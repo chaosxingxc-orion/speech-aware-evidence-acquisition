@@ -1,0 +1,4733 @@
+{
+ "THIS_IS_AN_ORACLE": "Every query measured here uses the trajectory's own GOLD TOOL identity -- information no runtime query could legally have. Every number BOUNDS THE DIRECTION FROM ABOVE. Nothing here is a proposal, a method, a knob recommendation or an achievable accuracy",
+ "artifact_hashes": {
+  "arm1-m0-outputs.jsonl": "dea60ff1e63fd2ef11c93edf8808217062fea3f0565ed5b60f136264bc6a9467",
+  "arm2-blend-mechanical-report-attempt4.json": "641c4b5ae82cdda1b2d8508bb95e52035fe1b3d119ea170f10906779df459436",
+  "arm2-blend-mechanical.json": "59458c491368a117721041e4ba1538549f3e1e28bdb342e4927703ad5892644e",
+  "arm2-blend-outputs.jsonl": "24a7864263226f4918076571aee359d40ee76838f9cea1da2bbae38f6b6bdd18",
+  "content-facet-npz": "00a7ebe9b8325ffc2c7b8e45ac4f0c8475b2d3e76994cc0f539f7b5ad5740f45",
+  "g1-read-attempt4.json": "cb5e56584a6d572f7b41b39542201ddb1b361755042eac66c3a70c55fd086f89",
+  "kb_policy.py": "2a1c3d75e747db10f723044b05c08d232e1edf47f125d0889c1d2565ba1019af",
+  "pass-a-direct-outputs.jsonl": "73e28511f419cd67b1721d829438f8c102e725e01243c9a9f000e00d92aadc9c",
+  "query-vectors.jsonl": "2915aa0e4c690fc612777f28c88949956b2cfb108582c4e40eaca36e6a184be7",
+  "snapshot": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2"
+ },
+ "contacts": {
+  "audio_seconds": 0.0,
+  "embedding_tool": 0,
+  "frozen_core": 0,
+  "gold_opened": "SCORING-SIDE ONLY, over the EXPOSED A2T-G1-104 whose seal the landed G1 read already broke; never on a runtime path",
+  "gpu_hours": 0.0,
+  "outbound_connection_attempts": 0,
+  "outbound_targets": [],
+  "tokenizer": 0,
+  "vectors_constructed_from_text": 0
+ },
+ "decision_rule": {
+  "bands_fixed_in_the_registration": {
+   "inconclusive_between": [
+    2,
+    7
+   ],
+   "refuted_at_or_below": 1,
+   "survives_at_or_above": 8
+  },
+  "gold_supplied_under_the_oracle": 11,
+  "of": 11,
+  "outcome": "SURVIVES",
+  "pre_registered_quantity": "O3_gold_supplied_of_the_gold_absent -- the supremum over same-tool utterance queries with the query facet withheld, fixed as the headline in the registration before any number was seen",
+  "secondary_readings_NOT_the_registered_outcome": {
+   "O2_anchor_only": {
+    "bands_fixed_in_the_registration": {
+     "inconclusive_between": [
+      2,
+      7
+     ],
+     "refuted_at_or_below": 1,
+     "survives_at_or_above": 8
+    },
+    "gold_supplied_under_the_oracle": 6,
+    "of": 11,
+    "outcome": "INCONCLUSIVE",
+    "verdict": "6 of 11 gold-absent trajectories become gold-supplied under an ORACLE query -- neither the refutation band (<= 1) nor the survival band (>= 8). INCONCLUSIVE"
+   },
+   "O3_twin_free_post_registration": {
+    "bands_fixed_in_the_registration": {
+     "inconclusive_between": [
+      2,
+      7
+     ],
+     "refuted_at_or_below": 1,
+     "survives_at_or_above": 8
+    },
+    "gold_supplied_under_the_oracle": 11,
+    "of": 11,
+    "outcome": "SURVIVES",
+    "verdict": "11 of 11 gold-absent trajectories become gold-supplied under an ORACLE query. The direction SURVIVES this rung. Surviving AUTHORIZES NOTHING by itself: this is only an upper bound, and the K3 trap remains -- any fix that improves the query by making the ANSWER better recovers a direct label and the alpha veto then suppresses dispatch, projected 15/104 to 3/104, -80 percent"
+   },
+   "semantics": "read against the SAME pre-registered bands for transparency. The registered outcome is the O3 one above; these are reported so a reader can see how the count moves under a stricter or a narrower oracle, and neither one revises the registered outcome"
+  },
+  "verdict": "11 of 11 gold-absent trajectories become gold-supplied under an ORACLE query. The direction SURVIVES this rung. Surviving AUTHORIZES NOTHING by itself: this is only an upper bound, and the K3 trap remains -- any fix that improves the query by making the ANSWER better recovers a direct label and the alpha veto then suppresses dispatch, projected 15/104 to 3/104, -80 percent"
+ },
+ "execution_profile": "model-free-check",
+ "exposure_row_id": "SAEA-SN-MF-A2T-ORACLE-QUERY-BOUND",
+ "fidelity_gate": {
+  "direct_label_mismatch_ids": [],
+  "direct_label_recovery_reproduced": 104,
+  "dispatch_decision_reproduced": 104,
+  "dispatch_mismatch_ids": [],
+  "gate_passed": true,
+  "population": 104,
+  "semantics": "the flight records fusion_selected_value_ids only for a trajectory it dispatched; a retained trajectory carries null. The dispatched set is compared value-id for value-id and the retained set is asserted null.",
+  "supply_mismatch_ids": [],
+  "supply_reproduced": 104,
+  "trajectories_with_empty_recall": 0,
+  "trajectories_with_empty_supply": 0
+ },
+ "frozen_cell": {
+  "alpha": 0.45,
+  "c": 2,
+  "m": 5,
+  "policy_config_sha256_at_flight": "d68afd2cfb6e12d9cbd9d3fbcf0daf3f81f6ed8be9b2a75c4f8ffb234011a919",
+  "tau": 0.65,
+  "top_k": 5,
+  "top_l": 3,
+  "weights": {
+   "w_agree": 0.2,
+   "w_cos": 0.5,
+   "w_prior": 0.3
+  }
+ },
+ "generated_at": "2026-08-25T18:18:14+00:00",
+ "hard_stop": "BOUNDING RUNG ONLY. No knob is changed, no flight is authorized, no G2 is opened, no test contact is taken, and no generality or superiority claim follows from this artifact. A ceiling on a direction is never a measurement of a method",
+ "kb_shape": {
+  "content_facets_with_a_task_target": 12903,
+  "content_facets_with_vectors": 12601,
+  "distinct_value_task_targets": 151,
+  "label_vocabulary_size": 151,
+  "snapshot_values": 12601
+ },
+ "landed_reproduction_gate": {
+  "checks": {
+   "dispatched_n": {
+    "landed": 15,
+    "recomputed": 15
+   },
+   "gold_absent_dispatched": {
+    "landed": 11,
+    "recomputed": 11
+   },
+   "gold_bearing_dispatched": {
+    "landed": 4,
+    "recomputed": 4
+   },
+   "gold_facets_below_tau_among_the_gold_absent": {
+    "landed": 9,
+    "recomputed": 9
+   },
+   "tau_band_max": {
+    "landed": 0.635625,
+    "recomputed": 0.635625
+   },
+   "tau_band_min": {
+    "landed": 0.565332,
+    "recomputed": 0.565332
+   }
+  },
+  "disagreements": {},
+  "gate_passed": true,
+  "semantics": "a stop condition, not a decoration: an oracle bound computed on a population this row could not reproduce would not be a bound on the landed finding"
+ },
+ "lower_constructions": {
+  "N1_semantics": "TIER PROTOTYPE, a NON-oracle runtime-legal query: the normalized mean of the vectored content facets of the KB units in the trajectory's own tier. The sample id alone determines the tier, so no gold is used. It carries the correct tier prior and ZERO information about the individual utterance, which is exactly what makes it a floor rather than a bound",
+  "N2_semantics": "MIXING SENSITIVITY, explicitly NOT a bound: the smallest lambda at which the normalized mixture of the flown key and the O2 oracle direction delivers the gold value, with the oracle facet withheld throughout. The lambda = 0 cell is a self-check -- it must reproduce the as-flown supply",
+  "per_sample": [
+   {
+    "N1_tier_prototype": {
+     "best_gold_bearing_facet_cosine": 0.8092943826169431,
+     "best_gold_bearing_facet_id": "facet:content:tier3_multi_intent:002178",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet clears tau but enters the recall ordering only at position 172, outside the locked k = m = 5 window",
+      "kind": "knob",
+      "stage": "recall_depth_k"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 172,
+     "gold_primary_tool": "setColor",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": 55,
+     "sample_id": "tier1_direct:000167",
+     "supplied_targets": [
+      "getAirQuality",
+      "getEnergyUsage",
+      "getThermostatState"
+     ],
+     "supplied_value_count": 4,
+     "tau_passing_targets_total": 150,
+     "tier": "tier1_direct",
+     "tier_facets_averaged": 1546,
+     "top1_cosine": 0.8707625662002776,
+     "withheld_facet_ids": []
+    },
+    "N2_ladder": [
+     {
+      "best_gold_bearing_facet_cosine": 0.5841236297077432,
+      "gold_supplied": false,
+      "lambda": 0.0,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6040886904185033,
+      "gold_supplied": false,
+      "lambda": 0.1,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6324595445899567,
+      "gold_supplied": false,
+      "lambda": 0.2,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6568538810540488,
+      "gold_supplied": false,
+      "lambda": 0.3,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.675851978879798,
+      "gold_supplied": false,
+      "lambda": 0.4,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setLighting"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6883367971127248,
+      "gold_supplied": false,
+      "lambda": 0.5,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setLighting"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6937176000640538,
+      "gold_supplied": false,
+      "lambda": 0.6,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setColorTemperature",
+       "setHapticStrength"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6920458598434729,
+      "gold_supplied": false,
+      "lambda": 0.7,
+      "supplied_targets": [
+       "setColorTemperature",
+       "setHapticStrength",
+       "setLighting"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6839770988942042,
+      "gold_supplied": false,
+      "lambda": 0.8,
+      "supplied_targets": [
+       "setColorTemperature",
+       "setHapticStrength",
+       "setLighting"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.688400730866077,
+      "gold_supplied": false,
+      "lambda": 0.9,
+      "supplied_targets": [
+       "setColorTemperature",
+       "setHapticStrength",
+       "setLighting"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6882626938410351,
+      "gold_supplied": false,
+      "lambda": 1.0,
+      "supplied_targets": [
+       "setColorTemperature",
+       "setHapticStrength",
+       "setLighting"
+      ]
+     }
+    ],
+    "N2_smallest_lambda_that_supplies_gold": null,
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "setColor",
+    "sample_id": "tier1_direct:000167"
+   },
+   {
+    "N1_tier_prototype": {
+     "best_gold_bearing_facet_cosine": 0.8077476518190865,
+     "best_gold_bearing_facet_id": "facet:content:tier6_correction:002926",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet clears tau but enters the recall ordering only at position 186, outside the locked k = m = 5 window",
+      "kind": "knob",
+      "stage": "recall_depth_k"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 186,
+     "gold_primary_tool": "setWaterValve",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": 58,
+     "sample_id": "tier1_direct:001631",
+     "supplied_targets": [
+      "getAirQuality",
+      "getEnergyUsage",
+      "getThermostatState"
+     ],
+     "supplied_value_count": 4,
+     "tau_passing_targets_total": 150,
+     "tier": "tier1_direct",
+     "tier_facets_averaged": 1546,
+     "top1_cosine": 0.8707625662002776,
+     "withheld_facet_ids": []
+    },
+    "N2_ladder": [
+     {
+      "best_gold_bearing_facet_cosine": 0.5651308524009149,
+      "gold_supplied": false,
+      "lambda": 0.0,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.602109170873003,
+      "gold_supplied": false,
+      "lambda": 0.1,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6686620210991209,
+      "gold_supplied": false,
+      "lambda": 0.2,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7330432170420301,
+      "gold_supplied": false,
+      "lambda": 0.3,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7926234919680687,
+      "gold_supplied": true,
+      "lambda": 0.4,
+      "supplied_targets": [
+       "setGarageDoor",
+       "setHapticStrength",
+       "setWaterValve"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.844876015840177,
+      "gold_supplied": true,
+      "lambda": 0.5,
+      "supplied_targets": [
+       "setGarageDoor",
+       "setHapticStrength",
+       "setWaterValve"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8878216450884697,
+      "gold_supplied": true,
+      "lambda": 0.6,
+      "supplied_targets": [
+       "setGarageDoor",
+       "setHapticStrength",
+       "setWaterValve"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9203776425363527,
+      "gold_supplied": true,
+      "lambda": 0.7,
+      "supplied_targets": [
+       "controlPlayback",
+       "setGarageDoor",
+       "setWaterValve"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.942477952029734,
+      "gold_supplied": true,
+      "lambda": 0.8,
+      "supplied_targets": [
+       "controlPlayback",
+       "setGarageDoor",
+       "setWaterValve"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9549399773239057,
+      "gold_supplied": true,
+      "lambda": 0.9,
+      "supplied_targets": [
+       "setGarageDoor",
+       "setGarageOpener",
+       "setWaterValve"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9591651830808766,
+      "gold_supplied": true,
+      "lambda": 1.0,
+      "supplied_targets": [
+       "setGarageDoor",
+       "setGarageOpener",
+       "setWaterValve"
+      ]
+     }
+    ],
+    "N2_smallest_lambda_that_supplies_gold": 0.4,
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "setWaterValve",
+    "sample_id": "tier1_direct:001631"
+   },
+   {
+    "N1_tier_prototype": {
+     "best_gold_bearing_facet_cosine": 0.8426829718599441,
+     "best_gold_bearing_facet_id": "facet:content:tier3_multi_intent:003173",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet clears tau but enters the recall ordering only at position 25, outside the locked k = m = 5 window",
+      "kind": "knob",
+      "stage": "recall_depth_k"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 25,
+     "gold_primary_tool": "getLockState",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": 18,
+     "sample_id": "tier1_direct:004159",
+     "supplied_targets": [
+      "getAirQuality",
+      "getEnergyUsage",
+      "getThermostatState"
+     ],
+     "supplied_value_count": 4,
+     "tau_passing_targets_total": 150,
+     "tier": "tier1_direct",
+     "tier_facets_averaged": 1546,
+     "top1_cosine": 0.8707625662002776,
+     "withheld_facet_ids": []
+    },
+    "N2_ladder": [
+     {
+      "best_gold_bearing_facet_cosine": 0.9062917882189933,
+      "gold_supplied": true,
+      "lambda": 0.0,
+      "supplied_targets": [
+       "getLockState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9154544873022152,
+      "gold_supplied": true,
+      "lambda": 0.1,
+      "supplied_targets": [
+       "getLockState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9231503553631585,
+      "gold_supplied": true,
+      "lambda": 0.2,
+      "supplied_targets": [
+       "getLockState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9292799648724219,
+      "gold_supplied": true,
+      "lambda": 0.3,
+      "supplied_targets": [
+       "getLockState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9337659584346025,
+      "gold_supplied": true,
+      "lambda": 0.4,
+      "supplied_targets": [
+       "getLockState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9365562179856362,
+      "gold_supplied": true,
+      "lambda": 0.5,
+      "supplied_targets": [
+       "getLockState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9376260024812113,
+      "gold_supplied": true,
+      "lambda": 0.6,
+      "supplied_targets": [
+       "getLockState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9369788772149807,
+      "gold_supplied": true,
+      "lambda": 0.7,
+      "supplied_targets": [
+       "getLockState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9346463604262816,
+      "gold_supplied": true,
+      "lambda": 0.8,
+      "supplied_targets": [
+       "getLockState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9306863254252825,
+      "gold_supplied": true,
+      "lambda": 0.9,
+      "supplied_targets": [
+       "getLockState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.925180302998047,
+      "gold_supplied": true,
+      "lambda": 1.0,
+      "supplied_targets": [
+       "getLockState"
+      ]
+     }
+    ],
+    "N2_smallest_lambda_that_supplies_gold": 0.0,
+    "gold_absent_as_flown": false,
+    "gold_primary_tool": "getLockState",
+    "sample_id": "tier1_direct:004159"
+   },
+   {
+    "N1_tier_prototype": {
+     "best_gold_bearing_facet_cosine": 0.8250859327476404,
+     "best_gold_bearing_facet_id": "facet:content:tier6_correction:004388",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet clears tau but enters the recall ordering only at position 133, outside the locked k = m = 5 window",
+      "kind": "knob",
+      "stage": "recall_depth_k"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 133,
+     "gold_primary_tool": "setGroupLightState",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": 48,
+     "sample_id": "tier2_parametric:004826",
+     "supplied_targets": [
+      "getCameraStream",
+      "getEnergyUsage",
+      "setTargetTemperature"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 150,
+     "tier": "tier2_parametric",
+     "tier_facets_averaged": 2601,
+     "top1_cosine": 0.8887890277042171,
+     "withheld_facet_ids": []
+    },
+    "N2_ladder": [
+     {
+      "best_gold_bearing_facet_cosine": 0.8487298924879887,
+      "gold_supplied": false,
+      "lambda": 0.0,
+      "supplied_targets": [
+       "findMyDevice",
+       "setAdaptiveLighting",
+       "setBrightness"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8726979651772917,
+      "gold_supplied": false,
+      "lambda": 0.1,
+      "supplied_targets": [
+       "findMyDevice",
+       "setAdaptiveLighting",
+       "setBrightness"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8947403974977792,
+      "gold_supplied": false,
+      "lambda": 0.2,
+      "supplied_targets": [
+       "findMyDevice",
+       "setAdaptiveLighting",
+       "setBrightness"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9145196660879209,
+      "gold_supplied": true,
+      "lambda": 0.3,
+      "supplied_targets": [
+       "findMyDevice",
+       "rampBrightness",
+       "setGroupLightState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9317406442492847,
+      "gold_supplied": true,
+      "lambda": 0.4,
+      "supplied_targets": [
+       "findMyDevice",
+       "rampBrightness",
+       "setGroupLightState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.946168016822171,
+      "gold_supplied": true,
+      "lambda": 0.5,
+      "supplied_targets": [
+       "findMyDevice",
+       "rampBrightness",
+       "setGroupLightState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.957640191609493,
+      "gold_supplied": true,
+      "lambda": 0.6,
+      "supplied_targets": [
+       "findMyDevice",
+       "rampBrightness",
+       "setGroupLightState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9660779611524184,
+      "gold_supplied": true,
+      "lambda": 0.7,
+      "supplied_targets": [
+       "findMyDevice",
+       "rampBrightness",
+       "setGroupLightState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9714868755931192,
+      "gold_supplied": true,
+      "lambda": 0.8,
+      "supplied_targets": [
+       "findMyDevice",
+       "rampBrightness",
+       "setGroupLightState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9739532095402251,
+      "gold_supplied": true,
+      "lambda": 0.9,
+      "supplied_targets": [
+       "findMyDevice",
+       "rampBrightness",
+       "setGroupLightState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9736343253920071,
+      "gold_supplied": true,
+      "lambda": 1.0,
+      "supplied_targets": [
+       "findMyDevice",
+       "rampBrightness",
+       "setGroupLightState"
+      ]
+     }
+    ],
+    "N2_smallest_lambda_that_supplies_gold": 0.3,
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "setGroupLightState",
+    "sample_id": "tier2_parametric:004826"
+   },
+   {
+    "N1_tier_prototype": {
+     "best_gold_bearing_facet_cosine": 0.858710697382477,
+     "best_gold_bearing_facet_id": "facet:content:tier3_multi_intent:002528",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet clears tau but enters the recall ordering only at position 141, outside the locked k = m = 5 window",
+      "kind": "knob",
+      "stage": "recall_depth_k"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 141,
+     "gold_primary_tool": "getCameraEvent",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": 41,
+     "sample_id": "tier3_multi_intent:000879",
+     "supplied_targets": [
+      "getCameraStream",
+      "setAdaptiveLighting",
+      "setTargetTemperature"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 150,
+     "tier": "tier3_multi_intent",
+     "tier_facets_averaged": 1550,
+     "top1_cosine": 0.9211988582422354,
+     "withheld_facet_ids": []
+    },
+    "N2_ladder": [
+     {
+      "best_gold_bearing_facet_cosine": 0.8302967480002905,
+      "gold_supplied": true,
+      "lambda": 0.0,
+      "supplied_targets": [
+       "findMyDevice",
+       "getCameraEvent",
+       "getCameraStream"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8397749294512268,
+      "gold_supplied": true,
+      "lambda": 0.1,
+      "supplied_targets": [
+       "getCameraEvent",
+       "getCameraStream"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8470978635210928,
+      "gold_supplied": true,
+      "lambda": 0.2,
+      "supplied_targets": [
+       "getCameraEvent",
+       "getCameraStream"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8561223812451036,
+      "gold_supplied": true,
+      "lambda": 0.3,
+      "supplied_targets": [
+       "getCameraEvent",
+       "getCameraStream"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8629171772389324,
+      "gold_supplied": true,
+      "lambda": 0.4,
+      "supplied_targets": [
+       "getCameraEvent",
+       "getCameraStream"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8671003677259448,
+      "gold_supplied": true,
+      "lambda": 0.5,
+      "supplied_targets": [
+       "getCameraEvent",
+       "getCameraStream"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8697188272077775,
+      "gold_supplied": true,
+      "lambda": 0.6,
+      "supplied_targets": [
+       "getCameraEvent",
+       "getCameraStream"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8706952530599933,
+      "gold_supplied": true,
+      "lambda": 0.7,
+      "supplied_targets": [
+       "getCameraEvent",
+       "getCameraStream"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8690550411248791,
+      "gold_supplied": true,
+      "lambda": 0.8,
+      "supplied_targets": [
+       "getCameraEvent",
+       "getCameraStream"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8649287760008739,
+      "gold_supplied": true,
+      "lambda": 0.9,
+      "supplied_targets": [
+       "getCameraEvent"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8585033587370912,
+      "gold_supplied": true,
+      "lambda": 1.0,
+      "supplied_targets": [
+       "getCameraEvent"
+      ]
+     }
+    ],
+    "N2_smallest_lambda_that_supplies_gold": 0.0,
+    "gold_absent_as_flown": false,
+    "gold_primary_tool": "getCameraEvent",
+    "sample_id": "tier3_multi_intent:000879"
+   },
+   {
+    "N1_tier_prototype": {
+     "best_gold_bearing_facet_cosine": 0.7775076042387666,
+     "best_gold_bearing_facet_id": "facet:content:tier4_implicit:002432",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet clears tau but enters the recall ordering only at position 44, outside the locked k = m = 5 window",
+      "kind": "knob",
+      "stage": "recall_depth_k"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 44,
+     "gold_primary_tool": "setLockState",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": 29,
+     "sample_id": "tier4_implicit:000655",
+     "supplied_targets": [
+      "getAirQuality",
+      "getCameraEvent",
+      "setFanMode"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 148,
+     "tier": "tier4_implicit",
+     "tier_facets_averaged": 1544,
+     "top1_cosine": 0.8192799749041234,
+     "withheld_facet_ids": []
+    },
+    "N2_ladder": [
+     {
+      "best_gold_bearing_facet_cosine": 0.571343841630034,
+      "gold_supplied": false,
+      "lambda": 0.0,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.5948405005800635,
+      "gold_supplied": false,
+      "lambda": 0.1,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6290337914435256,
+      "gold_supplied": false,
+      "lambda": 0.2,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6596818880801995,
+      "gold_supplied": false,
+      "lambda": 0.3,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6852601600041103,
+      "gold_supplied": false,
+      "lambda": 0.4,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7044992298775153,
+      "gold_supplied": false,
+      "lambda": 0.5,
+      "supplied_targets": [
+       "getCameraEvent",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7166203659001035,
+      "gold_supplied": false,
+      "lambda": 0.6,
+      "supplied_targets": [
+       "getCameraEvent",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7214751258507781,
+      "gold_supplied": false,
+      "lambda": 0.7,
+      "supplied_targets": [
+       "getCameraEvent",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7195367610091641,
+      "gold_supplied": true,
+      "lambda": 0.8,
+      "supplied_targets": [
+       "controlPlayback",
+       "getCameraEvent",
+       "setLockState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7117552003629544,
+      "gold_supplied": true,
+      "lambda": 0.9,
+      "supplied_targets": [
+       "getCameraEvent",
+       "setLockState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6993408775820684,
+      "gold_supplied": true,
+      "lambda": 1.0,
+      "supplied_targets": [
+       "getCameraEvent",
+       "setLockState"
+      ]
+     }
+    ],
+    "N2_smallest_lambda_that_supplies_gold": 0.8,
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "setLockState",
+    "sample_id": "tier4_implicit:000655"
+   },
+   {
+    "N1_tier_prototype": {
+     "best_gold_bearing_facet_cosine": 0.7477235653166576,
+     "best_gold_bearing_facet_id": "facet:content:tier4_implicit:002569",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet clears tau but enters the recall ordering only at position 216, outside the locked k = m = 5 window",
+      "kind": "knob",
+      "stage": "recall_depth_k"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 216,
+     "gold_primary_tool": "setGarageDoor",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": 71,
+     "sample_id": "tier4_implicit:000900",
+     "supplied_targets": [
+      "getAirQuality",
+      "getCameraEvent",
+      "setFanMode"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 148,
+     "tier": "tier4_implicit",
+     "tier_facets_averaged": 1544,
+     "top1_cosine": 0.8192799749041234,
+     "withheld_facet_ids": []
+    },
+    "N2_ladder": [
+     {
+      "best_gold_bearing_facet_cosine": 0.5699814147802175,
+      "gold_supplied": false,
+      "lambda": 0.0,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6102353380698765,
+      "gold_supplied": false,
+      "lambda": 0.1,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6486156139600059,
+      "gold_supplied": false,
+      "lambda": 0.2,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6840577442426364,
+      "gold_supplied": false,
+      "lambda": 0.3,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7148280701624005,
+      "gold_supplied": false,
+      "lambda": 0.4,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.738840029748075,
+      "gold_supplied": false,
+      "lambda": 0.5,
+      "supplied_targets": [
+       "setHapticStrength",
+       "setPowerState",
+       "setWaterValve"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7551235203723315,
+      "gold_supplied": false,
+      "lambda": 0.6,
+      "supplied_targets": [
+       "setHapticStrength",
+       "setPowerState",
+       "setWaterValve"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7636579954932257,
+      "gold_supplied": true,
+      "lambda": 0.7,
+      "supplied_targets": [
+       "setAlwaysOnDisplay",
+       "setGarageDoor",
+       "setWaterValve"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7724947880497834,
+      "gold_supplied": true,
+      "lambda": 0.8,
+      "supplied_targets": [
+       "setAlwaysOnDisplay",
+       "setGarageDoor",
+       "setWaterValve"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7742726730520815,
+      "gold_supplied": true,
+      "lambda": 0.9,
+      "supplied_targets": [
+       "setAlwaysOnDisplay",
+       "setGarageDoor",
+       "setWaterValve"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7701834016013333,
+      "gold_supplied": true,
+      "lambda": 1.0,
+      "supplied_targets": [
+       "setAlwaysOnDisplay",
+       "setGarageDoor",
+       "setWaterValve"
+      ]
+     }
+    ],
+    "N2_smallest_lambda_that_supplies_gold": 0.7,
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "setGarageDoor",
+    "sample_id": "tier4_implicit:000900"
+   },
+   {
+    "N1_tier_prototype": {
+     "best_gold_bearing_facet_cosine": 0.7898153552729054,
+     "best_gold_bearing_facet_id": "facet:content:tier4_implicit:002675",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet clears tau but enters the recall ordering only at position 14, outside the locked k = m = 5 window",
+      "kind": "knob",
+      "stage": "recall_depth_k"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 14,
+     "gold_primary_tool": "castContent",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": 13,
+     "sample_id": "tier4_implicit:001148",
+     "supplied_targets": [
+      "getAirQuality",
+      "getCameraEvent",
+      "setFanMode"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 148,
+     "tier": "tier4_implicit",
+     "tier_facets_averaged": 1544,
+     "top1_cosine": 0.8192799749041234,
+     "withheld_facet_ids": []
+    },
+    "N2_ladder": [
+     {
+      "best_gold_bearing_facet_cosine": 0.5950311604065934,
+      "gold_supplied": false,
+      "lambda": 0.0,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6278829929921774,
+      "gold_supplied": false,
+      "lambda": 0.1,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6688208078968062,
+      "gold_supplied": false,
+      "lambda": 0.2,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.706347610101228,
+      "gold_supplied": false,
+      "lambda": 0.3,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7387987301792858,
+      "gold_supplied": false,
+      "lambda": 0.4,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7647404856323793,
+      "gold_supplied": true,
+      "lambda": 0.5,
+      "supplied_targets": [
+       "castContent",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7832185517157068,
+      "gold_supplied": true,
+      "lambda": 0.6,
+      "supplied_targets": [
+       "castContent",
+       "getDeviceList",
+       "setHapticStrength"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.793917591472582,
+      "gold_supplied": true,
+      "lambda": 0.7,
+      "supplied_targets": [
+       "castContent",
+       "getDeviceList",
+       "setHapticStrength"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7971753729196086,
+      "gold_supplied": true,
+      "lambda": 0.8,
+      "supplied_targets": [
+       "castContent",
+       "getDeviceList"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7938558395986346,
+      "gold_supplied": true,
+      "lambda": 0.9,
+      "supplied_targets": [
+       "castContent",
+       "getDeviceList"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7851402011340859,
+      "gold_supplied": true,
+      "lambda": 1.0,
+      "supplied_targets": [
+       "castContent",
+       "getDeviceList"
+      ]
+     }
+    ],
+    "N2_smallest_lambda_that_supplies_gold": 0.5,
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "castContent",
+    "sample_id": "tier4_implicit:001148"
+   },
+   {
+    "N1_tier_prototype": {
+     "best_gold_bearing_facet_cosine": 0.7209419740717382,
+     "best_gold_bearing_facet_id": "facet:content:tier3_multi_intent:002809",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet clears tau but enters the recall ordering only at position 668, outside the locked k = m = 5 window",
+      "kind": "knob",
+      "stage": "recall_depth_k"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 668,
+     "gold_primary_tool": "setApplianceMode",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": 99,
+     "sample_id": "tier4_implicit:001389",
+     "supplied_targets": [
+      "getAirQuality",
+      "getCameraEvent",
+      "setFanMode"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 148,
+     "tier": "tier4_implicit",
+     "tier_facets_averaged": 1544,
+     "top1_cosine": 0.8192799749041234,
+     "withheld_facet_ids": []
+    },
+    "N2_ladder": [
+     {
+      "best_gold_bearing_facet_cosine": 0.5759807701810088,
+      "gold_supplied": false,
+      "lambda": 0.0,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.5975978522526758,
+      "gold_supplied": false,
+      "lambda": 0.1,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6160666611647321,
+      "gold_supplied": false,
+      "lambda": 0.2,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6300940557619387,
+      "gold_supplied": false,
+      "lambda": 0.3,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6496190171605116,
+      "gold_supplied": false,
+      "lambda": 0.4,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6671387924953928,
+      "gold_supplied": false,
+      "lambda": 0.5,
+      "supplied_targets": [
+       "getEnergyUsage",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.677709269467984,
+      "gold_supplied": false,
+      "lambda": 0.6,
+      "supplied_targets": [
+       "getEnergyUsage",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6812196137017861,
+      "gold_supplied": false,
+      "lambda": 0.7,
+      "supplied_targets": [
+       "getEnergyUsage",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6781784154098127,
+      "gold_supplied": false,
+      "lambda": 0.8,
+      "supplied_targets": [
+       "getEnergyUsage",
+       "setDoNotDisturb",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6695601639071613,
+      "gold_supplied": false,
+      "lambda": 0.9,
+      "supplied_targets": [
+       "getEnergyUsage",
+       "setDoNotDisturb",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6565825786982098,
+      "gold_supplied": false,
+      "lambda": 1.0,
+      "supplied_targets": [
+       "activateScene",
+       "getEnergyUsage",
+       "setDoNotDisturb"
+      ]
+     }
+    ],
+    "N2_smallest_lambda_that_supplies_gold": null,
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "setApplianceMode",
+    "sample_id": "tier4_implicit:001389"
+   },
+   {
+    "N1_tier_prototype": {
+     "best_gold_bearing_facet_cosine": 0.7209419740717382,
+     "best_gold_bearing_facet_id": "facet:content:tier3_multi_intent:002809",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet clears tau but enters the recall ordering only at position 668, outside the locked k = m = 5 window",
+      "kind": "knob",
+      "stage": "recall_depth_k"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 668,
+     "gold_primary_tool": "setApplianceMode",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": 99,
+     "sample_id": "tier4_implicit:001409",
+     "supplied_targets": [
+      "getAirQuality",
+      "getCameraEvent",
+      "setFanMode"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 148,
+     "tier": "tier4_implicit",
+     "tier_facets_averaged": 1544,
+     "top1_cosine": 0.8192799749041234,
+     "withheld_facet_ids": []
+    },
+    "N2_ladder": [
+     {
+      "best_gold_bearing_facet_cosine": 0.5759807701810088,
+      "gold_supplied": false,
+      "lambda": 0.0,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.5975978522526758,
+      "gold_supplied": false,
+      "lambda": 0.1,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6160666611647321,
+      "gold_supplied": false,
+      "lambda": 0.2,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6300940557619387,
+      "gold_supplied": false,
+      "lambda": 0.3,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6496190171605116,
+      "gold_supplied": false,
+      "lambda": 0.4,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6671387924953928,
+      "gold_supplied": false,
+      "lambda": 0.5,
+      "supplied_targets": [
+       "getEnergyUsage",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.677709269467984,
+      "gold_supplied": false,
+      "lambda": 0.6,
+      "supplied_targets": [
+       "getEnergyUsage",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6812196137017861,
+      "gold_supplied": false,
+      "lambda": 0.7,
+      "supplied_targets": [
+       "getEnergyUsage",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6781784154098127,
+      "gold_supplied": false,
+      "lambda": 0.8,
+      "supplied_targets": [
+       "getEnergyUsage",
+       "setDoNotDisturb",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6695601639071613,
+      "gold_supplied": false,
+      "lambda": 0.9,
+      "supplied_targets": [
+       "getEnergyUsage",
+       "setDoNotDisturb",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6565825786982098,
+      "gold_supplied": false,
+      "lambda": 1.0,
+      "supplied_targets": [
+       "activateScene",
+       "getEnergyUsage",
+       "setDoNotDisturb"
+      ]
+     }
+    ],
+    "N2_smallest_lambda_that_supplies_gold": null,
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "setApplianceMode",
+    "sample_id": "tier4_implicit:001409"
+   },
+   {
+    "N1_tier_prototype": {
+     "best_gold_bearing_facet_cosine": 0.7863482341533043,
+     "best_gold_bearing_facet_id": "facet:content:tier4_implicit:002871",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet clears tau but enters the recall ordering only at position 21, outside the locked k = m = 5 window",
+      "kind": "knob",
+      "stage": "recall_depth_k"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 21,
+     "gold_primary_tool": "setPowerState",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": 17,
+     "sample_id": "tier4_implicit:001513",
+     "supplied_targets": [
+      "getAirQuality",
+      "getCameraEvent",
+      "setFanMode"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 148,
+     "tier": "tier4_implicit",
+     "tier_facets_averaged": 1544,
+     "top1_cosine": 0.8192799749041234,
+     "withheld_facet_ids": []
+    },
+    "N2_ladder": [
+     {
+      "best_gold_bearing_facet_cosine": 0.5711300926964893,
+      "gold_supplied": false,
+      "lambda": 0.0,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setBrightness",
+       "setHapticStrength"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.5940802872826397,
+      "gold_supplied": false,
+      "lambda": 0.1,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setBrightness",
+       "setHapticStrength"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6148178529252468,
+      "gold_supplied": false,
+      "lambda": 0.2,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setBrightness",
+       "setHapticStrength"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6325876686880924,
+      "gold_supplied": false,
+      "lambda": 0.3,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setBrightness",
+       "setHapticStrength"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6496412431138306,
+      "gold_supplied": false,
+      "lambda": 0.4,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setBrightness",
+       "setHapticStrength"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6676179632735637,
+      "gold_supplied": false,
+      "lambda": 0.5,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setBrightness",
+       "setHapticStrength"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6810665702856412,
+      "gold_supplied": false,
+      "lambda": 0.6,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setBrightness",
+       "setHapticStrength"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6898084254770386,
+      "gold_supplied": false,
+      "lambda": 0.7,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setBrightness",
+       "setHapticStrength"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6939449672090565,
+      "gold_supplied": false,
+      "lambda": 0.8,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setBrightness",
+       "setHapticStrength"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6938224644931931,
+      "gold_supplied": false,
+      "lambda": 0.9,
+      "supplied_targets": [
+       "activateScene",
+       "cancelNavigation",
+       "setHapticStrength"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6899655821199243,
+      "gold_supplied": false,
+      "lambda": 1.0,
+      "supplied_targets": [
+       "activateScene",
+       "cancelNavigation",
+       "setHapticStrength"
+      ]
+     }
+    ],
+    "N2_smallest_lambda_that_supplies_gold": null,
+    "gold_absent_as_flown": false,
+    "gold_primary_tool": "setPowerState",
+    "sample_id": "tier4_implicit:001513"
+   },
+   {
+    "N1_tier_prototype": {
+     "best_gold_bearing_facet_cosine": 0.7618622856776084,
+     "best_gold_bearing_facet_id": "facet:content:tier4_implicit:003629",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet clears tau but enters the recall ordering only at position 102, outside the locked k = m = 5 window",
+      "kind": "knob",
+      "stage": "recall_depth_k"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 102,
+     "gold_primary_tool": "startWorkout",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": 52,
+     "sample_id": "tier4_implicit:003312",
+     "supplied_targets": [
+      "getAirQuality",
+      "getCameraEvent",
+      "setFanMode"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 148,
+     "tier": "tier4_implicit",
+     "tier_facets_averaged": 1544,
+     "top1_cosine": 0.8192799749041234,
+     "withheld_facet_ids": []
+    },
+    "N2_ladder": [
+     {
+      "best_gold_bearing_facet_cosine": 0.5648527181946151,
+      "gold_supplied": false,
+      "lambda": 0.0,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6059914313552244,
+      "gold_supplied": false,
+      "lambda": 0.1,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6557387493455028,
+      "gold_supplied": false,
+      "lambda": 0.2,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7076091592017696,
+      "gold_supplied": false,
+      "lambda": 0.3,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.7582179212513072,
+      "gold_supplied": false,
+      "lambda": 0.4,
+      "supplied_targets": [
+       "getActivitySummary",
+       "setHapticStrength",
+       "stopWorkout"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8017981195521752,
+      "gold_supplied": true,
+      "lambda": 0.5,
+      "supplied_targets": [
+       "getActivitySummary",
+       "startWorkout",
+       "stopWorkout"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8366977315998749,
+      "gold_supplied": true,
+      "lambda": 0.6,
+      "supplied_targets": [
+       "getActivitySummary",
+       "startWorkout",
+       "stopWorkout"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.862086852186238,
+      "gold_supplied": true,
+      "lambda": 0.7,
+      "supplied_targets": [
+       "getActivitySummary",
+       "startWorkout",
+       "stopWorkout"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8780416538525593,
+      "gold_supplied": true,
+      "lambda": 0.8,
+      "supplied_targets": [
+       "getActivitySummary",
+       "startWorkout",
+       "stopWorkout"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8854080083262176,
+      "gold_supplied": true,
+      "lambda": 0.9,
+      "supplied_targets": [
+       "getActivitySummary",
+       "startWorkout",
+       "stopWorkout"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8855259887626229,
+      "gold_supplied": true,
+      "lambda": 1.0,
+      "supplied_targets": [
+       "getActivitySummary",
+       "startWorkout",
+       "stopWorkout"
+      ]
+     }
+    ],
+    "N2_smallest_lambda_that_supplies_gold": 0.5,
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "startWorkout",
+    "sample_id": "tier4_implicit:003312"
+   },
+   {
+    "N1_tier_prototype": {
+     "best_gold_bearing_facet_cosine": 0.7742358046888709,
+     "best_gold_bearing_facet_id": "facet:content:tier3_multi_intent:002158",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet clears tau but enters the recall ordering only at position 75, outside the locked k = m = 5 window",
+      "kind": "knob",
+      "stage": "recall_depth_k"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 75,
+     "gold_primary_tool": "setBrightness",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": 29,
+     "sample_id": "tier5_needle:000061",
+     "supplied_targets": [
+      "activateRoutine",
+      "getApplianceState",
+      "getEnergyUsage"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 148,
+     "tier": "tier5_needle",
+     "tier_facets_averaged": 1554,
+     "top1_cosine": 0.8232967864188996,
+     "withheld_facet_ids": []
+    },
+    "N2_ladder": [
+     {
+      "best_gold_bearing_facet_cosine": 0.8570218616621413,
+      "gold_supplied": false,
+      "lambda": 0.0,
+      "supplied_targets": [
+       "findMyDevice",
+       "getDeviceList",
+       "rampBrightness"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8722987936135,
+      "gold_supplied": true,
+      "lambda": 0.1,
+      "supplied_targets": [
+       "findMyDevice",
+       "rampBrightness",
+       "setBrightness"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8856468958740247,
+      "gold_supplied": true,
+      "lambda": 0.2,
+      "supplied_targets": [
+       "findMyDevice",
+       "rampBrightness",
+       "setBrightness"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.8968389655588193,
+      "gold_supplied": true,
+      "lambda": 0.3,
+      "supplied_targets": [
+       "findMyDevice",
+       "setBrightness",
+       "setLighting"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9056889311606808,
+      "gold_supplied": true,
+      "lambda": 0.4,
+      "supplied_targets": [
+       "findMyDevice",
+       "setBrightness",
+       "setLighting"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9120626680483677,
+      "gold_supplied": true,
+      "lambda": 0.5,
+      "supplied_targets": [
+       "findMyDevice",
+       "setBrightness",
+       "setLighting"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9158858406355248,
+      "gold_supplied": true,
+      "lambda": 0.6,
+      "supplied_targets": [
+       "setBrightness",
+       "setGroupLightState",
+       "setLighting"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9171478317632145,
+      "gold_supplied": true,
+      "lambda": 0.7,
+      "supplied_targets": [
+       "setBrightness",
+       "setGroupLightState",
+       "setLighting"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9159013068744808,
+      "gold_supplied": true,
+      "lambda": 0.8,
+      "supplied_targets": [
+       "setBrightness",
+       "setGroupLightState",
+       "setLighting"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9122575361905706,
+      "gold_supplied": true,
+      "lambda": 0.9,
+      "supplied_targets": [
+       "setBrightness",
+       "setGroupLightState",
+       "setLighting"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.9063781397031788,
+      "gold_supplied": true,
+      "lambda": 1.0,
+      "supplied_targets": [
+       "setBrightness",
+       "setGroupLightState",
+       "setLighting"
+      ]
+     }
+    ],
+    "N2_smallest_lambda_that_supplies_gold": 0.1,
+    "gold_absent_as_flown": false,
+    "gold_primary_tool": "setBrightness",
+    "sample_id": "tier5_needle:000061"
+   },
+   {
+    "N1_tier_prototype": {
+     "best_gold_bearing_facet_cosine": 0.8084761096697223,
+     "best_gold_bearing_facet_id": "facet:content:tier3_multi_intent:002322",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet clears tau but enters the recall ordering only at position 14, outside the locked k = m = 5 window",
+      "kind": "knob",
+      "stage": "recall_depth_k"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 14,
+     "gold_primary_tool": "setTargetTemperature",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": 11,
+     "sample_id": "tier7_multiturn:000214",
+     "supplied_targets": [
+      "getCameraStream",
+      "getEnergyUsage",
+      "getThermostatState"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 150,
+     "tier": "tier7_multiturn",
+     "tier_facets_averaged": 1554,
+     "top1_cosine": 0.827212328952768,
+     "withheld_facet_ids": []
+    },
+    "N2_ladder": [
+     {
+      "best_gold_bearing_facet_cosine": 0.6347539892680013,
+      "gold_supplied": false,
+      "lambda": 0.0,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6514754934418708,
+      "gold_supplied": false,
+      "lambda": 0.1,
+      "supplied_targets": [
+       "setBrightness",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6646962653109959,
+      "gold_supplied": false,
+      "lambda": 0.2,
+      "supplied_targets": [
+       "setBrightness",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6734052632478288,
+      "gold_supplied": false,
+      "lambda": 0.3,
+      "supplied_targets": [
+       "setBrightness",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6767583811368126,
+      "gold_supplied": false,
+      "lambda": 0.4,
+      "supplied_targets": [
+       "setBrightness",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6742324000585149,
+      "gold_supplied": false,
+      "lambda": 0.5,
+      "supplied_targets": [
+       "setBrightness",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6657382231071349,
+      "gold_supplied": false,
+      "lambda": 0.6,
+      "supplied_targets": [
+       "setBrightness",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.651651268002736,
+      "gold_supplied": false,
+      "lambda": 0.7,
+      "supplied_targets": [
+       "resetFilterStatus",
+       "setBrightness",
+       "setHapticStrength"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6327453212134626,
+      "gold_supplied": false,
+      "lambda": 0.8,
+      "supplied_targets": [
+       "resetFilterStatus",
+       "setBrightness",
+       "setHapticStrength"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6100534207182476,
+      "gold_supplied": false,
+      "lambda": 0.9,
+      "supplied_targets": [
+       "getEnergyUsage",
+       "resetFilterStatus",
+       "setBrightness"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.5847031713445516,
+      "gold_supplied": false,
+      "lambda": 1.0,
+      "supplied_targets": [
+       "getEnergyUsage",
+       "resetFilterStatus",
+       "setBrightness"
+      ]
+     }
+    ],
+    "N2_smallest_lambda_that_supplies_gold": null,
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "setTargetTemperature",
+    "sample_id": "tier7_multiturn:000214"
+   },
+   {
+    "N1_tier_prototype": {
+     "best_gold_bearing_facet_cosine": 0.8054073910473054,
+     "best_gold_bearing_facet_id": "facet:content:tier3_multi_intent:004354",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet clears tau but enters the recall ordering only at position 16, outside the locked k = m = 5 window",
+      "kind": "knob",
+      "stage": "recall_depth_k"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 16,
+     "gold_primary_tool": "activateRoutine",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": 13,
+     "sample_id": "tier7_multiturn:001516",
+     "supplied_targets": [
+      "getCameraStream",
+      "getEnergyUsage",
+      "getThermostatState"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 150,
+     "tier": "tier7_multiturn",
+     "tier_facets_averaged": 1554,
+     "top1_cosine": 0.827212328952768,
+     "withheld_facet_ids": []
+    },
+    "N2_ladder": [
+     {
+      "best_gold_bearing_facet_cosine": 0.6070566631902459,
+      "gold_supplied": false,
+      "lambda": 0.0,
+      "supplied_targets": [
+       "cancelNavigation",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6207508315571127,
+      "gold_supplied": false,
+      "lambda": 0.1,
+      "supplied_targets": [
+       "setBrightness",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.63185518009225,
+      "gold_supplied": false,
+      "lambda": 0.2,
+      "supplied_targets": [
+       "setBrightness",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6391130954376233,
+      "gold_supplied": false,
+      "lambda": 0.3,
+      "supplied_targets": [
+       "setBrightness",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6474488479563455,
+      "gold_supplied": false,
+      "lambda": 0.4,
+      "supplied_targets": [
+       "setBrightness",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6541585701283545,
+      "gold_supplied": false,
+      "lambda": 0.5,
+      "supplied_targets": [
+       "setBrightness",
+       "setHapticStrength",
+       "setPowerState"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.655852971601741,
+      "gold_supplied": false,
+      "lambda": 0.6,
+      "supplied_targets": [
+       "findPairedPhone",
+       "getAirQuality",
+       "setHapticStrength"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6526067870738914,
+      "gold_supplied": false,
+      "lambda": 0.7,
+      "supplied_targets": [
+       "findPairedPhone",
+       "getAirQuality",
+       "setSecurityMode"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6448134550572175,
+      "gold_supplied": false,
+      "lambda": 0.8,
+      "supplied_targets": [
+       "findPairedPhone",
+       "getAirQuality",
+       "setSecurityMode"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6331110691705119,
+      "gold_supplied": false,
+      "lambda": 0.9,
+      "supplied_targets": [
+       "findPairedPhone",
+       "getAirQuality",
+       "setSecurityMode"
+      ]
+     },
+     {
+      "best_gold_bearing_facet_cosine": 0.6182790400146102,
+      "gold_supplied": false,
+      "lambda": 1.0,
+      "supplied_targets": [
+       "findPairedPhone",
+       "getAirQuality",
+       "setSecurityMode"
+      ]
+     }
+    ],
+    "N2_smallest_lambda_that_supplies_gold": null,
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "activateRoutine",
+    "sample_id": "tier7_multiturn:001516"
+   }
+  ],
+  "summary": {
+   "N1_binding_stage_histogram": {
+    "recall_depth_k": 15
+   },
+   "N1_gold_facet_clears_tau_of_all_dispatched": 15,
+   "N1_gold_facet_cosine_max": 0.858710697382477,
+   "N1_gold_facet_cosine_median": 0.7898153552729054,
+   "N1_gold_facet_cosine_min": 0.7209419740717382,
+   "N1_gold_supplied_of_all_dispatched": 0,
+   "N1_gold_supplied_of_the_gold_absent": 0,
+   "N2_gold_absent_reached_at_some_lambda": 6,
+   "N2_lambda_grid": [
+    0.0,
+    0.1,
+    0.2,
+    0.3,
+    0.4,
+    0.5,
+    0.6,
+    0.7,
+    0.8,
+    0.9,
+    1.0
+   ],
+   "N2_smallest_lambda_max": 0.8,
+   "N2_smallest_lambda_median": 0.5,
+   "N2_smallest_lambda_min": 0.3
+  }
+ },
+ "mixing_self_check": {
+  "lambda_zero_reproduces_the_flown_supply": 13,
+  "mismatches": [
+   {
+    "flown_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "lambda_zero_targets": [
+     "cancelNavigation",
+     "setBrightness",
+     "setHapticStrength"
+    ],
+    "sample_id": "tier4_implicit:001513"
+   },
+   {
+    "flown_targets": [
+     "findMyDevice",
+     "rampBrightness",
+     "setBrightness"
+    ],
+    "lambda_zero_targets": [
+     "findMyDevice",
+     "getDeviceList",
+     "rampBrightness"
+    ],
+    "sample_id": "tier5_needle:000061"
+   }
+  ],
+  "of": 15,
+  "semantics": "evaluated with the oracle anchor facet withheld, so a mismatch is expected exactly where that facet supported the flown supply"
+ },
+ "oracle_bound": {
+  "gold_value_criterion": "a trajectory is GOLD-SUPPLIED when some selected value's task_target is its gold PRIMARY tool -- the same criterion cross_carrier_ceiling_decomposition.gold_coverage uses. The trajectory's OWN gold value does not exist in the KB by decontamination, so a value-id criterion would be vacuous",
+  "identity_leak_note": "O1's query IS a KB entry and therefore retrieves ITSELF at cosine 1.0. O2, O3 and O4 are the self-excluded constructions and O3 is the honest bound. The real trajectories can never self-match: rails.knowledge_build_a2t.propose_partition reserves every evaluation item's whole query_idx BLOCK out of the construction pool, so no evaluation utterance is a KB entry",
+  "oracle_warning": "EVERY QUERY IN THIS BLOCK IS AN ORACLE. It is built from the trajectory's own GOLD TOOL identity, which no runtime query could legally have, so every count here BOUNDS THE DIRECTION FROM ABOVE and is not a proposal, a method or an achievable accuracy",
+  "per_sample": [
+   {
+    "O1_oracle_self_LEAKY": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999996,
+     "best_gold_bearing_facet_id": "facet:content:tier4_implicit:002178",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setColor",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier1_direct:000167",
+     "supplied_targets": [
+      "setColor",
+      "setColorTemperature",
+      "setLighting"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 26,
+     "top1_cosine": 0.9999999999999996,
+     "withheld_facet_ids": []
+    },
+    "O2_oracle_leave_one_out_HONEST": {
+     "best_gold_bearing_facet_cosine": 0.6882626938410347,
+     "best_gold_bearing_facet_id": "facet:content:tier4_implicit:002169",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet clears tau but enters the recall ordering only at position 14, outside the locked k = m = 5 window",
+      "kind": "knob",
+      "stage": "recall_depth_k"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 14,
+     "gold_primary_tool": "setColor",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": 8,
+     "sample_id": "tier1_direct:000167",
+     "supplied_targets": [
+      "setColorTemperature",
+      "setHapticStrength",
+      "setLighting"
+     ],
+     "supplied_value_count": 4,
+     "tau_passing_targets_total": 26,
+     "top1_cosine": 0.7917177988365531,
+     "withheld_facet_ids": [
+      "facet:content:tier4_implicit:002178"
+     ]
+    },
+    "O3_TWIN_STRATIFICATION_post_registration": {
+     "best_twin_free_query": {
+      "best_gold_bearing_facet_cosine": 0.9430086263754884,
+      "best_gold_bearing_facet_id": "facet:content:tier6_correction:002174",
+      "binding_stage": {
+       "detail": "no stage binds",
+       "kind": null,
+       "stage": "supplied"
+      },
+      "gold_facet_clears_tau_0_65": true,
+      "gold_facet_inside_admitted_window": true,
+      "gold_facet_recall_position": 1,
+      "gold_primary_tool": "setColor",
+      "gold_supplied": true,
+      "gold_target_rank_among_tau_passing": 1,
+      "oracle_query_facet_id": "facet:content:tier6_correction:002173",
+      "query_has_a_near_duplicate_twin": false,
+      "sample_id": "tier1_direct:000167",
+      "supplied_targets": [
+       "setColor",
+       "setLighting"
+      ],
+      "supplied_value_count": 3,
+      "tau_passing_targets_total": 48,
+      "top1_cosine": 0.9430086263754884,
+      "withheld_facet_ids": [
+       "facet:content:tier6_correction:002173"
+      ]
+     },
+     "delivered_without_a_near_duplicate_twin": 130,
+     "delivery_rate_without_a_near_duplicate_twin": 0.7878787878787878,
+     "gold_supplied_by_some_twin_free_query": true,
+     "queries_with_a_near_duplicate_twin": 0,
+     "queries_without_a_near_duplicate_twin": 165
+    },
+    "O3_delivery_rate_over_same_tool_sibling_queries": 0.7878787878787878,
+    "O3_gold_tool_facets_that_deliver_gold": 130,
+    "O3_gold_tool_facets_tried": 165,
+    "O3_oracle_best_leave_one_out_HEADLINE": {
+     "best_gold_bearing_facet_cosine": 0.9430086263754884,
+     "best_gold_bearing_facet_id": "facet:content:tier6_correction:002174",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setColor",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "oracle_query_facet_id": "facet:content:tier6_correction:002173",
+     "query_has_a_near_duplicate_twin": false,
+     "sample_id": "tier1_direct:000167",
+     "supplied_targets": [
+      "setColor",
+      "setLighting"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 48,
+     "top1_cosine": 0.9430086263754884,
+     "withheld_facet_ids": [
+      "facet:content:tier6_correction:002173"
+     ]
+    },
+    "O4_oracle_centroid": {
+     "best_gold_bearing_facet_cosine": 0.9081346667306512,
+     "best_gold_bearing_facet_id": "facet:content:tier2_parametric:002294",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setColor",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier1_direct:000167",
+     "supplied_targets": [
+      "setColor",
+      "setColorTemperature"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 80,
+     "top1_cosine": 0.9081346667306512,
+     "withheld_facet_ids": []
+    },
+    "as_flown": {
+     "best_gold_bearing_facet_cosine": 0.5872704111725993,
+     "gold_facet_clears_tau_0_65": false,
+     "gold_facet_recall_position": 178,
+     "gold_target_rank_among_tau_passing": null,
+     "top1_cosine": 0.7740102290661852
+    },
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "setColor",
+    "kb_vectored_facets_for_gold": 165,
+    "sample_id": "tier1_direct:000167"
+   },
+   {
+    "O1_oracle_self_LEAKY": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999994,
+     "best_gold_bearing_facet_id": "facet:content:tier7_multiturn:002922",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setWaterValve",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier1_direct:001631",
+     "supplied_targets": [
+      "setGarageDoor",
+      "setWaterValve"
+     ],
+     "supplied_value_count": 4,
+     "tau_passing_targets_total": 25,
+     "top1_cosine": 0.9999999999999994,
+     "withheld_facet_ids": []
+    },
+    "O2_oracle_leave_one_out_HONEST": {
+     "best_gold_bearing_facet_cosine": 0.9591651830808765,
+     "best_gold_bearing_facet_id": "facet:content:tier7_multiturn:002921",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setWaterValve",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier1_direct:001631",
+     "supplied_targets": [
+      "setGarageDoor",
+      "setGarageOpener",
+      "setWaterValve"
+     ],
+     "supplied_value_count": 4,
+     "tau_passing_targets_total": 25,
+     "top1_cosine": 0.9591651830808765,
+     "withheld_facet_ids": [
+      "facet:content:tier7_multiturn:002922"
+     ]
+    },
+    "O3_TWIN_STRATIFICATION_post_registration": {
+     "best_twin_free_query": {
+      "best_gold_bearing_facet_cosine": 0.9693216891840227,
+      "best_gold_bearing_facet_id": "facet:content:tier2_parametric:004187",
+      "binding_stage": {
+       "detail": "no stage binds",
+       "kind": null,
+       "stage": "supplied"
+      },
+      "gold_facet_clears_tau_0_65": true,
+      "gold_facet_inside_admitted_window": true,
+      "gold_facet_recall_position": 1,
+      "gold_primary_tool": "setWaterValve",
+      "gold_supplied": true,
+      "gold_target_rank_among_tau_passing": 1,
+      "oracle_query_facet_id": "facet:content:tier2_parametric:004151",
+      "query_has_a_near_duplicate_twin": false,
+      "sample_id": "tier1_direct:001631",
+      "supplied_targets": [
+       "setWaterValve"
+      ],
+      "supplied_value_count": 2,
+      "tau_passing_targets_total": 8,
+      "top1_cosine": 0.9693216891840227,
+      "withheld_facet_ids": [
+       "facet:content:tier2_parametric:004151"
+      ]
+     },
+     "delivered_without_a_near_duplicate_twin": 161,
+     "delivery_rate_without_a_near_duplicate_twin": 0.930635838150289,
+     "gold_supplied_by_some_twin_free_query": true,
+     "queries_with_a_near_duplicate_twin": 2,
+     "queries_without_a_near_duplicate_twin": 173
+    },
+    "O3_delivery_rate_over_same_tool_sibling_queries": 0.9314285714285714,
+    "O3_gold_tool_facets_that_deliver_gold": 163,
+    "O3_gold_tool_facets_tried": 175,
+    "O3_oracle_best_leave_one_out_HEADLINE": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999991,
+     "best_gold_bearing_facet_id": "facet:content:tier8_intent_blending:000644",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setWaterValve",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "oracle_query_facet_id": "facet:content:tier8_intent_blending:000527",
+     "query_has_a_near_duplicate_twin": true,
+     "sample_id": "tier1_direct:001631",
+     "supplied_targets": [
+      "setSecurityMode",
+      "setWaterValve"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 53,
+     "top1_cosine": 0.9999999999999991,
+     "withheld_facet_ids": [
+      "facet:content:tier8_intent_blending:000527"
+     ]
+    },
+    "O4_oracle_centroid": {
+     "best_gold_bearing_facet_cosine": 0.8985807848815498,
+     "best_gold_bearing_facet_id": "facet:content:tier2_parametric:004173",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setWaterValve",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier1_direct:001631",
+     "supplied_targets": [
+      "setWaterValve"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 121,
+     "top1_cosine": 0.8985807848815498,
+     "withheld_facet_ids": []
+    },
+    "as_flown": {
+     "best_gold_bearing_facet_cosine": 0.56533181747632,
+     "gold_facet_clears_tau_0_65": false,
+     "gold_facet_recall_position": 430,
+     "gold_target_rank_among_tau_passing": null,
+     "top1_cosine": 0.7740102290661852
+    },
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "setWaterValve",
+    "kb_vectored_facets_for_gold": 175,
+    "sample_id": "tier1_direct:001631"
+   },
+   {
+    "O1_oracle_self_LEAKY": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999993,
+     "best_gold_bearing_facet_id": "facet:content:tier2_parametric:003893",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "getLockState",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier1_direct:004159",
+     "supplied_targets": [
+      "getLockState"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 9,
+     "top1_cosine": 0.9999999999999993,
+     "withheld_facet_ids": []
+    },
+    "O2_oracle_leave_one_out_HONEST": {
+     "best_gold_bearing_facet_cosine": 0.9251803029980469,
+     "best_gold_bearing_facet_id": "facet:content:tier1_direct:003167",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "getLockState",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier1_direct:004159",
+     "supplied_targets": [
+      "getLockState"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 9,
+     "top1_cosine": 0.9251803029980469,
+     "withheld_facet_ids": [
+      "facet:content:tier2_parametric:003893"
+     ]
+    },
+    "O3_TWIN_STRATIFICATION_post_registration": {
+     "best_twin_free_query": {
+      "best_gold_bearing_facet_cosine": 0.9771601085073217,
+      "best_gold_bearing_facet_id": "facet:content:tier2_parametric:003886",
+      "binding_stage": {
+       "detail": "no stage binds",
+       "kind": null,
+       "stage": "supplied"
+      },
+      "gold_facet_clears_tau_0_65": true,
+      "gold_facet_inside_admitted_window": true,
+      "gold_facet_recall_position": 1,
+      "gold_primary_tool": "getLockState",
+      "gold_supplied": true,
+      "gold_target_rank_among_tau_passing": 1,
+      "oracle_query_facet_id": "facet:content:tier2_parametric:003865",
+      "query_has_a_near_duplicate_twin": false,
+      "sample_id": "tier1_direct:004159",
+      "supplied_targets": [
+       "getLockState"
+      ],
+      "supplied_value_count": 2,
+      "tau_passing_targets_total": 21,
+      "top1_cosine": 0.9771601085073217,
+      "withheld_facet_ids": [
+       "facet:content:tier2_parametric:003865"
+      ]
+     },
+     "delivered_without_a_near_duplicate_twin": 194,
+     "delivery_rate_without_a_near_duplicate_twin": 0.97,
+     "gold_supplied_by_some_twin_free_query": true,
+     "queries_with_a_near_duplicate_twin": 2,
+     "queries_without_a_near_duplicate_twin": 200
+    },
+    "O3_delivery_rate_over_same_tool_sibling_queries": 0.9702970297029703,
+    "O3_gold_tool_facets_that_deliver_gold": 196,
+    "O3_gold_tool_facets_tried": 202,
+    "O3_oracle_best_leave_one_out_HEADLINE": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999991,
+     "best_gold_bearing_facet_id": "facet:content:tier8_intent_blending:000530",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "getLockState",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "oracle_query_facet_id": "facet:content:tier8_intent_blending:000510",
+     "query_has_a_near_duplicate_twin": true,
+     "sample_id": "tier1_direct:004159",
+     "supplied_targets": [
+      "getLockState"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 122,
+     "top1_cosine": 0.9999999999999991,
+     "withheld_facet_ids": [
+      "facet:content:tier8_intent_blending:000510"
+     ]
+    },
+    "O4_oracle_centroid": {
+     "best_gold_bearing_facet_cosine": 0.9404581980247904,
+     "best_gold_bearing_facet_id": "facet:content:tier2_parametric:003894",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "getLockState",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier1_direct:004159",
+     "supplied_targets": [
+      "getLockState"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 75,
+     "top1_cosine": 0.9404581980247904,
+     "withheld_facet_ids": []
+    },
+    "as_flown": {
+     "best_gold_bearing_facet_cosine": 0.9120661423168619,
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_recall_position": 1,
+     "gold_target_rank_among_tau_passing": 1,
+     "top1_cosine": 0.9120661423168619
+    },
+    "gold_absent_as_flown": false,
+    "gold_primary_tool": "getLockState",
+    "kb_vectored_facets_for_gold": 202,
+    "sample_id": "tier1_direct:004159"
+   },
+   {
+    "O1_oracle_self_LEAKY": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999998,
+     "best_gold_bearing_facet_id": "facet:content:tier6_correction:004399",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setGroupLightState",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier2_parametric:004826",
+     "supplied_targets": [
+      "findMyDevice",
+      "setGroupLightState"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 87,
+     "top1_cosine": 0.9999999999999998,
+     "withheld_facet_ids": []
+    },
+    "O2_oracle_leave_one_out_HONEST": {
+     "best_gold_bearing_facet_cosine": 0.9736343253920071,
+     "best_gold_bearing_facet_id": "facet:content:tier6_correction:004393",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setGroupLightState",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier2_parametric:004826",
+     "supplied_targets": [
+      "findMyDevice",
+      "rampBrightness",
+      "setGroupLightState"
+     ],
+     "supplied_value_count": 4,
+     "tau_passing_targets_total": 87,
+     "top1_cosine": 0.9736343253920071,
+     "withheld_facet_ids": [
+      "facet:content:tier6_correction:004399"
+     ]
+    },
+    "O3_TWIN_STRATIFICATION_post_registration": {
+     "best_twin_free_query": {
+      "best_gold_bearing_facet_cosine": 0.9736343253920071,
+      "best_gold_bearing_facet_id": "facet:content:tier6_correction:004399",
+      "binding_stage": {
+       "detail": "no stage binds",
+       "kind": null,
+       "stage": "supplied"
+      },
+      "gold_facet_clears_tau_0_65": true,
+      "gold_facet_inside_admitted_window": true,
+      "gold_facet_recall_position": 1,
+      "gold_primary_tool": "setGroupLightState",
+      "gold_supplied": true,
+      "gold_target_rank_among_tau_passing": 1,
+      "oracle_query_facet_id": "facet:content:tier6_correction:004393",
+      "query_has_a_near_duplicate_twin": false,
+      "sample_id": "tier2_parametric:004826",
+      "supplied_targets": [
+       "findMyDevice",
+       "setGroupLightState"
+      ],
+      "supplied_value_count": 3,
+      "tau_passing_targets_total": 67,
+      "top1_cosine": 0.9736343253920071,
+      "withheld_facet_ids": [
+       "facet:content:tier6_correction:004393"
+      ]
+     },
+     "delivered_without_a_near_duplicate_twin": 126,
+     "delivery_rate_without_a_near_duplicate_twin": 0.6961325966850829,
+     "gold_supplied_by_some_twin_free_query": true,
+     "queries_with_a_near_duplicate_twin": 4,
+     "queries_without_a_near_duplicate_twin": 181
+    },
+    "O3_delivery_rate_over_same_tool_sibling_queries": 0.7027027027027027,
+    "O3_gold_tool_facets_that_deliver_gold": 130,
+    "O3_gold_tool_facets_tried": 185,
+    "O3_oracle_best_leave_one_out_HEADLINE": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999996,
+     "best_gold_bearing_facet_id": "facet:content:tier8_intent_blending:000649",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setGroupLightState",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "oracle_query_facet_id": "facet:content:tier8_intent_blending:000581",
+     "query_has_a_near_duplicate_twin": true,
+     "sample_id": "tier2_parametric:004826",
+     "supplied_targets": [
+      "setGroupLightState",
+      "setLighting",
+      "setTargetTemperature"
+     ],
+     "supplied_value_count": 4,
+     "tau_passing_targets_total": 85,
+     "top1_cosine": 0.9999999999999996,
+     "withheld_facet_ids": [
+      "facet:content:tier8_intent_blending:000581"
+     ]
+    },
+    "O4_oracle_centroid": {
+     "best_gold_bearing_facet_cosine": 0.9029750767705902,
+     "best_gold_bearing_facet_id": "facet:content:tier6_correction:004408",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setGroupLightState",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier2_parametric:004826",
+     "supplied_targets": [
+      "setAmbientLighting",
+      "setGroupLightState"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 111,
+     "top1_cosine": 0.9029750767705902,
+     "withheld_facet_ids": []
+    },
+    "as_flown": {
+     "best_gold_bearing_facet_cosine": 0.8548288235301719,
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_recall_position": 10,
+     "gold_target_rank_among_tau_passing": 8,
+     "top1_cosine": 0.8949415372799853
+    },
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "setGroupLightState",
+    "kb_vectored_facets_for_gold": 185,
+    "sample_id": "tier2_parametric:004826"
+   },
+   {
+    "O1_oracle_self_LEAKY": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999989,
+     "best_gold_bearing_facet_id": "facet:content:tier3_multi_intent:002521",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "getCameraEvent",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier3_multi_intent:000879",
+     "supplied_targets": [
+      "getCameraEvent"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 115,
+     "top1_cosine": 0.9999999999999989,
+     "withheld_facet_ids": []
+    },
+    "O2_oracle_leave_one_out_HONEST": {
+     "best_gold_bearing_facet_cosine": 0.8585033587370914,
+     "best_gold_bearing_facet_id": "facet:content:tier8_intent_blending:000514",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "getCameraEvent",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier3_multi_intent:000879",
+     "supplied_targets": [
+      "getCameraEvent"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 115,
+     "top1_cosine": 0.8585033587370914,
+     "withheld_facet_ids": [
+      "facet:content:tier3_multi_intent:002521"
+     ]
+    },
+    "O3_TWIN_STRATIFICATION_post_registration": {
+     "best_twin_free_query": {
+      "best_gold_bearing_facet_cosine": 0.9329351470161221,
+      "best_gold_bearing_facet_id": "facet:content:tier6_correction:002549",
+      "binding_stage": {
+       "detail": "no stage binds",
+       "kind": null,
+       "stage": "supplied"
+      },
+      "gold_facet_clears_tau_0_65": true,
+      "gold_facet_inside_admitted_window": true,
+      "gold_facet_recall_position": 1,
+      "gold_primary_tool": "getCameraEvent",
+      "gold_supplied": true,
+      "gold_target_rank_among_tau_passing": 1,
+      "oracle_query_facet_id": "facet:content:tier6_correction:002523",
+      "query_has_a_near_duplicate_twin": false,
+      "sample_id": "tier3_multi_intent:000879",
+      "supplied_targets": [
+       "getCameraEvent"
+      ],
+      "supplied_value_count": 2,
+      "tau_passing_targets_total": 60,
+      "top1_cosine": 0.9329351470161221,
+      "withheld_facet_ids": [
+       "facet:content:tier6_correction:002523"
+      ]
+     },
+     "delivered_without_a_near_duplicate_twin": 165,
+     "delivery_rate_without_a_near_duplicate_twin": 0.8549222797927462,
+     "gold_supplied_by_some_twin_free_query": true,
+     "queries_with_a_near_duplicate_twin": 0,
+     "queries_without_a_near_duplicate_twin": 193
+    },
+    "O3_delivery_rate_over_same_tool_sibling_queries": 0.8549222797927462,
+    "O3_gold_tool_facets_that_deliver_gold": 165,
+    "O3_gold_tool_facets_tried": 193,
+    "O3_oracle_best_leave_one_out_HEADLINE": {
+     "best_gold_bearing_facet_cosine": 0.9329351470161221,
+     "best_gold_bearing_facet_id": "facet:content:tier6_correction:002549",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "getCameraEvent",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "oracle_query_facet_id": "facet:content:tier6_correction:002523",
+     "query_has_a_near_duplicate_twin": false,
+     "sample_id": "tier3_multi_intent:000879",
+     "supplied_targets": [
+      "getCameraEvent"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 60,
+     "top1_cosine": 0.9329351470161221,
+     "withheld_facet_ids": [
+      "facet:content:tier6_correction:002523"
+     ]
+    },
+    "O4_oracle_centroid": {
+     "best_gold_bearing_facet_cosine": 0.9029352855821703,
+     "best_gold_bearing_facet_id": "facet:content:tier2_parametric:003395",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "getCameraEvent",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier3_multi_intent:000879",
+     "supplied_targets": [
+      "getCameraEvent"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 124,
+     "top1_cosine": 0.9029352855821703,
+     "withheld_facet_ids": []
+    },
+    "as_flown": {
+     "best_gold_bearing_facet_cosine": 0.8565087386977166,
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_recall_position": 1,
+     "gold_target_rank_among_tau_passing": 1,
+     "top1_cosine": 0.8565087386977166
+    },
+    "gold_absent_as_flown": false,
+    "gold_primary_tool": "getCameraEvent",
+    "kb_vectored_facets_for_gold": 193,
+    "sample_id": "tier3_multi_intent:000879"
+   },
+   {
+    "O1_oracle_self_LEAKY": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999993,
+     "best_gold_bearing_facet_id": "facet:content:tier4_implicit:002431",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setLockState",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier4_implicit:000655",
+     "supplied_targets": [
+      "getCameraEvent",
+      "setLockState"
+     ],
+     "supplied_value_count": 4,
+     "tau_passing_targets_total": 5,
+     "top1_cosine": 0.9999999999999993,
+     "withheld_facet_ids": []
+    },
+    "O2_oracle_leave_one_out_HONEST": {
+     "best_gold_bearing_facet_cosine": 0.6993408775820683,
+     "best_gold_bearing_facet_id": "facet:content:tier4_implicit:002433",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 4,
+     "gold_primary_tool": "setLockState",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 2,
+     "sample_id": "tier4_implicit:000655",
+     "supplied_targets": [
+      "getCameraEvent",
+      "setLockState"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 5,
+     "top1_cosine": 0.7189016782237729,
+     "withheld_facet_ids": [
+      "facet:content:tier4_implicit:002431"
+     ]
+    },
+    "O3_TWIN_STRATIFICATION_post_registration": {
+     "best_twin_free_query": {
+      "best_gold_bearing_facet_cosine": 0.9605792328646641,
+      "best_gold_bearing_facet_id": "facet:content:tier7_multiturn:002453",
+      "binding_stage": {
+       "detail": "no stage binds",
+       "kind": null,
+       "stage": "supplied"
+      },
+      "gold_facet_clears_tau_0_65": true,
+      "gold_facet_inside_admitted_window": true,
+      "gold_facet_recall_position": 1,
+      "gold_primary_tool": "setLockState",
+      "gold_supplied": true,
+      "gold_target_rank_among_tau_passing": 1,
+      "oracle_query_facet_id": "facet:content:tier7_multiturn:002444",
+      "query_has_a_near_duplicate_twin": false,
+      "sample_id": "tier4_implicit:000655",
+      "supplied_targets": [
+       "setLockState",
+       "setSecureStorageAccess"
+      ],
+      "supplied_value_count": 3,
+      "tau_passing_targets_total": 27,
+      "top1_cosine": 0.9605792328646641,
+      "withheld_facet_ids": [
+       "facet:content:tier7_multiturn:002444"
+      ]
+     },
+     "delivered_without_a_near_duplicate_twin": 129,
+     "delivery_rate_without_a_near_duplicate_twin": 0.7962962962962963,
+     "gold_supplied_by_some_twin_free_query": true,
+     "queries_with_a_near_duplicate_twin": 2,
+     "queries_without_a_near_duplicate_twin": 162
+    },
+    "O3_delivery_rate_over_same_tool_sibling_queries": 0.7987804878048781,
+    "O3_gold_tool_facets_that_deliver_gold": 131,
+    "O3_gold_tool_facets_tried": 164,
+    "O3_oracle_best_leave_one_out_HEADLINE": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999989,
+     "best_gold_bearing_facet_id": "facet:content:tier7_multiturn:002457",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setLockState",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "oracle_query_facet_id": "facet:content:tier7_multiturn:002446",
+     "query_has_a_near_duplicate_twin": true,
+     "sample_id": "tier4_implicit:000655",
+     "supplied_targets": [
+      "setLockState"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 27,
+     "top1_cosine": 0.9999999999999989,
+     "withheld_facet_ids": [
+      "facet:content:tier7_multiturn:002446"
+     ]
+    },
+    "O4_oracle_centroid": {
+     "best_gold_bearing_facet_cosine": 0.9221831562942785,
+     "best_gold_bearing_facet_id": "facet:content:tier6_correction:002434",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setLockState",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier4_implicit:000655",
+     "supplied_targets": [
+      "setLockState",
+      "setLockState_home"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 121,
+     "top1_cosine": 0.9221831562942785,
+     "withheld_facet_ids": []
+    },
+    "as_flown": {
+     "best_gold_bearing_facet_cosine": 0.5942410657038212,
+     "gold_facet_clears_tau_0_65": false,
+     "gold_facet_recall_position": 130,
+     "gold_target_rank_among_tau_passing": null,
+     "top1_cosine": 0.7740102290661852
+    },
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "setLockState",
+    "kb_vectored_facets_for_gold": 164,
+    "sample_id": "tier4_implicit:000655"
+   },
+   {
+    "O1_oracle_self_LEAKY": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999991,
+     "best_gold_bearing_facet_id": "facet:content:tier7_multiturn:002556",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setGarageDoor",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier4_implicit:000900",
+     "supplied_targets": [
+      "setAlwaysOnDisplay",
+      "setGarageDoor",
+      "setWaterValve"
+     ],
+     "supplied_value_count": 5,
+     "tau_passing_targets_total": 65,
+     "top1_cosine": 0.9999999999999991,
+     "withheld_facet_ids": []
+    },
+    "O2_oracle_leave_one_out_HONEST": {
+     "best_gold_bearing_facet_cosine": 0.7701834016013333,
+     "best_gold_bearing_facet_id": "facet:content:tier7_multiturn:002575",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 4,
+     "gold_primary_tool": "setGarageDoor",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 3,
+     "sample_id": "tier4_implicit:000900",
+     "supplied_targets": [
+      "setAlwaysOnDisplay",
+      "setGarageDoor",
+      "setWaterValve"
+     ],
+     "supplied_value_count": 5,
+     "tau_passing_targets_total": 65,
+     "top1_cosine": 0.8445700981544485,
+     "withheld_facet_ids": [
+      "facet:content:tier7_multiturn:002556"
+     ]
+    },
+    "O3_TWIN_STRATIFICATION_post_registration": {
+     "best_twin_free_query": {
+      "best_gold_bearing_facet_cosine": 0.9768502444043095,
+      "best_gold_bearing_facet_id": "facet:content:tier2_parametric:003200",
+      "binding_stage": {
+       "detail": "no stage binds",
+       "kind": null,
+       "stage": "supplied"
+      },
+      "gold_facet_clears_tau_0_65": true,
+      "gold_facet_inside_admitted_window": true,
+      "gold_facet_recall_position": 1,
+      "gold_primary_tool": "setGarageDoor",
+      "gold_supplied": true,
+      "gold_target_rank_among_tau_passing": 1,
+      "oracle_query_facet_id": "facet:content:tier2_parametric:003240",
+      "query_has_a_near_duplicate_twin": false,
+      "sample_id": "tier4_implicit:000900",
+      "supplied_targets": [
+       "setGarageDoor",
+       "setGarageOpener"
+      ],
+      "supplied_value_count": 4,
+      "tau_passing_targets_total": 68,
+      "top1_cosine": 0.9768502444043095,
+      "withheld_facet_ids": [
+       "facet:content:tier2_parametric:003240"
+      ]
+     },
+     "delivered_without_a_near_duplicate_twin": 139,
+     "delivery_rate_without_a_near_duplicate_twin": 0.9266666666666666,
+     "gold_supplied_by_some_twin_free_query": true,
+     "queries_with_a_near_duplicate_twin": 0,
+     "queries_without_a_near_duplicate_twin": 150
+    },
+    "O3_delivery_rate_over_same_tool_sibling_queries": 0.9266666666666666,
+    "O3_gold_tool_facets_that_deliver_gold": 139,
+    "O3_gold_tool_facets_tried": 150,
+    "O3_oracle_best_leave_one_out_HEADLINE": {
+     "best_gold_bearing_facet_cosine": 0.9768502444043095,
+     "best_gold_bearing_facet_id": "facet:content:tier2_parametric:003200",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setGarageDoor",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "oracle_query_facet_id": "facet:content:tier2_parametric:003240",
+     "query_has_a_near_duplicate_twin": false,
+     "sample_id": "tier4_implicit:000900",
+     "supplied_targets": [
+      "setGarageDoor",
+      "setGarageOpener"
+     ],
+     "supplied_value_count": 4,
+     "tau_passing_targets_total": 68,
+     "top1_cosine": 0.9768502444043095,
+     "withheld_facet_ids": [
+      "facet:content:tier2_parametric:003240"
+     ]
+    },
+    "O4_oracle_centroid": {
+     "best_gold_bearing_facet_cosine": 0.9558035484990014,
+     "best_gold_bearing_facet_id": "facet:content:tier6_correction:002550",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setGarageDoor",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier4_implicit:000900",
+     "supplied_targets": [
+      "setGarageDoor",
+      "setGarageOpener"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 113,
+     "top1_cosine": 0.9558035484990014,
+     "withheld_facet_ids": []
+    },
+    "as_flown": {
+     "best_gold_bearing_facet_cosine": 0.5828134078366325,
+     "gold_facet_clears_tau_0_65": false,
+     "gold_facet_recall_position": 216,
+     "gold_target_rank_among_tau_passing": null,
+     "top1_cosine": 0.7740102290661852
+    },
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "setGarageDoor",
+    "kb_vectored_facets_for_gold": 150,
+    "sample_id": "tier4_implicit:000900"
+   },
+   {
+    "O1_oracle_self_LEAKY": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999992,
+     "best_gold_bearing_facet_id": "facet:content:tier1_direct:002690",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "castContent",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier4_implicit:001148",
+     "supplied_targets": [
+      "castContent"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 17,
+     "top1_cosine": 0.9999999999999992,
+     "withheld_facet_ids": []
+    },
+    "O2_oracle_leave_one_out_HONEST": {
+     "best_gold_bearing_facet_cosine": 0.7851402011340859,
+     "best_gold_bearing_facet_id": "facet:content:tier1_direct:002696",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "castContent",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier4_implicit:001148",
+     "supplied_targets": [
+      "castContent",
+      "getDeviceList"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 17,
+     "top1_cosine": 0.7851402011340859,
+     "withheld_facet_ids": [
+      "facet:content:tier1_direct:002690"
+     ]
+    },
+    "O3_TWIN_STRATIFICATION_post_registration": {
+     "best_twin_free_query": {
+      "best_gold_bearing_facet_cosine": 0.9756512208795498,
+      "best_gold_bearing_facet_id": "facet:content:tier1_direct:002694",
+      "binding_stage": {
+       "detail": "no stage binds",
+       "kind": null,
+       "stage": "supplied"
+      },
+      "gold_facet_clears_tau_0_65": true,
+      "gold_facet_inside_admitted_window": true,
+      "gold_facet_recall_position": 1,
+      "gold_primary_tool": "castContent",
+      "gold_supplied": true,
+      "gold_target_rank_among_tau_passing": 1,
+      "oracle_query_facet_id": "facet:content:tier1_direct:002677",
+      "query_has_a_near_duplicate_twin": false,
+      "sample_id": "tier4_implicit:001148",
+      "supplied_targets": [
+       "castContent",
+       "setInputSource"
+      ],
+      "supplied_value_count": 3,
+      "tau_passing_targets_total": 26,
+      "top1_cosine": 0.9756512208795498,
+      "withheld_facet_ids": [
+       "facet:content:tier1_direct:002677"
+      ]
+     },
+     "delivered_without_a_near_duplicate_twin": 146,
+     "delivery_rate_without_a_near_duplicate_twin": 0.8111111111111111,
+     "gold_supplied_by_some_twin_free_query": true,
+     "queries_with_a_near_duplicate_twin": 3,
+     "queries_without_a_near_duplicate_twin": 180
+    },
+    "O3_delivery_rate_over_same_tool_sibling_queries": 0.8142076502732241,
+    "O3_gold_tool_facets_that_deliver_gold": 149,
+    "O3_gold_tool_facets_tried": 183,
+    "O3_oracle_best_leave_one_out_HEADLINE": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999993,
+     "best_gold_bearing_facet_id": "facet:content:tier8_intent_blending:000605",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "castContent",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "oracle_query_facet_id": "facet:content:tier8_intent_blending:000464",
+     "query_has_a_near_duplicate_twin": true,
+     "sample_id": "tier4_implicit:001148",
+     "supplied_targets": [
+      "castContent",
+      "setBrightness",
+      "setPowerState"
+     ],
+     "supplied_value_count": 4,
+     "tau_passing_targets_total": 22,
+     "top1_cosine": 0.9999999999999993,
+     "withheld_facet_ids": [
+      "facet:content:tier8_intent_blending:000464"
+     ]
+    },
+    "O4_oracle_centroid": {
+     "best_gold_bearing_facet_cosine": 0.8769210100121039,
+     "best_gold_bearing_facet_id": "facet:content:tier1_direct:002693",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "castContent",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier4_implicit:001148",
+     "supplied_targets": [
+      "castContent"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 101,
+     "top1_cosine": 0.8769210100121039,
+     "withheld_facet_ids": []
+    },
+    "as_flown": {
+     "best_gold_bearing_facet_cosine": 0.6054045940896657,
+     "gold_facet_clears_tau_0_65": false,
+     "gold_facet_recall_position": 83,
+     "gold_target_rank_among_tau_passing": null,
+     "top1_cosine": 0.7740102290661852
+    },
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "castContent",
+    "kb_vectored_facets_for_gold": 183,
+    "sample_id": "tier4_implicit:001148"
+   },
+   {
+    "O1_oracle_self_LEAKY": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999998,
+     "best_gold_bearing_facet_id": "facet:content:tier4_implicit:002801",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setApplianceMode",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier4_implicit:001389",
+     "supplied_targets": [
+      "getEnergyUsage",
+      "setApplianceMode",
+      "setDoNotDisturb"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 15,
+     "top1_cosine": 0.9999999999999998,
+     "withheld_facet_ids": []
+    },
+    "O2_oracle_leave_one_out_HONEST": {
+     "best_gold_bearing_facet_cosine": 0.6565825786982098,
+     "best_gold_bearing_facet_id": "facet:content:tier2_parametric:003184",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet clears tau but enters the recall ordering only at position 23, outside the locked k = m = 5 window",
+      "kind": "knob",
+      "stage": "recall_depth_k"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 23,
+     "gold_primary_tool": "setApplianceMode",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": 13,
+     "sample_id": "tier4_implicit:001389",
+     "supplied_targets": [
+      "activateScene",
+      "getEnergyUsage",
+      "setDoNotDisturb"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 15,
+     "top1_cosine": 0.7263705309958212,
+     "withheld_facet_ids": [
+      "facet:content:tier4_implicit:002801"
+     ]
+    },
+    "O3_TWIN_STRATIFICATION_post_registration": {
+     "best_twin_free_query": {
+      "best_gold_bearing_facet_cosine": 0.9637832807289197,
+      "best_gold_bearing_facet_id": "facet:content:tier6_correction:002809",
+      "binding_stage": {
+       "detail": "no stage binds",
+       "kind": null,
+       "stage": "supplied"
+      },
+      "gold_facet_clears_tau_0_65": true,
+      "gold_facet_inside_admitted_window": true,
+      "gold_facet_recall_position": 1,
+      "gold_primary_tool": "setApplianceMode",
+      "gold_supplied": true,
+      "gold_target_rank_among_tau_passing": 1,
+      "oracle_query_facet_id": "facet:content:tier6_correction:002804",
+      "query_has_a_near_duplicate_twin": false,
+      "sample_id": "tier4_implicit:001389",
+      "supplied_targets": [
+       "setApplianceMode"
+      ],
+      "supplied_value_count": 2,
+      "tau_passing_targets_total": 5,
+      "top1_cosine": 0.9637832807289197,
+      "withheld_facet_ids": [
+       "facet:content:tier6_correction:002804"
+      ]
+     },
+     "delivered_without_a_near_duplicate_twin": 131,
+     "delivery_rate_without_a_near_duplicate_twin": 0.9097222222222222,
+     "gold_supplied_by_some_twin_free_query": true,
+     "queries_with_a_near_duplicate_twin": 0,
+     "queries_without_a_near_duplicate_twin": 144
+    },
+    "O3_delivery_rate_over_same_tool_sibling_queries": 0.9097222222222222,
+    "O3_gold_tool_facets_that_deliver_gold": 131,
+    "O3_gold_tool_facets_tried": 144,
+    "O3_oracle_best_leave_one_out_HEADLINE": {
+     "best_gold_bearing_facet_cosine": 0.9637832807289197,
+     "best_gold_bearing_facet_id": "facet:content:tier6_correction:002809",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setApplianceMode",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "oracle_query_facet_id": "facet:content:tier6_correction:002804",
+     "query_has_a_near_duplicate_twin": false,
+     "sample_id": "tier4_implicit:001389",
+     "supplied_targets": [
+      "setApplianceMode"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 5,
+     "top1_cosine": 0.9637832807289197,
+     "withheld_facet_ids": [
+      "facet:content:tier6_correction:002804"
+     ]
+    },
+    "O4_oracle_centroid": {
+     "best_gold_bearing_facet_cosine": 0.8915888018315364,
+     "best_gold_bearing_facet_id": "facet:content:tier6_correction:002813",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setApplianceMode",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier4_implicit:001389",
+     "supplied_targets": [
+      "setApplianceMode"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 139,
+     "top1_cosine": 0.8915888018315364,
+     "withheld_facet_ids": []
+    },
+    "as_flown": {
+     "best_gold_bearing_facet_cosine": 0.5842049011071593,
+     "gold_facet_clears_tau_0_65": false,
+     "gold_facet_recall_position": 203,
+     "gold_target_rank_among_tau_passing": null,
+     "top1_cosine": 0.7740102290661852
+    },
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "setApplianceMode",
+    "kb_vectored_facets_for_gold": 144,
+    "sample_id": "tier4_implicit:001389"
+   },
+   {
+    "O1_oracle_self_LEAKY": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999998,
+     "best_gold_bearing_facet_id": "facet:content:tier4_implicit:002801",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setApplianceMode",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier4_implicit:001409",
+     "supplied_targets": [
+      "getEnergyUsage",
+      "setApplianceMode",
+      "setDoNotDisturb"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 15,
+     "top1_cosine": 0.9999999999999998,
+     "withheld_facet_ids": []
+    },
+    "O2_oracle_leave_one_out_HONEST": {
+     "best_gold_bearing_facet_cosine": 0.6565825786982098,
+     "best_gold_bearing_facet_id": "facet:content:tier2_parametric:003184",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet clears tau but enters the recall ordering only at position 23, outside the locked k = m = 5 window",
+      "kind": "knob",
+      "stage": "recall_depth_k"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 23,
+     "gold_primary_tool": "setApplianceMode",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": 13,
+     "sample_id": "tier4_implicit:001409",
+     "supplied_targets": [
+      "activateScene",
+      "getEnergyUsage",
+      "setDoNotDisturb"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 15,
+     "top1_cosine": 0.7263705309958212,
+     "withheld_facet_ids": [
+      "facet:content:tier4_implicit:002801"
+     ]
+    },
+    "O3_TWIN_STRATIFICATION_post_registration": {
+     "best_twin_free_query": {
+      "best_gold_bearing_facet_cosine": 0.9637832807289197,
+      "best_gold_bearing_facet_id": "facet:content:tier6_correction:002809",
+      "binding_stage": {
+       "detail": "no stage binds",
+       "kind": null,
+       "stage": "supplied"
+      },
+      "gold_facet_clears_tau_0_65": true,
+      "gold_facet_inside_admitted_window": true,
+      "gold_facet_recall_position": 1,
+      "gold_primary_tool": "setApplianceMode",
+      "gold_supplied": true,
+      "gold_target_rank_among_tau_passing": 1,
+      "oracle_query_facet_id": "facet:content:tier6_correction:002804",
+      "query_has_a_near_duplicate_twin": false,
+      "sample_id": "tier4_implicit:001409",
+      "supplied_targets": [
+       "setApplianceMode"
+      ],
+      "supplied_value_count": 2,
+      "tau_passing_targets_total": 5,
+      "top1_cosine": 0.9637832807289197,
+      "withheld_facet_ids": [
+       "facet:content:tier6_correction:002804"
+      ]
+     },
+     "delivered_without_a_near_duplicate_twin": 131,
+     "delivery_rate_without_a_near_duplicate_twin": 0.9097222222222222,
+     "gold_supplied_by_some_twin_free_query": true,
+     "queries_with_a_near_duplicate_twin": 0,
+     "queries_without_a_near_duplicate_twin": 144
+    },
+    "O3_delivery_rate_over_same_tool_sibling_queries": 0.9097222222222222,
+    "O3_gold_tool_facets_that_deliver_gold": 131,
+    "O3_gold_tool_facets_tried": 144,
+    "O3_oracle_best_leave_one_out_HEADLINE": {
+     "best_gold_bearing_facet_cosine": 0.9637832807289197,
+     "best_gold_bearing_facet_id": "facet:content:tier6_correction:002809",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setApplianceMode",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "oracle_query_facet_id": "facet:content:tier6_correction:002804",
+     "query_has_a_near_duplicate_twin": false,
+     "sample_id": "tier4_implicit:001409",
+     "supplied_targets": [
+      "setApplianceMode"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 5,
+     "top1_cosine": 0.9637832807289197,
+     "withheld_facet_ids": [
+      "facet:content:tier6_correction:002804"
+     ]
+    },
+    "O4_oracle_centroid": {
+     "best_gold_bearing_facet_cosine": 0.8915888018315364,
+     "best_gold_bearing_facet_id": "facet:content:tier6_correction:002813",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setApplianceMode",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier4_implicit:001409",
+     "supplied_targets": [
+      "setApplianceMode"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 139,
+     "top1_cosine": 0.8915888018315364,
+     "withheld_facet_ids": []
+    },
+    "as_flown": {
+     "best_gold_bearing_facet_cosine": 0.5842049011071593,
+     "gold_facet_clears_tau_0_65": false,
+     "gold_facet_recall_position": 203,
+     "gold_target_rank_among_tau_passing": null,
+     "top1_cosine": 0.7740102290661852
+    },
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "setApplianceMode",
+    "kb_vectored_facets_for_gold": 144,
+    "sample_id": "tier4_implicit:001409"
+   },
+   {
+    "O1_oracle_self_LEAKY": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999996,
+     "best_gold_bearing_facet_id": "facet:content:tier7_multiturn:002853",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setPowerState",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier4_implicit:001513",
+     "supplied_targets": [
+      "activateScene",
+      "setHapticStrength",
+      "setPowerState"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 56,
+     "top1_cosine": 0.9999999999999996,
+     "withheld_facet_ids": []
+    },
+    "O2_oracle_leave_one_out_HONEST": {
+     "best_gold_bearing_facet_cosine": 0.6899655821199244,
+     "best_gold_bearing_facet_id": "facet:content:tier7_multiturn:002863",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet clears tau but enters the recall ordering only at position 35, outside the locked k = m = 5 window",
+      "kind": "knob",
+      "stage": "recall_depth_k"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 35,
+     "gold_primary_tool": "setPowerState",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": 19,
+     "sample_id": "tier4_implicit:001513",
+     "supplied_targets": [
+      "activateScene",
+      "cancelNavigation",
+      "setHapticStrength"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 56,
+     "top1_cosine": 0.7874036854837353,
+     "withheld_facet_ids": [
+      "facet:content:tier7_multiturn:002853"
+     ]
+    },
+    "O3_TWIN_STRATIFICATION_post_registration": {
+     "best_twin_free_query": {
+      "best_gold_bearing_facet_cosine": 0.9500973812574528,
+      "best_gold_bearing_facet_id": "facet:content:tier3_multi_intent:002861",
+      "binding_stage": {
+       "detail": "no stage binds",
+       "kind": null,
+       "stage": "supplied"
+      },
+      "gold_facet_clears_tau_0_65": true,
+      "gold_facet_inside_admitted_window": true,
+      "gold_facet_recall_position": 1,
+      "gold_primary_tool": "setPowerState",
+      "gold_supplied": true,
+      "gold_target_rank_among_tau_passing": 1,
+      "oracle_query_facet_id": "facet:content:tier3_multi_intent:002868",
+      "query_has_a_near_duplicate_twin": false,
+      "sample_id": "tier4_implicit:001513",
+      "supplied_targets": [
+       "setLighting",
+       "setPowerState",
+       "setThermostatMode"
+      ],
+      "supplied_value_count": 4,
+      "tau_passing_targets_total": 126,
+      "top1_cosine": 0.9500973812574528,
+      "withheld_facet_ids": [
+       "facet:content:tier3_multi_intent:002868"
+      ]
+     },
+     "delivered_without_a_near_duplicate_twin": 107,
+     "delivery_rate_without_a_near_duplicate_twin": 0.6993464052287581,
+     "gold_supplied_by_some_twin_free_query": true,
+     "queries_with_a_near_duplicate_twin": 0,
+     "queries_without_a_near_duplicate_twin": 153
+    },
+    "O3_delivery_rate_over_same_tool_sibling_queries": 0.6993464052287581,
+    "O3_gold_tool_facets_that_deliver_gold": 107,
+    "O3_gold_tool_facets_tried": 153,
+    "O3_oracle_best_leave_one_out_HEADLINE": {
+     "best_gold_bearing_facet_cosine": 0.9500973812574528,
+     "best_gold_bearing_facet_id": "facet:content:tier3_multi_intent:002861",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setPowerState",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "oracle_query_facet_id": "facet:content:tier3_multi_intent:002868",
+     "query_has_a_near_duplicate_twin": false,
+     "sample_id": "tier4_implicit:001513",
+     "supplied_targets": [
+      "setLighting",
+      "setPowerState",
+      "setThermostatMode"
+     ],
+     "supplied_value_count": 4,
+     "tau_passing_targets_total": 126,
+     "top1_cosine": 0.9500973812574528,
+     "withheld_facet_ids": [
+      "facet:content:tier3_multi_intent:002868"
+     ]
+    },
+    "O4_oracle_centroid": {
+     "best_gold_bearing_facet_cosine": 0.8850203181790264,
+     "best_gold_bearing_facet_id": "facet:content:tier7_multiturn:002851",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setPowerState",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier4_implicit:001513",
+     "supplied_targets": [
+      "setPowerState"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 146,
+     "top1_cosine": 0.8850203181790264,
+     "withheld_facet_ids": []
+    },
+    "as_flown": {
+     "best_gold_bearing_facet_cosine": 0.7087755311079166,
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_recall_position": 2,
+     "gold_target_rank_among_tau_passing": 2,
+     "top1_cosine": 0.7740102290661852
+    },
+    "gold_absent_as_flown": false,
+    "gold_primary_tool": "setPowerState",
+    "kb_vectored_facets_for_gold": 153,
+    "sample_id": "tier4_implicit:001513"
+   },
+   {
+    "O1_oracle_self_LEAKY": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999991,
+     "best_gold_bearing_facet_id": "facet:content:tier2_parametric:004394",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "startWorkout",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier4_implicit:003312",
+     "supplied_targets": [
+      "getActivitySummary",
+      "startWorkout"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 41,
+     "top1_cosine": 0.9999999999999991,
+     "withheld_facet_ids": []
+    },
+    "O2_oracle_leave_one_out_HONEST": {
+     "best_gold_bearing_facet_cosine": 0.8855259887626226,
+     "best_gold_bearing_facet_id": "facet:content:tier6_correction:003618",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "startWorkout",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier4_implicit:003312",
+     "supplied_targets": [
+      "getActivitySummary",
+      "startWorkout",
+      "stopWorkout"
+     ],
+     "supplied_value_count": 4,
+     "tau_passing_targets_total": 41,
+     "top1_cosine": 0.8855259887626226,
+     "withheld_facet_ids": [
+      "facet:content:tier2_parametric:004394"
+     ]
+    },
+    "O3_TWIN_STRATIFICATION_post_registration": {
+     "best_twin_free_query": {
+      "best_gold_bearing_facet_cosine": 0.9673455606289411,
+      "best_gold_bearing_facet_id": "facet:content:tier2_parametric:004372",
+      "binding_stage": {
+       "detail": "no stage binds",
+       "kind": null,
+       "stage": "supplied"
+      },
+      "gold_facet_clears_tau_0_65": true,
+      "gold_facet_inside_admitted_window": true,
+      "gold_facet_recall_position": 1,
+      "gold_primary_tool": "startWorkout",
+      "gold_supplied": true,
+      "gold_target_rank_among_tau_passing": 1,
+      "oracle_query_facet_id": "facet:content:tier2_parametric:004350",
+      "query_has_a_near_duplicate_twin": false,
+      "sample_id": "tier4_implicit:003312",
+      "supplied_targets": [
+       "startWorkout"
+      ],
+      "supplied_value_count": 2,
+      "tau_passing_targets_total": 17,
+      "top1_cosine": 0.9673455606289411,
+      "withheld_facet_ids": [
+       "facet:content:tier2_parametric:004350"
+      ]
+     },
+     "delivered_without_a_near_duplicate_twin": 147,
+     "delivery_rate_without_a_near_duplicate_twin": 0.8802395209580839,
+     "gold_supplied_by_some_twin_free_query": true,
+     "queries_with_a_near_duplicate_twin": 19,
+     "queries_without_a_near_duplicate_twin": 167
+    },
+    "O3_delivery_rate_over_same_tool_sibling_queries": 0.8924731182795699,
+    "O3_gold_tool_facets_that_deliver_gold": 166,
+    "O3_gold_tool_facets_tried": 186,
+    "O3_oracle_best_leave_one_out_HEADLINE": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999999,
+     "best_gold_bearing_facet_id": "facet:content:tier8_intent_blending:000773",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "startWorkout",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "oracle_query_facet_id": "facet:content:tier8_intent_blending:000699",
+     "query_has_a_near_duplicate_twin": true,
+     "sample_id": "tier4_implicit:003312",
+     "supplied_targets": [
+      "getActivitySummary",
+      "getHRV",
+      "startWorkout"
+     ],
+     "supplied_value_count": 5,
+     "tau_passing_targets_total": 31,
+     "top1_cosine": 0.9999999999999999,
+     "withheld_facet_ids": [
+      "facet:content:tier8_intent_blending:000699"
+     ]
+    },
+    "O4_oracle_centroid": {
+     "best_gold_bearing_facet_cosine": 0.8921532636554707,
+     "best_gold_bearing_facet_id": "facet:content:tier1_direct:003623",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "startWorkout",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier4_implicit:003312",
+     "supplied_targets": [
+      "startWorkout"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 115,
+     "top1_cosine": 0.8921532636554707,
+     "withheld_facet_ids": []
+    },
+    "as_flown": {
+     "best_gold_bearing_facet_cosine": 0.5712478654475782,
+     "gold_facet_clears_tau_0_65": false,
+     "gold_facet_recall_position": 339,
+     "gold_target_rank_among_tau_passing": null,
+     "top1_cosine": 0.7740102290661852
+    },
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "startWorkout",
+    "kb_vectored_facets_for_gold": 186,
+    "sample_id": "tier4_implicit:003312"
+   },
+   {
+    "O1_oracle_self_LEAKY": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999993,
+     "best_gold_bearing_facet_id": "facet:content:tier6_correction:002132",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setBrightness",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier5_needle:000061",
+     "supplied_targets": [
+      "setBrightness",
+      "setGroupLightState",
+      "setLighting"
+     ],
+     "supplied_value_count": 5,
+     "tau_passing_targets_total": 60,
+     "top1_cosine": 0.9999999999999993,
+     "withheld_facet_ids": []
+    },
+    "O2_oracle_leave_one_out_HONEST": {
+     "best_gold_bearing_facet_cosine": 0.9063781397031784,
+     "best_gold_bearing_facet_id": "facet:content:tier3_multi_intent:002141",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setBrightness",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier5_needle:000061",
+     "supplied_targets": [
+      "setBrightness",
+      "setGroupLightState",
+      "setLighting"
+     ],
+     "supplied_value_count": 5,
+     "tau_passing_targets_total": 60,
+     "top1_cosine": 0.9063781397031784,
+     "withheld_facet_ids": [
+      "facet:content:tier6_correction:002132"
+     ]
+    },
+    "O3_TWIN_STRATIFICATION_post_registration": {
+     "best_twin_free_query": {
+      "best_gold_bearing_facet_cosine": 0.9718337833531563,
+      "best_gold_bearing_facet_id": "facet:content:tier6_correction:002141",
+      "binding_stage": {
+       "detail": "no stage binds",
+       "kind": null,
+       "stage": "supplied"
+      },
+      "gold_facet_clears_tau_0_65": true,
+      "gold_facet_inside_admitted_window": true,
+      "gold_facet_recall_position": 1,
+      "gold_primary_tool": "setBrightness",
+      "gold_supplied": true,
+      "gold_target_rank_among_tau_passing": 1,
+      "oracle_query_facet_id": "facet:content:tier2_parametric:002787",
+      "query_has_a_near_duplicate_twin": false,
+      "sample_id": "tier5_needle:000061",
+      "supplied_targets": [
+       "setBrightness"
+      ],
+      "supplied_value_count": 2,
+      "tau_passing_targets_total": 66,
+      "top1_cosine": 0.9718337833531563,
+      "withheld_facet_ids": [
+       "facet:content:tier2_parametric:002787"
+      ]
+     },
+     "delivered_without_a_near_duplicate_twin": 118,
+     "delivery_rate_without_a_near_duplicate_twin": 0.7712418300653595,
+     "gold_supplied_by_some_twin_free_query": true,
+     "queries_with_a_near_duplicate_twin": 0,
+     "queries_without_a_near_duplicate_twin": 153
+    },
+    "O3_delivery_rate_over_same_tool_sibling_queries": 0.7712418300653595,
+    "O3_gold_tool_facets_that_deliver_gold": 118,
+    "O3_gold_tool_facets_tried": 153,
+    "O3_oracle_best_leave_one_out_HEADLINE": {
+     "best_gold_bearing_facet_cosine": 0.9718337833531563,
+     "best_gold_bearing_facet_id": "facet:content:tier6_correction:002141",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setBrightness",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "oracle_query_facet_id": "facet:content:tier2_parametric:002787",
+     "query_has_a_near_duplicate_twin": false,
+     "sample_id": "tier5_needle:000061",
+     "supplied_targets": [
+      "setBrightness"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 66,
+     "top1_cosine": 0.9718337833531563,
+     "withheld_facet_ids": [
+      "facet:content:tier2_parametric:002787"
+     ]
+    },
+    "O4_oracle_centroid": {
+     "best_gold_bearing_facet_cosine": 0.916407783619222,
+     "best_gold_bearing_facet_id": "facet:content:tier2_parametric:002766",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setBrightness",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier5_needle:000061",
+     "supplied_targets": [
+      "setAdaptiveLighting",
+      "setBrightness",
+      "setLighting"
+     ],
+     "supplied_value_count": 4,
+     "tau_passing_targets_total": 127,
+     "top1_cosine": 0.916407783619222,
+     "withheld_facet_ids": []
+    },
+    "as_flown": {
+     "best_gold_bearing_facet_cosine": 0.869056019373288,
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_recall_position": 2,
+     "gold_target_rank_among_tau_passing": 2,
+     "top1_cosine": 0.8695203139541454
+    },
+    "gold_absent_as_flown": false,
+    "gold_primary_tool": "setBrightness",
+    "kb_vectored_facets_for_gold": 153,
+    "sample_id": "tier5_needle:000061"
+   },
+   {
+    "O1_oracle_self_LEAKY": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999992,
+     "best_gold_bearing_facet_id": "facet:content:tier7_multiturn:002325",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setTargetTemperature",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier7_multiturn:000214",
+     "supplied_targets": [
+      "getEnergyUsage",
+      "setBrightness",
+      "setTargetTemperature"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 21,
+     "top1_cosine": 0.9999999999999992,
+     "withheld_facet_ids": []
+    },
+    "O2_oracle_leave_one_out_HONEST": {
+     "best_gold_bearing_facet_cosine": 0.5847031713445519,
+     "best_gold_bearing_facet_id": "facet:content:tier1_direct:002317",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet scores 0.5847031713445519 against the locked tau = 0.65; the percept gate refuses it at EVERY window depth, so no value of k or m is a fix. The bar is a knob of the locked cell; the cosine is a property of the data",
+      "kind": "data-against-a-knob",
+      "stage": "tau_gate"
+     },
+     "gold_facet_clears_tau_0_65": false,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 194,
+     "gold_primary_tool": "setTargetTemperature",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": null,
+     "sample_id": "tier7_multiturn:000214",
+     "supplied_targets": [
+      "getEnergyUsage",
+      "resetFilterStatus",
+      "setBrightness"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 20,
+     "top1_cosine": 0.915727568148926,
+     "withheld_facet_ids": [
+      "facet:content:tier7_multiturn:002325"
+     ]
+    },
+    "O3_TWIN_STRATIFICATION_post_registration": {
+     "best_twin_free_query": {
+      "best_gold_bearing_facet_cosine": 0.9408437160301885,
+      "best_gold_bearing_facet_id": "facet:content:tier6_correction:002339",
+      "binding_stage": {
+       "detail": "no stage binds",
+       "kind": null,
+       "stage": "supplied"
+      },
+      "gold_facet_clears_tau_0_65": true,
+      "gold_facet_inside_admitted_window": true,
+      "gold_facet_recall_position": 1,
+      "gold_primary_tool": "setTargetTemperature",
+      "gold_supplied": true,
+      "gold_target_rank_among_tau_passing": 1,
+      "oracle_query_facet_id": "facet:content:tier6_correction:002317",
+      "query_has_a_near_duplicate_twin": false,
+      "sample_id": "tier7_multiturn:000214",
+      "supplied_targets": [
+       "setTargetTemperature"
+      ],
+      "supplied_value_count": 2,
+      "tau_passing_targets_total": 113,
+      "top1_cosine": 0.9408437160301885,
+      "withheld_facet_ids": [
+       "facet:content:tier6_correction:002317"
+      ]
+     },
+     "delivered_without_a_near_duplicate_twin": 162,
+     "delivery_rate_without_a_near_duplicate_twin": 0.8571428571428571,
+     "gold_supplied_by_some_twin_free_query": true,
+     "queries_with_a_near_duplicate_twin": 0,
+     "queries_without_a_near_duplicate_twin": 189
+    },
+    "O3_delivery_rate_over_same_tool_sibling_queries": 0.8571428571428571,
+    "O3_gold_tool_facets_that_deliver_gold": 162,
+    "O3_gold_tool_facets_tried": 189,
+    "O3_oracle_best_leave_one_out_HEADLINE": {
+     "best_gold_bearing_facet_cosine": 0.9408437160301885,
+     "best_gold_bearing_facet_id": "facet:content:tier6_correction:002339",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setTargetTemperature",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "oracle_query_facet_id": "facet:content:tier6_correction:002317",
+     "query_has_a_near_duplicate_twin": false,
+     "sample_id": "tier7_multiturn:000214",
+     "supplied_targets": [
+      "setTargetTemperature"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 113,
+     "top1_cosine": 0.9408437160301885,
+     "withheld_facet_ids": [
+      "facet:content:tier6_correction:002317"
+     ]
+    },
+    "O4_oracle_centroid": {
+     "best_gold_bearing_facet_cosine": 0.907384990871445,
+     "best_gold_bearing_facet_id": "facet:content:tier6_correction:002339",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "setTargetTemperature",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier7_multiturn:000214",
+     "supplied_targets": [
+      "setTargetTemperature"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 142,
+     "top1_cosine": 0.907384990871445,
+     "withheld_facet_ids": []
+    },
+    "as_flown": {
+     "best_gold_bearing_facet_cosine": 0.6356254654021299,
+     "gold_facet_clears_tau_0_65": false,
+     "gold_facet_recall_position": 16,
+     "gold_target_rank_among_tau_passing": null,
+     "top1_cosine": 0.7740102290661852
+    },
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "setTargetTemperature",
+    "kb_vectored_facets_for_gold": 189,
+    "sample_id": "tier7_multiturn:000214"
+   },
+   {
+    "O1_oracle_self_LEAKY": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999994,
+     "best_gold_bearing_facet_id": "facet:content:tier7_multiturn:004363",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "activateRoutine",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier7_multiturn:001516",
+     "supplied_targets": [
+      "activateRoutine",
+      "findPairedPhone",
+      "getAirQuality"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 13,
+     "top1_cosine": 0.9999999999999994,
+     "withheld_facet_ids": []
+    },
+    "O2_oracle_leave_one_out_HONEST": {
+     "best_gold_bearing_facet_cosine": 0.6182790400146103,
+     "best_gold_bearing_facet_id": "facet:content:tier4_implicit:004372",
+     "binding_stage": {
+      "detail": "the best gold-bearing facet scores 0.6182790400146103 against the locked tau = 0.65; the percept gate refuses it at EVERY window depth, so no value of k or m is a fix. The bar is a knob of the locked cell; the cosine is a property of the data",
+      "kind": "data-against-a-knob",
+      "stage": "tau_gate"
+     },
+     "gold_facet_clears_tau_0_65": false,
+     "gold_facet_inside_admitted_window": false,
+     "gold_facet_recall_position": 24,
+     "gold_primary_tool": "activateRoutine",
+     "gold_supplied": false,
+     "gold_target_rank_among_tau_passing": null,
+     "sample_id": "tier7_multiturn:001516",
+     "supplied_targets": [
+      "findPairedPhone",
+      "getAirQuality",
+      "setSecurityMode"
+     ],
+     "supplied_value_count": 3,
+     "tau_passing_targets_total": 12,
+     "top1_cosine": 0.8674951439741615,
+     "withheld_facet_ids": [
+      "facet:content:tier7_multiturn:004363"
+     ]
+    },
+    "O3_TWIN_STRATIFICATION_post_registration": {
+     "best_twin_free_query": {
+      "best_gold_bearing_facet_cosine": 0.9416858331750488,
+      "best_gold_bearing_facet_id": "facet:content:tier6_correction:004368",
+      "binding_stage": {
+       "detail": "no stage binds",
+       "kind": null,
+       "stage": "supplied"
+      },
+      "gold_facet_clears_tau_0_65": true,
+      "gold_facet_inside_admitted_window": true,
+      "gold_facet_recall_position": 1,
+      "gold_primary_tool": "activateRoutine",
+      "gold_supplied": true,
+      "gold_target_rank_among_tau_passing": 1,
+      "oracle_query_facet_id": "facet:content:tier6_correction:004362",
+      "query_has_a_near_duplicate_twin": false,
+      "sample_id": "tier7_multiturn:001516",
+      "supplied_targets": [
+       "activateRoutine"
+      ],
+      "supplied_value_count": 2,
+      "tau_passing_targets_total": 65,
+      "top1_cosine": 0.9416858331750488,
+      "withheld_facet_ids": [
+       "facet:content:tier6_correction:004362"
+      ]
+     },
+     "delivered_without_a_near_duplicate_twin": 160,
+     "delivery_rate_without_a_near_duplicate_twin": 0.8791208791208791,
+     "gold_supplied_by_some_twin_free_query": true,
+     "queries_with_a_near_duplicate_twin": 4,
+     "queries_without_a_near_duplicate_twin": 182
+    },
+    "O3_delivery_rate_over_same_tool_sibling_queries": 0.8817204301075269,
+    "O3_gold_tool_facets_that_deliver_gold": 164,
+    "O3_gold_tool_facets_tried": 186,
+    "O3_oracle_best_leave_one_out_HEADLINE": {
+     "best_gold_bearing_facet_cosine": 0.9999999999999992,
+     "best_gold_bearing_facet_id": "facet:content:tier7_multiturn:004359",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "activateRoutine",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "oracle_query_facet_id": "facet:content:tier7_multiturn:004351",
+     "query_has_a_near_duplicate_twin": true,
+     "sample_id": "tier7_multiturn:001516",
+     "supplied_targets": [
+      "activateRoutine"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 27,
+     "top1_cosine": 0.9999999999999992,
+     "withheld_facet_ids": [
+      "facet:content:tier7_multiturn:004351"
+     ]
+    },
+    "O4_oracle_centroid": {
+     "best_gold_bearing_facet_cosine": 0.8845830666327308,
+     "best_gold_bearing_facet_id": "facet:content:tier6_correction:004351",
+     "binding_stage": {
+      "detail": "no stage binds",
+      "kind": null,
+      "stage": "supplied"
+     },
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_inside_admitted_window": true,
+     "gold_facet_recall_position": 1,
+     "gold_primary_tool": "activateRoutine",
+     "gold_supplied": true,
+     "gold_target_rank_among_tau_passing": 1,
+     "sample_id": "tier7_multiturn:001516",
+     "supplied_targets": [
+      "activateRoutine"
+     ],
+     "supplied_value_count": 2,
+     "tau_passing_targets_total": 136,
+     "top1_cosine": 0.8845830666327308,
+     "withheld_facet_ids": []
+    },
+    "as_flown": {
+     "best_gold_bearing_facet_cosine": 0.6767572955769758,
+     "gold_facet_clears_tau_0_65": true,
+     "gold_facet_recall_position": 8,
+     "gold_target_rank_among_tau_passing": 8,
+     "top1_cosine": 0.7740102290661852
+    },
+    "gold_absent_as_flown": true,
+    "gold_primary_tool": "activateRoutine",
+    "kb_vectored_facets_for_gold": 186,
+    "sample_id": "tier7_multiturn:001516"
+   }
+  ],
+  "summary": {
+   "O1_binding_stage_histogram_over_the_gold_absent": {
+    "supplied": 11
+   },
+   "O1_gold_supplied_of_all_dispatched": 15,
+   "O1_gold_supplied_of_the_gold_absent": 11,
+   "O2_binding_stage_histogram_over_the_gold_absent": {
+    "recall_depth_k": 3,
+    "supplied": 6,
+    "tau_gate": 2
+   },
+   "O2_gold_facet_clears_tau": 9,
+   "O2_gold_facet_cosine_max": 0.9736343253920071,
+   "O2_gold_facet_cosine_median": 0.6993408775820683,
+   "O2_gold_facet_cosine_min": 0.5847031713445519,
+   "O2_gold_supplied_of_all_dispatched": 9,
+   "O2_gold_supplied_of_the_gold_absent": 6,
+   "O3_RATE_per_trajectory_max": 0.9314285714285714,
+   "O3_RATE_per_trajectory_median": 0.8817204301075269,
+   "O3_RATE_per_trajectory_min": 0.7027027027027027,
+   "O3_RATE_pooled": 0.8530197755211117,
+   "O3_RATE_pooled_delivered": 1596,
+   "O3_RATE_pooled_tried": 1871,
+   "O3_TWIN_FREE_gold_supplied_of_the_gold_absent": 11,
+   "O3_TWIN_FREE_pooled_delivered": 1562,
+   "O3_TWIN_FREE_pooled_rate": 0.8502994011976048,
+   "O3_TWIN_FREE_pooled_tried": 1837,
+   "O3_binding_stage_histogram_over_the_gold_absent": {
+    "supplied": 11
+   },
+   "O3_gold_facet_clears_tau": 11,
+   "O3_gold_facet_cosine_max": 0.9999999999999999,
+   "O3_gold_facet_cosine_median": 0.9999999999999989,
+   "O3_gold_facet_cosine_min": 0.9408437160301885,
+   "O3_gold_supplied_of_all_dispatched": 15,
+   "O3_gold_supplied_of_the_gold_absent": 11,
+   "O3_maxima_at_an_exact_twin": 6,
+   "O4_binding_stage_histogram_over_the_gold_absent": {
+    "supplied": 11
+   },
+   "O4_gold_supplied_of_all_dispatched": 15,
+   "O4_gold_supplied_of_the_gold_absent": 11,
+   "dispatched_n": 15,
+   "gold_absent_n": 11,
+   "near_duplicate_cosine_threshold_POST_REGISTRATION": 0.99
+  },
+  "twin_stratification_note": "POST-REGISTRATION AND LABELLED AS SUCH. O3's self-exclusion withholds the query facet itself, but the first run showed that several gold tools carry EXACT DUPLICATE utterances, so a withheld facet can still be matched at cosine 1.0 by its own twin -- identity leak by duplication rather than by self-match. The O3_TWIN_* fields re-read the SAME O3 loop with the 0.99 threshold applied to every query's best OTHER gold-bearing cosine. The threshold was chosen after the numbers were seen; the stratification can only make the headline weaker or equal, and it never replaces the pre-registered O3 count"
+ },
+ "population": {
+  "dispatched_ids": [
+   "tier1_direct:000167",
+   "tier1_direct:001631",
+   "tier1_direct:004159",
+   "tier2_parametric:004826",
+   "tier3_multi_intent:000879",
+   "tier4_implicit:000655",
+   "tier4_implicit:000900",
+   "tier4_implicit:001148",
+   "tier4_implicit:001389",
+   "tier4_implicit:001409",
+   "tier4_implicit:001513",
+   "tier4_implicit:003312",
+   "tier5_needle:000061",
+   "tier7_multiturn:000214",
+   "tier7_multiturn:001516"
+  ],
+  "exposure_caveat": "A2T-G1-104 is EXPOSED; every statistic here is a SECONDARY READING and must not be used to revise, re-tune or restate the LOCK",
+  "gold_absent_ids": [
+   "tier1_direct:000167",
+   "tier1_direct:001631",
+   "tier2_parametric:004826",
+   "tier4_implicit:000655",
+   "tier4_implicit:000900",
+   "tier4_implicit:001148",
+   "tier4_implicit:001389",
+   "tier4_implicit:001409",
+   "tier4_implicit:003312",
+   "tier7_multiturn:000214",
+   "tier7_multiturn:001516"
+  ],
+  "gold_bearing_ids": [
+   "tier1_direct:004159",
+   "tier3_multi_intent:000879",
+   "tier4_implicit:001513",
+   "tier5_needle:000061"
+  ]
+ },
+ "recall_fidelity": {
+  "cosine_probes_against_kb_policy_cosine": 72,
+  "recall_fidelity_probes": 8,
+  "semantics": "the vectorised full-KB cosine sweep is not trusted until kb.multidim_recall admits the same facet set with the same scores on the probed samples and kb_policy._cosine reproduces each probed cosine to 1e-9"
+ },
+ "schema": "saea-a2t-oracle-query-bound-v1",
+ "study": "speech-aware-evidence-acquisition",
+ "wall_seconds": 285.84
+}
