@@ -113,3 +113,48 @@ call over 11,514 facets and runs twice per trajectory, i.e. +19 minutes of pure 
 trajectories. Any second dimension multiplies that. Vectorization / pre-indexing of the facet
 matrix is a prerequisite for K1 at 1,000-sample scale, and is pure engineering — no scientific
 registration needed, but it must land before K1's flight.
+
+## 6. K1 gate outcome (2026-08-25) — the falsifier was mis-constructed, and what it cost
+
+The K1 offline gate ran (row `SAEA-SN-MF-K1-HYBRID-RANKING-GATE`, commits `437015d6` /
+`ac8dc317` / `1b3cb855`; zero contacts; fidelity gate reproduced both sealed one-shot reads
+count-for-count on all ten k values, plus 497/500 flown dispatch decisions whose 3 deviations
+are exactly the v2 delta-override fires).
+
+**Falsifier verdict: NOT FIRED.** RRF-60 raises gold-facet recall@5 on the DEV-1000 unexposed
+500 from 0.744 to 0.762 (+9/500). So the pre-registered consequent — "key representation is not
+the lever and the residual is task-intrinsic" — is NOT licensed. The key plane is not saturated.
+
+**And the flight is still refused**, on three quantities the falsifier failed to name:
+recall@1 FALLS 0.636 -> 0.590 (-23/500) under the same rule; the measured conversion anchors are
+steeply rank-dependent (98.2% at top-1 versus 69.6% at ranks 2-3), so 23 demotions against 9
+promotions does not close; and at supply level the loss side dominates (newly gold-supplied
+among currently-wrong 12, gold-supply LOST among currently-correct 29-40). Central conversion
+projections are negative on all four populations (-0.75 to -2.70 pp).
+
+**Methodological correction, recorded so it is not repeated: the falsifier was ONE-SIDED.**
+A key-plane falsifier on this cell must be two-sided (a rule must raise recall@5 AND not lower
+recall@1) or must be stated directly on the conversion-weighted objective. Every future
+key-plane gate in this agenda inherits that requirement.
+
+**Two durable assets survive the negative projection:**
+1. **Multi-dimensional K is now demonstrably realizable.** With the lexical dimension live,
+   `dims_total` goes 3 -> 4, `agreement` takes 1/4 and 2/4, `dims_hit=2` occurs on 11.7-14.3%
+   of top-m candidates, 181-217 of 500 samples carry a two-dimension candidate, and 1,417
+   facets are admitted by the lexical dimension alone. The rank-weight family is
+   **non-degenerate for the first time** — section 2.1's defect is fixable, and this is
+   independent of whether this particular fusion buys accuracy.
+2. **The cost note in section 5 was WRONG and is corrected here.** The lexical channel is
+   effectively free: index build 0.054 s over all 11,514 texts, per-query scoring 0.096 ms
+   (0.096 s per 1,000 trajectories). The 1.147 s/call figure belongs to the EXISTING scalar
+   sweep, whose vectorised equivalent measures 0.98 ms (about 1,170x, fidelity proved by 9,900
+   cosine probes at 1e-9). **Vectorisation is therefore not a K1 prerequisite** — it is an
+   independent ~19 min CPU per 1,000 trajectories win, and a second dimension does not multiply
+   the old cost.
+
+**Consequence for the agenda order:** K1 as a same-text lexical fusion is closed for flight.
+The next key-plane item is **K2 (v5 pair-boundary material as discriminative key text)**, which
+targets exactly K1's weakness — it aims at top-1 discrimination between confusable siblings
+rather than at widening the top-5 window. K3 (field-role-constrained contact-0) is unchanged.
+Any K1 successor must present a fusion form that improves recall@1, not merely recall@5, and
+must be gated on the two-sided falsifier above.
