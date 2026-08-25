@@ -1,0 +1,190 @@
+{
+  "experiment_id": "SAEA-DEV100-RETAIN-OVERRIDE",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "EXPERIMENT A4 -- the retain-override dispatch variant on DEV-100. The E-C/A4 model-free projections (docs/readiness/2026-08-25-ec-and-retain-override-projections.md section 2) established a MECHANICAL result about the frozen cell: because _fused_label_scores normalizes the fused scores to sum to 1, _blend_scores gives a recovered direct label at least (1 - alpha) = 0.55 while every other label gets at most alpha = 0.45, so at the frozen alpha 0.45 a recovered direct label is ALWAYS the blend's unique argmax and ALWAYS retains. Measured on every sealed population: dead-direct trajectories that dispatched 37/37, 33/33, 130/130; live-direct trajectories that dispatched 0, 0, 0. The frozen cell's dispatch rule is therefore NOT a confidence rule -- it is the single predicate 'the direct answer named no TRAIN intent'. A4 adds ONE registered variable: ALSO dispatch (override retain-primary) when the retrieval-preference margin delta = cos_top1 - cos_direct is at least 0.14 AND the direct answer's own target is not the retrieval's fused top-1. Both quantities are already computed by rails.kb_policy.multidim_recall on a vector the controller has in hand, so the signal is runtime-legal, gold-free, and costs ZERO extra tool contacts. Every other knob is byte-frozen from configs/policy/kb-policy-v1-dev100.json (alpha 0.45, tau 0.65, recall_top_k_per_dimension 5, fusion m 5 / c 2 / top_l 3, rrf rank weighting 0.5/0.3/0.2, TRAIN priors, M11 pair-boundary stage OFF, value vectors SEALED, facet-side percept admission, the f1060078 label-identity repair). Gold opens scoring-side only after the round's arms seal, never in runtime. This fragment is the machine-readable contract: the delta bar, the frozen-cell assertion, the registered prediction, the ceilings, and the comparison spec. It carries no promotion claim -- the bar was FIT on exposed data and its out-of-sample test is the DEV-1000 baseline-lock read on the unexposed 500.",
+  "retain_override_authority": {
+    "design_input": "docs/readiness/2026-08-25-ec-and-retain-override-projections.md (sections 2, 3, 6, 6.2, 6.3, 6.4, 6.5 -- the mechanical retain-primary theorem, the measured conversion anchors, the trigger curve, the risk side, and the registered prediction)",
+    "queue_authority": "docs/readiness/2026-08-24-kwiden-and-next-experiments-queue.md section 4 item 3 (the retain-override-loss dispatch variant, sized at 5/28 DEV-100 and 12/111 NEW400) and section 2a (K-WIDEN K1 sealed: width is INERT, the binding constraint is the c/top_l supply budget, not m)",
+    "error_class_origin": "docs/readiness/2026-08-24-contrast-fewshot-preanalysis.md finding 2 -- the retain-override-loss class was NAMED there: gold IS the fused top-1 but retain-primary discarded it unseen. A control-plane loss, not a core failure.",
+    "frozen_cell": "configs/policy/kb-policy-v1-dev100.json (byte-frozen; the DEV-100 campaign verdict froze this cell at 72/100 with zero C-to-W)",
+    "owner_rulings": "docs/readiness/2026-08-23-knowledge-plane-baseline-rulings.md",
+    "ruling_sections": ["2.2", "7.1", "7.2", "7.3"]
+  },
+  "retain_override_dataset_fragment": "slurp-speech-native-dev100",
+  "retain_override_split": {
+    "split_name": "DEV-100",
+    "split_role": "dev",
+    "use_partition_role": "dev",
+    "receipt": "docs/receipts/probe-samples/DEV-100.json",
+    "split_identity_hash": "e9a7b7febcf4fe3dc228370f7487e1e75dea3d63d447a07fbfe87c1404e2d853",
+    "receipt_integrity_hash": "d676d38b4d27b3a136ba2523b96ae3c71ba2b8b436f7712f4f0c976c3ea833e1",
+    "count": 100,
+    "audio_seconds_total": 275.700125
+  },
+  "retain_override_policy_chain": {
+    "controller_policy_id": "saea-kb-alpha-blend-v1",
+    "ranker_policy_id": "saea-rank-wcos-prior-agree-v1",
+    "fuser_policy_id": "saea-fuse-supplyfilter-v1",
+    "agent_executor_id": "openjiuwen-workflow-v1",
+    "policy_config_baseline": "configs/policy/kb-policy-v1-dev100.json",
+    "m11_pair_boundary_stage": false,
+    "m11_pair_boundary_rationale": "carried frozen from the sealed DEV-100 campaign cell; not an A4 variable"
+  },
+  "retain_override_knowledge_snapshot": {
+    "snapshot_id": "slurp-kb-distmodel-76e61b0666162aa7",
+    "builder_policy_id": "saea-kb-distmodel-v1",
+    "receipt": "docs/receipts/knowledge/slurp-kb-size-full.json",
+    "snapshot_artifact_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full/snapshot.json",
+    "snapshot_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+    "source_split": "train",
+    "source_split_identity_hash": "6a6677e97a64063b8672b2d175bd6378bcf9b644346fa2d249cc2d80343b252c",
+    "facet_count": 11863,
+    "value_count": 11514
+  },
+  "retain_override_frozen_cell_assertion": {
+    "rule": "every knob below MUST equal configs/policy/kb-policy-v1-dev100.json byte-for-byte; the ONLY registered variable of this round is the delta override dispatch rule, which is implemented LAUNCHER-SIDE and touches no file under src/speech_aware_evidence_acquisition/rails/ or core/",
+    "alpha": 0.45,
+    "tau": 0.65,
+    "top_k_per_dimension": 5,
+    "fusion_m": 5,
+    "fusion_c": 2,
+    "fusion_top_l": 3,
+    "rank_weight_id": "rrf",
+    "evidence_variant": "rank+prior+agreement",
+    "rank_weights": {"w_cos": 0.5, "w_prior": 0.3, "w_agree": 0.2},
+    "prior_source": "train",
+    "percept_admission": "facet-side (value vectors SEALED)",
+    "label_identity_repair_commit": "f1060078",
+    "supply_is_unchanged_by_the_override": "recall, rank and fuse all run BEFORE _blend_scores, so the override changes the retain/dispatch BRANCH only -- never which values are supplied. The launcher asserts this per sample by comparing its own pure-function replay against the controller's own flown FusionDecision."
+  },
+  "retain_override_trigger": {
+    "signal_id": "retrieval-preference-margin",
+    "formula": "delta = cos_top1 - cos_direct",
+    "cos_top1": "the fused top-1 TASK TARGET's best PERCEPT-ADMITTED supporting content facet cosine, where admitted means the facet is inside rank_result.candidates[:fusion_m] AND its maximum non-prior-dimension recall cosine is at least tau",
+    "cos_direct": "the direct answer's OWN task target's best content facet cosine ANYWHERE in the frozen snapshot (a masked maximum over the full content-facet matrix against this trajectory's own flown query vector)",
+    "asymmetry_rationale": "deliberate and conservative: the direct answer is credited with its strongest evidence in the whole snapshot while the retrieval is credited only with what it actually admitted, so a large delta means the KB prefers the retrieved target even under a handicap",
+    "delta_bar": 0.14,
+    "delta_bar_selection": "the smallest value that disturbs ZERO already-correct retains on all three sealed populations simultaneously (DEV-100 r4, DEV-100 r5, DEV-500 NEW400). The two populations agree on a clean separation interval of roughly [0.135, 0.147]; the DEV-100-optimal 0.12 recovers one more DEV-100 loss but costs one NEW400 disturbance, and the extra recovery is inside the variance channel while the disturbance is not.",
+    "disagreement_condition": "MANDATORY -- the override fires only when the direct answer's own task target is NOT the fused top-1 target. When the direct answer already agrees with the retrieval there is nothing for evidence to change, and firing would spend a contact and put a one-contact trajectory at risk for nothing.",
+    "scope": "trajectories that retain-primary would finish in ONE contact (i.e. the repaired normalizer recovered a direct label). Dead-direct trajectories dispatch exactly as they do in the frozen cell and are untouched by this rule.",
+    "runtime_legality": "the direct answer's parsed identity is the model's own output, the facets and their vectors are the frozen TRAIN snapshot, and the query vector is the one the controller already computed and already paid one embedding contact for. No gold, no reference transcript, no future turn, no second answering model, and ZERO extra frozen-core or tool contacts.",
+    "rejected_alternatives": {
+      "fused_top1_score": "degenerate -- bimodal, six of the DEV-100 loss members score exactly 1.0",
+      "fused_top2_margin": "degenerate -- an affine map of cosine with zero prior mass and constant agreement; every threshold in [0.10, 0.90] selects the identical set",
+      "cos_top1_alone": "measured non-separating -- on every population the retain-override-loss members and the correct-retain members occupy the SAME cos_top1 band (DEV-100 losses 0.824-0.864 against correct retains 0.690-0.901, median 0.836). At cos_top1 >= 0.82 on DEV-100 r4 it recovers 5 losses and disturbs 9 correct retains: net negative.",
+      "raising_alpha_past_0.5": "the knob already on the box, and it loses badly on every population -- alpha 0.50-0.60 projects 70.0 on DEV-100 r4 and 279.9 on NEW400; alpha 0.75-0.90 projects 63.9 and 261.9. Every alpha >= 0.5 is net-negative because alpha selects on the degenerate fused score gap, not on whether the KB has anything to say FOR the direct answer."
+    }
+  },
+  "retain_override_registered_prediction": {
+    "basis": "DEV-100 round-4 basis, projections section 6.5, registered BEFORE takeoff",
+    "verbatim": "at delta >= 0.14 on DEV-100 r4-basis: 3 triggered, 3 of the 5 retain-override-loss samples recovered, ZERO correct retains disturbed (zero-loss by construction of the bar), +3 contacts; accuracy band pessimistic/central/optimistic = 74.1 / 75.0 / 75.0 vs the sealed base 72.",
+    "triggered": 3,
+    "losses_recovered_of_five": 3,
+    "other_wrong_retains_triggered": 0,
+    "correct_retains_disturbed": 0,
+    "extra_frozen_core_contacts": 3,
+    "contacts_projection": "137 -> 140 on the round-4 basis (133 -> 137 on the round-5 basis, where a fourth member 012045 clears the bar)",
+    "accuracy_band": {"pessimistic": 74.1, "central": 75.0, "optimistic": 75.0},
+    "absolute_bounds": [72, 75],
+    "named_samples_r4": ["002814", "010037", "011819"],
+    "named_samples_r5_additional": ["012045"],
+    "out_of_reach_at_any_usable_bar": ["014125"],
+    "conversion_anchors_measured": {
+      "gold_is_fused_top1": "108/110 = 98.2 percent",
+      "gold_at_fused_rank_2_or_3": "16/23 = 69.6 percent",
+      "gold_absent_from_the_fused_supply": "0/67 = 0.0 percent",
+      "pooling": "pooled over the three sealed populations (DEV-100 r4, DEV-100 r5, DEV-500 NEW400) -- disjoint trajectories of the same frozen cell",
+      "band_construction": "pessimistic applies the rank-2-or-3 anchor 69.6 percent to the recovered set; central applies the top-1 anchor 98.2 percent; optimistic applies 100 percent"
+    },
+    "anchor_limitation_stated": "every sample that dispatched under the frozen cell is a DEAD-direct sample, so the anchor is measured where the direct answer was already off-vocabulary. A4's population instead had a fluent, legal, but wrong direct answer. The anchor is used as-is and the residual is named in the falsifier.",
+    "variance_honesty": "the central DEV-100 projection is +3.0 per 100, which sits JUST OUTSIDE the documented +/-2-per-100 direct-decode byte-variance channel -- narrowly evaluable at this tier. Two things make the read cleaner than that margin suggests: the loss side is projected at ZERO BY CONSTRUCTION at this bar rather than being a small difference of large numbers, and the effect is carried by a NAMED set of 3-4 samples whose per-sample outcome is checkable, so the round is scored per-sample and not only in aggregate.",
+    "exposed_data_fit_disclosure": "the bar was chosen by looking at all three sealed populations, which are ALL exposed data. Under the owner's split-usage philosophy that is legitimate optimization, but it means the bar is FIT, NOT VALIDATED: its out-of-sample test is the DEV-1000 baseline-lock read on the unexposed 500, not this round.",
+    "effective_sample_size_caveat": "identical direct answers embed to identical query vectors, so the candidate set collapses onto fewer distinct cosine points than it has samples: 16 distinct points behind 20 DEV-100 r4 candidates, 17 behind 22 on r5, 51 behind 78 on NEW400. The bar's position is fixed by a handful of clusters, not by every sample independently.",
+    "falsifiers": [
+      "a flown arm whose triggered samples do NOT convert (W-to-C of 0 on the named recovered set) falsifies the central band and with it the transfer of the gold-is-fused-top-1 anchor from the dead-direct dispatched subgroup to the live-direct overridden one",
+      "a flown arm that disturbs a correct retain at this bar falsifies the zero-disturbance construction",
+      "a flown arm at or below the sealed baseline 72/100 falsifies the design",
+      "an override that changes the SUPPLY on any trajectory falsifies the branch-only claim and voids single-variable attribution"
+    ]
+  },
+  "retain_override_arms": [
+    {
+      "arm_id": "M0",
+      "description": "direct decode baseline, CONSUMED from the sealed DEV-100 round-0 per-sample scoring artifact (48/100); never re-flown under this row",
+      "contacts_per_sample": 0
+    },
+    {
+      "arm_id": "BLEND_OVERRIDE",
+      "description": "the frozen C3 alpha-blend cell PLUS the delta override dispatch rule: direct decode, then acquire, then evidence-conditioned decode on trajectories that are either dead-direct (the frozen cell's own rule) or delta-overridden (the registered variable); trajectories that retain stop at 1 contact. Every contact carries the original speech packet.",
+      "contacts_per_sample": 2,
+      "tool_contacts_per_sample": 1
+    }
+  ],
+  "retain_override_comparison_spec": {
+    "primary": "paired per-sample vs the sealed DEV-100 BLEND round-4 and round-5 artifacts (both 72/100, C-to-W 0, retain-primary 63 and 67) and vs the sealed round-0 M0 (48/100), AND vs the registered prediction sample-by-sample",
+    "deliverables": [
+      "W-to-C and C-to-W lists vs M0 and vs round-4/round-5",
+      "which retain-override-loss samples were recovered, named",
+      "how many correct retains were disturbed (registered expectation: ZERO)",
+      "the realized delta-trigger count and the delta distribution over all retain candidates",
+      "dispatch rate split into dead-direct dispatches and delta-override dispatches",
+      "override fidelity: the launcher-side replay supply must equal the controller's own flown FusionDecision on every sample",
+      "hits/misses vs the registered prediction with mechanism-vs-variance attribution (the round-3/round-4 reconciliation format)",
+      "decode rates, prompt-reuse ratios, canary and resend byte identity, contacts and spend vs ceilings"
+    ],
+    "attribution_channels": [
+      "OVERRIDE-ATTRIBUTABLE: the sample was delta-overridden this round and retained in the sealed base, and its direct decode is byte-identical to the base's",
+      "direct-byte-variance: the flown direct decode differs byte-wise from the base's, so the comparison is CONFOUNDED for that sample",
+      "evidence-decode-byte-variance: direct unchanged, dispatch decision unchanged, evidence final differs byte-wise",
+      "MECHANISM-LEVEL ANOMALY: anything else, including a retain/dispatch decision on a byte-unchanged direct that is explained by neither the frozen predicate nor the registered override"
+    ]
+  },
+  "retain_override_stopping_rule": {
+    "hard_cap_rounds": 1,
+    "one_shot": "A4 is a SINGLE registered round. The launcher lands and STOPS; no bar ladder, no second attempt, no intra-round retry.",
+    "adopt_candidate": {
+      "condition": "net paired gain vs the round-4/5 base is positive AND zero correct retains were disturbed AND at least one named prediction sample converted",
+      "consequence": "the coordinator may recommend the delta bar for the candidate cell of the DEV-1000 baseline-lock read; the bar remains FIT-not-validated until that unexposed read"
+    },
+    "falsified": {
+      "condition": "delta vs the base is at most 0, or any correct retain was disturbed, or the triggered set converted at 0",
+      "consequence": "the override is declared falsified at this tier and the report recommends against carrying the bar into the lock cell"
+    },
+    "inconclusive": {
+      "condition": "the delta vs the base is inside the documented +/-2-per-100 byte-variance channel with fewer than 2 named samples converting",
+      "consequence": "reported honestly as inconclusive at the 100 tier; a 400-or-larger tier is required to separate it"
+    },
+    "evaluation_moment": "after every arm of the round has completed (runner seal-before-score); gold never enters runtime"
+  },
+  "retain_override_ceilings": {
+    "frozen_core_contacts_total": 300,
+    "frozen_core_contacts_per_round": 210,
+    "pinned_tool_embedding_contacts_total": 200,
+    "metered_audio_seconds_total": 900,
+    "gpu_hours_total": 0.4,
+    "one_shot_semantics": "ONE round attempt; no silent intra-round retry. planned_model_calls and planned_speech_audio_seconds are RUN-CUMULATIVE across every attempt of the run id and are enforced by core.model.adapter against a fresh sibling read of durable attempt actuals.",
+    "mandatory_rails": [
+      "structured contracts.ExecutionPlan on every frozen-core contact (split role, split identity hash, budget cap, protocol hash, exposure pre-registration binding)",
+      "exposure row appended to docs/exposure-ledger.md and committed BEFORE the first contact",
+      "seal-before-score: devel gold and every gold-derived artifact open only after all arms of the round seal",
+      "value vectors stay SEALED; percept admission stays facet-side",
+      "fail-closed caller-side meters on frozen-core and embedding contacts, plus the decode-rate canary and the in-flight sentinel",
+      "no file under src/speech_aware_evidence_acquisition/rails/ or core/ is modified by this round -- the override lives entirely in the launcher"
+    ]
+  },
+  "retain_override_per_round_discipline": {
+    "record_server_np": true,
+    "record_identical_prompt_resend_pair": true,
+    "resend_rationale": "the pcorrf divergence lesson: the round records the server -np and one byte-identical prompt resend pair",
+    "prompt_fit_precondition": "the STANDING session-bound row SAEA-SN-MF-DEV100-C3-PROMPT-FIT-NP8-R6 covers this round without re-measurement: A4 flies the frozen cell's m=5 material unchanged, the supplied-value ceiling stays fusion_c 2 * fusion_top_l 3 = 6, and the flown runner renders ZERO facet representations, so the evidence-prompt WORST CASE is byte-identical to the one that row measured (6,174 tokens against 8,192, margin +1,954). The override changes only WHICH trajectories reach that envelope, never its shape. The precondition is that the resident session receipt still hashes to the value the R6 row bound.",
+    "outputs": [
+      "per-arm accuracy",
+      "wrong-to-correct and correct-to-wrong lists vs M0 and vs the round-4/5 base",
+      "retain-primary, dead-direct-dispatch, and delta-override-dispatch counts",
+      "the per-sample delta distribution and the realized trigger set",
+      "prediction reconciliation, named sample by named sample",
+      "evidence-prompt declared-token distribution",
+      "contacts used and spend vs ceilings"
+    ]
+  }
+}

@@ -1702,3 +1702,286 @@ def test_dev500_confirmatory_prompt_fit_receipt_certifies_all_four_arms():
             == row["context_margin_tokens"]
             >= 0
         )
+
+
+# ---------------------------------------------------------------------------
+# EXPERIMENT A4 -- the retain-override dispatch variant. Unlike every DEV-100
+# composition above, A4 moves NO knob: its single registered variable is a
+# DISPATCH RULE implemented launcher-side. That makes two properties uniquely
+# load-bearing here, and both are asserted rather than described.
+#
+# First, the frozen-cell assertion must be EQUAL to
+# configs/policy/kb-policy-v1-dev100.json rather than a restatement of it, so
+# that a knob move in either place breaks this test. A4's whole claim is
+# "nothing but the dispatch rule changed"; if the fragment could drift from
+# the policy file, that claim would be unfalsifiable.
+#
+# Second, the registered prediction, its exposed-data-FIT disclosure and its
+# variance-honesty statement are pinned here, because a prediction that can
+# be edited after the fact is not a prediction. The band's arithmetic is
+# checked for internal consistency too: with the loss side zero BY
+# CONSTRUCTION at this bar, the central point must be exactly
+# base + recovered.
+# ---------------------------------------------------------------------------
+
+
+def test_dev100_retain_override_a4_composes_on_the_np8_base_service():
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+    from speech_aware_evidence_acquisition.rails import kb_policy
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+        "slurp-speech-native-dev100",
+        "slurp-dev100-kb-alpha-blend",
+        "slurp-dev100-retain-override-campaign-v1",
+    )
+    values = composed.values
+
+    assert values["experiment_id"] == "SAEA-DEV100-RETAIN-OVERRIDE"
+    assert values["execution_profile"] == "bounded-discovery-probe"
+
+    # DEV-role split identity, load_split convention -- the same population
+    # the sealed round-4/round-5 base flew.
+    assert values["split_name"] == "DEV-100"
+    assert values["split_role"] == "dev"
+    assert values["count"] == 100
+    assert values["audio_seconds_total"] == 275.700125
+    assert values["split_identity_hash"] == (
+        "e9a7b7febcf4fe3dc228370f7487e1e75dea3d63d447a07fbfe87c1404e2d853"
+    )
+    assert values["retain_override_split"]["receipt_integrity_hash"] == (
+        "d676d38b4d27b3a136ba2523b96ae3c71ba2b8b436f7712f4f0c976c3ea833e1"
+    )
+    assert values["speech_packet_promotion_receipt_sha256"] == (
+        "8d2dc4dc9056ed604b22cbb66cd46724d3ee0246b6aca5665e6bfaf67cf0503d"
+    )
+
+    # The BASE-build np8 serving surface: A4 attaches to the resident service
+    # and never launches one, so argv drift is an attachment refusal.
+    assert values["runtime_receipt"] == "receipts/runtime-q4km-mmproj-free.json"
+    assert values["profile_slot_count"] == 8
+    assert values["prompt_order"] == "speech-query-prefix-v2"
+    assert values["server_args"] == [
+        "-c", "65536", "-np", "8", "-b", "2048", "-ub", "512",
+        "-fa", "on", "-ngl", "999", "-ctk", "q8_0", "-ctv", "q8_0",
+        "--cache-prompt", "--cache-ram", "0",
+        "--no-cache-idle-slots", "--slot-prompt-similarity", "0",
+    ]
+
+    # THE FROZEN-CELL ASSERTION, checked AGAINST the policy file.
+    frozen_policy = json.loads(
+        (REPO_ROOT / "configs" / "policy" / "kb-policy-v1-dev100.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    knobs = frozen_policy["knobs"]
+    cell = values["retain_override_frozen_cell_assertion"]
+    assert cell["alpha"] == knobs["alpha"] == 0.45
+    assert cell["tau"] == knobs["tau"] == 0.65
+    assert cell["top_k_per_dimension"] == knobs["recall_top_k_per_dimension"] == 5
+    assert knobs["fusion"] == {"m": 5, "c": 2, "l": 3}
+    assert cell["fusion_m"] == knobs["fusion"]["m"]
+    assert cell["fusion_c"] == knobs["fusion"]["c"]
+    assert cell["fusion_top_l"] == knobs["fusion"]["l"]
+    assert cell["rank_weights"] == knobs["rank_weights"]
+    assert cell["prior_source"] == knobs["prior_source"] == "train"
+    assert cell["rank_weight_id"] == knobs["rank_weighting"] == "rrf"
+    assert cell["label_identity_repair_commit"] == "f1060078"
+    # A4 is NOT a width move: the K-WIDEN K1 seal proved width inert, so the
+    # cell must be back at 5, not at K1's 8.
+    assert cell["top_k_per_dimension"] != 8 and cell["fusion_m"] != 8
+
+    # The C3 policy chain, unchanged from the sealed campaign.
+    chain = values["retain_override_policy_chain"]
+    assert chain["controller_policy_id"] == kb_policy.CONTROLLER_POLICY_ID
+    assert chain["ranker_policy_id"] == kb_policy.RANK_POLICY_ID
+    assert chain["fuser_policy_id"] == kb_policy.FUSE_POLICY_ID
+    assert chain["agent_executor_id"] == "openjiuwen-workflow-v1"
+    assert chain["m11_pair_boundary_stage"] is False
+
+    # The pinned TRAIN snapshot, exactly the KB-BUILD receipt's own hash.
+    kb_receipt = json.loads(
+        (REPO_ROOT / "docs" / "receipts" / "knowledge" / "slurp-kb-size-full.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert values["retain_override_knowledge_snapshot"]["snapshot_sha256"] == (
+        kb_receipt["snapshot_sha256"]
+    )
+    assert values["retain_override_knowledge_snapshot"]["source_split"] == "train"
+
+    # THE REGISTERED VARIABLE: the delta bar and the mandatory disagreement
+    # condition. The signal's runtime legality is part of the contract.
+    trigger = values["retain_override_trigger"]
+    assert trigger["formula"] == "delta = cos_top1 - cos_direct"
+    assert trigger["delta_bar"] == 0.14
+    assert trigger["disagreement_condition"].startswith("MANDATORY")
+    assert "ZERO extra frozen-core or tool contacts" in trigger["runtime_legality"]
+    assert "no second answering model" in trigger["runtime_legality"]
+    # The three degenerate signals the projections ruled out stay ruled out.
+    assert set(trigger["rejected_alternatives"]) == {
+        "fused_top1_score",
+        "fused_top2_margin",
+        "cos_top1_alone",
+        "raising_alpha_past_0.5",
+    }
+
+    # THE REGISTERED PREDICTION, pinned verbatim.
+    prediction = values["retain_override_registered_prediction"]
+    assert prediction["verbatim"] == (
+        "at delta >= 0.14 on DEV-100 r4-basis: 3 triggered, 3 of the 5 "
+        "retain-override-loss samples recovered, ZERO correct retains "
+        "disturbed (zero-loss by construction of the bar), +3 contacts; "
+        "accuracy band pessimistic/central/optimistic = 74.1 / 75.0 / 75.0 "
+        "vs the sealed base 72."
+    )
+    assert prediction["triggered"] == 3
+    assert prediction["losses_recovered_of_five"] == 3
+    assert prediction["correct_retains_disturbed"] == 0
+    assert prediction["extra_frozen_core_contacts"] == 3
+    assert prediction["accuracy_band"] == {
+        "pessimistic": 74.1,
+        "central": 75.0,
+        "optimistic": 75.0,
+    }
+    assert prediction["absolute_bounds"] == [72, 75]
+    assert prediction["named_samples_r4"] == ["002814", "010037", "011819"]
+    assert prediction["named_samples_r5_additional"] == ["012045"]
+    assert prediction["out_of_reach_at_any_usable_bar"] == ["014125"]
+    # Internal consistency: with the loss side zero BY CONSTRUCTION, the
+    # central point is exactly base + recovered, and that is also the ceiling.
+    base = 72
+    assert prediction["accuracy_band"]["central"] == float(
+        base + prediction["losses_recovered_of_five"]
+    )
+    assert prediction["absolute_bounds"][1] == base + prediction["losses_recovered_of_five"]
+    assert prediction["absolute_bounds"][0] == base
+
+    # THE DISCLOSURE. A bar fitted on exposed data must say so, and must name
+    # its own out-of-sample test.
+    assert "FIT, NOT VALIDATED" in prediction["exposed_data_fit_disclosure"]
+    assert "unexposed 500" in prediction["exposed_data_fit_disclosure"]
+    assert "DEV-1000" in prediction["exposed_data_fit_disclosure"]
+    assert "JUST OUTSIDE" in prediction["variance_honesty"]
+    assert "ZERO BY CONSTRUCTION" in prediction["variance_honesty"]
+    # The measured conversion anchors travel with the band they generated.
+    anchors = prediction["conversion_anchors_measured"]
+    assert anchors["gold_is_fused_top1"] == "108/110 = 98.2 percent"
+    assert anchors["gold_absent_from_the_fused_supply"] == "0/67 = 0.0 percent"
+    assert len(prediction["falsifiers"]) == 4
+
+    # Arms and ceilings.
+    arms = {arm["arm_id"]: arm for arm in values["retain_override_arms"]}
+    assert list(arms) == ["M0", "BLEND_OVERRIDE"]
+    assert arms["M0"]["contacts_per_sample"] == 0
+    assert arms["BLEND_OVERRIDE"]["contacts_per_sample"] == 2
+    assert arms["BLEND_OVERRIDE"]["tool_contacts_per_sample"] == 1
+    ceilings = values["retain_override_ceilings"]
+    assert ceilings["frozen_core_contacts_total"] == 300
+    assert ceilings["frozen_core_contacts_per_round"] == 210
+    assert ceilings["pinned_tool_embedding_contacts_total"] == 200
+    assert ceilings["metered_audio_seconds_total"] == 900
+    assert ceilings["gpu_hours_total"] == 0.4
+    assert len(ceilings["mandatory_rails"]) == 6
+    # The rail that makes the launcher-side implementation auditable: no
+    # control-plane file may move, so "the override is branch-only" stays a
+    # falsifiable claim about a frozen control plane.
+    assert any(
+        "rails/" in rail and "core/" in rail and "no file under" in rail
+        for rail in ceilings["mandatory_rails"]
+    )
+
+    # A4 is ONE round; no ladder, no successor, no intra-round retry.
+    stopping = values["retain_override_stopping_rule"]
+    assert stopping["hard_cap_rounds"] == 1
+    assert "SINGLE registered round" in stopping["one_shot"]
+    assert set(stopping) >= {
+        "adopt_candidate",
+        "falsified",
+        "inconclusive",
+        "evaluation_moment",
+    }
+
+    # Slot geometry: the np8 base service's 8,192-token slots.
+    assert 65536 // values["profile_slot_count"] == 8192
+
+    # Record the composed identity so a fragment edit is a visible test move.
+    assert composed.config_hash == (
+        "10ea2794ddc932692cad3face415a5f7ee42d44ee9c124e751f2c6c602cd0c4c"
+    )
+
+
+def test_dev100_retain_override_a4_reuses_the_standing_r6_prompt_fit_envelope():
+    """A4 registers NO fresh prompt-fit row, and this test is what keeps that
+    decision honest rather than convenient.
+
+    The claim is narrow and checkable: A4 reverts every knob to the frozen
+    width-5 cell, so the evidence-prompt WORST CASE is byte-identical to the
+    one the standing session-bound R6 row measured. The supplied-value ceiling
+    is fusion_c * fusion_top_l = 6 regardless of anything else, and the flown
+    runner renders zero facet representations. The registered override changes
+    only WHICH trajectories reach that envelope, never its shape.
+
+    If a later edit widens m, raises c or top_l, or makes the runner render
+    facet texts, this test fails and the round must re-measure its fit.
+    """
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+        "slurp-speech-native-dev100",
+        "slurp-dev100-kb-alpha-blend",
+        "slurp-dev100-retain-override-campaign-v1",
+    )
+    values = composed.values
+    cell = values["retain_override_frozen_cell_assertion"]
+
+    prompt_fit = json.loads(
+        (
+            REPO_ROOT
+            / "docs"
+            / "checks"
+            / "speech-aware-evidence-acquisition"
+            / "2026-08-24-dev100-c3-prompt-fit-np8-r6"
+            / "prompt-fit.json"
+        ).read_text(encoding="utf-8")
+    )
+
+    assert prompt_fit["model_contact"] is False
+    assert prompt_fit["exposure_run_id"] == "SAEA-SN-MF-DEV100-C3-PROMPT-FIT-NP8"
+    assert prompt_fit["knowledge_snapshot_sha256"] == (
+        values["retain_override_knowledge_snapshot"]["snapshot_sha256"]
+    )
+    assert prompt_fit["prompt_order"] == values["prompt_order"]
+
+    # The R6 row measured the m=5 material A4 flies: 5 visible key facets and
+    # the c*top_l = 6 supplied values.
+    assert prompt_fit["visible_key_facets"] == cell["fusion_m"] == 5
+    assert prompt_fit["visible_values"] == cell["fusion_c"] * cell["fusion_top_l"] == 6
+
+    # And it fits, with the margin the A4 report cites.
+    context_per_slot = 65536 // values["profile_slot_count"]
+    assert prompt_fit["context_tokens_per_slot"] == context_per_slot == 8192
+    assert prompt_fit["maximum_completion_tokens"] == (
+        values["decoding_params"]["max_tokens"]
+    )
+    assert prompt_fit["worst_envelope_id"] == "evidence-decode-worst"
+    assert prompt_fit["maximum_prompt_tokens_upper_bound"] == 6174
+    assert prompt_fit["context_margin_tokens"] == 1954
+    assert prompt_fit["maximum_prompt_fits_one_slot"] is True
+    assert (
+        context_per_slot
+        - prompt_fit["maximum_prompt_tokens_upper_bound"]
+        - prompt_fit["maximum_completion_tokens"]
+        == prompt_fit["context_margin_tokens"]
+    )
+
+    # The fragment's own precondition text must keep naming the standing row
+    # and the receipt-hash condition that binds it.
+    precondition = values["retain_override_per_round_discipline"]["prompt_fit_precondition"]
+    assert "SAEA-SN-MF-DEV100-C3-PROMPT-FIT-NP8-R6" in precondition
+    assert "6,174" in precondition and "8,192" in precondition
+    assert "session receipt" in precondition
