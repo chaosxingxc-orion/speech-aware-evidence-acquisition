@@ -1,0 +1,3333 @@
+{
+  "a4_knobs": {
+    "alpha": 0.45,
+    "delta_override": {
+      "bar": 0.14,
+      "disagreement_condition": "MANDATORY",
+      "implemented": "LAUNCHER-SIDE (DeltaOverrideNormalizer)",
+      "signal": "delta = cos_top1 - cos_direct"
+    },
+    "evidence_variant": "rank+prior+agreement",
+    "fusion": {
+      "c": 2,
+      "l": 3,
+      "m": 5
+    },
+    "knob_change_vs_frozen_base": {
+      "knobs_changed": "NONE. Every number above is byte-equal to configs/policy/kb-policy-v1-dev100.json. The single registered variable is the DISPATCH RULE: a live-direct trajectory that would have retained is ALSO dispatched when delta >= 0.14 and the direct target is not the fused top-1",
+      "single_variable": true,
+      "supply_is_untouched": "recall, rank and fuse all run BEFORE _blend_scores, so the override changes the branch and never the supply. Proven per sample by the branch-only replay",
+      "why_a_dispatch_rule_and_not_a_knob": "at alpha 0.45 the protect-direct constant 1 - alpha = 0.55 strictly dominates the maximum possible fused contribution alpha = 0.45, so a recovered direct label is ALWAYS the blend's unique argmax and ALWAYS retains. The frozen cell's dispatch rule is therefore the predicate 'the direct answer named no TRAIN intent' and carries no confidence content at all. Raising alpha past 0.5 is the only knob that can dispatch a live-direct trajectory, and the projections measured it net-negative on every population (alpha 0.50-0.60 projects 70.0 on DEV-100 r4 and 279.9 on NEW400), because alpha selects on the degenerate fused score gap rather than on whether the KB has anything to say FOR the direct answer"
+    },
+    "m11_pair_boundary_stage": false,
+    "percept_admission": "facet-side",
+    "prior_source": "train",
+    "rank_weight_id": "rrf",
+    "rank_weights": {
+      "w_agree": 0.2,
+      "w_cos": 0.5,
+      "w_prior": 0.3
+    },
+    "tau": 0.65,
+    "top_k_per_dimension": 5,
+    "value_vectors": "SEALED (never loaded)"
+  },
+  "a4_reconciliation": {
+    "absolute_bounds": [
+      72,
+      75
+    ],
+    "branch_only_proof": {
+      "claim": "the override changed the retain/dispatch BRANCH and nothing else -- in particular it changed NO supply",
+      "delta_consistency_failures": [],
+      "method": "the FROZEN-cell recall -> rank -> fuse chain was replayed offline on this round's own logged query vectors through pure rails.kb_policy functions (zero contacts, zero gold). That replay path never sees a direct label -- recall, rank and fuse all run BEFORE _blend_scores -- so reproducing the FLOWN supply on every sample INCLUDING the overridden ones proves the override was branch-only",
+      "supply_fidelity_failures": [],
+      "verdict": "PASS"
+    },
+    "delta_distribution_over_retain_candidates": {
+      "bar": 0.14,
+      "deltas_descending": [
+        {
+          "delta": 0.171835,
+          "sample_id": "slurp:devel:002814:audio-1490194699",
+          "triggered": true
+        },
+        {
+          "delta": 0.160179,
+          "sample_id": "slurp:devel:010037:audio-1500386970-headset",
+          "triggered": true
+        },
+        {
+          "delta": 0.148629,
+          "sample_id": "slurp:devel:011819:audio--1505404383-headset",
+          "triggered": true
+        },
+        {
+          "delta": 0.128188,
+          "sample_id": "slurp:devel:001569:audio-1490198849-headset",
+          "triggered": false
+        },
+        {
+          "delta": 0.117036,
+          "sample_id": "slurp:devel:003705:audio-1490194357",
+          "triggered": false
+        },
+        {
+          "delta": 0.116983,
+          "sample_id": "slurp:devel:003443:audio-1501776590",
+          "triggered": false
+        },
+        {
+          "delta": 0.109622,
+          "sample_id": "slurp:devel:001227:audio-1490104218",
+          "triggered": false
+        },
+        {
+          "delta": 0.104829,
+          "sample_id": "slurp:devel:007738:audio-1489153308",
+          "triggered": false
+        },
+        {
+          "delta": 0.08564,
+          "sample_id": "slurp:devel:015370:audio-1501688507",
+          "triggered": false
+        },
+        {
+          "delta": 0.065978,
+          "sample_id": "slurp:devel:016699:audio-1499688493-headset",
+          "triggered": false
+        },
+        {
+          "delta": 0.063924,
+          "sample_id": "slurp:devel:012185:audio-1499244805",
+          "triggered": false
+        },
+        {
+          "delta": 0.059871,
+          "sample_id": "slurp:devel:003202:audio-1495733953-headset",
+          "triggered": false
+        },
+        {
+          "delta": 0.059382,
+          "sample_id": "slurp:devel:002417:audio-1494548204-headset",
+          "triggered": false
+        },
+        {
+          "delta": 0.059382,
+          "sample_id": "slurp:devel:001791:audio-1502195360",
+          "triggered": false
+        },
+        {
+          "delta": 0.050043,
+          "sample_id": "slurp:devel:000090:audio-1498567209",
+          "triggered": false
+        },
+        {
+          "delta": 0.023908,
+          "sample_id": "slurp:devel:015630:audio-1490967842",
+          "triggered": false
+        },
+        {
+          "delta": 0.023908,
+          "sample_id": "slurp:devel:015265:audio-1499689293-headset",
+          "triggered": false
+        },
+        {
+          "delta": 0.023908,
+          "sample_id": "slurp:devel:005565:audio-1498570308",
+          "triggered": false
+        },
+        {
+          "delta": 0.018957,
+          "sample_id": "slurp:devel:012625:audio-1494417974",
+          "triggered": false
+        },
+        {
+          "delta": 0.008544,
+          "sample_id": "slurp:devel:005100:audio-1490291520",
+          "triggered": false
+        },
+        {
+          "delta": 0.003893,
+          "sample_id": "slurp:devel:014125:audio-1500388327-headset",
+          "triggered": false
+        }
+      ],
+      "max_untriggered_delta": 0.12818801576751004,
+      "min_triggered_delta": 0.14862874614894483,
+      "retain_candidates": 21,
+      "triggered_at_bar": 3
+    },
+    "delta_vs_round4": 2,
+    "delta_vs_round5": 2,
+    "direct_agreement_vs_round4": {
+      "agree_count": 87,
+      "changed_sample_ids": [
+        "slurp:devel:001038:audio--1504191120",
+        "slurp:devel:002417:audio-1494548204-headset",
+        "slurp:devel:005015:audio-1501756546",
+        "slurp:devel:007381:audio-1501686582-headset",
+        "slurp:devel:007732:audio-1502376806-headset",
+        "slurp:devel:009951:audio-1500038657-headset",
+        "slurp:devel:010041:audio-1497264270-headset",
+        "slurp:devel:010138:audio-1490289156",
+        "slurp:devel:010210:audio-1501754125-headset",
+        "slurp:devel:012045:audio-1490956582-headset",
+        "slurp:devel:013522:audio-1494607289",
+        "slurp:devel:015370:audio-1501688507",
+        "slurp:devel:015397:audio-1490262948"
+      ]
+    },
+    "direct_agreement_vs_round5": {
+      "agree_count": 83,
+      "changed_sample_ids": [
+        "slurp:devel:000617:audio-1501152792-headset",
+        "slurp:devel:001038:audio--1504191120",
+        "slurp:devel:002417:audio-1494548204-headset",
+        "slurp:devel:004899:audio-1495377050",
+        "slurp:devel:005015:audio-1501756546",
+        "slurp:devel:005100:audio-1490291520",
+        "slurp:devel:005393:audio--1505407257-headset",
+        "slurp:devel:007732:audio-1502376806-headset",
+        "slurp:devel:010086:audio-1502201283",
+        "slurp:devel:010138:audio-1490289156",
+        "slurp:devel:010210:audio-1501754125-headset",
+        "slurp:devel:010830:audio-1488985252",
+        "slurp:devel:012045:audio-1490956582-headset",
+        "slurp:devel:012712:audio-1502199981-headset",
+        "slurp:devel:013522:audio-1494607289",
+        "slurp:devel:015397:audio-1490262948",
+        "slurp:devel:015516:audio-1499264883-headset"
+      ]
+    },
+    "dispatch_decomposition": {
+      "dead_direct_dispatched": 38,
+      "dead_direct_dispatched_sample_ids": [
+        "slurp:devel:000109:audio-1497882612",
+        "slurp:devel:000392:audio-1498573434",
+        "slurp:devel:000617:audio-1501152792-headset",
+        "slurp:devel:000806:audio--1506079512",
+        "slurp:devel:000921:audio-1498564374-headset",
+        "slurp:devel:001085:audio-1490103635-headset",
+        "slurp:devel:001558:audio-1495734409",
+        "slurp:devel:001599:audio-1434532176-headset",
+        "slurp:devel:002161:audio-1501408523-headset",
+        "slurp:devel:004422:audio-1498757235-headset",
+        "slurp:devel:004579:audio-1502195536-headset",
+        "slurp:devel:004899:audio-1495377050",
+        "slurp:devel:005183:audio-1498565600",
+        "slurp:devel:005386:audio-1501758493",
+        "slurp:devel:005393:audio--1505407257-headset",
+        "slurp:devel:005526:audio-1490202617",
+        "slurp:devel:005726:audio--1504197977",
+        "slurp:devel:005989:audio-1497621031",
+        "slurp:devel:006367:audio-1490354336-headset",
+        "slurp:devel:006595:audio-1497868179",
+        "slurp:devel:007732:audio-1502376806-headset",
+        "slurp:devel:009951:audio-1500038657-headset",
+        "slurp:devel:010041:audio-1497264270-headset",
+        "slurp:devel:010086:audio-1502201283",
+        "slurp:devel:010138:audio-1490289156",
+        "slurp:devel:010210:audio-1501754125-headset",
+        "slurp:devel:010374:audio-1501690184-headset",
+        "slurp:devel:012045:audio-1490956582-headset",
+        "slurp:devel:012055:audio-1494512213",
+        "slurp:devel:012712:audio-1502199981-headset",
+        "slurp:devel:012978:audio-1490954706",
+        "slurp:devel:013465:audio-1502302305-headset",
+        "slurp:devel:013522:audio-1494607289",
+        "slurp:devel:013804:audio-1434542201-headset",
+        "slurp:devel:014145:audio-1492784282",
+        "slurp:devel:014203:audio-1500979762",
+        "slurp:devel:015397:audio-1490262948",
+        "slurp:devel:015414:audio-1499265566"
+      ],
+      "dispatched_total": 41,
+      "frozen_cell_counterfactual_retains": 62,
+      "note": "under the frozen cell the dispatched set IS the dead-direct set (projections section 2, measured 37/37, 33/33, 130/130 and 0/0/0). A live-direct trajectory can therefore reach the evidence contact ONLY through the registered override, so override_dispatched must equal override_fired exactly; override_mechanism_anomalies is their symmetric difference and must be empty",
+      "override_dispatched": 3,
+      "override_dispatched_sample_ids": [
+        "slurp:devel:002814:audio-1490194699",
+        "slurp:devel:010037:audio-1500386970-headset",
+        "slurp:devel:011819:audio--1505404383-headset"
+      ],
+      "override_fired_sample_ids": [
+        "slurp:devel:002814:audio-1490194699",
+        "slurp:devel:010037:audio-1500386970-headset",
+        "slurp:devel:011819:audio--1505404383-headset"
+      ],
+      "override_mechanism_anomalies": []
+    },
+    "expectation_source": "the ROUND-5 SEAL (report sha256 482d33bde5fe4ff7a522f8ca5e2b4fd7f02f3a87a6113f682c6218f3256e4d71, scores sha256 59eaae53568056e6ecd7c78101de8879d1752ebef4fe7b4ce2a711c6ba087263) as the per-sample frozen-cell expectation base -- the latest replication of the frozen cell -- with ROUND 4 (report sha256 42fa837582f5f9e129348d4ecc8324c56db62a754728048126c319666a997f1e) as the cross-reference AND as the basis the registered prediction was written against. Both are reported. The exposure row registered the prediction verbatim BEFORE takeoff",
+    "expected_correct_total_round4_basis": 72,
+    "expected_correct_total_round5_basis": 72,
+    "flown_correct_total": 74,
+    "mechanism_level_anomaly_count": 0,
+    "outcome_flips": {
+      "slurp:devel:002814:audio-1490194699": {
+        "a4_correct": true,
+        "attribution": "OVERRIDE-ATTRIBUTABLE (direct byte-identical to round-5's; the base RETAINED this trajectory and A4's registered delta override dispatched it -- the treatment channel)",
+        "delta": 0.17183469984513222,
+        "direct_changed_vs_r5": false,
+        "direction": "r5_wrong_to_a4_correct",
+        "final_changed_vs_r5": true,
+        "override_fired": true,
+        "r5_correct": false,
+        "retain_primary_a4": false,
+        "retain_primary_r5": true
+      },
+      "slurp:devel:004899:audio-1495377050": {
+        "a4_correct": false,
+        "attribution": "direct-byte-variance channel (the flown direct decode differs byte-wise from round-5's logged direct -- the override comparison is CONFOUNDED for this sample, because the query vector the delta was computed on also changed)",
+        "delta": null,
+        "direct_changed_vs_r5": true,
+        "direction": "r5_correct_to_a4_wrong",
+        "final_changed_vs_r5": true,
+        "override_fired": false,
+        "r5_correct": true,
+        "retain_primary_a4": false,
+        "retain_primary_r5": true
+      },
+      "slurp:devel:010037:audio-1500386970-headset": {
+        "a4_correct": true,
+        "attribution": "OVERRIDE-ATTRIBUTABLE (direct byte-identical to round-5's; the base RETAINED this trajectory and A4's registered delta override dispatched it -- the treatment channel)",
+        "delta": 0.16017864320959196,
+        "direct_changed_vs_r5": false,
+        "direction": "r5_wrong_to_a4_correct",
+        "final_changed_vs_r5": true,
+        "override_fired": true,
+        "r5_correct": false,
+        "retain_primary_a4": false,
+        "retain_primary_r5": true
+      },
+      "slurp:devel:011819:audio--1505404383-headset": {
+        "a4_correct": true,
+        "attribution": "OVERRIDE-ATTRIBUTABLE (direct byte-identical to round-5's; the base RETAINED this trajectory and A4's registered delta override dispatched it -- the treatment channel)",
+        "delta": 0.14862874614894483,
+        "direct_changed_vs_r5": false,
+        "direction": "r5_wrong_to_a4_correct",
+        "final_changed_vs_r5": true,
+        "override_fired": true,
+        "r5_correct": false,
+        "retain_primary_a4": false,
+        "retain_primary_r5": true
+      },
+      "slurp:devel:012045:audio-1490956582-headset": {
+        "a4_correct": true,
+        "attribution": "direct-byte-variance channel (the flown direct decode differs byte-wise from round-5's logged direct -- the override comparison is CONFOUNDED for this sample, because the query vector the delta was computed on also changed)",
+        "delta": null,
+        "direct_changed_vs_r5": true,
+        "direction": "r5_wrong_to_a4_correct",
+        "final_changed_vs_r5": true,
+        "override_fired": false,
+        "r5_correct": false,
+        "retain_primary_a4": false,
+        "retain_primary_r5": true
+      },
+      "slurp:devel:013522:audio-1494607289": {
+        "a4_correct": false,
+        "attribution": "direct-byte-variance channel (the flown direct decode differs byte-wise from round-5's logged direct -- the override comparison is CONFOUNDED for this sample, because the query vector the delta was computed on also changed)",
+        "delta": null,
+        "direct_changed_vs_r5": true,
+        "direction": "r5_correct_to_a4_wrong",
+        "final_changed_vs_r5": true,
+        "override_fired": false,
+        "r5_correct": true,
+        "retain_primary_a4": false,
+        "retain_primary_r5": false
+      }
+    },
+    "outcome_flips_gained": [
+      "slurp:devel:002814:audio-1490194699",
+      "slurp:devel:010037:audio-1500386970-headset",
+      "slurp:devel:011819:audio--1505404383-headset",
+      "slurp:devel:012045:audio-1490956582-headset"
+    ],
+    "outcome_flips_lost": [
+      "slurp:devel:004899:audio-1495377050",
+      "slurp:devel:013522:audio-1494607289"
+    ],
+    "override_attributable_flip_count": 3,
+    "per_sample_repeats_vs_round5": 94,
+    "prediction_reconciliation": {
+      "named_not_triggered": [
+        "002814",
+        "010037",
+        "011819"
+      ],
+      "named_recovered": [],
+      "named_triggered": [],
+      "named_triggered_still_wrong": [],
+      "note": "the prediction was written on the ROUND-4 basis, but A4 flies FRESH direct decodes, so the trigger population is this round's own. A named sample whose direct decode changed byte-wise from round 4's is NOT a prediction miss -- it is the documented byte-variance channel moving the signal the bar is evaluated on, and it is reported as such rather than scored against the prediction",
+      "out_of_reach_sample_triggered_unexpectedly": [],
+      "overridden_still_wrong": [],
+      "predicted_correct_retains_disturbed": 0,
+      "predicted_extra_core_contacts": 3,
+      "predicted_losses_recovered": 3,
+      "predicted_named_samples_r4_basis": [
+        "002814",
+        "010037",
+        "011819"
+      ],
+      "predicted_triggered": 3,
+      "realized_correct_retains_disturbed_round4_basis": [],
+      "realized_correct_retains_disturbed_round5_basis": [],
+      "realized_override_dispatches": 3,
+      "realized_triggered": 3,
+      "realized_triggered_sample_ids": [
+        "slurp:devel:002814:audio-1490194699",
+        "slurp:devel:010037:audio-1500386970-headset",
+        "slurp:devel:011819:audio--1505404383-headset"
+      ],
+      "recovered_by_override_round4_basis": [
+        "slurp:devel:002814:audio-1490194699",
+        "slurp:devel:010037:audio-1500386970-headset",
+        "slurp:devel:011819:audio--1505404383-headset"
+      ],
+      "recovered_by_override_round5_basis": [
+        "slurp:devel:002814:audio-1490194699",
+        "slurp:devel:010037:audio-1500386970-headset",
+        "slurp:devel:011819:audio--1505404383-headset"
+      ],
+      "triggered_outside_the_named_set": [
+        "slurp:devel:002814:audio-1490194699",
+        "slurp:devel:010037:audio-1500386970-headset",
+        "slurp:devel:011819:audio--1505404383-headset"
+      ],
+      "zero_disturbance_construction_held": true
+    },
+    "prediction_verbatim": "at delta >= 0.14 on DEV-100 r4-basis: 3 triggered, 3 of the 5 retain-override-loss samples recovered, ZERO correct retains disturbed (zero-loss by construction of the bar), +3 contacts; accuracy band pessimistic/central/optimistic = 74.1 / 75.0 / 75.0 vs the sealed base 72.",
+    "registered_prediction": {
+      "absolute_bound_high": 75,
+      "absolute_bound_low": 72,
+      "band_central": 75.0,
+      "band_optimistic": 75.0,
+      "band_pessimistic": 74.1,
+      "basis": "DEV-100 round-4 basis, projections section 6.5",
+      "conversion_anchors_measured": {
+        "gold_absent_from_the_fused_supply": "0/67 = 0.0 percent",
+        "gold_at_fused_rank_2_or_3": "16/23 = 69.6 percent",
+        "gold_is_fused_top1": "108/110 = 98.2 percent"
+      },
+      "expected_correct_retains_disturbed": 0,
+      "expected_extra_core_contacts": 3,
+      "expected_losses_recovered": 3,
+      "expected_other_wrong_retains_triggered": 0,
+      "expected_retain_override_loss_population": 5,
+      "expected_triggered": 3,
+      "exposed_data_fit_disclosure": "the bar was FIT on exposed data -- all three sealed populations (DEV-100 r4, DEV-100 r5, DEV-500 NEW400) were inspected to place it. Under the owner's split-usage philosophy that is legitimate optimization, but it means the bar is FIT, NOT VALIDATED: its out-of-sample test is the DEV-1000 baseline-lock read on the unexposed 500, not this round.",
+      "falsifiers": "a flown arm whose triggered samples do NOT convert (W->C of 0 on the named recovered set) falsifies the central band and with it the transfer of the gold-is-fused-top-1 anchor from the dead-direct dispatched subgroup to the live-direct overridden one; a flown arm that disturbs a correct retain at this bar falsifies the zero-disturbance construction; a flown arm at or below the sealed baseline 72/100 falsifies the design; an override that changes the SUPPLY on any trajectory falsifies the branch-only claim and voids single-variable attribution",
+      "named_samples_r4": [
+        "002814",
+        "010037",
+        "011819"
+      ],
+      "named_samples_r5_additional": [
+        "012045"
+      ],
+      "out_of_reach_at_any_usable_bar": [
+        "014125"
+      ],
+      "sealed_base_correct": 72,
+      "variance_honesty": "the central projection is +3.0 per 100, JUST OUTSIDE the documented +/-2 per-100 direct-decode byte-variance channel -- narrowly evaluable at this tier. Two things make the read cleaner than that margin suggests: the loss side is projected at ZERO BY CONSTRUCTION at this bar rather than being a small difference of large numbers, and the effect is carried by a NAMED set of 3-4 samples whose per-sample outcome is checkable, so the round is scored PER SAMPLE and not only in aggregate.",
+      "verbatim": "at delta >= 0.14 on DEV-100 r4-basis: 3 triggered, 3 of the 5 retain-override-loss samples recovered, ZERO correct retains disturbed (zero-loss by construction of the bar), +3 contacts; accuracy band pessimistic/central/optimistic = 74.1 / 75.0 / 75.0 vs the sealed base 72."
+    },
+    "retain_primary": {
+      "decision_flips": {
+        "slurp:devel:002814:audio-1490194699": {
+          "a4_retain_primary": false,
+          "anomaly_unexplained": false,
+          "direct_changed_vs_r5": false,
+          "explained_by_override": true,
+          "outcome_flipped": true,
+          "override_fired": true,
+          "r5_retain_primary": true
+        },
+        "slurp:devel:004899:audio-1495377050": {
+          "a4_retain_primary": false,
+          "anomaly_unexplained": false,
+          "direct_changed_vs_r5": true,
+          "explained_by_override": false,
+          "outcome_flipped": true,
+          "override_fired": false,
+          "r5_retain_primary": true
+        },
+        "slurp:devel:005393:audio--1505407257-headset": {
+          "a4_retain_primary": false,
+          "anomaly_unexplained": false,
+          "direct_changed_vs_r5": true,
+          "explained_by_override": false,
+          "outcome_flipped": false,
+          "override_fired": false,
+          "r5_retain_primary": true
+        },
+        "slurp:devel:007732:audio-1502376806-headset": {
+          "a4_retain_primary": false,
+          "anomaly_unexplained": false,
+          "direct_changed_vs_r5": true,
+          "explained_by_override": false,
+          "outcome_flipped": false,
+          "override_fired": false,
+          "r5_retain_primary": true
+        },
+        "slurp:devel:010037:audio-1500386970-headset": {
+          "a4_retain_primary": false,
+          "anomaly_unexplained": false,
+          "direct_changed_vs_r5": false,
+          "explained_by_override": true,
+          "outcome_flipped": true,
+          "override_fired": true,
+          "r5_retain_primary": true
+        },
+        "slurp:devel:011819:audio--1505404383-headset": {
+          "a4_retain_primary": false,
+          "anomaly_unexplained": false,
+          "direct_changed_vs_r5": false,
+          "explained_by_override": true,
+          "outcome_flipped": true,
+          "override_fired": true,
+          "r5_retain_primary": true
+        },
+        "slurp:devel:012045:audio-1490956582-headset": {
+          "a4_retain_primary": false,
+          "anomaly_unexplained": false,
+          "direct_changed_vs_r5": true,
+          "explained_by_override": false,
+          "outcome_flipped": true,
+          "override_fired": false,
+          "r5_retain_primary": true
+        },
+        "slurp:devel:015397:audio-1490262948": {
+          "a4_retain_primary": false,
+          "anomaly_unexplained": false,
+          "direct_changed_vs_r5": true,
+          "explained_by_override": false,
+          "outcome_flipped": false,
+          "override_fired": false,
+          "r5_retain_primary": true
+        }
+      },
+      "direct_label_recovered_count": 62,
+      "expected_count_round4": 63,
+      "expected_count_round5": 67,
+      "note": "the frozen cell's invariant is retain == direct-label-recovered. A4's registered variable modifies exactly that invariant to retain == direct-label-recovered MINUS the overridden set, which is asserted here. Every decision flip vs round-5 must be either inside the changed-direct set or explained by the override; anything else is a mechanism-level anomaly",
+      "override_fired_count": 3,
+      "realized_count": 59,
+      "realized_with_changed_direct": 6,
+      "realized_with_unchanged_direct": 53,
+      "retain_equals_recovered_minus_overridden": true
+    },
+    "variance_channel_distribution": {
+      "direct_decode_changed_vs_r5": 17,
+      "final_response_changed_vs_r5": 19,
+      "note": "byte-variance channels measured exactly as in the round-5 replication and K-WIDEN K1, so override-attributable movement is separable from the documented decode instability. The registered honesty constraint stands: a delta whose absolute value is at most 2 samples sits INSIDE the documented channel",
+      "outcome_flips_on_changed_direct": 3,
+      "outcome_flips_total": 6,
+      "retain_decision_flips_UNEXPLAINED_ANOMALY": 0,
+      "retain_decision_flips_explained_by_override": 3,
+      "retain_decision_flips_total": 8
+    },
+    "within_absolute_bounds": true
+  },
+  "a4_variable": {
+    "alpha_flown": 0.45,
+    "behavior_probe": "PASS (identity exact-match live, swap refused)",
+    "branch_only_claim": "recall, rank and fuse all run BEFORE _blend_scores, so the SUPPLY of an overridden trajectory is byte-identical to the frozen cell's. Proven per sample at the seal by replaying the frozen fuse on this round's own logged query vectors and comparing against the controller's own flown FusionDecision",
+    "cos_direct": "the direct answer's OWN target's best content-facet cosine ANYWHERE in the frozen snapshot (a conservative handicap)",
+    "cos_top1": "the fused top-1 TARGET's best PERCEPT-ADMITTED supporting content-facet cosine (admitted = inside rank_result.candidates[:fusion_m] AND max non-prior-dimension recall cosine >= tau)",
+    "delta_bar": 0.14,
+    "disagreement_condition": "MANDATORY",
+    "fusion_m_flown": 5,
+    "implementation": "LAUNCHER-SIDE ONLY, through the `normalizer` keyword the REGISTERED make_kb_alpha_blend_controller_factory already exposes: DeltaOverrideNormalizer returns None instead of the recovered label exactly when the override fires, which removes the protect-direct constant from _blend_scores and routes the trajectory down _advance_after_direct's evidence-dispatch branch. No file under rails/ or core/ is modified",
+    "kind": "single registered variable RETAIN-OVERRIDE DISPATCH RULE: also dispatch the evidence contact when delta = cos_top1 - cos_direct >= 0.14 AND the direct answer's own task target is not the retrieval's fused top-1. NO KNOB MOVES: alpha 0.45 / tau 0.65 / top_k 5 / fusion m 5, c 2, top_l 3 / rrf 0.5/0.3/0.2 / train priors / f1060078 repair are all byte-frozen from configs/policy/kb-policy-v1-dev100.json",
+    "knobs_changed": "NONE -- the variable is the dispatch rule, not a knob",
+    "rails_core_clean": true,
+    "repair_invariant_commit": "f1060078c61e6d498a124f00d84ffa90415924aa",
+    "repo_head_at_flight": "1be68a1d2b8ba9885253381a1bbabb2c2d1c2887",
+    "signal": "delta = cos_top1 - cos_direct (retrieval-preference margin)",
+    "tau_flown": 0.65,
+    "top_k_flown": 5
+  },
+  "arms": {
+    "BLEND_A4": {
+      "accuracy_scenario_action_exact": 0.74,
+      "cell": "alpha .45, tau .65, top-k 5, fusion m 5 / c 2 / l 3, rrf, train priors, f1060078 repair -- the FROZEN cell -- PLUS the registered retain-override at delta >= 0.14",
+      "contacts": 141,
+      "correct_count": 74,
+      "dead_direct_dispatched": 38,
+      "direct_label_recovered_samples": 62,
+      "embedding_tool_contacts": 102,
+      "evidence_contact_dispatched_samples": 41,
+      "override_dispatched": 3,
+      "parsed_count": 100,
+      "retain_primary_samples": 59
+    },
+    "BLEND_ROUND4_FOR_REFERENCE": {
+      "accuracy_scenario_action_exact": 0.72,
+      "correct_count": 72,
+      "source": "ROUND-4 SEALED per-sample scores (frozen-cell paired base, half 1 of 2; the prediction basis)"
+    },
+    "BLEND_ROUND5_FOR_REFERENCE": {
+      "accuracy_scenario_action_exact": 0.72,
+      "correct_count": 72,
+      "source": "ROUND-5 SEALED per-sample scores (frozen-cell paired base, half 2 of 2)"
+    },
+    "M0": {
+      "accuracy_scenario_action_exact": 0.48,
+      "contacts": 0,
+      "correct_count": 48,
+      "source": "ROUND-0 SEALED per-sample scores (never re-flown; scores sha256 88922466d0463169547f0fcfae20bbdf98a6dd94a8ad7d89b68956a8bd343bed)"
+    }
+  },
+  "attempt_id": "attempt-20260825T042506Z-dev100a4",
+  "authority": "design input docs/readiness/2026-08-25-ec-and-retain-override-projections.md (sections 2, 3, 6, 6.2, 6.3, 6.4 and 6.5: the mechanical retain-primary theorem, the measured conversion anchors, the trigger curve, the risk side, and the registered prediction); queue authority docs/readiness/2026-08-24-kwiden-and-next-experiments-queue.md section 4 item 3 (the retain-override-loss dispatch variant) and section 2a (K-WIDEN K1 sealed: width is INERT, the binding constraint is the c/top_l supply budget); error class named by docs/readiness/2026-08-24-contrast-fewshot-preanalysis.md finding 2; owner iterate-before-concluding rulings docs/readiness/2026-08-23-knowledge-plane-baseline-rulings.md sections 2.2 and 7.1-7.3; machine-readable contract configs/experiment/slurp-dev100-retain-override-campaign-v1.json; exposure row SAEA-DEV100-RETAIN-OVERRIDE registration (registered variable: ONE variable named the RETAIN-OVERRIDE DISPATCH RULE -- also dispatch when delta = cos_top1 - cos_direct >= 0.14 AND the direct answer's own task target is not the retrieval's fused top-1; EVERY knob byte-frozen from configs/policy/kb-policy-v1-dev100.json; the registered falsifiable prediction is reproduced verbatim below; FRESH run-cumulative plan 250 calls / 700 audio-s / 0.35 GPU-h over ZERO durable prior under this run id, AttemptStore verified ABSENT at registration; sealed round-0/round-4/round-5 authorities pinned byte-wise; sentinel + micro-run trace isolation + Windows-side GPU sampling + clock sampling carried flight-proven from the sealed DEV-100 campaign, the DEV-500 confirmatory campaign and K-WIDEN K1)",
+  "blend_decisions": {
+    "dead_direct_dispatched": 38,
+    "direct_label_recovered_samples": 62,
+    "evidence_contact_dispatched_samples": 41,
+    "note": "winner_label is set only on trajectories that dispatched the evidence contact; a retain-primary trajectory stops at 1 contact with the direct response as final and no winner label (rails.kb_policy retain path). direct_label_recovered counts samples where the REPAIRED normalizer recovered a label facet from the flown direct answer, read from the override normalizer's TRUE recovery rather than from the controller's possibly-suppressed _direct_label. Under the FROZEN cell retain-primary equals direct_label_recovered exactly; under A4 the registered invariant is retain == direct_label_recovered MINUS the overridden set",
+    "override_dispatched": 3,
+    "retain_primary_samples": 59,
+    "retained_primary_sample_ids": [
+      "slurp:devel:000090:audio-1498567209",
+      "slurp:devel:000582:audio-1502891180-headset",
+      "slurp:devel:000896:audio-1502216983-headset",
+      "slurp:devel:001038:audio--1504191120",
+      "slurp:devel:001211:audio-1490020990",
+      "slurp:devel:001227:audio-1490104218",
+      "slurp:devel:001271:audio-1502300290-headset",
+      "slurp:devel:001349:audio-1490108023",
+      "slurp:devel:001569:audio-1490198849-headset",
+      "slurp:devel:001791:audio-1502195360",
+      "slurp:devel:001901:audio-1490183906",
+      "slurp:devel:002058:audio-1494512880",
+      "slurp:devel:002417:audio-1494548204-headset",
+      "slurp:devel:003082:audio-1490103664-headset",
+      "slurp:devel:003202:audio-1495733953-headset",
+      "slurp:devel:003443:audio-1501776590",
+      "slurp:devel:003464:audio-1499690370-headset",
+      "slurp:devel:003613:audio-1502308872",
+      "slurp:devel:003705:audio-1490194357",
+      "slurp:devel:003895:audio-1501687710",
+      "slurp:devel:003956:audio-1501753591-headset",
+      "slurp:devel:004198:audio--1504191536-headset",
+      "slurp:devel:004338:audio-1494418385-headset",
+      "slurp:devel:004545:audio-1497450582",
+      "slurp:devel:004971:audio-1502199127-headset",
+      "slurp:devel:005015:audio-1501756546",
+      "slurp:devel:005100:audio-1490291520",
+      "slurp:devel:005565:audio-1498570308",
+      "slurp:devel:005792:audio-1499697954",
+      "slurp:devel:006170:audio-1497557093-headset",
+      "slurp:devel:006176:audio-1492780408",
+      "slurp:devel:007066:audio-1498484428",
+      "slurp:devel:007381:audio-1501686582-headset",
+      "slurp:devel:007646:audio-1488969762",
+      "slurp:devel:007738:audio-1489153308",
+      "slurp:devel:008333:audio-1502893972",
+      "slurp:devel:008788:audio-1490105823",
+      "slurp:devel:010548:audio-1499697772",
+      "slurp:devel:010557:audio-1489498911",
+      "slurp:devel:010605:audio-1490021707",
+      "slurp:devel:010730:audio-1499693684-headset",
+      "slurp:devel:010806:audio-1501415533-headset",
+      "slurp:devel:010830:audio-1488985252",
+      "slurp:devel:011795:audio-1494607116",
+      "slurp:devel:012185:audio-1499244805",
+      "slurp:devel:012575:audio-1501686449",
+      "slurp:devel:012625:audio-1494417974",
+      "slurp:devel:012904:audio-1490194983",
+      "slurp:devel:014125:audio-1500388327-headset",
+      "slurp:devel:015265:audio-1499689293-headset",
+      "slurp:devel:015370:audio-1501688507",
+      "slurp:devel:015516:audio-1499264883-headset",
+      "slurp:devel:015630:audio-1490967842",
+      "slurp:devel:015836:audio-1434543277",
+      "slurp:devel:016303:audio-1490107552-headset",
+      "slurp:devel:016448:audio-1497869742-headset",
+      "slurp:devel:016463:audio-1501688583",
+      "slurp:devel:016570:audio-1490182015",
+      "slurp:devel:016699:audio-1499688493-headset"
+    ],
+    "winner_label_present_samples": 41
+  },
+  "blend_generation_rates_ms_per_token_in_observation_order": [
+    29.88,
+    50.23,
+    36.68,
+    36.62,
+    36.77,
+    36.74,
+    36.74,
+    36.44,
+    89.72,
+    33.66,
+    34.58,
+    32.31,
+    35.37,
+    40.06,
+    40.05,
+    29.22,
+    54.39,
+    30.06,
+    30.06,
+    30.06,
+    30.06,
+    38.31,
+    38.5,
+    37.72,
+    29.92,
+    29.93,
+    29.94,
+    62.38,
+    40.96,
+    40.95,
+    40.95,
+    40.28,
+    29.39,
+    29.39,
+    29.39,
+    30.64,
+    32.96,
+    59.22,
+    31.45,
+    30.65,
+    28.64,
+    29.9,
+    29.91,
+    48.75,
+    33.24,
+    31.97,
+    30.57,
+    28.6,
+    67.87,
+    31.87,
+    31.88,
+    33.53,
+    44.1,
+    44.1,
+    44.1,
+    41.7,
+    37.65,
+    92.64,
+    52.68,
+    31.13,
+    31.13,
+    52.72,
+    32.32,
+    32.29,
+    23.5,
+    29.41,
+    62.19,
+    29.42,
+    29.46,
+    29.46,
+    32.05,
+    31.62,
+    28.82,
+    29.05,
+    29.03,
+    67.01,
+    30.38,
+    32.29,
+    38.08,
+    38.03,
+    35.09,
+    67.42,
+    30.57,
+    31.67,
+    28.37,
+    27.78,
+    27.6,
+    23.16,
+    23.05,
+    53.29,
+    52.97,
+    91.9,
+    52.99,
+    46.96,
+    32.27,
+    32.27,
+    31.83,
+    59.7,
+    29.69,
+    29.69,
+    29.68,
+    38.52,
+    38.5,
+    38.37,
+    28.69,
+    38.63,
+    90.06,
+    38.93,
+    44.56,
+    44.55,
+    44.53,
+    43.78,
+    39.12,
+    26.98,
+    26.98,
+    26.97,
+    36.43,
+    36.68,
+    36.74,
+    35.21,
+    44.89,
+    117.7,
+    33.0,
+    33.01,
+    33.02,
+    33.05,
+    55.18,
+    53.31,
+    42.16,
+    59.69,
+    29.75,
+    29.76,
+    29.77,
+    38.59,
+    38.56,
+    38.55,
+    37.97,
+    52.41,
+    17.55,
+    15.07,
+    15.22
+  ],
+  "blend_print_timing": {
+    "generation_rows": 141,
+    "ms_per_token_max": 117.7,
+    "ms_per_token_median": 33.66,
+    "ms_per_token_min": 15.07
+  },
+  "branch_only_replay": {
+    "dead_direct_dispatched_sample_ids": [
+      "slurp:devel:000109:audio-1497882612",
+      "slurp:devel:000392:audio-1498573434",
+      "slurp:devel:000617:audio-1501152792-headset",
+      "slurp:devel:000806:audio--1506079512",
+      "slurp:devel:000921:audio-1498564374-headset",
+      "slurp:devel:001085:audio-1490103635-headset",
+      "slurp:devel:001558:audio-1495734409",
+      "slurp:devel:001599:audio-1434532176-headset",
+      "slurp:devel:002161:audio-1501408523-headset",
+      "slurp:devel:004422:audio-1498757235-headset",
+      "slurp:devel:004579:audio-1502195536-headset",
+      "slurp:devel:004899:audio-1495377050",
+      "slurp:devel:005183:audio-1498565600",
+      "slurp:devel:005386:audio-1501758493",
+      "slurp:devel:005393:audio--1505407257-headset",
+      "slurp:devel:005526:audio-1490202617",
+      "slurp:devel:005726:audio--1504197977",
+      "slurp:devel:005989:audio-1497621031",
+      "slurp:devel:006367:audio-1490354336-headset",
+      "slurp:devel:006595:audio-1497868179",
+      "slurp:devel:007732:audio-1502376806-headset",
+      "slurp:devel:009951:audio-1500038657-headset",
+      "slurp:devel:010041:audio-1497264270-headset",
+      "slurp:devel:010086:audio-1502201283",
+      "slurp:devel:010138:audio-1490289156",
+      "slurp:devel:010210:audio-1501754125-headset",
+      "slurp:devel:010374:audio-1501690184-headset",
+      "slurp:devel:012045:audio-1490956582-headset",
+      "slurp:devel:012055:audio-1494512213",
+      "slurp:devel:012712:audio-1502199981-headset",
+      "slurp:devel:012978:audio-1490954706",
+      "slurp:devel:013465:audio-1502302305-headset",
+      "slurp:devel:013522:audio-1494607289",
+      "slurp:devel:013804:audio-1434542201-headset",
+      "slurp:devel:014145:audio-1492784282",
+      "slurp:devel:014203:audio-1500979762",
+      "slurp:devel:015397:audio-1490262948",
+      "slurp:devel:015414:audio-1499265566"
+    ],
+    "delta_consistency_failures": [],
+    "frozen_cell_counterfactual_retain_count": 62,
+    "method": "the FROZEN-cell recall -> rank -> fuse chain is REPLAYED OFFLINE on THIS round's own logged query vectors through the pure rails.kb_policy functions at ZERO contacts. That path never sees a direct label, so reproducing the FLOWN supply on every sample -- INCLUDING the overridden ones -- proves the registered override changed the dispatch branch and nothing else. The same replay recomputes delta and cross-checks it against the in-flight trigger record",
+    "override_dispatched_sample_ids": [
+      "slurp:devel:002814:audio-1490194699",
+      "slurp:devel:010037:audio-1500386970-headset",
+      "slurp:devel:011819:audio--1505404383-headset"
+    ],
+    "override_fired_sample_ids": [
+      "slurp:devel:002814:audio-1490194699",
+      "slurp:devel:010037:audio-1500386970-headset",
+      "slurp:devel:011819:audio--1505404383-headset"
+    ],
+    "override_mechanism_anomalies": [],
+    "samples_with_a_captured_fusion_decision": 41,
+    "supply_fidelity_failures": [],
+    "verdict": "PASS"
+  },
+  "canary": {
+    "byte_identical_to_attempt1_m0": true,
+    "contacts": 2,
+    "decode_divergence": null,
+    "generation": [
+      {
+        "ms_per_token": 10.75,
+        "tokens": 33,
+        "total_ms": 354.83
+      },
+      {
+        "ms_per_token": 7.52,
+        "tokens": 34,
+        "total_ms": 255.75
+      }
+    ],
+    "note": "responses never read semantically: sha256 + server print_timing descriptives only, per the registered canary semantics (attempt-3 registration, carried to round 5; the service is the SAME BASE-build instance attempt 6 proved byte-identical to attempt-1 M0)",
+    "pass_threshold_ms_per_token": 300.0,
+    "passed": true,
+    "prompt_eval": [
+      {
+        "ms_per_token": 74.16,
+        "tokens": 1,
+        "total_ms": 74.16
+      },
+      {
+        "ms_per_token": 1.28,
+        "tokens": 75,
+        "total_ms": 95.77
+      }
+    ],
+    "response_sha256_vs_attempt1_m0": {
+      "slurp:devel:000090:audio-1498567209": {
+        "byte_identical_to_attempt1": true,
+        "response_sha256": "5fe1b883601c67a10862f74c4ef2abd1e94445d25088dbc2989870e29e067a59"
+      },
+      "slurp:devel:000109:audio-1497882612": {
+        "byte_identical_to_attempt1": true,
+        "response_sha256": "7e6ccbed9d234c2ed405c1ea4169213767bcc5694af3bcd8f2b261503980a073"
+      }
+    },
+    "sample_ids": [
+      "slurp:devel:000090:audio-1498567209",
+      "slurp:devel:000109:audio-1497882612"
+    ],
+    "trace": {
+      "manifest_hash": "54bc4dbeaeba9e39f85b21b5e211c2046c4c632f45ccf509efad4ba9f3e814b4",
+      "namespace": "canary/",
+      "record_ids": 14,
+      "sink_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV100-RETAIN-OVERRIDE/attempt-20260825T042506Z-dev100a4/canary-trace"
+    },
+    "wall_seconds": 4.447,
+    "worst_generation_ms_per_token": 10.75
+  },
+  "config_hash": "10ea2794ddc932692cad3face415a5f7ee42d44ee9c124e751f2c6c602cd0c4c",
+  "core_client": {
+    "contact_latency_seconds_total": 278.962,
+    "cost": {
+      "audio_seconds_used": 378.1575625000001,
+      "calls_used": 144,
+      "completion_tokens_total": 3834,
+      "latency_seconds_total": 278.9617035949341,
+      "prompt_tokens_total": 283516,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "9064bde89d4248fd80c9c2f93c2a9c276a454eadbb1aa7d529671118961371b1"
+    },
+    "request_count": 144,
+    "trace_manifest_hash": "511e87b03387a1a12f7ea5601164fbb15a83b775e0e4ebbde03490a472b9a44b"
+  },
+  "correct_to_wrong_sample_ids": [],
+  "cross_attempt_direct_agreement": {
+    "agree_count": 79,
+    "detail": "per-sample sha256 equality between this round's BLEND direct-decode responses and attempt-1's reused M0 responses (byte-identical prompts; 8-slot concurrent serving descriptive, computed hash-to-hash; r0a6 measured 78/100, r1 79/100, r2 75/100, r3 81/100, r4 77/100 on the same service)",
+    "disagree_sample_ids": [
+      "slurp:devel:000392:audio-1498573434",
+      "slurp:devel:000617:audio-1501152792-headset",
+      "slurp:devel:001038:audio--1504191120",
+      "slurp:devel:001085:audio-1490103635-headset",
+      "slurp:devel:001901:audio-1490183906",
+      "slurp:devel:002417:audio-1494548204-headset",
+      "slurp:devel:003956:audio-1501753591-headset",
+      "slurp:devel:005100:audio-1490291520",
+      "slurp:devel:005386:audio-1501758493",
+      "slurp:devel:005393:audio--1505407257-headset",
+      "slurp:devel:005792:audio-1499697954",
+      "slurp:devel:006595:audio-1497868179",
+      "slurp:devel:007381:audio-1501686582-headset",
+      "slurp:devel:007732:audio-1502376806-headset",
+      "slurp:devel:010138:audio-1490289156",
+      "slurp:devel:010830:audio-1488985252",
+      "slurp:devel:012045:audio-1490956582-headset",
+      "slurp:devel:012575:audio-1501686449",
+      "slurp:devel:013522:audio-1494607289",
+      "slurp:devel:015265:audio-1499689293-headset",
+      "slurp:devel:015370:audio-1501688507"
+    ],
+    "vs_round4_agree_count": 87,
+    "vs_round4_changed_sample_ids": [
+      "slurp:devel:001038:audio--1504191120",
+      "slurp:devel:002417:audio-1494548204-headset",
+      "slurp:devel:005015:audio-1501756546",
+      "slurp:devel:007381:audio-1501686582-headset",
+      "slurp:devel:007732:audio-1502376806-headset",
+      "slurp:devel:009951:audio-1500038657-headset",
+      "slurp:devel:010041:audio-1497264270-headset",
+      "slurp:devel:010138:audio-1490289156",
+      "slurp:devel:010210:audio-1501754125-headset",
+      "slurp:devel:012045:audio-1490956582-headset",
+      "slurp:devel:013522:audio-1494607289",
+      "slurp:devel:015370:audio-1501688507",
+      "slurp:devel:015397:audio-1490262948"
+    ],
+    "vs_round5_agree_count": 83,
+    "vs_round5_changed_sample_ids": [
+      "slurp:devel:000617:audio-1501152792-headset",
+      "slurp:devel:001038:audio--1504191120",
+      "slurp:devel:002417:audio-1494548204-headset",
+      "slurp:devel:004899:audio-1495377050",
+      "slurp:devel:005015:audio-1501756546",
+      "slurp:devel:005100:audio-1490291520",
+      "slurp:devel:005393:audio--1505407257-headset",
+      "slurp:devel:007732:audio-1502376806-headset",
+      "slurp:devel:010086:audio-1502201283",
+      "slurp:devel:010138:audio-1490289156",
+      "slurp:devel:010210:audio-1501754125-headset",
+      "slurp:devel:010830:audio-1488985252",
+      "slurp:devel:012045:audio-1490956582-headset",
+      "slurp:devel:012712:audio-1502199981-headset",
+      "slurp:devel:013522:audio-1494607289",
+      "slurp:devel:015397:audio-1490262948",
+      "slurp:devel:015516:audio-1499264883-headset"
+    ]
+  },
+  "decoder_session_receipt_sha256": "6c8bab4d67432b4a3b88679483f0d6db41e28620ab8ee973f442a97200861b10",
+  "delta_signal": {
+    "bar": 0.14,
+    "definition": "delta = cos_top1 - cos_direct, the retrieval-preference margin. cos_top1 is the fused top-1 TARGET's best PERCEPT-ADMITTED supporting content-facet cosine; cos_direct is the direct answer's OWN target's best content facet ANYWHERE in the frozen snapshot",
+    "distribution_over_retain_candidates": {
+      "bar": 0.14,
+      "deltas_descending": [
+        {
+          "delta": 0.171835,
+          "sample_id": "slurp:devel:002814:audio-1490194699",
+          "triggered": true
+        },
+        {
+          "delta": 0.160179,
+          "sample_id": "slurp:devel:010037:audio-1500386970-headset",
+          "triggered": true
+        },
+        {
+          "delta": 0.148629,
+          "sample_id": "slurp:devel:011819:audio--1505404383-headset",
+          "triggered": true
+        },
+        {
+          "delta": 0.128188,
+          "sample_id": "slurp:devel:001569:audio-1490198849-headset",
+          "triggered": false
+        },
+        {
+          "delta": 0.117036,
+          "sample_id": "slurp:devel:003705:audio-1490194357",
+          "triggered": false
+        },
+        {
+          "delta": 0.116983,
+          "sample_id": "slurp:devel:003443:audio-1501776590",
+          "triggered": false
+        },
+        {
+          "delta": 0.109622,
+          "sample_id": "slurp:devel:001227:audio-1490104218",
+          "triggered": false
+        },
+        {
+          "delta": 0.104829,
+          "sample_id": "slurp:devel:007738:audio-1489153308",
+          "triggered": false
+        },
+        {
+          "delta": 0.08564,
+          "sample_id": "slurp:devel:015370:audio-1501688507",
+          "triggered": false
+        },
+        {
+          "delta": 0.065978,
+          "sample_id": "slurp:devel:016699:audio-1499688493-headset",
+          "triggered": false
+        },
+        {
+          "delta": 0.063924,
+          "sample_id": "slurp:devel:012185:audio-1499244805",
+          "triggered": false
+        },
+        {
+          "delta": 0.059871,
+          "sample_id": "slurp:devel:003202:audio-1495733953-headset",
+          "triggered": false
+        },
+        {
+          "delta": 0.059382,
+          "sample_id": "slurp:devel:002417:audio-1494548204-headset",
+          "triggered": false
+        },
+        {
+          "delta": 0.059382,
+          "sample_id": "slurp:devel:001791:audio-1502195360",
+          "triggered": false
+        },
+        {
+          "delta": 0.050043,
+          "sample_id": "slurp:devel:000090:audio-1498567209",
+          "triggered": false
+        },
+        {
+          "delta": 0.023908,
+          "sample_id": "slurp:devel:015630:audio-1490967842",
+          "triggered": false
+        },
+        {
+          "delta": 0.023908,
+          "sample_id": "slurp:devel:015265:audio-1499689293-headset",
+          "triggered": false
+        },
+        {
+          "delta": 0.023908,
+          "sample_id": "slurp:devel:005565:audio-1498570308",
+          "triggered": false
+        },
+        {
+          "delta": 0.018957,
+          "sample_id": "slurp:devel:012625:audio-1494417974",
+          "triggered": false
+        },
+        {
+          "delta": 0.008544,
+          "sample_id": "slurp:devel:005100:audio-1490291520",
+          "triggered": false
+        },
+        {
+          "delta": 0.003893,
+          "sample_id": "slurp:devel:014125:audio-1500388327-headset",
+          "triggered": false
+        }
+      ],
+      "max_untriggered_delta": 0.12818801576751004,
+      "min_triggered_delta": 0.14862874614894483,
+      "retain_candidates": 21,
+      "triggered_at_bar": 3
+    },
+    "runtime_legality": "the direct answer's parsed identity is the model's own output, the facets and their vectors are the frozen TRAIN snapshot, and the query vector is the one the controller already computed and already paid ONE embedding contact for. No gold, no reference transcript, no future turn, no second answering model, and ZERO extra frozen-core or tool contacts -- multidim_recall already sweeps every content facet's cosine before truncating to top_k"
+  },
+  "deviations": [
+    {
+      "detail": "Arm M0 was not re-flown: its per-sample correctness comes from round-0's sealed scoring artifact (round0-scores.json, sha256 88922466d0463169547f0fcfae20bbdf98a6dd94a8ad7d89b68956a8bd343bed), cross-checked against the sealed round-0 report (26f05488bb7031d1ae85710faffd2b414644729af1adc476a1002a55612fb0b6) at the single scoring-side opening. Zero new spend for the arm.",
+      "id": "m0-arm-consumed-from-round0-seal",
+      "kind": "successor semantics, registered pre-takeoff in the exposure row"
+    },
+    {
+      "detail": "The FROZEN-CELL PAIRED BASE was not re-flown. Its per-sample correctness comes from round-4's sealed scoring artifact (sha256 2c4de7dd9303350bcda3e8f5db8d55e217bccea6cd74fe6d26461f4e7e5db4ac, cross-checked against report 42fa837582f5f9e129348d4ecc8324c56db62a754728048126c319666a997f1e) and round-5's sealed scoring artifact (sha256 59eaae53568056e6ecd7c78101de8879d1752ebef4fe7b4ce2a711c6ba087263, cross-checked against report 482d33bde5fe4ff7a522f8ca5e2b4fd7f02f3a87a6113f682c6218f3256e4d71), both opened at the single scoring-side opening after this round's arms sealed. Both sealed rounds flew the identical frozen cell and both landed 72/100 with C->W 0. Zero new spend.",
+      "id": "frozen-cell-base-consumed-from-round4-and-round5-seals",
+      "kind": "successor semantics, registered pre-takeoff in the exposure row"
+    },
+    {
+      "detail": "The registered variable is injected through the `normalizer` keyword the REGISTERED make_kb_alpha_blend_controller_factory already exposes. No file under src/speech_aware_evidence_acquisition/rails/ or core/ is modified, monkeypatched or subclassed; the launcher asserts at preflight that both directories are git-clean and that rails/kb_policy.py's last commit is still the f1060078 repair. The branch-only claim is then PROVEN per sample at the seal rather than asserted.",
+      "id": "override-implemented-launcher-side",
+      "kind": "registered implementation constraint, asserted at preflight"
+    },
+    {
+      "detail": "No fresh prompt-fit row was registered for A4. The standing session-bound R6 row already bounds this round's worst case exactly: A4 reverts every knob to the frozen width-5 cell, the supplied-value ceiling stays c*top_l = 6, and the flown runner renders zero facet representations, so the evidence-prompt envelope is byte-identical to the one R6 measured (6,174 vs 8,192, margin +1,954). The override changes only which trajectories reach that envelope. The binding precondition -- the resident session receipt still hashing to the R6-bound value -- was asserted in-script before attach.",
+      "id": "prompt-fit-standing-not-remeasured",
+      "kind": "registered precondition reasoning, zero spend"
+    },
+    {
+      "detail": "The in-flight GPU/VRAM sampler polls the Windows-side /mnt/c/Windows/System32/nvidia-smi.exe (5 s cadence) instead of the WSL bridge binary that timed out under decode load in round 1 and self-disabled. Fail-tolerant semantics unchanged (degrades to NOT_AVAILABLE); no science knob touched.",
+      "id": "gpu-sampler-windows-binary",
+      "kind": "telemetry plumbing fix, carried flight-proven from round 2"
+    }
+  ],
+  "embedding_jitter_pair": {
+    "bit_identical": true,
+    "cosine": 1.0,
+    "text_sha256": "c9a64ba8de082d25de1625c3b1edee546532841b19c94d2d62096d5f75eac5fa"
+  },
+  "generated_at": "2026-08-25T04:38:59.059144+00:00",
+  "gpu_preflight": {
+    "clock_lock": {
+      "command": "nvidia-smi -lgc 1200,2500 (Windows side)",
+      "status": "RE-ASSERTED idempotently at A4 registration (SM sampled 1,192 MHz -- the lock was live; harmless re-apply, NOT a remedy -- attempt 5 falsified the clock hypothesis, attempt 6 confirmed the pathology was build-bound; disclosed)"
+    },
+    "enforced_power_limit_w_at_preflight": 100.0,
+    "enforced_power_limit_w_in_wsl": 100.0,
+    "lenovo_smart_fan_mode": 3,
+    "measured_at": "2026-08-25 A4 preflight (host PowerShell WMI GetSmartFanMode=3 + Windows nvidia-smi enforced 100.00 W, SM 1,192 MHz post-lock-reassert / 0 % util / 44 C; service /health ok with 8/8 slots idle and the session receipt re-hashed equal to the attempt-6/R6 binding; keepalive alive; llama-server pid 2768 up; AttemptStore for run id SAEA-DEV100-RETAIN-OVERRIDE verified ABSENT -- zero durable prior under this fresh run id)"
+  },
+  "hard_stop": "A4 lands and STOPS. This launcher does not register a successor round, a second bar, or a ladder: whether the delta bar enters the candidate cell for the DEV-1000 baseline-lock read is the coordinator's and the owner's decision, and the bar stays FIT-not-validated until that unexposed read is taken. The coordinator reports per-arm accuracy, W->C/C->W vs M0, the per-sample movement vs the sealed frozen-cell base with override-vs-variance attribution, the named-sample prediction reconciliation, which retain-override-loss samples were recovered, how many correct retains were disturbed, the realized delta-trigger count and distribution, the dispatch decomposition, prompt-reuse, decode rates and spend vs the exposure-row ceilings. The resident service and keepalive are LEFT UP.",
+  "hosting": {
+    "clock_lock_note": "the Windows-side GPU clock lock nvidia-smi -lgc 1200,2500 was RE-ASSERTED idempotently at A4 registration (SM sampled 1,192 MHz post-assert -- the lock was live; the re-apply is harmless and explicitly NOT a remedy, per the attempt-5/attempt-6 findings); mid-flight Windows-side clock sampling continues into clock-samples-retain-override.jsonl",
+    "keepalive": "detached Windows wsl.exe client (verified alive at A4 registration; holds the VM)",
+    "linger": "enabled (loginctl enable-linger chao, 2026-08-24T08:06Z)",
+    "mode": "systemd-run --user unit saea-np8-dev100-r6-base -p KillMode=mixed (WSL Ubuntu-24.04, systemd PID 1)",
+    "prompt_fit_standing": "the STANDING session-bound R6 prompt-fit row SAEA-SN-MF-DEV100-C3-PROMPT-FIT-NP8-R6 (6,174 tokens vs 8,192, margin +1,954, measured at m=5 material including 5 facet texts and 6 values) binds this round WITHOUT re-measurement. A4 reverts every knob to the frozen width-5 cell, so the evidence-prompt WORST CASE is byte-identical to the one that row measured: the supplied-value ceiling is fusion_c 2 * fusion_top_l 3 = 6 and the flown runner renders ZERO facet representations (visible_facet_ids stays empty through the registered C3 chain). The delta override changes only WHICH trajectories reach that envelope, never its shape. The takeoff precondition is that the resident session receipt still hashes to the value the R6 row bound, asserted in-script before attach. The K-WIDEN m=8 row (2026-08-25, same session, PASS at +1,272 with the chat template byte-equal to R6's) is an even more recent confirmation that this session's template has not moved",
+    "service_inheritance": "A4 flies on the SAME resident BASE-build service the attempt-6 round-0 landing left up, rounds 1-5 landed on, the DEV-500 confirmatory campaign flew, and K-WIDEN K1 flew (unit saea-np8-dev100-r6-base, llama-server pid 2768, port 8080, BASE build llama.cpp-featcache, 8 slots at n_ctx 8192): at A4 registration the unit was active, /health ok, 8/8 slots idle, and the session receipt re-hashed byte-identical to the attempt-6 binding -- no respawn, no restart, no binary change"
+  },
+  "kwiden_k1_citation": {
+    "report_relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev100-kwiden-k1/kwiden-k1-report.json",
+    "sealed_results": "K-WIDEN K1 (retrieval width 5->8 coupled) 71/100, delta -1 vs the frozen base, INSIDE the byte-variance channel: width is INERT. The width move changed the admitted supply on 32/100 trajectories and produced 0 width-attributable outcome flips, because fusion_c 2 * fusion_top_l 3 = 6 binds first and is m-invariant. This is why A4 attacks the DISPATCH RULE rather than the retrieval width"
+  },
+  "mid_flight_clock_samples_windows_side": [
+    {
+      "raw": "\ufeff{\"ts\":\"2026-08-25T04:24:25Z\",\"clocks_sm_mhz\":180,\"clocks_max_sm\":3090,\"power_draw_w\":16.27,\"power_limit_w\":100,\"temperature_c\":41,\"utilization_pct\":0,\"memory_used_mib\":21264,\"source\":\"windows nvidia-smi\"}"
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 3315,
+      "memory_used_mib": 21264,
+      "power_draw_w": 16.66,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 41,
+      "ts": "2026-08-25T04:24:36Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 9855,
+      "memory_used_mib": 21264,
+      "power_draw_w": 16.7,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 42,
+      "ts": "2026-08-25T04:24:46Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 4297,
+      "memory_used_mib": 21264,
+      "power_draw_w": 16.72,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 42,
+      "ts": "2026-08-25T04:24:57Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 3127,
+      "memory_used_mib": 21264,
+      "power_draw_w": 16.74,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 42,
+      "ts": "2026-08-25T04:25:07Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 277,
+      "memory_used_mib": 21264,
+      "power_draw_w": 16.87,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 43,
+      "ts": "2026-08-25T04:25:18Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1665,
+      "memory_used_mib": 21264,
+      "power_draw_w": 16.92,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 44,
+      "ts": "2026-08-25T04:25:29Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 67,
+      "memory_used_mib": 21264,
+      "power_draw_w": 16.91,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 44,
+      "ts": "2026-08-25T04:25:39Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 21264,
+      "power_draw_w": 10.57,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 44,
+      "ts": "2026-08-25T04:25:50Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 180,
+      "memory_used_mib": 21264,
+      "power_draw_w": 16.67,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 45,
+      "ts": "2026-08-25T04:26:00Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 4027,
+      "memory_used_mib": 21264,
+      "power_draw_w": 17.01,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 45,
+      "ts": "2026-08-25T04:26:11Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 15120,
+      "memory_used_mib": 21264,
+      "power_draw_w": 17.06,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 45,
+      "ts": "2026-08-25T04:26:22Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 21264,
+      "power_draw_w": 10.62,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 45,
+      "ts": "2026-08-25T04:26:32Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 180,
+      "memory_used_mib": 21264,
+      "power_draw_w": 9.16,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 46,
+      "ts": "2026-08-25T04:26:42Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 4792,
+      "memory_used_mib": 21264,
+      "power_draw_w": 9.57,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 46,
+      "ts": "2026-08-25T04:26:53Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 21264,
+      "power_draw_w": 8.52,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 46,
+      "ts": "2026-08-25T04:27:03Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1507,
+      "memory_used_mib": 21517,
+      "power_draw_w": 15.65,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 47,
+      "ts": "2026-08-25T04:27:13Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24069,
+      "power_draw_w": 13.81,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 48,
+      "ts": "2026-08-25T04:27:24Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24069,
+      "power_draw_w": 11.11,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 48,
+      "ts": "2026-08-25T04:27:34Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24069,
+      "power_draw_w": 13.22,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 48,
+      "ts": "2026-08-25T04:27:44Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24069,
+      "power_draw_w": 15.89,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 49,
+      "ts": "2026-08-25T04:27:54Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 960,
+      "memory_used_mib": 24069,
+      "power_draw_w": 17.55,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 49,
+      "ts": "2026-08-25T04:28:04Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24069,
+      "power_draw_w": 11.12,
+      "power_limit_w": 95.54,
+      "source": "windows nvidia-smi",
+      "temperature_c": 49,
+      "ts": "2026-08-25T04:28:14Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24069,
+      "power_draw_w": 14.2,
+      "power_limit_w": 90.16,
+      "source": "windows nvidia-smi",
+      "temperature_c": 50,
+      "ts": "2026-08-25T04:28:24Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24073,
+      "power_draw_w": 14.77,
+      "power_limit_w": 91.75,
+      "source": "windows nvidia-smi",
+      "temperature_c": 50,
+      "ts": "2026-08-25T04:28:34Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1732,
+      "memory_used_mib": 24073,
+      "power_draw_w": 90.9,
+      "power_limit_w": 94.13,
+      "source": "windows nvidia-smi",
+      "temperature_c": 55,
+      "ts": "2026-08-25T04:28:44Z",
+      "utilization_pct": 97
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 13.65,
+      "power_limit_w": 92.59,
+      "source": "windows nvidia-smi",
+      "temperature_c": 52,
+      "ts": "2026-08-25T04:28:54Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 14.54,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 52,
+      "ts": "2026-08-25T04:29:04Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 11.61,
+      "power_limit_w": 99.11,
+      "source": "windows nvidia-smi",
+      "temperature_c": 52,
+      "ts": "2026-08-25T04:29:14Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1575,
+      "memory_used_mib": 24105,
+      "power_draw_w": 91.66,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 58,
+      "ts": "2026-08-25T04:29:24Z",
+      "utilization_pct": 82
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 14.05,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 52,
+      "ts": "2026-08-25T04:29:34Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 13.71,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 52,
+      "ts": "2026-08-25T04:29:45Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 14.55,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 52,
+      "ts": "2026-08-25T04:29:55Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 13.08,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 52,
+      "ts": "2026-08-25T04:30:05Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 30.37,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 53,
+      "ts": "2026-08-25T04:30:15Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 11.49,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 52,
+      "ts": "2026-08-25T04:30:25Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 15.74,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 52,
+      "ts": "2026-08-25T04:30:35Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 14.57,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 53,
+      "ts": "2026-08-25T04:30:45Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1492,
+      "memory_used_mib": 24105,
+      "power_draw_w": 12.57,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 52,
+      "ts": "2026-08-25T04:30:55Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 14.59,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 53,
+      "ts": "2026-08-25T04:31:05Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 15.24,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 53,
+      "ts": "2026-08-25T04:31:15Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 11.6,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 53,
+      "ts": "2026-08-25T04:31:25Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 2205,
+      "memory_used_mib": 24105,
+      "power_draw_w": 86.15,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 57,
+      "ts": "2026-08-25T04:31:35Z",
+      "utilization_pct": 50
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 13.04,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 53,
+      "ts": "2026-08-25T04:31:46Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1605,
+      "memory_used_mib": 24105,
+      "power_draw_w": 92.62,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 59,
+      "ts": "2026-08-25T04:31:56Z",
+      "utilization_pct": 97
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 14.68,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 53,
+      "ts": "2026-08-25T04:32:06Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 14.75,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 53,
+      "ts": "2026-08-25T04:32:16Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 14.77,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 54,
+      "ts": "2026-08-25T04:32:26Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 15.6,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 53,
+      "ts": "2026-08-25T04:32:36Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 11.54,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 52,
+      "ts": "2026-08-25T04:32:46Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 14.64,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 53,
+      "ts": "2026-08-25T04:32:56Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 11.54,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 52,
+      "ts": "2026-08-25T04:33:06Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 15.61,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 53,
+      "ts": "2026-08-25T04:33:16Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1927,
+      "memory_used_mib": 24105,
+      "power_draw_w": 14.55,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 53,
+      "ts": "2026-08-25T04:33:26Z",
+      "utilization_pct": 45
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 14.75,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 54,
+      "ts": "2026-08-25T04:33:36Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 14.75,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 53,
+      "ts": "2026-08-25T04:33:46Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 11.61,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 52,
+      "ts": "2026-08-25T04:33:56Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 11.46,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 52,
+      "ts": "2026-08-25T04:34:06Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 24105,
+      "power_draw_w": 14.53,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 53,
+      "ts": "2026-08-25T04:34:17Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 21264,
+      "power_draw_w": 13.12,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 52,
+      "ts": "2026-08-25T04:34:27Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 3090,
+      "memory_used_mib": 21264,
+      "power_draw_w": 17.99,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 52,
+      "ts": "2026-08-25T04:34:37Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 18577,
+      "memory_used_mib": 21264,
+      "power_draw_w": 17.96,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 52,
+      "ts": "2026-08-25T04:34:48Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 21264,
+      "power_draw_w": 11.33,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 51,
+      "ts": "2026-08-25T04:34:58Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 180,
+      "memory_used_mib": 21264,
+      "power_draw_w": 17.52,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 51,
+      "ts": "2026-08-25T04:35:09Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 4447,
+      "memory_used_mib": 21264,
+      "power_draw_w": 17.78,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 51,
+      "ts": "2026-08-25T04:35:19Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 14010,
+      "memory_used_mib": 21264,
+      "power_draw_w": 17.83,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 51,
+      "ts": "2026-08-25T04:35:30Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 7335,
+      "memory_used_mib": 21264,
+      "power_draw_w": 17.8,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 51,
+      "ts": "2026-08-25T04:35:41Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1200,
+      "memory_used_mib": 21264,
+      "power_draw_w": 17.74,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 51,
+      "ts": "2026-08-25T04:35:51Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 2190,
+      "memory_used_mib": 21264,
+      "power_draw_w": 17.78,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 50,
+      "ts": "2026-08-25T04:36:02Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 907,
+      "memory_used_mib": 21264,
+      "power_draw_w": 17.75,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 50,
+      "ts": "2026-08-25T04:36:12Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 2055,
+      "memory_used_mib": 21264,
+      "power_draw_w": 17.73,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 50,
+      "ts": "2026-08-25T04:36:23Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 21264,
+      "power_draw_w": 11.23,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 50,
+      "ts": "2026-08-25T04:36:33Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 180,
+      "memory_used_mib": 21264,
+      "power_draw_w": 17.26,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 50,
+      "ts": "2026-08-25T04:36:44Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 2017,
+      "memory_used_mib": 21264,
+      "power_draw_w": 17.75,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 50,
+      "ts": "2026-08-25T04:36:54Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 21264,
+      "power_draw_w": 11.21,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 50,
+      "ts": "2026-08-25T04:37:05Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 180,
+      "memory_used_mib": 21264,
+      "power_draw_w": 17.18,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 50,
+      "ts": "2026-08-25T04:37:15Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 21264,
+      "power_draw_w": 11.14,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 49,
+      "ts": "2026-08-25T04:37:25Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 180,
+      "memory_used_mib": 21264,
+      "power_draw_w": 17.24,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 49,
+      "ts": "2026-08-25T04:37:36Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 3765,
+      "memory_used_mib": 21264,
+      "power_draw_w": 17.69,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 50,
+      "ts": "2026-08-25T04:37:47Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 21264,
+      "power_draw_w": 11.15,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 49,
+      "ts": "2026-08-25T04:37:57Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 0,
+      "memory_used_mib": 21264,
+      "power_draw_w": 21.47,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 50,
+      "ts": "2026-08-25T04:38:08Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 2722,
+      "memory_used_mib": 21264,
+      "power_draw_w": 17.49,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 50,
+      "ts": "2026-08-25T04:38:19Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 21264,
+      "power_draw_w": 11.12,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 49,
+      "ts": "2026-08-25T04:38:29Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 180,
+      "memory_used_mib": 21264,
+      "power_draw_w": 16.78,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 49,
+      "ts": "2026-08-25T04:38:39Z",
+      "utilization_pct": 0
+    },
+    {
+      "clocks_max_sm": 3090,
+      "clocks_sm_mhz": 1192,
+      "memory_used_mib": 21264,
+      "power_draw_w": 11.09,
+      "power_limit_w": 100,
+      "source": "windows nvidia-smi",
+      "temperature_c": 49,
+      "ts": "2026-08-25T04:38:50Z",
+      "utilization_pct": 0
+    }
+  ],
+  "prompt_fit_precondition": {
+    "context_margin_tokens": 1954,
+    "context_tokens_per_slot": 8192,
+    "corroboration": "the K-WIDEN m=8 prompt-fit row SAEA-SN-MF-DEV100-KWIDEN-PROMPT-FIT-M8 (2026-08-25, same resident session) re-measured on this service at a strictly over-bounding worst case and PASSED at +1,272 with the chat template sha256 byte-equal to R6's -- an even more recent confirmation that this session's template has not moved",
+    "exposure_run_id": "SAEA-SN-MF-DEV100-C3-PROMPT-FIT-NP8-R6",
+    "maximum_prompt_tokens_upper_bound": 6174,
+    "reasoning": "A4 reverts every knob to the frozen width-5 cell, so the evidence-prompt WORST CASE is byte-identical to the one the R6 row measured: the supplied-value ceiling is fusion_c 2 * fusion_top_l 3 = 6 and the flown runner renders ZERO facet representations (visible_facet_ids stays empty through the registered C3 chain). The registered delta override changes only WHICH trajectories reach that envelope, never its shape -- an overridden trajectory's evidence contact is built by rails.runner from the speech packet plus the supplied values alone, exactly like every evidence contact already flown. The binding precondition is that the resident session receipt still hashes to the value the R6 row bound, which was asserted in-script before attach",
+    "receipt_relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev100-c3-prompt-fit-np8-r6/prompt-fit.json",
+    "session_receipt_sha256_rehashed_equal": true,
+    "verdict": "PASS (STANDING -- no re-measurement required)"
+  },
+  "prompt_reuse": {
+    "by_class": {
+      "blend_direct_contact0": {
+        "declared_prompt_tokens": 177338,
+        "declared_tokens_distribution": {
+          "count": 100,
+          "max": 1848,
+          "median": 1770,
+          "min": 1757,
+          "p10": 1757,
+          "p90": 1783,
+          "sum": 177338
+        },
+        "evaluated_prompt_tokens": 7838,
+        "evaluated_tokens_distribution": {
+          "count": 100,
+          "max": 153,
+          "median": 75,
+          "min": 62,
+          "p10": 62,
+          "p90": 88,
+          "sum": 7838
+        },
+        "evaluation_ratio": 0.044198,
+        "requests": 100,
+        "reuse_ratio": 0.955802,
+        "skipped_prompt_tokens": 169500,
+        "skipped_tokens_distribution": {
+          "count": 100,
+          "max": 1695,
+          "median": 1695,
+          "min": 1695,
+          "p10": 1695,
+          "p90": 1695,
+          "sum": 169500
+        }
+      },
+      "blend_evidence_contact1": {
+        "declared_prompt_tokens": 100894,
+        "declared_tokens_distribution": {
+          "count": 41,
+          "max": 3295,
+          "median": 2404,
+          "min": 1999,
+          "p10": 2067,
+          "p90": 2877,
+          "sum": 100894
+        },
+        "evaluated_prompt_tokens": 29839,
+        "evaluated_tokens_distribution": {
+          "count": 41,
+          "max": 1535,
+          "median": 660,
+          "min": 265,
+          "p10": 335,
+          "p90": 1156,
+          "sum": 29839
+        },
+        "evaluation_ratio": 0.295746,
+        "requests": 41,
+        "reuse_ratio": 0.704254,
+        "skipped_prompt_tokens": 71055,
+        "skipped_tokens_distribution": {
+          "count": 41,
+          "max": 1760,
+          "median": 1734,
+          "min": 1721,
+          "p10": 1721,
+          "p90": 1747,
+          "sum": 71055
+        }
+      },
+      "canary_direct_single_slot": {
+        "declared_prompt_tokens": 3527,
+        "declared_tokens_distribution": {
+          "count": 2,
+          "max": 1770,
+          "median": 1770,
+          "min": 1757,
+          "p10": 1757,
+          "p90": 1770,
+          "sum": 3527
+        },
+        "evaluated_prompt_tokens": 76,
+        "evaluated_tokens_distribution": {
+          "count": 2,
+          "max": 75,
+          "median": 75,
+          "min": 1,
+          "p10": 1,
+          "p90": 75,
+          "sum": 76
+        },
+        "evaluation_ratio": 0.021548,
+        "requests": 2,
+        "reuse_ratio": 0.978452,
+        "skipped_prompt_tokens": 3451,
+        "skipped_tokens_distribution": {
+          "count": 2,
+          "max": 1756,
+          "median": 1756,
+          "min": 1695,
+          "p10": 1695,
+          "p90": 1756,
+          "sum": 3451
+        }
+      },
+      "resend_direct_single_slot": {
+        "declared_prompt_tokens": 1757,
+        "declared_tokens_distribution": {
+          "count": 1,
+          "max": 1757,
+          "median": 1757,
+          "min": 1757,
+          "p10": 1757,
+          "p90": 1757,
+          "sum": 1757
+        },
+        "evaluated_prompt_tokens": 62,
+        "evaluated_tokens_distribution": {
+          "count": 1,
+          "max": 62,
+          "median": 62,
+          "min": 62,
+          "p10": 62,
+          "p90": 62,
+          "sum": 62
+        },
+        "evaluation_ratio": 0.035287,
+        "requests": 1,
+        "reuse_ratio": 0.964713,
+        "skipped_prompt_tokens": 1695,
+        "skipped_tokens_distribution": {
+          "count": 1,
+          "max": 1695,
+          "median": 1695,
+          "min": 1695,
+          "p10": 1695,
+          "p90": 1695,
+          "sum": 1695
+        }
+      }
+    },
+    "classification_clean_by_threshold": false,
+    "declared_offset_calibration": {
+      "client_prompt_tokens_total": 283516,
+      "per_request_offset": 1,
+      "request_count_parsed": 144,
+      "sum_release_n_tokens_minus_generation": 283372
+    },
+    "directive": "owner directive at round-2 registration: prefix-cache optimality is a first-class metric; measured from durable server-log per-request records only (content-free token counts), no behavior change",
+    "method": "per request: declared = release n_tokens - generation tokens + calibrated fixed offset; evaluated = print_timing prompt-eval tokens (post-prefix-cache); skipped = declared - evaluated. Windows split by the tracked server-log offsets: canary / BLEND / resend. BLEND contact classes split at declared <= 2000 (direct envelope 1,819)",
+    "overall": {
+      "declared_prompt_tokens": 283516,
+      "declared_tokens_distribution": {
+        "count": 144,
+        "max": 3295,
+        "median": 1770,
+        "min": 1757,
+        "p10": 1757,
+        "p90": 2594,
+        "sum": 283516
+      },
+      "evaluated_prompt_tokens": 37815,
+      "evaluated_tokens_distribution": {
+        "count": 144,
+        "max": 1535,
+        "median": 75,
+        "min": 1,
+        "p10": 62,
+        "p90": 873,
+        "sum": 37815
+      },
+      "evaluation_ratio": 0.133379,
+      "requests": 144,
+      "reuse_ratio": 0.866621,
+      "skipped_prompt_tokens": 245701,
+      "skipped_tokens_distribution": {
+        "count": 144,
+        "max": 1760,
+        "median": 1695,
+        "min": 1695,
+        "p10": 1695,
+        "p90": 1734,
+        "sum": 245701
+      }
+    },
+    "verdict": "ACTIVE: the slot prompt cache is doing real work on the evidence contact class (reuse ratio >= 0.5)",
+    "within_trajectory": {
+      "evidence_contact_different_server_slot": 0,
+      "evidence_contact_same_server_slot_as_direct": 41,
+      "evidence_skipped_ge_1000_tokens": 41,
+      "evidence_skipped_ge_1700_tokens": 41,
+      "evidence_skipped_lt_100_tokens": 0,
+      "expected_common_prefix_tokens": "~1,700+ (system + task contract + speech packet + query)",
+      "note": "the slot prompt cache holds the LAST prompt per server slot, so an evidence contact reaching the slot that just served a prompt sharing its prefix (its own trajectory's direct contact, or any request sharing the system+contract prefix) skips that prefix; slot ids per contact come from the client-side contact records (the runner pins id_slot)",
+      "two_contact_trajectories": 41
+    }
+  },
+  "refused_takeoffs": [],
+  "resend_pair": {
+    "byte_identical": true,
+    "flown": true,
+    "note": "byte-identical direct-decode PROMPT by construction: the SAME assembly path (rails.runner._agent_messages over the same frozen adapter/contract/packet/instruction inputs). Response A is attempt-1's recorded M0 hash (ZERO-COPY build); response B is a fresh single-slot decode on the SAME BASE-build service instance attempt 6 flew \u2014 cross-build byte-determinism was proven at the attempt-6 canary/resend, so byte identity is expected here. sha256 equality only.",
+    "response_a_sha256": "5fe1b883601c67a10862f74c4ef2abd1e94445d25088dbc2989870e29e067a59",
+    "response_b_sha256": "5fe1b883601c67a10862f74c4ef2abd1e94445d25088dbc2989870e29e067a59",
+    "sample_id": "slurp:devel:000090:audio-1498567209",
+    "server_np": 8,
+    "trace": {
+      "manifest_hash": "70893aebf8117c83471fded95f72f3d0cf25f9b9d038b589e5840d03c6aa0807",
+      "namespace": "resend/",
+      "record_ids": 7,
+      "sink_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV100-RETAIN-OVERRIDE/attempt-20260825T042506Z-dev100a4/resend-trace"
+    }
+  },
+  "round0_citation": {
+    "report_path": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev100-round0/round0-report.json",
+    "report_sha256": "26f05488bb7031d1ae85710faffd2b414644729af1adc476a1002a55612fb0b6",
+    "scores_sha256": "88922466d0463169547f0fcfae20bbdf98a6dd94a8ad7d89b68956a8bd343bed",
+    "sealed_results": "M0 48/100; BLEND(alpha .60, tau .5) 63/100; W->C 26; C->W 11; evidence fired 100/100"
+  },
+  "round4_citation": {
+    "report_path": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev100-round4/round4-report.json",
+    "report_sha256": "42fa837582f5f9e129348d4ecc8324c56db62a754728048126c319666a997f1e",
+    "scores_sha256": "2c4de7dd9303350bcda3e8f5db8d55e217bccea6cd74fe6d26461f4e7e5db4ac",
+    "sealed_results": "BLEND(alpha .45, tau .65, top-k 5, fusion m 5, f1060078 repair) 72/100 -- one half of the FROZEN-CELL PAIRED BASE and the basis the A4 prediction was written against; W->C 24; C->W 0; retain-primary 63/100; direct-label recovered 63/100; evidence dispatched 37/100"
+  },
+  "round5_citation": {
+    "report_path": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev100-round5/round5-report.json",
+    "report_sha256": "482d33bde5fe4ff7a522f8ca5e2b4fd7f02f3a87a6113f682c6218f3256e4d71",
+    "scores_sha256": "59eaae53568056e6ecd7c78101de8879d1752ebef4fe7b4ce2a711c6ba087263",
+    "sealed_results": "BLEND(alpha .45, tau .65, top-k 5, fusion m 5, f1060078 repair) 72/100 -- the EXACT REPLICATION of round 4 and the other half of the FROZEN-CELL PAIRED BASE; W->C 24; C->W 0; retain-primary 67/100; direct-label recovered 67/100; evidence dispatched 33/100. The two sealed base rounds agree at 72/100 with C->W 0, which is what makes them a usable paired baseline and what defines the +/-2-sample byte-variance channel this round must be read against"
+  },
+  "round_index": "A4",
+  "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV100-RETAIN-OVERRIDE/attempt-20260825T042506Z-dev100a4",
+  "run_id": "SAEA-DEV100-RETAIN-OVERRIDE",
+  "schema": "saea-dev100-retain-override-report-v1",
+  "sentinel": {
+    "contacts_observed": 141,
+    "ms_per_token_max": 117.7,
+    "ms_per_token_median": 33.66,
+    "ms_per_token_min": 15.07,
+    "ms_per_token_p90": 54.39,
+    "rates_observed": 141,
+    "threshold_ms_per_token": 1000.0,
+    "tripped": null,
+    "window_contacts": 8
+  },
+  "server_np": 8,
+  "serving_descriptives": {
+    "gpu_sampling_reason": null,
+    "gpu_seconds": 52.02770933261462,
+    "peak_vram_mib": 24105.0,
+    "request_gpu_sample_count": 81,
+    "request_gpu_samples": [
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787632041.014379,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 2.599000930786133,
+        "server_slot_sampled_at_unix_seconds": 1787632041.016978,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787632046.108951,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.6891956329345703,
+        "server_slot_sampled_at_unix_seconds": 1787632046.1106403,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787632051.7927969,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.401662826538086,
+        "server_slot_sampled_at_unix_seconds": 1787632051.7941985,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787632056.9669752,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.94178581237793,
+        "server_slot_sampled_at_unix_seconds": 1787632056.983917,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787632062.495282,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.6796588897705078,
+        "server_slot_sampled_at_unix_seconds": 1787632062.4969616,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787632067.587192,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 23.336410522460938,
+        "server_slot_sampled_at_unix_seconds": 1787632067.6105285,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787632073.2031415,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.6717910766601562,
+        "server_slot_sampled_at_unix_seconds": 1787632073.2048132,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787632078.4177406,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 145.03026008605957,
+        "server_slot_sampled_at_unix_seconds": 1787632078.5627708,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787632084.2529156,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.2478828430175781,
+        "server_slot_sampled_at_unix_seconds": 1787632084.2541635,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787632089.372837,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 127.2735595703125,
+        "server_slot_sampled_at_unix_seconds": 1787632089.5001106,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787632095.0516167,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.8384456634521484,
+        "server_slot_sampled_at_unix_seconds": 1787632095.053455,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787632100.1302292,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 11.759281158447266,
+        "server_slot_sampled_at_unix_seconds": 1787632100.1419885,
+        "server_total_slots": 8,
+        "utilization_pct": 93.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787632105.8922586,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 27.083873748779297,
+        "server_slot_sampled_at_unix_seconds": 1787632105.9193425,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24069.0,
+        "sampled_at_unix_seconds": 1787632111.00912,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.022205352783203,
+        "server_slot_sampled_at_unix_seconds": 1787632111.0251422,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787632116.1204312,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 32.50908851623535,
+        "server_slot_sampled_at_unix_seconds": 1787632116.1529403,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787632121.2461467,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.326656341552734,
+        "server_slot_sampled_at_unix_seconds": 1787632121.2724733,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787632126.7572315,
+        "server_busy_slots": 3,
+        "server_slot_gpu_skew_milliseconds": 45.36795616149902,
+        "server_slot_sampled_at_unix_seconds": 1787632126.8025994,
+        "server_total_slots": 8,
+        "utilization_pct": 57.0
+      },
+      {
+        "memory_used_mib": 24073.0,
+        "sampled_at_unix_seconds": 1787632131.9000618,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 17.360925674438477,
+        "server_slot_sampled_at_unix_seconds": 1787632131.9174228,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632137.7790437,
+        "server_busy_slots": 1,
+        "server_slot_gpu_skew_milliseconds": 294.03209686279297,
+        "server_slot_sampled_at_unix_seconds": 1787632138.0730758,
+        "server_total_slots": 8,
+        "utilization_pct": 13.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632143.1844652,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 15.936136245727539,
+        "server_slot_sampled_at_unix_seconds": 1787632143.2004013,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632148.2945526,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.4998722076416,
+        "server_slot_sampled_at_unix_seconds": 1787632148.3160524,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632153.4162683,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.10039710998535,
+        "server_slot_sampled_at_unix_seconds": 1787632153.4423687,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632158.5218368,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.387224197387695,
+        "server_slot_sampled_at_unix_seconds": 1787632158.538224,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632163.6319828,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 629.0934085845947,
+        "server_slot_sampled_at_unix_seconds": 1787632164.2610762,
+        "server_total_slots": 8,
+        "utilization_pct": 100.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632169.3666894,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.045923233032227,
+        "server_slot_sampled_at_unix_seconds": 1787632169.3877354,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632175.2510324,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.686563491821289,
+        "server_slot_sampled_at_unix_seconds": 1787632175.262719,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632180.360697,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.721477508544922,
+        "server_slot_sampled_at_unix_seconds": 1787632180.3874185,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632185.4635613,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.683330535888672,
+        "server_slot_sampled_at_unix_seconds": 1787632185.4902446,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632190.859676,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.6002655029296875,
+        "server_slot_sampled_at_unix_seconds": 1787632190.8612761,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632195.954257,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.735191345214844,
+        "server_slot_sampled_at_unix_seconds": 1787632195.9759922,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632201.073826,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.93415641784668,
+        "server_slot_sampled_at_unix_seconds": 1787632201.0907602,
+        "server_total_slots": 8,
+        "utilization_pct": 3.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632206.6742778,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 13.260841369628906,
+        "server_slot_sampled_at_unix_seconds": 1787632206.6875386,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632211.7937205,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 31.1582088470459,
+        "server_slot_sampled_at_unix_seconds": 1787632211.8248787,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632216.9624825,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 16.34502410888672,
+        "server_slot_sampled_at_unix_seconds": 1787632216.9788275,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632222.070422,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 25.902509689331055,
+        "server_slot_sampled_at_unix_seconds": 1787632222.0963244,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632227.3105288,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 13.61989974975586,
+        "server_slot_sampled_at_unix_seconds": 1787632227.3241487,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632232.4397767,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.928621292114258,
+        "server_slot_sampled_at_unix_seconds": 1787632232.4607053,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632237.5465353,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.437416076660156,
+        "server_slot_sampled_at_unix_seconds": 1787632237.5579727,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632243.3630073,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 15.959501266479492,
+        "server_slot_sampled_at_unix_seconds": 1787632243.3789668,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632248.479718,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 20.97344398498535,
+        "server_slot_sampled_at_unix_seconds": 1787632248.5006914,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632253.884873,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.444807052612305,
+        "server_slot_sampled_at_unix_seconds": 1787632253.8963177,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632259.2386773,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 3.9701461791992188,
+        "server_slot_sampled_at_unix_seconds": 1787632259.2426474,
+        "server_total_slots": 8,
+        "utilization_pct": 87.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632264.3259628,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.409273147583008,
+        "server_slot_sampled_at_unix_seconds": 1787632264.347372,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632269.4510024,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.6443729400634766,
+        "server_slot_sampled_at_unix_seconds": 1787632269.4526467,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632274.5267298,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.455297470092773,
+        "server_slot_sampled_at_unix_seconds": 1787632274.5381851,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632280.4638934,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.9423770904541,
+        "server_slot_sampled_at_unix_seconds": 1787632280.4858358,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632285.5851393,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.32451057434082,
+        "server_slot_sampled_at_unix_seconds": 1787632285.6114638,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632290.7077782,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.634817123413086,
+        "server_slot_sampled_at_unix_seconds": 1787632290.729413,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632295.8640492,
+        "server_busy_slots": 3,
+        "server_slot_gpu_skew_milliseconds": 57.65867233276367,
+        "server_slot_sampled_at_unix_seconds": 1787632295.9217079,
+        "server_total_slots": 8,
+        "utilization_pct": 50.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632301.0111222,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 10.710477828979492,
+        "server_slot_sampled_at_unix_seconds": 1787632301.0218327,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632306.114797,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 15.892982482910156,
+        "server_slot_sampled_at_unix_seconds": 1787632306.13069,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632311.9713151,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.585817337036133,
+        "server_slot_sampled_at_unix_seconds": 1787632311.997901,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632317.0664937,
+        "server_busy_slots": 7,
+        "server_slot_gpu_skew_milliseconds": 17.665624618530273,
+        "server_slot_sampled_at_unix_seconds": 1787632317.0841594,
+        "server_total_slots": 8,
+        "utilization_pct": 93.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632322.1750054,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.091938018798828,
+        "server_slot_sampled_at_unix_seconds": 1787632322.1960974,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632327.3165944,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.872758865356445,
+        "server_slot_sampled_at_unix_seconds": 1787632327.3384671,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632332.791074,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 24.640321731567383,
+        "server_slot_sampled_at_unix_seconds": 1787632332.8157144,
+        "server_total_slots": 8,
+        "utilization_pct": 95.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632337.909678,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 11.884689331054688,
+        "server_slot_sampled_at_unix_seconds": 1787632337.9215627,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632343.0514498,
+        "server_busy_slots": 4,
+        "server_slot_gpu_skew_milliseconds": 56.45108222961426,
+        "server_slot_sampled_at_unix_seconds": 1787632343.1079009,
+        "server_total_slots": 8,
+        "utilization_pct": 48.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632349.1156642,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 27.04596519470215,
+        "server_slot_sampled_at_unix_seconds": 1787632349.1427102,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632354.6802347,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 3.6115646362304688,
+        "server_slot_sampled_at_unix_seconds": 1787632354.6838462,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632359.7739985,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 36.623239517211914,
+        "server_slot_sampled_at_unix_seconds": 1787632359.8106217,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632364.906269,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.2552547454834,
+        "server_slot_sampled_at_unix_seconds": 1787632364.9275243,
+        "server_total_slots": 8,
+        "utilization_pct": 5.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632370.015849,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.6312599182128906,
+        "server_slot_sampled_at_unix_seconds": 1787632370.0174804,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632375.1261663,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.590585708618164,
+        "server_slot_sampled_at_unix_seconds": 1787632375.152757,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632381.0046663,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.991491317749023,
+        "server_slot_sampled_at_unix_seconds": 1787632381.0266578,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632386.129892,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.797771453857422,
+        "server_slot_sampled_at_unix_seconds": 1787632386.15669,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632391.3087,
+        "server_busy_slots": 8,
+        "server_slot_gpu_skew_milliseconds": 6.595373153686523,
+        "server_slot_sampled_at_unix_seconds": 1787632391.3152955,
+        "server_total_slots": 8,
+        "utilization_pct": 90.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632396.4212813,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 27.057409286499023,
+        "server_slot_sampled_at_unix_seconds": 1787632396.4483387,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632401.6380816,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.296262741088867,
+        "server_slot_sampled_at_unix_seconds": 1787632401.6593778,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632406.7516704,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 27.256011962890625,
+        "server_slot_sampled_at_unix_seconds": 1787632406.7789264,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632411.8740067,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 15.943527221679688,
+        "server_slot_sampled_at_unix_seconds": 1787632411.8899503,
+        "server_total_slots": 8,
+        "utilization_pct": 76.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632417.8898299,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 25.88033676147461,
+        "server_slot_sampled_at_unix_seconds": 1787632417.9157102,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632423.341741,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 2.0034313201904297,
+        "server_slot_sampled_at_unix_seconds": 1787632423.3437445,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632428.509092,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 27.42314338684082,
+        "server_slot_sampled_at_unix_seconds": 1787632428.5365152,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632433.6321874,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 25.716543197631836,
+        "server_slot_sampled_at_unix_seconds": 1787632433.657904,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632438.7499902,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 21.096229553222656,
+        "server_slot_sampled_at_unix_seconds": 1787632438.7710865,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632443.868703,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.594161987304688,
+        "server_slot_sampled_at_unix_seconds": 1787632443.895297,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632449.7008176,
+        "server_busy_slots": 4,
+        "server_slot_gpu_skew_milliseconds": 8.74018669128418,
+        "server_slot_sampled_at_unix_seconds": 1787632449.7095578,
+        "server_total_slots": 8,
+        "utilization_pct": 98.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632454.8051033,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 26.723623275756836,
+        "server_slot_sampled_at_unix_seconds": 1787632454.831827,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632459.904496,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 1.605987548828125,
+        "server_slot_sampled_at_unix_seconds": 1787632459.906102,
+        "server_total_slots": 8,
+        "utilization_pct": 0.0
+      },
+      {
+        "memory_used_mib": 24105.0,
+        "sampled_at_unix_seconds": 1787632464.9881032,
+        "server_busy_slots": 0,
+        "server_slot_gpu_skew_milliseconds": 2.361774444580078,
+        "server_slot_sampled_at_unix_seconds": 1787632464.990465,
+        "server_total_slots": 8,
+        "utilization_pct": 94.0
+      }
+    ],
+    "request_gpu_utilization_median_pct": 0.0,
+    "request_gpu_utilization_p10_pct": 0.0,
+    "server_slot_probe_failure_count": 0,
+    "server_slot_sample_count": 81,
+    "server_slot_sampling_configured": true,
+    "server_slot_sampling_reason": null
+  },
+  "spend_vs_ceilings": {
+    "campaign_ceilings": {
+      "core_contacts": 300,
+      "embedding_tool_contacts": 200,
+      "gpu_hours": 0.4,
+      "metered_audio_seconds": 900,
+      "scope": "the WHOLE A4 experiment (hard cap 1 round)"
+    },
+    "campaign_cumulative_incl_prior_rounds": {
+      "core_contacts": 144,
+      "embedding_tool_contacts": 102,
+      "metered_audio_seconds": 378.1575625000001,
+      "note": "A4 is the ONLY round under the SAEA-DEV100-RETAIN-OVERRIDE row (hard cap 1), so prior durable spend under this row is exactly zero and the row cumulative equals this attempt. The sealed predecessor rows SAEA-DEV100-KB-ALPHA-BLEND-CAMPAIGN and SAEA-DEV100-KWIDEN closed at their own caps and do NOT count against these ceilings"
+    },
+    "cumulative_plan_declaration": {
+      "note": "FRESH run id with ZERO durable prior: the AttemptStore directory attempts/SAEA-DEV100-RETAIN-OVERRIDE and the run dir runs/SAEA-DEV100-RETAIN-OVERRIDE were BOTH verified ABSENT at registration, so this plan covers the A4 worst case alone (210 attempt ceiling + 40 margin = 250 calls; about 575 worst-case audio-s + about 125 margin = 700). Run-cumulative per core.model.adapter's enforcement across all attempts of the run id (fresh sibling read of durable attempt actuals per request)",
+      "planned_gpu_hours": 0.35,
+      "planned_model_calls_run_cumulative": 250,
+      "planned_speech_audio_seconds_run_cumulative": 700
+    },
+    "round_a4": {
+      "core_contacts": {
+        "attempt_ceiling": 210,
+        "used": 144
+      },
+      "embedding_tool_contacts": {
+        "attempt_ceiling": 130,
+        "used": 102
+      },
+      "gpu_active_hours_contact_basis": 0.077489,
+      "metered_audio_seconds": {
+        "used": 378.1575625000001
+      }
+    }
+  },
+  "stopping_rule_status": {
+    "a4_c2w_vs_m0": 0,
+    "a4_correct_total": 74,
+    "absolute_bounds": [
+      72,
+      75
+    ],
+    "adopt_candidate_signal": false,
+    "base_c2w_vs_m0": 0,
+    "base_correct_total": 72,
+    "beats_direct": true,
+    "byte_variance_channel_samples": 2,
+    "c2w_growth_vs_base": 0,
+    "completed_rounds_after_this": 1,
+    "correct_retains_disturbed": [],
+    "delta_a4_vs_base": 2,
+    "delta_inside_byte_variance_channel": true,
+    "exposed_data_fit_disclosure": "the bar was FIT on exposed data -- all three sealed populations (DEV-100 r4, DEV-100 r5, DEV-500 NEW400) were inspected to place it. Under the owner's split-usage philosophy that is legitimate optimization, but it means the bar is FIT, NOT VALIDATED: its out-of-sample test is the DEV-1000 baseline-lock read on the unexposed 500, not this round.",
+    "falsified_signal": false,
+    "hard_cap_rounds": 1,
+    "inconclusive_signal": true,
+    "inside_absolute_bounds": true,
+    "named_samples_recovered": [],
+    "note": "evaluated AT THIS SEAL. The arithmetic here is the launcher's; the FORMAL stopping statement belongs to the coordinator and the owner. HONESTY CONSTRAINT registered BEFORE takeoff: the central projection is +3.0 per 100, which sits JUST OUTSIDE the documented +/-2 per-100 byte-variance channel, so an aggregate delta of at most 2 samples MUST NOT be reported as a win on its own. The honest discriminators are the PER-SAMPLE named-set reconciliation and the loss side, which the bar holds at zero BY CONSTRUCTION. And the bar remains FIT, NOT VALIDATED: its out-of-sample test is the DEV-1000 baseline-lock read on the unexposed 500",
+    "override_attributable_flip_count": 3,
+    "recovered_by_override": [
+      "slurp:devel:002814:audio-1490194699",
+      "slurp:devel:010037:audio-1500386970-headset",
+      "slurp:devel:011819:audio--1505404383-headset"
+    ],
+    "rule": "ADOPT-CANDIDATE: net paired gain vs the round-4/5 frozen base is positive AND zero correct retains were disturbed AND at least one NAMED prediction sample converted -- the coordinator may then recommend the delta bar for the candidate cell of the DEV-1000 baseline-lock read, with the bar still FIT-not-validated until that unexposed read. FALSIFIED: delta vs the base <= 0, or any correct retain was disturbed, or the triggered set converted at 0. INCONCLUSIVE: the delta sits inside the documented +/-2 per-100 byte-variance channel with fewer than 2 named samples converting. Hard cap 1 round; evaluated after every arm has sealed",
+    "triggered_conversion_count": 3,
+    "zero_disturbance_construction_held": true
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "trace_isolation": {
+    "canary_sink_records": 14,
+    "flush_order": "canary (own sink) -> BLEND (main sink FIRST) -> resend (own sink)",
+    "main_sink_records": 823,
+    "resend_sink_records": 7,
+    "zero_record_id_overlap_asserted": true
+  },
+  "vs_round4_blend": {
+    "final_response_sha_changed_count": 14,
+    "final_response_sha_changed_sample_ids": [
+      "slurp:devel:001038:audio--1504191120",
+      "slurp:devel:002161:audio-1501408523-headset",
+      "slurp:devel:002417:audio-1494548204-headset",
+      "slurp:devel:002814:audio-1490194699",
+      "slurp:devel:005015:audio-1501756546",
+      "slurp:devel:007381:audio-1501686582-headset",
+      "slurp:devel:007732:audio-1502376806-headset",
+      "slurp:devel:010037:audio-1500386970-headset",
+      "slurp:devel:010210:audio-1501754125-headset",
+      "slurp:devel:011819:audio--1505404383-headset",
+      "slurp:devel:012045:audio-1490956582-headset",
+      "slurp:devel:012712:audio-1502199981-headset",
+      "slurp:devel:013522:audio-1494607289",
+      "slurp:devel:015370:audio-1501688507"
+    ],
+    "net_delta_correct_samples": 2,
+    "note": "per-sample vs the round-4 sealed BLEND arm (the FROZEN cell, half 1 of the paired base, and the basis the registered prediction was written against). round-4's C->W list vs M0 is EMPTY, so round4_c2w_repaired/_still_wrong are structurally empty",
+    "round4_c2w_repaired": [],
+    "round4_c2w_still_wrong": [],
+    "round4_correct_now_wrong": [
+      "slurp:devel:013522:audio-1494607289"
+    ],
+    "round4_w2c_lost": [
+      "slurp:devel:013522:audio-1494607289"
+    ],
+    "round4_w2c_retained": [
+      "slurp:devel:000109:audio-1497882612",
+      "slurp:devel:000392:audio-1498573434",
+      "slurp:devel:000806:audio--1506079512",
+      "slurp:devel:000921:audio-1498564374-headset",
+      "slurp:devel:001558:audio-1495734409",
+      "slurp:devel:004579:audio-1502195536-headset",
+      "slurp:devel:005183:audio-1498565600",
+      "slurp:devel:005726:audio--1504197977",
+      "slurp:devel:005989:audio-1497621031",
+      "slurp:devel:007381:audio-1501686582-headset",
+      "slurp:devel:009951:audio-1500038657-headset",
+      "slurp:devel:010041:audio-1497264270-headset",
+      "slurp:devel:010086:audio-1502201283",
+      "slurp:devel:010138:audio-1490289156",
+      "slurp:devel:010374:audio-1501690184-headset",
+      "slurp:devel:012045:audio-1490956582-headset",
+      "slurp:devel:012055:audio-1494512213",
+      "slurp:devel:012712:audio-1502199981-headset",
+      "slurp:devel:013804:audio-1434542201-headset",
+      "slurp:devel:014203:audio-1500979762",
+      "slurp:devel:015265:audio-1499689293-headset",
+      "slurp:devel:015397:audio-1490262948",
+      "slurp:devel:015414:audio-1499265566"
+    ],
+    "round4_wrong_now_correct": [
+      "slurp:devel:002814:audio-1490194699",
+      "slurp:devel:010037:audio-1500386970-headset",
+      "slurp:devel:011819:audio--1505404383-headset"
+    ]
+  },
+  "vs_round5_blend": {
+    "final_response_sha_changed_count": 19,
+    "final_response_sha_changed_sample_ids": [
+      "slurp:devel:000617:audio-1501152792-headset",
+      "slurp:devel:001038:audio--1504191120",
+      "slurp:devel:002161:audio-1501408523-headset",
+      "slurp:devel:002417:audio-1494548204-headset",
+      "slurp:devel:002814:audio-1490194699",
+      "slurp:devel:004899:audio-1495377050",
+      "slurp:devel:005015:audio-1501756546",
+      "slurp:devel:005100:audio-1490291520",
+      "slurp:devel:005386:audio-1501758493",
+      "slurp:devel:007732:audio-1502376806-headset",
+      "slurp:devel:010037:audio-1500386970-headset",
+      "slurp:devel:010086:audio-1502201283",
+      "slurp:devel:010210:audio-1501754125-headset",
+      "slurp:devel:010830:audio-1488985252",
+      "slurp:devel:011819:audio--1505404383-headset",
+      "slurp:devel:012045:audio-1490956582-headset",
+      "slurp:devel:012712:audio-1502199981-headset",
+      "slurp:devel:013522:audio-1494607289",
+      "slurp:devel:015516:audio-1499264883-headset"
+    ],
+    "net_delta_correct_samples": 2,
+    "note": "per-sample vs the round-5 sealed BLEND arm (the FROZEN cell, half 2 of the paired base) -- the STOPPING-RULE baseline. Every difference here is either the registered override effect or run-to-run decode variance, and a4_reconciliation attributes each flip to one channel",
+    "round5_c2w_repaired": [],
+    "round5_c2w_still_wrong": [],
+    "round5_correct_now_wrong": [
+      "slurp:devel:004899:audio-1495377050",
+      "slurp:devel:013522:audio-1494607289"
+    ],
+    "round5_w2c_lost": [
+      "slurp:devel:004899:audio-1495377050",
+      "slurp:devel:013522:audio-1494607289"
+    ],
+    "round5_w2c_retained": [
+      "slurp:devel:000109:audio-1497882612",
+      "slurp:devel:000392:audio-1498573434",
+      "slurp:devel:000806:audio--1506079512",
+      "slurp:devel:000921:audio-1498564374-headset",
+      "slurp:devel:001558:audio-1495734409",
+      "slurp:devel:004579:audio-1502195536-headset",
+      "slurp:devel:005183:audio-1498565600",
+      "slurp:devel:005726:audio--1504197977",
+      "slurp:devel:005989:audio-1497621031",
+      "slurp:devel:007381:audio-1501686582-headset",
+      "slurp:devel:009951:audio-1500038657-headset",
+      "slurp:devel:010041:audio-1497264270-headset",
+      "slurp:devel:010086:audio-1502201283",
+      "slurp:devel:010138:audio-1490289156",
+      "slurp:devel:010374:audio-1501690184-headset",
+      "slurp:devel:012055:audio-1494512213",
+      "slurp:devel:012712:audio-1502199981-headset",
+      "slurp:devel:013804:audio-1434542201-headset",
+      "slurp:devel:014203:audio-1500979762",
+      "slurp:devel:015265:audio-1499689293-headset",
+      "slurp:devel:015397:audio-1490262948",
+      "slurp:devel:015414:audio-1499265566"
+    ],
+    "round5_wrong_now_correct": [
+      "slurp:devel:002814:audio-1490194699",
+      "slurp:devel:010037:audio-1500386970-headset",
+      "slurp:devel:011819:audio--1505404383-headset",
+      "slurp:devel:012045:audio-1490956582-headset"
+    ]
+  },
+  "wrong_to_correct_sample_ids": [
+    "slurp:devel:000109:audio-1497882612",
+    "slurp:devel:000392:audio-1498573434",
+    "slurp:devel:000806:audio--1506079512",
+    "slurp:devel:000921:audio-1498564374-headset",
+    "slurp:devel:001558:audio-1495734409",
+    "slurp:devel:002814:audio-1490194699",
+    "slurp:devel:004579:audio-1502195536-headset",
+    "slurp:devel:005183:audio-1498565600",
+    "slurp:devel:005726:audio--1504197977",
+    "slurp:devel:005989:audio-1497621031",
+    "slurp:devel:007381:audio-1501686582-headset",
+    "slurp:devel:009951:audio-1500038657-headset",
+    "slurp:devel:010037:audio-1500386970-headset",
+    "slurp:devel:010041:audio-1497264270-headset",
+    "slurp:devel:010086:audio-1502201283",
+    "slurp:devel:010138:audio-1490289156",
+    "slurp:devel:010374:audio-1501690184-headset",
+    "slurp:devel:011819:audio--1505404383-headset",
+    "slurp:devel:012045:audio-1490956582-headset",
+    "slurp:devel:012055:audio-1494512213",
+    "slurp:devel:012712:audio-1502199981-headset",
+    "slurp:devel:013804:audio-1434542201-headset",
+    "slurp:devel:014203:audio-1500979762",
+    "slurp:devel:015265:audio-1499689293-headset",
+    "slurp:devel:015397:audio-1490262948",
+    "slurp:devel:015414:audio-1499265566"
+  ]
+}

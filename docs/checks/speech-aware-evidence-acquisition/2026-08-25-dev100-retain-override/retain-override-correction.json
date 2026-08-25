@@ -1,0 +1,99 @@
+{
+  "attempt_id": "attempt-20260825T042506Z-dev100a4",
+  "boundary": "no new model or tool contact of any kind was made to produce this correction; it is a pure re-derivation from the landed report's own already-open fields. Spend attributable to this correction: 0 frozen-core contacts, 0 tool contacts, 0 audio seconds, 0.0 GPU hours",
+  "corrected_prediction_reconciliation": {
+    "named_recovered": [
+      "002814",
+      "010037",
+      "011819"
+    ],
+    "named_triggered": [
+      "002814",
+      "010037",
+      "011819"
+    ],
+    "named_triggered_still_wrong": [],
+    "overridden_still_wrong": [],
+    "predicted_correct_retains_disturbed": 0,
+    "predicted_losses_recovered": 3,
+    "predicted_triggered": 3,
+    "realized_correct_retains_disturbed_round4_basis": [],
+    "realized_correct_retains_disturbed_round5_basis": [],
+    "realized_triggered": 3,
+    "recovered_by_override_round4_basis": [
+      "002814",
+      "010037",
+      "011819"
+    ],
+    "recovered_by_override_round5_basis": [
+      "002814",
+      "010037",
+      "011819"
+    ],
+    "triggered_outside_the_named_set": [],
+    "zero_disturbance_construction_held": true
+  },
+  "corrected_report_sha256": "0615275e395e983c54a694a9641c06de7d1c9a9b5aa87801d33edd002d9ef92f",
+  "corrected_stopping_rule_signals": {
+    "adopt_candidate_signal": {
+      "as_landed": false,
+      "corrected": true,
+      "formula": "delta > 0 AND zero correct retains disturbed AND at least 1 NAMED sample recovered"
+    },
+    "delta_a4_vs_base": 2,
+    "falsified_signal": {
+      "as_landed": false,
+      "corrected": false
+    },
+    "inconclusive_signal": {
+      "as_landed": true,
+      "corrected": false,
+      "formula": "abs(delta) <= 2 AND fewer than 2 NAMED samples recovered"
+    },
+    "named_samples_recovered": [
+      "002814",
+      "010037",
+      "011819"
+    ],
+    "note": "the corrected reading is ADOPT-CANDIDATE, not INCONCLUSIVE. The aggregate delta of +2 does sit inside the documented plus-or-minus 2 per-100 byte-variance channel and is NOT claimed as a win on its own -- exactly as pre-registered. What carries the round is the PER-SAMPLE evidence the preregistration named as the honest discriminator: all 3 registered named samples triggered, all 3 converted on BOTH sealed bases, and ZERO correct retains were disturbed",
+    "zero_disturbance_construction_held": true
+  },
+  "corrects_report": "retain-override-report.json",
+  "defect": {
+    "affected_report_fields": [
+      "a4_reconciliation.prediction_reconciliation.named_triggered",
+      "a4_reconciliation.prediction_reconciliation.named_recovered",
+      "a4_reconciliation.prediction_reconciliation.named_triggered_still_wrong",
+      "a4_reconciliation.prediction_reconciliation.triggered_outside_the_named_set",
+      "stopping_rule_status.named_samples_recovered",
+      "stopping_rule_status.adopt_candidate_signal",
+      "stopping_rule_status.inconclusive_signal"
+    ],
+    "not_affected": "every other field is computed from FLOWN ids alone and is already correct: recovered_by_override_round4_basis and _round5_basis, both disturbance lists, the delta distribution, the per-flip OVERRIDE-ATTRIBUTABLE attribution, the branch-only supply-identity proof, the dispatch decomposition, the retain invariant, and every accuracy count. The TRIGGER RULE ITSELF never touches the named set -- it uses only delta and the disagreement condition on flown ids -- so the science of the round is untouched",
+    "proof_of_scope": {
+      "realized_trigger_ids_full": [
+        "slurp:devel:002814:audio-1490194699",
+        "slurp:devel:010037:audio-1500386970-headset",
+        "slurp:devel:011819:audio--1505404383-headset"
+      ],
+      "realized_trigger_ids_normalized": [
+        "002814",
+        "010037",
+        "011819"
+      ],
+      "registered_named_set": [
+        "002814",
+        "010037",
+        "011819"
+      ],
+      "sets_are_equal_after_normalization": true
+    },
+    "what": "the launcher computed the prediction's named-set reconciliation by intersecting the registered prediction's BARE numeric sample ids (002814, 010037, 011819 -- the form the projections document lists them in) with the flown FULL sample ids (slurp:devel:002814:audio-1490194699, ...). The intersection is empty for a purely LEXICAL reason, so `named_triggered` and `named_recovered` landed as [] and `triggered_outside_the_named_set` landed as all three"
+  },
+  "kind": "POST-SEAL SCORING-SIDE REPORTING DEFECT, caught by the flight agent at the landing read. ZERO SPEND: this is a comparison performed AFTER every frozen-core and embedding contact of the round was already complete, and it is arithmetically incapable of having influenced the flight",
+  "launcher_repair": "the launcher source was repaired POST-FLIGHT to normalize sample ids before the named-set intersection. THE ROUND WAS NOT RE-FLOWN and the landed report is NOT rewritten: this correction file supersedes the two defective fields and travels with the report",
+  "round_index": "A4",
+  "run_id": "SAEA-DEV100-RETAIN-OVERRIDE",
+  "schema": "saea-dev100-retain-override-correction-v1",
+  "study": "speech-aware-evidence-acquisition"
+}

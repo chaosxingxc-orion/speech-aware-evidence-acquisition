@@ -595,6 +595,23 @@ def sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+def short_sample_id(sample_id: str) -> str:
+    """Normalize a flown sample id to the BARE numeric utterance id.
+
+    The registered A4 prediction names its samples the way the projections
+    document lists them -- ``002814`` -- while the flown ids carry the full
+    carrier form ``slurp:devel:002814:audio-1490194699``. Every comparison
+    between the two MUST normalize first; the A4 round landed with that
+    normalization missing (see ``../retain-override-correction.json``).
+    A non-matching id is returned unchanged so the function can never silently
+    invent a match."""
+
+    import re  # noqa: PLC0415
+
+    match = re.match(r"^slurp:devel:(\d+):", sample_id)
+    return match.group(1) if match is not None else sample_id
+
+
 def _port_reachable(host: str, port: int, timeout: float = 1.0) -> bool:
     try:
         with socket.create_connection((host, port), timeout=timeout):
@@ -3688,14 +3705,31 @@ def main() -> int:
         for sid in override_fired_ids
         if sid not in r5_blend_correct and sid not in a4_correct
     )
-    named_triggered = sorted(predicted_named & override_fired_set)
-    named_not_triggered = sorted(predicted_named - override_fired_set)
+    # POST-FLIGHT REPAIR (2026-08-25, applied AFTER the A4 round landed; the
+    # round was NOT re-flown and the landed report is NOT rewritten -- see
+    # ../retain-override-correction.json, which supersedes the two fields this
+    # defect touched). THE DEFECT: the registered prediction names its samples
+    # by BARE numeric id (`002814`), which is the form the projections document
+    # lists, while the flown ids are FULL (`slurp:devel:002814:audio-...`), so
+    # every named-set intersection below was empty for a purely LEXICAL reason.
+    # It landed `named_triggered` and `named_recovered` as empty even though all
+    # three registered named samples triggered AND converted, and through them
+    # it flipped `adopt_candidate_signal` to False and `inconclusive_signal` to
+    # True. It is a POST-SEAL REPORTING defect only: the trigger rule itself
+    # never consults the named set (it uses delta and the disagreement condition
+    # on flown ids alone), so no contact, no dispatch decision and no accuracy
+    # count was ever affected. The repair normalizes both sides before
+    # comparing.
+    override_fired_short = {short_sample_id(sid) for sid in override_fired_set}
+    named_triggered = sorted(predicted_named & override_fired_short)
+    named_not_triggered = sorted(predicted_named - override_fired_short)
     triggered_outside_named = sorted(
-        override_fired_set - predicted_named - predicted_named_r5_extra
+        override_fired_short - predicted_named - predicted_named_r5_extra
     )
-    named_recovered = sorted(set(named_triggered) & set(a4_correct))
-    named_triggered_still_wrong = sorted(set(named_triggered) - set(a4_correct))
-    out_of_reach_triggered = sorted(predicted_out_of_reach & override_fired_set)
+    a4_correct_short = {short_sample_id(sid) for sid in a4_correct}
+    named_recovered = sorted(set(named_triggered) & a4_correct_short)
+    named_triggered_still_wrong = sorted(set(named_triggered) - a4_correct_short)
+    out_of_reach_triggered = sorted(predicted_out_of_reach & override_fired_short)
 
     # The realized delta distribution over every RETAIN CANDIDATE (a
     # live-direct trajectory that disagrees with the retrieval top-1) --
