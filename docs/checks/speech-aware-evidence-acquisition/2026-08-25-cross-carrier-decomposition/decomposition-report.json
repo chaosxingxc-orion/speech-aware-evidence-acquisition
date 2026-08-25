@@ -1,0 +1,1931 @@
+{
+ "artifact_hashes": {
+  "arm1-m0-outputs.jsonl": "dea60ff1e63fd2ef11c93edf8808217062fea3f0565ed5b60f136264bc6a9467",
+  "arm2-blend-mechanical-report-attempt4.json": "641c4b5ae82cdda1b2d8508bb95e52035fe1b3d119ea170f10906779df459436",
+  "arm2-blend-mechanical.json": "59458c491368a117721041e4ba1538549f3e1e28bdb342e4927703ad5892644e",
+  "arm2-blend-outputs.jsonl": "24a7864263226f4918076571aee359d40ee76838f9cea1da2bbae38f6b6bdd18",
+  "content-facet-npz": "00a7ebe9b8325ffc2c7b8e45ac4f0c8475b2d3e76994cc0f539f7b5ad5740f45",
+  "g1-read-attempt4.json": "cb5e56584a6d572f7b41b39542201ddb1b361755042eac66c3a70c55fd086f89",
+  "kb_policy.py": "2a1c3d75e747db10f723044b05c08d232e1edf47f125d0889c1d2565ba1019af",
+  "pass-a-direct-outputs.jsonl": "73e28511f419cd67b1721d829438f8c102e725e01243c9a9f000e00d92aadc9c",
+  "query-vectors.jsonl": "2915aa0e4c690fc612777f28c88949956b2cfb108582c4e40eaca36e6a184be7",
+  "snapshot": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2"
+ },
+ "ceiling_a_alpha_veto": {
+  "evidence": {
+   "fused_label_score_max": 1.0,
+   "fused_label_score_min": 0.0,
+   "fused_label_score_sum_max": 1.0000000000000002,
+   "fused_label_score_sum_min": 0.9999999999999998,
+   "fused_range_inside_0_1": true,
+   "fused_sum_never_exceeds_1": true,
+   "label_vocabulary_size": 151,
+   "observed_margin_at_or_above_structural_floor": true,
+   "structural_floor_1_minus_2alpha": 0.10000000000000003,
+   "trajectories_examined": 104,
+   "trajectories_with_a_recovered_direct_label": 89,
+   "worst_observed_at": "tier2_parametric:003923",
+   "worst_observed_direct_minus_best_rival": 0.10000000000000003
+  },
+  "theorem": {
+   "alpha": 0.45,
+   "argmax_tie_tolerance": 1e-09,
+   "blend_head": "_blend_scores(label) = alpha * fused(label) + (1 - alpha) * [label == direct_label]",
+   "carve_out": "the equivalence needs the trajectory to REACH the blend at all: kb_policy._advance_after_direct returns early when recall is empty or the fuser selects nothing, and such a trajectory retains without a blend being formed. Both counts are reported per carrier.",
+   "condition": "alpha < 0.5 makes a RECOVERED direct label the strict, unique argmax of the blend for EVERY possible supply; alpha = 0.5 makes the worst case an exact tie, which _argmax_labels resolves as a multi-label best set and the controller therefore DISPATCHES; alpha > 0.5 lets a supply outvote the direct label.",
+   "consequence": "under the locked cell 'retain == direct-label-recovered' is a PROPERTY OF THE POLICY FORM, not an empirical finding: evidence can only ever reach trajectories from which no direct label was recovered. The reachable set is the label-free set, exactly.",
+   "direct_label_floor": 0.55,
+   "fused_range_argument": "_fused_label_scores starts each label's raw score at best = 0.0 and only ever takes max(best, strength), so raw >= 0 for every label WHATEVER the ranker returns -- a negative or unbounded candidate score cannot make a raw label score negative. It then divides by total = sum(raw) when total > 0 and returns all-zeros otherwise. Therefore fused(label) in [0, 1] and sum(fused) in {0, 1}, by construction and not by measurement.",
+   "guaranteed_margin_1_minus_2alpha": 0.10000000000000003,
+   "rival_ceiling": 0.45,
+   "veto_holds": true,
+   "worst_case_for_the_direct_label": "fused(direct) = 0 and some rival at fused(rival) = 1, which sum(fused) <= 1 allows only when the rival takes the whole mass"
+  }
+ },
+ "ceiling_b_gold_coverage": {
+  "dispatched_direct_answer_correct": 0,
+  "dispatched_direct_answer_wrong": 15,
+  "dispatched_gold_absent_from_supply": 11,
+  "dispatched_gold_at_fused_rank_1": 2,
+  "dispatched_gold_at_fused_rank_2_or_3": 2,
+  "dispatched_gold_fused_rank_histogram": {
+   "1": 2,
+   "2": 2,
+   "absent": 11
+  },
+  "dispatched_ids": [
+   "tier1_direct:000167",
+   "tier1_direct:001631",
+   "tier1_direct:004159",
+   "tier2_parametric:004826",
+   "tier3_multi_intent:000879",
+   "tier4_implicit:000655",
+   "tier4_implicit:000900",
+   "tier4_implicit:001148",
+   "tier4_implicit:001389",
+   "tier4_implicit:001409",
+   "tier4_implicit:001513",
+   "tier4_implicit:003312",
+   "tier5_needle:000061",
+   "tier7_multiturn:000214",
+   "tier7_multiturn:001516"
+  ],
+  "dispatched_n": 15,
+  "dispatched_with_gold_bearing_supply": 4,
+  "dispatched_with_gold_facet_inside_admitted_window": 4,
+  "per_sample": {
+   "tier1_direct:000074": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setBrightness",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "rampBrightness",
+     "setAdaptiveLighting",
+     "setLighting"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier1_direct:000077": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setBrightness",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "adjustVolume",
+     "setAudioVolume",
+     "setVolume"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier1_direct:000167": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setColor",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier1_direct:000178": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 2,
+    "gold_primary_tool": "setColor",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "setAdaptiveLighting",
+     "setColor",
+     "setLighting"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier1_direct:001432": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setApplianceMode",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "setApplianceMode"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier1_direct:001607": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getEnergyUsage",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getEnergyUsage"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier1_direct:001631": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setWaterValve",
+    "gold_supplied": false,
+    "m0_correct": true,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier1_direct:002212": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getThermostatState",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getThermostatState"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier1_direct:002609": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "resetFilterStatus",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "resetFilterStatus"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier1_direct:002687": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "runNetworkSpeedTest",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "runNetworkSpeedTest"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier1_direct:002728": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setLighting",
+    "gold_supplied": false,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getLightState",
+     "rampBrightness",
+     "setAdaptiveLighting"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier1_direct:003713": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "enableWaterLock",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "enableWaterLock"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier1_direct:004159": {
+    "blend_correct": true,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getLockState",
+    "gold_supplied": true,
+    "m0_correct": false,
+    "supplied_targets": [
+     "getLockState"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier2_parametric:000240": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setLightState",
+    "gold_supplied": false,
+    "m0_correct": true,
+    "supplied_targets": [
+     "rampBrightness",
+     "setAdaptiveLighting",
+     "setLighting"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier2_parametric:000369": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setFanMode",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "setFanMode"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier2_parametric:000632": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setThermostatMode",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "setThermostatMode"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier2_parametric:001004": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "armSecuritySystem",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "setAlarm"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier2_parametric:002653": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setPowerState",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "getThermostatState",
+     "setAdaptiveLighting",
+     "setTargetTemperature"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier2_parametric:003631": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "getAirQuality_diag",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "getBatteryLevel",
+     "getSensorState",
+     "getThermostatState"
+    ],
+    "supplied_value_count": 5
+   },
+   "tier2_parametric:003650": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getAirQuality_diag",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getAirQuality",
+     "getAirQuality_diag"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier2_parametric:003923": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "rebootDevice",
+    "gold_supplied": true,
+    "m0_correct": false,
+    "supplied_targets": [
+     "rebootDevice"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier2_parametric:004826": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setGroupLightState",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "findMyDevice",
+     "setAdaptiveLighting",
+     "setBrightness"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier2_parametric:005678": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setAlarm",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "setAlarm"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier2_parametric:005732": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getHRV",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getHRV"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier2_parametric:006028": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getSleepSummary",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getSleepSummary"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier2_parametric:006317": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setFollowDistance",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "setDoNotDisturb",
+     "setFollowDistance",
+     "setHapticStrength"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier3_multi_intent:000259": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 2,
+    "gold_primary_tool": "setAdaptiveLighting",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "rampBrightness",
+     "setAdaptiveLighting"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier3_multi_intent:000427": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setTargetTemperature",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "rampBrightness",
+     "setBrightness",
+     "setLighting"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier3_multi_intent:000879": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getCameraEvent",
+    "gold_supplied": true,
+    "m0_correct": false,
+    "supplied_targets": [
+     "findMyDevice",
+     "getCameraEvent",
+     "getCameraStream"
+    ],
+    "supplied_value_count": 5
+   },
+   "tier3_multi_intent:000924": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setGarageDoor",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "getLockState",
+     "setLockState",
+     "setSecurityMode"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier3_multi_intent:001424": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setApplianceMode",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "getDeviceList",
+     "getLockState",
+     "setDockState"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier3_multi_intent:002553": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "calibrateThermostat",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "calibrateThermostat",
+     "setTargetTemperature"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier3_multi_intent:002560": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "calibrateThermostat",
+    "gold_supplied": false,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getThermostatState",
+     "setSecurityMode",
+     "setTargetTemperature"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier3_multi_intent:002995": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 2,
+    "gold_primary_tool": "getDeviceList",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "findMyDevice",
+     "getDeviceList",
+     "setAdaptiveLighting"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier3_multi_intent:003058": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "activateRoutine",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "activateRoutine",
+     "setTargetTemperature",
+     "setThermostatSchedule"
+    ],
+    "supplied_value_count": 5
+   },
+   "tier3_multi_intent:003153": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 3,
+    "gold_primary_tool": "setThermostatSchedule",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getThermostatState",
+     "setAdaptiveLighting",
+     "setThermostatSchedule"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier3_multi_intent:003973": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setSeatComfort",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "getClimateState",
+     "getEnergyConsumption",
+     "setCampingMode"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier3_multi_intent:003982": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 2,
+    "gold_primary_tool": "setPetComfortMode",
+    "gold_supplied": true,
+    "m0_correct": false,
+    "supplied_targets": [
+     "setClimate",
+     "setPetComfortMode",
+     "setRecirculation"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier3_multi_intent:004025": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setAutonomousDriving",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "getBatteryHealth",
+     "getEnergyConsumption",
+     "getVehicleInfo"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier4_implicit:000655": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setLockState",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier4_implicit:000900": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setGarageDoor",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier4_implicit:001010": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "playMedia",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "playMedia"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier4_implicit:001074": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "controlPlayback",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "controlPlayback",
+     "playMedia"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier4_implicit:001148": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "castContent",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier4_implicit:001389": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setApplianceMode",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier4_implicit:001409": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setApplianceMode",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier4_implicit:001513": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 2,
+    "gold_primary_tool": "setPowerState",
+    "gold_supplied": true,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier4_implicit:002046": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "getFilterLife",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "getAirQuality",
+     "getAirQuality_diag"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier4_implicit:002649": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "runNetworkSpeedTest",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "runNetworkSpeedTest"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier4_implicit:003312": {
+    "blend_correct": true,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "startWorkout",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier4_implicit:003949": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setZoneTemperature",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getOdometer",
+     "setPetComfortMode",
+     "setZoneTemperature"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier4_implicit:003979": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setCabinOverheatProtection",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "setAdaptiveLighting",
+     "setCabinOverheatProtection",
+     "setClimate"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier5_needle:000060": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 3,
+    "gold_primary_tool": "setLighting",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "setLightState",
+     "setLighting",
+     "setPowerState"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier5_needle:000061": {
+    "blend_correct": true,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 2,
+    "gold_primary_tool": "setBrightness",
+    "gold_supplied": true,
+    "m0_correct": false,
+    "supplied_targets": [
+     "findMyDevice",
+     "rampBrightness",
+     "setBrightness"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier5_needle:000241": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setAdaptiveLighting",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "rampBrightness",
+     "setAdaptiveLighting"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier5_needle:000285": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setAdaptiveLighting",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "rampBrightness",
+     "setAdaptiveLighting"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier5_needle:000976": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "playMedia",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "playMedia"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier5_needle:001458": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getApplianceStatus",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getApplianceStatus"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier5_needle:001719": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "activateScene",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "activateScene"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier5_needle:002215": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getThermostatState",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getThermostatState"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier5_needle:002753": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setLighting",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "rampBrightness",
+     "setAdaptiveLighting",
+     "setLighting"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier5_needle:003841": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setAlarm",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "setAlarm"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier5_needle:003873": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setAlarm",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "setAlarm"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier5_needle:004078": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setSpeedLimitMode",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "setChargeLimit",
+     "setSpeedLimitMode"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier5_needle:004242": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "getClimateState",
+    "gold_supplied": false,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getThermostatState",
+     "installApp",
+     "setThermostatMode"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier6_correction:001056": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "controlPlayback",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "controlPlayback_home",
+     "setVolume"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier6_correction:001764": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "broadcastMessage",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "broadcastMessage"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier6_correction:001794": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "broadcastMessage",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "broadcastMessage"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier6_correction:002179": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getThermostatState",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getThermostatState"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier6_correction:002430": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "rebootDevice",
+    "gold_supplied": true,
+    "m0_correct": false,
+    "supplied_targets": [
+     "rebootDevice"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier6_correction:002630": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "resetFilterStatus",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "resetFilterStatus"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier6_correction:002850": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "streamCamera",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getCameraStream",
+     "streamCamera"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier6_correction:002999": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getDeviceList",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getDeviceList"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier6_correction:003197": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getBiometricData",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getBiometricData",
+     "getHRV"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier6_correction:003267": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getActivitySummary",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getActivitySummary"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier6_correction:003450": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setAlwaysOnDisplay",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "setAlwaysOnDisplay"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier6_correction:003900": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setAlarm",
+    "gold_supplied": true,
+    "m0_correct": false,
+    "supplied_targets": [
+     "setAlarm"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier6_correction:004155": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getActiveAlerts",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getActiveAlerts",
+     "getBatteryLevel",
+     "setAlarm"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier7_multiturn:000091": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setColorTemperature",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "setGroupLightState",
+     "setLighting"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier7_multiturn:000214": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setTargetTemperature",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier7_multiturn:000274": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "getAirQuality",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "getBatteryLevel",
+     "getSensorState",
+     "getThermostatState"
+    ],
+    "supplied_value_count": 5
+   },
+   "tier7_multiturn:000318": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setHumidifierState",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "setChargeLimit",
+     "setChargingLimit",
+     "startCharging"
+    ],
+    "supplied_value_count": 5
+   },
+   "tier7_multiturn:000330": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setHumidifierState",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "setHumidifierState"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier7_multiturn:000440": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getCameraEvent",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getCameraEvent"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier7_multiturn:000545": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setVolume",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "setAudioVolume",
+     "setVolume"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier7_multiturn:000554": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setVolume",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "setAudioVolume",
+     "setVolume"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier7_multiturn:000739": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getApplianceStatus",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getApplianceStatus"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier7_multiturn:001516": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "activateRoutine",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier7_multiturn:001892": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getSleepSummary",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getSleepSummary"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier7_multiturn:002099": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "resetTPMSSensors",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getAirQuality",
+     "getBatteryLevel",
+     "resetTPMSSensors"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier7_multiturn:002120": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 2,
+    "gold_primary_tool": "setRecirculation",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getLocation",
+     "setAirQualityMode",
+     "setRecirculation"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier8_intent_blending:000192": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "calibrateThermostat",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "getCameraEvent",
+     "getCameraStream",
+     "streamCamera"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier8_intent_blending:000213": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "getFilterLife",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "getThermostatState",
+     "setSecurityMode",
+     "setTargetTemperature"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier8_intent_blending:000249": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setThermostatMode",
+    "gold_supplied": true,
+    "m0_correct": false,
+    "supplied_targets": [
+     "getThermostatState",
+     "setTargetTemperature",
+     "setThermostatMode"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier8_intent_blending:000372": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "setAlwaysOnDisplay",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "getActivitySummary",
+     "setAlwaysOnDisplay"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier8_intent_blending:000423": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "startWorkout",
+    "gold_supplied": false,
+    "m0_correct": true,
+    "supplied_targets": [
+     "findPairedPhone",
+     "setAlwaysOnDisplay",
+     "stopWorkout"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier8_intent_blending:000433": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 2,
+    "gold_primary_tool": "getHRV",
+    "gold_supplied": true,
+    "m0_correct": false,
+    "supplied_targets": [
+     "getHRV",
+     "setAlwaysOnDisplay"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier8_intent_blending:000441": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setDoNotDisturb",
+    "gold_supplied": false,
+    "m0_correct": true,
+    "supplied_targets": [
+     "findMyDevice",
+     "findPairedPhone",
+     "stopWorkout"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier8_intent_blending:000494": {
+    "blend_correct": true,
+    "direct_correct": true,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 2,
+    "gold_primary_tool": "setHapticStrength",
+    "gold_supplied": true,
+    "m0_correct": true,
+    "supplied_targets": [
+     "setAlwaysOnDisplay",
+     "setHapticStrength"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier8_intent_blending:000581": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getHRV",
+    "gold_supplied": true,
+    "m0_correct": false,
+    "supplied_targets": [
+     "getActivitySummary",
+     "getHRV"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier8_intent_blending:000673": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 3,
+    "gold_primary_tool": "setRoutePreferences",
+    "gold_supplied": true,
+    "m0_correct": false,
+    "supplied_targets": [
+     "getEnergyConsumption",
+     "getVehicleInfo",
+     "setRoutePreferences"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier8_intent_blending:000713": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "getRouteSummary",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "getEnergyConsumption",
+     "setCampingMode",
+     "setSteeringWheelHeat"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier8_intent_blending:000720": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 2,
+    "gold_primary_tool": "setCampingMode",
+    "gold_supplied": true,
+    "m0_correct": false,
+    "supplied_targets": [
+     "setCampingMode",
+     "setSteeringWheelHeat",
+     "setVoiceGuidance"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier8_intent_blending:000724": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": false,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setCruiseSpeed",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "getEnergyConsumption",
+     "runNetworkSpeedTest",
+     "setFanMode"
+    ],
+    "supplied_value_count": 4
+   }
+  },
+  "population_with_gold_bearing_supply_IF_ALPHA_DID_NOT_GATE": 68,
+  "retained_n": 89,
+  "retained_with_gold_bearing_supply_IF_ALPHA_DID_NOT_GATE": 64
+ },
+ "conditional_conversion": {
+  "a2t_dispatched_all": {
+   "blend_correct": 3,
+   "blend_minus_m0_samples": 2,
+   "blend_minus_own_direct_samples": 3,
+   "blend_rate": 0.2,
+   "label": "every dispatched trajectory",
+   "m0_arm_correct": 1,
+   "n": 15,
+   "own_contact0_direct_correct": 0,
+   "sample_ids": [
+    "tier1_direct:000167",
+    "tier1_direct:001631",
+    "tier1_direct:004159",
+    "tier2_parametric:004826",
+    "tier3_multi_intent:000879",
+    "tier4_implicit:000655",
+    "tier4_implicit:000900",
+    "tier4_implicit:001148",
+    "tier4_implicit:001389",
+    "tier4_implicit:001409",
+    "tier4_implicit:001513",
+    "tier4_implicit:003312",
+    "tier5_needle:000061",
+    "tier7_multiturn:000214",
+    "tier7_multiturn:001516"
+   ]
+  },
+  "a2t_dispatched_gold_at_fused_rank_1": {
+   "blend_correct": 1,
+   "blend_minus_m0_samples": 1,
+   "blend_minus_own_direct_samples": 1,
+   "blend_rate": 0.5,
+   "label": "gold at fused rank 1",
+   "m0_arm_correct": 0,
+   "n": 2,
+   "own_contact0_direct_correct": 0,
+   "sample_ids": [
+    "tier1_direct:004159",
+    "tier3_multi_intent:000879"
+   ]
+  },
+  "a2t_dispatched_gold_at_fused_rank_2_or_3": {
+   "blend_correct": 1,
+   "blend_minus_m0_samples": 1,
+   "blend_minus_own_direct_samples": 1,
+   "blend_rate": 0.5,
+   "label": "gold at fused rank 2-3",
+   "m0_arm_correct": 0,
+   "n": 2,
+   "own_contact0_direct_correct": 0,
+   "sample_ids": [
+    "tier4_implicit:001513",
+    "tier5_needle:000061"
+   ]
+  },
+  "a2t_dispatched_with_gold_bearing_supply": {
+   "blend_correct": 2,
+   "blend_minus_m0_samples": 2,
+   "blend_minus_own_direct_samples": 2,
+   "blend_rate": 0.5,
+   "label": "dispatched AND supply carried the gold tool's own value",
+   "m0_arm_correct": 0,
+   "n": 4,
+   "own_contact0_direct_correct": 0,
+   "sample_ids": [
+    "tier1_direct:004159",
+    "tier3_multi_intent:000879",
+    "tier4_implicit:001513",
+    "tier5_needle:000061"
+   ]
+  },
+  "a2t_dispatched_without_gold_bearing_supply": {
+   "blend_correct": 1,
+   "blend_minus_m0_samples": 0,
+   "blend_minus_own_direct_samples": 1,
+   "blend_rate": 0.09090909090909091,
+   "label": "dispatched AND gold absent from supply",
+   "m0_arm_correct": 1,
+   "n": 11,
+   "own_contact0_direct_correct": 0,
+   "sample_ids": [
+    "tier1_direct:000167",
+    "tier1_direct:001631",
+    "tier2_parametric:004826",
+    "tier4_implicit:000655",
+    "tier4_implicit:000900",
+    "tier4_implicit:001148",
+    "tier4_implicit:001389",
+    "tier4_implicit:001409",
+    "tier4_implicit:003312",
+    "tier7_multiturn:000214",
+    "tier7_multiturn:001516"
+   ]
+  },
+  "reading_rule": "MECHANISM READING, NEVER AN EFFECT SIZE. The A2T cells hold at most a handful of samples and the SLURP anchors were measured on a different task with a different label space and a different answer shape. The two are reported side by side with their sample sizes attached; no interval is computed across them.",
+  "slurp_anchors": {
+   "gold_absent_from_supply": {
+    "measured": "0 / 67",
+    "rate": 0.0
+   },
+   "gold_at_fused_rank_2_or_3": {
+    "measured": "16 / 23",
+    "rate": 0.6956521739130435
+   },
+   "gold_at_fused_top_1": {
+    "measured": "108 / 110",
+    "rate": 0.9818181818181818
+   },
+   "source": "analysis.k1_hybrid_ranking_gate.ANCHOR_TOP1 / ANCHOR_RANK23 / ANCHOR_ABSENT, pooled over the three sealed SLURP populations; published in docs/readiness/2026-08-25-ec-and-retain-override-projections.md section 3 (table rows '108 / 110', '16 / 23', '0 / 67') and recomputed identically in docs/readiness/2026-08-25-supply-budget-projection.md section 6"
+  }
+ },
+ "contacts": {
+  "audio_seconds": 0.0,
+  "embedding_tool": 0,
+  "frozen_core": 0,
+  "gold_opened": "SCORING-SIDE ONLY, over the EXPOSED A2T-G1-104 whose seal the landed G1 read already broke; never on a runtime path",
+  "gpu_hours": 0.0,
+  "outbound_connection_attempts": 0,
+  "outbound_targets": [],
+  "tokenizer": 0
+ },
+ "decomposition": {
+  "audio2tool": {
+   "blend_correct": 63,
+   "carrier": "audio2tool / A2T-G1-104 (EXPOSED)",
+   "closes_exactly": true,
+   "identity": "the two subgroups partition the population, so the reconstruction is an exact identity and closure is a CHECK on the read, not a result. The content is in the two FACTORS: the reachable share and the within-reach conversion.",
+   "m0_correct": 62,
+   "metric": "tool accuracy (a2t-scorer-v1 tool-name multiset equality)",
+   "n": 104,
+   "observed_population_delta_pp": 0.9615384615384616,
+   "reachable_subgroup_dead_direct_dispatch": {
+    "blend_correct": 3,
+    "c2w": 1,
+    "delta_samples": 2,
+    "m0_correct": 1,
+    "n": 15,
+    "population_contribution_pp": 1.9230769230769231,
+    "share_of_population": 0.14423076923076922,
+    "w2c": 3,
+    "within_subgroup_delta_pp": 13.333333333333334
+   },
+   "reconstructed_population_delta_pp": 0.9615384615384616,
+   "unreachable_subgroup_retain_primary": {
+    "blend_correct": 60,
+    "c2w": 1,
+    "delta_samples": -1,
+    "m0_correct": 61,
+    "n": 89,
+    "population_contribution_pp": -0.9615384615384616,
+    "share_of_population": 0.8557692307692307,
+    "w2c": 0,
+    "within_subgroup_delta_pp": -1.1235955056179776
+   }
+  },
+  "cross_carrier": {
+   "reach_times_conversion_pp": {
+    "a2t": 1.923076923076923,
+    "slurp_unexposed500": 19.0
+   },
+   "reachable_share": {
+    "a2t": 0.14423076923076922,
+    "slurp_unexposed500": 0.32
+   },
+   "reachable_share_ratio_slurp_over_a2t": 2.218666666666667,
+   "reading": "the two carriers differ on BOTH factors and they multiply. Neither factor alone explains the magnitude gap.",
+   "retain_drift_pp": {
+    "a2t": -0.9615384615384616,
+    "slurp_unexposed500": 1.6
+   },
+   "within_reach_conversion_pp": {
+    "a2t": 13.333333333333334,
+    "slurp_unexposed500": 59.375
+   },
+   "within_reach_conversion_ratio_slurp_over_a2t": 4.453125
+  },
+  "slurp_unexposed500": {
+   "blend_correct": 379,
+   "carrier": "slurp / DEV-1000 unexposed NEW500",
+   "closes_exactly_as_flown": true,
+   "direct_labels_recovered_unexposed500": 340,
+   "locked_v1_blend_correct": 382,
+   "locked_v1_counterfactual_source": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-dev1000-lock-read/README.md section 5.3, 'v1 retain (counterfactual)' column of the 14-fire table, restricted to the 3 UNEXPOSED rows (slurp:devel:002303, 002955, 014737): 1, 1, 1",
+   "locked_v1_note": "the LOCKED cell is v1, which carries no override; the 3 override trajectories would have RETAINED and answered with their own contact-0 direct decode. Priced at that landed counterfactual the unexposed-500 margin is the +20.80 pp the lock verdict section 3 records (382/500). Priced instead at the M0 ARM's decode of the same prompts it reads +20.60 pp; the 0.20 pp gap is exactly the one sample (slurp:devel:002303) where the two decodes disagree, and it is arm-level decode variance, not an arithmetic difference.",
+   "locked_v1_override_retain_counterfactual_correct": 3,
+   "locked_v1_population_delta_pp": 20.8,
+   "locked_v1_population_delta_pp_if_priced_at_the_m0_arm": 20.6,
+   "m0_correct": 278,
+   "metric": "scenario_action exact intent accuracy",
+   "n": 500,
+   "observed_population_delta_pp_as_flown_v2": 20.2,
+   "override_subgroup_v2_only": {
+    "blend_correct": 0,
+    "c2w": 2,
+    "delta_samples": -2,
+    "label": "delta retain-override dispatch (v2 ONLY -- removed from the lock)",
+    "m0_correct": 2,
+    "n": 3,
+    "population_contribution_pp": -0.4,
+    "share_of_population": 0.006,
+    "w2c": 0,
+    "within_subgroup_delta_pp": -66.66666666666667
+   },
+   "pooled1000_cross_check": {
+    "dead_direct_dispatched": 326,
+    "direct_labels_recovered": 674,
+    "override_dispatched": 14,
+    "retain_primary": 660
+   },
+   "reachable_subgroup_dead_direct_dispatch": {
+    "blend_correct": 100,
+    "c2w": 2,
+    "delta_samples": 95,
+    "label": "dead-direct dispatch (the reachable set under v1)",
+    "m0_correct": 5,
+    "n": 160,
+    "population_contribution_pp": 19.0,
+    "share_of_population": 0.32,
+    "w2c": 97,
+    "within_subgroup_delta_pp": 59.375
+   },
+   "reconstructed_population_delta_pp_as_flown_v2": 20.200000000000003,
+   "source": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-dev1000-lock-read/read-verdict.json",
+   "source_sha256": "2f8e295852e1c09d737467a62123586f097f938ec353dcbe58d258dadc1ea581",
+   "unreachable_subgroup_retain_primary": {
+    "blend_correct": 279,
+    "c2w": 1,
+    "delta_samples": 8,
+    "label": "retain-primary (the alpha-vetoed set)",
+    "m0_correct": 271,
+    "n": 337,
+    "population_contribution_pp": 1.6,
+    "share_of_population": 0.674,
+    "w2c": 9,
+    "within_subgroup_delta_pp": 2.373887240356083
+   }
+  }
+ },
+ "execution_profile": "model-free-check",
+ "exposure_row_id": "SAEA-SN-MF-CROSS-CARRIER-CEILING-DECOMPOSITION",
+ "fidelity_gate": {
+  "direct_label_mismatch_ids": [],
+  "direct_label_recovery_reproduced": 104,
+  "dispatch_decision_reproduced": 104,
+  "dispatch_mismatch_ids": [],
+  "gate_passed": true,
+  "population": 104,
+  "semantics": "the flight records fusion_selected_value_ids only for a trajectory it dispatched; a retained trajectory carries null. The dispatched set is compared value-id for value-id and the retained set is asserted null.",
+  "supply_mismatch_ids": [],
+  "supply_reproduced": 104,
+  "trajectories_with_empty_recall": 0,
+  "trajectories_with_empty_supply": 0
+ },
+ "frozen_cell": {
+  "alpha": 0.45,
+  "c": 2,
+  "m": 5,
+  "policy_config_sha256_at_flight": "d68afd2cfb6e12d9cbd9d3fbcf0daf3f81f6ed8be9b2a75c4f8ffb234011a919",
+  "tau": 0.65,
+  "top_k": 5,
+  "top_l": 3,
+  "weights": {
+   "w_agree": 0.2,
+   "w_cos": 0.5,
+   "w_prior": 0.3
+  }
+ },
+ "generated_at": "2026-08-25T15:32:29+00:00",
+ "hard_stop": "CONSOLIDATION READ ONLY. No knob is changed, no flight is authorized, no G2 is opened, no test contact is taken, and no generality or superiority claim follows from this artifact.",
+ "schema": "saea-cross-carrier-ceiling-decomposition-v1",
+ "study": "speech-aware-evidence-acquisition",
+ "wall_seconds": 270.523
+}
