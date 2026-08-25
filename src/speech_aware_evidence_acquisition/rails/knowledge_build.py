@@ -27,9 +27,24 @@ selected by :func:`distribution_sample`, a DIMENSION-BASED (proportional
 over intent, not per-label-uniform) sampler with two HARD long-tail floors --
 every intent keeps at least one utterance and every entity type observed
 anywhere in TRAIN keeps at least one filler exemplar -- so a vocabulary
-larger than 100 (SLURP train: 91 intents, 55 entity types) never silently
-loses knowledge the way per-label-uniform sampling would (the 2026-08-08
-unified-agent-abstraction long-tail clause this ruling document restates).
+larger than 100 (SLURP train, MEASURED: 60 intents plus 55 entity types =
+115 label entries) never silently loses knowledge the way per-label-uniform
+sampling would (the 2026-08-08 unified-agent-abstraction long-tail clause
+this ruling document restates). Both floors are applied UNCONDITIONALLY --
+neither is gated on the vocabulary size -- so the clause is satisfied under
+any reading of its threshold.
+
+This parenthetical read "91 intents" until 2026-08-25, and that number was
+wrong for the quantity this sentence is about. 91 is the count of distinct
+``intent`` FIELD STRINGS in ``train.jsonl``, and 31 of those 91 are
+prefix-stripped ALIASES of an intent already counted: SLURP writes the bare
+action ("query") instead of "scenario_action" on 162 of its 11,514 train
+rows, so 40 of the 60 (scenario, action) pairs carry two spellings of one
+intent. The vocabulary this sampler actually strata on is the synthesized
+``f"{scenario}_{action}"`` key that every label facet, prior facet and
+``task_target`` uses, and that vocabulary is 60; devel adds none of its own
+(59 of the 60, no new ones). Measured over the governed bytes in
+``docs/readiness/2026-08-25-slurp-intent-coverage-check.md``.
 
 Decontamination (belt and braces): :func:`slurp_split_sample_ids` is an
 IDENTITY-ONLY enumerator over SLURP ``devel``/``test`` -- it reads
