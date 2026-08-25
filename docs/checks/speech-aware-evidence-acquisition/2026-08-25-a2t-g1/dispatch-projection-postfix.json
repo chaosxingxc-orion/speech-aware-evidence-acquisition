@@ -1,0 +1,2862 @@
+{
+ "about_attempt": "the FOURTH BLEND attempt, the first flight after the ranker scale defect was repaired",
+ "about_run_id": "SAEA-A2T-G1",
+ "attempt4_ceiling": {
+  "attempt_core_ceiling": 26,
+  "attempt_worst_case_audio_seconds": 353.079,
+  "audio_remaining_seconds": 467.591,
+  "basis": "Pass A is REPLAYED from attempt 3's hash-pinned landed texts at ZERO core contacts, so the only contacts attempt 4 can spend are the canary, one Pass-B evidence contact per DISPATCHING trajectory, and the identical-prompt resend",
+  "campaign_audio_cell": 2000.0,
+  "campaign_core_cell": 400,
+  "campaign_tool_cell": 200,
+  "canary_contacts": 2,
+  "core_remaining": 97,
+  "fits_remaining_cell": true,
+  "margin": 8,
+  "pass_a_contacts": 0,
+  "pass_b_contact_ceiling": 23,
+  "pass_b_worst_audio_seconds": 269.697,
+  "prior_durable_audio_seconds": 1532.409,
+  "prior_durable_core": 303,
+  "prior_durable_tool_contacts": 136,
+  "projected_dispatch": 15,
+  "projected_tool_contacts": 0,
+  "resend_contacts": 1,
+  "why_zero_tool_contacts": "every Pass-A text is already covered by attempt 3's durable query-vector table, so the offline bridge has nothing to embed and the sidecar never needs to be spawned"
+ },
+ "contacts": {
+  "gold_opened": false,
+  "model": 0,
+  "tool": 0
+ },
+ "dispatch_sample_ids": [
+  "tier1_direct:000167",
+  "tier1_direct:001631",
+  "tier1_direct:004159",
+  "tier2_parametric:004826",
+  "tier3_multi_intent:000879",
+  "tier4_implicit:000655",
+  "tier4_implicit:000900",
+  "tier4_implicit:001148",
+  "tier4_implicit:001389",
+  "tier4_implicit:001409",
+  "tier4_implicit:001513",
+  "tier4_implicit:003312",
+  "tier5_needle:000061",
+  "tier7_multiturn:000214",
+  "tier7_multiturn:001516"
+ ],
+ "execution_profile": "model-free-check",
+ "inputs": {
+  "attempt3_bridge_vectors_sha256": "be63447edd56b97bdc3afa711cda9d40f8dd22b126f2f37bdbee1475b9d088a9",
+  "attempt3_id": "attempt-20260825T125051Z-a2tg1blend",
+  "attempt3_pass_a_outputs_sha256": "73e28511f419cd67b1721d829438f8c102e725e01243c9a9f000e00d92aadc9c",
+  "attempt3_query_vectors_sha256": "d3e9f073771ac75dc7a9c9dfac934bf7229d04a5352a7e99174bac41ae68f6a0",
+  "attempt3_report_sha256": "56bf0a7592d2b595da86dab84ad7c0ae8246d1afc150f4cb695f2c9efcc0b520",
+  "content_facet_npz_sha256": "00a7ebe9b8325ffc2c7b8e45ac4f0c8475b2d3e76994cc0f539f7b5ad5740f45",
+  "distinct_query_vectors_available": 89,
+  "policy": "the FROZEN v1 cell (alpha 0.45, tau 0.65, top-k 5, m 5 / c 2 / top_l 3, rrf 0.5/0.3/0.2) through rails.kb_policy's OWN pure functions, with the 1341c2db repair live",
+  "query_texts": "attempt 3's LANDED Pass-A direct-decode texts -- the exact texts attempt 4 REPLAYS rather than re-flies, so the dispatch set here is the set the flight takes, not an estimate of it",
+  "snapshot_sha256": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2"
+ },
+ "margin_rationale": "The dispatch set is EXACT under a deterministic policy over fixed texts and fixed vectors, so the margin is not there for the policy. It covers only serving-side residuals: an evidence contact that has to be re-sent, or a trajectory whose evidence decode fails once and is retried. It is deliberately small because the cell binds.",
+ "per_sample": {
+  "tier1_direct:000074": {
+   "audio_seconds": 1.097,
+   "best_content_cosine": 0.856025,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setLighting",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "dd0c33150d85fadadbd4ca5f5b4de64260ee7e71c0adbb87a4c4a4bc9d15bd38",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier6_correction:002268",
+    "value:tier6_correction:003478",
+    "value:tier8_intent_blending:000484"
+   ],
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier1_direct:000077": {
+   "audio_seconds": 2.137,
+   "best_content_cosine": 0.8766,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:adjustVolume",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "bf9e14a4b45fd3011b63cf3fe2db615ae9e5e6dd3d3d76c74103e010c8e0e335",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier1_direct:002665",
+    "value:tier2_parametric:000965",
+    "value:tier2_parametric:001218",
+    "value:tier2_parametric:003116"
+   ],
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier1_direct:000167": {
+   "audio_seconds": 1.118,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": true,
+   "pass_a_messages_sha256": "701ae509dc65b74585e89f5c03c189f978f31c54b355419f5c6e8ba02dc57d68",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "no label recovered from the direct answer",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier4_implicit:001275",
+    "value:tier7_multiturn:002853",
+    "value:tier7_multiturn:003760"
+   ],
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier1_direct:000178": {
+   "audio_seconds": 1.497,
+   "best_content_cosine": 0.856501,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setColor",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "b6408b4456604c316c187d58dfd8849414d2cdc56d3c022905d1680e1afa417c",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:002230",
+    "value:tier3_multi_intent:002231",
+    "value:tier6_correction:003456",
+    "value:tier8_intent_blending:000495"
+   ],
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier1_direct:001432": {
+   "audio_seconds": 1.817,
+   "best_content_cosine": 0.887805,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setApplianceMode",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "b1ea5418016ec65bae3bc918267c6c920dd34dac215b0e4b0d68372eae185599",
+   "query_vector_source": "attempt2-live-embed",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier1_direct:002792",
+    "value:tier6_correction:002803"
+   ],
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier1_direct:001607": {
+   "audio_seconds": 2.377,
+   "best_content_cosine": 0.915245,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getEnergyUsage",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "e5a2b8d63ccb4131f5a6096de04fe077938db3dfe68caccf46ee43a9e5a78079",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier2_parametric:003924",
+    "value:tier7_multiturn:002887"
+   ],
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier1_direct:001631": {
+   "audio_seconds": 3.497,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": true,
+   "pass_a_messages_sha256": "731e98d8df5ba719f03701e753a59389701bc2603d6748ac3e42b6a2ee4a7103",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "no label recovered from the direct answer",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier4_implicit:001275",
+    "value:tier7_multiturn:002853",
+    "value:tier7_multiturn:003760"
+   ],
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier1_direct:002212": {
+   "audio_seconds": 2.297,
+   "best_content_cosine": 0.917627,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getThermostatState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "e3e155fa0284a2e76ae19080b09c4cfe028e298a0e8303c9b34e8e113db7407a",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier1_direct:003196",
+    "value:tier1_direct:003201"
+   ],
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier1_direct:002609": {
+   "audio_seconds": 2.537,
+   "best_content_cosine": 0.915911,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:resetFilterStatus",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "c676a507d22da6dd73aecc5e84d90c551ec23ef21cd4043fe8edc68cf8a69da1",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier5_needle:003407",
+    "value:tier6_correction:003400"
+   ],
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier1_direct:002687": {
+   "audio_seconds": 3.017,
+   "best_content_cosine": 0.920655,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:runNetworkSpeedTest",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "e664b600aa629af7c9c90247ee8b86aff9ca497d9150021dfd327c337f2ad829",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier1_direct:003429",
+    "value:tier6_correction:003430"
+   ],
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier1_direct:002728": {
+   "audio_seconds": 2.057,
+   "best_content_cosine": 0.862543,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setLighting",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "49b0538936d1b37a18a15c9109fbf55c1d9bf7999d43d900639790001a2e002d",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:002230",
+    "value:tier3_multi_intent:002231",
+    "value:tier3_multi_intent:003258",
+    "value:tier6_correction:002268"
+   ],
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier1_direct:003713": {
+   "audio_seconds": 2.073,
+   "best_content_cosine": 0.906311,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:enableWaterLock",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "5e4a27f82ef49ffecd199490b447acabc6734d4d99a3f4d40b587ebf7c5279c9",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier1_direct:003804",
+    "value:tier2_parametric:005460"
+   ],
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier1_direct:004159": {
+   "audio_seconds": 1.577,
+   "best_content_cosine": 0.912066,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": true,
+   "pass_a_messages_sha256": "ed2dd6298fe64e6fb9ab2f361392e3dff807b23cd1296879f4d572e88b94af5c",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "no label recovered from the direct answer",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier1_direct:003167",
+    "value:tier2_parametric:003893"
+   ],
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier2_parametric:000240": {
+   "audio_seconds": 2.297,
+   "best_content_cosine": 0.821709,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setLightState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "107a41299e4cd8e9581d32f1418e20516788d115297a20b1508a734a9ec14bfd",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier1_direct:002102",
+    "value:tier6_correction:002228",
+    "value:tier6_correction:002246",
+    "value:tier6_correction:002268"
+   ],
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier2_parametric:000369": {
+   "audio_seconds": 3.497,
+   "best_content_cosine": 0.862604,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setFanMode",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "77b70fde63108f1eeeb6ce52aed2c60913f0b8dd9d8b257739d417adabdf9f28",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier6_correction:002350",
+    "value:tier6_correction:002357"
+   ],
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier2_parametric:000632": {
+   "audio_seconds": 1.817,
+   "best_content_cosine": 0.887663,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setThermostatMode",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "fe3632859174b02d0285618a2ba59e387b03a4ba2feaf0f70b872d90a7f9797a",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier6_correction:002288",
+    "value:tier6_correction:002303"
+   ],
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier2_parametric:001004": {
+   "audio_seconds": 2.217,
+   "best_content_cosine": 0.893342,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setAlarm",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "552677519545ace10db21fd67f4216f4c57e9fda9c46ad8a6b6cd9ba40fb3022",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier2_parametric:005324",
+    "value:tier2_parametric:005348"
+   ],
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier2_parametric:002653": {
+   "audio_seconds": 2.937,
+   "best_content_cosine": 0.82733,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setLightState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "43199a81beddeac9179447414e2a19c4f6df6f7254baf583c69c94f748542e71",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:002322",
+    "value:tier3_multi_intent:003194",
+    "value:tier8_intent_blending:000347"
+   ],
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier2_parametric:003631": {
+   "audio_seconds": 3.017,
+   "best_content_cosine": 0.829209,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getSensorState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "729c1d0feabaf4bcd69e10c3d581add42727e16ca4ed66d62749d6ce0ae0abdb",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 5,
+   "selected_value_ids": [
+    "value:tier1_direct:003201",
+    "value:tier1_direct:003222",
+    "value:tier2_parametric:004149",
+    "value:tier2_parametric:004319",
+    "value:tier6_correction:003063"
+   ],
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier2_parametric:003650": {
+   "audio_seconds": 4.617,
+   "best_content_cosine": 0.915833,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getAirQuality_diag",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "0adef8e40d57f778fedc9323b9304ff491b611e39d93213e69960fad44a4e3c1",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier2_parametric:002174",
+    "value:tier2_parametric:002184",
+    "value:tier2_parametric:004202",
+    "value:tier2_parametric:004225"
+   ],
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier2_parametric:003923": {
+   "audio_seconds": 3.017,
+   "best_content_cosine": 0.763252,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:restartDevice",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "4b664ad81ce862d6af32dd0cdbbed168cf2360c61fd187e2367dabd48cf47246",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier1_direct:003002",
+    "value:tier1_direct:003017"
+   ],
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier2_parametric:004826": {
+   "audio_seconds": 3.737,
+   "best_content_cosine": 0.894942,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": true,
+   "pass_a_messages_sha256": "d2e8e872e54fdfb8048f2a70f1b939a2f8858fe339fd304b1aaeaa638226974d",
+   "query_vector_source": "attempt2-live-embed",
+   "reason": "no label recovered from the direct answer",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier1_direct:002156",
+    "value:tier3_multi_intent:003846",
+    "value:tier7_multiturn:002150",
+    "value:tier8_intent_blending:000484"
+   ],
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier2_parametric:005678": {
+   "audio_seconds": 6.937,
+   "best_content_cosine": 0.799129,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setAlarm",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "22f19431f6a40e922b3bee5f85246ada5606f1ca6379d89a7dc13a675c01c105",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier8_intent_blending:000706",
+    "value:tier8_intent_blending:000717"
+   ],
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier2_parametric:005732": {
+   "audio_seconds": 2.937,
+   "best_content_cosine": 0.957249,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getHRV",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "cfe3dbef275519c8f54ffcd463b75422d60b15b8804a2bb157d3246addc6a3ba",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier2_parametric:005429",
+    "value:tier6_correction:004550"
+   ],
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier2_parametric:006028": {
+   "audio_seconds": 3.097,
+   "best_content_cosine": 0.957237,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getSleepSummary",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "140a9e8efb78e15a226d6dabb6d421e4afc9c177220dfac93bce8c0d5e9d59d7",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier2_parametric:005751",
+    "value:tier6_correction:004483"
+   ],
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier2_parametric:006317": {
+   "audio_seconds": 3.177,
+   "best_content_cosine": 0.90787,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setFollowDistance",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "f7c7066228c03d86d4a1e5b50a70734afb06be410c1a9d11ca2fab4d77304601",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:003752",
+    "value:tier6_correction:004258",
+    "value:tier8_intent_blending:000813",
+    "value:tier8_intent_blending:000967"
+   ],
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier3_multi_intent:000259": {
+   "audio_seconds": 4.937,
+   "best_content_cosine": 0.917481,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setAdaptiveLighting",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "a926de9ca99c08224167a0e4bebe19911817c795f915e0b9d0ae6f2095eb0118",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:002245",
+    "value:tier3_multi_intent:002272",
+    "value:tier6_correction:002268",
+    "value:tier8_intent_blending:000484"
+   ],
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier3_multi_intent:000427": {
+   "audio_seconds": 4.537,
+   "best_content_cosine": 0.854317,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setLighting",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "ca527347cfb661f0699a1685ceef8d64ea45cfe076fa20ffdd000af099a786f4",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier6_correction:002268",
+    "value:tier6_correction:003478",
+    "value:tier7_multiturn:002150"
+   ],
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier3_multi_intent:000879": {
+   "audio_seconds": 6.057,
+   "best_content_cosine": 0.856509,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": true,
+   "pass_a_messages_sha256": "c03e98c3af1b4925c47ccd3a7de0097dd80638bf6c76f545b1d556d634cecee4",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "no label recovered from the direct answer",
+   "selected_value_count": 5,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:002491",
+    "value:tier3_multi_intent:002496",
+    "value:tier3_multi_intent:002521",
+    "value:tier3_multi_intent:002528",
+    "value:tier3_multi_intent:003848"
+   ],
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier3_multi_intent:000924": {
+   "audio_seconds": 3.737,
+   "best_content_cosine": 0.840279,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setGarageDoor",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "65aff8c8b993cc6bb91864d091458e1fbf71246a328d2ae5a5dd5b5928cd4438",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:002452",
+    "value:tier3_multi_intent:002459",
+    "value:tier3_multi_intent:002466",
+    "value:tier3_multi_intent:003173"
+   ],
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier3_multi_intent:001424": {
+   "audio_seconds": 7.177,
+   "best_content_cosine": 0.871752,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:startCleaning",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "6d95e75e5076acef1f9afa90247144c79828ca7f6a459b6836c8bdc3b011dbae",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:002778",
+    "value:tier3_multi_intent:002784",
+    "value:tier3_multi_intent:003173",
+    "value:tier3_multi_intent:004322"
+   ],
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier3_multi_intent:002553": {
+   "audio_seconds": 7.257,
+   "best_content_cosine": 0.877001,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:calibrateThermostat",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "fb330c9492b26e6e556925f4bd5ac282adbe12b642e33e297a8ddb1d30957399",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier1_direct:002324",
+    "value:tier1_direct:002336",
+    "value:tier1_direct:003367",
+    "value:tier8_intent_blending:000650"
+   ],
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier3_multi_intent:002560": {
+   "audio_seconds": 6.377,
+   "best_content_cosine": 0.89037,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:calibrateThermostat",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "4491309ee72e9334bc884bd735ed8e75f8cee8a5b569cd49ab382d554ba72a89",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:002322",
+    "value:tier3_multi_intent:002466",
+    "value:tier3_multi_intent:003194"
+   ],
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier3_multi_intent:002995": {
+   "audio_seconds": 4.057,
+   "best_content_cosine": 0.916009,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getDeviceList",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "65e9bc12dc44d4b0977deab19fd25b6c5fee6106986399fb707bd17bf7c4ca85",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:003846",
+    "value:tier3_multi_intent:004322",
+    "value:tier3_multi_intent:004331",
+    "value:tier8_intent_blending:000484"
+   ],
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier3_multi_intent:003058": {
+   "audio_seconds": 8.937,
+   "best_content_cosine": 0.826113,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:activateRoutine",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "a68b74c189291c870c7cefad9e260023396eb282fdecadbf334915ce2a12930a",
+   "query_vector_source": "attempt3-bridge",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 5,
+   "selected_value_ids": [
+    "value:tier1_direct:002336",
+    "value:tier1_direct:004435",
+    "value:tier1_direct:004436",
+    "value:tier3_multi_intent:004370",
+    "value:tier3_multi_intent:004372"
+   ],
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier3_multi_intent:003153": {
+   "audio_seconds": 6.457,
+   "best_content_cosine": 0.908545,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setThermostatSchedule",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "e5f437541b41f042405ccf296e16aabc2b79ed917e8a2f54817f5f5e3dbd5221",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:002238",
+    "value:tier3_multi_intent:003194",
+    "value:tier3_multi_intent:004413",
+    "value:tier8_intent_blending:000347"
+   ],
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier3_multi_intent:003973": {
+   "audio_seconds": 4.223,
+   "best_content_cosine": 0.850121,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setSeatComfort",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "e3cf1194ae233c69d39888fdd28d9b2b9886ae0b1b87343a3e1ac02032e4587b",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:001556",
+    "value:tier3_multi_intent:003944",
+    "value:tier8_intent_blending:000188"
+   ],
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier3_multi_intent:003982": {
+   "audio_seconds": 4.937,
+   "best_content_cosine": 0.86095,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setPetComfortMode",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "20eedb438bf52229b0710f754b28e7a8ebd4e08f585a5b82a4f74c3fcbb585ef",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:000178",
+    "value:tier3_multi_intent:001898",
+    "value:tier3_multi_intent:003918",
+    "value:tier8_intent_blending:000228"
+   ],
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier3_multi_intent:004025": {
+   "audio_seconds": 2.857,
+   "best_content_cosine": 0.868874,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setCruiseSpeed",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "5599dc9b972bf4800dd482393a805ab872499c04f6e501adc783f54f42c028c3",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:001556",
+    "value:tier3_multi_intent:004283",
+    "value:tier8_intent_blending:000074",
+    "value:tier8_intent_blending:000288"
+   ],
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier4_implicit:000655": {
+   "audio_seconds": 4.937,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": true,
+   "pass_a_messages_sha256": "b169884af390cb87378c46d09c1b7aaddccf1dad98ad19c82a30b161109e4592",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "no label recovered from the direct answer",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier4_implicit:001275",
+    "value:tier7_multiturn:002853",
+    "value:tier7_multiturn:003760"
+   ],
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier4_implicit:000900": {
+   "audio_seconds": 1.737,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": true,
+   "pass_a_messages_sha256": "8d8209990c398048b1a9f0aef11c7232840749aee6560c08bc245898fe6ec9a1",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "no label recovered from the direct answer",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier4_implicit:001275",
+    "value:tier7_multiturn:002853",
+    "value:tier7_multiturn:003760"
+   ],
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier4_implicit:001010": {
+   "audio_seconds": 1.417,
+   "best_content_cosine": 0.872125,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:playMedia",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "620b5bfd923759d4b8da90a4ac061562589567f36e8310fc55d794ba65d6f4bb",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier2_parametric:003294",
+    "value:tier7_multiturn:002592"
+   ],
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier4_implicit:001074": {
+   "audio_seconds": 1.977,
+   "best_content_cosine": 0.809234,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:controlPlayback",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "b9dc1a6492253cfc62c60d04cfbbfd0a9dc84c87a99c95a497db8021d1f8bd2d",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier1_direct:002593",
+    "value:tier6_correction:001067",
+    "value:tier6_correction:002608",
+    "value:tier7_multiturn:002623"
+   ],
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier4_implicit:001148": {
+   "audio_seconds": 4.377,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": true,
+   "pass_a_messages_sha256": "a845ba3556328d55f591d203799b1960759a04d09adb8a7fe6f1995d5bc3a81b",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "no label recovered from the direct answer",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier4_implicit:001275",
+    "value:tier7_multiturn:002853",
+    "value:tier7_multiturn:003760"
+   ],
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier4_implicit:001389": {
+   "audio_seconds": 3.497,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": true,
+   "pass_a_messages_sha256": "6b35550cf69624b4dc42647dbbc22f6f7e754ff38b6274bd1e79a3e81ef7aa9f",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "no label recovered from the direct answer",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier4_implicit:001275",
+    "value:tier7_multiturn:002853",
+    "value:tier7_multiturn:003760"
+   ],
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier4_implicit:001409": {
+   "audio_seconds": 2.537,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": true,
+   "pass_a_messages_sha256": "850dfef0787571957fd54f921809a21cad50f7c166be426502f6c06db857a4ba",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "no label recovered from the direct answer",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier4_implicit:001275",
+    "value:tier7_multiturn:002853",
+    "value:tier7_multiturn:003760"
+   ],
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier4_implicit:001513": {
+   "audio_seconds": 1.497,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": true,
+   "pass_a_messages_sha256": "2d89e050abaaeefab92cee6c995fce443df5af2f33faf47fe14e46b784efe863",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "no label recovered from the direct answer",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier4_implicit:001275",
+    "value:tier7_multiturn:002853",
+    "value:tier7_multiturn:003760"
+   ],
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier4_implicit:002046": {
+   "audio_seconds": 3.737,
+   "best_content_cosine": 0.893075,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getAirQuality_diag",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "34cdb1b864b0ce150b3174183ae9144b7ab9082ddf5b55bb34e1b3c3696c4105",
+   "query_vector_source": "attempt3-bridge",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier1_direct:003090",
+    "value:tier2_parametric:002159",
+    "value:tier2_parametric:002184",
+    "value:tier2_parametric:004225"
+   ],
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier4_implicit:002649": {
+   "audio_seconds": 3.337,
+   "best_content_cosine": 0.78793,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:runNetworkSpeedTest",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "a29fb4ed96e2c8c31ddd8c86cd486ccda2d694d7a64809d0612bea926bbf61af",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier6_correction:003430",
+    "value:tier6_correction:003436"
+   ],
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier4_implicit:003312": {
+   "audio_seconds": 3.897,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": true,
+   "pass_a_messages_sha256": "90ccb98efc8ab0e2d0e4ce0a38bf9e189b4ba4ebf722f5b31316bf1e306416a0",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "no label recovered from the direct answer",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier4_implicit:001275",
+    "value:tier7_multiturn:002853",
+    "value:tier7_multiturn:003760"
+   ],
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier4_implicit:003949": {
+   "audio_seconds": 3.417,
+   "best_content_cosine": 0.903017,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setZoneTemperature",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "631c9798fa572a2441e2bf2dabe19e140dc048c0a7ec8a5223fcf26002b49387",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier2_parametric:000593",
+    "value:tier2_parametric:000599",
+    "value:tier3_multi_intent:000178",
+    "value:tier3_multi_intent:001487"
+   ],
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier4_implicit:003979": {
+   "audio_seconds": 4.457,
+   "best_content_cosine": 0.860852,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setCabinOverheatProtection",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "46f5c51b1868ab9ebb69946551d8cd87d23b6b9d6b954aa2f0596f02b7724eb8",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier1_direct:000249",
+    "value:tier6_correction:001892",
+    "value:tier8_intent_blending:000103",
+    "value:tier8_intent_blending:000347"
+   ],
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier5_needle:000060": {
+   "audio_seconds": 7.737,
+   "best_content_cosine": 0.865998,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setLighting",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "e27ef1f210ee23706a5360b8f57a971ed4e7b6ad66f16321967038789f42baae",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier2_parametric:002351",
+    "value:tier2_parametric:003709",
+    "value:tier2_parametric:004551",
+    "value:tier2_parametric:004557"
+   ],
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier5_needle:000061": {
+   "audio_seconds": 12.377,
+   "best_content_cosine": 0.86952,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": true,
+   "pass_a_messages_sha256": "329582984cbd75a0eea3eac8e41ca1ad86b601311f1c679386d08342c13f84da",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "no label recovered from the direct answer",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:003846",
+    "value:tier6_correction:002132",
+    "value:tier6_correction:002268"
+   ],
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier5_needle:000241": {
+   "audio_seconds": 12.857,
+   "best_content_cosine": 0.925956,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setAdaptiveLighting",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "33544788bdc1dc7199bced6798163b16a39e709c3f2313da2fe8c13ad03d36ed",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier6_correction:002246",
+    "value:tier6_correction:002268",
+    "value:tier7_multiturn:002228"
+   ],
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier5_needle:000285": {
+   "audio_seconds": 13.817,
+   "best_content_cosine": 0.925956,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setAdaptiveLighting",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "8b89dde68b9ea713aa4dfe8eec3e98d92468f1e5eb8d40941656a19e9562a60c",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier6_correction:002246",
+    "value:tier6_correction:002268",
+    "value:tier7_multiturn:002228"
+   ],
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier5_needle:000976": {
+   "audio_seconds": 11.017,
+   "best_content_cosine": 0.875382,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:playMedia",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "da322a24af445ea57520d7371fd1bdf44d0b8f83fac92a3bc608c48d0e2a2b47",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier2_parametric:003271",
+    "value:tier7_multiturn:002592"
+   ],
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier5_needle:001458": {
+   "audio_seconds": 10.377,
+   "best_content_cosine": 0.887482,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getApplianceStatus",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "ee2b4fad2b69f6095420e71af49db9e52073a17759fb7a69b09f4f379a92f4b9",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier1_direct:002831",
+    "value:tier2_parametric:003830"
+   ],
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier5_needle:001719": {
+   "audio_seconds": 11.497,
+   "best_content_cosine": 0.914992,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:activateScene",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "df361b904d74ed1bd6f7828f9e51b429510e2d94c4e5ba293e6b686fd3d368e6",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier2_parametric:003954",
+    "value:tier2_parametric:003984"
+   ],
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier5_needle:002215": {
+   "audio_seconds": 11.497,
+   "best_content_cosine": 0.917627,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getThermostatState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "9c172c0332b7e47e51015e2772e1faa352d8882b4fb03f572ce19c32d1cb2215",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier1_direct:003196",
+    "value:tier1_direct:003201"
+   ],
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier5_needle:002753": {
+   "audio_seconds": 9.417,
+   "best_content_cosine": 0.854544,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setLighting",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "fdc86a3479d990ca095ade5b6c29ba9df27981aa0ffad89e0216e72fef0efeca",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:002231",
+    "value:tier6_correction:002268",
+    "value:tier6_correction:003456",
+    "value:tier8_intent_blending:000484"
+   ],
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier5_needle:003841": {
+   "audio_seconds": 11.177,
+   "best_content_cosine": 0.847537,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setAlarm",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "ecd1e7b80de068a3b136bb567ba00cfb8f9fadc609ab72f9614ff4f100699edf",
+   "query_vector_source": "attempt3-bridge",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier2_parametric:005324",
+    "value:tier8_intent_blending:000915"
+   ],
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier5_needle:003873": {
+   "audio_seconds": 10.217,
+   "best_content_cosine": 0.807272,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setAlarm",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "ff543e551002dc3a5bd8cb812b738c4da902c5fe36b33a133e9c0ff6db6f10b7",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier2_parametric:005348",
+    "value:tier6_correction:004523"
+   ],
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier5_needle:004078": {
+   "audio_seconds": 11.657,
+   "best_content_cosine": 0.872871,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setSpeedLimitMode",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "dfa68116a73b7ffbf52103264dcfa9f68b776d5f4207504886796f9c8ae10cd7",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier1_direct:000925",
+    "value:tier3_multi_intent:000910",
+    "value:tier6_correction:001970"
+   ],
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier5_needle:004242": {
+   "audio_seconds": 11.497,
+   "best_content_cosine": 0.759366,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getClimateState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "e201e59e3b55d9b8b1b336ddd53f43208d17ed39f41a5c9c68c1324cc54dc321",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier1_direct:002286",
+    "value:tier1_direct:003185",
+    "value:tier1_direct:003198",
+    "value:tier2_parametric:004476"
+   ],
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier6_correction:001056": {
+   "audio_seconds": 4.857,
+   "best_content_cosine": 0.845014,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setAudioVolume",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "916bfbad9efbd4a4ceab5c81609ec8be1952256dc609431b4175fbd9377f1537",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier2_parametric:003450",
+    "value:tier2_parametric:003479",
+    "value:tier6_correction:002662",
+    "value:tier6_correction:002666"
+   ],
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier6_correction:001764": {
+   "audio_seconds": 3.897,
+   "best_content_cosine": 0.795542,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:broadcastMessage",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "bcbce5e2577ae067525073706e6011f7fd9d6fa9c8ab9bae66b0d78a226d7420",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier2_parametric:003600",
+    "value:tier6_correction:002976"
+   ],
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier6_correction:001794": {
+   "audio_seconds": 7.897,
+   "best_content_cosine": 0.873235,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:broadcastMessage",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "62803844d2d5a2f8a062bdce986b3184bc6b61ab059193648f2b2a8c615a07e3",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier6_correction:002975",
+    "value:tier6_correction:002976"
+   ],
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier6_correction:002179": {
+   "audio_seconds": 4.857,
+   "best_content_cosine": 0.917627,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getThermostatState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "5830e8e32cffd1ac7d0495a9e0b446738b9c458d4af6a1116c31c481918abadd",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier1_direct:003196",
+    "value:tier1_direct:003201"
+   ],
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier6_correction:002430": {
+   "audio_seconds": 4.697,
+   "best_content_cosine": 0.870492,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:resetTPMSSensors",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "b03446b1b28813bf1bdf75fb2770926521e2b4a80ed061a358e5413d770cc3a2",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier2_parametric:004435",
+    "value:tier7_multiturn:003326"
+   ],
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier6_correction:002630": {
+   "audio_seconds": 5.417,
+   "best_content_cosine": 0.901029,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:resetFilterStatus",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "a28eaf0f5887d3ac1c124d5534a08e0df1a670129d30b4c2f3f2133c77a4473c",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier5_needle:003407",
+    "value:tier6_correction:003400"
+   ],
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier6_correction:002850": {
+   "audio_seconds": 4.857,
+   "best_content_cosine": 0.891444,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:streamCamera",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "edcef696c28494b373f01d2c6f56ceaa66ec3fffbb083d403e90d0fc892c20af",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier2_parametric:003531",
+    "value:tier6_correction:003520",
+    "value:tier6_correction:003537"
+   ],
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier6_correction:002999": {
+   "audio_seconds": 5.977,
+   "best_content_cosine": 0.935029,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getDeviceList",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "d038e5a821581e62f571acac11fed326be27bde438511e097e76440dcfb737d9",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier1_direct:004328",
+    "value:tier1_direct:004331"
+   ],
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier6_correction:003197": {
+   "audio_seconds": 3.097,
+   "best_content_cosine": 0.912381,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getBiometricData",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "d248e37e997462c661cca37a745b8710d0820c612e4a3f02175c057ea890573d",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier1_direct:003569",
+    "value:tier2_parametric:004762",
+    "value:tier2_parametric:005427",
+    "value:tier3_multi_intent:004539"
+   ],
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier6_correction:003267": {
+   "audio_seconds": 4.947,
+   "best_content_cosine": 0.940277,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getActivitySummary",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "479c27aab9b62ad57494d7351ee22ac5d821f70d0e928258400ca81ab20059ba",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier2_parametric:004689",
+    "value:tier6_correction:003589"
+   ],
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier6_correction:003450": {
+   "audio_seconds": 6.537,
+   "best_content_cosine": 0.903971,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setAlwaysOnDisplay",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "12a13d113a0d6aeca2b77ec8762ad5833e00cc4647745c5c91d6b2a020b1419a",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier1_direct:003673",
+    "value:tier2_parametric:005002"
+   ],
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier6_correction:003900": {
+   "audio_seconds": 5.897,
+   "best_content_cosine": 0.843479,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setAlarm",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "a0f9bff5ee7290b311f38e75043eeaec6f534c83cc8415c3e60b4fd0be0d9126",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier2_parametric:005324",
+    "value:tier6_correction:004502"
+   ],
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier6_correction:004155": {
+   "audio_seconds": 5.977,
+   "best_content_cosine": 0.851432,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getActiveAlerts",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "6a87e7429530e9a696058c03be7f4edefa8ccb107352a6c4cbee046e2d97f591",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier1_direct:004508",
+    "value:tier6_correction:001512",
+    "value:tier6_correction:003065",
+    "value:tier7_multiturn:001520"
+   ],
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier7_multiturn:000091": {
+   "audio_seconds": 8.137,
+   "best_content_cosine": 0.841591,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setGroupLightState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "f1a73e645030ff85e6c1cf4687714de2def1c915fb5ab67a8f7e67259428422e",
+   "query_vector_source": "attempt3-bridge",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier6_correction:003456",
+    "value:tier6_correction:004393",
+    "value:tier6_correction:004399"
+   ],
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier7_multiturn:000214": {
+   "audio_seconds": 1.897,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": true,
+   "pass_a_messages_sha256": "f2fdb8e61a755bfadf383fc6dae5416dde1f23a294691bd4e3000f0ebe11cad5",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "no label recovered from the direct answer",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier4_implicit:001275",
+    "value:tier7_multiturn:002853",
+    "value:tier7_multiturn:003760"
+   ],
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier7_multiturn:000274": {
+   "audio_seconds": 2.457,
+   "best_content_cosine": 0.829209,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getSensorState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "295f56a24b3b66f9c9d0e8db7c070e794617ba7f513c370e84ff944156839453",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 5,
+   "selected_value_ids": [
+    "value:tier1_direct:003201",
+    "value:tier1_direct:003222",
+    "value:tier2_parametric:004149",
+    "value:tier2_parametric:004319",
+    "value:tier6_correction:003063"
+   ],
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier7_multiturn:000318": {
+   "audio_seconds": 3.817,
+   "best_content_cosine": 0.826876,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setChargingLimit",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "8bb1141a199b6db87801670a1fd1b373887e0cbf56bd698d9919866197996f98",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 5,
+   "selected_value_ids": [
+    "value:tier2_parametric:001089",
+    "value:tier2_parametric:002305",
+    "value:tier2_parametric:002307",
+    "value:tier6_correction:001970",
+    "value:tier6_correction:003990"
+   ],
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier7_multiturn:000330": {
+   "audio_seconds": 5.577,
+   "best_content_cosine": 0.87496,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setHumidifierState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "308b9fb5ca3136bda46dd845061972a0c3f4499668ef527e5d8fec5bd2963be2",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier2_parametric:003068",
+    "value:tier2_parametric:003072"
+   ],
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier7_multiturn:000440": {
+   "audio_seconds": 7.737,
+   "best_content_cosine": 0.890935,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getCameraEvent",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "bdefa5da92aa81b2b903c54e3be6f4e1f0c7d1cdcfef821f78118d9c6774ef70",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier2_parametric:003350",
+    "value:tier7_multiturn:002533"
+   ],
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier7_multiturn:000545": {
+   "audio_seconds": 27.794,
+   "best_content_cosine": 0.897325,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setVolume",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "8994fda928891046185305bbd29668aafb3ea7f5e3ae1897c591bea597850b52",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier2_parametric:000965",
+    "value:tier2_parametric:003116",
+    "value:tier6_correction:002665"
+   ],
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier7_multiturn:000554": {
+   "audio_seconds": 4.697,
+   "best_content_cosine": 0.893404,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setVolume",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "21f049521d2938391c8a5ff9f7565f99459f34767e17896d985d8ec10f200175",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier2_parametric:000965",
+    "value:tier2_parametric:003116",
+    "value:tier6_correction:002665"
+   ],
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier7_multiturn:000739": {
+   "audio_seconds": 3.177,
+   "best_content_cosine": 0.887482,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getApplianceStatus",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "b05d1a0ae6796aa0ce0a43b5b17f71424ebb0aa82eb4baa906fa7b50d10a7773",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier1_direct:002831",
+    "value:tier2_parametric:003830"
+   ],
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier7_multiturn:001516": {
+   "audio_seconds": 1.177,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": true,
+   "pass_a_messages_sha256": "854c415bf43bae6d4828a512a9b643b4955c0a097f3287c7520a02680a6df7c7",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "no label recovered from the direct answer",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier4_implicit:001275",
+    "value:tier7_multiturn:002853",
+    "value:tier7_multiturn:003760"
+   ],
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier7_multiturn:001892": {
+   "audio_seconds": 3.097,
+   "best_content_cosine": 0.942253,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getSleepSummary",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "ec7956db4bacf6c206959d17d23ebe4b2e546e50cedd513ccf561b506804082f",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 2,
+   "selected_value_ids": [
+    "value:tier6_correction:004483",
+    "value:tier6_correction:004496"
+   ],
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier7_multiturn:002099": {
+   "audio_seconds": 13.177,
+   "best_content_cosine": 0.789475,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:resetTPMSSensors",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "7bf020d62993f265407fa652afa0bda6328861b3c7eca4f1b0647621d3ca6fa6",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier6_correction:001855",
+    "value:tier6_correction:003063",
+    "value:tier7_multiturn:002370",
+    "value:tier8_intent_blending:000003"
+   ],
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier7_multiturn:002120": {
+   "audio_seconds": 23.817,
+   "best_content_cosine": 0.84742,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setRecirculation",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "e10630eb262c0d7ac7896897e34d5309b42c79ac82a33c390e32f9e7a3274fc2",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:001663",
+    "value:tier3_multi_intent:003918",
+    "value:tier6_correction:000239",
+    "value:tier6_correction:003926"
+   ],
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier8_intent_blending:000192": {
+   "audio_seconds": 5.897,
+   "best_content_cosine": 0.874014,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:viewRemoteCamera",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "422397eed50fbb4862381a46f495867874d02d6b66bf618aee89e5f44040c85b",
+   "query_vector_source": "attempt3-bridge",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:002494",
+    "value:tier3_multi_intent:002508",
+    "value:tier3_multi_intent:002528",
+    "value:tier3_multi_intent:003520"
+   ],
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier8_intent_blending:000213": {
+   "audio_seconds": 10.386,
+   "best_content_cosine": 0.889727,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getFilterLife",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "3245c5e8ca4633fc3ccb6f4e42a265cf289d488e4eb341852ade761f3f37c0fd",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:002322",
+    "value:tier3_multi_intent:002466",
+    "value:tier3_multi_intent:003194"
+   ],
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier8_intent_blending:000249": {
+   "audio_seconds": 7.977,
+   "best_content_cosine": 0.8919,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setClimate",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "b9681194031dab72f01d7b955eae90a107480cd01075bf4ee644860265c2b321",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:002322",
+    "value:tier3_multi_intent:003194",
+    "value:tier8_intent_blending:000427"
+   ],
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier8_intent_blending:000372": {
+   "audio_seconds": 5.097,
+   "best_content_cosine": 0.920464,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:getActivitySummary",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "13f13101107af8c1b8d293a387b552cd3b794726d1fac800c4fe638474d5a8de",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier2_parametric:004676",
+    "value:tier6_correction:003584",
+    "value:tier8_intent_blending:000779",
+    "value:tier8_intent_blending:000955"
+   ],
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier8_intent_blending:000423": {
+   "audio_seconds": 6.227,
+   "best_content_cosine": 0.877437,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:startWorkout",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "cdc636321fffef0f0a9a2136f4ebe7e1380f2d8d620cdada73b5f8dceb64be30",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:003665",
+    "value:tier3_multi_intent:003710",
+    "value:tier3_multi_intent:004469",
+    "value:tier8_intent_blending:000966"
+   ],
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier8_intent_blending:000433": {
+   "audio_seconds": 4.457,
+   "best_content_cosine": 0.909684,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setAlwaysOnDisplay",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "c53e298da5f4c3cee0b271effaf30b68f4de09793c718b00ccff5f4cea7d093d",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:004539",
+    "value:tier3_multi_intent:004550",
+    "value:tier8_intent_blending:000810",
+    "value:tier8_intent_blending:000819"
+   ],
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier8_intent_blending:000441": {
+   "audio_seconds": 5.497,
+   "best_content_cosine": 0.900944,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:findPairedPhone",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "89b8f4b5311cf00c611b72cf13f4b4361bb228dccf7fd2998fb73a8e6d770d81",
+   "query_vector_source": "attempt3-bridge",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier1_direct:003861",
+    "value:tier3_multi_intent:004469",
+    "value:tier7_multiturn:003694",
+    "value:tier7_multiturn:003713"
+   ],
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier8_intent_blending:000494": {
+   "audio_seconds": 5.177,
+   "best_content_cosine": 0.853052,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setHapticStrength",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "4d7b93f6e3bc984d5b300f4c17ef86b8522844fdcbac515c0a9d9fd2062a182f",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:003686",
+    "value:tier3_multi_intent:003777",
+    "value:tier8_intent_blending:000805"
+   ],
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier8_intent_blending:000581": {
+   "audio_seconds": 6.857,
+   "best_content_cosine": 0.89219,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:startWorkout",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "c9aa1dbf70fabdc31e5ff9c17fe3ccad733bb5ea3776dbd7e692b2d05f5430f8",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:003579",
+    "value:tier3_multi_intent:004535",
+    "value:tier8_intent_blending:000853",
+    "value:tier8_intent_blending:000922"
+   ],
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier8_intent_blending:000673": {
+   "audio_seconds": 8.697,
+   "best_content_cosine": 0.879267,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setPetComfortMode",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "886e0e138e7b4675dd68460f4d77722a1876bbe3e1cb7560c9aa389e4144fa11",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 3,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:001321",
+    "value:tier3_multi_intent:004283",
+    "value:tier8_intent_blending:000074"
+   ],
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier8_intent_blending:000713": {
+   "audio_seconds": 7.417,
+   "best_content_cosine": 0.893395,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setChargeLimit",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "062be6be0d6d5a7de16c3a47f524859e4c6612edcf5c879c5c4ec9a0ab497c47",
+   "query_vector_source": "attempt3-bridge",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:000145",
+    "value:tier3_multi_intent:001556",
+    "value:tier8_intent_blending:000074",
+    "value:tier8_intent_blending:000188"
+   ],
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier8_intent_blending:000720": {
+   "audio_seconds": 4.777,
+   "best_content_cosine": 0.897363,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:cancelNavigation",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "304333489c037e1d1650fa486dcd5279f71537be8a5183eb30e5e9e5d2bb8e13",
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:000145",
+    "value:tier3_multi_intent:001360",
+    "value:tier6_correction:000202",
+    "value:tier8_intent_blending:000188"
+   ],
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  },
+  "tier8_intent_blending:000724": {
+   "audio_seconds": 5.177,
+   "best_content_cosine": 0.871685,
+   "best_label_count": 1,
+   "content_facets_in_top_m": 5,
+   "direct_label_facet_id": "facet:label:tool:setCruiseSpeed",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "pass_a_messages_sha256": "d31008b357b96fe5068964d9c6dc3a6cb8b87b6ca30457ab2dd0ae4862a34d1d",
+   "query_vector_source": "attempt3-bridge",
+   "reason": "direct label uniquely wins the blend (retain-primary)",
+   "selected_value_count": 4,
+   "selected_value_ids": [
+    "value:tier3_multi_intent:001556",
+    "value:tier3_multi_intent:003440",
+    "value:tier6_correction:002364",
+    "value:tier8_intent_blending:000074"
+   ],
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "content",
+    "content",
+    "content",
+    "content",
+    "content"
+   ]
+  }
+ },
+ "population": {
+  "count": 104,
+  "split_id": "A2T-G1-104",
+  "split_identity_hash": "f5a030189cf80dcbc52899e2fa5f819bac03874f2ad3f9645fdc60c432a9bf3a",
+  "subset_receipt_sha256": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db"
+ },
+ "projection": {
+  "best_content_cosine_distribution": {
+   "at_or_above_tau": 104,
+   "max": 0.957249,
+   "min": 0.759366
+  },
+  "by_tier": {
+   "tier1_direct": {
+    "dispatch": 3,
+    "n": 13
+   },
+   "tier2_parametric": {
+    "dispatch": 1,
+    "n": 13
+   },
+   "tier3_multi_intent": {
+    "dispatch": 1,
+    "n": 13
+   },
+   "tier4_implicit": {
+    "dispatch": 7,
+    "n": 13
+   },
+   "tier5_needle": {
+    "dispatch": 1,
+    "n": 13
+   },
+   "tier6_correction": {
+    "dispatch": 0,
+    "n": 13
+   },
+   "tier7_multiturn": {
+    "dispatch": 2,
+    "n": 13
+   },
+   "tier8_intent_blending": {
+    "dispatch": 0,
+    "n": 13
+   }
+  },
+  "dispatch_audio_seconds": 53.916,
+  "dispatch_count": 15,
+  "dispatch_rate": 0.144231,
+  "no_label_recovered_count": 15,
+  "retain_count": 89,
+  "retain_equals_recovered": true,
+  "supplied_value_count_distribution": {
+   "2": 35,
+   "3": 28,
+   "4": 36,
+   "5": 5
+  },
+  "trajectories_with_a_content_facet_in_top_m": 104,
+  "trajectories_with_zero_content_facets_in_top_m": 0
+ },
+ "ranker_repair": {
+  "commit": "1341c2db",
+  "identity_on_the_locked_slurp_cell": "proved on the sealed DEV-1000 store over 674 replayed trajectories, exact float equality",
+  "kb_policy_sha256": "2a1c3d75e747db10f723044b05c08d232e1edf47f125d0889c1d2565ba1019af",
+  "rule": "every ranker dimension divided by max(1.0, sup_d) over the recalled candidate set before the weights apply",
+  "structural_guarantee_under_the_locked_knobs": "w_prior * 1.0 = 0.300 is strictly below w_cos * tau = 0.325, so every percept-admissible content facet outranks every prior-mass facet on any carrier by construction"
+ },
+ "run_id": "SAEA-SN-MF-A2T-G1-DISPATCH-PROJECTION-POSTFIX",
+ "schema": "saea-a2t-g1-dispatch-projection-v2-postfix",
+ "study": "speech-aware-evidence-acquisition",
+ "worst_case_audio_of_largest_n": {
+  "1": 27.794,
+  "10": 149.987,
+  "104": 587.017,
+  "15": 203.161,
+  "20": 246.326,
+  "23": 269.697,
+  "26": 291.548,
+  "30": 318.336,
+  "5": 91.462
+ }
+}
