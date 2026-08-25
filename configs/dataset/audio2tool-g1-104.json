@@ -1,0 +1,15 @@
+{
+  "carrier_lock_key": "audio2tool",
+  "a2t_g1_subset_receipt": "docs/receipts/a2t/A2T-G1-104.json",
+  "a2t_g1_subset_receipt_sha256": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db",
+  "a2t_g1_split_name": "A2T-G1-104",
+  "a2t_g1_split_role": "discovery",
+  "a2t_g1_split_identity_hash": "516f92d9b919640969676eb10b776d9c479169fb0a387497e943c726b2191326",
+  "a2t_g1_run_identity_hash": "f5a030189cf80dcbc52899e2fa5f819bac03874f2ad3f9645fdc60c432a9bf3a",
+  "a2t_g1_count": 104,
+  "a2t_g1_audio_seconds_total": 587.017,
+  "a2t_g1_parent_receipt": "docs/receipts/probe-samples/r1-audio2tool-sample.json",
+  "a2t_g1_parent_split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+  "a2t_g1_exposure": "EXPOSED -- a tier-stratified 13-per-tier draw from the frozen 400-item discovery split the A0 baseline, P-EMB-2 and the S2/S2b/S2c probes already read. Campaign plan section 3.3: this tier's numbers are SECONDARY readings and are never the campaign claim.",
+  "a2t_g1_no_driver_split_name": "This fragment deliberately declares NO 'split_name' key. The generic core driver would resolve a split_name through reproduction.probe_split.load_verified_probe_split against docs/receipts/probe-samples/, and the G1 subset receipt is deliberately NOT written into that globbed directory (it would silently expand data.audio2tool.audio2tool_receipts' frozen loadable universe). The G1 population is served by a launcher-side Audio2ToolAdapter subclass bound to the receipt pinned above."
+}

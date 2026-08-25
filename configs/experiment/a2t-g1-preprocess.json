@@ -1,0 +1,20 @@
+{
+  "experiment_id": "SAEA-SN-A2T-G1-PREPROCESS",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Label-free offline speech-feature preprocessing for the Audio2Tool stage-G1 subset A2T-G1-104 (campaign plan docs/readiness/2026-08-25-a2t-generality-campaign-plan.md section 8.1 item 3 -- packet materialization is the engineering prerequisite the derived serving geometry implies, because the G1 decoder serves --no-mmproj and therefore cannot encode audio itself). A model-free audit (scripts/build_a2t_g1_subset.py) measured the subset against the six legacy llama.cpp feature caches and the A2T packet root: all 104 recordings are warm in the legacy cache /home/chao/feat-cache/audio2tool-q4km written by the EARLIER A2T flights under the OLDER featcache build 5d9dfcb5 (docs/receipts/runtime-q4km-featcache.json), and ZERO packets exist. This pass deliberately re-encodes all 104 under the CURRENT build 04ccc72a (docs/receipts/runtime-q4km-preprocess.json) into a SEPARATE legacy cache directory /home/chao/feat-cache/audio2tool-q4km-04ccc72a, so the promoted packets' encoder provenance is the same build that serves them and no cross-build feature assumption is smuggled into the flight. A CPU-only sidecar on port 8081 (-ngl 0 --no-mmproj-offload) does the encoding; the resident GPU decoder on port 8090 is never started, stopped, probed, reconfigured or contacted. The prompt is a minimal fixed instruction, NOT the 152-tool registry: the legacy feature-cache key is the FNV-1a hash of the media bytes alone, so the prompt cannot affect the cached features, and sending the registry to a CPU-only server would cost a 13,236-token prefill per item for nothing. Generated text is never inspected: the registered response is a fixed one-token completion and no label, reference transcript or task accuracy is read.",
+  "a2t_g1_preprocess_scope": {
+    "subset_receipt": "docs/receipts/a2t/A2T-G1-104.json",
+    "count": 104,
+    "audio_seconds_total": 587.017,
+    "legacy_cache_dir": "/home/chao/feat-cache/audio2tool-q4km-04ccc72a",
+    "packet_root": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a",
+    "promotion_receipt": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a/A2T-G1-104-promotion.json",
+    "packet_id_convention": "sample_id with ':' replaced by '/' (tier1_direct:000045 -> tier1_direct/000045), the same convention the SLURP runtime views use",
+    "promotion_path": "core.model.speech_features.materialize_legacy_cached_speech_feature_packets, called directly. The saea-driver promote-speech-packets CLI is NOT used: it is hard-wired to data.slurp.load_slurp_engineering_gate, which refuses any view whose carrier_lock_key is not 'slurp' or whose sample_id does not start with 'slurp:'. Nothing under src/ is modified; the promotion primitive itself is carrier-agnostic."
+  },
+  "a2t_g1_preprocess_boundary": {
+    "gold": "never opened -- the adapter subclass used by this pass returns a scoring-deferred marker",
+    "gpu_decoder": "untouched; the sidecar is CPU-only and listens on a different port",
+    "outputs": "legacy .feat cache entries plus audited speech-feature packets and one promotion receipt; no semantic content is read"
+  }
+}
