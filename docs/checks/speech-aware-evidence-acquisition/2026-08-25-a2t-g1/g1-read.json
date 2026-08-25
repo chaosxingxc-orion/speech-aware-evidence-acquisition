@@ -1,0 +1,494 @@
+{
+  "a0_anchor": {
+    "a0_empty_call_rate": 0.1025,
+    "a0_exact_match": 0.2425,
+    "a0_tool_accuracy": 0.5425,
+    "g1_m0_empty_call_rate": 0.1346153846153846,
+    "g1_m0_exact_match": 0.27884615384615385,
+    "g1_m0_tool_accuracy": 0.5961538461538461,
+    "note": "the published A0 comparator was read on the PARENT 400-item split, not on this 104-item subset. Quoted as an anchor only; the populations differ and the comparison is NOT paired."
+  },
+  "arms": {
+    "arm1-m0": {
+      "arm_id": "M0",
+      "attempt_id": "attempt-20260825T100735Z-a2tg1m0",
+      "canary_worst_ms_per_token": 11.55,
+      "config_hash": "df6bf4d4e5ac3ae5a3fe9d52dc8933b81bec70f7dbff05a2984635b8badc38f9",
+      "outputs_sha256": "dea60ff1e63fd2ef11c93edf8808217062fea3f0565ed5b60f136264bc6a9467",
+      "report_sha256": "7e5e9223c48b1bc457b2b02cb54050d208d717b376326ab5061da8847366ab37",
+      "sentinel_tripped": null,
+      "server_np": 2
+    },
+    "arm2-blend": {
+      "arm_id": "BLEND",
+      "attempt_id": "attempt-20260825T125051Z-a2tg1blend",
+      "canary_worst_ms_per_token": 12.32,
+      "config_hash": "df6bf4d4e5ac3ae5a3fe9d52dc8933b81bec70f7dbff05a2984635b8badc38f9",
+      "outputs_sha256": "00aa52ff5aad7aedd0b2cf3d47063aa18a89ce486981622083e4ad80ecc9a420",
+      "report_sha256": "56bf0a7592d2b595da86dab84ad7c0ae8246d1afc150f4cb695f2c9efcc0b520",
+      "sentinel_tripped": null,
+      "server_np": 2
+    }
+  },
+  "authority": "docs/readiness/2026-08-25-a2t-generality-campaign-plan.md sections 3.3, 3.5, 3.6, 7 and 8; contract configs/experiment/a2t-g1-v1.json",
+  "decode_variance_attribution": {
+    "attribution": "every scored difference between the two arms falls inside the set of trajectories whose direct decode did not reproduce byte for byte, and no trajectory received any evidence. The paired delta is therefore the frozen core's OWN multi-slot decode-variance channel, measured on this carrier, and it is NOT an effect of the policy cell. It must not be read as the method helping or hurting.",
+    "dispatched_trajectories": 0,
+    "divergent_sample_ids": [
+      "tier1_direct:001432",
+      "tier1_direct:001631",
+      "tier2_parametric:004826",
+      "tier3_multi_intent:003058",
+      "tier4_implicit:002046",
+      "tier5_needle:003841",
+      "tier7_multiturn:000091",
+      "tier8_intent_blending:000192",
+      "tier8_intent_blending:000441",
+      "tier8_intent_blending:000713",
+      "tier8_intent_blending:000724"
+    ],
+    "evidence_contacts_flown": 0,
+    "exact_match_flips": [
+      "tier8_intent_blending:000441"
+    ],
+    "exact_match_flips_all_inside_divergent_set": true,
+    "question": "with zero dispatches the policy supplied nothing, so any paired delta must come from somewhere other than the method. Where?",
+    "tool_accuracy_flips": [
+      "tier1_direct:001631",
+      "tier8_intent_blending:000441"
+    ],
+    "tool_accuracy_flips_all_inside_divergent_set": true,
+    "trajectories_with_text_divergent_from_m0": 11,
+    "trajectories_with_text_identical_to_m0": 93
+  },
+  "exposure_ledger_row": "SAEA-A2T-G1",
+  "generated_at": "2026-08-25T13:11:07.180006+00:00",
+  "hard_stop": "G1 authorizes MECHANICS AND FIRST SIGNAL ONLY. No generality claim, no superiority claim, no test contact, no knob change and no Stage-3 activity follows from this report.",
+  "headline": {
+    "blend_empty_call_rate": 0.1346153846153846,
+    "blend_exact_match": 0.2692307692307692,
+    "blend_gap": 0.30769230769230765,
+    "blend_tool_accuracy": 0.5769230769230769,
+    "exact_match_delta_pp": -0.9615384615384616,
+    "m0_empty_call_rate": 0.1346153846153846,
+    "m0_exact_match": 0.27884615384615385,
+    "m0_gap": 0.3173076923076923,
+    "m0_tool_accuracy": 0.5961538461538461,
+    "tool_accuracy_delta_pp": -1.9230769230769231
+  },
+  "limitations": [
+    "EXPOSED tier: every number is a secondary reading (plan section 3.3).",
+    "n = 104: below the plan's own n >= 400 power floor (section 3.5); the intervals here are descriptive, not a confirmatory claim.",
+    "the a2t-gold-v1 scorer's semantics are interpretation, not ground truth -- the A0 verdict's own limitation, inherited in full.",
+    "the corpus is synthetic and the speakers are synthetic voice assignments.",
+    "no ablation arm flew, so nothing here attributes the effect to retrieval as opposed to the second contact; ABL-RANDRET answers that at G2."
+  ],
+  "mechanism": {
+    "branch_only_replay": {
+      "branch_only_holds": true,
+      "supply_mismatches": [],
+      "trajectories_replayed": 0
+    },
+    "branch_only_replay_is_vacuous": true,
+    "closes_over_population": true,
+    "dead_direct_dispatched": 0,
+    "decision_replay": {
+      "branch_mismatches": [],
+      "decision_replay_holds": true,
+      "semantics": "each trajectory's RETAIN-or-DISPATCH branch re-derived offline from its OWN landed query vector and OWN flown direct text through rails.kb_policy's own pure functions, compared against the branch the controller actually took. Zero contacts, gold never consulted.",
+      "trajectories_replayed": 104,
+      "why_each_trajectory_branched": {
+        "best_content_cosine_at_or_above_tau": 104,
+        "best_content_cosine_max": 0.957249,
+        "best_content_cosine_min": 0.759366,
+        "fusion_selected_nothing": 104,
+        "reading": "content-facet RECALL is healthy -- the cosines clear the admission threshold. What never happens is ADMISSION: the ranker's prior-mass dimensions outscore any cosine, so the top-m window the fuser admits over holds no content facet at all, and percept admission reads only NON-prior-mass dimensions. Nothing is admitted, nothing is selected, every trajectory retains. This is a property of the cell meeting this carrier's knowledge base, not a defect of the flight.",
+        "recall_empty": 0,
+        "tau": 0.65,
+        "zero_content_facets_in_top_m": 104
+      }
+    },
+    "direct_label_recovered": 89,
+    "dispatched": 0,
+    "retain_equals_direct_label_recovered": false,
+    "retained_primary": 104,
+    "subgroups": {
+      "dead-direct-dispatch": {
+        "n": 0
+      },
+      "retain-primary": {
+        "blend_exact_match": 0.2692307692307692,
+        "blend_tool_accuracy": 0.5769230769230769,
+        "exact_match_delta_samples": -1,
+        "m0_exact_match": 0.27884615384615385,
+        "m0_tool_accuracy": 0.5961538461538461,
+        "n": 104,
+        "tool_accuracy_delta_samples": -2
+      }
+    }
+  },
+  "paired_exact_match": {
+    "blend_count": 28,
+    "bootstrap": {
+      "ci90_excludes_zero": false,
+      "ci90_high_pp": 0.0,
+      "ci90_low_pp": -2.8846153846153846,
+      "ci95_excludes_zero": false,
+      "ci95_high_pp": 0.0,
+      "ci95_low_pp": -2.8846153846153846,
+      "n_replicates": 10000,
+      "point_estimate_pp": -0.9615384615384616,
+      "replicate_share_at_or_below_zero": 1.0,
+      "replicates_at_or_below_zero": 10000,
+      "resampling": "per-sample paired cluster bootstrap over the 100 DEV-100 ids; the SAME resampled multiset scores both arms, preserving the pairing",
+      "seed": 20260807,
+      "sigma_hat_pp": 0.9553123375902098
+    },
+    "bootstrap_label_erratum": "the imported bootstrap_gain hard-codes a resampling string reading 'over the 100 DEV-100 ids'; the actual resampling universe here is the 104 A2T-G1-104 ids. The module is NOT edited -- it is pinned to already sealed reads -- so both the returned label and this correction are carried.",
+    "correct_to_wrong_ids": [
+      "tier8_intent_blending:000441"
+    ],
+    "delta_pp": -0.9615384615384616,
+    "delta_samples": -1,
+    "field": "exact_match",
+    "m0_count": 29,
+    "mcnemar": {
+      "chi_square_continuity_corrected": 0.0,
+      "chi_square_two_sided_p": 1.0,
+      "discordant_pairs": 1,
+      "exact_binomial_two_sided_p": 1.0,
+      "mid_p_two_sided": 0.5,
+      "n01_wrong_to_correct": 0,
+      "n10_correct_to_wrong": 1,
+      "odds_ratio_n01_over_n10": 0.0
+    },
+    "wrong_to_correct_ids": []
+  },
+  "paired_tool_accuracy": {
+    "blend_count": 60,
+    "bootstrap": {
+      "ci90_excludes_zero": false,
+      "ci90_high_pp": 0.0,
+      "ci90_low_pp": -4.8076923076923075,
+      "ci95_excludes_zero": false,
+      "ci95_high_pp": 0.0,
+      "ci95_low_pp": -4.8076923076923075,
+      "n_replicates": 10000,
+      "point_estimate_pp": -1.9230769230769231,
+      "replicate_share_at_or_below_zero": 1.0,
+      "replicates_at_or_below_zero": 10000,
+      "resampling": "per-sample paired cluster bootstrap over the 100 DEV-100 ids; the SAME resampled multiset scores both arms, preserving the pairing",
+      "seed": 20260807,
+      "sigma_hat_pp": 1.3417409950989028
+    },
+    "bootstrap_label_erratum": "the imported bootstrap_gain hard-codes a resampling string reading 'over the 100 DEV-100 ids'; the actual resampling universe here is the 104 A2T-G1-104 ids. The module is NOT edited -- it is pinned to already sealed reads -- so both the returned label and this correction are carried.",
+    "correct_to_wrong_ids": [
+      "tier1_direct:001631",
+      "tier8_intent_blending:000441"
+    ],
+    "delta_pp": -1.9230769230769231,
+    "delta_samples": -2,
+    "field": "tool_accuracy",
+    "m0_count": 62,
+    "mcnemar": {
+      "chi_square_continuity_corrected": 0.5,
+      "chi_square_two_sided_p": 0.4795001221869535,
+      "discordant_pairs": 2,
+      "exact_binomial_two_sided_p": 0.5,
+      "mid_p_two_sided": 0.25,
+      "n01_wrong_to_correct": 0,
+      "n10_correct_to_wrong": 2,
+      "odds_ratio_n01_over_n10": 0.0
+    },
+    "wrong_to_correct_ids": []
+  },
+  "per_tier": [
+    {
+      "blend_empty_call_rate": 0.15384615384615385,
+      "blend_exact_match": 0.07692307692307693,
+      "blend_gap": 0.5384615384615385,
+      "blend_tool_accuracy": 0.6153846153846154,
+      "exact_match_delta_pp": 0.0,
+      "m0_empty_call_rate": 0.07692307692307693,
+      "m0_exact_match": 0.07692307692307693,
+      "m0_gap": 0.6153846153846154,
+      "m0_tool_accuracy": 0.6923076923076923,
+      "n": 13,
+      "tier": "tier1_direct",
+      "tool_accuracy_delta_pp": -7.692307692307687
+    },
+    {
+      "blend_empty_call_rate": 0.07692307692307693,
+      "blend_exact_match": 0.46153846153846156,
+      "blend_gap": 0.15384615384615385,
+      "blend_tool_accuracy": 0.6153846153846154,
+      "exact_match_delta_pp": 0.0,
+      "m0_empty_call_rate": 0.0,
+      "m0_exact_match": 0.46153846153846156,
+      "m0_gap": 0.15384615384615385,
+      "m0_tool_accuracy": 0.6153846153846154,
+      "n": 13,
+      "tier": "tier2_parametric",
+      "tool_accuracy_delta_pp": 0.0
+    },
+    {
+      "blend_empty_call_rate": 0.07692307692307693,
+      "blend_exact_match": 0.0,
+      "blend_gap": 0.46153846153846156,
+      "blend_tool_accuracy": 0.46153846153846156,
+      "exact_match_delta_pp": 0.0,
+      "m0_empty_call_rate": 0.07692307692307693,
+      "m0_exact_match": 0.0,
+      "m0_gap": 0.46153846153846156,
+      "m0_tool_accuracy": 0.46153846153846156,
+      "n": 13,
+      "tier": "tier3_multi_intent",
+      "tool_accuracy_delta_pp": 0.0
+    },
+    {
+      "blend_empty_call_rate": 0.5384615384615384,
+      "blend_exact_match": 0.07692307692307693,
+      "blend_gap": 0.3076923076923077,
+      "blend_tool_accuracy": 0.38461538461538464,
+      "exact_match_delta_pp": 0.0,
+      "m0_empty_call_rate": 0.5384615384615384,
+      "m0_exact_match": 0.07692307692307693,
+      "m0_gap": 0.3076923076923077,
+      "m0_tool_accuracy": 0.38461538461538464,
+      "n": 13,
+      "tier": "tier4_implicit",
+      "tool_accuracy_delta_pp": 0.0
+    },
+    {
+      "blend_empty_call_rate": 0.07692307692307693,
+      "blend_exact_match": 0.38461538461538464,
+      "blend_gap": 0.5384615384615385,
+      "blend_tool_accuracy": 0.9230769230769231,
+      "exact_match_delta_pp": 0.0,
+      "m0_empty_call_rate": 0.07692307692307693,
+      "m0_exact_match": 0.38461538461538464,
+      "m0_gap": 0.5384615384615385,
+      "m0_tool_accuracy": 0.9230769230769231,
+      "n": 13,
+      "tier": "tier5_needle",
+      "tool_accuracy_delta_pp": 0.0
+    },
+    {
+      "blend_empty_call_rate": 0.0,
+      "blend_exact_match": 0.5384615384615384,
+      "blend_gap": 0.23076923076923084,
+      "blend_tool_accuracy": 0.7692307692307693,
+      "exact_match_delta_pp": 0.0,
+      "m0_empty_call_rate": 0.0,
+      "m0_exact_match": 0.5384615384615384,
+      "m0_gap": 0.23076923076923084,
+      "m0_tool_accuracy": 0.7692307692307693,
+      "n": 13,
+      "tier": "tier6_correction",
+      "tool_accuracy_delta_pp": 0.0
+    },
+    {
+      "blend_empty_call_rate": 0.15384615384615385,
+      "blend_exact_match": 0.6153846153846154,
+      "blend_gap": 0.0,
+      "blend_tool_accuracy": 0.6153846153846154,
+      "exact_match_delta_pp": 0.0,
+      "m0_empty_call_rate": 0.15384615384615385,
+      "m0_exact_match": 0.6153846153846154,
+      "m0_gap": 0.0,
+      "m0_tool_accuracy": 0.6153846153846154,
+      "n": 13,
+      "tier": "tier7_multiturn",
+      "tool_accuracy_delta_pp": 0.0
+    },
+    {
+      "blend_empty_call_rate": 0.0,
+      "blend_exact_match": 0.0,
+      "blend_gap": 0.23076923076923078,
+      "blend_tool_accuracy": 0.23076923076923078,
+      "exact_match_delta_pp": -7.6923076923076925,
+      "m0_empty_call_rate": 0.15384615384615385,
+      "m0_exact_match": 0.07692307692307693,
+      "m0_gap": 0.23076923076923078,
+      "m0_tool_accuracy": 0.3076923076923077,
+      "n": 13,
+      "tier": "tier8_intent_blending",
+      "tool_accuracy_delta_pp": -7.6923076923076925
+    }
+  ],
+  "pooled": {
+    "blend": {
+      "empty_call_count": 14,
+      "empty_call_rate": 0.1346153846153846,
+      "exact_match": 0.2692307692307692,
+      "exact_match_count": 28,
+      "gap_tool_accuracy_minus_exact_match": 0.30769230769230765,
+      "headroom_tool_correct_not_exact": [
+        "tier1_direct:000178",
+        "tier1_direct:001432",
+        "tier1_direct:001607",
+        "tier1_direct:002212",
+        "tier1_direct:002609",
+        "tier1_direct:002728",
+        "tier1_direct:003713",
+        "tier2_parametric:000240",
+        "tier2_parametric:000369",
+        "tier3_multi_intent:000259",
+        "tier3_multi_intent:002553",
+        "tier3_multi_intent:002560",
+        "tier3_multi_intent:002995",
+        "tier3_multi_intent:003058",
+        "tier3_multi_intent:003153",
+        "tier4_implicit:001010",
+        "tier4_implicit:001074",
+        "tier4_implicit:003949",
+        "tier4_implicit:003979",
+        "tier5_needle:000060",
+        "tier5_needle:000241",
+        "tier5_needle:000285",
+        "tier5_needle:000976",
+        "tier5_needle:002753",
+        "tier5_needle:003841",
+        "tier5_needle:003873",
+        "tier6_correction:001764",
+        "tier6_correction:001794",
+        "tier6_correction:002630",
+        "tier8_intent_blending:000372",
+        "tier8_intent_blending:000423",
+        "tier8_intent_blending:000494"
+      ],
+      "mean_slot_f1": 0.36575091575091573,
+      "n": 104,
+      "tool_accuracy": 0.5769230769230769,
+      "tool_accuracy_count": 60,
+      "unparsed_count": 3,
+      "unparsed_ids": [
+        "tier2_parametric:004826",
+        "tier3_multi_intent:000879",
+        "tier5_needle:000061"
+      ]
+    },
+    "m0": {
+      "empty_call_count": 14,
+      "empty_call_rate": 0.1346153846153846,
+      "exact_match": 0.27884615384615385,
+      "exact_match_count": 29,
+      "gap_tool_accuracy_minus_exact_match": 0.3173076923076923,
+      "headroom_tool_correct_not_exact": [
+        "tier1_direct:000178",
+        "tier1_direct:001432",
+        "tier1_direct:001607",
+        "tier1_direct:001631",
+        "tier1_direct:002212",
+        "tier1_direct:002609",
+        "tier1_direct:002728",
+        "tier1_direct:003713",
+        "tier2_parametric:000240",
+        "tier2_parametric:000369",
+        "tier3_multi_intent:000259",
+        "tier3_multi_intent:002553",
+        "tier3_multi_intent:002560",
+        "tier3_multi_intent:002995",
+        "tier3_multi_intent:003058",
+        "tier3_multi_intent:003153",
+        "tier4_implicit:001010",
+        "tier4_implicit:001074",
+        "tier4_implicit:003949",
+        "tier4_implicit:003979",
+        "tier5_needle:000060",
+        "tier5_needle:000241",
+        "tier5_needle:000285",
+        "tier5_needle:000976",
+        "tier5_needle:002753",
+        "tier5_needle:003841",
+        "tier5_needle:003873",
+        "tier6_correction:001764",
+        "tier6_correction:001794",
+        "tier6_correction:002630",
+        "tier8_intent_blending:000372",
+        "tier8_intent_blending:000423",
+        "tier8_intent_blending:000494"
+      ],
+      "mean_slot_f1": 0.37664835164835164,
+      "n": 104,
+      "tool_accuracy": 0.5961538461538461,
+      "tool_accuracy_count": 62,
+      "unparsed_count": 4,
+      "unparsed_ids": [
+        "tier3_multi_intent:000879",
+        "tier5_needle:000061",
+        "tier8_intent_blending:000192",
+        "tier8_intent_blending:000713"
+      ]
+    }
+  },
+  "population": {
+    "count": 104,
+    "exposure": "EXPOSED. Plan section 3.3: every number in this report is a SECONDARY reading and can never be the campaign claim. The claim interval needs n >= 400 UNEXPOSED (section 3.5) and belongs to G2.",
+    "receipt": "docs/receipts/a2t/A2T-G1-104.json",
+    "receipt_sha256": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db",
+    "run_identity_hash": "f5a030189cf80dcbc52899e2fa5f819bac03874f2ad3f9645fdc60c432a9bf3a",
+    "split_identity_hash": "516f92d9b919640969676eb10b776d9c479169fb0a387497e943c726b2191326",
+    "split_name": "A2T-G1-104"
+  },
+  "primary_metric": "tool_accuracy",
+  "run_id": "SAEA-A2T-G1",
+  "schema": "saea-a2t-g1-read-v1",
+  "scorer": "a2t-scorer-v1",
+  "smuggling_guard": "plan section 3.5, carried verbatim: a tool-accuracy gain that leaves exact match flat is a DIFFERENT claim and must not be smuggled. Both metrics, the gap and the empty-call rate are reported together above and per tier below.",
+  "spend": {
+    "arm1-m0": {
+      "core_contacts": {
+        "attempt_ceiling": 120,
+        "used": 106
+      },
+      "embedding_tool_contacts": {
+        "attempt_ceiling": 0,
+        "used": 0
+      },
+      "gpu_active_hours_contact_basis": 0.033071,
+      "metered_audio_seconds": {
+        "used": 590.251
+      }
+    },
+    "arm2-blend": {
+      "core_contacts": {
+        "attempt_ceiling": 135,
+        "used": 107
+      },
+      "embedding_tool_contacts": {
+        "attempt_ceiling": 50,
+        "used": 10
+      },
+      "gpu_active_hours_contact_basis": 0.02921,
+      "metered_audio_seconds": {
+        "used": 591.348
+      }
+    },
+    "campaign_ceilings": {
+      "core_contacts": 400,
+      "embedding_tool_contacts": 200,
+      "gpu_hours": 0.6,
+      "metered_audio_seconds": 2000
+    },
+    "campaign_cumulative_core_contacts": 303
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "tool_name_multiset_mapping": {
+    "disclosure": "on the 78 items whose gold call list names a single distinct tool the primary-name projection and the multiset carry the same information; on the remaining 26 it is LOSSY, and that is a property of the dispatch rule, not of the score.",
+    "dispatch_projection": "the A2T direct-label-recovery analogue takes the PRIMARY (first) call's tool name and matches it EXACTLY against the 151-tool label vocabulary, ties by facet_id ascending -- the carrier form of the SLURP scenario_action rule and of the f1060078 repair. It governs which branch of the dispatch rule a trajectory takes and is NEVER scored.",
+    "gold_call_list_length_counts": {
+      "1": 78,
+      "2": 16,
+      "3": 7,
+      "4": 2,
+      "5": 1
+    },
+    "gold_multi_distinct_tool_items": 26,
+    "gold_primary_names_inside_label_vocabulary": 104,
+    "gold_single_distinct_tool_items": 78,
+    "label_vocabulary_size": 151,
+    "projection_lossless_share": 0.75,
+    "scorer_projection": "tool accuracy is equality of the full tool-name MULTISET (collections.Counter over call names); exact match is equality of the full name-plus-argument multiset. Frozen scorer a2t-scorer-v1."
+  }
+}

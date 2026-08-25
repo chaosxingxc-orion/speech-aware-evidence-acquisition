@@ -115,8 +115,14 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def load_arm(stub: str) -> dict:
-    report_path = OUT_DIR / ("%s-mechanical-report.json" % stub)
+def load_arm(stub: str, report_relname: str | None = None) -> dict:
+    """``report_relname`` lets a SUCCESSOR attempt's report be read under the
+    same arm stub. The per-sample mechanical records still come from the run
+    directory the report itself names, so the two can never drift apart."""
+
+    report_path = OUT_DIR / (
+        report_relname or ("%s-mechanical-report.json" % stub)
+    )
     report = json.loads(report_path.read_text(encoding="utf-8"))
     if report["run_id"] != RUN_ID:
         raise SystemExit("%s names a different run id" % report_path)
@@ -407,6 +413,212 @@ def m0_only_read(*, m0_arm, sample_ids, subset, measured_subset, lock, root) -> 
     return 0
 
 
+def replay_decisions(*, blend_arm: dict, sample_ids, root) -> dict:
+    """Model-free, zero-contact: re-derive each trajectory's RETAIN-or-DISPATCH
+    branch from its own landed query vector and its own flown direct text, and
+    compare against the branch the controller actually took.
+
+    Everything here is ``rails.kb_policy``'s own pure functions. Nothing is
+    reimplemented, no gold is consulted, and no contact is spent. It also
+    records WHY each trajectory branched the way it did, because on this
+    carrier the answer turned out to be structural."""
+
+    from speech_aware_evidence_acquisition.rails.kb_policy import (  # noqa: PLC0415
+        PRIOR_MASS_DIMENSIONS,
+        FuseKnobs,
+        RankWeights,
+        _argmax_labels,
+        _blend_scores,
+        _fused_label_scores,
+        _label_identities,
+        fuse_supplyfilter_factory,
+        multidim_recall,
+        rank_wcos_prior_agree_factory,
+    )
+    from speech_aware_evidence_acquisition.rails.knowledge import (  # noqa: PLC0415
+        KnowledgeSnapshot,
+        QueryState,
+    )
+    import numpy as np  # noqa: PLC0415
+
+    fuse = FuseKnobs(tau=0.65, m=5, c=2, top_l=3)
+    weights = RankWeights(w_cos=0.5, w_prior=0.3, w_agree=0.2)
+    alpha, top_k = 0.45, 5
+
+    snapshot_path = (
+        root / "knowledge/audio2tool/saea-kb-a2t-toolshaped-v1/size-full/snapshot.json"
+    )
+    snapshot = KnowledgeSnapshot.from_frozen_json(
+        json.loads(snapshot_path.read_text(encoding="utf-8"))
+    )
+    label_targets = dict(_label_identities(snapshot))
+    values_by_id = {value.value_id: value for value in snapshot.values}
+    emb_receipt = json.loads(
+        (REPO / "docs/receipts/knowledge/a2t-kb-size-full-embeddings.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    facet_block = emb_receipt["vectors"]["content_facets"]
+    npz = np.load(snapshot_path.parent / facet_block["file"])
+    facet_ids = [str(v) for v in npz["ids"]]
+    matrix = npz["vectors"]
+    facet_vectors = {
+        facet_id: {"content": tuple(matrix[index].tolist())}
+        for index, facet_id in enumerate(facet_ids)
+    }
+
+    run_dir = Path(str(blend_arm["report"]["run_dir"]))
+    vectors_by_text_sha: dict[str, tuple] = {}
+    with (run_dir / "query-vectors.jsonl").open(encoding="utf-8") as handle:
+        for line in handle:
+            line = line.strip()
+            if not line:
+                continue
+            record = json.loads(line)
+            vectors_by_text_sha[str(record["text_sha256"])] = tuple(
+                float(v) for v in record["values"]
+            )
+
+    ranker = rank_wcos_prior_agree_factory(weights)
+    fuser = fuse_supplyfilter_factory(fuse)
+    snapshot_sha = snapshot.content_hash()
+    subset = json.loads((REPO / SUBSET_RECEIPT_RELPATH).read_text(encoding="utf-8"))
+    packet_by_sample = {
+        item["sample_id"]: item["packet_id"] for item in subset["items"]
+    }
+    from speech_aware_evidence_acquisition.core.model.speech_features import (  # noqa: PLC0415
+        load_speech_feature_packet,
+    )
+
+    feature_root = Path("/home/chao/feat-cache/a2t-q4km-packets-04ccc72a")
+    packet_sha_by_sample = {
+        item["sample_id"]: load_speech_feature_packet(
+            feature_root, item["packet_id"]
+        ).packet_sha256
+        for item in subset["items"]
+    }
+    # The runtime QueryState carries the LOAD-SPLIT identity hash the
+    # ExecutionPlan carries, which is the receipt's ``run_identity_hash`` --
+    # not the receipt's own self-signing ``split_identity_hash`` and certainly
+    # not the split NAME.
+    split_identity_hash = str(subset["run_identity_hash"])
+
+    mismatches: list[str] = []
+    zero_content_in_top_m = 0
+    empty_recall = 0
+    empty_fusion = 0
+    cosines: list[float] = []
+    replayed = 0
+    for sample_id in sample_ids:
+        row = blend_arm["rows"][sample_id]
+        text = row.get("direct_response_text")
+        if not isinstance(text, str):
+            mismatches.append("%s: no landed direct text" % sample_id)
+            continue
+        key = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        vector = vectors_by_text_sha.get(key)
+        if vector is None:
+            mismatches.append("%s: no landed query vector for the flown text" % sample_id)
+            continue
+        try:
+            calls, parsed = parse_tool_calls_text(text)
+        except Exception:  # noqa: BLE001
+            calls, parsed = [], False
+        direct_label = None
+        if parsed and calls and isinstance(calls[0].name, str) and calls[0].name:
+            matches = sorted(
+                facet_id
+                for facet_id, target in label_targets.items()
+                if target == calls[0].name
+            )
+            direct_label = matches[0] if matches else None
+        query_state = QueryState(
+            query_id="%s:%s:step0" % (RUN_ID, sample_id),
+            query_sample_id=sample_id,
+            speech_packet_id=packet_by_sample[sample_id],
+            speech_packet_sha256=packet_sha_by_sample[sample_id],
+            use_split_identity_hash=str(split_identity_hash),
+        )
+        recall_scores = multidim_recall(
+            snapshot, {"content": vector}, lambda fid: facet_vectors.get(fid, {}), top_k
+        )
+        replayed += 1
+        if not recall_scores:
+            empty_recall += 1
+            replay_dispatch = False
+        else:
+            best_cosine = max(
+                (
+                    score
+                    for dims in recall_scores.values()
+                    for dim, score in dims.items()
+                    if dim not in PRIOR_MASS_DIMENSIONS
+                ),
+                default=None,
+            )
+            if best_cosine is not None:
+                cosines.append(float(best_cosine))
+            rank_result = ranker(
+                snapshot_sha256=snapshot_sha,
+                query_state=query_state,
+                recall_scores=recall_scores,
+            )
+            top_m = tuple(c.facet_id for c in rank_result.candidates[: fuse.m])
+            if not any(fid.split(":")[1] == "content" for fid in top_m if ":" in fid):
+                zero_content_in_top_m += 1
+            fusion = fuser(
+                snapshot=snapshot,
+                snapshot_sha256=snapshot_sha,
+                query_state=query_state,
+                rank_result=rank_result,
+                recall_scores=recall_scores,
+            )
+            selected = tuple(fusion.selected_value_ids)
+            if not selected:
+                empty_fusion += 1
+                replay_dispatch = False
+            else:
+                fused = _fused_label_scores(
+                    label_targets, values_by_id, selected, rank_result
+                )
+                blended = _blend_scores(label_targets, fused, direct_label, alpha)
+                replay_dispatch = _argmax_labels(blended) != (direct_label,)
+        flown_dispatch = not bool(blend_arm["mechanical"][sample_id]["retained_primary"])
+        if replay_dispatch != flown_dispatch:
+            mismatches.append(sample_id)
+    return {
+        "semantics": (
+            "each trajectory's RETAIN-or-DISPATCH branch re-derived offline from its "
+            "OWN landed query vector and OWN flown direct text through "
+            "rails.kb_policy's own pure functions, compared against the branch the "
+            "controller actually took. Zero contacts, gold never consulted."
+        ),
+        "trajectories_replayed": replayed,
+        "branch_mismatches": mismatches,
+        "decision_replay_holds": not mismatches and replayed == len(sample_ids),
+        "why_each_trajectory_branched": {
+            "recall_empty": empty_recall,
+            "fusion_selected_nothing": empty_fusion,
+            "zero_content_facets_in_top_m": zero_content_in_top_m,
+            "best_content_cosine_min": round(min(cosines), 6) if cosines else None,
+            "best_content_cosine_max": round(max(cosines), 6) if cosines else None,
+            "best_content_cosine_at_or_above_tau": sum(
+                1 for c in cosines if c >= fuse.tau
+            ),
+            "tau": fuse.tau,
+            "reading": (
+                "content-facet RECALL is healthy -- the cosines clear the admission "
+                "threshold. What never happens is ADMISSION: the ranker's prior-mass "
+                "dimensions outscore any cosine, so the top-m window the fuser admits "
+                "over holds no content facet at all, and percept admission reads only "
+                "NON-prior-mass dimensions. Nothing is admitted, nothing is selected, "
+                "every trajectory retains. This is a property of the cell meeting this "
+                "carrier's knowledge base, not a defect of the flight."
+            ),
+        },
+    }
+
+
 def main() -> int:
     lock = load_lock(umbrella_lock_path())
     root = data_root()
@@ -421,6 +633,12 @@ def main() -> int:
         raise SystemExit("subset receipt count disagrees with its items")
 
     m0_only = "--m0-only" in sys.argv
+    blend_report_relname = None
+    if "--blend-report" in sys.argv:
+        blend_report_relname = sys.argv[sys.argv.index("--blend-report") + 1]
+    out_relname = "g1-read.json"
+    if "--out" in sys.argv:
+        out_relname = sys.argv[sys.argv.index("--out") + 1]
     m0_arm = load_arm("arm1-m0")
     if m0_only:
         return m0_only_read(
@@ -431,7 +649,7 @@ def main() -> int:
             lock=lock,
             root=root,
         )
-    blend_arm = load_arm("arm2-blend")
+    blend_arm = load_arm("arm2-blend", blend_report_relname)
     for arm in (m0_arm, blend_arm):
         if sorted(arm["rows"]) != sample_ids:
             raise SystemExit(
@@ -499,6 +717,84 @@ def main() -> int:
             "blend_exact_match": blend_em / len(ids),
             "exact_match_delta_samples": blend_em - m0_em,
         }
+
+    # ---- DECISION REPLAY: the invariant a branch-only replay cannot carry --
+    #
+    # The registered branch-only replay proves that the SUPPLY a dispatched
+    # trajectory received equals what the pure functions independently produce.
+    # When NOTHING dispatches it has nothing to check and reports zero
+    # trajectories, which is vacuous rather than passing. The invariant that
+    # still bites is one level up: replay the RETAIN-versus-DISPATCH DECISION
+    # itself, through rails.kb_policy's OWN pure functions, on each
+    # trajectory's OWN landed query vector and OWN flown direct text, and
+    # require it to reproduce the controller's flown branch on every sample.
+    decision_replay = replay_decisions(
+        blend_arm=blend_arm,
+        sample_ids=sample_ids,
+        root=root,
+    )
+    decomposition["decision_replay"] = decision_replay
+    decomposition["branch_only_replay_is_vacuous"] = (
+        int(decomposition["branch_only_replay"].get("trajectories_replayed", 0)) == 0
+    )
+
+    # ---- WHERE THE PAIRED DELTA COMES FROM, when nothing dispatched ------
+    #
+    # If no trajectory dispatched, the policy supplied nothing to any contact
+    # and the two arms differ ONLY where the frozen core's own multi-slot
+    # decode variance produced a different direct answer for the same prompt.
+    # A delta must then be attributed to that channel and NOT to the method,
+    # and this block is what makes that attribution checkable rather than
+    # asserted.
+    blend_report_mech = blend_arm["report"]["mechanical"]
+    divergent = sorted(
+        blend_arm["report"]["two_pass"]["pass_a"]["divergent_from_landed_m0_text"]
+    ) if "two_pass" in blend_arm["report"] else []
+    flipped_tool = sorted(
+        sid
+        for sid in sample_ids
+        if float(m0_scored[sid].metrics["tool_accuracy"])
+        != float(blend_scored[sid].metrics["tool_accuracy"])
+    )
+    flipped_em = sorted(
+        sid
+        for sid in sample_ids
+        if float(m0_scored[sid].metrics["exact_match"])
+        != float(blend_scored[sid].metrics["exact_match"])
+    )
+    identical_text = sorted(
+        sid
+        for sid in sample_ids
+        if blend_arm["rows"][sid].get("direct_response_text")
+        == m0_arm["rows"][sid].get("final_response_text")
+    )
+    decode_variance = {
+        "question": (
+            "with zero dispatches the policy supplied nothing, so any paired delta "
+            "must come from somewhere other than the method. Where?"
+        ),
+        "dispatched_trajectories": int(blend_report_mech["two_contact_trajectories_dispatched"]),
+        "evidence_contacts_flown": int(blend_report_mech["pass_b_evidence_contacts_flown"]),
+        "trajectories_with_text_identical_to_m0": len(identical_text),
+        "trajectories_with_text_divergent_from_m0": len(sample_ids) - len(identical_text),
+        "divergent_sample_ids": divergent,
+        "tool_accuracy_flips": flipped_tool,
+        "tool_accuracy_flips_all_inside_divergent_set": all(
+            sid in set(divergent) for sid in flipped_tool
+        ),
+        "exact_match_flips": flipped_em,
+        "exact_match_flips_all_inside_divergent_set": all(
+            sid in set(divergent) for sid in flipped_em
+        ),
+        "attribution": (
+            "every scored difference between the two arms falls inside the set of "
+            "trajectories whose direct decode did not reproduce byte for byte, and "
+            "no trajectory received any evidence. The paired delta is therefore the "
+            "frozen core's OWN multi-slot decode-variance channel, measured on this "
+            "carrier, and it is NOT an effect of the policy cell. It must not be "
+            "read as the method helping or hurting."
+        ),
+    }
 
     # ---- the tool-name-multiset mapping, measured on THIS population -----
     gold_multiset_sizes = Counter(len(gold[sid]) for sid in sample_ids)
@@ -635,6 +931,7 @@ def main() -> int:
         "paired_exact_match": em_paired,
         "per_tier": per_tier_table(m0_scored, blend_scored, sample_ids),
         "mechanism": decomposition,
+        "decode_variance_attribution": decode_variance,
         "tool_name_multiset_mapping": multiset_mapping,
         "a0_anchor": {
             "note": (
@@ -668,7 +965,7 @@ def main() -> int:
     }
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = OUT_DIR / "g1-read.json"
+    out_path = OUT_DIR / out_relname
     out_path.write_text(
         json.dumps(report, indent=2, sort_keys=True, default=str) + "\n",
         encoding="utf-8",
@@ -732,7 +1029,29 @@ def main() -> int:
         }
     ))
     print("subgroups: %s" % json.dumps(decomposition["subgroups"]))
-    print("branch-only: %s" % json.dumps(decomposition["branch_only_replay"]))
+    print("branch-only: %s (vacuous=%s)" % (
+        json.dumps(decomposition["branch_only_replay"]),
+        decomposition["branch_only_replay_is_vacuous"],
+    ))
+    print("decode variance: %s" % json.dumps(
+        {k: v for k, v in decode_variance.items() if k not in ("question", "attribution")}
+    ))
+    print("decision replay: %s" % json.dumps(
+        {
+            k: v
+            for k, v in decomposition["decision_replay"].items()
+            if k not in ("semantics", "why_each_trajectory_branched")
+        }
+    ))
+    print("why: %s" % json.dumps(
+        {
+            k: v
+            for k, v in decomposition["decision_replay"][
+                "why_each_trajectory_branched"
+            ].items()
+            if k != "reading"
+        }
+    ))
     print("")
     print("read written: %s" % out_path)
     print("read sha256: %s" % sha256_file(out_path))

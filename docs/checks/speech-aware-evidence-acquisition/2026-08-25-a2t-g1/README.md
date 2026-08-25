@@ -1,4 +1,4 @@
-# Audio2Tool stage G1 (second attempt) — **PARTIAL: M0 LANDED, BLEND SENTINEL-ABORTED**
+# Audio2Tool stage G1 — **COMPLETE: BOTH ARMS LANDED, AND THE FIRST SIGNAL IS A MECHANISM NULL**
 
 Date: 2026-08-25. Campaign row `SAEA-A2T-G1` (`docs/exposure-ledger.md`), registered at commit
 `4e25ac68` **before any flight contact**. Authority:
@@ -17,7 +17,14 @@ Date: 2026-08-25. Campaign row `SAEA-A2T-G1` (`docs/exposure-ledger.md`), regist
 > row with §6's four fixes. It **tripped the same sentinel again**, and this time the added
 > telemetry **attributed it**: the stall is a **memory-path stall under VRAM
 > oversubscription**, and **throttling is refuted**. §§1–7 below describe attempt 1 and remain
-> exactly as written. The paired first signal is still **not reached**.
+> exactly as written.
+>
+> **THIRD ATTEMPT (2026-08-25T12:50Z) — READ §10. THE BLEND ARM LANDED COMPLETE.** The two-pass
+> redesign kept the embedder sidecar out of every decode window and the arm flew 104/104 at a
+> 22.47 ms/token decode median with no sentinel trip. **The paired first signal now exists and it
+> is a NULL with a mechanism: 0 of 104 trajectories dispatched, so the byte-identical v1 cell is
+> STRUCTURALLY INERT on this carrier.** §§1–9 describe attempts 1 and 2 and remain exactly as
+> written.
 
 ## 1. The claim this campaign carries (Amendment 2 framing, no hedging)
 
@@ -417,3 +424,218 @@ bug with a known repair, not an unexplained instability.
 Nothing in this section licenses a generality claim, a superiority claim, test contact, a knob
 change, or Stage-3 activity. Gold was never opened; the 180 flushed partial records and 60
 partial decodes are dead spend, disclosed and never re-read as results.
+
+---
+
+## 10. THIRD ATTEMPT — **THE BLEND ARM LANDED COMPLETE, AND THE FIRST SIGNAL IS A MECHANISM NULL**
+
+Registered under the same row `SAEA-A2T-G1` at commit `4fa63514` **before any contact of it**.
+Launcher `launcher/launch_a2t_g1_blend_attempt3.py` (git blob sha256 `78342cd660f5a0c6…0364d`,
+commit `099884e4`); attempt `attempt-20260825T125051Z-a2tg1blend`; preflight
+`gpu-preflight-blend-attempt3.json`; report `arm2-blend-mechanical-report-attempt3.json`
+(sha256 `56bf0a7592d2b595…c0b520`); paired read `g1-read.json` (sha256
+`2536f8666d87b315…8b0f2f`). Attempts 1 and 2 and their stop records are preserved unmodified.
+
+> **OUTCOME.** Exit 0. **104 of 104 samples, 107 core contacts, the sentinel never tripped, and
+> the co-residency invariant held on all 111 checks.** The paired first signal exists for the
+> first time. **It is a NULL, and the null has a mechanism: the byte-identical v1 policy cell is
+> STRUCTURALLY INERT on this carrier — 0 of 104 trajectories dispatched, so no trajectory ever
+> received evidence.** The −1.9 pp paired tool-accuracy difference is **not** an effect of the
+> method; every scored flip is attributed to the frozen core's own multi-slot decode-variance
+> channel, proved below.
+
+### 10.1 What the two-pass redesign was for, and whether it worked
+
+Attempt 2 attributed its stall to VRAM oversubscription and named the defect exactly: the
+query-vector miss path spawned the embedder sidecar and never stopped it, so one miss restored
+the bad condition for the whole loop. This attempt removed the condition structurally.
+
+| phase | sidecar | `memory.used` | GPU util | decode |
+|---|---|---|---|---|
+| canary (2 contacts) | DOWN | 21,224 – 21,288 MiB | 0 – 98 % | **12.32 / 11.47 ms/token** |
+| PASS A (104 contacts) | DOWN | **21,288 MiB, all 21 samples** | 92 % median | median **22.47**, p90 27.58, max 73.94 |
+| offline bridge (8 embeds) | **UP ALONE** | 21,288 → **24,125** → 21,288 MiB | **0 – 2 %** | no decode in flight |
+| PASS B (0 evidence contacts) | DOWN | 21,288 MiB, all 85 samples | 0 % (CPU-bound recall) | no rows |
+| resend (1 contact) | DOWN | 21,288 MiB | — | — |
+
+The bridge row is the control that proves the diagnosis rather than assuming it: **the sidecar's
+≈2,837 MiB device allocation appears exactly where attempt 2 said it would, and it costs nothing
+because the GPU is idle underneath it.** Decode ran at a 22.47 ms/token median across all 104
+Pass-A contacts against attempt 2's 997.25 median after its sidecar re-spawned — **a 44×
+difference on the same host, same build, same geometry, same policy cell.**
+
+**The invariant was asserted, not hoped for.** `SidecarCoResidencyGuard` ran **111 checks — 107
+before individual frozen-core contacts and 4 at phase boundaries — with 0 violations**, by two
+independent probes (the launcher's own live sidecar handle and a TCP probe of port 8082). The
+bridge additionally proved the port free AND VRAM returned to 21,288 MiB against a 22,500 MiB
+ceiling before Pass B was allowed to start.
+
+**Throttling, disclosed as before and still not the mechanism.** `sw_power_cap` was flagged in
+the pre-takeoff, pass-a, pass-b and resend phases. Pass A ran at a **93.4 W median of a 100 W
+cap** at 1,192 – 1,687 MHz and 44 – 62 °C, and decoded at 22 ms/token throughout. One `clocks.sm`
+sample in the pass-b window reads **63,487 MHz**, which is a driver/parse artifact and not a
+measurement; it is recorded rather than dropped, and the phase median is 1,192 MHz.
+
+### 10.2 The flight, in order
+
+| stage | outcome |
+|---|---|
+| GPU preflight | SmartFanMode 3, 100 W enforced, clock lock re-asserted, 21,224 MiB baseline, **sidecar not running, port 8082 refused** |
+| every pre-takeoff gate | PASS (composed hash, v1 cell key-for-key, §8.1 derivation margin +12,183, receipts, 151 label identities, decontamination, facet vectors, packet bindings, both `f1060078` probes, dry check over 25,519 payloads, GGUF attestation 50.4 s, AttemptStore two-pass sizing guard) |
+| durable query-vector table | **95 vectors loaded, 0 tool contacts, sidecar NOT spawned** |
+| canary | **PASS 12.32 / 11.47 ms/token, byte-identical to the M0 authority on both samples** |
+| PASS A | **104/104 in 62.6 s**; 93 texts byte-identical to the landed M0 text, **11 divergent** |
+| offline bridge | 8 texts embedded (81 of 89 distinct already covered, coverage **0.9101** against a registered 0.9138), sidecar up 5.3 s and stopped SIGTERM `forced` false, port free, VRAM returned |
+| PASS B | **104 trajectories in 272.3 s; 104 contact-0s RESUMED at zero cost, 0 evidence contacts flown** |
+| resend | flown, **byte-identical** to the M0 authority |
+| trace isolation | zero record-id overlap across main (416), pass-a (728), canary (14), resend (7) |
+
+**Exact spend: 107 frozen-core contacts (2 canary + 104 Pass A + 1 resend), 591.348 metered audio
+seconds, 10 embedding tool contacts (8 bridge + 2 jitter), 1,427,941 prompt tokens, 3,760
+completion tokens, 105.2 s contact latency, 0.02921 GPU active hours.** Inside the 135 core and
+50 tool attempt cells. Prompt reuse **99.14 %**. **Campaign cumulative: 303 / 400 core contacts,
+1,532.409 / 2,000 audio seconds, 136 / 200 embedding tool contacts.**
+
+**The replay saved the flight.** 104 Pass-B contact-0s were resumed from Pass A's durable record,
+each admitted only after the sha256 of the messages document the runner built was proved equal to
+the sha256 Pass A recorded for that sample — 104 of 104 matched. Without it the arm's worst case
+was 213 core contacts against 204 remaining, and the launcher's own guard would have refused
+takeoff at zero spend.
+
+### 10.3 The paired first signal — BLEND against the LANDED M0 on the same 104
+
+Frozen scorer `a2t-scorer-v1`, reused not reimplemented; gold opened once over the sealed
+population.
+
+| | M0 (landed) | BLEND (attempt 3) | paired delta |
+|---|---|---|---|
+| tool accuracy | 0.5962 (62/104) | **0.5769 (60/104)** | **−1.92 pp**, CI90 [−4.81, 0.00], McNemar p 0.5 |
+| exact match | 0.2788 (29/104) | **0.2692 (28/104)** | **−0.96 pp**, CI90 [−2.88, 0.00], McNemar p 1.0 |
+| gap | 0.3173 | 0.3077 | −0.96 pp |
+| empty-call rate | 0.1346 (14/104) | **0.1346 (14/104)** | **0.00 pp** |
+| W→C / C→W (tool) | — | — | **0 / 2** |
+| W→C / C→W (exact) | — | — | **0 / 1** |
+
+Per tier, published whole — **six of eight tiers are identical to the sample**:
+
+| tier | n | M0 tool | BLEND tool | Δ pp | M0 EM | BLEND EM | Δ pp |
+|---|---|---|---|---|---|---|---|
+| tier1_direct | 13 | 0.6923 | 0.6154 | −7.69 | 0.0769 | 0.0769 | 0.00 |
+| tier2_parametric | 13 | 0.6154 | 0.6154 | 0.00 | 0.4615 | 0.4615 | 0.00 |
+| tier3_multi_intent | 13 | 0.4615 | 0.4615 | 0.00 | 0.0000 | 0.0000 | 0.00 |
+| tier4_implicit | 13 | 0.3846 | 0.3846 | 0.00 | 0.0769 | 0.0769 | 0.00 |
+| tier5_needle | 13 | 0.9231 | 0.9231 | 0.00 | 0.3846 | 0.3846 | 0.00 |
+| tier6_correction | 13 | 0.7692 | 0.7692 | 0.00 | 0.5385 | 0.5385 | 0.00 |
+| tier7_multiturn | 13 | 0.6154 | 0.6154 | 0.00 | 0.6154 | 0.6154 | 0.00 |
+| tier8_intent_blending | 13 | 0.3077 | 0.2308 | −7.69 | 0.0769 | 0.0000 | −7.69 |
+
+**THE DELTA IS NOT THE METHOD, AND THAT IS CHECKABLE RATHER THAN ASSERTED.** Dispatched
+trajectories: **0**. Evidence contacts flown: **0**. The policy supplied nothing to any contact,
+so the two arms can only differ where the frozen core's own decode of the same prompt differed.
+**11 of 104 Pass-A texts diverged from the landed M0 text. Both tool-accuracy flips
+(`tier1_direct:001631`, `tier8_intent_blending:000441`) and the single exact-match flip
+(`tier8_intent_blending:000441`) fall inside those 11**, and all three flips are C→W. The paired
+delta is the program's known **multi-slot decode-variance channel**, measured here at 10.6 % text
+divergence and 1.9 pp of score noise on this carrier, and it must not be read as the method
+helping or hurting.
+
+### 10.4 The mechanism verdicts, including the one that failed
+
+| invariant | verdict |
+|---|---|
+| dispatch decomposition closes over the population | **PASS** — 104 retained + 0 dispatched = 104; `dead_direct_dispatched` 0 equals `dispatched` 0 |
+| dispatch matched the pre-registered projection | **PASS** — projected 0, flown 0 |
+| branch-only replay (supply equals the flown fusion decision) | **VACUOUS, NOT PASS** — 0 trajectories branched, so it had nothing to check, and it is reported as vacuous rather than as a pass |
+| **decision replay** (the retain-or-dispatch BRANCH re-derived offline per trajectory) | **PASS — 104 of 104 replayed, 0 mismatches** |
+| retain == direct-label-recovered | **FALSIFIED on this carrier — 104 retained against 89 recovered** |
+| co-residency (no sidecar while a decode is in flight) | **PASS — 111 checks, 0 violations** |
+| replayed contact 0 is byte-identically the flown contact 0 | **PASS — 104 of 104 messages digests matched** |
+| decode-speed canary + canary hash authority | **PASS** — 12.32 / 11.47 ms/token, byte-identical to M0 |
+| identical-prompt resend | **PASS — byte-identical** |
+| in-flight decode-rate sentinel | **NO TRIP** — 104 rates, median 22.47, max 73.94 ms/token |
+
+The branch-only replay being vacuous is why a **decision replay** was added and run: it re-derives
+each trajectory's retain-or-dispatch branch offline, from that trajectory's OWN landed query
+vector and OWN flown direct text, through `rails.kb_policy`'s own pure functions, and requires it
+to reproduce the controller's flown branch. It reproduced all 104 with zero mismatches, at zero
+contacts, with gold never consulted.
+
+**`retain == direct-label-recovered` IS FALSIFIED HERE, AND THE FALSIFICATION IS THE FINDING.**
+The registered expectation — under the v1 cell a trajectory dispatches exactly when the normalizer
+recovers no label — assumes the fuser actually selects something. On this carrier it never does,
+so all 15 label-free trajectories retained instead of dispatching. The invariant was never a
+theorem; it was an empirical regularity of SLURP, and Audio2Tool breaks it.
+
+### 10.5 WHY nothing dispatched — the structural mechanism, measured
+
+This is the payload of the attempt, and it is not a marginal miss.
+
+| measurement over all 104 trajectories | value |
+|---|---|
+| recall returned nothing | **0** |
+| best content-facet cosine, min / max | **0.7594 / 0.9572** |
+| trajectories whose best content cosine clears tau 0.65 | **104 of 104** |
+| trajectories with ZERO content facets in the top-m=5 rank window | **104 of 104** |
+| fusion selected nothing | **104 of 104** |
+
+**Content-facet RECALL is healthy — the cosines clear the admission threshold comfortably. What
+never happens is ADMISSION.** The ranker scores `w_cos·cos + w_prior·prior + w_agree·agree` at
+0.5 / 0.3 / 0.2, and on this knowledge base the prior-mass dimensions carry **unnormalized scores
+of roughly 1.2 to 4.1** against a cosine of at most 0.96. Label and prior facets therefore occupy
+the entire top-m=5 window the fuser admits over. The percept-admission gate reads **only
+non-prior-mass dimensions**, and a label or prior facet has none — so `admitted()` is false for
+every candidate, `admitted_facets` is empty, no value is ever selected, and every trajectory takes
+the retain branch. Independently corroborated by the flown record of the two aborted attempts:
+**86 BLEND trajectories, 86 direct-decode contacts, 0 evidence-decode contacts.**
+
+**What this establishes.** The locked policy cell transfers byte-identical, and the §8.1 derived
+geometry serves this carrier end to end — both were already true after M0, and this attempt adds
+that the full BLEND machinery runs cleanly over 104 trajectories on this carrier. **What it also
+establishes, and what G2 must not be allowed to discover the expensive way: on Audio2Tool the
+cell's SUPPLY PATH NEVER FIRES.** Byte-identical transfer of the cell is not the same thing as
+byte-identical transfer of the *behaviour*, and this carrier separates the two.
+
+### 10.6 Recommendation for G2 — **do NOT open it**
+
+Not for the previous reason. G1's mechanics half now passes completely and its first-signal half
+is reached. The reason is that **G2 as scoped would spend an unexposed 400-item tier measuring a
+policy that provably does nothing on this carrier**, and would return a null with wider error bars
+and no more mechanism than this 104-item read already gives.
+
+1. **The blocking question is a KNOWLEDGE-BASE / RANKER-SCALE question, not a campaign-size
+   question.** The prior-mass dimensions are unnormalized relative to the cosine dimension, and on
+   a knowledge base with 12,601 values and 151 tool labels that difference is large enough to
+   evict every content facet from a top-m=5 window. Nothing about that is discoverable by flying
+   more samples.
+2. **Anything that fixes it is a KNOB CHANGE and is NOT authorized here.** Normalizing prior mass,
+   raising `m`, or admitting on the content dimension separately would each make the supply path
+   fire — and each would break the campaign's own central claim that the cell transfers
+   byte-identical. That trade is an OWNER decision, not an implementer's.
+3. **What is cheap and unauthorized-free**: this read already carries the diagnostic. A future
+   owner-approved experiment can quantify the eviction directly (offline, zero contacts) by
+   sweeping `m` and prior normalization against the landed vectors, and report at what setting a
+   content facet first enters the admitted window.
+4. **The two-pass launcher and its co-residency guard should become the default shape** for any
+   arm that needs an embedder on this host. It converted a 51× decode collapse into a 22 ms/token
+   flight at a cost of 104 prompt-cache-hit resumes and 7.2 s of bridge.
+
+Nothing in this section licenses a generality claim, a superiority claim, test contact, a knob
+change, or Stage-3 activity. `consumed` stays `no`. **The operational debt stands: the SLURP np8
+service remains DOWN and must be respawned by a later mission before any SLURP arm flies.**
+
+### 10.7 Artifacts
+
+| artifact | sha256 |
+|---|---|
+| `launcher/launch_a2t_g1_blend_attempt3.py` (git blob) | `78342cd660f5a0c6d6886e2019d0877530dee2ddbcde23baba6338fabea0364d` |
+| `dispatch-projection.json` | `c27b0be62bab33d0172a2611841ac48e9d31f98049591ace883b93bd6a9dcb36` |
+| `gpu-preflight-blend-attempt3.json` | `8b28ae75ce8a8657f87bfadf611b287d6e2a9caa43139d0bd9bd4c167f19b958` |
+| `arm2-blend-mechanical-report-attempt3.json` | `56bf0a7592d2b595da86dab84ad7c0ae8246d1afc150f4cb695f2c9efcc0b520` |
+| `g1-read.json` (the paired read) | `2536f8666d87b3157ec909c4c43e4b318a9b8ccb7f2ea3cacb195265f98b0f2f` |
+| Pass-A direct outputs (run dir) | `73e28511f419cd67b1721d829438f8c102e725e01243c9a9f000e00d92aadc9c` |
+| bridge vectors (run dir) | `be63447edd56b97bdc3afa711cda9d40f8dd22b126f2f37bdbee1475b9d088a9` |
+| core-client trace manifest | `94b8e63a595ba1406616c11ffcaa2e09a8d7eaa3ad9383d89f9180afc3b30165` |
+
+Code: `launcher/launch_a2t_g1_blend_attempt3.py`, `scripts/a2t_g1_dispatch_projection.py`,
+`scripts/a2t_g1_read.py`. **`rails/` and `core/` are untouched: `rails/kb_policy.py`'s last commit
+is still `f1060078`**, re-verified live at takeoff.
