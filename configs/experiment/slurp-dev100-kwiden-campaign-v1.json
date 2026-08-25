@@ -1,0 +1,121 @@
+{
+  "experiment_id": "SAEA-DEV100-KWIDEN",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "K-WIDEN retrieval-width mini-campaign on DEV-100 (owner iterate-before-concluding discipline; DEV-500 confirmatory verdict section 4.1 gate: k-widening top-k 8-32 may be dev-iterated on DEV-100/500 under a new registered mini-campaign BEFORE the DEV-1000 touch). Evidence basis: the DEV-500 retrieval-reachability curve at the frozen cell -- gold-facet recall 71.50 percent at k=5, 74.25 percent at k=8, 84.25 percent at k=32 -- shows BLEND operates AT the k=5 ceiling, so wider recall is the only quantified headroom outside key construction. The DEV-100 damage-channel analysis proved raising recall_top_k_per_dimension ALONE is a no-op (the fuser's top_m=5 re-truncates the wider pool before admission; 0 of 100 trajectories change), so each round moves recall_top_k_per_dimension AND fusion_m TOGETHER as ONE registered coupled variable named retrieval width. Every other knob is byte-frozen from configs/policy/kb-policy-v1-dev100.json (the sealed DEV-100 campaign's frozen cell: alpha 0.45, tau 0.65, rrf rank weighting 0.5/0.3/0.2, fusion_c 2, fusion_top_l 3, train priors, f1060078 label-identity repair, M11 pair-boundary stage OFF, value vectors SEALED, facet-side percept admission). Gold opens scoring-side only after a round's arms seal, never in runtime. This fragment is the machine-readable mini-campaign contract: knob ladder, arms, stopping rule, ceilings, comparison spec, and the pinned knowledge snapshot. It carries no promotion claim -- any widened cell that wins on DEV-100 gets its own DEV-500-tier confirmatory registration later, per the ladder.",
+  "kb_campaign_authority": {
+    "gate": "docs/readiness/2026-08-24-dev500-confirmatory-verdict.md section 4.1 (DEV-1000 gate: k-widening dev-iteration on DEV-100/500 first, under a new registered mini-campaign, per iterate-before-concluding)",
+    "design_input": "docs/readiness/2026-08-24-dev100-damage-channel-analysis.md (top_m re-truncation lesson sections 6-7: top_k 8 alone changes 0 trajectories; top_k 8 + m 8 changes the supply on 34 of 100 round-2-basis trajectories with outcomes unknowable offline; gold newly supplied on 1 of the 11 damage samples)",
+    "frozen_cell": "configs/policy/kb-policy-v1-dev100.json (byte-frozen non-width knobs; the DEV-100 campaign verdict froze this cell at 72/100 with zero C-to-W)",
+    "owner_rulings": "docs/readiness/2026-08-23-knowledge-plane-baseline-rulings.md",
+    "ruling_sections": ["2.2", "7.1", "7.2", "7.3"]
+  },
+  "kb_campaign_dataset_fragment": "slurp-speech-native-dev100",
+  "kb_campaign_split": {
+    "split_name": "DEV-100",
+    "split_role": "dev",
+    "use_partition_role": "dev",
+    "receipt": "docs/receipts/probe-samples/DEV-100.json",
+    "split_identity_hash": "e9a7b7febcf4fe3dc228370f7487e1e75dea3d63d447a07fbfe87c1404e2d853",
+    "receipt_integrity_hash": "d676d38b4d27b3a136ba2523b96ae3c71ba2b8b436f7712f4f0c976c3ea833e1",
+    "count": 100,
+    "audio_seconds_total": 275.700125
+  },
+  "kb_campaign_policy_chain": {
+    "controller_policy_id": "saea-kb-alpha-blend-v1",
+    "ranker_policy_id": "saea-rank-wcos-prior-agree-v1",
+    "fuser_policy_id": "saea-fuse-supplyfilter-v1",
+    "agent_executor_id": "openjiuwen-workflow-v1",
+    "policy_config_baseline": "configs/policy/kb-policy-v1-dev100.json",
+    "m11_pair_boundary_stage": false,
+    "m11_pair_boundary_rationale": "carried frozen from the sealed DEV-100 campaign cell; not a KWIDEN variable"
+  },
+  "kb_campaign_knowledge_snapshot": {
+    "snapshot_id": "slurp-kb-distmodel-76e61b0666162aa7",
+    "builder_policy_id": "saea-kb-distmodel-v1",
+    "receipt": "docs/receipts/knowledge/slurp-kb-size-full.json",
+    "snapshot_artifact_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full/snapshot.json",
+    "snapshot_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+    "source_split": "train",
+    "source_split_identity_hash": "6a6677e97a64063b8672b2d175bd6378bcf9b644346fa2d249cc2d80343b252c",
+    "facet_count": 11863,
+    "value_count": 11514
+  },
+  "kb_campaign_round_k1_knobs": {
+    "alpha": 0.45,
+    "rank_weight_id": "rrf",
+    "evidence_variant": "rank+prior+agreement",
+    "tau": 0.65,
+    "top_k_per_dimension": 8,
+    "fusion_m": 8,
+    "fusion_c": 2,
+    "fusion_top_l": 3,
+    "rank_weights": {"w_cos": 0.5, "w_prior": 0.3, "w_agree": 0.2},
+    "prior_source": "train",
+    "derivation": "the frozen kb-policy-v1-dev100.json cell with EXACTLY the coupled retrieval-width move top_k 5 to 8 AND fusion_m 5 to 8 (one registered variable; the damage analysis proved m must widen with k or the move is inert). c and top_l unchanged, so the supplied-value ceiling stays c*top_l = 6 and the retain-primary mechanism (retain fires if and only if the repaired normalizer recovers a direct label, alpha 0.45 dominance) is m-invariant."
+  },
+  "kb_campaign_width_ladder": [
+    {"round": "K1", "top_k_per_dimension": 8, "fusion_m": 8},
+    {"round": "K2-candidate", "top_k_per_dimension": 16, "fusion_m": 16},
+    {"round": "K3-candidate", "top_k_per_dimension": 32, "fusion_m": 32}
+  ],
+  "kb_campaign_tunable_knobs": [
+    "retrieval_width (recall_top_k_per_dimension AND fusion_m, moved together as ONE registered coupled variable per round; all other knobs byte-frozen from configs/policy/kb-policy-v1-dev100.json)"
+  ],
+  "kb_campaign_arms": [
+    {
+      "arm_id": "M0",
+      "description": "direct decode baseline, CONSUMED from the sealed DEV-100 round-0 per-sample scoring artifact (48/100); never re-flown under this campaign",
+      "contacts_per_sample": 0
+    },
+    {
+      "arm_id": "BLEND",
+      "description": "C3 alpha-blend at the widened retrieval cell: direct decode, then acquire, then evidence-conditioned decode on dispatched trajectories only (retain-primary trajectories stop at 1 contact); every contact carries the original speech packet",
+      "contacts_per_sample": 2,
+      "tool_contacts_per_sample": 1
+    }
+  ],
+  "kb_campaign_comparison_spec": {
+    "primary": "paired per-sample vs the sealed DEV-100 BLEND round-4 and round-5 artifacts (both 72/100, C-to-W 0, retain-primary 63-67) and vs the sealed round-0 M0 (48/100)",
+    "deliverables": [
+      "W-to-C and C-to-W lists vs M0 and vs round-4/round-5",
+      "retain-primary rate and its equality with direct-label-recovered (the alpha 0.45 mechanism invariant)",
+      "supply-change attribution on dispatched trajectories (which samples' selected_value_ids changed vs the round-4/5 width-5 cell)",
+      "evidence-prompt declared-token distribution vs round-5's (median 2404, max 2928)",
+      "decode rates, prompt-reuse ratios, canary and resend byte identity"
+    ]
+  },
+  "kb_campaign_stopping_rule": {
+    "hard_cap_rounds": 3,
+    "widened": {
+      "condition": "net paired gain vs the round-4/5 base (delta correct samples > 0) with C-to-W vs M0 not exceeding the base's 0 by more than the gain",
+      "consequence": "the coordinator may register the next ladder width (16 then 32) as the following round"
+    },
+    "converged_or_falsified": {
+      "condition": "delta vs the round-4/5 base <= 0, or losses on previously-correct dispatched samples offset the reachability gains",
+      "consequence": "widening is declared exhausted at this tier; the mini-campaign ends and the report recommends key-construction work instead"
+    },
+    "evaluation_moment": "between rounds only, after every arm of a round has completed (runner seal-before-score); gold never enters runtime"
+  },
+  "kb_campaign_ceilings": {
+    "frozen_core_contacts_total": 500,
+    "frozen_core_contacts_per_round": 210,
+    "pinned_tool_embedding_contacts_total": 300,
+    "metered_audio_seconds_total": 1500,
+    "gpu_hours_total": 0.6,
+    "one_shot_semantics": "per ROUND attempt; no silent intra-round retry. The campaign exposure row stays open across rounds K1..K3 with per-round accounting appended until the stopping rule fires or the hard cap is reached."
+  },
+  "kb_campaign_per_round_discipline": {
+    "record_server_np": true,
+    "record_identical_prompt_resend_pair": true,
+    "resend_rationale": "the pcorrf divergence lesson: each round records the server -np and one byte-identical prompt resend pair.",
+    "prompt_fit_precondition": "a session-bound prompt-fit MF row at the round's fusion_m worst case (m longest facet representations + 6 longest values, conservative) must PASS before takeoff; the round-5 evidence prompts measured declared max 2928 at m=5 against the 8192-token slot",
+    "outputs": [
+      "per-arm accuracy",
+      "wrong-to-correct and correct-to-wrong lists vs M0 and vs the round-4/5 base",
+      "retain-primary and direct-label-recovered counts",
+      "evidence-prompt declared-token distribution",
+      "contacts used",
+      "worst-round disclosure"
+    ]
+  }
+}
