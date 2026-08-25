@@ -23,10 +23,10 @@ landed bytes at zero contacts it is declared unverified in §9 rather than estim
 
 **The Audio2Tool KB does not have a coverage hole, and widening the window would not have helped.**
 Of the 11 gold-absent dispatched trajectories, **0 are a BUILD defect and 11 are a RANKING defect** —
-every one of their gold tools sits in the pinned snapshot with 186–191 values and 186–189 vectored
+every one of their gold tools sits in the pinned snapshot with 144–189 values and 144–189 vectored
 content facets. But the ranking defect is not where the key-construction agenda expected it either.
 **9 of the 11 are refused by the τ = 0.65 percept gate** (their best gold-bearing facet scores
-0.5712–0.6356), which no window depth can lift, and the other **2 are refused by the `top_l` = 3
+0.5653–0.6356), which no window depth can lift, and the other **2 are refused by the `top_l` = 3
 target budget**, which is not a window knob either: **0 of 11 are reached at ANY depth under the
 locked cell.** The reason the cosines are low is the deliverable finding: on the reachable subgroup
 **the retrieval key is a constant.** The 15 dead-direct trajectories carry only **5 distinct query
@@ -34,9 +34,9 @@ vectors**, and **11 of the 15 share ONE identical key** — the embedding of the
 therefore received **one identical supply**, the three targets `cancelNavigation` /
 `setHapticStrength` / `setPowerState`, whatever the utterance was about. Gold reached exactly one of
 those 11, by coincidence, and that one still scored wrong. The SLURP dead-direct retrieval deficit is
-present on Audio2Tool and is **six to eight times larger** (gold-in-top-5 26.67 % vs 71.91 %, a
-−45.24 pp gap against SLURP's ≈ −6 pp; median gold-facet cosine 0.6054 vs 0.8632, −0.2578 against
-SLURP's −0.053). The compounding story is not merely confirmed — the second ceiling is a *consequence*
+present on Audio2Tool and is **several times larger** (gold-in-top-5 26.67 % vs 71.91 %, a −45.24 pp
+gap against SLURP's −4.0 to −7.9 pp, i.e. 5.7× to 11.3× and ≈ 7.6× at the midpoint; median
+gold-facet cosine 0.6054 vs 0.8632, −0.2578 against SLURP's −0.053, i.e. 4.9×). The compounding story is not merely confirmed — the second ceiling is a *consequence*
 of the first, because the α veto selects precisely the trajectories whose answer text is empty, and
 the answer text IS the query. Finally, **K3 (field-role-constrained contact-0) is an off-switch in
 disguise on this carrier and is refused on that ground**: projected dispatch falls from 15/104 to
@@ -122,8 +122,8 @@ which case no ranker, no width and no key representation could ever surface it. 
 **Dominating sub-cause: RANKING, 11 of 11.**
 
 Every one of the 11 gold tools is present in force. Per-tool KB depth for the 11, read off
-`case_b_ranking_recall_defect.rows`: **186–191 values** and **186–189 vectored content facets** each,
-and all 11 gold tools are inside the 151-entry label vocabulary.
+`case_b_ranking_recall_defect.rows`: **144–189 values**, **146–191 content facets** and **144–189 of
+those facets vectored**, and all 11 gold tools are inside the 151-entry label vocabulary.
 
 And the carrier has **no build hole at all**: over the whole 104,
 `population_coverage_context` reads **0** trajectories whose gold tool has no KB value and **0**
@@ -168,7 +168,7 @@ supply, and each can independently keep the gold value out. `binding_stage`, wit
 
 | | count of the 11 |
 |---|---|
-| **blocked by the τ = 0.65 percept gate** (best gold-bearing facet cosine 0.5712–0.6356) | **9** |
+| **blocked by the τ = 0.65 percept gate** (best gold-bearing facet cosine 0.5653–0.6356) | **9** |
 | blocked by the `top_l` = 3 target budget only (gold facet passes τ, gold target ranks 8th) | **2** |
 | **reached at SOME depth under the locked `top_l` = 3** | **0** |
 | reached at some depth if `top_l` were lifted entirely | 2 (at depths 8 and 16) |
@@ -238,7 +238,7 @@ prior-mass dimension removed entirely), and any correction lies weakly between t
 
 ---
 
-## 4. Q3 — the dead-direct query deficit is PRESENT, and it is 6–8× larger than SLURP's
+## 4. Q3 — the dead-direct query deficit is PRESENT, and it is several times larger than SLURP's
 
 Source: `q3_dead_direct_contrast`. Both statistics were fixed in the registration before the module
 ran: the gold-in-top-5 rate over the full-KB dense ordering, and the median best gold-bearing facet
@@ -248,15 +248,18 @@ directory and recomputed no SLURP number.
 
 | statistic | A2T dead-direct (n = 15) | A2T label-recovered (n = 89) | A2T gap | SLURP gap (quoted) |
 |---|---|---|---|---|
-| gold-in-top-5 | **4 / 15 = 26.67 %** | **64 / 89 = 71.91 %** | **−45.24 pp** | 66.2–67.6 % vs 71.6–74.1 % ⇒ ≈ **−5.4 to −7.9 pp** |
+| gold-in-top-5 | **4 / 15 = 26.67 %** | **64 / 89 = 71.91 %** | **−45.24 pp** | 66.2–67.6 % vs 71.6–74.1 % ⇒ **−4.0 to −7.9 pp**, midpoint −5.95 |
 | median gold-facet cosine | **0.6054** | **0.8632** | **−0.2578** | 0.775 vs 0.828 ⇒ **−0.053** |
 | mean gold-facet cosine | 0.6792 | 0.8522 | −0.1729 | — |
 | median gold-facet position | **83** | **1** | — | — |
 | median top-1 cosine (any facet) | 0.7740 | 0.8774 | −0.1034 | — |
 | gold present in KB | 15 / 15 | 89 / 89 | — | — |
 
-**The deficit is PRESENT on both statistics, and it is roughly 6–8× larger on the top-5 statistic
-and 4.9× larger on the cosine statistic than the SLURP deficit that motivated the K-agenda.** The
+**The deficit is PRESENT on both statistics.** On the top-5 statistic it is **5.7× to 11.3×** the
+SLURP deficit depending on which end of SLURP's quoted per-population range is used, and **≈ 7.6×**
+at its midpoint; on the cosine statistic it is **4.9×**. SLURP's figures are ranges across three
+populations rather than one paired number, so the ratio is reported as the interval those figures
+actually permit and not as a point. The
 compounding story in the cross-carrier verdict §3.2 is not merely intact; the mechanism is stronger
 than it claimed.
 
