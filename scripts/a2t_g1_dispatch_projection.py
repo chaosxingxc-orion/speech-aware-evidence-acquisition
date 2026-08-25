@@ -68,6 +68,9 @@ if Path(_pkg.__file__ or "") != REPO / "src" / "speech_aware_evidence_acquisitio
 
 import numpy as np  # noqa: E402
 
+from speech_aware_evidence_acquisition.core.model.speech_features import (  # noqa: E402
+    load_speech_feature_packet,
+)
 from speech_aware_evidence_acquisition.data.lock import (  # noqa: E402
     data_root,
     load_lock,
@@ -79,6 +82,7 @@ from speech_aware_evidence_acquisition.rails.kb_policy import (  # noqa: E402
     _argmax_labels,
     _blend_scores,
     _fused_label_scores,
+    PRIOR_MASS_DIMENSIONS,
     _label_identities,
     fuse_supplyfilter_factory,
     multidim_recall,
@@ -108,6 +112,7 @@ SNAPSHOT_SHA256 = "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9
 EMBEDDINGS_RECEIPT_RELPATH = "docs/receipts/knowledge/a2t-kb-size-full-embeddings.json"
 LABEL_VOCABULARY_SIZE = 151
 EMBEDDER_DIM = 1024
+FEATURE_ROOT = Path("/home/chao/feat-cache/a2t-q4km-packets-04ccc72a")
 
 FROZEN_ALPHA = 0.45
 FROZEN_TAU = 0.65
@@ -177,7 +182,22 @@ def main() -> int:
     audio_by_sample = {
         item["sample_id"]: float(item["audio_seconds"]) for item in receipt["items"]
     }
-    packet_by_sample = {item["sample_id"]: item["packet_id"] for item in receipt["items"]}
+    # The QueryState the runtime controller sees is built by
+    # ``rails.runner._initial_query_state`` from the promoted speech packet's
+    # own descriptor, so this projection binds the identical descriptor rather
+    # than a stand-in. Reading a packet header is a local file read: no audio
+    # is decoded, no model is loaded and no contact is spent.
+    packet_by_sample: dict[str, dict[str, str]] = {}
+    for item in receipt["items"]:
+        packet = load_speech_feature_packet(FEATURE_ROOT, item["packet_id"])
+        if packet.audio_sha256 != item["audio_sha256"]:
+            raise SystemExit(
+                "packet %s carries a different audio sha256" % item["packet_id"]
+            )
+        packet_by_sample[item["sample_id"]] = {
+            "packet_id": packet.packet_id,
+            "sha256": packet.packet_sha256,
+        }
 
     # ---- knowledge snapshot + content-facet vectors ----------------------
     snapshot_path = root / SNAPSHOT_RELPATH
@@ -290,7 +310,8 @@ def main() -> int:
         query_state = QueryState(
             query_id="%s:%s:step0" % (RUN_ID, sample_id),
             query_sample_id=sample_id,
-            speech_packet_id=packet_by_sample[sample_id],
+            speech_packet_id=packet_by_sample[sample_id]["packet_id"],
+            speech_packet_sha256=packet_by_sample[sample_id]["sha256"],
             use_split_identity_hash=SPLIT_IDENTITY_HASH,
         )
         reason: str
@@ -302,6 +323,9 @@ def main() -> int:
             lambda facet_id: facet_vector_table.get(facet_id, {}),
             FROZEN_TOP_K,
         )
+        top_m_kinds: tuple[str, ...] = ()
+        content_in_top_m = 0
+        best_content_cosine = None
         if not recall_scores:
             dispatch = False
             reason = "recall empty"
@@ -319,6 +343,23 @@ def main() -> int:
                 recall_scores=recall_scores,
             )
             selected = tuple(fusion_decision.selected_value_ids)
+            # WHY a trajectory retains is as important as THAT it retains, so
+            # the top-m rank window the fuser actually admits over is recorded
+            # per sample: the percept-admission gate reads only NON-prior-mass
+            # dimensions, so a top-m window occupied entirely by label/prior
+            # facets can never admit anything however high the cosines are.
+            top_m = tuple(c.facet_id for c in rank_result.candidates[: FROZEN_FUSE.m])
+            top_m_kinds = tuple(fid.split(":")[1] if ":" in fid else fid for fid in top_m)
+            content_in_top_m = sum(1 for kind in top_m_kinds if kind == "content")
+            best_content_cosine = max(
+                (
+                    score
+                    for dims in recall_scores.values()
+                    for dim, score in dims.items()
+                    if dim not in PRIOR_MASS_DIMENSIONS
+                ),
+                default=None,
+            )
             if not selected:
                 dispatch = False
                 reason = "fusion selected nothing"
@@ -340,6 +381,11 @@ def main() -> int:
                     )
         rows[sample_id] = {
             "tier": sample_id.split(":")[0],
+            "top_m_facet_kinds": list(top_m_kinds),
+            "content_facets_in_top_m": content_in_top_m,
+            "best_content_cosine": (
+                round(best_content_cosine, 6) if best_content_cosine is not None else None
+            ),
             "audio_seconds": audio_by_sample[sample_id],
             "direct_label_recovered": direct_label is not None,
             "direct_label_facet_id": direct_label,
@@ -405,9 +451,36 @@ def main() -> int:
             "no_label_recovered_count": sum(
                 1 for row in rows.values() if not row["direct_label_recovered"]
             ),
+            "trajectories_with_zero_content_facets_in_top_m": sum(
+                1 for row in rows.values() if row["content_facets_in_top_m"] == 0
+            ),
+            "best_content_cosine_distribution": {
+                "min": min(
+                    (
+                        row["best_content_cosine"]
+                        for row in rows.values()
+                        if row["best_content_cosine"] is not None
+                    ),
+                    default=None,
+                ),
+                "max": max(
+                    (
+                        row["best_content_cosine"]
+                        for row in rows.values()
+                        if row["best_content_cosine"] is not None
+                    ),
+                    default=None,
+                ),
+                "at_or_above_tau": sum(
+                    1
+                    for row in rows.values()
+                    if row["best_content_cosine"] is not None
+                    and row["best_content_cosine"] >= FROZEN_TAU
+                ),
+            },
         },
         "worst_case_audio_of_largest_n": {
-            str(n): round(sum(audio_desc[:n]), 6) for n in (40, 50, 60, 70, 80, 90, 104)
+            str(n): round(sum(audio_desc[:n]), 6) for n in (10, 20, 26, 30, 40, 52, 104)
         },
         "limitation": (
             "Pass A re-flies the direct decode. The program's known multi-slot "

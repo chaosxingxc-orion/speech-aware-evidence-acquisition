@@ -1,0 +1,2169 @@
+{
+ "about_run_id": "SAEA-A2T-G1",
+ "contacts": {
+  "gold_opened": false,
+  "model": 0,
+  "tool": 0
+ },
+ "dispatch_sample_ids": [],
+ "execution_profile": "model-free-check",
+ "inputs": {
+  "attempt2_precomputed_sha256": "4fceb9488a5d0245837dfde85cb9d918115d8e6c7f720b2e1e9eccdfeaf46657",
+  "content_facet_npz_sha256": "00a7ebe9b8325ffc2c7b8e45ac4f0c8475b2d3e76994cc0f539f7b5ad5740f45",
+  "m0_attempt_id": "attempt-20260825T100735Z-a2tg1m0",
+  "m0_report_sha256": "7e5e9223c48b1bc457b2b02cb54050d208d717b376326ab5061da8847366ab37",
+  "policy": "the FROZEN v1 cell (alpha 0.45, tau 0.65, top-k 5, m 5 / c 2 / top_l 3, rrf 0.5/0.3/0.2) through rails.kb_policy's OWN pure functions",
+  "query_texts": "the LANDED M0 arm's own per-sample direct-decode answers, each verified against that arm's direct_response_sha256 record",
+  "query_vectors": "already-durable embeddings on this row; nothing is embedded here",
+  "snapshot_sha256": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2"
+ },
+ "limitation": "Pass A re-flies the direct decode. The program's known multi-slot decode-variance channel means a minority of flown texts will not reproduce the M0 text byte for byte (attempt 1: 4 of 26; attempt 2: 5 of 58). Where the text diverges the dispatch decision may differ, so this is a PROJECTION over the same population under the same policy, not a prediction of the flown count. The registered attempt ceiling carries a margin on top of it.",
+ "per_sample": {
+  "tier1_direct:000074": {
+   "audio_seconds": 1.097,
+   "best_content_cosine": 0.856025,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setLighting",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier1_direct:000077": {
+   "audio_seconds": 2.137,
+   "best_content_cosine": 0.8766,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:adjustVolume",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier1_direct:000167": {
+   "audio_seconds": 1.118,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier1_direct:000178": {
+   "audio_seconds": 1.497,
+   "best_content_cosine": 0.856501,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setColor",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier1_direct:001432": {
+   "audio_seconds": 1.817,
+   "best_content_cosine": 0.882519,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setApplianceMode",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier1_direct:001607": {
+   "audio_seconds": 2.377,
+   "best_content_cosine": 0.915245,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getEnergyUsage",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier1_direct:001631": {
+   "audio_seconds": 3.497,
+   "best_content_cosine": 0.811341,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setWaterValve",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier1_direct:002212": {
+   "audio_seconds": 2.297,
+   "best_content_cosine": 0.917627,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getThermostatState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier1_direct:002609": {
+   "audio_seconds": 2.537,
+   "best_content_cosine": 0.915911,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:resetFilterStatus",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier1_direct:002687": {
+   "audio_seconds": 3.017,
+   "best_content_cosine": 0.920655,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:runNetworkSpeedTest",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier1_direct:002728": {
+   "audio_seconds": 2.057,
+   "best_content_cosine": 0.862543,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setLighting",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier1_direct:003713": {
+   "audio_seconds": 2.073,
+   "best_content_cosine": 0.906311,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:enableWaterLock",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier1_direct:004159": {
+   "audio_seconds": 1.577,
+   "best_content_cosine": 0.912066,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier1_direct",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier2_parametric:000240": {
+   "audio_seconds": 2.297,
+   "best_content_cosine": 0.821709,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setLightState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier2_parametric:000369": {
+   "audio_seconds": 3.497,
+   "best_content_cosine": 0.862604,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setFanMode",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier2_parametric:000632": {
+   "audio_seconds": 1.817,
+   "best_content_cosine": 0.887663,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setThermostatMode",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier2_parametric:001004": {
+   "audio_seconds": 2.217,
+   "best_content_cosine": 0.893342,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setAlarm",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier2_parametric:002653": {
+   "audio_seconds": 2.937,
+   "best_content_cosine": 0.82733,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setLightState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier2_parametric:003631": {
+   "audio_seconds": 3.017,
+   "best_content_cosine": 0.829209,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getSensorState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier2_parametric:003650": {
+   "audio_seconds": 4.617,
+   "best_content_cosine": 0.915833,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getAirQuality_diag",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier2_parametric:003923": {
+   "audio_seconds": 3.017,
+   "best_content_cosine": 0.763252,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:restartDevice",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier2_parametric:004826": {
+   "audio_seconds": 3.737,
+   "best_content_cosine": 0.879353,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setBrightness",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier2_parametric:005678": {
+   "audio_seconds": 6.937,
+   "best_content_cosine": 0.799129,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setAlarm",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier2_parametric:005732": {
+   "audio_seconds": 2.937,
+   "best_content_cosine": 0.957249,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getHRV",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier2_parametric:006028": {
+   "audio_seconds": 3.097,
+   "best_content_cosine": 0.957237,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getSleepSummary",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier2_parametric:006317": {
+   "audio_seconds": 3.177,
+   "best_content_cosine": 0.90787,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setFollowDistance",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier2_parametric",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier3_multi_intent:000259": {
+   "audio_seconds": 4.937,
+   "best_content_cosine": 0.917481,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setAdaptiveLighting",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier3_multi_intent:000427": {
+   "audio_seconds": 4.537,
+   "best_content_cosine": 0.854317,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setLighting",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier3_multi_intent:000879": {
+   "audio_seconds": 6.057,
+   "best_content_cosine": 0.856509,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier3_multi_intent:000924": {
+   "audio_seconds": 3.737,
+   "best_content_cosine": 0.840279,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setGarageDoor",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier3_multi_intent:001424": {
+   "audio_seconds": 7.177,
+   "best_content_cosine": 0.871752,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:startCleaning",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier3_multi_intent:002553": {
+   "audio_seconds": 7.257,
+   "best_content_cosine": 0.877001,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:calibrateThermostat",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier3_multi_intent:002560": {
+   "audio_seconds": 6.377,
+   "best_content_cosine": 0.89037,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:calibrateThermostat",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier3_multi_intent:002995": {
+   "audio_seconds": 4.057,
+   "best_content_cosine": 0.916009,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getDeviceList",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier3_multi_intent:003058": {
+   "audio_seconds": 8.937,
+   "best_content_cosine": 0.833429,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:activateRoutine",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier3_multi_intent:003153": {
+   "audio_seconds": 6.457,
+   "best_content_cosine": 0.908545,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setThermostatSchedule",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier3_multi_intent:003973": {
+   "audio_seconds": 4.223,
+   "best_content_cosine": 0.850121,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setSeatComfort",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier3_multi_intent:003982": {
+   "audio_seconds": 4.937,
+   "best_content_cosine": 0.86095,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setPetComfortMode",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier3_multi_intent:004025": {
+   "audio_seconds": 2.857,
+   "best_content_cosine": 0.868874,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setCruiseSpeed",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier3_multi_intent",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier4_implicit:000655": {
+   "audio_seconds": 4.937,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier4_implicit:000900": {
+   "audio_seconds": 1.737,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier4_implicit:001010": {
+   "audio_seconds": 1.417,
+   "best_content_cosine": 0.872125,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:playMedia",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier4_implicit:001074": {
+   "audio_seconds": 1.977,
+   "best_content_cosine": 0.809234,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:controlPlayback",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier4_implicit:001148": {
+   "audio_seconds": 4.377,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier4_implicit:001389": {
+   "audio_seconds": 3.497,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier4_implicit:001409": {
+   "audio_seconds": 2.537,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier4_implicit:001513": {
+   "audio_seconds": 1.497,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier4_implicit:002046": {
+   "audio_seconds": 3.737,
+   "best_content_cosine": 0.859317,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setAirQualityMode",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier4_implicit:002649": {
+   "audio_seconds": 3.337,
+   "best_content_cosine": 0.78793,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:runNetworkSpeedTest",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier4_implicit:003312": {
+   "audio_seconds": 3.897,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier4_implicit:003949": {
+   "audio_seconds": 3.417,
+   "best_content_cosine": 0.903017,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setZoneTemperature",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier4_implicit:003979": {
+   "audio_seconds": 4.457,
+   "best_content_cosine": 0.860852,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setCabinOverheatProtection",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier4_implicit",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier5_needle:000060": {
+   "audio_seconds": 7.737,
+   "best_content_cosine": 0.865998,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setLighting",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier5_needle:000061": {
+   "audio_seconds": 12.377,
+   "best_content_cosine": 0.86952,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier5_needle:000241": {
+   "audio_seconds": 12.857,
+   "best_content_cosine": 0.925956,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setAdaptiveLighting",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier5_needle:000285": {
+   "audio_seconds": 13.817,
+   "best_content_cosine": 0.925956,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setAdaptiveLighting",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier5_needle:000976": {
+   "audio_seconds": 11.017,
+   "best_content_cosine": 0.875382,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:playMedia",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier5_needle:001458": {
+   "audio_seconds": 10.377,
+   "best_content_cosine": 0.887482,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getApplianceStatus",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier5_needle:001719": {
+   "audio_seconds": 11.497,
+   "best_content_cosine": 0.914992,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:activateScene",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier5_needle:002215": {
+   "audio_seconds": 11.497,
+   "best_content_cosine": 0.917627,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getThermostatState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier5_needle:002753": {
+   "audio_seconds": 9.417,
+   "best_content_cosine": 0.854544,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setLighting",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier5_needle:003841": {
+   "audio_seconds": 11.177,
+   "best_content_cosine": 0.83996,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setAlarm",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier5_needle:003873": {
+   "audio_seconds": 10.217,
+   "best_content_cosine": 0.807272,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setAlarm",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier5_needle:004078": {
+   "audio_seconds": 11.657,
+   "best_content_cosine": 0.872871,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setSpeedLimitMode",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier5_needle:004242": {
+   "audio_seconds": 11.497,
+   "best_content_cosine": 0.759366,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getClimateState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier5_needle",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier6_correction:001056": {
+   "audio_seconds": 4.857,
+   "best_content_cosine": 0.845014,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setAudioVolume",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier6_correction:001764": {
+   "audio_seconds": 3.897,
+   "best_content_cosine": 0.795542,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:broadcastMessage",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier6_correction:001794": {
+   "audio_seconds": 7.897,
+   "best_content_cosine": 0.873235,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:broadcastMessage",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier6_correction:002179": {
+   "audio_seconds": 4.857,
+   "best_content_cosine": 0.917627,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getThermostatState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier6_correction:002430": {
+   "audio_seconds": 4.697,
+   "best_content_cosine": 0.870492,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:resetTPMSSensors",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier6_correction:002630": {
+   "audio_seconds": 5.417,
+   "best_content_cosine": 0.901029,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:resetFilterStatus",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier6_correction:002850": {
+   "audio_seconds": 4.857,
+   "best_content_cosine": 0.891444,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:streamCamera",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier6_correction:002999": {
+   "audio_seconds": 5.977,
+   "best_content_cosine": 0.935029,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getDeviceList",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier6_correction:003197": {
+   "audio_seconds": 3.097,
+   "best_content_cosine": 0.912381,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getBiometricData",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier6_correction:003267": {
+   "audio_seconds": 4.947,
+   "best_content_cosine": 0.940277,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getActivitySummary",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier6_correction:003450": {
+   "audio_seconds": 6.537,
+   "best_content_cosine": 0.903971,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setAlwaysOnDisplay",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier6_correction:003900": {
+   "audio_seconds": 5.897,
+   "best_content_cosine": 0.843479,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setAlarm",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier6_correction:004155": {
+   "audio_seconds": 5.977,
+   "best_content_cosine": 0.851432,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getActiveAlerts",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier6_correction",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier7_multiturn:000091": {
+   "audio_seconds": 8.137,
+   "best_content_cosine": 0.84469,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setGroupLightState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier7_multiturn:000214": {
+   "audio_seconds": 1.897,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier7_multiturn:000274": {
+   "audio_seconds": 2.457,
+   "best_content_cosine": 0.829209,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getSensorState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier7_multiturn:000318": {
+   "audio_seconds": 3.817,
+   "best_content_cosine": 0.826876,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setChargingLimit",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier7_multiturn:000330": {
+   "audio_seconds": 5.577,
+   "best_content_cosine": 0.87496,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setHumidifierState",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier7_multiturn:000440": {
+   "audio_seconds": 7.737,
+   "best_content_cosine": 0.890935,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getCameraEvent",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier7_multiturn:000545": {
+   "audio_seconds": 27.794,
+   "best_content_cosine": 0.897325,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setVolume",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier7_multiturn:000554": {
+   "audio_seconds": 4.697,
+   "best_content_cosine": 0.893404,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setVolume",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier7_multiturn:000739": {
+   "audio_seconds": 3.177,
+   "best_content_cosine": 0.887482,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getApplianceStatus",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier7_multiturn:001516": {
+   "audio_seconds": 1.177,
+   "best_content_cosine": 0.77401,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier7_multiturn:001892": {
+   "audio_seconds": 3.097,
+   "best_content_cosine": 0.942253,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getSleepSummary",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier7_multiturn:002099": {
+   "audio_seconds": 13.177,
+   "best_content_cosine": 0.789475,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:resetTPMSSensors",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier7_multiturn:002120": {
+   "audio_seconds": 23.817,
+   "best_content_cosine": 0.84742,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setRecirculation",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier7_multiturn",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier8_intent_blending:000192": {
+   "audio_seconds": 5.897,
+   "best_content_cosine": 0.875786,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier8_intent_blending:000213": {
+   "audio_seconds": 10.386,
+   "best_content_cosine": 0.889727,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getFilterLife",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier8_intent_blending:000249": {
+   "audio_seconds": 7.977,
+   "best_content_cosine": 0.8919,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setClimate",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier8_intent_blending:000372": {
+   "audio_seconds": 5.097,
+   "best_content_cosine": 0.920464,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:getActivitySummary",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier8_intent_blending:000423": {
+   "audio_seconds": 6.227,
+   "best_content_cosine": 0.877437,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:startWorkout",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier8_intent_blending:000433": {
+   "audio_seconds": 4.457,
+   "best_content_cosine": 0.909684,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setAlwaysOnDisplay",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier8_intent_blending:000441": {
+   "audio_seconds": 5.497,
+   "best_content_cosine": 0.913552,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:findPairedPhone",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier8_intent_blending:000494": {
+   "audio_seconds": 5.177,
+   "best_content_cosine": 0.853052,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setHapticStrength",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier8_intent_blending:000581": {
+   "audio_seconds": 6.857,
+   "best_content_cosine": 0.89219,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:startWorkout",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier8_intent_blending:000673": {
+   "audio_seconds": 8.697,
+   "best_content_cosine": 0.879267,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setPetComfortMode",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier8_intent_blending:000713": {
+   "audio_seconds": 7.417,
+   "best_content_cosine": 0.88195,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": null,
+   "direct_label_recovered": false,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier8_intent_blending:000720": {
+   "audio_seconds": 4.777,
+   "best_content_cosine": 0.897363,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:cancelNavigation",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  },
+  "tier8_intent_blending:000724": {
+   "audio_seconds": 5.177,
+   "best_content_cosine": 0.881795,
+   "best_label_count": 0,
+   "content_facets_in_top_m": 0,
+   "direct_label_facet_id": "facet:label:tool:setClimate",
+   "direct_label_recovered": true,
+   "dispatch": false,
+   "query_vector_source": "attempt2-offline-precompute",
+   "reason": "fusion selected nothing",
+   "selected_value_count": 0,
+   "tier": "tier8_intent_blending",
+   "top_m_facet_kinds": [
+    "label",
+    "prior",
+    "label",
+    "prior",
+    "label"
+   ]
+  }
+ },
+ "population": {
+  "count": 104,
+  "split_id": "A2T-G1-104",
+  "split_identity_hash": "f5a030189cf80dcbc52899e2fa5f819bac03874f2ad3f9645fdc60c432a9bf3a",
+  "subset_receipt_sha256": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db"
+ },
+ "projection": {
+  "best_content_cosine_distribution": {
+   "at_or_above_tau": 104,
+   "max": 0.957249,
+   "min": 0.759366
+  },
+  "by_tier": {
+   "tier1_direct": {
+    "dispatch": 0,
+    "n": 13
+   },
+   "tier2_parametric": {
+    "dispatch": 0,
+    "n": 13
+   },
+   "tier3_multi_intent": {
+    "dispatch": 0,
+    "n": 13
+   },
+   "tier4_implicit": {
+    "dispatch": 0,
+    "n": 13
+   },
+   "tier5_needle": {
+    "dispatch": 0,
+    "n": 13
+   },
+   "tier6_correction": {
+    "dispatch": 0,
+    "n": 13
+   },
+   "tier7_multiturn": {
+    "dispatch": 0,
+    "n": 13
+   },
+   "tier8_intent_blending": {
+    "dispatch": 0,
+    "n": 13
+   }
+  },
+  "dispatch_audio_seconds": 0,
+  "dispatch_count": 0,
+  "dispatch_rate": 0.0,
+  "no_label_recovered_count": 15,
+  "retain_count": 104,
+  "retain_equals_recovered": false,
+  "trajectories_with_zero_content_facets_in_top_m": 104
+ },
+ "run_id": "SAEA-SN-MF-A2T-G1-DISPATCH-PROJECTION",
+ "schema": "saea-a2t-g1-dispatch-projection-v1",
+ "study": "speech-aware-evidence-acquisition",
+ "worst_case_audio_of_largest_n": {
+  "10": 149.987,
+  "104": 587.017,
+  "20": 246.326,
+  "26": 291.548,
+  "30": 318.336,
+  "40": 377.236,
+  "52": 436.49
+ }
+}
