@@ -1,0 +1,1757 @@
+{
+ "a2t_prior_dimension_sensitivity": {
+  "already_recorded_at": "rails/kb_policy.py _dimension_scales docstring (owner ruling 2026-08-25), which states sup = 4.1 with 193 values above 1 on the pinned A2T snapshot ec2f9ec4...",
+  "bracket": {
+   "as_flown_replay_matches_the_flight_on_dispatched": true,
+   "every_ranking_statement_here_is_invariant_to_the_prior_defect": true,
+   "method": "a corrected prior is a probability, so it lies in [0, 1]. The supply is replayed at the SUPREMUM (every prior-mass score set to 1.0) and at the INFIMUM (the prior-mass dimension removed entirely) and both are compared against the as-flown supply on all 104. Any semantically corrected prior lies weakly between the two, so agreement at both extremes is agreement everywhere.",
+   "prior_at_unity_vs_as_flown": {
+    "gold_supplied_flag_changed_sample_ids": [],
+    "gold_supplied_flag_changed_trajectories": 0,
+    "supply_changed_sample_ids": [],
+    "supply_changed_trajectories": 0
+   },
+   "prior_dropped_vs_as_flown": {
+    "gold_supplied_flag_changed_sample_ids": [],
+    "gold_supplied_flag_changed_trajectories": 0,
+    "supply_changed_sample_ids": [],
+    "supply_changed_trajectories": 0
+   }
+  },
+  "defect": "rails.knowledge_build_a2t sets prior_score = tool_total / category_total, counting a tool's rows across EVERY domain against a single (domain, category) denominator. The numerator is not a subset of the denominator, so the ratio is not a conditional probability and has no reason to be <= 1. The intended quantity is p(tool | domain, category) = count(tool AND category) / count(category). The landed max(1.0, sup) repair in kb_policy._dimension_scales is a monotone rescale of a wrong ratio, not a correction of it.",
+  "disclosure": "Q1's case-(b) membership and Q2's reachability curve are RANKING statements. They were computed under the as-flown, defective prior and are the record of what actually happened. The bracket above states, as a measurement rather than an assumption, whether any correction of that prior could move them.",
+  "measured_prior_shape": {
+   "prior_mass_facets_recalled": 10,
+   "recalled_prior_score_sup": 4.1,
+   "recalled_prior_scores_above_1": 10,
+   "snapshot_prior_mass_sup": 4.1,
+   "snapshot_prior_mass_values_above_1": 193
+  },
+  "prior_mass_facets_inside_the_locked_top_m_window": {
+   "max_over_trajectories": 0,
+   "population": 104,
+   "total_over_trajectories": 0,
+   "trajectories_with_at_least_one": 0
+  }
+ },
+ "artifact_hashes": {
+  "arm1-m0-outputs.jsonl": "dea60ff1e63fd2ef11c93edf8808217062fea3f0565ed5b60f136264bc6a9467",
+  "arm2-blend-mechanical-report-attempt4.json": "641c4b5ae82cdda1b2d8508bb95e52035fe1b3d119ea170f10906779df459436",
+  "arm2-blend-mechanical.json": "59458c491368a117721041e4ba1538549f3e1e28bdb342e4927703ad5892644e",
+  "arm2-blend-outputs.jsonl": "24a7864263226f4918076571aee359d40ee76838f9cea1da2bbae38f6b6bdd18",
+  "content-facet-npz": "00a7ebe9b8325ffc2c7b8e45ac4f0c8475b2d3e76994cc0f539f7b5ad5740f45",
+  "g1-read-attempt4.json": "cb5e56584a6d572f7b41b39542201ddb1b361755042eac66c3a70c55fd086f89",
+  "kb_policy.py": "2a1c3d75e747db10f723044b05c08d232e1edf47f125d0889c1d2565ba1019af",
+  "pass-a-direct-outputs.jsonl": "73e28511f419cd67b1721d829438f8c102e725e01243c9a9f000e00d92aadc9c",
+  "query-vectors.jsonl": "2915aa0e4c690fc612777f28c88949956b2cfb108582c4e40eaca36e6a184be7",
+  "snapshot": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2"
+ },
+ "contacts": {
+  "audio_seconds": 0.0,
+  "embedding_tool": 0,
+  "frozen_core": 0,
+  "gold_opened": "SCORING-SIDE ONLY, over the EXPOSED A2T-G1-104 whose seal the landed G1 read already broke; never on a runtime path",
+  "gpu_hours": 0.0,
+  "outbound_connection_attempts": 0,
+  "outbound_targets": [],
+  "tokenizer": 0
+ },
+ "execution_profile": "model-free-check",
+ "exposure_row_id": "SAEA-SN-MF-A2T-GOLD-ABSENCE-DIAGNOSIS",
+ "fidelity_gate": {
+  "direct_label_mismatch_ids": [],
+  "direct_label_recovery_reproduced": 104,
+  "dispatch_decision_reproduced": 104,
+  "dispatch_mismatch_ids": [],
+  "gate_passed": true,
+  "population": 104,
+  "semantics": "the flight records fusion_selected_value_ids only for a trajectory it dispatched; a retained trajectory carries null. The dispatched set is compared value-id for value-id and the retained set is asserted null.",
+  "supply_mismatch_ids": [],
+  "supply_reproduced": 104,
+  "trajectories_with_empty_recall": 0,
+  "trajectories_with_empty_supply": 0
+ },
+ "frozen_cell": {
+  "alpha": 0.45,
+  "c": 2,
+  "m": 5,
+  "policy_config_sha256_at_flight": "d68afd2cfb6e12d9cbd9d3fbcf0daf3f81f6ed8be9b2a75c4f8ffb234011a919",
+  "tau": 0.65,
+  "top_k": 5,
+  "top_l": 3,
+  "weights": {
+   "w_agree": 0.2,
+   "w_cos": 0.5,
+   "w_prior": 0.3
+  }
+ },
+ "generated_at": "2026-08-25T16:50:16+00:00",
+ "gold_coverage_dispatched": {
+  "dispatched_gold_absent_from_supply": 11,
+  "dispatched_gold_fused_rank_histogram": {
+   "1": 2,
+   "2": 2,
+   "absent": 11
+  },
+  "dispatched_n": 15,
+  "dispatched_with_gold_bearing_supply": 4,
+  "per_sample": {
+   "tier1_direct:000167": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setColor",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier1_direct:001631": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setWaterValve",
+    "gold_supplied": false,
+    "m0_correct": true,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier1_direct:004159": {
+    "blend_correct": true,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getLockState",
+    "gold_supplied": true,
+    "m0_correct": false,
+    "supplied_targets": [
+     "getLockState"
+    ],
+    "supplied_value_count": 2
+   },
+   "tier2_parametric:004826": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setGroupLightState",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "findMyDevice",
+     "setAdaptiveLighting",
+     "setBrightness"
+    ],
+    "supplied_value_count": 4
+   },
+   "tier3_multi_intent:000879": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 1,
+    "gold_primary_tool": "getCameraEvent",
+    "gold_supplied": true,
+    "m0_correct": false,
+    "supplied_targets": [
+     "findMyDevice",
+     "getCameraEvent",
+     "getCameraStream"
+    ],
+    "supplied_value_count": 5
+   },
+   "tier4_implicit:000655": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setLockState",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier4_implicit:000900": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setGarageDoor",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier4_implicit:001148": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "castContent",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier4_implicit:001389": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setApplianceMode",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier4_implicit:001409": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setApplianceMode",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier4_implicit:001513": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 2,
+    "gold_primary_tool": "setPowerState",
+    "gold_supplied": true,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier4_implicit:003312": {
+    "blend_correct": true,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "startWorkout",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier5_needle:000061": {
+    "blend_correct": true,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": true,
+    "gold_fused_target_rank": 2,
+    "gold_primary_tool": "setBrightness",
+    "gold_supplied": true,
+    "m0_correct": false,
+    "supplied_targets": [
+     "findMyDevice",
+     "rampBrightness",
+     "setBrightness"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier7_multiturn:000214": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "setTargetTemperature",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   },
+   "tier7_multiturn:001516": {
+    "blend_correct": false,
+    "direct_correct": false,
+    "dispatched": true,
+    "gold_facet_inside_admitted_window": false,
+    "gold_fused_target_rank": null,
+    "gold_primary_tool": "activateRoutine",
+    "gold_supplied": false,
+    "m0_correct": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supplied_value_count": 3
+   }
+  },
+  "population_with_gold_bearing_supply_IF_ALPHA_DID_NOT_GATE": 68,
+  "source": "recomputed here through cross_carrier_ceiling_decomposition.gold_coverage on the same fidelity-gated replay, so the 4/11 split this row diagnoses is the same 4/11 the landed cross-carrier verdict reports"
+ },
+ "hard_stop": "DIAGNOSIS ONLY. No knob is changed, no flight is authorized, no G2 is opened, no test contact is taken, and no generality or superiority claim follows from this artifact.",
+ "k3_dispatch_projection": {
+  "dispatch_predicate": "a2t_label_normalizer returns None -- the answer did not parse, carried no calls, or its PRIMARY tool name is outside the 151-entry label vocabulary. K3's form constraint removes the first two causes and leaves the third.",
+  "e_c_precedent": "the rejected E-C variant forced label recovery on every sample and took evidence contacts to zero (projected 54-67/100 against 72). The plan admits K3 only because it leaves out-of-vocabulary answers out-of-vocabulary; that carve-out is measured here rather than assumed.",
+  "flown_dispatch_composition": {
+   "empty": 11,
+   "reading": "only the third class survives a pure FORM constraint; the first two are exactly what a role constraint is designed to remove, and removing them removes the trajectory from the reachable set",
+   "unparsed": 3,
+   "well_formed_but_out_of_vocabulary": 1,
+   "well_formed_but_out_of_vocabulary_sample_ids": [
+    "tier1_direct:004159"
+   ]
+  },
+  "projection_lower_bound_on_repair": {
+   "flown_dispatch_count": 15,
+   "flown_dispatch_rate": 0.14423076923076922,
+   "label": "LOWER bound on form repair (M0 arm's own answers, no evidence) -> UPPER bound on surviving dispatch",
+   "projected_dispatch_count": 13,
+   "projected_dispatch_rate": 0.125,
+   "projected_dispatch_rate_change_pp": -1.9230769230769231,
+   "recovered_sample_ids": [
+    "tier1_direct:001631",
+    "tier2_parametric:004826"
+   ],
+   "relative_change": -0.13333333333333333,
+   "trajectories_that_would_recover_a_label": 2
+  },
+  "projection_upper_bound_on_repair": {
+   "flown_dispatch_count": 15,
+   "flown_dispatch_rate": 0.14423076923076922,
+   "label": "UPPER bound on form repair (BLEND arm's own final answers, evidence in context) -> LOWER bound on surviving dispatch",
+   "projected_dispatch_count": 3,
+   "projected_dispatch_rate": 0.028846153846153848,
+   "projected_dispatch_rate_change_pp": -11.538461538461538,
+   "recovered_sample_ids": [
+    "tier1_direct:004159",
+    "tier2_parametric:004826",
+    "tier3_multi_intent:000879",
+    "tier4_implicit:000655",
+    "tier4_implicit:000900",
+    "tier4_implicit:001148",
+    "tier4_implicit:001409",
+    "tier4_implicit:001513",
+    "tier4_implicit:003312",
+    "tier5_needle:000061",
+    "tier7_multiturn:000214",
+    "tier7_multiturn:001516"
+   ],
+   "relative_change": -0.8,
+   "trajectories_that_would_recover_a_label": 12
+  },
+  "question": "the key-construction plan section 3 K3 requires the dispatch-rate change to be projected FIRST; if projected dispatch drops materially, K3 is an off-switch in disguise and is rejected like the E-C variant"
+ },
+ "kb_shape": {
+  "content_facets_with_a_task_target": 12903,
+  "content_facets_with_vectors": 12601,
+  "distinct_value_task_targets": 151,
+  "label_vocabulary_size": 151,
+  "snapshot_values": 12601
+ },
+ "q1_build_versus_ranking": {
+  "case_a_build_coverage_defect": {
+   "fix": "KB CONSTRUCTION -- the tool has no value or no vectored content facet in the pinned snapshot, so no ranker, no width and no key representation can ever surface it",
+   "n": 0,
+   "rows": [],
+   "sample_ids": [],
+   "share": 0.0
+  },
+  "case_b_ranking_recall_defect": {
+   "fix": "THE KEY PLANE -- the gold value is present and vectored; the current ranking did not bring it inside the admitted window",
+   "n": 11,
+   "rows": [
+    {
+     "blend_correct": false,
+     "gold_facet_cosine": 0.5872704111725993,
+     "gold_facet_passes_tau": false,
+     "gold_facet_position": 178,
+     "gold_in_label_vocabulary": true,
+     "gold_primary_tool": "setColor",
+     "gold_target_rank_by_best_cosine": null,
+     "kb_facets_for_gold": 167,
+     "kb_values_for_gold": 165,
+     "kb_vectored_facets_for_gold": 165,
+     "sample_id": "tier1_direct:000167",
+     "top1_cosine": 0.7740102290661852
+    },
+    {
+     "blend_correct": false,
+     "gold_facet_cosine": 0.56533181747632,
+     "gold_facet_passes_tau": false,
+     "gold_facet_position": 430,
+     "gold_in_label_vocabulary": true,
+     "gold_primary_tool": "setWaterValve",
+     "gold_target_rank_by_best_cosine": null,
+     "kb_facets_for_gold": 177,
+     "kb_values_for_gold": 175,
+     "kb_vectored_facets_for_gold": 175,
+     "sample_id": "tier1_direct:001631",
+     "top1_cosine": 0.7740102290661852
+    },
+    {
+     "blend_correct": false,
+     "gold_facet_cosine": 0.8548288235301719,
+     "gold_facet_passes_tau": true,
+     "gold_facet_position": 10,
+     "gold_in_label_vocabulary": true,
+     "gold_primary_tool": "setGroupLightState",
+     "gold_target_rank_by_best_cosine": 8,
+     "kb_facets_for_gold": 187,
+     "kb_values_for_gold": 185,
+     "kb_vectored_facets_for_gold": 185,
+     "sample_id": "tier2_parametric:004826",
+     "top1_cosine": 0.8949415372799853
+    },
+    {
+     "blend_correct": false,
+     "gold_facet_cosine": 0.5942410657038212,
+     "gold_facet_passes_tau": false,
+     "gold_facet_position": 130,
+     "gold_in_label_vocabulary": true,
+     "gold_primary_tool": "setLockState",
+     "gold_target_rank_by_best_cosine": null,
+     "kb_facets_for_gold": 166,
+     "kb_values_for_gold": 164,
+     "kb_vectored_facets_for_gold": 164,
+     "sample_id": "tier4_implicit:000655",
+     "top1_cosine": 0.7740102290661852
+    },
+    {
+     "blend_correct": false,
+     "gold_facet_cosine": 0.5828134078366325,
+     "gold_facet_passes_tau": false,
+     "gold_facet_position": 216,
+     "gold_in_label_vocabulary": true,
+     "gold_primary_tool": "setGarageDoor",
+     "gold_target_rank_by_best_cosine": null,
+     "kb_facets_for_gold": 152,
+     "kb_values_for_gold": 150,
+     "kb_vectored_facets_for_gold": 150,
+     "sample_id": "tier4_implicit:000900",
+     "top1_cosine": 0.7740102290661852
+    },
+    {
+     "blend_correct": false,
+     "gold_facet_cosine": 0.6054045940896657,
+     "gold_facet_passes_tau": false,
+     "gold_facet_position": 83,
+     "gold_in_label_vocabulary": true,
+     "gold_primary_tool": "castContent",
+     "gold_target_rank_by_best_cosine": null,
+     "kb_facets_for_gold": 185,
+     "kb_values_for_gold": 183,
+     "kb_vectored_facets_for_gold": 183,
+     "sample_id": "tier4_implicit:001148",
+     "top1_cosine": 0.7740102290661852
+    },
+    {
+     "blend_correct": false,
+     "gold_facet_cosine": 0.5842049011071593,
+     "gold_facet_passes_tau": false,
+     "gold_facet_position": 203,
+     "gold_in_label_vocabulary": true,
+     "gold_primary_tool": "setApplianceMode",
+     "gold_target_rank_by_best_cosine": null,
+     "kb_facets_for_gold": 146,
+     "kb_values_for_gold": 144,
+     "kb_vectored_facets_for_gold": 144,
+     "sample_id": "tier4_implicit:001389",
+     "top1_cosine": 0.7740102290661852
+    },
+    {
+     "blend_correct": false,
+     "gold_facet_cosine": 0.5842049011071593,
+     "gold_facet_passes_tau": false,
+     "gold_facet_position": 203,
+     "gold_in_label_vocabulary": true,
+     "gold_primary_tool": "setApplianceMode",
+     "gold_target_rank_by_best_cosine": null,
+     "kb_facets_for_gold": 146,
+     "kb_values_for_gold": 144,
+     "kb_vectored_facets_for_gold": 144,
+     "sample_id": "tier4_implicit:001409",
+     "top1_cosine": 0.7740102290661852
+    },
+    {
+     "blend_correct": true,
+     "gold_facet_cosine": 0.5712478654475782,
+     "gold_facet_passes_tau": false,
+     "gold_facet_position": 339,
+     "gold_in_label_vocabulary": true,
+     "gold_primary_tool": "startWorkout",
+     "gold_target_rank_by_best_cosine": null,
+     "kb_facets_for_gold": 188,
+     "kb_values_for_gold": 186,
+     "kb_vectored_facets_for_gold": 186,
+     "sample_id": "tier4_implicit:003312",
+     "top1_cosine": 0.7740102290661852
+    },
+    {
+     "blend_correct": false,
+     "gold_facet_cosine": 0.6356254654021299,
+     "gold_facet_passes_tau": false,
+     "gold_facet_position": 16,
+     "gold_in_label_vocabulary": true,
+     "gold_primary_tool": "setTargetTemperature",
+     "gold_target_rank_by_best_cosine": null,
+     "kb_facets_for_gold": 191,
+     "kb_values_for_gold": 189,
+     "kb_vectored_facets_for_gold": 189,
+     "sample_id": "tier7_multiturn:000214",
+     "top1_cosine": 0.7740102290661852
+    },
+    {
+     "blend_correct": false,
+     "gold_facet_cosine": 0.6767572955769758,
+     "gold_facet_passes_tau": true,
+     "gold_facet_position": 8,
+     "gold_in_label_vocabulary": true,
+     "gold_primary_tool": "activateRoutine",
+     "gold_target_rank_by_best_cosine": 8,
+     "kb_facets_for_gold": 188,
+     "kb_values_for_gold": 186,
+     "kb_vectored_facets_for_gold": 186,
+     "sample_id": "tier7_multiturn:001516",
+     "top1_cosine": 0.7740102290661852
+    }
+   ],
+   "sample_ids": [
+    "tier1_direct:000167",
+    "tier1_direct:001631",
+    "tier2_parametric:004826",
+    "tier4_implicit:000655",
+    "tier4_implicit:000900",
+    "tier4_implicit:001148",
+    "tier4_implicit:001389",
+    "tier4_implicit:001409",
+    "tier4_implicit:003312",
+    "tier7_multiturn:000214",
+    "tier7_multiturn:001516"
+   ],
+   "share": 1.0
+  },
+  "dominating_sub_cause": "RANKING",
+  "gold_absent_dispatched_n": 11,
+  "population_coverage_context": {
+   "population": 104,
+   "reading": "the same two counts over all 104, so the dispatched subgroup's split can be read against the carrier's own build coverage",
+   "trajectories_whose_gold_tool_has_no_kb_value": 0,
+   "trajectories_whose_gold_tool_has_no_vectored_facet": 0
+  },
+  "question": "of the gold-absent DISPATCHED trajectories, which have no gold value in the KB at all (BUILD) and which have one that was not admitted (RANKING)?"
+ },
+ "q2_reachability_curve": {
+  "admissibility": {
+   "any_depth_change_is_a_knob_change": "k, m, tau, c and top_l are all cells of configs/policy/kb-policy-v1-dev100.json, which is LOCKED. No depth in this curve is admissible without an owner knob decision; this module computes the curve and makes no such decision.",
+   "k_widen_prior": "K-WIDEN K1 FLOWN plus its offline width-5 replay: widening the retrieval window changed the supply on 32 of 100 trajectories and produced 0 width-attributable flips (71/100 at delta -1). A reachability curve is evidence about REACHABILITY only; K-WIDEN is the measured counter-example to treating depth as conversion.",
+   "locked_cell_depth": {
+    "c": 2,
+    "m": 5,
+    "tau": 0.65,
+    "top_k": 5,
+    "top_l": 3
+   }
+  },
+  "binding_stage": {
+   "blocked_by_the_tau_percept_gate": 9,
+   "blocked_by_the_top_l_target_budget_only": 2,
+   "case_b_n": 11,
+   "reached_at_some_depth_under_any_top_l": 2,
+   "reached_at_some_depth_under_the_locked_top_l_3": 0,
+   "semantics": "a facet whose best cosine is below tau = 0.65 is refused by the percept gate at EVERY window depth, so for those trajectories no value of k or m is a fix at all. A facet that passes tau but whose TARGET is outside the top_l = 3 target budget is refused by the budget, not by the window -- widening k or m cannot reach it either."
+  },
+  "curve_all_dispatched": {
+   "gold_facet_position_max": 430,
+   "gold_facet_position_median": 83,
+   "gold_facet_position_min": 1,
+   "n": 15,
+   "recall_at_1024": {
+    "count": 15,
+    "rate": 1.0
+   },
+   "recall_at_128": {
+    "count": 8,
+    "rate": 0.5333333333333333
+   },
+   "recall_at_16": {
+    "count": 7,
+    "rate": 0.4666666666666667
+   },
+   "recall_at_256": {
+    "count": 13,
+    "rate": 0.8666666666666667
+   },
+   "recall_at_32": {
+    "count": 7,
+    "rate": 0.4666666666666667
+   },
+   "recall_at_5": {
+    "count": 4,
+    "rate": 0.26666666666666666
+   },
+   "recall_at_512": {
+    "count": 15,
+    "rate": 1.0
+   },
+   "recall_at_64": {
+    "count": 7,
+    "rate": 0.4666666666666667
+   },
+   "recall_at_8": {
+    "count": 5,
+    "rate": 0.3333333333333333
+   },
+   "recall_at_full_kb": {
+    "count": 15,
+    "rate": 1.0
+   }
+  },
+  "curve_all_retained": {
+   "gold_facet_position_max": 466,
+   "gold_facet_position_median": 1,
+   "gold_facet_position_min": 1,
+   "n": 89,
+   "recall_at_1024": {
+    "count": 89,
+    "rate": 1.0
+   },
+   "recall_at_128": {
+    "count": 86,
+    "rate": 0.9662921348314607
+   },
+   "recall_at_16": {
+    "count": 76,
+    "rate": 0.8539325842696629
+   },
+   "recall_at_256": {
+    "count": 88,
+    "rate": 0.9887640449438202
+   },
+   "recall_at_32": {
+    "count": 81,
+    "rate": 0.9101123595505618
+   },
+   "recall_at_5": {
+    "count": 64,
+    "rate": 0.7191011235955056
+   },
+   "recall_at_512": {
+    "count": 89,
+    "rate": 1.0
+   },
+   "recall_at_64": {
+    "count": 84,
+    "rate": 0.9438202247191011
+   },
+   "recall_at_8": {
+    "count": 72,
+    "rate": 0.8089887640449438
+   },
+   "recall_at_full_kb": {
+    "count": 89,
+    "rate": 1.0
+   }
+  },
+  "curve_case_b_ranking_defect": {
+   "gold_facet_position_max": 430,
+   "gold_facet_position_median": 178,
+   "gold_facet_position_min": 8,
+   "n": 11,
+   "recall_at_1024": {
+    "count": 11,
+    "rate": 1.0
+   },
+   "recall_at_128": {
+    "count": 4,
+    "rate": 0.36363636363636365
+   },
+   "recall_at_16": {
+    "count": 3,
+    "rate": 0.2727272727272727
+   },
+   "recall_at_256": {
+    "count": 9,
+    "rate": 0.8181818181818182
+   },
+   "recall_at_32": {
+    "count": 3,
+    "rate": 0.2727272727272727
+   },
+   "recall_at_5": {
+    "count": 0,
+    "rate": 0.0
+   },
+   "recall_at_512": {
+    "count": 11,
+    "rate": 1.0
+   },
+   "recall_at_64": {
+    "count": 3,
+    "rate": 0.2727272727272727
+   },
+   "recall_at_8": {
+    "count": 1,
+    "rate": 0.09090909090909091
+   },
+   "recall_at_full_kb": {
+    "count": 11,
+    "rate": 1.0
+   }
+  },
+  "curve_whole_population": {
+   "gold_facet_position_max": 466,
+   "gold_facet_position_median": 1.0,
+   "gold_facet_position_min": 1,
+   "n": 104,
+   "recall_at_1024": {
+    "count": 104,
+    "rate": 1.0
+   },
+   "recall_at_128": {
+    "count": 94,
+    "rate": 0.9038461538461539
+   },
+   "recall_at_16": {
+    "count": 83,
+    "rate": 0.7980769230769231
+   },
+   "recall_at_256": {
+    "count": 101,
+    "rate": 0.9711538461538461
+   },
+   "recall_at_32": {
+    "count": 88,
+    "rate": 0.8461538461538461
+   },
+   "recall_at_5": {
+    "count": 68,
+    "rate": 0.6538461538461539
+   },
+   "recall_at_512": {
+    "count": 104,
+    "rate": 1.0
+   },
+   "recall_at_64": {
+    "count": 91,
+    "rate": 0.875
+   },
+   "recall_at_8": {
+    "count": 77,
+    "rate": 0.7403846153846154
+   },
+   "recall_at_full_kb": {
+    "count": 104,
+    "rate": 1.0
+   }
+  },
+  "per_sample_depth": [
+   {
+    "gold_facet_cosine": 0.5872704111725993,
+    "gold_facet_passes_tau_0_65": false,
+    "gold_facet_position": 178,
+    "gold_primary_tool": "setColor",
+    "gold_target_rank_by_best_cosine": null,
+    "sample_id": "tier1_direct:000167",
+    "supply_reaches_gold_at_depth_locked_top_l_3": null,
+    "supply_reaches_gold_at_depth_unbounded_top_l": null,
+    "tau_passing_targets_total": 10,
+    "top1_cosine": 0.7740102290661852
+   },
+   {
+    "gold_facet_cosine": 0.56533181747632,
+    "gold_facet_passes_tau_0_65": false,
+    "gold_facet_position": 430,
+    "gold_primary_tool": "setWaterValve",
+    "gold_target_rank_by_best_cosine": null,
+    "sample_id": "tier1_direct:001631",
+    "supply_reaches_gold_at_depth_locked_top_l_3": null,
+    "supply_reaches_gold_at_depth_unbounded_top_l": null,
+    "tau_passing_targets_total": 10,
+    "top1_cosine": 0.7740102290661852
+   },
+   {
+    "gold_facet_cosine": 0.8548288235301719,
+    "gold_facet_passes_tau_0_65": true,
+    "gold_facet_position": 10,
+    "gold_primary_tool": "setGroupLightState",
+    "gold_target_rank_by_best_cosine": 8,
+    "sample_id": "tier2_parametric:004826",
+    "supply_reaches_gold_at_depth_locked_top_l_3": null,
+    "supply_reaches_gold_at_depth_unbounded_top_l": 16,
+    "tau_passing_targets_total": 65,
+    "top1_cosine": 0.8949415372799853
+   },
+   {
+    "gold_facet_cosine": 0.5942410657038212,
+    "gold_facet_passes_tau_0_65": false,
+    "gold_facet_position": 130,
+    "gold_primary_tool": "setLockState",
+    "gold_target_rank_by_best_cosine": null,
+    "sample_id": "tier4_implicit:000655",
+    "supply_reaches_gold_at_depth_locked_top_l_3": null,
+    "supply_reaches_gold_at_depth_unbounded_top_l": null,
+    "tau_passing_targets_total": 10,
+    "top1_cosine": 0.7740102290661852
+   },
+   {
+    "gold_facet_cosine": 0.5828134078366325,
+    "gold_facet_passes_tau_0_65": false,
+    "gold_facet_position": 216,
+    "gold_primary_tool": "setGarageDoor",
+    "gold_target_rank_by_best_cosine": null,
+    "sample_id": "tier4_implicit:000900",
+    "supply_reaches_gold_at_depth_locked_top_l_3": null,
+    "supply_reaches_gold_at_depth_unbounded_top_l": null,
+    "tau_passing_targets_total": 10,
+    "top1_cosine": 0.7740102290661852
+   },
+   {
+    "gold_facet_cosine": 0.6054045940896657,
+    "gold_facet_passes_tau_0_65": false,
+    "gold_facet_position": 83,
+    "gold_primary_tool": "castContent",
+    "gold_target_rank_by_best_cosine": null,
+    "sample_id": "tier4_implicit:001148",
+    "supply_reaches_gold_at_depth_locked_top_l_3": null,
+    "supply_reaches_gold_at_depth_unbounded_top_l": null,
+    "tau_passing_targets_total": 10,
+    "top1_cosine": 0.7740102290661852
+   },
+   {
+    "gold_facet_cosine": 0.5842049011071593,
+    "gold_facet_passes_tau_0_65": false,
+    "gold_facet_position": 203,
+    "gold_primary_tool": "setApplianceMode",
+    "gold_target_rank_by_best_cosine": null,
+    "sample_id": "tier4_implicit:001389",
+    "supply_reaches_gold_at_depth_locked_top_l_3": null,
+    "supply_reaches_gold_at_depth_unbounded_top_l": null,
+    "tau_passing_targets_total": 10,
+    "top1_cosine": 0.7740102290661852
+   },
+   {
+    "gold_facet_cosine": 0.5842049011071593,
+    "gold_facet_passes_tau_0_65": false,
+    "gold_facet_position": 203,
+    "gold_primary_tool": "setApplianceMode",
+    "gold_target_rank_by_best_cosine": null,
+    "sample_id": "tier4_implicit:001409",
+    "supply_reaches_gold_at_depth_locked_top_l_3": null,
+    "supply_reaches_gold_at_depth_unbounded_top_l": null,
+    "tau_passing_targets_total": 10,
+    "top1_cosine": 0.7740102290661852
+   },
+   {
+    "gold_facet_cosine": 0.5712478654475782,
+    "gold_facet_passes_tau_0_65": false,
+    "gold_facet_position": 339,
+    "gold_primary_tool": "startWorkout",
+    "gold_target_rank_by_best_cosine": null,
+    "sample_id": "tier4_implicit:003312",
+    "supply_reaches_gold_at_depth_locked_top_l_3": null,
+    "supply_reaches_gold_at_depth_unbounded_top_l": null,
+    "tau_passing_targets_total": 10,
+    "top1_cosine": 0.7740102290661852
+   },
+   {
+    "gold_facet_cosine": 0.6356254654021299,
+    "gold_facet_passes_tau_0_65": false,
+    "gold_facet_position": 16,
+    "gold_primary_tool": "setTargetTemperature",
+    "gold_target_rank_by_best_cosine": null,
+    "sample_id": "tier7_multiturn:000214",
+    "supply_reaches_gold_at_depth_locked_top_l_3": null,
+    "supply_reaches_gold_at_depth_unbounded_top_l": null,
+    "tau_passing_targets_total": 10,
+    "top1_cosine": 0.7740102290661852
+   },
+   {
+    "gold_facet_cosine": 0.6767572955769758,
+    "gold_facet_passes_tau_0_65": true,
+    "gold_facet_position": 8,
+    "gold_primary_tool": "activateRoutine",
+    "gold_target_rank_by_best_cosine": 8,
+    "sample_id": "tier7_multiturn:001516",
+    "supply_reaches_gold_at_depth_locked_top_l_3": null,
+    "supply_reaches_gold_at_depth_unbounded_top_l": 8,
+    "tau_passing_targets_total": 10,
+    "top1_cosine": 0.7740102290661852
+   }
+  ],
+  "question": "for the case-(b) trajectories whose gold value exists in the KB, what is its rank under the CURRENT post-repair ranker and how deep would the admitted window have to go to reach it?"
+ },
+ "q3_dead_direct_contrast": {
+  "dead_direct": {
+   "gold_facet_cosine_mean": 0.6792224653297331,
+   "gold_facet_cosine_median": 0.6054045940896657,
+   "gold_facet_position_median": 83,
+   "gold_in_top_5": 4,
+   "gold_in_top_5_rate_over_all_members": 0.26666666666666666,
+   "gold_in_top_5_rate_over_members_with_gold_in_kb": 0.26666666666666666,
+   "gold_present_in_kb": 15,
+   "label": "dead-direct (dispatched, no direct label recovered)",
+   "n": 15,
+   "top1_cosine_median": 0.7740102290661852
+  },
+  "deficit_present_on_both_statistics": true,
+  "delta_dead_minus_live": {
+   "gold_facet_cosine_median": -0.2578022954647965,
+   "gold_in_top_5_rate": -0.45243445692883894,
+   "gold_in_top_5_rate_over_members_with_gold_in_kb": -0.45243445692883894,
+   "top1_cosine_median": -0.10342637181933201
+  },
+  "label_recovered": {
+   "gold_facet_cosine_mean": 0.8521554676893969,
+   "gold_facet_cosine_median": 0.8632068895544622,
+   "gold_facet_position_median": 1,
+   "gold_in_top_5": 64,
+   "gold_in_top_5_rate_over_all_members": 0.7191011235955056,
+   "gold_in_top_5_rate_over_members_with_gold_in_kb": 0.7191011235955056,
+   "gold_present_in_kb": 89,
+   "label": "label-recovered (retained by the alpha veto)",
+   "n": 89,
+   "top1_cosine_median": 0.8774366008855172
+  },
+  "query_key_degeneracy": {
+   "dead_direct": {
+    "distinct_contact0_texts": 5,
+    "distinct_query_vectors": 5,
+    "distinct_query_vectors_per_trajectory": 0.3333333333333333,
+    "label": "dead-direct (dispatched)",
+    "largest_identical_query_cluster_sample_ids": [
+     "tier1_direct:000167",
+     "tier1_direct:001631",
+     "tier4_implicit:000655",
+     "tier4_implicit:000900",
+     "tier4_implicit:001148",
+     "tier4_implicit:001389",
+     "tier4_implicit:001409",
+     "tier4_implicit:001513",
+     "tier4_implicit:003312",
+     "tier7_multiturn:000214",
+     "tier7_multiturn:001516"
+    ],
+    "largest_identical_query_cluster_share": 0.7333333333333333,
+    "largest_identical_query_cluster_size": 11,
+    "n": 15
+   },
+   "label_recovered": {
+    "distinct_contact0_texts": 84,
+    "distinct_query_vectors": 84,
+    "distinct_query_vectors_per_trajectory": 0.9438202247191011,
+    "label": "label-recovered (retained)",
+    "largest_identical_query_cluster_sample_ids": [
+     "tier1_direct:002212",
+     "tier5_needle:002215",
+     "tier6_correction:002179"
+    ],
+    "largest_identical_query_cluster_share": 0.033707865168539325,
+    "largest_identical_query_cluster_size": 3,
+    "n": 89
+   },
+   "largest_cluster_supply": {
+    "cluster_members_whose_gold_is_inside_sample_ids": [
+     "tier4_implicit:001513"
+    ],
+    "cluster_members_whose_gold_is_inside_the_constant_supply": 1,
+    "cluster_size": 11,
+    "distinct_flown_supplies_inside_the_cluster": 1,
+    "reading": "one key, one supply. Every trajectory in this cluster received the SAME targets whatever its utterance was about, so gold can only arrive by coincidence -- when the trajectory's own gold tool happens to be one of the constant targets.",
+    "the_constant_supply_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ]
+   },
+   "provenance": "the content-dimension query vector is the embedding of the trajectory's OWN contact-0 answer text -- contact 0's output IS the retrieval key. Verified in this row by re-hashing each landed Pass-A text against the text_sha256 its own landed query-vector record carries (ccd.load_a2t_attempt4).",
+   "question": "does the retrieval key carry trajectory-specific information on the dead-direct subgroup at all?",
+   "reading": "a distinct-query-vector count below the trajectory count means several trajectories share ONE retrieval key and therefore ONE recalled facet set, whatever their utterances were about"
+  },
+  "question": "is the SLURP dead-direct retrieval deficit present on Audio2Tool?",
+  "reading_rule": "PRE-REGISTERED: reported whichever way it comes out. An ABSENT deficit is the headline finding, not a reason to re-partition the population or re-choose the statistic. n = 15 against n = 89; no interval is computed and none should be.",
+  "slurp_reference": {
+   "gold_facet_cosine_dead_direct": 0.775,
+   "gold_facet_cosine_label_recovered": 0.828,
+   "gold_in_top_5_dead_direct_range": [
+    0.662,
+    0.676
+   ],
+   "gold_in_top_5_label_recovered_range": [
+    0.716,
+    0.741
+   ],
+   "source": "docs/readiness/2026-08-25-key-construction-agenda-plan.md section 2.2; QUOTED from the landed committed document, not recomputed here -- this row opens no SLURP run directory and touches no SLURP seal"
+  }
+ },
+ "q4_multiset_binding": {
+  "dispatched_15": {
+   "label": "the 15 dispatched",
+   "multi_tool_gold_blend_correct": 0,
+   "multi_tool_gold_n": 1,
+   "multi_tool_gold_sample_ids": [
+    "tier3_multi_intent:000879"
+   ],
+   "multi_tool_gold_share": 0.06666666666666667,
+   "n": 15,
+   "single_tool_gold_blend_correct": 3,
+   "single_tool_gold_n": 14,
+   "supply_covered_only_part_of_a_multi_tool_gold_n": 1,
+   "supply_covered_only_part_sample_ids": [
+    "tier3_multi_intent:000879"
+   ],
+   "supply_covered_the_whole_gold_tool_set_n": 3
+  },
+  "dispatched_with_gold_bearing_supply_4": {
+   "label": "the dispatched trajectories whose supply carried gold",
+   "multi_tool_gold_blend_correct": 0,
+   "multi_tool_gold_n": 1,
+   "multi_tool_gold_sample_ids": [
+    "tier3_multi_intent:000879"
+   ],
+   "multi_tool_gold_share": 0.25,
+   "n": 4,
+   "single_tool_gold_blend_correct": 2,
+   "single_tool_gold_n": 3,
+   "supply_covered_only_part_of_a_multi_tool_gold_n": 1,
+   "supply_covered_only_part_sample_ids": [
+    "tier3_multi_intent:000879"
+   ],
+   "supply_covered_the_whole_gold_tool_set_n": 3
+  },
+  "per_sample": {
+   "tier1_direct:000167": {
+    "blend_correct": false,
+    "gold_call_count": 1,
+    "gold_distinct_tool_count": 1,
+    "gold_distinct_tools": [
+     "setColor"
+    ],
+    "gold_multiset": {
+     "setColor": 1
+    },
+    "gold_supplied_primary": false,
+    "gold_tools_covered_by_supply": [],
+    "gold_tools_covered_count": 0,
+    "multi_tool_gold": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supply_covers_only_part_of_a_multi_tool_gold": false,
+    "supply_covers_the_whole_gold_tool_set": false
+   },
+   "tier1_direct:001631": {
+    "blend_correct": false,
+    "gold_call_count": 1,
+    "gold_distinct_tool_count": 1,
+    "gold_distinct_tools": [
+     "setWaterValve"
+    ],
+    "gold_multiset": {
+     "setWaterValve": 1
+    },
+    "gold_supplied_primary": false,
+    "gold_tools_covered_by_supply": [],
+    "gold_tools_covered_count": 0,
+    "multi_tool_gold": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supply_covers_only_part_of_a_multi_tool_gold": false,
+    "supply_covers_the_whole_gold_tool_set": false
+   },
+   "tier1_direct:004159": {
+    "blend_correct": true,
+    "gold_call_count": 1,
+    "gold_distinct_tool_count": 1,
+    "gold_distinct_tools": [
+     "getLockState"
+    ],
+    "gold_multiset": {
+     "getLockState": 1
+    },
+    "gold_supplied_primary": true,
+    "gold_tools_covered_by_supply": [
+     "getLockState"
+    ],
+    "gold_tools_covered_count": 1,
+    "multi_tool_gold": false,
+    "supplied_targets": [
+     "getLockState"
+    ],
+    "supply_covers_only_part_of_a_multi_tool_gold": false,
+    "supply_covers_the_whole_gold_tool_set": true
+   },
+   "tier2_parametric:004826": {
+    "blend_correct": false,
+    "gold_call_count": 1,
+    "gold_distinct_tool_count": 1,
+    "gold_distinct_tools": [
+     "setGroupLightState"
+    ],
+    "gold_multiset": {
+     "setGroupLightState": 1
+    },
+    "gold_supplied_primary": false,
+    "gold_tools_covered_by_supply": [],
+    "gold_tools_covered_count": 0,
+    "multi_tool_gold": false,
+    "supplied_targets": [
+     "findMyDevice",
+     "setAdaptiveLighting",
+     "setBrightness"
+    ],
+    "supply_covers_only_part_of_a_multi_tool_gold": false,
+    "supply_covers_the_whole_gold_tool_set": false
+   },
+   "tier3_multi_intent:000879": {
+    "blend_correct": false,
+    "gold_call_count": 3,
+    "gold_distinct_tool_count": 3,
+    "gold_distinct_tools": [
+     "getCameraEvent",
+     "setColorTemperature",
+     "setLighting"
+    ],
+    "gold_multiset": {
+     "getCameraEvent": 1,
+     "setColorTemperature": 1,
+     "setLighting": 1
+    },
+    "gold_supplied_primary": true,
+    "gold_tools_covered_by_supply": [
+     "getCameraEvent"
+    ],
+    "gold_tools_covered_count": 1,
+    "multi_tool_gold": true,
+    "supplied_targets": [
+     "findMyDevice",
+     "getCameraEvent",
+     "getCameraStream"
+    ],
+    "supply_covers_only_part_of_a_multi_tool_gold": true,
+    "supply_covers_the_whole_gold_tool_set": false
+   },
+   "tier4_implicit:000655": {
+    "blend_correct": false,
+    "gold_call_count": 1,
+    "gold_distinct_tool_count": 1,
+    "gold_distinct_tools": [
+     "setLockState"
+    ],
+    "gold_multiset": {
+     "setLockState": 1
+    },
+    "gold_supplied_primary": false,
+    "gold_tools_covered_by_supply": [],
+    "gold_tools_covered_count": 0,
+    "multi_tool_gold": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supply_covers_only_part_of_a_multi_tool_gold": false,
+    "supply_covers_the_whole_gold_tool_set": false
+   },
+   "tier4_implicit:000900": {
+    "blend_correct": false,
+    "gold_call_count": 1,
+    "gold_distinct_tool_count": 1,
+    "gold_distinct_tools": [
+     "setGarageDoor"
+    ],
+    "gold_multiset": {
+     "setGarageDoor": 1
+    },
+    "gold_supplied_primary": false,
+    "gold_tools_covered_by_supply": [],
+    "gold_tools_covered_count": 0,
+    "multi_tool_gold": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supply_covers_only_part_of_a_multi_tool_gold": false,
+    "supply_covers_the_whole_gold_tool_set": false
+   },
+   "tier4_implicit:001148": {
+    "blend_correct": false,
+    "gold_call_count": 1,
+    "gold_distinct_tool_count": 1,
+    "gold_distinct_tools": [
+     "castContent"
+    ],
+    "gold_multiset": {
+     "castContent": 1
+    },
+    "gold_supplied_primary": false,
+    "gold_tools_covered_by_supply": [],
+    "gold_tools_covered_count": 0,
+    "multi_tool_gold": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supply_covers_only_part_of_a_multi_tool_gold": false,
+    "supply_covers_the_whole_gold_tool_set": false
+   },
+   "tier4_implicit:001389": {
+    "blend_correct": false,
+    "gold_call_count": 1,
+    "gold_distinct_tool_count": 1,
+    "gold_distinct_tools": [
+     "setApplianceMode"
+    ],
+    "gold_multiset": {
+     "setApplianceMode": 1
+    },
+    "gold_supplied_primary": false,
+    "gold_tools_covered_by_supply": [],
+    "gold_tools_covered_count": 0,
+    "multi_tool_gold": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supply_covers_only_part_of_a_multi_tool_gold": false,
+    "supply_covers_the_whole_gold_tool_set": false
+   },
+   "tier4_implicit:001409": {
+    "blend_correct": false,
+    "gold_call_count": 1,
+    "gold_distinct_tool_count": 1,
+    "gold_distinct_tools": [
+     "setApplianceMode"
+    ],
+    "gold_multiset": {
+     "setApplianceMode": 1
+    },
+    "gold_supplied_primary": false,
+    "gold_tools_covered_by_supply": [],
+    "gold_tools_covered_count": 0,
+    "multi_tool_gold": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supply_covers_only_part_of_a_multi_tool_gold": false,
+    "supply_covers_the_whole_gold_tool_set": false
+   },
+   "tier4_implicit:001513": {
+    "blend_correct": false,
+    "gold_call_count": 1,
+    "gold_distinct_tool_count": 1,
+    "gold_distinct_tools": [
+     "setPowerState"
+    ],
+    "gold_multiset": {
+     "setPowerState": 1
+    },
+    "gold_supplied_primary": true,
+    "gold_tools_covered_by_supply": [
+     "setPowerState"
+    ],
+    "gold_tools_covered_count": 1,
+    "multi_tool_gold": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supply_covers_only_part_of_a_multi_tool_gold": false,
+    "supply_covers_the_whole_gold_tool_set": true
+   },
+   "tier4_implicit:003312": {
+    "blend_correct": true,
+    "gold_call_count": 1,
+    "gold_distinct_tool_count": 1,
+    "gold_distinct_tools": [
+     "startWorkout"
+    ],
+    "gold_multiset": {
+     "startWorkout": 1
+    },
+    "gold_supplied_primary": false,
+    "gold_tools_covered_by_supply": [],
+    "gold_tools_covered_count": 0,
+    "multi_tool_gold": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supply_covers_only_part_of_a_multi_tool_gold": false,
+    "supply_covers_the_whole_gold_tool_set": false
+   },
+   "tier5_needle:000061": {
+    "blend_correct": true,
+    "gold_call_count": 1,
+    "gold_distinct_tool_count": 1,
+    "gold_distinct_tools": [
+     "setBrightness"
+    ],
+    "gold_multiset": {
+     "setBrightness": 1
+    },
+    "gold_supplied_primary": true,
+    "gold_tools_covered_by_supply": [
+     "setBrightness"
+    ],
+    "gold_tools_covered_count": 1,
+    "multi_tool_gold": false,
+    "supplied_targets": [
+     "findMyDevice",
+     "rampBrightness",
+     "setBrightness"
+    ],
+    "supply_covers_only_part_of_a_multi_tool_gold": false,
+    "supply_covers_the_whole_gold_tool_set": true
+   },
+   "tier7_multiturn:000214": {
+    "blend_correct": false,
+    "gold_call_count": 1,
+    "gold_distinct_tool_count": 1,
+    "gold_distinct_tools": [
+     "setTargetTemperature"
+    ],
+    "gold_multiset": {
+     "setTargetTemperature": 1
+    },
+    "gold_supplied_primary": false,
+    "gold_tools_covered_by_supply": [],
+    "gold_tools_covered_count": 0,
+    "multi_tool_gold": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supply_covers_only_part_of_a_multi_tool_gold": false,
+    "supply_covers_the_whole_gold_tool_set": false
+   },
+   "tier7_multiturn:001516": {
+    "blend_correct": false,
+    "gold_call_count": 1,
+    "gold_distinct_tool_count": 1,
+    "gold_distinct_tools": [
+     "activateRoutine"
+    ],
+    "gold_multiset": {
+     "activateRoutine": 1
+    },
+    "gold_supplied_primary": false,
+    "gold_tools_covered_by_supply": [],
+    "gold_tools_covered_count": 0,
+    "multi_tool_gold": false,
+    "supplied_targets": [
+     "cancelNavigation",
+     "setHapticStrength",
+     "setPowerState"
+    ],
+    "supply_covers_only_part_of_a_multi_tool_gold": false,
+    "supply_covers_the_whole_gold_tool_set": false
+   }
+  },
+  "population": {
+   "label": "all 104",
+   "multi_tool_gold_blend_correct": 9,
+   "multi_tool_gold_n": 26,
+   "multi_tool_gold_sample_ids": [
+    "tier3_multi_intent:000259",
+    "tier3_multi_intent:000427",
+    "tier3_multi_intent:000879",
+    "tier3_multi_intent:000924",
+    "tier3_multi_intent:001424",
+    "tier3_multi_intent:002553",
+    "tier3_multi_intent:002560",
+    "tier3_multi_intent:002995",
+    "tier3_multi_intent:003058",
+    "tier3_multi_intent:003153",
+    "tier3_multi_intent:003973",
+    "tier3_multi_intent:003982",
+    "tier3_multi_intent:004025",
+    "tier8_intent_blending:000192",
+    "tier8_intent_blending:000213",
+    "tier8_intent_blending:000249",
+    "tier8_intent_blending:000372",
+    "tier8_intent_blending:000423",
+    "tier8_intent_blending:000433",
+    "tier8_intent_blending:000441",
+    "tier8_intent_blending:000494",
+    "tier8_intent_blending:000581",
+    "tier8_intent_blending:000673",
+    "tier8_intent_blending:000713",
+    "tier8_intent_blending:000720",
+    "tier8_intent_blending:000724"
+   ],
+   "multi_tool_gold_share": 0.25,
+   "n": 104,
+   "single_tool_gold_blend_correct": 54,
+   "single_tool_gold_n": 78,
+   "supply_covered_only_part_of_a_multi_tool_gold_n": 13,
+   "supply_covered_only_part_sample_ids": [
+    "tier3_multi_intent:000427",
+    "tier3_multi_intent:000879",
+    "tier3_multi_intent:002560",
+    "tier3_multi_intent:002995",
+    "tier3_multi_intent:003153",
+    "tier3_multi_intent:003982",
+    "tier8_intent_blending:000213",
+    "tier8_intent_blending:000249",
+    "tier8_intent_blending:000423",
+    "tier8_intent_blending:000433",
+    "tier8_intent_blending:000441",
+    "tier8_intent_blending:000581",
+    "tier8_intent_blending:000673"
+   ],
+   "supply_covered_the_whole_gold_tool_set_n": 60
+  },
+  "question": "the frozen scorer demands the full tool-name multiset. Among the dispatched trajectories, how often was the supply carrying only PART of a multi-tool gold answer?",
+  "scorer_semantics": "a2t-scorer-v1 tool accuracy is equality of the full tool-name MULTISET (collections.Counter over call names); the dispatch projection uses only the PRIMARY (first) call's name, so on a multi-tool item the projection is lossy by construction"
+ },
+ "q5_form_repair_channel": {
+  "blend_final_form_classes": {
+   "empty": 3,
+   "well-formed-non-empty": 12
+  },
+  "contact0_form_classes": {
+   "empty": 11,
+   "unparsed": 3,
+   "well-formed-non-empty": 1
+  },
+  "converted_against_own_contact0_n": 3,
+  "converted_with_gold_bearing_supply": {
+   "channel": "KNOWLEDGE -- the supply named the gold tool",
+   "n": 2,
+   "sample_ids": [
+    "tier1_direct:004159",
+    "tier5_needle:000061"
+   ]
+  },
+  "converted_without_gold_bearing_supply": {
+   "channel": "FORM -- no gold value was supplied, so the only thing the evidence contact can have done is repair the SHAPE of an answer the core already half-knew",
+   "n": 1,
+   "sample_ids": [
+    "tier4_implicit:003312"
+   ]
+  },
+  "dispatched_n": 15,
+  "empty_call_rate": {
+   "blend_arm": {
+    "count": 3,
+    "rate": 0.028846153846153848
+   },
+   "m0_arm": {
+    "count": 14,
+    "rate": 0.1346153846153846
+   },
+   "predicate": "analysis.a2t_read.is_empty_tool_call, i.e. len(predicted) == 0, so unparsed answers count as empty too"
+  },
+  "form_repaired_but_still_wrong_n": 9,
+  "form_repaired_but_still_wrong_sample_ids": [
+   "tier2_parametric:004826",
+   "tier3_multi_intent:000879",
+   "tier4_implicit:000655",
+   "tier4_implicit:000900",
+   "tier4_implicit:001148",
+   "tier4_implicit:001409",
+   "tier4_implicit:001513",
+   "tier7_multiturn:000214",
+   "tier7_multiturn:001516"
+  ],
+  "form_repaired_n": 11,
+  "form_repaired_sample_ids": [
+   "tier2_parametric:004826",
+   "tier3_multi_intent:000879",
+   "tier4_implicit:000655",
+   "tier4_implicit:000900",
+   "tier4_implicit:001148",
+   "tier4_implicit:001409",
+   "tier4_implicit:001513",
+   "tier4_implicit:003312",
+   "tier5_needle:000061",
+   "tier7_multiturn:000214",
+   "tier7_multiturn:001516"
+  ],
+  "per_sample": {
+   "tier1_direct:000167": {
+    "blend_correct": false,
+    "blend_final_empty_by_frozen_predicate": true,
+    "blend_final_form": "empty",
+    "blend_final_in_vocabulary_label": null,
+    "contact0_correct": false,
+    "contact0_empty_by_frozen_predicate": true,
+    "contact0_form": "empty",
+    "contact0_in_vocabulary_label": null,
+    "form_repaired": false,
+    "gold_supplied": false,
+    "m0_arm_correct": false
+   },
+   "tier1_direct:001631": {
+    "blend_correct": false,
+    "blend_final_empty_by_frozen_predicate": true,
+    "blend_final_form": "empty",
+    "blend_final_in_vocabulary_label": null,
+    "contact0_correct": false,
+    "contact0_empty_by_frozen_predicate": true,
+    "contact0_form": "empty",
+    "contact0_in_vocabulary_label": null,
+    "form_repaired": false,
+    "gold_supplied": false,
+    "m0_arm_correct": true
+   },
+   "tier1_direct:004159": {
+    "blend_correct": true,
+    "blend_final_empty_by_frozen_predicate": false,
+    "blend_final_form": "well-formed-non-empty",
+    "blend_final_in_vocabulary_label": "facet:label:tool:getLockState",
+    "contact0_correct": false,
+    "contact0_empty_by_frozen_predicate": false,
+    "contact0_form": "well-formed-non-empty",
+    "contact0_in_vocabulary_label": null,
+    "form_repaired": false,
+    "gold_supplied": true,
+    "m0_arm_correct": false
+   },
+   "tier2_parametric:004826": {
+    "blend_correct": false,
+    "blend_final_empty_by_frozen_predicate": false,
+    "blend_final_form": "well-formed-non-empty",
+    "blend_final_in_vocabulary_label": "facet:label:tool:setBrightness",
+    "contact0_correct": false,
+    "contact0_empty_by_frozen_predicate": true,
+    "contact0_form": "unparsed",
+    "contact0_in_vocabulary_label": null,
+    "form_repaired": true,
+    "gold_supplied": false,
+    "m0_arm_correct": false
+   },
+   "tier3_multi_intent:000879": {
+    "blend_correct": false,
+    "blend_final_empty_by_frozen_predicate": false,
+    "blend_final_form": "well-formed-non-empty",
+    "blend_final_in_vocabulary_label": "facet:label:tool:getCameraEvent",
+    "contact0_correct": false,
+    "contact0_empty_by_frozen_predicate": true,
+    "contact0_form": "unparsed",
+    "contact0_in_vocabulary_label": null,
+    "form_repaired": true,
+    "gold_supplied": true,
+    "m0_arm_correct": false
+   },
+   "tier4_implicit:000655": {
+    "blend_correct": false,
+    "blend_final_empty_by_frozen_predicate": false,
+    "blend_final_form": "well-formed-non-empty",
+    "blend_final_in_vocabulary_label": "facet:label:tool:setPowerState",
+    "contact0_correct": false,
+    "contact0_empty_by_frozen_predicate": true,
+    "contact0_form": "empty",
+    "contact0_in_vocabulary_label": null,
+    "form_repaired": true,
+    "gold_supplied": false,
+    "m0_arm_correct": false
+   },
+   "tier4_implicit:000900": {
+    "blend_correct": false,
+    "blend_final_empty_by_frozen_predicate": false,
+    "blend_final_form": "well-formed-non-empty",
+    "blend_final_in_vocabulary_label": "facet:label:tool:cancelNavigation",
+    "contact0_correct": false,
+    "contact0_empty_by_frozen_predicate": true,
+    "contact0_form": "empty",
+    "contact0_in_vocabulary_label": null,
+    "form_repaired": true,
+    "gold_supplied": false,
+    "m0_arm_correct": false
+   },
+   "tier4_implicit:001148": {
+    "blend_correct": false,
+    "blend_final_empty_by_frozen_predicate": false,
+    "blend_final_form": "well-formed-non-empty",
+    "blend_final_in_vocabulary_label": "facet:label:tool:cancelNavigation",
+    "contact0_correct": false,
+    "contact0_empty_by_frozen_predicate": true,
+    "contact0_form": "empty",
+    "contact0_in_vocabulary_label": null,
+    "form_repaired": true,
+    "gold_supplied": false,
+    "m0_arm_correct": false
+   },
+   "tier4_implicit:001389": {
+    "blend_correct": false,
+    "blend_final_empty_by_frozen_predicate": true,
+    "blend_final_form": "empty",
+    "blend_final_in_vocabulary_label": null,
+    "contact0_correct": false,
+    "contact0_empty_by_frozen_predicate": true,
+    "contact0_form": "empty",
+    "contact0_in_vocabulary_label": null,
+    "form_repaired": false,
+    "gold_supplied": false,
+    "m0_arm_correct": false
+   },
+   "tier4_implicit:001409": {
+    "blend_correct": false,
+    "blend_final_empty_by_frozen_predicate": false,
+    "blend_final_form": "well-formed-non-empty",
+    "blend_final_in_vocabulary_label": "facet:label:tool:cancelNavigation",
+    "contact0_correct": false,
+    "contact0_empty_by_frozen_predicate": true,
+    "contact0_form": "empty",
+    "contact0_in_vocabulary_label": null,
+    "form_repaired": true,
+    "gold_supplied": false,
+    "m0_arm_correct": false
+   },
+   "tier4_implicit:001513": {
+    "blend_correct": false,
+    "blend_final_empty_by_frozen_predicate": false,
+    "blend_final_form": "well-formed-non-empty",
+    "blend_final_in_vocabulary_label": "facet:label:tool:cancelNavigation",
+    "contact0_correct": false,
+    "contact0_empty_by_frozen_predicate": true,
+    "contact0_form": "empty",
+    "contact0_in_vocabulary_label": null,
+    "form_repaired": true,
+    "gold_supplied": true,
+    "m0_arm_correct": false
+   },
+   "tier4_implicit:003312": {
+    "blend_correct": true,
+    "blend_final_empty_by_frozen_predicate": false,
+    "blend_final_form": "well-formed-non-empty",
+    "blend_final_in_vocabulary_label": "facet:label:tool:startWorkout",
+    "contact0_correct": false,
+    "contact0_empty_by_frozen_predicate": true,
+    "contact0_form": "empty",
+    "contact0_in_vocabulary_label": null,
+    "form_repaired": true,
+    "gold_supplied": false,
+    "m0_arm_correct": false
+   },
+   "tier5_needle:000061": {
+    "blend_correct": true,
+    "blend_final_empty_by_frozen_predicate": false,
+    "blend_final_form": "well-formed-non-empty",
+    "blend_final_in_vocabulary_label": "facet:label:tool:setBrightness",
+    "contact0_correct": false,
+    "contact0_empty_by_frozen_predicate": true,
+    "contact0_form": "unparsed",
+    "contact0_in_vocabulary_label": null,
+    "form_repaired": true,
+    "gold_supplied": true,
+    "m0_arm_correct": false
+   },
+   "tier7_multiturn:000214": {
+    "blend_correct": false,
+    "blend_final_empty_by_frozen_predicate": false,
+    "blend_final_form": "well-formed-non-empty",
+    "blend_final_in_vocabulary_label": "facet:label:tool:cancelNavigation",
+    "contact0_correct": false,
+    "contact0_empty_by_frozen_predicate": true,
+    "contact0_form": "empty",
+    "contact0_in_vocabulary_label": null,
+    "form_repaired": true,
+    "gold_supplied": false,
+    "m0_arm_correct": false
+   },
+   "tier7_multiturn:001516": {
+    "blend_correct": false,
+    "blend_final_empty_by_frozen_predicate": false,
+    "blend_final_form": "well-formed-non-empty",
+    "blend_final_in_vocabulary_label": "facet:label:tool:cancelNavigation",
+    "contact0_correct": false,
+    "contact0_empty_by_frozen_predicate": true,
+    "contact0_form": "empty",
+    "contact0_in_vocabulary_label": null,
+    "form_repaired": true,
+    "gold_supplied": false,
+    "m0_arm_correct": false
+   }
+  },
+  "question": "how many of the 15 changed FORM independent of correctness, and what is the correctness delta attributable to form repair alone versus to gold-bearing supply?"
+ },
+ "ranker_ordering_check": {
+  "consequence": "with one dimension per content facet and zero prior mass the registered ranker's score is an affine map of the cosine, so the content-facet ordering IS the cosine ordering and every depth statement below is a statement about that single ordering",
+  "content_facet_agreement_values": [
+   0.333333333333
+  ],
+  "content_facet_max_prior_values": [
+   0.0
+  ],
+  "disagreement_sample_ids": [],
+  "ranker_order_equals_cosine_order_on_content_facets": true,
+  "recall_depth_used": 128,
+  "recall_dims_total_values": [
+   3
+  ],
+  "trajectories_checked": 104
+ },
+ "recall_fidelity": {
+  "cosine_probes_against_kb_policy_cosine": 72,
+  "recall_fidelity_probes": 8,
+  "semantics": "the vectorised full-KB cosine sweep is not trusted until kb.multidim_recall admits the same facet set with the same scores on the probed samples and kb_policy._cosine reproduces each probed cosine to 1e-9"
+ },
+ "schema": "saea-a2t-gold-absence-diagnosis-v1",
+ "study": "speech-aware-evidence-acquisition",
+ "wall_seconds": 271.525
+}
