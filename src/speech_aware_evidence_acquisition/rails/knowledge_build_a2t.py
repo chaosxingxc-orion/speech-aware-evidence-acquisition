@@ -1,0 +1,1375 @@
+"""KB-BUILD-A2T v1: tool-shaped, distribution-modeled, MODEL-FREE knowledge
+construction for the Audio2Tool carrier (Audio2Tool generality campaign,
+stage G0; authority ``docs/readiness/2026-08-25-a2t-generality-campaign-plan.md``
+sections 3.2, 3.3 and 3.6).
+
+This module is the Audio2Tool analogue of :mod:`.knowledge_build`, NOT an
+edit of it. The SLURP builder stays byte-frozen because the locked baseline
+cites its snapshot hash; everything Audio2Tool-specific lives here.
+
+Scope discipline, identical to the SLURP builder: text facets and metadata
+ONLY. No embeddings, no tokenizer, no model contacts, no network of any
+kind. Every byte is read from the already-landed Audio2Tool tier manifests,
+``tools_registry.csv`` and this repository's committed receipts.
+
+WHAT CHANGES FROM THE SLURP SHAPE, and why (campaign plan section 3.2 -- the
+campaign's main scientific decision):
+
+* **Unit.** SLURP's KB unit was "utterance text -> intent". The A2T unit is
+  "invocation utterance text -> tool call". A unit here is one
+  ``(tier, query_idx)`` pair, which the carrier renders as one to four wav
+  files by different synthetic speakers; the manifest text and the whole
+  gold call list are IDENTICAL across a unit's renderings (verified over all
+  16,843 units: zero text-inconsistent, zero gold-inconsistent), so merging
+  them is lossless and mirrors SLURP's one-utterance-many-recordings shape.
+* **Label facets.** One per GOLD tool name, hierarchically parented by
+  ``domain -> category``, exactly as SLURP parented intent by
+  ``scenario -> action``.
+* **Value bundles carry ARGUMENT STRUCTURE.** SLURP's values carried a label;
+  the measured A2T tool-acc/EM gap of +30.0 pp (the A0 verdict) says argument
+  construction, not tool selection, is the dominant loss channel, so every
+  value carries the tool's registry signature, constraints and defaults, this
+  exemplar's own argument pattern, and the other argument patterns observed
+  for the same tool in the construction pool.
+* **Prior facets are argument-pattern priors.** SLURP's prior facet was
+  ``p(entity_type | intent)``; here it is ``p(argument-pattern | tool)`` plus
+  ``p(argument-key | tool)`` -- the same statistical role, aimed at the
+  channel the A0 verdict identified.
+* **The speaker dimension is DROPPED by default.** SLURP speakers are real
+  people whose identity carries acoustic and distributional information;
+  Audio2Tool speakers are synthetic voice assignments drawn from voice banks,
+  they carry no tool-selection information, and 821 tier8 rows have no
+  speaker id at all. The dimension remains representable (``dimensions``
+  accepts ``"speaker"``) but is off in the registered default, and this
+  deviation is reported rather than silently taken.
+
+IDENTITY FACTS this module depends on, each measured rather than assumed
+(the G0 report carries the full table):
+
+* The tool registry declares **152** tools. The corpus's gold uses **151**
+  of them as a primary tool; ``getLockStatus`` never appears as a gold tool
+  anywhere in the 30,733-item pool, so it cannot receive a sample-bound
+  facet. The campaign plan's "152 label facets" is corrected to 151 by
+  measurement.
+* ``tool_id`` is NOT a reliable join key between the manifests and the
+  registry: 10 ``tool_id`` values carry a different ``tool_name`` in the
+  manifests than in ``tools_registry.csv`` (e.g. id 70 is ``setLighting`` in
+  gold and ``setLightState`` in the registry). The join here is by NAME,
+  which is also what ``reproduction.toolcall_scoring`` compares.
+* ``query_idx`` is shared ACROSS tiers -- 4,646 distinct values over 8
+  tiers, 2,495 of them appearing in more than one tier -- so the same base
+  scenario is re-rendered at several difficulty tiers. That makes the
+  ``query_idx`` BLOCK, not the item, the unit that carries leakage between a
+  construction pool and an evaluation tier, and it is the unit
+  :func:`propose_partition` partitions on.
+
+Decontamination is fail-closed and belt-and-braces, on the SLURP pattern:
+the selected construction units' sample ids are checked against the frozen
+exposed 400 (``docs/receipts/probe-samples/r1-audio2tool-sample.json``) AND
+against the proposed evaluation tier, and any intersection raises before a
+snapshot is returned.
+"""
+
+from __future__ import annotations
+
+import csv
+import hashlib
+import json
+import math
+import random
+from collections import Counter, defaultdict
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Mapping, Sequence
+
+from ..data.audio2tool import (
+    AUDIO2TOOL_LOCK_KEY,
+    _entry_media,  # noqa: SLF001 -- reused, not reimplemented; see module docstring
+    audio2tool_receipts,
+)
+from ..data.loader import LoaderError
+from ..data.lock import REPO_ROOT, asset_dir, lock_entry
+from ..reproduction.toolcall_gold import GoldParseError, expected_tool_calls_for_entry
+from ..reproduction.toolcall_scoring import ToolCall
+from .errors import RailsError
+from .hashing import content_hash
+from .knowledge import KeyFacet, KnowledgeSnapshot, ValueBundle
+
+A2T_KB_BUILD_POLICY_ID = "saea-kb-a2t-toolshaped-v1"
+A2T_PARTITION_POLICY_ID = "saea-a2t-block-partition-v1"
+
+TIERS: tuple[str, ...] = (
+    "tier1_direct",
+    "tier2_parametric",
+    "tier3_multi_intent",
+    "tier4_implicit",
+    "tier5_needle",
+    "tier6_correction",
+    "tier7_multiturn",
+    "tier8_intent_blending",
+)
+
+_ALLOWED_DIMENSIONS = frozenset({"content", "label", "prior", "speaker"})
+_DEFAULT_DIMENSIONS: tuple[str, ...] = ("content", "label", "prior")
+
+EXPOSED_RECEIPT_RELPATH = "docs/receipts/probe-samples/r1-audio2tool-sample.json"
+EXPOSED_RECEIPT_NAME = "r1-audio2tool-sample"
+
+_AUTHORITY = (
+    "docs/readiness/2026-08-25-a2t-generality-campaign-plan.md sections 3.2, 3.3 and 3.6"
+)
+_LONG_TAIL_THRESHOLD = 5
+
+#: An item is eligible for the proposed evaluation tier only when its gold
+#: primary tool has at least this many units in the exposure-free pool. The
+#: rule exists so the evaluation draw can never starve the construction
+#: floor of a rare tool; the tools it excludes are named in the partition
+#: report rather than dropped silently.
+EVAL_TOOL_MIN_POOL_ROWS = 8
+
+
+# ---------------------------------------------------------------------------
+# Task-neutral A2T rows
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class A2tKbRow:
+    """One Audio2Tool ``(tier, query_idx)`` unit's task-neutral row.
+
+    ``sample_ids`` are the loader's own ``f"{tier}:{id:06d}"`` ids for every
+    manifest item in the unit, so decontamination compares like with like
+    against the frozen probe receipt.
+    """
+
+    unit_id: str
+    tier: str
+    query_idx: int
+    text: str
+    domain: str
+    category: str
+    tool_id: int
+    tool_name: str
+    arg_signature: tuple[str, ...]
+    arg_pairs: tuple[tuple[str, str], ...]
+    call_render: str
+    extra_call_names: tuple[str, ...]
+    call_count: int
+    sample_ids: tuple[str, ...]
+    item_ids: tuple[int, ...]
+    media_relpath_by_sample_id: Mapping[str, str]
+    speaker_ids: tuple[str, ...]
+
+    @property
+    def family_key(self) -> tuple[str, tuple[str, ...]]:
+        """This unit's argument-pattern family: the gold primary tool paired
+        with the sorted tuple of its argument KEY names."""
+
+        return (self.tool_name, self.arg_signature)
+
+
+def _render_value(value: object) -> str:
+    """Deterministic one-line rendering of one gold argument value."""
+
+    if isinstance(value, str):
+        return value
+    return json.dumps(value, ensure_ascii=False, sort_keys=True)
+
+
+def render_call(call: ToolCall) -> str:
+    """Deterministic ``name(k=v, ...)`` rendering with keys sorted."""
+
+    inner = ", ".join(
+        f"{key}={_render_value(call.arguments[key])!r}" for key in sorted(call.arguments)
+    )
+    return f"{call.name}({inner})"
+
+
+def _unit_text(tier: str, entry: Mapping[str, object]) -> str:
+    """The invocation utterance text of one manifest entry.
+
+    tier7_multiturn's ``query`` field is the WHOLE conversation transcript,
+    while the runtime protocol sends only the final user turn's wav
+    (``data.audio2tool`` module docstring). ``user_request`` is that final
+    turn, so it -- not ``query`` -- is the text the runtime percept
+    corresponds to, and it is what this builder keys the tier7 content facet
+    on.
+    """
+
+    raw = entry.get("user_request") if tier == "tier7_multiturn" else entry.get("query")
+    if not isinstance(raw, str) or not raw.strip():
+        raise RailsError(f"{tier}: manifest entry lacks a non-empty invocation text")
+    return raw.strip()
+
+
+def _tier_manifest_path(public_dir: Path, tier: str) -> Path:
+    return public_dir / f"{tier}_data" / f"{tier}.json"
+
+
+def load_tool_registry_by_name(
+    lock: Mapping[str, object], root: Path
+) -> dict[str, dict[str, str]]:
+    """``tools_registry.csv`` keyed by ``tool_name``.
+
+    Keyed by NAME rather than ``tool_id`` because the two disagree on 10 ids
+    (module docstring) and because the scorer compares names.
+    """
+
+    path = asset_dir(lock, AUDIO2TOOL_LOCK_KEY, root) / "tools_registry.csv"
+    if not path.is_file():
+        raise RailsError(f"audio2tool tools_registry.csv missing: {path}")
+    try:
+        with path.open(encoding="utf-8-sig", newline="") as handle:
+            rows = list(csv.DictReader(handle))
+    except (OSError, UnicodeError, csv.Error) as error:
+        raise RailsError(f"cannot read tools_registry.csv {path}: {error}") from error
+    by_name: dict[str, dict[str, str]] = {}
+    for row in rows:
+        name = (row.get("tool_name") or "").strip()
+        if not name:
+            raise RailsError("tools_registry.csv row lacks tool_name")
+        if name in by_name:
+            raise RailsError(f"tools_registry.csv has a duplicate tool_name {name!r}")
+        by_name[name] = {key: (row.get(key) or "") for key in row}
+    if not by_name:
+        raise RailsError(f"tools_registry.csv {path} has no rows")
+    return by_name
+
+
+def a2t_pool_rows(
+    lock: Mapping[str, object], root: Path
+) -> tuple[tuple[A2tKbRow, ...], dict[str, object]]:
+    """Every Audio2Tool ``(tier, query_idx)`` unit in the FULL carrier pool,
+    sorted by ``unit_id``, plus an integrity report.
+
+    Fail-closed on a unit whose manifest items disagree on invocation text or
+    on parsed gold. Units whose parsed gold names a call OUTSIDE the tool
+    registry are QUARANTINED rather than silently kept: the only observed
+    case is an upstream data defect (two tier2 rows whose
+    ``expected_tool_call`` string carries Telugu codepoints spliced into the
+    middle of ``getApplianceState``), and a corrupted-gold row must never
+    enter either a knowledge base or an evaluation tier.
+    """
+
+    entry = lock_entry(lock, AUDIO2TOOL_LOCK_KEY)
+    carrier_dir = asset_dir(lock, AUDIO2TOOL_LOCK_KEY, root)
+    subdir = str(entry["local_subdir"]).rstrip("/")
+    public_dir = carrier_dir / "public"
+    if not public_dir.is_dir():
+        raise RailsError(f"audio2tool public directory missing: {public_dir}")
+    registry = load_tool_registry_by_name(lock, root)
+
+    units: dict[str, list[tuple[int, Mapping[str, object]]]] = defaultdict(list)
+    tier_item_counts: dict[str, int] = {}
+    for tier in TIERS:
+        path = _tier_manifest_path(public_dir, tier)
+        if not path.is_file():
+            raise RailsError(f"audio2tool tier manifest missing: {path}")
+        try:
+            entries = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            raise RailsError(
+                f"cannot read audio2tool tier manifest {path}: {error}"
+            ) from error
+        if not isinstance(entries, list) or not entries:
+            raise RailsError(
+                f"audio2tool tier manifest {path} must be a non-empty JSON list"
+            )
+        tier_item_counts[tier] = len(entries)
+        for item in entries:
+            if not isinstance(item, Mapping):
+                raise RailsError(f"audio2tool tier manifest {path} has a malformed item")
+            query_idx = item.get("query_idx")
+            if isinstance(query_idx, bool) or not isinstance(query_idx, int):
+                raise RailsError(f"{tier}: manifest entry lacks an int query_idx")
+            units[f"{tier}:{query_idx:06d}"].append((int(item["id"]), item))
+
+    rows: list[A2tKbRow] = []
+    quarantined: list[dict[str, object]] = []
+    for unit_id in sorted(units):
+        tier, _, idx_text = unit_id.partition(":")
+        members = sorted(units[unit_id], key=lambda pair: pair[0])
+        texts = {_unit_text(tier, item) for _item_id, item in members}
+        if len(texts) != 1:
+            raise RailsError(f"unit {unit_id!r} has inconsistent invocation text")
+        text = texts.pop()
+        signatures: set[tuple[tuple[str, str], ...]] = set()
+        parsed_calls: tuple[ToolCall, ...] | None = None
+        for _item_id, item in members:
+            try:
+                calls = expected_tool_calls_for_entry(item)
+            except GoldParseError as error:
+                raise RailsError(f"unit {unit_id!r}: cannot parse gold: {error}") from error
+            signatures.add(tuple((call.name, render_call(call)) for call in calls))
+            parsed_calls = calls
+        if len(signatures) != 1 or parsed_calls is None:
+            raise RailsError(f"unit {unit_id!r} has inconsistent gold across its renderings")
+        unknown = sorted({call.name for call in parsed_calls} - set(registry))
+        if unknown:
+            quarantined.append(
+                {
+                    "unit_id": unit_id,
+                    "reason": "gold names a call outside the tool registry",
+                    "unknown_call_names": unknown,
+                }
+            )
+            continue
+
+        primary = parsed_calls[0]
+        sample_ids: list[str] = []
+        media: dict[str, str] = {}
+        speakers: list[str] = []
+        item_ids: list[int] = []
+        last_item: Mapping[str, object] = members[0][1]
+        media_error: str | None = None
+        for item_id, item in members:
+            sample_id = f"{tier}:{item_id:06d}"
+            try:
+                relpath, _seconds = _entry_media(item, sample_id)
+            except LoaderError as error:
+                media_error = str(error)
+                break
+            sample_ids.append(sample_id)
+            media[sample_id] = f"{subdir}/public/{relpath}"
+            item_ids.append(item_id)
+            speaker = item.get("speaker_id") or item.get("user_speaker_id")
+            speakers.append(
+                str(speaker) if isinstance(speaker, str) and speaker else "unknown"
+            )
+            last_item = item
+        if media_error is not None:
+            # tier7_multiturn rows whose final chat_history turn is not a user
+            # turn carry no resolvable request audio, so the runtime protocol
+            # cannot send them and a facet cannot bind to a sample id. They are
+            # quarantined with their reason, never silently repaired.
+            quarantined.append(
+                {
+                    "unit_id": unit_id,
+                    "reason": "media unresolvable under the frozen runtime protocol",
+                    "detail": media_error,
+                }
+            )
+            continue
+        rows.append(
+            A2tKbRow(
+                unit_id=unit_id,
+                tier=tier,
+                query_idx=int(idx_text),
+                text=text,
+                domain=str(last_item.get("domain") or "unknown"),
+                category=str(last_item.get("category") or "unknown"),
+                tool_id=int(last_item.get("tool_id", -1)),
+                tool_name=primary.name,
+                arg_signature=tuple(sorted(primary.arguments)),
+                arg_pairs=tuple(
+                    (key, _render_value(primary.arguments[key]))
+                    for key in sorted(primary.arguments)
+                ),
+                call_render=" ".join(render_call(call) for call in parsed_calls),
+                extra_call_names=tuple(call.name for call in parsed_calls[1:]),
+                call_count=len(parsed_calls),
+                sample_ids=tuple(sample_ids),
+                item_ids=tuple(item_ids),
+                media_relpath_by_sample_id=media,
+                speaker_ids=tuple(speakers),
+            )
+        )
+
+    report = {
+        "pool_items": sum(tier_item_counts.values()),
+        "pool_items_by_tier": dict(sorted(tier_item_counts.items())),
+        "pool_units": len(units),
+        "usable_units": len(rows),
+        "usable_items": sum(len(row.sample_ids) for row in rows),
+        "quarantined_unit_count": len(quarantined),
+        "quarantined_units_by_reason": dict(
+            sorted(Counter(str(record["reason"]) for record in quarantined).items())
+        ),
+        "quarantined_units": quarantined,
+        "registry_tool_count": len(registry),
+        "gold_primary_tool_count": len({row.tool_name for row in rows}),
+        "registry_tools_never_gold": sorted(set(registry) - {row.tool_name for row in rows}),
+    }
+    return tuple(sorted(rows, key=lambda row: row.unit_id)), report
+
+
+# ---------------------------------------------------------------------------
+# Split governance: the block partition proposal
+# ---------------------------------------------------------------------------
+
+
+def exposed_sample_ids(repo_root: Path | None = None) -> frozenset[str]:
+    """The frozen 400-item discovery split's sample ids, from the committed
+    receipt, via the loader's own strict verifier (the receipt's
+    ``split_identity_hash`` is recomputed fail-closed before its items are
+    trusted). Identity only -- no gold field is read."""
+
+    receipts = audio2tool_receipts(Path(REPO_ROOT if repo_root is None else repo_root))
+    payload = receipts.get(EXPOSED_RECEIPT_NAME)
+    if payload is None:
+        raise RailsError(
+            f"exposed discovery receipt {EXPOSED_RECEIPT_NAME!r} not found among "
+            f"{sorted(receipts)}"
+        )
+    return frozenset(f"{item['tier']}:{int(item['id']):06d}" for item in payload["items"])
+
+
+@dataclass(frozen=True)
+class PartitionProposal:
+    """A PROPOSED construction-versus-evaluation partition. Not a registered
+    split: registering ``eval_sample_ids`` as a flyable roster is later
+    campaign work with its own preregistration."""
+
+    policy_id: str
+    seed: int
+    construction: tuple[A2tKbRow, ...]
+    eval_items: tuple[tuple[str, int, str, str], ...]
+    reserved_exposed_blocks: tuple[int, ...]
+    eval_blocks: tuple[int, ...]
+    report: Mapping[str, object]
+
+    @property
+    def eval_sample_ids(self) -> tuple[str, ...]:
+        return tuple(
+            sorted(f"{tier}:{item_id:06d}" for tier, item_id, _text, _tool in self.eval_items)
+        )
+
+    def split_identity_hash(self) -> str:
+        return hashlib.sha256("\n".join(self.eval_sample_ids).encode("utf-8")).hexdigest()
+
+
+def propose_partition(
+    rows: Sequence[A2tKbRow],
+    exposed: frozenset[str],
+    *,
+    seed: int = 20260807,
+    per_tier: int = 50,
+    tool_min_pool_rows: int = EVAL_TOOL_MIN_POOL_ROWS,
+) -> PartitionProposal:
+    """Partition the carrier's ``query_idx`` BLOCKS three ways.
+
+    1. **RESERVED-EXPOSED** -- every block touched by the frozen exposed 400.
+       Held out of BOTH sides. The exposed 400 itself may still fly as the
+       campaign plan's SECONDARY comparator; holding its cross-tier siblings
+       out too is the conservative choice that makes that secondary reading
+       safe against the same knowledge base.
+    2. **EVAL** -- a seeded, tier-stratified draw of ``per_tier`` items per
+       tier, each from a DISTINCT block, whose whole block is then reserved.
+       Tiers are processed in ascending order of candidate count (scarcest
+       first: tier8 has only 821 items) so a later tier can never be starved
+       by an earlier one, then by tier name; the order is deterministic and
+       independent of pool order.
+    3. **CONSTRUCTION** -- every remaining block. This is the KB TRAIN pool.
+
+    Eval candidacy additionally requires the item's gold primary tool to have
+    at least ``tool_min_pool_rows`` units in the exposure-free pool, so the
+    build's hard "at least one exemplar per tool" floor can never be starved
+    by the evaluation draw. The excluded tools are named in the report.
+    """
+
+    rows = tuple(rows)
+    if not rows:
+        raise RailsError("propose_partition: rows must be non-empty")
+    if isinstance(per_tier, bool) or not isinstance(per_tier, int) or per_tier <= 0:
+        raise RailsError("propose_partition: per_tier must be a positive int")
+
+    exposed_blocks = frozenset(
+        row.query_idx
+        for row in rows
+        if any(sample_id in exposed for sample_id in row.sample_ids)
+    )
+    free_rows = tuple(row for row in rows if row.query_idx not in exposed_blocks)
+    if not free_rows:
+        raise RailsError("propose_partition: exposure reserved the whole pool")
+    tool_pool_counts = Counter(row.tool_name for row in free_rows)
+    construction_only_tools = sorted(
+        tool for tool, count in tool_pool_counts.items() if count < tool_min_pool_rows
+    )
+
+    candidates_by_tier: dict[str, list[A2tKbRow]] = defaultdict(list)
+    for row in free_rows:
+        if row.tool_name in construction_only_tools:
+            continue
+        candidates_by_tier[row.tier].append(row)
+
+    order = sorted(candidates_by_tier, key=lambda tier: (len(candidates_by_tier[tier]), tier))
+    reserved: set[int] = set()
+    eval_items: list[tuple[str, int, str, str]] = []
+    per_tier_drawn: dict[str, int] = {}
+    for tier in order:
+        pool = sorted(
+            (row for row in candidates_by_tier[tier] if row.query_idx not in reserved),
+            key=lambda row: row.unit_id,
+        )
+        if len(pool) < per_tier:
+            raise RailsError(
+                f"propose_partition: tier {tier!r} offers only {len(pool)} block-free "
+                f"candidates for a draw of {per_tier}"
+            )
+        rng = random.Random(f"{seed}:{tier}")
+        picked = rng.sample(range(len(pool)), per_tier)
+        for index in sorted(picked):
+            row = pool[index]
+            reserved.add(row.query_idx)
+            # One wav per drawn unit: the lowest item id, so the draw is a
+            # deterministic ITEM roster and never two near-identical
+            # renderings of one unit.
+            eval_items.append((row.tier, row.item_ids[0], row.text, row.tool_name))
+        per_tier_drawn[tier] = per_tier
+
+    eval_blocks = frozenset(reserved)
+    construction = tuple(row for row in free_rows if row.query_idx not in eval_blocks)
+    if not construction:
+        raise RailsError("propose_partition: empty construction pool")
+
+    missing_tools = sorted(
+        {row.tool_name for row in rows} - {row.tool_name for row in construction}
+    )
+    if missing_tools:
+        raise RailsError(
+            "propose_partition: the evaluation draw starved the construction floor for "
+            f"tools {missing_tools}"
+        )
+
+    eval_ids = {f"{tier}:{item_id:06d}" for tier, item_id, _text, _tool in eval_items}
+    construction_ids = {sid for row in construction for sid in row.sample_ids}
+    if eval_ids & construction_ids:
+        raise RailsError("propose_partition: eval and construction sample ids intersect")
+    if eval_ids & set(exposed):
+        raise RailsError("propose_partition: eval intersects the frozen exposed 400")
+    if construction_ids & set(exposed):
+        raise RailsError("propose_partition: construction intersects the frozen exposed 400")
+
+    report = {
+        "policy_id": A2T_PARTITION_POLICY_ID,
+        "seed": seed,
+        "per_tier": per_tier,
+        "eval_tool_min_pool_rows": tool_min_pool_rows,
+        "blocks_total": len({row.query_idx for row in rows}),
+        "blocks_reserved_exposed": len(exposed_blocks),
+        "blocks_eval": len(eval_blocks),
+        "blocks_construction": len({row.query_idx for row in construction}),
+        "units_total": len(rows),
+        "units_reserved_exposed": len(rows) - len(free_rows),
+        "units_eval_drawn": len(eval_items),
+        "units_construction": len(construction),
+        "items_construction": sum(len(row.sample_ids) for row in construction),
+        "eval_items_by_tier": dict(sorted(per_tier_drawn.items())),
+        "eval_draw_order": list(order),
+        "construction_only_tools": construction_only_tools,
+        "construction_only_tool_units": {
+            tool: tool_pool_counts[tool] for tool in construction_only_tools
+        },
+        "construction_units_by_tier": dict(
+            sorted(Counter(row.tier for row in construction).items())
+        ),
+        "construction_tool_count": len({row.tool_name for row in construction}),
+        "eval_tools_covered": len({tool for _t, _i, _x, tool in eval_items}),
+    }
+    return PartitionProposal(
+        policy_id=A2T_PARTITION_POLICY_ID,
+        seed=seed,
+        construction=construction,
+        eval_items=tuple(sorted(eval_items)),
+        reserved_exposed_blocks=tuple(sorted(exposed_blocks)),
+        eval_blocks=tuple(sorted(eval_blocks)),
+        report=report,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Model-free build spec
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class A2tKnowledgeBuildSpec:
+    """Model-free KB-BUILD-A2T configuration. ``datastore_size=None`` selects
+    the entire construction pool (the 'full' tier)."""
+
+    carrier_lock_key: str = AUDIO2TOOL_LOCK_KEY
+    datastore_size: int | None = None
+    seed: int = 20260825
+    dimensions: tuple[str, ...] = _DEFAULT_DIMENSIONS
+
+    def validate(self) -> "A2tKnowledgeBuildSpec":
+        if self.carrier_lock_key != AUDIO2TOOL_LOCK_KEY:
+            raise RailsError(
+                "KB-BUILD-A2T is Audio2Tool-only; got carrier_lock_key="
+                f"{self.carrier_lock_key!r}"
+            )
+        if self.datastore_size is not None and (
+            isinstance(self.datastore_size, bool)
+            or not isinstance(self.datastore_size, int)
+            or self.datastore_size <= 0
+        ):
+            raise RailsError(
+                "A2tKnowledgeBuildSpec.datastore_size must be a positive int or None"
+            )
+        if isinstance(self.seed, bool) or not isinstance(self.seed, int):
+            raise RailsError("A2tKnowledgeBuildSpec.seed must be an int")
+        if (
+            not isinstance(self.dimensions, tuple)
+            or not self.dimensions
+            or len(set(self.dimensions)) != len(self.dimensions)
+            or not set(self.dimensions) <= _ALLOWED_DIMENSIONS
+        ):
+            raise RailsError(
+                "A2tKnowledgeBuildSpec.dimensions must be a non-empty, duplicate-free "
+                f"tuple drawn from {sorted(_ALLOWED_DIMENSIONS)}"
+            )
+        if not ({"content", "label"} & set(self.dimensions)):
+            raise RailsError(
+                "A2tKnowledgeBuildSpec.dimensions must include 'content' or 'label' so "
+                "every value has at least one grounded facet"
+            )
+        return self
+
+
+# ---------------------------------------------------------------------------
+# Distribution-modeled sampling with tool-shaped floors
+# ---------------------------------------------------------------------------
+
+
+def _shingles(text: str) -> frozenset[str]:
+    tokens = text.lower().split()
+    if len(tokens) < 2:
+        return frozenset(tokens)
+    return frozenset(f"{a} {b}" for a, b in zip(tokens, tokens[1:]))
+
+
+def _jaccard(a: frozenset[str], b: frozenset[str]) -> float:
+    if not a and not b:
+        return 1.0
+    union = a | b
+    if not union:
+        return 0.0
+    return len(a & b) / len(union)
+
+
+def _greedy_diverse_pick(
+    candidates: Sequence[A2tKbRow],
+    count: int,
+    already_selected: Sequence[A2tKbRow],
+    rng: random.Random,
+    *,
+    tool_cap: int,
+) -> list[A2tKbRow]:
+    """Greedy farthest-point content-diversity selection over invocation
+    text, honoring a soft per-TOOL cap inside the stratum (bypassed only when
+    every remaining candidate is capped, so a pick is never refused). Ties
+    break through ``rng`` over the ``unit_id``-sorted tied set, so the result
+    is pool-order independent and reproducible for a fixed seed."""
+
+    selected_shingles = [_shingles(row.text) for row in already_selected]
+    tool_counts: Counter[str] = Counter(row.tool_name for row in already_selected)
+    remaining = sorted(candidates, key=lambda row: row.unit_id)
+    shingle_of = {row.unit_id: _shingles(row.text) for row in remaining}
+    picked: list[A2tKbRow] = []
+    while remaining and len(picked) < count:
+        capped = {tool for tool, n in tool_counts.items() if n >= tool_cap}
+        eligible = [row for row in remaining if row.tool_name not in capped] or remaining
+        best_score: float | None = None
+        best_rows: list[A2tKbRow] = []
+        for row in eligible:
+            shingles = shingle_of[row.unit_id]
+            max_sim = max(
+                (_jaccard(shingles, other) for other in selected_shingles), default=0.0
+            )
+            novelty = 1.0 - max_sim
+            if best_score is None or novelty > best_score + 1e-12:
+                best_score, best_rows = novelty, [row]
+            elif abs(novelty - best_score) <= 1e-12:
+                best_rows.append(row)
+        chosen = (
+            sorted(best_rows, key=lambda row: row.unit_id)[rng.randrange(len(best_rows))]
+            if len(best_rows) > 1
+            else best_rows[0]
+        )
+        picked.append(chosen)
+        selected_shingles.append(shingle_of[chosen.unit_id])
+        tool_counts[chosen.tool_name] += 1
+        remaining = [row for row in remaining if row.unit_id != chosen.unit_id]
+    return picked
+
+
+def _hamilton_apportion(capacity_by_key: Mapping[str, int], total: int) -> dict[str, int]:
+    """Largest-remainder apportionment of ``total`` seats across
+    ``capacity_by_key``, capped at each key's capacity, ties by ascending key."""
+
+    if isinstance(total, bool) or not isinstance(total, int) or total < 0:
+        raise RailsError("_hamilton_apportion: total must be a non-negative int")
+    keys = sorted(capacity_by_key)
+    total_capacity = sum(capacity_by_key[key] for key in keys)
+    if total > total_capacity:
+        raise RailsError("_hamilton_apportion: total exceeds total capacity")
+    result = {key: 0 for key in keys}
+    if total == 0 or total_capacity == 0:
+        return result
+    raw = {key: total * capacity_by_key[key] / total_capacity for key in keys}
+    for key in keys:
+        result[key] = min(int(raw[key]), capacity_by_key[key])
+    remainder = total - sum(result.values())
+    order = sorted(keys, key=lambda key: (-(raw[key] - int(raw[key])), key))
+    guard = 0
+    while remainder > 0:
+        progressed = False
+        for key in order:
+            if remainder <= 0:
+                break
+            if result[key] < capacity_by_key[key]:
+                result[key] += 1
+                remainder -= 1
+                progressed = True
+        if not progressed:
+            raise RailsError("_hamilton_apportion: failed to converge (internal invariant)")
+        guard += 1
+        if guard > 10_000:
+            raise RailsError("_hamilton_apportion: exceeded iteration guard")
+    return result
+
+
+def distribution_sample_a2t(
+    rows: Sequence[A2tKbRow], size: int | None, seed: int
+) -> tuple[A2tKbRow, ...]:
+    """Distribution-modeled construction-pool selection with THREE hard
+    floors (campaign plan section 3.2): at least one exemplar per GOLD TOOL,
+    at least one per ARGUMENT-PATTERN FAMILY ``(tool, sorted argument keys)``,
+    and at least one per TIER. The remaining budget is Hamilton-apportioned
+    over TIER strata (the plan's "tier-stratified") and filled by greedy
+    content-diversity picks under a soft per-tool cap.
+
+    ``size=None`` selects the whole pool. When the floors alone already meet
+    or exceed ``size``, the floor set IS the returned (larger) selection:
+    floors are a HARD requirement, ``size`` a best-effort target.
+
+    Deterministic and pool-order independent: every draw samples a
+    ``unit_id``-sorted candidate list through ``random.Random`` seeded by a
+    namespaced tag.
+    """
+
+    rows = tuple(rows)
+    if not rows:
+        raise RailsError("distribution_sample_a2t: rows must be non-empty")
+    rows_by_id = {row.unit_id: row for row in rows}
+    if len(rows_by_id) != len(rows):
+        raise RailsError("distribution_sample_a2t: rows must have unique unit_id values")
+
+    if size is None or size >= len(rows):
+        return tuple(sorted(rows, key=lambda row: row.unit_id))
+    if isinstance(size, bool) or not isinstance(size, int) or size <= 0:
+        raise RailsError("distribution_sample_a2t: size must be a positive int or None")
+
+    selected_ids: set[str] = set()
+
+    # Phase 1: every gold tool keeps at least one exemplar.
+    rows_by_tool: dict[str, list[A2tKbRow]] = defaultdict(list)
+    for row in rows:
+        rows_by_tool[row.tool_name].append(row)
+    for tool in sorted(rows_by_tool):
+        pool = sorted(rows_by_tool[tool], key=lambda row: row.unit_id)
+        rng = random.Random(f"{seed}:tool:{tool}")
+        selected_ids.add(pool[rng.randrange(len(pool))].unit_id)
+
+    # Phase 2: every argument-pattern family keeps at least one exemplar.
+    rows_by_family: dict[tuple[str, tuple[str, ...]], list[A2tKbRow]] = defaultdict(list)
+    for row in rows:
+        rows_by_family[row.family_key].append(row)
+    covered = {rows_by_id[i].family_key for i in selected_ids}
+    for family in sorted(set(rows_by_family) - covered):
+        pool = sorted(rows_by_family[family], key=lambda row: row.unit_id)
+        unselected = [row for row in pool if row.unit_id not in selected_ids]
+        candidates = unselected or pool
+        rng = random.Random(f"{seed}:family:{family[0]}:{'|'.join(family[1])}")
+        selected_ids.add(candidates[rng.randrange(len(candidates))].unit_id)
+
+    # Phase 3: every tier keeps at least one exemplar.
+    rows_by_tier: dict[str, list[A2tKbRow]] = defaultdict(list)
+    for row in rows:
+        rows_by_tier[row.tier].append(row)
+    covered_tiers = {rows_by_id[i].tier for i in selected_ids}
+    for tier in sorted(set(rows_by_tier) - covered_tiers):
+        pool = sorted(rows_by_tier[tier], key=lambda row: row.unit_id)
+        rng = random.Random(f"{seed}:tier:{tier}")
+        selected_ids.add(pool[rng.randrange(len(pool))].unit_id)
+
+    floor_count = len(selected_ids)
+    if size <= floor_count:
+        return tuple(
+            sorted((rows_by_id[i] for i in selected_ids), key=lambda row: row.unit_id)
+        )
+
+    # Phase 4: Hamilton-apportion the remaining budget over TIER strata.
+    remaining_budget = size - floor_count
+    floor_by_tier: Counter[str] = Counter(rows_by_id[i].tier for i in selected_ids)
+    capacity_by_tier = {
+        tier: len(members) - floor_by_tier.get(tier, 0)
+        for tier, members in rows_by_tier.items()
+    }
+    additional_by_tier = _hamilton_apportion(capacity_by_tier, remaining_budget)
+    for tier in sorted(rows_by_tier):
+        extra = additional_by_tier.get(tier, 0)
+        if extra <= 0:
+            continue
+        already = [rows_by_id[i] for i in selected_ids if rows_by_id[i].tier == tier]
+        candidate_pool = [
+            row for row in rows_by_tier[tier] if row.unit_id not in selected_ids
+        ]
+        target_stratum_size = len(already) + extra
+        tool_cap = max(1, math.ceil(0.10 * target_stratum_size))
+        rng = random.Random(f"{seed}:{tier}")
+        for row in _greedy_diverse_pick(
+            candidate_pool, extra, already, rng, tool_cap=tool_cap
+        ):
+            selected_ids.add(row.unit_id)
+
+    return tuple(sorted((rows_by_id[i] for i in selected_ids), key=lambda row: row.unit_id))
+
+
+# ---------------------------------------------------------------------------
+# Facet / value emission
+# ---------------------------------------------------------------------------
+
+
+def _pattern_text(signature: Sequence[str]) -> str:
+    return "(" + ", ".join(signature) + ")" if signature else "(no arguments)"
+
+
+def _build_facets_and_values(
+    selected: Sequence[A2tKbRow],
+    rows: Sequence[A2tKbRow],
+    spec: A2tKnowledgeBuildSpec,
+    registry: Mapping[str, Mapping[str, str]],
+    *,
+    governed_relpath_by_tier: Mapping[str, str],
+) -> tuple[list[KeyFacet], list[ValueBundle]]:
+    dims = set(spec.dimensions)
+
+    rows_by_tool_full: dict[str, list[A2tKbRow]] = defaultdict(list)
+    rows_by_category_full: dict[tuple[str, str], list[A2tKbRow]] = defaultdict(list)
+    patterns_by_tool_full: dict[str, Counter[tuple[str, ...]]] = defaultdict(Counter)
+    pairs_by_tool_full: dict[str, dict[str, set[str]]] = defaultdict(lambda: defaultdict(set))
+    for row in rows:
+        rows_by_tool_full[row.tool_name].append(row)
+        rows_by_category_full[(row.domain, row.category)].append(row)
+        patterns_by_tool_full[row.tool_name][row.arg_signature] += 1
+        for key, value in row.arg_pairs:
+            pairs_by_tool_full[row.tool_name][key].add(value)
+
+    selected_by_tool: dict[str, list[A2tKbRow]] = defaultdict(list)
+    for row in selected:
+        selected_by_tool[row.tool_name].append(row)
+
+    facets: list[KeyFacet] = []
+    content_facet_id: dict[str, str] = {}
+    tool_facet_id: dict[str, str] = {}
+    prior_facet_id: dict[str, str] = {}
+    prior_representation: dict[str, str] = {}
+    speaker_facet_id: dict[str, str] = {}
+
+    # ---- label dimension: domain -> category -> tool -------------------
+    if "label" in dims:
+        for domain in sorted({row.domain for row in selected}):
+            domain_rows = [row for row in selected if row.domain == domain]
+            domain_fid = f"facet:label:domain:{domain}"
+            facets.append(
+                KeyFacet(
+                    facet_id=domain_fid,
+                    dimension="label",
+                    representation_kind="text",
+                    representation=(
+                        f"Tool domain '{domain}' ({len(domain_rows)} construction "
+                        "invocations in this snapshot)."
+                    ),
+                    source_sample_ids=tuple(
+                        sorted({sid for row in domain_rows for sid in row.sample_ids})
+                    ),
+                ).validate()
+            )
+            for category in sorted({row.category for row in domain_rows}):
+                category_rows = [row for row in domain_rows if row.category == category]
+                category_fid = f"facet:label:category:{domain}:{category}"
+                facets.append(
+                    KeyFacet(
+                        facet_id=category_fid,
+                        dimension="label",
+                        representation_kind="text",
+                        representation=(
+                            f"Tool category '{category}' under domain '{domain}' "
+                            f"({len(category_rows)} construction invocations in this "
+                            "snapshot)."
+                        ),
+                        source_sample_ids=tuple(
+                            sorted({sid for row in category_rows for sid in row.sample_ids})
+                        ),
+                        parent_facet_ids=(domain_fid,),
+                    ).validate()
+                )
+                for tool in sorted({row.tool_name for row in category_rows}):
+                    if tool in tool_facet_id:
+                        continue
+                    tool_rows = [row for row in selected if row.tool_name == tool]
+                    entry = registry.get(tool, {})
+                    signature = entry.get("signature", "")
+                    description = entry.get("description", "")
+                    constraints = entry.get("argument_constraints", "")
+                    defaults = entry.get("argument_defaults", "")
+                    tool_fid = f"facet:label:tool:{tool}"
+                    facets.append(
+                        KeyFacet(
+                            facet_id=tool_fid,
+                            dimension="label",
+                            representation_kind="text",
+                            representation=(
+                                f"Tool '{tool}' (domain='{domain}', category='{category}'); "
+                                f"registry signature {signature or 'unavailable'}; "
+                                f"{description or 'no registry description'} "
+                                f"Argument defaults: {defaults or 'none'}. "
+                                f"Argument constraints: {constraints or 'none'}. "
+                                f"{len(tool_rows)} construction invocations in this snapshot."
+                            ),
+                            source_sample_ids=tuple(
+                                sorted({sid for row in tool_rows for sid in row.sample_ids})
+                            ),
+                            parent_facet_ids=(category_fid,),
+                        ).validate()
+                    )
+                    tool_facet_id[tool] = tool_fid
+
+    # ---- content dimension: one facet per selected invocation ----------
+    if "content" in dims:
+        for row in selected:
+            parent = (tool_facet_id[row.tool_name],) if row.tool_name in tool_facet_id else ()
+            content_fid = f"facet:content:{row.unit_id}"
+            facets.append(
+                KeyFacet(
+                    facet_id=content_fid,
+                    dimension="content",
+                    representation_kind="text",
+                    representation=row.text,
+                    source_sample_ids=row.sample_ids,
+                    parent_facet_ids=parent,
+                ).validate()
+            )
+            content_facet_id[row.unit_id] = content_fid
+
+    # ---- speaker dimension (off by default; see module docstring) ------
+    if "speaker" in dims:
+        rows_by_speaker: dict[str, list[A2tKbRow]] = defaultdict(list)
+        for row in selected:
+            rows_by_speaker[row.speaker_ids[0]].append(row)
+        for speaker_id in sorted(rows_by_speaker):
+            speaker_rows = rows_by_speaker[speaker_id]
+            speaker_fid = f"facet:speaker:{speaker_id}"
+            histogram = Counter(row.tier for row in speaker_rows)
+            hist_text = ", ".join(
+                f"{tier}={count}"
+                for tier, count in sorted(histogram.items(), key=lambda kv: (-kv[1], kv[0]))
+            )
+            facets.append(
+                KeyFacet(
+                    facet_id=speaker_fid,
+                    dimension="speaker",
+                    representation_kind="text",
+                    representation=(
+                        f"Synthetic voice '{speaker_id}': {len(speaker_rows)} construction "
+                        f"invocations in this snapshot; tier histogram: {hist_text}."
+                    ),
+                    source_sample_ids=tuple(
+                        sorted({sid for row in speaker_rows for sid in row.sample_ids})
+                    ),
+                ).validate()
+            )
+            speaker_facet_id[speaker_id] = speaker_fid
+
+    # ---- prior dimension: p(argument pattern | tool) -------------------
+    if "prior" in dims:
+        for tool in sorted(selected_by_tool):
+            total = len(rows_by_tool_full.get(tool, ()))
+            patterns = patterns_by_tool_full.get(tool, Counter())
+            if patterns and total:
+                pattern_text = "; ".join(
+                    f"{_pattern_text(signature)}={count / total:.4f} ({count}/{total})"
+                    for signature, count in sorted(
+                        patterns.items(), key=lambda item: (-item[1], item[0])
+                    )
+                )
+                key_counts: Counter[str] = Counter()
+                for signature, count in patterns.items():
+                    for key in signature:
+                        key_counts[key] += count
+                key_text = (
+                    "; ".join(
+                        f"{key}={count / total:.4f} ({count}/{total})"
+                        for key, count in sorted(
+                            key_counts.items(), key=lambda item: (-item[1], item[0])
+                        )
+                    )
+                    or "no argument keys observed"
+                )
+                representation = (
+                    f"Argument-pattern prior for tool '{tool}' from full construction-pool "
+                    f"counts (n={total} invocations). Patterns: {pattern_text}. "
+                    f"Argument keys: {key_text}."
+                )
+            else:
+                representation = (
+                    f"Argument-pattern prior for tool '{tool}' from full construction-pool "
+                    f"counts (n={total} invocations): no argument patterns observed."
+                )
+            prior_fid = f"facet:prior:{tool}"
+            facets.append(
+                KeyFacet(
+                    facet_id=prior_fid,
+                    dimension="prior",
+                    representation_kind="text",
+                    representation=representation,
+                    source_sample_ids=tuple(
+                        sorted(
+                            {sid for row in selected_by_tool[tool] for sid in row.sample_ids}
+                        )
+                    ),
+                ).validate()
+            )
+            prior_facet_id[tool] = prior_fid
+            prior_representation[tool] = representation
+
+    # ---- values: one ValueBundle per selected invocation ----------------
+    values: list[ValueBundle] = []
+    for row in selected:
+        entry = registry.get(row.tool_name, {})
+        signature = entry.get("signature", "")
+        description = entry.get("description", "")
+        constraints = entry.get("argument_constraints", "")
+        defaults = entry.get("argument_defaults", "")
+        own_pattern = (
+            "; ".join(f"{key}={value}" for key, value in row.arg_pairs)
+            if row.arg_pairs
+            else "no arguments"
+        )
+        other_patterns = sorted(
+            candidate
+            for candidate in patterns_by_tool_full.get(row.tool_name, Counter())
+            if candidate != row.arg_signature
+        )[:5]
+        other_text = (
+            ", ".join(_pattern_text(item) for item in other_patterns)
+            if other_patterns
+            else "no other argument pattern observed for this tool"
+        )
+        filler_lines = []
+        for key in sorted(pairs_by_tool_full.get(row.tool_name, {})):
+            observed = sorted(pairs_by_tool_full[row.tool_name][key])[:5]
+            filler_lines.append(f"{key}: {', '.join(observed)}")
+        filler_text = "; ".join(filler_lines) if filler_lines else "no argument values observed"
+        extra_text = (
+            f" Further calls in this exemplar: {', '.join(row.extra_call_names)}."
+            if row.extra_call_names
+            else ""
+        )
+        content_text = (
+            f'Invocation exemplar: "{row.text}" -> tool call: {row.call_render}. '
+            f"Tool '{row.tool_name}' (domain={row.domain}, category={row.category}); "
+            f"registry signature {signature or 'unavailable'}; "
+            f"{description or 'no registry description'} "
+            f"Argument defaults: {defaults or 'none'}. "
+            f"Argument constraints: {constraints or 'none'}. "
+            f"This exemplar's argument pattern: {own_pattern}. "
+            f"Other argument patterns for this tool: {other_text}. "
+            f"Argument values observed for this tool in the construction pool: "
+            f"{filler_text}.{extra_text}"
+        )
+        if row.tool_name in prior_representation:
+            content_text += f" {prior_representation[row.tool_name]}"
+
+        category_total = len(rows_by_category_full.get((row.domain, row.category), ()))
+        tool_total = len(rows_by_tool_full.get(row.tool_name, ()))
+        prior_score = tool_total / category_total if category_total else 0.0
+
+        associated: list[str] = []
+        if row.tool_name in tool_facet_id:
+            associated.append(tool_facet_id[row.tool_name])
+        if row.unit_id in content_facet_id:
+            associated.append(content_facet_id[row.unit_id])
+        if row.speaker_ids and row.speaker_ids[0] in speaker_facet_id:
+            associated.append(speaker_facet_id[row.speaker_ids[0]])
+        if row.tool_name in prior_facet_id:
+            associated.append(prior_facet_id[row.tool_name])
+        if not associated:
+            raise RailsError(
+                f"KB-BUILD-A2T value for unit {row.unit_id!r} has no associated facet"
+            )
+
+        governed = governed_relpath_by_tier.get(row.tier, f"audio2tool/{row.tier}.json")
+        provenance_refs = tuple(
+            sorted(
+                {
+                    *(f"sample:{sid}" for sid in row.sample_ids),
+                    f"utterance:{row.unit_id}",
+                    f"tool:{row.tool_name}",
+                    f"governed-json:{governed}#query_idx={row.query_idx}",
+                }
+            )
+        )
+        values.append(
+            ValueBundle(
+                value_id=f"value:{row.unit_id}",
+                content=content_text,
+                associated_facet_ids=tuple(sorted(set(associated))),
+                source_sample_ids=row.sample_ids,
+                provenance_refs=provenance_refs,
+                task_target=row.tool_name,
+                prior_score=prior_score,
+            ).validate()
+        )
+
+    return facets, values
+
+
+# ---------------------------------------------------------------------------
+# Snapshot build
+# ---------------------------------------------------------------------------
+
+
+def build_a2t_knowledge_snapshot(
+    spec: A2tKnowledgeBuildSpec,
+    *,
+    rows: Sequence[A2tKbRow],
+    registry: Mapping[str, Mapping[str, str]],
+    forbidden_sample_ids: frozenset[str],
+    governed_relpath_by_tier: Mapping[str, str] | None = None,
+) -> KnowledgeSnapshot:
+    """Build one standalone, model-free construction-pool
+    :class:`KnowledgeSnapshot` for Audio2Tool.
+
+    ``rows`` must already be the CONSTRUCTION pool (the caller partitions;
+    see :func:`propose_partition`). ``forbidden_sample_ids`` must carry BOTH
+    the frozen exposed 400 and the proposed evaluation tier -- the check is
+    fail-closed and belt-and-braces: the partition already guarantees
+    disjointness, and this re-proves it against the snapshot that is actually
+    emitted.
+    """
+
+    spec.validate()
+    rows = tuple(rows)
+    if not rows:
+        raise RailsError("build_a2t_knowledge_snapshot: zero construction rows")
+    if not forbidden_sample_ids:
+        raise RailsError(
+            "build_a2t_knowledge_snapshot: refusing to build with an EMPTY "
+            "decontamination roster (fail-closed)"
+        )
+
+    selected = distribution_sample_a2t(rows, spec.datastore_size, spec.seed)
+    selected_sample_ids = {sid for row in selected for sid in row.sample_ids}
+    contaminated = selected_sample_ids & set(forbidden_sample_ids)
+    if contaminated:
+        preview = sorted(contaminated)[:5]
+        raise RailsError(
+            "KB-BUILD-A2T selection intersects the frozen exposed-400 / proposed-eval "
+            f"decontamination roster: {preview}"
+            + (f" (+{len(contaminated) - 5} more)" if len(contaminated) > 5 else "")
+        )
+
+    facets, values = _build_facets_and_values(
+        selected,
+        rows,
+        spec,
+        registry,
+        governed_relpath_by_tier=dict(governed_relpath_by_tier or {}),
+    )
+
+    source_sample_ids = tuple(sorted(selected_sample_ids))
+    source_split_identity_hash = hashlib.sha256(
+        "\n".join(source_sample_ids).encode("utf-8")
+    ).hexdigest()
+    build_descriptor = {
+        "schema": "saea-kb-a2t-toolshaped-build-v1",
+        "carrier_lock_key": spec.carrier_lock_key,
+        "datastore_size": spec.datastore_size,
+        "seed": spec.seed,
+        "dimensions": list(spec.dimensions),
+        "source_split_identity_hash": source_split_identity_hash,
+        "unit_count": len(selected),
+    }
+    build_sha256 = content_hash(build_descriptor)
+    return KnowledgeSnapshot(
+        snapshot_id=f"a2t-kb-toolshaped-{build_sha256[:16]}",
+        source_split_identity_hash=source_split_identity_hash,
+        source_sample_ids=source_sample_ids,
+        builder_policy_id=A2T_KB_BUILD_POLICY_ID,
+        facets=tuple(facets),
+        values=tuple(values),
+    ).validate()
+
+
+# ---------------------------------------------------------------------------
+# Coverage report
+# ---------------------------------------------------------------------------
+
+
+def _selected_rows_from_snapshot(
+    snapshot: KnowledgeSnapshot, rows: Sequence[A2tKbRow]
+) -> tuple[A2tKbRow, ...]:
+    rows_by_sample_id = {sid: row for row in rows for sid in row.sample_ids}
+    seen: set[str] = set()
+    selected: list[A2tKbRow] = []
+    for sample_id in snapshot.source_sample_ids:
+        row = rows_by_sample_id.get(sample_id)
+        if row is None:
+            raise RailsError(
+                f"snapshot sample id {sample_id!r} not found in the provided construction rows"
+            )
+        if row.unit_id not in seen:
+            seen.add(row.unit_id)
+            selected.append(row)
+    return tuple(sorted(selected, key=lambda row: row.unit_id))
+
+
+def coverage_report_a2t(
+    snapshot: KnowledgeSnapshot,
+    rows: Sequence[A2tKbRow],
+    *,
+    registry_tool_count: int | None = None,
+) -> dict[str, object]:
+    """Coverage/diversity statistics for a built A2T snapshot, measured
+    against the FULL construction population ``rows``."""
+
+    rows = tuple(rows)
+    selected = _selected_rows_from_snapshot(snapshot, rows)
+
+    pool_tools: Counter[str] = Counter(row.tool_name for row in rows)
+    sel_tools: Counter[str] = Counter(row.tool_name for row in selected)
+    pool_families: Counter[tuple[str, tuple[str, ...]]] = Counter(
+        row.family_key for row in rows
+    )
+    sel_families: Counter[tuple[str, tuple[str, ...]]] = Counter(
+        row.family_key for row in selected
+    )
+    pool_tiers: Counter[str] = Counter(row.tier for row in rows)
+    sel_tiers: Counter[str] = Counter(row.tier for row in selected)
+    pool_categories: Counter[tuple[str, str]] = Counter(
+        (row.domain, row.category) for row in rows
+    )
+    sel_categories: Counter[tuple[str, str]] = Counter(
+        (row.domain, row.category) for row in selected
+    )
+    pool_keys: Counter[str] = Counter()
+    for row in rows:
+        pool_keys.update(set(row.arg_signature))
+    sel_keys: Counter[str] = Counter()
+    for row in selected:
+        sel_keys.update(set(row.arg_signature))
+
+    def _coverage(pool: Mapping[object, int], chosen: Mapping[object, int]) -> float:
+        if not pool:
+            return 1.0
+        return sum(1 for key in pool if chosen.get(key, 0) > 0) / len(pool)
+
+    def _kl(pool: Mapping[object, int], chosen: Mapping[object, int]) -> float:
+        total_pool = sum(pool.values())
+        total_sel = sum(chosen.values())
+        value = 0.0
+        for key, count in chosen.items():
+            p = count / total_sel
+            q = pool.get(key, 0) / total_pool
+            if q <= 0:
+                raise RailsError(f"selected stratum {key!r} absent from the construction pool")
+            if p > 0:
+                value += p * math.log(p / q)
+        return value
+
+    long_tail_tools = {tool for tool, n in pool_tools.items() if n < _LONG_TAIL_THRESHOLD}
+    long_tail_families = {
+        family for family, n in pool_families.items() if n < _LONG_TAIL_THRESHOLD
+    }
+    covered_long_tail_tools = sum(1 for tool in long_tail_tools if sel_tools.get(tool, 0) > 0)
+    covered_long_tail_families = sum(
+        1 for family in long_tail_families if sel_families.get(family, 0) > 0
+    )
+
+    pool_shingles: set[str] = set()
+    for row in rows:
+        pool_shingles |= _shingles(row.text)
+    sel_shingles: set[str] = set()
+    for row in selected:
+        sel_shingles |= _shingles(row.text)
+
+    call_counts = Counter(row.call_count for row in selected)
+    multi_call = sum(count for calls, count in call_counts.items() if calls > 1)
+
+    return {
+        "datastore_size_actual": len(selected),
+        "tool_coverage": _coverage(pool_tools, sel_tools),
+        "argument_pattern_family_coverage": _coverage(pool_families, sel_families),
+        "argument_key_coverage": _coverage(pool_keys, sel_keys),
+        "tier_coverage": _coverage(pool_tiers, sel_tiers),
+        "category_coverage": _coverage(pool_categories, sel_categories),
+        "long_tail_coverage": {
+            "tool": {
+                "pool_long_tail_count": len(long_tail_tools),
+                "covered_count": covered_long_tail_tools,
+                "coverage": (
+                    covered_long_tail_tools / len(long_tail_tools) if long_tail_tools else 1.0
+                ),
+                "threshold": _LONG_TAIL_THRESHOLD,
+            },
+            "argument_pattern_family": {
+                "pool_long_tail_count": len(long_tail_families),
+                "covered_count": covered_long_tail_families,
+                "coverage": (
+                    covered_long_tail_families / len(long_tail_families)
+                    if long_tail_families
+                    else 1.0
+                ),
+                "threshold": _LONG_TAIL_THRESHOLD,
+            },
+        },
+        "cluster_coverage_proxy": (
+            len(sel_shingles) / len(pool_shingles) if pool_shingles else 1.0
+        ),
+        "kl_selected_given_pool_over_tool": _kl(pool_tools, sel_tools),
+        "kl_selected_given_pool_over_tier": _kl(pool_tiers, sel_tiers),
+        "counts": {
+            "pool_units": len(rows),
+            "selected_units": len(selected),
+            "pool_tools": len(pool_tools),
+            "selected_tools": len(sel_tools),
+            "registry_tools": registry_tool_count,
+            "pool_argument_pattern_families": len(pool_families),
+            "selected_argument_pattern_families": len(sel_families),
+            "pool_argument_keys": len(pool_keys),
+            "selected_argument_keys": len(sel_keys),
+            "selected_multi_call_units": multi_call,
+        },
+        "selected_units_by_tier": dict(sorted(sel_tiers.items())),
+        "tool_histogram_summary": {
+            "distinct_tools": len(sel_tools),
+            "max_tool_share": (max(sel_tools.values()) / len(selected)) if selected else 0.0,
+            "min_tool_count": min(sel_tools.values()) if sel_tools else 0,
+            "top_tools": [
+                {"tool_name": tool, "count": count}
+                for tool, count in sorted(sel_tools.items(), key=lambda kv: (-kv[1], kv[0]))[:10]
+            ],
+        },
+    }
+
+
+__all__ = [
+    "A2T_KB_BUILD_POLICY_ID",
+    "A2T_PARTITION_POLICY_ID",
+    "EVAL_TOOL_MIN_POOL_ROWS",
+    "EXPOSED_RECEIPT_RELPATH",
+    "TIERS",
+    "A2tKbRow",
+    "A2tKnowledgeBuildSpec",
+    "PartitionProposal",
+    "a2t_pool_rows",
+    "build_a2t_knowledge_snapshot",
+    "coverage_report_a2t",
+    "distribution_sample_a2t",
+    "exposed_sample_ids",
+    "load_tool_registry_by_name",
+    "propose_partition",
+    "render_call",
+]

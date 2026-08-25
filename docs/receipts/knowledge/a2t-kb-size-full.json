@@ -1,0 +1,256 @@
+{
+  "authority": "docs/readiness/2026-08-25-a2t-generality-campaign-plan.md sections 3.2, 3.3 and 3.6",
+  "builder_policy_id": "saea-kb-a2t-toolshaped-v1",
+  "carrier_inventory": {
+    "gold_primary_tool_count": 151,
+    "pool_items": 30733,
+    "pool_items_by_tier": {
+      "tier1_direct": 4292,
+      "tier2_parametric": 6320,
+      "tier3_multi_intent": 4292,
+      "tier4_implicit": 4278,
+      "tier5_needle": 4292,
+      "tier6_correction": 4292,
+      "tier7_multiturn": 2146,
+      "tier8_intent_blending": 821
+    },
+    "pool_units": 16843,
+    "quarantined_unit_count": 5,
+    "quarantined_units": [
+      {
+        "reason": "gold names a call outside the tool registry",
+        "unit_id": "tier2_parametric:004865",
+        "unknown_call_names": [
+          "lianceState"
+        ]
+      },
+      {
+        "detail": "tier7_multiturn:002023: the final chat_history turn must be a user turn carrying the request audio (fail-closed)",
+        "reason": "media unresolvable under the frozen runtime protocol",
+        "unit_id": "tier7_multiturn:000666"
+      },
+      {
+        "detail": "tier7_multiturn:000373: the final chat_history turn must be a user turn carrying the request audio (fail-closed)",
+        "reason": "media unresolvable under the frozen runtime protocol",
+        "unit_id": "tier7_multiturn:002472"
+      },
+      {
+        "detail": "tier7_multiturn:001258: the final chat_history turn must be a user turn carrying the request audio (fail-closed)",
+        "reason": "media unresolvable under the frozen runtime protocol",
+        "unit_id": "tier7_multiturn:003357"
+      },
+      {
+        "detail": "tier7_multiturn:001744: the final chat_history turn must be a user turn carrying the request audio (fail-closed)",
+        "reason": "media unresolvable under the frozen runtime protocol",
+        "unit_id": "tier7_multiturn:003693"
+      }
+    ],
+    "quarantined_units_by_reason": {
+      "gold names a call outside the tool registry": 1,
+      "media unresolvable under the frozen runtime protocol": 4
+    },
+    "registry_tool_count": 152,
+    "registry_tools_never_gold": [
+      "getLockStatus"
+    ],
+    "usable_items": 30727,
+    "usable_units": 16838
+  },
+  "coverage_report": {
+    "argument_key_coverage": 1.0,
+    "argument_pattern_family_coverage": 1.0,
+    "category_coverage": 1.0,
+    "cluster_coverage_proxy": 1.0,
+    "counts": {
+      "pool_argument_keys": 85,
+      "pool_argument_pattern_families": 354,
+      "pool_tools": 151,
+      "pool_units": 12601,
+      "registry_tools": 152,
+      "selected_argument_keys": 85,
+      "selected_argument_pattern_families": 354,
+      "selected_multi_call_units": 2250,
+      "selected_tools": 151,
+      "selected_units": 12601
+    },
+    "datastore_size_actual": 12601,
+    "kl_selected_given_pool_over_tier": 0.0,
+    "kl_selected_given_pool_over_tool": 0.0,
+    "long_tail_coverage": {
+      "argument_pattern_family": {
+        "coverage": 1.0,
+        "covered_count": 100,
+        "pool_long_tail_count": 100,
+        "threshold": 5
+      },
+      "tool": {
+        "coverage": 1.0,
+        "covered_count": 4,
+        "pool_long_tail_count": 4,
+        "threshold": 5
+      }
+    },
+    "selected_units_by_tier": {
+      "tier1_direct": 1546,
+      "tier2_parametric": 2601,
+      "tier3_multi_intent": 1550,
+      "tier4_implicit": 1544,
+      "tier5_needle": 1554,
+      "tier6_correction": 1547,
+      "tier7_multiturn": 1554,
+      "tier8_intent_blending": 705
+    },
+    "tier_coverage": 1.0,
+    "tool_coverage": 1.0,
+    "tool_histogram_summary": {
+      "distinct_tools": 151,
+      "max_tool_share": 0.02571224505991588,
+      "min_tool_count": 2,
+      "top_tools": [
+        {
+          "count": 324,
+          "tool_name": "rebootDevice"
+        },
+        {
+          "count": 312,
+          "tool_name": "setSecurityMode"
+        },
+        {
+          "count": 309,
+          "tool_name": "setLighting"
+        },
+        {
+          "count": 220,
+          "tool_name": "setHapticStrength"
+        },
+        {
+          "count": 212,
+          "tool_name": "getSleepSummary"
+        },
+        {
+          "count": 211,
+          "tool_name": "getHRV"
+        },
+        {
+          "count": 208,
+          "tool_name": "setAlwaysOnDisplay"
+        },
+        {
+          "count": 202,
+          "tool_name": "getLockState"
+        },
+        {
+          "count": 200,
+          "tool_name": "setAlarm"
+        },
+        {
+          "count": 198,
+          "tool_name": "enableWaterLock"
+        }
+      ]
+    }
+  },
+  "decontamination": {
+    "checked_sample_count": 22951,
+    "exposed_400_count": 400,
+    "forbidden_roster_size": 800,
+    "forbidden_rosters": [
+      "docs/receipts/probe-samples/r1-audio2tool-sample.json",
+      "docs/receipts/knowledge/a2t-partition-proposal.json (proposed eval tier)"
+    ],
+    "proposed_eval_count": 400,
+    "verdict": "clean"
+  },
+  "exposure_row": "SAEA-SN-MF-A2T-G0",
+  "facet_count": 12936,
+  "generator": "scripts/build_a2t_knowledge_snapshot.py",
+  "offline_guard": {
+    "attempted_targets": [],
+    "exposure_row": "SAEA-SN-MF-A2T-G0",
+    "mechanism": "socket.socket.connect / connect_ex / socket.create_connection were replaced with counting refusals before the first input was opened",
+    "outbound_connection_attempts": 0
+  },
+  "partition_report": {
+    "blocks_construction": 3871,
+    "blocks_eval": 400,
+    "blocks_reserved_exposed": 374,
+    "blocks_total": 4645,
+    "construction_only_tool_units": {
+      "adjustVolume": 2,
+      "controlLocks": 2,
+      "getClimateState": 7,
+      "setAudioVolume": 2,
+      "setChargingLimit": 2
+    },
+    "construction_only_tools": [
+      "adjustVolume",
+      "controlLocks",
+      "getClimateState",
+      "setAudioVolume",
+      "setChargingLimit"
+    ],
+    "construction_tool_count": 151,
+    "construction_units_by_tier": {
+      "tier1_direct": 1546,
+      "tier2_parametric": 2601,
+      "tier3_multi_intent": 1550,
+      "tier4_implicit": 1544,
+      "tier5_needle": 1554,
+      "tier6_correction": 1547,
+      "tier7_multiturn": 1554,
+      "tier8_intent_blending": 705
+    },
+    "eval_draw_order": [
+      "tier8_intent_blending",
+      "tier4_implicit",
+      "tier6_correction",
+      "tier3_multi_intent",
+      "tier1_direct",
+      "tier7_multiturn",
+      "tier5_needle",
+      "tier2_parametric"
+    ],
+    "eval_items_by_tier": {
+      "tier1_direct": 50,
+      "tier2_parametric": 50,
+      "tier3_multi_intent": 50,
+      "tier4_implicit": 50,
+      "tier5_needle": 50,
+      "tier6_correction": 50,
+      "tier7_multiturn": 50,
+      "tier8_intent_blending": 50
+    },
+    "eval_tool_min_pool_rows": 8,
+    "eval_tools_covered": 96,
+    "items_construction": 22951,
+    "per_tier": 50,
+    "policy_id": "saea-a2t-block-partition-v1",
+    "seed": 20260807,
+    "units_construction": 12601,
+    "units_eval_drawn": 400,
+    "units_reserved_exposed": 2061,
+    "units_total": 16838
+  },
+  "schema": "saea-kb-a2t-build-receipt-v1",
+  "snapshot_artifact_relpath": "knowledge/audio2tool/saea-kb-a2t-toolshaped-v1/size-full/snapshot.json",
+  "snapshot_id": "a2t-kb-toolshaped-9eb5f4bf186a0285",
+  "snapshot_sha256": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2",
+  "source_split_identity_hash": "b4107de2bf1f7b83dd27aa6ace58e0e74c0e9fb4f7c86a6e495d82eb90b5a4c3",
+  "spec": {
+    "carrier_lock_key": "audio2tool",
+    "datastore_size": null,
+    "dimensions": [
+      "content",
+      "label",
+      "prior"
+    ],
+    "seed": 20260825
+  },
+  "timing_seconds": {
+    "build_snapshot": 0.261,
+    "coverage_report": 0.081,
+    "load_pool_rows": 0.916,
+    "propose_partition": 0.065
+  },
+  "value_count": 12601
+}
