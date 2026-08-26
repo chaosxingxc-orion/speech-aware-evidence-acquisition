@@ -1304,7 +1304,14 @@ def run(*, repo_root: Path, out_path: Path | None = None) -> dict[str, Any]:
     if out_path is not None:
         out_path = Path(out_path)
         out_path.parent.mkdir(parents=True, exist_ok=True)
-        out_path.write_text(json.dumps(report, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+        # newline="\n" explicitly: this module runs on both Windows and WSL and
+        # the receipt is hashed by its bytes, so the bytes must not depend on
+        # which side wrote it.
+        out_path.write_text(
+            json.dumps(report, indent=1, sort_keys=True) + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
     return report
 
 
