@@ -1,0 +1,67 @@
+{
+  "all_mutations_caught": true,
+  "all_mutations_reverted": true,
+  "module_sha256_restored": true,
+  "mutations": [
+    {
+      "defect_reintroduced": "denominate the support report on the DATASTORE's own targets instead of the TASK target space -- exactly the intent_coverage defect",
+      "expected": "TestSupportDistribution::test_FAILURE_MODE_a_task_target_the_datastore_lacks_reads_support_zero FAILS, so the metric is shown able to fail",
+      "metric": "support_distribution",
+      "mutation": "per_target = {target: supports.get(target, 0) for target in space}  ->  per_target = dict(supports)  # MUTATION",
+      "named_test_failed": true,
+      "observed_pytest_summary": "4 failed, 38 passed in 2.67s",
+      "reverted_cleanly": true
+    },
+    {
+      "defect_reintroduced": "drop the queries the datastore cannot serve from the denominator, so recall is denominated on the index rather than on the eval population",
+      "expected": "TestGoldRecallCurve::test_FAILURE_MODE_gold_absent_from_the_datastore_is_a_miss_not_a_dropped_query FAILS, so the metric is shown able to fail",
+      "metric": "gold_recall_curve",
+      "mutation": "\"n_queries\": n_queries,\n            \"recall\": round(sum(1 for rank in reachable if rank <= k) / n_queries, 6),  ->  \"n_queries\": max(1, len(reachable)),  # MUTATION\n            \"recall\": round(\n                sum(1 for rank in reachable if rank <= k) / max(1, len(reachable)), 6\n            ),",
+      "named_test_failed": true,
+      "observed_pytest_summary": "1 failed, 41 passed in 3.16s",
+      "reverted_cleanly": true
+    },
+    {
+      "defect_reintroduced": "compare the eval ids against an EMPTY datastore id set -- the structural shape that makes the landed builders' gate report 'clean' unconditionally",
+      "expected": "TestDecontaminationIntersection::test_FAILURE_MODE_an_injected_eval_id_is_counted_and_named FAILS, so the metric is shown able to fail",
+      "metric": "decontamination_intersection",
+      "mutation": "store_ids = {str(sample_id) for sample_id in datastore_sample_ids}  ->  store_ids = set()  # MUTATION",
+      "named_test_failed": true,
+      "observed_pytest_summary": "1 failed, 41 passed in 2.84s",
+      "reverted_cleanly": true
+    },
+    {
+      "defect_reintroduced": "declare the curve informative unconditionally, so a flat sweep passes",
+      "expected": "TestScalingCurve::test_FAILURE_MODE_a_flat_curve_is_reported_as_uninformative FAILS, so the metric is shown able to fail",
+      "metric": "scaling_curve",
+      "mutation": "\"curve_is_informative\": len(distinct_r5) > 1 and len(distinct_sizes) > 1,  ->  \"curve_is_informative\": True,  # MUTATION",
+      "named_test_failed": true,
+      "observed_pytest_summary": "2 failed, 40 passed in 2.90s",
+      "reverted_cleanly": true
+    },
+    {
+      "defect_reintroduced": "accept a reduced tier whose content-facet representation DRIFTED from the pinned full snapshot -- which would silently pair every reduced-tier facet with the wrong landed vector",
+      "expected": "TestRestrictionProof::test_FAILURE_MODE_a_drifted_representation_raises FAILS, so the metric is shown able to fail",
+      "metric": "prove_restriction_is_exact",
+      "mutation": "drifted = sorted(\n        facet_id\n        for facet_id, representation in reduced_content.items()\n        if full_content[facet_id] != representation\n    )  ->  drifted = []  # MUTATION",
+      "named_test_failed": true,
+      "observed_pytest_summary": "1 failed, 41 passed in 3.21s",
+      "reverted_cleanly": true
+    }
+  ],
+  "unmutated_suite": "42 passed in 2.29s",
+  "working_tree_after_git_checkout": [
+    "M tests/contract/test_attempt_accounting.py",
+    " M tests/contract/test_carrier_scope.py",
+    " M tests/contract/test_cli_module_dispatch.py",
+    " M tests/contract/test_exposure_and_gate.py",
+    " M tests/contract/test_frozen_core_adapter_contract.py",
+    " M tests/contract/test_model_lock_key_binding.py",
+    " M tests/contract/test_runtime_identity_fastpath.py",
+    " M tests/unit/test_driver_smoke.py",
+    " M tests/unit/test_e0_generators.py",
+    " M tests/unit/test_pemb3m_flight.py",
+    " M tests/unit/test_pemb4r_flight.py",
+    " M tests/unit/test_session.py"
+  ]
+}
