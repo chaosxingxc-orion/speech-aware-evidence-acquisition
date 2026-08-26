@@ -47,9 +47,9 @@ Six rules. They are the difference between this table and the one it replaces.
 6. **Provenance is one hop, and every number was re-read from its own artifact.** Each row cites a
    register key (§1). Every figure in this document is declared in
    `src/speech_aware_evidence_acquisition/analysis/scoreboard_v5_verification.py` against the
-   artifact and the JSON path it came from; the module re-hashes all 52 artifacts with SHA-256 and
-   refuses to return unless every declared value matches. **398 receipt-field claims, 14
-   receipt-substring claims and 19 verbatim document assertions passed, 0 failed, across 47
+   artifact and the JSON path it came from; the module re-hashes all 53 artifacts with SHA-256 and
+   refuses to return unless every declared value matches. **415 receipt-field claims, 14
+   receipt-substring claims and 19 verbatim document assertions passed, 0 failed, across 48
    SHA-256-verified receipts and 5 SHA-256-verified documents, with 0 outbound connection
    attempts.** A number no artifact supports is not in this table; it is in §5.
 
@@ -128,6 +128,7 @@ from prose. All paths are repo-relative; receipts live under
 | **R-INTENT** | R | `…/2026-08-25-slurp-intent-coverage/intent-coverage-report.json` | `de1e9778795fc6b0d02445a53c45dedf060f483978e542e0f354003545d52750` |
 | **R-PRIOR** | R | `…/2026-08-25-prior-score-semantics-repair/repair-report.json` | `041de6c0868ca4324545d2a423c098d5d96218ca9443fff2ca527aa053895c05` |
 | **R-FACET** | R | `…/2026-08-25-content-facet-target-audit/audit-report.json` | `ff4311fab3b61719dc5d59b6e30a2eeada899b3d34ba7f7e20b5ac891886dcd5` |
+| **R-ALPHA** | R | `…/2026-08-25-alpha-trade-sizing/alpha-trade-sizing-report.json` | `4df34154a86fc7bb2f683b6f2a692819c0e4283228ccdc0bf1c796081812e2ab` |
 | **R-SYNTH** | R | `…/2026-08-25-stage2a-synthesis/verification-report.json` | `561a6c020d1c58a77097e88f30e2e7d597730fa570dbeb2e15200e321d45d9a0` |
 | **D-SN** | D | `docs/readiness/2026-08-21-speech-native-agent-loop-training-free-rl-plan.md` | `e7803bf07300cdcf4976b5e9404d067bcf505166d79c7819c2dc85b574fb45ba` |
 | **D-E108** | D | `docs/readiness/2026-08-23-e108-verdict.md` | `1d36c557a9e780569bd8e7cbb0737c45f2ffd303daad924c795ed40286666788` |
@@ -203,6 +204,7 @@ N = 10,000, seed 20260807) wherever one exists.
 | **C-51** | Can-it-fail gate audit | 08-25 | the repository's own gates | n.m. | n.m. | n.a. | ESTABLISHED: **140 mutations recorded, 112 live — 69 FIRES, 23 DID-NOT-FIRE, 20 correct controls**, at 0 outbound connection attempts. At GATE granularity (tier D, D-GATES): **of the 43 gates in scope, 23 FIRE, 10 CANNOT FAIL, 9 are NARROWER THAN THEIR CLAIM, 1 is UNTESTED.** The two tallies count different things and must not be conflated | R-GATEAUDIT · `mutation_tally_live/*`, `mutations_*`; D-GATES · the 43-gate sentence |
 | **C-52** | `content_facet_target` correctness audit | 08-25 | both carriers' pinned snapshots | n.m. | n.m. | n.a. | ESTABLISHED: the name asserts a content restriction the code does not apply, on both carriers; the live consequence is **two descriptive Audio2Tool numbers** and nothing that gates a decision. Diagnosis only — no repair proposed, no behaviour changed | R-FACET (digest verified; figures carried in the audit document itself) |
 | **C-53** | Stage-2A matured synthesis | 08-25 | the twelve receipts it reads | n.m. | n.m. | n.a. | ESTABLISHED as the reviewer-facing synthesis: **332 receipt-field claims verified, 12 receipts SHA-256-verified, 0 outbound connection attempts.** This scoreboard and that synthesis agree by construction — both re-read the same receipts, neither restates the other | R-SYNTH · `claims_verified`, `receipts_verified`, `offline_guard/*` |
+| **C-54** | α-trade decision sizing (open owner decision D1) | 08-26 | SLURP DEV-1000-NEW500 (unexposed) + A2T-G1-104 (exposed) | **PROJECTION, not a measurement.** Moving α 0.45 → 0.50 on the unexposed 500 projects **−3.4109 pp central**, band **[−3.5826, −0.0109]** against the locked cell's 382/500. The block's own rule travels with it: *"these bands are decision-sizing arithmetic, not a forecast, and no single number from this block may be quoted as an expected accuracy"* | n.m. | control **160 / 500 = 32.00 %** (locked v1) → **184 / 500 = 36.80 %** at α 0.50; on Audio2Tool the same step adds only **2** trajectories to a control of 15 | SIZES an owner decision and takes none; recommends no value of α and authorizes no change. Two measured facts do the work: at α = 0.50 the guaranteed margin `1 − 2α` is **0.0000** and the worst case is an exact tie the controller dispatches on — α is a switch, not a dial; and of the **24** newly dispatching trajectories, **20 are already correct under the locked cell** and **all 20** would receive a supply that **omits** gold, against **3** of the 24 that would receive a gold-bearing supply. Carries the X-06 adverse prior explicitly | R-ALPHA · `populations/*/by_alpha/0.50/*`, `registered_constants/control_alpha` |
 
 ---
 

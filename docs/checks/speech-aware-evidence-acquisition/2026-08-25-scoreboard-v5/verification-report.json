@@ -369,6 +369,14 @@
    "tier": "R"
   },
   {
+   "key": "R-ALPHA",
+   "matches_pin": true,
+   "produced_by": "the alpha-trade decision sizing for open owner decision D1 (bcea7c95)",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-alpha-trade-sizing/alpha-trade-sizing-report.json",
+   "sha256": "4df34154a86fc7bb2f683b6f2a692819c0e4283228ccdc0bf1c796081812e2ab",
+   "tier": "R"
+  },
+  {
    "key": "R-SYNTH",
    "matches_pin": true,
    "produced_by": "the Stage-2A matured synthesis verification receipt",
@@ -417,7 +425,7 @@
    "tier": "D"
   }
  ],
- "claims_verified": 398,
+ "claims_verified": 415,
  "contacts": {
   "audio_seconds": 0.0,
   "embedding_tool": 0,
@@ -446,12 +454,12 @@
   "Small-n cells are MECHANISM READINGS, never effect sizes.",
   "The test split (FINAL60) is untouched and is named by no row."
  ],
- "receipts_verified": 47,
+ "receipts_verified": 48,
  "schema": "saea-scoreboard-v5-verification-v1",
  "scoreboard_document": {
   "present": true,
   "relpath": "docs/readiness/2026-08-19-scheme-scoreboard.md",
-  "sha256": "39cf3512f5a6993e0b83fbb8f7129f5e74fbad1ab79aa10850900d53c180a065"
+  "sha256": "9b089c79c611cf2cceb7d74cf3469c7330b51f14f0c4154dc6bb4c2234dd2229"
  },
  "study": "speech-aware-evidence-acquisition",
  "substring_claims_verified": 14,

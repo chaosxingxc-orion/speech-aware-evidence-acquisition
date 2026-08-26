@@ -372,6 +372,12 @@ RECEIPTS: tuple[Receipt, ...] = (
         "the DEV-100 reviewer-perspective statistical audit",
     ),
     Receipt(
+        "R-ALPHA",
+        f"{_CHECKS}/2026-08-25-alpha-trade-sizing/alpha-trade-sizing-report.json",
+        "4df34154a86fc7bb2f683b6f2a692819c0e4283228ccdc0bf1c796081812e2ab",
+        "the alpha-trade decision sizing for open owner decision D1 (bcea7c95)",
+    ),
+    Receipt(
         "R-SYNTH",
         f"{_CHECKS}/2026-08-25-stage2a-synthesis/verification-report.json",
         "561a6c020d1c58a77097e88f30e2e7d597730fa570dbeb2e15200e321d45d9a0",
@@ -957,6 +963,24 @@ CLAIMS: tuple[Claim, ...] = (
     _c("audit.floor_worst_ci_high", "R-AUDIT", "q2_variance_channel/floors/observed_worst_bootstrap/ci90_high_pp", 22.0),
     _c("k1gate.rrf_recall5_count", "R-K1GATE", "populations/DEV-1000-NEW500/by_query_normalization/Q-RAW/recall_table/RRF-60/recall_at_5/count", 381),
     _c("k1gate.dense_recall5_count", "R-K1GATE", "populations/DEV-1000-NEW500/by_query_normalization/Q-RAW/recall_table/DENSE-ONLY/recall_at_5/count", 372),
+    # -- The alpha-trade decision sizing (open owner decision D1) ------------
+    _c("alpha.control_alpha", "R-ALPHA", "registered_constants/control_alpha", 0.45),
+    _c("alpha.slurp_control_dispatched", "R-ALPHA", "populations/SLURP-UNEXPOSED-500/by_alpha/0.45/reach/dispatched", 160),
+    _c("alpha.slurp_050_dispatched", "R-ALPHA", "populations/SLURP-UNEXPOSED-500/by_alpha/0.50/reach/dispatched", 184),
+    _c("alpha.slurp_050_rate", "R-ALPHA", "populations/SLURP-UNEXPOSED-500/by_alpha/0.50/reach/dispatch_rate", 0.368),
+    _c("alpha.slurp_050_newly", "R-ALPHA", "populations/SLURP-UNEXPOSED-500/by_alpha/0.50/newly_dispatching_vs_control/n", 24),
+    _c("alpha.slurp_050_at_risk", "R-ALPHA", "populations/SLURP-UNEXPOSED-500/by_alpha/0.50/risk/currently_correct_put_at_risk", 20),
+    _c("alpha.slurp_050_risk_gold_omitted", "R-ALPHA", "populations/SLURP-UNEXPOSED-500/by_alpha/0.50/risk/of_those_at_risk_the_supply_omits_gold", 20),
+    _c("alpha.slurp_050_risk_gold_carried", "R-ALPHA", "populations/SLURP-UNEXPOSED-500/by_alpha/0.50/risk/of_those_at_risk_the_supply_carries_gold", 0),
+    _c("alpha.slurp_050_gold_bearing", "R-ALPHA", "populations/SLURP-UNEXPOSED-500/by_alpha/0.50/supply_quality_of_the_newly_dispatched/would_receive_a_gold_bearing_supply", 3),
+    _c("alpha.slurp_050_central_pp", "R-ALPHA", "populations/SLURP-UNEXPOSED-500/by_alpha/0.50/projection/delta_pp_central", -3.4109090909090924),
+    _c("alpha.slurp_050_pessimistic_pp", "R-ALPHA", "populations/SLURP-UNEXPOSED-500/by_alpha/0.50/projection/delta_pp_pessimistic", -3.582608695652175),
+    _c("alpha.slurp_050_optimistic_pp", "R-ALPHA", "populations/SLURP-UNEXPOSED-500/by_alpha/0.50/projection/delta_pp_optimistic", -0.010909090909092357),
+    _c("alpha.slurp_050_margin", "R-ALPHA", "populations/SLURP-UNEXPOSED-500/by_alpha/0.50/margin_arithmetic/guaranteed_margin_1_minus_2alpha", 0.0),
+    _c("alpha.slurp_050_tie", "R-ALPHA", "populations/SLURP-UNEXPOSED-500/by_alpha/0.50/margin_arithmetic/worst_case_is_an_exact_tie", True),
+    _c("alpha.a2t_050_newly", "R-ALPHA", "populations/A2T-G1-104/by_alpha/0.50/newly_dispatching_vs_control/n", 2),
+    _c("alpha.a2t_050_at_risk", "R-ALPHA", "populations/A2T-G1-104/by_alpha/0.50/risk/currently_correct_put_at_risk", 0),
+    _c("alpha.a2t_control_dispatched", "R-ALPHA", "populations/A2T-G1-104/by_alpha/0.45/reach/dispatched", 15),
 )
 
 
