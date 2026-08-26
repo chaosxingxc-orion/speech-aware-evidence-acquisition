@@ -1,0 +1,3098 @@
+{
+  "accounting": {
+    "embedding_tool_contacts": 0,
+    "frozen_core_contacts": 0,
+    "gpu_hours": 0.0,
+    "http_requests": 0,
+    "speech_audio_seconds": 0,
+    "tokenizer_contacts": 0
+  },
+  "audio2tool": {
+    "carrier": "audio2tool",
+    "cells": [
+      {
+        "datastore_size_actual": 354,
+        "decontamination": {
+          "by_ngram": {
+            "eval_items_found_in_the_datastore": 3,
+            "eval_population": 400,
+            "granularity": "shared word 8-gram",
+            "identities": [
+              "tier5_needle:003119",
+              "tier6_correction:002679",
+              "tier8_intent_blending:000677"
+            ],
+            "identities_truncated": 0,
+            "rate": 0.0075
+          },
+          "by_normalised_text": {
+            "eval_items_found_in_the_datastore": 0,
+            "eval_population": 400,
+            "granularity": "case-folded, punctuation-stripped text equality",
+            "identities": [],
+            "identities_truncated": 0,
+            "rate": 0.0
+          },
+          "by_sample_id": {
+            "eval_items_found_in_the_datastore": 0,
+            "eval_population": 400,
+            "granularity": "exact sample id",
+            "identities": [],
+            "identities_truncated": 0,
+            "rate": 0.0
+          },
+          "datastore_distinct_ngrams": 2324,
+          "datastore_distinct_normalised_texts": 354,
+          "datastore_sample_ids": 665,
+          "eval_items_shorter_than_ngram": 110,
+          "eval_population": 400,
+          "ngram": 8
+        },
+        "gold_recall": {
+          "A2T-G1-104 (exposed)": {
+            "best_gold_rank": {
+              "max": 318,
+              "min": 1,
+              "p25": 1,
+              "p50": 3,
+              "p75": 18,
+              "p95": 138
+            },
+            "candidate_facets": 354,
+            "curve": {
+              "recall_at_1": {
+                "hits": 36,
+                "n_queries": 104,
+                "recall": 0.346154
+              },
+              "recall_at_128": {
+                "hits": 96,
+                "n_queries": 104,
+                "recall": 0.923077
+              },
+              "recall_at_16": {
+                "hits": 75,
+                "n_queries": 104,
+                "recall": 0.721154
+              },
+              "recall_at_256": {
+                "hits": 103,
+                "n_queries": 104,
+                "recall": 0.990385
+              },
+              "recall_at_32": {
+                "hits": 84,
+                "n_queries": 104,
+                "recall": 0.807692
+              },
+              "recall_at_5": {
+                "hits": 63,
+                "n_queries": 104,
+                "recall": 0.605769
+              },
+              "recall_at_512": {
+                "hits": 104,
+                "n_queries": 104,
+                "recall": 1.0
+              },
+              "recall_at_64": {
+                "hits": 92,
+                "n_queries": 104,
+                "recall": 0.884615
+              },
+              "recall_at_8": {
+                "hits": 70,
+                "n_queries": 104,
+                "recall": 0.673077
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 104,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 104,
+              "n_queries": 104,
+              "recall": 1.0
+            }
+          }
+        },
+        "primary_population": "A2T-G1-104 (exposed)",
+        "requested_datastore_size": 100,
+        "restriction_proof": {
+          "equality_required_and_held": false,
+          "full_content_facets": 12601,
+          "ids_are_a_subset": true,
+          "pinned_content_facets_not_in_this_tier": 12247,
+          "reduced_content_facets": 354,
+          "representations_are_identical": true
+        },
+        "snapshot_content_hash": "13a51be70493faddd3400a807d1cdeeb839968c9e8860d79a2dc360bb25a1676",
+        "support": {
+          "max": 12,
+          "mean": 2.3289,
+          "min": 0,
+          "outside_task_space_targets": [],
+          "p05": 1,
+          "p25": 1,
+          "p50": 2,
+          "p75": 3,
+          "p95": 5,
+          "quantile_convention": "nearest-rank inclusive: sorted[ceil(q*n) - 1]",
+          "support_1_targets": [
+            "adjustVolume",
+            "armSecuritySystem",
+            "calibrateCameras",
+            "cancelNavigation",
+            "controlLocks",
+            "controlPlayback_home",
+            "enableRemoteStart",
+            "findPairedPhone",
+            "flashLights",
+            "getActiveAlerts",
+            "getBatteryHealth",
+            "getBatteryStatus",
+            "getChargeState",
+            "getChargingSession",
+            "getClimateState",
+            "getDeviceList",
+            "getEnergyConsumption",
+            "getGearSelection",
+            "getLocation",
+            "getOdometer",
+            "getRouteSummary",
+            "getSentryStatus",
+            "getSoftwareUpdateStatus",
+            "getTirePressures",
+            "getVehicleInfo",
+            "honkHorn",
+            "initiateAutoPark",
+            "installSoftwareUpdate",
+            "openChargePortDoor",
+            "openFrontTrunk",
+            "resetTPMSSensors",
+            "restartDevice",
+            "runNetworkSpeedTest",
+            "setAudioVolume",
+            "setChargingLimit",
+            "setLightState",
+            "setSurveillanceMode",
+            "startCharging",
+            "stopCharging",
+            "stopWorkout",
+            "triggerBatteryPreconditioning",
+            "unlockChargeCable",
+            "ventWindows",
+            "viewRemoteCamera"
+          ],
+          "targets_outside_task_space": 0,
+          "targets_with_support_1": 44,
+          "targets_with_support_below_5": 142,
+          "targets_with_zero_support": 1,
+          "task_target_space_size": 152,
+          "total_exemplars": 354,
+          "zero_support_targets": [
+            "getLockStatus"
+          ],
+          "zero_support_targets_truncated": 0
+        }
+      },
+      {
+        "datastore_size_actual": 500,
+        "decontamination": {
+          "by_ngram": {
+            "eval_items_found_in_the_datastore": 3,
+            "eval_population": 400,
+            "granularity": "shared word 8-gram",
+            "identities": [
+              "tier5_needle:003119",
+              "tier6_correction:002679",
+              "tier8_intent_blending:000677"
+            ],
+            "identities_truncated": 0,
+            "rate": 0.0075
+          },
+          "by_normalised_text": {
+            "eval_items_found_in_the_datastore": 0,
+            "eval_population": 400,
+            "granularity": "case-folded, punctuation-stripped text equality",
+            "identities": [],
+            "identities_truncated": 0,
+            "rate": 0.0
+          },
+          "by_sample_id": {
+            "eval_items_found_in_the_datastore": 0,
+            "eval_population": 400,
+            "granularity": "exact sample id",
+            "identities": [],
+            "identities_truncated": 0,
+            "rate": 0.0
+          },
+          "datastore_distinct_ngrams": 3214,
+          "datastore_distinct_normalised_texts": 500,
+          "datastore_sample_ids": 931,
+          "eval_items_shorter_than_ngram": 110,
+          "eval_population": 400,
+          "ngram": 8
+        },
+        "gold_recall": {
+          "A2T-G1-104 (exposed)": {
+            "best_gold_rank": {
+              "max": 212,
+              "min": 1,
+              "p25": 1,
+              "p50": 3,
+              "p75": 11,
+              "p95": 128
+            },
+            "candidate_facets": 500,
+            "curve": {
+              "recall_at_1": {
+                "hits": 41,
+                "n_queries": 104,
+                "recall": 0.394231
+              },
+              "recall_at_128": {
+                "hits": 99,
+                "n_queries": 104,
+                "recall": 0.951923
+              },
+              "recall_at_16": {
+                "hits": 83,
+                "n_queries": 104,
+                "recall": 0.798077
+              },
+              "recall_at_256": {
+                "hits": 104,
+                "n_queries": 104,
+                "recall": 1.0
+              },
+              "recall_at_32": {
+                "hits": 86,
+                "n_queries": 104,
+                "recall": 0.826923
+              },
+              "recall_at_5": {
+                "hits": 69,
+                "n_queries": 104,
+                "recall": 0.663462
+              },
+              "recall_at_512": {
+                "hits": 104,
+                "n_queries": 104,
+                "recall": 1.0
+              },
+              "recall_at_64": {
+                "hits": 93,
+                "n_queries": 104,
+                "recall": 0.894231
+              },
+              "recall_at_8": {
+                "hits": 75,
+                "n_queries": 104,
+                "recall": 0.721154
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 104,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 104,
+              "n_queries": 104,
+              "recall": 1.0
+            }
+          }
+        },
+        "primary_population": "A2T-G1-104 (exposed)",
+        "requested_datastore_size": 500,
+        "restriction_proof": {
+          "equality_required_and_held": false,
+          "full_content_facets": 12601,
+          "ids_are_a_subset": true,
+          "pinned_content_facets_not_in_this_tier": 12101,
+          "reduced_content_facets": 500,
+          "representations_are_identical": true
+        },
+        "snapshot_content_hash": "7e518335358f8f64c511deac4ff77dda37c07d53ebade752251684f05cac1810",
+        "support": {
+          "max": 17,
+          "mean": 3.2895,
+          "min": 0,
+          "outside_task_space_targets": [],
+          "p05": 1,
+          "p25": 2,
+          "p50": 3,
+          "p75": 4,
+          "p95": 8,
+          "quantile_convention": "nearest-rank inclusive: sorted[ceil(q*n) - 1]",
+          "support_1_targets": [
+            "adjustVolume",
+            "armSecuritySystem",
+            "calibrateCameras",
+            "cancelNavigation",
+            "controlLocks",
+            "controlPlayback_home",
+            "findPairedPhone",
+            "flashLights",
+            "getActiveAlerts",
+            "getBatteryHealth",
+            "getBatteryStatus",
+            "getChargingSession",
+            "getClimateState",
+            "getEnergyConsumption",
+            "getGearSelection",
+            "getLocation",
+            "getRouteSummary",
+            "getSentryStatus",
+            "getTirePressures",
+            "honkHorn",
+            "initiateAutoPark",
+            "installSoftwareUpdate",
+            "openChargePortDoor",
+            "resetTPMSSensors",
+            "setAudioVolume",
+            "setChargingLimit",
+            "setLightState",
+            "setSurveillanceMode",
+            "startCharging",
+            "stopCharging",
+            "triggerBatteryPreconditioning",
+            "unlockChargeCable",
+            "viewRemoteCamera"
+          ],
+          "targets_outside_task_space": 0,
+          "targets_with_support_1": 33,
+          "targets_with_support_below_5": 116,
+          "targets_with_zero_support": 1,
+          "task_target_space_size": 152,
+          "total_exemplars": 500,
+          "zero_support_targets": [
+            "getLockStatus"
+          ],
+          "zero_support_targets_truncated": 0
+        }
+      },
+      {
+        "datastore_size_actual": 1000,
+        "decontamination": {
+          "by_ngram": {
+            "eval_items_found_in_the_datastore": 4,
+            "eval_population": 400,
+            "granularity": "shared word 8-gram",
+            "identities": [
+              "tier5_needle:003119",
+              "tier6_correction:002679",
+              "tier8_intent_blending:000522",
+              "tier8_intent_blending:000677"
+            ],
+            "identities_truncated": 0,
+            "rate": 0.01
+          },
+          "by_normalised_text": {
+            "eval_items_found_in_the_datastore": 1,
+            "eval_population": 400,
+            "granularity": "case-folded, punctuation-stripped text equality",
+            "identities": [
+              "tier8_intent_blending:000522"
+            ],
+            "identities_truncated": 0,
+            "rate": 0.0025
+          },
+          "by_sample_id": {
+            "eval_items_found_in_the_datastore": 0,
+            "eval_population": 400,
+            "granularity": "exact sample id",
+            "identities": [],
+            "identities_truncated": 0,
+            "rate": 0.0
+          },
+          "datastore_distinct_ngrams": 6544,
+          "datastore_distinct_normalised_texts": 998,
+          "datastore_sample_ids": 1844,
+          "eval_items_shorter_than_ngram": 110,
+          "eval_population": 400,
+          "ngram": 8
+        },
+        "gold_recall": {
+          "A2T-G1-104 (exposed)": {
+            "best_gold_rank": {
+              "max": 446,
+              "min": 1,
+              "p25": 1,
+              "p50": 2,
+              "p75": 13,
+              "p95": 106
+            },
+            "candidate_facets": 1000,
+            "curve": {
+              "recall_at_1": {
+                "hits": 45,
+                "n_queries": 104,
+                "recall": 0.432692
+              },
+              "recall_at_128": {
+                "hits": 99,
+                "n_queries": 104,
+                "recall": 0.951923
+              },
+              "recall_at_16": {
+                "hits": 81,
+                "n_queries": 104,
+                "recall": 0.778846
+              },
+              "recall_at_256": {
+                "hits": 103,
+                "n_queries": 104,
+                "recall": 0.990385
+              },
+              "recall_at_32": {
+                "hits": 89,
+                "n_queries": 104,
+                "recall": 0.855769
+              },
+              "recall_at_5": {
+                "hits": 71,
+                "n_queries": 104,
+                "recall": 0.682692
+              },
+              "recall_at_512": {
+                "hits": 104,
+                "n_queries": 104,
+                "recall": 1.0
+              },
+              "recall_at_64": {
+                "hits": 94,
+                "n_queries": 104,
+                "recall": 0.903846
+              },
+              "recall_at_8": {
+                "hits": 73,
+                "n_queries": 104,
+                "recall": 0.701923
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 104,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 104,
+              "n_queries": 104,
+              "recall": 1.0
+            }
+          }
+        },
+        "primary_population": "A2T-G1-104 (exposed)",
+        "requested_datastore_size": 1000,
+        "restriction_proof": {
+          "equality_required_and_held": false,
+          "full_content_facets": 12601,
+          "ids_are_a_subset": true,
+          "pinned_content_facets_not_in_this_tier": 11601,
+          "reduced_content_facets": 1000,
+          "representations_are_identical": true
+        },
+        "snapshot_content_hash": "8bbcff0850cc4beedfecedb258135a93d59f5ddf81e8e40cb58a7c346e72579b",
+        "support": {
+          "max": 26,
+          "mean": 6.5789,
+          "min": 0,
+          "outside_task_space_targets": [],
+          "p05": 1,
+          "p25": 2,
+          "p50": 4,
+          "p75": 11,
+          "p95": 17,
+          "quantile_convention": "nearest-rank inclusive: sorted[ceil(q*n) - 1]",
+          "support_1_targets": [
+            "calibrateCameras",
+            "cancelNavigation",
+            "controlLocks",
+            "flashLights",
+            "getActiveAlerts",
+            "getBatteryHealth",
+            "getBatteryStatus",
+            "getClimateState",
+            "getLocation",
+            "getSentryStatus",
+            "getTirePressures",
+            "honkHorn",
+            "openChargePortDoor",
+            "setAudioVolume",
+            "setChargingLimit",
+            "setSurveillanceMode",
+            "startCharging",
+            "triggerBatteryPreconditioning",
+            "unlockChargeCable"
+          ],
+          "targets_outside_task_space": 0,
+          "targets_with_support_1": 19,
+          "targets_with_support_below_5": 78,
+          "targets_with_zero_support": 1,
+          "task_target_space_size": 152,
+          "total_exemplars": 1000,
+          "zero_support_targets": [
+            "getLockStatus"
+          ],
+          "zero_support_targets_truncated": 0
+        }
+      },
+      {
+        "datastore_size_actual": 5000,
+        "decontamination": {
+          "by_ngram": {
+            "eval_items_found_in_the_datastore": 21,
+            "eval_population": 400,
+            "granularity": "shared word 8-gram",
+            "identities": [
+              "tier3_multi_intent:000561",
+              "tier3_multi_intent:002113",
+              "tier5_needle:000915",
+              "tier5_needle:001245",
+              "tier5_needle:001923",
+              "tier5_needle:002057",
+              "tier5_needle:003119",
+              "tier5_needle:003275",
+              "tier5_needle:004259",
+              "tier6_correction:002679",
+              "tier7_multiturn:000646",
+              "tier7_multiturn:001300",
+              "tier8_intent_blending:000043",
+              "tier8_intent_blending:000170",
+              "tier8_intent_blending:000314",
+              "tier8_intent_blending:000415",
+              "tier8_intent_blending:000522",
+              "tier8_intent_blending:000613",
+              "tier8_intent_blending:000621",
+              "tier8_intent_blending:000661",
+              "tier8_intent_blending:000677"
+            ],
+            "identities_truncated": 0,
+            "rate": 0.0525
+          },
+          "by_normalised_text": {
+            "eval_items_found_in_the_datastore": 7,
+            "eval_population": 400,
+            "granularity": "case-folded, punctuation-stripped text equality",
+            "identities": [
+              "tier8_intent_blending:000170",
+              "tier8_intent_blending:000314",
+              "tier8_intent_blending:000415",
+              "tier8_intent_blending:000522",
+              "tier8_intent_blending:000613",
+              "tier8_intent_blending:000621",
+              "tier8_intent_blending:000661"
+            ],
+            "identities_truncated": 0,
+            "rate": 0.0175
+          },
+          "by_sample_id": {
+            "eval_items_found_in_the_datastore": 0,
+            "eval_population": 400,
+            "granularity": "exact sample id",
+            "identities": [],
+            "identities_truncated": 0,
+            "rate": 0.0
+          },
+          "datastore_distinct_ngrams": 47529,
+          "datastore_distinct_normalised_texts": 4992,
+          "datastore_sample_ids": 9120,
+          "eval_items_shorter_than_ngram": 110,
+          "eval_population": 400,
+          "ngram": 8
+        },
+        "gold_recall": {
+          "A2T-G1-104 (exposed)": {
+            "best_gold_rank": {
+              "max": 481,
+              "min": 1,
+              "p25": 1,
+              "p50": 2,
+              "p75": 14,
+              "p95": 163
+            },
+            "candidate_facets": 5000,
+            "curve": {
+              "recall_at_1": {
+                "hits": 51,
+                "n_queries": 104,
+                "recall": 0.490385
+              },
+              "recall_at_128": {
+                "hits": 98,
+                "n_queries": 104,
+                "recall": 0.942308
+              },
+              "recall_at_16": {
+                "hits": 81,
+                "n_queries": 104,
+                "recall": 0.778846
+              },
+              "recall_at_256": {
+                "hits": 101,
+                "n_queries": 104,
+                "recall": 0.971154
+              },
+              "recall_at_32": {
+                "hits": 84,
+                "n_queries": 104,
+                "recall": 0.807692
+              },
+              "recall_at_5": {
+                "hits": 68,
+                "n_queries": 104,
+                "recall": 0.653846
+              },
+              "recall_at_512": {
+                "hits": 104,
+                "n_queries": 104,
+                "recall": 1.0
+              },
+              "recall_at_64": {
+                "hits": 91,
+                "n_queries": 104,
+                "recall": 0.875
+              },
+              "recall_at_8": {
+                "hits": 74,
+                "n_queries": 104,
+                "recall": 0.711538
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 104,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 104,
+              "n_queries": 104,
+              "recall": 1.0
+            }
+          }
+        },
+        "primary_population": "A2T-G1-104 (exposed)",
+        "requested_datastore_size": 5000,
+        "restriction_proof": {
+          "equality_required_and_held": false,
+          "full_content_facets": 12601,
+          "ids_are_a_subset": true,
+          "pinned_content_facets_not_in_this_tier": 7601,
+          "reduced_content_facets": 5000,
+          "representations_are_identical": true
+        },
+        "snapshot_content_hash": "02a075ae58a4a9f69dd63b8d31f7c8d3194cb97a537ca17cc3d3ea21335a1994",
+        "support": {
+          "max": 141,
+          "mean": 32.8947,
+          "min": 0,
+          "outside_task_space_targets": [],
+          "p05": 5,
+          "p25": 7,
+          "p50": 11,
+          "p75": 63,
+          "p95": 82,
+          "quantile_convention": "nearest-rank inclusive: sorted[ceil(q*n) - 1]",
+          "support_1_targets": [
+            "controlLocks",
+            "getClimateState"
+          ],
+          "targets_outside_task_space": 0,
+          "targets_with_support_1": 2,
+          "targets_with_support_below_5": 6,
+          "targets_with_zero_support": 1,
+          "task_target_space_size": 152,
+          "total_exemplars": 5000,
+          "zero_support_targets": [
+            "getLockStatus"
+          ],
+          "zero_support_targets_truncated": 0
+        }
+      },
+      {
+        "datastore_size_actual": 12601,
+        "decontamination": {
+          "by_ngram": {
+            "eval_items_found_in_the_datastore": 36,
+            "eval_population": 400,
+            "granularity": "shared word 8-gram",
+            "identities": [
+              "tier1_direct:001987",
+              "tier2_parametric:001135",
+              "tier3_multi_intent:000239",
+              "tier3_multi_intent:000561",
+              "tier3_multi_intent:001505",
+              "tier3_multi_intent:002113",
+              "tier3_multi_intent:003947",
+              "tier4_implicit:002183",
+              "tier5_needle:000319",
+              "tier5_needle:000915",
+              "tier5_needle:001245",
+              "tier5_needle:001923",
+              "tier5_needle:002057",
+              "tier5_needle:003119",
+              "tier5_needle:003275",
+              "tier5_needle:003485",
+              "tier5_needle:004259",
+              "tier6_correction:002677",
+              "tier6_correction:002679",
+              "tier7_multiturn:000014",
+              "tier7_multiturn:000646",
+              "tier7_multiturn:001300",
+              "tier8_intent_blending:000043",
+              "tier8_intent_blending:000132",
+              "tier8_intent_blending:000170",
+              "tier8_intent_blending:000227",
+              "tier8_intent_blending:000306",
+              "tier8_intent_blending:000314",
+              "tier8_intent_blending:000375",
+              "tier8_intent_blending:000415",
+              "tier8_intent_blending:000522",
+              "tier8_intent_blending:000613",
+              "tier8_intent_blending:000621",
+              "tier8_intent_blending:000661",
+              "tier8_intent_blending:000666",
+              "tier8_intent_blending:000677"
+            ],
+            "identities_truncated": 0,
+            "rate": 0.09
+          },
+          "by_normalised_text": {
+            "eval_items_found_in_the_datastore": 11,
+            "eval_population": 400,
+            "granularity": "case-folded, punctuation-stripped text equality",
+            "identities": [
+              "tier1_direct:001987",
+              "tier4_implicit:002183",
+              "tier8_intent_blending:000170",
+              "tier8_intent_blending:000314",
+              "tier8_intent_blending:000375",
+              "tier8_intent_blending:000415",
+              "tier8_intent_blending:000522",
+              "tier8_intent_blending:000613",
+              "tier8_intent_blending:000621",
+              "tier8_intent_blending:000661",
+              "tier8_intent_blending:000666"
+            ],
+            "identities_truncated": 0,
+            "rate": 0.0275
+          },
+          "by_sample_id": {
+            "eval_items_found_in_the_datastore": 0,
+            "eval_population": 400,
+            "granularity": "exact sample id",
+            "identities": [],
+            "identities_truncated": 0,
+            "rate": 0.0
+          },
+          "datastore_distinct_ngrams": 101350,
+          "datastore_distinct_normalised_texts": 12419,
+          "datastore_sample_ids": 22951,
+          "eval_items_shorter_than_ngram": 110,
+          "eval_population": 400,
+          "ngram": 8
+        },
+        "full_tier_identity": {
+          "content_plane_reproduces_exactly": true,
+          "note": "the content plane -- the only vector-recalled dimension, and the only one this sweep restricts -- is reproduced facet-for-facet with identical representations. A whole-snapshot hash difference, if any, is the 2026-08-25 prior-score semantics repair landing in both builders after these snapshots were pinned; it changes the prior plane, not the content plane, and no number in this sweep reads the prior plane.",
+          "pinned_snapshot_content_hash": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2",
+          "rebuilt_snapshot_content_hash": "ad4e0bbff31e46a66a9281fbc1deb893546c53d68debfe4b479c4658435c8e76",
+          "whole_snapshot_hash_reproduces": false
+        },
+        "gold_recall": {
+          "A2T-G1-104 (exposed)": {
+            "best_gold_rank": {
+              "max": 466,
+              "min": 1,
+              "p25": 1,
+              "p50": 1,
+              "p75": 10,
+              "p95": 203
+            },
+            "candidate_facets": 12601,
+            "curve": {
+              "recall_at_1": {
+                "hits": 55,
+                "n_queries": 104,
+                "recall": 0.528846
+              },
+              "recall_at_128": {
+                "hits": 94,
+                "n_queries": 104,
+                "recall": 0.903846
+              },
+              "recall_at_16": {
+                "hits": 83,
+                "n_queries": 104,
+                "recall": 0.798077
+              },
+              "recall_at_256": {
+                "hits": 101,
+                "n_queries": 104,
+                "recall": 0.971154
+              },
+              "recall_at_32": {
+                "hits": 88,
+                "n_queries": 104,
+                "recall": 0.846154
+              },
+              "recall_at_5": {
+                "hits": 68,
+                "n_queries": 104,
+                "recall": 0.653846
+              },
+              "recall_at_512": {
+                "hits": 104,
+                "n_queries": 104,
+                "recall": 1.0
+              },
+              "recall_at_64": {
+                "hits": 91,
+                "n_queries": 104,
+                "recall": 0.875
+              },
+              "recall_at_8": {
+                "hits": 77,
+                "n_queries": 104,
+                "recall": 0.740385
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 104,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 104,
+              "n_queries": 104,
+              "recall": 1.0
+            }
+          }
+        },
+        "primary_population": "A2T-G1-104 (exposed)",
+        "requested_datastore_size": null,
+        "restriction_proof": {
+          "equality_required_and_held": true,
+          "full_content_facets": 12601,
+          "ids_are_a_subset": true,
+          "pinned_content_facets_not_in_this_tier": 0,
+          "reduced_content_facets": 12601,
+          "representations_are_identical": true
+        },
+        "snapshot_content_hash": "ad4e0bbff31e46a66a9281fbc1deb893546c53d68debfe4b479c4658435c8e76",
+        "superseded_coverage_report": {
+          "argument_key_coverage": 1.0,
+          "argument_pattern_family_coverage": 1.0,
+          "category_coverage": 1.0,
+          "cluster_coverage_proxy": 1.0,
+          "counts": {
+            "pool_argument_keys": 85,
+            "pool_argument_pattern_families": 354,
+            "pool_tools": 151,
+            "pool_units": 12601,
+            "registry_tools": 152,
+            "selected_argument_keys": 85,
+            "selected_argument_pattern_families": 354,
+            "selected_multi_call_units": 2250,
+            "selected_tools": 151,
+            "selected_units": 12601
+          },
+          "datastore_size_actual": 12601,
+          "kl_selected_given_pool_over_tier": 0.0,
+          "kl_selected_given_pool_over_tool": 0.0,
+          "long_tail_coverage": {
+            "argument_pattern_family": {
+              "coverage": 1.0,
+              "covered_count": 100,
+              "pool_long_tail_count": 100,
+              "threshold": 5
+            },
+            "tool": {
+              "coverage": 1.0,
+              "covered_count": 4,
+              "pool_long_tail_count": 4,
+              "threshold": 5
+            }
+          },
+          "selected_units_by_tier": {
+            "tier1_direct": 1546,
+            "tier2_parametric": 2601,
+            "tier3_multi_intent": 1550,
+            "tier4_implicit": 1544,
+            "tier5_needle": 1554,
+            "tier6_correction": 1547,
+            "tier7_multiturn": 1554,
+            "tier8_intent_blending": 705
+          },
+          "tier_coverage": 1.0,
+          "tool_coverage": 1.0,
+          "tool_histogram_summary": {
+            "distinct_tools": 151,
+            "max_tool_share": 0.02571224505991588,
+            "min_tool_count": 2,
+            "top_tools": [
+              {
+                "count": 324,
+                "tool_name": "rebootDevice"
+              },
+              {
+                "count": 312,
+                "tool_name": "setSecurityMode"
+              },
+              {
+                "count": 309,
+                "tool_name": "setLighting"
+              },
+              {
+                "count": 220,
+                "tool_name": "setHapticStrength"
+              },
+              {
+                "count": 212,
+                "tool_name": "getSleepSummary"
+              },
+              {
+                "count": 211,
+                "tool_name": "getHRV"
+              },
+              {
+                "count": 208,
+                "tool_name": "setAlwaysOnDisplay"
+              },
+              {
+                "count": 202,
+                "tool_name": "getLockState"
+              },
+              {
+                "count": 200,
+                "tool_name": "setAlarm"
+              },
+              {
+                "count": 198,
+                "tool_name": "enableWaterLock"
+              }
+            ]
+          }
+        },
+        "support": {
+          "max": 324,
+          "mean": 82.9013,
+          "min": 0,
+          "outside_task_space_targets": [],
+          "p05": 8,
+          "p25": 13,
+          "p50": 16,
+          "p75": 171,
+          "p95": 202,
+          "quantile_convention": "nearest-rank inclusive: sorted[ceil(q*n) - 1]",
+          "support_1_targets": [],
+          "targets_outside_task_space": 0,
+          "targets_with_support_1": 0,
+          "targets_with_support_below_5": 4,
+          "targets_with_zero_support": 1,
+          "task_target_space_size": 152,
+          "total_exemplars": 12601,
+          "zero_support_targets": [
+            "getLockStatus"
+          ],
+          "zero_support_targets_truncated": 0
+        }
+      }
+    ],
+    "inputs": {
+      "artifact_hashes": {
+        "arm1-m0-outputs.jsonl": "dea60ff1e63fd2ef11c93edf8808217062fea3f0565ed5b60f136264bc6a9467",
+        "arm2-blend-mechanical-report-attempt4.json": "641c4b5ae82cdda1b2d8508bb95e52035fe1b3d119ea170f10906779df459436",
+        "arm2-blend-mechanical.json": "59458c491368a117721041e4ba1538549f3e1e28bdb342e4927703ad5892644e",
+        "arm2-blend-outputs.jsonl": "24a7864263226f4918076571aee359d40ee76838f9cea1da2bbae38f6b6bdd18",
+        "content-facet-npz": "00a7ebe9b8325ffc2c7b8e45ac4f0c8475b2d3e76994cc0f539f7b5ad5740f45",
+        "g1-read-attempt4.json": "cb5e56584a6d572f7b41b39542201ddb1b361755042eac66c3a70c55fd086f89",
+        "kb_policy.py": "2a1c3d75e747db10f723044b05c08d232e1edf47f125d0889c1d2565ba1019af",
+        "pass-a-direct-outputs.jsonl": "73e28511f419cd67b1721d829438f8c102e725e01243c9a9f000e00d92aadc9c",
+        "query-vectors.jsonl": "2915aa0e4c690fc612777f28c88949956b2cfb108582c4e40eaca36e6a184be7",
+        "snapshot": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2"
+      },
+      "construction_units": 12601,
+      "content_facet_npz_sha256": "00a7ebe9b8325ffc2c7b8e45ac4f0c8475b2d3e76994cc0f539f7b5ad5740f45",
+      "decontamination_roster_ids": 800,
+      "eval_units": 400,
+      "exposed_ids": 400,
+      "pool_units": 16843,
+      "snapshot_measured_content_hash": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2",
+      "snapshot_pinned_sha256": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2",
+      "snapshot_relpath": "knowledge/audio2tool/saea-kb-a2t-toolshaped-v1/size-full/snapshot.json"
+    },
+    "mutation_proofs": [
+      {
+        "carrier": "audio2tool",
+        "expected": "the curve collapses to a single recall@5 value and curve_is_informative goes False",
+        "metric": "scaling_curve",
+        "metric_moved": true,
+        "mutation": "ignore the datastore-size restriction and score every swept size against the FULL candidate set",
+        "observed": "unmutated distinct recall@5 values=4 (span 0.076923); mutated=1 (informative=False)"
+      },
+      {
+        "carrier": "audio2tool",
+        "expected": "targets_with_zero_support rises by exactly 1 and the new target is named",
+        "metric": "support_distribution",
+        "metric_moved": true,
+        "mutation": "add one target to the TASK target space that the datastore has no exemplar for",
+        "observed": "1 -> 2; named=True"
+      },
+      {
+        "carrier": "audio2tool",
+        "expected": "that target drops to support 0, the zero count rises and the total falls",
+        "metric": "support_distribution",
+        "metric_moved": true,
+        "mutation": "delete every exemplar of the best-supported target ('rebootDevice')",
+        "observed": "zero 1 -> 2; total 12601 -> 12277"
+      },
+      {
+        "carrier": "audio2tool",
+        "expected": "recall@5 collapses toward the label base rate",
+        "metric": "gold_recall_curve",
+        "metric_moved": true,
+        "mutation": "deterministically permute the gold target assignment across the eval population (seed 20260825), leaving every query vector and the whole datastore untouched",
+        "observed": "recall@5 0.653846 -> 0.076923"
+      },
+      {
+        "carrier": "audio2tool",
+        "expected": "recall goes to 0.0 at every k and every query is counted as a miss, never dropped from the denominator",
+        "metric": "gold_recall_curve",
+        "metric_moved": true,
+        "mutation": "declare every eval query's gold target absent from the datastore's target space",
+        "observed": "recall@512 1.0 -> 0.0; denominator 104 unchanged; gold-absent 104"
+      },
+      {
+        "carrier": "audio2tool",
+        "expected": "by_sample_id rises by exactly 1 and the injected id is named",
+        "metric": "decontamination_intersection",
+        "metric_moved": true,
+        "mutation": "inject one EVAL sample id ('tier1_direct:000075') into the datastore's id set",
+        "observed": "0 -> 1; named=True"
+      },
+      {
+        "carrier": "audio2tool",
+        "expected": "by_normalised_text rises by at least 1 and the id check stays where it was -- the id gate is exactly the leak this granularity exists to catch",
+        "metric": "decontamination_intersection",
+        "metric_moved": true,
+        "mutation": "inject one EVAL item's verbatim text ('tier1_direct:000075') into the datastore's text set, under NO shared id",
+        "observed": "text 11 -> 12; id 0 -> 0"
+      }
+    ],
+    "populations": {
+      "A2T-G1-104 (exposed)": {
+        "n": 104,
+        "secondary_reading": false
+      }
+    },
+    "primary_population": "A2T-G1-104 (exposed)",
+    "recall_fidelity_probe": {
+      "claim": "kb.multidim_recall admits the same facet set with the same scores as this module's vectorised cosine row, so the recall@k ranking is the registered ranker's own ordering",
+      "probes": 8
+    },
+    "scaling_curve": {
+      "axis": "datastore_size",
+      "curve_is_informative": true,
+      "distinct_datastore_sizes": 5,
+      "distinct_recall_at_5_values": 4,
+      "monotone_non_decreasing_in_size": false,
+      "recall_at_5_span": 0.076923,
+      "rows": [
+        {
+          "candidate_facets": 354,
+          "datastore_size_actual": 354,
+          "median_support": 2,
+          "recall_at_1": 0.346154,
+          "recall_at_5": 0.605769,
+          "recall_at_64": 0.884615,
+          "recall_at_full_datastore": 1.0,
+          "requested_datastore_size": 100,
+          "targets_with_zero_support": 1
+        },
+        {
+          "candidate_facets": 500,
+          "datastore_size_actual": 500,
+          "median_support": 3,
+          "recall_at_1": 0.394231,
+          "recall_at_5": 0.663462,
+          "recall_at_64": 0.894231,
+          "recall_at_full_datastore": 1.0,
+          "requested_datastore_size": 500,
+          "targets_with_zero_support": 1
+        },
+        {
+          "candidate_facets": 1000,
+          "datastore_size_actual": 1000,
+          "median_support": 4,
+          "recall_at_1": 0.432692,
+          "recall_at_5": 0.682692,
+          "recall_at_64": 0.903846,
+          "recall_at_full_datastore": 1.0,
+          "requested_datastore_size": 1000,
+          "targets_with_zero_support": 1
+        },
+        {
+          "candidate_facets": 5000,
+          "datastore_size_actual": 5000,
+          "median_support": 11,
+          "recall_at_1": 0.490385,
+          "recall_at_5": 0.653846,
+          "recall_at_64": 0.875,
+          "recall_at_full_datastore": 1.0,
+          "requested_datastore_size": 5000,
+          "targets_with_zero_support": 1
+        },
+        {
+          "candidate_facets": 12601,
+          "datastore_size_actual": 12601,
+          "median_support": 16,
+          "recall_at_1": 0.528846,
+          "recall_at_5": 0.653846,
+          "recall_at_64": 0.875,
+          "recall_at_full_datastore": 1.0,
+          "requested_datastore_size": null,
+          "targets_with_zero_support": 1
+        }
+      ]
+    },
+    "task_target_space": {
+      "construction_pool_tools": 151,
+      "definition": "the FROZEN TOOL REGISTRY -- every tool the core may call. This is the denominator the replaced tool_coverage should have had; it is what makes getLockStatus visible at support 0",
+      "eval_gold_tools": 64,
+      "registry_tools_with_zero_construction_support": [
+        "getLockStatus"
+      ],
+      "size": 152
+    }
+  },
+  "execution_profile": "model-free-check",
+  "exposure_row": "SAEA-SN-MF-DATASTORE-SCORING-ALIGNMENT",
+  "field_practice": [
+    {
+      "field_source": "MassiveDS (Shao et al., NeurIPS 2024) -- trillion-token datastore scaling, 'size is a reported axis'",
+      "implemented_by": "scaling_curve",
+      "our_own_prior_call": "docs/readiness/2026-08-23-cross-modal-retrieval-survey.md section 'MassiveDS hygiene: KB scaling curve with decontamination and dev-only knob tuning' called for it, and the 1k / 5k / full snapshots were BUILT but never read as a curve",
+      "practice": "datastore size as a swept axis with a scaling curve",
+      "source_mapping_line": "'the template for the KB scaling curve and decontamination discipline' -- the survey's own mapping line, written on 2026-08-23",
+      "source_record": "docs/readiness/2026-08-23-cross-modal-retrieval-survey.md lane 1 item 5"
+    },
+    {
+      "field_source": "Long-tail crisis in NN LMs (2025, arXiv 2503.22426) -- gains concentrate on a minority of targets and retrieval actively hurts elsewhere; Tip-Adapter (Zhang et al., ECCV 2022) -- a training-free K-shot key-value cache whose behaviour is read per class and per shot count",
+      "implemented_by": "support_distribution",
+      "our_own_prior_call": "the landed build receipts already carried a top-10 target histogram; the tail, the quantiles, the count at support 1 and the count at support 0 were never reported, and a coverage RATIO was reported instead",
+      "practice": "per-target support distribution with the long-tail shape",
+      "source_mapping_line": "'report per-class and per-bucket deltas on dev, never aggregate only' -- the survey's own mapping line",
+      "source_record": "docs/readiness/2026-08-23-cross-modal-retrieval-survey.md lane 1 item 3 and lane 2 item 15"
+    },
+    {
+      "field_source": "retrieve-then-rerank evaluation -- ColBERTv2 (NAACL 2022), RankGPT (Sun et al., EMNLP 2023) and the listwise rerankers -- denominates recall on the QUERIES being served, never on the index's own contents",
+      "implemented_by": "gold_recall_curve",
+      "our_own_prior_call": "docs/readiness/2026-08-25-a2t-gold-absence-diagnosis.md's k = 5..1024 reachability curve, the K-WIDEN round and the K1 hybrid-ranking gate already did exactly this; it was RE-DERIVED per analysis instead of reported as a metric",
+      "practice": "gold recall@k against the eval population's gold",
+      "source_mapping_line": "'cheap multi-dim recall, then one reranker fusing dimensions' -- recall depth is the reported axis, and it is reported over the query set",
+      "source_record": "docs/readiness/2026-08-23-cross-modal-retrieval-survey.md lane 1 item 12"
+    },
+    {
+      "field_source": "MassiveDS (Shao et al., NeurIPS 2024) -- 'explicit decontamination vs eval sets'; RETRO (Borgeaud et al., ICML 2022) -- quantifies train/test leakage via n-gram overlap and stratifies results by it",
+      "implemented_by": "decontamination_intersection",
+      "our_own_prior_call": "the landed builders publish decontamination.verdict = 'clean', which is a Python literal with no other reachable value",
+      "practice": "decontamination as a measured intersection count",
+      "source_mapping_line": "'report accuracy stratified by train-eval near-duplicate overlap' -- which requires a MEASURED overlap, not a verdict string",
+      "source_record": "docs/readiness/2026-08-23-cross-modal-retrieval-survey.md lane 1 items 5 and 6"
+    }
+  ],
+  "frame": "ALIGNMENT AND REPORTING CHANGE. Owner ruling 2026-08-25: find out how the field does this, decide whether we created the implementation difficulty ourselves, and if so align to the field's implementation. We did create it. This row replaces a self-invented coverage-ratio family that cannot fail with the field's standard datastore metrics, changes WHAT IS REPORTED and never what is retrieved or decided, changes no knob, rebuilds no snapshot on disk, displaces nothing hash-pinned, revises no landed number, and authorises no flight.",
+  "hard_stop": "HARD STOP. This row reports; it does not act. No knob is changed, no snapshot is rebuilt on disk, no landed receipt or readiness document is rewritten, no flight or re-flight is authorised, and no number here revises, re-tunes or restates the 2026-08-25 DEV-1000 baseline lock.",
+  "k_grid": [
+    1,
+    5,
+    8,
+    16,
+    32,
+    64,
+    128,
+    256,
+    512
+  ],
+  "knob_invariance": {
+    "frozen_policy_config_relpath": "configs/policy/kb-policy-v1-dev100.json",
+    "frozen_policy_config_sha256": "d68afd2cfb6e12d9cbd9d3fbcf0daf3f81f6ed8be9b2a75c4f8ffb234011a919",
+    "matches_the_locked_v1_cell": true
+  },
+  "metric_definitions": {
+    "decontamination_intersection": "the MEASURED number of eval items found inside the datastore -- by exact sample id, by normalised text and by shared word n-gram -- with the identities of anything that intersects",
+    "gold_recall_curve": "recall@k of a gold-bearing content facet, denominated on the EVAL population's queries; a query whose gold is absent from the datastore is a miss at every k and is never removed from the denominator",
+    "scaling_curve": "datastore size swept as an axis; every reported quantity is a function of the swept size, and a curve that does not move is refused",
+    "support_distribution": "exemplars per TASK target, denominated on the task's target vocabulary, with min / p05 / p25 / p50 / p75 / p95 / max, the count at support 1 and the count at support 0 with identities"
+  },
+  "mutation_proofs": [
+    {
+      "carrier": "slurp",
+      "expected": "the curve collapses to a single recall@5 value and curve_is_informative goes False",
+      "metric": "scaling_curve",
+      "metric_moved": true,
+      "mutation": "ignore the datastore-size restriction and score every swept size against the FULL candidate set",
+      "observed": "unmutated distinct recall@5 values=5 (span 0.09); mutated=1 (informative=False)"
+    },
+    {
+      "carrier": "slurp",
+      "expected": "targets_with_zero_support rises by exactly 1 and the new target is named",
+      "metric": "support_distribution",
+      "metric_moved": true,
+      "mutation": "add one target to the TASK target space that the datastore has no exemplar for",
+      "observed": "0 -> 1; named=True"
+    },
+    {
+      "carrier": "slurp",
+      "expected": "that target drops to support 0, the zero count rises and the total falls",
+      "metric": "support_distribution",
+      "metric_moved": true,
+      "mutation": "delete every exemplar of the best-supported target ('calendar_set')",
+      "observed": "zero 0 -> 1; total 11514 -> 10704"
+    },
+    {
+      "carrier": "slurp",
+      "expected": "recall@5 collapses toward the label base rate",
+      "metric": "gold_recall_curve",
+      "metric_moved": true,
+      "mutation": "deterministically permute the gold target assignment across the eval population (seed 20260825), leaving every query vector and the whole datastore untouched",
+      "observed": "recall@5 0.736 -> 0.046"
+    },
+    {
+      "carrier": "slurp",
+      "expected": "recall goes to 0.0 at every k and every query is counted as a miss, never dropped from the denominator",
+      "metric": "gold_recall_curve",
+      "metric_moved": true,
+      "mutation": "declare every eval query's gold target absent from the datastore's target space",
+      "observed": "recall@512 0.98 -> 0.0; denominator 500 unchanged; gold-absent 500"
+    },
+    {
+      "carrier": "slurp",
+      "expected": "by_sample_id rises by exactly 1 and the injected id is named",
+      "metric": "decontamination_intersection",
+      "metric_moved": true,
+      "mutation": "inject one EVAL sample id ('slurp:devel:000011:audio-1497266596') into the datastore's id set",
+      "observed": "0 -> 1; named=True"
+    },
+    {
+      "carrier": "slurp",
+      "expected": "by_normalised_text rises by at least 1 and the id check stays where it was -- the id gate is exactly the leak this granularity exists to catch",
+      "metric": "decontamination_intersection",
+      "metric_moved": true,
+      "mutation": "inject one EVAL item's verbatim text ('slurp:devel:000011:audio-1497266596') into the datastore's text set, under NO shared id",
+      "observed": "text 3 -> 4; id 0 -> 0"
+    },
+    {
+      "carrier": "audio2tool",
+      "expected": "the curve collapses to a single recall@5 value and curve_is_informative goes False",
+      "metric": "scaling_curve",
+      "metric_moved": true,
+      "mutation": "ignore the datastore-size restriction and score every swept size against the FULL candidate set",
+      "observed": "unmutated distinct recall@5 values=4 (span 0.076923); mutated=1 (informative=False)"
+    },
+    {
+      "carrier": "audio2tool",
+      "expected": "targets_with_zero_support rises by exactly 1 and the new target is named",
+      "metric": "support_distribution",
+      "metric_moved": true,
+      "mutation": "add one target to the TASK target space that the datastore has no exemplar for",
+      "observed": "1 -> 2; named=True"
+    },
+    {
+      "carrier": "audio2tool",
+      "expected": "that target drops to support 0, the zero count rises and the total falls",
+      "metric": "support_distribution",
+      "metric_moved": true,
+      "mutation": "delete every exemplar of the best-supported target ('rebootDevice')",
+      "observed": "zero 1 -> 2; total 12601 -> 12277"
+    },
+    {
+      "carrier": "audio2tool",
+      "expected": "recall@5 collapses toward the label base rate",
+      "metric": "gold_recall_curve",
+      "metric_moved": true,
+      "mutation": "deterministically permute the gold target assignment across the eval population (seed 20260825), leaving every query vector and the whole datastore untouched",
+      "observed": "recall@5 0.653846 -> 0.076923"
+    },
+    {
+      "carrier": "audio2tool",
+      "expected": "recall goes to 0.0 at every k and every query is counted as a miss, never dropped from the denominator",
+      "metric": "gold_recall_curve",
+      "metric_moved": true,
+      "mutation": "declare every eval query's gold target absent from the datastore's target space",
+      "observed": "recall@512 1.0 -> 0.0; denominator 104 unchanged; gold-absent 104"
+    },
+    {
+      "carrier": "audio2tool",
+      "expected": "by_sample_id rises by exactly 1 and the injected id is named",
+      "metric": "decontamination_intersection",
+      "metric_moved": true,
+      "mutation": "inject one EVAL sample id ('tier1_direct:000075') into the datastore's id set",
+      "observed": "0 -> 1; named=True"
+    },
+    {
+      "carrier": "audio2tool",
+      "expected": "by_normalised_text rises by at least 1 and the id check stays where it was -- the id gate is exactly the leak this granularity exists to catch",
+      "metric": "decontamination_intersection",
+      "metric_moved": true,
+      "mutation": "inject one EVAL item's verbatim text ('tier1_direct:000075') into the datastore's text set, under NO shared id",
+      "observed": "text 11 -> 12; id 0 -> 0"
+    }
+  ],
+  "offline_guard": {
+    "attempted_targets": [],
+    "mechanism": "socket.socket.connect / connect_ex / socket.create_connection were replaced with counting refusals before the first input was opened",
+    "outbound_connection_attempts": 0
+  },
+  "schema": "saea-datastore-scoring-alignment-v1",
+  "size_grid": [
+    100,
+    500,
+    1000,
+    5000,
+    null
+  ],
+  "slurp": {
+    "carrier": "slurp",
+    "cells": [
+      {
+        "datastore_size_actual": 100,
+        "decontamination": {
+          "by_ngram": {
+            "eval_items_found_in_the_datastore": 1,
+            "eval_population": 1000,
+            "granularity": "shared word 8-gram",
+            "identities": [
+              "slurp:devel:006425:audio-1495370944-headset"
+            ],
+            "identities_truncated": 0,
+            "rate": 0.001
+          },
+          "by_normalised_text": {
+            "eval_items_found_in_the_datastore": 1,
+            "eval_population": 1000,
+            "granularity": "case-folded, punctuation-stripped text equality",
+            "identities": [
+              "slurp:devel:006425:audio-1495370944-headset"
+            ],
+            "identities_truncated": 0,
+            "rate": 0.001
+          },
+          "by_sample_id": {
+            "eval_items_found_in_the_datastore": 0,
+            "eval_population": 1000,
+            "granularity": "exact sample id",
+            "identities": [],
+            "identities_truncated": 0,
+            "rate": 0.0
+          },
+          "datastore_distinct_ngrams": 191,
+          "datastore_distinct_normalised_texts": 100,
+          "datastore_sample_ids": 512,
+          "eval_items_shorter_than_ngram": 649,
+          "eval_population": 1000,
+          "ngram": 8
+        },
+        "gold_recall": {
+          "DEV-1000 (pooled, descriptive)": {
+            "best_gold_rank": {
+              "max": 97,
+              "min": 1,
+              "p25": 1,
+              "p50": 2,
+              "p75": 8,
+              "p95": 33
+            },
+            "candidate_facets": 100,
+            "curve": {
+              "recall_at_1": {
+                "hits": 447,
+                "n_queries": 1000,
+                "recall": 0.447
+              },
+              "recall_at_128": {
+                "hits": 1000,
+                "n_queries": 1000,
+                "recall": 1.0
+              },
+              "recall_at_16": {
+                "hits": 851,
+                "n_queries": 1000,
+                "recall": 0.851
+              },
+              "recall_at_256": {
+                "hits": 1000,
+                "n_queries": 1000,
+                "recall": 1.0
+              },
+              "recall_at_32": {
+                "hits": 933,
+                "n_queries": 1000,
+                "recall": 0.933
+              },
+              "recall_at_5": {
+                "hits": 712,
+                "n_queries": 1000,
+                "recall": 0.712
+              },
+              "recall_at_512": {
+                "hits": 1000,
+                "n_queries": 1000,
+                "recall": 1.0
+              },
+              "recall_at_64": {
+                "hits": 991,
+                "n_queries": 1000,
+                "recall": 0.991
+              },
+              "recall_at_8": {
+                "hits": 760,
+                "n_queries": 1000,
+                "recall": 0.76
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 1000,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 1000,
+              "n_queries": 1000,
+              "recall": 1.0
+            }
+          },
+          "DEV-1000 NEW500 (unexposed; SECONDARY READING)": {
+            "best_gold_rank": {
+              "max": 85,
+              "min": 1,
+              "p25": 1,
+              "p50": 2,
+              "p75": 7,
+              "p95": 33
+            },
+            "candidate_facets": 100,
+            "curve": {
+              "recall_at_1": {
+                "hits": 216,
+                "n_queries": 500,
+                "recall": 0.432
+              },
+              "recall_at_128": {
+                "hits": 500,
+                "n_queries": 500,
+                "recall": 1.0
+              },
+              "recall_at_16": {
+                "hits": 429,
+                "n_queries": 500,
+                "recall": 0.858
+              },
+              "recall_at_256": {
+                "hits": 500,
+                "n_queries": 500,
+                "recall": 1.0
+              },
+              "recall_at_32": {
+                "hits": 467,
+                "n_queries": 500,
+                "recall": 0.934
+              },
+              "recall_at_5": {
+                "hits": 362,
+                "n_queries": 500,
+                "recall": 0.724
+              },
+              "recall_at_512": {
+                "hits": 500,
+                "n_queries": 500,
+                "recall": 1.0
+              },
+              "recall_at_64": {
+                "hits": 497,
+                "n_queries": 500,
+                "recall": 0.994
+              },
+              "recall_at_8": {
+                "hits": 389,
+                "n_queries": 500,
+                "recall": 0.778
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 500,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 500,
+              "n_queries": 500,
+              "recall": 1.0
+            }
+          },
+          "DEV-500 (prior-exposed)": {
+            "best_gold_rank": {
+              "max": 97,
+              "min": 1,
+              "p25": 1,
+              "p50": 2,
+              "p75": 9,
+              "p95": 36
+            },
+            "candidate_facets": 100,
+            "curve": {
+              "recall_at_1": {
+                "hits": 231,
+                "n_queries": 500,
+                "recall": 0.462
+              },
+              "recall_at_128": {
+                "hits": 500,
+                "n_queries": 500,
+                "recall": 1.0
+              },
+              "recall_at_16": {
+                "hits": 422,
+                "n_queries": 500,
+                "recall": 0.844
+              },
+              "recall_at_256": {
+                "hits": 500,
+                "n_queries": 500,
+                "recall": 1.0
+              },
+              "recall_at_32": {
+                "hits": 466,
+                "n_queries": 500,
+                "recall": 0.932
+              },
+              "recall_at_5": {
+                "hits": 350,
+                "n_queries": 500,
+                "recall": 0.7
+              },
+              "recall_at_512": {
+                "hits": 500,
+                "n_queries": 500,
+                "recall": 1.0
+              },
+              "recall_at_64": {
+                "hits": 494,
+                "n_queries": 500,
+                "recall": 0.988
+              },
+              "recall_at_8": {
+                "hits": 371,
+                "n_queries": 500,
+                "recall": 0.742
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 500,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 500,
+              "n_queries": 500,
+              "recall": 1.0
+            }
+          }
+        },
+        "primary_population": "DEV-500 (prior-exposed)",
+        "requested_datastore_size": 100,
+        "restriction_proof": {
+          "equality_required_and_held": false,
+          "full_content_facets": 11514,
+          "ids_are_a_subset": true,
+          "pinned_content_facets_not_in_this_tier": 11414,
+          "reduced_content_facets": 100,
+          "representations_are_identical": true
+        },
+        "snapshot_content_hash": "0c280ed3ad14050142e6e91b033618532f4584bd82c2d83aea7a3252372b52f9",
+        "support": {
+          "max": 5,
+          "mean": 1.6667,
+          "min": 1,
+          "outside_task_space_targets": [],
+          "p05": 1,
+          "p25": 1,
+          "p50": 1,
+          "p75": 2,
+          "p95": 3,
+          "quantile_convention": "nearest-rank inclusive: sorted[ceil(q*n) - 1]",
+          "support_1_targets": [
+            "alarm_query",
+            "alarm_set",
+            "audio_volume_down",
+            "audio_volume_other",
+            "audio_volume_up",
+            "cooking_query",
+            "datetime_convert",
+            "email_addcontact",
+            "email_querycontact",
+            "general_greet",
+            "general_joke",
+            "iot_cleaning",
+            "iot_hue_lightdim",
+            "iot_hue_lightoff",
+            "iot_hue_lighton",
+            "iot_hue_lightup",
+            "iot_wemo_off",
+            "iot_wemo_on",
+            "lists_createoradd",
+            "lists_query",
+            "music_dislikeness",
+            "music_likeness",
+            "music_settings",
+            "qa_currency",
+            "qa_definition",
+            "qa_maths",
+            "qa_stock",
+            "recommendation_events",
+            "social_post",
+            "social_query",
+            "takeaway_query",
+            "transport_taxi",
+            "transport_traffic"
+          ],
+          "targets_outside_task_space": 0,
+          "targets_with_support_1": 33,
+          "targets_with_support_below_5": 59,
+          "targets_with_zero_support": 0,
+          "task_target_space_size": 60,
+          "total_exemplars": 100,
+          "zero_support_targets": [],
+          "zero_support_targets_truncated": 0
+        }
+      },
+      {
+        "datastore_size_actual": 500,
+        "decontamination": {
+          "by_ngram": {
+            "eval_items_found_in_the_datastore": 1,
+            "eval_population": 1000,
+            "granularity": "shared word 8-gram",
+            "identities": [
+              "slurp:devel:006425:audio-1495370944-headset"
+            ],
+            "identities_truncated": 0,
+            "rate": 0.001
+          },
+          "by_normalised_text": {
+            "eval_items_found_in_the_datastore": 1,
+            "eval_population": 1000,
+            "granularity": "case-folded, punctuation-stripped text equality",
+            "identities": [
+              "slurp:devel:006425:audio-1495370944-headset"
+            ],
+            "identities_truncated": 0,
+            "rate": 0.001
+          },
+          "by_sample_id": {
+            "eval_items_found_in_the_datastore": 0,
+            "eval_population": 1000,
+            "granularity": "exact sample id",
+            "identities": [],
+            "identities_truncated": 0,
+            "rate": 0.0
+          },
+          "datastore_distinct_ngrams": 850,
+          "datastore_distinct_normalised_texts": 500,
+          "datastore_sample_ids": 2046,
+          "eval_items_shorter_than_ngram": 649,
+          "eval_population": 1000,
+          "ngram": 8
+        },
+        "gold_recall": {
+          "DEV-1000 (pooled, descriptive)": {
+            "best_gold_rank": {
+              "max": 300,
+              "min": 1,
+              "p25": 1,
+              "p50": 1,
+              "p75": 5,
+              "p95": 44
+            },
+            "candidate_facets": 500,
+            "curve": {
+              "recall_at_1": {
+                "hits": 590,
+                "n_queries": 1000,
+                "recall": 0.59
+              },
+              "recall_at_128": {
+                "hits": 984,
+                "n_queries": 1000,
+                "recall": 0.984
+              },
+              "recall_at_16": {
+                "hits": 898,
+                "n_queries": 1000,
+                "recall": 0.898
+              },
+              "recall_at_256": {
+                "hits": 998,
+                "n_queries": 1000,
+                "recall": 0.998
+              },
+              "recall_at_32": {
+                "hits": 936,
+                "n_queries": 1000,
+                "recall": 0.936
+              },
+              "recall_at_5": {
+                "hits": 786,
+                "n_queries": 1000,
+                "recall": 0.786
+              },
+              "recall_at_512": {
+                "hits": 1000,
+                "n_queries": 1000,
+                "recall": 1.0
+              },
+              "recall_at_64": {
+                "hits": 971,
+                "n_queries": 1000,
+                "recall": 0.971
+              },
+              "recall_at_8": {
+                "hits": 828,
+                "n_queries": 1000,
+                "recall": 0.828
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 1000,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 1000,
+              "n_queries": 1000,
+              "recall": 1.0
+            }
+          },
+          "DEV-1000 NEW500 (unexposed; SECONDARY READING)": {
+            "best_gold_rank": {
+              "max": 226,
+              "min": 1,
+              "p25": 1,
+              "p50": 1,
+              "p75": 5,
+              "p95": 43
+            },
+            "candidate_facets": 500,
+            "curve": {
+              "recall_at_1": {
+                "hits": 290,
+                "n_queries": 500,
+                "recall": 0.58
+              },
+              "recall_at_128": {
+                "hits": 493,
+                "n_queries": 500,
+                "recall": 0.986
+              },
+              "recall_at_16": {
+                "hits": 452,
+                "n_queries": 500,
+                "recall": 0.904
+              },
+              "recall_at_256": {
+                "hits": 500,
+                "n_queries": 500,
+                "recall": 1.0
+              },
+              "recall_at_32": {
+                "hits": 467,
+                "n_queries": 500,
+                "recall": 0.934
+              },
+              "recall_at_5": {
+                "hits": 391,
+                "n_queries": 500,
+                "recall": 0.782
+              },
+              "recall_at_512": {
+                "hits": 500,
+                "n_queries": 500,
+                "recall": 1.0
+              },
+              "recall_at_64": {
+                "hits": 485,
+                "n_queries": 500,
+                "recall": 0.97
+              },
+              "recall_at_8": {
+                "hits": 414,
+                "n_queries": 500,
+                "recall": 0.828
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 500,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 500,
+              "n_queries": 500,
+              "recall": 1.0
+            }
+          },
+          "DEV-500 (prior-exposed)": {
+            "best_gold_rank": {
+              "max": 300,
+              "min": 1,
+              "p25": 1,
+              "p50": 1,
+              "p75": 5,
+              "p95": 45
+            },
+            "candidate_facets": 500,
+            "curve": {
+              "recall_at_1": {
+                "hits": 300,
+                "n_queries": 500,
+                "recall": 0.6
+              },
+              "recall_at_128": {
+                "hits": 491,
+                "n_queries": 500,
+                "recall": 0.982
+              },
+              "recall_at_16": {
+                "hits": 446,
+                "n_queries": 500,
+                "recall": 0.892
+              },
+              "recall_at_256": {
+                "hits": 498,
+                "n_queries": 500,
+                "recall": 0.996
+              },
+              "recall_at_32": {
+                "hits": 469,
+                "n_queries": 500,
+                "recall": 0.938
+              },
+              "recall_at_5": {
+                "hits": 395,
+                "n_queries": 500,
+                "recall": 0.79
+              },
+              "recall_at_512": {
+                "hits": 500,
+                "n_queries": 500,
+                "recall": 1.0
+              },
+              "recall_at_64": {
+                "hits": 486,
+                "n_queries": 500,
+                "recall": 0.972
+              },
+              "recall_at_8": {
+                "hits": 414,
+                "n_queries": 500,
+                "recall": 0.828
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 500,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 500,
+              "n_queries": 500,
+              "recall": 1.0
+            }
+          }
+        },
+        "primary_population": "DEV-500 (prior-exposed)",
+        "requested_datastore_size": 500,
+        "restriction_proof": {
+          "equality_required_and_held": false,
+          "full_content_facets": 11514,
+          "ids_are_a_subset": true,
+          "pinned_content_facets_not_in_this_tier": 11014,
+          "reduced_content_facets": 500,
+          "representations_are_identical": true
+        },
+        "snapshot_content_hash": "f1ba044c07bcf83c5a1d65afd8dbade4480325d3fd24b7104475d8ea44f7bfa2",
+        "support": {
+          "max": 31,
+          "mean": 8.3333,
+          "min": 1,
+          "outside_task_space_targets": [],
+          "p05": 2,
+          "p25": 4,
+          "p50": 6,
+          "p75": 10,
+          "p95": 22,
+          "quantile_convention": "nearest-rank inclusive: sorted[ceil(q*n) - 1]",
+          "support_1_targets": [
+            "cooking_query",
+            "music_dislikeness"
+          ],
+          "targets_outside_task_space": 0,
+          "targets_with_support_1": 2,
+          "targets_with_support_below_5": 16,
+          "targets_with_zero_support": 0,
+          "task_target_space_size": 60,
+          "total_exemplars": 500,
+          "zero_support_targets": [],
+          "zero_support_targets_truncated": 0
+        }
+      },
+      {
+        "datastore_size_actual": 1000,
+        "decontamination": {
+          "by_ngram": {
+            "eval_items_found_in_the_datastore": 1,
+            "eval_population": 1000,
+            "granularity": "shared word 8-gram",
+            "identities": [
+              "slurp:devel:006425:audio-1495370944-headset"
+            ],
+            "identities_truncated": 0,
+            "rate": 0.001
+          },
+          "by_normalised_text": {
+            "eval_items_found_in_the_datastore": 1,
+            "eval_population": 1000,
+            "granularity": "case-folded, punctuation-stripped text equality",
+            "identities": [
+              "slurp:devel:006425:audio-1495370944-headset"
+            ],
+            "identities_truncated": 0,
+            "rate": 0.001
+          },
+          "by_sample_id": {
+            "eval_items_found_in_the_datastore": 0,
+            "eval_population": 1000,
+            "granularity": "exact sample id",
+            "identities": [],
+            "identities_truncated": 0,
+            "rate": 0.0
+          },
+          "datastore_distinct_ngrams": 1508,
+          "datastore_distinct_normalised_texts": 1000,
+          "datastore_sample_ids": 4091,
+          "eval_items_shorter_than_ngram": 649,
+          "eval_population": 1000,
+          "ngram": 8
+        },
+        "gold_recall": {
+          "DEV-1000 (pooled, descriptive)": {
+            "best_gold_rank": {
+              "max": 521,
+              "min": 1,
+              "p25": 1,
+              "p50": 1,
+              "p75": 5,
+              "p95": 45
+            },
+            "candidate_facets": 1000,
+            "curve": {
+              "recall_at_1": {
+                "hits": 570,
+                "n_queries": 1000,
+                "recall": 0.57
+              },
+              "recall_at_128": {
+                "hits": 977,
+                "n_queries": 1000,
+                "recall": 0.977
+              },
+              "recall_at_16": {
+                "hits": 884,
+                "n_queries": 1000,
+                "recall": 0.884
+              },
+              "recall_at_256": {
+                "hits": 993,
+                "n_queries": 1000,
+                "recall": 0.993
+              },
+              "recall_at_32": {
+                "hits": 938,
+                "n_queries": 1000,
+                "recall": 0.938
+              },
+              "recall_at_5": {
+                "hits": 750,
+                "n_queries": 1000,
+                "recall": 0.75
+              },
+              "recall_at_512": {
+                "hits": 999,
+                "n_queries": 1000,
+                "recall": 0.999
+              },
+              "recall_at_64": {
+                "hits": 958,
+                "n_queries": 1000,
+                "recall": 0.958
+              },
+              "recall_at_8": {
+                "hits": 845,
+                "n_queries": 1000,
+                "recall": 0.845
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 1000,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 1000,
+              "n_queries": 1000,
+              "recall": 1.0
+            }
+          },
+          "DEV-1000 NEW500 (unexposed; SECONDARY READING)": {
+            "best_gold_rank": {
+              "max": 413,
+              "min": 1,
+              "p25": 1,
+              "p50": 1,
+              "p75": 6,
+              "p95": 31
+            },
+            "candidate_facets": 1000,
+            "curve": {
+              "recall_at_1": {
+                "hits": 287,
+                "n_queries": 500,
+                "recall": 0.574
+              },
+              "recall_at_128": {
+                "hits": 490,
+                "n_queries": 500,
+                "recall": 0.98
+              },
+              "recall_at_16": {
+                "hits": 449,
+                "n_queries": 500,
+                "recall": 0.898
+              },
+              "recall_at_256": {
+                "hits": 495,
+                "n_queries": 500,
+                "recall": 0.99
+              },
+              "recall_at_32": {
+                "hits": 478,
+                "n_queries": 500,
+                "recall": 0.956
+              },
+              "recall_at_5": {
+                "hits": 373,
+                "n_queries": 500,
+                "recall": 0.746
+              },
+              "recall_at_512": {
+                "hits": 500,
+                "n_queries": 500,
+                "recall": 1.0
+              },
+              "recall_at_64": {
+                "hits": 481,
+                "n_queries": 500,
+                "recall": 0.962
+              },
+              "recall_at_8": {
+                "hits": 428,
+                "n_queries": 500,
+                "recall": 0.856
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 500,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 500,
+              "n_queries": 500,
+              "recall": 1.0
+            }
+          },
+          "DEV-500 (prior-exposed)": {
+            "best_gold_rank": {
+              "max": 521,
+              "min": 1,
+              "p25": 1,
+              "p50": 1,
+              "p75": 5,
+              "p95": 59
+            },
+            "candidate_facets": 1000,
+            "curve": {
+              "recall_at_1": {
+                "hits": 283,
+                "n_queries": 500,
+                "recall": 0.566
+              },
+              "recall_at_128": {
+                "hits": 487,
+                "n_queries": 500,
+                "recall": 0.974
+              },
+              "recall_at_16": {
+                "hits": 435,
+                "n_queries": 500,
+                "recall": 0.87
+              },
+              "recall_at_256": {
+                "hits": 498,
+                "n_queries": 500,
+                "recall": 0.996
+              },
+              "recall_at_32": {
+                "hits": 460,
+                "n_queries": 500,
+                "recall": 0.92
+              },
+              "recall_at_5": {
+                "hits": 377,
+                "n_queries": 500,
+                "recall": 0.754
+              },
+              "recall_at_512": {
+                "hits": 499,
+                "n_queries": 500,
+                "recall": 0.998
+              },
+              "recall_at_64": {
+                "hits": 477,
+                "n_queries": 500,
+                "recall": 0.954
+              },
+              "recall_at_8": {
+                "hits": 417,
+                "n_queries": 500,
+                "recall": 0.834
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 500,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 500,
+              "n_queries": 500,
+              "recall": 1.0
+            }
+          }
+        },
+        "primary_population": "DEV-500 (prior-exposed)",
+        "requested_datastore_size": 1000,
+        "restriction_proof": {
+          "equality_required_and_held": false,
+          "full_content_facets": 11514,
+          "ids_are_a_subset": true,
+          "pinned_content_facets_not_in_this_tier": 10514,
+          "reduced_content_facets": 1000,
+          "representations_are_identical": true
+        },
+        "snapshot_content_hash": "1af3a1db6bbbaa93d0afb6e37fa7239dad064332622694a137ba76e89fbe5886",
+        "support": {
+          "max": 66,
+          "mean": 16.6667,
+          "min": 1,
+          "outside_task_space_targets": [],
+          "p05": 2,
+          "p25": 7,
+          "p50": 12,
+          "p75": 19,
+          "p95": 47,
+          "quantile_convention": "nearest-rank inclusive: sorted[ceil(q*n) - 1]",
+          "support_1_targets": [
+            "cooking_query"
+          ],
+          "targets_outside_task_space": 0,
+          "targets_with_support_1": 1,
+          "targets_with_support_below_5": 5,
+          "targets_with_zero_support": 0,
+          "task_target_space_size": 60,
+          "total_exemplars": 1000,
+          "zero_support_targets": [],
+          "zero_support_targets_truncated": 0
+        }
+      },
+      {
+        "datastore_size_actual": 5000,
+        "decontamination": {
+          "by_ngram": {
+            "eval_items_found_in_the_datastore": 4,
+            "eval_population": 1000,
+            "granularity": "shared word 8-gram",
+            "identities": [
+              "slurp:devel:006425:audio-1495370944-headset",
+              "slurp:devel:012919:audio-1434529326-headset",
+              "slurp:devel:013842:audio-1497884837-headset",
+              "slurp:devel:016232:audio-1492782844-headset"
+            ],
+            "identities_truncated": 0,
+            "rate": 0.004
+          },
+          "by_normalised_text": {
+            "eval_items_found_in_the_datastore": 1,
+            "eval_population": 1000,
+            "granularity": "case-folded, punctuation-stripped text equality",
+            "identities": [
+              "slurp:devel:006425:audio-1495370944-headset"
+            ],
+            "identities_truncated": 0,
+            "rate": 0.001
+          },
+          "by_sample_id": {
+            "eval_items_found_in_the_datastore": 0,
+            "eval_population": 1000,
+            "granularity": "exact sample id",
+            "identities": [],
+            "identities_truncated": 0,
+            "rate": 0.0
+          },
+          "datastore_distinct_ngrams": 10584,
+          "datastore_distinct_normalised_texts": 5000,
+          "datastore_sample_ids": 20089,
+          "eval_items_shorter_than_ngram": 649,
+          "eval_population": 1000,
+          "ngram": 8
+        },
+        "gold_recall": {
+          "DEV-1000 (pooled, descriptive)": {
+            "best_gold_rank": {
+              "max": 2282,
+              "min": 1,
+              "p25": 1,
+              "p50": 1,
+              "p75": 5,
+              "p95": 85
+            },
+            "candidate_facets": 5000,
+            "curve": {
+              "recall_at_1": {
+                "hits": 590,
+                "n_queries": 1000,
+                "recall": 0.59
+              },
+              "recall_at_128": {
+                "hits": 965,
+                "n_queries": 1000,
+                "recall": 0.965
+              },
+              "recall_at_16": {
+                "hits": 847,
+                "n_queries": 1000,
+                "recall": 0.847
+              },
+              "recall_at_256": {
+                "hits": 974,
+                "n_queries": 1000,
+                "recall": 0.974
+              },
+              "recall_at_32": {
+                "hits": 903,
+                "n_queries": 1000,
+                "recall": 0.903
+              },
+              "recall_at_5": {
+                "hits": 766,
+                "n_queries": 1000,
+                "recall": 0.766
+              },
+              "recall_at_512": {
+                "hits": 993,
+                "n_queries": 1000,
+                "recall": 0.993
+              },
+              "recall_at_64": {
+                "hits": 933,
+                "n_queries": 1000,
+                "recall": 0.933
+              },
+              "recall_at_8": {
+                "hits": 803,
+                "n_queries": 1000,
+                "recall": 0.803
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 1000,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 1000,
+              "n_queries": 1000,
+              "recall": 1.0
+            }
+          },
+          "DEV-1000 NEW500 (unexposed; SECONDARY READING)": {
+            "best_gold_rank": {
+              "max": 1355,
+              "min": 1,
+              "p25": 1,
+              "p50": 1,
+              "p75": 4,
+              "p95": 72
+            },
+            "candidate_facets": 5000,
+            "curve": {
+              "recall_at_1": {
+                "hits": 299,
+                "n_queries": 500,
+                "recall": 0.598
+              },
+              "recall_at_128": {
+                "hits": 484,
+                "n_queries": 500,
+                "recall": 0.968
+              },
+              "recall_at_16": {
+                "hits": 429,
+                "n_queries": 500,
+                "recall": 0.858
+              },
+              "recall_at_256": {
+                "hits": 488,
+                "n_queries": 500,
+                "recall": 0.976
+              },
+              "recall_at_32": {
+                "hits": 452,
+                "n_queries": 500,
+                "recall": 0.904
+              },
+              "recall_at_5": {
+                "hits": 387,
+                "n_queries": 500,
+                "recall": 0.774
+              },
+              "recall_at_512": {
+                "hits": 497,
+                "n_queries": 500,
+                "recall": 0.994
+              },
+              "recall_at_64": {
+                "hits": 468,
+                "n_queries": 500,
+                "recall": 0.936
+              },
+              "recall_at_8": {
+                "hits": 408,
+                "n_queries": 500,
+                "recall": 0.816
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 500,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 500,
+              "n_queries": 500,
+              "recall": 1.0
+            }
+          },
+          "DEV-500 (prior-exposed)": {
+            "best_gold_rank": {
+              "max": 2282,
+              "min": 1,
+              "p25": 1,
+              "p50": 1,
+              "p75": 5,
+              "p95": 94
+            },
+            "candidate_facets": 5000,
+            "curve": {
+              "recall_at_1": {
+                "hits": 291,
+                "n_queries": 500,
+                "recall": 0.582
+              },
+              "recall_at_128": {
+                "hits": 481,
+                "n_queries": 500,
+                "recall": 0.962
+              },
+              "recall_at_16": {
+                "hits": 418,
+                "n_queries": 500,
+                "recall": 0.836
+              },
+              "recall_at_256": {
+                "hits": 486,
+                "n_queries": 500,
+                "recall": 0.972
+              },
+              "recall_at_32": {
+                "hits": 451,
+                "n_queries": 500,
+                "recall": 0.902
+              },
+              "recall_at_5": {
+                "hits": 379,
+                "n_queries": 500,
+                "recall": 0.758
+              },
+              "recall_at_512": {
+                "hits": 496,
+                "n_queries": 500,
+                "recall": 0.992
+              },
+              "recall_at_64": {
+                "hits": 465,
+                "n_queries": 500,
+                "recall": 0.93
+              },
+              "recall_at_8": {
+                "hits": 395,
+                "n_queries": 500,
+                "recall": 0.79
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 500,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 500,
+              "n_queries": 500,
+              "recall": 1.0
+            }
+          }
+        },
+        "primary_population": "DEV-500 (prior-exposed)",
+        "requested_datastore_size": 5000,
+        "restriction_proof": {
+          "equality_required_and_held": false,
+          "full_content_facets": 11514,
+          "ids_are_a_subset": true,
+          "pinned_content_facets_not_in_this_tier": 6514,
+          "reduced_content_facets": 5000,
+          "representations_are_identical": true
+        },
+        "snapshot_content_hash": "656b037310b1edc388e96048d6255dc1f4dd05ac52094d062f3dcb3bab959061",
+        "support": {
+          "max": 349,
+          "mean": 83.3333,
+          "min": 2,
+          "outside_task_space_targets": [],
+          "p05": 8,
+          "p25": 33,
+          "p50": 56,
+          "p75": 91,
+          "p95": 244,
+          "quantile_convention": "nearest-rank inclusive: sorted[ceil(q*n) - 1]",
+          "support_1_targets": [],
+          "targets_outside_task_space": 0,
+          "targets_with_support_1": 0,
+          "targets_with_support_below_5": 1,
+          "targets_with_zero_support": 0,
+          "task_target_space_size": 60,
+          "total_exemplars": 5000,
+          "zero_support_targets": [],
+          "zero_support_targets_truncated": 0
+        }
+      },
+      {
+        "datastore_size_actual": 11514,
+        "decontamination": {
+          "by_ngram": {
+            "eval_items_found_in_the_datastore": 15,
+            "eval_population": 1000,
+            "granularity": "shared word 8-gram",
+            "identities": [
+              "slurp:devel:000053:audio-1498758443",
+              "slurp:devel:000188:audio--1504198223",
+              "slurp:devel:000353:audio-1501698581-headset",
+              "slurp:devel:000975:audio-1489673632",
+              "slurp:devel:002943:audio-1502200671-headset",
+              "slurp:devel:006425:audio-1495370944-headset",
+              "slurp:devel:007043:audio-1501763982",
+              "slurp:devel:008039:audio-1490105633-headset",
+              "slurp:devel:012593:audio-1490292229-headset",
+              "slurp:devel:012919:audio-1434529326-headset",
+              "slurp:devel:012923:audio-1502302112-headset",
+              "slurp:devel:013842:audio-1497884837-headset",
+              "slurp:devel:014390:audio-1501697950-headset",
+              "slurp:devel:014737:audio-1495376531",
+              "slurp:devel:016232:audio-1492782844-headset"
+            ],
+            "identities_truncated": 0,
+            "rate": 0.015
+          },
+          "by_normalised_text": {
+            "eval_items_found_in_the_datastore": 3,
+            "eval_population": 1000,
+            "granularity": "case-folded, punctuation-stripped text equality",
+            "identities": [
+              "slurp:devel:000188:audio--1504198223",
+              "slurp:devel:002943:audio-1502200671-headset",
+              "slurp:devel:006425:audio-1495370944-headset"
+            ],
+            "identities_truncated": 0,
+            "rate": 0.003
+          },
+          "by_sample_id": {
+            "eval_items_found_in_the_datastore": 0,
+            "eval_population": 1000,
+            "granularity": "exact sample id",
+            "identities": [],
+            "identities_truncated": 0,
+            "rate": 0.0
+          },
+          "datastore_distinct_ngrams": 20670,
+          "datastore_distinct_normalised_texts": 11501,
+          "datastore_sample_ids": 50628,
+          "eval_items_shorter_than_ngram": 649,
+          "eval_population": 1000,
+          "ngram": 8
+        },
+        "full_tier_identity": {
+          "content_plane_reproduces_exactly": true,
+          "note": "the content plane -- the only vector-recalled dimension, and the only one this sweep restricts -- is reproduced facet-for-facet with identical representations. A whole-snapshot hash difference, if any, is the 2026-08-25 prior-score semantics repair landing in both builders after these snapshots were pinned; it changes the prior plane, not the content plane, and no number in this sweep reads the prior plane.",
+          "pinned_snapshot_content_hash": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+          "rebuilt_snapshot_content_hash": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+          "whole_snapshot_hash_reproduces": true
+        },
+        "gold_recall": {
+          "DEV-1000 (pooled, descriptive)": {
+            "best_gold_rank": {
+              "max": 2572,
+              "min": 1,
+              "p25": 1,
+              "p50": 1,
+              "p75": 6,
+              "p95": 156
+            },
+            "candidate_facets": 11514,
+            "curve": {
+              "recall_at_1": {
+                "hits": 628,
+                "n_queries": 1000,
+                "recall": 0.628
+              },
+              "recall_at_128": {
+                "hits": 941,
+                "n_queries": 1000,
+                "recall": 0.941
+              },
+              "recall_at_16": {
+                "hits": 805,
+                "n_queries": 1000,
+                "recall": 0.805
+              },
+              "recall_at_256": {
+                "hits": 967,
+                "n_queries": 1000,
+                "recall": 0.967
+              },
+              "recall_at_32": {
+                "hits": 853,
+                "n_queries": 1000,
+                "recall": 0.853
+              },
+              "recall_at_5": {
+                "hits": 740,
+                "n_queries": 1000,
+                "recall": 0.74
+              },
+              "recall_at_512": {
+                "hits": 985,
+                "n_queries": 1000,
+                "recall": 0.985
+              },
+              "recall_at_64": {
+                "hits": 887,
+                "n_queries": 1000,
+                "recall": 0.887
+              },
+              "recall_at_8": {
+                "hits": 769,
+                "n_queries": 1000,
+                "recall": 0.769
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 1000,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 1000,
+              "n_queries": 1000,
+              "recall": 1.0
+            }
+          },
+          "DEV-1000 NEW500 (unexposed; SECONDARY READING)": {
+            "best_gold_rank": {
+              "max": 1632,
+              "min": 1,
+              "p25": 1,
+              "p50": 1,
+              "p75": 6,
+              "p95": 156
+            },
+            "candidate_facets": 11514,
+            "curve": {
+              "recall_at_1": {
+                "hits": 318,
+                "n_queries": 500,
+                "recall": 0.636
+              },
+              "recall_at_128": {
+                "hits": 470,
+                "n_queries": 500,
+                "recall": 0.94
+              },
+              "recall_at_16": {
+                "hits": 408,
+                "n_queries": 500,
+                "recall": 0.816
+              },
+              "recall_at_256": {
+                "hits": 483,
+                "n_queries": 500,
+                "recall": 0.966
+              },
+              "recall_at_32": {
+                "hits": 433,
+                "n_queries": 500,
+                "recall": 0.866
+              },
+              "recall_at_5": {
+                "hits": 372,
+                "n_queries": 500,
+                "recall": 0.744
+              },
+              "recall_at_512": {
+                "hits": 495,
+                "n_queries": 500,
+                "recall": 0.99
+              },
+              "recall_at_64": {
+                "hits": 443,
+                "n_queries": 500,
+                "recall": 0.886
+              },
+              "recall_at_8": {
+                "hits": 389,
+                "n_queries": 500,
+                "recall": 0.778
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 500,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 500,
+              "n_queries": 500,
+              "recall": 1.0
+            }
+          },
+          "DEV-500 (prior-exposed)": {
+            "best_gold_rank": {
+              "max": 2572,
+              "min": 1,
+              "p25": 1,
+              "p50": 1,
+              "p75": 7,
+              "p95": 150
+            },
+            "candidate_facets": 11514,
+            "curve": {
+              "recall_at_1": {
+                "hits": 310,
+                "n_queries": 500,
+                "recall": 0.62
+              },
+              "recall_at_128": {
+                "hits": 471,
+                "n_queries": 500,
+                "recall": 0.942
+              },
+              "recall_at_16": {
+                "hits": 397,
+                "n_queries": 500,
+                "recall": 0.794
+              },
+              "recall_at_256": {
+                "hits": 484,
+                "n_queries": 500,
+                "recall": 0.968
+              },
+              "recall_at_32": {
+                "hits": 420,
+                "n_queries": 500,
+                "recall": 0.84
+              },
+              "recall_at_5": {
+                "hits": 368,
+                "n_queries": 500,
+                "recall": 0.736
+              },
+              "recall_at_512": {
+                "hits": 490,
+                "n_queries": 500,
+                "recall": 0.98
+              },
+              "recall_at_64": {
+                "hits": 444,
+                "n_queries": 500,
+                "recall": 0.888
+              },
+              "recall_at_8": {
+                "hits": 380,
+                "n_queries": 500,
+                "recall": 0.76
+              }
+            },
+            "denominator": "the EVAL population's queries -- never the datastore's contents",
+            "n_queries": 500,
+            "queries_whose_gold_exemplars_are_all_non_positive": 0,
+            "queries_whose_gold_target_has_no_exemplar": 0,
+            "recall_at_full_datastore": {
+              "hits": 500,
+              "n_queries": 500,
+              "recall": 1.0
+            }
+          }
+        },
+        "primary_population": "DEV-500 (prior-exposed)",
+        "requested_datastore_size": null,
+        "restriction_proof": {
+          "equality_required_and_held": true,
+          "full_content_facets": 11514,
+          "ids_are_a_subset": true,
+          "pinned_content_facets_not_in_this_tier": 0,
+          "reduced_content_facets": 11514,
+          "representations_are_identical": true
+        },
+        "snapshot_content_hash": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+        "superseded_coverage_report": {
+          "action_coverage": 1.0,
+          "cluster_coverage_proxy": 1.0,
+          "counts": {
+            "selected_entity_types": 55,
+            "selected_intents": 60,
+            "selected_utterances": 11514,
+            "train_entity_types": 55,
+            "train_intents": 60,
+            "train_utterances": 11514
+          },
+          "datastore_size_actual": 11514,
+          "entity_type_coverage": 1.0,
+          "intent_coverage": 1.0,
+          "kl_selected_given_train_over_intent": 0.0,
+          "long_tail_coverage": {
+            "entity_type": {
+              "coverage": 1.0,
+              "covered_count": 2,
+              "threshold": 5,
+              "train_long_tail_count": 2
+            },
+            "intent": {
+              "coverage": 1.0,
+              "covered_count": 1,
+              "threshold": 5,
+              "train_long_tail_count": 1
+            }
+          },
+          "scenario_coverage": 1.0,
+          "speaker_histogram_summary": {
+            "distinct_speakers": 151,
+            "max_speaker_share": 0.05211047420531527,
+            "top_speakers": [
+              {
+                "count": 600,
+                "speaker_id": "FO-488"
+              },
+              {
+                "count": 451,
+                "speaker_id": "FO-234"
+              },
+              {
+                "count": 288,
+                "speaker_id": "FE-353"
+              },
+              {
+                "count": 264,
+                "speaker_id": "FO-462"
+              },
+              {
+                "count": 240,
+                "speaker_id": "ME-223"
+              },
+              {
+                "count": 228,
+                "speaker_id": "FO-219"
+              },
+              {
+                "count": 208,
+                "speaker_id": "FE-249"
+              },
+              {
+                "count": 199,
+                "speaker_id": "ME-144"
+              },
+              {
+                "count": 192,
+                "speaker_id": "ME-220"
+              },
+              {
+                "count": 184,
+                "speaker_id": "FE-146"
+              }
+            ]
+          }
+        },
+        "support": {
+          "max": 810,
+          "mean": 191.9,
+          "min": 4,
+          "outside_task_space_targets": [],
+          "p05": 18,
+          "p25": 76,
+          "p50": 127,
+          "p75": 207,
+          "p95": 566,
+          "quantile_convention": "nearest-rank inclusive: sorted[ceil(q*n) - 1]",
+          "support_1_targets": [],
+          "targets_outside_task_space": 0,
+          "targets_with_support_1": 0,
+          "targets_with_support_below_5": 1,
+          "targets_with_zero_support": 0,
+          "task_target_space_size": 60,
+          "total_exemplars": 11514,
+          "zero_support_targets": [],
+          "zero_support_targets_truncated": 0
+        }
+      }
+    ],
+    "inputs": {
+      "arm_pins": {
+        "BLEND": {
+          "attempt_id": "attempt-20260825T054707Z-dev1000blend",
+          "mechanical_sha256": "e55b6632d85a0037fb928d565fb2ef1b40c987c915dd98a9f2599d78113c828e",
+          "outputs_sha256": "542a029adca8fb8daf3618e8a049aecdba1b04aba30eafedb67099fb6e08cf14"
+        },
+        "M0": {
+          "attempt_id": "attempt-20260825T053342Z-dev1000m0",
+          "mechanical_sha256": "814532760a712888d943c4a781f358cff426001ac0394ee29814cf4ee0335d16",
+          "outputs_sha256": "ea7045d3cfd3d1652f568911a0c47c16d66b879e824d314a6cb5061d7f07decc"
+        }
+      },
+      "content_facet_npz_sha256": "0bcb955a3a0ab84880f0d039ae702e77d1247ed23c3b8cecb468cbb1e0221c72",
+      "decontamination_roster_ids": 21768,
+      "population_receipt_hashes": {
+        "DEV-1000": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b",
+        "DEV-1000-NEW500": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3",
+        "DEV-500": "adc3e4ddd20518d279dc6c3aa42821629ca67b05eaba7802e1918f0349c2f315"
+      },
+      "query_vectors_count": 1000,
+      "query_vectors_relpath": "runs/SAEA-DEV1000-BASELINE-LOCK/attempt-20260825T054707Z-dev1000blend/query-vectors.jsonl",
+      "query_vectors_sha256": "efcf948918e1b4f6c695998da21311d1fa766de57dbd84feedce5ae5ade11702",
+      "snapshot_measured_content_hash": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+      "snapshot_pinned_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+      "snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full/snapshot.json",
+      "train_rows": 11514
+    },
+    "mutation_proofs": [
+      {
+        "carrier": "slurp",
+        "expected": "the curve collapses to a single recall@5 value and curve_is_informative goes False",
+        "metric": "scaling_curve",
+        "metric_moved": true,
+        "mutation": "ignore the datastore-size restriction and score every swept size against the FULL candidate set",
+        "observed": "unmutated distinct recall@5 values=5 (span 0.09); mutated=1 (informative=False)"
+      },
+      {
+        "carrier": "slurp",
+        "expected": "targets_with_zero_support rises by exactly 1 and the new target is named",
+        "metric": "support_distribution",
+        "metric_moved": true,
+        "mutation": "add one target to the TASK target space that the datastore has no exemplar for",
+        "observed": "0 -> 1; named=True"
+      },
+      {
+        "carrier": "slurp",
+        "expected": "that target drops to support 0, the zero count rises and the total falls",
+        "metric": "support_distribution",
+        "metric_moved": true,
+        "mutation": "delete every exemplar of the best-supported target ('calendar_set')",
+        "observed": "zero 0 -> 1; total 11514 -> 10704"
+      },
+      {
+        "carrier": "slurp",
+        "expected": "recall@5 collapses toward the label base rate",
+        "metric": "gold_recall_curve",
+        "metric_moved": true,
+        "mutation": "deterministically permute the gold target assignment across the eval population (seed 20260825), leaving every query vector and the whole datastore untouched",
+        "observed": "recall@5 0.736 -> 0.046"
+      },
+      {
+        "carrier": "slurp",
+        "expected": "recall goes to 0.0 at every k and every query is counted as a miss, never dropped from the denominator",
+        "metric": "gold_recall_curve",
+        "metric_moved": true,
+        "mutation": "declare every eval query's gold target absent from the datastore's target space",
+        "observed": "recall@512 0.98 -> 0.0; denominator 500 unchanged; gold-absent 500"
+      },
+      {
+        "carrier": "slurp",
+        "expected": "by_sample_id rises by exactly 1 and the injected id is named",
+        "metric": "decontamination_intersection",
+        "metric_moved": true,
+        "mutation": "inject one EVAL sample id ('slurp:devel:000011:audio-1497266596') into the datastore's id set",
+        "observed": "0 -> 1; named=True"
+      },
+      {
+        "carrier": "slurp",
+        "expected": "by_normalised_text rises by at least 1 and the id check stays where it was -- the id gate is exactly the leak this granularity exists to catch",
+        "metric": "decontamination_intersection",
+        "metric_moved": true,
+        "mutation": "inject one EVAL item's verbatim text ('slurp:devel:000011:audio-1497266596') into the datastore's text set, under NO shared id",
+        "observed": "text 3 -> 4; id 0 -> 0"
+      }
+    ],
+    "populations": {
+      "DEV-1000 (pooled, descriptive)": {
+        "n": 1000,
+        "secondary_reading": false
+      },
+      "DEV-1000 NEW500 (unexposed; SECONDARY READING)": {
+        "n": 500,
+        "secondary_reading": true
+      },
+      "DEV-500 (prior-exposed)": {
+        "n": 500,
+        "secondary_reading": false
+      }
+    },
+    "primary_population": "DEV-500 (prior-exposed)",
+    "recall_fidelity_probe": {
+      "claim": "kb.multidim_recall admits the same facet set with the same scores as this module's vectorised cosine row, so the recall@k ranking is the registered ranker's own ordering",
+      "probes": 8
+    },
+    "scaling_curve": {
+      "axis": "datastore_size",
+      "curve_is_informative": true,
+      "distinct_datastore_sizes": 5,
+      "distinct_recall_at_5_values": 5,
+      "monotone_non_decreasing_in_size": false,
+      "recall_at_5_span": 0.09,
+      "rows": [
+        {
+          "candidate_facets": 100,
+          "datastore_size_actual": 100,
+          "median_support": 1,
+          "recall_at_1": 0.462,
+          "recall_at_5": 0.7,
+          "recall_at_64": 0.988,
+          "recall_at_full_datastore": 1.0,
+          "requested_datastore_size": 100,
+          "targets_with_zero_support": 0
+        },
+        {
+          "candidate_facets": 500,
+          "datastore_size_actual": 500,
+          "median_support": 6,
+          "recall_at_1": 0.6,
+          "recall_at_5": 0.79,
+          "recall_at_64": 0.972,
+          "recall_at_full_datastore": 1.0,
+          "requested_datastore_size": 500,
+          "targets_with_zero_support": 0
+        },
+        {
+          "candidate_facets": 1000,
+          "datastore_size_actual": 1000,
+          "median_support": 12,
+          "recall_at_1": 0.566,
+          "recall_at_5": 0.754,
+          "recall_at_64": 0.954,
+          "recall_at_full_datastore": 1.0,
+          "requested_datastore_size": 1000,
+          "targets_with_zero_support": 0
+        },
+        {
+          "candidate_facets": 5000,
+          "datastore_size_actual": 5000,
+          "median_support": 56,
+          "recall_at_1": 0.582,
+          "recall_at_5": 0.758,
+          "recall_at_64": 0.93,
+          "recall_at_full_datastore": 1.0,
+          "requested_datastore_size": 5000,
+          "targets_with_zero_support": 0
+        },
+        {
+          "candidate_facets": 11514,
+          "datastore_size_actual": 11514,
+          "median_support": 127,
+          "recall_at_1": 0.62,
+          "recall_at_5": 0.736,
+          "recall_at_64": 0.888,
+          "recall_at_full_datastore": 1.0,
+          "requested_datastore_size": null,
+          "targets_with_zero_support": 0
+        }
+      ]
+    },
+    "secondary_reading_caveat": "SECONDARY READING. The SLURP unexposed 500 inside DEV-1000 is the LOCKED baseline's own population. Every number computed on it here is a secondary, descriptive retrieval-side reading over already-sealed records and must NOT be used to revise, re-tune or restate the 2026-08-25 baseline lock.",
+    "task_target_space": {
+      "definition": "union of the TRAIN row intents and the EVAL population's gold intents -- the TASK's target vocabulary, never the datastore's contents",
+      "eval_gold_targets": 59,
+      "eval_gold_targets_absent_from_train": [],
+      "size": 60,
+      "train_targets": 60
+    }
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "superseded_metrics": [
+    {
+      "carrier": "slurp",
+      "classification": "CANNOT FAIL",
+      "classified_by": "docs/readiness/2026-08-25-slurp-intent-coverage-check.md section Q4",
+      "implementation": "rails.knowledge_build.coverage_report",
+      "last_landed_receipt": "docs/receipts/knowledge/slurp-kb-size-full.json",
+      "last_landed_value": 1.0,
+      "metric": "intent_coverage",
+      "replaced_by": "support_distribution + gold_recall_curve, swept over datastore size",
+      "why": "1.0 with probability one at the landed configuration (datastore_size=None makes selected == rows identically), and the denominator is TRAIN-derived while the contract clause it serves is about TASK targets"
+    },
+    {
+      "carrier": "slurp",
+      "classification": "CANNOT FAIL",
+      "classified_by": "docs/readiness/2026-08-25-gate-audit-can-it-fail.md row 5",
+      "implementation": "rails.knowledge_build.coverage_report",
+      "last_landed_receipt": "docs/receipts/knowledge/slurp-kb-size-full.json",
+      "last_landed_value": "1.0 / 1.0 / 1.0 / 1.0 / 1.0 / 0.0",
+      "metric": "scenario_coverage / action_coverage / entity_type_coverage / long_tail_coverage.* / cluster_coverage_proxy / kl_selected_given_train_over_intent",
+      "replaced_by": "support_distribution + scaling_curve",
+      "why": "1.0 (and KL 0.0) in every one of the ten swept cells; at datastore_size=1 the stratified sampler still returns 90 utterances covering all 60 intents, so the size argument is a floor, not a cap"
+    },
+    {
+      "carrier": "audio2tool",
+      "classification": "CANNOT FAIL (row 6); NARROWER THAN ITS CLAIM (row 7)",
+      "classified_by": "docs/readiness/2026-08-25-gate-audit-can-it-fail.md rows 6 and 7",
+      "implementation": "rails.knowledge_build_a2t.coverage_report_a2t",
+      "last_landed_receipt": "docs/receipts/knowledge/a2t-kb-size-full.json",
+      "last_landed_value": 1.0,
+      "metric": "tool_coverage / tier_coverage / category_coverage / argument_key_coverage / argument_pattern_family_coverage / long_tail_coverage.*",
+      "replaced_by": "support_distribution denominated on the FROZEN TOOL REGISTRY, which reports getLockStatus at support 0",
+      "why": "1.0 in every swept cell, and tool_coverage's denominator is the construction pool it was drawn from (151) rather than the frozen registry the core may call (152), so getLockStatus is modelled by nothing while the metric reads 1.0"
+    },
+    {
+      "carrier": "slurp and audio2tool",
+      "classification": "CANNOT FAIL",
+      "classified_by": "docs/readiness/2026-08-25-gate-audit-can-it-fail.md rows 1, 2 and 4",
+      "implementation": "scripts/build_knowledge_snapshot.py:153 and scripts/build_a2t_knowledge_snapshot.py:217",
+      "last_landed_receipt": "docs/receipts/knowledge/slurp-kb-size-full.json and docs/receipts/knowledge/a2t-kb-size-full.json",
+      "last_landed_value": "clean",
+      "metric": "decontamination.verdict",
+      "replaced_by": "decontamination_intersection, which reports the MEASURED count at three granularities with the identities of anything that intersects",
+      "why": "the string 'clean' is a Python literal with no other reachable value, and the id intersection it reports is structurally empty (SLURP ids are split-namespaced; the A2T construction pool is literally pool minus eval minus exposed)"
+    }
+  ],
+  "timing_seconds": 1581.15
+}
