@@ -1,0 +1,242 @@
+{
+ "admitted_set_scope": {
+  "audio2tool": {
+   "carrier": "audio2tool",
+   "cosine_family_dimensions_returned": [
+    "content"
+   ],
+   "facets_outside_the_npz_answered_with_a_vector": 0,
+   "facets_outside_the_npz_answered_with_no_vector": 335,
+   "facets_probed": 12936,
+   "frozen_tau": 0.65,
+   "non_content_facets_carrying_a_vector": 0,
+   "prior_mass_dimensions": [
+    "label",
+    "prior"
+   ],
+   "reading": "a facet outside the landed content-facet NPZ receives no cosine-family dimension from multidim_recall, so its max non-prior-mass score is 0.0 and the admission test (>= tau = 0.65) refuses it; every admitted_facet_ids set is therefore a subset of the NPZ id set",
+   "vector_dimensions_returned": {
+    "content": 12601
+   }
+  },
+  "slurp": {
+   "carrier": "slurp",
+   "cosine_family_dimensions_returned": [
+    "content"
+   ],
+   "facets_outside_the_npz_answered_with_a_vector": 0,
+   "facets_outside_the_npz_answered_with_no_vector": 349,
+   "facets_probed": 11863,
+   "frozen_tau": 0.65,
+   "non_content_facets_carrying_a_vector": 0,
+   "prior_mass_dimensions": [
+    "label",
+    "prior"
+   ],
+   "reading": "a facet outside the landed content-facet NPZ receives no cosine-family dimension from multidim_recall, so its max non-prior-mass score is 0.0 and the admission test (>= tau = 0.65) refuses it; every admitted_facet_ids set is therefore a subset of the NPZ id set",
+   "vector_dimensions_returned": {
+    "content": 11514
+   }
+  }
+ },
+ "artifact_hashes": {
+  "audio2tool_content_facet_npz": "00a7ebe9b8325ffc2c7b8e45ac4f0c8475b2d3e76994cc0f539f7b5ad5740f45",
+  "audio2tool_snapshot": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2",
+  "docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-gold-absence/diagnosis-report.json": "64327e98ff9f91a4affdf75f25e98eb5500aa4ab2eeab8befa6d3978799a3e14",
+  "docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-oracle-query-bound/oracle-query-bound-report.json": "b564362b64bb41df4d9055518bcd0cd88753e2796b3583ed0b95f626a2ece723",
+  "slurp_content_facet_npz": "0bcb955a3a0ab84880f0d039ae702e77d1247ed23c3b8cecb468cbb1e0221c72",
+  "slurp_snapshot": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57"
+ },
+ "contacts": {
+  "frozen_core": 0,
+  "http_or_socket": 0,
+  "outbound_connection_attempts": 0,
+  "outbound_connection_targets": [],
+  "pinned_tool_embedding": 0,
+  "tokenizer": 0
+ },
+ "execution_profile": "model-free-check",
+ "exposure_row_id": "SAEA-SN-MF-CONTENT-FACET-TARGET-AUDIT",
+ "hard_stop": "DIAGNOSIS ONLY. No knob changed, nothing written under rails/, core/ or configs/, no snapshot rebuilt, no receipt displaced, no repair designed. Anything read over the SLURP unexposed 500 is a SECONDARY READING and must not revise, re-tune or restate the lock.",
+ "key_composition": {
+  "audio2tool": {
+   "carrier": "audio2tool",
+   "content_keys": 12601,
+   "content_keys_outside_the_npz": 0,
+   "facets_by_dimension": {
+    "content": 12601,
+    "label": 184,
+    "prior": 151
+   },
+   "facets_total": 12936,
+   "keys_by_dimension": {
+    "content": 12601,
+    "label": 151,
+    "prior": 151
+   },
+   "keys_not_declared_as_a_facet": 0,
+   "keys_total": 12903,
+   "non_content_keys": 302,
+   "non_content_keys_inside_the_npz": 0,
+   "npz_ids_by_dimension": {
+    "content": 12601
+   },
+   "npz_ids_total": 12601,
+   "reference_content_keys": 12601,
+   "snapshot_sha256": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2",
+   "values_total": 12601,
+   "values_with_task_target": 12601
+  },
+  "slurp": {
+   "carrier": "slurp",
+   "content_keys": 11514,
+   "content_keys_outside_the_npz": 0,
+   "facets_by_dimension": {
+    "content": 11514,
+    "label": 138,
+    "prior": 60,
+    "speaker": 151
+   },
+   "facets_total": 11863,
+   "keys_by_dimension": {
+    "content": 11514,
+    "label": 60,
+    "prior": 60,
+    "speaker": 151
+   },
+   "keys_not_declared_as_a_facet": 0,
+   "keys_total": 11785,
+   "non_content_keys": 271,
+   "non_content_keys_inside_the_npz": 0,
+   "npz_ids_by_dimension": {
+    "content": 11514
+   },
+   "npz_ids_total": 11514,
+   "reference_content_keys": 11514,
+   "snapshot_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+   "values_total": 11514,
+   "values_with_task_target": 11514
+  }
+ },
+ "landed_number_recompute": {
+  "carrier": "audio2tool",
+  "case_b_kb_facets_for_gold": {
+   "content_facet_only_range": [
+    144,
+    189
+   ],
+   "content_only_reading_equals_landed_vectored_count": true,
+   "distinct_differences": [
+    2
+   ],
+   "landed_all_facet_range": [
+    146,
+    191
+   ],
+   "n_rows": 11,
+   "rows": [
+    {
+     "content_facet_only_reading": 165,
+     "difference": 2,
+     "gold_primary_tool": "setColor",
+     "landed_all_facet_reading": 167,
+     "landed_kb_vectored_facets_for_gold": 165,
+     "sample_id": "tier1_direct:000167"
+    },
+    {
+     "content_facet_only_reading": 175,
+     "difference": 2,
+     "gold_primary_tool": "setWaterValve",
+     "landed_all_facet_reading": 177,
+     "landed_kb_vectored_facets_for_gold": 175,
+     "sample_id": "tier1_direct:001631"
+    },
+    {
+     "content_facet_only_reading": 185,
+     "difference": 2,
+     "gold_primary_tool": "setGroupLightState",
+     "landed_all_facet_reading": 187,
+     "landed_kb_vectored_facets_for_gold": 185,
+     "sample_id": "tier2_parametric:004826"
+    },
+    {
+     "content_facet_only_reading": 164,
+     "difference": 2,
+     "gold_primary_tool": "setLockState",
+     "landed_all_facet_reading": 166,
+     "landed_kb_vectored_facets_for_gold": 164,
+     "sample_id": "tier4_implicit:000655"
+    },
+    {
+     "content_facet_only_reading": 150,
+     "difference": 2,
+     "gold_primary_tool": "setGarageDoor",
+     "landed_all_facet_reading": 152,
+     "landed_kb_vectored_facets_for_gold": 150,
+     "sample_id": "tier4_implicit:000900"
+    },
+    {
+     "content_facet_only_reading": 183,
+     "difference": 2,
+     "gold_primary_tool": "castContent",
+     "landed_all_facet_reading": 185,
+     "landed_kb_vectored_facets_for_gold": 183,
+     "sample_id": "tier4_implicit:001148"
+    },
+    {
+     "content_facet_only_reading": 144,
+     "difference": 2,
+     "gold_primary_tool": "setApplianceMode",
+     "landed_all_facet_reading": 146,
+     "landed_kb_vectored_facets_for_gold": 144,
+     "sample_id": "tier4_implicit:001389"
+    },
+    {
+     "content_facet_only_reading": 144,
+     "difference": 2,
+     "gold_primary_tool": "setApplianceMode",
+     "landed_all_facet_reading": 146,
+     "landed_kb_vectored_facets_for_gold": 144,
+     "sample_id": "tier4_implicit:001409"
+    },
+    {
+     "content_facet_only_reading": 186,
+     "difference": 2,
+     "gold_primary_tool": "startWorkout",
+     "landed_all_facet_reading": 188,
+     "landed_kb_vectored_facets_for_gold": 186,
+     "sample_id": "tier4_implicit:003312"
+    },
+    {
+     "content_facet_only_reading": 189,
+     "difference": 2,
+     "gold_primary_tool": "setTargetTemperature",
+     "landed_all_facet_reading": 191,
+     "landed_kb_vectored_facets_for_gold": 189,
+     "sample_id": "tier7_multiturn:000214"
+    },
+    {
+     "content_facet_only_reading": 186,
+     "difference": 2,
+     "gold_primary_tool": "activateRoutine",
+     "landed_all_facet_reading": 188,
+     "landed_kb_vectored_facets_for_gold": 186,
+     "sample_id": "tier7_multiturn:001516"
+    }
+   ]
+  },
+  "kb_shape_content_facets_with_a_task_target": {
+   "content_facet_only_reading": 12601,
+   "difference": 302,
+   "landed_all_facet_reading": 12903,
+   "landed_in": [
+    "docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-gold-absence/diagnosis-report.json (sha256 64327e98ff9f91a4affdf75f25e98eb5500aa4ab2eeab8befa6d3978799a3e14)",
+    "docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-oracle-query-bound/oracle-query-bound-report.json (sha256 b564362b64bb41df4d9055518bcd0cd88753e2796b3583ed0b95f626a2ece723)"
+   ]
+  }
+ },
+ "schema": "saea-content-facet-target-audit-v1",
+ "study": "speech-aware-evidence-acquisition",
+ "subject": "analysis.contrast_fewshot_preanalysis.SnapshotBundle.content_facet_target and every read of a mapping built the same way",
+ "wall_seconds": 3.1
+}
