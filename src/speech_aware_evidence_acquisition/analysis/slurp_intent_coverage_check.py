@@ -486,7 +486,6 @@ def run(*, repo_root: Path, data_root: Path, out_path: Path) -> dict[str, object
     synth_sa = set(label_space["train_synthetic"]["scenario_action_inventory"])  # type: ignore[index]
     train_if = set(label_space["train"]["intent_field_inventory"])  # type: ignore[index]
     devel_if = set(label_space["devel"]["intent_field_inventory"])  # type: ignore[index]
-    synth_if = set(label_space["train_synthetic"]["intent_field_inventory"])  # type: ignore[index]
     label_space_union = {
         "train_union_devel_scenario_action": len(train_sa | devel_sa),
         "train_union_devel_intent_field": len(train_if | devel_if),

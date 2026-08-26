@@ -227,7 +227,7 @@ import ast
 import hashlib
 import json
 import random
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from types import MappingProxyType
 from typing import Callable, Mapping, Sequence
@@ -271,7 +271,7 @@ from .pemb3m_flight import (
     run_cascade_source_check,
     run_pooling_differ_gate,
 )
-from .pfew_flight import DemoCandidate, load_train_demo_pool
+from .pfew_flight import DemoCandidate
 from .pkey_flight import TranscriptRecord, render_txt_transcript_block
 from .pslu_flight import (
     _source_references_ontology_miner,

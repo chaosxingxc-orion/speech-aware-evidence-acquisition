@@ -175,7 +175,6 @@ from .pslu_read import (
     _void_clause_harness_defect,
     _void_clause_recheck,
     _void_clause_silence_swap,
-    arm_copy_rate,
     build_arm_aggregate,
     count_induced_substitutions,
     load_gold_by_sample_id,

@@ -89,7 +89,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
 
-from . import bootstrap as bs
 from . import dev100_damage_channel_analysis as dc
 from . import dev100_reviewer_audit as ra
 from ..reproduction.slurp_scoring import parse_slu_response, score_slu

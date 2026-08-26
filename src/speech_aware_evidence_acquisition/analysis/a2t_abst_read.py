@@ -75,7 +75,7 @@ from pathlib import Path
 from typing import Mapping, Sequence
 
 from ..reproduction.toolcall_scoring import parse_tool_calls_text
-from ..rails.probes.a2t_abst_flight import A2T_ABST_CELLS, ABST_N, TP_A_CELL, TP_S_CELL, TW_A_CELL, TW_S_CELL
+from ..rails.probes.a2t_abst_flight import A2T_ABST_CELLS, ABST_N, TP_S_CELL, TW_A_CELL
 from .a2t_s2_read import ClauseResult, OutputRow, load_attempt_rows, load_flight_receipt
 from .bootstrap import BootstrapResult, DEFAULT_CI_LEVEL, DEFAULT_N_REPLICATES, DEFAULT_SEED, paired_cluster_bootstrap
 

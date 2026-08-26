@@ -511,7 +511,7 @@ def override_analysis(
     wanted = {sid: str(records[sid]["direct_response_sha256"]) for sid in fires}
     direct_texts = _direct_texts(run_dir=blend.run_dir, wanted=wanted)
 
-    new500_set, dev500_set = set(new500), set(dev500)
+    new500_set = set(new500)
     rows: list[dict[str, object]] = []
     for sid in fires:
         record = records[sid]

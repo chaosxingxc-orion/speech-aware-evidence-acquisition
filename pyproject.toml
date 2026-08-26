@@ -22,19 +22,61 @@ dependencies = []
 [project.scripts]
 saea-driver = "speech_aware_evidence_acquisition.core.driver.cli:main"
 
+# TEST-TIME dependencies (numpy / soundfile / jiwer).
+#
+# The package itself still declares no runtime dependencies (`dependencies = []`
+# above) and must stay importable with zero heavy packages installed: every use
+# of these three inside `src/` is a deliberate function-local import, so
+# importing the package never pulls them in. The TEST SUITE is a different
+# contract -- it imports them to build fixtures and to exercise the analysis
+# paths -- and that contract was simply undeclared. It passed locally only
+# because the shared WSL ML venv happens to carry a full stack, while CI's
+# `uv sync --frozen` installed none of them (numpy reached the lock only as a
+# transitive of the OPTIONAL `tracking` extra: mlflow -> matplotlib -> numpy).
+# Measured on a clean `uv sync --frozen` environment, the undeclared set is
+# exactly these three: 526 of 526 collection/`ModuleNotFoundError` failures were
+# `soundfile` (520), `jiwer` (6), plus the `numpy` collection error that
+# interrupted CI before the rest could even be seen.
+#
+# Floors, each stated rather than guessed:
+#   numpy>=2.0     -- this suite has only ever been exercised on the 2.x line
+#                     (shared venv 2.2.6; this lock resolves 2.5.1) and 2.0 is
+#                     the API/ABI break, so a lower floor would nominally admit
+#                     a 1.x nothing here has run against. No ceiling: the APIs
+#                     used (`asarray`, `zeros`, `load`, `int64`, `float64`) are
+#                     core-stable.
+#   soundfile>=0.12 -- 0.12 is the first release whose wheels bundle libsndfile,
+#                     which is the capability a bare runner actually needs.
+#                     Looser than "the exercised version" (0.14.0) on purpose:
+#                     soundfile is used only for fixture I/O and frame/sample-
+#                     rate reads, so no research quantity depends on its version.
+#   jiwer>=4.0      -- TIGHT on purpose, unlike soundfile: `jiwer.wer` IS a
+#                     research measurement here (`reproduction.slurp_scoring.
+#                     _word_distance` reproduces the official SLURP script's
+#                     WordDistance), and 4.0.0 is the version every landed
+#                     SLURP number was computed with.
 [project.optional-dependencies]
 dev = [
     "pytest>=8",
     "build>=1.2",
     "ruff>=0.6",
+    "numpy>=2.0",
+    "soundfile>=0.12",
+    "jiwer>=4.0",
 ]
 tracking = ["mlflow>=2.14"]
 
+# Kept byte-identical to `[project.optional-dependencies].dev` above: the extra
+# is what `uv pip install -e ".[dev]"` reads, the group is what a bare
+# `uv sync` / `uv sync --frozen` installs by default (which is what CI runs).
 [dependency-groups]
 dev = [
     "pytest>=8",
     "build>=1.2",
     "ruff>=0.6",
+    "numpy>=2.0",
+    "soundfile>=0.12",
+    "jiwer>=4.0",
 ]
 
 [tool.setuptools.packages.find]

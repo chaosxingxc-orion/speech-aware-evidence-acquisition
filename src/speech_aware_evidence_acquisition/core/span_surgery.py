@@ -36,6 +36,7 @@ it does not gate or log it.
 
 from __future__ import annotations
 
+import re as _re
 from pathlib import Path
 
 
@@ -43,8 +44,6 @@ class SpanSurgeryError(RuntimeError):
     """A span-surgery function was given unusable inputs, or the aligner/
     waveform I/O it wraps failed."""
 
-
-import re as _re
 
 _MMS_STRIP = _re.compile(r"[^a-z']")
 
