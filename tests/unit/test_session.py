@@ -2182,6 +2182,7 @@ class TestStartSessionSpawn:
         }
         return runtime_root, data_root, runtime_receipt
 
+    @pytest.mark.requires_wsl2_execution_authority
     def test_spawn_writes_a_session_receipt_bound_to_the_real_process(self, tmp_path):
         """Probe 7 (spawn half): a legitimate spawn of the FAKE pinned binary
         produces a SessionReceipt with a REAL pid/argv/binary hash/port/model
@@ -2227,6 +2228,7 @@ class TestStartSessionSpawn:
             except OSError:
                 pass
 
+    @pytest.mark.requires_wsl2_execution_authority
     def test_spawn_passes_extra_env_to_the_server_process(self, tmp_path):
         """server_env (W3, 2026-08-11): a model-fragment environment variable
         (e.g. GGML_CUDA_DISABLE_GRAPHS) must reach the spawned server's
@@ -2264,6 +2266,7 @@ class TestStartSessionSpawn:
             except OSError:
                 pass
 
+    @pytest.mark.requires_wsl2_execution_authority
     def test_spawn_refuses_non_string_extra_env(self, tmp_path):
         """extra_env is str->str, fail-closed — an int value (a config typo)
         is refused before any process is spawned."""
@@ -2282,6 +2285,7 @@ class TestStartSessionSpawn:
                 http_get_status=lambda url, timeout: 200,
             )
 
+    @pytest.mark.requires_wsl2_execution_authority
     def test_spawn_of_a_binary_whose_hash_does_not_match_pinned_is_refused(self, tmp_path):
         """Probe 5: the binary on disk was swapped after the receipt captured
         a hash for the ORIGINAL bytes -- spawn must refuse, not execute it."""
@@ -2300,6 +2304,7 @@ class TestStartSessionSpawn:
                 session_id="spawn-test-2",
             )
 
+    @pytest.mark.requires_wsl2_execution_authority
     def test_start_session_refuses_non_loopback_host(self, tmp_path):
         """Probe 1 (spawn half): refused before any process is spawned."""
 
@@ -2314,6 +2319,7 @@ class TestStartSessionSpawn:
                 session_id="spawn-test-3",
             )
 
+    @pytest.mark.requires_wsl2_execution_authority
     def test_spawn_persists_combined_stdout_after_the_startup_window(self, tmp_path):
         """Task 1 (2026-08-09): the startup-window bytes AND everything the
         server prints afterward (module docstring: the thread that must keep
@@ -2373,6 +2379,7 @@ class TestStartSessionSpawn:
             except OSError:
                 pass
 
+    @pytest.mark.requires_wsl2_execution_authority
     def test_spawn_survives_an_unwritable_server_log_path(self, tmp_path):
         """The log path cannot be opened at all (its parent is a plain FILE);
         the spawn must still succeed and the server must still become ready

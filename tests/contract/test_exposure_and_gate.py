@@ -92,6 +92,7 @@ def world(tmp_path):
     return GateFixture(tmp_path)
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_fully_valid_receipts_open_the_gate(world):
     world.gate().assert_model_touch_allowed(world.plan())
 
@@ -103,6 +104,7 @@ def test_fully_valid_receipts_open_the_gate(world):
 # ---------------------------------------------------------------------------
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_returns_the_umbrella_lock_sha256(world):
     gate = world.gate()
     expected = _sha(world.lock_path.read_bytes())
@@ -110,6 +112,7 @@ def test_gate_returns_the_umbrella_lock_sha256(world):
     assert result == expected
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_reads_the_umbrella_lock_exactly_once_per_call(world, monkeypatch):
     """Before M-3, one call independently re-read/re-parsed the lock file up to
     three times (exposure pre-registration, carrier scope resolution, the
@@ -139,6 +142,7 @@ def test_gate_reads_the_umbrella_lock_exactly_once_per_call(world, monkeypatch):
 # ---------------------------------------------------------------------------
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_pycache_entry_in_scoring_package(world):
     pycache = world.scoring_dir / "__pycache__"
     pycache.mkdir()
@@ -147,6 +151,7 @@ def test_gate_refuses_pycache_entry_in_scoring_package(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_an_empty_pycache_directory_too(world):
     """Presence alone is refused, not just a non-empty cache: an empty
     __pycache__ dir is anomalous residue that could be repopulated."""
@@ -164,6 +169,7 @@ def test_gate_refuses_an_empty_pycache_directory_too(world):
 # ---------------------------------------------------------------------------
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_when_pythonpycacheprefix_env_var_is_set(world, monkeypatch, tmp_path):
     relocated = tmp_path / "relocated-pycache"
     monkeypatch.setenv("PYTHONPYCACHEPREFIX", str(relocated))
@@ -171,6 +177,7 @@ def test_gate_refuses_when_pythonpycacheprefix_env_var_is_set(world, monkeypatch
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_when_sys_pycache_prefix_is_set(world, monkeypatch, tmp_path):
     relocated = tmp_path / "relocated-pycache"
     monkeypatch.setattr("sys.pycache_prefix", str(relocated))
@@ -178,6 +185,7 @@ def test_gate_refuses_when_sys_pycache_prefix_is_set(world, monkeypatch, tmp_pat
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_with_a_stale_forged_pyc_in_a_relocated_prefix_tree(world, monkeypatch, tmp_path):
     """Reproduces the demonstrated defect end to end: a forged UNCHECKED_HASH
     .pyc sitting in a PYTHONPYCACHEPREFIX-relocated tree, invisible to the
@@ -194,6 +202,7 @@ def test_gate_refuses_with_a_stale_forged_pyc_in_a_relocated_prefix_tree(world, 
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_passes_with_no_relocated_prefix_configured(world, monkeypatch):
     """Clean-environment control: with neither PYTHONPYCACHEPREFIX nor
     sys.pycache_prefix set, the new check is a no-op and the gate still
@@ -204,6 +213,7 @@ def test_gate_passes_with_no_relocated_prefix_configured(world, monkeypatch):
     world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_an_already_imported_scoring_module_with_a_cache_outside_its_tree(world):
     """A module already present in sys.modules, loaded from THIS gate's own
     scoring_dir, whose __cached__ attribute points outside it (e.g. left
@@ -228,6 +238,7 @@ def test_gate_refuses_an_already_imported_scoring_module_with_a_cache_outside_it
         del _sys.modules[module_name]
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_an_already_imported_scoring_module_loaded_from_non_source(world):
     """A module already present in sys.modules, loaded from THIS gate's own
     scoring_dir, but whose __file__ does not end in .py (a sourceless
@@ -249,6 +260,7 @@ def test_gate_refuses_an_already_imported_scoring_module_loaded_from_non_source(
         del _sys.modules[module_name]
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_ignores_a_scoring_like_module_loaded_from_a_different_tree(world):
     """A module named under the scoring prefix but loaded from an UNRELATED
     directory (e.g. a different GateFixture's tmp tree from an earlier test,
@@ -270,6 +282,7 @@ def test_gate_ignores_a_scoring_like_module_loaded_from_a_different_tree(world):
         del _sys.modules[module_name]
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_when_receipts_are_missing(tmp_path, world):
     gate = FrozenCoreGate(
         tmp_path / "absent-e0.json",
@@ -285,12 +298,14 @@ def test_gate_refuses_when_receipts_are_missing(tmp_path, world):
         gate.assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_nonexistent_model_file(world):
     world.runtime["gguf_files"][1]["path"] = f"{world.SUBDIR}/definitely-does-not-exist.gguf"
     with pytest.raises(GateClosed, match="does not exist"):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_fabricated_hash_and_size(world):
     world.runtime["gguf_files"][0]["sha256"] = "0" * 64
     with pytest.raises(GateClosed, match="SHA-256 drift"):
@@ -302,6 +317,7 @@ def test_gate_refuses_fabricated_hash_and_size(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_model_byte_drift_on_disk(world):
     (world.data_root / world.SUBDIR / "model-q8_0.gguf").write_bytes(b"tampered")
     with pytest.raises(GateClosed, match="drift"):
@@ -317,12 +333,14 @@ def test_gate_refuses_model_byte_drift_on_disk(world):
         "models/../../escape.gguf",
     ],
 )
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_absolute_and_traversal_paths(world, bad_path):
     world.runtime["gguf_files"][1]["path"] = bad_path
     with pytest.raises(GateClosed):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_duplicate_and_extra_model_files(world):
     world.runtime["gguf_files"][1] = dict(world.runtime["gguf_files"][0])
     with pytest.raises(GateClosed, match="duplicates"):
@@ -345,6 +363,7 @@ def test_gate_refuses_duplicate_and_extra_model_files(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_lock_key_mismatch_and_missing_lock_entry(world):
     world.runtime["model_lock_key"] = "some-other-model"
     with pytest.raises(GateClosed, match="does not match"):
@@ -356,6 +375,7 @@ def test_gate_refuses_lock_key_mismatch_and_missing_lock_entry(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_path_outside_lock_subdir(world):
     stray = world.data_root / "models" / "other"
     stray.mkdir(parents=True)
@@ -365,6 +385,7 @@ def test_gate_refuses_path_outside_lock_subdir(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_unbacked_build_commit(world):
     world.runtime["llama_cpp"]["build_commit"] = "abc123"
     with pytest.raises(GateClosed, match="full 40-hex"):
@@ -381,12 +402,14 @@ def test_gate_refuses_unbacked_build_commit(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_e0_artifact_hash_drift(world):
     world.deliverables["d2_leakage"]["sha256"] = "f" * 64
     with pytest.raises(GateClosed, match="artifact hash drift"):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_open_deliverable_and_missing_artifact(world):
     world.deliverables["d3_scoring"]["status"] = "OPEN"
     with pytest.raises(GateClosed, match="d3_scoring"):
@@ -398,6 +421,7 @@ def test_gate_refuses_open_deliverable_and_missing_artifact(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_schema_or_identity_mismatch(world):
     world.e0["schema"] = "some-other-schema"
     with pytest.raises(GateClosed, match="schema mismatch"):
@@ -409,12 +433,14 @@ def test_gate_refuses_schema_or_identity_mismatch(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_lock_total_size_mismatch(world):
     world.lock["models"][0]["size_bytes"] += 1
     with pytest.raises(GateClosed, match="total"):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_accepts_v3_inference_receipt_without_mmproj(world):
     world.runtime["schema"] = "saea-runtime-receipt-v3"
     world.runtime["role"] = "inference"
@@ -426,6 +452,7 @@ def test_gate_accepts_v3_inference_receipt_without_mmproj(world):
     world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_verifies_the_explicit_model_materialization_root(world, tmp_path):
     gate = world.gate()
     model_root = tmp_path / "fast-ext4"
@@ -435,12 +462,14 @@ def test_gate_verifies_the_explicit_model_materialization_root(world, tmp_path):
     replace(gate, model_root=model_root).assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_does_not_fall_back_when_explicit_model_root_is_missing(world, tmp_path):
     gate = replace(world.gate(), model_root=tmp_path / "missing-fast-root")
     with pytest.raises(GateClosed, match="gguf_files"):
         gate.assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_mmproj_in_v3_inference_receipt(world):
     world.runtime["schema"] = "saea-runtime-receipt-v3"
     world.runtime["role"] = "inference"
@@ -453,6 +482,7 @@ def test_gate_refuses_confirmatory_split_even_with_allowed_profile(world):
         world.gate().assert_model_touch_allowed(world.plan(split_role="confirmatory"))
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_accepts_a_plan_with_calls_far_beyond_the_former_first_slice_cap_when_registered(world):
     """Owner amendment 2026-08-06 (SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS)
     retired the first-slice numeric caps (formerly <=3,000 calls / <=40
@@ -484,6 +514,7 @@ def test_gate_refuses_missing_or_malformed_hashes(world):
         world.gate().assert_model_touch_allowed(world.plan(protocol_hash=""))
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_run_without_preregistered_exposure_row(world):
     with pytest.raises(GateClosed, match="pre-registered exposure row"):
         world.gate().assert_model_touch_allowed(
@@ -491,18 +522,21 @@ def test_gate_refuses_run_without_preregistered_exposure_row(world):
         )
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_scoring_source_drift(world):
     (world.scoring_dir / "wer.py").write_bytes(b"def score():\n    return 1  # tampered\n")
     with pytest.raises(GateClosed, match="scoring freeze drift"):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_unlisted_scoring_module(world):
     (world.scoring_dir / "wer_v2.py").write_bytes(b"def score2():\n    return 2\n")
     with pytest.raises(GateClosed, match="does not name"):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_missing_scoring_freeze_mapping(world):
     artifact = world.receipts / "e0" / "d3_scoring.json"
     artifact.write_bytes(world.ARTIFACT)
@@ -511,6 +545,7 @@ def test_gate_refuses_missing_scoring_freeze_mapping(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_runtime_library_drift_and_unlisted_files(world):
     lib = world.runtime_root / "llama.cpp" / "build" / "bin" / "libfake-impl.so"
     lib.write_bytes(b"rebuilt-from-patched-source")
@@ -524,12 +559,14 @@ def test_gate_refuses_runtime_library_drift_and_unlisted_files(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_reported_build_mismatch(world):
     world.runtime["llama_cpp"]["reported_build"] = "version: 9999 (abcdef1)"
     with pytest.raises(GateClosed, match="prefix-match"):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_ledger_row_disagreeing_with_plan(world):
     with pytest.raises(GateClosed, match="disagrees with the execution plan"):
         world.gate().assert_model_touch_allowed(world.plan(split_identity_hash="b" * 64))
@@ -537,11 +574,13 @@ def test_gate_refuses_ledger_row_disagreeing_with_plan(world):
         world.gate().assert_model_touch_allowed(world.plan(split_role="discovery"))
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_budget_exceeding_registration(world):
     with pytest.raises(GateClosed, match="pre-registered"):
         world.gate().assert_model_touch_allowed(world.plan(planned_model_calls=2999))
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_consumed_row(world):
     world.write_ledger_rows(
         f"| 2026-08-04 | {world.RUN_ID} | baseline-reproduction | s | m "
@@ -552,6 +591,7 @@ def test_gate_refuses_consumed_row(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_duplicate_registration(world):
     row = (
         f"| 2026-08-04 | {world.RUN_ID} | baseline-reproduction | s | m "
@@ -563,6 +603,7 @@ def test_gate_refuses_duplicate_registration(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_profile_and_seconds_disagreement(world):
     with pytest.raises(GateClosed, match="disagrees with the execution plan"):
         world.gate().assert_model_touch_allowed(
@@ -576,6 +617,7 @@ def test_gate_refuses_profile_and_seconds_disagreement(world):
         world.gate().assert_model_touch_allowed(world.plan(planned_gpu_hours=2.0))
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_scoring_module_hidden_in_a_subdirectory(world):
     nested = world.scoring_dir / "helpers"
     nested.mkdir()
@@ -584,12 +626,14 @@ def test_gate_refuses_scoring_module_hidden_in_a_subdirectory(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_non_source_file_in_scoring_package(world):
     (world.scoring_dir / "table.json").write_bytes(b"{}")
     with pytest.raises(GateClosed, match="non-source entry"):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_subdirectory_in_runtime_bin(world):
     plugins = world.runtime_root / "llama.cpp" / "build" / "bin" / "plugins"
     plugins.mkdir()
@@ -598,6 +642,7 @@ def test_gate_refuses_subdirectory_in_runtime_bin(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_symlinked_directory_in_scoring_package(world, tmp_path):
     outside = tmp_path / "outside_pkg"
     outside.mkdir()
@@ -610,6 +655,7 @@ def test_gate_refuses_symlinked_directory_in_scoring_package(world, tmp_path):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_symlinked_pycache_directory_in_scoring_package(world, tmp_path):
     """The __pycache__ name skip must not shadow the symlink refusal."""
 
@@ -624,6 +670,7 @@ def test_gate_refuses_symlinked_pycache_directory_in_scoring_package(world, tmp_
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_nan_and_negative_budget_cells(world):
     world.write_ledger_rows(
         f"| 2026-08-04 | {world.RUN_ID} | baseline-reproduction | s | m "
@@ -634,6 +681,7 @@ def test_gate_refuses_nan_and_negative_budget_cells(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_ignores_a_malformed_budget_cell_in_an_unrelated_row(world):
     """Owner amendment 2026-08-06 (SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS)
     retired the slice-wide summation that used to validate EVERY registered
@@ -704,6 +752,7 @@ def _table(rows: str) -> str:
     return _LEDGER_HEADER + _LEDGER_SEP + rows
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_recognizes_rows_registered_in_a_second_table(world):
     """I2 fix: a run registered ONLY in a second markdown table (after prose)
     must still be found. Before the fix, the parser stopped at the first
@@ -721,6 +770,7 @@ def test_gate_recognizes_rows_registered_in_a_second_table(world):
     world.gate().assert_model_touch_allowed(world.plan(run_id="SAEA-E-777-injected"))
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_prose_line_between_rows_does_not_drop_the_row_below_it(world):
     """I2 probe (cap-independent form): a single prose line inserted BETWEEN
     two data rows of the SAME table must never drop the row below it from
@@ -739,6 +789,7 @@ def test_prose_line_between_rows_does_not_drop_the_row_below_it(world):
     world.gate().assert_model_touch_allowed(world.plan(run_id="SAEA-E-779-afterprose"))
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_duplicate_run_id_across_two_tables_is_refused(world):
     """I2 probe: the SAME run id pre-registered in two different tables must
     still be caught as a duplicate registration, not treated as if the
@@ -753,6 +804,7 @@ def test_duplicate_run_id_across_two_tables_is_refused(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_consumed_row_in_a_later_table_for_the_same_run_id_is_refused(world):
     """I2 probe: a `consumed=yes` row for the same run id, registered in a
     LATER table, must still refuse the touch -- it must not be invisible
@@ -777,6 +829,7 @@ def test_consumed_row_in_a_later_table_for_the_same_run_id_is_refused(world):
 # ---------------------------------------------------------------------------
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_table_inside_an_html_comment_is_not_a_registration(world):
     """A run pre-registered ONLY inside an HTML comment must still be
     refused as unregistered -- a human reading the rendered ledger sees
@@ -793,6 +846,7 @@ def test_table_inside_an_html_comment_is_not_a_registration(world):
         world.gate().assert_model_touch_allowed(world.plan(run_id="SAEA-E-666-hidden"))
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_table_inside_a_fenced_code_block_is_not_binding(world):
     """A contract-shaped table inside a fenced code block -- the natural way
     to document the row format -- must never be a registration: an
@@ -824,6 +878,7 @@ def test_table_inside_a_fenced_code_block_is_not_binding(world):
     world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_a_real_second_table_after_a_fenced_example_is_still_parsed(world):
     """The I2 fix must not regress: a genuine second table AFTER a fenced
     illustrative example must still be parsed and its own row still
@@ -857,6 +912,7 @@ def test_a_real_second_table_after_a_fenced_example_is_still_parsed(world):
 # ---------------------------------------------------------------------------
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_inline_same_line_comment_in_notes_does_not_corrupt_other_cells(world):
     """Cap-independent regression guard for the reproduced PoC: an inline,
     same-line HTML comment inside a row's notes cell must never corrupt or
@@ -877,6 +933,7 @@ def test_inline_same_line_comment_in_notes_does_not_corrupt_other_cells(world):
         world.gate().assert_model_touch_allowed(world.plan(planned_model_calls=601))
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_inline_comment_hiding_a_consumed_cell_still_refuses_as_consumed(world):
     """A ``consumed = yes`` row whose cell carries an inline, same-line
     comment (e.g. ``yes<!-- amended -->``) must still be read as consumed --
@@ -889,6 +946,7 @@ def test_inline_comment_hiding_a_consumed_cell_still_refuses_as_consumed(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_unclosed_comment_inside_a_row_cell_fails_closed(world):
     """An HTML comment opened inside a row's cell that never closes before
     end-of-file must FAIL CLOSED, not silently drop every row below it (the
@@ -905,6 +963,7 @@ def test_unclosed_comment_inside_a_row_cell_fails_closed(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_unrecognized_table_header_sharing_a_contract_column_is_refused(world):
     """I2 fail-closed: a table whose header does NOT carry the run-id column
     but DOES reuse another contract column name (here `consumed`) must be
@@ -919,6 +978,7 @@ def test_unrecognized_table_header_sharing_a_contract_column_is_refused(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_row_with_extra_cell_from_an_unescaped_pipe_is_refused(world):
     """M4: an unescaped `|` inside a free-text cell (e.g. notes) renders as
     one cell for a human but splits into two for the parser; the row must be
@@ -933,6 +993,7 @@ def test_row_with_extra_cell_from_an_unescaped_pipe_is_refused(world):
         world.gate().assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_row_with_missing_cell_is_refused(world):
     """M4: a row with FEWER cells than its header (a dropped trailing column)
     must also be refused, not silently zipped against the wrong columns."""
@@ -966,6 +1027,7 @@ def test_real_exposure_ledger_still_parses_correctly(world):
     assert "SAEA-E0-CLOSURE-2026-08-04" in run_ids
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_unknown_carrier_lock_key(world):
     # An unregistered carrier can never be the exposure row's unambiguous named
     # carrier (I2 binding requires the row to name a *known* dataset lock key),

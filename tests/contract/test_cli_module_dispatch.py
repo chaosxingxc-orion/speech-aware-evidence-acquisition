@@ -165,6 +165,7 @@ def _empty_data_root_env(tmp_path: Path) -> dict:
     return _no_bytecode_env({"SPEECHRL_DATA_DIR": str(empty_data_root)})
 
 
+@pytest.mark.requires_umbrella_checkout
 def test_module_score_outputs_genuinely_reaches_the_scorer(tmp_path):
     """(b) ``python -m ...core.driver score --outputs <synthetic file>``
     must genuinely dispatch into ``core.scorers.score_asr_outputs`` -- proven
@@ -196,6 +197,7 @@ def test_module_score_outputs_genuinely_reaches_the_scorer(tmp_path):
     os.name == "nt" or shutil.which("bash") is None,
     reason="entrypoint behavior is exercised in the POSIX runtime environment",
 )
+@pytest.mark.requires_umbrella_checkout
 def test_evaluate_sh_outputs_reaches_python_not_merely_a_shell_branch(tmp_path):
     """(c) ``bash scripts/evaluate.sh --outputs <synthetic>`` must likewise
     reach Python -- POSIX-only (bash), same refusal-based proof as (b). No

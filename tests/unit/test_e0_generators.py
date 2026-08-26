@@ -574,6 +574,7 @@ class TestCloseAndGate:
         }
         return runtime_root, binary, runtime
 
+    @pytest.mark.requires_wsl2_execution_authority
     def test_generated_receipts_open_and_tampering_recloses(
         self, synthetic_world, tmp_path
     ):

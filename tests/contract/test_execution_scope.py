@@ -5,6 +5,8 @@ exactly three execution profiles; ``paper-scale-confirmatory`` — and any forge
 is refused before any receipt or model asset is read.
 """
 
+import platform
+
 import pytest
 
 from speech_aware_evidence_acquisition.contracts import (
@@ -96,6 +98,45 @@ def test_formal_execution_accepts_only_the_wsl2_compute_authority(kernel_release
     assert assert_wsl_execution_environment(
         os_name="posix", kernel_release=kernel_release
     ) == "wsl2"
+
+
+def test_gate_calls_the_wsl2_authority_check_before_reading_any_receipt(tmp_path, monkeypatch):
+    """MUTATION PROBE. Delete `assert_wsl_execution_environment()` from
+    `FrozenCoreGate.assert_model_touch_allowed` and this test fails.
+
+    Why it exists (2026-08-26): CI deselects the 115 tests marked
+    `requires_wsl2_execution_authority` because GitHub's `ubuntu-latest` is not
+    WSL2 and the gate correctly refuses there. Those 115 were the only tests that
+    drove the gate past its profile check, so without this probe a later edit
+    could silently remove the WSL2 call and nothing in CI would notice -- the
+    "gate that cannot fail" pathology, reintroduced by the very fix that made CI
+    green. This probe closes that hole and runs EVERYWHERE, on both hosts.
+
+    The seam is as narrow as it can be: `monkeypatch` swaps `platform.release`
+    for the duration of THIS ONE TEST (pytest restores it at teardown), so the
+    probe reads the same on the WSL2 dev host as on a plain-Linux runner. Nothing
+    in `contracts.plan` is patched -- the production function runs unmodified and
+    makes its own decision from the (faked) kernel string.
+
+    The assertion is about ORDER as much as refusal. Every path this gate is
+    handed is missing on disk, so if the WSL2 call were gone the gate would fail
+    later and DIFFERENTLY -- reading the absent lock/receipts -- and
+    `ExecutionScopeError` would never be raised. A pass therefore proves the
+    authority check fires FIRST, before a single byte of evidence is opened.
+    """
+
+    monkeypatch.setattr(platform, "release", lambda: "6.11.0-1018-azure")
+    gate = FrozenCoreGate(
+        e0_receipt=tmp_path / "missing-e0.json",
+        runtime_receipt=tmp_path / "missing-runtime.json",
+        data_root=tmp_path,
+        lock_path=tmp_path / "missing-lock.json",
+        runtime_root=tmp_path,
+        exposure_ledger=tmp_path / "missing-ledger.md",
+        source_root=tmp_path,
+    )
+    with pytest.raises(ExecutionScopeError, match="WSL2 compute authority"):
+        gate.assert_model_touch_allowed(_plan())
 
 
 def test_model_touch_refuses_out_of_scope_plans_before_reading_any_receipt(tmp_path):

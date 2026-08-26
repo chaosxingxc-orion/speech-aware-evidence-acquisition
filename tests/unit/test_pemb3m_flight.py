@@ -187,11 +187,13 @@ def test_resolve_model_binding_refuses_an_unknown_key():
         f.resolve_model_binding(_synthetic_lock(), "does-not-exist")
 
 
+@pytest.mark.requires_umbrella_checkout
 def test_binding_config_sha256_matches_the_pinned_constant_on_the_real_umbrella_lock():
     lock = load_lock(umbrella_lock_path(REPO_ROOT))
     assert f.binding_config_sha256(lock) == f.BINDING_CONFIG_SHA256
 
 
+@pytest.mark.requires_umbrella_checkout
 def test_assert_binding_config_sha256_accepts_the_real_lock():
     lock = load_lock(umbrella_lock_path(REPO_ROOT))
     f.assert_binding_config_sha256(lock)  # does not raise

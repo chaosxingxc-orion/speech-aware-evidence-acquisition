@@ -274,6 +274,7 @@ def test_load_bank_manifest_refuses_a_tampered_text(tmp_path):
         f.load_bank_manifest(tmp_path, expected_sha256=None)
 
 
+@pytest.mark.requires_umbrella_checkout
 def test_bank_manifest_sha256_matches_the_pinned_constant_on_the_real_governed_bank(slurp_world):
     """Live proof (module docstring): the REAL governed train.jsonl, the
     REAL 18 canonical labels, the registered seed/per_scenario_n -- must
@@ -312,11 +313,13 @@ def _real_data_root_or_skip():
 # ---------------------------------------------------------------------------
 
 
+@pytest.mark.requires_umbrella_checkout
 def test_binding_config_sha256_matches_the_pinned_constant_on_the_real_umbrella_lock():
     lock = load_lock(umbrella_lock_path(REPO_ROOT))
     assert f.binding_config_sha256(lock) == f.BINDING_CONFIG_SHA256
 
 
+@pytest.mark.requires_umbrella_checkout
 def test_assert_binding_config_sha256_accepts_the_real_lock():
     lock = load_lock(umbrella_lock_path(REPO_ROOT))
     f.assert_binding_config_sha256(lock)  # does not raise

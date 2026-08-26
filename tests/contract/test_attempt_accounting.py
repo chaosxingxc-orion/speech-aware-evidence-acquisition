@@ -66,6 +66,7 @@ def world(tmp_path):
     return GateFixture(tmp_path)
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_p4_same_run_and_attempt_id_opened_twice_second_refused(tmp_path, world):
     """Campaign probe P4, real gate: the identical (run_id, attempt_id) — here
     literally the same ExecutionPlan — must never open a second live adapter."""
@@ -92,6 +93,7 @@ def test_p4_same_run_and_attempt_id_opened_twice_second_refused(tmp_path, world)
         )
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_second_adapter_over_the_same_attempt_is_refused_not_resumed(tmp_path, world):
     """The stricter design choice (see task-4 report): after the first adapter
     has already spent budget, a second live adapter over the identical attempt
@@ -119,6 +121,7 @@ def test_second_adapter_over_the_same_attempt_is_refused_not_resumed(tmp_path, w
     assert store.prior_actual_usage(plan.run_id) == (1, 100.0)
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_plan_without_attempt_id_is_refused(tmp_path, world):
     plan = world.plan(attempt_id=None)
     with pytest.raises(FrozenCoreError, match="attempt_id"):
@@ -149,6 +152,7 @@ def test_plan_with_malformed_attempt_id_is_refused(tmp_path, world, bad_attempt_
         )
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_crashed_attempt_actuals_count_toward_a_new_attempts_row_budget(tmp_path, world):
     """A crashed attempt (state stuck OPENED, never finalized -- finalization is
     T6, out of scope for this task) still counts against the row's registered
@@ -179,6 +183,7 @@ def test_crashed_attempt_actuals_count_toward_a_new_attempts_row_budget(tmp_path
     assert store.prior_actual_usage(plan1.run_id) == (2, 200.0)
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_two_overlapping_adapters_over_the_real_gate_cannot_together_exceed_the_plan_budget(
     tmp_path, world
 ):

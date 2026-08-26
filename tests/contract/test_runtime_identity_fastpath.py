@@ -47,6 +47,7 @@ def _gguf_target(world) -> Path:
     return world.data_root / world.SUBDIR / "model-q8_0.gguf"
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_unchanged_files_second_open_uses_the_fast_path_and_skips_rehash(world, monkeypatch):
     """The core perf claim, proved by an actual re-hash CALL COUNT, not merely
     by elapsed time (which is noisy for tiny fixture files)."""
@@ -80,6 +81,7 @@ def test_unchanged_files_second_open_uses_the_fast_path_and_skips_rehash(world, 
     assert not gguf_rehashed, f"fast path must not re-hash GGUF bytes, but re-hashed: {gguf_rehashed}"
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_explicit_full_hash_true_always_rehashes_even_with_a_warm_cache(world):
     gate = world.gate()
     plan = world.plan()
@@ -91,6 +93,7 @@ def test_explicit_full_hash_true_always_rehashes_even_with_a_warm_cache(world):
     assert diagnostics["gguf_files_full_hashed"] == diagnostics["gguf_files_total"]
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_a_process_never_trusts_a_preexisting_cache_on_its_first_gate_open(world):
     """The 'at least once per session' floor (owner decision item 5): even
     with a fully valid, matching on-disk cache already present (as if written
@@ -109,6 +112,7 @@ def test_a_process_never_trusts_a_preexisting_cache_on_its_first_gate_open(world
     assert diagnostics["gguf_fast_path_used"] is False
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_env_var_true_forces_full_hash_when_full_hash_argument_is_none(world, monkeypatch):
     gate = world.gate()
     plan = world.plan()
@@ -120,6 +124,7 @@ def test_env_var_true_forces_full_hash_when_full_hash_argument_is_none(world, mo
     assert diagnostics["gguf_fast_path_used"] is False
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_env_var_false_permits_the_fast_path_when_full_hash_argument_is_none(world, monkeypatch):
     gate = world.gate()
     plan = world.plan()
@@ -131,6 +136,7 @@ def test_env_var_false_permits_the_fast_path_when_full_hash_argument_is_none(wor
     assert diagnostics["gguf_fast_path_used"] is True
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_explicit_full_hash_argument_wins_over_the_env_var(world, monkeypatch):
     gate = world.gate()
     plan = world.plan()
@@ -142,6 +148,7 @@ def test_explicit_full_hash_argument_wins_over_the_env_var(world, monkeypatch):
     assert diagnostics["gguf_fast_path_used"] is False
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_malformed_env_var_falls_through_to_the_safe_auto_default(world, monkeypatch):
     """A garbage env value must never be silently treated as an explicit
     fast-path request -- it falls through to the auto/session floor, which is
@@ -158,6 +165,7 @@ def test_malformed_env_var_falls_through_to_the_safe_auto_default(world, monkeyp
     assert diagnostics["gguf_fast_path_used"] is False
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_bytes_replaced_same_size_and_mtime_restored_is_the_documented_residual_weakness(world):
     """Pinned by test, not merely prose (task requirement): the fast path
     defends size/mtime/file-identity, not content. An in-place edit that
@@ -182,6 +190,7 @@ def test_bytes_replaced_same_size_and_mtime_restored_is_the_documented_residual_
     assert diagnostics["gguf_fast_path_used"] is True
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_size_change_is_refused(world):
     gate = world.gate()
     plan = world.plan()
@@ -193,6 +202,7 @@ def test_size_change_is_refused(world):
         gate.assert_model_touch_allowed(plan)
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_mtime_change_alone_triggers_full_rehash_and_passes_on_identical_bytes(world):
     gate = world.gate()
     plan = world.plan()
@@ -208,6 +218,7 @@ def test_mtime_change_alone_triggers_full_rehash_and_passes_on_identical_bytes(w
     assert diagnostics["gguf_files_full_hashed"] >= 1
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_mtime_change_with_different_bytes_is_refused(world):
     gate = world.gate()
     plan = world.plan()
@@ -221,6 +232,7 @@ def test_mtime_change_with_different_bytes_is_refused(world):
         gate.assert_model_touch_allowed(plan)
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_different_runtime_receipt_invalidates_the_cache(world):
     gate = world.gate()
     plan = world.plan()
@@ -240,6 +252,7 @@ def test_different_runtime_receipt_invalidates_the_cache(world):
     assert cache_after["runtime_receipt_sha256"] != cache_before["runtime_receipt_sha256"]
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_missing_cache_file_forces_full_verification(world):
     gate = world.gate()
     plan = world.plan()
@@ -249,6 +262,7 @@ def test_missing_cache_file_forces_full_verification(world):
     assert _cache_path(world).is_file()
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_corrupt_cache_file_forces_full_verification_fail_safe(world):
     gate = world.gate()
     plan = world.plan()
@@ -260,6 +274,7 @@ def test_corrupt_cache_file_forces_full_verification_fail_safe(world):
     assert diagnostics["gguf_fast_path_used"] is False
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_runtime_library_tampering_still_refused_full_hashing_kept(world):
     """Item 3: runtime libraries are never cached and never fast-pathed."""
 
@@ -273,6 +288,7 @@ def test_runtime_library_tampering_still_refused_full_hashing_kept(world):
         gate.assert_model_touch_allowed(plan)
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_cache_file_lives_under_data_root_not_the_repo(world):
     gate = world.gate()
     plan = world.plan()
@@ -307,6 +323,7 @@ def _cheap_identity(path: Path) -> dict:
     }
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_forged_cache_cannot_hide_a_per_file_size_swap_when_aggregate_still_matches(world):
     """Demonstrated defect: swap the two pinned GGUF files' CONTENTS on disk
     (the aggregate byte total is unchanged -- len(GGUF_1)+len(GGUF_2) either
@@ -352,6 +369,7 @@ def test_forged_cache_cannot_hide_a_per_file_size_swap_when_aggregate_still_matc
 # ---------------------------------------------------------------------------
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_patched_load_identity_cache_is_observed_by_the_fast_path(world, monkeypatch):
     gate = world.gate()
     plan = world.plan()
@@ -372,6 +390,7 @@ def test_patched_load_identity_cache_is_observed_by_the_fast_path(world, monkeyp
     assert diagnostics["gguf_fast_path_used"] is True  # the real cache still warm/valid
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_cache_is_never_written_after_a_failed_verification(world):
     """A failed check must never leave a cache record behind that a LATER,
     unrelated call could mistakenly trust."""

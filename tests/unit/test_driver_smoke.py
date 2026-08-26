@@ -518,6 +518,7 @@ def test_smoke_non_dry_run_falls_back_to_the_default_runtime_receipt_path(
         )
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_smoke_non_dry_run_passes_the_models_declared_model_lock_key_to_the_gate(
     synthetic_world, smoke_repo, tmp_path, monkeypatch
 ):

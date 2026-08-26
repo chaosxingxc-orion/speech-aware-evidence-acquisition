@@ -35,6 +35,7 @@ def _binding(fixture: GateFixture, sample_id: str = "4000001") -> PayloadBinding
     )
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_adapter_construction_passes_through_a_real_open_gate(tmp_path):
     fixture = GateFixture(tmp_path)
     plan = fixture.plan()
@@ -49,6 +50,7 @@ def test_adapter_construction_passes_through_a_real_open_gate(tmp_path):
     assert adapter.cost_summary()["calls_used"] == 0
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_adapter_refuses_when_the_gate_is_closed(tmp_path):
     fixture = GateFixture(tmp_path)
     # No dedicated tamper helper exists on GateFixture; break the E0 receipt the

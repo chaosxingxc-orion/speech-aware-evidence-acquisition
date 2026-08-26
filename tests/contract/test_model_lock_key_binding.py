@@ -120,6 +120,7 @@ def _write_second_world(world: GateFixture) -> "tuple[dict, str]":
 # ---------------------------------------------------------------------------
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_default_expected_model_lock_key_is_the_frozen_constant(world):
     """Constructing a gate the OLD way (no ``expected_model_lock_key`` at
     all) still opens against the existing, unaltered Q8_0 receipt/lock/plan
@@ -154,6 +155,7 @@ def test_for_study_repo_accepts_an_explicit_expected_model_lock_key(tmp_path):
 # ---------------------------------------------------------------------------
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_a_run_that_declares_model_b_but_is_handed_model_as_receipt(world):
     """A run that DECLARES the second model (``expected_model_lock_key=B``)
     but is hand ed the first model's (Q8_0) already-committed receipt is
@@ -176,6 +178,7 @@ def test_gate_refuses_a_run_that_declares_model_b_but_is_handed_model_as_receipt
         crossed.assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_the_reverse_pairing_too(world):
     """The symmetric direction: a run that declares model A (the default,
     unset) but is handed model B's genuinely, correctly-built receipt is
@@ -197,6 +200,7 @@ def test_gate_refuses_the_reverse_pairing_too(world):
         gate.assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_opens_for_a_correctly_bound_second_model(world):
     """The actual unblock: a run that DECLARES model B and is handed model
     B's own genuinely-built receipt -- matching lock entry, matching on-disk
@@ -217,6 +221,7 @@ def test_gate_opens_for_a_correctly_bound_second_model(world):
     gate.assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_second_model_gguf_drift_too(world):
     """The widened rail is not merely a looser string check -- the SAME
     byte-level GGUF/size verification the Q8_0 path always had still applies
@@ -239,6 +244,7 @@ def test_gate_refuses_second_model_gguf_drift_too(world):
         gate.assert_model_touch_allowed(world.plan())
 
 
+@pytest.mark.requires_wsl2_execution_authority
 def test_gate_refuses_missing_lock_entry_for_the_declared_second_model(world):
     """``_lock_model_entry`` must look the SECOND model up by its own
     ``expected_model_lock_key`` -- not the frozen Q8_0 constant -- so a

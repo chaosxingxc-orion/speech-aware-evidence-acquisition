@@ -134,12 +134,21 @@ from prose. All paths are repo-relative; receipts live under
 | **D-E108** | D | `docs/readiness/2026-08-23-e108-verdict.md` | `1d36c557a9e780569bd8e7cbb0737c45f2ffd303daad924c795ed40286666788` |
 | **D-EC** | D | `docs/readiness/2026-08-25-ec-and-retain-override-projections.md` | `6d50d2ea164567e01c0cb6c5f999e10270453577b617f20d960a7a0fdb580462` |
 | **D-KWIDEN** | D | `docs/readiness/2026-08-24-kwiden-and-next-experiments-queue.md` | `e4ae3f48a128bdf67811d1a67cb436b988ed83de4bf47bc1860f98c07de2285e` |
-| **D-GATES** | D | `docs/readiness/2026-08-25-gate-audit-can-it-fail.md` | `da59b6e1243b6e2ea260247b6cc105f6f6d945c0fd267b7f5909c45d73a760cd` |
+| **D-GATES** | D | `docs/readiness/2026-08-25-gate-audit-can-it-fail.md` | `6ab241b18a924122a5c3a64712bfde7fcc23a6bc2075f7ac0c281ca83d822efa` |
 
 *(This document carries no digest of its own verification receipt: the receipt records this
 document's SHA-256, so a self-citation could never close. The receipt is
 `…/2026-08-25-scoreboard-v5/verification-report.json` and its `scoreboard_document` block is the
 pairing.)*
+
+*(2026-08-26 digest repair, D-GATES only. The cell above previously carried
+`da59b6e1…`, taken from the CRLF working-tree bytes of that file on the Windows checkout
+(32790 bytes, 345 CRLF line endings). The Git blob is LF (32445 bytes) and hashes to
+`6ab241b1…`, which is what any clean checkout — CI included — measures. Umbrella `CLAUDE.md`:
+"Git blob bytes are the evidence hash authority ... not CRLF working-tree bytes". Only the
+digest changed; the file's committed content is untouched. The already-landed receipt
+`…/2026-08-25-scoreboard-v5/verification-report.json` still records the old value and is left
+as written — check receipts are append-only and are superseded, never rewritten.)*
 
 ---
 

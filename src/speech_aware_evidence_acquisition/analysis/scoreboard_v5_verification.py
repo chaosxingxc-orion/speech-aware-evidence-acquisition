@@ -71,6 +71,7 @@ from .stage2a_synthesis_verification import (
     Receipt,
     _matches,
     _walk,
+    crlf_defect,
     sha256_of,
 )
 
@@ -412,10 +413,19 @@ DOCUMENTS: tuple[Receipt, ...] = (
         "e4ae3f48a128bdf67811d1a67cb436b988ed83de4bf47bc1860f98c07de2285e",
         "the next-experiment queue: the K2 stopping ruling and the E-A pre-analysis outcome",
     ),
+    # 2026-08-26 repin (CI-first-green repair, cause 3). The previous pin,
+    # da59b6e1..., was taken from this file's CRLF WORKING-TREE bytes on the
+    # Windows checkout (345 CRLF line endings, 32790 bytes). The Git blob is
+    # LF (32445 bytes) and hashes to 6ab241b1..., so the old pin could never be
+    # reproduced by any clean checkout -- CI hashed the blob bytes and refused.
+    # Umbrella CLAUDE.md is the authority: "Git blob bytes are the evidence hash
+    # authority ... not CRLF working-tree bytes". The working-tree file was
+    # renormalized to LF (a no-op against the blob) and the pin now names the
+    # blob digest; `_crlf_defect` below makes the defect class fail-closed.
     Receipt(
         "D-GATES",
         f"{_READY}/2026-08-25-gate-audit-can-it-fail.md",
-        "da59b6e1243b6e2ea260247b6cc105f6f6d945c0fd267b7f5909c45d73a760cd",
+        "6ab241b18a924122a5c3a64712bfde7fcc23a6bc2075f7ac0c281ca83d822efa",
         "the gate audit document: the 43-gate split (the receipt publishes the mutation tally instead)",
     ),
 )
@@ -1157,6 +1167,10 @@ def verify_artifacts(repo_root: Path) -> dict[str, Any]:
         path = repo_root / artifact.relpath
         if not path.is_file():
             failures.append(f"{artifact.key}: MISSING at {artifact.relpath}")
+            continue
+        crlf = crlf_defect(path)
+        if crlf is not None:
+            failures.append(f"{artifact.key}: {crlf}")
             continue
         measured = sha256_of(path)
         ok = measured == artifact.sha256

@@ -482,3 +482,38 @@ only ever bind both sockets as itself, which cannot distinguish fixed from regre
 split-forgery tests still exercise that end to end under WSL2. Tests that spawn `sys.executable`
 directly (un-copied, a stable path across runs) are unaffected by any of this and keep running on
 native Windows.
+
+**GitHub CI runs a SUBSET, and the excluded tests are named and counted (2026-08-26).**
+`ubuntu-latest` is a clean, single-repository, plain-Linux container, and two of this study's real
+preconditions are absent there and cannot be faked: (1) the WSL2 compute authority, which
+`contracts.plan.assert_wsl_execution_environment()` requires by kernel release, so every test that
+drives the real `FrozenCoreGate.assert_model_touch_allowed` or `core.session.start_session` past its
+profile check is correctly REFUSED on the runner; and (2) the umbrella checkout, since seven tests
+read the real umbrella `docs/datasets.lock.json` at `REPO_ROOT.parent.parent`, which lives in a
+different Git repository. Two markers name those preconditions -
+`requires_wsl2_execution_authority` (115 tests, 112 functions across 9 files) and
+`requires_umbrella_checkout` (7 tests) - and `.github/workflows/ci.yml` deselects them with `-m`.
+This is an exclusion, never a weakening: nothing is skipped, deleted, softened or patched, the gate
+itself is unchanged, and on the WSL2 host all 122 still run exactly as before. The honesty
+conditions are enforced, not promised. The workflow step **"Environment exclusions are exactly the
+declared inventory"** prints every excluded node id, prints both counts and then ASSERTS them
+(`test "${wsl2}" -eq 115`, `test "${umbrella}" -eq 7`), so marking one more test fails CI on the
+number until a human looks at it; `--strict-markers` is in `addopts`, so a misspelled marker is an
+error rather than an inert decorator; and the mutation probe
+`tests/contract/test_execution_scope.py::test_gate_calls_the_wsl2_authority_check_before_reading_any_receipt`
+runs IN CI and fails if the WSL2 call is ever removed from the gate (its `start_session` twin,
+`TestStartSessionSpawn::test_spawn_refuses_outside_wsl_before_any_process_or_asset_access`, has been
+passing in CI throughout). An autouse fixture patching `platform.release` across the suite was
+considered and refused: it would disable a fail-closed execution-authority gate everywhere at once.
+
+**Pins are over Git blob bytes, and CRLF is refused (2026-08-26).** Umbrella `CLAUDE.md`: "Git blob
+bytes are the evidence hash authority ... not CRLF working-tree bytes". `.gitattributes` declares
+`* text=auto eol=lf`, so every text artifact's blob is LF; a Windows working tree that still holds
+CRLF for a pinned file hashes to a value no clean checkout can reproduce, which is exactly how the
+D-GATES pin (`da59b6e1...` from 32790 CRLF bytes, against the blob's `6ab241b1...` from 32445 LF
+bytes) reached `master` and broke CI. `analysis.stage2a_synthesis_verification.crlf_defect` now
+refuses such a file BY NAME in all three pinned-artifact loops, and
+`tests/unit/test_scoreboard_v5_verification.py::TestPinsAreOverGitBlobBytes` carries both a standing
+invariant (no pinned artifact holds CRLF on disk) and a mutation gate. Hashing the blob instead of
+the disk was rejected: these verifiers also hash freshly written, not-yet-committed receipts, where
+substituting committed bytes would report a stale digest as current.

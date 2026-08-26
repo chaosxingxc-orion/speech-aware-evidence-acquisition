@@ -26,6 +26,11 @@ from speech_aware_evidence_acquisition.analysis import (
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
+#: Byte constants for the pin/line-ending gates below. Named rather than
+#: inlined so no escape in this file can be misread as a real newline.
+LF = bytes([0x0A])
+CRLF = bytes([0x0D, 0x0A])
+
 
 class TestRegister:
     def test_every_cited_artifact_exists_and_hashes_to_its_pin(self) -> None:
@@ -127,6 +132,57 @@ class TestItCanFail:
                 sv.verify_artifacts(REPO_ROOT)
         finally:
             sv.RECEIPTS = original  # type: ignore[misc]
+
+
+class TestPinsAreOverGitBlobBytes:
+    """The 2026-08-25 D-GATES defect, made impossible to repeat silently.
+
+    The D-GATES pin was taken from that file's CRLF WORKING-TREE bytes on the
+    Windows checkout. `.gitattributes` here declares `* text=auto eol=lf`, so the
+    blob is LF and hashes to something else entirely -- the pin passed on the one
+    machine that authored it and failed on every clean checkout, which is how it
+    reached `master` and broke CI. Umbrella `CLAUDE.md` settles the authority:
+    "Git blob bytes are the evidence hash authority ... not CRLF working-tree
+    bytes."
+
+    `crlf_defect` turns that sentence into a refusal, and these two gates prove it
+    fires. The first is a standing invariant over the live register: a pin can
+    only ever be taken from bytes that are already LF, so the CRLF-derived pin
+    could not be authored again without this failing first. The second is a
+    mutation gate -- a guard that cannot be made to fire is not a guard.
+    """
+
+    def test_no_pinned_artifact_carries_crlf_in_the_working_tree(self) -> None:
+        offenders = [
+            artifact.relpath
+            for artifact in (*sv.RECEIPTS, *sv.DOCUMENTS)
+            if CRLF in (REPO_ROOT / artifact.relpath).read_bytes()
+        ]
+        assert offenders == [], (
+            "these pinned artifacts hold CRLF on disk, so their on-disk digest is not "
+            "the Git blob digest every clean checkout measures: " + repr(offenders)
+        )
+
+    def test_a_crlf_working_tree_copy_is_refused_by_name(self, tmp_path: Path) -> None:
+        artifact = sv.ARTIFACTS_BY_KEY["D-GATES"]
+        blob = (REPO_ROOT / artifact.relpath).read_bytes()
+        assert CRLF not in blob
+        staged = tmp_path / artifact.relpath
+        staged.parent.mkdir(parents=True, exist_ok=True)
+        staged.write_bytes(blob.replace(LF, CRLF))
+
+        kept_documents, kept_receipts = sv.DOCUMENTS, sv.RECEIPTS
+        try:
+            # Verify exactly the one staged artifact: the rest of the register
+            # does not exist under tmp_path and would drown the signal in
+            # MISSING rows.
+            sv.DOCUMENTS = (artifact,)  # type: ignore[misc]
+            sv.RECEIPTS = ()  # type: ignore[misc]
+            with pytest.raises(sv.ScoreboardVerificationError, match="CRLF line endings"):
+                sv.verify_artifacts(tmp_path)
+        finally:
+            sv.DOCUMENTS = kept_documents  # type: ignore[misc]
+            sv.RECEIPTS = kept_receipts  # type: ignore[misc]
 
 
 class TestReadingRules:

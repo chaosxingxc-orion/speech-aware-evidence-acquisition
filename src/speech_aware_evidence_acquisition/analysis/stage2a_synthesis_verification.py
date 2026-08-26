@@ -698,6 +698,38 @@ def sha256_of(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def crlf_defect(path: Path) -> str | None:
+    """Return a diagnosis when a PINNED artifact carries CRLF line endings on disk.
+
+    Executable form of the umbrella rule ("Git blob bytes are the evidence hash
+    authority: use ``git show <commit>:<path>`` for historical evidence, not CRLF
+    working-tree bytes"). ``.gitattributes`` here declares ``* text=auto eol=lf``,
+    so every text artifact's blob is LF; a Windows working tree that still holds
+    CRLF for such a file hashes to a value NO clean checkout can reproduce. A pin
+    taken from those bytes is unreproducible by construction -- it passes on the
+    machine that authored it and fails everywhere else, which is exactly how the
+    D-GATES pin reached ``master`` and broke CI on 2026-08-25.
+
+    Deliberately NOT solved by hashing the blob instead: these verifiers also hash
+    freshly written, not-yet-committed receipts, and silently substituting the
+    committed bytes there would report a stale digest as if it were current --
+    a worse failure than the one being fixed. Refusing CRLF keeps "the bytes on
+    disk" and "the bytes in the blob" identical, so the disk read IS the blob read.
+
+    Returns ``None`` when the file is clean, so callers can append the diagnosis to
+    whatever failure channel they already use.
+    """
+
+    if b"\r\n" not in path.read_bytes():
+        return None
+    return (
+        f"CRLF line endings in the working tree at {path.as_posix()}: pins are over Git "
+        "blob (LF) bytes, so this file's on-disk digest is unreproducible by any clean "
+        "checkout. Re-checkout the file (e.g. `git stash`-free: delete it and "
+        "`git checkout -- <path>`) before pinning or verifying it"
+    )
+
+
 def verify_receipts(repo_root: Path) -> dict[str, Any]:
     """Re-hash every cited receipt. Fail-closed: a digest mismatch means every
     number below it was read from bytes the landed documents did not cite."""
@@ -707,6 +739,9 @@ def verify_receipts(repo_root: Path) -> dict[str, Any]:
         path = repo_root / receipt.relpath
         if not path.is_file():
             raise SynthesisVerificationError(f"receipt {receipt.key!r} missing at {receipt.relpath}")
+        crlf = crlf_defect(path)
+        if crlf is not None:
+            raise SynthesisVerificationError(f"receipt {receipt.key!r}: {crlf}")
         measured = sha256_of(path)
         if measured != receipt.sha256:
             raise SynthesisVerificationError(
@@ -982,6 +1017,10 @@ def verify_file_digests(repo_root: Path) -> dict[str, Any]:
         path = repo_root / relpath
         if not path.is_file():
             failures.append(f"{relpath} is missing")
+            continue
+        crlf = crlf_defect(path)
+        if crlf is not None:
+            failures.append(crlf)
             continue
         measured = sha256_of(path)
         if measured != expected:
