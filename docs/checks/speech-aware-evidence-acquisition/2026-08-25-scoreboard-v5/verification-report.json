@@ -1,0 +1,459 @@
+{
+ "artifacts": [
+  {
+   "key": "R-PSLU",
+   "matches_pin": true,
+   "produced_by": "P-SLU elicitation-bank supply ladder on SLURP-60",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-18-pslu-read/verdict.json",
+   "sha256": "7bedd461e4443932bda01444af84cac65f700c45d79e7d1cc012fd22ce1a287f",
+   "tier": "R"
+  },
+  {
+   "key": "R-PSLU2",
+   "matches_pin": true,
+   "produced_by": "P-SLU stage 2: KNOWLEDGE-BEYOND-FORMAT + SELF-SCOPING-WORKS",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-18-pslu-s2-read/verdict.json",
+   "sha256": "a29e5ac1151711f8b56a41609187b65d018753369ac680cf402a2ad2fedc2fe8",
+   "tier": "R"
+  },
+  {
+   "key": "R-PPHON",
+   "matches_pin": true,
+   "produced_by": "P-PHON failure-class decomposition on both carriers",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-18-pphon-decomp/verdict.json",
+   "sha256": "0654ba1fbf242c789e6fdc6211f6de501a1a36e747fa79d8e0e466358c1f32ec",
+   "tier": "R"
+  },
+  {
+   "key": "R-A2T-A0",
+   "matches_pin": true,
+   "produced_by": "Audio2Tool A0 baseline anchor on the parent 400-item split",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-18-pa2t-a0-read/verdict.json",
+   "sha256": "8b0e96ca6eac50b75eb07d6f1d05b245c43cc845e877b8f1dd185e4665c7ccff",
+   "tier": "R"
+  },
+  {
+   "key": "R-A2T-S2",
+   "matches_pin": true,
+   "produced_by": "Audio2Tool stage 2: the value-copy trap",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-18-a2t-s2-read/verdict.json",
+   "sha256": "2377f09ac1138c2648e18fd6ac040465f5d4d11967f4f6479b39ec53bbffa8bf",
+   "tier": "R"
+  },
+  {
+   "key": "R-A2T-S2B",
+   "matches_pin": true,
+   "produced_by": "Audio2Tool stage 2b: CONFIRMED-CUT / INCONCLUSIVE-B",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-18-a2t-s2b-read/verdict.json",
+   "sha256": "ad49af4c73e281b5094aecb917bf59b4b13cf3c7472b54e45947f895a2a86363",
+   "tier": "R"
+  },
+  {
+   "key": "R-A2T-S2C",
+   "matches_pin": true,
+   "produced_by": "Audio2Tool stage 2c: ROBUST / CHANNEL-REOPENED",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-18-a2t-s2c-read/verdict.json",
+   "sha256": "904b63c1465371f6dcc5c6093cc39153001a32974d06fc83fab357c7a7f75fdc",
+   "tier": "R"
+  },
+  {
+   "key": "R-A2T-LOSS",
+   "matches_pin": true,
+   "produced_by": "Audio2Tool B2 loss decomposition",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-18-a2t-loss-decomp/verdict.json",
+   "sha256": "04bb9dc841bb0ce95efdd9223cee72e8cf901929d114d3cb19c9c3294b3ccb07",
+   "tier": "R"
+  },
+  {
+   "key": "R-A2T-ABST",
+   "matches_pin": true,
+   "produced_by": "Audio2Tool abstention asymmetry probe",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-19-a2t-abst-read/verdict.json",
+   "sha256": "23eaafa9a0d6fe958722d7c0d752a866a70b7bb3f91171ae68e23ae7cc50ec49",
+   "tier": "R"
+  },
+  {
+   "key": "R-A2T-POP",
+   "matches_pin": true,
+   "produced_by": "Audio2Tool blind-replacement regression probe",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-19-a2t-pop-read/verdict.json",
+   "sha256": "27457acaab8f193a4783cf166fdd8320dc0bd7204b038e35603074c5fbb9b73d",
+   "tier": "R"
+  },
+  {
+   "key": "R-PFEW",
+   "matches_pin": true,
+   "produced_by": "P-FEW routing few-shot gain and bias",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-19-pfew-read/verdict.json",
+   "sha256": "339ad933a68e97115601d8e2751e77e37b0e1643693068b6f8d1eb427878057b",
+   "tier": "R"
+  },
+  {
+   "key": "R-PTRAP",
+   "matches_pin": true,
+   "produced_by": "P-TRAP self-percept resonance",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-19-ptrap-read/verdict.json",
+   "sha256": "41241cc197194fdde5a2a4061144c42d6a744f9fa41b1a15546689f5778635ca",
+   "tier": "R"
+  },
+  {
+   "key": "R-PKEY2",
+   "matches_pin": true,
+   "produced_by": "P-KEY-2 audio-versus-text supply interaction",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-19-pkey2-read/verdict.json",
+   "sha256": "429d3159fb10c1b6f0cda8567abc1a7065e2bcef0db3901d31ebe0500cdaedff",
+   "tier": "R"
+  },
+  {
+   "key": "R-PEMB1",
+   "matches_pin": true,
+   "produced_by": "P-EMB-1 generation-core pooled-state routing (SLURP scenario)",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-19-pemb1-read/verdict.json",
+   "sha256": "a2957d5637bb15f2502ee064df7f7e1e5477c31b5fc780c875cafac14ccc1992",
+   "tier": "R"
+  },
+  {
+   "key": "R-PEMB2",
+   "matches_pin": true,
+   "produced_by": "P-EMB-2 generation-core pooled-state routing (A2T tool)",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-19-pemb2-read/verdict.json",
+   "sha256": "3ed669178ab1ff685be136892fcaa4039c691b0a395caaf575582c127c51f76f",
+   "tier": "R"
+  },
+  {
+   "key": "R-PEMB3L",
+   "matches_pin": true,
+   "produced_by": "P-EMB-3L local construction sweep",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-20-pemb3l-read/verdict.json",
+   "sha256": "b4644d0a7c5e6db4b1415c95eea288d82872d00ec21ed5b9a5bdd0c5edde1171",
+   "tier": "R"
+  },
+  {
+   "key": "R-PEMB3M",
+   "matches_pin": true,
+   "produced_by": "P-EMB-3M dedicated omni-embedding model plus the cascade arm",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-20-pemb3m-read/verdict.json",
+   "sha256": "17c3a9398003a94724e9c8a6d162407ad0abc1896c7fff5e718f97a3ee1409ce",
+   "tier": "R"
+  },
+  {
+   "key": "R-PEMB4R",
+   "matches_pin": true,
+   "produced_by": "P-EMB-4R register-aligned utterance-to-utterance kNN",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-21-pemb4r-read/verdict.json",
+   "sha256": "f1220d7b3518a80ccbd98e0c74afd249c9ee7cb1cbae39d2a2d5a0eda2a81691",
+   "tier": "R"
+  },
+  {
+   "key": "R-PCORRF",
+   "matches_pin": true,
+   "produced_by": "P-CORR-F percept-keyed corrective supply",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-20-pcorrf-read/verdict.json",
+   "sha256": "e7ee3fda16c7dbce02559826da49b0259bb1ad27b7f0775cbfb61d8b85fc5e0c",
+   "tier": "R"
+  },
+  {
+   "key": "R-E108",
+   "matches_pin": true,
+   "produced_by": "E108 M11 adaptive evidence-gap read (train-only discovery split)",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-23-e108-zcopy-read/read-verdict.json",
+   "sha256": "e0154a4e26a839abb7a44584714442415724dd93f95996e1111b15c84a82504c",
+   "tier": "R"
+  },
+  {
+   "key": "R-R0",
+   "matches_pin": true,
+   "produced_by": "DEV-100 round 0",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev100-round0/round0-report.json",
+   "sha256": "26f05488bb7031d1ae85710faffd2b414644729af1adc476a1002a55612fb0b6",
+   "tier": "R"
+  },
+  {
+   "key": "R-R1",
+   "matches_pin": true,
+   "produced_by": "DEV-100 round 1",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev100-round1/round1-report.json",
+   "sha256": "559559d239103f2905d8e86e643741990ceb1023070095d1d797d8e66de4cd8d",
+   "tier": "R"
+  },
+  {
+   "key": "R-R2",
+   "matches_pin": true,
+   "produced_by": "DEV-100 round 2",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev100-round2/round2-report.json",
+   "sha256": "c69cf3fef49a3bafb86818383953c9c0e37880518750073c6ba857f47e7b00f6",
+   "tier": "R"
+  },
+  {
+   "key": "R-R3",
+   "matches_pin": true,
+   "produced_by": "DEV-100 round 3",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev100-round3/round3-report.json",
+   "sha256": "ac5a884febb43ede69b6401deb6e1e67e1e543c8e8082e50ad552b8358c47965",
+   "tier": "R"
+  },
+  {
+   "key": "R-R4",
+   "matches_pin": true,
+   "produced_by": "DEV-100 round 4 (the frozen cell)",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev100-round4/round4-report.json",
+   "sha256": "42fa837582f5f9e129348d4ecc8324c56db62a754728048126c319666a997f1e",
+   "tier": "R"
+  },
+  {
+   "key": "R-R5",
+   "matches_pin": true,
+   "produced_by": "DEV-100 round 5 (the exact replication)",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev100-round5/round5-report.json",
+   "sha256": "482d33bde5fe4ff7a522f8ca5e2b4fd7f02f3a87a6113f682c6218f3256e4d71",
+   "tier": "R"
+  },
+  {
+   "key": "R-KWIDEN",
+   "matches_pin": true,
+   "produced_by": "K-WIDEN K1 (retrieval width 5 to 8) plus its offline width-5 replay",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev100-kwiden-k1/kwiden-k1-report.json",
+   "sha256": "66a340da402f97f6495f87a6a0e3abfa312b3b7771652bd3087407eafee98f9f",
+   "tier": "R"
+  },
+  {
+   "key": "R-A4",
+   "matches_pin": true,
+   "produced_by": "DEV-100 A4 retain-override dispatch variant",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-dev100-retain-override/retain-override-report.json",
+   "sha256": "0615275e395e983c54a694a9641c06de7d1c9a9b5aa87801d33edd002d9ef92f",
+   "tier": "R"
+  },
+  {
+   "key": "R-DEV500",
+   "matches_pin": true,
+   "produced_by": "the DEV-500 confirmatory one-shot read (four sealed arms)",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev500-confirmatory-read/read-verdict.json",
+   "sha256": "b3187fea6f23f637dfa8ac43718667b0286a5c034ea9304bfb03e7029bfc90a3",
+   "tier": "R"
+  },
+  {
+   "key": "R-LOCK",
+   "matches_pin": true,
+   "produced_by": "the one-shot DEV-1000 baseline-lock read (d9fef537)",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-dev1000-lock-read/read-verdict.json",
+   "sha256": "2f8e295852e1c09d737467a62123586f097f938ec353dcbe58d258dadc1ea581",
+   "tier": "R"
+  },
+  {
+   "key": "R-G1",
+   "matches_pin": true,
+   "produced_by": "the Audio2Tool G1 attempt-4 paired read",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-g1/g1-read-attempt4.json",
+   "sha256": "cb5e56584a6d572f7b41b39542201ddb1b361755042eac66c3a70c55fd086f89",
+   "tier": "R"
+  },
+  {
+   "key": "R-SWEEP",
+   "matches_pin": true,
+   "produced_by": "the admission-scale defect audit and its fix verification (repair 1341c2db)",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-admission-scale-sweep/sweep-report.json",
+   "sha256": "88f606fe89eb42e675bdd4832a31b028638613eba71d712d3d4ee6cf7aa74d66",
+   "tier": "R"
+  },
+  {
+   "key": "R-GOLD",
+   "matches_pin": true,
+   "produced_by": "the Audio2Tool gold-absence diagnosis",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-gold-absence/diagnosis-report.json",
+   "sha256": "64327e98ff9f91a4affdf75f25e98eb5500aa4ab2eeab8befa6d3978799a3e14",
+   "tier": "R"
+  },
+  {
+   "key": "R-ORACLE",
+   "matches_pin": true,
+   "produced_by": "the Audio2Tool oracle-query upper bound (post-correction, 274ce62a)",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-oracle-query-bound/oracle-query-bound-report.json",
+   "sha256": "b564362b64bb41df4d9055518bcd0cd88753e2796b3583ed0b95f626a2ece723",
+   "tier": "R"
+  },
+  {
+   "key": "R-XC",
+   "matches_pin": true,
+   "produced_by": "the cross-carrier ceiling decomposition",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-cross-carrier-decomposition/decomposition-report.json",
+   "sha256": "9a1903b35f3eff42dc7bf4caee5ba95235af855e9e0fc087ba8d9d7c0d8be5a1",
+   "tier": "R"
+  },
+  {
+   "key": "R-MVE",
+   "matches_pin": true,
+   "produced_by": "the matching-versus-extraction read (population two-axis table; its CONDITIONED verdict is superseded)",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-matching-vs-extraction/read-report.json",
+   "sha256": "378757b5bc3292395cbdc82a19c936912edaf61725cede012bfad6b77ffd6523",
+   "tier": "R"
+  },
+  {
+   "key": "R-ECD",
+   "matches_pin": true,
+   "produced_by": "the extraction-conditioned-on-dispatch read (the supersession, 6c6ec719)",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-extraction-conditioned-on-dispatch/read-report.json",
+   "sha256": "7662fbc381e6994f3c71422154a0facfc86c0e99b656cf91670577036a337525",
+   "tier": "R"
+  },
+  {
+   "key": "R-DEGEN",
+   "matches_pin": true,
+   "produced_by": "the cross-carrier query-key degeneracy measurement",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-query-key-degeneracy/degeneracy-report.json",
+   "sha256": "a1a40999dfddae7642cdc3eaa6763a8fcffe1874e5488210e41618c219a6aeae",
+   "tier": "R"
+  },
+  {
+   "key": "R-FIELD",
+   "matches_pin": true,
+   "produced_by": "the field-level supply accounting (the delivery rates)",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-field-level-supply-accounting/accounting-report.json",
+   "sha256": "ca973be873318deb6029f183045ac4074653dd1b5943c9113fb78d40766de4c6",
+   "tier": "R"
+  },
+  {
+   "key": "R-K1GATE",
+   "matches_pin": true,
+   "produced_by": "the K1 hybrid lexical-plus-dense ranking gate",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-k1-hybrid-ranking-gate/gate-report.json",
+   "sha256": "252d53f30baed2ee36a725b0df9c5a5807438713c755845c8b8376b76ff5556f",
+   "tier": "R"
+  },
+  {
+   "key": "R-FUSION",
+   "matches_pin": true,
+   "produced_by": "the fusion-form offline gate (four candidate scoring forms)",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-fusion-form-gate/gate-report.json",
+   "sha256": "568a78eeebd1519fcd7bee9d0c240469ffd6cb2b640fd4d4931ea22007a69647",
+   "tier": "R"
+  },
+  {
+   "key": "R-GATEAUDIT",
+   "matches_pin": true,
+   "produced_by": "the can-it-fail gate audit",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-gate-audit/gate-audit-report.json",
+   "sha256": "c850ace8e025071658201c3bc57f39741b8282f230fc0614f9dae9957516f8f3",
+   "tier": "R"
+  },
+  {
+   "key": "R-INTENT",
+   "matches_pin": true,
+   "produced_by": "the SLURP intent-coverage check",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-slurp-intent-coverage/intent-coverage-report.json",
+   "sha256": "de1e9778795fc6b0d02445a53c45dedf060f483978e542e0f354003545d52750",
+   "tier": "R"
+  },
+  {
+   "key": "R-PRIOR",
+   "matches_pin": true,
+   "produced_by": "the prior-score semantics repair",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-prior-score-semantics-repair/repair-report.json",
+   "sha256": "041de6c0868ca4324545d2a423c098d5d96218ca9443fff2ca527aa053895c05",
+   "tier": "R"
+  },
+  {
+   "key": "R-FACET",
+   "matches_pin": true,
+   "produced_by": "the content_facet_target correctness audit",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-content-facet-target-audit/audit-report.json",
+   "sha256": "ff4311fab3b61719dc5d59b6e30a2eeada899b3d34ba7f7e20b5ac891886dcd5",
+   "tier": "R"
+  },
+  {
+   "key": "R-AUDIT",
+   "matches_pin": true,
+   "produced_by": "the DEV-100 reviewer-perspective statistical audit",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-24-dev100-reviewer-audit/reviewer-audit.json",
+   "sha256": "e039b5818fa23ef5568f4c6e505ea6d66e0fbb8493121f0c606994695f3bcc89",
+   "tier": "R"
+  },
+  {
+   "key": "R-SYNTH",
+   "matches_pin": true,
+   "produced_by": "the Stage-2A matured synthesis verification receipt",
+   "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-stage2a-synthesis/verification-report.json",
+   "sha256": "561a6c020d1c58a77097e88f30e2e7d597730fa570dbeb2e15200e321d45d9a0",
+   "tier": "R"
+  },
+  {
+   "key": "D-SN",
+   "matches_pin": true,
+   "produced_by": "the speech-native agent-loop plan: the EFFECT-C108 read and the M5-M9 controller rejections",
+   "relpath": "docs/readiness/2026-08-21-speech-native-agent-loop-training-free-rl-plan.md",
+   "sha256": "e7803bf07300cdcf4976b5e9404d067bcf505166d79c7819c2dc85b574fb45ba",
+   "tier": "D"
+  },
+  {
+   "key": "D-E108",
+   "matches_pin": true,
+   "produced_by": "the E108 verdict: the information-support gate outcome",
+   "relpath": "docs/readiness/2026-08-23-e108-verdict.md",
+   "sha256": "1d36c557a9e780569bd8e7cbb0737c45f2ffd303daad924c795ed40286666788",
+   "tier": "D"
+  },
+  {
+   "key": "D-EC",
+   "matches_pin": true,
+   "produced_by": "the E-C and retain-override model-free projections",
+   "relpath": "docs/readiness/2026-08-25-ec-and-retain-override-projections.md",
+   "sha256": "6d50d2ea164567e01c0cb6c5f999e10270453577b617f20d960a7a0fdb580462",
+   "tier": "D"
+  },
+  {
+   "key": "D-KWIDEN",
+   "matches_pin": true,
+   "produced_by": "the next-experiment queue: the K2 stopping ruling and the E-A pre-analysis outcome",
+   "relpath": "docs/readiness/2026-08-24-kwiden-and-next-experiments-queue.md",
+   "sha256": "e4ae3f48a128bdf67811d1a67cb436b988ed83de4bf47bc1860f98c07de2285e",
+   "tier": "D"
+  },
+  {
+   "key": "D-GATES",
+   "matches_pin": true,
+   "produced_by": "the gate audit document: the 43-gate split (the receipt publishes the mutation tally instead)",
+   "relpath": "docs/readiness/2026-08-25-gate-audit-can-it-fail.md",
+   "sha256": "da59b6e1243b6e2ea260247b6cc105f6f6d945c0fd267b7f5909c45d73a760cd",
+   "tier": "D"
+  }
+ ],
+ "claims_verified": 398,
+ "contacts": {
+  "audio_seconds": 0.0,
+  "embedding_tool": 0,
+  "frozen_core": 0,
+  "gold_labels_opened": 0,
+  "gpu_hours": 0.0,
+  "new_dependencies": 0,
+  "tokenizer": 0
+ },
+ "document_claims_verified": 19,
+ "documents_verified": 5,
+ "execution_profile": "model-free-check",
+ "exposure_row_id": "SAEA-SN-MF-SCOREBOARD-V5",
+ "float_tolerance": 5e-05,
+ "hard_stop": "DOCUMENTATION TIER. This module changes no knob, writes nothing under configs/, rails/ or core/, opens no sealed run directory, authorizes no flight and reaches no new empirical verdict.",
+ "offline_guard": {
+  "armed_before_first_input": true,
+  "outbound_connection_attempts": 0,
+  "resident_llama_server": "pid 38623 port 8090 treated as COLD: not started, stopped, probed, reconfigured or contacted",
+  "targets": []
+ },
+ "reading_rules_enforced": [
+  "POPULATION and WHERE-DELIVERED figures never share a column.",
+  "MATCHING and EXTRACTION are separate columns; an unmeasured axis is EMPTY.",
+  "Every SLURP unexposed-500 figure is a SECONDARY READING on the locked baseline's own population and revises nothing about the LOCK (d9fef537).",
+  "Small-n cells are MECHANISM READINGS, never effect sizes.",
+  "The test split (FINAL60) is untouched and is named by no row."
+ ],
+ "receipts_verified": 47,
+ "schema": "saea-scoreboard-v5-verification-v1",
+ "scoreboard_document": {
+  "present": true,
+  "relpath": "docs/readiness/2026-08-19-scheme-scoreboard.md",
+  "sha256": "39cf3512f5a6993e0b83fbb8f7129f5e74fbad1ab79aa10850900d53c180a065"
+ },
+ "study": "speech-aware-evidence-acquisition",
+ "substring_claims_verified": 14,
+ "what_this_proves": "FAITHFULNESS ONLY: every number scoreboard v5 carries is the number its own source artifact holds, at the JSON path (tier R) or in the verbatim sentence (tier D) named here. It proves nothing about whether those artifacts are right -- that is each landed row's own business -- and it computes no new experimental quantity."
+}
