@@ -131,9 +131,13 @@ content restriction at the passing site. C16 does not, and is measured below.
 
 ### 4.1 Every admitted-set and NPZ-indexed site: **NIL. Stated plainly.**
 
-C1–C5, C9–C15, C17–C23 pass sets that are subsets of the content-facet NPZ id set, and §2.1 measures
-**0** non-content facets in that set on either carrier. **The all-facet reading and the
-content-facet-only reading are exact identities at every one of those sites, on every sample of
+**20 of the 24 consumer entries are SAFE.** Nineteen of them (C1–C5, C9–C15, C18–C23) read only
+facet ids that are already inside the content-facet NPZ — by construction, by the admitted-set
+subset relation of §2.1, or by a `"content" in recall_scores` guard — and §2.1 measures **0**
+non-content facets in that set on either carrier. The remaining two (C8, C17) pass unrestricted rank
+candidates but apply the content restriction **at the passing site**, by intersection with the
+landed content-facet id set or with the content recall scores. **The all-facet reading and the
+content-facet-only reading are exact identities at every one of those 20 sites, on every sample of
 every population. Nothing changes. That is the whole result at those sites and it is a good one.**
 
 ### 4.2 C7 — `kb_shape.content_facets_with_a_task_target`: **the number changes by 302**
