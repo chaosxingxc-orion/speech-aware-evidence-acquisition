@@ -15,10 +15,13 @@ registered prospective experiment.
 from __future__ import annotations
 
 import ast
+import argparse
 import hashlib
 import json
+import subprocess
 from collections import Counter
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
+from pathlib import Path
 from typing import Literal, Mapping, Sequence
 
 from ..rails.probes.a2t_pop_flight import (
@@ -27,10 +30,12 @@ from ..rails.probes.a2t_pop_flight import (
 from ..rails.probes.a2t_s2b_flight import (
     render_b1_tool_schemas as HEADROOM_SUPPLY_RENDERER,
 )
-from ..reproduction.toolcall_scoring import parse_tool_calls_text
+from ..reproduction.toolcall_scoring import ToolCall, parse_tool_calls_text, score_item
 from .bootstrap import BootstrapResult, paired_cluster_bootstrap
 
 POLICY_SCHEMA = "saea-a2t-training-free-signed-supply-memory-policy-v1"
+EXPERIMENT_ID = "SAEA-A2T-MF-TFRL-SIGNED-SUPPLY-MEMORY-V1"
+SPLIT_IDENTITY_HASH = "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c"
 CANDIDATE_IDS: tuple[str, ...] = ("coarse-v1", "detailed-v1")
 STOP_DIRECT = "STOP_DIRECT"
 SUPPLY_STRIPPED_REGISTRY = "SUPPLY_STRIPPED_REGISTRY"
@@ -47,6 +52,14 @@ MIN_SAVE_RETENTION = 0.50
 MIN_NET_GAIN = 3
 MIN_POSITIVE_FOLDS = 3
 MAX_DOMINANT_STATE_SHARE = 0.95
+
+REGISTRATION_PATHS: tuple[str, ...] = (
+    "configs/experiment/a2t-training-free-signed-supply-memory-v1.json",
+    "docs/readiness/2026-09-01-a2t-training-free-signed-supply-memory-v1-preregistration.md",
+    "docs/exposure-ledger.md",
+    "src/speech_aware_evidence_acquisition/analysis/training_free_a2t_supply_memory.py",
+    "tests/unit/test_training_free_a2t_supply_memory.py",
+)
 
 
 class SupplyMemoryError(RuntimeError):
@@ -351,6 +364,220 @@ class ScreenResult:
     promotion_passed: bool
 
 
+@dataclass(frozen=True)
+class SurfaceAudit:
+    a0_rows: int
+    headroom_rows: int
+    population_rows: int
+    eligible_rows: int
+    distinct_query_groups: int
+    repeated_query_groups: int
+    supplied_tool_label_matches: int
+    unresolved_registry_signatures: int
+
+
+@dataclass(frozen=True)
+class LoggedSurface:
+    outcomes: tuple[SignedSupplyOutcome, ...]
+    audit: SurfaceAudit
+
+
+def load_query_groups_from_receipt(
+    path: Path, *, expected_split_identity_hash: str
+) -> dict[str, str]:
+    """Load the frozen ``sample_id -> query_idx`` isolation mapping."""
+
+    try:
+        document = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise SupplyMemoryError(f"cannot read Audio2Tool receipt {path}: {error}") from error
+    if not isinstance(document, Mapping):
+        raise SupplyMemoryError("Audio2Tool receipt must be a JSON object")
+    if document.get("carrier") != "audio2tool":
+        raise SupplyMemoryError("receipt carrier is not audio2tool")
+    if document.get("split_identity_hash") != expected_split_identity_hash:
+        raise SupplyMemoryError("receipt split identity does not match the registered hash")
+    items = document.get("items")
+    if not isinstance(items, list) or not items:
+        raise SupplyMemoryError("Audio2Tool receipt has no items")
+    groups: dict[str, str] = {}
+    for item in items:
+        if not isinstance(item, Mapping):
+            raise SupplyMemoryError("Audio2Tool receipt item is not an object")
+        tier = item.get("tier")
+        item_id = item.get("id")
+        query_idx = item.get("query_idx")
+        if not isinstance(tier, str) or not tier:
+            raise SupplyMemoryError("Audio2Tool receipt item lacks tier")
+        if isinstance(item_id, bool) or not isinstance(item_id, int) or item_id < 0:
+            raise SupplyMemoryError("Audio2Tool receipt item has an invalid id")
+        if isinstance(query_idx, bool) or not isinstance(query_idx, int):
+            raise SupplyMemoryError("Audio2Tool receipt item lacks an integer query_idx")
+        sample_id = f"{tier}:{item_id:06d}"
+        if sample_id in groups:
+            raise SupplyMemoryError(f"Audio2Tool receipt has duplicate sample id {sample_id!r}")
+        groups[sample_id] = str(query_idx)
+    return groups
+
+
+def _unique_index(rows: Sequence[object], *, label: str) -> dict[str, object]:
+    indexed: dict[str, object] = {}
+    for row in rows:
+        sample_id = str(getattr(row, "sample_id"))
+        if sample_id in indexed:
+            raise SupplyMemoryError(f"{label} has duplicate sample_id {sample_id!r}")
+        indexed[sample_id] = row
+    return indexed
+
+
+def _score_response(expected: Sequence[ToolCall], response: str):
+    predicted, parsed = parse_tool_calls_text(response)
+    return predicted, parsed, score_item(expected, predicted)
+
+
+def build_logged_surface(
+    *,
+    a0_rows: Sequence[object],
+    headroom_supply_rows: Sequence[object],
+    population_supply_rows: Sequence[object],
+    headroom_ids: Sequence[str],
+    query_group_by_id: Mapping[str, str],
+    registry_rows: Sequence[Mapping[str, str]],
+    expected_by_id: Mapping[str, Sequence[ToolCall]],
+    expected_a0_n: int = 400,
+    expected_headroom_n: int = 120,
+    expected_population_n: int = 97,
+) -> LoggedSurface:
+    """Build the paired 217-row surface with fail-closed fidelity checks.
+
+    ``headroom_supply_rows`` and ``population_supply_rows`` may contain both
+    arms from their source attempts.  Only B1 and R1 respectively are action
+    outcomes; the sibling comparator arms are ignored after their source
+    loaders have validated the attempts.
+    """
+
+    assert_supply_renderer_identity()
+    if len(a0_rows) != expected_a0_n:
+        raise SupplyMemoryError(
+            f"A0 row count {len(a0_rows)} != expected {expected_a0_n}"
+        )
+    wrong_a0_arms = sorted(
+        {str(getattr(row, "arm")) for row in a0_rows if getattr(row, "arm") != "zero-supply"}
+    )
+    if wrong_a0_arms:
+        raise SupplyMemoryError(f"A0 contains unexpected arm(s): {wrong_a0_arms}")
+    a0_by_id = _unique_index(a0_rows, label="A0")
+
+    headroom_selected = tuple(
+        row for row in headroom_supply_rows if getattr(row, "arm") == "B1"
+    )
+    population_selected = tuple(
+        row for row in population_supply_rows if getattr(row, "arm") == "R1"
+    )
+    if len(headroom_selected) != expected_headroom_n:
+        raise SupplyMemoryError(
+            f"B1 row count {len(headroom_selected)} != expected {expected_headroom_n}"
+        )
+    if len(population_selected) != expected_population_n:
+        raise SupplyMemoryError(
+            f"R1 row count {len(population_selected)} != expected {expected_population_n}"
+        )
+    b1_by_id = _unique_index(headroom_selected, label="B1")
+    r1_by_id = _unique_index(population_selected, label="R1")
+    frozen_headroom = set(headroom_ids)
+    if len(frozen_headroom) != len(tuple(headroom_ids)):
+        raise SupplyMemoryError("headroom identity contains duplicate sample ids")
+    if set(b1_by_id) != frozen_headroom:
+        raise SupplyMemoryError("B1 ids do not equal the frozen headroom identity")
+    if frozen_headroom & set(r1_by_id):
+        raise SupplyMemoryError("headroom and population supply ids overlap")
+
+    eligible_ids = tuple(sorted(frozen_headroom | set(r1_by_id)))
+    if len(eligible_ids) != expected_headroom_n + expected_population_n:
+        raise SupplyMemoryError("eligible signed-supply surface has the wrong cardinality")
+    missing_a0 = sorted(set(eligible_ids) - set(a0_by_id))
+    if missing_a0:
+        raise SupplyMemoryError(f"eligible ids missing from A0: {missing_a0[:5]}")
+    missing_gold = sorted(set(eligible_ids) - set(expected_by_id))
+    if missing_gold:
+        raise SupplyMemoryError(f"eligible ids missing scorer gold: {missing_gold[:5]}")
+    missing_groups = sorted(set(eligible_ids) - set(query_group_by_id))
+    if missing_groups:
+        raise SupplyMemoryError(
+            f"eligible ids missing a receipt query group: {missing_groups[:5]}"
+        )
+
+    outcomes: list[SignedSupplyOutcome] = []
+    label_matches = 0
+    for sample_id in eligible_ids:
+        direct_row = a0_by_id[sample_id]
+        direct_response = str(getattr(direct_row, "response_text"))
+        # State is intentionally computed before scorer-side expected calls
+        # are read in this loop.  Its function signature accepts no gold.
+        state = extract_runtime_state(direct_response, registry_rows)
+        expected = expected_by_id[sample_id]
+        direct_calls, direct_parsed, direct_score = _score_response(expected, direct_response)
+        if not direct_parsed:
+            raise SupplyMemoryError(f"{sample_id}: tool-correct A0 response did not parse")
+        direct_label = ",".join(sorted({call.name for call in direct_calls}))
+
+        if sample_id in frozen_headroom:
+            if direct_score.tool_accuracy != 1.0 or direct_score.exact_match != 0.0:
+                raise SupplyMemoryError(
+                    f"{sample_id}: headroom stratum is not A0 tool-correct/exact-wrong"
+                )
+            supply_row = b1_by_id[sample_id]
+        else:
+            if direct_score.tool_accuracy != 1.0 or direct_score.exact_match != 1.0:
+                raise SupplyMemoryError(
+                    f"{sample_id}: population stratum is not A0 tool-correct/exact-correct"
+                )
+            supply_row = r1_by_id[sample_id]
+
+        supplied_label = getattr(supply_row, "supplied_tool")
+        if supplied_label != direct_label:
+            raise SupplyMemoryError(
+                f"{sample_id}: supplied tool label {supplied_label!r} does not equal "
+                f"the A0-selected label {direct_label!r}"
+            )
+        label_matches += 1
+        _supply_calls, _supply_parsed, supply_score = _score_response(
+            expected, str(getattr(supply_row, "response"))
+        )
+        outcomes.append(
+            SignedSupplyOutcome(
+                sample_id=sample_id,
+                group_id=str(query_group_by_id[sample_id]),
+                state=state,
+                stop_exact=int(direct_score.exact_match),
+                supply_exact=int(supply_score.exact_match),
+                stop_tool_accuracy=direct_score.tool_accuracy,
+                supply_tool_accuracy=supply_score.tool_accuracy,
+                stop_slot_f1=direct_score.slot_f1,
+                supply_slot_f1=supply_score.slot_f1,
+            )
+        )
+
+    group_counts = Counter(item.group_id for item in outcomes)
+    unresolved = sum(
+        parse_signature_parameters(row.get("signature", "")) is None
+        for row in registry_rows
+    )
+    return LoggedSurface(
+        outcomes=tuple(outcomes),
+        audit=SurfaceAudit(
+            a0_rows=len(a0_rows),
+            headroom_rows=len(headroom_selected),
+            population_rows=len(population_selected),
+            eligible_rows=len(outcomes),
+            distinct_query_groups=len(group_counts),
+            repeated_query_groups=sum(value > 1 for value in group_counts.values()),
+            supplied_tool_label_matches=label_matches,
+            unresolved_registry_signatures=unresolved,
+        ),
+    )
+
+
 def _state_label(state: RuntimeState, candidate_id: str) -> str:
     return json.dumps(state.key(candidate_id), separators=(",", ":"))
 
@@ -486,6 +713,101 @@ def assert_supply_renderer_identity() -> None:
         )
 
 
+def _identity_digest(lines: Sequence[str]) -> str:
+    payload = "\n".join(sorted(lines)) + "\n"
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _candidate_payload(report: CandidateReport) -> dict[str, object]:
+    return {
+        "candidate_id": report.candidate_id,
+        "state_class_counts": dict(report.state_class_counts),
+        "metrics": asdict(report.metrics),
+        "gates": dict(report.gates),
+        "promotion_passed": report.promotion_passed,
+        "decision_identity_sha256": _identity_digest(
+            [f"{item.outcome.sample_id}\t{item.action}" for item in report.decisions]
+        ),
+    }
+
+
+def build_policy_artifact(
+    surface: LoggedSurface,
+    screen: ScreenResult,
+    *,
+    offline_attempts: int,
+    source_hashes: Mapping[str, str] | None = None,
+) -> dict[str, object]:
+    """Create a response-free, self-hashed retrospective policy artifact."""
+
+    reports = {
+        candidate_id: _candidate_payload(report)
+        for candidate_id, report in sorted(screen.reports.items())
+    }
+    selected = (
+        None
+        if screen.selected_candidate is None
+        else reports[screen.selected_candidate]
+    )
+    outcomes = surface.outcomes
+    memory_lines = [
+        json.dumps(
+            {
+                "sample_id": item.sample_id,
+                "group_id": item.group_id,
+                "state": asdict(item.state),
+                "stop_exact": item.stop_exact,
+                "supply_exact": item.supply_exact,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        for item in outcomes
+    ]
+    payload: dict[str, object] = {
+        "schema": POLICY_SCHEMA,
+        "experiment_id": EXPERIMENT_ID,
+        "execution_profile": "model-free-check",
+        "claim_status": "retrospective discovery feasibility only",
+        "surface": {
+            **asdict(surface.audit),
+            "sample_identity_sha256": _identity_digest(
+                [item.sample_id for item in outcomes]
+            ),
+            "query_group_identity_sha256": _identity_digest(
+                [item.group_id for item in outcomes]
+            ),
+            "memory_sha256": _identity_digest(memory_lines),
+            "always_stop_exact": sum(item.stop_exact for item in outcomes),
+            "always_supply_exact": sum(item.supply_exact for item in outcomes),
+            "always_supply_saves": sum(item.delta > 0 for item in outcomes),
+            "always_supply_harms": sum(item.delta < 0 for item in outcomes),
+        },
+        "policy": {
+            "type": "exact-cell non-parametric action-return memory",
+            "default_action": STOP_DIRECT,
+            "minimum_cell_support": MIN_CELL_SUPPORT,
+            "minimum_cell_saves": MIN_CELL_SAVES,
+            "maximum_cell_harms": MAX_CELL_HARMS,
+            "parameter_training": "none",
+        },
+        "candidate_reports": reports,
+        "selected_candidate": screen.selected_candidate,
+        "selected": selected,
+        "promotion_passed": screen.promotion_passed,
+        "prospective_authorization": (
+            "a pass may only propose a separately preregistered approximately-100-sample "
+            "discovery experiment; this artifact authorizes no model contact"
+        ),
+        "offline_guard": {
+            "outbound_connection_attempts": offline_attempts,
+            "targets": [],
+        },
+        "source_hashes": dict(sorted((source_hashes or {}).items())),
+    }
+    return with_self_hash(payload)
+
+
 def _canonical_json(document: Mapping[str, object]) -> bytes:
     return json.dumps(
         document, ensure_ascii=True, sort_keys=True, separators=(",", ":")
@@ -532,6 +854,198 @@ def assert_policy_admits_prospective(document: Mapping[str, object]) -> None:
         raise SupplyMemoryError("selected policy state is not live")
 
 
+def _assert_file_committed(*, repo_root: Path, relpath: str) -> None:
+    tracked = subprocess.run(
+        ["git", "ls-files", "--error-unmatch", "--", relpath],
+        cwd=repo_root,
+        check=False,
+        capture_output=True,
+    )
+    clean = subprocess.run(
+        ["git", "diff", "--quiet", "HEAD", "--", relpath],
+        cwd=repo_root,
+        check=False,
+    )
+    if tracked.returncode != 0:
+        raise SupplyMemoryError(f"{relpath} is not committed at HEAD")
+    if clean.returncode != 0:
+        raise SupplyMemoryError(f"{relpath} differs from its committed HEAD bytes")
+
+
+def assert_registration_committed(repo_root: Path) -> None:
+    for relpath in REGISTRATION_PATHS:
+        _assert_file_committed(repo_root=repo_root, relpath=relpath)
+    ledger = (repo_root / "docs/exposure-ledger.md").read_text(encoding="utf-8")
+    if ledger.count(f"Row `{EXPERIMENT_ID}`") != 1:
+        raise SupplyMemoryError(
+            "committed exposure ledger lacks exactly one signed-supply registration"
+        )
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def load_registered_surface(
+    *,
+    repo_root: Path,
+    data_root: Path,
+    lock: Mapping[str, object],
+    a0_attempt: Path,
+    headroom_supply_attempt: Path,
+    population_supply_attempt: Path,
+    headroom_path: Path,
+    stage2_arm_plan_path: Path,
+    receipt_path: Path,
+) -> LoggedSurface:
+    """Validate the three consumed runs, then construct the frozen surface."""
+
+    from ..data.audio2tool import load_expected_calls, load_tool_registry
+    from . import a2t_pop_read, a2t_read, a2t_s2_read, a2t_s2b_read
+
+    a0_report = a2t_read.build_a2t_report(
+        a0_attempt, lock, data_root, repo_root=repo_root
+    )
+    headroom_identity = a2t_s2_read.load_headroom_identity(headroom_path)
+    if tuple(a0_report.headroom_ids) != tuple(headroom_identity.sample_ids):
+        raise SupplyMemoryError(
+            "A0 official read headroom does not equal the frozen headroom manifest"
+        )
+    a2t_s2b_read.build_a2t_s2b_report(
+        headroom_supply_attempt,
+        lock,
+        data_root,
+        repo_root=repo_root,
+        headroom_path=headroom_path,
+        stage2_arm_plan_path=stage2_arm_plan_path,
+    )
+    a2t_pop_read.build_a2t_pop_report(
+        population_supply_attempt,
+        lock,
+        data_root,
+        repo_root=repo_root,
+    )
+
+    a0_rows, a0_malformed = a2t_read.load_attempt_rows(a0_attempt)
+    b_rows, b_malformed = a2t_s2_read.load_attempt_rows(headroom_supply_attempt)
+    pop_rows, pop_malformed = a2t_s2_read.load_attempt_rows(population_supply_attempt)
+    malformed = (*a0_malformed, *b_malformed, *pop_malformed)
+    if malformed:
+        raise SupplyMemoryError(
+            f"validated source loaders still reported {len(malformed)} malformed row(s)"
+        )
+    query_groups = load_query_groups_from_receipt(
+        receipt_path, expected_split_identity_hash=SPLIT_IDENTITY_HASH
+    )
+    registry_rows = load_tool_registry(lock, data_root)
+    expected_by_id = load_expected_calls(lock, data_root, repo_root=repo_root)
+    surface = build_logged_surface(
+        a0_rows=a0_rows,
+        headroom_supply_rows=b_rows,
+        population_supply_rows=pop_rows,
+        headroom_ids=headroom_identity.sample_ids,
+        query_group_by_id=query_groups,
+        registry_rows=registry_rows,
+        expected_by_id=expected_by_id,
+    )
+    saves = sum(item.delta > 0 for item in surface.outcomes)
+    harms = sum(item.delta < 0 for item in surface.outcomes)
+    if saves != 8 or harms != 36:
+        raise SupplyMemoryError(
+            f"signed-return aggregate drifted: saves={saves}, harms={harms}; expected 8/36"
+        )
+    return surface
+
+
+def run_registered_replay(
+    *,
+    repo_root: Path,
+    data_root: Path,
+    lock: Mapping[str, object],
+    a0_attempt: Path,
+    headroom_supply_attempt: Path,
+    population_supply_attempt: Path,
+    headroom_path: Path,
+    stage2_arm_plan_path: Path,
+    receipt_path: Path,
+) -> dict[str, object]:
+    """Run the committed, zero-contact retrospective screen once."""
+
+    from .dev100_reviewer_audit import arm_offline_guard
+
+    assert_registration_committed(repo_root)
+    attempts = arm_offline_guard()
+    surface = load_registered_surface(
+        repo_root=repo_root,
+        data_root=data_root,
+        lock=lock,
+        a0_attempt=a0_attempt,
+        headroom_supply_attempt=headroom_supply_attempt,
+        population_supply_attempt=population_supply_attempt,
+        headroom_path=headroom_path,
+        stage2_arm_plan_path=stage2_arm_plan_path,
+        receipt_path=receipt_path,
+    )
+    screen = screen_candidates(surface.outcomes)
+    sources = {
+        "a0_outputs": _sha256_file(a0_attempt / "outputs.jsonl"),
+        "headroom_supply_outputs": _sha256_file(
+            headroom_supply_attempt / "outputs.jsonl"
+        ),
+        "population_supply_outputs": _sha256_file(
+            population_supply_attempt / "outputs.jsonl"
+        ),
+        "headroom_manifest": _sha256_file(headroom_path),
+        "stage2_arm_plan": _sha256_file(stage2_arm_plan_path),
+        "receipt": _sha256_file(receipt_path),
+    }
+    return build_policy_artifact(
+        surface,
+        screen,
+        offline_attempts=attempts.count,
+        source_hashes=sources,
+    )
+
+
+def _parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="python -m speech_aware_evidence_acquisition.analysis.training_free_a2t_supply_memory"
+    )
+    parser.add_argument("--repo-root", type=Path, required=True)
+    parser.add_argument("--data-root", type=Path, required=True)
+    parser.add_argument("--lock", type=Path, required=True)
+    parser.add_argument("--a0-attempt", type=Path, required=True)
+    parser.add_argument("--headroom-supply-attempt", type=Path, required=True)
+    parser.add_argument("--population-supply-attempt", type=Path, required=True)
+    parser.add_argument("--headroom", type=Path, required=True)
+    parser.add_argument("--stage2-arm-plan", type=Path, required=True)
+    parser.add_argument("--receipt", type=Path, required=True)
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    from ..data.lock import load_lock
+
+    args = _parser().parse_args(argv)
+    artifact = run_registered_replay(
+        repo_root=args.repo_root,
+        data_root=args.data_root,
+        lock=load_lock(args.lock),
+        a0_attempt=args.a0_attempt,
+        headroom_supply_attempt=args.headroom_supply_attempt,
+        population_supply_attempt=args.population_supply_attempt,
+        headroom_path=args.headroom,
+        stage2_arm_plan_path=args.stage2_arm_plan,
+        receipt_path=args.receipt,
+    )
+    print(json.dumps(artifact, indent=2, sort_keys=True))
+    return 0
+
+
 __all__ = [
     "CANDIDATE_IDS",
     "HEADROOM_SUPPLY_RENDERER",
@@ -546,15 +1060,28 @@ __all__ = [
     "RuntimeState",
     "ScreenResult",
     "SignedSupplyOutcome",
+    "SurfaceAudit",
+    "LoggedSurface",
     "SupplyMemoryError",
     "assert_policy_admits_prospective",
+    "assert_registration_committed",
     "assert_self_hash",
     "assert_supply_renderer_identity",
     "assign_folds",
+    "build_logged_surface",
+    "build_policy_artifact",
     "decide",
     "extract_runtime_state",
     "grouped_net_gain_bootstrap",
+    "load_query_groups_from_receipt",
+    "load_registered_surface",
+    "main",
     "parse_signature_parameters",
+    "run_registered_replay",
     "screen_candidates",
     "with_self_hash",
 ]
+
+
+if __name__ == "__main__":  # pragma: no cover - exercised by the registered CLI run
+    raise SystemExit(main())

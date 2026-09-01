@@ -1,12 +1,16 @@
 from __future__ import annotations
 
 import json
+import hashlib
+from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
 from speech_aware_evidence_acquisition.analysis import (
     training_free_a2t_supply_memory as smem,
 )
+from speech_aware_evidence_acquisition.reproduction.toolcall_scoring import ToolCall
 
 
 def _registry() -> tuple[dict[str, str], ...]:
@@ -280,3 +284,195 @@ def test_prospective_admission_accepts_only_live_changed_policy() -> None:
             },
         }
     )
+
+
+def _a0_row(sample_id: str, response: str, *, arm: str = "zero-supply") -> SimpleNamespace:
+    return SimpleNamespace(arm=arm, sample_id=sample_id, response_text=response)
+
+
+def _supply_row(
+    arm: str, sample_id: str, supplied_tool: str, response: str
+) -> SimpleNamespace:
+    return SimpleNamespace(
+        arm=arm,
+        sample_id=sample_id,
+        supplied_tool=supplied_tool,
+        response=response,
+    )
+
+
+def _synthetic_surface_inputs() -> dict[str, object]:
+    return {
+        "a0_rows": (
+            _a0_row(
+                "tier1_direct:000001",
+                '[{"name":"weather","arguments":{"city":"wrong"}}]',
+            ),
+            _a0_row("tier1_direct:000002", '[{"name":"ping","arguments":{}}]'),
+        ),
+        "headroom_supply_rows": (
+            _supply_row(
+                "B1",
+                "tier1_direct:000001",
+                "weather",
+                '[{"name":"weather","arguments":{"city":"right"}}]',
+            ),
+        ),
+        "population_supply_rows": (
+            _supply_row("R1", "tier1_direct:000002", "ping", "[]"),
+        ),
+        "headroom_ids": ("tier1_direct:000001",),
+        "query_group_by_id": {
+            "tier1_direct:000001": "q-1",
+            "tier1_direct:000002": "q-2",
+        },
+        "registry_rows": (
+            {"tool_name": "weather", "signature": "weather(city: str)"},
+            {"tool_name": "ping", "signature": "ping()"},
+        ),
+        "expected_by_id": {
+            "tier1_direct:000001": (ToolCall("weather", {"city": "right"}),),
+            "tier1_direct:000002": (ToolCall("ping", {}),),
+        },
+        "expected_a0_n": 2,
+        "expected_headroom_n": 1,
+        "expected_population_n": 1,
+    }
+
+
+def test_logged_surface_recomputes_paired_rewards_and_state() -> None:
+    surface = smem.build_logged_surface(**_synthetic_surface_inputs())
+    assert len(surface.outcomes) == 2
+    by_id = {item.sample_id: item for item in surface.outcomes}
+    assert by_id["tier1_direct:000001"].delta == 1
+    assert by_id["tier1_direct:000002"].delta == -1
+    assert by_id["tier1_direct:000001"].group_id == "q-1"
+    assert surface.audit == smem.SurfaceAudit(
+        a0_rows=2,
+        headroom_rows=1,
+        population_rows=1,
+        eligible_rows=2,
+        distinct_query_groups=2,
+        repeated_query_groups=0,
+        supplied_tool_label_matches=2,
+        unresolved_registry_signatures=0,
+    )
+
+
+def test_logged_surface_refuses_a_supplied_tool_not_selected_by_a0() -> None:
+    inputs = _synthetic_surface_inputs()
+    inputs["headroom_supply_rows"] = (
+        _supply_row(
+            "B1",
+            "tier1_direct:000001",
+            "ping",
+            '[{"name":"weather","arguments":{"city":"right"}}]',
+        ),
+    )
+    with pytest.raises(smem.SupplyMemoryError, match="supplied tool label"):
+        smem.build_logged_surface(**inputs)
+
+
+def test_logged_surface_refuses_gold_strata_that_do_not_match_the_frozen_definition() -> None:
+    inputs = _synthetic_surface_inputs()
+    expected = dict(inputs["expected_by_id"])
+    expected["tier1_direct:000002"] = (ToolCall("weather", {"city": "right"}),)
+    inputs["expected_by_id"] = expected
+    with pytest.raises(smem.SupplyMemoryError, match="population stratum"):
+        smem.build_logged_surface(**inputs)
+
+
+def test_logged_surface_refuses_missing_query_group_or_duplicate_a0_row() -> None:
+    missing_group = _synthetic_surface_inputs()
+    missing_group["query_group_by_id"] = {"tier1_direct:000001": "q-1"}
+    with pytest.raises(smem.SupplyMemoryError, match="query group"):
+        smem.build_logged_surface(**missing_group)
+
+    duplicate = _synthetic_surface_inputs()
+    duplicate["a0_rows"] = (
+        duplicate["a0_rows"][0],
+        duplicate["a0_rows"][0],
+    )
+    with pytest.raises(smem.SupplyMemoryError, match="duplicate"):
+        smem.build_logged_surface(**duplicate)
+
+
+def test_artifact_payload_keeps_hashed_identities_and_excludes_raw_responses() -> None:
+    surface = smem.build_logged_surface(**_synthetic_surface_inputs())
+    screen = smem.screen_candidates(surface.outcomes, seed=3, n_folds=2, n_replicates=20)
+    artifact = smem.build_policy_artifact(surface, screen, offline_attempts=0)
+    smem.assert_self_hash(artifact)
+    encoded = json.dumps(artifact, sort_keys=True)
+    assert "wrong" not in encoded
+    assert "right" not in encoded
+    assert artifact["surface"]["eligible_rows"] == 2
+    assert len(artifact["surface"]["sample_identity_sha256"]) == 64
+
+
+def test_receipt_group_loader_uses_query_idx_and_refuses_duplicates(tmp_path: Path) -> None:
+    receipt = tmp_path / "receipt.json"
+    receipt.write_text(
+        json.dumps(
+            {
+                "carrier": "audio2tool",
+                "split_identity_hash": "split-hash",
+                "items": [
+                    {"tier": "tier1_direct", "id": 1, "query_idx": 9},
+                    {"tier": "tier1_direct", "id": 2, "query_idx": 9},
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    assert smem.load_query_groups_from_receipt(
+        receipt, expected_split_identity_hash="split-hash"
+    ) == {
+        "tier1_direct:000001": "9",
+        "tier1_direct:000002": "9",
+    }
+
+    document = json.loads(receipt.read_text(encoding="utf-8"))
+    document["items"].append(document["items"][0])
+    receipt.write_text(json.dumps(document), encoding="utf-8")
+    with pytest.raises(smem.SupplyMemoryError, match="duplicate"):
+        smem.load_query_groups_from_receipt(
+            receipt, expected_split_identity_hash="split-hash"
+        )
+
+
+def test_receipt_group_loader_refuses_wrong_carrier_hash_or_missing_query_idx(
+    tmp_path: Path,
+) -> None:
+    receipt = tmp_path / "receipt.json"
+    base = {
+        "carrier": "other",
+        "split_identity_hash": "split-hash",
+        "items": [{"tier": "tier1_direct", "id": 1, "query_idx": 9}],
+    }
+    receipt.write_text(json.dumps(base), encoding="utf-8")
+    with pytest.raises(smem.SupplyMemoryError, match="carrier"):
+        smem.load_query_groups_from_receipt(
+            receipt, expected_split_identity_hash="split-hash"
+        )
+
+    base["carrier"] = "audio2tool"
+    receipt.write_text(json.dumps(base), encoding="utf-8")
+    with pytest.raises(smem.SupplyMemoryError, match="split identity"):
+        smem.load_query_groups_from_receipt(
+            receipt, expected_split_identity_hash="different"
+        )
+
+    del base["items"][0]["query_idx"]
+    receipt.write_text(json.dumps(base), encoding="utf-8")
+    with pytest.raises(smem.SupplyMemoryError, match="query_idx"):
+        smem.load_query_groups_from_receipt(
+            receipt, expected_split_identity_hash="split-hash"
+        )
+
+
+def test_source_hash_reads_complete_file(tmp_path: Path) -> None:
+    source = tmp_path / "source.bin"
+    source.write_bytes(b"signed-supply-source")
+    assert smem._sha256_file(source) == hashlib.sha256(  # noqa: SLF001
+        b"signed-supply-source"
+    ).hexdigest()
