@@ -1,0 +1,120 @@
+{
+  "experiment_id": "SAEA-A2T-MF-TFRL-SIGNED-SUPPLY-MEMORY-V1",
+  "schema": "saea-a2t-training-free-signed-supply-memory-experiment-v1",
+  "date": "2026-09-01",
+  "execution_profile": "model-free-check",
+  "purpose": "Test whether runtime-visible direct-call structure supports a conservative reward-memory decision between STOP_DIRECT and SUPPLY_STRIPPED_REGISTRY on the already-exposed Audio2Tool signed-return surface.",
+  "claim_status": "retrospective discovery feasibility only",
+  "contacts": {
+    "frozen_core": 0,
+    "embedding_tool": 0,
+    "tokenizer": 0,
+    "http_or_socket": 0,
+    "audio_seconds": 0,
+    "gpu_hours": 0.0
+  },
+  "population": {
+    "carrier": "audio2tool",
+    "split_role": "discovery",
+    "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+    "eligible": "the already-exposed 217 samples whose original A0 output selected the correct tool: 120 A0 exact-match failures plus 97 A0 exact matches",
+    "selection_warning": "eligibility was defined with scorer-side gold and is not a runtime state or a representative-population claim",
+    "group_id": "receipt query_idx, with every rendition of one query assigned to one fold",
+    "prohibited": [
+      "the other 183 tool-selection failures",
+      "any unexposed Audio2Tool sample",
+      "G2",
+      "FINAL60",
+      "test annotations",
+      "future turns"
+    ]
+  },
+  "actions": {
+    "STOP_DIRECT": "return the original A0 direct response with no second core contact",
+    "SUPPLY_STRIPPED_REGISTRY": "make one second core contact with the A0-selected tool row or rows rendered by render_b1_tool_schemas with argument_defaults removed",
+    "default": "STOP_DIRECT",
+    "final_answer_authority": "the frozen core"
+  },
+  "logged_rewards": {
+    "primary": "official exact_match recomputed with the frozen Audio2Tool scorer primitives",
+    "STOP_DIRECT": "the original A0 response",
+    "SUPPLY_STRIPPED_REGISTRY_headroom_120": "the Stage-2b B1 response",
+    "SUPPLY_STRIPPED_REGISTRY_em_correct_97": "the population R1 response",
+    "known_aggregate_context": {
+      "always_supply_saves": 8,
+      "always_supply_harms": 36
+    },
+    "secondary": [
+      "tool_accuracy",
+      "slot_f1",
+      "parse success",
+      "empty-call rate",
+      "second-contact rate"
+    ]
+  },
+  "runtime_state": {
+    "source": "original A0 response plus the frozen deployment registry",
+    "coarse_signature": [
+      "parse class: invalid, empty, single, or multiple",
+      "registry resolution: no-call, all-known, some-unknown, or all-unknown",
+      "declared-key relation: no-call, unresolved, exact, subset, superset, or mixed"
+    ],
+    "detailed_signature_additions": [
+      "declared schema arity bucket: zero, one, two, three-plus, mixed, or unresolved",
+      "provided argument-key count bucket: zero, one, two, three-plus, or mixed"
+    ],
+    "forbidden": [
+      "gold labels or correctness",
+      "reference transcript or spoken query text",
+      "supply response or future turn",
+      "sample id, query_idx, rendition id, or tier as a feature",
+      "tool name, domain, category, or description as a feature"
+    ]
+  },
+  "memory_policy": {
+    "type": "exact-cell non-parametric action-return memory",
+    "parameter_training": "none",
+    "candidates": ["coarse-v1", "detailed-v1"],
+    "decision": "choose SUPPLY_STRIPPED_REGISTRY only when the other-fold memory cell has at least 5 samples, at least 2 observed saves, and zero observed harms; otherwise choose STOP_DIRECT",
+    "candidate_selection": "among candidates that pass every gate, maximize cross-fitted exact-match net gain, then saves, then minimize second contacts, then choose the lexical candidate id"
+  },
+  "crossfit": {
+    "folds": 5,
+    "seed": 20260901,
+    "assignment": "deterministic balanced whole-query-group assignment",
+    "evaluation": "each group is acted on only by memory built from the other four folds",
+    "bootstrap": {
+      "unit": "query_idx group",
+      "replicates": 10000,
+      "seed": 20260901,
+      "ci_level": 0.9
+    }
+  },
+  "fidelity_gates": {
+    "expected_samples": 217,
+    "a0_unique_rows": 400,
+    "headroom_rows": 120,
+    "em_correct_rows": 97,
+    "query_group_isolation": true,
+    "supply_renderer_identity": true,
+    "a0_selected_tool_label_identity": true,
+    "runtime_state_gold_mutation_invariance": true,
+    "state_live_classes_at_least": 2,
+    "dominant_state_share_at_most": 0.95
+  },
+  "promotion_gates": {
+    "controller_differs_from_always_stop": true,
+    "controller_differs_from_always_supply": true,
+    "saved_exact_matches_at_least": 4,
+    "harmful_supplies_at_most": 3,
+    "avoid_known_always_supply_harms_fraction_at_least": 0.9,
+    "retain_known_always_supply_saves_fraction_at_least": 0.5,
+    "exact_match_net_gain_at_least": 3,
+    "grouped_ci90_lower_bound_strictly_positive": true,
+    "per_fold_net_gain_nonnegative": true,
+    "positive_net_gain_folds_at_least": 3,
+    "all_conjunctive": true
+  },
+  "failure": "write a negative artifact and verdict; make no model contact and open no new Audio2Tool population",
+  "success": "freeze one controller specification for a separately preregistered prospective discovery run of approximately 100 samples; do not revise the baseline or claim superiority from this screen"
+}
