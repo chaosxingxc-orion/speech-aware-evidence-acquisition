@@ -1,0 +1,163 @@
+{
+  "candidate_reports": {
+    "coarse-v1": {
+      "candidate_id": "coarse-v1",
+      "decision_identity_sha256": "ec85d8cf7db6724186c4d80b321e257cbc2e42f69d6435905b216a2d12d0065c",
+      "full_surface_return_cells": {
+        "[\"multiple\",\"all-known\",\"exact\"]": {"harms": 0, "n": 40, "neutral": 40, "saves": 0},
+        "[\"multiple\",\"all-known\",\"mixed\"]": {"harms": 1, "n": 8, "neutral": 7, "saves": 0},
+        "[\"single\",\"all-known\",\"exact\"]": {"harms": 31, "n": 138, "neutral": 100, "saves": 7},
+        "[\"single\",\"all-known\",\"mixed\"]": {"harms": 0, "n": 1, "neutral": 1, "saves": 0},
+        "[\"single\",\"all-known\",\"subset\"]": {"harms": 0, "n": 1, "neutral": 1, "saves": 0},
+        "[\"single\",\"all-known\",\"unresolved\"]": {"harms": 4, "n": 29, "neutral": 24, "saves": 1}
+      },
+      "gates": {
+        "both_actions": false,
+        "every_fold_nonnegative": true,
+        "harm_avoidance": true,
+        "harm_maximum": true,
+        "net_gain": false,
+        "positive_ci90_lower": false,
+        "positive_fold_count": false,
+        "save_retention": false,
+        "saved_minimum": false,
+        "state_liveness": true
+      },
+      "metrics": {
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "fold_net_gains": [0, 0, 0, 0, 0],
+        "harmed": 0,
+        "n_samples": 217,
+        "net_gain": 0,
+        "saved": 0,
+        "second_contact_rate": 0.0,
+        "sigma_hat": 0.0,
+        "stopped": 217,
+        "supplied": 0
+      },
+      "promotion_passed": false,
+      "state_class_counts": {
+        "[\"multiple\",\"all-known\",\"exact\"]": 40,
+        "[\"multiple\",\"all-known\",\"mixed\"]": 8,
+        "[\"single\",\"all-known\",\"exact\"]": 138,
+        "[\"single\",\"all-known\",\"mixed\"]": 1,
+        "[\"single\",\"all-known\",\"subset\"]": 1,
+        "[\"single\",\"all-known\",\"unresolved\"]": 29
+      }
+    },
+    "detailed-v1": {
+      "candidate_id": "detailed-v1",
+      "decision_identity_sha256": "ec85d8cf7db6724186c4d80b321e257cbc2e42f69d6435905b216a2d12d0065c",
+      "full_surface_return_cells": {
+        "[\"multiple\",\"all-known\",\"exact\",\"mixed\",\"mixed\"]": {"harms": 0, "n": 25, "neutral": 25, "saves": 0},
+        "[\"multiple\",\"all-known\",\"exact\",\"one\",\"one\"]": {"harms": 0, "n": 4, "neutral": 4, "saves": 0},
+        "[\"multiple\",\"all-known\",\"exact\",\"two\",\"two\"]": {"harms": 0, "n": 10, "neutral": 10, "saves": 0},
+        "[\"multiple\",\"all-known\",\"exact\",\"zero\",\"zero\"]": {"harms": 0, "n": 1, "neutral": 1, "saves": 0},
+        "[\"multiple\",\"all-known\",\"mixed\",\"mixed\",\"mixed\"]": {"harms": 1, "n": 4, "neutral": 3, "saves": 0},
+        "[\"multiple\",\"all-known\",\"mixed\",\"one\",\"mixed\"]": {"harms": 0, "n": 2, "neutral": 2, "saves": 0},
+        "[\"multiple\",\"all-known\",\"mixed\",\"two\",\"mixed\"]": {"harms": 0, "n": 1, "neutral": 1, "saves": 0},
+        "[\"multiple\",\"all-known\",\"mixed\",\"two\",\"two\"]": {"harms": 0, "n": 1, "neutral": 1, "saves": 0},
+        "[\"single\",\"all-known\",\"exact\",\"one\",\"one\"]": {"harms": 18, "n": 76, "neutral": 51, "saves": 7},
+        "[\"single\",\"all-known\",\"exact\",\"three-plus\",\"three-plus\"]": {"harms": 0, "n": 2, "neutral": 2, "saves": 0},
+        "[\"single\",\"all-known\",\"exact\",\"two\",\"two\"]": {"harms": 12, "n": 43, "neutral": 31, "saves": 0},
+        "[\"single\",\"all-known\",\"exact\",\"zero\",\"zero\"]": {"harms": 1, "n": 17, "neutral": 16, "saves": 0},
+        "[\"single\",\"all-known\",\"mixed\",\"two\",\"two\"]": {"harms": 0, "n": 1, "neutral": 1, "saves": 0},
+        "[\"single\",\"all-known\",\"subset\",\"two\",\"one\"]": {"harms": 0, "n": 1, "neutral": 1, "saves": 0},
+        "[\"single\",\"all-known\",\"unresolved\",\"unresolved\",\"one\"]": {"harms": 0, "n": 1, "neutral": 1, "saves": 0},
+        "[\"single\",\"all-known\",\"unresolved\",\"unresolved\",\"three-plus\"]": {"harms": 2, "n": 14, "neutral": 12, "saves": 0},
+        "[\"single\",\"all-known\",\"unresolved\",\"unresolved\",\"two\"]": {"harms": 2, "n": 13, "neutral": 10, "saves": 1},
+        "[\"single\",\"all-known\",\"unresolved\",\"unresolved\",\"zero\"]": {"harms": 0, "n": 1, "neutral": 1, "saves": 0}
+      },
+      "gates": {
+        "both_actions": false,
+        "every_fold_nonnegative": true,
+        "harm_avoidance": true,
+        "harm_maximum": true,
+        "net_gain": false,
+        "positive_ci90_lower": false,
+        "positive_fold_count": false,
+        "save_retention": false,
+        "saved_minimum": false,
+        "state_liveness": true
+      },
+      "metrics": {
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "fold_net_gains": [0, 0, 0, 0, 0],
+        "harmed": 0,
+        "n_samples": 217,
+        "net_gain": 0,
+        "saved": 0,
+        "second_contact_rate": 0.0,
+        "sigma_hat": 0.0,
+        "stopped": 217,
+        "supplied": 0
+      },
+      "promotion_passed": false,
+      "state_class_counts": {
+        "[\"multiple\",\"all-known\",\"exact\",\"mixed\",\"mixed\"]": 25,
+        "[\"multiple\",\"all-known\",\"exact\",\"one\",\"one\"]": 4,
+        "[\"multiple\",\"all-known\",\"exact\",\"two\",\"two\"]": 10,
+        "[\"multiple\",\"all-known\",\"exact\",\"zero\",\"zero\"]": 1,
+        "[\"multiple\",\"all-known\",\"mixed\",\"mixed\",\"mixed\"]": 4,
+        "[\"multiple\",\"all-known\",\"mixed\",\"one\",\"mixed\"]": 2,
+        "[\"multiple\",\"all-known\",\"mixed\",\"two\",\"mixed\"]": 1,
+        "[\"multiple\",\"all-known\",\"mixed\",\"two\",\"two\"]": 1,
+        "[\"single\",\"all-known\",\"exact\",\"one\",\"one\"]": 76,
+        "[\"single\",\"all-known\",\"exact\",\"three-plus\",\"three-plus\"]": 2,
+        "[\"single\",\"all-known\",\"exact\",\"two\",\"two\"]": 43,
+        "[\"single\",\"all-known\",\"exact\",\"zero\",\"zero\"]": 17,
+        "[\"single\",\"all-known\",\"mixed\",\"two\",\"two\"]": 1,
+        "[\"single\",\"all-known\",\"subset\",\"two\",\"one\"]": 1,
+        "[\"single\",\"all-known\",\"unresolved\",\"unresolved\",\"one\"]": 1,
+        "[\"single\",\"all-known\",\"unresolved\",\"unresolved\",\"three-plus\"]": 14,
+        "[\"single\",\"all-known\",\"unresolved\",\"unresolved\",\"two\"]": 13,
+        "[\"single\",\"all-known\",\"unresolved\",\"unresolved\",\"zero\"]": 1
+      }
+    }
+  },
+  "claim_status": "retrospective discovery feasibility only",
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-A2T-MF-TFRL-SIGNED-SUPPLY-MEMORY-V1",
+  "offline_guard": {"outbound_connection_attempts": 0, "targets": []},
+  "policy": {
+    "default_action": "STOP_DIRECT",
+    "maximum_cell_harms": 0,
+    "minimum_cell_saves": 2,
+    "minimum_cell_support": 5,
+    "parameter_training": "none",
+    "type": "exact-cell non-parametric action-return memory"
+  },
+  "promotion_passed": false,
+  "prospective_authorization": "a pass may only propose a separately preregistered approximately-100-sample discovery experiment; this artifact authorizes no model contact",
+  "schema": "saea-a2t-training-free-signed-supply-memory-policy-v1",
+  "selected": null,
+  "selected_candidate": null,
+  "self_sha256": "99c19db3f1adfde2c86b6c9ebfc4c18fc3dc58fe2ccfde22a78c679a408ca7c6",
+  "source_hashes": {
+    "a0_outputs": "e81549266834b8b6d2bfa0500e22e92fb130923bd46b619139ba2969a8e1b75c",
+    "headroom_manifest": "894ffa45dcd3e170da17deb11adc4fb7b844d9ab14adbc2e08559f2f8daf842f",
+    "headroom_supply_outputs": "7119918fb5904b9a7198f5fec6f4a6b3d8d9acbefe2991ebb4fb3553c4a4c8e4",
+    "population_supply_outputs": "8d70f56bcffb8ccecbdbf638170b28575fde4fe7574e607009cf69a52038f282",
+    "receipt": "d99570a797744f7dc3db53bdb898611836ae2682a02e726b974d05734c6cbb2d",
+    "stage2_arm_plan": "6eb32b2798e8289d257a14d273dd970a8dc13b48e2943118ccb42645159dba1a"
+  },
+  "surface": {
+    "a0_rows": 400,
+    "always_stop_exact": 97,
+    "always_supply_exact": 69,
+    "always_supply_harms": 36,
+    "always_supply_saves": 8,
+    "distinct_query_groups": 208,
+    "eligible_rows": 217,
+    "headroom_rows": 120,
+    "memory_sha256": "a17cef81f1746c2b15f6cf6de235e4a182e4eb57bf749d1198e67767bdf81fd6",
+    "population_rows": 97,
+    "query_group_identity_sha256": "57c29c95bc00c905a5dd680a88f30182340c5eee8935c7aa239c31425dcd6cd2",
+    "repeated_query_groups": 8,
+    "sample_identity_sha256": "b1f6f362be959e366d87170865aa27f4d54ac45e84a44cb90d32a34982d3d7b2",
+    "supplied_tool_label_matches": 217,
+    "unresolved_registry_signatures": 15
+  }
+}
