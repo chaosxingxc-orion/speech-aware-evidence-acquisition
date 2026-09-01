@@ -1,0 +1,307 @@
+{
+  "experiment_id": "SAEA-A2T-TFRL-SELF-TRANSCRIPT-CASCADE-104-V1",
+  "schema": "saea-a2t-training-free-self-transcript-cascade-experiment-v1",
+  "date": "2026-09-01",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Test whether a same-core English self-transcript creates useful lexical evidence and whether a cross-fitted training-free controller can convert that evidence into a reliable improvement over frozen one-call M0.",
+  "predecessor": {
+    "experiment_id": "SAEA-A2T-TFRL-FACTOR-TOP1-104-V1",
+    "result_file": "docs/checks/speech-aware-evidence-acquisition/2026-09-01-a2t-factor-top1-104-v1/mechanism-result.json",
+    "result_file_sha256": "1cca5291452022d1897144ad41073b37c0cf29445e5359bcd189197d4cae85b8",
+    "verdict": "all 103 recovery samples returned a response, but the strict semantic-factor parser accepted zero; no BM25 candidate existed and no evidence-use or scorer phase opened",
+    "required_change": "acquire a plain English linguistic observation that is independently known to be live, preserve a batch-level liveness stop before evidence use, and do not relax or retry the closed strict-factor interface"
+  },
+  "independent_motivation": [
+    "the earlier 60-sample speech cascade routed 45 of 60 frozen-core self-transcripts with the preregistered text-retrieval threshold",
+    "the frozen Audio2Tool perfect-transcript lexical ceiling reached 0.7925 top-5 recall while the one-call A2T-G1-104 tool accuracy was 0.5962",
+    "the failed factor probe localized its failure to strict structured observation rather than model response liveness"
+  ],
+  "single_information_change": {
+    "unchanged": [
+      "frozen M0 response bytes",
+      "A2T-G1-104 sample identities and speech-feature packets",
+      "frozen core and API-shaped service boundary",
+      "complete 152-tool task contract on final-answer contacts",
+      "official scorer and exact-match primary outcome",
+      "five whole-query-group folds",
+      "default action returns frozen M0",
+      "zero parameter updates"
+    ],
+    "changed": "replace the dead strict semantic-factor observation with a plain English same-core self-transcript, retrieve frozen knowledge content with deterministic BM25, and supply a bounded matched evidence bundle",
+    "not_allowed": [
+      "repairing, relaxing, or retrying the predecessor factor schema",
+      "reference transcripts, gold labels, scores, rewards, test annotations, or future turns on a runtime path",
+      "a second answering language model",
+      "post-result transcript filters, BM25 settings, evidence budgets, state bins, support rules, or promotion-threshold changes"
+    ]
+  },
+  "population": {
+    "carrier": "audio2tool",
+    "split_role": "discovery",
+    "split_name": "A2T-G1-104",
+    "count": 104,
+    "strata": "13 samples per tier across all eight tiers",
+    "receipt": "docs/receipts/a2t/A2T-G1-104.json",
+    "receipt_sha256": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db",
+    "split_identity_hash": "516f92d9b919640969676eb10b776d9c479169fb0a387497e943c726b2191326",
+    "run_identity_hash": "f5a030189cf80dcbc52899e2fa5f819bac03874f2ad3f9645fdc60c432a9bf3a",
+    "audio_seconds_one_pass": 587.017,
+    "exposure": "fully exposed discovery cohort; all findings are secondary mechanism evidence and cannot revise the locked engineering baseline",
+    "forbidden": [
+      "the other 296 Audio2Tool parent-discovery rows",
+      "any unregistered Audio2Tool sample",
+      "G2",
+      "FINAL60",
+      "any test annotation",
+      "any future turn"
+    ]
+  },
+  "sources": {
+    "frozen_m0_outputs": {
+      "run": "SAEA-A2T-G1",
+      "attempt": "attempt-20260825T100735Z-a2tg1m0",
+      "relpath": "arm1-m0-outputs.jsonl",
+      "sha256": "dea60ff1e63fd2ef11c93edf8808217062fea3f0565ed5b60f136264bc6a9467",
+      "semantics": "one-call baseline and STOP_M0 output, reused without model contact"
+    },
+    "knowledge_snapshot": {
+      "receipt": "docs/receipts/knowledge/a2t-kb-size-full.json",
+      "receipt_sha256": "75f52a23ee86ff00abc2d33bb865fd3a0864dcb77fe7035eece13fbb2e77e081",
+      "snapshot_id": "a2t-kb-toolshaped-9eb5f4bf186a0285",
+      "snapshot_sha256": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2",
+      "facet_count": 12936,
+      "value_count": 12601,
+      "construction": "block-disjoint English training content; no reference transcript or discovery/test annotation"
+    },
+    "tool_registry": {
+      "lock_key": "audio2tool",
+      "relative_path": "tools_registry.csv",
+      "sha256": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4",
+      "rows": 152,
+      "ordering": "ascending numeric tool_id"
+    },
+    "prompt_fit_receipt": {
+      "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-g1/prompt-fit-np2.json",
+      "sha256": "0c77812d9439b6a7d6d3ff0227fc27924f617245d1ec9a0cbca20960f090946b",
+      "dominance_rule": "the final contact must not exceed the landed envelope of one agent state, five facets, six values, the complete task contract, and 1024 completion tokens"
+    }
+  },
+  "agent_loop": {
+    "executor_id": "openjiuwen-workflow-v1",
+    "frozen_core": "Qwen3-Omni-30B-A3B-Instruct Q4_K_M through a receipt-pinned local llama.cpp API-shaped service",
+    "same_core_only": true,
+    "parameter_training": "none",
+    "phase_barrier": "finish and seal every OBS_SELF_TRANSCRIPT response, evaluate only label-free liveness, and stop the experiment if the batch gate fails before starting any USE contact",
+    "phase_1": "OBS_SELF_TRANSCRIPT: one speech-only same-core contact receives the original speech and an ASR-only English instruction; it receives no registry, knowledge value, M0 response, gold, or task-answer schema",
+    "phase_2": "ORG_RETRIEVE: an offline deterministic parser validates the transcript and deterministic local BM25 ranks the frozen knowledge snapshot; no model, embedding, tokenizer, HTTP, or socket contact is allowed",
+    "phase_3_main": "USE_MATCHED: one final same-core contact receives the original speech, the validated English self-transcript as traced AgentState, the complete frozen task contract, and the matched bounded evidence bundle",
+    "phase_3_control": "USE_SHUFFLED_EVIDENCE: one final same-core contact receives the same original speech, its own validated self-transcript AgentState, the same task contract, and an equal-budget evidence bundle retrieved from a deterministic same-tier deranged donor transcript",
+    "final_actions": [
+      "STOP_M0",
+      "USE_MATCHED"
+    ],
+    "invalid_or_unavailable_semantics": "return frozen M0 without a USE contact; rejected transcript text never enters a later model context",
+    "final_authority": "only a USE_MATCHED frozen-core response or frozen M0 can be the proposed policy answer; transcript responses, retriever state, and shuffled-control responses are never final policy authority"
+  },
+  "self_transcript_contract": {
+    "instruction": "Transcribe the English speech verbatim. Output only the spoken English words. Do not answer the request, infer missing content, emit JSON, or name a tool. If a word is unclear, write the most likely English word without commentary.",
+    "completion_tokens": 192,
+    "temperature": 0,
+    "registry_visible": false,
+    "task_answer_schema_visible": false,
+    "m0_visible": false,
+    "reference_transcript_visible": false,
+    "canonicalization": "strip surrounding ASCII whitespace, normalize CRLF to LF, require one nonempty line, collapse internal ASCII whitespace, and preserve the remaining ASCII letters, digits, apostrophes, hyphens, and sentence punctuation",
+    "validity": [
+      "one through 160 whitespace-delimited tokens",
+      "ASCII printable characters only and at least one ASCII letter",
+      "at least 0.80 of alphanumeric tokens contain an ASCII letter",
+      "not valid JSON and not fenced code",
+      "does not contain a tool-call object, role prefix, model commentary, or refusal marker"
+    ],
+    "invalid_semantics": "record the structural rejection reason, force STOP_M0, and never place the rejected text in another model context"
+  },
+  "label_free_batch_liveness_gate": {
+    "evaluated_after_all_observation_contacts": true,
+    "evaluated_before_any_use_contact": true,
+    "model_responses_at_least": 102,
+    "valid_transcripts_at_least": 99,
+    "positive_bm25_routes_at_least": 94,
+    "distinct_normalized_transcripts_at_least": 83,
+    "largest_identical_transcript_count_at_most": 5,
+    "tool_call_or_json_leakage_count": 0,
+    "same_tier_derangement_possible_for_every_routed_sample": true,
+    "all_conjunctive": true,
+    "failure": "seal a negative liveness result, make no USE or resend contact, do not open gold or an official scorer, and close this self-transcript interface on A2T-G1-104"
+  },
+  "retriever": {
+    "policy_id": "saea-a2t-self-transcript-content-bm25-top5-v1",
+    "algorithm": "deterministic Okapi BM25 over frozen English content facets",
+    "k1": 1.5,
+    "b": 0.75,
+    "tokenization": "lowercase ASCII alphanumeric tokens after camel-case splitting",
+    "query": "the canonical validated self-transcript only",
+    "documents": "frozen content-facet English text only",
+    "candidate_rule": "rank positive-score facets by descending BM25 score, then stable facet identity; keep the first five facets after deterministic deduplication",
+    "evidence_budget": {
+      "facets_at_most": 5,
+      "associated_values_at_most": 6,
+      "distinct_task_targets_at_most": 5,
+      "renderer": "the existing canonical Audio2Tool knowledge renderer"
+    },
+    "unavailable_rule": "no positive facet score means no route and forces STOP_M0",
+    "invariances": [
+      "knowledge source order",
+      "consistent source path relocation",
+      "ASCII whitespace variation in the query",
+      "stable results for byte-identical inputs"
+    ]
+  },
+  "shuffled_evidence_control": {
+    "scope": "all routed samples",
+    "assignment": "within each tier, sort routed sample ids by SHA-256 of shuffled-evidence-v1 plus sample_id and rotate donor transcripts by one position",
+    "derangement": "no sample can donate its own transcript; every routed sample receives exactly one donor and is used exactly once as a donor within its tier",
+    "final_agent_state": "the recipient's own validated self-transcript remains visible",
+    "retrieval_query": "the donor self-transcript is used only by the deterministic retriever and is not rendered into the final model context",
+    "evidence_budget": "identical to USE_MATCHED",
+    "purpose": "measure whether matched evidence adds information beyond a second same-core contact, the self-transcript AgentState, and the fixed evidence budget"
+  },
+  "runtime_state": {
+    "coarse": [
+      "M0 parse relation to matched top-5 targets: intersects, known-disjoint, unresolved",
+      "normalized BM25 top-1 margin: below-0.15, at-least-0.15",
+      "positive facet count: one, two-to-five, six-or-more"
+    ],
+    "detailed_additions": [
+      "transcript word count: one-to-four, five-to-eight, nine-or-more",
+      "distinct task targets in supplied evidence: one, two-to-three, four-to-five"
+    ],
+    "margin_definition": "top1-minus-top2 divided by max(top1, 1e-12); a missing top2 has margin 1",
+    "forbidden": [
+      "literal transcript text or token identity",
+      "retrieved or M0 tool identity",
+      "knowledge facet, value, registry domain, or category identity",
+      "sample id, query_idx, rendition id, tier, donor id, or fold as a feature",
+      "gold labels, correctness, score, reward, USE response, shuffled response, or future turn"
+    ]
+  },
+  "training_free_reward_memory": {
+    "type": "five-fold whole-query-group cross-fitted hierarchical exact-cell action-return memory",
+    "folds": 5,
+    "seed": 20260901,
+    "default_action": "STOP_M0",
+    "primary_return": "official exact_match(USE_MATCHED) minus official exact_match(STOP_M0)",
+    "secondary_returns": [
+      "tool_accuracy delta",
+      "slot micro-F1 delta",
+      "incremental observation and final contacts"
+    ],
+    "decision": "use the most-specific other-fold matching cell, detailed before coarse; select USE_MATCHED only with support at least four, at least two exact-match saves, and zero exact-match harms; otherwise STOP_M0",
+    "candidate_selection": "the hierarchy and thresholds are frozen; no policy-family search is allowed after labels open",
+    "no_parameter_updates": true,
+    "no_counterfactual_imputation": true,
+    "contact_accounting": "every deployable sample pays one self-transcript contact; only USE_MATCHED pays a final-answer contact; frozen M0 remains the one-call baseline"
+  },
+  "resend_control": {
+    "count": 16,
+    "selection": "after matched route availability is frozen but before any USE response is semantically read, choose two routed samples per tier by the smallest SHA-256 of resend-self-transcript-v1 plus sample_id",
+    "protocol": "repeat the byte-identical USE_MATCHED model request through a fresh gated attempt with the same request id, slot id, speech packet, decoding parameters, AgentState, supplied evidence, task contract, and control instruction",
+    "scoring": "create a complete 104-row resend composite by replacing only the 16 selected matched responses and retaining matched or frozen-M0 responses for the other rows",
+    "floor": "record request-hash equality, byte divergence, parsed-call divergence, exact-match divergence, and the absolute matched-versus-resend-composite exact-count difference",
+    "promotion_binding": "cross-fitted policy exact gain must exceed the measured absolute complete-manifest resend exact-count difference"
+  },
+  "evaluation": {
+    "seal_before_score": "all observation, matched, shuffled-evidence, and resend contacts and all complete output manifests seal before gold or scorer results are opened",
+    "official_scorer": "invoke the existing authoritative scorer unchanged and single-process once for each complete manifest",
+    "outer_parallelism": {
+      "entrypoint": "scripts/evaluate_parallel.sh",
+      "wave_1_workers": 3,
+      "wave_1_jobs": [
+        "matched complete 104-row composite",
+        "shuffled-evidence complete 104-row composite",
+        "resend complete 104-row composite"
+      ],
+      "wave_2_jobs": [
+        "cross-fitted policy complete 104-row composite after the fixed policy is composed"
+      ],
+      "official_scorer_processes_per_job": 1,
+      "aggregation": "never shard a dataset for official scoring and never average shard-level metrics",
+      "equivalence_gate": "every parallel result must be verified, bind the expected complete-manifest identity, and match an unchanged official-scorer invocation",
+      "efficiency_report": "record wall time, sum of per-job times, effective speedup, worker count, storage pressure, result hashes, and scorer identity; scoring speed is not a scientific promotion gate"
+    },
+    "bootstrap": {
+      "unit": "query_idx group",
+      "replicates": 10000,
+      "seed": 20260901,
+      "ci_level": 0.9
+    },
+    "mandatory_reports": [
+      "M0, always-use matched, shuffled-evidence, resend, and cross-fitted policy exact match, tool accuracy, and slot micro-F1",
+      "observation response rate, transcript validity and rejection reasons, word-count distribution, diversity, and prohibited-structure leakage",
+      "BM25 route rate, top-1 margin, positive-facet count, top-5 gold-tool recall on the scoring side only, and evidence-target diversity",
+      "matched-minus-M0, matched-minus-shuffled, and policy-minus-M0 grouped paired deltas and CI90",
+      "policy saves, harms, net gain, action rate, observation contacts, final contacts, and total contacts per sample",
+      "all eight tiers without tier-conditioned tuning and all five whole-query-group folds",
+      "state-cell support, signed-return mixing, and every selected cell's other-fold provenance",
+      "resend request identity, byte, parsed-call, metric, timing, and slot-id divergence",
+      "parallel scorer wall time, per-job time, effective speedup, result hashes, complete-manifest identities, and scorer identity"
+    ]
+  },
+  "promotion_gates": {
+    "liveness_gate_passed": true,
+    "matched_top5_gold_tool_recall_exceeds_m0_tool_accuracy_by_at_least_count": 3,
+    "matched_exact_match_exceeds_m0_by_at_least_count": 3,
+    "matched_tool_accuracy_exceeds_m0_by_at_least_count": 3,
+    "matched_exact_match_exceeds_shuffled_by_at_least_count": 3,
+    "matched_tool_accuracy_exceeds_shuffled_by_at_least_count": 3,
+    "matched_minus_shuffled_grouped_exact_ci90_lower_bound_strictly_positive": true,
+    "both_policy_actions_observed": true,
+    "policy_use_samples_at_least": 5,
+    "policy_use_samples_at_most": 52,
+    "policy_saved_exact_matches_at_least": 3,
+    "policy_harmful_uses_at_most": 0,
+    "policy_exact_match_net_gain_at_least": 3,
+    "policy_exact_gain_exceeds_resend_absolute_count_difference": true,
+    "policy_minus_m0_grouped_exact_ci90_lower_bound_strictly_positive": true,
+    "policy_tool_accuracy_net_gain_nonnegative": true,
+    "policy_slot_micro_f1_net_gain_nonnegative": true,
+    "every_fold_policy_exact_match_net_gain_nonnegative": true,
+    "positive_policy_exact_match_folds_at_least": 2,
+    "policy_exact_gain_at_least_always_use_matched_exact_gain": true,
+    "policy_final_contacts_strictly_fewer_than_always_use_matched": true,
+    "new_state_live_classes_at_least": 2,
+    "non_dominant_state_samples_at_least": 10,
+    "all_conjunctive": true
+  },
+  "decision_ladder": {
+    "liveness_failure": "write a negative artifact, make no USE contact, close this self-transcript interface on the current cohort, and do not open gold or scorer",
+    "scientific_failure": "write a negative artifact, close this matched self-transcript BM25 evidence mechanism on the current cohort, and make no fresh-sample contact",
+    "success": "freeze the exact observation, retriever, evidence renderer, controller, and gates; then preregister a separate block-disjoint approximately-104-sample prospective support flight without opening it under this contract",
+    "support_success": "only a separately registered stable prospective gain may propose an approximately-1000-sample Stage-2 engineering validation; no larger run is authorized here",
+    "large_validation_success": "only replicated approximately-100 and approximately-1000 gains may propose a new engineering-baseline lock; Stage-3, test, and paper-scale claims remain separately gated",
+    "no_test_tuning": true,
+    "no_failure_followup": "do not alter transcript acceptance, BM25, top-k, evidence budget, shuffle, state bins, support, harm, or promotion gates on these returns"
+  },
+  "contact_budget": {
+    "observation_contacts_maximum": 104,
+    "matched_use_contacts_maximum": 104,
+    "shuffled_use_contacts_maximum": 104,
+    "resend_contacts": 16,
+    "canary_allowance": 6,
+    "planned_model_calls": 334,
+    "planned_speech_audio_seconds": 2000,
+    "planned_gpu_hours": 1.0,
+    "paid_api_spend": 0,
+    "embedding_contacts": 0,
+    "tokenizer_contacts": 0
+  },
+  "precontact_requirements": [
+    "implementation and tests are committed with at least 80 percent targeted branch coverage",
+    "structured contracts.ExecutionPlan files are committed with this row as exposure_pre_registration_id",
+    "split identity, protocol hashes, source hashes, speech packets, runtime receipt, attempt budgets, and one-shot identities validate fail-closed",
+    "ASR-only prompt isolation, English/ASCII filter, batch liveness barrier, BM25 invariance, evidence-budget, derangement, forbidden-policy-feature, group-fold isolation, exact-replay, prompt-fit, and complete-manifest gates pass",
+    "three complete-manifest outer-parallel official scorer jobs are prepared but cannot execute before every model response seals",
+    "the official scorer code and metric definitions remain unchanged",
+    "working tree is clean"
+  ]
+}

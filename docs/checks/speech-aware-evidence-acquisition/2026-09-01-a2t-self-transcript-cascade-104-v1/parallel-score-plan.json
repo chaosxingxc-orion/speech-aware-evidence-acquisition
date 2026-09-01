@@ -1,0 +1,45 @@
+{
+  "schema": "saea-parallel-score-plan-v1",
+  "experiment_id": "SAEA-A2T-TFRL-SELF-TRANSCRIPT-CASCADE-104-V1",
+  "entrypoint": "scripts/evaluate_parallel.sh",
+  "mode": "--finalize",
+  "official_scorer": {
+    "modified": false,
+    "processes_per_job": 1,
+    "invocations_per_complete_manifest": 1
+  },
+  "wave_1": {
+    "workers": 3,
+    "jobs": [
+      {
+        "job_id": "self-transcript-matched-composite",
+        "input": "one complete 104-row matched run manifest",
+        "attempt": "the matched USE attempt"
+      },
+      {
+        "job_id": "self-transcript-shuffled-evidence-composite",
+        "input": "one complete 104-row shuffled-evidence run manifest",
+        "attempt": "the shuffled-evidence USE attempt"
+      },
+      {
+        "job_id": "self-transcript-resend-composite",
+        "input": "one complete 104-row resend run manifest",
+        "attempt": "the 16-contact byte-identical matched replay attempt"
+      }
+    ]
+  },
+  "wave_2": {
+    "workers": 1,
+    "jobs": [
+      {
+        "job_id": "self-transcript-crossfit-policy-composite",
+        "input": "one complete 104-row policy run manifest composed by the frozen cross-fitted rule",
+        "attempt": "the model-free policy composition attempt"
+      }
+    ]
+  },
+  "materialization": "No scorer starts until observation, matched, shuffled-evidence, and resend attempts are sealed and the three wave-1 complete 104-row manifests verify. The launcher writes exact manifest paths to a JSONL job file and invokes the unchanged official finalizer once per manifest. Wave 2 starts only after the fixed cross-fitted policy composition has produced and verified its own complete manifest.",
+  "aggregation_rule": "Never split one dataset into scoring shards and never average shard-level metrics. Each worker invokes the unchanged official scorer on one complete 104-row composite.",
+  "equivalence_rule": "Every result must be verified, bind the expected complete-manifest identity, and match the unchanged authoritative single-job path for the same manifest after excluding nonsemantic timing fields.",
+  "timing_receipt": "Each batch-summary.json records outer wall time, sum of per-job elapsed times, effective speedup, worker count, per-job status, scorer identity, complete-manifest identities, and result hashes."
+}
