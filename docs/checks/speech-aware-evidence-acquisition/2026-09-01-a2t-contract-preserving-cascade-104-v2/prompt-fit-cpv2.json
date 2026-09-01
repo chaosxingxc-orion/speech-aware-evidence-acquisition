@@ -1,0 +1,63 @@
+{
+  "schema": "saea-a2t-cpv2-prompt-fit-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "scope": "model-free-check",
+  "carrier_lock_key": "audio2tool",
+  "split_name": "A2T-CPV2-104",
+  "split_role": "discovery",
+  "split_count": 104,
+  "split_identity_hash": "401a28684adea908c80363df0815c9ce04b0ffa46a654975b129d4b69e60f8a1",
+  "promotion_receipt": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a/A2T-CPV2-104-promotion.json",
+  "promotion_receipt_sha256": "a9ae338fbc9ba4734553b97a417403923aa6e085d3bd4446848a2abff3b65c87",
+  "preprocess_report": "docs/checks/speech-aware-evidence-acquisition/2026-09-01-a2t-contract-preserving-cascade-104-v2/preprocess-report.json",
+  "preprocess_report_sha256": "f0c7cbcf54753e8d48fe1924cb3dde50152bef3a3bb220dacc9854baa9c1ad25",
+  "inherited_text_envelope_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-g1/prompt-fit-np2.json",
+  "inherited_text_envelope_receipt_sha256": "0c77812d9439b6a7d6d3ff0227fc27924f617245d1ec9a0cbca20960f090946b",
+  "inheritance_rule": "The complete 152-row task contract, at most one Agent-state text, five visible facets, six visible values, 1024 completion tokens, chat template, prompt order, context geometry, and direct final output sentence are unchanged. The prior text-token counts are therefore reused byte-for-byte. Only the newly measured speech-feature token maximum replaces the predecessor maximum.",
+  "text_prompt_tokens": {
+    "m0_direct": 13236,
+    "evidence_use_worst": 19047,
+    "source_byte_identity_preserved": true
+  },
+  "speech_feature_tokens_distribution": {
+    "count": 104,
+    "min": 26,
+    "median": 65,
+    "p90": 130,
+    "max": 455,
+    "sum": 7735
+  },
+  "speech_feature_tokens_measured_worst": 455,
+  "speech_feature_tokens_measured_worst_sample_id": "tier7_multiturn:000062",
+  "packet_integrity": {
+    "packets_loaded": 104,
+    "packet_sha256_matches_promotion_receipt": 104,
+    "audio_sha256_matches_subset_receipt": 104
+  },
+  "envelopes": [
+    {
+      "envelope_id": "m0-direct-decode",
+      "text_prompt_tokens": 13236,
+      "speech_feature_tokens": 455,
+      "prompt_tokens_with_measured_speech": 13693
+    },
+    {
+      "envelope_id": "contract-preserving-evidence-decode-worst",
+      "text_prompt_tokens": 19047,
+      "speech_feature_tokens": 455,
+      "prompt_tokens_with_measured_speech": 19504
+    }
+  ],
+  "context_tokens": 65536,
+  "slot_count": 2,
+  "context_tokens_per_slot": 32768,
+  "completion_tokens": 1024,
+  "maximum_prompt_tokens_with_measured_speech": 19504,
+  "required_context_per_slot": 20528,
+  "context_margin_tokens": 12240,
+  "maximum_prompt_fits_one_slot": true,
+  "model_contact": false,
+  "tokenizer_contact": false,
+  "gold_read": false,
+  "test_read": false
+}

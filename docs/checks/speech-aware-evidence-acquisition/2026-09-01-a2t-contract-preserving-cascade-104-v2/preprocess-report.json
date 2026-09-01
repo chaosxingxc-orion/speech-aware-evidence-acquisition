@@ -1,0 +1,61 @@
+{
+  "attempt_id": "attempt-20260901T220601Z-a2tcpv2pre",
+  "audio_seconds_total": 536.05,
+  "boundary": "label-free: gold never opened, no response read semantically, the registered completion is one token; the GPU decoder on 8090 was never started, stopped, probed, reconfigured or contacted",
+  "config_hash": "800f66aa970384889131e77ac79bf47d0da647ced874f2fa4db991b3c210e4d5",
+  "core_client": {
+    "cost": {
+      "audio_seconds_used": 536.0500000000002,
+      "calls_used": 104,
+      "completion_tokens_total": 104,
+      "latency_seconds_total": 204.85837382735917,
+      "prompt_tokens_total": 10855,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "fe843e1b4789d3f3b47731ddf5b1bb42d430b05afe74292afc9ca0a6368e2864"
+    },
+    "trace_manifest_hash": "99236b594568e2cff8ecc380d37ac4fac230866ddbb5ba6737c71c626636aba4"
+  },
+  "count": 104,
+  "encode_contacts": 104,
+  "encode_failures": [],
+  "fragments": {
+    "baseline": "speech-native-preprocess",
+    "dataset": "audio2tool-cpv2-104",
+    "experiment": "a2t-cpv2-preprocess",
+    "model": "q4km-preprocess-featcache-cpu-sidecar-a2t"
+  },
+  "gate": {
+    "umbrella_lock_sha256": "fe843e1b4789d3f3b47731ddf5b1bb42d430b05afe74292afc9ca0a6368e2864"
+  },
+  "generated_at": "2026-09-01T22:11:28.596512+00:00",
+  "gpu_decoder_reachable_after": false,
+  "gpu_decoder_reachable_before": false,
+  "legacy_cache_dir": "/home/chao/feat-cache/audio2tool-q4km-04ccc72a",
+  "llama_cpp_build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+  "packet_root": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a",
+  "packets_promoted": 104,
+  "plan": {
+    "attempt_core_ceiling": 110,
+    "planned_gpu_hours": 0.2,
+    "planned_model_calls": 120,
+    "planned_speech_audio_seconds": 650
+  },
+  "prior_cache_disclosure": "The pre-existing legacy cache /home/chao/feat-cache/audio2tool-q4km was warm for all 104 subset items before this pass, but it was written by the EARLIER A2T flights under the OLDER featcache build (docs/receipts/runtime-q4km-featcache.json). Those bytes were NOT promoted. This pass re-encoded every item under the serving build 04ccc72a2207347ca76161b93fd9d846dd0a8675 into a separate cache directory, so the promoted packets' encoder provenance is the same build that serves them.",
+  "promotion_receipt": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a/A2T-CPV2-104-promotion.json",
+  "promotion_receipt_sha256": "a9ae338fbc9ba4734553b97a417403923aa6e085d3bd4446848a2abff3b65c87",
+  "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SN-A2T-CPV2-PREPROCESS/attempt-20260901T220601Z-a2tcpv2pre",
+  "run_id": "SAEA-SN-A2T-CPV2-PREPROCESS",
+  "schema": "saea-a2t-cpv2-preprocess-report-v1",
+  "sidecar": {
+    "pid": 597,
+    "port": 8081
+  },
+  "sidecar_stop": {
+    "forced": false,
+    "termination_signal": "SIGTERM"
+  },
+  "split_identity_hash": "401a28684adea908c80363df0815c9ce04b0ffa46a654975b129d4b69e60f8a1",
+  "study": "speech-aware-evidence-acquisition",
+  "subset_receipt": "docs/receipts/a2t/A2T-CPV2-104.json",
+  "subset_receipt_sha256": "8f47922124c61f92fee03273c1165eb1f8f97048d910ddd4a6a7243906d78783"
+}

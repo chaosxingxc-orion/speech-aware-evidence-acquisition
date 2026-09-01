@@ -1,0 +1,33 @@
+{
+  "schema": "saea-a2t-contract-preserving-cascade-flight-plan-v2",
+  "exposure_pre_registration_id": "SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2",
+  "execution_plan": {
+    "attempt_id": null,
+    "carrier_lock_key": "audio2tool",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.5,
+    "planned_model_calls": 440,
+    "planned_speech_audio_seconds": 2700,
+    "protocol_hash": "52d1d4e589bf6663e5724b7095cbbfce9fd1e6f9eaee9a12280e7b4f93348dba",
+    "run_id": "SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "401a28684adea908c80363df0815c9ce04b0ffa46a654975b129d4b69e60f8a1",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "config_composition": {
+    "baseline": "a2t-contract-preserving-cascade-agentloop",
+    "dataset": "audio2tool-cpv2-104",
+    "experiment": "a2t-training-free-contract-preserving-cascade-104-v2",
+    "model": "q4km-mmproj-free-speech-native-np2-a2t-max1024"
+  },
+  "composed_config_sha256": "ff6f8a0065279243126635caf2b648568c2b579274a2c5a44bbdfe624946dd93",
+  "phase_attempts": [
+    "one 104-contact direct M0 attempt with no Agent history",
+    "one 104-contact observation attempt",
+    "one at-most-104-contact matched USE attempt whose first eight contacts are the fixed canaries",
+    "one at-most-104-contact shuffled-evidence USE attempt whose first eight contacts are the fixed canaries",
+    "one 16-contact exact matched resend attempt"
+  ],
+  "attempt_binding": "The one-shot launcher replaces only execution_plan.attempt_id with a newly reserved phase attempt id. Every other field compares exactly. Actual use accumulates across sibling attempts under the single registered run-level ceiling of 440 calls and 2700 speech-audio seconds. The 16 canary contacts are the first eight rows of each USE attempt and are not repeated after the gate."
+}

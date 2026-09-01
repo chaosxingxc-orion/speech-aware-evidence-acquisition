@@ -1,0 +1,24 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "training-free-contract-preserving-self-transcript-cascade-v2",
+  "evidence_source": "same-core-self-transcript-content-bm25-top5",
+  "evidence_mismatch": false,
+  "obs_batch_samples": 2,
+  "allow_empty_speech_feature_evidence": true,
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a/A2T-CPV2-104-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "a9ae338fbc9ba4734553b97a417403923aa6e085d3bd4446848a2abff3b65c87",
+  "speech_native_prompt_fit_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-01-a2t-contract-preserving-cascade-104-v2/prompt-fit-cpv2.json",
+  "speech_native_prompt_fit_receipt_sha256": "9b6b8464926af01b33bdd6f1f5360eb6623702033e217491b26141b3f947d5df",
+  "speech_native_prompt_fit_dominance": "The receipt inherits byte-identical text envelopes for the complete task contract, one Agent-state text, five visible facets, six visible values, and 1024 completion tokens, then substitutes the measured CPV2 speech-feature maximum of 455 tokens. The resulting worst request needs 20528 tokens in a 32768-token slot, leaving 12240 tokens of margin.",
+  "profile_queue_depth_multiplier": 2,
+  "profile_validation_workers": 8,
+  "speech_native_result_mode": "predictions",
+  "speech_native_contact_ceiling_per_task": 1,
+  "speech_native_dispatch_granularity": "contact",
+  "speech_native_agent_executor_id": "openjiuwen-workflow-v1",
+  "scorers": [
+    "a2t-toolcall",
+    "cost"
+  ],
+  "task_instruction": "Answer the spoken command by emitting only the exact JSON array of name/arguments tool calls required by the final system sentence. M0 receives only the complete registry and original speech. USE retains the same final output sentence and original speech while adding one validated English self-transcript Agent state and at most five matched content facets, six frozen knowledge values, and five supplied targets. Gold labels and reference transcripts are unavailable at runtime."
+}

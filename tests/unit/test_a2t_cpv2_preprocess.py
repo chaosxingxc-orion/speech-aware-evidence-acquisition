@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 from pathlib import Path
 import subprocess
@@ -43,3 +44,31 @@ def test_cpv2_identity_mode_selects_only_the_new_receipt() -> None:
     assert identity["promotion_receipt"].endswith(
         "A2T-CPV2-104-promotion.json"
     )
+
+
+def test_cpv2_prompt_fit_inherits_text_bytes_and_prices_new_packet_maximum() -> None:
+    path = (
+        REPO
+        / "docs/checks/speech-aware-evidence-acquisition"
+        / "2026-09-01-a2t-contract-preserving-cascade-104-v2"
+        / "prompt-fit-cpv2.json"
+    )
+    receipt = json.loads(path.read_text(encoding="utf-8"))
+    source = REPO / receipt["inherited_text_envelope_receipt"]
+    assert receipt["inherited_text_envelope_receipt_sha256"] == hashlib.sha256(
+        source.read_bytes()
+    ).hexdigest()
+    assert receipt["speech_feature_tokens_distribution"] == {
+        "count": 104,
+        "max": 455,
+        "median": 65,
+        "min": 26,
+        "p90": 130,
+        "sum": 7735,
+    }
+    assert receipt["maximum_prompt_tokens_with_measured_speech"] == 19504
+    assert receipt["required_context_per_slot"] == 20528
+    assert receipt["context_margin_tokens"] == 12240
+    assert receipt["maximum_prompt_fits_one_slot"] is True
+    assert receipt["model_contact"] is False
+    assert receipt["tokenizer_contact"] is False

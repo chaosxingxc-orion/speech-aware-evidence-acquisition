@@ -2534,3 +2534,31 @@ def test_a2t_cpv2_preprocess_is_receipt_bound_and_cpu_only():
     assert scope["promotion_receipt"].endswith(
         "A2T-CPV2-104-promotion.json"
     )
+
+
+def test_a2t_cpv2_main_fragments_bind_packets_prompt_fit_and_agentloop():
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-mmproj-free-speech-native-np2-a2t-max1024",
+        "audio2tool-cpv2-104",
+        "a2t-contract-preserving-cascade-agentloop",
+        "a2t-training-free-contract-preserving-cascade-104-v2",
+    )
+    values = composed.values
+    assert values["experiment_id"] == (
+        "SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2"
+    )
+    assert values["arm"] == "speech-feature-query"
+    assert values["speech_native_agent_executor_id"] == "openjiuwen-workflow-v1"
+    assert values["speech_packet_promotion_receipt"].endswith(
+        "A2T-CPV2-104-promotion.json"
+    )
+    assert values["speech_packet_promotion_receipt_sha256"] == (
+        "a9ae338fbc9ba4734553b97a417403923aa6e085d3bd4446848a2abff3b65c87"
+    )
+    assert values["speech_native_prompt_fit_receipt_sha256"] == (
+        "9b6b8464926af01b33bdd6f1f5360eb6623702033e217491b26141b3f947d5df"
+    )
+    assert values["profile_slot_count"] == 2

@@ -1,6 +1,6 @@
 # Audio2Tool contract-preserving cascade 104 v2 — preregistration
 
-Date: 2026-09-01. Status: **DESIGN AND COHORT IDENTITY FROZEN; IMPLEMENTATION AND CONTACT CLOSED**.
+Date: 2026-09-01. Status: **IMPLEMENTATION FROZEN; CONTACT CLOSED UNTIL CLEAN PREFLIGHT PASSES**.
 Experiment: `SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2`. Machine contract:
 `configs/experiment/a2t-training-free-contract-preserving-cascade-104-v2.json`, initial SHA-256
 `cf77ceee65ce0ed8c30b1ac5a469b1f6688f1eb0bca3d4340e9a784c1976039e`.
@@ -109,3 +109,29 @@ coverage, structured ExecutionPlans, exposure binding, composed and protocol has
 packet receipts, prompt-fit proof, exact-output-contract byte test, canary gate, complete-manifest
 job table, and clean tree must land. G2, unexposed Audio2Tool data, FINAL60, test annotations,
 future turns, Stage-3, and paper-scale work remain closed.
+
+## Pre-contact implementation binding
+
+The implementation and all remaining bindings now land prospectively. The composed config
+SHA-256 is `ff6f8a0065279243126635caf2b648568c2b579274a2c5a44bbdfe624946dd93`; its protocol
+SHA-256 is `52d1d4e589bf6663e5724b7095cbbfce9fd1e6f9eaee9a12280e7b4f93348dba`.
+The main baseline binds the exclusive preprocessing promotion receipt SHA-256
+`a9ae338fbc9ba4734553b97a417403923aa6e085d3bd4446848a2abff3b65c87` and prompt-fit receipt
+SHA-256 `9b6b8464926af01b33bdd6f1f5360eb6623702033e217491b26141b3f947d5df`.
+The latter verifies all 104 packet/audio hashes, measures a worst speech feature length of 455
+tokens, and leaves 12,240 tokens of margin in each 32,768-token serving slot without a model or
+tokenizer contact.
+
+The launcher emits a true direct M0 request without Agent state or control history, preserves the
+exact final output-contract bytes in both USE arms, keeps each canary inside its original complete
+attempt, and leaves gold closed until M0, matched, shuffled, and resend manifests have all sealed.
+Its Wave-1 job table invokes four unchanged official single-process scorers concurrently with four
+outer workers, once per complete 104-row manifest; it contains no dataset sharding or shard-score
+averaging. The dependent policy remains one complete single-worker Wave-2 job. Model contact stays
+closed until the committed tree is clean and the launcher's read-only preflight passes every
+identity, budget, runtime, packet, prompt-fit, AgentLoop, and scorer-plan check.
+
+The four targeted mechanism modules jointly reach 82% branch coverage in the pre-contact suite
+(policy 81%, cohort construction 99%, bundle materialization 71%, and AgentLoop flight 80%).
+Separate launcher assembly tests cover frozen identities, non-repeated canary combination, and the
+default-score command boundary.
