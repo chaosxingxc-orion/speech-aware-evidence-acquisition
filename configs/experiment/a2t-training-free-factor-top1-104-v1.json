@@ -75,13 +75,13 @@
     "speech_carriage": "the exact original speech-feature packet remains the primary query on every model contact",
     "phase_1": "ORG_FACTORS: one strict-schema speech-conditioned contact produces English semantic factors but no tool-call list",
     "phase_2": "RETRIEVE_TOP1: deterministic local BM25 ranks the frozen registry and selects at most one row; no model, tokenizer, embedding, HTTP, or socket contact",
-    "phase_3": "USE_FACTOR_TOP1: one final frozen-core contact sees the original speech, canonical factor state, and exactly one values-stripped retrieved registry row",
+    "phase_3": "USE_FACTOR_TOP1: one final frozen-core contact sees the original speech and canonical factor state; it sees exactly one values-stripped retrieved registry row when available and a fixed no-factor sentinel with no supplied value otherwise",
     "final_actions": [
       "STOP_M0",
       "USE_FACTOR_TOP1"
     ],
     "stop_semantics": "return the frozen M0 response after the factor contact; the factor response is never itself a final answer",
-    "candidate_unavailable_semantics": "force STOP_M0 and make no phase-3 contact",
+    "candidate_unavailable_semantics": "the discovery arm still records one diagnostic phase-3 response with no supplied registry value, but scoring-side composition excludes that response and forces STOP_M0; a deployed policy never spends this unavailable phase-3 contact",
     "final_authority": "only the phase-3 frozen-core response or frozen M0 can be the task answer"
   },
   "factor_schema": {
@@ -105,7 +105,7 @@
     ],
     "instruction": "Analyze the original speech without transcribing it. Describe task semantics in English. Do not name, choose, or emit a tool or tool-call list.",
     "canonicalization": "parse the exact object, reject extra fields or non-ASCII/non-English-control text, trim and collapse whitespace, preserve field order, sort and deduplicate qualifier and argument-hint tuples",
-    "invalid_semantics": "no retrieval, no phase-3 contact, and STOP_M0"
+    "invalid_semantics": "no retrieval; a fixed English sentinel replaces the rejected factor before the diagnostic phase-3 contact, and scoring-side composition forces STOP_M0"
   },
   "retriever": {
     "policy_id": "saea-a2t-factor-registry-bm25-top1-v1",

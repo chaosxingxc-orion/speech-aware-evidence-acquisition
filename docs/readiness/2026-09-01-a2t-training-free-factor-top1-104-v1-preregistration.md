@@ -26,7 +26,7 @@ Every sample starts from the same speech-feature packet and frozen M0 response u
 qualifiers, up to four role/value hints, and a low/medium/high uncertainty label. A strict response
 schema forbids extra fields and a tool-call list. Canonicalization rejects non-ASCII control text,
 collapses whitespace, and deterministically sorts and deduplicates repeated factor entries. An
-invalid or empty factor cannot acquire evidence and returns M0.
+invalid or empty factor cannot acquire evidence and the scored composite returns M0.
 
 `RETRIEVE_TOP1` is model-free Okapi BM25 with `k1=1.5` and `b=0.75`. Its documents contain only the
 camel-case-split tool name, domain, category, description, and signature names. Argument defaults
@@ -35,8 +35,23 @@ means no candidate. Supply contains one canonical registry row with `argument_de
 
 `USE_FACTOR_TOP1` is the only second model contact. It preserves the original speech as primary
 authority and makes the canonical factor state and one traced registry value visible through the
-openJiuwen workflow. Its response is a task answer. The factor response is never a task answer, and
-no other answering model exists.
+openJiuwen workflow. Where retrieval is available, its response is the experimental task answer.
+The factor response is never a task answer, unavailable diagnostic responses are excluded, and no
+other answering model exists.
+
+### Pre-contact implementation amendment
+
+The generic openJiuwen trajectory runner requires every stopped trajectory to select a response
+produced inside that trajectory; it cannot terminate by injecting an externally reused frozen M0
+byte string. Therefore every discovery trajectory records the second diagnostic contact. When
+factor parsing or positive-score retrieval fails, the rejected factor is replaced by a fixed
+English sentinel, no registry facet or value is supplied, and the diagnostic response is excluded
+from both action-return memory and the scored main composite. That row is forced to frozen M0. A
+deployed controller would stop after the factor and would not spend the unavailable second contact.
+
+This amendment occurs before any model contact, keeps the 104-contact phase-3 maximum and every
+promotion gate unchanged, and makes the actual openJiuwen trace total while preserving the
+registered exactly-one-row-or-no-row supply law. It introduces no new information variable.
 
 ## Training-free decision and information-gain requirements
 
