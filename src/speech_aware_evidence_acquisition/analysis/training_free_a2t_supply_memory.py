@@ -582,6 +582,25 @@ def _state_label(state: RuntimeState, candidate_id: str) -> str:
     return json.dumps(state.key(candidate_id), separators=(",", ":"))
 
 
+def state_return_cells(
+    outcomes: Sequence[SignedSupplyOutcome], *, candidate_id: str
+) -> dict[str, dict[str, int]]:
+    """Descriptive full-surface action-return counts for each frozen state."""
+
+    cells: dict[str, dict[str, int]] = {}
+    for item in outcomes:
+        label = _state_label(item.state, candidate_id)
+        cell = cells.setdefault(label, {"n": 0, "saves": 0, "harms": 0, "neutral": 0})
+        cell["n"] += 1
+        if item.delta > 0:
+            cell["saves"] += 1
+        elif item.delta < 0:
+            cell["harms"] += 1
+        else:
+            cell["neutral"] += 1
+    return dict(sorted(cells.items()))
+
+
 def _evaluate_candidate(
     outcomes: Sequence[SignedSupplyOutcome],
     *,
@@ -718,13 +737,18 @@ def _identity_digest(lines: Sequence[str]) -> str:
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
-def _candidate_payload(report: CandidateReport) -> dict[str, object]:
+def _candidate_payload(
+    report: CandidateReport, outcomes: Sequence[SignedSupplyOutcome]
+) -> dict[str, object]:
     return {
         "candidate_id": report.candidate_id,
         "state_class_counts": dict(report.state_class_counts),
         "metrics": asdict(report.metrics),
         "gates": dict(report.gates),
         "promotion_passed": report.promotion_passed,
+        "full_surface_return_cells": state_return_cells(
+            outcomes, candidate_id=report.candidate_id
+        ),
         "decision_identity_sha256": _identity_digest(
             [f"{item.outcome.sample_id}\t{item.action}" for item in report.decisions]
         ),
@@ -741,7 +765,7 @@ def build_policy_artifact(
     """Create a response-free, self-hashed retrospective policy artifact."""
 
     reports = {
-        candidate_id: _candidate_payload(report)
+        candidate_id: _candidate_payload(report, surface.outcomes)
         for candidate_id, report in sorted(screen.reports.items())
     }
     selected = (
@@ -1110,6 +1134,7 @@ __all__ = [
     "parse_signature_parameters",
     "run_registered_replay",
     "screen_candidates",
+    "state_return_cells",
     "with_self_hash",
 ]
 

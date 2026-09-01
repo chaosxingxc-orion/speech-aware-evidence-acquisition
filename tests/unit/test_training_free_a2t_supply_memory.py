@@ -357,6 +357,10 @@ def test_logged_surface_recomputes_paired_rewards_and_state() -> None:
         supplied_tool_label_matches=2,
         unresolved_registry_signatures=0,
     )
+    cells = smem.state_return_cells(surface.outcomes, candidate_id="coarse-v1")
+    assert sum(cell["n"] for cell in cells.values()) == 2
+    assert sum(cell["saves"] for cell in cells.values()) == 1
+    assert sum(cell["harms"] for cell in cells.values()) == 1
 
 
 def test_logged_surface_refuses_a_supplied_tool_not_selected_by_a0() -> None:
