@@ -1,0 +1,185 @@
+{
+  "schema": "saea-a2t-self-transcript-cascade-104-result-summary-v1",
+  "experiment_id": "SAEA-A2T-TFRL-SELF-TRANSCRIPT-CASCADE-104-V1",
+  "date": "2026-09-01",
+  "claim_status": "already-exposed discovery cohort only",
+  "decision": "close this self-transcript-to-BM25-to-USE mechanism; do not run fresh support or scale",
+  "promotion_passed": false,
+  "arm_metrics": {
+    "M0": {
+      "samples": 104,
+      "exact_match_count": 29,
+      "exact_match": 0.27884615384615385,
+      "tool_accuracy_count": 62,
+      "tool_accuracy": 0.5961538461538461,
+      "slot_f1": 0.4378698224852071,
+      "parse_failures": 4
+    },
+    "USE_MATCHED": {
+      "samples": 104,
+      "exact_match_count": 0,
+      "exact_match": 0.0,
+      "tool_accuracy_count": 0,
+      "tool_accuracy": 0.0,
+      "slot_f1": 0.0,
+      "parse_failures": 103
+    },
+    "USE_SHUFFLED_EVIDENCE": {
+      "samples": 104,
+      "exact_match_count": 0,
+      "exact_match": 0.0,
+      "tool_accuracy_count": 0,
+      "tool_accuracy": 0.0,
+      "slot_f1": 0.0,
+      "parse_failures": 102
+    },
+    "MATCHED_RESEND_COMPOSITE": {
+      "samples": 104,
+      "exact_match_count": 0,
+      "exact_match": 0.0,
+      "tool_accuracy_count": 0,
+      "tool_accuracy": 0.0,
+      "slot_f1": 0.0,
+      "parse_failures": 103
+    },
+    "CROSSFIT_POLICY": {
+      "samples": 104,
+      "exact_match_count": 29,
+      "exact_match": 0.27884615384615385,
+      "tool_accuracy_count": 62,
+      "tool_accuracy": 0.5961538461538461,
+      "slot_f1": 0.4378698224852071,
+      "parse_failures": 4
+    }
+  },
+  "observation_liveness": {
+    "responses": 104,
+    "valid_transcripts": 104,
+    "positive_routes": 104,
+    "distinct_transcripts": 104,
+    "largest_identical_transcript_count": 1,
+    "prohibited_structures": 0,
+    "same_tier_derangement": true,
+    "passed": true
+  },
+  "retrieval_information": {
+    "m0_gold_tool_correct": 62,
+    "top5_gold_tool_correct": 62,
+    "both_correct": 46,
+    "route_only_correct": 16,
+    "m0_only_correct": 16,
+    "neither_correct": 26,
+    "registered_net_information_gain_count": 0,
+    "registered_minimum_gain_count": 3,
+    "gate_passed": false,
+    "interpretation": "The route was complementary on 16 samples but lost 16 other M0-correct tools, so it supplied no net top-5 coverage gain under the registered gate."
+  },
+  "use_output_contract": {
+    "matched": {
+      "fenced_outputs": 102,
+      "strictly_parsed_outputs": 1,
+      "strict_nonempty_toolcall_outputs": 0,
+      "outputs_with_name_key": 0,
+      "outputs_with_tool_key": 44,
+      "outputs_with_arguments_key": 70,
+      "outputs_with_args_key": 2,
+      "outputs_with_tool_input_key": 31
+    },
+    "shuffled": {
+      "fenced_outputs": 103,
+      "strictly_parsed_outputs": 2,
+      "strict_nonempty_toolcall_outputs": 0,
+      "outputs_with_name_key": 0,
+      "outputs_with_tool_key": 45,
+      "outputs_with_arguments_key": 63,
+      "outputs_with_args_key": 2,
+      "outputs_with_tool_input_key": 36
+    },
+    "resend": {
+      "fenced_outputs": 102,
+      "strictly_parsed_outputs": 1,
+      "strict_nonempty_toolcall_outputs": 0,
+      "outputs_with_name_key": 0,
+      "outputs_with_tool_key": 43,
+      "outputs_with_arguments_key": 69,
+      "outputs_with_args_key": 2,
+      "outputs_with_tool_input_key": 31
+    },
+    "interpretation": "The final-answer contacts were live and emitted tool-shaped JSON, but no output satisfied the official nonempty name/arguments call contract. This delivery failure dominates the matched-versus-shuffled comparison."
+  },
+  "training_free_policy": {
+    "parameter_training": "none",
+    "folds": 5,
+    "group_isolation": "whole query group",
+    "actions": {
+      "STOP_M0": 104,
+      "USE_MATCHED": 0
+    },
+    "saved": 0,
+    "harmed": 0,
+    "net_exact_match_gain": 0,
+    "tool_accuracy_net_gain": 0,
+    "slot_micro_f1_net_gain": 0.0,
+    "fold_net_gains": [0, 0, 0, 0, 0],
+    "grouped_ci90": [0.0, 0.0],
+    "always_use_net_gain": -29,
+    "matched_vs_shuffled_exact_gain": 0,
+    "matched_vs_shuffled_grouped_ci90": [0.0, 0.0],
+    "verdict": "The safe all-stop controller prevented the always-use loss but produced neither agent improvement nor a positive training-free RL contribution."
+  },
+  "parallel_scoring": {
+    "wave1_workers": 3,
+    "wave1_whole_manifest_jobs": 3,
+    "wave1_dataset_shards": 0,
+    "wave1_wall_seconds": 3.8029153129900806,
+    "wave1_sum_job_seconds": 8.215864739962853,
+    "wave1_effective_speedup": 2.1604122268773445,
+    "wave2_workers": 1,
+    "wave2_whole_manifest_jobs": 1,
+    "wave2_wall_seconds": 7.39149967499543,
+    "aggregation_rule": "no dataset sharding and no averaging of shard-level official metrics",
+    "official_scorers_modified": false
+  },
+  "contact_accounting": {
+    "observation_calls": 104,
+    "matched_use_calls": 104,
+    "shuffled_use_calls": 104,
+    "resend_calls": 16,
+    "total_calls": 328,
+    "registered_ceiling": 334,
+    "unused_canary_allowance": 6,
+    "audio_seconds": 1842.443,
+    "registered_audio_seconds_ceiling": 2000.0,
+    "paid_api_spend": 0,
+    "embedding_contacts": 0,
+    "tokenizer_contacts": 0
+  },
+  "recovery_incidents": {
+    "prediction_reflight": false,
+    "repeated_observation_contacts": 0,
+    "repeated_matched_contacts": 0,
+    "repeated_shuffled_contacts": 0,
+    "wave2_initial_failure": "The experiment launcher passed the unsupported --score switch to the score-batch command; argument parsing failed before scorer execution.",
+    "wave2_recovery": "Commit 839cc6cf removed the unsupported switch after a failing regression test. Only the already-sealed policy manifest was then scored once.",
+    "scientific_outputs_complete": true
+  },
+  "source_hashes": {
+    "subset_receipt": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db",
+    "m0_outputs": "dea60ff1e63fd2ef11c93edf8808217062fea3f0565ed5b60f136264bc6a9467",
+    "observation_outputs": "b37f5d2b92404a41c4b9f0ca8516fff612d44befeb2be6428eacf73a6b694544",
+    "matched_manifest_final": "19eea2fa6abe8b34b25bdf5d178dc6182a98f15f2cf08f86c249207511b1695c",
+    "matched_outputs": "7397ab5809b056c1f9090897582c34521b2f64f4fbc96a8cba987259c098fb72",
+    "matched_scores": "8dec28233e69c2ea176aee5c6ec0328dd6f513e0e88066566975ae017b2771c4",
+    "shuffled_manifest_final": "ffcfc0a7c9eb69e3032bc43339bc6d5883244e632235322a4ca99c709799f0ba",
+    "shuffled_outputs": "f65ea10ed2c4575b91e42db9f3bbb16d2260322ee34ca716ecf639b351b84747",
+    "shuffled_scores": "30ff73283856bb0f842a730a061a061071bea61e76a8b5a1ebc1d23709a07160",
+    "resend_manifest_final": "d039c227a47837641f1d88c513f0f137039c557c6db0eed170dea6b6e08e6d00",
+    "resend_outputs": "b1dc90d37e0a6fdf45a48cf92491392f36133ea74291443eaf1b2f8737dac3ff",
+    "resend_scores": "e802a9af7da35fc5202064d4b5814cf131f3ef5b50d88905702470d8dd632cc9",
+    "policy_manifest": "3c0117cf1170811ee5e117ca842fa2d11f1eb359d3d0f22fb74a1b7a6ad782f5",
+    "policy_outputs": "b39f682efec9691f5d19e73496368cbb99bea8b812941d3b593b404da9472987",
+    "policy_official_score_result": "1bb6b1efc54c9f5c5d4193f09420587e508c2bd438a40d06e93e9ec2b120e960",
+    "wave1_parallel_batch": "441b5eafe4f8b823a10e90f4b48d152cad5b3d831e3e3fc5d29d0c81e626727e",
+    "wave2_score_batch": "9af69f31c98a23beb499c149a9de3f7f5c605d485d177f0e4411a4dce89c9fce"
+  }
+}
