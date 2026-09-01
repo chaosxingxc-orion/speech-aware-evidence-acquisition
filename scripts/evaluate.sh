@@ -14,6 +14,9 @@ usage:
   evaluate.sh --outputs <outputs.jsonl> [scorers]    UNVERIFIED, ad-hoc only
   evaluate.sh <outputs.jsonl> [scorers]              same as --outputs (legacy form)
 
+For multiple independent authoritative manifests, use:
+  evaluate_parallel.sh --jobs <jobs.jsonl> --output-dir <new-dir> [--workers N]
+
 model-free scoring of the frozen scoring stack, never the model.
 
 --manifest re-verifies the whole run bundle before scoring; this is the only

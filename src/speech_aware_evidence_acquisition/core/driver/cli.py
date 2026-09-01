@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Mapping
@@ -561,6 +562,21 @@ def _cli_score(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cli_score_batch(args: argparse.Namespace) -> int:
+    """Run complete authoritative scorer jobs with bounded outer parallelism."""
+
+    from ..scoring_batch import load_score_jobs, run_score_batch
+
+    jobs = load_score_jobs(Path(args.jobs))
+    summary = run_score_batch(
+        jobs,
+        output_dir=Path(args.output_dir),
+        max_workers=args.workers,
+    )
+    print(json.dumps(summary, indent=2, sort_keys=True))
+    return 0 if summary["failed"] == 0 else 1
+
+
 def _cli_run(args: argparse.Namespace) -> int:
     from ...contracts import FrozenCoreGate
     from ...data.lock import data_root, load_lock, umbrella_lock_path
@@ -710,6 +726,33 @@ def main(argv: list[str] | None = None) -> int:
         help="comma-separated scorer names (--outputs mode only)",
     )
     score.set_defaults(func=_cli_score)
+    score_batch = sub.add_parser(
+        "score-batch",
+        help=(
+            "run independent, complete --manifest scoring jobs concurrently; "
+            "official scorers remain single-process inside each job"
+        ),
+    )
+    score_batch.add_argument(
+        "--jobs",
+        required=True,
+        help=(
+            "JSONL file with exact fields job_id and manifest; relative manifest "
+            "paths resolve beside this file"
+        ),
+    )
+    score_batch.add_argument(
+        "--output-dir",
+        required=True,
+        help="new or empty directory for isolated score results and batch-summary.json",
+    )
+    score_batch.add_argument(
+        "--workers",
+        type=int,
+        default=max(1, min(4, os.cpu_count() or 1)),
+        help="maximum number of complete scorer processes to run concurrently",
+    )
+    score_batch.set_defaults(func=_cli_score_batch)
     run = sub.add_parser("run", help="gate-enforced live run (requires a plan file)")
     run.add_argument("--model", required=True)
     run.add_argument("--dataset", required=True)
