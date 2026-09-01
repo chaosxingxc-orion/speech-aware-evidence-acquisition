@@ -1,0 +1,269 @@
+{
+  "experiment_id": "SAEA-A2T-TFRL-FACTOR-TOP1-104-V1",
+  "schema": "saea-a2t-training-free-factor-top1-experiment-v1",
+  "date": "2026-09-01",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Test whether one speech-semantic organization contact followed by deterministic retrieval and supply of exactly one values-stripped registry row yields deployment-visible information and a cross-fitted training-free controller that improves on frozen M0.",
+  "predecessor": {
+    "experiment_id": "SAEA-A2T-MF-TFRL-SCHEMA-RISK-MEMORY-V1",
+    "result_file_sha256": "be88b018c11183173bd3cb22cb132b03c9d09fbb17dfeab6c54ce0e5f582120a",
+    "policy_self_sha256": "85872638953f31fe16f24687017997f2aa5d1ac3980fbd1b0427f7cc09214b26",
+    "verdict": "schema risk was live but did not separate useful from harmful returns; both policies stopped on all 104 samples",
+    "required_change": "change information acquisition or evidence generation without tuning another state category or threshold on the predecessor returns"
+  },
+  "single_information_change": {
+    "unchanged": [
+      "frozen M0 response bytes",
+      "A2T-G1-104 sample and speech-feature packets",
+      "frozen core and API-shaped service boundary",
+      "complete 152-tool task contract",
+      "official scorer and exact-match primary outcome",
+      "five whole-query-group folds",
+      "default action returns frozen M0",
+      "zero parameter updates"
+    ],
+    "changed": "replace direct self-consistency and union supply with a structured speech-semantic factor observation, deterministic BM25 top-1 registry retrieval, and exactly one values-stripped registry-row supply",
+    "not_allowed": [
+      "top-k candidate menus",
+      "same-core arbitration among supplied candidates",
+      "tool identity, domain, category, sample identity, tier, gold, reward, or future response in a policy state",
+      "post-result factor-schema, retriever, state-bin, support, harm, or promotion-threshold changes"
+    ]
+  },
+  "population": {
+    "carrier": "audio2tool",
+    "split_role": "discovery",
+    "split_name": "A2T-G1-104",
+    "count": 104,
+    "strata": "13 samples per tier across all eight tiers",
+    "receipt": "docs/receipts/a2t/A2T-G1-104.json",
+    "receipt_sha256": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db",
+    "split_identity_hash": "516f92d9b919640969676eb10b776d9c479169fb0a387497e943c726b2191326",
+    "run_identity_hash": "f5a030189cf80dcbc52899e2fa5f819bac03874f2ad3f9645fdc60c432a9bf3a",
+    "audio_seconds_one_pass": 587.017,
+    "exposure": "fully exposed discovery cohort; all findings are secondary mechanism evidence only",
+    "forbidden": [
+      "the remaining 296 exposed discovery samples",
+      "any unexposed Audio2Tool sample",
+      "G2",
+      "FINAL60",
+      "any test annotation",
+      "any future turn"
+    ]
+  },
+  "sources": {
+    "frozen_m0_outputs": {
+      "run": "SAEA-A2T-G1",
+      "attempt": "attempt-20260825T100735Z-a2tg1m0",
+      "relpath": "arm1-m0-outputs.jsonl",
+      "sha256": "dea60ff1e63fd2ef11c93edf8808217062fea3f0565ed5b60f136264bc6a9467",
+      "semantics": "one-call baseline and STOP_M0 output, reused without model contact"
+    },
+    "tool_registry": {
+      "lock_key": "audio2tool",
+      "relative_path": "tools_registry.csv",
+      "sha256": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4",
+      "rows": 152,
+      "ordering": "ascending numeric tool_id"
+    }
+  },
+  "agent_loop": {
+    "executor_id": "openjiuwen-workflow-v1",
+    "frozen_core": "Qwen3-Omni-30B-A3B-Instruct Q4_K_M through the receipt-pinned local llama.cpp service",
+    "same_core_only": true,
+    "parameter_training": "none",
+    "speech_carriage": "the exact original speech-feature packet remains the primary query on every model contact",
+    "phase_1": "ORG_FACTORS: one strict-schema speech-conditioned contact produces English semantic factors but no tool-call list",
+    "phase_2": "RETRIEVE_TOP1: deterministic local BM25 ranks the frozen registry and selects at most one row; no model, tokenizer, embedding, HTTP, or socket contact",
+    "phase_3": "USE_FACTOR_TOP1: one final frozen-core contact sees the original speech, canonical factor state, and exactly one values-stripped retrieved registry row",
+    "final_actions": [
+      "STOP_M0",
+      "USE_FACTOR_TOP1"
+    ],
+    "stop_semantics": "return the frozen M0 response after the factor contact; the factor response is never itself a final answer",
+    "candidate_unavailable_semantics": "force STOP_M0 and make no phase-3 contact",
+    "final_authority": "only the phase-3 frozen-core response or frozen M0 can be the task answer"
+  },
+  "factor_schema": {
+    "strict": true,
+    "additional_properties": false,
+    "required_fields": [
+      "task_action",
+      "task_object",
+      "qualifiers",
+      "argument_hints",
+      "uncertainty"
+    ],
+    "task_action": "ASCII English semantic phrase, zero to 80 characters",
+    "task_object": "ASCII English semantic phrase, zero to 80 characters",
+    "qualifiers": "zero to four ASCII English phrases, each at most 80 characters",
+    "argument_hints": "zero to four objects with ASCII role and value_hint fields, each at most 80 characters",
+    "uncertainty": [
+      "low",
+      "medium",
+      "high"
+    ],
+    "instruction": "Analyze the original speech without transcribing it. Describe task semantics in English. Do not name, choose, or emit a tool or tool-call list.",
+    "canonicalization": "parse the exact object, reject extra fields or non-ASCII/non-English-control text, trim and collapse whitespace, preserve field order, sort and deduplicate qualifier and argument-hint tuples",
+    "invalid_semantics": "no retrieval, no phase-3 contact, and STOP_M0"
+  },
+  "retriever": {
+    "policy_id": "saea-a2t-factor-registry-bm25-top1-v1",
+    "algorithm": "deterministic Okapi BM25",
+    "k1": 1.5,
+    "b": 0.75,
+    "tokenization": "lowercase ASCII alphanumeric tokens after camel-case splitting",
+    "query_fields": [
+      "task_action",
+      "task_object",
+      "qualifiers",
+      "argument_hints.role",
+      "argument_hints.value_hint"
+    ],
+    "document_fields": [
+      "camel-case-split tool_name",
+      "domain",
+      "category",
+      "description",
+      "signature tool and parameter names"
+    ],
+    "excluded_document_fields": [
+      "argument_defaults",
+      "argument_constraints"
+    ],
+    "candidate_rule": "select exactly one highest-scoring positive-score row; break a top-score tie by ascending numeric tool_id while recording tied-top state",
+    "unavailable_rule": "no positive lexical score means no candidate",
+    "supply_renderer": "canonical registry JSON with argument_defaults removed and every other field unchanged",
+    "invariances": [
+      "registry source order",
+      "factor qualifier order",
+      "factor argument-hint order",
+      "consistent tool-id renumbering after preserving numeric order does not change scores"
+    ]
+  },
+  "runtime_state": {
+    "coarse": [
+      "factor status: valid-nonempty, valid-empty, invalid",
+      "factor uncertainty: low, medium, high, unavailable",
+      "retrieved top-1 relation to M0 parsed tool set: m0-contains-top1, m0-known-disagrees, m0-unresolved, unavailable",
+      "ranking relation: unique-top, tied-top, no-positive"
+    ],
+    "detailed_additions": [
+      "positive-score document count: one, two-to-five, six-or-more, unavailable",
+      "matched factor-token fraction: none, minority-below-one-half, majority-at-least-one-half",
+      "nonempty semantic field count: zero, one, two, three-or-more"
+    ],
+    "forbidden": [
+      "retrieved or M0 tool name",
+      "registry domain or category",
+      "literal factor strings or argument values",
+      "sample id, query_idx, rendition id, tier, or fold as a feature",
+      "gold labels, correctness, score, reward, phase-3 response, or future turn"
+    ]
+  },
+  "training_free_reward_memory": {
+    "type": "five-fold whole-query-group cross-fitted hierarchical exact-cell action-return memory",
+    "folds": 5,
+    "seed": 20260901,
+    "default_action": "STOP_M0",
+    "primary_return": "official exact_match(USE_FACTOR_TOP1) minus official exact_match(STOP_M0)",
+    "secondary_returns": [
+      "tool_accuracy delta",
+      "slot micro-F1 delta",
+      "incremental factor and final contacts"
+    ],
+    "decision": "use the most-specific other-fold matching cell, detailed before coarse; select USE_FACTOR_TOP1 only with support at least four, at least two saves, and zero harms; otherwise STOP_M0",
+    "candidate_selection": "among candidates passing every gate, maximize cross-fitted exact-match net gain, then saved exact matches, then minimize phase-3 contacts, then lexical candidate id",
+    "no_parameter_updates": true,
+    "no_counterfactual_imputation": true,
+    "contact_accounting": "every deployed sample pays one factor contact; only USE_FACTOR_TOP1 pays a second new contact; frozen M0 is reported as the one-call baseline"
+  },
+  "resend_control": {
+    "count": 16,
+    "selection": "after candidate availability is known but before any result is semantically read, choose two available samples per tier by the smallest SHA-256 of resend-v1 plus sample_id; fail closed if any tier has fewer than two available samples",
+    "protocol": "repeat the byte-identical phase-3 request in a separate workflow with the same contact id, decoding parameters, factor state, supplied row, and speech packet",
+    "scoring": "create a complete 104-row resend-composite manifest by replacing only the 16 selected main responses and retaining the other 88 main or STOP_M0 responses",
+    "floor": "record byte divergence, parsed-call divergence, exact-match divergence, and the absolute main-versus-resend-composite exact-count difference",
+    "promotion_binding": "cross-fitted policy exact gain must exceed the measured absolute complete-manifest resend exact-count difference"
+  },
+  "evaluation": {
+    "seal_before_score": "factor, main phase-3, and resend contacts seal before gold or scorer results are opened",
+    "official_scorer": "one unchanged complete-manifest invocation for the main composite and one for the resend composite",
+    "outer_parallelism": {
+      "entrypoint": "scripts/evaluate_parallel.sh",
+      "workers": 2,
+      "jobs": [
+        "main complete 104-row composite",
+        "resend complete 104-row composite"
+      ],
+      "aggregation": "no dataset sharding and no averaging of shard-level metrics"
+    },
+    "bootstrap": {
+      "unit": "query_idx group",
+      "replicates": 10000,
+      "seed": 20260901,
+      "ci_level": 0.9
+    },
+    "mandatory_reports": [
+      "M0, always-use main composite, resend composite, and cross-fitted policy exact match, tool accuracy, and slot micro-F1",
+      "factor parse rate, nonempty rate, uncertainty distribution, and prohibited-tool-name leakage count",
+      "top-1 availability, score-tie rate, top-1 gold-tool accuracy, and delta from M0 tool accuracy",
+      "saves, harms, net gain, final-action rate, factor contacts, phase-3 contacts, and total contacts per sample",
+      "all eight tiers without tier-conditioned tuning and all five query-group folds",
+      "state-class support and signed-return mixing",
+      "resend byte, parsed-call, metric, timing, and slot-id divergence",
+      "parallel scorer wall time, per-job time, effective speedup, result hashes, and scorer identity"
+    ]
+  },
+  "promotion_gates": {
+    "factor_parse_rate_at_least": 0.95,
+    "top1_available_fraction_at_least": 0.9,
+    "top1_gold_tool_correct_count_exceeds_m0_by_at_least": 3,
+    "both_actions_observed": true,
+    "use_samples_at_least": 5,
+    "use_samples_at_most": 52,
+    "saved_exact_matches_at_least": 3,
+    "harmful_uses_at_most": 1,
+    "exact_match_net_gain_at_least": 2,
+    "exact_match_gain_exceeds_resend_absolute_count_difference": true,
+    "grouped_exact_match_ci90_lower_bound_strictly_positive": true,
+    "tool_accuracy_net_gain_nonnegative": true,
+    "slot_micro_f1_net_gain_nonnegative": true,
+    "every_fold_exact_match_net_gain_nonnegative": true,
+    "positive_exact_match_folds_at_least": 2,
+    "avoid_always_use_harms_fraction_at_least": 0.8,
+    "retain_always_use_saves_fraction_at_least": 0.5,
+    "policy_exact_gain_at_least_always_use_exact_gain": true,
+    "avoid_at_least_one_always_use_harm": true,
+    "new_state_live_classes_at_least": 2,
+    "non_dominant_state_samples_at_least": 10,
+    "all_conjunctive": true
+  },
+  "decision_ladder": {
+    "failure": "write a negative artifact, close semantic-factor-to-BM25-top1 single-row supply on this cohort, and make no fresh-sample contact",
+    "success": "freeze one actual controller proposal and preregister a fresh approximately-104-sample support flight drawn without gold from the remaining exposed discovery population",
+    "support_success": "only a separately registered stable prospective gain may propose a larger Stage-2 candidate or Stage-3 promotion; no approximately-1000-sample run is authorized here",
+    "no_test_tuning": true,
+    "no_failure_followup": "do not expand k, add a candidate menu, retune BM25, alter state bins, or relax policy/promotion gates on these returns"
+  },
+  "contact_budget": {
+    "factor_contacts_maximum": 104,
+    "main_phase3_contacts_maximum": 104,
+    "resend_contacts": 16,
+    "canary_allowance": 4,
+    "planned_model_calls": 228,
+    "planned_speech_audio_seconds": 1320,
+    "planned_gpu_hours": 0.6,
+    "paid_api_spend": 0,
+    "embedding_contacts": 0,
+    "tokenizer_contacts": 0
+  },
+  "precontact_requirements": [
+    "implementation and tests committed",
+    "structured contracts.ExecutionPlan committed with this row as exposure_pre_registration_id",
+    "split identity, protocol hash, source hashes, packet receipt, runtime receipt, and attempt budget validated fail-closed",
+    "factor-schema, English/ASCII, prohibited-tool-name, retriever-invariance, single-row renderer, prompt-fit, and composite-manifest gates pass",
+    "two complete-manifest official scorer jobs are prepared but not executed",
+    "working tree clean"
+  ]
+}
