@@ -252,7 +252,7 @@
     "resend_contacts": 16,
     "canary_allowance": 4,
     "planned_model_calls": 228,
-    "planned_speech_audio_seconds": 1320,
+    "planned_speech_audio_seconds": 1340,
     "planned_gpu_hours": 0.6,
     "paid_api_spend": 0,
     "embedding_contacts": 0,

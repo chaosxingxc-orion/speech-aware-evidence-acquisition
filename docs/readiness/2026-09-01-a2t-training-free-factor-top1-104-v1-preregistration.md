@@ -105,7 +105,7 @@ materializes a complete 104-row composite through deterministic `TOOL` trace rec
 main rows cite their phase-3 response, unavailable rows cite frozen M0, selected resend rows cite
 the replay response, and the other resend rows cite the hash-pinned main composite. This preserves
 the existing bundle output-to-trace invariant without mislabeling a reused M0 byte string as a new
-model response. The shared run-level budget remains 228 contacts and 1,320 speech-audio seconds.
+model response. The shared run-level budget remains 228 contacts and 1,340 speech-audio seconds.
 
 Prompt fit reuses the landed session-bound Audio2Tool NP2 envelope at SHA-256
 `0c77812d9439b6a7d6d3ff0227fc27924f617245d1ec9a0cbca20960f090946b`. That envelope contains the
@@ -124,7 +124,7 @@ stack's current resend floor instead of assuming deterministic decoding is bit-r
 
 The population remains the fully exposed, tier-balanced `A2T-G1-104` discovery cohort. This design
 opens no new sample identity. Maximum planned contact is 104 factor calls, 104 main final calls, 16
-resends, and four canary allowances: 228 calls, 1,320 metered speech-audio seconds, 0.6 GPU-hours,
+resends, and four canary allowances: 228 calls, 1,340 metered speech-audio seconds, 0.6 GPU-hours,
 and zero paid API, embedding, or tokenizer contact.
 
 No contact is authorized until implementation, tests, structured `ExecutionPlan`, exposure binding,
