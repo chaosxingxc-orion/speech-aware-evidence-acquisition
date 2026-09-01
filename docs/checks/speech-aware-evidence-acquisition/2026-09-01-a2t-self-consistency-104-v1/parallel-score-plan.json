@@ -15,7 +15,7 @@
       "input": "one complete 104-row SUPPLY_UNION_STRIPPED run manifest"
     }
   ],
-  "materialization": "After both prediction files and their runtime traces are sealed, the launcher writes the two exact manifest paths to score-jobs.jsonl in this order. No scorer starts before both manifest hashes exist. The --finalize mode runs the unchanged official scorer exactly once per complete arm, writes each score artifact, and terminally settles the two independent one-shot attempts in the same outer-parallel wave.",
+  "materialization": "After both prediction files and their runtime traces are sealed, the launcher writes the two exact manifest paths and their complete preregistered human-ledger cell files to score-jobs.jsonl in this order. Finalize rejects a missing or incomplete ledger surface before a scorer can run. No scorer starts before both manifest hashes exist. The --finalize mode runs the unchanged official scorer exactly once per complete arm, writes each score artifact, and terminally settles the two independent one-shot attempts in the same outer-parallel wave.",
   "recovery": {
     "registered_at": "2026-09-01T17:37:54Z",
     "reason": "The first flight sealed all 104 REOBSERVE_DIRECT rows, then SUPPLY_UNION_STRIPPED refused before its first contact because twelve unresolved registry unions rendered an empty task contract. Gold and official scorer inputs were not opened.",
@@ -40,7 +40,7 @@
         "input": "one fresh complete 104-row SUPPLY_UNION_STRIPPED run manifest"
       }
     ],
-    "integrity": "The two unchanged official operations start in one outer-parallel two-worker wave only after the fresh supply manifest seals. The recovered observation remains ABORTED; the fresh supply attempt must become FINALIZED. No dataset sharding or shard-metric averaging is allowed."
+    "integrity": "The two unchanged official operations start in one outer-parallel two-worker wave only after the fresh supply manifest seals. Each finalize job binds a complete human-ledger cell file and validates it before scoring. The recovered observation remains ABORTED; the fresh supply attempt must become FINALIZED. No dataset sharding or shard-metric averaging is allowed."
   },
   "aggregation_rule": "Never shard a dataset for scoring and never average shard-level metrics. Each worker invokes the unchanged official scorer on one complete arm."
 }

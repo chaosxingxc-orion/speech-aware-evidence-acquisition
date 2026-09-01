@@ -81,6 +81,20 @@ def finalize_bundle(
             "manifest's self-reported status, is authoritative (I7)"
         )
 
+    cells = dict(ledger_cells or {})
+    if "artifact hashes" in cells:
+        raise ValueError(
+            "artifact hashes is machine-derived after scoring and must not be "
+            "hand-supplied to finalize_bundle"
+        )
+    validation_cells = dict(cells)
+    if tracking_uri is not None and "MLflow run" not in validation_cells:
+        validation_cells["MLflow run"] = "pending runtime assignment"
+    # Validate the complete human-ledger surface before the scorer can write
+    # scores or mutate the manifest.  The machine-derived artifact-hash cell
+    # is recomputed again after scores attach.
+    ledger_row_for_bundle(bundle, validation_cells)
+
     scores = score_bundle(bundle, lock, root, repo_root=repo_root)
     run_dir = Path(manifest_path).resolve().parent
     run_id = str(bundle.manifest["run_id"])
@@ -97,7 +111,6 @@ def finalize_bundle(
     if tracking_uri is not None:
         mlflow_run_id = log_bundle(bundle, tracking_uri, metrics=mlflow_metrics)
 
-    cells = dict(ledger_cells or {})
     if mlflow_run_id is not None:
         # Overwrite (not setdefault): the caller cannot have known the real
         # mlflow_run_id before this call returned it, so any hand-supplied

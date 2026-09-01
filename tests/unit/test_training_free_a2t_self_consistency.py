@@ -124,6 +124,51 @@ def test_union_renderer_refuses_supply_when_no_predicted_tool_resolves() -> None
     assert rendered.supply_available is False
 
 
+def test_build_scored_outcomes_keeps_gold_out_of_state_and_marks_availability() -> None:
+    m0 = {
+        "sample-a": _response(
+            [{"name": "setTemp", "arguments": {"room": "office", "degrees": 20}}]
+        ),
+        "sample-b": "not-json",
+    }
+    observation = {
+        "sample-a": _response(
+            [{"name": "setTemp", "arguments": {"room": "office", "degrees": 21}}]
+        ),
+        "sample-b": _response([{"name": "unknown", "arguments": {}}]),
+    }
+    supply = {
+        "sample-a": _response(
+            [{"name": "setTemp", "arguments": {"room": "office", "degrees": 21}}]
+        ),
+        "sample-b": "[]",
+    }
+    expected = {
+        "sample-a": (
+            selfcon.ToolCall(
+                "setTemp", {"room": "office", "degrees": 21}
+            ),
+        ),
+        "sample-b": (selfcon.ToolCall("setLight", {"state": "on"}),),
+    }
+
+    outcomes = selfcon.build_scored_outcomes(
+        m0_response_by_id=m0,
+        observation_response_by_id=observation,
+        supply_response_by_id=supply,
+        query_group_by_id={"sample-a": "group-a", "sample-b": "group-b"},
+        registry_rows=REGISTRY,
+        expected_by_id=expected,
+    )
+
+    assert outcomes[0].sample_id == "sample-a"
+    assert outcomes[0].state.argument_value_relation == "different"
+    assert outcomes[0].supply_available is True
+    assert outcomes[0].delta == 1
+    assert outcomes[1].supply_available is False
+    assert outcomes[1].delta == 0
+
+
 def test_state_is_call_order_and_duplicate_invariant() -> None:
     first = _response(
         [

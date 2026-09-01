@@ -29,6 +29,11 @@ def _manifest(path: Path) -> Path:
     return path
 
 
+def _ledger_cells(path: Path) -> Path:
+    path.write_text("{}", encoding="utf-8")
+    return path
+
+
 def _verified(job: ScoreJob) -> ScoreProcessOutcome:
     return ScoreProcessOutcome(
         returncode=0,
@@ -82,6 +87,7 @@ def test_load_score_jobs_resolves_paths_relative_to_the_job_file(tmp_path):
 def test_load_score_jobs_accepts_explicit_per_job_operations(tmp_path):
     first = _manifest(tmp_path / "first.run-manifest.json")
     second = _manifest(tmp_path / "second.run-manifest.json")
+    ledger_cells = _ledger_cells(tmp_path / "second.ledger-cells.json")
     jobs_path = tmp_path / "jobs.jsonl"
     jobs_path.write_text(
         "\n".join(
@@ -90,7 +96,12 @@ def test_load_score_jobs_accepts_explicit_per_job_operations(tmp_path):
                     {"job_id": "observation", "manifest": first.name, "operation": "score"}
                 ),
                 json.dumps(
-                    {"job_id": "supply", "manifest": second.name, "operation": "finalize"}
+                    {
+                        "job_id": "supply",
+                        "manifest": second.name,
+                        "operation": "finalize",
+                        "ledger_cells": ledger_cells.name,
+                    }
                 ),
             )
         )
@@ -100,7 +111,12 @@ def test_load_score_jobs_accepts_explicit_per_job_operations(tmp_path):
 
     assert load_score_jobs(jobs_path, require_operation=True) == (
         ScoreJob(job_id="observation", manifest=first.resolve(), operation="score"),
-        ScoreJob(job_id="supply", manifest=second.resolve(), operation="finalize"),
+        ScoreJob(
+            job_id="supply",
+            manifest=second.resolve(),
+            operation="finalize",
+            ledger_cells=ledger_cells.resolve(),
+        ),
     )
 
 
@@ -214,6 +230,7 @@ def test_official_job_runner_uses_an_argument_vector_and_the_existing_manifest_c
 
 def test_official_finalize_runner_uses_the_existing_finalize_cli(tmp_path, monkeypatch):
     manifest = _manifest(tmp_path / "one.run-manifest.json").resolve()
+    ledger_cells = _ledger_cells(tmp_path / "one.ledger-cells.json").resolve()
     captured = {}
 
     def fake_run(arguments, **kwargs):
@@ -222,9 +239,17 @@ def test_official_finalize_runner_uses_the_existing_finalize_cli(tmp_path, monke
         return SimpleNamespace(returncode=0, stdout="finalized", stderr="")
 
     monkeypatch.setattr(subprocess, "run", fake_run)
-    outcome = run_official_finalize_job(ScoreJob(job_id="one", manifest=manifest))
+    outcome = run_official_finalize_job(
+        ScoreJob(job_id="one", manifest=manifest, ledger_cells=ledger_cells)
+    )
 
-    assert captured["arguments"][-3:] == ["finalize", "--manifest", str(manifest)]
+    assert captured["arguments"][-5:] == [
+        "finalize",
+        "--manifest",
+        str(manifest),
+        "--ledger-cells",
+        str(ledger_cells),
+    ]
     assert captured["kwargs"]["check"] is False
     assert "shell" not in captured["kwargs"]
     assert outcome == ScoreProcessOutcome(0, "finalized", "")
@@ -235,6 +260,9 @@ def test_run_score_batch_can_finalize_complete_manifests_concurrently(tmp_path):
         ScoreJob(
             job_id=name,
             manifest=_manifest(tmp_path / f"{name}.run-manifest.json").resolve(),
+            ledger_cells=_ledger_cells(
+                tmp_path / f"{name}.ledger-cells.json"
+            ).resolve(),
         )
         for name in ("observation", "supply")
     )
@@ -264,6 +292,7 @@ def test_run_score_batch_can_mix_score_and_finalize_jobs(tmp_path, monkeypatch):
         job_id="supply",
         manifest=_manifest(tmp_path / "supply.run-manifest.json").resolve(),
         operation="finalize",
+        ledger_cells=_ledger_cells(tmp_path / "supply.ledger-cells.json").resolve(),
     )
     monkeypatch.setattr(scoring_batch, "run_official_score_job", _verified)
     monkeypatch.setattr(scoring_batch, "run_official_finalize_job", _finalized)
@@ -278,6 +307,22 @@ def test_run_score_batch_can_mix_score_and_finalize_jobs(tmp_path, monkeypatch):
     assert summary["operation"] == "per-job"
     assert summary["succeeded"] == 2
     assert [row["operation"] for row in summary["jobs"]] == ["score", "finalize"]
+
+
+def test_run_score_batch_refuses_finalize_without_ledger_cells(tmp_path):
+    job = ScoreJob(
+        job_id="supply",
+        manifest=_manifest(tmp_path / "supply.run-manifest.json").resolve(),
+        operation="finalize",
+    )
+
+    with pytest.raises(ScoreBatchError, match="ledger_cells"):
+        run_score_batch(
+            (job,),
+            output_dir=tmp_path / "scores",
+            max_workers=1,
+            operation="per-job",
+        )
 
 
 def test_run_score_batch_finishes_other_jobs_and_fails_overall(tmp_path):
@@ -400,9 +445,17 @@ def test_driver_score_batch_finalize_mode_runs_the_outer_scheduler(
     from speech_aware_evidence_acquisition.core.driver.cli import main
 
     manifest = _manifest(tmp_path / "one.run-manifest.json")
+    ledger_cells = _ledger_cells(tmp_path / "one.ledger-cells.json")
     jobs_path = tmp_path / "jobs.jsonl"
     jobs_path.write_text(
-        json.dumps({"job_id": "one", "manifest": manifest.name}) + "\n",
+        json.dumps(
+            {
+                "job_id": "one",
+                "manifest": manifest.name,
+                "ledger_cells": ledger_cells.name,
+            }
+        )
+        + "\n",
         encoding="utf-8",
     )
     monkeypatch.setattr(scoring_batch, "run_official_finalize_job", _finalized)
@@ -434,6 +487,7 @@ def test_driver_score_batch_per_job_mode_runs_the_outer_scheduler(
 
     observation = _manifest(tmp_path / "observation.run-manifest.json")
     supply = _manifest(tmp_path / "supply.run-manifest.json")
+    supply_ledger = _ledger_cells(tmp_path / "supply.ledger-cells.json")
     jobs_path = tmp_path / "jobs.jsonl"
     jobs_path.write_text(
         "\n".join(
@@ -450,6 +504,7 @@ def test_driver_score_batch_per_job_mode_runs_the_outer_scheduler(
                         "job_id": "supply",
                         "manifest": supply.name,
                         "operation": "finalize",
+                        "ledger_cells": supply_ledger.name,
                     }
                 ),
             )

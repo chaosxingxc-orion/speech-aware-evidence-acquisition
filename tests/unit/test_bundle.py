@@ -46,7 +46,6 @@ import hashlib
 import json
 import shutil
 import subprocess
-import sys
 from pathlib import Path
 
 import pytest
@@ -1080,6 +1079,40 @@ def test_finalize_bundle_end_to_end_produces_a_ledger_row(synthetic_world, bundl
             manifest_path, lock, synthetic_world.data_root, repo_root=repo_root,
             ledger_cells=_HUMAN_LEDGER_CELLS,
         )
+
+
+def test_finalize_bundle_refuses_incomplete_ledger_before_scoring(
+    synthetic_world, bundled_repo, tmp_path, monkeypatch
+):
+    from speech_aware_evidence_acquisition.core.bundle import finalize as finalizer
+
+    _, repo_root = bundled_repo
+    manifest_path, _composed_config, plan, lock = _run_completed(
+        synthetic_world,
+        bundled_repo,
+        tmp_path,
+        run_id="SAEA-E-000-ledger-preflight",
+        attempt_id="attempt-ledger-preflight",
+        run_dir_name="run-ledger-preflight",
+    )
+
+    def scorer_must_not_run(*_args, **_kwargs):
+        raise AssertionError("scorer ran before ledger preflight")
+
+    monkeypatch.setattr(finalizer, "score_bundle", scorer_must_not_run)
+
+    with pytest.raises(ValueError, match="ledger row"):
+        finalize_bundle(
+            manifest_path,
+            lock,
+            synthetic_world.data_root,
+            repo_root=repo_root,
+            ledger_cells={},
+        )
+
+    assert _read_manifest(manifest_path)["scores"] is None
+    store = AttemptStore(synthetic_world.data_root / "attempts")
+    assert store.handle(plan.run_id, plan.attempt_id).state() == "OPENED"
 
 
 def test_finalize_bundle_uploads_via_stubbed_mlflow(synthetic_world, bundled_repo, tmp_path, monkeypatch):

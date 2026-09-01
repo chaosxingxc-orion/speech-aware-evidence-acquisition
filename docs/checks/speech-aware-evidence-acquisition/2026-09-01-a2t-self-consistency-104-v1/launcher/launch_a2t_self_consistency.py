@@ -259,6 +259,29 @@ def _execution_plan(attempt_id: str) -> ExecutionPlan:
     return ExecutionPlan(**fields).validate()
 
 
+def _human_ledger_cells(
+    *, phase: str, umbrella_lock_sha256: str, recovery: bool
+) -> dict[str, str]:
+    return {
+        "experiment_id": RUN_ID,
+        "speech task/carrier": "Audio2Tool A2T-G1-104 discovery",
+        "changed axes": phase,
+        "shared code revision": f"openJiuwen {OPENJIUWEN_VERSION}",
+        "model rev": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+        "dataset rev": umbrella_lock_sha256,
+        "MLflow run": "not uploaded",
+        "effectiveness": "unread before finalization",
+        "reasonableness": "complete verified 104-row whole-manifest scorer job",
+        "efficiency": "two-worker outer parallelism across complete manifests",
+        "deviations": (
+            "registered zero-contact recovery; observation not re-flown"
+            if recovery
+            else "none"
+        ),
+        "decision": "pending preregistered scorer-side read",
+    }
+
+
 def _verified_split(sample_ids: Sequence[str]) -> VerifiedSplit:
     ids = tuple(sorted(sample_ids))
     return VerifiedSplit(
@@ -597,10 +620,36 @@ def _launch(
         session = None
 
         jobs_path = mission_dir / "score-jobs.jsonl"
+        supply_ledger_cells = mission_dir / "supply-ledger-cells.json"
+        _write_json(
+            supply_ledger_cells,
+            _human_ledger_cells(
+                phase=SUPPLY_PHASE,
+                umbrella_lock_sha256=lock_sha256,
+                recovery=recovered_observation is not None,
+            ),
+        )
         if recovered_observation is None:
+            observation_ledger_cells = mission_dir / "observation-ledger-cells.json"
+            _write_json(
+                observation_ledger_cells,
+                _human_ledger_cells(
+                    phase=OBSERVATION_PHASE,
+                    umbrella_lock_sha256=lock_sha256,
+                    recovery=False,
+                ),
+            )
             score_jobs = (
-                {"job_id": "reobserve-direct", "manifest": str(observation["manifest"])},
-                {"job_id": "supply-union-stripped", "manifest": str(supply["manifest"])},
+                {
+                    "job_id": "reobserve-direct",
+                    "manifest": str(observation["manifest"]),
+                    "ledger_cells": str(observation_ledger_cells),
+                },
+                {
+                    "job_id": "supply-union-stripped",
+                    "manifest": str(supply["manifest"]),
+                    "ledger_cells": str(supply_ledger_cells),
+                },
             )
             score_mode = "--finalize"
         else:
@@ -614,6 +663,7 @@ def _launch(
                     "job_id": "supply-union-stripped",
                     "manifest": str(supply["manifest"]),
                     "operation": "finalize",
+                    "ledger_cells": str(supply_ledger_cells),
                 },
             )
             score_mode = "--per-job-operation"

@@ -37,6 +37,7 @@ class ScoreJob:
     job_id: str
     manifest: Path
     operation: ScoreOperation | None = None
+    ledger_cells: Path | None = None
 
 
 @dataclass(frozen=True)
@@ -71,10 +72,17 @@ def _write_json(path: Path, value: Mapping[str, object]) -> None:
 
 
 def load_score_jobs(
-    path: Path, *, require_operation: bool = False
+    path: Path,
+    *,
+    require_operation: bool = False,
+    require_ledger_cells: bool = False,
 ) -> tuple[ScoreJob, ...]:
     """Load an exact-field JSONL job table and resolve manifests beside it."""
 
+    if require_operation and require_ledger_cells:
+        raise ScoreBatchError(
+            "job loading cannot require both per-job operations and uniform ledger cells"
+        )
     path = Path(path)
     try:
         raw = path.read_text(encoding="utf-8")
@@ -100,11 +108,15 @@ def load_score_jobs(
             raise ScoreBatchError(
                 f"score job file {path} line {line_number} is malformed JSON: {error}"
             ) from error
-        expected_fields = (
-            {"job_id", "manifest", "operation"}
-            if require_operation
-            else {"job_id", "manifest"}
-        )
+        operation_value = row.get("operation") if isinstance(row, Mapping) else None
+        if require_operation and operation_value == "finalize":
+            expected_fields = {"job_id", "manifest", "operation", "ledger_cells"}
+        elif require_operation:
+            expected_fields = {"job_id", "manifest", "operation"}
+        elif require_ledger_cells:
+            expected_fields = {"job_id", "manifest", "ledger_cells"}
+        else:
+            expected_fields = {"job_id", "manifest"}
         if not isinstance(row, Mapping) or set(row) != expected_fields:
             raise ScoreBatchError(
                 f"score job file {path} line {line_number} must contain exactly "
@@ -113,6 +125,7 @@ def load_score_jobs(
         job_id = row.get("job_id")
         manifest_value = row.get("manifest")
         job_operation = row.get("operation") if require_operation else None
+        ledger_cells_value = row.get("ledger_cells") if "ledger_cells" in row else None
         if not isinstance(job_id, str) or not _JOB_ID.fullmatch(job_id):
             raise ScoreBatchError(
                 f"score job file {path} line {line_number} has an unsafe job_id"
@@ -126,6 +139,12 @@ def load_score_jobs(
                 f"score job file {path} line {line_number} operation must be "
                 "'score' or 'finalize'"
             )
+        if ledger_cells_value is not None and (
+            not isinstance(ledger_cells_value, str) or not ledger_cells_value
+        ):
+            raise ScoreBatchError(
+                f"score job file {path} line {line_number} has no ledger_cells path"
+            )
         manifest = Path(manifest_value)
         if not manifest.is_absolute():
             manifest = path.parent / manifest
@@ -138,6 +157,16 @@ def load_score_jobs(
             raise ScoreBatchError(
                 f"score job {job_id!r} is not a run-manifest.json artifact: {manifest}"
             )
+        ledger_cells = None
+        if isinstance(ledger_cells_value, str):
+            ledger_cells = Path(ledger_cells_value)
+            if not ledger_cells.is_absolute():
+                ledger_cells = path.parent / ledger_cells
+            ledger_cells = ledger_cells.resolve()
+            if not ledger_cells.is_file():
+                raise ScoreBatchError(
+                    f"score job {job_id!r} ledger_cells does not exist: {ledger_cells}"
+                )
         job_id_key = job_id.casefold()
         if job_id_key in seen_ids:
             raise ScoreBatchError(f"duplicate job_id {job_id!r} in {path}")
@@ -154,6 +183,7 @@ def load_score_jobs(
                     if job_operation is not None
                     else None
                 ),
+                ledger_cells=ledger_cells,
             )
         )
     return tuple(jobs)
@@ -190,6 +220,10 @@ def run_official_score_job(job: ScoreJob) -> ScoreProcessOutcome:
 def run_official_finalize_job(job: ScoreJob) -> ScoreProcessOutcome:
     """Finalize one whole manifest through the existing authoritative CLI."""
 
+    if job.ledger_cells is None:
+        raise ScoreBatchError(
+            f"finalize job {job.job_id!r} requires a ledger_cells file"
+        )
     environment = dict(os.environ)
     environment["PYTHONDONTWRITEBYTECODE"] = "1"
     completed = subprocess.run(
@@ -201,6 +235,8 @@ def run_official_finalize_job(job: ScoreJob) -> ScoreProcessOutcome:
             "finalize",
             "--manifest",
             str(job.manifest),
+            "--ledger-cells",
+            str(job.ledger_cells),
         ],
         cwd=_REPO_ROOT,
         env=environment,
@@ -279,6 +315,11 @@ def run_score_batch(
             job_id=job.job_id,
             manifest=Path(job.manifest).resolve(),
             operation=job.operation,
+            ledger_cells=(
+                Path(job.ledger_cells).resolve()
+                if job.ledger_cells is not None
+                else None
+            ),
         )
         for job in jobs
     )
@@ -295,6 +336,16 @@ def run_score_batch(
         raise ScoreBatchError(
             "uniform score/finalize mode refuses per-job operation fields"
         )
+    for job in frozen_jobs:
+        job_operation = job.operation if operation == "per-job" else operation
+        if job_operation == "finalize" and job.ledger_cells is None:
+            raise ScoreBatchError(
+                f"finalize job {job.job_id!r} requires ledger_cells"
+            )
+        if job_operation == "score" and job.ledger_cells is not None:
+            raise ScoreBatchError(
+                f"score job {job.job_id!r} must not declare ledger_cells"
+            )
     if (
         not isinstance(max_workers, int)
         or isinstance(max_workers, bool)
@@ -318,6 +369,11 @@ def run_score_batch(
             raise ScoreBatchError(
                 f"score job {job.job_id!r} is not a run-manifest.json artifact: "
                 f"{job.manifest}"
+            )
+        if job.ledger_cells is not None and not job.ledger_cells.is_file():
+            raise ScoreBatchError(
+                f"score job {job.job_id!r} ledger_cells does not exist: "
+                f"{job.ledger_cells}"
             )
 
     output_dir = Path(output_dir)
@@ -381,6 +437,9 @@ def run_score_batch(
                 "job_id": job.job_id,
                 "operation": job_operation,
                 "manifest": str(job.manifest),
+                "ledger_cells": (
+                    str(job.ledger_cells) if job.ledger_cells is not None else None
+                ),
                 "status": status,
                 "returncode": outcome.returncode,
                 "elapsed_seconds": elapsed_seconds,

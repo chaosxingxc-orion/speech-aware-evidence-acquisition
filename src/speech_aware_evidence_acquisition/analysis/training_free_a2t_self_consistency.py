@@ -17,7 +17,12 @@ from dataclasses import asdict, dataclass
 from typing import Literal, Mapping, Sequence
 
 from ..data.audio2tool import render_registry_row
-from ..reproduction.toolcall_scoring import ItemScore, ToolCall, parse_tool_calls_text
+from ..reproduction.toolcall_scoring import (
+    ItemScore,
+    ToolCall,
+    parse_tool_calls_text,
+    score_item,
+)
 from .bootstrap import paired_cluster_bootstrap
 
 STOP_M0 = "STOP_M0"
@@ -272,6 +277,65 @@ class SelfConsistencyOutcome:
         return int(
             self.supply_score.tool_accuracy - self.stop_score.tool_accuracy
         )
+
+
+def build_scored_outcomes(
+    *,
+    m0_response_by_id: Mapping[str, str],
+    observation_response_by_id: Mapping[str, str],
+    supply_response_by_id: Mapping[str, str],
+    query_group_by_id: Mapping[str, str],
+    registry_rows: Sequence[Mapping[str, str]],
+    expected_by_id: Mapping[str, Sequence[ToolCall]],
+) -> tuple[SelfConsistencyOutcome, ...]:
+    """Build the registered scorer-side surface from three sealed arms.
+
+    State and supply availability are computed before the corresponding gold
+    row is read, keeping expected calls outside the runtime-information path.
+    """
+
+    sample_ids = set(m0_response_by_id)
+    named_surfaces = {
+        "observation": set(observation_response_by_id),
+        "supply": set(supply_response_by_id),
+        "query groups": set(query_group_by_id),
+    }
+    for label, values in named_surfaces.items():
+        if values != sample_ids:
+            raise SelfConsistencyError(
+                f"{label} ids do not equal the frozen M0 sample identity"
+            )
+    missing_gold = sorted(sample_ids - set(expected_by_id))
+    if missing_gold:
+        raise SelfConsistencyError(
+            f"scorer gold lacks registered sample ids: {missing_gold[:5]}"
+        )
+
+    outcomes: list[SelfConsistencyOutcome] = []
+    for sample_id in sorted(sample_ids):
+        m0_response = m0_response_by_id[sample_id]
+        observation_response = observation_response_by_id[sample_id]
+        state = extract_self_consistency_state(m0_response, observation_response)
+        supply_available = render_union_stripped_registry(
+            m0_response, observation_response, registry_rows
+        ).supply_available
+
+        expected = expected_by_id[sample_id]
+        m0_calls, _m0_parsed = parse_tool_calls_text(m0_response)
+        supply_calls, _supply_parsed = parse_tool_calls_text(
+            supply_response_by_id[sample_id]
+        )
+        outcomes.append(
+            SelfConsistencyOutcome(
+                sample_id=sample_id,
+                group_id=query_group_by_id[sample_id],
+                state=state,
+                supply_available=supply_available,
+                stop_score=score_item(expected, m0_calls),
+                supply_score=score_item(expected, supply_calls),
+            )
+        )
+    return tuple(outcomes)
 
 
 @dataclass(frozen=True)
@@ -761,6 +825,7 @@ __all__ = [
     "assert_policy_admits_support",
     "assert_self_hash",
     "assign_folds",
+    "build_scored_outcomes",
     "build_policy_artifact",
     "decide",
     "evaluate_candidate",

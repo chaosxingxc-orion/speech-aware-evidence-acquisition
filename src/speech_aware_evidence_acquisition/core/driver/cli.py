@@ -568,7 +568,9 @@ def _cli_score_batch(args: argparse.Namespace) -> int:
     from ..scoring_batch import load_score_jobs, run_score_batch
 
     jobs = load_score_jobs(
-        Path(args.jobs), require_operation=args.per_job_operation
+        Path(args.jobs),
+        require_operation=args.per_job_operation,
+        require_ledger_cells=args.finalize,
     )
     summary = run_score_batch(
         jobs,
