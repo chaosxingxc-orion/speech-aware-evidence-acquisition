@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from types import SimpleNamespace
+from unittest.mock import patch
 
 import pytest
 
@@ -208,3 +209,228 @@ def test_run_phase_requires_openjiuwen_and_exactly_one_contact_per_sample() -> N
         agent_runner=fake_runner,
     )
     assert returned is summary
+
+
+def _receipt_items() -> tuple[dict[str, str], ...]:
+    return (
+        {
+            "sample_id": "tier1:000001",
+            "media_relpath": "audio/one.wav",
+            "audio_sha256": "1" * 64,
+        },
+        {
+            "sample_id": "tier1:000002",
+            "media_relpath": "audio/two.wav",
+            "audio_sha256": "2" * 64,
+        },
+    )
+
+
+def _samples() -> tuple[SimpleNamespace, ...]:
+    return (
+        SimpleNamespace(
+            sample_id="tier1:000002",
+            media_relpath="audio/two.wav",
+            audio_ref=SimpleNamespace(sha256="2" * 64),
+        ),
+        SimpleNamespace(
+            sample_id="tier1:000001",
+            media_relpath="audio/one.wav",
+            audio_ref=SimpleNamespace(sha256="1" * 64),
+        ),
+    )
+
+
+def _material(sample_id: str) -> flight.UseMaterial:
+    return flight.UseMaterial(
+        sample_id=sample_id,
+        recipient_transcript="turn on the kitchen light",
+        route=cascade.EvidenceRoute(
+            available=True,
+            facet_ids=("facet-1",),
+            value_ids=("value-1",),
+            task_targets=("setLightBrightness",),
+            scores=(2.0,),
+            positive_facet_count=1,
+            top1_margin=1.0,
+            prompt_block="setLightBrightness controls a light",
+        ),
+        evidence_contents=("setLightBrightness controls a light",),
+        donor_id=None,
+        retrieval_query_sha256="b" * 64,
+    )
+
+
+def test_receipt_filtered_adapters_render_observation_and_use_prompts() -> None:
+    with (
+        patch.object(flight.Audio2ToolAdapter, "__init__", return_value=None),
+        patch.object(
+            flight.Audio2ToolAdapter,
+            "load_split",
+            return_value=_samples(),
+        ),
+        patch.object(
+            flight.Audio2ToolAdapter,
+            "build_task_contract",
+            return_value="Complete registry contract.",
+        ),
+    ):
+        observation = flight.A2TSelfTranscriptAdapter(
+            {},
+            SimpleNamespace(),
+            repo_root=SimpleNamespace(),
+            receipt_items=_receipt_items(),
+            phase=flight.OBSERVATION_PHASE,
+        )
+        observed = observation.load_split(flight.SPLIT_ID)
+        assert [sample.sample_id for sample in observed] == [
+            "tier1:000001",
+            "tier1:000002",
+        ]
+        assert observation.load_split(flight.SPLIT_ID) is observed
+        contract = observation.build_task_contract(observed[0], object())
+        prompt = observation.assemble_prompt(observed[0], None)
+        assert contract == cascade.SELF_TRANSCRIPT_INSTRUCTION
+        assert prompt[0] == {"role": "system", "content": contract}
+        assert prompt[1]["content"][0]["media_relpath"] == "audio/one.wav"
+        assert observation.score(observed[0], "words") == {
+            "scoring_deferred": True
+        }
+
+        use = flight.A2TSelfTranscriptAdapter(
+            {},
+            SimpleNamespace(),
+            repo_root=SimpleNamespace(),
+            receipt_items=_receipt_items(),
+            phase=flight.MATCHED_USE_PHASE,
+            use_material={"tier1:000001": _material("tier1:000001")},
+        )
+        selected = use.load_split(flight.SPLIT_ID)
+        assert [sample.sample_id for sample in selected] == ["tier1:000001"]
+        use_contract = use.build_task_contract(selected[0], object())
+        assert "Complete registry contract." in use_contract
+        assert "turn on the kitchen light" in use_contract
+        assert "setLightBrightness controls a light" in use_contract
+
+
+def test_adapter_and_controller_fail_closed_on_malformed_boundaries() -> None:
+    with patch.object(flight.Audio2ToolAdapter, "__init__", return_value=None):
+        with pytest.raises(flight.A2TSelfTranscriptFlightError, match="unknown"):
+            flight.A2TSelfTranscriptAdapter(
+                {},
+                SimpleNamespace(),
+                repo_root=SimpleNamespace(),
+                receipt_items=_receipt_items(),
+                phase="UNKNOWN",
+            )
+        with pytest.raises(flight.A2TSelfTranscriptFlightError, match="duplicate"):
+            flight.A2TSelfTranscriptAdapter(
+                {},
+                SimpleNamespace(),
+                repo_root=SimpleNamespace(),
+                receipt_items=(_receipt_items()[0], _receipt_items()[0]),
+                phase=flight.OBSERVATION_PHASE,
+            )
+        with pytest.raises(flight.A2TSelfTranscriptFlightError, match="cannot receive"):
+            flight.A2TSelfTranscriptAdapter(
+                {},
+                SimpleNamespace(),
+                repo_root=SimpleNamespace(),
+                receipt_items=_receipt_items(),
+                phase=flight.OBSERVATION_PHASE,
+                use_material={"tier1:000001": _material("tier1:000001")},
+            )
+
+    with pytest.raises(flight.A2TSelfTranscriptFlightError, match="cannot receive"):
+        flight.SingleContactController(
+            phase=flight.OBSERVATION_PHASE,
+            liveness_receipt=_receipt(),
+        )
+    with pytest.raises(flight.A2TSelfTranscriptFlightError, match="unknown"):
+        flight.SingleContactController(phase="UNKNOWN")
+    malformed = SimpleNamespace(
+        passed=True,
+        row_count=104,
+        report_sha256="not-a-hash",
+    )
+    with pytest.raises(flight.A2TSelfTranscriptFlightError, match="64-hex"):
+        flight.SingleContactController(
+            phase=flight.MATCHED_USE_PHASE,
+            liveness_receipt=malformed,
+        )
+
+
+def test_prompt_and_single_contact_sequence_reject_unsafe_inputs() -> None:
+    with pytest.raises(flight.A2TSelfTranscriptFlightError, match="USE phase"):
+        flight.render_use_prompt_block(
+            task_contract="contract",
+            recipient_transcript="spoken words",
+            evidence_contents=("evidence",),
+            phase=flight.OBSERVATION_PHASE,
+        )
+    with pytest.raises(flight.A2TSelfTranscriptFlightError, match="task contract"):
+        flight.render_use_prompt_block(
+            task_contract=" ",
+            recipient_transcript="spoken words",
+            evidence_contents=("evidence",),
+            phase=flight.MATCHED_USE_PHASE,
+        )
+    with pytest.raises(flight.A2TSelfTranscriptFlightError, match="evidence"):
+        flight.render_use_prompt_block(
+            task_contract="contract",
+            recipient_transcript="spoken words",
+            evidence_contents=(),
+            phase=flight.MATCHED_USE_PHASE,
+        )
+
+    controller = flight.SingleContactController(phase=flight.OBSERVATION_PHASE)
+    context = _context()
+    with pytest.raises(flight.A2TSelfTranscriptFlightError, match="contact"):
+        controller.advance(context, object(), "words")
+    contact = controller.initial_contact(context)
+    with pytest.raises(flight.A2TSelfTranscriptFlightError, match="string"):
+        controller.advance(context, contact, object())
+
+
+@pytest.mark.parametrize(
+    ("summary", "pattern"),
+    (
+        (SimpleNamespace(results=(), agent_executor_id="wrong"), "openjiuwen"),
+        (SimpleNamespace(results=[], agent_executor_id=flight.AGENT_EXECUTOR_ID), "tuple"),
+        (
+            SimpleNamespace(
+                results=(SimpleNamespace(sample_id="", contacts=(object(),)),),
+                agent_executor_id=flight.AGENT_EXECUTOR_ID,
+            ),
+            "sample_id",
+        ),
+        (
+            SimpleNamespace(
+                results=(
+                    SimpleNamespace(sample_id="tier1:000001", contacts=()),
+                ),
+                agent_executor_id=flight.AGENT_EXECUTOR_ID,
+            ),
+            "exactly one",
+        ),
+    ),
+)
+def test_run_phase_rejects_unbound_agent_results(
+    summary: SimpleNamespace, pattern: str
+) -> None:
+    with pytest.raises(flight.A2TSelfTranscriptFlightError, match=pattern):
+        flight.run_phase(
+            phase=flight.OBSERVATION_PHASE,
+            data_root=SimpleNamespace(),
+            plan=SimpleNamespace(),
+            adapter=SimpleNamespace(),
+            core_client=SimpleNamespace(),
+            split_id=flight.SPLIT_ID,
+            knowledge_snapshot=SimpleNamespace(),
+            speech_packet_bindings={"tier1:000001": {}},
+            trace_sink=SimpleNamespace(),
+            slot_count=2,
+            queue_depth=2,
+            decoding_params={},
+            agent_runner=lambda **_kwargs: summary,
+        )

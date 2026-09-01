@@ -21,7 +21,12 @@ from ..attempts import AttemptError, AttemptHandle
 from ..config import protocol_hash as _recompute_protocol_hash
 from . import _SHA256_PATTERN, ATTEMPT_STATE_NEVER_OPENED, BundleError
 from .artifacts import VerifiedBundle, _read_bytes, _verify_artifact
-from .outputs import _verify_outputs, _verify_outputs_trace_binding, _verify_raw_trace
+from .outputs import (
+    _minimum_model_calls_from_trace,
+    _verify_outputs,
+    _verify_outputs_trace_binding,
+    _verify_raw_trace,
+)
 from .verify_header import _verify_manifest_header
 
 
@@ -207,17 +212,17 @@ def verify_bundle(manifest_path: Path) -> VerifiedBundle:
             "protocol_hash (I-1)"
         )
 
-    # I-1 fix: cost.calls_used is derivable, for a COMPLETED bundle with a
-    # non-empty VERIFIED outputs set, as a lower bound -- core.model.
-    # FrozenCoreAdapter.request durably records a call (core.attempts) BEFORE
-    # the transport is ever invoked, so no outputs row can exist without at
-    # least one genuinely spent call behind it. Today's only registered
-    # policy (FixedPolicy) makes this an exact equality; a future
-    # retrying/re-resolving policy (X-series) could only ever need MORE
-    # calls than rows, never fewer, so this stays a safe `>=` rather than a
-    # strict `==` tied to FixedPolicy's specific shape. An ABORTED bundle
-    # (empty outputs_rows) is NOT checked here: with zero verified outputs
-    # rows there is nothing to derive a bound from, so
+    # I-1 fix, extended for deterministic derived composites: cost.calls_used
+    # is lower-bounded by MODEL REQUESTS freshly derived from the verified
+    # trace, not blindly by output-row count. A direct run still has one
+    # model request per output. A complete composite can additionally bind a
+    # row to a deterministic TOOL request whose source is either a model
+    # response in the same trace or immutable source bytes re-hashed by
+    # _minimum_model_calls_from_trace. This preserves honest current-attempt
+    # accounting when frozen M0 rows are reused. A retrying policy can only
+    # require more calls than this floor. An ABORTED bundle (empty
+    # outputs_rows) is NOT checked here: with zero verified outputs rows
+    # there is nothing to derive a bound from, so
     # ``core.bundle._best_effort_cost_for_aborted_attempt``'s own read of
     # the durable attempt store is honestly NOT independently re-derivable
     # from bundle artifacts the way this check needs -- see that function's
@@ -225,15 +230,18 @@ def verify_bundle(manifest_path: Path) -> VerifiedBundle:
     cost = manifest.get("cost")
     if outputs_rows and isinstance(cost, Mapping):
         calls_used = cost.get("calls_used")
+        minimum_model_calls = _minimum_model_calls_from_trace(
+            trace_records,
+            output_request_ids=frozenset(str(row["request_id"]) for row in outputs_rows),
+        )
         if (
             isinstance(calls_used, (int, float))
             and not isinstance(calls_used, bool)
-            and calls_used < len(outputs_rows)
+            and calls_used < minimum_model_calls
         ):
             raise BundleError(
                 f"run manifest cost.calls_used={calls_used!r} is less than the "
-                f"{len(outputs_rows)} verified outputs rows it must have taken at "
-                "least that many calls to produce (I-1)"
+                f"{minimum_model_calls} verified model requests in its trace (I-1)"
             )
 
     attempt_meta = manifest.get("attempt")

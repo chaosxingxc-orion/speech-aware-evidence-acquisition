@@ -115,6 +115,25 @@ composite after reward-memory composition. Batch receipts record wall time, summ
 effective speedup, scorer identity, manifest identity, and result hashes. Evaluation speed is an
 engineering measurement, not a scientific promotion criterion.
 
+### Pre-contact implementation binding: observation and derivative lifecycle
+
+The observation-only attempt ends in the durable `ABORTED` state after its complete English
+transcript artifact, trace, cost, and liveness report seal. Here `ABORTED` means "not eligible for
+task-answer scoring," not a failed model execution. This terminal state prevents an observation
+response from being mistaken for a task answer or left indefinitely open. A failed liveness gate
+stops there without opening USE, gold, or the scorer.
+
+Complete matched, shuffled-evidence, and resend prediction manifests may contain deterministic
+reuse of frozen M0 or an already sealed composite. Their trace binds every reused row to an
+absolute source artifact path and a freshly verified SHA-256; current-attempt `calls_used` remains
+the measured number of new model requests and is never inflated to the 104 output-row count.
+
+Wave 1 finalizes the three independent model-bearing attempts in three outer workers. Wave 2 is a
+single `score` operation over the complete model-free policy derivative. The derivative binds the
+already-finalized matched-attempt identity but does not reopen or mutate it. This is an
+implementation/lifecycle clarification only: it changes no sample, prompt, route, action rule,
+metric, bootstrap, promotion gate, or contact budget.
+
 ## Exposure, budgets, and terminal decisions
 
 The cohort is the already-exposed, tier-balanced A2T-G1-104 only. This registration permits at most

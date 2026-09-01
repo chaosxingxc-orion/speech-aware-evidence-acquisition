@@ -167,6 +167,18 @@ def test_bm25_route_is_deterministic_order_invariant_and_budgeted() -> None:
     assert 0.0 <= route.top1_margin <= 1.0
 
 
+def test_frozen_retriever_builds_once_and_matches_the_reference_function() -> None:
+    snapshot = _snapshot(n_extra=8)
+    retriever = cascade.EvidenceRetriever(snapshot)
+    first = retriever.route("dim the kitchen light to eighty percent")
+    second = retriever.route("weather forecast in Boston tomorrow")
+    assert first == cascade.retrieve_evidence(
+        "dim the kitchen light to eighty percent", snapshot
+    )
+    assert second.task_targets[0] == "getWeatherForecast"
+    assert retriever.snapshot_sha256 == snapshot.content_hash()
+
+
 def test_label_free_liveness_barrier_passes_only_the_complete_live_batch() -> None:
     rows = tuple(
         cascade.ObservationRecord(
@@ -318,4 +330,3 @@ def test_policy_report_keeps_crossfit_and_information_gates_conjunctive() -> Non
     assert report.promotion_passed == all(report.gates.values())
     assert "matched_vs_shuffled_exact" in report.gates
     assert "policy_positive_ci90_lower" in report.gates
-

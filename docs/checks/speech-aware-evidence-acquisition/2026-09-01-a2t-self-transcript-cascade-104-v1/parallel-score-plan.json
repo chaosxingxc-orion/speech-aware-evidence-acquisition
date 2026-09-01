@@ -2,13 +2,14 @@
   "schema": "saea-parallel-score-plan-v1",
   "experiment_id": "SAEA-A2T-TFRL-SELF-TRANSCRIPT-CASCADE-104-V1",
   "entrypoint": "scripts/evaluate_parallel.sh",
-  "mode": "--finalize",
+  "mode": "per-wave",
   "official_scorer": {
     "modified": false,
     "processes_per_job": 1,
     "invocations_per_complete_manifest": 1
   },
   "wave_1": {
+    "mode": "--finalize",
     "workers": 3,
     "jobs": [
       {
@@ -29,16 +30,17 @@
     ]
   },
   "wave_2": {
+    "mode": "--score",
     "workers": 1,
     "jobs": [
       {
         "job_id": "self-transcript-crossfit-policy-composite",
         "input": "one complete 104-row policy run manifest composed by the frozen cross-fitted rule",
-        "attempt": "the model-free policy composition attempt"
+        "attempt": "a model-free derivative bound to the finalized matched-attempt identity; scoring does not reopen or mutate that attempt"
       }
     ]
   },
-  "materialization": "No scorer starts until observation, matched, shuffled-evidence, and resend attempts are sealed and the three wave-1 complete 104-row manifests verify. The launcher writes exact manifest paths to a JSONL job file and invokes the unchanged official finalizer once per manifest. Wave 2 starts only after the fixed cross-fitted policy composition has produced and verified its own complete manifest.",
+  "materialization": "No scorer starts until observation, matched, shuffled-evidence, and resend attempts are sealed and the three wave-1 complete 104-row manifests verify. The launcher writes exact manifest paths to a JSONL job file and invokes the unchanged official finalizer once per manifest. Wave 2 starts only after the fixed cross-fitted policy composition has produced and verified its own complete derivative manifest; it invokes score rather than finalize because it makes no model contact and reuses the already-finalized matched-attempt identity.",
   "aggregation_rule": "Never split one dataset into scoring shards and never average shard-level metrics. Each worker invokes the unchanged official scorer on one complete 104-row composite.",
   "equivalence_rule": "Every result must be verified, bind the expected complete-manifest identity, and match the unchanged authoritative single-job path for the same manifest after excluding nonsemantic timing fields.",
   "timing_receipt": "Each batch-summary.json records outer wall time, sum of per-job elapsed times, effective speedup, worker count, per-job status, scorer identity, complete-manifest identities, and result hashes."

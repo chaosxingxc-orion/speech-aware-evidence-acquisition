@@ -33,6 +33,7 @@ Status: frozen before implementation. No model, gold, or scorer contact is autho
 | E11 | Complete composites | Matched, shuffled, resend, and policy artifacts each contain exactly the frozen 104 unique sample ids; unavailable rows cite frozen M0 and no output is invented. |
 | E12 | Outer parallel scoring | Wave 1 has exactly three unique complete manifests and three workers; each job invokes the unchanged scorer once in one process; shard manifests and shard-metric averaging are rejected. |
 | E13 | Score equivalence | Each concurrent result is verified, binds the expected full-manifest identity, and is byte-equivalent to the authoritative single-job result for the same manifest after nonsemantic timing fields are excluded. |
+| E13a | Model-free derivative scoring | Wave 2 scores one complete 104-row policy derivative after wave-1 finalization; it reuses the finalized matched-attempt identity without reopening or mutating an attempt. |
 | E14 | Promotion conjunction | A report cannot pass unless every liveness, matched-information, agent-gain, training-free, fold, secondary-metric, resend, and state-liveness gate in the machine contract passes. |
 | E15 | Terminal scope | Failure authorizes no support or scale; success authorizes only a separately registered approximately-104 support proposal; no test, approximately-1,000, Stage-3, or paper-scale execution starts here. |
 

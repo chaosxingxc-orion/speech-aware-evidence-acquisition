@@ -64,6 +64,9 @@ from speech_aware_evidence_acquisition.core.bundle import (
     finalize_bundle,
     verify_bundle,
 )
+from speech_aware_evidence_acquisition.core.bundle.outputs import (
+    _minimum_model_calls_from_trace,
+)
 from speech_aware_evidence_acquisition.core.base import CoreError
 from speech_aware_evidence_acquisition.core.config import ComposedConfig, protocol_hash
 from speech_aware_evidence_acquisition.core.driver import (
@@ -90,6 +93,57 @@ def _transport(request_bytes):
 
 def _failing_transport(request_bytes):
     raise RuntimeError("transport exploded")
+
+
+def test_composite_trace_cost_floor_counts_model_requests_not_tool_outputs(tmp_path):
+    source = tmp_path / "frozen.outputs.jsonl"
+    source.write_text("source bytes\n", encoding="utf-8")
+    source_sha256 = sha256_file(source)
+    trace = {
+        "model-1/request": {
+            "arm": "speech-feature-query",
+            "payload": {"sample_id": "sample-1"},
+            "payload_sha256": "a" * 64,
+        },
+        "model-1/response": {"text": "answer"},
+        "composite-1/request": {
+            "tool_id": "deterministic-composite-v1",
+            "source": {"source_request_id": "model-1"},
+        },
+        "composite-2/request": {
+            "tool_id": "deterministic-composite-v1",
+            "source": {
+                "source_artifact_path": str(source),
+                "source_artifact_sha256": source_sha256,
+            },
+        },
+    }
+    assert _minimum_model_calls_from_trace(trace) == 1
+
+
+def test_composite_trace_cost_floor_rejects_unbound_tool_provenance(tmp_path):
+    missing = tmp_path / "missing.outputs.jsonl"
+    with pytest.raises(BundleError, match="source provenance"):
+        _minimum_model_calls_from_trace(
+            {
+                "composite/request": {
+                    "tool_id": "deterministic-composite-v1",
+                    "source": {},
+                }
+            }
+        )
+    with pytest.raises(BundleError, match="source artifact"):
+        _minimum_model_calls_from_trace(
+            {
+                "composite/request": {
+                    "tool_id": "deterministic-composite-v1",
+                    "source": {
+                        "source_artifact_path": str(missing),
+                        "source_artifact_sha256": "b" * 64,
+                    },
+                }
+            }
+        )
 
 
 def _composed(**overrides):

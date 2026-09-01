@@ -9,10 +9,90 @@ from __future__ import annotations
 
 import hashlib
 import json
+from pathlib import Path
 from typing import Mapping
 
 from ...contracts import BoundaryViolation, TraceContractError, TraceRecord
 from . import BundleError
+
+
+def _is_sha256(value: object) -> bool:
+    return (
+        isinstance(value, str)
+        and len(value) == 64
+        and all(character in "0123456789abcdef" for character in value)
+    )
+
+
+def _minimum_model_calls_from_trace(
+    trace_records: Mapping[str, Mapping[str, object]],
+    *,
+    output_request_ids: frozenset[str] | None = None,
+) -> int:
+    """Derive the model-call cost floor while admitting traced tool composites.
+
+    A normal model request carries the transport envelope fields ``arm``,
+    ``payload``, and ``payload_sha256``. A deterministic tool-derived output
+    instead carries ``tool_id`` and must bind either a model response in the
+    same trace or immutable source bytes whose SHA-256 is re-measured here.
+    The latter is what lets a complete prediction manifest reuse a frozen M0
+    row without pretending that the current attempt made another model call.
+    """
+
+    model_requests = 0
+    derived_ids = (
+        output_request_ids
+        if output_request_ids is not None
+        else frozenset(
+            record_id[: -len("/request")]
+            for record_id, payload in trace_records.items()
+            if record_id.endswith("/request") and "tool_id" in payload
+        )
+    )
+    for record_id, payload in trace_records.items():
+        if not record_id.endswith("/request"):
+            continue
+        request_id = record_id[: -len("/request")]
+        if (
+            isinstance(payload.get("arm"), str)
+            and isinstance(payload.get("payload"), Mapping)
+            and _is_sha256(payload.get("payload_sha256"))
+        ):
+            model_requests += 1
+            continue
+        if request_id not in derived_ids:
+            continue
+        tool_id = payload.get("tool_id")
+        source = payload.get("source")
+        if not isinstance(tool_id, str) or not tool_id or not isinstance(source, Mapping):
+            raise BundleError(
+                f"tool-derived output {request_id!r} lacks bound source provenance"
+            )
+        source_request_id = source.get("source_request_id")
+        if isinstance(source_request_id, str) and source_request_id:
+            if f"{source_request_id}/response" not in trace_records:
+                raise BundleError(
+                    f"tool-derived output {request_id!r} source provenance names "
+                    f"missing response {source_request_id!r}"
+                )
+            continue
+        source_path_value = source.get("source_artifact_path")
+        source_sha256 = source.get("source_artifact_sha256")
+        if not isinstance(source_path_value, str) or not _is_sha256(source_sha256):
+            raise BundleError(
+                f"tool-derived output {request_id!r} lacks bound source provenance"
+            )
+        source_path = Path(source_path_value)
+        if not source_path.is_absolute() or not source_path.is_file():
+            raise BundleError(
+                f"tool-derived output {request_id!r} source artifact is unavailable"
+            )
+        actual_sha256 = hashlib.sha256(source_path.read_bytes()).hexdigest()
+        if actual_sha256 != source_sha256:
+            raise BundleError(
+                f"tool-derived output {request_id!r} source artifact hash drifted"
+            )
+    return model_requests
 
 
 def _split_jsonl(text: str) -> list[str]:

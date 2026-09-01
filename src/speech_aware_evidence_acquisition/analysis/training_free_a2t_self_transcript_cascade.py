@@ -167,6 +167,80 @@ def _content_documents(
     return documents
 
 
+class EvidenceRetriever:
+    """One immutable BM25 index reused across the complete observation batch."""
+
+    def __init__(self, snapshot: KnowledgeSnapshot) -> None:
+        self._snapshot = snapshot.validate()
+        self._documents = _content_documents(snapshot)
+        self._index = Bm25Index.build(self._documents)
+        self.snapshot_sha256 = snapshot.content_hash()
+
+    def route(self, transcript: str) -> EvidenceRoute:
+        if not isinstance(transcript, str) or not transcript.strip():
+            raise SelfTranscriptCascadeError(
+                "retrieval requires a non-empty transcript"
+            )
+        scored = [
+            (document_index, float(score))
+            for document_index, score in self._index.scores(transcript).items()
+            if math.isfinite(score) and score > 0.0
+        ]
+        if not scored:
+            return EvidenceRoute(False, (), (), (), (), 0, 0.0, "")
+        ranked = sorted(
+            scored,
+            key=lambda item: (-item[1], self._index.doc_ids[item[0]]),
+        )
+        selected = ranked[:MAX_FACETS]
+        facet_ids = tuple(
+            self._index.doc_ids[index_] for index_, _score in selected
+        )
+        scores = tuple(score for _index, score in selected)
+        top_score = scores[0]
+        second_score = scores[1] if len(scores) > 1 else 0.0
+        top1_margin = (top_score - second_score) / max(top_score, 1e-12)
+
+        selected_score = dict(zip(facet_ids, scores, strict=True))
+        value_candidates: list[tuple[float, str, object]] = []
+        for value in self._snapshot.values:
+            supporting = set(value.associated_facet_ids) & set(facet_ids)
+            if not supporting or value.task_target is None:
+                continue
+            best = max(selected_score[facet_id] for facet_id in supporting)
+            value_candidates.append((-best, value.value_id, value))
+        value_candidates.sort(key=lambda item: (item[0], item[1]))
+
+        chosen: list[object] = []
+        targets: list[str] = []
+        for _negative_score, _value_id, value in value_candidates:
+            target = value.task_target
+            if target not in targets and len(targets) >= MAX_TARGETS:
+                continue
+            chosen.append(value)
+            if target not in targets:
+                targets.append(target)
+            if len(chosen) == MAX_VALUES:
+                break
+        if not chosen:
+            return EvidenceRoute(
+                False, (), (), (), (), len(scored), top1_margin, ""
+            )
+        prompt_block = "\n".join(
+            f"[value {value.value_id}] {value.content}" for value in chosen
+        )
+        return EvidenceRoute(
+            True,
+            facet_ids,
+            tuple(value.value_id for value in chosen),
+            tuple(targets),
+            scores,
+            len(scored),
+            top1_margin,
+            prompt_block,
+        )
+
+
 def retrieve_evidence(
     transcript: str,
     snapshot: KnowledgeSnapshot,
@@ -175,70 +249,15 @@ def retrieve_evidence(
     max_values: int = MAX_VALUES,
     max_targets: int = MAX_TARGETS,
 ) -> EvidenceRoute:
-    """Rank frozen content facets and render the registered bounded evidence."""
+    """Reference one-query entry point with frozen 5/6/5 budgets."""
 
-    if not isinstance(transcript, str) or not transcript.strip():
-        raise SelfTranscriptCascadeError("retrieval requires a non-empty transcript")
     if (max_facets, max_values, max_targets) != (
         MAX_FACETS,
         MAX_VALUES,
         MAX_TARGETS,
     ):
         raise SelfTranscriptCascadeError("retrieval budgets are frozen at 5/6/5")
-    snapshot.validate()
-    documents = _content_documents(snapshot)
-    index = Bm25Index.build(documents)
-    scored = [
-        (document_index, float(score))
-        for document_index, score in index.scores(transcript).items()
-        if math.isfinite(score) and score > 0.0
-    ]
-    if not scored:
-        return EvidenceRoute(False, (), (), (), (), 0, 0.0, "")
-    ranked = sorted(scored, key=lambda item: (-item[1], index.doc_ids[item[0]]))
-    selected = ranked[:max_facets]
-    facet_ids = tuple(index.doc_ids[index_] for index_, _score in selected)
-    scores = tuple(score for _index, score in selected)
-    top_score = scores[0]
-    second_score = scores[1] if len(scores) > 1 else 0.0
-    top1_margin = (top_score - second_score) / max(top_score, 1e-12)
-
-    selected_score = dict(zip(facet_ids, scores, strict=True))
-    value_candidates: list[tuple[float, str, object]] = []
-    for value in snapshot.values:
-        supporting = set(value.associated_facet_ids) & set(facet_ids)
-        if not supporting or value.task_target is None:
-            continue
-        best = max(selected_score[facet_id] for facet_id in supporting)
-        value_candidates.append((-best, value.value_id, value))
-    value_candidates.sort(key=lambda item: (item[0], item[1]))
-
-    chosen: list[object] = []
-    targets: list[str] = []
-    for _negative_score, _value_id, value in value_candidates:
-        target = value.task_target
-        if target not in targets and len(targets) >= max_targets:
-            continue
-        chosen.append(value)
-        if target not in targets:
-            targets.append(target)
-        if len(chosen) == max_values:
-            break
-    if not chosen:
-        return EvidenceRoute(False, (), (), (), (), len(scored), top1_margin, "")
-    prompt_block = "\n".join(
-        f"[value {value.value_id}] {value.content}" for value in chosen
-    )
-    return EvidenceRoute(
-        True,
-        facet_ids,
-        tuple(value.value_id for value in chosen),
-        tuple(targets),
-        scores,
-        len(scored),
-        top1_margin,
-        prompt_block,
-    )
+    return EvidenceRetriever(snapshot).route(transcript)
 
 
 @dataclass(frozen=True)
@@ -867,6 +886,7 @@ __all__ = [
     "STOP_M0",
     "USE_MATCHED",
     "DecisionOutcome",
+    "EvidenceRetriever",
     "EvidenceRoute",
     "LivenessReceipt",
     "LivenessReport",

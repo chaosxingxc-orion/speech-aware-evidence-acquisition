@@ -5,10 +5,12 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
 from speech_aware_evidence_acquisition.core.config import compose, protocol_hash
+from speech_aware_evidence_acquisition.core.tracing import TraceBuffer
 from speech_aware_evidence_acquisition.rails.probes import (
     a2t_self_transcript_cascade_bundle as bundle,
 )
@@ -21,6 +23,7 @@ def _request(sample_id: str, request_id: str) -> dict[str, object]:
     payload = {
         "request_id": request_id,
         "sample_id": sample_id,
+        "carrier_lock_key": "audio2tool",
         "history": [
             {
                 "role": "control",
@@ -49,6 +52,33 @@ def _request(sample_id: str, request_id: str) -> dict[str, object]:
     }
 
 
+def _phase_trace(sample_id: str, request_id: str, text: str) -> tuple[dict[str, object], ...]:
+    request = _request(sample_id, request_id)
+    response_text_sha256 = hashlib.sha256(text.encode("utf-8")).hexdigest()
+    response_sha256 = hashlib.sha256(f"response:{text}".encode("utf-8")).hexdigest()
+    return (
+        request,
+        {
+            "channel": "MODEL_RESPONSE",
+            "record_id": f"{request_id}/response",
+            "payload": {
+                "text": text,
+                "response_sha256": response_sha256,
+                "response_text_sha256": response_text_sha256,
+            },
+        },
+        {
+            "channel": "COST",
+            "record_id": f"{request_id}/cost",
+            "payload": {
+                "calls": 1,
+                "audio_seconds": 2.5,
+                "latency_seconds": 1.25,
+                "prompt_tokens": 100,
+                "completion_tokens": 12,
+            },
+        },
+    )
 def test_resend_selection_is_hash_ranked_two_per_tier() -> None:
     tiers = {
         f"tier{tier}:{index:06d}": f"tier{tier}"
@@ -118,6 +148,78 @@ def test_policy_composite_uses_only_frozen_m0_or_matched_authority() -> None:
     assert set(policy) == set(expected)
 
 
+def test_phase_bundle_material_preserves_trace_identity_and_cost() -> None:
+    results = tuple(
+        SimpleNamespace(
+            sample_id=f"tier1:{index:06d}",
+            final_response_text=f"response-{index}",
+        )
+        for index in range(2)
+    )
+    trace = tuple(
+        row
+        for index in range(2)
+        for row in _phase_trace(
+            f"tier1:{index:06d}", f"matched-{index:04d}", f"response-{index}"
+        )
+    )
+    rows, cost = bundle.build_phase_bundle_material(
+        SimpleNamespace(results=results),
+        trace,
+        phase="USE_MATCHED",
+        umbrella_lock_sha256="a" * 64,
+    )
+    assert len(rows) == 2
+    assert all(row["phase"] == "USE_MATCHED" for row in rows)
+    assert cost == {
+        "calls_used": 2,
+        "audio_seconds_used": 5.0,
+        "latency_seconds_total": 2.5,
+        "prompt_tokens_total": 200,
+        "completion_tokens_total": 24,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "a" * 64,
+    }
+
+
+def test_matched_shuffled_and_resend_composites_remain_complete() -> None:
+    expected = tuple(f"tier1:{index:06d}" for index in range(4))
+    m0 = {sample_id: f"m0-{sample_id}" for sample_id in expected}
+    phase = {sample_id: f"use-{sample_id}" for sample_id in expected[:3]}
+    matched = bundle.build_use_composite_texts(
+        m0_texts=m0,
+        use_texts=phase,
+        routed_ids=expected[:3],
+    )
+    assert matched[expected[3]].startswith("m0-")
+    resend = bundle.build_resend_composite_texts(
+        matched,
+        selected_ids=(expected[0], expected[1]),
+        resend_responses={expected[0]: "r0", expected[1]: "r1"},
+    )
+    assert set(resend) == set(expected)
+    assert resend[expected[0]] == "r0"
+
+
+def test_composite_rows_are_bound_to_deterministic_tool_trace_records() -> None:
+    texts = {"tier1:000001": "one", "tier1:000002": "two"}
+    sources = {
+        "tier1:000001": {"action": "USE_MATCHED", "request_id": "matched-1"},
+        "tier1:000002": {"action": "STOP_M0", "request_id": "frozen-m0"},
+    }
+    sink = TraceBuffer("SAEA-A2T-TFRL-SELF-TRANSCRIPT-CASCADE-104-V1")
+    rows = bundle.emit_composite_rows(
+        texts=texts,
+        source_by_id=sources,
+        sink=sink,
+        variant="matched",
+    )
+    assert len(rows) == 2
+    assert len(sink.records) == 4
+    assert all(channel == "TOOL" for channel, _record_id, _payload in sink.records)
+    assert all(row["composite_variant"] == "matched" for row in rows)
+
+
 def test_registered_score_plan_parallelizes_only_complete_manifests() -> None:
     path = (
         REPO
@@ -133,6 +235,9 @@ def test_registered_score_plan_parallelizes_only_complete_manifests() -> None:
         "processes_per_job": 1,
         "invocations_per_complete_manifest": 1,
     }
+    assert plan["mode"] == "per-wave"
+    assert plan["wave_1"]["mode"] == "--finalize"
+    assert plan["wave_2"]["mode"] == "--score"
     assert plan["wave_1"]["workers"] == len(plan["wave_1"]["jobs"]) == 3
     assert all("complete 104-row" in job["input"] for job in plan["wave_1"]["jobs"])
     assert "Never split one dataset" in plan["aggregation_rule"]

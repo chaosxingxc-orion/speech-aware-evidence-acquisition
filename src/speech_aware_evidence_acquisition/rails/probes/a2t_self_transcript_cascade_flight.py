@@ -95,6 +95,7 @@ def build_use_material(
             "use material requires a frozen KnowledgeSnapshot"
         )
     snapshot.validate()
+    retriever = cascade.EvidenceRetriever(snapshot)
     matched_routes: dict[str, cascade.EvidenceRoute] = {}
     for sample_id in sorted(transcripts):
         parsed = transcripts[sample_id]
@@ -104,7 +105,7 @@ def build_use_material(
             )
         if not parsed.valid:
             continue
-        route = cascade.retrieve_evidence(parsed.text, snapshot)
+        route = retriever.route(parsed.text)
         if route.available:
             matched_routes[sample_id] = route
     if not matched_routes:
