@@ -1,0 +1,126 @@
+{
+  "schema": "saea-a2t-schema-risk-memory-result-summary-v1",
+  "experiment_id": "SAEA-A2T-MF-TFRL-SCHEMA-RISK-MEMORY-V1",
+  "date": "2026-09-01",
+  "claim_status": "exposed-cohort retrospective feasibility only",
+  "decision": "close schema-risk targeting for the current supply action",
+  "promotion_passed": false,
+  "selected_candidate": null,
+  "study_commit": "4d6932a459c15c5afdd2ac440dd71e99642997fc",
+  "contacts": {
+    "frozen_core": 0,
+    "embedding_tool": 0,
+    "tokenizer": 0,
+    "http_or_socket": 0,
+    "audio_seconds": 0,
+    "gpu_hours": 0.0
+  },
+  "offline_guard": {
+    "outbound_connection_attempts": 0,
+    "targets": []
+  },
+  "registry_parser_audit": {
+    "rows": 152,
+    "parsed_signatures": 152,
+    "unresolved_signatures": 0,
+    "declared_parameters": 179,
+    "optional_parameters": 18,
+    "constraint_clauses": 114,
+    "enum_constraints": 80,
+    "numeric_range_constraints": 33,
+    "uncheckable_constraints": 1
+  },
+  "state_summary": {
+    "m0_risk_class_counts": {
+      "schema-clean": 73,
+      "constraint-invalid": 10,
+      "empty": 10,
+      "type-invalid": 5,
+      "invalid-json": 4,
+      "missing-required": 1,
+      "mixed-risk": 1
+    },
+    "observation_risk_class_counts": {
+      "schema-clean": 65,
+      "empty": 17,
+      "constraint-invalid": 11,
+      "type-invalid": 6,
+      "invalid-json": 4,
+      "mixed-risk": 1
+    },
+    "risk_relation_counts": {
+      "exact": 75,
+      "m0-lower": 3,
+      "observation-lower": 3,
+      "unresolved": 23
+    },
+    "largest_mixed_cell": {
+      "state": "[\"schema-clean\",\"schema-clean\",\"exact\",\"zero\",\"zero\"]",
+      "support": 61,
+      "saves": 3,
+      "harms": 7,
+      "neutral": 51
+    },
+    "most_promising_safe_cell": {
+      "state": "[\"schema-clean\",\"empty\",\"unresolved\",\"zero\",\"zero\"]",
+      "support": 7,
+      "saves": 1,
+      "harms": 0,
+      "frozen_minimum_saves": 2,
+      "eligible": false
+    },
+    "conclusion": "The schema state was live, but safe cells did not contain enough saves and high-support positive cells mixed saves with harms."
+  },
+  "training_free_policy": {
+    "parameter_training": "none",
+    "folds": 5,
+    "candidates": [
+      "schema-risk-coarse-v1",
+      "schema-risk-detailed-v1"
+    ],
+    "selected": null,
+    "candidate_outcomes_identical": true,
+    "actions_per_candidate": {
+      "STOP_M0": 104,
+      "SUPPLY_UNION_STRIPPED": 0
+    },
+    "saved": 0,
+    "harmed": 0,
+    "net_exact_match_gain": 0,
+    "tool_accuracy_net_gain": 0,
+    "fold_net_gains": [0, 0, 0, 0, 0],
+    "grouped_ci90": [0.0, 0.0],
+    "failed_gates": [
+      "both_actions",
+      "supply_range",
+      "saved_minimum",
+      "net_gain",
+      "positive_ci90_lower",
+      "positive_fold_count",
+      "save_retention"
+    ]
+  },
+  "predecessor_fidelity": {
+    "samples": 104,
+    "supply_available": 92,
+    "always_supply_saves": 4,
+    "always_supply_harms": 10,
+    "decision_identity_sha256": "07afc9c6e51b8b61f5ce8c1cf1c705a2e727e7a82c1f9a556247f252f386c31c",
+    "fold_identity_sha256": "f99e3b1febd2f1f4a9a2e76ab709edfca97b5aca19b3540a2c15fa98970b2174"
+  },
+  "raw_result": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-MF-TFRL-SCHEMA-RISK-MEMORY-V1/schema-risk-memory-result.json",
+    "bytes": 19602,
+    "file_sha256": "be88b018c11183173bd3cb22cb132b03c9d09fbb17dfeab6c54ce0e5f582120a",
+    "self_sha256": "7837e9e0a821af5809cfa96e0eefbb8caf7ceb3dcafb52988f7149c26fa4960b",
+    "policy_self_sha256": "85872638953f31fe16f24687017997f2aa5d1ac3980fbd1b0427f7cc09214b26",
+    "policy_state_identity_sha256": "56328863f1d038e5b791095236e5f85db2a95a64375eeeb90f968c8c3b6f9e94"
+  },
+  "source_hashes": {
+    "raw_predecessor_result": "8527282e110cd11a9d87f0d65d06d55f266e0a27a9bb95d7f7eff3b103266d39",
+    "m0_outputs": "dea60ff1e63fd2ef11c93edf8808217062fea3f0565ed5b60f136264bc6a9467",
+    "observation_outputs": "888626b97c0525ce16abd91e6d3da1d5df50955b5a7bf6eb6cda8ba8657fb0f9",
+    "supply_outputs": "14cf59eaf053dd344b4b6b874f1e182de6ea11599c7e2a4a0a620f715690d93f"
+  },
+  "next_design_constraint": "change information acquisition or evidence generation; do not tune schema-risk thresholds or categories on these returns"
+}
