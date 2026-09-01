@@ -1,0 +1,171 @@
+{
+  "experiment_id": "SAEA-A2T-TFRL-SELF-CONSISTENCY-104-V1",
+  "schema": "saea-a2t-training-free-self-consistency-experiment-v1",
+  "date": "2026-09-01",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Test whether a new same-core direct re-observation supplies deployment-visible state that lets a non-parametric reward memory safely target values-stripped registry evidence on the exposed A2T-G1-104 discovery cohort.",
+  "predecessor": {
+    "experiment_id": "SAEA-A2T-MF-TFRL-REGISTRY-SEMANTIC-MEMORY-V2",
+    "artifact_self_sha256": "a7fab72e77a60d047b2c222fbbbdd9866cf81a45350c89cbd0de09039b909583",
+    "verdict": "static structural and registry-semantic state is live but reward-inseparable; categorical and threshold search on the 217-row logged surface is closed",
+    "required_change": "obtain a genuinely new prospective runtime observation"
+  },
+  "population": {
+    "carrier": "audio2tool",
+    "split_role": "discovery",
+    "split_name": "A2T-G1-104",
+    "count": 104,
+    "strata": "13 samples per tier across all eight tiers",
+    "receipt": "docs/receipts/a2t/A2T-G1-104.json",
+    "receipt_sha256": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db",
+    "split_identity_hash": "516f92d9b919640969676eb10b776d9c479169fb0a387497e943c726b2191326",
+    "run_identity_hash": "f5a030189cf80dcbc52899e2fa5f819bac03874f2ad3f9645fdc60c432a9bf3a",
+    "audio_seconds_one_pass": 587.017,
+    "exposure": "fully exposed discovery cohort; every result is secondary and cannot carry a generality, confirmatory, superiority, or baseline-lock claim",
+    "forbidden": [
+      "the remaining 296 frozen discovery samples",
+      "the proposed A2T-DEV-400 unexposed tier",
+      "G2",
+      "FINAL60",
+      "any test annotation",
+      "any future turn"
+    ]
+  },
+  "frozen_contact_zero": {
+    "source_run": "SAEA-A2T-G1",
+    "source_attempt": "attempt-20260825T100735Z-a2tg1m0",
+    "outputs_relpath": "arm1-m0-outputs.jsonl",
+    "outputs_sha256": "dea60ff1e63fd2ef11c93edf8808217062fea3f0565ed5b60f136264bc6a9467",
+    "semantics": "the original one-contact answer and the STOP_M0 final answer; it is reused without model contact",
+    "known_before_registration": "a prior G1 direct re-flight was byte-identical on 93 of 104 samples; its per-sample relation to the new signed-return surface is not reused"
+  },
+  "agent_loop": {
+    "executor_id": "openjiuwen-workflow-v1",
+    "frozen_core": "Qwen3-Omni-30B-A3B-Instruct Q4_K_M through the receipt-pinned llama.cpp API-shaped boundary",
+    "same_core_only": true,
+    "parameter_training": "none",
+    "speech_carriage": "the exact original speech-feature packet is carried on every new contact",
+    "phase_1": "REOBSERVE_DIRECT: replay the byte-identical M0 messages once and seal all 104 responses before phase 2",
+    "phase_2": "SUPPLY_UNION_STRIPPED: deterministically render the union of registry rows selected in frozen M0 and REOBSERVE_DIRECT, strip argument_defaults, and make one evidence contact per sample",
+    "final_actions": ["STOP_M0", "SUPPLY_UNION_STRIPPED"],
+    "stop_semantics": "return the frozen M0 answer; the observation contact never silently replaces the final answer",
+    "supply_semantics": "return the phase-2 response",
+    "unresolved_supply": "when neither response yields a registry-resolved tool, SUPPLY_UNION_STRIPPED is unavailable and the action is STOP_M0"
+  },
+  "renderer": {
+    "source": "reuse the registered Stage-2B values-stripped registry-row renderer",
+    "tool_selection": "parse both response call lists with the frozen scorer parser; take the sorted unique union of registry-resolved predicted tool names",
+    "ordering": "registry row order; response order and duplicate calls cannot change the payload",
+    "removed_field": "argument_defaults",
+    "retained_fields": "all other fields of each selected registry row",
+    "forbidden": "gold tool names, expected arguments, reference text, sample tier, sample identity, reward, or any future response"
+  },
+  "runtime_state": {
+    "coarse": [
+      "parse-pair class: both, one, neither",
+      "predicted tool-multiset relation: exact, overlap, disjoint, unresolved"
+    ],
+    "detailed_additions": [
+      "call-count relation: equal, different, unresolved",
+      "per-tool argument-key-signature relation: exact, mixed, different, unresolved",
+      "per-tool argument-value relation: exact, mixed, different, unresolved"
+    ],
+    "invariances": [
+      "gold mutation",
+      "sample and tier identity",
+      "tool-call order",
+      "duplicate identical calls",
+      "registry row order"
+    ],
+    "forbidden": [
+      "gold labels or correctness",
+      "reference transcript or spoken query text",
+      "sample id, query_idx, rendition id, or tier as a feature",
+      "tool name, registry domain, category, description, or argument values as a feature",
+      "phase-2 response, reward, or future turn"
+    ]
+  },
+  "training_free_reward_memory": {
+    "type": "five-fold whole-query-group cross-fitted hierarchical exact-cell action-return memory",
+    "folds": 5,
+    "seed": 20260901,
+    "default_action": "STOP_M0",
+    "primary_return": "official exact_match(SUPPLY_UNION_STRIPPED) minus official exact_match(STOP_M0)",
+    "secondary_returns": [
+      "tool_accuracy delta",
+      "slot micro-F1 delta",
+      "contact delta"
+    ],
+    "decision": "use the most-specific other-fold matching cell, detailed before coarse; select supply only with support at least 4, at least 2 saves, and zero harms; otherwise stop",
+    "candidate_selection": "among candidates passing every gate, maximize cross-fitted exact-match net gain, then saved exact matches, then minimize supply contacts, then lexical candidate id",
+    "no_parameter_updates": true,
+    "no_counterfactual_imputation": true
+  },
+  "evaluation": {
+    "seal_before_score": "both complete 104-row new-contact arms seal before gold is opened",
+    "official_scorer": "one complete official scorer invocation per arm",
+    "outer_parallelism": {
+      "entrypoint": "scripts/evaluate_parallel.sh",
+      "workers": 2,
+      "jobs": ["REOBSERVE_DIRECT complete run", "SUPPLY_UNION_STRIPPED complete run"],
+      "aggregation": "no dataset sharding and no averaging of shard-level metrics"
+    },
+    "bootstrap": {
+      "unit": "query_idx group",
+      "replicates": 10000,
+      "seed": 20260901,
+      "ci_level": 0.9
+    },
+    "mandatory_reports": [
+      "exact match, tool accuracy, slot micro-F1, empty-call rate, parse-failure rate",
+      "saves, harms, net gain, action rate, and contacts per sample",
+      "all eight tiers without tier-conditioned tuning",
+      "all five query-group folds",
+      "state-class support and return mixing",
+      "byte, parsed-tool, key-signature, and value agreement between M0 and re-observation",
+      "parallel scorer wall time, per-job time, result hashes, and scorer identity"
+    ]
+  },
+  "promotion_gates": {
+    "both_actions_observed": true,
+    "supplied_samples_at_least": 5,
+    "supplied_samples_at_most": 52,
+    "saved_exact_matches_at_least": 3,
+    "harmful_supplies_at_most": 1,
+    "exact_match_net_gain_at_least": 2,
+    "grouped_exact_match_ci90_lower_bound_strictly_positive": true,
+    "tool_accuracy_net_gain_nonnegative": true,
+    "every_fold_exact_match_net_gain_nonnegative": true,
+    "positive_exact_match_folds_at_least": 2,
+    "avoid_always_supply_harms_fraction_at_least": 0.8,
+    "retain_always_supply_saves_fraction_at_least": 0.5,
+    "new_state_live_classes_at_least": 2,
+    "non_dominant_state_samples_at_least": 10,
+    "all_conjunctive": true
+  },
+  "decision_ladder": {
+    "failure": "write a negative artifact, close same-core direct self-consistency as the next Audio2Tool targeting signal, and make no new contact",
+    "success": "freeze one training-free controller and preregister an actual-policy support run on the remaining exposed discovery cohort; do not open G2 or revise the baseline",
+    "support_success": "only a separately registered stable prospective gain may propose G2 or Stage-3 promotion",
+    "no_test_tuning": true
+  },
+  "contact_budget": {
+    "new_main_core_contacts": 208,
+    "canary_allowance": 4,
+    "resend_allowance": 1,
+    "planned_model_calls": 213,
+    "planned_speech_audio_seconds": 1200,
+    "planned_gpu_hours": 0.5,
+    "paid_api_spend": 0,
+    "embedding_contacts": 0,
+    "tokenizer_contacts": 0
+  },
+  "precontact_requirements": [
+    "implementation and tests committed",
+    "structured contracts.ExecutionPlan committed with this row as exposure_pre_registration_id",
+    "split identity, protocol hash, source hashes, packet receipt, runtime receipt, and attempt budget validated fail-closed",
+    "model-free prompt-fit and renderer-identity gates pass",
+    "official scorer manifests and two-job outer-parallel score table are prepared but not executed",
+    "working tree clean"
+  ]
+}
