@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import hashlib
+import json
 from pathlib import Path
 import runpy
 from types import SimpleNamespace
@@ -9,6 +11,8 @@ import pytest
 
 from speech_aware_evidence_acquisition.analysis.a2t_contract_preserving_cohort import (
     CohortError,
+    SELECTION_NAMESPACE,
+    TIERS,
     build_receipt,
     query_block,
     select_block_disjoint,
@@ -39,6 +43,10 @@ def _candidate(tier: str, item: int, query: int) -> Candidate:
     )
 
 
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
 def test_materializer_launcher_imports_against_public_package_surface(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -49,6 +57,51 @@ def test_materializer_launcher_imports_against_public_package_surface(
 
     assert namespace["require_clean_study_repo"]
     assert namespace["main"]
+
+
+def test_real_cpv2_receipt_and_configs_are_hash_bound() -> None:
+    receipt_path = REPO / "docs/receipts/a2t/A2T-CPV2-104.json"
+    excluded_path = REPO / "docs/receipts/a2t/A2T-G1-104.json"
+    dataset_path = REPO / "configs/dataset/audio2tool-cpv2-104.json"
+    experiment_path = (
+        REPO
+        / "configs/experiment"
+        / "a2t-training-free-contract-preserving-cascade-104-v2.json"
+    )
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    excluded = json.loads(excluded_path.read_text(encoding="utf-8"))
+    dataset = json.loads(dataset_path.read_text(encoding="utf-8"))
+    experiment = json.loads(experiment_path.read_text(encoding="utf-8"))
+    items = receipt["items"]
+    blocks = {item["query_block"] for item in items}
+    excluded_blocks = {
+        query_block(item["tier"], item["media_relpath"])
+        for item in excluded["items"]
+    }
+
+    assert receipt["count"] == len(items) == 104
+    assert receipt["selection_namespace"] == SELECTION_NAMESPACE
+    assert receipt["strata_counts"] == {tier: 13 for tier in TIERS}
+    assert len(blocks) == 104
+    assert blocks.isdisjoint(excluded_blocks)
+    assert all(
+        item["selection_rank_sha256"]
+        == hashlib.sha256(
+            f"{SELECTION_NAMESPACE}\0{item['sample_id']}".encode()
+        ).hexdigest()
+        for item in items
+    )
+    assert dataset["a2t_cpv2_subset_receipt_sha256"] == _sha256(receipt_path)
+    assert dataset["a2t_cpv2_split_identity_hash"] == receipt["split_identity_hash"]
+    assert dataset["a2t_cpv2_run_identity_hash"] == receipt["run_identity_hash"]
+    assert dataset["a2t_cpv2_excluded_receipt_sha256"] == _sha256(excluded_path)
+    assert dataset["a2t_cpv2_count"] == receipt["count"]
+    assert dataset["a2t_cpv2_audio_seconds_total"] == receipt["audio_seconds_total"]
+    population = experiment["population"]
+    assert population["receipt_status"] == "MATERIALIZED_AND_HASH_PINNED"
+    assert population["receipt_sha256"] == _sha256(receipt_path)
+    assert population["split_identity_hash"] == receipt["split_identity_hash"]
+    assert population["run_identity_hash"] == receipt["run_identity_hash"]
 
 
 def test_query_block_is_tier_scoped_and_refuses_an_ambiguous_path() -> None:

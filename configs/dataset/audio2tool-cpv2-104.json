@@ -1,0 +1,18 @@
+{
+  "carrier_lock_key": "audio2tool",
+  "a2t_cpv2_subset_receipt": "docs/receipts/a2t/A2T-CPV2-104.json",
+  "a2t_cpv2_subset_receipt_sha256": "8f47922124c61f92fee03273c1165eb1f8f97048d910ddd4a6a7243906d78783",
+  "a2t_cpv2_split_name": "A2T-CPV2-104",
+  "a2t_cpv2_split_role": "discovery",
+  "a2t_cpv2_split_identity_hash": "a0acb1672aa1d65517f050418c530cebce9946328d030f41af958ff1a946d42c",
+  "a2t_cpv2_run_identity_hash": "401a28684adea908c80363df0815c9ce04b0ffa46a654975b129d4b69e60f8a1",
+  "a2t_cpv2_count": 104,
+  "a2t_cpv2_audio_seconds_total": 536.05,
+  "a2t_cpv2_parent_receipt": "docs/receipts/probe-samples/r1-audio2tool-sample.json",
+  "a2t_cpv2_parent_receipt_sha256": "d99570a797744f7dc3db53bdb898611836ae2682a02e726b974d05734c6cbb2d",
+  "a2t_cpv2_parent_split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+  "a2t_cpv2_excluded_receipt": "docs/receipts/a2t/A2T-G1-104.json",
+  "a2t_cpv2_excluded_receipt_sha256": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db",
+  "a2t_cpv2_exposure": "EXPOSED parent population -- deterministic identity-only 13-per-tier selection after excluding every A2T-G1-104 query block. This is secondary discovery evidence and cannot carry a confirmatory or generality claim.",
+  "a2t_cpv2_no_driver_split_name": "This fragment deliberately declares no split_name key. The generic driver resolves probe receipts only from docs/receipts/probe-samples; a receipt-bound launcher-side Audio2ToolAdapter subclass serves this cohort without expanding the frozen generic loadable universe."
+}

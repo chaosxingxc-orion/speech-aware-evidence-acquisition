@@ -1,7 +1,11 @@
 # Frozen evaluation definition
 
 Experiment: `SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2`.
-Status: design frozen before cohort materialization, implementation, or model contact.
+Status: design and cohort identity frozen before implementation or model contact. Receipt
+`docs/receipts/a2t/A2T-CPV2-104.json` has SHA-256
+`8f47922124c61f92fee03273c1165eb1f8f97048d910ddd4a6a7243906d78783`, split identity
+`a0acb1672aa1d65517f050418c530cebce9946328d030f41af958ff1a946d42c`, and run identity
+`401a28684adea908c80363df0815c9ce04b0ffa46a654975b129d4b69e60f8a1`.
 
 ## Evaluation questions
 

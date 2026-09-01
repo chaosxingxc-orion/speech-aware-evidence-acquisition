@@ -1,9 +1,20 @@
 # Audio2Tool contract-preserving cascade 104 v2 — preregistration
 
-Date: 2026-09-01. Status: **DESIGN REGISTERED; RECEIPT, IMPLEMENTATION, AND CONTACT CLOSED**.
+Date: 2026-09-01. Status: **DESIGN AND COHORT IDENTITY FROZEN; IMPLEMENTATION AND CONTACT CLOSED**.
 Experiment: `SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2`. Machine contract:
 `configs/experiment/a2t-training-free-contract-preserving-cascade-104-v2.json`, initial SHA-256
 `cf77ceee65ce0ed8c30b1ac5a469b1f6688f1eb0bca3d4340e9a784c1976039e`.
+
+Identity-only materialization from clean study commit `ecd50b385b00bc7973acd15399d298ee0712b8c1`
+froze receipt `docs/receipts/a2t/A2T-CPV2-104.json`, SHA-256
+`8f47922124c61f92fee03273c1165eb1f8f97048d910ddd4a6a7243906d78783`, split identity
+`a0acb1672aa1d65517f050418c530cebce9946328d030f41af958ff1a946d42c`, and run identity
+`401a28684adea908c80363df0815c9ce04b0ffa46a654975b129d4b69e60f8a1`. The materializer read
+no gold, query text, expected call, prior response, prior score, or test field. It selected 104
+unique query blocks, 13 per tier, with zero overlap against all 104 A2T-G1-104 query blocks and
+536.05 total speech-audio seconds. The receipt-binding amendment changes no experimental rule;
+the current machine-contract SHA-256 is
+`00f3fa9b1b3386a3a889dcbbbf79f7141a106c30ab475a5634ebda65e6d5c54e`.
 
 ## Why this is a distinct successor
 
@@ -28,8 +39,9 @@ already exposed. Selection is frozen before materialization: remove every parent
 `tier/query_N` block occurs in `A2T-G1-104`; then, within each of the eight tiers, sort by
 `SHA-256("a2t-contract-preserving-cascade-v2" + NUL + sample_id)`, break ties by sample id, and take
 13. No gold, query text, expected call, old response, old score, or test field participates. The
-receipt must land with both identity hashes, media byte hashes, durations, block ids, the parent and
-exclusion hashes, and an explicit zero-overlap proof before implementation begins.
+landed receipt carries both identity hashes, media byte hashes, durations, block ids, the parent and
+exclusion hashes, and an explicit zero-overlap proof. Implementation remains closed until this
+receipt binding is committed and its real-receipt regression test passes.
 
 ## AgentLoop and label-free stop sequence
 

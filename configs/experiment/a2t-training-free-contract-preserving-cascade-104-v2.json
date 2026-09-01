@@ -27,7 +27,12 @@
     "items_per_tier": 13,
     "count": 104,
     "receipt": "docs/receipts/a2t/A2T-CPV2-104.json",
-    "receipt_status": "must be materialized and hash-pinned before implementation or contact",
+    "receipt_status": "MATERIALIZED_AND_HASH_PINNED",
+    "receipt_sha256": "8f47922124c61f92fee03273c1165eb1f8f97048d910ddd4a6a7243906d78783",
+    "split_identity_hash": "a0acb1672aa1d65517f050418c530cebce9946328d030f41af958ff1a946d42c",
+    "run_identity_hash": "401a28684adea908c80363df0815c9ce04b0ffa46a654975b129d4b69e60f8a1",
+    "audio_seconds_total": 536.05,
+    "materialization_study_commit": "ecd50b385b00bc7973acd15399d298ee0712b8c1",
     "gold_used_for_selection": false,
     "prior_outputs_used_for_selection": false,
     "test_used_for_selection": false
