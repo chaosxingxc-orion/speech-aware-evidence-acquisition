@@ -19,7 +19,12 @@ from .a2t_self_transcript_cascade_flight import (
 
 RESEND_SELECTION_PREFIX = "resend-self-transcript-v1\n"
 COMPOSITE_TOOL_ID = "saea-a2t-self-transcript-composite-v1"
-_PHASES = {OBSERVATION_PHASE, MATCHED_USE_PHASE, SHUFFLED_USE_PHASE}
+_PHASES = {
+    "M0_DIRECT",
+    OBSERVATION_PHASE,
+    MATCHED_USE_PHASE,
+    SHUFFLED_USE_PHASE,
+}
 _VARIANTS = {"matched", "shuffled-evidence", "resend", "policy"}
 
 

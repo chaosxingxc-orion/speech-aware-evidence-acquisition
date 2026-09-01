@@ -407,6 +407,68 @@ def test_v2_run_phase_binds_openjiuwen_one_contact_and_packet_ids() -> None:
         )
 
 
+def test_direct_phase_has_no_agent_history_and_keeps_system_bytes() -> None:
+    samples = (
+        SimpleNamespace(sample_id="tier1:000001", media_relpath="one.wav"),
+        SimpleNamespace(sample_id="tier1:000002", media_relpath="two.wav"),
+    )
+    system = _INSTRUCTION_TEMPLATE.format(tool_schemas="registry")
+
+    class Adapter:
+        def load_split(self, split_id: str):
+            assert split_id == flight.SPLIT_ID
+            return samples
+
+        def build_task_contract(self, sample: object, obs: object) -> str:
+            return "registry"
+
+        def assemble_prompt(self, sample: object, supply: object):
+            assert supply is None
+            return (
+                {"role": "system", "content": system},
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "input_audio",
+                            "media_relpath": sample.media_relpath,
+                        }
+                    ],
+                },
+            )
+
+    calls: list[tuple[object, dict[str, object]]] = []
+
+    class Client:
+        def complete(self, messages: object, **kwargs: object) -> str:
+            calls.append((messages, kwargs))
+            return _valid()
+
+    summary = flight.run_direct_phase(
+        adapter=Adapter(),
+        core_client=Client(),
+        split_id=flight.SPLIT_ID,
+        speech_packet_bindings={
+            "tier1:000001": {"packet_id": "packet/one", "sha256": "1" * 64},
+            "tier1:000002": {"packet_id": "packet/two", "sha256": "2" * 64},
+        },
+        slot_count=2,
+        decoding_params={"temperature": 0},
+    )
+
+    assert [result.sample_id for result in summary.results] == [
+        "tier1:000001",
+        "tier1:000002",
+    ]
+    assert len(calls) == 2
+    for messages, kwargs in calls:
+        assert messages[0]["content"] == system
+        assert messages[1]["content"][0]["type"] == "input_speech_features"
+        assert "agent_state" not in kwargs
+        assert "agent_contact_id" not in kwargs
+        assert "contact_instruction" not in kwargs
+
+
 def test_observation_adapter_keeps_registry_and_output_schema_out() -> None:
     with (
         patch.object(flight.Audio2ToolAdapter, "__init__", return_value=None),

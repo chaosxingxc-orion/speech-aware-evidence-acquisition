@@ -8,7 +8,10 @@ output sentence instead of replacing that sentence.
 
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass
 from pathlib import Path
+from queue import Queue
 from typing import Callable, Mapping, Sequence
 
 from ...analysis import training_free_a2t_self_transcript_cascade as selftx
@@ -60,6 +63,22 @@ _USE_CONTROL_INSTRUCTION = (
 
 class A2TContractPreservingFlightError(RuntimeError):
     """The v2 phase boundary refused an unregistered or unsafe execution."""
+
+
+@dataclass(frozen=True)
+class DirectPhaseResult:
+    """One same-flight single-call comparator response."""
+
+    sample_id: str
+    final_response_text: str
+
+
+@dataclass(frozen=True)
+class DirectPhaseSummary:
+    """The complete direct comparator surface, with no Agent history."""
+
+    results: tuple[DirectPhaseResult, ...]
+    direct_single_call: bool = True
 
 
 def render_observation_system_contract() -> str:
@@ -254,6 +273,110 @@ class A2TContractPreservingAdapter(Audio2ToolAdapter):
 
     def score(self, sample: Audio2ToolSample, response: str) -> Mapping[str, object]:
         return {"scoring_deferred": True}
+
+
+def run_direct_phase(
+    *,
+    adapter: object,
+    core_client: object,
+    split_id: str,
+    speech_packet_bindings: Mapping[str, Mapping[str, object]],
+    slot_count: int,
+    decoding_params: Mapping[str, object],
+) -> DirectPhaseSummary:
+    """Run M0 as one call per sample without Agent state or control history."""
+
+    if isinstance(slot_count, bool) or not isinstance(slot_count, int) or slot_count < 1:
+        raise A2TContractPreservingFlightError(
+            "direct phase slot count must be a positive integer"
+        )
+    if not isinstance(decoding_params, Mapping) or "id_slot" in decoding_params:
+        raise A2TContractPreservingFlightError(
+            "direct phase decoding parameters must omit id_slot"
+        )
+    samples = tuple(adapter.load_split(split_id))
+    sample_ids = [sample.sample_id for sample in samples]
+    if (
+        not samples
+        or len(set(sample_ids)) != len(sample_ids)
+        or set(sample_ids) != set(speech_packet_bindings)
+    ):
+        raise A2TContractPreservingFlightError(
+            "direct sample and speech-packet identities must match uniquely"
+        )
+
+    slots: Queue[int] = Queue()
+    for slot in range(slot_count):
+        slots.put(slot)
+
+    def invoke(sample: object) -> DirectPhaseResult:
+        packet = speech_packet_bindings[sample.sample_id]
+        packet_id = packet.get("packet_id")
+        packet_sha256 = packet.get("sha256")
+        if (
+            not isinstance(packet_id, str)
+            or not packet_id
+            or not isinstance(packet_sha256, str)
+            or len(packet_sha256) != 64
+            or any(
+                character not in "0123456789abcdef"
+                for character in packet_sha256
+            )
+        ):
+            raise A2TContractPreservingFlightError(
+                f"direct phase has a malformed packet binding for {sample.sample_id!r}"
+            )
+        base = tuple(adapter.assemble_prompt(sample, None))
+        if (
+            len(base) != 2
+            or not isinstance(base[0], Mapping)
+            or base[0].get("role") != "system"
+            or not isinstance(base[0].get("content"), str)
+            or not base[0].get("content")
+        ):
+            raise A2TContractPreservingFlightError(
+                "direct adapter did not produce its exact system message"
+            )
+        messages = (
+            dict(base[0]),
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "input_speech_features",
+                        "speech_features": {
+                            "packet_id": packet_id,
+                            "sha256": packet_sha256,
+                            "role": "query",
+                        },
+                    }
+                ],
+            },
+        )
+        slot = slots.get()
+        try:
+            decoding = dict(decoding_params)
+            decoding["id_slot"] = slot
+            response = core_client.complete(
+                messages,
+                decoding_params=decoding,
+                speech_feature_sample_id=sample.sample_id,
+                key_representation_id="audio2tool-direct-registry-v1",
+                matcher_policy_id="saea-a2t-contract-v2-m0-direct",
+            )
+        finally:
+            slots.put(slot)
+        if not isinstance(response, str) or not response:
+            raise A2TContractPreservingFlightError(
+                f"direct phase returned no response for {sample.sample_id!r}"
+            )
+        return DirectPhaseResult(sample.sample_id, response)
+
+    with ThreadPoolExecutor(max_workers=slot_count) as executor:
+        results = tuple(executor.map(invoke, samples))
+    return DirectPhaseSummary(
+        results=tuple(sorted(results, key=lambda result: result.sample_id))
+    )
 
 
 def _assert_liveness_receipt(receipt: object) -> None:
@@ -465,10 +588,13 @@ __all__ = [
     "SPLIT_ID",
     "A2TContractPreservingAdapter",
     "A2TContractPreservingFlightError",
+    "DirectPhaseResult",
+    "DirectPhaseSummary",
     "SingleContactController",
     "UseMaterial",
     "build_use_material",
     "render_observation_system_contract",
     "render_use_system_contract",
+    "run_direct_phase",
     "run_phase",
 ]
