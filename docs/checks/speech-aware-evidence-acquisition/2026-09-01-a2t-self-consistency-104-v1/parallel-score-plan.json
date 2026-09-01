@@ -2,6 +2,7 @@
   "schema": "saea-parallel-score-plan-v1",
   "experiment_id": "SAEA-A2T-TFRL-SELF-CONSISTENCY-104-V1",
   "entrypoint": "scripts/evaluate_parallel.sh",
+  "mode": "--finalize",
   "workers": 2,
   "jobs": [
     {
@@ -13,6 +14,6 @@
       "input": "one complete 104-row SUPPLY_UNION_STRIPPED run manifest"
     }
   ],
-  "materialization": "After both prediction files and their runtime traces are sealed, the launcher writes the two exact manifest paths to score-jobs.jsonl in this order. No scorer starts before both manifest hashes exist.",
+  "materialization": "After both prediction files and their runtime traces are sealed, the launcher writes the two exact manifest paths to score-jobs.jsonl in this order. No scorer starts before both manifest hashes exist. The --finalize mode runs the unchanged official scorer exactly once per complete arm, writes each score artifact, and terminally settles the two independent one-shot attempts in the same outer-parallel wave.",
   "aggregation_rule": "Never shard a dataset for scoring and never average shard-level metrics. Each worker invokes the unchanged official scorer on one complete arm."
 }
