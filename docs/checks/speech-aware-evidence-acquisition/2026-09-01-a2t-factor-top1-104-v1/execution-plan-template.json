@@ -1,0 +1,26 @@
+{
+  "schema": "saea-a2t-factor-top1-flight-plan-v1",
+  "exposure_pre_registration_id": "SAEA-A2T-TFRL-FACTOR-TOP1-104-V1",
+  "execution_plan": {
+    "attempt_id": null,
+    "carrier_lock_key": "audio2tool",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.6,
+    "planned_model_calls": 228,
+    "planned_speech_audio_seconds": 1320,
+    "protocol_hash": "08179931338d58a7661e107f756f178034f34d15cdd33c13f5601d44bc62a9b3",
+    "run_id": "SAEA-A2T-TFRL-FACTOR-TOP1-104-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "f5a030189cf80dcbc52899e2fa5f819bac03874f2ad3f9645fdc60c432a9bf3a",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "config_composition": {
+    "baseline": "a2t-factor-top1-agentloop",
+    "dataset": "audio2tool-g1-104",
+    "experiment": "a2t-training-free-factor-top1-104-v1",
+    "model": "q4km-mmproj-free-speech-native-np2-a2t-max1024"
+  },
+  "composed_config_sha256": "9cca235ff7a879dd83c0cdf0e99f6280df5d4f8268831af34741db4f4e0d6fa2",
+  "attempt_binding": "The one-shot launcher replaces only execution_plan.attempt_id with a newly reserved main or resend attempt id. Every other field compares exactly. Actual usage is shared across sibling attempts under the one registered run-level budget."
+}

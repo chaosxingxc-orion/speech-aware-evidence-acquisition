@@ -1,0 +1,22 @@
+{
+  "schema": "saea-parallel-score-plan-v1",
+  "experiment_id": "SAEA-A2T-TFRL-FACTOR-TOP1-104-V1",
+  "entrypoint": "scripts/evaluate_parallel.sh",
+  "mode": "--finalize",
+  "workers": 2,
+  "jobs": [
+    {
+      "job_id": "factor-top1-main-composite",
+      "input": "one complete 104-row main composite run manifest",
+      "attempt": "the 208-contact factor plus phase-3 attempt"
+    },
+    {
+      "job_id": "factor-top1-resend-composite",
+      "input": "one complete 104-row resend composite run manifest",
+      "attempt": "the 16-contact exact-payload replay attempt"
+    }
+  ],
+  "materialization": "No scorer starts until both attempts are sealed, both complete 104-row prediction files exist, both run manifests verify, and both complete human-ledger cell files validate. The launcher writes the two exact manifest paths to score-jobs.jsonl and invokes the unchanged official finalizer once per manifest in one two-worker wave.",
+  "aggregation_rule": "Never shard a dataset for scoring and never average shard-level metrics. Each worker invokes the unchanged official scorer on one complete 104-row composite.",
+  "timing_receipt": "batch-summary.json records outer wall time, per-job time, effective speedup, scorer identity, and result hashes."
+}

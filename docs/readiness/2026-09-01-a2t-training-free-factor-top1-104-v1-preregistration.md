@@ -89,6 +89,33 @@ frozen M0. The two unchanged official scorer invocations run concurrently throug
 `scripts/evaluate_parallel.sh --workers 2`. There is no dataset sharding, shard-level metric, or
 scorer modification.
 
+### Pre-contact exact-replay and complete-manifest amendment
+
+The replay workflow passes the original traced phase-3 payload directly to a fresh gated
+`FrozenCoreAdapter`; it does not rebuild an equivalent AgentLoop call. Canonical serialized request
+bytes, including request id, slot id, speech packet, decoding parameters, factor state, supplied
+row, and control instruction, must hash to the original `MODEL_REQUEST` payload before dispatch.
+The fresh resend attempt keeps its own trace and durable accounting while the payload itself stays
+byte-identical. Selection reads only structural candidate availability and is fixed before final
+response text is inspected.
+
+The two official scorer workers finalize two distinct attempts. The main attempt carries all 208
+factor and phase-3 contacts. The resend attempt carries exactly 16 replay contacts. Each attempt
+materializes a complete 104-row composite through deterministic `TOOL` trace records: available
+main rows cite their phase-3 response, unavailable rows cite frozen M0, selected resend rows cite
+the replay response, and the other resend rows cite the hash-pinned main composite. This preserves
+the existing bundle output-to-trace invariant without mislabeling a reused M0 byte string as a new
+model response. The shared run-level budget remains 228 contacts and 1,320 speech-audio seconds.
+
+Prompt fit reuses the landed session-bound Audio2Tool NP2 envelope at SHA-256
+`0c77812d9439b6a7d6d3ff0227fc27924f617245d1ec9a0cbca20960f090946b`. That envelope contains the
+same complete task contract, one agent-state text, five visible facets, and six visible values at
+19,413 prompt tokens plus 1,024 completion tokens against 32,768 tokens per slot. This probe keeps
+the same task contract and constructor but exposes one state, at most one facet, and at most one
+value, so it is strictly dominated by the landed envelope. Any constructor, receipt, task-contract,
+packet, or serving-geometry drift fails preflight and requires a separately registered model-free
+prompt-fit measurement; this flight never opens an unregistered tokenizer contact.
+
 The result records byte, parsed-call, and exact-score divergence. The cross-fitted policy's exact
 gain must exceed the absolute main-versus-resend-composite exact-count difference. This measures the
 stack's current resend floor instead of assuming deterministic decoding is bit-reproducible.
