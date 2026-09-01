@@ -1,0 +1,94 @@
+{
+  "experiment_id": "SAEA-SN-MF-TFRL-QUERY-MEMORY-V2",
+  "schema": "saea-training-free-query-memory-experiment-v2",
+  "date": "2026-09-01",
+  "execution_profile": "model-free-check",
+  "purpose": "Test whether the runtime retrieval query itself carries enough information for a conservative non-parametric state-action-return controller to suppress useless evidence contacts without losing primary task reward.",
+  "predecessor": {
+    "experiment": "SAEA-SN-MF-TFRL-ACQUISITION-MEMORY-V1",
+    "verdict": "discovery support failed",
+    "artifact_self_sha256": "205915d0914d57333cbe3f435b8f73d9882324acaf2b1a2af115b605f3132ae5",
+    "measured_reason_for_successor": "the nine scalar telemetry fields placed helpful and unhelpful acquisitions in the same neighborhoods: k=1 lost 4 answers while saving 12 contacts, k=3 lost 3 while saving 10, and k>=5 saved none; radius was inert over 0.05-0.30"
+  },
+  "single_variable_change": {
+    "changed": "state representation: nine scalar telemetry values become the direct-answer query vector already consumed by the frozen retriever",
+    "unchanged": [
+      "locked v1 baseline and knowledge bytes",
+      "eligible set is baseline-dispatched only",
+      "default action ACQUIRE",
+      "STOP requires unanimous non-positive local acquisition return",
+      "whole-utterance group isolation",
+      "70/30 discovery tune/support boundary",
+      "zero-harm discovery gate",
+      "two-stage committed-artifact boundary",
+      "holdout promotion gate"
+    ]
+  },
+  "baseline": {
+    "policy": "configs/policy/kb-policy-v1-dev100.json",
+    "policy_sha256": "d68afd2cfb6e12d9cbd9d3fbcf0daf3f81f6ed8be9b2a75c4f8ffb234011a919",
+    "unchanged": true
+  },
+  "scope": {
+    "eligible": "locked-v1 baseline-dispatched trajectories with both logged frozen-core responses",
+    "actions": ["ACQUIRE", "STOP"],
+    "default_action": "ACQUIRE",
+    "may_widen_dispatch": false,
+    "counterfactual_imputation": "forbidden",
+    "model_parameter_training": "none",
+    "second_answering_model": "none"
+  },
+  "state": {
+    "contract": "direct-answer-query-vector-cosine-v2",
+    "source": "the exact landed query vector produced from the trajectory's direct-answer text and already passed into the frozen multidimensional retriever",
+    "similarity": "cosine",
+    "runtime_legal": true,
+    "forbidden": [
+      "gold labels",
+      "correctness",
+      "reference transcript",
+      "evidence response",
+      "sample identity as a feature",
+      "speaker identity as a feature",
+      "future turns"
+    ]
+  },
+  "policy": {
+    "id": "conservative-query-cosine-acquisition-memory-v2",
+    "decision": "STOP only if the k highest-cosine utterance-group-independent memory neighbors all meet the minimum cosine and all have observed ACQUIRE-minus-STOP primary return <= 0; otherwise ACQUIRE",
+    "grid": {
+      "k": [1, 3, 5, 7],
+      "minimum_cosine": [0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99, 0.999999]
+    }
+  },
+  "populations": {
+    "discovery": {
+      "name": "DEV-100-ROUND4",
+      "split_identity_hash": "e9a7b7febcf4fe3dc228370f7487e1e75dea3d63d447a07fbfe87c1404e2d853"
+    },
+    "holdout": {
+      "name": "DEV-500-NEW400",
+      "split_identity_hash": "e1cf6fc5c795e5e1451bf0edfa57a7633dbeed3e21e3044c52adf4399a4d036c",
+      "admission": "only after a passed discovery artifact is committed",
+      "utterance_overlap": "excluded before evaluation"
+    },
+    "prohibited": ["DEV-1000-NEW500", "FINAL60", "SLURP test", "future turns"]
+  },
+  "discovery_selection": {
+    "seed": 20260901,
+    "split": "whole utterance groups, deterministic 70 percent tune and 30 percent support gate",
+    "tune_admission": "at least 2 STOP and zero harmful STOP under leave-one-group-out replay",
+    "tie_break": "maximum contacts saved, then larger k, then larger minimum cosine",
+    "support_gate": "zero harmful STOP and at least max(2, ceil(10 percent of gate n)) STOP",
+    "failure": "write a failed artifact and keep NEW400 unread"
+  },
+  "holdout_promotion_gate": {
+    "eligible_dispatched_at_least_100": true,
+    "zero_harmful_stops": true,
+    "primary_score_non_decreasing": true,
+    "primary_ci90_lower_nonnegative": true,
+    "contact_savings_at_least_10_percent": true,
+    "all_conjunctive": true
+  },
+  "claim_boundary": "A pass is a retrospective Stage-2 training-free control-plane contribution on already-exposed devel data. It never revises the locked baseline and is not a test, confirmatory, generality, Stage-3, or paper claim."
+}
