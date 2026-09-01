@@ -173,3 +173,10 @@ implementation correction places the new manifest in the M0 root, where both the
 child trace artifacts are confined beneath one bundle directory. A model-free verification then
 accepted all 104 output rows against the same terminal attempt. This changes no registered source
 byte, prediction, contact, score operation, or scientific rule.
+
+The next recovery invocation was also refused before server start because the exposure row had
+prematurely marked the still-active experiment `consumed=yes`. Repository semantics reserve that
+value for a terminally completed experiment; partial spend is recorded in the amendment and the
+durable attempt store while `consumed` remains `no`. The row is corrected prospectively. The 104
+M0 calls remain counted, immutable, and unavailable for replay; the correction only permits the
+registered remaining attempts to reach a terminal result.
