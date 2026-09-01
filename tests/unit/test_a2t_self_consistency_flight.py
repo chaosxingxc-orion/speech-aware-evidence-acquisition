@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 from types import SimpleNamespace
@@ -263,4 +264,127 @@ def test_run_phase_refuses_a_result_with_more_than_one_contact() -> None:
             queue_depth=1,
             decoding_params={},
             agent_runner=fake_runner,
+        )
+
+
+def test_build_phase_bundle_material_binds_trace_and_cost() -> None:
+    answer = _response("setLight", {"room": "office", "state": "on"})
+    text_hash = hashlib.sha256(answer.encode()).hexdigest()
+    trace = (
+        {
+            "channel": "MODEL_REQUEST",
+            "record_id": "obs-0001/request",
+            "payload": {
+                "arm": "speech-feature-query",
+                "payload": {
+                    "sample_id": "a",
+                    "carrier_lock_key": "audio2tool",
+                },
+                "payload_sha256": "1" * 64,
+            },
+        },
+        {
+            "channel": "MODEL_RESPONSE",
+            "record_id": "obs-0001/response",
+            "payload": {
+                "text": answer,
+                "response_sha256": "2" * 64,
+                "response_text_sha256": text_hash,
+                "usage": {"prompt_tokens": 12, "completion_tokens": 7},
+            },
+        },
+        {
+            "channel": "COST",
+            "record_id": "obs-0001/cost",
+            "payload": {
+                "calls": 1,
+                "audio_seconds": 2.5,
+                "latency_seconds": 3.0,
+                "prompt_tokens": 12,
+                "completion_tokens": 7,
+            },
+        },
+    )
+    summary = SimpleNamespace(
+        results=(SimpleNamespace(sample_id="a", final_response_text=answer),)
+    )
+
+    rows, cost = flight.build_phase_bundle_material(
+        summary,
+        trace,
+        phase=flight.OBSERVATION_PHASE,
+        umbrella_lock_sha256="f" * 64,
+    )
+
+    assert rows == (
+        {
+            "request_id": "obs-0001",
+            "sample_id": "a",
+            "carrier_lock_key": "audio2tool",
+            "arm": "speech-feature-query",
+            "text": answer,
+            "admitted": True,
+            "request_sha256": "1" * 64,
+            "response_sha256": "2" * 64,
+            "response_text_sha256": text_hash,
+            "phase": flight.OBSERVATION_PHASE,
+        },
+    )
+    assert cost == {
+        "calls_used": 1,
+        "audio_seconds_used": 2.5,
+        "latency_seconds_total": 3.0,
+        "prompt_tokens_total": 12,
+        "completion_tokens_total": 7,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "f" * 64,
+    }
+
+
+def test_build_phase_bundle_material_refuses_response_drift() -> None:
+    trace = (
+        {
+            "channel": "MODEL_REQUEST",
+            "record_id": "obs-0001/request",
+            "payload": {
+                "arm": "speech-feature-query",
+                "payload": {
+                    "sample_id": "a",
+                    "carrier_lock_key": "audio2tool",
+                },
+                "payload_sha256": "1" * 64,
+            },
+        },
+        {
+            "channel": "MODEL_RESPONSE",
+            "record_id": "obs-0001/response",
+            "payload": {
+                "text": "trace answer",
+                "response_sha256": "2" * 64,
+                "response_text_sha256": hashlib.sha256(b"trace answer").hexdigest(),
+                "usage": {},
+            },
+        },
+        {
+            "channel": "COST",
+            "record_id": "obs-0001/cost",
+            "payload": {
+                "calls": 1,
+                "audio_seconds": 1.0,
+                "latency_seconds": 1.0,
+                "prompt_tokens": 0,
+                "completion_tokens": 0,
+            },
+        },
+    )
+    summary = SimpleNamespace(
+        results=(SimpleNamespace(sample_id="a", final_response_text="different"),)
+    )
+
+    with pytest.raises(flight.A2TSelfConsistencyFlightError, match="response drift"):
+        flight.build_phase_bundle_material(
+            summary,
+            trace,
+            phase=flight.OBSERVATION_PHASE,
+            umbrella_lock_sha256="f" * 64,
         )

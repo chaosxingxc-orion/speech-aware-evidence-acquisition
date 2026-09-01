@@ -10,6 +10,8 @@ gold or scorer output.
 from __future__ import annotations
 
 import json
+import hashlib
+import math
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
@@ -445,6 +447,227 @@ def run_phase(
     return summary
 
 
+def _trace_parts(
+    trace_documents: Sequence[Mapping[str, object]],
+) -> tuple[
+    dict[str, Mapping[str, object]],
+    dict[str, Mapping[str, object]],
+    dict[str, Mapping[str, object]],
+]:
+    requests: dict[str, Mapping[str, object]] = {}
+    responses: dict[str, Mapping[str, object]] = {}
+    costs: dict[str, Mapping[str, object]] = {}
+    targets = {
+        "MODEL_REQUEST": ("/request", requests),
+        "MODEL_RESPONSE": ("/response", responses),
+        "COST": ("/cost", costs),
+    }
+    for number, document in enumerate(trace_documents, start=1):
+        if not isinstance(document, Mapping):
+            raise A2TSelfConsistencyFlightError(
+                f"trace document {number} must be an object"
+            )
+        channel = document.get("channel")
+        target = targets.get(channel) if isinstance(channel, str) else None
+        if target is None:
+            continue
+        suffix, destination = target
+        record_id = document.get("record_id")
+        payload = document.get("payload")
+        if (
+            not isinstance(record_id, str)
+            or not record_id.endswith(suffix)
+            or not isinstance(payload, Mapping)
+        ):
+            raise A2TSelfConsistencyFlightError(
+                f"trace document {number} has a malformed {channel} record"
+            )
+        request_id = record_id[: -len(suffix)]
+        if not request_id or request_id in destination:
+            raise A2TSelfConsistencyFlightError(
+                f"trace carries a duplicate or blank {channel} request id"
+            )
+        destination[request_id] = payload
+    return requests, responses, costs
+
+
+def _cost_number(payload: Mapping[str, object], field: str) -> float:
+    value = payload.get(field)
+    if (
+        isinstance(value, bool)
+        or not isinstance(value, (int, float))
+        or not math.isfinite(float(value))
+        or float(value) < 0
+    ):
+        raise A2TSelfConsistencyFlightError(
+            f"trace cost field {field!r} must be finite and non-negative"
+        )
+    return float(value)
+
+
+def build_phase_bundle_material(
+    summary: object,
+    trace_documents: Sequence[Mapping[str, object]],
+    *,
+    phase: str,
+    umbrella_lock_sha256: str,
+) -> tuple[tuple[dict[str, object], ...], dict[str, object]]:
+    """Convert one sealed AgentLoop phase into standard bundle material."""
+
+    if phase not in _PHASE_POLICY:
+        raise A2TSelfConsistencyFlightError(
+            f"unknown self-consistency phase {phase!r}"
+        )
+    if (
+        not isinstance(umbrella_lock_sha256, str)
+        or len(umbrella_lock_sha256) != 64
+        or any(character not in "0123456789abcdef" for character in umbrella_lock_sha256)
+    ):
+        raise A2TSelfConsistencyFlightError(
+            "umbrella lock identity must be lowercase 64-hex"
+        )
+    results = getattr(summary, "results", None)
+    if not isinstance(results, tuple) or not results:
+        raise A2TSelfConsistencyFlightError(
+            "AgentLoop summary must carry non-empty tuple results"
+        )
+    result_by_id: dict[str, object] = {}
+    for result in results:
+        sample_id = getattr(result, "sample_id", None)
+        response_text = getattr(result, "final_response_text", None)
+        if (
+            not isinstance(sample_id, str)
+            or not sample_id
+            or not isinstance(response_text, str)
+        ):
+            raise A2TSelfConsistencyFlightError(
+                "AgentLoop result lacks sample_id or final_response_text"
+            )
+        if sample_id in result_by_id:
+            raise A2TSelfConsistencyFlightError(
+                f"AgentLoop summary duplicates sample {sample_id!r}"
+            )
+        result_by_id[sample_id] = result
+
+    requests, responses, costs = _trace_parts(trace_documents)
+    if set(requests) != set(responses) or set(requests) != set(costs):
+        raise A2TSelfConsistencyFlightError(
+            "phase trace request, response, and cost identities differ"
+        )
+    request_by_sample: dict[str, str] = {}
+    for request_id, outer in requests.items():
+        payload = outer.get("payload")
+        if not isinstance(payload, Mapping):
+            raise A2TSelfConsistencyFlightError(
+                f"request {request_id!r} lacks its model payload"
+            )
+        sample_id = payload.get("sample_id")
+        if not isinstance(sample_id, str) or not sample_id:
+            raise A2TSelfConsistencyFlightError(
+                f"request {request_id!r} lacks sample_id"
+            )
+        if sample_id in request_by_sample:
+            raise A2TSelfConsistencyFlightError(
+                f"phase trace has more than one request for sample {sample_id!r}"
+            )
+        if outer.get("arm") != "speech-feature-query" or payload.get(
+            "carrier_lock_key"
+        ) != "audio2tool":
+            raise A2TSelfConsistencyFlightError(
+                f"request {request_id!r} has the wrong arm or carrier"
+            )
+        request_by_sample[sample_id] = request_id
+    if set(request_by_sample) != set(result_by_id):
+        raise A2TSelfConsistencyFlightError(
+            "phase trace and AgentLoop result identity mismatch"
+        )
+
+    rows: list[dict[str, object]] = []
+    for sample_id in sorted(result_by_id):
+        result = result_by_id[sample_id]
+        request_id = request_by_sample[sample_id]
+        request = requests[request_id]
+        response = responses[request_id]
+        response_text = getattr(result, "final_response_text")
+        if response.get("text") != response_text:
+            raise A2TSelfConsistencyFlightError(
+                f"response drift between trace and AgentLoop result for {sample_id!r}"
+            )
+        response_text_sha256 = hashlib.sha256(response_text.encode("utf-8")).hexdigest()
+        if response.get("response_text_sha256") != response_text_sha256:
+            raise A2TSelfConsistencyFlightError(
+                f"response text hash drift for {sample_id!r}"
+            )
+        request_sha256 = request.get("payload_sha256")
+        response_sha256 = response.get("response_sha256")
+        if any(
+            not isinstance(value, str)
+            or len(value) != 64
+            or any(character not in "0123456789abcdef" for character in value)
+            for value in (request_sha256, response_sha256)
+        ):
+            raise A2TSelfConsistencyFlightError(
+                f"request or response hash is malformed for {sample_id!r}"
+            )
+        rows.append(
+            {
+                "request_id": request_id,
+                "sample_id": sample_id,
+                "carrier_lock_key": "audio2tool",
+                "arm": "speech-feature-query",
+                "text": response_text,
+                "admitted": True,
+                "request_sha256": request_sha256,
+                "response_sha256": response_sha256,
+                "response_text_sha256": response_text_sha256,
+                "phase": phase,
+            }
+        )
+
+    calls_used = 0
+    audio_seconds = 0.0
+    latency_seconds = 0.0
+    prompt_tokens = 0
+    completion_tokens = 0
+    for request_id in sorted(costs):
+        payload = costs[request_id]
+        calls = _cost_number(payload, "calls")
+        if calls != 1.0:
+            raise A2TSelfConsistencyFlightError(
+                f"request {request_id!r} must account for exactly one call"
+            )
+        calls_used += 1
+        audio_seconds += _cost_number(payload, "audio_seconds")
+        latency_seconds += _cost_number(payload, "latency_seconds")
+        for field, destination in (
+            ("prompt_tokens", "prompt"),
+            ("completion_tokens", "completion"),
+        ):
+            value = _cost_number(payload, field)
+            if not value.is_integer():
+                raise A2TSelfConsistencyFlightError(
+                    f"trace cost field {field!r} must be integral"
+                )
+            if destination == "prompt":
+                prompt_tokens += int(value)
+            else:
+                completion_tokens += int(value)
+    if calls_used != len(rows):
+        raise A2TSelfConsistencyFlightError(
+            "phase cost row count differs from output row count"
+        )
+    cost = {
+        "calls_used": calls_used,
+        "audio_seconds_used": audio_seconds,
+        "latency_seconds_total": latency_seconds,
+        "prompt_tokens_total": prompt_tokens,
+        "completion_tokens_total": completion_tokens,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": umbrella_lock_sha256,
+    }
+    return tuple(rows), cost
+
+
 __all__ = [
     "AGENT_EXECUTOR_ID",
     "A2TSelfConsistencyAdapter",
@@ -457,6 +680,7 @@ __all__ = [
     "SingleContactController",
     "SupplyMaterial",
     "build_supply_material",
+    "build_phase_bundle_material",
     "load_frozen_m0_outputs",
     "run_phase",
 ]
