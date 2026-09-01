@@ -128,6 +128,14 @@ def test_score_batch_uses_existing_per_job_operation_mode(
     assert "--finalize" not in captured["command"]
 
 
+def test_policy_derivative_accepts_terminal_aborted_source() -> None:
+    launcher = _launcher()
+    assert launcher._terminal_policy_attempt_state("ABORTED") == "ABORTED"
+    assert launcher._terminal_policy_attempt_state("FINALIZED") == "FINALIZED"
+    with pytest.raises(RuntimeError, match="terminal source attempt"):
+        launcher._terminal_policy_attempt_state("OPENED")
+
+
 def test_repair_m0_manifest_only_adds_the_two_sealed_trace_entries(
     tmp_path: Path,
 ) -> None:

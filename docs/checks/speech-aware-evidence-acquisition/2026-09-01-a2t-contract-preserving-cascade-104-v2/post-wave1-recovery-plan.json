@@ -1,0 +1,68 @@
+{
+  "schema": "saea-a2t-cpv2-post-wave1-recovery-v1",
+  "run_id": "SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2",
+  "registered_at": "2026-09-01T23:35:00Z",
+  "failure_class": "post-score model-free policy manifest expected FINALIZED while bound to the terminal ABORTED shuffled attempt",
+  "source_flight": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2/flight-20260901T232133Z",
+  "source_study_commit": "91d111226711e70a8fc5eb2bd02d3beaeb0fcac8",
+  "failure_receipt_sha256": "9e17fedb99c5af3729d47d1127fe351d42df87ae4d7cf3303a0c98676357907a",
+  "resend": {
+    "attempt_id": "attempt-20260901t232133z-cpv2resend",
+    "attempt_receipt_sha256": "a453fecb0fe6a4c4de6b889395ae772befc1728d0c7f0134c17fca2fe4ecf49f",
+    "attempt_state": "FINALIZED",
+    "calls": 16,
+    "audio_seconds": 84.603,
+    "receipt_sha256": "1fe5765fee4bba730ef36e8be40717f566059f6d6daed5e12c6811aed36e70a3",
+    "outputs_sha256": "d4b4ef39f14dcfc7bc91a0ae02369ec846731e1283396587dab231a7f16a257d",
+    "raw_trace_sha256": "b530e38a4b8b69867eed68e8cd48cdcc43d5e1a1e0c762c215e4c8171e436dec",
+    "trace_manifest_sha256": "2f58617ebe5349dbf16b83a0893647aa4d9b3b643a78a9eecda52d1a1d565ab4",
+    "run_manifest_sha256": "a8e88a7f546355cb3d9b4807604784459db169f4797a59e0eb92e9ef0c0878f4",
+    "scores_sha256": "0cf1131bf370089c8cd9a591c1d37c5f0774fa0607083a38cdb9016f49717097"
+  },
+  "wave_1": {
+    "batch_summary_sha256": "ed3075279880b0d64d47764dcb3995501d55ebb058b82002b07bc14c36a78e4a",
+    "m0_result_sha256": "19152a807b3c1b443f707c6bcc9ae2aad48ff68f014cab43e7dbccc064821924",
+    "matched_result_sha256": "baa669294cdca2ef006b187afeb5a6db76beff7fc45e14c909bf3dd1db462165",
+    "shuffled_result_sha256": "4b1f9acbcae7a7fc53a7c9c681c632227ed858083ac883aa119317466c1bf58e",
+    "resend_result_sha256": "fc17e0ff4f398649d58d1ea07922e20334dc60d5cf6ac6ba3ad840f66ff03746",
+    "jobs": 4,
+    "workers": 4,
+    "succeeded": 4,
+    "failed": 0,
+    "elapsed_seconds": 2.758638027997222,
+    "summed_job_seconds": 9.318596308934502,
+    "effective_speedup": 3.3779699309444475
+  },
+  "failed_policy_draft": {
+    "outputs_sha256": "622ef48088bb3f4ea5873c40775f2e7ad39915977e57637845c6f179cb951569",
+    "raw_trace_sha256": "77bea0adecb8d899c2512b44b8330dadf51257311195c408b67c0d8aee88019d",
+    "trace_manifest_sha256": "0c1a1ce4a5dc9cbd85b19c5967f4e6ed5c97938e2f79e2fa58e958a21ba6e6b6",
+    "run_manifest_sha256": "108771599f2ba42750710cefd1665a75244a9762491468667e98f415ed22f36a",
+    "official_score_started": false
+  },
+  "session_receipt_sha256": "5bf31d03f2c0c1d7424c91d51ca92d5cc03062fabeeb8b798c8e0c958769bef0",
+  "stop_receipt_sha256": "53e1655de0f693bb4c28ea40a573f727aebd917862b82be298a9f95188f34110",
+  "observed_boundary": {
+    "cumulative_model_calls": 430,
+    "cumulative_audio_seconds": 2216.689,
+    "remaining_model_calls": 0,
+    "gold_opened": true,
+    "wave_1_official_scorers_completed": 4,
+    "wave_2_official_scorer_started": false
+  },
+  "authorized_recovery": {
+    "model_recontact": false,
+    "wave_1_rescore": false,
+    "policy_recompute": "Recompute the unchanged frozen cross-fitted policy from the same sealed M0, OBS, matched, shuffled, and resend bytes. Emit it in a new derivative directory bound to the terminal ABORTED shuffled attempt and require that terminal state during verification.",
+    "wave_2": "Invoke the unchanged official single-process scorer once on the complete 104-row policy derivative after it verifies. Do not shard the dataset or average shard metrics.",
+    "maximum_additional_model_calls": 0,
+    "maximum_additional_official_scorer_calls": 1
+  },
+  "forbidden": [
+    "Repeat any M0, OBS, matched, shuffled, or resend model contact",
+    "Repeat any of the four settled Wave-1 official scorer jobs",
+    "Read Wave-1 scores to change any policy feature, fold, threshold, metric, promotion gate, or decision rule",
+    "Change any prompt, sample, packet, evidence, canary, or claim surface",
+    "Shard a dataset or average shard-level metrics"
+  ]
+}

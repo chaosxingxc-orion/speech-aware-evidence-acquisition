@@ -198,6 +198,15 @@ POST_SHUFFLED_SOURCE_FLIGHT = Path(
     "SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2/flight-20260901T230624Z"
 )
 SHUFFLED_SOURCE_ATTEMPT_ID = "attempt-20260901t230624z-cpv2shuffledrecovery"
+POST_WAVE1_RECOVERY_PLAN = CHECK_DIR / "post-wave1-recovery-plan.json"
+POST_WAVE1_RECOVERY_PLAN_SHA256 = (
+    "5ce00d5c45762211dcecf17575e4d0474379661dd9fa488af3a04efbe10e9542"
+)
+POST_WAVE1_SOURCE_FLIGHT = Path(
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/"
+    "SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2/flight-20260901T232133Z"
+)
+RESEND_SOURCE_ATTEMPT_ID = "attempt-20260901t232133z-cpv2resend"
 
 
 def _sha256_file(path: Path) -> str:
@@ -1075,6 +1084,144 @@ def _recover_shuffled(
         "outputs": recovery["paths"]["outputs"],  # type: ignore[index]
         "attempt_id": SHUFFLED_SOURCE_ATTEMPT_ID,
         "run_dir": POST_SHUFFLED_SOURCE_FLIGHT / "shuffled-recovery",
+        "recovered": True,
+    }
+
+
+def _validate_post_wave1_recovery_sources(root: Path) -> dict[str, object]:
+    if _sha256_file(POST_WAVE1_RECOVERY_PLAN) != POST_WAVE1_RECOVERY_PLAN_SHA256:
+        raise RuntimeError("post-Wave-1 recovery plan byte identity drift")
+    plan = _read_json(POST_WAVE1_RECOVERY_PLAN)
+    boundary = plan.get("observed_boundary")
+    authorization = plan.get("authorized_recovery")
+    resend = plan.get("resend")
+    wave1 = plan.get("wave_1")
+    if (
+        plan.get("run_id") != RUN_ID
+        or not isinstance(boundary, Mapping)
+        or boundary.get("cumulative_model_calls") != 430
+        or boundary.get("remaining_model_calls") != 0
+        or boundary.get("gold_opened") is not True
+        or boundary.get("wave_1_official_scorers_completed") != 4
+        or boundary.get("wave_2_official_scorer_started") is not False
+        or not isinstance(authorization, Mapping)
+        or authorization.get("model_recontact") is not False
+        or authorization.get("wave_1_rescore") is not False
+        or authorization.get("maximum_additional_model_calls") != 0
+        or authorization.get("maximum_additional_official_scorer_calls") != 1
+        or not isinstance(resend, Mapping)
+        or resend.get("attempt_id") != RESEND_SOURCE_ATTEMPT_ID
+        or not isinstance(wave1, Mapping)
+    ):
+        raise RuntimeError("post-Wave-1 recovery contract drift")
+    resend_dir = POST_WAVE1_SOURCE_FLIGHT / "resend-composite"
+    wave1_dir = POST_WAVE1_SOURCE_FLIGHT / "wave1-parallel-finalize"
+    policy_dir = POST_WAVE1_SOURCE_FLIGHT / "policy-composite"
+    paths = {
+        "failure_receipt": POST_WAVE1_SOURCE_FLIGHT / "failure-receipt.json",
+        "session_receipt": POST_WAVE1_SOURCE_FLIGHT / "service/session-receipt.json",
+        "stop_receipt": POST_WAVE1_SOURCE_FLIGHT / "service/stop-receipt.json",
+        "resend_receipt": resend_dir / "resend-receipt.json",
+        "resend_outputs": resend_dir / f"{RUN_ID}.outputs.jsonl",
+        "resend_raw_trace": resend_dir / f"{RUN_ID}.trace.jsonl",
+        "resend_trace_manifest": resend_dir / f"{RUN_ID}.trace-manifest.json",
+        "resend_manifest": resend_dir / f"{RUN_ID}.run-manifest.json",
+        "resend_scores": resend_dir / f"{RUN_ID}.scores.json",
+        "wave1_summary": wave1_dir / "batch-summary.json",
+        "wave1_m0": wave1_dir / "contract-v2-m0-direct.score.json",
+        "wave1_matched": wave1_dir / "contract-v2-matched-composite.score.json",
+        "wave1_shuffled": wave1_dir
+        / "contract-v2-shuffled-composite.score.json",
+        "wave1_resend": wave1_dir / "contract-v2-resend-composite.score.json",
+        "policy_outputs": policy_dir / f"{RUN_ID}.outputs.jsonl",
+        "policy_raw_trace": policy_dir / f"{RUN_ID}.trace.jsonl",
+        "policy_trace_manifest": policy_dir / f"{RUN_ID}.trace-manifest.json",
+        "policy_manifest": policy_dir / f"{RUN_ID}.run-manifest.json",
+    }
+    failed_policy = plan.get("failed_policy_draft")
+    if not isinstance(failed_policy, Mapping):
+        raise RuntimeError("post-Wave-1 failed policy section is malformed")
+    expected_hashes = {
+        "failure_receipt": plan.get("failure_receipt_sha256"),
+        "session_receipt": plan.get("session_receipt_sha256"),
+        "stop_receipt": plan.get("stop_receipt_sha256"),
+        "resend_receipt": resend.get("receipt_sha256"),
+        "resend_outputs": resend.get("outputs_sha256"),
+        "resend_raw_trace": resend.get("raw_trace_sha256"),
+        "resend_trace_manifest": resend.get("trace_manifest_sha256"),
+        "resend_manifest": resend.get("run_manifest_sha256"),
+        "resend_scores": resend.get("scores_sha256"),
+        "wave1_summary": wave1.get("batch_summary_sha256"),
+        "wave1_m0": wave1.get("m0_result_sha256"),
+        "wave1_matched": wave1.get("matched_result_sha256"),
+        "wave1_shuffled": wave1.get("shuffled_result_sha256"),
+        "wave1_resend": wave1.get("resend_result_sha256"),
+        "policy_outputs": failed_policy.get("outputs_sha256"),
+        "policy_raw_trace": failed_policy.get("raw_trace_sha256"),
+        "policy_trace_manifest": failed_policy.get("trace_manifest_sha256"),
+        "policy_manifest": failed_policy.get("run_manifest_sha256"),
+    }
+    for key, path in paths.items():
+        expected = expected_hashes[key]
+        if not isinstance(expected, str) or _sha256_file(path) != expected:
+            raise RuntimeError(f"post-Wave-1 source drift: {key}")
+    attempt_path = root / "attempts" / RUN_ID / f"{RESEND_SOURCE_ATTEMPT_ID}.json"
+    if _sha256_file(attempt_path) != resend.get("attempt_receipt_sha256"):
+        raise RuntimeError("post-Wave-1 resend attempt byte identity drift")
+    attempt = _read_json(attempt_path)
+    actual = attempt.get("actual")
+    if (
+        attempt.get("state") != "FINALIZED"
+        or not isinstance(actual, Mapping)
+        or actual.get("calls") != 16
+        or abs(float(actual.get("audio_seconds", -1)) - 84.603) > 1e-6
+    ):
+        raise RuntimeError("post-Wave-1 resend attempt accounting drift")
+    batch = _read_json(paths["wave1_summary"])
+    jobs = batch.get("jobs")
+    if (
+        batch.get("failed") != 0
+        or batch.get("succeeded") != 4
+        or batch.get("effective_max_workers") != 4
+        or batch.get("parallelism_boundary")
+        != "one-complete-verified-manifest-per-process"
+        or not isinstance(jobs, list)
+        or [job.get("operation") for job in jobs if isinstance(job, Mapping)]
+        != ["score", "score", "score", "finalize"]
+    ):
+        raise RuntimeError("post-Wave-1 parallel score summary drift")
+    verified_resend = verify_bundle(paths["resend_manifest"])
+    verified_policy_draft = verify_bundle(paths["policy_manifest"])
+    if (
+        verified_resend.attempt_state != "FINALIZED"
+        or len(verified_resend.outputs_rows) != SPLIT_COUNT
+        or verified_policy_draft.attempt_state != "ABORTED"
+        or len(verified_policy_draft.outputs_rows) != SPLIT_COUNT
+    ):
+        raise RuntimeError("post-Wave-1 source manifest verification drift")
+    return {
+        "plan": plan,
+        "paths": paths,
+        "batch": batch,
+        "verified_resend": verified_resend,
+    }
+
+
+def _recover_resend(root: Path, context: Mapping[str, object]) -> dict[str, object]:
+    recovery = _validate_post_wave1_recovery_sources(root)
+    verified = recovery["verified_resend"]
+    texts = {
+        str(row["sample_id"]): str(row["text"])
+        for row in verified.outputs_rows  # type: ignore[union-attr]
+    }
+    if set(texts) != set(context["sample_ids"]):  # type: ignore[arg-type]
+        raise RuntimeError("recovered resend identities differ from the frozen split")
+    return {
+        "texts": texts,
+        "manifest": recovery["paths"]["resend_manifest"],  # type: ignore[index]
+        "outputs": recovery["paths"]["resend_outputs"],  # type: ignore[index]
+        "attempt_id": RESEND_SOURCE_ATTEMPT_ID,
+        "run_dir": POST_WAVE1_SOURCE_FLIGHT / "resend-composite",
         "recovered": True,
     }
 
@@ -2010,6 +2157,12 @@ def _score_text(expected: Sequence[object], text: str):
     return score_item(expected, predicted)  # type: ignore[arg-type]
 
 
+def _terminal_policy_attempt_state(value: str) -> str:
+    if value not in {"ABORTED", "FINALIZED"}:
+        raise RuntimeError("policy derivative requires a terminal source attempt")
+    return value
+
+
 def _postseal_policy_read(
     *,
     root: Path,
@@ -2022,7 +2175,8 @@ def _postseal_policy_read(
     matched: Mapping[str, object],
     shuffled: Mapping[str, object],
     resend: Mapping[str, object],
-    matched_attempt_id: str,
+    policy_attempt_id: str,
+    policy_attempt_state: str,
 ) -> dict[str, object]:
     expected = load_expected_calls(context["lock"], root, repo_root=REPO)  # type: ignore[arg-type]
     items_by_id = {
@@ -2102,7 +2256,8 @@ def _postseal_policy_read(
     trace_hash = sink.close()
     outputs = run_dir / f"{RUN_ID}.outputs.jsonl"
     _write_jsonl(outputs, rows)
-    plan = _execution_plan(matched_attempt_id)
+    policy_attempt_state = _terminal_policy_attempt_state(policy_attempt_state)
+    plan = _execution_plan(policy_attempt_id)
     manifest = _build_completed_manifest(
         root=root,
         context=context,
@@ -2123,7 +2278,7 @@ def _postseal_policy_read(
             ],
             "derivation": "model-free cross-fitted composition from sealed same-flight M0 and matched outputs",
         },
-        expected_attempt_state="FINALIZED",
+        expected_attempt_state=policy_attempt_state,
     )
     wave2 = _run_score_batch(
         mission_dir=mission_dir,
@@ -2332,7 +2487,8 @@ def _launch(root: Path, *, recover_post_shuffled_failure: bool) -> Mapping[str, 
             matched=matched,
             shuffled=shuffled,
             resend=resend,
-            matched_attempt_id=attempt_ids["shuffled"],
+            policy_attempt_id=attempt_ids["shuffled"],
+            policy_attempt_state="ABORTED",
         )
         receipt = {
             "schema": "saea-a2t-contract-preserving-flight-receipt-v2",
@@ -2407,12 +2563,86 @@ def _launch(root: Path, *, recover_post_shuffled_failure: bool) -> Mapping[str, 
             )
 
 
+def _recover_post_wave1(root: Path) -> Mapping[str, object]:
+    context = _static_preflight(root)
+    _validate_m0_recovery_sources(root)
+    _validate_post_matched_recovery_sources(root)
+    _validate_post_shuffled_recovery_sources(root)
+    wave1_recovery = _validate_post_wave1_recovery_sources(root)
+    m0 = _recover_m0(root, context)
+    observation = _recover_observation(root, context)
+    matched = _recover_matched(
+        root=root,
+        context=context,
+        observation=observation,
+    )
+    shuffled = _recover_shuffled(root, context)
+    resend = _recover_resend(root, context)
+    canary_report = _recover_canary_report(context, observation)
+    if not canary_report.passed:
+        raise RuntimeError("sealed structural canary no longer passes")
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    mission_dir = root / "runs" / RUN_ID / f"policy-recovery-{stamp}"
+    if mission_dir.exists():
+        raise RuntimeError(f"policy recovery directory already exists: {mission_dir}")
+    mission_dir.mkdir(parents=True)
+    started = time.perf_counter()
+    try:
+        policy = _postseal_policy_read(
+            root=root,
+            context=context,
+            mission_dir=mission_dir,
+            session_receipt_path=wave1_recovery["paths"]["session_receipt"],  # type: ignore[index]
+            observation=observation,
+            canary_report=canary_report,
+            m0=m0,
+            matched=matched,
+            shuffled=shuffled,
+            resend=resend,
+            policy_attempt_id=SHUFFLED_SOURCE_ATTEMPT_ID,
+            policy_attempt_state="ABORTED",
+        )
+        receipt = {
+            "schema": "saea-a2t-contract-preserving-policy-recovery-receipt-v1",
+            "run_id": RUN_ID,
+            "status": "SCORED",
+            "study_commit": context["commit"],
+            "mission_dir": str(mission_dir),
+            "elapsed_seconds": time.perf_counter() - started,
+            "model_recontacts": 0,
+            "wave1_rescores": 0,
+            "wave1_source_batch_summary": str(
+                wave1_recovery["paths"]["wave1_summary"]  # type: ignore[index]
+            ),
+            "wave1_source_batch_summary_sha256": _sha256_file(
+                wave1_recovery["paths"]["wave1_summary"]  # type: ignore[index]
+            ),
+            "post_wave1_recovery_plan_sha256": POST_WAVE1_RECOVERY_PLAN_SHA256,
+            "policy_result": policy,
+        }
+        _write_json(mission_dir / "flight-receipt.json", receipt)
+        return receipt
+    except Exception as error:
+        _write_json(
+            mission_dir / "failure-receipt.json",
+            {
+                "schema": "saea-a2t-contract-preserving-policy-recovery-failure-v1",
+                "run_id": RUN_ID,
+                "error": repr(error),
+                "model_recontacts": 0,
+                "wave1_rescores": 0,
+            },
+        )
+        raise
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--recover-m0-manifest-failure", action="store_true")
     parser.add_argument("--recover-post-matched-failure", action="store_true")
     parser.add_argument("--recover-post-shuffled-failure", action="store_true")
+    parser.add_argument("--recover-post-wave1-failure", action="store_true")
     args = parser.parse_args(argv)
     root = data_root()
     if args.preflight_only:
@@ -2420,6 +2650,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         recovery = None
         post_matched_recovery = None
         post_shuffled_recovery = None
+        post_wave1_recovery = None
         if args.recover_m0_manifest_failure:
             recovery = _validate_m0_recovery_sources(root)
         if args.recover_post_matched_failure:
@@ -2450,6 +2681,27 @@ def main(argv: Sequence[str] | None = None) -> int:
                 context, recovered_observation
             )
             recovered_shuffled = _recover_shuffled(root, context)
+            exact_resends = extract_exact_matched_payloads(
+                _trace_documents(Path(recovered_matched["request_source_run_dir"])),
+                tuple(recovered_observation["resend_ids"]),  # type: ignore[arg-type]
+            )
+        if args.recover_post_wave1_failure:
+            recovery = _validate_m0_recovery_sources(root)
+            post_matched_recovery = _validate_post_matched_recovery_sources(root)
+            post_shuffled_recovery = _validate_post_shuffled_recovery_sources(root)
+            post_wave1_recovery = _validate_post_wave1_recovery_sources(root)
+            recovered_m0 = _recover_m0(root, context)
+            recovered_observation = _recover_observation(root, context)
+            recovered_matched = _recover_matched(
+                root=root,
+                context=context,
+                observation=recovered_observation,
+            )
+            recovered_canary = _recover_canary_report(
+                context, recovered_observation
+            )
+            recovered_shuffled = _recover_shuffled(root, context)
+            recovered_resend = _recover_resend(root, context)
             exact_resends = extract_exact_matched_payloads(
                 _trace_documents(Path(recovered_matched["request_source_run_dir"])),
                 tuple(recovered_observation["resend_ids"]),  # type: ignore[arg-type]
@@ -2513,18 +2765,38 @@ def main(argv: Sequence[str] | None = None) -> int:
                         if post_shuffled_recovery is not None
                         else None
                     ),
+                    "post_wave1_recovery": (
+                        {
+                            "plan_sha256": POST_WAVE1_RECOVERY_PLAN_SHA256,
+                            "prior_model_contacts": post_wave1_recovery["plan"][  # type: ignore[index]
+                                "observed_boundary"
+                            ]["cumulative_model_calls"],
+                            "maximum_new_model_contacts": post_wave1_recovery["plan"][  # type: ignore[index]
+                                "authorized_recovery"
+                            ]["maximum_additional_model_calls"],
+                            "wave1_jobs_verified": post_wave1_recovery["batch"][  # type: ignore[index]
+                                "succeeded"
+                            ],
+                            "resend_rows_verified": len(recovered_resend["texts"]),
+                            "policy_source_attempt_state": "ABORTED",
+                        }
+                        if post_wave1_recovery is not None
+                        else None
+                    ),
                 },
                 indent=2,
                 sort_keys=True,
             )
         )
         return 0
+    if not args.recover_post_wave1_failure:
+        raise RuntimeError(
+            "all 430 model contacts and four Wave-1 scores are sealed; "
+            "--recover-post-wave1-failure is required"
+        )
     print(
         json.dumps(
-            _launch(
-                root,
-                recover_post_shuffled_failure=args.recover_post_shuffled_failure,
-            ),
+            _recover_post_wave1(root),
             indent=2,
             sort_keys=True,
             default=str,

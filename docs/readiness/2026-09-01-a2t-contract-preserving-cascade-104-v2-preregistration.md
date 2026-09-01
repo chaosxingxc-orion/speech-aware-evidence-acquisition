@@ -239,3 +239,27 @@ evidence, canary, state, policy feature, fold, threshold, metric, promotion gate
 changes. Further contact remains closed until this amendment, recovery plan, implementation,
 tests, score plan, and exposure update land on a clean commit and the recovery preflight verifies
 the sixteen exact payloads.
+
+## Post-Wave-1 model-free policy recovery amendment
+
+The clean recovery at commit `91d11122` completed the registered sixteen exact resends. All model
+contact is now terminal: 430 calls and 2,216.689 audio seconds. Four unchanged official
+single-process Wave-1 jobs then scored the complete M0, matched, shuffled, and resend manifests
+through four outer workers. All four succeeded in 2.7586 seconds wall versus 9.3186 summed job
+seconds, an effective 3.3780-times speedup. No dataset was split and no shard metric was averaged.
+
+The launcher subsequently stopped in the model-free policy derivative before Wave 2. The policy
+manifest used the terminal shuffled attempt as its derivation identity, as frozen, but verification
+still expected that attempt to be `FINALIZED`; recovery had correctly left it `ABORTED` and scored
+it read-only. Gold had opened for the frozen cross-fitted calculation, but the failed draft was not
+officially scored and no policy result was written.
+
+Recovery plan
+`docs/checks/speech-aware-evidence-acquisition/2026-09-01-a2t-contract-preserving-cascade-104-v2/post-wave1-recovery-plan.json`,
+SHA-256 `5ce00d5c45762211dcecf17575e4d0474379661dd9fa488af3a04efbe10e9542`, freezes
+the finalized resend, all four Wave-1 score results, the parallel timing receipt, and the failed
+policy draft. It permits zero model calls and zero Wave-1 rescoring. The only authorized work is to
+recompute the unchanged policy in a new derivative directory, require the source shuffled
+attempt's actual terminal `ABORTED` state, and run the unchanged official single-process scorer
+once on the verified complete 104-row policy manifest. No score may alter any policy feature,
+fold, threshold, metric, promotion gate, decision rule, or claim surface.
