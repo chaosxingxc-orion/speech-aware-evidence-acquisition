@@ -1363,14 +1363,17 @@ def _run_score_batch(
     command = [
         "bash",
         str(REPO / "scripts/evaluate_parallel.sh"),
-        "--finalize" if finalize else "--score",
+    ]
+    if finalize:
+        command.append("--finalize")
+    command.extend([
         "--jobs",
         str(jobs_path),
         "--output-dir",
         str(output_dir),
         "--workers",
         str(workers),
-    ]
+    ])
     completed = subprocess.run(
         command,
         cwd=REPO,

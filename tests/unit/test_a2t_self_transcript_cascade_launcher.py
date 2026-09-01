@@ -275,3 +275,43 @@ def test_recovered_use_derivative_opens_zero_call_complete_attempt(
     assert built["cost"]["tool_calls"] == 2
     assert len(result["texts"]) == 2
     assert result["request_source_run_dir"] == tmp_path / "source-trace"
+
+
+def test_score_batch_uses_default_score_mode_without_unknown_flag(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    launcher = _launcher()
+    captured: dict[str, object] = {}
+    output_dir = tmp_path / "wave2"
+
+    def fake_run(command, **kwargs):
+        captured["command"] = command
+        captured["kwargs"] = kwargs
+        output_dir.mkdir()
+        _write_json(
+            output_dir / "batch-summary.json",
+            {"failed": 0, "succeeded": 1},
+        )
+        return type("Completed", (), {"returncode": 0, "stdout": "", "stderr": ""})()
+
+    monkeypatch.setattr(launcher.subprocess, "run", fake_run)
+
+    summary = launcher._run_score_batch(
+        mission_dir=tmp_path,
+        name="wave2",
+        jobs=({"job_id": "policy", "manifest": "/fixed/policy.json"},),
+        workers=1,
+        finalize=False,
+    )
+
+    assert summary == {"failed": 0, "succeeded": 1}
+    assert "--score" not in captured["command"]
+    assert "--finalize" not in captured["command"]
+    assert captured["command"][-6:] == [
+        "--jobs",
+        str(tmp_path / "wave2-jobs.jsonl"),
+        "--output-dir",
+        str(output_dir),
+        "--workers",
+        "1",
+    ]
