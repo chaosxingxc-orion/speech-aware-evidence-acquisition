@@ -22,7 +22,7 @@
         "job_id": "contract-v2-matched-composite",
         "input": "one complete 104-row matched USE run manifest",
         "attempt": "the matched USE attempt including its reused canaries",
-        "operation": "finalize"
+        "operation": "score"
       },
       {
         "job_id": "contract-v2-shuffled-composite",

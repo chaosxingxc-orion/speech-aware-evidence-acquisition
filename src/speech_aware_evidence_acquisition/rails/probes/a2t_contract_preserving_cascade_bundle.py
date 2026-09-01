@@ -148,9 +148,9 @@ def validate_parallel_score_plan(path: Path) -> dict[str, object]:
         )
     if wave_1.get("mode") == "--per-job-operation" and [
         job.get("operation") if isinstance(job, Mapping) else None for job in jobs_1
-    ] != ["score", "finalize", "finalize", "finalize"]:
+    ] != ["score", "score", "finalize", "finalize"]:
         raise ContractPreservingBundleError(
-            "recovery wave operations must be score then three finalizers"
+            "recovery wave operations must be two scores then two finalizers"
         )
     if not isinstance(jobs_2, list) or len(jobs_2) != 1 or wave_2.get("workers") != 1:
         raise ContractPreservingBundleError(

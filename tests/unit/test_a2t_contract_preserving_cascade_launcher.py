@@ -163,3 +163,52 @@ def test_repair_m0_manifest_only_adds_the_two_sealed_trace_entries(
         "sha256": launcher._sha256_file(trace_manifest),
     }
     assert source["raw_trace"] is None
+
+
+def test_trace_union_preserves_records_and_recovers_sample_responses(
+    tmp_path: Path,
+) -> None:
+    launcher = _launcher()
+    first = tmp_path / "first"
+    second = tmp_path / "second"
+    first_sink = launcher.TraceSink(first, launcher.RUN_ID)
+    first_sink.emit(
+        "MODEL_REQUEST",
+        "new-1/request",
+        {
+            "arm": "speech-feature-query",
+            "payload": {"sample_id": "sample-1"},
+            "payload_sha256": "a" * 64,
+        },
+    )
+    first_sink.emit(
+        "MODEL_RESPONSE",
+        "new-1/response",
+        {
+            "text": "sealed response",
+            "response_sha256": "b" * 64,
+            "response_text_sha256": "c" * 64,
+        },
+    )
+    first_sink.close()
+    second_sink = launcher.TraceSink(second, launcher.RUN_ID)
+    second_sink.emit(
+        "TOOL",
+        "composite-1/request",
+        {"tool_id": "fixed", "source": {"source_request_id": "new-1"}},
+    )
+    second_sink.close()
+
+    raw, manifest = launcher._combine_trace_artifacts(
+        tmp_path / "combined", (first, second)
+    )
+    assert raw.is_file() and manifest.is_file()
+    documents = launcher._trace_documents(tmp_path / "combined")
+    assert {row["record_id"] for row in documents} == {
+        "new-1/request",
+        "new-1/response",
+        "composite-1/request",
+    }
+    texts, request_ids = launcher._responses_from_trace(documents)
+    assert texts == {"sample-1": "sealed response"}
+    assert request_ids == {"sample-1": "new-1"}

@@ -1,0 +1,74 @@
+{
+  "schema": "saea-a2t-cpv2-post-matched-recovery-v1",
+  "run_id": "SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2",
+  "registered_at": "2026-09-01T23:00:00Z",
+  "failure_class": "post-response composite-trace selection only",
+  "source_flight": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2/flight-20260901T225026Z",
+  "source_study_commit": "20cdadd2261858680e416d6d896c48f9afbd2b72",
+  "failure_receipt_sha256": "928cdf398f3eacd611a1fe22264a4bd0ec306bfe2b3dbb1edbb9438d2b0db63d",
+  "observation": {
+    "attempt_id": "attempt-20260901t225026z-cpv2obs",
+    "attempt_receipt_sha256": "bb4e86565bb12b57bf91acc9c316961490d5951a2a0206ae1cc17f0e7d860a73",
+    "calls": 104,
+    "audio_seconds": 536.05,
+    "outputs_sha256": "82c35b51e2dd93f0b28aaa9e3f1a26d340c194a57e0f32afb210440eaa394136",
+    "source_manifest_sha256": "b80023effdecfc380a88bec19ee976c02d9b57df79f84ce8519ac3a7a090f9f1",
+    "raw_trace_sha256": "80cbe710e312c488d0cfa50e2081617d97ad4eafff937375a6cbcfb9146571ac",
+    "trace_manifest_sha256": "c7b30132ee6ff420f6833f0b421b3828681825479bf9667e9176b76568d5f00e",
+    "liveness_report_sha256": "fd0332dcefe6e3946edb68c323522da6b5c9ff2f1936d870d463b789e5e77f0c",
+    "use_authorization_sha256": "1f11085a99cd712fd309e648bf53a65ce8a8ca625996cb262ce304f8692486e3",
+    "routed_count": 103,
+    "canary_count": 8,
+    "resend_count": 16
+  },
+  "matched": {
+    "attempt_id": "attempt-20260901t225026z-cpv2matched",
+    "attempt_receipt_sha256": "d18c06f00c48710a05260751e0ffd7b017279ea1c9c4a153902c8fc8569a045f",
+    "calls": 103,
+    "audio_seconds": 529.993,
+    "outputs_sha256": "4f41183d01a5246a76944ad48843936fb8fe08907a84f55784079feb0c1afc9b",
+    "source_manifest_sha256": "e100e23ac8eaf0f6924b457f742c66438f6fec7861d0819693fb52368d99b34c",
+    "primary_raw_trace_sha256": "a370276bf758c9b541caec06d853b32325356c1cc9245097e7df0d4ca07148b4",
+    "primary_trace_manifest_sha256": "36377c585fa88fae77e2c2b5192bbe8493ffa42ba9abb02101c37f5b25aaf160",
+    "composite_raw_trace_sha256": "37944325fafd8699aa9b22d9c49979082216954f6100944e53f3a70a84e2f04b",
+    "composite_trace_manifest_sha256": "a040a0e254ad35a55abea9263d700fe8e2a900aef090a14eb417297ba107d9f4"
+  },
+  "shuffled_canary": {
+    "attempt_id": "attempt-20260901t225026z-cpv2shuffled",
+    "attempt_receipt_sha256": "feac5c342ab926684c02e7188f7b9e75283d9bd2a0736163db3f091149a9ea0f",
+    "calls": 8,
+    "audio_seconds": 36.696,
+    "raw_trace_sha256": "83a3a3c88b813945c784194627b640f02d0cfdc926253766d2243b78920b728f",
+    "structural_canary_report_sha256": "86165f05182de5646262de938695c38c14e916b5d3372d21d9db0730a31203ba",
+    "canary_passed": true
+  },
+  "session_receipt_sha256": "4fea7a7a1b356babe7d7d124273296ea2b97ae0964751366ced7160b6350be31",
+  "stop_receipt_sha256": "22c5695d0b882fd256b986e62aa99d8332931847b9c385d004239e02752563fd",
+  "observed_boundary": {
+    "cumulative_calls": 319,
+    "cumulative_audio_seconds": 1638.789,
+    "remaining_shuffled_contacts": 95,
+    "resend_contacts": 0,
+    "gold_opened": false,
+    "official_scorer_started": false
+  },
+  "authorized_recovery": {
+    "m0_recontact": false,
+    "observation_recontact": false,
+    "matched_recontact": false,
+    "shuffled_canary_recontact": false,
+    "matched_manifest_repair": "Emit a new deterministic composite trace from the sealed matched outputs. Bind routed rows to the sealed primary matched trace by absolute path and SHA-256, bind the one fallback row to sealed M0 outputs, and create a new complete manifest preserving the old attempt, cost, study commit, outputs, and scientific fields.",
+    "shuffled_continuation": "Reuse the eight sealed canary responses exactly once and contact only the remaining 95 routed identities under one fresh attempt. Bind old-canary rows to the frozen old raw trace, new rows to the fresh raw trace, and fallback to sealed M0.",
+    "resend": "Run the original sixteen exact matched-payload replays from the sealed matched primary trace under one fresh attempt.",
+    "maximum_additional_calls": 111,
+    "maximum_cumulative_calls": 430,
+    "registered_call_ceiling": 440,
+    "wave_1": "Four complete-manifest jobs run concurrently with four outer workers. Recovered M0 and matched use read-only score; continued shuffled and resend use finalize. No dataset sharding or shard-score averaging is allowed."
+  },
+  "forbidden": [
+    "Repeat M0, OBS, matched, or any shuffled canary contact",
+    "Read gold or start an official scorer before the continued shuffled and resend responses plus all four complete manifests seal",
+    "Change any prompt, sample, packet, evidence, canary, policy feature, fold, threshold, metric, or promotion gate",
+    "Shard a dataset or average shard-level metrics"
+  ]
+}

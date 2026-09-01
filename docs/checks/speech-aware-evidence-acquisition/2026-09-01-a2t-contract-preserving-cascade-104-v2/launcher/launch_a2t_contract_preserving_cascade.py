@@ -178,6 +178,17 @@ M0_SOURCE_FLIGHT = Path(
     "SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2/flight-20260901T223557Z"
 )
 M0_SOURCE_ATTEMPT_ID = "attempt-20260901t223557z-cpv2m0"
+POST_MATCHED_RECOVERY_PLAN = CHECK_DIR / "post-matched-recovery-plan.json"
+POST_MATCHED_RECOVERY_PLAN_SHA256 = (
+    "da51434ba9c93d17017af40066ce804d3180b82ae190c4418a7b4f1d1d0e09ec"
+)
+POST_MATCHED_SOURCE_FLIGHT = Path(
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/"
+    "SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2/flight-20260901T225026Z"
+)
+OBS_SOURCE_ATTEMPT_ID = "attempt-20260901t225026z-cpv2obs"
+MATCHED_SOURCE_ATTEMPT_ID = "attempt-20260901t225026z-cpv2matched"
+SHUFFLED_CANARY_SOURCE_ATTEMPT_ID = "attempt-20260901t225026z-cpv2shuffled"
 
 
 def _sha256_file(path: Path) -> str:
@@ -241,6 +252,92 @@ def _repair_m0_manifest_document(
         "sha256": _sha256_file(trace_manifest),
     }
     return repaired
+
+
+def _replace_manifest_trace_document(
+    source: Mapping[str, object],
+    *,
+    raw_trace: Path,
+    trace_manifest: Path,
+) -> dict[str, object]:
+    repaired = dict(source)
+    repaired["raw_trace"] = {
+        "path": str(Path(raw_trace).resolve()),
+        "sha256": _sha256_file(raw_trace),
+    }
+    repaired["trace_manifest"] = {
+        "path": str(Path(trace_manifest).resolve()),
+        "sha256": _sha256_file(trace_manifest),
+    }
+    return repaired
+
+
+def _combine_trace_artifacts(destination: Path, sources: Sequence[Path]) -> tuple[Path, Path]:
+    """Union disjoint sealed traces without changing any trace record."""
+
+    if not sources:
+        raise RuntimeError("combined trace requires at least one sealed source")
+    documents: list[Mapping[str, object]] = []
+    records: dict[str, str] = {}
+    for source in sources:
+        source = Path(source)
+        source_manifest = _read_json(source / f"{RUN_ID}.trace-manifest.json")
+        source_records = source_manifest.get("records")
+        if source_manifest.get("run_id") != RUN_ID or not isinstance(
+            source_records, Mapping
+        ):
+            raise RuntimeError("combined trace source manifest drift")
+        for record_id, digest in source_records.items():
+            if record_id in records:
+                raise RuntimeError(f"combined trace duplicates record id {record_id!r}")
+            records[str(record_id)] = str(digest)
+        documents.extend(_trace_documents(source))
+    destination.mkdir(parents=True, exist_ok=True)
+    raw_trace = destination / f"{RUN_ID}.trace.jsonl"
+    trace_manifest = destination / f"{RUN_ID}.trace-manifest.json"
+    _write_jsonl(raw_trace, documents)
+    _write_json(
+        trace_manifest,
+        {"records": dict(sorted(records.items())), "run_id": RUN_ID},
+    )
+    return raw_trace, trace_manifest
+
+
+def _responses_from_trace(
+    documents: Sequence[Mapping[str, object]],
+) -> tuple[dict[str, str], dict[str, str]]:
+    samples_by_request: dict[str, str] = {}
+    responses_by_request: dict[str, str] = {}
+    for document in documents:
+        record_id = document.get("record_id")
+        payload = document.get("payload")
+        if not isinstance(record_id, str) or not isinstance(payload, Mapping):
+            continue
+        if document.get("channel") == "MODEL_REQUEST" and record_id.endswith("/request"):
+            request = payload.get("payload")
+            if isinstance(request, Mapping) and isinstance(request.get("sample_id"), str):
+                samples_by_request[record_id[: -len("/request")]] = str(
+                    request["sample_id"]
+                )
+        elif document.get("channel") == "MODEL_RESPONSE" and record_id.endswith(
+            "/response"
+        ):
+            if isinstance(payload.get("text"), str):
+                responses_by_request[record_id[: -len("/response")]] = str(
+                    payload["text"]
+                )
+    if set(samples_by_request) != set(responses_by_request):
+        raise RuntimeError("sealed trace lacks a one-to-one request/response surface")
+    texts = {
+        sample_id: responses_by_request[request_id]
+        for request_id, sample_id in samples_by_request.items()
+    }
+    request_ids = {
+        sample_id: request_id for request_id, sample_id in samples_by_request.items()
+    }
+    if len(texts) != len(samples_by_request):
+        raise RuntimeError("sealed trace duplicates sample identities")
+    return texts, request_ids
 
 
 def _trace_documents(run_dir: Path) -> tuple[Mapping[str, object], ...]:
@@ -754,6 +851,158 @@ def _recover_m0(root: Path, context: Mapping[str, object]) -> dict[str, object]:
     }
 
 
+def _validate_post_matched_recovery_sources(root: Path) -> dict[str, object]:
+    if _sha256_file(POST_MATCHED_RECOVERY_PLAN) != POST_MATCHED_RECOVERY_PLAN_SHA256:
+        raise RuntimeError("post-matched recovery plan byte identity drift")
+    plan = _read_json(POST_MATCHED_RECOVERY_PLAN)
+    if (
+        plan.get("run_id") != RUN_ID
+        or plan.get("observed_boundary", {}).get("gold_opened") is not False  # type: ignore[union-attr]
+        or plan.get("observed_boundary", {}).get("official_scorer_started")  # type: ignore[union-attr]
+        is not False
+        or plan.get("authorized_recovery", {}).get("maximum_cumulative_calls")  # type: ignore[union-attr]
+        != 430
+    ):
+        raise RuntimeError("post-matched recovery contract drift")
+    paths = {
+        "failure_receipt": POST_MATCHED_SOURCE_FLIGHT / "failure-receipt.json",
+        "session_receipt": POST_MATCHED_SOURCE_FLIGHT / "service/session-receipt.json",
+        "stop_receipt": POST_MATCHED_SOURCE_FLIGHT / "service/stop-receipt.json",
+        "canary_report": POST_MATCHED_SOURCE_FLIGHT / "structural-canary-report.json",
+        "observation_dir": POST_MATCHED_SOURCE_FLIGHT / "observation",
+        "matched_dir": POST_MATCHED_SOURCE_FLIGHT / "matched-composite",
+        "shuffled_dir": POST_MATCHED_SOURCE_FLIGHT / "shuffled-composite",
+    }
+    for key in ("failure_receipt", "session_receipt", "stop_receipt"):
+        if _sha256_file(paths[key]) != plan.get(f"{key}_sha256"):
+            raise RuntimeError(f"post-matched source drift: {key}")
+    observation = plan.get("observation")
+    matched = plan.get("matched")
+    shuffled = plan.get("shuffled_canary")
+    if not all(isinstance(item, Mapping) for item in (observation, matched, shuffled)):
+        raise RuntimeError("post-matched recovery sections are malformed")
+    artifact_checks = (
+        (paths["observation_dir"] / f"{RUN_ID}.outputs.jsonl", observation["outputs_sha256"]),  # type: ignore[index]
+        (paths["observation_dir"] / f"{RUN_ID}.run-manifest.json", observation["source_manifest_sha256"]),  # type: ignore[index]
+        (paths["observation_dir"] / f"{RUN_ID}.trace.jsonl", observation["raw_trace_sha256"]),  # type: ignore[index]
+        (paths["observation_dir"] / f"{RUN_ID}.trace-manifest.json", observation["trace_manifest_sha256"]),  # type: ignore[index]
+        (paths["observation_dir"] / "liveness-report.json", observation["liveness_report_sha256"]),  # type: ignore[index]
+        (paths["observation_dir"] / "use-authorization-receipt.json", observation["use_authorization_sha256"]),  # type: ignore[index]
+        (paths["matched_dir"] / f"{RUN_ID}.outputs.jsonl", matched["outputs_sha256"]),  # type: ignore[index]
+        (paths["matched_dir"] / f"{RUN_ID}.run-manifest.json", matched["source_manifest_sha256"]),  # type: ignore[index]
+        (paths["matched_dir"] / f"{RUN_ID}.trace.jsonl", matched["primary_raw_trace_sha256"]),  # type: ignore[index]
+        (paths["matched_dir"] / f"{RUN_ID}.trace-manifest.json", matched["primary_trace_manifest_sha256"]),  # type: ignore[index]
+        (paths["matched_dir"] / "composite-trace" / f"{RUN_ID}.trace.jsonl", matched["composite_raw_trace_sha256"]),  # type: ignore[index]
+        (paths["matched_dir"] / "composite-trace" / f"{RUN_ID}.trace-manifest.json", matched["composite_trace_manifest_sha256"]),  # type: ignore[index]
+        (paths["shuffled_dir"] / f"{RUN_ID}.trace.jsonl", shuffled["raw_trace_sha256"]),  # type: ignore[index]
+        (paths["canary_report"], shuffled["structural_canary_report_sha256"]),  # type: ignore[index]
+    )
+    for path, expected in artifact_checks:
+        if _sha256_file(path) != expected:
+            raise RuntimeError(f"post-matched artifact drift: {path}")
+    for section, attempt_id in (
+        (observation, OBS_SOURCE_ATTEMPT_ID),
+        (matched, MATCHED_SOURCE_ATTEMPT_ID),
+        (shuffled, SHUFFLED_CANARY_SOURCE_ATTEMPT_ID),
+    ):
+        attempt_path = root / "attempts" / RUN_ID / f"{attempt_id}.json"
+        if _sha256_file(attempt_path) != section["attempt_receipt_sha256"]:  # type: ignore[index]
+            raise RuntimeError(f"post-matched attempt receipt drift: {attempt_id}")
+        attempt = _read_json(attempt_path)
+        actual = attempt.get("actual")
+        if (
+            attempt.get("state") != "ABORTED"
+            or not isinstance(actual, Mapping)
+            or actual.get("calls") != section["calls"]  # type: ignore[index]
+            or abs(float(actual.get("audio_seconds", -1)) - float(section["audio_seconds"]))  # type: ignore[index]
+            > 1e-6
+        ):
+            raise RuntimeError(f"post-matched attempt accounting drift: {attempt_id}")
+    return {"plan": plan, "paths": paths}
+
+
+def _recover_observation(
+    root: Path, context: Mapping[str, object]
+) -> dict[str, object]:
+    recovery = _validate_post_matched_recovery_sources(root)
+    observation_dir = recovery["paths"]["observation_dir"]  # type: ignore[index]
+    manifest = observation_dir / f"{RUN_ID}.run-manifest.json"
+    verified = verify_bundle(manifest)
+    if verified.attempt_state != "ABORTED" or len(verified.outputs_rows) != SPLIT_COUNT:
+        raise RuntimeError("sealed observation bundle failed recovery verification")
+    responses = {
+        str(row["sample_id"]): str(row["text"]) for row in verified.outputs_rows
+    }
+    material = _materialize_observation(context, responses)
+    if material.get("passed") is not True:
+        raise RuntimeError("sealed observation no longer passes the frozen liveness gate")
+    authorization = _read_json(observation_dir / "use-authorization-receipt.json")
+    if (
+        list(material["canary_ids"]) != authorization.get("canary_ids")  # type: ignore[arg-type]
+        or list(material["resend_ids"]) != authorization.get("resend_ids")  # type: ignore[arg-type]
+        or len(material["routed_tiers"]) != 103  # type: ignore[arg-type]
+    ):
+        raise RuntimeError("recovered observation authorization drift")
+    material.update(
+        {"manifest": manifest, "attempt_id": OBS_SOURCE_ATTEMPT_ID, "recovered": True}
+    )
+    return material
+
+
+def _recover_matched(
+    *,
+    root: Path,
+    context: Mapping[str, object],
+    observation: Mapping[str, object],
+) -> dict[str, object]:
+    recovery = _validate_post_matched_recovery_sources(root)
+    run_dir = recovery["paths"]["matched_dir"]  # type: ignore[index]
+    combined_dir = run_dir / "recovered-combined-trace"
+    raw_trace, trace_manifest = _combine_trace_artifacts(
+        combined_dir,
+        (run_dir, run_dir / "composite-trace"),
+    )
+    source_manifest_path = run_dir / f"{RUN_ID}.run-manifest.json"
+    repaired = _replace_manifest_trace_document(
+        _read_json(source_manifest_path),
+        raw_trace=raw_trace,
+        trace_manifest=trace_manifest,
+    )
+    recovered_manifest = run_dir / f"{RUN_ID}.recovered.run-manifest.json"
+    _write_json(recovered_manifest, repaired)
+    verified = verify_bundle(recovered_manifest)
+    if verified.attempt_state != "ABORTED" or len(verified.outputs_rows) != SPLIT_COUNT:
+        raise RuntimeError("sealed matched bundle failed recovery verification")
+    texts = {
+        str(row["sample_id"]): str(row["text"]) for row in verified.outputs_rows
+    }
+    adapter = A2TContractPreservingAdapter(
+        context["lock"],  # type: ignore[arg-type]
+        root,
+        repo_root=REPO,
+        receipt_items=context["items"],  # type: ignore[arg-type]
+        phase=MATCHED_USE_PHASE,
+        use_material=observation["matched_material"],  # type: ignore[arg-type]
+    )
+    samples = adapter.load_split(SPLIT_ID)
+    binding = build_payload_binding(
+        carrier_lock_key=AUDIO2TOOL_LOCK_KEY,
+        samples=samples,
+        data_root=root,
+        carrier_root=context["carrier_root"],  # type: ignore[arg-type]
+    )
+    return {
+        "texts": texts,
+        "manifest": recovered_manifest,
+        "outputs": run_dir / f"{RUN_ID}.outputs.jsonl",
+        "attempt_id": MATCHED_SOURCE_ATTEMPT_ID,
+        "run_dir": run_dir,
+        "binding": binding,
+        "request_source_run_dir": run_dir,
+        "recovered": True,
+    }
+
+
 def _run_m0(
     *,
     root: Path,
@@ -1191,6 +1440,185 @@ def _complete_use_arm(
     }
 
 
+def _continue_shuffled_after_canary(
+    *,
+    root: Path,
+    context: Mapping[str, object],
+    observation: Mapping[str, object],
+    m0: Mapping[str, object],
+    gate: FrozenCoreGate,
+    transport: object,
+    attempt_id: str,
+    run_dir: Path,
+    session_receipt_path: Path,
+    lock_sha256: str,
+) -> dict[str, object]:
+    _validate_post_matched_recovery_sources(root)
+    old_run_dir = POST_MATCHED_SOURCE_FLIGHT / "shuffled-composite"
+    old_trace = _trace_documents(old_run_dir)
+    canary_texts, _old_request_ids = _responses_from_trace(old_trace)
+    canary_ids = tuple(observation["canary_ids"])  # type: ignore[arg-type]
+    if set(canary_texts) != set(canary_ids):
+        raise RuntimeError("sealed shuffled canary identities drift")
+    full_material = observation["shuffled_material"]
+    routed_ids = tuple(sorted(observation["routed_tiers"]))  # type: ignore[arg-type]
+    remaining_ids = tuple(
+        sample_id for sample_id in routed_ids if sample_id not in set(canary_ids)
+    )
+    if len(remaining_ids) != 95:
+        raise RuntimeError("shuffled recovery must contain exactly 95 new contacts")
+    remaining_material = {
+        sample_id: full_material[sample_id]  # type: ignore[index]
+        for sample_id in remaining_ids
+    }
+    plan = _execution_plan(attempt_id)
+    _write_json(run_dir / "execution-plan.json", asdict(plan))
+    adapter = A2TContractPreservingAdapter(
+        context["lock"],  # type: ignore[arg-type]
+        root,
+        repo_root=REPO,
+        receipt_items=context["items"],  # type: ignore[arg-type]
+        phase=SHUFFLED_USE_PHASE,
+        use_material=remaining_material,
+    )
+    samples = adapter.load_split(SPLIT_ID)
+    if {sample.sample_id for sample in samples} != set(remaining_ids):
+        raise RuntimeError("shuffled recovery adapter identity drift")
+    packet_bindings = {
+        sample_id: context["packet_bindings"][sample_id]  # type: ignore[index]
+        for sample_id in remaining_ids
+    }
+    binding = build_payload_binding(
+        carrier_lock_key=AUDIO2TOOL_LOCK_KEY,
+        samples=samples,
+        data_root=root,
+        carrier_root=context["carrier_root"],  # type: ignore[arg-type]
+    )
+    primary_dir = run_dir / "primary-trace"
+    sink = TraceSink(primary_dir, RUN_ID)
+    client = FrozenCoreClient(
+        plan=plan,
+        gate=gate,
+        transport=transport,  # type: ignore[arg-type]
+        run_dir=run_dir / "transport-trace",
+        binding=binding,
+        arm="speech-feature-query",
+        request_id_prefix="cpv2shuffledrecovery",
+        speech_feature_root=FEATURE_ROOT,
+        speech_packet_bindings=packet_bindings,
+    )
+    values = context["composed"].values  # type: ignore[union-attr]
+    summary = run_phase(
+        phase=SHUFFLED_USE_PHASE,
+        data_root=root,
+        plan=plan,
+        adapter=adapter,
+        core_client=client,
+        split_id=SPLIT_ID,
+        knowledge_snapshot=context["snapshot"],
+        speech_packet_bindings=packet_bindings,
+        trace_sink=sink,
+        slot_count=int(values["profile_slot_count"]),
+        queue_depth=(
+            int(values["profile_slot_count"])
+            * int(values["profile_queue_depth_multiplier"])
+        ),
+        decoding_params=_decoding(context),
+        liveness_receipt=observation["receipt"],
+    )
+    primary_trace_hash, client_summary = _close_phase_traces(sink, client)
+    phase_rows, cost = build_phase_bundle_material(
+        summary,
+        _trace_documents(primary_dir),
+        phase=SHUFFLED_USE_PHASE,
+        umbrella_lock_sha256=lock_sha256,
+    )
+    if client_summary.get("request_count") != len(remaining_ids):
+        raise RuntimeError("shuffled recovery contact accounting drift")
+    remaining_texts = _phase_responses(summary)
+    use_texts = merge_canary_and_remaining(
+        canary=canary_texts,
+        remaining=remaining_texts,
+        expected_ids=routed_ids,
+    )
+    composite = build_use_composite_texts(
+        m0_texts=m0["texts"],  # type: ignore[arg-type]
+        use_texts=use_texts,
+        routed_ids=routed_ids,
+    )
+    new_request_ids = _request_ids_from_rows(phase_rows)
+    old_trace_path = old_run_dir / f"{RUN_ID}.trace.jsonl"
+    m0_path = Path(m0["outputs"])
+    source_by_id: dict[str, dict[str, str]] = {}
+    for sample_id in composite:
+        if sample_id in canary_texts:
+            source_by_id[sample_id] = {
+                "action": "USE_SHUFFLED_EVIDENCE_CANARY_REUSE",
+                "source_artifact_path": str(old_trace_path),
+                "source_artifact_sha256": _sha256_file(old_trace_path),
+            }
+        elif sample_id in new_request_ids:
+            source_by_id[sample_id] = {
+                "action": "USE_SHUFFLED_EVIDENCE_RECOVERY",
+                "source_request_id": new_request_ids[sample_id],
+            }
+        else:
+            source_by_id[sample_id] = {
+                "action": "STOP_M0",
+                "source_artifact_path": str(m0_path),
+                "source_artifact_sha256": _sha256_file(m0_path),
+            }
+    composite_dir = run_dir / "composite-trace"
+    composite_sink = TraceSink(composite_dir, RUN_ID)
+    rows = emit_composite_rows(
+        texts=composite,
+        source_by_id=source_by_id,
+        sink=composite_sink,
+        variant="shuffled-evidence",
+    )
+    composite_trace_hash = composite_sink.close()
+    bundle_dir = run_dir / "complete-bundle"
+    _combine_trace_artifacts(bundle_dir, (primary_dir, composite_dir))
+    outputs = bundle_dir / f"{RUN_ID}.outputs.jsonl"
+    _write_jsonl(outputs, rows)
+    manifest = _build_completed_manifest(
+        root=root,
+        context=context,
+        plan=plan,
+        run_dir=bundle_dir,
+        session_receipt_path=session_receipt_path,
+        outputs_path=outputs,
+        trace_manifest_hash=composite_trace_hash,
+        cost=cost,
+        expected_attempt_state="OPENED",
+    )
+    _write_json(
+        run_dir / "shuffled-recovery-receipt.json",
+        {
+            "schema": "saea-a2t-cpv2-shuffled-recovery-receipt-v1",
+            "post_matched_recovery_plan_sha256": POST_MATCHED_RECOVERY_PLAN_SHA256,
+            "old_canary_attempt_id": SHUFFLED_CANARY_SOURCE_ATTEMPT_ID,
+            "old_canary_contacts": len(canary_ids),
+            "new_attempt_id": attempt_id,
+            "new_contacts": len(remaining_ids),
+            "primary_trace_manifest_sha256": primary_trace_hash,
+            "manifest": str(manifest),
+            "manifest_sha256": _sha256_file(manifest),
+            "outputs_sha256": _sha256_file(outputs),
+            "cost": cost,
+        },
+    )
+    return {
+        "texts": composite,
+        "use_texts": use_texts,
+        "manifest": manifest,
+        "outputs": outputs,
+        "attempt_id": attempt_id,
+        "run_dir": run_dir,
+        "binding": binding,
+    }
+
+
 def _run_resend(
     *,
     root: Path,
@@ -1378,7 +1806,7 @@ def _parallel_finalize(
     jobs: list[dict[str, str]] = []
     for job_id, phase, result, operation in (
         ("contract-v2-m0-direct", "same-flight direct M0", m0, "score"),
-        ("contract-v2-matched-composite", "matched evidence", matched, "finalize"),
+        ("contract-v2-matched-composite", "matched evidence", matched, "score"),
         (
             "contract-v2-shuffled-composite",
             "same-tier shuffled evidence",
@@ -1592,13 +2020,41 @@ def _stop_service(
     )
 
 
-def _launch(root: Path, *, recover_m0_manifest_failure: bool) -> Mapping[str, object]:
+def _recover_canary_report(
+    context: Mapping[str, object], observation: Mapping[str, object]
+) -> cascade_v2.StructuralCanaryReport:
+    matched_texts, _matched_requests = _responses_from_trace(
+        _trace_documents(POST_MATCHED_SOURCE_FLIGHT / "matched-composite")
+    )
+    shuffled_texts, _shuffled_requests = _responses_from_trace(
+        _trace_documents(POST_MATCHED_SOURCE_FLIGHT / "shuffled-composite")
+    )
+    canary_ids = tuple(observation["canary_ids"])  # type: ignore[arg-type]
+    canary_tiers = {
+        sample_id: observation["routed_tiers"][sample_id]  # type: ignore[index]
+        for sample_id in canary_ids
+    }
+    report = cascade_v2.evaluate_structural_canary(
+        matched={sample_id: matched_texts[sample_id] for sample_id in canary_ids},
+        shuffled={sample_id: shuffled_texts[sample_id] for sample_id in canary_ids},
+        sample_tiers=canary_tiers,
+        registry_names=context["registry_names"],  # type: ignore[arg-type]
+    )
+    if report.as_json() != _read_json(
+        POST_MATCHED_SOURCE_FLIGHT / "structural-canary-report.json"
+    ):
+        raise RuntimeError("recovered structural canary report drift")
+    return report
+
+
+def _launch(root: Path, *, recover_post_matched_failure: bool) -> Mapping[str, object]:
     context = _static_preflight(root)
-    if not recover_m0_manifest_failure:
+    if not recover_post_matched_failure:
         raise RuntimeError(
-            "the completed M0 attempt must be recovered; repeating M0 is forbidden"
+            "the post-matched recovery is required; all 319 prior contacts are sealed"
         )
     _validate_m0_recovery_sources(root)
+    _validate_post_matched_recovery_sources(root)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     mission_dir = root / "runs" / RUN_ID / f"flight-{stamp}"
     if mission_dir.exists():
@@ -1606,12 +2062,22 @@ def _launch(root: Path, *, recover_m0_manifest_failure: bool) -> Mapping[str, ob
     mission_dir.mkdir(parents=True)
     attempt_ids = {
         "m0": M0_SOURCE_ATTEMPT_ID,
-        "observation": f"attempt-{stamp.lower()}-cpv2obs",
-        "matched": f"attempt-{stamp.lower()}-cpv2matched",
-        "shuffled": f"attempt-{stamp.lower()}-cpv2shuffled",
+        "observation": OBS_SOURCE_ATTEMPT_ID,
+        "matched": MATCHED_SOURCE_ATTEMPT_ID,
+        "shuffled_canary": SHUFFLED_CANARY_SOURCE_ATTEMPT_ID,
+        "shuffled": f"attempt-{stamp.lower()}-cpv2shuffledrecovery",
         "resend": f"attempt-{stamp.lower()}-cpv2resend",
     }
     m0 = _recover_m0(root, context)
+    observation = _recover_observation(root, context)
+    matched = _recover_matched(
+        root=root,
+        context=context,
+        observation=observation,
+    )
+    canary_report = _recover_canary_report(context, observation)
+    if not canary_report.passed:
+        raise RuntimeError("sealed structural canary no longer passes")
     runtime_receipt = load_runtime_receipt(REPO / "docs" / RUNTIME_RECEIPT_RELPATH)
     values = context["composed"].values  # type: ignore[union-attr]
     model_root = Path(str(values["model_materialization_root"]))
@@ -1624,7 +2090,7 @@ def _launch(root: Path, *, recover_m0_manifest_failure: bool) -> Mapping[str, ob
         model_root=model_root,
     )
     lock_sha256 = gate.assert_model_touch_allowed(
-        _execution_plan(attempt_ids["observation"]), full_hash=True
+        _execution_plan(attempt_ids["shuffled"]), full_hash=True
     )
     parsed_url = urlparse(str(values["base_url"]))
     if parsed_url.hostname not in {"127.0.0.1", "localhost"} or parsed_url.port is None:
@@ -1658,131 +2124,17 @@ def _launch(root: Path, *, recover_m0_manifest_failure: bool) -> Mapping[str, ob
             runtime_receipt=runtime_receipt,
             runtime_root=RUNTIME_ROOT,
         )
-        observation = _run_observation(
-            root=root,
-            context=context,
-            gate=gate,
-            transport=transport,
-            attempt_id=attempt_ids["observation"],
-            run_dir=mission_dir / "observation",
-            session_receipt_path=session_receipt,
-            lock_sha256=lock_sha256,
-        )
-        if observation["passed"] is not True:
-            abort_attempt_if_opened(
-                root,
-                RUN_ID,
-                attempt_ids["m0"],
-                reason="label-free observation liveness gate failed",
-            )
-            _stop_service(
-                session,
-                runtime_receipt=runtime_receipt,
-                receipt_path=stop_receipt,
-            )
-            session = None
-            result = {
-                "schema": "saea-a2t-contract-preserving-flight-receipt-v2",
-                "run_id": RUN_ID,
-                "status": "STOPPED_AT_LABEL_FREE_LIVENESS_GATE",
-                "study_commit": context["commit"],
-                "mission_dir": str(mission_dir),
-                "elapsed_seconds": time.perf_counter() - started,
-                "liveness": asdict(observation["report"]),
-                "use_contacts": 0,
-                "official_scorer_contacts": 0,
-            }
-            _write_json(mission_dir / "flight-receipt.json", result)
-            return result
-
-        matched_arm = _open_use_arm(
-            phase=MATCHED_USE_PHASE,
+        shuffled = _continue_shuffled_after_canary(
             root=root,
             context=context,
             observation=observation,
-            gate=gate,
-            transport=transport,
-            attempt_id=attempt_ids["matched"],
-            run_dir=mission_dir / "matched-composite",
-        )
-        shuffled_arm = _open_use_arm(
-            phase=SHUFFLED_USE_PHASE,
-            root=root,
-            context=context,
-            observation=observation,
+            m0=m0,
             gate=gate,
             transport=transport,
             attempt_id=attempt_ids["shuffled"],
-            run_dir=mission_dir / "shuffled-composite",
-        )
-        canary_ids = tuple(observation["canary_ids"])  # type: ignore[arg-type]
-        canary_tiers = {
-            sample_id: observation["routed_tiers"][sample_id]  # type: ignore[index]
-            for sample_id in canary_ids
-        }
-        canary_report = cascade_v2.evaluate_structural_canary(
-            matched=matched_arm["canary_texts"],  # type: ignore[arg-type]
-            shuffled=shuffled_arm["canary_texts"],  # type: ignore[arg-type]
-            sample_tiers=canary_tiers,
-            registry_names=context["registry_names"],  # type: ignore[arg-type]
-        )
-        _write_json(mission_dir / "structural-canary-report.json", canary_report.as_json())
-        if not canary_report.passed:
-            _close_stopped_use_arm(matched_arm)
-            _close_stopped_use_arm(shuffled_arm)
-            for attempt_id in (
-                attempt_ids["m0"],
-                attempt_ids["matched"],
-                attempt_ids["shuffled"],
-            ):
-                abort_attempt_if_opened(
-                    root,
-                    RUN_ID,
-                    attempt_id,
-                    reason="label-free structural canary failed",
-                )
-            _stop_service(
-                session,
-                runtime_receipt=runtime_receipt,
-                receipt_path=stop_receipt,
-            )
-            session = None
-            result = {
-                "schema": "saea-a2t-contract-preserving-flight-receipt-v2",
-                "run_id": RUN_ID,
-                "status": "STOPPED_AT_LABEL_FREE_STRUCTURAL_CANARY",
-                "study_commit": context["commit"],
-                "mission_dir": str(mission_dir),
-                "elapsed_seconds": time.perf_counter() - started,
-                "liveness": asdict(observation["report"]),
-                "structural_canary": canary_report.as_json(),
-                "matched_use_contacts": 8,
-                "shuffled_use_contacts": 8,
-                "remaining_use_contacts": 0,
-                "official_scorer_contacts": 0,
-            }
-            _write_json(mission_dir / "flight-receipt.json", result)
-            return result
-
-        matched = _complete_use_arm(
-            arm=matched_arm,
-            root=root,
-            context=context,
-            observation=observation,
-            m0=m0,
+            run_dir=mission_dir / "shuffled-recovery",
             session_receipt_path=session_receipt,
             lock_sha256=lock_sha256,
-            variant="matched",
-        )
-        shuffled = _complete_use_arm(
-            arm=shuffled_arm,
-            root=root,
-            context=context,
-            observation=observation,
-            m0=m0,
-            session_receipt_path=session_receipt,
-            lock_sha256=lock_sha256,
-            variant="shuffled-evidence",
         )
         resend = _run_resend(
             root=root,
@@ -1809,7 +2161,7 @@ def _launch(root: Path, *, recover_m0_manifest_failure: bool) -> Mapping[str, ob
             shuffled=shuffled,
             resend=resend,
         )
-        expected_states = ("ABORTED", "FINALIZED", "FINALIZED", "FINALIZED")
+        expected_states = ("ABORTED", "ABORTED", "FINALIZED", "FINALIZED")
         for result, expected_state in zip(
             (m0, matched, shuffled, resend), expected_states, strict=True
         ):
@@ -1826,7 +2178,7 @@ def _launch(root: Path, *, recover_m0_manifest_failure: bool) -> Mapping[str, ob
             matched=matched,
             shuffled=shuffled,
             resend=resend,
-            matched_attempt_id=attempt_ids["matched"],
+            matched_attempt_id=attempt_ids["shuffled"],
         )
         receipt = {
             "schema": "saea-a2t-contract-preserving-flight-receipt-v2",
@@ -1847,11 +2199,18 @@ def _launch(root: Path, *, recover_m0_manifest_failure: bool) -> Mapping[str, ob
                 },
                 "observation": {
                     "attempt_id": attempt_ids["observation"],
-                    "state": "ABORTED_OBSERVATION_ONLY_SUCCESS",
+                    "state": "ABORTED_RECOVERED_OBSERVATION_ONLY_SUCCESS",
+                    "recontacts": 0,
                 },
                 "matched": {
                     "attempt_id": attempt_ids["matched"],
-                    "state": "FINALIZED",
+                    "state": "ABORTED_RECOVERED_AND_SCORED_READ_ONLY",
+                    "recontacts": 0,
+                },
+                "shuffled_canary": {
+                    "attempt_id": attempt_ids["shuffled_canary"],
+                    "state": "ABORTED_SOURCE_REUSED",
+                    "recontacts": 0,
                 },
                 "shuffled": {
                     "attempt_id": attempt_ids["shuffled"],
@@ -1863,6 +2222,7 @@ def _launch(root: Path, *, recover_m0_manifest_failure: bool) -> Mapping[str, ob
                 },
             },
             "wave1_parallel_official_finalizer": wave1,
+            "post_matched_recovery_plan_sha256": POST_MATCHED_RECOVERY_PLAN_SHA256,
             "policy_result": policy,
         }
         _write_json(mission_dir / "flight-receipt.json", receipt)
@@ -1893,13 +2253,28 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--recover-m0-manifest-failure", action="store_true")
+    parser.add_argument("--recover-post-matched-failure", action="store_true")
     args = parser.parse_args(argv)
     root = data_root()
     if args.preflight_only:
         context = _static_preflight(root)
         recovery = None
+        post_matched_recovery = None
         if args.recover_m0_manifest_failure:
             recovery = _validate_m0_recovery_sources(root)
+        if args.recover_post_matched_failure:
+            recovery = _validate_m0_recovery_sources(root)
+            post_matched_recovery = _validate_post_matched_recovery_sources(root)
+            recovered_m0 = _recover_m0(root, context)
+            recovered_observation = _recover_observation(root, context)
+            recovered_matched = _recover_matched(
+                root=root,
+                context=context,
+                observation=recovered_observation,
+            )
+            recovered_canary = _recover_canary_report(
+                context, recovered_observation
+            )
         print(
             json.dumps(
                 {
@@ -1923,6 +2298,25 @@ def main(argv: Sequence[str] | None = None) -> int:
                         if recovery is not None
                         else None
                     ),
+                    "post_matched_recovery": (
+                        {
+                            "plan_sha256": POST_MATCHED_RECOVERY_PLAN_SHA256,
+                            "prior_contacts": post_matched_recovery["plan"][  # type: ignore[index]
+                                "observed_boundary"
+                            ]["cumulative_calls"],
+                            "maximum_new_contacts": post_matched_recovery["plan"][  # type: ignore[index]
+                                "authorized_recovery"
+                            ]["maximum_additional_calls"],
+                            "m0_rows_verified": len(recovered_m0["texts"]),
+                            "observation_rows_verified": len(
+                                recovered_observation["transcripts"]  # type: ignore[arg-type]
+                            ),
+                            "matched_rows_verified": len(recovered_matched["texts"]),
+                            "canary_passed": recovered_canary.passed,
+                        }
+                        if post_matched_recovery is not None
+                        else None
+                    ),
                 },
                 indent=2,
                 sort_keys=True,
@@ -1933,7 +2327,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         json.dumps(
             _launch(
                 root,
-                recover_m0_manifest_failure=args.recover_m0_manifest_failure,
+                recover_post_matched_failure=args.recover_post_matched_failure,
             ),
             indent=2,
             sort_keys=True,

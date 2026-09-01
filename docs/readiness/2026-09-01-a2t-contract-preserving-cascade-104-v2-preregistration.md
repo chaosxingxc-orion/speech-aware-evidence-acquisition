@@ -180,3 +180,32 @@ value for a terminally completed experiment; partial spend is recorded in the am
 durable attempt store while `consumed` remains `no`. The row is corrected prospectively. The 104
 M0 calls remain counted, immutable, and unavailable for replay; the correction only permits the
 registered remaining attempts to reach a terminal result.
+
+## Post-matched composite-trace recovery amendment
+
+The next clean flight from commit `20cdadd2` preserved M0 with zero recontacts, completed and
+sealed 104 OBS contacts, passed the 8+8 structural canary, and completed all 103 routed matched
+contacts. It then stopped while verifying the matched complete manifest. The composite outputs and
+their deterministic composite trace had both sealed, but `build_manifest` auto-selected the primary
+model trace in the parent directory rather than the composite trace in `composite-trace/`. The
+verifier therefore could not find the composite output request ids. The common failure handler
+terminally aborted OBS, matched, and the eight-contact shuffled-canary attempt. No resend, gold, or
+official scorer started.
+
+Recovery plan
+`docs/checks/speech-aware-evidence-acquisition/2026-09-01-a2t-contract-preserving-cascade-104-v2/post-matched-recovery-plan.json`,
+SHA-256 `da51434ba9c93d17017af40066ce804d3180b82ae190c4418a7b4f1d1d0e09ec`, freezes
+the OBS, matched, shuffled-canary, session, stop, failure, output, and trace artifacts plus all three
+terminal attempts. Cumulative spend is 319 calls. M0, OBS, matched, and the eight shuffled canaries
+must never be contacted again.
+
+The model-free matched repair re-emits only deterministic composite trace records from the sealed
+matched outputs, binding routed rows to the sealed primary trace and the fallback row to sealed M0
+bytes. A fresh shuffled continuation may contact only the remaining 95 routed identities, reuse the
+eight old canary responses exactly once, and bind old/new source traces separately. The original 16
+exact matched-payload resends may then run. At most 111 calls remain, for a cumulative maximum of
+430/440. Wave 1 remains four complete-manifest jobs on four outer workers, now with read-only score
+for terminal M0 and matched and finalize for continued shuffled and resend. No scientific field,
+prediction, prompt, sample, retrieval, canary, state, fold, threshold, gate, scorer, or sharding rule
+changes. Further contact remains closed until this amendment, implementation, tests, and exposure
+update land on a clean commit and the new recovery preflight passes.
