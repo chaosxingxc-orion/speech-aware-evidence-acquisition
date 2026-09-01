@@ -1,0 +1,103 @@
+{
+  "experiment_id": "SAEA-A2T-MF-TFRL-REGISTRY-SEMANTIC-MEMORY-V2",
+  "schema": "saea-a2t-training-free-registry-semantic-memory-experiment-v2",
+  "date": "2026-09-01",
+  "execution_profile": "model-free-check",
+  "purpose": "Test whether deployment-visible registry domain/category abstractions separate useful from harmful stripped-registry supply while every v1 reward-memory and promotion threshold remains fixed.",
+  "predecessor": {
+    "experiment_id": "SAEA-A2T-MF-TFRL-SIGNED-SUPPLY-MEMORY-V1",
+    "verdict": "live structural state but reward-inseparable; both candidates stopped on 217 of 217",
+    "artifact_self_sha256": "99c19db3f1adfde2c86b6c9ebfc4c18fc3dc58fe2ccfde22a78c679a408ca7c6",
+    "measured_reason_for_successor": "seven saves and 31 harms shared the coarse single/all-known/exact cell; the detailed one-argument cell still shared seven saves and 18 harms"
+  },
+  "single_variable_change": {
+    "changed": "append the A0-selected registry row's domain/category pair abstraction to the v1 state",
+    "unchanged": [
+      "217-sample already-exposed signed-return surface",
+      "STOP_DIRECT and SUPPLY_STRIPPED_REGISTRY actions",
+      "STOP_DIRECT default",
+      "official exact_match primary reward",
+      "exact-cell non-parametric action-return memory",
+      "minimum cell support 5",
+      "minimum cell saves 2",
+      "maximum cell harms 0",
+      "five-fold query_idx group isolation",
+      "promotion thresholds and tie-break",
+      "zero parameter training and zero model contact"
+    ]
+  },
+  "population": {
+    "carrier": "audio2tool",
+    "split_role": "discovery",
+    "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+    "eligible_rows": 217,
+    "exposure_status": "fully adaptive retrospective discovery; no row or fold is fresh support",
+    "group_id": "receipt query_idx",
+    "prohibited": [
+      "the other 183 tool-selection failures",
+      "any unexposed Audio2Tool sample",
+      "G2",
+      "FINAL60",
+      "test annotations",
+      "future turns"
+    ]
+  },
+  "runtime_state": {
+    "candidates": {
+      "domain-category-coarse-v2": "v1 coarse state plus the sorted unique set of selected registry (domain, category) pairs",
+      "domain-category-detailed-v2": "v1 detailed state plus the same registry semantic pair set"
+    },
+    "multiple_call_aggregation": "sort unique domain/category pairs lexically; tool-call order and duplicate calls do not change state",
+    "missing_metadata": "explicit unresolved class; never guessed",
+    "allowed": [
+      "original A0 response structure",
+      "selected registry row domain",
+      "selected registry row category"
+    ],
+    "forbidden": [
+      "gold labels or correctness",
+      "reference transcript or spoken query text",
+      "supply response or future turn",
+      "sample id, query_idx, rendition id, or tier as a feature",
+      "tool name, description, argument values, or reward as a feature"
+    ]
+  },
+  "memory_policy": {
+    "type": "exact-cell non-parametric action-return memory",
+    "parameter_training": "none",
+    "decision": "choose SUPPLY_STRIPPED_REGISTRY only when the other-fold matching semantic-state cell has at least 5 samples, at least 2 observed saves, and zero observed harms; otherwise choose STOP_DIRECT",
+    "candidate_selection": "among candidates that pass every gate, maximize cross-fitted exact-match net gain, then saves, then minimize second contacts, then choose the lexical candidate id"
+  },
+  "crossfit": {
+    "folds": 5,
+    "seed": 20260901,
+    "assignment": "the same deterministic balanced whole-query-group assignment as v1",
+    "bootstrap": {"unit": "query_idx group", "replicates": 10000, "seed": 20260901, "ci_level": 0.9}
+  },
+  "fidelity_gates": {
+    "v1_memory_sha256": "a17cef81f1746c2b15f6cf6de235e4a182e4eb57bf749d1198e67767bdf81fd6",
+    "outcomes_identical_to_v1": true,
+    "fold_identity_identical_to_v1": true,
+    "runtime_state_gold_mutation_invariance": true,
+    "domain_category_metadata_complete_or_explicitly_unresolved": true,
+    "state_live_classes_at_least": 2,
+    "dominant_state_share_at_most": 0.95,
+    "decision_set_differs_from_v1_all_stop": true
+  },
+  "promotion_gates": {
+    "controller_differs_from_always_stop": true,
+    "controller_differs_from_always_supply": true,
+    "saved_exact_matches_at_least": 4,
+    "harmful_supplies_at_most": 3,
+    "avoid_known_always_supply_harms_fraction_at_least": 0.9,
+    "retain_known_always_supply_saves_fraction_at_least": 0.5,
+    "exact_match_net_gain_at_least": 3,
+    "grouped_ci90_lower_bound_strictly_positive": true,
+    "per_fold_net_gain_nonnegative": true,
+    "positive_net_gain_folds_at_least": 3,
+    "all_conjunctive": true
+  },
+  "failure": "write a negative artifact, close static Audio2Tool reward replay, and seek a genuinely new prospective runtime observation rather than another threshold or categorical-state search",
+  "success": "freeze one semantic-state controller proposal for a separately preregistered prospective discovery run of approximately 100 samples; do not revise the baseline or claim superiority",
+  "contacts": {"frozen_core": 0, "embedding_tool": 0, "tokenizer": 0, "http_or_socket": 0, "audio_seconds": 0, "gpu_hours": 0.0}
+}
