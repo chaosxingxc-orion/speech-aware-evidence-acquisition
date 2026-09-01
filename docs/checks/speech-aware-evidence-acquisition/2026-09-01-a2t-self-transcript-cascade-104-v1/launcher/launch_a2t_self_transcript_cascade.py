@@ -169,6 +169,30 @@ PLAN_TEMPLATE = CHECK_DIR / "execution-plan-template.json"
 SCORE_PLAN = CHECK_DIR / "parallel-score-plan.json"
 OPENJIUWEN_VERSION = "0.1.16.post2"
 _QUERY_GROUP = re.compile(r"/query_(\d+)(?:/|$)")
+RECOVERY_ATTEMPT_ID = "attempt-20260901t203803z-selftxobs"
+RECOVERY_OBSERVATION_RELPATH = Path(
+    "runs/SAEA-A2T-TFRL-SELF-TRANSCRIPT-CASCADE-104-V1/"
+    "flight-20260901T203803Z/observation"
+)
+RECOVERY_ATTEMPT_RELPATH = Path(
+    "attempts/SAEA-A2T-TFRL-SELF-TRANSCRIPT-CASCADE-104-V1/"
+    f"{RECOVERY_ATTEMPT_ID}.json"
+)
+RECOVERY_OUTPUTS_SHA256 = (
+    "b37f5d2b92404a41c4b9f0ca8516fff612d44befeb2be6428eacf73a6b694544"
+)
+RECOVERY_TRACE_SHA256 = (
+    "d4161541fc0d438ca6f5d01b0775e6337124275f4d715f066812789e02eca4de"
+)
+RECOVERY_PLAN_SHA256 = (
+    "c6b0202a24708f3b91b5edfc9c87a42a235598cde18df8efecc99afaa3d73e37"
+)
+RECOVERY_FAILURE_SHA256 = (
+    "92f8ec2f59fbad661af6175abf50e17bd9f152c3ca734540d27e0d773406b2cb"
+)
+RECOVERY_ATTEMPT_SHA256 = (
+    "780ec2a2d5924e020b4360b0a7d5dc53f681ffcd600e4d6ff3c984c85d733c04"
+)
 
 
 def _sha256_file(path: Path) -> str:
@@ -418,6 +442,258 @@ def _request_ids_from_rows(
     return result
 
 
+def _close_phase_traces(
+    trace_sink: object, client: object
+) -> tuple[str, Mapping[str, object]]:
+    """Seal the authoritative phase trace before the adapter-owned fallback sink."""
+
+    trace_manifest_hash = trace_sink.close()  # type: ignore[attr-defined]
+    client_summary = client.close()  # type: ignore[attr-defined]
+    if not isinstance(trace_manifest_hash, str) or len(trace_manifest_hash) != 64:
+        raise RuntimeError("primary trace close did not return a SHA-256")
+    if not isinstance(client_summary, Mapping):
+        raise RuntimeError("transport trace close did not return a mapping")
+    return trace_manifest_hash, client_summary
+
+
+def _materialize_observation(
+    context: Mapping[str, object], responses: Mapping[str, str]
+) -> dict[str, object]:
+    expected_ids = tuple(sorted(str(value) for value in context["sample_ids"]))  # type: ignore[union-attr]
+    if set(responses) != set(expected_ids):
+        raise RuntimeError("observation response identity differs from the frozen split")
+    retriever = cascade.EvidenceRetriever(context["snapshot"])  # type: ignore[arg-type]
+    transcripts: dict[str, cascade.TranscriptParse] = {}
+    routes: dict[str, cascade.EvidenceRoute] = {}
+    observations: list[cascade.ObservationRecord] = []
+    tiers = {
+        str(item["sample_id"]): str(item["tier"])
+        for item in context["items"]  # type: ignore[union-attr]
+    }
+    for sample_id in expected_ids:
+        parsed = cascade.validate_self_transcript(responses.get(sample_id))
+        route = (
+            retriever.route(parsed.text)
+            if parsed.valid
+            else cascade.EvidenceRoute(False, (), (), (), (), 0, 0.0, "")
+        )
+        transcripts[sample_id] = parsed
+        routes[sample_id] = route
+        observations.append(
+            cascade.ObservationRecord(
+                sample_id=sample_id,
+                tier=tiers[sample_id],
+                response_received=sample_id in responses,
+                transcript=parsed,
+                positive_route=route.available,
+            )
+        )
+    report = cascade.evaluate_liveness(observations)
+    material: dict[str, object] = {
+        "passed": report.passed,
+        "report": report,
+        "transcripts": transcripts,
+        "routes": routes,
+        "tiers": tiers,
+    }
+    if not report.passed:
+        return material
+    receipt = cascade.authorize_use_phase(observations)
+    routed_tiers = {
+        sample_id: tiers[sample_id]
+        for sample_id, route in routes.items()
+        if transcripts[sample_id].valid and route.available
+    }
+    resend_ids = select_resend_ids(routed_tiers, per_tier=2)
+    matched_material = build_use_material(
+        transcripts=transcripts,
+        sample_tiers=tiers,
+        snapshot=context["snapshot"],
+        phase=MATCHED_USE_PHASE,
+    )
+    shuffled_material = build_use_material(
+        transcripts=transcripts,
+        sample_tiers=tiers,
+        snapshot=context["snapshot"],
+        phase=SHUFFLED_USE_PHASE,
+    )
+    if set(matched_material) != set(routed_tiers) or set(shuffled_material) != set(
+        routed_tiers
+    ):
+        raise RuntimeError("frozen USE material differs from the liveness route set")
+    material.update(
+        {
+            "receipt": receipt,
+            "routed_tiers": routed_tiers,
+            "resend_ids": resend_ids,
+            "matched_material": matched_material,
+            "shuffled_material": shuffled_material,
+        }
+    )
+    return material
+
+
+def _write_observation_receipts(run_dir: Path, material: Mapping[str, object]) -> None:
+    transcripts = material["transcripts"]
+    routes = material["routes"]
+    _write_json(
+        run_dir / "liveness-report.json",
+        {
+            "schema": "saea-a2t-self-transcript-liveness-report-v1",
+            "report": asdict(material["report"]),  # type: ignore[arg-type]
+            "transcripts": {
+                sample_id: asdict(transcripts[sample_id])  # type: ignore[index]
+                for sample_id in sorted(transcripts)  # type: ignore[arg-type]
+            },
+            "routes": {
+                sample_id: asdict(routes[sample_id])  # type: ignore[index]
+                for sample_id in sorted(routes)  # type: ignore[arg-type]
+            },
+        },
+    )
+    if material["passed"] is not True:
+        return
+    routed_tiers = material["routed_tiers"]
+    shuffled_material = material["shuffled_material"]
+    _write_json(
+        run_dir / "use-authorization-receipt.json",
+        {
+            "schema": "saea-a2t-self-transcript-use-authorization-v1",
+            "liveness": asdict(material["receipt"]),  # type: ignore[arg-type]
+            "routed_ids": sorted(routed_tiers),  # type: ignore[arg-type]
+            "routed_tiers": dict(sorted(routed_tiers.items())),  # type: ignore[union-attr]
+            "same_tier_donors": {
+                sample_id: shuffled_material[sample_id].donor_id  # type: ignore[index]
+                for sample_id in sorted(shuffled_material)  # type: ignore[arg-type]
+            },
+            "resend_ids": list(material["resend_ids"]),  # type: ignore[arg-type]
+            "sealed_before_use": True,
+        },
+    )
+
+
+def _load_recovered_observation(
+    root: Path, context: Mapping[str, object]
+) -> dict[str, object]:
+    """Load the one registered OBS abort without repeating a model contact."""
+
+    source_dir = (Path(root) / RECOVERY_OBSERVATION_RELPATH).resolve()
+    expected_source = (Path(root).resolve() / RECOVERY_OBSERVATION_RELPATH).resolve()
+    if source_dir != expected_source:
+        raise RuntimeError("recovery observation path escaped the registered data root")
+    outputs_path = source_dir / f"{RUN_ID}.outputs.jsonl"
+    trace_path = source_dir / f"{RUN_ID}.trace.jsonl"
+    plan_path = source_dir / "execution-plan.json"
+    failure_path = source_dir.parent / "failure-receipt.json"
+    attempt_path = (Path(root) / RECOVERY_ATTEMPT_RELPATH).resolve()
+    fixed = (
+        (outputs_path, RECOVERY_OUTPUTS_SHA256, "outputs"),
+        (trace_path, RECOVERY_TRACE_SHA256, "trace"),
+        (plan_path, RECOVERY_PLAN_SHA256, "execution plan"),
+        (failure_path, RECOVERY_FAILURE_SHA256, "failure receipt"),
+        (attempt_path, RECOVERY_ATTEMPT_SHA256, "attempt record"),
+    )
+    for path, expected_sha256, label in fixed:
+        if not path.is_file() or _sha256_file(path) != expected_sha256:
+            raise RuntimeError(f"recovery {label} SHA-256 drift")
+    attempt_files = sorted(attempt_path.parent.glob("*.json"))
+    if attempt_files != [attempt_path]:
+        raise RuntimeError("recovery run has unregistered sibling attempt spend")
+    plan_document = _read_json(plan_path)
+    failure_document = _read_json(failure_path)
+    attempt_document = _read_json(attempt_path)
+    actual = attempt_document.get("actual")
+    if (
+        plan_document.get("attempt_id") != RECOVERY_ATTEMPT_ID
+        or failure_document.get("attempt_ids", {}).get("observation")  # type: ignore[union-attr]
+        != RECOVERY_ATTEMPT_ID
+        or "trace manifest" not in str(failure_document.get("error", ""))
+        or attempt_document.get("attempt_id") != RECOVERY_ATTEMPT_ID
+        or attempt_document.get("run_id") != RUN_ID
+        or attempt_document.get("state") != "ABORTED"
+        or not isinstance(actual, Mapping)
+        or actual.get("calls") != SPLIT_COUNT
+        or abs(float(actual.get("audio_seconds", -1)) - SPLIT_AUDIO_SECONDS) > 1e-9
+    ):
+        raise RuntimeError("recovery source is not the registered 104-call OBS abort")
+    rows = [
+        json.loads(line)
+        for line in outputs_path.read_text(encoding="utf-8").splitlines()
+        if line
+    ]
+    expected_ids = tuple(sorted(str(value) for value in context["sample_ids"]))  # type: ignore[union-attr]
+    if len(rows) != SPLIT_COUNT or any(not isinstance(row, Mapping) for row in rows):
+        raise RuntimeError("recovery outputs are not exactly 104 objects")
+    responses: dict[str, str] = {}
+    output_by_request: dict[str, Mapping[str, object]] = {}
+    for row in rows:
+        sample_id = str(row.get("sample_id", ""))
+        request_id = str(row.get("request_id", ""))
+        text = row.get("text")
+        if (
+            sample_id in responses
+            or request_id in output_by_request
+            or not isinstance(text, str)
+            or row.get("phase") != OBSERVATION_PHASE
+            or row.get("admitted") is not True
+            or row.get("response_text_sha256") != _sha256_text(text)
+        ):
+            raise RuntimeError("recovery output row binding is malformed")
+        responses[sample_id] = text
+        output_by_request[request_id] = row
+    if set(responses) != set(expected_ids):
+        raise RuntimeError("recovery output identities differ from the frozen split")
+    requests: dict[str, Mapping[str, object]] = {}
+    response_records: dict[str, Mapping[str, object]] = {}
+    for document in _trace_documents(source_dir):
+        record_id = str(document.get("record_id", ""))
+        payload = document.get("payload")
+        if not isinstance(payload, Mapping):
+            continue
+        if document.get("channel") == "MODEL_REQUEST" and record_id.endswith("/request"):
+            requests[record_id.removesuffix("/request")] = payload
+        if document.get("channel") == "MODEL_RESPONSE" and record_id.endswith("/response"):
+            response_records[record_id.removesuffix("/response")] = payload
+    if set(requests) != set(output_by_request) or set(response_records) != set(
+        output_by_request
+    ):
+        raise RuntimeError("recovery trace does not bind every OBS request and response")
+    for request_id, row in output_by_request.items():
+        request = requests[request_id]
+        response = response_records[request_id]
+        request_payload = request.get("payload")
+        if (
+            request.get("payload_sha256") != row.get("request_sha256")
+            or not isinstance(request_payload, Mapping)
+            or request_payload.get("sample_id") != row.get("sample_id")
+            or response.get("response_sha256") != row.get("response_sha256")
+            or response.get("response_text_sha256") != row.get("response_text_sha256")
+            or response.get("text") != row.get("text")
+        ):
+            raise RuntimeError("recovery output/trace cryptographic binding drift")
+    material = _materialize_observation(context, responses)
+    if material["passed"] is not True:
+        raise RuntimeError("registered recovery OBS no longer passes the frozen liveness gate")
+    material.update(
+        {
+            "attempt_id": RECOVERY_ATTEMPT_ID,
+            "manifest": None,
+            "outputs": outputs_path,
+            "recovery_source": {
+                "observation_dir": str(source_dir),
+                "outputs_sha256": RECOVERY_OUTPUTS_SHA256,
+                "trace_sha256": RECOVERY_TRACE_SHA256,
+                "execution_plan_sha256": RECOVERY_PLAN_SHA256,
+                "failure_receipt_sha256": RECOVERY_FAILURE_SHA256,
+                "attempt_record_sha256": RECOVERY_ATTEMPT_SHA256,
+                "actual_calls": SPLIT_COUNT,
+                "actual_audio_seconds": SPLIT_AUDIO_SECONDS,
+            },
+        }
+    )
+    return material
+
+
 def _build_completed_manifest(
     *,
     root: Path,
@@ -515,6 +791,7 @@ def _run_observation(
         ),
         decoding_params=decoding,
     )
+    trace_manifest_hash, client_summary = _close_phase_traces(trace_sink, client)
     documents = _trace_documents(run_dir)
     rows, cost = build_phase_bundle_material(
         summary,
@@ -522,7 +799,6 @@ def _run_observation(
         phase=OBSERVATION_PHASE,
         umbrella_lock_sha256=lock_sha256,
     )
-    client_summary = client.close()
     if client_summary.get("request_count") != SPLIT_COUNT:
         raise RuntimeError("observation contact accounting drift")
     outputs_path = run_dir / f"{RUN_ID}.outputs.jsonl"
@@ -534,47 +810,12 @@ def _run_observation(
         run_dir=run_dir,
         session_receipt_path=session_receipt_path,
         outputs_path=outputs_path,
-        trace_manifest_hash=str(client_summary["trace_manifest_hash"]),
+        trace_manifest_hash=trace_manifest_hash,
         cost=cost,
         expected_attempt_state="OPENED",
     )
-    responses = _phase_responses(summary)
-    retriever = cascade.EvidenceRetriever(context["snapshot"])  # type: ignore[arg-type]
-    transcripts: dict[str, cascade.TranscriptParse] = {}
-    routes: dict[str, cascade.EvidenceRoute] = {}
-    observations: list[cascade.ObservationRecord] = []
-    tiers = {str(item["sample_id"]): str(item["tier"]) for item in context["items"]}  # type: ignore[union-attr]
-    for sample_id in sorted(context["sample_ids"]):  # type: ignore[arg-type]
-        parsed = cascade.validate_self_transcript(responses.get(sample_id))
-        route = retriever.route(parsed.text) if parsed.valid else cascade.EvidenceRoute(
-            False, (), (), (), (), 0, 0.0, ""
-        )
-        transcripts[sample_id] = parsed
-        routes[sample_id] = route
-        observations.append(
-            cascade.ObservationRecord(
-                sample_id=sample_id,
-                tier=tiers[sample_id],
-                response_received=sample_id in responses,
-                transcript=parsed,
-                positive_route=route.available,
-            )
-        )
-    report = cascade.evaluate_liveness(observations)
-    _write_json(
-        run_dir / "liveness-report.json",
-        {
-            "schema": "saea-a2t-self-transcript-liveness-report-v1",
-            "report": asdict(report),
-            "transcripts": {
-                sample_id: asdict(transcripts[sample_id])
-                for sample_id in sorted(transcripts)
-            },
-            "routes": {
-                sample_id: asdict(routes[sample_id]) for sample_id in sorted(routes)
-            },
-        },
-    )
+    material = _materialize_observation(context, _phase_responses(summary))
+    _write_observation_receipts(run_dir, material)
     aborted = abort_attempt_if_opened(
         root,
         RUN_ID,
@@ -586,67 +827,14 @@ def _run_observation(
     )
     if not aborted or verify_bundle(manifest_path).attempt_state != "ABORTED":
         raise RuntimeError("observation-only attempt did not reach terminal ABORTED state")
-    if not report.passed:
-        return {
-            "passed": False,
-            "report": report,
+    material.update(
+        {
             "manifest": manifest_path,
             "outputs": outputs_path,
             "attempt_id": attempt_id,
         }
-    receipt = cascade.authorize_use_phase(observations)
-    routed_tiers = {
-        sample_id: tiers[sample_id]
-        for sample_id, route in routes.items()
-        if transcripts[sample_id].valid and route.available
-    }
-    resend_ids = select_resend_ids(routed_tiers, per_tier=2)
-    matched_material = build_use_material(
-        transcripts=transcripts,
-        sample_tiers=tiers,
-        snapshot=context["snapshot"],
-        phase=MATCHED_USE_PHASE,
     )
-    shuffled_material = build_use_material(
-        transcripts=transcripts,
-        sample_tiers=tiers,
-        snapshot=context["snapshot"],
-        phase=SHUFFLED_USE_PHASE,
-    )
-    if set(matched_material) != set(routed_tiers) or set(shuffled_material) != set(
-        routed_tiers
-    ):
-        raise RuntimeError("frozen USE material differs from the liveness route set")
-    _write_json(
-        run_dir / "use-authorization-receipt.json",
-        {
-            "schema": "saea-a2t-self-transcript-use-authorization-v1",
-            "liveness": asdict(receipt),
-            "routed_ids": sorted(routed_tiers),
-            "routed_tiers": dict(sorted(routed_tiers.items())),
-            "same_tier_donors": {
-                sample_id: shuffled_material[sample_id].donor_id
-                for sample_id in sorted(shuffled_material)
-            },
-            "resend_ids": list(resend_ids),
-            "sealed_before_use": True,
-        },
-    )
-    return {
-        "passed": True,
-        "report": report,
-        "receipt": receipt,
-        "transcripts": transcripts,
-        "routes": routes,
-        "tiers": tiers,
-        "routed_tiers": routed_tiers,
-        "resend_ids": resend_ids,
-        "matched_material": matched_material,
-        "shuffled_material": shuffled_material,
-        "manifest": manifest_path,
-        "outputs": outputs_path,
-        "attempt_id": attempt_id,
-    }
+    return material
 
 
 def _run_use(
@@ -757,7 +945,7 @@ def _run_use(
         sink=trace_sink,
         variant=variant,
     )
-    client_summary = client.close()
+    trace_manifest_hash, client_summary = _close_phase_traces(trace_sink, client)
     if client_summary.get("request_count") != len(routed_ids):
         raise RuntimeError(f"{phase} contact accounting drift")
     outputs_path = run_dir / f"{RUN_ID}.outputs.jsonl"
@@ -769,7 +957,7 @@ def _run_use(
         run_dir=run_dir,
         session_receipt_path=session_receipt_path,
         outputs_path=outputs_path,
-        trace_manifest_hash=str(client_summary["trace_manifest_hash"]),
+        trace_manifest_hash=trace_manifest_hash,
         cost=cost,
         expected_attempt_state="OPENED",
     )
@@ -1172,7 +1360,7 @@ def _postseal_policy_read(
     return result
 
 
-def _launch(root: Path) -> Mapping[str, object]:
+def _launch(root: Path, *, recover_sealed_observation: bool = False) -> Mapping[str, object]:
     context = _static_preflight(root)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     mission_dir = root / "runs" / RUN_ID / f"flight-{stamp}"
@@ -1180,11 +1368,30 @@ def _launch(root: Path) -> Mapping[str, object]:
         raise RuntimeError(f"mission directory already exists: {mission_dir}")
     mission_dir.mkdir(parents=True)
     attempt_ids = {
-        "observation": f"attempt-{stamp.lower()}-selftxobs",
         "matched": f"attempt-{stamp.lower()}-selftxmatch",
         "shuffled": f"attempt-{stamp.lower()}-selftxshuffle",
         "resend": f"attempt-{stamp.lower()}-selftxresend",
     }
+    if not recover_sealed_observation:
+        attempt_ids["observation"] = f"attempt-{stamp.lower()}-selftxobs"
+    observation: Mapping[str, object] | None = None
+    if recover_sealed_observation:
+        observation = _load_recovered_observation(root, context)
+        recovery_dir = mission_dir / "observation-reuse"
+        _write_observation_receipts(recovery_dir, observation)
+        _write_json(
+            recovery_dir / "recovery-receipt.json",
+            {
+                "schema": "saea-a2t-self-transcript-observation-recovery-v1",
+                "run_id": RUN_ID,
+                "source_attempt_id": RECOVERY_ATTEMPT_ID,
+                "source": observation["recovery_source"],
+                "liveness": asdict(observation["report"]),  # type: ignore[arg-type]
+                "new_observation_contacts": 0,
+                "remaining_registered_call_ceiling": 230,
+                "scientific_protocol_changed": False,
+            },
+        )
     session = None
     runtime_receipt = load_runtime_receipt(REPO / "docs" / RUNTIME_RECEIPT_RELPATH)
     values = context["composed"].values  # type: ignore[union-attr]
@@ -1197,8 +1404,13 @@ def _launch(root: Path) -> Mapping[str, object]:
         expected_model_lock_key=str(values["model_lock_key"]),
         model_root=model_root,
     )
+    authorization_attempt = (
+        attempt_ids["matched"]
+        if recover_sealed_observation
+        else attempt_ids["observation"]
+    )
     lock_sha256 = gate.assert_model_touch_allowed(
-        _execution_plan(attempt_ids["observation"]), full_hash=True
+        _execution_plan(authorization_attempt), full_hash=True
     )
     parsed_url = urlparse(str(values["base_url"]))
     if parsed_url.hostname not in {"127.0.0.1", "localhost"} or parsed_url.port is None:
@@ -1230,16 +1442,17 @@ def _launch(root: Path) -> Mapping[str, object]:
             runtime_receipt=runtime_receipt,
             runtime_root=RUNTIME_ROOT,
         )
-        observation = _run_observation(
-            root=root,
-            context=context,
-            gate=gate,
-            transport=transport,
-            attempt_id=attempt_ids["observation"],
-            run_dir=mission_dir / "observation",
-            session_receipt_path=session_receipt_path,
-            lock_sha256=lock_sha256,
-        )
+        if observation is None:
+            observation = _run_observation(
+                root=root,
+                context=context,
+                gate=gate,
+                transport=transport,
+                attempt_id=attempt_ids["observation"],
+                run_dir=mission_dir / "observation",
+                session_receipt_path=session_receipt_path,
+                lock_sha256=lock_sha256,
+            )
         if observation["passed"] is not True:
             stop_session(
                 session,
@@ -1339,11 +1552,20 @@ def _launch(root: Path) -> Mapping[str, object]:
             "umbrella_lock_sha256": lock_sha256,
             "session_receipt": str(session_receipt_path),
             "attempts": {
-                "observation": {
-                    "attempt_id": attempt_ids["observation"],
-                    "state": "ABORTED_OBSERVATION_ONLY_SUCCESS",
-                    "manifest": str(observation["manifest"]),
-                },
+                "observation": (
+                    {
+                        "attempt_id": RECOVERY_ATTEMPT_ID,
+                        "state": "REUSED_ABORTED_OBSERVATION",
+                        "manifest": None,
+                        "source": observation["recovery_source"],
+                    }
+                    if recover_sealed_observation
+                    else {
+                        "attempt_id": attempt_ids["observation"],
+                        "state": "ABORTED_OBSERVATION_ONLY_SUCCESS",
+                        "manifest": str(observation["manifest"]),
+                    }
+                ),
                 "matched": {
                     "attempt_id": attempt_ids["matched"],
                     "state": "FINALIZED",
@@ -1392,10 +1614,16 @@ def _launch(root: Path) -> Mapping[str, object]:
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--preflight-only", action="store_true")
+    parser.add_argument("--recover-sealed-observation", action="store_true")
     args = parser.parse_args(argv)
     root = data_root()
     if args.preflight_only:
         context = _static_preflight(root)
+        recovery = (
+            _load_recovered_observation(root, context)
+            if args.recover_sealed_observation
+            else None
+        )
         print(
             json.dumps(
                 {
@@ -1406,13 +1634,30 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "official_score_workers": 3,
                     "scoring_boundary": "one-complete-manifest-per-process",
                     "dataset_sharding": False,
+                    "recovery_observation": (
+                        {
+                            "source_attempt_id": RECOVERY_ATTEMPT_ID,
+                            "liveness": asdict(recovery["report"]),
+                            "new_observation_contacts": 0,
+                            "remaining_registered_call_ceiling": 230,
+                        }
+                        if recovery is not None
+                        else None
+                    ),
                 },
                 indent=2,
                 sort_keys=True,
             )
         )
         return 0
-    print(json.dumps(_launch(root), indent=2, sort_keys=True, default=str))
+    print(
+        json.dumps(
+            _launch(root, recover_sealed_observation=args.recover_sealed_observation),
+            indent=2,
+            sort_keys=True,
+            default=str,
+        )
+    )
     return 0
 
 

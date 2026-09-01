@@ -1,6 +1,6 @@
 # Audio2Tool training-free self-transcript cascade v1 — preregistration
 
-Date: 2026-09-01. Status: **REGISTERED DESIGN; NO MODEL CONTACT AUTHORIZED YET**.
+Date: 2026-09-01. Status: **OBS FLOWN AND ABORTED DURING PACKAGING; BOUNDED RECOVERY REGISTERED**.
 Experiment: `SAEA-A2T-TFRL-SELF-TRANSCRIPT-CASCADE-104-V1`. Machine contract:
 `configs/experiment/a2t-training-free-self-transcript-cascade-104-v1.json`, initial SHA-256
 `635c90e886064f5053507a9118777c7b18880b2695ca410e108eff5f577d58aa`.
@@ -153,3 +153,14 @@ approximately-104-sample prospective support proposal. Only that independent sup
 propose an approximately-1,000-sample Stage-2 engineering validation. Neither this contract nor a
 failure permits another parent row, test data, G2, FINAL60, a baseline revision, Stage-3,
 paper-scale execution, or a superiority/generalization claim.
+
+## Recovery amendment
+
+The first flight completed all 104 observation contacts and then aborted on a launcher-only trace
+manifest packaging defect before liveness authorization, USE, gold, or scoring. The label-free
+read subsequently established 104/104 valid, distinct, positively routed transcripts. The fixed
+source hashes, 104-call spend, no-repeat rule, trace-sealing repair, and zero-OBS recovery entry are
+registered in
+`docs/readiness/2026-09-01-a2t-self-transcript-cascade-104-v1-recovery-preregistration.md`.
+That amendment changes no scientific axis or original 334-call ceiling; only the remaining 230
+calls may be used under fresh attempt identities.

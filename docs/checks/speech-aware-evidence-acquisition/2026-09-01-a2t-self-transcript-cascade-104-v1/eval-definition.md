@@ -1,7 +1,8 @@
 # Frozen evaluation definition
 
 Experiment: `SAEA-A2T-TFRL-SELF-TRANSCRIPT-CASCADE-104-V1`.
-Status: frozen before implementation. No model, gold, or scorer contact is authorized by this file.
+Status: frozen before implementation. The 104-contact OBS phase has flown; gold and the scorer
+remain closed, and only the separately registered bounded recovery may continue.
 
 ## Evaluation questions
 
@@ -36,6 +37,7 @@ Status: frozen before implementation. No model, gold, or scorer contact is autho
 | E13a | Model-free derivative scoring | Wave 2 scores one complete 104-row policy derivative after wave-1 finalization; it reuses the finalized matched-attempt identity without reopening or mutating an attempt. |
 | E14 | Promotion conjunction | A report cannot pass unless every liveness, matched-information, agent-gain, training-free, fold, secondary-metric, resend, and state-liveness gate in the machine contract passes. |
 | E15 | Terminal scope | Failure authorizes no support or scale; success authorizes only a separately registered approximately-104 support proposal; no test, approximately-1,000, Stage-3, or paper-scale execution starts here. |
+| E16 | OBS abort recovery | Recovery accepts only the fixed 104-call `ABORTED` OBS source, verifies output-to-trace hashes and absence of sibling spend, performs zero new OBS contacts, closes the authoritative trace before the fallback trace, and preserves the cumulative 334-call ceiling. |
 
 ## Coverage and execution rule
 
