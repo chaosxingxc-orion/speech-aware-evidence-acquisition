@@ -56,7 +56,6 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-import subprocess
 import sys
 import time
 from datetime import datetime, timezone
@@ -151,6 +150,42 @@ DECODING_PARAMS = {"temperature": 0, "seed": 20260803, "max_tokens": 1}
 OUT_CHECK_DIR = (
     REPO / "docs" / "checks" / "speech-aware-evidence-acquisition" / "2026-08-25-a2t-g1"
 )
+PREPROCESS_SPLIT_NAME = "A2T-G1-104"
+DATASET_RECEIPT_HASH_KEY = "a2t_g1_subset_receipt_sha256"
+DATASET_RUN_IDENTITY_KEY = "a2t_g1_run_identity_hash"
+ATTEMPT_SUFFIX = "a2tg1pre"
+REQUEST_ID_PREFIX = "a2tg1pre"
+STATE_SCHEMA = "saea-a2t-g1-preprocess-v1"
+REPORT_SCHEMA = "saea-a2t-g1-preprocess-report-v1"
+
+if "--cpv2" in sys.argv:
+    RUN_ID = "SAEA-SN-A2T-CPV2-PREPROCESS"
+    DATASET_FRAGMENT = "audio2tool-cpv2-104"
+    EXPERIMENT_FRAGMENT = "a2t-cpv2-preprocess"
+    SUBSET_RECEIPT_RELPATH = "docs/receipts/a2t/A2T-CPV2-104.json"
+    SUBSET_RECEIPT_SHA256 = (
+        "8f47922124c61f92fee03273c1165eb1f8f97048d910ddd4a6a7243906d78783"
+    )
+    SPLIT_IDENTITY_HASH = (
+        "401a28684adea908c80363df0815c9ce04b0ffa46a654975b129d4b69e60f8a1"
+    )
+    SUBSET_AUDIO_SECONDS = 536.05
+    PREPROCESS_SPLIT_NAME = "A2T-CPV2-104"
+    PROMOTION_RECEIPT = PACKET_ROOT / "A2T-CPV2-104-promotion.json"
+    PLAN_AUDIO = 650
+    DATASET_RECEIPT_HASH_KEY = "a2t_cpv2_subset_receipt_sha256"
+    DATASET_RUN_IDENTITY_KEY = "a2t_cpv2_run_identity_hash"
+    ATTEMPT_SUFFIX = "a2tcpv2pre"
+    REQUEST_ID_PREFIX = "a2tcpv2pre"
+    STATE_SCHEMA = "saea-a2t-cpv2-preprocess-v1"
+    REPORT_SCHEMA = "saea-a2t-cpv2-preprocess-report-v1"
+    OUT_CHECK_DIR = (
+        REPO
+        / "docs"
+        / "checks"
+        / "speech-aware-evidence-acquisition"
+        / "2026-09-01-a2t-contract-preserving-cascade-104-v2"
+    )
 
 
 def log(message: str) -> None:
@@ -193,9 +228,10 @@ class A2TG1PreprocessAdapter(Audio2ToolAdapter):
         self._cache: tuple[Audio2ToolSample, ...] | None = None
 
     def load_split(self, split_id):  # noqa: D102
-        if split_id != "A2T-G1-104":
+        if split_id != PREPROCESS_SPLIT_NAME:
             raise ValueError(
-                "A2TG1PreprocessAdapter serves only A2T-G1-104, not %r" % (split_id,)
+                "A2T preprocess adapter serves only %s, not %r"
+                % (PREPROCESS_SPLIT_NAME, split_id)
             )
         if self._cache is None:
             exposed = super().load_split("discovery")
@@ -225,7 +261,7 @@ def load_subset() -> dict:
         )
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     if (
-        receipt["split_name"] != "A2T-G1-104"
+        receipt["split_name"] != PREPROCESS_SPLIT_NAME
         or receipt["count"] != SUBSET_COUNT
         or receipt["run_identity_hash"] != SPLIT_IDENTITY_HASH
     ):
@@ -246,9 +282,9 @@ def main() -> int:
     receipt = load_subset()
     composed = composed_identity()
     values = composed.values
-    if values["a2t_g1_subset_receipt_sha256"] != SUBSET_RECEIPT_SHA256:
+    if values[DATASET_RECEIPT_HASH_KEY] != SUBSET_RECEIPT_SHA256:
         raise SystemExit("dataset fragment pins a different subset receipt")
-    if values["a2t_g1_run_identity_hash"] != SPLIT_IDENTITY_HASH:
+    if values[DATASET_RUN_IDENTITY_KEY] != SPLIT_IDENTITY_HASH:
         raise SystemExit("dataset fragment pins a different split identity")
     if values["experiment_id"] != RUN_ID:
         raise SystemExit("experiment fragment names a different run id")
@@ -269,6 +305,7 @@ def main() -> int:
                     "plan_gpu_hours": PLAN_GPU_HOURS,
                     "legacy_cache_dir": str(LEGACY_CACHE_DIR),
                     "packet_root": str(PACKET_ROOT),
+                    "promotion_receipt": str(PROMOTION_RECEIPT),
                     "subset_receipt_sha256": SUBSET_RECEIPT_SHA256,
                 },
                 indent=2,
@@ -281,7 +318,7 @@ def main() -> int:
     root = data_root()
     subset_ids = [item["sample_id"] for item in receipt["items"]]
     adapter = A2TG1PreprocessAdapter(lock, root, repo_root=REPO, subset_ids=subset_ids)
-    samples = list(adapter.load_split("A2T-G1-104"))
+    samples = list(adapter.load_split(PREPROCESS_SPLIT_NAME))
     if len(samples) != SUBSET_COUNT:
         raise SystemExit("adapter resolved %d samples" % len(samples))
     by_id = {sample.sample_id: sample for sample in samples}
@@ -318,8 +355,9 @@ def main() -> int:
     if "--run" not in sys.argv:
         raise SystemExit("usage: --emit-identity | --preflight-only | --run")
 
-    attempt_id = "attempt-%s-a2tg1pre" % datetime.now(tz=timezone.utc).strftime(
-        "%Y%m%dT%H%M%SZ"
+    attempt_id = "attempt-%s-%s" % (
+        datetime.now(tz=timezone.utc).strftime("%Y%m%dT%H%M%SZ"),
+        ATTEMPT_SUFFIX,
     )
     run_dir = root / "runs" / RUN_ID / attempt_id
     run_dir.mkdir(parents=True, exist_ok=True)
@@ -329,7 +367,7 @@ def main() -> int:
         raise SystemExit("promotion receipt already exists: %s" % PROMOTION_RECEIPT)
 
     state = {
-        "schema": "saea-a2t-g1-preprocess-v1",
+        "schema": STATE_SCHEMA,
         "run_id": RUN_ID,
         "attempt_id": attempt_id,
         "started_at": iso_now(),
@@ -428,7 +466,7 @@ def main() -> int:
             transport=transport,
             run_dir=run_dir,
             binding=payload_binding,
-            request_id_prefix="a2tg1pre",
+            request_id_prefix=REQUEST_ID_PREFIX,
         )
         loop_started = time.time()
         for index, sample in enumerate(samples, start=1):
@@ -598,7 +636,7 @@ def main() -> int:
 
     OUT_CHECK_DIR.mkdir(parents=True, exist_ok=True)
     report = {
-        "schema": "saea-a2t-g1-preprocess-report-v1",
+        "schema": REPORT_SCHEMA,
         "study": "speech-aware-evidence-acquisition",
         "run_id": RUN_ID,
         "attempt_id": attempt_id,

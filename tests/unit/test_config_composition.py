@@ -2508,3 +2508,29 @@ def test_a2t_g1_preprocess_fragments_compose_and_keep_the_gpu_decoder_out():
     assert scope["count"] == 104
     assert "5d9dfcb5" in values["purpose"]
     assert "load_slurp_engineering_gate" in scope["promotion_path"]
+
+
+def test_a2t_cpv2_preprocess_is_receipt_bound_and_cpu_only():
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    composed = compose(
+        REPO_ROOT,
+        "q4km-preprocess-featcache-cpu-sidecar-a2t",
+        "audio2tool-cpv2-104",
+        "speech-native-preprocess",
+        "a2t-cpv2-preprocess",
+    )
+    values = composed.values
+    assert values["experiment_id"] == "SAEA-SN-A2T-CPV2-PREPROCESS"
+    args = list(values["server_args"])
+    assert args[args.index("-ngl") + 1] == "0"
+    assert "--no-mmproj-offload" in args
+    assert values["base_url"].endswith(":8081")
+    assert values["decoding_params"]["max_tokens"] == 1
+    scope = values["a2t_cpv2_preprocess_scope"]
+    assert scope["subset_receipt"] == "docs/receipts/a2t/A2T-CPV2-104.json"
+    assert scope["count"] == 104
+    assert scope["audio_seconds_total"] == 536.05
+    assert scope["promotion_receipt"].endswith(
+        "A2T-CPV2-104-promotion.json"
+    )

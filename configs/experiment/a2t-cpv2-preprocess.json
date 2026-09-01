@@ -1,0 +1,25 @@
+{
+  "experiment_id": "SAEA-SN-A2T-CPV2-PREPROCESS",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Label-free offline speech-feature preprocessing for the receipt-pinned A2T-CPV2-104 discovery cohort. A model-free audit found zero current-build legacy cache entries and zero packets for these 104 recordings. A CPU-only sidecar on port 8081 re-encodes each recording under the receipt-pinned current build into /home/chao/feat-cache/audio2tool-q4km-04ccc72a, then the carrier-agnostic promotion primitive writes audited packets under /home/chao/feat-cache/a2t-q4km-packets-04ccc72a. The fixed minimal prompt contains no registry, task label, query text, reference transcript, expected call, prior output, score, test annotation, or future turn. Generated text is not read semantically. The GPU decoder on port 8090 is neither started, stopped, reconfigured, nor used for inference; only its label-free loopback reachability state is observed before and after the CPU pass.",
+  "a2t_cpv2_preprocess_scope": {
+    "subset_receipt": "docs/receipts/a2t/A2T-CPV2-104.json",
+    "subset_receipt_sha256": "8f47922124c61f92fee03273c1165eb1f8f97048d910ddd4a6a7243906d78783",
+    "split_identity_hash": "401a28684adea908c80363df0815c9ce04b0ffa46a654975b129d4b69e60f8a1",
+    "count": 104,
+    "audio_seconds_total": 536.05,
+    "legacy_cache_dir": "/home/chao/feat-cache/audio2tool-q4km-04ccc72a",
+    "packet_root": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a",
+    "promotion_receipt": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a/A2T-CPV2-104-promotion.json",
+    "packet_id_convention": "sample_id with ':' replaced by '/'",
+    "promotion_path": "core.model.speech_features.materialize_legacy_cached_speech_feature_packets, called directly after the CPU-only encoder session stops; the SLURP-specific promote-speech-packets CLI is not used."
+  },
+  "a2t_cpv2_preprocess_boundary": {
+    "gold": "never opened; the adapter returns scoring_deferred",
+    "outputs": "legacy feature cache entries, audited packets, and one promotion receipt; response meaning is not read; GPU decoder loopback reachability is observed but no GPU request is sent",
+    "contacts_maximum": 120,
+    "speech_audio_seconds_maximum": 650,
+    "gpu_hours_maximum": 0.2,
+    "paid_api_spend": 0
+  }
+}
