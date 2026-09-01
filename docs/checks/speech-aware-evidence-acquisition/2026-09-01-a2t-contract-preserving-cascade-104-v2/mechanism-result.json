@@ -1,0 +1,148 @@
+{
+  "schema": "saea-a2t-contract-preserving-cascade-result-v2",
+  "run_id": "SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2",
+  "status": "COMPLETED_NEGATIVE_POLICY_RESULT",
+  "population": {
+    "split_id": "A2T-CPV2-104",
+    "samples": 104,
+    "split_identity_hash": "401a28684adea908c80363df0815c9ce04b0ffa46a654975b129d4b69e60f8a1",
+    "query_block_overlap_with_a2t_g1_104": 0
+  },
+  "sealed_spend": {
+    "model_calls": 430,
+    "speech_audio_seconds": 2216.689,
+    "registered_model_call_ceiling": 440,
+    "registered_speech_audio_seconds": 2700,
+    "paid_api_spend": 0
+  },
+  "official_scores": {
+    "m0_direct": {
+      "exact_count": 32,
+      "exact_match": 0.3076923076923077,
+      "tool_correct_count": 61,
+      "tool_accuracy": 0.5865384615384616,
+      "slot_micro_f1": 0.37419354838709673,
+      "parse_failures": 6
+    },
+    "matched_always_use": {
+      "exact_count": 40,
+      "exact_match": 0.38461538461538464,
+      "tool_correct_count": 73,
+      "tool_accuracy": 0.7019230769230769,
+      "slot_micro_f1": 0.40909090909090906,
+      "parse_failures": 0
+    },
+    "shuffled_evidence": {
+      "exact_count": 28,
+      "exact_match": 0.2692307692307692,
+      "tool_correct_count": 51,
+      "tool_accuracy": 0.49038461538461536,
+      "slot_micro_f1": 0.32075471698113206,
+      "parse_failures": 1
+    },
+    "matched_exact_resend_composite": {
+      "exact_count": 39,
+      "exact_match": 0.375,
+      "tool_correct_count": 72,
+      "tool_accuracy": 0.6923076923076923,
+      "slot_micro_f1": 0.4180064308681672,
+      "parse_failures": 0
+    },
+    "cross_fitted_policy": {
+      "exact_count": 30,
+      "exact_match": 0.28846153846153844,
+      "tool_correct_count": 59,
+      "tool_accuracy": 0.5673076923076923,
+      "slot_micro_f1": 0.36482084690553745,
+      "parse_failures": 6
+    }
+  },
+  "mechanism_effects": {
+    "matched_minus_m0_exact_count": 8,
+    "matched_minus_m0_exact_pp": 7.6923076923076925,
+    "matched_minus_m0_tool_count": 12,
+    "matched_minus_m0_tool_pp": 11.538461538461538,
+    "matched_minus_m0_slot_micro_f1_pp": 3.489736070381233,
+    "matched_minus_shuffled_exact_count": 12,
+    "matched_minus_shuffled_exact_pp": 11.538461538461538,
+    "matched_minus_shuffled_grouped_ci90_pp": [
+      4.807692307692308,
+      19.230769230769234
+    ],
+    "matched_minus_shuffled_tool_count": 22,
+    "top5_gold_tool_correct_minus_m0_tool_correct": 10,
+    "resend_absolute_exact_count_difference": 1
+  },
+  "training_free_policy": {
+    "actions": {
+      "stop_m0": 94,
+      "use_matched": 10
+    },
+    "saved": 0,
+    "harmed": 2,
+    "net_exact_count": -2,
+    "net_exact_pp": -1.9230769230769231,
+    "tool_correct_count_delta": -2,
+    "slot_micro_f1_pp_delta": -0.9372701481559331,
+    "fold_net_gains": [
+      0,
+      -1,
+      0,
+      -1,
+      0
+    ],
+    "grouped_ci90_pp": [
+      -4.807692307692308,
+      0.0
+    ],
+    "incremental_contacts_beyond_m0": 114,
+    "incremental_contacts_per_sample_beyond_m0": 1.0961538461538463,
+    "promotion_passed": false,
+    "failed_gate_count": 10,
+    "failed_gates": [
+      "every_fold_nonnegative",
+      "policy_gain_exceeds_always_use_by_two",
+      "policy_gain_exceeds_resend_floor",
+      "policy_harm_maximum",
+      "policy_net_gain",
+      "policy_positive_ci90_lower",
+      "policy_saved_minimum",
+      "policy_slot_micro_f1_nonnegative",
+      "policy_tool_accuracy_nonnegative",
+      "positive_fold_count"
+    ]
+  },
+  "outer_parallel_scoring": {
+    "wave_1_complete_manifest_jobs": 4,
+    "workers": 4,
+    "official_scorer_processes_per_job": 1,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "wall_seconds": 2.758638027997222,
+    "summed_job_seconds": 9.318596308934502,
+    "effective_speedup": 3.3779699309444475,
+    "succeeded": 4,
+    "failed": 0,
+    "wave_2_complete_policy_jobs": 1,
+    "wave_2_workers": 1,
+    "wave_2_succeeded": 1
+  },
+  "artifact_hashes": {
+    "wave_1_batch_summary": "ed3075279880b0d64d47764dcb3995501d55ebb058b82002b07bc14c36a78e4a",
+    "wave_2_batch_summary": "ea9f1fa42b898c39a7fbb1e98f0719ee2fb56da03c895cd2294678b916c6c758",
+    "wave_2_score_result": "941d4a451568c1ab38487f514f42837c0992f4cadc069f1aea34781638dd6f76",
+    "policy_outputs": "622ef48088bb3f4ea5873c40775f2e7ad39915977e57637845c6f179cb951569",
+    "policy_manifest": "34155f1582035c3859c59f7730662f1770df9859b14b7f0e1810ab22f37e6d6c",
+    "policy_result": "2b616b69c64a51a2caeaaac04c944754e2e903ed1d65f546e79cc75df676ca9b",
+    "flight_receipt": "d3d59e8d5f7389720df6809e836d2a345a6779225908a1b2169d365b4f6ddfcf"
+  },
+  "scientific_conclusion": {
+    "agent_over_single_call": true,
+    "matched_information_gain": true,
+    "training_free_rl_positive_contribution": false,
+    "support_flight_authorized": false,
+    "approximately_1000_scale_authorized": false,
+    "baseline_change_authorized": false,
+    "decision": "Close this exact-cell controller and do not scale it. Preserve the contract-preserving matched evidence mechanism as a positive component for a separately preregistered controller experiment on a fresh query-block-disjoint discovery cohort."
+  }
+}

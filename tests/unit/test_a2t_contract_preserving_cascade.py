@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
 
@@ -516,3 +517,38 @@ def test_v2_adapter_rejects_drifted_receipts_and_material() -> None:
                 receipt_items=_receipt_items(),
                 phase=flight.MATCHED_USE_PHASE,
             )
+
+
+def test_committed_mechanism_result_closes_failed_policy_without_losing_gain() -> None:
+    repo = Path(__file__).resolve().parents[2]
+    path = (
+        repo
+        / "docs/checks/speech-aware-evidence-acquisition"
+        / "2026-09-01-a2t-contract-preserving-cascade-104-v2"
+        / "mechanism-result.json"
+    )
+    result = json.loads(path.read_text(encoding="utf-8"))
+    scores = result["official_scores"]
+    effects = result["mechanism_effects"]
+    policy = result["training_free_policy"]
+    conclusion = result["scientific_conclusion"]
+
+    assert scores["matched_always_use"]["exact_count"] - scores["m0_direct"][
+        "exact_count"
+    ] == effects["matched_minus_m0_exact_count"] == 8
+    assert scores["matched_always_use"]["exact_count"] - scores[
+        "shuffled_evidence"
+    ]["exact_count"] == effects["matched_minus_shuffled_exact_count"] == 12
+    assert policy["saved"] == 0
+    assert policy["harmed"] == 2
+    assert policy["net_exact_count"] == -2
+    assert policy["promotion_passed"] is False
+    assert conclusion == {
+        "agent_over_single_call": True,
+        "matched_information_gain": True,
+        "training_free_rl_positive_contribution": False,
+        "support_flight_authorized": False,
+        "approximately_1000_scale_authorized": False,
+        "baseline_change_authorized": False,
+        "decision": conclusion["decision"],
+    }
