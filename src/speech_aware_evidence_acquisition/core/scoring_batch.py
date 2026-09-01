@@ -19,7 +19,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Mapping, Sequence
+from typing import Callable, Literal, Mapping, Sequence
 
 
 class ScoreBatchError(RuntimeError):
@@ -44,6 +44,7 @@ class ScoreProcessOutcome:
 
 
 ScoreRunner = Callable[[ScoreJob], ScoreProcessOutcome]
+ScoreOperation = Literal["score", "finalize"]
 
 _SCHEMA = "saea-parallel-score-batch-v1"
 _JOB_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*\Z")
@@ -159,7 +160,40 @@ def run_official_score_job(job: ScoreJob) -> ScoreProcessOutcome:
     )
 
 
-def _verified_payload(job: ScoreJob, outcome: ScoreProcessOutcome) -> Mapping[str, object]:
+def run_official_finalize_job(job: ScoreJob) -> ScoreProcessOutcome:
+    """Finalize one whole manifest through the existing authoritative CLI."""
+
+    environment = dict(os.environ)
+    environment["PYTHONDONTWRITEBYTECODE"] = "1"
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-B",
+            "-m",
+            _DRIVER_MODULE,
+            "finalize",
+            "--manifest",
+            str(job.manifest),
+        ],
+        cwd=_REPO_ROOT,
+        env=environment,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    return ScoreProcessOutcome(
+        returncode=completed.returncode,
+        stdout=completed.stdout,
+        stderr=completed.stderr,
+    )
+
+
+def _verified_payload(
+    job: ScoreJob,
+    outcome: ScoreProcessOutcome,
+    *,
+    operation: ScoreOperation,
+) -> Mapping[str, object]:
     try:
         payload = json.loads(outcome.stdout)
     except json.JSONDecodeError as error:
@@ -169,8 +203,17 @@ def _verified_payload(job: ScoreJob, outcome: ScoreProcessOutcome) -> Mapping[st
     manifest = payload.get("manifest")
     if not isinstance(manifest, str) or Path(manifest).resolve() != job.manifest:
         raise ScoreBatchError("scorer result manifest identity does not match its job")
-    if not isinstance(payload.get("scores"), Mapping):
+    scores = payload.get("scores")
+    if operation == "score" and not isinstance(scores, Mapping):
         raise ScoreBatchError("scorer returned a verified result without scores")
+    if operation == "finalize" and (
+        not isinstance(scores, str)
+        or not scores
+        or payload.get("attempt_state") != "FINALIZED"
+    ):
+        raise ScoreBatchError(
+            "finalizer returned success without scores or FINALIZED attempt state"
+        )
     return payload
 
 
@@ -195,6 +238,7 @@ def run_score_batch(
     output_dir: Path,
     max_workers: int,
     runner: ScoreRunner | None = None,
+    operation: ScoreOperation = "score",
 ) -> dict[str, object]:
     """Run every complete job with bounded outer process concurrency.
 
@@ -209,6 +253,8 @@ def run_score_batch(
     )
     if not frozen_jobs:
         raise ScoreBatchError("parallel scoring requires at least one job")
+    if operation not in {"score", "finalize"}:
+        raise ScoreBatchError("operation must be 'score' or 'finalize'")
     if (
         not isinstance(max_workers, int)
         or isinstance(max_workers, bool)
@@ -239,7 +285,12 @@ def run_score_batch(
         raise ScoreBatchError(f"score output directory is not empty: {output_dir}")
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    selected_runner = runner if runner is not None else run_official_score_job
+    if runner is not None:
+        selected_runner = runner
+    elif operation == "finalize":
+        selected_runner = run_official_finalize_job
+    else:
+        selected_runner = run_official_score_job
     started = time.perf_counter()
     completed_by_index: dict[
         int, tuple[ScoreProcessOutcome, float, str | None]
@@ -264,7 +315,7 @@ def run_score_batch(
             error = f"official scorer exited with status {outcome.returncode}"
         if error is None:
             try:
-                _verified_payload(job, outcome)
+                _verified_payload(job, outcome, operation=operation)
             except ScoreBatchError as payload_error:
                 error = str(payload_error)
 
@@ -301,6 +352,7 @@ def run_score_batch(
 
     summary: dict[str, object] = {
         "schema": _SCHEMA,
+        "operation": operation,
         "parallelism_boundary": "one-complete-verified-manifest-per-process",
         "aggregation_rule": (
             "no dataset sharding and no averaging of shard-level official metrics"
@@ -322,6 +374,7 @@ __all__ = [
     "ScoreJob",
     "ScoreProcessOutcome",
     "load_score_jobs",
+    "run_official_finalize_job",
     "run_official_score_job",
     "run_score_batch",
 ]

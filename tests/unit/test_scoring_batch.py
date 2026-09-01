@@ -18,6 +18,7 @@ from speech_aware_evidence_acquisition.core.scoring_batch import (
     ScoreJob,
     ScoreProcessOutcome,
     load_score_jobs,
+    run_official_finalize_job,
     run_official_score_job,
     run_score_batch,
 )
@@ -36,6 +37,21 @@ def _verified(job: ScoreJob) -> ScoreProcessOutcome:
                 "manifest": str(job.manifest),
                 "verified": True,
                 "scores": {"official": {"samples": 10}},
+            }
+        ),
+        stderr="",
+    )
+
+
+def _finalized(job: ScoreJob) -> ScoreProcessOutcome:
+    return ScoreProcessOutcome(
+        returncode=0,
+        stdout=json.dumps(
+            {
+                "manifest": str(job.manifest),
+                "verified": True,
+                "scores": str(job.manifest.with_suffix(".scores.json")),
+                "attempt_state": "FINALIZED",
             }
         ),
         stderr="",
@@ -171,6 +187,46 @@ def test_official_job_runner_uses_an_argument_vector_and_the_existing_manifest_c
     assert outcome == ScoreProcessOutcome(0, "verified", "diagnostic")
 
 
+def test_official_finalize_runner_uses_the_existing_finalize_cli(tmp_path, monkeypatch):
+    manifest = _manifest(tmp_path / "one.run-manifest.json").resolve()
+    captured = {}
+
+    def fake_run(arguments, **kwargs):
+        captured["arguments"] = arguments
+        captured["kwargs"] = kwargs
+        return SimpleNamespace(returncode=0, stdout="finalized", stderr="")
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    outcome = run_official_finalize_job(ScoreJob(job_id="one", manifest=manifest))
+
+    assert captured["arguments"][-3:] == ["finalize", "--manifest", str(manifest)]
+    assert captured["kwargs"]["check"] is False
+    assert "shell" not in captured["kwargs"]
+    assert outcome == ScoreProcessOutcome(0, "finalized", "")
+
+
+def test_run_score_batch_can_finalize_complete_manifests_concurrently(tmp_path):
+    jobs = tuple(
+        ScoreJob(
+            job_id=name,
+            manifest=_manifest(tmp_path / f"{name}.run-manifest.json").resolve(),
+        )
+        for name in ("observation", "supply")
+    )
+
+    summary = run_score_batch(
+        jobs,
+        output_dir=tmp_path / "scores",
+        max_workers=2,
+        runner=_finalized,
+        operation="finalize",
+    )
+
+    assert summary["operation"] == "finalize"
+    assert summary["succeeded"] == 2
+    assert all(row["status"] == "succeeded" for row in summary["jobs"])
+
+
 def test_run_score_batch_finishes_other_jobs_and_fails_overall(tmp_path):
     jobs = tuple(
         ScoreJob(
@@ -281,6 +337,39 @@ def test_driver_score_batch_command_runs_the_outer_scheduler(
     assert returncode == 0
     summary = json.loads(capsys.readouterr().out)
     assert summary["effective_max_workers"] == 1
+    assert summary["failed"] == 0
+
+
+def test_driver_score_batch_finalize_mode_runs_the_outer_scheduler(
+    tmp_path, monkeypatch, capsys
+):
+    from speech_aware_evidence_acquisition.core import scoring_batch
+    from speech_aware_evidence_acquisition.core.driver.cli import main
+
+    manifest = _manifest(tmp_path / "one.run-manifest.json")
+    jobs_path = tmp_path / "jobs.jsonl"
+    jobs_path.write_text(
+        json.dumps({"job_id": "one", "manifest": manifest.name}) + "\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(scoring_batch, "run_official_finalize_job", _finalized)
+
+    returncode = main(
+        [
+            "score-batch",
+            "--jobs",
+            str(jobs_path),
+            "--output-dir",
+            str(tmp_path / "scores"),
+            "--workers",
+            "2",
+            "--finalize",
+        ]
+    )
+
+    assert returncode == 0
+    summary = json.loads(capsys.readouterr().out)
+    assert summary["operation"] == "finalize"
     assert summary["failed"] == 0
 
 

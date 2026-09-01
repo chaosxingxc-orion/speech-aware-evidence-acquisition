@@ -572,6 +572,7 @@ def _cli_score_batch(args: argparse.Namespace) -> int:
         jobs,
         output_dir=Path(args.output_dir),
         max_workers=args.workers,
+        operation="finalize" if args.finalize else "score",
     )
     print(json.dumps(summary, indent=2, sort_keys=True))
     return 0 if summary["failed"] == 0 else 1
@@ -679,6 +680,8 @@ def _cli_finalize(args: argparse.Namespace) -> int:
     print(
         json.dumps(
             {
+                "manifest": str(Path(args.manifest)),
+                "verified": True,
                 "scores": str(result.scores_path),
                 "ledger_markdown": str(result.ledger_markdown_path),
                 "ledger_json": str(result.ledger_json_path),
@@ -751,6 +754,14 @@ def main(argv: list[str] | None = None) -> int:
         type=int,
         default=max(1, min(4, os.cpu_count() or 1)),
         help="maximum number of complete scorer processes to run concurrently",
+    )
+    score_batch.add_argument(
+        "--finalize",
+        action="store_true",
+        help=(
+            "run the existing authoritative finalize command per complete manifest; "
+            "this scores exactly once, writes scores, and settles each attempt"
+        ),
     )
     score_batch.set_defaults(func=_cli_score_batch)
     run = sub.add_parser("run", help="gate-enforced live run (requires a plan file)")

@@ -37,6 +37,11 @@ bash scripts/evaluate_parallel.sh \
   --workers 4
 ```
 
+For completed attempts that still need their score artifact and terminal
+attempt transition, add `--finalize`. Each worker then runs the existing
+authoritative finalize command, so the official scorer still executes exactly
+once per complete manifest while the independent attempts settle concurrently.
+
 The output directory must be new or empty. The scheduler never overwrites an
 existing result. It allows every submitted job to finish, even if another job
 fails, and returns a nonzero exit status when any job fails.
