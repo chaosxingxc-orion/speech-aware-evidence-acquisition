@@ -125,12 +125,13 @@ def _score_plan() -> dict[str, object]:
             "invocations_per_complete_manifest": 1,
         },
         "wave_1": {
-            "mode": "--finalize",
+            "mode": "--per-job-operation",
             "workers": 4,
             "jobs": [
                 {
                     "job_id": job_id,
                     "input": "one complete 104-row manifest",
+                    "operation": "score" if job_id == "m0" else "finalize",
                 }
                 for job_id in ("m0", "matched", "shuffled", "resend")
             ],
@@ -167,6 +168,12 @@ def test_parallel_plan_uses_four_whole_manifests_then_one_policy(tmp_path: Path)
     plan["wave_1"]["jobs"] = plan["wave_1"]["jobs"][:3]
     path.write_text(json.dumps(plan), encoding="utf-8")
     with pytest.raises(bundle.ContractPreservingBundleError, match="four"):
+        bundle.validate_parallel_score_plan(path)
+
+    plan = _score_plan()
+    plan["wave_1"]["jobs"][1]["operation"] = "score"
+    path.write_text(json.dumps(plan), encoding="utf-8")
+    with pytest.raises(bundle.ContractPreservingBundleError, match="operations"):
         bundle.validate_parallel_score_plan(path)
 
 

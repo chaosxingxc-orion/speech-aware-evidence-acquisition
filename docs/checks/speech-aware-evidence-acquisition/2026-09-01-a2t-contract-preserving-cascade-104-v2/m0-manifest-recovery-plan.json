@@ -1,0 +1,49 @@
+{
+  "schema": "saea-a2t-cpv2-m0-manifest-recovery-v1",
+  "run_id": "SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2",
+  "registered_at": "2026-09-01T22:45:00Z",
+  "failure_class": "post-response manifest assembly only",
+  "source_flight": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2/flight-20260901T223557Z",
+  "source_study_commit": "d555b7bc7f68b96bf677539f88d3ae56d5cfae4c",
+  "source_attempt_id": "attempt-20260901t223557z-cpv2m0",
+  "source_attempt_state": "ABORTED",
+  "source_actual": {
+    "calls": 104,
+    "audio_seconds": 536.05
+  },
+  "failure_receipt_sha256": "45a87280e1f9929635cadf4f1d7d56dbe5d56fa96699fd5aef10f9a35766544f",
+  "source_manifest_sha256": "978efb5da3d7ffba514b995c56a4cd0db6952cdcaaa6de1660c6355381394278",
+  "attempt_receipt_sha256": "2474f70c870713893734ebff4a2cc4b2894695abafd39c02e7de6b7bb3fdbd25",
+  "outputs_sha256": "9efc91d7362e40255a25d099b3fb464b32ca87228f96c4db5c0aba0edcbdf400",
+  "raw_trace_sha256": "d1f20752d03e35489c47130a2f4c5efa48f58b97b7832cbb381b1593cb2cf2fc",
+  "trace_manifest_sha256": "626e30cb8f01291b978be4f3b549ed1b2f403f038e7fb97fa8bcae38aae70e8b",
+  "session_receipt_sha256": "035f8cf61f15cb153a5617556a3a571049a6c99637c42d8ce3b55597fede1023",
+  "stop_receipt_sha256": "61f4cef186aa8b648e11b817c0103338d15180e56a222506dc50c82fcbe34a58",
+  "observed_boundary": {
+    "m0_contacts_complete": 104,
+    "observation_contacts": 0,
+    "matched_use_contacts": 0,
+    "shuffled_use_contacts": 0,
+    "resend_contacts": 0,
+    "gold_opened": false,
+    "official_scorer_started": false,
+    "response_meaning_read": false
+  },
+  "authorized_recovery": {
+    "m0_recontact": false,
+    "repair": "Copy the already-generated raw-trace and trace-manifest metadata into a new recovered manifest document while preserving the source manifest's study commit, attempt identity, outputs, costs, and all other fields. Verify the recovered complete bundle against the terminal ABORTED attempt before any new contact.",
+    "remaining_attempts": "One fresh OBS attempt, one fresh matched USE attempt, one fresh shuffled-evidence USE attempt, and one fresh resend attempt under the unchanged run-level ceilings.",
+    "wave_1": "Run four complete-manifest official jobs concurrently with four outer workers. The recovered terminal M0 manifest uses read-only score; matched, shuffled, and resend use finalize. No dataset sharding or shard-score averaging is allowed.",
+    "wave_2": "Run the complete policy manifest once in default score mode after Wave 1.",
+    "maximum_additional_calls": 328,
+    "maximum_cumulative_calls": 432,
+    "registered_call_ceiling": 440
+  },
+  "forbidden": [
+    "Repeat any M0 contact",
+    "Read M0 response meaning before the registered post-seal read",
+    "Open gold or any official scorer before every remaining model response and four complete manifests seal",
+    "Change prompts, samples, packets, retrieval, canaries, policy features, folds, thresholds, or promotion gates",
+    "Shard a dataset or average shard-level metrics"
+  ]
+}

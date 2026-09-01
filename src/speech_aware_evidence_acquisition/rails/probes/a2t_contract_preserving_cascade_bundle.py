@@ -132,8 +132,10 @@ def validate_parallel_score_plan(path: Path) -> dict[str, object]:
     wave_2 = plan.get("wave_2")
     if not isinstance(wave_1, Mapping) or not isinstance(wave_2, Mapping):
         raise ContractPreservingBundleError("parallel score plan requires two waves")
-    if wave_1.get("mode") != "--finalize":
-        raise ContractPreservingBundleError("wave 1 must finalize model-contact jobs")
+    if wave_1.get("mode") not in {"--finalize", "--per-job-operation"}:
+        raise ContractPreservingBundleError(
+            "wave 1 must finalize live attempts or use frozen per-job operations"
+        )
     if wave_2.get("mode") != "default-score":
         raise ContractPreservingBundleError(
             "wave 2 must use the launcher's default score mode"
@@ -143,6 +145,12 @@ def validate_parallel_score_plan(path: Path) -> dict[str, object]:
     if not isinstance(jobs_1, list) or len(jobs_1) != 4 or wave_1.get("workers") != 4:
         raise ContractPreservingBundleError(
             "wave 1 requires exactly four whole-manifest workers"
+        )
+    if wave_1.get("mode") == "--per-job-operation" and [
+        job.get("operation") if isinstance(job, Mapping) else None for job in jobs_1
+    ] != ["score", "finalize", "finalize", "finalize"]:
+        raise ContractPreservingBundleError(
+            "recovery wave operations must be score then three finalizers"
         )
     if not isinstance(jobs_2, list) or len(jobs_2) != 1 or wave_2.get("workers") != 1:
         raise ContractPreservingBundleError(

@@ -91,3 +91,75 @@ def test_score_batch_omits_unsupported_flag_for_default_score(
     assert summary == {"failed": 0, "succeeded": 1}
     assert "--score" not in captured["command"]
     assert "--finalize" not in captured["command"]
+
+
+def test_score_batch_uses_existing_per_job_operation_mode(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    launcher = _launcher()
+    captured: dict[str, object] = {}
+    output_dir = tmp_path / "wave1"
+
+    def fake_run(command, **kwargs):
+        captured["command"] = command
+        output_dir.mkdir()
+        (output_dir / "batch-summary.json").write_text(
+            json.dumps({"failed": 0, "succeeded": 1}),
+            encoding="utf-8",
+        )
+        return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+    monkeypatch.setattr(launcher.subprocess, "run", fake_run)
+    launcher._run_score_batch(
+        mission_dir=tmp_path,
+        name="wave1",
+        jobs=(
+            {
+                "job_id": "m0",
+                "manifest": "/fixed/m0.run-manifest.json",
+                "operation": "score",
+            },
+        ),
+        workers=4,
+        finalize=False,
+        per_job_operation=True,
+    )
+    assert "--per-job-operation" in captured["command"]
+    assert "--finalize" not in captured["command"]
+
+
+def test_repair_m0_manifest_only_adds_the_two_sealed_trace_entries(
+    tmp_path: Path,
+) -> None:
+    launcher = _launcher()
+    raw_trace = tmp_path / "run.trace.jsonl"
+    trace_manifest = tmp_path / "run.trace-manifest.json"
+    raw_trace.write_text("sealed raw trace\n", encoding="utf-8")
+    trace_manifest.write_text("{}\n", encoding="utf-8")
+    source = {
+        "schema": "saea-run-manifest-v1",
+        "study_commit": "d" * 40,
+        "attempt": {"attempt_id": "fixed"},
+        "outputs": {"sha256": "a" * 64},
+        "raw_trace": None,
+        "trace_manifest": None,
+    }
+
+    repaired = launcher._repair_m0_manifest_document(
+        source,
+        raw_trace=raw_trace,
+        trace_manifest=trace_manifest,
+    )
+
+    assert repaired["study_commit"] == "d" * 40
+    assert repaired["attempt"] == {"attempt_id": "fixed"}
+    assert repaired["outputs"] == {"sha256": "a" * 64}
+    assert repaired["raw_trace"] == {
+        "path": str(raw_trace.resolve()),
+        "sha256": launcher._sha256_file(raw_trace),
+    }
+    assert repaired["trace_manifest"] == {
+        "path": str(trace_manifest.resolve()),
+        "sha256": launcher._sha256_file(trace_manifest),
+    }
+    assert source["raw_trace"] is None

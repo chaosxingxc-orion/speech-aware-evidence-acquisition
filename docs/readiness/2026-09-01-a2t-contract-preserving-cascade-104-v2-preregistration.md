@@ -135,3 +135,33 @@ The four targeted mechanism modules jointly reach 82% branch coverage in the pre
 (policy 81%, cohort construction 99%, bundle materialization 71%, and AgentLoop flight 80%).
 Separate launcher assembly tests cover frozen identities, non-repeated canary combination, and the
 default-score command boundary.
+
+## Post-M0 manifest-path recovery amendment
+
+The first flight from clean commit `d555b7bc7f68b96bf677539f88d3ae56d5cfae4c` completed all 104
+direct M0 contacts and then stopped at the first bundle verification. Attempt
+`attempt-20260901t223557z-cpv2m0` records 104 calls and 536.05 audio seconds and is terminally
+`ABORTED`. The responses, raw trace, trace manifest, outputs, session receipt, and stop receipt all
+sealed, but the launcher asked `build_manifest` to discover the raw trace in the M0 parent
+directory while the direct client had written it in `transport-trace/`. The resulting manifest
+correctly refused because its `raw_trace` and `trace_manifest` entries were null. OBS, matched USE,
+shuffled USE, resend, gold, and the official scorer all remained unopened, and response meaning was
+not read.
+
+Before any further contact, recovery plan
+`docs/checks/speech-aware-evidence-acquisition/2026-09-01-a2t-contract-preserving-cascade-104-v2/m0-manifest-recovery-plan.json`,
+SHA-256 `00ec5bf6781816a8349959850e17da0d13f5dd96affbef7c04a57b0654ae9737`, freezes
+every source artifact hash. M0 must not be contacted again. A model-free repair may add only the two
+already-sealed trace artifact metadata entries to a new manifest document while preserving the old
+study commit, attempt identity, output bytes, cost, and every scientific field. The recovered
+manifest must verify against the terminal `ABORTED` attempt before the launcher may open one fresh
+OBS attempt and the original remaining stages. At most 328 further calls are possible, so cumulative
+use remains at most 432 of the registered 440.
+
+Wave 1 remains four concurrent outer workers over four complete 104-row manifests. Because the M0
+attempt is terminal, its official operation is read-only `score`; matched, shuffled, and resend
+remain `finalize`. The batch therefore uses the existing per-job-operation mode. This changes no
+official scorer, prediction, metric, concurrency boundary, sample, prompt, evidence, policy, fold,
+gate, or claim surface. Dataset sharding and shard-score averaging remain forbidden. Model contact
+stays closed until this amendment, recovery implementation, tests, score plan, and exposure update
+land on a clean commit and the recovery preflight passes.

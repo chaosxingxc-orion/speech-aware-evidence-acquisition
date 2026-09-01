@@ -169,6 +169,15 @@ CHECK_DIR = REPO / (
 PLAN_TEMPLATE = CHECK_DIR / "execution-plan-template.json"
 SCORE_PLAN = CHECK_DIR / "parallel-score-plan.json"
 OPENJIUWEN_VERSION = "0.1.16.post2"
+M0_RECOVERY_PLAN = CHECK_DIR / "m0-manifest-recovery-plan.json"
+M0_RECOVERY_PLAN_SHA256 = (
+    "00ec5bf6781816a8349959850e17da0d13f5dd96affbef7c04a57b0654ae9737"
+)
+M0_SOURCE_FLIGHT = Path(
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/"
+    "SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2/flight-20260901T223557Z"
+)
+M0_SOURCE_ATTEMPT_ID = "attempt-20260901t223557z-cpv2m0"
 
 
 def _sha256_file(path: Path) -> str:
@@ -210,6 +219,28 @@ def _write_jsonl(path: Path, rows: Sequence[Mapping[str, object]]) -> None:
         encoding="utf-8",
         newline="\n",
     )
+
+
+def _repair_m0_manifest_document(
+    source: Mapping[str, object],
+    *,
+    raw_trace: Path,
+    trace_manifest: Path,
+) -> dict[str, object]:
+    """Add only the sealed trace metadata omitted by the failed assembler."""
+
+    if source.get("raw_trace") is not None or source.get("trace_manifest") is not None:
+        raise RuntimeError("source M0 manifest is not the registered null-trace failure")
+    repaired = dict(source)
+    repaired["raw_trace"] = {
+        "path": str(Path(raw_trace).resolve()),
+        "sha256": _sha256_file(raw_trace),
+    }
+    repaired["trace_manifest"] = {
+        "path": str(Path(trace_manifest).resolve()),
+        "sha256": _sha256_file(trace_manifest),
+    }
+    return repaired
 
 
 def _trace_documents(run_dir: Path) -> tuple[Mapping[str, object], ...]:
@@ -615,6 +646,113 @@ def _decoding(context: Mapping[str, object]) -> dict[str, object]:
     return result
 
 
+def _validate_m0_recovery_sources(root: Path) -> dict[str, object]:
+    if _sha256_file(M0_RECOVERY_PLAN) != M0_RECOVERY_PLAN_SHA256:
+        raise RuntimeError("M0 recovery plan byte identity drift")
+    recovery = _read_json(M0_RECOVERY_PLAN)
+    if (
+        recovery.get("run_id") != RUN_ID
+        or recovery.get("source_attempt_id") != M0_SOURCE_ATTEMPT_ID
+        or recovery.get("source_attempt_state") != "ABORTED"
+        or recovery.get("observed_boundary", {}).get("gold_opened") is not False  # type: ignore[union-attr]
+        or recovery.get("observed_boundary", {}).get("official_scorer_started")  # type: ignore[union-attr]
+        is not False
+        or recovery.get("authorized_recovery", {}).get("m0_recontact") is not False  # type: ignore[union-attr]
+        or recovery.get("authorized_recovery", {}).get("maximum_cumulative_calls")  # type: ignore[union-attr]
+        != 432
+    ):
+        raise RuntimeError("M0 recovery contract drift")
+    m0_dir = M0_SOURCE_FLIGHT / "m0-direct"
+    transport_dir = m0_dir / "transport-trace"
+    paths = {
+        "failure_receipt": M0_SOURCE_FLIGHT / "failure-receipt.json",
+        "source_manifest": m0_dir / f"{RUN_ID}.run-manifest.json",
+        "outputs": m0_dir / f"{RUN_ID}.outputs.jsonl",
+        "raw_trace": transport_dir / f"{RUN_ID}.trace.jsonl",
+        "trace_manifest": transport_dir / f"{RUN_ID}.trace-manifest.json",
+        "session_receipt": M0_SOURCE_FLIGHT / "service/session-receipt.json",
+        "stop_receipt": M0_SOURCE_FLIGHT / "service/stop-receipt.json",
+    }
+    for key, path in paths.items():
+        expected = recovery.get(f"{key}_sha256")
+        if not isinstance(expected, str) or _sha256_file(path) != expected:
+            raise RuntimeError(f"registered M0 recovery source drift: {key}")
+    source_manifest = _read_json(paths["source_manifest"])
+    attempt = source_manifest.get("attempt")
+    if (
+        source_manifest.get("study_commit") != recovery.get("source_study_commit")
+        or source_manifest.get("status") != STATUS_COMPLETED
+        or not isinstance(attempt, Mapping)
+        or attempt.get("attempt_id") != M0_SOURCE_ATTEMPT_ID
+        or source_manifest.get("raw_trace") is not None
+        or source_manifest.get("trace_manifest") is not None
+    ):
+        raise RuntimeError("source M0 failure manifest structure drift")
+    attempt_path = root / "attempts" / RUN_ID / f"{M0_SOURCE_ATTEMPT_ID}.json"
+    if _sha256_file(attempt_path) != recovery.get("attempt_receipt_sha256"):
+        raise RuntimeError("source M0 attempt receipt byte identity drift")
+    attempt_document = _read_json(attempt_path)
+    actual = attempt_document.get("actual")
+    if (
+        attempt_document.get("state") != "ABORTED"
+        or not isinstance(actual, Mapping)
+        or actual.get("calls") != SPLIT_COUNT
+        or abs(float(actual.get("audio_seconds", -1)) - SPLIT_AUDIO_SECONDS) > 1e-9
+    ):
+        raise RuntimeError("source M0 terminal attempt accounting drift")
+    return {
+        "recovery": recovery,
+        "paths": paths,
+        "source_manifest": source_manifest,
+        "attempt_path": attempt_path,
+    }
+
+
+def _recover_m0(root: Path, context: Mapping[str, object]) -> dict[str, object]:
+    material = _validate_m0_recovery_sources(root)
+    paths = material["paths"]
+    repaired = _repair_m0_manifest_document(
+        material["source_manifest"],  # type: ignore[arg-type]
+        raw_trace=paths["raw_trace"],  # type: ignore[index]
+        trace_manifest=paths["trace_manifest"],  # type: ignore[index]
+    )
+    recovered_manifest = (
+        Path(paths["trace_manifest"]).parent  # type: ignore[arg-type]
+        / f"{RUN_ID}.recovered.run-manifest.json"
+    )
+    _write_json(recovered_manifest, repaired)
+    verified = verify_bundle(recovered_manifest)
+    if verified.attempt_state != "ABORTED" or len(verified.outputs_rows) != SPLIT_COUNT:
+        raise RuntimeError("recovered M0 bundle did not verify as complete and terminal")
+    texts = {
+        str(row["sample_id"]): str(row["text"]) for row in verified.outputs_rows
+    }
+    if set(texts) != set(context["sample_ids"]):  # type: ignore[arg-type]
+        raise RuntimeError("recovered M0 output identities differ from the frozen split")
+    _write_json(
+        recovered_manifest.parent / "m0-recovery-receipt.json",
+        {
+            "schema": "saea-a2t-cpv2-m0-manifest-recovery-receipt-v1",
+            "recovery_plan_sha256": M0_RECOVERY_PLAN_SHA256,
+            "source_manifest_sha256": material["recovery"]["source_manifest_sha256"],  # type: ignore[index]
+            "recovered_manifest": str(recovered_manifest),
+            "recovered_manifest_sha256": _sha256_file(recovered_manifest),
+            "attempt_id": M0_SOURCE_ATTEMPT_ID,
+            "attempt_state": verified.attempt_state,
+            "outputs_count": len(verified.outputs_rows),
+            "m0_recontacts": 0,
+        },
+    )
+    return {
+        "texts": texts,
+        "outputs": Path(paths["outputs"]),  # type: ignore[arg-type]
+        "manifest": recovered_manifest,
+        "attempt_id": M0_SOURCE_ATTEMPT_ID,
+        "run_dir": M0_SOURCE_FLIGHT / "m0-direct",
+        "recovered": True,
+    }
+
+
 def _run_m0(
     *,
     root: Path,
@@ -641,12 +779,11 @@ def _run_m0(
         data_root=root,
         carrier_root=context["carrier_root"],  # type: ignore[arg-type]
     )
-    transport_dir = run_dir / "transport-trace"
     client = FrozenCoreClient(
         plan=plan,
         gate=gate,
         transport=transport,  # type: ignore[arg-type]
-        run_dir=transport_dir,
+        run_dir=run_dir,
         binding=binding,
         arm="speech-feature-query",
         request_id_prefix="cpv2m0",
@@ -667,7 +804,7 @@ def _run_m0(
         raise RuntimeError("M0 trace or contact accounting drift")
     rows, cost = build_phase_bundle_material(
         summary,
-        _trace_documents(transport_dir),
+        _trace_documents(run_dir),
         phase=M0_DIRECT_PHASE,
         umbrella_lock_sha256=str(client_summary["cost"]["umbrella_lock_sha256"]),  # type: ignore[index]
     )
@@ -1180,13 +1317,18 @@ def _run_score_batch(
     jobs: Sequence[Mapping[str, str]],
     workers: int,
     finalize: bool,
+    per_job_operation: bool = False,
 ) -> dict[str, object]:
     jobs_path = mission_dir / f"{name}-jobs.jsonl"
     _write_jsonl(jobs_path, jobs)
     output_dir = mission_dir / name
     command = ["bash", str(REPO / "scripts/evaluate_parallel.sh")]
+    if finalize and per_job_operation:
+        raise RuntimeError("score batch cannot combine uniform and per-job operation modes")
     if finalize:
         command.append("--finalize")
+    elif per_job_operation:
+        command.append("--per-job-operation")
     command.extend(
         [
             "--jobs",
@@ -1233,27 +1375,39 @@ def _parallel_finalize(
     resend: Mapping[str, object],
 ) -> dict[str, object]:
     jobs: list[dict[str, str]] = []
-    for job_id, phase, result in (
-        ("contract-v2-m0-direct", "same-flight direct M0", m0),
-        ("contract-v2-matched-composite", "matched evidence", matched),
-        ("contract-v2-shuffled-composite", "same-tier shuffled evidence", shuffled),
-        ("contract-v2-resend-composite", "exact matched request replay", resend),
+    for job_id, phase, result, operation in (
+        ("contract-v2-m0-direct", "same-flight direct M0", m0, "score"),
+        ("contract-v2-matched-composite", "matched evidence", matched, "finalize"),
+        (
+            "contract-v2-shuffled-composite",
+            "same-tier shuffled evidence",
+            shuffled,
+            "finalize",
+        ),
+        (
+            "contract-v2-resend-composite",
+            "exact matched request replay",
+            resend,
+            "finalize",
+        ),
     ):
-        cells = mission_dir / f"{job_id}-ledger-cells.json"
-        _write_json(cells, _human_ledger_cells(phase, lock_sha256))
-        jobs.append(
-            {
-                "job_id": job_id,
-                "manifest": str(result["manifest"]),
-                "ledger_cells": str(cells),
-            }
-        )
+        job = {
+            "job_id": job_id,
+            "manifest": str(result["manifest"]),
+            "operation": operation,
+        }
+        if operation == "finalize":
+            cells = mission_dir / f"{job_id}-ledger-cells.json"
+            _write_json(cells, _human_ledger_cells(phase, lock_sha256))
+            job["ledger_cells"] = str(cells)
+        jobs.append(job)
     return _run_score_batch(
         mission_dir=mission_dir,
         name="wave1-parallel-finalize",
         jobs=jobs,
         workers=4,
-        finalize=True,
+        finalize=False,
+        per_job_operation=True,
     )
 
 
@@ -1437,20 +1591,26 @@ def _stop_service(
     )
 
 
-def _launch(root: Path) -> Mapping[str, object]:
+def _launch(root: Path, *, recover_m0_manifest_failure: bool) -> Mapping[str, object]:
     context = _static_preflight(root)
+    if not recover_m0_manifest_failure:
+        raise RuntimeError(
+            "the completed M0 attempt must be recovered; repeating M0 is forbidden"
+        )
+    _validate_m0_recovery_sources(root)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     mission_dir = root / "runs" / RUN_ID / f"flight-{stamp}"
     if mission_dir.exists():
         raise RuntimeError(f"mission directory already exists: {mission_dir}")
     mission_dir.mkdir(parents=True)
     attempt_ids = {
-        "m0": f"attempt-{stamp.lower()}-cpv2m0",
+        "m0": M0_SOURCE_ATTEMPT_ID,
         "observation": f"attempt-{stamp.lower()}-cpv2obs",
         "matched": f"attempt-{stamp.lower()}-cpv2matched",
         "shuffled": f"attempt-{stamp.lower()}-cpv2shuffled",
         "resend": f"attempt-{stamp.lower()}-cpv2resend",
     }
+    m0 = _recover_m0(root, context)
     runtime_receipt = load_runtime_receipt(REPO / "docs" / RUNTIME_RECEIPT_RELPATH)
     values = context["composed"].values  # type: ignore[union-attr]
     model_root = Path(str(values["model_materialization_root"]))
@@ -1463,7 +1623,7 @@ def _launch(root: Path) -> Mapping[str, object]:
         model_root=model_root,
     )
     lock_sha256 = gate.assert_model_touch_allowed(
-        _execution_plan(attempt_ids["m0"]), full_hash=True
+        _execution_plan(attempt_ids["observation"]), full_hash=True
     )
     parsed_url = urlparse(str(values["base_url"]))
     if parsed_url.hostname not in {"127.0.0.1", "localhost"} or parsed_url.port is None:
@@ -1496,15 +1656,6 @@ def _launch(root: Path) -> Mapping[str, object]:
             session=session,
             runtime_receipt=runtime_receipt,
             runtime_root=RUNTIME_ROOT,
-        )
-        m0 = _run_m0(
-            root=root,
-            context=context,
-            gate=gate,
-            transport=transport,
-            attempt_id=attempt_ids["m0"],
-            run_dir=mission_dir / "m0-direct",
-            session_receipt_path=session_receipt,
         )
         observation = _run_observation(
             root=root,
@@ -1657,9 +1808,12 @@ def _launch(root: Path) -> Mapping[str, object]:
             shuffled=shuffled,
             resend=resend,
         )
-        for result in (m0, matched, shuffled, resend):
-            if verify_bundle(result["manifest"]).attempt_state != "FINALIZED":  # type: ignore[arg-type]
-                raise RuntimeError("official finalizer left a model attempt unsettled")
+        expected_states = ("ABORTED", "FINALIZED", "FINALIZED", "FINALIZED")
+        for result, expected_state in zip(
+            (m0, matched, shuffled, resend), expected_states, strict=True
+        ):
+            if verify_bundle(result["manifest"]).attempt_state != expected_state:  # type: ignore[arg-type]
+                raise RuntimeError("official score wave left an unexpected attempt state")
         policy = _postseal_policy_read(
             root=root,
             context=context,
@@ -1685,7 +1839,11 @@ def _launch(root: Path) -> Mapping[str, object]:
             "liveness": asdict(observation["report"]),
             "structural_canary": canary_report.as_json(),
             "attempts": {
-                "m0": {"attempt_id": attempt_ids["m0"], "state": "FINALIZED"},
+                "m0": {
+                    "attempt_id": attempt_ids["m0"],
+                    "state": "ABORTED_RECOVERED_AND_SCORED_READ_ONLY",
+                    "recontacts": 0,
+                },
                 "observation": {
                     "attempt_id": attempt_ids["observation"],
                     "state": "ABORTED_OBSERVATION_ONLY_SUCCESS",
@@ -1733,10 +1891,14 @@ def _launch(root: Path) -> Mapping[str, object]:
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--preflight-only", action="store_true")
+    parser.add_argument("--recover-m0-manifest-failure", action="store_true")
     args = parser.parse_args(argv)
     root = data_root()
     if args.preflight_only:
         context = _static_preflight(root)
+        recovery = None
+        if args.recover_m0_manifest_failure:
+            recovery = _validate_m0_recovery_sources(root)
         print(
             json.dumps(
                 {
@@ -1749,13 +1911,34 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "dataset_sharding": False,
                     "prompt_fit_margin_tokens": 12240,
                     "promotion_receipt_sha256": PROMOTION_SHA256,
+                    "m0_recovery": (
+                        {
+                            "attempt_id": M0_SOURCE_ATTEMPT_ID,
+                            "recontacts": 0,
+                            "source_manifest_sha256": recovery["recovery"][  # type: ignore[index]
+                                "source_manifest_sha256"
+                            ],
+                        }
+                        if recovery is not None
+                        else None
+                    ),
                 },
                 indent=2,
                 sort_keys=True,
             )
         )
         return 0
-    print(json.dumps(_launch(root), indent=2, sort_keys=True, default=str))
+    print(
+        json.dumps(
+            _launch(
+                root,
+                recover_m0_manifest_failure=args.recover_m0_manifest_failure,
+            ),
+            indent=2,
+            sort_keys=True,
+            default=str,
+        )
+    )
     return 0
 
 
