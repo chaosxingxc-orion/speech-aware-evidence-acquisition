@@ -189,3 +189,51 @@ def test_holdout_refuses_failed_policy() -> None:
         rmem.assert_policy_admits_holdout(
             {"schema": rmem.POLICY_SCHEMA, "stability_screen_passed": False}
         )
+
+
+def test_holdout_refuses_a_degenerate_route_state() -> None:
+    with pytest.raises(rmem.RoutePolicyError, match="route state is degenerate"):
+        rmem.assert_policy_admits_holdout(
+            {
+                "schema": rmem.POLICY_SCHEMA,
+                "stability_screen_passed": True,
+                "discovery": {"route_class_counts": {"direct-unresolved": 37}},
+                "crossfit": {"stopped_ids": ["a"]},
+                "fixed_v2_comparator": {"crossfit": {"stopped_ids": ["b"]}},
+            }
+        )
+
+
+def test_holdout_refuses_route_conditioning_that_changes_no_decision() -> None:
+    with pytest.raises(rmem.RoutePolicyError, match="does not change cross-fitted decisions"):
+        rmem.assert_policy_admits_holdout(
+            {
+                "schema": rmem.POLICY_SCHEMA,
+                "stability_screen_passed": True,
+                "discovery": {
+                    "route_class_counts": {
+                        "direct-absent": 20,
+                        "direct-runner-up": 17,
+                    }
+                },
+                "crossfit": {"stopped_ids": ["a", "b"]},
+                "fixed_v2_comparator": {"crossfit": {"stopped_ids": ["a", "b"]}},
+            }
+        )
+
+
+def test_holdout_accepts_a_live_route_policy_with_changed_decisions() -> None:
+    rmem.assert_policy_admits_holdout(
+        {
+            "schema": rmem.POLICY_SCHEMA,
+            "stability_screen_passed": True,
+            "discovery": {
+                "route_class_counts": {
+                    "direct-absent": 20,
+                    "direct-runner-up": 17,
+                }
+            },
+            "crossfit": {"stopped_ids": ["a"]},
+            "fixed_v2_comparator": {"crossfit": {"stopped_ids": ["b"]}},
+        }
+    )

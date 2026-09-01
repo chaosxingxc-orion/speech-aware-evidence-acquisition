@@ -122,6 +122,30 @@ def assert_policy_admits_holdout(payload: Mapping[str, object]) -> None:
         raise RoutePolicyError("holdout policy has the wrong schema")
     if payload.get("stability_screen_passed") is not True:
         raise RoutePolicyError("exploratory stability screen did not pass; holdout rewards stay unread")
+    discovery = payload.get("discovery")
+    if not isinstance(discovery, Mapping):
+        raise RoutePolicyError("policy artifact lacks discovery state diagnostics")
+    route_counts = discovery.get("route_class_counts")
+    if not isinstance(route_counts, Mapping):
+        raise RoutePolicyError("policy artifact lacks route-class counts")
+    live_routes = [key for key, value in route_counts.items() if int(value) > 0]
+    if len(live_routes) < 2:
+        raise RoutePolicyError("route state is degenerate; holdout rewards stay unread")
+    crossfit = payload.get("crossfit")
+    comparator = payload.get("fixed_v2_comparator")
+    if not isinstance(crossfit, Mapping) or not isinstance(comparator, Mapping):
+        raise RoutePolicyError("policy artifact lacks the decision-attribution comparison")
+    comparator_crossfit = comparator.get("crossfit")
+    if not isinstance(comparator_crossfit, Mapping):
+        raise RoutePolicyError("policy artifact lacks comparator cross-fitted decisions")
+    stopped = tuple(sorted(str(value) for value in crossfit.get("stopped_ids", ())))
+    comparator_stopped = tuple(
+        sorted(str(value) for value in comparator_crossfit.get("stopped_ids", ()))
+    )
+    if stopped == comparator_stopped:
+        raise RoutePolicyError(
+            "route conditioning does not change cross-fitted decisions; holdout rewards stay unread"
+        )
 
 
 def classify_route(*, direct_target: str | None, fused_targets: Sequence[str]) -> str:
