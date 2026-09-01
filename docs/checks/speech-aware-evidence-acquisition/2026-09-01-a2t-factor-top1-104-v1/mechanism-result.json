@@ -1,0 +1,162 @@
+{
+  "schema": "saea-a2t-factor-top1-104-mechanism-result-v1",
+  "experiment_id": "SAEA-A2T-TFRL-FACTOR-TOP1-104-V1",
+  "date": "2026-09-01",
+  "status": "TERMINAL_MECHANISM_FAILURE_BEFORE_SCORING",
+  "claim_status": "exposed-cohort structural discovery only",
+  "decision": "close strict semantic-factor to BM25 top-1 as this mechanism; do not score, support, or scale",
+  "promotion_passed": false,
+  "selected_candidate": null,
+  "boundary": {
+    "gold_opened": false,
+    "official_scorer_invoked": false,
+    "official_score_read": false,
+    "test_annotation_opened": false,
+    "new_sample_identity_opened": false,
+    "model_response_semantics_read": false,
+    "structural_response_shape_read": true,
+    "note": "Only request structure, strict-parser acceptance, retrieval availability, and coarse JSON shape were read. No task answer, factor meaning, label, or score was inspected."
+  },
+  "attempts": {
+    "receipt_gate_refusal": {
+      "flight": "flight-20260901T191317Z",
+      "model_contacts": 0,
+      "effect": "The developer llama.cpp binary did not match the runtime receipt, so the gate refused before contact."
+    },
+    "peg_native_canary": {
+      "attempt_id": "attempt-20260901t191503z-factormain",
+      "state": "ABORTED",
+      "model_contacts": 5,
+      "metered_audio_seconds": 7.986,
+      "factor_requests": 4,
+      "factor_requests_without_model_response": 3,
+      "completed_factor_final_pairs": 1,
+      "completed_pair_supplied_registry_rows": 0,
+      "failure": "The receipt-pinned server returned HTTP 500 when OpenAI response_format was combined with its peg-native format."
+    },
+    "registered_recovery": {
+      "attempt_id": "attempt-20260901t192249z-factormain",
+      "state": "ABORTED",
+      "model_contacts": 206,
+      "metered_audio_seconds": 1169.76,
+      "factor_contacts": 103,
+      "diagnostic_final_contacts": 103,
+      "model_request_records": 206,
+      "model_response_records": 206,
+      "cost_records": 206,
+      "failure": "The frozen two-per-tier available-sample resend gate could not be met because no recovery sample produced an available top-1 row."
+    },
+    "resend": {
+      "attempt_started": false,
+      "model_contacts": 0,
+      "reason": "No tier contained the required two available samples."
+    }
+  },
+  "factor_and_retrieval_liveness": {
+    "recovery_samples": 103,
+    "factor_responses": 103,
+    "strict_parser_valid_nonempty": 0,
+    "strict_parser_valid_empty": 0,
+    "strict_parser_invalid": 103,
+    "factor_parse_rate": 0.0,
+    "registered_minimum_factor_parse_rate": 0.95,
+    "positive_top1_available": 0,
+    "positive_top1_rate": 0.0,
+    "registered_minimum_positive_top1_rate": 0.9,
+    "coarse_response_shape": {
+      "not_exact_json": 82,
+      "json_object_with_wrong_fields": 21,
+      "json_object_with_exact_factor_fields": 0
+    },
+    "per_tier": {
+      "tier1_direct": {
+        "samples": 12,
+        "positive_top1_available": 0
+      },
+      "tier2_parametric": {
+        "samples": 13,
+        "positive_top1_available": 0
+      },
+      "tier3_multi_intent": {
+        "samples": 13,
+        "positive_top1_available": 0
+      },
+      "tier4_implicit": {
+        "samples": 13,
+        "positive_top1_available": 0
+      },
+      "tier5_needle": {
+        "samples": 13,
+        "positive_top1_available": 0
+      },
+      "tier6_correction": {
+        "samples": 13,
+        "positive_top1_available": 0
+      },
+      "tier7_multiturn": {
+        "samples": 13,
+        "positive_top1_available": 0
+      },
+      "tier8_intent_blending": {
+        "samples": 13,
+        "positive_top1_available": 0
+      }
+    },
+    "conclusion": "The information channel was dead at its first strict boundary. No registry evidence was acquired, so no agent action return or training-free policy could be evaluated."
+  },
+  "diagnostic_use_phase": {
+    "contacts": 103,
+    "contacts_with_zero_supplied_registry_rows": 103,
+    "contacts_with_one_supplied_registry_row": 0,
+    "scientific_use": "none",
+    "engineering_finding": "A future staged flight must complete and gate the ORG batch before starting any USE batch. That fail-closed phase boundary would have avoided all 103 diagnostic final contacts in this result."
+  },
+  "parallel_scoring": {
+    "outer_launcher": "scripts/evaluate_parallel.sh",
+    "planned_workers": 2,
+    "planned_whole_manifest_jobs": 2,
+    "dataset_shards": 0,
+    "official_scorers_modified": false,
+    "invoked": false,
+    "reason": "Neither complete manifest existed after the liveness gate failed.",
+    "retained_engineering_rule": "Run each unchanged official scorer once on a complete manifest and parallelize only independent complete-manifest jobs at the outer layer."
+  },
+  "contact_accounting": {
+    "canary_calls": 5,
+    "recovery_calls": 206,
+    "resend_calls": 0,
+    "cumulative_calls": 211,
+    "registered_call_ceiling": 228,
+    "canary_audio_seconds": 7.986,
+    "recovery_audio_seconds": 1169.76,
+    "cumulative_audio_seconds": 1177.746,
+    "registered_audio_seconds_ceiling": 1340.0,
+    "paid_api_spend": 0
+  },
+  "promotion_gates": {
+    "factor_parse_rate": false,
+    "positive_top1_rate": false,
+    "top1_tool_gain": "NOT_REACHED",
+    "agent_exact_gain": "NOT_REACHED",
+    "training_free_policy": "NOT_REACHED",
+    "resend_floor": "NOT_REACHED",
+    "overall": false
+  },
+  "runtime_restoration": {
+    "developer_commit": "9a41ce51850898973a41c39f9224818ff1a7fbe2",
+    "developer_binary_sha256": "5770688f110dbb93f851c58c6cf5ba8ef603ad4fdd54eceebafa989253a063c0",
+    "developer_binary_restored_to": "/home/chao/llama.cpp-featcache/build/bin",
+    "receipt_pinned_binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "receipt_pinned_binary_archived_at": "/home/chao/llama.cpp-featcache/build/bin-receipt-04ccc72a-after-factor-top1",
+    "server_running_after_experiment": false
+  },
+  "source_hashes": {
+    "subset_receipt": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db",
+    "m0_outputs": "dea60ff1e63fd2ef11c93edf8808217062fea3f0565ed5b60f136264bc6a9467",
+    "registry": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4",
+    "canary_trace": "e4a2110fa3fbf7a2dbf986046228a4cd8fb8f4b6252186176b8a32d5dd01d2df",
+    "recovery_trace": "14fe211ef78e5c3c7d2f3d4ea8fc6eb190b4e932b766a978a85b0baaeea10867",
+    "recovery_failure_receipt": "90e6b460f9c10e4e2292fc6f45eca190d5b8001c852dade23e467e09c1f5b51e"
+  },
+  "scope_consequence": "No scorer read, policy fitting, fresh support flight, approximately-1,000-sample expansion, G2, remaining exposed-296, unexposed population, FINAL60, test, Stage-3, or paper-scale work is authorized by this result."
+}
