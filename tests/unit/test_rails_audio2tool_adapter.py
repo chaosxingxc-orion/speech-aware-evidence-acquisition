@@ -21,7 +21,12 @@ from speech_aware_evidence_acquisition.rails import (
     SupplyPacket,
     run_rails_experiment,
 )
-from speech_aware_evidence_acquisition.rails.adapters.audio2tool import Audio2ToolAdapter
+from speech_aware_evidence_acquisition.rails.adapters.audio2tool import (
+    AUDIO2TOOL_OUTPUT_INSTRUCTION,
+    _INSTRUCTION_TEMPLATE,
+    Audio2ToolAdapter,
+    render_audio2tool_instruction,
+)
 from speech_aware_evidence_acquisition.rails.obs import default_obs_packet
 
 _SHA_A = "a" * 64
@@ -72,6 +77,30 @@ def test_assemble_prompt_zero_supply_has_no_text_content_part(audio2tool_world):
     user_content = messages[1]["content"]
     assert all(part["type"] != "text" for part in user_content)
     assert user_content[-1] == {"type": "input_audio", "media_relpath": sample.media_relpath}
+
+
+def test_instruction_renderer_preserves_direct_bytes_and_final_output_contract():
+    registry = '[{"tool_name":"setLighting"}]'
+    direct = render_audio2tool_instruction(registry)
+    enriched = render_audio2tool_instruction(
+        registry,
+        auxiliary_context="English self-transcript Agent state:\nturn on the light",
+    )
+
+    assert direct == _INSTRUCTION_TEMPLATE.format(tool_schemas=registry)
+    assert direct.endswith(AUDIO2TOOL_OUTPUT_INSTRUCTION)
+    assert enriched.endswith(AUDIO2TOOL_OUTPUT_INSTRUCTION)
+    assert enriched.count(AUDIO2TOOL_OUTPUT_INSTRUCTION) == 1
+    assert "English self-transcript Agent state" in enriched
+    assert enriched.index("English self-transcript Agent state") < enriched.index(
+        AUDIO2TOOL_OUTPUT_INSTRUCTION
+    )
+    assert '[{"name": "x", "arguments": {}}]' in enriched
+
+    with pytest.raises(ValueError, match="tool schemas"):
+        render_audio2tool_instruction("")
+    with pytest.raises(ValueError, match="auxiliary context"):
+        render_audio2tool_instruction(registry, auxiliary_context=" ")
 
 
 def test_assemble_prompt_with_supply_includes_the_prompt_block(audio2tool_world):

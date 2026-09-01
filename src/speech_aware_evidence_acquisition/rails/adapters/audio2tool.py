@@ -40,10 +40,36 @@ from ..obs import AudioRef, ObsPacket
 from ..supply import SupplyPacket
 from ..task_adapter import TaskAdapter
 
+AUDIO2TOOL_OUTPUT_INSTRUCTION = (
+    'Respond with ONLY a JSON array of tool calls, e.g. [{"name": "x", "arguments": {}}].'
+)
 _INSTRUCTION_TEMPLATE = (
     "You control tools. Available tools:\n{tool_schemas}\n\n"
     'Respond with ONLY a JSON array of tool calls, e.g. [{{"name": "x", "arguments": {{}}}}].'
 )
+
+
+def render_audio2tool_instruction(
+    tool_schemas: str,
+    *,
+    auxiliary_context: str | None = None,
+) -> str:
+    """Render the direct contract, optionally inserting context before its suffix.
+
+    The no-context result is byte-identical to the historical template.  A
+    successor may add English Agent state or evidence only ahead of the same
+    final output sentence and exact ``name``/``arguments`` example.
+    """
+
+    if not isinstance(tool_schemas, str) or not tool_schemas.strip():
+        raise ValueError("Audio2Tool tool schemas must be non-empty text")
+    direct = _INSTRUCTION_TEMPLATE.format(tool_schemas=tool_schemas)
+    if auxiliary_context is None:
+        return direct
+    if not isinstance(auxiliary_context, str) or not auxiliary_context.strip():
+        raise ValueError("Audio2Tool auxiliary context must be non-empty text")
+    prefix = direct[: -len(AUDIO2TOOL_OUTPUT_INSTRUCTION)]
+    return f"{prefix}{auxiliary_context}\n\n{AUDIO2TOOL_OUTPUT_INSTRUCTION}"
 
 
 @dataclass(frozen=True)
@@ -121,8 +147,8 @@ class Audio2ToolAdapter(TaskAdapter):
     def assemble_prompt(
         self, sample: Audio2ToolSample, supply: SupplyPacket | None
     ) -> Sequence[Mapping[str, object]]:
-        instruction = _INSTRUCTION_TEMPLATE.format(
-            tool_schemas=render_tool_schemas(self._lock, self._root)
+        instruction = render_audio2tool_instruction(
+            render_tool_schemas(self._lock, self._root)
         )
         content: list[Mapping[str, object]] = []
         if supply is not None:
@@ -160,4 +186,10 @@ class Audio2ToolAdapter(TaskAdapter):
         return build_consumption_trace(span_id="full", supply=supply, response_text=response)
 
 
-__all__ = ["AUDIO2TOOL_LOCK_KEY", "Audio2ToolAdapter", "Audio2ToolSample"]
+__all__ = [
+    "AUDIO2TOOL_LOCK_KEY",
+    "AUDIO2TOOL_OUTPUT_INSTRUCTION",
+    "Audio2ToolAdapter",
+    "Audio2ToolSample",
+    "render_audio2tool_instruction",
+]
