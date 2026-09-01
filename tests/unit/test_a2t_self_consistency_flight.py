@@ -122,6 +122,19 @@ def test_build_supply_material_refuses_identity_mismatch() -> None:
         )
 
 
+def test_build_supply_material_uses_non_evidentiary_sentinel_when_unresolved() -> None:
+    material = flight.build_supply_material(
+        {"sample-a": _response("unknownM0", {})},
+        {"sample-a": _response("unknownRepeat", {})},
+        REGISTRY,
+    )
+
+    assert material["sample-a"].tool_names == ()
+    assert material["sample-a"].supply_available is False
+    assert material["sample-a"].prompt_block == flight.UNRESOLVED_SUPPLY_SENTINEL
+    assert "registry-resolved" in material["sample-a"].prompt_block
+
+
 def test_supply_adapter_places_only_sample_union_in_system_contract() -> None:
     material = flight.build_supply_material(
         {"sample-a": _response("setTemp", {"room": "office", "degrees": 20})},

@@ -291,7 +291,9 @@ def _cell_counts(
     candidate_id: str,
 ) -> tuple[int, int, int]:
     cell = tuple(
-        item for item in memory if item.state.key(candidate_id) == state_key
+        item
+        for item in memory
+        if item.supply_available and item.state.key(candidate_id) == state_key
     )
     return (
         len(cell),
@@ -523,8 +525,8 @@ def evaluate_candidate(
         item.action == SUPPLY_UNION_STRIPPED and item.outcome.delta < 0
         for item in selected
     )
-    always_saves = sum(item.delta > 0 for item in ordered)
-    always_harms = sum(item.delta < 0 for item in ordered)
+    always_saves = sum(item.supply_available and item.delta > 0 for item in ordered)
+    always_harms = sum(item.supply_available and item.delta < 0 for item in ordered)
     harm_avoidance = (
         (always_harms - harmed) / always_harms if always_harms else 1.0
     )

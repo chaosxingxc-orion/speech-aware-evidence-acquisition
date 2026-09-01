@@ -19,11 +19,15 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Literal, Mapping, Sequence
+from typing import Callable, Literal, Mapping, Sequence, cast
 
 
 class ScoreBatchError(RuntimeError):
     """The batch description or its output boundary is unsafe."""
+
+
+ScoreOperation = Literal["score", "finalize"]
+BatchOperation = Literal["score", "finalize", "per-job"]
 
 
 @dataclass(frozen=True)
@@ -32,6 +36,7 @@ class ScoreJob:
 
     job_id: str
     manifest: Path
+    operation: ScoreOperation | None = None
 
 
 @dataclass(frozen=True)
@@ -44,7 +49,6 @@ class ScoreProcessOutcome:
 
 
 ScoreRunner = Callable[[ScoreJob], ScoreProcessOutcome]
-ScoreOperation = Literal["score", "finalize"]
 
 _SCHEMA = "saea-parallel-score-batch-v1"
 _JOB_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*\Z")
@@ -66,7 +70,9 @@ def _write_json(path: Path, value: Mapping[str, object]) -> None:
     _write_text(path, json.dumps(value, indent=2, sort_keys=True) + "\n")
 
 
-def load_score_jobs(path: Path) -> tuple[ScoreJob, ...]:
+def load_score_jobs(
+    path: Path, *, require_operation: bool = False
+) -> tuple[ScoreJob, ...]:
     """Load an exact-field JSONL job table and resolve manifests beside it."""
 
     path = Path(path)
@@ -94,13 +100,19 @@ def load_score_jobs(path: Path) -> tuple[ScoreJob, ...]:
             raise ScoreBatchError(
                 f"score job file {path} line {line_number} is malformed JSON: {error}"
             ) from error
-        if not isinstance(row, Mapping) or set(row) != {"job_id", "manifest"}:
+        expected_fields = (
+            {"job_id", "manifest", "operation"}
+            if require_operation
+            else {"job_id", "manifest"}
+        )
+        if not isinstance(row, Mapping) or set(row) != expected_fields:
             raise ScoreBatchError(
                 f"score job file {path} line {line_number} must contain exactly "
-                "job_id and manifest"
+                f"{sorted(expected_fields)}"
             )
         job_id = row.get("job_id")
         manifest_value = row.get("manifest")
+        job_operation = row.get("operation") if require_operation else None
         if not isinstance(job_id, str) or not _JOB_ID.fullmatch(job_id):
             raise ScoreBatchError(
                 f"score job file {path} line {line_number} has an unsafe job_id"
@@ -108,6 +120,11 @@ def load_score_jobs(path: Path) -> tuple[ScoreJob, ...]:
         if not isinstance(manifest_value, str) or not manifest_value:
             raise ScoreBatchError(
                 f"score job file {path} line {line_number} has no manifest path"
+            )
+        if require_operation and job_operation not in {"score", "finalize"}:
+            raise ScoreBatchError(
+                f"score job file {path} line {line_number} operation must be "
+                "'score' or 'finalize'"
             )
         manifest = Path(manifest_value)
         if not manifest.is_absolute():
@@ -128,7 +145,17 @@ def load_score_jobs(path: Path) -> tuple[ScoreJob, ...]:
             raise ScoreBatchError(f"duplicate manifest {manifest} in {path}")
         seen_ids.add(job_id_key)
         seen_manifests.add(manifest)
-        jobs.append(ScoreJob(job_id=job_id, manifest=manifest))
+        jobs.append(
+            ScoreJob(
+                job_id=job_id,
+                manifest=manifest,
+                operation=(
+                    cast(ScoreOperation, job_operation)
+                    if job_operation is not None
+                    else None
+                ),
+            )
+        )
     return tuple(jobs)
 
 
@@ -238,7 +265,7 @@ def run_score_batch(
     output_dir: Path,
     max_workers: int,
     runner: ScoreRunner | None = None,
-    operation: ScoreOperation = "score",
+    operation: BatchOperation = "score",
 ) -> dict[str, object]:
     """Run every complete job with bounded outer process concurrency.
 
@@ -248,13 +275,26 @@ def run_score_batch(
     """
 
     frozen_jobs = tuple(
-        ScoreJob(job_id=job.job_id, manifest=Path(job.manifest).resolve())
+        ScoreJob(
+            job_id=job.job_id,
+            manifest=Path(job.manifest).resolve(),
+            operation=job.operation,
+        )
         for job in jobs
     )
     if not frozen_jobs:
         raise ScoreBatchError("parallel scoring requires at least one job")
-    if operation not in {"score", "finalize"}:
-        raise ScoreBatchError("operation must be 'score' or 'finalize'")
+    if operation not in {"score", "finalize", "per-job"}:
+        raise ScoreBatchError("operation must be 'score', 'finalize', or 'per-job'")
+    if operation == "per-job":
+        if any(job.operation not in {"score", "finalize"} for job in frozen_jobs):
+            raise ScoreBatchError(
+                "per-job scoring requires every job to declare score or finalize"
+            )
+    elif any(job.operation is not None for job in frozen_jobs):
+        raise ScoreBatchError(
+            "uniform score/finalize mode refuses per-job operation fields"
+        )
     if (
         not isinstance(max_workers, int)
         or isinstance(max_workers, bool)
@@ -285,12 +325,13 @@ def run_score_batch(
         raise ScoreBatchError(f"score output directory is not empty: {output_dir}")
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    if runner is not None:
-        selected_runner = runner
-    elif operation == "finalize":
-        selected_runner = run_official_finalize_job
-    else:
-        selected_runner = run_official_score_job
+    def selected_runner(job: ScoreJob) -> ScoreProcessOutcome:
+        if runner is not None:
+            return runner(job)
+        job_operation = job.operation if operation == "per-job" else operation
+        if job_operation == "finalize":
+            return run_official_finalize_job(job)
+        return run_official_score_job(job)
     started = time.perf_counter()
     completed_by_index: dict[
         int, tuple[ScoreProcessOutcome, float, str | None]
@@ -308,6 +349,7 @@ def run_score_batch(
     succeeded = 0
     for index, job in enumerate(frozen_jobs):
         outcome, elapsed_seconds, runner_error = completed_by_index[index]
+        job_operation = job.operation if operation == "per-job" else operation
         stderr_name = f"{job.job_id}.stderr.log"
         _write_text(output_dir / stderr_name, outcome.stderr)
         error = runner_error
@@ -315,7 +357,7 @@ def run_score_batch(
             error = f"official scorer exited with status {outcome.returncode}"
         if error is None:
             try:
-                _verified_payload(job, outcome, operation=operation)
+                _verified_payload(job, outcome, operation=job_operation)
             except ScoreBatchError as payload_error:
                 error = str(payload_error)
 
@@ -337,6 +379,7 @@ def run_score_batch(
             {
                 "index": index,
                 "job_id": job.job_id,
+                "operation": job_operation,
                 "manifest": str(job.manifest),
                 "status": status,
                 "returncode": outcome.returncode,

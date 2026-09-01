@@ -232,6 +232,24 @@ def test_unavailable_supply_always_stops_before_memory_lookup() -> None:
     assert decision.support == 0
 
 
+def test_reward_memory_excludes_unavailable_counterfactual_returns() -> None:
+    state = _state()
+    memory = (
+        _outcome(0, state, delta=1),
+        _outcome(1, state, delta=1),
+        _outcome(2, state, delta=1, supply_available=False),
+        _outcome(3, state, delta=1, supply_available=False),
+    )
+
+    decision = selfcon.decide(
+        state, memory, supply_available=True, candidate_id="coarse-v1"
+    )
+
+    assert decision.action == selfcon.STOP_M0
+    assert decision.support == 2
+    assert decision.saves == 2
+
+
 def test_crossfit_keeps_whole_groups_together_and_can_pass_all_gates() -> None:
     positive = _state("overlap")
     neutral = _state("exact", value_relation="exact")
@@ -274,6 +292,42 @@ def test_crossfit_keeps_whole_groups_together_and_can_pass_all_gates() -> None:
     assert report.metrics.tool_accuracy_net_gain == 10
     assert report.promotion_passed is True
     assert all(report.gates.values())
+
+
+def test_always_supply_reference_excludes_unavailable_counterfactual_returns() -> None:
+    positive = _state("overlap")
+    neutral = _state("exact", value_relation="exact")
+    outcomes: list[selfcon.SelfConsistencyOutcome] = []
+    for group_index in range(5):
+        outcomes.extend(
+            [
+                _outcome(
+                    group_index * 10,
+                    positive,
+                    delta=1,
+                    group=f"positive-{group_index}",
+                ),
+                _outcome(
+                    group_index * 10 + 1,
+                    positive,
+                    delta=1,
+                    group=f"positive-{group_index}",
+                ),
+            ]
+        )
+    outcomes.extend(_outcome(100 + index, neutral, delta=0) for index in range(15))
+    outcomes.append(_outcome(200, positive, delta=1, supply_available=False))
+
+    report = selfcon.evaluate_candidate(
+        outcomes,
+        candidate_id="hierarchical-v1",
+        seed=20260901,
+        n_folds=5,
+        n_replicates=200,
+    )
+
+    assert report.metrics.saved == 10
+    assert report.metrics.save_retention == 1.0
 
 
 def test_screen_is_fail_closed_when_every_candidate_stops() -> None:

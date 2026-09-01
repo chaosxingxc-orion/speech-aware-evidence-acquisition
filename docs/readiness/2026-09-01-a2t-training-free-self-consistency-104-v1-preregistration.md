@@ -88,3 +88,52 @@ This document registers the scientific design only. Before any core contact, the
 tests, structured `contracts.ExecutionPlan`, protocol hash, exposure binding, packet and runtime
 receipts, prompt-fit proof, renderer-identity proof, scorer manifests, and two-job score table must
 be committed and the working tree must be clean.
+
+## Pre-score operational recovery amendment
+
+Registered at 2026-09-01T17:37:54Z, after the first flight stopped and before any gold or official
+scorer input was opened. The runtime gate, exact receipt-pinned decoder reconstruction, clean-tree
+gate, packet binding, and all 104 `REOBSERVE_DIRECT` contacts completed. That phase sealed a
+verified 104-row manifest with SHA-256
+`73c901639916a28d67c2bc8a996d921371744f438c73be178c7fbe995fc1a238`. Its durable attempt
+`attempt-20260901t172514z-selfobs` records 104 calls and 587.017 audio seconds. The launcher then
+refused before the first `SUPPLY_UNION_STRIPPED` contact because twelve samples resolved no tool in
+either direct observation and the deterministic renderer consequently returned an empty task
+contract. The supply attempt `attempt-20260901t172514z-selfsup` records zero calls and zero audio
+seconds. The launcher's common exception boundary marked both attempts `ABORTED`; it did not alter
+the sealed observation bytes.
+
+The twelve affected sample ids are:
+
+- `tier1_direct:000167`
+- `tier3_multi_intent:000879`
+- `tier4_implicit:000655`
+- `tier4_implicit:000900`
+- `tier4_implicit:001148`
+- `tier4_implicit:001389`
+- `tier4_implicit:001409`
+- `tier4_implicit:001513`
+- `tier4_implicit:003312`
+- `tier7_multiturn:000214`
+- `tier7_multiturn:001516`
+- `tier8_intent_blending:000713`
+
+The recovery is an execution repair, not a scientific choice. An unresolved empty renderer result
+is replaced by the fixed English sentinel `No registry-resolved tool evidence is available for
+this query.` so the preregistered one-contact-per-sample supply phase remains total. The sentinel
+asserts absence and supplies no tool identity, value, label, transcript, reward, or sample
+information. These twelve rows keep `supply_available=false`; the controller must return `STOP_M0`.
+Their sentinel-response scores are excluded from reward-memory cell support and from the eligible
+always-supply comparator because the supply action is impossible in that state. This exclusion is
+the direct executable meaning of the already-registered availability rule, not a threshold or
+feature change.
+
+The complete observation is never re-flown. Recovery may open exactly one fresh supply attempt for
+the untouched 104 contacts. After its complete manifest seals, the outer two-worker scheduler runs
+the unchanged official `score --manifest` operation on the recovered observation and the unchanged
+official `finalize --manifest` operation on the fresh supply bundle concurrently. Read-only scoring
+must leave the source attempt `ABORTED`; finalization must leave the fresh supply attempt
+`FINALIZED`. This mixed terminal handling changes no scorer, prediction, metric, fold, state
+feature, action gate, promotion gate, or cohort. The 213-call registered ceiling still covers the
+104 consumed observation calls plus the 104 remaining supply calls, with five unused allowance
+calls. G2, FINAL60, test data, Stage-3, and scale remain closed.

@@ -37,6 +37,9 @@ SUPPLY_PHASE = "SUPPLY_UNION_STRIPPED"
 OBSERVATION_POLICY_ID = "saea-a2t-self-consistency-reobserve-direct-v1"
 SUPPLY_POLICY_ID = "saea-a2t-self-consistency-supply-union-stripped-v1"
 AGENT_EXECUTOR_ID = "openjiuwen-workflow-v1"
+UNRESOLVED_SUPPLY_SENTINEL = (
+    "No registry-resolved tool evidence is available for this query."
+)
 
 _A2T_INSTRUCTION_TEMPLATE = (
     "You control tools. Available tools:\n{tool_schemas}\n\n"
@@ -242,7 +245,7 @@ def build_supply_material(
             )
         material[sample_id] = SupplyMaterial(
             sample_id=sample_id,
-            prompt_block=rendered.text,
+            prompt_block=(rendered.text or UNRESOLVED_SUPPLY_SENTINEL),
             tool_names=rendered.tool_names,
             state=extract_self_consistency_state(m0_response, observation_response),
         )
@@ -677,6 +680,7 @@ __all__ = [
     "SPLIT_ID",
     "SUPPLY_PHASE",
     "SUPPLY_POLICY_ID",
+    "UNRESOLVED_SUPPLY_SENTINEL",
     "SingleContactController",
     "SupplyMaterial",
     "build_supply_material",

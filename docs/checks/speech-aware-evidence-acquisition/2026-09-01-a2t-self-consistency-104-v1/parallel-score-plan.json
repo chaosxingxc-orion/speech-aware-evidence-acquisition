@@ -3,6 +3,7 @@
   "experiment_id": "SAEA-A2T-TFRL-SELF-CONSISTENCY-104-V1",
   "entrypoint": "scripts/evaluate_parallel.sh",
   "mode": "--finalize",
+  "recovery_mode": "--per-job-operation",
   "workers": 2,
   "jobs": [
     {
@@ -15,5 +16,31 @@
     }
   ],
   "materialization": "After both prediction files and their runtime traces are sealed, the launcher writes the two exact manifest paths to score-jobs.jsonl in this order. No scorer starts before both manifest hashes exist. The --finalize mode runs the unchanged official scorer exactly once per complete arm, writes each score artifact, and terminally settles the two independent one-shot attempts in the same outer-parallel wave.",
+  "recovery": {
+    "registered_at": "2026-09-01T17:37:54Z",
+    "reason": "The first flight sealed all 104 REOBSERVE_DIRECT rows, then SUPPLY_UNION_STRIPPED refused before its first contact because twelve unresolved registry unions rendered an empty task contract. Gold and official scorer inputs were not opened.",
+    "source_attempt_id": "attempt-20260901t172514z-selfobs",
+    "source_attempt_state": "ABORTED",
+    "source_manifest_sha256": "73c901639916a28d67c2bc8a996d921371744f438c73be178c7fbe995fc1a238",
+    "source_actual_calls": 104,
+    "source_actual_audio_seconds": 587.017,
+    "failed_supply_attempt_id": "attempt-20260901t172514z-selfsup",
+    "failed_supply_actual_calls": 0,
+    "failed_supply_actual_audio_seconds": 0.0,
+    "contact_rule": "Never re-fly the complete observation. Make only the untouched 104-contact supply phase after replacing an empty unresolved renderer result with the fixed non-evidentiary English sentinel. Such samples remain supply-unavailable, always return STOP_M0, and are excluded from reward-memory cells and the eligible always-supply comparator.",
+    "jobs": [
+      {
+        "job_id": "reobserve-direct-recovered",
+        "operation": "score",
+        "input": "the verified complete 104-row source manifest; official score is read-only because the durable attempt is already ABORTED"
+      },
+      {
+        "job_id": "supply-union-stripped",
+        "operation": "finalize",
+        "input": "one fresh complete 104-row SUPPLY_UNION_STRIPPED run manifest"
+      }
+    ],
+    "integrity": "The two unchanged official operations start in one outer-parallel two-worker wave only after the fresh supply manifest seals. The recovered observation remains ABORTED; the fresh supply attempt must become FINALIZED. No dataset sharding or shard-metric averaging is allowed."
+  },
   "aggregation_rule": "Never shard a dataset for scoring and never average shard-level metrics. Each worker invokes the unchanged official scorer on one complete arm."
 }

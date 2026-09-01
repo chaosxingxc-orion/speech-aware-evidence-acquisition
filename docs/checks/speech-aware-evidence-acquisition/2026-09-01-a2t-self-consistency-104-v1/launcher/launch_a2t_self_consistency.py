@@ -1,9 +1,11 @@
 """Launch the preregistered 104-item Audio2Tool self-consistency probe.
 
-The launcher owns one decoder session and two independent one-shot attempts.
-It seals both complete prediction bundles before it starts the outer-parallel
-official finalizer.  Each finalizer process therefore sees one whole 104-row
-manifest; samples are never sharded and shard metrics are never averaged.
+The normal path owns one decoder session and two independent one-shot
+attempts.  A registered recovery path reuses one exact complete observation
+bundle after a downstream zero-contact refusal and opens only a fresh supply
+attempt.  Both paths start official scoring only after both complete 104-row
+prediction manifests exist.  Samples are never sharded and shard metrics are
+never averaged.
 
 The flight path never opens gold.  Gold becomes readable only inside the two
 official finalizer processes after both prediction manifests verify.
@@ -135,6 +137,10 @@ RUNTIME_RECEIPT_RELPATH = Path("receipts/runtime-q4km-mmproj-free.json")
 PLAN_TEMPLATE = REPO / "docs/checks/speech-aware-evidence-acquisition/2026-09-01-a2t-self-consistency-104-v1/execution-plan-template.json"
 SCORE_PLAN = REPO / "docs/checks/speech-aware-evidence-acquisition/2026-09-01-a2t-self-consistency-104-v1/parallel-score-plan.json"
 OPENJIUWEN_VERSION = "0.1.16.post2"
+RECOVERED_OBSERVATION_ATTEMPT_ID = "attempt-20260901t172514z-selfobs"
+RECOVERED_OBSERVATION_MANIFEST_SHA256 = (
+    "73c901639916a28d67c2bc8a996d921371744f438c73be178c7fbe995fc1a238"
+)
 
 
 def _sha256_file(path: Path) -> str:
@@ -193,6 +199,57 @@ def _phase_responses(summary: object) -> dict[str, str]:
     if len(responses) != SPLIT_COUNT:
         raise RuntimeError("phase summary contains duplicate or malformed results")
     return responses
+
+
+def _load_recovered_observation(root: Path, manifest_path: Path) -> dict[str, object]:
+    manifest_path = manifest_path.resolve(strict=True)
+    expected_root = (root / "runs" / RUN_ID).resolve(strict=True)
+    if not manifest_path.is_relative_to(expected_root):
+        raise RuntimeError("recovered observation manifest is outside this run root")
+    if _sha256_file(manifest_path) != RECOVERED_OBSERVATION_MANIFEST_SHA256:
+        raise RuntimeError("recovered observation manifest is not the registered source")
+    bundle = verify_bundle(manifest_path)
+    manifest = bundle.manifest
+    if (
+        bundle.attempt_state != "ABORTED"
+        or manifest.get("status") != STATUS_COMPLETED
+        or manifest.get("run_id") != RUN_ID
+        or manifest.get("arm") != "speech-feature-query"
+        or len(bundle.outputs_rows) != SPLIT_COUNT
+        or bundle.outputs_path is None
+    ):
+        raise RuntimeError("recovered observation is not a complete aborted source bundle")
+    split = manifest.get("split")
+    if not isinstance(split, Mapping) or split.get("identity_hash") != SPLIT_IDENTITY_SHA256:
+        raise RuntimeError("recovered observation split identity drift")
+    if any(row.get("phase") != OBSERVATION_PHASE for row in bundle.outputs_rows):
+        raise RuntimeError("recovered observation outputs contain another phase")
+    responses = {str(row["sample_id"]): str(row["text"]) for row in bundle.outputs_rows}
+    if len(responses) != SPLIT_COUNT:
+        raise RuntimeError("recovered observation responses are incomplete")
+    attempt = manifest.get("attempt")
+    if (
+        not isinstance(attempt, Mapping)
+        or attempt.get("attempt_id") != RECOVERED_OBSERVATION_ATTEMPT_ID
+    ):
+        raise RuntimeError("recovered observation manifest lacks attempt metadata")
+    state = _read_json(Path(str(attempt["state_path"])))
+    actual = state.get("actual")
+    if (
+        not isinstance(actual, Mapping)
+        or actual.get("calls") != SPLIT_COUNT
+        or abs(float(actual.get("audio_seconds", -1)) - SPLIT_AUDIO_SECONDS) > 1e-6
+    ):
+        raise RuntimeError("recovered observation durable accounting is incomplete")
+    return {
+        "summary": None,
+        "responses": responses,
+        "manifest": manifest_path,
+        "outputs": bundle.outputs_path,
+        "attempt_id": str(attempt["attempt_id"]),
+        "source_attempt_state": "ABORTED",
+        "source_manifest_sha256": _sha256_file(manifest_path),
+    }
 
 
 def _execution_plan(attempt_id: str) -> ExecutionPlan:
@@ -296,7 +353,11 @@ def _static_preflight(root: Path) -> dict[str, object]:
         raise RuntimeError("knowledge snapshot overlaps the flight population")
 
     score_plan = _read_json(SCORE_PLAN)
-    if score_plan.get("mode") != "--finalize" or score_plan.get("workers") != 2:
+    if (
+        score_plan.get("mode") != "--finalize"
+        or score_plan.get("recovery_mode") != "--per-job-operation"
+        or score_plan.get("workers") != 2
+    ):
         raise RuntimeError("parallel score plan drift")
     return {
         "commit": commit,
@@ -431,16 +492,29 @@ def _run_one_phase(
     }
 
 
-def _launch(root: Path) -> Mapping[str, object]:
+def _launch(
+    root: Path, *, resume_observation_manifest: Path | None = None
+) -> Mapping[str, object]:
     context = _static_preflight(root)
+    recovered_observation = (
+        _load_recovered_observation(root, resume_observation_manifest)
+        if resume_observation_manifest is not None
+        else None
+    )
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     mission_dir = root / "runs" / RUN_ID / f"flight-{stamp}"
     if mission_dir.exists():
         raise RuntimeError(f"mission directory already exists: {mission_dir}")
     mission_dir.mkdir(parents=True)
-    observation_attempt = f"attempt-{stamp.lower()}-selfobs"
     supply_attempt = f"attempt-{stamp.lower()}-selfsup"
-    attempts = (observation_attempt, supply_attempt)
+    if recovered_observation is None:
+        observation_attempt = f"attempt-{stamp.lower()}-selfobs"
+        attempts = (observation_attempt, supply_attempt)
+        gate_plan = _execution_plan(observation_attempt)
+    else:
+        observation_attempt = str(recovered_observation["attempt_id"])
+        attempts = (supply_attempt,)
+        gate_plan = _execution_plan(supply_attempt)
     session = None
     runtime_receipt = load_runtime_receipt(REPO / "docs" / RUNTIME_RECEIPT_RELPATH)
     values = context["composed"].values
@@ -453,9 +527,7 @@ def _launch(root: Path) -> Mapping[str, object]:
         expected_model_lock_key=str(values["model_lock_key"]),
         model_root=model_root,
     )
-    lock_sha256 = gate.assert_model_touch_allowed(
-        _execution_plan(observation_attempt), full_hash=True
-    )
+    lock_sha256 = gate.assert_model_touch_allowed(gate_plan, full_hash=True)
     parsed_url = urlparse(str(values["base_url"]))
     if parsed_url.hostname not in {"127.0.0.1", "localhost"} or parsed_url.port is None:
         raise RuntimeError("decoder base_url must be an explicit loopback port")
@@ -486,17 +558,19 @@ def _launch(root: Path) -> Mapping[str, object]:
             runtime_receipt=runtime_receipt,
             runtime_root=RUNTIME_ROOT,
         )
-        observation = _run_one_phase(
-            phase=OBSERVATION_PHASE,
-            attempt_id=observation_attempt,
-            phase_dir=mission_dir / "reobserve-direct",
-            root=root,
-            context=context,
-            gate=gate,
-            transport=transport,
-            session_receipt_path=session_receipt_path,
-            lock_sha256=lock_sha256,
-        )
+        observation = recovered_observation
+        if observation is None:
+            observation = _run_one_phase(
+                phase=OBSERVATION_PHASE,
+                attempt_id=observation_attempt,
+                phase_dir=mission_dir / "reobserve-direct",
+                root=root,
+                context=context,
+                gate=gate,
+                transport=transport,
+                session_receipt_path=session_receipt_path,
+                lock_sha256=lock_sha256,
+            )
         supply_material = build_supply_material(
             context["m0"], observation["responses"], context["registry"]
         )
@@ -513,20 +587,43 @@ def _launch(root: Path) -> Mapping[str, object]:
             supply_material=supply_material,
         )
 
+        stop_session(
+            session,
+            runtime_receipt=runtime_receipt,
+            runtime_root=RUNTIME_ROOT,
+            force_after_timeout=True,
+            receipt_path=session_dir / "stop-receipt.json",
+        )
+        session = None
+
         jobs_path = mission_dir / "score-jobs.jsonl"
-        _write_jsonl(
-            jobs_path,
-            (
+        if recovered_observation is None:
+            score_jobs = (
                 {"job_id": "reobserve-direct", "manifest": str(observation["manifest"])},
                 {"job_id": "supply-union-stripped", "manifest": str(supply["manifest"])},
-            ),
-        )
+            )
+            score_mode = "--finalize"
+        else:
+            score_jobs = (
+                {
+                    "job_id": "reobserve-direct-recovered",
+                    "manifest": str(observation["manifest"]),
+                    "operation": "score",
+                },
+                {
+                    "job_id": "supply-union-stripped",
+                    "manifest": str(supply["manifest"]),
+                    "operation": "finalize",
+                },
+            )
+            score_mode = "--per-job-operation"
+        _write_jsonl(jobs_path, score_jobs)
         score_dir = mission_dir / "parallel-finalize"
         completed = subprocess.run(
             [
                 "bash",
                 str(REPO / "scripts/evaluate_parallel.sh"),
-                "--finalize",
+                score_mode,
                 "--jobs",
                 str(jobs_path),
                 "--output-dir",
@@ -557,14 +654,22 @@ def _launch(root: Path) -> Mapping[str, object]:
         score_summary = _read_json(score_dir / "batch-summary.json")
         if score_summary.get("failed") != 0 or score_summary.get("succeeded") != 2:
             raise RuntimeError("outer-parallel official finalization did not settle both jobs")
-        for phase in (observation, supply):
-            if verify_bundle(phase["manifest"]).attempt_state != "FINALIZED":
-                raise RuntimeError("official finalizer did not settle an attempt")
+        observation_state = verify_bundle(observation["manifest"]).attempt_state
+        supply_state = verify_bundle(supply["manifest"]).attempt_state
+        if recovered_observation is None:
+            if observation_state != "FINALIZED" or supply_state != "FINALIZED":
+                raise RuntimeError("official finalizer did not settle both attempts")
+        elif observation_state != "ABORTED" or supply_state != "FINALIZED":
+            raise RuntimeError("recovery scoring changed source state or failed to finalize supply")
 
         receipt = {
             "schema": "saea-a2t-self-consistency-flight-receipt-v1",
             "run_id": RUN_ID,
-            "status": "FINALIZED",
+            "status": (
+                "FINALIZED"
+                if recovered_observation is None
+                else "RECOVERED_OBSERVATION_SCORED_AND_SUPPLY_FINALIZED"
+            ),
             "study_commit": context["commit"],
             "mission_dir": str(mission_dir),
             "elapsed_seconds": time.perf_counter() - started,
@@ -573,12 +678,15 @@ def _launch(root: Path) -> Mapping[str, object]:
             "phases": {
                 OBSERVATION_PHASE: {
                     "attempt_id": observation_attempt,
+                    "attempt_state": observation_state,
+                    "recovered_without_reflight": recovered_observation is not None,
                     "manifest": str(observation["manifest"]),
                     "manifest_sha256": _sha256_file(observation["manifest"]),
                     "outputs_sha256": _sha256_file(observation["outputs"]),
                 },
                 SUPPLY_PHASE: {
                     "attempt_id": supply_attempt,
+                    "attempt_state": supply_state,
                     "manifest": str(supply["manifest"]),
                     "manifest_sha256": _sha256_file(supply["manifest"]),
                     "outputs_sha256": _sha256_file(supply["outputs"]),
@@ -615,6 +723,14 @@ def _launch(root: Path) -> Mapping[str, object]:
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--preflight-only", action="store_true")
+    parser.add_argument(
+        "--resume-observation-manifest",
+        type=Path,
+        help=(
+            "reuse one complete ABORTED observation bundle after a downstream "
+            "zero-contact supply refusal; the observation is never re-flown"
+        ),
+    )
     args = parser.parse_args(argv)
     root = data_root()
     if args.preflight_only:
@@ -634,7 +750,17 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
         )
         return 0
-    print(json.dumps(_launch(root), indent=2, sort_keys=True, default=str))
+    print(
+        json.dumps(
+            _launch(
+                root,
+                resume_observation_manifest=args.resume_observation_manifest,
+            ),
+            indent=2,
+            sort_keys=True,
+            default=str,
+        )
+    )
     return 0
 
 

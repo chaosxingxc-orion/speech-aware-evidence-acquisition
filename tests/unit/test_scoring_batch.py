@@ -79,6 +79,31 @@ def test_load_score_jobs_resolves_paths_relative_to_the_job_file(tmp_path):
     )
 
 
+def test_load_score_jobs_accepts_explicit_per_job_operations(tmp_path):
+    first = _manifest(tmp_path / "first.run-manifest.json")
+    second = _manifest(tmp_path / "second.run-manifest.json")
+    jobs_path = tmp_path / "jobs.jsonl"
+    jobs_path.write_text(
+        "\n".join(
+            (
+                json.dumps(
+                    {"job_id": "observation", "manifest": first.name, "operation": "score"}
+                ),
+                json.dumps(
+                    {"job_id": "supply", "manifest": second.name, "operation": "finalize"}
+                ),
+            )
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    assert load_score_jobs(jobs_path, require_operation=True) == (
+        ScoreJob(job_id="observation", manifest=first.resolve(), operation="score"),
+        ScoreJob(job_id="supply", manifest=second.resolve(), operation="finalize"),
+    )
+
+
 @pytest.mark.parametrize(
     "rows,match",
     [
@@ -227,6 +252,34 @@ def test_run_score_batch_can_finalize_complete_manifests_concurrently(tmp_path):
     assert all(row["status"] == "succeeded" for row in summary["jobs"])
 
 
+def test_run_score_batch_can_mix_score_and_finalize_jobs(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.core import scoring_batch
+
+    observation = ScoreJob(
+        job_id="observation",
+        manifest=_manifest(tmp_path / "observation.run-manifest.json").resolve(),
+        operation="score",
+    )
+    supply = ScoreJob(
+        job_id="supply",
+        manifest=_manifest(tmp_path / "supply.run-manifest.json").resolve(),
+        operation="finalize",
+    )
+    monkeypatch.setattr(scoring_batch, "run_official_score_job", _verified)
+    monkeypatch.setattr(scoring_batch, "run_official_finalize_job", _finalized)
+
+    summary = run_score_batch(
+        (observation, supply),
+        output_dir=tmp_path / "scores",
+        max_workers=2,
+        operation="per-job",
+    )
+
+    assert summary["operation"] == "per-job"
+    assert summary["succeeded"] == 2
+    assert [row["operation"] for row in summary["jobs"]] == ["score", "finalize"]
+
+
 def test_run_score_batch_finishes_other_jobs_and_fails_overall(tmp_path):
     jobs = tuple(
         ScoreJob(
@@ -370,6 +423,59 @@ def test_driver_score_batch_finalize_mode_runs_the_outer_scheduler(
     assert returncode == 0
     summary = json.loads(capsys.readouterr().out)
     assert summary["operation"] == "finalize"
+    assert summary["failed"] == 0
+
+
+def test_driver_score_batch_per_job_mode_runs_the_outer_scheduler(
+    tmp_path, monkeypatch, capsys
+):
+    from speech_aware_evidence_acquisition.core import scoring_batch
+    from speech_aware_evidence_acquisition.core.driver.cli import main
+
+    observation = _manifest(tmp_path / "observation.run-manifest.json")
+    supply = _manifest(tmp_path / "supply.run-manifest.json")
+    jobs_path = tmp_path / "jobs.jsonl"
+    jobs_path.write_text(
+        "\n".join(
+            (
+                json.dumps(
+                    {
+                        "job_id": "observation",
+                        "manifest": observation.name,
+                        "operation": "score",
+                    }
+                ),
+                json.dumps(
+                    {
+                        "job_id": "supply",
+                        "manifest": supply.name,
+                        "operation": "finalize",
+                    }
+                ),
+            )
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(scoring_batch, "run_official_score_job", _verified)
+    monkeypatch.setattr(scoring_batch, "run_official_finalize_job", _finalized)
+
+    returncode = main(
+        [
+            "score-batch",
+            "--jobs",
+            str(jobs_path),
+            "--output-dir",
+            str(tmp_path / "scores"),
+            "--workers",
+            "2",
+            "--per-job-operation",
+        ]
+    )
+
+    assert returncode == 0
+    summary = json.loads(capsys.readouterr().out)
+    assert summary["operation"] == "per-job"
     assert summary["failed"] == 0
 
 

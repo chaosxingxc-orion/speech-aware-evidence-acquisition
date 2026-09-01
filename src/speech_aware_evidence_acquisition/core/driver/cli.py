@@ -567,12 +567,18 @@ def _cli_score_batch(args: argparse.Namespace) -> int:
 
     from ..scoring_batch import load_score_jobs, run_score_batch
 
-    jobs = load_score_jobs(Path(args.jobs))
+    jobs = load_score_jobs(
+        Path(args.jobs), require_operation=args.per_job_operation
+    )
     summary = run_score_batch(
         jobs,
         output_dir=Path(args.output_dir),
         max_workers=args.workers,
-        operation="finalize" if args.finalize else "score",
+        operation=(
+            "per-job"
+            if args.per_job_operation
+            else ("finalize" if args.finalize else "score")
+        ),
     )
     print(json.dumps(summary, indent=2, sort_keys=True))
     return 0 if summary["failed"] == 0 else 1
@@ -755,12 +761,22 @@ def main(argv: list[str] | None = None) -> int:
         default=max(1, min(4, os.cpu_count() or 1)),
         help="maximum number of complete scorer processes to run concurrently",
     )
-    score_batch.add_argument(
+    score_operation = score_batch.add_mutually_exclusive_group()
+    score_operation.add_argument(
         "--finalize",
         action="store_true",
         help=(
             "run the existing authoritative finalize command per complete manifest; "
             "this scores exactly once, writes scores, and settles each attempt"
+        ),
+    )
+    score_operation.add_argument(
+        "--per-job-operation",
+        action="store_true",
+        help=(
+            "require an operation field on every JSONL job and run that complete "
+            "manifest through score or finalize as declared; useful when a sealed "
+            "recovery artifact is scoreable but no longer finalizable"
         ),
     )
     score_batch.set_defaults(func=_cli_score_batch)
