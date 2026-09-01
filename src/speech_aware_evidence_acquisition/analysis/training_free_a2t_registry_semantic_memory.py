@@ -210,7 +210,9 @@ def _candidate_payload(
         report, outcomes
     )
     full_cells = payload.pop("full_surface_return_cells")
+    state_counts = payload.pop("state_class_counts")
     assert isinstance(full_cells, Mapping)
+    assert isinstance(state_counts, Mapping)
     non_neutral = {
         key: value
         for key, value in full_cells.items()
@@ -226,6 +228,15 @@ def _candidate_payload(
         "maximum_support": max(supports),
         "classes_at_memory_support_minimum": sum(
             support >= v1.MIN_CELL_SUPPORT for support in supports
+        ),
+    }
+    dominant = max((int(value) for value in state_counts.values()), default=0)
+    payload["state_class_summary"] = {
+        "live_class_count": len(state_counts),
+        "dominant_class_count": dominant,
+        "dominant_class_share": dominant / len(outcomes),
+        "counts_sha256": v1._identity_digest(  # noqa: SLF001
+            [f"{key}\t{value}" for key, value in state_counts.items()]
         ),
     }
     return payload
@@ -317,12 +328,12 @@ def assert_policy_admits_prospective(document: Mapping[str, object]) -> None:
     if not isinstance(selected, Mapping):
         raise v1.SupplyMemoryError("semantic policy lacks a selected candidate")
     metrics = selected.get("metrics")
-    counts = selected.get("state_class_counts")
+    counts = selected.get("state_class_summary")
     if not isinstance(metrics, Mapping) or int(metrics.get("supplied", 0)) <= 0:
         raise v1.SupplyMemoryError("semantic policy does not change the v1 all-stop decision")
     if int(metrics.get("stopped", 0)) <= 0:
         raise v1.SupplyMemoryError("semantic policy does not exercise both actions")
-    if not isinstance(counts, Mapping) or len(counts) < 2:
+    if not isinstance(counts, Mapping) or int(counts.get("live_class_count", 0)) < 2:
         raise v1.SupplyMemoryError("semantic policy state is not live")
 
 

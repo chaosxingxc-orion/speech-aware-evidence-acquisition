@@ -202,7 +202,9 @@ def test_v2_artifact_is_self_hashed_and_admission_is_fail_closed() -> None:
     v1.assert_self_hash(artifact)
     selected = artifact["selected"]
     assert "full_surface_return_cells" not in selected
+    assert "state_class_counts" not in selected
     assert selected["state_support_summary"]["state_class_count"] == 2
+    assert selected["state_class_summary"]["live_class_count"] == 2
     assert len(selected["non_neutral_return_cells"]) == 2
     v2.assert_policy_admits_prospective(artifact)
 
