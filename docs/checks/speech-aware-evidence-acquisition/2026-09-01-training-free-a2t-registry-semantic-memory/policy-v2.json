@@ -1,0 +1,370 @@
+{
+  "candidate_reports": {
+    "domain-category-coarse-v2": {
+      "candidate_id": "domain-category-coarse-v2",
+      "decision_identity_sha256": "ec85d8cf7db6724186c4d80b321e257cbc2e42f69d6435905b216a2d12d0065c",
+      "gates": {
+        "both_actions": false,
+        "every_fold_nonnegative": true,
+        "harm_avoidance": true,
+        "harm_maximum": true,
+        "net_gain": false,
+        "positive_ci90_lower": false,
+        "positive_fold_count": false,
+        "save_retention": false,
+        "saved_minimum": false,
+        "state_liveness": true
+      },
+      "metrics": {
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "fold_net_gains": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "harmed": 0,
+        "n_samples": 217,
+        "net_gain": 0,
+        "saved": 0,
+        "second_contact_rate": 0.0,
+        "sigma_hat": 0.0,
+        "stopped": 217,
+        "supplied": 0
+      },
+      "non_neutral_return_cells": {
+        "[\"multiple\",\"all-known\",\"mixed\",\"wearables/device_state\"]": {
+          "harms": 1,
+          "n": 1,
+          "neutral": 0,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"smart_car/body_control\"]": {
+          "harms": 1,
+          "n": 2,
+          "neutral": 1,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"smart_car/climate_environment\"]": {
+          "harms": 1,
+          "n": 4,
+          "neutral": 3,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"smart_car/driving_dynamics\"]": {
+          "harms": 2,
+          "n": 4,
+          "neutral": 2,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"smart_home/appliances\"]": {
+          "harms": 1,
+          "n": 3,
+          "neutral": 2,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"smart_home/climate\"]": {
+          "harms": 6,
+          "n": 11,
+          "neutral": 5,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"smart_home/core_control\"]": {
+          "harms": 1,
+          "n": 5,
+          "neutral": 4,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"smart_home/diagnostics\"]": {
+          "harms": 2,
+          "n": 4,
+          "neutral": 2,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"smart_home/energy\"]": {
+          "harms": 2,
+          "n": 9,
+          "neutral": 6,
+          "saves": 1
+        },
+        "[\"single\",\"all-known\",\"exact\",\"smart_home/lighting\"]": {
+          "harms": 1,
+          "n": 13,
+          "neutral": 12,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"smart_home/maintenance\"]": {
+          "harms": 5,
+          "n": 13,
+          "neutral": 4,
+          "saves": 4
+        },
+        "[\"single\",\"all-known\",\"exact\",\"smart_home/security\"]": {
+          "harms": 3,
+          "n": 6,
+          "neutral": 3,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"smart_home/status\"]": {
+          "harms": 5,
+          "n": 11,
+          "neutral": 4,
+          "saves": 2
+        },
+        "[\"single\",\"all-known\",\"exact\",\"wearables/health_activity\"]": {
+          "harms": 1,
+          "n": 18,
+          "neutral": 17,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"unresolved\",\"smart_home/appliances\"]": {
+          "harms": 2,
+          "n": 3,
+          "neutral": 1,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"unresolved\",\"wearables/device_state\"]": {
+          "harms": 2,
+          "n": 6,
+          "neutral": 4,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"unresolved\",\"wearables/health_activity\"]": {
+          "harms": 0,
+          "n": 4,
+          "neutral": 3,
+          "saves": 1
+        }
+      },
+      "promotion_passed": false,
+      "state_class_summary": {
+        "counts_sha256": "af91b84c24a97a0b8adb7d05b04eac0ca74417d782acbf6e1dcf81942fbef4fb",
+        "dominant_class_count": 18,
+        "dominant_class_share": 0.08294930875576037,
+        "live_class_count": 62
+      },
+      "state_support_summary": {
+        "classes_at_memory_support_minimum": 13,
+        "maximum_support": 18,
+        "minimum_support": 1,
+        "state_class_count": 62,
+        "zero_return_state_count": 45
+      }
+    },
+    "domain-category-detailed-v2": {
+      "candidate_id": "domain-category-detailed-v2",
+      "decision_identity_sha256": "ec85d8cf7db6724186c4d80b321e257cbc2e42f69d6435905b216a2d12d0065c",
+      "gates": {
+        "both_actions": false,
+        "every_fold_nonnegative": true,
+        "harm_avoidance": true,
+        "harm_maximum": true,
+        "net_gain": false,
+        "positive_ci90_lower": false,
+        "positive_fold_count": false,
+        "save_retention": false,
+        "saved_minimum": false,
+        "state_liveness": true
+      },
+      "metrics": {
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "fold_net_gains": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "harmed": 0,
+        "n_samples": 217,
+        "net_gain": 0,
+        "saved": 0,
+        "second_contact_rate": 0.0,
+        "sigma_hat": 0.0,
+        "stopped": 217,
+        "supplied": 0
+      },
+      "non_neutral_return_cells": {
+        "[\"multiple\",\"all-known\",\"mixed\",\"mixed\",\"mixed\",\"wearables/device_state\"]": {
+          "harms": 1,
+          "n": 1,
+          "neutral": 0,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"one\",\"one\",\"smart_car/body_control\"]": {
+          "harms": 1,
+          "n": 2,
+          "neutral": 1,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"one\",\"one\",\"smart_car/climate_environment\"]": {
+          "harms": 1,
+          "n": 1,
+          "neutral": 0,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"one\",\"one\",\"smart_car/driving_dynamics\"]": {
+          "harms": 2,
+          "n": 4,
+          "neutral": 2,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"one\",\"one\",\"smart_home/appliances\"]": {
+          "harms": 1,
+          "n": 3,
+          "neutral": 2,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"one\",\"one\",\"smart_home/climate\"]": {
+          "harms": 2,
+          "n": 4,
+          "neutral": 2,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"one\",\"one\",\"smart_home/diagnostics\"]": {
+          "harms": 2,
+          "n": 4,
+          "neutral": 2,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"one\",\"one\",\"smart_home/energy\"]": {
+          "harms": 0,
+          "n": 2,
+          "neutral": 1,
+          "saves": 1
+        },
+        "[\"single\",\"all-known\",\"exact\",\"one\",\"one\",\"smart_home/maintenance\"]": {
+          "harms": 3,
+          "n": 7,
+          "neutral": 0,
+          "saves": 4
+        },
+        "[\"single\",\"all-known\",\"exact\",\"one\",\"one\",\"smart_home/status\"]": {
+          "harms": 5,
+          "n": 11,
+          "neutral": 4,
+          "saves": 2
+        },
+        "[\"single\",\"all-known\",\"exact\",\"one\",\"one\",\"wearables/health_activity\"]": {
+          "harms": 1,
+          "n": 17,
+          "neutral": 16,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"two\",\"two\",\"smart_home/climate\"]": {
+          "harms": 4,
+          "n": 7,
+          "neutral": 3,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"two\",\"two\",\"smart_home/energy\"]": {
+          "harms": 2,
+          "n": 7,
+          "neutral": 5,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"two\",\"two\",\"smart_home/lighting\"]": {
+          "harms": 1,
+          "n": 12,
+          "neutral": 11,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"two\",\"two\",\"smart_home/maintenance\"]": {
+          "harms": 2,
+          "n": 3,
+          "neutral": 1,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"two\",\"two\",\"smart_home/security\"]": {
+          "harms": 3,
+          "n": 5,
+          "neutral": 2,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"exact\",\"zero\",\"zero\",\"smart_home/core_control\"]": {
+          "harms": 1,
+          "n": 3,
+          "neutral": 2,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"unresolved\",\"unresolved\",\"three-plus\",\"wearables/device_state\"]": {
+          "harms": 2,
+          "n": 6,
+          "neutral": 4,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"unresolved\",\"unresolved\",\"two\",\"smart_home/appliances\"]": {
+          "harms": 2,
+          "n": 3,
+          "neutral": 1,
+          "saves": 0
+        },
+        "[\"single\",\"all-known\",\"unresolved\",\"unresolved\",\"two\",\"wearables/health_activity\"]": {
+          "harms": 0,
+          "n": 4,
+          "neutral": 3,
+          "saves": 1
+        }
+      },
+      "promotion_passed": false,
+      "state_class_summary": {
+        "counts_sha256": "0361517100fc20dd4c3a15db117eb6b1750f550f351b14ea3e898b60170e4cd4",
+        "dominant_class_count": 17,
+        "dominant_class_share": 0.07834101382488479,
+        "live_class_count": 83
+      },
+      "state_support_summary": {
+        "classes_at_memory_support_minimum": 11,
+        "maximum_support": 17,
+        "minimum_support": 1,
+        "state_class_count": 83,
+        "zero_return_state_count": 63
+      }
+    }
+  },
+  "claim_status": "fully adaptive retrospective discovery only",
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-A2T-MF-TFRL-REGISTRY-SEMANTIC-MEMORY-V2",
+  "fold_identity_sha256": [
+    "5c3bf2adae5d83661d6643a3af2c3b18a089591ede8cb97c3e26206ebc7cbb08",
+    "4b3ac14ea49d1bd0d4fa30a5f56a3b2b1748be053878264104ea9ce41dc60289",
+    "e70e4d3c87f0c6e911d3013fc11be0769d9e710db029e42f3360a7851af34594",
+    "ceadee156607a473ea8372c7df5f3e32b7dd1b7e00ba85d1b40bb72027de09e3",
+    "b31e0f84a939e3cfbfb9f9998a9c59376bbef4ced7847eb5e8ceab5a7676cc88"
+  ],
+  "offline_guard": {
+    "outbound_connection_attempts": 0,
+    "targets": []
+  },
+  "policy": {
+    "default_action": "STOP_DIRECT",
+    "maximum_cell_harms": 0,
+    "minimum_cell_saves": 2,
+    "minimum_cell_support": 5,
+    "parameter_training": "none"
+  },
+  "predecessor": {
+    "artifact_self_sha256": "99c19db3f1adfde2c86b6c9ebfc4c18fc3dc58fe2ccfde22a78c679a408ca7c6",
+    "experiment_id": "SAEA-A2T-MF-TFRL-SIGNED-SUPPLY-MEMORY-V1",
+    "v1_decision": "STOP_DIRECT on 217 of 217",
+    "v1_memory_sha256": "a17cef81f1746c2b15f6cf6de235e4a182e4eb57bf749d1198e67767bdf81fd6"
+  },
+  "promotion_passed": false,
+  "schema": "saea-a2t-training-free-registry-semantic-memory-policy-v2",
+  "selected": null,
+  "selected_candidate": null,
+  "self_sha256": "a7fab72e77a60d047b2c222fbbbdd9866cf81a45350c89cbd0de09039b909583",
+  "semantic_state_sha256": "e84edaa48db42829ae4c4f17e203c61b60e4d5bd19ec851516177b71d23bdfbe",
+  "source_hashes": {
+    "a0_outputs": "e81549266834b8b6d2bfa0500e22e92fb130923bd46b619139ba2969a8e1b75c",
+    "headroom_supply_outputs": "7119918fb5904b9a7198f5fec6f4a6b3d8d9acbefe2991ebb4fb3553c4a4c8e4",
+    "population_supply_outputs": "8d70f56bcffb8ccecbdbf638170b28575fde4fe7574e607009cf69a52038f282",
+    "receipt": "d99570a797744f7dc3db53bdb898611836ae2682a02e726b974d05734c6cbb2d",
+    "v1_artifact": "a42b826cc92edd4715017a1f17d09fde9b18f8f9a41ab0a5c603f2124fa66aed"
+  },
+  "state_contract": "v1 structural state plus selected registry domain/category pairs",
+  "static_surface_terminal_rule": "failure closes categorical and threshold search on this 217-row surface"
+}
