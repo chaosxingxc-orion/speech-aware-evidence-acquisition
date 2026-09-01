@@ -215,17 +215,31 @@ def render_union_stripped_registry(
     observed_calls, observed_parsed = parse_tool_calls_text(observation_response)
     selected = {call.name for call in (*m0_calls, *observed_calls)}
 
-    rows_by_name: dict[str, Mapping[str, str]] = {}
+    rows_by_name: dict[str, tuple[int, Mapping[str, str]]] = {}
     for row in registry_rows:
         name = row.get("tool_name")
         if not isinstance(name, str) or not name:
             raise SelfConsistencyError("registry row lacks a non-empty tool_name")
         if name in rows_by_name:
             raise SelfConsistencyError(f"duplicate registry tool_name {name!r}")
-        rows_by_name[name] = row
-    names = tuple(sorted(selected & rows_by_name.keys()))
+        tool_id = row.get("tool_id")
+        try:
+            numeric_tool_id = int(tool_id)
+        except (TypeError, ValueError):
+            raise SelfConsistencyError(
+                f"registry tool {name!r} lacks a numeric tool_id"
+            ) from None
+        rows_by_name[name] = (numeric_tool_id, row)
+    names = tuple(
+        name
+        for name, (_tool_id, _row) in sorted(
+            rows_by_name.items(), key=lambda item: (item[1][0], item[0])
+        )
+        if name in selected
+    )
     text = "\n".join(
-        render_registry_row(rows_by_name[name], strip_defaults=True) for name in names
+        render_registry_row(rows_by_name[name][1], strip_defaults=True)
+        for name in names
     )
     return SupplyRender(text=text, tool_names=names, parsed_pair=(m0_parsed, observed_parsed))
 
