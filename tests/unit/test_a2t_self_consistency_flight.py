@@ -8,11 +8,15 @@ from types import SimpleNamespace
 
 import pytest
 
+from speech_aware_evidence_acquisition.contracts import ExecutionPlan
+from speech_aware_evidence_acquisition.contracts.ledger import _parse_ledger_tables
+from speech_aware_evidence_acquisition.core.config import compose
 from speech_aware_evidence_acquisition.rails.probes import (
     a2t_self_consistency_flight as flight,
 )
 
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
 REGISTRY = (
     {
         "tool_id": "1",
@@ -54,6 +58,36 @@ def _receipt_items() -> tuple[dict[str, object], ...]:
             "audio_sha256": "b" * 64,
         },
     )
+
+
+def test_committed_plan_binds_composition_and_exposure_row() -> None:
+    plan_path = (
+        REPO_ROOT
+        / "docs/checks/speech-aware-evidence-acquisition"
+        / "2026-09-01-a2t-self-consistency-104-v1/execution-plan-template.json"
+    )
+    document = json.loads(plan_path.read_text(encoding="utf-8"))
+    fragments = document["config_composition"]
+    composed = compose(
+        REPO_ROOT,
+        fragments["model"],
+        fragments["dataset"],
+        fragments["baseline"],
+        fragments["experiment"],
+    )
+    plan = ExecutionPlan(**document["execution_plan"]).validate()
+    rows = _parse_ledger_tables(
+        (REPO_ROOT / "docs/exposure-ledger.md").read_text(encoding="utf-8")
+    )
+    matched = [row for row in rows if row["run/experiment id"] == plan.run_id]
+
+    assert composed.config_hash == plan.protocol_hash
+    assert composed.values["speech_native_agent_executor_id"] == flight.AGENT_EXECUTOR_ID
+    assert composed.values["speech_native_contact_ceiling_per_task"] == 1
+    assert composed.values["scorers"] == ["a2t-toolcall", "cost"]
+    assert len(matched) == 1
+    assert matched[0]["split identity hash"] == plan.split_identity_hash
+    assert matched[0]["calls"] == str(plan.planned_model_calls)
 
 
 def test_build_supply_material_is_identity_complete_and_gold_free() -> None:

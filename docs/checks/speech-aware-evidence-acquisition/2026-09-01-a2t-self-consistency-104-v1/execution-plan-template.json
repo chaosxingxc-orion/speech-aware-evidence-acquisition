@@ -1,0 +1,25 @@
+{
+  "schema": "saea-self-consistency-flight-plan-v1",
+  "exposure_pre_registration_id": "SAEA-A2T-TFRL-SELF-CONSISTENCY-104-V1",
+  "execution_plan": {
+    "attempt_id": null,
+    "carrier_lock_key": "audio2tool",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 213,
+    "planned_speech_audio_seconds": 1200,
+    "protocol_hash": "f819f460cadbe8911d81c476be3f41050cd93f896bb88fc4836a3033d9a4f66d",
+    "run_id": "SAEA-A2T-TFRL-SELF-CONSISTENCY-104-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "f5a030189cf80dcbc52899e2fa5f819bac03874f2ad3f9645fdc60c432a9bf3a",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "config_composition": {
+    "baseline": "a2t-self-consistency-agentloop",
+    "dataset": "audio2tool-g1-104",
+    "experiment": "a2t-training-free-self-consistency-104-v1",
+    "model": "q4km-mmproj-free-speech-native-np2-a2t-max1024"
+  },
+  "attempt_binding": "The one-shot launcher replaces only execution_plan.attempt_id with the newly reserved attempt id. Every other field must compare exactly."
+}

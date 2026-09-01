@@ -54,8 +54,8 @@
   },
   "renderer": {
     "source": "reuse the registered Stage-2B values-stripped registry-row renderer",
-    "tool_selection": "parse both response call lists with the frozen scorer parser; take the sorted unique union of registry-resolved predicted tool names",
-    "ordering": "registry row order; response order and duplicate calls cannot change the payload",
+    "tool_selection": "parse both response call lists with the frozen scorer parser; take the unique union of registry-resolved predicted tool names",
+    "ordering": "ascending numeric registry tool_id; response order, duplicate calls, and source row order cannot change the payload",
     "removed_field": "argument_defaults",
     "retained_fields": "all other fields of each selected registry row",
     "forbidden": "gold tool names, expected arguments, reference text, sample tier, sample identity, reward, or any future response"
