@@ -1,0 +1,189 @@
+{
+  "experiment_id": "SAEA-A2T-MF-TFRL-SCHEMA-RISK-MEMORY-V1",
+  "schema": "saea-a2t-training-free-schema-risk-memory-experiment-v1",
+  "date": "2026-09-01",
+  "execution_profile": "model-free-check",
+  "purpose": "Test whether deterministic deployment-registry schema-risk diagnostics over M0 and REOBSERVE_DIRECT separate useful from harmful SUPPLY_UNION_STRIPPED returns on the already-exposed A2T-G1-104 cohort.",
+  "predecessor": {
+    "experiment_id": "SAEA-A2T-TFRL-SELF-CONSISTENCY-104-V1",
+    "result_self_sha256": "ee7368f2ba0587fa959438a965bea3c604261aad0924dd303837f3f853668b2b",
+    "policy_self_sha256": "9e16405535da114f1ccf42d457e7f7ec20099b2f6df5b76d264231e00365c132",
+    "verdict": "direct consistency relation was live but reward-inseparable; both registered policies chose STOP_M0 on 104 of 104",
+    "measured_reason_for_successor": "the prior state compared response structure but did not validate required versus optional parameters, JSON value types, or explicit deployment-registry enum and numeric constraints"
+  },
+  "prior_evidence_constraint": {
+    "finding": "the frozen core is not a safe menu arbitrator among supplied candidates",
+    "source": "docs/readiness/2026-08-20-pcorrf-verdict.md section 8",
+    "consequence": "this experiment uses deterministic external schema validation and does not ask the core to select among candidate tool rows"
+  },
+  "single_variable_change": {
+    "changed": "replace the prior pairwise-consistency state with a deterministic schema-risk state computed from both direct responses and the deployment registry",
+    "unchanged": [
+      "104-sample already-exposed signed-return surface",
+      "STOP_M0 and SUPPLY_UNION_STRIPPED actions",
+      "supply availability and values-stripped renderer",
+      "STOP_M0 default",
+      "official exact_match primary reward",
+      "five-fold whole-query-group isolation",
+      "minimum cell support 4",
+      "minimum cell saves 2",
+      "maximum cell harms 0",
+      "10,000-replicate grouped CI90",
+      "promotion thresholds and tie-break",
+      "zero parameter training and zero new model contact"
+    ]
+  },
+  "population": {
+    "carrier": "audio2tool",
+    "split_role": "discovery",
+    "split_name": "A2T-G1-104",
+    "count": 104,
+    "receipt": "docs/receipts/a2t/A2T-G1-104.json",
+    "receipt_sha256": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db",
+    "split_identity_hash": "516f92d9b919640969676eb10b776d9c479169fb0a387497e943c726b2191326",
+    "run_identity_hash": "f5a030189cf80dcbc52899e2fa5f819bac03874f2ad3f9645fdc60c432a9bf3a",
+    "exposure_status": "fully exposed secondary discovery; no row, state, or fold is fresh support",
+    "group_id": "receipt query_idx recovered from the pinned parent receipt",
+    "prohibited": [
+      "the remaining 296 frozen discovery samples",
+      "any unexposed Audio2Tool sample",
+      "G2",
+      "FINAL60",
+      "test annotations",
+      "future turns"
+    ]
+  },
+  "source_surface": {
+    "raw_result_sha256": "8527282e110cd11a9d87f0d65d06d55f266e0a27a9bb95d7f7eff3b103266d39",
+    "m0_outputs_sha256": "dea60ff1e63fd2ef11c93edf8808217062fea3f0565ed5b60f136264bc6a9467",
+    "observation_outputs_sha256": "888626b97c0525ce16abd91e6d3da1d5df50955b5a7bf6eb6cda8ba8657fb0f9",
+    "supply_outputs_sha256": "14cf59eaf053dd344b4b6b874f1e182de6ea11599c7e2a4a0a620f715690d93f",
+    "observation_score_sha256": "c82d04d110596c18319d3f9d5e364705193a6bd5bae83a6995981fd56e0e88ac",
+    "supply_scores_sha256": "bb6e154c5da210f363ed7ea98c1c42b04087d5291bbf3d0a88516e7cf158fd07",
+    "official_aggregate_fidelity_required": true,
+    "supply_available": 92,
+    "supply_unavailable": 12,
+    "always_supply_saves": 4,
+    "always_supply_harms": 10
+  },
+  "schema_parser": {
+    "signature_grammar": "toolName(name: Type, optionalName: Type?) with comma-separated scalar, List<T>, or Map parameter types; any ambiguity becomes unresolved",
+    "required_parameter": "a declared parameter whose type lacks a terminal question mark",
+    "optional_parameter": "a declared parameter whose type has a terminal question mark",
+    "type_families": {
+      "Boolean": "JSON boolean only",
+      "Int": "JSON integer excluding boolean",
+      "Float": "JSON integer or float excluding boolean",
+      "List": "JSON array",
+      "Map": "JSON object",
+      "other_declared_type": "JSON string"
+    },
+    "constraint_grammar": "zero or more name: [body] clauses; a body is checked only when it is an exact enum list or a single numeric inclusive range",
+    "numeric_ranges": "inclusive; supports integers, decimals, negatives, optional whitespace, and zero-padded endpoints",
+    "enum_comparison": "exact string equality after trimming registry delimiter whitespace",
+    "unparseable_signature_or_constraint": "explicit unresolved or uncheckable state; never guessed and never counted as a violation"
+  },
+  "runtime_state": {
+    "per_response": [
+      "parse class: invalid, empty, single, or multiple",
+      "registry resolution: all-known, some-unknown, or all-unknown",
+      "required-key coverage: complete, missing, mixed, or unresolved",
+      "unknown-key status: none, present, mixed, or unresolved",
+      "JSON type status: valid, invalid, mixed, or unresolved",
+      "explicit constraint status: valid, invalid, mixed, unconstrained, or unresolved"
+    ],
+    "pairwise": [
+      "M0 risk class",
+      "REOBSERVE_DIRECT risk class",
+      "risk relation: exact, M0-lower, observation-lower, incomparable, or unresolved",
+      "bucketed total violation counts for each response"
+    ],
+    "candidates": {
+      "schema-risk-coarse-v1": "M0 risk class plus pairwise risk relation",
+      "schema-risk-detailed-v1": "both response risk classes, pairwise risk relation, and both violation-count buckets"
+    },
+    "multiple_call_aggregation": "aggregate unordered per-call statuses; call order and duplicate identical calls do not change state",
+    "allowed": [
+      "M0 and REOBSERVE_DIRECT parsed call structure",
+      "deployment registry signature type declarations",
+      "deployment registry argument constraints",
+      "literal predicted JSON argument values only for type and constraint validation"
+    ],
+    "forbidden": [
+      "gold labels or correctness",
+      "reference transcript or spoken query text",
+      "supply response or future turn",
+      "sample id, query_idx, rendition id, or tier as a feature",
+      "tool name, tool id, domain, category, or description as a feature",
+      "literal argument values in the state key",
+      "reward as a feature"
+    ],
+    "invariances": [
+      "gold mutation",
+      "sample and tier identity",
+      "tool-call order",
+      "duplicate identical calls",
+      "registry row order",
+      "renaming tools while preserving their schemas and response references"
+    ]
+  },
+  "memory_policy": {
+    "type": "five-fold whole-query-group cross-fitted exact-cell non-parametric action-return memory",
+    "parameter_training": "none",
+    "default_action": "STOP_M0",
+    "decision": "choose SUPPLY_UNION_STRIPPED only when supply is available and the other-fold matching schema-risk cell has at least 4 samples, at least 2 observed saves, and zero observed harms; otherwise choose STOP_M0",
+    "candidate_selection": "among candidates passing every gate, maximize cross-fitted exact-match net gain, then saves, then minimize supply contacts, then choose lexical candidate id",
+    "no_counterfactual_imputation": true
+  },
+  "crossfit": {
+    "folds": 5,
+    "seed": 20260901,
+    "assignment": "reuse the predecessor's deterministic balanced whole-query-group assignment exactly",
+    "bootstrap": {
+      "unit": "query_idx group",
+      "replicates": 10000,
+      "seed": 20260901,
+      "ci_level": 0.9
+    }
+  },
+  "fidelity_gates": {
+    "predecessor_state_identity_sha256": "890538474a7fcbc0ab981f54e2168358096be66145f306c9e6f7ba063808b246",
+    "predecessor_decision_identity_sha256": "07afc9c6e51b8b61f5ce8c1cf1c705a2e727e7a82c1f9a556247f252f386c31c",
+    "outcomes_identical_to_predecessor": true,
+    "fold_identity_identical_to_predecessor": true,
+    "runtime_state_gold_mutation_invariance": true,
+    "schema_ambiguity_fail_closed": true,
+    "state_live_classes_at_least": 2,
+    "non_dominant_state_samples_at_least": 10,
+    "decision_set_differs_from_predecessor_all_stop": true
+  },
+  "promotion_gates": {
+    "both_actions_observed": true,
+    "supplied_samples_at_least": 5,
+    "supplied_samples_at_most": 52,
+    "saved_exact_matches_at_least": 3,
+    "harmful_supplies_at_most": 1,
+    "avoid_always_supply_harms_fraction_at_least": 0.8,
+    "retain_always_supply_saves_fraction_at_least": 0.5,
+    "exact_match_net_gain_at_least": 2,
+    "grouped_ci90_lower_bound_strictly_positive": true,
+    "tool_accuracy_net_gain_nonnegative": true,
+    "every_fold_exact_match_net_gain_nonnegative": true,
+    "positive_exact_match_folds_at_least": 2,
+    "all_conjunctive": true
+  },
+  "decision_ladder": {
+    "failure": "write a negative artifact and close schema-risk targeting for the current supply action; the next method must change information acquisition or supply generation rather than add another state category or relax a threshold",
+    "success": "freeze exactly one schema-risk controller proposal for a separately preregistered fresh approximately-100-sample exposed-discovery AgentLoop support flight",
+    "support_success": "only a stable prospective gain may propose a larger discovery experiment; no test or G2 access follows directly",
+    "no_test_tuning": true
+  },
+  "contacts": {
+    "frozen_core": 0,
+    "embedding_tool": 0,
+    "tokenizer": 0,
+    "http_or_socket": 0,
+    "audio_seconds": 0,
+    "gpu_hours": 0.0
+  }
+}
