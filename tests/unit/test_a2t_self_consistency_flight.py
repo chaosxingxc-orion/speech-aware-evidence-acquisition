@@ -10,7 +10,7 @@ import pytest
 
 from speech_aware_evidence_acquisition.contracts import ExecutionPlan
 from speech_aware_evidence_acquisition.contracts.ledger import _parse_ledger_tables
-from speech_aware_evidence_acquisition.core.config import compose
+from speech_aware_evidence_acquisition.core.config import compose, protocol_hash
 from speech_aware_evidence_acquisition.rails.probes import (
     a2t_self_consistency_flight as flight,
 )
@@ -81,7 +81,10 @@ def test_committed_plan_binds_composition_and_exposure_row() -> None:
     )
     matched = [row for row in rows if row["run/experiment id"] == plan.run_id]
 
-    assert composed.config_hash == plan.protocol_hash
+    assert composed.config_hash == document["composed_config_sha256"]
+    assert plan.protocol_hash == protocol_hash(
+        composed.config_hash, composed.values["arm"], plan.split_identity_hash
+    )
     assert composed.values["speech_native_agent_executor_id"] == flight.AGENT_EXECUTOR_ID
     assert composed.values["speech_native_contact_ceiling_per_task"] == 1
     assert composed.values["scorers"] == ["a2t-toolcall", "cost"]
