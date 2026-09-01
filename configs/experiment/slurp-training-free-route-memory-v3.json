@@ -1,0 +1,108 @@
+{
+  "experiment_id": "SAEA-SN-MF-TFRL-ROUTE-MEMORY-V3",
+  "schema": "saea-training-free-route-memory-experiment-v3",
+  "date": "2026-09-01",
+  "execution_profile": "model-free-check",
+  "purpose": "Test whether conditioning query-vector reward memory on the runtime-visible relation between the direct answer and the proposed evidence route can preserve v2 precision while increasing safe stopping coverage.",
+  "predecessor": {
+    "experiment": "SAEA-SN-MF-TFRL-QUERY-MEMORY-V2",
+    "verdict": "discovery support failed",
+    "artifact_self_sha256": "a442bd85a9ac8235e047be737f4c97bace443063654b46d133f3702476495026",
+    "measured_reason_for_successor": "k=1 at cosine 0.95 saved 3 of 26 tuning contacts and 1 of 11 support contacts with zero harm, but the support fold required at least 2 stops; query geometry improved precision but lacked supported coverage"
+  },
+  "single_variable_change": {
+    "changed": "state representation: query-vector cosine memory is conditioned on the direct answer's rank class in the pre-contact fused evidence route",
+    "unchanged": [
+      "locked v1 baseline and knowledge bytes",
+      "eligible set is baseline-dispatched only",
+      "default action ACQUIRE",
+      "STOP requires unanimous non-positive observed acquisition return",
+      "whole-utterance group isolation",
+      "zero-harm discovery requirement",
+      "two-stage committed-artifact boundary",
+      "holdout promotion gate"
+    ]
+  },
+  "baseline": {
+    "policy": "configs/policy/kb-policy-v1-dev100.json",
+    "policy_sha256": "d68afd2cfb6e12d9cbd9d3fbcf0daf3f81f6ed8be9b2a75c4f8ffb234011a919",
+    "unchanged": true
+  },
+  "scope": {
+    "eligible": "locked-v1 baseline-dispatched trajectories with both logged frozen-core responses",
+    "actions": ["ACQUIRE", "STOP"],
+    "default_action": "ACQUIRE",
+    "may_widen_dispatch": false,
+    "counterfactual_imputation": "forbidden",
+    "model_parameter_training": "none",
+    "second_answering_model": "none"
+  },
+  "state": {
+    "contract": "direct-answer-route-class-plus-query-vector-v3",
+    "route_classes": [
+      "direct-unresolved",
+      "direct-absent",
+      "direct-rank-1-dispatched",
+      "direct-runner-up",
+      "direct-rank-3plus"
+    ],
+    "route_source": "the direct answer's parsed scenario/action and the ordered fused task targets computed before an evidence response is requested",
+    "similarity_within_route": "query-vector cosine",
+    "runtime_legal": true,
+    "forbidden": [
+      "gold labels",
+      "correctness as a state feature",
+      "reference transcript",
+      "evidence response",
+      "sample identity as a feature",
+      "speaker identity as a feature",
+      "future turns"
+    ]
+  },
+  "policy": {
+    "id": "conservative-route-conditioned-query-memory-v3",
+    "decision": "STOP only if the k highest-cosine utterance-group-independent memory neighbors have the same route class, all meet the minimum cosine, and all have observed ACQUIRE-minus-STOP primary return <= 0; otherwise ACQUIRE",
+    "grid": {
+      "k": [1, 3, 5, 7],
+      "minimum_cosine": [0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99, 0.999999]
+    },
+    "fixed_comparator": {
+      "state": "unconditioned query vector",
+      "k": 1,
+      "minimum_cosine": 0.95,
+      "selection_eligible": false
+    }
+  },
+  "populations": {
+    "exploratory_discovery": {
+      "name": "DEV-100-ROUND4",
+      "split_identity_hash": "e9a7b7febcf4fe3dc228370f7487e1e75dea3d63d447a07fbfe87c1404e2d853",
+      "exposure_status": "all reward folds already exposed by v1 and v2; no fold is described as fresh support"
+    },
+    "holdout": {
+      "name": "DEV-500-NEW400",
+      "split_identity_hash": "e1cf6fc5c795e5e1451bf0edfa57a7633dbeed3e21e3044c52adf4399a4d036c",
+      "admission": "only after a cross-fitted v3 policy artifact passes and is committed",
+      "utterance_overlap": "excluded before evaluation"
+    },
+    "prohibited": ["DEV-1000-NEW500", "FINAL60", "SLURP test", "future turns"]
+  },
+  "exploratory_stability_screen": {
+    "seed": 20260902,
+    "folds": 5,
+    "split": "whole utterance groups, deterministic balanced assignment; each decision is evaluated only against memory from the other four folds",
+    "candidate_admission": "zero harmful STOP in aggregate, at least ceil(10 percent of all eligible decisions) STOP, and at least one STOP in at least three of five folds",
+    "tie_break": "maximum contacts saved, then larger k, then larger minimum cosine",
+    "failure": "write a failed artifact and keep NEW400 unread",
+    "interpretation": "adaptive exploratory stability only; not independent support"
+  },
+  "holdout_promotion_gate": {
+    "eligible_dispatched_at_least_100": true,
+    "zero_harmful_stops": true,
+    "primary_score_non_decreasing": true,
+    "primary_ci90_lower_nonnegative": true,
+    "contact_savings_at_least_10_percent": true,
+    "all_conjunctive": true
+  },
+  "claim_boundary": "A holdout pass would be a retrospective Stage-2 training-free control-plane contribution on already-exposed devel data. Cross-fitting alone cannot revise the baseline or support a superiority claim. No result is a test, confirmatory, generality, Stage-3, or paper claim."
+}
