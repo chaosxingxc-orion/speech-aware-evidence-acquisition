@@ -717,7 +717,8 @@ def _recover_m0(root: Path, context: Mapping[str, object]) -> dict[str, object]:
         trace_manifest=paths["trace_manifest"],  # type: ignore[index]
     )
     recovered_manifest = (
-        Path(paths["trace_manifest"]).parent  # type: ignore[arg-type]
+        M0_SOURCE_FLIGHT
+        / "m0-direct"
         / f"{RUN_ID}.recovered.run-manifest.json"
     )
     _write_json(recovered_manifest, repaired)

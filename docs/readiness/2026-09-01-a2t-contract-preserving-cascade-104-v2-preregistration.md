@@ -165,3 +165,11 @@ official scorer, prediction, metric, concurrency boundary, sample, prompt, evide
 gate, or claim surface. Dataset sharding and shard-score averaging remain forbidden. Model contact
 stays closed until this amendment, recovery implementation, tests, score plan, and exposure update
 land on a clean commit and the recovery preflight passes.
+
+The first model-free recovery assembly from clean commit `56689c37` was itself refused before the
+server started: placing the recovered manifest inside `transport-trace/` made the parent M0 outputs
+fail the bundle's artifact-confinement rule. No model, gold, or scorer contact occurred. The
+implementation correction places the new manifest in the M0 root, where both the root outputs and
+child trace artifacts are confined beneath one bundle directory. A model-free verification then
+accepted all 104 output rows against the same terminal attempt. This changes no registered source
+byte, prediction, contact, score operation, or scientific rule.
