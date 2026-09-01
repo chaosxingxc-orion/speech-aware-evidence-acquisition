@@ -204,6 +204,11 @@ def test_recovery_accepts_only_fixed_aborted_observation_bytes(
         "RECOVERY_ATTEMPT_RELPATH",
         attempt.relative_to(tmp_path),
     )
+    monkeypatch.setattr(
+        launcher,
+        "RECOVERY_KNOWN_ATTEMPT_RELPATHS",
+        (attempt.relative_to(tmp_path),),
+    )
     monkeypatch.setattr(launcher, "RECOVERY_ATTEMPT_ID", "attempt-fixed-selftxobs")
     monkeypatch.setattr(launcher, "RECOVERY_OUTPUTS_SHA256", _sha256(outputs))
     monkeypatch.setattr(launcher, "RECOVERY_TRACE_SHA256", _sha256(trace))
@@ -220,3 +225,53 @@ def test_recovery_accepts_only_fixed_aborted_observation_bytes(
     outputs.write_text(outputs.read_text(encoding="utf-8") + "\n", encoding="utf-8")
     with pytest.raises(RuntimeError, match="outputs SHA-256 drift"):
         launcher._load_recovered_observation(tmp_path, context)
+
+
+def test_recovered_use_derivative_opens_zero_call_complete_attempt(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    launcher = _launcher()
+    source_outputs = tmp_path / "source-outputs.jsonl"
+    source_outputs.write_text(
+        '{"sample_id":"tier1:000001","text":"one"}\n'
+        '{"sample_id":"tier1:000002","text":"two"}\n',
+        encoding="utf-8",
+    )
+    built: dict[str, object] = {}
+
+    def fake_build_completed_manifest(**kwargs):
+        built.update(kwargs)
+        path = Path(kwargs["run_dir"]) / "manifest.json"
+        _write_json(path, {"status": "COMPLETED"})
+        return path
+
+    monkeypatch.setattr(launcher, "_build_completed_manifest", fake_build_completed_manifest)
+    result = launcher._materialize_recovered_use_derivative(
+        root=tmp_path,
+        context={"sample_ids": ("tier1:000001", "tier1:000002")},
+        source={
+            "texts": {"tier1:000001": "one", "tier1:000002": "two"},
+            "outputs": source_outputs,
+            "request_source_run_dir": tmp_path / "source-trace",
+            "binding": object(),
+        },
+        attempt_id="attempt-20260901t000000z-recovered",
+        run_dir=tmp_path / "derived",
+        session_receipt_path=tmp_path / "session-receipt.json",
+        lock_sha256="a" * 64,
+        variant="matched",
+        action="RECOVER_MATCHED_ABORTED_SOURCE",
+    )
+    attempt_path = (
+        tmp_path
+        / "attempts"
+        / launcher.RUN_ID
+        / "attempt-20260901t000000z-recovered.json"
+    )
+    attempt = json.loads(attempt_path.read_text(encoding="utf-8"))
+    assert attempt["state"] == "OPENED"
+    assert attempt["actual"] == {"calls": 0, "audio_seconds": 0.0}
+    assert built["cost"]["calls_used"] == 0
+    assert built["cost"]["tool_calls"] == 2
+    assert len(result["texts"]) == 2
+    assert result["request_source_run_dir"] == tmp_path / "source-trace"

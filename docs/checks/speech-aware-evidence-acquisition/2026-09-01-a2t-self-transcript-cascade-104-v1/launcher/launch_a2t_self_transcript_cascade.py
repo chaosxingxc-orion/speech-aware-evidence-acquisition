@@ -56,6 +56,7 @@ from speech_aware_evidence_acquisition.core.bundle import (  # noqa: E402
     require_clean_study_repo,
     verify_bundle,
 )
+from speech_aware_evidence_acquisition.core.attempts import AttemptStore  # noqa: E402
 from speech_aware_evidence_acquisition.core.config import (  # noqa: E402
     compose,
     protocol_hash,
@@ -192,6 +193,32 @@ RECOVERY_FAILURE_SHA256 = (
 )
 RECOVERY_ATTEMPT_SHA256 = (
     "780ec2a2d5924e020b4360b0a7d5dc53f681ffcd600e4d6ff3c984c85d733c04"
+)
+RECOVERY_USE_SOURCE_RELPATH = Path(
+    "runs/SAEA-A2T-TFRL-SELF-TRANSCRIPT-CASCADE-104-V1/"
+    "flight-20260901T205433Z"
+)
+RECOVERY_MATCHED_ATTEMPT_ID = "attempt-20260901t205433z-selftxmatch"
+RECOVERY_SHUFFLED_ATTEMPT_ID = "attempt-20260901t205433z-selftxshuffle"
+RECOVERY_MATCHED_MANIFEST_SHA256 = (
+    "f553c1ac684ebcb85e95622be751a630369eeb734d2a5007f139c51568903c50"
+)
+RECOVERY_SHUFFLED_MANIFEST_SHA256 = (
+    "060e54b07f3c82ae09e2577283535884928c6098f58da406cd33611329b6ee92"
+)
+RECOVERY_MATCHED_ATTEMPT_SHA256 = (
+    "171bde8c2d7c4e8da0bcb464aeca1998d53a67000ee5c301bcca6e52d9017e59"
+)
+RECOVERY_SHUFFLED_ATTEMPT_SHA256 = (
+    "76eec7326174f0f211e300a3a1a6ee7c770a31ac0552ecd05c188340637d2781"
+)
+RECOVERY_USE_FAILURE_SHA256 = (
+    "71223984c545dd19a84b3f06d38b6b706d381a04a8d0157dafcad38212b1f91e"
+)
+RECOVERY_KNOWN_ATTEMPT_RELPATHS = (
+    RECOVERY_ATTEMPT_RELPATH,
+    RECOVERY_ATTEMPT_RELPATH.with_name(f"{RECOVERY_MATCHED_ATTEMPT_ID}.json"),
+    RECOVERY_ATTEMPT_RELPATH.with_name(f"{RECOVERY_SHUFFLED_ATTEMPT_ID}.json"),
 )
 
 
@@ -597,7 +624,11 @@ def _load_recovered_observation(
         if not path.is_file() or _sha256_file(path) != expected_sha256:
             raise RuntimeError(f"recovery {label} SHA-256 drift")
     attempt_files = sorted(attempt_path.parent.glob("*.json"))
-    if attempt_files != [attempt_path]:
+    expected_attempt_files = sorted(
+        (Path(root) / relpath).resolve()
+        for relpath in RECOVERY_KNOWN_ATTEMPT_RELPATHS
+    )
+    if attempt_files != expected_attempt_files:
         raise RuntimeError("recovery run has unregistered sibling attempt spend")
     plan_document = _read_json(plan_path)
     failure_document = _read_json(failure_path)
@@ -692,6 +723,207 @@ def _load_recovered_observation(
         }
     )
     return material
+
+
+def _load_recovered_use_sources(
+    root: Path,
+    context: Mapping[str, object],
+    observation: Mapping[str, object],
+) -> dict[str, dict[str, object]]:
+    """Verify and load the two complete USE surfaces from the second abort."""
+
+    source_root = (Path(root) / RECOVERY_USE_SOURCE_RELPATH).resolve()
+    failure_path = source_root / "failure-receipt.json"
+    if (
+        not failure_path.is_file()
+        or _sha256_file(failure_path) != RECOVERY_USE_FAILURE_SHA256
+    ):
+        raise RuntimeError("recovery USE failure receipt SHA-256 drift")
+    failure = _read_json(failure_path)
+    if "not a MODEL_REQUEST" not in str(failure.get("error", "")):
+        raise RuntimeError("recovery USE failure is not the registered resend extractor abort")
+    expected_ids = set(str(value) for value in context["sample_ids"])  # type: ignore[union-attr]
+    phase_specs = (
+        (
+            "matched",
+            source_root / "matched-composite",
+            RECOVERY_MATCHED_ATTEMPT_ID,
+            RECOVERY_MATCHED_MANIFEST_SHA256,
+            RECOVERY_MATCHED_ATTEMPT_SHA256,
+        ),
+        (
+            "shuffled",
+            source_root / "shuffled-evidence-composite",
+            RECOVERY_SHUFFLED_ATTEMPT_ID,
+            RECOVERY_SHUFFLED_MANIFEST_SHA256,
+            RECOVERY_SHUFFLED_ATTEMPT_SHA256,
+        ),
+    )
+    loaded: dict[str, dict[str, object]] = {}
+    cumulative_calls = 0
+    cumulative_audio = 0.0
+    for name, run_dir, attempt_id, manifest_sha256, attempt_sha256 in phase_specs:
+        manifest_path = run_dir / f"{RUN_ID}.run-manifest.json"
+        attempt_path = (
+            Path(root) / "attempts" / RUN_ID / f"{attempt_id}.json"
+        ).resolve()
+        if (
+            not manifest_path.is_file()
+            or _sha256_file(manifest_path) != manifest_sha256
+            or not attempt_path.is_file()
+            or _sha256_file(attempt_path) != attempt_sha256
+        ):
+            raise RuntimeError(f"recovery {name} manifest or attempt SHA-256 drift")
+        verified = verify_bundle(manifest_path)
+        attempt = _read_json(attempt_path)
+        actual = attempt.get("actual")
+        if (
+            verified.attempt_state != "ABORTED"
+            or verified.manifest.get("status") != STATUS_COMPLETED
+            or len(verified.outputs_rows) != SPLIT_COUNT
+            or not isinstance(actual, Mapping)
+            or actual.get("calls") != SPLIT_COUNT
+            or abs(float(actual.get("audio_seconds", -1)) - SPLIT_AUDIO_SECONDS) > 1e-9
+        ):
+            raise RuntimeError(f"recovery {name} is not a complete 104-call aborted USE")
+        texts = {
+            str(row["sample_id"]): str(row["text"]) for row in verified.outputs_rows
+        }
+        if set(texts) != expected_ids:
+            raise RuntimeError(f"recovery {name} output identity drift")
+        cumulative_calls += int(actual["calls"])
+        cumulative_audio += float(actual["audio_seconds"])
+        loaded[name] = {
+            "texts": texts,
+            "manifest": manifest_path,
+            "outputs": verified.outputs_path,
+            "request_source_run_dir": run_dir,
+            "source_attempt_id": attempt_id,
+            "source_manifest_sha256": manifest_sha256,
+            "source_attempt_sha256": attempt_sha256,
+        }
+    if cumulative_calls != 208 or abs(cumulative_audio - 2 * SPLIT_AUDIO_SECONDS) > 1e-9:
+        raise RuntimeError("recovery matched/shuffled cumulative spend drift")
+    adapter = A2TSelfTranscriptAdapter(
+        context["lock"],  # type: ignore[arg-type]
+        root,
+        repo_root=REPO,
+        receipt_items=context["items"],  # type: ignore[arg-type]
+        phase=MATCHED_USE_PHASE,
+        use_material=observation["matched_material"],  # type: ignore[arg-type]
+    )
+    samples = adapter.load_split(SPLIT_ID)
+    binding = build_payload_binding(
+        carrier_lock_key=AUDIO2TOOL_LOCK_KEY,
+        samples=samples,
+        data_root=root,
+        carrier_root=context["carrier_root"],  # type: ignore[arg-type]
+    )
+    for source in loaded.values():
+        source["binding"] = binding
+    return loaded
+
+
+def _materialize_recovered_use_derivative(
+    *,
+    root: Path,
+    context: Mapping[str, object],
+    source: Mapping[str, object],
+    attempt_id: str,
+    run_dir: Path,
+    session_receipt_path: Path,
+    lock_sha256: str,
+    variant: str,
+    action: str,
+) -> dict[str, object]:
+    """Create an OPENED, zero-model-call derivative of one sealed USE surface."""
+
+    plan = _execution_plan(attempt_id)
+    handle = AttemptStore(Path(root) / "attempts").open_attempt(
+        RUN_ID,
+        attempt_id,
+        carrier_lock_key=plan.carrier_lock_key,
+        reserved_calls=plan.planned_model_calls,
+        reserved_audio_seconds=plan.planned_speech_audio_seconds,
+    )
+    if handle.state() != "OPENED":
+        raise RuntimeError("recovered USE derivative attempt did not open")
+    _write_json(run_dir / "execution-plan.json", asdict(plan))
+    source_outputs = Path(source["outputs"])  # type: ignore[arg-type]
+    source_sha256 = _sha256_file(source_outputs)
+    texts = {
+        str(sample_id): str(text)
+        for sample_id, text in source["texts"].items()  # type: ignore[union-attr]
+    }
+    expected_ids = set(str(value) for value in context["sample_ids"])  # type: ignore[union-attr]
+    if set(texts) != expected_ids:
+        raise RuntimeError("recovered USE derivative identity drift")
+    sink = TraceSink(run_dir, RUN_ID)
+    rows = emit_composite_rows(
+        texts=texts,
+        source_by_id={
+            sample_id: {
+                "action": action,
+                "source_artifact_path": str(source_outputs),
+                "source_artifact_sha256": source_sha256,
+            }
+            for sample_id in texts
+        },
+        sink=sink,
+        variant=variant,
+    )
+    trace_manifest_hash = sink.close()
+    outputs_path = run_dir / f"{RUN_ID}.outputs.jsonl"
+    _write_jsonl(outputs_path, rows)
+    cost = {
+        "calls_used": 0,
+        "audio_seconds_used": 0.0,
+        "latency_seconds_total": 0.0,
+        "prompt_tokens_total": 0,
+        "completion_tokens_total": 0,
+        "tool_calls": len(texts),
+        "umbrella_lock_sha256": lock_sha256,
+        "derivation": (
+            "model-free complete-manifest recovery from a fixed aborted USE source"
+        ),
+    }
+    manifest_path = _build_completed_manifest(
+        root=root,
+        context=context,
+        plan=plan,
+        run_dir=run_dir,
+        session_receipt_path=session_receipt_path,
+        outputs_path=outputs_path,
+        trace_manifest_hash=trace_manifest_hash,
+        cost=cost,
+        expected_attempt_state="OPENED",
+    )
+    _write_json(
+        run_dir / "recovery-derivative-receipt.json",
+        {
+            "schema": "saea-a2t-self-transcript-use-recovery-derivative-v1",
+            "variant": variant,
+            "attempt_id": attempt_id,
+            "source_attempt_id": source.get("source_attempt_id"),
+            "source_manifest": str(source.get("manifest")),
+            "source_manifest_sha256": source.get("source_manifest_sha256"),
+            "source_outputs_sha256": source_sha256,
+            "new_model_contacts": 0,
+            "manifest": str(manifest_path),
+            "manifest_sha256": _sha256_file(manifest_path),
+        },
+    )
+    return {
+        **source,
+        "texts": texts,
+        "manifest": manifest_path,
+        "outputs": outputs_path,
+        "attempt_id": attempt_id,
+        "run_dir": run_dir,
+        "ledger_deviation": (
+            "zero-call complete-manifest derivative of the fixed aborted USE source"
+        ),
+    }
 
 
 def _build_completed_manifest(
@@ -1003,7 +1235,10 @@ def _run_resend(
     plan = _execution_plan(attempt_id)
     _write_json(run_dir / "execution-plan.json", asdict(plan))
     selected_ids = observation["resend_ids"]
-    documents = _trace_documents(Path(matched["run_dir"]))
+    request_source_run_dir = Path(
+        matched.get("request_source_run_dir", matched["run_dir"])  # type: ignore[arg-type]
+    )
+    documents = _trace_documents(request_source_run_dir)
     payloads = extract_exact_matched_payloads(
         documents, selected_ids  # type: ignore[arg-type]
     )
@@ -1095,7 +1330,9 @@ def _run_resend(
     }
 
 
-def _human_ledger_cells(phase: str, lock_sha256: str) -> dict[str, str]:
+def _human_ledger_cells(
+    phase: str, lock_sha256: str, *, deviations: str = "none"
+) -> dict[str, str]:
     return {
         "experiment_id": RUN_ID,
         "speech task/carrier": "Audio2Tool A2T-G1-104 discovery",
@@ -1107,7 +1344,7 @@ def _human_ledger_cells(phase: str, lock_sha256: str) -> dict[str, str]:
         "effectiveness": "unread before finalization",
         "reasonableness": "complete verified 104-row composite scorer job",
         "efficiency": "three-worker outer parallelism across complete manifests",
-        "deviations": "none",
+        "deviations": deviations,
         "decision": "pending preregistered scorer-side read",
     }
 
@@ -1179,7 +1416,14 @@ def _parallel_finalize(
         ("self-transcript-resend-composite", "exact matched request replay", resend),
     ):
         cells = mission_dir / f"{job_id}-ledger-cells.json"
-        _write_json(cells, _human_ledger_cells(phase, lock_sha256))
+        _write_json(
+            cells,
+            _human_ledger_cells(
+                phase,
+                lock_sha256,
+                deviations=str(result.get("ledger_deviation", "none")),
+            ),
+        )
         jobs.append(
             {
                 "job_id": job_id,
@@ -1360,7 +1604,14 @@ def _postseal_policy_read(
     return result
 
 
-def _launch(root: Path, *, recover_sealed_observation: bool = False) -> Mapping[str, object]:
+def _launch(
+    root: Path,
+    *,
+    recover_sealed_observation: bool = False,
+    recover_sealed_use: bool = False,
+) -> Mapping[str, object]:
+    if recover_sealed_use and not recover_sealed_observation:
+        raise RuntimeError("sealed USE recovery requires sealed observation recovery")
     context = _static_preflight(root)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     mission_dir = root / "runs" / RUN_ID / f"flight-{stamp}"
@@ -1368,13 +1619,14 @@ def _launch(root: Path, *, recover_sealed_observation: bool = False) -> Mapping[
         raise RuntimeError(f"mission directory already exists: {mission_dir}")
     mission_dir.mkdir(parents=True)
     attempt_ids = {
-        "matched": f"attempt-{stamp.lower()}-selftxmatch",
-        "shuffled": f"attempt-{stamp.lower()}-selftxshuffle",
+        "matched": f"attempt-{stamp.lower()}-selftxmatchseal",
+        "shuffled": f"attempt-{stamp.lower()}-selftxshuffleseal",
         "resend": f"attempt-{stamp.lower()}-selftxresend",
     }
     if not recover_sealed_observation:
         attempt_ids["observation"] = f"attempt-{stamp.lower()}-selftxobs"
     observation: Mapping[str, object] | None = None
+    use_sources: Mapping[str, Mapping[str, object]] | None = None
     if recover_sealed_observation:
         observation = _load_recovered_observation(root, context)
         recovery_dir = mission_dir / "observation-reuse"
@@ -1392,6 +1644,27 @@ def _launch(root: Path, *, recover_sealed_observation: bool = False) -> Mapping[
                 "scientific_protocol_changed": False,
             },
         )
+        if recover_sealed_use:
+            use_sources = _load_recovered_use_sources(root, context, observation)
+            _write_json(
+                recovery_dir / "use-source-recovery-receipt.json",
+                {
+                    "schema": "saea-a2t-self-transcript-use-source-recovery-v1",
+                    "source_root": str(Path(root) / RECOVERY_USE_SOURCE_RELPATH),
+                    "matched_source_manifest_sha256": (
+                        RECOVERY_MATCHED_MANIFEST_SHA256
+                    ),
+                    "shuffled_source_manifest_sha256": (
+                        RECOVERY_SHUFFLED_MANIFEST_SHA256
+                    ),
+                    "source_failure_receipt_sha256": RECOVERY_USE_FAILURE_SHA256,
+                    "source_calls": 208,
+                    "cumulative_calls_before_resend": 312,
+                    "new_matched_or_shuffled_contacts": 0,
+                    "remaining_registered_call_ceiling": 22,
+                    "scientific_protocol_changed": False,
+                },
+            )
     session = None
     runtime_receipt = load_runtime_receipt(REPO / "docs" / RUNTIME_RECEIPT_RELPATH)
     values = context["composed"].values  # type: ignore[union-attr]
@@ -1405,9 +1678,13 @@ def _launch(root: Path, *, recover_sealed_observation: bool = False) -> Mapping[
         model_root=model_root,
     )
     authorization_attempt = (
-        attempt_ids["matched"]
-        if recover_sealed_observation
-        else attempt_ids["observation"]
+        attempt_ids["resend"]
+        if recover_sealed_use
+        else (
+            attempt_ids["matched"]
+            if recover_sealed_observation
+            else attempt_ids["observation"]
+        )
     )
     lock_sha256 = gate.assert_model_touch_allowed(
         _execution_plan(authorization_attempt), full_hash=True
@@ -1476,32 +1753,56 @@ def _launch(root: Path, *, recover_sealed_observation: bool = False) -> Mapping[
             _write_json(mission_dir / "flight-receipt.json", result)
             return result
 
-        matched = _run_use(
-            phase=MATCHED_USE_PHASE,
-            variant="matched",
-            root=root,
-            context=context,
-            observation=observation,
-            gate=gate,
-            transport=transport,
-            attempt_id=attempt_ids["matched"],
-            run_dir=mission_dir / "matched-composite",
-            session_receipt_path=session_receipt_path,
-            lock_sha256=lock_sha256,
-        )
-        shuffled = _run_use(
-            phase=SHUFFLED_USE_PHASE,
-            variant="shuffled-evidence",
-            root=root,
-            context=context,
-            observation=observation,
-            gate=gate,
-            transport=transport,
-            attempt_id=attempt_ids["shuffled"],
-            run_dir=mission_dir / "shuffled-evidence-composite",
-            session_receipt_path=session_receipt_path,
-            lock_sha256=lock_sha256,
-        )
+        if use_sources is not None:
+            matched = _materialize_recovered_use_derivative(
+                root=root,
+                context=context,
+                source=use_sources["matched"],
+                attempt_id=attempt_ids["matched"],
+                run_dir=mission_dir / "matched-composite",
+                session_receipt_path=session_receipt_path,
+                lock_sha256=lock_sha256,
+                variant="matched",
+                action="RECOVER_MATCHED_ABORTED_SOURCE",
+            )
+            shuffled = _materialize_recovered_use_derivative(
+                root=root,
+                context=context,
+                source=use_sources["shuffled"],
+                attempt_id=attempt_ids["shuffled"],
+                run_dir=mission_dir / "shuffled-evidence-composite",
+                session_receipt_path=session_receipt_path,
+                lock_sha256=lock_sha256,
+                variant="shuffled-evidence",
+                action="RECOVER_SHUFFLED_ABORTED_SOURCE",
+            )
+        else:
+            matched = _run_use(
+                phase=MATCHED_USE_PHASE,
+                variant="matched",
+                root=root,
+                context=context,
+                observation=observation,
+                gate=gate,
+                transport=transport,
+                attempt_id=attempt_ids["matched"],
+                run_dir=mission_dir / "matched-composite",
+                session_receipt_path=session_receipt_path,
+                lock_sha256=lock_sha256,
+            )
+            shuffled = _run_use(
+                phase=SHUFFLED_USE_PHASE,
+                variant="shuffled-evidence",
+                root=root,
+                context=context,
+                observation=observation,
+                gate=gate,
+                transport=transport,
+                attempt_id=attempt_ids["shuffled"],
+                run_dir=mission_dir / "shuffled-evidence-composite",
+                session_receipt_path=session_receipt_path,
+                lock_sha256=lock_sha256,
+            )
         resend = _run_resend(
             root=root,
             context=context,
@@ -1551,6 +1852,13 @@ def _launch(root: Path, *, recover_sealed_observation: bool = False) -> Mapping[
             "elapsed_seconds": time.perf_counter() - started,
             "umbrella_lock_sha256": lock_sha256,
             "session_receipt": str(session_receipt_path),
+            "recovery": {
+                "sealed_observation": recover_sealed_observation,
+                "sealed_matched_and_shuffled": recover_sealed_use,
+                "new_observation_contacts": 0 if recover_sealed_observation else SPLIT_COUNT,
+                "new_matched_contacts": 0 if recover_sealed_use else SPLIT_COUNT,
+                "new_shuffled_contacts": 0 if recover_sealed_use else SPLIT_COUNT,
+            },
             "attempts": {
                 "observation": (
                     {
@@ -1615,13 +1923,21 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--recover-sealed-observation", action="store_true")
+    parser.add_argument("--recover-sealed-use", action="store_true")
     args = parser.parse_args(argv)
+    if args.recover_sealed_use and not args.recover_sealed_observation:
+        parser.error("--recover-sealed-use requires --recover-sealed-observation")
     root = data_root()
     if args.preflight_only:
         context = _static_preflight(root)
         recovery = (
             _load_recovered_observation(root, context)
             if args.recover_sealed_observation
+            else None
+        )
+        recovered_use = (
+            _load_recovered_use_sources(root, context, recovery)
+            if args.recover_sealed_use and recovery is not None
             else None
         )
         print(
@@ -1644,6 +1960,20 @@ def main(argv: Sequence[str] | None = None) -> int:
                         if recovery is not None
                         else None
                     ),
+                    "recovery_use": (
+                        {
+                            "source_attempt_ids": [
+                                RECOVERY_MATCHED_ATTEMPT_ID,
+                                RECOVERY_SHUFFLED_ATTEMPT_ID,
+                            ],
+                            "source_calls": 208,
+                            "new_matched_or_shuffled_contacts": 0,
+                            "remaining_registered_call_ceiling": 22,
+                            "verified_variants": sorted(recovered_use),
+                        }
+                        if recovered_use is not None
+                        else None
+                    ),
                 },
                 indent=2,
                 sort_keys=True,
@@ -1652,7 +1982,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
     print(
         json.dumps(
-            _launch(root, recover_sealed_observation=args.recover_sealed_observation),
+            _launch(
+                root,
+                recover_sealed_observation=args.recover_sealed_observation,
+                recover_sealed_use=args.recover_sealed_use,
+            ),
             indent=2,
             sort_keys=True,
             default=str,

@@ -38,6 +38,7 @@ remain closed, and only the separately registered bounded recovery may continue.
 | E14 | Promotion conjunction | A report cannot pass unless every liveness, matched-information, agent-gain, training-free, fold, secondary-metric, resend, and state-liveness gate in the machine contract passes. |
 | E15 | Terminal scope | Failure authorizes no support or scale; success authorizes only a separately registered approximately-104 support proposal; no test, approximately-1,000, Stage-3, or paper-scale execution starts here. |
 | E16 | OBS abort recovery | Recovery accepts only the fixed 104-call `ABORTED` OBS source, verifies output-to-trace hashes and absence of sibling spend, performs zero new OBS contacts, closes the authoritative trace before the fallback trace, and preserves the cumulative 334-call ceiling. |
+| E17 | USE abort recovery | Recovery accepts only the fixed complete matched and shuffled bundles and their 104-call `ABORTED` records, creates zero-call source-bound complete derivatives, ignores non-request rows while extracting the exact 16 resend payloads, performs no repeated USE contact, and leaves three whole-manifest outer-parallel finalization jobs. |
 
 ## Coverage and execution rule
 

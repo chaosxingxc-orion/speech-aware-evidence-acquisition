@@ -118,6 +118,27 @@ def test_exact_replay_extracts_only_byte_identical_matched_payloads() -> None:
         )
 
 
+def test_exact_replay_ignores_non_request_records_in_a_complete_trace() -> None:
+    request = _request("tier1:000001", "matched-0001")
+    trace = (
+        request,
+        {
+            "channel": "MODEL_RESPONSE",
+            "record_id": "matched-0001/response",
+            "payload": {"text": "response"},
+        },
+        {
+            "channel": "COST",
+            "record_id": "matched-0001/cost",
+            "payload": {"calls": 1},
+        },
+    )
+    extracted = bundle.extract_exact_matched_payloads(
+        trace, ("tier1:000001",)
+    )
+    assert extracted["tier1:000001"]["request_id"] == "matched-0001"
+
+
 def test_complete_composites_refuse_missing_duplicate_or_extra_rows() -> None:
     expected = tuple(f"tier1:{index:06d}" for index in range(4))
     texts = {sample_id: f"response-{sample_id}" for sample_id in expected}

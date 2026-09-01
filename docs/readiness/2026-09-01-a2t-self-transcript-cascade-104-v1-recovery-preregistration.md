@@ -69,3 +69,41 @@ before model contact. A later scientific-gate failure retains the original termi
 close this mechanism and make no fresh-sample contact. A pass permits only the separately
 preregistered block-disjoint approximately-104 support proposal already defined by the parent
 registration.
+
+## Second packaging abort and final bounded recovery
+
+The first recovery obeyed the zero-OBS rule. It completed and sealed 104 matched and 104
+shuffled-evidence contacts, then aborted before the first resend request. The resend extractor was
+given the complete matched trace but incorrectly required every trace row to be a `MODEL_REQUEST`;
+it stopped on trace row two, a normal non-request record. Both USE attempts are durably `ABORTED`
+because the outer flight failed after their complete manifests sealed. No resend, gold, or scorer
+contact occurred. Cumulative model use is now 312 calls and 1,761.051 speech-audio seconds.
+
+The final recovery fixes the extractor under a mixed-trace capability test and accepts only the
+following additional bytes:
+
+| Artifact | SHA-256 |
+|---|---|
+| Matched complete run manifest | `f553c1ac684ebcb85e95622be751a630369eeb734d2a5007f139c51568903c50` |
+| Shuffled complete run manifest | `060e54b07f3c82ae09e2577283535884928c6098f58da406cd33611329b6ee92` |
+| Matched aborted attempt record | `171bde8c2d7c4e8da0bcb464aeca1998d53a67000ee5c301bcca6e52d9017e59` |
+| Shuffled aborted attempt record | `76eec7326174f0f211e300a3a1a6ee7c770a31ac0552ecd05c188340637d2781` |
+| Second flight failure receipt | `71223984c545dd19a84b3f06d38b6b706d381a04a8d0157dafcad38212b1f91e` |
+
+Each fixed run manifest must independently verify as a complete 104-row `COMPLETED` bundle whose
+durable attempt is `ABORTED`, whose actual usage is 104 calls and 587.017 seconds, and whose
+outputs, raw trace, trace manifest, session receipt, plan, split, protocol, and source provenance
+match the hashes embedded in that fixed manifest.
+
+The recovery makes zero new matched or shuffled contacts. It opens two fresh zero-call derivative
+attempts, emits complete 104-row manifests whose every row binds the corresponding fixed source
+output artifact and SHA-256, and finalizes those derivatives rather than mutating or reopening the
+aborted attempts. It then replays only the original 16 hash-selected matched request payloads from
+the fixed full trace under one fresh resend attempt. The matched and shuffled derivatives and the
+resend manifest remain three independent complete-manifest jobs for the original three-worker
+outer parallel finalizer. The policy derivative still binds the newly finalized matched derivative.
+
+Only 22 calls remain under the unchanged 334-call ceiling: 16 registered resends and six unused
+canaries. No canary is planned. Source validation or derivative-manifest failure stops before the
+resend model contact. This amendment changes no prompt, response byte, route, evidence, action,
+metric, scorer, promotion rule, sample, or scientific protocol.

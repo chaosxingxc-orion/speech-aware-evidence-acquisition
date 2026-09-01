@@ -162,5 +162,8 @@ read subsequently established 104/104 valid, distinct, positively routed transcr
 source hashes, 104-call spend, no-repeat rule, trace-sealing repair, and zero-OBS recovery entry are
 registered in
 `docs/readiness/2026-09-01-a2t-self-transcript-cascade-104-v1-recovery-preregistration.md`.
-That amendment changes no scientific axis or original 334-call ceiling; only the remaining 230
-calls may be used under fresh attempt identities.
+That amendment changes no scientific axis or original 334-call ceiling. The first recovery then
+sealed 104 matched and 104 shuffled contacts before a mixed-trace resend-extractor packaging abort;
+no resend, gold, or scorer contact occurred. The same recovery registration now fixes those source
+hashes and permits only zero-call complete derivatives plus the original 16 resends. Cumulative
+use is 312 calls; only 22 calls remain under fresh attempt identities.

@@ -128,6 +128,8 @@ def extract_exact_matched_payloads(
     wanted = set(selected)
     found: dict[str, Mapping[str, object]] = {}
     for number, document in enumerate(trace_documents, start=1):
+        if document.get("channel") != "MODEL_REQUEST":
+            continue
         sample_id, payload, _payload_hash = _request_parts(document, number=number)
         if sample_id not in wanted:
             continue
