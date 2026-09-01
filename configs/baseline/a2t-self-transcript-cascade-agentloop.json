@@ -1,0 +1,24 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "training-free-self-transcript-cascade-v1",
+  "evidence_source": "same-core-self-transcript-content-bm25-top5",
+  "evidence_mismatch": false,
+  "obs_batch_samples": 2,
+  "allow_empty_speech_feature_evidence": true,
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a/A2T-G1-104-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "be07c69c030fc12e56e4e2e1f5e08423636a84fb823d16293fae7bf5819218bc",
+  "speech_native_prompt_fit_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-08-25-a2t-g1/prompt-fit-np2.json",
+  "speech_native_prompt_fit_receipt_sha256": "0c77812d9439b6a7d6d3ff0227fc27924f617245d1ec9a0cbca20960f090946b",
+  "speech_native_prompt_fit_dominance": "The landed envelope contains the same complete task contract, one AgentState text, five visible facets, six visible values, and 1024 completion tokens. Every self-transcript USE request stays within those exact structural maxima; the observation request omits the task contract and all knowledge.",
+  "profile_queue_depth_multiplier": 2,
+  "profile_validation_workers": 8,
+  "speech_native_result_mode": "predictions",
+  "speech_native_contact_ceiling_per_task": 1,
+  "speech_native_dispatch_granularity": "contact",
+  "speech_native_agent_executor_id": "openjiuwen-workflow-v1",
+  "scorers": [
+    "a2t-toolcall",
+    "cost"
+  ],
+  "task_instruction": "Answer the spoken command by emitting only a JSON array of tool calls. The final AgentLoop contact retains the original speech and may use one validated English self-transcript AgentState plus at most five matched content facets and six frozen knowledge values. Gold labels and reference transcripts are unavailable at runtime."
+}

@@ -1,0 +1,32 @@
+{
+  "schema": "saea-a2t-self-transcript-cascade-flight-plan-v1",
+  "exposure_pre_registration_id": "SAEA-A2T-TFRL-SELF-TRANSCRIPT-CASCADE-104-V1",
+  "execution_plan": {
+    "attempt_id": null,
+    "carrier_lock_key": "audio2tool",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 334,
+    "planned_speech_audio_seconds": 2000,
+    "protocol_hash": "7c4518d2e2c7a25fa2106a54e9f2398717586af197f7cf98e39ac7ef49e1bc8d",
+    "run_id": "SAEA-A2T-TFRL-SELF-TRANSCRIPT-CASCADE-104-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "f5a030189cf80dcbc52899e2fa5f819bac03874f2ad3f9645fdc60c432a9bf3a",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "config_composition": {
+    "baseline": "a2t-self-transcript-cascade-agentloop",
+    "dataset": "audio2tool-g1-104",
+    "experiment": "a2t-training-free-self-transcript-cascade-104-v1",
+    "model": "q4km-mmproj-free-speech-native-np2-a2t-max1024"
+  },
+  "composed_config_sha256": "855f6c33aad2a9364ca1bef7af3eea5736edef868d9065c5c10d2b3ff749ff89",
+  "phase_attempts": [
+    "one 104-contact observation attempt",
+    "one at-most-104-contact matched USE attempt after liveness authorization",
+    "one at-most-104-contact shuffled-evidence USE attempt after liveness authorization",
+    "one 16-contact exact matched resend attempt"
+  ],
+  "attempt_binding": "The one-shot launcher replaces only execution_plan.attempt_id with a newly reserved phase attempt id. Every other field compares exactly. Actual usage is accumulated across sibling attempts under the single registered run-level 334-call and 2000-speech-second budget."
+}
