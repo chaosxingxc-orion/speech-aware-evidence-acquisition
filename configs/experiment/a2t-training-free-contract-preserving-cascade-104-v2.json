@@ -1,0 +1,215 @@
+{
+  "schema": "saea-a2t-training-free-contract-preserving-cascade-experiment-v2",
+  "experiment_id": "SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2",
+  "status": "PREREGISTERED_DESIGN_ONLY",
+  "date": "2026-09-01",
+  "execution_profile": "bounded-discovery-probe",
+  "zero_parameter_training": true,
+  "second_answering_model": false,
+  "paid_api_spend": 0,
+  "claim_scope": "secondary discovery evidence on an already-exposed parent population",
+  "predecessor_boundary": {
+    "experiment_id": "SAEA-A2T-TFRL-SELF-TRANSCRIPT-CASCADE-104-V1",
+    "result": "OBS and BM25 were live, but all matched, shuffled, and resend official tool accuracy was zero because no output formed a valid nonempty name/arguments call",
+    "terminal_rule_honored": "No predecessor response is reparsed, normalized, rescored under a new parser, or recontacted; no predecessor threshold or retrieval setting changes.",
+    "distinct_successor_variable": "The successor preserves the already-frozen Audio2Tool direct-answer output envelope and adds a label-free structural USE canary before completing USE on a block-disjoint cohort."
+  },
+  "population": {
+    "name": "A2T-CPV2-104",
+    "parent_receipt": "docs/receipts/probe-samples/r1-audio2tool-sample.json",
+    "parent_count": 400,
+    "parent_exposure": "EXPOSED by prior Audio2Tool discovery work",
+    "excluded_receipt": "docs/receipts/a2t/A2T-G1-104.json",
+    "block_key": "tier plus query number parsed from media_relpath",
+    "selection_namespace": "a2t-contract-preserving-cascade-v2",
+    "selection_rule": "Exclude every parent item whose block key occurs in A2T-G1-104. Within each tier, rank remaining items by SHA-256(namespace + NUL + sample_id), then sample_id, and take the first 13.",
+    "tier_count": 8,
+    "items_per_tier": 13,
+    "count": 104,
+    "receipt": "docs/receipts/a2t/A2T-CPV2-104.json",
+    "receipt_status": "must be materialized and hash-pinned before implementation or contact",
+    "gold_used_for_selection": false,
+    "prior_outputs_used_for_selection": false,
+    "test_used_for_selection": false
+  },
+  "frozen_core": {
+    "model": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+    "service_boundary": "receipt-pinned local llama.cpp API-shaped service",
+    "agent_executor": "openjiuwen-workflow-v1",
+    "answer_authority": "frozen core",
+    "task_contract": "the SHA-256-pinned 152-row Audio2Tool registry",
+    "same_runtime_for_all_new_contact_arms": true
+  },
+  "phases": {
+    "M0_DIRECT": {
+      "contacts": 104,
+      "input": "original speech plus the complete registry",
+      "instruction": "Use the existing Audio2Tool direct prompt byte-for-byte, including the exact example [{\"name\": \"x\", \"arguments\": {}}].",
+      "purpose": "same-flight single-call comparator"
+    },
+    "OBS_SELF_TRANSCRIPT": {
+      "contacts": 104,
+      "input": "original speech plus the frozen ASR-only English instruction",
+      "forbidden": [
+        "tool registry",
+        "task answer schema",
+        "knowledge values",
+        "M0 response",
+        "gold or reference transcript",
+        "score or future turn"
+      ],
+      "full_batch_barrier": true
+    },
+    "USE_CANARY": {
+      "contacts": 16,
+      "included_in_complete_surfaces": true,
+      "selection": "one independently hash-ranked item per tier, each contacted once with matched evidence and once with its fixed same-tier shuffled donor evidence",
+      "meaning_read_before_gate": false,
+      "gold_read_before_gate": false,
+      "structural_gate": {
+        "pooled_valid_minimum": 15,
+        "matched_valid_minimum": 7,
+        "shuffled_valid_minimum": 7,
+        "each_tier_has_at_least_one_valid_of_two": true,
+        "valid_output": "raw response is unfenced exact JSON, a nonempty array of at most four objects, every object has exactly name and arguments, name is a frozen registry member, and arguments is an object",
+        "failure_consequence": "stop before the remaining 192 USE contacts; do not open gold or scorer"
+      }
+    },
+    "USE_MATCHED": {
+      "contacts_total_including_canary": 104,
+      "input": "original speech, own accepted self-transcript, and BM25 values retrieved from that transcript",
+      "output_contract": "The original Audio2Tool exact output sentence and example remain the final text in the system instruction.",
+      "raw_output_scored_without_normalization": true
+    },
+    "USE_SHUFFLED_EVIDENCE": {
+      "contacts_total_including_canary": 104,
+      "input": "original speech, own accepted self-transcript, and evidence retrieved from a fixed same-tier donor transcript",
+      "output_contract": "identical to USE_MATCHED",
+      "raw_output_scored_without_normalization": true
+    },
+    "MATCHED_RESEND": {
+      "contacts": 16,
+      "selection": "two independently hash-ranked matched requests per tier",
+      "request_identity": "canonical request payload bytes must equal the sealed matched source payload bytes",
+      "purpose": "bound same-request nondeterminism"
+    }
+  },
+  "observation_gate": {
+    "rows": 104,
+    "responses_minimum": 102,
+    "valid_ascii_english_transcripts_minimum": 99,
+    "positive_routes_minimum": 94,
+    "distinct_transcripts_minimum": 83,
+    "largest_identical_transcript_maximum": 5,
+    "prohibited_structures_maximum": 0,
+    "same_tier_derangement_required": true
+  },
+  "retrieval": {
+    "snapshot": "knowledge/audio2tool/saea-kb-a2t-toolshaped-v1/size-full/snapshot.json",
+    "query": "accepted same-core English self-transcript",
+    "method": "deterministic BM25",
+    "k1": 1.5,
+    "b": 0.75,
+    "max_facets": 5,
+    "max_values": 6,
+    "max_targets": 5,
+    "runtime_gold_access": false
+  },
+  "training_free_control": {
+    "actions": ["STOP_M0", "USE_MATCHED"],
+    "features": [
+      "M0 parse and top-five target-set relation bucket",
+      "BM25 top-one margin bucket",
+      "positive-facet-count bucket",
+      "accepted transcript word-count bucket",
+      "supplied-target-count bucket"
+    ],
+    "forbidden_features": [
+      "literal transcript or token",
+      "tool, facet, value, domain, or category identity",
+      "sample, tier, donor, or fold identity",
+      "gold, score, reward, matched response, shuffled response, or future turn"
+    ],
+    "folds": 5,
+    "fold_unit": "whole tier/query block",
+    "fold_seed": 20260901,
+    "memory": "hierarchical exact-cell non-parametric signed-return memory",
+    "minimum_cell_support": 4,
+    "minimum_cell_saves": 2,
+    "maximum_cell_harms": 0,
+    "default_action": "STOP_M0",
+    "support_semantics": "A later support flight must freeze this discovery memory and apply it without reading support rewards; it may not cross-fit on support."
+  },
+  "scoring": {
+    "official_scorer": "a2t-scorer-v1 unchanged",
+    "wave_1": {
+      "jobs": ["M0_DIRECT", "USE_MATCHED", "USE_SHUFFLED_EVIDENCE", "MATCHED_RESEND_COMPOSITE"],
+      "workers": 4,
+      "operation": "finalize",
+      "unit": "one complete verified 104-row manifest per process"
+    },
+    "wave_2": {
+      "jobs": ["CROSSFIT_POLICY"],
+      "workers": 1,
+      "operation": "score"
+    },
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "efficiency_report": "record wall time, summed job time, effective speedup, worker count, manifest count, and per-job result hashes"
+  },
+  "promotion_gates": {
+    "all_liveness_and_canary_gates_pass": true,
+    "top5_gold_tool_count_exceeds_m0_tool_correct_count_by_at_least": 3,
+    "matched_exact_gain_over_m0_at_least": 3,
+    "matched_tool_gain_over_m0_at_least": 3,
+    "matched_exact_gain_over_shuffled_at_least": 3,
+    "matched_tool_gain_over_shuffled_at_least": 3,
+    "matched_minus_shuffled_grouped_ci90_lower_strictly_positive": true,
+    "policy_uses_minimum": 5,
+    "policy_uses_maximum": 52,
+    "policy_saves_minimum": 4,
+    "policy_harms_maximum": 1,
+    "policy_exact_net_gain_minimum": 3,
+    "policy_grouped_ci90_lower_strictly_positive": true,
+    "policy_tool_accuracy_net_gain_nonnegative": true,
+    "policy_slot_micro_f1_net_gain_nonnegative": true,
+    "every_fold_exact_net_nonnegative": true,
+    "positive_folds_minimum": 2,
+    "policy_exact_gain_exceeds_always_use_by_at_least": 2,
+    "policy_final_contacts_fewer_than_always_use": true,
+    "policy_gain_exceeds_resend_absolute_exact_count_floor": true,
+    "both_actions_required": true,
+    "state_liveness_required": true
+  },
+  "contact_budget": {
+    "m0_contacts_maximum": 104,
+    "observation_contacts_maximum": 104,
+    "matched_use_contacts_maximum": 104,
+    "shuffled_use_contacts_maximum": 104,
+    "resend_contacts": 16,
+    "allowance_contacts": 8,
+    "planned_model_calls": 440,
+    "planned_speech_audio_seconds": 2700,
+    "planned_gpu_hours": 1.5,
+    "paid_api_spend": 0,
+    "embedding_contacts": 0,
+    "tokenizer_contacts": 0
+  },
+  "terminal_rules": {
+    "failure": "Close this contract-preserving cascade on A2T-CPV2-104. Do not change the output envelope, structural canary, BM25, evidence budget, state bins, memory thresholds, or promotion gates on its returns. Do not run support or scale.",
+    "success": "Permit only a separately preregistered, query-block-disjoint approximately-104 support proposal using the frozen discovery memory. Support success may propose, but not execute, an approximately-1,000 engineering experiment with a separately decontaminated knowledge build.",
+    "no_test_tuning": true,
+    "test_and_final60_closed": true,
+    "stage3_closed": true,
+    "paper_scale_closed": true
+  },
+  "precontact_requirements": [
+    "materialize and pin the A2T-CPV2-104 receipt without reading gold or prior outputs",
+    "commit implementation and tests with at least 80 percent targeted branch coverage",
+    "bind structured ExecutionPlan files to this exact exposure row, split identity, protocol hash, source hashes, runtime receipt, and cumulative budgets",
+    "prove byte preservation of the existing M0 output sentence and exact example",
+    "prove OBS isolation, label-free batch barriers, strict canary behavior, BM25 and derangement determinism, forbidden-feature exclusion, query-group fold isolation, exact replay, complete manifests, and clean-tree scoring",
+    "prepare four whole-manifest wave-1 jobs and one dependent wave-2 job before contact",
+    "keep gold and scorer closed until every permitted model response and complete prediction manifest seals"
+  ]
+}
