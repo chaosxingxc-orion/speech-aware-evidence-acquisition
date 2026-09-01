@@ -476,3 +476,33 @@ def test_source_hash_reads_complete_file(tmp_path: Path) -> None:
     assert smem._sha256_file(source) == hashlib.sha256(  # noqa: SLF001
         b"signed-supply-source"
     ).hexdigest()
+
+
+def test_fast_a0_validation_reuses_structural_checks_without_scoring(tmp_path: Path) -> None:
+    rows = (_a0_row("tier1_direct:000001", "[]"),)
+    calls: list[str] = []
+
+    fake_reader = SimpleNamespace(
+        load_attempt_rows=lambda _path: (rows, ()),
+        load_flight_receipt=lambda _path: {"status": "COMPLETED"},
+        _load_split_receipt=lambda _repo, _role: {
+            "split_identity_hash": "hash",
+            "items": [{"tier": "tier1_direct", "id": 1}],
+        },
+        expected_sample_ids=lambda _receipt: ("tier1_direct:000001",),
+        _harness_defect_reasons=lambda **_kwargs: calls.append("checked") or (),
+    )
+    assert smem._validated_a0_rows(  # noqa: SLF001
+        fake_reader,
+        attempt_dir=tmp_path,
+        repo_root=tmp_path,
+    ) == rows
+    assert calls == ["checked"]
+
+    fake_reader._harness_defect_reasons = lambda **_kwargs: ("drift",)
+    with pytest.raises(smem.SupplyMemoryError, match="drift"):
+        smem._validated_a0_rows(  # noqa: SLF001
+            fake_reader,
+            attempt_dir=tmp_path,
+            repo_root=tmp_path,
+        )

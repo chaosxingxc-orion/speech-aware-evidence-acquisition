@@ -890,6 +890,42 @@ def _sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _validated_a0_rows(
+    a2t_reader,
+    *,
+    attempt_dir: Path,
+    repo_root: Path,
+) -> tuple[object, ...]:
+    """Run A0's structural receipt checks without its per-row gold reload.
+
+    ``build_a2t_report`` calls ``Audio2ToolAdapter.score`` once per row, and
+    that adapter reloads the complete expected-call manifest on every call.
+    This evaluator already performs one shared official-primitives scoring
+    pass in :func:`build_logged_surface`, so repeating that reader's scoring
+    would add 400 redundant manifest scans.  The receipt/row checks below are
+    the exact helpers from the official reader; only the duplicate scoring
+    pass is omitted.
+    """
+
+    rows, malformed = a2t_reader.load_attempt_rows(attempt_dir)
+    flight_receipt = a2t_reader.load_flight_receipt(attempt_dir)
+    split_receipt = a2t_reader._load_split_receipt(repo_root, "discovery")
+    expected_ids = a2t_reader.expected_sample_ids(split_receipt)
+    split_identity_hash = str(split_receipt["split_identity_hash"])
+    reasons = a2t_reader._harness_defect_reasons(
+        malformed_row_reasons=malformed,
+        flight_receipt=flight_receipt,
+        rows=rows,
+        expected_ids=expected_ids,
+        split_identity_hash=split_identity_hash,
+    )
+    if reasons:
+        raise SupplyMemoryError(
+            "A0 structural harness defect(s):\n  " + "\n  ".join(reasons)
+        )
+    return tuple(rows)
+
+
 def load_registered_surface(
     *,
     repo_root: Path,
@@ -907,14 +943,10 @@ def load_registered_surface(
     from ..data.audio2tool import load_expected_calls, load_tool_registry
     from . import a2t_pop_read, a2t_read, a2t_s2_read, a2t_s2b_read
 
-    a0_report = a2t_read.build_a2t_report(
-        a0_attempt, lock, data_root, repo_root=repo_root
+    a0_rows = _validated_a0_rows(
+        a2t_read, attempt_dir=a0_attempt, repo_root=repo_root
     )
     headroom_identity = a2t_s2_read.load_headroom_identity(headroom_path)
-    if tuple(a0_report.headroom_ids) != tuple(headroom_identity.sample_ids):
-        raise SupplyMemoryError(
-            "A0 official read headroom does not equal the frozen headroom manifest"
-        )
     a2t_s2b_read.build_a2t_s2b_report(
         headroom_supply_attempt,
         lock,
@@ -930,10 +962,9 @@ def load_registered_surface(
         repo_root=repo_root,
     )
 
-    a0_rows, a0_malformed = a2t_read.load_attempt_rows(a0_attempt)
     b_rows, b_malformed = a2t_s2_read.load_attempt_rows(headroom_supply_attempt)
     pop_rows, pop_malformed = a2t_s2_read.load_attempt_rows(population_supply_attempt)
-    malformed = (*a0_malformed, *b_malformed, *pop_malformed)
+    malformed = (*b_malformed, *pop_malformed)
     if malformed:
         raise SupplyMemoryError(
             f"validated source loaders still reported {len(malformed)} malformed row(s)"
