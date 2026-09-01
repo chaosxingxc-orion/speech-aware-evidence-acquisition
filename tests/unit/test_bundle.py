@@ -121,6 +121,24 @@ def test_composite_trace_cost_floor_counts_model_requests_not_tool_outputs(tmp_p
     assert _minimum_model_calls_from_trace(trace) == 1
 
 
+def test_cost_floor_does_not_misclassify_legacy_observation_root_as_tool_output():
+    trace = {
+        "sample-1/request": {
+            "obs_regions": ["sample-1-i0000", "sample-1-i0001"],
+        },
+        "sample-1-i0000/request": {
+            "arm": "bare-core",
+            "payload": {"sample_id": "sample-1"},
+            "payload_sha256": "a" * 64,
+        },
+        "sample-1-i0000/response": {"text": "answer"},
+    }
+    assert _minimum_model_calls_from_trace(
+        trace,
+        output_request_ids=frozenset({"sample-1"}),
+    ) == 1
+
+
 def test_composite_trace_cost_floor_rejects_unbound_tool_provenance(tmp_path):
     missing = tmp_path / "missing.outputs.jsonl"
     with pytest.raises(BundleError, match="source provenance"):

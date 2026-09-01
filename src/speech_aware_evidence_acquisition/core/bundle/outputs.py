@@ -60,7 +60,11 @@ def _minimum_model_calls_from_trace(
         ):
             model_requests += 1
             continue
-        if request_id not in derived_ids:
+        # Legacy OBS roots are output identities too, but their request record is
+        # a stitch/observation envelope rather than a model or deterministic-tool
+        # request. Only an explicit tool_id opts a non-model request into the
+        # derived-output provenance contract.
+        if request_id not in derived_ids or "tool_id" not in payload:
             continue
         tool_id = payload.get("tool_id")
         source = payload.get("source")
