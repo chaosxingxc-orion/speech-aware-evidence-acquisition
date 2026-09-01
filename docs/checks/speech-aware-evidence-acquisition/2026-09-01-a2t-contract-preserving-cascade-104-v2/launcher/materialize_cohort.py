@@ -23,7 +23,7 @@ from speech_aware_evidence_acquisition.analysis.a2t_contract_preserving_cohort i
     query_block,
     select_block_disjoint,
 )
-from speech_aware_evidence_acquisition.core.bundle.git import (  # noqa: E402
+from speech_aware_evidence_acquisition.core.bundle import (  # noqa: E402
     require_clean_study_repo,
 )
 from speech_aware_evidence_acquisition.data.lock import (  # noqa: E402

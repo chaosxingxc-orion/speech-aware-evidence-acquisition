@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
+import runpy
 from types import SimpleNamespace
 
 import pytest
@@ -21,11 +23,32 @@ class Candidate:
     audio_sha256: str = "a" * 64
 
 
+REPO = Path(__file__).resolve().parents[2]
+LAUNCHER = (
+    REPO
+    / "docs/checks/speech-aware-evidence-acquisition"
+    / "2026-09-01-a2t-contract-preserving-cascade-104-v2/launcher"
+    / "materialize_cohort.py"
+)
+
+
 def _candidate(tier: str, item: int, query: int) -> Candidate:
     return Candidate(
         sample_id=f"{tier}:{item:06d}",
         media_relpath=f"datasets/audio2tool/{tier}_audios/query_{query:05d}/voice.wav",
     )
+
+
+def test_materializer_launcher_imports_against_public_package_surface(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("PYTHONDONTWRITEBYTECODE", "1")
+    monkeypatch.setenv("PYTHONPATH", str(REPO / "src"))
+
+    namespace = runpy.run_path(str(LAUNCHER), run_name="_assembly_check")
+
+    assert namespace["require_clean_study_repo"]
+    assert namespace["main"]
 
 
 def test_query_block_is_tier_scoped_and_refuses_an_ambiguous_path() -> None:
