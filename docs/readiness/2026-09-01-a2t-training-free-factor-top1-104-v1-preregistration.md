@@ -116,6 +116,28 @@ value, so it is strictly dominated by the landed envelope. Any constructor, rece
 packet, or serving-geometry drift fails preflight and requires a separately registered model-free
 prompt-fit measurement; this flight never opens an unregistered tokenizer contact.
 
+### Pre-result peg-native recovery amendment
+
+The first main attempt stopped after five metered requests. Three factor requests returned HTTP 500
+and no `MODEL_RESPONSE` because the receipt-pinned server could not reconcile Qwen's peg-native chat
+format with the OpenAI `response_format` JSON-schema path. One sample completed both contacts, but
+its final request carried zero supplied registry values. Before reading either response text, that
+sample is fixed to `STOP_M0`, excluded from retrieval and reward memory, and must never be
+re-contacted. The three error requests have no returned response and may be issued once under the
+repaired protocol. Exact structural identities and trace hash are frozen in `recovery-plan.json`.
+
+Recovery runs the remaining 103 samples. It removes only server-side `response_format`, caps the
+factor completion at 256 tokens, and retains the exact same strict external parser, fields,
+canonicalization, tool-name rejection, BM25, one-row renderer, state, folds, thresholds, promotion
+gates, and scorer. Arbitrary text, tool calls, extra fields, malformed JSON, non-ASCII text, and
+tool-name leakage still become `invalid` with no retrieval. The contact therefore remains
+strictly post-validated, while avoiding a server path that returned no usable factor.
+
+The recovery spends at most 206 main contacts plus 16 resends. Including the five consumed canary
+requests, cumulative use is at most 227 of 228 contacts. The 1,340-second ceiling also covers the
+five consumed calls plus the registered worst-case resend durations. No scorer or gold has been
+opened. Both complete 104-row composites still seal before the same two-worker official finalizer.
+
 The result records byte, parsed-call, and exact-score divergence. The cross-fitted policy's exact
 gain must exceed the absolute main-versus-resend-composite exact-count difference. This measures the
 stack's current resend floor instead of assuming deterministic decoding is bit-reproducible.

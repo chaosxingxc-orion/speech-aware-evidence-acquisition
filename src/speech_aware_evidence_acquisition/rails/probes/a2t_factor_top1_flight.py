@@ -245,11 +245,12 @@ class FactorTop1Controller:
             instruction=(
                 "Analyze the original speech without transcribing it. Describe only "
                 "task semantics in English. Do not name, choose, or emit a tool or "
-                "tool-call list. Return only the required factor object."
+                "tool-call list. Return only one raw JSON object with the exact "
+                "required factor fields in assistant content."
             ),
             key_representation_id=f"{CONTROLLER_POLICY_ID}:speech-factors",
             matcher_policy_id=factor.RETRIEVER_POLICY_ID,
-            decoding_params={"response_format": factor_response_format()},
+            decoding_params={"max_tokens": 256},
         ).validate()
 
     def _final_contact(self, query_state: QueryState) -> AgentContactPlan:

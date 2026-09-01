@@ -8,7 +8,7 @@
     "planned_gpu_hours": 0.6,
     "planned_model_calls": 228,
     "planned_speech_audio_seconds": 1340,
-    "protocol_hash": "b7cef7a67170b80f5eb76d396888ba0f13dc76710534c2ddf0974211f74fc489",
+    "protocol_hash": "e6e99f122e14bc3b3969fc0221373c2c51f0a35b5771ec252c9bc4e11f266c54",
     "run_id": "SAEA-A2T-TFRL-FACTOR-TOP1-104-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "f5a030189cf80dcbc52899e2fa5f819bac03874f2ad3f9645fdc60c432a9bf3a",
@@ -21,6 +21,6 @@
     "experiment": "a2t-training-free-factor-top1-104-v1",
     "model": "q4km-mmproj-free-speech-native-np2-a2t-max1024"
   },
-  "composed_config_sha256": "3657a9e9abb9007e928be7ecbf565186c9cec892eccb0bf63dff71e0d05bc775",
+  "composed_config_sha256": "1ce5782f20f5b9977f02fa5db5f547211b83b4bb15a81ba21d48136c4dfffd63",
   "attempt_binding": "The one-shot launcher replaces only execution_plan.attempt_id with a newly reserved main or resend attempt id. Every other field compares exactly. Actual usage is shared across sibling attempts under the one registered run-level budget."
 }

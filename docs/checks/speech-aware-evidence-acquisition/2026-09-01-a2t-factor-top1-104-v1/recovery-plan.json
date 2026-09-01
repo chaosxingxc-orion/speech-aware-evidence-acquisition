@@ -1,0 +1,58 @@
+{
+  "schema": "saea-a2t-factor-top1-peg-recovery-v1",
+  "experiment_id": "SAEA-A2T-TFRL-FACTOR-TOP1-104-V1",
+  "registered_before_recovery_contact": true,
+  "source_attempt": {
+    "attempt_id": "attempt-20260901t191503z-factormain",
+    "state": "ABORTED",
+    "actual_calls": 5,
+    "actual_audio_seconds": 7.986000000000001,
+    "trace_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-TFRL-FACTOR-TOP1-104-V1/flight-20260901T191503Z/main-composite/SAEA-A2T-TFRL-FACTOR-TOP1-104-V1.trace.jsonl",
+    "trace_sha256": "e4a2110fa3fbf7a2dbf986046228a4cd8fb8f4b6252186176b8a32d5dd01d2df",
+    "model_requests": 5,
+    "model_responses": 2,
+    "failure": "three factor requests returned HTTP 500 because peg-native output could not satisfy the server-side response_format path"
+  },
+  "completed_trajectory": {
+    "sample_id": "tier1_direct:000077",
+    "factor_request_id": "factortop1-0002",
+    "final_request_id": "factortop1-0004",
+    "supplied_registry_values": 0,
+    "recovery_action": "STOP_M0",
+    "response_text_use": "neither response text is read or reused; the zero-value final request makes the trajectory unavailable under the already-registered rule",
+    "recontact": false,
+    "reward_memory_eligibility": false
+  },
+  "failed_requests_without_model_response": [
+    {
+      "request_id": "factortop1-0001",
+      "sample_id": "tier1_direct:000074"
+    },
+    {
+      "request_id": "factortop1-0003",
+      "sample_id": "tier1_direct:000167"
+    },
+    {
+      "request_id": "factortop1-0005",
+      "sample_id": "tier1_direct:000178"
+    }
+  ],
+  "recovery": {
+    "runtime_population": 103,
+    "main_contacts_maximum": 206,
+    "resend_contacts": 16,
+    "cumulative_contacts_maximum": 227,
+    "registered_contact_ceiling": 228,
+    "registered_audio_seconds_ceiling": 1340,
+    "only_protocol_change": "remove server-side response_format and cap factor completion at 256 tokens; keep the same exact strict parser, fields, retrieval, state, evidence, policy, gates, and scorer",
+    "failed_request_rule": "the three requests with no MODEL_RESPONSE may be issued once under the repaired protocol",
+    "completed_request_rule": "never re-contact tier1_direct:000077 and force frozen M0 in both complete composites"
+  },
+  "forbidden": [
+    "reading either source response text before recovery registration",
+    "using the completed canary factor in retrieval or reward memory",
+    "re-contacting the completed canary sample",
+    "changing parser fields, BM25, state bins, thresholds, folds, promotion gates, scorer, or sample scope",
+    "opening gold or a scorer before both recovery manifests seal"
+  ]
+}

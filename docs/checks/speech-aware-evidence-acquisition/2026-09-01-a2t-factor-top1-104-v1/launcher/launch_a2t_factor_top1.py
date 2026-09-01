@@ -114,10 +114,10 @@ DATASET_FRAGMENT = "audio2tool-g1-104"
 BASELINE_FRAGMENT = "a2t-factor-top1-agentloop"
 EXPERIMENT_FRAGMENT = "a2t-training-free-factor-top1-104-v1"
 COMPOSED_CONFIG_SHA256 = (
-    "3657a9e9abb9007e928be7ecbf565186c9cec892eccb0bf63dff71e0d05bc775"
+    "1ce5782f20f5b9977f02fa5db5f547211b83b4bb15a81ba21d48136c4dfffd63"
 )
 PROTOCOL_SHA256 = (
-    "b7cef7a67170b80f5eb76d396888ba0f13dc76710534c2ddf0974211f74fc489"
+    "e6e99f122e14bc3b3969fc0221373c2c51f0a35b5771ec252c9bc4e11f266c54"
 )
 SPLIT_IDENTITY_SHA256 = (
     "f5a030189cf80dcbc52899e2fa5f819bac03874f2ad3f9645fdc60c432a9bf3a"
@@ -151,6 +151,10 @@ PLAN_TEMPLATE = REPO / (
 SCORE_PLAN = REPO / (
     "docs/checks/speech-aware-evidence-acquisition/"
     "2026-09-01-a2t-factor-top1-104-v1/parallel-score-plan.json"
+)
+RECOVERY_PLAN = REPO / (
+    "docs/checks/speech-aware-evidence-acquisition/"
+    "2026-09-01-a2t-factor-top1-104-v1/recovery-plan.json"
 )
 OPENJIUWEN_VERSION = "0.1.16.post2"
 
@@ -270,6 +274,94 @@ def _validate_prompt_fit(
         raise RuntimeError("landed prompt-fit envelope no longer dominates this flight")
 
 
+def _validate_recovery(root: Path) -> dict[str, object]:
+    recovery = _read_json(RECOVERY_PLAN)
+    source = recovery.get("source_attempt")
+    completed = recovery.get("completed_trajectory")
+    failed = recovery.get("failed_requests_without_model_response")
+    if (
+        recovery.get("registered_before_recovery_contact") is not True
+        or not isinstance(source, Mapping)
+        or not isinstance(completed, Mapping)
+        or not isinstance(failed, list)
+    ):
+        raise RuntimeError("recovery plan structure drift")
+    attempt_id = source.get("attempt_id")
+    if not isinstance(attempt_id, str):
+        raise RuntimeError("recovery source attempt id is malformed")
+    attempt = _read_json(root / "attempts" / RUN_ID / f"{attempt_id}.json")
+    actual = attempt.get("actual")
+    if (
+        attempt.get("state") != "ABORTED"
+        or not isinstance(actual, Mapping)
+        or actual.get("calls") != source.get("actual_calls")
+        or abs(
+            float(actual.get("audio_seconds", -1))
+            - float(source.get("actual_audio_seconds", -2))
+        )
+        > 1e-9
+    ):
+        raise RuntimeError("recovery source attempt accounting drift")
+    trace_path = Path(str(source.get("trace_path")))
+    if _sha256_file(trace_path) != source.get("trace_sha256"):
+        raise RuntimeError("recovery source trace byte identity drift")
+    requests: dict[str, Mapping[str, object]] = {}
+    response_ids: set[str] = set()
+    for line in trace_path.read_text(encoding="utf-8").split("\n"):
+        if not line:
+            continue
+        document = json.loads(line)
+        channel = document.get("channel")
+        record_id = document.get("record_id")
+        if not isinstance(record_id, str):
+            raise RuntimeError("recovery trace record id is malformed")
+        if channel == "MODEL_REQUEST":
+            outer = document.get("payload")
+            payload = outer.get("payload") if isinstance(outer, Mapping) else None
+            if not isinstance(payload, Mapping):
+                raise RuntimeError("recovery MODEL_REQUEST lacks payload")
+            requests[record_id.removesuffix("/request")] = payload
+        elif channel == "MODEL_RESPONSE":
+            response_ids.add(record_id.removesuffix("/response"))
+    if len(requests) != source.get("model_requests") or len(
+        response_ids
+    ) != source.get("model_responses"):
+        raise RuntimeError("recovery trace request/response counts drift")
+    factor_request_id = str(completed.get("factor_request_id"))
+    final_request_id = str(completed.get("final_request_id"))
+    sample_id = completed.get("sample_id")
+    if (
+        response_ids != {factor_request_id, final_request_id}
+        or requests[factor_request_id].get("sample_id") != sample_id
+        or requests[final_request_id].get("sample_id") != sample_id
+        or len(requests[final_request_id].get("supplied_evidence", [])) != 0
+        or completed.get("recovery_action") != "STOP_M0"
+        or completed.get("recontact") is not False
+    ):
+        raise RuntimeError("completed recovery trajectory structure drift")
+    expected_failed = {
+        (row.get("request_id"), row.get("sample_id"))
+        for row in failed
+        if isinstance(row, Mapping)
+    }
+    actual_failed = {
+        (request_id, payload.get("sample_id"))
+        for request_id, payload in requests.items()
+        if request_id not in response_ids
+    }
+    if actual_failed != expected_failed or len(actual_failed) != 3:
+        raise RuntimeError("failed recovery request identities drift")
+    return {
+        "source_attempt_id": attempt_id,
+        "source_trace": str(trace_path),
+        "source_trace_sha256": source["trace_sha256"],
+        "completed_sample_id": sample_id,
+        "failed_request_sample_ids": tuple(
+            sorted(str(sample) for _request, sample in actual_failed)
+        ),
+    }
+
+
 def _static_preflight(root: Path) -> dict[str, object]:
     commit = require_clean_study_repo(REPO)
     composed = compose(
@@ -353,6 +445,19 @@ def _static_preflight(root: Path) -> dict[str, object]:
             "sha256": packet.packet_sha256,
         }
 
+    recovery = _validate_recovery(root)
+    recovered_sample_id = recovery["completed_sample_id"]
+    runtime_items = tuple(
+        item for item in items if item["sample_id"] != recovered_sample_id
+    )
+    runtime_packet_bindings = {
+        sample_id: descriptor
+        for sample_id, descriptor in packet_bindings.items()
+        if sample_id != recovered_sample_id
+    }
+    if len(runtime_items) != 103 or len(runtime_packet_bindings) != 103:
+        raise RuntimeError("recovery runtime population is not exactly 103 samples")
+
     lock = load_lock(umbrella_lock_path(REPO))
     carrier_root = asset_dir(lock, AUDIO2TOOL_LOCK_KEY, root)
     registry_path = carrier_root / "tools_registry.csv"
@@ -395,11 +500,14 @@ def _static_preflight(root: Path) -> dict[str, object]:
         "carrier_root": carrier_root,
         "receipt": receipt,
         "items": items,
+        "runtime_items": runtime_items,
         "sample_ids": sample_ids,
         "m0": m0,
         "registry": registry,
         "snapshot": snapshot,
         "packet_bindings": packet_bindings,
+        "runtime_packet_bindings": runtime_packet_bindings,
+        "recovery": recovery,
     }
 
 
@@ -522,7 +630,7 @@ def _run_main(
         context["lock"],  # type: ignore[arg-type]
         root,
         repo_root=REPO,
-        receipt_items=context["items"],  # type: ignore[arg-type]
+        receipt_items=context["runtime_items"],  # type: ignore[arg-type]
         phase=OBSERVATION_PHASE,
     )
     samples = adapter.load_split(SPLIT_ID)
@@ -542,7 +650,7 @@ def _run_main(
         arm="speech-feature-query",
         request_id_prefix="factortop1",
         speech_feature_root=FEATURE_ROOT,
-        speech_packet_bindings=context["packet_bindings"],  # type: ignore[arg-type]
+        speech_packet_bindings=context["runtime_packet_bindings"],  # type: ignore[arg-type]
     )
     decoding = dict(context["composed"].values["decoding_params"])  # type: ignore[union-attr]
     decoding.pop("id_slot", None)
@@ -553,7 +661,7 @@ def _run_main(
         core_client=client,
         split_id=SPLIT_ID,
         knowledge_snapshot=context["snapshot"],  # type: ignore[arg-type]
-        speech_packet_bindings=context["packet_bindings"],  # type: ignore[arg-type]
+        speech_packet_bindings=context["runtime_packet_bindings"],  # type: ignore[arg-type]
         controller_policy_id=CONTROLLER_POLICY_ID,
         max_contacts=2,
         slot_count=int(context["composed"].values["profile_slot_count"]),  # type: ignore[union-attr]
@@ -586,7 +694,18 @@ def _run_main(
             result.sample_id: result.final_response_text for result in summary.results
         },
     )
-    main_texts = build_main_composite_texts(summary, context["m0"])  # type: ignore[arg-type]
+    runtime_ids = {result.sample_id for result in summary.results}
+    runtime_m0 = {
+        sample_id: response
+        for sample_id, response in context["m0"].items()  # type: ignore[union-attr]
+        if sample_id in runtime_ids
+    }
+    main_texts = build_main_composite_texts(summary, runtime_m0)
+    recovered_sample_id = str(context["recovery"]["completed_sample_id"])  # type: ignore[index]
+    main_texts[recovered_sample_id] = context["m0"][recovered_sample_id]  # type: ignore[index]
+    main_texts = {
+        sample_id: main_texts[sample_id] for sample_id in sorted(main_texts)
+    }
     source_by_id = {
         sample_id: (
             {
@@ -594,11 +713,21 @@ def _run_main(
                 "source_request_id": request_ids[sample_id],
             }
             if sample_id in request_ids
-            else {
+            else (
+                {
+                    "action": "RECOVERED_CANARY_STOP_M0",
+                    "source_request_id": "recovered-zero-value-final",
+                    "source_artifact_sha256": str(
+                        context["recovery"]["source_trace_sha256"]  # type: ignore[index]
+                    ),
+                }
+                if sample_id == recovered_sample_id
+                else {
                 "action": "STOP_M0",
                 "source_request_id": "frozen-m0",
                 "source_artifact_sha256": M0_SHA256,
-            }
+                }
+            )
         )
         for sample_id in main_texts
     }
@@ -610,8 +739,9 @@ def _run_main(
     )
     trace_manifest_hash = trace_sink.close()
     client_summary = client.close()
-    if client_summary.get("request_count") != SPLIT_COUNT * 2:
-        raise RuntimeError("main attempt did not account for exactly 208 contacts")
+    expected_main_contacts = len(context["runtime_items"]) * 2  # type: ignore[arg-type]
+    if client_summary.get("request_count") != expected_main_contacts:
+        raise RuntimeError("recovery main attempt contact accounting drift")
     outputs_path = run_dir / f"{RUN_ID}.outputs.jsonl"
     _write_jsonl(outputs_path, rows)
     manifest_path = _build_completed_manifest(
@@ -634,6 +764,7 @@ def _run_main(
             "trace_manifest_sha256": trace_manifest_hash,
             "selected_resend_ids": list(selected_ids),
             "available_count": len(final_payloads),
+            "recovery": context["recovery"],
             "client": client_summary,
         },
     )
@@ -939,6 +1070,7 @@ def _launch(root: Path) -> Mapping[str, object]:
                 },
             },
             "selected_resend_ids": list(main["selected_ids"]),
+            "recovery": context["recovery"],
             "parallel_finalizer": score_summary,
         }
         _write_json(mission_dir / "flight-receipt.json", receipt)
@@ -981,8 +1113,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "run_id": RUN_ID,
                     "study_commit": context["commit"],
                     "samples": len(context["sample_ids"]),
-                    "planned_main_contacts": 208,
+                    "planned_main_contacts": 206,
                     "planned_resend_contacts": 16,
+                    "consumed_canary_contacts": 5,
                     "official_score_workers": 2,
                     "scoring_boundary": "one-complete-manifest-per-process",
                 },

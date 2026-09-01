@@ -73,7 +73,7 @@
     "same_core_only": true,
     "parameter_training": "none",
     "speech_carriage": "the exact original speech-feature packet remains the primary query on every model contact",
-    "phase_1": "ORG_FACTORS: one strict-schema speech-conditioned contact produces English semantic factors but no tool-call list",
+    "phase_1": "ORG_FACTORS: one bounded speech-conditioned contact requests a raw JSON factor object; the external strict parser accepts only the frozen schema and otherwise marks the factor invalid",
     "phase_2": "RETRIEVE_TOP1: deterministic local BM25 ranks the frozen registry and selects at most one row; no model, tokenizer, embedding, HTTP, or socket contact",
     "phase_3": "USE_FACTOR_TOP1: one final frozen-core contact sees the original speech and canonical factor state; it sees exactly one values-stripped retrieved registry row when available and a fixed no-factor sentinel with no supplied value otherwise",
     "final_actions": [
@@ -86,6 +86,8 @@
   },
   "factor_schema": {
     "strict": true,
+    "enforcement": "external exact post-response validation because the receipt-pinned peg-native server rejects response_format JSON-schema generation before returning a usable response",
+    "factor_completion_tokens": 256,
     "additional_properties": false,
     "required_fields": [
       "task_action",
@@ -103,7 +105,7 @@
       "medium",
       "high"
     ],
-    "instruction": "Analyze the original speech without transcribing it. Describe task semantics in English. Do not name, choose, or emit a tool or tool-call list.",
+    "instruction": "Analyze the original speech without transcribing it. Describe task semantics in English. Do not name, choose, or emit a tool or tool-call list. Return one raw JSON object with the exact required fields in assistant content.",
     "canonicalization": "parse the exact object, reject extra fields or non-ASCII/non-English-control text, trim and collapse whitespace, preserve field order, sort and deduplicate qualifier and argument-hint tuples",
     "invalid_semantics": "no retrieval; a fixed English sentinel replaces the rejected factor before the diagnostic phase-3 contact, and scoring-side composition forces STOP_M0"
   },

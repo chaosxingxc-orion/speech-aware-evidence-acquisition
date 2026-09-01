@@ -94,19 +94,20 @@ def test_registry_snapshot_is_external_governed_and_values_stripped() -> None:
     ]
 
 
-def test_initial_factor_contact_freezes_strict_non_tool_schema() -> None:
+def test_initial_factor_contact_freezes_bounded_postvalidated_json_instruction() -> None:
     snapshot = flight.build_registry_snapshot(REGISTRY, registry_sha256="c" * 64)
     controller = flight.FactorTop1Controller(REGISTRY, snapshot)
     contact = controller.initial_contact(_context(snapshot, _query_state()))
-    response_format = contact.decoding_params["response_format"]
-    schema = response_format["json_schema"]["schema"]
     assert contact.contact_id == flight.FACTOR_CONTACT_ID
+    assert contact.decoding_params == {"max_tokens": 256}
+    schema = flight.factor_response_format()["json_schema"]["schema"]
     assert schema["additionalProperties"] is False
     assert set(schema["required"]) == flight.FACTOR_FIELDS
     serialized = json.dumps(schema)
     assert "tool_name" not in serialized
     assert "tool_calls" not in serialized
     assert "Do not name" in contact.instruction
+    assert "raw JSON object" in contact.instruction
 
 
 def test_valid_factor_acquires_exactly_one_row_and_one_org_state() -> None:
