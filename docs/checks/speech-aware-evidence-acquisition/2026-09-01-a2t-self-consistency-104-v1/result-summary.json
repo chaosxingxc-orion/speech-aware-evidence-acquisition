@@ -1,0 +1,132 @@
+{
+  "schema": "saea-a2t-self-consistency-104-result-summary-v1",
+  "experiment_id": "SAEA-A2T-TFRL-SELF-CONSISTENCY-104-V1",
+  "date": "2026-09-01",
+  "claim_status": "exposed-cohort secondary discovery only",
+  "decision": "close direct self-consistency as this targeting signal; do not scale",
+  "promotion_passed": false,
+  "selected_candidate": null,
+  "arm_metrics": {
+    "M0": {
+      "samples": 104,
+      "exact_match_count": 29,
+      "exact_match": 0.27884615384615385,
+      "tool_accuracy_count": 62,
+      "tool_accuracy": 0.5961538461538461,
+      "slot_f1": 0.4378698224852071,
+      "parse_failures": 4
+    },
+    "REOBSERVE_DIRECT": {
+      "samples": 104,
+      "exact_match_count": 23,
+      "exact_match": 0.22115384615384615,
+      "tool_accuracy_count": 55,
+      "tool_accuracy": 0.5288461538461539,
+      "slot_f1": 0.40625000000000006,
+      "parse_failures": 4
+    },
+    "SUPPLY_UNION_STRIPPED": {
+      "samples": 104,
+      "exact_match_count": 23,
+      "exact_match": 0.22115384615384615,
+      "tool_accuracy_count": 60,
+      "tool_accuracy": 0.5769230769230769,
+      "slot_f1": 0.3569023569023569,
+      "parse_failures": 8
+    }
+  },
+  "information_gain": {
+    "observation_changed_samples": 34,
+    "observation_byte_identical_samples": 70,
+    "observation_saves": 0,
+    "observation_harms": 6,
+    "observation_neutral": 98,
+    "supply_eligible_samples": 92,
+    "supply_unavailable_samples": 12,
+    "eligible_supply_saves": 4,
+    "eligible_supply_harms": 10,
+    "eligible_supply_neutral": 78,
+    "conclusion": "The new observation was live but added no corrective signal, and the supply returns remained inseparable in the registered deployment-visible state."
+  },
+  "training_free_policy": {
+    "parameter_training": "none",
+    "folds": 5,
+    "candidates": [
+      "coarse-v1",
+      "hierarchical-v1"
+    ],
+    "selected": null,
+    "actions": {
+      "STOP_M0": 104,
+      "SUPPLY_UNION_STRIPPED": 0
+    },
+    "saved": 0,
+    "harmed": 0,
+    "net_exact_match_gain": 0,
+    "tool_accuracy_net_gain": 0,
+    "fold_net_gains": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "grouped_ci90": [
+      0.0,
+      0.0
+    ],
+    "verdict": "The safe all-stop result is not an agent improvement and is not a training-free RL contribution."
+  },
+  "parallel_scoring": {
+    "workers": 2,
+    "whole_manifest_jobs": 2,
+    "dataset_shards": 0,
+    "wall_seconds": 2.256304139009444,
+    "sum_job_seconds": 4.301651779998792,
+    "effective_speedup": 1.9065035185758648,
+    "official_scorers_modified": false
+  },
+  "contact_accounting": {
+    "observation_calls": 104,
+    "supply_calls": 104,
+    "total_calls": 208,
+    "registered_ceiling": 213,
+    "audio_seconds": 1174.034,
+    "registered_audio_seconds_ceiling": 1200.0,
+    "paid_api_spend": 0
+  },
+  "finalization_incident": {
+    "failure_class": "missing human ledger cells after official supply scoring",
+    "scientific_scores_complete": true,
+    "supply_score_attached_before_tracking_failure": true,
+    "observation_attempt_state": "ABORTED",
+    "supply_attempt_state": "ABORTED",
+    "prediction_reflight": false,
+    "generic_fix_commit": "3332d8b1bcce787a1eed0f9f931a4ef649b2dc03",
+    "generic_fix": "validate the complete human-ledger surface before scoring or manifest mutation"
+  },
+  "runtime_restoration": {
+    "developer_commit": "9a41ce51850898973a41c39f9224818ff1a7fbe2",
+    "receipt_pinned_experiment_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "receipt_pinned_build_archive": "/home/chao/llama.cpp-featcache/build-receipt-04ccc72a-20260901",
+    "server_running_after_experiment": false
+  },
+  "raw_result": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-TFRL-SELF-CONSISTENCY-104-V1/analysis/self-consistency-result.json",
+    "bytes": 13437,
+    "file_sha256": "8527282e110cd11a9d87f0d65d06d55f266e0a27a9bb95d7f7eff3b103266d39",
+    "self_sha256": "ee7368f2ba0587fa959438a965bea3c604261aad0924dd303837f3f853668b2b",
+    "policy_self_sha256": "9e16405535da114f1ccf42d457e7f7ec20099b2f6df5b76d264231e00365c132"
+  },
+  "source_hashes": {
+    "subset_receipt": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db",
+    "m0_outputs": "dea60ff1e63fd2ef11c93edf8808217062fea3f0565ed5b60f136264bc6a9467",
+    "observation_manifest": "73c901639916a28d67c2bc8a996d921371744f438c73be178c7fbe995fc1a238",
+    "observation_outputs": "888626b97c0525ce16abd91e6d3da1d5df50955b5a7bf6eb6cda8ba8657fb0f9",
+    "observation_score": "c82d04d110596c18319d3f9d5e364705193a6bd5bae83a6995981fd56e0e88ac",
+    "supply_outputs": "14cf59eaf053dd344b4b6b874f1e182de6ea11599c7e2a4a0a620f715690d93f",
+    "supply_manifest_scored": "e5270dea9b9fa1fd0b968518598a24f65761971093e2ed4d4d961ff4641f7575",
+    "supply_scores": "bb6e154c5da210f363ed7ea98c1c42b04087d5291bbf3d0a88516e7cf158fd07",
+    "parallel_batch": "ef8b3b398608003de13a91521adda855ac5ebebe635fd2018ce1d5a0bc97db12"
+  }
+}

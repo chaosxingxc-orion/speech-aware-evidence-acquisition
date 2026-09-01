@@ -1546,7 +1546,13 @@ def test_finalize_bundle_refuses_when_a_frozen_scoring_source_is_edited(
     manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
     with _tamper_real_scoring_source():
         with pytest.raises(GateClosed, match="freeze drift"):
-            finalize_bundle(manifest_path, lock, synthetic_world.data_root, repo_root=repo_root)
+            finalize_bundle(
+                manifest_path,
+                lock,
+                synthetic_world.data_root,
+                repo_root=repo_root,
+                ledger_cells=_HUMAN_LEDGER_CELLS,
+            )
     # No lingering write from the refused attempt: it must still be OPENED,
     # not FINALIZED, and a legitimate finalize must still succeed afterward.
     store = AttemptStore(synthetic_world.data_root / "attempts")
@@ -1573,7 +1579,13 @@ def test_finalize_bundle_refuses_a_dirty_study_repo_at_scoring_time(
     manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
     (repo_root / "uncommitted-at-scoring-time.txt").write_text("dirty", encoding="utf-8")
     with pytest.raises(BundleError, match="uncommitted"):
-        finalize_bundle(manifest_path, lock, synthetic_world.data_root, repo_root=repo_root)
+        finalize_bundle(
+            manifest_path,
+            lock,
+            synthetic_world.data_root,
+            repo_root=repo_root,
+            ledger_cells=_HUMAN_LEDGER_CELLS,
+        )
 
 
 def test_cli_score_manifest_mode_refuses_when_a_frozen_scoring_source_is_edited(
@@ -1599,9 +1611,19 @@ def test_cli_finalize_refuses_when_a_frozen_scoring_source_is_edited(
         "speech_aware_evidence_acquisition.data.lock.umbrella_lock_path",
         lambda *a, **k: synthetic_world.lock_path,
     )
+    ledger_cells = tmp_path / "ledger-cells.json"
+    ledger_cells.write_text(json.dumps(_HUMAN_LEDGER_CELLS), encoding="utf-8")
     with _tamper_real_scoring_source():
         with pytest.raises(GateClosed, match="freeze drift"):
-            driver_main(["finalize", "--manifest", str(manifest_path)])
+            driver_main(
+                [
+                    "finalize",
+                    "--manifest",
+                    str(manifest_path),
+                    "--ledger-cells",
+                    str(ledger_cells),
+                ]
+            )
     store = AttemptStore(synthetic_world.data_root / "attempts")
     assert store.handle(plan.run_id, plan.attempt_id).state() == "OPENED"
 
