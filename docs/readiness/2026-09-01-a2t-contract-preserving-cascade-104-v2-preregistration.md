@@ -209,3 +209,33 @@ for terminal M0 and matched and finalize for continued shuffled and resend. No s
 prediction, prompt, sample, retrieval, canary, state, fold, threshold, gate, scorer, or sharding rule
 changes. Further contact remains closed until this amendment, implementation, tests, and exposure
 update land on a clean commit and the new recovery preflight passes.
+
+## Post-shuffled exact-replay recovery amendment
+
+The recovery flight from clean commit `eb846a8c` reused all 319 prior contacts without recontact,
+then completed exactly the registered 95 remaining shuffled contacts. Attempt
+`attempt-20260901t230624z-cpv2shuffledrecovery` records 95 calls and 493.297 audio seconds and is
+terminally `ABORTED`. Its complete 104-row composite, including the eight byte-reused canary rows,
+sealed and verifies. Before opening a resend attempt, the launcher stopped locally because the
+inherited exact-replay extractor recognized the v1 matched contact id rather than the frozen v2
+`contract-v2-matched-final` identifier. No resend, gold, or official scorer contact occurred.
+
+Recovery plan
+`docs/checks/speech-aware-evidence-acquisition/2026-09-01-a2t-contract-preserving-cascade-104-v2/post-shuffled-recovery-plan.json`,
+SHA-256 `8bc48ea3e91d6ab6ea7a9d7d963da055260a78f613609af9ad96bffc9429a321`, freezes
+the new attempt, failure, session, stop, output, manifest, and all primary, composite, and complete
+trace artifacts. Cumulative spend is 414 calls and 2,132.086 audio seconds. M0, OBS, matched,
+shuffled canary, and shuffled continuation must never be contacted again.
+
+The repair is limited to exact replay extraction. It verifies every model-request payload hash,
+requires `record_id` to bind its payload `request_id`, selects only histories containing the frozen
+v2 matched-final contact id, ignores other valid request types, and replays the same sixteen frozen
+payloads without reconstruction. This permits at most 16 further calls, for a cumulative maximum of
+430/440. Wave 1 remains four complete 104-row manifests on four outer workers: terminal M0,
+matched, and shuffled use read-only `score`, while only the new resend attempt uses `finalize`.
+Each worker invokes the unchanged official single-process scorer once on a complete manifest;
+dataset sharding and shard-score averaging remain forbidden. No prompt, response, sample,
+evidence, canary, state, policy feature, fold, threshold, metric, promotion gate, or claim surface
+changes. Further contact remains closed until this amendment, recovery plan, implementation,
+tests, score plan, and exposure update land on a clean commit and the recovery preflight verifies
+the sixteen exact payloads.

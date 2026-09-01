@@ -1,0 +1,56 @@
+{
+  "schema": "saea-a2t-cpv2-post-shuffled-recovery-v1",
+  "run_id": "SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2",
+  "registered_at": "2026-09-01T23:25:00Z",
+  "failure_class": "pre-contact v1 replay-extractor mismatch with the frozen v2 matched contact identifier",
+  "source_flight": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2/flight-20260901T230624Z",
+  "source_study_commit": "eb846a8c07fbfa2cadc555041e5d51e9a7de1860",
+  "failure_receipt_sha256": "3ee745e22a824c06896496154be26ccaf3feb778b5f5389895fef4a8474f8480",
+  "shuffled": {
+    "attempt_id": "attempt-20260901t230624z-cpv2shuffledrecovery",
+    "attempt_receipt_sha256": "1ac8ef31bfd040bb686e1787d21a115872e768fce995423282d1bb6241754e74",
+    "calls": 95,
+    "audio_seconds": 493.2970000000001,
+    "old_canary_contacts": 8,
+    "new_contacts": 95,
+    "outputs_sha256": "0906fa9e7442416a6a55d86fba0cbd5f46d85ab555a89f5fe798cdfba1232264",
+    "run_manifest_sha256": "a1f0ceb695d94e89fa7d9712ddd08f1868c5f4604a12c562022e9eccafeb696e",
+    "primary_raw_trace_sha256": "2891b92c4432715bf5c160d3e628a087f26b055fc773faf2a63ea177a658eac6",
+    "primary_trace_manifest_sha256": "9d6f85ef5ba75d1a07c043fd099e973be2198bd4f546650afd2fcc3609e7c132",
+    "composite_raw_trace_sha256": "0246e1f495e1c8965a29a661c1f68d48044ef323bf895cfafb046f1f16e90b76",
+    "composite_trace_manifest_sha256": "b45eae668c293e0869e1c704fa4d828dba3ef127e9a221cbe85ed48da5db48c5",
+    "complete_raw_trace_sha256": "7daba8d0783813cb9ba9ef2b3c6a3f8c6babe9b1ec961f3f25a57ad071d732f0",
+    "complete_trace_manifest_sha256": "41228e7b6193e6b1e23aa728cd8338139dc07fde0588aba9a3ba316a317a0bc3",
+    "recovery_receipt_sha256": "4153f0464ced8bd201b1b516c658263898f5c418a784d5873e2d9c688501237d"
+  },
+  "session_receipt_sha256": "18335bc6a6398617d8e81ee4127d678364c33e084ce7fb314aee77bf158fb0d5",
+  "stop_receipt_sha256": "cdc0a8bc33960767a5cf67e67213197adc7f0ac79a4998a3f8b830a165dc6647",
+  "observed_boundary": {
+    "cumulative_calls": 414,
+    "cumulative_audio_seconds": 2132.086,
+    "remaining_resend_contacts": 16,
+    "resend_attempt_opened": false,
+    "gold_opened": false,
+    "official_scorer_started": false
+  },
+  "authorized_recovery": {
+    "m0_recontact": false,
+    "observation_recontact": false,
+    "matched_recontact": false,
+    "shuffled_canary_recontact": false,
+    "shuffled_remaining_recontact": false,
+    "shuffled_manifest": "Verify and score the sealed complete 104-row shuffled manifest read-only under its terminal ABORTED attempt.",
+    "resend_extractor_repair": "Select MODEL_REQUEST records whose hashed payload history contains the frozen contract-v2-matched-final contact identifier, bind record_id to payload request_id, ignore other valid request types, and replay the exact sixteen frozen payloads without reconstruction.",
+    "resend": "Run only the original sixteen exact matched-payload replays under one fresh attempt.",
+    "maximum_additional_calls": 16,
+    "maximum_cumulative_calls": 430,
+    "registered_call_ceiling": 440,
+    "wave_1": "Four complete-manifest jobs run concurrently with four outer workers. Recovered M0, matched, and shuffled use read-only score; only resend uses finalize. No dataset sharding or shard-score averaging is allowed."
+  },
+  "forbidden": [
+    "Repeat M0, OBS, matched, shuffled canary, or shuffled continuation contact",
+    "Read gold or start an official scorer before all sixteen resend responses and all four complete manifests seal",
+    "Change any prompt, sample, packet, evidence, canary, policy feature, fold, threshold, metric, or promotion gate",
+    "Shard a dataset or average shard-level metrics"
+  ]
+}

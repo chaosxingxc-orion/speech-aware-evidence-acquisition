@@ -13,6 +13,7 @@ from speech_aware_evidence_acquisition.rails.probes import (
     a2t_contract_preserving_cascade_bundle as bundle,
 )
 from speech_aware_evidence_acquisition.rails.probes.a2t_contract_preserving_cascade_flight import (
+    MATCHED_CONTACT_ID,
     M0_DIRECT_PHASE,
 )
 
@@ -55,6 +56,48 @@ def test_resend_selection_is_two_per_tier_and_order_invariant() -> None:
     assert selected == reverse
     assert len(selected) == 16
     assert all(sum(tiers[item] == f"tier{tier}" for item in selected) == 2 for tier in range(1, 9))
+
+
+def _request_document(
+    *, sample_id: str, request_id: str, contact_id: str
+) -> dict[str, object]:
+    payload = {
+        "sample_id": sample_id,
+        "request_id": request_id,
+        "history": [{"contact_id": contact_id}],
+    }
+    return {
+        "channel": "MODEL_REQUEST",
+        "record_id": f"{request_id}/request",
+        "payload": {
+            "payload": payload,
+            "payload_sha256": hashlib.sha256(
+                bundle.canonical_payload_bytes(payload)
+            ).hexdigest(),
+        },
+    }
+
+
+def test_exact_resend_extractor_accepts_only_v2_matched_requests() -> None:
+    selected = "tier1:000001"
+    matched = _request_document(
+        sample_id=selected,
+        request_id="cpv2matched-0001",
+        contact_id=MATCHED_CONTACT_ID,
+    )
+    documents = (
+        _request_document(
+            sample_id="tier1:000099",
+            request_id="cpv2obs-0001",
+            contact_id="contract-v2-observation",
+        ),
+        {"channel": "MODEL_RESPONSE", "record_id": "cpv2matched-0001/response"},
+        matched,
+    )
+
+    extracted = bundle.extract_exact_matched_payloads(documents, (selected,))
+
+    assert extracted == {selected: matched["payload"]["payload"]}
 
 
 def test_direct_phase_bundle_material_is_trace_bound() -> None:
@@ -132,7 +175,7 @@ def _score_plan() -> dict[str, object]:
                     "job_id": job_id,
                     "input": "one complete 104-row manifest",
                     "operation": (
-                        "score" if job_id in {"m0", "matched"} else "finalize"
+                        "finalize" if job_id == "resend" else "score"
                     ),
                 }
                 for job_id in ("m0", "matched", "shuffled", "resend")
@@ -173,7 +216,7 @@ def test_parallel_plan_uses_four_whole_manifests_then_one_policy(tmp_path: Path)
         bundle.validate_parallel_score_plan(path)
 
     plan = _score_plan()
-    plan["wave_1"]["jobs"][2]["operation"] = "score"
+    plan["wave_1"]["jobs"][2]["operation"] = "finalize"
     path.write_text(json.dumps(plan), encoding="utf-8")
     with pytest.raises(bundle.ContractPreservingBundleError, match="operations"):
         bundle.validate_parallel_score_plan(path)

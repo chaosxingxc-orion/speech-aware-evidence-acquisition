@@ -189,6 +189,15 @@ POST_MATCHED_SOURCE_FLIGHT = Path(
 OBS_SOURCE_ATTEMPT_ID = "attempt-20260901t225026z-cpv2obs"
 MATCHED_SOURCE_ATTEMPT_ID = "attempt-20260901t225026z-cpv2matched"
 SHUFFLED_CANARY_SOURCE_ATTEMPT_ID = "attempt-20260901t225026z-cpv2shuffled"
+POST_SHUFFLED_RECOVERY_PLAN = CHECK_DIR / "post-shuffled-recovery-plan.json"
+POST_SHUFFLED_RECOVERY_PLAN_SHA256 = (
+    "8bc48ea3e91d6ab6ea7a9d7d963da055260a78f613609af9ad96bffc9429a321"
+)
+POST_SHUFFLED_SOURCE_FLIGHT = Path(
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/"
+    "SAEA-A2T-TFRL-CONTRACT-PRESERVING-CASCADE-104-V2/flight-20260901T230624Z"
+)
+SHUFFLED_SOURCE_ATTEMPT_ID = "attempt-20260901t230624z-cpv2shuffledrecovery"
 
 
 def _sha256_file(path: Path) -> str:
@@ -919,6 +928,155 @@ def _validate_post_matched_recovery_sources(root: Path) -> dict[str, object]:
         ):
             raise RuntimeError(f"post-matched attempt accounting drift: {attempt_id}")
     return {"plan": plan, "paths": paths}
+
+
+def _validate_post_shuffled_recovery_sources(root: Path) -> dict[str, object]:
+    if (
+        _sha256_file(POST_SHUFFLED_RECOVERY_PLAN)
+        != POST_SHUFFLED_RECOVERY_PLAN_SHA256
+    ):
+        raise RuntimeError("post-shuffled recovery plan byte identity drift")
+    plan = _read_json(POST_SHUFFLED_RECOVERY_PLAN)
+    boundary = plan.get("observed_boundary")
+    authorization = plan.get("authorized_recovery")
+    shuffled = plan.get("shuffled")
+    if (
+        plan.get("run_id") != RUN_ID
+        or not isinstance(boundary, Mapping)
+        or boundary.get("cumulative_calls") != 414
+        or boundary.get("remaining_resend_contacts") != 16
+        or boundary.get("resend_attempt_opened") is not False
+        or boundary.get("gold_opened") is not False
+        or boundary.get("official_scorer_started") is not False
+        or not isinstance(authorization, Mapping)
+        or authorization.get("maximum_additional_calls") != 16
+        or authorization.get("maximum_cumulative_calls") != 430
+        or any(
+            authorization.get(key) is not False
+            for key in (
+                "m0_recontact",
+                "observation_recontact",
+                "matched_recontact",
+                "shuffled_canary_recontact",
+                "shuffled_remaining_recontact",
+            )
+        )
+        or not isinstance(shuffled, Mapping)
+        or shuffled.get("attempt_id") != SHUFFLED_SOURCE_ATTEMPT_ID
+    ):
+        raise RuntimeError("post-shuffled recovery contract drift")
+    shuffled_dir = POST_SHUFFLED_SOURCE_FLIGHT / "shuffled-recovery"
+    complete_dir = shuffled_dir / "complete-bundle"
+    paths = {
+        "failure_receipt": POST_SHUFFLED_SOURCE_FLIGHT / "failure-receipt.json",
+        "session_receipt": POST_SHUFFLED_SOURCE_FLIGHT
+        / "service/session-receipt.json",
+        "stop_receipt": POST_SHUFFLED_SOURCE_FLIGHT / "service/stop-receipt.json",
+        "recovery_receipt": shuffled_dir / "shuffled-recovery-receipt.json",
+        "primary_raw_trace": shuffled_dir / "primary-trace" / f"{RUN_ID}.trace.jsonl",
+        "primary_trace_manifest": shuffled_dir
+        / "primary-trace"
+        / f"{RUN_ID}.trace-manifest.json",
+        "composite_raw_trace": shuffled_dir
+        / "composite-trace"
+        / f"{RUN_ID}.trace.jsonl",
+        "composite_trace_manifest": shuffled_dir
+        / "composite-trace"
+        / f"{RUN_ID}.trace-manifest.json",
+        "complete_raw_trace": complete_dir / f"{RUN_ID}.trace.jsonl",
+        "complete_trace_manifest": complete_dir / f"{RUN_ID}.trace-manifest.json",
+        "outputs": complete_dir / f"{RUN_ID}.outputs.jsonl",
+        "manifest": complete_dir / f"{RUN_ID}.run-manifest.json",
+    }
+    expected_hashes = {
+        "failure_receipt": plan.get("failure_receipt_sha256"),
+        "session_receipt": plan.get("session_receipt_sha256"),
+        "stop_receipt": plan.get("stop_receipt_sha256"),
+        "recovery_receipt": shuffled.get("recovery_receipt_sha256"),
+        "primary_raw_trace": shuffled.get("primary_raw_trace_sha256"),
+        "primary_trace_manifest": shuffled.get("primary_trace_manifest_sha256"),
+        "composite_raw_trace": shuffled.get("composite_raw_trace_sha256"),
+        "composite_trace_manifest": shuffled.get(
+            "composite_trace_manifest_sha256"
+        ),
+        "complete_raw_trace": shuffled.get("complete_raw_trace_sha256"),
+        "complete_trace_manifest": shuffled.get(
+            "complete_trace_manifest_sha256"
+        ),
+        "outputs": shuffled.get("outputs_sha256"),
+        "manifest": shuffled.get("run_manifest_sha256"),
+    }
+    for key, path in paths.items():
+        expected = expected_hashes[key]
+        if not isinstance(expected, str) or _sha256_file(path) != expected:
+            raise RuntimeError(f"post-shuffled source drift: {key}")
+    attempt_path = root / "attempts" / RUN_ID / f"{SHUFFLED_SOURCE_ATTEMPT_ID}.json"
+    if _sha256_file(attempt_path) != shuffled.get("attempt_receipt_sha256"):
+        raise RuntimeError("post-shuffled attempt receipt byte identity drift")
+    attempt = _read_json(attempt_path)
+    actual = attempt.get("actual")
+    if (
+        attempt.get("state") != "ABORTED"
+        or not isinstance(actual, Mapping)
+        or actual.get("calls") != 95
+        or abs(float(actual.get("audio_seconds", -1)) - 493.2970000000001)
+        > 1e-6
+    ):
+        raise RuntimeError("post-shuffled terminal attempt accounting drift")
+    failure = _read_json(paths["failure_receipt"])
+    prior_attempts = failure.get("attempt_ids")
+    if (
+        not isinstance(prior_attempts, Mapping)
+        or prior_attempts.get("shuffled") != SHUFFLED_SOURCE_ATTEMPT_ID
+        or prior_attempts.get("resend")
+        != "attempt-20260901t230624z-cpv2resend"
+        or (
+            root
+            / "attempts"
+            / RUN_ID
+            / "attempt-20260901t230624z-cpv2resend.json"
+        ).exists()
+    ):
+        raise RuntimeError("post-shuffled pre-contact resend boundary drift")
+    recovery_receipt = _read_json(paths["recovery_receipt"])
+    if (
+        recovery_receipt.get("new_attempt_id") != SHUFFLED_SOURCE_ATTEMPT_ID
+        or recovery_receipt.get("old_canary_contacts") != 8
+        or recovery_receipt.get("new_contacts") != 95
+        or recovery_receipt.get("manifest_sha256")
+        != shuffled.get("run_manifest_sha256")
+    ):
+        raise RuntimeError("post-shuffled recovery receipt drift")
+    verified = verify_bundle(paths["manifest"])
+    if verified.attempt_state != "ABORTED" or len(verified.outputs_rows) != SPLIT_COUNT:
+        raise RuntimeError("sealed shuffled bundle failed recovery verification")
+    return {
+        "plan": plan,
+        "paths": paths,
+        "verified": verified,
+        "attempt_path": attempt_path,
+    }
+
+
+def _recover_shuffled(
+    root: Path, context: Mapping[str, object]
+) -> dict[str, object]:
+    recovery = _validate_post_shuffled_recovery_sources(root)
+    verified = recovery["verified"]
+    texts = {
+        str(row["sample_id"]): str(row["text"])
+        for row in verified.outputs_rows  # type: ignore[union-attr]
+    }
+    if set(texts) != set(context["sample_ids"]):  # type: ignore[arg-type]
+        raise RuntimeError("recovered shuffled identities differ from the frozen split")
+    return {
+        "texts": texts,
+        "manifest": recovery["paths"]["manifest"],  # type: ignore[index]
+        "outputs": recovery["paths"]["outputs"],  # type: ignore[index]
+        "attempt_id": SHUFFLED_SOURCE_ATTEMPT_ID,
+        "run_dir": POST_SHUFFLED_SOURCE_FLIGHT / "shuffled-recovery",
+        "recovered": True,
+    }
 
 
 def _recover_observation(
@@ -1811,7 +1969,7 @@ def _parallel_finalize(
             "contract-v2-shuffled-composite",
             "same-tier shuffled evidence",
             shuffled,
-            "finalize",
+            "score",
         ),
         (
             "contract-v2-resend-composite",
@@ -2047,14 +2205,15 @@ def _recover_canary_report(
     return report
 
 
-def _launch(root: Path, *, recover_post_matched_failure: bool) -> Mapping[str, object]:
+def _launch(root: Path, *, recover_post_shuffled_failure: bool) -> Mapping[str, object]:
     context = _static_preflight(root)
-    if not recover_post_matched_failure:
+    if not recover_post_shuffled_failure:
         raise RuntimeError(
-            "the post-matched recovery is required; all 319 prior contacts are sealed"
+            "the post-shuffled recovery is required; all 414 prior contacts are sealed"
         )
     _validate_m0_recovery_sources(root)
     _validate_post_matched_recovery_sources(root)
+    _validate_post_shuffled_recovery_sources(root)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     mission_dir = root / "runs" / RUN_ID / f"flight-{stamp}"
     if mission_dir.exists():
@@ -2065,7 +2224,7 @@ def _launch(root: Path, *, recover_post_matched_failure: bool) -> Mapping[str, o
         "observation": OBS_SOURCE_ATTEMPT_ID,
         "matched": MATCHED_SOURCE_ATTEMPT_ID,
         "shuffled_canary": SHUFFLED_CANARY_SOURCE_ATTEMPT_ID,
-        "shuffled": f"attempt-{stamp.lower()}-cpv2shuffledrecovery",
+        "shuffled": SHUFFLED_SOURCE_ATTEMPT_ID,
         "resend": f"attempt-{stamp.lower()}-cpv2resend",
     }
     m0 = _recover_m0(root, context)
@@ -2078,6 +2237,13 @@ def _launch(root: Path, *, recover_post_matched_failure: bool) -> Mapping[str, o
     canary_report = _recover_canary_report(context, observation)
     if not canary_report.passed:
         raise RuntimeError("sealed structural canary no longer passes")
+    shuffled = _recover_shuffled(root, context)
+    selected_ids = tuple(observation["resend_ids"])  # type: ignore[arg-type]
+    exact_payloads = extract_exact_matched_payloads(
+        _trace_documents(Path(matched["request_source_run_dir"])), selected_ids
+    )
+    if len(exact_payloads) != 16:
+        raise RuntimeError("post-shuffled recovery did not bind sixteen exact resends")
     runtime_receipt = load_runtime_receipt(REPO / "docs" / RUNTIME_RECEIPT_RELPATH)
     values = context["composed"].values  # type: ignore[union-attr]
     model_root = Path(str(values["model_materialization_root"]))
@@ -2090,7 +2256,7 @@ def _launch(root: Path, *, recover_post_matched_failure: bool) -> Mapping[str, o
         model_root=model_root,
     )
     lock_sha256 = gate.assert_model_touch_allowed(
-        _execution_plan(attempt_ids["shuffled"]), full_hash=True
+        _execution_plan(attempt_ids["resend"]), full_hash=True
     )
     parsed_url = urlparse(str(values["base_url"]))
     if parsed_url.hostname not in {"127.0.0.1", "localhost"} or parsed_url.port is None:
@@ -2124,18 +2290,6 @@ def _launch(root: Path, *, recover_post_matched_failure: bool) -> Mapping[str, o
             runtime_receipt=runtime_receipt,
             runtime_root=RUNTIME_ROOT,
         )
-        shuffled = _continue_shuffled_after_canary(
-            root=root,
-            context=context,
-            observation=observation,
-            m0=m0,
-            gate=gate,
-            transport=transport,
-            attempt_id=attempt_ids["shuffled"],
-            run_dir=mission_dir / "shuffled-recovery",
-            session_receipt_path=session_receipt,
-            lock_sha256=lock_sha256,
-        )
         resend = _run_resend(
             root=root,
             context=context,
@@ -2161,7 +2315,7 @@ def _launch(root: Path, *, recover_post_matched_failure: bool) -> Mapping[str, o
             shuffled=shuffled,
             resend=resend,
         )
-        expected_states = ("ABORTED", "ABORTED", "FINALIZED", "FINALIZED")
+        expected_states = ("ABORTED", "ABORTED", "ABORTED", "FINALIZED")
         for result, expected_state in zip(
             (m0, matched, shuffled, resend), expected_states, strict=True
         ):
@@ -2214,7 +2368,8 @@ def _launch(root: Path, *, recover_post_matched_failure: bool) -> Mapping[str, o
                 },
                 "shuffled": {
                     "attempt_id": attempt_ids["shuffled"],
-                    "state": "FINALIZED",
+                    "state": "ABORTED_RECOVERED_AND_SCORED_READ_ONLY",
+                    "recontacts": 0,
                 },
                 "resend": {
                     "attempt_id": attempt_ids["resend"],
@@ -2223,6 +2378,9 @@ def _launch(root: Path, *, recover_post_matched_failure: bool) -> Mapping[str, o
             },
             "wave1_parallel_official_finalizer": wave1,
             "post_matched_recovery_plan_sha256": POST_MATCHED_RECOVERY_PLAN_SHA256,
+            "post_shuffled_recovery_plan_sha256": (
+                POST_SHUFFLED_RECOVERY_PLAN_SHA256
+            ),
             "policy_result": policy,
         }
         _write_json(mission_dir / "flight-receipt.json", receipt)
@@ -2254,12 +2412,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--recover-m0-manifest-failure", action="store_true")
     parser.add_argument("--recover-post-matched-failure", action="store_true")
+    parser.add_argument("--recover-post-shuffled-failure", action="store_true")
     args = parser.parse_args(argv)
     root = data_root()
     if args.preflight_only:
         context = _static_preflight(root)
         recovery = None
         post_matched_recovery = None
+        post_shuffled_recovery = None
         if args.recover_m0_manifest_failure:
             recovery = _validate_m0_recovery_sources(root)
         if args.recover_post_matched_failure:
@@ -2274,6 +2434,25 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             recovered_canary = _recover_canary_report(
                 context, recovered_observation
+            )
+        if args.recover_post_shuffled_failure:
+            recovery = _validate_m0_recovery_sources(root)
+            post_matched_recovery = _validate_post_matched_recovery_sources(root)
+            post_shuffled_recovery = _validate_post_shuffled_recovery_sources(root)
+            recovered_m0 = _recover_m0(root, context)
+            recovered_observation = _recover_observation(root, context)
+            recovered_matched = _recover_matched(
+                root=root,
+                context=context,
+                observation=recovered_observation,
+            )
+            recovered_canary = _recover_canary_report(
+                context, recovered_observation
+            )
+            recovered_shuffled = _recover_shuffled(root, context)
+            exact_resends = extract_exact_matched_payloads(
+                _trace_documents(Path(recovered_matched["request_source_run_dir"])),
+                tuple(recovered_observation["resend_ids"]),  # type: ignore[arg-type]
             )
         print(
             json.dumps(
@@ -2317,6 +2496,23 @@ def main(argv: Sequence[str] | None = None) -> int:
                         if post_matched_recovery is not None
                         else None
                     ),
+                    "post_shuffled_recovery": (
+                        {
+                            "plan_sha256": POST_SHUFFLED_RECOVERY_PLAN_SHA256,
+                            "prior_contacts": post_shuffled_recovery["plan"][  # type: ignore[index]
+                                "observed_boundary"
+                            ]["cumulative_calls"],
+                            "maximum_new_contacts": post_shuffled_recovery["plan"][  # type: ignore[index]
+                                "authorized_recovery"
+                            ]["maximum_additional_calls"],
+                            "shuffled_rows_verified": len(
+                                recovered_shuffled["texts"]
+                            ),
+                            "exact_resend_payloads_verified": len(exact_resends),
+                        }
+                        if post_shuffled_recovery is not None
+                        else None
+                    ),
                 },
                 indent=2,
                 sort_keys=True,
@@ -2327,7 +2523,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         json.dumps(
             _launch(
                 root,
-                recover_post_matched_failure=args.recover_post_matched_failure,
+                recover_post_shuffled_failure=args.recover_post_shuffled_failure,
             ),
             indent=2,
             sort_keys=True,
