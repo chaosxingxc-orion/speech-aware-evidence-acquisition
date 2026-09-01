@@ -206,9 +206,29 @@ def _candidate_payload(
     report: v1.CandidateReport,
     outcomes: Sequence[SemanticSignedSupplyOutcome],
 ) -> dict[str, object]:
-    return v1._candidate_payload(  # noqa: SLF001 - identical artifact fields
+    payload = v1._candidate_payload(  # noqa: SLF001 - identical artifact fields
         report, outcomes
     )
+    full_cells = payload.pop("full_surface_return_cells")
+    assert isinstance(full_cells, Mapping)
+    non_neutral = {
+        key: value
+        for key, value in full_cells.items()
+        if isinstance(value, Mapping)
+        and (int(value.get("saves", 0)) > 0 or int(value.get("harms", 0)) > 0)
+    }
+    supports = [int(value["n"]) for value in full_cells.values()]
+    payload["non_neutral_return_cells"] = non_neutral
+    payload["state_support_summary"] = {
+        "state_class_count": len(full_cells),
+        "zero_return_state_count": len(full_cells) - len(non_neutral),
+        "minimum_support": min(supports),
+        "maximum_support": max(supports),
+        "classes_at_memory_support_minimum": sum(
+            support >= v1.MIN_CELL_SUPPORT for support in supports
+        ),
+    }
+    return payload
 
 
 def build_policy_artifact(
