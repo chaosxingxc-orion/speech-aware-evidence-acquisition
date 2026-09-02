@@ -16,7 +16,7 @@ _ASSESSMENT_STATUSES = frozenset(
     {ASSESSMENT_SUPPORT, ASSESSMENT_CONTRADICT, ASSESSMENT_UNCERTAIN}
 )
 _EMPTY_OBSERVATION = "No reliable observation was available."
-_EVIDENCE_ID = re.compile(r"[A-Za-z0-9_-]{1,16}")
+_EVIDENCE_ID = re.compile(r"o1")
 MAX_OBSERVATION_ASCII_BYTES = 2_048
 SLOT_TOKENS = 32_768
 OPERATIONAL_HEADROOM_TOKENS = 8_192
@@ -138,7 +138,7 @@ def _record(value: object, allowed: frozenset[str]) -> AssessmentRecord | None:
         return None
     if (
         not isinstance(evidence, list)
-        or len(evidence) > 2
+        or len(evidence) > 1
         or not all(
             isinstance(item, str) and _EVIDENCE_ID.fullmatch(item) is not None
             for item in evidence
@@ -215,8 +215,13 @@ class G7ExampleGround:
                 family_bundle_text=bundle.text,
                 tool_names=tuple(bundle.tool_names),
                 instruction=(
-                    "Assess only the named family tools as support, contradict, or uncertain. "
-                    "Return JSON only. Do not infer, alias, correct, or fill parameter values."
+                    "Assess every named family tool. Return exactly one JSON object with key "
+                    "assessments. Each assessment uses exact keys tool_name, status, evidence. "
+                    "status is exactly support, contradict, or uncertain. evidence is a JSON "
+                    "list containing only the available OBS ID o1; use [] when it does not "
+                    "applies. Example: {\"assessments\":[{\"tool_name\":\""
+                    f"{bundle.tool_names[0]}\",\"status\":\"uncertain\",\"evidence\":[]}}]}}. "
+                    "Do not infer, alias, correct, cross families, or fill parameter values."
                 ),
             )
             for bundle in self.bundles
@@ -237,6 +242,7 @@ class G7ExampleGround:
                 evidence = found.evidence if found else ()
                 rows.append(NormalizedAssessment(bundle.family_tag, tool.tool_name, status, evidence))
                 skeletons = "/".join(",".join(keys) for keys in tool.legal_key_skeletons)
+                types = ",".join(f"{key}:{kind}" for key, kind in tool.types) or "-"
                 normalized_evidence = ",".join(evidence) or "-"
                 status_code = {
                     ASSESSMENT_SUPPORT: "S",
@@ -245,7 +251,7 @@ class G7ExampleGround:
                 }[status]
                 lines.append(
                     f"{tool.tool_name}={status_code}|{normalized_evidence}|"
-                    f"{tool.operation}|keys:{skeletons}"
+                    f"{tool.operation}|keys:{skeletons}|types:{types}"
                 )
         if len(rows) != 152:
             raise G7ExampleGroundError("execution sheet lost registered tools")
@@ -266,7 +272,15 @@ class G7ExampleGround:
             instruction=(
                 "Use the original complete-dialogue audio, the observation, this all-tool "
                 "execution sheet, and all normalized assessments. No cumulative raw history. "
-                "Return one unchanged official tool-call JSON object with no repair."
+                "Sheet codes mean S=support, C=contradict, U=uncertain. Assessments are advisory; "
+                "C and U never remove a tool. Select an exact listed legal key skeleton and its "
+                "types. Bind values only from the original audio or OBS. Preserve exact JSON "
+                "value types, spelling, and requested call order. Never copy a construction "
+                "example, registry default, or placeholder. "
+                "Return only the unchanged official tool-call JSON array. Every array item "
+                "must be an object with exactly the keys name and arguments; arguments must "
+                "be one JSON object. Preserve multiple calls when requested. No prose, fence, "
+                "metadata, placeholder, repair, or extra key is allowed."
             ),
         )
 

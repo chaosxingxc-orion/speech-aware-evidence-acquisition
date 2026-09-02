@@ -66,7 +66,7 @@ def test_observation_is_bounded_plain_english_and_excludes_tool_names() -> None:
 
 def test_tolerant_parser_removes_one_exact_fence_and_ignores_unknown_keys() -> None:
     raw = """```json
-{"assessments":[{"tool_name":"tool_00_00","status":"support","evidence":["obs-1"],"extra":1}],"unknown":true}
+{"assessments":[{"tool_name":"tool_00_00","status":"support","evidence":["o1"],"extra":1}],"unknown":true}
 ```"""
 
     result = parse_family_assessment(
@@ -125,7 +125,7 @@ def test_no_alias_cross_family_or_value_synthesis_is_possible() -> None:
 def test_evidence_ids_are_bounded_without_truncation() -> None:
     result = parse_family_assessment(
         '{"assessments":[{"tool_name":"tool_00_00","status":"support",'
-        '"evidence":["abcdefghijklmnopq"]}]}',
+        '"evidence":["o3"]}]}',
         family_tag="family-00",
         family_tool_names=("tool_00_00",),
     )
@@ -147,6 +147,10 @@ def test_all_152_tools_start_uncertain_and_survive_every_assessment() -> None:
     sheet = core.build_execution_sheet(parsed)
 
     assert len(contexts) == 28
+    assert all("assessments" in context.instruction for context in contexts)
+    assert all("tool_name, status, evidence" in context.instruction for context in contexts)
+    assert all("support, contradict, or uncertain" in context.instruction for context in contexts)
+    assert all("available OBS ID o1" in context.instruction for context in contexts)
     assert len(sheet.assessments) == 152
     assert {row.status for row in sheet.assessments} == {ASSESSMENT_UNCERTAIN}
     assert {row.tool_name for row in sheet.assessments} == set(core.tool_names)
@@ -169,6 +173,13 @@ def test_resolve_contains_observation_all_tools_and_all_assessments() -> None:
     assert len(resolve.assessments) == 152
     assert len(resolve.tool_names) == 152
     assert "No cumulative raw history" in resolve.instruction
+    assert "JSON array" in resolve.instruction
+    assert "exactly the keys name and arguments" in resolve.instruction
+    assert "S=support, C=contradict, U=uncertain" in resolve.instruction
+    assert "C and U never remove a tool" in resolve.instruction
+    assert "Bind values only from the original audio or OBS" in resolve.instruction
+    assert "Never copy a construction example" in resolve.instruction
+    assert "types:value:String" in resolve.execution_sheet
 
 
 def test_prompt_measurement_refuses_above_24576_including_completion() -> None:

@@ -26,5 +26,5 @@
   "resends": 0,
   "network_jitter_testing": false,
   "cumulative_raw_history": false,
-  "task_instruction": "Observe the complete spoken dialogue in bounded plain English without naming tools. Assess every frozen construction-example family independently from that observation. Resolve once from the original complete-dialogue audio, the observation, the complete all-tool execution sheet, and all normalized assessments. Return only unchanged official tool-call JSON."
+  "task_instruction": "Observe the complete spoken dialogue in bounded plain English without naming tools. Assess every frozen construction-example family independently with the exact assessments/tool_name/status/evidence schema and only observation evidence ID o1. Resolve once from the original complete-dialogue audio, the observation, the complete all-tool execution sheet, and all normalized assessments. Return only the unchanged official JSON array of objects with exactly name and arguments."
 }

@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import importlib.util
 import json
+from dataclasses import asdict
 from pathlib import Path
 import sys
 
@@ -39,6 +40,9 @@ PARTITION_SEED = 20260807
 G5_CORPUS = REPO / "knowledge/audio2tool/g5-exhaustive-family-contracts-v1/corpus.json"
 G7_ROSTER = REPO / "docs/receipts/a2t/A2T-G7-EXAMPLE-FIXED16.json"
 DEFAULT_CORPUS = REPO / "knowledge/audio2tool/g7-construction-example-ground-v1/corpus.txt"
+DEFAULT_STRUCTURED = (
+    REPO / "knowledge/audio2tool/g7-construction-example-ground-v1/ground.json"
+)
 DEFAULT_RECEIPT = REPO / (
     "docs/checks/speech-aware-evidence-acquisition/"
     "2026-09-02-a2t-g7-exhaustive-example-ground-fixed16-v1/ground-receipt.json"
@@ -147,16 +151,32 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--corpus-output", type=Path, default=DEFAULT_CORPUS)
     parser.add_argument("--receipt-output", type=Path, default=DEFAULT_RECEIPT)
+    parser.add_argument("--structured-output", type=Path, default=DEFAULT_STRUCTURED)
     args = parser.parse_args()
     ground, receipt = build_ground(data_root())
     speech_max = max(receipt["speech_feature_tokens_by_sample"].values())
     receipt["prompt_fit"] = _preflight(ground, speech_max)
     args.corpus_output.parent.mkdir(parents=True, exist_ok=True)
     args.corpus_output.write_text(ground.text, encoding="ascii", newline="\n")
+    structured = {
+        "schema": "saea-a2t-construction-example-ground-runtime-v1",
+        "ground_sha256": ground.sha256,
+        "bundles": [asdict(bundle) for bundle in ground.bundles],
+    }
+    args.structured_output.parent.mkdir(parents=True, exist_ok=True)
+    args.structured_output.write_text(
+        json.dumps(structured, indent=2, sort_keys=True) + "\n",
+        encoding="ascii",
+        newline="\n",
+    )
     receipt["artifact"] = {
         "path": str(args.corpus_output.relative_to(REPO)).replace("\\", "/"),
         "sha256": ground.sha256,
         "ascii_bytes": len(ground.text.encode("ascii")),
+        "structured_path": str(args.structured_output.relative_to(REPO)).replace(
+            "\\", "/"
+        ),
+        "structured_sha256": _sha256(args.structured_output),
     }
     args.receipt_output.parent.mkdir(parents=True, exist_ok=True)
     args.receipt_output.write_text(

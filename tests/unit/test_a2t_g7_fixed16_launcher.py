@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import importlib.util
 from pathlib import Path
+import sys
 from types import SimpleNamespace
+
+import pytest
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -16,6 +19,7 @@ LAUNCHER = ROOT / (
 SPEC = importlib.util.spec_from_file_location("g7_launcher", LAUNCHER)
 assert SPEC and SPEC.loader
 module = importlib.util.module_from_spec(SPEC)
+sys.modules[SPEC.name] = module
 SPEC.loader.exec_module(module)
 
 
@@ -67,6 +71,14 @@ def test_preflight_binds_identity_builder_and_exact_protocol() -> None:
     assert report["builder_commit"] == "7046ce6e7fbbba67ddbae5f122748e2158761e23"
 
 
+def test_committed_structured_ground_round_trips_without_construction_rows() -> None:
+    ground = module.load_ground()
+
+    assert ground.sha256 == module.GROUND_SHA256
+    assert len(ground.bundles) == 28
+    assert len(ground.tool_names) == 152
+
+
 def test_byte_upper_bound_preflight_measures_all_static_prompts() -> None:
     report = module.preflight_ground(_ground(), speech_feature_tokens_max=100)
 
@@ -85,4 +97,146 @@ def test_execution_plan_binds_exact_population_and_budget() -> None:
     assert plan.split_identity_hash == module.SPLIT_IDENTITY_HASH
     assert plan.protocol_hash == module.PROTOCOL_SHA256
     assert plan.planned_model_calls == 480
-    assert plan.planned_speech_audio_seconds == 185
+    assert plan.planned_speech_audio_seconds == 2769
+
+
+def test_exact_evidence_render_names_schema_once_and_resolve_is_official_array() -> None:
+    ground = _ground()
+    core = module.G7ExampleGround(ground.bundles)
+    observation = module.parse_observation("A device action is requested.", core.tool_names)
+    context = core.build_evidence_contexts(observation)[0]
+    state = SimpleNamespace(
+        stage="EVIDENCE", packet_binding={"packet_id": "p", "sha256": "a" * 64}
+    )
+    messages = module._contact_messages(state, context)
+
+    assert "assessments" in messages[0]["content"]
+    assert "tool_name" in messages[0]["content"]
+    assert messages[0]["content"] not in str(messages[1])
+    assert '"agent_control"' not in module._exact_request(
+        messages, context, with_control=False
+    )
+
+
+def test_openjiuwen_phase_has_32_audio_and_448_text_only_contacts() -> None:
+    ids = tuple(f"sample-{index}" for index in range(16))
+    surface = module.RuntimeSurface(
+        samples=tuple(SimpleNamespace(sample_id=value) for value in ids),
+        packet_bindings={value: {"packet_id": value, "sha256": "b" * 64} for value in ids},
+        speech_feature_tokens_by_sample={value: 10 for value in ids},
+    )
+
+    class Client:
+        def __init__(self) -> None:
+            self.calls = []
+
+        def complete(self, _messages, **kwargs):
+            self.calls.append(kwargs)
+            if kwargs.get("agent_contact_id") == "g7-obs":
+                return "The speaker requests a device action."
+            if kwargs.get("text_only_sample_id"):
+                return "{}"
+            return '{"calls":[]}'
+
+    class Sink:
+        def __init__(self) -> None:
+            self.rows = []
+
+        def emit(self, *args):
+            self.rows.append(args)
+
+    def runner(states, **kwargs):
+        for state in states:
+            while kwargs["should_continue"](state):
+                count = kwargs["prepare_wave"](state, object())
+                responses = tuple(
+                    kwargs["invoke_contact"](state, index, 0) for index in range(count)
+                )
+                kwargs["aggregate_wave"](state, responses, object())
+        return states
+
+    client = Client()
+    sink = Sink()
+    summary = module.run_openjiuwen_phase(
+        surface=surface,
+        ground=_ground(),
+        client=client,
+        trace_sink=sink,
+        workflow_runner=runner,
+    )
+
+    assert len(summary.results) == 16
+    assert sum("speech_feature_sample_id" in call for call in client.calls) == 32
+    assert sum("text_only_sample_id" in call for call in client.calls) == 448
+    assert len(client.calls) == 480
+    assert len(sink.rows) == 64
+
+
+def test_recovery_reuses_bound_response_without_recontact() -> None:
+    ground = _ground()
+    sample_id = "sample-0"
+    surface = module.RuntimeSurface(
+        samples=(SimpleNamespace(sample_id=sample_id),),
+        packet_bindings={sample_id: {"packet_id": sample_id, "sha256": "b" * 64}},
+        speech_feature_tokens_by_sample={sample_id: 10},
+    )
+    obs_context = SimpleNamespace(contact_id="g7-obs", instruction=module._render_obs())
+    state = SimpleNamespace(
+        stage="OBS", packet_binding=surface.packet_bindings[sample_id]
+    )
+    messages = module._contact_messages(state, obs_context)
+    recovered_text = "The speaker requests a device action."
+    source = module.RecoveryContact(
+        request_id="old-1",
+        sample_id=sample_id,
+        contact_id="g7-obs",
+        semantic_sha256=module._message_semantic_sha256(
+            sample_id, obs_context, messages
+        ),
+        response_text=recovered_text,
+        response_sha256=module.hashlib.sha256(recovered_text.encode()).hexdigest(),
+        slot_id=0,
+        cost={},
+    )
+    recovery = module.RecoveryBundle(
+        trace_path=Path("old.jsonl"),
+        trace_sha256="c" * 64,
+        contacts={(sample_id, "g7-obs"): source},
+        cost={},
+    )
+
+    class Client:
+        def __init__(self) -> None:
+            self.count = 0
+
+        def complete(self, _messages, **_kwargs):
+            self.count += 1
+            return "{}" if self.count <= 28 else '{"calls":[]}'
+
+    class Sink:
+        def emit(self, *_args):
+            return None
+
+    def runner(states, **kwargs):
+        for current in states:
+            while kwargs["should_continue"](current):
+                count = kwargs["prepare_wave"](current, object())
+                responses = tuple(
+                    kwargs["invoke_contact"](current, index, 0)
+                    for index in range(count)
+                )
+                kwargs["aggregate_wave"](current, responses, object())
+        return states
+
+    client = Client()
+    with pytest.raises(RuntimeError, match="exactly 480"):
+        module.run_openjiuwen_phase(
+            surface=surface,
+            ground=ground,
+            client=client,
+            trace_sink=Sink(),
+            workflow_runner=runner,
+            recovery=recovery,
+        )
+
+    assert client.count == 29
