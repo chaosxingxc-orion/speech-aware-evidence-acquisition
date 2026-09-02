@@ -5,11 +5,16 @@ Date: 2026-09-02. Status: **PRE-CONTACT AMENDED; ZERO CONTACT; MODEL CONTACT CLO
 `bounded-discovery-probe`. The original zero-contact experiment config SHA-256 was
 `926bbbb0c90b70df7877dfd4c72248e09c56007d85180c5b9b23ec664263c04a`; its composed config and
 protocol SHA-256 values were `b5a28adf9316d28adfbe5d0bd25c67b429903d03ff1f6eb10d2f9d594b64ed09` and
-`efa1fe160f5ee72b0c9dcc110058f6ad723a89df232cbfd7b2e913de564c52dc`. The prospective amendment
-below supersedes those identities before any contact. Current experiment, composed-config, and
-protocol SHA-256 values are `528f3e5707d3d8b9c992ab99aab701231270c915fa2e7309b5c3b0a3a6101235`,
+`efa1fe160f5ee72b0c9dcc110058f6ad723a89df232cbfd7b2e913de564c52dc`. The first prospective
+amendment below superseded those identities with experiment, composed-config, and protocol SHA-256
+values `528f3e5707d3d8b9c992ab99aab701231270c915fa2e7309b5c3b0a3a6101235`,
 `b4a817e193203e2da82c0821ee6dbb2383f07988e8d0e41e5c5da859060055c4`, and
-`28195c502bb6a285c372c1b07135948f0e2472f5e541ff610b1bdf6dc2c8aad9`. Baseline config SHA-256 is
+`28195c502bb6a285c372c1b07135948f0e2472f5e541ff610b1bdf6dc2c8aad9`. The second prospective
+execution-identity correction below supersedes that first amendment before contact. Current
+experiment, composed-config, and protocol SHA-256 values are
+`f2f31ad178d54e99cffa60d24fae1f0c72a8ea2d6894e6d1f19929e161100d5a`,
+`c651ac7b631ebdbbe19a450582d17a8d728f5fd3fae2e6600b3fe7affc531da2`, and
+`64236977c29d4babbacabbb597da5d21ec8b019c524191a64457452f66b889e0`. Baseline config SHA-256 is
 `dd7f38fe941d1c6ece607ff695f0ab700a9aea2c75fd5808674ceba8119820e5`; roster receipt SHA-256 is
 `41a14ab576d7a428dd9849f26432e2c4998371b9f601189a1d558d694a12c884`.
 
@@ -28,7 +33,26 @@ active action uses `normalized`, falling back to `surface`, while the existing e
 `action_phrase` schema remains accepted. Forbidden runtime fields, the eight-action maximum,
 retrieval policy, candidate limits, packet renderer, arms, population, gates, budgets, phase order,
 scoring, and terminal consequences do not change. The predecessor identities remain above as an
-auditable zero-contact history; only the current amended identities may be used by a launcher.
+auditable zero-contact history. The execution-identity correction below defines the current
+launcher identities.
+
+## Prospective pre-contact execution identity correction
+
+The selected16 receipt carries two deliberate hashes. The colon-key partition-integrity hash is
+`7590dfef54b42601c266f2bb325faee073143a575beeccd0c33cc8baf13aed45`. The carrier-prefixed run
+identity is `f9e3055f7eceff49405a192806be933db9bfcab150a1778bb3ddd937a8f57269`. G3 establishes that
+`VerifiedSplit`, `ExecutionPlan.split_identity_hash`, bundle verification, and protocol hashing use
+the latter. Binding those runtime surfaces to the former would make a completed bundle
+unverifiable.
+
+Before any contact, this amendment therefore binds the carrier-prefixed run identity to all four
+runtime surfaces and retains the colon-key hash only as receipt partition-integrity evidence. It
+changes no selected row, media byte, state, packet, arm, phase, call count, budget, gate, scorer, or
+terminal consequence. Only experiment SHA-256
+`f2f31ad178d54e99cffa60d24fae1f0c72a8ea2d6894e6d1f19929e161100d5a`, composed-config SHA-256
+`c651ac7b631ebdbbe19a450582d17a8d728f5fd3fae2e6600b3fe7affc531da2`, and protocol SHA-256
+`64236977c29d4babbacabbb597da5d21ec8b019c524191a64457452f66b889e0` are current. Every predecessor
+identity above remains an auditable zero-contact record and must not launch.
 
 ## Objective and roster
 
