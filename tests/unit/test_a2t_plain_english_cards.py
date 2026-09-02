@@ -149,8 +149,9 @@ def test_corpus_is_complete_plain_english_and_tier_conditioned() -> None:
 
     assert corpus.report["registry_tool_count"] == 4
     assert corpus.report["detailed_tool_card_count"] == 4
-    assert corpus.index_text.count(" — ") == 4
-    assert "setLightState — Change a light to the requested state." in corpus.index_text
+    assert corpus.index_text.count(" - ") == 4
+    assert "setLightState - Change a light to the requested state." in corpus.index_text
+    assert corpus.corpus_text.isascii()
     detail = corpus.tool_cards_by_name["setLightState"].text
     assert "Tool name: setLightState" in detail
     assert "Meaning: Change a light to the requested state." in detail

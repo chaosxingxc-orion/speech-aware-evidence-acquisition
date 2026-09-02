@@ -18,7 +18,7 @@
     "card_module": "src/speech_aware_evidence_acquisition/rails/a2t_plain_english_cards.py",
     "registry_tool_count": 152,
     "detailed_card_limit": 32,
-    "historical_observation_packet_utf8_byte_max": 63113,
+    "historical_observation_packet_utf8_byte_max": 62809,
     "runtime_packet_utf8_byte_cap": 64000,
     "construction_bm25": true,
     "source_utterances_rendered": 0,

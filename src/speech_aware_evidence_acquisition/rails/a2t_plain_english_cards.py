@@ -423,7 +423,7 @@ def build_plain_english_card_corpus(
     cues = _aggregate_cues(construction_rows)
     index_lines = ["COMPLETE TOOL NAME AND MEANING INDEX"]
     for name in sorted(registry):
-        index_lines.append(f"{name} — {registry[name]['description']}")
+        index_lines.append(f"{name} - {registry[name]['description']}")
     index_text = "\n".join(index_lines)
 
     tool_cards: list[ToolKnowledgeCard] = []

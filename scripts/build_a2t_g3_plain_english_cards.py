@@ -61,14 +61,14 @@ def build(repo_root: Path, root: Path) -> tuple[str, dict[str, object]]:
         registry,
         partition.construction,
         forbidden_sample_ids=forbidden,
-        max_corpus_utf8_bytes=100_000,
+        max_corpus_utf8_bytes=512_000,
         max_tool_card_utf8_bytes=6_000,
     )
     second = build_plain_english_card_corpus(
         tuple(reversed(registry)),
         tuple(reversed(partition.construction)),
         forbidden_sample_ids=forbidden,
-        max_corpus_utf8_bytes=100_000,
+        max_corpus_utf8_bytes=512_000,
         max_tool_card_utf8_bytes=6_000,
     )
     if first != second:
