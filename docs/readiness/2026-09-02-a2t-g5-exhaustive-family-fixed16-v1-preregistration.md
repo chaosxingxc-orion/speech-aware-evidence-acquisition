@@ -90,6 +90,34 @@ superseded non-launchable np16 experiment, composed-config, and protocol identit
 `0c6cf271d79a79190226bc046c40105f04927b35f8a7ceb7a10d2cf8473ce941`, and
 `fa7ea93447b6965fcd0758a0ee8c5ee3e28aecd6786fe8d8fe9d543699612e42`.
 
-Before any contact, verify all frozen hashes, create the final no-contact prompt-fit receipt,
-construct the structured ExecutionPlan, bind the receipt-pinned runtime and complete manifests,
-append the final exposure amendment, and run the integrated preflight from a clean commit.
+## Final prospective activation amendment
+
+Before any G5 contact, the dedicated launcher landed at commit
+`b8b01ecf9d57452db8cfd11da116b6cee6fa8be4`, SHA-256
+`68f3179d791998b9018ae2d49a7f84e7eeedd5a053d6054f816343ae00427194`.
+It binds the corrected np2 experiment, composed-config, and protocol identities above and checks
+the corpus, roster, promotion receipt, runtime packet surface, integration, prompt-fit receipt,
+and all model-facing request identities before service start.
+
+The zero-contact integration module and prompt-fit receipt are SHA-256
+`dc6ad763473d7f7854f900330cacf5194a5ccc5beab9955ce0ee97b613541c5d` and
+`75b1a9bfbff4373d4cc35d7ce472ae888567a03863a2a9d226c141eb4289c869`.
+The prompt-fit receipt passes without tokenizer contact: PLAN requires at most 2,871 and EXECUTE
+at most 26,219 of 32,768 per-slot tokens, including the fixed 512 special-token reserve, measured
+speech reserve, and the respective 256 and 1,024 completion reserves. The receipt-pinned runtime
+receipt is `docs/receipts/runtime-q4km-mmproj-free.json`, SHA-256
+`b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77`.
+
+The launcher constructs and validates exactly one `saea-execution-plan-v1` plan for this attempt:
+run `SAEA-A2T-G5-EXHAUSTIVE-FAMILY-FIXED16-V1`, bounded-discovery-probe, Audio2Tool discovery,
+run identity `8c0136a901693548a737bf4bf3fa83206d9bae190283123d6412be6a78b069fe`, 32 model calls,
+247 registered speech-audio seconds, 0.3 GPU-hours, and protocol
+`e669d545e7ffb7ed09e9a827e99951807699c9fc49796d5942a0b31f6716f9fd`. It permits exactly
+PLAN then EXECUTE for each fixed16 row, with no scoring or response-meaning inspection during the
+flight. The 37 combined G5 tests and Ruff check pass at the launcher commit.
+
+This final prospective amendment opens only that fixed16 launcher attempt after its own clean-tree
+preflight. It opens neither another roster nor a scorer read: gold and unchanged whole-manifest
+official scoring remain closed until all sixteen final responses and both contact manifests seal.
+Every population, protocol, packet bound, temperature, contact count, gate, exclusion, stop rule,
+and terminal consequence above remains unchanged.
