@@ -4,11 +4,12 @@ Date: 2026-09-02. Status: **REGISTERED DESIGN; MODEL CONTACT CLOSED**.
 Experiment: `SAEA-A2T-EXECUTABLE-GROUND-QUALIFICATION-104-V1`.
 Execution profile: `bounded-discovery-probe`.
 Composed config SHA-256:
-`d6780127652775a09aad9d2d6f83f9ec8b141b1f0fcc9079498f1ef5f618c4c8`.
-Protocol SHA-256: `9093c767e1bc6af020e0be94b5c4c4ba357c5371ba622d8cf577f1bfaa5695ae`.
-These identities supersede the design-only `2ec773a1...` / `c0c61145...` pair before any model
-contact; the only change freezes the already-required grouped interval's replication count, seed,
-quantiles, and cluster resampling rule.
+`60b896eea441e94cc6570e5721303762b88da388d0ddc987a6a7b65cdeca8dda`.
+Protocol SHA-256: `82680b0bc909a0c6f3f88f87ce4bd815feecdeff03a694e79e8456acc63dc33b`.
+These identities supersede both earlier zero-contact design pairs before any model contact. They
+freeze the grouped interval procedure plus phase/attempt order, no-recontact failure behavior,
+resend payload equivalence, finalized-score consumption, parsed-empty reporting, and resend
+agreement semantics.
 
 ## Objective and scientific sequence
 
@@ -43,6 +44,20 @@ contact and repeated once after both full arms. The resend preserves system/user
 binding, seed, temperature, completion cap, and source slot; only its request/accounting identity is
 new. No selection may use a response, parse, score, reward, latency, or gold.
 
+The phase order is M0, then ground, then the 16 resends through one unchanged service session.
+Before `start_session`, the launcher writes and hashes one flight plan containing the three concrete
+attempt ids derived from the UTC flight stamp (`groundm0`, `groundg1`, and `groundresend`). A partial
+failure seals every available trace and accounting record, aborts every still-opened attempt, stops
+the service, and ends without recontacting any row. Recovery requires a prospective amendment.
+
+For every selected ground source, the launcher canonicalizes the complete traced payload except
+`request_id` as sorted ASCII JSON and records its SHA-256 and source slot. The normalized surface
+contains carrier/sample/media facts, task instruction, history, decoding including `id_slot`,
+evidence/provenance, speech-feature descriptors and packet hash, query source, key/matcher ids, and
+the mmproj flag. Before each resend, the reconstructed intended payload must equal the source hash;
+after contact, the actual traced resend must equal it again. Only request/accounting identity may
+differ.
+
 ## Qualification gates
 
 The basic ground passes only if all conditions hold on the complete 104-row ground manifest:
@@ -75,6 +90,15 @@ workers run two unchanged official single-process finalizers concurrently, one p
 manifest. There is no dataset shard, shard score, or shard-average metric. The batch reports wall
 time, summed job time, effective speedup, worker count, manifest count, and result hashes. The fixed
 16-pair stability read runs only after both official jobs settle.
+
+Each finalized manifest is reverified as `FINALIZED`; analysis reads only its manifest-bound scores
+artifact. The per-sample id set must equal the frozen 104 ids, and derived parse/exact/tool counts
+must cross-check the official aggregate rates and slot micro totals. A parsed empty call means the
+unchanged parser returned `parsed=true` and zero calls; parse failures remain separate. Resend
+semantic agreement requires both texts to parse and scorer-v1 exact call-multiset equality by
+calling `score_item(source_calls, resend_calls)`. Source exact outcome comes from the finalized
+ground row; resend exact outcome uses the unchanged gold loader and item scorer only after both
+finalizers complete.
 
 Network jitter, packet loss, latency injection, retry stress, and failure-throughput testing are not
 engineering gates and are not measured.

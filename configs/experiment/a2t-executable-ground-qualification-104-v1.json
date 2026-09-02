@@ -52,6 +52,58 @@
       "purpose": "measure semantic call stability without selecting on response or reward"
     }
   },
+  "execution_protocol": {
+    "phase_order": [
+      "M0_REGISTRY_DIRECT",
+      "G1_FULL_EXECUTABLE_GROUND",
+      "G1_RESEND_STABILITY"
+    ],
+    "attempt_count": 3,
+    "attempt_id_rule": "Before start_session, write and hash one flight plan with attempt-{UTC flight stamp}-groundm0, attempt-{UTC flight stamp}-groundg1, and attempt-{UTC flight stamp}-groundresend. The three exact ids become immutable once that plan is written.",
+    "same_service_session": true,
+    "service_stop_before_score": true,
+    "per_attempt_expected_calls": [104, 104, 16],
+    "total_expected_calls": 224,
+    "failure_rule": "On any partial phase failure, seal available trace/accounting, abort every still-OPENED attempt, stop the service, and end the mission. Never recontact a missing or failed row in this invocation. Any recovery requires a new prospective amendment.",
+    "pre_score_verification": "Require the M0 and G1 manifests to verify as complete OPENED 104-row bundles and require the 16-row resend trace/receipt to seal before stopping the service and opening gold."
+  },
+  "resend_binding": {
+    "selection_source": "identity-only frozen roster",
+    "source_phase": "G1_FULL_EXECUTABLE_GROUND",
+    "normalized_payload_fields": [
+      "carrier_lock_key",
+      "sample_id",
+      "speech_ref",
+      "media_relpath",
+      "audio_seconds",
+      "sample_rate_hz",
+      "task_instruction",
+      "history",
+      "decoding_params",
+      "supplied_evidence",
+      "evidence_provenance",
+      "speech_feature_parts",
+      "speech_packet_sha256",
+      "query_source",
+      "key_representation_id",
+      "matcher_policy_id",
+      "mmproj_loaded"
+    ],
+    "excluded_payload_field": "request_id",
+    "canonicalization": "UTF-8 JSON with ensure_ascii=true, sort_keys=true, separators comma/colon",
+    "precontact_rule": "For every selected source, validate its sealed normalized payload and source id_slot, rebuild the intended resend from the same messages, packet binding and decoding, and require the intended normalized payload SHA-256 to equal the source hash before contact.",
+    "postcontact_rule": "Require the actual traced resend normalized payload SHA-256 to equal the source hash. Only request/accounting identity may differ.",
+    "receipt_fields": [
+      "sample_id",
+      "source_request_id",
+      "resend_request_id",
+      "source_response_sha256",
+      "resend_response_sha256",
+      "source_id_slot",
+      "source_normalized_payload_sha256",
+      "resend_normalized_payload_sha256"
+    ]
+  },
   "ground_gates": {
     "primary_parse_count_minimum": 103,
     "primary_exact_count_minimum": 94,
@@ -76,7 +128,11 @@
     "dataset_sharding": false,
     "shard_metric_averaging": false,
     "gold_open_rule": "Both complete 104-row manifests and the 16-row resend trace must seal before either official scorer starts.",
-    "resend_read": "After the two official jobs settle, use the unchanged local parser/item scorer only on the fixed 16 source/resend pairs."
+    "resend_read": "After the two official jobs settle, use the unchanged local parser/item scorer only on the fixed 16 source/resend pairs.",
+    "score_artifact_rule": "After each finalizer succeeds, re-run verify_bundle on the finalized manifest, require attempt state FINALIZED, and read only the manifest-bound scores artifact whose path and SHA-256 the verified bundle exposes.",
+    "required_score_section": "a2t-toolcall",
+    "empty_call_definition": "parsed=true and the unchanged parser returns an empty call list; parse failures are reported separately and are not counted as parsed-empty calls.",
+    "ledger_cells": "Write one complete human-ledger-cells JSON object per full arm before starting the two finalizers; the finalizer derives artifact hashes."
   },
   "statistics": {
     "paired_outcome": "ground exact-correct minus same-sample M0 exact-correct",
@@ -89,6 +145,38 @@
     "lower_quantile": 0.05,
     "upper_quantile": 0.95,
     "replicate_rule": "Sample the frozen query_block identities with replacement, include every paired row belonging to each sampled block, and compute the sample-weighted mean paired exact delta."
+  },
+  "postscore_report": {
+    "score_rows": "Require exact equality between each finalized per_sample id set and the frozen 104 ids; derive parse/exact/tool counts from those rows and cross-check aggregate rates and slot micro totals.",
+    "bootstrap_fields": [
+      "point_estimate",
+      "sigma_hat",
+      "ci_low",
+      "ci_high",
+      "ci_level",
+      "n_replicates",
+      "seed",
+      "sorted_query_blocks",
+      "query_block_count",
+      "m0_score_sha256",
+      "ground_score_sha256"
+    ],
+    "resend_semantic_agreement": "Both source and resend must parse, then call score_item with source parsed calls as expected and resend parsed calls as predicted; semantic agreement is exact_match==1. This inherits scorer-v1 canonical values, order-insensitive call multisets, and duplicate counts.",
+    "resend_parse_failure": "Any resend parse failure fails that pair's semantic agreement and the resend parse-count gate.",
+    "resend_exact_outcome": "Use the finalized G1 per_sample exact_match boolean for the source. After scorer completion opens gold, score the resend with the unchanged load_expected_calls plus score_item path and compare the two exact-match booleans.",
+    "resend_pair_fields": [
+      "sample_id",
+      "source_request_id",
+      "resend_request_id",
+      "source_response_sha256",
+      "resend_response_sha256",
+      "source_parsed",
+      "resend_parsed",
+      "semantic_call_agreement",
+      "source_exact_match",
+      "resend_exact_match",
+      "exact_outcome_agreement"
+    ]
   },
   "contact_budget": {
     "expected_model_calls": 224,

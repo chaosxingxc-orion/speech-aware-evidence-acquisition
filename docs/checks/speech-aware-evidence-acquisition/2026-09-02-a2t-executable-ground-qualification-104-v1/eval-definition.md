@@ -29,9 +29,22 @@ agreement at least 15. Target pass additionally requires exact at least 99.
 
 ## Scoring execution
 
+Execute exactly M0, then ground, then the 16 resends through one unchanged service session and three
+distinct attempt ids derived in a hashed pre-contact flight plan. A partial failure seals available
+trace/accounting, aborts opened attempts, stops the service, and ends the mission without recontact;
+recovery requires a prospective amendment.
+
 Seal every model response before opening gold. Run two complete-manifest official single-process
 finalizers through two outer workers. Never shard a manifest or average shard scores. Do not include
 network jitter or retry behavior in the engineering gate.
+
+For each resend, canonicalize the complete traced source payload except `request_id` as sorted ASCII
+JSON and bind its SHA-256 plus source slot. The intended resend must match that hash before contact;
+the actual traced resend must match it again after contact. After both official finalizers settle,
+semantic agreement requires both outputs to parse and scorer-v1 exact multiset equality when the
+source calls are passed as expected and the resend calls as predicted. Exact-outcome agreement
+compares the finalized source exact boolean with unchanged item scoring of the resend. A parsed
+empty call is `parsed=true` with zero calls; parse failures are a separate count.
 
 ## Leakage and scope
 
