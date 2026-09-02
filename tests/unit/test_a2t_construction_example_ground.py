@@ -319,7 +319,55 @@ def test_unaligned_values_are_excluded_instead_of_leaked() -> None:
     assert "Down" not in tool.patterns[0].text
     assert "8" not in tool.patterns[0].text
     assert artifact.report["unaligned_row_count"] == 1
+    assert artifact.report["rejected_row_count"] == 1
+    assert artifact.report["rejected_row_reason_counts"] == {
+        "unaligned_argument_values": 1
+    }
     assert artifact.report["source_argument_values_rendered"] == 0
+
+
+def test_g5_incompatible_key_skeleton_is_safely_excluded_and_reported() -> None:
+    incompatible = _row(
+        52,
+        text="UNSAFE PARTIAL VOLUME Up",
+        pairs=(("direction", "Up"),),
+    )
+    safe = _row(
+        53,
+        text="Move cabin volume Down by 6 steps",
+        pairs=(("direction", "Down"), ("steps", "6")),
+    )
+
+    artifact = _build((incompatible, safe))
+
+    assert artifact.report["rejected_row_count"] == 1
+    assert artifact.report["rejected_row_reason_counts"] == {
+        "g5_incompatible_key_skeleton": 1
+    }
+    assert artifact.report["g5_incompatible_key_skeleton_row_count"] == 1
+    assert "UNSAFE PARTIAL VOLUME" not in artifact.text
+    assert artifact.report["task_used_tool_pattern_coverage"] == 1.0
+
+
+def test_malformed_construction_key_skeleton_is_safely_excluded_and_reported() -> None:
+    malformed = _row(
+        54,
+        text="UNSAFE MALFORMED VOLUME Up",
+        pairs=(("direction:[", "Up"),),
+    )
+    safe = _row(
+        55,
+        text="Move cabin volume Down by 7 steps",
+        pairs=(("direction", "Down"), ("steps", "7")),
+    )
+
+    artifact = _build((malformed, safe))
+
+    assert artifact.report["rejected_row_reason_counts"] == {
+        "malformed_argument_key_skeleton": 1
+    }
+    assert artifact.report["malformed_argument_key_skeleton_row_count"] == 1
+    assert "UNSAFE MALFORMED VOLUME" not in artifact.text
 
 
 @pytest.mark.parametrize(

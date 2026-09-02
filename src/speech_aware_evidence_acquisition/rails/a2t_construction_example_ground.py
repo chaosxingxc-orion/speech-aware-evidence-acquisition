@@ -16,6 +16,7 @@ data-API limitation explicit.
 
 from __future__ import annotations
 
+from collections import Counter
 from collections.abc import Collection, Mapping, Sequence
 from dataclasses import dataclass
 from fractions import Fraction
@@ -518,7 +519,7 @@ def build_construction_example_family_ground(
         name: set() for name in by_tool
     }
     used_tools: set[str] = set()
-    unaligned = 0
+    rejected_rows: Counter[str] = Counter()
     observed_legal_skeletons: set[tuple[str, tuple[str, ...]]] = set()
     for row in rows:
         contract = by_tool.get(row.tool_name)
@@ -527,19 +528,25 @@ def build_construction_example_family_ground(
                 f"construction tool {row.tool_name!r} is outside frozen G5"
             )
         used_tools.add(row.tool_name)
+        if (
+            not isinstance(row.arg_signature, tuple)
+            or len(row.arg_signature) != len(set(row.arg_signature))
+            or any(_IDENTIFIER.fullmatch(key) is None for key in row.arg_signature)
+        ):
+            rejected_rows["malformed_argument_key_skeleton"] += 1
+            continue
         matching_skeletons = tuple(
             skeleton
             for skeleton in contract.legal_key_skeletons
             if frozenset(skeleton) == frozenset(row.arg_signature)
         )
         if len(matching_skeletons) != 1:
-            raise ConstructionExampleGroundError(
-                f"construction key skeleton for {row.tool_name!r} is outside frozen G5"
-            )
+            rejected_rows["g5_incompatible_key_skeleton"] += 1
+            continue
         observed_legal_skeletons.add((row.tool_name, matching_skeletons[0]))
         pattern = _delexicalize(row)
         if pattern is None:
-            unaligned += 1
+            rejected_rows["unaligned_argument_values"] += 1
             continue
         patterns_by_tool[row.tool_name].add(pattern)
     uncovered = sorted(name for name in used_tools if not patterns_by_tool[name])
@@ -642,7 +649,15 @@ def build_construction_example_family_ground(
         ),
         "example_count": example_count,
         "maximum_examples_per_tool": max_examples_per_tool,
-        "unaligned_row_count": unaligned,
+        "rejected_row_count": sum(rejected_rows.values()),
+        "rejected_row_reason_counts": dict(sorted(rejected_rows.items())),
+        "unaligned_row_count": rejected_rows["unaligned_argument_values"],
+        "g5_incompatible_key_skeleton_row_count": rejected_rows[
+            "g5_incompatible_key_skeleton"
+        ],
+        "malformed_argument_key_skeleton_row_count": rejected_rows[
+            "malformed_argument_key_skeleton"
+        ],
         "typed_key_count": sum(
             len(contract.types)
             for contracts in contracts_by_family.values()
