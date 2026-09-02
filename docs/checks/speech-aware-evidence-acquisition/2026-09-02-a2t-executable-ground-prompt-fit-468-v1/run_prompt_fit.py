@@ -67,7 +67,9 @@ def main() -> int:
         raise RuntimeError("promotion receipt binding drifted")
     result = reprice_prompt_fit(prompt_fit, preprocessing)
     if attempts:
-        raise RuntimeError("offline guard observed an outbound connection attempt")
+        raise RuntimeError(
+            "offline guard observed an outbound connection attempt: %r" % (attempts,)
+        )
     output = {
         "schema": "saea-a2t-executable-ground-prompt-fit-468-result-v1",
         "study": "speech-aware-evidence-acquisition",
