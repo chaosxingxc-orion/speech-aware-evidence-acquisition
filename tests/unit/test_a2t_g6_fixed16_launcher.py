@@ -388,6 +388,27 @@ def test_controller_policy_stays_bound_to_frozen_g6_core() -> None:
     assert launcher.CONTROLLER_POLICY_ID == CONTROLLER_POLICY_ID
 
 
+def test_phase_trace_payloads_use_disjoint_channel_prefixes() -> None:
+    launcher = _launcher()
+    sink = _Sink()
+    state = SimpleNamespace(
+        sample=SimpleNamespace(sample_id="sample-a"),
+        trace_documents={
+            "OBS": {"packet": "a"},
+            "ORG": {"reports": []},
+            "SUPPLY": {"contracts": []},
+            "USE": {"resolution": "[]"},
+        },
+    )
+
+    launcher._emit_phase_traces(state, sink)
+
+    for channel, _record_id, payload in sink.records:
+        prefix = channel.lower() + "_"
+        assert payload
+        assert all(key.startswith(prefix) for key in payload)
+
+
 def test_recovery_reuses_exact_eight_contacts_and_sends_only_456() -> None:
     launcher = _launcher()
     surface = _surface(launcher)

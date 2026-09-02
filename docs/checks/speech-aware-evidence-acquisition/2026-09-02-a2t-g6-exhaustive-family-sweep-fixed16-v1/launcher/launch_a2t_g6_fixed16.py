@@ -164,6 +164,16 @@ RECOVERY_SOURCE_TRACE_SHA256 = (
 )
 RECOVERY_PRIOR_CONTACTS = 8
 RECOVERY_CURRENT_CONTACTS = 456
+SEAL_SOURCE_ATTEMPT_ID = "attempt-20260902t221239z-g6-fixed16"
+SEAL_SOURCE_ATTEMPT_SHA256 = (
+    "e7b085a829f9228ea92864b6f6b8e38ac068f85e9311d03352215a48c1345d40"
+)
+SEAL_SOURCE_TRACE_SHA256 = (
+    "23f5eb29502e1a76ae9242536350e35cf2b9a362a9a982ea5f4b64dc8050b807"
+)
+SEAL_SOURCE_TRACE_MANIFEST_SHA256 = (
+    "89ccefe85d4c3b651bc7d247efc06f977bf366cffe5a8e7fabc23d75ec48ff3a"
+)
 RECOVERY_EXPECTED_CONTACTS = (
     ("g6fixed16-0001", "tier1_direct:000077", "g6-scan-smart-car-navigation", "5652f43327026e4decdccd5f9b769e20126bedd4ee18334e45582c408440fd5c", "5eb4623ed48a2b54650c6d4d51ef27baa7682e51aab0cf17d7b87b80423fea77", "11a7a96d253b24fe9a68da2c46ac1be2201d08fea8184eabf845e3a5be774236"),
     ("g6fixed16-0002", "tier1_direct:004159", "g6-scan-smart-car-navigation", "27471d1fda32cd0b69587a6aab2958286431e23c1af43efba010dfa059350375", "ed8efcebb9ba3c0623026b092ad498293704d40f3964973338e9026999f02ec0", "d006b279d3b74fda72833d0cbe7042a7bdbaf096f1c8346e45bac562384ffbe5"),
@@ -421,6 +431,7 @@ class RecoveryBundle:
     source_trace_sha256: str
     contacts: Mapping[tuple[str, str], RecoveryContact]
     cost: Mapping[str, object]
+    allow_resolve: bool = False
 
 
 def _canonical_sha256(document: Mapping[str, object]) -> str:
@@ -590,6 +601,145 @@ def _merge_recovery_cost(
     ):
         merged[key] = merged.get(key, 0) + recovery.cost.get(key, 0)
     return merged
+
+
+def _load_seal_trace_bundle(root: Path, trace_path: Path) -> RecoveryBundle:
+    """Validate the immutable 456-contact recovery trace without interpretation."""
+
+    trace_path = Path(trace_path)
+    _require_hash(trace_path, SEAL_SOURCE_TRACE_SHA256, "seal source trace")
+    manifest_path = trace_path.with_name(f"{RUN_ID}.trace-manifest.json")
+    _require_hash(
+        manifest_path,
+        SEAL_SOURCE_TRACE_MANIFEST_SHA256,
+        "seal source trace manifest",
+    )
+    attempt_path = (
+        Path(root) / "attempts" / RUN_ID / f"{SEAL_SOURCE_ATTEMPT_ID}.json"
+    )
+    _require_hash(attempt_path, SEAL_SOURCE_ATTEMPT_SHA256, "seal source attempt")
+    attempt = json.loads(attempt_path.read_text(encoding="utf-8"))
+    if (
+        attempt.get("schema") != "saea-attempt-v1"
+        or attempt.get("state") != "ABORTED"
+        or attempt.get("run_id") != RUN_ID
+        or attempt.get("attempt_id") != SEAL_SOURCE_ATTEMPT_ID
+        or attempt.get("actual", {}).get("calls") != RECOVERY_CURRENT_CONTACTS
+    ):
+        raise RuntimeError("seal source attempt identity or accounting drift")
+    rows = [
+        json.loads(line)
+        for line in trace_path.read_text(encoding="utf-8").splitlines()
+        if line
+    ]
+    if len(rows) != RECOVERY_CURRENT_CONTACTS * 3:
+        raise RuntimeError("seal source must contain 456 request triples")
+    by_record = {row.get("record_id"): row for row in rows}
+    if len(by_record) != len(rows):
+        raise RuntimeError("seal source contains duplicate records")
+    request_ids = sorted(
+        str(record_id).removesuffix("/request")
+        for record_id, row in by_record.items()
+        if isinstance(row, Mapping) and row.get("channel") == "MODEL_REQUEST"
+    )
+    if len(request_ids) != RECOVERY_CURRENT_CONTACTS:
+        raise RuntimeError("seal source request count drift")
+    contacts: dict[tuple[str, str], RecoveryContact] = {}
+    totals = {
+        "calls_used": 0,
+        "audio_seconds_used": 0.0,
+        "latency_seconds_total": 0.0,
+        "prompt_tokens_total": 0,
+        "completion_tokens_total": 0,
+    }
+    for request_id in request_ids:
+        request = by_record.get(f"{request_id}/request")
+        response = by_record.get(f"{request_id}/response")
+        cost_row = by_record.get(f"{request_id}/cost")
+        if not all(isinstance(row, Mapping) for row in (request, response, cost_row)):
+            raise RuntimeError("seal source has an incomplete request triple")
+        assert isinstance(request, Mapping)
+        assert isinstance(response, Mapping)
+        assert isinstance(cost_row, Mapping)
+        wrapper = request.get("payload")
+        response_payload = response.get("payload")
+        cost = cost_row.get("payload")
+        if not all(
+            isinstance(value, Mapping) for value in (wrapper, response_payload, cost)
+        ):
+            raise RuntimeError("seal source payload shape drift")
+        assert isinstance(wrapper, Mapping)
+        assert isinstance(response_payload, Mapping)
+        assert isinstance(cost, Mapping)
+        payload = wrapper.get("payload")
+        history = payload.get("history") if isinstance(payload, Mapping) else None
+        control = history[-1] if isinstance(history, list) and history else None
+        text = response_payload.get("text")
+        payload_hash = wrapper.get("payload_sha256")
+        response_hash = response_payload.get("response_sha256")
+        text_hash = response_payload.get("response_text_sha256")
+        if (
+            wrapper.get("arm") != "speech-feature-query"
+            or not isinstance(payload, Mapping)
+            or not isinstance(payload_hash, str)
+            or _canonical_sha256(payload) != payload_hash
+            or payload.get("request_id") != request_id
+            or not isinstance(payload.get("sample_id"), str)
+            or not isinstance(payload.get("speech_packet_sha256"), str)
+            or not isinstance(control, Mapping)
+            or not isinstance(control.get("contact_id"), str)
+            or not isinstance(response_hash, str)
+            or not isinstance(text_hash, str)
+            or not isinstance(text, str)
+            or hashlib.sha256(text.encode("utf-8")).hexdigest() != text_hash
+            or cost.get("calls") != 1
+            or response.get("channel") != "MODEL_RESPONSE"
+            or cost_row.get("channel") != "COST"
+        ):
+            raise RuntimeError("seal source request/response hash or identity drift")
+        decoding = payload.get("decoding_params")
+        slot_id = decoding.get("id_slot") if isinstance(decoding, Mapping) else None
+        if slot_id not in range(SLOT_COUNT):
+            raise RuntimeError("seal source slot geometry drift")
+        sample_id = str(payload["sample_id"])
+        contact_id = str(control["contact_id"])
+        key = (sample_id, contact_id)
+        if key in contacts:
+            raise RuntimeError("seal source repeats a sample/contact pair")
+        contacts[key] = RecoveryContact(
+            request_id=request_id,
+            sample_id=sample_id,
+            contact_id=contact_id,
+            packet_sha256=str(payload["speech_packet_sha256"]),
+            payload_sha256=payload_hash,
+            response_sha256=response_hash,
+            response_text_sha256=text_hash,
+            response_text=text,
+            slot_id=int(slot_id),
+            cost=dict(cost),
+        )
+        totals["calls_used"] += 1
+        totals["audio_seconds_used"] += float(cost.get("audio_seconds", 0.0))
+        totals["latency_seconds_total"] += float(cost.get("latency_seconds", 0.0))
+        totals["prompt_tokens_total"] += int(cost.get("prompt_tokens", 0))
+        totals["completion_tokens_total"] += int(cost.get("completion_tokens", 0))
+    if set(by_record) != {
+        f"{request_id}/{suffix}"
+        for request_id in request_ids
+        for suffix in ("request", "response", "cost")
+    }:
+        raise RuntimeError("seal source contains an unexpected record")
+    actual = attempt.get("actual", {})
+    if abs(totals["audio_seconds_used"] - float(actual.get("audio_seconds", -1))) > 1e-6:
+        raise RuntimeError("seal source audio accounting drift")
+    return RecoveryBundle(
+        source_attempt_id=SEAL_SOURCE_ATTEMPT_ID,
+        source_attempt_sha256=SEAL_SOURCE_ATTEMPT_SHA256,
+        source_trace_path=trace_path,
+        source_trace_sha256=SEAL_SOURCE_TRACE_SHA256,
+        contacts=contacts,
+        cost=totals,
+    )
 
 
 def _static_preflight(root: Path) -> dict[str, object]:
@@ -837,10 +987,14 @@ def _render_request(
 def _emit_phase_traces(state: _G6WorkflowState, trace_sink: object) -> None:
     assert state.trace_documents is not None
     for phase in ("OBS", "ORG", "SUPPLY", "USE"):
+        prefix = phase.lower() + "_"
         trace_sink.emit(
             phase,
             f"g6:{state.sample.sample_id}:{phase.lower()}",
-            state.trace_documents[phase],
+            {
+                f"{prefix}{key}": value
+                for key, value in state.trace_documents[phase].items()
+            },
         )
 
 
@@ -931,7 +1085,7 @@ def _run_phase(
         source = recovery.contacts.get(recovery_key) if recovery is not None else None
         if source is not None:
             if (
-                context.stage != "SCAN"
+                (context.stage != "SCAN" and not recovery.allow_resolve)
                 or source.packet_sha256 != context.speech_packet_sha256
                 or source.sample_id != state.sample.sample_id
                 or source.contact_id != context.contact_id
@@ -1234,6 +1388,209 @@ def _seal_outputs(
     }
 
 
+def _execute_model_free_workflows(states: Sequence[object], **kwargs: object) -> list[object]:
+    """Execute callback state transitions synchronously with no OpenJiuwen import."""
+
+    prepare_wave = kwargs["prepare_wave"]
+    invoke_contact = kwargs["invoke_contact"]
+    aggregate_wave = kwargs["aggregate_wave"]
+    should_continue = kwargs["should_continue"]
+    assert callable(prepare_wave)
+    assert callable(invoke_contact)
+    assert callable(aggregate_wave)
+    assert callable(should_continue)
+    for state in states:
+        while should_continue(state):
+            active = prepare_wave(state, object())
+            responses = tuple(
+                invoke_contact(state, branch_index, 0)
+                for branch_index in range(active)
+            )
+            if any(
+                set(response)
+                != {"response_text", "slot_id", "response_sha256"}
+                for response in responses
+            ):
+                raise RuntimeError("model-free reconstruction callback shape drift")
+            aggregate_wave(state, responses, object())
+    return list(states)
+
+
+class _NoContactClient:
+    def complete(self, *args: object, **kwargs: object) -> str:
+        del args, kwargs
+        raise RuntimeError("model contact is prohibited during source-bound sealing")
+
+
+def _seal_from(
+    root: Path, *, first_trace_path: Path, latest_trace_path: Path
+) -> Mapping[str, object]:
+    """Reconstruct and externally seal all 464 already-consumed contacts."""
+
+    context = _static_preflight(root)
+    first = _load_recovery_bundle(root, first_trace_path)
+    latest = _load_seal_trace_bundle(root, latest_trace_path)
+    overlap = set(first.contacts) & set(latest.contacts)
+    combined_contacts = {**first.contacts, **latest.contacts}
+    if overlap or len(combined_contacts) != MAX_TOTAL_CONTACTS:
+        raise RuntimeError("source traces do not form one disjoint 464-contact surface")
+    combined_cost = _merge_recovery_cost(latest.cost, first)
+    combined = RecoveryBundle(
+        source_attempt_id=f"{first.source_attempt_id}+{latest.source_attempt_id}",
+        source_attempt_sha256=hashlib.sha256(
+            (first.source_attempt_sha256 + latest.source_attempt_sha256).encode("ascii")
+        ).hexdigest(),
+        source_trace_path=latest.source_trace_path,
+        source_trace_sha256=hashlib.sha256(
+            (first.source_trace_sha256 + latest.source_trace_sha256).encode("ascii")
+        ).hexdigest(),
+        contacts=combined_contacts,
+        cost=combined_cost,
+        allow_resolve=True,
+    )
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    mission_dir = Path(root) / "runs" / RUN_ID / f"flight-seal-{stamp}"
+    run_dir = mission_dir / "g6-seal"
+    run_dir.mkdir(parents=True, exist_ok=False)
+    _write_json(run_dir / "official-score-plan.json", OFFICIAL_SCORE_PLAN)
+    source_binding = {
+        "schema": "saea-a2t-g6-source-bound-plan-v1",
+        "run_id": RUN_ID,
+        "protocol_hash": PROTOCOL_SHA256,
+        "split_identity_hash": SELECTED_RUN_SHA256,
+        "model_contacts_already_consumed": MAX_TOTAL_CONTACTS,
+        "new_model_contacts": 0,
+        "sources": [
+            {
+                "attempt_id": first.source_attempt_id,
+                "attempt_sha256": first.source_attempt_sha256,
+                "trace_path": str(first.source_trace_path),
+                "trace_sha256": first.source_trace_sha256,
+                "contact_count": len(first.contacts),
+            },
+            {
+                "attempt_id": latest.source_attempt_id,
+                "attempt_sha256": latest.source_attempt_sha256,
+                "trace_path": str(latest.source_trace_path),
+                "trace_sha256": latest.source_trace_sha256,
+                "trace_manifest_sha256": SEAL_SOURCE_TRACE_MANIFEST_SHA256,
+                "contact_count": len(latest.contacts),
+            },
+        ],
+    }
+    _write_json(run_dir / "source-bound-plan.json", source_binding)
+    agent_sink = TraceSink(run_dir / "agent-trace", RUN_ID)
+    summary = _run_phase(
+        root=root,
+        plan=type("Plan", (), {"protocol_hash": PROTOCOL_SHA256})(),
+        adapter=context["adapter"],
+        client=_NoContactClient(),
+        surface=context["surface"],
+        trace_sink=agent_sink,
+        workflow_runner=_execute_model_free_workflows,
+        recovery=combined,
+    )
+    agent_trace_manifest_sha256 = agent_sink.close()
+    scan_states = run_dir / "g6-scan-states.jsonl"
+    _write_jsonl(scan_states, _scan_state_rows(summary))
+    agent_trace_path = run_dir / "agent-trace" / f"{RUN_ID}.trace.jsonl"
+    texts = _final_resolve_texts(summary)
+    source_by_id = {
+        sample_id: {
+            "action": RESOLVE_CONTACT_ID,
+            "source_agent_trace_manifest_sha256": agent_trace_manifest_sha256,
+            "source_artifact_path": str(agent_trace_path),
+            "source_artifact_sha256": _sha256_file(agent_trace_path),
+        }
+        for sample_id in SELECTED_IDS
+    }
+    output_sink = TraceSink(run_dir, RUN_ID)
+    output_rows = emit_composite_rows(
+        texts=texts,
+        source_by_id=source_by_id,
+        sink=output_sink,
+        variant="main",
+    )
+    output_trace_manifest_sha256 = output_sink.close()
+    outputs_path = run_dir / f"{RUN_ID}.outputs.jsonl"
+    _write_jsonl(outputs_path, output_rows)
+    output_trace_path = run_dir / f"{RUN_ID}.trace.jsonl"
+    output_trace_manifest_path = run_dir / f"{RUN_ID}.trace-manifest.json"
+    external_manifest_path = run_dir / "g6-external-complete-manifest.json"
+    external_manifest = {
+        "schema": "saea-a2t-g6-external-complete-manifest-v1",
+        "status": "EXTERNALLY_SEALED_COMPLETE_UNSCORED",
+        "formal_verify_bundle": {
+            "achievable": False,
+            "reasons": ["source_attempts_aborted_after_all_model_contacts"],
+        },
+        "run_id": RUN_ID,
+        "study_commit": context["commit"],
+        "protocol_hash": PROTOCOL_SHA256,
+        "split": {
+            "name": SPLIT_ID,
+            "role": "discovery",
+            "identity_hash": SELECTED_RUN_SHA256,
+            "ids": list(SELECTED_IDS),
+            "count": len(SELECTED_IDS),
+        },
+        "contacts": {
+            "scan": len(SELECTED_IDS) * SCAN_CONTACTS,
+            "resolve": len(SELECTED_IDS),
+            "total": MAX_TOTAL_CONTACTS,
+            "new": 0,
+        },
+        "cost": combined_cost,
+        "source_binding": source_binding,
+        "artifacts": {
+            "scan_states": {
+                "path": str(scan_states),
+                "sha256": _sha256_file(scan_states),
+            },
+            "agent_trace": {
+                "path": str(agent_trace_path),
+                "sha256": _sha256_file(agent_trace_path),
+                "manifest_sha256": agent_trace_manifest_sha256,
+            },
+            "outputs": {
+                "path": str(outputs_path),
+                "sha256": _sha256_file(outputs_path),
+                "row_count": len(output_rows),
+            },
+            "output_trace": {
+                "path": str(output_trace_path),
+                "sha256": _sha256_file(output_trace_path),
+                "manifest_path": str(output_trace_manifest_path),
+                "manifest_sha256": output_trace_manifest_sha256,
+            },
+        },
+        "contacts_during_seal": {
+            "model": 0,
+            "network": 0,
+            "retriever": 0,
+            "tokenizer": 0,
+            "scorer": 0,
+            "gold": 0,
+        },
+    }
+    _write_json(external_manifest_path, external_manifest)
+    receipt = {
+        "schema": "saea-a2t-g6-external-source-bound-seal-v1",
+        "status": "SEALED_UNSCORED",
+        "run_id": RUN_ID,
+        "mission_dir": str(mission_dir),
+        "external_manifest": str(external_manifest_path),
+        "external_manifest_sha256": _sha256_file(external_manifest_path),
+        "outputs": str(outputs_path),
+        "outputs_sha256": _sha256_file(outputs_path),
+        "model_contacts": 0,
+        "scorer_contacts": 0,
+        "gold_contacts": 0,
+    }
+    _write_json(mission_dir / "seal-receipt.json", receipt)
+    return receipt
+
+
 def _launch(
     root: Path, *, recovery_trace_path: Path | None = None
 ) -> Mapping[str, object]:
@@ -1432,6 +1789,12 @@ def _parser() -> argparse.ArgumentParser:
     mode.add_argument("--preflight-only", action="store_true")
     mode.add_argument("--run", action="store_true")
     mode.add_argument("--recover-from", type=Path)
+    mode.add_argument(
+        "--seal-from",
+        nargs=2,
+        type=Path,
+        metavar=("FIRST8_TRACE", "LATEST456_TRACE"),
+    )
     return parser
 
 
@@ -1474,6 +1837,15 @@ def main(argv: Sequence[str] | None = None) -> int:
                 sort_keys=True,
             )
         )
+        return 0
+    if args.seal_from is not None:
+        first_trace, latest_trace = args.seal_from
+        result = _seal_from(
+            root,
+            first_trace_path=first_trace,
+            latest_trace_path=latest_trace,
+        )
+        print(json.dumps(result, ensure_ascii=True, sort_keys=True, default=str))
         return 0
     result = (
         _launch(root, recovery_trace_path=args.recover_from)
