@@ -81,8 +81,11 @@ construction partition: Boolean strings for adaptive lighting, nullable valet PI
 `controlPlayback` compatibility signature with `deviceId`, `Mute`, and `Unmute`. Two Tier-8 rows
 remain anomalous: one expects `setHapticStrength` with `strength: "Medium"` although the public
 schema and all 220 construction units use integer `level`; another expects noncanonical period and
-Boolean strings. A third Tier-8 sample has independently inconsistent M0 and OBS evidence and
-should be investigated as a carrier-binding defect rather than repaired through knowledge.
+Boolean strings. A subsequent identity audit proves that the third Tier-8 anomaly is not a carrier
+binding defect. Its roster, runtime media, packet, request, waveform, and dataset-manifest hashes
+all agree. The foreground asks for HRV and a hike while a competing background speaker asks for
+always-on display and heart rate; both M0 and OBS lock onto the background. Retain this row as a
+foreground-speech-selection hard anomaly rather than repairing or excluding it.
 
 The minimum missing ground is now concrete: construction-specific ordered call skeletons;
 conditional device defaults; entity, URL, Boolean, null, list, period, and nested-schedule
