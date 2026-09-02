@@ -55,12 +55,22 @@ def test_rendered_family_is_ascii_reference_only_and_contract_complete() -> None
     assert "steps: Int" in rendered
     assert "direction: [Up, Down], steps: [1-10]" in rendered
     assert "Canonicalizers:" in rendered
+    assert rendered.count("Canonicalizers:") == 1
     assert "Defaults:" not in rendered
     assert "default" not in rendered.casefold()
     assert "Example" not in rendered
     assert "final call" not in rendered.casefold()
     assert "Operation:" not in rendered
     assert len(rendered.encode("ascii")) <= FAMILY_REFERENCE_ASCII_BYTE_CAP
+
+
+def test_shared_canonicalizers_are_rendered_once_and_all_families_stay_compact() -> None:
+    renderer = G6CorpusRenderer.from_path(CORPUS)
+
+    rendered = {tag: renderer.render_family(tag) for tag in renderer.family_tags}
+
+    assert all(text.count("Canonicalizers:") == 1 for text in rendered.values())
+    assert max(len(text.encode("ascii")) for text in rendered.values()) < 8_192
 
 
 def test_exact_nominations_and_legal_key_sets_are_deterministic_and_family_bound() -> None:

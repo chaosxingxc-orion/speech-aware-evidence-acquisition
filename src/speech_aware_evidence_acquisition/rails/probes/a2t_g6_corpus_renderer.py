@@ -262,13 +262,25 @@ class G6CorpusRenderer:
             "REFERENCE-ONLY FAMILY MATERIAL",
             f"Family: {self._labels[family_tag]} ({family_tag})",
             "This material describes registered interfaces only; it supplies no task values.",
+            "Canonicalizers:",
         ]
+        lines.extend(
+            f"- {name}: {description}"
+            for name, description in self._canonicalizers.items()
+        )
         for contract in self._contracts_by_family[family_tag]:
             lines.extend(("", f"Contract: {contract.contract_id}", f"Tool: {contract.tool_name}"))
             type_text = "; ".join(f"{key}: {kind}" for key, kind in contract.types) or "(none)"
             sets_text = " | ".join("{" + ", ".join(keys) + "}" for keys in contract.legal_key_skeletons)
-            lines.extend((f"Key types: {type_text}", f"Legal key sets: {sets_text}", f"Constraints: {contract.constraints}", "Canonicalizers:"))
-            lines.extend(f"- {name}: {self._canonicalizers[name]}" for name in contract.canonicalization_rules)
+            rules_text = ", ".join(contract.canonicalization_rules) or "(none)"
+            lines.extend(
+                (
+                    f"Key types: {type_text}",
+                    f"Legal key sets: {sets_text}",
+                    f"Constraints: {contract.constraints}",
+                    f"Applicable canonicalizers: {rules_text}",
+                )
+            )
         rendered = "\n".join(lines) + "\n"
         if not rendered.isascii():
             raise G6CorpusRendererError("rendered reference is not ASCII")
