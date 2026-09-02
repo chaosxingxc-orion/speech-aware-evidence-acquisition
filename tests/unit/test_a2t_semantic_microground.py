@@ -13,6 +13,9 @@ from speech_aware_evidence_acquisition.rails.a2t_executable_semantic_cards impor
     TaskSemanticCard,
     ToolSemanticCard,
 )
+from speech_aware_evidence_acquisition.rails import (
+    a2t_structured_dialogue_state as dialogue,
+)
 
 
 def _card(
@@ -191,6 +194,55 @@ def test_structured_state_routes_per_action_and_renders_only_selected_cards() ->
     assert re.fullmatch(r"[0-9a-f]{64}", route.trace_sha256)
     assert all(candidate.action_scores for candidate in route.candidates)
     assert all(candidate.reasons for candidate in route.candidates)
+
+
+def test_validated_strict_dialogue_state_routes_using_normalized_active_action() -> None:
+    observation = "User: Please switch the desk lamp on."
+    turns = dialogue.extract_role_labeled_g3_turns(
+        observation,
+        normalized_turns=("please switch on the desk lamp.",),
+    )
+    artifact = dialogue.build_structured_dialogue_state(
+        observation,
+        turns=turns,
+        current_request=dialogue.StateValue(
+            surface="Please switch the desk lamp on.",
+            normalized="please switch on the desk lamp.",
+            source_turn=0,
+        ),
+        active_actions=(
+            dialogue.StateValue(
+                surface="switch the desk lamp on",
+                normalized="switch on the desk lamp",
+                source_turn=0,
+            ),
+        ),
+    )
+    validated = dialogue.parse_structured_dialogue_state(artifact.json_text)
+
+    route = ground.route_semantic_microground(
+        _corpus(), structured_state=validated.document
+    )
+
+    assert route.action_queries == ("switch on the desk lamp",)
+    assert "setLightState" in route.candidate_names
+
+
+def test_state_value_action_falls_back_to_surface_when_normalized_is_absent() -> None:
+    route = ground.route_semantic_microground(
+        _corpus(),
+        structured_state={
+            "active_actions": [
+                {
+                    "surface": "book a taxi ride to the station",
+                    "source_turn": 0,
+                }
+            ]
+        },
+    )
+
+    assert route.action_queries == ("book a taxi ride to the station",)
+    assert "bookRide" in route.candidate_names
 
 
 def test_observation_route_is_byte_identical_under_reversed_corpus_input() -> None:

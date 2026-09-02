@@ -271,7 +271,12 @@ def _action_queries(structured_state: Mapping[str, object]) -> tuple[str, ...]:
             raise SemanticMicrogroundError(
                 f"active action {action_index} must be a mapping"
             )
-        parts = [_required_ascii(action.get("action_phrase"), field="action phrase")]
+        action_phrase = action.get("action_phrase")
+        if action_phrase in (None, ""):
+            action_phrase = action.get("normalized")
+        if action_phrase in (None, ""):
+            action_phrase = action.get("surface")
+        parts = [_required_ascii(action_phrase, field="action phrase")]
         target = action.get("target_phrase")
         if target not in (None, ""):
             parts.append(_required_ascii(target, field="target phrase"))
