@@ -16,6 +16,12 @@
   "knowledge": {
     "builder": "scripts/build_a2t_g3_plain_english_cards.py",
     "card_module": "src/speech_aware_evidence_acquisition/rails/a2t_plain_english_cards.py",
+    "corpus_path": "knowledge/audio2tool/g3-plain-english-cards-v1/corpus.txt",
+    "corpus_file_sha256": "6c9a89780ed0f18c2473c9bbfca97e8f2eb5b3724386ac41c6075fd7b35f463b",
+    "corpus_bound_identity_sha256": "95af7c6072c7fed7fc0212f16e589e41457cd010dcb13b1cdf801907ed678ece",
+    "construction_access_sha256": "1a2942f6b6c139adb5932af62d40cdd148f496baf56aa0309b0cd4bdebe6bf0f",
+    "build_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-02-a2t-g3-plain-english-cards-build/build-receipt.json",
+    "build_receipt_sha256": "3139a34b4df66876a30dd609beed51fa57deb23ecc82703adfb43d2cc22d6a1c",
     "registry_tool_count": 152,
     "detailed_card_limit": 32,
     "historical_observation_packet_utf8_byte_max": 62809,

@@ -1,0 +1,77 @@
+{
+  "carrier_inventory": {
+    "pool_items": 30733,
+    "pool_units": 16843,
+    "usable_units": 16838
+  },
+  "contacts": {
+    "gold_runtime": 0,
+    "gpu_hours": 0.0,
+    "model": 0,
+    "network": 0,
+    "retriever": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "corpus": {
+    "construction_access_sha256": "1a2942f6b6c139adb5932af62d40cdd148f496baf56aa0309b0cd4bdebe6bf0f",
+    "deterministic_rebuild_equal": true,
+    "report": {
+      "behavior_card_count": 8,
+      "construction_access_sha256": "1a2942f6b6c139adb5932af62d40cdd148f496baf56aa0309b0cd4bdebe6bf0f",
+      "construction_retrieval_document_count": 12601,
+      "construction_retriever": {
+        "algorithm": "Okapi BM25 over construction-unit English text",
+        "b": 0.75,
+        "k1": 1.5,
+        "tokenizer": "lowercase ASCII alphanumeric runs"
+      },
+      "construction_tool_count": 151,
+      "corpus_utf8_bytes": 228373,
+      "detailed_tool_card_count": 152,
+      "forbidden_sample_intersection_count": 0,
+      "index_utf8_bytes": 12563,
+      "largest_tool_card_utf8_bytes": 2202,
+      "max_corpus_utf8_bytes": 512000,
+      "max_tool_card_utf8_bytes": 6000,
+      "registry_tool_count": 152,
+      "row_argument_values_rendered": 0,
+      "sample_ids_rendered": 0,
+      "schema": "saea-a2t-plain-english-card-corpus-report-v1",
+      "source_sample_count": 22951,
+      "source_unit_count": 12601,
+      "source_utterances_rendered": 0,
+      "stable_default_count": 3
+    },
+    "sha256": "95af7c6072c7fed7fc0212f16e589e41457cd010dcb13b1cdf801907ed678ece",
+    "source_argument_values_rendered": 0,
+    "source_sample_ids_rendered": 0,
+    "source_utterances_rendered": 0,
+    "utf8_bytes": 228373
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-A2T-G3-PLAIN-ENGLISH-CARDS-BUILD",
+  "partition": {
+    "construction_identity_sha256": "1b5aeb5b53bbbb7da17fbe26a4df2da66dadf79618a39cdc5e44401497f7e877",
+    "construction_sample_count": 22951,
+    "construction_unit_count": 12601,
+    "exposed_sample_count": 400,
+    "forbidden_intersection_count": 0,
+    "policy_id": "saea-a2t-block-partition-v1",
+    "proposed_eval_identity_sha256": "4d0196ec91858cdc81340ee197c085ff29726a1f1b7fe9119d4e410d62df2f90",
+    "proposed_eval_sample_count": 400,
+    "seed": 20260807
+  },
+  "registry": {
+    "sha256": "dc118e52b1ef153b1c16b91ced966cf44b97421dbe14caf857e1ae518ba1cbcd",
+    "tool_count": 152
+  },
+  "rendering_proof": {
+    "ascii_only": true,
+    "source_argument_values_rendered": 0,
+    "source_sample_ids_rendered": 0,
+    "source_utterances_rendered": 0,
+    "test_annotations_used": false
+  },
+  "schema": "saea-a2t-g3-plain-english-card-build-receipt-v1"
+}
