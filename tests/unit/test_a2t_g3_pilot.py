@@ -14,6 +14,7 @@ from speech_aware_evidence_acquisition.analysis.a2t_g3_pilot import (
     build_pilot_roster,
     build_repo_pilot_roster,
 )
+from speech_aware_evidence_acquisition.reproduction.sampling import split_identity_hash
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -94,6 +95,9 @@ def test_pilot_roster_is_balanced_unique_deterministic_and_identity_only() -> No
     assert receipt["selection_proof"]["transcripts_used"] is False
     assert receipt["selection_proof"]["prior_outputs_used"] is False
     assert receipt["selection_proof"]["prior_scores_used"] is False
+    assert receipt["run_identity_hash"] == split_identity_hash(
+        f"audio2tool/{item['sample_id']}" for item in receipt["items"]
+    )
 
 
 def test_pilot_roster_proves_confirmation_reserve_disjointness() -> None:

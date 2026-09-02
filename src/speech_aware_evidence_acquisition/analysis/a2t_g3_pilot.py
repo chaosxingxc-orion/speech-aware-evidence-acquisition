@@ -265,6 +265,9 @@ def build_pilot_roster(
         "items": selected_items,
         "parent_split_identity_hash": parent_receipt.get("split_identity_hash"),
         "purpose": "G3 human-readable hierarchical-ground pilot.",
+        "run_identity_hash": split_identity_hash(
+            f"audio2tool/{item['sample_id']}" for item in selected_items
+        ),
         "schema": "saea-a2t-g3-identity-only-pilot-roster-v1",
         "selection_namespace": G3_SELECTION_NAMESPACE,
         "selection_proof": {

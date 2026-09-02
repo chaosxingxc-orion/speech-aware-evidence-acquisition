@@ -1124,6 +1124,7 @@
   "parent_receipt_sha256": "d99570a797744f7dc3db53bdb898611836ae2682a02e726b974d05734c6cbb2d",
   "parent_split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
   "purpose": "G3 human-readable hierarchical-ground pilot.",
+  "run_identity_hash": "3b25dfe3b850ab83ec72a62e2972e882e0e5c386c3bf00c798cc75460da3d614",
   "schema": "saea-a2t-g3-identity-only-pilot-roster-v1",
   "selection_namespace": "a2t-g3-human-hierarchical-pilot-v1",
   "selection_proof": {
