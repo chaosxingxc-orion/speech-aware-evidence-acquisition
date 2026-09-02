@@ -28,6 +28,7 @@ from speech_aware_evidence_acquisition.analysis.bootstrap import (  # noqa: E402
 from speech_aware_evidence_acquisition.contracts import (  # noqa: E402
     ExecutionPlan,
     FrozenCoreGate,
+    TraceRecord,
 )
 from speech_aware_evidence_acquisition.core.base import (  # noqa: E402
     TRANSPORTS,
@@ -78,6 +79,11 @@ from speech_aware_evidence_acquisition.rails.knowledge import (  # noqa: E402
 )
 from speech_aware_evidence_acquisition.rails.probes import (  # noqa: E402
     a2t_g3_plain_english_flight as g3_flight,
+)
+from speech_aware_evidence_acquisition.rails.probes.a2t_contract_preserving_cascade_flight import (  # noqa: E402
+    DirectPhaseResult,
+    DirectPhaseSummary,
+    run_direct_phase,
 )
 from speech_aware_evidence_acquisition.rails.probes.a2t_self_transcript_cascade_bundle import (  # noqa: E402
     build_resend_composite_texts,
@@ -181,6 +187,33 @@ CORPUS_BOUND_SHA256 = (
 CONSTRUCTION_ACCESS_SHA256 = (
     "1a2942f6b6c139adb5932af62d40cdd148f496baf56aa0309b0cd4bdebe6bf0f"
 )
+
+M0_RECOVERY_FLIGHT_RELPATH = Path(
+    "runs/SAEA-A2T-G3-PLAIN-ENGLISH-V1/flight-20260902T172919Z"
+)
+M0_RECOVERY_TRACE_DIR_RELPATH = M0_RECOVERY_FLIGHT_RELPATH / "m0/transport-trace"
+M0_RECOVERY_TRACE_RELPATH = M0_RECOVERY_TRACE_DIR_RELPATH / f"{RUN_ID}.trace.jsonl"
+M0_RECOVERY_TRACE_MANIFEST_RELPATH = (
+    M0_RECOVERY_TRACE_DIR_RELPATH / f"{RUN_ID}.trace-manifest.json"
+)
+M0_RECOVERY_FAILURE_RELPATH = M0_RECOVERY_FLIGHT_RELPATH / "failure-receipt.json"
+M0_RECOVERY_ATTEMPT_ID = "attempt-20260902t172919z-g3-m0"
+M0_RECOVERY_ATTEMPT_RELPATH = (
+    Path("attempts") / RUN_ID / f"{M0_RECOVERY_ATTEMPT_ID}.json"
+)
+M0_RECOVERY_TRACE_SHA256 = (
+    "d101379ca60518ebb66076fdd0444b5114cd3ab4288139158fd0024f6872b2cf"
+)
+M0_RECOVERY_TRACE_MANIFEST_SHA256 = (
+    "3fe9093e8562000e6741e650668eaac06298c0a731cef89c347ae7f7b3fe7ddd"
+)
+M0_RECOVERY_FAILURE_SHA256 = (
+    "2b0d81a176895e855376321b2b6201e04e5ae59afb5b113e79df6d19f915515a"
+)
+M0_RECOVERY_ATTEMPT_SHA256 = (
+    "01e041f3bd42cb3f54162f0da22d75cd0e18cc03e5bedcd29620a554d64ae864"
+)
+M0_RECOVERY_COMPLETED_COUNT = 31
 KNOWLEDGE_SNAPSHOT_RELPATH = Path(
     "knowledge/audio2tool/saea-kb-a2t-toolshaped-v1/size-full/snapshot.json"
 )
@@ -263,6 +296,21 @@ def _read_json(path: Path) -> dict[str, object]:
     return document
 
 
+def _trace_documents(run_dir: Path) -> tuple[Mapping[str, object], ...]:
+    path = Path(run_dir) / f"{RUN_ID}.trace.jsonl"
+    documents: list[Mapping[str, object]] = []
+    for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        if not line:
+            continue
+        document = json.loads(line)
+        if not isinstance(document, Mapping):
+            raise RuntimeError(f"G3 trace row {number} is not an object")
+        documents.append(document)
+    if not documents:
+        raise RuntimeError(f"G3 sealed trace is empty: {path}")
+    return tuple(documents)
+
+
 def _write_json(path: Path, document: Mapping[str, object]) -> None:
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     Path(path).write_text(
@@ -283,6 +331,198 @@ def _write_jsonl(path: Path, rows: Sequence[Mapping[str, object]]) -> None:
         encoding="utf-8",
         newline="\n",
     )
+
+
+def _validate_m0_recovery_trace(
+    documents: Sequence[Mapping[str, object]],
+    manifest: Mapping[str, object],
+    *,
+    expected_ids: Sequence[str],
+    expected_completed_count: int = M0_RECOVERY_COMPLETED_COUNT,
+) -> dict[str, object]:
+    """Verify complete prior M0 contacts without interpreting their answers."""
+
+    expected = tuple(sorted(expected_ids))
+    if not expected or len(set(expected)) != len(expected):
+        raise RuntimeError("M0 recovery expected identities must be nonempty and unique")
+    if (
+        isinstance(expected_completed_count, bool)
+        or not isinstance(expected_completed_count, int)
+        or not 0 < expected_completed_count <= len(expected)
+    ):
+        raise RuntimeError("M0 recovery completed count must fit the expected surface")
+    manifest_records = manifest.get("records")
+    if manifest.get("run_id") != RUN_ID or not isinstance(manifest_records, Mapping):
+        raise RuntimeError("M0 recovery trace manifest is malformed")
+
+    record_ids: set[str] = set()
+    documents_by_contact: dict[str, dict[str, Mapping[str, object]]] = {}
+    suffix_by_channel = {
+        "MODEL_REQUEST": "/request",
+        "MODEL_RESPONSE": "/response",
+        "COST": "/cost",
+    }
+    for number, document in enumerate(documents, start=1):
+        if not isinstance(document, Mapping):
+            raise RuntimeError(f"M0 recovery trace row {number} is not an object")
+        channel = document.get("channel")
+        record_id = document.get("record_id")
+        payload = document.get("payload")
+        suffix = suffix_by_channel.get(channel) if isinstance(channel, str) else None
+        if (
+            suffix is None
+            or not isinstance(record_id, str)
+            or not record_id.endswith(suffix)
+            or not isinstance(payload, Mapping)
+            or record_id in record_ids
+        ):
+            raise RuntimeError(f"M0 recovery trace row {number} is malformed or duplicated")
+        record_ids.add(record_id)
+        measured = TraceRecord(
+            channel=channel,
+            record_id=record_id,
+            payload=payload,
+        ).content_hash()
+        if manifest_records.get(record_id) != measured:
+            raise RuntimeError(f"M0 recovery record hash drift for {record_id!r}")
+        contact_id = record_id[: -len(suffix)]
+        documents_by_contact.setdefault(contact_id, {})[channel] = document
+    if set(manifest_records) != record_ids:
+        raise RuntimeError("M0 recovery trace manifest record set drift")
+
+    required_channels = set(suffix_by_channel)
+    results: list[DirectPhaseResult] = []
+    completed_ids: set[str] = set()
+    for contact_id, contact in sorted(documents_by_contact.items()):
+        if set(contact) != required_channels:
+            raise RuntimeError(
+                "M0 recovery requires one complete request/response/cost triple per contact"
+            )
+        request_outer = contact["MODEL_REQUEST"]["payload"]
+        request_payload = request_outer.get("payload")
+        if (
+            request_outer.get("arm") != "speech-feature-query"
+            or not isinstance(request_payload, Mapping)
+            or request_payload.get("request_id") != contact_id
+            or request_payload.get("key_representation_id")
+            != "audio2tool-direct-registry-v1"
+            or request_payload.get("matcher_policy_id")
+            != "saea-a2t-contract-v2-m0-direct"
+        ):
+            raise RuntimeError(f"M0 recovery request contract drift for {contact_id!r}")
+        canonical_payload = json.dumps(
+            request_payload,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        if request_outer.get("payload_sha256") != hashlib.sha256(
+            canonical_payload
+        ).hexdigest():
+            raise RuntimeError(f"M0 recovery request payload hash drift for {contact_id!r}")
+        sample_id = request_payload.get("sample_id")
+        if (
+            not isinstance(sample_id, str)
+            or sample_id not in expected
+            or sample_id in completed_ids
+        ):
+            raise RuntimeError("M0 recovery sample identity is unknown or duplicated")
+        response = contact["MODEL_RESPONSE"]["payload"]
+        text = response.get("text")
+        if (
+            not isinstance(text, str)
+            or response.get("response_text_sha256")
+            != hashlib.sha256(text.encode("utf-8")).hexdigest()
+        ):
+            raise RuntimeError(f"M0 recovery response text hash drift for {sample_id!r}")
+        cost = contact["COST"]["payload"]
+        if cost.get("calls") != 1:
+            raise RuntimeError(f"M0 recovery cost is not one call for {sample_id!r}")
+        completed_ids.add(sample_id)
+        results.append(DirectPhaseResult(sample_id, text))
+
+    if len(results) != expected_completed_count:
+        raise RuntimeError(
+            f"M0 recovery contains {len(results)} complete contacts, expected "
+            f"{expected_completed_count}"
+        )
+    summary = DirectPhaseSummary(tuple(sorted(results, key=lambda row: row.sample_id)))
+    g3_flight.build_g3_m0_bundle_material(
+        summary,
+        documents,
+        umbrella_lock_sha256="0" * 64,
+    )
+    missing_ids = tuple(sorted(set(expected) - completed_ids))
+    return {
+        "summary": summary,
+        "completed_ids": tuple(sorted(completed_ids)),
+        "missing_ids": missing_ids,
+    }
+
+
+def _load_m0_recovery(root: Path, expected_ids: Sequence[str]) -> dict[str, object]:
+    """Load the exact 31-contact aborted flight as a one-shot recovery source."""
+
+    root = Path(root)
+    trace_path = root / M0_RECOVERY_TRACE_RELPATH
+    manifest_path = root / M0_RECOVERY_TRACE_MANIFEST_RELPATH
+    failure_path = root / M0_RECOVERY_FAILURE_RELPATH
+    attempt_path = root / M0_RECOVERY_ATTEMPT_RELPATH
+    _require_hash(trace_path, M0_RECOVERY_TRACE_SHA256, "M0 recovery trace")
+    _require_hash(
+        manifest_path,
+        M0_RECOVERY_TRACE_MANIFEST_SHA256,
+        "M0 recovery trace manifest",
+    )
+    _require_hash(failure_path, M0_RECOVERY_FAILURE_SHA256, "M0 recovery failure")
+    _require_hash(attempt_path, M0_RECOVERY_ATTEMPT_SHA256, "M0 recovery attempt")
+    failure = _read_json(failure_path)
+    attempt = _read_json(attempt_path)
+    if (
+        failure.get("phase_attempt_ids", {}).get(G3_M0_DIRECT_PHASE)
+        != M0_RECOVERY_ATTEMPT_ID
+        or "payload media_relpath escapes its confined root" not in str(failure.get("error"))
+    ):
+        raise RuntimeError("M0 recovery failure identity drift")
+    actual = attempt.get("actual")
+    if (
+        attempt.get("attempt_id") != M0_RECOVERY_ATTEMPT_ID
+        or attempt.get("state") != "ABORTED"
+        or not isinstance(actual, Mapping)
+        or actual.get("calls") != M0_RECOVERY_COMPLETED_COUNT
+    ):
+        raise RuntimeError("M0 recovery attempt state drift")
+    documents = _trace_documents(root / M0_RECOVERY_TRACE_DIR_RELPATH)
+    result = _validate_m0_recovery_trace(
+        documents,
+        _read_json(manifest_path),
+        expected_ids=expected_ids,
+    )
+    if len(result["missing_ids"]) != SPLIT_COUNT - M0_RECOVERY_COMPLETED_COUNT:
+        raise RuntimeError("M0 recovery source does not leave exactly nine missing identities")
+    return {
+        **result,
+        "documents": documents,
+        "source_attempt_id": M0_RECOVERY_ATTEMPT_ID,
+        "source_trace_sha256": M0_RECOVERY_TRACE_SHA256,
+        "source_trace_manifest_sha256": M0_RECOVERY_TRACE_MANIFEST_SHA256,
+    }
+
+
+def _write_combined_trace(
+    run_dir: Path,
+    documents: Sequence[Mapping[str, object]],
+) -> tuple[str, Mapping[str, object]]:
+    sink = TraceSink(run_dir, RUN_ID)
+    for document in documents:
+        sink.emit(
+            str(document["channel"]),
+            str(document["record_id"]),
+            document["payload"],
+        )
+    manifest_hash = sink.close()
+    manifest = _read_json(Path(run_dir) / f"{RUN_ID}.trace-manifest.json")
+    return manifest_hash, manifest
 
 
 def _execution_plan(phase: str, attempt_id: str) -> ExecutionPlan:
@@ -501,6 +741,7 @@ def _static_preflight(root: Path) -> dict[str, object]:
         bindings,
         data_root=root,
     )
+    m0_recovery = _load_m0_recovery(root, tuple(surface.tier_by_sample))
 
     _require_hash(REPO / CARD_BUILD_RELPATH, CARD_BUILD_SHA256, "G3 card build")
     card_build = _read_json(REPO / CARD_BUILD_RELPATH)
@@ -529,6 +770,7 @@ def _static_preflight(root: Path) -> dict[str, object]:
         "sample_ids": roster["sample_ids"],
         "tier_by_sample": roster["tier_by_sample"],
         "surface": surface,
+        "m0_recovery": m0_recovery,
         "selected_ids": selected_ids,
         "corpus": corpus,
         "route_build": route_build,
@@ -551,7 +793,7 @@ def _verified_split(sample_ids: Sequence[str]) -> VerifiedSplit:
         split_role="discovery",
         ids=ids,
         prefixed_ids=tuple(f"audio2tool/{sample_id}" for sample_id in ids),
-        identity_hash=SPLIT_IDENTITY_SHA256,
+        identity_hash=RUN_IDENTITY_SHA256,
     )
 
 
@@ -612,7 +854,7 @@ def _client(
         carrier_lock_key=AUDIO2TOOL_LOCK_KEY,
         samples=samples,
         data_root=root,
-        carrier_root=context["carrier_root"],
+        carrier_root=root,
     )
     return FrozenCoreClient(
         plan=plan,
@@ -707,8 +949,21 @@ def _run_m0(
     session_receipt_path: Path,
 ) -> dict[str, object]:
     surface = context["surface"]
+    recovery = context["m0_recovery"]
+    missing_ids = tuple(recovery["missing_ids"])
+    if len(missing_ids) != SPLIT_COUNT - M0_RECOVERY_COMPLETED_COUNT:
+        raise RuntimeError("G3 M0 recovery must contact exactly nine missing identities")
+    missing = set(missing_ids)
+    recovery_samples = tuple(
+        sample for sample in surface.samples if sample.sample_id in missing
+    )
+    recovery_bindings = {
+        sample_id: surface.packet_bindings[sample_id] for sample_id in missing_ids
+    }
+    if len(recovery_samples) != len(missing_ids):
+        raise RuntimeError("G3 M0 recovery sample surface is incomplete")
     adapter = g3_flight.G3PilotAdapter(
-        surface.samples,
+        recovery_samples,
         phase=G3_M0_DIRECT_PHASE,
         registry_contract=context["registry_contract"],
     )
@@ -718,16 +973,17 @@ def _run_m0(
         gate=gate,
         transport=transport,
         plan=plan,
-        samples=surface.samples,
-        packet_bindings=surface.packet_bindings,
+        samples=recovery_samples,
+        packet_bindings=recovery_bindings,
         run_dir=run_dir,
-        prefix="g3m0",
+        prefix="g3m0r",
     )
     try:
-        summary = g3_flight.run_g3_m0_phase(
+        new_summary = run_direct_phase(
             adapter=adapter,
             core_client=client,
-            speech_packet_bindings=surface.packet_bindings,
+            split_id=g3_flight.G3_SPLIT_ID,
+            speech_packet_bindings=recovery_bindings,
             slot_count=2,
             decoding_params=_decoding(context),
         )
@@ -735,9 +991,21 @@ def _run_m0(
         client.close()
         raise
     client_summary = client.close()
-    if client_summary.get("request_count") != 40:
-        raise RuntimeError("G3 M0 did not make exactly 40 contacts")
-    documents = Q._trace_documents(run_dir / "transport-trace")
+    new_ids = tuple(sorted(row.sample_id for row in new_summary.results))
+    if client_summary.get("request_count") != len(missing_ids) or new_ids != missing_ids:
+        raise RuntimeError("G3 M0 recovery did not complete exactly the nine missing rows")
+    new_documents = _trace_documents(run_dir / "transport-trace")
+    documents = tuple(recovery["documents"]) + tuple(new_documents)
+    trace_manifest_hash, trace_manifest = _write_combined_trace(run_dir, documents)
+    combined = _validate_m0_recovery_trace(
+        documents,
+        trace_manifest,
+        expected_ids=tuple(surface.tier_by_sample),
+        expected_completed_count=SPLIT_COUNT,
+    )
+    summary = combined["summary"]
+    if combined["missing_ids"]:
+        raise RuntimeError("G3 M0 combined trace is not a complete 40-row surface")
     rows, cost = g3_flight.build_g3_m0_bundle_material(
         summary,
         documents,
@@ -752,7 +1020,7 @@ def _run_m0(
         run_dir=run_dir,
         session_receipt_path=session_receipt_path,
         outputs_path=outputs,
-        trace_manifest_hash=str(client_summary["trace_manifest_hash"]),
+        trace_manifest_hash=trace_manifest_hash,
         cost=cost,
     )
     return {
@@ -761,6 +1029,15 @@ def _run_m0(
         "manifest": manifest,
         "outputs": outputs,
         "client": client_summary,
+        "recovery": {
+            "prior_contacts": M0_RECOVERY_COMPLETED_COUNT,
+            "new_contacts": len(missing_ids),
+            "source_attempt_id": recovery["source_attempt_id"],
+            "source_trace_sha256": recovery["source_trace_sha256"],
+            "source_trace_manifest_sha256": recovery[
+                "source_trace_manifest_sha256"
+            ],
+        },
     }
 
 

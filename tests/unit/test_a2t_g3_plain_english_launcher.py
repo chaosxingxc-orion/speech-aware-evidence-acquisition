@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import json
 from pathlib import Path
 from types import SimpleNamespace
 import sys
 
 import pytest
+
+from speech_aware_evidence_acquisition.contracts import TraceRecord
 
 
 REPO = Path(__file__).resolve().parents[2]
@@ -75,6 +78,66 @@ def _scores(items, *, exact_fail=(), tool_fail=(), slot_f1=0.95):
     }
 
 
+def _recovery_documents(sample_ids):
+    documents = []
+    for index, sample_id in enumerate(sample_ids, start=1):
+        request_id = f"prior-{index:04d}"
+        text = f"opaque-{index}"
+        payload = {
+            "sample_id": sample_id,
+            "request_id": request_id,
+            "key_representation_id": "audio2tool-direct-registry-v1",
+            "matcher_policy_id": "saea-a2t-contract-v2-m0-direct",
+        }
+        outer = {
+            "arm": "speech-feature-query",
+            "payload": payload,
+            "payload_sha256": hashlib.sha256(
+                json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+            ).hexdigest(),
+        }
+        records = (
+            ("MODEL_REQUEST", f"{request_id}/request", outer),
+            (
+                "MODEL_RESPONSE",
+                f"{request_id}/response",
+                {
+                    "response_sha256": "a" * 64,
+                    "response_text_sha256": hashlib.sha256(text.encode()).hexdigest(),
+                    "text": text,
+                    "usage": {
+                        "completion_tokens": 1,
+                        "prompt_tokens": 2,
+                        "total_tokens": 3,
+                    },
+                },
+            ),
+            (
+                "COST",
+                f"{request_id}/cost",
+                {
+                    "audio_seconds": 1.0,
+                    "calls": 1,
+                    "completion_tokens": 1,
+                    "latency_seconds": 0.5,
+                    "prompt_tokens": 2,
+                },
+            ),
+        )
+        documents.extend(
+            {"channel": channel, "record_id": record_id, "payload": record_payload}
+            for channel, record_id, record_payload in records
+        )
+    manifest = {
+        "run_id": "SAEA-A2T-G3-PLAIN-ENGLISH-V1",
+        "records": {
+            document["record_id"]: TraceRecord(**document).content_hash()
+            for document in documents
+        },
+    }
+    return documents, manifest
+
+
 def test_launcher_pins_config_protocol_artifacts_and_global_budget() -> None:
     launcher = _launcher()
     assert launcher.COMPOSED_CONFIG_SHA256.startswith("f258c7")
@@ -87,6 +150,9 @@ def test_launcher_pins_config_protocol_artifacts_and_global_budget() -> None:
     assert launcher.CORPUS_FILE_SHA256.startswith("6c9a")
     assert launcher.CORPUS_BOUND_SHA256.startswith("95af")
     assert launcher.CONSTRUCTION_ACCESS_SHA256.startswith("1a294")
+    assert launcher.M0_RECOVERY_TRACE_SHA256.startswith("d101379")
+    assert launcher.M0_RECOVERY_TRACE_MANIFEST_SHA256.startswith("3fe909")
+    assert launcher.M0_RECOVERY_COMPLETED_COUNT == 31
 
     for phase in launcher.PHASES:
         plan = launcher._execution_plan(phase, f"attempt-{phase.lower()}")
@@ -109,6 +175,8 @@ def test_phase_contract_is_fresh_and_exactly_40_40_80_32_contacts() -> None:
         phase: f"attempt-20260902t000000z-g3-{suffix}"
         for phase, suffix in launcher.PHASE_SUFFIXES.items()
     }
+    split = launcher._verified_split(tuple(item["sample_id"] for item in _items()))
+    assert split.identity_hash == launcher.RUN_IDENTITY_SHA256
 
 
 def test_scoped_media_gate_maps_only_derived_contact_identities() -> None:
@@ -185,6 +253,105 @@ def test_g3_gate_uses_protocol_bound_dialogue_supplement(tmp_path: Path) -> None
     )
     assert captured["kwargs"]["d1_media_supplement_sha256"] == "a" * 64
     assert captured["kwargs"]["expected_model_lock_key"] == "model-key"
+
+
+def test_g3_client_confines_verified_original_and_derived_paths_to_data_root(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    launcher = _launcher()
+    captured = {}
+
+    def fake_binding(**kwargs):
+        captured.update(kwargs)
+        return object()
+
+    monkeypatch.setattr(launcher, "build_payload_binding", fake_binding)
+    monkeypatch.setattr(
+        launcher,
+        "FrozenCoreClient",
+        lambda **kwargs: SimpleNamespace(**kwargs),
+    )
+    root = tmp_path / "data"
+    sample = SimpleNamespace(sample_id="tier7_multiturn:000318")
+
+    launcher._client(
+        root=root,
+        context={"carrier_root": root / "datasets/audio2tool"},
+        gate=object(),
+        transport=object(),
+        plan=object(),
+        samples=(sample,),
+        packet_bindings={sample.sample_id: {"packet_id": "p", "sha256": "a" * 64}},
+        run_dir=tmp_path / "run",
+        prefix="test",
+    )
+
+    assert captured["carrier_root"] == root
+
+
+def test_recovery_trace_reuses_complete_triples_and_returns_only_missing_ids() -> None:
+    launcher = _launcher()
+    expected_ids = (
+        "tier1_direct:000001",
+        "tier7_multiturn:000318",
+        "tier8_intent_blending:000324",
+    )
+    documents, manifest = _recovery_documents(expected_ids[:2])
+
+    recovery = launcher._validate_m0_recovery_trace(
+        documents,
+        manifest,
+        expected_ids=expected_ids,
+        expected_completed_count=2,
+    )
+
+    assert recovery["completed_ids"] == expected_ids[:2]
+    assert recovery["missing_ids"] == (expected_ids[2],)
+    assert tuple(row.sample_id for row in recovery["summary"].results) == expected_ids[:2]
+
+
+def test_recovery_trace_refuses_hash_drift_or_incomplete_contact() -> None:
+    launcher = _launcher()
+    expected_ids = ("tier1_direct:000001", "tier7_multiturn:000318")
+    documents, manifest = _recovery_documents(expected_ids[:1])
+
+    drifted = json.loads(json.dumps(documents))
+    next(row for row in drifted if row["channel"] == "MODEL_RESPONSE")["payload"][
+        "text"
+    ] = "changed"
+    with pytest.raises(RuntimeError, match="record hash"):
+        launcher._validate_m0_recovery_trace(
+            drifted,
+            manifest,
+            expected_ids=expected_ids,
+            expected_completed_count=1,
+        )
+
+    incomplete = [row for row in documents if row["channel"] != "COST"]
+    incomplete_manifest = {
+        **manifest,
+        "records": {
+            row["record_id"]: TraceRecord(**row).content_hash() for row in incomplete
+        },
+    }
+    with pytest.raises(RuntimeError, match="complete request/response/cost"):
+        launcher._validate_m0_recovery_trace(
+            incomplete,
+            incomplete_manifest,
+            expected_ids=expected_ids,
+            expected_completed_count=1,
+        )
+
+
+def test_trace_reader_uses_the_g3_run_identity(tmp_path: Path) -> None:
+    launcher = _launcher()
+    expected = {"channel": "COST", "record_id": "x/cost", "payload": {"calls": 1}}
+    (tmp_path / f"{launcher.RUN_ID}.trace.jsonl").write_text(
+        json.dumps(expected) + "\n",
+        encoding="utf-8",
+    )
+
+    assert launcher._trace_documents(tmp_path) == (expected,)
 
 
 def test_roster_and_score_plan_require_complete_unsharded_surfaces() -> None:
