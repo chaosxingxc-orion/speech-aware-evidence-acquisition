@@ -1,0 +1,247 @@
+"""Model-free construction of the frozen G4 executable semantic-card corpus."""
+
+from __future__ import annotations
+
+import hashlib
+import importlib.util
+import json
+from pathlib import Path
+
+from speech_aware_evidence_acquisition.rails.knowledge_build_a2t import A2tKbRow
+
+REPO = Path(__file__).resolve().parents[2]
+SCRIPT = REPO / "scripts" / "build_a2t_g4_semantic_cards.py"
+CORPUS = (
+    REPO
+    / "knowledge"
+    / "audio2tool"
+    / "g4-executable-semantic-cards-v1"
+    / "corpus.txt"
+)
+RECEIPT = (
+    REPO
+    / "docs"
+    / "checks"
+    / "speech-aware-evidence-acquisition"
+    / "2026-09-02-a2t-g4-semantic-cards-build-v1"
+    / "build-receipt.json"
+)
+
+
+def _builder():
+    spec = importlib.util.spec_from_file_location("build_a2t_g4_semantic_cards", SCRIPT)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _registry_row(name: str, signature: str) -> dict[str, str]:
+    return {
+        "tool_id": "1",
+        "domain": "synthetic",
+        "category": "synthetic",
+        "tool_name": name,
+        "signature": signature,
+        "description": f"Perform the artificial {name} operation.",
+        "argument_defaults": "",
+        "argument_constraints": "",
+    }
+
+
+def _row(
+    index: int,
+    tool: str,
+    pairs: tuple[tuple[str, str], ...],
+    *,
+    private: str = "PRIVATE SOURCE UTTERANCE",
+) -> A2tKbRow:
+    return A2tKbRow(
+        unit_id=f"tier1_direct:{index:06d}",
+        tier="tier1_direct",
+        query_idx=index,
+        text=private,
+        domain="private",
+        category="private",
+        tool_id=index,
+        tool_name=tool,
+        arg_signature=tuple(sorted(key for key, _value in pairs)),
+        arg_pairs=tuple(sorted(pairs)),
+        call_render=f"PRIVATE CALL {tool}",
+        extra_call_names=(),
+        call_count=1,
+        sample_ids=(f"tier1_direct:PRIVATE_{index:06d}",),
+        item_ids=(index,),
+        media_relpath_by_sample_id={},
+        speaker_ids=("PRIVATE SPEAKER",),
+    )
+
+
+def _compatibility_world():
+    registry = (
+        _registry_row("controlPlayback", "controlPlayback(action: MediaAction)"),
+        _registry_row(
+            "setAdaptiveLighting",
+            "setAdaptiveLighting(deviceId: String, enabled: Boolean)",
+        ),
+        _registry_row(
+            "setValetMode", "setValetMode(enabled: Boolean, pin: Int?)"
+        ),
+        _registry_row("setHapticStrength", "setHapticStrength(level: Int)"),
+        _registry_row("startCleaning", "startCleaning(deviceId: String)"),
+    )
+    rows = (
+        _row(
+            1,
+            "controlPlayback",
+            (("action", "Play"), ("deviceId", "PRIVATE-DEVICE-A")),
+        ),
+        _row(
+            2,
+            "controlPlayback",
+            (("action", "Pause"), ("deviceId", "PRIVATE-DEVICE-B")),
+        ),
+        _row(
+            3,
+            "setAdaptiveLighting",
+            (("deviceId", "PRIVATE-LIGHT-A"), ("enabled", "true")),
+        ),
+        _row(
+            4,
+            "setAdaptiveLighting",
+            (("deviceId", "PRIVATE-LIGHT-B"), ("enabled", "false")),
+        ),
+        _row(5, "setValetMode", (("enabled", "true"), ("pin", "null"))),
+        _row(6, "setValetMode", (("enabled", "false"), ("pin", "null"))),
+        _row(
+            7,
+            "setHapticStrength",
+            (("strength", "PRIVATE-ANOMALY"),),
+        ),
+        _row(
+            8,
+            "startCleaning",
+            (("deviceId", "PRIVATE-CLEANER-A"), ("zones:[", "PRIVATE-ZONE")),
+        ),
+        _row(
+            9,
+            "startCleaning",
+            (("deviceId", "PRIVATE-CLEANER-B"), ("zones:[", "PRIVATE-ZONE")),
+        ),
+    )
+    return registry, rows
+
+
+def test_compatibility_derivation_is_aggregate_supported_structured_and_deterministic() -> None:
+    builder = _builder()
+    registry, rows = _compatibility_world()
+
+    first, report = builder.derive_compatibility_rules(registry, rows)
+    second, reversed_report = builder.derive_compatibility_rules(
+        tuple(reversed(registry)), tuple(reversed(rows))
+    )
+
+    assert first == second
+    assert report == reversed_report
+    by_identity = {
+        (rule.tool_name, rule.legal_argument_key_set): rule for rule in first
+    }
+    playback = by_identity[("controlPlayback", ("action", "deviceId"))]
+    adaptive = by_identity[
+        ("setAdaptiveLighting", ("deviceId", "enabled"))
+    ]
+    valet = by_identity[("setValetMode", ("enabled", "pin"))]
+    assert playback.value_forms == (("deviceId", "string"),)
+    assert playback.construction_support_count == 2
+    assert adaptive.value_forms == (("enabled", "boolean-string"),)
+    assert valet.value_forms == (
+        ("enabled", "boolean-string"),
+        ("pin", "nullable-string"),
+    )
+    assert all(rule.construction_support_count >= 2 for rule in first)
+    assert not any(rule.tool_name == "setHapticStrength" for rule in first)
+    assert not any(rule.tool_name == "startCleaning" for rule in first)
+    rendered = json.dumps([rule.__dict__ for rule in first], sort_keys=True)
+    assert "PRIVATE" not in rendered
+    assert report["concrete_argument_values_rendered"] == 0
+    assert report["singleton_skeletons_excluded"] >= 1
+    assert report["malformed_key_skeletons_excluded"] >= 1
+
+
+def test_build_from_partition_covers_152_tools_and_never_renders_private_fields() -> None:
+    builder = _builder()
+    relevant_registry, rows = _compatibility_world()
+    fillers = tuple(
+        _registry_row(
+            f"syntheticTool{index:03d}", f"syntheticTool{index:03d}()"
+        )
+        for index in range(147)
+    )
+    registry = (*relevant_registry, *fillers)
+
+    corpus, report = builder.build_from_partition(registry, rows)
+
+    assert corpus.report["registry_tool_count"] == 152
+    assert corpus.report["tool_card_count"] == 152
+    assert corpus.text.isascii()
+    assert report["deterministic_rebuild_equal"] is True
+    assert report["construction_argument_pattern_family_count"] == 5
+    assert report["construction_argument_key_count"] == 6
+    for private in (
+        "PRIVATE SOURCE UTTERANCE",
+        "PRIVATE-DEVICE-A",
+        "PRIVATE CALL",
+        "PRIVATE_000001",
+        "PRIVATE SPEAKER",
+        "PRIVATE-ANOMALY",
+    ):
+        assert private not in corpus.text
+
+
+def test_main_writes_only_explicit_outputs(monkeypatch, tmp_path: Path) -> None:
+    builder = _builder()
+    corpus_path = tmp_path / "corpus.txt"
+    receipt_path = tmp_path / "receipt.json"
+    receipt = {
+        "schema": "test-receipt",
+        "contacts": {"model": 0, "network": 0},
+    }
+    monkeypatch.setattr(builder, "run_build", lambda _root: ("ASCII CORPUS\n", receipt))
+    monkeypatch.setattr(builder, "data_root", lambda: Path("/fixed/data"))
+
+    assert (
+        builder.main(
+            [
+                "--corpus-output",
+                str(corpus_path),
+                "--receipt-output",
+                str(receipt_path),
+            ]
+        )
+        == 0
+    )
+    assert corpus_path.read_text(encoding="utf-8") == "ASCII CORPUS\n"
+    assert json.loads(receipt_path.read_text(encoding="utf-8")) == receipt
+
+
+def test_committed_corpus_and_receipt_preserve_model_free_static_gates() -> None:
+    receipt = json.loads(RECEIPT.read_text(encoding="utf-8"))
+    corpus = CORPUS.read_bytes()
+
+    assert receipt["execution_profile"] == "model-free-check"
+    assert set(receipt["contacts"].values()) == {0}
+    assert receipt["offline_guard"]["outbound_connection_attempts"] == 0
+    assert receipt["partition"]["construction_forbidden_intersection_count"] == 0
+    assert receipt["corpus"]["deterministic_rebuild_equal"] is True
+    assert receipt["corpus"]["sha256"] == hashlib.sha256(corpus).hexdigest()
+    report = receipt["corpus"]["report"]
+    assert report["registry_tool_count"] == 152
+    assert receipt["construction_summary"]["argument_pattern_family_count"] == 354
+    assert receipt["construction_summary"]["argument_key_count"] == 85
+    assert report["ascii_only"] is True
+    assert report["source_utterances_rendered"] == 0
+    assert report["source_argument_values_rendered"] == 0
+    assert report["gold_values_rendered"] == 0
+    assert report["source_sample_ids_rendered"] == 0
+    assert receipt["compatibility"]["minimum_support"] == 2
+    assert receipt["compatibility"]["concrete_argument_values_rendered"] == 0
