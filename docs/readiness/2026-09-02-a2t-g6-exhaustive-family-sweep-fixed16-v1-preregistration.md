@@ -78,7 +78,9 @@ closed until a stable disjoint-40 result at or above 90% exact. A 1,000-row scal
 
 This preregistration and its baseline/experiment fragments do not authorize a model, network,
 gold, scorer, tokenizer, retriever-service, reference-transcript, task-output, score, reward,
-test-annotation, or future-turn contact. Before any model contact, a dedicated launcher must bind
-the frozen roster, runtime receipt, exact prompt-fit receipt, ExecutionPlan, protocol hash,
-complete manifests, and exposure-ledger registration; all preconditions must pass without opening
-protected information.
+test-annotation, or future-turn contact. Before the first model contact, a dedicated launcher must
+bind the frozen roster, runtime receipt, exact SCAN prompt-fit receipt, ExecutionPlan, protocol
+hash, complete-manifest procedure, and exposure-ledger registration. A RESOLVE request does not
+exist until its 28 actual reports seal, so the launcher must measure and record that exact request
+after the seal and before the row's sole RESOLVE contact. No precondition may open protected
+information.
