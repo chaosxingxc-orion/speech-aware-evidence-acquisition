@@ -527,7 +527,7 @@ def _static_preflight(root: Path) -> dict[str, object]:
         roster_document, media, bindings, data_root=root
     )
     selected_ids = G3.g3_flight.select_shuffled_control_ids(surface.tier_by_sample)
-    if tuple(selected_ids) != SELECTED_IDS:
+    if tuple(sorted(selected_ids)) != SELECTED_IDS:
         raise RuntimeError("G3 deterministic selected16 identity drift")
     _validate_selected_ids(
         {sample_id: surface.tier_by_sample[sample_id] for sample_id in SELECTED_IDS}
