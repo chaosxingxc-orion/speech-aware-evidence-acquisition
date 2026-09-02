@@ -5,9 +5,12 @@ from __future__ import annotations
 import importlib.util
 import json
 from pathlib import Path
+from types import SimpleNamespace
 import sys
 
 import pytest
+
+from speech_aware_evidence_acquisition.reproduction.toolcall_scoring import ToolCall
 
 
 REPO = Path(__file__).resolve().parents[2]
@@ -36,6 +39,7 @@ def _roster() -> dict[str, object]:
             "packet_id": f"tier{tier}_kind/{index:06d}",
             "audio_sha256": f"{tier:x}" * 64,
             "media_relpath": f"datasets/audio2tool/tier{tier}/{index}.wav",
+            "query_block": f"tier{tier}_kind:query-{index:06d}",
         }
         for tier in range(1, 9)
         for index in range(13)
@@ -163,8 +167,288 @@ def test_preflight_only_never_enters_full_launch(
 
 def test_full_launch_is_a_contact_closed_scaffold() -> None:
     launcher = _launcher()
-    with pytest.raises(RuntimeError, match="contact-closed scaffold"):
-        launcher._launch(Path("/fixed/data"))
+    assert callable(launcher._launch)
+
+
+def _official_score(
+    sample_ids: list[str], *, exact_count: int, tool_count: int, slot_f1: float
+) -> dict[str, object]:
+    per_sample = [
+        {
+            "sample_id": sample_id,
+            "tier": sample_id.split(":", 1)[0],
+            "exact_match": float(index < exact_count),
+            "tool_accuracy": float(index < tool_count),
+            "parsed": True,
+        }
+        for index, sample_id in enumerate(sample_ids)
+    ]
+    return {
+        "a2t-toolcall": {
+            "per_sample": per_sample,
+            "aggregate": {
+                "samples": 104,
+                "exact_match": exact_count / 104,
+                "tool_accuracy": tool_count / 104,
+                "slot_precision": slot_f1,
+                "slot_recall": slot_f1,
+                "slot_f1": slot_f1,
+                "parse_failures": 0,
+                "per_tier": {},
+            },
+        }
+    }
+
+
+def test_qualification_result_applies_every_registered_gate_deterministically() -> None:
+    launcher = _launcher()
+    roster = _roster()
+    items = roster["items"]
+    sample_ids = [item["sample_id"] for item in items]
+    resend_ids = launcher.ground_flight.select_resend_ids(
+        {item["sample_id"]: item["tier"] for item in items}
+    )
+    response = '[{"name":"tool","arguments":{"value":"fixed"}}]'
+    expected = {
+        sample_id: (ToolCall("tool", {"value": "fixed"}),)
+        for sample_id in sample_ids
+    }
+
+    first = launcher._build_qualification_result(
+        m0_scores=_official_score(
+            sample_ids, exact_count=79, tool_count=80, slot_f1=0.75
+        ),
+        g1_scores=_official_score(
+            sample_ids, exact_count=99, tool_count=100, slot_f1=0.95
+        ),
+        g1_texts={sample_id: response for sample_id in sample_ids},
+        resend_texts={sample_id: response for sample_id in resend_ids},
+        expected_by_id=expected,
+        items=items,
+        resend_ids=resend_ids,
+    )
+    second = launcher._build_qualification_result(
+        m0_scores=_official_score(
+            sample_ids, exact_count=79, tool_count=80, slot_f1=0.75
+        ),
+        g1_scores=_official_score(
+            sample_ids, exact_count=99, tool_count=100, slot_f1=0.95
+        ),
+        g1_texts={sample_id: response for sample_id in sample_ids},
+        resend_texts={sample_id: response for sample_id in resend_ids},
+        expected_by_id=expected,
+        items=items,
+        resend_ids=resend_ids,
+    )
+    assert first == second
+    assert first["bootstrap"] == {
+        **first["bootstrap"],
+        "n_replicates": 10_000,
+        "seed": 20260902,
+        "ci_level": 0.9,
+    }
+    assert first["counts"]["g1_exact"] == 99
+    assert first["counts"]["g1_tool"] == 100
+    assert first["counts"]["g1_parse"] == 104
+    assert first["counts"]["resend_semantic_call_agreement"] == 16
+    assert first["counts"]["resend_exact_outcome_agreement"] == 16
+    assert all(first["gates"].values())
+    assert first["basic_ground_passed"] is True
+    assert first["target_ground_passed"] is True
+
+
+def test_qualification_result_refuses_incomplete_official_surface() -> None:
+    launcher = _launcher()
+    roster = _roster()
+    items = roster["items"]
+    sample_ids = [item["sample_id"] for item in items]
+    incomplete = _official_score(
+        sample_ids, exact_count=99, tool_count=100, slot_f1=0.95
+    )
+    incomplete["a2t-toolcall"]["per_sample"].pop()
+    with pytest.raises(RuntimeError, match="complete 104-row official score"):
+        launcher._build_qualification_result(
+            m0_scores=incomplete,
+            g1_scores=_official_score(
+                sample_ids, exact_count=99, tool_count=100, slot_f1=0.95
+            ),
+            g1_texts={},
+            resend_texts={},
+            expected_by_id={},
+            items=items,
+            resend_ids=(),
+        )
+
+
+def test_resend_payloads_preserve_source_slot_and_content() -> None:
+    launcher = _launcher()
+    source = {
+        "sample-1": {
+            "request_id": "ground-g1-0001",
+            "sample_id": "sample-1",
+            "task_instruction": "handbook",
+            "speech_feature_parts": [
+                {"packet_id": "tier/1", "sha256": "a" * 64, "role": "query"}
+            ],
+            "decoding_params": {
+                "temperature": 0,
+                "seed": 20260803,
+                "max_tokens": 1024,
+                "id_slot": 1,
+            },
+            "key_representation_id": "ground",
+            "matcher_policy_id": "ground-policy",
+            "history": [],
+            "supplied_evidence": [],
+            "evidence_provenance": [],
+        }
+    }
+    resend = json.loads(json.dumps(source))
+    resend["sample-1"]["request_id"] = "ground-resend-0001"
+    assert launcher._assert_resend_equivalence(source, resend) == {"sample-1": 1}
+
+    resend["sample-1"]["decoding_params"]["id_slot"] = 0
+    with pytest.raises(RuntimeError, match="source request equivalence"):
+        launcher._assert_resend_equivalence(source, resend)
+
+
+def test_parallel_finalizer_uses_two_whole_manifest_jobs(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    launcher = _launcher()
+    captured: dict[str, object] = {}
+    output_dir = tmp_path / "parallel-official-finalize"
+
+    def fake_run(command, **kwargs):
+        captured["command"] = command
+        captured["kwargs"] = kwargs
+        output_dir.mkdir()
+        (output_dir / "batch-summary.json").write_text(
+            json.dumps({"failed": 0, "succeeded": 2}), encoding="utf-8"
+        )
+        return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+    monkeypatch.setattr(launcher.subprocess, "run", fake_run)
+    summary = launcher._run_parallel_finalizers(
+        mission_dir=tmp_path,
+        jobs=(
+            {
+                "job_id": "m0-registry-direct",
+                "manifest": "/fixed/m0.run-manifest.json",
+                "ledger_cells": "/fixed/m0-ledger.json",
+            },
+            {
+                "job_id": "g1-full-executable-ground",
+                "manifest": "/fixed/g1.run-manifest.json",
+                "ledger_cells": "/fixed/g1-ledger.json",
+            },
+        ),
+    )
+    assert summary == {"failed": 0, "succeeded": 2}
+    assert captured["command"][2:4] == ["--finalize", "--jobs"]
+    assert captured["command"][-2:] == ["--workers", "2"]
+
+
+def test_postseal_read_opens_gold_only_after_both_finalizers_settle(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    launcher = _launcher()
+    events: list[str] = []
+    roster = _roster()
+    items = roster["items"]
+    sample_ids = [item["sample_id"] for item in items]
+    resend_ids = launcher.ground_flight.select_resend_ids(
+        {item["sample_id"]: item["tier"] for item in items}
+    )
+    response = '[{"name":"tool","arguments":{}}]'
+    expected = {sample_id: (ToolCall("tool", {}),) for sample_id in sample_ids}
+    m0 = {
+        "manifest": tmp_path / "m0.run-manifest.json",
+        "texts": {sample_id: response for sample_id in sample_ids},
+    }
+    g1 = {
+        "manifest": tmp_path / "g1.run-manifest.json",
+        "texts": {sample_id: response for sample_id in sample_ids},
+    }
+    resend = {
+        "texts": {sample_id: response for sample_id in resend_ids},
+        "resend_ids": resend_ids,
+    }
+
+    monkeypatch.setattr(
+        launcher,
+        "_assert_contact_surface_sealed",
+        lambda **kwargs: events.append("sealed"),
+    )
+
+    def fake_finalize(**kwargs):
+        assert events == ["sealed"]
+        events.append("finalized")
+        return {"failed": 0, "succeeded": 2}
+
+    monkeypatch.setattr(launcher, "_run_parallel_finalizers", fake_finalize)
+    monkeypatch.setattr(
+        launcher,
+        "verify_bundle",
+        lambda path: SimpleNamespace(attempt_state="FINALIZED"),
+    )
+    monkeypatch.setattr(
+        launcher,
+        "_load_final_scores",
+        lambda path: _official_score(
+            sample_ids, exact_count=99, tool_count=100, slot_f1=0.95
+        ),
+    )
+
+    def fake_expected(*args, **kwargs):
+        assert events == ["sealed", "finalized"]
+        events.append("gold")
+        return expected
+
+    monkeypatch.setattr(launcher, "load_expected_calls", fake_expected)
+    monkeypatch.setattr(
+        launcher,
+        "_build_qualification_result",
+        lambda **kwargs: {"schema": "fixed-result"},
+    )
+    result = launcher._postseal_qualification(
+        root=tmp_path,
+        context={"items": items, "lock": {}, "resend_ids": resend_ids},
+        mission_dir=tmp_path,
+        lock_sha256="a" * 64,
+        m0=m0,
+        g1=g1,
+        resend=resend,
+    )
+    assert events == ["sealed", "finalized", "gold"]
+    assert result["qualification"] == {"schema": "fixed-result"}
+
+
+def test_request_payload_extractor_requires_hash_bound_unique_samples() -> None:
+    launcher = _launcher()
+    payload = {
+        "request_id": "ground-g1-0001",
+        "sample_id": "sample-1",
+        "decoding_params": {"id_slot": 0},
+    }
+    envelope = {
+        "arm": "speech-feature-query",
+        "payload": payload,
+        "payload_sha256": launcher.hashlib.sha256(
+            launcher.canonical_payload_bytes(payload)
+        ).hexdigest(),
+    }
+    documents = (
+        {
+            "channel": "MODEL_REQUEST",
+            "record_id": "ground-g1-0001/request",
+            "payload": envelope,
+        },
+    )
+    assert launcher._request_payloads_by_sample(documents) == {"sample-1": payload}
+    envelope["payload_sha256"] = "0" * 64
+    with pytest.raises(RuntimeError, match="payload hash drift"):
+        launcher._request_payloads_by_sample(documents)
 
 
 def test_committed_prompt_fit_receipt_passes_the_zero_contact_gate() -> None:
