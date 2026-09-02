@@ -28,6 +28,9 @@ DRAFT_CONTACT_ID = "hard-validity-draft"
 REPAIR_CONTACT_ID = "hard-validity-repair"
 HARD_VALIDITY_STATE_KIND = "hard-validity-report"
 MAX_TOOL_CALLS = 4
+MAX_STORED_DRAFT_CHARS = 4096
+MAX_SERIALIZED_VIOLATIONS = 16
+MAX_AGENT_STATE_UTF8_BYTES = 8192
 
 DRAFT_INSTRUCTION = (
     "Use the original speech and the supplied G3 construction-semantic knowledge "
@@ -439,6 +442,60 @@ def _sha256_text(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 
+def _bounded_repair_state_content(
+    report: HardValidityReport,
+    response_text: str,
+) -> str:
+    serialized_violations = report.violations[:MAX_SERIALIZED_VIOLATIONS]
+    report_document = {
+        "policy_id": report.policy_id,
+        "status": report.status,
+        "parsed_call_count": report.parsed_call_count,
+        "violations": [item.as_json() for item in serialized_violations],
+        "omitted_count": len(report.violations) - len(serialized_violations),
+    }
+    draft_prefix = response_text[:MAX_STORED_DRAFT_CHARS]
+
+    def render(stored_draft: str) -> str:
+        return json.dumps(
+            {
+                "instruction": (
+                    "Repair the hard-invalid draft using only these findings."
+                ),
+                "report": report_document,
+                "previous_draft": stored_draft,
+                "previous_draft_omitted_chars": len(response_text) - len(stored_draft),
+            },
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+
+    content = render(draft_prefix)
+    if len(content.encode("utf-8")) <= MAX_AGENT_STATE_UTF8_BYTES:
+        return content
+
+    empty_content = render("")
+    if len(empty_content.encode("utf-8")) > MAX_AGENT_STATE_UTF8_BYTES:
+        raise ValueError(
+            "hard-validity repair state exceeds 8192 UTF-8 bytes without draft text"
+        )
+
+    low = 0
+    high = len(draft_prefix)
+    while low < high:
+        midpoint = (low + high + 1) // 2
+        candidate = render(draft_prefix[:midpoint])
+        if len(candidate.encode("utf-8")) <= MAX_AGENT_STATE_UTF8_BYTES:
+            low = midpoint
+        else:
+            high = midpoint - 1
+    content = render(draft_prefix[:low])
+    if len(content.encode("utf-8")) > MAX_AGENT_STATE_UTF8_BYTES:
+        raise ValueError("hard-validity repair state exceeds 8192 UTF-8 bytes")
+    return content
+
+
 def _stop(context: AgentRuntimeContext, contact_id: str) -> AgentLoopAdvance:
     return AgentLoopAdvance(
         transition=AgentStepTransition(
@@ -533,16 +590,7 @@ class HardValidityRepairController:
                 f"state:hard-validity:{context.sample_id}:"
                 f"{context.query_state.content_hash()[:12]}"
             )
-            state_content = json.dumps(
-                {
-                    "instruction": "Repair the hard-invalid draft using only these findings.",
-                    "report": report.as_json(),
-                    "previous_draft": response_text,
-                },
-                ensure_ascii=False,
-                sort_keys=True,
-                separators=(",", ":"),
-            )
+            state_content = _bounded_repair_state_content(report, response_text)
             state = AgentStateArtifact(
                 state_id=state_id,
                 state_kind=HARD_VALIDITY_STATE_KIND,
@@ -603,6 +651,9 @@ __all__ = [
     "DRAFT_INSTRUCTION",
     "HARD_VALIDITY_POLICY_ID",
     "HARD_VALIDITY_STATE_KIND",
+    "MAX_AGENT_STATE_UTF8_BYTES",
+    "MAX_SERIALIZED_VIOLATIONS",
+    "MAX_STORED_DRAFT_CHARS",
     "MAX_TOOL_CALLS",
     "REPAIR_CONTACT_ID",
     "REPAIR_INSTRUCTION",

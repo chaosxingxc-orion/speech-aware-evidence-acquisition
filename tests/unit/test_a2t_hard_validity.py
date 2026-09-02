@@ -5,6 +5,9 @@ import pytest
 from speech_aware_evidence_acquisition.rails.a2t_hard_validity import (
     DRAFT_CONTACT_ID,
     HARD_VALIDITY_POLICY_ID,
+    MAX_AGENT_STATE_UTF8_BYTES,
+    MAX_SERIALIZED_VIOLATIONS,
+    MAX_STORED_DRAFT_CHARS,
     REPAIR_CONTACT_ID,
     HardValidityRepairController,
     validate_hard_validity,
@@ -254,3 +257,79 @@ def test_controller_rejects_a_third_contact_sequence() -> None:
 
     with pytest.raises(ValueError, match="invalid contact sequence"):
         controller.advance(context, contact, "[]")
+
+
+def test_long_malformed_draft_has_bounded_repair_state_and_one_repair() -> None:
+    controller = _controller()
+    first_context = _context(_query_state())
+    draft_contact = controller.initial_contact(first_context)
+    response = "malformed tool-call output " * 1024
+
+    repair_advance = controller.advance(first_context, draft_contact, response)
+
+    state = repair_advance.new_agent_states[0]
+    state_document = json.loads(state.content)
+    assert len(state.content.encode("utf-8")) <= MAX_AGENT_STATE_UTF8_BYTES
+    assert len(state_document["previous_draft"]) <= MAX_STORED_DRAFT_CHARS
+    assert state_document["previous_draft_omitted_chars"] == (
+        len(response) - len(state_document["previous_draft"])
+    )
+    assert len(state_document["report"]["violations"]) == 1
+    assert state_document["report"]["omitted_count"] == 0
+
+    assert repair_advance.next_query_state is not None
+    assert isinstance(repair_advance.next_contact, AgentContactPlan)
+    second_context = AgentRuntimeContext(
+        sample_id=first_context.sample_id,
+        knowledge_snapshot_sha256=first_context.knowledge_snapshot_sha256,
+        catalog_facet_ids=first_context.catalog_facet_ids,
+        catalog_value_ids=first_context.catalog_value_ids,
+        query_state=repair_advance.next_query_state,
+        task_contract=first_context.task_contract,
+        agent_states=repair_advance.new_agent_states,
+        prior_response_sha256s=("e" * 64,),
+        contact_index=1,
+    )
+    final_advance = controller.advance(
+        second_context,
+        repair_advance.next_contact,
+        response,
+    )
+    assert final_advance.next_contact is None
+    assert final_advance.final_response_contact_id == REPAIR_CONTACT_ID
+
+
+def test_many_invalid_keys_serialize_first_sixteen_and_omitted_count() -> None:
+    controller = _controller()
+    context = _context(_query_state())
+    contact = controller.initial_contact(context)
+    invalid_arguments = {f"illegal_key_{index:02d}": index for index in range(64)}
+    payload = json.dumps(
+        [{"name": "getBatteryStatus", "arguments": invalid_arguments}],
+        separators=(",", ":"),
+    )
+    response = f"```json\n{payload}\n```\n" + ("trailing malformed text " * 1024)
+
+    advance = controller.advance(context, contact, response)
+
+    state_document = json.loads(advance.new_agent_states[0].content)
+    serialized = state_document["report"]["violations"]
+    assert len(serialized) == MAX_SERIALIZED_VIOLATIONS == 16
+    assert state_document["report"]["omitted_count"] == 48
+    assert serialized[0]["argument_key"] == "illegal_key_00"
+    assert serialized[-1]["argument_key"] == "illegal_key_15"
+    assert len(advance.new_agent_states[0].content.encode("utf-8")) <= 8192
+    assert len(state_document["previous_draft"]) <= 4096
+
+
+def test_repair_state_fails_deterministically_if_metadata_cannot_fit() -> None:
+    controller = _controller()
+    context = _context(_query_state())
+    contact = controller.initial_contact(context)
+    invalid_arguments = {f"illegal_{index}_{'x' * 900}": index for index in range(16)}
+    response = json.dumps(
+        [{"name": "getBatteryStatus", "arguments": invalid_arguments}]
+    )
+
+    with pytest.raises(ValueError, match="exceeds 8192 UTF-8 bytes"):
+        controller.advance(context, contact, response)
