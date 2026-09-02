@@ -1,0 +1,27 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "saea-a2t-g4-executable-microground-single-contact-v1",
+  "evidence_source": "sealed-English-state-to-deterministic-semantic-microground",
+  "evidence_mismatch": false,
+  "obs_batch_samples": 2,
+  "profile_queue_depth_multiplier": 2,
+  "profile_validation_workers": 2,
+  "speech_native_result_mode": "predictions",
+  "speech_native_contact_ceiling_per_task": 1,
+  "speech_native_dispatch_granularity": "contact",
+  "speech_native_agent_executor_id": "openjiuwen-workflow-v1",
+  "max_concurrent_model_requests": 2,
+  "queue_depth": 4,
+  "state_utf8_byte_cap": 4096,
+  "microground_packet_utf8_byte_cap": 16384,
+  "prompt_token_cap": 8192,
+  "completion_token_cap": 1024,
+  "repair_contacts": 0,
+  "retries": 0,
+  "network_jitter_testing": false,
+  "scorers": [
+    "a2t-toolcall",
+    "cost"
+  ],
+  "task_instruction": "Use the original speech, the supplied bounded English state, and only the selected executable semantic microground. Emit registered tool names with legal argument keys. Return only a JSON array of tool calls."
+}

@@ -1,0 +1,94 @@
+{
+  "schema": "saea-a2t-g4-selected16-remainder24-identity-receipt-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "carrier": "audio2tool",
+  "date": "2026-09-02",
+  "split_role": "discovery",
+  "design": "identity-only deterministic partition of the already-exposed G3 pilot",
+  "source_receipt": {
+    "path": "docs/receipts/a2t/A2T-G3-PILOT-40.json",
+    "sha256": "179535049414fa0e9747075db84e8ced3fbc60001955be25a75e9d70a4ba7e92",
+    "split_identity_hash": "7d170a0e333be385a99ecd35012de5c8e38f98c99304442d01145ed8fe6a1aaf",
+    "run_identity_hash": "3b25dfe3b850ab83ec72a62e2972e882e0e5c386c3bf00c798cc75460da3d614"
+  },
+  "selection_namespace": "a2t-g3-shuffled-control-v1",
+  "selection_algorithm": "Within each tier, sort ascending by SHA256(namespace || NUL || sample_id), then sample_id; selected16 is the first two and remainder24 is the fixed complement.",
+  "selected16": {
+    "name": "A2T-G4-MICROGROUND-SCREEN-16",
+    "count": 16,
+    "items_per_tier": 2,
+    "query_block_count": 16,
+    "source_audio_seconds": 121.161,
+    "runtime_audio_seconds": 178.125,
+    "split_identity_hash": "7590dfef54b42601c266f2bb325faee073143a575beeccd0c33cc8baf13aed45",
+    "run_identity_hash": "f9e3055f7eceff49405a192806be933db9bfcab150a1778bb3ddd937a8f57269",
+    "tiers": {
+      "tier1_direct": ["tier1_direct:003713", "tier1_direct:000074"],
+      "tier2_parametric": ["tier2_parametric:001869", "tier2_parametric:000568"],
+      "tier3_multi_intent": ["tier3_multi_intent:001732", "tier3_multi_intent:002166"],
+      "tier4_implicit": ["tier4_implicit:001759", "tier4_implicit:001628"],
+      "tier5_needle": ["tier5_needle:001059", "tier5_needle:002546"],
+      "tier6_correction": ["tier6_correction:001056", "tier6_correction:003671"],
+      "tier7_multiturn": ["tier7_multiturn:001590", "tier7_multiturn:000637"],
+      "tier8_intent_blending": ["tier8_intent_blending:000489", "tier8_intent_blending:000324"]
+    }
+  },
+  "remainder24": {
+    "name": "A2T-G4-MICROGROUND-REMAINDER-24",
+    "count": 24,
+    "items_per_tier": 3,
+    "query_block_count": 24,
+    "source_audio_seconds": 115.928,
+    "runtime_audio_seconds": 198.916375,
+    "split_identity_hash": "a369a15f8abc1c03b70d41286776d757aac7677a81c402521512c38123e2a9f4",
+    "run_identity_hash": "c55dad2d4050811cd5537f02a112b825112ed0cdcd6b9d85be078973895ac8cf",
+    "tiers": {
+      "tier1_direct": ["tier1_direct:000579", "tier1_direct:003668", "tier1_direct:004040"],
+      "tier2_parametric": ["tier2_parametric:001693", "tier2_parametric:006210", "tier2_parametric:006028"],
+      "tier3_multi_intent": ["tier3_multi_intent:000078", "tier3_multi_intent:000427", "tier3_multi_intent:000924"],
+      "tier4_implicit": ["tier4_implicit:001389", "tier4_implicit:003317", "tier4_implicit:003949"],
+      "tier5_needle": ["tier5_needle:001656", "tier5_needle:003863", "tier5_needle:004078"],
+      "tier6_correction": ["tier6_correction:000009", "tier6_correction:000484", "tier6_correction:002940"],
+      "tier7_multiturn": ["tier7_multiturn:000599", "tier7_multiturn:000330", "tier7_multiturn:000318"],
+      "tier8_intent_blending": ["tier8_intent_blending:000433", "tier8_intent_blending:000484", "tier8_intent_blending:000488"]
+    }
+  },
+  "runtime_media_overrides": {
+    "tier7_multiturn:001590": {
+      "identity": "a2t-g3-dialogue:001590",
+      "sha256": "1ec8f6a14cf68e1e91146d69339b6e7e854214313e394da2656a4f7a5c335d07"
+    },
+    "tier7_multiturn:000637": {
+      "identity": "a2t-g3-dialogue:000637",
+      "sha256": "a39224d14947267125b2202082858d348c79c716b0b8f7c03463428c96bf9018"
+    },
+    "tier7_multiturn:000599": {
+      "identity": "a2t-g3-dialogue:000599",
+      "sha256": "1d704865195ae64d1ab6e788a5ecc03d3ebb8a73bfc2bf914494b2a290425a4f"
+    },
+    "tier7_multiturn:000330": {
+      "identity": "a2t-g3-dialogue:000330",
+      "sha256": "9bc259b63bc514c2cd6be25165caba7a2ca766ac8e6f77994f5dd2923840991c"
+    },
+    "tier7_multiturn:000318": {
+      "identity": "a2t-g3-dialogue:000318",
+      "sha256": "2490aabf475629903f19333221a396de55fb6c415aee9a5369de0b1cbe6c735f"
+    }
+  },
+  "fresh88": {
+    "count": 88,
+    "split_identity_hash": "7378d84cab77a8e2bccd4b8eaeab6a56fffe32ced76917ecf3bc2393164a3ad3",
+    "status": "sealed and excluded"
+  },
+  "selection_proof": {
+    "uses_gold": false,
+    "uses_reference": false,
+    "uses_prediction": false,
+    "uses_reward": false,
+    "uses_prior_outcome": false,
+    "uses_tier_for_balancing_only": true,
+    "selected_remainder_disjoint": true,
+    "selected_remainder_union_is_source": true,
+    "reversed_source_input_byte_identical": true
+  }
+}

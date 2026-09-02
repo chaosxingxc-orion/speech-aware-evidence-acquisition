@@ -1,0 +1,200 @@
+{
+  "schema": "saea-a2t-g4-executable-microground-screen-16-experiment-v1",
+  "experiment_id": "SAEA-A2T-G4-EXECUTABLE-MICROGROUND-SCREEN-16-V1",
+  "status": "REGISTERED_ZERO_CONTACT_MODEL_CONTACT_CLOSED",
+  "date": "2026-09-02",
+  "execution_profile": "bounded-discovery-probe",
+  "claim_scope": "small Stage-2 discovery screen on the already-exposed G3 pilot; no fresh, confirmatory, test, scale, or paper claim",
+  "scientific_objective": "Find a model-usable semantic, tool, and argument ground before pruning, scale, or training-free control.",
+  "population": {
+    "receipt": "docs/receipts/a2t/A2T-G4-MICROGROUND-SCREEN-16.json",
+    "receipt_sha256": "41a14ab576d7a428dd9849f26432e2c4998371b9f601189a1d558d694a12c884",
+    "source_split": "A2T-G3-PILOT-40",
+    "source_count": 40,
+    "selected16": {
+      "split_name": "A2T-G4-MICROGROUND-SCREEN-16",
+      "count": 16,
+      "items_per_tier": 2,
+      "split_identity_hash": "7590dfef54b42601c266f2bb325faee073143a575beeccd0c33cc8baf13aed45",
+      "run_identity_hash": "f9e3055f7eceff49405a192806be933db9bfcab150a1778bb3ddd937a8f57269",
+      "runtime_audio_seconds": 178.125
+    },
+    "remainder24": {
+      "split_name": "A2T-G4-MICROGROUND-REMAINDER-24",
+      "count": 24,
+      "items_per_tier": 3,
+      "split_identity_hash": "a369a15f8abc1c03b70d41286776d757aac7677a81c402521512c38123e2a9f4",
+      "run_identity_hash": "c55dad2d4050811cd5537f02a112b825112ed0cdcd6b9d85be078973895ac8cf",
+      "runtime_audio_seconds": 198.916375,
+      "contact_status": "closed unless exactly one deterministically selected Stage-1 winner qualifies"
+    },
+    "fresh88": {
+      "count": 88,
+      "split_identity_hash": "7378d84cab77a8e2bccd4b8eaeab6a56fffe32ced76917ecf3bc2393164a3ad3",
+      "status": "sealed and excluded"
+    }
+  },
+  "frozen_components": {
+    "baseline_config": "configs/baseline/a2t-g4-executable-microground-agentloop.json",
+    "baseline_config_sha256": "dd7f38fe941d1c6ece607ff695f0ab700a9aea2c75fd5808674ceba8119820e5",
+    "semantic_card_builder": "scripts/build_a2t_g4_semantic_cards.py",
+    "semantic_card_corpus": "knowledge/audio2tool/g4-executable-semantic-cards-v1/corpus.txt",
+    "semantic_card_build_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-02-a2t-g4-semantic-cards-build-v1/build-receipt.json",
+    "semantic_card_module_sha256": "f13692bdf658286a0a018176446462258e81d76543806a0f7d569ef2c419f2ae",
+    "microground_router_sha256": "8ff3ff193a1bda4ed066a9112c8b3ebc45614c875a121237b437cd743bf79447",
+    "structured_state_module_sha256": "7c8a745cfaab81c3efc421f759b30e990c5155ec0bb9daa386bf7598281cabfc",
+    "flight_boundary_sha256": "54ec410ec02a4addde4c870ac405da118b0b06e2eb276a9efb00014c5d37f29b",
+    "router_policy_id": "saea-a2t-semantic-microground-bm25-v1",
+    "key_representation_id": "a2t-g4-executable-semantic-cards-v1",
+    "matcher_policy_id": "a2t-g4-structured-action-bm25-k2-8-v1",
+    "model": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+    "runtime": "receipt-pinned local llama.cpp API-shaped service",
+    "decoding": {
+      "temperature": 0,
+      "seed": 20260803,
+      "completion_token_cap": 1024
+    },
+    "contact_preconditions": [
+      "Bind and verify the semantic corpus file and build-receipt SHA-256 values.",
+      "Bind and verify the sealed 16 task-blind English observations for E.",
+      "Bind and verify the validated 16 structured states for SE; no state-generation contact is authorized by this contract.",
+      "Compose the model, dataset, baseline, and experiment fragments and bind the resulting config and protocol hashes.",
+      "Prove every selected prompt fits the frozen prompt cap before opening an ExecutionPlan.",
+      "Append or amend the exposure-ledger registration with every final binding before reading any contact result."
+    ]
+  },
+  "arms": {
+    "C": {
+      "label": "G3 matched plain-English ground comparator",
+      "contact_count": 0,
+      "source_result_sha256": "d5c6ed5393d3119516420942827cc751add03edaf9d61a88ac6baf50336c0d01",
+      "source_flight_receipt_sha256": "fccf51a91eed259f3bdad06f3bcbfd26f65972a356b955774485eed77053ee86",
+      "selected16_exact_count": 2,
+      "selected16_tool_count": 11,
+      "rule": "Reuse the sealed G3 selected16 rows without model recontact; obtain any additional comparator metrics only by identity-filtering its sealed official whole-manifest score artifact."
+    },
+    "E": {
+      "label": "sealed task-blind English OBS plus executable semantic microground",
+      "phase": "G4_EXECUTABLE_MICROGROUND_USE",
+      "contact_count": 16,
+      "state_source": "existing sealed G3 task-blind English observation",
+      "ground": "the deterministic microground routed once per active action",
+      "authorized_runtime_inputs": ["original speech", "sealed task-blind English observation", "selected semantic cards", "four task cards"]
+    },
+    "SE": {
+      "label": "validated structured state plus executable semantic microground",
+      "phase": "G4_STRUCTURED_EXECUTABLE_MICROGROUND_USE",
+      "contact_count": 16,
+      "state_source": "prevalidated bounded structured dialogue state",
+      "ground": "the same deterministic microground policy and corpus used by E",
+      "authorized_runtime_inputs": ["original speech", "validated structured state", "selected semantic cards", "four task cards"]
+    }
+  },
+  "microground": {
+    "query_unit": "each active action",
+    "query_sources": ["validated structured-state mapping", "task-blind English observation"],
+    "features": ["choose semantics", "avoid and contrast semantics", "role guidance", "tool and category facets"],
+    "retrieval": "frozen deterministic BM25",
+    "selection": "retain top two per active action plus the best sibling contrast or schema-compatible alternative; union two through eight unique registered candidates while preserving at least the top candidate for every active action",
+    "render": "selected cards plus exactly four task cards",
+    "forbidden_router_features": ["tier", "sample id", "gold", "reference", "reward", "prior response", "prior score", "future turn"],
+    "synthetic_example_literal_query_input": false,
+    "fixed_tie_breaks": true,
+    "route_trace_required": ["scores", "ranks", "reasons", "candidate names", "packet SHA-256", "trace SHA-256"]
+  },
+  "stage1_execution": {
+    "phase_order": ["E", "SE"],
+    "expected_model_calls": 32,
+    "max_concurrent_model_requests": 2,
+    "queue_depth": 4,
+    "state_utf8_byte_cap": 4096,
+    "microground_packet_utf8_byte_cap": 16384,
+    "prompt_token_cap": 8192,
+    "completion_token_cap": 1024,
+    "contacts_per_row_per_arm": 1,
+    "repair_contacts": 0,
+    "retries": 0,
+    "network_jitter_testing": false,
+    "failure_rule": "Seal available traces, abort the affected attempt, stop the flight, and do not recontact a row. Recovery requires a prospective amendment.",
+    "score_open_rule": "Seal both complete 16-row new-arm manifests before gold or official scores open."
+  },
+  "stage1_gate_per_new_arm": {
+    "parse_count_minimum": 15,
+    "exact_count_minimum": 15,
+    "tool_count_minimum": 16,
+    "slot_micro_f1_minimum": 0.9,
+    "out_of_registry_name_count_maximum": 0,
+    "synthetic_example_literal_copy_count_maximum": 0,
+    "paired_exact_improvement_over_C": "wins minus losses must be strictly greater than zero on the same selected16 identities",
+    "all_conditions_required": true,
+    "structural_checks_do_not_substitute_for_score_gate": true
+  },
+  "mechanism_report": {
+    "required_effects": [
+      "E minus C: executable-microground effect relative to the sealed G3 comparator",
+      "SE minus E: structured-state increment with the microground fixed",
+      "SE minus C: combined structured-state and executable-microground effect"
+    ],
+    "paired_fields": ["wins", "losses", "ties", "net exact gain", "net tool gain"],
+    "factorial_limit": "There is no state-only cell. Report the three registered contrasts as a staged mechanism decomposition; do not claim a classical two-by-two interaction."
+  },
+  "extension_rule": {
+    "neither_passes": "Do not contact remainder24.",
+    "exactly_one_passes": "Only that qualifying arm may contact remainder24.",
+    "both_pass": "Choose exactly one extension arm by lexicographic order: higher exact count, then higher slot micro-F1, then higher parse count, then higher paired exact net gain; an exact tie selects E as the lower-complexity arm.",
+    "no_stage1_threshold_or_router_change": true,
+    "extension_contacts": 24,
+    "full40_gate": {
+      "parse_count_minimum": 39,
+      "exact_count_minimum": 36,
+      "tool_count_minimum": 38,
+      "slot_micro_f1_minimum": 0.9,
+      "per_tier_exact_count_minimum": 4,
+      "all_conditions_required": true
+    }
+  },
+  "scoring": {
+    "official_scorer": "unchanged a2t-toolcall scorer",
+    "whole_manifests": true,
+    "outer_parallel_only": true,
+    "outer_workers_maximum": 2,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "stage1_jobs": ["E complete 16", "SE complete 16"],
+    "extension_job": "one complete 40-row composite manifest for the deterministically selected arm",
+    "non_gold_structural_checks": ["parse", "registry-name-only", "legal argument-key sets", "synthetic-example literal copying"],
+    "gold_rule": "Gold remains scoring-side only and opens only after the relevant whole manifest seals."
+  },
+  "contact_budget": {
+    "stage1_expected_model_calls": 32,
+    "maximum_expected_model_calls_with_extension": 56,
+    "planned_model_calls": 56,
+    "stage1_speech_audio_seconds": 356.25,
+    "maximum_speech_audio_seconds_with_extension": 555.166375,
+    "planned_speech_audio_seconds": 556,
+    "planned_gpu_hours": 0.4,
+    "embedding_contacts": 0,
+    "tokenizer_contacts": 0,
+    "paid_api_spend": 0
+  },
+  "supersession": {
+    "prospectively_supersedes": "SAEA-A2T-EXECUTABLE-GROUND-QUALIFICATION-104-V1",
+    "superseded_config": "configs/experiment/a2t-executable-ground-qualification-104-v1.json",
+    "scope": "The dormant zero-contact 104-row full-handbook qualification must not launch. Its immutable registration and ledger history remain unchanged."
+  },
+  "terminal_rules": {
+    "stage1_failure": "If neither E nor SE passes every primary condition, close G4 on this cohort and do not open remainder24, fresh88, test, pruning, scale, or training-free control.",
+    "full40_pass": "Freeze the qualifying ground as a Stage-2 discovery result. Any pruning or training-free control study requires a separate prospective contract and must preserve an untouched evaluation surface.",
+    "full40_failure": "Close this ground form without tuning on these returns. Any materially different ground requires a new prospective discovery registration.",
+    "fresh88_closed": true,
+    "test_closed": true,
+    "tfrl_space_preserved": true,
+    "stage3_closed": true,
+    "paper_scale_closed": true
+  },
+  "prohibitions": [
+    "No model, scorer, tokenizer, retriever-service, or network contact is authorized by this zero-contact artifact alone.",
+    "Do not use gold, references, test annotations, prior outcomes, future turns, or synthetic example literals as router queries.",
+    "Do not repair, retry, recontact, run jitter experiments, tune on test, prune candidates, fit training-free control, or scale from a failed gate."
+  ]
+}
