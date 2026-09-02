@@ -782,7 +782,8 @@ def main() -> int:
         "boundary": (
             "label-free: gold never opened, no response read semantically, the "
             "registered completion is one token; the GPU decoder on 8090 was "
-            "never started, stopped, probed, reconfigured or contacted"
+            "never started, stopped, reconfigured or sent a request; its loopback "
+            "reachability was observed before and after"
         ),
         "run_dir": str(run_dir),
     }

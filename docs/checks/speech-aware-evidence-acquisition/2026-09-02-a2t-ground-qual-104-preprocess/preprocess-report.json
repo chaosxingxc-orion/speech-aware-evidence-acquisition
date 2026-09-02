@@ -1,0 +1,500 @@
+{
+  "artifact_preflight": {
+    "current_build_legacy_cache_entries": 0,
+    "existing_packet_manifests": 0,
+    "promotion_receipt_exists": false
+  },
+  "attempt_id": "attempt-20260902T130411Z-a2tgroundqualpre",
+  "audio_seconds_total": 543.107,
+  "boundary": "label-free: gold never opened, no response read semantically, the registered completion is one token; the GPU decoder on 8090 was never started, stopped, reconfigured or sent a request; its loopback reachability was observed before and after",
+  "config_hash": "3845d4a8a601e3279a4656ccd0e1c9c92feed33236801758df528e43a7862ae4",
+  "core_client": {
+    "cost": {
+      "audio_seconds_used": 543.1069999999997,
+      "calls_used": 104,
+      "completion_tokens_total": 104,
+      "latency_seconds_total": 243.7481981207966,
+      "prompt_tokens_total": 10933,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "fe843e1b4789d3f3b47731ddf5b1bb42d430b05afe74292afc9ca0a6368e2864"
+    },
+    "trace_manifest_hash": "c71477e2a7f31bf46cbb7bc97e079058ae0a6099246e4bbfa6de18aaf040361f"
+  },
+  "count": 104,
+  "encode_contacts": 104,
+  "encode_failures": [],
+  "fragments": {
+    "baseline": "speech-native-preprocess",
+    "dataset": "audio2tool-ground-qual-104",
+    "experiment": "a2t-ground-qual-preprocess",
+    "model": "q4km-preprocess-featcache-cpu-sidecar-a2t"
+  },
+  "gate": {
+    "umbrella_lock_sha256": "fe843e1b4789d3f3b47731ddf5b1bb42d430b05afe74292afc9ca0a6368e2864"
+  },
+  "generated_at": "2026-09-02T13:10:38.778719+00:00",
+  "gpu_decoder_reachable_after": false,
+  "gpu_decoder_reachable_before": false,
+  "legacy_cache_dir": "/home/chao/feat-cache/audio2tool-q4km-04ccc72a",
+  "llama_cpp_build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+  "packet_root": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a",
+  "packets_promoted": 104,
+  "plan": {
+    "attempt_core_ceiling": 110,
+    "planned_gpu_hours": 0.2,
+    "planned_model_calls": 120,
+    "planned_speech_audio_seconds": 650
+  },
+  "prior_cache_disclosure": "The pre-existing legacy cache /home/chao/feat-cache/audio2tool-q4km was warm for all 104 subset items before this pass, but it was written by the EARLIER A2T flights under the OLDER featcache build (docs/receipts/runtime-q4km-featcache.json). Those bytes were NOT promoted. This pass re-encoded every item under the serving build 04ccc72a2207347ca76161b93fd9d846dd0a8675 into a separate cache directory, so the promoted packets' encoder provenance is the same build that serves them.",
+  "promotion_receipt": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a/A2T-GROUND-QUAL-104-promotion.json",
+  "promotion_receipt_sha256": "b350567a6dd8b5d9021725756424f2b6ae99803c8c0327901c724fe3ebe8a47f",
+  "prompt_fit_inheritance_allowed": false,
+  "prompt_fit_overflow_action": "No packet is truncated. Qualification remains closed until a separately registered exact prompt-fit successor.",
+  "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SN-A2T-GROUND-QUAL-104-PREPROCESS/attempt-20260902T130411Z-a2tgroundqualpre",
+  "run_id": "SAEA-SN-A2T-GROUND-QUAL-104-PREPROCESS",
+  "schema": "saea-a2t-ground-qual-preprocess-report-v1",
+  "sidecar": {
+    "pid": 597,
+    "port": 8081
+  },
+  "sidecar_stop": {
+    "forced": false,
+    "termination_signal": "SIGTERM"
+  },
+  "speech_feature_tokens": {
+    "ceiling": 455,
+    "distribution": {
+      "count": 104,
+      "max": 468,
+      "mean": 75.125,
+      "median": 65.0,
+      "min": 13,
+      "p90": 143,
+      "p95": 169,
+      "sum": 7813
+    },
+    "packets": [
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/000045"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/000062"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/000593"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/000620"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/000636"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier1_direct/001422"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/002510"
+      },
+      {
+        "n_tokens": 13,
+        "packet_id": "tier1_direct/003198"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/003210"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/003668"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/004040"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/004218"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier1_direct/004244"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/000045"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier2_parametric/000132"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier2_parametric/000568"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier2_parametric/000704"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/001474"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/001644"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier2_parametric/001693"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier2_parametric/002334"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier2_parametric/003115"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier2_parametric/004217"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier2_parametric/005407"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/005859"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier2_parametric/006210"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier3_multi_intent/000078"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/000855"
+      },
+      {
+        "n_tokens": 117,
+        "packet_id": "tier3_multi_intent/001487"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier3_multi_intent/001732"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/002096"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier3_multi_intent/002490"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier3_multi_intent/002645"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/002651"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier3_multi_intent/002818"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier3_multi_intent/003220"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/003740"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier3_multi_intent/003868"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/004291"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier4_implicit/000216"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/000279"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/001034"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier4_implicit/001541"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier4_implicit/001628"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier4_implicit/001759"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier4_implicit/002241"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier4_implicit/002376"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier4_implicit/002412"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/002563"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/002718"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier4_implicit/003049"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier4_implicit/004273"
+      },
+      {
+        "n_tokens": 117,
+        "packet_id": "tier5_needle/000534"
+      },
+      {
+        "n_tokens": 156,
+        "packet_id": "tier5_needle/001323"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier5_needle/001532"
+      },
+      {
+        "n_tokens": 182,
+        "packet_id": "tier5_needle/001679"
+      },
+      {
+        "n_tokens": 169,
+        "packet_id": "tier5_needle/002007"
+      },
+      {
+        "n_tokens": 156,
+        "packet_id": "tier5_needle/002054"
+      },
+      {
+        "n_tokens": 195,
+        "packet_id": "tier5_needle/002396"
+      },
+      {
+        "n_tokens": 195,
+        "packet_id": "tier5_needle/002640"
+      },
+      {
+        "n_tokens": 130,
+        "packet_id": "tier5_needle/003107"
+      },
+      {
+        "n_tokens": 143,
+        "packet_id": "tier5_needle/003398"
+      },
+      {
+        "n_tokens": 156,
+        "packet_id": "tier5_needle/003592"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier5_needle/003940"
+      },
+      {
+        "n_tokens": 143,
+        "packet_id": "tier5_needle/004037"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/000008"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/000009"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier6_correction/000168"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier6_correction/000398"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/000484"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier6_correction/001489"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/001873"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier6_correction/002178"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier6_correction/002313"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/002740"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier6_correction/002940"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/003671"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier6_correction/003783"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier7_multiturn/000272"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier7_multiturn/000293"
+      },
+      {
+        "n_tokens": 117,
+        "packet_id": "tier7_multiturn/000599"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier7_multiturn/001098"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier7_multiturn/001272"
+      },
+      {
+        "n_tokens": 468,
+        "packet_id": "tier7_multiturn/001590"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier7_multiturn/001614"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier7_multiturn/001707"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier7_multiturn/001708"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier7_multiturn/001732"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier7_multiturn/001834"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier7_multiturn/001865"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier7_multiturn/001922"
+      },
+      {
+        "n_tokens": 117,
+        "packet_id": "tier8_intent_blending/000023"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier8_intent_blending/000052"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier8_intent_blending/000065"
+      },
+      {
+        "n_tokens": 208,
+        "packet_id": "tier8_intent_blending/000269"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier8_intent_blending/000284"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier8_intent_blending/000324"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier8_intent_blending/000339"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier8_intent_blending/000355"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier8_intent_blending/000358"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier8_intent_blending/000475"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier8_intent_blending/000484"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier8_intent_blending/000488"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier8_intent_blending/000696"
+      }
+    ],
+    "within_ceiling": false
+  },
+  "split_identity_hash": "fbd4addd541ff29214cbff7c35564b15f27e2fb7f438202b79d694b1c5961d4b",
+  "study": "speech-aware-evidence-acquisition",
+  "subset_receipt": "docs/receipts/a2t/A2T-GROUND-QUAL-104.json",
+  "subset_receipt_sha256": "eeb90abbe8695e449c676f18339db6618cb6d606d6c1e7c656626e4e9b6b6c16"
+}

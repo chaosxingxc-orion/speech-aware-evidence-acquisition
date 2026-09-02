@@ -1,6 +1,6 @@
 # A2T executable-ground qualification 104 v1 preprocessing preregistration
 
-Date: 2026-09-02. Status: **REGISTERED; IMPLEMENTATION AND ZERO-CONTACT PREFLIGHT LANDED**.
+Date: 2026-09-02. Status: **EXECUTED SUCCESSFULLY; PROMPT-FIT INHERITANCE STOPPED**.
 Experiment id: `SAEA-SN-A2T-GROUND-QUAL-104-PREPROCESS`.
 Composed config and protocol SHA-256:
 `3845d4a8a601e3279a4656ccd0e1c9c92feed33236801758df528e43a7862ae4`.
@@ -67,3 +67,16 @@ SHA-256 `0316f5f309bf48cc2d56a715262660e23d2a177278584f3c8d235c1fbeab9b47`.
 
 The registered one-shot preprocessing pass is now executable. No task-inference contact is opened by
 this closure.
+
+## Execution closure
+
+Attempt `attempt-20260902T130411Z-a2tgroundqualpre` completed 104/104 contacts with zero failures and
+543.107 speech-audio seconds. The CPU-only sidecar stopped normally, the GPU decoder received no
+request, and exactly 104 packets were promoted. Promotion receipt SHA-256:
+`b350567a6dd8b5d9021725756424f2b6ae99803c8c0327901c724fe3ebe8a47f`. Repository report SHA-256:
+`c2120c9500ac943dc485d1953087965312e13f491ee850775df23347c4dccb0a`.
+
+The complete-packet distribution is min 13, median 65, p90 143, p95 169, max 468, and sum 7,813.
+Because 468 exceeds the inherited 455-token reserve by 13, preprocessing passes but qualification
+remains closed. No packet is changed. Only a separately preregistered 468-token model-free prompt-fit
+successor is opened.
