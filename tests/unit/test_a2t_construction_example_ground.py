@@ -248,6 +248,36 @@ def test_boundary_rejects_forbidden_query_blocks_and_source_ids() -> None:
         _build((source_overlap,))
 
 
+def test_boundary_allows_legitimate_source_ids_shared_across_construction_rows() -> (
+    None
+):
+    shared_source = "shared-multicall-source"
+    rows = (
+        _row(
+            41,
+            text="Move cabin volume Up by 2 steps",
+            pairs=(("direction", "Up"), ("steps", "2")),
+            source_id=shared_source,
+        ),
+        _row(
+            42,
+            text="Move cabin volume Down by 3 steps",
+            pairs=(("direction", "Down"), ("steps", "3")),
+            source_id=shared_source,
+        ),
+    )
+
+    artifact = _build(rows)
+
+    assert artifact.receipt["boundary"]["construction_source_identity_count"] == 3
+    assert artifact.report["construction_row_count"] == 2
+    assert (
+        artifact.bundles_by_family["smart-car-media-cabin"]
+        .tools_by_name["adjustVolume"]
+        .patterns
+    )
+
+
 def test_unaligned_values_are_excluded_instead_of_leaked() -> None:
     artifact = _build(
         (

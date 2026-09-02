@@ -227,14 +227,13 @@ def _validate_boundary(
     block_overlap = sorted({row.query_idx for row in rows} & set(blocks))
     if block_overlap:
         raise ConstructionExampleGroundError("construction query-block overlap")
-    source_id_list = [
+    # One carrier source may legitimately support multiple construction rows
+    # (notably multi-call decompositions).  Source identities therefore form a
+    # many-to-one overlap-check set; unit identity uniqueness is enforced
+    # separately by the caller-facing builder.
+    row_source_ids = {
         source_id for row in rows for source_id in (*row.sample_ids, row.unit_id)
-    ]
-    row_source_ids = set(source_id_list)
-    if len(source_id_list) != len(row_source_ids):
-        raise ConstructionExampleGroundError(
-            "construction source identities are duplicated"
-        )
+    }
     if row_source_ids & set(sources):
         raise ConstructionExampleGroundError("construction source overlap")
     return blocks, sources, len(row_source_ids)
