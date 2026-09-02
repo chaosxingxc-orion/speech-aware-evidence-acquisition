@@ -149,6 +149,33 @@ def _registry_argument_types(
     return registry
 
 
+def _registry_optional_keys(
+    registry_rows: Sequence[Mapping[str, str]],
+) -> dict[str, frozenset[str]]:
+    optional: dict[str, frozenset[str]] = {}
+    for row in registry_rows:
+        name = row["tool_name"]
+        signature = row["signature"]
+        match = re.fullmatch(r"([A-Za-z_][A-Za-z0-9_]*)\((.*)\)", signature)
+        if match is None or match.group(1) != name:
+            raise G4SemanticCardBuildError(
+                f"registry signature identity drift for {name!r}"
+            )
+        keys = set()
+        for raw in _split_signature_arguments(match.group(2)):
+            argument = re.fullmatch(
+                r"([A-Za-z_][A-Za-z0-9_]*)\s*:\s*.+?(\?)?", raw
+            )
+            if argument is None:
+                raise G4SemanticCardBuildError(
+                    f"registry signature arguments are malformed for {name!r}"
+                )
+            if argument.group(2) is not None:
+                keys.add(argument.group(1))
+        optional[name] = frozenset(keys)
+    return optional
+
+
 def _serialized_value_form(value: str) -> str:
     """Classify a serialized construction value without retaining its literal."""
 
@@ -208,6 +235,7 @@ def derive_compatibility_rules(
     ):
         raise G4SemanticCardBuildError("compatibility minimum support must be at least two")
     registry = _registry_argument_types(registry_rows)
+    optional_keys = _registry_optional_keys(registry_rows)
     pattern_support: Counter[tuple[str, tuple[str, ...]]] = Counter()
     value_forms: dict[
         tuple[str, tuple[str, ...], str], Counter[str]
@@ -263,7 +291,7 @@ def derive_compatibility_rules(
             type_name = public[key].lower()
             null_count = observed.get("null", 0)
             boolean_count = observed.get("boolean", 0)
-            if null_count >= minimum_support:
+            if null_count >= minimum_support and key in optional_keys[tool_name]:
                 forms[key] = "nullable-string"
                 supports.append(null_count)
                 nullable_rules += 1

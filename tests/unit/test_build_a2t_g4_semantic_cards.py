@@ -199,6 +199,31 @@ def test_build_from_partition_covers_152_tools_and_never_renders_private_fields(
         assert private not in corpus.text
 
 
+def test_null_compatibility_requires_a_public_optional_argument() -> None:
+    builder = _builder()
+    registry = (
+        _registry_row("optionalTool", "optionalTool(pin: Int?)"),
+        _registry_row("requiredTool", "requiredTool(mode: Mode)"),
+    )
+    rows = (
+        _row(1, "optionalTool", (("pin", "null"),)),
+        _row(2, "optionalTool", (("pin", "null"),)),
+        _row(3, "requiredTool", (("mode", "null"),)),
+        _row(4, "requiredTool", (("mode", "null"),)),
+    )
+
+    rules, _report = builder.derive_compatibility_rules(registry, rows)
+
+    assert rules == (
+        builder.CompatibilityRule(
+            tool_name="optionalTool",
+            legal_argument_key_set=("pin",),
+            value_forms=(("pin", "nullable-string"),),
+            construction_support_count=2,
+        ),
+    )
+
+
 def test_main_writes_only_explicit_outputs(monkeypatch, tmp_path: Path) -> None:
     builder = _builder()
     corpus_path = tmp_path / "corpus.txt"
