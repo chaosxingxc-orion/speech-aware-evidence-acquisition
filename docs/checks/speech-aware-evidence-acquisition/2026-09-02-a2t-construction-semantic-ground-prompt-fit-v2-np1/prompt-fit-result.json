@@ -1,0 +1,118 @@
+{
+  "bounds": {
+    "completion_token_allowance": 1024,
+    "context_margin_tokens": 13387,
+    "context_tokens": 65536,
+    "context_tokens_per_slot": 65536,
+    "envelopes": [
+      {
+        "envelope_id": "ground-direct",
+        "observation_token_allowance": 0,
+        "prompt_tokens_with_all_reserves": 50086,
+        "special_token_reserve": 2,
+        "speech_feature_token_reserve": 455,
+        "text_prompt_tokens": 49629
+      },
+      {
+        "envelope_id": "ground-agent-observed",
+        "observation_token_allowance": 1024,
+        "prompt_tokens_with_all_reserves": 51125,
+        "special_token_reserve": 2,
+        "speech_feature_token_reserve": 455,
+        "text_prompt_tokens": 49644
+      }
+    ],
+    "maximum_prompt_fits_one_slot": true,
+    "maximum_prompt_tokens_with_all_reserves": 51125,
+    "maximum_text_prompt_tokens": 49644,
+    "minimum_registered_margin_tokens": 4096,
+    "required_context_per_slot": 52149,
+    "slot_count": 1,
+    "worst_envelope_id": "ground-agent-observed"
+  },
+  "contacts": {
+    "audio_seconds": 0,
+    "embedding_tool": 0,
+    "external_network": 0,
+    "frozen_core_decode": 0,
+    "gpu_decode_hours": 0.0,
+    "local_tokenizer_http": 7,
+    "retriever": 0
+  },
+  "decision": "permit only fresh approximately-104 roster freezing and separately preregistered preprocessing and ground qualification",
+  "engineering_scope": {
+    "complete_manifest_outer_parallel_scoring": true,
+    "dataset_sharding": false,
+    "network_jitter_testing": false,
+    "official_scorer_single_process_per_manifest": true
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-A2T-MF-CONSTRUCTION-SEMANTIC-GROUND-PROMPT-FIT-V2-NP1",
+  "gold_read": false,
+  "handbook": {
+    "ascii_only": true,
+    "characters": 97548,
+    "complete_system_message": true,
+    "relative_path": "knowledge/audio2tool/construction-semantic-ground-v2/handbook.txt",
+    "selected_or_reordered_after_measurement": false,
+    "utf8_bytes": 97548
+  },
+  "message_sha256": {
+    "ground-agent-observed": "96f5cabd8a9c54193774f379df41bfbe9f8504678f0292c79e6300672c391e45",
+    "ground-direct": "84ff0abdac726da966916395467149a685e0c53c919407d0ef58e88fbf0d1264"
+  },
+  "observation_bound": {
+    "maximum_ascii_characters": 1024,
+    "maximum_words": 160,
+    "separate_token_allowance": 1024,
+    "silent_truncation_allowed": false
+  },
+  "runtime_verification": {
+    "decoder_gguf_hash_verified": true,
+    "decoder_gguf_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+    "llama_cpp_build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "runtime_binary_and_library_file_count": 44,
+    "runtime_binary_and_library_hashes_verified": true
+  },
+  "schema": "saea-a2t-executable-ground-prompt-fit-result-v1",
+  "source_hashes": {
+    "cpv2_prompt_fit_receipt": "9b6b8464926af01b33bdd6f1f5360eb6623702033e217491b26141b3f947d5df",
+    "executable_ground_build_receipt": "ad7a96c11fbd633e0d1643d385e44726f5a456c522619720e8dcc3f54da56b0d",
+    "handbook": "04c9c78d03b002faf6c828a5b35f1786aadc7f5da3fee2bf675374e7ea2ea697",
+    "model_fragment": "0a76f4d257b43544caab01cef033cdd70964b2b5bd404353f9a09d696227a507",
+    "runtime_receipt": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77"
+  },
+  "speech_feature_bound": {
+    "fresh_roster_inheritance_rule": "every promoted packet must measure at most 455 tokens; a larger packet stops qualification and requires a new prompt-fit receipt",
+    "reserved_tokens": 455,
+    "source_sample_id": "tier7_multiturn:000062"
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "study_commit": "352f76bb2fe18d9911c3bc7600af22db8b827ef1",
+  "test_read": false,
+  "tokenizer": {
+    "allowed_endpoints": [
+      "/props",
+      "/apply-template",
+      "/tokenize"
+    ],
+    "audio_decoded": false,
+    "chat_template_sha256": "45777d2e798aae1d1ce6844e69edcb23fc0c710009554711c78efab9044da2c8",
+    "completion_endpoint_calls": 0,
+    "decoder_evaluations": 0,
+    "generated_tokens": 0,
+    "host": "127.0.0.1",
+    "media_marker": "<__media_SMNjTZRpSQuXDUi4OdpLcNulwnLuaR5C__>",
+    "port": 8090,
+    "request_counts": {
+      "GET /props": 1,
+      "POST /apply-template": 2,
+      "POST /tokenize": 4
+    },
+    "server_log_sha256": "6413d4b29f3cb9e802dbc93ee3bbd7162cc59af0928ca8b73c1cf4a7270fdfc2",
+    "service_started_by_check": true,
+    "service_stopped_by_check": true,
+    "session_receipt_sha256": "af255d66f2af29dc64db2db314cfc833910e2c2bf833fa211fc21b5e8eaa4ff5",
+    "stop_receipt_sha256": "683763a227e498102d88c4f7d13504052152374d31a3abab638658a95e19d236"
+  }
+}
