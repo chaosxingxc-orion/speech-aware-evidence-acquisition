@@ -1,6 +1,6 @@
 # A2T executable-ground prompt-fit 468 v1 preregistration
 
-Date: 2026-09-02. Status: **REGISTERED; COMPUTATION NOT YET RUN**.
+Date: 2026-09-02. Status: **EXECUTED; PASS**.
 Experiment id: `SAEA-A2T-MF-EXECUTABLE-GROUND-PROMPT-FIT-468-V1`.
 Execution profile: `model-free-check`.
 
@@ -51,3 +51,15 @@ Failure leaves ground qualification closed. Passing authorizes only separately p
 qualification implementation and zero-contact preflight over the already frozen 104 roster and 104
 packets. It authorizes no task contact by itself, no pruning, no training-free control, no
 approximately-1,000 scale, no baseline change, no test access, no Stage-3, and no paper-scale work.
+
+## Execution closure
+
+The source-bound integer computation passed. The worst `ground-agent-observed` envelope is 14,066
+prompt tokens and requires 15,090 tokens with the frozen 1,024-token completion allowance, leaving
+17,678 of the 32,768-token slot. Result SHA-256:
+`277f5147b8ce1ac9acca538e4b8a83a2c5b282c62f278afd56e27c9fd61a2fd5`.
+
+The run recorded zero contacts and zero outbound attempts. Two earlier invocations wrote no result:
+the runner incorrectly treated its mutable guard counter object as a boolean, although its recorded
+count was zero. The corrected runner reads `.count` and `.targets`; it changes no input, arithmetic,
+or gate. Five unit tests pass, and the repricing module has 85% statement coverage.

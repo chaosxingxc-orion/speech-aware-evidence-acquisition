@@ -1,0 +1,83 @@
+{
+  "bounds": {
+    "completion_token_allowance": 1024,
+    "context_margin_tokens": 17678,
+    "context_tokens": 65536,
+    "context_tokens_per_slot": 32768,
+    "envelopes": [
+      {
+        "envelope_id": "ground-direct",
+        "observation_token_allowance": 0,
+        "prompt_tokens_with_all_reserves": 13027,
+        "special_token_reserve": 2,
+        "speech_feature_token_reserve": 468,
+        "text_prompt_tokens": 12557
+      },
+      {
+        "envelope_id": "ground-agent-observed",
+        "observation_token_allowance": 1024,
+        "prompt_tokens_with_all_reserves": 14066,
+        "special_token_reserve": 2,
+        "speech_feature_token_reserve": 468,
+        "text_prompt_tokens": 12572
+      }
+    ],
+    "handbook": {
+      "ascii_only": true,
+      "characters": 54881,
+      "complete_system_message": true,
+      "relative_path": "knowledge/audio2tool/executable-ground-v1/handbook.txt",
+      "selected_or_reordered_after_measurement": false,
+      "utf8_bytes": 54881
+    },
+    "maximum_prompt_fits_one_slot": true,
+    "maximum_prompt_tokens_with_all_reserves": 14066,
+    "message_sha256": {
+      "ground-agent-observed": "7db44dd78d95b6faac89aff59016301bdbfb9f114b2c093091604f020c1aca84",
+      "ground-direct": "95fec4672fb85ea2654247b34d334827a3450cbb7edb7254ec7650e8dfe910c5"
+    },
+    "new_speech_feature_token_reserve": 468,
+    "old_speech_feature_token_reserve": 455,
+    "required_context_per_slot": 15090,
+    "runtime_verification": {
+      "decoder_gguf_hash_verified": true,
+      "decoder_gguf_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+      "llama_cpp_build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+      "runtime_binary_and_library_file_count": 44,
+      "runtime_binary_and_library_hashes_verified": true
+    },
+    "slot_count": 2,
+    "speech_reserve_delta": 13
+  },
+  "contacts": {
+    "audio_decode": 0,
+    "embedding": 0,
+    "gpu_hours": 0.0,
+    "model": 0,
+    "network": 0,
+    "outbound_attempts": 0,
+    "outbound_targets": [],
+    "retriever": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "decision": "permit separately preregistered ground-qualification implementation and zero-contact preflight only",
+  "engineering_scope": {
+    "complete_manifest_outer_parallel_scoring": true,
+    "dataset_sharding": false,
+    "network_jitter_testing": false,
+    "official_scorer_single_process_per_manifest": true
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-A2T-MF-EXECUTABLE-GROUND-PROMPT-FIT-468-V1",
+  "gold_read": false,
+  "schema": "saea-a2t-executable-ground-prompt-fit-468-result-v1",
+  "source_hashes": {
+    "preprocess_report": "c2120c9500ac943dc485d1953087965312e13f491ee850775df23347c4dccb0a",
+    "promotion_receipt": "b350567a6dd8b5d9021725756424f2b6ae99803c8c0327901c724fe3ebe8a47f",
+    "prompt_fit_result": "627e0efb01595eb45751a448fcc2b9029ce35f38f73810107506226f86a55c63"
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "study_commit": "3eee64e0d91461d1ed8efdcbf75982f2c098f04c",
+  "test_read": false
+}
