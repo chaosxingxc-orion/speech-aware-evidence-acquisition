@@ -88,16 +88,20 @@ def test_fixed16_identity_tier_balance_and_two_contact_execution_plan() -> None:
     assert launcher.JITTER_TESTING is False
 
 
-def test_all_future_bindings_remain_explicitly_fail_closed() -> None:
+def test_all_launch_bindings_are_explicit_and_complete() -> None:
     launcher = _launcher()
 
-    assert set(launcher._unbound_requirements()) == {
-        "EXPERIMENT_CONFIG_SHA256",
-        "COMPOSED_CONFIG_SHA256",
-        "PROTOCOL_SHA256",
-    }
-    with pytest.raises(RuntimeError, match="G5 launcher bindings are incomplete"):
-        launcher._require_bound_requirements()
+    assert launcher._unbound_requirements() == ()
+    assert launcher._require_bound_requirements() is None
+    assert launcher.EXPERIMENT_CONFIG_SHA256 == (
+        "fb69d031fc291e9fdc228430acfda95d9f743059795059593205891e57afe0c4"
+    )
+    assert launcher.COMPOSED_CONFIG_SHA256 == (
+        "797bf47bcb7fb7c94c46a79cc62e9cd1963414d48c3aa3f8912020f450607f09"
+    )
+    assert launcher.PROTOCOL_SHA256 == (
+        "e669d545e7ffb7ed09e9a827e99951807699c9fc49796d5942a0b31f6716f9fd"
+    )
 
 
 def test_compiler_maps_each_declared_family_to_every_contract_without_ranking() -> None:
