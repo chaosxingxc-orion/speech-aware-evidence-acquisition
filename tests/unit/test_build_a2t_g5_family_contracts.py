@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import json
 from pathlib import Path
 from types import SimpleNamespace
@@ -10,6 +11,21 @@ from types import SimpleNamespace
 
 REPO = Path(__file__).resolve().parents[2]
 SCRIPT = REPO / "scripts" / "build_a2t_g5_family_contracts.py"
+CORPUS = (
+    REPO
+    / "knowledge"
+    / "audio2tool"
+    / "g5-exhaustive-family-contracts-v1"
+    / "corpus.json"
+)
+RECEIPT = (
+    REPO
+    / "docs"
+    / "checks"
+    / "speech-aware-evidence-acquisition"
+    / "2026-09-02-a2t-g5-family-contract-build-v1"
+    / "build-receipt.json"
+)
 
 
 def _builder():
@@ -100,3 +116,22 @@ def test_run_build_records_model_free_qualification(monkeypatch) -> None:
     assert receipt["qualification"]["passed"] is True
     assert set(receipt["contacts"].values()) == {0}
     assert receipt["scope"]["evaluation_rows_consumed"] == 0
+
+
+def test_committed_corpus_and_receipt_preserve_all_fixed_gates() -> None:
+    receipt = json.loads(RECEIPT.read_text(encoding="utf-8"))
+    corpus_bytes = CORPUS.read_bytes()
+
+    assert receipt["execution_profile"] == "model-free-check"
+    assert receipt["corpus"]["sha256"] == hashlib.sha256(corpus_bytes).hexdigest()
+    assert receipt["corpus"]["family_count"] > 1
+    assert receipt["corpus"]["contract_count"] == 152
+    assert receipt["corpus"]["maximum_family_bundle_ascii_bytes"] <= 18_432
+    assert receipt["corpus"]["sha256"] == receipt["corpus"][
+        "reverse_order_build_sha256"
+    ]
+    assert receipt["qualification"]["passed"] is True
+    assert all(receipt["qualification"]["gates"].values())
+    assert set(receipt["contacts"].values()) == {0}
+    assert receipt["offline_guard"]["outbound_connection_attempts"] == 0
+    assert set(receipt["scope"].values()) == {0, False}
