@@ -1,0 +1,31 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "saea-a2t-g5-plan-compile-execute-v1",
+  "evidence_source": "closed-English-family-taxonomy-to-deterministic-full-unranked-family-contract-bundle",
+  "evidence_mismatch": false,
+  "obs_batch_samples": 2,
+  "profile_queue_depth_multiplier": 2,
+  "profile_validation_workers": 2,
+  "speech_native_result_mode": "predictions",
+  "speech_native_contact_ceiling_per_task": 2,
+  "speech_native_dispatch_granularity": "contact",
+  "speech_native_agent_executor_id": "openjiuwen-workflow-v1",
+  "max_concurrent_model_requests": 2,
+  "queue_depth": 4,
+  "state_utf8_byte_cap": 4096,
+  "family_bundle_utf8_byte_cap": 18432,
+  "prompt_token_cap_per_slot": 32768,
+  "plan_completion_token_cap": 256,
+  "final_completion_token_cap": 1024,
+  "temperature": 0,
+  "repair_contacts": 0,
+  "retries": 0,
+  "resends": 0,
+  "network_jitter_testing": false,
+  "response_format_dependency": false,
+  "scorers": [
+    "a2t-toolcall",
+    "cost"
+  ],
+  "task_instruction": "PLAN from original speech using only the closed English family taxonomy, then deterministically compile the complete unranked compatible family-contract bundle. EXECUTE the sole final answer from original speech, the validated PLAN, and that bundle. Return only a JSON array of registered tool calls with legal argument keys."
+}

@@ -1,0 +1,86 @@
+# Audio2Tool G5 exhaustive-family fixed16 v1 preregistration
+
+Date: 2026-09-02. Status: **MODEL CONTACT CLOSED**. Experiment:
+`SAEA-A2T-G5-EXHAUSTIVE-FAMILY-FIXED16-V1`. Execution profile:
+`bounded-discovery-probe`. This is a prospective, bounded discovery ground screen, not
+confirmation, scale, candidate pruning, training-free control, test evaluation, or paper work.
+
+## Frozen population and evidence
+
+The identity-only receipt is
+`docs/receipts/a2t/A2T-G5-FIXED16-IDENTITY.json`, SHA-256
+`81e3703f0529882c943f71dbe213e1c2d9bcd4e9b00fabf51e5499bae3501ffe`.
+Its ordered partition hash is
+`c1c38f4ac670846df8c2a488aa62642bb6d14733aa8cc4fa33955f5c2bf76550` and its
+carrier-prefixed run identity is
+`8c0136a901693548a737bf4bf3fa83206d9bae190283123d6412be6a78b069fe`.
+Runtime verification, the future ExecutionPlan, bundle verification, and protocol hashing use
+the run identity; the partition hash remains receipt-integrity evidence.
+
+There are exactly two identity-selected rows in each of eight tiers, sixteen rows total. G3,
+all G4 rows including remainder24, fresh88, test, future turns, TFRL evaluation surfaces, and
+the unexposed population are excluded. The roster was selected without audio, task text, gold,
+outputs, scores, rewards, tokenizer, scorer, network, or model contact.
+
+The frozen construction-only family corpus is
+`knowledge/audio2tool/g5-exhaustive-family-contracts-v1/corpus.json`, SHA-256
+`92684a16e39985d3c4c6e7e6d62ac54feaa357eaa7c24c744df21950e51f95e`. Its build
+receipt SHA-256 is
+`768533a759c742ccc2bd827164c18d77cf5079558169d5104f6760cacecb81c5`; it proves
+152 contracts across 28 families, a maximum full compatible bundle of 12,057 ASCII bytes, and
+the fixed 18,432-byte bundle ceiling. The builder SHA-256 is
+`08a836c79de3dfc821ee4ce8c29381e5f99d22a3a04fa0d5186fe732cde5e737`; the G5
+AgentLoop boundary SHA-256 is
+`df4f40b6b4269b8dc453ef8579ca9ed8b643b020dc5b7852a750488a4639491c`. The design
+authority SHA-256 is
+`28eacf0a4553c29a000e8c98340a5e2485a06c0f17fff6a74a6729fdafbbf576`.
+
+## Frozen protocol
+
+The same frozen core makes exactly 32 contacts: PLAN16 followed sequentially by EXECUTE16.
+PLAN is non-final and returns only strict English JSON over the closed family taxonomy; it has a
+256-token completion cap. Deterministic, contact-free COMPILE validates the PLAN and supplies the
+complete, unranked compatible family bundle. EXECUTE is the sole final answer and has a
+1,024-token completion cap. Temperature is zero, with two slots, at most two concurrent requests,
+and queue depth four.
+
+The PLAN state is capped at 4,096 ASCII bytes. Every full bundle must be at most 18,432 ASCII
+bytes; it may not be ranked, pruned, partially trimmed, or changed adaptively. PLAN text is capped
+at 6,000 tokens and EXECUTE text at 12,000 tokens before measured speech and special-token
+reserves. Every per-slot total must fit within 32,768 tokens. There is no repair, retry, resend,
+jitter experiment, cumulative history, or response-format dependency.
+
+## Gate and stop rule
+
+P16 passes only with parse at least 15/16, exact at least 15/16, correct tool 16/16, slot micro-F1
+at least 0.90, and at least one exact row in every tier. It additionally requires zero
+out-of-registry names, illegal argument-key sets, synthetic literal copies, and parser repairs.
+Structural checks do not substitute for the official exact gate. Both complete contact manifests
+must seal before gold or the unchanged whole-manifest official scorer opens; no dataset sharding or
+shard-score averaging is permitted.
+
+If any gate fails, no scale, pruning, TFRL, G3/G4/remainder contact, fresh88, or test opens. A pass
+only permits a separately preregistered, identity-selected, disjoint 40-row discovery proposal,
+which must independently meet parse 39/40, exact 36/40, correct tool 38/40, slot micro-F1 0.90,
+and four exact rows in each tier.
+
+## Current closure and provisional identity
+
+The baseline and experiment fragments are registered at
+`configs/baseline/a2t-g5-exhaustive-family-agentloop.json` and
+`configs/experiment/a2t-g5-exhaustive-family-fixed16-v1.json`. Their provisional composed-config
+and protocol identities use the registered `q4km-mmproj-free-speech-native-np16` model fragment,
+the `audio2tool-g1-104` dataset fragment solely for configuration composition, this baseline, and
+this experiment, with the G5 run identity above. They do not authorize contact and will be
+prospectively superseded by one final hash amendment when the dedicated G5 integration, exact
+prompt-fit receipt, runtime binding, ExecutionPlan, and launcher hashes land.
+
+The current baseline, experiment, provisional composed-config, and provisional protocol SHA-256
+values are `bda861b2d110b2b98b9a0cc8ffa3311cef21d2325091ff2be42417a3a8152e92`,
+`da536090f85a6131f9e7da061d4bbcbcbc32230ee462906ded1238a3307f7bf9d`,
+`0c6cf271d79a79190226bc046c40105f04927b35f8a7ceb7a10d2cf8473ce941`, and
+`fa7ea93447b6965fcd0758a0ee8c5ee3e28aecd6786fe8d8fe9d543699612e42`, respectively.
+
+Before any contact, verify all frozen hashes, create the final no-contact prompt-fit receipt,
+construct the structured ExecutionPlan, bind the receipt-pinned runtime and complete manifests,
+append the final exposure amendment, and run the integrated preflight from a clean commit.

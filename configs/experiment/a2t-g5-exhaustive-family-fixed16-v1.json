@@ -1,0 +1,135 @@
+{
+  "schema": "saea-a2t-g5-exhaustive-family-fixed16-experiment-v1",
+  "experiment_id": "SAEA-A2T-G5-EXHAUSTIVE-FAMILY-FIXED16-V1",
+  "status": "MODEL_CONTACT_CLOSED_PENDING_INTEGRATION_PROMPT_FIT_AND_LAUNCHER_BINDINGS",
+  "date": "2026-09-02",
+  "execution_profile": "bounded-discovery-probe",
+  "claim_scope": "Prospective 16-row bounded discovery ground screen only; no confirmation, scale, pruning, training-free control, test, or paper claim.",
+  "population": {
+    "receipt": "docs/receipts/a2t/A2T-G5-FIXED16-IDENTITY.json",
+    "receipt_sha256": "81e3703f0529882c943f71dbe213e1c2d9bcd4e9b00fabf51e5499bae3501ffe",
+    "split_name": "A2T-G5-FIXED16",
+    "split_role": "discovery",
+    "count": 16,
+    "tiers": 8,
+    "items_per_tier": 2,
+    "partition_split_identity_hash": "c1c38f4ac670846df8c2a488aa62642bb6d14733aa8cc4fa33955f5c2bf76550",
+    "run_identity_hash": "8c0136a901693548a737bf4bf3fa83206d9bae190283123d6412be6a78b069fe",
+    "verified_split_identity_hash": "8c0136a901693548a737bf4bf3fa83206d9bae190283123d6412be6a78b069fe",
+    "execution_plan_split_identity_hash": "8c0136a901693548a737bf4bf3fa83206d9bae190283123d6412be6a78b069fe",
+    "protocol_split_identity_hash": "8c0136a901693548a737bf4bf3fa83206d9bae190283123d6412be6a78b069fe",
+    "identity_rule": "The receipt split hash proves the ordered tier-and-sample partition. Runtime verification, ExecutionPlan binding, and protocol hashing use the carrier-prefixed run identity.",
+    "excluded_surfaces": ["G3", "G4 selected16", "G4 remainder24", "fresh88", "test", "future turns", "TFRL evaluation surfaces", "unexposed population"]
+  },
+  "frozen_components": {
+    "baseline_config": "configs/baseline/a2t-g5-exhaustive-family-agentloop.json",
+    "family_contract_builder": "scripts/build_a2t_g5_family_contracts.py",
+    "family_contract_builder_sha256": "08a836c79de3dfc821ee4ce8c29381e5f99d22a3a04fa0d5186fe732cde5e737",
+    "family_contract_corpus": "knowledge/audio2tool/g5-exhaustive-family-contracts-v1/corpus.json",
+    "family_contract_corpus_sha256": "92684a16e39985d3c4c6e7e6d62ac54feaa357eaa7c24c744df21950e51f95e5",
+    "family_contract_build_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-02-a2t-g5-family-contract-build-v1/build-receipt.json",
+    "family_contract_build_receipt_sha256": "768533a759c742ccc2bd827164c18d77cf5079558169d5104f6760cacecb81c5",
+    "design_authority": "docs/checks/speech-aware-evidence-acquisition/2026-09-02-a2t-g5-ground-redesign/design.md",
+    "design_authority_sha256": "28eacf0a4553c29a000e8c98340a5e2485a06c0f17fff6a74a6729fdafbbf576",
+    "agentloop_module": "src/speech_aware_evidence_acquisition/rails/probes/a2t_g5_agentloop.py",
+    "agentloop_module_sha256": "df4f40b6b4269b8dc453ef8579ca9ed8b643b020dc5b7852a750488a4639491c",
+    "compiler_policy_id": "g5-full-unranked-family-compiler-v1",
+    "controller_policy_id": "saea-a2t-g5-plan-compile-execute-v1",
+    "model": "frozen Qwen3-Omni Q4_K_M through the receipt-pinned local llama.cpp API-shaped boundary",
+    "contact_preconditions": [
+      "Land and hash the G5 runtime integration and launcher without changing this population, protocol, packet limits, or gates.",
+      "Produce a zero-contact prompt-fit receipt for every exact PLAN and EXECUTE message, including measured speech and special-token reserves, under the 32768-token per-slot ceiling.",
+      "Bind the receipt-pinned runtime, structured ExecutionPlan, complete manifests, and final exposure-ledger amendment to the integrated launcher hashes.",
+      "Verify the corpus, build receipt, compiler, AgentLoop module, identity receipt, and design authority before the first contact."
+    ]
+  },
+  "protocol": {
+    "contacts_per_sample": 2,
+    "ordered_contacts": ["PLAN", "COMPILE_CONTACT_FREE", "EXECUTE"],
+    "same_frozen_core": true,
+    "plan": {
+      "contacts": 16,
+      "completion_token_cap": 256,
+      "purpose": "non-final closed-family English plan only",
+      "forbidden_output": ["tool names", "calls", "final answer", "metadata", "example-derived values"]
+    },
+    "compile": {
+      "contacts": 0,
+      "policy": "deterministic complete full-unranked family admission",
+      "allows": ["declared syntax-level incompatibility exclusion", "fixed fallback union for invalid or unrecognized plans"],
+      "forbids": ["ranking", "pruning", "top-k", "similarity", "sample or tier identity", "gold", "outcome", "reward", "model-selected candidate name"]
+    },
+    "execute": {
+      "contacts": 16,
+      "completion_token_cap": 1024,
+      "sole_final_answer_authority": true,
+      "runtime_value_sources": ["original speech", "validated PLAN span labels"]
+    },
+    "temperature": 0,
+    "slots": 2,
+    "max_concurrent_model_requests": 2,
+    "queue_depth": 4,
+    "repair": false,
+    "retry": false,
+    "resend": false,
+    "jitter_experiment": false,
+    "cumulative_history": false,
+    "response_format_dependency": false,
+    "trace_phases": ["OBS", "ORG", "SUPPLY", "USE"]
+  },
+  "bounds": {
+    "plan_state_ascii_byte_cap": 4096,
+    "family_bundle_ascii_byte_cap": 18432,
+    "family_bundle_policy": "complete, unranked, and never partially trimmed",
+    "plan_text_token_cap": 6000,
+    "execute_text_token_cap_before_measured_reserves": 12000,
+    "per_slot_total_token_cap": 32768,
+    "completion_reserve_rule": "PLAN reserves 256 completion tokens; EXECUTE reserves 1024 completion tokens; both reserve measured speech and special tokens without silent truncation.",
+    "example_call_literals": false,
+    "evaluation_derived_values": false
+  },
+  "gates": {
+    "parse_count_minimum": 15,
+    "exact_count_minimum": 15,
+    "tool_count_minimum": 16,
+    "slot_micro_f1_minimum": 0.9,
+    "per_tier_exact_count_minimum": 1,
+    "out_of_registry_name_count_maximum": 0,
+    "illegal_argument_key_set_count_maximum": 0,
+    "synthetic_literal_copy_count_maximum": 0,
+    "parser_repair_count_maximum": 0,
+    "all_conditions_required": true,
+    "structural_checks_do_not_substitute_for_official_exact_gate": true
+  },
+  "scoring": {
+    "official_scorer": "unchanged a2t-toolcall scorer",
+    "score_open_rule": "Seal both complete 16-row PLAN and EXECUTE contact manifests before opening gold or the official scorer.",
+    "whole_manifest_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "non_gold_structural_checks": ["PLAN parse", "registry-name-only", "legal argument-key sets", "synthetic literal copying", "parser repairs"]
+  },
+  "contact_budget": {
+    "planned_model_calls": 32,
+    "planned_speech_audio_seconds": "pending a no-contact, identity-bound duration receipt",
+    "planned_gpu_hours": "pending a no-contact, receipt-pinned runtime estimate",
+    "embedding_contacts": 0,
+    "tokenizer_contacts": 0,
+    "paid_api_spend": 0
+  },
+  "decision_rule": {
+    "failure": "If any gate fails, do not scale, prune, fit training-free control, contact G3 or G4 remainder rows, contact fresh88, or contact test. Freeze attribution at knowledge coverage, family routing recall, tool selection, and argument realization.",
+    "pass": "Only if every fixed16 gate passes, freeze the exact corpus, compiler, parser, prompt, runtime, and launcher identities. Then and only then a separately preregistered identity-selected disjoint 40-row discovery qualification cohort may be proposed.",
+    "disjoint40_gate": {"parse_count_minimum": 39, "exact_count_minimum": 36, "tool_count_minimum": 38, "slot_micro_f1_minimum": 0.9, "per_tier_exact_count_minimum": 4},
+    "fresh88_closed": true,
+    "test_closed": true,
+    "tfrl_closed": true,
+    "stage3_closed": true,
+    "paper_scale_closed": true
+  },
+  "prohibitions": [
+    "No model, scorer, tokenizer, retriever-service, external network, gold, reference transcript, task output, score, reward, test annotation, or future-turn contact is authorized by this contract alone.",
+    "Do not use G3, G4, remainder24, fresh88, test, TFRL, or unexposed surfaces for runtime, tuning, or comparison.",
+    "Do not repair, retry, resend, jitter-test, recontact a row, scale, prune, or fit training-free control after a failure."
+  ]
+}
