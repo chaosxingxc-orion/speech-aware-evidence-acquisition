@@ -1,0 +1,59 @@
+{
+  "schema": "saea-a2t-construction-semantic-ground-diagnostic-v1",
+  "experiment_id": "SAEA-A2T-CONSTRUCTION-SEMANTIC-GROUND-DIAGNOSTIC-104-V1",
+  "status": "PREREGISTERED",
+  "date": "2026-09-02",
+  "execution_profile": "bounded-discovery-probe",
+  "claim_scope": "development diagnostic of a construction-derived task ground on the already-exposed 104-sample discovery cohort",
+  "population": {
+    "name": "A2T-GROUND-QUAL-104",
+    "count": 104,
+    "tiers": 8,
+    "items_per_tier": 13,
+    "audio_seconds_total": 543.107,
+    "receipt_sha256": "eeb90abbe8695e449c676f18339db6618cb6d606d6c1e7c656626e4e9b6b6c16",
+    "run_identity_hash": "fbd4addd541ff29214cbff7c35564b15f27e2fb7f438202b79d694b1c5961d4b",
+    "test_used": false
+  },
+  "frozen_inputs": {
+    "handbook_sha256": "04c9c78d03b002faf6c828a5b35f1786aadc7f5da3fee2bf675374e7ea2ea697",
+    "handbook_build_receipt_sha256": "ad7a96c11fbd633e0d1643d385e44726f5a456c522619720e8dcc3f54da56b0d",
+    "prompt_fit_receipt_sha256": "942d26c839f4d57dbed787087829dc920f51f1693096b60df157c47ad5750c25",
+    "historical_g1_score_sha256": "ef172f42cab575d2fe746066a9b95595930f568e4058b6c3f071c4a194a86706",
+    "decoding": "temperature 0, seed 20260803, max_tokens 1024, one 65536-token slot"
+  },
+  "arms": {
+    "G2_CONSTRUCTION_SEMANTIC_GROUND": {
+      "contacts": 104,
+      "comparison": "post-seal paired comparison with the frozen historical G1 score on the same discovery identities",
+      "resends": 0
+    }
+  },
+  "gates": {
+    "parse_count_minimum": 103,
+    "exact_count_minimum": 94,
+    "exact_target_count": 99,
+    "tool_count_minimum": 99,
+    "slot_micro_f1_minimum": 0.9,
+    "paired_exact_grouped_ci90_lower_strictly_positive": true
+  },
+  "execution": {
+    "expected_model_calls": 104,
+    "planned_model_calls": 108,
+    "planned_speech_audio_seconds": 570,
+    "planned_gpu_hours": 0.5,
+    "paid_api_spend": 0,
+    "request_parallelism": 1,
+    "official_scorer_processes_per_complete_manifest": 1,
+    "dataset_sharding": false,
+    "network_jitter_testing": false
+  },
+  "interpretation": {
+    "pass": "Freeze G2 as the full ground, then test candidate reduction and AgentLoop information acquisition on a fresh discovery cohort.",
+    "fail": "Do not scale. Use per-tier and error-channel evidence to choose between complete multiturn observation, knowledge expansion, and hierarchical ground access.",
+    "same_cohort_limit": "This is a rapid development diagnostic, not an independent confirmation. Any promotion requires a fresh discovery cohort.",
+    "test_closed": true,
+    "scale_closed_until_pass": true,
+    "training_free_rl_deferred": true
+  }
+}

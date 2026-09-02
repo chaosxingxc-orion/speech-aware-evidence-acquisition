@@ -1,0 +1,23 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "fixed-construction-semantic-ground-v2",
+  "evidence_source": "query-independent-construction-semantic-handbook",
+  "evidence_mismatch": false,
+  "obs_batch_samples": 1,
+  "allow_empty_speech_feature_evidence": true,
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a/A2T-GROUND-QUAL-104-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "b350567a6dd8b5d9021725756424f2b6ae99803c8c0327901c724fe3ebe8a47f",
+  "speech_native_prompt_fit_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-02-a2t-construction-semantic-ground-prompt-fit-v2-np1/prompt-fit-result.json",
+  "speech_native_prompt_fit_receipt_sha256": "942d26c839f4d57dbed787087829dc920f51f1693096b60df157c47ad5750c25",
+  "profile_queue_depth_multiplier": 1,
+  "profile_validation_workers": 8,
+  "speech_native_result_mode": "predictions",
+  "speech_native_contact_ceiling_per_task": 1,
+  "speech_native_dispatch_granularity": "contact",
+  "speech_native_agent_executor_id": "openjiuwen-workflow-v1",
+  "scorers": [
+    "a2t-toolcall",
+    "cost"
+  ],
+  "task_instruction": "Use the complete construction-derived semantic ground to infer the exact Audio2Tool JSON name/arguments call array from the original speech. Return only that JSON array."
+}
