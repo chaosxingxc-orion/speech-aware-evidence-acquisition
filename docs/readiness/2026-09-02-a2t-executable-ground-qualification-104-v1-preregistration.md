@@ -4,8 +4,11 @@ Date: 2026-09-02. Status: **REGISTERED DESIGN; MODEL CONTACT CLOSED**.
 Experiment: `SAEA-A2T-EXECUTABLE-GROUND-QUALIFICATION-104-V1`.
 Execution profile: `bounded-discovery-probe`.
 Composed config SHA-256:
-`2ec773a13e65698d0d8f750b46ae377213ebb1cd98660cd813fd077dcb56b1dd`.
-Protocol SHA-256: `c0c611454c3db4b1f185811eb8f7d40e96d92123790a75c6927cc5954f73a4aa`.
+`d6780127652775a09aad9d2d6f83f9ec8b141b1f0fcc9079498f1ef5f618c4c8`.
+Protocol SHA-256: `9093c767e1bc6af020e0be94b5c4c4ba357c5371ba622d8cf577f1bfaa5695ae`.
+These identities supersede the design-only `2ec773a1...` / `c0c61145...` pair before any model
+contact; the only change freezes the already-required grouped interval's replication count, seed,
+quantiles, and cluster resampling rule.
 
 ## Objective and scientific sequence
 
@@ -49,7 +52,11 @@ The basic ground passes only if all conditions hold on the complete 104-row grou
 - at least 99 tool-correct rows (95.19%);
 - slot micro-F1 at least 0.90;
 - at least +15 exact and +15 tool-correct rows over same-flight M0;
-- the query-grouped paired exact-gain 90% interval has a strictly positive lower bound;
+- the query-grouped paired exact-gain 90% interval has a strictly positive lower bound. This is a
+  percentile bootstrap with 10,000 replicates, seed 20260902, and NumPy linear 0.05/0.95
+  quantiles. Each replicate samples frozen `query_block` identities with replacement, includes
+  every paired row in each sampled block, and takes the sample-weighted mean ground-minus-M0 exact
+  delta;
 - all 16 resends parse, at least 15/16 source/resend pairs have equal parsed call multisets, and at
   least 15/16 have the same exact-correct outcome.
 

@@ -16,7 +16,10 @@ The unit is one frozen Audio2Tool speech query. The population is exactly the 10
 Use the unchanged official `a2t-toolcall` scorer for the two complete 104-row manifests. Report exact
 count/rate, tool count/rate, slot micro precision/recall/F1, parse count/rate, empty calls, and the
 complete per-tier table. Compute the paired exact delta by whole query group with the frozen grouped
-90% interval procedure. Parse resends with the same exact parser and compare call multisets plus
+90% percentile interval: 10,000 bootstrap replicates, seed 20260902, NumPy linear quantiles at 0.05
+and 0.95. Each replicate samples frozen `query_block` identities with replacement, includes every
+paired row in each sampled block, and computes the sample-weighted mean ground-minus-M0 exact
+delta. Parse resends with the same exact parser and compare call multisets plus
 exact-correct outcomes on the fixed 16 pairs.
 
 Basic pass is conjunctive: parse at least 103, exact at least 94, tool at least 99, slot F1 at least

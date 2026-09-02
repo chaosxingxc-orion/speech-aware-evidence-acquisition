@@ -78,6 +78,18 @@
     "gold_open_rule": "Both complete 104-row manifests and the 16-row resend trace must seal before either official scorer starts.",
     "resend_read": "After the two official jobs settle, use the unchanged local parser/item scorer only on the fixed 16 source/resend pairs."
   },
+  "statistics": {
+    "paired_outcome": "ground exact-correct minus same-sample M0 exact-correct",
+    "cluster_id": "query_block",
+    "bootstrap_replicates": 10000,
+    "bootstrap_seed": 20260902,
+    "confidence_level": 0.9,
+    "interval": "percentile",
+    "quantile_method": "linear",
+    "lower_quantile": 0.05,
+    "upper_quantile": 0.95,
+    "replicate_rule": "Sample the frozen query_block identities with replacement, include every paired row belonging to each sampled block, and compute the sample-weighted mean paired exact delta."
+  },
   "contact_budget": {
     "expected_model_calls": 224,
     "planned_model_calls": 230,
