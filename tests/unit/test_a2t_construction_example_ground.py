@@ -269,13 +269,30 @@ def test_boundary_allows_legitimate_source_ids_shared_across_construction_rows()
 
     artifact = _build(rows)
 
-    assert artifact.receipt["boundary"]["construction_source_identity_count"] == 3
+    assert artifact.receipt["boundary"]["construction_source_identity_count"] == 1
     assert artifact.report["construction_row_count"] == 2
     assert (
         artifact.bundles_by_family["smart-car-media-cabin"]
         .tools_by_name["adjustVolume"]
         .patterns
     )
+
+
+def test_source_boundary_does_not_mix_internal_unit_and_sample_namespaces() -> None:
+    row = _row(
+        43,
+        text="Move cabin volume Up by 4 steps",
+        pairs=(("direction", "Up"), ("steps", "4")),
+        source_id="construction-only-source",
+    )
+    same_text_as_forbidden_source = A2tKbRow(
+        **{**row.__dict__, "unit_id": "evaluation-source-1"}
+    )
+
+    artifact = _build((same_text_as_forbidden_source,))
+
+    assert artifact.receipt["boundary"]["construction_source_identity_count"] == 1
+    assert artifact.receipt["boundary"]["source_identity_intersection_count"] == 0
 
 
 def test_unaligned_values_are_excluded_instead_of_leaked() -> None:
