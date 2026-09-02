@@ -1,0 +1,58 @@
+{
+  "audit": {
+    "always_matched_net": 8,
+    "changed_count": 70,
+    "gates": {
+      "always_matched_net": true,
+      "minimum_harms": true,
+      "minimum_saves": true,
+      "oracle_net_over_m0": true,
+      "oracle_net_over_matched": true
+    },
+    "m0_exact_count": 32,
+    "matched_exact_count": 40,
+    "n_samples": 104,
+    "oracle_exact_count": 46,
+    "oracle_minus_m0": 14,
+    "oracle_minus_matched": 6,
+    "paired_counts": {
+      "both_correct": 26,
+      "both_wrong": 58,
+      "harm": 6,
+      "save": 14
+    },
+    "parse_counts": {
+      "both_parse": 98,
+      "neither_parse": 0,
+      "parse_loss": 0,
+      "parse_rescue": 6
+    },
+    "postcontact_headroom_present": true,
+    "unchanged_count": 34
+  },
+  "claim_status": "exposed-cohort aggregate feasibility only",
+  "contacts": {
+    "audio_seconds": 0,
+    "embedding_tool": 0,
+    "frozen_core": 0,
+    "gpu_hours": 0.0,
+    "http_or_socket": 0,
+    "retriever": 0,
+    "tokenizer": 0
+  },
+  "decision": "permit only a separately preregistered model-free post-contact controller screen",
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-A2T-MF-POSTCONTACT-HEADROOM-V1",
+  "offline_guard": {
+    "outbound_connection_attempts": 0,
+    "targets": []
+  },
+  "schema": "saea-a2t-postcontact-headroom-result-v1",
+  "source_hashes": {
+    "cohort_receipt": "8f47922124c61f92fee03273c1165eb1f8f97048d910ddd4a6a7243906d78783",
+    "m0_outputs": "9efc91d7362e40255a25d099b3fb464b32ca87228f96c4db5c0aba0edcbdf400",
+    "matched_outputs": "4f41183d01a5246a76944ad48843936fb8fe08907a84f55784079feb0c1afc9b",
+    "split_identity": "401a28684adea908c80363df0815c9ce04b0ffa46a654975b129d4b69e60f8a1"
+  },
+  "study_commit": "6b70b09d708a2928e3d99d9dbc2c706816fbb4c7"
+}

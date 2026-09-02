@@ -68,6 +68,10 @@ one complete 104-row manifest; no dataset was sharded and no shard metric was av
 jobs succeeded in 2.7586 seconds wall time versus 9.3186 seconds summed job time, an effective
 3.3780-times speedup. The dependent policy derivative then used one complete single-worker Wave-2
 job. This whole-manifest outer-parallel pattern is retained as the engineering evaluation baseline.
+Network-jitter injection, packet-loss simulation, and network-retry stress are deliberately outside
+that baseline: the frozen core and scorer use local service boundaries, and network variation is not
+a scientific axis or an engineering acceptance condition for this study. Throughput checks retain
+only local wall time, summed job time, worker count, queue/service behavior, and fail-closed recovery.
 
 ## Consequence and next admissible experiment
 

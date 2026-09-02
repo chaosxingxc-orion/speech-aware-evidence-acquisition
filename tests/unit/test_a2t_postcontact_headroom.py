@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import pytest
 
 from speech_aware_evidence_acquisition.analysis import a2t_postcontact_headroom as audit
@@ -94,3 +97,51 @@ def test_headroom_rejects_duplicate_and_nonbinary_records() -> None:
             m0_parsed=True,
             matched_parsed=True,
         )
+
+
+def test_committed_headroom_result_preserves_the_sealed_decision() -> None:
+    repository_root = Path(__file__).resolve().parents[2]
+    result_path = (
+        repository_root
+        / "docs"
+        / "checks"
+        / "speech-aware-evidence-acquisition"
+        / "2026-09-01-a2t-postcontact-headroom-v1"
+        / "headroom-result.json"
+    )
+    result = json.loads(result_path.read_text(encoding="utf-8"))
+
+    assert result["execution_profile"] == "model-free-check"
+    assert result["offline_guard"]["outbound_connection_attempts"] == 0
+    assert set(result["contacts"].values()) == {0}
+    assert result["audit"] == {
+        "always_matched_net": 8,
+        "changed_count": 70,
+        "gates": {
+            "always_matched_net": True,
+            "minimum_harms": True,
+            "minimum_saves": True,
+            "oracle_net_over_m0": True,
+            "oracle_net_over_matched": True,
+        },
+        "m0_exact_count": 32,
+        "matched_exact_count": 40,
+        "n_samples": 104,
+        "oracle_exact_count": 46,
+        "oracle_minus_m0": 14,
+        "oracle_minus_matched": 6,
+        "paired_counts": {
+            "both_correct": 26,
+            "both_wrong": 58,
+            "harm": 6,
+            "save": 14,
+        },
+        "parse_counts": {
+            "both_parse": 98,
+            "neither_parse": 0,
+            "parse_loss": 0,
+            "parse_rescue": 6,
+        },
+        "postcontact_headroom_present": True,
+        "unchanged_count": 34,
+    }
