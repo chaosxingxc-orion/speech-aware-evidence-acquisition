@@ -1,0 +1,141 @@
+{
+  "schema": "saea-a2t-g6-exhaustive-family-sweep-fixed16-experiment-v1",
+  "experiment_id": "SAEA-A2T-G6-EXHAUSTIVE-FAMILY-SWEEP-FIXED16-V1",
+  "status": "PREREGISTERED_NO_CONTACT_AUTHORIZATION",
+  "date": "2026-09-02",
+  "execution_profile": "bounded-discovery-probe",
+  "claim_scope": "Prospective Stage-2 16-row bounded discovery ground screen only; no confirmation, scale, pruning, training-free control, test, or paper claim.",
+  "scientific_objective": "Test whether exhaustive family-local evidence acquisition and evidence-bound final resolution can qualify the frozen G5 contract corpus before pruning or reward-guided control is introduced.",
+  "population": {
+    "receipt": "docs/receipts/a2t/A2T-G6-FAMILY-SWEEP-FIXED16.json",
+    "receipt_sha256": "fcc8350312710b6a5831185e265a3b92fe619279acd0924da7b83268b07ff25b",
+    "split_name": "A2T-G6-FAMILY-SWEEP-FIXED16",
+    "split_role": "discovery",
+    "count": 16,
+    "tiers": 8,
+    "items_per_tier": 2,
+    "split_identity_hash": "a99a64f004534516399c520c742132dc31d5c06cab5e59240653ff586a60fcb5",
+    "verified_split_identity_hash": "a99a64f004534516399c520c742132dc31d5c06cab5e59240653ff586a60fcb5",
+    "execution_plan_split_identity_hash": "a99a64f004534516399c520c742132dc31d5c06cab5e59240653ff586a60fcb5",
+    "protocol_split_identity_hash": "a99a64f004534516399c520c742132dc31d5c06cab5e59240653ff586a60fcb5",
+    "identity_rule": "Use the carrier-prefixed manifest split identity for VerifiedSplit, ExecutionPlan, protocol hashing, and manifest verification. Do not use the selection identity hash.",
+    "excluded_surfaces": ["G3", "G4", "G5", "fresh88", "test", "future turns", "TFRL evaluation surfaces", "unexposed population"]
+  },
+  "frozen_components": {
+    "baseline_config": "configs/baseline/a2t-g6-exhaustive-family-sweep-agentloop.json",
+    "design_authority": "docs/checks/speech-aware-evidence-acquisition/2026-09-02-a2t-g6-exhaustive-family-sweep-design/design.md",
+    "design_commit": "bf14b8bba9e1d100e7864b5ca856b29a6b558c76",
+    "family_contract_corpus": "knowledge/audio2tool/g5-exhaustive-family-contracts-v1/corpus.json",
+    "family_contract_corpus_sha256": "92684a16e39985d3c4c6e7e6d62ac54feaa357eaa7c24c744df21950e51f95e5",
+    "family_sweep_module": "src/speech_aware_evidence_acquisition/rails/probes/a2t_g6_family_sweep.py",
+    "corpus_renderer_module": "src/speech_aware_evidence_acquisition/rails/probes/a2t_g6_corpus_renderer.py",
+    "controller_policy_id": "saea-a2t-g6-exhaustive-family-sweep-v1",
+    "required_model_fragment": "configs/model/q4km-mmproj-free-speech-native-np2-a2t-max1024.json",
+    "model": "frozen Qwen3-Omni Q4_K_M through the receipt-pinned local llama.cpp API-shaped boundary",
+    "contact_preconditions": [
+      "Land and hash the G6 runtime integration and launcher without changing this roster, protocol, packet limits, or gates.",
+      "Produce a zero-contact exact prompt-fit receipt for every FAMILY SCAN and RESOLVE request, including measured speech and special-token reserves, under the 32768-token per-slot ceiling with at least 8192 tokens of headroom.",
+      "Bind the receipt-pinned runtime, structured ExecutionPlan, complete manifests, and exposure-ledger amendment to the integrated launcher identities.",
+      "Verify the frozen corpus, roster receipt, design authority, family-sweep module, corpus renderer, and all 28 family bundle boundaries before the first contact."
+    ]
+  },
+  "protocol": {
+    "contacts_per_sample": 29,
+    "ordered_contacts": ["FAMILY_SCAN_28_INDEPENDENT", "RESOLVE_AFTER_ALL_28_REPORTS"],
+    "same_frozen_core": true,
+    "family_scan": {
+      "contacts_per_sample": 28,
+      "completion_token_cap": 512,
+      "purpose": "one complete frozen family bundle as reference-only evidence against original speech",
+      "all_families_required_before_resolve": true,
+      "forbidden_output": ["final calls", "prose", "metadata", "repair", "evaluation fields", "tools outside the supplied family", "contract-default task values"]
+    },
+    "resolve": {
+      "contacts_per_sample": 1,
+      "completion_token_cap": 1024,
+      "sole_final_answer_authority": true,
+      "requires_all_28_sealed_reports": true,
+      "runtime_value_sources": ["original speech", "validated family-report speech evidence", "explicitly permitted construction canonicalizers"]
+    },
+    "temperature": 0,
+    "slots": 2,
+    "max_concurrent_model_requests": 2,
+    "queue_depth": 4,
+    "repair": false,
+    "retry": false,
+    "resend": false,
+    "jitter_experiment": false,
+    "cumulative_history": false,
+    "response_format_dependency": false,
+    "trace_phases": ["OBS", "ORG", "SUPPLY", "USE"]
+  },
+  "bounds": {
+    "per_slot_total_token_cap": 32768,
+    "operational_headroom_token_minimum": 8192,
+    "scan_report_ascii_byte_cap": 2048,
+    "all_scan_reports_ascii_byte_cap": 32768,
+    "family_bundle_ascii_byte_cap": 12288,
+    "resolve_contracts_ascii_byte_cap": 18432,
+    "final_response_ascii_byte_cap": 8192,
+    "completion_reserve_rule": "Every exact fully rendered request reserves its declared completion cap plus measured speech and special tokens. Refuse before contact instead of truncating or reducing completion capacity.",
+    "example_call_literals": false,
+    "evaluation_derived_values": false
+  },
+  "gates": {
+    "parse_count_minimum": 15,
+    "exact_count_minimum": 15,
+    "tool_count_minimum": 16,
+    "slot_micro_f1_minimum": 0.9,
+    "per_tier_exact_count_minimum": 1,
+    "out_of_registry_name_count_maximum": 0,
+    "illegal_argument_key_set_count_maximum": 0,
+    "inventory_enumeration_count_maximum": 0,
+    "parser_repair_count_maximum": 0,
+    "retry_count_maximum": 0,
+    "silent_truncation_count_maximum": 0,
+    "synthetic_or_default_task_value_copy_count_maximum": 0,
+    "all_conditions_required": true,
+    "structural_checks_do_not_substitute_for_official_exact_gate": true
+  },
+  "comparator": {
+    "label": "frozen G1 M0 same-roster comparator",
+    "contact_count": 0,
+    "rule": "After roster freeze, reuse the sealed G1 M0 outputs by identity filtering only. Do not create new M0 model contacts."
+  },
+  "scoring": {
+    "official_scorer": "unchanged a2t-toolcall scorer",
+    "score_open_rule": "Seal every complete 16-row 29-contact trace and final-response manifest before opening gold or the official scorer.",
+    "whole_manifest_only": true,
+    "single_process": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "non_gold_structural_checks": ["scan-report validity", "registered-tool-only", "legal argument-key sets", "inventory enumeration", "synthetic/default task-value copying", "parser repairs", "retries", "silent truncation"]
+  },
+  "contact_budget": {
+    "planned_model_calls": 464,
+    "contacts_per_sample": 29,
+    "sample_count": 16,
+    "selected_one_pass_speech_audio_seconds": 87.001,
+    "repeated_speech_audio_seconds_cap": 2600,
+    "embedding_contacts": 0,
+    "tokenizer_contacts": 0,
+    "paid_api_spend": 0
+  },
+  "decision_rule": {
+    "failure": "If any gate fails, do not scale to 40, 100, or 1000 rows; do not prune, fit training-free reward-guided control, contact fresh88 or test, or recontact a row. Use sealed mediator analysis only to select a construction-only successor on a new identity-only roster.",
+    "pass": "Only if every fixed16 gate passes, freeze the corpus, family-scan schema, resolver, runtime budget, and decode settings. Then and only then a separately preregistered disjoint 40-row discovery support gate may be proposed.",
+    "disjoint40_gate": {"exact_rate_minimum": 0.9, "separate_preregistration_required": true},
+    "scale100_closed_until_disjoint40_stability": true,
+    "scale1000_closed": true,
+    "fresh88_closed": true,
+    "test_closed": true,
+    "tfrl_closed": true,
+    "stage3_closed": true,
+    "paper_scale_closed": true
+  },
+  "prohibitions": [
+    "No model, scorer, tokenizer, retriever-service, external network, gold, reference transcript, task output, score, reward, test annotation, or future-turn contact is authorized by this contract alone.",
+    "Do not use G3, G4, G5, fresh88, test, TFRL, or unexposed surfaces for runtime, tuning, or comparison beyond the sealed G1 M0 identity-filtered comparator.",
+    "Do not repair, retry, resend, jitter-test, recontact a row, scale, prune, or fit training-free reward-guided control after a failure."
+  ]
+}
