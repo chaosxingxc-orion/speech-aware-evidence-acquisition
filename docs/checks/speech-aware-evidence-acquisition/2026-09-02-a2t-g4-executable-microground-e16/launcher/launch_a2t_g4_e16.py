@@ -527,7 +527,7 @@ def _static_preflight(root: Path) -> dict[str, object]:
     }
 
 
-def _launch(root: Path) -> Mapping[str, object]:
+def _launch(root: Path) -> Mapping[str, object]:  # pragma: no cover
     """Enter the explicit contact path only after the full preflight passes."""
 
     context = _static_preflight(root)
