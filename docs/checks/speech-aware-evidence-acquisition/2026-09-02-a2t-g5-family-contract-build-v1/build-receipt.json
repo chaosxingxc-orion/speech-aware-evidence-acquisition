@@ -1,0 +1,159 @@
+{
+  "carrier_inventory": {
+    "gold_primary_tool_count": 151,
+    "pool_items": 30733,
+    "pool_items_by_tier": {
+      "tier1_direct": 4292,
+      "tier2_parametric": 6320,
+      "tier3_multi_intent": 4292,
+      "tier4_implicit": 4278,
+      "tier5_needle": 4292,
+      "tier6_correction": 4292,
+      "tier7_multiturn": 2146,
+      "tier8_intent_blending": 821
+    },
+    "pool_units": 16843,
+    "quarantined_unit_count": 5,
+    "quarantined_units": [
+      {
+        "reason": "gold names a call outside the tool registry",
+        "unit_id": "tier2_parametric:004865",
+        "unknown_call_names": [
+          "lianceState"
+        ]
+      },
+      {
+        "detail": "tier7_multiturn:002023: the final chat_history turn must be a user turn carrying the request audio (fail-closed)",
+        "reason": "media unresolvable under the frozen runtime protocol",
+        "unit_id": "tier7_multiturn:000666"
+      },
+      {
+        "detail": "tier7_multiturn:000373: the final chat_history turn must be a user turn carrying the request audio (fail-closed)",
+        "reason": "media unresolvable under the frozen runtime protocol",
+        "unit_id": "tier7_multiturn:002472"
+      },
+      {
+        "detail": "tier7_multiturn:001258: the final chat_history turn must be a user turn carrying the request audio (fail-closed)",
+        "reason": "media unresolvable under the frozen runtime protocol",
+        "unit_id": "tier7_multiturn:003357"
+      },
+      {
+        "detail": "tier7_multiturn:001744: the final chat_history turn must be a user turn carrying the request audio (fail-closed)",
+        "reason": "media unresolvable under the frozen runtime protocol",
+        "unit_id": "tier7_multiturn:003693"
+      }
+    ],
+    "quarantined_units_by_reason": {
+      "gold names a call outside the tool registry": 1,
+      "media unresolvable under the frozen runtime protocol": 4
+    },
+    "registry_tool_count": 152,
+    "registry_tools_never_gold": [
+      "getLockStatus"
+    ],
+    "usable_items": 30727,
+    "usable_units": 16838
+  },
+  "construction_validation": {
+    "build_identity_sha256": "366d4cd836858e1ef175174a9a1b6627dc87ffb6ab857e341b97d88d3fca204e",
+    "build_query_block_count": 3097,
+    "build_unit_count": 10105,
+    "query_block_intersection_count": 0,
+    "seed": 20260902,
+    "validation_identity_sha256": "9801cb3e3f1c7b9cdccd808b7de2f0fdf6632c5be9599cc8a4d9082c7cbbf833",
+    "validation_query_block_count": 774,
+    "validation_unit_count": 2496
+  },
+  "contacts": {
+    "audio_seconds": 0,
+    "frozen_core": 0,
+    "gpu_hours": 0.0,
+    "network": 0,
+    "retriever": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "corpus": {
+    "ascii_bytes": 202593,
+    "contract_count": 152,
+    "family_bundle_limit_ascii_bytes": 18432,
+    "family_count": 28,
+    "maximum_family_bundle_ascii_bytes": 12057,
+    "path": "knowledge/audio2tool/g5-exhaustive-family-contracts-v1/corpus.json",
+    "report": {
+      "construction_argument_literals_rendered": 0,
+      "construction_calls_rendered": 0,
+      "construction_fields_consumed": [
+        "arg_signature",
+        "arg_value_form",
+        "tool_name"
+      ],
+      "construction_sample_ids_rendered": 0,
+      "construction_summary_count": 10105,
+      "construction_utterances_rendered": 0,
+      "contract_count": 152,
+      "evaluation_rows_consumed": 0,
+      "ranking_or_pruning_applied": false,
+      "registry_tool_count": 152,
+      "reverse_order_build_hash_stable": true,
+      "syntax_incompatible_skeleton_count": 30
+    },
+    "reverse_order_build_sha256": "92684a16e39985d3c4c6e7e6d62ac54feaa357eaa7c24c744df21950e51f95e5",
+    "sha256": "92684a16e39985d3c4c6e7e6d62ac54feaa357eaa7c24c744df21950e51f95e5"
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-A2T-MF-G5-EXHAUSTIVE-FAMILY-CONTRACT-BUILD-V1",
+  "offline_guard": {
+    "outbound_connection_attempts": 0,
+    "targets": []
+  },
+  "partition": {
+    "construction_identity_sha256": "86bfc6f36fb6a562ad1134cd11d60a2ad6bb94668195d76eada97edd2ce0ce16",
+    "construction_sample_count": 22951,
+    "construction_unit_count": 12601,
+    "exposed_sample_count": 400,
+    "forbidden_intersection_count": 0,
+    "policy_id": "saea-a2t-block-partition-v1",
+    "proposed_eval_identity_sha256": "4d0196ec91858cdc81340ee197c085ff29726a1f1b7fe9119d4e410d62df2f90",
+    "proposed_eval_sample_count": 400,
+    "seed": 20260807
+  },
+  "qualification": {
+    "gates": {
+      "artificial_literal_count_zero": true,
+      "complete_gold_tool_set_recall_at_least_90_percent": true,
+      "family_bundle_ascii_bytes_at_most_18432": true,
+      "legal_key_skeleton_inclusion_100_percent": true,
+      "registry_validity_100_percent": true,
+      "reverse_order_build_hash_stable": true
+    },
+    "metrics": {
+      "artificial_literal_count": 0,
+      "complete_gold_tool_set_recall": 0.9919871794871795,
+      "legal_key_skeleton_inclusion": 1.0,
+      "maximum_family_bundle_ascii_bytes": 12057,
+      "registry_validity": 1.0,
+      "reverse_order_build_hash_stable": true,
+      "validation_unit_count": 2496
+    },
+    "passed": true
+  },
+  "schema": "saea-a2t-g5-family-contract-build-receipt-v1",
+  "scope": {
+    "configuration_written": false,
+    "evaluation_rows_consumed": 0,
+    "exposure_ledger_written": false,
+    "flight_launcher_written": false,
+    "fresh_rows_consumed": 0,
+    "g4_remainder_rows_consumed": 0,
+    "model_flight_authorized": false,
+    "preregistration_written": false,
+    "test_rows_consumed": 0
+  },
+  "source_hashes": {
+    "builder": "08a836c79de3dfc821ee4ce8c29381e5f99d22a3a04fa0d5186fe732cde5e737",
+    "partition_proposal": "3bbf77a328c2983fb6299bcfe34a975624fee330a9325614dc1f84a7338678a1",
+    "registry": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4"
+  },
+  "study_commit": "4435ae46f1e93de5ea0164b94cc8f60bf3bb6799"
+}
