@@ -61,6 +61,8 @@ Field semantics (consolidated contract §6/§7; umbrella continuations 92/93):
   of the three columns, against the plan's own declared `planned_model_calls` /
   `planned_speech_audio_seconds` / `planned_gpu_hours`.
 
+**G6 MODEL-FREE SEAL RECOVERY REGISTERED BEFORE RESPONSE-MEANING OR GOLD READ.** Recovery attempt `attempt-20260902t221239z-g6-fixed16` completed the remaining 456 calls and 2,505.293 audio seconds, bringing cumulative G6 spend to exactly 464 calls and 2,523.029 audio seconds. It then aborted after model completion while emitting local phase traces because unprefixed OBS keys violated the trace namespace contract. The complete 456-row transport trace/manifest and attempt SHA-256 values are `23f5eb29502e1a76ae9242536350e35cf2b9a362a9a982ea5f4b64dc8050b807` / `89ccefe85d4c3b651bc7d247efc06f977bf366cffe5a8e7fabc23d75ec48ff3a` / `e7b085a829f9228ea92864b6f6b8e38ac068f85e9311d03352215a48c1345d40`; seal-recovery plan SHA-256 is `05555f138a3217986d6a70635f5cc2fd01ffba54e89f30d2c453ada3459a4309`. All further model contact is forbidden. Commit `716ab6a1` with launcher SHA-256 `17d64ecb3a95a08408167ae59251b60b5c25390ae782c76878757cf1acdb080e` may only reconstruct the 16 results from both frozen traces, prefix phase fields, and create a complete source-bound external seal. The next permitted contact is the unchanged single-process whole-manifest scorer after sealing; no dataset sharding or shard averaging is allowed.
+
 Inherited exposure baseline: program-level prior exposure (W1 probe campaigns on other carriers; no
 Earnings21/Earnings22/ConEC model exposure inherited as of 2026-08-03). The carriers' only
 processing so far is model-free acquisition/verification (D0).
