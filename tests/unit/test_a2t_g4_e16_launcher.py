@@ -202,6 +202,9 @@ def test_main_separates_zero_contact_preflight_from_explicit_run(
         "selected_ids": launcher.SELECTED_IDS,
         "route_set_sha256": "c" * 64,
         "prompt_report": {"max_utf8_bytes": 1234},
+        "execution_plan_template": launcher._execution_plan(
+            "attempt-preflight-g4-e16", protocol_hash="d" * 64
+        ),
     }
     calls: list[tuple[str, Path]] = []
     monkeypatch.setattr(launcher, "data_root", lambda: Path("/fixed/data"))
@@ -222,6 +225,7 @@ def test_main_separates_zero_contact_preflight_from_explicit_run(
     }
     assert payload["samples"] == 16
     assert payload["official_score_manifests"] == 1
+    assert payload["planned_model_calls"] == 16
     assert calls == []
 
     assert launcher.main(["--run"]) == 0
