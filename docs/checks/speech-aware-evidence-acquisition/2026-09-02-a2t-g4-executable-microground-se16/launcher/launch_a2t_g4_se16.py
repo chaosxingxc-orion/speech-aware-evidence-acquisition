@@ -218,26 +218,26 @@ ORGANIZER_RELPATH = Path(
     "a2t_observation_state_organizer.py"
 )
 ORGANIZER_SHA256 = (
-    "d36dd25cb43199ce32a32279a3796603267c01f92fd39ec0ddd2e4f6f370285b"
+    "cf313b819d944306f1ff67c9bb9a556a2e083d5d6944509fe775ee3a928f2c06"
 )
 STRUCTURED_STATE_RELPATH = Path(
     "src/speech_aware_evidence_acquisition/rails/a2t_structured_dialogue_state.py"
 )
 STRUCTURED_STATE_SHA256 = (
-    "7c8a745cfaab81c3efc421f759b30e990c5155ec0bb9daa386bf7598281cabfc"
+    "58d26aac9fc1946d080008904ddbd5217d1ab711e342754169ded72cb5266523"
 )
 ROUTER_RELPATH = Path(
     "src/speech_aware_evidence_acquisition/rails/a2t_semantic_microground.py"
 )
 ROUTER_SHA256 = (
-    "63fe8dc77ca208bc02ce501eef4c5f79a8f11eda7243b6226709736241d451ea"
+    "31da304a1e5c989972b8f7a435ad15827f0995fd35740b851b3043bb18d86d31"
 )
 FLIGHT_RELPATH = Path(
     "src/speech_aware_evidence_acquisition/rails/probes/"
     "a2t_g4_microground_flight.py"
 )
 FLIGHT_SHA256 = (
-    "54ec410ec02a4addde4c870ac405da118b0b06e2eb276a9efb00014c5d37f29b"
+    "d9dbc3fe3ffaac8fbf46b89edbb00b8bdc213ebfc21c8c0e78a1c5c106d000e5"
 )
 RUNTIME_RECEIPT_RELPATH = G3.RUNTIME_RECEIPT_RELPATH
 RUNTIME_RECEIPT_SHA256 = G3.RUNTIME_RECEIPT_SHA256
@@ -249,8 +249,12 @@ STATE_RECEIPT_RELPATH = Path(
 
 # Bound after a deterministic no-contact reconstruction of the already-sealed
 # G3 selected16 OBS.  These are source-free set identities, not source bytes.
-STATE_SET_SHA256: str | None = None
-ROUTE_SET_SHA256: str | None = None
+STATE_SET_SHA256: str | None = (
+    "2e42e636e36d7e15dcab9a6c7e3e450bd38a930b02f1e7270d4a617d8c45abad"
+)
+ROUTE_SET_SHA256: str | None = (
+    "2b2d8b444ae67edd06abf7a3d59bab09d74db3e21b242246a392569f4ce5236c"
+)
 
 OFFICIAL_SCORE_PLAN: Mapping[str, object] = {
     "workers": 1,

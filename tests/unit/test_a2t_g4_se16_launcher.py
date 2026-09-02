@@ -69,6 +69,12 @@ def test_execution_plan_and_verified_split_use_carrier_prefixed_run_identity() -
     assert split.prefixed_ids == tuple(
         f"audio2tool/{sample_id}" for sample_id in launcher.SELECTED_IDS
     )
+    assert launcher.STATE_SET_SHA256 == (
+        "2e42e636e36d7e15dcab9a6c7e3e450bd38a930b02f1e7270d4a617d8c45abad"
+    )
+    assert launcher.ROUTE_SET_SHA256 == (
+        "2b2d8b444ae67edd06abf7a3d59bab09d74db3e21b242246a392569f4ce5236c"
+    )
 
 
 def test_organizer_builds_exactly_sixteen_bounded_states_and_source_free_receipt() -> None:
