@@ -1,0 +1,27 @@
+{
+  "receipt_kind": "model-free-g6-recovery",
+  "run_id": "SAEA-A2T-G6-EXHAUSTIVE-FAMILY-SWEEP-FIXED16-V1",
+  "flight_id": "flight-20260902T220036Z",
+  "attempt_status": "aborted-transport-contract",
+  "source_trace_manifest_sha256": "FDE0E5987878C5C682B3436E99A357730894529935C858BB25D56549CA25F463",
+  "source_trace_jsonl_sha256": "99F6B74B8EAC96B540A0A8CF8E2DB5D9EBD66CCD86E6C601769E3EB5AE11E81E",
+  "source_execution_plan_sha256": "090198B4D31ED10F9DFF8315F4ACC48E96207BF9B477BEED1D64CA598035202D",
+  "source_score_plan_sha256": "C3451E80B15ED10EBEE2B62AC9A1BAC9388793AB662296B7D48D493614CED5D8E",
+  "source_prompt_fit_sha256": "983D9E454EFF9EF927FE7656FA63F1786D57B62D3A2A1695456D49E62843038D",
+  "source_agent_trace_manifest_sha256": "001C77E41AB3BBA802F6D227A660E8FE3910CC2D1126525C19534C41F49117B8",
+  "consumed_calls": 8,
+  "consumed_audio_seconds": 17.736,
+  "complete_triples": [
+    {"request_id":"g6fixed16-0001","sample_id":"tier1_direct:000077","contact_id":"g6-scan-smart-car-navigation","audio_seconds":2.137},
+    {"request_id":"g6fixed16-0002","sample_id":"tier1_direct:004159","contact_id":"g6-scan-smart-car-navigation","audio_seconds":1.577},
+    {"request_id":"g6fixed16-0003","sample_id":"tier1_direct:004159","contact_id":"g6-scan-smart-car-core-control","audio_seconds":1.577},
+    {"request_id":"g6fixed16-0004","sample_id":"tier1_direct:000077","contact_id":"g6-scan-smart-car-core-control","audio_seconds":2.137},
+    {"request_id":"g6fixed16-0005","sample_id":"tier2_parametric:001004","contact_id":"g6-scan-smart-car-navigation","audio_seconds":2.217},
+    {"request_id":"g6fixed16-0006","sample_id":"tier2_parametric:002653","contact_id":"g6-scan-smart-car-navigation","audio_seconds":2.937},
+    {"request_id":"g6fixed16-0007","sample_id":"tier2_parametric:002653","contact_id":"g6-scan-smart-car-core-control","audio_seconds":2.937},
+    {"request_id":"g6fixed16-0008","sample_id":"tier2_parametric:001004","contact_id":"g6-scan-smart-car-core-control","audio_seconds":2.217}
+  ],
+  "root_cause": "The launcher returned extra metadata keys to an exact three-key OpenJiuwen callback.",
+  "forbidden_recontacts": ["g6fixed16-0001","g6fixed16-0002","g6fixed16-0003","g6fixed16-0004","g6fixed16-0005","g6fixed16-0006","g6fixed16-0007","g6fixed16-0008"],
+  "permitted_next_attempt": {"attempts":1,"model_calls":456,"audio_seconds":2582.264,"preserve_science_runtime_prompts_roster":true}
+}
