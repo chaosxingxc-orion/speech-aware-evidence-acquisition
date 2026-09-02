@@ -463,6 +463,8 @@ def _synthetic_value(
         choices = tuple(part.strip() for part in constraint.split(",") if part.strip())
         if choices:
             selected = choices[0]
+            if type_lower.startswith("list") or type_lower.endswith("[]"):
+                return [selected], True
             if type_lower in {"boolean", "bool"} and selected in {"True", "False"}:
                 return selected == "True", True
             if type_lower in {"int", "integer"} and re.fullmatch(r"-?[0-9]+", selected):
@@ -498,6 +500,12 @@ def _constraint_accepts(value: object, argument: _SignatureArgument, text: str) 
             return isinstance(value, (int, float)) and not isinstance(value, bool) and low <= value <= high
         return isinstance(value, str) and value.isdigit() and low <= int(value) <= high
     choices = tuple(part.strip() for part in text.split(",") if part.strip())
+    if type_lower.startswith("list") or type_lower.endswith("[]"):
+        return (
+            isinstance(value, list)
+            and bool(value)
+            and all(str(item) in choices for item in value)
+        )
     rendered = "True" if value is True else "False" if value is False else str(value)
     return rendered in choices
 

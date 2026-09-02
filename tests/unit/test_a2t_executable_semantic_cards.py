@@ -160,6 +160,25 @@ def test_examples_are_type_correct_constraint_valid_and_visibly_artificial() -> 
     assert "Every example is artificial" in card.text
 
 
+def test_list_enum_constraint_produces_a_type_correct_synthetic_array() -> None:
+    registry = tuple(
+        {
+            **row,
+            "argument_constraints": (
+                row["argument_constraints"] + ", stops: [Alpha_Zone, Beta_Zone]"
+            ),
+        }
+        if row["tool_name"] == "planSyntheticTrip"
+        else row
+        for row in _registry()
+    )
+
+    corpus = cards.build_executable_semantic_card_corpus(registry, _summaries())
+
+    example = json.loads(corpus.cards_by_name["planSyntheticTrip"].examples[0])
+    assert example["arguments"]["stops"] == ["Alpha_Zone"]
+
+
 def test_corpus_has_four_task_cards_and_never_renders_private_row_fields() -> None:
     corpus = cards.build_executable_semantic_card_corpus(_registry(), _summaries())
 
