@@ -1,6 +1,6 @@
 # A2T executable-ground qualification 104 v1 preprocessing preregistration
 
-Date: 2026-09-02. Status: **REGISTERED; CONTACT CLOSED UNTIL IMPLEMENTATION AND PREFLIGHT LAND**.
+Date: 2026-09-02. Status: **REGISTERED; IMPLEMENTATION AND ZERO-CONTACT PREFLIGHT LANDED**.
 Experiment id: `SAEA-SN-A2T-GROUND-QUAL-104-PREPROCESS`.
 Composed config and protocol SHA-256:
 `3845d4a8a601e3279a4656ccd0e1c9c92feed33236801758df528e43a7862ae4`.
@@ -54,3 +54,16 @@ repair is permitted without a new prospective amendment. Passing authorizes only
 implemented and preregistered executable-ground qualification preflight. It does not authorize task
 model contact, pruning, training-free control, approximately-1,000 scale, baseline change, test
 access, Stage-3, or paper-scale work.
+
+## Pre-contact closure
+
+Implementation commit `c7cf45bc8f5e791fee6b6d6984017e9d5849ab14` passed 74 relevant tests; the
+new token-accounting module reached 95% statement coverage, and the changed files passed Ruff. A
+clean-tree zero-contact preflight resolved all 104 identities and 543.107 seconds, found 0/104
+current-build cache entries, 0/104 packet manifests, no promotion receipt, free sidecar port 8081,
+and no GPU decoder on port 8090. It opened no session and ran no frozen-core gate. Receipt:
+`docs/checks/speech-aware-evidence-acquisition/2026-09-02-a2t-ground-qual-104-preprocess/preflight-receipt.json`,
+SHA-256 `0316f5f309bf48cc2d56a715262660e23d2a177278584f3c8d235c1fbeab9b47`.
+
+The registered one-shot preprocessing pass is now executable. No task-inference contact is opened by
+this closure.

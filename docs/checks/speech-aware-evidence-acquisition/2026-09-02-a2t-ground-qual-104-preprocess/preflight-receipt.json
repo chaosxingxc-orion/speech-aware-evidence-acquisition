@@ -1,0 +1,23 @@
+{
+  "artifact_preflight": {
+    "current_build_legacy_cache_entries": 0,
+    "existing_packet_manifests": 0,
+    "promotion_receipt_exists": false
+  },
+  "audio_seconds_total": 543.107,
+  "config_hash": "3845d4a8a601e3279a4656ccd0e1c9c92feed33236801758df528e43a7862ae4",
+  "count": 104,
+  "gpu_decoder_reachable": false,
+  "implementation_commit": "c7cf45bc8f5e791fee6b6d6984017e9d5849ab14",
+  "model_contact": false,
+  "packet_root": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a",
+  "preflight_passed": true,
+  "promotion_receipt": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a/A2T-GROUND-QUAL-104-promotion.json",
+  "protocol_hash": "3845d4a8a601e3279a4656ccd0e1c9c92feed33236801758df528e43a7862ae4",
+  "run_id": "SAEA-SN-A2T-GROUND-QUAL-104-PREPROCESS",
+  "schema": "saea-a2t-ground-qual-preprocess-preflight-v1",
+  "sidecar_port_8081_free": true,
+  "split_identity_hash": "fbd4addd541ff29214cbff7c35564b15f27e2fb7f438202b79d694b1c5961d4b",
+  "subset_receipt_sha256": "eeb90abbe8695e449c676f18339db6618cb6d606d6c1e7c656626e4e9b6b6c16",
+  "tool_contact": false
+}
