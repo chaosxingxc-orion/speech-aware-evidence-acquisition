@@ -64,6 +64,31 @@ unchanged and one change leaves the scored outcome unchanged. Seven repairs occu
 arm. Automatic repair should be disabled in the successor unless a new offline analysis identifies
 a deployment-visible failure class with positive utility.
 
+## Reachability audit
+
+A conservative offline audit separates knowledge failure from impossible rows. Across the 55 gold
+calls, public registry semantics plus speech or task-blind OBS fully determine 23 calls. Another 23
+require aggregate English construction rules, seven conflict with the public schema, and two have
+runtime audio or observation evidence inconsistent with the expected task. At the sample level,
+the strict public-registry ceiling is 16/40 exact. Legal aggregate construction rules raise the
+ceiling to 33/40. Training-partition compatibility rules for recurring scorer-effective conventions
+raise the legal ceiling to 37/40 without rendering an evaluation label, sample ID, source utterance,
+or reference transcript. The 36/40 qualification target is therefore reachable in principle, but
+not if the public schema is treated as the only executable convention.
+
+Six samples expose public-schema conflicts. Four have recurring support in the non-evaluation
+construction partition: Boolean strings for adaptive lighting, nullable valet PINs, and a
+`controlPlayback` compatibility signature with `deviceId`, `Mute`, and `Unmute`. Two Tier-8 rows
+remain anomalous: one expects `setHapticStrength` with `strength: "Medium"` although the public
+schema and all 220 construction units use integer `level`; another expects noncanonical period and
+Boolean strings. A third Tier-8 sample has independently inconsistent M0 and OBS evidence and
+should be investigated as a carrier-binding defect rather than repaired through knowledge.
+
+The minimum missing ground is now concrete: construction-specific ordered call skeletons;
+conditional device defaults; entity, URL, Boolean, null, list, period, and nested-schedule
+canonicalizers; a training-supported compatibility schema; explicit correction and multi-intent
+ordering rules; and role-preserving multiturn observation. These are the first G4 knowledge targets.
+
 ## Context, batching, and scoring efficiency
 
 The service exposes a nominal 65,536-token context split across two parallel slots, or 32,768 tokens
