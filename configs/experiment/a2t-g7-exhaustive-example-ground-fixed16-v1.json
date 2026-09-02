@@ -23,7 +23,7 @@
     "artifact_sha256": "a5bb788a64db320b8d09de3712ede38f46c5395d8e7dd1932d8acbbf8cedc855",
     "artifact_ascii_bytes": 102459,
     "build_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-02-a2t-g7-exhaustive-example-ground-fixed16-v1/ground-receipt.json",
-    "build_receipt_sha256": "ca46a5b10ea813911e276aa79225319552e3addac6ffbd0fe6707e67af6b645b",
+    "build_receipt_sha256": "f85e85b052a4cfdf3eeb8f2a82902dbfec78c4370a4f7c953d15e10421037ae5",
     "structured_artifact": "knowledge/audio2tool/g7-construction-example-ground-v1/ground.json",
     "structured_artifact_sha256": "f890e2a0975c4517e1909ecb2dee04d38eeaa05c4f0d9830b41ac634dbc9d830",
     "artifact_status": "FROZEN_MODEL_FREE",
@@ -52,6 +52,7 @@
     "prompt_plus_completion_tokens_maximum": 24576,
     "operational_headroom_tokens_minimum": 8192,
     "resolve_completion_tokens": 1024,
+    "obs_response_ascii_bytes_maximum": 1024,
     "overflow_policy": "refuse-before-contact-never-query-trim",
     "precontact_counter": "conservative UTF-8 byte construction upper bound; no tokenizer contact",
     "resolve_fit_timing": "after all 152 normalized assessments seal and immediately before RESOLVE"

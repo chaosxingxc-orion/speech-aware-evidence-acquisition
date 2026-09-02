@@ -13,6 +13,7 @@ from speech_aware_evidence_acquisition.rails.probes.a2t_g7_example_ground import
     ASSESSMENT_UNCERTAIN,
     G7ExampleGround,
     G7ExampleGroundError,
+    MAX_OBSERVATION_ASCII_BYTES,
     execute_g7_workflows,
     build_trace_documents,
     parse_family_assessment,
@@ -62,6 +63,12 @@ def test_observation_is_bounded_plain_english_and_excludes_tool_names() -> None:
     assert valid.valid is True
     assert forbidden.valid is nonascii.valid is False
     assert forbidden.text == nonascii.text == "No reliable observation was available."
+
+
+def test_observation_cap_is_1024_ascii_bytes_and_fails_closed_above_it() -> None:
+    assert MAX_OBSERVATION_ASCII_BYTES == 1_024
+    assert parse_observation("A" * 1_024, ()).valid is True
+    assert parse_observation("A" * 1_025, ()).valid is False
 
 
 def test_tolerant_parser_removes_one_exact_fence_and_ignores_unknown_keys() -> None:

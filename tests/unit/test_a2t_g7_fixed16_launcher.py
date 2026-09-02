@@ -87,12 +87,27 @@ def test_byte_upper_bound_preflight_measures_all_static_prompts() -> None:
     report = module.preflight_ground(_ground(), speech_feature_tokens_max=100)
 
     assert report["token_counter"] == "utf8-byte-construction-upper-bound"
+    assert report["worst_observation_ascii_bytes"] == 1_024
     assert report["obs_prompt"]["completion_tokens"] == 512
     assert len(report["evidence_prompts"]) == 28
     assert all(row["remaining_tokens"] >= 8192 for row in report["evidence_prompts"])
     assert report["resolve_empty_assessment_base_prompt"]["remaining_tokens"] >= 8192
     assert report["resolve_worst_normalized_assessment_prompt"]["remaining_tokens"] >= 8192
     assert report["resolve_measurement"] == "dynamic-after-152-assessments-seal"
+
+
+def test_committed_ground_worst_case_uses_full_observation_and_keeps_headroom() -> None:
+    report = module.preflight_ground(module.load_ground(), speech_feature_tokens_max=182)
+
+    assert report["worst_observation_ascii_bytes"] == 1_024
+    assert max(row["total_tokens"] for row in report["evidence_prompts"]) == 12_534
+    assert report["resolve_worst_normalized_assessment_prompt"] == {
+        "completion_tokens": 1_024,
+        "contact_id": "g7-resolve",
+        "prompt_tokens": 23_070,
+        "remaining_tokens": 8_674,
+        "total_tokens": 24_094,
+    }
 
 
 def test_execution_plan_binds_exact_population_and_budget() -> None:

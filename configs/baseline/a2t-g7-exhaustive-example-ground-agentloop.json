@@ -18,6 +18,7 @@
   "per_slot_context_tokens": 32768,
   "operational_headroom_token_minimum": 8192,
   "obs_completion_token_cap": 512,
+  "obs_response_ascii_byte_cap": 1024,
   "evidence_completion_token_cap": 512,
   "final_completion_token_cap": 1024,
   "temperature": 0,

@@ -29,6 +29,7 @@ if str(REPO / "src") not in sys.path:
 
 from speech_aware_evidence_acquisition.rails.probes.a2t_g7_example_ground import (  # noqa: E402
     G7ExampleGround,
+    MAX_OBSERVATION_ASCII_BYTES,
     build_trace_documents,
     execute_g7_workflows,
     parse_family_assessment,
@@ -86,7 +87,7 @@ SPLIT_IDENTITY_HASH = "94a10c359dfe9e6a96cd63940c4dcb52fc7206e4c0e7d855733b21b69
 ROSTER_SHA256 = "8be941c6e82527f9b63cd1f9ea09449f6cabbf175e7b2401642de455edc975c3"
 BUILDER_COMMIT = "7046ce6e7fbbba67ddbae5f122748e2158761e23"
 GROUND_SHA256 = "a5bb788a64db320b8d09de3712ede38f46c5395d8e7dd1932d8acbbf8cedc855"
-GROUND_RECEIPT_SHA256 = "ca46a5b10ea813911e276aa79225319552e3addac6ffbd0fe6707e67af6b645b"
+GROUND_RECEIPT_SHA256 = "f85e85b052a4cfdf3eeb8f2a82902dbfec78c4370a4f7c953d15e10421037ae5"
 CONTACTS_PER_SAMPLE = 30
 SAMPLE_COUNT = 16
 MODEL_CONTACTS = CONTACTS_PER_SAMPLE * SAMPLE_COUNT
@@ -96,8 +97,8 @@ QUEUE_DEPTH = 4
 OBS_COMPLETION_TOKENS = 512
 EVIDENCE_COMPLETION_TOKENS = 512
 RESOLVE_COMPLETION_TOKENS = 1024
-COMPOSED_CONFIG_SHA256 = "f908567e57b2c5cef69659fbd16656abb791697fcf8270d6700ee4fbe0ee24aa"
-PROTOCOL_SHA256 = "8ddef229f2de8677280e7682a8c30e4244aacf2c83a9fe5f959917adfe8ffe40"
+COMPOSED_CONFIG_SHA256 = "2b8ca2f033fcbfe265533adeec8b3bfb8d39bb49174cedd13d2cacc492dcdf10"
+PROTOCOL_SHA256 = "6f1c4eb956dfb4519ff880d55f92f19c51e89ffba1e000d47e9a19321e55e9c7"
 RUNTIME_ROOT = Path("/home/chao")
 FEATURE_ROOT = Path("/home/chao/feat-cache/a2t-q4km-packets-04ccc72a")
 PROMOTION_RECEIPT = FEATURE_ROOT / "A2T-G1-104-promotion.json"
@@ -315,7 +316,14 @@ def preflight_ground(
     if ground.sha256 != GROUND_SHA256:
         raise ValueError("construction-example ground SHA-256 drift")
     core = G7ExampleGround(ground.bundles)
-    observation = type("Obs", (), {"text": "No reliable observation was available."})()
+    observation_seed = "The speaker describes the requested device action in plain English. "
+    observation_text = (
+        observation_seed
+        * (MAX_OBSERVATION_ASCII_BYTES // len(observation_seed) + 1)
+    )[:MAX_OBSERVATION_ASCII_BYTES]
+    if len(observation_text.encode("ascii")) != MAX_OBSERVATION_ASCII_BYTES:
+        raise RuntimeError("worst-case observation construction drift")
+    observation = type("Obs", (), {"text": observation_text})()
     packet_binding = {"packet_id": "preflight/query", "sha256": "0" * 64}
     obs_context = SimpleNamespace(contact_id="g7-obs", instruction=_render_obs())
     obs_state = SimpleNamespace(stage="OBS", packet_binding=packet_binding)
@@ -408,6 +416,7 @@ def preflight_ground(
         "max_concurrent_model_requests": MAX_CONCURRENT_MODEL_REQUESTS,
         "queue_depth": QUEUE_DEPTH,
         "token_counter": "utf8-byte-construction-upper-bound",
+        "worst_observation_ascii_bytes": len(observation_text.encode("ascii")),
         "obs_prompt": _fit_dict(obs),
         "evidence_prompts": [_fit_dict(row) for row in evidence],
         "resolve_empty_assessment_base_prompt": _fit_dict(resolve_base),
