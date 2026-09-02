@@ -1,0 +1,92 @@
+{
+  "schema": "saea-a2t-g7-exhaustive-example-ground-fixed16-experiment-v1",
+  "experiment_id": "SAEA-A2T-G7-EXHAUSTIVE-EXAMPLE-GROUND-FIXED16-V1",
+  "status": "PREREGISTERED_NO_CONTACT_AUTHORIZATION",
+  "date": "2026-09-02",
+  "execution_profile": "bounded-discovery-probe",
+  "claim_scope": "Prospective Stage-2 fixed16 construction-example ground screen only.",
+  "population": {
+    "receipt": "docs/receipts/a2t/A2T-G7-EXAMPLE-FIXED16.json",
+    "receipt_sha256": "8be941c6e82527f9b63cd1f9ea09449f6cabbf175e7b2401642de455edc975c3",
+    "split_name": "A2T-G7-EXAMPLE-FIXED16",
+    "split_role": "discovery",
+    "count": 16,
+    "items_per_tier": 2,
+    "support_remainder_count": 44,
+    "split_identity_hash": "94a10c359dfe9e6a96cd63940c4dcb52fc7206e4c0e7d855733b21b69b987212"
+  },
+  "ground": {
+    "builder_module": "src/speech_aware_evidence_acquisition/rails/a2t_construction_example_ground.py",
+    "builder_commit": "7046ce6e7fbbba67ddbae5f122748e2158761e23",
+    "receipt_schema": "saea-a2t-construction-example-ground-receipt-v1",
+    "artifact": "knowledge/audio2tool/g7-construction-example-ground-v1/corpus.txt",
+    "artifact_sha256": "a5bb788a64db320b8d09de3712ede38f46c5395d8e7dd1932d8acbbf8cedc855",
+    "artifact_ascii_bytes": 102459,
+    "build_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-02-a2t-g7-exhaustive-example-ground-fixed16-v1/ground-receipt.json",
+    "build_receipt_sha256": "65d7a94296bc893de877c020370815833e697bb8f6ff26c210f9a73111299dc7",
+    "artifact_status": "FROZEN_MODEL_FREE",
+    "max_examples_per_tool": 3,
+    "families": 28,
+    "registered_tools": 152
+  },
+  "protocol": {
+    "contacts_per_sample": 30,
+    "ordered_contacts": ["OBS_AUDIO", "EVIDENCE_28_TEXT_ONLY", "RESOLVE_AUDIO"],
+    "obs_plain_english_no_tool_names": true,
+    "all_tools_prepopulated_uncertain": true,
+    "family_assessments_may_not_filter_supply": true,
+    "strict_and_tolerant_validity_recorded": true,
+    "final_surface": "unchanged-official-tool-call-json",
+    "final_repair": false,
+    "cumulative_raw_history": false,
+    "temperature": 0,
+    "slots": 2,
+    "max_concurrent_model_requests": 2,
+    "queue_depth": 4
+  },
+  "bounds": {
+    "per_slot_context_tokens": 32768,
+    "prompt_plus_completion_tokens_maximum": 24576,
+    "operational_headroom_tokens_minimum": 8192,
+    "resolve_completion_tokens": 1024,
+    "overflow_policy": "refuse-before-contact-never-query-trim",
+    "precontact_counter": "conservative UTF-8 byte construction upper bound; no tokenizer contact",
+    "resolve_fit_timing": "after all 152 normalized assessments seal and immediately before RESOLVE"
+  },
+  "contact_budget": {
+    "planned_model_calls": 480,
+    "sample_count": 16,
+    "audio_contacts_per_sample": 2,
+    "text_only_contacts_per_sample": 28,
+    "embedding_contacts": 0,
+    "tokenizer_contacts": 0,
+    "paid_api_spend": 0
+  },
+  "comparator": {
+    "label": "frozen G1 M0 same-row outputs",
+    "contact_count": 0,
+    "rule": "reuse by exact sample identity only"
+  },
+  "gates": {
+    "exact_count_minimum": 15,
+    "tool_count_minimum": 16,
+    "slot_micro_f1_minimum": 0.9,
+    "parse_count_minimum": 15,
+    "per_tier_exact_count_minimum": 1,
+    "paired_exact_delta_positive": true,
+    "unregistered_final_count_maximum": 0,
+    "illegal_final_count_maximum": 0,
+    "placeholder_final_count_maximum": 0,
+    "gold_support_count_minimum_post_score_only": 15
+  },
+  "scoring": {
+    "official_scorer": "unchanged a2t-toolcall scorer",
+    "whole_manifest_only": true,
+    "single_process": true,
+    "gold_open_only_after_complete_manifest_seal": true
+  },
+  "prohibitions": [
+    "This preregistration does not authorize model, scorer, tokenizer, audio-service, network, gold, task-field, output-field, or future-turn contact.",
+    "Do not alias, correct, infer, cross families, synthesize values, filter supply, repair a final, retry, resend, query-trim, or use cumulative raw history."
+  ]
+}

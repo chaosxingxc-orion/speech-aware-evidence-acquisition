@@ -1,0 +1,4435 @@
+{
+  "artifact": {
+    "ascii_bytes": 102459,
+    "path": "knowledge/audio2tool/g7-construction-example-ground-v1/corpus.txt",
+    "sha256": "a5bb788a64db320b8d09de3712ede38f46c5395d8e7dd1932d8acbbf8cedc855"
+  },
+  "contacts": {
+    "audio_service": 0,
+    "gold": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-A2T-G7-EXHAUSTIVE-EXAMPLE-GROUND-FIXED16-V1",
+  "ground": {
+    "boundary": {
+      "construction_query_block_count": 3871,
+      "construction_source_identity_count": 22951,
+      "forbidden_query_block_count": 774,
+      "forbidden_source_identity_count": 800,
+      "query_block_intersection_count": 0,
+      "source_identity_intersection_count": 0
+    },
+    "corpus_sha256": "a5bb788a64db320b8d09de3712ede38f46c5395d8e7dd1932d8acbbf8cedc855",
+    "coverage": {
+      "ascii_only": true,
+      "construction_fields_consumed": [
+        "arg_pairs",
+        "arg_signature",
+        "query_idx",
+        "sample_ids",
+        "text",
+        "tier",
+        "tool_name",
+        "unit_id"
+      ],
+      "construction_row_count": 12601,
+      "construction_used_tool_count": 151,
+      "corpus_ascii_byte_cap": 524288,
+      "corpus_ascii_bytes": 102459,
+      "example_count": 449,
+      "family_ascii_byte_cap": 24576,
+      "family_count": 28,
+      "family_coverage": [
+        {
+          "ascii_bytes": 5805,
+          "construction_used_tool_count": 8,
+          "example_count": 24,
+          "family_tag": "smart-car-body-control",
+          "sha256": "d1d8fdb98c0e793dafaea5b8096d91c8aa6f649d07a25999513172abc611b9bf",
+          "tool_count": 8,
+          "tools_with_examples": 8
+        },
+        {
+          "ascii_bytes": 7419,
+          "construction_used_tool_count": 10,
+          "example_count": 30,
+          "family_tag": "smart-car-charging-energy",
+          "sha256": "346101e021eb8f527a2a9d0d614af6e2d9d94875c778476c2e9d9c89e7e6fe10",
+          "tool_count": 10,
+          "tools_with_examples": 10
+        },
+        {
+          "ascii_bytes": 10097,
+          "construction_used_tool_count": 13,
+          "example_count": 39,
+          "family_tag": "smart-car-climate-environment",
+          "sha256": "11f6303f6b556f11366bdb495c93d1066ce7e50010df0d6e66a243051f908d5a",
+          "tool_count": 13,
+          "tools_with_examples": 13
+        },
+        {
+          "ascii_bytes": 2282,
+          "construction_used_tool_count": 4,
+          "example_count": 10,
+          "family_tag": "smart-car-core-control",
+          "sha256": "0b4f9c74e7dcfd15d33d68c132d5c6f52170ab254278c8d6571df50523023f1d",
+          "tool_count": 4,
+          "tools_with_examples": 4
+        },
+        {
+          "ascii_bytes": 3148,
+          "construction_used_tool_count": 5,
+          "example_count": 15,
+          "family_tag": "smart-car-diagnostics",
+          "sha256": "48a058206b1c9afcc8ab9d66f2abfe6eb74f1c37e69a015563245936c9ba1cd5",
+          "tool_count": 5,
+          "tools_with_examples": 5
+        },
+        {
+          "ascii_bytes": 5796,
+          "construction_used_tool_count": 8,
+          "example_count": 24,
+          "family_tag": "smart-car-driving-dynamics",
+          "sha256": "1215fd4bcf02a084134d227c160ac1f4ac222506ebb76c10cb35cef687ae8afb",
+          "tool_count": 8,
+          "tools_with_examples": 8
+        },
+        {
+          "ascii_bytes": 859,
+          "construction_used_tool_count": 1,
+          "example_count": 3,
+          "family_tag": "smart-car-fine-grained",
+          "sha256": "d07eb05f4d9e60a498d3ab55de8891ae949d8b6d175f7a0d5463734f95ffba3b",
+          "tool_count": 1,
+          "tools_with_examples": 1
+        },
+        {
+          "ascii_bytes": 4492,
+          "construction_used_tool_count": 6,
+          "example_count": 18,
+          "family_tag": "smart-car-maintenance",
+          "sha256": "dfd693c32f582a5afd7955e116a6ccfa562c5c6da1cd328a4fc2ff85c4d75045",
+          "tool_count": 6,
+          "tools_with_examples": 6
+        },
+        {
+          "ascii_bytes": 5620,
+          "construction_used_tool_count": 8,
+          "example_count": 22,
+          "family_tag": "smart-car-media-cabin",
+          "sha256": "25cc5a268c4760c968d4c4124a76fb8f04ee58eee0174b54ed4d388071a3b5d8",
+          "tool_count": 8,
+          "tools_with_examples": 8
+        },
+        {
+          "ascii_bytes": 4676,
+          "construction_used_tool_count": 7,
+          "example_count": 21,
+          "family_tag": "smart-car-navigation",
+          "sha256": "28d16aa1bf8bdf556b169146332ca026bf74fa0b24e9ef9c705661edad5a9100",
+          "tool_count": 7,
+          "tools_with_examples": 7
+        },
+        {
+          "ascii_bytes": 1799,
+          "construction_used_tool_count": 3,
+          "example_count": 9,
+          "family_tag": "smart-car-novelty",
+          "sha256": "0ba98a0eecd3cf8350df361edf87fd9f63a036ab15733214d09c7eff81dc0a84",
+          "tool_count": 3,
+          "tools_with_examples": 3
+        },
+        {
+          "ascii_bytes": 4253,
+          "construction_used_tool_count": 6,
+          "example_count": 18,
+          "family_tag": "smart-car-security",
+          "sha256": "9f985e2f4b1ffccd738589952d8839064ae39820f9038cce67ed44bb4c9d45b8",
+          "tool_count": 6,
+          "tools_with_examples": 6
+        },
+        {
+          "ascii_bytes": 4580,
+          "construction_used_tool_count": 6,
+          "example_count": 18,
+          "family_tag": "smart-car-status",
+          "sha256": "41e34e6466716b5ecbc15e0e6261f7278c19fd863ddb90d25ec4cbc4d85fb695",
+          "tool_count": 7,
+          "tools_with_examples": 6
+        },
+        {
+          "ascii_bytes": 2439,
+          "construction_used_tool_count": 4,
+          "example_count": 12,
+          "family_tag": "smart-home-appliances",
+          "sha256": "641177e6e9b7b2561cf44ee6602eccdd11261d512761f6868254fccd52794e92",
+          "tool_count": 4,
+          "tools_with_examples": 4
+        },
+        {
+          "ascii_bytes": 2190,
+          "construction_used_tool_count": 4,
+          "example_count": 12,
+          "family_tag": "smart-home-automation",
+          "sha256": "01d4158b76e65675115325e14c81956501e45efa8213d2ef2a5e2f3207001e68",
+          "tool_count": 4,
+          "tools_with_examples": 4
+        },
+        {
+          "ascii_bytes": 3898,
+          "construction_used_tool_count": 6,
+          "example_count": 18,
+          "family_tag": "smart-home-climate",
+          "sha256": "4f05039deb58d9725b9ef1103a0d9aeaeb46f87feafb0688e8772a268b72580b",
+          "tool_count": 6,
+          "tools_with_examples": 6
+        },
+        {
+          "ascii_bytes": 2554,
+          "construction_used_tool_count": 4,
+          "example_count": 12,
+          "family_tag": "smart-home-core-control",
+          "sha256": "2f31f7dbcad4dd05516d21243e4917b9c4a2b67741e208d2083b6c311cce948c",
+          "tool_count": 4,
+          "tools_with_examples": 4
+        },
+        {
+          "ascii_bytes": 641,
+          "construction_used_tool_count": 1,
+          "example_count": 3,
+          "family_tag": "smart-home-device-finding",
+          "sha256": "65a6ad9a87a0a009e9bac2ce12bda491cd3cb08d6f50876c6b6968a87488bbc1",
+          "tool_count": 1,
+          "tools_with_examples": 1
+        },
+        {
+          "ascii_bytes": 2691,
+          "construction_used_tool_count": 4,
+          "example_count": 12,
+          "family_tag": "smart-home-diagnostics",
+          "sha256": "418eaf4f853a9183704e733eca5770eedbfb1af190c396130b583f0ff1ba809e",
+          "tool_count": 4,
+          "tools_with_examples": 4
+        },
+        {
+          "ascii_bytes": 1717,
+          "construction_used_tool_count": 3,
+          "example_count": 9,
+          "family_tag": "smart-home-energy",
+          "sha256": "43a84f5f00519840ff2c051ec98f57a2258999ae9a021cab63cb4274d884512b",
+          "tool_count": 3,
+          "tools_with_examples": 3
+        },
+        {
+          "ascii_bytes": 5142,
+          "construction_used_tool_count": 7,
+          "example_count": 21,
+          "family_tag": "smart-home-lighting",
+          "sha256": "390c2e3e7c2a3213115afacb3332d5400a29a461a52b6c34666ddc195051e6ca",
+          "tool_count": 7,
+          "tools_with_examples": 7
+        },
+        {
+          "ascii_bytes": 3044,
+          "construction_used_tool_count": 5,
+          "example_count": 15,
+          "family_tag": "smart-home-maintenance",
+          "sha256": "2c21efeb6d93ca223263f3a73401f5c58e477ac875af997e362327ed8a3d21c1",
+          "tool_count": 5,
+          "tools_with_examples": 5
+        },
+        {
+          "ascii_bytes": 3363,
+          "construction_used_tool_count": 5,
+          "example_count": 15,
+          "family_tag": "smart-home-media",
+          "sha256": "0b628e840809b8578a80af4592c32c79f614b726edd13df38c1e9b022f6c4008",
+          "tool_count": 5,
+          "tools_with_examples": 5
+        },
+        {
+          "ascii_bytes": 3205,
+          "construction_used_tool_count": 5,
+          "example_count": 15,
+          "family_tag": "smart-home-security",
+          "sha256": "e4a5c5cf6dd5b34b430523baa48ade7b4a4239a7f11e310d6c6f238cc7ebba49",
+          "tool_count": 5,
+          "tools_with_examples": 5
+        },
+        {
+          "ascii_bytes": 2959,
+          "construction_used_tool_count": 5,
+          "example_count": 15,
+          "family_tag": "smart-home-status",
+          "sha256": "077d4eade65be102181b62c6ea55c8deb936651cbd913566d4cd9603693625e1",
+          "tool_count": 5,
+          "tools_with_examples": 5
+        },
+        {
+          "ascii_bytes": 2278,
+          "construction_used_tool_count": 4,
+          "example_count": 12,
+          "family_tag": "wearables-device-state",
+          "sha256": "41cfb2adb3b293e610e77c5914b73a8dcc1ebe5bf886448332f13994feaa5295",
+          "tool_count": 4,
+          "tools_with_examples": 4
+        },
+        {
+          "ascii_bytes": 3755,
+          "construction_used_tool_count": 6,
+          "example_count": 18,
+          "family_tag": "wearables-health-activity",
+          "sha256": "39ab031aba77492e00fe169f7e5177f385f44955704de270ef0fac41b90da668",
+          "tool_count": 6,
+          "tools_with_examples": 6
+        },
+        {
+          "ascii_bytes": 1757,
+          "construction_used_tool_count": 3,
+          "example_count": 9,
+          "family_tag": "wearables-system-connectivity",
+          "sha256": "91d420d6575bf49991b121c4137744a4fc55481429b8cfe1396abca160966786",
+          "tool_count": 3,
+          "tools_with_examples": 3
+        }
+      ],
+      "g5_incompatible_key_skeleton_row_count": 0,
+      "gold_or_evaluation_fields_consumed": 0,
+      "legal_key_skeleton_count": 349,
+      "malformed_argument_key_skeleton_row_count": 38,
+      "maximum_examples_per_tool": 3,
+      "maximum_family_ascii_bytes": 10097,
+      "observed_legal_key_skeleton_count": 348,
+      "placeholder_free_pattern_count": 361,
+      "primary_call_examples_only": true,
+      "query_independent": true,
+      "registry_defaults_rendered": 0,
+      "registry_only_tool_count": 1,
+      "registry_only_tool_names": [
+        "getLockStatus"
+      ],
+      "registry_only_tool_pattern_policy": "zero patterns; no construction-positive language is available",
+      "rejected_row_count": 218,
+      "rejected_row_reason_counts": {
+        "malformed_argument_key_skeleton": 38,
+        "non_ascii_construction_text": 180
+      },
+      "rejected_row_reason_counts_by_tool": {
+        "activateRoutine": {
+          "non_ascii_construction_text": 3
+        },
+        "activateScene": {
+          "non_ascii_construction_text": 3
+        },
+        "calibrateThermostat": {
+          "non_ascii_construction_text": 2
+        },
+        "castContent": {
+          "non_ascii_construction_text": 3
+        },
+        "controlPlayback": {
+          "non_ascii_construction_text": 3
+        },
+        "enableWaterLock": {
+          "non_ascii_construction_text": 3
+        },
+        "findMyDevice": {
+          "non_ascii_construction_text": 1
+        },
+        "findPairedPhone": {
+          "non_ascii_construction_text": 1
+        },
+        "flashLights": {
+          "non_ascii_construction_text": 1
+        },
+        "getAirQuality": {
+          "non_ascii_construction_text": 2
+        },
+        "getAirQuality_diag": {
+          "non_ascii_construction_text": 2
+        },
+        "getApplianceState": {
+          "non_ascii_construction_text": 4
+        },
+        "getApplianceStatus": {
+          "non_ascii_construction_text": 3
+        },
+        "getBatteryHealth": {
+          "non_ascii_construction_text": 1
+        },
+        "getBatteryLevel": {
+          "non_ascii_construction_text": 3
+        },
+        "getBiometricData": {
+          "non_ascii_construction_text": 2
+        },
+        "getCameraEvent": {
+          "non_ascii_construction_text": 4
+        },
+        "getCameraStream": {
+          "non_ascii_construction_text": 5
+        },
+        "getChargeState": {
+          "non_ascii_construction_text": 2
+        },
+        "getClimateState": {
+          "non_ascii_construction_text": 1
+        },
+        "getDeviceList": {
+          "non_ascii_construction_text": 1
+        },
+        "getEnergyUsage": {
+          "non_ascii_construction_text": 3
+        },
+        "getFilterLife": {
+          "non_ascii_construction_text": 3
+        },
+        "getHRV": {
+          "non_ascii_construction_text": 3
+        },
+        "getLightState": {
+          "non_ascii_construction_text": 2
+        },
+        "getLocation": {
+          "non_ascii_construction_text": 1
+        },
+        "getLockState": {
+          "non_ascii_construction_text": 3
+        },
+        "getNetworkHealth": {
+          "non_ascii_construction_text": 2
+        },
+        "getSensorState": {
+          "non_ascii_construction_text": 3
+        },
+        "getSentryStatus": {
+          "non_ascii_construction_text": 1
+        },
+        "getSleepSummary": {
+          "non_ascii_construction_text": 4
+        },
+        "getThermostatState": {
+          "non_ascii_construction_text": 1
+        },
+        "getTirePressures": {
+          "non_ascii_construction_text": 1
+        },
+        "honkHorn": {
+          "non_ascii_construction_text": 1
+        },
+        "installApp": {
+          "non_ascii_construction_text": 4
+        },
+        "playMedia": {
+          "non_ascii_construction_text": 5
+        },
+        "rampBrightness": {
+          "non_ascii_construction_text": 2
+        },
+        "rebootDevice": {
+          "non_ascii_construction_text": 7
+        },
+        "resetFilterStatus": {
+          "non_ascii_construction_text": 1
+        },
+        "runNetworkSpeedTest": {
+          "non_ascii_construction_text": 4
+        },
+        "setAdaptiveLighting": {
+          "non_ascii_construction_text": 2
+        },
+        "setAlarm": {
+          "malformed_argument_key_skeleton": 24,
+          "non_ascii_construction_text": 3
+        },
+        "setAlwaysOnDisplay": {
+          "non_ascii_construction_text": 1
+        },
+        "setAmbientLighting": {
+          "non_ascii_construction_text": 1
+        },
+        "setBrightness": {
+          "non_ascii_construction_text": 1
+        },
+        "setColor": {
+          "non_ascii_construction_text": 4
+        },
+        "setColorTemperature": {
+          "non_ascii_construction_text": 6
+        },
+        "setDoNotDisturb": {
+          "non_ascii_construction_text": 2
+        },
+        "setDockState": {
+          "non_ascii_construction_text": 4
+        },
+        "setEmissionsMode": {
+          "non_ascii_construction_text": 1
+        },
+        "setFanMode": {
+          "non_ascii_construction_text": 1
+        },
+        "setGarageDoor": {
+          "non_ascii_construction_text": 2
+        },
+        "setGroupLightState": {
+          "non_ascii_construction_text": 2
+        },
+        "setHapticStrength": {
+          "non_ascii_construction_text": 1
+        },
+        "setHumidifierState": {
+          "non_ascii_construction_text": 1
+        },
+        "setInputSource": {
+          "non_ascii_construction_text": 3
+        },
+        "setLighting": {
+          "non_ascii_construction_text": 1
+        },
+        "setLockState": {
+          "non_ascii_construction_text": 3
+        },
+        "setPowerState": {
+          "non_ascii_construction_text": 1
+        },
+        "setSecurityMode": {
+          "non_ascii_construction_text": 5
+        },
+        "setSteeringWheelHeat": {
+          "non_ascii_construction_text": 1
+        },
+        "setSunroofPosition": {
+          "non_ascii_construction_text": 1
+        },
+        "setTargetTemperature": {
+          "non_ascii_construction_text": 5
+        },
+        "setThermostatMode": {
+          "non_ascii_construction_text": 3
+        },
+        "setThermostatSchedule": {
+          "non_ascii_construction_text": 2
+        },
+        "setValetMode": {
+          "non_ascii_construction_text": 1
+        },
+        "setVolume": {
+          "non_ascii_construction_text": 2
+        },
+        "setWaterValve": {
+          "non_ascii_construction_text": 4
+        },
+        "startCharging": {
+          "non_ascii_construction_text": 1
+        },
+        "startCleaning": {
+          "malformed_argument_key_skeleton": 14,
+          "non_ascii_construction_text": 1
+        },
+        "startWorkout": {
+          "non_ascii_construction_text": 3
+        },
+        "stopWorkout": {
+          "non_ascii_construction_text": 2
+        },
+        "streamCamera": {
+          "non_ascii_construction_text": 3
+        },
+        "updateFirmware": {
+          "non_ascii_construction_text": 4
+        },
+        "viewRemoteCamera": {
+          "non_ascii_construction_text": 1
+        }
+      },
+      "reversed_input_rebuild_contract": "byte-identical",
+      "schema": "saea-a2t-construction-example-ground-report-v1",
+      "source_argument_values_rendered": 0,
+      "source_sample_ids_rendered": 0,
+      "source_unit_ids_rendered": 0,
+      "task_used_tool_pattern_coverage": 1.0,
+      "tier7_chat_histories_consumed": 0,
+      "tool_count": 152,
+      "tool_coverage": [
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-body-control",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "foldExteriorMirrors",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-body-control",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "openFrontTrunk",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-body-control",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "state",
+            "trunk"
+          ],
+          "tool_name": "setCargoState",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-body-control",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "action"
+          ],
+          "tool_name": "setGarageOpener",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-body-control",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId",
+            "state"
+          ],
+          "tool_name": "setLockState",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-body-control",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setSecureStorageAccess",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-body-control",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setSunroofPosition",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-body-control",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "window"
+          ],
+          "tool_name": "setWindowPosition",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-charging-energy",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getBatteryStatus",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-charging-energy",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getChargingSession",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-charging-energy",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "openChargePortDoor",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-charging-energy",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "percentage"
+          ],
+          "tool_name": "setChargeLimit",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-charging-energy",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "amps"
+          ],
+          "tool_name": "setChargingAmperage",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-charging-energy",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setScheduledDeparture",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-charging-energy",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "startCharging",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-charging-energy",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "stopCharging",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-charging-energy",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "triggerBatteryPreconditioning",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-charging-energy",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "unlockChargeCable",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-climate-environment",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getClimateState",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-climate-environment",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "mode"
+          ],
+          "tool_name": "setAirQualityMode",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-climate-environment",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setCabinOverheatProtection",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-climate-environment",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setCampingMode",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-climate-environment",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setDefrost",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-climate-environment",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setFanSpeed",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-climate-environment",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setHvacMode",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-climate-environment",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setPetComfortMode",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-climate-environment",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setRecirculation",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-climate-environment",
+          "legal_key_skeleton_count": 4,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "coolLevel"
+          ],
+          "tool_name": "setSeatComfort",
+          "typed_key_count": 3
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-climate-environment",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setSteeringWheelHeat",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-climate-environment",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "zone"
+          ],
+          "tool_name": "setZoneTemperature",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-climate-environment",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "ventWindows",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-core-control",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 2,
+          "pattern_placeholder_keys": [],
+          "tool_name": "controlLocks",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-core-control",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "enableRemoteStart",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-core-control",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 2,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setChargingLimit",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-core-control",
+          "legal_key_skeleton_count": 4,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setClimate",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-diagnostics",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getActiveAlerts",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-diagnostics",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getBatteryHealth",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-diagnostics",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getEnergyConsumption",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-diagnostics",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getOdometer",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-diagnostics",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getTirePressures",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-driving-dynamics",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "initiateAutoPark",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-driving-dynamics",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "level"
+          ],
+          "tool_name": "setAutonomousDriving",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-driving-dynamics",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setCruiseSpeed",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-driving-dynamics",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "mode"
+          ],
+          "tool_name": "setDrivingMode",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-driving-dynamics",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setFollowDistance",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-driving-dynamics",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setRegenerativeBraking",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-driving-dynamics",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "mode"
+          ],
+          "tool_name": "setSteeringFeel",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-driving-dynamics",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "action"
+          ],
+          "tool_name": "triggerRemoteParking",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-fine-grained",
+          "legal_key_skeleton_count": 4,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "mirror",
+            "x"
+          ],
+          "tool_name": "setMirrorAngle",
+          "typed_key_count": 3
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-maintenance",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "calibrateCameras",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-maintenance",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getSoftwareUpdateStatus",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-maintenance",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "installSoftwareUpdate",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-maintenance",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "resetTPMSSensors",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-maintenance",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "notes"
+          ],
+          "tool_name": "scheduleService",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-maintenance",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "wiperServiceMode",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-media-cabin",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 2,
+          "pattern_placeholder_keys": [
+            "direction"
+          ],
+          "tool_name": "adjustVolume",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-media-cabin",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "controlPlayback",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-media-cabin",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "game"
+          ],
+          "tool_name": "launchInCarGaming",
+          "typed_key_count": 3
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-media-cabin",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setAmbientLighting",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-media-cabin",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 2,
+          "pattern_placeholder_keys": [
+            "stream"
+          ],
+          "tool_name": "setAudioVolume",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-media-cabin",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setExternalSpeakerOutput",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-media-cabin",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "source"
+          ],
+          "tool_name": "setMediaSource",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-media-cabin",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setPassengerQuietMode",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-navigation",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "addTripStop",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-navigation",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "cancelNavigation",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-navigation",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getRouteSummary",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-navigation",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "category",
+            "filter"
+          ],
+          "tool_name": "searchPOI",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-navigation",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "address"
+          ],
+          "tool_name": "setDestination",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-navigation",
+          "legal_key_skeleton_count": 5,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setRoutePreferences",
+          "typed_key_count": 3
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-navigation",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setVoiceGuidance",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-novelty",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "seat"
+          ],
+          "tool_name": "setEmissionsMode",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-novelty",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setRomanceMode",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-novelty",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "showName"
+          ],
+          "tool_name": "startLightShow",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-security",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "flashLights",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-security",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "honkHorn",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-security",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "limit"
+          ],
+          "tool_name": "setSpeedLimitMode",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-security",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setSurveillanceMode",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-security",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "pin"
+          ],
+          "tool_name": "setValetMode",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-security",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "camera"
+          ],
+          "tool_name": "viewRemoteCamera",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-status",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getChargeState",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-status",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "door"
+          ],
+          "tool_name": "getDoorStatus",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-status",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getGearSelection",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-status",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getLocation",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": false,
+          "family_tag": "smart-car-status",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 0,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getLockStatus",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-status",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getSentryStatus",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-car-status",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getVehicleInfo",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-appliances",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId"
+          ],
+          "tool_name": "getApplianceStatus",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-appliances",
+          "legal_key_skeleton_count": 4,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "mode"
+          ],
+          "tool_name": "setApplianceMode",
+          "typed_key_count": 3
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-appliances",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId"
+          ],
+          "tool_name": "setDockState",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-appliances",
+          "legal_key_skeleton_count": 4,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "startCleaning",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-automation",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "routineId"
+          ],
+          "tool_name": "activateRoutine",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-automation",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "activateScene",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-automation",
+          "legal_key_skeleton_count": 4,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "message"
+          ],
+          "tool_name": "broadcastMessage",
+          "typed_key_count": 3
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-automation",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId"
+          ],
+          "tool_name": "restartDevice",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-climate",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getAirQuality",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-climate",
+          "legal_key_skeleton_count": 5,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "speed"
+          ],
+          "tool_name": "setFanMode",
+          "typed_key_count": 3
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-climate",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "targetHumidity"
+          ],
+          "tool_name": "setHumidifierState",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-climate",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setTargetTemperature",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-climate",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setThermostatMode",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-climate",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId"
+          ],
+          "tool_name": "setThermostatSchedule",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-core-control",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getDeviceList",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-core-control",
+          "legal_key_skeleton_count": 12,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId"
+          ],
+          "tool_name": "setLighting",
+          "typed_key_count": 4
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-core-control",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setSecurityMode",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-core-control",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId"
+          ],
+          "tool_name": "streamCamera",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-device-finding",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "findMyDevice",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-diagnostics",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId"
+          ],
+          "tool_name": "getAirQuality_diag",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-diagnostics",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId"
+          ],
+          "tool_name": "getBatteryLevel",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-diagnostics",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId"
+          ],
+          "tool_name": "getFilterLife",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-diagnostics",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getNetworkHealth",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-energy",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId"
+          ],
+          "tool_name": "getEnergyUsage",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-energy",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId",
+            "state"
+          ],
+          "tool_name": "setPowerState",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-energy",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "state"
+          ],
+          "tool_name": "setWaterValve",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-lighting",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId",
+            "duration",
+            "targetLevel"
+          ],
+          "tool_name": "rampBrightness",
+          "typed_key_count": 3
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-lighting",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setAdaptiveLighting",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-lighting",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setBrightness",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-lighting",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setColor",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-lighting",
+          "legal_key_skeleton_count": 9,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "kelvin"
+          ],
+          "tool_name": "setColorTemperature",
+          "typed_key_count": 9
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-lighting",
+          "legal_key_skeleton_count": 12,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "groupId",
+            "level"
+          ],
+          "tool_name": "setGroupLightState",
+          "typed_key_count": 4
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-lighting",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId",
+            "state"
+          ],
+          "tool_name": "setLightState",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-maintenance",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId",
+            "offset"
+          ],
+          "tool_name": "calibrateThermostat",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-maintenance",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId"
+          ],
+          "tool_name": "rebootDevice",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-maintenance",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "resetFilterStatus",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-maintenance",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "runNetworkSpeedTest",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-maintenance",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId"
+          ],
+          "tool_name": "updateFirmware",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-media",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "sourceUrl",
+            "targetDeviceId"
+          ],
+          "tool_name": "castContent",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-media",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "action",
+            "deviceId"
+          ],
+          "tool_name": "controlPlayback_home",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-media",
+          "legal_key_skeleton_count": 7,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "query",
+            "source"
+          ],
+          "tool_name": "playMedia",
+          "typed_key_count": 5
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-media",
+          "legal_key_skeleton_count": 4,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "input"
+          ],
+          "tool_name": "setInputSource",
+          "typed_key_count": 3
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-media",
+          "legal_key_skeleton_count": 5,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId"
+          ],
+          "tool_name": "setVolume",
+          "typed_key_count": 5
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-security",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "mode"
+          ],
+          "tool_name": "armSecuritySystem",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-security",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "eventType"
+          ],
+          "tool_name": "getCameraEvent",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-security",
+          "legal_key_skeleton_count": 4,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "getCameraStream",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-security",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "state"
+          ],
+          "tool_name": "setGarageDoor",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-security",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId",
+            "state"
+          ],
+          "tool_name": "setLockState_home",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-status",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId"
+          ],
+          "tool_name": "getApplianceState",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-status",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId"
+          ],
+          "tool_name": "getLightState",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-status",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId"
+          ],
+          "tool_name": "getLockState",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-status",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId"
+          ],
+          "tool_name": "getSensorState",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "smart-home-status",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "deviceId"
+          ],
+          "tool_name": "getThermostatState",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "wearables-device-state",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "findPairedPhone",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "wearables-device-state",
+          "legal_key_skeleton_count": 5,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setAlarm",
+          "typed_key_count": 3
+        },
+        {
+          "construction_used": true,
+          "family_tag": "wearables-device-state",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "setAlwaysOnDisplay",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "wearables-device-state",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "mode"
+          ],
+          "tool_name": "setDoNotDisturb",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "wearables-health-activity",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "period"
+          ],
+          "tool_name": "getActivitySummary",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "wearables-health-activity",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "type"
+          ],
+          "tool_name": "getBiometricData",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "wearables-health-activity",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "period"
+          ],
+          "tool_name": "getHRV",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "wearables-health-activity",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "period"
+          ],
+          "tool_name": "getSleepSummary",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "wearables-health-activity",
+          "legal_key_skeleton_count": 3,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "activity"
+          ],
+          "tool_name": "startWorkout",
+          "typed_key_count": 2
+        },
+        {
+          "construction_used": true,
+          "family_tag": "wearables-health-activity",
+          "legal_key_skeleton_count": 1,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "stopWorkout",
+          "typed_key_count": 0
+        },
+        {
+          "construction_used": true,
+          "family_tag": "wearables-system-connectivity",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [],
+          "tool_name": "enableWaterLock",
+          "typed_key_count": 1
+        },
+        {
+          "construction_used": true,
+          "family_tag": "wearables-system-connectivity",
+          "legal_key_skeleton_count": 4,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "appName"
+          ],
+          "tool_name": "installApp",
+          "typed_key_count": 3
+        },
+        {
+          "construction_used": true,
+          "family_tag": "wearables-system-connectivity",
+          "legal_key_skeleton_count": 2,
+          "pattern_count": 3,
+          "pattern_placeholder_keys": [
+            "level"
+          ],
+          "tool_name": "setHapticStrength",
+          "typed_key_count": 1
+        }
+      ],
+      "tools_with_examples": 151,
+      "typed_key_count": 201,
+      "unaligned_row_count": 0,
+      "unsafe_construction_text_row_count": 180
+    },
+    "schema": "saea-a2t-construction-example-ground-receipt-v1",
+    "source_hashes": {
+      "construction_rows_sha256": "a3404481ed94a5bf7378aa8a86790b8ebedc8afdc1f9f66b9f2a584a8d3da66d",
+      "forbidden_query_blocks_sha256": "d50ab33b407e731518255948f688109b7eb81cefe819ddda9edbd069083f581f",
+      "forbidden_source_ids_sha256": "4b151c92195328100dc91d8d4f519ea62e35c1ba6b6fd6ed7b0de119d94445ca",
+      "g5_corpus_sha256": "92684a16e39985d3c4c6e7e6d62ac54feaa357eaa7c24c744df21950e51f95e5"
+    }
+  },
+  "ground_report": {
+    "ascii_only": true,
+    "construction_fields_consumed": [
+      "arg_pairs",
+      "arg_signature",
+      "query_idx",
+      "sample_ids",
+      "text",
+      "tier",
+      "tool_name",
+      "unit_id"
+    ],
+    "construction_row_count": 12601,
+    "construction_used_tool_count": 151,
+    "corpus_ascii_byte_cap": 524288,
+    "corpus_ascii_bytes": 102459,
+    "example_count": 449,
+    "family_ascii_byte_cap": 24576,
+    "family_count": 28,
+    "family_coverage": [
+      {
+        "ascii_bytes": 5805,
+        "construction_used_tool_count": 8,
+        "example_count": 24,
+        "family_tag": "smart-car-body-control",
+        "sha256": "d1d8fdb98c0e793dafaea5b8096d91c8aa6f649d07a25999513172abc611b9bf",
+        "tool_count": 8,
+        "tools_with_examples": 8
+      },
+      {
+        "ascii_bytes": 7419,
+        "construction_used_tool_count": 10,
+        "example_count": 30,
+        "family_tag": "smart-car-charging-energy",
+        "sha256": "346101e021eb8f527a2a9d0d614af6e2d9d94875c778476c2e9d9c89e7e6fe10",
+        "tool_count": 10,
+        "tools_with_examples": 10
+      },
+      {
+        "ascii_bytes": 10097,
+        "construction_used_tool_count": 13,
+        "example_count": 39,
+        "family_tag": "smart-car-climate-environment",
+        "sha256": "11f6303f6b556f11366bdb495c93d1066ce7e50010df0d6e66a243051f908d5a",
+        "tool_count": 13,
+        "tools_with_examples": 13
+      },
+      {
+        "ascii_bytes": 2282,
+        "construction_used_tool_count": 4,
+        "example_count": 10,
+        "family_tag": "smart-car-core-control",
+        "sha256": "0b4f9c74e7dcfd15d33d68c132d5c6f52170ab254278c8d6571df50523023f1d",
+        "tool_count": 4,
+        "tools_with_examples": 4
+      },
+      {
+        "ascii_bytes": 3148,
+        "construction_used_tool_count": 5,
+        "example_count": 15,
+        "family_tag": "smart-car-diagnostics",
+        "sha256": "48a058206b1c9afcc8ab9d66f2abfe6eb74f1c37e69a015563245936c9ba1cd5",
+        "tool_count": 5,
+        "tools_with_examples": 5
+      },
+      {
+        "ascii_bytes": 5796,
+        "construction_used_tool_count": 8,
+        "example_count": 24,
+        "family_tag": "smart-car-driving-dynamics",
+        "sha256": "1215fd4bcf02a084134d227c160ac1f4ac222506ebb76c10cb35cef687ae8afb",
+        "tool_count": 8,
+        "tools_with_examples": 8
+      },
+      {
+        "ascii_bytes": 859,
+        "construction_used_tool_count": 1,
+        "example_count": 3,
+        "family_tag": "smart-car-fine-grained",
+        "sha256": "d07eb05f4d9e60a498d3ab55de8891ae949d8b6d175f7a0d5463734f95ffba3b",
+        "tool_count": 1,
+        "tools_with_examples": 1
+      },
+      {
+        "ascii_bytes": 4492,
+        "construction_used_tool_count": 6,
+        "example_count": 18,
+        "family_tag": "smart-car-maintenance",
+        "sha256": "dfd693c32f582a5afd7955e116a6ccfa562c5c6da1cd328a4fc2ff85c4d75045",
+        "tool_count": 6,
+        "tools_with_examples": 6
+      },
+      {
+        "ascii_bytes": 5620,
+        "construction_used_tool_count": 8,
+        "example_count": 22,
+        "family_tag": "smart-car-media-cabin",
+        "sha256": "25cc5a268c4760c968d4c4124a76fb8f04ee58eee0174b54ed4d388071a3b5d8",
+        "tool_count": 8,
+        "tools_with_examples": 8
+      },
+      {
+        "ascii_bytes": 4676,
+        "construction_used_tool_count": 7,
+        "example_count": 21,
+        "family_tag": "smart-car-navigation",
+        "sha256": "28d16aa1bf8bdf556b169146332ca026bf74fa0b24e9ef9c705661edad5a9100",
+        "tool_count": 7,
+        "tools_with_examples": 7
+      },
+      {
+        "ascii_bytes": 1799,
+        "construction_used_tool_count": 3,
+        "example_count": 9,
+        "family_tag": "smart-car-novelty",
+        "sha256": "0ba98a0eecd3cf8350df361edf87fd9f63a036ab15733214d09c7eff81dc0a84",
+        "tool_count": 3,
+        "tools_with_examples": 3
+      },
+      {
+        "ascii_bytes": 4253,
+        "construction_used_tool_count": 6,
+        "example_count": 18,
+        "family_tag": "smart-car-security",
+        "sha256": "9f985e2f4b1ffccd738589952d8839064ae39820f9038cce67ed44bb4c9d45b8",
+        "tool_count": 6,
+        "tools_with_examples": 6
+      },
+      {
+        "ascii_bytes": 4580,
+        "construction_used_tool_count": 6,
+        "example_count": 18,
+        "family_tag": "smart-car-status",
+        "sha256": "41e34e6466716b5ecbc15e0e6261f7278c19fd863ddb90d25ec4cbc4d85fb695",
+        "tool_count": 7,
+        "tools_with_examples": 6
+      },
+      {
+        "ascii_bytes": 2439,
+        "construction_used_tool_count": 4,
+        "example_count": 12,
+        "family_tag": "smart-home-appliances",
+        "sha256": "641177e6e9b7b2561cf44ee6602eccdd11261d512761f6868254fccd52794e92",
+        "tool_count": 4,
+        "tools_with_examples": 4
+      },
+      {
+        "ascii_bytes": 2190,
+        "construction_used_tool_count": 4,
+        "example_count": 12,
+        "family_tag": "smart-home-automation",
+        "sha256": "01d4158b76e65675115325e14c81956501e45efa8213d2ef2a5e2f3207001e68",
+        "tool_count": 4,
+        "tools_with_examples": 4
+      },
+      {
+        "ascii_bytes": 3898,
+        "construction_used_tool_count": 6,
+        "example_count": 18,
+        "family_tag": "smart-home-climate",
+        "sha256": "4f05039deb58d9725b9ef1103a0d9aeaeb46f87feafb0688e8772a268b72580b",
+        "tool_count": 6,
+        "tools_with_examples": 6
+      },
+      {
+        "ascii_bytes": 2554,
+        "construction_used_tool_count": 4,
+        "example_count": 12,
+        "family_tag": "smart-home-core-control",
+        "sha256": "2f31f7dbcad4dd05516d21243e4917b9c4a2b67741e208d2083b6c311cce948c",
+        "tool_count": 4,
+        "tools_with_examples": 4
+      },
+      {
+        "ascii_bytes": 641,
+        "construction_used_tool_count": 1,
+        "example_count": 3,
+        "family_tag": "smart-home-device-finding",
+        "sha256": "65a6ad9a87a0a009e9bac2ce12bda491cd3cb08d6f50876c6b6968a87488bbc1",
+        "tool_count": 1,
+        "tools_with_examples": 1
+      },
+      {
+        "ascii_bytes": 2691,
+        "construction_used_tool_count": 4,
+        "example_count": 12,
+        "family_tag": "smart-home-diagnostics",
+        "sha256": "418eaf4f853a9183704e733eca5770eedbfb1af190c396130b583f0ff1ba809e",
+        "tool_count": 4,
+        "tools_with_examples": 4
+      },
+      {
+        "ascii_bytes": 1717,
+        "construction_used_tool_count": 3,
+        "example_count": 9,
+        "family_tag": "smart-home-energy",
+        "sha256": "43a84f5f00519840ff2c051ec98f57a2258999ae9a021cab63cb4274d884512b",
+        "tool_count": 3,
+        "tools_with_examples": 3
+      },
+      {
+        "ascii_bytes": 5142,
+        "construction_used_tool_count": 7,
+        "example_count": 21,
+        "family_tag": "smart-home-lighting",
+        "sha256": "390c2e3e7c2a3213115afacb3332d5400a29a461a52b6c34666ddc195051e6ca",
+        "tool_count": 7,
+        "tools_with_examples": 7
+      },
+      {
+        "ascii_bytes": 3044,
+        "construction_used_tool_count": 5,
+        "example_count": 15,
+        "family_tag": "smart-home-maintenance",
+        "sha256": "2c21efeb6d93ca223263f3a73401f5c58e477ac875af997e362327ed8a3d21c1",
+        "tool_count": 5,
+        "tools_with_examples": 5
+      },
+      {
+        "ascii_bytes": 3363,
+        "construction_used_tool_count": 5,
+        "example_count": 15,
+        "family_tag": "smart-home-media",
+        "sha256": "0b628e840809b8578a80af4592c32c79f614b726edd13df38c1e9b022f6c4008",
+        "tool_count": 5,
+        "tools_with_examples": 5
+      },
+      {
+        "ascii_bytes": 3205,
+        "construction_used_tool_count": 5,
+        "example_count": 15,
+        "family_tag": "smart-home-security",
+        "sha256": "e4a5c5cf6dd5b34b430523baa48ade7b4a4239a7f11e310d6c6f238cc7ebba49",
+        "tool_count": 5,
+        "tools_with_examples": 5
+      },
+      {
+        "ascii_bytes": 2959,
+        "construction_used_tool_count": 5,
+        "example_count": 15,
+        "family_tag": "smart-home-status",
+        "sha256": "077d4eade65be102181b62c6ea55c8deb936651cbd913566d4cd9603693625e1",
+        "tool_count": 5,
+        "tools_with_examples": 5
+      },
+      {
+        "ascii_bytes": 2278,
+        "construction_used_tool_count": 4,
+        "example_count": 12,
+        "family_tag": "wearables-device-state",
+        "sha256": "41cfb2adb3b293e610e77c5914b73a8dcc1ebe5bf886448332f13994feaa5295",
+        "tool_count": 4,
+        "tools_with_examples": 4
+      },
+      {
+        "ascii_bytes": 3755,
+        "construction_used_tool_count": 6,
+        "example_count": 18,
+        "family_tag": "wearables-health-activity",
+        "sha256": "39ab031aba77492e00fe169f7e5177f385f44955704de270ef0fac41b90da668",
+        "tool_count": 6,
+        "tools_with_examples": 6
+      },
+      {
+        "ascii_bytes": 1757,
+        "construction_used_tool_count": 3,
+        "example_count": 9,
+        "family_tag": "wearables-system-connectivity",
+        "sha256": "91d420d6575bf49991b121c4137744a4fc55481429b8cfe1396abca160966786",
+        "tool_count": 3,
+        "tools_with_examples": 3
+      }
+    ],
+    "g5_incompatible_key_skeleton_row_count": 0,
+    "gold_or_evaluation_fields_consumed": 0,
+    "legal_key_skeleton_count": 349,
+    "malformed_argument_key_skeleton_row_count": 38,
+    "maximum_examples_per_tool": 3,
+    "maximum_family_ascii_bytes": 10097,
+    "observed_legal_key_skeleton_count": 348,
+    "placeholder_free_pattern_count": 361,
+    "primary_call_examples_only": true,
+    "query_independent": true,
+    "registry_defaults_rendered": 0,
+    "registry_only_tool_count": 1,
+    "registry_only_tool_names": [
+      "getLockStatus"
+    ],
+    "registry_only_tool_pattern_policy": "zero patterns; no construction-positive language is available",
+    "rejected_row_count": 218,
+    "rejected_row_reason_counts": {
+      "malformed_argument_key_skeleton": 38,
+      "non_ascii_construction_text": 180
+    },
+    "rejected_row_reason_counts_by_tool": {
+      "activateRoutine": {
+        "non_ascii_construction_text": 3
+      },
+      "activateScene": {
+        "non_ascii_construction_text": 3
+      },
+      "calibrateThermostat": {
+        "non_ascii_construction_text": 2
+      },
+      "castContent": {
+        "non_ascii_construction_text": 3
+      },
+      "controlPlayback": {
+        "non_ascii_construction_text": 3
+      },
+      "enableWaterLock": {
+        "non_ascii_construction_text": 3
+      },
+      "findMyDevice": {
+        "non_ascii_construction_text": 1
+      },
+      "findPairedPhone": {
+        "non_ascii_construction_text": 1
+      },
+      "flashLights": {
+        "non_ascii_construction_text": 1
+      },
+      "getAirQuality": {
+        "non_ascii_construction_text": 2
+      },
+      "getAirQuality_diag": {
+        "non_ascii_construction_text": 2
+      },
+      "getApplianceState": {
+        "non_ascii_construction_text": 4
+      },
+      "getApplianceStatus": {
+        "non_ascii_construction_text": 3
+      },
+      "getBatteryHealth": {
+        "non_ascii_construction_text": 1
+      },
+      "getBatteryLevel": {
+        "non_ascii_construction_text": 3
+      },
+      "getBiometricData": {
+        "non_ascii_construction_text": 2
+      },
+      "getCameraEvent": {
+        "non_ascii_construction_text": 4
+      },
+      "getCameraStream": {
+        "non_ascii_construction_text": 5
+      },
+      "getChargeState": {
+        "non_ascii_construction_text": 2
+      },
+      "getClimateState": {
+        "non_ascii_construction_text": 1
+      },
+      "getDeviceList": {
+        "non_ascii_construction_text": 1
+      },
+      "getEnergyUsage": {
+        "non_ascii_construction_text": 3
+      },
+      "getFilterLife": {
+        "non_ascii_construction_text": 3
+      },
+      "getHRV": {
+        "non_ascii_construction_text": 3
+      },
+      "getLightState": {
+        "non_ascii_construction_text": 2
+      },
+      "getLocation": {
+        "non_ascii_construction_text": 1
+      },
+      "getLockState": {
+        "non_ascii_construction_text": 3
+      },
+      "getNetworkHealth": {
+        "non_ascii_construction_text": 2
+      },
+      "getSensorState": {
+        "non_ascii_construction_text": 3
+      },
+      "getSentryStatus": {
+        "non_ascii_construction_text": 1
+      },
+      "getSleepSummary": {
+        "non_ascii_construction_text": 4
+      },
+      "getThermostatState": {
+        "non_ascii_construction_text": 1
+      },
+      "getTirePressures": {
+        "non_ascii_construction_text": 1
+      },
+      "honkHorn": {
+        "non_ascii_construction_text": 1
+      },
+      "installApp": {
+        "non_ascii_construction_text": 4
+      },
+      "playMedia": {
+        "non_ascii_construction_text": 5
+      },
+      "rampBrightness": {
+        "non_ascii_construction_text": 2
+      },
+      "rebootDevice": {
+        "non_ascii_construction_text": 7
+      },
+      "resetFilterStatus": {
+        "non_ascii_construction_text": 1
+      },
+      "runNetworkSpeedTest": {
+        "non_ascii_construction_text": 4
+      },
+      "setAdaptiveLighting": {
+        "non_ascii_construction_text": 2
+      },
+      "setAlarm": {
+        "malformed_argument_key_skeleton": 24,
+        "non_ascii_construction_text": 3
+      },
+      "setAlwaysOnDisplay": {
+        "non_ascii_construction_text": 1
+      },
+      "setAmbientLighting": {
+        "non_ascii_construction_text": 1
+      },
+      "setBrightness": {
+        "non_ascii_construction_text": 1
+      },
+      "setColor": {
+        "non_ascii_construction_text": 4
+      },
+      "setColorTemperature": {
+        "non_ascii_construction_text": 6
+      },
+      "setDoNotDisturb": {
+        "non_ascii_construction_text": 2
+      },
+      "setDockState": {
+        "non_ascii_construction_text": 4
+      },
+      "setEmissionsMode": {
+        "non_ascii_construction_text": 1
+      },
+      "setFanMode": {
+        "non_ascii_construction_text": 1
+      },
+      "setGarageDoor": {
+        "non_ascii_construction_text": 2
+      },
+      "setGroupLightState": {
+        "non_ascii_construction_text": 2
+      },
+      "setHapticStrength": {
+        "non_ascii_construction_text": 1
+      },
+      "setHumidifierState": {
+        "non_ascii_construction_text": 1
+      },
+      "setInputSource": {
+        "non_ascii_construction_text": 3
+      },
+      "setLighting": {
+        "non_ascii_construction_text": 1
+      },
+      "setLockState": {
+        "non_ascii_construction_text": 3
+      },
+      "setPowerState": {
+        "non_ascii_construction_text": 1
+      },
+      "setSecurityMode": {
+        "non_ascii_construction_text": 5
+      },
+      "setSteeringWheelHeat": {
+        "non_ascii_construction_text": 1
+      },
+      "setSunroofPosition": {
+        "non_ascii_construction_text": 1
+      },
+      "setTargetTemperature": {
+        "non_ascii_construction_text": 5
+      },
+      "setThermostatMode": {
+        "non_ascii_construction_text": 3
+      },
+      "setThermostatSchedule": {
+        "non_ascii_construction_text": 2
+      },
+      "setValetMode": {
+        "non_ascii_construction_text": 1
+      },
+      "setVolume": {
+        "non_ascii_construction_text": 2
+      },
+      "setWaterValve": {
+        "non_ascii_construction_text": 4
+      },
+      "startCharging": {
+        "non_ascii_construction_text": 1
+      },
+      "startCleaning": {
+        "malformed_argument_key_skeleton": 14,
+        "non_ascii_construction_text": 1
+      },
+      "startWorkout": {
+        "non_ascii_construction_text": 3
+      },
+      "stopWorkout": {
+        "non_ascii_construction_text": 2
+      },
+      "streamCamera": {
+        "non_ascii_construction_text": 3
+      },
+      "updateFirmware": {
+        "non_ascii_construction_text": 4
+      },
+      "viewRemoteCamera": {
+        "non_ascii_construction_text": 1
+      }
+    },
+    "reversed_input_rebuild_contract": "byte-identical",
+    "schema": "saea-a2t-construction-example-ground-report-v1",
+    "source_argument_values_rendered": 0,
+    "source_sample_ids_rendered": 0,
+    "source_unit_ids_rendered": 0,
+    "task_used_tool_pattern_coverage": 1.0,
+    "tier7_chat_histories_consumed": 0,
+    "tool_count": 152,
+    "tool_coverage": [
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-body-control",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "foldExteriorMirrors",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-body-control",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "openFrontTrunk",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-body-control",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "state",
+          "trunk"
+        ],
+        "tool_name": "setCargoState",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-body-control",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "action"
+        ],
+        "tool_name": "setGarageOpener",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-body-control",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId",
+          "state"
+        ],
+        "tool_name": "setLockState",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-body-control",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setSecureStorageAccess",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-body-control",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setSunroofPosition",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-body-control",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "window"
+        ],
+        "tool_name": "setWindowPosition",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-charging-energy",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getBatteryStatus",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-charging-energy",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getChargingSession",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-charging-energy",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "openChargePortDoor",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-charging-energy",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "percentage"
+        ],
+        "tool_name": "setChargeLimit",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-charging-energy",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "amps"
+        ],
+        "tool_name": "setChargingAmperage",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-charging-energy",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setScheduledDeparture",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-charging-energy",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "startCharging",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-charging-energy",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "stopCharging",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-charging-energy",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "triggerBatteryPreconditioning",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-charging-energy",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "unlockChargeCable",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-climate-environment",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getClimateState",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-climate-environment",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "mode"
+        ],
+        "tool_name": "setAirQualityMode",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-climate-environment",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setCabinOverheatProtection",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-climate-environment",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setCampingMode",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-climate-environment",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setDefrost",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-climate-environment",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setFanSpeed",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-climate-environment",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setHvacMode",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-climate-environment",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setPetComfortMode",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-climate-environment",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setRecirculation",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-climate-environment",
+        "legal_key_skeleton_count": 4,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "coolLevel"
+        ],
+        "tool_name": "setSeatComfort",
+        "typed_key_count": 3
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-climate-environment",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setSteeringWheelHeat",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-climate-environment",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "zone"
+        ],
+        "tool_name": "setZoneTemperature",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-climate-environment",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "ventWindows",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-core-control",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 2,
+        "pattern_placeholder_keys": [],
+        "tool_name": "controlLocks",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-core-control",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "enableRemoteStart",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-core-control",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 2,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setChargingLimit",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-core-control",
+        "legal_key_skeleton_count": 4,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setClimate",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-diagnostics",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getActiveAlerts",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-diagnostics",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getBatteryHealth",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-diagnostics",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getEnergyConsumption",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-diagnostics",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getOdometer",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-diagnostics",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getTirePressures",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-driving-dynamics",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "initiateAutoPark",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-driving-dynamics",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "level"
+        ],
+        "tool_name": "setAutonomousDriving",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-driving-dynamics",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setCruiseSpeed",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-driving-dynamics",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "mode"
+        ],
+        "tool_name": "setDrivingMode",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-driving-dynamics",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setFollowDistance",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-driving-dynamics",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setRegenerativeBraking",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-driving-dynamics",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "mode"
+        ],
+        "tool_name": "setSteeringFeel",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-driving-dynamics",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "action"
+        ],
+        "tool_name": "triggerRemoteParking",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-fine-grained",
+        "legal_key_skeleton_count": 4,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "mirror",
+          "x"
+        ],
+        "tool_name": "setMirrorAngle",
+        "typed_key_count": 3
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-maintenance",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "calibrateCameras",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-maintenance",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getSoftwareUpdateStatus",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-maintenance",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "installSoftwareUpdate",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-maintenance",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "resetTPMSSensors",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-maintenance",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "notes"
+        ],
+        "tool_name": "scheduleService",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-maintenance",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "wiperServiceMode",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-media-cabin",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 2,
+        "pattern_placeholder_keys": [
+          "direction"
+        ],
+        "tool_name": "adjustVolume",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-media-cabin",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "controlPlayback",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-media-cabin",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "game"
+        ],
+        "tool_name": "launchInCarGaming",
+        "typed_key_count": 3
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-media-cabin",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setAmbientLighting",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-media-cabin",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 2,
+        "pattern_placeholder_keys": [
+          "stream"
+        ],
+        "tool_name": "setAudioVolume",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-media-cabin",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setExternalSpeakerOutput",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-media-cabin",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "source"
+        ],
+        "tool_name": "setMediaSource",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-media-cabin",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setPassengerQuietMode",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-navigation",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "addTripStop",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-navigation",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "cancelNavigation",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-navigation",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getRouteSummary",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-navigation",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "category",
+          "filter"
+        ],
+        "tool_name": "searchPOI",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-navigation",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "address"
+        ],
+        "tool_name": "setDestination",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-navigation",
+        "legal_key_skeleton_count": 5,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setRoutePreferences",
+        "typed_key_count": 3
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-navigation",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setVoiceGuidance",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-novelty",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "seat"
+        ],
+        "tool_name": "setEmissionsMode",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-novelty",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setRomanceMode",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-novelty",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "showName"
+        ],
+        "tool_name": "startLightShow",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-security",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "flashLights",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-security",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "honkHorn",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-security",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "limit"
+        ],
+        "tool_name": "setSpeedLimitMode",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-security",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setSurveillanceMode",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-security",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "pin"
+        ],
+        "tool_name": "setValetMode",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-security",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "camera"
+        ],
+        "tool_name": "viewRemoteCamera",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-status",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getChargeState",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-status",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "door"
+        ],
+        "tool_name": "getDoorStatus",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-status",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getGearSelection",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-status",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getLocation",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": false,
+        "family_tag": "smart-car-status",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 0,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getLockStatus",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-status",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getSentryStatus",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-car-status",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getVehicleInfo",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-appliances",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId"
+        ],
+        "tool_name": "getApplianceStatus",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-appliances",
+        "legal_key_skeleton_count": 4,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "mode"
+        ],
+        "tool_name": "setApplianceMode",
+        "typed_key_count": 3
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-appliances",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId"
+        ],
+        "tool_name": "setDockState",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-appliances",
+        "legal_key_skeleton_count": 4,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "startCleaning",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-automation",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "routineId"
+        ],
+        "tool_name": "activateRoutine",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-automation",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "activateScene",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-automation",
+        "legal_key_skeleton_count": 4,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "message"
+        ],
+        "tool_name": "broadcastMessage",
+        "typed_key_count": 3
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-automation",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId"
+        ],
+        "tool_name": "restartDevice",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-climate",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getAirQuality",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-climate",
+        "legal_key_skeleton_count": 5,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "speed"
+        ],
+        "tool_name": "setFanMode",
+        "typed_key_count": 3
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-climate",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "targetHumidity"
+        ],
+        "tool_name": "setHumidifierState",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-climate",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setTargetTemperature",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-climate",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setThermostatMode",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-climate",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId"
+        ],
+        "tool_name": "setThermostatSchedule",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-core-control",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getDeviceList",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-core-control",
+        "legal_key_skeleton_count": 12,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId"
+        ],
+        "tool_name": "setLighting",
+        "typed_key_count": 4
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-core-control",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setSecurityMode",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-core-control",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId"
+        ],
+        "tool_name": "streamCamera",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-device-finding",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "findMyDevice",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-diagnostics",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId"
+        ],
+        "tool_name": "getAirQuality_diag",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-diagnostics",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId"
+        ],
+        "tool_name": "getBatteryLevel",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-diagnostics",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId"
+        ],
+        "tool_name": "getFilterLife",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-diagnostics",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getNetworkHealth",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-energy",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId"
+        ],
+        "tool_name": "getEnergyUsage",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-energy",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId",
+          "state"
+        ],
+        "tool_name": "setPowerState",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-energy",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "state"
+        ],
+        "tool_name": "setWaterValve",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-lighting",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId",
+          "duration",
+          "targetLevel"
+        ],
+        "tool_name": "rampBrightness",
+        "typed_key_count": 3
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-lighting",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setAdaptiveLighting",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-lighting",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setBrightness",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-lighting",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setColor",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-lighting",
+        "legal_key_skeleton_count": 9,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "kelvin"
+        ],
+        "tool_name": "setColorTemperature",
+        "typed_key_count": 9
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-lighting",
+        "legal_key_skeleton_count": 12,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "groupId",
+          "level"
+        ],
+        "tool_name": "setGroupLightState",
+        "typed_key_count": 4
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-lighting",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId",
+          "state"
+        ],
+        "tool_name": "setLightState",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-maintenance",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId",
+          "offset"
+        ],
+        "tool_name": "calibrateThermostat",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-maintenance",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId"
+        ],
+        "tool_name": "rebootDevice",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-maintenance",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "resetFilterStatus",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-maintenance",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "runNetworkSpeedTest",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-maintenance",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId"
+        ],
+        "tool_name": "updateFirmware",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-media",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "sourceUrl",
+          "targetDeviceId"
+        ],
+        "tool_name": "castContent",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-media",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "action",
+          "deviceId"
+        ],
+        "tool_name": "controlPlayback_home",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-media",
+        "legal_key_skeleton_count": 7,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "query",
+          "source"
+        ],
+        "tool_name": "playMedia",
+        "typed_key_count": 5
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-media",
+        "legal_key_skeleton_count": 4,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "input"
+        ],
+        "tool_name": "setInputSource",
+        "typed_key_count": 3
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-media",
+        "legal_key_skeleton_count": 5,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId"
+        ],
+        "tool_name": "setVolume",
+        "typed_key_count": 5
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-security",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "mode"
+        ],
+        "tool_name": "armSecuritySystem",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-security",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "eventType"
+        ],
+        "tool_name": "getCameraEvent",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-security",
+        "legal_key_skeleton_count": 4,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "getCameraStream",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-security",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "state"
+        ],
+        "tool_name": "setGarageDoor",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-security",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId",
+          "state"
+        ],
+        "tool_name": "setLockState_home",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-status",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId"
+        ],
+        "tool_name": "getApplianceState",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-status",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId"
+        ],
+        "tool_name": "getLightState",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-status",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId"
+        ],
+        "tool_name": "getLockState",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-status",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId"
+        ],
+        "tool_name": "getSensorState",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "smart-home-status",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "deviceId"
+        ],
+        "tool_name": "getThermostatState",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "wearables-device-state",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "findPairedPhone",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "wearables-device-state",
+        "legal_key_skeleton_count": 5,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setAlarm",
+        "typed_key_count": 3
+      },
+      {
+        "construction_used": true,
+        "family_tag": "wearables-device-state",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "setAlwaysOnDisplay",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "wearables-device-state",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "mode"
+        ],
+        "tool_name": "setDoNotDisturb",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "wearables-health-activity",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "period"
+        ],
+        "tool_name": "getActivitySummary",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "wearables-health-activity",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "type"
+        ],
+        "tool_name": "getBiometricData",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "wearables-health-activity",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "period"
+        ],
+        "tool_name": "getHRV",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "wearables-health-activity",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "period"
+        ],
+        "tool_name": "getSleepSummary",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "wearables-health-activity",
+        "legal_key_skeleton_count": 3,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "activity"
+        ],
+        "tool_name": "startWorkout",
+        "typed_key_count": 2
+      },
+      {
+        "construction_used": true,
+        "family_tag": "wearables-health-activity",
+        "legal_key_skeleton_count": 1,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "stopWorkout",
+        "typed_key_count": 0
+      },
+      {
+        "construction_used": true,
+        "family_tag": "wearables-system-connectivity",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [],
+        "tool_name": "enableWaterLock",
+        "typed_key_count": 1
+      },
+      {
+        "construction_used": true,
+        "family_tag": "wearables-system-connectivity",
+        "legal_key_skeleton_count": 4,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "appName"
+        ],
+        "tool_name": "installApp",
+        "typed_key_count": 3
+      },
+      {
+        "construction_used": true,
+        "family_tag": "wearables-system-connectivity",
+        "legal_key_skeleton_count": 2,
+        "pattern_count": 3,
+        "pattern_placeholder_keys": [
+          "level"
+        ],
+        "tool_name": "setHapticStrength",
+        "typed_key_count": 1
+      }
+    ],
+    "tools_with_examples": 151,
+    "typed_key_count": 201,
+    "unaligned_row_count": 0,
+    "unsafe_construction_text_row_count": 180
+  },
+  "offline_guard": {
+    "outbound_connection_attempts": 0
+  },
+  "population_boundary": {
+    "construction_unit_count": 12601,
+    "forbidden_query_block_count": 774,
+    "forbidden_source_identity_count": 800,
+    "g7_roster_sha256": "8be941c6e82527f9b63cd1f9ea09449f6cabbf175e7b2401642de455edc975c3",
+    "g7_source_identity_count": 16,
+    "pool_items": 30733
+  },
+  "prompt_fit": {
+    "audio_contacts_per_sample": 2,
+    "builder_commit": "7046ce6e7fbbba67ddbae5f122748e2158761e23",
+    "contacts": 480,
+    "contacts_per_sample": 30,
+    "evidence_prompts": [
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-car-body-control",
+        "prompt_tokens": 6046,
+        "remaining_tokens": 26210,
+        "total_tokens": 6558
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-car-charging-energy",
+        "prompt_tokens": 7660,
+        "remaining_tokens": 24596,
+        "total_tokens": 8172
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-car-climate-environment",
+        "prompt_tokens": 10338,
+        "remaining_tokens": 21918,
+        "total_tokens": 10850
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-car-core-control",
+        "prompt_tokens": 2523,
+        "remaining_tokens": 29733,
+        "total_tokens": 3035
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-car-diagnostics",
+        "prompt_tokens": 3389,
+        "remaining_tokens": 28867,
+        "total_tokens": 3901
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-car-driving-dynamics",
+        "prompt_tokens": 6037,
+        "remaining_tokens": 26219,
+        "total_tokens": 6549
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-car-fine-grained",
+        "prompt_tokens": 1100,
+        "remaining_tokens": 31156,
+        "total_tokens": 1612
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-car-maintenance",
+        "prompt_tokens": 4733,
+        "remaining_tokens": 27523,
+        "total_tokens": 5245
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-car-media-cabin",
+        "prompt_tokens": 5861,
+        "remaining_tokens": 26395,
+        "total_tokens": 6373
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-car-navigation",
+        "prompt_tokens": 4917,
+        "remaining_tokens": 27339,
+        "total_tokens": 5429
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-car-novelty",
+        "prompt_tokens": 2040,
+        "remaining_tokens": 30216,
+        "total_tokens": 2552
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-car-security",
+        "prompt_tokens": 4494,
+        "remaining_tokens": 27762,
+        "total_tokens": 5006
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-car-status",
+        "prompt_tokens": 4821,
+        "remaining_tokens": 27435,
+        "total_tokens": 5333
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-home-appliances",
+        "prompt_tokens": 2680,
+        "remaining_tokens": 29576,
+        "total_tokens": 3192
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-home-automation",
+        "prompt_tokens": 2431,
+        "remaining_tokens": 29825,
+        "total_tokens": 2943
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-home-climate",
+        "prompt_tokens": 4139,
+        "remaining_tokens": 28117,
+        "total_tokens": 4651
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-home-core-control",
+        "prompt_tokens": 2795,
+        "remaining_tokens": 29461,
+        "total_tokens": 3307
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-home-device-finding",
+        "prompt_tokens": 882,
+        "remaining_tokens": 31374,
+        "total_tokens": 1394
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-home-diagnostics",
+        "prompt_tokens": 2932,
+        "remaining_tokens": 29324,
+        "total_tokens": 3444
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-home-energy",
+        "prompt_tokens": 1958,
+        "remaining_tokens": 30298,
+        "total_tokens": 2470
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-home-lighting",
+        "prompt_tokens": 5383,
+        "remaining_tokens": 26873,
+        "total_tokens": 5895
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-home-maintenance",
+        "prompt_tokens": 3285,
+        "remaining_tokens": 28971,
+        "total_tokens": 3797
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-home-media",
+        "prompt_tokens": 3604,
+        "remaining_tokens": 28652,
+        "total_tokens": 4116
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-home-security",
+        "prompt_tokens": 3446,
+        "remaining_tokens": 28810,
+        "total_tokens": 3958
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-smart-home-status",
+        "prompt_tokens": 3200,
+        "remaining_tokens": 29056,
+        "total_tokens": 3712
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-wearables-device-state",
+        "prompt_tokens": 2519,
+        "remaining_tokens": 29737,
+        "total_tokens": 3031
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-wearables-health-activity",
+        "prompt_tokens": 3996,
+        "remaining_tokens": 28260,
+        "total_tokens": 4508
+      },
+      {
+        "completion_tokens": 512,
+        "contact_id": "g7-evidence-wearables-system-connectivity",
+        "prompt_tokens": 1998,
+        "remaining_tokens": 30258,
+        "total_tokens": 2510
+      }
+    ],
+    "family_count": 28,
+    "ground_sha256": "a5bb788a64db320b8d09de3712ede38f46c5395d8e7dd1932d8acbbf8cedc855",
+    "max_concurrent_model_requests": 2,
+    "obs_prompt": {
+      "completion_tokens": 512,
+      "contact_id": "g7-obs",
+      "prompt_tokens": 337,
+      "remaining_tokens": 31919,
+      "total_tokens": 849
+    },
+    "queue_depth": 4,
+    "resolve_empty_assessment_base_prompt": {
+      "completion_tokens": 1024,
+      "contact_id": "g7-resolve",
+      "prompt_tokens": 16689,
+      "remaining_tokens": 15055,
+      "total_tokens": 17713
+    },
+    "resolve_measurement": "dynamic-after-152-assessments-seal",
+    "resolve_worst_normalized_assessment_prompt": {
+      "completion_tokens": 1024,
+      "contact_id": "g7-resolve",
+      "prompt_tokens": 21553,
+      "remaining_tokens": 10191,
+      "total_tokens": 22577
+    },
+    "roster_sha256": "8be941c6e82527f9b63cd1f9ea09449f6cabbf175e7b2401642de455edc975c3",
+    "run_id": "SAEA-A2T-G7-EXHAUSTIVE-EXAMPLE-GROUND-FIXED16-V1",
+    "schema": "saea-a2t-g7-precontact-report-v1",
+    "slots": 2,
+    "split_id": "A2T-G7-EXAMPLE-FIXED16",
+    "split_identity_hash": "94a10c359dfe9e6a96cd63940c4dcb52fc7206e4c0e7d855733b21b69b987212",
+    "token_counter": "utf8-byte-construction-upper-bound",
+    "tool_count": 152
+  },
+  "schema": "saea-a2t-g7-construction-example-ground-build-v1",
+  "speech_feature_tokens_by_sample": {
+    "tier1_direct:001432": 26,
+    "tier1_direct:001631": 52,
+    "tier2_parametric:000240": 39,
+    "tier2_parametric:005678": 91,
+    "tier3_multi_intent:002560": 91,
+    "tier3_multi_intent:003982": 65,
+    "tier4_implicit:001409": 39,
+    "tier4_implicit:003979": 65,
+    "tier5_needle:000060": 104,
+    "tier5_needle:002753": 130,
+    "tier6_correction:003450": 91,
+    "tier6_correction:003900": 78,
+    "tier7_multiturn:000274": 39,
+    "tier7_multiturn:002099": 182,
+    "tier8_intent_blending:000441": 78,
+    "tier8_intent_blending:000673": 117
+  }
+}

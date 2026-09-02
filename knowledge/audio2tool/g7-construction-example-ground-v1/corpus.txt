@@ -1,0 +1,1778 @@
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_car / body_control (smart-car-body-control)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- foldExteriorMirrors: Folds or unfolds the exterior side mirrors.
+- openFrontTrunk: Releases the latch for the front trunk (frunk).
+- setCargoState: Opens or closes the specified cargo area (Front Trunk or Rear Liftgate).
+- setGarageOpener: Triggers the programmed HomeLink garage door opener signal.
+- setLockState: Sets the global lock state (Locked/Unlocked) for all doors and the trunk.
+- setSecureStorageAccess: Locks or unlocks secure storage compartments (e.g., glovebox), optionally verifying a PIN.
+- setSunroofPosition: Sets the sunroof opening percentage.
+- setWindowPosition: Sets the opening position of a specific window as a percentage (0% closed, 100% open).
+
+Tool: foldExteriorMirrors
+Choose when: Folds or unfolds the exterior side mirrors.
+Sibling operation contrast: openFrontTrunk, setCargoState, setGarageOpener, setLockState, setSecureStorageAccess, setSunroofPosition, setWindowPosition
+Key types: state: FoldState
+Legal key skeletons: {} | {state}
+Positive construction language patterns:
+- [tier2_parametric] Collapse the side mirrors.
+- [tier7_multiturn] Yes, please fold them.
+- [tier8_intent_blending] Fold mirrors set driver temp to sixty seven and heat seat
+
+Tool: openFrontTrunk
+Choose when: Releases the latch for the front trunk (frunk).
+Sibling operation contrast: foldExteriorMirrors, setCargoState, setGarageOpener, setLockState, setSecureStorageAccess, setSunroofPosition, setWindowPosition
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier1_direct] Open forward trunk
+- [tier3_multi_intent] Release frunk latch and enable auto HVAC and set driver temp to seventy
+- [tier5_needle] I'm so tired of all this rain. It's been raining for three days straight. I can't wait for a sunny day. At least my new rain boots are keeping my feet dry. They're in here, uh, pop the front trunk.
+
+Tool: setCargoState
+Choose when: Opens or closes the specified cargo area (Front Trunk or Rear Liftgate).
+Sibling operation contrast: foldExteriorMirrors, openFrontTrunk, setGarageOpener, setLockState, setSecureStorageAccess, setSunroofPosition, setWindowPosition
+Key types: trunk: TrunkLocation; state: OpenClose
+Legal key skeletons: {} | {trunk, state}
+Positive construction language patterns:
+- [tier1_direct] Trunk opening
+- [tier7_multiturn] Oh, sorry! I meant the back one please, where I usually put my groceries.
+- [tier5_needle] The whole discussion about keeping valuables out of sight, like not on seats, uh, reminded me, so can you {state} the {trunk} trunk so the bags are not visible
+
+Tool: setGarageOpener
+Choose when: Triggers the programmed HomeLink garage door opener signal.
+Sibling operation contrast: foldExteriorMirrors, openFrontTrunk, setCargoState, setLockState, setSecureStorageAccess, setSunroofPosition, setWindowPosition
+Key types: action: OpenClose
+Legal key skeletons: {} | {action}
+Positive construction language patterns:
+- [tier7_multiturn] {action} it.
+- [tier1_direct] Activate HomeLink button
+- [tier4_implicit] I can see right into my garage from outside
+
+Tool: setLockState
+Choose when: Sets the global lock state (Locked/Unlocked) for all doors and the trunk.
+Sibling operation contrast: foldExteriorMirrors, openFrontTrunk, setCargoState, setGarageOpener, setSecureStorageAccess, setSunroofPosition, setWindowPosition
+Key types: state: LockState; deviceId: String
+Legal key skeletons: {} | {state} | {state, deviceId}
+Positive construction language patterns:
+- [tier1_direct] Locking time
+- [tier7_multiturn] Actually, I don't want to touch the back door, but I do want to make sure the {deviceId} is {state}, I've got a lot of valuable stuff in there and I've been meaning to get a new safe, but that's a whole other story. I just want to make sure that the {deviceId} is secure, you know, for peace of mind.
+- [tier4_implicit] Feeling unsafe right now
+
+Tool: setSecureStorageAccess
+Choose when: Locks or unlocks secure storage compartments (e.g., glovebox), optionally verifying a PIN.
+Sibling operation contrast: foldExteriorMirrors, openFrontTrunk, setCargoState, setGarageOpener, setLockState, setSunroofPosition, setWindowPosition
+Key types: enabled: Boolean; pin: Int
+Legal key skeletons: {} | {enabled} | {enabled, pin}
+Positive construction language patterns:
+- [tier2_parametric] Lock the glovebox
+- [tier4_implicit] All my paperwork is just loose in that open box
+- [tier3_multi_intent] Lock storage pin two four six eight and set fan to level three
+
+Tool: setSunroofPosition
+Choose when: Sets the sunroof opening percentage.
+Sibling operation contrast: foldExteriorMirrors, openFrontTrunk, setCargoState, setGarageOpener, setLockState, setSecureStorageAccess, setWindowPosition
+Key types: position: Int
+Legal key skeletons: {} | {position}
+Positive construction language patterns:
+- [tier1_direct] Just close the roof thing
+- [tier4_implicit] Let's make it quieter.
+- [tier2_parametric] Sunroof position to three percent.
+
+Tool: setWindowPosition
+Choose when: Sets the opening position of a specific window as a percentage (0% closed, 100% open).
+Sibling operation contrast: foldExteriorMirrors, openFrontTrunk, setCargoState, setGarageOpener, setLockState, setSecureStorageAccess, setSunroofPosition
+Key types: window: WindowLocation; position: Int
+Legal key skeletons: {} | {window, position}
+Positive construction language patterns:
+- [tier1_direct] Driver front window go fully up now
+- [tier4_implicit] I think it's about to rain.
+- [tier3_multi_intent] Crack the {window} window at ten percent and then set rear zone temperature to seventy plus switch HVAC to auto
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_car / charging_energy (smart-car-charging-energy)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- getBatteryStatus: Retrieves the current State of Charge (SoC), estimated range, and charging connection status.
+- getChargingSession: Retrieves real-time charging metrics (Power, Voltage, Current).
+- openChargePortDoor: Opens or unlatches the charge port door to allow cable insertion.
+- setChargeLimit: Sets the maximum battery charge percentage limit (e.g., 80% for daily use).
+- setChargingAmperage: Limits the maximum AC charging current to prevent overloading electrical circuits.
+- setScheduledDeparture: Schedules a departure time to automatically precondition the battery and cabin temperature.
+- startCharging: Manually starts a charging session.
+- stopCharging: Stops an active charging session.
+- triggerBatteryPreconditioning: Manually starts battery preconditioning to prepare for DC fast charging.
+- unlockChargeCable: Unlocks the charging port latch to allow cable removal.
+
+Tool: getBatteryStatus
+Choose when: Retrieves the current State of Charge (SoC), estimated range, and charging connection status.
+Sibling operation contrast: getChargingSession, openChargePortDoor, setChargeLimit, setChargingAmperage, setScheduledDeparture, startCharging, stopCharging, triggerBatteryPreconditioning, unlockChargeCable
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier1_direct] Battery level?
+- [tier4_implicit] I'm just trying to plan my day.
+- [tier5_needle] I was daydreaming about getting a bigger battery model someday, and that made me think, uh, what is the battery status on this one right now, can you show me
+
+Tool: getChargingSession
+Choose when: Retrieves real-time charging metrics (Power, Voltage, Current).
+Sibling operation contrast: getBatteryStatus, openChargePortDoor, setChargeLimit, setChargingAmperage, setScheduledDeparture, startCharging, stopCharging, triggerBatteryPreconditioning, unlockChargeCable
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier4_implicit] Is it taking in power correctly?
+- [tier6_correction] Set a new maximum state of charge, scratch that, just show me the active charging session data
+- [tier7_multiturn] Uh, yeah... primary one, I guess.
+
+Tool: openChargePortDoor
+Choose when: Opens or unlatches the charge port door to allow cable insertion.
+Sibling operation contrast: getBatteryStatus, getChargingSession, setChargeLimit, setChargingAmperage, setScheduledDeparture, startCharging, stopCharging, triggerBatteryPreconditioning, unlockChargeCable
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier1_direct] Open my charging socket cover
+- [tier7_multiturn] Do not move the car. Do not honk. Only unlatch the charge inlet now.
+- [tier8_intent_blending] Please open the charge door and enable pet comfort at sixty six with air recirculation on
+
+Tool: setChargeLimit
+Choose when: Sets the maximum battery charge percentage limit (e.g., 80% for daily use).
+Sibling operation contrast: getBatteryStatus, getChargingSession, openChargePortDoor, setChargingAmperage, setScheduledDeparture, startCharging, stopCharging, triggerBatteryPreconditioning, unlockChargeCable
+Key types: percentage: Int
+Legal key skeletons: {} | {percentage}
+Positive construction language patterns:
+- [tier7_multiturn] Set to {percentage} percent.
+- [tier4_implicit] My commute is getting longer and this partial charge is not cutting it
+- [tier1_direct] Use your usual battery cap
+
+Tool: setChargingAmperage
+Choose when: Limits the maximum AC charging current to prevent overloading electrical circuits.
+Sibling operation contrast: getBatteryStatus, getChargingSession, openChargePortDoor, setChargeLimit, setScheduledDeparture, startCharging, stopCharging, triggerBatteryPreconditioning, unlockChargeCable
+Key types: amps: Int
+Legal key skeletons: {} | {amps}
+Positive construction language patterns:
+- [tier1_direct] Adjust charging amps
+- [tier4_implicit] Just give it a trickle charge.
+- [tier7_multiturn] Exactly! I don't want to risk overloading the circuits. I think {amps} amps should be a safe amount, don't you?
+
+Tool: setScheduledDeparture
+Choose when: Schedules a departure time to automatically precondition the battery and cabin temperature.
+Sibling operation contrast: getBatteryStatus, getChargingSession, openChargePortDoor, setChargeLimit, setChargingAmperage, startCharging, stopCharging, triggerBatteryPreconditioning, unlockChargeCable
+Key types: time: Time; precondition: Boolean
+Legal key skeletons: {} | {time} | {time, precondition}
+Positive construction language patterns:
+- [tier1_direct] Car, schedule departure.
+- [tier4_implicit] I really hate stepping into such a cold cabin to start my day
+- [tier7_multiturn] Wait, forgot about meeting. Actually... 6:45. No preconditioning, waste of energy.
+
+Tool: startCharging
+Choose when: Manually starts a charging session.
+Sibling operation contrast: getBatteryStatus, getChargingSession, openChargePortDoor, setChargeLimit, setChargingAmperage, setScheduledDeparture, stopCharging, triggerBatteryPreconditioning, unlockChargeCable
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier1_direct] Enable charging
+- [tier8_intent_blending] Charge the car, set my side to sixty six degrees, and turn the fan to high, level ten.
+- [tier4_implicit] I'm running on fumes.
+
+Tool: stopCharging
+Choose when: Stops an active charging session.
+Sibling operation contrast: getBatteryStatus, getChargingSession, openChargePortDoor, setChargeLimit, setChargingAmperage, setScheduledDeparture, startCharging, triggerBatteryPreconditioning, unlockChargeCable
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier7_multiturn] Charging... yeah.
+- [tier4_implicit] I don't wanna be late.
+- [tier8_intent_blending] Stop the charge and turn on camp mode plus auto fan
+
+Tool: triggerBatteryPreconditioning
+Choose when: Manually starts battery preconditioning to prepare for DC fast charging.
+Sibling operation contrast: getBatteryStatus, getChargingSession, openChargePortDoor, setChargeLimit, setChargingAmperage, setScheduledDeparture, startCharging, stopCharging, unlockChargeCable
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier4_implicit] I'm concerned about the charging time.
+- [tier7_multiturn] Oh, yes please! That sounds great, thank you!
+- [tier3_multi_intent] Trigger preconditioning and set fan speed to level five
+
+Tool: unlockChargeCable
+Choose when: Unlocks the charging port latch to allow cable removal.
+Sibling operation contrast: getBatteryStatus, getChargingSession, openChargePortDoor, setChargeLimit, setChargingAmperage, setScheduledDeparture, startCharging, stopCharging, triggerBatteryPreconditioning
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier1_direct] Release charging cord
+- [tier5_needle] I keep meaning to clean out the trunk because there is all this random camping gear in there, and, you know, before I forget why I came outside, can you unlock the charge cable so I can disconnect the car
+- [tier8_intent_blending] Please unlock the charging connector, enable recirculation, and put HVAC into auto mode
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_car / climate_environment (smart-car-climate-environment)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- getClimateState: Retrieves the full status of the climate control system.
+- setAirQualityMode: Controls air recirculation and HEPA filtration modes to improve cabin air quality.
+- setCabinOverheatProtection: Automatically activates the climate control to prevent the cabin from exceeding a specified temperature while parked.
+- setCampingMode: Enables 'Camp Mode' to maintain airflow and power USB/12V outlets while the vehicle is parked.
+- setDefrost: Activates or deactivates the front windshield and/or rear window defroster independently.
+- setFanSpeed: Sets the ventilation fan speed to a specific level (1-10).
+- setHvacMode: Changes the HVAC system operating mode (e.g., OFF, AUTO, MAX_DEFROST).
+- setPetComfortMode: Enables 'Dog Mode' to maintain a safe cabin temperature for pets while the vehicle is parked and locked.
+- setRecirculation: Enables or disables cabin air recirculation.
+- setSeatComfort: Adjusts the heating and ventilation levels (0-3) for a specific seat.
+- setSteeringWheelHeat: Enables or disables the steering wheel heater.
+- setZoneTemperature: Sets the target climate control temperature for a specific cabin zone (e.g., Driver, Passenger).
+- ventWindows: Slightly lowers all windows to facilitate passive cabin cooling.
+
+Tool: getClimateState
+Choose when: Retrieves the full status of the climate control system.
+Sibling operation contrast: setAirQualityMode, setCabinOverheatProtection, setCampingMode, setDefrost, setFanSpeed, setHvacMode, setPetComfortMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, setZoneTemperature, ventWindows
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier4_implicit] Why is it so muggy
+- [tier3_multi_intent] Check interior climate state then set all seats to level two and fan to level six
+- [tier6_correction] Turn AC off completely, no wait, keep it as is and just report the climate system state
+
+Tool: setAirQualityMode
+Choose when: Controls air recirculation and HEPA filtration modes to improve cabin air quality.
+Sibling operation contrast: getClimateState, setCabinOverheatProtection, setCampingMode, setDefrost, setFanSpeed, setHvacMode, setPetComfortMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, setZoneTemperature, ventWindows
+Key types: mode: AirMode
+Legal key skeletons: {} | {mode}
+Positive construction language patterns:
+- [tier1_direct] Put on air quality
+- [tier4_implicit] My sinuses are killing me
+- [tier7_multiturn] Um, I think I'll just go with... uh... {mode}, please?
+
+Tool: setCabinOverheatProtection
+Choose when: Automatically activates the climate control to prevent the cabin from exceeding a specified temperature while parked.
+Sibling operation contrast: getClimateState, setAirQualityMode, setCampingMode, setDefrost, setFanSpeed, setHvacMode, setPetComfortMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, setZoneTemperature, ventWindows
+Key types: enabled: Boolean; maxTemp: Float
+Legal key skeletons: {} | {enabled, maxTemp}
+Positive construction language patterns:
+- [tier7_multiturn] Adjust temperature. 45 degrees.
+- [tier6_correction] Enable cabin overheat protection at thirty six point two, actually make it thirty four point two
+- [tier4_implicit] I cant leave anything in my car because it gets too hot
+
+Tool: setCampingMode
+Choose when: Enables 'Camp Mode' to maintain airflow and power USB/12V outlets while the vehicle is parked.
+Sibling operation contrast: getClimateState, setAirQualityMode, setCabinOverheatProtection, setDefrost, setFanSpeed, setHvacMode, setPetComfortMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, setZoneTemperature, ventWindows
+Key types: enabled: Boolean
+Legal key skeletons: {} | {enabled}
+Positive construction language patterns:
+- [tier1_direct] Activate camp mode please
+- [tier7_multiturn] Both. Turn it on now.
+- [tier4_implicit] Everything turns off when the engine stops
+
+Tool: setDefrost
+Choose when: Activates or deactivates the front windshield and/or rear window defroster independently.
+Sibling operation contrast: getClimateState, setAirQualityMode, setCabinOverheatProtection, setCampingMode, setFanSpeed, setHvacMode, setPetComfortMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, setZoneTemperature, ventWindows
+Key types: front: Boolean; rear: Boolean
+Legal key skeletons: {} | {rear} | {front, rear}
+Positive construction language patterns:
+- [tier1_direct] Give me window defrost
+- [tier7_multiturn] Can you turn on the defroster for the front windshield only?
+- [tier4_implicit] This car is a fog machine.
+
+Tool: setFanSpeed
+Choose when: Sets the ventilation fan speed to a specific level (1-10).
+Sibling operation contrast: getClimateState, setAirQualityMode, setCabinOverheatProtection, setCampingMode, setDefrost, setHvacMode, setPetComfortMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, setZoneTemperature, ventWindows
+Key types: level: Int
+Legal key skeletons: {} | {level}
+Positive construction language patterns:
+- [tier1_direct] Come on, fan on
+- [tier7_multiturn] Can you just set it to a medium level, that should help.
+- [tier4_implicit] I wish there was stronger air from these vents
+
+Tool: setHvacMode
+Choose when: Changes the HVAC system operating mode (e.g., OFF, AUTO, MAX_DEFROST).
+Sibling operation contrast: getClimateState, setAirQualityMode, setCabinOverheatProtection, setCampingMode, setDefrost, setFanSpeed, setPetComfortMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, setZoneTemperature, ventWindows
+Key types: mode: HvacMode
+Legal key skeletons: {} | {mode}
+Positive construction language patterns:
+- [tier4_implicit] Really warm in here
+- [tier2_parametric] Blast the defrost on max
+- [tier7_multiturn] Just make it automatic, I don't care, I'm just so hot.
+
+Tool: setPetComfortMode
+Choose when: Enables 'Dog Mode' to maintain a safe cabin temperature for pets while the vehicle is parked and locked.
+Sibling operation contrast: getClimateState, setAirQualityMode, setCabinOverheatProtection, setCampingMode, setDefrost, setFanSpeed, setHvacMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, setZoneTemperature, ventWindows
+Key types: enabled: Boolean; targetTemp: Float
+Legal key skeletons: {} | {enabled} | {enabled, targetTemp}
+Positive construction language patterns:
+- [tier1_direct] Enable dog mode
+- [tier7_multiturn] I'd prefer it not to be higher than 22 degrees Celsius.
+- [tier6_correction] Turn on pet comfort at twenty seven, actually twenty six point five
+
+Tool: setRecirculation
+Choose when: Enables or disables cabin air recirculation.
+Sibling operation contrast: getClimateState, setAirQualityMode, setCabinOverheatProtection, setCampingMode, setDefrost, setFanSpeed, setHvacMode, setPetComfortMode, setSeatComfort, setSteeringWheelHeat, setZoneTemperature, ventWindows
+Key types: enabled: Boolean
+Legal key skeletons: {} | {enabled}
+Positive construction language patterns:
+- [tier2_parametric] Turn off air recirculation
+- [tier4_implicit] Can barely see out the side windows
+- [tier7_multiturn] I think I'd like to enable it.
+
+Tool: setSeatComfort
+Choose when: Adjusts the heating and ventilation levels (0-3) for a specific seat.
+Sibling operation contrast: getClimateState, setAirQualityMode, setCabinOverheatProtection, setCampingMode, setDefrost, setFanSpeed, setHvacMode, setPetComfortMode, setRecirculation, setSteeringWheelHeat, setZoneTemperature, ventWindows
+Key types: seat: SeatLocation; heatLevel: Int; coolLevel: Int
+Legal key skeletons: {} | {seat, coolLevel} | {seat, heatLevel} | {seat, heatLevel, coolLevel}
+Positive construction language patterns:
+- [tier7_multiturn] No. Level {coolLevel}.
+- [tier5_needle] It's not as hot as I thought it would be, so I don't think my son needs his seat cooler on anymore. He's in the back right. Can you please disable the cooling for that seat?
+- [tier4_implicit] The air has a bit of a bite.
+
+Tool: setSteeringWheelHeat
+Choose when: Enables or disables the steering wheel heater.
+Sibling operation contrast: getClimateState, setAirQualityMode, setCabinOverheatProtection, setCampingMode, setDefrost, setFanSpeed, setHvacMode, setPetComfortMode, setRecirculation, setSeatComfort, setZoneTemperature, ventWindows
+Key types: enabled: Boolean
+Legal key skeletons: {} | {enabled}
+Positive construction language patterns:
+- [tier1_direct] Warm the wheel, please
+- [tier7_multiturn] Yes, do that for me, make it work
+- [tier3_multi_intent] Heat steering wheel and camping mode and fan level six
+
+Tool: setZoneTemperature
+Choose when: Sets the target climate control temperature for a specific cabin zone (e.g., Driver, Passenger).
+Sibling operation contrast: getClimateState, setAirQualityMode, setCabinOverheatProtection, setCampingMode, setDefrost, setFanSpeed, setHvacMode, setPetComfortMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, ventWindows
+Key types: zone: Zone; temperature: Float
+Legal key skeletons: {} | {zone, temperature}
+Positive construction language patterns:
+- [tier4_implicit] It's uncomfortably warm.
+- [tier8_intent_blending] Make the {zone} zone twenty one degrees and HVAC to max defrost
+- [tier5_needle] My phone is about to die, I really hope I have a charger in here somewhere. This is always a problem. Um, you know, I'm getting hot, please set my temperature to eighteen degrees.
+
+Tool: ventWindows
+Choose when: Slightly lowers all windows to facilitate passive cabin cooling.
+Sibling operation contrast: getClimateState, setAirQualityMode, setCabinOverheatProtection, setCampingMode, setDefrost, setFanSpeed, setHvacMode, setPetComfortMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, setZoneTemperature
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier7_multiturn] Affirmative.
+- [tier1_direct] Drop the windows a notch
+- [tier4_implicit] It is sweltering in here
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_car / core_control (smart-car-core-control)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- controlLocks: Locks or unlocks the vehicle doors.
+- enableRemoteStart: Enables keyless driving access for a limited duration.
+- setChargingLimit: Sets the target maximum battery charge percentage.
+- setClimate: Sets the cabin temperature and activates the HVAC system.
+
+Tool: controlLocks
+Choose when: Locks or unlocks the vehicle doors.
+Sibling operation contrast: enableRemoteStart, setChargingLimit, setClimate
+Key types: state: LockState
+Legal key skeletons: {state}
+Positive construction language patterns:
+- [tier2_parametric] Hey assistant, unlock my car.
+- [tier2_parametric] Go ahead and lock the car.
+
+Tool: enableRemoteStart
+Choose when: Enables keyless driving access for a limited duration.
+Sibling operation contrast: controlLocks, setChargingLimit, setClimate
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier1_direct] Enable remote engine start
+- [tier7_multiturn] Fine, whatever. I just need to get going without messing with the key, okay? No extra nonsense, no long sessions, just give me that quick window so I can drive off already.
+- [tier3_multi_intent] I'm leaving, start the car and cool my seat down on level three.
+
+Tool: setChargingLimit
+Choose when: Sets the target maximum battery charge percentage.
+Sibling operation contrast: controlLocks, enableRemoteStart, setClimate
+Key types: percentage: Int
+Legal key skeletons: {percentage}
+Positive construction language patterns:
+- [tier2_parametric] Limit the charge to eighty five percent.
+- [tier2_parametric] Set the maximum charge to one hundred percent.
+
+Tool: setClimate
+Choose when: Sets the cabin temperature and activates the HVAC system.
+Sibling operation contrast: controlLocks, enableRemoteStart, setChargingLimit
+Key types: temp: Float; hvacMode: HvacMode
+Legal key skeletons: {} | {hvacMode} | {temp} | {temp, hvacMode}
+Positive construction language patterns:
+- [tier7_multiturn] Change it to cooling mode.
+- [tier2_parametric] I'd like minimum air at twenty three degrees
+- [tier1_direct] Let's get the climate system running.
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_car / diagnostics (smart-car-diagnostics)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- getActiveAlerts: Retrieves a list of currently active vehicle warning and alert codes.
+- getBatteryHealth: Retrieves the battery's maximum capacity retention and general state of health.
+- getEnergyConsumption: Returns the average energy consumption (Wh/mi) for the current trip.
+- getOdometer: Returns the total distance traveled by the vehicle.
+- getTirePressures: Returns the pressure reading for each tire and flags any alerts.
+
+Tool: getActiveAlerts
+Choose when: Retrieves a list of currently active vehicle warning and alert codes.
+Sibling operation contrast: getBatteryHealth, getEnergyConsumption, getOdometer, getTirePressures
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier7_multiturn] Active alerts. Now.
+- [tier4_implicit] I'm a little concerned about the car.
+- [tier3_multi_intent] Get current alerts then set HVAC to max defrost plus fan speed to level eight and turn on air recirculation
+
+Tool: getBatteryHealth
+Choose when: Retrieves the battery's maximum capacity retention and general state of health.
+Sibling operation contrast: getActiveAlerts, getEnergyConsumption, getOdometer, getTirePressures
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier7_multiturn] Yeah, just check it
+- [tier4_implicit] Feels like the battery is aging way too fast
+- [tier3_multi_intent] Check battery health and set driver zone to seventy four and turn on seat heating
+
+Tool: getEnergyConsumption
+Choose when: Returns the average energy consumption (Wh/mi) for the current trip.
+Sibling operation contrast: getActiveAlerts, getBatteryHealth, getOdometer, getTirePressures
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier1_direct] Give me the energy consumption.
+- [tier4_implicit] Am I being a lead foot?
+- [tier3_multi_intent] Tell me this trips watt hours per mile and warm both seats to level three plus set air quality to recirculate
+
+Tool: getOdometer
+Choose when: Returns the total distance traveled by the vehicle.
+Sibling operation contrast: getActiveAlerts, getBatteryHealth, getEnergyConsumption, getTirePressures
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier7_multiturn] total
+- [tier1_direct] Could you tell me the odometer reading?
+- [tier8_intent_blending] How far have we gone and can you turn on camp mode for this parking stop
+
+Tool: getTirePressures
+Choose when: Returns the pressure reading for each tire and flags any alerts.
+Sibling operation contrast: getActiveAlerts, getBatteryHealth, getEnergyConsumption, getOdometer
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier7_multiturn] Pressures. All tires.
+- [tier8_intent_blending] Check tire pressure alerts, then enable camp mode, turn on HEPA, set temp to seventy, and fan level three
+- [tier4_implicit] Something doesn't feel right with the wheels
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_car / driving_dynamics (smart-car-driving-dynamics)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- initiateAutoPark: Commands the vehicle to scan for available parking spots and execute an automatic parking maneuver.
+- setAutonomousDriving: Enables driver assistance features such as Adaptive Cruise Control, Lane Centering, or Full Self-Driving.
+- setCruiseSpeed: Sets the target speed for cruise control.
+- setDrivingMode: Sets the vehicle's acceleration and handling profile (e.g., Chill, Standard, Sport).
+- setFollowDistance: Sets the following distance gap for adaptive cruise control.
+- setRegenerativeBraking: Sets the level of regenerative braking intensity (e.g., Low for coasting, Standard for one-pedal driving).
+- setSteeringFeel: Adjusts the steering wheel resistance level (e.g., Comfort, Standard, Sport).
+- triggerRemoteParking: Initiates remote vehicle movement commands (Summon) or autonomous navigation to the user (Smart Summon).
+
+Tool: initiateAutoPark
+Choose when: Commands the vehicle to scan for available parking spots and execute an automatic parking maneuver.
+Sibling operation contrast: setAutonomousDriving, setCruiseSpeed, setDrivingMode, setFollowDistance, setRegenerativeBraking, setSteeringFeel, triggerRemoteParking
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier7_multiturn] Okay, do that.
+- [tier1_direct] Can you handle the parking from here?
+- [tier6_correction] Enable full self driving on this avenue, no no, initiate auto park in a side street spot
+
+Tool: setAutonomousDriving
+Choose when: Enables driver assistance features such as Adaptive Cruise Control, Lane Centering, or Full Self-Driving.
+Sibling operation contrast: initiateAutoPark, setCruiseSpeed, setDrivingMode, setFollowDistance, setRegenerativeBraking, setSteeringFeel, triggerRemoteParking
+Key types: level: AutonomyLevel
+Legal key skeletons: {} | {level}
+Positive construction language patterns:
+- [tier1_direct] Activate lane centering
+- [tier3_multi_intent] Enable {level} and run dog mode then set fan speed to three
+- [tier2_parametric] Let the car drive.
+
+Tool: setCruiseSpeed
+Choose when: Sets the target speed for cruise control.
+Sibling operation contrast: initiateAutoPark, setAutonomousDriving, setDrivingMode, setFollowDistance, setRegenerativeBraking, setSteeringFeel, triggerRemoteParking
+Key types: speed: Float
+Legal key skeletons: {} | {speed}
+Positive construction language patterns:
+- [tier1_direct] Set cruise.
+- [tier2_parametric] Maintain speed at seventy nine miles per hour.
+- [tier4_implicit] This leisurely pace won't cut it
+
+Tool: setDrivingMode
+Choose when: Sets the vehicle's acceleration and handling profile (e.g., Chill, Standard, Sport).
+Sibling operation contrast: initiateAutoPark, setAutonomousDriving, setCruiseSpeed, setFollowDistance, setRegenerativeBraking, setSteeringFeel, triggerRemoteParking
+Key types: mode: DriveMode
+Legal key skeletons: {} | {mode}
+Positive construction language patterns:
+- [tier2_parametric] Activate {mode}
+- [tier1_direct] Change how relaxed it drives
+- [tier4_implicit] Driving on some loose shale here
+
+Tool: setFollowDistance
+Choose when: Sets the following distance gap for adaptive cruise control.
+Sibling operation contrast: initiateAutoPark, setAutonomousDriving, setCruiseSpeed, setDrivingMode, setRegenerativeBraking, setSteeringFeel, triggerRemoteParking
+Key types: level: Int
+Legal key skeletons: {} | {level}
+Positive construction language patterns:
+- [tier2_parametric] Change the follow gap to seven.
+- [tier1_direct] Adjust how far we stay behind traffic
+- [tier7_multiturn] Oh, I didn't know about that... um, I'm not sure what's normal? I just don't want to be tailgating anyone. Maybe something in the middle?
+
+Tool: setRegenerativeBraking
+Choose when: Sets the level of regenerative braking intensity (e.g., Low for coasting, Standard for one-pedal driving).
+Sibling operation contrast: initiateAutoPark, setAutonomousDriving, setCruiseSpeed, setDrivingMode, setFollowDistance, setSteeringFeel, triggerRemoteParking
+Key types: level: RegenLevel
+Legal key skeletons: {} | {level}
+Positive construction language patterns:
+- [tier2_parametric] Set regen to its highest setting
+- [tier1_direct] I think I'll use regenerative braking now.
+- [tier4_implicit] I liked it better when I barely had to touch the brake to come to a stop
+
+Tool: setSteeringFeel
+Choose when: Adjusts the steering wheel resistance level (e.g., Comfort, Standard, Sport).
+Sibling operation contrast: initiateAutoPark, setAutonomousDriving, setCruiseSpeed, setDrivingMode, setFollowDistance, setRegenerativeBraking, triggerRemoteParking
+Key types: mode: SteeringMode
+Legal key skeletons: {} | {mode}
+Positive construction language patterns:
+- [tier2_parametric] Engage {mode} steering mode.
+- [tier5_needle] I tried messing with the custom profiles but I think I messed it up, you know, so can you just set the steering feel back to {mode} and I will stop touching it
+- [tier1_direct] Steering back to regular, please
+
+Tool: triggerRemoteParking
+Choose when: Initiates remote vehicle movement commands (Summon) or autonomous navigation to the user (Smart Summon).
+Sibling operation contrast: initiateAutoPark, setAutonomousDriving, setCruiseSpeed, setDrivingMode, setFollowDistance, setRegenerativeBraking, setSteeringFeel
+Key types: action: ParkAction
+Legal key skeletons: {} | {action}
+Positive construction language patterns:
+- [tier1_direct] Start the remote parking procedure.
+- [tier6_correction] Begin Smart Summon to navigate to me, no wait, just do a simple {action}
+- [tier3_multi_intent] {action} and turn on Dog Mode plus heat both front seats one
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_car / fine_grained (smart-car-fine-grained)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- setMirrorAngle: Adjusts the physical tilt angle of a specific side mirror.
+
+Tool: setMirrorAngle
+Choose when: Adjusts the physical tilt angle of a specific side mirror.
+Sibling operation contrast: none
+Key types: mirror: Location; x: Int; y: Int
+Legal key skeletons: {} | {mirror, x} | {mirror, y} | {mirror, x, y}
+Positive construction language patterns:
+- [tier1_direct] Move the side mirror
+- [tier7_multiturn] Hmm, I'm not sure... Can you just make it a bit more, you know, up and to the right? Maybe by, like, {x} degrees or something?
+- [tier8_intent_blending] Set {mirror} mirror angle up two and driver temp sixty six degrees
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_car / maintenance (smart-car-maintenance)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- calibrateCameras: Resets the calibration of Autopilot cameras.
+- getSoftwareUpdateStatus: Checks the status of Over-The-Air (OTA) software updates.
+- installSoftwareUpdate: Initiates the installation process for a downloaded software update.
+- resetTPMSSensors: Triggers the tire pressure monitoring system to re-learn sensor IDs.
+- scheduleService: Creates a request for a vehicle service appointment.
+- wiperServiceMode: Moves the windshield wipers to the service position for replacement.
+
+Tool: calibrateCameras
+Choose when: Resets the calibration of Autopilot cameras.
+Sibling operation contrast: getSoftwareUpdateStatus, installSoftwareUpdate, resetTPMSSensors, scheduleService, wiperServiceMode
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier7_multiturn] Affirmative. Execute camera calibration.
+- [tier8_intent_blending] Calibrate Autopilot cameras, turn on Dog Mode, and keep the rear zone at seventy two with fan level four
+- [tier4_implicit] The visualization of the road is incorrect.
+
+Tool: getSoftwareUpdateStatus
+Choose when: Checks the status of Over-The-Air (OTA) software updates.
+Sibling operation contrast: calibrateCameras, installSoftwareUpdate, resetTPMSSensors, scheduleService, wiperServiceMode
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier7_multiturn] Yeah check it
+- [tier8_intent_blending] Can you tell me the software update progress and then change fan speed to level four and HVAC mode to auto
+- [tier4_implicit] Wonder what improvements are available
+
+Tool: installSoftwareUpdate
+Choose when: Initiates the installation process for a downloaded software update.
+Sibling operation contrast: calibrateCameras, getSoftwareUpdateStatus, resetTPMSSensors, scheduleService, wiperServiceMode
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier1_direct] Perform software update
+- [tier5_needle] I was thinking about how cold it was this morning and fiddling with the climate controls and, um, the system said the download finished earlier, so could you now install the software update while we are parked
+- [tier7_multiturn] Yeah, I guess it's time to update, I don't want any security issues.
+
+Tool: resetTPMSSensors
+Choose when: Triggers the tire pressure monitoring system to re-learn sensor IDs.
+Sibling operation contrast: calibrateCameras, getSoftwareUpdateStatus, installSoftwareUpdate, scheduleService, wiperServiceMode
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier1_direct] I need a TPMS reset.
+- [tier8_intent_blending] Re learn tire pressure sensors and turn on camp mode with outside air disabled and fan level four
+- [tier7_multiturn] So if I let it do that relearn thing you're talking about right now, you're saying it'll just update what it listens to and I can finally see if that light is legit or not?
+
+Tool: scheduleService
+Choose when: Creates a request for a vehicle service appointment.
+Sibling operation contrast: calibrateCameras, getSoftwareUpdateStatus, installSoftwareUpdate, resetTPMSSensors, wiperServiceMode
+Key types: type: ServiceType; notes: String
+Legal key skeletons: {} | {type, notes}
+Positive construction language patterns:
+- [tier2_parametric] Schedule another type of service, {notes}.
+- [tier4_implicit] I need to get my summer tires swapped out.
+- [tier5_needle] I'm going on a long trip next month and I want to make sure the car is in perfect shape. Can you schedule a full checkup for me? Like, fluids, brakes, the whole thing. Just a general service.
+
+Tool: wiperServiceMode
+Choose when: Moves the windshield wipers to the service position for replacement.
+Sibling operation contrast: calibrateCameras, getSoftwareUpdateStatus, installSoftwareUpdate, resetTPMSSensors, scheduleService
+Key types: enabled: Boolean
+Legal key skeletons: {} | {enabled}
+Positive construction language patterns:
+- [tier2_parametric] Deactivate the wiper replacement mode
+- [tier7_multiturn] Well, if you're certain it's safe, could you please activate that service position for the wipers? But I want to double-check - this will definitely move them to where I can replace them, right?
+- [tier3_multi_intent] Wiper service on and set temp to seventy one.
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_car / media_cabin (smart-car-media-cabin)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- adjustVolume: Increases or decreases the volume by a specified number of steps.
+- controlPlayback: Executes standard media playback commands (Play, Pause, Next, Previous).
+- launchInCarGaming: Launches a specified video game on the infotainment screen (parked only).
+- setAmbientLighting: Sets the color and brightness of the interior ambient lighting.
+- setAudioVolume: Sets the volume level for a specific audio stream (Media, Navigation, or Voice).
+- setExternalSpeakerOutput: Routes audio to the external pedestrian warning speaker (Boombox).
+- setMediaSource: Changes the active media input source (e.g., Bluetooth, Radio, Streaming App).
+- setPassengerQuietMode: Enables 'Joe Mode' to lower the volume of system chimes and alerts.
+
+Tool: adjustVolume
+Choose when: Increases or decreases the volume by a specified number of steps.
+Sibling operation contrast: controlPlayback, launchInCarGaming, setAmbientLighting, setAudioVolume, setExternalSpeakerOutput, setMediaSource, setPassengerQuietMode
+Key types: direction: UpDown; steps: Int
+Legal key skeletons: {direction, steps}
+Positive construction language patterns:
+- [tier2_parametric] Volume {direction} by five.
+- [tier2_parametric] Drop the volume by six clicks.
+
+Tool: controlPlayback
+Choose when: Executes standard media playback commands (Play, Pause, Next, Previous).
+Sibling operation contrast: adjustVolume, launchInCarGaming, setAmbientLighting, setAudioVolume, setExternalSpeakerOutput, setMediaSource, setPassengerQuietMode
+Key types: action: PlayPauseNextPrev; deviceId: String
+Legal key skeletons: {} | {action} | {action, deviceId}
+Positive construction language patterns:
+- [tier2_parametric] Music.
+- [tier7_multiturn] Activate playback
+- [tier1_direct] And... play
+
+Tool: launchInCarGaming
+Choose when: Launches a specified video game on the infotainment screen (parked only).
+Sibling operation contrast: adjustVolume, controlPlayback, setAmbientLighting, setAudioVolume, setExternalSpeakerOutput, setMediaSource, setPassengerQuietMode
+Key types: game: String; seat: String; ventilation: Int
+Legal key skeletons: {} | {game} | {seat, ventilation}
+Positive construction language patterns:
+- [tier7_multiturn] Launch {game} game.
+- [tier4_implicit] I am already tired of scrolling my phone in this parked car
+- [tier5_needle] I was just going through notification settings and, uh, that is sorted, so while we are parked can you open an {game} game on the main screen for me
+
+Tool: setAmbientLighting
+Choose when: Sets the color and brightness of the interior ambient lighting.
+Sibling operation contrast: adjustVolume, controlPlayback, launchInCarGaming, setAudioVolume, setExternalSpeakerOutput, setMediaSource, setPassengerQuietMode
+Key types: color: HexCode; brightness: Int
+Legal key skeletons: {} | {color} | {color, brightness}
+Positive construction language patterns:
+- [tier7_multiturn] Both. Red. Bright.
+- [tier2_parametric] Adjust the ambient brightness to seventy.
+- [tier4_implicit] I dropped something and cant find it
+
+Tool: setAudioVolume
+Choose when: Sets the volume level for a specific audio stream (Media, Navigation, or Voice).
+Sibling operation contrast: adjustVolume, controlPlayback, launchInCarGaming, setAmbientLighting, setExternalSpeakerOutput, setMediaSource, setPassengerQuietMode
+Key types: stream: StreamType; level: Int
+Legal key skeletons: {stream, level}
+Positive construction language patterns:
+- [tier2_parametric] Set {stream} guidance volume to ninety five
+- [tier2_parametric] Adjust the {stream} assistant's volume to eighty five
+
+Tool: setExternalSpeakerOutput
+Choose when: Routes audio to the external pedestrian warning speaker (Boombox).
+Sibling operation contrast: adjustVolume, controlPlayback, launchInCarGaming, setAmbientLighting, setAudioVolume, setMediaSource, setPassengerQuietMode
+Key types: enabled: Boolean; sound: AudioFile
+Legal key skeletons: {} | {enabled} | {enabled, sound}
+Positive construction language patterns:
+- [tier1_direct] Yeah, send the audio outside
+- [tier3_multi_intent] Activate boombox plus heat driver seat and turn on steering wheel warmer
+- [tier4_implicit] Pedestrians keep walking in front of me without noticing
+
+Tool: setMediaSource
+Choose when: Changes the active media input source (e.g., Bluetooth, Radio, Streaming App).
+Sibling operation contrast: adjustVolume, controlPlayback, launchInCarGaming, setAmbientLighting, setAudioVolume, setExternalSpeakerOutput, setPassengerQuietMode
+Key types: source: MediaSource
+Legal key skeletons: {} | {source}
+Positive construction language patterns:
+- [tier1_direct] Play from another source.
+- [tier4_implicit] I copied my whole library to this drive
+- [tier8_intent_blending] Use {source} audio and warm up the driver seat to level three while cooling the passenger seat to level one
+
+Tool: setPassengerQuietMode
+Choose when: Enables 'Joe Mode' to lower the volume of system chimes and alerts.
+Sibling operation contrast: adjustVolume, controlPlayback, launchInCarGaming, setAmbientLighting, setAudioVolume, setExternalSpeakerOutput, setMediaSource
+Key types: enabled: Boolean
+Legal key skeletons: {} | {enabled}
+Positive construction language patterns:
+- [tier1_direct] Turn down all the warning sounds for passengers
+- [tier4_implicit] Backseat feels like a speaker right next to your ear
+- [tier6_correction] Set navigation prompts quieter, never mind, disable passenger quiet mode instead
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_car / navigation (smart-car-navigation)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- addTripStop: Adds a new waypoint to the current navigation route.
+- cancelNavigation: Cancels the current active navigation route.
+- getRouteSummary: Retrieves route details including ETA, distance, and estimated battery at arrival.
+- searchPOI: Searches for points of interest matching the category and filter.
+- setDestination: Starts turn-by-turn navigation to the specified address or destination.
+- setRoutePreferences: Updates navigation routing preferences to avoid specific road features.
+- setVoiceGuidance: Mutes or unmutes the navigation voice instructions.
+
+Tool: addTripStop
+Choose when: Adds a new waypoint to the current navigation route.
+Sibling operation contrast: cancelNavigation, getRouteSummary, searchPOI, setDestination, setRoutePreferences, setVoiceGuidance
+Key types: address: String
+Legal key skeletons: {} | {address}
+Positive construction language patterns:
+- [tier4_implicit] Need to refuel soon
+- [tier8_intent_blending] Add a stop at the movie theater and turn on max defrost for the windshield.
+- [tier7_multiturn] Wait... what's that noise? Is that my phone? Oh nevermind... yeah... just find me somewhere to charge...
+
+Tool: cancelNavigation
+Choose when: Cancels the current active navigation route.
+Sibling operation contrast: addTripStop, getRouteSummary, searchPOI, setDestination, setRoutePreferences, setVoiceGuidance
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier4_implicit] All done.
+- [tier6_correction] Add a stop at the kids' school, never mind, cancel the trip navigation
+- [tier5_needle] My allergies are really acting up today. My eyes are so itchy. I just want to go home and take some medicine. So, um, could you get rid of the route for me?
+
+Tool: getRouteSummary
+Choose when: Retrieves route details including ETA, distance, and estimated battery at arrival.
+Sibling operation contrast: addTripStop, cancelNavigation, searchPOI, setDestination, setRoutePreferences, setVoiceGuidance
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier1_direct] Time remaining on trip
+- [tier6_correction] Change my preferences so we avoid dirt roads, no wait, keep them as is and show me the route summary
+- [tier7_multiturn] That's not what I meant. I'm worried about whether we'll have enough battery when we arrive.
+
+Tool: searchPOI
+Choose when: Searches for points of interest matching the category and filter.
+Sibling operation contrast: addTripStop, cancelNavigation, getRouteSummary, setDestination, setRoutePreferences, setVoiceGuidance
+Key types: category: String; filter: String
+Legal key skeletons: {} | {category} | {category, filter}
+Positive construction language patterns:
+- [tier1_direct] Find entertainment
+- [tier2_parametric] I'm looking for {filter} {category}.
+- [tier4_implicit] Need some shuteye
+
+Tool: setDestination
+Choose when: Starts turn-by-turn navigation to the specified address or destination.
+Sibling operation contrast: addTripStop, cancelNavigation, getRouteSummary, searchPOI, setRoutePreferences, setVoiceGuidance
+Key types: address: String; _raw: String
+Legal key skeletons: {} | {_raw} | {address}
+Positive construction language patterns:
+- [tier7_multiturn] Navigate to {address}.
+- [tier4_implicit] I think I'm done here.
+- [tier1_direct] Let's get back home.
+
+Tool: setRoutePreferences
+Choose when: Updates navigation routing preferences to avoid specific road features.
+Sibling operation contrast: addTripStop, cancelNavigation, getRouteSummary, searchPOI, setDestination, setVoiceGuidance
+Key types: avoidTolls: Boolean; avoidFerries: Boolean; useHOV: Boolean
+Legal key skeletons: {} | {avoidTolls} | {useHOV} | {avoidTolls, avoidFerries} | {avoidTolls, avoidFerries, useHOV}
+Positive construction language patterns:
+- [tier1_direct] Yeah, navigation route preferences
+- [tier3_multi_intent] Avoid ferries and also set the steering wheel heater to off
+- [tier4_implicit] I am just not comfortable using HOV lanes without passengers
+
+Tool: setVoiceGuidance
+Choose when: Mutes or unmutes the navigation voice instructions.
+Sibling operation contrast: addTripStop, cancelNavigation, getRouteSummary, searchPOI, setDestination, setRoutePreferences
+Key types: muted: Boolean
+Legal key skeletons: {} | {muted}
+Positive construction language patterns:
+- [tier2_parametric] Resume voice guidance
+- [tier4_implicit] I'm listening to an audiobook.
+- [tier1_direct] Let's get some audio for these directions.
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_car / novelty (smart-car-novelty)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- setEmissionsMode: Plays a prank sound effect from a specific seat speaker.
+- setRomanceMode: Displays a virtual fireplace on the screen with heater activation.
+- startLightShow: Starts a choreographed light and sound sequence.
+
+Tool: setEmissionsMode
+Choose when: Plays a prank sound effect from a specific seat speaker.
+Sibling operation contrast: setRomanceMode, startLightShow
+Key types: seat: Location
+Legal key skeletons: {} | {seat}
+Positive construction language patterns:
+- [tier1_direct] Prank noise
+- [tier4_implicit] Kinda wish the back right speaker would do something silly
+- [tier3_multi_intent] Play a sneaky {seat} seat fart and camp mode on plus HVAC auto
+
+Tool: setRomanceMode
+Choose when: Displays a virtual fireplace on the screen with heater activation.
+Sibling operation contrast: setEmissionsMode, startLightShow
+Key types: enabled: Boolean
+Legal key skeletons: {} | {enabled}
+Positive construction language patterns:
+- [tier1_direct] Romantic ambience on
+- [tier8_intent_blending] Enable romance mode and make the cabin super quiet with fan speed level one and auto HVAC
+- [tier4_implicit] I am shivering in here
+
+Tool: startLightShow
+Choose when: Starts a choreographed light and sound sequence.
+Sibling operation contrast: setEmissionsMode, setRomanceMode
+Key types: showName: String
+Legal key skeletons: {} | {showName}
+Positive construction language patterns:
+- [tier2_parametric] Activate the {showName} light show.
+- [tier4_implicit] Christmas Eve feels a bit underwhelming in here
+- [tier3_multi_intent] Begin {showName} lights and turn camping mode on
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_car / security (smart-car-security)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- flashLights: Flashes the vehicle's exterior lights.
+- honkHorn: Sounds the vehicle horn.
+- setSpeedLimitMode: Enforces a maximum speed limit for the vehicle.
+- setSurveillanceMode: Enables 'Sentry Mode' to monitor and record suspicious activity using vehicle cameras.
+- setValetMode: Enables Valet Mode to limit speed and restrict access to personal data and storage.
+- viewRemoteCamera: Streams live video from a selected vehicle camera to the mobile app.
+
+Tool: flashLights
+Choose when: Flashes the vehicle's exterior lights.
+Sibling operation contrast: honkHorn, setSpeedLimitMode, setSurveillanceMode, setValetMode, viewRemoteCamera
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier1_direct] Flash car lights real quick
+- [tier4_implicit] I'm trying to find you.
+- [tier7_multiturn] Oh yes, that would be really helpful! Could you make it do that thing with the lights please?
+
+Tool: honkHorn
+Choose when: Sounds the vehicle horn.
+Sibling operation contrast: flashLights, setSpeedLimitMode, setSurveillanceMode, setValetMode, viewRemoteCamera
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier1_direct] Let me hear the horn.
+- [tier3_multi_intent] Honk and switch to recirculate air
+- [tier4_implicit] Someone's lane changing without signaling
+
+Tool: setSpeedLimitMode
+Choose when: Enforces a maximum speed limit for the vehicle.
+Sibling operation contrast: flashLights, honkHorn, setSurveillanceMode, setValetMode, viewRemoteCamera
+Key types: enabled: Boolean; limit: Int
+Legal key skeletons: {} | {enabled} | {enabled, limit}
+Positive construction language patterns:
+- [tier2_parametric] Limit my speed to one hundred.
+- [tier4_implicit] This feels too quick for how distracted I am
+- [tier7_multiturn] Oh yes, that's a good question! I was so caught up in my memories of my own teenage driving years that I completely forgot to mention the actual speed I want to set. Well, considering the roads he'll be taking - there's that winding path up to Pine Mountain where my uncle used to take us fishing every summer, beautiful views but treacherous curves - I think {limit} miles per hour would be plenty fast enough for him. I don't want to be too restrictive because I remember how frustrating it was when my parents limited me too much, but safety comes first, especially with his friends in the car.
+
+Tool: setSurveillanceMode
+Choose when: Enables 'Sentry Mode' to monitor and record suspicious activity using vehicle cameras.
+Sibling operation contrast: flashLights, honkHorn, setSpeedLimitMode, setValetMode, viewRemoteCamera
+Key types: enabled: Boolean
+Legal key skeletons: {enabled}
+Positive construction language patterns:
+- [tier2_parametric] Exit sentry mode
+- [tier4_implicit] I'm not sure this area is safe at night
+- [tier7_multiturn] Just turn that thing on, you know, the one that watches for suspicious activity.
+
+Tool: setValetMode
+Choose when: Enables Valet Mode to limit speed and restrict access to personal data and storage.
+Sibling operation contrast: flashLights, honkHorn, setSpeedLimitMode, setSurveillanceMode, viewRemoteCamera
+Key types: enabled: Boolean; pin: Int
+Legal key skeletons: {} | {enabled} | {enabled, pin}
+Positive construction language patterns:
+- [tier2_parametric] Cancel valet mode
+- [tier4_implicit] I want to restrict trunk access
+- [tier7_multiturn] O-oh, yeah, I'll set a PIN, um, {pin}.
+
+Tool: viewRemoteCamera
+Choose when: Streams live video from a selected vehicle camera to the mobile app.
+Sibling operation contrast: flashLights, honkHorn, setSpeedLimitMode, setSurveillanceMode, setValetMode
+Key types: camera: CameraView
+Legal key skeletons: {camera}
+Positive construction language patterns:
+- [tier2_parametric] Please display the {camera} camera.
+- [tier4_implicit] Backing out of this spot feels like a total guess
+- [tier5_needle] I think I saw a cat run under my car earlier and I'm a little worried about it. I hope it's okay. Um, let me just check... can you activate the remote camera for me?
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_car / status (smart-car-status)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- getChargeState: Returns the current charging state (e.g., Disconnected, Charging, Complete).
+- getDoorStatus: Checks the open/closed state of a specific door, trunk, or frunk.
+- getGearSelection: Returns the currently selected gear (Park, Reverse, Neutral, Drive).
+- getLocation: Retrieves the vehicle's current GPS coordinates and heading.
+- getLockStatus: Checks if the vehicle is currently locked or unlocked.
+- getSentryStatus: Checks if Sentry Mode surveillance is currently active.
+- getVehicleInfo: Retrieves vehicle details including VIN, model, and software version.
+
+Tool: getChargeState
+Choose when: Returns the current charging state (e.g., Disconnected, Charging, Complete).
+Sibling operation contrast: getDoorStatus, getGearSelection, getLocation, getLockStatus, getSentryStatus, getVehicleInfo
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier4_implicit] Is the charging cycle done?
+- [tier8_intent_blending] Are we in charging mode right now, and if yes, enable camp mode and set temp to sixty nine
+- [tier5_needle] So I am sitting here finishing my coffee and thinking about going to the gym and, uh, before I leave I kinda need to know what the car charge status is at this moment
+
+Tool: getDoorStatus
+Choose when: Checks the open/closed state of a specific door, trunk, or frunk.
+Sibling operation contrast: getChargeState, getGearSelection, getLocation, getLockStatus, getSentryStatus, getVehicleInfo
+Key types: door: DoorLocation
+Legal key skeletons: {} | {door}
+Positive construction language patterns:
+- [tier7_multiturn] {door}.
+- [tier5_needle] I was thinking about that new electric truck, it has that huge storage space in the front. It's pretty neat. You know, I put my laptop bag in mine earlier... can you just verify the {door} is closed?
+- [tier3_multi_intent] Check the {door} and turn on my seat heater to max and the steering wheel heat too.
+
+Tool: getGearSelection
+Choose when: Returns the currently selected gear (Park, Reverse, Neutral, Drive).
+Sibling operation contrast: getChargeState, getDoorStatus, getLocation, getLockStatus, getSentryStatus, getVehicleInfo
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier1_direct] Get gear
+- [tier7_multiturn] Okay, the engine is definitely revving, but I'm barely creeping forward, like something's holding the car back.
+- [tier8_intent_blending] What gear is selected? Also, turn on the driver and passenger seat coolers to level one.
+
+Tool: getLocation
+Choose when: Retrieves the vehicle's current GPS coordinates and heading.
+Sibling operation contrast: getChargeState, getDoorStatus, getGearSelection, getLockStatus, getSentryStatus, getVehicleInfo
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier1_direct] Car location please
+- [tier5_needle] I noticed the odometer just hit a milestone number which is kind of cool, like, uh what are our current coordinates
+- [tier4_implicit] We're lost, aren't we?
+
+Tool: getLockStatus
+Choose when: Checks if the vehicle is currently locked or unlocked.
+Sibling operation contrast: getChargeState, getDoorStatus, getGearSelection, getLocation, getSentryStatus, getVehicleInfo
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- none: no positive construction row is available
+
+Tool: getSentryStatus
+Choose when: Checks if Sentry Mode surveillance is currently active.
+Sibling operation contrast: getChargeState, getDoorStatus, getGearSelection, getLocation, getLockStatus, getVehicleInfo
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier1_direct] Sentry mode running
+- [tier4_implicit] Leaving it on the street during this event makes me twitchy
+- [tier7_multiturn] Yes, that's it! Can you please check?
+
+Tool: getVehicleInfo
+Choose when: Retrieves vehicle details including VIN, model, and software version.
+Sibling operation contrast: getChargeState, getDoorStatus, getGearSelection, getLocation, getLockStatus, getSentryStatus
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier1_direct] Quick car info
+- [tier3_multi_intent] Give me vehicle information and set HVAC to auto plus keep pet comfort mode on
+- [tier7_multiturn] Yeah, I just want to know what kind of car I have and what version of software it's running
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_home / appliances (smart-home-appliances)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- getApplianceStatus: Retrieves the current status of an appliance (e.g., Running, Error, Finished).
+- setApplianceMode: Sets the operating mode and parameters for a smart appliance.
+- setDockState: Commands a robot vacuum to return to its charging dock.
+- startCleaning: Starts a cleaning cycle on a robot vacuum/mop, optionally for specific zones.
+
+Tool: getApplianceStatus
+Choose when: Retrieves the current status of an appliance (e.g., Running, Error, Finished).
+Sibling operation contrast: setApplianceMode, setDockState, startCleaning
+Key types: deviceId: String
+Legal key skeletons: {} | {deviceId}
+Positive construction language patterns:
+- [tier7_multiturn] Oven status.
+- [tier4_implicit] Are the sheets dry?
+- [tier6_correction] Check dishwasher kitchen, hold on, I meant {deviceId}
+
+Tool: setApplianceMode
+Choose when: Sets the operating mode and parameters for a smart appliance.
+Sibling operation contrast: getApplianceStatus, setDockState, startCleaning
+Key types: deviceId: String; mode: String; parameters: Map
+Legal key skeletons: {} | {mode} | {deviceId, mode} | {deviceId, mode, parameters}
+Positive construction language patterns:
+- [tier7_multiturn] Make it {mode}
+- [tier1_direct] Can you get the wash started?
+- [tier4_implicit] Climate change has me worried
+
+Tool: setDockState
+Choose when: Commands a robot vacuum to return to its charging dock.
+Sibling operation contrast: getApplianceStatus, setApplianceMode, startCleaning
+Key types: deviceId: String
+Legal key skeletons: {} | {deviceId}
+Positive construction language patterns:
+- [tier1_direct] Dock now.
+- [tier2_parametric] Can you make the vacuum go back to where it charges?
+- [tier7_multiturn] Device ID {deviceId}.
+
+Tool: startCleaning
+Choose when: Starts a cleaning cycle on a robot vacuum/mop, optionally for specific zones.
+Sibling operation contrast: getApplianceStatus, setApplianceMode, setDockState
+Key types: deviceId: String; zones: List<String>
+Legal key skeletons: {} | {deviceId} | {zones} | {deviceId, zones}
+Positive construction language patterns:
+- [tier1_direct] Vacuum please
+- [tier6_correction] Begin a bedroom cleaning job, no wait, do the whole house instead
+- [tier2_parametric] Can you start vacuuming now?
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_home / automation (smart-home-automation)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- activateRoutine: Triggers a multi-action automation routine.
+- activateScene: Activates a pre-configured smart home scene.
+- broadcastMessage: Broadcasts a text-to-speech message to specified smart speakers.
+- restartDevice: Reboots a specific smart device.
+
+Tool: activateRoutine
+Choose when: Triggers a multi-action automation routine.
+Sibling operation contrast: activateScene, broadcastMessage, restartDevice
+Key types: routineId: String
+Legal key skeletons: {} | {routineId}
+Positive construction language patterns:
+- [tier7_multiturn] Affirmative
+- [tier6_correction] Activate Arriving Home, I mean activate {routineId}
+- [tier4_implicit] Back from the doctors
+
+Tool: activateScene
+Choose when: Activates a pre-configured smart home scene.
+Sibling operation contrast: activateRoutine, broadcastMessage, restartDevice
+Key types: sceneId: String
+Legal key skeletons: {} | {sceneId}
+Positive construction language patterns:
+- [tier1_direct] Activate please
+- [tier7_multiturn] Ah, morning one
+- [tier4_implicit] Cinema vibes tonight
+
+Tool: broadcastMessage
+Choose when: Broadcasts a text-to-speech message to specified smart speakers.
+Sibling operation contrast: activateRoutine, activateScene, restartDevice
+Key types: message: String; targetRooms: List<String>; _raw: String
+Legal key skeletons: {} | {_raw} | {message} | {message, targetRooms}
+Positive construction language patterns:
+- [tier7_multiturn] {message}.
+- [tier1_direct] Announce on all devices
+- [tier3_multi_intent] Broadcast that quiet time is starting and lower the thermostat to sixty six degrees
+
+Tool: restartDevice
+Choose when: Reboots a specific smart device.
+Sibling operation contrast: activateRoutine, activateScene, broadcastMessage
+Key types: deviceId: String
+Legal key skeletons: {deviceId}
+Positive construction language patterns:
+- [tier2_parametric] Restart the router.
+- [tier2_parametric] Could you please reboot smart hub two?
+- [tier2_parametric] My {deviceId} needs a reboot.
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_home / climate (smart-home-climate)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- getAirQuality: Retrieves air quality metrics (AQI, CO2, PM2.5) from a sensor.
+- setFanMode: Controls the mode and speed of a fan or air purifier.
+- setHumidifierState: Sets the target humidity level for a humidifier or dehumidifier.
+- setTargetTemperature: Sets the temperature setpoint for the thermostat.
+- setThermostatMode: Sets the thermostat operating mode (e.g., Heat, Cool, Auto, Off).
+- setThermostatSchedule: Configures the automatic heating/cooling schedule for a thermostat.
+
+Tool: getAirQuality
+Choose when: Retrieves air quality metrics (AQI, CO2, PM2.5) from a sensor.
+Sibling operation contrast: setFanMode, setHumidifierState, setTargetTemperature, setThermostatMode, setThermostatSchedule
+Key types: deviceId: String
+Legal key skeletons: {} | {deviceId}
+Positive construction language patterns:
+- [tier7_multiturn] Affirmative.
+- [tier3_multi_intent] Air quality check and turn on adaptive lighting
+- [tier6_correction] Get AQI from the nursery sensor, no wait, from the kids room sensor
+
+Tool: setFanMode
+Choose when: Controls the mode and speed of a fan or air purifier.
+Sibling operation contrast: getAirQuality, setHumidifierState, setTargetTemperature, setThermostatMode, setThermostatSchedule
+Key types: deviceId: String; mode: FanMode; speed: Int
+Legal key skeletons: {} | {mode} | {deviceId, mode} | {mode, speed} | {deviceId, mode, speed}
+Positive construction language patterns:
+- [tier1_direct] Fan please
+- [tier7_multiturn] Around {speed} should be fine, thanks.
+- [tier4_implicit] I am not really feeling hot or cold anymore
+
+Tool: setHumidifierState
+Choose when: Sets the target humidity level for a humidifier or dehumidifier.
+Sibling operation contrast: getAirQuality, setFanMode, setTargetTemperature, setThermostatMode, setThermostatSchedule
+Key types: deviceId: String; targetHumidity: Int
+Legal key skeletons: {} | {targetHumidity} | {deviceId, targetHumidity}
+Positive construction language patterns:
+- [tier7_multiturn] {targetHumidity}
+- [tier2_parametric] Adjust the humidifier to forty two percent
+- [tier1_direct] Begin humidifying
+
+Tool: setTargetTemperature
+Choose when: Sets the temperature setpoint for the thermostat.
+Sibling operation contrast: getAirQuality, setFanMode, setHumidifierState, setThermostatMode, setThermostatSchedule
+Key types: deviceId: String; temperature: Float
+Legal key skeletons: {} | {temperature} | {deviceId, temperature}
+Positive construction language patterns:
+- [tier7_multiturn] Confirm.
+- [tier4_implicit] Absolutely roasting
+- [tier6_correction] Actually, forget all that, never mind the fan and humidity, just set the thermostat to twenty one degrees
+
+Tool: setThermostatMode
+Choose when: Sets the thermostat operating mode (e.g., Heat, Cool, Auto, Off).
+Sibling operation contrast: getAirQuality, setFanMode, setHumidifierState, setTargetTemperature, setThermostatSchedule
+Key types: deviceId: String; mode: HvacMode
+Legal key skeletons: {} | {mode} | {deviceId, mode}
+Positive construction language patterns:
+- [tier4_implicit] Absolutely freezing
+- [tier2_parametric] Activate the air conditioning.
+- [tier1_direct] Auto mode thermostat
+
+Tool: setThermostatSchedule
+Choose when: Configures the automatic heating/cooling schedule for a thermostat.
+Sibling operation contrast: getAirQuality, setFanMode, setHumidifierState, setTargetTemperature, setThermostatMode
+Key types: deviceId: String; schedule: Map
+Legal key skeletons: {} | {deviceId, schedule}
+Positive construction language patterns:
+- [tier1_direct] Configure climate timer
+- [tier2_parametric] Add to the schedule for the {deviceId}: at two PM, make it seventy degrees.
+- [tier4_implicit] Every afternoon this room turns into a sauna
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_home / core_control (smart-home-core-control)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- getDeviceList: Returns a list of all available smart home devices and their capabilities.
+- setLighting: Controls the power, brightness, and color of a light in a single command.
+- setSecurityMode: Sets the arming state of the security system.
+- streamCamera: Starts a live video stream from a security camera.
+
+Tool: getDeviceList
+Choose when: Returns a list of all available smart home devices and their capabilities.
+Sibling operation contrast: setLighting, setSecurityMode, streamCamera
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier1_direct] Enumerate my devices.
+- [tier7_multiturn] Actually, I'm not sure about the security cameras. Can you just give me a list of everything that's connected?
+- [tier3_multi_intent] Show every device and ramp the hallway lights up to eighty percent over three minutes
+
+Tool: setLighting
+Choose when: Controls the power, brightness, and color of a light in a single command.
+Sibling operation contrast: getDeviceList, setSecurityMode, streamCamera
+Key types: deviceId: String; state: OnOff; level: Int; color: HexCode
+Legal key skeletons: {} | {state} | {deviceId, color} | {deviceId, level} | {deviceId, state} | {state, color} | {state, level} | {deviceId, level, color} | {deviceId, state, color} | {deviceId, state, level} | {state, level, color} | {deviceId, state, level, color}
+Positive construction language patterns:
+- [tier7_multiturn] {deviceId}
+- [tier4_implicit] All I see is shadows in here
+- [tier1_direct] Be a dear and turn on the lights
+
+Tool: setSecurityMode
+Choose when: Sets the arming state of the security system.
+Sibling operation contrast: getDeviceList, setLighting, streamCamera
+Key types: mode: SecurityState
+Legal key skeletons: {} | {mode}
+Positive construction language patterns:
+- [tier7_multiturn] Affirmative.
+- [tier1_direct] Activate alarm
+- [tier3_multi_intent] Arm away and change the dining room lights to green
+
+Tool: streamCamera
+Choose when: Starts a live video stream from a security camera.
+Sibling operation contrast: getDeviceList, setLighting, setSecurityMode
+Key types: deviceId: String
+Legal key skeletons: {} | {deviceId}
+Positive construction language patterns:
+- [tier1_direct] Live feed
+- [tier2_parametric] Activate the stream for the {deviceId}.
+- [tier7_multiturn] I choose front door one
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_home / device_finding (smart-home-device-finding)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- findMyDevice: Triggers a sound to help locate a lost device.
+
+Tool: findMyDevice
+Choose when: Triggers a sound to help locate a lost device.
+Sibling operation contrast: none
+Key types: device: String
+Legal key skeletons: {} | {device}
+Positive construction language patterns:
+- [tier1_direct] Find device.
+- [tier4_implicit] All I know is my phone is somewhere close by
+- [tier7_multiturn] Do it now for that.
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_home / diagnostics (smart-home-diagnostics)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- getAirQuality_diag: Retrieves diagnostic sensor readings for air quality (VOCs, CO2, Humidity).
+- getBatteryLevel: Returns the battery charge percentage for a battery-operated device.
+- getFilterLife: Returns the remaining life percentage of a device filter.
+- getNetworkHealth: Retrieves Wi-Fi signal strength and network connectivity status.
+
+Tool: getAirQuality_diag
+Choose when: Retrieves diagnostic sensor readings for air quality (VOCs, CO2, Humidity).
+Sibling operation contrast: getBatteryLevel, getFilterLife, getNetworkHealth
+Key types: deviceId: String
+Legal key skeletons: {} | {deviceId}
+Positive construction language patterns:
+- [tier7_multiturn] {deviceId}
+- [tier3_multi_intent] Air quality and fade brightness down to sixty over eight minutes
+- [tier6_correction] Check VOC diagnostics in the bedroom, actually in the walk in closet monitor
+
+Tool: getBatteryLevel
+Choose when: Returns the battery charge percentage for a battery-operated device.
+Sibling operation contrast: getAirQuality_diag, getFilterLife, getNetworkHealth
+Key types: deviceId: String
+Legal key skeletons: {} | {deviceId}
+Positive construction language patterns:
+- [tier7_multiturn] The sensor.
+- [tier3_multi_intent] Battery status for {deviceId} and also enable adaptive lighting
+- [tier4_implicit] Device seems to be struggling
+
+Tool: getFilterLife
+Choose when: Returns the remaining life percentage of a device filter.
+Sibling operation contrast: getAirQuality_diag, getBatteryLevel, getNetworkHealth
+Key types: deviceId: String
+Legal key skeletons: {} | {deviceId}
+Positive construction language patterns:
+- [tier7_multiturn] {deviceId}.
+- [tier2_parametric] Can you check the filter on the purifier in the entryway?
+- [tier4_implicit] Im sneezing way more than I did last week
+
+Tool: getNetworkHealth
+Choose when: Retrieves Wi-Fi signal strength and network connectivity status.
+Sibling operation contrast: getAirQuality_diag, getBatteryLevel, getFilterLife
+Key types: deviceId: String
+Legal key skeletons: {} | {deviceId}
+Positive construction language patterns:
+- [tier1_direct] Network strength
+- [tier7_multiturn] Ah, sorry, I get distracted, my cat just attack the curtain again. Also I think maybe only living room TV suffer, bedroom seems okay. The main white box from provider, I think you call it gateway? I don't know its number name, I just want you to check this gateway thing, see if signal is weak or something.
+- [tier4_implicit] Connection keeps timing out
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_home / energy (smart-home-energy)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- getEnergyUsage: Retrieves current power usage or historical energy consumption data.
+- setPowerState: Controls the power state of a smart plug or switch.
+- setWaterValve: Opens or closes a main water valve or irrigation controller.
+
+Tool: getEnergyUsage
+Choose when: Retrieves current power usage or historical energy consumption data.
+Sibling operation contrast: setPowerState, setWaterValve
+Key types: deviceId: String
+Legal key skeletons: {} | {deviceId}
+Positive construction language patterns:
+- [tier1_direct] Live consumption
+- [tier7_multiturn] Actually, I want to check the usage for my {deviceId}
+- [tier4_implicit] Our energy footprint is probably massive
+
+Tool: setPowerState
+Choose when: Controls the power state of a smart plug or switch.
+Sibling operation contrast: getEnergyUsage, setWaterValve
+Key types: deviceId: String; state: OnOff
+Legal key skeletons: {} | {state} | {deviceId, state}
+Positive construction language patterns:
+- [tier7_multiturn] {state}
+- [tier2_parametric] Activate the plug for the {deviceId}
+- [tier1_direct] Could you switch it off?
+
+Tool: setWaterValve
+Choose when: Opens or closes a main water valve or irrigation controller.
+Sibling operation contrast: getEnergyUsage, setPowerState
+Key types: deviceId: String; state: OpenClose
+Legal key skeletons: {} | {state} | {deviceId, state}
+Positive construction language patterns:
+- [tier7_multiturn] {state} it.
+- [tier2_parametric] Activate the water valve
+- [tier4_implicit] My shower just went completely dry
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_home / lighting (smart-home-lighting)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- rampBrightness: Transitions brightness to a target level over a specified duration.
+- setAdaptiveLighting: Enables automatic adjustment of light color temperature based on the time of day.
+- setBrightness: Sets the brightness level (0-100%) for a dimmable light.
+- setColor: Sets the color of a light using HSB (Hue/Saturation/Brightness) values.
+- setColorTemperature: Adjusts the white light temperature (Kelvin) from warm to cool.
+- setGroupLightState: Controls the state of a group of lights simultaneously.
+- setLightState: Turns a lighting device on or off.
+
+Tool: rampBrightness
+Choose when: Transitions brightness to a target level over a specified duration.
+Sibling operation contrast: setAdaptiveLighting, setBrightness, setColor, setColorTemperature, setGroupLightState, setLightState
+Key types: deviceId: String; targetLevel: Int; duration: Time
+Legal key skeletons: {} | {targetLevel, duration} | {deviceId, targetLevel, duration}
+Positive construction language patterns:
+- [tier1_direct] Brightness transition
+- [tier7_multiturn] Ah, sorry, my brain go on small vacation. The lamp is just the main one, I think system call it "{deviceId}". I don't want it like sun attack, maybe around {targetLevel} only, and it can climb there gentle, like in {duration}, not rush.
+- [tier4_implicit] Everything looks washed out
+
+Tool: setAdaptiveLighting
+Choose when: Enables automatic adjustment of light color temperature based on the time of day.
+Sibling operation contrast: rampBrightness, setBrightness, setColor, setColorTemperature, setGroupLightState, setLightState
+Key types: deviceId: String; enabled: Boolean
+Legal key skeletons: {} | {enabled} | {deviceId, enabled}
+Positive construction language patterns:
+- [tier1_direct] Adaptive lights on
+- [tier4_implicit] Can the light just stay one color please?
+- [tier7_multiturn] Oh, definitely enable it! I want to try it out.
+
+Tool: setBrightness
+Choose when: Sets the brightness level (0-100%) for a dimmable light.
+Sibling operation contrast: rampBrightness, setAdaptiveLighting, setColor, setColorTemperature, setGroupLightState, setLightState
+Key types: deviceId: String; level: Int
+Legal key skeletons: {} | {level} | {deviceId, level}
+Positive construction language patterns:
+- [tier7_multiturn] Confirm
+- [tier1_direct] Adjust brightness now
+- [tier2_parametric] Can you dim the lights to about forty percent?
+
+Tool: setColor
+Choose when: Sets the color of a light using HSB (Hue/Saturation/Brightness) values.
+Sibling operation contrast: rampBrightness, setAdaptiveLighting, setBrightness, setColorTemperature, setGroupLightState, setLightState
+Key types: deviceId: String; color: HsbColor
+Legal key skeletons: {} | {color} | {deviceId, color}
+Positive construction language patterns:
+- [tier1_direct] Change color.
+- [tier7_multiturn] Blue, not too bright
+- [tier2_parametric] Can you make the light a washed-out yellow?
+
+Tool: setColorTemperature
+Choose when: Adjusts the white light temperature (Kelvin) from warm to cool.
+Sibling operation contrast: rampBrightness, setAdaptiveLighting, setBrightness, setColor, setGroupLightState, setLightState
+Key types: deviceId: String; kelvin: Int; brightness: Int; duration: Int; enabled: Boolean; level: Int; mode: String; state: String; temperature: Int
+Legal key skeletons: {} | {kelvin} | {deviceId, kelvin} | {kelvin, brightness} | {kelvin, enabled} | {kelvin, temperature} | {kelvin, duration, level} | {kelvin, mode, temperature} | {kelvin, state, temperature}
+Positive construction language patterns:
+- [tier1_direct] Adjust white balance
+- [tier7_multiturn] Ah, okay! I try again. Set to, uh, {kelvin} Kelvin, please.
+- [tier4_implicit] Can we make it feel more like daytime?
+
+Tool: setGroupLightState
+Choose when: Controls the state of a group of lights simultaneously.
+Sibling operation contrast: rampBrightness, setAdaptiveLighting, setBrightness, setColor, setColorTemperature, setLightState
+Key types: groupId: String; state: OnOff; level: Int; color: HexCode
+Legal key skeletons: {} | {state} | {groupId, color} | {groupId, level} | {groupId, state} | {state, color} | {state, level} | {groupId, level, color} | {groupId, state, color} | {groupId, state, level} | {state, level, color} | {groupId, state, level, color}
+Positive construction language patterns:
+- [tier1_direct] Hello, lights?
+- [tier7_multiturn] Actually, 30 is still too bright. Let's go with {level} instead.
+- [tier2_parametric] Change the color in the {groupId} to cyan.
+
+Tool: setLightState
+Choose when: Turns a lighting device on or off.
+Sibling operation contrast: rampBrightness, setAdaptiveLighting, setBrightness, setColor, setColorTemperature, setGroupLightState
+Key types: deviceId: String; state: OnOff
+Legal key skeletons: {deviceId, state}
+Positive construction language patterns:
+- [tier2_parametric] Activate the {deviceId}
+- [tier2_parametric] Lights {state}, please
+- [tier2_parametric] Set {deviceId} to {state}
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_home / maintenance (smart-home-maintenance)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- calibrateThermostat: Applies a temperature offset to calibrate the thermostat sensor.
+- rebootDevice: Performs a soft reboot of a device.
+- resetFilterStatus: Resets the filter life counter after a filter replacement.
+- runNetworkSpeedTest: Runs an internet speed test on the network gateway.
+- updateFirmware: Initiates a firmware update for the specified device.
+
+Tool: calibrateThermostat
+Choose when: Applies a temperature offset to calibrate the thermostat sensor.
+Sibling operation contrast: rebootDevice, resetFilterStatus, runNetworkSpeedTest, updateFirmware
+Key types: deviceId: String; offset: Float
+Legal key skeletons: {} | {offset} | {deviceId, offset}
+Positive construction language patterns:
+- [tier1_direct] Initiate calibration.
+- [tier2_parametric] Adjust the sensor on the {deviceId} by minus three point five degrees.
+- [tier7_multiturn] Apply an offset of {offset}.
+
+Tool: rebootDevice
+Choose when: Performs a soft reboot of a device.
+Sibling operation contrast: calibrateThermostat, resetFilterStatus, runNetworkSpeedTest, updateFirmware
+Key types: deviceId: String
+Legal key skeletons: {} | {deviceId}
+Positive construction language patterns:
+- [tier7_multiturn] Camera one.
+- [tier8_intent_blending] Assistant, restart the {deviceId} and change garage lights to a cool white at sixty percent
+- [tier1_direct] Can you power cycle it?
+
+Tool: resetFilterStatus
+Choose when: Resets the filter life counter after a filter replacement.
+Sibling operation contrast: calibrateThermostat, rebootDevice, runNetworkSpeedTest, updateFirmware
+Key types: deviceId: String
+Legal key skeletons: {} | {deviceId}
+Positive construction language patterns:
+- [tier7_multiturn] Yeah
+- [tier8_intent_blending] After changing the filter, reset purifier one and ramp the office lights down to twenty percent over thirty seconds with a warm color temperature
+- [tier1_direct] Clear filter life counter
+
+Tool: runNetworkSpeedTest
+Choose when: Runs an internet speed test on the network gateway.
+Sibling operation contrast: calibrateThermostat, rebootDevice, resetFilterStatus, updateFirmware
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier1_direct] Check network bandwidth
+- [tier3_multi_intent] Adjust the lights to a cool white and then run a speed test.
+- [tier4_implicit] Can barely get online
+
+Tool: updateFirmware
+Choose when: Initiates a firmware update for the specified device.
+Sibling operation contrast: calibrateThermostat, rebootDevice, resetFilterStatus, runNetworkSpeedTest
+Key types: deviceId: String
+Legal key skeletons: {} | {deviceId}
+Positive construction language patterns:
+- [tier7_multiturn] {deviceId}
+- [tier6_correction] Begin a firmware update for the front door camera, no wait, recalibrate the cameras
+- [tier4_implicit] It's not responding to my taps.
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_home / media (smart-home-media)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- castContent: Casts media content from a URL to a target device.
+- controlPlayback_home: Sends playback controls (Play, Pause, Stop) to a media device.
+- playMedia: Plays specified media content on a target device.
+- setInputSource: Changes the input source of a TV or receiver.
+- setVolume: Sets the volume level for a media device.
+
+Tool: castContent
+Choose when: Casts media content from a URL to a target device.
+Sibling operation contrast: controlPlayback_home, playMedia, setInputSource, setVolume
+Key types: sourceUrl: String; targetDeviceId: String
+Legal key skeletons: {} | {targetDeviceId} | {sourceUrl, targetDeviceId}
+Positive construction language patterns:
+- [tier1_direct] Cast screen
+- [tier7_multiturn] Ah, I say wrong before, not tv_9. The device is my living room TV, id is {targetDeviceId}, and the movie link is {sourceUrl}
+- [tier4_implicit] It's too hard to see what's happening.
+
+Tool: controlPlayback_home
+Choose when: Sends playback controls (Play, Pause, Stop) to a media device.
+Sibling operation contrast: castContent, playMedia, setInputSource, setVolume
+Key types: deviceId: String; action: MediaAction
+Legal key skeletons: {deviceId, action}
+Positive construction language patterns:
+- [tier2_parametric] {action} {deviceId}.
+- [tier2_parametric] Go back to the last one on the {deviceId}.
+- [tier2_parametric] Can you resume playback on {deviceId}?
+
+Tool: playMedia
+Choose when: Plays specified media content on a target device.
+Sibling operation contrast: castContent, controlPlayback_home, setInputSource, setVolume
+Key types: deviceId: String; query: String; source: Service; brightness: Int; mode: String
+Legal key skeletons: {} | {brightness} | {mode} | {query} | {deviceId, query} | {query, source} | {deviceId, query, source}
+Positive construction language patterns:
+- [tier1_direct] Audio on
+- [tier4_implicit] Can we liven things up?
+- [tier2_parametric] Could you play {query} from {source}?
+
+Tool: setInputSource
+Choose when: Changes the input source of a TV or receiver.
+Sibling operation contrast: castContent, controlPlayback_home, playMedia, setVolume
+Key types: deviceId: String; input: String; mode: String
+Legal key skeletons: {} | {input} | {mode} | {deviceId, input}
+Positive construction language patterns:
+- [tier1_direct] Cycle receiver inputs
+- [tier7_multiturn] Ah sorry, I get distracted, my cat just attack the curtain again, like ninja on the wall. Anyway, the game is plug in second thin cable place, I think they call it HDMI number two. Can you make tv go to that one now?
+- [tier2_parametric] Let's watch broadcast {input}
+
+Tool: setVolume
+Choose when: Sets the volume level for a media device.
+Sibling operation contrast: castContent, controlPlayback_home, playMedia, setInputSource
+Key types: deviceId: String; level: Int; direction: String; steps: Int; stream: String
+Legal key skeletons: {} | {level} | {deviceId, level} | {direction, steps} | {level, stream}
+Positive construction language patterns:
+- [tier7_multiturn] {deviceId}
+- [tier4_implicit] A little aggressive, don't you think?
+- [tier6_correction] Cast my rock station, no wait, just set the speaker volume to eighty one
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_home / security (smart-home-security)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- armSecuritySystem: Sets the home security system mode (e.g., Away, Home, Night, Disarmed).
+- getCameraEvent: Retrieves video clips corresponding to specific detected events (e.g., Person, Package).
+- getCameraStream: Retrieves the URL for a live video stream from a camera.
+- setGarageDoor: Opens or closes a smart garage door or gate.
+- setLockState_home: Locks or unlocks a smart lock device.
+
+Tool: armSecuritySystem
+Choose when: Sets the home security system mode (e.g., Away, Home, Night, Disarmed).
+Sibling operation contrast: getCameraEvent, getCameraStream, setGarageDoor, setLockState_home
+Key types: mode: SecurityMode
+Legal key skeletons: {mode}
+Positive construction language patterns:
+- [tier2_parametric] Deactivate security.
+- [tier2_parametric] Arm for the {mode}.
+- [tier2_parametric] I need to turn the alarm off.
+
+Tool: getCameraEvent
+Choose when: Retrieves video clips corresponding to specific detected events (e.g., Person, Package).
+Sibling operation contrast: armSecuritySystem, getCameraStream, setGarageDoor, setLockState_home
+Key types: deviceId: String; eventType: Event
+Legal key skeletons: {} | {eventType} | {deviceId, eventType}
+Positive construction language patterns:
+- [tier1_direct] Camera, replay.
+- [tier7_multiturn] Actually, I was watching the news earlier and there was a report about a person trying to steal packages from the neighborhood. I'm getting a bit worried now.
+- [tier2_parametric] Any {eventType} events today?
+
+Tool: getCameraStream
+Choose when: Retrieves the URL for a live video stream from a camera.
+Sibling operation contrast: armSecuritySystem, getCameraEvent, setGarageDoor, setLockState_home
+Key types: deviceId: String; protocol: StreamProto
+Legal key skeletons: {} | {deviceId} | {protocol} | {deviceId, protocol}
+Positive construction language patterns:
+- [tier1_direct] Live feed.
+- [tier6_correction] Activate surveillance mode on the vehicle, no wait, just show my default home camera
+- [tier4_implicit] I cant tell if theres a car in visitor parking
+
+Tool: setGarageDoor
+Choose when: Opens or closes a smart garage door or gate.
+Sibling operation contrast: armSecuritySystem, getCameraEvent, getCameraStream, setLockState_home
+Key types: deviceId: String; state: OpenClose
+Legal key skeletons: {} | {state} | {deviceId, state}
+Positive construction language patterns:
+- [tier7_multiturn] Yes. Hurry.
+- [tier4_implicit] All our tools are visible because the garage is open again
+- [tier6_correction] Close garage one for me, I mean {state} it, I am about to drive out
+
+Tool: setLockState_home
+Choose when: Locks or unlocks a smart lock device.
+Sibling operation contrast: armSecuritySystem, getCameraEvent, getCameraStream, setGarageDoor
+Key types: deviceId: String; state: LockState
+Legal key skeletons: {state} | {deviceId, state}
+Positive construction language patterns:
+- [tier2_parametric] Lock it.
+- [tier2_parametric] Can you make sure the {deviceId} is {state}?
+- [tier2_parametric] I'm home, unlock the door.
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: smart_home / status (smart-home-status)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- getApplianceState: Checks the current operational state of an appliance.
+- getLightState: Returns the current On/Off state and brightness of a light.
+- getLockState: Retrieves the current status of a smart lock (Locked, Unlocked, Jammed).
+- getSensorState: Retrieves the state of a sensor (e.g., Motion detected, Contact open).
+- getThermostatState: Returns the current mode and ambient temperature reading of a thermostat.
+
+Tool: getApplianceState
+Choose when: Checks the current operational state of an appliance.
+Sibling operation contrast: getLightState, getLockState, getSensorState, getThermostatState
+Key types: deviceId: String
+Legal key skeletons: {} | {deviceId}
+Positive construction language patterns:
+- [tier1_direct] Update?
+- [tier7_multiturn] Affirmative. Check dryer state now.
+- [tier2_parametric] Can you find out what the {deviceId} is doing?
+
+Tool: getLightState
+Choose when: Returns the current On/Off state and brightness of a light.
+Sibling operation contrast: getApplianceState, getLockState, getSensorState, getThermostatState
+Key types: deviceId: String
+Legal key skeletons: {} | {deviceId}
+Positive construction language patterns:
+- [tier7_multiturn] Yeah... whatever.
+- [tier2_parametric] Can you check the state of the {deviceId}?
+- [tier4_implicit] I feel like I'm being interrogated
+
+Tool: getLockState
+Choose when: Retrieves the current status of a smart lock (Locked, Unlocked, Jammed).
+Sibling operation contrast: getApplianceState, getLightState, getSensorState, getThermostatState
+Key types: deviceId: String
+Legal key skeletons: {} | {deviceId}
+Positive construction language patterns:
+- [tier7_multiturn] Front
+- [tier1_direct] Am I locked out or is the door open
+- [tier3_multi_intent] Check the lock state at the {deviceId} and set living room lights to cool white plus dim to sixty percent
+
+Tool: getSensorState
+Choose when: Retrieves the state of a sensor (e.g., Motion detected, Contact open).
+Sibling operation contrast: getApplianceState, getLightState, getLockState, getThermostatState
+Key types: deviceId: String
+Legal key skeletons: {} | {deviceId}
+Positive construction language patterns:
+- [tier2_parametric] Check {deviceId}.
+- [tier7_multiturn] Back. Windows secure? Front one.
+- [tier1_direct] Can I get sensor state
+
+Tool: getThermostatState
+Choose when: Returns the current mode and ambient temperature reading of a thermostat.
+Sibling operation contrast: getApplianceState, getLightState, getLockState, getSensorState
+Key types: deviceId: String
+Legal key skeletons: {} | {deviceId}
+Positive construction language patterns:
+- [tier1_direct] Thermostat update.
+- [tier2_parametric] Can you tell me what the {deviceId} is set to?
+- [tier4_implicit] I am wrapped in blankets and still cold
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: wearables / device_state (wearables-device-state)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- findPairedPhone: Triggers an audible alert on the paired smartphone.
+- setAlarm: Sets or updates an alarm on the wearable device.
+- setAlwaysOnDisplay: Enables or disables the Always-On Display feature.
+- setDoNotDisturb: Enables or disables 'Do Not Disturb' and sets the active mode (e.g., Sleep, Theater).
+
+Tool: findPairedPhone
+Choose when: Triggers an audible alert on the paired smartphone.
+Sibling operation contrast: setAlarm, setAlwaysOnDisplay, setDoNotDisturb
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier7_multiturn] Affirmative.
+- [tier1_direct] Alert my phone
+- [tier4_implicit] Crap, where did it go?
+
+Tool: setAlarm
+Choose when: Sets or updates an alarm on the wearable device.
+Sibling operation contrast: findPairedPhone, setAlwaysOnDisplay, setDoNotDisturb
+Key types: time: Time; label: String; repeat: List<String>
+Legal key skeletons: {} | {time} | {time, label} | {time, repeat} | {time, label, repeat}
+Positive construction language patterns:
+- [tier7_multiturn] 6:30
+- [tier8_intent_blending] After you tell me my distance, set an alarm for five PM.
+- [tier4_implicit] Getting out of bed before sunrise is impossible
+
+Tool: setAlwaysOnDisplay
+Choose when: Enables or disables the Always-On Display feature.
+Sibling operation contrast: findPairedPhone, setAlarm, setDoNotDisturb
+Key types: enabled: Boolean
+Legal key skeletons: {} | {enabled}
+Positive construction language patterns:
+- [tier1_direct] AOD off
+- [tier2_parametric] Activate always on display
+- [tier7_multiturn] Disable it then.
+
+Tool: setDoNotDisturb
+Choose when: Enables or disables 'Do Not Disturb' and sets the active mode (e.g., Sleep, Theater).
+Sibling operation contrast: findPairedPhone, setAlarm, setAlwaysOnDisplay
+Key types: enabled: Boolean; mode: DNDMode
+Legal key skeletons: {} | {enabled} | {enabled, mode}
+Positive construction language patterns:
+- [tier2_parametric] Cancel {mode} mode.
+- [tier4_implicit] All these alerts are distracting me during the movie
+- [tier1_direct] Can you turn on do not disturb
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: wearables / health_activity (wearables-health-activity)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- getActivitySummary: Returns a summary of activity metrics (Steps, Calories, Distance) for a period.
+- getBiometricData: Retrieves specific biometric data (e.g., Heart Rate, Blood Oxygen).
+- getHRV: Retrieves Heart Rate Variability (HRV) data for a specified period.
+- getSleepSummary: Retrieves sleep analysis data (Duration, Stages, Score).
+- startWorkout: Starts tracking a new workout session.
+- stopWorkout: Ends the currently active workout session.
+
+Tool: getActivitySummary
+Choose when: Returns a summary of activity metrics (Steps, Calories, Distance) for a period.
+Sibling operation contrast: getBiometricData, getHRV, getSleepSummary, startWorkout, stopWorkout
+Key types: period: TimeFrame
+Legal key skeletons: {} | {period}
+Positive construction language patterns:
+- [tier1_direct] Calories, show.
+- [tier8_intent_blending] Activity summary for {period} and begin an elliptical workout
+- [tier4_implicit] All week I have felt way too sedentary
+
+Tool: getBiometricData
+Choose when: Retrieves specific biometric data (e.g., Heart Rate, Blood Oxygen).
+Sibling operation contrast: getActivitySummary, getHRV, getSleepSummary, startWorkout, stopWorkout
+Key types: type: MetricType
+Legal key skeletons: {} | {type}
+Positive construction language patterns:
+- [tier2_parametric] Get {type}.
+- [tier1_direct] Begin health monitoring.
+- [tier4_implicit] Body is radiating heat
+
+Tool: getHRV
+Choose when: Retrieves Heart Rate Variability (HRV) data for a specified period.
+Sibling operation contrast: getActivitySummary, getBiometricData, getSleepSummary, startWorkout, stopWorkout
+Key types: period: TimeFrame
+Legal key skeletons: {} | {period}
+Positive construction language patterns:
+- [tier7_multiturn] {period}.
+- [tier1_direct] Bring up my HRV chart
+- [tier3_multi_intent] Display last weeks heart rate variability then keep the display always on and also start a workout
+
+Tool: getSleepSummary
+Choose when: Retrieves sleep analysis data (Duration, Stages, Score).
+Sibling operation contrast: getActivitySummary, getBiometricData, getHRV, startWorkout, stopWorkout
+Key types: period: TimeFrame
+Legal key skeletons: {} | {period}
+Positive construction language patterns:
+- [tier7_multiturn] {period}.
+- [tier8_intent_blending] Can I get my weekly sleep data and set vibration strength to medium
+- [tier4_implicit] Feeling unrested
+
+Tool: startWorkout
+Choose when: Starts tracking a new workout session.
+Sibling operation contrast: getActivitySummary, getBiometricData, getHRV, getSleepSummary, stopWorkout
+Key types: activity: ActivityType; goal: Goal
+Legal key skeletons: {} | {activity} | {activity, goal}
+Positive construction language patterns:
+- [tier2_parametric] Begin {activity}.
+- [tier7_multiturn] Ah, sorry, I get sidetrack. The buzzing is maybe telling me I sit like potato too long. I don't want crazy gym torture, but also not just sleepy stretching. Maybe something like strong training with weights, I want feel muscles complain a bit. Let's start that now, no special target, I just go until I feel nicely destroyed.
+- [tier4_implicit] My hamstrings are tight
+
+Tool: stopWorkout
+Choose when: Ends the currently active workout session.
+Sibling operation contrast: getActivitySummary, getBiometricData, getHRV, getSleepSummary, startWorkout
+Key types: none
+Legal key skeletons: {}
+Positive construction language patterns:
+- [tier4_implicit] Feeling nauseous
+- [tier7_multiturn] Affirmative. End workout now.
+- [tier3_multi_intent] i'm done exercising plus download the maps app and check my blood oxygen
+CONSTRUCTION-EXAMPLE FAMILY GROUND
+Family: wearables / system_connectivity (wearables-system-connectivity)
+Use only as query-independent positive language and exact interface evidence.
+Family tool meanings (co-located sibling contrast):
+- enableWaterLock: Enables or disables Water Lock mode to prevent accidental screen touches.
+- installApp: Installs a specified application onto the wearable device.
+- setHapticStrength: Adjusts the intensity of haptic vibration feedback.
+
+Tool: enableWaterLock
+Choose when: Enables or disables Water Lock mode to prevent accidental screen touches.
+Sibling operation contrast: installApp, setHapticStrength
+Key types: enabled: Boolean
+Legal key skeletons: {} | {enabled}
+Positive construction language patterns:
+- [tier7_multiturn] Enable.
+- [tier4_implicit] A quick hand rinse turns my watch into a chaos machine
+- [tier1_direct] About to swim turn on water lock
+
+Tool: installApp
+Choose when: Installs a specified application onto the wearable device.
+Sibling operation contrast: enableWaterLock, setHapticStrength
+Key types: appName: String; enabled: Boolean; workoutType: String
+Legal key skeletons: {} | {appName} | {appName, enabled} | {appName, workoutType}
+Positive construction language patterns:
+- [tier7_multiturn] Fitness
+- [tier1_direct] Add new app
+- [tier2_parametric] Can you put {appName} on my watch?
+
+Tool: setHapticStrength
+Choose when: Adjusts the intensity of haptic vibration feedback.
+Sibling operation contrast: enableWaterLock, installApp
+Key types: level: Int
+Legal key skeletons: {} | {level}
+Positive construction language patterns:
+- [tier7_multiturn] Level {level}.
+- [tier1_direct] Adjust haptic feedback settings
+- [tier4_implicit] Alarm vibrations dont wake me because theyre so gentle

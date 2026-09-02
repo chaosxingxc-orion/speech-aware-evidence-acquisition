@@ -1,0 +1,11 @@
+# G7 exhaustive construction-example ground design
+
+G7 is a prospective fixed16 discovery screen addressing the G6 raw diagnostic ceiling of 10/16. It tests construction examples as evidence, without pruning, training, query trimming, or changes to the official final-answer surface.
+
+Each row has exactly 30 contacts: one audio OBS, 28 independent text-only EVIDENCE contacts, and one audio RESOLVE. OBS describes the complete dialogue in bounded plain English and may not name tools. Each EVIDENCE contact receives only OBS and one frozen family bundle. Every registered tool begins as uncertain; support, contradict, and uncertain assessments annotate evidence but never remove a tool. RESOLVE receives the original complete-dialogue audio, OBS, a compact 152-tool execution sheet, and all 152 normalized assessments. Raw contact history is not accumulated.
+
+The tolerant nonfinal parser is frozen before contact. It may remove one exact outer `json` Markdown fence, ignores unknown fields, treats `{}` as empty evidence, and retains valid siblings when another record is invalid. It never changes a tool name, crosses a family, supplies a missing value, or promotes malformed content. Strict and tolerant validity are both traced. The final response uses the unchanged official JSON surface and has no repair, retry, or resend.
+
+Every exact request is measured before contact. Prompt tokens plus the reserved completion must not exceed 24,576 in a 32,768-token slot, leaving at least 8,192 tokens. The tokenizer-free precontact construction uses UTF-8 bytes as a conservative upper bound. RESOLVE is measured only after all assessments seal and is refused on overflow; no query is trimmed.
+
+Two sample workflows may run concurrently, with two model slots and queue depth four. The planned total is 480 contacts. Only OBS and RESOLVE carry audio. The authorized model-free construction build covers 151 of 152 tools with 449 examples; the registry-only `getLockStatus` has no construction-positive pattern but retains its complete interface. The 102,459-byte aggregate ground is SHA-256 `a5bb788a64db320b8d09de3712ede38f46c5395d8e7dd1932d8acbbf8cedc855`. The build read no evaluation task, gold, output, or score field.
