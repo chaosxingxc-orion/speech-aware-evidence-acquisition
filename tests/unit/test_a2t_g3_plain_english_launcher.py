@@ -157,6 +157,9 @@ def test_launcher_pins_config_protocol_artifacts_and_global_budget() -> None:
     assert launcher.COMPLETED_FLIGHT_M0_MANIFEST_SHA256.startswith("1a25d4")
     assert launcher.COMPLETED_FLIGHT_OBS_TRACE_SHA256.startswith("7f50c9")
     assert launcher.COMPLETED_FLIGHT_OBS_TRACE_MANIFEST_SHA256.startswith("5c06db")
+    assert launcher.MATCHED_RECOVERY_OUTPUTS_SHA256.startswith("6e6589")
+    assert launcher.MATCHED_RECOVERY_AGENT_TRACE_SHA256.startswith("431025")
+    assert launcher.MATCHED_RECOVERY_COMPOSITE_TRACE_SHA256.startswith("18b55f")
 
     for phase in launcher.PHASES:
         plan = launcher._execution_plan(phase, f"attempt-{phase.lower()}")
@@ -383,6 +386,38 @@ def test_completed_obs_trace_recovery_requires_40_hashed_contact_triples() -> No
     assert set(recovered["contact_counts"]) == set(expected_ids)
 
 
+def test_completed_matched_trace_recovery_preserves_40_plus_5_contacts() -> None:
+    launcher = _launcher()
+    expected_ids = tuple(item["sample_id"] for item in _items())
+    documents, _manifest = _recovery_documents(expected_ids + expected_ids[:5])
+    for document in documents:
+        if document["channel"] != "MODEL_REQUEST":
+            continue
+        request = document["payload"]["payload"]
+        request["key_representation_id"] = "a2t-g3-plain-english-k32-v1"
+        request["matcher_policy_id"] = "a2t-g3-construction-bm25-k32-matched-v1"
+        document["payload"]["payload_sha256"] = hashlib.sha256(
+            json.dumps(request, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
+    manifest = {
+        "run_id": launcher.RUN_ID,
+        "records": {
+            document["record_id"]: TraceRecord(**document).content_hash()
+            for document in documents
+        },
+    }
+
+    recovered = launcher._validate_matched_recovery_trace(
+        documents,
+        manifest,
+        expected_ids=expected_ids,
+    )
+
+    assert sum(recovered["contact_counts"].values()) == 45
+    assert recovered["repair_count"] == 5
+    assert set(recovered["repair_sample_ids"]) == set(expected_ids[:5])
+
+
 def test_trace_reader_uses_the_g3_run_identity(tmp_path: Path) -> None:
     launcher = _launcher()
     expected = {"channel": "COST", "record_id": "x/cost", "payload": {"calls": 1}}
@@ -511,9 +546,59 @@ def test_parallel_official_scoring_uses_three_whole_manifest_workers(
     assert "--finalize" not in captured["command"]
     assert captured["command"][-2:] == ["--workers", "3"]
     jobs = [json.loads(line) for line in (tmp_path / "official-score-jobs.jsonl").read_text().splitlines()]
-    assert [job["operation"] for job in jobs] == ["score", "finalize", "finalize"]
-    assert "ledger_cells" not in jobs[0]
-    assert all("ledger_cells" in job for job in jobs[1:])
+    assert [job["operation"] for job in jobs] == ["score", "score", "finalize"]
+    assert all("ledger_cells" not in job for job in jobs[:2])
+    assert "ledger_cells" in jobs[2]
+
+
+def test_composite_seal_places_trace_where_manifest_discovers_it(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    launcher = _launcher()
+    captured = {}
+
+    class Sink:
+        def __init__(self, path, run_id):
+            captured["sink_path"] = path
+            captured["run_id"] = run_id
+
+        def close(self):
+            return "a" * 64
+
+    monkeypatch.setattr(launcher, "TraceSink", Sink)
+    monkeypatch.setattr(
+        launcher.g3_flight,
+        "emit_g3_use_rows",
+        lambda **_kwargs: (
+            {
+                "sample_id": "tier1_direct:000001",
+                "text": "[]",
+            },
+        ),
+    )
+    monkeypatch.setattr(
+        launcher,
+        "_build_completed_manifest",
+        lambda **kwargs: captured.update(manifest_kwargs=kwargs)
+        or tmp_path / "manifest.json",
+    )
+
+    launcher._seal_composite(
+        phase=launcher.G3_SHUFFLED_USE_PHASE,
+        texts={"tier1_direct:000001": "[]"},
+        source_result={
+            "client": {"cost": {"calls_used": 1}},
+            "agent_trace_hash": "b" * 64,
+        },
+        root=tmp_path,
+        context={},
+        plan=object(),
+        run_dir=tmp_path / "run",
+        session_receipt_path=tmp_path / "session.json",
+    )
+
+    assert captured["sink_path"] == tmp_path / "run"
+    assert captured["manifest_kwargs"]["run_dir"] == tmp_path / "run"
 
 
 def test_result_reports_absolute_tier_paired_control_repair_and_ci90() -> None:

@@ -11,6 +11,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import time
@@ -35,6 +36,7 @@ from speech_aware_evidence_acquisition.core.base import (  # noqa: E402
     RunResult,
 )
 from speech_aware_evidence_acquisition.core.bundle import (  # noqa: E402
+    ATTEMPT_STATE_NEVER_OPENED,
     STATUS_COMPLETED,
     abort_attempt_if_opened,
     build_manifest,
@@ -87,7 +89,6 @@ from speech_aware_evidence_acquisition.rails.probes.a2t_contract_preserving_casc
 )
 from speech_aware_evidence_acquisition.rails.probes.a2t_self_transcript_cascade_bundle import (  # noqa: E402
     build_resend_composite_texts,
-    build_use_composite_texts,
 )
 
 
@@ -273,6 +274,69 @@ COMPLETED_FLIGHT_M0_ATTEMPT_SHA256 = (
 COMPLETED_FLIGHT_OBS_ATTEMPT_SHA256 = (
     "c928fd1adc45ae4ab37f30381e1f5c0899b5b81ef28094f021c9eb351a730db6"
 )
+MATCHED_RECOVERY_FLIGHT_RELPATH = Path(
+    "runs/SAEA-A2T-G3-PLAIN-ENGLISH-V1/flight-20260902T180333Z"
+)
+MATCHED_RECOVERY_DIR_RELPATH = MATCHED_RECOVERY_FLIGHT_RELPATH / "matched"
+MATCHED_RECOVERY_OUTPUTS_RELPATH = (
+    MATCHED_RECOVERY_DIR_RELPATH / f"{RUN_ID}.outputs.jsonl"
+)
+MATCHED_RECOVERY_MANIFEST_RELPATH = (
+    MATCHED_RECOVERY_DIR_RELPATH / f"{RUN_ID}.run-manifest.json"
+)
+MATCHED_RECOVERY_AGENT_TRACE_DIR_RELPATH = (
+    MATCHED_RECOVERY_DIR_RELPATH / "agent-trace"
+)
+MATCHED_RECOVERY_AGENT_TRACE_RELPATH = (
+    MATCHED_RECOVERY_AGENT_TRACE_DIR_RELPATH / f"{RUN_ID}.trace.jsonl"
+)
+MATCHED_RECOVERY_AGENT_MANIFEST_RELPATH = (
+    MATCHED_RECOVERY_AGENT_TRACE_DIR_RELPATH / f"{RUN_ID}.trace-manifest.json"
+)
+MATCHED_RECOVERY_COMPOSITE_DIR_RELPATH = (
+    MATCHED_RECOVERY_DIR_RELPATH / "composite-trace"
+)
+MATCHED_RECOVERY_COMPOSITE_TRACE_RELPATH = (
+    MATCHED_RECOVERY_COMPOSITE_DIR_RELPATH / f"{RUN_ID}.trace.jsonl"
+)
+MATCHED_RECOVERY_COMPOSITE_MANIFEST_RELPATH = (
+    MATCHED_RECOVERY_COMPOSITE_DIR_RELPATH / f"{RUN_ID}.trace-manifest.json"
+)
+MATCHED_RECOVERY_SESSION_RELPATH = MATCHED_RECOVERY_FLIGHT_RELPATH / (
+    "service/session-receipt.json"
+)
+MATCHED_RECOVERY_FAILURE_RELPATH = MATCHED_RECOVERY_FLIGHT_RELPATH / "failure-receipt.json"
+MATCHED_RECOVERY_ATTEMPT_ID = "attempt-20260902t180333z-g3-matched"
+MATCHED_RECOVERY_ATTEMPT_RELPATH = (
+    Path("attempts") / RUN_ID / f"{MATCHED_RECOVERY_ATTEMPT_ID}.json"
+)
+MATCHED_RECOVERY_OUTPUTS_SHA256 = (
+    "6e6589ce03f638957731ceddeec109c3d9e0cca0cf365d7ae9b98634bd4b1f8f"
+)
+MATCHED_RECOVERY_MANIFEST_SHA256 = (
+    "f43569b9b82bdb3a480a0444749140d451015f732e4440d965f8fffc9f85763e"
+)
+MATCHED_RECOVERY_AGENT_TRACE_SHA256 = (
+    "431025422c6f111c7983582a8b6e4a9f03dcdc27a3db2b7f1991383c509d019a"
+)
+MATCHED_RECOVERY_AGENT_MANIFEST_SHA256 = (
+    "ae9c6d60cc5cc2a4b27288790d789db6545d5cb2289fb99d2bba2338504fb2ec"
+)
+MATCHED_RECOVERY_COMPOSITE_TRACE_SHA256 = (
+    "18b55fa9bd8bbedab3f9d7d42230e17152c54978832674654099ae88de244536"
+)
+MATCHED_RECOVERY_COMPOSITE_MANIFEST_SHA256 = (
+    "d1e24908eb30946f841d383ab25730f766d9e4d2245bf89d75521303dc4c62d2"
+)
+MATCHED_RECOVERY_SESSION_SHA256 = (
+    "54869b19466added1e44ec7521a0d2fa3dea4df639ae95fc7757701ae2c05e6e"
+)
+MATCHED_RECOVERY_FAILURE_SHA256 = (
+    "f8cdfb325ef873663a24374426d013969f473c24dd206610796a934c23f86251"
+)
+MATCHED_RECOVERY_ATTEMPT_SHA256 = (
+    "4217d688085aecaf72bffdb6bea48e48d3bc7247a115a4a6a856d672e1f77668"
+)
 KNOWLEDGE_SNAPSHOT_RELPATH = Path(
     "knowledge/audio2tool/saea-kb-a2t-toolshaped-v1/size-full/snapshot.json"
 )
@@ -300,7 +364,7 @@ OFFICIAL_SCORE_PLAN: Mapping[str, object] = {
         },
         {
             "job_id": "g3-matched-use",
-            "operation": "finalize",
+            "operation": "score",
             "input": "one complete 40-row manifest",
             "row_count": 40,
         },
@@ -693,6 +757,132 @@ def _validate_obs_recovery_trace(
     }
 
 
+def _validate_matched_recovery_trace(
+    documents: Sequence[Mapping[str, object]],
+    manifest: Mapping[str, object],
+    *,
+    expected_ids: Sequence[str],
+) -> dict[str, object]:
+    """Verify the complete 40-draft plus 5-repair matched Agent trace."""
+
+    expected = set(expected_ids)
+    if len(expected) != SPLIT_COUNT:
+        raise RuntimeError("matched recovery requires the complete 40-row surface")
+    manifest_records = manifest.get("records")
+    if manifest.get("run_id") != RUN_ID or not isinstance(manifest_records, Mapping):
+        raise RuntimeError("matched recovery trace manifest is malformed")
+    suffix_by_channel = {
+        "MODEL_REQUEST": "/request",
+        "MODEL_RESPONSE": "/response",
+        "COST": "/cost",
+    }
+    by_contact: dict[str, dict[str, Mapping[str, object]]] = {}
+    record_ids: set[str] = set()
+    for number, document in enumerate(documents, start=1):
+        channel = document.get("channel")
+        record_id = document.get("record_id")
+        payload = document.get("payload")
+        if (
+            not isinstance(channel, str)
+            or not isinstance(record_id, str)
+            or not isinstance(payload, Mapping)
+            or record_id in record_ids
+        ):
+            raise RuntimeError(
+                f"matched recovery trace row {number} is malformed or duplicated"
+            )
+        record_ids.add(record_id)
+        measured = TraceRecord(
+            channel=channel,
+            record_id=record_id,
+            payload=payload,
+        ).content_hash()
+        if manifest_records.get(record_id) != measured:
+            raise RuntimeError(f"matched recovery record hash drift for {record_id!r}")
+        suffix = suffix_by_channel.get(channel)
+        if suffix is not None:
+            if not record_id.endswith(suffix):
+                raise RuntimeError(f"matched recovery record id drift for {record_id!r}")
+            contact_id = record_id[: -len(suffix)]
+            contact = by_contact.setdefault(contact_id, {})
+            if channel in contact:
+                raise RuntimeError(f"matched recovery duplicate channel for {contact_id!r}")
+            contact[channel] = document
+    if set(manifest_records) != record_ids:
+        raise RuntimeError("matched recovery trace manifest record set drift")
+
+    required = set(suffix_by_channel)
+    contact_counts: Counter[str] = Counter()
+    cost_totals = {
+        "calls": 0,
+        "audio_seconds": 0.0,
+        "completion_tokens": 0,
+        "latency_seconds": 0.0,
+        "prompt_tokens": 0,
+    }
+    for contact_id, contact in sorted(by_contact.items()):
+        if set(contact) != required:
+            raise RuntimeError(
+                "matched recovery requires complete request/response/cost triples"
+            )
+        request_outer = contact["MODEL_REQUEST"]["payload"]
+        request_payload = request_outer.get("payload")
+        if (
+            request_outer.get("arm") != "speech-feature-query"
+            or not isinstance(request_payload, Mapping)
+            or request_payload.get("request_id") != contact_id
+            or request_payload.get("key_representation_id")
+            != "a2t-g3-plain-english-k32-v1"
+            or request_payload.get("matcher_policy_id")
+            != "a2t-g3-construction-bm25-k32-matched-v1"
+        ):
+            raise RuntimeError(f"matched recovery request contract drift for {contact_id!r}")
+        canonical_payload = json.dumps(
+            request_payload,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        if request_outer.get("payload_sha256") != hashlib.sha256(
+            canonical_payload
+        ).hexdigest():
+            raise RuntimeError(f"matched recovery payload hash drift for {contact_id!r}")
+        sample_id = request_payload.get("sample_id")
+        if not isinstance(sample_id, str) or sample_id not in expected:
+            raise RuntimeError("matched recovery sample identity is unknown")
+        response = contact["MODEL_RESPONSE"]["payload"]
+        text = response.get("text")
+        if (
+            not isinstance(text, str)
+            or response.get("response_text_sha256")
+            != hashlib.sha256(text.encode("utf-8")).hexdigest()
+        ):
+            raise RuntimeError(f"matched recovery response hash drift for {sample_id!r}")
+        cost = contact["COST"]["payload"]
+        if cost.get("calls") != 1:
+            raise RuntimeError(f"matched recovery cost is not one call for {sample_id!r}")
+        contact_counts[sample_id] += 1
+        for field in cost_totals:
+            value = cost.get(field)
+            if not isinstance(value, (int, float)) or isinstance(value, bool):
+                raise RuntimeError(f"matched recovery cost field {field!r} is malformed")
+            cost_totals[field] += value
+    repair_ids = tuple(sorted(sample_id for sample_id, count in contact_counts.items() if count == 2))
+    if (
+        set(contact_counts) != expected
+        or any(count not in {1, 2} for count in contact_counts.values())
+        or sum(contact_counts.values()) != 45
+        or len(repair_ids) != 5
+    ):
+        raise RuntimeError("matched recovery is not exactly forty drafts plus five repairs")
+    return {
+        "contact_counts": dict(sorted(contact_counts.items())),
+        "repair_count": len(repair_ids),
+        "repair_sample_ids": repair_ids,
+        "cost": cost_totals,
+    }
+
+
 def _load_completed_flight(root: Path, expected_ids: Sequence[str]) -> dict[str, object]:
     """Load the hash-pinned complete M0 and OBS surfaces without new contacts."""
 
@@ -787,6 +977,138 @@ def _load_completed_flight(root: Path, expected_ids: Sequence[str]) -> dict[str,
             "observation": SPLIT_COUNT,
             "cumulative_before_use": 80,
         },
+    }
+
+
+def _load_matched_recovery(root: Path, expected_ids: Sequence[str]) -> dict[str, object]:
+    """Load and verify the hash-pinned 45-contact matched recovery surface."""
+
+    root = Path(root)
+    pinned = (
+        (MATCHED_RECOVERY_OUTPUTS_RELPATH, MATCHED_RECOVERY_OUTPUTS_SHA256),
+        (MATCHED_RECOVERY_MANIFEST_RELPATH, MATCHED_RECOVERY_MANIFEST_SHA256),
+        (MATCHED_RECOVERY_AGENT_TRACE_RELPATH, MATCHED_RECOVERY_AGENT_TRACE_SHA256),
+        (
+            MATCHED_RECOVERY_AGENT_MANIFEST_RELPATH,
+            MATCHED_RECOVERY_AGENT_MANIFEST_SHA256,
+        ),
+        (
+            MATCHED_RECOVERY_COMPOSITE_TRACE_RELPATH,
+            MATCHED_RECOVERY_COMPOSITE_TRACE_SHA256,
+        ),
+        (
+            MATCHED_RECOVERY_COMPOSITE_MANIFEST_RELPATH,
+            MATCHED_RECOVERY_COMPOSITE_MANIFEST_SHA256,
+        ),
+        (MATCHED_RECOVERY_SESSION_RELPATH, MATCHED_RECOVERY_SESSION_SHA256),
+        (MATCHED_RECOVERY_FAILURE_RELPATH, MATCHED_RECOVERY_FAILURE_SHA256),
+        (MATCHED_RECOVERY_ATTEMPT_RELPATH, MATCHED_RECOVERY_ATTEMPT_SHA256),
+    )
+    for relpath, digest in pinned:
+        _require_hash(root / relpath, digest, f"matched recovery {relpath.name}")
+
+    failure = _read_json(root / MATCHED_RECOVERY_FAILURE_RELPATH)
+    attempt = _read_json(root / MATCHED_RECOVERY_ATTEMPT_RELPATH)
+    actual = attempt.get("actual")
+    if (
+        "lacks a usable raw trace entry" not in str(failure.get("error"))
+        or failure.get("phase_attempt_ids", {}).get(G3_MATCHED_USE_PHASE)
+        != MATCHED_RECOVERY_ATTEMPT_ID
+        or attempt.get("attempt_id") != MATCHED_RECOVERY_ATTEMPT_ID
+        or attempt.get("state") != "ABORTED"
+        or not isinstance(actual, Mapping)
+        or actual.get("calls") != 45
+    ):
+        raise RuntimeError("matched recovery failure or attempt identity drift")
+
+    source_manifest = _read_json(root / MATCHED_RECOVERY_MANIFEST_RELPATH)
+    source_cost = source_manifest.get("cost")
+    if (
+        source_manifest.get("status") != STATUS_COMPLETED
+        or source_manifest.get("raw_trace") is not None
+        or source_manifest.get("trace_manifest") is not None
+        or source_manifest.get("outputs", {}).get("sha256")
+        != MATCHED_RECOVERY_OUTPUTS_SHA256
+        or source_manifest.get("plan", {}).get("attempt_id")
+        != MATCHED_RECOVERY_ATTEMPT_ID
+        or not isinstance(source_cost, Mapping)
+        or source_cost.get("calls_used") != 45
+    ):
+        raise RuntimeError("matched recovery source manifest drift")
+
+    agent_documents = _trace_documents(root / MATCHED_RECOVERY_AGENT_TRACE_DIR_RELPATH)
+    agent = _validate_matched_recovery_trace(
+        agent_documents,
+        _read_json(root / MATCHED_RECOVERY_AGENT_MANIFEST_RELPATH),
+        expected_ids=expected_ids,
+    )
+    cost = agent["cost"]
+    if (
+        cost["calls"] != source_cost.get("calls_used")
+        or cost["audio_seconds"] != source_cost.get("audio_seconds_used")
+        or cost["completion_tokens"] != source_cost.get("completion_tokens_total")
+        or cost["latency_seconds"] != source_cost.get("latency_seconds_total")
+        or cost["prompt_tokens"] != source_cost.get("prompt_tokens_total")
+        or actual.get("audio_seconds") != cost["audio_seconds"]
+    ):
+        raise RuntimeError("matched recovery cost totals drift")
+
+    composite_documents = _trace_documents(
+        root / MATCHED_RECOVERY_COMPOSITE_DIR_RELPATH
+    )
+    composite_manifest = _read_json(root / MATCHED_RECOVERY_COMPOSITE_MANIFEST_RELPATH)
+    composite_records = composite_manifest.get("records")
+    if not isinstance(composite_records, Mapping) or len(composite_documents) != 80:
+        raise RuntimeError("matched recovery composite trace shape drift")
+    composite_ids: set[str] = set()
+    for document in composite_documents:
+        record_id = document.get("record_id")
+        if not isinstance(record_id, str) or record_id in composite_ids:
+            raise RuntimeError("matched recovery composite record identity drift")
+        composite_ids.add(record_id)
+        if composite_records.get(record_id) != TraceRecord(**document).content_hash():
+            raise RuntimeError(f"matched recovery composite hash drift for {record_id!r}")
+    if set(composite_records) != composite_ids:
+        raise RuntimeError("matched recovery composite manifest record set drift")
+
+    outputs_path = root / MATCHED_RECOVERY_OUTPUTS_RELPATH
+    rows = tuple(
+        json.loads(line)
+        for line in outputs_path.read_text(encoding="utf-8").splitlines()
+        if line
+    )
+    expected = set(expected_ids)
+    by_id: dict[str, Mapping[str, object]] = {}
+    for row in rows:
+        if not isinstance(row, Mapping):
+            raise RuntimeError("matched recovery output row is not an object")
+        sample_id = row.get("sample_id")
+        text = row.get("text")
+        request_id = row.get("request_id")
+        if (
+            not isinstance(sample_id, str)
+            or sample_id in by_id
+            or not isinstance(text, str)
+            or row.get("response_text_sha256")
+            != hashlib.sha256(text.encode("utf-8")).hexdigest()
+            or not isinstance(request_id, str)
+            or f"{request_id}/request" not in composite_ids
+            or f"{request_id}/response" not in composite_ids
+        ):
+            raise RuntimeError("matched recovery output binding drift")
+        by_id[sample_id] = row
+    if len(rows) != SPLIT_COUNT or set(by_id) != expected:
+        raise RuntimeError("matched recovery outputs do not cover all forty samples")
+    return {
+        "source_outputs": outputs_path,
+        "source_composite_trace": root / MATCHED_RECOVERY_COMPOSITE_TRACE_RELPATH,
+        "source_composite_manifest": root / MATCHED_RECOVERY_COMPOSITE_MANIFEST_RELPATH,
+        "source_session_receipt": root / MATCHED_RECOVERY_SESSION_RELPATH,
+        "texts": {sample_id: str(by_id[sample_id]["text"]) for sample_id in sorted(by_id)},
+        "contact_counts": agent["contact_counts"],
+        "repair_count": agent["repair_count"],
+        "repair_sample_ids": agent["repair_sample_ids"],
+        "cost": dict(source_cost),
     }
 
 
@@ -1043,6 +1365,7 @@ def _static_preflight(root: Path) -> dict[str, object]:
     )
     m0_recovery = _load_m0_recovery(root, tuple(surface.tier_by_sample))
     completed_flight = _load_completed_flight(root, tuple(surface.tier_by_sample))
+    matched_recovery = _load_matched_recovery(root, tuple(surface.tier_by_sample))
 
     _require_hash(REPO / CARD_BUILD_RELPATH, CARD_BUILD_SHA256, "G3 card build")
     card_build = _read_json(REPO / CARD_BUILD_RELPATH)
@@ -1073,6 +1396,7 @@ def _static_preflight(root: Path) -> dict[str, object]:
         "surface": surface,
         "m0_recovery": m0_recovery,
         "completed_flight": completed_flight,
+        "matched_recovery": matched_recovery,
         "selected_ids": selected_ids,
         "corpus": corpus,
         "route_build": route_build,
@@ -1116,6 +1440,7 @@ def _build_completed_manifest(
     outputs_path: Path,
     trace_manifest_hash: str,
     cost: Mapping[str, object],
+    expected_attempt_state: str = "OPENED",
 ) -> Path:
     manifest = build_manifest(
         repo_root=REPO,
@@ -1135,8 +1460,10 @@ def _build_completed_manifest(
         ),
     )
     bundle = verify_bundle(manifest)
-    if bundle.attempt_state != "OPENED" or len(bundle.outputs_rows) != 40:
-        raise RuntimeError("G3 phase did not seal a complete OPENED manifest")
+    if bundle.attempt_state != expected_attempt_state or len(bundle.outputs_rows) != 40:
+        raise RuntimeError(
+            "G3 phase did not seal a complete manifest in the expected attempt state"
+        )
     return manifest
 
 
@@ -1421,7 +1748,7 @@ def _seal_composite(
         }
         for sample_id in texts
     }
-    sink = TraceSink(run_dir / "composite-trace", RUN_ID)
+    sink = TraceSink(run_dir, RUN_ID)
     rows = g3_flight.emit_g3_use_rows(
         texts=texts,
         source_by_id=source_by_id,
@@ -1448,6 +1775,73 @@ def _seal_composite(
         "texts": dict(texts),
         "outputs": outputs,
         "manifest": manifest,
+    }
+
+
+def _materialize_matched_recovery(
+    *,
+    root: Path,
+    context: Mapping[str, object],
+    plan: ExecutionPlan,
+    run_dir: Path,
+) -> dict[str, object]:
+    """Copy verified matched artifacts byte-for-byte into a score-only bundle."""
+
+    recovery = context["matched_recovery"]
+    outputs = run_dir / f"{RUN_ID}.outputs.jsonl"
+    trace = run_dir / f"{RUN_ID}.trace.jsonl"
+    trace_manifest = run_dir / f"{RUN_ID}.trace-manifest.json"
+    for source, destination, digest in (
+        (recovery["source_outputs"], outputs, MATCHED_RECOVERY_OUTPUTS_SHA256),
+        (
+            recovery["source_composite_trace"],
+            trace,
+            MATCHED_RECOVERY_COMPOSITE_TRACE_SHA256,
+        ),
+        (
+            recovery["source_composite_manifest"],
+            trace_manifest,
+            MATCHED_RECOVERY_COMPOSITE_MANIFEST_SHA256,
+        ),
+    ):
+        shutil.copyfile(source, destination)
+        _require_hash(destination, digest, f"materialized matched {destination.name}")
+    manifest = _build_completed_manifest(
+        root=root,
+        context=context,
+        plan=plan,
+        run_dir=run_dir,
+        session_receipt_path=recovery["source_session_receipt"],
+        outputs_path=outputs,
+        trace_manifest_hash=MATCHED_RECOVERY_COMPOSITE_MANIFEST_SHA256,
+        cost=recovery["cost"],
+        expected_attempt_state=ATTEMPT_STATE_NEVER_OPENED,
+    )
+    _write_json(
+        run_dir / "recovery-receipt.json",
+        {
+            "source_attempt_id": MATCHED_RECOVERY_ATTEMPT_ID,
+            "source_outputs_sha256": MATCHED_RECOVERY_OUTPUTS_SHA256,
+            "source_agent_trace_sha256": MATCHED_RECOVERY_AGENT_TRACE_SHA256,
+            "source_agent_trace_manifest_sha256": (
+                MATCHED_RECOVERY_AGENT_MANIFEST_SHA256
+            ),
+            "source_composite_trace_sha256": MATCHED_RECOVERY_COMPOSITE_TRACE_SHA256,
+            "source_composite_manifest_sha256": (
+                MATCHED_RECOVERY_COMPOSITE_MANIFEST_SHA256
+            ),
+            "contacts_reused": sum(recovery["contact_counts"].values()),
+            "repair_count": recovery["repair_count"],
+            "repair_sample_ids": recovery["repair_sample_ids"],
+            "new_attempt_state": ATTEMPT_STATE_NEVER_OPENED,
+        },
+    )
+    return {
+        "texts": dict(recovery["texts"]),
+        "contact_counts": dict(recovery["contact_counts"]),
+        "outputs": outputs,
+        "manifest": manifest,
+        "recovered": True,
     }
 
 
@@ -1481,9 +1875,9 @@ def _run_parallel_scorers(
         job = {
             "job_id": f"g3-{name}",
             "manifest": str(manifests[name]),
-            "operation": "score" if name == "m0" else "finalize",
+            "operation": "score" if name in {"m0", "matched"} else "finalize",
         }
-        if name != "m0":
+        if name == "shuffled":
             cells = mission_dir / f"{name}-ledger-cells.json"
             _write_json(cells, _human_ledger_cells(name, lock_sha256))
             job["ledger_cells"] = str(cells)
@@ -1764,6 +2158,17 @@ def _launch(root: Path) -> Mapping[str, object]:
     )
     if route_report["role_labels_missing"] != 5 or route_report["normalized_non_ascii"] != 1:
         raise RuntimeError("completed-flight OBS representation failure counts drift")
+    matched = _materialize_matched_recovery(
+        root=root,
+        context=context,
+        plan=plans[G3_MATCHED_USE_PHASE],
+        run_dir=mission_dir / "matched",
+    )
+    reused_contact_accounting = {
+        **completed_flight["contact_accounting"],
+        "matched": sum(matched["contact_counts"].values()),
+        "cumulative_before_shuffled": 125,
+    }
     _write_json(
         mission_dir / "m0" / "recovery-receipt.json",
         {
@@ -1771,7 +2176,7 @@ def _launch(root: Path) -> Mapping[str, object]:
             "source_manifest_sha256": COMPLETED_FLIGHT_M0_MANIFEST_SHA256,
             "source_outputs_sha256": COMPLETED_FLIGHT_M0_OUTPUTS_SHA256,
             "source_trace_sha256": COMPLETED_FLIGHT_M0_TRACE_SHA256,
-            "contact_accounting": completed_flight["contact_accounting"],
+            "contact_accounting": reused_contact_accounting,
         },
     )
     _write_json(
@@ -1796,8 +2201,7 @@ def _launch(root: Path) -> Mapping[str, object]:
         values=values,
         media_identity_by_sample=context["surface"].media_identity_by_sample,
     )
-    for plan in plans.values():
-        gate.assert_model_touch_allowed(plan, full_hash=True)
+    gate.assert_model_touch_allowed(plans[G3_SHUFFLED_USE_PHASE], full_hash=True)
     parsed_url = urlparse(str(values["base_url"]))
     if parsed_url.hostname not in {"127.0.0.1", "localhost"} or parsed_url.port is None:
         raise RuntimeError("G3 decoder must use an explicit loopback port")
@@ -1831,39 +2235,6 @@ def _launch(root: Path) -> Mapping[str, object]:
             runtime_receipt=runtime_receipt,
             runtime_root=RUNTIME_ROOT,
         )
-        matched_adapter = g3_flight.G3PilotAdapter(
-            surface.samples,
-            phase=G3_MATCHED_USE_PHASE,
-            observation_by_sample=observations,
-            packet_by_sample={sample_id: routes[sample_id].matched_packet for sample_id in observations},
-        )
-        matched_raw = _run_agent_phase(
-            phase=G3_MATCHED_USE_PHASE,
-            root=root,
-            context=context,
-            gate=gate,
-            transport=transport,
-            plan=plans[G3_MATCHED_USE_PHASE],
-            adapter=matched_adapter,
-            packet_bindings=surface.packet_bindings,
-            run_dir=mission_dir / "matched",
-        )
-        matched_texts = build_use_composite_texts(
-            m0_texts=m0["texts"],
-            use_texts=matched_raw["texts"],
-            routed_ids=context["sample_ids"],
-        )
-        matched = _seal_composite(
-            phase=G3_MATCHED_USE_PHASE,
-            texts=matched_texts,
-            source_result=matched_raw,
-            root=root,
-            context=context,
-            plan=plans[G3_MATCHED_USE_PHASE],
-            run_dir=mission_dir / "matched",
-            session_receipt_path=session_receipt,
-        )
-
         selected_ids = tuple(context["selected_ids"])
         selected = set(selected_ids)
         selected_samples = tuple(
@@ -1923,7 +2294,9 @@ def _launch(root: Path) -> Mapping[str, object]:
             m0_scores=_load_batch_scores(
                 mission_dir / "official-score" / "g3-m0.score.json"
             ),
-            matched_scores=_load_scores(matched["manifest"]),
+            matched_scores=_load_batch_scores(
+                mission_dir / "official-score" / "g3-matched.score.json"
+            ),
             shuffled_scores=_load_scores(shuffled["manifest"]),
             matched_contact_counts=matched["contact_counts"],
             shuffled_contact_counts=shuffled["contact_counts"],
@@ -1943,7 +2316,7 @@ def _launch(root: Path) -> Mapping[str, object]:
                 G3_MATCHED_USE_PHASE: sum(matched["contact_counts"].values()),
                 G3_SHUFFLED_USE_PHASE: sum(shuffled["contact_counts"].values()),
             },
-            "reused_contact_accounting": completed_flight["contact_accounting"],
+            "reused_contact_accounting": reused_contact_accounting,
             "route_report": route_report,
             "official_score": score_summary,
             "result_path": str(mission_dir / "result.json"),
