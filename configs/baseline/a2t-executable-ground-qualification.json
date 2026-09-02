@@ -1,0 +1,24 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "fixed-full-executable-ground-qualification-v1",
+  "evidence_source": "query-independent-full-executable-handbook",
+  "evidence_mismatch": false,
+  "obs_batch_samples": 2,
+  "allow_empty_speech_feature_evidence": true,
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a/A2T-GROUND-QUAL-104-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "b350567a6dd8b5d9021725756424f2b6ae99803c8c0327901c724fe3ebe8a47f",
+  "speech_native_prompt_fit_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-02-a2t-executable-ground-prompt-fit-468-v1/prompt-fit-result.json",
+  "speech_native_prompt_fit_receipt_sha256": "277f5147b8ce1ac9acca538e4b8a83a2c5b282c62f278afd56e27c9fd61a2fd5",
+  "speech_native_prompt_fit_dominance": "The exact full handbook with the fresh maximum 468-token speech packet and a 1024-token completion requires at most 15090 tokens in one 32768-token slot, leaving 17678 tokens. The direct qualification arm is strictly smaller than this frozen one-state envelope.",
+  "profile_queue_depth_multiplier": 2,
+  "profile_validation_workers": 8,
+  "speech_native_result_mode": "predictions",
+  "speech_native_contact_ceiling_per_task": 1,
+  "speech_native_dispatch_granularity": "contact",
+  "speech_native_agent_executor_id": "openjiuwen-workflow-v1",
+  "scorers": [
+    "a2t-toolcall",
+    "cost"
+  ],
+  "task_instruction": "Compare the same-flight single-call full-registry baseline with one single-call use of the complete query-independent executable handbook. The handbook contains task semantics and signatures but no query values, gold labels, reference transcripts, prior responses, scores, or test annotations. Return only the exact JSON name/arguments call array."
+}

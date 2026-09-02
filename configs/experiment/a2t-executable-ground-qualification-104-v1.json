@@ -1,0 +1,99 @@
+{
+  "schema": "saea-a2t-executable-ground-qualification-experiment-v1",
+  "experiment_id": "SAEA-A2T-EXECUTABLE-GROUND-QUALIFICATION-104-V1",
+  "status": "PREREGISTERED_DESIGN_ONLY",
+  "date": "2026-09-02",
+  "execution_profile": "bounded-discovery-probe",
+  "zero_parameter_training": true,
+  "second_answering_model": false,
+  "paid_api_spend": 0,
+  "claim_scope": "secondary discovery qualification of a task-wide executable knowledge ground on an already-exposed parent population",
+  "population": {
+    "name": "A2T-GROUND-QUAL-104",
+    "count": 104,
+    "tiers": 8,
+    "items_per_tier": 13,
+    "audio_seconds_total": 543.107,
+    "receipt": "docs/receipts/a2t/A2T-GROUND-QUAL-104.json",
+    "receipt_sha256": "eeb90abbe8695e449c676f18339db6618cb6d606d6c1e7c656626e4e9b6b6c16",
+    "split_identity_hash": "c6bb080bb264733087b3da352fe930702ec6509bc02e6a639b0f4c30c5017dac",
+    "run_identity_hash": "fbd4addd541ff29214cbff7c35564b15f27e2fb7f438202b79d694b1c5961d4b",
+    "exposure": "Identity-only selection from the already-exposed parent 400 after excluding every G1 and CPV2 query block. Parent A0 outcomes were not used. The separately protected unexposed 400 remains unopened.",
+    "construction_block_disjoint": true,
+    "gold_used_for_selection": false,
+    "prior_outputs_used_for_selection": false,
+    "test_used_for_selection": false
+  },
+  "frozen_inputs": {
+    "handbook_sha256": "58ba08f3cebbe390156506653051d54aa37796822f49f5b851fd6eba4818fbc8",
+    "handbook_build_receipt_sha256": "505645b3cdef553ac847a5b248936182160d7b38aaaac84a076b9137c8e40e34",
+    "packet_promotion_receipt_sha256": "b350567a6dd8b5d9021725756424f2b6ae99803c8c0327901c724fe3ebe8a47f",
+    "prompt_fit_468_result_sha256": "277f5147b8ce1ac9acca538e4b8a83a2c5b282c62f278afd56e27c9fd61a2fd5",
+    "tool_registry_sha256": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4",
+    "model": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+    "runtime": "receipt-pinned local llama.cpp API-shaped service",
+    "decoding": "temperature 0, seed 20260803, max_tokens 1024, two 32768-token slots"
+  },
+  "arms": {
+    "M0_REGISTRY_DIRECT": {
+      "contacts": 104,
+      "input": "original speech packet plus the unchanged complete 152-row registry instruction",
+      "purpose": "same-flight one-call engineering comparator"
+    },
+    "G1_FULL_EXECUTABLE_GROUND": {
+      "contacts": 104,
+      "input": "original speech packet plus the exact complete query-independent executable handbook",
+      "purpose": "test whether the frozen core can understand and use the full task knowledge"
+    },
+    "G1_RESEND_STABILITY": {
+      "contacts": 16,
+      "selection": "before model contact, select two identities per tier by SHA-256 of the frozen namespace and sample id",
+      "request_equivalence": "Reuse the exact source system/user message content, packet id/hash, decoding seed, temperature, max_tokens, and source id_slot. Only request/accounting identity is new.",
+      "purpose": "measure semantic call stability without selecting on response or reward"
+    }
+  },
+  "ground_gates": {
+    "primary_parse_count_minimum": 103,
+    "primary_exact_count_minimum": 94,
+    "primary_exact_target_count": 99,
+    "primary_tool_count_minimum": 99,
+    "primary_slot_micro_f1_minimum": 0.9,
+    "exact_gain_over_m0_minimum": 15,
+    "tool_gain_over_m0_minimum": 15,
+    "paired_exact_grouped_ci90_lower_strictly_positive": true,
+    "resend_semantic_call_agreement_minimum": 15,
+    "resend_parse_count_minimum": 16,
+    "resend_exact_outcome_agreement_minimum": 15,
+    "per_tier_primary_exact_floor": "report only; no per-tier tuning or pass threshold",
+    "basic_ground_definition": "At least 94/104 exact (90.38%), 99/104 tool-correct (95.19%), slot micro-F1 at least 0.90, and 103/104 parseable.",
+    "target_ground_definition": "At least 99/104 exact (95.19%); reported as a stronger target, not substituted for the basic pass gate."
+  },
+  "scoring": {
+    "official_scorer": "unchanged a2t-toolcall scorer, single-process per complete manifest",
+    "jobs": ["M0_REGISTRY_DIRECT complete 104", "G1_FULL_EXECUTABLE_GROUND complete 104"],
+    "outer_workers": 2,
+    "operation": "finalize",
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "gold_open_rule": "Both complete 104-row manifests and the 16-row resend trace must seal before either official scorer starts.",
+    "resend_read": "After the two official jobs settle, use the unchanged local parser/item scorer only on the fixed 16 source/resend pairs."
+  },
+  "contact_budget": {
+    "expected_model_calls": 224,
+    "planned_model_calls": 230,
+    "planned_speech_audio_seconds": 1300,
+    "planned_gpu_hours": 0.7,
+    "embedding_contacts": 0,
+    "tokenizer_contacts": 0,
+    "paid_api_spend": 0
+  },
+  "terminal_rules": {
+    "basic_pass": "Freeze the full executable handbook as the qualified task ground. Only then design candidate reduction and AgentLoop information-acquisition experiments; training-free control remains a later distinct contribution.",
+    "basic_fail": "Do not prune candidates, fit training-free control, expand to approximately 1000, or tune on this cohort. Classify misses into observation, knowledge coverage, knowledge execution, value grounding, and output-format channels, then decide whether a separately preregistered expansion of knowledge construction is justified.",
+    "target_pass": "Record that the stronger 95% target is met; it does not by itself authorize scale.",
+    "no_test_tuning": true,
+    "test_closed": true,
+    "stage3_closed": true,
+    "paper_scale_closed": true
+  }
+}
