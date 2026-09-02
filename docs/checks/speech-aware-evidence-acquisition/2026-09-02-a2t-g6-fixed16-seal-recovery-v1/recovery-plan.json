@@ -1,0 +1,22 @@
+{
+  "receipt_kind": "model-free-g6-seal-recovery-v1",
+  "run_id": "SAEA-A2T-G6-EXHAUSTIVE-FAMILY-SWEEP-FIXED16-V1",
+  "flight_id": "flight-20260902T221239Z",
+  "attempt_status": "aborted-after-model-completion-trace-emission",
+  "first_attempt_used_calls": 8,
+  "second_attempt_used_calls": 456,
+  "cumulative_used_calls": 464,
+  "complete_request_response_cost_triples": 456,
+  "root_cause": "Phase trace emission failed after model completion because unprefixed OBS payload keys violated TraceContract.",
+  "source_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-G6-EXHAUSTIVE-FAMILY-SWEEP-FIXED16-V1/flight-20260902T221239Z",
+  "source_trace_manifest_sha256": "89ccefe85d4c3b651bc7d247efc06f977bf366cffe5a8e7fabc23d75ec48ff3a",
+  "source_trace_jsonl_sha256": "23f5eb29502e1a76ae9242536350e35cf2b9a362a9a982ea5f4b64dc8050b807",
+  "source_execution_plan_sha256": "88e75031bf4636d9517ecfc4667a34284e89997edf1356b7805ff5bfb74d50a6",
+  "source_score_plan_sha256": "c3451e80b15ee2beee2b62ac9a1bac9388793ab662296b7d48d493614ced5d8e",
+  "source_prompt_fit_sha256": "983d9e454eff9ef927fe7656fa63f1786d57b62d3a2a1695456d49e62843038d",
+  "source_agent_trace_manifest_sha256": "001c77e41ab3bba802f6d227a660e8fe3910cc2d1126525c19534c41f49117b8",
+  "forbid_model_contact": true,
+  "forbid_recontact": true,
+  "permitted_actions": ["model-free reconstruction of 16 final outputs from both traces", "source-bound external sealing", "unchanged one-process whole-manifest scorer"],
+  "meaning_blind_audit": true
+}
