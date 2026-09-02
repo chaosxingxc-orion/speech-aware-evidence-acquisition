@@ -1,4 +1,4 @@
-"""Audio2Tool stage-G1 speech-feature preprocessing and packet promotion.
+"""Receipt-bound Audio2Tool speech-feature preprocessing and packet promotion.
 
 Exposure row ``SAEA-SN-A2T-G1-PREPROCESS`` (contract
 ``configs/experiment/a2t-g1-preprocess.json``). Label-free engineering: the
@@ -49,6 +49,10 @@ Modes::
 
     # the registered pass
     python scripts/a2t_g1_preprocess.py --run
+
+    # select successor profiles before one of the modes above
+    python scripts/a2t_g1_preprocess.py --cpv2 --emit-identity
+    python scripts/a2t_g1_preprocess.py --ground-qual --emit-identity
 """
 
 from __future__ import annotations
@@ -80,6 +84,9 @@ if Path(_pkg.__file__ or "") != REPO / "src" / "speech_aware_evidence_acquisitio
 from speech_aware_evidence_acquisition.contracts import (  # noqa: E402
     ExecutionPlan,
     FrozenCoreGate,
+)
+from speech_aware_evidence_acquisition.analysis.a2t_packet_token_gate import (  # noqa: E402
+    summarize_packet_tokens,
 )
 from speech_aware_evidence_acquisition.core.base import TRANSPORTS  # noqa: E402
 from speech_aware_evidence_acquisition.core.config import compose  # noqa: E402
@@ -157,6 +164,11 @@ ATTEMPT_SUFFIX = "a2tg1pre"
 REQUEST_ID_PREFIX = "a2tg1pre"
 STATE_SCHEMA = "saea-a2t-g1-preprocess-v1"
 REPORT_SCHEMA = "saea-a2t-g1-preprocess-report-v1"
+PROMPT_FIT_SPEECH_TOKEN_CEILING = 455
+
+profile_flags = tuple(flag for flag in ("--cpv2", "--ground-qual") if flag in sys.argv)
+if len(profile_flags) > 1:
+    raise SystemExit("select at most one Audio2Tool preprocessing profile")
 
 if "--cpv2" in sys.argv:
     RUN_ID = "SAEA-SN-A2T-CPV2-PREPROCESS"
@@ -185,6 +197,35 @@ if "--cpv2" in sys.argv:
         / "checks"
         / "speech-aware-evidence-acquisition"
         / "2026-09-01-a2t-contract-preserving-cascade-104-v2"
+    )
+
+if "--ground-qual" in sys.argv:
+    RUN_ID = "SAEA-SN-A2T-GROUND-QUAL-104-PREPROCESS"
+    DATASET_FRAGMENT = "audio2tool-ground-qual-104"
+    EXPERIMENT_FRAGMENT = "a2t-ground-qual-preprocess"
+    SUBSET_RECEIPT_RELPATH = "docs/receipts/a2t/A2T-GROUND-QUAL-104.json"
+    SUBSET_RECEIPT_SHA256 = (
+        "eeb90abbe8695e449c676f18339db6618cb6d606d6c1e7c656626e4e9b6b6c16"
+    )
+    SPLIT_IDENTITY_HASH = (
+        "fbd4addd541ff29214cbff7c35564b15f27e2fb7f438202b79d694b1c5961d4b"
+    )
+    SUBSET_AUDIO_SECONDS = 543.107
+    PREPROCESS_SPLIT_NAME = "A2T-GROUND-QUAL-104"
+    PROMOTION_RECEIPT = PACKET_ROOT / "A2T-GROUND-QUAL-104-promotion.json"
+    PLAN_AUDIO = 650
+    DATASET_RECEIPT_HASH_KEY = "a2t_ground_qual_subset_receipt_sha256"
+    DATASET_RUN_IDENTITY_KEY = "a2t_ground_qual_run_identity_hash"
+    ATTEMPT_SUFFIX = "a2tgroundqualpre"
+    REQUEST_ID_PREFIX = "a2tgroundqualpre"
+    STATE_SCHEMA = "saea-a2t-ground-qual-preprocess-v1"
+    REPORT_SCHEMA = "saea-a2t-ground-qual-preprocess-report-v1"
+    OUT_CHECK_DIR = (
+        REPO
+        / "docs"
+        / "checks"
+        / "speech-aware-evidence-acquisition"
+        / "2026-09-02-a2t-ground-qual-104-preprocess"
     )
 
 
@@ -307,6 +348,7 @@ def main() -> int:
                     "packet_root": str(PACKET_ROOT),
                     "promotion_receipt": str(PROMOTION_RECEIPT),
                     "subset_receipt_sha256": SUBSET_RECEIPT_SHA256,
+                    "prompt_fit_speech_token_ceiling": PROMPT_FIT_SPEECH_TOKEN_CEILING,
                 },
                 indent=2,
                 sort_keys=True,
@@ -571,6 +613,28 @@ def main() -> int:
             raise SystemExit(
                 "promoted packet %s carries a different audio sha256" % packet.packet_id
             )
+    packet_token_counts = {
+        packet.packet_id: sum(chunk.n_tokens for chunk in packet.chunks)
+        for packet in packets
+    }
+    token_summary = summarize_packet_tokens(
+        packet_token_counts,
+        ceiling=PROMPT_FIT_SPEECH_TOKEN_CEILING,
+    )
+    if token_summary["distribution"]["count"] != SUBSET_COUNT:
+        raise SystemExit("token accounting did not cover every promoted packet")
+    log(
+        "packet tokens: min=%d median=%.1f p90=%d p95=%d max=%d ceiling=%d pass=%s"
+        % (
+            token_summary["distribution"]["min"],
+            token_summary["distribution"]["median"],
+            token_summary["distribution"]["p90"],
+            token_summary["distribution"]["p95"],
+            token_summary["distribution"]["max"],
+            PROMPT_FIT_SPEECH_TOKEN_CEILING,
+            token_summary["within_ceiling"],
+        )
+    )
 
     promotion = {
         "schema": "saea-a2t-speech-packet-promotion-receipt-v1",
@@ -595,6 +659,7 @@ def main() -> int:
         "encode_contacts": contacts,
         "encode_audio_seconds": round(loop_audio, 6),
         "count": len(packets),
+        "speech_feature_tokens": token_summary,
         "prior_cache_disclosure": (
             "The pre-existing legacy cache %s was warm for all %d subset items "
             "before this pass, but it was written by the EARLIER A2T flights "
@@ -616,6 +681,7 @@ def main() -> int:
                 "audio_sha256": packet.audio_sha256,
                 "decoder_gguf_sha256": packet.decoder_gguf_sha256,
                 "mmproj_sha256": packet.mmproj_sha256,
+                "n_tokens": packet_token_counts[packet.packet_id],
             }
             for packet in packets
         ],
@@ -630,6 +696,7 @@ def main() -> int:
         "receipt": str(PROMOTION_RECEIPT),
         "sha256": promotion_sha,
         "count": len(packets),
+        "speech_feature_tokens": token_summary,
     }
     state["finished_at"] = iso_now()
     save_state()
@@ -659,6 +726,14 @@ def main() -> int:
         "promotion_receipt": str(PROMOTION_RECEIPT),
         "promotion_receipt_sha256": promotion_sha,
         "packets_promoted": len(packets),
+        "speech_feature_tokens": token_summary,
+        "prompt_fit_inheritance_allowed": token_summary["within_ceiling"],
+        "prompt_fit_overflow_action": (
+            "No packet is truncated. Qualification remains closed until a separately "
+            "registered exact prompt-fit successor."
+            if not token_summary["within_ceiling"]
+            else "The landed full-handbook prompt-fit receipt may be inherited."
+        ),
         "legacy_cache_dir": str(LEGACY_CACHE_DIR),
         "packet_root": str(PACKET_ROOT),
         "llama_cpp_build_commit": runtime_receipt["llama_cpp"]["build_commit"],
