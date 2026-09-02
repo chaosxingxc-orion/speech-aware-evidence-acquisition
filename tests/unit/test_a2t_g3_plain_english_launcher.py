@@ -111,6 +111,82 @@ def test_phase_contract_is_fresh_and_exactly_40_40_80_32_contacts() -> None:
     }
 
 
+def test_scoped_media_gate_maps_only_derived_contact_identities() -> None:
+    launcher = _launcher()
+    calls = []
+
+    class Delegate:
+        def verify_media_identity(self, carrier_lock_key, media_facts):
+            calls.append((carrier_lock_key, media_facts))
+
+        def assert_model_touch_allowed(self, plan, **kwargs):
+            return (plan, kwargs)
+
+    identity_map = {
+        "tier1_direct:000001": "tier1_direct:000001",
+        "tier7_multiturn:000318": "a2t-g3-dialogue:000318",
+    }
+    delegate = Delegate()
+    gate = launcher._G3MediaIdentityGate(delegate, identity_map)
+    facts = {
+        "tier1_direct:000001": ("datasets/original.wav", 1.0),
+        "tier7_multiturn:000318": ("derived/dialogue.wav", 33.444375),
+    }
+
+    gate.verify_media_identity("audio2tool", facts)
+
+    assert calls == [
+        (
+            "audio2tool",
+            {
+                "tier1_direct:000001": ("datasets/original.wav", 1.0),
+                "a2t-g3-dialogue:000318": ("derived/dialogue.wav", 33.444375),
+            },
+        )
+    ]
+    assert gate.assert_model_touch_allowed("plan", full_hash=True) == (
+        "plan",
+        {"full_hash": True},
+    )
+
+
+def test_g3_gate_uses_protocol_bound_dialogue_supplement(tmp_path: Path) -> None:
+    launcher = _launcher()
+    captured = {}
+    delegate = SimpleNamespace()
+
+    def gate_factory(repo, data_root, runtime_root, **kwargs):
+        captured.update(
+            repo=repo,
+            data_root=data_root,
+            runtime_root=runtime_root,
+            kwargs=kwargs,
+        )
+        return delegate
+
+    values = {
+        "model_lock_key": "model-key",
+        "model_materialization_root": str(tmp_path / "model"),
+        "d1_media_supplement": "receipts/artifacts/dialogue.json",
+        "d1_media_supplement_sha256": "a" * 64,
+    }
+    mapping = {"tier7_multiturn:000318": "a2t-g3-dialogue:000318"}
+
+    gate = launcher._build_g3_gate(
+        root=tmp_path,
+        values=values,
+        media_identity_by_sample=mapping,
+        gate_factory=gate_factory,
+    )
+
+    assert gate.delegate is delegate
+    assert captured["kwargs"]["d1_media_supplement_relpath"] == (
+        "receipts/artifacts/dialogue.json"
+    )
+    assert captured["kwargs"]["d1_media_supplement_sha256"] == "a" * 64
+    assert captured["kwargs"]["expected_model_lock_key"] == "model-key"
+
+
 def test_roster_and_score_plan_require_complete_unsharded_surfaces() -> None:
     launcher = _launcher()
     roster = launcher._validate_roster({"count": 40, "items": _items()})

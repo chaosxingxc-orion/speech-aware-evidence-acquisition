@@ -42,6 +42,8 @@ from speech_aware_evidence_acquisition.core.bundle import (  # noqa: E402
 )
 from speech_aware_evidence_acquisition.core.config import (  # noqa: E402
     compose,
+    d1_media_supplement_relpath,
+    d1_media_supplement_sha256,
     protocol_hash,
 )
 from speech_aware_evidence_acquisition.core.model.speech_features import (  # noqa: E402
@@ -625,6 +627,75 @@ def _client(
     )
 
 
+class _G3MediaIdentityGate:
+    """Translate logical G3 ids only at the D1 media-identity boundary.
+
+    AgentLoop results, model traces, and scorer rows retain the frozen logical
+    ``tier7_multiturn:*`` identities.  The five complete-dialogue WAVs have
+    separately frozen ``a2t-g3-dialogue:*`` identities in the protocol-bound
+    D1 supplement, so only the gate lookup key is translated.
+    """
+
+    def __init__(self, delegate: object, media_identity_by_sample: Mapping[str, str]) -> None:
+        identities = dict(media_identity_by_sample)
+        if (
+            not identities
+            or any(
+                not isinstance(sample_id, str)
+                or not sample_id
+                or not isinstance(media_id, str)
+                or not media_id
+                for sample_id, media_id in identities.items()
+            )
+            or len(set(identities.values())) != len(identities)
+        ):
+            raise RuntimeError("G3 media identity mapping must be nonempty and one-to-one")
+        self.delegate = delegate
+        self._media_identity_by_sample = identities
+
+    def verify_media_identity(
+        self,
+        carrier_lock_key: str,
+        media_facts: Mapping[str, tuple[str, float]],
+    ) -> None:
+        unknown = set(media_facts) - set(self._media_identity_by_sample)
+        if not media_facts or unknown:
+            raise RuntimeError(
+                "G3 media identity facts must be a nonempty subset of the frozen runtime surface"
+            )
+        translated = {
+            self._media_identity_by_sample[sample_id]: fact
+            for sample_id, fact in media_facts.items()
+        }
+        self.delegate.verify_media_identity(carrier_lock_key, translated)
+
+    def __getattr__(self, name: str) -> object:
+        return getattr(self.delegate, name)
+
+
+def _build_g3_gate(
+    *,
+    root: Path,
+    values: Mapping[str, object],
+    media_identity_by_sample: Mapping[str, str],
+    gate_factory: object | None = None,
+) -> _G3MediaIdentityGate:
+    factory = gate_factory or FrozenCoreGate.for_study_repo
+    if not callable(factory):
+        raise RuntimeError("G3 gate factory must be callable")
+    delegate = factory(
+        REPO,
+        root,
+        RUNTIME_ROOT,
+        runtime_receipt_relpath=str(RUNTIME_RECEIPT_RELPATH.relative_to("docs")),
+        expected_model_lock_key=str(values["model_lock_key"]),
+        model_root=Path(str(values["model_materialization_root"])),
+        d1_media_supplement_relpath=d1_media_supplement_relpath(values),
+        d1_media_supplement_sha256=d1_media_supplement_sha256(values),
+    )
+    return _G3MediaIdentityGate(delegate, media_identity_by_sample)
+
+
 def _run_m0(
     *,
     root: Path,
@@ -1060,13 +1131,10 @@ def _launch(root: Path) -> Mapping[str, object]:
     values = context["composed"].values
     runtime_receipt = load_runtime_receipt(REPO / RUNTIME_RECEIPT_RELPATH)
     model_root = Path(str(values["model_materialization_root"]))
-    gate = FrozenCoreGate.for_study_repo(
-        REPO,
-        root,
-        RUNTIME_ROOT,
-        runtime_receipt_relpath=str(RUNTIME_RECEIPT_RELPATH.relative_to("docs")),
-        expected_model_lock_key=str(values["model_lock_key"]),
-        model_root=model_root,
+    gate = _build_g3_gate(
+        root=root,
+        values=values,
+        media_identity_by_sample=context["surface"].media_identity_by_sample,
     )
     for plan in plans.values():
         gate.assert_model_touch_allowed(plan, full_hash=True)

@@ -133,6 +133,18 @@ def test_runtime_media_resolves_exact_40_and_five_derived_dialogue_identities(
         )
         for sample in derived
     )
+    assert {
+        sample_id: media_identity
+        for sample_id, media_identity in surface.media_identity_by_sample.items()
+        if sample_id != media_identity
+    } == {
+        f"tier7_multiturn:{60 + offset:06d}": f"a2t-g3-dialogue:{60 + offset:06d}"
+        for offset in range(5)
+    }
+    assert sum(
+        sample_id == media_identity
+        for sample_id, media_identity in surface.media_identity_by_sample.items()
+    ) == 35
 
 
 def test_runtime_media_rejects_byte_or_identity_drift(tmp_path: Path) -> None:

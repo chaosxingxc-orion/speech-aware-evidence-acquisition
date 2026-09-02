@@ -61,6 +61,7 @@ G3_SHUFFLED_PER_TIER = 2
 G3_EXPECTED_TIERS = 8
 G3_EXPECTED_ROWS = 40
 G3_EXPECTED_SHUFFLED_ROWS = 16
+G3_DERIVED_MEDIA_IDENTITY_PREFIX = "a2t-g3-dialogue"
 
 _OBS_POLICY_ID = "saea-a2t-g3-task-blind-observation-v1"
 _USE_KEY_REPRESENTATION_ID = "a2t-g3-plain-english-k32-v1"
@@ -100,6 +101,7 @@ class G3RuntimeSurface:
     packet_bindings: Mapping[str, Mapping[str, str]]
     tier_by_sample: Mapping[str, str]
     derived_dialogue_sample_ids: tuple[str, ...]
+    media_identity_by_sample: Mapping[str, str]
 
 
 @dataclass(frozen=True)
@@ -183,6 +185,7 @@ def resolve_g3_runtime_media(
     samples: list[Audio2ToolSample] = []
     tiers: dict[str, str] = {}
     derived_ids: list[str] = []
+    media_identity_by_sample: dict[str, str] = {}
     for sample_id in sorted(roster_by_id):
         roster_item = roster_by_id[sample_id]
         media_item = media_by_id[sample_id]
@@ -209,11 +212,17 @@ def resolve_g3_runtime_media(
             ):
                 raise G3PilotFlightError(f"complete-dialogue source drift for {sample_id!r}")
             derived_ids.append(sample_id)
+            numeric = sample_id.split(":", 1)[1]
+            media_identity_by_sample[sample_id] = (
+                f"{G3_DERIVED_MEDIA_IDENTITY_PREFIX}:{numeric}"
+            )
         elif (
             relpath != roster_item.get("media_relpath")
             or expected_audio_sha256 != roster_item.get("audio_sha256")
         ):
             raise G3PilotFlightError(f"original runtime media drift for {sample_id!r}")
+        else:
+            media_identity_by_sample[sample_id] = sample_id
 
         binding = bindings[sample_id]
         if not isinstance(binding, Mapping):
@@ -250,6 +259,7 @@ def resolve_g3_runtime_media(
         packet_bindings={sample_id: bindings[sample_id] for sample_id in sorted(bindings)},
         tier_by_sample=dict(sorted(tiers.items())),
         derived_dialogue_sample_ids=tuple(sorted(derived_ids)),
+        media_identity_by_sample=dict(sorted(media_identity_by_sample.items())),
     )
 
 
