@@ -6,6 +6,7 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 from speech_aware_evidence_acquisition.rails.knowledge_build_a2t import A2tKbRow
 
@@ -222,6 +223,85 @@ def test_main_writes_only_explicit_outputs(monkeypatch, tmp_path: Path) -> None:
     )
     assert corpus_path.read_text(encoding="utf-8") == "ASCII CORPUS\n"
     assert json.loads(receipt_path.read_text(encoding="utf-8")) == receipt
+
+
+def test_run_build_records_the_hash_pinned_model_free_build(monkeypatch) -> None:
+    builder = _builder()
+    registry = tuple(
+        _registry_row(f"syntheticTool{index:03d}", f"syntheticTool{index:03d}()")
+        for index in range(152)
+    )
+    construction = (_row(1, "syntheticTool000", ()),)
+    partition = SimpleNamespace(
+        construction=construction,
+        eval_sample_ids=("held-out-evaluation",),
+        policy_id="synthetic-policy",
+        seed=builder.PARTITION_SEED,
+        split_identity_hash=lambda: builder.PROPOSED_EVAL_IDENTITY,
+    )
+    report = {
+        "registry_tool_count": 152,
+        "tool_card_count": 152,
+        "task_card_count": 4,
+        "examples_validated": True,
+        "ascii_only": True,
+        "source_utterances_rendered": 0,
+        "reference_transcripts_rendered": 0,
+        "source_argument_values_rendered": 0,
+        "gold_values_rendered": 0,
+        "source_sample_ids_rendered": 0,
+        "evaluation_samples_consumed": 0,
+    }
+    corpus = SimpleNamespace(text="ASCII\n", sha256="f" * 64, report=report)
+    audit = {
+        "deterministic_rebuild_equal": True,
+        "construction_argument_pattern_family_count": 354,
+        "construction_argument_key_count": 85,
+        "safe_construction_row_count": 1,
+        "excluded_construction_row_count": 0,
+        "compatibility": {
+            "minimum_support": 2,
+            "concrete_argument_values_rendered": 0,
+        },
+    }
+    monkeypatch.setattr(builder, "require_clean_study_repo", lambda _repo: "abc123")
+    monkeypatch.setattr(builder, "arm_offline_guard", lambda: SimpleNamespace(count=0))
+    monkeypatch.setattr(
+        builder,
+        "_sha256_file",
+        lambda path: (
+            builder.PARTITION_PROPOSAL_SHA256
+            if path == builder.PARTITION_PROPOSAL
+            else builder.REGISTRY_SHA256
+            if path.name == "tools_registry.csv"
+            else "b" * 64
+        ),
+    )
+    monkeypatch.setattr(builder, "load_lock", lambda _path: object())
+    monkeypatch.setattr(builder, "umbrella_lock_path", lambda _repo: Path("lock"))
+    monkeypatch.setattr(builder, "asset_dir", lambda _lock, _name, root: root)
+    monkeypatch.setattr(builder, "load_tool_registry", lambda _lock, _root: registry)
+    monkeypatch.setattr(
+        builder,
+        "a2t_pool_rows",
+        lambda _lock, _root: (
+            construction,
+            {"pool_items": 1, "pool_units": 1, "usable_units": 1},
+        ),
+    )
+    monkeypatch.setattr(builder, "exposed_sample_ids", lambda _repo: frozenset())
+    monkeypatch.setattr(
+        builder, "propose_partition", lambda _rows, _exposed, seed: partition
+    )
+    monkeypatch.setattr(builder, "build_from_partition", lambda _registry, _rows: (corpus, audit))
+
+    text, receipt = builder.run_build(Path("synthetic-data"))
+
+    assert text == "ASCII\n"
+    assert receipt["study_commit"] == "abc123"
+    assert receipt["corpus"]["sha256"] == "f" * 64
+    assert receipt["partition"]["construction_forbidden_intersection_count"] == 0
+    assert set(receipt["contacts"].values()) == {0}
 
 
 def test_committed_corpus_and_receipt_preserve_model_free_static_gates() -> None:
