@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import pytest
 
 from speech_aware_evidence_acquisition.rails import a2t_executable_ground as ground
@@ -139,3 +142,32 @@ def test_handbook_refuses_unknown_or_duplicate_tools_and_oversize_output() -> No
             (_row("tier1_direct:000001", "setLight", ()),),
             max_utf8_bytes=100,
         )
+
+
+def test_committed_build_receipt_preserves_the_static_ground_gates() -> None:
+    repository_root = Path(__file__).resolve().parents[2]
+    receipt_path = (
+        repository_root
+        / "docs"
+        / "checks"
+        / "speech-aware-evidence-acquisition"
+        / "2026-09-02-a2t-executable-ground-build-v1"
+        / "build-receipt.json"
+    )
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    report = receipt["handbook"]["report"]
+
+    assert receipt["execution_profile"] == "model-free-check"
+    assert set(receipt["contacts"].values()) == {0}
+    assert receipt["offline_guard"]["outbound_connection_attempts"] == 0
+    assert receipt["partition"]["construction_forbidden_intersection_count"] == 0
+    assert receipt["handbook"]["deterministic_rebuild_equal"] is True
+    assert report["registry_tool_count"] == 152
+    assert report["construction_tool_count"] == 151
+    assert report["argument_pattern_family_count"] == 354
+    assert report["argument_key_count"] == 85
+    assert report["default_literal_match_count"] == 0
+    assert report["invocation_texts_rendered"] == 0
+    assert report["argument_values_rendered"] == 0
+    assert report["utf8_bytes"] <= report["max_utf8_bytes"]
+    assert receipt["engineering_scope"]["network_jitter_testing"] is False

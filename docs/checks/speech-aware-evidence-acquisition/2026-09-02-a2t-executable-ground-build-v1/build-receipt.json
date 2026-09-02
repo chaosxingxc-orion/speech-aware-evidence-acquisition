@@ -1,0 +1,66 @@
+{
+  "carrier_inventory": {
+    "pool_items": 30733,
+    "pool_units": 16843,
+    "usable_units": 16838
+  },
+  "contacts": {
+    "audio_seconds": 0,
+    "embedding_tool": 0,
+    "frozen_core": 0,
+    "gpu_hours": 0.0,
+    "http_or_socket": 0,
+    "retriever": 0,
+    "tokenizer": 0
+  },
+  "decision": "permit only a separately preregistered tokenizer prompt-fit check",
+  "engineering_scope": {
+    "complete_manifest_outer_parallel_scoring": true,
+    "network_jitter_testing": false
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-A2T-MF-EXECUTABLE-GROUND-BUILD-V1",
+  "handbook": {
+    "deterministic_rebuild_equal": true,
+    "report": {
+      "argument_key_count": 85,
+      "argument_pattern_family_count": 354,
+      "argument_values_rendered": 0,
+      "ascii_only": true,
+      "characters": 54881,
+      "construction_tool_count": 151,
+      "contrast_group_count": 28,
+      "default_literal_match_count": 0,
+      "invocation_texts_rendered": 0,
+      "line_count": 1344,
+      "max_utf8_bytes": 65536,
+      "registry_only_tool_count": 1,
+      "registry_tool_count": 152,
+      "schema": "saea-a2t-executable-ground-build-report-v1",
+      "source_sample_count": 22951,
+      "utf8_bytes": 54881
+    },
+    "sha256": "58ba08f3cebbe390156506653051d54aa37796822f49f5b851fd6eba4818fbc8"
+  },
+  "offline_guard": {
+    "outbound_connection_attempts": 0,
+    "targets": []
+  },
+  "partition": {
+    "construction_forbidden_intersection_count": 0,
+    "construction_identity_sha256": "86bfc6f36fb6a562ad1134cd11d60a2ad6bb94668195d76eada97edd2ce0ce16",
+    "construction_sample_count": 22951,
+    "construction_unit_count": 12601,
+    "exposed_sample_count": 400,
+    "policy_id": "saea-a2t-block-partition-v1",
+    "proposed_eval_identity_sha256": "4d0196ec91858cdc81340ee197c085ff29726a1f1b7fe9119d4e410d62df2f90",
+    "proposed_eval_sample_count": 400,
+    "seed": 20260807
+  },
+  "schema": "saea-a2t-executable-ground-build-receipt-v1",
+  "source_hashes": {
+    "partition_proposal": "3bbf77a328c2983fb6299bcfe34a975624fee330a9325614dc1f84a7338678a1",
+    "registry": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4"
+  },
+  "study_commit": "cfe92f5a96f64bd78f7b2e05435be01569287e54"
+}
