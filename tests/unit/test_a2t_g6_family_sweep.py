@@ -32,6 +32,7 @@ def _contract(index: int) -> ToolContract:
             ArgumentSpec("count", required=False, canonicalizer_ids=("to-int",)),
         ),
         content=f"Use tool{index:02d} with a required target and optional count.",
+        legal_key_skeletons=(("target",), ("target", "count")),
     )
 
 
@@ -216,6 +217,23 @@ def test_final_resolution_accepts_evidence_copy_and_permitted_canonicalizer() ->
     assert parsed.calls[0].arguments == {"target": "Alice", "count": 3}
 
 
+def test_final_resolution_requires_exact_legal_key_skeleton_membership() -> None:
+    sweep = _sweep(max_final_calls=1)
+    reports = sweep.parse_scan_responses(_responses(nominated=(0,)))
+
+    legal = sweep.parse_resolve_response(
+        '[{"name":"tool00","arguments":{"target":"Alice"}}]',
+        reports=reports,
+    )
+    illegal_order = sweep.parse_resolve_response(
+        '[{"name":"tool00","arguments":{"count":3,"target":"Alice"}}]',
+        reports=reports,
+    )
+
+    assert legal.valid is True
+    assert illegal_order.valid is False
+
+
 @pytest.mark.parametrize(
     "raw",
     [
@@ -342,6 +360,7 @@ def test_protocol_rejects_wrong_family_count_duplicate_registry_and_unknown_cano
         tool_name="tool00",
         arguments=(ArgumentSpec("target", required=True),),
         content="Duplicate registered name.",
+        legal_key_skeletons=(("target",),),
     )
     bundles = [FamilyBundle(contract.family_tag, (contract,)) for contract in contracts]
     bundles[1] = FamilyBundle("family-01", (duplicate,))
@@ -373,6 +392,8 @@ def test_contract_and_family_setup_rejects_malformed_closed_surfaces() -> None:
             contract,
             arguments=(ArgumentSpec("x", True), ArgumentSpec("x", False)),
         ).validate()
+    with pytest.raises(G6FamilySweepError, match="legal key skeleton"):
+        replace(contract, legal_key_skeletons=(("target", "unknown"),)).validate()
     with pytest.raises(G6FamilySweepError, match="ToolContract"):
         FamilyBundle("family-00", (object(),)).validate()  # type: ignore[arg-type]
     with pytest.raises(G6FamilySweepError, match="belong"):

@@ -177,6 +177,7 @@ class ToolContract:
     tool_name: str
     arguments: tuple[ArgumentSpec, ...]
     content: str
+    legal_key_skeletons: tuple[tuple[str, ...], ...]
 
     def validate(self) -> ToolContract:
         _ascii(self.contract_id, field="ToolContract.contract_id")
@@ -188,6 +189,38 @@ class ToolContract:
         keys = tuple(item.validate().key for item in self.arguments)
         if len(set(keys)) != len(keys):
             raise G6FamilySweepError("ToolContract argument keys must be unique")
+        if (
+            not isinstance(self.legal_key_skeletons, tuple)
+            or not self.legal_key_skeletons
+            or any(not isinstance(skeleton, tuple) for skeleton in self.legal_key_skeletons)
+        ):
+            raise G6FamilySweepError(
+                "ToolContract legal key skeletons must be a nonempty tuple of tuples"
+            )
+        legal_skeletons: list[tuple[str, ...]] = []
+        for skeleton in self.legal_key_skeletons:
+            legal_skeletons.append(
+                _ascii_tuple(
+                    skeleton,
+                    field="ToolContract legal key skeleton",
+                    allow_empty=True,
+                    max_items=len(keys),
+                )
+            )
+        if len(set(legal_skeletons)) != len(legal_skeletons) or any(
+            not set(skeleton).issubset(keys) for skeleton in legal_skeletons
+        ):
+            raise G6FamilySweepError(
+                "ToolContract legal key skeletons must be unique and use declared argument keys"
+            )
+        required_by_skeleton = set(legal_skeletons[0]).intersection(
+            *map(set, legal_skeletons[1:])
+        )
+        declared_required = {item.key for item in self.arguments if item.required}
+        if declared_required != required_by_skeleton:
+            raise G6FamilySweepError(
+                "ToolContract required arguments must equal the legal skeleton intersection"
+            )
         return self
 
     @property
@@ -688,6 +721,12 @@ class G6FamilySweep:
             not set(unresolved).issubset(required)
             or set(unresolved) & bound_keys
             or not required.issubset(bound_keys | set(unresolved))
+            or not any(
+                set(bound_keys).issubset(skeleton)
+                and tuple(key for key in skeleton if key in bound_keys)
+                == tuple(binding.key for binding in bindings)
+                for skeleton in contract.legal_key_skeletons
+            )
         ):
             return None
         candidate = ScanCandidate(
@@ -899,6 +938,8 @@ class G6FamilySweep:
     ) -> bool:
         legal = contract.argument_by_key
         if any(not isinstance(key, str) or key not in legal for key in arguments):
+            return False
+        if tuple(arguments) not in contract.legal_key_skeletons:
             return False
         required = {item.key for item in contract.arguments if item.required}
         if not required.issubset(arguments):
