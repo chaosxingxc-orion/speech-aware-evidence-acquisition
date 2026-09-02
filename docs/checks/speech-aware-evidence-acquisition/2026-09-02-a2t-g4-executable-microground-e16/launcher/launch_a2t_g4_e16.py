@@ -505,6 +505,7 @@ def _static_preflight(root: Path) -> dict[str, object]:
     snapshot = g3.KnowledgeSnapshot.from_frozen_json(
         _read_json(Path(root) / g3.KNOWLEDGE_SNAPSHOT_RELPATH)
     )
+    execution_plan_template = _execution_plan("attempt-preflight-g4-e16")
     return {
         "commit": commit,
         "composed": composed,
@@ -521,6 +522,7 @@ def _static_preflight(root: Path) -> dict[str, object]:
         },
         "runtime_receipt": runtime_receipt,
         "snapshot": snapshot,
+        "execution_plan_template": execution_plan_template,
         "lock": corpus_context["lock"],
         "registry": corpus_context["registry"],
         "g3": g3,
@@ -706,6 +708,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                         "max_utf8_bytes"
                     ],
                     "official_score_manifests": 1,
+                    "planned_model_calls": context[
+                        "execution_plan_template"
+                    ].planned_model_calls,
                     "contacts": {
                         "gold": 0,
                         "model": 0,
