@@ -1,0 +1,126 @@
+{
+  "schema": "saea-a2t-g5-fixed16-identity-receipt-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "date": "2026-09-02",
+  "execution_profile": "model-free-check",
+  "carrier": "audio2tool",
+  "split_name": "A2T-G5-FIXED16",
+  "split_role": "discovery",
+  "purpose": "Prospective identity-only roster for the G5 exhaustive-family PLAN/EXECUTE screen. This receipt authorizes no model, tool, network, tokenizer, scorer, audio, task, gold, output, reward, test, or future-turn read or contact.",
+  "design_authority": {
+    "path": "docs/checks/speech-aware-evidence-acquisition/2026-09-02-a2t-g5-ground-redesign/design.md",
+    "sha256": "28eacf0a4553c29a000e8c98340a5e2485a06c0f17fff6a74a6729fdafbbf576"
+  },
+  "identity_sources": [
+    {
+      "name": "A2T-G1-104",
+      "path": "docs/receipts/a2t/A2T-G1-104.json",
+      "sha256": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db",
+      "count": 104,
+      "parent_receipt": "docs/receipts/probe-samples/r1-audio2tool-sample.json",
+      "parent_receipt_sha256": "d99570a797744f7dc3db53bdb898611836ae2682a02e726b974d05734c6cbb2d"
+    }
+  ],
+  "excluded_identity_authorities": [
+    {
+      "name": "A2T-G3-PILOT-40 plus its sealed confirmation reserve",
+      "path": "docs/receipts/a2t/A2T-G3-PILOT-40.json",
+      "sha256": "179535049414fa0e9747075db84e8ced3fbc60001955be25a75e9d70a4ba7e92",
+      "identity_count": 128,
+      "reason": "Exclude every listed identity, including the 40 G3-contacted rows and the 88 protected fresh-reserve identities."
+    },
+    {
+      "name": "A2T-G4-MICROGROUND-SCREEN-16 selected16 and remainder24",
+      "path": "docs/receipts/a2t/A2T-G4-MICROGROUND-SCREEN-16.json",
+      "sha256": "41a14ab576d7a428dd9849f26432e2c4998371b9f601189a1d558d694a12c884",
+      "reason": "Its source is the G3 pilot and its selected16/remainder24 union is explicitly the G3 source; excluding the complete G3 identity authority excludes both G4 surfaces."
+    },
+    {
+      "name": "TFRL and other secondary discovery surfaces",
+      "reason": "A2T-CPV2-104, A2T-GROUND-QUAL-104, test, future turns, and the protected unexposed population are not source populations for this receipt."
+    }
+  ],
+  "construction_block_disjointness": {
+    "authority_path": "docs/checks/speech-aware-evidence-acquisition/2026-09-02-a2t-executable-ground-build-v1/build-receipt.json",
+    "authority_sha256": "505645b3cdef553ac847a5b248936182160d7b38aaaac84a076b9137c8e40e34",
+    "policy_id": "saea-a2t-block-partition-v1",
+    "construction_forbidden_intersection_count": 0,
+    "scope": "The construction partition is proved disjoint from all 400 exposed parent identities, which contains this receipt's G1-only source. Therefore construction query-block overlap is zero without reading construction examples or evaluation fields."
+  },
+  "selection": {
+    "namespace": "a2t-g5-exhaustive-family-fixed16-v1",
+    "algorithm": "Read only identity fields (key, sample_id, tier) from the G1 receipt and sample_id plus tier from the G3 exclusion authority. Remove every G3-authority sample_id. Within each tier, sort by SHA-256(UTF-8(namespace || NUL || sample_id)), then by sample_id, and retain the first two.",
+    "source_count": 104,
+    "excluded_source_identity_count": 12,
+    "eligible_count": 92,
+    "eligible_per_tier": {
+      "tier1_direct": 11,
+      "tier2_parametric": 12,
+      "tier3_multi_intent": 11,
+      "tier4_implicit": 11,
+      "tier5_needle": 12,
+      "tier6_correction": 12,
+      "tier7_multiturn": 11,
+      "tier8_intent_blending": 12
+    },
+    "selected_count": 16,
+    "items_per_tier": 2,
+    "uses_task_text": false,
+    "uses_audio": false,
+    "uses_gold": false,
+    "uses_outputs": false,
+    "uses_scores": false,
+    "uses_rewards": false,
+    "uses_test": false,
+    "uses_future_turns": false,
+    "uses_model_or_tool": false,
+    "uses_network_or_tokenizer_or_scorer": false
+  },
+  "canonical_split_identity": {
+    "encoding": "UTF-8",
+    "format": "One line per selected row in ascending tier then sample_id order: tier, TAB, sample_id, LF. No final-field omission and exactly one final LF.",
+    "sha256": "c1c38f4ac670846df8c2a488aa62642bb6d14733aa8cc4fa33955f5c2bf76550"
+  },
+  "split_identity_hash": "c1c38f4ac670846df8c2a488aa62642bb6d14733aa8cc4fa33955f5c2bf76550",
+  "run_identity": {
+    "encoding": "UTF-8",
+    "format": "schema=saea-a2t-g5-fixed16-identity-receipt-v1 LF namespace=a2t-g5-exhaustive-family-fixed16-v1 LF split_identity_hash=<split hash> LF execution_profile=model-free-check LF",
+    "sha256": "8c0136a901693548a737bf4bf3fa83206d9bae190283123d6412be6a78b069fe"
+  },
+  "run_identity_hash": "8c0136a901693548a737bf4bf3fa83206d9bae190283123d6412be6a78b069fe",
+  "tiers": {
+    "tier1_direct": [
+      {"sample_id": "tier1_direct:002609", "key": "audio2tool:tier1_direct:002609", "selection_rank_sha256": "2fde716b61a87fe87535acb77130c909c06c01eaae13e515c0c3c1255a50f1d5"},
+      {"sample_id": "tier1_direct:002728", "key": "audio2tool:tier1_direct:002728", "selection_rank_sha256": "39c8029f40fa01b37d4a6c550f3ba95ec2bc57f3b5bc09098c2c94323a9c5e82"}
+    ],
+    "tier2_parametric": [
+      {"sample_id": "tier2_parametric:003923", "key": "audio2tool:tier2_parametric:003923", "selection_rank_sha256": "03a5402a3a62a1c807bfa4447e5ea5edf20ec7d05787500586f173c3f9c07819"},
+      {"sample_id": "tier2_parametric:006317", "key": "audio2tool:tier2_parametric:006317", "selection_rank_sha256": "0d6e829066bb78dbf54db22eca47d6c437a1cefab5f16ea539d248540e13ccb8"}
+    ],
+    "tier3_multi_intent": [
+      {"sample_id": "tier3_multi_intent:002995", "key": "audio2tool:tier3_multi_intent:002995", "selection_rank_sha256": "3cf374de99c4273a9ba2cdc8354d3c4a1b08bedcee56cd9702b4e74003e8f5f2"},
+      {"sample_id": "tier3_multi_intent:003153", "key": "audio2tool:tier3_multi_intent:003153", "selection_rank_sha256": "2aa84f347f6fd0798b81428aed0b532cbae15aa08883329451e466cab8ccba49"}
+    ],
+    "tier4_implicit": [
+      {"sample_id": "tier4_implicit:001074", "key": "audio2tool:tier4_implicit:001074", "selection_rank_sha256": "27a55a57fa4de13438fc6aa7426628f90d4f9afd379dafc64f9e75d17b913af0"},
+      {"sample_id": "tier4_implicit:001148", "key": "audio2tool:tier4_implicit:001148", "selection_rank_sha256": "701e333865a6b76e38b567642455a4e05aba9f10d518376708cf445824283833"}
+    ],
+    "tier5_needle": [
+      {"sample_id": "tier5_needle:000241", "key": "audio2tool:tier5_needle:000241", "selection_rank_sha256": "02ca0d7fbbab32dfa8a7f384e397ffc806e71d64a01b552ad64a4ea84fdceef9"},
+      {"sample_id": "tier5_needle:002215", "key": "audio2tool:tier5_needle:002215", "selection_rank_sha256": "150860f3b569dc0a398feec457570d482ded2394702dd1a40885e070ea850796"}
+    ],
+    "tier6_correction": [
+      {"sample_id": "tier6_correction:002179", "key": "audio2tool:tier6_correction:002179", "selection_rank_sha256": "0ae62e325388d73d76eba952ea38b87bf560b0676b568b26b4046d8bb6849b46"},
+      {"sample_id": "tier6_correction:003197", "key": "audio2tool:tier6_correction:003197", "selection_rank_sha256": "2089f59c2a4ca03789dbaa5c3d3a8f9d153d39e10d7b2a40d1bad45ac394905e"}
+    ],
+    "tier7_multiturn": [
+      {"sample_id": "tier7_multiturn:000545", "key": "audio2tool:tier7_multiturn:000545", "selection_rank_sha256": "1fdc8b0c14bdf46d061e36bcd91928441cf496af4de269bdc680585f9d61db87"},
+      {"sample_id": "tier7_multiturn:002120", "key": "audio2tool:tier7_multiturn:002120", "selection_rank_sha256": "0e6260bb76f843a0a5ad275cc063fa90b7a26629616d239e8cc4f438da5719d1"}
+    ],
+    "tier8_intent_blending": [
+      {"sample_id": "tier8_intent_blending:000581", "key": "audio2tool:tier8_intent_blending:000581", "selection_rank_sha256": "45ceb3e079def7df3d16b3ac4e89b12671d8a00e70d394de7a80463babbc43d0"},
+      {"sample_id": "tier8_intent_blending:000720", "key": "audio2tool:tier8_intent_blending:000720", "selection_rank_sha256": "21ecb2993b86c3578df258426ca8986004d65efb5095af22319d6a4c552f30a6"}
+    ]
+  },
+  "status": "IDENTITY_FROZEN_NO_CONTACT_AUTHORIZATION"
+}
