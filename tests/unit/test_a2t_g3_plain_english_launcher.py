@@ -556,6 +556,10 @@ def test_composite_seal_places_trace_where_manifest_discovers_it(
 ) -> None:
     launcher = _launcher()
     captured = {}
+    run_dir = tmp_path / "run"
+    source_trace = run_dir / "agent-trace" / f"{launcher.RUN_ID}.trace.jsonl"
+    source_trace.parent.mkdir(parents=True)
+    source_trace.write_text("source\n", encoding="utf-8")
 
     class Sink:
         def __init__(self, path, run_id):
@@ -589,16 +593,17 @@ def test_composite_seal_places_trace_where_manifest_discovers_it(
         source_result={
             "client": {"cost": {"calls_used": 1}},
             "agent_trace_hash": "b" * 64,
+            "run_dir": run_dir,
         },
         root=tmp_path,
         context={},
         plan=object(),
-        run_dir=tmp_path / "run",
+        run_dir=run_dir,
         session_receipt_path=tmp_path / "session.json",
     )
 
-    assert captured["sink_path"] == tmp_path / "run"
-    assert captured["manifest_kwargs"]["run_dir"] == tmp_path / "run"
+    assert captured["sink_path"] == run_dir
+    assert captured["manifest_kwargs"]["run_dir"] == run_dir
 
 
 def test_result_reports_absolute_tier_paired_control_repair_and_ci90() -> None:

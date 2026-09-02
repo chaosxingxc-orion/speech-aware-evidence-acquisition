@@ -11,7 +11,6 @@ import importlib.util
 import json
 import os
 from pathlib import Path
-import shutil
 import subprocess
 import sys
 import time
@@ -1101,6 +1100,7 @@ def _load_matched_recovery(root: Path, expected_ids: Sequence[str]) -> dict[str,
         raise RuntimeError("matched recovery outputs do not cover all forty samples")
     return {
         "source_outputs": outputs_path,
+        "source_agent_trace": root / MATCHED_RECOVERY_AGENT_TRACE_RELPATH,
         "source_composite_trace": root / MATCHED_RECOVERY_COMPOSITE_TRACE_RELPATH,
         "source_composite_manifest": root / MATCHED_RECOVERY_COMPOSITE_MANIFEST_RELPATH,
         "source_session_receipt": root / MATCHED_RECOVERY_SESSION_RELPATH,
@@ -1741,10 +1741,16 @@ def _seal_composite(
     session_receipt_path: Path,
 ) -> dict[str, object]:
     client_summary = source_result["client"]
+    source_trace = Path(source_result["run_dir"]) / "agent-trace" / (
+        f"{RUN_ID}.trace.jsonl"
+    )
+    source_trace_sha256 = _sha256_file(source_trace)
     source_by_id = {
         sample_id: {
             "action": phase,
             "source_agent_trace_manifest_sha256": source_result["agent_trace_hash"],
+            "source_artifact_path": str(source_trace),
+            "source_artifact_sha256": source_trace_sha256,
         }
         for sample_id in texts
     }
@@ -1788,24 +1794,27 @@ def _materialize_matched_recovery(
     """Copy verified matched artifacts byte-for-byte into a score-only bundle."""
 
     recovery = context["matched_recovery"]
+    source_by_id = {
+        sample_id: {
+            "action": G3_MATCHED_USE_PHASE,
+            "source_agent_trace_manifest_sha256": (
+                MATCHED_RECOVERY_AGENT_MANIFEST_SHA256
+            ),
+            "source_artifact_path": str(recovery["source_agent_trace"]),
+            "source_artifact_sha256": MATCHED_RECOVERY_AGENT_TRACE_SHA256,
+        }
+        for sample_id in recovery["texts"]
+    }
+    sink = TraceSink(run_dir, RUN_ID)
+    rows = g3_flight.emit_g3_use_rows(
+        texts=recovery["texts"],
+        source_by_id=source_by_id,
+        sink=sink,
+        phase=G3_MATCHED_USE_PHASE,
+    )
+    trace_hash = sink.close()
     outputs = run_dir / f"{RUN_ID}.outputs.jsonl"
-    trace = run_dir / f"{RUN_ID}.trace.jsonl"
-    trace_manifest = run_dir / f"{RUN_ID}.trace-manifest.json"
-    for source, destination, digest in (
-        (recovery["source_outputs"], outputs, MATCHED_RECOVERY_OUTPUTS_SHA256),
-        (
-            recovery["source_composite_trace"],
-            trace,
-            MATCHED_RECOVERY_COMPOSITE_TRACE_SHA256,
-        ),
-        (
-            recovery["source_composite_manifest"],
-            trace_manifest,
-            MATCHED_RECOVERY_COMPOSITE_MANIFEST_SHA256,
-        ),
-    ):
-        shutil.copyfile(source, destination)
-        _require_hash(destination, digest, f"materialized matched {destination.name}")
+    _write_jsonl(outputs, rows)
     manifest = _build_completed_manifest(
         root=root,
         context=context,
@@ -1813,7 +1822,7 @@ def _materialize_matched_recovery(
         run_dir=run_dir,
         session_receipt_path=recovery["source_session_receipt"],
         outputs_path=outputs,
-        trace_manifest_hash=MATCHED_RECOVERY_COMPOSITE_MANIFEST_SHA256,
+        trace_manifest_hash=trace_hash,
         cost=recovery["cost"],
         expected_attempt_state=ATTEMPT_STATE_NEVER_OPENED,
     )
@@ -1830,6 +1839,8 @@ def _materialize_matched_recovery(
             "source_composite_manifest_sha256": (
                 MATCHED_RECOVERY_COMPOSITE_MANIFEST_SHA256
             ),
+            "successor_outputs_sha256": _sha256_file(outputs),
+            "successor_trace_manifest_sha256": trace_hash,
             "contacts_reused": sum(recovery["contact_counts"].values()),
             "repair_count": recovery["repair_count"],
             "repair_sample_ids": recovery["repair_sample_ids"],
