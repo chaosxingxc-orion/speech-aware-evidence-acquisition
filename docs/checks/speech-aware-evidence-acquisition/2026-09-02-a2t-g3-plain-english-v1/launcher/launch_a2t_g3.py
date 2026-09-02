@@ -1703,6 +1703,36 @@ def _stop_service(session: object, runtime_receipt: object, receipt_path: Path) 
     )
 
 
+def _prepare_recovered_observations(
+    *,
+    observation_summary: object,
+    surface: object,
+    corpus: object,
+    sample_ids: Sequence[str],
+) -> tuple[dict[str, str], dict[str, object], dict[str, object]]:
+    """Normalize once, then share the exact OBS text with routing and USE."""
+
+    representation_flags: dict[str, dict[str, bool]] = {}
+    observations = g3_flight.normalize_observation_texts(
+        observation_summary,
+        dialogue_sample_ids=surface.derived_dialogue_sample_ids,
+        representation_flags=representation_flags,
+    )
+    routes = g3_flight.build_packet_routes(
+        observation_summary,
+        corpus=corpus,
+        detailed_tool_limit=32,
+        dialogue_sample_ids=surface.derived_dialogue_sample_ids,
+        normalized_observation_texts=observations,
+    )
+    route_report = _validate_packet_routes(
+        routes,
+        sample_ids,
+        representation_flags,
+    )
+    return observations, routes, route_report
+
+
 def _launch(root: Path) -> Mapping[str, object]:
     context = _static_preflight(root)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
@@ -1726,18 +1756,11 @@ def _launch(root: Path) -> Mapping[str, object]:
     m0 = completed_flight["m0"]
     observation = completed_flight["observation"]
     surface = context["surface"]
-    representation_flags: dict[str, dict[str, bool]] = {}
-    routes = g3_flight.build_packet_routes(
-        observation["summary"],
+    observations, routes, route_report = _prepare_recovered_observations(
+        observation_summary=observation["summary"],
+        surface=surface,
         corpus=context["corpus"],
-        detailed_tool_limit=32,
-        dialogue_sample_ids=surface.derived_dialogue_sample_ids,
-        representation_flags=representation_flags,
-    )
-    route_report = _validate_packet_routes(
-        routes,
-        context["sample_ids"],
-        representation_flags,
+        sample_ids=context["sample_ids"],
     )
     if route_report["role_labels_missing"] != 5 or route_report["normalized_non_ascii"] != 1:
         raise RuntimeError("completed-flight OBS representation failure counts drift")
@@ -1808,7 +1831,6 @@ def _launch(root: Path) -> Mapping[str, object]:
             runtime_receipt=runtime_receipt,
             runtime_root=RUNTIME_ROOT,
         )
-        observations = observation["texts"]
         matched_adapter = g3_flight.G3PilotAdapter(
             surface.samples,
             phase=G3_MATCHED_USE_PHASE,

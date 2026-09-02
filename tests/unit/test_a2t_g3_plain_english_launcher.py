@@ -431,6 +431,57 @@ def test_packet_route_gate_stops_the_flight_before_use_on_any_invalid_route() ->
         launcher._validate_packet_routes(routes, tuple(routes))
 
 
+def test_recovered_observation_normalization_is_shared_by_routing_and_use(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    launcher = _launcher()
+    sample_ids = tuple(item["sample_id"] for item in _items())
+    normalized = {sample_id: f"normalized {sample_id}" for sample_id in sample_ids}
+    captured = {}
+
+    def normalize(summary, **kwargs):
+        captured["summary"] = summary
+        flags = kwargs["representation_flags"]
+        for index, sample_id in enumerate(sample_ids):
+            flags[sample_id] = {
+                "role_labels_missing": index < 5,
+                "normalized_non_ascii": index == 0,
+            }
+        return normalized
+
+    def route(summary, **kwargs):
+        captured["route_summary"] = summary
+        captured["routed_observations"] = kwargs["normalized_observation_texts"]
+        return {
+            sample_id: SimpleNamespace(
+                matched_packet="matched",
+                shuffled_packet="shuffled",
+                matched_tool_names=tuple(f"matched-{index}" for index in range(32)),
+                shuffled_tool_names=tuple(f"shuffled-{index}" for index in range(32)),
+            )
+            for sample_id in sample_ids
+        }
+
+    monkeypatch.setattr(launcher.g3_flight, "normalize_observation_texts", normalize)
+    monkeypatch.setattr(launcher.g3_flight, "build_packet_routes", route)
+    summary = object()
+    surface = SimpleNamespace(derived_dialogue_sample_ids=frozenset(sample_ids[:5]))
+
+    observations, _routes, report = launcher._prepare_recovered_observations(
+        observation_summary=summary,
+        surface=surface,
+        corpus=object(),
+        sample_ids=sample_ids,
+    )
+
+    assert observations is normalized
+    assert captured["summary"] is summary
+    assert captured["route_summary"] is summary
+    assert captured["routed_observations"] is normalized
+    assert report["role_labels_missing"] == 5
+    assert report["normalized_non_ascii"] == 1
+
+
 def test_parallel_official_scoring_uses_three_whole_manifest_workers(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

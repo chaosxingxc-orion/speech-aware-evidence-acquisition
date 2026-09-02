@@ -437,22 +437,19 @@ def _summary_texts(summary: object, *, label: str) -> dict[str, str]:
     return dict(sorted(texts.items()))
 
 
-def build_packet_routes(
+def normalize_observation_texts(
     observation_summary: object,
     *,
-    corpus: PlainEnglishCardCorpus,
-    detailed_tool_limit: int = MAX_DETAILED_TOOLS,
     dialogue_sample_ids: Collection[str] = (),
     representation_flags: dict[str, dict[str, bool]] | None = None,
-    retriever: Callable[..., PlainEnglishPacketRoute] = retrieve_plain_english_packets,
-) -> dict[str, PlainEnglishPacketRoute]:
-    """Build matched and shuffled packets from OBS text alone, without tier hints."""
+) -> dict[str, str]:
+    """Return the one ASCII English OBS representation consumed downstream."""
 
     observations = _summary_texts(observation_summary, label="OBS")
     dialogue_ids = frozenset(dialogue_sample_ids)
     if not dialogue_ids.issubset(observations):
         raise G3PilotFlightError("dialogue OBS identities fall outside the summary")
-    routes: dict[str, PlainEnglishPacketRoute] = {}
+    normalized_observations: dict[str, str] = {}
     for sample_id, text in observations.items():
         role_labels_missing = False
         normalized_non_ascii = False
@@ -494,6 +491,37 @@ def build_packet_routes(
                 "role_labels_missing": role_labels_missing,
                 "normalized_non_ascii": normalized_non_ascii,
             }
+        normalized_observations[sample_id] = observation_text
+    return normalized_observations
+
+
+def build_packet_routes(
+    observation_summary: object,
+    *,
+    corpus: PlainEnglishCardCorpus,
+    detailed_tool_limit: int = MAX_DETAILED_TOOLS,
+    dialogue_sample_ids: Collection[str] = (),
+    representation_flags: dict[str, dict[str, bool]] | None = None,
+    normalized_observation_texts: Mapping[str, str] | None = None,
+    retriever: Callable[..., PlainEnglishPacketRoute] = retrieve_plain_english_packets,
+) -> dict[str, PlainEnglishPacketRoute]:
+    """Build matched and shuffled packets from OBS text alone, without tier hints."""
+
+    if normalized_observation_texts is None:
+        observations = normalize_observation_texts(
+            observation_summary,
+            dialogue_sample_ids=dialogue_sample_ids,
+            representation_flags=representation_flags,
+        )
+    else:
+        raw_ids = set(_summary_texts(observation_summary, label="OBS"))
+        observations = dict(normalized_observation_texts)
+        if set(observations) != raw_ids or any(
+            not text or not text.isascii() for text in observations.values()
+        ):
+            raise G3PilotFlightError("normalized OBS texts are malformed or incomplete")
+    routes: dict[str, PlainEnglishPacketRoute] = {}
+    for sample_id, observation_text in observations.items():
         routes[sample_id] = retriever(
             observation_text,
             corpus,
@@ -714,4 +742,5 @@ __all__ = [
     "run_g3_agent_phase",
     "run_g3_m0_phase",
     "select_shuffled_control_ids",
+    "normalize_observation_texts",
 ]
