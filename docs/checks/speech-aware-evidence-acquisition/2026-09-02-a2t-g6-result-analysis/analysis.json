@@ -1,0 +1,1966 @@
+{
+  "aggregate": {
+    "bottlenecks": {
+      "scan-invalid-gold-family": 12,
+      "scan-missed-gold-family": 4
+    },
+    "g1_m0": {
+      "exact_count": 3,
+      "exact_match": 0.1875,
+      "parse_count": 15,
+      "parse_failures": 1,
+      "samples": 16,
+      "slot_expected_total": 21,
+      "slot_f1": 0.2857142857142857,
+      "slot_precision": 0.22857142857142856,
+      "slot_predicted_total": 35,
+      "slot_recall": 0.38095238095238093,
+      "slot_true_positives": 8,
+      "tool_accuracy": 0.375,
+      "tool_count": 6
+    },
+    "g6": {
+      "exact_count": 0,
+      "exact_match": 0.0,
+      "parse_count": 16,
+      "parse_failures": 0,
+      "samples": 16,
+      "slot_expected_total": 21,
+      "slot_f1": 0.0,
+      "slot_precision": 0.0,
+      "slot_predicted_total": 0,
+      "slot_recall": 0.0,
+      "slot_true_positives": 0,
+      "tool_accuracy": 0.0,
+      "tool_count": 0
+    },
+    "gold_family_coverage_rows": 0,
+    "gold_family_valid_rows": 4,
+    "official_equivalent_score_gate": {
+      "conditions": {
+        "at_least_one_exact_per_tier": false,
+        "exact_at_least_15": false,
+        "parse_at_least_15": true,
+        "slot_micro_f1_at_least_0_90": false,
+        "tool_16_of_16": false
+      },
+      "pass": false,
+      "scope_note": "Score conditions only; non-score protocol gates require the sealed runtime records."
+    },
+    "paired_exact": {
+      "loss": 3,
+      "tie": 13,
+      "win": 0
+    },
+    "paired_slot_f1": {
+      "loss": 6,
+      "tie": 10,
+      "win": 0
+    },
+    "paired_tool": {
+      "loss": 6,
+      "tie": 10,
+      "win": 0
+    },
+    "per_tier": {
+      "tier1_direct": {
+        "bottlenecks": {
+          "scan-invalid-gold-family": 1,
+          "scan-missed-gold-family": 1
+        },
+        "g1_m0": {
+          "exact_count": 0,
+          "exact_match": 0.0,
+          "parse_count": 2,
+          "parse_failures": 0,
+          "samples": 2,
+          "slot_expected_total": 0,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_predicted_total": 2,
+          "slot_recall": 0.0,
+          "slot_true_positives": 0,
+          "tool_accuracy": 0.0,
+          "tool_count": 0
+        },
+        "g6": {
+          "exact_count": 0,
+          "exact_match": 0.0,
+          "parse_count": 2,
+          "parse_failures": 0,
+          "samples": 2,
+          "slot_expected_total": 0,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_predicted_total": 0,
+          "slot_recall": 0.0,
+          "slot_true_positives": 0,
+          "tool_accuracy": 0.0,
+          "tool_count": 0
+        },
+        "gold_family_coverage_rows": 0,
+        "gold_family_valid_rows": 1,
+        "paired_exact": {
+          "loss": 0,
+          "tie": 2,
+          "win": 0
+        },
+        "paired_slot_f1": {
+          "loss": 0,
+          "tie": 2,
+          "win": 0
+        },
+        "paired_tool": {
+          "loss": 0,
+          "tie": 2,
+          "win": 0
+        },
+        "resolver_valid_rows": 0,
+        "samples": 2,
+        "scan": {
+          "applicable": 0,
+          "invalid": 13,
+          "nominations": 0,
+          "total": 56,
+          "valid": 43
+        },
+        "selected_contract_coverage_rows": 0
+      },
+      "tier2_parametric": {
+        "bottlenecks": {
+          "scan-invalid-gold-family": 2
+        },
+        "g1_m0": {
+          "exact_count": 0,
+          "exact_match": 0.0,
+          "parse_count": 2,
+          "parse_failures": 0,
+          "samples": 2,
+          "slot_expected_total": 3,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_predicted_total": 5,
+          "slot_recall": 0.0,
+          "slot_true_positives": 0,
+          "tool_accuracy": 0.0,
+          "tool_count": 0
+        },
+        "g6": {
+          "exact_count": 0,
+          "exact_match": 0.0,
+          "parse_count": 2,
+          "parse_failures": 0,
+          "samples": 2,
+          "slot_expected_total": 3,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_predicted_total": 0,
+          "slot_recall": 0.0,
+          "slot_true_positives": 0,
+          "tool_accuracy": 0.0,
+          "tool_count": 0
+        },
+        "gold_family_coverage_rows": 0,
+        "gold_family_valid_rows": 0,
+        "paired_exact": {
+          "loss": 0,
+          "tie": 2,
+          "win": 0
+        },
+        "paired_slot_f1": {
+          "loss": 0,
+          "tie": 2,
+          "win": 0
+        },
+        "paired_tool": {
+          "loss": 0,
+          "tie": 2,
+          "win": 0
+        },
+        "resolver_valid_rows": 0,
+        "samples": 2,
+        "scan": {
+          "applicable": 0,
+          "invalid": 22,
+          "nominations": 0,
+          "total": 56,
+          "valid": 34
+        },
+        "selected_contract_coverage_rows": 0
+      },
+      "tier3_multi_intent": {
+        "bottlenecks": {
+          "scan-invalid-gold-family": 2
+        },
+        "g1_m0": {
+          "exact_count": 0,
+          "exact_match": 0.0,
+          "parse_count": 2,
+          "parse_failures": 0,
+          "samples": 2,
+          "slot_expected_total": 5,
+          "slot_f1": 0.25000000000000006,
+          "slot_precision": 0.18181818181818182,
+          "slot_predicted_total": 11,
+          "slot_recall": 0.4,
+          "slot_true_positives": 2,
+          "tool_accuracy": 0.5,
+          "tool_count": 1
+        },
+        "g6": {
+          "exact_count": 0,
+          "exact_match": 0.0,
+          "parse_count": 2,
+          "parse_failures": 0,
+          "samples": 2,
+          "slot_expected_total": 5,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_predicted_total": 0,
+          "slot_recall": 0.0,
+          "slot_true_positives": 0,
+          "tool_accuracy": 0.0,
+          "tool_count": 0
+        },
+        "gold_family_coverage_rows": 0,
+        "gold_family_valid_rows": 0,
+        "paired_exact": {
+          "loss": 0,
+          "tie": 2,
+          "win": 0
+        },
+        "paired_slot_f1": {
+          "loss": 1,
+          "tie": 1,
+          "win": 0
+        },
+        "paired_tool": {
+          "loss": 1,
+          "tie": 1,
+          "win": 0
+        },
+        "resolver_valid_rows": 0,
+        "samples": 2,
+        "scan": {
+          "applicable": 0,
+          "invalid": 21,
+          "nominations": 0,
+          "total": 56,
+          "valid": 35
+        },
+        "selected_contract_coverage_rows": 0
+      },
+      "tier4_implicit": {
+        "bottlenecks": {
+          "scan-invalid-gold-family": 1,
+          "scan-missed-gold-family": 1
+        },
+        "g1_m0": {
+          "exact_count": 0,
+          "exact_match": 0.0,
+          "parse_count": 2,
+          "parse_failures": 0,
+          "samples": 2,
+          "slot_expected_total": 4,
+          "slot_f1": 0.28571428571428575,
+          "slot_precision": 0.3333333333333333,
+          "slot_predicted_total": 3,
+          "slot_recall": 0.25,
+          "slot_true_positives": 1,
+          "tool_accuracy": 0.5,
+          "tool_count": 1
+        },
+        "g6": {
+          "exact_count": 0,
+          "exact_match": 0.0,
+          "parse_count": 2,
+          "parse_failures": 0,
+          "samples": 2,
+          "slot_expected_total": 4,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_predicted_total": 0,
+          "slot_recall": 0.0,
+          "slot_true_positives": 0,
+          "tool_accuracy": 0.0,
+          "tool_count": 0
+        },
+        "gold_family_coverage_rows": 0,
+        "gold_family_valid_rows": 1,
+        "paired_exact": {
+          "loss": 0,
+          "tie": 2,
+          "win": 0
+        },
+        "paired_slot_f1": {
+          "loss": 1,
+          "tie": 1,
+          "win": 0
+        },
+        "paired_tool": {
+          "loss": 1,
+          "tie": 1,
+          "win": 0
+        },
+        "resolver_valid_rows": 0,
+        "samples": 2,
+        "scan": {
+          "applicable": 0,
+          "invalid": 18,
+          "nominations": 0,
+          "total": 56,
+          "valid": 38
+        },
+        "selected_contract_coverage_rows": 0
+      },
+      "tier5_needle": {
+        "bottlenecks": {
+          "scan-invalid-gold-family": 2
+        },
+        "g1_m0": {
+          "exact_count": 2,
+          "exact_match": 1.0,
+          "parse_count": 2,
+          "parse_failures": 0,
+          "samples": 2,
+          "slot_expected_total": 1,
+          "slot_f1": 1.0,
+          "slot_precision": 1.0,
+          "slot_predicted_total": 1,
+          "slot_recall": 1.0,
+          "slot_true_positives": 1,
+          "tool_accuracy": 1.0,
+          "tool_count": 2
+        },
+        "g6": {
+          "exact_count": 0,
+          "exact_match": 0.0,
+          "parse_count": 2,
+          "parse_failures": 0,
+          "samples": 2,
+          "slot_expected_total": 1,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_predicted_total": 0,
+          "slot_recall": 0.0,
+          "slot_true_positives": 0,
+          "tool_accuracy": 0.0,
+          "tool_count": 0
+        },
+        "gold_family_coverage_rows": 0,
+        "gold_family_valid_rows": 0,
+        "paired_exact": {
+          "loss": 2,
+          "tie": 0,
+          "win": 0
+        },
+        "paired_slot_f1": {
+          "loss": 1,
+          "tie": 1,
+          "win": 0
+        },
+        "paired_tool": {
+          "loss": 2,
+          "tie": 0,
+          "win": 0
+        },
+        "resolver_valid_rows": 0,
+        "samples": 2,
+        "scan": {
+          "applicable": 0,
+          "invalid": 21,
+          "nominations": 0,
+          "total": 56,
+          "valid": 35
+        },
+        "selected_contract_coverage_rows": 0
+      },
+      "tier6_correction": {
+        "bottlenecks": {
+          "scan-invalid-gold-family": 2
+        },
+        "g1_m0": {
+          "exact_count": 0,
+          "exact_match": 0.0,
+          "parse_count": 2,
+          "parse_failures": 0,
+          "samples": 2,
+          "slot_expected_total": 3,
+          "slot_f1": 0.3333333333333333,
+          "slot_precision": 0.3333333333333333,
+          "slot_predicted_total": 3,
+          "slot_recall": 0.3333333333333333,
+          "slot_true_positives": 1,
+          "tool_accuracy": 0.5,
+          "tool_count": 1
+        },
+        "g6": {
+          "exact_count": 0,
+          "exact_match": 0.0,
+          "parse_count": 2,
+          "parse_failures": 0,
+          "samples": 2,
+          "slot_expected_total": 3,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_predicted_total": 0,
+          "slot_recall": 0.0,
+          "slot_true_positives": 0,
+          "tool_accuracy": 0.0,
+          "tool_count": 0
+        },
+        "gold_family_coverage_rows": 0,
+        "gold_family_valid_rows": 0,
+        "paired_exact": {
+          "loss": 0,
+          "tie": 2,
+          "win": 0
+        },
+        "paired_slot_f1": {
+          "loss": 1,
+          "tie": 1,
+          "win": 0
+        },
+        "paired_tool": {
+          "loss": 1,
+          "tie": 1,
+          "win": 0
+        },
+        "resolver_valid_rows": 0,
+        "samples": 2,
+        "scan": {
+          "applicable": 0,
+          "invalid": 12,
+          "nominations": 0,
+          "total": 56,
+          "valid": 44
+        },
+        "selected_contract_coverage_rows": 0
+      },
+      "tier7_multiturn": {
+        "bottlenecks": {
+          "scan-invalid-gold-family": 1,
+          "scan-missed-gold-family": 1
+        },
+        "g1_m0": {
+          "exact_count": 1,
+          "exact_match": 0.5,
+          "parse_count": 2,
+          "parse_failures": 0,
+          "samples": 2,
+          "slot_expected_total": 3,
+          "slot_f1": 0.8,
+          "slot_precision": 1.0,
+          "slot_predicted_total": 2,
+          "slot_recall": 0.6666666666666666,
+          "slot_true_positives": 2,
+          "tool_accuracy": 0.5,
+          "tool_count": 1
+        },
+        "g6": {
+          "exact_count": 0,
+          "exact_match": 0.0,
+          "parse_count": 2,
+          "parse_failures": 0,
+          "samples": 2,
+          "slot_expected_total": 3,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_predicted_total": 0,
+          "slot_recall": 0.0,
+          "slot_true_positives": 0,
+          "tool_accuracy": 0.0,
+          "tool_count": 0
+        },
+        "gold_family_coverage_rows": 0,
+        "gold_family_valid_rows": 1,
+        "paired_exact": {
+          "loss": 1,
+          "tie": 1,
+          "win": 0
+        },
+        "paired_slot_f1": {
+          "loss": 1,
+          "tie": 1,
+          "win": 0
+        },
+        "paired_tool": {
+          "loss": 1,
+          "tie": 1,
+          "win": 0
+        },
+        "resolver_valid_rows": 0,
+        "samples": 2,
+        "scan": {
+          "applicable": 0,
+          "invalid": 11,
+          "nominations": 0,
+          "total": 56,
+          "valid": 45
+        },
+        "selected_contract_coverage_rows": 0
+      },
+      "tier8_intent_blending": {
+        "bottlenecks": {
+          "scan-invalid-gold-family": 1,
+          "scan-missed-gold-family": 1
+        },
+        "g1_m0": {
+          "exact_count": 0,
+          "exact_match": 0.0,
+          "parse_count": 1,
+          "parse_failures": 1,
+          "samples": 2,
+          "slot_expected_total": 2,
+          "slot_f1": 0.2,
+          "slot_precision": 0.125,
+          "slot_predicted_total": 8,
+          "slot_recall": 0.5,
+          "slot_true_positives": 1,
+          "tool_accuracy": 0.0,
+          "tool_count": 0
+        },
+        "g6": {
+          "exact_count": 0,
+          "exact_match": 0.0,
+          "parse_count": 2,
+          "parse_failures": 0,
+          "samples": 2,
+          "slot_expected_total": 2,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_predicted_total": 0,
+          "slot_recall": 0.0,
+          "slot_true_positives": 0,
+          "tool_accuracy": 0.0,
+          "tool_count": 0
+        },
+        "gold_family_coverage_rows": 0,
+        "gold_family_valid_rows": 1,
+        "paired_exact": {
+          "loss": 0,
+          "tie": 2,
+          "win": 0
+        },
+        "paired_slot_f1": {
+          "loss": 1,
+          "tie": 1,
+          "win": 0
+        },
+        "paired_tool": {
+          "loss": 0,
+          "tie": 2,
+          "win": 0
+        },
+        "resolver_valid_rows": 0,
+        "samples": 2,
+        "scan": {
+          "applicable": 0,
+          "invalid": 16,
+          "nominations": 0,
+          "total": 56,
+          "valid": 40
+        },
+        "selected_contract_coverage_rows": 0
+      }
+    },
+    "resolver_valid_rows": 0,
+    "samples": 16,
+    "scan": {
+      "applicable": 0,
+      "invalid": 134,
+      "nominations": 0,
+      "total": 448,
+      "valid": 314
+    },
+    "selected_contract_coverage_rows": 0
+  },
+  "raw_transport_diagnostic": {
+    "contacts": {
+      "resolve": 16,
+      "scan": 448,
+      "total": 464
+    },
+    "diagnostic_ceiling": {
+      "gold_family_applicable_rows": 10,
+      "gold_tool_nominated_rows": 10,
+      "rows": [
+        {
+          "gold_family_applicable": false,
+          "gold_tool_nominated": false,
+          "sample_id": "tier1_direct:000077"
+        },
+        {
+          "gold_family_applicable": true,
+          "gold_tool_nominated": true,
+          "sample_id": "tier1_direct:004159"
+        },
+        {
+          "gold_family_applicable": true,
+          "gold_tool_nominated": true,
+          "sample_id": "tier2_parametric:001004"
+        },
+        {
+          "gold_family_applicable": true,
+          "gold_tool_nominated": true,
+          "sample_id": "tier2_parametric:002653"
+        },
+        {
+          "gold_family_applicable": false,
+          "gold_tool_nominated": false,
+          "sample_id": "tier3_multi_intent:001424"
+        },
+        {
+          "gold_family_applicable": true,
+          "gold_tool_nominated": true,
+          "sample_id": "tier3_multi_intent:003058"
+        },
+        {
+          "gold_family_applicable": false,
+          "gold_tool_nominated": false,
+          "sample_id": "tier4_implicit:000655"
+        },
+        {
+          "gold_family_applicable": true,
+          "gold_tool_nominated": true,
+          "sample_id": "tier4_implicit:001010"
+        },
+        {
+          "gold_family_applicable": true,
+          "gold_tool_nominated": true,
+          "sample_id": "tier5_needle:001458"
+        },
+        {
+          "gold_family_applicable": true,
+          "gold_tool_nominated": true,
+          "sample_id": "tier5_needle:004242"
+        },
+        {
+          "gold_family_applicable": true,
+          "gold_tool_nominated": true,
+          "sample_id": "tier6_correction:001764"
+        },
+        {
+          "gold_family_applicable": true,
+          "gold_tool_nominated": true,
+          "sample_id": "tier6_correction:002430"
+        },
+        {
+          "gold_family_applicable": true,
+          "gold_tool_nominated": true,
+          "sample_id": "tier7_multiturn:000440"
+        },
+        {
+          "gold_family_applicable": false,
+          "gold_tool_nominated": false,
+          "sample_id": "tier7_multiturn:001516"
+        },
+        {
+          "gold_family_applicable": false,
+          "gold_tool_nominated": false,
+          "sample_id": "tier8_intent_blending:000192"
+        },
+        {
+          "gold_family_applicable": false,
+          "gold_tool_nominated": false,
+          "sample_id": "tier8_intent_blending:000213"
+        }
+      ]
+    },
+    "nonempty_response_texts": 464,
+    "resolve": {
+      "raw_call_count": 20,
+      "raw_json_array_rows": 16,
+      "raw_registered_call_count": 0,
+      "raw_unregistered_call_count": 20
+    },
+    "scan": {
+      "official_invalid_empty_fallback": 134,
+      "official_valid": 314,
+      "raw_applicable_true": 46,
+      "raw_candidate_count": 65,
+      "raw_registered_family_local_nominations": 60,
+      "raw_shape_counts": {
+        "candidate-key-set-invalid": 41,
+        "json-code-fence": 17,
+        "json-or-top-level-object-invalid": 7,
+        "ordering-evidence-object-not-list": 67,
+        "scan-evidence-field-type-invalid": 2,
+        "valid-abstention": 314
+      }
+    },
+    "scope_note": "Diagnostic only: raw-shape recovery does not alter official G6 outputs, scores, validity, or make a counterfactual end-to-end claim."
+  },
+  "rows": [
+    {
+      "bottleneck": "scan-missed-gold-family",
+      "expected": [
+        {
+          "arguments": {},
+          "name": "setBrightness"
+        }
+      ],
+      "g1_m0": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [
+          {
+            "arguments": {
+              "direction": "Up",
+              "steps": 5
+            },
+            "name": "adjustVolume"
+          }
+        ],
+        "predicted_calls": 1,
+        "slot_expected_total": 0,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 2,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "g6": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [],
+        "predicted_calls": 0,
+        "slot_expected_total": 0,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "gold_contracts": [
+        "contract-bf2187ef299c447c"
+      ],
+      "gold_contracts_selected": [
+        false
+      ],
+      "gold_families": [
+        "smart-home-lighting"
+      ],
+      "gold_family_applicable": false,
+      "gold_family_valid": true,
+      "gold_tools_nominated": [
+        false
+      ],
+      "paired": {
+        "exact": "tie",
+        "slot_f1": "tie",
+        "tool": "tie"
+      },
+      "resolver_valid": false,
+      "sample_id": "tier1_direct:000077",
+      "scan": {
+        "applicable": 0,
+        "nominated_tools": [],
+        "nominations": 0,
+        "selected_contract_ids": [],
+        "total": 28,
+        "valid": 22
+      },
+      "tier": "tier1_direct"
+    },
+    {
+      "bottleneck": "scan-invalid-gold-family",
+      "expected": [
+        {
+          "arguments": {},
+          "name": "getLockState"
+        }
+      ],
+      "g1_m0": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [
+          {
+            "arguments": {},
+            "name": "getLockStatus"
+          }
+        ],
+        "predicted_calls": 1,
+        "slot_expected_total": 0,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "g6": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [],
+        "predicted_calls": 0,
+        "slot_expected_total": 0,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "gold_contracts": [
+        "contract-71eda71f9b275579"
+      ],
+      "gold_contracts_selected": [
+        false
+      ],
+      "gold_families": [
+        "smart-home-status"
+      ],
+      "gold_family_applicable": false,
+      "gold_family_valid": false,
+      "gold_tools_nominated": [
+        false
+      ],
+      "paired": {
+        "exact": "tie",
+        "slot_f1": "tie",
+        "tool": "tie"
+      },
+      "resolver_valid": false,
+      "sample_id": "tier1_direct:004159",
+      "scan": {
+        "applicable": 0,
+        "nominated_tools": [],
+        "nominations": 0,
+        "selected_contract_ids": [],
+        "total": 28,
+        "valid": 21
+      },
+      "tier": "tier1_direct"
+    },
+    {
+      "bottleneck": "scan-invalid-gold-family",
+      "expected": [
+        {
+          "arguments": {
+            "mode": "Home"
+          },
+          "name": "armSecuritySystem"
+        }
+      ],
+      "g1_m0": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [
+          {
+            "arguments": {
+              "label": "Wake Up",
+              "repeat": [
+                "Daily"
+              ],
+              "time": "07:00"
+            },
+            "name": "setAlarm"
+          }
+        ],
+        "predicted_calls": 1,
+        "slot_expected_total": 1,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 3,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "g6": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [],
+        "predicted_calls": 0,
+        "slot_expected_total": 1,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "gold_contracts": [
+        "contract-bc1134c85d2c8d88"
+      ],
+      "gold_contracts_selected": [
+        false
+      ],
+      "gold_families": [
+        "smart-home-security"
+      ],
+      "gold_family_applicable": false,
+      "gold_family_valid": false,
+      "gold_tools_nominated": [
+        false
+      ],
+      "paired": {
+        "exact": "tie",
+        "slot_f1": "tie",
+        "tool": "tie"
+      },
+      "resolver_valid": false,
+      "sample_id": "tier2_parametric:001004",
+      "scan": {
+        "applicable": 0,
+        "nominated_tools": [],
+        "nominations": 0,
+        "selected_contract_ids": [],
+        "total": 28,
+        "valid": 19
+      },
+      "tier": "tier2_parametric"
+    },
+    {
+      "bottleneck": "scan-invalid-gold-family",
+      "expected": [
+        {
+          "arguments": {
+            "deviceId": "patio heater",
+            "state": "On"
+          },
+          "name": "setPowerState"
+        }
+      ],
+      "g1_m0": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [
+          {
+            "arguments": {
+              "deviceId": "patio_heater",
+              "state": "On"
+            },
+            "name": "setLightState"
+          }
+        ],
+        "predicted_calls": 1,
+        "slot_expected_total": 2,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 2,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "g6": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [],
+        "predicted_calls": 0,
+        "slot_expected_total": 2,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "gold_contracts": [
+        "contract-bcfb86f34a8c98a1"
+      ],
+      "gold_contracts_selected": [
+        false
+      ],
+      "gold_families": [
+        "smart-home-energy"
+      ],
+      "gold_family_applicable": false,
+      "gold_family_valid": false,
+      "gold_tools_nominated": [
+        false
+      ],
+      "paired": {
+        "exact": "tie",
+        "slot_f1": "tie",
+        "tool": "tie"
+      },
+      "resolver_valid": false,
+      "sample_id": "tier2_parametric:002653",
+      "scan": {
+        "applicable": 0,
+        "nominated_tools": [],
+        "nominations": 0,
+        "selected_contract_ids": [],
+        "total": 28,
+        "valid": 15
+      },
+      "tier": "tier2_parametric"
+    },
+    {
+      "bottleneck": "scan-invalid-gold-family",
+      "expected": [
+        {
+          "arguments": {
+            "deviceId": "washer_1",
+            "mode": "Normal",
+            "parameters": null
+          },
+          "name": "setApplianceMode"
+        },
+        {
+          "arguments": {},
+          "name": "setColor"
+        },
+        {
+          "arguments": {},
+          "name": "rampBrightness"
+        }
+      ],
+      "g1_m0": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [
+          {
+            "arguments": {
+              "deviceId": "vacuum_1",
+              "zones": [
+                "Kitchen"
+              ]
+            },
+            "name": "startCleaning"
+          },
+          {
+            "arguments": {
+              "color": "#FF0000",
+              "deviceId": "light_kitchen",
+              "state": "On"
+            },
+            "name": "setLighting"
+          },
+          {
+            "arguments": {
+              "deviceId": "light_kitchen",
+              "duration": "10m",
+              "targetLevel": 80
+            },
+            "name": "rampBrightness"
+          }
+        ],
+        "predicted_calls": 3,
+        "slot_expected_total": 3,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 8,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "g6": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [],
+        "predicted_calls": 0,
+        "slot_expected_total": 3,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "gold_contracts": [
+        "contract-f61cbd7b85c631ab",
+        "contract-80f28ae06ab86e02",
+        "contract-399d4b7b0d1c62a9"
+      ],
+      "gold_contracts_selected": [
+        false,
+        false,
+        false
+      ],
+      "gold_families": [
+        "smart-home-appliances",
+        "smart-home-lighting"
+      ],
+      "gold_family_applicable": false,
+      "gold_family_valid": false,
+      "gold_tools_nominated": [
+        false,
+        false,
+        false
+      ],
+      "paired": {
+        "exact": "tie",
+        "slot_f1": "tie",
+        "tool": "tie"
+      },
+      "resolver_valid": false,
+      "sample_id": "tier3_multi_intent:001424",
+      "scan": {
+        "applicable": 0,
+        "nominated_tools": [],
+        "nominations": 0,
+        "selected_contract_ids": [],
+        "total": 28,
+        "valid": 18
+      },
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "bottleneck": "scan-invalid-gold-family",
+      "expected": [
+        {
+          "arguments": {
+            "routineId": "Arriving_Home"
+          },
+          "name": "activateRoutine"
+        },
+        {
+          "arguments": {
+            "temperature": 73
+          },
+          "name": "setTargetTemperature"
+        }
+      ],
+      "g1_m0": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [
+          {
+            "arguments": {
+              "routineId": "Arriving_Home"
+            },
+            "name": "activateRoutine"
+          },
+          {
+            "arguments": {
+              "deviceId": "thermostat_1",
+              "temperature": 73.0
+            },
+            "name": "setTargetTemperature"
+          }
+        ],
+        "predicted_calls": 2,
+        "slot_expected_total": 2,
+        "slot_f1": 0.8,
+        "slot_predicted_total": 3,
+        "slot_true_positives": 2,
+        "tool": 1
+      },
+      "g6": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [],
+        "predicted_calls": 0,
+        "slot_expected_total": 2,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "gold_contracts": [
+        "contract-ac083efc786a21f6",
+        "contract-c136d34c00248fef"
+      ],
+      "gold_contracts_selected": [
+        false,
+        false
+      ],
+      "gold_families": [
+        "smart-home-automation",
+        "smart-home-climate"
+      ],
+      "gold_family_applicable": false,
+      "gold_family_valid": false,
+      "gold_tools_nominated": [
+        false,
+        false
+      ],
+      "paired": {
+        "exact": "tie",
+        "slot_f1": "loss",
+        "tool": "loss"
+      },
+      "resolver_valid": false,
+      "sample_id": "tier3_multi_intent:003058",
+      "scan": {
+        "applicable": 0,
+        "nominated_tools": [],
+        "nominations": 0,
+        "selected_contract_ids": [],
+        "total": 28,
+        "valid": 17
+      },
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "bottleneck": "scan-missed-gold-family",
+      "expected": [
+        {
+          "arguments": {
+            "deviceId": "front_door",
+            "state": "Locked"
+          },
+          "name": "setLockState"
+        }
+      ],
+      "g1_m0": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [],
+        "predicted_calls": 0,
+        "slot_expected_total": 2,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "g6": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [],
+        "predicted_calls": 0,
+        "slot_expected_total": 2,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "gold_contracts": [
+        "contract-0036ae4cac22bed9"
+      ],
+      "gold_contracts_selected": [
+        false
+      ],
+      "gold_families": [
+        "smart-car-body-control"
+      ],
+      "gold_family_applicable": false,
+      "gold_family_valid": true,
+      "gold_tools_nominated": [
+        false
+      ],
+      "paired": {
+        "exact": "tie",
+        "slot_f1": "tie",
+        "tool": "tie"
+      },
+      "resolver_valid": false,
+      "sample_id": "tier4_implicit:000655",
+      "scan": {
+        "applicable": 0,
+        "nominated_tools": [],
+        "nominations": 0,
+        "selected_contract_ids": [],
+        "total": 28,
+        "valid": 21
+      },
+      "tier": "tier4_implicit"
+    },
+    {
+      "bottleneck": "scan-invalid-gold-family",
+      "expected": [
+        {
+          "arguments": {
+            "deviceId": "speaker_1",
+            "query": "dinner music"
+          },
+          "name": "playMedia"
+        }
+      ],
+      "g1_m0": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [
+          {
+            "arguments": {
+              "deviceId": "speaker_1",
+              "query": "Dinner Party Music",
+              "source": "Spotify"
+            },
+            "name": "playMedia"
+          }
+        ],
+        "predicted_calls": 1,
+        "slot_expected_total": 2,
+        "slot_f1": 0.4,
+        "slot_predicted_total": 3,
+        "slot_true_positives": 1,
+        "tool": 1
+      },
+      "g6": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [],
+        "predicted_calls": 0,
+        "slot_expected_total": 2,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "gold_contracts": [
+        "contract-f153d87376800e1a"
+      ],
+      "gold_contracts_selected": [
+        false
+      ],
+      "gold_families": [
+        "smart-home-media"
+      ],
+      "gold_family_applicable": false,
+      "gold_family_valid": false,
+      "gold_tools_nominated": [
+        false
+      ],
+      "paired": {
+        "exact": "tie",
+        "slot_f1": "loss",
+        "tool": "loss"
+      },
+      "resolver_valid": false,
+      "sample_id": "tier4_implicit:001010",
+      "scan": {
+        "applicable": 0,
+        "nominated_tools": [],
+        "nominations": 0,
+        "selected_contract_ids": [],
+        "total": 28,
+        "valid": 17
+      },
+      "tier": "tier4_implicit"
+    },
+    {
+      "bottleneck": "scan-invalid-gold-family",
+      "expected": [
+        {
+          "arguments": {
+            "deviceId": "oven_1"
+          },
+          "name": "getApplianceStatus"
+        }
+      ],
+      "g1_m0": {
+        "exact": 1,
+        "parsed": 1,
+        "predicted": [
+          {
+            "arguments": {
+              "deviceId": "oven_1"
+            },
+            "name": "getApplianceStatus"
+          }
+        ],
+        "predicted_calls": 1,
+        "slot_expected_total": 1,
+        "slot_f1": 1.0,
+        "slot_predicted_total": 1,
+        "slot_true_positives": 1,
+        "tool": 1
+      },
+      "g6": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [],
+        "predicted_calls": 0,
+        "slot_expected_total": 1,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "gold_contracts": [
+        "contract-e3a30acdcb0d28f8"
+      ],
+      "gold_contracts_selected": [
+        false
+      ],
+      "gold_families": [
+        "smart-home-appliances"
+      ],
+      "gold_family_applicable": false,
+      "gold_family_valid": false,
+      "gold_tools_nominated": [
+        false
+      ],
+      "paired": {
+        "exact": "loss",
+        "slot_f1": "loss",
+        "tool": "loss"
+      },
+      "resolver_valid": false,
+      "sample_id": "tier5_needle:001458",
+      "scan": {
+        "applicable": 0,
+        "nominated_tools": [],
+        "nominations": 0,
+        "selected_contract_ids": [],
+        "total": 28,
+        "valid": 18
+      },
+      "tier": "tier5_needle"
+    },
+    {
+      "bottleneck": "scan-invalid-gold-family",
+      "expected": [
+        {
+          "arguments": {},
+          "name": "getClimateState"
+        }
+      ],
+      "g1_m0": {
+        "exact": 1,
+        "parsed": 1,
+        "predicted": [
+          {
+            "arguments": {},
+            "name": "getClimateState"
+          }
+        ],
+        "predicted_calls": 1,
+        "slot_expected_total": 0,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 1
+      },
+      "g6": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [],
+        "predicted_calls": 0,
+        "slot_expected_total": 0,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "gold_contracts": [
+        "contract-e6b2c838516ea204"
+      ],
+      "gold_contracts_selected": [
+        false
+      ],
+      "gold_families": [
+        "smart-car-climate-environment"
+      ],
+      "gold_family_applicable": false,
+      "gold_family_valid": false,
+      "gold_tools_nominated": [
+        false
+      ],
+      "paired": {
+        "exact": "loss",
+        "slot_f1": "tie",
+        "tool": "loss"
+      },
+      "resolver_valid": false,
+      "sample_id": "tier5_needle:004242",
+      "scan": {
+        "applicable": 0,
+        "nominated_tools": [],
+        "nominations": 0,
+        "selected_contract_ids": [],
+        "total": 28,
+        "valid": 17
+      },
+      "tier": "tier5_needle"
+    },
+    {
+      "bottleneck": "scan-invalid-gold-family",
+      "expected": [
+        {
+          "arguments": {
+            "message": "Kids, dinner is ready",
+            "targetRooms": "null"
+          },
+          "name": "broadcastMessage"
+        }
+      ],
+      "g1_m0": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [
+          {
+            "arguments": {
+              "message": "Dinner is ready",
+              "targetRooms": null
+            },
+            "name": "broadcastMessage"
+          }
+        ],
+        "predicted_calls": 1,
+        "slot_expected_total": 2,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 2,
+        "slot_true_positives": 0,
+        "tool": 1
+      },
+      "g6": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [],
+        "predicted_calls": 0,
+        "slot_expected_total": 2,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "gold_contracts": [
+        "contract-619bb42187d4a6c1"
+      ],
+      "gold_contracts_selected": [
+        false
+      ],
+      "gold_families": [
+        "smart-home-automation"
+      ],
+      "gold_family_applicable": false,
+      "gold_family_valid": false,
+      "gold_tools_nominated": [
+        false
+      ],
+      "paired": {
+        "exact": "tie",
+        "slot_f1": "tie",
+        "tool": "loss"
+      },
+      "resolver_valid": false,
+      "sample_id": "tier6_correction:001764",
+      "scan": {
+        "applicable": 0,
+        "nominated_tools": [],
+        "nominations": 0,
+        "selected_contract_ids": [],
+        "total": 28,
+        "valid": 25
+      },
+      "tier": "tier6_correction"
+    },
+    {
+      "bottleneck": "scan-invalid-gold-family",
+      "expected": [
+        {
+          "arguments": {
+            "deviceId": "camera_1"
+          },
+          "name": "rebootDevice"
+        }
+      ],
+      "g1_m0": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [
+          {
+            "arguments": {},
+            "name": "resetTPMSSensors"
+          },
+          {
+            "arguments": {
+              "deviceId": "camera_1"
+            },
+            "name": "rebootDevice"
+          }
+        ],
+        "predicted_calls": 2,
+        "slot_expected_total": 1,
+        "slot_f1": 1.0,
+        "slot_predicted_total": 1,
+        "slot_true_positives": 1,
+        "tool": 0
+      },
+      "g6": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [],
+        "predicted_calls": 0,
+        "slot_expected_total": 1,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "gold_contracts": [
+        "contract-91ab8b03c8bc3b7c"
+      ],
+      "gold_contracts_selected": [
+        false
+      ],
+      "gold_families": [
+        "smart-home-maintenance"
+      ],
+      "gold_family_applicable": false,
+      "gold_family_valid": false,
+      "gold_tools_nominated": [
+        false
+      ],
+      "paired": {
+        "exact": "tie",
+        "slot_f1": "loss",
+        "tool": "tie"
+      },
+      "resolver_valid": false,
+      "sample_id": "tier6_correction:002430",
+      "scan": {
+        "applicable": 0,
+        "nominated_tools": [],
+        "nominations": 0,
+        "selected_contract_ids": [],
+        "total": 28,
+        "valid": 19
+      },
+      "tier": "tier6_correction"
+    },
+    {
+      "bottleneck": "scan-invalid-gold-family",
+      "expected": [
+        {
+          "arguments": {
+            "deviceId": "camera_1",
+            "eventType": "Person"
+          },
+          "name": "getCameraEvent"
+        }
+      ],
+      "g1_m0": {
+        "exact": 1,
+        "parsed": 1,
+        "predicted": [
+          {
+            "arguments": {
+              "deviceId": "camera_1",
+              "eventType": "Person"
+            },
+            "name": "getCameraEvent"
+          }
+        ],
+        "predicted_calls": 1,
+        "slot_expected_total": 2,
+        "slot_f1": 1.0,
+        "slot_predicted_total": 2,
+        "slot_true_positives": 2,
+        "tool": 1
+      },
+      "g6": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [],
+        "predicted_calls": 0,
+        "slot_expected_total": 2,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "gold_contracts": [
+        "contract-f7092ef1f7b499ef"
+      ],
+      "gold_contracts_selected": [
+        false
+      ],
+      "gold_families": [
+        "smart-home-security"
+      ],
+      "gold_family_applicable": false,
+      "gold_family_valid": false,
+      "gold_tools_nominated": [
+        false
+      ],
+      "paired": {
+        "exact": "loss",
+        "slot_f1": "loss",
+        "tool": "loss"
+      },
+      "resolver_valid": false,
+      "sample_id": "tier7_multiturn:000440",
+      "scan": {
+        "applicable": 0,
+        "nominated_tools": [],
+        "nominations": 0,
+        "selected_contract_ids": [],
+        "total": 28,
+        "valid": 21
+      },
+      "tier": "tier7_multiturn"
+    },
+    {
+      "bottleneck": "scan-missed-gold-family",
+      "expected": [
+        {
+          "arguments": {
+            "routineId": "Good_Morning"
+          },
+          "name": "activateRoutine"
+        }
+      ],
+      "g1_m0": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [],
+        "predicted_calls": 0,
+        "slot_expected_total": 1,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "g6": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [],
+        "predicted_calls": 0,
+        "slot_expected_total": 1,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "gold_contracts": [
+        "contract-ac083efc786a21f6"
+      ],
+      "gold_contracts_selected": [
+        false
+      ],
+      "gold_families": [
+        "smart-home-automation"
+      ],
+      "gold_family_applicable": false,
+      "gold_family_valid": true,
+      "gold_tools_nominated": [
+        false
+      ],
+      "paired": {
+        "exact": "tie",
+        "slot_f1": "tie",
+        "tool": "tie"
+      },
+      "resolver_valid": false,
+      "sample_id": "tier7_multiturn:001516",
+      "scan": {
+        "applicable": 0,
+        "nominated_tools": [],
+        "nominations": 0,
+        "selected_contract_ids": [],
+        "total": 28,
+        "valid": 24
+      },
+      "tier": "tier7_multiturn"
+    },
+    {
+      "bottleneck": "scan-missed-gold-family",
+      "expected": [
+        {
+          "arguments": {
+            "offset": -1.4
+          },
+          "name": "calibrateThermostat"
+        },
+        {
+          "arguments": {},
+          "name": "setBrightness"
+        }
+      ],
+      "g1_m0": {
+        "exact": 0,
+        "parsed": 0,
+        "predicted": [],
+        "predicted_calls": 0,
+        "slot_expected_total": 1,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "g6": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [],
+        "predicted_calls": 0,
+        "slot_expected_total": 1,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "gold_contracts": [
+        "contract-1647375c7b011fc9",
+        "contract-bf2187ef299c447c"
+      ],
+      "gold_contracts_selected": [
+        false,
+        false
+      ],
+      "gold_families": [
+        "smart-home-maintenance",
+        "smart-home-lighting"
+      ],
+      "gold_family_applicable": false,
+      "gold_family_valid": true,
+      "gold_tools_nominated": [
+        false,
+        false
+      ],
+      "paired": {
+        "exact": "tie",
+        "slot_f1": "tie",
+        "tool": "tie"
+      },
+      "resolver_valid": false,
+      "sample_id": "tier8_intent_blending:000192",
+      "scan": {
+        "applicable": 0,
+        "nominated_tools": [],
+        "nominations": 0,
+        "selected_contract_ids": [],
+        "total": 28,
+        "valid": 22
+      },
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "bottleneck": "scan-invalid-gold-family",
+      "expected": [
+        {
+          "arguments": {
+            "deviceId": "purifier_1"
+          },
+          "name": "getFilterLife"
+        },
+        {
+          "arguments": {},
+          "name": "setThermostatMode"
+        },
+        {
+          "arguments": {},
+          "name": "setTargetTemperature"
+        },
+        {
+          "arguments": {},
+          "name": "setLighting"
+        },
+        {
+          "arguments": {},
+          "name": "setBrightness"
+        }
+      ],
+      "g1_m0": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [
+          {
+            "arguments": {
+              "deviceId": "purifier_1"
+            },
+            "name": "getFilterLife"
+          },
+          {
+            "arguments": {
+              "deviceId": "thermostat_1",
+              "mode": "Auto"
+            },
+            "name": "setThermostatMode"
+          },
+          {
+            "arguments": {
+              "deviceId": "thermostat_1",
+              "temperature": 21.6
+            },
+            "name": "setTargetTemperature"
+          },
+          {
+            "arguments": {
+              "deviceId": "light_1",
+              "level": 50,
+              "state": "On"
+            },
+            "name": "setLighting"
+          }
+        ],
+        "predicted_calls": 4,
+        "slot_expected_total": 1,
+        "slot_f1": 0.2222222222222222,
+        "slot_predicted_total": 8,
+        "slot_true_positives": 1,
+        "tool": 0
+      },
+      "g6": {
+        "exact": 0,
+        "parsed": 1,
+        "predicted": [],
+        "predicted_calls": 0,
+        "slot_expected_total": 1,
+        "slot_f1": 0.0,
+        "slot_predicted_total": 0,
+        "slot_true_positives": 0,
+        "tool": 0
+      },
+      "gold_contracts": [
+        "contract-6db885ffb3406734",
+        "contract-4cfa2507f3f9e276",
+        "contract-c136d34c00248fef",
+        "contract-c1a57854397b6b21",
+        "contract-bf2187ef299c447c"
+      ],
+      "gold_contracts_selected": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "gold_families": [
+        "smart-home-diagnostics",
+        "smart-home-climate",
+        "smart-home-core-control",
+        "smart-home-lighting"
+      ],
+      "gold_family_applicable": false,
+      "gold_family_valid": false,
+      "gold_tools_nominated": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "paired": {
+        "exact": "tie",
+        "slot_f1": "loss",
+        "tool": "tie"
+      },
+      "resolver_valid": false,
+      "sample_id": "tier8_intent_blending:000213",
+      "scan": {
+        "applicable": 0,
+        "nominated_tools": [],
+        "nominations": 0,
+        "selected_contract_ids": [],
+        "total": 28,
+        "valid": 18
+      },
+      "tier": "tier8_intent_blending"
+    }
+  ],
+  "schema": "saea-a2t-g6-fixed16-result-analysis-v1",
+  "scope": {
+    "audio_reads": 0,
+    "model_contacts": 0,
+    "network_contacts": 0,
+    "score_semantics": "unchanged Audio2Tool parser and item scorer imported in-process",
+    "scorer_processes": 0,
+    "tool_service_contacts": 0,
+    "tuning": false
+  },
+  "selected_ids": [
+    "tier1_direct:000077",
+    "tier1_direct:004159",
+    "tier2_parametric:001004",
+    "tier2_parametric:002653",
+    "tier3_multi_intent:001424",
+    "tier3_multi_intent:003058",
+    "tier4_implicit:000655",
+    "tier4_implicit:001010",
+    "tier5_needle:001458",
+    "tier5_needle:004242",
+    "tier6_correction:001764",
+    "tier6_correction:002430",
+    "tier7_multiturn:000440",
+    "tier7_multiturn:001516",
+    "tier8_intent_blending:000192",
+    "tier8_intent_blending:000213"
+  ],
+  "sources": {
+    "family_corpus": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/knowledge/audio2tool/g5-exhaustive-family-contracts-v1/corpus.json",
+    "family_corpus_sha256": "92684a16e39985d3c4c6e7e6d62ac54feaa357eaa7c24c744df21950e51f95e5",
+    "g1_m0_outputs": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-G1/attempt-20260825T100735Z-a2tg1m0/arm1-m0-outputs.jsonl",
+    "g1_m0_outputs_sha256": "dea60ff1e63fd2ef11c93edf8808217062fea3f0565ed5b60f136264bc6a9467",
+    "g6_outputs": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-G6-EXHAUSTIVE-FAMILY-SWEEP-FIXED16-V1/flight-seal-20260902T222625Z/g6-seal/SAEA-A2T-G6-EXHAUSTIVE-FAMILY-SWEEP-FIXED16-V1.outputs.jsonl",
+    "g6_outputs_sha256": "8ecbcb785e12a26d690a448f4c897d4e01a0c5d048c0a0a7295f6548979b4c6e",
+    "g6_scan_states": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-G6-EXHAUSTIVE-FAMILY-SWEEP-FIXED16-V1/flight-seal-20260902T222625Z/g6-seal/g6-scan-states.jsonl",
+    "g6_scan_states_sha256": "6183aa501650525a2b4ee3f1c68ff3ac33d791f3b26c77bae2dbcf9cee6e2d01",
+    "transport_traces": [
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-G6-EXHAUSTIVE-FAMILY-SWEEP-FIXED16-V1/flight-20260902T220036Z/g6/transport-trace/SAEA-A2T-G6-EXHAUSTIVE-FAMILY-SWEEP-FIXED16-V1.trace.jsonl",
+        "sha256": "99f6b74b8eac96b540a0a8cf8e2db5d9ebd66ccd86e6c601769e3eb5ae11e81e"
+      },
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-G6-EXHAUSTIVE-FAMILY-SWEEP-FIXED16-V1/flight-20260902T221239Z/g6/transport-trace/SAEA-A2T-G6-EXHAUSTIVE-FAMILY-SWEEP-FIXED16-V1.trace.jsonl",
+        "sha256": "23f5eb29502e1a76ae9242536350e35cf2b9a362a9a982ea5f4b64dc8050b807"
+      }
+    ]
+  }
+}

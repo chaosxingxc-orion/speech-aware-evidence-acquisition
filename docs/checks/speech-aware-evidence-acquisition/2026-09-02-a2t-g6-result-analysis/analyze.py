@@ -56,6 +56,8 @@ G6_IDS = (
 )
 FAMILY_COUNT = 28
 SCAN_ROW_COUNT = len(G6_IDS) * FAMILY_COUNT
+CONTACT_COUNT = len(G6_IDS) * (FAMILY_COUNT + 1)
+TRANSPORT_ROW_COUNT = CONTACT_COUNT * 3
 M0_RELPATH = Path(
     "runs/SAEA-A2T-G1/attempt-20260825T100735Z-a2tg1m0/"
     "arm1-m0-outputs.jsonl"
@@ -303,6 +305,272 @@ def classify_bottleneck(facts: Mapping[str, bool]) -> str:
     return "argument-realization"
 
 
+def _transport_responses(
+    rows: Sequence[Mapping[str, object]],
+) -> dict[tuple[str, str], str]:
+    if len(rows) != TRANSPORT_ROW_COUNT:
+        raise RuntimeError(
+            f"G6 transport traces must contain exactly {TRANSPORT_ROW_COUNT} rows"
+        )
+    by_channel: dict[str, dict[str, Mapping[str, object]]] = {
+        channel: {} for channel in ("MODEL_REQUEST", "MODEL_RESPONSE", "COST")
+    }
+    suffixes = {
+        "MODEL_REQUEST": "/request",
+        "MODEL_RESPONSE": "/response",
+        "COST": "/cost",
+    }
+    for row in rows:
+        channel = row.get("channel")
+        record_id = row.get("record_id")
+        if channel not in by_channel or not isinstance(record_id, str):
+            raise RuntimeError("G6 transport row has an unknown channel or identity")
+        suffix = suffixes[str(channel)]
+        if not record_id.endswith(suffix):
+            raise RuntimeError("G6 transport record suffix disagrees with its channel")
+        base = record_id.removesuffix(suffix)
+        if base in by_channel[str(channel)]:
+            raise RuntimeError("duplicate G6 transport record")
+        by_channel[str(channel)][base] = row
+    bases = set(by_channel["MODEL_REQUEST"])
+    if any(set(records) != bases for records in by_channel.values()) or len(bases) != CONTACT_COUNT:
+        raise RuntimeError("G6 transport request/response/cost triples are incomplete")
+
+    responses: dict[tuple[str, str], str] = {}
+    for base in bases:
+        request_payload = by_channel["MODEL_REQUEST"][base].get("payload")
+        response_payload = by_channel["MODEL_RESPONSE"][base].get("payload")
+        if not isinstance(request_payload, dict) or not isinstance(response_payload, dict):
+            raise RuntimeError("G6 transport payload is malformed")
+        payload = request_payload.get("payload")
+        if not isinstance(payload, dict):
+            raise RuntimeError("G6 transport request has no inner payload")
+        sample_id = payload.get("sample_id")
+        history = payload.get("history")
+        if (
+            sample_id not in G6_IDS
+            or not isinstance(history, list)
+            or not history
+            or not isinstance(history[0], dict)
+            or not isinstance(history[0].get("contact_id"), str)
+        ):
+            raise RuntimeError("G6 transport request lacks a frozen contact binding")
+        contact_id = str(history[0]["contact_id"])
+        text = response_payload.get("text")
+        if not isinstance(text, str) or not text:
+            raise RuntimeError("G6 transport response text must be nonempty")
+        key = (str(sample_id), contact_id)
+        if key in responses:
+            raise RuntimeError("duplicate G6 sample/contact transport response")
+        responses[key] = text
+
+    expected_scan_contacts = {
+        f"g6-scan-{family}" for family in _families_from_transport(responses)
+    }
+    for sample_id in G6_IDS:
+        contacts = {contact for sample, contact in responses if sample == sample_id}
+        if len(contacts) != FAMILY_COUNT + 1 or "g6-resolve" not in contacts:
+            raise RuntimeError(f"G6 transport contact coverage mismatch for {sample_id}")
+        if contacts - {"g6-resolve"} != expected_scan_contacts:
+            raise RuntimeError(f"G6 transport family coverage mismatch for {sample_id}")
+    return responses
+
+
+def _families_from_transport(responses: Mapping[tuple[str, str], str]) -> tuple[str, ...]:
+    prefix = "g6-scan-"
+    return tuple(
+        sorted(
+            {
+                contact.removeprefix(prefix)
+                for _, contact in responses
+                if contact.startswith(prefix)
+            }
+        )
+    )
+
+
+def _raw_json_document(raw: str) -> tuple[object | None, bool]:
+    surface = raw.strip()
+    fenced = surface.startswith("```json\n") and surface.endswith("\n```")
+    diagnostic_surface = surface[len("```json\n") : -len("\n```")] if fenced else surface
+    try:
+        return json.loads(diagnostic_surface), fenced
+    except json.JSONDecodeError:
+        return None, fenced
+
+
+def _raw_scan_category(
+    *,
+    raw: str,
+    official_report: Mapping[str, object],
+    family: str,
+    tool_to_family: Mapping[str, str],
+) -> str:
+    if official_report["valid"]:
+        return (
+            "valid-applicable"
+            if official_report["applicable"]
+            else "valid-abstention"
+        )
+    document, fenced = _raw_json_document(raw)
+    if fenced:
+        return "json-code-fence"
+    if not isinstance(document, dict):
+        return "json-or-top-level-object-invalid"
+    if document.get("ordering_evidence") == {}:
+        return "ordering-evidence-object-not-list"
+    required_keys = {
+        "applicable",
+        "candidates",
+        "correction_evidence",
+        "turn_evidence",
+        "role_evidence",
+        "ordering_evidence",
+    }
+    if set(document) != required_keys:
+        return "scan-top-level-key-set-invalid"
+    candidates = document.get("candidates")
+    if not isinstance(document.get("applicable"), bool) or not isinstance(candidates, list):
+        return "scan-top-level-field-type-invalid"
+    evidence_fields = (
+        "correction_evidence",
+        "turn_evidence",
+        "role_evidence",
+        "ordering_evidence",
+    )
+    if any(not isinstance(document.get(field), list) for field in evidence_fields):
+        return "scan-evidence-field-type-invalid"
+    candidate_keys = {
+        "tool_name",
+        "speech_spans",
+        "argument_bindings",
+        "unresolved_required_arguments",
+    }
+    if any(not isinstance(candidate, dict) or set(candidate) != candidate_keys for candidate in candidates):
+        return "candidate-key-set-invalid"
+    names = [candidate.get("tool_name") for candidate in candidates]
+    if any(not isinstance(name, str) or tool_to_family.get(name) != family for name in names):
+        return "candidate-unregistered-or-cross-family"
+    return "candidate-contract-or-evidence-invalid"
+
+
+def build_raw_transport_diagnostic(
+    *,
+    transport_rows: Sequence[Mapping[str, object]],
+    scan_rows: Sequence[Mapping[str, object]],
+    corpus_document: Mapping[str, object],
+    expected_by_id: Mapping[str, Sequence[ToolCall]],
+) -> dict[str, object]:
+    """Describe raw shapes and nomination ceilings without changing sealed scores."""
+
+    index = _contract_index(corpus_document)
+    scans = validate_scan_rows(scan_rows, corpus_document)
+    responses = _transport_responses(transport_rows)
+    families = set(index["families"])
+    if set(_families_from_transport(responses)) != families:
+        raise RuntimeError("transport trace families disagree with the frozen corpus")
+    tool_to_family: Mapping[str, str] = index["tool_to_family"]  # type: ignore[assignment]
+    registered_tools = set(tool_to_family)
+    shape_counts: Counter[str] = Counter()
+    raw_applicable: dict[str, set[str]] = {sample_id: set() for sample_id in G6_IDS}
+    raw_nominations: dict[str, set[str]] = {sample_id: set() for sample_id in G6_IDS}
+    raw_candidate_count = 0
+    family_local_nomination_count = 0
+
+    for sample_id in G6_IDS:
+        for family, official_report in scans[sample_id].items():
+            raw = responses[(sample_id, f"g6-scan-{family}")]
+            shape_counts[
+                _raw_scan_category(
+                    raw=raw,
+                    official_report=official_report,
+                    family=family,
+                    tool_to_family=tool_to_family,
+                )
+            ] += 1
+            document, _ = _raw_json_document(raw)
+            if not isinstance(document, dict):
+                continue
+            if document.get("applicable") is True:
+                raw_applicable[sample_id].add(family)
+            candidates = document.get("candidates")
+            if not isinstance(candidates, list):
+                continue
+            raw_candidate_count += len(candidates)
+            for candidate in candidates:
+                name = candidate.get("tool_name") if isinstance(candidate, dict) else None
+                if isinstance(name, str) and tool_to_family.get(name) == family:
+                    family_local_nomination_count += 1
+                    raw_nominations[sample_id].add(name)
+
+    gold_family_rows = 0
+    gold_tool_rows = 0
+    ceiling_rows: list[dict[str, object]] = []
+    for sample_id in G6_IDS:
+        expected = expected_by_id[sample_id]
+        gold_tools = {call.name for call in expected}
+        if not gold_tools.issubset(registered_tools):
+            raise RuntimeError("gold tool is absent from the frozen family corpus")
+        gold_families = {tool_to_family[tool] for tool in gold_tools}
+        family_covered = gold_families.issubset(raw_applicable[sample_id])
+        tools_nominated = gold_tools.issubset(raw_nominations[sample_id])
+        gold_family_rows += family_covered
+        gold_tool_rows += tools_nominated
+        ceiling_rows.append(
+            {
+                "sample_id": sample_id,
+                "gold_family_applicable": family_covered,
+                "gold_tool_nominated": tools_nominated,
+            }
+        )
+
+    raw_call_count = 0
+    raw_registered_call_count = 0
+    raw_resolve_parse_count = 0
+    for sample_id in G6_IDS:
+        document, fenced = _raw_json_document(responses[(sample_id, "g6-resolve")])
+        if fenced or not isinstance(document, list):
+            continue
+        raw_resolve_parse_count += 1
+        for call in document:
+            raw_call_count += 1
+            if isinstance(call, dict) and call.get("name") in registered_tools:
+                raw_registered_call_count += 1
+
+    official_valid = sum(
+        bool(report["valid"])
+        for sample_reports in scans.values()
+        for report in sample_reports.values()
+    )
+    return {
+        "contacts": {"scan": SCAN_ROW_COUNT, "resolve": len(G6_IDS), "total": CONTACT_COUNT},
+        "nonempty_response_texts": len(responses),
+        "scan": {
+            "official_valid": official_valid,
+            "official_invalid_empty_fallback": SCAN_ROW_COUNT - official_valid,
+            "raw_shape_counts": dict(sorted(shape_counts.items())),
+            "raw_applicable_true": sum(len(rows) for rows in raw_applicable.values()),
+            "raw_candidate_count": raw_candidate_count,
+            "raw_registered_family_local_nominations": family_local_nomination_count,
+        },
+        "resolve": {
+            "raw_json_array_rows": raw_resolve_parse_count,
+            "raw_call_count": raw_call_count,
+            "raw_registered_call_count": raw_registered_call_count,
+            "raw_unregistered_call_count": raw_call_count - raw_registered_call_count,
+        },
+        "diagnostic_ceiling": {
+            "gold_family_applicable_rows": gold_family_rows,
+            "gold_tool_nominated_rows": gold_tool_rows,
+            "rows": ceiling_rows,
+        },
+        "scope_note": (
+            "Diagnostic only: raw-shape recovery does not alter official G6 outputs, "
+            "scores, validity, or make a counterfactual end-to-end claim."
+        ),
+    }
+
+
 def _resolver_valid(
     score: Mapping[str, object],
     nominated_tools: set[str],
@@ -505,6 +773,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--g6-outputs", type=Path, required=True)
     parser.add_argument("--g6-scan-states", type=Path, required=True)
+    parser.add_argument(
+        "--transport-trace",
+        type=Path,
+        action="append",
+        required=True,
+        help="Immutable G6 transport trace; repeat once per source attempt.",
+    )
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args(argv)
     if args.out.exists():
@@ -519,12 +794,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         raise RuntimeError("frozen G5 family corpus identity drift")
     lock = load_lock(umbrella_lock_path(REPO))
     expected = load_expected_calls(lock, root, repo_root=REPO)
+    g6_rows = read_rows(args.g6_outputs)
+    scan_rows = read_jsonl(args.g6_scan_states)
+    corpus_document = json.loads(corpus_path.read_text(encoding="utf-8"))
     result = build_analysis(
-        g6_rows=read_rows(args.g6_outputs),
+        g6_rows=g6_rows,
         m0_rows=read_rows(m0_path),
         expected_by_id=expected,
-        scan_rows=read_jsonl(args.g6_scan_states),
-        corpus_document=json.loads(corpus_path.read_text(encoding="utf-8")),
+        scan_rows=scan_rows,
+        corpus_document=corpus_document,
         sources={
             "g6_outputs": str(args.g6_outputs.resolve()),
             "g6_outputs_sha256": sha256_file(args.g6_outputs),
@@ -534,7 +812,23 @@ def main(argv: Sequence[str] | None = None) -> int:
             "g1_m0_outputs_sha256": M0_SHA256,
             "family_corpus": str(corpus_path),
             "family_corpus_sha256": CORPUS_SHA256,
+            "transport_traces": [
+                {
+                    "path": str(path.resolve()),
+                    "sha256": sha256_file(path),
+                }
+                for path in args.transport_trace
+            ],
         },
+    )
+    transport_rows = [
+        row for path in args.transport_trace for row in read_jsonl(path)
+    ]
+    result["raw_transport_diagnostic"] = build_raw_transport_diagnostic(
+        transport_rows=transport_rows,
+        scan_rows=scan_rows,
+        corpus_document=corpus_document,
+        expected_by_id=expected,
     )
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(
