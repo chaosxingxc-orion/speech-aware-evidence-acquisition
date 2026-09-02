@@ -214,7 +214,13 @@ def _validate_registry(
             "defaults": _parse_registry_defaults(
                 str(raw.get("argument_defaults") or ""), name
             ),
+            "constraints": str(raw.get("argument_constraints") or "").strip(),
         }
+        constraints = registry[name]["constraints"]
+        if not isinstance(constraints, str) or not constraints.isascii():
+            raise PlainEnglishCardError(
+                f"registry {name}.argument_constraints must be ASCII English"
+            )
     if not registry:
         raise PlainEnglishCardError("registry must contain at least one tool")
     return registry
@@ -446,6 +452,9 @@ def build_plain_english_card_corpus(
             lines.extend(f"- {key} ({type_name})" for key, type_name in arguments)
         else:
             lines.append("- No arguments.")
+        constraints = entry["constraints"]
+        if isinstance(constraints, str) and constraints:
+            lines.append(f"Public argument constraints: {constraints}")
         lines.append("Tier-conditioned argument inclusion rules:")
         found_tier = False
         for tier in TIERS:

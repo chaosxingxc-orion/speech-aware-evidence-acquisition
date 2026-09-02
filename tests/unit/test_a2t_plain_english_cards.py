@@ -15,6 +15,7 @@ def _registry_row(
     signature: str | None = None,
     category: str = "lighting",
     defaults: str = "",
+    constraints: str = "",
 ) -> dict[str, str]:
     return {
         "tool_id": "1",
@@ -24,7 +25,7 @@ def _registry_row(
         "signature": signature or f"{name}()",
         "description": description,
         "argument_defaults": defaults,
-        "argument_constraints": "",
+        "argument_constraints": constraints,
     }
 
 
@@ -183,6 +184,24 @@ def test_only_registry_confirmed_construction_stable_defaults_are_rendered() -> 
     assert "PRIVATE-PERSON" not in corpus.corpus_text
     assert "PRIVATE-MESSAGE" not in corpus.corpus_text
     assert corpus.report["stable_default_count"] == 1
+
+
+def test_detailed_cards_preserve_public_argument_constraints() -> None:
+    registry, rows = _world()
+    constrained = tuple(
+        {
+            **row,
+            "argument_constraints": "level: [0-100]"
+            if row["tool_name"] == "setLightLevel"
+            else row["argument_constraints"],
+        }
+        for row in registry
+    )
+
+    corpus = cards.build_plain_english_card_corpus(constrained, rows)
+
+    detail = corpus.tool_cards_by_name["setLightLevel"].text
+    assert "Public argument constraints: level: [0-100]" in detail
 
 
 def test_corpus_does_not_render_source_text_or_identity_and_rejects_overlap() -> None:
