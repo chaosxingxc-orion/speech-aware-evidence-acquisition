@@ -1,0 +1,56 @@
+{
+  "artifacts": {
+    "diagnostic_result_sha256": "483d5e3dc08e9c9594d8ce08e5d1ceefef44b97f9878e60aa5c8c2118de1f29f",
+    "flight_receipt_sha256": "ced7609ddebb44a8b9fbce9dc3167250dcff7d25cc91fa6b32210e172815f07c",
+    "manifest_sha256": "632d147c6e2f2f3d46d4eb0ae6ae3c8da5eedf973faefa507185bb595ac5bb3e",
+    "official_score_sha256": "a489e82a5630e9063265f26644767e7f27a76e93661447dac9f110e353ee60da",
+    "trace_sha256": "8a07a6ed14515850033f852ffbbf4ae4ee2756b9202423812711d461c3f38591"
+  },
+  "contacts": {
+    "model": 104,
+    "network_jitter": 0,
+    "retries": 0,
+    "scorer_complete_manifests": 1
+  },
+  "decision": {
+    "g2_representation_accepted": false,
+    "next_hypothesis": "Bounded English observation followed by deterministic hierarchical retrieval and a small set of direct English knowledge cards is more executable than a monolithic coded handbook.",
+    "scale_to_approximately_1000": false,
+    "test_remains_closed": true,
+    "training_free_rl_remains_deferred": true
+  },
+  "exclusive_outcomes": {
+    "exact": 4,
+    "parse_failure": 9,
+    "parsed_empty": 7,
+    "parsed_nonempty_wrong_tool_set": 56,
+    "tool_set_correct_schema_wrong": 28
+  },
+  "failure_evidence": {
+    "g1_average_prompt_tokens": 12632,
+    "g2_average_prompt_tokens": 49704,
+    "g2_code_leakage_samples": 9,
+    "g2_context_fraction": 0.758,
+    "g2_illegal_argument_key_set_samples": 43,
+    "g2_out_of_registry_call_count": 16,
+    "g2_out_of_registry_sample_count": 11,
+    "g2_to_g1_prompt_token_ratio": 3.934,
+    "tier7_complete_history_supplied": false
+  },
+  "metrics": {
+    "g1_exact_count": 19,
+    "g1_slot_micro_f1": 0.34951456310679613,
+    "g1_tool_count": 71,
+    "g2_exact_count": 4,
+    "g2_parse_count": 95,
+    "g2_slot_micro_f1": 0.09756097560975609,
+    "g2_tool_count": 32,
+    "paired_exact_ci90_high": -0.08653846153846154,
+    "paired_exact_ci90_low": -0.20192307692307693,
+    "paired_exact_delta": -0.14423076923076922
+  },
+  "run_id": "SAEA-A2T-CONSTRUCTION-SEMANTIC-GROUND-DIAGNOSTIC-104-V1",
+  "schema": "saea-a2t-construction-semantic-ground-diagnostic-summary-v1",
+  "status": "COMPLETED_FAILED_GROUND_GATE",
+  "study_commit": "4d8c2c9e674bb9db6b0f70077a353a8afd5bfc36"
+}
