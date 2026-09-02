@@ -11,6 +11,7 @@ from threading import Lock
 from typing import Mapping, Sequence
 
 from ..adapters.audio2tool import Audio2ToolAdapter, Audio2ToolSample
+from ..adapters.audio2tool import render_audio2tool_instruction
 
 
 SPLIT_ID = "A2T-GROUND-QUAL-104"
@@ -75,7 +76,11 @@ def render_qualification_contract(
         raise GroundQualificationFlightError("handbook must be non-empty text")
     if not handbook.isascii():
         raise GroundQualificationFlightError("handbook must be ASCII English")
-    return registry_contract if mode == REGISTRY_DIRECT else handbook
+    return (
+        render_audio2tool_instruction(registry_contract)
+        if mode == REGISTRY_DIRECT
+        else handbook
+    )
 
 
 class GroundQualificationAdapter(Audio2ToolAdapter):

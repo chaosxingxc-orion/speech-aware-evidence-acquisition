@@ -43,7 +43,7 @@ def test_resend_selection_refuses_wrong_tier_geometry() -> None:
 
 
 def test_contract_renderer_changes_only_the_registered_knowledge_source() -> None:
-    registry = "You control tools. Available tools:\nTOOL x\n\nReturn JSON."
+    registry = "TOOL x"
     handbook = "AUDIO2TOOL EXECUTABLE HANDBOOK\n\nReturn only JSON."
     assert (
         render_qualification_contract(
@@ -51,7 +51,11 @@ def test_contract_renderer_changes_only_the_registered_knowledge_source() -> Non
             registry_contract=registry,
             handbook=handbook,
         )
-        == registry
+        == (
+            "You control tools. Available tools:\nTOOL x\n\n"
+            'Respond with ONLY a JSON array of tool calls, e.g. '
+            '[{"name": "x", "arguments": {}}].'
+        )
     )
     assert (
         render_qualification_contract(
