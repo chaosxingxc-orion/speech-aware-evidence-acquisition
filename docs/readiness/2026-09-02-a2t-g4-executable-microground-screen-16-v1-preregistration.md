@@ -1,11 +1,34 @@
 # Audio2Tool G4 executable-microground screen 16 v1 preregistration
 
-Date: 2026-09-02. Status: **REGISTERED; ZERO CONTACT; MODEL CONTACT CLOSED**. Experiment:
+Date: 2026-09-02. Status: **PRE-CONTACT AMENDED; ZERO CONTACT; MODEL CONTACT CLOSED**. Experiment:
 `SAEA-A2T-G4-EXECUTABLE-MICROGROUND-SCREEN-16-V1`. Execution profile:
-`bounded-discovery-probe`. Experiment config SHA-256 is
-`926bbbb0c90b70df7877dfd4c72248e09c56007d85180c5b9b23ec664263c04a`; baseline config SHA-256 is
+`bounded-discovery-probe`. The original zero-contact experiment config SHA-256 was
+`926bbbb0c90b70df7877dfd4c72248e09c56007d85180c5b9b23ec664263c04a`; its composed config and
+protocol SHA-256 values were `b5a28adf9316d28adfbe5d0bd25c67b429903d03ff1f6eb10d2f9d594b64ed09` and
+`efa1fe160f5ee72b0c9dcc110058f6ad723a89df232cbfd7b2e913de564c52dc`. The prospective amendment
+below supersedes those identities before any contact. Current experiment, composed-config, and
+protocol SHA-256 values are `528f3e5707d3d8b9c992ab99aab701231270c915fa2e7309b5c3b0a3a6101235`,
+`b4a817e193203e2da82c0821ee6dbb2383f07988e8d0e41e5c5da859060055c4`, and
+`28195c502bb6a285c372c1b07135948f0e2472f5e541ff610b1bdf6dc2c8aad9`. Baseline config SHA-256 is
 `dd7f38fe941d1c6ece607ff695f0ab700a9aea2c75fd5808674ceba8119820e5`; roster receipt SHA-256 is
 `41a14ab576d7a428dd9849f26432e2c4998371b9f601189a1d558d694a12c884`.
+
+## Prospective pre-contact identity amendment
+
+Before any model, scorer, tokenizer, retriever, network, or gold contact, this amendment binds the
+landed semantic-card builder, corpus, build receipt, and strict-state-compatible router. Their
+SHA-256 values are, respectively,
+`e49c5b71348efbfdcb284d17b847efb341a3a5898324ef2432ebe9e880da080e`,
+`85a04fc72c49802853d0da3785f30a266a90d88275901c8292231442ef4a294f`,
+`f2da2a1b77a59ff7f5d9e74c2fabe1e04c87d560f4ca066c573f3d65803680fa`, and
+`63fe8dc77ca208bc02ce501eef4c5f79a8f11eda7243b6226709736241d451ea`.
+
+The router change only makes the already-registered SE arm executable: a validated strict state's
+active action uses `normalized`, falling back to `surface`, while the existing extended
+`action_phrase` schema remains accepted. Forbidden runtime fields, the eight-action maximum,
+retrieval policy, candidate limits, packet renderer, arms, population, gates, budgets, phase order,
+scoring, and terminal consequences do not change. The predecessor identities remain above as an
+auditable zero-contact history; only the current amended identities may be used by a launcher.
 
 ## Objective and roster
 
@@ -78,9 +101,10 @@ Official scoring consumes whole manifests only. E and SE may finalize through tw
 the one possible full-40 composite is one indivisible official job. Dataset sharding, shard score
 averaging, and parallel scoring within a manifest are forbidden.
 
-Model contact remains closed until the semantic corpus and build-receipt hashes, sealed observation
-and validated-state bindings, composed config and protocol hashes, prompt-fit report, structured
-ExecutionPlan, clean commit, and amended pre-contact exposure binding all exist and verify. This
+The semantic corpus, build receipt, router, composed config, and protocol hashes are now bound.
+Model contact remains closed until the sealed observation and validated-state bindings, prompt-fit
+report, structured ExecutionPlan, clean commit, and final pre-contact exposure binding all exist
+and verify. This
 zero-contact registration prospectively supersedes the dormant
 `SAEA-A2T-EXECUTABLE-GROUND-QUALIFICATION-104-V1` full-handbook flight without rewriting its bytes or
 history. Failure opens no remaining24, fresh88, test, pruning, TFRL, scale, Stage-3, or paper work.

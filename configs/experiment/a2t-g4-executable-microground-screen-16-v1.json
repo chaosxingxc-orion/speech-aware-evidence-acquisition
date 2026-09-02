@@ -1,8 +1,18 @@
 {
   "schema": "saea-a2t-g4-executable-microground-screen-16-experiment-v1",
   "experiment_id": "SAEA-A2T-G4-EXECUTABLE-MICROGROUND-SCREEN-16-V1",
-  "status": "REGISTERED_ZERO_CONTACT_MODEL_CONTACT_CLOSED",
+  "status": "PRECONTACT_AMENDED_ZERO_CONTACT_MODEL_CONTACT_CLOSED",
   "date": "2026-09-02",
+  "amendment_history": [
+    {
+      "date": "2026-09-02",
+      "kind": "prospective pre-contact identity binding",
+      "predecessor_experiment_sha256": "926bbbb0c90b70df7877dfd4c72248e09c56007d85180c5b9b23ec664263c04a",
+      "predecessor_composed_config_sha256": "b5a28adf9316d28adfbe5d0bd25c67b429903d03ff1f6eb10d2f9d594b64ed09",
+      "predecessor_protocol_sha256": "efa1fe160f5ee72b0c9dcc110058f6ad723a89df232cbfd7b2e913de564c52dc",
+      "reason": "Bind the landed semantic corpus and build receipt and the strict structured-state-compatible router before any model contact."
+    }
+  ],
   "execution_profile": "bounded-discovery-probe",
   "claim_scope": "small Stage-2 discovery screen on the already-exposed G3 pilot; no fresh, confirmatory, test, scale, or paper claim",
   "scientific_objective": "Find a model-usable semantic, tool, and argument ground before pruning, scale, or training-free control.",
@@ -38,10 +48,13 @@
     "baseline_config": "configs/baseline/a2t-g4-executable-microground-agentloop.json",
     "baseline_config_sha256": "dd7f38fe941d1c6ece607ff695f0ab700a9aea2c75fd5808674ceba8119820e5",
     "semantic_card_builder": "scripts/build_a2t_g4_semantic_cards.py",
+    "semantic_card_builder_sha256": "e49c5b71348efbfdcb284d17b847efb341a3a5898324ef2432ebe9e880da080e",
     "semantic_card_corpus": "knowledge/audio2tool/g4-executable-semantic-cards-v1/corpus.txt",
+    "semantic_card_corpus_sha256": "85a04fc72c49802853d0da3785f30a266a90d88275901c8292231442ef4a294f",
     "semantic_card_build_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-02-a2t-g4-semantic-cards-build-v1/build-receipt.json",
+    "semantic_card_build_receipt_sha256": "f2da2a1b77a59ff7f5d9e74c2fabe1e04c87d560f4ca066c573f3d65803680fa",
     "semantic_card_module_sha256": "f13692bdf658286a0a018176446462258e81d76543806a0f7d569ef2c419f2ae",
-    "microground_router_sha256": "8ff3ff193a1bda4ed066a9112c8b3ebc45614c875a121237b437cd743bf79447",
+    "microground_router_sha256": "63fe8dc77ca208bc02ce501eef4c5f79a8f11eda7243b6226709736241d451ea",
     "structured_state_module_sha256": "7c8a745cfaab81c3efc421f759b30e990c5155ec0bb9daa386bf7598281cabfc",
     "flight_boundary_sha256": "54ec410ec02a4addde4c870ac405da118b0b06e2eb276a9efb00014c5d37f29b",
     "router_policy_id": "saea-a2t-semantic-microground-bm25-v1",
@@ -55,7 +68,7 @@
       "completion_token_cap": 1024
     },
     "contact_preconditions": [
-      "Bind and verify the semantic corpus file and build-receipt SHA-256 values.",
+      "Verify the bound semantic builder, corpus file, and build-receipt SHA-256 values.",
       "Bind and verify the sealed 16 task-blind English observations for E.",
       "Bind and verify the validated 16 structured states for SE; no state-generation contact is authorized by this contract.",
       "Compose the model, dataset, baseline, and experiment fragments and bind the resulting config and protocol hashes.",
