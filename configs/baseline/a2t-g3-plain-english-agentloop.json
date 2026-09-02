@@ -1,0 +1,18 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "a2t-g3-plain-english-k32-hard-validity-v1",
+  "evidence_source": "task-blind-English-OBS-to-construction-BM25-k32",
+  "evidence_mismatch": false,
+  "obs_batch_samples": 2,
+  "profile_queue_depth_multiplier": 2,
+  "profile_validation_workers": 8,
+  "speech_native_result_mode": "predictions",
+  "speech_native_contact_ceiling_per_task": 2,
+  "speech_native_dispatch_granularity": "contact",
+  "speech_native_agent_executor_id": "openjiuwen-workflow-v1",
+  "scorers": [
+    "a2t-toolcall",
+    "cost"
+  ],
+  "task_instruction": "Use the original speech, a task-blind English observation, and the bounded plain-English knowledge packet. Return only a JSON array of tool calls."
+}

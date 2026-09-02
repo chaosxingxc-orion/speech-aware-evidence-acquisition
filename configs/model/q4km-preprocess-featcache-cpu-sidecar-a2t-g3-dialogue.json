@@ -1,0 +1,32 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8081",
+  "timeout_seconds": 900.0,
+  "runtime_receipt": "receipts/runtime-q4km-preprocess.json",
+  "server_args": [
+    "-c",
+    "16384",
+    "-np",
+    "4",
+    "-b",
+    "512",
+    "-ub",
+    "128",
+    "-fa",
+    "on",
+    "-ngl",
+    "0",
+    "--no-mmproj-offload"
+  ],
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1
+  },
+  "prompt_order": "evidence-first-system-v2",
+  "server_env": {
+    "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/audio2tool-g3-dialogue-q4km-04ccc72a"
+  }
+}

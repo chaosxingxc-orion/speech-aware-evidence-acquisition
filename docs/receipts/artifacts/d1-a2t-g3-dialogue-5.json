@@ -1,0 +1,68 @@
+{
+  "carrier_lock_key": "audio2tool",
+  "count": 5,
+  "ids_sha256": "8ae589c8af76754fa85fcb142a1f88b048a23fd6ea6424797bd0617b8d2a544d",
+  "manifest": [
+    {
+      "audio_seconds": 33.444375,
+      "bytes": 1605374,
+      "id": "a2t-g3-dialogue:000318",
+      "media_relpath": "derived/audio2tool/a2t-g3-human-hierarchical-pilot-v1/tier7_multiturn/query_00318/complete_dialogue.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 24000,
+      "sha256": "2490aabf475629903f19333221a396de55fb6c415aee9a5369de0b1cbe6c735f"
+    },
+    {
+      "audio_seconds": 48.244375,
+      "bytes": 2315774,
+      "id": "a2t-g3-dialogue:000330",
+      "media_relpath": "derived/audio2tool/a2t-g3-human-hierarchical-pilot-v1/tier7_multiturn/query_00330/complete_dialogue.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 24000,
+      "sha256": "9bc259b63bc514c2cd6be25165caba7a2ca766ac8e6f77994f5dd2923840991c"
+    },
+    {
+      "audio_seconds": 18.910625,
+      "bytes": 907754,
+      "id": "a2t-g3-dialogue:000599",
+      "media_relpath": "derived/audio2tool/a2t-g3-human-hierarchical-pilot-v1/tier7_multiturn/query_00599/complete_dialogue.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 24000,
+      "sha256": "1d704865195ae64d1ab6e788a5ecc03d3ebb8a73bfc2bf914494b2a290425a4f"
+    },
+    {
+      "audio_seconds": 19.550625,
+      "bytes": 938474,
+      "id": "a2t-g3-dialogue:000637",
+      "media_relpath": "derived/audio2tool/a2t-g3-human-hierarchical-pilot-v1/tier7_multiturn/query_00637/complete_dialogue.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 24000,
+      "sha256": "a39224d14947267125b2202082858d348c79c716b0b8f7c03463428c96bf9018"
+    },
+    {
+      "audio_seconds": 77.504375,
+      "bytes": 3720254,
+      "id": "a2t-g3-dialogue:001590",
+      "media_relpath": "derived/audio2tool/a2t-g3-human-hierarchical-pilot-v1/tier7_multiturn/query_01590/complete_dialogue.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 24000,
+      "sha256": "1ec8f6a14cf68e1e91146d69339b6e7e854214313e394da2656a4f7a5c335d07"
+    }
+  ],
+  "manifest_sha256": "25b2681d30f38628e7347fc2f859e5cdee01906dd8fc14dc57e7fd301d5b8956",
+  "parent_d1_sha256": "9c10fad1e5b625f977a5bdc71ed0c782e5d5c76c7a13af11ce811c5e152d35e3",
+  "schema": "saea-d1-media-supplement-v1",
+  "source_binding_sha256": "72cc6b1a1cc320b425414d178cfaeff81ef2aaf4b7d1dbc40721bb513cd2e271",
+  "study": "speech-aware-evidence-acquisition",
+  "total_bytes": 9487630
+}

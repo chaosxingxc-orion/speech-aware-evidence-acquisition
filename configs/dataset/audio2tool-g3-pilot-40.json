@@ -1,0 +1,14 @@
+{
+  "carrier_lock_key": "audio2tool",
+  "a2t_g3_roster": "docs/receipts/a2t/A2T-G3-PILOT-40.json",
+  "a2t_g3_roster_sha256": "179535049414fa0e9747075db84e8ced3fbc60001955be25a75e9d70a4ba7e92",
+  "a2t_g3_split_name": "A2T-G3-PILOT-40",
+  "a2t_g3_split_role": "discovery",
+  "a2t_g3_split_identity_hash": "7d170a0e333be385a99ecd35012de5c8e38f98c99304442d01145ed8fe6a1aaf",
+  "a2t_g3_run_identity_hash": "3b25dfe3b850ab83ec72a62e2972e882e0e5c386c3bf00c798cc75460da3d614",
+  "a2t_g3_count": 40,
+  "a2t_g3_runtime_media_manifest": "derived/audio2tool/a2t-g3-human-hierarchical-pilot-v1/pilot-media.json",
+  "a2t_g3_runtime_media_manifest_sha256": "72cc6b1a1cc320b425414d178cfaeff81ef2aaf4b7d1dbc40721bb513cd2e271",
+  "d1_media_supplement": "receipts/artifacts/d1-a2t-g3-dialogue-5.json",
+  "d1_media_supplement_sha256": "497d3a8356d3e1d7910678c00d25c181e5b30f1eef78f8273799b2fe6024892b"
+}

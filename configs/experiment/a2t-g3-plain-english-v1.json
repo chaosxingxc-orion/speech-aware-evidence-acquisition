@@ -1,0 +1,54 @@
+{
+  "schema": "saea-a2t-g3-plain-english-experiment-v1",
+  "experiment_id": "SAEA-A2T-G3-PLAIN-ENGLISH-V1",
+  "execution_profile": "bounded-discovery-probe",
+  "claim_scope": "same-flight discovery comparison on the already-exposed 40-sample G3 pilot; no fresh or confirmatory contact",
+  "population": {
+    "split_name": "A2T-G3-PILOT-40",
+    "count": 40,
+    "tiers": 8,
+    "items_per_tier": 5,
+    "split_identity_hash": "7d170a0e333be385a99ecd35012de5c8e38f98c99304442d01145ed8fe6a1aaf",
+    "run_identity_hash": "3b25dfe3b850ab83ec72a62e2972e882e0e5c386c3bf00c798cc75460da3d614",
+    "receipt": "docs/receipts/a2t/A2T-G3-PILOT-40.json",
+    "fresh_reserved_count": 88
+  },
+  "knowledge": {
+    "builder": "scripts/build_a2t_g3_plain_english_cards.py",
+    "card_module": "src/speech_aware_evidence_acquisition/rails/a2t_plain_english_cards.py",
+    "registry_tool_count": 152,
+    "detailed_card_limit": 32,
+    "historical_observation_packet_utf8_byte_max": 63113,
+    "runtime_packet_utf8_byte_cap": 64000,
+    "construction_bm25": true,
+    "source_utterances_rendered": 0,
+    "source_argument_values_rendered": 0,
+    "source_sample_ids_rendered": 0
+  },
+  "phases": {
+    "M0_DIRECT": {"count": 40, "contacts_per_sample": 1, "same_flight": true},
+    "OBS_TASK_BLIND_ENGLISH": {"count": 40, "contacts_per_sample": 1, "derived_tier7_complete_dialogue": 5},
+    "MATCHED_G3_USE": {"count": 40, "max_contacts_per_sample": 2, "evidence": "same-sample matched packet"},
+    "SHUFFLED_CONTROL": {"count": 16, "items_per_tier": 2, "selection": "identity-only deterministic", "max_contacts_per_sample": 2}
+  },
+  "gates": {
+    "development_ground": {"parse_min": 39, "exact_min": 36, "tool_min": 38, "slot_f1_min": 0.9, "per_tier_exact_min": 4},
+    "strong_target_exact": 38,
+    "matched_minus_shuffled_exact_gain_min": 5,
+    "matched_minus_shuffled_grouped_ci90_lower_strictly_positive": true
+  },
+  "scoring": {
+    "official_scorer": true,
+    "whole_manifests": true,
+    "outer_parallel": true,
+    "network_jitter_testing": false,
+    "test_annotations_used": false
+  },
+  "boundary": {
+    "model_parameters_changed": false,
+    "second_answering_model": false,
+    "paid_api_spend": 0,
+    "fresh88_reserved": true,
+    "no_test_tuning": true
+  }
+}

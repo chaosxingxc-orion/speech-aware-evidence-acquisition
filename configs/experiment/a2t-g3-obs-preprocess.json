@@ -1,0 +1,25 @@
+{
+  "experiment_id": "SAEA-SN-A2T-G3-OBS-PREPROCESS",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Label-free observation packet preprocessing for five receipt-bound complete-dialogue Audio2Tool recordings. Thirty-five original packets are reused after full hash verification. Only five derived WAVs contact the CPU-only feature-cache sidecar, each once, with a one-token completion whose meaning is never read. The pass emits one deterministic 40-row promotion receipt and one binding map. Gold, transcripts, task text, outputs, scores, future turns, retries, overwrite behavior, and the GPU decoder are outside this path.",
+  "a2t_g3_obs_preprocess_scope": {
+    "roster_count": 40,
+    "original_packets_verified": 40,
+    "original_packets_reused": 35,
+    "derived_packets_encoded": 5,
+    "derived_audio_seconds_exact": 197.654375,
+    "execution_plan_audio_seconds_ceiling": 198,
+    "legacy_cache_dir": "/home/chao/feat-cache/audio2tool-g3-dialogue-q4km-04ccc72a",
+    "packet_root": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a",
+    "promotion_receipt": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a/A2T-G3-OBS-40-promotion.json",
+    "binding_map": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a/A2T-G3-OBS-40-bindings.json"
+  },
+  "a2t_g3_obs_preprocess_boundary": {
+    "planned_model_calls": 5,
+    "planned_speech_audio_seconds": 198,
+    "planned_gpu_hours": 0.1,
+    "response_semantics_read": false,
+    "retry_count": 0,
+    "paid_api_spend": 0
+  }
+}
