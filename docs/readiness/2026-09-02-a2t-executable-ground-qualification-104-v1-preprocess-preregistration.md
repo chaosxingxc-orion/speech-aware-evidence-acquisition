@@ -1,0 +1,56 @@
+# A2T executable-ground qualification 104 v1 preprocessing preregistration
+
+Date: 2026-09-02. Status: **REGISTERED; CONTACT CLOSED UNTIL IMPLEMENTATION AND PREFLIGHT LAND**.
+Experiment id: `SAEA-SN-A2T-GROUND-QUAL-104-PREPROCESS`.
+Composed config and protocol SHA-256:
+`3845d4a8a601e3279a4656ccd0e1c9c92feed33236801758df528e43a7862ae4`.
+
+## Purpose and fixed population
+
+The executable-ground qualification decoder serves without an audio encoder. The roster-pinned
+`A2T-GROUND-QUAL-104` population therefore needs one audited speech-feature packet per recording
+before any task inference. The only population is
+`docs/receipts/a2t/A2T-GROUND-QUAL-104.json`, SHA-256
+`eeb90abbe8695e449c676f18339db6618cb6d606d6c1e7c656626e4e9b6b6c16`, run identity
+`fbd4addd541ff29214cbff7c35564b15f27e2fb7f438202b79d694b1c5961d4b`, with 104 items and
+543.107 speech-audio seconds. It is an identity-only selection from the already-exposed parent 400,
+is query-block-disjoint from G1 and CPV2, and does not open the separately protected unexposed 400.
+
+## One-shot procedure
+
+The existing audited Audio2Tool preprocessing entry point gains an explicit `--ground-qual`
+profile. A receipt-pinned CPU-only llama.cpp sidecar on loopback port 8081 uses `-ngl 0` and
+`--no-mmproj-offload`. Each recording receives the same minimal English instruction and a one-token
+completion cap. The instruction contains no registry, handbook, query text, label, reference
+transcript, expected call, prior output, score, test annotation, or future turn. Response meaning is
+never read. The sidecar writes the current-build legacy cache, stops, and only then the
+carrier-neutral promotion primitive writes exclusive audited packets and
+`/home/chao/feat-cache/a2t-q4km-packets-04ccc72a/A2T-GROUND-QUAL-104-promotion.json`.
+
+The GPU decoder on port 8090 is not started, stopped, reconfigured, or contacted. The preflight may
+observe only whether the two loopback ports are reachable so that the CPU sidecar cannot collide
+with another process or change the decoder service state. Network jitter, packet loss, latency
+injection, retry stress, and throughput-under-fault measurements are outside this engineering gate.
+
+## Packet-size gate
+
+After promotion, the run records the complete packet token-count distribution from packet metadata.
+No packet is truncated, resampled, split, or selected by token count. The landed full-handbook
+prompt-fit receipt may be inherited only when all 104 packets exist, every packet/audio/runtime hash
+matches, and the measured maximum is at most 455 speech tokens. A maximum above 455 leaves the
+packets valid but stops qualification until a separately registered successor recomputes the exact
+prompt envelope with that measured maximum. This is a capacity gate, not a result-dependent change.
+
+## Bounds and terminal rule
+
+The structured `ExecutionPlan` binds discovery role, the exact run identity, composed
+config/protocol hash, 120 contacts, 650 speech-audio seconds, 0.2 declared GPU hours, and zero paid
+API spend. Intended use is exactly 104 contacts and 543.107 audio seconds. No gold, scorer, task
+answer, retriever, embedding tool, tokenizer endpoint, external network, or test data may be opened.
+
+Any failed contact, incomplete cache, identity drift, receipt drift, runtime drift, response-
+accounting drift, or incomplete promotion stops without a successful receipt. No retry or partial
+repair is permitted without a new prospective amendment. Passing authorizes only a separately
+implemented and preregistered executable-ground qualification preflight. It does not authorize task
+model contact, pruning, training-free control, approximately-1,000 scale, baseline change, test
+access, Stage-3, or paper-scale work.

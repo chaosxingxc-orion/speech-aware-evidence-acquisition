@@ -1,0 +1,27 @@
+{
+  "experiment_id": "SAEA-SN-A2T-GROUND-QUAL-104-PREPROCESS",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Label-free offline speech-feature preprocessing for the receipt-pinned A2T-GROUND-QUAL-104 discovery cohort. A CPU-only sidecar on port 8081 re-encodes each recording under the receipt-pinned current build into /home/chao/feat-cache/audio2tool-q4km-04ccc72a, then the carrier-neutral promotion primitive writes audited packets under /home/chao/feat-cache/a2t-q4km-packets-04ccc72a. The fixed minimal prompt contains no registry, handbook, task label, query text, reference transcript, expected call, prior output, score, test annotation, or future turn. Generated text is not read semantically. Packet token counts are measured without truncation; qualification inherits the landed prompt-fit receipt only if the maximum is at most 455. The GPU decoder on port 8090 is not started, stopped, reconfigured, or contacted. Network-jitter and retry-stress testing are out of scope.",
+  "a2t_ground_qual_preprocess_scope": {
+    "subset_receipt": "docs/receipts/a2t/A2T-GROUND-QUAL-104.json",
+    "subset_receipt_sha256": "eeb90abbe8695e449c676f18339db6618cb6d606d6c1e7c656626e4e9b6b6c16",
+    "split_identity_hash": "fbd4addd541ff29214cbff7c35564b15f27e2fb7f438202b79d694b1c5961d4b",
+    "count": 104,
+    "audio_seconds_total": 543.107,
+    "legacy_cache_dir": "/home/chao/feat-cache/audio2tool-q4km-04ccc72a",
+    "packet_root": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a",
+    "promotion_receipt": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a/A2T-GROUND-QUAL-104-promotion.json",
+    "packet_id_convention": "sample_id with ':' replaced by '/'",
+    "prompt_fit_speech_token_ceiling": 455,
+    "token_overflow_action": "Keep the packet unchanged and stop qualification pending a separately registered exact prompt-fit successor.",
+    "promotion_path": "core.model.speech_features.materialize_legacy_cached_speech_feature_packets, called directly after the CPU-only encoder session stops; the SLURP-specific promote-speech-packets CLI is not used."
+  },
+  "a2t_ground_qual_preprocess_boundary": {
+    "gold": "never opened; the adapter returns scoring_deferred",
+    "outputs": "legacy feature cache entries, audited packets, one promotion receipt, and token-count statistics; response meaning is not read; the GPU decoder receives no request",
+    "contacts_maximum": 120,
+    "speech_audio_seconds_maximum": 650,
+    "gpu_hours_maximum": 0.2,
+    "paid_api_spend": 0
+  }
+}
