@@ -1,0 +1,68 @@
+{
+  "contacts": {
+    "audio_decoder": 0,
+    "embedding_tool": 0,
+    "frozen_core": 0,
+    "gpu_hours": 0.0,
+    "http_or_socket": 0,
+    "retriever": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "decision": "permit only separately preregistered packet preprocessing and ground qualification implementation",
+  "engineering_scope": {
+    "complete_manifest_outer_parallel_scoring": true,
+    "dataset_sharding": false,
+    "network_jitter_testing": false
+  },
+  "excluded_query_block_count": 208,
+  "excluded_sample_count": 208,
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-A2T-MF-EXECUTABLE-GROUND-QUALIFICATION-104-V1-ROSTER",
+  "information_boundary": {
+    "expected_calls_read": false,
+    "prior_outputs_read": false,
+    "prior_scores_read": false,
+    "query_text_read": false,
+    "task_annotations_read": false,
+    "test_annotations_read": false
+  },
+  "offline_guard": {
+    "outbound_connection_attempts": 0,
+    "targets": []
+  },
+  "parent_count": 400,
+  "parent_order_deterministic": true,
+  "proposed_unexposed_400": {
+    "changed": false,
+    "identity_sha256": "4d0196ec91858cdc81340ee197c085ff29726a1f1b7fe9119d4e410d62df2f90",
+    "opened": false
+  },
+  "query_block_overlap_count": 0,
+  "receipt_order_deterministic": true,
+  "runtime_media_identity_verified": true,
+  "schema": "saea-a2t-ground-qualification-roster-result-v1",
+  "selected_audio_seconds_total": 543.107,
+  "selected_count": 104,
+  "selected_query_block_count": 104,
+  "selected_receipt_sha256": "eeb90abbe8695e449c676f18339db6618cb6d606d6c1e7c656626e4e9b6b6c16",
+  "selected_run_identity_hash": "fbd4addd541ff29214cbff7c35564b15f27e2fb7f438202b79d694b1c5961d4b",
+  "selected_split_identity_hash": "c6bb080bb264733087b3da352fe930702ec6509bc02e6a639b0f4c30c5017dac",
+  "selected_strata_counts": {
+    "tier1_direct": 13,
+    "tier2_parametric": 13,
+    "tier3_multi_intent": 13,
+    "tier4_implicit": 13,
+    "tier5_needle": 13,
+    "tier6_correction": 13,
+    "tier7_multiturn": 13,
+    "tier8_intent_blending": 13
+  },
+  "selection_namespace": "a2t-executable-ground-qualification-v1",
+  "source_hashes": {
+    "docs/receipts/a2t/A2T-CPV2-104.json": "8f47922124c61f92fee03273c1165eb1f8f97048d910ddd4a6a7243906d78783",
+    "docs/receipts/a2t/A2T-G1-104.json": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db",
+    "docs/receipts/probe-samples/r1-audio2tool-sample.json": "d99570a797744f7dc3db53bdb898611836ae2682a02e726b974d05734c6cbb2d"
+  },
+  "study_commit": "23153c1914425d1167f92930bba12e9f5d9d95a6"
+}
