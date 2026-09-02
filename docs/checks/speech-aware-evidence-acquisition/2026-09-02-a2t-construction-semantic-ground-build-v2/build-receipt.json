@@ -1,0 +1,79 @@
+{
+  "carrier_inventory": {
+    "pool_items": 30733,
+    "pool_units": 16843,
+    "usable_units": 16838
+  },
+  "contacts": {
+    "gold_runtime": 0,
+    "gpu_hours": 0.0,
+    "model": 0,
+    "network": 0,
+    "retriever": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "decision": "measure exact prompt fit, then run one bounded G2 discovery arm",
+  "engineering_scope": {
+    "network_jitter_testing": false,
+    "official_scorer_single_process_per_manifest": true,
+    "outer_parallel_scoring_allowed": true
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-A2T-MF-CONSTRUCTION-SEMANTIC-GROUND-BUILD-V2",
+  "handbook": {
+    "deterministic_rebuild_equal": true,
+    "report": {
+      "argument_key_pattern_count": 1326,
+      "argument_values_rendered": 0,
+      "ascii_only": true,
+      "call_count_pattern_count": 1312,
+      "characters": 97548,
+      "construction_primary_tool_count": 151,
+      "invocation_texts_rendered": 0,
+      "lexical_cues_rendered": 3146,
+      "line_count": 1367,
+      "max_cues_per_pair": 3,
+      "max_utf8_bytes": 100000,
+      "registry_only_tool_count": 1,
+      "registry_tool_count": 152,
+      "sample_ids_rendered": 0,
+      "schema": "saea-a2t-construction-semantic-ground-report-v1",
+      "source_row_count": 12601,
+      "source_rows_by_tier": {
+        "tier1_direct": 1546,
+        "tier2_parametric": 2601,
+        "tier3_multi_intent": 1550,
+        "tier4_implicit": 1544,
+        "tier5_needle": 1554,
+        "tier6_correction": 1547,
+        "tier7_multiturn": 1554,
+        "tier8_intent_blending": 705
+      },
+      "source_sample_count": 22951,
+      "source_tier_count": 8,
+      "source_unit_count": 12601,
+      "tier_tool_pair_count": 1094,
+      "tool_sequence_pattern_count": 2210,
+      "utf8_bytes": 97548,
+      "value_form_evidence_count": 458
+    },
+    "sha256": "04c9c78d03b002faf6c828a5b35f1786aadc7f5da3fee2bf675374e7ea2ea697",
+    "source_argument_values_rendered": 0,
+    "source_sample_ids_rendered": 0,
+    "source_transcripts_rendered": 0
+  },
+  "partition": {
+    "construction_forbidden_intersection_count": 0,
+    "construction_identity_sha256": "86bfc6f36fb6a562ad1134cd11d60a2ad6bb94668195d76eada97edd2ce0ce16",
+    "construction_sample_count": 22951,
+    "construction_unit_count": 12601,
+    "exposed_sample_count": 400,
+    "policy_id": "saea-a2t-block-partition-v1",
+    "proposed_eval_identity_sha256": "4d0196ec91858cdc81340ee197c085ff29726a1f1b7fe9119d4e410d62df2f90",
+    "proposed_eval_sample_count": 400,
+    "seed": 20260807
+  },
+  "schema": "saea-a2t-construction-semantic-ground-build-receipt-v1",
+  "study_commit": "95fbb1982cff47b226e0cff819e1cc77c869cfdb"
+}
