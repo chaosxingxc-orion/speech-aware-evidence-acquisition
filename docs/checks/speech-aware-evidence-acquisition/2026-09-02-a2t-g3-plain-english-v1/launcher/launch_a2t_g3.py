@@ -89,6 +89,9 @@ from speech_aware_evidence_acquisition.rails.probes.a2t_contract_preserving_casc
 from speech_aware_evidence_acquisition.rails.probes.a2t_self_transcript_cascade_bundle import (  # noqa: E402
     build_resend_composite_texts,
 )
+from speech_aware_evidence_acquisition.reproduction.a2t_scorer import (  # noqa: E402
+    score_audio2tool_outputs,
+)
 
 
 RUN_ID = "SAEA-A2T-G3-PLAIN-ENGLISH-V1"
@@ -335,6 +338,24 @@ MATCHED_RECOVERY_FAILURE_SHA256 = (
 )
 MATCHED_RECOVERY_ATTEMPT_SHA256 = (
     "4217d688085aecaf72bffdb6bea48e48d3bc7247a115a4a6a856d672e1f77668"
+)
+POSTPROCESS_FLIGHT_RELPATH = Path(
+    "runs/SAEA-A2T-G3-PLAIN-ENGLISH-V1/flight-20260902T182038Z"
+)
+POSTPROCESS_FAILURE_SHA256 = (
+    "2ee1e640a0918c4f29b63100b76aaced6c2923307075611f6cd0056ecbe12f70"
+)
+POSTPROCESS_BATCH_SHA256 = (
+    "4dd9fb0ec6fc8935467f42802855db747d03eea48bfed3d0688d15d22883b82f"
+)
+POSTPROCESS_M0_SCORE_SHA256 = (
+    "387135c104d6956275fa0a6ac3ec4e295844cba761c660c814cba8d157ad2f81"
+)
+POSTPROCESS_MATCHED_SCORE_SHA256 = (
+    "cfc7fcd2b64889a89ff5de2d9c81811b11d99bd5333ed473a8c520e00e9e6c5b"
+)
+POSTPROCESS_SHUFFLED_SCORE_SHA256 = (
+    "2c7eb21357a3c8035e63b9e00f704936bf9b0e26e9f4e3ef1a77569d70aaf5d0"
 )
 KNOWLEDGE_SNAPSHOT_RELPATH = Path(
     "knowledge/audio2tool/saea-kb-a2t-toolshaped-v1/size-full/snapshot.json"
@@ -2017,6 +2038,37 @@ def _build_result(
             "slot_f1": float(surface["slot_f1"]),
         }
 
+    def selected_summary(surface: Mapping[str, object]) -> dict[str, object]:
+        rows = [surface["by_id"][sample_id] for sample_id in selected]
+        return {
+            "samples": len(rows),
+            "parse_count": sum(bool(row.get("parsed")) for row in rows),
+            "exact_count": int(sum(float(row.get("exact_match", 0)) for row in rows)),
+            "tool_count": int(sum(float(row.get("tool_accuracy", 0)) for row in rows)),
+            "mean_slot_f1": sum(float(row.get("slot_f1", 0.0)) for row in rows)
+            / len(rows),
+        }
+
+    def paired_outcomes(
+        left: Mapping[str, object],
+        right: Mapping[str, object],
+        sample_ids: Sequence[str],
+        metric: str,
+    ) -> dict[str, int]:
+        differences = [
+            int(float(left["by_id"][sample_id].get(metric, 0)))
+            - int(float(right["by_id"][sample_id].get(metric, 0)))
+            for sample_id in sample_ids
+        ]
+        wins = sum(value > 0 for value in differences)
+        losses = sum(value < 0 for value in differences)
+        return {
+            "wins": wins,
+            "losses": losses,
+            "ties": len(differences) - wins - losses,
+            "net": sum(differences),
+        }
+
     per_tier: dict[str, object] = {}
     for tier in CANONICAL_TIERS:
         tier_ids = [
@@ -2035,12 +2087,13 @@ def _build_result(
             }
             for name, surface in (("m0", m0), ("matched", matched), ("shuffled", shuffled))
         }
-    matched_selected = sum(
-        float(matched["by_id"][sample_id].get("exact_match", 0)) for sample_id in selected
-    )
-    shuffled_selected = sum(
-        float(shuffled["by_id"][sample_id].get("exact_match", 0)) for sample_id in selected
-    )
+    matched_selected = selected_summary(matched)
+    shuffled_selected = selected_summary(shuffled)
+    all_ids = tuple(str(item["sample_id"]) for item in items)
+    matched_m0_exact = paired_outcomes(matched, m0, all_ids, "exact_match")
+    matched_m0_tool = paired_outcomes(matched, m0, all_ids, "tool_accuracy")
+    paired_exact = paired_outcomes(matched, shuffled, selected, "exact_match")
+    paired_tool = paired_outcomes(matched, shuffled, selected, "tool_accuracy")
     bootstrap = _grouped_ci(
         items=items,
         left=matched["by_id"],
@@ -2053,26 +2106,32 @@ def _build_result(
         selected_ids=selected,
     )
     return {
-        "schema": "saea-a2t-g3-plain-english-result-v1",
+        "schema": "saea-a2t-g3-plain-english-result-v2",
         "absolute": {
             "m0": summary(m0),
             "matched": summary(matched),
-            "shuffled": summary(shuffled),
+            "shuffled_composite_40": summary(shuffled),
         },
         "paired": {
             "matched_minus_m0_exact": int(matched["exact_count"] - m0["exact_count"]),
             "matched_minus_m0_tool": int(matched["tool_count"] - m0["tool_count"]),
+            "matched_vs_m0_exact": matched_m0_exact,
+            "matched_vs_m0_tool": matched_m0_tool,
         },
         "selected16": {
-            "matched_exact": int(matched_selected),
-            "shuffled_exact": int(shuffled_selected),
-            "matched_minus_shuffled_exact": int(matched_selected - shuffled_selected),
+            "scope": "preregistered-selected16-only",
+            "sample_ids": list(selected),
+            "matched": matched_selected,
+            "shuffled": shuffled_selected,
+            "paired_exact": paired_exact,
+            "paired_tool": paired_tool,
             "grouped_ci90": control_bootstrap,
         },
         "hard_repair_counts": {
             "matched": sum(count == 2 for count in matched_contact_counts.values()),
             "shuffled": sum(count == 2 for count in shuffled_contact_counts.values()),
         },
+        "per_tier_scope": "40-row composite arms; not the selected16 control read",
         "per_tier": per_tier,
         "bootstrap": bootstrap,
         "gates": {
@@ -2080,7 +2139,7 @@ def _build_result(
             "matched_exact_at_least_36": int(matched["exact_count"]) >= 36,
             "matched_tool_at_least_38": int(matched["tool_count"]) >= 38,
             "matched_slot_f1_at_least_0_90": float(matched["slot_f1"]) >= 0.90,
-            "matched_minus_shuffled_exact_at_least_5": matched_selected - shuffled_selected >= 5,
+            "matched_minus_shuffled_exact_at_least_5": paired_exact["net"] >= 5,
             "matched_minus_shuffled_ci90_lower_positive": float(control_bootstrap["ci_low"]) > 0,
         },
     }
@@ -2093,9 +2152,27 @@ def _load_scores(manifest: Path) -> dict[str, object]:
 def _load_batch_scores(path: Path) -> dict[str, object]:
     document = _read_json(path)
     scores = document.get("scores")
-    if document.get("verified") is not True or not isinstance(scores, Mapping):
-        raise RuntimeError("official score-only result is malformed")
-    return dict(scores)
+    if document.get("verified") is not True:
+        raise RuntimeError("official batch score result is not verified")
+    if isinstance(scores, Mapping):
+        normalized: dict[str, object] = {}
+        for name, value in scores.items():
+            if not isinstance(name, str) or not isinstance(value, Mapping):
+                raise RuntimeError("official inline score result is malformed")
+            if "aggregate" in value or "per_sample" in value:
+                normalized[name] = dict(value)
+            else:
+                normalized[name] = {"per_sample": None, "aggregate": dict(value)}
+        return normalized
+    if isinstance(scores, str) and scores:
+        scores_path = Path(scores)
+        if not scores_path.is_absolute():
+            scores_path = Path(path).parent / scores_path
+        loaded = _read_json(scores_path)
+        if document.get("attempt_state") != "FINALIZED":
+            raise RuntimeError("official score path requires a FINALIZED result")
+        return loaded
+    raise RuntimeError("official batch score result is malformed")
 
 
 def _stop_service(session: object, runtime_receipt: object, receipt_path: Path) -> None:
@@ -2136,6 +2213,196 @@ def _prepare_recovered_observations(
         representation_flags,
     )
     return observations, routes, route_report
+
+
+def _offline_full_score(
+    *,
+    bundle: object,
+    recorded_scores: Mapping[str, object],
+    context: Mapping[str, object],
+) -> dict[str, object]:
+    """Reconstruct per-sample rows locally and cross-check the recorded aggregate."""
+
+    outputs_path = getattr(bundle, "outputs_path", None)
+    if not isinstance(outputs_path, Path):
+        raise RuntimeError("offline score reconstruction requires verified outputs")
+    full = score_audio2tool_outputs(
+        outputs_path,
+        context["lock"],
+        Path(context["data_root"]),
+    )
+    recorded = recorded_scores.get("a2t-toolcall")
+    aggregate = recorded.get("aggregate") if isinstance(recorded, Mapping) else None
+    if not isinstance(aggregate, Mapping) or full.get("aggregate") != dict(aggregate):
+        raise RuntimeError("offline per-sample reconstruction disagrees with official aggregate")
+    return {"a2t-toolcall": full}
+
+
+def _verified_agent_contact_counts(
+    trace_dir: Path,
+    *,
+    expected_ids: Sequence[str],
+) -> dict[str, int]:
+    """Count contacts from an agent trace already artifact-bound by a bundle."""
+
+    expected = set(expected_ids)
+    counts: Counter[str] = Counter()
+    for document in _trace_documents(trace_dir):
+        if document.get("channel") != "MODEL_REQUEST":
+            continue
+        outer = document.get("payload")
+        payload = outer.get("payload") if isinstance(outer, Mapping) else None
+        if not isinstance(payload, Mapping):
+            raise RuntimeError("verified Agent request payload is malformed")
+        canonical = json.dumps(
+            payload,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        sample_id = payload.get("sample_id")
+        if (
+            not isinstance(sample_id, str)
+            or sample_id not in expected
+            or outer.get("payload_sha256") != hashlib.sha256(canonical).hexdigest()
+        ):
+            raise RuntimeError("verified Agent request identity or hash drift")
+        counts[sample_id] += 1
+    if set(counts) != expected or any(value not in {1, 2} for value in counts.values()):
+        raise RuntimeError("verified Agent contact surface is incomplete")
+    return dict(sorted(counts.items()))
+
+
+def _postprocess_existing(root: Path) -> Mapping[str, object]:
+    """Assemble the completed G3 result offline from the 182038Z artifacts."""
+
+    context = _static_preflight(root)
+    context["data_root"] = Path(root)
+    mission_dir = Path(root) / POSTPROCESS_FLIGHT_RELPATH
+    official_dir = mission_dir / "official-score"
+    pinned = (
+        (mission_dir / "failure-receipt.json", POSTPROCESS_FAILURE_SHA256),
+        (official_dir / "batch-summary.json", POSTPROCESS_BATCH_SHA256),
+        (official_dir / "g3-m0.score.json", POSTPROCESS_M0_SCORE_SHA256),
+        (official_dir / "g3-matched.score.json", POSTPROCESS_MATCHED_SCORE_SHA256),
+        (official_dir / "g3-shuffled.score.json", POSTPROCESS_SHUFFLED_SCORE_SHA256),
+    )
+    for path, digest in pinned:
+        _require_hash(path, digest, f"postprocess {path.name}")
+
+    failure = _read_json(mission_dir / "failure-receipt.json")
+    if failure.get("error") != "RuntimeError('official score surface is malformed')":
+        raise RuntimeError("postprocess source failure identity drift")
+    batch = _read_json(official_dir / "batch-summary.json")
+    jobs = batch.get("jobs")
+    if (
+        batch.get("failed") != 0
+        or batch.get("succeeded") != 3
+        or not isinstance(jobs, list)
+        or [(row.get("job_id"), row.get("operation")) for row in jobs]
+        != [("g3-m0", "score"), ("g3-matched", "score"), ("g3-shuffled", "finalize")]
+    ):
+        raise RuntimeError("postprocess official score batch drift")
+    expected_result_hashes = {
+        "g3-m0": POSTPROCESS_M0_SCORE_SHA256,
+        "g3-matched": POSTPROCESS_MATCHED_SCORE_SHA256,
+        "g3-shuffled": POSTPROCESS_SHUFFLED_SCORE_SHA256,
+    }
+    for row in jobs:
+        if row.get("status") != "succeeded" or row.get("result_sha256") != (
+            expected_result_hashes[row["job_id"]]
+        ):
+            raise RuntimeError("postprocess official score job hash drift")
+
+    score_paths = {
+        name: official_dir / f"g3-{name}.score.json"
+        for name in ("m0", "matched", "shuffled")
+    }
+    score_documents = {name: _read_json(path) for name, path in score_paths.items()}
+    bundles = {
+        name: verify_bundle(Path(str(document["manifest"])))
+        for name, document in score_documents.items()
+    }
+    if (
+        any(len(bundle.outputs_rows) != SPLIT_COUNT for bundle in bundles.values())
+        or bundles["shuffled"].attempt_state != "FINALIZED"
+    ):
+        raise RuntimeError("postprocess verified bundle state drift")
+    recorded = {name: _load_batch_scores(path) for name, path in score_paths.items()}
+    full_scores = {
+        "m0": _offline_full_score(
+            bundle=bundles["m0"], recorded_scores=recorded["m0"], context=context
+        ),
+        "matched": _offline_full_score(
+            bundle=bundles["matched"],
+            recorded_scores=recorded["matched"],
+            context=context,
+        ),
+        "shuffled": recorded["shuffled"],
+    }
+    shuffled_rows = full_scores["shuffled"].get("a2t-toolcall")
+    if (
+        not isinstance(shuffled_rows, Mapping)
+        or not isinstance(shuffled_rows.get("per_sample"), list)
+        or len(shuffled_rows["per_sample"]) != SPLIT_COUNT
+    ):
+        raise RuntimeError("postprocess shuffled score surface is incomplete")
+
+    selected_ids = tuple(context["selected_ids"])
+    shuffled_contacts = _verified_agent_contact_counts(
+        mission_dir / "shuffled" / "agent-trace",
+        expected_ids=selected_ids,
+    )
+    matched_contacts = context["matched_recovery"]["contact_counts"]
+    result = _build_result(
+        items=context["items"],
+        selected_ids=selected_ids,
+        m0_scores=full_scores["m0"],
+        matched_scores=full_scores["matched"],
+        shuffled_scores=full_scores["shuffled"],
+        matched_contact_counts=matched_contacts,
+        shuffled_contact_counts=shuffled_contacts,
+    )
+    result["analysis_only_per_sample_reconstruction"] = {
+        "function": "score_audio2tool_outputs",
+        "official_aggregate_crosscheck": True,
+        "model_contacts": 0,
+        "network_contacts": 0,
+        "new_scorer_processes": 0,
+        "reason": "score-only CLI artifacts intentionally retained aggregate rows only",
+    }
+    _write_json(mission_dir / "result.json", result)
+    route_receipt = _read_json(mission_dir / "obs" / "observation-receipt.json")
+    attempts = failure.get("phase_attempt_ids")
+    receipt = {
+        "schema": "saea-a2t-g3-plain-english-flight-receipt-v2",
+        "run_id": RUN_ID,
+        "status": "SCORED",
+        "flight_study_commit": bundles["shuffled"].manifest.get("study_commit"),
+        "postprocess_study_commit": context["commit"],
+        "mission_dir": str(mission_dir),
+        "phase_attempt_ids": attempts,
+        "phase_contact_counts": {
+            G3_M0_DIRECT_PHASE: 40,
+            G3_OBSERVATION_PHASE: 40,
+            G3_MATCHED_USE_PHASE: sum(matched_contacts.values()),
+            G3_SHUFFLED_USE_PHASE: sum(shuffled_contacts.values()),
+        },
+        "cumulative_model_contacts": 148,
+        "route_report": route_receipt.get("route_report"),
+        "official_score": batch,
+        "postprocess_existing": True,
+        "postprocess_model_contacts": 0,
+        "postprocess_network_contacts": 0,
+        "postprocess_scorer_processes": 0,
+        "superseded_failure_sha256": POSTPROCESS_FAILURE_SHA256,
+        "result_path": str(mission_dir / "result.json"),
+        "result_sha256": _sha256_file(mission_dir / "result.json"),
+        "network_jitter_testing": False,
+        "retries": 0,
+    }
+    _write_json(mission_dir / "flight-receipt.json", receipt)
+    return receipt
 
 
 def _launch(root: Path) -> Mapping[str, object]:
@@ -2299,19 +2566,44 @@ def _launch(root: Path) -> Mapping[str, object]:
             },
             lock_sha256=lock_sha256,
         )
+        score_paths = {
+            name: mission_dir / "official-score" / f"g3-{name}.score.json"
+            for name in ("m0", "matched", "shuffled")
+        }
+        recorded_scores = {
+            name: _load_batch_scores(path) for name, path in score_paths.items()
+        }
+        score_context = {**context, "data_root": Path(root)}
+        full_scores = {
+            "m0": _offline_full_score(
+                bundle=verify_bundle(m0["manifest"]),
+                recorded_scores=recorded_scores["m0"],
+                context=score_context,
+            ),
+            "matched": _offline_full_score(
+                bundle=verify_bundle(matched["manifest"]),
+                recorded_scores=recorded_scores["matched"],
+                context=score_context,
+            ),
+            "shuffled": recorded_scores["shuffled"],
+        }
         result = _build_result(
             items=context["items"],
             selected_ids=selected_ids,
-            m0_scores=_load_batch_scores(
-                mission_dir / "official-score" / "g3-m0.score.json"
-            ),
-            matched_scores=_load_batch_scores(
-                mission_dir / "official-score" / "g3-matched.score.json"
-            ),
-            shuffled_scores=_load_scores(shuffled["manifest"]),
+            m0_scores=full_scores["m0"],
+            matched_scores=full_scores["matched"],
+            shuffled_scores=full_scores["shuffled"],
             matched_contact_counts=matched["contact_counts"],
             shuffled_contact_counts=shuffled["contact_counts"],
         )
+        result["analysis_only_per_sample_reconstruction"] = {
+            "function": "score_audio2tool_outputs",
+            "official_aggregate_crosscheck": True,
+            "model_contacts": 0,
+            "network_contacts": 0,
+            "new_scorer_processes": 0,
+            "reason": "score-only CLI artifacts intentionally retained aggregate rows only",
+        }
         _write_json(mission_dir / "result.json", result)
         receipt = {
             "schema": "saea-a2t-g3-plain-english-flight-receipt-v1",
@@ -2353,9 +2645,14 @@ def _launch(root: Path) -> Mapping[str, object]:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--preflight-only", action="store_true")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--preflight-only", action="store_true")
+    mode.add_argument("--postprocess-existing", action="store_true")
     args = parser.parse_args(argv)
     root = data_root()
+    if args.postprocess_existing:
+        print(json.dumps(_postprocess_existing(root), indent=2, sort_keys=True))
+        return 0
     if args.preflight_only:
         context = _static_preflight(root)
         print(

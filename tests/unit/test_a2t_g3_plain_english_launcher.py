@@ -61,6 +61,7 @@ def _scores(items, *, exact_fail=(), tool_fail=(), slot_f1=0.95):
             "exact_match": float(item["sample_id"] not in exact_fail),
             "tool_accuracy": float(item["sample_id"] not in tool_fail),
             "parsed": True,
+            "slot_f1": slot_f1,
         }
         for item in items
     ]
@@ -626,11 +627,89 @@ def test_result_reports_absolute_tier_paired_control_repair_and_ci90() -> None:
         shuffled_contact_counts={sample_id: 2 for sample_id in selected},
     )
     assert result["absolute"]["matched"]["exact_count"] == 38
+    assert "shuffled" not in result["absolute"]
+    assert result["absolute"]["shuffled_composite_40"]["exact_count"] == 34
     assert result["paired"]["matched_minus_m0_exact"] == 6
-    assert result["selected16"]["matched_minus_shuffled_exact"] >= 4
+    assert result["selected16"]["scope"] == "preregistered-selected16-only"
+    assert result["selected16"]["matched"]["samples"] == 16
+    assert result["selected16"]["matched"]["exact_count"] == 14
+    assert result["selected16"]["shuffled"]["exact_count"] == 10
+    assert result["selected16"]["paired_exact"]["net"] == 4
     assert result["hard_repair_counts"] == {"matched": 3, "shuffled": 16}
     assert result["bootstrap"]["ci_level"] == 0.9
     assert set(result["per_tier"]) == set(launcher.CANONICAL_TIERS)
+
+
+def test_batch_score_loader_normalizes_inline_and_path_score_shapes(
+    tmp_path: Path,
+) -> None:
+    launcher = _launcher()
+    inline_path = tmp_path / "inline.json"
+    inline_path.write_text(
+        json.dumps(
+            {
+                "verified": True,
+                "manifest": "/fixed/m0.run-manifest.json",
+                "scores": {
+                    "a2t-toolcall": {"samples": 40, "exact_match": 0.2},
+                    "cost": {"calls_used": 40},
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    full_scores = {
+        "a2t-toolcall": {
+            "per_sample": [{"sample_id": "sample-1"}],
+            "aggregate": {"samples": 40, "exact_match": 0.175},
+        },
+        "cost": {"per_sample": [], "aggregate": {"calls_used": 16}},
+    }
+    full_path = tmp_path / "scores.json"
+    full_path.write_text(json.dumps(full_scores), encoding="utf-8")
+    path_result = tmp_path / "path.json"
+    path_result.write_text(
+        json.dumps(
+            {
+                "verified": True,
+                "attempt_state": "FINALIZED",
+                "manifest": "/fixed/shuffled.run-manifest.json",
+                "scores": str(full_path),
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    inline = launcher._load_batch_scores(inline_path)
+    referenced = launcher._load_batch_scores(path_result)
+
+    assert inline["a2t-toolcall"] == {
+        "per_sample": None,
+        "aggregate": {"samples": 40, "exact_match": 0.2},
+    }
+    assert inline["cost"]["aggregate"] == {"calls_used": 40}
+    assert referenced == full_scores
+
+
+def test_postprocess_existing_mode_never_enters_launch(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    launcher = _launcher()
+    monkeypatch.setattr(launcher, "data_root", lambda: Path("/fixed/data"))
+    monkeypatch.setattr(
+        launcher,
+        "_postprocess_existing",
+        lambda _root: {"status": "SCORED", "postprocess_existing": True},
+        raising=False,
+    )
+    monkeypatch.setattr(
+        launcher,
+        "_launch",
+        lambda _root: (_ for _ in ()).throw(AssertionError("launch entered")),
+    )
+
+    assert launcher.main(["--postprocess-existing"]) == 0
+    assert json.loads(capsys.readouterr().out)["postprocess_existing"] is True
 
 
 def test_preflight_only_never_starts_the_service(
