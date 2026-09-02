@@ -18,6 +18,7 @@ def test_g6_fixed16_config_freezes_the_authorized_family_sweep() -> None:
     )
 
     assert baseline["speech_native_contact_ceiling_per_task"] == 29
+    assert baseline["obs_batch_samples"] == 2
     assert baseline["family_scan_contacts_per_task"] == 28
     assert baseline["resolve_contacts_per_task"] == 1
     assert baseline["max_concurrent_model_requests"] == 2

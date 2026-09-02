@@ -3,7 +3,7 @@
   "policy": "saea-a2t-g6-exhaustive-family-sweep-v1",
   "evidence_source": "exhaustive-family-local-reference-scan-then-evidence-bound-resolution",
   "evidence_mismatch": false,
-  "obs_batch_samples": 1,
+  "obs_batch_samples": 2,
   "profile_queue_depth_multiplier": 2,
   "profile_validation_workers": 2,
   "speech_native_result_mode": "predictions",
