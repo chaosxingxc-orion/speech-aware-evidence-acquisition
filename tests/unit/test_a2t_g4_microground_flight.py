@@ -17,6 +17,8 @@ from speech_aware_evidence_acquisition.rails.probes.a2t_g4_microground_flight im
     G4_MICROGROUND_E_PHASE,
     G4_MICROGROUND_SE_PHASE,
     G4_SCREEN_SPLIT_ID,
+    G4_SE_STATE_UTF8_BYTE_CAP,
+    G4_STATE_UTF8_BYTE_CAP,
     G4MicrogroundAdapter,
     G4MicrogroundFlightError,
     G4SingleContactController,
@@ -154,6 +156,20 @@ def test_adapter_rejects_incomplete_leaky_non_ascii_or_oversize_surfaces() -> No
             samples,
             phase=G4_MICROGROUND_E_PHASE,
             state_by_sample={**states, first: "x" * 4097},
+            packet_by_sample=packets,
+        )
+    se_adapter = G4MicrogroundAdapter(
+        samples,
+        phase=G4_MICROGROUND_SE_PHASE,
+        state_by_sample={**states, first: "x" * (G4_STATE_UTF8_BYTE_CAP + 1)},
+        packet_by_sample=packets,
+    )
+    assert len(se_adapter._states[first]) == G4_STATE_UTF8_BYTE_CAP + 1
+    with pytest.raises(G4MicrogroundFlightError, match="state byte cap"):
+        G4MicrogroundAdapter(
+            samples,
+            phase=G4_MICROGROUND_SE_PHASE,
+            state_by_sample={**states, first: "x" * (G4_SE_STATE_UTF8_BYTE_CAP + 1)},
             packet_by_sample=packets,
         )
     with pytest.raises(G4MicrogroundFlightError, match="packet byte cap"):

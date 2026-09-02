@@ -80,8 +80,8 @@ from speech_aware_evidence_acquisition.rails.probes.a2t_g4_microground_flight im
     G4_PACKET_UTF8_BYTE_CAP,
     G4_QUEUE_DEPTH,
     G4_SCREEN_SPLIT_ID,
+    G4_SE_STATE_UTF8_BYTE_CAP,
     G4_SLOT_COUNT,
-    G4_STATE_UTF8_BYTE_CAP,
     G4MicrogroundAdapter,
     run_g4_microground_phase,
 )
@@ -370,7 +370,10 @@ def _organize_selected(
         for sample_id in SELECTED_IDS
     }
     states = {sample_id: artifacts[sample_id].json_text for sample_id in SELECTED_IDS}
-    if any(len(text.encode("utf-8")) > G4_STATE_UTF8_BYTE_CAP for text in states.values()):
+    if any(
+        len(text.encode("utf-8")) > G4_SE_STATE_UTF8_BYTE_CAP
+        for text in states.values()
+    ):
         raise RuntimeError("structured-state byte cap exceeded")
     receipt = build_external_state_receipt(observations)
     measured = _state_set_sha256(states)

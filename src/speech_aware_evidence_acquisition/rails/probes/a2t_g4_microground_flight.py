@@ -33,6 +33,7 @@ G4_MICROGROUND_E_PHASE = "G4_EXECUTABLE_MICROGROUND_USE"
 G4_MICROGROUND_SE_PHASE = "G4_STRUCTURED_EXECUTABLE_MICROGROUND_USE"
 G4_EXPECTED_SCREEN_ROWS = 16
 G4_STATE_UTF8_BYTE_CAP = 4_096
+G4_SE_STATE_UTF8_BYTE_CAP = 8_192
 G4_PACKET_UTF8_BYTE_CAP = 16_384
 G4_SLOT_COUNT = 2
 G4_QUEUE_DEPTH = 4
@@ -106,11 +107,16 @@ class G4MicrogroundAdapter(TaskAdapter):
             sorted(sample_by_id.values(), key=lambda sample: sample.sample_id)
         )
         self._phase = phase
+        state_byte_cap = (
+            G4_SE_STATE_UTF8_BYTE_CAP
+            if phase == G4_MICROGROUND_SE_PHASE
+            else G4_STATE_UTF8_BYTE_CAP
+        )
         self._states = {
             sample_id: _bounded_ascii(
                 state_by_sample[sample_id],
                 label="state",
-                byte_cap=G4_STATE_UTF8_BYTE_CAP,
+                byte_cap=state_byte_cap,
             )
             for sample_id in sorted(sample_by_id)
         }
@@ -296,6 +302,7 @@ __all__ = [
     "G4_PACKET_UTF8_BYTE_CAP",
     "G4_QUEUE_DEPTH",
     "G4_SCREEN_SPLIT_ID",
+    "G4_SE_STATE_UTF8_BYTE_CAP",
     "G4_SLOT_COUNT",
     "G4_STATE_UTF8_BYTE_CAP",
     "G4MicrogroundAdapter",

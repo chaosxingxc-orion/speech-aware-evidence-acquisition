@@ -8,7 +8,7 @@ import json
 import re
 from typing import Mapping, Sequence
 
-MAX_STATE_UTF8_BYTES = 4096
+MAX_STATE_UTF8_BYTES = 8192
 
 _TOP_LEVEL_FIELDS = frozenset(
     {

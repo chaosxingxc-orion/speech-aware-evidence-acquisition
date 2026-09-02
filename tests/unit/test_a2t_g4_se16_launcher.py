@@ -79,7 +79,7 @@ def test_organizer_builds_exactly_sixteen_bounded_states_and_source_free_receipt
     assert receipt["observation_count"] == 16
     assert receipt["state_count"] == 16
     assert receipt["source_observations_rendered"] == 0
-    assert all(len(text.encode("utf-8")) <= 4096 for text in states.values())
+    assert all(len(text.encode("utf-8")) <= 8192 for text in states.values())
     rendered = json.dumps(receipt, sort_keys=True)
     assert not any(sample_id in rendered for sample_id in launcher.SELECTED_IDS)
     assert not any(text in rendered for text in _observations(launcher).values())

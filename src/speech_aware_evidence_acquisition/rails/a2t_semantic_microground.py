@@ -256,11 +256,20 @@ def _action_queries(structured_state: Mapping[str, object]) -> tuple[str, ...]:
     if (
         not isinstance(actions, Sequence)
         or isinstance(actions, (str, bytes, bytearray))
-        or not actions
     ):
         raise SemanticMicrogroundError(
-            "structured state must contain at least one active action"
+            "structured state active_actions must be a sequence"
         )
+    if not actions:
+        current = structured_state.get("current_request")
+        if not isinstance(current, Mapping):
+            raise SemanticMicrogroundError(
+                "structured state without active actions requires current_request"
+            )
+        query = current.get("normalized")
+        if query in (None, ""):
+            query = current.get("surface")
+        return (_required_ascii(query, field="current request"),)
     if len(actions) > MAX_CANDIDATES:
         raise SemanticMicrogroundError(
             "structured state permits at most eight active actions"
@@ -519,7 +528,11 @@ def route_semantic_microground(
         if not isinstance(structured_state, Mapping):
             raise SemanticMicrogroundError("structured_state must be a mapping")
         action_queries = _action_queries(structured_state)
-        representation = "structured-state"
+        representation = (
+            "structured-state:current-request-fallback"
+            if not structured_state.get("active_actions")
+            else "structured-state"
+        )
     else:
         assert observation is not None
         action_queries = (_required_ascii(observation, field="observation"),)

@@ -245,6 +245,24 @@ def test_state_value_action_falls_back_to_surface_when_normalized_is_absent() ->
     assert "bookRide" in route.candidate_names
 
 
+def test_empty_active_actions_route_once_from_current_request_without_promotion() -> None:
+    route = ground.route_semantic_microground(
+        _corpus(),
+        structured_state={
+            "current_request": {
+                "surface": "Please book a taxi ride to the station.",
+                "normalized": "book a taxi ride to the station",
+                "source_turn": 0,
+            },
+            "active_actions": [],
+        },
+    )
+
+    assert route.action_queries == ("book a taxi ride to the station",)
+    assert route.representation == "structured-state:current-request-fallback"
+    assert "bookRide" in route.candidate_names
+
+
 def test_observation_route_is_byte_identical_under_reversed_corpus_input() -> None:
     observation = "Please book a taxi ride to the station destination."
 

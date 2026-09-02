@@ -105,14 +105,60 @@ def test_role_labeled_observation_preserves_alternating_turns_and_uses_users() -
     assert "The shades are open" not in json.dumps(document["active_actions"])
 
 
+def test_flat_action_overflow_preserves_entire_observation_as_one_action() -> None:
+    observation = (
+        "Open one; open two; open three; open four; open five; "
+        "open six; open seven; open eight; open nine."
+    )
+
+    document = organizer.organize_sealed_observation(observation).document
+
+    assert document["turns"] == [
+        {
+            "role": "user",
+            "source_turn": 0,
+            "surface": observation,
+            "normalized": observation.lower(),
+        }
+    ]
+    assert document["active_actions"] == [
+        {
+            "surface": observation,
+            "normalized": observation.lower(),
+            "source_turn": 0,
+        }
+    ]
+    assert document["current_request"] == document["active_actions"][0]
+    assert document["superseded_actions"] == []
+    assert document["superseded_values"] == []
+    assert observation in json.dumps(document)
+
+
+def test_long_flat_overflow_remains_under_state_cap_without_content_loss() -> None:
+    clauses = tuple(
+        f"Open control number {index} with its complete stable setting " + "x" * 30
+        for index in range(1, 10)
+    )
+    observation = "; ".join(clauses) + "."
+
+    artifact = organizer.organize_sealed_observation(observation)
+
+    assert len(artifact.json_text.encode("utf-8")) <= 8192
+    assert artifact.document["active_actions"][0]["surface"] == observation
+    assert artifact.document["active_actions"][0]["normalized"] == observation.lower()
+    assert artifact.document["current_request"] == artifact.document["active_actions"][0]
+
+
 @pytest.mark.parametrize(
     ("observation", "message"),
     (
         ("Use sample_id 123 now.", "sample or tier identity"),
         ("Open the caf\u00e9 door.", "ASCII English"),
         (
-            "Open one; open two; open three; open four; open five; "
-            "open six; open seven; open eight; open nine.",
+            "User: Open one; open two; open three; open four; open five; "
+            "open six; open seven; open eight; open nine.\n"
+            "Assistant: I have not acted.\n"
+            "User: Wait.",
             "at most 8 action clauses",
         ),
     ),
@@ -125,9 +171,9 @@ def test_identity_non_ascii_and_more_than_eight_actions_fail_closed(
 
 
 def test_oversize_state_is_rejected_without_truncation_or_fallback() -> None:
-    observation = "Please preserve " + "x" * 5000
+    observation = "Please preserve " + "x" * 9000
 
-    with pytest.raises(organizer.StructuredDialogueStateError, match="4,096-byte cap"):
+    with pytest.raises(organizer.StructuredDialogueStateError, match="8,192-byte cap"):
         organizer.organize_sealed_observation(observation)
 
 

@@ -281,7 +281,7 @@ def test_invalid_json_noncanonical_json_non_ascii_and_oversize_never_repair() ->
         dialogue.render_structured_dialogue_state(non_ascii)
 
     large = _artifact().document
-    padding = "x" * 5000
+    padding = "x" * 9000
     large["turns"][2]["surface"] = padding
     large["turns"][2]["normalized"] = padding
     large["current_request"] = {
@@ -291,5 +291,5 @@ def test_invalid_json_noncanonical_json_non_ascii_and_oversize_never_repair() ->
     }
     large["active_actions"] = []
     large["irrelevant_context"] = []
-    with pytest.raises(dialogue.StructuredDialogueStateError, match="4,096-byte cap"):
+    with pytest.raises(dialogue.StructuredDialogueStateError, match="8,192-byte cap"):
         dialogue.render_structured_dialogue_state(large)

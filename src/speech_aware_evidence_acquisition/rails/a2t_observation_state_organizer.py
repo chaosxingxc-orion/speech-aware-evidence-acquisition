@@ -220,10 +220,23 @@ def organize_sealed_observation(
     turns = _turn_spans(sealed_observation_text)
     clauses = _clauses_for_user_turns(sealed_observation_text, turns)
     action_count = sum(clause.action_like for clause in clauses)
+    flat_overflow = False
     if action_count > MAX_ACTION_CLAUSES:
-        raise ObservationStateOrganizerError(
-            f"sealed OBS contains {action_count} action clauses; at most "
-            f"{MAX_ACTION_CLAUSES} action clauses are allowed"
+        if _ROLE_PREFIX.search(sealed_observation_text):
+            raise ObservationStateOrganizerError(
+                f"sealed OBS contains {action_count} action clauses; at most "
+                f"{MAX_ACTION_CLAUSES} action clauses are allowed"
+            )
+        flat_overflow = True
+        clauses = (
+            _Clause(
+                source_turn=0,
+                surface=sealed_observation_text,
+                normalized=_normalize_english_span(sealed_observation_text),
+                action_like=True,
+                correction=False,
+                superseded_values=(),
+            ),
         )
 
     active: list[StateValue] = []
@@ -246,14 +259,19 @@ def organize_sealed_observation(
     final_turn_index = len(turns) - 1
     final_turn = turns[final_turn_index]
     final_surface = sealed_observation_text[final_turn.start : final_turn.end]
-    return build_structured_dialogue_state(
-        sealed_observation_text,
-        turns=turns,
-        current_request=StateValue(
+    current_request = (
+        _value(clauses[0])
+        if flat_overflow
+        else StateValue(
             surface=final_surface,
             normalized=final_turn.normalized,
             source_turn=final_turn_index,
-        ),
+        )
+    )
+    return build_structured_dialogue_state(
+        sealed_observation_text,
+        turns=turns,
+        current_request=current_request,
         active_actions=active_values,
         superseded_actions=superseded_values_actions,
         superseded_values=explicit_values,
