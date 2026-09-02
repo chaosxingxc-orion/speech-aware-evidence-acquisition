@@ -1,0 +1,116 @@
+{
+  "carrier_inventory": {
+    "pool_items": 30733,
+    "pool_units": 16843,
+    "usable_units": 16838
+  },
+  "compatibility": {
+    "ambiguous_extension_skeletons_excluded": 0,
+    "call_renders_rendered": 0,
+    "concrete_argument_values_rendered": 0,
+    "constrained_nullable_forms_excluded": 9,
+    "evaluation_rows_consumed": 0,
+    "extension_rule_count": 8,
+    "malformed_key_skeletons_excluded": 4,
+    "minimum_support": 2,
+    "nullable_lexical_rule_count": 8,
+    "public_boolean_lexical_rule_count": 31,
+    "reference_transcripts_rendered": 0,
+    "rule_count": 43,
+    "schema": "saea-a2t-g4-compatibility-derivation-v1",
+    "singleton_skeletons_excluded": 40,
+    "source_sample_ids_rendered": 0,
+    "source_utterances_rendered": 0,
+    "tool_count": 35
+  },
+  "construction_summary": {
+    "argument_key_count": 85,
+    "argument_pattern_family_count": 354,
+    "call_renders_rendered": 0,
+    "concrete_argument_values_rendered": 0,
+    "excluded_construction_row_count": 51,
+    "safe_construction_row_count": 12550,
+    "source_sample_ids_rendered": 0,
+    "source_utterances_rendered": 0
+  },
+  "contacts": {
+    "audio_seconds": 0,
+    "embedding_tool": 0,
+    "frozen_core": 0,
+    "gpu_hours": 0,
+    "network": 0,
+    "retriever": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "corpus": {
+    "deterministic_rebuild_equal": true,
+    "path": "knowledge/audio2tool/g4-executable-semantic-cards-v1/corpus.txt",
+    "report": {
+      "ascii_only": true,
+      "characters": 141302,
+      "compatibility_rule_construction_support_count": 1330,
+      "compatibility_rule_count": 43,
+      "compatibility_rule_value_literals_rendered": 0,
+      "construction_fields_consumed": [
+        "arg_signature",
+        "tool_name"
+      ],
+      "construction_summary_count": 12550,
+      "construction_tool_count": 151,
+      "evaluation_samples_consumed": 0,
+      "example_count": 302,
+      "examples_validated": true,
+      "forbidden_example_literal_count": 0,
+      "gold_values_rendered": 0,
+      "legal_argument_key_set_count": 338,
+      "line_count": 2378,
+      "max_utf8_bytes": 524288,
+      "public_constraint_example_literal_count": 145,
+      "reference_transcripts_rendered": 0,
+      "registry_tool_count": 152,
+      "reversed_input_rebuild_contract": "byte-identical",
+      "schema": "saea-a2t-executable-semantic-card-corpus-report-v1",
+      "source_argument_values_rendered": 0,
+      "source_sample_ids_rendered": 0,
+      "source_utterances_rendered": 0,
+      "spoken_role_guidance_count": 188,
+      "task_card_count": 4,
+      "tool_card_count": 152,
+      "unparsed_constraint_field_count": 0,
+      "utf8_bytes": 141302
+    },
+    "sha256": "85a04fc72c49802853d0da3785f30a266a90d88275901c8292231442ef4a294f"
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-A2T-MF-G4-SEMANTIC-CARDS-BUILD-V1",
+  "offline_guard": {
+    "outbound_connection_attempts": 0,
+    "targets": []
+  },
+  "partition": {
+    "construction_forbidden_intersection_count": 0,
+    "construction_identity_sha256": "86bfc6f36fb6a562ad1134cd11d60a2ad6bb94668195d76eada97edd2ce0ce16",
+    "construction_sample_count": 22951,
+    "construction_unit_count": 12601,
+    "exposed_sample_count": 400,
+    "policy_id": "saea-a2t-block-partition-v1",
+    "proposed_eval_identity_sha256": "4d0196ec91858cdc81340ee197c085ff29726a1f1b7fe9119d4e410d62df2f90",
+    "proposed_eval_sample_count": 400,
+    "seed": 20260807
+  },
+  "schema": "saea-a2t-g4-semantic-card-build-receipt-v1",
+  "scope": {
+    "evaluation_or_fresh_rows_rendered": 0,
+    "exposure_row_created": false,
+    "launcher_created": false,
+    "model_flight_authorized": false,
+    "network_jitter_testing": false
+  },
+  "source_hashes": {
+    "builder": "e49c5b71348efbfdcb284d17b847efb341a3a5898324ef2432ebe9e880da080e",
+    "partition_proposal": "3bbf77a328c2983fb6299bcfe34a975624fee330a9325614dc1f84a7338678a1",
+    "registry": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4"
+  },
+  "study_commit": "cbf07c24640b2519a702e4001fcfeba8700c1d75"
+}

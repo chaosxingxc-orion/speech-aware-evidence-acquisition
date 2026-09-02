@@ -1,0 +1,2378 @@
+AUDIO2TOOL EXECUTABLE SEMANTIC-CARD CORPUS
+
+OUTPUT CONTRACT
+Return only one JSON array. Every element must be exactly {"name":"registeredToolName","arguments":{...}}. Use an exact registered tool name, an exact legal argument-key set from its card, and JSON values with the public types and constraints. Copy task values only from the speech or its same-core observation. Never copy a value from a synthetic example.
+
+CARD USE
+Choose a tool by its operation meaning. Use Avoid guidance to reject nearby tools that share nouns but perform a different operation. The construction summaries contribute only observed legal argument-key sets; no source utterance, sample identity, transcript, call label, or argument value is available to this builder.
+
+TASK-WIDE EXECUTION CARDS
+
+TASK CARD multi-call-ordering
+For multiple supported actions, emit one call per action and preserve the spoken action order. Do not merge distinct actions or add an unrequested call.
+
+TASK CARD correction-resolution
+A final correction supersedes the earlier value or action. Emit only the corrected call state and do not retain a superseded argument.
+
+TASK CARD implicit-end-state-resolution
+For an implicit request, select the operation that reaches the desired end state. Do not invent an argument value that was not spoken or observed by the same core.
+
+TASK CARD multiturn-carryover
+Carry forward only relevant facts explicitly established in earlier user turns, then apply the final user request. Never use future turns or invented assistant facts.
+
+TOOL CARD activateRoutine
+Exact tool name: activateRoutine
+Choose when: Triggers a multi-action automation routine.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially activateScene, broadcastMessage, restartDevice; shared nouns alone are insufficient.
+Public signature: activateRoutine(routineId: String)
+Public types: routineId: String
+Public constraints: routineId: [Good_Morning, Leaving_Home, Arriving_Home, Bedtime]
+Legal argument-key sets: {}; {routineId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: routine identifier -> routineId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"activateRoutine"}
+- {"arguments":{"routineId":"Good_Morning"},"name":"activateRoutine"}
+
+TOOL CARD activateScene
+Exact tool name: activateScene
+Choose when: Activates a pre-configured smart home scene.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially activateRoutine, broadcastMessage, restartDevice; shared nouns alone are insufficient.
+Public signature: activateScene(sceneId: String)
+Public types: sceneId: String
+Public constraints: sceneId: [Good_Morning, Good_Night, Movie_Time, Party, Away]
+Legal argument-key sets: {}; {sceneId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: scene identifier -> sceneId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"activateScene"}
+- {"arguments":{"sceneId":"Good_Morning"},"name":"activateScene"}
+
+TOOL CARD addTripStop
+Exact tool name: addTripStop
+Choose when: Adds a new waypoint to the current navigation route.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially cancelNavigation, getRouteSummary, searchPOI, setDestination, setRoutePreferences, setVoiceGuidance; shared nouns alone are insufficient.
+Public signature: addTripStop(address: String)
+Public types: address: String
+Public constraints: none declared
+Legal argument-key sets: {}; {address}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: address -> address (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"addTripStop"}
+- {"arguments":{"address":"SYNTHETIC_ADDTRIPSTOP_ADDRESS_001"},"name":"addTripStop"}
+
+TOOL CARD adjustVolume
+Exact tool name: adjustVolume
+Choose when: Increases or decreases the volume by a specified number of steps.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially controlPlayback, launchInCarGaming, setAmbientLighting, setAudioVolume, setExternalSpeakerOutput, setMediaSource, setPassengerQuietMode; shared nouns alone are insufficient.
+Public signature: adjustVolume(direction: UpDown, steps: Int)
+Public types: direction: UpDown; steps: Int
+Public constraints: direction: [Up, Down], steps: [1-10]
+Legal argument-key sets: {direction, steps}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: direction -> direction (UpDown).
+- Spoken role: steps -> steps (Int).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{"direction":"Up","steps":5},"name":"adjustVolume"}
+
+TOOL CARD armSecuritySystem
+Exact tool name: armSecuritySystem
+Choose when: Sets the home security system mode (e.g., Away, Home, Night, Disarmed).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getCameraEvent, getCameraStream, setGarageDoor, setLockState_home; shared nouns alone are insufficient.
+Public signature: armSecuritySystem(mode: SecurityMode)
+Public types: mode: SecurityMode
+Public constraints: mode: [Away, Home, Night, Disarmed]
+Legal argument-key sets: {mode}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: mode -> mode (SecurityMode).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{"mode":"Away"},"name":"armSecuritySystem"}
+
+TOOL CARD broadcastMessage
+Exact tool name: broadcastMessage
+Choose when: Broadcasts a text-to-speech message to specified smart speakers.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially activateRoutine, activateScene, restartDevice; shared nouns alone are insufficient.
+Public signature: broadcastMessage(message: String, targetRooms: List<String>?)
+Public types: message: String; targetRooms: List<String> (optional)
+Public constraints: none declared
+Legal argument-key sets: {}; {message}; {message, targetRooms}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 58; legal keys {message, targetRooms}; targetRooms accepts JSON null or an artificial JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: message -> message (String).
+- Spoken role: target rooms -> targetRooms (List<String>).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"broadcastMessage"}
+- {"arguments":{"message":"SYNTHETIC_BROADCASTMESSAGE_MESSAGE_001"},"name":"broadcastMessage"}
+- {"arguments":{"message":"SYNTHETIC_BROADCASTMESSAGE_MESSAGE_001","targetRooms":null},"name":"broadcastMessage"}
+
+TOOL CARD calibrateCameras
+Exact tool name: calibrateCameras
+Choose when: Resets the calibration of Autopilot cameras.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getSoftwareUpdateStatus, installSoftwareUpdate, resetTPMSSensors, scheduleService, wiperServiceMode; shared nouns alone are insufficient.
+Public signature: calibrateCameras()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"calibrateCameras"}
+
+TOOL CARD calibrateThermostat
+Exact tool name: calibrateThermostat
+Choose when: Applies a temperature offset to calibrate the thermostat sensor.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially rebootDevice, resetFilterStatus, runNetworkSpeedTest, updateFirmware; shared nouns alone are insufficient.
+Public signature: calibrateThermostat(deviceId: String, offset: Float)
+Public types: deviceId: String; offset: Float
+Public constraints: offset: [-5.0 - 5.0]
+Legal argument-key sets: {}; {offset}; {deviceId, offset}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: offset -> offset (Float).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"calibrateThermostat"}
+- {"arguments":{"offset":0.0},"name":"calibrateThermostat"}
+- {"arguments":{"deviceId":"SYNTHETIC_CALIBRATETHERMOSTAT_DEVICEID_001","offset":0.0},"name":"calibrateThermostat"}
+
+TOOL CARD cancelNavigation
+Exact tool name: cancelNavigation
+Choose when: Cancels the current active navigation route.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially addTripStop, getRouteSummary, searchPOI, setDestination, setRoutePreferences, setVoiceGuidance; shared nouns alone are insufficient.
+Public signature: cancelNavigation()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"cancelNavigation"}
+
+TOOL CARD castContent
+Exact tool name: castContent
+Choose when: Casts media content from a URL to a target device.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially controlPlayback_home, playMedia, setInputSource, setVolume; shared nouns alone are insufficient.
+Public signature: castContent(sourceUrl: String, targetDeviceId: String)
+Public types: sourceUrl: String; targetDeviceId: String
+Public constraints: none declared
+Legal argument-key sets: {}; {targetDeviceId}; {sourceUrl, targetDeviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: source url -> sourceUrl (String).
+- Spoken role: target device identifier -> targetDeviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"castContent"}
+- {"arguments":{"targetDeviceId":"SYNTHETIC_CASTCONTENT_TARGETDEVICEID_001"},"name":"castContent"}
+- {"arguments":{"sourceUrl":"SYNTHETIC_CASTCONTENT_SOURCEURL_001","targetDeviceId":"SYNTHETIC_CASTCONTENT_TARGETDEVICEID_001"},"name":"castContent"}
+
+TOOL CARD controlLocks
+Exact tool name: controlLocks
+Choose when: Locks or unlocks the vehicle doors.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially enableRemoteStart, setChargingLimit, setClimate; shared nouns alone are insufficient.
+Public signature: controlLocks(state: LockState)
+Public types: state: LockState
+Public constraints: state: [Locked, Unlocked]
+Legal argument-key sets: {state}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: state -> state (LockState).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{"state":"Locked"},"name":"controlLocks"}
+
+TOOL CARD controlPlayback
+Exact tool name: controlPlayback
+Choose when: Executes standard media playback commands (Play, Pause, Next, Previous).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially adjustVolume, launchInCarGaming, setAmbientLighting, setAudioVolume, setExternalSpeakerOutput, setMediaSource, setPassengerQuietMode; shared nouns alone are insufficient.
+Public signature: controlPlayback(action: PlayPauseNextPrev)
+Public types: action: PlayPauseNextPrev
+Public constraints: action: [Play, Pause, PlayPause, Next, Previous]
+Legal argument-key sets: {}; {action}; {action, deviceId}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 80; legal keys {action, deviceId}; deviceId use an artificial JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: action -> action (PlayPauseNextPrev).
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"controlPlayback"}
+- {"arguments":{"action":"Play"},"name":"controlPlayback"}
+- {"arguments":{"action":"Play","deviceId":"SYNTHETIC_CONTROLPLAYBACK_DEVICEID_001"},"name":"controlPlayback"}
+
+TOOL CARD controlPlayback_home
+Exact tool name: controlPlayback_home
+Choose when: Sends playback controls (Play, Pause, Stop) to a media device.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially castContent, playMedia, setInputSource, setVolume; shared nouns alone are insufficient.
+Public signature: controlPlayback_home(deviceId: String, action: MediaAction)
+Public types: deviceId: String; action: MediaAction
+Public constraints: action: [Play, Pause, Stop, Next, Previous, Mute, Unmute]
+Legal argument-key sets: {action, deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: action -> action (MediaAction).
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{"action":"Play","deviceId":"SYNTHETIC_CONTROLPLAYBACK_HOME_DEVICEID_001"},"name":"controlPlayback_home"}
+
+TOOL CARD enableRemoteStart
+Exact tool name: enableRemoteStart
+Choose when: Enables keyless driving access for a limited duration.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially controlLocks, setChargingLimit, setClimate; shared nouns alone are insufficient.
+Public signature: enableRemoteStart()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"enableRemoteStart"}
+
+TOOL CARD enableWaterLock
+Exact tool name: enableWaterLock
+Choose when: Enables or disables Water Lock mode to prevent accidental screen touches.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially installApp, setHapticStrength; shared nouns alone are insufficient.
+Public signature: enableWaterLock(enabled: Boolean)
+Public types: enabled: Boolean
+Public constraints: enabled: [True, False]
+Legal argument-key sets: {}; {enabled}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 170; legal keys {enabled}; enabled accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: enabled -> enabled (Boolean).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"enableWaterLock"}
+- {"arguments":{"enabled":"True"},"name":"enableWaterLock"}
+
+TOOL CARD findMyDevice
+Exact tool name: findMyDevice
+Choose when: Triggers a sound to help locate a lost device.
+Avoid when: Avoid when the requested operation does not match this meaning; shared nouns alone are insufficient.
+Public signature: findMyDevice()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}; {device}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 2; legal keys {device}; device use an artificial JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: device -> device (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"findMyDevice"}
+- {"arguments":{"device":"SYNTHETIC_FINDMYDEVICE_DEVICE_001"},"name":"findMyDevice"}
+
+TOOL CARD findPairedPhone
+Exact tool name: findPairedPhone
+Choose when: Triggers an audible alert on the paired smartphone.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially setAlarm, setAlwaysOnDisplay, setDoNotDisturb; shared nouns alone are insufficient.
+Public signature: findPairedPhone()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"findPairedPhone"}
+
+TOOL CARD flashLights
+Exact tool name: flashLights
+Choose when: Flashes the vehicle's exterior lights.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially honkHorn, setSpeedLimitMode, setSurveillanceMode, setValetMode, viewRemoteCamera; shared nouns alone are insufficient.
+Public signature: flashLights()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"flashLights"}
+
+TOOL CARD foldExteriorMirrors
+Exact tool name: foldExteriorMirrors
+Choose when: Folds or unfolds the exterior side mirrors.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially openFrontTrunk, setCargoState, setGarageOpener, setLockState, setSecureStorageAccess, setSunroofPosition, setWindowPosition; shared nouns alone are insufficient.
+Public signature: foldExteriorMirrors(state: FoldState)
+Public types: state: FoldState
+Public constraints: state: [Folded, Unfolded]
+Legal argument-key sets: {}; {state}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: state -> state (FoldState).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"foldExteriorMirrors"}
+- {"arguments":{"state":"Folded"},"name":"foldExteriorMirrors"}
+
+TOOL CARD getActiveAlerts
+Exact tool name: getActiveAlerts
+Choose when: Retrieves a list of currently active vehicle warning and alert codes.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getBatteryHealth, getEnergyConsumption, getOdometer, getTirePressures; shared nouns alone are insufficient.
+Public signature: getActiveAlerts()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getActiveAlerts"}
+
+TOOL CARD getActivitySummary
+Exact tool name: getActivitySummary
+Choose when: Returns a summary of activity metrics (Steps, Calories, Distance) for a period.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getBiometricData, getHRV, getSleepSummary, startWorkout, stopWorkout; shared nouns alone are insufficient.
+Public signature: getActivitySummary(period: TimeFrame)
+Public types: period: TimeFrame
+Public constraints: period: [Today, Yesterday, Last_Week, Last_Month]
+Legal argument-key sets: {}; {period}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: period -> period (TimeFrame).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getActivitySummary"}
+- {"arguments":{"period":"Today"},"name":"getActivitySummary"}
+
+TOOL CARD getAirQuality
+Exact tool name: getAirQuality
+Choose when: Retrieves air quality metrics (AQI, CO2, PM2.5) from a sensor.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially setFanMode, setHumidifierState, setTargetTemperature, setThermostatMode, setThermostatSchedule; shared nouns alone are insufficient.
+Public signature: getAirQuality(deviceId: String)
+Public types: deviceId: String
+Public constraints: none declared
+Legal argument-key sets: {}; {deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getAirQuality"}
+- {"arguments":{"deviceId":"SYNTHETIC_GETAIRQUALITY_DEVICEID_001"},"name":"getAirQuality"}
+
+TOOL CARD getAirQuality_diag
+Exact tool name: getAirQuality_diag
+Choose when: Retrieves diagnostic sensor readings for air quality (VOCs, CO2, Humidity).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getBatteryLevel, getFilterLife, getNetworkHealth; shared nouns alone are insufficient.
+Public signature: getAirQuality_diag(deviceId: String)
+Public types: deviceId: String
+Public constraints: none declared
+Legal argument-key sets: {}; {deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getAirQuality_diag"}
+- {"arguments":{"deviceId":"SYNTHETIC_GETAIRQUALITY_DIAG_DEVICEID_001"},"name":"getAirQuality_diag"}
+
+TOOL CARD getApplianceState
+Exact tool name: getApplianceState
+Choose when: Checks the current operational state of an appliance.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getLightState, getLockState, getSensorState, getThermostatState; shared nouns alone are insufficient.
+Public signature: getApplianceState(deviceId: String)
+Public types: deviceId: String
+Public constraints: none declared
+Legal argument-key sets: {}; {deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getApplianceState"}
+- {"arguments":{"deviceId":"SYNTHETIC_GETAPPLIANCESTATE_DEVICEID_001"},"name":"getApplianceState"}
+
+TOOL CARD getApplianceStatus
+Exact tool name: getApplianceStatus
+Choose when: Retrieves the current status of an appliance (e.g., Running, Error, Finished).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially setApplianceMode, setDockState, startCleaning; shared nouns alone are insufficient.
+Public signature: getApplianceStatus(deviceId: String)
+Public types: deviceId: String
+Public constraints: none declared
+Legal argument-key sets: {}; {deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getApplianceStatus"}
+- {"arguments":{"deviceId":"SYNTHETIC_GETAPPLIANCESTATUS_DEVICEID_001"},"name":"getApplianceStatus"}
+
+TOOL CARD getBatteryHealth
+Exact tool name: getBatteryHealth
+Choose when: Retrieves the battery's maximum capacity retention and general state of health.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getActiveAlerts, getEnergyConsumption, getOdometer, getTirePressures; shared nouns alone are insufficient.
+Public signature: getBatteryHealth()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getBatteryHealth"}
+
+TOOL CARD getBatteryLevel
+Exact tool name: getBatteryLevel
+Choose when: Returns the battery charge percentage for a battery-operated device.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getAirQuality_diag, getFilterLife, getNetworkHealth; shared nouns alone are insufficient.
+Public signature: getBatteryLevel(deviceId: String)
+Public types: deviceId: String
+Public constraints: none declared
+Legal argument-key sets: {}; {deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getBatteryLevel"}
+- {"arguments":{"deviceId":"SYNTHETIC_GETBATTERYLEVEL_DEVICEID_001"},"name":"getBatteryLevel"}
+
+TOOL CARD getBatteryStatus
+Exact tool name: getBatteryStatus
+Choose when: Retrieves the current State of Charge (SoC), estimated range, and charging connection status.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getChargingSession, openChargePortDoor, setChargeLimit, setChargingAmperage, setScheduledDeparture, startCharging, stopCharging, triggerBatteryPreconditioning, unlockChargeCable; shared nouns alone are insufficient.
+Public signature: getBatteryStatus()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getBatteryStatus"}
+
+TOOL CARD getBiometricData
+Exact tool name: getBiometricData
+Choose when: Retrieves specific biometric data (e.g., Heart Rate, Blood Oxygen).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getActivitySummary, getHRV, getSleepSummary, startWorkout, stopWorkout; shared nouns alone are insufficient.
+Public signature: getBiometricData(type: MetricType)
+Public types: type: MetricType
+Public constraints: type: [Heart_Rate, Blood_Oxygen, Skin_Temp, HRV, Stress, Blood_Pressure]
+Legal argument-key sets: {}; {type}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: type -> type (MetricType).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getBiometricData"}
+- {"arguments":{"type":"Heart_Rate"},"name":"getBiometricData"}
+
+TOOL CARD getCameraEvent
+Exact tool name: getCameraEvent
+Choose when: Retrieves video clips corresponding to specific detected events (e.g., Person, Package).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially armSecuritySystem, getCameraStream, setGarageDoor, setLockState_home; shared nouns alone are insufficient.
+Public signature: getCameraEvent(deviceId: String, eventType: Event)
+Public types: deviceId: String; eventType: Event
+Public constraints: eventType: [Person, Vehicle, Animal, Package, Motion]
+Legal argument-key sets: {}; {eventType}; {deviceId, eventType}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: event type -> eventType (Event).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getCameraEvent"}
+- {"arguments":{"eventType":"Person"},"name":"getCameraEvent"}
+- {"arguments":{"deviceId":"SYNTHETIC_GETCAMERAEVENT_DEVICEID_001","eventType":"Person"},"name":"getCameraEvent"}
+
+TOOL CARD getCameraStream
+Exact tool name: getCameraStream
+Choose when: Retrieves the URL for a live video stream from a camera.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially armSecuritySystem, getCameraEvent, setGarageDoor, setLockState_home; shared nouns alone are insufficient.
+Public signature: getCameraStream(deviceId: String, protocol: StreamProto)
+Public types: deviceId: String; protocol: StreamProto
+Public constraints: protocol: [RTSP, HLS, WebRTC]
+Legal argument-key sets: {}; {deviceId}; {protocol}; {deviceId, protocol}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: protocol -> protocol (StreamProto).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getCameraStream"}
+- {"arguments":{"deviceId":"SYNTHETIC_GETCAMERASTREAM_DEVICEID_001"},"name":"getCameraStream"}
+- {"arguments":{"protocol":"RTSP"},"name":"getCameraStream"}
+
+TOOL CARD getChargeState
+Exact tool name: getChargeState
+Choose when: Returns the current charging state (e.g., Disconnected, Charging, Complete).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getDoorStatus, getGearSelection, getLocation, getLockStatus, getSentryStatus, getVehicleInfo; shared nouns alone are insufficient.
+Public signature: getChargeState()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getChargeState"}
+
+TOOL CARD getChargingSession
+Exact tool name: getChargingSession
+Choose when: Retrieves real-time charging metrics (Power, Voltage, Current).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getBatteryStatus, openChargePortDoor, setChargeLimit, setChargingAmperage, setScheduledDeparture, startCharging, stopCharging, triggerBatteryPreconditioning, unlockChargeCable; shared nouns alone are insufficient.
+Public signature: getChargingSession()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getChargingSession"}
+
+TOOL CARD getClimateState
+Exact tool name: getClimateState
+Choose when: Retrieves the full status of the climate control system.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially setAirQualityMode, setCabinOverheatProtection, setCampingMode, setDefrost, setFanSpeed, setHvacMode, setPetComfortMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, setZoneTemperature, ventWindows; shared nouns alone are insufficient.
+Public signature: getClimateState()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getClimateState"}
+
+TOOL CARD getDeviceList
+Exact tool name: getDeviceList
+Choose when: Returns a list of all available smart home devices and their capabilities.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially setLighting, setSecurityMode, streamCamera; shared nouns alone are insufficient.
+Public signature: getDeviceList()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getDeviceList"}
+
+TOOL CARD getDoorStatus
+Exact tool name: getDoorStatus
+Choose when: Checks the open/closed state of a specific door, trunk, or frunk.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getChargeState, getGearSelection, getLocation, getLockStatus, getSentryStatus, getVehicleInfo; shared nouns alone are insufficient.
+Public signature: getDoorStatus(door: DoorLocation)
+Public types: door: DoorLocation
+Public constraints: door: [Driver_Front, Passenger_Front, Driver_Rear, Passenger_Rear, Trunk, Frunk]
+Legal argument-key sets: {}; {door}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: door -> door (DoorLocation).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getDoorStatus"}
+- {"arguments":{"door":"Driver_Front"},"name":"getDoorStatus"}
+
+TOOL CARD getEnergyConsumption
+Exact tool name: getEnergyConsumption
+Choose when: Returns the average energy consumption (Wh/mi) for the current trip.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getActiveAlerts, getBatteryHealth, getOdometer, getTirePressures; shared nouns alone are insufficient.
+Public signature: getEnergyConsumption()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getEnergyConsumption"}
+
+TOOL CARD getEnergyUsage
+Exact tool name: getEnergyUsage
+Choose when: Retrieves current power usage or historical energy consumption data.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially setPowerState, setWaterValve; shared nouns alone are insufficient.
+Public signature: getEnergyUsage(deviceId: String)
+Public types: deviceId: String
+Public constraints: none declared
+Legal argument-key sets: {}; {deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getEnergyUsage"}
+- {"arguments":{"deviceId":"SYNTHETIC_GETENERGYUSAGE_DEVICEID_001"},"name":"getEnergyUsage"}
+
+TOOL CARD getFilterLife
+Exact tool name: getFilterLife
+Choose when: Returns the remaining life percentage of a device filter.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getAirQuality_diag, getBatteryLevel, getNetworkHealth; shared nouns alone are insufficient.
+Public signature: getFilterLife(deviceId: String)
+Public types: deviceId: String
+Public constraints: none declared
+Legal argument-key sets: {}; {deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getFilterLife"}
+- {"arguments":{"deviceId":"SYNTHETIC_GETFILTERLIFE_DEVICEID_001"},"name":"getFilterLife"}
+
+TOOL CARD getGearSelection
+Exact tool name: getGearSelection
+Choose when: Returns the currently selected gear (Park, Reverse, Neutral, Drive).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getChargeState, getDoorStatus, getLocation, getLockStatus, getSentryStatus, getVehicleInfo; shared nouns alone are insufficient.
+Public signature: getGearSelection()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getGearSelection"}
+
+TOOL CARD getHRV
+Exact tool name: getHRV
+Choose when: Retrieves Heart Rate Variability (HRV) data for a specified period.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getActivitySummary, getBiometricData, getSleepSummary, startWorkout, stopWorkout; shared nouns alone are insufficient.
+Public signature: getHRV(period: TimeFrame)
+Public types: period: TimeFrame
+Public constraints: period: [Today, Yesterday, Last_Week]
+Legal argument-key sets: {}; {period}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: period -> period (TimeFrame).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getHRV"}
+- {"arguments":{"period":"Today"},"name":"getHRV"}
+
+TOOL CARD getLightState
+Exact tool name: getLightState
+Choose when: Returns the current On/Off state and brightness of a light.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getApplianceState, getLockState, getSensorState, getThermostatState; shared nouns alone are insufficient.
+Public signature: getLightState(deviceId: String)
+Public types: deviceId: String
+Public constraints: none declared
+Legal argument-key sets: {}; {deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getLightState"}
+- {"arguments":{"deviceId":"SYNTHETIC_GETLIGHTSTATE_DEVICEID_001"},"name":"getLightState"}
+
+TOOL CARD getLocation
+Exact tool name: getLocation
+Choose when: Retrieves the vehicle's current GPS coordinates and heading.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getChargeState, getDoorStatus, getGearSelection, getLockStatus, getSentryStatus, getVehicleInfo; shared nouns alone are insufficient.
+Public signature: getLocation()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getLocation"}
+
+TOOL CARD getLockState
+Exact tool name: getLockState
+Choose when: Retrieves the current status of a smart lock (Locked, Unlocked, Jammed).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getApplianceState, getLightState, getSensorState, getThermostatState; shared nouns alone are insufficient.
+Public signature: getLockState(deviceId: String)
+Public types: deviceId: String
+Public constraints: none declared
+Legal argument-key sets: {}; {deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getLockState"}
+- {"arguments":{"deviceId":"SYNTHETIC_GETLOCKSTATE_DEVICEID_001"},"name":"getLockState"}
+
+TOOL CARD getLockStatus
+Exact tool name: getLockStatus
+Choose when: Checks if the vehicle is currently locked or unlocked.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getChargeState, getDoorStatus, getGearSelection, getLocation, getSentryStatus, getVehicleInfo; shared nouns alone are insufficient.
+Public signature: getLockStatus()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getLockStatus"}
+
+TOOL CARD getNetworkHealth
+Exact tool name: getNetworkHealth
+Choose when: Retrieves Wi-Fi signal strength and network connectivity status.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getAirQuality_diag, getBatteryLevel, getFilterLife; shared nouns alone are insufficient.
+Public signature: getNetworkHealth(deviceId: String)
+Public types: deviceId: String
+Public constraints: none declared
+Legal argument-key sets: {}; {deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getNetworkHealth"}
+- {"arguments":{"deviceId":"SYNTHETIC_GETNETWORKHEALTH_DEVICEID_001"},"name":"getNetworkHealth"}
+
+TOOL CARD getOdometer
+Exact tool name: getOdometer
+Choose when: Returns the total distance traveled by the vehicle.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getActiveAlerts, getBatteryHealth, getEnergyConsumption, getTirePressures; shared nouns alone are insufficient.
+Public signature: getOdometer()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getOdometer"}
+
+TOOL CARD getRouteSummary
+Exact tool name: getRouteSummary
+Choose when: Retrieves route details including ETA, distance, and estimated battery at arrival.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially addTripStop, cancelNavigation, searchPOI, setDestination, setRoutePreferences, setVoiceGuidance; shared nouns alone are insufficient.
+Public signature: getRouteSummary()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getRouteSummary"}
+
+TOOL CARD getSensorState
+Exact tool name: getSensorState
+Choose when: Retrieves the state of a sensor (e.g., Motion detected, Contact open).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getApplianceState, getLightState, getLockState, getThermostatState; shared nouns alone are insufficient.
+Public signature: getSensorState(deviceId: String)
+Public types: deviceId: String
+Public constraints: none declared
+Legal argument-key sets: {}; {deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getSensorState"}
+- {"arguments":{"deviceId":"SYNTHETIC_GETSENSORSTATE_DEVICEID_001"},"name":"getSensorState"}
+
+TOOL CARD getSentryStatus
+Exact tool name: getSentryStatus
+Choose when: Checks if Sentry Mode surveillance is currently active.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getChargeState, getDoorStatus, getGearSelection, getLocation, getLockStatus, getVehicleInfo; shared nouns alone are insufficient.
+Public signature: getSentryStatus()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getSentryStatus"}
+
+TOOL CARD getSleepSummary
+Exact tool name: getSleepSummary
+Choose when: Retrieves sleep analysis data (Duration, Stages, Score).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getActivitySummary, getBiometricData, getHRV, startWorkout, stopWorkout; shared nouns alone are insufficient.
+Public signature: getSleepSummary(period: TimeFrame)
+Public types: period: TimeFrame
+Public constraints: period: [Last_Night, Last_Week, Last_Month]
+Legal argument-key sets: {}; {period}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: period -> period (TimeFrame).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getSleepSummary"}
+- {"arguments":{"period":"Last_Night"},"name":"getSleepSummary"}
+
+TOOL CARD getSoftwareUpdateStatus
+Exact tool name: getSoftwareUpdateStatus
+Choose when: Checks the status of Over-The-Air (OTA) software updates.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially calibrateCameras, installSoftwareUpdate, resetTPMSSensors, scheduleService, wiperServiceMode; shared nouns alone are insufficient.
+Public signature: getSoftwareUpdateStatus()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getSoftwareUpdateStatus"}
+
+TOOL CARD getThermostatState
+Exact tool name: getThermostatState
+Choose when: Returns the current mode and ambient temperature reading of a thermostat.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getApplianceState, getLightState, getLockState, getSensorState; shared nouns alone are insufficient.
+Public signature: getThermostatState(deviceId: String)
+Public types: deviceId: String
+Public constraints: none declared
+Legal argument-key sets: {}; {deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getThermostatState"}
+- {"arguments":{"deviceId":"SYNTHETIC_GETTHERMOSTATSTATE_DEVICEID_001"},"name":"getThermostatState"}
+
+TOOL CARD getTirePressures
+Exact tool name: getTirePressures
+Choose when: Returns the pressure reading for each tire and flags any alerts.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getActiveAlerts, getBatteryHealth, getEnergyConsumption, getOdometer; shared nouns alone are insufficient.
+Public signature: getTirePressures()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getTirePressures"}
+
+TOOL CARD getVehicleInfo
+Exact tool name: getVehicleInfo
+Choose when: Retrieves vehicle details including VIN, model, and software version.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getChargeState, getDoorStatus, getGearSelection, getLocation, getLockStatus, getSentryStatus; shared nouns alone are insufficient.
+Public signature: getVehicleInfo()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"getVehicleInfo"}
+
+TOOL CARD honkHorn
+Exact tool name: honkHorn
+Choose when: Sounds the vehicle horn.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially flashLights, setSpeedLimitMode, setSurveillanceMode, setValetMode, viewRemoteCamera; shared nouns alone are insufficient.
+Public signature: honkHorn()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"honkHorn"}
+
+TOOL CARD initiateAutoPark
+Exact tool name: initiateAutoPark
+Choose when: Commands the vehicle to scan for available parking spots and execute an automatic parking maneuver.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially setAutonomousDriving, setCruiseSpeed, setDrivingMode, setFollowDistance, setRegenerativeBraking, setSteeringFeel, triggerRemoteParking; shared nouns alone are insufficient.
+Public signature: initiateAutoPark()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"initiateAutoPark"}
+
+TOOL CARD installApp
+Exact tool name: installApp
+Choose when: Installs a specified application onto the wearable device.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially enableWaterLock, setHapticStrength; shared nouns alone are insufficient.
+Public signature: installApp(appName: String)
+Public types: appName: String
+Public constraints: none declared
+Legal argument-key sets: {}; {appName}; {appName, enabled}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 2; legal keys {appName, enabled}; enabled use a JSON Boolean.
+Spoken-role-to-key guidance:
+- Spoken role: app name -> appName (String).
+- Spoken role: enabled -> enabled (Boolean).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"installApp"}
+- {"arguments":{"appName":"SYNTHETIC_INSTALLAPP_APPNAME_001"},"name":"installApp"}
+- {"arguments":{"appName":"SYNTHETIC_INSTALLAPP_APPNAME_001","enabled":false},"name":"installApp"}
+
+TOOL CARD installSoftwareUpdate
+Exact tool name: installSoftwareUpdate
+Choose when: Initiates the installation process for a downloaded software update.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially calibrateCameras, getSoftwareUpdateStatus, resetTPMSSensors, scheduleService, wiperServiceMode; shared nouns alone are insufficient.
+Public signature: installSoftwareUpdate()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"installSoftwareUpdate"}
+
+TOOL CARD launchInCarGaming
+Exact tool name: launchInCarGaming
+Choose when: Launches a specified video game on the infotainment screen (parked only).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially adjustVolume, controlPlayback, setAmbientLighting, setAudioVolume, setExternalSpeakerOutput, setMediaSource, setPassengerQuietMode; shared nouns alone are insufficient.
+Public signature: launchInCarGaming(game: String)
+Public types: game: String
+Public constraints: game: [Solitaire, Chess, Racing, Arcade]
+Legal argument-key sets: {}; {game}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: game -> game (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"launchInCarGaming"}
+- {"arguments":{"game":"Solitaire"},"name":"launchInCarGaming"}
+
+TOOL CARD openChargePortDoor
+Exact tool name: openChargePortDoor
+Choose when: Opens or unlatches the charge port door to allow cable insertion.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getBatteryStatus, getChargingSession, setChargeLimit, setChargingAmperage, setScheduledDeparture, startCharging, stopCharging, triggerBatteryPreconditioning, unlockChargeCable; shared nouns alone are insufficient.
+Public signature: openChargePortDoor()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"openChargePortDoor"}
+
+TOOL CARD openFrontTrunk
+Exact tool name: openFrontTrunk
+Choose when: Releases the latch for the front trunk (frunk).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially foldExteriorMirrors, setCargoState, setGarageOpener, setLockState, setSecureStorageAccess, setSunroofPosition, setWindowPosition; shared nouns alone are insufficient.
+Public signature: openFrontTrunk()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"openFrontTrunk"}
+
+TOOL CARD playMedia
+Exact tool name: playMedia
+Choose when: Plays specified media content on a target device.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially castContent, controlPlayback_home, setInputSource, setVolume; shared nouns alone are insufficient.
+Public signature: playMedia(deviceId: String, query: String, source: Service?)
+Public types: deviceId: String; query: String; source: Service (optional)
+Public constraints: source: [Spotify, AppleMusic, YouTube, AmazonMusic, Local]
+Legal argument-key sets: {}; {query}; {deviceId, query}; {query, source}; {deviceId, query, source}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: query -> query (String).
+- Spoken role: source -> source (Service).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"playMedia"}
+- {"arguments":{"query":"SYNTHETIC_PLAYMEDIA_QUERY_001"},"name":"playMedia"}
+- {"arguments":{"deviceId":"SYNTHETIC_PLAYMEDIA_DEVICEID_001","query":"SYNTHETIC_PLAYMEDIA_QUERY_001"},"name":"playMedia"}
+
+TOOL CARD rampBrightness
+Exact tool name: rampBrightness
+Choose when: Transitions brightness to a target level over a specified duration.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially setAdaptiveLighting, setBrightness, setColor, setColorTemperature, setGroupLightState, setLightState; shared nouns alone are insufficient.
+Public signature: rampBrightness(deviceId: String, targetLevel: Int, duration: Time)
+Public types: deviceId: String; targetLevel: Int; duration: Time
+Public constraints: targetLevel: [0-100]
+Legal argument-key sets: {}; {duration, targetLevel}; {deviceId, duration, targetLevel}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: duration -> duration (Time).
+- Spoken role: target level -> targetLevel (Int).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"rampBrightness"}
+- {"arguments":{"duration":"SYNTHETIC_RAMPBRIGHTNESS_DURATION_001","targetLevel":50},"name":"rampBrightness"}
+- {"arguments":{"deviceId":"SYNTHETIC_RAMPBRIGHTNESS_DEVICEID_001","duration":"SYNTHETIC_RAMPBRIGHTNESS_DURATION_001","targetLevel":50},"name":"rampBrightness"}
+
+TOOL CARD rebootDevice
+Exact tool name: rebootDevice
+Choose when: Performs a soft reboot of a device.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially calibrateThermostat, resetFilterStatus, runNetworkSpeedTest, updateFirmware; shared nouns alone are insufficient.
+Public signature: rebootDevice(deviceId: String)
+Public types: deviceId: String
+Public constraints: none declared
+Legal argument-key sets: {}; {deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"rebootDevice"}
+- {"arguments":{"deviceId":"SYNTHETIC_REBOOTDEVICE_DEVICEID_001"},"name":"rebootDevice"}
+
+TOOL CARD resetFilterStatus
+Exact tool name: resetFilterStatus
+Choose when: Resets the filter life counter after a filter replacement.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially calibrateThermostat, rebootDevice, runNetworkSpeedTest, updateFirmware; shared nouns alone are insufficient.
+Public signature: resetFilterStatus(deviceId: String)
+Public types: deviceId: String
+Public constraints: none declared
+Legal argument-key sets: {}; {deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"resetFilterStatus"}
+- {"arguments":{"deviceId":"SYNTHETIC_RESETFILTERSTATUS_DEVICEID_001"},"name":"resetFilterStatus"}
+
+TOOL CARD resetTPMSSensors
+Exact tool name: resetTPMSSensors
+Choose when: Triggers the tire pressure monitoring system to re-learn sensor IDs.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially calibrateCameras, getSoftwareUpdateStatus, installSoftwareUpdate, scheduleService, wiperServiceMode; shared nouns alone are insufficient.
+Public signature: resetTPMSSensors()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"resetTPMSSensors"}
+
+TOOL CARD restartDevice
+Exact tool name: restartDevice
+Choose when: Reboots a specific smart device.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially activateRoutine, activateScene, broadcastMessage; shared nouns alone are insufficient.
+Public signature: restartDevice(deviceId: String)
+Public types: deviceId: String
+Public constraints: none declared
+Legal argument-key sets: {deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{"deviceId":"SYNTHETIC_RESTARTDEVICE_DEVICEID_001"},"name":"restartDevice"}
+
+TOOL CARD runNetworkSpeedTest
+Exact tool name: runNetworkSpeedTest
+Choose when: Runs an internet speed test on the network gateway.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially calibrateThermostat, rebootDevice, resetFilterStatus, updateFirmware; shared nouns alone are insufficient.
+Public signature: runNetworkSpeedTest()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"runNetworkSpeedTest"}
+
+TOOL CARD scheduleService
+Exact tool name: scheduleService
+Choose when: Creates a request for a vehicle service appointment.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially calibrateCameras, getSoftwareUpdateStatus, installSoftwareUpdate, resetTPMSSensors, wiperServiceMode; shared nouns alone are insufficient.
+Public signature: scheduleService(type: ServiceType, notes: String)
+Public types: type: ServiceType; notes: String
+Public constraints: type: [General_Maintenance, Tire_Service, Glass, Body_Shop, Other]
+Legal argument-key sets: {}; {notes, type}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: notes -> notes (String).
+- Spoken role: type -> type (ServiceType).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"scheduleService"}
+- {"arguments":{"notes":"SYNTHETIC_SCHEDULESERVICE_NOTES_001","type":"General_Maintenance"},"name":"scheduleService"}
+
+TOOL CARD searchPOI
+Exact tool name: searchPOI
+Choose when: Searches for points of interest matching the category and filter.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially addTripStop, cancelNavigation, getRouteSummary, setDestination, setRoutePreferences, setVoiceGuidance; shared nouns alone are insufficient.
+Public signature: searchPOI(category: String, filter: String?)
+Public types: category: String; filter: String (optional)
+Public constraints: category: [Food, Charging, Parking, Hotel, Entertainment]
+Legal argument-key sets: {}; {category}; {category, filter}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 3; legal keys {category, filter}; filter accepts JSON null or an artificial JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: category -> category (String).
+- Spoken role: filter -> filter (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"searchPOI"}
+- {"arguments":{"category":"Food"},"name":"searchPOI"}
+- {"arguments":{"category":"Food","filter":null},"name":"searchPOI"}
+
+TOOL CARD setAdaptiveLighting
+Exact tool name: setAdaptiveLighting
+Choose when: Enables automatic adjustment of light color temperature based on the time of day.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially rampBrightness, setBrightness, setColor, setColorTemperature, setGroupLightState, setLightState; shared nouns alone are insufficient.
+Public signature: setAdaptiveLighting(deviceId: String, enabled: Boolean)
+Public types: deviceId: String; enabled: Boolean
+Public constraints: enabled: [True, False]
+Legal argument-key sets: {}; {enabled}; {deviceId, enabled}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 21; legal keys {enabled}; enabled accepts a Boolean lexical form encoded as a JSON string.
+- Training-supported compatibility rule; construction support count: 113; legal keys {deviceId, enabled}; enabled accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: enabled -> enabled (Boolean).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setAdaptiveLighting"}
+- {"arguments":{"enabled":"True"},"name":"setAdaptiveLighting"}
+- {"arguments":{"deviceId":"SYNTHETIC_SETADAPTIVELIGHTING_DEVICEID_001","enabled":"True"},"name":"setAdaptiveLighting"}
+
+TOOL CARD setAirQualityMode
+Exact tool name: setAirQualityMode
+Choose when: Controls air recirculation and HEPA filtration modes to improve cabin air quality.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getClimateState, setCabinOverheatProtection, setCampingMode, setDefrost, setFanSpeed, setHvacMode, setPetComfortMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, setZoneTemperature, ventWindows; shared nouns alone are insufficient.
+Public signature: setAirQualityMode(mode: AirMode)
+Public types: mode: AirMode
+Public constraints: mode: [Auto, Recirculate, Fresh_Air, Bioweapon_Defense]
+Legal argument-key sets: {}; {mode}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: mode -> mode (AirMode).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setAirQualityMode"}
+- {"arguments":{"mode":"Auto"},"name":"setAirQualityMode"}
+
+TOOL CARD setAlarm
+Exact tool name: setAlarm
+Choose when: Sets or updates an alarm on the wearable device.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially findPairedPhone, setAlwaysOnDisplay, setDoNotDisturb; shared nouns alone are insufficient.
+Public signature: setAlarm(time: Time, label: String?, repeat: List<String>?)
+Public types: time: Time; label: String (optional); repeat: List<String> (optional)
+Public constraints: repeat: [Daily, Weekdays, Weekends, Once]
+Legal argument-key sets: {}; {time}; {label, time}; {repeat, time}; {label, repeat, time}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 3; legal keys {label, repeat, time}; label accepts JSON null or an artificial JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: label -> label (String).
+- Spoken role: repeat -> repeat (List<String>).
+- Spoken role: time -> time (Time).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setAlarm"}
+- {"arguments":{"time":"SYNTHETIC_SETALARM_TIME_001"},"name":"setAlarm"}
+- {"arguments":{"label":null,"time":"SYNTHETIC_SETALARM_TIME_001"},"name":"setAlarm"}
+
+TOOL CARD setAlwaysOnDisplay
+Exact tool name: setAlwaysOnDisplay
+Choose when: Enables or disables the Always-On Display feature.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially findPairedPhone, setAlarm, setDoNotDisturb; shared nouns alone are insufficient.
+Public signature: setAlwaysOnDisplay(enabled: Boolean)
+Public types: enabled: Boolean
+Public constraints: enabled: [True, False]
+Legal argument-key sets: {}; {enabled}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 184; legal keys {enabled}; enabled accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: enabled -> enabled (Boolean).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setAlwaysOnDisplay"}
+- {"arguments":{"enabled":"True"},"name":"setAlwaysOnDisplay"}
+
+TOOL CARD setAmbientLighting
+Exact tool name: setAmbientLighting
+Choose when: Sets the color and brightness of the interior ambient lighting.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially adjustVolume, controlPlayback, launchInCarGaming, setAudioVolume, setExternalSpeakerOutput, setMediaSource, setPassengerQuietMode; shared nouns alone are insufficient.
+Public signature: setAmbientLighting(color: HexCode, brightness: Int)
+Public types: color: HexCode; brightness: Int
+Public constraints: brightness: [0-100]
+Legal argument-key sets: {}; {color}; {brightness, color}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: brightness -> brightness (Int).
+- Spoken role: color -> color (HexCode).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setAmbientLighting"}
+- {"arguments":{"color":"SYNTHETIC_SETAMBIENTLIGHTING_COLOR_001"},"name":"setAmbientLighting"}
+- {"arguments":{"brightness":50,"color":"SYNTHETIC_SETAMBIENTLIGHTING_COLOR_001"},"name":"setAmbientLighting"}
+
+TOOL CARD setApplianceMode
+Exact tool name: setApplianceMode
+Choose when: Sets the operating mode and parameters for a smart appliance.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getApplianceStatus, setDockState, startCleaning; shared nouns alone are insufficient.
+Public signature: setApplianceMode(deviceId: String, mode: String, parameters: Map?)
+Public types: deviceId: String; mode: String; parameters: Map (optional)
+Public constraints: mode: [Normal, Quick, Delicate, Heavy_Duty, Eco]
+Legal argument-key sets: {}; {mode}; {deviceId, mode}; {deviceId, mode, parameters}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 45; legal keys {deviceId, mode, parameters}; parameters accepts JSON null or an artificial JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: mode -> mode (String).
+- Spoken role: parameters -> parameters (Map).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setApplianceMode"}
+- {"arguments":{"mode":"Normal"},"name":"setApplianceMode"}
+- {"arguments":{"deviceId":"SYNTHETIC_SETAPPLIANCEMODE_DEVICEID_001","mode":"Normal"},"name":"setApplianceMode"}
+
+TOOL CARD setAudioVolume
+Exact tool name: setAudioVolume
+Choose when: Sets the volume level for a specific audio stream (Media, Navigation, or Voice).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially adjustVolume, controlPlayback, launchInCarGaming, setAmbientLighting, setExternalSpeakerOutput, setMediaSource, setPassengerQuietMode; shared nouns alone are insufficient.
+Public signature: setAudioVolume(stream: StreamType, level: Int)
+Public types: stream: StreamType; level: Int
+Public constraints: stream: [Media, Navigation, Voice, Phone], level: [0-100]
+Legal argument-key sets: {level, stream}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: level -> level (Int).
+- Spoken role: stream -> stream (StreamType).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{"level":50,"stream":"Media"},"name":"setAudioVolume"}
+
+TOOL CARD setAutonomousDriving
+Exact tool name: setAutonomousDriving
+Choose when: Enables driver assistance features such as Adaptive Cruise Control, Lane Centering, or Full Self-Driving.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially initiateAutoPark, setCruiseSpeed, setDrivingMode, setFollowDistance, setRegenerativeBraking, setSteeringFeel, triggerRemoteParking; shared nouns alone are insufficient.
+Public signature: setAutonomousDriving(level: AutonomyLevel)
+Public types: level: AutonomyLevel
+Public constraints: level: [None, Cruise_Control, Lane_Centering, Full_Self_Driving]
+Legal argument-key sets: {}; {level}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: level -> level (AutonomyLevel).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setAutonomousDriving"}
+- {"arguments":{"level":"None"},"name":"setAutonomousDriving"}
+
+TOOL CARD setBrightness
+Exact tool name: setBrightness
+Choose when: Sets the brightness level (0-100%) for a dimmable light.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially rampBrightness, setAdaptiveLighting, setColor, setColorTemperature, setGroupLightState, setLightState; shared nouns alone are insufficient.
+Public signature: setBrightness(deviceId: String, level: Int)
+Public types: deviceId: String; level: Int
+Public constraints: level: [0-100]
+Legal argument-key sets: {}; {level}; {deviceId, level}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: level -> level (Int).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setBrightness"}
+- {"arguments":{"level":50},"name":"setBrightness"}
+- {"arguments":{"deviceId":"SYNTHETIC_SETBRIGHTNESS_DEVICEID_001","level":50},"name":"setBrightness"}
+
+TOOL CARD setCabinOverheatProtection
+Exact tool name: setCabinOverheatProtection
+Choose when: Automatically activates the climate control to prevent the cabin from exceeding a specified temperature while parked.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getClimateState, setAirQualityMode, setCampingMode, setDefrost, setFanSpeed, setHvacMode, setPetComfortMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, setZoneTemperature, ventWindows; shared nouns alone are insufficient.
+Public signature: setCabinOverheatProtection(enabled: Boolean, maxTemp: Float)
+Public types: enabled: Boolean; maxTemp: Float
+Public constraints: enabled: [True, False], maxTemp: [30.0-50.0]
+Legal argument-key sets: {}; {enabled, maxTemp}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 7; legal keys {enabled, maxTemp}; enabled accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: enabled -> enabled (Boolean).
+- Spoken role: max temp -> maxTemp (Float).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setCabinOverheatProtection"}
+- {"arguments":{"enabled":"True","maxTemp":40.0},"name":"setCabinOverheatProtection"}
+
+TOOL CARD setCampingMode
+Exact tool name: setCampingMode
+Choose when: Enables 'Camp Mode' to maintain airflow and power USB/12V outlets while the vehicle is parked.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getClimateState, setAirQualityMode, setCabinOverheatProtection, setDefrost, setFanSpeed, setHvacMode, setPetComfortMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, setZoneTemperature, ventWindows; shared nouns alone are insufficient.
+Public signature: setCampingMode(enabled: Boolean)
+Public types: enabled: Boolean
+Public constraints: enabled: [True, False]
+Legal argument-key sets: {}; {enabled}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 12; legal keys {enabled}; enabled accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: enabled -> enabled (Boolean).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setCampingMode"}
+- {"arguments":{"enabled":"True"},"name":"setCampingMode"}
+
+TOOL CARD setCargoState
+Exact tool name: setCargoState
+Choose when: Opens or closes the specified cargo area (Front Trunk or Rear Liftgate).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially foldExteriorMirrors, openFrontTrunk, setGarageOpener, setLockState, setSecureStorageAccess, setSunroofPosition, setWindowPosition; shared nouns alone are insufficient.
+Public signature: setCargoState(trunk: TrunkLocation, state: OpenClose)
+Public types: trunk: TrunkLocation; state: OpenClose
+Public constraints: trunk: [Front, Rear], state: [Open, Close]
+Legal argument-key sets: {}; {state, trunk}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: state -> state (OpenClose).
+- Spoken role: trunk -> trunk (TrunkLocation).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setCargoState"}
+- {"arguments":{"state":"Open","trunk":"Front"},"name":"setCargoState"}
+
+TOOL CARD setChargeLimit
+Exact tool name: setChargeLimit
+Choose when: Sets the maximum battery charge percentage limit (e.g., 80% for daily use).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getBatteryStatus, getChargingSession, openChargePortDoor, setChargingAmperage, setScheduledDeparture, startCharging, stopCharging, triggerBatteryPreconditioning, unlockChargeCable; shared nouns alone are insufficient.
+Public signature: setChargeLimit(percentage: Int)
+Public types: percentage: Int
+Public constraints: percentage: [50-100]
+Legal argument-key sets: {}; {percentage}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: percentage -> percentage (Int).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setChargeLimit"}
+- {"arguments":{"percentage":75},"name":"setChargeLimit"}
+
+TOOL CARD setChargingAmperage
+Exact tool name: setChargingAmperage
+Choose when: Limits the maximum AC charging current to prevent overloading electrical circuits.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getBatteryStatus, getChargingSession, openChargePortDoor, setChargeLimit, setScheduledDeparture, startCharging, stopCharging, triggerBatteryPreconditioning, unlockChargeCable; shared nouns alone are insufficient.
+Public signature: setChargingAmperage(amps: Int)
+Public types: amps: Int
+Public constraints: amps: [5-48]
+Legal argument-key sets: {}; {amps}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: amps -> amps (Int).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setChargingAmperage"}
+- {"arguments":{"amps":26},"name":"setChargingAmperage"}
+
+TOOL CARD setChargingLimit
+Exact tool name: setChargingLimit
+Choose when: Sets the target maximum battery charge percentage.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially controlLocks, enableRemoteStart, setClimate; shared nouns alone are insufficient.
+Public signature: setChargingLimit(percentage: Int)
+Public types: percentage: Int
+Public constraints: percentage: [50-100]
+Legal argument-key sets: {percentage}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: percentage -> percentage (Int).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{"percentage":75},"name":"setChargingLimit"}
+
+TOOL CARD setClimate
+Exact tool name: setClimate
+Choose when: Sets the cabin temperature and activates the HVAC system.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially controlLocks, enableRemoteStart, setChargingLimit; shared nouns alone are insufficient.
+Public signature: setClimate(temp: Float, hvacMode: HvacMode)
+Public types: temp: Float; hvacMode: HvacMode
+Public constraints: temp: [15.0-30.0], hvacMode: [OFF, AUTO, HEAT, COOL, MIN, MAX]
+Legal argument-key sets: {}; {hvacMode}; {temp}; {hvacMode, temp}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: hvac mode -> hvacMode (HvacMode).
+- Spoken role: temp -> temp (Float).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setClimate"}
+- {"arguments":{"hvacMode":"OFF"},"name":"setClimate"}
+- {"arguments":{"temp":22.5},"name":"setClimate"}
+
+TOOL CARD setColor
+Exact tool name: setColor
+Choose when: Sets the color of a light using HSB (Hue/Saturation/Brightness) values.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially rampBrightness, setAdaptiveLighting, setBrightness, setColorTemperature, setGroupLightState, setLightState; shared nouns alone are insufficient.
+Public signature: setColor(deviceId: String, color: HsbColor)
+Public types: deviceId: String; color: HsbColor
+Public constraints: color: [Hue:0-360, Sat:0-100, Bri:0-100]
+Legal argument-key sets: {}; {color}; {color, deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: color -> color (HsbColor).
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setColor"}
+- {"arguments":{"color":"Hue:0-360"},"name":"setColor"}
+- {"arguments":{"color":"Hue:0-360","deviceId":"SYNTHETIC_SETCOLOR_DEVICEID_001"},"name":"setColor"}
+
+TOOL CARD setColorTemperature
+Exact tool name: setColorTemperature
+Choose when: Adjusts the white light temperature (Kelvin) from warm to cool.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially rampBrightness, setAdaptiveLighting, setBrightness, setColor, setGroupLightState, setLightState; shared nouns alone are insufficient.
+Public signature: setColorTemperature(deviceId: String, kelvin: Int)
+Public types: deviceId: String; kelvin: Int
+Public constraints: kelvin: [2000-6500]
+Legal argument-key sets: {}; {kelvin}; {brightness, kelvin}; {deviceId, kelvin}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 2; legal keys {brightness, kelvin}; brightness use a JSON integer.
+Spoken-role-to-key guidance:
+- Spoken role: brightness -> brightness (Int).
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: kelvin -> kelvin (Int).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setColorTemperature"}
+- {"arguments":{"kelvin":4250},"name":"setColorTemperature"}
+- {"arguments":{"brightness":7,"kelvin":4250},"name":"setColorTemperature"}
+
+TOOL CARD setCruiseSpeed
+Exact tool name: setCruiseSpeed
+Choose when: Sets the target speed for cruise control.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially initiateAutoPark, setAutonomousDriving, setDrivingMode, setFollowDistance, setRegenerativeBraking, setSteeringFeel, triggerRemoteParking; shared nouns alone are insufficient.
+Public signature: setCruiseSpeed(speed: Float)
+Public types: speed: Float
+Public constraints: speed: [20.0-150.0]
+Legal argument-key sets: {}; {speed}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: speed -> speed (Float).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setCruiseSpeed"}
+- {"arguments":{"speed":85.0},"name":"setCruiseSpeed"}
+
+TOOL CARD setDefrost
+Exact tool name: setDefrost
+Choose when: Activates or deactivates the front windshield and/or rear window defroster independently.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getClimateState, setAirQualityMode, setCabinOverheatProtection, setCampingMode, setFanSpeed, setHvacMode, setPetComfortMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, setZoneTemperature, ventWindows; shared nouns alone are insufficient.
+Public signature: setDefrost(front: Boolean, rear: Boolean)
+Public types: front: Boolean; rear: Boolean
+Public constraints: front: [True, False], rear: [True, False]
+Legal argument-key sets: {}; {rear}; {front, rear}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 2; legal keys {rear}; rear accepts a Boolean lexical form encoded as a JSON string.
+- Training-supported compatibility rule; construction support count: 11; legal keys {front, rear}; front accepts a Boolean lexical form encoded as a JSON string; rear accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: front -> front (Boolean).
+- Spoken role: rear -> rear (Boolean).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setDefrost"}
+- {"arguments":{"rear":"True"},"name":"setDefrost"}
+- {"arguments":{"front":"True","rear":"True"},"name":"setDefrost"}
+
+TOOL CARD setDestination
+Exact tool name: setDestination
+Choose when: Starts turn-by-turn navigation to the specified address or destination.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially addTripStop, cancelNavigation, getRouteSummary, searchPOI, setRoutePreferences, setVoiceGuidance; shared nouns alone are insufficient.
+Public signature: setDestination(address: String)
+Public types: address: String
+Public constraints: none declared
+Legal argument-key sets: {}; {address}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: address -> address (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setDestination"}
+- {"arguments":{"address":"SYNTHETIC_SETDESTINATION_ADDRESS_001"},"name":"setDestination"}
+
+TOOL CARD setDoNotDisturb
+Exact tool name: setDoNotDisturb
+Choose when: Enables or disables 'Do Not Disturb' and sets the active mode (e.g., Sleep, Theater).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially findPairedPhone, setAlarm, setAlwaysOnDisplay; shared nouns alone are insufficient.
+Public signature: setDoNotDisturb(enabled: Boolean, mode: DNDMode)
+Public types: enabled: Boolean; mode: DNDMode
+Public constraints: enabled: [True, False], mode: [Sleep, Theater, Meeting, Driving]
+Legal argument-key sets: {}; {enabled}; {enabled, mode}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 5; legal keys {enabled}; enabled accepts a Boolean lexical form encoded as a JSON string.
+- Training-supported compatibility rule; construction support count: 160; legal keys {enabled, mode}; enabled accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: enabled -> enabled (Boolean).
+- Spoken role: mode -> mode (DNDMode).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setDoNotDisturb"}
+- {"arguments":{"enabled":"True"},"name":"setDoNotDisturb"}
+- {"arguments":{"enabled":"True","mode":"Sleep"},"name":"setDoNotDisturb"}
+
+TOOL CARD setDockState
+Exact tool name: setDockState
+Choose when: Commands a robot vacuum to return to its charging dock.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getApplianceStatus, setApplianceMode, startCleaning; shared nouns alone are insufficient.
+Public signature: setDockState(deviceId: String)
+Public types: deviceId: String
+Public constraints: none declared
+Legal argument-key sets: {}; {deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setDockState"}
+- {"arguments":{"deviceId":"SYNTHETIC_SETDOCKSTATE_DEVICEID_001"},"name":"setDockState"}
+
+TOOL CARD setDrivingMode
+Exact tool name: setDrivingMode
+Choose when: Sets the vehicle's acceleration and handling profile (e.g., Chill, Standard, Sport).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially initiateAutoPark, setAutonomousDriving, setCruiseSpeed, setFollowDistance, setRegenerativeBraking, setSteeringFeel, triggerRemoteParking; shared nouns alone are insufficient.
+Public signature: setDrivingMode(mode: DriveMode)
+Public types: mode: DriveMode
+Public constraints: mode: [Chill, Standard, Sport, Plaid, Off-Road]
+Legal argument-key sets: {}; {mode}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: mode -> mode (DriveMode).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setDrivingMode"}
+- {"arguments":{"mode":"Chill"},"name":"setDrivingMode"}
+
+TOOL CARD setEmissionsMode
+Exact tool name: setEmissionsMode
+Choose when: Plays a prank sound effect from a specific seat speaker.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially setRomanceMode, startLightShow; shared nouns alone are insufficient.
+Public signature: setEmissionsMode(seat: Location)
+Public types: seat: Location
+Public constraints: seat: [Driver, Passenger, Rear_Left, Rear_Right, Rear_Center]
+Legal argument-key sets: {}; {seat}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: seat -> seat (Location).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setEmissionsMode"}
+- {"arguments":{"seat":"Driver"},"name":"setEmissionsMode"}
+
+TOOL CARD setExternalSpeakerOutput
+Exact tool name: setExternalSpeakerOutput
+Choose when: Routes audio to the external pedestrian warning speaker (Boombox).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially adjustVolume, controlPlayback, launchInCarGaming, setAmbientLighting, setAudioVolume, setMediaSource, setPassengerQuietMode; shared nouns alone are insufficient.
+Public signature: setExternalSpeakerOutput(enabled: Boolean, sound: AudioFile?)
+Public types: enabled: Boolean; sound: AudioFile (optional)
+Public constraints: enabled: [True, False]
+Legal argument-key sets: {}; {enabled}; {enabled, sound}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 4; legal keys {enabled}; enabled accepts a Boolean lexical form encoded as a JSON string.
+- Training-supported compatibility rule; construction support count: 5; legal keys {enabled, sound}; enabled accepts a Boolean lexical form encoded as a JSON string; sound accepts JSON null or an artificial JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: enabled -> enabled (Boolean).
+- Spoken role: sound -> sound (AudioFile).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setExternalSpeakerOutput"}
+- {"arguments":{"enabled":"True"},"name":"setExternalSpeakerOutput"}
+- {"arguments":{"enabled":"True","sound":null},"name":"setExternalSpeakerOutput"}
+
+TOOL CARD setFanMode
+Exact tool name: setFanMode
+Choose when: Controls the mode and speed of a fan or air purifier.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getAirQuality, setHumidifierState, setTargetTemperature, setThermostatMode, setThermostatSchedule; shared nouns alone are insufficient.
+Public signature: setFanMode(deviceId: String, mode: FanMode, speed: Int?)
+Public types: deviceId: String; mode: FanMode; speed: Int (optional)
+Public constraints: mode: [Auto, On, Off], speed: [1-10]
+Legal argument-key sets: {}; {mode}; {deviceId, mode}; {mode, speed}; {deviceId, mode, speed}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: mode -> mode (FanMode).
+- Spoken role: speed -> speed (Int).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setFanMode"}
+- {"arguments":{"mode":"Auto"},"name":"setFanMode"}
+- {"arguments":{"deviceId":"SYNTHETIC_SETFANMODE_DEVICEID_001","mode":"Auto"},"name":"setFanMode"}
+
+TOOL CARD setFanSpeed
+Exact tool name: setFanSpeed
+Choose when: Sets the ventilation fan speed to a specific level (1-10).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getClimateState, setAirQualityMode, setCabinOverheatProtection, setCampingMode, setDefrost, setHvacMode, setPetComfortMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, setZoneTemperature, ventWindows; shared nouns alone are insufficient.
+Public signature: setFanSpeed(level: Int)
+Public types: level: Int
+Public constraints: level: [1-10]
+Legal argument-key sets: {}; {level}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: level -> level (Int).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setFanSpeed"}
+- {"arguments":{"level":5},"name":"setFanSpeed"}
+
+TOOL CARD setFollowDistance
+Exact tool name: setFollowDistance
+Choose when: Sets the following distance gap for adaptive cruise control.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially initiateAutoPark, setAutonomousDriving, setCruiseSpeed, setDrivingMode, setRegenerativeBraking, setSteeringFeel, triggerRemoteParking; shared nouns alone are insufficient.
+Public signature: setFollowDistance(level: Int)
+Public types: level: Int
+Public constraints: level: [1-7]
+Legal argument-key sets: {}; {level}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: level -> level (Int).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setFollowDistance"}
+- {"arguments":{"level":4},"name":"setFollowDistance"}
+
+TOOL CARD setGarageDoor
+Exact tool name: setGarageDoor
+Choose when: Opens or closes a smart garage door or gate.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially armSecuritySystem, getCameraEvent, getCameraStream, setLockState_home; shared nouns alone are insufficient.
+Public signature: setGarageDoor(deviceId: String, state: OpenClose)
+Public types: deviceId: String; state: OpenClose
+Public constraints: state: [Open, Closed]
+Legal argument-key sets: {}; {state}; {deviceId, state}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: state -> state (OpenClose).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setGarageDoor"}
+- {"arguments":{"state":"Open"},"name":"setGarageDoor"}
+- {"arguments":{"deviceId":"SYNTHETIC_SETGARAGEDOOR_DEVICEID_001","state":"Open"},"name":"setGarageDoor"}
+
+TOOL CARD setGarageOpener
+Exact tool name: setGarageOpener
+Choose when: Triggers the programmed HomeLink garage door opener signal.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially foldExteriorMirrors, openFrontTrunk, setCargoState, setLockState, setSecureStorageAccess, setSunroofPosition, setWindowPosition; shared nouns alone are insufficient.
+Public signature: setGarageOpener(action: OpenClose)
+Public types: action: OpenClose
+Public constraints: action: [Open, Close, Trigger]
+Legal argument-key sets: {}; {action}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: action -> action (OpenClose).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setGarageOpener"}
+- {"arguments":{"action":"Open"},"name":"setGarageOpener"}
+
+TOOL CARD setGroupLightState
+Exact tool name: setGroupLightState
+Choose when: Controls the state of a group of lights simultaneously.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially rampBrightness, setAdaptiveLighting, setBrightness, setColor, setColorTemperature, setLightState; shared nouns alone are insufficient.
+Public signature: setGroupLightState(groupId: String, state: OnOff, level: Int?, color: HexCode?)
+Public types: groupId: String; state: OnOff; level: Int (optional); color: HexCode (optional)
+Public constraints: state: [On, Off], level: [0-100]
+Legal argument-key sets: {}; {state}; {color, groupId}; {color, state}; {groupId, level}; {groupId, state}; {level, state}; {color, groupId, level}; {color, groupId, state}; {color, level, state}; {groupId, level, state}; {color, groupId, level, state}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 59; legal keys {color, groupId, level, state}; color accepts JSON null or an artificial JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: color -> color (HexCode).
+- Spoken role: group identifier -> groupId (String).
+- Spoken role: level -> level (Int).
+- Spoken role: state -> state (OnOff).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setGroupLightState"}
+- {"arguments":{"state":"On"},"name":"setGroupLightState"}
+- {"arguments":{"color":null,"groupId":"SYNTHETIC_SETGROUPLIGHTSTATE_GROUPID_001"},"name":"setGroupLightState"}
+
+TOOL CARD setHapticStrength
+Exact tool name: setHapticStrength
+Choose when: Adjusts the intensity of haptic vibration feedback.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially enableWaterLock, installApp; shared nouns alone are insufficient.
+Public signature: setHapticStrength(level: Int)
+Public types: level: Int
+Public constraints: level: [1-3]
+Legal argument-key sets: {}; {level}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: level -> level (Int).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setHapticStrength"}
+- {"arguments":{"level":2},"name":"setHapticStrength"}
+
+TOOL CARD setHumidifierState
+Exact tool name: setHumidifierState
+Choose when: Sets the target humidity level for a humidifier or dehumidifier.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getAirQuality, setFanMode, setTargetTemperature, setThermostatMode, setThermostatSchedule; shared nouns alone are insufficient.
+Public signature: setHumidifierState(deviceId: String, targetHumidity: Int)
+Public types: deviceId: String; targetHumidity: Int
+Public constraints: targetHumidity: [30-80]
+Legal argument-key sets: {}; {targetHumidity}; {deviceId, targetHumidity}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: target humidity -> targetHumidity (Int).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setHumidifierState"}
+- {"arguments":{"targetHumidity":55},"name":"setHumidifierState"}
+- {"arguments":{"deviceId":"SYNTHETIC_SETHUMIDIFIERSTATE_DEVICEID_001","targetHumidity":55},"name":"setHumidifierState"}
+
+TOOL CARD setHvacMode
+Exact tool name: setHvacMode
+Choose when: Changes the HVAC system operating mode (e.g., OFF, AUTO, MAX_DEFROST).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getClimateState, setAirQualityMode, setCabinOverheatProtection, setCampingMode, setDefrost, setFanSpeed, setPetComfortMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, setZoneTemperature, ventWindows; shared nouns alone are insufficient.
+Public signature: setHvacMode(mode: HvacMode)
+Public types: mode: HvacMode
+Public constraints: mode: [OFF, AUTO, MAX_DEFROST, HEAT, COOL, ECO]
+Legal argument-key sets: {}; {mode}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: mode -> mode (HvacMode).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setHvacMode"}
+- {"arguments":{"mode":"OFF"},"name":"setHvacMode"}
+
+TOOL CARD setInputSource
+Exact tool name: setInputSource
+Choose when: Changes the input source of a TV or receiver.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially castContent, controlPlayback_home, playMedia, setVolume; shared nouns alone are insufficient.
+Public signature: setInputSource(deviceId: String, input: String)
+Public types: deviceId: String; input: String
+Public constraints: input: [HDMI_1, HDMI_2, HDMI_3, HDMI_ARC, TV, AV]
+Legal argument-key sets: {}; {input}; {mode}; {deviceId, input}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 2; legal keys {mode}; mode use an artificial JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: input -> input (String).
+- Spoken role: mode -> mode (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setInputSource"}
+- {"arguments":{"input":"HDMI_1"},"name":"setInputSource"}
+- {"arguments":{"mode":"SYNTHETIC_SETINPUTSOURCE_MODE_001"},"name":"setInputSource"}
+
+TOOL CARD setLightState
+Exact tool name: setLightState
+Choose when: Turns a lighting device on or off.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially rampBrightness, setAdaptiveLighting, setBrightness, setColor, setColorTemperature, setGroupLightState; shared nouns alone are insufficient.
+Public signature: setLightState(deviceId: String, state: OnOff)
+Public types: deviceId: String; state: OnOff
+Public constraints: state: [On, Off]
+Legal argument-key sets: {deviceId, state}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: state -> state (OnOff).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{"deviceId":"SYNTHETIC_SETLIGHTSTATE_DEVICEID_001","state":"On"},"name":"setLightState"}
+
+TOOL CARD setLighting
+Exact tool name: setLighting
+Choose when: Controls the power, brightness, and color of a light in a single command.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getDeviceList, setSecurityMode, streamCamera; shared nouns alone are insufficient.
+Public signature: setLighting(deviceId: String, state: OnOff, level: Int?, color: HexCode?)
+Public types: deviceId: String; state: OnOff; level: Int (optional); color: HexCode (optional)
+Public constraints: state: [On, Off], level: [0-100]
+Legal argument-key sets: {}; {state}; {color, deviceId}; {color, state}; {deviceId, level}; {deviceId, state}; {level, state}; {color, deviceId, level}; {color, deviceId, state}; {color, level, state}; {deviceId, level, state}; {color, deviceId, level, state}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 39; legal keys {color, deviceId, level, state}; color accepts JSON null or an artificial JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: color -> color (HexCode).
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: level -> level (Int).
+- Spoken role: state -> state (OnOff).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setLighting"}
+- {"arguments":{"state":"On"},"name":"setLighting"}
+- {"arguments":{"color":null,"deviceId":"SYNTHETIC_SETLIGHTING_DEVICEID_001"},"name":"setLighting"}
+
+TOOL CARD setLockState
+Exact tool name: setLockState
+Choose when: Sets the global lock state (Locked/Unlocked) for all doors and the trunk.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially foldExteriorMirrors, openFrontTrunk, setCargoState, setGarageOpener, setSecureStorageAccess, setSunroofPosition, setWindowPosition; shared nouns alone are insufficient.
+Public signature: setLockState(state: LockState)
+Public types: state: LockState
+Public constraints: state: [Locked, Unlocked]
+Legal argument-key sets: {}; {state}; {deviceId, state}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 125; legal keys {deviceId, state}; deviceId use an artificial JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: state -> state (LockState).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setLockState"}
+- {"arguments":{"state":"Locked"},"name":"setLockState"}
+- {"arguments":{"deviceId":"SYNTHETIC_SETLOCKSTATE_DEVICEID_001","state":"Locked"},"name":"setLockState"}
+
+TOOL CARD setLockState_home
+Exact tool name: setLockState_home
+Choose when: Locks or unlocks a smart lock device.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially armSecuritySystem, getCameraEvent, getCameraStream, setGarageDoor; shared nouns alone are insufficient.
+Public signature: setLockState_home(deviceId: String, state: LockState)
+Public types: deviceId: String; state: LockState
+Public constraints: state: [Locked, Unlocked]
+Legal argument-key sets: {state}; {deviceId, state}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: state -> state (LockState).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{"state":"Locked"},"name":"setLockState_home"}
+- {"arguments":{"deviceId":"SYNTHETIC_SETLOCKSTATE_HOME_DEVICEID_001","state":"Locked"},"name":"setLockState_home"}
+
+TOOL CARD setMediaSource
+Exact tool name: setMediaSource
+Choose when: Changes the active media input source (e.g., Bluetooth, Radio, Streaming App).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially adjustVolume, controlPlayback, launchInCarGaming, setAmbientLighting, setAudioVolume, setExternalSpeakerOutput, setPassengerQuietMode; shared nouns alone are insufficient.
+Public signature: setMediaSource(source: MediaSource)
+Public types: source: MediaSource
+Public constraints: source: [Bluetooth, Radio, Spotify, Apple_Music, TuneIn, USB]
+Legal argument-key sets: {}; {source}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: source -> source (MediaSource).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setMediaSource"}
+- {"arguments":{"source":"Bluetooth"},"name":"setMediaSource"}
+
+TOOL CARD setMirrorAngle
+Exact tool name: setMirrorAngle
+Choose when: Adjusts the physical tilt angle of a specific side mirror.
+Avoid when: Avoid when the requested operation does not match this meaning; shared nouns alone are insufficient.
+Public signature: setMirrorAngle(mirror: Location, x: Int, y: Int)
+Public types: mirror: Location; x: Int; y: Int
+Public constraints: mirror: [Left, Right], x: [-10 - 10], y: [-10 - 10]
+Legal argument-key sets: {}; {mirror, x}; {mirror, y}; {mirror, x, y}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: mirror -> mirror (Location).
+- Spoken role: x -> x (Int).
+- Spoken role: y -> y (Int).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setMirrorAngle"}
+- {"arguments":{"mirror":"Left","x":0},"name":"setMirrorAngle"}
+- {"arguments":{"mirror":"Left","y":0},"name":"setMirrorAngle"}
+
+TOOL CARD setPassengerQuietMode
+Exact tool name: setPassengerQuietMode
+Choose when: Enables 'Joe Mode' to lower the volume of system chimes and alerts.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially adjustVolume, controlPlayback, launchInCarGaming, setAmbientLighting, setAudioVolume, setExternalSpeakerOutput, setMediaSource; shared nouns alone are insufficient.
+Public signature: setPassengerQuietMode(enabled: Boolean)
+Public types: enabled: Boolean
+Public constraints: enabled: [True, False]
+Legal argument-key sets: {}; {enabled}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 10; legal keys {enabled}; enabled accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: enabled -> enabled (Boolean).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setPassengerQuietMode"}
+- {"arguments":{"enabled":"True"},"name":"setPassengerQuietMode"}
+
+TOOL CARD setPetComfortMode
+Exact tool name: setPetComfortMode
+Choose when: Enables 'Dog Mode' to maintain a safe cabin temperature for pets while the vehicle is parked and locked.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getClimateState, setAirQualityMode, setCabinOverheatProtection, setCampingMode, setDefrost, setFanSpeed, setHvacMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, setZoneTemperature, ventWindows; shared nouns alone are insufficient.
+Public signature: setPetComfortMode(enabled: Boolean, targetTemp: Float)
+Public types: enabled: Boolean; targetTemp: Float
+Public constraints: enabled: [True, False], targetTemp: [15.0-28.0]
+Legal argument-key sets: {}; {enabled}; {enabled, targetTemp}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 2; legal keys {enabled}; enabled accepts a Boolean lexical form encoded as a JSON string.
+- Training-supported compatibility rule; construction support count: 9; legal keys {enabled, targetTemp}; enabled accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: enabled -> enabled (Boolean).
+- Spoken role: target temp -> targetTemp (Float).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setPetComfortMode"}
+- {"arguments":{"enabled":"True"},"name":"setPetComfortMode"}
+- {"arguments":{"enabled":"True","targetTemp":21.5},"name":"setPetComfortMode"}
+
+TOOL CARD setPowerState
+Exact tool name: setPowerState
+Choose when: Controls the power state of a smart plug or switch.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getEnergyUsage, setWaterValve; shared nouns alone are insufficient.
+Public signature: setPowerState(deviceId: String, state: OnOff)
+Public types: deviceId: String; state: OnOff
+Public constraints: state: [On, Off]
+Legal argument-key sets: {}; {state}; {deviceId, state}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: state -> state (OnOff).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setPowerState"}
+- {"arguments":{"state":"On"},"name":"setPowerState"}
+- {"arguments":{"deviceId":"SYNTHETIC_SETPOWERSTATE_DEVICEID_001","state":"On"},"name":"setPowerState"}
+
+TOOL CARD setRecirculation
+Exact tool name: setRecirculation
+Choose when: Enables or disables cabin air recirculation.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getClimateState, setAirQualityMode, setCabinOverheatProtection, setCampingMode, setDefrost, setFanSpeed, setHvacMode, setPetComfortMode, setSeatComfort, setSteeringWheelHeat, setZoneTemperature, ventWindows; shared nouns alone are insufficient.
+Public signature: setRecirculation(enabled: Boolean)
+Public types: enabled: Boolean
+Public constraints: enabled: [True, False]
+Legal argument-key sets: {}; {enabled}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 12; legal keys {enabled}; enabled accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: enabled -> enabled (Boolean).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setRecirculation"}
+- {"arguments":{"enabled":"True"},"name":"setRecirculation"}
+
+TOOL CARD setRegenerativeBraking
+Exact tool name: setRegenerativeBraking
+Choose when: Sets the level of regenerative braking intensity (e.g., Low for coasting, Standard for one-pedal driving).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially initiateAutoPark, setAutonomousDriving, setCruiseSpeed, setDrivingMode, setFollowDistance, setSteeringFeel, triggerRemoteParking; shared nouns alone are insufficient.
+Public signature: setRegenerativeBraking(level: RegenLevel)
+Public types: level: RegenLevel
+Public constraints: level: [Low, Standard]
+Legal argument-key sets: {}; {level}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: level -> level (RegenLevel).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setRegenerativeBraking"}
+- {"arguments":{"level":"Low"},"name":"setRegenerativeBraking"}
+
+TOOL CARD setRomanceMode
+Exact tool name: setRomanceMode
+Choose when: Displays a virtual fireplace on the screen with heater activation.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially setEmissionsMode, startLightShow; shared nouns alone are insufficient.
+Public signature: setRomanceMode(enabled: Boolean)
+Public types: enabled: Boolean
+Public constraints: enabled: [True, False]
+Legal argument-key sets: {}; {enabled}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 13; legal keys {enabled}; enabled accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: enabled -> enabled (Boolean).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setRomanceMode"}
+- {"arguments":{"enabled":"True"},"name":"setRomanceMode"}
+
+TOOL CARD setRoutePreferences
+Exact tool name: setRoutePreferences
+Choose when: Updates navigation routing preferences to avoid specific road features.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially addTripStop, cancelNavigation, getRouteSummary, searchPOI, setDestination, setVoiceGuidance; shared nouns alone are insufficient.
+Public signature: setRoutePreferences(avoidTolls: Boolean, avoidFerries: Boolean, useHOV: Boolean)
+Public types: avoidTolls: Boolean; avoidFerries: Boolean; useHOV: Boolean
+Public constraints: avoidTolls: [True, False], avoidFerries: [True, False], useHOV: [True, False]
+Legal argument-key sets: {}; {avoidTolls}; {useHOV}; {avoidFerries, avoidTolls}; {avoidFerries, avoidTolls, useHOV}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 10; legal keys {avoidFerries, avoidTolls, useHOV}; avoidFerries accepts a Boolean lexical form encoded as a JSON string; avoidTolls accepts a Boolean lexical form encoded as a JSON string; useHOV accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: avoid ferries -> avoidFerries (Boolean).
+- Spoken role: avoid tolls -> avoidTolls (Boolean).
+- Spoken role: use hov -> useHOV (Boolean).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setRoutePreferences"}
+- {"arguments":{"avoidTolls":"True"},"name":"setRoutePreferences"}
+- {"arguments":{"useHOV":"True"},"name":"setRoutePreferences"}
+
+TOOL CARD setScheduledDeparture
+Exact tool name: setScheduledDeparture
+Choose when: Schedules a departure time to automatically precondition the battery and cabin temperature.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getBatteryStatus, getChargingSession, openChargePortDoor, setChargeLimit, setChargingAmperage, startCharging, stopCharging, triggerBatteryPreconditioning, unlockChargeCable; shared nouns alone are insufficient.
+Public signature: setScheduledDeparture(time: Time, precondition: Boolean)
+Public types: time: Time; precondition: Boolean
+Public constraints: precondition: [True, False]
+Legal argument-key sets: {}; {time}; {precondition, time}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 12; legal keys {precondition, time}; precondition accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: precondition -> precondition (Boolean).
+- Spoken role: time -> time (Time).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setScheduledDeparture"}
+- {"arguments":{"time":"SYNTHETIC_SETSCHEDULEDDEPARTURE_TIME_001"},"name":"setScheduledDeparture"}
+- {"arguments":{"precondition":"True","time":"SYNTHETIC_SETSCHEDULEDDEPARTURE_TIME_001"},"name":"setScheduledDeparture"}
+
+TOOL CARD setSeatComfort
+Exact tool name: setSeatComfort
+Choose when: Adjusts the heating and ventilation levels (0-3) for a specific seat.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getClimateState, setAirQualityMode, setCabinOverheatProtection, setCampingMode, setDefrost, setFanSpeed, setHvacMode, setPetComfortMode, setRecirculation, setSteeringWheelHeat, setZoneTemperature, ventWindows; shared nouns alone are insufficient.
+Public signature: setSeatComfort(seat: SeatLocation, heatLevel: Int, coolLevel: Int)
+Public types: seat: SeatLocation; heatLevel: Int; coolLevel: Int
+Public constraints: seat: [Driver, Passenger, Rear_Left, Rear_Right], heatLevel: [0-3], coolLevel: [0-3]
+Legal argument-key sets: {}; {coolLevel, seat}; {heatLevel, seat}; {coolLevel, heatLevel, seat}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: cool level -> coolLevel (Int).
+- Spoken role: heat level -> heatLevel (Int).
+- Spoken role: seat -> seat (SeatLocation).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setSeatComfort"}
+- {"arguments":{"coolLevel":1,"seat":"Driver"},"name":"setSeatComfort"}
+- {"arguments":{"heatLevel":1,"seat":"Driver"},"name":"setSeatComfort"}
+
+TOOL CARD setSecureStorageAccess
+Exact tool name: setSecureStorageAccess
+Choose when: Locks or unlocks secure storage compartments (e.g., glovebox), optionally verifying a PIN.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially foldExteriorMirrors, openFrontTrunk, setCargoState, setGarageOpener, setLockState, setSunroofPosition, setWindowPosition; shared nouns alone are insufficient.
+Public signature: setSecureStorageAccess(enabled: Boolean, pin: Int?)
+Public types: enabled: Boolean; pin: Int (optional)
+Public constraints: enabled: [True, False], pin: [0000-9999]
+Legal argument-key sets: {}; {enabled}; {enabled, pin}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 2; legal keys {enabled}; enabled accepts a Boolean lexical form encoded as a JSON string.
+- Training-supported compatibility rule; construction support count: 11; legal keys {enabled, pin}; enabled accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: enabled -> enabled (Boolean).
+- Spoken role: pin -> pin (Int).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setSecureStorageAccess"}
+- {"arguments":{"enabled":"True"},"name":"setSecureStorageAccess"}
+- {"arguments":{"enabled":"True","pin":4999},"name":"setSecureStorageAccess"}
+
+TOOL CARD setSecurityMode
+Exact tool name: setSecurityMode
+Choose when: Sets the arming state of the security system.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getDeviceList, setLighting, streamCamera; shared nouns alone are insufficient.
+Public signature: setSecurityMode(mode: SecurityState)
+Public types: mode: SecurityState
+Public constraints: mode: [Armed_Away, Armed_Home, Disarmed]
+Legal argument-key sets: {}; {mode}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: mode -> mode (SecurityState).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setSecurityMode"}
+- {"arguments":{"mode":"Armed_Away"},"name":"setSecurityMode"}
+
+TOOL CARD setSpeedLimitMode
+Exact tool name: setSpeedLimitMode
+Choose when: Enforces a maximum speed limit for the vehicle.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially flashLights, honkHorn, setSurveillanceMode, setValetMode, viewRemoteCamera; shared nouns alone are insufficient.
+Public signature: setSpeedLimitMode(enabled: Boolean, limit: Int?)
+Public types: enabled: Boolean; limit: Int (optional)
+Public constraints: enabled: [True, False], limit: [50-120]
+Legal argument-key sets: {}; {enabled}; {enabled, limit}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 11; legal keys {enabled, limit}; enabled accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: enabled -> enabled (Boolean).
+- Spoken role: limit -> limit (Int).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setSpeedLimitMode"}
+- {"arguments":{"enabled":"True"},"name":"setSpeedLimitMode"}
+- {"arguments":{"enabled":"True","limit":85},"name":"setSpeedLimitMode"}
+
+TOOL CARD setSteeringFeel
+Exact tool name: setSteeringFeel
+Choose when: Adjusts the steering wheel resistance level (e.g., Comfort, Standard, Sport).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially initiateAutoPark, setAutonomousDriving, setCruiseSpeed, setDrivingMode, setFollowDistance, setRegenerativeBraking, triggerRemoteParking; shared nouns alone are insufficient.
+Public signature: setSteeringFeel(mode: SteeringMode)
+Public types: mode: SteeringMode
+Public constraints: mode: [Comfort, Standard, Sport]
+Legal argument-key sets: {}; {mode}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: mode -> mode (SteeringMode).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setSteeringFeel"}
+- {"arguments":{"mode":"Comfort"},"name":"setSteeringFeel"}
+
+TOOL CARD setSteeringWheelHeat
+Exact tool name: setSteeringWheelHeat
+Choose when: Enables or disables the steering wheel heater.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getClimateState, setAirQualityMode, setCabinOverheatProtection, setCampingMode, setDefrost, setFanSpeed, setHvacMode, setPetComfortMode, setRecirculation, setSeatComfort, setZoneTemperature, ventWindows; shared nouns alone are insufficient.
+Public signature: setSteeringWheelHeat(enabled: Boolean)
+Public types: enabled: Boolean
+Public constraints: enabled: [True, False]
+Legal argument-key sets: {}; {enabled}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 12; legal keys {enabled}; enabled accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: enabled -> enabled (Boolean).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setSteeringWheelHeat"}
+- {"arguments":{"enabled":"True"},"name":"setSteeringWheelHeat"}
+
+TOOL CARD setSunroofPosition
+Exact tool name: setSunroofPosition
+Choose when: Sets the sunroof opening percentage.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially foldExteriorMirrors, openFrontTrunk, setCargoState, setGarageOpener, setLockState, setSecureStorageAccess, setWindowPosition; shared nouns alone are insufficient.
+Public signature: setSunroofPosition(position: Int)
+Public types: position: Int
+Public constraints: position: [0-100]
+Legal argument-key sets: {}; {position}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: position -> position (Int).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setSunroofPosition"}
+- {"arguments":{"position":50},"name":"setSunroofPosition"}
+
+TOOL CARD setSurveillanceMode
+Exact tool name: setSurveillanceMode
+Choose when: Enables 'Sentry Mode' to monitor and record suspicious activity using vehicle cameras.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially flashLights, honkHorn, setSpeedLimitMode, setValetMode, viewRemoteCamera; shared nouns alone are insufficient.
+Public signature: setSurveillanceMode(enabled: Boolean)
+Public types: enabled: Boolean
+Public constraints: enabled: [True, False]
+Legal argument-key sets: {enabled}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 10; legal keys {enabled}; enabled accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: enabled -> enabled (Boolean).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{"enabled":"True"},"name":"setSurveillanceMode"}
+
+TOOL CARD setTargetTemperature
+Exact tool name: setTargetTemperature
+Choose when: Sets the temperature setpoint for the thermostat.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getAirQuality, setFanMode, setHumidifierState, setThermostatMode, setThermostatSchedule; shared nouns alone are insufficient.
+Public signature: setTargetTemperature(deviceId: String, temperature: Float)
+Public types: deviceId: String; temperature: Float
+Public constraints: temperature: [10.0-32.0]
+Legal argument-key sets: {}; {temperature}; {deviceId, temperature}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: temperature -> temperature (Float).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setTargetTemperature"}
+- {"arguments":{"temperature":21.0},"name":"setTargetTemperature"}
+- {"arguments":{"deviceId":"SYNTHETIC_SETTARGETTEMPERATURE_DEVICEID_001","temperature":21.0},"name":"setTargetTemperature"}
+
+TOOL CARD setThermostatMode
+Exact tool name: setThermostatMode
+Choose when: Sets the thermostat operating mode (e.g., Heat, Cool, Auto, Off).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getAirQuality, setFanMode, setHumidifierState, setTargetTemperature, setThermostatSchedule; shared nouns alone are insufficient.
+Public signature: setThermostatMode(deviceId: String, mode: HvacMode)
+Public types: deviceId: String; mode: HvacMode
+Public constraints: mode: [Heat, Cool, Auto, Off, Fan_Only, Eco]
+Legal argument-key sets: {}; {mode}; {deviceId, mode}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: mode -> mode (HvacMode).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setThermostatMode"}
+- {"arguments":{"mode":"Heat"},"name":"setThermostatMode"}
+- {"arguments":{"deviceId":"SYNTHETIC_SETTHERMOSTATMODE_DEVICEID_001","mode":"Heat"},"name":"setThermostatMode"}
+
+TOOL CARD setThermostatSchedule
+Exact tool name: setThermostatSchedule
+Choose when: Configures the automatic heating/cooling schedule for a thermostat.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getAirQuality, setFanMode, setHumidifierState, setTargetTemperature, setThermostatMode; shared nouns alone are insufficient.
+Public signature: setThermostatSchedule(deviceId: String, schedule: Map)
+Public types: deviceId: String; schedule: Map
+Public constraints: none declared
+Legal argument-key sets: {}; {deviceId, schedule}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: schedule -> schedule (Map).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setThermostatSchedule"}
+- {"arguments":{"deviceId":"SYNTHETIC_SETTHERMOSTATSCHEDULE_DEVICEID_001","schedule":{"syntheticKey":"SYNTHETIC_SETTHERMOSTATSCHEDULE_SCHEDULE_001"}},"name":"setThermostatSchedule"}
+
+TOOL CARD setValetMode
+Exact tool name: setValetMode
+Choose when: Enables Valet Mode to limit speed and restrict access to personal data and storage.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially flashLights, honkHorn, setSpeedLimitMode, setSurveillanceMode, viewRemoteCamera; shared nouns alone are insufficient.
+Public signature: setValetMode(enabled: Boolean, pin: Int?)
+Public types: enabled: Boolean; pin: Int (optional)
+Public constraints: enabled: [True, False], pin: [0000-9999]
+Legal argument-key sets: {}; {enabled}; {enabled, pin}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 3; legal keys {enabled}; enabled accepts a Boolean lexical form encoded as a JSON string.
+- Training-supported compatibility rule; construction support count: 10; legal keys {enabled, pin}; enabled accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: enabled -> enabled (Boolean).
+- Spoken role: pin -> pin (Int).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setValetMode"}
+- {"arguments":{"enabled":"True"},"name":"setValetMode"}
+- {"arguments":{"enabled":"True","pin":4999},"name":"setValetMode"}
+
+TOOL CARD setVoiceGuidance
+Exact tool name: setVoiceGuidance
+Choose when: Mutes or unmutes the navigation voice instructions.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially addTripStop, cancelNavigation, getRouteSummary, searchPOI, setDestination, setRoutePreferences; shared nouns alone are insufficient.
+Public signature: setVoiceGuidance(muted: Boolean)
+Public types: muted: Boolean
+Public constraints: muted: [True, False]
+Legal argument-key sets: {}; {muted}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 10; legal keys {muted}; muted accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: muted -> muted (Boolean).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setVoiceGuidance"}
+- {"arguments":{"muted":"True"},"name":"setVoiceGuidance"}
+
+TOOL CARD setVolume
+Exact tool name: setVolume
+Choose when: Sets the volume level for a media device.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially castContent, controlPlayback_home, playMedia, setInputSource; shared nouns alone are insufficient.
+Public signature: setVolume(deviceId: String, level: Int)
+Public types: deviceId: String; level: Int
+Public constraints: level: [0-100]
+Legal argument-key sets: {}; {level}; {deviceId, level}; {direction, steps}; {level, stream}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 5; legal keys {direction, steps}; direction use an artificial JSON string; steps use a JSON integer.
+- Training-supported compatibility rule; construction support count: 6; legal keys {level, stream}; stream use an artificial JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: direction -> direction (String).
+- Spoken role: level -> level (Int).
+- Spoken role: steps -> steps (Int).
+- Spoken role: stream -> stream (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setVolume"}
+- {"arguments":{"level":50},"name":"setVolume"}
+- {"arguments":{"deviceId":"SYNTHETIC_SETVOLUME_DEVICEID_001","level":50},"name":"setVolume"}
+
+TOOL CARD setWaterValve
+Exact tool name: setWaterValve
+Choose when: Opens or closes a main water valve or irrigation controller.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getEnergyUsage, setPowerState; shared nouns alone are insufficient.
+Public signature: setWaterValve(deviceId: String, state: OpenClose)
+Public types: deviceId: String; state: OpenClose
+Public constraints: state: [Open, Closed]
+Legal argument-key sets: {}; {state}; {deviceId, state}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: state -> state (OpenClose).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setWaterValve"}
+- {"arguments":{"state":"Open"},"name":"setWaterValve"}
+- {"arguments":{"deviceId":"SYNTHETIC_SETWATERVALVE_DEVICEID_001","state":"Open"},"name":"setWaterValve"}
+
+TOOL CARD setWindowPosition
+Exact tool name: setWindowPosition
+Choose when: Sets the opening position of a specific window as a percentage (0% closed, 100% open).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially foldExteriorMirrors, openFrontTrunk, setCargoState, setGarageOpener, setLockState, setSecureStorageAccess, setSunroofPosition; shared nouns alone are insufficient.
+Public signature: setWindowPosition(window: WindowLocation, position: Int)
+Public types: window: WindowLocation; position: Int
+Public constraints: window: [Driver_Front, Passenger_Front, Driver_Rear, Passenger_Rear], position: [0-100]
+Legal argument-key sets: {}; {position, window}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: position -> position (Int).
+- Spoken role: window -> window (WindowLocation).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setWindowPosition"}
+- {"arguments":{"position":50,"window":"Driver_Front"},"name":"setWindowPosition"}
+
+TOOL CARD setZoneTemperature
+Exact tool name: setZoneTemperature
+Choose when: Sets the target climate control temperature for a specific cabin zone (e.g., Driver, Passenger).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getClimateState, setAirQualityMode, setCabinOverheatProtection, setCampingMode, setDefrost, setFanSpeed, setHvacMode, setPetComfortMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, ventWindows; shared nouns alone are insufficient.
+Public signature: setZoneTemperature(zone: Zone, temperature: Float)
+Public types: zone: Zone; temperature: Float
+Public constraints: zone: [Driver, Passenger, Rear_Left, Rear_Right], temperature: [15.0-30.0]
+Legal argument-key sets: {}; {temperature, zone}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: temperature -> temperature (Float).
+- Spoken role: zone -> zone (Zone).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"setZoneTemperature"}
+- {"arguments":{"temperature":22.5,"zone":"Driver"},"name":"setZoneTemperature"}
+
+TOOL CARD startCharging
+Exact tool name: startCharging
+Choose when: Manually starts a charging session.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getBatteryStatus, getChargingSession, openChargePortDoor, setChargeLimit, setChargingAmperage, setScheduledDeparture, stopCharging, triggerBatteryPreconditioning, unlockChargeCable; shared nouns alone are insufficient.
+Public signature: startCharging()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"startCharging"}
+
+TOOL CARD startCleaning
+Exact tool name: startCleaning
+Choose when: Starts a cleaning cycle on a robot vacuum/mop, optionally for specific zones.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getApplianceStatus, setApplianceMode, setDockState; shared nouns alone are insufficient.
+Public signature: startCleaning(deviceId: String, zones: List<String>?)
+Public types: deviceId: String; zones: List<String> (optional)
+Public constraints: zones: [Living_Room, Kitchen, Bedroom, Hallway]
+Legal argument-key sets: {}; {deviceId}; {zones}; {deviceId, zones}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+- Spoken role: zones -> zones (List<String>).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"startCleaning"}
+- {"arguments":{"deviceId":"SYNTHETIC_STARTCLEANING_DEVICEID_001"},"name":"startCleaning"}
+- {"arguments":{"zones":["Living_Room"]},"name":"startCleaning"}
+
+TOOL CARD startLightShow
+Exact tool name: startLightShow
+Choose when: Starts a choreographed light and sound sequence.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially setEmissionsMode, setRomanceMode; shared nouns alone are insufficient.
+Public signature: startLightShow(showName: String?)
+Public types: showName: String (optional)
+Public constraints: showName: [Holiday, Spooky, Party, Sparkle]
+Legal argument-key sets: {}; {showName}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: show name -> showName (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"startLightShow"}
+- {"arguments":{"showName":"Holiday"},"name":"startLightShow"}
+
+TOOL CARD startWorkout
+Exact tool name: startWorkout
+Choose when: Starts tracking a new workout session.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getActivitySummary, getBiometricData, getHRV, getSleepSummary, stopWorkout; shared nouns alone are insufficient.
+Public signature: startWorkout(activity: ActivityType, goal: Goal?)
+Public types: activity: ActivityType; goal: Goal (optional)
+Public constraints: activity: [Running, Walking, Cycling, Swimming, Yoga, HIIT, Strength_Training]
+Legal argument-key sets: {}; {activity}; {activity, goal}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 55; legal keys {activity, goal}; goal accepts JSON null or an artificial JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: activity -> activity (ActivityType).
+- Spoken role: goal -> goal (Goal).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"startWorkout"}
+- {"arguments":{"activity":"Running"},"name":"startWorkout"}
+- {"arguments":{"activity":"Running","goal":null},"name":"startWorkout"}
+
+TOOL CARD stopCharging
+Exact tool name: stopCharging
+Choose when: Stops an active charging session.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getBatteryStatus, getChargingSession, openChargePortDoor, setChargeLimit, setChargingAmperage, setScheduledDeparture, startCharging, triggerBatteryPreconditioning, unlockChargeCable; shared nouns alone are insufficient.
+Public signature: stopCharging()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"stopCharging"}
+
+TOOL CARD stopWorkout
+Exact tool name: stopWorkout
+Choose when: Ends the currently active workout session.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getActivitySummary, getBiometricData, getHRV, getSleepSummary, startWorkout; shared nouns alone are insufficient.
+Public signature: stopWorkout()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"stopWorkout"}
+
+TOOL CARD streamCamera
+Exact tool name: streamCamera
+Choose when: Starts a live video stream from a security camera.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getDeviceList, setLighting, setSecurityMode; shared nouns alone are insufficient.
+Public signature: streamCamera(deviceId: String)
+Public types: deviceId: String
+Public constraints: none declared
+Legal argument-key sets: {}; {deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"streamCamera"}
+- {"arguments":{"deviceId":"SYNTHETIC_STREAMCAMERA_DEVICEID_001"},"name":"streamCamera"}
+
+TOOL CARD triggerBatteryPreconditioning
+Exact tool name: triggerBatteryPreconditioning
+Choose when: Manually starts battery preconditioning to prepare for DC fast charging.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getBatteryStatus, getChargingSession, openChargePortDoor, setChargeLimit, setChargingAmperage, setScheduledDeparture, startCharging, stopCharging, unlockChargeCable; shared nouns alone are insufficient.
+Public signature: triggerBatteryPreconditioning()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"triggerBatteryPreconditioning"}
+
+TOOL CARD triggerRemoteParking
+Exact tool name: triggerRemoteParking
+Choose when: Initiates remote vehicle movement commands (Summon) or autonomous navigation to the user (Smart Summon).
+Avoid when: Avoid when the requested operation matches another registered meaning, especially initiateAutoPark, setAutonomousDriving, setCruiseSpeed, setDrivingMode, setFollowDistance, setRegenerativeBraking, setSteeringFeel; shared nouns alone are insufficient.
+Public signature: triggerRemoteParking(action: ParkAction)
+Public types: action: ParkAction
+Public constraints: action: [Summon_Forward, Summon_Reverse, Smart_Summon]
+Legal argument-key sets: {}; {action}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: action -> action (ParkAction).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"triggerRemoteParking"}
+- {"arguments":{"action":"Summon_Forward"},"name":"triggerRemoteParking"}
+
+TOOL CARD unlockChargeCable
+Exact tool name: unlockChargeCable
+Choose when: Unlocks the charging port latch to allow cable removal.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getBatteryStatus, getChargingSession, openChargePortDoor, setChargeLimit, setChargingAmperage, setScheduledDeparture, startCharging, stopCharging, triggerBatteryPreconditioning; shared nouns alone are insufficient.
+Public signature: unlockChargeCable()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"unlockChargeCable"}
+
+TOOL CARD updateFirmware
+Exact tool name: updateFirmware
+Choose when: Initiates a firmware update for the specified device.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially calibrateThermostat, rebootDevice, resetFilterStatus, runNetworkSpeedTest; shared nouns alone are insufficient.
+Public signature: updateFirmware(deviceId: String)
+Public types: deviceId: String
+Public constraints: none declared
+Legal argument-key sets: {}; {deviceId}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: device identifier -> deviceId (String).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"updateFirmware"}
+- {"arguments":{"deviceId":"SYNTHETIC_UPDATEFIRMWARE_DEVICEID_001"},"name":"updateFirmware"}
+
+TOOL CARD ventWindows
+Exact tool name: ventWindows
+Choose when: Slightly lowers all windows to facilitate passive cabin cooling.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially getClimateState, setAirQualityMode, setCabinOverheatProtection, setCampingMode, setDefrost, setFanSpeed, setHvacMode, setPetComfortMode, setRecirculation, setSeatComfort, setSteeringWheelHeat, setZoneTemperature; shared nouns alone are insufficient.
+Public signature: ventWindows()
+Public types: none
+Public constraints: none declared
+Legal argument-key sets: {}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"ventWindows"}
+
+TOOL CARD viewRemoteCamera
+Exact tool name: viewRemoteCamera
+Choose when: Streams live video from a selected vehicle camera to the mobile app.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially flashLights, honkHorn, setSpeedLimitMode, setSurveillanceMode, setValetMode; shared nouns alone are insufficient.
+Public signature: viewRemoteCamera(camera: CameraView)
+Public types: camera: CameraView
+Public constraints: camera: [Front, Rear, Left_Repeater, Right_Repeater, Cabin]
+Legal argument-key sets: {camera}
+Aggregate compatibility rules:
+Spoken-role-to-key guidance:
+- Spoken role: camera -> camera (CameraView).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{"camera":"Front"},"name":"viewRemoteCamera"}
+
+TOOL CARD wiperServiceMode
+Exact tool name: wiperServiceMode
+Choose when: Moves the windshield wipers to the service position for replacement.
+Avoid when: Avoid when the requested operation matches another registered meaning, especially calibrateCameras, getSoftwareUpdateStatus, installSoftwareUpdate, resetTPMSSensors, scheduleService; shared nouns alone are insufficient.
+Public signature: wiperServiceMode(enabled: Boolean)
+Public types: enabled: Boolean
+Public constraints: enabled: [True, False]
+Legal argument-key sets: {}; {enabled}
+Aggregate compatibility rules:
+- Training-supported compatibility rule; construction support count: 13; legal keys {enabled}; enabled accepts a Boolean lexical form encoded as a JSON string.
+Spoken-role-to-key guidance:
+- Spoken role: enabled -> enabled (Boolean).
+Synthetic JSON examples: Every example is artificial; never copy its values.
+- {"arguments":{},"name":"wiperServiceMode"}
+- {"arguments":{"enabled":"True"},"name":"wiperServiceMode"}
