@@ -176,6 +176,23 @@ def _registry_optional_keys(
     return optional
 
 
+def _registry_constrained_keys(
+    registry_rows: Sequence[Mapping[str, str]],
+) -> dict[str, frozenset[str]]:
+    constrained: dict[str, frozenset[str]] = {}
+    for row in registry_rows:
+        text = row.get("argument_constraints", "")
+        if not isinstance(text, str):
+            raise G4SemanticCardBuildError("registry constraints must be text")
+        constrained[row["tool_name"]] = frozenset(
+            match.group(1)
+            for match in re.finditer(
+                r"([A-Za-z_][A-Za-z0-9_]*)\s*:\s*\[[^\]]+\]", text
+            )
+        )
+    return constrained
+
+
 def _serialized_value_form(value: str) -> str:
     """Classify a serialized construction value without retaining its literal."""
 
@@ -236,6 +253,7 @@ def derive_compatibility_rules(
         raise G4SemanticCardBuildError("compatibility minimum support must be at least two")
     registry = _registry_argument_types(registry_rows)
     optional_keys = _registry_optional_keys(registry_rows)
+    constrained_keys = _registry_constrained_keys(registry_rows)
     pattern_support: Counter[tuple[str, tuple[str, ...]]] = Counter()
     value_forms: dict[
         tuple[str, tuple[str, ...], str], Counter[str]
@@ -263,6 +281,7 @@ def derive_compatibility_rules(
     ambiguous_excluded = 0
     public_boolean_rules = 0
     nullable_rules = 0
+    constrained_nullable_excluded = 0
     extension_rules = 0
     for (tool_name, skeleton), support in sorted(pattern_support.items()):
         if support < minimum_support:
@@ -291,10 +310,20 @@ def derive_compatibility_rules(
             type_name = public[key].lower()
             null_count = observed.get("null", 0)
             boolean_count = observed.get("boolean", 0)
-            if null_count >= minimum_support and key in optional_keys[tool_name]:
+            if (
+                null_count >= minimum_support
+                and key in optional_keys[tool_name]
+                and key not in constrained_keys[tool_name]
+            ):
                 forms[key] = "nullable-string"
                 supports.append(null_count)
                 nullable_rules += 1
+            elif (
+                null_count >= minimum_support
+                and key in optional_keys[tool_name]
+                and key in constrained_keys[tool_name]
+            ):
+                constrained_nullable_excluded += 1
             elif type_name in {"boolean", "bool"} and boolean_count >= minimum_support:
                 forms[key] = "boolean-string"
                 supports.append(boolean_count)
@@ -330,6 +359,7 @@ def derive_compatibility_rules(
         "extension_rule_count": extension_rules,
         "public_boolean_lexical_rule_count": public_boolean_rules,
         "nullable_lexical_rule_count": nullable_rules,
+        "constrained_nullable_forms_excluded": constrained_nullable_excluded,
         "singleton_skeletons_excluded": singleton_excluded,
         "malformed_key_skeletons_excluded": malformed_excluded,
         "ambiguous_extension_skeletons_excluded": ambiguous_excluded,

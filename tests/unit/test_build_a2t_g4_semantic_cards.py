@@ -224,6 +224,25 @@ def test_null_compatibility_requires_a_public_optional_argument() -> None:
     )
 
 
+def test_null_compatibility_does_not_override_a_public_constraint() -> None:
+    builder = _builder()
+    registry = (
+        {
+            **_registry_row("constrainedTool", "constrainedTool(pin: Int?)"),
+            "argument_constraints": "pin: [0000-9999]",
+        },
+    )
+    rows = (
+        _row(1, "constrainedTool", (("pin", "null"),)),
+        _row(2, "constrainedTool", (("pin", "null"),)),
+    )
+
+    rules, report = builder.derive_compatibility_rules(registry, rows)
+
+    assert rules == ()
+    assert report["constrained_nullable_forms_excluded"] == 1
+
+
 def test_main_writes_only_explicit_outputs(monkeypatch, tmp_path: Path) -> None:
     builder = _builder()
     corpus_path = tmp_path / "corpus.txt"
