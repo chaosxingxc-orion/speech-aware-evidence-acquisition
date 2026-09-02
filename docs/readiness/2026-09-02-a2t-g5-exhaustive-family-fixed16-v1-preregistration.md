@@ -68,18 +68,27 @@ and four exact rows in each tier.
 
 The baseline and experiment fragments are registered at
 `configs/baseline/a2t-g5-exhaustive-family-agentloop.json` and
-`configs/experiment/a2t-g5-exhaustive-family-fixed16-v1.json`. Their provisional composed-config
-and protocol identities use the registered `q4km-mmproj-free-speech-native-np16` model fragment,
-the `audio2tool-g1-104` dataset fragment solely for configuration composition, this baseline, and
-this experiment, with the G5 run identity above. They do not authorize contact and will be
-prospectively superseded by one final hash amendment when the dedicated G5 integration, exact
-prompt-fit receipt, runtime binding, ExecutionPlan, and launcher hashes land.
+`configs/experiment/a2t-g5-exhaustive-family-fixed16-v1.json`. The required runtime fragment is
+`q4km-mmproj-free-speech-native-np2-a2t-max1024`: the established two-slot Audio2Tool profile with
+a 32,768-token per-slot context and a 1,024-token final completion cap. The prior provisional
+`q4km-mmproj-free-speech-native-np16` composition is non-launchable and remains audit history
+only; it cannot be used for G5 contact.
+
+The corrected provisional composition uses `q4km-mmproj-free-speech-native-np2-a2t-max1024`, the
+`audio2tool-g1-104` dataset fragment solely for composition, this baseline, this experiment, and
+the G5 run identity above. It does not authorize contact and will be prospectively superseded by
+one final hash amendment when the dedicated G5 integration, exact prompt-fit receipt, runtime
+binding, ExecutionPlan, and launcher hashes land.
 
 The current baseline, experiment, provisional composed-config, and provisional protocol SHA-256
 values are `bda861b2d110b2b98b9a0cc8ffa3311cef21d2325091ff2be42417a3a8152e92`,
+`fb69d031fc291e9fdc228430acfda95d9f743059795059593205891e57afe0c4`,
+`797bf47bcb7fb7c94c46a79cc62e9cd1963414d48c3aa3f8912020f450607f09`, and
+`e669d545e7ffb7ed09e9a827e99951807699c9fc49796d5942a0b31f6716f9fd`, respectively. The
+superseded non-launchable np16 experiment, composed-config, and protocol identities are
 `da536090f85a6131f9e7da061d4bbcbcbc32230ee462906ded1238a3307f7bf9d`,
 `0c6cf271d79a79190226bc046c40105f04927b35f8a7ceb7a10d2cf8473ce941`, and
-`fa7ea93447b6965fcd0758a0ee8c5ee3e28aecd6786fe8d8fe9d543699612e42`, respectively.
+`fa7ea93447b6965fcd0758a0ee8c5ee3e28aecd6786fe8d8fe9d543699612e42`.
 
 Before any contact, verify all frozen hashes, create the final no-contact prompt-fit receipt,
 construct the structured ExecutionPlan, bind the receipt-pinned runtime and complete manifests,

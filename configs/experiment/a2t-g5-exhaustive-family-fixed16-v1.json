@@ -3,6 +3,16 @@
   "experiment_id": "SAEA-A2T-G5-EXHAUSTIVE-FAMILY-FIXED16-V1",
   "status": "MODEL_CONTACT_CLOSED_PENDING_INTEGRATION_PROMPT_FIT_AND_LAUNCHER_BINDINGS",
   "date": "2026-09-02",
+  "prospective_amendments": [
+    {
+      "date": "2026-09-02",
+      "kind": "pre-contact runtime-fragment identity correction",
+      "superseded_model_fragment": "q4km-mmproj-free-speech-native-np16",
+      "required_model_fragment": "q4km-mmproj-free-speech-native-np2-a2t-max1024",
+      "reason": "G5 requires the proven two-slot Audio2Tool runtime with a 32768-token per-slot context and a 1024-token final completion cap. The np16 composition is non-launchable and remains audit history only.",
+      "contact_or_result_read": false
+    }
+  ],
   "execution_profile": "bounded-discovery-probe",
   "claim_scope": "Prospective 16-row bounded discovery ground screen only; no confirmation, scale, pruning, training-free control, test, or paper claim.",
   "population": {
@@ -35,6 +45,7 @@
     "agentloop_module_sha256": "df4f40b6b4269b8dc453ef8579ca9ed8b643b020dc5b7852a750488a4639491c",
     "compiler_policy_id": "g5-full-unranked-family-compiler-v1",
     "controller_policy_id": "saea-a2t-g5-plan-compile-execute-v1",
+    "required_model_fragment": "configs/model/q4km-mmproj-free-speech-native-np2-a2t-max1024.json",
     "model": "frozen Qwen3-Omni Q4_K_M through the receipt-pinned local llama.cpp API-shaped boundary",
     "contact_preconditions": [
       "Land and hash the G5 runtime integration and launcher without changing this population, protocol, packet limits, or gates.",
