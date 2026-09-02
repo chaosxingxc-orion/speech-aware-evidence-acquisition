@@ -23,6 +23,10 @@ sys.modules[SPEC.name] = module
 SPEC.loader.exec_module(module)
 
 
+def test_openjiuwen_runtime_version_is_frozen_to_installed_receipt() -> None:
+    assert module.OPENJIUWEN_VERSION == "0.1.16.post2"
+
+
 def _ground():
     bundles = []
     for family in range(28):
