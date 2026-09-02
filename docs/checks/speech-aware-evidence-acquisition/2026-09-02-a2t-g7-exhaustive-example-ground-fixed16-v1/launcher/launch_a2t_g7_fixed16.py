@@ -1013,6 +1013,16 @@ def static_preflight(root: Path) -> dict[str, object]:
         or int(composed.values["queue_depth"]) != 4
     ):
         raise RuntimeError("G7 np2/concurrency/queue geometry drift")
+    lock = load_lock(umbrella_lock_path(REPO))
+    gate = FrozenCoreGate.for_study_repo(
+        REPO,
+        root,
+        RUNTIME_ROOT,
+        runtime_receipt_relpath="receipts/runtime-q4km-mmproj-free.json",
+        expected_model_lock_key=str(composed.values["model_lock_key"]),
+        model_root=Path(str(composed.values["model_materialization_root"])),
+    )
+    gate._require_exposure_preregistration(execution_plan("preflight-g7"), lock=lock)
     ground = load_ground()
     surface = load_runtime_surface()
     prompt_fit = preflight_ground(
@@ -1022,7 +1032,7 @@ def static_preflight(root: Path) -> dict[str, object]:
     return {
         "commit": commit,
         "composed": composed,
-        "lock": load_lock(umbrella_lock_path(REPO)),
+        "lock": lock,
         "ground": ground,
         "surface": surface,
         "prompt_fit": prompt_fit,

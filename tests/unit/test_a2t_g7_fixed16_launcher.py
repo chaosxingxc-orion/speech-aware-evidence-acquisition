@@ -9,6 +9,10 @@ from types import SimpleNamespace
 
 import pytest
 
+from speech_aware_evidence_acquisition.contracts.gate_exposure import (
+    _parse_ledger_tables,
+)
+
 
 ROOT = Path(__file__).resolve().parents[2]
 LAUNCHER = ROOT / (
@@ -117,6 +121,29 @@ def test_execution_plan_binds_exact_population_and_budget() -> None:
     assert plan.protocol_hash == module.PROTOCOL_SHA256
     assert plan.planned_model_calls == 480
     assert plan.planned_speech_audio_seconds == 2769
+
+
+def test_exposure_table_pre_registers_exact_execution_plan() -> None:
+    rows = _parse_ledger_tables(
+        (ROOT / "docs/exposure-ledger.md").read_text(encoding="utf-8")
+    )
+    matches = [
+        row
+        for row in rows
+        if row["run/experiment id"] == module.RUN_ID
+    ]
+
+    assert len(matches) == 1
+    row = matches[0]
+    assert row["execution profile"] == "bounded-discovery-probe"
+    assert row["split role"] == "discovery"
+    assert row["split identity hash"] == module.SPLIT_IDENTITY_HASH
+    assert row["consumed"] == "no"
+    assert (row["calls"], row["speech audio seconds"], row["gpu hours"]) == (
+        "480",
+        "2769",
+        "1.0",
+    )
 
 
 def test_exact_evidence_render_names_schema_once_and_resolve_is_official_array() -> None:
