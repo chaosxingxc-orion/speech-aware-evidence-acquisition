@@ -66,9 +66,9 @@ def main() -> int:
     if preprocessing.get("promotion_receipt_sha256") != PROMOTION_RECEIPT_SHA256:
         raise RuntimeError("promotion receipt binding drifted")
     result = reprice_prompt_fit(prompt_fit, preprocessing)
-    if attempts:
+    if attempts.count:
         raise RuntimeError(
-            "offline guard observed an outbound connection attempt: %r" % (attempts,)
+            "offline guard observed outbound targets: %r" % (attempts.targets,)
         )
     output = {
         "schema": "saea-a2t-executable-ground-prompt-fit-468-result-v1",
@@ -91,7 +91,8 @@ def main() -> int:
             "embedding": 0,
             "scorer": 0,
             "gpu_hours": 0.0,
-            "outbound_attempts": len(attempts),
+            "outbound_attempts": attempts.count,
+            "outbound_targets": list(attempts.targets),
         },
         "gold_read": False,
         "test_read": False,
