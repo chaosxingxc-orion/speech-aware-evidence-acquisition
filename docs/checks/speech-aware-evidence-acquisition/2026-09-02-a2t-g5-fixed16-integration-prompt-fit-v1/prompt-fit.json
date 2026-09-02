@@ -1,0 +1,94 @@
+{
+  "accounting": {
+    "ascii_bytes_per_text_token_ceiling": 1,
+    "method": "exact ASCII bytes with a conservative ceiling of one text token per byte",
+    "per_slot_token_limit": 32768,
+    "special_token_reserve": 512,
+    "speech_tokens_source": "sealed packet chunk n_tokens",
+    "tokenizer_contacts": 0
+  },
+  "contacts": {
+    "frozen_core": 0,
+    "network": 0,
+    "retriever": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "corpus": {
+    "contract_entries_per_requested_family": 1,
+    "family_count": 28,
+    "knowledge_snapshot_sha256": "c595a8959476f722a4f7bbb5db07d869f5d41e416164b3290cd08207ebcda8be",
+    "operation_tag": "execute",
+    "ranking_or_pruning_applied": false,
+    "taxonomy_sha256": "f13842b912519dca07e87c3158c327f26cd0745b170a8046b425c1818fc87945",
+    "tool_count": 152
+  },
+  "execute": {
+    "bundle_ascii_bytes": 18426,
+    "bundle_content_sha256": "e629db3c7d8ef5d3213cc10f5ccb2440fe9167ec050530e6ebf042f54e05fe43",
+    "completion_reserve_tokens": 1024,
+    "family_facet_ascii_bytes": 377,
+    "margin_tokens": 6549,
+    "maximum_envelope_tokens": 26219,
+    "message_ascii_bytes": 24319,
+    "speech_feature_tokens": 364,
+    "state_ascii_bytes": 4096,
+    "worst_compatible_family_tags": [
+      "smart-car-core-control",
+      "smart-home-core-control",
+      "smart-home-device-finding",
+      "smart-home-diagnostics",
+      "wearables-system-connectivity"
+    ]
+  },
+  "fallback": {
+    "content_sha256": "d1615f34c0b61d5238eedd813cf4bc6fc2603432e1451b70fddf509d3b5ee040",
+    "family_count": 3,
+    "family_tags": [
+      "smart-car-charging-energy",
+      "smart-home-maintenance",
+      "wearables-device-state"
+    ],
+    "registry_tool_coverage": 0.125,
+    "rendered_ascii_bytes": 18302,
+    "selection_basis": "construction-only maximum tool coverage with at least one family from smart-car, smart-home, and wearables under the rendered bundle cap",
+    "tool_count": 19
+  },
+  "plan": {
+    "completion_reserve_tokens": 256,
+    "margin_tokens": 29897,
+    "maximum_envelope_tokens": 2871,
+    "message_ascii_bytes": 1739,
+    "speech_feature_tokens": 364
+  },
+  "runtime": {
+    "fresh_rows_read": 0,
+    "gold_fields_read": 0,
+    "maximum_speech_feature_tokens": 364,
+    "maximum_speech_feature_tokens_sample_id": "tier7_multiturn:000545",
+    "outputs_read": 0,
+    "runtime_surface_sha256": "6232a6e121c6a37a540e485cefb97b01c6c470f93440d99af661977f1c68d429",
+    "sample_count": 16,
+    "source_fields_read": [
+      "audio_seconds",
+      "audio_sha256",
+      "key",
+      "media_relpath",
+      "packet_id",
+      "sample_id",
+      "tier"
+    ],
+    "split_id": "A2T-G5-FIXED16",
+    "split_identity_hash": "c1c38f4ac670846df8c2a488aa62642bb6d14733aa8cc4fa33955f5c2bf76550",
+    "task_text_fields_read": 0,
+    "test_rows_read": 0
+  },
+  "schema": "saea-a2t-g5-fixed16-model-free-prompt-fit-v1",
+  "sources": {
+    "corpus_sha256": "92684a16e39985d3c4c6e7e6d62ac54feaa357eaa7c24c744df21950e51f95e5",
+    "fixed16_identity_sha256": "81e3703f0529882c943f71dbe213e1c2d9bcd4e9b00fabf51e5499bae3501ffe",
+    "g1_receipt_sha256": "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db",
+    "promotion_receipt_sha256": "be07c69c030fc12e56e4e2e1f5e08423636a84fb823d16293fae7bf5819218bc"
+  },
+  "status": "PASS"
+}
