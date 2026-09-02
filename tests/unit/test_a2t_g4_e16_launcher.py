@@ -80,7 +80,7 @@ def test_execution_plan_is_exactly_sixteen_single_contact_use_requests() -> None
     assert plan.execution_profile == "bounded-discovery-probe"
     assert plan.carrier_lock_key == "audio2tool"
     assert plan.split_role == "discovery"
-    assert plan.split_identity_hash == launcher.SELECTED_SPLIT_SHA256
+    assert plan.split_identity_hash == launcher.SELECTED_RUN_SHA256
     assert plan.planned_model_calls == 16
     assert plan.planned_speech_audio_seconds == launcher.PLANNED_AUDIO_SECONDS
     assert plan.protocol_hash == "a" * 64
@@ -177,8 +177,13 @@ def test_official_score_plan_is_one_whole_manifest_job() -> None:
         launcher._validate_official_score_plan(drifted)
 
 
-def test_preflight_refuses_unbound_builder_config_and_route_constants() -> None:
+def test_preflight_refuses_any_unbound_builder_config_or_route_constant(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     launcher = _launcher()
+    monkeypatch.setattr(launcher, "CORPUS_BUILD_SHA256", None)
+    monkeypatch.setattr(launcher, "COMPOSED_CONFIG_SHA256", None)
+    monkeypatch.setattr(launcher, "ROUTE_SET_SHA256", None)
     missing = launcher._unbound_requirements()
 
     assert "CORPUS_BUILD_SHA256" in missing
