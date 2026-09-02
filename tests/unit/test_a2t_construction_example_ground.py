@@ -295,7 +295,7 @@ def test_source_boundary_does_not_mix_internal_unit_and_sample_namespaces() -> N
     assert artifact.receipt["boundary"]["source_identity_intersection_count"] == 0
 
 
-def test_unaligned_values_are_excluded_instead_of_leaked() -> None:
+def test_absent_literal_values_allow_safe_placeholder_free_positive_patterns() -> None:
     artifact = _build(
         (
             _row(
@@ -314,15 +314,22 @@ def test_unaligned_values_are_excluded_instead_of_leaked() -> None:
     tool = artifact.bundles_by_family["smart-car-media-cabin"].tools_by_name[
         "adjustVolume"
     ]
-    assert len(tool.patterns) == 1
-    assert "louder" not in artifact.text
-    assert "Down" not in tool.patterns[0].text
-    assert "8" not in tool.patterns[0].text
-    assert artifact.report["unaligned_row_count"] == 1
-    assert artifact.report["rejected_row_count"] == 1
-    assert artifact.report["rejected_row_reason_counts"] == {
-        "unaligned_argument_values": 1
-    }
+    assert len(tool.patterns) == 2
+    assert any(
+        pattern.text == "Please make the cabin louder" for pattern in tool.patterns
+    )
+    placeholder_free = next(
+        pattern for pattern in tool.patterns if pattern.text.endswith("louder")
+    )
+    assert placeholder_free.placeholders == ()
+    assert all("Down" not in pattern.text for pattern in tool.patterns)
+    assert all("8" not in pattern.text for pattern in tool.patterns)
+    assert all("Up" not in pattern.text for pattern in tool.patterns)
+    assert all("7" not in pattern.text for pattern in tool.patterns)
+    assert artifact.report["unaligned_row_count"] == 0
+    assert artifact.report["rejected_row_count"] == 0
+    assert artifact.report["rejected_row_reason_counts"] == {}
+    assert artifact.report["placeholder_free_pattern_count"] >= 1
     assert artifact.report["source_argument_values_rendered"] == 0
 
 
@@ -345,6 +352,9 @@ def test_g5_incompatible_key_skeleton_is_safely_excluded_and_reported() -> None:
         "g5_incompatible_key_skeleton": 1
     }
     assert artifact.report["g5_incompatible_key_skeleton_row_count"] == 1
+    assert artifact.report["rejected_row_reason_counts_by_tool"] == {
+        "adjustVolume": {"g5_incompatible_key_skeleton": 1}
+    }
     assert "UNSAFE PARTIAL VOLUME" not in artifact.text
     assert artifact.report["task_used_tool_pattern_coverage"] == 1.0
 

@@ -315,9 +315,8 @@ def _delexicalize(row: A2tKbRow) -> ConstructionLanguagePattern | None:
     replacements: list[tuple[str, tuple[tuple[str, ...], ...]]] = []
     for key, value in row.arg_pairs:
         atoms = _value_atoms(value)
-        if not atoms:
-            return None
-        replacements.append((key, atoms))
+        if atoms:
+            replacements.append((key, atoms))
     replacements.sort(
         key=lambda item: (
             -max(len(surface) for atom in item[1] for surface in atom),
@@ -326,6 +325,7 @@ def _delexicalize(row: A2tKbRow) -> ConstructionLanguagePattern | None:
     )
     for key, atoms in replacements:
         placeholder = "{" + key + "}"
+        key_aligned = False
         for alternatives in atoms:
             match: re.Match[str] | None = None
             selected: re.Pattern[str] | None = None
@@ -336,9 +336,11 @@ def _delexicalize(row: A2tKbRow) -> ConstructionLanguagePattern | None:
                     selected = candidate
                     break
             if match is None or selected is None:
-                return None
+                continue
             rendered = selected.sub(placeholder, rendered)
-        aligned_keys.append(key)
+            key_aligned = True
+        if key_aligned:
+            aligned_keys.append(key)
     rendered = _SPACE.sub(" ", rendered).strip()
     if not rendered or not rendered.isascii():
         return None
@@ -520,6 +522,9 @@ def build_construction_example_family_ground(
     }
     used_tools: set[str] = set()
     rejected_rows: Counter[str] = Counter()
+    rejected_rows_by_tool: dict[str, Counter[str]] = {
+        name: Counter() for name in by_tool
+    }
     observed_legal_skeletons: set[tuple[str, tuple[str, ...]]] = set()
     for row in rows:
         contract = by_tool.get(row.tool_name)
@@ -530,9 +535,11 @@ def build_construction_example_family_ground(
         used_tools.add(row.tool_name)
         if not isinstance(row.text, str) or not row.text.strip():
             rejected_rows["empty_construction_text"] += 1
+            rejected_rows_by_tool[row.tool_name]["empty_construction_text"] += 1
             continue
         if not row.text.isascii():
             rejected_rows["non_ascii_construction_text"] += 1
+            rejected_rows_by_tool[row.tool_name]["non_ascii_construction_text"] += 1
             continue
         if (
             not isinstance(row.arg_signature, tuple)
@@ -540,6 +547,7 @@ def build_construction_example_family_ground(
             or any(_IDENTIFIER.fullmatch(key) is None for key in row.arg_signature)
         ):
             rejected_rows["malformed_argument_key_skeleton"] += 1
+            rejected_rows_by_tool[row.tool_name]["malformed_argument_key_skeleton"] += 1
             continue
         matching_skeletons = tuple(
             skeleton
@@ -548,11 +556,13 @@ def build_construction_example_family_ground(
         )
         if len(matching_skeletons) != 1:
             rejected_rows["g5_incompatible_key_skeleton"] += 1
+            rejected_rows_by_tool[row.tool_name]["g5_incompatible_key_skeleton"] += 1
             continue
         observed_legal_skeletons.add((row.tool_name, matching_skeletons[0]))
         pattern = _delexicalize(row)
         if pattern is None:
             rejected_rows["unaligned_argument_values"] += 1
+            rejected_rows_by_tool[row.tool_name]["unaligned_argument_values"] += 1
             continue
         patterns_by_tool[row.tool_name].add(pattern)
     uncovered = sorted(name for name in used_tools if not patterns_by_tool[name])
@@ -657,6 +667,11 @@ def build_construction_example_family_ground(
         "maximum_examples_per_tool": max_examples_per_tool,
         "rejected_row_count": sum(rejected_rows.values()),
         "rejected_row_reason_counts": dict(sorted(rejected_rows.items())),
+        "rejected_row_reason_counts_by_tool": {
+            name: dict(sorted(reasons.items()))
+            for name, reasons in sorted(rejected_rows_by_tool.items())
+            if reasons
+        },
         "unaligned_row_count": rejected_rows["unaligned_argument_values"],
         "g5_incompatible_key_skeleton_row_count": rejected_rows[
             "g5_incompatible_key_skeleton"
@@ -667,6 +682,11 @@ def build_construction_example_family_ground(
         "unsafe_construction_text_row_count": (
             rejected_rows["empty_construction_text"]
             + rejected_rows["non_ascii_construction_text"]
+        ),
+        "placeholder_free_pattern_count": sum(
+            not pattern.placeholders
+            for patterns in selected.values()
+            for pattern in patterns
         ),
         "typed_key_count": sum(
             len(contract.types)
