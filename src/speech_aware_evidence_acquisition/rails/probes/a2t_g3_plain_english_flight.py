@@ -443,6 +443,7 @@ def build_packet_routes(
     corpus: PlainEnglishCardCorpus,
     detailed_tool_limit: int = MAX_DETAILED_TOOLS,
     dialogue_sample_ids: Collection[str] = (),
+    representation_flags: dict[str, dict[str, bool]] | None = None,
     retriever: Callable[..., PlainEnglishPacketRoute] = retrieve_plain_english_packets,
 ) -> dict[str, PlainEnglishPacketRoute]:
     """Build matched and shuffled packets from OBS text alone, without tier hints."""
@@ -453,13 +454,24 @@ def build_packet_routes(
         raise G3PilotFlightError("dialogue OBS identities fall outside the summary")
     routes: dict[str, PlainEnglishPacketRoute] = {}
     for sample_id, text in observations.items():
+        role_labels_missing = False
+        normalized_non_ascii = False
         if sample_id in dialogue_ids:
             observation_text = text.strip()
             roles = tuple(
                 match.group(1).lower()
                 for match in _DIALOGUE_ROLE_LINE.finditer(observation_text)
             )
-            if (
+            if not roles:
+                role_labels_missing = True
+                normalized = (
+                    observation_text.replace("\N{DEGREE SIGN}", " degrees")
+                    .replace("\N{EM DASH}", " - ")
+                    .replace("\N{RIGHT SINGLE QUOTATION MARK}", "'")
+                )
+                normalized_non_ascii = normalized != observation_text
+                observation_text = normalized
+            elif (
                 len(roles) < 3
                 or roles[0] != "user"
                 or roles[-1] != "user"
@@ -477,6 +489,11 @@ def build_packet_routes(
             observation_text = parsed.text
         if not observation_text.isascii():
             raise G3PilotFlightError(f"OBS text is not ASCII English for {sample_id!r}")
+        if representation_flags is not None:
+            representation_flags[sample_id] = {
+                "role_labels_missing": role_labels_missing,
+                "normalized_non_ascii": normalized_non_ascii,
+            }
         routes[sample_id] = retriever(
             observation_text,
             corpus,

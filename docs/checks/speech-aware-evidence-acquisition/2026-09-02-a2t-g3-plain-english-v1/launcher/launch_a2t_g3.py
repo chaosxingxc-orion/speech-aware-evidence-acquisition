@@ -214,6 +214,65 @@ M0_RECOVERY_ATTEMPT_SHA256 = (
     "01e041f3bd42cb3f54162f0da22d75cd0e18cc03e5bedcd29620a554d64ae864"
 )
 M0_RECOVERY_COMPLETED_COUNT = 31
+COMPLETED_FLIGHT_RELPATH = Path(
+    "runs/SAEA-A2T-G3-PLAIN-ENGLISH-V1/flight-20260902T174427Z"
+)
+COMPLETED_FLIGHT_M0_DIR_RELPATH = COMPLETED_FLIGHT_RELPATH / "m0"
+COMPLETED_FLIGHT_M0_OUTPUTS_RELPATH = (
+    COMPLETED_FLIGHT_M0_DIR_RELPATH / f"{RUN_ID}.outputs.jsonl"
+)
+COMPLETED_FLIGHT_M0_MANIFEST_RELPATH = (
+    COMPLETED_FLIGHT_M0_DIR_RELPATH / f"{RUN_ID}.run-manifest.json"
+)
+COMPLETED_FLIGHT_M0_TRACE_RELPATH = (
+    COMPLETED_FLIGHT_M0_DIR_RELPATH / f"{RUN_ID}.trace.jsonl"
+)
+COMPLETED_FLIGHT_M0_TRACE_MANIFEST_RELPATH = (
+    COMPLETED_FLIGHT_M0_DIR_RELPATH / f"{RUN_ID}.trace-manifest.json"
+)
+COMPLETED_FLIGHT_OBS_TRACE_DIR_RELPATH = COMPLETED_FLIGHT_RELPATH / "obs/agent-trace"
+COMPLETED_FLIGHT_OBS_TRACE_RELPATH = (
+    COMPLETED_FLIGHT_OBS_TRACE_DIR_RELPATH / f"{RUN_ID}.trace.jsonl"
+)
+COMPLETED_FLIGHT_OBS_TRACE_MANIFEST_RELPATH = (
+    COMPLETED_FLIGHT_OBS_TRACE_DIR_RELPATH / f"{RUN_ID}.trace-manifest.json"
+)
+COMPLETED_FLIGHT_FAILURE_RELPATH = COMPLETED_FLIGHT_RELPATH / "failure-receipt.json"
+COMPLETED_FLIGHT_M0_ATTEMPT_ID = "attempt-20260902t174427z-g3-m0"
+COMPLETED_FLIGHT_OBS_ATTEMPT_ID = "attempt-20260902t174427z-g3-obs"
+COMPLETED_FLIGHT_M0_ATTEMPT_RELPATH = (
+    Path("attempts") / RUN_ID / f"{COMPLETED_FLIGHT_M0_ATTEMPT_ID}.json"
+)
+COMPLETED_FLIGHT_OBS_ATTEMPT_RELPATH = (
+    Path("attempts") / RUN_ID / f"{COMPLETED_FLIGHT_OBS_ATTEMPT_ID}.json"
+)
+COMPLETED_FLIGHT_M0_OUTPUTS_SHA256 = (
+    "15c542c3d44f9e760a529cd21e334c0643de76e468ebce3acf174097d4deba55"
+)
+COMPLETED_FLIGHT_M0_MANIFEST_SHA256 = (
+    "1a25d4a9e12114c4d74e7a6021ea8d13184d513fcaa5dbc931a82a2ab790f1bc"
+)
+COMPLETED_FLIGHT_M0_TRACE_SHA256 = (
+    "08d9c70227a3d36f32a2fb47f712715ae2a29c90cc1820a4e8f8761d10d23077"
+)
+COMPLETED_FLIGHT_M0_TRACE_MANIFEST_SHA256 = (
+    "0095de3eca8fade86e6722009ce9a3af6616cbf7056f2673cf39fe1f2d0b7c2e"
+)
+COMPLETED_FLIGHT_OBS_TRACE_SHA256 = (
+    "7f50c98d39d6d6f721603304094d9108658b91ab7d7f10349e17b2d1b4e83aa8"
+)
+COMPLETED_FLIGHT_OBS_TRACE_MANIFEST_SHA256 = (
+    "5c06db3c246f5f631bbeadd62a67f6f996b21691bc6dbc0781d13da772a1222e"
+)
+COMPLETED_FLIGHT_FAILURE_SHA256 = (
+    "75186ab604c6b362e3f8a9cd8f1a0d2ac0b2349233820f80c12d4688f651a3b6"
+)
+COMPLETED_FLIGHT_M0_ATTEMPT_SHA256 = (
+    "4e76dbefba4632a12fcf5d9ce6aad86556f7639dede72e78a0bcf86c5361c2fe"
+)
+COMPLETED_FLIGHT_OBS_ATTEMPT_SHA256 = (
+    "c928fd1adc45ae4ab37f30381e1f5c0899b5b81ef28094f021c9eb351a730db6"
+)
 KNOWLEDGE_SNAPSHOT_RELPATH = Path(
     "knowledge/audio2tool/saea-kb-a2t-toolshaped-v1/size-full/snapshot.json"
 )
@@ -225,7 +284,7 @@ RUNTIME_RECEIPT_SHA256 = (
 OFFICIAL_SCORE_PLAN: Mapping[str, object] = {
     "schema": "saea-a2t-g3-whole-manifest-score-plan-v1",
     "entrypoint": "scripts/evaluate_parallel.sh",
-    "operation": "finalize",
+    "operation": "per-job",
     "workers": 3,
     "official_scorer_modified": False,
     "processes_per_job": 1,
@@ -235,16 +294,19 @@ OFFICIAL_SCORE_PLAN: Mapping[str, object] = {
     "jobs": [
         {
             "job_id": "g3-m0-direct",
+            "operation": "score",
             "input": "one complete 40-row manifest",
             "row_count": 40,
         },
         {
             "job_id": "g3-matched-use",
+            "operation": "finalize",
             "input": "one complete 40-row manifest",
             "row_count": 40,
         },
         {
             "job_id": "g3-shuffled-use",
+            "operation": "finalize",
             "input": "one complete 40-row manifest",
             "row_count": 40,
         },
@@ -509,6 +571,225 @@ def _load_m0_recovery(root: Path, expected_ids: Sequence[str]) -> dict[str, obje
     }
 
 
+def _validate_obs_recovery_trace(
+    documents: Sequence[Mapping[str, object]],
+    manifest: Mapping[str, object],
+    *,
+    expected_ids: Sequence[str],
+) -> dict[str, object]:
+    """Verify and mechanically recover one complete task-blind OBS trace."""
+
+    expected = set(expected_ids)
+    if len(expected) != SPLIT_COUNT:
+        raise RuntimeError("OBS recovery requires the complete 40-row identity surface")
+    manifest_records = manifest.get("records")
+    if manifest.get("run_id") != RUN_ID or not isinstance(manifest_records, Mapping):
+        raise RuntimeError("OBS recovery trace manifest is malformed")
+    by_contact: dict[str, dict[str, Mapping[str, object]]] = {}
+    record_ids: set[str] = set()
+    suffix_by_channel = {
+        "MODEL_REQUEST": "/request",
+        "MODEL_RESPONSE": "/response",
+        "COST": "/cost",
+    }
+    for number, document in enumerate(documents, start=1):
+        channel = document.get("channel")
+        record_id = document.get("record_id")
+        payload = document.get("payload")
+        if (
+            not isinstance(channel, str)
+            or not isinstance(record_id, str)
+            or not isinstance(payload, Mapping)
+            or record_id in record_ids
+        ):
+            raise RuntimeError(f"OBS recovery trace row {number} is malformed or duplicated")
+        record_ids.add(record_id)
+        measured = TraceRecord(
+            channel=channel,
+            record_id=record_id,
+            payload=payload,
+        ).content_hash()
+        if manifest_records.get(record_id) != measured:
+            raise RuntimeError(f"OBS recovery record hash drift for {record_id!r}")
+        suffix = suffix_by_channel.get(channel)
+        if suffix is not None:
+            if not record_id.endswith(suffix):
+                raise RuntimeError(f"OBS recovery record id drift for {record_id!r}")
+            contact_id = record_id[: -len(suffix)]
+            by_contact.setdefault(contact_id, {})[channel] = document
+    if set(manifest_records) != record_ids:
+        raise RuntimeError("OBS recovery trace manifest record set drift")
+
+    required = set(suffix_by_channel)
+    results: list[DirectPhaseResult] = []
+    contact_counts: dict[str, int] = {}
+    cost_totals = {
+        "calls": 0,
+        "audio_seconds": 0.0,
+        "completion_tokens": 0,
+        "latency_seconds": 0.0,
+        "prompt_tokens": 0,
+    }
+    for contact_id, contact in sorted(by_contact.items()):
+        if set(contact) != required:
+            raise RuntimeError(
+                "OBS recovery requires one complete request/response/cost triple per contact"
+            )
+        request_outer = contact["MODEL_REQUEST"]["payload"]
+        request_payload = request_outer.get("payload")
+        if (
+            request_outer.get("arm") != "speech-feature-query"
+            or not isinstance(request_payload, Mapping)
+            or request_payload.get("request_id") != contact_id
+            or request_payload.get("key_representation_id")
+            != "saea-a2t-contract-v2-self-transcript-observation:speech"
+            or request_payload.get("matcher_policy_id")
+            != "saea-a2t-contract-v2-self-transcript-observation"
+        ):
+            raise RuntimeError(f"OBS recovery request contract drift for {contact_id!r}")
+        canonical_payload = json.dumps(
+            request_payload,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        if request_outer.get("payload_sha256") != hashlib.sha256(
+            canonical_payload
+        ).hexdigest():
+            raise RuntimeError(f"OBS recovery request payload hash drift for {contact_id!r}")
+        sample_id = request_payload.get("sample_id")
+        if (
+            not isinstance(sample_id, str)
+            or sample_id not in expected
+            or sample_id in contact_counts
+        ):
+            raise RuntimeError("OBS recovery sample identity is unknown or duplicated")
+        response = contact["MODEL_RESPONSE"]["payload"]
+        text = response.get("text")
+        if (
+            not isinstance(text, str)
+            or response.get("response_text_sha256")
+            != hashlib.sha256(text.encode("utf-8")).hexdigest()
+        ):
+            raise RuntimeError(f"OBS recovery response text hash drift for {sample_id!r}")
+        cost = contact["COST"]["payload"]
+        if cost.get("calls") != 1:
+            raise RuntimeError(f"OBS recovery cost is not one call for {sample_id!r}")
+        contact_counts[sample_id] = 1
+        results.append(DirectPhaseResult(sample_id, text))
+        for field in cost_totals:
+            value = cost.get(field)
+            if not isinstance(value, (int, float)) or isinstance(value, bool):
+                raise RuntimeError(f"OBS recovery cost field {field!r} is malformed")
+            cost_totals[field] += value
+    if set(contact_counts) != expected:
+        raise RuntimeError("OBS recovery does not contain exactly forty sample contacts")
+    summary = DirectPhaseSummary(tuple(sorted(results, key=lambda row: row.sample_id)))
+    return {
+        "summary": summary,
+        "texts": {row.sample_id: row.final_response_text for row in summary.results},
+        "contact_counts": dict(sorted(contact_counts.items())),
+        "cost": cost_totals,
+    }
+
+
+def _load_completed_flight(root: Path, expected_ids: Sequence[str]) -> dict[str, object]:
+    """Load the hash-pinned complete M0 and OBS surfaces without new contacts."""
+
+    root = Path(root)
+    pinned = (
+        (COMPLETED_FLIGHT_M0_OUTPUTS_RELPATH, COMPLETED_FLIGHT_M0_OUTPUTS_SHA256),
+        (COMPLETED_FLIGHT_M0_MANIFEST_RELPATH, COMPLETED_FLIGHT_M0_MANIFEST_SHA256),
+        (COMPLETED_FLIGHT_M0_TRACE_RELPATH, COMPLETED_FLIGHT_M0_TRACE_SHA256),
+        (
+            COMPLETED_FLIGHT_M0_TRACE_MANIFEST_RELPATH,
+            COMPLETED_FLIGHT_M0_TRACE_MANIFEST_SHA256,
+        ),
+        (COMPLETED_FLIGHT_OBS_TRACE_RELPATH, COMPLETED_FLIGHT_OBS_TRACE_SHA256),
+        (
+            COMPLETED_FLIGHT_OBS_TRACE_MANIFEST_RELPATH,
+            COMPLETED_FLIGHT_OBS_TRACE_MANIFEST_SHA256,
+        ),
+        (COMPLETED_FLIGHT_FAILURE_RELPATH, COMPLETED_FLIGHT_FAILURE_SHA256),
+        (COMPLETED_FLIGHT_M0_ATTEMPT_RELPATH, COMPLETED_FLIGHT_M0_ATTEMPT_SHA256),
+        (COMPLETED_FLIGHT_OBS_ATTEMPT_RELPATH, COMPLETED_FLIGHT_OBS_ATTEMPT_SHA256),
+    )
+    for relpath, digest in pinned:
+        _require_hash(root / relpath, digest, f"completed-flight {relpath.name}")
+
+    failure = _read_json(root / COMPLETED_FLIGHT_FAILURE_RELPATH)
+    m0_attempt = _read_json(root / COMPLETED_FLIGHT_M0_ATTEMPT_RELPATH)
+    obs_attempt = _read_json(root / COMPLETED_FLIGHT_OBS_ATTEMPT_RELPATH)
+    if "dialogue OBS lacks alternating role labels" not in str(failure.get("error")):
+        raise RuntimeError("completed-flight failure identity drift")
+    for attempt, attempt_id, calls in (
+        (m0_attempt, COMPLETED_FLIGHT_M0_ATTEMPT_ID, 9),
+        (obs_attempt, COMPLETED_FLIGHT_OBS_ATTEMPT_ID, 40),
+    ):
+        actual = attempt.get("actual")
+        if (
+            attempt.get("attempt_id") != attempt_id
+            or attempt.get("state") != "ABORTED"
+            or not isinstance(actual, Mapping)
+            or actual.get("calls") != calls
+        ):
+            raise RuntimeError("completed-flight attempt state drift")
+
+    m0_manifest_path = root / COMPLETED_FLIGHT_M0_MANIFEST_RELPATH
+    bundle = verify_bundle(m0_manifest_path)
+    if bundle.attempt_state != "ABORTED" or len(bundle.outputs_rows) != SPLIT_COUNT:
+        raise RuntimeError("completed-flight M0 bundle is not a complete aborted recovery")
+    m0_documents = _trace_documents(root / COMPLETED_FLIGHT_M0_DIR_RELPATH)
+    m0_trace = _validate_m0_recovery_trace(
+        m0_documents,
+        _read_json(root / COMPLETED_FLIGHT_M0_TRACE_MANIFEST_RELPATH),
+        expected_ids=expected_ids,
+        expected_completed_count=SPLIT_COUNT,
+    )
+    output_texts = {
+        str(row["sample_id"]): str(row["text"]) for row in bundle.outputs_rows
+    }
+    trace_texts = {
+        row.sample_id: row.final_response_text for row in m0_trace["summary"].results
+    }
+    if output_texts != trace_texts:
+        raise RuntimeError("completed-flight M0 outputs and trace disagree")
+    manifest_document = _read_json(m0_manifest_path)
+    m0_cost = manifest_document.get("cost")
+    if not isinstance(m0_cost, Mapping) or m0_cost.get("calls_used") != SPLIT_COUNT:
+        raise RuntimeError("completed-flight M0 cost drift")
+
+    obs_documents = _trace_documents(root / COMPLETED_FLIGHT_OBS_TRACE_DIR_RELPATH)
+    observation = _validate_obs_recovery_trace(
+        obs_documents,
+        _read_json(root / COMPLETED_FLIGHT_OBS_TRACE_MANIFEST_RELPATH),
+        expected_ids=expected_ids,
+    )
+    if (
+        observation["cost"]["calls"] != SPLIT_COUNT
+        or observation["cost"]["audio_seconds"]
+        != obs_attempt["actual"]["audio_seconds"]
+    ):
+        raise RuntimeError("completed-flight OBS cost drift")
+    return {
+        "m0": {
+            "texts": dict(sorted(output_texts.items())),
+            "manifest": m0_manifest_path,
+            "cost": dict(m0_cost),
+        },
+        "observation": {
+            **observation,
+            "agent_trace_hash": COMPLETED_FLIGHT_OBS_TRACE_MANIFEST_SHA256,
+        },
+        "contact_accounting": {
+            "original_m0": M0_RECOVERY_COMPLETED_COUNT,
+            "m0_recovery": SPLIT_COUNT - M0_RECOVERY_COMPLETED_COUNT,
+            "observation": SPLIT_COUNT,
+            "cumulative_before_use": 80,
+        },
+    }
+
+
 def _write_combined_trace(
     run_dir: Path,
     documents: Sequence[Mapping[str, object]],
@@ -581,7 +862,7 @@ def _validate_official_score_plan(plan: Mapping[str, object]) -> dict[str, objec
     jobs = plan.get("jobs")
     if (
         plan.get("entrypoint") != "scripts/evaluate_parallel.sh"
-        or plan.get("operation") != "finalize"
+        or plan.get("operation") != "per-job"
         or plan.get("workers") != 3
         or plan.get("official_scorer_modified") is not False
         or plan.get("processes_per_job") != 1
@@ -597,13 +878,16 @@ def _validate_official_score_plan(plan: Mapping[str, object]) -> dict[str, objec
             not isinstance(job, Mapping)
             or job.get("row_count") != 40
             or job.get("input") != "one complete 40-row manifest"
+            or job.get("operation") not in {"score", "finalize"}
         ):
             raise RuntimeError("every scorer input must be one complete 40-row manifest")
     return dict(plan)
 
 
 def _validate_packet_routes(
-    routes: Mapping[str, object], sample_ids: Sequence[str]
+    routes: Mapping[str, object],
+    sample_ids: Sequence[str],
+    representation_flags: Mapping[str, Mapping[str, bool]] | None = None,
 ) -> dict[str, object]:
     expected = set(sample_ids)
     if len(expected) != 40 or set(routes) != expected:
@@ -630,7 +914,23 @@ def _validate_packet_routes(
         maximum = max(maximum, len(matched.encode()), len(shuffled.encode()))
         if maximum > PACKET_UTF8_BYTE_CAP:
             raise RuntimeError("OBS packet exceeds the frozen 64KB cap")
-    return {"route_count": 40, "maximum_packet_utf8_bytes": maximum}
+    flags = representation_flags or {}
+    if flags and set(flags) != expected:
+        raise RuntimeError("OBS representation flags must cover all forty samples")
+    missing_ids = tuple(
+        sorted(sample_id for sample_id, row in flags.items() if row.get("role_labels_missing"))
+    )
+    normalized_ids = tuple(
+        sorted(sample_id for sample_id, row in flags.items() if row.get("normalized_non_ascii"))
+    )
+    return {
+        "route_count": 40,
+        "maximum_packet_utf8_bytes": maximum,
+        "role_labels_missing": len(missing_ids),
+        "role_labels_missing_sample_ids": missing_ids,
+        "normalized_non_ascii": len(normalized_ids),
+        "normalized_non_ascii_sample_ids": normalized_ids,
+    }
 
 
 def _validate_promotion(
@@ -742,6 +1042,7 @@ def _static_preflight(root: Path) -> dict[str, object]:
         data_root=root,
     )
     m0_recovery = _load_m0_recovery(root, tuple(surface.tier_by_sample))
+    completed_flight = _load_completed_flight(root, tuple(surface.tier_by_sample))
 
     _require_hash(REPO / CARD_BUILD_RELPATH, CARD_BUILD_SHA256, "G3 card build")
     card_build = _read_json(REPO / CARD_BUILD_RELPATH)
@@ -771,6 +1072,7 @@ def _static_preflight(root: Path) -> dict[str, object]:
         "tier_by_sample": roster["tier_by_sample"],
         "surface": surface,
         "m0_recovery": m0_recovery,
+        "completed_flight": completed_flight,
         "selected_ids": selected_ids,
         "corpus": corpus,
         "route_build": route_build,
@@ -1176,22 +1478,23 @@ def _run_parallel_scorers(
         raise RuntimeError("official scoring requires exactly three G3 manifests")
     jobs = []
     for name in ("m0", "matched", "shuffled"):
-        cells = mission_dir / f"{name}-ledger-cells.json"
-        _write_json(cells, _human_ledger_cells(name, lock_sha256))
-        jobs.append(
-            {
-                "job_id": f"g3-{name}",
-                "manifest": str(manifests[name]),
-                "ledger_cells": str(cells),
-            }
-        )
+        job = {
+            "job_id": f"g3-{name}",
+            "manifest": str(manifests[name]),
+            "operation": "score" if name == "m0" else "finalize",
+        }
+        if name != "m0":
+            cells = mission_dir / f"{name}-ledger-cells.json"
+            _write_json(cells, _human_ledger_cells(name, lock_sha256))
+            job["ledger_cells"] = str(cells)
+        jobs.append(job)
     jobs_path = mission_dir / "official-score-jobs.jsonl"
     _write_jsonl(jobs_path, jobs)
     output_dir = mission_dir / "official-score"
     command = [
         "bash",
         str(REPO / "scripts/evaluate_parallel.sh"),
-        "--finalize",
+        "--per-job-operation",
         "--jobs",
         str(jobs_path),
         "--output-dir",
@@ -1382,6 +1685,14 @@ def _load_scores(manifest: Path) -> dict[str, object]:
     return Q._load_final_scores(manifest)
 
 
+def _load_batch_scores(path: Path) -> dict[str, object]:
+    document = _read_json(path)
+    scores = document.get("scores")
+    if document.get("verified") is not True or not isinstance(scores, Mapping):
+        raise RuntimeError("official score-only result is malformed")
+    return dict(scores)
+
+
 def _stop_service(session: object, runtime_receipt: object, receipt_path: Path) -> None:
     stop_session(
         session,
@@ -1399,11 +1710,60 @@ def _launch(root: Path) -> Mapping[str, object]:
     mission_dir = Path(root) / "runs" / RUN_ID / f"flight-{stamp}"
     mission_dir.mkdir(parents=True, exist_ok=False)
     attempts = _phase_attempt_ids(stamp_lower)
-    plans = {phase: _execution_plan(phase, attempts[phase]) for phase in PHASES}
-    for phase, plan in plans.items():
+    attempts[G3_M0_DIRECT_PHASE] = COMPLETED_FLIGHT_M0_ATTEMPT_ID
+    attempts[G3_OBSERVATION_PHASE] = COMPLETED_FLIGHT_OBS_ATTEMPT_ID
+    plans = {
+        phase: _execution_plan(phase, attempts[phase])
+        for phase in (G3_MATCHED_USE_PHASE, G3_SHUFFLED_USE_PHASE)
+    }
+    for phase in PHASES:
         phase_dir = mission_dir / PHASE_SUFFIXES[phase]
         phase_dir.mkdir()
-        _write_json(phase_dir / "execution-plan.json", asdict(plan))
+        if phase in plans:
+            _write_json(phase_dir / "execution-plan.json", asdict(plans[phase]))
+
+    completed_flight = context["completed_flight"]
+    m0 = completed_flight["m0"]
+    observation = completed_flight["observation"]
+    surface = context["surface"]
+    representation_flags: dict[str, dict[str, bool]] = {}
+    routes = g3_flight.build_packet_routes(
+        observation["summary"],
+        corpus=context["corpus"],
+        detailed_tool_limit=32,
+        dialogue_sample_ids=surface.derived_dialogue_sample_ids,
+        representation_flags=representation_flags,
+    )
+    route_report = _validate_packet_routes(
+        routes,
+        context["sample_ids"],
+        representation_flags,
+    )
+    if route_report["role_labels_missing"] != 5 or route_report["normalized_non_ascii"] != 1:
+        raise RuntimeError("completed-flight OBS representation failure counts drift")
+    _write_json(
+        mission_dir / "m0" / "recovery-receipt.json",
+        {
+            "source_manifest": str(m0["manifest"]),
+            "source_manifest_sha256": COMPLETED_FLIGHT_M0_MANIFEST_SHA256,
+            "source_outputs_sha256": COMPLETED_FLIGHT_M0_OUTPUTS_SHA256,
+            "source_trace_sha256": COMPLETED_FLIGHT_M0_TRACE_SHA256,
+            "contact_accounting": completed_flight["contact_accounting"],
+        },
+    )
+    _write_json(
+        mission_dir / "obs" / "observation-receipt.json",
+        {
+            "phase": G3_OBSERVATION_PHASE,
+            "source_attempt_id": COMPLETED_FLIGHT_OBS_ATTEMPT_ID,
+            "contacts_reused": SPLIT_COUNT,
+            "route_report": route_report,
+            "source_agent_trace_sha256": COMPLETED_FLIGHT_OBS_TRACE_SHA256,
+            "source_agent_trace_manifest_sha256": (
+                COMPLETED_FLIGHT_OBS_TRACE_MANIFEST_SHA256
+            ),
+        },
+    )
 
     values = context["composed"].values
     runtime_receipt = load_runtime_receipt(REPO / RUNTIME_RECEIPT_RELPATH)
@@ -1448,59 +1808,6 @@ def _launch(root: Path) -> Mapping[str, object]:
             runtime_receipt=runtime_receipt,
             runtime_root=RUNTIME_ROOT,
         )
-        m0 = _run_m0(
-            root=root,
-            context=context,
-            gate=gate,
-            transport=transport,
-            plan=plans[G3_M0_DIRECT_PHASE],
-            run_dir=mission_dir / "m0",
-            session_receipt_path=session_receipt,
-        )
-
-        surface = context["surface"]
-        obs_adapter = g3_flight.G3PilotAdapter(
-            surface.samples,
-            phase=G3_OBSERVATION_PHASE,
-            dialogue_sample_ids=surface.derived_dialogue_sample_ids,
-        )
-        observation = _run_agent_phase(
-            phase=G3_OBSERVATION_PHASE,
-            root=root,
-            context=context,
-            gate=gate,
-            transport=transport,
-            plan=plans[G3_OBSERVATION_PHASE],
-            adapter=obs_adapter,
-            packet_bindings=surface.packet_bindings,
-            run_dir=mission_dir / "obs",
-        )
-        routes = g3_flight.build_packet_routes(
-            observation["summary"],
-            corpus=context["corpus"],
-            detailed_tool_limit=32,
-            dialogue_sample_ids=surface.derived_dialogue_sample_ids,
-        )
-        route_report = _validate_packet_routes(routes, context["sample_ids"])
-        _write_json(
-            mission_dir / "obs" / "observation-receipt.json",
-            {
-                "phase": G3_OBSERVATION_PHASE,
-                "attempt_id": attempts[G3_OBSERVATION_PHASE],
-                "contacts": sum(observation["contact_counts"].values()),
-                "route_report": route_report,
-                "agent_trace_manifest_sha256": observation["agent_trace_hash"],
-                "transport_trace_manifest_sha256": observation["client"]["trace_manifest_hash"],
-            },
-        )
-        if not abort_attempt_if_opened(
-            root,
-            RUN_ID,
-            attempts[G3_OBSERVATION_PHASE],
-            reason="task-blind OBS and all forty bounded packet routes sealed",
-        ):
-            raise RuntimeError("OBS attempt did not reach terminal ABORTED state")
-
         observations = observation["texts"]
         matched_adapter = g3_flight.G3PilotAdapter(
             surface.samples,
@@ -1578,7 +1885,7 @@ def _launch(root: Path) -> Mapping[str, object]:
 
         _stop_service(session, runtime_receipt, stop_receipt)
         session = None
-        lock_sha256 = str(m0["client"]["cost"]["umbrella_lock_sha256"])
+        lock_sha256 = str(m0["cost"]["umbrella_lock_sha256"])
         score_summary = _run_parallel_scorers(
             mission_dir=mission_dir,
             manifests={
@@ -1591,7 +1898,9 @@ def _launch(root: Path) -> Mapping[str, object]:
         result = _build_result(
             items=context["items"],
             selected_ids=selected_ids,
-            m0_scores=_load_scores(m0["manifest"]),
+            m0_scores=_load_batch_scores(
+                mission_dir / "official-score" / "g3-m0.score.json"
+            ),
             matched_scores=_load_scores(matched["manifest"]),
             shuffled_scores=_load_scores(shuffled["manifest"]),
             matched_contact_counts=matched["contact_counts"],
@@ -1612,6 +1921,7 @@ def _launch(root: Path) -> Mapping[str, object]:
                 G3_MATCHED_USE_PHASE: sum(matched["contact_counts"].values()),
                 G3_SHUFFLED_USE_PHASE: sum(shuffled["contact_counts"].values()),
             },
+            "reused_contact_accounting": completed_flight["contact_accounting"],
             "route_report": route_report,
             "official_score": score_summary,
             "result_path": str(mission_dir / "result.json"),
@@ -1622,7 +1932,8 @@ def _launch(root: Path) -> Mapping[str, object]:
         _write_json(mission_dir / "flight-receipt.json", receipt)
         return receipt
     except Exception as error:
-        for phase, attempt_id in attempts.items():
+        for phase, plan in plans.items():
+            attempt_id = plan.attempt_id
             abort_attempt_if_opened(root, RUN_ID, attempt_id, reason=repr(error))
         _write_json(
             mission_dir / "failure-receipt.json",

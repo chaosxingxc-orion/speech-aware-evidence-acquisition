@@ -271,6 +271,42 @@ def test_role_labeled_dialogue_observation_is_retrieved_without_a_tier_hint() ->
     assert "tier_hint" not in calls[0][1]
 
 
+def test_flat_dialogue_observation_is_ascii_normalized_and_reported() -> None:
+    sample_id = "tier7_multiturn:001590"
+    observations = SimpleNamespace(
+        results=(
+            SimpleNamespace(
+                sample_id=sample_id,
+                final_response_text="Set it to 72\N{DEGREE SIGN}\N{EM DASH}don\N{RIGHT SINGLE QUOTATION MARK}t stop.",
+            ),
+        )
+    )
+    calls = []
+    representation_flags = {}
+
+    def retrieve(text, corpus, **kwargs):
+        calls.append((text, kwargs))
+        return SimpleNamespace(matched_packet="matched", shuffled_packet="shuffled")
+
+    routes = build_packet_routes(
+        observations,
+        corpus=object(),
+        dialogue_sample_ids=(sample_id,),
+        representation_flags=representation_flags,
+        retriever=retrieve,
+    )
+
+    assert set(routes) == {sample_id}
+    assert calls[0][0] == "Set it to 72 degrees - don't stop."
+    assert calls[0][0].isascii()
+    assert representation_flags == {
+        sample_id: {
+            "role_labels_missing": True,
+            "normalized_non_ascii": True,
+        }
+    }
+
+
 def test_adapter_keeps_observation_task_blind_and_use_packet_sample_local(
     tmp_path: Path,
 ) -> None:

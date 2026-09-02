@@ -153,6 +153,10 @@ def test_launcher_pins_config_protocol_artifacts_and_global_budget() -> None:
     assert launcher.M0_RECOVERY_TRACE_SHA256.startswith("d101379")
     assert launcher.M0_RECOVERY_TRACE_MANIFEST_SHA256.startswith("3fe909")
     assert launcher.M0_RECOVERY_COMPLETED_COUNT == 31
+    assert launcher.COMPLETED_FLIGHT_M0_OUTPUTS_SHA256.startswith("15c542")
+    assert launcher.COMPLETED_FLIGHT_M0_MANIFEST_SHA256.startswith("1a25d4")
+    assert launcher.COMPLETED_FLIGHT_OBS_TRACE_SHA256.startswith("7f50c9")
+    assert launcher.COMPLETED_FLIGHT_OBS_TRACE_MANIFEST_SHA256.startswith("5c06db")
 
     for phase in launcher.PHASES:
         plan = launcher._execution_plan(phase, f"attempt-{phase.lower()}")
@@ -343,6 +347,42 @@ def test_recovery_trace_refuses_hash_drift_or_incomplete_contact() -> None:
         )
 
 
+def test_completed_obs_trace_recovery_requires_40_hashed_contact_triples() -> None:
+    launcher = _launcher()
+    expected_ids = tuple(item["sample_id"] for item in _items())
+    documents, _manifest = _recovery_documents(expected_ids)
+    for document in documents:
+        if document["channel"] != "MODEL_REQUEST":
+            continue
+        request = document["payload"]["payload"]
+        request["key_representation_id"] = (
+            "saea-a2t-contract-v2-self-transcript-observation:speech"
+        )
+        request["matcher_policy_id"] = (
+            "saea-a2t-contract-v2-self-transcript-observation"
+        )
+        document["payload"]["payload_sha256"] = hashlib.sha256(
+            json.dumps(request, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
+    manifest = {
+        "run_id": launcher.RUN_ID,
+        "records": {
+            document["record_id"]: TraceRecord(**document).content_hash()
+            for document in documents
+        },
+    }
+
+    recovered = launcher._validate_obs_recovery_trace(
+        documents,
+        manifest,
+        expected_ids=expected_ids,
+    )
+
+    assert len(recovered["texts"]) == 40
+    assert recovered["cost"]["calls"] == 40
+    assert set(recovered["contact_counts"]) == set(expected_ids)
+
+
 def test_trace_reader_uses_the_g3_run_identity(tmp_path: Path) -> None:
     launcher = _launcher()
     expected = {"channel": "COST", "record_id": "x/cost", "payload": {"calls": 1}}
@@ -416,8 +456,13 @@ def test_parallel_official_scoring_uses_three_whole_manifest_workers(
     )
 
     assert summary == {"failed": 0, "succeeded": 3}
-    assert "--finalize" in captured["command"]
+    assert "--per-job-operation" in captured["command"]
+    assert "--finalize" not in captured["command"]
     assert captured["command"][-2:] == ["--workers", "3"]
+    jobs = [json.loads(line) for line in (tmp_path / "official-score-jobs.jsonl").read_text().splitlines()]
+    assert [job["operation"] for job in jobs] == ["score", "finalize", "finalize"]
+    assert "ledger_cells" not in jobs[0]
+    assert all("ledger_cells" in job for job in jobs[1:])
 
 
 def test_result_reports_absolute_tier_paired_control_repair_and_ci90() -> None:
