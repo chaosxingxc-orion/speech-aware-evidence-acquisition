@@ -91,6 +91,8 @@ from speech_aware_evidence_acquisition.analysis.a2t_packet_token_gate import (  
 from speech_aware_evidence_acquisition.core.base import TRANSPORTS  # noqa: E402
 from speech_aware_evidence_acquisition.core.config import compose  # noqa: E402
 from speech_aware_evidence_acquisition.core.model.speech_features import (  # noqa: E402
+    PACKET_MANIFEST_NAME,
+    legacy_audio_feature_cache_key,
     materialize_legacy_cached_speech_feature_packets,
 )
 from speech_aware_evidence_acquisition.core.session import (  # noqa: E402
@@ -375,6 +377,37 @@ def main() -> int:
         "subset verified: %d samples, %.6f audio-s, receipt %s"
         % (len(samples), loop_audio, SUBSET_RECEIPT_SHA256[:12])
     )
+    legacy_cache_entries = 0
+    existing_packet_manifests = 0
+    for item in receipt["items"]:
+        sample = by_id[item["sample_id"]]
+        audio_bytes = (root / sample.media_relpath).read_bytes()
+        cache_key = legacy_audio_feature_cache_key(audio_bytes)
+        if any(LEGACY_CACHE_DIR.glob("%s_o*.feat" % cache_key)):
+            legacy_cache_entries += 1
+        if (PACKET_ROOT / item["packet_id"] / PACKET_MANIFEST_NAME).exists():
+            existing_packet_manifests += 1
+    artifact_preflight = {
+        "current_build_legacy_cache_entries": legacy_cache_entries,
+        "existing_packet_manifests": existing_packet_manifests,
+        "promotion_receipt_exists": PROMOTION_RECEIPT.exists(),
+    }
+    log(
+        "artifact preflight: current cache %d/%d; packet manifests %d/%d; "
+        "promotion receipt exists=%s"
+        % (
+            legacy_cache_entries,
+            SUBSET_COUNT,
+            existing_packet_manifests,
+            SUBSET_COUNT,
+            PROMOTION_RECEIPT.exists(),
+        )
+    )
+    if PROMOTION_RECEIPT.exists() or existing_packet_manifests:
+        raise SystemExit(
+            "receipt-bound preprocessing requires an absent promotion receipt and zero "
+            "pre-existing packet manifests"
+        )
 
     # GPU decoder must be untouched by this pass; the sidecar port must be free.
     import socket
@@ -419,6 +452,7 @@ def main() -> int:
         "legacy_cache_dir": str(LEGACY_CACHE_DIR),
         "packet_root": str(PACKET_ROOT),
         "gpu_decoder_reachable_before": decoder_up_before,
+        "artifact_preflight": artifact_preflight,
     }
 
     def save_state() -> None:
@@ -723,6 +757,7 @@ def main() -> int:
         "gpu_decoder_reachable_before": decoder_up_before,
         "gpu_decoder_reachable_after": reachable(8090),
         "gate": state.get("gate"),
+        "artifact_preflight": artifact_preflight,
         "promotion_receipt": str(PROMOTION_RECEIPT),
         "promotion_receipt_sha256": promotion_sha,
         "packets_promoted": len(packets),
