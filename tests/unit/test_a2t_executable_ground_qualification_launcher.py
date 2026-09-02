@@ -165,3 +165,9 @@ def test_full_launch_is_a_contact_closed_scaffold() -> None:
     launcher = _launcher()
     with pytest.raises(RuntimeError, match="contact-closed scaffold"):
         launcher._launch(Path("/fixed/data"))
+
+
+def test_committed_prompt_fit_receipt_passes_the_zero_contact_gate() -> None:
+    launcher = _launcher()
+    receipt = json.loads((REPO / launcher.PROMPT_FIT_RELPATH).read_text("utf-8"))
+    launcher._validate_prompt_fit(receipt)

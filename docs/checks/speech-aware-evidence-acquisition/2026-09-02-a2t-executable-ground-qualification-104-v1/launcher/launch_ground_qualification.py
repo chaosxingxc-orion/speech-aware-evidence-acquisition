@@ -435,7 +435,7 @@ def _validate_prompt_fit(receipt: Mapping[str, object]) -> None:
     if (
         not isinstance(contacts, Mapping)
         or any(
-            value not in {0, 0.0, []}
+            value not in (0, 0.0)
             for key, value in contacts.items()
             if key != "outbound_targets"
         )
