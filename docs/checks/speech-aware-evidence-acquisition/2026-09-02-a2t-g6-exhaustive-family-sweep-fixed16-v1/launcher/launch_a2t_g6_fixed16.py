@@ -20,6 +20,7 @@ import importlib.metadata
 import json
 from pathlib import Path
 import sys
+import threading
 import time
 from urllib.parse import urlparse
 
@@ -152,6 +153,26 @@ RENDERER_SHA256: str | None = (
 )
 RUNTIME_RECEIPT_SHA256 = (
     "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77"
+)
+
+RECOVERY_SOURCE_ATTEMPT_ID = "attempt-20260902t220036z-g6-fixed16"
+RECOVERY_SOURCE_ATTEMPT_SHA256 = (
+    "7cf26402480106e905fd76f001df5a34a6f378e1e16d869c4d2304a018723542"
+)
+RECOVERY_SOURCE_TRACE_SHA256 = (
+    "99f6b74b8eac96b540a0a8cf8e2db5d9ebd66ccd86e6c601769e3eb5ae11e81e"
+)
+RECOVERY_PRIOR_CONTACTS = 8
+RECOVERY_CURRENT_CONTACTS = 456
+RECOVERY_EXPECTED_CONTACTS = (
+    ("g6fixed16-0001", "tier1_direct:000077", "g6-scan-smart-car-navigation", "5652f43327026e4decdccd5f9b769e20126bedd4ee18334e45582c408440fd5c", "5eb4623ed48a2b54650c6d4d51ef27baa7682e51aab0cf17d7b87b80423fea77", "11a7a96d253b24fe9a68da2c46ac1be2201d08fea8184eabf845e3a5be774236"),
+    ("g6fixed16-0002", "tier1_direct:004159", "g6-scan-smart-car-navigation", "27471d1fda32cd0b69587a6aab2958286431e23c1af43efba010dfa059350375", "ed8efcebb9ba3c0623026b092ad498293704d40f3964973338e9026999f02ec0", "d006b279d3b74fda72833d0cbe7042a7bdbaf096f1c8346e45bac562384ffbe5"),
+    ("g6fixed16-0003", "tier1_direct:004159", "g6-scan-smart-car-core-control", "eab030824a979239592314cf33fbd211f985b7ef7345cd337ea7b0ed92def378", "2050fc32e4693fe64c82c0a813b473d7d2c05abbe4a7ae6dec538faa4ddf148d", "d006b279d3b74fda72833d0cbe7042a7bdbaf096f1c8346e45bac562384ffbe5"),
+    ("g6fixed16-0004", "tier1_direct:000077", "g6-scan-smart-car-core-control", "1c2365048e4ff19f905d10b08131077b9d4e0c0dab4af37ac26f2a3bd592d56a", "780c98a9511020f6b39ef88dc1a3c43ae72690e11773d6ab72f41a5cd6ddade1", "d006b279d3b74fda72833d0cbe7042a7bdbaf096f1c8346e45bac562384ffbe5"),
+    ("g6fixed16-0005", "tier2_parametric:001004", "g6-scan-smart-car-navigation", "19e495317bcf7aa7ba1a88d85d83177c4a396d854869a68605b88c2e158f7582", "5eb4623ed48a2b54650c6d4d51ef27baa7682e51aab0cf17d7b87b80423fea77", "11a7a96d253b24fe9a68da2c46ac1be2201d08fea8184eabf845e3a5be774236"),
+    ("g6fixed16-0006", "tier2_parametric:002653", "g6-scan-smart-car-navigation", "61ca4ebda9feadffff7155a817cad66ab01e06904de4be2b19cf3464554639eb", "5eb4623ed48a2b54650c6d4d51ef27baa7682e51aab0cf17d7b87b80423fea77", "11a7a96d253b24fe9a68da2c46ac1be2201d08fea8184eabf845e3a5be774236"),
+    ("g6fixed16-0007", "tier2_parametric:002653", "g6-scan-smart-car-core-control", "685bfa557c4cb2e407d6eb5bec615c107f963abbd9b788306f8ce9397a07aaf7", "780c98a9511020f6b39ef88dc1a3c43ae72690e11773d6ab72f41a5cd6ddade1", "d006b279d3b74fda72833d0cbe7042a7bdbaf096f1c8346e45bac562384ffbe5"),
+    ("g6fixed16-0008", "tier2_parametric:001004", "g6-scan-smart-car-core-control", "84c8e145155adb4c3aac930851fd7fcf064e5a490b6b5e6bc60d2fd45f53d9a3", "780c98a9511020f6b39ef88dc1a3c43ae72690e11773d6ab72f41a5cd6ddade1", "d006b279d3b74fda72833d0cbe7042a7bdbaf096f1c8346e45bac562384ffbe5"),
 )
 
 SELECTED_SPLIT_SHA256 = (
@@ -376,6 +397,201 @@ def _validate_official_score_plan(plan: Mapping[str, object]) -> Mapping[str, ob
     return plan
 
 
+@dataclass(frozen=True)
+class RecoveryContact:
+    """One hash-verified opaque request/response pair from the aborted source."""
+
+    request_id: str
+    sample_id: str
+    contact_id: str
+    packet_sha256: str
+    payload_sha256: str
+    response_sha256: str
+    response_text_sha256: str
+    response_text: str
+    slot_id: int
+    cost: Mapping[str, object]
+
+
+@dataclass(frozen=True)
+class RecoveryBundle:
+    source_attempt_id: str
+    source_attempt_sha256: str
+    source_trace_path: Path
+    source_trace_sha256: str
+    contacts: Mapping[tuple[str, str], RecoveryContact]
+    cost: Mapping[str, object]
+
+
+def _canonical_sha256(document: Mapping[str, object]) -> str:
+    payload = json.dumps(
+        document, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _load_recovery_bundle(root: Path, trace_path: Path) -> RecoveryBundle:
+    """Load the eight prior responses as opaque hash-bound bytes."""
+
+    trace_path = Path(trace_path)
+    _require_hash(trace_path, RECOVERY_SOURCE_TRACE_SHA256, "recovery source trace")
+    attempt_path = (
+        Path(root)
+        / "attempts"
+        / RUN_ID
+        / f"{RECOVERY_SOURCE_ATTEMPT_ID}.json"
+    )
+    _require_hash(
+        attempt_path, RECOVERY_SOURCE_ATTEMPT_SHA256, "recovery source attempt"
+    )
+    attempt = json.loads(attempt_path.read_text(encoding="utf-8"))
+    if (
+        attempt.get("schema") != "saea-attempt-v1"
+        or attempt.get("state") != "ABORTED"
+        or attempt.get("run_id") != RUN_ID
+        or attempt.get("attempt_id") != RECOVERY_SOURCE_ATTEMPT_ID
+        or attempt.get("carrier_lock_key") != AUDIO2TOOL_LOCK_KEY
+        or attempt.get("actual", {}).get("calls") != RECOVERY_PRIOR_CONTACTS
+    ):
+        raise RuntimeError("recovery source attempt identity or accounting drift")
+
+    rows = [
+        json.loads(line)
+        for line in trace_path.read_text(encoding="utf-8").splitlines()
+        if line
+    ]
+    if len(rows) != RECOVERY_PRIOR_CONTACTS * 3:
+        raise RuntimeError("recovery trace must contain eight complete request triples")
+    by_record = {row.get("record_id"): row for row in rows}
+    if len(by_record) != len(rows):
+        raise RuntimeError("recovery trace contains duplicate records")
+    contacts: dict[tuple[str, str], RecoveryContact] = {}
+    totals = {
+        "calls_used": 0,
+        "audio_seconds_used": 0.0,
+        "latency_seconds_total": 0.0,
+        "prompt_tokens_total": 0,
+        "completion_tokens_total": 0,
+    }
+    for (
+        request_id,
+        sample_id,
+        contact_id,
+        payload_sha256,
+        response_sha256,
+        response_text_sha256,
+    ) in RECOVERY_EXPECTED_CONTACTS:
+        request = by_record.get(f"{request_id}/request")
+        response = by_record.get(f"{request_id}/response")
+        cost_row = by_record.get(f"{request_id}/cost")
+        if any(row is None for row in (request, response, cost_row)):
+            raise RuntimeError("recovery trace is missing a source request triple")
+        assert isinstance(request, Mapping)
+        assert isinstance(response, Mapping)
+        assert isinstance(cost_row, Mapping)
+        if (
+            request.get("channel") != "MODEL_REQUEST"
+            or response.get("channel") != "MODEL_RESPONSE"
+            or cost_row.get("channel") != "COST"
+        ):
+            raise RuntimeError("recovery trace channel drift")
+        request_wrapper = request.get("payload")
+        response_payload = response.get("payload")
+        cost = cost_row.get("payload")
+        if not all(
+            isinstance(value, Mapping)
+            for value in (request_wrapper, response_payload, cost)
+        ):
+            raise RuntimeError("recovery trace payload shape drift")
+        assert isinstance(request_wrapper, Mapping)
+        assert isinstance(response_payload, Mapping)
+        assert isinstance(cost, Mapping)
+        payload = request_wrapper.get("payload")
+        if not isinstance(payload, Mapping):
+            raise RuntimeError("recovery MODEL_REQUEST payload is malformed")
+        history = payload.get("history")
+        control = history[-1] if isinstance(history, list) and history else None
+        text = response_payload.get("text")
+        if (
+            request_wrapper.get("arm") != "speech-feature-query"
+            or request_wrapper.get("payload_sha256") != payload_sha256
+            or _canonical_sha256(payload) != payload_sha256
+            or payload.get("request_id") != request_id
+            or payload.get("sample_id") != sample_id
+            or payload.get("speech_packet_sha256") is None
+            or not isinstance(control, Mapping)
+            or control.get("contact_id") != contact_id
+            or response_payload.get("response_sha256") != response_sha256
+            or response_payload.get("response_text_sha256")
+            != response_text_sha256
+            or not isinstance(text, str)
+            or hashlib.sha256(text.encode("utf-8")).hexdigest()
+            != response_text_sha256
+            or cost.get("calls") != 1
+        ):
+            raise RuntimeError("recovery request/response identity or hash drift")
+        decoding = payload.get("decoding_params")
+        slot_id = decoding.get("id_slot") if isinstance(decoding, Mapping) else None
+        if slot_id not in range(SLOT_COUNT):
+            raise RuntimeError("recovery source slot geometry drift")
+        key = (sample_id, contact_id)
+        if key in contacts:
+            raise RuntimeError("recovery source repeats a sample/contact pair")
+        contacts[key] = RecoveryContact(
+            request_id=request_id,
+            sample_id=sample_id,
+            contact_id=contact_id,
+            packet_sha256=str(payload["speech_packet_sha256"]),
+            payload_sha256=payload_sha256,
+            response_sha256=response_sha256,
+            response_text_sha256=response_text_sha256,
+            response_text=text,
+            slot_id=int(slot_id),
+            cost=dict(cost),
+        )
+        totals["calls_used"] += 1
+        totals["audio_seconds_used"] += float(cost.get("audio_seconds", 0.0))
+        totals["latency_seconds_total"] += float(cost.get("latency_seconds", 0.0))
+        totals["prompt_tokens_total"] += int(cost.get("prompt_tokens", 0))
+        totals["completion_tokens_total"] += int(cost.get("completion_tokens", 0))
+    if set(by_record) != {
+        f"{request_id}/{suffix}"
+        for request_id, *_rest in RECOVERY_EXPECTED_CONTACTS
+        for suffix in ("request", "response", "cost")
+    }:
+        raise RuntimeError("recovery trace contains an unexpected record")
+    if abs(
+        totals["audio_seconds_used"]
+        - float(attempt.get("actual", {}).get("audio_seconds", -1))
+    ) > 1e-6:
+        raise RuntimeError("recovery source audio accounting drift")
+    return RecoveryBundle(
+        source_attempt_id=RECOVERY_SOURCE_ATTEMPT_ID,
+        source_attempt_sha256=RECOVERY_SOURCE_ATTEMPT_SHA256,
+        source_trace_path=trace_path,
+        source_trace_sha256=RECOVERY_SOURCE_TRACE_SHA256,
+        contacts=contacts,
+        cost=totals,
+    )
+
+
+def _merge_recovery_cost(
+    current: Mapping[str, object], recovery: RecoveryBundle | None
+) -> dict[str, object]:
+    merged = dict(current)
+    if recovery is None:
+        return merged
+    for key in (
+        "calls_used",
+        "audio_seconds_used",
+        "latency_seconds_total",
+        "prompt_tokens_total",
+        "completion_tokens_total",
+    ):
+        merged[key] = merged.get(key, 0) + recovery.cost.get(key, 0)
+    return merged
+
+
 def _static_preflight(root: Path) -> dict[str, object]:
     _require_bound_requirements()
     commit = require_clean_study_repo(REPO)
@@ -474,21 +690,31 @@ def _static_preflight(root: Path) -> dict[str, object]:
 
 @dataclass(frozen=True)
 class G6ContactRecord:
+    sample_id: str
     contact_id: str
     stage: str
     family_tag: str | None
     slot_id: int
     response_sha256: str
     envelope: object
+    recovered: bool = False
+    source_request_id: str | None = None
+    source_payload_sha256: str | None = None
+    source_response_sha256: str | None = None
 
     def as_json(self) -> dict[str, object]:
         return {
+            "sample_id": self.sample_id,
             "contact_id": self.contact_id,
             "stage": self.stage,
             "family_tag": self.family_tag,
             "slot_id": self.slot_id,
             "response_sha256": self.response_sha256,
             "prompt_envelope": _envelope_json(self.envelope),
+            "recovered": self.recovered,
+            "source_request_id": self.source_request_id,
+            "source_payload_sha256": self.source_payload_sha256,
+            "source_response_sha256": self.source_response_sha256,
         }
 
 
@@ -507,6 +733,7 @@ class _G6WorkflowState:
     raw_final_response_text: str = ""
     final_response_text: str = ""
     trace_documents: Mapping[str, Mapping[str, object]] | None = None
+    pending_metadata: dict[str, Mapping[str, object]] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -628,6 +855,7 @@ def _run_phase(
     workflow_runner: Callable[..., object] = _execute_speech_agent_workflows,
     token_counter: Callable[[str], int] = _count_tokens_without_contact,
     prompt_fit_measurer: Callable[..., Mapping[str, object]] = measure_contact_prompt_fit,
+    recovery: RecoveryBundle | None = None,
 ) -> G6RunSummary:
     del root
     samples = tuple(sorted(surface.samples, key=lambda item: item.sample_id))
@@ -649,6 +877,8 @@ def _run_phase(
         )
         for sample in samples
     ]
+    recovered_used: set[tuple[str, str]] = set()
+    recovery_lock = threading.Lock()
 
     def prepare_wave(state: _G6WorkflowState, session: object) -> int:
         if state.stage == "SCAN":
@@ -697,30 +927,59 @@ def _run_phase(
             raise RuntimeError(
                 f"G6 {context.stage} prompt does not preserve required headroom"
             )
-        response_text = client.complete(
-            messages,
-            decoding_params={
-                "max_tokens": context.completion_token_ceiling,
-                "temperature": TEMPERATURE,
-                "id_slot": slot_id,
-            },
-            speech_feature_sample_id=state.sample.sample_id,
-            key_representation_id=f"{CONTROLLER_POLICY_ID}:{context.stage.lower()}",
-            matcher_policy_id=CONTROLLER_POLICY_ID,
-            agent_state=(),
-            agent_contact_id=context.contact_id,
-            contact_instruction=context.instruction,
-        )
+        recovery_key = (state.sample.sample_id, context.contact_id)
+        source = recovery.contacts.get(recovery_key) if recovery is not None else None
+        if source is not None:
+            if (
+                context.stage != "SCAN"
+                or source.packet_sha256 != context.speech_packet_sha256
+                or source.sample_id != state.sample.sample_id
+                or source.contact_id != context.contact_id
+            ):
+                raise RuntimeError("recovery contact disagrees with current G6 context")
+            with recovery_lock:
+                if recovery_key in recovered_used:
+                    raise RuntimeError("recovery contact was reused more than once")
+                recovered_used.add(recovery_key)
+            response_text = source.response_text
+            response_slot_id = source.slot_id
+            metadata = {
+                "envelope": envelope,
+                "recovered": True,
+                "source_request_id": source.request_id,
+                "source_payload_sha256": source.payload_sha256,
+                "source_response_sha256": source.response_sha256,
+            }
+        else:
+            response_text = client.complete(
+                messages,
+                decoding_params={
+                    "max_tokens": context.completion_token_ceiling,
+                    "temperature": TEMPERATURE,
+                    "id_slot": slot_id,
+                },
+                speech_feature_sample_id=state.sample.sample_id,
+                key_representation_id=f"{CONTROLLER_POLICY_ID}:{context.stage.lower()}",
+                matcher_policy_id=CONTROLLER_POLICY_ID,
+                agent_state=(),
+                agent_contact_id=context.contact_id,
+                contact_instruction=context.instruction,
+            )
+            response_slot_id = slot_id
+            metadata = {
+                "envelope": envelope,
+                "recovered": False,
+                "source_request_id": None,
+                "source_payload_sha256": None,
+                "source_response_sha256": None,
+            }
         if not isinstance(response_text, str):
             raise RuntimeError("G6 frozen core response must be text")
+        state.pending_metadata[context.contact_id] = metadata
         return {
-            "contact_id": context.contact_id,
-            "stage": context.stage,
-            "family_tag": context.family_tag,
-            "slot_id": slot_id,
             "response_text": response_text,
+            "slot_id": response_slot_id,
             "response_sha256": hashlib.sha256(response_text.encode("utf-8")).hexdigest(),
-            "envelope": envelope,
         }
 
     def aggregate_wave(
@@ -732,8 +991,6 @@ def _run_phase(
         if len(responses) != len(state.current_contexts):
             raise RuntimeError("G6 fan-in changed the scheduled contact count")
         for context, response in zip(state.current_contexts, responses, strict=True):
-            if response.get("contact_id") != context.contact_id:
-                raise RuntimeError("G6 fan-in changed contact order")
             response_text = response.get("response_text")
             if not isinstance(response_text, str):
                 raise RuntimeError("G6 fan-in returned malformed response text")
@@ -741,20 +998,30 @@ def _run_phase(
                 response_text.encode("utf-8")
             ).hexdigest():
                 raise RuntimeError("G6 fan-in response hash mismatch")
+            metadata = state.pending_metadata.pop(context.contact_id, None)
+            if metadata is None:
+                raise RuntimeError("G6 contact metadata was not retained in state")
             state.contacts.append(
                 G6ContactRecord(
+                    sample_id=state.sample.sample_id,
                     contact_id=context.contact_id,
                     stage=context.stage,
                     family_tag=context.family_tag,
                     slot_id=int(response["slot_id"]),
                     response_sha256=str(response["response_sha256"]),
-                    envelope=response["envelope"],
+                    envelope=metadata["envelope"],
+                    recovered=bool(metadata["recovered"]),
+                    source_request_id=metadata["source_request_id"],
+                    source_payload_sha256=metadata["source_payload_sha256"],
+                    source_response_sha256=metadata["source_response_sha256"],
                 )
             )
         if state.stage == "SCAN":
             by_family = {
-                str(response["family_tag"]): response["response_text"]
-                for response in responses
+                str(context.family_tag): response["response_text"]
+                for context, response in zip(
+                    state.current_contexts, responses, strict=True
+                )
             }
             state.reports = tuple(state.sweep.parse_scan_responses(by_family))
             if len(state.reports) != SCAN_CONTACTS:
@@ -801,6 +1068,9 @@ def _run_phase(
         raise RuntimeError("G6 OpenJiuwen workflow changed state identity or order")
     if sum(len(state.contacts) for state in states) != MAX_TOTAL_CONTACTS:
         raise RuntimeError("G6 must complete exactly 464 contacts")
+    expected_recovery_keys = set(recovery.contacts) if recovery is not None else set()
+    if recovered_used != expected_recovery_keys:
+        raise RuntimeError("G6 recovery did not consume every source contact exactly once")
     results: list[G6SampleResult] = []
     for state in states:
         contact_ids = tuple(contact.contact_id for contact in state.contacts)
@@ -881,6 +1151,7 @@ def _seal_outputs(
     run_dir: Path,
     agent_trace_hash: str,
     session_receipt_path: Path,
+    recovery: RecoveryBundle | None = None,
 ) -> dict[str, object]:
     scan_states = run_dir / "g6-scan-states.jsonl"
     _write_jsonl(scan_states, _scan_state_rows(summary))
@@ -896,6 +1167,17 @@ def _seal_outputs(
             "nonfinal": True,
             "rows_path": str(scan_states),
             "rows_sha256": _sha256_file(scan_states),
+            "recovery_source": (
+                None
+                if recovery is None
+                else {
+                    "attempt_id": recovery.source_attempt_id,
+                    "attempt_sha256": recovery.source_attempt_sha256,
+                    "trace_path": str(recovery.source_trace_path),
+                    "trace_sha256": recovery.source_trace_sha256,
+                    "reused_contact_count": len(recovery.contacts),
+                }
+            ),
         },
     )
     trace_path = run_dir / "agent-trace" / f"{RUN_ID}.trace.jsonl"
@@ -952,8 +1234,15 @@ def _seal_outputs(
     }
 
 
-def _launch(root: Path) -> Mapping[str, object]:
+def _launch(
+    root: Path, *, recovery_trace_path: Path | None = None
+) -> Mapping[str, object]:
     context = _static_preflight(root)
+    recovery = (
+        None
+        if recovery_trace_path is None
+        else _load_recovery_bundle(root, recovery_trace_path)
+    )
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     attempt_id = f"attempt-{stamp.lower()}-g6-fixed16"
     plan = _execution_plan(attempt_id)
@@ -1024,7 +1313,7 @@ def _launch(root: Path) -> Mapping[str, object]:
             run_dir=run_dir / "transport-trace",
             binding=binding,
             arm="speech-feature-query",
-            request_id_prefix="g6fixed16",
+            request_id_prefix="g6fixed16r" if recovery is not None else "g6fixed16",
             speech_feature_root=FEATURE_ROOT,
             speech_packet_bindings=surface.packet_bindings,
         )
@@ -1036,13 +1325,26 @@ def _launch(root: Path) -> Mapping[str, object]:
             client=client,
             surface=surface,
             trace_sink=trace_sink,
+            recovery=recovery,
         )
         agent_trace_hash = trace_sink.close()
         trace_sink = None
         client_summary = client.close()
         client = None
-        if client_summary.get("request_count") != MAX_TOTAL_CONTACTS:
-            raise RuntimeError("G6 transport did not record exactly 464 requests")
+        expected_current = (
+            RECOVERY_CURRENT_CONTACTS if recovery is not None else MAX_TOTAL_CONTACTS
+        )
+        if client_summary.get("request_count") != expected_current:
+            raise RuntimeError(
+                f"G6 transport did not record exactly {expected_current} current requests"
+            )
+        client_summary = dict(client_summary)
+        client_summary["cost"] = _merge_recovery_cost(
+            client_summary["cost"], recovery
+        )
+        client_summary["request_count_total"] = expected_current + (
+            len(recovery.contacts) if recovery is not None else 0
+        )
         stop_session(
             session,
             runtime_receipt=runtime_receipt,
@@ -1060,6 +1362,7 @@ def _launch(root: Path) -> Mapping[str, object]:
             run_dir=run_dir,
             agent_trace_hash=agent_trace_hash,
             session_receipt_path=session_receipt,
+            recovery=recovery,
         )
         receipt = {
             "schema": "saea-a2t-g6-exhaustive-family-sweep-fixed16-flight-receipt-v1",
@@ -1070,6 +1373,10 @@ def _launch(root: Path) -> Mapping[str, object]:
             "mission_dir": str(mission_dir),
             "elapsed_seconds": time.perf_counter() - started,
             "model_contacts": MAX_TOTAL_CONTACTS,
+            "prior_reused_model_contacts": (
+                len(recovery.contacts) if recovery is not None else 0
+            ),
+            "current_model_contacts": expected_current,
             "scan_contacts": 16 * SCAN_CONTACTS,
             "resolve_contacts": 16,
             "repair_contacts": REPAIR_CONTACTS,
@@ -1080,6 +1387,16 @@ def _launch(root: Path) -> Mapping[str, object]:
             "max_concurrent_model_requests": MAX_CONCURRENT_REQUESTS,
             "queue_depth": QUEUE_DEPTH,
             "scorer_contacts": 0,
+            "recovery_source": (
+                None
+                if recovery is None
+                else {
+                    "attempt_id": recovery.source_attempt_id,
+                    "attempt_sha256": recovery.source_attempt_sha256,
+                    "trace_path": str(recovery.source_trace_path),
+                    "trace_sha256": recovery.source_trace_sha256,
+                }
+            ),
             **{
                 key: str(value) if isinstance(value, Path) else value
                 for key, value in sealed.items()
@@ -1114,6 +1431,7 @@ def _parser() -> argparse.ArgumentParser:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--preflight-only", action="store_true")
     mode.add_argument("--run", action="store_true")
+    mode.add_argument("--recover-from", type=Path)
     return parser
 
 
@@ -1157,7 +1475,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
         )
         return 0
-    result = _launch(root)
+    result = (
+        _launch(root, recovery_trace_path=args.recover_from)
+        if args.recover_from is not None
+        else _launch(root)
+    )
     print(json.dumps(result, ensure_ascii=True, sort_keys=True, default=str))
     return 0
 

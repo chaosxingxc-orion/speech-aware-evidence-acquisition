@@ -183,6 +183,11 @@ def _synchronous_workflow_runner(states, **kwargs):
                 kwargs["invoke_contact"](state, branch, 0)
                 for branch in range(active)
             )
+            assert all(
+                set(response)
+                == {"response_text", "slot_id", "response_sha256"}
+                for response in responses
+            )
             kwargs["aggregate_wave"](state, responses, SimpleNamespace())
     return list(states)
 
@@ -381,3 +386,72 @@ def test_main_separates_zero_contact_preflight_from_explicit_run(
 def test_controller_policy_stays_bound_to_frozen_g6_core() -> None:
     launcher = _launcher()
     assert launcher.CONTROLLER_POLICY_ID == CONTROLLER_POLICY_ID
+
+
+def test_recovery_reuses_exact_eight_contacts_and_sends_only_456() -> None:
+    launcher = _launcher()
+    surface = _surface(launcher)
+    sweep = _Sweep()
+    source_pairs = (
+        (launcher.SELECTED_IDS[0], f"{SCAN_CONTACT_PREFIX}{sweep.family_tags[0]}"),
+        (launcher.SELECTED_IDS[0], f"{SCAN_CONTACT_PREFIX}{sweep.family_tags[1]}"),
+        (launcher.SELECTED_IDS[1], f"{SCAN_CONTACT_PREFIX}{sweep.family_tags[0]}"),
+        (launcher.SELECTED_IDS[1], f"{SCAN_CONTACT_PREFIX}{sweep.family_tags[1]}"),
+        (launcher.SELECTED_IDS[2], f"{SCAN_CONTACT_PREFIX}{sweep.family_tags[0]}"),
+        (launcher.SELECTED_IDS[2], f"{SCAN_CONTACT_PREFIX}{sweep.family_tags[1]}"),
+        (launcher.SELECTED_IDS[3], f"{SCAN_CONTACT_PREFIX}{sweep.family_tags[0]}"),
+        (launcher.SELECTED_IDS[3], f"{SCAN_CONTACT_PREFIX}{sweep.family_tags[1]}"),
+    )
+    contacts = {}
+    for index, (sample_id, contact_id) in enumerate(source_pairs, start=1):
+        text = f"opaque-{index}"
+        contacts[(sample_id, contact_id)] = launcher.RecoveryContact(
+            request_id=f"g6fixed16-{index:04d}",
+            sample_id=sample_id,
+            contact_id=contact_id,
+            packet_sha256="a" * 64,
+            payload_sha256=f"{index:064x}",
+            response_sha256=f"{index + 20:064x}",
+            response_text_sha256=hashlib.sha256(text.encode()).hexdigest(),
+            response_text=text,
+            slot_id=index % 2,
+            cost={"calls": 1, "audio_seconds": 1.0},
+        )
+    recovery = launcher.RecoveryBundle(
+        source_attempt_id="attempt-source",
+        source_attempt_sha256="b" * 64,
+        source_trace_path=Path("/source.trace.jsonl"),
+        source_trace_sha256="c" * 64,
+        contacts=contacts,
+        cost={
+            "calls_used": 8,
+            "audio_seconds_used": 8.0,
+            "latency_seconds_total": 0.0,
+            "prompt_tokens_total": 0,
+            "completion_tokens_total": 0,
+        },
+    )
+    client = _Client()
+
+    summary = launcher._run_phase(
+        root=Path("/data"),
+        plan=SimpleNamespace(run_id=launcher.RUN_ID, protocol_hash="c" * 64),
+        adapter=_Adapter(),
+        client=client,
+        surface=surface,
+        trace_sink=_Sink(),
+        workflow_runner=_synchronous_workflow_runner,
+        prompt_fit_measurer=_fake_prompt_fit,
+        recovery=recovery,
+    )
+
+    assert len(client.contact_ids) == 456
+    assert sum(len(row.contacts) for row in summary.results) == 464
+    recovered = [
+        contact
+        for row in summary.results
+        for contact in row.contacts
+        if contact.recovered
+    ]
+    assert len(recovered) == 8
+    assert {(row.sample_id, row.contact_id) for row in recovered} == set(source_pairs)
