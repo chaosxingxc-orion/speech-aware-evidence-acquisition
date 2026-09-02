@@ -1,0 +1,117 @@
+{
+  "claim_status": "sealed aggregate diagnosis and prospective ground contract",
+  "contacts": {
+    "audio_seconds": 0,
+    "embedding_tool": 0,
+    "frozen_core": 0,
+    "gpu_hours": 0.0,
+    "http_or_socket": 0,
+    "retriever": 0,
+    "tokenizer": 0
+  },
+  "decision": "expand task-wide executable knowledge before candidate pruning or training-free controller optimization",
+  "diagnosis": {
+    "correct_tool_row_does_not_supply_execution_knowledge": true,
+    "full_registry_is_not_a_qualified_ground": true,
+    "knowledge_expansion_required_before_candidate_optimization": true,
+    "literal_defaults_are_a_copy_hazard": true,
+    "perfect_m0_matched_arbitration_cannot_reach_the_ground_floor": true,
+    "top5_surface_cannot_reach_the_ground_floor": true
+  },
+  "engineering_scope": {
+    "complete_manifest_outer_parallel_scoring": true,
+    "network_jitter_testing": false
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-A2T-MF-TASK-GROUND-AUDIT-V1",
+  "ground_contract": {
+    "minimum_exact_match": 0.9,
+    "minimum_parse_rate": 0.99,
+    "minimum_slot_micro_f1": 0.9,
+    "minimum_tool_accuracy": 0.95,
+    "target_exact_match": 0.95
+  },
+  "knowledge_inventory": {
+    "argument_keys": 85,
+    "argument_pattern_families": 354,
+    "argument_pattern_family_coverage": 1.0,
+    "construction_tools": 151,
+    "lexical_gold_tool_recall": {
+      "at_128": 0.985,
+      "at_16": 0.8975,
+      "at_32": 0.94,
+      "at_5": 0.7925
+    },
+    "registry_tools": 152,
+    "tool_coverage": 1.0
+  },
+  "landed_surfaces": {
+    "full_registry_a0": {
+      "exact_match": 0.2425,
+      "n_samples": 400,
+      "tool_accuracy": 0.5425
+    },
+    "full_registry_plus_values_stripped_correct_row": {
+      "exact_conversion": 0.058333333333333334,
+      "literal_default_substitutions": 22,
+      "tool_retention": 0.9416666666666667
+    },
+    "highlighted_correct_registry_row": {
+      "exact_conversion": 0.13333333333333333,
+      "literal_default_substitutions": 34,
+      "n_samples": 120,
+      "tool_retention": 0.9333333333333333
+    },
+    "perfect_m0_matched_arbitration": {
+      "exact_count": 46,
+      "exact_match": 0.4423076923076923
+    },
+    "top5_matched_cpv2": {
+      "gold_tool_coverage": 0.6826923076923077,
+      "metrics": {
+        "exact_count": 40,
+        "n_samples": 104,
+        "parse_failures": 0,
+        "slot_micro_f1": 0.40909090909090906,
+        "tool_correct_count": 73
+      },
+      "qualification": {
+        "gates": {
+          "exact_at_least_90_percent": false,
+          "parse_rate_at_least_99_percent": true,
+          "slot_f1_at_least_90_percent": false,
+          "tool_at_least_95_percent": false
+        },
+        "minimum_ground_passed": false,
+        "rates": {
+          "exact_match": 0.38461538461538464,
+          "parse_rate": 1.0,
+          "slot_micro_f1": 0.40909090909090906,
+          "tool_accuracy": 0.7019230769230769
+        },
+        "target_95_exact_passed": false
+      }
+    },
+    "values_stripped_correct_row": {
+      "exact_conversion": 0.06666666666666667,
+      "literal_default_substitutions": 2
+    }
+  },
+  "offline_guard": {
+    "outbound_connection_attempts": 0,
+    "targets": []
+  },
+  "schema": "saea-a2t-task-ground-audit-result-v1",
+  "source_hashes": {
+    "a0": "8b0e96ca6eac50b75eb07d6f1d05b245c43cc845e877b8f1dd185e4665c7ccff",
+    "cpv2": "59b7e91fc2ce47e3f54652e20091228b2c78f970eac85771fe028313e9f13fc1",
+    "headroom": "a3fc915b945a23e4d265c403235b51e4febd714d03fb4823b6613de067b7b8ac",
+    "kb_size": "75f52a23ee86ff00abc2d33bb865fd3a0864dcb77fe7035eece13fbb2e77e081",
+    "lexical": "624d85f9803291d3f2f8698687bc9c1d0dd43bb49f1bbc8b8948b14b983703fc",
+    "registry": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4",
+    "s2": "2377f09ac1138c2648e18fd6ac040465f5d4d11967f4f6479b39ec53bbffa8bf",
+    "s2b": "ad49af4c73e281b5094aecb917bf59b4b13cf3c7472b54e45947f895a2a86363",
+    "s2c": "904b63c1465371f6dcc5c6093cc39153001a32974d06fc83fab357c7a7f75fdc"
+  },
+  "study_commit": "3e5bd3ae6e6e9950a56e42051ef5e8025e19b4f8"
+}

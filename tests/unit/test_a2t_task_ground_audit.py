@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import pytest
 
 from speech_aware_evidence_acquisition.analysis import a2t_task_ground_audit as audit
@@ -91,4 +94,44 @@ def test_landed_surface_diagnosis_forbids_candidate_optimization() -> None:
         "correct_tool_row_does_not_supply_execution_knowledge": True,
         "literal_defaults_are_a_copy_hazard": True,
         "knowledge_expansion_required_before_candidate_optimization": True,
+    }
+
+
+def test_committed_task_ground_audit_preserves_the_sealed_decision() -> None:
+    repository_root = Path(__file__).resolve().parents[2]
+    result_path = (
+        repository_root
+        / "docs"
+        / "checks"
+        / "speech-aware-evidence-acquisition"
+        / "2026-09-02-a2t-task-ground-audit-v1"
+        / "task-ground-audit-result.json"
+    )
+    result = json.loads(result_path.read_text(encoding="utf-8"))
+
+    assert result["execution_profile"] == "model-free-check"
+    assert set(result["contacts"].values()) == {0}
+    assert result["offline_guard"]["outbound_connection_attempts"] == 0
+    assert result["knowledge_inventory"] == {
+        "argument_keys": 85,
+        "argument_pattern_families": 354,
+        "argument_pattern_family_coverage": 1.0,
+        "construction_tools": 151,
+        "lexical_gold_tool_recall": {
+            "at_128": 0.985,
+            "at_16": 0.8975,
+            "at_32": 0.94,
+            "at_5": 0.7925,
+        },
+        "registry_tools": 152,
+        "tool_coverage": 1.0,
+    }
+    assert all(result["diagnosis"].values())
+    assert result["landed_surfaces"]["perfect_m0_matched_arbitration"] == {
+        "exact_count": 46,
+        "exact_match": pytest.approx(46 / 104),
+    }
+    assert result["engineering_scope"] == {
+        "complete_manifest_outer_parallel_scoring": True,
+        "network_jitter_testing": False,
     }
