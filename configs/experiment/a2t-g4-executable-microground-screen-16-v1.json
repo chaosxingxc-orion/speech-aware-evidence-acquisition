@@ -1,7 +1,7 @@
 {
   "schema": "saea-a2t-g4-executable-microground-screen-16-experiment-v1",
   "experiment_id": "SAEA-A2T-G4-EXECUTABLE-MICROGROUND-SCREEN-16-V1",
-  "status": "PRECONTACT_AMENDED_ZERO_CONTACT_MODEL_CONTACT_CLOSED",
+  "status": "E16_SEALED_SE_PRECONTACT_CAP_AMENDED_MODEL_CONTACT_CLOSED",
   "date": "2026-09-02",
   "amendment_history": [
     {
@@ -19,6 +19,14 @@
       "predecessor_composed_config_sha256": "b4a817e193203e2da82c0821ee6dbb2383f07988e8d0e41e5c5da859060055c4",
       "predecessor_protocol_sha256": "28195c502bb6a285c372c1b07135948f0e2472f5e541ff610b1bdf6dc2c8aad9",
       "reason": "Use the carrier-prefixed run identity for VerifiedSplit, ExecutionPlan, bundle verification, and protocol hashing; retain the colon-key receipt hash only as partition-integrity evidence."
+    },
+    {
+      "date": "2026-09-02",
+      "kind": "prospective SE-only state-cap correction after E sealing and before SE contact",
+      "predecessor_experiment_sha256": "f2f31ad178d54e99cffa60d24fae1f0c72a8ea2d6894e6d1f19929e161100d5a",
+      "predecessor_composed_config_sha256": "c651ac7b631ebdbbe19a450582d17a8d728f5fd3fae2e6600b3fe7affc531da2",
+      "predecessor_protocol_sha256": "64236977c29d4babbacabbb597da5d21ec8b019c524191a64457452f66b889e0",
+      "reason": "Label-free reconstruction found one 753-byte observation whose complete strict-state JSON exceeds the original 4096-byte cap and three states with no generic active action. Raise only the prospective SE state cap to 8192 bytes, bind the landed task-blind organizer and state modules, and query current_request once only when active_actions is empty."
     }
   ],
   "execution_profile": "bounded-discovery-probe",
@@ -66,9 +74,11 @@
     "semantic_card_build_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-02-a2t-g4-semantic-cards-build-v1/build-receipt.json",
     "semantic_card_build_receipt_sha256": "f2da2a1b77a59ff7f5d9e74c2fabe1e04c87d560f4ca066c573f3d65803680fa",
     "semantic_card_module_sha256": "f13692bdf658286a0a018176446462258e81d76543806a0f7d569ef2c419f2ae",
-    "microground_router_sha256": "63fe8dc77ca208bc02ce501eef4c5f79a8f11eda7243b6226709736241d451ea",
-    "structured_state_module_sha256": "7c8a745cfaab81c3efc421f759b30e990c5155ec0bb9daa386bf7598281cabfc",
-    "flight_boundary_sha256": "54ec410ec02a4addde4c870ac405da118b0b06e2eb276a9efb00014c5d37f29b",
+    "observation_state_organizer": "src/speech_aware_evidence_acquisition/rails/a2t_observation_state_organizer.py",
+    "observation_state_organizer_sha256": "cf313b819d944306f1ff67c9bb9a556a2e083d5d6944509fe775ee3a928f2c06",
+    "microground_router_sha256": "31da304a1e5c989972b8f7a435ad15827f0995fd35740b851b3043bb18d86d31",
+    "structured_state_module_sha256": "58d26aac9fc1946d080008904ddbd5217d1ab711e342754169ded72cb5266523",
+    "flight_boundary_sha256": "d9dbc3fe3ffaac8fbf46b89edbb00b8bdc213ebfc21c8c0e78a1c5c106d000e5",
     "router_policy_id": "saea-a2t-semantic-microground-bm25-v1",
     "key_representation_id": "a2t-g4-executable-semantic-cards-v1",
     "matcher_policy_id": "a2t-g4-structured-action-bm25-k2-8-v1",
@@ -102,6 +112,13 @@
       "label": "sealed task-blind English OBS plus executable semantic microground",
       "phase": "G4_EXECUTABLE_MICROGROUND_USE",
       "contact_count": 16,
+      "status": "SEALED_UNSCORED_PREDECESSOR_IDENTITY",
+      "sealed_manifest_sha256": "75550a28f3efc9b495ca60f06f88f506a0ac2c7d432cee936f07b61b008373c3",
+      "sealed_experiment_sha256": "f2f31ad178d54e99cffa60d24fae1f0c72a8ea2d6894e6d1f19929e161100d5a",
+      "sealed_composed_config_sha256": "c651ac7b631ebdbbe19a450582d17a8d728f5fd3fae2e6600b3fe7affc531da2",
+      "sealed_protocol_sha256": "64236977c29d4babbacabbb597da5d21ec8b019c524191a64457452f66b889e0",
+      "sealed_microground_router_sha256": "63fe8dc77ca208bc02ce501eef4c5f79a8f11eda7243b6226709736241d451ea",
+      "output_or_score_inspected_for_amendment": false,
       "state_source": "existing sealed G3 task-blind English observation",
       "ground": "the deterministic microground routed once per active action",
       "authorized_runtime_inputs": ["original speech", "sealed task-blind English observation", "selected semantic cards", "four task cards"]
@@ -111,6 +128,10 @@
       "phase": "G4_STRUCTURED_EXECUTABLE_MICROGROUND_USE",
       "contact_count": 16,
       "state_source": "prevalidated bounded structured dialogue state",
+      "state_set_sha256": "2e42e636e36d7e15dcab9a6c7e3e450bd38a930b02f1e7270d4a617d8c45abad",
+      "route_set_sha256": "2b2d8b444ae67edd06abf7a3d59bab09d74db3e21b242246a392569f4ce5236c",
+      "maximum_state_utf8_bytes": 4813,
+      "maximum_canonical_prompt_utf8_bytes": 10810,
       "ground": "the same deterministic microground policy and corpus used by E",
       "authorized_runtime_inputs": ["original speech", "validated structured state", "selected semantic cards", "four task cards"]
     }
@@ -118,6 +139,7 @@
   "microground": {
     "query_unit": "each active action",
     "query_sources": ["validated structured-state mapping", "task-blind English observation"],
+    "empty_active_actions_fallback": "Only when validated active_actions is empty, issue exactly one task-blind query from current_request.normalized, falling back to current_request.surface. Do not infer an action and do not add tool, gold, sample, tier, reward, or prior-outcome features.",
     "features": ["choose semantics", "avoid and contrast semantics", "role guidance", "tool and category facets"],
     "retrieval": "frozen deterministic BM25",
     "selection": "retain top two per active action plus the best sibling contrast or schema-compatible alternative; union two through eight unique registered candidates while preserving at least the top candidate for every active action",
@@ -132,7 +154,9 @@
     "expected_model_calls": 32,
     "max_concurrent_model_requests": 2,
     "queue_depth": 4,
-    "state_utf8_byte_cap": 4096,
+    "state_utf8_byte_cap": 8192,
+    "state_cap_scope": "The 8192-byte cap applies only to prospective SE. Sealed E remains bound to the predecessor 4096-byte contract.",
+    "state_preservation_rule": "Preserve the complete exact ASCII surface and normalized values. Do not truncate, omit, summarize, or deduplicate state content to fit the cap.",
     "microground_packet_utf8_byte_cap": 16384,
     "prompt_token_cap": 8192,
     "completion_token_cap": 1024,

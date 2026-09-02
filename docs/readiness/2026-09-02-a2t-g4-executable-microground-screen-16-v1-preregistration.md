@@ -1,6 +1,6 @@
 # Audio2Tool G4 executable-microground screen 16 v1 preregistration
 
-Date: 2026-09-02. Status: **PRE-CONTACT AMENDED; ZERO CONTACT; MODEL CONTACT CLOSED**. Experiment:
+Date: 2026-09-02. Status: **E16 SEALED; SE PRE-CONTACT AMENDED; SE CONTACT CLOSED**. Experiment:
 `SAEA-A2T-G4-EXECUTABLE-MICROGROUND-SCREEN-16-V1`. Execution profile:
 `bounded-discovery-probe`. The original zero-contact experiment config SHA-256 was
 `926bbbb0c90b70df7877dfd4c72248e09c56007d85180c5b9b23ec664263c04a`; its composed config and
@@ -10,11 +10,16 @@ amendment below superseded those identities with experiment, composed-config, an
 values `528f3e5707d3d8b9c992ab99aab701231270c915fa2e7309b5c3b0a3a6101235`,
 `b4a817e193203e2da82c0821ee6dbb2383f07988e8d0e41e5c5da859060055c4`, and
 `28195c502bb6a285c372c1b07135948f0e2472f5e541ff610b1bdf6dc2c8aad9`. The second prospective
-execution-identity correction below supersedes that first amendment before contact. Current
-experiment, composed-config, and protocol SHA-256 values are
+execution-identity correction below superseded that first amendment before E contact, with
+experiment, composed-config, and protocol SHA-256 values
 `f2f31ad178d54e99cffa60d24fae1f0c72a8ea2d6894e6d1f19929e161100d5a`,
 `c651ac7b631ebdbbe19a450582d17a8d728f5fd3fae2e6600b3fe7affc531da2`, and
-`64236977c29d4babbacabbb597da5d21ec8b019c524191a64457452f66b889e0`. Baseline config SHA-256 is
+`64236977c29d4babbacabbb597da5d21ec8b019c524191a64457452f66b889e0`. E16 sealed under those
+identities. The third prospective SE-only state-cap amendment below is current before any SE
+contact. Current experiment, composed-config, and protocol SHA-256 values are
+`f0b942d05121f14ee433371c730b77d155fb5ae0cfdb80b5ef110f862bcbacf7`,
+`04f02dfd3c620351799947ef6582ef5b5064a80591bca07fc6519a717887d8f9`, and
+`041b87305f8357ffb19487ac3f8a76a7da78f37fdad0ea4dca4399c13b733cf4`. Baseline config SHA-256 is
 `dd7f38fe941d1c6ece607ff695f0ab700a9aea2c75fd5808674ceba8119820e5`; roster receipt SHA-256 is
 `41a14ab576d7a428dd9849f26432e2c4998371b9f601189a1d558d694a12c884`.
 
@@ -53,6 +58,50 @@ terminal consequence. Only experiment SHA-256
 `c651ac7b631ebdbbe19a450582d17a8d728f5fd3fae2e6600b3fe7affc531da2`, and protocol SHA-256
 `64236977c29d4babbacabbb597da5d21ec8b019c524191a64457452f66b889e0` are current. Every predecessor
 identity above remains an auditable zero-contact record and must not launch.
+
+## Prospective SE-only state-cap amendment after E sealing
+
+E16 completed 16 contacts and sealed without score or output inspection under predecessor
+experiment, composed-config, and protocol identities
+`f2f31ad178d54e99cffa60d24fae1f0c72a8ea2d6894e6d1f19929e161100d5a`,
+`c651ac7b631ebdbbe19a450582d17a8d728f5fd3fae2e6600b3fe7affc531da2`, and
+`64236977c29d4babbacabbb597da5d21ec8b019c524191a64457452f66b889e0`. Its manifest SHA-256 is
+`75550a28f3efc9b495ca60f06f88f506a0ac2c7d432cee936f07b61b008373c3`. E is immutable and is not
+recontacted or reattributed to the amended SE identity.
+
+Before any SE contact, label-free reconstruction found one 753-byte task-blind English observation
+whose complete strict-state JSON exceeds 4,096 bytes because the schema correctly preserves both
+exact surface and normalized values. The prior cap was a tight prediction rather than a semantic
+limit. The prospective SE state cap is therefore 8,192 ASCII bytes. The organizer must preserve the
+complete exact surface and normalization: no truncation, omission, summarization, or deduplication
+is allowed. The original E cap remains 4,096 bytes as part of its sealed predecessor identity.
+
+The same label-free reconstruction found three of sixteen states with no generic active action. The
+prospective router therefore issues exactly one query from `current_request.normalized`, falling
+back to `current_request.surface`, only when `active_actions` is empty. It does not infer an action
+or admit tool, gold, sample, tier, reward, or prior-outcome features. A nonempty active-action list
+continues to route once per action without this fallback.
+
+The landed organizer, structured-state, router, and G4 flight-boundary module SHA-256 values are
+`cf313b819d944306f1ff67c9bb9a556a2e083d5d6944509fe775ee3a928f2c06`,
+`58d26aac9fc1946d080008904ddbd5217d1ab711e342754169ded72cb5266523`,
+`31da304a1e5c989972b8f7a435ad15827f0995fd35740b851b3043bb18d86d31`, and
+`d9dbc3fe3ffaac8fbf46b89edbb00b8bdc213ebfc21c8c0e78a1c5c106d000e5`. Sealed E remains bound to
+its predecessor router SHA-256 `63fe8dc77ca208bc02ce501eef4c5f79a8f11eda7243b6226709736241d451ea`
+and predecessor experiment/composed/protocol identities; none is retroactively changed.
+
+The reconstructed selected16 state set and deterministic route set are bound at SHA-256
+`2e42e636e36d7e15dcab9a6c7e3e450bd38a930b02f1e7270d4a617d8c45abad` and
+`2b2d8b444ae67edd06abf7a3d59bab09d74db3e21b242246a392569f4ce5236c`. Maximum state size is 4,813
+UTF-8 bytes, below the amended 8,192-byte cap; maximum canonical prompt size is 10,810 UTF-8 bytes.
+These are label-free preflight facts, not task scores.
+
+This amendment changes no observation, state semantics, structured-state schema, corpus, candidate
+limits, arm, sample, gate, request count, completion cap, scorer, or terminal consequence. Only
+current experiment SHA-256 `f0b942d05121f14ee433371c730b77d155fb5ae0cfdb80b5ef110f862bcbacf7`,
+composed-config SHA-256 `04f02dfd3c620351799947ef6582ef5b5064a80591bca07fc6519a717887d8f9`,
+and protocol SHA-256 `041b87305f8357ffb19487ac3f8a76a7da78f37fdad0ea4dca4399c13b733cf4`
+may govern SE.
 
 ## Objective and roster
 
@@ -113,9 +162,10 @@ tier. No result may retune the router, state, prompt, threshold, or cohort.
 
 ## Execution and scoring
 
-Freeze two model slots, at most two concurrent requests, queue depth four, state at most 4,096 ASCII
-bytes, microground packet at most 16,384 ASCII bytes, prompt at most 8,192 tokens, and completion at
-most 1,024 tokens. Temperature is zero and seed is 20260803. Each row gets one contact with no
+Freeze two model slots, at most two concurrent requests, queue depth four, the sealed E state cap at
+4,096 ASCII bytes, the prospective SE state cap at 8,192 ASCII bytes, microground packet at most
+16,384 ASCII bytes, prompt at most 8,192 tokens, and completion at most 1,024 tokens. Temperature is
+zero and seed is 20260803. Each row gets one contact with no
 repair, retry, resend, or network-jitter experiment. Stage 1 expects 32 contacts and 356.25
 speech-audio seconds. A qualifying extension adds 24 contacts and 198.916375 seconds; the plan
 ceiling is 56 calls, 556 audio seconds, 0.4 GPU hours, and zero paid API, embedding, or tokenizer
@@ -125,10 +175,10 @@ Official scoring consumes whole manifests only. E and SE may finalize through tw
 the one possible full-40 composite is one indivisible official job. Dataset sharding, shard score
 averaging, and parallel scoring within a manifest are forbidden.
 
-The semantic corpus, build receipt, router, composed config, and protocol hashes are now bound.
-Model contact remains closed until the sealed observation and validated-state bindings, prompt-fit
-report, structured ExecutionPlan, clean commit, and final pre-contact exposure binding all exist
-and verify. This
+The semantic corpus, build receipt, organizer, structured-state module, router, flight boundary,
+composed config, and protocol hashes are now bound. SE contact remains closed until the sealed
+observation and validated-state bindings, prompt-fit report, structured ExecutionPlan, clean commit,
+and final pre-contact exposure binding all exist and verify. This
 zero-contact registration prospectively supersedes the dormant
 `SAEA-A2T-EXECUTABLE-GROUND-QUALIFICATION-104-V1` full-handbook flight without rewriting its bytes or
 history. Failure opens no remaining24, fresh88, test, pruning, TFRL, scale, Stage-3, or paper work.
