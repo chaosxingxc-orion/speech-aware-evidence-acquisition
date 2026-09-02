@@ -1,0 +1,158 @@
+{
+  "schema": "saea-a2t-g4-stage1-analysis-v1",
+  "date": "2026-09-02",
+  "scope": {
+    "population": "A2T-G4-MICROGROUND-SCREEN-16",
+    "samples": 16,
+    "fresh88_opened": false,
+    "test_opened": false,
+    "remainder24_opened": false,
+    "model_contacts": 0,
+    "network_contacts": 0,
+    "tokenizer_contacts": 0,
+    "new_official_scorer_jobs": 0,
+    "method": "Read-only offline per-row reconstruction with the frozen scorer functions after the two official whole-manifest jobs settled; every reconstructed aggregate was required to equal its official artifact."
+  },
+  "artifact_bindings": {
+    "official_scoring_directory": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-G4-STAGE1-SCORING-20260902T210300Z",
+    "e_manifest_sha256": "75550a28f3efc9b495ca60f06f88f506a0ac2c7d432cee936f07b61b008373c3",
+    "se_manifest_sha256": "69afd80f710eea8c2636e9646df5133f88c41b3ced9c7a33c10559d2e38b0032",
+    "e_official_score_sha256": "2b31e1f8c2f20374f410cd8dcb76e3e97460d9c27cf25322570f642950ee90c2",
+    "se_official_score_sha256": "83df3fe26ef4381d98d094dc67a42db55e90cc15443934a924771aa951774af8",
+    "e_outputs_sha256": "0596b402c32d6d45e4d12b7b14bcaa6a50524afc2651695026b5fd20761a02a3",
+    "se_outputs_sha256": "392197e411e7bebb506db77745d0c9b6121e75beff7eaf330dbed421b8719434",
+    "e_agent_trace_sha256": "974ae66f0eaaa17259a6def9d7bb144b7a954a5c4c67055460bc6d5315f491ee",
+    "se_agent_trace_sha256": "ecfa931af0a860ad48f6e94a545ec448568d817ca06c7d8404f863c00d6048fd",
+    "se_state_receipt_sha256": "62ccbb0df8e591d696626b08c805cc20b5ee464792ad729bed109c114478df4a"
+  },
+  "absolute": {
+    "C": {"parse": 16, "exact": 2, "tool": 11, "slot_tp": 7, "slot_expected": 21, "slot_predicted": 22, "slot_f1": 0.3255813953488372},
+    "E": {"parse": 16, "exact": 1, "tool": 6, "slot_tp": 4, "slot_expected": 21, "slot_predicted": 22, "slot_f1": 0.18604651162790697},
+    "SE": {"parse": 16, "exact": 1, "tool": 6, "slot_tp": 4, "slot_expected": 21, "slot_predicted": 20, "slot_f1": 0.1951219512195122}
+  },
+  "paired": {
+    "E-C": {
+      "exact": {"wins": 1, "losses": 2, "ties": 13, "net": -1},
+      "tool": {"wins": 0, "losses": 5, "ties": 11, "net": -5}
+    },
+    "SE-C": {
+      "exact": {"wins": 1, "losses": 2, "ties": 13, "net": -1},
+      "tool": {"wins": 0, "losses": 5, "ties": 11, "net": -5}
+    },
+    "SE-E": {
+      "exact": {"wins": 0, "losses": 0, "ties": 16, "net": 0},
+      "tool": {"wins": 0, "losses": 0, "ties": 16, "net": 0}
+    }
+  },
+  "per_tier": {
+    "tier1_direct": {
+      "C": {"exact": 0, "tool": 1, "slot_tp": 0, "slot_expected": 0, "slot_predicted": 3, "slot_f1": 0.0},
+      "E": {"exact": 0, "tool": 1, "slot_tp": 0, "slot_expected": 0, "slot_predicted": 2, "slot_f1": 0.0},
+      "SE": {"exact": 0, "tool": 1, "slot_tp": 0, "slot_expected": 0, "slot_predicted": 2, "slot_f1": 0.0}
+    },
+    "tier2_parametric": {
+      "C": {"exact": 0, "tool": 2, "slot_tp": 0, "slot_expected": 3, "slot_predicted": 3, "slot_f1": 0.0},
+      "E": {"exact": 1, "tool": 2, "slot_tp": 1, "slot_expected": 3, "slot_predicted": 3, "slot_f1": 0.3333333333333333},
+      "SE": {"exact": 1, "tool": 2, "slot_tp": 1, "slot_expected": 3, "slot_predicted": 3, "slot_f1": 0.3333333333333333}
+    },
+    "tier3_multi_intent": {
+      "C": {"exact": 0, "tool": 0, "slot_tp": 1, "slot_expected": 1, "slot_predicted": 4, "slot_f1": 0.4},
+      "E": {"exact": 0, "tool": 0, "slot_tp": 1, "slot_expected": 1, "slot_predicted": 1, "slot_f1": 1.0},
+      "SE": {"exact": 0, "tool": 0, "slot_tp": 1, "slot_expected": 1, "slot_predicted": 1, "slot_f1": 1.0}
+    },
+    "tier4_implicit": {
+      "C": {"exact": 0, "tool": 2, "slot_tp": 1, "slot_expected": 3, "slot_predicted": 3, "slot_f1": 0.3333333333333333},
+      "E": {"exact": 0, "tool": 0, "slot_tp": 0, "slot_expected": 3, "slot_predicted": 1, "slot_f1": 0.0},
+      "SE": {"exact": 0, "tool": 0, "slot_tp": 0, "slot_expected": 3, "slot_predicted": 0, "slot_f1": 0.0}
+    },
+    "tier5_needle": {
+      "C": {"exact": 0, "tool": 1, "slot_tp": 1, "slot_expected": 4, "slot_predicted": 3, "slot_f1": 0.28571428571428575},
+      "E": {"exact": 0, "tool": 1, "slot_tp": 1, "slot_expected": 4, "slot_predicted": 2, "slot_f1": 0.3333333333333333},
+      "SE": {"exact": 0, "tool": 1, "slot_tp": 1, "slot_expected": 4, "slot_predicted": 3, "slot_f1": 0.28571428571428575}
+    },
+    "tier6_correction": {
+      "C": {"exact": 1, "tool": 2, "slot_tp": 2, "slot_expected": 3, "slot_predicted": 2, "slot_f1": 0.8},
+      "E": {"exact": 0, "tool": 1, "slot_tp": 0, "slot_expected": 3, "slot_predicted": 3, "slot_f1": 0.0},
+      "SE": {"exact": 0, "tool": 1, "slot_tp": 0, "slot_expected": 3, "slot_predicted": 3, "slot_f1": 0.0}
+    },
+    "tier7_multiturn": {
+      "C": {"exact": 1, "tool": 2, "slot_tp": 2, "slot_expected": 4, "slot_predicted": 4, "slot_f1": 0.5},
+      "E": {"exact": 0, "tool": 1, "slot_tp": 0, "slot_expected": 4, "slot_predicted": 4, "slot_f1": 0.0},
+      "SE": {"exact": 0, "tool": 1, "slot_tp": 0, "slot_expected": 4, "slot_predicted": 2, "slot_f1": 0.0}
+    },
+    "tier8_intent_blending": {
+      "C": {"exact": 0, "tool": 1, "slot_tp": 0, "slot_expected": 3, "slot_predicted": 0, "slot_f1": 0.0},
+      "E": {"exact": 0, "tool": 0, "slot_tp": 1, "slot_expected": 3, "slot_predicted": 6, "slot_f1": 0.2222222222222222},
+      "SE": {"exact": 0, "tool": 0, "slot_tp": 1, "slot_expected": 3, "slot_predicted": 6, "slot_f1": 0.2222222222222222}
+    }
+  },
+  "structure": {
+    "E": {"parsed_rows": 16, "nonempty_registry_valid_rows": 16, "legal_key_rows": 16, "structurally_invalid_rows": 0, "out_of_registry_calls": 0, "unmistakable_synthetic_literal_rows": 1, "unmistakable_synthetic_literal_occurrences": 1, "rendered_example_value_overlap_rows": 5},
+    "SE": {"parsed_rows": 16, "nonempty_registry_valid_rows": 15, "legal_key_rows": 14, "structurally_invalid_rows": 2, "out_of_registry_calls": 0, "unmistakable_synthetic_literal_rows": 1, "unmistakable_synthetic_literal_occurrences": 1, "rendered_example_value_overlap_rows": 4},
+    "synthetic_literal": "SYNTHETIC_CONTROLPLAYBACK_HOME_DEVICEID_001",
+    "synthetic_literal_sample": "tier6_correction:001056",
+    "se_structurally_invalid_samples": ["tier4_implicit:001628", "tier7_multiturn:001590"]
+  },
+  "candidate_coverage": {
+    "E": {"all_gold_tools_present_rows": 7, "route_miss_rows": 9, "mean_candidate_count": 3.25, "candidate_count_range": [2, 4]},
+    "SE": {"all_gold_tools_present_rows": 7, "route_miss_rows": 9, "mean_candidate_count": 4.3125, "candidate_count_range": [2, 8]},
+    "shared_route_miss_ids": [
+      "tier1_direct:000074",
+      "tier3_multi_intent:001732",
+      "tier3_multi_intent:002166",
+      "tier4_implicit:001628",
+      "tier4_implicit:001759",
+      "tier5_needle:001059",
+      "tier7_multiturn:000637",
+      "tier8_intent_blending:000324",
+      "tier8_intent_blending:000489"
+    ],
+    "full_frozen_corpus_gold_tool_and_legal_keyset_rows": 16
+  },
+  "mechanism": {
+    "E": {"route_miss": 9, "model_selection_miss": 1, "correct_tool_argument_realization_failure": 5, "exact": 1},
+    "SE": {"route_miss": 9, "model_selection_miss": 1, "correct_tool_argument_realization_failure": 5, "exact": 1}
+  },
+  "argument_failure_occurrences_on_correct_tool_nonexact_rows": {
+    "E": {"extra_key": 1, "missing_key": 1, "wrong_value": 5, "wrong_type_subset": 1},
+    "SE": {"extra_key": 1, "missing_key": 2, "wrong_value": 4, "wrong_type_subset": 1}
+  },
+  "state_contrast": {
+    "identical_candidate_set_rows": 8,
+    "mean_candidate_set_jaccard": 0.6885416666666667,
+    "byte_identical_output_rows": 7,
+    "exact_paired_ties": 16,
+    "tool_paired_ties": 16,
+    "slot_true_positive_delta": 0,
+    "prompt_token_delta": 6911,
+    "prompt_token_relative_increase": 0.3457764668801281,
+    "latency_seconds_delta": 3.405286841909402,
+    "conclusion": "The structured state is a deterministic re-expression of the same observation. It changed formatting, action segmentation, routes, and output form, but added no task information or scored correctness."
+  },
+  "row_mechanisms": {
+    "tier1_direct:000074": {"C": "wrong-tool", "E": "route-miss", "SE": "route-miss"},
+    "tier1_direct:003713": {"C": "correct-tool-nonexact", "E": "argument-realization", "SE": "argument-realization"},
+    "tier2_parametric:000568": {"C": "correct-tool-nonexact", "E": "exact", "SE": "exact"},
+    "tier2_parametric:001869": {"C": "correct-tool-nonexact", "E": "argument-realization", "SE": "argument-realization"},
+    "tier3_multi_intent:001732": {"C": "wrong-tool-multiset", "E": "route-miss", "SE": "route-miss"},
+    "tier3_multi_intent:002166": {"C": "wrong-tool-multiset", "E": "route-miss", "SE": "route-miss"},
+    "tier4_implicit:001628": {"C": "correct-tool-nonexact", "E": "route-miss", "SE": "route-miss-empty-array"},
+    "tier4_implicit:001759": {"C": "correct-tool-nonexact", "E": "route-miss", "SE": "route-miss"},
+    "tier5_needle:001059": {"C": "wrong-tool", "E": "route-miss", "SE": "route-miss"},
+    "tier5_needle:002546": {"C": "correct-tool-nonexact", "E": "argument-realization", "SE": "argument-realization"},
+    "tier6_correction:001056": {"C": "correct-tool-nonexact", "E": "model-selection-miss-and-synthetic-literal-copy", "SE": "model-selection-miss-and-synthetic-literal-copy"},
+    "tier6_correction:003671": {"C": "exact", "E": "argument-realization", "SE": "argument-realization"},
+    "tier7_multiturn:000637": {"C": "exact", "E": "route-miss", "SE": "route-miss"},
+    "tier7_multiturn:001590": {"C": "correct-tool-nonexact", "E": "argument-realization", "SE": "argument-realization-and-illegal-keyset"},
+    "tier8_intent_blending:000324": {"C": "wrong-tool-multiset", "E": "route-miss", "SE": "route-miss"},
+    "tier8_intent_blending:000489": {"C": "correct-tool-nonexact", "E": "route-miss", "SE": "route-miss"}
+  },
+  "decision": {
+    "e_stage1_pass": false,
+    "se_stage1_pass": false,
+    "remainder24_status": "closed",
+    "fresh88_status": "closed",
+    "test_status": "closed",
+    "tfrl_status": "unchanged"
+  }
+}
