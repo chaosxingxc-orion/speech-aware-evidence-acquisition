@@ -116,13 +116,13 @@ BASELINE_FRAGMENT = "a2t-g4-executable-microground-agentloop"
 EXPERIMENT_FRAGMENT = "a2t-g4-executable-microground-screen-16-v1"
 
 EXPERIMENT_CONFIG_SHA256 = (
-    "f2f31ad178d54e99cffa60d24fae1f0c72a8ea2d6894e6d1f19929e161100d5a"
+    "f0b942d05121f14ee433371c730b77d155fb5ae0cfdb80b5ef110f862bcbacf7"
 )
 COMPOSED_CONFIG_SHA256 = (
-    "c651ac7b631ebdbbe19a450582d17a8d728f5fd3fae2e6600b3fe7affc531da2"
+    "04f02dfd3c620351799947ef6582ef5b5064a80591bca07fc6519a717887d8f9"
 )
 PROTOCOL_SHA256 = (
-    "64236977c29d4babbacabbb597da5d21ec8b019c524191a64457452f66b889e0"
+    "041b87305f8357ffb19487ac3f8a76a7da78f37fdad0ea4dca4399c13b733cf4"
 )
 SELECTED_RECEIPT_SHA256 = (
     "41a14ab576d7a428dd9849f26432e2c4998371b9f601189a1d558d694a12c884"
@@ -192,6 +192,13 @@ BASELINE_CONFIG_SHA256 = (
 )
 EXPERIMENT_CONFIG_RELPATH = Path(
     "configs/experiment/a2t-g4-executable-microground-screen-16-v1.json"
+)
+PREREGISTRATION_RELPATH = Path(
+    "docs/readiness/"
+    "2026-09-02-a2t-g4-executable-microground-screen-16-v1-preregistration.md"
+)
+PREREGISTRATION_SHA256 = (
+    "9e380eacfb87e29550804548d54a693ebf27deb745a3cb662f53c0cbcca36387"
 )
 SELECTED_RECEIPT_RELPATH = Path(
     "docs/receipts/a2t/A2T-G4-MICROGROUND-SCREEN-16.json"
@@ -493,6 +500,7 @@ def _static_preflight(root: Path) -> dict[str, object]:
     for relpath, expected, label in (
         (BASELINE_CONFIG_RELPATH, BASELINE_CONFIG_SHA256, "baseline config"),
         (EXPERIMENT_CONFIG_RELPATH, EXPERIMENT_CONFIG_SHA256, "experiment config"),
+        (PREREGISTRATION_RELPATH, PREREGISTRATION_SHA256, "preregistration"),
         (SELECTED_RECEIPT_RELPATH, SELECTED_RECEIPT_SHA256, "selected16 receipt"),
         (CORPUS_BUILD_RELPATH, CORPUS_BUILD_SHA256, "corpus build receipt"),
         (CORPUS_FILE_RELPATH, CORPUS_FILE_SHA256, "semantic corpus"),

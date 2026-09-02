@@ -75,6 +75,15 @@ def test_execution_plan_and_verified_split_use_carrier_prefixed_run_identity() -
     assert launcher.ROUTE_SET_SHA256 == (
         "2b2d8b444ae67edd06abf7a3d59bab09d74db3e21b242246a392569f4ce5236c"
     )
+    assert launcher.EXPERIMENT_CONFIG_SHA256 == (
+        "f0b942d05121f14ee433371c730b77d155fb5ae0cfdb80b5ef110f862bcbacf7"
+    )
+    assert launcher.COMPOSED_CONFIG_SHA256 == (
+        "04f02dfd3c620351799947ef6582ef5b5064a80591bca07fc6519a717887d8f9"
+    )
+    assert launcher.PROTOCOL_SHA256 == (
+        "041b87305f8357ffb19487ac3f8a76a7da78f37fdad0ea4dca4399c13b733cf4"
+    )
 
 
 def test_organizer_builds_exactly_sixteen_bounded_states_and_source_free_receipt() -> None:
