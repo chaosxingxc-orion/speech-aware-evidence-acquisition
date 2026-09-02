@@ -370,6 +370,35 @@ def test_malformed_construction_key_skeleton_is_safely_excluded_and_reported() -
     assert "UNSAFE MALFORMED VOLUME" not in artifact.text
 
 
+def test_empty_and_non_ascii_construction_text_are_quarantined_before_rendering() -> (
+    None
+):
+    empty = _row(
+        56,
+        text="   ",
+        pairs=(("direction", "Up"), ("steps", "8")),
+    )
+    non_ascii = _row(
+        57,
+        text="caf\u00e9 volume Up by 8 steps",
+        pairs=(("direction", "Up"), ("steps", "8")),
+    )
+    safe = _row(
+        58,
+        text="Move cabin volume Down by 8 steps",
+        pairs=(("direction", "Down"), ("steps", "8")),
+    )
+
+    artifact = _build((empty, non_ascii, safe))
+
+    assert artifact.report["rejected_row_reason_counts"] == {
+        "empty_construction_text": 1,
+        "non_ascii_construction_text": 1,
+    }
+    assert artifact.report["unsafe_construction_text_row_count"] == 2
+    assert artifact.text.isascii()
+
+
 @pytest.mark.parametrize(
     ("kwargs", "message"),
     [

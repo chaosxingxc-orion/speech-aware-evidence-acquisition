@@ -528,6 +528,12 @@ def build_construction_example_family_ground(
                 f"construction tool {row.tool_name!r} is outside frozen G5"
             )
         used_tools.add(row.tool_name)
+        if not isinstance(row.text, str) or not row.text.strip():
+            rejected_rows["empty_construction_text"] += 1
+            continue
+        if not row.text.isascii():
+            rejected_rows["non_ascii_construction_text"] += 1
+            continue
         if (
             not isinstance(row.arg_signature, tuple)
             or len(row.arg_signature) != len(set(row.arg_signature))
@@ -658,6 +664,10 @@ def build_construction_example_family_ground(
         "malformed_argument_key_skeleton_row_count": rejected_rows[
             "malformed_argument_key_skeleton"
         ],
+        "unsafe_construction_text_row_count": (
+            rejected_rows["empty_construction_text"]
+            + rejected_rows["non_ascii_construction_text"]
+        ),
         "typed_key_count": sum(
             len(contract.types)
             for contracts in contracts_by_family.values()
