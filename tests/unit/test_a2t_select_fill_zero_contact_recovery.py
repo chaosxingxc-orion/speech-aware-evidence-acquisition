@@ -7,6 +7,7 @@ import importlib.util
 import json
 from pathlib import Path
 import sys
+from types import SimpleNamespace
 
 import pytest
 
@@ -162,3 +163,43 @@ def test_send_accounting_requires_exact_phase_by_sample_cross_product() -> None:
             phases=phases,
             sample_ids=sample_ids,
         )
+
+
+def test_reuses_verified_direct_bundle_without_copying_or_rewriting(
+    tmp_path, monkeypatch
+) -> None:
+    module = _module()
+    source = tmp_path / "source-direct"
+    source.mkdir()
+    paths = {}
+    for field, suffix in (
+        ("manifest", "run-manifest.json"),
+        ("outputs", "outputs.jsonl"),
+        ("trace", "trace.jsonl"),
+        ("trace_manifest", "trace-manifest.json"),
+    ):
+        path = source / suffix
+        path.write_bytes(f"immutable-{field}\n".encode("ascii"))
+        paths[f"direct:{field}"] = path
+    before = {path: path.read_bytes() for path in paths.values()}
+    verified_paths = []
+
+    def verify(path):
+        verified_paths.append(Path(path))
+        return SimpleNamespace(outputs_rows=(object(), object()), attempt_state="ABORTED")
+
+    monkeypatch.setattr(module, "verify_bundle", verify)
+
+    descriptor = module._reuse_direct_bundle(paths, sample_count=2)
+
+    assert verified_paths == [paths["direct:manifest"]]
+    assert descriptor["manifest"] == str(paths["direct:manifest"].resolve())
+    assert descriptor["source_manifest_reused_without_rewriting"] is True
+    assert set(descriptor["source_bundle"]) == {
+        "manifest",
+        "outputs",
+        "trace",
+        "trace_manifest",
+    }
+    assert {path: path.read_bytes() for path in paths.values()} == before
+    assert set(source.iterdir()) == set(before)

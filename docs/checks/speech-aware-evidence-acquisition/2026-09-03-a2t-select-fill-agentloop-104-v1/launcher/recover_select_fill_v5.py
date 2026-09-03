@@ -1125,29 +1125,25 @@ def _lineage_rows(
     return tuple(result)
 
 
-def _copy_direct_bundle(
-    paths: Mapping[str, Path], target: Path, *, sample_count: int
+def _reuse_direct_bundle(
+    paths: Mapping[str, Path], *, sample_count: int
 ) -> dict[str, object]:
-    directory = target / "direct_m0"
-    directory.mkdir(parents=False, exist_ok=False)
-    copied: dict[str, Path] = {}
-    for field in ("manifest", "outputs", "trace", "trace_manifest"):
-        source = paths[f"direct:{field}"]
-        destination = directory / source.name
-        shutil.copyfile(source, destination)
-        if _sha256(destination) != _sha256(source):
-            raise RecoveryError(f"recovered direct {field} copy drift")
-        copied[field] = destination
-    verified = verify_bundle(copied["manifest"])
+    """Reference the already verified direct bundle without rewriting it."""
+
+    source = {
+        field: paths[f"direct:{field}"]
+        for field in ("manifest", "outputs", "trace", "trace_manifest")
+    }
+    verified = verify_bundle(source["manifest"])
     if len(verified.outputs_rows) != sample_count or verified.attempt_state != "ABORTED":
-        raise RecoveryError("copied direct manifest no longer verifies")
+        raise RecoveryError("source direct manifest no longer verifies")
     return {
         "role": "direct_m0",
         "status": "COMPLETE",
         "complete_rows": sample_count,
-        "manifest": str(copied["manifest"].resolve()),
-        "manifest_sha256": _sha256(copied["manifest"]),
-        "copied_bundle": {field: _artifact(path) for field, path in copied.items()},
+        "manifest": str(source["manifest"].resolve()),
+        "manifest_sha256": _sha256(source["manifest"]),
+        "source_bundle": {field: _artifact(path) for field, path in source.items()},
         "source_manifest_reused_without_rewriting": True,
     }
 
@@ -1176,7 +1172,7 @@ def recover(plan_path: Path, data_root: Path) -> dict[str, object]:
     expected = plan["expected"]
     assert isinstance(expected, Mapping)
     sample_count = int(expected["sample_count"])
-    descriptors = [_copy_direct_bundle(source_paths, target, sample_count=sample_count)]
+    descriptors = [_reuse_direct_bundle(source_paths, sample_count=sample_count)]
 
     authority_plans = authority["execution_plans"]
     assert isinstance(authority_plans, Mapping)
