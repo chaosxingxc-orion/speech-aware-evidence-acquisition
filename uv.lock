@@ -2279,6 +2279,9 @@ dev = [
     { name = "ruff" },
     { name = "soundfile" },
 ]
+tfrl-vw = [
+    { name = "vowpalwabbit" },
+]
 tracking = [
     { name = "mlflow" },
 ]
@@ -2302,8 +2305,9 @@ requires-dist = [
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.6" },
     { name = "soundfile", marker = "extra == 'dev'", specifier = ">=0.12" },
+    { name = "vowpalwabbit", marker = "extra == 'tfrl-vw'", specifier = "==9.11.2" },
 ]
-provides-extras = ["dev", "tracking"]
+provides-extras = ["dev", "tracking", "tfrl-vw"]
 
 [package.metadata.requires-dev]
 dev = [
@@ -2437,6 +2441,29 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/03/18/ccce41535dee1be77735592bd19965f3972c82e07ee703d324709496b716/uvicorn-0.52.1.tar.gz", hash = "sha256:112ec661814189acbccd3f7b86460147cc065fc92c0821afa78918780e4354dd", size = 100571, upload-time = "2026-08-01T18:19:30.732Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c7/d5/68e6e9bca63c0badf67002890a46d3784c958de45b65e1275ec583ca1f06/uvicorn-0.52.1-py3-none-any.whl", hash = "sha256:e4403f9d93188cf9d1088e9f40e3acd12630e2df8675316704379a7fc20fff6a", size = 79859, upload-time = "2026-08-01T18:19:29.294Z" },
+]
+
+[[package]]
+name = "vowpalwabbit"
+version = "9.11.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/4d/ff/bd0ffb16f5792a00151136741cfad876777777db7d14aae9a9b126d03c6f/vowpalwabbit-9.11.2.tar.gz", hash = "sha256:c0ecf8d773c0174a9ab7b0f9207a2608c894bc2fbec50380ca276e89553fd379", size = 35442893, upload-time = "2026-03-07T16:25:32.093Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/33/5b/f88c516cd411adb4636c9fa8df828c2e5338de3dc36accc68ea0143d4469/vowpalwabbit-9.11.2-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:6ee450a5dd40a60a9a12abfe16972410e8e5d06a7ee92d8c6ec15be4a7ec0ecb", size = 2283281, upload-time = "2026-03-07T16:25:07.933Z" },
+    { url = "https://files.pythonhosted.org/packages/9a/a1/c8d4ab89a2a3346645683ccc1b4e3c1fbbf68dc70d9901f896cfa03ac3f8/vowpalwabbit-9.11.2-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:fb962bce215757e4cd49d8d90341617416d5b360abdf476daa109b3eb4312825", size = 2479835, upload-time = "2026-03-07T16:25:09.984Z" },
+    { url = "https://files.pythonhosted.org/packages/ec/2b/bbc242bdd69d65daf130b65ae08046fa5ddac4effe85deb8dcd7de3cad7c/vowpalwabbit-9.11.2-cp312-cp312-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:690353cc881bbd26ac81e758ed4b7fe0fecae7edb534a1a86c26246e38c5aecd", size = 3010926, upload-time = "2026-03-07T16:25:11.727Z" },
+    { url = "https://files.pythonhosted.org/packages/8e/cf/62ae2a81385ca007a2b1db52a9a1d9a2a27afd2c183b14a8e522661295ed/vowpalwabbit-9.11.2-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:62d117df1f5d2994130ee5b9f145d710c8198d065b061f0480ba0cab78aa3141", size = 3478813, upload-time = "2026-03-07T16:25:13.461Z" },
+    { url = "https://files.pythonhosted.org/packages/06/3f/9231a026e3344118605a752933df5e935602efaa0281e50fe3d60361f3f3/vowpalwabbit-9.11.2-cp312-cp312-win_amd64.whl", hash = "sha256:bdf3267faec119ce69dd147b11da234507cc1acd38a6ad61521188918e06d382", size = 1961008, upload-time = "2026-03-07T16:25:14.747Z" },
+    { url = "https://files.pythonhosted.org/packages/15/f5/20b4cc95eb8dddf6140fe7df3dd05b4fdf4c3278404636763848cbbefc50/vowpalwabbit-9.11.2-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:46a914003e1eeb2a2c73c1234323262294d2a65981b83706789a90cb251956f6", size = 2283317, upload-time = "2026-03-07T16:25:16.368Z" },
+    { url = "https://files.pythonhosted.org/packages/8d/2f/80e8d2e1f85782f75733898f11cfb1580ee13f3fbdf0f0f1e46f4087f767/vowpalwabbit-9.11.2-cp313-cp313-macosx_11_0_x86_64.whl", hash = "sha256:8a1270a7a42f5d469f0511a6171d13b5b227eade306b653ae9babb34f5aff405", size = 2479800, upload-time = "2026-03-07T16:25:17.521Z" },
+    { url = "https://files.pythonhosted.org/packages/f3/49/c72122dc6288e80303a427d0a89a453f9ad5c9f3ef2a6a02403208fbf46e/vowpalwabbit-9.11.2-cp313-cp313-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:38f17578e13b53cb62c2f9c1d27dea78963d2c05d465ceb645837a53229a4822", size = 3010885, upload-time = "2026-03-07T16:25:18.858Z" },
+    { url = "https://files.pythonhosted.org/packages/20/b5/98c74b54585867da35d9c82782d9b096918f294c32cd8febabd1a28187ef/vowpalwabbit-9.11.2-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:876e7b93615bc87b1af658098e9f33e007eedd698bef3b7cbfbe76635f8f4f71", size = 3478604, upload-time = "2026-03-07T16:25:20.514Z" },
+    { url = "https://files.pythonhosted.org/packages/5d/61/8987e91d56d58d04a1c605a25e4414fe9633dfff94bcae0e63321ee0369b/vowpalwabbit-9.11.2-cp313-cp313-win_amd64.whl", hash = "sha256:2e5470796b967152e9832e04e29b424765f077ab3bea648e109bf07f5671e5ea", size = 1961060, upload-time = "2026-03-07T16:25:21.989Z" },
+    { url = "https://files.pythonhosted.org/packages/09/88/c2ded0e407f46bcde82d0ab05ab35b0732556e089aa968d32b106fb3de15/vowpalwabbit-9.11.2-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:25ef6e2e571d065242d31f3d3f566ba45fd8456811db7bf2e5923f799e30caf1", size = 2283476, upload-time = "2026-03-07T16:25:23.549Z" },
+    { url = "https://files.pythonhosted.org/packages/a2/9b/b957da546b07de5e557f00c4b876aa72633da7e1c62bdd0d3257fa33ccca/vowpalwabbit-9.11.2-cp314-cp314-macosx_11_0_x86_64.whl", hash = "sha256:842e4339dae02b7e60c0c7e250cadb631a5ab3d792db483e2b729b9ca7fc5b71", size = 2480042, upload-time = "2026-03-07T16:25:25.036Z" },
+    { url = "https://files.pythonhosted.org/packages/6e/60/23bda78bdb4d02047142b36892053f35d09af663792bd71b91cc3060819d/vowpalwabbit-9.11.2-cp314-cp314-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:de15b8d2ebfd908b63c259025d579a26dcef3cedf352b7c63737b450f9c92a61", size = 3011373, upload-time = "2026-03-07T16:25:26.442Z" },
+    { url = "https://files.pythonhosted.org/packages/12/2d/15819906353eb6a9e6c61327b53aa7d70f343e3fbb874447748ea1145a6a/vowpalwabbit-9.11.2-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:68b09d3db0bb8e8ff4782ca9d1503e7e043f29618bf2de560b0abd85f8463d0b", size = 3479196, upload-time = "2026-03-07T16:25:28.028Z" },
+    { url = "https://files.pythonhosted.org/packages/a8/39/59a9aabb5b79b0e4bbd7a059f6351f19faea5d1b556c2e2ebf5f92ab848e/vowpalwabbit-9.11.2-cp314-cp314-win_amd64.whl", hash = "sha256:a0badad3719f8b05f87e0e62874ca38e0be96d220f43d3032656239ba8c248df", size = 2021211, upload-time = "2026-03-07T16:25:29.477Z" },
 ]
 
 [[package]]

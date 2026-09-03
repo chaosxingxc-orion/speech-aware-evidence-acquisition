@@ -65,6 +65,11 @@ dev = [
     "jiwer>=4.0",
 ]
 tracking = ["mlflow>=2.14"]
+# The external training-free controller reuses upstream Vowpal Wabbit rather
+# than carrying a study-owned RL implementation. Keep its compiled runtime out
+# of the zero-dependency base package and pin the exact version recorded by
+# controller receipts.
+tfrl-vw = ["vowpalwabbit==9.11.2"]
 
 # Kept byte-identical to `[project.optional-dependencies].dev` above: the extra
 # is what `uv pip install -e ".[dev]"` reads, the group is what a bare
