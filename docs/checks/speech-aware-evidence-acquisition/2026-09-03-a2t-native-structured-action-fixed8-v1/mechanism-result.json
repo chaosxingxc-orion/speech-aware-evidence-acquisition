@@ -1,0 +1,269 @@
+{
+  "schema": "saea-a2t-native-structured-action-fixed8-mechanism-result-v1",
+  "experiment_id": "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1",
+  "flight_id": "flight-20260903T013000Z",
+  "date": "2026-09-03",
+  "status": "TERMINAL_MECHANISM_FAILURE",
+  "claim_scope": "Stage-2 secondary-discovery fixed-eight mechanism falsification only",
+  "decision": "Do not promote this candidate into the OpenJiuwen engineering baseline. Build a new canonical-ground discovery cell; keep policy fitting, VW, scale, confirmation, test, Stage-3, and paper-scale work closed.",
+  "metric_authority": {
+    "task_metrics": "The unchanged official a2t-toolcall scorer over each complete verified manifest.",
+    "hard_validity_and_legal_key_set_coverage": "Frozen label-free post-seal diagnostics from a2t_native_structured_action_postseal.",
+    "tuning_or_fitting": false,
+    "new_model_contacts": 0,
+    "test_or_confirmatory_data_opened": false
+  },
+  "cell_names": {
+    "REGISTRY_NO_SCHEMA": "M0: complete registry without structured response format",
+    "REGISTRY_STRICT_ACTION": "Complete registry with structured response format",
+    "HANDBOOK_NO_SCHEMA": "Executable handbook without structured response format",
+    "HANDBOOK_STRICT_ACTION": "Executable handbook with structured response format"
+  },
+  "cells": {
+    "REGISTRY_NO_SCHEMA": {
+      "samples": 8,
+      "exact_count": 0,
+      "tool_count": 0,
+      "slot_micro_precision": 0.0,
+      "slot_micro_recall": 0.0,
+      "slot_micro_f1": 0.0,
+      "parse_count": 0,
+      "hard_valid_count": 0,
+      "legal_key_set_count": 0,
+      "manifest_sha256": "fdebe31e6db7a29b39e3460d5640a176b4d37bf11cd43ea217b08ba9674650e4",
+      "outputs_sha256": "2cee423c183b765ced4e4791ad3ccdacd10563a8867effcd426639b6f443c230",
+      "official_score_sha256": "1c59db090857eb3ffaeda53af6dfda440103420d3dc4a05e008bab5b8c0e5311"
+    },
+    "REGISTRY_STRICT_ACTION": {
+      "samples": 8,
+      "exact_count": 2,
+      "tool_count": 4,
+      "slot_micro_precision": 0.3,
+      "slot_micro_recall": 0.375,
+      "slot_micro_f1": 0.33333333333333326,
+      "parse_count": 8,
+      "hard_valid_count": 8,
+      "legal_key_set_count": 8,
+      "matched_parent_exact_saves": 2,
+      "matched_parent_exact_harms": 0,
+      "matched_parent_exact_ties": 6,
+      "manifest_sha256": "e950cd7093da3e5287898c4611217e099f60af64b8e24bcb06a0838fd3d7f5ab",
+      "outputs_sha256": "f4e19ab8e107e368e68f889a9dbf0df8e1f10b601b87184ee5e2e7120de79b6d",
+      "official_score_sha256": "fdee5f36042cc81fbfebb910fd2452b0448d2324eb8fdc5b7202b80ff57d7c8b"
+    },
+    "HANDBOOK_NO_SCHEMA": {
+      "samples": 8,
+      "exact_count": 1,
+      "tool_count": 5,
+      "slot_micro_precision": 0.36363636363636365,
+      "slot_micro_recall": 0.5,
+      "slot_micro_f1": 0.4210526315789474,
+      "parse_count": 8,
+      "hard_valid_count": 7,
+      "legal_key_set_count": 7,
+      "manifest_sha256": "7d3b7d6999ba04a6003e621f9dab5ebe1d511b543e92014b9dd9caf4a4d07b27",
+      "outputs_sha256": "695e830c703d65f980e6d483e137ff8977a5eb1aa175c8ec7bb2a30596e83fe7",
+      "official_score_sha256": "64779366afd2dcc1602a11dc288f62ad8f4565b81fad4e5f0411b7ec7a043e83"
+    },
+    "HANDBOOK_STRICT_ACTION": {
+      "samples": 8,
+      "exact_count": 1,
+      "tool_count": 3,
+      "slot_micro_precision": 0.2,
+      "slot_micro_recall": 0.25,
+      "slot_micro_f1": 0.22222222222222224,
+      "parse_count": 8,
+      "hard_valid_count": 7,
+      "legal_key_set_count": 8,
+      "matched_parent_exact_saves": 1,
+      "matched_parent_exact_harms": 1,
+      "matched_parent_exact_ties": 6,
+      "hard_validity_failure": {
+        "sample_id": "tier3_multi_intent:002490",
+        "violation": "duplicate_call",
+        "note": "The response parses and every call uses a legal key set, but it duplicates a call. Syntax parsing and legal key-set coverage therefore remain 8/8 while complete hard validity is only 7/8."
+      },
+      "manifest_sha256": "8aa781134cebb35f1f97d5f40b632002300f31df9e9da933134fe19a66c962a8",
+      "outputs_sha256": "0c59a97c30e145ecd4d7ce1d389d308817e7faa0293d8faebc1e4e2eb08ebfca",
+      "official_score_sha256": "a12922a40ff8e971c4cf1af8b483002edb499d39333c98e97dddf6148d1c1bae"
+    }
+  },
+  "per_tier": {
+    "metric_order": [
+      "exact_match",
+      "tool_accuracy",
+      "row_slot_f1"
+    ],
+    "tier1_direct": {
+      "REGISTRY_NO_SCHEMA": [0.0, 0.0, 0.0],
+      "REGISTRY_STRICT_ACTION": [0.0, 1.0, 0.0],
+      "HANDBOOK_NO_SCHEMA": [0.0, 0.0, 0.0],
+      "HANDBOOK_STRICT_ACTION": [0.0, 1.0, 0.0]
+    },
+    "tier2_parametric": {
+      "REGISTRY_NO_SCHEMA": [0.0, 0.0, 0.0],
+      "REGISTRY_STRICT_ACTION": [0.0, 0.0, 0.0],
+      "HANDBOOK_NO_SCHEMA": [0.0, 1.0, 0.6666666666666666],
+      "HANDBOOK_STRICT_ACTION": [0.0, 0.0, 0.0]
+    },
+    "tier3_multi_intent": {
+      "REGISTRY_NO_SCHEMA": [0.0, 0.0, 0.0],
+      "REGISTRY_STRICT_ACTION": [0.0, 0.0, 1.0],
+      "HANDBOOK_NO_SCHEMA": [0.0, 1.0, 0.5],
+      "HANDBOOK_STRICT_ACTION": [0.0, 0.0, 0.25]
+    },
+    "tier4_implicit": {
+      "REGISTRY_NO_SCHEMA": [0.0, 0.0, 0.0],
+      "REGISTRY_STRICT_ACTION": [0.0, 0.0, 0.0],
+      "HANDBOOK_NO_SCHEMA": [1.0, 1.0, 1.0],
+      "HANDBOOK_STRICT_ACTION": [0.0, 0.0, 0.0]
+    },
+    "tier5_needle": {
+      "REGISTRY_NO_SCHEMA": [0.0, 0.0, 0.0],
+      "REGISTRY_STRICT_ACTION": [0.0, 1.0, 0.6666666666666666],
+      "HANDBOOK_NO_SCHEMA": [0.0, 1.0, 0.6666666666666666],
+      "HANDBOOK_STRICT_ACTION": [0.0, 1.0, 0.6666666666666666]
+    },
+    "tier6_correction": {
+      "REGISTRY_NO_SCHEMA": [0.0, 0.0, 0.0],
+      "REGISTRY_STRICT_ACTION": [1.0, 1.0, 0.0],
+      "HANDBOOK_NO_SCHEMA": [0.0, 1.0, 0.0],
+      "HANDBOOK_STRICT_ACTION": [1.0, 1.0, 0.0]
+    },
+    "tier7_multiturn": {
+      "REGISTRY_NO_SCHEMA": [0.0, 0.0, 0.0],
+      "REGISTRY_STRICT_ACTION": [1.0, 1.0, 1.0],
+      "HANDBOOK_NO_SCHEMA": [0.0, 0.0, 0.0],
+      "HANDBOOK_STRICT_ACTION": [0.0, 0.0, 0.0]
+    },
+    "tier8_intent_blending": {
+      "REGISTRY_NO_SCHEMA": [0.0, 0.0, 0.0],
+      "REGISTRY_STRICT_ACTION": [0.0, 0.0, 0.0],
+      "HANDBOOK_NO_SCHEMA": [0.0, 0.0, 0.0],
+      "HANDBOOK_STRICT_ACTION": [0.0, 0.0, 0.0]
+    }
+  },
+  "pairwise_exact": {
+    "REGISTRY_STRICT_ACTION_vs_REGISTRY_NO_SCHEMA": {
+      "saves": 2,
+      "harms": 0,
+      "ties": 6
+    },
+    "HANDBOOK_STRICT_ACTION_vs_HANDBOOK_NO_SCHEMA": {
+      "saves": 1,
+      "harms": 1,
+      "ties": 6
+    },
+    "REGISTRY_STRICT_ACTION_vs_HANDBOOK_NO_SCHEMA": {
+      "saves": 2,
+      "harms": 1,
+      "ties": 5
+    },
+    "HANDBOOK_STRICT_ACTION_vs_REGISTRY_NO_SCHEMA": {
+      "saves": 1,
+      "harms": 0,
+      "ties": 7
+    }
+  },
+  "factorial_effects": {
+    "metric_order": [
+      "exact_rate",
+      "tool_rate",
+      "slot_micro_f1",
+      "parse_rate",
+      "hard_valid_rate",
+      "legal_key_set_rate"
+    ],
+    "definition": {
+      "knowledge_main_effect": "Mean of handbook cells minus mean of registry cells.",
+      "structured_action_main_effect": "Mean of strict-action cells minus mean of no-schema cells.",
+      "interaction": "Handbook strict-minus-no-schema effect minus registry strict-minus-no-schema effect."
+    },
+    "knowledge_main_effect": [0.0, 0.25, 0.154971, 0.5, 0.375, 0.4375],
+    "structured_action_main_effect": [0.125, 0.125, 0.067251, 0.5, 0.5, 0.5625],
+    "interaction": [-0.25, -0.75, -0.532164, -1.0, -1.0, -0.875],
+    "best_cell": "REGISTRY_STRICT_ACTION",
+    "best_cell_vs_m0": [0.25, 0.5, 0.333333, 1.0, 1.0, 1.0],
+    "best_cell_vs_m0_exact_saves": 2,
+    "best_cell_vs_m0_exact_harms": 0
+  },
+  "frozen_oracle": {
+    "selection_rule": "exact_match, then row slot F1, then tool correctness, then frozen cell order",
+    "selected_by_cell": {
+      "REGISTRY_NO_SCHEMA": 1,
+      "REGISTRY_STRICT_ACTION": 5,
+      "HANDBOOK_NO_SCHEMA": 2,
+      "HANDBOOK_STRICT_ACTION": 0
+    },
+    "selected_rows": {
+      "tier1_direct:000062": "REGISTRY_STRICT_ACTION",
+      "tier2_parametric:001693": "HANDBOOK_NO_SCHEMA",
+      "tier3_multi_intent:002490": "REGISTRY_STRICT_ACTION",
+      "tier4_implicit:001628": "HANDBOOK_NO_SCHEMA",
+      "tier5_needle:001679": "REGISTRY_STRICT_ACTION",
+      "tier6_correction:002940": "REGISTRY_STRICT_ACTION",
+      "tier7_multiturn:000293": "REGISTRY_STRICT_ACTION",
+      "tier8_intent_blending:000052": "REGISTRY_NO_SCHEMA"
+    },
+    "official_metrics": {
+      "samples": 8,
+      "exact_count": 3,
+      "tool_count": 6,
+      "slot_micro_precision": 0.8333333333333334,
+      "slot_micro_recall": 0.625,
+      "slot_micro_f1": 0.7142857142857143,
+      "parse_count": 7
+    },
+    "label_free_diagnostics": {
+      "hard_valid_count": 7,
+      "legal_key_set_count": 7,
+      "failure_sample_id": "tier8_intent_blending:000052",
+      "failure_reason": "All four cells tied at zero under the frozen comparator, so frozen cell order selected the unparsable REGISTRY_NO_SCHEMA row."
+    },
+    "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1/flight-20260903T013000Z/postseal-four-cell-oracle/SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-RECOVERY-V2.run-manifest.json",
+    "manifest_sha256": "d0ad1900418486aae6af831657b47e86b796108932b15b876f9fb7583f552175",
+    "outputs_sha256": "43e729809d09c2189a8a00669d4da84a2bdf8f305a29c98da6cca3a5081807fb",
+    "trace_manifest_sha256": "21d38a4c3238ff99041b23cd43c21f56ee332d1b667ec8c06963167c5894a67b",
+    "official_score_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1/flight-20260903T013000Z/oracle-official-score-effective/FOUR_CELL_ORACLE.score.json",
+    "official_score_sha256": "c3343928385e130fb4da3f04440c18b0a63faa721721174a7ad9c57234f8de96",
+    "new_model_contacts": 0,
+    "effective_official_score_invocations": 1
+  },
+  "mechanism_gates": {
+    "both_strict_parse_8_of_8": true,
+    "both_strict_complete_hard_validity_8_of_8": false,
+    "both_strict_legal_key_set_coverage_8_of_8": true,
+    "oracle_exact_8_of_8_tool_8_of_8_and_slot_f1_at_least_0_90": false,
+    "at_least_one_strict_cell_exact_7_of_8_tool_8_of_8_slot_f1_at_least_0_90_saves_at_least_3_harms_0": false,
+    "oracle_best_strict_exact_gap_at_most_1": true,
+    "tie_rule_applied": false,
+    "selected_strict_cell": null,
+    "overall": false,
+    "outcome": "failure"
+  },
+  "scoring_audit": {
+    "four_cell_outer_workers": 4,
+    "four_cell_whole_manifest_jobs": 4,
+    "four_cell_elapsed_seconds": 9.599750343011692,
+    "four_cell_summed_job_seconds": 30.279793113062102,
+    "four_cell_effective_speedup": 3.1542271237401307,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "score_jobs_sha256": "26e0f944d01d0850174663df1f1ee9406de30131e71d4f028c9dd1f90ebe0435",
+    "four_cell_batch_summary_sha256": "029a12c9b4825f369a4a091b1f8a47ac501f5cf95739e12e21fb927e98338a45",
+    "oracle_preflight_failure": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1/flight-20260903T013000Z/oracle-official-score",
+      "result_file_created": false,
+      "scorer_reached": false,
+      "reason": "The E0 frozen-source gate refused generated Python bytecode cache entries before the scorer ran. The disposable caches were removed and the unchanged oracle manifest was then scored effectively once."
+    },
+    "oracle_effective_batch_summary_sha256": "c33286d158c9a70fa5aabb790bb3f69bca056ee78813ad94a899f651f86523e2"
+  },
+  "verification": {
+    "focused_tests": "tests/unit/test_a2t_native_structured_action_postseal.py",
+    "focused_test_result": "16 passed",
+    "source_code_modified": false,
+    "exposure_ledger_modified": false
+  },
+  "scope_consequence": "The fixed-eight screen does not authorize OpenJiuwen AgentLoop integration or any policy fit. A later task-wide canonicalization-knowledge change requires a separate preregistration and a post-seal finding that a needed public representation is not expressible by the current types, constraints, or compatibility forms."
+}
