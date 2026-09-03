@@ -43,7 +43,14 @@ from speech_aware_evidence_acquisition.data.splits import (  # noqa: E402
 
 RUN_ID = "SAEA-A2T-SEMANTIC-AGENTLOOP-104-V1"
 MISSION_ID = "mission-20260903t190000z-semantic104-v1"
-RECOVERY_DIRNAME = "zero-contact-recovery-v1"
+FAILED_RECOVERY_DIRNAME = "zero-contact-recovery-v1"
+RECOVERY_DIRNAME = "zero-contact-recovery-v2"
+FAILED_RECOVERY_SOURCE_SEAL_SHA256 = (
+    "28a7d2f38f433ed86301944b4f830007d971d3d3946ba6c3e50b25e591378642"
+)
+FAILED_RECOVERY_DIRECT_MANIFEST_SHA256 = (
+    "4dfa112f965225d0916eabc254733aadf5704e30235f122af6db42489fac1b6c"
+)
 ROSTER_PATH = REPO / (
     "docs/checks/speech-aware-evidence-acquisition/"
     "2026-09-03-a2t-fresh-agentloop-roster/flight-roster-receipt.json"
@@ -455,6 +462,18 @@ def validate_source_bytes(data_root: Path) -> dict[str, object]:
             "source embedding attempt is not the finalized 208-contact source"
         )
 
+    failed_recovery = mission / FAILED_RECOVERY_DIRNAME
+    failed_source_seal = _require_hash(
+        failed_recovery / "source-seal.json",
+        FAILED_RECOVERY_SOURCE_SEAL_SHA256,
+        "failed V1 recovery source seal",
+    )
+    failed_direct_manifest = _require_hash(
+        failed_recovery / "direct_m0" / f"{RUN_ID}.run-manifest.json",
+        FAILED_RECOVERY_DIRECT_MANIFEST_SHA256,
+        "failed V1 recovery direct manifest",
+    )
+
     manifest = _read_object(direct_manifest, "source direct manifest")
     plan = manifest.get("plan")
     split = manifest.get("split")
@@ -475,6 +494,19 @@ def validate_source_bytes(data_root: Path) -> dict[str, object]:
         "source_authority": _artifact(authority_path),
         "source_failure": _artifact(failure_path),
         "source_direct_manifest": _artifact(direct_manifest),
+        "failed_recovery_v1": {
+            "status": "TERMINAL_ZERO_CONTACT_ASSERTION_FAILURE",
+            "reason": (
+                "AgentLoop traces contain two USE records and no OBS record per "
+                "sample; the failed assertion expected one of each"
+            ),
+            "source_seal": _artifact(failed_source_seal),
+            "verified_direct_manifest": _artifact(failed_direct_manifest),
+            "model_contacts": 0,
+            "embedding_contacts": 0,
+            "scorer_contacts": 0,
+            "gold_opened": False,
+        },
         "source_traces": trace_seals,
         "source_attempts": attempt_seals,
         "source_embedding_attempt": {
@@ -585,12 +617,7 @@ def _derive_bundle_material(
     )
     if role != "direct_m0":
         expected_channel_counts.update(
-            {
-                "OBS": SAMPLE_COUNT,
-                "ORG": SAMPLE_COUNT,
-                "SUPPLY": SAMPLE_COUNT,
-                "USE": SAMPLE_COUNT,
-            }
+            {"ORG": SAMPLE_COUNT, "SUPPLY": SAMPLE_COUNT, "USE": SAMPLE_COUNT * 2}
         )
     if channel_counts != expected_channel_counts:
         raise RecoveryError(
