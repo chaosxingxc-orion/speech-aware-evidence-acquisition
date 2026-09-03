@@ -1,0 +1,43 @@
+{
+  "artifacts": {
+    "centroids": {
+      "bytes": 9207878,
+      "count": 1095,
+      "dimension": 1024,
+      "dtype": "float64",
+      "path": "knowledge/audio2tool/semantic-agentloop-runtime-v1/tool-tier-centroids.npz",
+      "sha256": "b314210370388db05487476f53781497a37a4c6da283a6d0e511b7752837aaea"
+    },
+    "compatibility_rules": {
+      "bytes": 11731,
+      "compatibility_payload_sha256": "9b38ccb1814e5d2d023b486e1a2d7f1b3952dbfdea9a6557b6b1bc59ef95bdec",
+      "count": 43,
+      "path": "knowledge/audio2tool/semantic-agentloop-runtime-v1/compatibility-rules.json",
+      "sha256": "b6b4d029b0366ac0e34b2d589b2906fab555d694e2f0df122029491b7886f717"
+    }
+  },
+  "contacts": {
+    "embedding_tool": 0,
+    "frozen_core": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "execution_profile": "model-free-check",
+  "privacy_boundary": {
+    "concrete_argument_values_emitted": 0,
+    "evaluation_rows_consumed": 0,
+    "reference_transcripts_emitted": 0,
+    "sample_identifiers_emitted": 0,
+    "source_utterances_emitted": 0
+  },
+  "schema": "saea-a2t-frozen-semantic-runtime-assets-receipt-v1",
+  "semantic_index_sha256": "40b275636675adda1d185a13d0ed76d07b18c90b0d7e164535486c7374448fdb",
+  "sources": {
+    "construction_partition_identity_sha256": "4d0196ec91858cdc81340ee197c085ff29726a1f1b7fe9119d4e410d62df2f90",
+    "construction_rows_sha256": "4d8e90b61c14bada2ad04308068b6033ba6e6721f29b84b7eb2c1c987bd1d141",
+    "embedding_receipt_relpath": "docs/receipts/knowledge/a2t-kb-size-full-embeddings.json",
+    "embedding_receipt_sha256": "571ab8179a426ea9a41383d8b44f6bb99986ba5bab7be36646aee1a812d8fb61",
+    "embedding_vector_sha256": "00a7ebe9b8325ffc2c7b8e45ac4f0c8475b2d3e76994cc0f539f7b5ad5740f45"
+  }
+}

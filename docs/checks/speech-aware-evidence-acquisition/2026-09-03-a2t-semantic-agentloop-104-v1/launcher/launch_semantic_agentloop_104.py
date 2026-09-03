@@ -64,6 +64,7 @@ CHECK_DIR = REPO / (
     "docs/checks/speech-aware-evidence-acquisition/"
     "2026-09-03-a2t-semantic-agentloop-104-v1"
 )
+LOCAL_RUNTIME_FACTORY_PATH = CHECK_DIR / "launcher/local_runtime_factory.py"
 ROSTER_PATH = REPO / (
     "docs/checks/speech-aware-evidence-acquisition/"
     "2026-09-03-a2t-fresh-agentloop-roster/flight-roster-receipt.json"
@@ -154,7 +155,11 @@ _SHA256 = frozenset("0123456789abcdef")
 # replace every value with the exact governed artifact hash and refuse a blank
 # or placeholder.  They are outside the scientific protocol hash.
 REQUIRED_AUTHORITY_HASHES = {
+    "coordinator_launcher_sha256": None,
+    "local_runtime_factory_sha256": None,
+    "governed_embedding_tool_sha256": None,
     "execution_plan_set_sha256": None,
+    "embedding_execution_plan_sha256": None,
     "exposure_preregistration_sha256": None,
     "generation_runtime_receipt_sha256": None,
     "generation_decoder_gguf_sha256": GENERATION_DECODER_GGUF_SHA256,
@@ -162,7 +167,13 @@ REQUIRED_AUTHORITY_HASHES = {
     "qwen3_embedding_0_6b_q8_gguf_sha256": QWEN3_EMBEDDING_Q8_GGUF_SHA256,
     "speech_packet_promotion_receipt_sha256": PROMOTION_RECEIPT_SHA256,
     "construction_rows_sha256": None,
-    "construction_embedding_manifest_sha256": None,
+    "construction_embedding_receipt_sha256": None,
+    "construction_vector_artifact_sha256": None,
+    "semantic_runtime_asset_receipt_sha256": None,
+    "semantic_centroid_artifact_sha256": None,
+    "semantic_compatibility_rules_sha256": None,
+    "semantic_index_sha256": None,
+    "runner_snapshot_sha256": None,
     "selected_tool_ground_corpus_sha256": None,
     "selected_tool_compatibility_sha256": None,
 }
@@ -789,11 +800,17 @@ class ExactPromptBudgetTransport:
         speech_packet_tokens: Mapping[str, int],
         post_json: Callable[[str, Mapping[str, object]], object],
         send: Callable[[str, bytes], bytes],
+        request_role: str = "generation",
+        allow_missing_response_format: bool = False,
     ) -> None:
         if not isinstance(media_marker, str) or not media_marker:
             raise RuntimeError("prompt-budget gate requires a pinned media marker")
         if not callable(post_json) or not callable(send):
             raise RuntimeError("prompt-budget gate requires explicit contact callables")
+        if allow_missing_response_format and request_role != "direct_m0":
+            raise RuntimeError(
+                "response-format-free contact is reserved for the direct M0 role"
+            )
         if (
             not isinstance(speech_packet_tokens, Mapping)
             or not speech_packet_tokens
@@ -813,6 +830,8 @@ class ExactPromptBudgetTransport:
         self._speech_packet_tokens = dict(speech_packet_tokens)
         self._post_json = post_json
         self._send = send
+        self._request_role = request_role
+        self._allow_missing_response_format = allow_missing_response_format
         self._audits: list[dict[str, object]] = []
         self._lock = Lock()
 
@@ -838,7 +857,8 @@ class ExactPromptBudgetTransport:
             raise RuntimeError("prompt-level multi-sample batching is prohibited")
         if body.get("n", 1) != 1 or body.get("best_of", 1) != 1:
             raise RuntimeError("generation requires n=1 and best_of=1")
-        if not isinstance(response_format, Mapping) or not response_format:
+        has_response_format = isinstance(response_format, Mapping) and bool(response_format)
+        if not has_response_format and not self._allow_missing_response_format:
             raise RuntimeError("every contact requires a per-request response_format")
         completion_ceiling = body.get("max_tokens")
         if (
@@ -879,10 +899,9 @@ class ExactPromptBudgetTransport:
             raise RuntimeError(
                 f"speech packet token count is unavailable for {packet_id!r}"
             )
-        template_payload = {
-            "messages": messages,
-            "response_format": response_format,
-        }
+        template_payload = {"messages": messages}
+        if has_response_format:
+            template_payload["response_format"] = response_format
         rendered = self._post_json(APPLY_TEMPLATE_ENDPOINT, template_payload)
         prompt = rendered.get("prompt") if isinstance(rendered, Mapping) else None
         if not isinstance(prompt, str) or not prompt:
@@ -932,7 +951,10 @@ class ExactPromptBudgetTransport:
         audit = {
             "request_body_sha256": hashlib.sha256(body_bytes).hexdigest(),
             "messages_sha256": sha256_json(messages),
-            "response_format_sha256": sha256_json(response_format),
+            "response_format_sha256": (
+                sha256_json(response_format) if has_response_format else None
+            ),
+            "request_role": self._request_role,
             "prompt_sha256": hashlib.sha256(prompt.encode("utf-8")).hexdigest(),
             "measured_text_tokens": measured,
             "speech_packet_id": packet_id,
@@ -1292,35 +1314,80 @@ def validate_execution_authority(document: object) -> Mapping[str, object]:
         != EMBEDDING_PHYSICAL_REQUESTS
     ):
         raise RuntimeError("execution authority identity or budget drift")
+    core_protocol_sha256 = document.get("core_protocol_sha256")
+    if not _is_sha256(core_protocol_sha256):
+        raise RuntimeError("authority must pin the core bundle protocol SHA-256")
     plans = document.get("execution_plans")
+    authority_hashes = document.get("hashes")
+    preregistration_sha256 = (
+        authority_hashes.get("exposure_preregistration_sha256")
+        if isinstance(authority_hashes, Mapping)
+        else None
+    )
     if not isinstance(plans, Mapping) or tuple(plans) != MANIFEST_ROLES:
         raise RuntimeError("authority must carry six ordered phase ExecutionPlans")
+    attempt_ids: set[str] = set()
     for role, plan in plans.items():
         if (
             not isinstance(plan, Mapping)
             or plan.get("split_role") != "discovery"
             or plan.get("split_identity_hash") != SPLIT_IDENTITY_HASH
-            or plan.get("protocol_hash") != PROTOCOL_SHA256
+            or plan.get("protocol_hash") != core_protocol_sha256
             or not _is_sha256(plan.get("exposure_preregistration_sha256"))
+            or plan.get("exposure_preregistration_sha256")
+            != preregistration_sha256
             or not isinstance(plan.get("attempt_id"), str)
             or not plan.get("attempt_id")
         ):
             raise RuntimeError(f"ExecutionPlan {role!r} is incomplete or unsafe")
-    validate_authority_hashes(document.get("hashes", {}))  # type: ignore[arg-type]
+        attempt_id = str(plan["attempt_id"])
+        if attempt_id in attempt_ids:
+            raise RuntimeError("generation ExecutionPlan attempt identities must be unique")
+        attempt_ids.add(attempt_id)
+    embedding_plan = document.get("embedding_execution_plan")
+    if (
+        not isinstance(embedding_plan, Mapping)
+        or embedding_plan.get("run_id")
+        != "SAEA-A2T-SEMANTIC-AGENTLOOP-104-V1-EMBED"
+        or embedding_plan.get("execution_profile") != "bounded-discovery-probe"
+        or embedding_plan.get("carrier_lock_key") != "audio2tool"
+        or embedding_plan.get("split_role") != "discovery"
+        or embedding_plan.get("split_identity_hash") != SPLIT_IDENTITY_HASH
+        or embedding_plan.get("protocol_hash") != core_protocol_sha256
+        or embedding_plan.get("planned_model_calls") != SEMANTIC_ITEM_COUNT
+        or embedding_plan.get("planned_gpu_hours") != 0.2
+        or embedding_plan.get("planned_speech_audio_seconds") != 1
+        or embedding_plan.get("exposure_preregistration_sha256")
+        != preregistration_sha256
+        or not isinstance(embedding_plan.get("attempt_id"), str)
+        or not embedding_plan.get("attempt_id")
+        or embedding_plan.get("attempt_id") in attempt_ids
+    ):
+        raise RuntimeError("embedding ExecutionPlan is incomplete or unsafe")
+    validate_authority_hashes(authority_hashes or {})  # type: ignore[arg-type]
     return document
 
 
-def _load_runtime_factory(specification: str) -> Callable[..., object]:
+def _load_runtime_factory(
+    specification: str, *, expected_sha256: str
+) -> Callable[..., object]:
     if not isinstance(specification, str) or specification.count(":") != 1:
         raise RuntimeError("runtime factory must be PATH.py:callable")
     path_text, name = specification.split(":", 1)
     path = Path(path_text).resolve()
-    if not path.is_file() or not name.isidentifier():
+    if (
+        path != LOCAL_RUNTIME_FACTORY_PATH.resolve()
+        or not path.is_file()
+        or not name.isidentifier()
+        or not _is_sha256(expected_sha256)
+        or sha256_file(path) != expected_sha256
+    ):
         raise RuntimeError("runtime factory path or callable name is invalid")
     module_spec = importlib.util.spec_from_file_location("a2t_flight_runtime", path)
     if module_spec is None or module_spec.loader is None:
         raise RuntimeError("runtime factory module cannot be loaded")
     module = importlib.util.module_from_spec(module_spec)
+    sys.modules[module_spec.name] = module
     module_spec.loader.exec_module(module)
     factory = getattr(module, name, None)
     if not callable(factory):
@@ -1368,20 +1435,26 @@ def preflight_report() -> dict[str, object]:
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--preflight-only", action="store_true")
+    parser.add_argument("--preflight-contact-ready", action="store_true")
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--authority", type=Path)
     parser.add_argument("--authority-sha256")
     parser.add_argument("--runtime-factory")
     args = parser.parse_args(argv)
-    if args.preflight_only and args.execute:
-        raise SystemExit("choose exactly one of --preflight-only and --execute")
+    selected_modes = sum(
+        int(value)
+        for value in (args.preflight_only, args.preflight_contact_ready, args.execute)
+    )
+    if selected_modes > 1:
+        raise SystemExit("choose exactly one preflight or execution mode")
     if args.preflight_only:
         print(json.dumps(preflight_report(), ensure_ascii=True, indent=2, sort_keys=True))
         return 0
-    if not args.execute:
+    if not args.execute and not args.preflight_contact_ready:
         raise SystemExit(
             "No contact is the default; use --preflight-only or explicitly supply "
-            "--execute with a pinned authority and local runtime factory."
+            "--preflight-contact-ready or --execute with a pinned authority and "
+            "local runtime factory."
         )
     if (
         args.authority is None
@@ -1389,23 +1462,43 @@ def main(argv: Sequence[str] | None = None) -> int:
         or not args.runtime_factory
     ):
         raise SystemExit(
-            "--execute requires --authority, --authority-sha256, and --runtime-factory"
+            "contact-ready preflight or execution requires --authority, "
+            "--authority-sha256, and --runtime-factory"
         )
     if sha256_file(args.authority) != args.authority_sha256:
         raise SystemExit("execution authority SHA-256 drift")
+    runtime = None
     try:
         authority = validate_execution_authority(
             json.loads(args.authority.read_text(encoding="utf-8"))
         )
+        if sha256_file(Path(__file__)) != authority["hashes"][  # type: ignore[index]
+            "coordinator_launcher_sha256"
+        ]:
+            raise RuntimeError("coordinator launcher SHA-256 drift")
         roster = validate_roster_path()
         packets = validate_preprocessed_packet_paths(roster)
-        factory = _load_runtime_factory(args.runtime_factory)
+        factory = _load_runtime_factory(
+            args.runtime_factory,
+            expected_sha256=authority["hashes"][  # type: ignore[index]
+                "local_runtime_factory_sha256"
+            ],
+        )
         runtime = factory(
             authority=authority,
             roster=roster,
             packets=packets,
             protocol_config=protocol_config(),
+            launcher_module=sys.modules[__name__],
         )
+        preflight = _hook(runtime, "assert_contact_ready_preflight")()
+        if not isinstance(preflight, Mapping) or preflight.get("status") != (
+            "CONTACT_READY_NO_CONTACT"
+        ):
+            raise RuntimeError("concrete runtime did not pass full zero-contact preflight")
+        if args.preflight_contact_ready:
+            print(json.dumps(preflight, ensure_ascii=True, indent=2, sort_keys=True))
+            return 0
         receipt = execute_contact_ready_flight(
             runtime=runtime,
             roster=roster,
@@ -1413,6 +1506,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             authority_hashes=authority["hashes"],  # type: ignore[index]
         )
     except (OSError, UnicodeError, json.JSONDecodeError, RuntimeError) as error:
+        abort = getattr(runtime, "abort_open_attempts", None)
+        if args.execute and callable(abort):
+            abort(repr(error))
         raise SystemExit(f"flight refused: {error}") from error
     print(json.dumps(receipt, ensure_ascii=True, indent=2, sort_keys=True))
     return 0

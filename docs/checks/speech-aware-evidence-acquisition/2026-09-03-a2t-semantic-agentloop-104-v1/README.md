@@ -1,11 +1,12 @@
 # Audio2Tool semantic AgentLoop 104-row contact-ready coordinator
 
-Status: `CONTACT_READY_RUNTIME_FACTORY_REQUIRED_NOT_EXECUTED`.
+Status: `PREREGISTERED_CONCRETE_LOCAL_RUNTIME_NOT_EXECUTED`.
 
 This check directory contains a fail-closed launcher coordinator for the fresh
 104-row Audio2Tool discovery roster. It does not authorize or perform model,
 embedding-tool, tokenizer, network, or scorer contact. It does not read gold.
-The exposure ledger is intentionally unchanged.
+The separate generation and embedding-tool exposure rows were registered before
+contact; both remain unconsumed.
 
 The coordinator pins preprocessing report SHA-256
 `32ec7ab4b93926f81a9f352e0dbcabf669f41eec23956e94f694c987d4a45950`
@@ -82,12 +83,29 @@ python docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-semantic-age
 ```
 
 The report mechanically exposes the config and protocol hashes and lists every
-unresolved governed hash. `--execute` exists but fails closed unless a separately
-authored, command-line-hash-pinned authority document supplies six ordered
-structured discovery `ExecutionPlan` objects and a local runtime factory. The
-runtime factory remains a prerequisite: it must construct and start/stop the
-pinned local generation and embedding services, adapters, clients, trace sinks,
-and bundle sealers. Therefore this file alone is not yet a direct service
-launcher. No authority, preregistration, ledger entry, runtime receipt, model
-contact, embedding contact, tokenizer contact, network contact, or scorer
-contact was created during this revision.
+unresolved governed hash. `--execute` fails closed unless a separately authored,
+command-line-hash-pinned authority document supplies six ordered structured
+discovery `ExecutionPlan` objects and selects
+`launcher/local_runtime_factory.py:build_runtime`. That concrete WSL2 runtime
+starts and stops two receipt-pinned generation sessions on port 8090 around one
+receipt-pinned embedding session on port 8082; constructs the direct and
+OpenJiuwen adapters, clients, and trace sinks; and seals six independently
+verified complete manifests plus one flight receipt.
+
+The generation and embedding-tool preregistration, exposure rows, standalone
+embedding runtime receipt, frozen semantic runtime receipt, 1,095 tool-tier
+centroids, and 43 aggregate compatibility rules now exist. The concrete runtime
+loads only those hash-pinned label-free semantic assets; it cannot reopen the
+construction rows, gold labels, source utterances, concrete argument values, or
+reference transcripts. A one-facet inert external-governed snapshot satisfies
+the generic AgentLoop runner contract but activates and supplies no evidence.
+The model receives only the per-sample selected G5 decision cards rendered by
+the semantic phase adapter.
+
+The remaining prerequisite is an exact committed contact authority carrying
+six unused generation attempts, one unused embedding-tool attempt, and every
+source/runtime/artifact hash listed by preflight. A full
+`--preflight-contact-ready` run must then verify the complete model and runtime
+bytes, D1 media binding, both exposure rows, all seven plans, and mission
+absence without opening a service or making a contact. No model, embedding,
+tokenizer, network, gold, or scorer contact has occurred for this flight yet.

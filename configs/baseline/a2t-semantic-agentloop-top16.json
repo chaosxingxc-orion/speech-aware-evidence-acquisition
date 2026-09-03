@@ -1,0 +1,37 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "semantic-agentloop-top16-v1",
+  "evidence_source": "local-qwen3-embedding-tool-tier-centroids-and-same-core-retrieval-query",
+  "agent_executor_id": "openjiuwen-workflow-v1",
+  "agent_phases": [
+    "OBS_SEMANTIC_STATE",
+    "TRANSCRIPT_TOP16_USE",
+    "MODEL_QUERY_TOP16_USE",
+    "RRF_FUSED_TOP16_USE",
+    "SAME_STRATUM_SHUFFLED_FUSED_USE"
+  ],
+  "semantic_encoder": "Qwen3-Embedding-0.6B-Q8_0",
+  "semantic_encoder_pooling": "last",
+  "semantic_encoder_batch_size": 32,
+  "semantic_router": "maximum-cosine-over-build-only-tool-tier-centroids",
+  "semantic_candidate_count": 16,
+  "semantic_fusion": "complete-ranking-reciprocal-rank-fusion",
+  "semantic_fusion_constant": 60,
+  "selected_ground": "g5-exhaustive-family-contracts-plus-43-qualified-compatibility-rules",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/a2t-semantic-agentloop-v1-packets-04ccc72a/A2T-SEMANTIC-AGENTLOOP-104-V1-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "6f5d77438b50ebba8130122c6cc39acff18f0707836c61e72a03f6af1380c6b5",
+  "prompt_budget_policy": {
+    "physical_context_tokens_per_slot": 32768,
+    "operational_maximum_required_window_tokens": 24576,
+    "reserved_tokens": 8192,
+    "measurement": "render the exact current request, tokenize every non-speech segment, add the measured speech packet, special-token reserve, and that request's completion ceiling immediately before sending"
+  },
+  "model_prompt_batching": false,
+  "generation_slots": 2,
+  "generation_queue_depth": 4,
+  "scorers": [
+    "a2t-toolcall",
+    "cost"
+  ],
+  "task_instruction": "Use the original speech as the query. The OBS contact emits a faithful English transcript and a concise English desired-action query without tool names. A frozen local semantic encoder ranks the complete registry through build-only tool-tier centroids. Each USE contact receives only the selected top-16 canonical decision cards and its strict response grammar. Return only the ordered JSON array of requested tool calls. Gold labels, reference transcripts, scores, future turns, and test annotations are unavailable at runtime."
+}

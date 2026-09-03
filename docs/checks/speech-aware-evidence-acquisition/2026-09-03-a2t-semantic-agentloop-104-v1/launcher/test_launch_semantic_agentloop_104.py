@@ -294,6 +294,50 @@ def test_precontact_gate_rejects_prompt_level_multi_sample_and_missing_schema() 
         gate("http://127.0.0.1:1/v1/chat/completions", json.dumps(missing).encode())
 
 
+def test_direct_m0_alone_may_omit_response_format_after_exact_measurement() -> None:
+    module = _launcher()
+    marker = "<|SPEECH|>"
+    events = []
+    body = {
+        "messages": [{"role": "user", "content": [{
+            "type": "input_speech_features",
+            "speech_features": {"packet_id": "p"},
+        }]}],
+        "max_tokens": 32,
+    }
+
+    def post_json(endpoint, payload):
+        events.append((endpoint, payload))
+        return ({"prompt": f"left{marker}right"} if endpoint == "/apply-template"
+                else {"tokens": [1]})
+
+    gate = module.ExactPromptBudgetTransport(
+        media_marker=marker,
+        speech_packet_tokens={"p": 13},
+        post_json=post_json,
+        send=lambda _url, raw: events.append(("send", raw)) or b"{}",
+        request_role="direct_m0",
+        allow_missing_response_format=True,
+    )
+    gate("http://127.0.0.1:1/v1/chat/completions", json.dumps(body).encode())
+    assert events[0] == ("/apply-template", {"messages": body["messages"]})
+    assert [event[0] for event in events] == [
+        "/apply-template", "/tokenize", "/tokenize", "send"
+    ]
+    assert gate.audits[0]["response_format_sha256"] is None
+    assert gate.audits[0]["request_role"] == "direct_m0"
+
+    with pytest.raises(RuntimeError, match="reserved for the direct M0"):
+        module.ExactPromptBudgetTransport(
+            media_marker=marker,
+            speech_packet_tokens={"p": 13},
+            post_json=post_json,
+            send=lambda _url, _raw: b"{}",
+            request_role="obs_semantic_retrieval",
+            allow_missing_response_format=True,
+        )
+
+
 def test_precontact_gate_requires_exact_packet_tokens_and_completion_ceiling() -> None:
     module = _launcher()
     marker = "<|SPEECH|>"
@@ -352,6 +396,24 @@ def test_server_phase_gate_enforces_separate_embedding_and_two_generation_window
         "stop-generation:post-embedding",
         "seal",
     )
+
+
+def test_concrete_runtime_factory_module_loads_without_contact() -> None:
+    module = _launcher()
+    factory_path = LAUNCHER.with_name("local_runtime_factory.py")
+
+    factory = module._load_runtime_factory(
+        f"{factory_path}:build_runtime",
+        expected_sha256=module.sha256_file(factory_path),
+    )
+
+    assert callable(factory)
+    with pytest.raises(RuntimeError, match="runtime factory path"):
+        module._load_runtime_factory(
+            f"{factory_path}:build_runtime",
+            expected_sha256="0" * 64,
+        )
+    assert factory.__module__ == "a2t_flight_runtime"
 
 
 def _resolved_hashes(module):

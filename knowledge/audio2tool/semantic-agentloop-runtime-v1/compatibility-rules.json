@@ -1,0 +1,615 @@
+{
+  "rules": [
+    {
+      "construction_support_count": 58,
+      "legal_argument_key_set": [
+        "message",
+        "targetRooms"
+      ],
+      "tool_name": "broadcastMessage",
+      "value_forms": [
+        [
+          "targetRooms",
+          "nullable-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 80,
+      "legal_argument_key_set": [
+        "action",
+        "deviceId"
+      ],
+      "tool_name": "controlPlayback",
+      "value_forms": [
+        [
+          "deviceId",
+          "string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 170,
+      "legal_argument_key_set": [
+        "enabled"
+      ],
+      "tool_name": "enableWaterLock",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 2,
+      "legal_argument_key_set": [
+        "device"
+      ],
+      "tool_name": "findMyDevice",
+      "value_forms": [
+        [
+          "device",
+          "string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 2,
+      "legal_argument_key_set": [
+        "appName",
+        "enabled"
+      ],
+      "tool_name": "installApp",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 3,
+      "legal_argument_key_set": [
+        "category",
+        "filter"
+      ],
+      "tool_name": "searchPOI",
+      "value_forms": [
+        [
+          "filter",
+          "nullable-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 21,
+      "legal_argument_key_set": [
+        "enabled"
+      ],
+      "tool_name": "setAdaptiveLighting",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 113,
+      "legal_argument_key_set": [
+        "deviceId",
+        "enabled"
+      ],
+      "tool_name": "setAdaptiveLighting",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 3,
+      "legal_argument_key_set": [
+        "label",
+        "repeat",
+        "time"
+      ],
+      "tool_name": "setAlarm",
+      "value_forms": [
+        [
+          "label",
+          "nullable-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 184,
+      "legal_argument_key_set": [
+        "enabled"
+      ],
+      "tool_name": "setAlwaysOnDisplay",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 45,
+      "legal_argument_key_set": [
+        "deviceId",
+        "mode",
+        "parameters"
+      ],
+      "tool_name": "setApplianceMode",
+      "value_forms": [
+        [
+          "parameters",
+          "nullable-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 7,
+      "legal_argument_key_set": [
+        "enabled",
+        "maxTemp"
+      ],
+      "tool_name": "setCabinOverheatProtection",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 12,
+      "legal_argument_key_set": [
+        "enabled"
+      ],
+      "tool_name": "setCampingMode",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 2,
+      "legal_argument_key_set": [
+        "brightness",
+        "kelvin"
+      ],
+      "tool_name": "setColorTemperature",
+      "value_forms": [
+        [
+          "brightness",
+          "integer"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 2,
+      "legal_argument_key_set": [
+        "rear"
+      ],
+      "tool_name": "setDefrost",
+      "value_forms": [
+        [
+          "rear",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 11,
+      "legal_argument_key_set": [
+        "front",
+        "rear"
+      ],
+      "tool_name": "setDefrost",
+      "value_forms": [
+        [
+          "front",
+          "boolean-string"
+        ],
+        [
+          "rear",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 5,
+      "legal_argument_key_set": [
+        "enabled"
+      ],
+      "tool_name": "setDoNotDisturb",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 160,
+      "legal_argument_key_set": [
+        "enabled",
+        "mode"
+      ],
+      "tool_name": "setDoNotDisturb",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 4,
+      "legal_argument_key_set": [
+        "enabled"
+      ],
+      "tool_name": "setExternalSpeakerOutput",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 5,
+      "legal_argument_key_set": [
+        "enabled",
+        "sound"
+      ],
+      "tool_name": "setExternalSpeakerOutput",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ],
+        [
+          "sound",
+          "nullable-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 59,
+      "legal_argument_key_set": [
+        "color",
+        "groupId",
+        "level",
+        "state"
+      ],
+      "tool_name": "setGroupLightState",
+      "value_forms": [
+        [
+          "color",
+          "nullable-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 2,
+      "legal_argument_key_set": [
+        "mode"
+      ],
+      "tool_name": "setInputSource",
+      "value_forms": [
+        [
+          "mode",
+          "string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 39,
+      "legal_argument_key_set": [
+        "color",
+        "deviceId",
+        "level",
+        "state"
+      ],
+      "tool_name": "setLighting",
+      "value_forms": [
+        [
+          "color",
+          "nullable-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 125,
+      "legal_argument_key_set": [
+        "deviceId",
+        "state"
+      ],
+      "tool_name": "setLockState",
+      "value_forms": [
+        [
+          "deviceId",
+          "string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 10,
+      "legal_argument_key_set": [
+        "enabled"
+      ],
+      "tool_name": "setPassengerQuietMode",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 2,
+      "legal_argument_key_set": [
+        "enabled"
+      ],
+      "tool_name": "setPetComfortMode",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 9,
+      "legal_argument_key_set": [
+        "enabled",
+        "targetTemp"
+      ],
+      "tool_name": "setPetComfortMode",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 12,
+      "legal_argument_key_set": [
+        "enabled"
+      ],
+      "tool_name": "setRecirculation",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 13,
+      "legal_argument_key_set": [
+        "enabled"
+      ],
+      "tool_name": "setRomanceMode",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 10,
+      "legal_argument_key_set": [
+        "avoidFerries",
+        "avoidTolls",
+        "useHOV"
+      ],
+      "tool_name": "setRoutePreferences",
+      "value_forms": [
+        [
+          "avoidFerries",
+          "boolean-string"
+        ],
+        [
+          "avoidTolls",
+          "boolean-string"
+        ],
+        [
+          "useHOV",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 12,
+      "legal_argument_key_set": [
+        "precondition",
+        "time"
+      ],
+      "tool_name": "setScheduledDeparture",
+      "value_forms": [
+        [
+          "precondition",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 2,
+      "legal_argument_key_set": [
+        "enabled"
+      ],
+      "tool_name": "setSecureStorageAccess",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 11,
+      "legal_argument_key_set": [
+        "enabled",
+        "pin"
+      ],
+      "tool_name": "setSecureStorageAccess",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 11,
+      "legal_argument_key_set": [
+        "enabled",
+        "limit"
+      ],
+      "tool_name": "setSpeedLimitMode",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 12,
+      "legal_argument_key_set": [
+        "enabled"
+      ],
+      "tool_name": "setSteeringWheelHeat",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 10,
+      "legal_argument_key_set": [
+        "enabled"
+      ],
+      "tool_name": "setSurveillanceMode",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 3,
+      "legal_argument_key_set": [
+        "enabled"
+      ],
+      "tool_name": "setValetMode",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 10,
+      "legal_argument_key_set": [
+        "enabled",
+        "pin"
+      ],
+      "tool_name": "setValetMode",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 10,
+      "legal_argument_key_set": [
+        "muted"
+      ],
+      "tool_name": "setVoiceGuidance",
+      "value_forms": [
+        [
+          "muted",
+          "boolean-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 5,
+      "legal_argument_key_set": [
+        "direction",
+        "steps"
+      ],
+      "tool_name": "setVolume",
+      "value_forms": [
+        [
+          "direction",
+          "string"
+        ],
+        [
+          "steps",
+          "integer"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 6,
+      "legal_argument_key_set": [
+        "level",
+        "stream"
+      ],
+      "tool_name": "setVolume",
+      "value_forms": [
+        [
+          "stream",
+          "string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 55,
+      "legal_argument_key_set": [
+        "activity",
+        "goal"
+      ],
+      "tool_name": "startWorkout",
+      "value_forms": [
+        [
+          "goal",
+          "nullable-string"
+        ]
+      ]
+    },
+    {
+      "construction_support_count": 13,
+      "legal_argument_key_set": [
+        "enabled"
+      ],
+      "tool_name": "wiperServiceMode",
+      "value_forms": [
+        [
+          "enabled",
+          "boolean-string"
+        ]
+      ]
+    }
+  ],
+  "schema": "saea-a2t-aggregate-compatibility-rules-v1"
+}

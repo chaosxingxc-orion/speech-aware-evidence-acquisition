@@ -1,0 +1,88 @@
+{
+  "experiment_id": "SAEA-A2T-SEMANTIC-AGENTLOOP-104-V1",
+  "schema": "saea-a2t-semantic-agentloop-experiment-v1",
+  "date": "2026-09-03",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Measure whether sample-specific semantic narrowing and canonical knowledge supply improve a frozen speech-capable core over one direct call, and separate the information contributions of a local semantic encoder, a same-core retrieval query, their fusion, and matched prompt volume.",
+  "population": {
+    "carrier": "audio2tool",
+    "split_name": "A2T-AGENTLOOP-FRESH-FLIGHT",
+    "split_role": "discovery",
+    "count": 104,
+    "strata": "13 samples per tier across all eight Audio2Tool tiers",
+    "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-fresh-agentloop-roster/flight-roster-receipt.json",
+    "receipt_sha256": "457297464e4e0acc9db541cbee5a2215d3447974c55d9c712c0cb1765623079e",
+    "split_identity_hash": "84c56416a36d5eb1737fa49f6b255b0a59585df8c8ff1754240a87022983eab0",
+    "audio_seconds_one_pass": 554.255707,
+    "query_block_count": 104,
+    "query_blocks_are_unique": true
+  },
+  "runtime_arms": {
+    "direct_m0": "One frozen-core contact with the complete 152-tool registry and original speech; no OBS state or selected knowledge.",
+    "obs_semantic_retrieval": "One frozen-core contact producing only a faithful English transcript and a tool-name-free desired-action retrieval query; diagnostic, not scored as a task answer.",
+    "transcript_top16_use": "One frozen-core task-answer contact with original speech, recipient OBS state, and decision cards for the transcript embedding's top 16 tools.",
+    "model_query_top16_use": "One frozen-core task-answer contact with original speech, recipient OBS state, and decision cards for the same-core retrieval-query embedding's top 16 tools.",
+    "rrf_fused_top16_use": "One frozen-core task-answer contact with original speech, recipient OBS state, and decision cards for RRF-60 fusion of the complete transcript and same-core-query rankings.",
+    "same_stratum_shuffled_fused_use": "One frozen-core task-answer contact with original speech and recipient OBS state but a different same-tier donor's fused top-16 decision cards, preserving card count and prompt class."
+  },
+  "information_estimands": {
+    "local_semantic_channel": "transcript_top16_use minus direct_m0, interpreted together with transcript top-16 required-tool reachability",
+    "same_core_query_increment": "model_query_top16_use minus transcript_top16_use while holding the local encoder, candidate count, ground, speech, and output protocol fixed",
+    "channel_complementarity": "rrf_fused_top16_use minus each single-view USE arm",
+    "sample_specific_evidence": "rrf_fused_top16_use minus same_stratum_shuffled_fused_use",
+    "agent_over_single_call": "rrf_fused_top16_use minus direct_m0"
+  },
+  "execution": {
+    "generation_contacts": 624,
+    "generation_contacts_per_arm": 104,
+    "embedding_logical_items": 208,
+    "embedding_physical_requests": 7,
+    "embedding_batch_size_maximum": 32,
+    "generation_slots": 2,
+    "generation_queue_depth": 4,
+    "service_windows": [
+      "generation-pre-embedding",
+      "embedding",
+      "generation-post-embedding"
+    ],
+    "services_must_not_coexist": true,
+    "retry_or_repair": false,
+    "network_jitter_study": false,
+    "paid_api_spend": 0
+  },
+  "evaluation": {
+    "official_scorer": "a2t-toolcall",
+    "scored_complete_manifests": 5,
+    "obs_is_diagnostic_only": true,
+    "outer_parallel_workers": 4,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "metrics": [
+      "exact_match",
+      "tool_accuracy",
+      "slot_f1",
+      "parse_rate"
+    ],
+    "paired_bootstrap_replicates": 10000,
+    "paired_bootstrap_seed": 20260903,
+    "paired_sign_tests": [
+      "exact_match",
+      "tool_accuracy"
+    ],
+    "mandatory_slices": [
+      "all eight tiers",
+      "transcript, model-query, and fused top-16 required-tool reachability",
+      "paired saves, harms, ties, and confidence intervals"
+    ]
+  },
+  "decision": {
+    "baseline_over_0_90_required": false,
+    "post_training_free_rl_target_over_0_90": true,
+    "approximately_1000_sample_expansion": "not authorized unless this 104-row flight shows a stable positive agent-over-single-call gain and a positive sample-specific-evidence contrast",
+    "knowledge_backtrack": "if required tools are absent from top 16, revise ORG or knowledge construction; if required tools are present but answers remain wrong, revise supplied decision content or USE control before changing retrieval",
+    "training_free_rl": "deferred until a deployment-visible state has measured action-dependent returns; prefer a pinned open-source implementation such as Vowpal Wabbit 9.11.2 rather than a custom learner",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "builder_policy_id": "semantic-agentloop-inert-runner-scaffold-v1",
+  "facets": [
+    {
+      "dimension": "runtime_scaffold",
+      "facet_id": "facet:runtime-scaffold",
+      "parent_facet_ids": [],
+      "representation": "No catalog evidence is activated by this runtime scaffold.",
+      "representation_kind": "text",
+      "source_sample_ids": [
+        "external-governed:runtime-scaffold"
+      ]
+    }
+  ],
+  "snapshot_id": "semantic-agentloop-runtime-scaffold-v1",
+  "snapshot_sha256": "93dde7c9eb029e77a03ca5fd91e6772e1931439d1fad5915264e92b69db99c8e",
+  "snapshot_version": "knowledge-snapshot-v1",
+  "source_partition_role": "external-governed",
+  "source_sample_ids": [
+    "external-governed:runtime-scaffold"
+  ],
+  "source_split_identity_hash": "e0e8232f61de6de3b457464b76bb23c3df3617d354499ef8cad0a6c51936e66e",
+  "values": [
+    {
+      "associated_facet_ids": [
+        "facet:runtime-scaffold"
+      ],
+      "content": "This inert value is never activated or supplied to a model.",
+      "prior_score": null,
+      "provenance_refs": [
+        "governed-runtime-scaffold:v1"
+      ],
+      "source_sample_ids": [
+        "external-governed:runtime-scaffold"
+      ],
+      "task_target": null,
+      "value_id": "value:runtime-scaffold"
+    }
+  ]
+}
