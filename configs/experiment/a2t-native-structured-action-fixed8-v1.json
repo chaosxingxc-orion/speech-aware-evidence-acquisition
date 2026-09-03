@@ -1,0 +1,258 @@
+{
+  "schema": "saea-a2t-native-structured-action-fixed8-experiment-v1",
+  "experiment_id": "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1",
+  "status": "PREREGISTERED_NO_CONTACT_AUTHORIZATION",
+  "date": "2026-09-03",
+  "execution_profile": "bounded-discovery-probe",
+  "claim_scope": "Stage-2 secondary-discovery fixed-eight mechanism falsification only; no engineering-baseline qualification, policy fit, generalization, confirmation, scale, test, or paper claim.",
+  "scientific_objective": "Determine whether the task-wide legal structured-action contract makes high-quality Audio2Tool actions reachable by the frozen core, and separate that effect from executable knowledge delivered in the prompt.",
+  "population": {
+    "name": "A2T-NATIVE-STRUCTURED-ACTION-FIXED8",
+    "receipt": "docs/receipts/a2t/A2T-NATIVE-STRUCTURED-ACTION-FIXED8.json",
+    "receipt_sha256": "b777f05e830af84209d6aa3403fe86d3835991452f983b3185214990004a4be3",
+    "split_role": "discovery",
+    "split_identity_hash": "f95efe70b615d71bb082f9ef804d1fa2b6f04ce4114d5d2694151cbaf44019ba",
+    "count": 8,
+    "tiers": 8,
+    "items_per_tier": 1,
+    "audio_seconds_total": 45.096,
+    "exposure": "Identity-only SHA-256 selection from the already-exposed A2T-GROUND-QUAL-104 population after excluding G8, G8B, G8C, and CPV2 identities. This is secondary discovery, not an independent confirmation sample.",
+    "selection_surfaces": [
+      "sample identity",
+      "tier"
+    ],
+    "selection_excludes": [
+      "task text",
+      "audio bytes",
+      "gold",
+      "reference transcript",
+      "model output",
+      "score",
+      "reward",
+      "test",
+      "future turns"
+    ]
+  },
+  "frozen_inputs": {
+    "baseline_config": "configs/baseline/a2t-native-structured-action.json",
+    "tool_registry": {
+      "path": "$SPEECHRL_DATA_DIR/knowledge/audio2tool/tool-registry-v1/registry.json",
+      "sha256": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4",
+      "tool_count": 152
+    },
+    "executable_handbook": {
+      "path": "$SPEECHRL_DATA_DIR/knowledge/audio2tool/executable-ground-v1/handbook.txt",
+      "sha256": "58ba08f3cebbe390156506653051d54aa37796822f49f5b851fd6eba4818fbc8",
+      "utf8_bytes": 54881,
+      "tool_count": 152,
+      "argument_pattern_family_count": 354,
+      "argument_key_count": 85,
+      "utterance_specific_values": 0
+    },
+    "structured_action_schema": {
+      "path": "$SPEECHRL_DATA_DIR/knowledge/audio2tool/structured-action-schema-v1/response-format.json",
+      "artifact_sha256": "8fe5db869f044b9e952765f7bee045027ad137db2cc445ff428db5303fb1a2ed",
+      "utf8_bytes": 91407,
+      "build_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-structured-action-schema-build-v1/build-receipt.json",
+      "build_receipt_sha256": "2931aba40a9a94921f670b857a052e69e1fba9820250cb1a8206b9838b35c581",
+      "tool_count": 152,
+      "branch_count": 338,
+      "compatibility_rule_count": 43,
+      "sample_values": 0,
+      "evaluation_rows": 0,
+      "gold_values": 0
+    },
+    "historical_parent": {
+      "experiment_id": "SAEA-A2T-EXECUTABLE-GROUND-QUALIFICATION-104-V1",
+      "flight_root": "$SPEECHRL_DATA_DIR/runs/SAEA-A2T-EXECUTABLE-GROUND-QUALIFICATION-104-V1/flight-20260902T145019Z",
+      "registry_manifest_sha256": "96ee952acc10aa414ec4ddf3965bb08519b7407c36c40445d09150145e841836",
+      "registry_outputs_sha256": "b30a5aa8fbb9b5bc61483f117a3ba2546c71d15ba357ad099792a45dfa0af49f",
+      "registry_score_sha256": "3501dc485da5de5b2fceb19bb7ef348e7b1026f2be6ff5b8e4f07d8d094d086e",
+      "handbook_manifest_sha256": "b0b19f4c537267da358545b4ae73a0a75d0ee42e40614e9ee86ba4ed221e71de",
+      "handbook_outputs_sha256": "f4c92804e359dda1faa7880a27bffb709db9638619e51b1f7e02c74176063803",
+      "handbook_score_sha256": "ef172f42cab575d2fe746066a9b95595930f568e4058b6c3f071c4a194a86706",
+      "preseal_access_rule": "Before both new strict manifests seal, verify only hashes and reconstruct source requests by exact identity. Do not read fixed-eight historical responses, per-sample scores, gold, or task text for analysis or selection."
+    },
+    "model": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+    "runtime": "receipt-pinned local llama.cpp API-shaped service",
+    "final_answer_authority": "frozen core only"
+  },
+  "factorial": {
+    "cell_order": [
+      "REGISTRY_NO_SCHEMA",
+      "REGISTRY_STRICT_ACTION",
+      "HANDBOOK_NO_SCHEMA",
+      "HANDBOOK_STRICT_ACTION"
+    ],
+    "new_contact_cells": [
+      "REGISTRY_STRICT_ACTION",
+      "HANDBOOK_STRICT_ACTION"
+    ],
+    "cells": {
+      "REGISTRY_NO_SCHEMA": {
+        "knowledge": "complete 152-row registry",
+        "response_format": false,
+        "contact": "sealed historical fixed-eight subset after both new manifests seal"
+      },
+      "REGISTRY_STRICT_ACTION": {
+        "knowledge": "byte-identical complete 152-row registry parent message",
+        "response_format": true,
+        "new_calls": 8
+      },
+      "HANDBOOK_NO_SCHEMA": {
+        "knowledge": "54,881-byte executable handbook",
+        "response_format": false,
+        "contact": "sealed historical fixed-eight subset after both new manifests seal"
+      },
+      "HANDBOOK_STRICT_ACTION": {
+        "knowledge": "byte-identical 54,881-byte executable handbook parent message",
+        "response_format": true,
+        "new_calls": 8
+      }
+    },
+    "schema_main_effect": "structured action-contract delivery",
+    "handbook_main_effect": "task semantics delivered in the prompt",
+    "interaction": "whether both surfaces are necessary"
+  },
+  "execution_protocol": {
+    "new_cell_order": [
+      "REGISTRY_STRICT_ACTION",
+      "HANDBOOK_STRICT_ACTION"
+    ],
+    "same_service_session": true,
+    "same_source_slot_as_historical_parent": true,
+    "batch_slots": 2,
+    "max_concurrent_model_requests": 2,
+    "queue_depth": 4,
+    "sample_affine_state": true,
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "new_calls_per_cell": 8,
+    "expected_and_maximum_new_calls": 16,
+    "only_scientific_request_factor": "Add the identical response_format to each byte-identical historical parent request; request and accounting identity necessarily change.",
+    "repair_contacts": 0,
+    "retries": 0,
+    "resends": 0,
+    "network_jitter_testing": false,
+    "tool_execution": false,
+    "second_answerer": false,
+    "failure_rule": "Seal all available traces, abort every open attempt, stop the service, and end without recontacting any row. Any recovery requires a prospective successor."
+  },
+  "prompt_fit": {
+    "per_slot_context_tokens": 32768,
+    "prompt_plus_completion_tokens_maximum": 24576,
+    "operational_headroom_tokens_minimum": 8192,
+    "special_token_reserve": 512,
+    "measurement_rule": "Reconstruct, serialize, measure, and hash the actual prompt, speech reserve, response schema, special-token reserve, and completion reserve immediately before every model contact. Never infer a later OpenJiuwen Loop envelope from this single-step screen.",
+    "overflow_policy": "Refuse before contact; never trim, truncate, lower a completion reserve, change the schema, or move a sample across slots."
+  },
+  "contact_budget": {
+    "sample_count": 8,
+    "new_model_calls": 16,
+    "planned_model_calls": 16,
+    "exact_speech_audio_seconds": 90.192,
+    "planned_speech_audio_seconds": 91,
+    "planned_gpu_hours": 0.2,
+    "embedding_contacts": 0,
+    "tokenizer_contacts": 0,
+    "paid_api_spend": 0
+  },
+  "sealing": {
+    "required_before_gold": [
+      "complete eight-row REGISTRY_STRICT_ACTION manifest and trace",
+      "complete eight-row HANDBOOK_STRICT_ACTION manifest and trace",
+      "complete cost and request-hash accounting"
+    ],
+    "service_stop_before_gold": true,
+    "partial_manifest_scoring": false
+  },
+  "postseal_scoring": {
+    "official_scorer": "unchanged a2t-toolcall scorer, single-process per complete manifest",
+    "whole_manifest_jobs": 4,
+    "outer_workers": 4,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "score_invocation_limit": "one effective invocation per complete fixed-eight cell manifest",
+    "historical_subset_rule": "Materialize the two historical fixed-eight cell manifests only after both new cells and traces seal.",
+    "required_metrics": [
+      "parse count",
+      "exact count",
+      "tool correctness",
+      "slot micro precision",
+      "slot micro recall",
+      "slot micro F1",
+      "hard validity",
+      "legal key-set coverage",
+      "paired exact wins and harms"
+    ],
+    "oracle": "After all four scores exist, build and officially score one zero-contact per-row oracle using exact, then row slot F1, then tool correctness, then frozen cell order. This is a reachability ceiling, not a policy."
+  },
+  "mechanism_gates": {
+    "strict_parse_minimum": {
+      "numerator": 8,
+      "denominator": 8
+    },
+    "strict_hard_validity_minimum": {
+      "numerator": 8,
+      "denominator": 8
+    },
+    "oracle_exact_minimum": {
+      "numerator": 8,
+      "denominator": 8
+    },
+    "oracle_tool_minimum": {
+      "numerator": 8,
+      "denominator": 8
+    },
+    "oracle_slot_micro_f1_minimum": 0.9,
+    "strict_cell_exact_minimum": {
+      "numerator": 7,
+      "denominator": 8
+    },
+    "strict_cell_tool_minimum": {
+      "numerator": 8,
+      "denominator": 8
+    },
+    "strict_cell_slot_micro_f1_minimum": 0.9,
+    "strict_cell_exact_saves_minimum": 3,
+    "strict_cell_exact_harms_maximum": 0,
+    "oracle_gap_from_best_strict_exact_maximum": 1,
+    "tie_rule": "Prefer REGISTRY_STRICT_ACTION unless HANDBOOK_STRICT_ACTION has at least two paired exact wins and zero harms against it.",
+    "all_conditions_required": true
+  },
+  "downstream_training_free_control": {
+    "status": "CLOSED_UNTIL_SEPARATE_AGENTLOOP_GAIN",
+    "implementation": "vowpalwabbit==9.11.2 cb_explore_adf",
+    "upstream_learning_and_prediction_only": true,
+    "local_learner_allowed": false,
+    "local_scope": [
+      "runtime context and action rendering",
+      "propensity-safe action sampling",
+      "reward joins",
+      "artifact hashing and receipts",
+      "OpenJiuwen integration"
+    ],
+    "post_policy_target": "Greater than 0.90 on a separately frozen held-out discovery or validation population, with paired gain over M0 and fixed AgentLoop and an attributable upstream-policy contribution.",
+    "scale_rule": "Only after this screen passes and a separate OpenJiuwen AgentLoop experiment demonstrates information gain may an approximately-100-row VW experiment be preregistered. Approximately 1,000 rows remain closed until stable held-out gain."
+  },
+  "terminal_rules": {
+    "pass": "Open only a separately preregistered OpenJiuwen AgentLoop integration on a different frozen discovery support roster.",
+    "syntax_only": "If schema fixes parsing or hard validity but misses reachability gates, record a syntax-only result and stop.",
+    "failure": "Keep AgentLoop policy fitting and VW closed. Expand task-wide canonicalization knowledge only when post-seal error analysis identifies a missing public representation that the current types, constraints, and compatibility forms cannot express.",
+    "no_sample_specific_tuning": true,
+    "no_test_tuning": true,
+    "test_closed": true,
+    "approximately_100_closed": true,
+    "approximately_1000_closed": true,
+    "confirmatory_closed": true,
+    "stage3_closed": true,
+    "paper_scale_closed": true
+  },
+  "prohibitions": [
+    "This preregistration does not authorize model, service, scorer, tokenizer, network, gold, reference-transcript, historical fixed-eight output, score, reward, test, or future-turn contact.",
+    "Do not repair, retry, resend, normalize, synthesize, or replace a frozen-core final response.",
+    "Do not fit any policy or local learner on this fixed-eight screen.",
+    "Do not expand to approximately 100 or 1,000 rows without the separately frozen promotion sequence."
+  ]
+}
