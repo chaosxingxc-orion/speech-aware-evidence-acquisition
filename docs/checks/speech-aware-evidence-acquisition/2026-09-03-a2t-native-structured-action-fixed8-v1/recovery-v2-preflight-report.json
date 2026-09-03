@@ -1,0 +1,40 @@
+{
+  "contacts": {
+    "gold": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "frozen_hashes": {
+    "canonical_execution_plan_sha256": "f0ab0ac216de7b09f3fdb8f68cefcfb31e1ec26ef89bc58fc058df4ae7dd7392",
+    "recovery_execution_plan_file_sha256": "4b4ae113811f380980e0564926bf38f554489dc72a1f83da07548436496aae56",
+    "recovery_launcher_sha256": "79060aa0966fa1dc7a96ce21d2038305605db10d483a40de2b74fd199646521a",
+    "recovery_preregistration_sha256": "68524eb21aa5853505e191d98910480e2ba0dadb950984ad57f6cb77051b2b7d",
+    "recovery_v1_failure_report_sha256": "a4d6ed9f446261d02f6b948a8e9fb36f8def74dc359b56ece45139b0da258176",
+    "registry_v2_successor_manifest_sha256": "e950cd7093da3e5287898c4611217e099f60af64b8e24bcb06a0838fd3d7f5ab"
+  },
+  "handbook": {
+    "attempt_id": "attempt-20260903T020500Z-handbook-strict-recovery-v2",
+    "audio_seconds_ceiling": 46,
+    "gpu_hours_ceiling": 0.1,
+    "model_contacts_remaining": 8
+  },
+  "identity": {
+    "composed_config_sha256": "e8a16944585d99e62bdc9d6c86d3181c0fa23c10d1295118edf2225752a8a526",
+    "protocol_sha256": "a2f24da7254a62020d4dff5d681c873af0ff11e71126dae7b72b7b9b2a7158d0",
+    "split_identity_sha256": "b15cf0c0874f7af7d10af6cc9801aae4535bbe57b5a6dc3add50bcdb40fd93aa"
+  },
+  "preflight": "PASSED_ZERO_CONTACT",
+  "preservation": {
+    "failed_v1_bytes_pinned": true,
+    "original_registry_bytes_pinned": true,
+    "registry_model_contacts_remaining": 0,
+    "registry_recontact_authorized": false,
+    "v2_targets_absent": true
+  },
+  "run_id": "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-RECOVERY-V2",
+  "schema": "saea-a2t-native-structured-action-fixed8-recovery-v2-preflight-v1",
+  "source_state": "V1_FAILURE_PINNED",
+  "study_commit": "385074ea9f29afffcaf2d36b3926234f5e50285a"
+}
