@@ -97,6 +97,26 @@ hashes, runtime receipts, an `ExecutionPlan`, exact repeated-audio accounting,
 and the exposure-ledger entry. The contact-free launcher implementation does
 not itself authorize execution.
 
+## One-shot execution activation
+
+The zero-contact preflight passed on clean source commit
+`ed22380ed511e097389876f6d8e0132fb1ba73d7`. It verified the receipt-pinned
+server and model, 317 promoted packets, the exact 16-row packet join, the
+frozen 104-row M0 source followed by exact 16-row identity filtering, and
+OpenJiuwen `0.1.16.post2`. The largest conservative dynamic envelope is the
+exhaustive resolve at 24,317 of 32,768 tokens, leaving 8,451; select leaves
+10,038 and maximum bind leaves 14,038.
+
+Attempt `attempt-20260903t015045z-g8-fixed16` is bound by the structured
+ExecutionPlan SHA-256
+`586370c731a49213a04f5c08faabbc2e04dee4805afdb503d97e58a546368773`
+and zero-contact preflight report SHA-256
+`a1c6c80b54642a1f1280f382d4e8fdb634a603bc4e9da4a1304ddbb16087bd1b`.
+The exposure ledger registers exactly 544 calls, 2,728 speech-reference
+seconds, and 1.0 GPU-hour before any result is read. This activates only that
+one-shot attempt. It does not authorize a retry, a replacement roster, policy
+fitting, scale, confirmation, or test access.
+
 ## Seal, score, and oracle
 
 Gold remains closed until all four complete 16-row branch manifests, traces,

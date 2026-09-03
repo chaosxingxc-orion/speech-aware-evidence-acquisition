@@ -1,0 +1,14 @@
+{
+  "attempt_id": "attempt-20260903t015045z-g8-fixed16",
+  "carrier_lock_key": "audio2tool",
+  "execution_profile": "bounded-discovery-probe",
+  "planned_gpu_hours": 1.0,
+  "planned_model_calls": 544,
+  "planned_speech_audio_seconds": 2728,
+  "protocol_hash": "69ee892a08a51adbb61a18b9f6827a9f33e7669155325fd198de384b5fab044e",
+  "run_id": "SAEA-A2T-G8-ACTION-SUPPORT-REACHABILITY-FIXED16-V1",
+  "schema": "saea-execution-plan-v1",
+  "split_identity_hash": "06acbcf6b9bd3fde67c1de8da622d6d446a5ec993926be3f58c42968dddb250b",
+  "split_role": "discovery",
+  "study": "speech-aware-evidence-acquisition"
+}

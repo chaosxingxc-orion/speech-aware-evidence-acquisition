@@ -1,0 +1,67 @@
+{
+  "attempt_id": "attempt-20260903t015045z-g8-fixed16",
+  "composed_config_sha256": "4bc209b1967364a05748f1c8c53d2898c9b27b0d8c4daa02604e3a8cac8cbbfd",
+  "contacts_sent": 0,
+  "implementation": {
+    "baseline_sha256": "bf30aad162fd48f430d51a37a56f03bd8035aaddd49435d25dbbcc7797e7bcc9",
+    "experiment_sha256": "53bb523c41f0e3fbde36a1ebaf1afb8d0a3a21a9adf7b37fa74e82a3661b21c4",
+    "g8_core_sha256": "7cec5d99bbc2f1647f185298f392279d9a613ef7a018c5ccf64138eb582f295d",
+    "launcher_sha256": "882c8508555ca3b591ad5d18d9b25c82c65a4b8441c2547b41f85ff2978ed292",
+    "oracle_sha256": "8b9b0df62ba6946556bc7bd13b2ef95be6c7ba22a0a4dc563acb085872c56448",
+    "scoring_batch_sha256": "493504f6dc6891ff584cd0b5261c6e608e65d5d7b3fd2e29dea8fdedad4cabba"
+  },
+  "model_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+  "openjiuwen_version": "0.1.16.post2",
+  "planned_model_calls": 544,
+  "planned_speech_audio_seconds": 2728,
+  "prompt_fit": {
+    "decomposed_bind_maximum": {
+      "completion_tokens": 12288,
+      "remaining_tokens": 14038,
+      "total_tokens": 18730
+    },
+    "decomposed_resolve_maximum": {
+      "completion_tokens": 1024,
+      "remaining_tokens": 15564,
+      "total_tokens": 17204
+    },
+    "decomposed_select": {
+      "completion_tokens": 4096,
+      "remaining_tokens": 10038,
+      "total_tokens": 22730
+    },
+    "evidence_maximum": {
+      "completion_tokens": 512,
+      "remaining_tokens": 19367,
+      "total_tokens": 13401
+    },
+    "exhaustive_resolve": {
+      "completion_tokens": 1024,
+      "remaining_tokens": 8451,
+      "total_tokens": 24317
+    },
+    "obs": {
+      "completion_tokens": 512,
+      "remaining_tokens": 31058,
+      "total_tokens": 1710
+    },
+    "support_only_resolve": {
+      "completion_tokens": 1024,
+      "remaining_tokens": 29447,
+      "total_tokens": 3321
+    },
+    "operational_cap": 24576,
+    "per_slot_context": 32768,
+    "serialized_request_counter": "utf8-byte-upper-bound",
+    "special_token_reserve": 512
+  },
+  "protocol_sha256": "69ee892a08a51adbb61a18b9f6827a9f33e7669155325fd198de384b5fab044e",
+  "runtime": {
+    "gpu": "NVIDIA GeForce RTX 5090 Laptop GPU",
+    "packet_count": 317,
+    "server_binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2"
+  },
+  "schema": "saea-a2t-g8-precontact-report-v1",
+  "source_commit": "ed22380ed511e097389876f6d8e0132fb1ba73d7",
+  "status": "PREFLIGHT_PASSED_ZERO_CONTACT"
+}
