@@ -1,0 +1,193 @@
+{
+  "schema": "saea-a2t-select-fill-zero-contact-seal-recovery-plan-v1",
+  "status": "RECOVERY_AUTHORIZED",
+  "run_id": "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V5",
+  "source_mission": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V5/mission-20260903t204700z-selectfill104-recovery-v5",
+  "recovery_target_dirname": "zero-contact-seal-recovery-v1",
+  "expected": {
+    "sample_count": 104,
+    "generation_contacts": 416,
+    "phase_contacts": 104,
+    "embedding_logical_items": 104,
+    "embedding_physical_requests": 4,
+    "attempt_audio_seconds": 549.489916
+  },
+  "authority": {
+    "path": "docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-select-fill-agentloop-104-v1/execution-authority-recovery-v5.json",
+    "sha256": "bc6d556ee38b3870f5eab44f70e2cd789fb78a2ab46633aa4807d7248d609117",
+    "implementation_commit": "65c86bb2a64672b22d44d10532e84c333ed6f3b5",
+    "preregistration": {
+      "path": "docs/readiness/2026-09-03-a2t-select-fill-agentloop-104-recovery-v5-preregistration.md",
+      "sha256": "80437f9d25e35a4d5b8bdfd8899c220b26705c09dcf513772730ee2e810bae8d"
+    },
+    "code": [
+      {
+        "path": "docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-select-fill-agentloop-104-v1/launcher/launch_a2t_select_fill_agentloop_104.py",
+        "sha256": "3709fb725f3f9b0976c5fbff49c3669334dc0799ab30dfb216ad9e4fd06a2239"
+      },
+      {
+        "path": "docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-select-fill-agentloop-104-v1/launcher/local_runtime_factory.py",
+        "sha256": "16982ec54d94526d564c7a06f91d12886e45ea3c1d59e26212a545e2ca2153a3"
+      }
+    ]
+  },
+  "source": {
+    "authority_binding": {
+      "relpath": "authority-binding.json",
+      "sha256": "9f2a68124290a9cc4bb67fd6bfad191e8ddedc3bc77262b32b9518f3250bad5b"
+    },
+    "failure_receipt": {
+      "relpath": "failure-receipt.json",
+      "sha256": "ba118cc8b0fbdec98588209b81ecd77f6e2343e0be417548ad77c62b2105b4e6"
+    },
+    "send_accounting": {
+      "relpath": "generation-send-accounting.jsonl",
+      "sha256": "cd819e0d0b537734f0171943777f95ae59e088cccd4eb4637a71fbd0c93dbfce"
+    },
+    "checkpoint": {
+      "relpath": "post-embedding-k32.json",
+      "sha256": "e56860c47a64af398f2c594a1a96f4a6ab993fc5849bdc718e1e3bf9f17dba1b"
+    },
+    "checkpoint_receipt": {
+      "relpath": "post-embedding-k32-receipt.json",
+      "sha256": "6f7e59c943c732c6222fe9bc3dbb0f88c0f3c303197dbc09bf1a09f7eb24fc4c"
+    },
+    "embedding_tool_receipt": {
+      "relpath": "services/embedding/tool-receipt.json",
+      "sha256": "545dc1f458a84ee7cf9c302baa954e3a21bf319359a1ae1eaa2bd5ccca735eb4"
+    },
+    "embedding_attempt": {
+      "path": "attempts/SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V5-EMBED/attempt-20260903t204700z-selectfill104-embedding-v5.json",
+      "sha256": "66a03e727e2512841eeaad4c3f3ea486c05882416a64091b672fc69081e7c2d3"
+    },
+    "service_receipts": [
+      {
+        "kind": "embedding_session",
+        "relpath": "services/embedding/session-receipt.json",
+        "sha256": "a438570d50c2b1eca712926d53673a5f70ea2ca9c5bd73bd18bda4cf8a229442"
+      },
+      {
+        "kind": "embedding_stop",
+        "relpath": "services/embedding/stop.json",
+        "sha256": "1e86d55cb4399ca66b689baec639869c1380668e5d014870dc8a08b90d7fd33c"
+      },
+      {
+        "kind": "generation_session",
+        "relpath": "services/generation-post-embedding/session-receipt.json",
+        "sha256": "4f8f906df8e8229b193cff9aae9e891fa354f6093c40b488f69d611a648e2164"
+      },
+      {
+        "kind": "generation_stop",
+        "relpath": "services/generation-post-embedding/stop.json",
+        "sha256": "6f69f87f1f59a565e19bb2b92c41ff4b53e97d14b2d12a6a6589d1b155e79f23"
+      }
+    ],
+    "phases": [
+      {
+        "phase": "JOINT_ONE_CALL",
+        "role": "joint_one_call",
+        "score_ready": true,
+        "source_dir": "joint-one-call",
+        "predecessor_phase": null,
+        "attempt": {
+          "path": "attempts/SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V5/attempt-20260903t204700z-selectfill104-joint-v5.json",
+          "sha256": "763e28e3f356beba2dd237db597a6ca2fce88c75e98d2cc80116bcbc117cbf10"
+        },
+        "trace": {
+          "relpath": "joint-one-call/agent-loop/SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V5.trace.jsonl",
+          "sha256": "e13c3bd89a08297f9f742e4826eb983d8ffdab4b526b912a2df1a93baef2152e",
+          "records": 728
+        },
+        "source_trace_manifest": {
+          "relpath": "joint-one-call/agent-loop/SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V5.trace-manifest.json",
+          "sha256": "bf467905ba79448866b7914faad58474ede85dd92d8a894e8dff57aa1ac6131f"
+        },
+        "preflight": {
+          "relpath": "preflight/JOINT_ONE_CALL.json",
+          "sha256": "a6b5065fe86a01318b4c5296926b1ef6b5f6e6188bb7edd57724f7e012bcb6b7"
+        }
+      },
+      {
+        "phase": "SELECT",
+        "role": "diagnostic_select",
+        "score_ready": false,
+        "source_dir": "select",
+        "predecessor_phase": null,
+        "attempt": {
+          "path": "attempts/SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V5/attempt-20260903t204700z-selectfill104-select-v5.json",
+          "sha256": "89c654e1ca255bcbec87b6a9f3116addd8b796537df2f62218c5a6466f443d18"
+        },
+        "trace": {
+          "relpath": "select/agent-loop/SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V5.trace.jsonl",
+          "sha256": "d253ff27cbb7089fcc272856d9d7cd21178f90550e3ad1fac210544821b8f9f6",
+          "records": 728
+        },
+        "source_trace_manifest": null,
+        "preflight": {
+          "relpath": "preflight/SELECT.json",
+          "sha256": "a69dbe0571f74017e061e6f92915d5a5c00528dc9893e820f8df164687146e4e"
+        }
+      },
+      {
+        "phase": "JOINT_DRAFT_REVISE",
+        "role": "joint_draft_revise",
+        "score_ready": true,
+        "source_dir": "joint-draft-revise",
+        "predecessor_phase": "JOINT_ONE_CALL",
+        "attempt": {
+          "path": "attempts/SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V5/attempt-20260903t204700z-selectfill104-revise-v5.json",
+          "sha256": "e83e40259ce256218a462ef4472854c9fab1608a43d5e8e4661b90686d93d117"
+        },
+        "trace": {
+          "relpath": "joint-draft-revise/agent-loop/SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V5.trace.jsonl",
+          "sha256": "c43174ec776dfd9c550f92557630c41462b2a95014089317ef85aca5b2990a5b",
+          "records": 728
+        },
+        "source_trace_manifest": null,
+        "preflight": {
+          "relpath": "preflight/JOINT_DRAFT_REVISE.json",
+          "sha256": "d5332d6cf1e595cbf42614a8c1a89bbca6c5924c0469b48fe5e8b8c0bd2cdbf3"
+        }
+      },
+      {
+        "phase": "FILL",
+        "role": "select_then_fill",
+        "score_ready": true,
+        "source_dir": "fill",
+        "predecessor_phase": "SELECT",
+        "attempt": {
+          "path": "attempts/SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V5/attempt-20260903t204700z-selectfill104-fill-v5.json",
+          "sha256": "12a3762356f15ae90aadfae9bcaa6a62cd31e7974d756862323a253102d68005"
+        },
+        "trace": {
+          "relpath": "fill/agent-loop/SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V5.trace.jsonl",
+          "sha256": "eabc95d7cd83f9f926ef81e86486e13c273d09ccd6daad23d95f186fb2a353fc",
+          "records": 728
+        },
+        "source_trace_manifest": null,
+        "preflight": {
+          "relpath": "preflight/FILL.json",
+          "sha256": "d152191377d55cf7d8caa544c89f22cd782cd3986d76808e3e38a17564b1680a"
+        }
+      }
+    ],
+    "recovered_direct_bundle": {
+      "manifest": {
+        "relpath": "recovered-direct-m0/SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2.run-manifest.json",
+        "sha256": "01d374d1dec270a0d958ddd6e3c0cc58b2e5298577c574aa7a6c712fff19996e"
+      },
+      "outputs": {
+        "relpath": "recovered-direct-m0/SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2.outputs.jsonl",
+        "sha256": "60664503c859d75b47debd1b861caad03b4ffead96584b607e5eaa079ed1d8d0"
+      },
+      "trace": {
+        "relpath": "recovered-direct-m0/SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2.trace.jsonl",
+        "sha256": "985bea38ccfca5429e4e2fe150b57c90195daf1cf20c8e97093ebfe419324e6a"
+      },
+      "trace_manifest": {
+        "relpath": "recovered-direct-m0/SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2.trace-manifest.json",
+        "sha256": "52c1db57449666de284409fb9088375660630413fa7b890a87cd88444d3aeeff"
+      }
+    }
+  }
+}

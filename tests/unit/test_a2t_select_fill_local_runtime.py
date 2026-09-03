@@ -209,6 +209,14 @@ def test_phase_gate_registry_keeps_paired_preflights_independent() -> None:
     assert runtime._phase_gate("JOINT_ONE_CALL") is joint
 
 
+def test_phase_trace_path_points_to_the_agent_loop_sink(tmp_path) -> None:
+    module = _factory()
+
+    assert module._phase_trace_path(tmp_path, "RUN-ID") == (
+        tmp_path / "agent-loop" / "RUN-ID.trace.jsonl"
+    )
+
+
 def test_stage_envelope_is_sealed_from_exact_response_and_lineage() -> None:
     module = _factory()
     candidate_names = ("alpha",) + tuple(f"tool_{index}" for index in range(31))

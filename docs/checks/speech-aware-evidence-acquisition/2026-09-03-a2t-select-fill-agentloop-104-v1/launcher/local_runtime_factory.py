@@ -164,6 +164,12 @@ def _sha256_json(value: object) -> str:
     return hashlib.sha256(_canonical_bytes(value)).hexdigest()
 
 
+def _phase_trace_path(run_dir: Path, run_id: str) -> Path:
+    """Return the trace written by the phase's AgentLoop trace sink."""
+
+    return Path(run_dir) / "agent-loop" / f"{run_id}.trace.jsonl"
+
+
 def _sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with Path(path).open("rb") as handle:
@@ -2236,7 +2242,9 @@ class LocalSelectFillRuntime:
             raise RuntimeError("phase client accounting is incomplete")
         request_by_sample = {str(item["sample_id"]): str(item["request_id"]) for item in timings}
         response_by_sample = {row.sample_id: row for row in phase_run.output.rows}
-        trace_path = state.run_dir / f"{self.authority['run_id']}.trace.jsonl"
+        trace_path = _phase_trace_path(
+            state.run_dir, str(self.authority["run_id"])
+        )
         trace_records = {
             document["record_id"]: document["payload"]
             for document in (
