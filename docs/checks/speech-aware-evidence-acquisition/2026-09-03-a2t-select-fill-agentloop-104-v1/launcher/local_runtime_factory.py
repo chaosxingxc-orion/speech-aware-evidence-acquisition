@@ -494,8 +494,11 @@ class LocalSelectFillRuntime:
             authority, protocol_sha256=str(authority["core_protocol_sha256"])
         )
         self.preregistration_path = _require_file_hash(
-            self.repo
-            / "docs/readiness/2026-09-03-a2t-select-fill-agentloop-104-v1-preregistration.md",
+            _confined_file(
+                self.repo,
+                self.spec.get("exposure_preregistration"),
+                label="exposure preregistration",
+            ),
             self.hashes.get("exposure_preregistration_sha256"),
             label="exposure preregistration",
         )
