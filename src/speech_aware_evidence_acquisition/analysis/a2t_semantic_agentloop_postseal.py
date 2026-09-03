@@ -25,18 +25,24 @@ RESULT_SCHEMA = "saea-a2t-semantic-agentloop-postseal-104-v1"
 OFFICIAL_SCORER = "a2t-toolcall"
 DIRECT_M0 = "direct_m0"
 OBS_SEMANTIC_RETRIEVAL = "obs_semantic_retrieval"
-MATCHED_SEMANTIC_TOP16_USE = "matched_semantic_top16_use"
-SHUFFLED_SAME_TIER_SAME_CARD_COUNT_USE = "shuffled_same_tier_same_card_count_use"
+TRANSCRIPT_TOP16_USE = "transcript_top16_use"
+MODEL_QUERY_TOP16_USE = "model_query_top16_use"
+RRF_FUSED_TOP16_USE = "rrf_fused_top16_use"
+SAME_STRATUM_SHUFFLED_FUSED_USE = "same_stratum_shuffled_fused_use"
 ARM_ORDER = (
     DIRECT_M0,
     OBS_SEMANTIC_RETRIEVAL,
-    MATCHED_SEMANTIC_TOP16_USE,
-    SHUFFLED_SAME_TIER_SAME_CARD_COUNT_USE,
+    TRANSCRIPT_TOP16_USE,
+    MODEL_QUERY_TOP16_USE,
+    RRF_FUSED_TOP16_USE,
+    SAME_STRATUM_SHUFFLED_FUSED_USE,
 )
 SCORED_ARM_ORDER = (
     DIRECT_M0,
-    MATCHED_SEMANTIC_TOP16_USE,
-    SHUFFLED_SAME_TIER_SAME_CARD_COUNT_USE,
+    TRANSCRIPT_TOP16_USE,
+    MODEL_QUERY_TOP16_USE,
+    RRF_FUSED_TOP16_USE,
+    SAME_STRATUM_SHUFFLED_FUSED_USE,
 )
 RETRIEVAL_CONDITIONS = ("transcript", "retrieval_query", "fused")
 
@@ -50,20 +56,21 @@ class RetrievalDiagnosticSample:
     """One sealed OBS/retrieval result plus post-seal required identities.
 
     The three ranking maps are intentionally supplied together so that the
-    transcript-only, retrieval-query-only, and fused full-ranking ablation
-    always has the same 104-row denominator.  ``proposed_action_sets`` is a
-    content/action-set ceiling, not observed model consumption.
+    transcript-only, main-model-query-only, and fused full-ranking ablation
+    always has the same 104-row denominator. Ordered-call-skeleton and
+    action-set fields are optional trace artifacts; the analysis marks their
+    ceilings unavailable unless complete trace coverage is supplied.
     """
 
     sample_id: str
     tier: str
     retrieval_sealed: bool
     required_tool_ids: Sequence[str]
-    required_ordered_call_skeleton: Sequence[str]
-    gold_calls: Sequence[Mapping[str, object]]
     ranked_tool_ids: Mapping[str, Sequence[str]]
-    ranked_ordered_call_skeletons: Mapping[str, Sequence[str]]
-    proposed_action_sets: Mapping[str, Sequence[Mapping[str, object]]]
+    required_ordered_call_skeleton: Sequence[str] | None = None
+    gold_calls: Sequence[Mapping[str, object]] | None = None
+    ranked_ordered_call_skeletons: Mapping[str, Sequence[str]] | None = None
+    proposed_action_sets: Mapping[str, Sequence[Mapping[str, object]]] | None = None
 
 
 def _nonempty_text(value: object, label: str) -> str:
@@ -141,7 +148,7 @@ def _validate_manifest_descriptors(
 ) -> Mapping[str, Path]:
     if not isinstance(manifests, Mapping) or set(manifests) != set(ARM_ORDER):
         raise AnalysisError(
-            "manifests must describe exactly the four future flight arms"
+            "manifests must describe exactly the six future flight arms"
         )
     resolved: dict[str, Path] = {}
     for arm in ARM_ORDER:
@@ -161,14 +168,14 @@ def _validate_manifest_descriptors(
             raise AnalysisError(f"{arm} must contain exactly {ROW_COUNT} complete rows")
         resolved[arm] = Path(manifest).resolve()
     if len(set(resolved.values())) != len(resolved):
-        raise AnalysisError("the four future flight manifests must be distinct")
+        raise AnalysisError("the six future flight manifests must be distinct")
     return resolved
 
 
 def build_official_score_jobs(
     manifests: Mapping[str, Mapping[str, object]],
 ) -> tuple[ScoreJob, ...]:
-    """Return three whole-manifest official scorer jobs, never OBS or shards.
+    """Return five whole-manifest official scorer jobs, never OBS or shards.
 
     Callers submit this exact tuple to ``run_score_batch(..., max_workers=4,
     include_per_sample=True)``.  The core scheduler starts one process for
@@ -178,10 +185,12 @@ def build_official_score_jobs(
     paths = _validate_manifest_descriptors(manifests)
     return (
         ScoreJob("direct-m0", paths[DIRECT_M0]),
-        ScoreJob("matched-semantic-top16-use", paths[MATCHED_SEMANTIC_TOP16_USE]),
+        ScoreJob("transcript-top16-use", paths[TRANSCRIPT_TOP16_USE]),
+        ScoreJob("model-query-top16-use", paths[MODEL_QUERY_TOP16_USE]),
+        ScoreJob("rrf-fused-top16-use", paths[RRF_FUSED_TOP16_USE]),
         ScoreJob(
-            "shuffled-same-tier-same-card-count-use",
-            paths[SHUFFLED_SAME_TIER_SAME_CARD_COUNT_USE],
+            "same-stratum-shuffled-fused-use",
+            paths[SAME_STRATUM_SHUFFLED_FUSED_USE],
         ),
     )
 
@@ -388,16 +397,7 @@ def _validate_diagnostic(sample: RetrievalDiagnosticSample) -> None:
         f"{sample.sample_id}.required_tool_ids",
         allow_empty=True,
     )
-    _sequence_of_unique_text(
-        sample.required_ordered_call_skeleton,
-        f"{sample.sample_id}.required_ordered_call_skeleton",
-        allow_empty=True,
-    )
-    for field_name, mapping in (
-        ("ranked_tool_ids", sample.ranked_tool_ids),
-        ("ranked_ordered_call_skeletons", sample.ranked_ordered_call_skeletons),
-        ("proposed_action_sets", sample.proposed_action_sets),
-    ):
+    for field_name, mapping in (("ranked_tool_ids", sample.ranked_tool_ids),):
         if not isinstance(mapping, Mapping) or set(mapping) != set(
             RETRIEVAL_CONDITIONS
         ):
@@ -410,32 +410,54 @@ def _validate_diagnostic(sample: RetrievalDiagnosticSample) -> None:
             f"{sample.sample_id}/{condition}.ranked_tool_ids",
             allow_empty=True,
         )
+    if sample.required_ordered_call_skeleton is not None:
         _sequence_of_unique_text(
-            sample.ranked_ordered_call_skeletons[condition],
-            f"{sample.sample_id}/{condition}.ranked_ordered_call_skeletons",
+            sample.required_ordered_call_skeleton,
+            f"{sample.sample_id}.required_ordered_call_skeleton",
             allow_empty=True,
         )
-        proposed = sample.proposed_action_sets[condition]
-        if isinstance(proposed, (str, bytes)) or not isinstance(proposed, Sequence):
+    if sample.ranked_ordered_call_skeletons is not None:
+        if set(sample.ranked_ordered_call_skeletons) != set(RETRIEVAL_CONDITIONS):
             raise AnalysisError(
-                f"{sample.sample_id}/{condition}.proposed_action_sets must be a sequence"
+                f"{sample.sample_id}.ranked_ordered_call_skeletons must provide the three ablation conditions"
             )
-        for index, call in enumerate(proposed):
+        for condition in RETRIEVAL_CONDITIONS:
+            _sequence_of_unique_text(
+                sample.ranked_ordered_call_skeletons[condition],
+                f"{sample.sample_id}/{condition}.ranked_ordered_call_skeletons",
+                allow_empty=True,
+            )
+    if sample.gold_calls is not None:
+        if isinstance(sample.gold_calls, (str, bytes)) or not isinstance(
+            sample.gold_calls, Sequence
+        ):
+            raise AnalysisError(f"{sample.sample_id}.gold_calls must be a sequence")
+        for index, call in enumerate(sample.gold_calls):
             if not isinstance(call, Mapping):
                 raise AnalysisError(
-                    f"{sample.sample_id}/{condition}.proposed_action_sets[{index}] is malformed"
+                    f"{sample.sample_id}.gold_calls[{index}] is malformed"
                 )
-            _call_identity(
-                call, f"{sample.sample_id}/{condition}.proposed_action_sets[{index}]"
+            _call_identity(call, f"{sample.sample_id}.gold_calls[{index}]")
+    if sample.proposed_action_sets is not None:
+        if set(sample.proposed_action_sets) != set(RETRIEVAL_CONDITIONS):
+            raise AnalysisError(
+                f"{sample.sample_id}.proposed_action_sets must provide the three ablation conditions"
             )
-    if isinstance(sample.gold_calls, (str, bytes)) or not isinstance(
-        sample.gold_calls, Sequence
-    ):
-        raise AnalysisError(f"{sample.sample_id}.gold_calls must be a sequence")
-    for index, call in enumerate(sample.gold_calls):
-        if not isinstance(call, Mapping):
-            raise AnalysisError(f"{sample.sample_id}.gold_calls[{index}] is malformed")
-        _call_identity(call, f"{sample.sample_id}.gold_calls[{index}]")
+        for condition in RETRIEVAL_CONDITIONS:
+            proposed = sample.proposed_action_sets[condition]
+            if isinstance(proposed, (str, bytes)) or not isinstance(proposed, Sequence):
+                raise AnalysisError(
+                    f"{sample.sample_id}/{condition}.proposed_action_sets must be a sequence"
+                )
+            for index, call in enumerate(proposed):
+                if not isinstance(call, Mapping):
+                    raise AnalysisError(
+                        f"{sample.sample_id}/{condition}.proposed_action_sets[{index}] is malformed"
+                    )
+                _call_identity(
+                    call,
+                    f"{sample.sample_id}/{condition}.proposed_action_sets[{index}]",
+                )
 
 
 def _retrieval_upper_bounds(
@@ -454,64 +476,102 @@ def _retrieval_upper_bounds(
         if not isinstance(item, RetrievalDiagnosticSample):
             raise AnalysisError("retrieval diagnostics contain a malformed row")
         _validate_diagnostic(item)
+    skeleton_available = all(
+        item.required_ordered_call_skeleton is not None
+        and item.ranked_ordered_call_skeletons is not None
+        for item in ordered
+    )
+    action_set_available = all(
+        item.gold_calls is not None and item.proposed_action_sets is not None
+        for item in ordered
+    )
+    unavailable_skeleton: Mapping[str, str] = {
+        "status": "unavailable",
+        "reason": "no sealed ordered-call skeleton trace artifact was supplied",
+    }
+    unavailable_action_set: Mapping[str, str] = {
+        "status": "unavailable",
+        "reason": "no sealed proposal-content/action-set trace artifact was supplied",
+    }
     conditions: dict[str, Mapping[str, object]] = {}
     for condition in RETRIEVAL_CONDITIONS:
         tool_hits = 0
-        skeleton_hits = 0
-        proposal_hits = 0
-        per_tier: dict[str, list[tuple[bool, bool, bool]]] = {}
+        skeleton_hits = 0 if skeleton_available else None
+        proposal_hits = 0 if action_set_available else None
+        per_tier: dict[str, list[tuple[bool, bool | None, bool | None]]] = {}
         for item in ordered:
             tools = tuple(item.ranked_tool_ids[condition])[:top_k]
-            skeletons = tuple(item.ranked_ordered_call_skeletons[condition])[:top_k]
             tool_hit = set(item.required_tool_ids).issubset(set(tools))
-            skeleton_hit = _is_subsequence(
-                item.required_ordered_call_skeleton, skeletons
-            )
-            available = Counter(
-                _call_identity(call, f"{item.sample_id}/{condition}.action")
-                for call in item.proposed_action_sets[condition]
-            )
-            needed = Counter(
-                _call_identity(call, f"{item.sample_id}.gold")
-                for call in item.gold_calls
-            )
-            proposal_hit = all(available[key] >= count for key, count in needed.items())
+            skeleton_hit = None
+            if skeleton_available:
+                assert item.ranked_ordered_call_skeletons is not None
+                assert item.required_ordered_call_skeleton is not None
+                skeleton_hit = _is_subsequence(
+                    item.required_ordered_call_skeleton,
+                    tuple(item.ranked_ordered_call_skeletons[condition])[:top_k],
+                )
+                assert skeleton_hits is not None
+                skeleton_hits += skeleton_hit
+            proposal_hit = None
+            if action_set_available:
+                assert item.proposed_action_sets is not None
+                assert item.gold_calls is not None
+                available = Counter(
+                    _call_identity(call, f"{item.sample_id}/{condition}.action")
+                    for call in item.proposed_action_sets[condition]
+                )
+                needed = Counter(
+                    _call_identity(call, f"{item.sample_id}.gold")
+                    for call in item.gold_calls
+                )
+                proposal_hit = all(
+                    available[key] >= count for key, count in needed.items()
+                )
+                assert proposal_hits is not None
+                proposal_hits += proposal_hit
             tool_hits += tool_hit
-            skeleton_hits += skeleton_hit
-            proposal_hits += proposal_hit
             per_tier.setdefault(item.tier, []).append(
                 (tool_hit, skeleton_hit, proposal_hit)
             )
+        tier_metrics: dict[str, Mapping[str, object]] = {}
+        for tier, values in sorted(per_tier.items()):
+            tier_metrics[tier] = {
+                "samples": len(values),
+                "top_k_tool_coverage": sum(value[0] for value in values)
+                / len(values),
+                "full_ordered_call_skeleton_coverage": (
+                    sum(bool(value[1]) for value in values) / len(values)
+                    if skeleton_available
+                    else unavailable_skeleton
+                ),
+                "proposal_content_action_set_consumption_ceiling": (
+                    sum(bool(value[2]) for value in values) / len(values)
+                    if action_set_available
+                    else unavailable_action_set
+                ),
+            }
         conditions[condition] = {
             "top_k_tool_coverage": tool_hits / ROW_COUNT,
-            "full_ordered_call_skeleton_coverage": skeleton_hits / ROW_COUNT,
-            "proposal_content_action_set_consumption_ceiling": proposal_hits
-            / ROW_COUNT,
-            "per_tier": {
-                tier: {
-                    "samples": len(values),
-                    "top_k_tool_coverage": sum(value[0] for value in values)
-                    / len(values),
-                    "full_ordered_call_skeleton_coverage": sum(
-                        value[1] for value in values
-                    )
-                    / len(values),
-                    "proposal_content_action_set_consumption_ceiling": sum(
-                        value[2] for value in values
-                    )
-                    / len(values),
-                }
-                for tier, values in sorted(per_tier.items())
-            },
+            "full_ordered_call_skeleton_coverage": (
+                skeleton_hits / ROW_COUNT
+                if skeleton_available
+                else unavailable_skeleton
+            ),
+            "proposal_content_action_set_consumption_ceiling": (
+                proposal_hits / ROW_COUNT if action_set_available else unavailable_action_set
+            ),
+            "per_tier": tier_metrics,
         }
     return {
         "analysis_phase": "post-seal",
         "runtime_eligible": False,
         "top_k": top_k,
-        "upper_bound_kind": "retrieval-and-action-set-coverage-ceiling",
+        "upper_bound_kind": "retrieval-tool-coverage-with-trace-gated-optional-ceilings",
         "scope_note": (
-            "These are post-seal ceilings over sealed rankings and action-set content. "
-            "They do not establish model consumption, achievable answer accuracy, or a runtime selection rule."
+            "These are post-seal diagnostics over sealed rankings. Ordered-call "
+            "skeleton and proposal-content/action-set ceilings remain unavailable "
+            "unless their corresponding trace artifacts are supplied. No diagnostic "
+            "establishes model consumption, achievable answer accuracy, or a runtime selection rule."
         ),
         "conditions": conditions,
     }
@@ -533,7 +593,7 @@ def analyze_semantic_agentloop_flight(
         SCORED_ARM_ORDER
     ):
         raise AnalysisError(
-            "score payloads must cover exactly the three scoreable complete manifests"
+            "score payloads must cover exactly the five scoreable complete manifests"
         )
     rows_by_arm: dict[str, Mapping[str, Mapping[str, object]]] = {}
     arm_metrics: dict[str, Mapping[str, object]] = {}
@@ -582,28 +642,49 @@ def analyze_semantic_agentloop_flight(
         },
         "arms": arm_metrics,
         "paired_contrasts": {
-            "matched_m0_agent_gain": _paired_contrast(
-                left=rows_by_arm[MATCHED_SEMANTIC_TOP16_USE],
-                right=rows_by_arm[DIRECT_M0],
+            "query_transcript": _paired_contrast(
+                left=rows_by_arm[MODEL_QUERY_TOP16_USE],
+                right=rows_by_arm[TRANSCRIPT_TOP16_USE],
                 sample_ids=sample_ids,
                 bootstrap_replicates=bootstrap_replicates,
                 bootstrap_seed=bootstrap_seed,
             ),
-            "matched_shuffled_causal_evidence_gain": _paired_contrast(
-                left=rows_by_arm[MATCHED_SEMANTIC_TOP16_USE],
-                right=rows_by_arm[SHUFFLED_SAME_TIER_SAME_CARD_COUNT_USE],
+            "fused_transcript": _paired_contrast(
+                left=rows_by_arm[RRF_FUSED_TOP16_USE],
+                right=rows_by_arm[TRANSCRIPT_TOP16_USE],
                 sample_ids=sample_ids,
                 bootstrap_replicates=bootstrap_replicates,
                 bootstrap_seed=bootstrap_seed + 100,
+            ),
+            "fused_query": _paired_contrast(
+                left=rows_by_arm[RRF_FUSED_TOP16_USE],
+                right=rows_by_arm[MODEL_QUERY_TOP16_USE],
+                sample_ids=sample_ids,
+                bootstrap_replicates=bootstrap_replicates,
+                bootstrap_seed=bootstrap_seed + 200,
+            ),
+            "fused_m0": _paired_contrast(
+                left=rows_by_arm[RRF_FUSED_TOP16_USE],
+                right=rows_by_arm[DIRECT_M0],
+                sample_ids=sample_ids,
+                bootstrap_replicates=bootstrap_replicates,
+                bootstrap_seed=bootstrap_seed + 300,
+            ),
+            "fused_shuffled": _paired_contrast(
+                left=rows_by_arm[RRF_FUSED_TOP16_USE],
+                right=rows_by_arm[SAME_STRATUM_SHUFFLED_FUSED_USE],
+                sample_ids=sample_ids,
+                bootstrap_replicates=bootstrap_replicates,
+                bootstrap_seed=bootstrap_seed + 400,
             ),
         },
         "retrieval_upper_bounds": _retrieval_upper_bounds(diagnostics, retrieval_top_k),
         "promotion_gates": {
             "scope": "104-row discovery qualification only; not a confirmatory or paper-scale claim",
-            "require_complete_verified_three_call_manifests_and_complete_obs_manifest": True,
-            "require_matched_m0_agent_gain_reported": True,
-            "require_matched_shuffled_causal_evidence_gain_reported": True,
-            "require_retrieval_ablation_and_all_three_postseal_ceilings_reported": True,
+            "require_complete_verified_five_call_manifests_and_complete_obs_manifest": True,
+            "require_all_five_paired_retrieval_and_evidence_contrasts_reported": True,
+            "require_transcript_query_fused_tool_ranking_reachability_reported": True,
+            "optional_skeleton_and_action_set_ceilings_require_sealed_trace_artifacts": True,
             "require_no_network_jitter_claim": True,
             "future_tfrl_over_0_90_not_required": True,
             "future_tfrl_over_0_90_is_not_a_baseline_admission_requirement": True,
@@ -631,13 +712,15 @@ __all__ = [
     "ARM_ORDER",
     "AnalysisError",
     "DIRECT_M0",
-    "MATCHED_SEMANTIC_TOP16_USE",
+    "MODEL_QUERY_TOP16_USE",
     "OBS_SEMANTIC_RETRIEVAL",
     "RETRIEVAL_CONDITIONS",
     "RESULT_SCHEMA",
     "RetrievalDiagnosticSample",
+    "RRF_FUSED_TOP16_USE",
     "ROW_COUNT",
-    "SHUFFLED_SAME_TIER_SAME_CARD_COUNT_USE",
+    "SAME_STRATUM_SHUFFLED_FUSED_USE",
+    "TRANSCRIPT_TOP16_USE",
     "analyze_semantic_agentloop_flight",
     "build_official_score_jobs",
 ]

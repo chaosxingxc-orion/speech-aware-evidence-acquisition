@@ -31,20 +31,23 @@ def _diagnostics(value: object) -> tuple[RetrievalDiagnosticSample, ...]:
     rows = []
     for index, raw in enumerate(value):
         row = _object(raw, f"retrieval_samples[{index}]")
-        expected = {
+        required = {
             "sample_id",
             "tier",
             "retrieval_sealed",
             "required_tool_ids",
+            "ranked_tool_ids",
+        }
+        optional = {
             "required_ordered_call_skeleton",
             "gold_calls",
-            "ranked_tool_ids",
             "ranked_ordered_call_skeletons",
             "proposed_action_sets",
         }
-        if set(row) != expected:
+        if not required.issubset(row) or not set(row).issubset(required | optional):
             raise RuntimeError(
-                f"retrieval_samples[{index}] must contain exactly {sorted(expected)}"
+                f"retrieval_samples[{index}] must contain required fields {sorted(required)} "
+                f"and only optional trace fields {sorted(optional)}"
             )
         rows.append(RetrievalDiagnosticSample(**row))
     return tuple(rows)

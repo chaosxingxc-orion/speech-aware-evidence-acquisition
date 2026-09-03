@@ -97,22 +97,11 @@ def _score_payload(
 
 def _diagnostics(ids: tuple[str, ...]) -> tuple[RetrievalDiagnosticSample, ...]:
     rows = []
-    for index, sample_id in enumerate(ids):
-        gold = {"name": "tool-a", "arguments": {"target": index}}
+    for sample_id in ids:
         rankings = {
             "transcript": ("tool-z", "tool-a"),
             "retrieval_query": ("tool-a", "tool-z"),
             "fused": ("tool-a", "tool-z"),
-        }
-        skeletons = {
-            "transcript": ("wrong", "tool-a(target)"),
-            "retrieval_query": ("tool-a(target)", "wrong"),
-            "fused": ("tool-a(target)", "wrong"),
-        }
-        action_sets = {
-            "transcript": ({"name": "tool-a", "arguments": {"target": index}},),
-            "retrieval_query": ({"name": "tool-a", "arguments": {"target": index}},),
-            "fused": ({"name": "tool-a", "arguments": {"target": index}},),
         }
         rows.append(
             RetrievalDiagnosticSample(
@@ -120,17 +109,13 @@ def _diagnostics(ids: tuple[str, ...]) -> tuple[RetrievalDiagnosticSample, ...]:
                 tier=sample_id.split(":", 1)[0],
                 retrieval_sealed=True,
                 required_tool_ids=("tool-a",),
-                required_ordered_call_skeleton=("tool-a(target)",),
-                gold_calls=(gold,),
                 ranked_tool_ids=rankings,
-                ranked_ordered_call_skeletons=skeletons,
-                proposed_action_sets=action_sets,
             )
         )
     return tuple(rows)
 
 
-def test_builds_three_whole_manifest_score_jobs_and_never_scores_obs(
+def test_builds_five_whole_manifest_score_jobs_and_never_scores_obs(
     tmp_path: Path,
 ) -> None:
     descriptors = _manifest_descriptors(tmp_path)
@@ -139,32 +124,42 @@ def test_builds_three_whole_manifest_score_jobs_and_never_scores_obs(
 
     assert [job.job_id for job in jobs] == [
         "direct-m0",
-        "matched-semantic-top16-use",
-        "shuffled-same-tier-same-card-count-use",
+        "transcript-top16-use",
+        "model-query-top16-use",
+        "rrf-fused-top16-use",
+        "same-stratum-shuffled-fused-use",
     ]
-    assert len(jobs) == 3
+    assert len(jobs) == 5
     assert all(job.manifest.name.endswith(".run-manifest.json") for job in jobs)
 
 
-def test_reports_matched_and_causal_gains_tier_metrics_sign_tests_and_retrieval_ablation(
+def test_reports_all_revised_paired_contrasts_and_unavailable_trace_ceilings(
     tmp_path: Path,
 ) -> None:
     ids = _ids()
     descriptors = _manifest_descriptors(tmp_path)
     direct = set(ids[:30])
-    matched = set(ids[:50])
-    shuffled = set(ids[:38])
+    transcript = set(ids[:38])
+    query = set(ids[:45])
+    fused = set(ids[:50])
+    shuffled = set(ids[:40])
     payloads = {
         "direct_m0": _score_payload(
             Path(descriptors["direct_m0"]["manifest"]), ids, wins=direct
         ),
-        "matched_semantic_top16_use": _score_payload(
-            Path(descriptors["matched_semantic_top16_use"]["manifest"]),
+        "transcript_top16_use": _score_payload(
+            Path(descriptors["transcript_top16_use"]["manifest"]),
             ids,
-            wins=matched,
+            wins=transcript,
         ),
-        "shuffled_same_tier_same_card_count_use": _score_payload(
-            Path(descriptors["shuffled_same_tier_same_card_count_use"]["manifest"]),
+        "model_query_top16_use": _score_payload(
+            Path(descriptors["model_query_top16_use"]["manifest"]), ids, wins=query
+        ),
+        "rrf_fused_top16_use": _score_payload(
+            Path(descriptors["rrf_fused_top16_use"]["manifest"]), ids, wins=fused
+        ),
+        "same_stratum_shuffled_fused_use": _score_payload(
+            Path(descriptors["same_stratum_shuffled_fused_use"]["manifest"]),
             ids,
             wins=shuffled,
         ),
@@ -179,30 +174,37 @@ def test_reports_matched_and_causal_gains_tier_metrics_sign_tests_and_retrieval_
     )
 
     assert report["schema"] == "saea-a2t-semantic-agentloop-postseal-104-v1"
-    assert report["arms"]["matched_semantic_top16_use"]["exact_match"] == pytest.approx(
+    assert report["arms"]["rrf_fused_top16_use"]["exact_match"] == pytest.approx(
         50 / 104
     )
     assert (
-        report["arms"]["matched_semantic_top16_use"]["per_tier"]["tier1"]["samples"]
+        report["arms"]["rrf_fused_top16_use"]["per_tier"]["tier1"]["samples"]
         == 13
     )
-    gain = report["paired_contrasts"]["matched_m0_agent_gain"]
+    gain = report["paired_contrasts"]["fused_m0"]
     assert gain["exact_match"]["point_estimate"] == pytest.approx(20 / 104)
     assert gain["exact_match"]["sign_test"]["wins"] == 20
-    causal = report["paired_contrasts"]["matched_shuffled_causal_evidence_gain"]
-    assert causal["tool_accuracy"]["point_estimate"] == pytest.approx(12 / 104)
+    assert report["paired_contrasts"]["query_transcript"]["tool_accuracy"][
+        "point_estimate"
+    ] == pytest.approx(7 / 104)
+    assert report["paired_contrasts"]["fused_transcript"]["slot_f1"][
+        "point_estimate"
+    ] == pytest.approx(12 / 104)
+    assert report["paired_contrasts"]["fused_query"]["exact_match"][
+        "point_estimate"
+    ] == pytest.approx(5 / 104)
+    causal = report["paired_contrasts"]["fused_shuffled"]
+    assert causal["tool_accuracy"]["point_estimate"] == pytest.approx(10 / 104)
     retrieval = report["retrieval_upper_bounds"]
     assert retrieval["top_k"] == 16
     assert retrieval["conditions"]["transcript"]["top_k_tool_coverage"] == 1.0
-    assert (
-        retrieval["conditions"]["fused"]["full_ordered_call_skeleton_coverage"] == 1.0
-    )
-    assert (
-        retrieval["conditions"]["retrieval_query"][
-            "proposal_content_action_set_consumption_ceiling"
-        ]
-        == 1.0
-    )
+    assert retrieval["conditions"]["fused"]["full_ordered_call_skeleton_coverage"] == {
+        "status": "unavailable",
+        "reason": "no sealed ordered-call skeleton trace artifact was supplied",
+    }
+    assert retrieval["conditions"]["retrieval_query"][
+        "proposal_content_action_set_consumption_ceiling"
+    ]["status"] == "unavailable"
     assert report["promotion_gates"]["future_tfrl_over_0_90_not_required"] is True
     assert "network jitter" in report["conclusion_exclusions"]
 
@@ -251,8 +253,10 @@ def test_no_contact_reader_accepts_only_the_explicit_future_input_shape(
         arm: _score_payload(Path(descriptors[arm]["manifest"]), ids, wins=empty)
         for arm in (
             "direct_m0",
-            "matched_semantic_top16_use",
-            "shuffled_same_tier_same_card_count_use",
+            "transcript_top16_use",
+            "model_query_top16_use",
+            "rrf_fused_top16_use",
+            "same_stratum_shuffled_fused_use",
         )
     }
     module = _script_module()
@@ -261,7 +265,14 @@ def test_no_contact_reader_accepts_only_the_explicit_future_input_shape(
         {
             "manifests": descriptors,
             "score_payloads": payloads,
-            "retrieval_samples": [sample.__dict__ for sample in _diagnostics(ids)],
+            "retrieval_samples": [
+                {
+                    key: value
+                    for key, value in sample.__dict__.items()
+                    if value is not None
+                }
+                for sample in _diagnostics(ids)
+            ],
         },
         bootstrap_replicates=10,
         bootstrap_seed=3,

@@ -6,6 +6,7 @@ import importlib.util
 import json
 from pathlib import Path
 import sys
+from types import SimpleNamespace
 
 import pytest
 
@@ -34,11 +35,13 @@ def test_protocol_is_exact_and_hashes_are_mechanical() -> None:
         "M0_DIRECT",
         "OBS_SEMANTIC_STATE",
         "EMBED_TRANSCRIPT_AND_RETRIEVAL_QUERY",
-        "USE_MATCHED_SELECTED_TOOLS",
-        "USE_SAME_TIER_SHUFFLED_SELECTED_TOOLS",
+        "TRANSCRIPT_TOP16_USE",
+        "MODEL_QUERY_TOP16_USE",
+        "RRF_FUSED_TOP16_USE",
+        "SAME_STRATUM_SHUFFLED_FUSED_USE",
     )
     assert module.SAMPLE_COUNT == 104
-    assert module.GENERATION_CONTACTS == 416
+    assert module.GENERATION_CONTACTS == 624
     assert module.SEMANTIC_ITEM_COUNT == 208
     assert module.EMBEDDING_BATCH_SIZE == 32
     assert module.EMBEDDING_PHYSICAL_REQUESTS == 7
@@ -52,6 +55,43 @@ def test_protocol_is_exact_and_hashes_are_mechanical() -> None:
     assert module.TOP_K == 16
     assert module.CONFIG_SHA256 == module.sha256_json(module.protocol_config())
     assert module.PROTOCOL_SHA256 == module.protocol_hash()
+    assert module.MANIFEST_ROLES == (
+        "direct_m0",
+        "obs_semantic_retrieval",
+        "transcript_top16_use",
+        "model_query_top16_use",
+        "rrf_fused_top16_use",
+        "same_stratum_shuffled_fused_use",
+    )
+
+
+def test_exact_preprocess_v2_and_promoted_packet_tokens_are_bound() -> None:
+    module = _launcher()
+    roster = module.validate_roster(_roster(module))
+    report = json.loads(module.PREPROCESS_REPORT_PATH.read_text(encoding="utf-8"))
+    promotion_path = Path(
+        "/home/chao/feat-cache/a2t-semantic-agentloop-v1-packets-04ccc72a/"
+        "A2T-SEMANTIC-AGENTLOOP-104-V1-promotion.json"
+    )
+    promotion = json.loads(promotion_path.read_text(encoding="utf-8"))
+
+    packets = module.validate_preprocessing_documents(report, promotion, roster)
+
+    assert len(packets.bindings) == 104
+    assert len(packets.speech_tokens) == 104
+    values = sorted(packets.speech_tokens.values())
+    assert min(values) == 26
+    assert max(values) == 481
+    assert packets.promotion_receipt_sha256 == (
+        "6f5d77438b50ebba8130122c6cc39acff18f0707836c61e72a03f6af1380c6b5"
+    )
+    sample_id = roster.sample_ids[0]
+    assert packets.bindings[sample_id]["packet_id"] == sample_id.replace(":", "/", 1)
+
+    drift = json.loads(json.dumps(promotion))
+    drift["speech_feature_tokens"]["distribution"]["max"] = 480
+    with pytest.raises(RuntimeError, match="distribution drift"):
+        module.validate_preprocessing_documents(report, drift, roster)
 
 
 def test_fresh_roster_is_exactly_104_unexposed_discovery_rows() -> None:
@@ -247,11 +287,11 @@ def test_precontact_gate_rejects_prompt_level_multi_sample_and_missing_schema() 
     base = {"messages": [{"role": "user", "content": "x"}], "response_format": {}}
 
     with pytest.raises(RuntimeError, match="n=1"):
-        gate("http://127.0.0.1:1", json.dumps({**base, "n": 2}).encode())
+        gate("http://127.0.0.1:1/v1/chat/completions", json.dumps({**base, "n": 2}).encode())
     missing = dict(base)
     del missing["response_format"]
     with pytest.raises(RuntimeError, match="per-request response_format"):
-        gate("http://127.0.0.1:1", json.dumps(missing).encode())
+        gate("http://127.0.0.1:1/v1/chat/completions", json.dumps(missing).encode())
 
 
 def test_precontact_gate_requires_exact_packet_tokens_and_completion_ceiling() -> None:
@@ -279,12 +319,12 @@ def test_precontact_gate_requires_exact_packet_tokens_and_completion_ceiling() -
         send=lambda _url, _raw: pytest.fail("must not contact"),
     )
     with pytest.raises(RuntimeError, match="packet token count"):
-        gate("http://127.0.0.1:1", json.dumps(body).encode())
+        gate("http://127.0.0.1:1/v1/chat/completions", json.dumps(body).encode())
 
     body["messages"][0]["content"][0]["speech_features"]["packet_id"] = "known"
     del body["max_tokens"]
     with pytest.raises(RuntimeError, match="max_tokens"):
-        gate("http://127.0.0.1:1", json.dumps(body).encode())
+        gate("http://127.0.0.1:1/v1/chat/completions", json.dumps(body).encode())
 
 
 def test_server_phase_gate_enforces_separate_embedding_and_two_generation_windows() -> (
@@ -314,12 +354,252 @@ def test_server_phase_gate_enforces_separate_embedding_and_two_generation_window
     )
 
 
+def _resolved_hashes(module):
+    return {
+        name: (expected if expected is not None else "a" * 64)
+        for name, expected in module.REQUIRED_AUTHORITY_HASHES.items()
+    }
+
+
+class _Runtime:
+    agent_executor_id = "openjiuwen-workflow-v1"
+    slot_count = 2
+    queue_depth = 4
+    registered_tool_names = ("knownTool",)
+
+    def __init__(self, module, sample_ids):
+        self.module = module
+        self.sample_ids = sample_ids
+        self.events = []
+
+    def assert_attempt_unopened(self):
+        self.events.append("unopened")
+
+    def start_generation(self, window):
+        self.events.append(f"start-gen:{window}")
+
+    def stop_generation(self, window):
+        self.events.append(f"stop-gen:{window}")
+
+    def start_embedding(self):
+        self.events.append("start-embed")
+
+    def stop_embedding(self):
+        self.events.append("stop-embed")
+
+    def m0_kwargs(self, bindings):
+        assert set(bindings) == set(self.sample_ids)
+        return {"kind": "m0"}
+
+    def observation_kwargs(self, bindings):
+        assert set(bindings) == set(self.sample_ids)
+        return {"kind": "obs"}
+
+    def embedding_client(self):
+        return object()
+
+    def semantic_index(self):
+        return object()
+
+    def selected_tool_ground(self):
+        return object()
+
+    def use_kwargs(self, public_phase, material, bindings):
+        self.events.append(f"prepare:{public_phase}")
+        assert set(material) == set(self.sample_ids)
+        assert set(bindings) == set(self.sample_ids)
+        return {"kind": public_phase}
+
+    def prompt_budget_audits(self):
+        return tuple(
+            {
+                "context_decision": "ALLOW",
+                "required_window_tokens": 100,
+            }
+            for _ in range(624)
+        )
+
+    def seal_runtime_receipt(self, role, summary):
+        self.events.append(f"runtime:{role}")
+        assert len(summary.results) == 104
+        return {
+            "role": role,
+            "status": "STOPPED",
+            "sha256": self.module.sha256_json({"runtime_role": role}),
+        }
+
+    def seal_manifest(self, role, summary, extras):
+        self.events.append(f"seal:{role}")
+        assert len(summary.results) == 104
+        assert extras["protocol_sha256"] == self.module.PROTOCOL_SHA256
+        if role.endswith("use"):
+            assert "tool_ranking_receipts" in extras
+        return {
+            "role": role,
+            "status": "COMPLETE",
+            "complete_rows": 104,
+            "manifest": f"{role}.run-manifest.json",
+            "runtime_receipt_sha256": extras["runtime_receipt"]["sha256"],
+        }
+
+    def seal_flight(self, descriptors, events, config_hash, protocol_hash):
+        assert tuple(row["role"] for row in descriptors) == self.module.MANIFEST_ROLES
+        assert events[-1] == "seal"
+        assert config_hash == self.module.CONFIG_SHA256
+        assert protocol_hash == self.module.PROTOCOL_SHA256
+        return {"status": "SEALED", "manifest_count": len(descriptors)}
+
+
+def test_contact_ready_coordinator_runs_exact_order_and_seals_six_manifests(
+    monkeypatch,
+) -> None:
+    module = _launcher()
+    roster = module.validate_roster(_roster(module))
+    bindings = {
+        sample_id: {"packet_id": sample_id.replace(":", "/", 1), "sha256": "b" * 64}
+        for sample_id in roster.sample_ids
+    }
+    packets = module.PreprocessedPackets(
+        bindings=bindings,
+        speech_tokens={value["packet_id"]: 26 for value in bindings.values()},
+        feature_root=module.PROMOTED_PACKET_ROOT,
+        promotion_receipt_sha256=module.PROMOTION_RECEIPT_SHA256,
+        decoder_gguf_sha256=module.GENERATION_DECODER_GGUF_SHA256,
+    )
+    runtime = _Runtime(module, roster.sample_ids)
+
+    def summary(text):
+        return SimpleNamespace(
+            results=tuple(
+                SimpleNamespace(sample_id=sample_id, final_response_text=text)
+                for sample_id in roster.sample_ids
+            )
+        )
+
+    def m0_runner(**kwargs):
+        runtime.events.append(kwargs["kind"])
+        return summary("[]")
+
+    def agent_runner(*, phase, **kwargs):
+        runtime.events.append(f"agent:{phase}:{kwargs['kind']}")
+        if phase == module.OBSERVATION_PHASE:
+            return summary(
+                '{"transcript":"Turn the lights on.",'
+                '"retrieval_query":"Enable the room lights."}'
+            )
+        return summary("[]")
+
+    def fake_embed(_client, observations):
+        runtime.events.append("embed-208")
+        assert len(observations) == 104
+        return {"vectors": ()}
+
+    routing = SimpleNamespace(
+        transcript_packets={sample_id: object() for sample_id in roster.sample_ids},
+        model_query_packets={sample_id: object() for sample_id in roster.sample_ids},
+        fused_packets={sample_id: object() for sample_id in roster.sample_ids},
+        routing_receipts={sample_id: {"full": True} for sample_id in roster.sample_ids},
+    )
+
+    def fake_route(**kwargs):
+        runtime.events.append("route-full-rankings")
+        return routing
+
+    arm_map = {sample_id: object() for sample_id in roster.sample_ids}
+    monkeypatch.setattr(module, "embed_observations", fake_embed)
+    monkeypatch.setattr(module, "route_observations", fake_route)
+    monkeypatch.setattr(
+        module,
+        "build_use_materials",
+        lambda **_kwargs: module.UseArmMaterial(
+            transcript=arm_map,
+            model_query=arm_map,
+            fused=arm_map,
+            shuffled_fused=arm_map,
+        ),
+    )
+
+    receipt = module.execute_contact_ready_flight(
+        runtime=runtime,
+        roster=roster,
+        packets=packets,
+        authority_hashes=_resolved_hashes(module),
+        m0_runner=m0_runner,
+        agentloop_runner=agent_runner,
+    )
+
+    assert receipt == {"status": "SEALED", "manifest_count": 6}
+    assert runtime.events[:6] == [
+        "unopened",
+        "start-gen:pre-embedding",
+        "m0",
+        "agent:OBS_SEMANTIC_STATE:obs",
+        "stop-gen:pre-embedding",
+        "start-embed",
+    ]
+    assert runtime.events.count("embed-208") == 1
+    assert runtime.events.count("route-full-rankings") == 1
+    assert [event for event in runtime.events if event.startswith("prepare:")] == [
+        "prepare:TRANSCRIPT_TOP16_USE",
+        "prepare:MODEL_QUERY_TOP16_USE",
+        "prepare:RRF_FUSED_TOP16_USE",
+        "prepare:SAME_STRATUM_SHUFFLED_FUSED_USE",
+    ]
+    assert [event for event in runtime.events if event.startswith("seal:")] == [
+        f"seal:{role}" for role in module.MANIFEST_ROLES
+    ]
+    assert [event for event in runtime.events if event.startswith("runtime:")] == [
+        f"runtime:{role}" for role in module.MANIFEST_ROLES
+    ]
+
+
+def test_invalid_observation_aborts_before_embedding(monkeypatch) -> None:
+    module = _launcher()
+    roster = module.validate_roster(_roster(module))
+    bindings = {
+        sample_id: {"packet_id": sample_id.replace(":", "/", 1), "sha256": "b" * 64}
+        for sample_id in roster.sample_ids
+    }
+    packets = module.PreprocessedPackets(
+        bindings=bindings,
+        speech_tokens={value["packet_id"]: 26 for value in bindings.values()},
+        feature_root=module.PROMOTED_PACKET_ROOT,
+        promotion_receipt_sha256=module.PROMOTION_RECEIPT_SHA256,
+        decoder_gguf_sha256=module.GENERATION_DECODER_GGUF_SHA256,
+    )
+    runtime = _Runtime(module, roster.sample_ids)
+    def result(text):
+        return SimpleNamespace(
+            results=tuple(
+                SimpleNamespace(sample_id=sample_id, final_response_text=text)
+                for sample_id in roster.sample_ids
+            )
+        )
+
+    with pytest.raises(RuntimeError, match="invalid JSON"):
+        module.execute_contact_ready_flight(
+            runtime=runtime,
+            roster=roster,
+            packets=packets,
+            authority_hashes=_resolved_hashes(module),
+            m0_runner=lambda **_kwargs: result("[]"),
+            agentloop_runner=lambda **_kwargs: result("not-json"),
+        )
+    assert runtime.events == [
+        "unopened",
+        "start-gen:pre-embedding",
+        "stop-gen:pre-embedding",
+    ]
+
+
 def test_cli_is_preflight_only_and_never_contacts(capsys) -> None:
     module = _launcher()
 
     assert module.main(["--preflight-only"]) == 0
     report = json.loads(capsys.readouterr().out)
     assert report["status"] == "PREFLIGHT_ONLY_NO_CONTACT"
+    assert report["generation_contact_ceiling"] == 624
+    assert report["embedding_physical_request_ceiling"] == 7
     assert report["contacts_made"] == {
         "embedding_physical_requests": 0,
         "generation": 0,
@@ -327,5 +607,5 @@ def test_cli_is_preflight_only_and_never_contacts(capsys) -> None:
         "scorer": 0,
         "tokenizer": 0,
     }
-    with pytest.raises(SystemExit, match="execution authority"):
+    with pytest.raises(SystemExit, match="No contact is the default"):
         module.main([])
