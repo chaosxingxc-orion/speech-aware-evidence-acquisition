@@ -123,8 +123,10 @@ second-stage phase. Then preflight every REVISE and FILL request before either s
 
 Seal exactly four answer manifests: `direct_m0`, `joint_one_call`, `joint_draft_revise`, and
 `select_then_fill`. OBS and SELECT are diagnostic phases, not official answer manifests. No response
-meaning, gold-derived reachability, task metric, or official scorer may be opened before all four answer
-manifests and the flight receipt are complete.
+meaning may be read by a human or analysis process, and no gold-derived reachability, task metric, or
+official scorer may be opened, before all four answer manifests and the flight receipt are complete.
+The runtime may mechanically parse the exact OBS, JOINT draft, and SELECT schemas only to produce the
+preregistered canonical downstream state; those intermediate values cannot change any frozen rule.
 
 ## Post-seal evaluation and decision rule
 
