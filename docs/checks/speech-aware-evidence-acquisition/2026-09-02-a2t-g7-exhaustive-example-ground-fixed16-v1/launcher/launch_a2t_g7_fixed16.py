@@ -128,6 +128,33 @@ OFFICIAL_SCORE_PLAN: Mapping[str, object] = {
         }
     ],
 }
+OFFICIAL_SCORERS = ("a2t-toolcall",)
+RESEAL_FLIGHT_NAME = "flight-20260903T000610Z"
+RESEAL_ATTEMPT_ID = "attempt-20260903t000610z-g7-fixed16"
+RESEAL_ATTEMPT_SHA256 = "3fc1b053ed422b917e1d84f9fc99c420a043a6c24ec75cafffed943982a5f4fd"
+RESEAL_CURRENT_CONTACTS = 476
+RESEAL_RECOVERY_TRACE_RELPATH = Path(
+    "runs/SAEA-A2T-G7-EXHAUSTIVE-EXAMPLE-GROUND-FIXED16-V1/"
+    "flight-20260902T234552Z/g7/transport-trace/"
+    "SAEA-A2T-G7-EXHAUSTIVE-EXAMPLE-GROUND-FIXED16-V1.trace.jsonl"
+)
+RESEAL_SOURCE_HASHES: Mapping[str, str] = {
+    "failure-receipt.json": "1548c46e80a1061395945bbb0ed1e1c61e4789270ecd44d9acdad77061bdc5af",
+    f"g7/{RUN_ID}.outputs.jsonl": "9c2c618c42fb601bce4a22b90f41a6ca3893378fd737fcb6c021b14b62652ec0",
+    f"g7/{RUN_ID}.run-manifest.json": "e80dae5fd67890494aed5fb98dcd014f3abbbf87453c767f14699d3974d376be",
+    f"g7/{RUN_ID}.trace-manifest.json": "652d412d17eddaa2c1207e98d93e3efceacc6458a3c6bcf975ced78d4be4792e",
+    f"g7/{RUN_ID}.trace.jsonl": "2996413928d95e6c0b35562159d7cf12adebac47c59de95669fb02670f1a89a3",
+    f"g7/agent-trace/{RUN_ID}.trace-manifest.json": "654505a2a2876067e7135e242129f44f986f55d4a172abfbaf58488ad4b212e8",
+    f"g7/agent-trace/{RUN_ID}.trace.jsonl": "f66a253b6f2ebbefdffb479e5f114f35f4d797a3826f94b43d0d463b9ede9000",
+    "g7/execution-plan.json": "e070e868b395b441233a91f8d7fe6f7ee667a000d735f6efd2394369ebce2735",
+    "g7/g7-assessment-states.jsonl": "8a310d0bdc1c67dd4cb7d314854667c319d4991835714c3b9fb78663e841f6f6",
+    "g7/official-score-plan.json": "9ecd61019ce922dd15cffb74a132dc1eb716d990c03b9be2edd288952642c239",
+    "g7/precontact-prompt-fit.json": "da25d84a602519f38d4f1c288c50a34a0cd8fd307e5ad97529b2e7f26bead103",
+    f"g7/transport-trace/{RUN_ID}.trace-manifest.json": "3da7d53a254eef8b4f879b2d5308f2d60bf770b92dbb651af8d51f4159d557d3",
+    f"g7/transport-trace/{RUN_ID}.trace.jsonl": "3075e6d1889314c6e46a2533da6ae451cf255c7791d03a91284b0511dc6b6ce3",
+    "service/session-receipt.json": "c8038c1efe93963bc306046b88533a6df1f2e42a83bf238117029145e693a63e",
+    "service/stop-receipt.json": "984a0365b9b479bc55399b71877a9a8e5efe072a3fc8a398c67aa7b312aa010f",
+}
 
 ROSTER = REPO / "docs/receipts/a2t/A2T-G7-EXAMPLE-FIXED16.json"
 BASELINE = REPO / "configs/baseline/a2t-g7-exhaustive-example-ground-agentloop.json"
@@ -985,6 +1012,179 @@ def _write_jsonl(path: Path, rows: Sequence[Mapping[str, object]]) -> None:
     )
 
 
+def _bind_official_scorers(manifest_path: Path) -> None:
+    """Bind the one frozen scorer without changing any execution artifact."""
+    document = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if document.get("scorers") not in ([], list(OFFICIAL_SCORERS)):
+        raise RuntimeError("G7 manifest carries an unexpected scorer surface")
+    document["scorers"] = list(OFFICIAL_SCORERS)
+    _write_json(manifest_path, document)
+
+
+def _validate_transport_triples(
+    trace_path: Path, *, expected_count: int
+) -> set[tuple[str, str]]:
+    """Validate opaque request/response/cost triples without interpreting results."""
+    rows = [json.loads(line) for line in trace_path.read_text().splitlines() if line]
+    if len(rows) != expected_count * 3:
+        raise RuntimeError("G7 reseal transport record count drift")
+    by_id: dict[str, Mapping[str, object]] = {}
+    for row in rows:
+        record_id = row.get("record_id")
+        if not isinstance(record_id, str) or record_id in by_id:
+            raise RuntimeError("G7 reseal transport record identity drift")
+        by_id[record_id] = row
+    requests = [row for row in rows if row.get("channel") == "MODEL_REQUEST"]
+    if len(requests) != expected_count:
+        raise RuntimeError("G7 reseal request count drift")
+    contacts: set[tuple[str, str]] = set()
+    for request in requests:
+        wrapper = request.get("payload")
+        if not isinstance(wrapper, Mapping) or not isinstance(wrapper.get("payload"), Mapping):
+            raise RuntimeError("G7 reseal request payload shape drift")
+        payload = wrapper["payload"]
+        request_id = payload.get("request_id")
+        if (
+            not isinstance(request_id, str)
+            or request.get("record_id") != f"{request_id}/request"
+            or wrapper.get("payload_sha256") != _canonical_sha256(payload)
+        ):
+            raise RuntimeError("G7 reseal request payload hash drift")
+        response = by_id.get(f"{request_id}/response")
+        cost_row = by_id.get(f"{request_id}/cost")
+        if response is None or cost_row is None:
+            raise RuntimeError("G7 reseal transport triple is incomplete")
+        response_payload = response.get("payload")
+        cost = cost_row.get("payload")
+        text = response_payload.get("text") if isinstance(response_payload, Mapping) else None
+        if (
+            not isinstance(text, str)
+            or response_payload.get("response_text_sha256")
+            != hashlib.sha256(text.encode("utf-8")).hexdigest()
+        ):
+            raise RuntimeError("G7 reseal response hash drift")
+        if not isinstance(cost, Mapping) or cost.get("calls") != 1:
+            raise RuntimeError("G7 reseal cost triple drift")
+        history = payload.get("history")
+        control = history[-1] if isinstance(history, list) and history else None
+        sample_id = payload.get("sample_id")
+        contact_id = control.get("contact_id") if isinstance(control, Mapping) else None
+        key = (sample_id, contact_id)
+        if (
+            not isinstance(sample_id, str)
+            or not isinstance(contact_id, str)
+            or key in contacts
+        ):
+            raise RuntimeError("G7 reseal contact identity drift")
+        contacts.add(key)
+    if set(by_id) != {
+        f"{request['payload']['payload']['request_id']}/{suffix}"
+        for request in requests
+        for suffix in ("request", "response", "cost")
+    }:
+        raise RuntimeError("G7 reseal trace contains a non-triple record")
+    return contacts
+
+
+def reseal_failed_flight(
+    root: Path,
+    flight_dir: Path,
+    *,
+    expected_hashes: Mapping[str, str] = RESEAL_SOURCE_HASHES,
+    expected_attempt_sha256: str = RESEAL_ATTEMPT_SHA256,
+    recovery_trace: Path | None = None,
+) -> Mapping[str, object]:
+    """Hash-validate and locally reseal the exact completed failed G7 flight."""
+    flight_dir = flight_dir.resolve()
+    if expected_hashes is RESEAL_SOURCE_HASHES and (
+        flight_dir.name != RESEAL_FLIGHT_NAME or flight_dir.parent.name != RUN_ID
+    ):
+        raise RuntimeError("G7 reseal accepts only the hash-pinned failed flight")
+    for relative, expected in expected_hashes.items():
+        path = flight_dir / relative
+        if not path.is_file() or _sha256(path) != expected:
+            raise RuntimeError(f"G7 reseal source hash drift: {relative}")
+    run_dir = flight_dir / "g7"
+    manifest_path = run_dir / f"{RUN_ID}.run-manifest.json"
+    outputs_path = run_dir / f"{RUN_ID}.outputs.jsonl"
+    trace_path = run_dir / "transport-trace" / f"{RUN_ID}.trace.jsonl"
+    failure_path = flight_dir / "failure-receipt.json"
+    attempt_path = root / "attempts" / RUN_ID / f"{RESEAL_ATTEMPT_ID}.json"
+    if not attempt_path.is_file() or _sha256(attempt_path) != expected_attempt_sha256:
+        raise RuntimeError("G7 reseal source attempt hash drift")
+    failure = json.loads(failure_path.read_text(encoding="utf-8"))
+    attempt = json.loads(attempt_path.read_text(encoding="utf-8"))
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if (
+        failure.get("run_id") != RUN_ID
+        or failure.get("attempt_id") != RESEAL_ATTEMPT_ID
+        or "scorers" not in str(failure.get("error", ""))
+        or failure.get("transport_trace") != str(trace_path)
+        or failure.get("transport_trace_sha256") != _sha256(trace_path)
+        or attempt.get("run_id") != RUN_ID
+        or attempt.get("attempt_id") != RESEAL_ATTEMPT_ID
+        or attempt.get("state") != "ABORTED"
+        or int(attempt.get("actual", {}).get("calls", -1)) != RESEAL_CURRENT_CONTACTS
+        or "scorers" not in str(attempt.get("failure_reason", ""))
+        or manifest.get("run_id") != RUN_ID
+        or manifest.get("status") != STATUS_COMPLETED
+        or manifest.get("scorers") != []
+        or manifest.get("attempt", {}).get("attempt_id") != RESEAL_ATTEMPT_ID
+    ):
+        raise RuntimeError("G7 reseal failed-flight provenance drift")
+    output_rows = [json.loads(line) for line in outputs_path.read_text().splitlines() if line]
+    expected_ids = set(_verified_split().ids)
+    if (
+        len(output_rows) != len(expected_ids)
+        or {row.get("sample_id") for row in output_rows} != expected_ids
+        or manifest.get("outputs", {}).get("sha256") != _sha256(outputs_path)
+    ):
+        raise RuntimeError("G7 reseal output identity drift")
+    current_contacts = _validate_transport_triples(
+        trace_path, expected_count=RESEAL_CURRENT_CONTACTS
+    )
+    source_trace = recovery_trace or root / RESEAL_RECOVERY_TRACE_RELPATH
+    recovered = load_recovery_bundle(root, source_trace)
+    recovered_contacts = set(recovered.contacts)
+    if (
+        current_contacts & recovered_contacts
+        or len(current_contacts) != RESEAL_CURRENT_CONTACTS
+        or len(recovered_contacts) != MODEL_CONTACTS - RESEAL_CURRENT_CONTACTS
+        or len(current_contacts | recovered_contacts) != MODEL_CONTACTS
+    ):
+        raise RuntimeError("G7 reseal 476 + 4 contact reconciliation drift")
+    _bind_official_scorers(manifest_path)
+    bundle = verify_bundle(manifest_path)
+    if (
+        len(bundle.outputs_rows) != len(expected_ids)
+        or bundle.attempt_state != "ABORTED"
+        or bundle.manifest.get("scorers") != list(OFFICIAL_SCORERS)
+    ):
+        raise RuntimeError("G7 locally resealed bundle verification drift")
+    receipt = {
+        "schema": "saea-a2t-g7-local-reseal-v1",
+        "status": "EXTERNALLY_RESEALED_COMPLETE_UNSCORED",
+        "run_id": RUN_ID,
+        "source_attempt": {
+            "attempt_id": RESEAL_ATTEMPT_ID,
+            "state": "ABORTED",
+            "sha256": expected_attempt_sha256,
+        },
+        "source_hashes": dict(expected_hashes),
+        "contacts": {
+            "current": len(current_contacts),
+            "recovered": len(recovered_contacts),
+            "total": len(current_contacts | recovered_contacts),
+        },
+        "outputs": {"path": str(outputs_path), "sha256": _sha256(outputs_path), "rows": 16},
+        "manifest": {"path": str(manifest_path), "sha256": _sha256(manifest_path)},
+        "scorers": list(OFFICIAL_SCORERS),
+        "contacts_during_reseal": {"model": 0, "service": 0, "scorer": 0, "network": 0},
+    }
+    _write_json(flight_dir / "local-reseal-receipt.json", receipt)
+    return receipt
+
+
 def _verified_split() -> VerifiedSplit:
     roster = json.loads(ROSTER.read_text(encoding="utf-8"))
     ids = tuple(row["sample_id"] for row in roster["selected"])
@@ -1137,6 +1337,7 @@ def _seal_outputs(
             cost=cost,
         ),
     )
+    _bind_official_scorers(manifest)
     if len(verify_bundle(manifest).outputs_rows) != 16:
         raise RuntimeError("G7 sealed bundle is not complete fixed16")
     return {
@@ -1363,8 +1564,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     mode.add_argument("--check", action="store_true", help=argparse.SUPPRESS)
     mode.add_argument("--run", action="store_true")
     mode.add_argument("--recover-from", type=Path, metavar="TRACE_JSONL")
+    mode.add_argument("--reseal-flight", type=Path, metavar="FLIGHT_DIR")
     args = parser.parse_args(argv)
     root = data_root()
+    if args.reseal_flight is not None:
+        print(json.dumps(reseal_failed_flight(root, args.reseal_flight), sort_keys=True))
+        return 0
     if args.run or args.recover_from is not None:
         print(json.dumps(launch(root, recovery_trace=args.recover_from), sort_keys=True))
         return 0

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 from pathlib import Path
 import sys
 from types import SimpleNamespace
@@ -402,3 +403,166 @@ def test_recovery_reuses_four_obs_and_new_request_namespace_cannot_collide() -> 
         not contact.request_id.startswith(module.RECOVERY_REQUEST_ID_PREFIX)
         for contact in contacts.values()
     )
+
+
+def test_generated_manifest_is_bound_to_the_frozen_official_scorer(tmp_path: Path) -> None:
+    manifest = tmp_path / "run-manifest.json"
+    manifest.write_text('{"scorers": []}\n', encoding="utf-8")
+
+    module._bind_official_scorers(manifest)
+
+    assert json.loads(manifest.read_text(encoding="utf-8"))["scorers"] == [
+        "a2t-toolcall"
+    ]
+
+
+def test_reseal_transport_validation_requires_complete_hash_bound_triples(
+    tmp_path: Path,
+) -> None:
+    trace = tmp_path / "trace.jsonl"
+    payload = {
+        "request_id": "g7fixed16r-0001",
+        "sample_id": "sample-1",
+        "history": [{"contact_id": "g7-evidence-family-1"}],
+    }
+    request_hash = module._canonical_sha256(payload)
+    response = "opaque response bytes"
+    response_hash = module.hashlib.sha256(response.encode()).hexdigest()
+    rows = [
+        {
+            "channel": "MODEL_REQUEST",
+            "record_id": "g7fixed16r-0001/request",
+            "payload": {"payload": payload, "payload_sha256": request_hash},
+        },
+        {
+            "channel": "MODEL_RESPONSE",
+            "record_id": "g7fixed16r-0001/response",
+            "payload": {"text": response, "response_text_sha256": response_hash},
+        },
+        {
+            "channel": "COST",
+            "record_id": "g7fixed16r-0001/cost",
+            "payload": {"calls": 1},
+        },
+    ]
+    trace.write_text(
+        "".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8"
+    )
+
+    contacts = module._validate_transport_triples(trace, expected_count=1)
+    assert contacts == {("sample-1", "g7-evidence-family-1")}
+
+    rows[1]["payload"]["response_text_sha256"] = "0" * 64
+    trace.write_text(
+        "".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8"
+    )
+    with pytest.raises(RuntimeError, match="response hash"):
+        module._validate_transport_triples(trace, expected_count=1)
+
+
+def test_local_reseal_binds_exact_sources_and_makes_no_external_contact(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = tmp_path / "data"
+    flight = root / "runs" / module.RUN_ID / module.RESEAL_FLIGHT_NAME
+    run_dir = flight / "g7"
+    trace_dir = run_dir / "transport-trace"
+    trace_dir.mkdir(parents=True)
+    outputs = run_dir / f"{module.RUN_ID}.outputs.jsonl"
+    outputs.write_text(
+        "".join(json.dumps({"sample_id": sample_id}) + "\n" for sample_id in ("a", "b")),
+        encoding="utf-8",
+    )
+    trace = trace_dir / f"{module.RUN_ID}.trace.jsonl"
+    trace.write_text("placeholder\n", encoding="utf-8")
+    manifest = run_dir / f"{module.RUN_ID}.run-manifest.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "run_id": module.RUN_ID,
+                "status": "COMPLETED",
+                "scorers": [],
+                "outputs": {"path": str(outputs), "sha256": module._sha256(outputs)},
+                "attempt": {
+                    "attempt_id": module.RESEAL_ATTEMPT_ID,
+                    "state_path": "unused-in-unit-test",
+                },
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    failure = flight / "failure-receipt.json"
+    failure.write_text(
+        json.dumps(
+            {
+                "run_id": module.RUN_ID,
+                "attempt_id": module.RESEAL_ATTEMPT_ID,
+                "error": "BundleError('run manifest scorers must be non-empty')",
+                "transport_trace": str(trace),
+                "transport_trace_sha256": module._sha256(trace),
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    attempt = root / "attempts" / module.RUN_ID / f"{module.RESEAL_ATTEMPT_ID}.json"
+    attempt.parent.mkdir(parents=True)
+    attempt.write_text(
+        json.dumps(
+            {
+                "run_id": module.RUN_ID,
+                "attempt_id": module.RESEAL_ATTEMPT_ID,
+                "state": "ABORTED",
+                "actual": {"calls": 1},
+                "failure_reason": "BundleError('run manifest scorers must be non-empty')",
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    expected_hashes = {
+        "failure-receipt.json": module._sha256(failure),
+        f"g7/{module.RUN_ID}.outputs.jsonl": module._sha256(outputs),
+        f"g7/{module.RUN_ID}.run-manifest.json": module._sha256(manifest),
+        f"g7/transport-trace/{module.RUN_ID}.trace.jsonl": module._sha256(trace),
+    }
+    recovery = SimpleNamespace(contacts={("b", "g7-obs"): object()})
+    monkeypatch.setattr(module, "MODEL_CONTACTS", 2)
+    monkeypatch.setattr(module, "RESEAL_CURRENT_CONTACTS", 1)
+    monkeypatch.setattr(module, "_verified_split", lambda: SimpleNamespace(ids=("a", "b")))
+    monkeypatch.setattr(
+        module,
+        "_validate_transport_triples",
+        lambda _path, *, expected_count: {("a", "g7-resolve")},
+    )
+    monkeypatch.setattr(module, "load_recovery_bundle", lambda _root, _path: recovery)
+    monkeypatch.setattr(
+        module,
+        "verify_bundle",
+        lambda path: SimpleNamespace(
+            manifest=json.loads(path.read_text(encoding="utf-8")),
+            outputs_rows=({}, {}),
+            attempt_state="ABORTED",
+        ),
+    )
+
+    receipt = module.reseal_failed_flight(
+        root,
+        flight,
+        expected_hashes=expected_hashes,
+        expected_attempt_sha256=module._sha256(attempt),
+        recovery_trace=Path("old-trace.jsonl"),
+    )
+
+    assert receipt["status"] == "EXTERNALLY_RESEALED_COMPLETE_UNSCORED"
+    assert receipt["contacts"] == {"current": 1, "recovered": 1, "total": 2}
+    assert receipt["contacts_during_reseal"] == {
+        "model": 0,
+        "service": 0,
+        "scorer": 0,
+        "network": 0,
+    }
+    assert json.loads(manifest.read_text(encoding="utf-8"))["scorers"] == [
+        "a2t-toolcall"
+    ]
