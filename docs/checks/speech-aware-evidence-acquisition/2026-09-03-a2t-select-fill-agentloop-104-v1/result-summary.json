@@ -1,0 +1,162 @@
+{
+  "schema": "saea-a2t-select-fill-result-brief-v1",
+  "status": "completed_not_promoted",
+  "population": {
+    "rows": 104,
+    "rows_per_tier": 13,
+    "tier_count": 8,
+    "split_role": "discovery"
+  },
+  "arms": {
+    "DIRECT_M0": {
+      "contacts": 104,
+      "exact_match": 0.17307692307692307,
+      "parse_rate": 0.8557692307692307,
+      "prompt_tokens": 1384357,
+      "raw_total_latency_seconds": 115.76308767183218,
+      "slot_f1": 0.3018867924528302,
+      "tool_accuracy": 0.40384615384615385
+    },
+    "JOINT_ONE_CALL": {
+      "contacts": 104,
+      "exact_match": 0.2403846153846154,
+      "parse_rate": 1.0,
+      "prompt_tokens": 763709,
+      "raw_total_latency_seconds": 584.6979015377583,
+      "slot_f1": 0.4044943820224719,
+      "tool_accuracy": 0.625
+    },
+    "JOINT_DRAFT_REVISE": {
+      "contacts": 208,
+      "exact_match": 0.25,
+      "parse_rate": 1.0,
+      "prompt_tokens": 1553399,
+      "raw_total_latency_seconds": 1185.078672903881,
+      "slot_f1": 0.40677966101694907,
+      "tool_accuracy": 0.6346153846153846
+    },
+    "SELECT_THEN_FILL": {
+      "contacts": 208,
+      "exact_match": 0.25,
+      "parse_rate": 1.0,
+      "prompt_tokens": 230005,
+      "raw_total_latency_seconds": 236.23494281439343,
+      "slot_f1": 0.36516853932584264,
+      "tool_accuracy": 0.5961538461538461
+    }
+  },
+  "split_contrasts": {
+    "versus_DIRECT_M0": {
+      "exact_match_delta": 0.07692307692307693,
+      "exact_match_delta_90_percent_ci": [
+        0.009615384615384616,
+        0.1346153846153846
+      ],
+      "paired_exact_harms": 5,
+      "paired_exact_saves": 13,
+      "paired_exact_ties": 86,
+      "slot_f1_delta": 0.06328174687301247,
+      "tool_accuracy_delta": 0.19230769230769232
+    },
+    "versus_JOINT_ONE_CALL": {
+      "exact_match_delta": 0.009615384615384616,
+      "exact_match_delta_90_percent_ci": [
+        -0.028846153846153848,
+        0.04807692307692308
+      ],
+      "paired_exact_harms": 2,
+      "paired_exact_saves": 3,
+      "paired_exact_ties": 99,
+      "slot_f1_delta": -0.039325842696629254,
+      "tool_accuracy_delta": -0.028846153846153848
+    },
+    "versus_JOINT_DRAFT_REVISE": {
+      "exact_match_delta": 0.0,
+      "exact_match_delta_90_percent_ci": [
+        -0.028846153846153848,
+        0.028846153846153848
+      ],
+      "paired_exact_harms": 2,
+      "paired_exact_saves": 2,
+      "paired_exact_ties": 100,
+      "slot_f1_delta": -0.04161112169110642,
+      "tool_accuracy_delta": -0.038461538461538464
+    }
+  },
+  "mechanism": {
+    "candidate_required_tool_set_reachability": 0.9615384615384616,
+    "candidate_reachable_rows": 100,
+    "conditional_fill_exact_accuracy": 0.41935483870967744,
+    "conditional_fill_rows": 62,
+    "joint_one_call_tool_name_multiset_accuracy": 0.625,
+    "multi_call": {
+      "exact_count_all_arms": 0,
+      "rows": 26,
+      "selector_correct_name_multiset_count": 11,
+      "selector_failure_types": {
+        "mixed_or_name_substitution": 11,
+        "pure_overselection": 2,
+        "pure_underselection": 2
+      }
+    },
+    "nonexact_fill_error_tags": {
+      "extra_key_rows": 20,
+      "missing_key_rows": 6,
+      "rows": 36,
+      "wrong_same_type_value_rows": 14,
+      "wrong_value_type_rows": 4
+    },
+    "revised_outputs_changed_from_draft": 1,
+    "select_then_fill_attribution_counts": {
+      "FILL": 36,
+      "SELECT": 38,
+      "SUCCESS": 26,
+      "SUPPLY": 4
+    },
+    "selector_multi_call_tool_name_multiset_accuracy": 0.4230769230769231,
+    "selector_multi_call_rows": 26,
+    "selector_tool_name_multiset_accuracy": 0.5961538461538461,
+    "tier_exact_counts_direct_joint_revise_split": {
+      "tier1_direct": [2, 1, 1, 1],
+      "tier2_parametric": [4, 4, 4, 5],
+      "tier3_multi_intent": [0, 0, 0, 0],
+      "tier4_implicit": [0, 2, 2, 2],
+      "tier5_needle": [5, 9, 9, 9],
+      "tier6_correction": [3, 5, 6, 5],
+      "tier7_multiturn": [4, 4, 4, 4],
+      "tier8_intent_blending": [0, 0, 0, 0]
+    }
+  },
+  "context_fit": {
+    "operational_cap_tokens": 24576,
+    "physical_per_slot_tokens": 32768,
+    "reserved_tokens": 8192,
+    "required_window_max_tokens": {
+      "FILL": 3010,
+      "JOINT_ONE_CALL": 9019,
+      "JOINT_REVISE": 9385,
+      "SELECT": 2577
+    }
+  },
+  "official_scoring": {
+    "batch_elapsed_seconds": 8.23127,
+    "jobs_failed": 0,
+    "jobs_succeeded": 4,
+    "mode": "outer parallelism over complete manifests",
+    "summed_job_elapsed_seconds": 26.5934,
+    "throughput_speedup": 3.23,
+    "workers": 4
+  },
+  "promotion": {
+    "decision": false,
+    "reason": "The split workflow did not establish a positive exact-match lower bound or nonnegative tool and slot effects against both joint controls.",
+    "scale_to_approximately_1000": false
+  },
+  "integrity": {
+    "analysis_input_seal_sha256": "23342b1e08bc833abc4cdfb92bd3d81393aadc7a4a29022d96cbb728ad117913",
+    "official_score_batch_sha256": "6506eff753c0004d715cacb3c461c327f004c1d335ba38c2d530f82a8893f6e3",
+    "postseal_result_sha256": "57e9fc3b5e9a2aa953f9368651eca11697f9d35d1feaff5e23aa792a2eda3b16",
+    "recovery_receipt_sha256": "678dc3ec30b8e855d9351d7b2f45ddd9dd25eaa5060a51e7d0f2675aee3dda1e",
+    "score_jobs_sha256": "559bced3bfd0c91181e23e73323f0eaf1ba2103003773132ddaf226feb35e28d"
+  }
+}
