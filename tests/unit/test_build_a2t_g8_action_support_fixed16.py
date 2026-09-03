@@ -100,7 +100,7 @@ def test_g8_experiment_freezes_reachability_not_policy_fitting() -> None:
         "SUPPORT_ONLY_RESOLVE",
         "DECOMPOSED_SELECT_BIND_RESOLVE",
     ]
-    assert config["status"] == "PREREGISTERED_NO_CONTACT_AUTHORIZATION"
+    assert config["status"] == "IMPLEMENTED_CONTACT_REQUIRES_MATCHED_LEDGER_AND_EXECUTION_PLAN"
     assert config["population"]["receipt_sha256"] == hashlib.sha256(
         G8.read_bytes()
     ).hexdigest()
