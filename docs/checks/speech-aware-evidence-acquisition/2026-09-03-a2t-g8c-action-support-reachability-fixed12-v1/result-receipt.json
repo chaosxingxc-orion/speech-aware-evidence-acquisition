@@ -1,0 +1,106 @@
+{
+  "schema": "saea-a2t-g8c-action-support-result-v1",
+  "date": "2026-09-03",
+  "run_id": "SAEA-A2T-G8C-ACTION-SUPPORT-REACHABILITY-FIXED12-V1",
+  "attempt_id": "attempt-20260903t033500z-g8c-fixed12",
+  "split_role": "discovery",
+  "split_identity_hash": "acf2d1e7664987bf7154e2e45ed366b712c11e710910cf94af067e90ba4e1acb",
+  "status": "COMPLETED_REACHABILITY_GATE_FAILED",
+  "flight": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-G8C-ACTION-SUPPORT-REACHABILITY-FIXED12-V1/flight-20260903T034314Z",
+    "receipt_sha256": "eb189941b46ab285951950e66647815a3422259d5d0faff80d45a790089d4de8",
+    "study_commit": "905c14c4b5ac851b8941409ba4d9e093ebea40c2",
+    "physical_model_contacts": 405,
+    "model_contact_ceiling": 408,
+    "speech_audio_seconds": 2591.2649999999953,
+    "speech_audio_seconds_cap": 2608,
+    "prompt_tokens": 528972,
+    "completion_tokens": 27700,
+    "minimum_context_headroom_tokens": 9193,
+    "configured_context_tokens": 32768,
+    "operational_prompt_plus_completion_cap": 24576
+  },
+  "official_scoring": {
+    "branch_batch_summary_sha256": "fcc17c86d9402a22e77d05d5d5df90062580d26e1d25b1250693c540a259cb78",
+    "whole_manifests": 4,
+    "outer_workers": 4,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "branch_score_sha256": {
+      "STOP_M0": "c1ccd867bf9149e68a2ef867e3f621676c4a112f7394ec3a22a00dd5e626cce7",
+      "EXHAUSTIVE_G7": "78cf0b2b59f78cc156ae7162c8372cd720213439776a7d70004039730134638a",
+      "SUPPORT_ONLY_RESOLVE": "32027f3d37a26599d6f2439e79ae8958765b8103ea7f0690e582cf46e4a21638",
+      "DECOMPOSED_SELECT_BIND_RESOLVE": "806bccd08d59a415b73a1d8c1d111ffab83f2b951dd3c8db72f0ed554b8ebba5"
+    },
+    "branches": {
+      "STOP_M0": {
+        "exact_match": 0.3333333333333333,
+        "exact_count": 4,
+        "tool_accuracy": 0.8333333333333334,
+        "slot_micro_f1": 0.5116279069767442,
+        "parse_failures": 0
+      },
+      "EXHAUSTIVE_G7": {
+        "exact_match": 0.08333333333333333,
+        "exact_count": 1,
+        "tool_accuracy": 0.5833333333333334,
+        "slot_micro_f1": 0.1951219512195122,
+        "parse_failures": 0
+      },
+      "SUPPORT_ONLY_RESOLVE": {
+        "exact_match": 0.0,
+        "exact_count": 0,
+        "tool_accuracy": 0.0,
+        "slot_micro_f1": 0.0,
+        "parse_failures": 12
+      },
+      "DECOMPOSED_SELECT_BIND_RESOLVE": {
+        "exact_match": 0.08333333333333333,
+        "exact_count": 1,
+        "tool_accuracy": 0.75,
+        "slot_micro_f1": 0.2631578947368421,
+        "parse_failures": 1
+      }
+    }
+  },
+  "post_score_oracle": {
+    "builder_commit": "aecca4c27b35ebb57025162b704e1a627b6668d1",
+    "new_model_contacts": 0,
+    "parent_physical_contacts_once": 405,
+    "manifest_sha256": "16c3844e5938e4f67ad4a7d782e41cbdcd6d254e17d341d3563bc66e169aa2e5",
+    "outputs_sha256": "2d4c8aeb233face7349b4912ca5bfb13fc228e2c8867a0d4aa9172626d5d1dad",
+    "trace_manifest_sha256": "b9fb4200eaff258797d1f97eb47a13a982c1c231c811626ec0b556c5f7488e54",
+    "effective_score_sha256": "741784518054352ba7de9f3adf36a5c7f1d514d1a9c06d30cdb677b0110ff773",
+    "effective_batch_summary_sha256": "45cd6bf85fd7fbde904338929387686ce28813b1e1c7c2cc071efb0bbbb6ef3f",
+    "exact_match": 0.3333333333333333,
+    "exact_count": 4,
+    "tool_accuracy": 0.9166666666666666,
+    "slot_micro_f1": 0.5116279069767442,
+    "parse_failures": 0,
+    "selected_by_branch": {
+      "STOP_M0": 11,
+      "EXHAUSTIVE_G7": 0,
+      "SUPPORT_ONLY_RESOLVE": 0,
+      "DECOMPOSED_SELECT_BIND_RESOLVE": 1
+    },
+    "scoring_processes_started": 2,
+    "effective_official_score_invocations": 1,
+    "pre_scorer_refusals": 1,
+    "pre_scorer_refusal_reason": "D3 rejected six generated CPython cache files before scorer or gold access.",
+    "pre_scorer_refusal_stderr_sha256": "417d2d8e3b209bf88e8d46d2e209aa8934c99a38697ac956736c63334b717cf5"
+  },
+  "reachability_gate": {
+    "required_exact_count": 11,
+    "required_slot_micro_f1_strictly_above": 0.9,
+    "exact_pass": false,
+    "slot_pass": false,
+    "overall_pass": false
+  },
+  "decision": {
+    "agentloop_beats_single_call": false,
+    "demonstrated_answer_information_gain": false,
+    "open_vowpal_wabbit_fit": false,
+    "open_approximately_100_scale": false,
+    "next_action": "Expand deployment-legal canonical action knowledge and constrain the output envelope on a fresh disjoint discovery screen."
+  }
+}
