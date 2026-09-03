@@ -487,14 +487,14 @@ def _emit_state_audits(state: _WorkflowState, trace_sink: TraceSink) -> None:
         )
     for index, transition in enumerate(state.model_free_transitions):
         trace_sink.emit(
-            "TRANSITION",
+            "USE",
             f"g8b:{sample_id}:model-free-transition:{index:02d}",
             {
-                "sample_id": sample_id,
-                "stage": transition.stage,
-                "canonical_json": transition.canonical_json,
-                "sha256": transition.sha256,
-                "model_contacts": transition.model_contacts,
+                "use_sample_id": sample_id,
+                "use_stage": transition.stage,
+                "use_canonical_json": transition.canonical_json,
+                "use_sha256": transition.sha256,
+                "use_model_contacts": transition.model_contacts,
             },
         )
     assert state.observation is not None
@@ -505,57 +505,63 @@ def _emit_state_audits(state: _WorkflowState, trace_sink: TraceSink) -> None:
     trace_sink.emit(
         "OBS",
         f"g8b:{sample_id}:obs",
-        {"sample_id": sample_id, "valid": state.observation.valid, "text": state.observation.text},
+        {
+            "obs_sample_id": sample_id,
+            "obs_valid": state.observation.valid,
+            "obs_text": state.observation.text,
+        },
     )
     trace_sink.emit(
         "ORG",
         f"g8b:{sample_id}:org",
         {
-            "sample_id": sample_id,
-            "normalized_tool_count": len(state.normalized_sheet.assessments),
-            "status_counts": statuses,
-            "normalized_execution_sheet": state.normalized_sheet.text,
+            "org_sample_id": sample_id,
+            "org_normalized_tool_count": len(state.normalized_sheet.assessments),
+            "org_status_counts": statuses,
+            "org_normalized_execution_sheet": state.normalized_sheet.text,
         },
     )
     trace_sink.emit(
         "SUPPLY",
         f"g8b:{sample_id}:supply",
         {
-            "sample_id": sample_id,
-            "support_tool_count": len(state.support_sheet.assessments),
-            "support_tool_names": [row.tool_name for row in state.support_sheet.assessments],
-            "support_execution_sheet": state.support_sheet.text,
+            "supply_sample_id": sample_id,
+            "supply_support_tool_count": len(state.support_sheet.assessments),
+            "supply_support_tool_names": [
+                row.tool_name for row in state.support_sheet.assessments
+            ],
+            "supply_support_execution_sheet": state.support_sheet.text,
         },
     )
     for branch in BRANCH_ORDER[1:]:
         text = state.branch_texts[branch]
         document: dict[str, object] = {
-            "sample_id": sample_id,
-            "branch": branch,
-            "final_response_text": text,
-            "final_response_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
+            "use_sample_id": sample_id,
+            "use_branch": branch,
+            "use_final_response_text": text,
+            "use_final_response_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
         }
         if branch == "DECOMPOSED_SELECT_BIND_RESOLVE":
             document.update(
                 {
-                    "selected_tool_names": (
+                    "use_selected_tool_names": (
                         list(state.selection.tool_names) if state.selection is not None else None
                     ),
-                    "binding_count": (
+                    "use_binding_count": (
                         len(state.bindings.calls) if state.bindings is not None else None
                     ),
-                    "bindings_json": (
+                    "use_bindings_json": (
                         state.bindings.canonical_json if state.bindings is not None else None
                     ),
-                    "invalid_stage": state.invalid_stage,
-                    "invalid_status": state.invalid_status,
-                    "invalid_error": state.invalid_error,
-                    "terminal_source": (
+                    "use_invalid_stage": state.invalid_stage,
+                    "use_invalid_status": state.invalid_status,
+                    "use_invalid_error": state.invalid_error,
+                    "use_terminal_source": (
                         "raw_invalid_frozen_core_response"
                         if state.invalid_stage
                         else "frozen_core_final_resolve"
                     ),
-                    "retry_or_repair_authorized": False,
+                    "use_retry_or_repair_authorized": False,
                 }
             )
         trace_sink.emit("USE", f"g8b:{sample_id}:use:{branch.lower()}", document)

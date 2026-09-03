@@ -254,7 +254,9 @@ def test_empty_bind_helpers_fail_closed_when_called_on_the_wrong_path() -> None:
         )
 
 
-def test_dynamic_execution_keeps_failures_sample_local_and_all_branch_texts_complete() -> None:
+def test_dynamic_execution_keeps_failures_sample_local_and_all_branch_texts_complete(
+    tmp_path: Path,
+) -> None:
     class Client:
         def __init__(self) -> None:
             self.calls = []
@@ -284,7 +286,7 @@ def test_dynamic_execution_keeps_failures_sample_local_and_all_branch_texts_comp
             return '{"calls":[]}'
 
     client = Client()
-    sink = _Sink()
+    sink = module.TraceSink(tmp_path / "real-agent-trace", module.RUN_ID)
     summary = module.run_openjiuwen_phase(
         surface=_surface(),
         ground=_ground(),
@@ -334,21 +336,41 @@ def test_dynamic_execution_keeps_failures_sample_local_and_all_branch_texts_comp
     }
     assert costs["logical_action_contacts"]["DECOMPOSED_SELECT_BIND_RESOLVE"] == 496
 
-    categories = [row[0] for row in sink.rows]
+    sink.close()
+    trace_path = (
+        tmp_path
+        / "real-agent-trace"
+        / f"{module.RUN_ID}.trace.jsonl"
+    )
+    trace_rows = tuple(
+        json.loads(line) for line in trace_path.read_text(encoding="utf-8").splitlines()
+    )
+    categories = [row["channel"] for row in trace_rows]
     assert categories.count("COST") == 528
+    assert categories.count("TOOL") == 0
     assert categories.count("OBS") == categories.count("ORG") == categories.count("SUPPLY") == 16
-    assert categories.count("USE") == 48
+    assert categories.count("USE") == 60
     invalid_use = [
-        row[2]
-        for row in sink.rows
-        if row[0] == "USE" and row[2].get("branch") == "DECOMPOSED_SELECT_BIND_RESOLVE"
-        and row[2].get("invalid_stage")
+        row["payload"]
+        for row in trace_rows
+        if row["channel"] == "USE"
+        and row["payload"].get("use_branch") == "DECOMPOSED_SELECT_BIND_RESOLVE"
+        and row["payload"].get("use_invalid_stage")
     ]
-    assert {(row["sample_id"], row["invalid_stage"]) for row in invalid_use} == {
+    assert {(row["use_sample_id"], row["use_invalid_stage"]) for row in invalid_use} == {
         ("sample-2", "DECOMPOSED_SELECT"),
         ("sample-3", "DECOMPOSED_BIND"),
         ("sample-4", "DECOMPOSED_BIND"),
     }
+    for row in trace_rows:
+        prefix = {
+            "OBS": "obs_",
+            "ORG": "org_",
+            "SUPPLY": "supply_",
+            "USE": "use_",
+        }.get(row["channel"])
+        if prefix is not None:
+            assert all(key.startswith(prefix) for key in row["payload"])
 
 
 def test_transport_summary_reconciles_the_realized_dynamic_count() -> None:
