@@ -11,6 +11,7 @@ from ..reproduction.sampling import split_identity_hash
 SELECTION_NAMESPACE = (
     "speech-aware-evidence-acquisition-g8d-structured-action-fixed8-v1"
 )
+SPLIT_NAME = "A2T-NATIVE-STRUCTURED-ACTION-FIXED8"
 TIERS = (
     "tier1_direct", "tier2_parametric", "tier3_multi_intent", "tier4_implicit",
     "tier5_needle", "tier6_correction", "tier7_multiturn", "tier8_intent_blending",
@@ -72,6 +73,14 @@ def render_native_schema_receipt(rows: Sequence[Mapping[str, object]]) -> dict[s
         "audio_seconds_total": round(sum(float(row["audio_seconds"]) for row in items), 3),
         "carrier": "audio2tool",
         "count": len(items),
+        "design": (
+            "Identity-only SHA-256 rank selection of one row per tier from the "
+            "already-exposed A2T-GROUND-QUAL-104 discovery cohort."
+        ),
+        "exposure": (
+            "Already-exposed cohort; secondary discovery only. Protected confirmation "
+            "and test identities remain unopened."
+        ),
         "items": items,
         "schema": "saea-a2t-native-schema-roster-v1",
         "selection_namespace": SELECTION_NAMESPACE,
@@ -83,5 +92,6 @@ def render_native_schema_receipt(rows: Sequence[Mapping[str, object]]) -> dict[s
         "split_identity_hash": split_identity_hash(
             str(row["key"]) for row in items
         ),
+        "split_name": SPLIT_NAME,
         "split_role": "discovery",
     }

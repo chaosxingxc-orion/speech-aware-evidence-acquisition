@@ -6,6 +6,7 @@ import pytest
 
 from speech_aware_evidence_acquisition.analysis.a2t_native_schema_roster import (
     SELECTION_NAMESPACE,
+    SPLIT_NAME,
     select_native_schema_roster,
     render_native_schema_receipt,
 )
@@ -55,6 +56,8 @@ def test_rendered_receipt_is_identity_only_and_reproducible() -> None:
     assert receipt["selection_namespace"] == SELECTION_NAMESPACE
     assert receipt["count"] == 8
     assert receipt["audio_seconds_total"] == 45.096
+    assert receipt["split_name"] == SPLIT_NAME
+    assert "secondary discovery" in receipt["exposure"]
     assert receipt["split_identity_hash"] == (
         "f95efe70b615d71bb082f9ef804d1fa2b6f04ce4114d5d2694151cbaf44019ba"
     )
@@ -62,11 +65,14 @@ def test_rendered_receipt_is_identity_only_and_reproducible() -> None:
         "audio_seconds_total",
         "carrier",
         "count",
+        "design",
+        "exposure",
         "items",
         "schema",
         "selection_namespace",
         "selection_proof",
         "split_identity_hash",
+        "split_name",
         "split_role",
     }
     assert all(set(item) <= {
