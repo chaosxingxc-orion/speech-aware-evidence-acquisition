@@ -585,7 +585,8 @@ class LocalSemanticRuntime:
             raise RuntimeError("operational composed config hash drift")
         if (
             values.get("arm") != GENERATION_ARM
-            or values.get("split_name") != self.verified_split.name
+            or values.get("a2t_semantic_agentloop_split_name")
+            != self.verified_split.name
             or protocol_hash(
                 self.composed.config_hash,
                 GENERATION_ARM,

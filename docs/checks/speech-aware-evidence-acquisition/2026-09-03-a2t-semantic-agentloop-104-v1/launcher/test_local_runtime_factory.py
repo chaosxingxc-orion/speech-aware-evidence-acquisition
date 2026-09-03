@@ -168,6 +168,10 @@ def test_factory_pins_committed_four_fragment_composition() -> None:
     assert composed.config_hash == (
         "b35b37829cef7fb792980c4099efb6a5efb34605c0b1da5be97a5b12aed38113"
     )
+    assert "split_name" not in composed.values
+    assert composed.values["a2t_semantic_agentloop_split_name"] == (
+        "A2T-AGENTLOOP-FRESH-FLIGHT"
+    )
     assert protocol_hash(
         composed.config_hash,
         "speech-feature-query",
