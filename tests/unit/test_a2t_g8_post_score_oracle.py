@@ -23,7 +23,7 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _branch_inputs(tmp_path: Path):
+def _branch_inputs(tmp_path: Path, ids=IDS):
     manifests = {
         branch: (tmp_path / f"{branch}.run-manifest.json").resolve()
         for branch in BRANCH_ORDER
@@ -34,7 +34,7 @@ def _branch_inputs(tmp_path: Path):
         manifests[branch].write_text("{}\n", encoding="utf-8")
         rows = []
         detail = []
-        for index, sample_id in enumerate(IDS):
+        for index, sample_id in enumerate(ids):
             text = f"{branch}:{sample_id}"
             rows.append(
                 {
@@ -67,7 +67,7 @@ def _branch_inputs(tmp_path: Path):
             "verified": True,
             "scores": {
                 "a2t-toolcall": {
-                    "aggregate": {"samples": 16, "exact_match": 0.0},
+                    "aggregate": {"samples": len(ids), "exact_match": 0.0},
                     "per_sample": detail,
                 }
             },
@@ -179,6 +179,7 @@ def test_builder_writes_oracle_outputs_and_tool_trace_with_zero_new_contacts(
     assert Path(result["manifest"]).is_file()
     assert result["new_model_contacts"] == 0
     assert captured["result"].cost["calls_used"] == 0
+    assert captured["result"].cost["parent_physical_contacts_once"] == 544
     assert captured["result"].cost["logical_costs_are_nonadditive"] is True
     source = json.loads(Path(result["outputs"]).read_text(encoding="utf-8").splitlines()[0])["composite_source"]
     assert source["branch"] == "STOP_M0"
@@ -190,6 +191,68 @@ def test_builder_writes_oracle_outputs_and_tool_trace_with_zero_new_contacts(
             sealed_branches=sealed,
             sample_ids=IDS,
             run_dir=tmp_path / "oracle",
+            parent_composed=object(),
+            parent_plan=type("Plan", (), {"run_id": "PARENT"})(),
+            parent_verified_split=object(),
+            data_root=tmp_path,
+            session_receipt_path=tmp_path / "session.json",
+        )
+
+
+def test_builder_accepts_fixed12_successor_and_records_actual_parent_contacts(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    ids = IDS[:12]
+    _manifests, sealed, payloads = _branch_inputs(tmp_path, ids)
+    captured = {}
+
+    def build_manifest(**kwargs):
+        captured.update(kwargs)
+        manifest = kwargs["run_dir"] / "PARENT.run-manifest.json"
+        manifest.write_text("{}\n", encoding="utf-8")
+        return manifest
+
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.analysis.a2t_g8_post_score_oracle.build_manifest",
+        build_manifest,
+    )
+    result = build_oracle_artifacts(
+        score_payloads=payloads,
+        sealed_branches=sealed,
+        sample_ids=ids,
+        expected_sample_count=12,
+        parent_physical_contacts_once=405,
+        run_dir=tmp_path / "oracle-fixed12",
+        parent_composed=object(),
+        parent_plan=type("Plan", (), {"run_id": "PARENT"})(),
+        parent_verified_split=object(),
+        data_root=tmp_path,
+        session_receipt_path=tmp_path / "session.json",
+    )
+
+    assert result["selection_summary"]["samples"] == 12
+    assert captured["result"].cost["parent_physical_contacts_once"] == 405
+
+
+@pytest.mark.parametrize("value", [True, 0, -1])
+def test_builder_refuses_invalid_parent_contact_count(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, value
+) -> None:
+    ids = IDS[:12]
+    _manifests, sealed, payloads = _branch_inputs(tmp_path, ids)
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.analysis.a2t_g8_post_score_oracle.build_manifest",
+        lambda **_kwargs: None,
+    )
+
+    with pytest.raises(G8OracleError, match="parent_physical_contacts_once"):
+        build_oracle_artifacts(
+            score_payloads=payloads,
+            sealed_branches=sealed,
+            sample_ids=ids,
+            expected_sample_count=12,
+            parent_physical_contacts_once=value,
+            run_dir=tmp_path / f"invalid-{value}",
             parent_composed=object(),
             parent_plan=type("Plan", (), {"run_id": "PARENT"})(),
             parent_verified_split=object(),

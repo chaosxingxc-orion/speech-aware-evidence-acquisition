@@ -83,10 +83,25 @@ def _write_json(path: Path, document: Mapping[str, object]) -> None:
     temporary.replace(path)
 
 
-def _exact_sample_ids(sample_ids: Sequence[str]) -> tuple[str, ...]:
+def _positive_count(value: object, label: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+        raise G8OracleError(f"{label} must be a positive integer")
+    return value
+
+
+def _exact_sample_ids(
+    sample_ids: Sequence[str], *, expected_sample_count: int = 16
+) -> tuple[str, ...]:
+    expected = _positive_count(expected_sample_count, "expected_sample_count")
     values = tuple(sample_ids)
-    if len(values) != 16 or len(set(values)) != 16 or any(not isinstance(item, str) or not item for item in values):
-        raise G8OracleError("G8 oracle requires exactly 16 unique non-empty sample identities")
+    if (
+        len(values) != expected
+        or len(set(values)) != expected
+        or any(not isinstance(item, str) or not item for item in values)
+    ):
+        raise G8OracleError(
+            f"G8 oracle requires exactly {expected} unique non-empty sample identities"
+        )
     return values
 
 
@@ -136,7 +151,9 @@ def _score_rows(
     aggregate = official.get("aggregate")
     details = official.get("per_sample")
     if not isinstance(aggregate, Mapping) or aggregate.get("samples") != len(sample_ids):
-        raise G8OracleError(f"{branch} {OFFICIAL_SCORER} aggregate does not cover fixed16")
+        raise G8OracleError(
+            f"{branch} {OFFICIAL_SCORER} aggregate does not cover the expected sample set"
+        )
     if not isinstance(details, list):
         raise G8OracleError(f"{branch} {OFFICIAL_SCORER} lacks per_sample detail")
 
@@ -153,7 +170,9 @@ def _score_rows(
             "tool_accuracy": _metric(detail.get("tool_accuracy"), f"{branch}/{sample_id} tool_accuracy"),
         }
     if set(rows) != set(sample_ids):
-        raise G8OracleError(f"{branch} per_sample sample identities do not match fixed16")
+        raise G8OracleError(
+            f"{branch} per_sample sample identities do not match the expected sample set"
+        )
     return rows
 
 
@@ -162,10 +181,11 @@ def validate_branch_score_payloads(
     score_payloads: Mapping[str, Mapping[str, object]],
     sealed_branches: Mapping[str, Mapping[str, object]],
     sample_ids: Sequence[str],
+    expected_sample_count: int = 16,
 ) -> Mapping[str, Mapping[str, Mapping[str, float]]]:
     """Validate the four one-pass official score payloads before any selection."""
 
-    ids = _exact_sample_ids(sample_ids)
+    ids = _exact_sample_ids(sample_ids, expected_sample_count=expected_sample_count)
     _exact_branches(score_payloads, "score payloads")
     _exact_branches(sealed_branches, "sealed branches")
     validated: dict[str, Mapping[str, Mapping[str, float]]] = {}
@@ -209,16 +229,21 @@ def _read_sealed_rows(path: Path, branch: str, sample_ids: tuple[str, ...]) -> M
             raise G8OracleError(f"{branch} sealed output response text hash drift")
         rows[sample_id] = dict(row)
     if set(rows) != set(sample_ids):
-        raise G8OracleError(f"{branch} sealed output sample identities do not match fixed16")
+        raise G8OracleError(
+            f"{branch} sealed output sample identities do not match the expected sample set"
+        )
     return rows
 
 
 def validate_sealed_branch_outputs(
-    *, sealed_branches: Mapping[str, Mapping[str, object]], sample_ids: Sequence[str]
+    *,
+    sealed_branches: Mapping[str, Mapping[str, object]],
+    sample_ids: Sequence[str],
+    expected_sample_count: int = 16,
 ) -> Mapping[str, Mapping[str, Mapping[str, object]]]:
     """Rehash and identity-check all four sealed branch output artifacts."""
 
-    ids = _exact_sample_ids(sample_ids)
+    ids = _exact_sample_ids(sample_ids, expected_sample_count=expected_sample_count)
     _exact_branches(sealed_branches, "sealed branches")
     validated: dict[str, Mapping[str, Mapping[str, object]]] = {}
     for branch in BRANCH_ORDER:
@@ -242,14 +267,22 @@ def select_oracle_rows(
     score_payloads: Mapping[str, Mapping[str, object]],
     sealed_branches: Mapping[str, Mapping[str, object]],
     sample_ids: Sequence[str],
+    expected_sample_count: int = 16,
 ) -> tuple[tuple[OracleSelection, ...], Mapping[str, object]]:
     """Choose one existing sealed output per row using the frozen comparator."""
 
-    ids = _exact_sample_ids(sample_ids)
+    ids = _exact_sample_ids(sample_ids, expected_sample_count=expected_sample_count)
     scores = validate_branch_score_payloads(
-        score_payloads=score_payloads, sealed_branches=sealed_branches, sample_ids=ids
+        score_payloads=score_payloads,
+        sealed_branches=sealed_branches,
+        sample_ids=ids,
+        expected_sample_count=expected_sample_count,
     )
-    outputs = validate_sealed_branch_outputs(sealed_branches=sealed_branches, sample_ids=ids)
+    outputs = validate_sealed_branch_outputs(
+        sealed_branches=sealed_branches,
+        sample_ids=ids,
+        expected_sample_count=expected_sample_count,
+    )
     selections: list[OracleSelection] = []
     counts = {branch: 0 for branch in BRANCH_ORDER}
     exact_count = 0
@@ -362,6 +395,8 @@ def build_oracle_artifacts(
     score_payloads: Mapping[str, Mapping[str, object]],
     sealed_branches: Mapping[str, Mapping[str, object]],
     sample_ids: Sequence[str],
+    expected_sample_count: int = 16,
+    parent_physical_contacts_once: int = 544,
     run_dir: Path,
     parent_composed: object,
     parent_plan: object,
@@ -376,8 +411,14 @@ def build_oracle_artifacts(
     official scorer configured but this function never invokes it.
     """
 
+    parent_contacts = _positive_count(
+        parent_physical_contacts_once, "parent_physical_contacts_once"
+    )
     selections, summary = select_oracle_rows(
-        score_payloads=score_payloads, sealed_branches=sealed_branches, sample_ids=sample_ids
+        score_payloads=score_payloads,
+        sealed_branches=sealed_branches,
+        sample_ids=sample_ids,
+        expected_sample_count=expected_sample_count,
     )
     run_dir = Path(run_dir)
     if run_dir.exists() and any(run_dir.iterdir()):
@@ -412,7 +453,7 @@ def build_oracle_artifacts(
         "new_model_contacts": 0,
         "logical_action_contacts": 0,
         "logical_costs_are_nonadditive": True,
-        "parent_physical_contacts_once": 544,
+        "parent_physical_contacts_once": parent_contacts,
         "parent_cost_is_inherited": True,
     }
     manifest = build_manifest(
