@@ -459,6 +459,30 @@ def test_reseal_transport_validation_requires_complete_hash_bound_triples(
     with pytest.raises(RuntimeError, match="response hash"):
         module._validate_transport_triples(trace, expected_count=1)
 
+    rows[1]["payload"]["response_text_sha256"] = response_hash
+    rows[0]["payload"]["payload_sha256"] = "0" * 64
+    trace.write_text(
+        "".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8"
+    )
+    with pytest.raises(RuntimeError, match="request payload hash"):
+        module._validate_transport_triples(trace, expected_count=1)
+
+    rows[0]["payload"]["payload_sha256"] = request_hash
+    rows[2]["payload"]["calls"] = 2
+    trace.write_text(
+        "".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8"
+    )
+    with pytest.raises(RuntimeError, match="cost triple"):
+        module._validate_transport_triples(trace, expected_count=1)
+
+
+def test_scorer_binding_refuses_a_different_scorer(tmp_path: Path) -> None:
+    manifest = tmp_path / "run-manifest.json"
+    manifest.write_text('{"scorers": ["asr-wer"]}\n', encoding="utf-8")
+
+    with pytest.raises(RuntimeError, match="unexpected scorer"):
+        module._bind_official_scorers(manifest)
+
 
 def test_local_reseal_binds_exact_sources_and_makes_no_external_contact(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
