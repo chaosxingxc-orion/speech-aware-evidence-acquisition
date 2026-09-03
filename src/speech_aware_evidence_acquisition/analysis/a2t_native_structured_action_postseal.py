@@ -749,7 +749,7 @@ def build_four_job_plan(
     _write_jsonl(
         jobs_file,
         tuple(
-            {"job_id": job.job_id, "manifest": str(job.manifest), "operation": "score"}
+            {"job_id": job.job_id, "manifest": str(job.manifest)}
             for job in jobs
         ),
     )

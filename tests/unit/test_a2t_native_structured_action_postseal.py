@@ -722,6 +722,11 @@ def test_builds_exactly_four_unique_whole_manifest_jobs_for_four_workers(
     assert plan.dataset_sharding is False
     assert plan.shard_metric_averaging is False
     assert plan.command[-3:] == ("--workers", "4", "--include-per-sample")
+    serialized_jobs = [
+        json.loads(line)
+        for line in plan.jobs_path.read_text(encoding="utf-8").splitlines()
+    ]
+    assert all(set(job) == {"job_id", "manifest"} for job in serialized_jobs)
 
     duplicate = dict(manifests)
     duplicate["HANDBOOK_STRICT_ACTION"] = duplicate["REGISTRY_STRICT_ACTION"]
