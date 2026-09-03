@@ -345,13 +345,17 @@ def build_partition_flight_receipt(
     partition: Any,
     *,
     exposed_sample_ids: Iterable[str],
+    excluded_identity_rows: Iterable[Mapping[str, Any]] = (),
     per_tier: int = 13,
     namespace: str = NAMESPACE,
+    split_name: str = "A2T-AGENTLOOP-FRESH-FLIGHT",
     carrier_metadata: Mapping[str, tuple[str, str, float]] | None = None,
 ) -> dict[str, Any]:
     """Build a compact roster from ``propose_partition``'s fresh eval draw."""
+    if not isinstance(split_name, str) or not split_name or not split_name.isascii():
+        raise ValueError("split name must be non-empty ASCII text")
     by_item = {(r.tier, item): r for r in source_rows for item in r.item_ids}
-    candidates = []
+    candidates: list[A2tKbRow] = []
     for tier, item_id, text, tool in partition.eval_items:
         row = by_item.get((tier, item_id))
         if row is None or row.text != text or row.tool_name != tool:
@@ -359,6 +363,47 @@ def build_partition_flight_receipt(
                 "partition eval item cannot be resolved to source A2tKbRow"
             )
         candidates.append(row)
+    excluded_rows = tuple(excluded_identity_rows)
+    excluded_ids: set[str] = set()
+    excluded_blocks: set[int] = set()
+    excluded_classes: set[str] = set()
+    for item in excluded_rows:
+        if not isinstance(item, Mapping):
+            raise ValueError("excluded identity row must be a mapping")
+        sample_id = item.get("sample_id")
+        query_idx = item.get("query_idx")
+        normalized_hash = item.get("normalized_token_class_sha256")
+        if isinstance(sample_id, str) and sample_id:
+            excluded_ids.add(sample_id)
+        if isinstance(query_idx, int) and not isinstance(query_idx, bool):
+            excluded_blocks.add(query_idx)
+        if isinstance(normalized_hash, str) and len(normalized_hash) == 64:
+            excluded_classes.add(normalized_hash)
+        if not (
+            isinstance(sample_id, str)
+            and sample_id
+            or isinstance(query_idx, int)
+            and not isinstance(query_idx, bool)
+            or isinstance(normalized_hash, str)
+            and len(normalized_hash) == 64
+        ):
+            raise ValueError("excluded identity row has no supported identity")
+    construction = tuple(partition.construction)
+    construction_classes = {
+        hashlib.sha256(normalize_text_v1(row.text).encode("utf-8")).hexdigest()
+        for row in construction
+    }
+    exposed = set(exposed_sample_ids)
+    candidates = [
+        row
+        for row in candidates
+        if f"{row.tier}:{row.item_ids[0]:06d}" not in exposed | excluded_ids
+        and row.query_idx not in excluded_blocks
+        and hashlib.sha256(
+            normalize_text_v1(row.text).encode("utf-8")
+        ).hexdigest()
+        not in excluded_classes | construction_classes
+    ]
     selected = []
     for tier in TIERS:
         pool = [r for r in candidates if r.tier == tier]
@@ -374,8 +419,6 @@ def build_partition_flight_receipt(
                 ).hexdigest(),
             )[:per_tier]
         )
-    exposed = set(exposed_sample_ids)
-    construction = tuple(partition.construction)
     selected_ids = {f"{r.tier}:{r.item_ids[0]:06d}" for r in selected}
     if selected_ids & exposed:
         raise ValueError("flight roster intersects exposed sample IDs")
@@ -384,6 +427,14 @@ def build_partition_flight_receipt(
     selected_blocks = {r.query_idx for r in selected}
     if selected_blocks & {r.query_idx for r in construction}:
         raise ValueError("flight roster intersects construction query blocks")
+    selected_classes = {
+        hashlib.sha256(normalize_text_v1(row.text).encode("utf-8")).hexdigest()
+        for row in selected
+    }
+    if selected_blocks & excluded_blocks or selected_classes & (
+        excluded_classes | construction_classes
+    ):
+        raise ValueError("flight roster intersects an excluded identity class")
     items = []
     if carrier_metadata is None:
         raise ValueError("audio metadata is required to build a flyable receipt")
@@ -428,7 +479,7 @@ def build_partition_flight_receipt(
     return {
         "schema": "saea-a2t-agentloop-flight-roster-receipt-v1",
         "carrier": "audio2tool",
-        "split_name": "A2T-AGENTLOOP-FRESH-FLIGHT",
+        "split_name": split_name,
         "split_role": "discovery",
         "status": "PREPARED_NOT_CONTACT_AUTHORITY",
         "count": len(items),
@@ -439,6 +490,8 @@ def build_partition_flight_receipt(
         "selection": {
             "namespace": namespace,
             "per_tier": per_tier,
+            "excluded_identity_rows": len(excluded_rows),
+            "construction_normalized_class_exclusions": len(construction_classes),
             "uses_test": False,
             "uses_gold_at_runtime": False,
         },

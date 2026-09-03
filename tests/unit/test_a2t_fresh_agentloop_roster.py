@@ -159,10 +159,15 @@ def test_partition_flight_receipt_resolves_eval_items_and_hashes_without_text() 
         f"{r.tier}:{r.item_ids[0]:06d}": ("audio.wav", "a" * 64, 1.0) for r in rows
     }
     receipt = build_partition_flight_receipt(
-        rows, partition, exposed_sample_ids=(), carrier_metadata=metadata
+        rows,
+        partition,
+        exposed_sample_ids=(),
+        carrier_metadata=metadata,
+        split_name="A2T-SELECT-FILL-FRESH-FLIGHT",
     )
     assert receipt["count"] == 104
     assert receipt["status"] == "PREPARED_NOT_CONTACT_AUTHORITY"
+    assert receipt["split_name"] == "A2T-SELECT-FILL-FRESH-FLIGHT"
     assert receipt["tier_counts"] == {tier: 13 for tier in TIERS}
     assert all("text" not in item for item in receipt["items"])
     assert all(
@@ -172,6 +177,82 @@ def test_partition_flight_receipt_resolves_eval_items_and_hashes_without_text() 
         item["audio_seconds"] > 0 and len(item["audio_sha256"]) == 64
         for item in receipt["items"]
     )
+
+
+def test_partition_receipt_excludes_prior_roster_identities_before_ranking() -> None:
+    rows = _kb_rows(28)
+    eval_items = tuple((r.tier, r.item_ids[0], r.text, r.tool_name) for r in rows)
+    partition = SimpleNamespace(
+        eval_items=eval_items, construction=tuple(), eval_blocks=tuple()
+    )
+    metadata = {
+        f"{r.tier}:{r.item_ids[0]:06d}": ("audio.wav", "a" * 64, 1.0)
+        for r in rows
+    }
+    first = build_partition_flight_receipt(
+        rows,
+        partition,
+        exposed_sample_ids=(),
+        carrier_metadata=metadata,
+        namespace="first-roster",
+    )
+
+    second = build_partition_flight_receipt(
+        rows,
+        partition,
+        exposed_sample_ids=(),
+        excluded_identity_rows=first["items"],
+        carrier_metadata=metadata,
+        namespace="second-roster",
+    )
+
+    first_ids = {item["sample_id"] for item in first["items"]}
+    assert first_ids.isdisjoint(item["sample_id"] for item in second["items"])
+    assert {item["query_idx"] for item in first["items"]}.isdisjoint(
+        item["query_idx"] for item in second["items"]
+    )
+    assert {
+        item["normalized_token_class_sha256"] for item in first["items"]
+    }.isdisjoint(
+        item["normalized_token_class_sha256"] for item in second["items"]
+    )
+    assert second["selection"]["excluded_identity_rows"] == 104
+
+
+def test_partition_receipt_excludes_construction_normalized_equivalence() -> None:
+    rows = _kb_rows(15)
+    conflict = rows[0]
+    construction_row = A2tKbRow(
+        **{
+            **conflict.__dict__,
+            "unit_id": "construction-conflict",
+            "query_idx": 999_999,
+            "sample_ids": ("construction:999999",),
+            "item_ids": (999_999,),
+        }
+    )
+    partition = SimpleNamespace(
+        eval_items=tuple(
+            (r.tier, r.item_ids[0], r.text, r.tool_name) for r in rows
+        ),
+        construction=(construction_row,),
+        eval_blocks=tuple(),
+    )
+    metadata = {
+        f"{r.tier}:{r.item_ids[0]:06d}": ("audio.wav", "a" * 64, 1.0)
+        for r in rows
+    }
+
+    receipt = build_partition_flight_receipt(
+        rows,
+        partition,
+        exposed_sample_ids=(),
+        carrier_metadata=metadata,
+    )
+
+    conflict_id = f"{conflict.tier}:{conflict.item_ids[0]:06d}"
+    assert conflict_id not in {item["sample_id"] for item in receipt["items"]}
+    assert receipt["selection"]["construction_normalized_class_exclusions"] == 1
 
 
 def test_partition_receipt_rejects_missing_audio_metadata() -> None:
