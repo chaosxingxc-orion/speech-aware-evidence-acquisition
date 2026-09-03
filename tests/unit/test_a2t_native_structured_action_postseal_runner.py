@@ -29,6 +29,21 @@ def _runner():
     return module
 
 
+def test_fixed8_sample_ids_reads_identity_only_receipt_items(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    module = _runner()
+    roster = tmp_path / module.ROSTER_RELPATH
+    roster.parent.mkdir(parents=True)
+    roster.write_text(
+        json.dumps({"items": [{"sample_id": sample_id} for sample_id in IDS]}),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(module, "REPO", tmp_path)
+
+    assert module.fixed8_sample_ids() == IDS
+
+
 @dataclass(frozen=True)
 class _Subset:
     manifest: Path
@@ -104,6 +119,21 @@ def test_dispatch_never_opens_historical_sources_when_strict_proof_fails(
             jobs_path=tmp_path / "score-jobs.jsonl",
             score_output_dir=tmp_path / "scores",
         )
+
+
+def test_fixed8_sample_ids_reads_identity_only_item_roster(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The frozen receipt records the fixed eight under ``items``."""
+
+    module = _runner()
+    monkeypatch.setattr(
+        module,
+        "_read_object",
+        lambda *_args: {"items": [{"sample_id": sample_id} for sample_id in IDS]},
+    )
+
+    assert module.fixed8_sample_ids() == IDS
 
 
 def test_registry_descriptor_binds_a_present_recovery_receipt(tmp_path: Path) -> None:

@@ -75,7 +75,12 @@ def fixed8_sample_ids() -> tuple[str, ...]:
     """Read identity-only roster metadata; never open output or score bytes."""
 
     roster = _read_object(REPO / ROSTER_RELPATH, "fixed-eight roster")
-    sample_ids = roster.get("sample_ids")
+    items = roster.get("items")
+    sample_ids = (
+        [item.get("sample_id") for item in items]
+        if isinstance(items, list) and all(isinstance(item, Mapping) for item in items)
+        else None
+    )
     if (
         not isinstance(sample_ids, list)
         or len(sample_ids) != 8
