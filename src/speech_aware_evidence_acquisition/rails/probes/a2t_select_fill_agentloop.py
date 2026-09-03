@@ -82,6 +82,26 @@ _PREDECESSOR_STAGE = {
 }
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z", flags=re.ASCII)
 _TOOL_NAME = re.compile(r"[A-Za-z_][A-Za-z0-9_]*\Z", flags=re.ASCII)
+_SUPPORTED_SCHEMA_KEYS = frozenset(
+    {
+        "additionalProperties",
+        "const",
+        "enum",
+        "items",
+        "maximum",
+        "maxItems",
+        "minimum",
+        "minItems",
+        "oneOf",
+        "prefixItems",
+        "properties",
+        "required",
+        "type",
+    }
+)
+_JSON_TYPES = frozenset(
+    {"array", "boolean", "integer", "null", "number", "object", "string"}
+)
 
 _BASE_INSTRUCTION = {
     JOINT_PHASE: (
@@ -231,6 +251,201 @@ def _call_rows(value: object, *, label: str) -> list[object]:
     return value
 
 
+def _matches_schema_type(value: object, raw_types: object) -> bool:
+    if isinstance(raw_types, str):
+        types = (raw_types,)
+    elif isinstance(raw_types, list) and raw_types:
+        types = tuple(raw_types)
+    else:
+        raise SelectFillAgentLoopError("response schema type is malformed")
+    if any(not isinstance(item, str) or item not in _JSON_TYPES for item in types):
+        raise SelectFillAgentLoopError("response schema type is unsupported")
+    return any(
+        (item == "null" and value is None)
+        or (item == "boolean" and isinstance(value, bool))
+        or (item == "integer" and isinstance(value, int) and not isinstance(value, bool))
+        or (
+            item == "number"
+            and isinstance(value, (int, float))
+            and not isinstance(value, bool)
+            and math.isfinite(float(value))
+        )
+        or (item == "string" and isinstance(value, str))
+        or (item == "array" and isinstance(value, list))
+        or (item == "object" and isinstance(value, dict))
+        for item in types
+    )
+
+
+def _validate_schema_value(
+    value: object, schema: object, *, path: str = "$"
+) -> None:
+    """Validate the exact schema subset emitted by Audio2Tool builders."""
+
+    if not isinstance(schema, Mapping):
+        raise SelectFillAgentLoopError(
+            f"response schema at {path} must be one object"
+        )
+    unknown = set(schema) - _SUPPORTED_SCHEMA_KEYS
+    if unknown:
+        raise SelectFillAgentLoopError(
+            f"response schema at {path} contains unsupported keys {sorted(unknown)!r}"
+        )
+    if "const" in schema and value != schema["const"]:
+        raise SelectFillAgentLoopError(
+            f"response schema mismatch at {path}: const"
+        )
+    if "enum" in schema:
+        enum = schema["enum"]
+        if not isinstance(enum, list) or not enum:
+            raise SelectFillAgentLoopError(
+                f"response schema enum at {path} is malformed"
+            )
+        if value not in enum:
+            raise SelectFillAgentLoopError(
+                f"response schema mismatch at {path}: enum"
+            )
+    if "type" in schema and not _matches_schema_type(value, schema["type"]):
+        raise SelectFillAgentLoopError(
+            f"response schema mismatch at {path}: type"
+        )
+    if "oneOf" in schema:
+        branches = schema["oneOf"]
+        if not isinstance(branches, list) or not branches:
+            raise SelectFillAgentLoopError(
+                f"response schema oneOf at {path} is malformed"
+            )
+        matches = 0
+        for branch in branches:
+            try:
+                _validate_schema_value(value, branch, path=path)
+            except SelectFillAgentLoopError:
+                continue
+            matches += 1
+        if matches != 1:
+            raise SelectFillAgentLoopError(
+                f"response schema mismatch at {path}: oneOf"
+            )
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        if not math.isfinite(float(value)):
+            raise SelectFillAgentLoopError(
+                f"response schema mismatch at {path}: non-finite number"
+            )
+        minimum = schema.get("minimum")
+        maximum = schema.get("maximum")
+        if minimum is not None and (
+            isinstance(minimum, bool)
+            or not isinstance(minimum, (int, float))
+            or not math.isfinite(float(minimum))
+        ):
+            raise SelectFillAgentLoopError(
+                f"response schema minimum at {path} is malformed"
+            )
+        if maximum is not None and (
+            isinstance(maximum, bool)
+            or not isinstance(maximum, (int, float))
+            or not math.isfinite(float(maximum))
+        ):
+            raise SelectFillAgentLoopError(
+                f"response schema maximum at {path} is malformed"
+            )
+        if minimum is not None and value < minimum:
+            raise SelectFillAgentLoopError(
+                f"response schema mismatch at {path}: minimum"
+            )
+        if maximum is not None and value > maximum:
+            raise SelectFillAgentLoopError(
+                f"response schema mismatch at {path}: maximum"
+            )
+    if isinstance(value, list):
+        minimum_items = schema.get("minItems")
+        maximum_items = schema.get("maxItems")
+        if minimum_items is not None and (
+            isinstance(minimum_items, bool)
+            or not isinstance(minimum_items, int)
+            or minimum_items < 0
+        ):
+            raise SelectFillAgentLoopError(
+                f"response schema minItems at {path} is malformed"
+            )
+        if maximum_items is not None and (
+            isinstance(maximum_items, bool)
+            or not isinstance(maximum_items, int)
+            or maximum_items < 0
+        ):
+            raise SelectFillAgentLoopError(
+                f"response schema maxItems at {path} is malformed"
+            )
+        if minimum_items is not None and len(value) < minimum_items:
+            raise SelectFillAgentLoopError(
+                f"response schema mismatch at {path}: minItems"
+            )
+        if maximum_items is not None and len(value) > maximum_items:
+            raise SelectFillAgentLoopError(
+                f"response schema mismatch at {path}: maxItems"
+            )
+        prefix_items = schema.get("prefixItems")
+        if prefix_items is not None:
+            if not isinstance(prefix_items, list):
+                raise SelectFillAgentLoopError(
+                    f"response schema prefixItems at {path} is malformed"
+                )
+            for index, item_schema in enumerate(prefix_items[: len(value)]):
+                _validate_schema_value(
+                    value[index], item_schema, path=f"{path}[{index}]"
+                )
+        item_schema = schema.get("items")
+        if item_schema is not None:
+            start = len(prefix_items) if isinstance(prefix_items, list) else 0
+            for index, item in enumerate(value[start:], start=start):
+                _validate_schema_value(item, item_schema, path=f"{path}[{index}]")
+    if isinstance(value, dict):
+        properties = schema.get("properties", {})
+        required = schema.get("required", [])
+        if not isinstance(properties, Mapping) or not isinstance(required, list):
+            raise SelectFillAgentLoopError(
+                f"response object schema at {path} is malformed"
+            )
+        if any(not isinstance(key, str) for key in required):
+            raise SelectFillAgentLoopError(
+                f"response required keys at {path} are malformed"
+            )
+        missing = [key for key in required if key not in value]
+        if missing:
+            raise SelectFillAgentLoopError(
+                f"response schema mismatch at {path}: required"
+            )
+        if schema.get("additionalProperties") is False and not set(value).issubset(
+            properties
+        ):
+            raise SelectFillAgentLoopError(
+                f"response schema mismatch at {path}: additionalProperties"
+            )
+        for key, item in value.items():
+            if key in properties:
+                _validate_schema_value(item, properties[key], path=f"{path}.{key}")
+
+
+def _validate_response_format(value: object, response_format: object) -> None:
+    if (
+        not isinstance(response_format, Mapping)
+        or response_format.get("type") != "json_schema"
+    ):
+        raise SelectFillAgentLoopError(
+            "response schema wrapper must use json_schema"
+        )
+    wrapper = response_format.get("json_schema")
+    if (
+        not isinstance(wrapper, Mapping)
+        or set(wrapper) != {"name", "strict", "schema"}
+        or not isinstance(wrapper.get("name"), str)
+        or not wrapper["name"]
+        or wrapper.get("strict") is not True
+    ):
+        raise SelectFillAgentLoopError("response schema wrapper is malformed")
+    _validate_schema_value(value, wrapper.get("schema"))
+
+
 @dataclass(frozen=True)
 class ExactCall:
     """One parsed call with immutable canonical argument bytes."""
@@ -357,7 +572,6 @@ class PhaseMaterial:
     observation_state_json: str
     observation_state_sha256: str
     observation_source_response_sha256: str
-    source_request_body_sha256: str
     predecessor: StageStateEnvelope | None = None
 
     def __post_init__(self) -> None:
@@ -417,10 +631,6 @@ class PhaseMaterial:
             self.observation_source_response_sha256,
             field="observation_source_response_sha256",
         )
-        _require_hash(
-            self.source_request_body_sha256,
-            field="source_request_body_sha256",
-        )
         required_stage = _PREDECESSOR_STAGE.get(self.phase)
         if required_stage is None:
             if self.predecessor is not None:
@@ -453,8 +663,6 @@ class PhaseMaterial:
             raise SelectFillAgentLoopError(
                 "predecessor observation source response does not match"
             )
-        if predecessor.source_request_body_sha256 != self.source_request_body_sha256:
-            raise SelectFillAgentLoopError("predecessor source request does not match")
         if predecessor.candidate_set_sha256 != _json_hash(list(names)):
             raise SelectFillAgentLoopError(
                 "predecessor candidate ordering does not match"
@@ -808,6 +1016,8 @@ class SingleContactPhaseController:
             or contact.query_state_sha256 != context.query_state.content_hash()
         ):
             raise SelectFillAgentLoopError("invalid single-contact phase sequence")
+        parsed_json = _load_exact_json(response_text, label="phase response")
+        _validate_response_format(parsed_json, self.material.response_format)
         if self.material.phase == SELECT_PHASE:
             parsed: tuple[str, ...] | tuple[ExactCall, ...] = parse_select_response(
                 response_text,

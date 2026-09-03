@@ -117,11 +117,6 @@ def _material(phase: str = loop.SELECT_PHASE) -> loop.PhaseMaterial:
         observation_state_json=observation,
         observation_state_sha256=_hash(json.loads(observation)),
         observation_source_response_sha256=HASHES["5"],
-        source_request_body_sha256=(
-            predecessor.source_request_body_sha256
-            if predecessor is not None
-            else HASHES["6"]
-        ),
         predecessor=predecessor,
     )
 
@@ -238,6 +233,96 @@ def test_phase_material_requires_exact_hashes_and_verified_predecessor() -> None
     values["predecessor"] = _predecessor(loop.FILL_PHASE)
     with pytest.raises(loop.SelectFillAgentLoopError, match="predecessor"):
         loop.PhaseMaterial(**values)
+
+    assert not hasattr(_material(loop.SELECT_PHASE), "source_request_body_sha256")
+
+
+def test_controller_revalidates_exact_argument_schema_after_generation() -> None:
+    material = _material(loop.FILL_PHASE)
+    strict_format = {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "typed_fill",
+            "strict": True,
+            "schema": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "prefixItems": [
+                    {
+                        "oneOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "name": {"const": "setTimer"},
+                                    "arguments": {
+                                        "type": "object",
+                                        "properties": {
+                                            "seconds": {
+                                                "type": "integer",
+                                                "minimum": 1,
+                                                "maximum": 60,
+                                            }
+                                        },
+                                        "required": ["seconds"],
+                                        "additionalProperties": False,
+                                    },
+                                },
+                                "required": ["name", "arguments"],
+                                "additionalProperties": False,
+                            }
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "name": {"enum": ["setTimer"]},
+                            "arguments": {
+                                "type": "object",
+                                "properties": {
+                                    "enabled": {"type": ["boolean", "null"]}
+                                },
+                                "required": ["enabled"],
+                                "additionalProperties": False,
+                            },
+                        },
+                        "required": ["name", "arguments"],
+                        "additionalProperties": False,
+                    },
+                ],
+            },
+        },
+    }
+    values = material.__dict__.copy()
+    values["response_format"] = strict_format
+    values["response_format_sha256"] = _hash(strict_format)
+    controller = loop.SingleContactPhaseController(
+        material=loop.PhaseMaterial(**values)
+    )
+    contact = controller.initial_contact(_context())
+
+    with pytest.raises(loop.SelectFillAgentLoopError, match="response schema"):
+        controller.advance(
+            _context(),
+            contact,
+            '[{"name":"setTimer","arguments":{"seconds":"five"}},'
+            '{"name":"setTimer","arguments":{"enabled":true}}]',
+        )
+    with pytest.raises(loop.SelectFillAgentLoopError, match="response schema"):
+        controller.advance(
+            _context(),
+            contact,
+            '[{"name":"setTimer","arguments":{"seconds":61}},'
+            '{"name":"setTimer","arguments":{"enabled":true}}]',
+        )
+
+    accepted = controller.advance(
+        _context(),
+        contact,
+        '[{"name":"setTimer","arguments":{"seconds":5}},'
+        '{"name":"setTimer","arguments":{"enabled":null}}]',
+    )
+    assert accepted.final_response_contact_id == loop.FILL_CONTACT_ID
 
 
 def test_exact_request_renderer_is_pure_hash_bound_and_has_no_raw_history() -> None:
