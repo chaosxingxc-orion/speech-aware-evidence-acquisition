@@ -1,0 +1,53 @@
+{
+  "schema": "saea-a2t-select-fill-knowledge-qualification-v1",
+  "status": "QUALIFIED_FOR_BOUNDED_DISCOVERY",
+  "method": "dense-build-only-tool-tier-centroids",
+  "candidate_count": 32,
+  "source_audit": "docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-semantic-candidate-audit/summary.json",
+  "source_audit_sha256": "ac87206d91fd99b83b8b5e9b8cb2855893cf77791c8f7099093410ee1edeb2a7",
+  "population": {
+    "construction_units": 12601,
+    "registry_tools": 152,
+    "grouped_folds": 5,
+    "vector_dimension": 1024,
+    "query_block_disjoint": true
+  },
+  "metrics": {
+    "full_required_tool_set_coverage": 0.9823029918260455,
+    "required_tool_recall": 0.9858421687511904,
+    "worst_fold_full_required_tool_set_coverage": 0.9758224336107808,
+    "worst_fold_required_tool_recall": 0.980542264752791,
+    "per_tier_full_required_tool_set_coverage": {
+      "tier1_direct": 0.999353169469599,
+      "tier2_parametric": 0.9984621299500193,
+      "tier3_multi_intent": 0.9825806451612903,
+      "tier4_implicit": 0.9417098445595855,
+      "tier5_needle": 0.9954954954954955,
+      "tier6_correction": 0.9987071751777634,
+      "tier7_multiturn": 0.9555984555984556,
+      "tier8_intent_blending": 0.9673758865248226
+    },
+    "minimum_tier_full_required_tool_set_coverage": 0.9417098445595855,
+    "maximum_decision_space_reduction_bits": 2.2479275134435857
+  },
+  "gate": {
+    "overall_full_set_at_least_0_95": true,
+    "every_tier_full_set_at_least_0_90": true,
+    "worst_fold_full_set_at_least_0_95": true,
+    "fixed_candidate_count_at_most_32": true,
+    "admitted": true
+  },
+  "interpretation": {
+    "claim": "This is a construction-fold retrieval reachability ground, not model task performance or a final-answer upper bound.",
+    "reachable_upper_bound": "A row is retrieval-reachable only when every required tool label is present in the frozen top-32 set. This is necessary but not sufficient for correct SELECT or FILL.",
+    "runtime_boundary": "Evaluation labels, reference transcripts, test annotations, scores, and future turns are unavailable to the runtime retriever and frozen core.",
+    "failure_backtrack": "If fresh-flight SUPPLY errors dominate, expand or reorganize construction knowledge before changing USE. If required tools are reachable but selection or exact calls fail, revise stage-specific supply and consumption instead."
+  },
+  "contacts": {
+    "model": 0,
+    "embedding": 0,
+    "tokenizer": 0,
+    "scorer": 0,
+    "network": 0
+  }
+}
