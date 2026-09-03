@@ -39,9 +39,9 @@ and separate SELECT then FILL on exactly 104 fresh discovery rows.
 The only implementation change reproduces the adapter's canonical payload round trip before hashing
 the exact physical slot bodies. The regression test constructs that round trip independently and
 requires byte equality with the admitted body. Implementation commit
-`7bcfa614b32ffdfa6b573153b38cb3fd0d01a590` carries coordinator SHA-256
+`b10e96d4ef17f2e96e4113492c97cfd73111df56` carries coordinator SHA-256
 `d3cf96f9050867187b7565b60d174563831b58538caa0fbba644e992667bdb30` and runtime-factory SHA-256
-`dacf67c68a9fc43eafcf27a8ede5d673a5c889b8131da025736a2131eab3e051`. The model-free focused suite
+`6677185342153205a3e99c33873b21667004680e91edd518ab6a07a0be024990`. The model-free focused suite
 passes 117 tests; the launcher/runtime subset passes 24 tests and Ruff passes.
 
 ## Recovery identities and budgets

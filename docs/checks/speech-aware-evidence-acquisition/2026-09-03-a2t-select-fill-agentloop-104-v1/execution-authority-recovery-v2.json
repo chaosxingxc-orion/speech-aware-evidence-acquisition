@@ -2,7 +2,7 @@
   "schema": "saea-a2t-select-fill-agentloop-104-recovery-v2-authority-v1",
   "status": "CONTACT_AUTHORIZED",
   "run_id": "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2",
-  "implementation_commit": "7bcfa614b32ffdfa6b573153b38cb3fd0d01a590",
+  "implementation_commit": "b10e96d4ef17f2e96e4113492c97cfd73111df56",
   "config_sha256": "60bd49a688d5c602267d4d4787e2d9e10789ca3f4873a78ac3dbe42c4f08a793",
   "composed_config_sha256": "ee0fa0beb4c49e4a8539354c7eec9b336120ee3660f5e7e13e204609412ed2d1",
   "core_protocol_sha256": "db933dfc8975b30ac8ce07526aa074874e554c1fbc055b39ebbc7719d3e936bd",
@@ -16,10 +16,10 @@
   "embedding_physical_request_ceiling": 4,
   "hashes": {
     "coordinator_launcher_sha256": "d3cf96f9050867187b7565b60d174563831b58538caa0fbba644e992667bdb30",
-    "local_runtime_factory_sha256": "dacf67c68a9fc43eafcf27a8ede5d673a5c889b8131da025736a2131eab3e051",
+    "local_runtime_factory_sha256": "6677185342153205a3e99c33873b21667004680e91edd518ab6a07a0be024990",
     "execution_plan_set_sha256": "8ac31871d77a6d4656018605875d2887ffe9af4ffc2aac04331ad0325e15d6f3",
     "embedding_execution_plan_sha256": "ed6460e0b89bea9944cd5e919db01a2acf528e65d515e05e3b50732bf989efb8",
-    "exposure_preregistration_sha256": "09358ff9740b7815ad4bc1025ffdf56c6ecc90f0137021b09ae05ea48c8d2bc7",
+    "exposure_preregistration_sha256": "0675f75e9861a9c9dcb58b60c85d7fa844bd6f391ddeaf1b38b1317a6d0052d1",
     "generation_runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
     "generation_decoder_gguf_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
     "embedding_runtime_receipt_sha256": "e92c8bf142235cda6233d47e68f505210a03937701ece458a506e711f62ca8d6",
@@ -54,7 +54,7 @@
       "attempt_id": "attempt-20260903t233000z-selectfill104-direct-v2",
       "schema": "saea-execution-plan-v1",
       "study": "speech-aware-evidence-acquisition",
-      "exposure_preregistration_sha256": "09358ff9740b7815ad4bc1025ffdf56c6ecc90f0137021b09ae05ea48c8d2bc7"
+      "exposure_preregistration_sha256": "0675f75e9861a9c9dcb58b60c85d7fa844bd6f391ddeaf1b38b1317a6d0052d1"
     },
     "OBS_SEMANTIC_STATE": {
       "run_id": "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2",
@@ -69,7 +69,7 @@
       "attempt_id": "attempt-20260903t233000z-selectfill104-obs-v2",
       "schema": "saea-execution-plan-v1",
       "study": "speech-aware-evidence-acquisition",
-      "exposure_preregistration_sha256": "09358ff9740b7815ad4bc1025ffdf56c6ecc90f0137021b09ae05ea48c8d2bc7"
+      "exposure_preregistration_sha256": "0675f75e9861a9c9dcb58b60c85d7fa844bd6f391ddeaf1b38b1317a6d0052d1"
     },
     "JOINT_ONE_CALL": {
       "run_id": "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2",
@@ -84,7 +84,7 @@
       "attempt_id": "attempt-20260903t233000z-selectfill104-joint-v2",
       "schema": "saea-execution-plan-v1",
       "study": "speech-aware-evidence-acquisition",
-      "exposure_preregistration_sha256": "09358ff9740b7815ad4bc1025ffdf56c6ecc90f0137021b09ae05ea48c8d2bc7"
+      "exposure_preregistration_sha256": "0675f75e9861a9c9dcb58b60c85d7fa844bd6f391ddeaf1b38b1317a6d0052d1"
     },
     "SELECT": {
       "run_id": "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2",
@@ -99,7 +99,7 @@
       "attempt_id": "attempt-20260903t233000z-selectfill104-select-v2",
       "schema": "saea-execution-plan-v1",
       "study": "speech-aware-evidence-acquisition",
-      "exposure_preregistration_sha256": "09358ff9740b7815ad4bc1025ffdf56c6ecc90f0137021b09ae05ea48c8d2bc7"
+      "exposure_preregistration_sha256": "0675f75e9861a9c9dcb58b60c85d7fa844bd6f391ddeaf1b38b1317a6d0052d1"
     },
     "JOINT_DRAFT_REVISE": {
       "run_id": "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2",
@@ -114,7 +114,7 @@
       "attempt_id": "attempt-20260903t233000z-selectfill104-revise-v2",
       "schema": "saea-execution-plan-v1",
       "study": "speech-aware-evidence-acquisition",
-      "exposure_preregistration_sha256": "09358ff9740b7815ad4bc1025ffdf56c6ecc90f0137021b09ae05ea48c8d2bc7"
+      "exposure_preregistration_sha256": "0675f75e9861a9c9dcb58b60c85d7fa844bd6f391ddeaf1b38b1317a6d0052d1"
     },
     "FILL": {
       "run_id": "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2",
@@ -129,7 +129,7 @@
       "attempt_id": "attempt-20260903t233000z-selectfill104-fill-v2",
       "schema": "saea-execution-plan-v1",
       "study": "speech-aware-evidence-acquisition",
-      "exposure_preregistration_sha256": "09358ff9740b7815ad4bc1025ffdf56c6ecc90f0137021b09ae05ea48c8d2bc7"
+      "exposure_preregistration_sha256": "0675f75e9861a9c9dcb58b60c85d7fa844bd6f391ddeaf1b38b1317a6d0052d1"
     }
   },
   "embedding_execution_plan": {
@@ -145,12 +145,13 @@
     "attempt_id": "attempt-20260903t233000z-selectfill104-embedding-v2",
     "schema": "saea-execution-plan-v1",
     "study": "speech-aware-evidence-acquisition",
-    "exposure_preregistration_sha256": "09358ff9740b7815ad4bc1025ffdf56c6ecc90f0137021b09ae05ea48c8d2bc7"
+    "exposure_preregistration_sha256": "0675f75e9861a9c9dcb58b60c85d7fa844bd6f391ddeaf1b38b1317a6d0052d1"
   },
   "local_runtime": {
     "data_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
     "runtime_root": "/home/chao",
     "mission_id": "mission-20260903t233000z-selectfill104-recovery-v2",
+    "exposure_preregistration": "docs/readiness/2026-09-03-a2t-select-fill-agentloop-104-recovery-v2-preregistration.md",
     "generation_runtime_receipt": "receipts/runtime-q4km-mmproj-free.json",
     "embedding_runtime_receipt": "receipts/runtime-qwen3-embedding-q8.json",
     "composed_config_hash": "ee0fa0beb4c49e4a8539354c7eec9b336120ee3660f5e7e13e204609412ed2d1",
