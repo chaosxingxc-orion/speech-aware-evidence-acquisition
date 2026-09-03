@@ -1,0 +1,43 @@
+{
+  "contacts": {
+    "gold": 0,
+    "handbook_model": 0,
+    "network": 0,
+    "registry_model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "corrected_identity": {
+    "composed_config_sha256": "e8a16944585d99e62bdc9d6c86d3181c0fa23c10d1295118edf2225752a8a526",
+    "declared_split_identity_sha256": "f95efe70b615d71bb082f9ef804d1fa2b6f04ce4114d5d2694151cbaf44019ba",
+    "derived_protocol_sha256": "a2f24da7254a62020d4dff5d681c873af0ff11e71126dae7b72b7b9b2a7158d0",
+    "verifier_recomputed_split_identity_sha256": "b15cf0c0874f7af7d10af6cc9801aae4535bbe57b5a6dc3add50bcdb40fd93aa"
+  },
+  "failed_v1_artifacts": {
+    "failure_receipt_sha256": "34fa23f5db5a2465a9876502d4cad803d37f9470f8ed9faf3c9d2359a3f1c20b",
+    "successor_manifest_sha256": "1063e42726ec256c5448c759b9a58b004293b672d28ef030b454724555d77eb3",
+    "successor_outputs_sha256": "f4e19ab8e107e368e68f889a9dbf0df8e1f10b601b87184ee5e2e7120de79b6d",
+    "successor_raw_trace_sha256": "08e56f7cce2882eb490958fc58f6bbbe532a73d190855929c2bba78b9f329bdb",
+    "successor_trace_manifest_sha256": "3f9c352712857e189d3bebaec0481dac9b9d3306b8cb5fae1b333f100509d314"
+  },
+  "failure": {
+    "classification": "ZERO_CONTACT_SPLIT_IDENTITY_CONVENTION_MISMATCH",
+    "message": "The V1 recovery copied the immutable registry artifacts and added the registered scorer metadata, then authoritative verification refused the successor before service startup because the roster receipt hash used colon-prefixed keys while the bundle verifier recomputes identity from slash-prefixed carrier/sample IDs.",
+    "model_or_response_cause": false,
+    "service_or_network_cause": false
+  },
+  "next_boundary": {
+    "handbook_contacts_remaining": 8,
+    "registry_recontact_authorized": false,
+    "run_id": "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-RECOVERY-V2"
+  },
+  "preservation": {
+    "failed_v1_successor_immutable": true,
+    "original_registry_artifacts_unchanged": true,
+    "response_meanings_opened": false
+  },
+  "schema": "saea-a2t-native-structured-action-fixed8-recovery-v1-failure-report-v1",
+  "source_run_id": "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1",
+  "status": "V1_RECOVERY_STOPPED_BEFORE_NEW_MODEL_CONTACT",
+  "study_commit": "d5325dbe7b16cb4f0faba7514af15e24d6e988d1"
+}

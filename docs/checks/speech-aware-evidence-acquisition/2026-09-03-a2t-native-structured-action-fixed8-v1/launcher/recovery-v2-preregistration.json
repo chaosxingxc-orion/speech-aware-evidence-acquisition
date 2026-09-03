@@ -1,0 +1,87 @@
+{
+  "schema": "saea-a2t-native-structured-action-fixed8-recovery-v2-preregistration-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "run_id": "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-RECOVERY-V2",
+  "source_run_id": "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1",
+  "source_flight_id": "flight-20260903T013000Z",
+  "source_mission_relpath": "runs/SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1/flight-20260903T013000Z",
+  "source_registry_attempt_id": "attempt-20260903T013000Z-registry-strict",
+  "source_registry_attempt_state": "ABORTED",
+  "source_registry_actual_calls": 8,
+  "source_registry_actual_audio_seconds": 45.096,
+  "remaining_contact_arm": "HANDBOOK_STRICT_ACTION",
+  "remaining_model_calls": 8,
+  "remaining_exact_audio_seconds": 45.096,
+  "remaining_audio_ceiling_seconds": 46,
+  "remaining_gpu_hour_ceiling": 0.1,
+  "registry_recontact_authorized": false,
+  "contacts_at_registration": {
+    "gold": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "manifest_scorers": [
+    "a2t-toolcall"
+  ],
+  "identity_correction": {
+    "declared_split_identity_sha256": "f95efe70b615d71bb082f9ef804d1fa2b6f04ce4114d5d2694151cbaf44019ba",
+    "recomputed_split_identity_sha256": "b15cf0c0874f7af7d10af6cc9801aae4535bbe57b5a6dc3add50bcdb40fd93aa",
+    "recomputed_protocol_sha256": "a2f24da7254a62020d4dff5d681c873af0ff11e71126dae7b72b7b9b2a7158d0",
+    "composed_config_sha256": "e8a16944585d99e62bdc9d6c86d3181c0fa23c10d1295118edf2225752a8a526",
+    "arm": "speech-feature-query"
+  },
+  "failed_v1_contract": {
+    "authorized_commit": "d5325dbe7b16cb4f0faba7514af15e24d6e988d1",
+    "launcher_sha256": "5b4b323bd4587a922028734545cd1eb09c95edfe7558f4ed3fbe94245c4e98ec",
+    "preregistration_sha256": "bf0658c13b8cdfa07fd372951cf662eea3ffc044b0f6dcd9e32924f778d816d1",
+    "execution_plan_file_sha256": "3aa2da2e71f78a507a6f443cd8d4ac3269b7e106ffd908401f0cfdba961d6763"
+  },
+  "frozen_request_contract": {
+    "registered_flight_plan_sha256": "fc522f84047f6cf6d07eb90f7edd0508f3b5658507fdf59e49c8fb033710fb39",
+    "precontact_request_contract_sha256": "d8ab56922a03b8e4aecbfb10c19a984b67365f6062d0c3bb32fe0d28cf06eba8",
+    "response_format_sha256": "8fe5db869f044b9e952765f7bee045027ad137db2cc445ff428db5303fb1a2ed",
+    "batch_size": 2,
+    "concurrency": 2,
+    "queue_depth": 4,
+    "repair_contacts": 0,
+    "resends": 0,
+    "retries": 0,
+    "network_jitter_testing": false
+  },
+  "source_hashes": {
+    "source_flight_plan_sha256": "4f65c56451bbda26fc59ca85f7bd628077c2c491ae6049d3653c024b6b08d1cb",
+    "source_precontact_plan_sha256": "7ff7d0a17b9eb73f335e5857380bbeeb0c96c8fdc6e9fd0ea4016b51ba5d24c9",
+    "source_failure_receipt_sha256": "91bcd679d4b44daec1642e77c7320db091ba4e343e89145a904dd6d190cb71e9",
+    "original_manifest_sha256": "0ca51392548e772d3b6ff5c42c2fdc2ec0aea56d8f9bbd4097b149aeec6128ee",
+    "original_outputs_sha256": "f4e19ab8e107e368e68f889a9dbf0df8e1f10b601b87184ee5e2e7120de79b6d",
+    "original_trace_sha256": "08e56f7cce2882eb490958fc58f6bbbe532a73d190855929c2bba78b9f329bdb",
+    "original_trace_manifest_sha256": "3f9c352712857e189d3bebaec0481dac9b9d3306b8cb5fae1b333f100509d314",
+    "registry_attempt_sha256": "53053bc4b241a7d6ff4084efe6c4843ba6ee6417278dc33ad0ff60570c73aa05",
+    "failed_v1_manifest_sha256": "1063e42726ec256c5448c759b9a58b004293b672d28ef030b454724555d77eb3",
+    "failed_v1_outputs_sha256": "f4e19ab8e107e368e68f889a9dbf0df8e1f10b601b87184ee5e2e7120de79b6d",
+    "failed_v1_trace_sha256": "08e56f7cce2882eb490958fc58f6bbbe532a73d190855929c2bba78b9f329bdb",
+    "failed_v1_trace_manifest_sha256": "3f9c352712857e189d3bebaec0481dac9b9d3306b8cb5fae1b333f100509d314",
+    "failed_v1_receipt_sha256": "34fa23f5db5a2465a9876502d4cad803d37f9470f8ed9faf3c9d2359a3f1c20b",
+    "successor_v2_manifest_sha256": "e950cd7093da3e5287898c4611217e099f60af64b8e24bcb06a0838fd3d7f5ab"
+  },
+  "recovery_execution_plan": {
+    "attempt_id": "attempt-20260903T020500Z-handbook-strict-recovery-v2",
+    "carrier_lock_key": "audio2tool",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.1,
+    "planned_model_calls": 8,
+    "planned_speech_audio_seconds": 46,
+    "protocol_hash": "a2f24da7254a62020d4dff5d681c873af0ff11e71126dae7b72b7b9b2a7158d0",
+    "run_id": "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-RECOVERY-V2",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "b15cf0c0874f7af7d10af6cc9801aae4535bbe57b5a6dc3add50bcdb40fd93aa",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "recovery_execution_plan_sha256": "f0ab0ac216de7b09f3fdb8f68cefcfb31e1ec26ef89bc58fc058df4ae7dd7392",
+  "protected_read_rule": "Do not read response meaning, gold, historical outputs, or a scorer before both corrected strict arms seal. Mechanical byte-hash and bundle-contract verification is allowed.",
+  "continuation_rule": "Verify the original and failed V1 bytes without modification. Build a new registry V2 successor from the original registry artifacts with only the registered scorer, verified split identity, derived protocol, and colocated artifact paths corrected. Then execute exactly the untouched eight handbook requests under the distinct V2 run and attempt.",
+  "failure_rule": "Abort the V2 handbook attempt if opened, stop any started service, preserve all source and V1 bytes, and do not repeat, repair, resend, or recontact any row."
+}

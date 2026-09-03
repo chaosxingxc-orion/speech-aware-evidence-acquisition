@@ -1,0 +1,14 @@
+{
+  "attempt_id": "attempt-20260903T020500Z-handbook-strict-recovery-v2",
+  "carrier_lock_key": "audio2tool",
+  "execution_profile": "bounded-discovery-probe",
+  "planned_gpu_hours": 0.1,
+  "planned_model_calls": 8,
+  "planned_speech_audio_seconds": 46,
+  "protocol_hash": "a2f24da7254a62020d4dff5d681c873af0ff11e71126dae7b72b7b9b2a7158d0",
+  "run_id": "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-RECOVERY-V2",
+  "schema": "saea-execution-plan-v1",
+  "split_identity_hash": "b15cf0c0874f7af7d10af6cc9801aae4535bbe57b5a6dc3add50bcdb40fd93aa",
+  "split_role": "discovery",
+  "study": "speech-aware-evidence-acquisition"
+}

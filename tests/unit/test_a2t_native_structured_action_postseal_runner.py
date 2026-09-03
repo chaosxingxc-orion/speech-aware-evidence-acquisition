@@ -123,7 +123,7 @@ def test_registry_descriptor_binds_a_present_recovery_receipt(tmp_path: Path) ->
         (arm_dir / f"{module.RUN_ID}.run-manifest.json").write_text(
             json.dumps(manifest), encoding="utf-8"
         )
-    receipt = mission / "recovery-flight-receipt.json"
+    receipt = mission / "recovery-v2-flight-receipt.json"
     receipt.write_text('{"schema":"fixture"}\n', encoding="utf-8")
 
     descriptors = module.strict_seals_from_mission(mission)
@@ -157,7 +157,7 @@ def test_registry_descriptor_uses_the_immutable_successor_bundle_when_present(
             ),
             encoding="utf-8",
         )
-    successor = mission / "registry_strict_action_recovery_v1"
+    successor = mission / "registry_strict_action_recovery_v2"
     successor.mkdir()
     successor_manifest = successor / f"{module.RUN_ID}.run-manifest.json"
     successor_manifest.write_text(
@@ -173,7 +173,7 @@ def test_registry_descriptor_uses_the_immutable_successor_bundle_when_present(
         ),
         encoding="utf-8",
     )
-    (mission / "recovery-flight-receipt.json").write_text("{}\n", encoding="utf-8")
+    (mission / "recovery-v2-flight-receipt.json").write_text("{}\n", encoding="utf-8")
 
     descriptors = module.strict_seals_from_mission(mission)
 
@@ -194,7 +194,12 @@ def test_handbook_descriptor_uses_the_recovery_bundle_after_continuation(
         (registry_successor, ("a", "b", "c")),
         (handbook_recovery, ("d", "e", "f")),
     ):
-        (directory / f"{module.RUN_ID}.run-manifest.json").write_text(
+        manifest_run_id = (
+            module.RUN_ID
+            if directory == registry_successor
+            else module.RECOVERY_V2_RUN_ID
+        )
+        (directory / f"{manifest_run_id}.run-manifest.json").write_text(
             json.dumps(
                 {
                     key: {"sha256": character * 64}
@@ -207,11 +212,11 @@ def test_handbook_descriptor_uses_the_recovery_bundle_after_continuation(
             ),
             encoding="utf-8",
         )
-    (mission / "recovery-flight-receipt.json").write_text("{}\n", encoding="utf-8")
+    (mission / "recovery-v2-flight-receipt.json").write_text("{}\n", encoding="utf-8")
 
     descriptors = module.strict_seals_from_mission(mission)
 
     assert descriptors["HANDBOOK_STRICT_ACTION"]["manifest"] == (
-        handbook_recovery / f"{module.RUN_ID}.run-manifest.json"
+        handbook_recovery / f"{module.RECOVERY_V2_RUN_ID}.run-manifest.json"
     ).resolve()
     assert descriptors["HANDBOOK_STRICT_ACTION"]["outputs_sha256"] == "d" * 64

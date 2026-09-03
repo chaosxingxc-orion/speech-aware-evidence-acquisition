@@ -48,8 +48,10 @@ PARENT_SOURCES = {
         "outputs_sha256": "f4c92804e359dda1faa7880a27bffb709db9638619e51b1f7e02c74176063803",
     },
 }
-REGISTRY_SUCCESSOR_DIRECTORY = "registry_strict_action_recovery_v1"
-HANDBOOK_RECOVERY_DIRECTORY = "handbook_strict_action_recovery_v1"
+REGISTRY_SUCCESSOR_DIRECTORY = "registry_strict_action_recovery_v2"
+HANDBOOK_RECOVERY_DIRECTORY = "handbook_strict_action_recovery_v2"
+RECOVERY_V2_RUN_ID = "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-RECOVERY-V2"
+RECOVERY_V2_RECEIPT_NAME = "recovery-v2-flight-receipt.json"
 
 
 def _read_object(path: Path, label: str) -> Mapping[str, object]:
@@ -89,14 +91,14 @@ def strict_seals_from_mission(mission_dir: Path) -> Mapping[str, Mapping[str, ob
 
     descriptors: dict[str, Mapping[str, object]] = {}
     for cell in STRICT_CELLS:
-        recovery_receipt = Path(mission_dir) / "recovery-flight-receipt.json"
+        recovery_receipt = Path(mission_dir) / RECOVERY_V2_RECEIPT_NAME
         successor_manifest = (
             Path(mission_dir) / REGISTRY_SUCCESSOR_DIRECTORY / f"{RUN_ID}.run-manifest.json"
         )
         handbook_recovery_manifest = (
             Path(mission_dir)
             / HANDBOOK_RECOVERY_DIRECTORY
-            / f"{RUN_ID}.run-manifest.json"
+            / f"{RECOVERY_V2_RUN_ID}.run-manifest.json"
         )
         if (
             cell == "REGISTRY_STRICT_ACTION"

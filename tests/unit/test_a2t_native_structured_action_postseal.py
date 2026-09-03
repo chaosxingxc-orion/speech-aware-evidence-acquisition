@@ -23,6 +23,10 @@ from speech_aware_evidence_acquisition.core.bundle import VerifiedBundle
 
 
 IDS = tuple(f"tier{index}:00000{index}" for index in range(1, 9))
+V1_RUN_ID = "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1"
+V2_RUN_ID = "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-RECOVERY-V2"
+V2_SPLIT_IDENTITY = "b15cf0c0874f7af7d10af6cc9801aae4535bbe57b5a6dc3add50bcdb40fd93aa"
+V2_PROTOCOL = "a2f24da7254a62020d4dff5d681c873af0ff11e71126dae7b72b7b9b2a7158d0"
 
 
 def _sha256(path: Path) -> str:
@@ -53,8 +57,17 @@ def _output_row(
 
 
 def _verified_bundle(
-    tmp_path: Path, cell: str, ids=IDS, *, texts=None, attempt_state="FINALIZED"
+    tmp_path: Path,
+    cell: str,
+    ids=IDS,
+    *,
+    texts=None,
+    attempt_state="FINALIZED",
+    run_id: str | None = None,
+    split_identity: str = "d" * 64,
+    protocol: str = "e" * 64,
 ) -> VerifiedBundle:
+    effective_run_id = run_id or f"FIXTURE-{cell}"
     manifest_path = _write(tmp_path / cell / "run-manifest.json", "{}\n")
     outputs_path = tmp_path / cell / "outputs.jsonl"
     rows = tuple(
@@ -70,7 +83,7 @@ def _verified_bundle(
         tmp_path / cell / "attempt.json",
         json.dumps(
             {
-                "run_id": f"FIXTURE-{cell}",
+                "run_id": effective_run_id,
                 "attempt_id": "attempt-fixture-0001",
                 "state": attempt_state,
             },
@@ -81,9 +94,13 @@ def _verified_bundle(
     raw_trace = _write(tmp_path / cell / "trace.jsonl", '{"sealed":true}\n')
     trace_manifest = _write(tmp_path / cell / "trace-manifest.json", "{}\n")
     manifest = {
-        "run_id": f"FIXTURE-{cell}",
+        "run_id": effective_run_id,
         "status": "COMPLETED",
-        "split": {"ids": sorted(ids), "count": len(ids)},
+        "split": {
+            "ids": sorted(ids),
+            "count": len(ids),
+            "identity_hash": split_identity,
+        },
         "outputs": {
             "path": str(outputs_path.resolve()),
             "sha256": _sha256(outputs_path),
@@ -98,23 +115,24 @@ def _verified_bundle(
         "plan": {
             "schema": "saea-execution-plan-v1",
             "study": "speech-aware-evidence-acquisition",
-            "run_id": f"FIXTURE-{cell}",
+            "run_id": effective_run_id,
             "execution_profile": "bounded-discovery-probe",
             "carrier_lock_key": "audio2tool",
             "split_role": "discovery",
-            "split_identity_hash": "d" * 64,
+            "split_identity_hash": split_identity,
             "planned_model_calls": 8,
             "planned_gpu_hours": 0.1,
             "planned_speech_audio_seconds": 46,
-            "protocol_hash": "e" * 64,
+            "protocol_hash": protocol,
             "attempt_id": "attempt-fixture-0001",
         },
         "session_receipt": None,
         "attempt": {
-            "run_id": f"FIXTURE-{cell}",
+            "run_id": effective_run_id,
             "attempt_id": "attempt-fixture-0001",
             "state_path": str(attempt_path),
         },
+        "protocol_hash": protocol,
         "cost": {"calls_used": 8},
     }
     return VerifiedBundle(
@@ -147,8 +165,8 @@ def _recovery_receipt(tmp_path: Path, bundle: VerifiedBundle) -> Path:
     receipt.write_text(
         json.dumps(
             {
-                "schema": "saea-a2t-native-structured-action-fixed8-recovery-flight-v1",
-                "run_id": manifest["run_id"],
+                "schema": "saea-a2t-native-structured-action-fixed8-recovery-v2-flight-v1",
+                "run_id": V2_RUN_ID,
                 "registry_recovery": {
                     "cell": "REGISTRY_STRICT_ACTION",
                     "recovered_from_attempt_id": "attempt-fixture-0001",
@@ -156,6 +174,10 @@ def _recovery_receipt(tmp_path: Path, bundle: VerifiedBundle) -> Path:
                     "registry_recontacted": False,
                     "registry_model_contacts": 0,
                     "completed_rows": 8,
+                    "successor_run_id": V2_RUN_ID,
+                    "verified_manifest_run_id": manifest["run_id"],
+                    "successor_split_identity_hash": V2_SPLIT_IDENTITY,
+                    "successor_protocol_hash": V2_PROTOCOL,
                     "successor_manifest_path": str(bundle.manifest_path),
                     "successor_manifest_sha256": _sha256(bundle.manifest_path),
                     "source_attempt": {
@@ -357,8 +379,15 @@ def test_proof_refuses_an_ordinary_aborted_strict_bundle(tmp_path: Path):
 def test_proof_admits_only_the_hash_pinned_aborted_registry_recovery(
     tmp_path: Path,
 ):
-    registry = _verified_bundle(tmp_path, "registry", attempt_state="ABORTED")
-    handbook = _verified_bundle(tmp_path, "handbook", attempt_state="OPENED")
+    registry = _verified_bundle(
+        tmp_path,
+        "registry",
+        attempt_state="ABORTED",
+        run_id=V1_RUN_ID,
+        split_identity=V2_SPLIT_IDENTITY,
+        protocol=V2_PROTOCOL,
+    )
+    handbook = _verified_bundle(tmp_path, "handbook", attempt_state="OPENED", run_id=V2_RUN_ID)
     receipt = _recovery_receipt(tmp_path, registry)
     registry_seal = _seal_descriptor(registry)
     registry_seal.update(
@@ -387,7 +416,14 @@ def test_proof_admits_only_the_hash_pinned_aborted_registry_recovery(
 def test_proof_refuses_recovery_receipt_that_reports_registry_recontact(
     tmp_path: Path,
 ):
-    registry = _verified_bundle(tmp_path, "registry", attempt_state="ABORTED")
+    registry = _verified_bundle(
+        tmp_path,
+        "registry",
+        attempt_state="ABORTED",
+        run_id=V1_RUN_ID,
+        split_identity=V2_SPLIT_IDENTITY,
+        protocol=V2_PROTOCOL,
+    )
     handbook = _verified_bundle(tmp_path, "handbook", attempt_state="OPENED")
     receipt = _recovery_receipt(tmp_path, registry)
     document = json.loads(receipt.read_text(encoding="utf-8"))
@@ -421,7 +457,14 @@ def test_proof_refuses_recovery_receipt_that_reports_registry_recontact(
 def test_proof_refuses_recovery_receipt_with_stale_source_artifact_hash(
     tmp_path: Path,
 ):
-    registry = _verified_bundle(tmp_path, "registry", attempt_state="ABORTED")
+    registry = _verified_bundle(
+        tmp_path,
+        "registry",
+        attempt_state="ABORTED",
+        run_id=V1_RUN_ID,
+        split_identity=V2_SPLIT_IDENTITY,
+        protocol=V2_PROTOCOL,
+    )
     handbook = _verified_bundle(tmp_path, "handbook", attempt_state="OPENED")
     receipt = _recovery_receipt(tmp_path, registry)
     document = json.loads(receipt.read_text(encoding="utf-8"))
@@ -455,7 +498,14 @@ def test_proof_refuses_recovery_receipt_with_stale_source_artifact_hash(
 def test_proof_refuses_recovery_receipt_without_successor_lineage(
     tmp_path: Path,
 ):
-    registry = _verified_bundle(tmp_path, "registry", attempt_state="ABORTED")
+    registry = _verified_bundle(
+        tmp_path,
+        "registry",
+        attempt_state="ABORTED",
+        run_id=V1_RUN_ID,
+        split_identity=V2_SPLIT_IDENTITY,
+        protocol=V2_PROTOCOL,
+    )
     handbook = _verified_bundle(tmp_path, "handbook", attempt_state="OPENED")
     receipt = _recovery_receipt(tmp_path, registry)
     document = json.loads(receipt.read_text(encoding="utf-8"))
@@ -472,6 +522,47 @@ def test_proof_refuses_recovery_receipt_without_successor_lineage(
 
     with pytest.raises(
         NativeStructuredActionPostsealError, match="successor manifest"
+    ):
+        prove_strict_cells_sealed(
+            strict_seals={
+                "REGISTRY_STRICT_ACTION": registry_seal,
+                "HANDBOOK_STRICT_ACTION": _seal_descriptor(handbook),
+            },
+            sample_ids=IDS,
+            verifier=lambda path: {
+                registry.manifest_path: registry,
+                handbook.manifest_path: handbook,
+            }[Path(path).resolve()],
+        )
+
+
+def test_proof_refuses_v2_recovery_with_an_uncorrected_split_or_protocol(
+    tmp_path: Path,
+):
+    registry = _verified_bundle(
+        tmp_path,
+        "registry",
+        attempt_state="ABORTED",
+        run_id=V1_RUN_ID,
+        split_identity=V2_SPLIT_IDENTITY,
+        protocol=V2_PROTOCOL,
+    )
+    handbook = _verified_bundle(tmp_path, "handbook", attempt_state="OPENED", run_id=V2_RUN_ID)
+    receipt = _recovery_receipt(tmp_path, registry)
+    document = json.loads(receipt.read_text(encoding="utf-8"))
+    document["registry_recovery"]["successor_protocol_hash"] = "0" * 64
+    receipt.write_text(json.dumps(document, sort_keys=True) + "\n", encoding="utf-8")
+    registry_seal = _seal_descriptor(registry)
+    registry_seal.update(
+        {
+            "recovered_from_aborted_attempt": True,
+            "recovery_receipt": receipt,
+            "recovery_receipt_sha256": _sha256(receipt),
+        }
+    )
+
+    with pytest.raises(
+        NativeStructuredActionPostsealError, match="V2 successor correction"
     ):
         prove_strict_cells_sealed(
             strict_seals={

@@ -49,8 +49,18 @@ STRICT_CELLS = ("REGISTRY_STRICT_ACTION", "HANDBOOK_STRICT_ACTION")
 HISTORICAL_CELLS = ("REGISTRY_NO_SCHEMA", "HANDBOOK_NO_SCHEMA")
 EXPECTED_SAMPLE_COUNT = 8
 _AUTHORITY_SENTINEL = object()
-_REGISTRY_RECOVERY_RECEIPT_SCHEMA = (
-    "saea-a2t-native-structured-action-fixed8-recovery-flight-v1"
+_REGISTRY_RECOVERY_V2_RECEIPT_SCHEMA = (
+    "saea-a2t-native-structured-action-fixed8-recovery-v2-flight-v1"
+)
+_REGISTRY_RECOVERY_V2_RUN_ID = (
+    "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-RECOVERY-V2"
+)
+_REGISTRY_ORIGINAL_RUN_ID = "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1"
+_REGISTRY_RECOVERY_V2_SPLIT_IDENTITY = (
+    "b15cf0c0874f7af7d10af6cc9801aae4535bbe57b5a6dc3add50bcdb40fd93aa"
+)
+_REGISTRY_RECOVERY_V2_PROTOCOL = (
+    "a2f24da7254a62020d4dff5d681c873af0ff11e71126dae7b72b7b9b2a7158d0"
 )
 
 
@@ -243,8 +253,8 @@ def _validate_aborted_registry_recovery(
         )
     recovery = receipt.get("registry_recovery")
     if (
-        receipt.get("schema") != _REGISTRY_RECOVERY_RECEIPT_SCHEMA
-        or receipt.get("run_id") != manifest.get("run_id")
+        receipt.get("schema") != _REGISTRY_RECOVERY_V2_RECEIPT_SCHEMA
+        or receipt.get("run_id") != _REGISTRY_RECOVERY_V2_RUN_ID
         or not isinstance(recovery, Mapping)
         or recovery.get("cell") != "REGISTRY_STRICT_ACTION"
         or recovery.get("recovered_from_attempt_id") != attempt_id
@@ -253,6 +263,21 @@ def _validate_aborted_registry_recovery(
     ):
         raise NativeStructuredActionPostsealError(
             "REGISTRY_STRICT_ACTION recovery receipt has invalid recovery facts"
+        )
+    split = manifest.get("split")
+    if (
+        manifest.get("run_id") != _REGISTRY_ORIGINAL_RUN_ID
+        or recovery.get("successor_run_id") != _REGISTRY_RECOVERY_V2_RUN_ID
+        or recovery.get("verified_manifest_run_id") != manifest.get("run_id")
+        or recovery.get("successor_split_identity_hash")
+        != _REGISTRY_RECOVERY_V2_SPLIT_IDENTITY
+        or recovery.get("successor_protocol_hash") != _REGISTRY_RECOVERY_V2_PROTOCOL
+        or not isinstance(split, Mapping)
+        or split.get("identity_hash") != _REGISTRY_RECOVERY_V2_SPLIT_IDENTITY
+        or manifest.get("protocol_hash") != _REGISTRY_RECOVERY_V2_PROTOCOL
+    ):
+        raise NativeStructuredActionPostsealError(
+            "REGISTRY_STRICT_ACTION V2 successor correction binding drift"
         )
     if recovery.get("registry_recontacted") is not False:
         raise NativeStructuredActionPostsealError(
