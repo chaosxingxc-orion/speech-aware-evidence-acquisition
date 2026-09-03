@@ -293,8 +293,8 @@ def load_m0_outputs(path: Path, expected_sample_ids: Sequence[str]) -> dict[str,
         if sample_id in texts:
             raise RuntimeError(f"M0 contains duplicate identity {sample_id!r}")
         texts[sample_id] = text
-    if set(texts) != set(expected):
-        raise RuntimeError("M0 source does not exactly cover the selected identities")
+    if not set(expected) <= set(texts):
+        raise RuntimeError("M0 source does not cover every selected identity")
     return {sample_id: texts[sample_id] for sample_id in expected}
 
 

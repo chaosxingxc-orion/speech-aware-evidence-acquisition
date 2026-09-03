@@ -262,7 +262,7 @@ def test_m0_loader_requires_exact_identity_and_preserves_source(tmp_path: Path) 
     path.write_text(
         "".join(
             json.dumps({"sample_id": sample_id, "text": f"m0:{sample_id}"}) + "\n"
-            for sample_id in ("b", "a")
+            for sample_id in ("b", "a", "outside-g8")
         ),
         encoding="utf-8",
     )
@@ -271,6 +271,7 @@ def test_m0_loader_requires_exact_identity_and_preserves_source(tmp_path: Path) 
 
     assert tuple(loaded) == ("a", "b")
     assert loaded["a"] == "m0:a"
+    assert "outside-g8" not in loaded
     path.write_text(
         json.dumps({"sample_id": "a", "text": "one"}) + "\n"
         + json.dumps({"sample_id": "a", "text": "two"}) + "\n",
