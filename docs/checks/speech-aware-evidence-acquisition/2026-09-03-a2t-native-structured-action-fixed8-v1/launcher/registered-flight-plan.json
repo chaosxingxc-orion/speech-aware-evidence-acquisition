@@ -1,0 +1,39 @@
+{
+  "arm_order": [
+    "REGISTRY_STRICT_ACTION",
+    "HANDBOOK_STRICT_ACTION"
+  ],
+  "attempts": {
+    "HANDBOOK_STRICT_ACTION": {
+      "attempt_id": "attempt-20260903T013000Z-handbook-strict",
+      "carrier_lock_key": "audio2tool",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 0.2,
+      "planned_model_calls": 16,
+      "planned_speech_audio_seconds": 91,
+      "protocol_hash": "a6d6634e2139673acd6ddee13fe87280e906b8bca09cbfe355cab0c00507f034",
+      "run_id": "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "f95efe70b615d71bb082f9ef804d1fa2b6f04ce4114d5d2694151cbaf44019ba",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "REGISTRY_STRICT_ACTION": {
+      "attempt_id": "attempt-20260903T013000Z-registry-strict",
+      "carrier_lock_key": "audio2tool",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 0.2,
+      "planned_model_calls": 16,
+      "planned_speech_audio_seconds": 91,
+      "protocol_hash": "a6d6634e2139673acd6ddee13fe87280e906b8bca09cbfe355cab0c00507f034",
+      "run_id": "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "f95efe70b615d71bb082f9ef804d1fa2b6f04ce4114d5d2694151cbaf44019ba",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    }
+  },
+  "flight_id": "flight-20260903T013000Z",
+  "run_id": "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1",
+  "schema": "saea-a2t-native-structured-action-registered-flight-plan-v1"
+}
