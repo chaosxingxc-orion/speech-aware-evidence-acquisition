@@ -83,6 +83,6 @@
     },
     "scoped_ruff": "passed"
   },
-  "disposition": "RENDERER_AND_FAMILY_SCHEMA_READY_COMPLETE_RUNTIME_NOT_YET_PREREGISTERED",
-  "claim_scope": "model-free renderer, family schema, compatibility, response-cap, and per-family request-capacity evidence only; shared OBS, runtime merge, trace sealing, post-seal ceiling, efficacy, policy, scale, test, and Stage-3 claims remain open"
+  "disposition": "MODEL_FREE_GROUND_REUSABLE_FIXED8_RUNTIME_SUPERSEDED_BEFORE_PREREGISTRATION_OR_CONTACT",
+  "claim_scope": "model-free renderer, family schema, compatibility, response-cap, and per-family request-capacity evidence only; shared OBS, runtime merge, trace sealing, post-seal proposal-content coverage, action-set consumption ceiling, efficacy, policy, scale, test, and Stage-3 claims remain open"
 }

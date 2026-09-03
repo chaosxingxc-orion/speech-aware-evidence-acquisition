@@ -1,0 +1,12 @@
+{
+  "schema": "saea-a2t-fresh-agentloop-independent-pool-diagnostic-v1",
+  "status": "SUPERSEDED_DIAGNOSTIC_BLOCKED_NO_ROSTER",
+  "source": {"receipt": "docs/receipts/probe-samples/r1-audio2tool-sample.json", "count": 400, "sha256": "d99570a797744f7dc3db53bdb898611836ae2682a02e726b974d05734c6cbb2d"},
+  "previously_exposed_sample_id_count": 312,
+  "eligible_count": 88,
+  "eligible_per_tier": 11,
+  "target_count": 104,
+  "target_per_tier": 13,
+  "blockers": ["Missing normalized-token equivalence metadata.", "Only 88 rows remain after tracked exposure exclusion."],
+  "contacts": {"model": 0, "network": 0, "scorer": 0, "audio": 0}
+}

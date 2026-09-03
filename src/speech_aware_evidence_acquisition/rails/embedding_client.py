@@ -80,6 +80,14 @@ call site's behaviour:
   that uses ``require_marker_verification=False``, never calls
   ``embed_audio`` at all (module docstring of
   ``rails.probes.pemb3m_flight``: M4 is text-text only).
+
+TEXT-BATCH EXTENSION: :meth:`EmbeddingClient.embed_text_batch` accepts a
+non-empty sequence of ``(contact_id, text)`` or ``(contact_id, text, prefix)``
+items. It sends their content strings in one ordered ``POST /embedding`` while
+retaining one semantic :class:`EmbeddingContact` per item. The additive
+``http_request_count`` distinguishes physical requests from semantic contacts;
+the original :class:`EmbeddingClientProtocol` remains unchanged and
+:class:`BatchedEmbeddingClientProtocol` exposes the optional extension.
 """
 
 from __future__ import annotations
@@ -119,6 +127,8 @@ GENERATION_COEXISTENCE_NOTE = (
     "the launcher must check for and refuse an orphan generation server before starting one"
 )
 
+TextEmbeddingBatchItem = tuple[str, str] | tuple[str, str, str]
+
 
 class EmbeddingClientError(RailsError):
     """A malformed embedding request/response, a marker-verification
@@ -148,7 +158,9 @@ def _iso(epoch_seconds: float) -> str:
     return datetime.fromtimestamp(epoch_seconds, tz=timezone.utc).isoformat()
 
 
-def _assert_vector_legal(values: Sequence[float], *, context: str, expected_dim: int = EMBEDDING_DIM) -> None:
+def _assert_vector_legal(
+    values: Sequence[float], *, context: str, expected_dim: int = EMBEDDING_DIM
+) -> None:
     """Fail-closed on dim != ``expected_dim`` (default :data:`EMBEDDING_DIM`,
     2048) or any non-finite (NaN/Inf) component -- never a soft flag.
     ``expected_dim`` is the EXTENSION seam module docstring's own EXTENSION
@@ -172,7 +184,11 @@ def _unwrap_pooled_vector(raw_vector: object, *, context: str) -> tuple[float, .
     on anything else (more than one row, empty, non-numeric)."""
 
     candidate = raw_vector
-    if isinstance(candidate, list) and candidate and all(isinstance(item, list) for item in candidate):
+    if (
+        isinstance(candidate, list)
+        and candidate
+        and all(isinstance(item, list) for item in candidate)
+    ):
         if len(candidate) != 1:
             raise EmbeddingClientError(
                 f"{context}: expected a single pooled row, got {len(candidate)} rows "
@@ -191,11 +207,19 @@ def _unwrap_pooled_vector(raw_vector: object, *, context: str) -> tuple[float, .
         ) from error
 
 
-def _parse_embedding_response(raw: bytes, *, expected_count: int, context: str) -> list[tuple[float, ...]]:
+def _parse_embedding_response(
+    raw: bytes,
+    *,
+    expected_count: int,
+    context: str,
+    order_by_index: bool = False,
+) -> list[tuple[float, ...]]:
     try:
         parsed = json.loads(raw.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError) as error:
-        raise EmbeddingClientError(f"{context}: embedding server returned invalid JSON: {error}") from error
+        raise EmbeddingClientError(
+            f"{context}: embedding server returned invalid JSON: {error}"
+        ) from error
     if not isinstance(parsed, list):
         raise EmbeddingClientError(
             f"{context}: embedding response must be a JSON array, got {type(parsed).__name__}"
@@ -204,12 +228,65 @@ def _parse_embedding_response(raw: bytes, *, expected_count: int, context: str) 
         raise EmbeddingClientError(
             f"{context}: embedding response carries {len(parsed)} row(s), expected {expected_count}"
         )
+    if order_by_index:
+        indexes = [
+            row.get("index") if isinstance(row, Mapping) else None for row in parsed
+        ]
+        if any(type(index) is not int for index in indexes) or set(indexes) != set(
+            range(expected_count)
+        ):
+            raise EmbeddingClientError(
+                f"{context}: response indexes must be a permutation of "
+                f"0..{expected_count - 1}"
+            )
+        parsed = [row for _index, row in sorted(zip(indexes, parsed, strict=True))]
     vectors: list[tuple[float, ...]] = []
     for row in parsed:
         if not isinstance(row, Mapping) or "embedding" not in row:
-            raise EmbeddingClientError(f"{context}: embedding response row missing 'embedding' field: {row!r}")
+            raise EmbeddingClientError(
+                f"{context}: embedding response row missing 'embedding' field: {row!r}"
+            )
         vectors.append(_unwrap_pooled_vector(row["embedding"], context=context))
     return vectors
+
+
+def _validate_text_batch_items(
+    items: Sequence[TextEmbeddingBatchItem],
+) -> tuple[tuple[str, str, str], ...]:
+    if isinstance(items, (str, bytes)) or not isinstance(items, Sequence) or not items:
+        raise EmbeddingClientError("text embedding batch must be a non-empty sequence")
+    normalized: list[tuple[str, str, str]] = []
+    seen_ids: set[str] = set()
+    for index, item in enumerate(items):
+        if (
+            isinstance(item, (str, bytes))
+            or not isinstance(item, Sequence)
+            or len(item) not in (2, 3)
+        ):
+            raise EmbeddingClientError(
+                f"text embedding batch item {index} must contain two or three values"
+            )
+        contact_id, text = item[:2]
+        prefix = item[2] if len(item) == 3 else ""
+        if not isinstance(contact_id, str) or not contact_id:
+            raise EmbeddingClientError(
+                f"text embedding batch item {index}: contact_id must be a non-empty string"
+            )
+        if contact_id in seen_ids:
+            raise EmbeddingClientError(
+                "text embedding batch contact_id values must be distinct"
+            )
+        if not isinstance(text, str) or not text:
+            raise EmbeddingClientError(
+                f"text embedding batch contact {contact_id!r}: text must be a non-empty string"
+            )
+        if not isinstance(prefix, str):
+            raise EmbeddingClientError(
+                f"text embedding batch contact {contact_id!r}: prefix must be a string"
+            )
+        seen_ids.add(contact_id)
+        normalized.append((contact_id, text, prefix))
+    return tuple(normalized)
 
 
 @dataclass(frozen=True)
@@ -258,11 +335,22 @@ class EmbeddingClientProtocol(Protocol):
 
     def verify_media_marker(self) -> Mapping[str, object]: ...
 
-    def embed_text(self, *, contact_id: str, text: str, prefix: str = "") -> EmbeddingVector: ...
+    def embed_text(
+        self, *, contact_id: str, text: str, prefix: str = ""
+    ) -> EmbeddingVector: ...
 
     def embed_audio(
         self, *, contact_id: str, audio_bytes: bytes, prompt_prefix: str = ""
     ) -> EmbeddingVector: ...
+
+
+@runtime_checkable
+class BatchedEmbeddingClientProtocol(EmbeddingClientProtocol, Protocol):
+    """Backward-compatible protocol extension for physical text batching."""
+
+    def embed_text_batch(
+        self, items: Sequence[TextEmbeddingBatchItem]
+    ) -> tuple[EmbeddingVector, ...]: ...
 
 
 def _default_post(timeout_seconds: float) -> Callable[[str, bytes], bytes]:
@@ -310,8 +398,14 @@ class EmbeddingClient:
         if require_marker_verification and (
             not isinstance(expected_media_marker, str) or not expected_media_marker
         ):
-            raise EmbeddingClientError("expected_media_marker must be a non-empty string")
-        if not isinstance(expected_dim, int) or isinstance(expected_dim, bool) or expected_dim <= 0:
+            raise EmbeddingClientError(
+                "expected_media_marker must be a non-empty string"
+            )
+        if (
+            not isinstance(expected_dim, int)
+            or isinstance(expected_dim, bool)
+            or expected_dim <= 0
+        ):
             raise EmbeddingClientError("expected_dim must be a positive integer")
         self._base_url = base_url.rstrip("/")
         self._expected_marker = expected_media_marker
@@ -323,6 +417,7 @@ class EmbeddingClient:
         self._marker_verified = False
         self._verified_props: Mapping[str, object] | None = None
         self._contacts: list[EmbeddingContact] = []
+        self._http_request_count = 0
         self._closed = False
 
     @property
@@ -332,6 +427,12 @@ class EmbeddingClient:
     @property
     def contacts(self) -> tuple[EmbeddingContact, ...]:
         return tuple(self._contacts)
+
+    @property
+    def http_request_count(self) -> int:
+        """Number of attempted physical ``POST /embedding`` requests."""
+
+        return self._http_request_count
 
     @property
     def marker_verified(self) -> bool:
@@ -357,7 +458,9 @@ class EmbeddingClient:
         try:
             props = json.loads(raw.decode("utf-8"))
         except (UnicodeDecodeError, json.JSONDecodeError) as error:
-            raise EmbeddingClientError(f"GET /props returned invalid JSON: {error}") from error
+            raise EmbeddingClientError(
+                f"GET /props returned invalid JSON: {error}"
+            ) from error
         if not isinstance(props, Mapping):
             raise EmbeddingClientError("GET /props did not return a JSON object")
         if PROPS_MEDIA_MARKER_FIELD not in props:
@@ -385,7 +488,9 @@ class EmbeddingClient:
                 "whose actual placeholder token differs from the env-pinned one"
             )
 
-    def embed_text(self, *, contact_id: str, text: str, prefix: str = "") -> EmbeddingVector:
+    def embed_text(
+        self, *, contact_id: str, text: str, prefix: str = ""
+    ) -> EmbeddingVector:
         """Plain content-string text embedding. ``prefix`` defaults to the
         empty string, preserving P-EMB-1/2's own pinned bare-content shape
         byte-for-byte (module docstring's EXTENSION paragraph); a non-empty
@@ -394,12 +499,74 @@ class EmbeddingClient:
         carries whatever trailing space it needs."""
 
         if not isinstance(text, str) or not text:
-            raise EmbeddingClientError(f"embed_text contact {contact_id!r}: text must be a non-empty string")
+            raise EmbeddingClientError(
+                f"embed_text contact {contact_id!r}: text must be a non-empty string"
+            )
         if not isinstance(prefix, str):
-            raise EmbeddingClientError(f"embed_text contact {contact_id!r}: prefix must be a string")
-        return self._send(contact_id=contact_id, kind="text", body={"content": [prefix + text]})
+            raise EmbeddingClientError(
+                f"embed_text contact {contact_id!r}: prefix must be a string"
+            )
+        return self._send(
+            contact_id=contact_id, kind="text", body={"content": [prefix + text]}
+        )
 
-    def embed_audio(self, *, contact_id: str, audio_bytes: bytes, prompt_prefix: str = "") -> EmbeddingVector:
+    def embed_text_batch(
+        self, items: Sequence[TextEmbeddingBatchItem]
+    ) -> tuple[EmbeddingVector, ...]:
+        """Embed distinct text items in one physical llama.cpp request.
+
+        Each successful item remains one semantic :class:`EmbeddingContact`.
+        All response vectors are validated before any contact is appended.
+        """
+
+        if self._closed:
+            raise EmbeddingClientError("embed call after close()")
+        normalized = _validate_text_batch_items(items)
+        self._require_marker_verified()
+        context = f"text embedding batch of {len(normalized)} contacts"
+        started_wall = self._now()
+        self._http_request_count += 1
+        body = {"content": [prefix + text for _contact_id, text, prefix in normalized]}
+        raw = self._post(
+            self._base_url + EMBEDDING_ENDPOINT_PATH,
+            json.dumps(body).encode("utf-8"),
+        )
+        latency = self._now() - started_wall
+        values_by_item = _parse_embedding_response(
+            raw,
+            expected_count=len(normalized),
+            context=context,
+            order_by_index=True,
+        )
+        for (contact_id, _text, _prefix), values in zip(
+            normalized, values_by_item, strict=True
+        ):
+            _assert_vector_legal(
+                values,
+                context=f"text contact {contact_id!r} in batch",
+                expected_dim=self._expected_dim,
+            )
+        vectors = tuple(
+            EmbeddingVector(contact_id=contact_id, kind="text", values=values)
+            for (contact_id, _text, _prefix), values in zip(
+                normalized, values_by_item, strict=True
+            )
+        )
+        self._contacts.extend(
+            EmbeddingContact(
+                contact_id=vector.contact_id,
+                kind="text",
+                started_at=_iso(started_wall),
+                latency_seconds=latency,
+                dims=vector.dims,
+            )
+            for vector in vectors
+        )
+        return vectors
+
+    def embed_audio(
+        self, *, contact_id: str, audio_bytes: bytes, prompt_prefix: str = ""
+    ) -> EmbeddingVector:
         """Audio embedding via the non-chat-style marker schema (module
         docstring): ``{"content": [{"prompt_string": <marker>,
         "multimodal_data": [<base64>]}]}``. ``audio_bytes`` are base64-
@@ -412,22 +579,33 @@ class EmbeddingClient:
         itself is never altered, only what precedes it."""
 
         if not isinstance(audio_bytes, (bytes, bytearray)) or not audio_bytes:
-            raise EmbeddingClientError(f"embed_audio contact {contact_id!r}: audio_bytes must be non-empty bytes")
+            raise EmbeddingClientError(
+                f"embed_audio contact {contact_id!r}: audio_bytes must be non-empty bytes"
+            )
         if not isinstance(prompt_prefix, str):
-            raise EmbeddingClientError(f"embed_audio contact {contact_id!r}: prompt_prefix must be a string")
+            raise EmbeddingClientError(
+                f"embed_audio contact {contact_id!r}: prompt_prefix must be a string"
+            )
         audio_b64 = base64.b64encode(bytes(audio_bytes)).decode("ascii")
         body = {
             "content": [
-                {"prompt_string": prompt_prefix + self._expected_marker, "multimodal_data": [audio_b64]}
+                {
+                    "prompt_string": prompt_prefix + self._expected_marker,
+                    "multimodal_data": [audio_b64],
+                }
             ]
         }
         return self._send(contact_id=contact_id, kind="audio", body=body)
 
-    def _send(self, *, contact_id: str, kind: str, body: Mapping[str, object]) -> EmbeddingVector:
+    def _send(
+        self, *, contact_id: str, kind: str, body: Mapping[str, object]
+    ) -> EmbeddingVector:
         if self._closed:
             raise EmbeddingClientError("embed call after close()")
         if not isinstance(contact_id, str) or not contact_id:
-            raise EmbeddingClientError(f"{kind} contact_id must be a non-empty string, got {contact_id!r}")
+            raise EmbeddingClientError(
+                f"{kind} contact_id must be a non-empty string, got {contact_id!r}"
+            )
         self._require_marker_verified()
         context = f"{kind} contact {contact_id!r}"
         started_wall = self._now()
@@ -436,7 +614,10 @@ class EmbeddingClient:
         # body construction above -- there is no seam through which a
         # sampling parameter could ever be forwarded to the embedding
         # server.
-        raw = self._post(self._base_url + EMBEDDING_ENDPOINT_PATH, json.dumps(body).encode("utf-8"))
+        self._http_request_count += 1
+        raw = self._post(
+            self._base_url + EMBEDDING_ENDPOINT_PATH, json.dumps(body).encode("utf-8")
+        )
         latency = self._now() - started_wall
         values = _parse_embedding_response(raw, expected_count=1, context=context)[0]
         _assert_vector_legal(values, context=context, expected_dim=self._expected_dim)
@@ -457,6 +638,7 @@ class EmbeddingClient:
         self._closed = True
         return {
             "contact_count": len(self._contacts),
+            "http_request_count": self._http_request_count,
             "contacts": [contact.as_json() for contact in self._contacts],
         }
 
@@ -486,7 +668,9 @@ def assert_no_conflicting_generation_server(
 # ---------------------------------------------------------------------------
 
 
-def deterministic_unit_vector(seed_text: str, *, dims: int = EMBEDDING_DIM) -> tuple[float, ...]:
+def deterministic_unit_vector(
+    seed_text: str, *, dims: int = EMBEDDING_DIM
+) -> tuple[float, ...]:
     """A reproducible, L2-normalized pseudo-random vector keyed only by
     ``seed_text`` (stdlib ``random.Random`` seeded off it -- never real
     model output, never claims to encode anything about ``seed_text``'s own
@@ -525,17 +709,57 @@ class MockEmbeddingClient:
     calls: list[tuple[str, str]] = field(default_factory=list)
     prefixes: list[str] = field(default_factory=list)
     marker_verified: bool = False
-    props: Mapping[str, object] = field(default_factory=lambda: {"media_marker": "<__media__>"})
+    props: Mapping[str, object] = field(
+        default_factory=lambda: {"media_marker": "<__media__>"}
+    )
     expected_dim: int = EMBEDDING_DIM
+    batch_request_count: int = 0
 
     def verify_media_marker(self) -> Mapping[str, object]:
         self.marker_verified = True
         return self.props
 
-    def embed_text(self, *, contact_id: str, text: str, prefix: str = "") -> EmbeddingVector:
+    def embed_text(
+        self, *, contact_id: str, text: str, prefix: str = ""
+    ) -> EmbeddingVector:
         return self._embed("text", contact_id, prefix)
 
-    def embed_audio(self, *, contact_id: str, audio_bytes: bytes, prompt_prefix: str = "") -> EmbeddingVector:
+    def embed_text_batch(
+        self, items: Sequence[TextEmbeddingBatchItem]
+    ) -> tuple[EmbeddingVector, ...]:
+        normalized = _validate_text_batch_items(items)
+        if not self.marker_verified:
+            raise EmbeddingClientError(
+                "verify_media_marker() must succeed before any embed_text/embed_audio call"
+            )
+        prepared: list[EmbeddingVector] = []
+        for contact_id, _text, _prefix in normalized:
+            if self.vector_source is not None:
+                values = tuple(
+                    float(value) for value in self.vector_source("text", contact_id)
+                )
+            else:
+                values = deterministic_unit_vector(
+                    f"text:{contact_id}", dims=self.expected_dim
+                )
+            _assert_vector_legal(
+                values,
+                context=f"mock text contact {contact_id!r}",
+                expected_dim=self.expected_dim,
+            )
+            prepared.append(
+                EmbeddingVector(contact_id=contact_id, kind="text", values=values)
+            )
+        self.batch_request_count += 1
+        self.calls.extend(
+            ("text", contact_id) for contact_id, _text, _prefix in normalized
+        )
+        self.prefixes.extend(prefix for _contact_id, _text, prefix in normalized)
+        return tuple(prepared)
+
+    def embed_audio(
+        self, *, contact_id: str, audio_bytes: bytes, prompt_prefix: str = ""
+    ) -> EmbeddingVector:
         return self._embed("audio", contact_id, prompt_prefix)
 
     def _embed(self, kind: str, contact_id: str, prefix: str = "") -> EmbeddingVector:
@@ -546,10 +770,18 @@ class MockEmbeddingClient:
         self.calls.append((kind, contact_id))
         self.prefixes.append(prefix)
         if self.vector_source is not None:
-            values = tuple(float(value) for value in self.vector_source(kind, contact_id))
+            values = tuple(
+                float(value) for value in self.vector_source(kind, contact_id)
+            )
         else:
-            values = deterministic_unit_vector(f"{kind}:{contact_id}", dims=self.expected_dim)
-        _assert_vector_legal(values, context=f"mock {kind} contact {contact_id!r}", expected_dim=self.expected_dim)
+            values = deterministic_unit_vector(
+                f"{kind}:{contact_id}", dims=self.expected_dim
+            )
+        _assert_vector_legal(
+            values,
+            context=f"mock {kind} contact {contact_id!r}",
+            expected_dim=self.expected_dim,
+        )
         return EmbeddingVector(contact_id=contact_id, kind=kind, values=values)
 
 
@@ -563,9 +795,11 @@ __all__ = [
     "EmbeddingClient",
     "EmbeddingClientError",
     "EmbeddingClientProtocol",
+    "BatchedEmbeddingClientProtocol",
     "EmbeddingContact",
     "EmbeddingVector",
     "MockEmbeddingClient",
+    "TextEmbeddingBatchItem",
     "assert_no_conflicting_generation_server",
     "deterministic_unit_vector",
     "resolve_expected_media_marker",

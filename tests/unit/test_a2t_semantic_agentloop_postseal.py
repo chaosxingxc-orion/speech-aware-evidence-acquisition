@@ -1,0 +1,270 @@
+"""Tests for the future sealed 104-row semantic AgentLoop analysis."""
+
+from __future__ import annotations
+
+import importlib.util
+from pathlib import Path
+import sys
+
+import pytest
+
+from speech_aware_evidence_acquisition.analysis.a2t_semantic_agentloop_postseal import (
+    ARM_ORDER,
+    OBS_SEMANTIC_RETRIEVAL,
+    AnalysisError,
+    RetrievalDiagnosticSample,
+    analyze_semantic_agentloop_flight,
+    build_official_score_jobs,
+)
+
+
+REPO = Path(__file__).resolve().parents[2]
+SCRIPT = (
+    REPO / "docs/checks/speech-aware-evidence-acquisition/"
+    "2026-09-03-a2t-semantic-agentloop-104-v1/analyze.py"
+)
+
+
+def _script_module():
+    spec = importlib.util.spec_from_file_location(
+        "semantic_agentloop_postseal_reader", SCRIPT
+    )
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def _ids() -> tuple[str, ...]:
+    return tuple(f"tier{(index % 8) + 1}:{index:06d}" for index in range(104))
+
+
+def _manifest_descriptors(tmp_path: Path) -> dict[str, dict[str, object]]:
+    result = {}
+    for arm in ARM_ORDER:
+        path = tmp_path / f"{arm}.run-manifest.json"
+        path.write_text("{}\n", encoding="utf-8")
+        result[arm] = {"manifest": str(path), "complete_rows": 104}
+    return result
+
+
+def _score_payload(
+    manifest: Path, ids: tuple[str, ...], *, wins: set[str]
+) -> dict[str, object]:
+    per_sample = []
+    for sample_id in ids:
+        win = sample_id in wins
+        per_sample.append(
+            {
+                "sample_id": sample_id,
+                "tier": sample_id.split(":", 1)[0],
+                "exact_match": float(win),
+                "tool_accuracy": float(win),
+                "slot_f1": float(win),
+                "parsed": True,
+            }
+        )
+    per_tier = {}
+    for tier in sorted({sample_id.split(":", 1)[0] for sample_id in ids}):
+        tier_rows = [row for row in per_sample if row["tier"] == tier]
+        rate = sum(row["exact_match"] for row in tier_rows) / len(tier_rows)
+        per_tier[tier] = {
+            "samples": len(tier_rows),
+            "exact_match": rate,
+            "tool_accuracy": rate,
+            "slot_f1": rate,
+            "parse_failures": 0,
+        }
+    return {
+        "verified": True,
+        "manifest": str(manifest),
+        "scores": {
+            "a2t-toolcall": {
+                "aggregate": {
+                    "samples": 104,
+                    "exact_match": len(wins) / 104,
+                    "tool_accuracy": len(wins) / 104,
+                    "slot_f1": len(wins) / 104,
+                    "parse_failures": 0,
+                    "per_tier": per_tier,
+                },
+                "per_sample": per_sample,
+            }
+        },
+    }
+
+
+def _diagnostics(ids: tuple[str, ...]) -> tuple[RetrievalDiagnosticSample, ...]:
+    rows = []
+    for index, sample_id in enumerate(ids):
+        gold = {"name": "tool-a", "arguments": {"target": index}}
+        rankings = {
+            "transcript": ("tool-z", "tool-a"),
+            "retrieval_query": ("tool-a", "tool-z"),
+            "fused": ("tool-a", "tool-z"),
+        }
+        skeletons = {
+            "transcript": ("wrong", "tool-a(target)"),
+            "retrieval_query": ("tool-a(target)", "wrong"),
+            "fused": ("tool-a(target)", "wrong"),
+        }
+        action_sets = {
+            "transcript": ({"name": "tool-a", "arguments": {"target": index}},),
+            "retrieval_query": ({"name": "tool-a", "arguments": {"target": index}},),
+            "fused": ({"name": "tool-a", "arguments": {"target": index}},),
+        }
+        rows.append(
+            RetrievalDiagnosticSample(
+                sample_id=sample_id,
+                tier=sample_id.split(":", 1)[0],
+                retrieval_sealed=True,
+                required_tool_ids=("tool-a",),
+                required_ordered_call_skeleton=("tool-a(target)",),
+                gold_calls=(gold,),
+                ranked_tool_ids=rankings,
+                ranked_ordered_call_skeletons=skeletons,
+                proposed_action_sets=action_sets,
+            )
+        )
+    return tuple(rows)
+
+
+def test_builds_three_whole_manifest_score_jobs_and_never_scores_obs(
+    tmp_path: Path,
+) -> None:
+    descriptors = _manifest_descriptors(tmp_path)
+
+    jobs = build_official_score_jobs(descriptors)
+
+    assert [job.job_id for job in jobs] == [
+        "direct-m0",
+        "matched-semantic-top16-use",
+        "shuffled-same-tier-same-card-count-use",
+    ]
+    assert len(jobs) == 3
+    assert all(job.manifest.name.endswith(".run-manifest.json") for job in jobs)
+
+
+def test_reports_matched_and_causal_gains_tier_metrics_sign_tests_and_retrieval_ablation(
+    tmp_path: Path,
+) -> None:
+    ids = _ids()
+    descriptors = _manifest_descriptors(tmp_path)
+    direct = set(ids[:30])
+    matched = set(ids[:50])
+    shuffled = set(ids[:38])
+    payloads = {
+        "direct_m0": _score_payload(
+            Path(descriptors["direct_m0"]["manifest"]), ids, wins=direct
+        ),
+        "matched_semantic_top16_use": _score_payload(
+            Path(descriptors["matched_semantic_top16_use"]["manifest"]),
+            ids,
+            wins=matched,
+        ),
+        "shuffled_same_tier_same_card_count_use": _score_payload(
+            Path(descriptors["shuffled_same_tier_same_card_count_use"]["manifest"]),
+            ids,
+            wins=shuffled,
+        ),
+    }
+
+    report = analyze_semantic_agentloop_flight(
+        manifests=descriptors,
+        score_payloads=payloads,
+        retrieval_samples=_diagnostics(ids),
+        bootstrap_replicates=200,
+        bootstrap_seed=17,
+    )
+
+    assert report["schema"] == "saea-a2t-semantic-agentloop-postseal-104-v1"
+    assert report["arms"]["matched_semantic_top16_use"]["exact_match"] == pytest.approx(
+        50 / 104
+    )
+    assert (
+        report["arms"]["matched_semantic_top16_use"]["per_tier"]["tier1"]["samples"]
+        == 13
+    )
+    gain = report["paired_contrasts"]["matched_m0_agent_gain"]
+    assert gain["exact_match"]["point_estimate"] == pytest.approx(20 / 104)
+    assert gain["exact_match"]["sign_test"]["wins"] == 20
+    causal = report["paired_contrasts"]["matched_shuffled_causal_evidence_gain"]
+    assert causal["tool_accuracy"]["point_estimate"] == pytest.approx(12 / 104)
+    retrieval = report["retrieval_upper_bounds"]
+    assert retrieval["top_k"] == 16
+    assert retrieval["conditions"]["transcript"]["top_k_tool_coverage"] == 1.0
+    assert (
+        retrieval["conditions"]["fused"]["full_ordered_call_skeleton_coverage"] == 1.0
+    )
+    assert (
+        retrieval["conditions"]["retrieval_query"][
+            "proposal_content_action_set_consumption_ceiling"
+        ]
+        == 1.0
+    )
+    assert report["promotion_gates"]["future_tfrl_over_0_90_not_required"] is True
+    assert "network jitter" in report["conclusion_exclusions"]
+
+
+def test_refuses_incomplete_or_mismatched_future_flight_inputs(tmp_path: Path) -> None:
+    ids = _ids()
+    descriptors = _manifest_descriptors(tmp_path)
+    descriptors[OBS_SEMANTIC_RETRIEVAL]["complete_rows"] = 103
+    payload = _score_payload(
+        Path(descriptors["direct_m0"]["manifest"]), ids, wins=set()
+    )
+
+    with pytest.raises(AnalysisError, match="104"):
+        analyze_semantic_agentloop_flight(
+            manifests=descriptors,
+            score_payloads={"direct_m0": payload},
+            retrieval_samples=_diagnostics(ids),
+            bootstrap_replicates=10,
+        )
+
+
+def test_is_pure_postseal_analysis_without_runtime_or_external_contacts() -> None:
+    module_path = Path(__file__).resolve().parents[2] / (
+        "src/speech_aware_evidence_acquisition/analysis/a2t_semantic_agentloop_postseal.py"
+    )
+    source = module_path.read_text(encoding="utf-8")
+
+    for prohibited in (
+        "subprocess",
+        "requests",
+        "urllib",
+        "socket",
+        "pyvw",
+        "tokenizer",
+    ):
+        assert prohibited not in source
+
+
+def test_no_contact_reader_accepts_only_the_explicit_future_input_shape(
+    tmp_path: Path,
+) -> None:
+    ids = _ids()
+    descriptors = _manifest_descriptors(tmp_path)
+    empty = set()
+    payloads = {
+        arm: _score_payload(Path(descriptors[arm]["manifest"]), ids, wins=empty)
+        for arm in (
+            "direct_m0",
+            "matched_semantic_top16_use",
+            "shuffled_same_tier_same_card_count_use",
+        )
+    }
+    module = _script_module()
+
+    report = module.build_report(
+        {
+            "manifests": descriptors,
+            "score_payloads": payloads,
+            "retrieval_samples": [sample.__dict__ for sample in _diagnostics(ids)],
+        },
+        bootstrap_replicates=10,
+        bootstrap_seed=3,
+    )
+
+    assert report["row_count"] == 104

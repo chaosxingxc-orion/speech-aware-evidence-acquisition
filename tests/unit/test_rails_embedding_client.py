@@ -12,11 +12,12 @@ import math
 
 import pytest
 
-from speech_aware_evidence_acquisition.core.session import SessionError
 from speech_aware_evidence_acquisition.rails.embedding_client import (
+    BatchedEmbeddingClientProtocol,
     EMBEDDING_DIM,
     EmbeddingClient,
     EmbeddingClientError,
+    EmbeddingClientProtocol,
     EmbeddingVector,
     MockEmbeddingClient,
     assert_no_conflicting_generation_server,
@@ -39,6 +40,15 @@ def _pooled_response(vector, *, nested: bool = False) -> bytes:
     return json.dumps([{"index": 0, "embedding": embedding}]).encode("utf-8")
 
 
+def _batched_response(*vectors) -> bytes:
+    return json.dumps(
+        [
+            {"index": index, "embedding": list(vector)}
+            for index, vector in enumerate(vectors)
+        ]
+    ).encode("utf-8")
+
+
 def _props_response(marker: str = _MARKER, *, field: str = "media_marker") -> bytes:
     return json.dumps({field: marker, "total_slots": 1}).encode("utf-8")
 
@@ -46,7 +56,9 @@ def _props_response(marker: str = _MARKER, *, field: str = "media_marker") -> by
 class _FakeTransport:
     """Captures every POST body and GET url; returns canned bytes."""
 
-    def __init__(self, *, post_response: bytes | None = None, get_response: bytes | None = None):
+    def __init__(
+        self, *, post_response: bytes | None = None, get_response: bytes | None = None
+    ):
         self.post_calls: list[tuple[str, dict]] = []
         self.get_calls: list[str] = []
         self._post_response = post_response
@@ -88,20 +100,38 @@ def test_construction_refuses_a_non_loopback_base_url():
     transport = _FakeTransport()
     with pytest.raises(EmbeddingClientError):
         EmbeddingClient(
-            base_url="http://example.com:8091", expected_media_marker=_MARKER, post=transport.post, get=transport.get
+            base_url="http://example.com:8091",
+            expected_media_marker=_MARKER,
+            post=transport.post,
+            get=transport.get,
         )
 
 
 def test_construction_refuses_empty_marker():
     transport = _FakeTransport()
     with pytest.raises(EmbeddingClientError, match="expected_media_marker"):
-        EmbeddingClient(base_url=_BASE_URL, expected_media_marker="", post=transport.post, get=transport.get)
+        EmbeddingClient(
+            base_url=_BASE_URL,
+            expected_media_marker="",
+            post=transport.post,
+            get=transport.get,
+        )
 
 
 def test_construction_accepts_localhost_and_ipv6_loopback():
     transport = _FakeTransport()
-    EmbeddingClient(base_url="http://localhost:8091", expected_media_marker=_MARKER, post=transport.post, get=transport.get)
-    EmbeddingClient(base_url="http://[::1]:8091", expected_media_marker=_MARKER, post=transport.post, get=transport.get)
+    EmbeddingClient(
+        base_url="http://localhost:8091",
+        expected_media_marker=_MARKER,
+        post=transport.post,
+        get=transport.get,
+    )
+    EmbeddingClient(
+        base_url="http://[::1]:8091",
+        expected_media_marker=_MARKER,
+        post=transport.post,
+        get=transport.get,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -119,7 +149,9 @@ def test_verify_media_marker_succeeds_and_records_props():
 
 
 def test_verify_media_marker_fails_closed_on_missing_field():
-    transport = _FakeTransport(get_response=json.dumps({"total_slots": 1}).encode("utf-8"))
+    transport = _FakeTransport(
+        get_response=json.dumps({"total_slots": 1}).encode("utf-8")
+    )
     client = _client(transport)
     with pytest.raises(EmbeddingClientError, match="media_marker"):
         client.verify_media_marker()
@@ -175,7 +207,10 @@ def test_embed_audio_refuses_before_marker_verified():
 
 
 def test_embed_text_sends_plain_content_string_no_sampling_params():
-    transport = _FakeTransport(get_response=_props_response(), post_response=_pooled_response(_unit_vector(2.0)))
+    transport = _FakeTransport(
+        get_response=_props_response(),
+        post_response=_pooled_response(_unit_vector(2.0)),
+    )
     client = _client(transport)
     client.verify_media_marker()
     vector = client.embed_text(contact_id="alarm", text="alarm")
@@ -189,8 +224,142 @@ def test_embed_text_sends_plain_content_string_no_sampling_params():
     assert body["content"] == ["alarm"]
 
 
+def test_embed_text_batch_sends_one_request_and_ledgers_each_item_in_order():
+    transport = _FakeTransport(
+        get_response=_props_response(),
+        post_response=_batched_response(_unit_vector(1.0), _unit_vector(2.0)),
+    )
+    client = _client(transport)
+    client.verify_media_marker()
+
+    vectors = client.embed_text_batch(
+        (("first", "hello"), ("second", "world", "query: "))
+    )
+
+    assert [vector.contact_id for vector in vectors] == ["first", "second"]
+    assert [vector.values[0] for vector in vectors] == [1.0, 2.0]
+    assert transport.post_calls == [
+        (_BASE_URL + "/embedding", {"content": ["hello", "query: world"]})
+    ]
+    assert [contact.contact_id for contact in client.contacts] == ["first", "second"]
+    assert all(contact.kind == "text" for contact in client.contacts)
+    assert all(
+        contact.latency_seconds == pytest.approx(0.75) for contact in client.contacts
+    )
+    assert client.http_request_count == 1
+    summary = client.close()
+    assert summary["contact_count"] == 2
+    assert summary["http_request_count"] == 1
+
+
+def test_embed_text_batch_uses_response_indexes_to_restore_input_order():
+    response = json.dumps(
+        [
+            {"index": 1, "embedding": _unit_vector(2.0)},
+            {"index": 0, "embedding": _unit_vector(1.0)},
+        ]
+    ).encode("utf-8")
+    transport = _FakeTransport(get_response=_props_response(), post_response=response)
+    client = _client(transport)
+    client.verify_media_marker()
+
+    vectors = client.embed_text_batch((("first", "hello"), ("second", "world")))
+
+    assert [vector.contact_id for vector in vectors] == ["first", "second"]
+    assert [vector.values[0] for vector in vectors] == [1.0, 2.0]
+
+
+@pytest.mark.parametrize(
+    ("items", "message"),
+    (
+        ((), "non-empty"),
+        ((("same", "one"), ("same", "two")), "distinct"),
+        ((("", "text"),), "contact_id"),
+        ((("id", ""),), "text"),
+        ((("id", "text", None),), "prefix"),
+        ((("id",),), "two or three"),
+    ),
+)
+def test_embed_text_batch_rejects_malformed_items_before_post(items, message):
+    transport = _FakeTransport(get_response=_props_response())
+    client = _client(transport)
+    client.verify_media_marker()
+
+    with pytest.raises(EmbeddingClientError, match=message):
+        client.embed_text_batch(items)
+
+    assert transport.post_calls == []
+    assert client.contacts == ()
+    assert client.http_request_count == 0
+
+
+def test_embed_text_batch_response_count_mismatch_is_atomic_but_request_is_audited():
+    transport = _FakeTransport(
+        get_response=_props_response(),
+        post_response=_batched_response(_unit_vector()),
+    )
+    client = _client(transport)
+    client.verify_media_marker()
+
+    with pytest.raises(EmbeddingClientError, match="expected 2"):
+        client.embed_text_batch((("first", "hello"), ("second", "world")))
+
+    assert client.contacts == ()
+    assert client.http_request_count == 1
+
+
+def test_embed_text_batch_illegal_later_vector_does_not_partially_ledger():
+    illegal = _unit_vector()
+    illegal[4] = math.nan
+    transport = _FakeTransport(
+        get_response=_props_response(),
+        post_response=_batched_response(_unit_vector(), illegal),
+    )
+    client = _client(transport)
+    client.verify_media_marker()
+
+    with pytest.raises(EmbeddingClientError, match="non-finite"):
+        client.embed_text_batch((("first", "hello"), ("second", "world")))
+
+    assert client.contacts == ()
+    assert client.http_request_count == 1
+
+
+def test_embed_text_batch_wrong_dimension_is_atomic():
+    transport = _FakeTransport(
+        get_response=_props_response(),
+        post_response=_batched_response(_unit_vector(), [1.0, 0.0]),
+    )
+    client = _client(transport)
+    client.verify_media_marker()
+
+    with pytest.raises(EmbeddingClientError, match="dim"):
+        client.embed_text_batch((("first", "hello"), ("second", "world")))
+
+    assert client.contacts == ()
+    assert client.http_request_count == 1
+
+
+def test_embed_text_batch_refuses_before_verify_and_after_close():
+    transport = _FakeTransport(
+        post_response=_batched_response(_unit_vector()),
+        get_response=_props_response(),
+    )
+    client = _client(transport)
+    with pytest.raises(EmbeddingClientError, match="verify_media_marker"):
+        client.embed_text_batch((("first", "hello"),))
+    client.verify_media_marker()
+    client.close()
+    with pytest.raises(EmbeddingClientError, match="close"):
+        client.embed_text_batch((("first", "hello"),))
+    assert transport.post_calls == []
+
+
 def test_embed_audio_sends_non_chat_marker_schema():
-    transport = _FakeTransport(get_response=_props_response(), post_response=_pooled_response(_unit_vector(3.0)))
+    transport = _FakeTransport(
+        get_response=_props_response(),
+        post_response=_pooled_response(_unit_vector(3.0)),
+    )
     client = _client(transport)
     client.verify_media_marker()
     vector = client.embed_audio(contact_id="s1", audio_bytes=b"RIFF-fake-audio-bytes")
@@ -210,7 +379,10 @@ def test_embed_audio_sends_non_chat_marker_schema():
 def test_embed_audio_accepts_flat_and_nested_pooled_shapes():
     vec = _unit_vector(1.5)
     for nested in (False, True):
-        transport = _FakeTransport(get_response=_props_response(), post_response=_pooled_response(vec, nested=nested))
+        transport = _FakeTransport(
+            get_response=_props_response(),
+            post_response=_pooled_response(vec, nested=nested),
+        )
         client = _client(transport)
         client.verify_media_marker()
         result = client.embed_audio(contact_id="s1", audio_bytes=b"x")
@@ -220,7 +392,9 @@ def test_embed_audio_accepts_flat_and_nested_pooled_shapes():
 def test_embed_refuses_multi_row_pooled_response():
     transport = _FakeTransport(
         get_response=_props_response(),
-        post_response=json.dumps([{"index": 0, "embedding": [_unit_vector(), _unit_vector()]}]).encode("utf-8"),
+        post_response=json.dumps(
+            [{"index": 0, "embedding": [_unit_vector(), _unit_vector()]}]
+        ).encode("utf-8"),
     )
     client = _client(transport)
     client.verify_media_marker()
@@ -231,7 +405,12 @@ def test_embed_refuses_multi_row_pooled_response():
 def test_embed_refuses_response_with_wrong_row_count():
     transport = _FakeTransport(
         get_response=_props_response(),
-        post_response=json.dumps([{"index": 0, "embedding": _unit_vector()}, {"index": 1, "embedding": _unit_vector()}]).encode("utf-8"),
+        post_response=json.dumps(
+            [
+                {"index": 0, "embedding": _unit_vector()},
+                {"index": 1, "embedding": _unit_vector()},
+            ]
+        ).encode("utf-8"),
     )
     client = _client(transport)
     client.verify_media_marker()
@@ -240,7 +419,9 @@ def test_embed_refuses_response_with_wrong_row_count():
 
 
 def test_embed_fails_closed_on_wrong_dim():
-    transport = _FakeTransport(get_response=_props_response(), post_response=_pooled_response([0.1, 0.2, 0.3]))
+    transport = _FakeTransport(
+        get_response=_props_response(), post_response=_pooled_response([0.1, 0.2, 0.3])
+    )
     client = _client(transport)
     client.verify_media_marker()
     with pytest.raises(EmbeddingClientError, match="dim"):
@@ -250,7 +431,9 @@ def test_embed_fails_closed_on_wrong_dim():
 def test_embed_fails_closed_on_non_finite_value():
     vector = _unit_vector()
     vector[5] = math.nan
-    transport = _FakeTransport(get_response=_props_response(), post_response=_pooled_response(vector))
+    transport = _FakeTransport(
+        get_response=_props_response(), post_response=_pooled_response(vector)
+    )
     client = _client(transport)
     client.verify_media_marker()
     with pytest.raises(EmbeddingClientError, match="non-finite"):
@@ -260,7 +443,9 @@ def test_embed_fails_closed_on_non_finite_value():
 def test_embed_fails_closed_on_infinite_value():
     vector = _unit_vector()
     vector[5] = math.inf
-    transport = _FakeTransport(get_response=_props_response(), post_response=_pooled_response(vector))
+    transport = _FakeTransport(
+        get_response=_props_response(), post_response=_pooled_response(vector)
+    )
     client = _client(transport)
     client.verify_media_marker()
     with pytest.raises(EmbeddingClientError, match="non-finite"):
@@ -291,7 +476,9 @@ def test_embed_audio_refuses_empty_bytes():
 
 
 def test_contacts_records_one_entry_per_call_with_dims_and_latency():
-    transport = _FakeTransport(get_response=_props_response(), post_response=_pooled_response(_unit_vector()))
+    transport = _FakeTransport(
+        get_response=_props_response(), post_response=_pooled_response(_unit_vector())
+    )
     client = _client(transport)
     client.verify_media_marker()
     client.embed_text(contact_id="alarm", text="alarm")
@@ -310,7 +497,9 @@ def test_contacts_records_one_entry_per_call_with_dims_and_latency():
 
 
 def test_close_reports_contact_count_and_refuses_a_second_call():
-    transport = _FakeTransport(get_response=_props_response(), post_response=_pooled_response(_unit_vector()))
+    transport = _FakeTransport(
+        get_response=_props_response(), post_response=_pooled_response(_unit_vector())
+    )
     client = _client(transport)
     client.verify_media_marker()
     client.embed_text(contact_id="a", text="a")
@@ -321,7 +510,9 @@ def test_close_reports_contact_count_and_refuses_a_second_call():
 
 
 def test_embed_after_close_is_refused():
-    transport = _FakeTransport(get_response=_props_response(), post_response=_pooled_response(_unit_vector()))
+    transport = _FakeTransport(
+        get_response=_props_response(), post_response=_pooled_response(_unit_vector())
+    )
     client = _client(transport)
     client.verify_media_marker()
     client.close()
@@ -355,14 +546,16 @@ def test_resolve_expected_media_marker_fails_closed_on_empty():
 
 def test_assert_no_conflicting_generation_server_passes_when_unreachable():
     assert_no_conflicting_generation_server(
-        generation_server_reachable=lambda: False, generation_base_url="http://127.0.0.1:8090"
+        generation_server_reachable=lambda: False,
+        generation_base_url="http://127.0.0.1:8090",
     )
 
 
 def test_assert_no_conflicting_generation_server_refuses_when_reachable():
     with pytest.raises(EmbeddingClientError, match="coexist"):
         assert_no_conflicting_generation_server(
-            generation_server_reachable=lambda: True, generation_base_url="http://127.0.0.1:8090"
+            generation_server_reachable=lambda: True,
+            generation_base_url="http://127.0.0.1:8090",
         )
 
 
@@ -406,6 +599,39 @@ def test_mock_embedding_client_honors_a_custom_vector_source():
     assert vector.values[1] == 0.0
 
 
+def test_mock_embedding_client_supports_text_batches_without_io():
+    client = MockEmbeddingClient(expected_dim=8)
+    client.verify_media_marker()
+
+    vectors = client.embed_text_batch(
+        (("first", "hello"), ("second", "world", "query: "))
+    )
+
+    assert [vector.contact_id for vector in vectors] == ["first", "second"]
+    assert all(vector.dims == 8 for vector in vectors)
+    assert client.calls == [("text", "first"), ("text", "second")]
+    assert client.prefixes == ["", "query: "]
+    assert client.batch_request_count == 1
+
+
+def test_batch_protocol_extends_without_breaking_the_legacy_protocol():
+    class LegacyEmbeddingClient:
+        def verify_media_marker(self):
+            return {}
+
+        def embed_text(self, *, contact_id, text, prefix=""):
+            return None
+
+        def embed_audio(self, *, contact_id, audio_bytes, prompt_prefix=""):
+            return None
+
+    legacy = LegacyEmbeddingClient()
+
+    assert isinstance(legacy, EmbeddingClientProtocol)
+    assert not isinstance(legacy, BatchedEmbeddingClientProtocol)
+    assert isinstance(MockEmbeddingClient(), BatchedEmbeddingClientProtocol)
+
+
 def test_deterministic_unit_vector_is_l2_normalized():
     vector = deterministic_unit_vector("seed-a")
     norm = math.sqrt(sum(v * v for v in vector))
@@ -437,12 +663,19 @@ def test_construction_refuses_non_positive_expected_dim():
     transport = _FakeTransport()
     with pytest.raises(EmbeddingClientError, match="expected_dim"):
         EmbeddingClient(
-            base_url=_BASE_URL, expected_media_marker=_MARKER, post=transport.post, get=transport.get, expected_dim=0
+            base_url=_BASE_URL,
+            expected_media_marker=_MARKER,
+            post=transport.post,
+            get=transport.get,
+            expected_dim=0,
         )
 
 
 def test_embed_text_accepts_a_1024_dim_vector_when_expected_dim_is_1024():
-    transport = _FakeTransport(post_response=_pooled_response(_dim_vector(1024)), get_response=_props_response())
+    transport = _FakeTransport(
+        post_response=_pooled_response(_dim_vector(1024)),
+        get_response=_props_response(),
+    )
     client = EmbeddingClient(
         base_url=_BASE_URL,
         expected_media_marker=_MARKER,
@@ -456,7 +689,10 @@ def test_embed_text_accepts_a_1024_dim_vector_when_expected_dim_is_1024():
 
 
 def test_embed_text_fails_closed_on_wrong_dim_for_a_non_default_expected_dim():
-    transport = _FakeTransport(post_response=_pooled_response(_dim_vector(2048)), get_response=_props_response())
+    transport = _FakeTransport(
+        post_response=_pooled_response(_dim_vector(2048)),
+        get_response=_props_response(),
+    )
     client = EmbeddingClient(
         base_url=_BASE_URL,
         expected_media_marker=_MARKER,
@@ -495,7 +731,11 @@ def test_require_marker_verification_false_never_issues_a_get_request():
 def test_require_marker_verification_false_still_requires_verify_media_marker_called_first():
     transport = _FakeTransport(post_response=_pooled_response(_dim_vector(1024)))
     client = EmbeddingClient(
-        base_url=_BASE_URL, post=transport.post, get=transport.get, expected_dim=1024, require_marker_verification=False
+        base_url=_BASE_URL,
+        post=transport.post,
+        get=transport.get,
+        expected_dim=1024,
+        require_marker_verification=False,
     )
     with pytest.raises(EmbeddingClientError, match="verify_media_marker"):
         client.embed_text(contact_id="s1", text="hello")
@@ -516,7 +756,9 @@ def test_mock_embedding_client_honors_a_non_default_expected_dim():
 
 
 def test_mock_embedding_client_fails_closed_when_vector_source_disagrees_with_expected_dim():
-    client = MockEmbeddingClient(expected_dim=1024, vector_source=lambda kind, cid: _dim_vector(EMBEDDING_DIM))
+    client = MockEmbeddingClient(
+        expected_dim=1024, vector_source=lambda kind, cid: _dim_vector(EMBEDDING_DIM)
+    )
     client.verify_media_marker()
     with pytest.raises(EmbeddingClientError, match="!= pinned 1024"):
         client.embed_text(contact_id="s1", text="hello")

@@ -53,6 +53,7 @@ Modes::
     # select successor profiles before one of the modes above
     python scripts/a2t_g1_preprocess.py --cpv2 --emit-identity
     python scripts/a2t_g1_preprocess.py --ground-qual --emit-identity
+    python scripts/a2t_g1_preprocess.py --semantic-agentloop --emit-identity
 """
 
 from __future__ import annotations
@@ -76,10 +77,11 @@ if str(REPO / "src") not in os.environ.get("PYTHONPATH", "").split(":"):
 
 import speech_aware_evidence_acquisition as _pkg  # noqa: E402
 
-if Path(_pkg.__file__ or "") != REPO / "src" / "speech_aware_evidence_acquisition" / "__init__.py":
-    raise SystemExit(
-        "package resolves to %s, not the main checkout" % (_pkg.__file__,)
-    )
+if (
+    Path(_pkg.__file__ or "")
+    != REPO / "src" / "speech_aware_evidence_acquisition" / "__init__.py"
+):
+    raise SystemExit("package resolves to %s, not the main checkout" % (_pkg.__file__,))
 
 from speech_aware_evidence_acquisition.contracts import (  # noqa: E402
     ExecutionPlan,
@@ -117,6 +119,7 @@ from speech_aware_evidence_acquisition.rails.core_client import (  # noqa: E402
     FrozenCoreClient,
     build_payload_binding,
 )
+from speech_aware_evidence_acquisition.rails.obs import AudioRef  # noqa: E402
 
 RUN_ID = "SAEA-SN-A2T-G1-PREPROCESS"
 MODEL_FRAGMENT = "q4km-preprocess-featcache-cpu-sidecar-a2t"
@@ -128,9 +131,7 @@ SUBSET_RECEIPT_RELPATH = "docs/receipts/a2t/A2T-G1-104.json"
 SUBSET_RECEIPT_SHA256 = (
     "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1996db"
 )
-SPLIT_IDENTITY_HASH = (
-    "f5a030189cf80dcbc52899e2fa5f819bac03874f2ad3f9645fdc60c432a9bf3a"
-)
+SPLIT_IDENTITY_HASH = "f5a030189cf80dcbc52899e2fa5f819bac03874f2ad3f9645fdc60c432a9bf3a"
 SUBSET_COUNT = 104
 SUBSET_AUDIO_SECONDS = 587.017
 
@@ -167,8 +168,15 @@ REQUEST_ID_PREFIX = "a2tg1pre"
 STATE_SCHEMA = "saea-a2t-g1-preprocess-v1"
 REPORT_SCHEMA = "saea-a2t-g1-preprocess-report-v1"
 PROMPT_FIT_SPEECH_TOKEN_CEILING = 455
+RECEIPT_IDENTITY_KEY = "run_identity_hash"
+DIRECT_RECEIPT_SAMPLES = False
+DYNAMIC_INFERENCE_PROMPT_FIT = False
 
-profile_flags = tuple(flag for flag in ("--cpv2", "--ground-qual") if flag in sys.argv)
+profile_flags = tuple(
+    flag
+    for flag in ("--cpv2", "--ground-qual", "--semantic-agentloop")
+    if flag in sys.argv
+)
 if len(profile_flags) > 1:
     raise SystemExit("select at most one Audio2Tool preprocessing profile")
 
@@ -230,6 +238,44 @@ if "--ground-qual" in sys.argv:
         / "2026-09-02-a2t-ground-qual-104-preprocess"
     )
 
+if "--semantic-agentloop" in sys.argv:
+    RUN_ID = "SAEA-SN-A2T-SEMANTIC-AGENTLOOP-104-PREPROCESS"
+    DATASET_FRAGMENT = "audio2tool-semantic-agentloop-104"
+    EXPERIMENT_FRAGMENT = "a2t-semantic-agentloop-preprocess"
+    SUBSET_RECEIPT_RELPATH = (
+        "docs/checks/speech-aware-evidence-acquisition/"
+        "2026-09-03-a2t-fresh-agentloop-roster/flight-roster-receipt.json"
+    )
+    SUBSET_RECEIPT_SHA256 = (
+        "457297464e4e0acc9db541cbee5a2215d3447974c55d9c712c0cb1765623079e"
+    )
+    SPLIT_IDENTITY_HASH = (
+        "84c56416a36d5eb1737fa49f6b255b0a59585df8c8ff1754240a87022983eab0"
+    )
+    SUBSET_AUDIO_SECONDS = 554.255707
+    PREPROCESS_SPLIT_NAME = "A2T-AGENTLOOP-FRESH-FLIGHT"
+    PACKET_ROOT = Path(
+        "/home/chao/feat-cache/a2t-semantic-agentloop-v1-packets-04ccc72a"
+    )
+    PROMOTION_RECEIPT = PACKET_ROOT / "A2T-SEMANTIC-AGENTLOOP-104-V1-promotion.json"
+    PLAN_AUDIO = 650
+    DATASET_RECEIPT_HASH_KEY = "a2t_semantic_agentloop_subset_receipt_sha256"
+    DATASET_RUN_IDENTITY_KEY = "a2t_semantic_agentloop_split_identity_hash"
+    RECEIPT_IDENTITY_KEY = "split_identity_hash"
+    DIRECT_RECEIPT_SAMPLES = True
+    DYNAMIC_INFERENCE_PROMPT_FIT = True
+    ATTEMPT_SUFFIX = "a2tsemanticagentlooppre"
+    REQUEST_ID_PREFIX = "a2tsemanticagentlooppre"
+    STATE_SCHEMA = "saea-a2t-semantic-agentloop-preprocess-v1"
+    REPORT_SCHEMA = "saea-a2t-semantic-agentloop-preprocess-report-v1"
+    OUT_CHECK_DIR = (
+        REPO
+        / "docs"
+        / "checks"
+        / "speech-aware-evidence-acquisition"
+        / "2026-09-03-a2t-semantic-agentloop-104-v1"
+    )
+
 
 def log(message: str) -> None:
     stamp = datetime.now(timezone.utc).strftime("%H:%M:%SZ")
@@ -253,6 +299,97 @@ def canonical_sha256(document: object) -> str:
         document, ensure_ascii=False, sort_keys=True, separators=(",", ":")
     ).encode("utf-8")
     return hashlib.sha256(payload).hexdigest()
+
+
+def receipt_packet_id(item: object) -> str:
+    """Return an explicit packet id or derive one from the receipt sample id."""
+
+    if not isinstance(item, dict):
+        raise ValueError("receipt item must be an object")
+    value = item.get("packet_id")
+    if value is None:
+        sample_id = item.get("sample_id")
+        if not isinstance(sample_id, str) or not sample_id:
+            raise ValueError("receipt item sample_id must be non-empty text")
+        value = sample_id.replace(":", "/")
+    if (
+        not isinstance(value, str)
+        or not value
+        or value.startswith("/")
+        or "\\" in value
+        or any(part in ("", ".", "..") for part in value.split("/"))
+    ):
+        raise ValueError("receipt packet_id must be a safe relative POSIX path")
+    return value
+
+
+def build_receipt_bound_samples(
+    receipt: object, root: Path
+) -> tuple[Audio2ToolSample, ...]:
+    """Build samples only from receipt media identity, never carrier task data."""
+
+    if not isinstance(receipt, dict) or not isinstance(receipt.get("items"), list):
+        raise ValueError("receipt items must be a list")
+    root = Path(root).resolve()
+    samples: list[Audio2ToolSample] = []
+    sample_ids: set[str] = set()
+    packet_ids: set[str] = set()
+    for item in receipt["items"]:
+        if not isinstance(item, dict):
+            raise ValueError("receipt item must be an object")
+        sample_id = item.get("sample_id")
+        media_relpath = item.get("media_relpath")
+        expected_sha256 = item.get("audio_sha256")
+        audio_seconds = item.get("audio_seconds")
+        if not isinstance(sample_id, str) or not sample_id:
+            raise ValueError("receipt sample_id must be non-empty text")
+        if sample_id in sample_ids:
+            raise ValueError("duplicate receipt sample_id: %s" % sample_id)
+        if (
+            not isinstance(media_relpath, str)
+            or not media_relpath
+            or media_relpath.startswith("/")
+            or "\\" in media_relpath
+        ):
+            raise ValueError("receipt media_relpath must be a relative POSIX path")
+        media_path = (root / media_relpath).resolve()
+        try:
+            media_path.relative_to(root)
+        except ValueError as error:
+            raise ValueError("receipt media path escapes the data root") from error
+        if not media_path.is_file():
+            raise ValueError("receipt media file is missing: %s" % media_relpath)
+        if (
+            not isinstance(expected_sha256, str)
+            or len(expected_sha256) != 64
+            or any(char not in "0123456789abcdef" for char in expected_sha256)
+        ):
+            raise ValueError("receipt audio_sha256 must be lowercase 64-hex")
+        measured_sha256 = sha256_file(media_path)
+        if measured_sha256 != expected_sha256:
+            raise ValueError("audio bytes drift for %s" % sample_id)
+        if (
+            isinstance(audio_seconds, bool)
+            or not isinstance(audio_seconds, (int, float))
+            or float(audio_seconds) <= 0
+        ):
+            raise ValueError("receipt audio_seconds must be positive")
+        packet_id = receipt_packet_id(item)
+        if packet_id in packet_ids:
+            raise ValueError("duplicate receipt packet_id: %s" % packet_id)
+        sample_ids.add(sample_id)
+        packet_ids.add(packet_id)
+        samples.append(
+            Audio2ToolSample(
+                sample_id=sample_id,
+                audio_ref=AudioRef(
+                    path=media_relpath, sha256=expected_sha256
+                ).validate(),
+                audio_seconds=float(audio_seconds),
+                media_relpath=media_relpath,
+            )
+        )
+    return tuple(samples)
 
 
 class A2TG1PreprocessAdapter(Audio2ToolAdapter):
@@ -283,7 +420,9 @@ class A2TG1PreprocessAdapter(Audio2ToolAdapter):
             )
             if len(picked) != len(self._subset_ids):
                 missing = self._subset_ids - {s.sample_id for s in picked}
-                raise ValueError("subset ids missing from the carrier: %r" % (sorted(missing)[:5],))
+                raise ValueError(
+                    "subset ids missing from the carrier: %r" % (sorted(missing)[:5],)
+                )
             self._cache = picked
         return self._cache
 
@@ -306,7 +445,7 @@ def load_subset() -> dict:
     if (
         receipt["split_name"] != PREPROCESS_SPLIT_NAME
         or receipt["count"] != SUBSET_COUNT
-        or receipt["run_identity_hash"] != SPLIT_IDENTITY_HASH
+        or receipt[RECEIPT_IDENTITY_KEY] != SPLIT_IDENTITY_HASH
     ):
         raise SystemExit("subset receipt identity drifted")
     if abs(float(receipt["audio_seconds_total"]) - SUBSET_AUDIO_SECONDS) > 1e-6:
@@ -350,7 +489,16 @@ def main() -> int:
                     "packet_root": str(PACKET_ROOT),
                     "promotion_receipt": str(PROMOTION_RECEIPT),
                     "subset_receipt_sha256": SUBSET_RECEIPT_SHA256,
-                    "prompt_fit_speech_token_ceiling": PROMPT_FIT_SPEECH_TOKEN_CEILING,
+                    "prompt_fit_speech_token_ceiling": (
+                        None
+                        if DYNAMIC_INFERENCE_PROMPT_FIT
+                        else PROMPT_FIT_SPEECH_TOKEN_CEILING
+                    ),
+                    "inference_prompt_fit_policy": (
+                        "exact-current-request-required-window"
+                        if DYNAMIC_INFERENCE_PROMPT_FIT
+                        else "inherit-fixed-text-envelope-if-speech-token-ceiling-passes"
+                    ),
                 },
                 indent=2,
                 sort_keys=True,
@@ -360,9 +508,14 @@ def main() -> int:
 
     lock = load_lock(umbrella_lock_path())
     root = data_root()
-    subset_ids = [item["sample_id"] for item in receipt["items"]]
-    adapter = A2TG1PreprocessAdapter(lock, root, repo_root=REPO, subset_ids=subset_ids)
-    samples = list(adapter.load_split(PREPROCESS_SPLIT_NAME))
+    if DIRECT_RECEIPT_SAMPLES:
+        samples = list(build_receipt_bound_samples(receipt, root))
+    else:
+        subset_ids = [item["sample_id"] for item in receipt["items"]]
+        adapter = A2TG1PreprocessAdapter(
+            lock, root, repo_root=REPO, subset_ids=subset_ids
+        )
+        samples = list(adapter.load_split(PREPROCESS_SPLIT_NAME))
     if len(samples) != SUBSET_COUNT:
         raise SystemExit("adapter resolved %d samples" % len(samples))
     by_id = {sample.sample_id: sample for sample in samples}
@@ -385,7 +538,7 @@ def main() -> int:
         cache_key = legacy_audio_feature_cache_key(audio_bytes)
         if any(LEGACY_CACHE_DIR.glob("%s_o*.feat" % cache_key)):
             legacy_cache_entries += 1
-        if (PACKET_ROOT / item["packet_id"] / PACKET_MANIFEST_NAME).exists():
+        if (PACKET_ROOT / receipt_packet_id(item) / PACKET_MANIFEST_NAME).exists():
             existing_packet_manifests += 1
     artifact_preflight = {
         "current_build_legacy_cache_entries": legacy_cache_entries,
@@ -409,7 +562,16 @@ def main() -> int:
             "pre-existing packet manifests"
         )
 
-    # GPU decoder must be untouched by this pass; the sidecar port must be free.
+    if "--preflight-only" in sys.argv and DIRECT_RECEIPT_SAMPLES:
+        log(
+            "PREFLIGHT-ONLY PASS: receipt paths and hashes verified, zero contacts, "
+            "no socket checks, no session, no gate"
+        )
+        return 0
+
+    # Legacy profile preflights retain their registered port checks. The direct
+    # receipt profile performs them only in run mode, never in contact-free
+    # preflight mode.
     import socket
 
     def reachable(port: int) -> bool:
@@ -425,10 +587,15 @@ def main() -> int:
     log("preflight: 8081 free; GPU decoder on 8090 reachable=%s" % decoder_up_before)
 
     if "--preflight-only" in sys.argv:
-        log("PREFLIGHT-ONLY PASS: inputs verified, zero contacts, no session, no gate")
+        log(
+            "PREFLIGHT-ONLY PASS: inputs verified, zero model contacts, no session, no gate"
+        )
         return 0
     if "--run" not in sys.argv:
-        raise SystemExit("usage: --emit-identity | --preflight-only | --run")
+        raise SystemExit(
+            "usage: [--cpv2 | --ground-qual | --semantic-agentloop] "
+            "(--emit-identity | --preflight-only | --run)"
+        )
 
     attempt_id = "attempt-%s-%s" % (
         datetime.now(tz=timezone.utc).strftime("%Y%m%dT%H%M%SZ"),
@@ -616,13 +783,17 @@ def main() -> int:
         if "mmproj" not in Path(str(entry["path"])).name.lower()
     ]
     mmproj = [
-        entry for entry in gguf_files if "mmproj" in Path(str(entry["path"])).name.lower()
+        entry
+        for entry in gguf_files
+        if "mmproj" in Path(str(entry["path"])).name.lower()
     ]
     if len(decoder) != 1 or len(mmproj) != 1:
-        raise SystemExit("preprocess receipt must bind exactly one decoder and one mmproj")
+        raise SystemExit(
+            "preprocess receipt must bind exactly one decoder and one mmproj"
+        )
     bindings = tuple(
         {
-            "packet_id": item["packet_id"],
+            "packet_id": receipt_packet_id(item),
             "audio_path": str(root / item["media_relpath"]),
         }
         for item in receipt["items"]
@@ -641,7 +812,9 @@ def main() -> int:
     )
     if len(packets) != SUBSET_COUNT:
         raise SystemExit("promotion produced %d packets" % len(packets))
-    audio_by_packet = {item["packet_id"]: item["audio_sha256"] for item in receipt["items"]}
+    audio_by_packet = {
+        receipt_packet_id(item): item["audio_sha256"] for item in receipt["items"]
+    }
     for packet in packets:
         if packet.audio_sha256 != audio_by_packet[packet.packet_id]:
             raise SystemExit(
@@ -670,6 +843,27 @@ def main() -> int:
         )
     )
 
+    if DIRECT_RECEIPT_SAMPLES:
+        prior_cache_disclosure = (
+            "The fresh roster was loaded directly from its hash-pinned receipt, "
+            "without opening carrier task data. Every promoted legacy-cache entry "
+            "is read from the current-build cache directory and bound to the current "
+            "runtime receipt; no older-build cache provenance is accepted."
+        )
+    else:
+        prior_cache_disclosure = (
+            "The pre-existing legacy cache %s was warm for all %d subset items "
+            "before this pass, but it was written by the EARLIER A2T flights "
+            "under the OLDER featcache build (%s). Those bytes were NOT "
+            "promoted. This pass re-encoded every item under the serving build "
+            "%s into a separate cache directory, so the promoted packets' "
+            "encoder provenance is the same build that serves them."
+        ) % (
+            PRIOR_LEGACY_CACHE_DIR,
+            SUBSET_COUNT,
+            PRIOR_BUILD_RECEIPT,
+            runtime_receipt["llama_cpp"]["build_commit"],
+        )
     promotion = {
         "schema": "saea-a2t-speech-packet-promotion-receipt-v1",
         "study": "speech-aware-evidence-acquisition",
@@ -694,20 +888,7 @@ def main() -> int:
         "encode_audio_seconds": round(loop_audio, 6),
         "count": len(packets),
         "speech_feature_tokens": token_summary,
-        "prior_cache_disclosure": (
-            "The pre-existing legacy cache %s was warm for all %d subset items "
-            "before this pass, but it was written by the EARLIER A2T flights "
-            "under the OLDER featcache build (%s). Those bytes were NOT "
-            "promoted. This pass re-encoded every item under the serving build "
-            "%s into a separate cache directory, so the promoted packets' "
-            "encoder provenance is the same build that serves them."
-        )
-        % (
-            PRIOR_LEGACY_CACHE_DIR,
-            SUBSET_COUNT,
-            PRIOR_BUILD_RECEIPT,
-            runtime_receipt["llama_cpp"]["build_commit"],
-        ),
+        "prior_cache_disclosure": prior_cache_disclosure,
         "packets": [
             {
                 "packet_id": packet.packet_id,
@@ -762,12 +943,21 @@ def main() -> int:
         "promotion_receipt_sha256": promotion_sha,
         "packets_promoted": len(packets),
         "speech_feature_tokens": token_summary,
-        "prompt_fit_inheritance_allowed": token_summary["within_ceiling"],
+        "prompt_fit_inheritance_allowed": (
+            None if DYNAMIC_INFERENCE_PROMPT_FIT else token_summary["within_ceiling"]
+        ),
         "prompt_fit_overflow_action": (
-            "No packet is truncated. Qualification remains closed until a separately "
-            "registered exact prompt-fit successor."
-            if not token_summary["within_ceiling"]
-            else "The landed full-handbook prompt-fit receipt may be inherited."
+            "No packet is truncated. Every later inference request must add exact "
+            "rendered text, this packet's measured speech tokens, special tokens, and "
+            "its completion ceiling, then require the complete window to be at most "
+            "24,576 tokens."
+            if DYNAMIC_INFERENCE_PROMPT_FIT
+            else (
+                "No packet is truncated. Qualification remains closed until a separately "
+                "registered exact prompt-fit successor."
+                if not token_summary["within_ceiling"]
+                else "The landed full-handbook prompt-fit receipt may be inherited."
+            )
         ),
         "legacy_cache_dir": str(LEGACY_CACHE_DIR),
         "packet_root": str(PACKET_ROOT),
