@@ -1,0 +1,95 @@
+{
+  "experiment_id": "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-V1",
+  "schema": "saea-a2t-select-fill-agentloop-experiment-v1",
+  "date": "2026-09-03",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Measure whether splitting exact tool identification from selected-only argument construction improves a frozen speech-capable core over one-call joint construction and an equal-contact joint draft-revise control on a fresh paired 104-row discovery roster.",
+  "select_fill_experiment": {
+    "population": {
+      "carrier": "audio2tool",
+      "split_name": "A2T-SELECT-FILL-FRESH-FLIGHT",
+      "split_role": "discovery",
+      "count": 104,
+      "strata": "13 samples per tier across all eight Audio2Tool tiers",
+      "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-select-fill-fresh-roster-v1/flight-roster-receipt.json",
+      "receipt_sha256": "dea74114430ed5e45e29d908dc2ecebf41788edfa2704435a2966f260de5bc4f",
+      "split_identity_hash": "bcbad5405aa8522ff53a91d624c54a909e01f8a31612b5165844b8e2cbca6eb3",
+      "audio_seconds_one_pass": 549.489916,
+      "query_block_count": 104,
+      "query_blocks_are_unique": true
+    },
+    "runtime_arms": {
+      "direct_m0": {
+        "answer_contacts": 1,
+        "context": "Original speech and complete registry contract only; no OBS or K32 supply."
+      },
+      "joint_one_call": {
+        "answer_contacts": 1,
+        "context": "Original speech, shared canonical OBS, and dense K32 joint routing and parameter ground."
+      },
+      "joint_draft_revise": {
+        "answer_contacts": 2,
+        "draft_reused": true,
+        "context": "Reuse the byte-exact sealed JOINT_ONE_CALL response as the first draft; a fresh second workflow receives canonical draft state, shared OBS, speech, and the same eligible K32 ground."
+      },
+      "select_then_fill": {
+        "answer_contacts": 2,
+        "context": "SELECT sees routing-only K32 values; FILL sees only selected occurrences' detailed parameter values with count and names locked."
+      }
+    },
+    "execution": {
+      "generation_contacts": 624,
+      "generation_contact_formula": "104 direct + 104 OBS + 104 joint draft + 104 SELECT + 104 joint revise + 104 FILL",
+      "embedding_logical_items": 104,
+      "embedding_physical_requests": 4,
+      "embedding_batch_size_maximum": 32,
+      "generation_request_batch_size": 1,
+      "generation_slots": 2,
+      "generation_queue_depth": 4,
+      "service_windows": [
+        "generation-direct-and-obs",
+        "embedding",
+        "generation-joint-select-revise-fill"
+      ],
+      "services_must_not_coexist": true,
+      "phase_barriers": true,
+      "retry_or_repair": false,
+      "network_jitter_study": false,
+      "paid_api_spend": 0
+    },
+    "evaluation": {
+      "official_scorer": "a2t-toolcall",
+      "scored_complete_manifests": 4,
+      "scoreable_arms": [
+        "DIRECT_M0",
+        "JOINT_ONE_CALL",
+        "JOINT_DRAFT_REVISE",
+        "SELECT_THEN_FILL"
+      ],
+      "diagnostic_only_phases": [
+        "OBS_SEMANTIC_STATE",
+        "SELECT"
+      ],
+      "outer_parallel_workers": 4,
+      "whole_manifest_jobs_only": true,
+      "dataset_sharding": false,
+      "shard_metric_averaging": false,
+      "paired_bootstrap_replicates": 10000,
+      "paired_bootstrap_seed": 20260903,
+      "primary_contrast": "SELECT_THEN_FILL minus JOINT_DRAFT_REVISE exact match",
+      "secondary_contrasts": [
+        "SELECT_THEN_FILL minus JOINT_ONE_CALL exact match",
+        "SELECT_THEN_FILL minus DIRECT_M0 exact match"
+      ]
+    },
+    "decision": {
+      "baseline_over_0_90_required": false,
+      "post_training_free_rl_target_over_0_90": true,
+      "training_free_rl_fit_in_this_flight": false,
+      "approximately_1000_sample_expansion": "closed unless split has a positive lower 90 percent paired-bootstrap bound against both joint controls, nonnegative tool and slot effects, a positive direct contrast, and no tier with more than one net exact loss",
+      "knowledge_backtrack": "return to knowledge construction if K32 supply dominates; revise SELECT information if reachable tools are missed; revise selected-only parameter supply or FILL control if selection is correct but exact calls fail",
+      "test_tuning": false,
+      "paper_scale": false
+    }
+  }
+}

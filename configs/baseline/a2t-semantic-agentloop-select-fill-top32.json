@@ -1,0 +1,38 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "semantic-agentloop-select-fill-top32-v1",
+  "evidence_source": "local-qwen3-embedding-transcript-to-build-only-tool-tier-centroids",
+  "agent_executor_id": "openjiuwen-workflow-v1",
+  "agent_phases": [
+    "OBS_SEMANTIC_STATE",
+    "JOINT_ONE_CALL",
+    "SELECT",
+    "JOINT_DRAFT_REVISE",
+    "FILL"
+  ],
+  "semantic_encoder": "Qwen3-Embedding-0.6B-Q8_0",
+  "semantic_encoder_pooling": "last",
+  "semantic_encoder_batch_size": 32,
+  "semantic_router": "maximum-cosine-over-build-only-tool-tier-centroids",
+  "semantic_candidate_count": 32,
+  "routing_ground": "top32-exact-tool-name-operation-choose-avoid-and-task-routing-cards",
+  "joint_ground": "top32-routing-plus-public-parameter-contracts-and-qualified-compatibility-rules",
+  "parameter_ground": "selected-occurrence-only-public-contracts-canonicalizers-and-construction-examples",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/a2t-semantic-agentloop-select-fill-v1-packets-04ccc72a/A2T-SEMANTIC-AGENTLOOP-SELECT-FILL-104-V1-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "1f7411359311a012c5162ee5472ef767d055a66521f2b12b4da267d1f0660e07",
+  "prompt_budget_policy": {
+    "physical_context_tokens_per_slot": 32768,
+    "operational_maximum_required_window_tokens": 24576,
+    "reserved_tokens": 8192,
+    "whole_phase_preflight": true,
+    "measurement": "render all exact requests for a phase, exercise the live template, tokenizer, and schema-to-grammar path, add exact packet speech tokens and the phase completion ceiling, and refuse the whole phase before its first generation send if any row exceeds the operating maximum"
+  },
+  "model_prompt_batching": false,
+  "generation_slots": 2,
+  "generation_queue_depth": 4,
+  "scorers": [
+    "a2t-toolcall",
+    "cost"
+  ],
+  "task_instruction": "Use the original speech and canonical English observation. A frozen local semantic encoder retrieves 32 routing candidates from the English transcript. JOINT may select and fill from all candidate contracts. SELECT returns only one to seven ordered tool occurrences. FILL receives only the selected tools' parameter contracts and must preserve the locked names and count. REVISE receives the canonical JOINT draft, not raw history. Return only the exact JSON allowed by the phase schema. Gold labels, reference transcripts, scores, future turns, and test annotations are unavailable at runtime."
+}

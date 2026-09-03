@@ -1,0 +1,45 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8090",
+  "timeout_seconds": 900.0,
+  "runtime_receipt": "receipts/runtime-q4km-mmproj-free.json",
+  "server_args": [
+    "-c",
+    "65536",
+    "-np",
+    "2",
+    "-b",
+    "2048",
+    "-ub",
+    "512",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "--cache-prompt",
+    "--cache-ram",
+    "0",
+    "--no-cache-idle-slots",
+    "--slot-prompt-similarity",
+    "0"
+  ],
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample"
+  },
+  "prompt_order": "speech-query-prefix-v2",
+  "profile_slot_count": 2,
+  "speech_feature_root": "/home/chao/feat-cache/a2t-semantic-agentloop-select-fill-v1-packets-04ccc72a",
+  "server_env": {
+    "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/a2t-semantic-agentloop-select-fill-v1-packets-04ccc72a",
+    "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+  }
+}
