@@ -11,7 +11,9 @@ from speech_aware_evidence_acquisition.rails.a2t_executable_semantic_cards impor
 from speech_aware_evidence_acquisition.rails.a2t_response_schema import (
     A2tResponseSchemaError,
     audio2tool_call_array_response_format,
+    audio2tool_locked_call_array_response_format,
     audio2tool_outer_call_array_response_format,
+    audio2tool_selection_response_format,
 )
 
 
@@ -116,6 +118,140 @@ def test_strict_subset_schema_can_allow_an_empty_family_local_abstention() -> No
     schema = response_format["json_schema"]["schema"]
     assert schema["minItems"] == 0
     assert schema["maxItems"] == 1
+
+
+def test_selection_schema_allows_empty_and_repeated_exact_candidate_names() -> None:
+    rows = (
+        _row("setLightState", "setLightState(deviceId: String, state: OnOff?)"),
+        _row("getLightState", "getLightState(deviceId: String)"),
+        _row("unselectedTool", "unselectedTool()"),
+    )
+
+    first = audio2tool_selection_response_format(
+        rows,
+        ("setLightState", "getLightState"),
+        max_calls=7,
+    )
+    second = audio2tool_selection_response_format(
+        tuple(reversed(rows)),
+        ("getLightState", "setLightState"),
+        max_calls=7,
+    )
+
+    assert first == second
+    document = first["json_schema"]["schema"]
+    assert document["type"] == "array"
+    assert document["minItems"] == 0
+    assert document["maxItems"] == 7
+    assert "uniqueItems" not in document
+    item = document["items"]
+    assert item == {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string",
+                "enum": ["getLightState", "setLightState"],
+            }
+        },
+        "required": ["name"],
+        "additionalProperties": False,
+    }
+
+
+def test_selection_schema_refuses_empty_duplicate_or_unknown_candidates() -> None:
+    rows = (_row("known", "known()"),)
+
+    for candidates, message in (
+        ((), "at least one candidate"),
+        (("known", "known"), "duplicate candidate"),
+        (("unknown",), "not in the registry"),
+    ):
+        with pytest.raises(A2tResponseSchemaError, match=message):
+            audio2tool_selection_response_format(rows, candidates)
+
+
+def test_locked_call_schema_preserves_occurrences_positions_and_legal_types() -> None:
+    rows = (
+        _row(
+            "setLightState",
+            "setLightState(deviceId: String, state: OnOff?, level: Int?)",
+            "state: [On, Off], level: [1-10]",
+        ),
+        _row("getLightState", "getLightState(deviceId: String)"),
+    )
+    cards = (
+        _card("getLightState", (("deviceId",),)),
+        _card(
+            "setLightState",
+            (("deviceId", "state"), ("deviceId", "level")),
+        ),
+    )
+    occurrences = ("setLightState", "getLightState", "setLightState")
+
+    response_format = audio2tool_locked_call_array_response_format(
+        rows,
+        cards,
+        occurrences,
+    )
+
+    document = response_format["json_schema"]["schema"]
+    assert document["minItems"] == document["maxItems"] == 3
+    assert document["items"] is False
+    prefix = document["prefixItems"]
+    assert len(prefix) == 3
+    assert [
+        {branch["properties"]["name"]["const"] for branch in item["oneOf"]}
+        for item in prefix
+    ] == [
+        {"setLightState"},
+        {"getLightState"},
+        {"setLightState"},
+    ]
+    first_forms = {
+        tuple(branch["properties"]["arguments"]["required"]): branch
+        for branch in prefix[0]["oneOf"]
+    }
+    assert set(first_forms) == {
+        ("deviceId", "level"),
+        ("deviceId", "state"),
+    }
+    assert first_forms[("deviceId", "level")]["properties"]["arguments"][
+        "properties"
+    ]["level"] == {"type": "integer", "minimum": 1, "maximum": 10}
+    assert first_forms[("deviceId", "state")]["properties"]["arguments"][
+        "properties"
+    ]["state"] == {"type": "string", "enum": ["On", "Off"]}
+    assert prefix[0] == prefix[2]
+
+
+def test_locked_call_schema_allows_only_an_empty_array_for_empty_selection() -> None:
+    response_format = audio2tool_locked_call_array_response_format(
+        (_row("known", "known()"),),
+        (),
+        (),
+    )
+
+    assert response_format["json_schema"]["schema"] == {
+        "type": "array",
+        "minItems": 0,
+        "maxItems": 0,
+        "prefixItems": [],
+        "items": False,
+    }
+
+
+def test_locked_call_schema_requires_cards_to_match_occurrences_exactly() -> None:
+    rows = (
+        _row("first", "first()"),
+        _row("second", "second()"),
+    )
+
+    with pytest.raises(A2tResponseSchemaError, match="exactly match occurrence"):
+        audio2tool_locked_call_array_response_format(
+            rows,
+            (_card("first", ((),)), _card("second", ((),))),
+            ("first",),
+        )
 
 
 def test_outer_response_format_constrains_only_shape_and_registered_names() -> None:

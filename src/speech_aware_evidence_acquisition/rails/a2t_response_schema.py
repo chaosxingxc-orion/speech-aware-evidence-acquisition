@@ -427,6 +427,184 @@ def audio2tool_call_array_response_format(
     }
 
 
+def audio2tool_selection_response_format(
+    registry_rows: Sequence[Mapping[str, str]],
+    candidate_tool_names: Sequence[str],
+    *,
+    schema_name: str = "audio2tool_tool_selection",
+    max_calls: int = DEFAULT_MAX_CALLS,
+) -> dict[str, object]:
+    """Build a strict argument-free tool-selection response schema.
+
+    The output is an array of exact candidate tool names wrapped in objects.
+    The array may be empty and may repeat a candidate name, preserving call
+    occurrence multiplicity without exposing any argument field to SELECT.
+    """
+
+    if not isinstance(schema_name, str) or _IDENTIFIER.fullmatch(schema_name) is None:
+        raise A2tResponseSchemaError("schema_name must be an ASCII identifier")
+    if isinstance(max_calls, bool) or not isinstance(max_calls, int) or max_calls < 1:
+        raise A2tResponseSchemaError("max_calls must be a positive integer")
+    registry = _load_registry(registry_rows)
+    if isinstance(candidate_tool_names, (str, bytes)):
+        raise A2tResponseSchemaError("at least one candidate tool is required")
+    try:
+        candidates = tuple(candidate_tool_names)
+    except TypeError as error:
+        raise A2tResponseSchemaError(
+            "at least one candidate tool is required"
+        ) from error
+    if not candidates:
+        raise A2tResponseSchemaError("at least one candidate tool is required")
+    if any(not isinstance(name, str) or not name for name in candidates):
+        raise A2tResponseSchemaError(
+            "candidate tools must be non-empty registered names"
+        )
+    if len(candidates) != len(set(candidates)):
+        raise A2tResponseSchemaError("duplicate candidate tool")
+    unknown = tuple(sorted(set(candidates) - set(registry)))
+    if unknown:
+        raise A2tResponseSchemaError(
+            f"candidate tool {unknown[0]!r} is not in the registry"
+        )
+
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": schema_name,
+            "strict": True,
+            "schema": {
+                "type": "array",
+                "minItems": 0,
+                "maxItems": max_calls,
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "enum": sorted(candidates),
+                        }
+                    },
+                    "required": ["name"],
+                    "additionalProperties": False,
+                },
+            },
+        },
+    }
+
+
+def audio2tool_locked_call_array_response_format(
+    registry_rows: Sequence[Mapping[str, str]],
+    selected_cards: Sequence[ToolSemanticCard],
+    selected_tool_occurrences: Sequence[str],
+    *,
+    schema_name: str = "audio2tool_locked_calls",
+) -> dict[str, object]:
+    """Build a strict positional FILL schema for selected call occurrences.
+
+    Each selected occurrence receives its own positional schema with an exact
+    tool-name constant and that tool's qualified argument skeletons and types.
+    Repeated names therefore remain repeated positions. An empty selection
+    produces a schema that accepts only the empty array.
+    """
+
+    if not isinstance(schema_name, str) or _IDENTIFIER.fullmatch(schema_name) is None:
+        raise A2tResponseSchemaError("schema_name must be an ASCII identifier")
+    registry = _load_registry(registry_rows)
+    if isinstance(selected_tool_occurrences, (str, bytes)):
+        raise A2tResponseSchemaError(
+            "selected tool occurrences must be a sequence"
+        )
+    try:
+        occurrences = tuple(selected_tool_occurrences)
+    except TypeError as error:
+        raise A2tResponseSchemaError(
+            "selected tool occurrences must be a sequence"
+        ) from error
+    if any(not isinstance(name, str) or not name for name in occurrences):
+        raise A2tResponseSchemaError(
+            "selected tool occurrences must contain non-empty names"
+        )
+    unknown_occurrences = tuple(sorted(set(occurrences) - set(registry)))
+    if unknown_occurrences:
+        raise A2tResponseSchemaError(
+            f"selected tool {unknown_occurrences[0]!r} is not in the registry"
+        )
+    if isinstance(selected_cards, (str, bytes)):
+        raise A2tResponseSchemaError("selected cards must be a sequence")
+    try:
+        cards = tuple(selected_cards)
+    except TypeError as error:
+        raise A2tResponseSchemaError("selected cards must be a sequence") from error
+
+    cards_by_name: dict[str, ToolSemanticCard] = {}
+    for card in cards:
+        if not isinstance(card, ToolSemanticCard):
+            raise A2tResponseSchemaError(
+                "selected cards must be ToolSemanticCard instances"
+            )
+        if card.tool_name in cards_by_name:
+            raise A2tResponseSchemaError(
+                f"duplicate selected tool {card.tool_name!r}"
+            )
+        if card.tool_name not in registry:
+            raise A2tResponseSchemaError(
+                f"selected tool {card.tool_name!r} is not in the registry"
+            )
+        cards_by_name[card.tool_name] = card
+    if set(cards_by_name) != set(occurrences):
+        raise A2tResponseSchemaError(
+            "selected cards must exactly match occurrence tool names"
+        )
+
+    branches_by_name: dict[str, list[dict[str, object]]] = {}
+    for name in sorted(cards_by_name):
+        card = cards_by_name[name]
+        tool = registry[name]
+        forms_by_skeleton = _card_forms(card, tool)
+        if not card.legal_argument_key_sets:
+            raise A2tResponseSchemaError(
+                f"selected tool {name!r} has no legal argument-key skeleton"
+            )
+        skeletons: set[tuple[str, ...]] = set()
+        for raw_skeleton in card.legal_argument_key_sets:
+            if not isinstance(raw_skeleton, tuple) or len(raw_skeleton) != len(
+                set(raw_skeleton)
+            ):
+                raise A2tResponseSchemaError(
+                    f"legal key skeleton for {name!r} is malformed"
+                )
+            if any(
+                not isinstance(key, str) or _IDENTIFIER.fullmatch(key) is None
+                for key in raw_skeleton
+            ):
+                raise A2tResponseSchemaError(
+                    f"legal key skeleton for {name!r} is malformed"
+                )
+            skeletons.add(tuple(sorted(raw_skeleton)))
+        branches_by_name[name] = [
+            _call_branch(tool, skeleton, forms_by_skeleton.get(skeleton, {}))
+            for skeleton in sorted(skeletons, key=lambda item: (len(item), item))
+        ]
+
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": schema_name,
+            "strict": True,
+            "schema": {
+                "type": "array",
+                "minItems": len(occurrences),
+                "maxItems": len(occurrences),
+                "prefixItems": [
+                    {"oneOf": branches_by_name[name]} for name in occurrences
+                ],
+                "items": False,
+            },
+        },
+    }
+
+
 def audio2tool_outer_call_array_response_format(
     registry_rows: Sequence[Mapping[str, str]],
     *,
@@ -489,5 +667,7 @@ __all__ = [
     "DEFAULT_MAX_CALLS",
     "DEFAULT_SCHEMA_NAME",
     "audio2tool_call_array_response_format",
+    "audio2tool_locked_call_array_response_format",
     "audio2tool_outer_call_array_response_format",
+    "audio2tool_selection_response_format",
 ]
