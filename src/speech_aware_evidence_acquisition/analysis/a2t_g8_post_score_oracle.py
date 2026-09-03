@@ -66,7 +66,9 @@ def _sha256_file(path: Path) -> str:
 def _write_jsonl(path: Path, rows: Sequence[Mapping[str, object]]) -> None:
     temporary = path.with_name(f".{path.name}.tmp")
     temporary.write_text(
-        "".join(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n" for row in rows),
+        "".join(
+            json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n" for row in rows
+        ),
         encoding="utf-8",
         newline="\n",
     )
@@ -105,9 +107,21 @@ def _exact_sample_ids(
     return values
 
 
-def _exact_branches(value: Mapping[str, object], label: str) -> None:
-    if set(value) != set(BRANCH_ORDER):
-        raise G8OracleError(f"{label} must name exactly the four frozen G8 branches")
+def _exact_branches(
+    value: Mapping[str, object], label: str, branch_order: Sequence[str]
+) -> None:
+    if (
+        len(branch_order) != 4
+        or len(set(branch_order)) != 4
+        or any(not isinstance(branch, str) or not branch for branch in branch_order)
+    ):
+        raise G8OracleError(
+            "oracle branch order must contain four unique non-empty names"
+        )
+    if set(value) != set(branch_order):
+        raise G8OracleError(
+            f"{label} must name exactly the four frozen oracle branches"
+        )
 
 
 def _path(value: object, label: str) -> Path:
@@ -120,13 +134,21 @@ def _path(value: object, label: str) -> Path:
 
 
 def _sha256(value: object, label: str) -> str:
-    if not isinstance(value, str) or len(value) != 64 or any(c not in "0123456789abcdef" for c in value):
+    if (
+        not isinstance(value, str)
+        or len(value) != 64
+        or any(c not in "0123456789abcdef" for c in value)
+    ):
         raise G8OracleError(f"{label} must be a lowercase SHA-256")
     return value
 
 
 def _metric(value: object, label: str) -> float:
-    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+    if (
+        isinstance(value, bool)
+        or not isinstance(value, (int, float))
+        or not math.isfinite(value)
+    ):
         raise G8OracleError(f"{label} must be a finite numeric score")
     result = float(value)
     if not 0.0 <= result <= 1.0:
@@ -135,22 +157,34 @@ def _metric(value: object, label: str) -> float:
 
 
 def _score_rows(
-    *, branch: str, payload: Mapping[str, object], manifest: Path, sample_ids: tuple[str, ...]
+    *,
+    branch: str,
+    payload: Mapping[str, object],
+    manifest: Path,
+    sample_ids: tuple[str, ...],
 ) -> Mapping[str, Mapping[str, float]]:
     if payload.get("verified") is not True:
         raise G8OracleError(f"{branch} score payload is not verified")
-    payload_manifest = _path(payload.get("manifest"), f"{branch} score payload manifest")
+    payload_manifest = _path(
+        payload.get("manifest"), f"{branch} score payload manifest"
+    )
     if payload_manifest != manifest:
-        raise G8OracleError(f"{branch} score payload manifest identity does not match sealed branch")
+        raise G8OracleError(
+            f"{branch} score payload manifest identity does not match sealed branch"
+        )
     scores = payload.get("scores")
     if not isinstance(scores, Mapping) or set(scores) != {OFFICIAL_SCORER}:
-        raise G8OracleError(f"{branch} score payload must contain only {OFFICIAL_SCORER}")
+        raise G8OracleError(
+            f"{branch} score payload must contain only {OFFICIAL_SCORER}"
+        )
     official = scores.get(OFFICIAL_SCORER)
     if not isinstance(official, Mapping):
         raise G8OracleError(f"{branch} {OFFICIAL_SCORER} score is malformed")
     aggregate = official.get("aggregate")
     details = official.get("per_sample")
-    if not isinstance(aggregate, Mapping) or aggregate.get("samples") != len(sample_ids):
+    if not isinstance(aggregate, Mapping) or aggregate.get("samples") != len(
+        sample_ids
+    ):
         raise G8OracleError(
             f"{branch} {OFFICIAL_SCORER} aggregate does not cover the expected sample set"
         )
@@ -163,11 +197,17 @@ def _score_rows(
             raise G8OracleError(f"{branch} per_sample row is malformed")
         sample_id = detail.get("sample_id")
         if not isinstance(sample_id, str) or not sample_id or sample_id in rows:
-            raise G8OracleError(f"{branch} per_sample rows have duplicate or invalid sample identities")
+            raise G8OracleError(
+                f"{branch} per_sample rows have duplicate or invalid sample identities"
+            )
         rows[sample_id] = {
-            "exact_match": _metric(detail.get("exact_match"), f"{branch}/{sample_id} exact_match"),
+            "exact_match": _metric(
+                detail.get("exact_match"), f"{branch}/{sample_id} exact_match"
+            ),
             "slot_f1": _metric(detail.get("slot_f1"), f"{branch}/{sample_id} slot_f1"),
-            "tool_accuracy": _metric(detail.get("tool_accuracy"), f"{branch}/{sample_id} tool_accuracy"),
+            "tool_accuracy": _metric(
+                detail.get("tool_accuracy"), f"{branch}/{sample_id} tool_accuracy"
+            ),
         }
     if set(rows) != set(sample_ids):
         raise G8OracleError(
@@ -182,14 +222,16 @@ def validate_branch_score_payloads(
     sealed_branches: Mapping[str, Mapping[str, object]],
     sample_ids: Sequence[str],
     expected_sample_count: int = 16,
+    branch_order: Sequence[str] = BRANCH_ORDER,
 ) -> Mapping[str, Mapping[str, Mapping[str, float]]]:
     """Validate the four one-pass official score payloads before any selection."""
 
     ids = _exact_sample_ids(sample_ids, expected_sample_count=expected_sample_count)
-    _exact_branches(score_payloads, "score payloads")
-    _exact_branches(sealed_branches, "sealed branches")
+    order = tuple(branch_order)
+    _exact_branches(score_payloads, "score payloads", order)
+    _exact_branches(sealed_branches, "sealed branches", order)
     validated: dict[str, Mapping[str, Mapping[str, float]]] = {}
-    for branch in BRANCH_ORDER:
+    for branch in order:
         seal = sealed_branches[branch]
         if not isinstance(seal, Mapping):
             raise G8OracleError(f"{branch} sealed branch descriptor is malformed")
@@ -203,7 +245,9 @@ def validate_branch_score_payloads(
     return validated
 
 
-def _read_sealed_rows(path: Path, branch: str, sample_ids: tuple[str, ...]) -> Mapping[str, Mapping[str, object]]:
+def _read_sealed_rows(
+    path: Path, branch: str, sample_ids: tuple[str, ...]
+) -> Mapping[str, Mapping[str, object]]:
     try:
         lines = path.read_text(encoding="utf-8").split("\n")
     except (OSError, UnicodeError) as error:
@@ -217,14 +261,24 @@ def _read_sealed_rows(path: Path, branch: str, sample_ids: tuple[str, ...]) -> M
         try:
             row = json.loads(line)
         except json.JSONDecodeError as error:
-            raise G8OracleError(f"{branch} sealed outputs line {number} is malformed") from error
+            raise G8OracleError(
+                f"{branch} sealed outputs line {number} is malformed"
+            ) from error
         if not isinstance(row, Mapping):
-            raise G8OracleError(f"{branch} sealed outputs line {number} is not an object")
+            raise G8OracleError(
+                f"{branch} sealed outputs line {number} is not an object"
+            )
         sample_id = row.get("sample_id")
         text = row.get("text")
         response_hash = row.get("response_text_sha256")
-        if not isinstance(sample_id, str) or sample_id in rows or not isinstance(text, str):
-            raise G8OracleError(f"{branch} sealed output identities or text are malformed")
+        if (
+            not isinstance(sample_id, str)
+            or sample_id in rows
+            or not isinstance(text, str)
+        ):
+            raise G8OracleError(
+                f"{branch} sealed output identities or text are malformed"
+            )
         if response_hash != _sha256_bytes(text.encode("utf-8")):
             raise G8OracleError(f"{branch} sealed output response text hash drift")
         rows[sample_id] = dict(row)
@@ -240,22 +294,28 @@ def validate_sealed_branch_outputs(
     sealed_branches: Mapping[str, Mapping[str, object]],
     sample_ids: Sequence[str],
     expected_sample_count: int = 16,
+    branch_order: Sequence[str] = BRANCH_ORDER,
 ) -> Mapping[str, Mapping[str, Mapping[str, object]]]:
     """Rehash and identity-check all four sealed branch output artifacts."""
 
     ids = _exact_sample_ids(sample_ids, expected_sample_count=expected_sample_count)
-    _exact_branches(sealed_branches, "sealed branches")
+    order = tuple(branch_order)
+    _exact_branches(sealed_branches, "sealed branches", order)
     validated: dict[str, Mapping[str, Mapping[str, object]]] = {}
-    for branch in BRANCH_ORDER:
+    for branch in order:
         seal = sealed_branches[branch]
         if not isinstance(seal, Mapping):
             raise G8OracleError(f"{branch} sealed branch descriptor is malformed")
         manifest = _path(seal.get("manifest"), f"{branch} sealed manifest")
-        declared_manifest_hash = _sha256(seal.get("manifest_sha256"), f"{branch} manifest_sha256")
+        declared_manifest_hash = _sha256(
+            seal.get("manifest_sha256"), f"{branch} manifest_sha256"
+        )
         if _sha256_file(manifest) != declared_manifest_hash:
             raise G8OracleError(f"{branch} manifest hash drift")
         outputs = _path(seal.get("outputs"), f"{branch} sealed outputs")
-        declared_outputs_hash = _sha256(seal.get("outputs_sha256"), f"{branch} outputs_sha256")
+        declared_outputs_hash = _sha256(
+            seal.get("outputs_sha256"), f"{branch} outputs_sha256"
+        )
         if _sha256_file(outputs) != declared_outputs_hash:
             raise G8OracleError(f"{branch} output hash drift")
         validated[branch] = _read_sealed_rows(outputs, branch, ids)
@@ -268,32 +328,36 @@ def select_oracle_rows(
     sealed_branches: Mapping[str, Mapping[str, object]],
     sample_ids: Sequence[str],
     expected_sample_count: int = 16,
+    branch_order: Sequence[str] = BRANCH_ORDER,
 ) -> tuple[tuple[OracleSelection, ...], Mapping[str, object]]:
     """Choose one existing sealed output per row using the frozen comparator."""
 
     ids = _exact_sample_ids(sample_ids, expected_sample_count=expected_sample_count)
+    order = tuple(branch_order)
     scores = validate_branch_score_payloads(
         score_payloads=score_payloads,
         sealed_branches=sealed_branches,
         sample_ids=ids,
         expected_sample_count=expected_sample_count,
+        branch_order=order,
     )
     outputs = validate_sealed_branch_outputs(
         sealed_branches=sealed_branches,
         sample_ids=ids,
         expected_sample_count=expected_sample_count,
+        branch_order=order,
     )
     selections: list[OracleSelection] = []
-    counts = {branch: 0 for branch in BRANCH_ORDER}
+    counts = {branch: 0 for branch in order}
     exact_count = 0
     for sample_id in ids:
         branch = max(
-            BRANCH_ORDER,
+            order,
             key=lambda candidate: (
                 scores[candidate][sample_id]["exact_match"],
                 scores[candidate][sample_id]["slot_f1"],
                 scores[candidate][sample_id]["tool_accuracy"],
-                -BRANCH_ORDER.index(candidate),
+                -order.index(candidate),
             ),
         )
         metric = scores[branch][sample_id]
@@ -308,9 +372,13 @@ def select_oracle_rows(
             slot_f1=metric["slot_f1"],
             tool_accuracy=metric["tool_accuracy"],
             source_manifest=source_manifest,
-            source_manifest_sha256=_sha256(seal.get("manifest_sha256"), f"{branch} manifest_sha256"),
+            source_manifest_sha256=_sha256(
+                seal.get("manifest_sha256"), f"{branch} manifest_sha256"
+            ),
             source_outputs=source_outputs,
-            source_outputs_sha256=_sha256(seal.get("outputs_sha256"), f"{branch} outputs_sha256"),
+            source_outputs_sha256=_sha256(
+                seal.get("outputs_sha256"), f"{branch} outputs_sha256"
+            ),
             score_payload_sha256=_sha256_bytes(
                 _canonical_payload_bytes(score_payloads[branch])
             ),
@@ -328,12 +396,22 @@ def select_oracle_rows(
 
 
 def _canonical_payload_bytes(payload: Mapping[str, object]) -> bytes:
-    return json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return json.dumps(
+        payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
 
 
-def _oracle_rows(selections: Sequence[OracleSelection], sink: TraceSink, *, carrier_lock_key: str, arm: str) -> tuple[dict[str, object], ...]:
+def _oracle_rows(
+    selections: Sequence[OracleSelection],
+    sink: TraceSink,
+    *,
+    carrier_lock_key: str,
+    arm: str,
+) -> tuple[dict[str, object], ...]:
     rows: list[dict[str, object]] = []
-    for index, selection in enumerate(sorted(selections, key=lambda item: item.sample_id), start=1):
+    for index, selection in enumerate(
+        sorted(selections, key=lambda item: item.sample_id), start=1
+    ):
         request_id = f"g8-oracle-composite-{index:04d}"
         source = {
             "branch": selection.branch,
@@ -362,7 +440,11 @@ def _oracle_rows(selections: Sequence[OracleSelection], sink: TraceSink, *, carr
             "text_sha256": response_text_sha256,
         }
         response_sha256 = _sha256_bytes(_canonical_payload_bytes(response))
-        sink.emit("TOOL", f"{request_id}/request", {**request, "payload_sha256": request_sha256})
+        sink.emit(
+            "TOOL",
+            f"{request_id}/request",
+            {**request, "payload_sha256": request_sha256},
+        )
         sink.emit(
             "TOOL",
             f"{request_id}/response",
@@ -403,6 +485,7 @@ def build_oracle_artifacts(
     parent_verified_split: object,
     data_root: Path,
     session_receipt_path: Path,
+    branch_order: Sequence[str] = BRANCH_ORDER,
 ) -> Mapping[str, object]:
     """Materialize a sealed oracle bundle for one later unchanged scorer call.
 
@@ -419,6 +502,7 @@ def build_oracle_artifacts(
         sealed_branches=sealed_branches,
         sample_ids=sample_ids,
         expected_sample_count=expected_sample_count,
+        branch_order=branch_order,
     )
     run_dir = Path(run_dir)
     if run_dir.exists() and any(run_dir.iterdir()):
@@ -433,13 +517,22 @@ def build_oracle_artifacts(
         raise G8OracleError("parent G8 composed configuration lacks values")
     carrier_lock_key = values.get("carrier_lock_key", "audio2tool")
     arm = values.get("arm", "speech-feature-query")
-    if not isinstance(carrier_lock_key, str) or not carrier_lock_key or not isinstance(arm, str) or not arm:
-        raise G8OracleError("parent G8 composed configuration has an invalid carrier or arm")
+    if (
+        not isinstance(carrier_lock_key, str)
+        or not carrier_lock_key
+        or not isinstance(arm, str)
+        or not arm
+    ):
+        raise G8OracleError(
+            "parent G8 composed configuration has an invalid carrier or arm"
+        )
 
     run_dir.mkdir(parents=True, exist_ok=True)
     sink = TraceSink(run_dir, run_id)
     try:
-        rows = _oracle_rows(selections, sink, carrier_lock_key=carrier_lock_key, arm=arm)
+        rows = _oracle_rows(
+            selections, sink, carrier_lock_key=carrier_lock_key, arm=arm
+        )
         trace_hash = sink.close()
     except Exception:
         # The trace remains a forensic artifact if a later artifact write fails;
@@ -476,14 +569,20 @@ def build_oracle_artifacts(
     try:
         manifest_document = json.loads(Path(manifest).read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as error:
-        raise G8OracleError(f"cannot bind oracle manifest {manifest}: {error}") from error
+        raise G8OracleError(
+            f"cannot bind oracle manifest {manifest}: {error}"
+        ) from error
     manifest_document["scorers"] = [OFFICIAL_SCORER]
     manifest_document["post_score_oracle"] = {
         "model_contacts": 0,
-        "source_branch_order": list(BRANCH_ORDER),
+        "source_branch_order": list(branch_order),
         "source_manifests": {
-            branch: str(_path(sealed_branches[branch].get("manifest"), f"{branch} sealed manifest"))
-            for branch in BRANCH_ORDER
+            branch: str(
+                _path(
+                    sealed_branches[branch].get("manifest"), f"{branch} sealed manifest"
+                )
+            )
+            for branch in branch_order
         },
         "selection_summary": summary,
         "scoring_invocations_authorized": 1,
