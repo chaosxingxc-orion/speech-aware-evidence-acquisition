@@ -59,7 +59,7 @@ BUNDLE_PROTOCOL_SHA256 = (
     "4f192381d41c96b55d53433035ff0566795b0fb772503a59555a0f83d15d1171"
 )
 SOURCE_RUN_ID = "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2"
-RUN_ID = "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V3"
+RUN_ID = "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V4"
 PREPROCESS_REPORT_PATH = REPO / (
     "docs/checks/speech-aware-evidence-acquisition/"
     "2026-09-03-a2t-select-fill-fresh-preprocess-v1/preprocess-report.json"
@@ -645,6 +645,17 @@ def _walk_visible(value: object, *, path: str = "body") -> None:
                 raise RuntimeError(f"{path} contains a non-ASCII key")
             if key.casefold() in _FORBIDDEN_VISIBLE_KEYS:
                 raise RuntimeError(f"{path} contains forbidden runtime field {key!r}")
+            if key == "properties" and isinstance(item, Mapping):
+                for field_name, field_schema in item.items():
+                    if not isinstance(field_name, str) or not field_name.isascii():
+                        raise RuntimeError(
+                            f"{path}.properties contains a non-ASCII field name"
+                        )
+                    _walk_visible(
+                        field_schema,
+                        path=f"{path}.properties[{field_name!r}]",
+                    )
+                continue
             _walk_visible(item, path=f"{path}.{key}")
 
 

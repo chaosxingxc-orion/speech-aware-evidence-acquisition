@@ -151,7 +151,7 @@ class _LiveChecks:
 def test_protocol_freezes_the_fair_six_contact_schedule() -> None:
     module = _launcher()
 
-    assert module.RUN_ID == "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V3"
+    assert module.RUN_ID == "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V4"
     assert module.SOURCE_RUN_ID == "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2"
     assert module.PHASE_ORDER == (
         "M0_DIRECT",
@@ -203,6 +203,34 @@ def test_protocol_freezes_the_fair_six_contact_schedule() -> None:
         "SELECT",
     )
     assert module.CONFIG_SHA256 == module.sha256_json(module.protocol_config())
+
+
+def test_visible_walk_allows_public_tool_fields_declared_inside_json_schema() -> None:
+    module = _launcher()
+
+    module._walk_visible(
+        {
+            "response_format": {
+                "json_schema": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "label": {"type": "string"},
+                            "reference": {"type": "string"},
+                        },
+                        "required": ["label", "reference"],
+                    }
+                }
+            }
+        }
+    )
+
+
+def test_visible_walk_still_refuses_forbidden_runtime_data_fields() -> None:
+    module = _launcher()
+
+    with pytest.raises(RuntimeError, match="forbidden runtime field 'label'"):
+        module._walk_visible({"runtime_state": {"label": "hidden answer"}})
 
 
 def test_transcript_embeddings_are_the_only_four_batches() -> None:

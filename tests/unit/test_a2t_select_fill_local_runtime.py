@@ -61,7 +61,7 @@ def _authority(module):
     plans = {}
     for index, role in enumerate(roles):
         plan = ExecutionPlan(
-            run_id="SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V3",
+            run_id="SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V4",
             execution_profile="bounded-discovery-probe",
             carrier_lock_key="audio2tool",
             split_role="discovery",
@@ -85,7 +85,7 @@ def _authority(module):
         for role in roles
     }
     embedding = ExecutionPlan(
-        run_id="SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V3-EMBED",
+        run_id="SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V4-EMBED",
         execution_profile="bounded-discovery-probe",
         carrier_lock_key="audio2tool",
         split_role="discovery",
@@ -121,7 +121,7 @@ def test_execution_plans_bind_only_four_remaining_phases_and_budget() -> None:
     parsed = module.parse_execution_plans(
         authority,
         roles=roles,
-        run_id="SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V3",
+        run_id="SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V4",
     )
 
     assert tuple(parsed) == roles
@@ -135,7 +135,7 @@ def test_execution_plans_bind_only_four_remaining_phases_and_budget() -> None:
         module.parse_execution_plans(
             authority,
             roles=roles,
-            run_id="SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V3",
+            run_id="SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V4",
         )
 
 
@@ -376,7 +376,7 @@ def test_post_embedding_checkpoint_round_trips_k32_and_refuses_tampering(
     receipt = module._write_post_embedding_checkpoint(
         checkpoint,
         launcher=launcher,
-        run_id="SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V3",
+        run_id="SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V4",
         source_report_sha256="a" * 64,
         observations=observations,
         candidates=candidates,
@@ -385,7 +385,7 @@ def test_post_embedding_checkpoint_round_trips_k32_and_refuses_tampering(
         checkpoint,
         launcher=launcher,
         expected_sha256=receipt["checkpoint_sha256"],
-        run_id="SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V3",
+        run_id="SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V4",
         source_report_sha256="a" * 64,
         observations=observations,
     )
@@ -397,7 +397,7 @@ def test_post_embedding_checkpoint_round_trips_k32_and_refuses_tampering(
             checkpoint,
             launcher=launcher,
             expected_sha256=receipt["checkpoint_sha256"],
-            run_id="SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V3",
+            run_id="SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V4",
             source_report_sha256="a" * 64,
             observations=observations,
         )
