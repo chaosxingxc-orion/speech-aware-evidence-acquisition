@@ -54,6 +54,7 @@ Modes::
     python scripts/a2t_g1_preprocess.py --cpv2 --emit-identity
     python scripts/a2t_g1_preprocess.py --ground-qual --emit-identity
     python scripts/a2t_g1_preprocess.py --semantic-agentloop --emit-identity
+    python scripts/a2t_g1_preprocess.py --semantic-agentloop-select-fill --emit-identity
 """
 
 from __future__ import annotations
@@ -178,7 +179,12 @@ DYNAMIC_INFERENCE_PROMPT_FIT = False
 
 profile_flags = tuple(
     flag
-    for flag in ("--cpv2", "--ground-qual", "--semantic-agentloop")
+    for flag in (
+        "--cpv2",
+        "--ground-qual",
+        "--semantic-agentloop",
+        "--semantic-agentloop-select-fill",
+    )
     if flag in sys.argv
 )
 if len(profile_flags) > 1:
@@ -278,6 +284,51 @@ if "--semantic-agentloop" in sys.argv:
         / "checks"
         / "speech-aware-evidence-acquisition"
         / "2026-09-03-a2t-semantic-agentloop-104-v1"
+    )
+
+if "--semantic-agentloop-select-fill" in sys.argv:
+    RUN_ID = "SAEA-SN-A2T-SEMANTIC-AGENTLOOP-SELECT-FILL-104-PREPROCESS-V1"
+    DATASET_FRAGMENT = "audio2tool-semantic-agentloop-select-fill-104-v1"
+    EXPERIMENT_FRAGMENT = "a2t-semantic-agentloop-select-fill-preprocess-v1"
+    SUBSET_RECEIPT_RELPATH = (
+        "docs/checks/speech-aware-evidence-acquisition/"
+        "2026-09-03-a2t-select-fill-fresh-roster-v1/flight-roster-receipt.json"
+    )
+    SUBSET_RECEIPT_SHA256 = (
+        "dea74114430ed5e45e29d908dc2ecebf41788edfa2704435a2966f260de5bc4f"
+    )
+    SPLIT_IDENTITY_HASH = (
+        "bcbad5405aa8522ff53a91d624c54a909e01f8a31612b5165844b8e2cbca6eb3"
+    )
+    SUBSET_AUDIO_SECONDS = 549.489916
+    PREPROCESS_SPLIT_NAME = "A2T-SELECT-FILL-FRESH-FLIGHT"
+    PACKET_ROOT = Path(
+        "/home/chao/feat-cache/"
+        "a2t-semantic-agentloop-select-fill-v1-packets-04ccc72a"
+    )
+    PROMOTION_RECEIPT = (
+        PACKET_ROOT / "A2T-SEMANTIC-AGENTLOOP-SELECT-FILL-104-V1-promotion.json"
+    )
+    PLAN_AUDIO = 650
+    DATASET_RECEIPT_HASH_KEY = (
+        "a2t_semantic_agentloop_select_fill_subset_receipt_sha256"
+    )
+    DATASET_RUN_IDENTITY_KEY = (
+        "a2t_semantic_agentloop_select_fill_split_identity_hash"
+    )
+    RECEIPT_IDENTITY_KEY = "split_identity_hash"
+    DIRECT_RECEIPT_SAMPLES = True
+    DYNAMIC_INFERENCE_PROMPT_FIT = True
+    ATTEMPT_SUFFIX = "a2tsemanticagentloopselectfillprev1"
+    REQUEST_ID_PREFIX = "a2tsemanticagentloopselectfillprev1"
+    STATE_SCHEMA = "saea-a2t-semantic-agentloop-select-fill-preprocess-v1"
+    REPORT_SCHEMA = "saea-a2t-semantic-agentloop-select-fill-preprocess-report-v1"
+    OUT_CHECK_DIR = (
+        REPO
+        / "docs"
+        / "checks"
+        / "speech-aware-evidence-acquisition"
+        / "2026-09-03-a2t-select-fill-fresh-preprocess-v1"
     )
 
 
@@ -624,7 +675,8 @@ def main() -> int:
         return 0
     if "--run" not in sys.argv:
         raise SystemExit(
-            "usage: [--cpv2 | --ground-qual | --semantic-agentloop] "
+            "usage: [--cpv2 | --ground-qual | --semantic-agentloop | "
+            "--semantic-agentloop-select-fill] "
             "(--emit-identity | --preflight-only | --run)"
         )
 

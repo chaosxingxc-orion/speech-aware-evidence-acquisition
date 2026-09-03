@@ -1,0 +1,33 @@
+{
+  "experiment_id": "SAEA-SN-A2T-SEMANTIC-AGENTLOOP-SELECT-FILL-104-PREPROCESS-V1",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Perform receipt-bound, label-free speech-feature preprocessing for the exact fresh 104-row SELECT/FILL discovery roster. The launcher constructs samples only from receipt-pinned sample identifiers and media facts; it never loads task text, gold, reference transcripts, annotations, outputs, scores, test data, or future turns. A current-build CPU-only llama sidecar on port 8081 uses the fixed minimal one-token preprocessing prompt and legacy feature cache. After the sidecar stops, the carrier-neutral promotion primitive writes audited packets into the exclusive SELECT/FILL packet root. Identity and preflight modes make no model, network, tokenizer, scorer, or audio-decoding contact. This fragment grants no run or exposure authority.",
+  "a2t_semantic_agentloop_select_fill_preprocess_scope": {
+    "subset_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-select-fill-fresh-roster-v1/flight-roster-receipt.json",
+    "subset_receipt_sha256": "dea74114430ed5e45e29d908dc2ecebf41788edfa2704435a2966f260de5bc4f",
+    "split_identity_hash": "bcbad5405aa8522ff53a91d624c54a909e01f8a31612b5165844b8e2cbca6eb3",
+    "count": 104,
+    "audio_seconds_total": 549.489916,
+    "d1_media_supplement": "receipts/artifacts/d1-a2t-semantic-agentloop-select-fill-104.json",
+    "d1_media_supplement_sha256": "52c870f04200b21e3a86dd315085f0ccf44c3e13388b7c1a0f62e04233411a21",
+    "legacy_cache_dir": "/home/chao/feat-cache/audio2tool-q4km-04ccc72a",
+    "packet_root": "/home/chao/feat-cache/a2t-semantic-agentloop-select-fill-v1-packets-04ccc72a",
+    "promotion_receipt": "/home/chao/feat-cache/a2t-semantic-agentloop-select-fill-v1-packets-04ccc72a/A2T-SEMANTIC-AGENTLOOP-SELECT-FILL-104-V1-promotion.json",
+    "packet_id_convention": "sample_id with ':' replaced by '/'",
+    "promotion_path": "core.model.speech_features.materialize_legacy_cached_speech_feature_packets, called directly after the CPU-only encoder session stops; the carrier-specific SLURP command is not used"
+  },
+  "a2t_semantic_agentloop_select_fill_preprocess_boundary": {
+    "gold": "never loaded",
+    "task_text": "never loaded",
+    "identity_inputs": "receipt metadata, additive D1 media receipt, and config fragments only",
+    "preflight_inputs": "receipt metadata plus filesystem path, size, SHA-256, and WAV container-header validation; speech content is not decoded or interpreted",
+    "model_contacts_in_identity_or_preflight": 0,
+    "network_contacts_in_identity_or_preflight": 0,
+    "tokenizer_contacts_in_identity_or_preflight": 0,
+    "scorer_contacts_in_identity_or_preflight": 0,
+    "speech_content_decode_contacts_in_identity_or_preflight": 0,
+    "gpu_decoder": "not started, stopped, reconfigured, or contacted",
+    "paid_api_spend": 0,
+    "authority": "none; running requires a separately valid exposure registration and execution plan"
+  }
+}
