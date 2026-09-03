@@ -1,0 +1,71 @@
+{
+  "actual": {
+    "audio_seconds": 45.096000000000004,
+    "completion_tokens": 199,
+    "latency_seconds": 26.364825504948385,
+    "model_contacts": 8,
+    "prompt_tokens": 106525
+  },
+  "artifact_sha256": {
+    "attempt_state": "53053bc4b241a7d6ff4084efe6c4843ba6ee6417278dc33ad0ff60570c73aa05",
+    "failure_receipt": "91bcd679d4b44daec1642e77c7320db091ba4e343e89145a904dd6d190cb71e9",
+    "flight_plan": "4f65c56451bbda26fc59ca85f7bd628077c2c491ae6049d3653c024b6b08d1cb",
+    "precontact_plan_file": "7ff7d0a17b9eb73f335e5857380bbeeb0c96c8fdc6e9fd0ea4016b51ba5d24c9",
+    "registry_execution_plan": "ad08a8daad3da8c85b5f3d6bbf03c5c3b9b9ca99185a45886a0893b70510bed9",
+    "registry_outputs": "f4e19ab8e107e368e68f889a9dbf0df8e1f10b601b87184ee5e2e7120de79b6d",
+    "registry_prompt_measurements": "d5eb2fc0cc1b83918c5836da175738d7afa4286b2aaca2d8c0994b393a4f1134",
+    "registry_raw_trace": "08e56f7cce2882eb490958fc58f6bbbe532a73d190855929c2bba78b9f329bdb",
+    "registry_run_manifest_before_recovery": "0ca51392548e772d3b6ff5c42c2fdc2ec0aea56d8f9bbd4097b149aeec6128ee",
+    "registry_trace_manifest": "3f9c352712857e189d3bebaec0481dac9b9d3306b8cb5fae1b333f100509d314",
+    "service_session_receipt": "f21cca322ba6810fc062a85e041fad7ba1d112012a9a35eb53ce806ed85c47c6",
+    "service_stop_receipt": "630190e4b42c2ecff9dfeb4850388600d336183fc9df17fc933422f8b861b99b"
+  },
+  "attempts": {
+    "handbook_strict_action": {
+      "contacts": 0,
+      "state": "NEVER_OPENED"
+    },
+    "registry_strict_action": {
+      "attempt_id": "attempt-20260903T013000Z-registry-strict",
+      "state": "ABORTED"
+    }
+  },
+  "contacts_after_failure": {
+    "gold": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "failure": {
+    "classification": "LOCAL_POSTCONTACT_MANIFEST_FIELD_DEFECT",
+    "message": "The registry arm completed all eight model requests and wrote its complete outputs and traces. Authoritative bundle verification then refused the generated run manifest because its scorer list was empty. The handbook arm did not start.",
+    "response_or_score_cause": false,
+    "root_cause": "The native-structured-action baseline config omitted the required registered scorer name, so build_manifest emitted scorers=[] before verify_bundle ran.",
+    "service_or_network_cause": false
+  },
+  "flight_id": "flight-20260903T013000Z",
+  "measurement": {
+    "context_tokens_per_slot": 32768,
+    "maximum_prompt_plus_completion_tokens": 14954,
+    "minimum_remaining_tokens": 17814
+  },
+  "protected_reads": {
+    "gold": false,
+    "historical_fixed_eight_outputs": false,
+    "reference_transcripts": false,
+    "registry_response_meaning": false,
+    "scores": false,
+    "test": false
+  },
+  "recovery_boundary": {
+    "handbook_contacts_remaining": 8,
+    "registry_contacts_must_be_reused": 8,
+    "registry_recontact_forbidden": true,
+    "required_order": "Hash-verify and seal the existing registry artifacts without reading response meaning; execute only the untouched handbook arm under a separately registered attempt; seal both strict cells before opening historical outputs, gold, or scorer."
+  },
+  "run_id": "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1",
+  "schema": "saea-a2t-native-structured-action-partial-flight-receipt-v1",
+  "status": "PARTIAL_TERMINAL_AFTER_REGISTRY_LOCAL_SEAL_DEFECT",
+  "study_commit": "7ba11c21b0076b82c1a4312531f3591e15cbfb56"
+}
