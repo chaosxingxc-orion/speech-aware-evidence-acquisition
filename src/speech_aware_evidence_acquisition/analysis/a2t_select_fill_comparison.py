@@ -41,6 +41,22 @@ class AnalysisError(ValueError):
     """A scored outcome or sealed diagnostic violates the analysis contract."""
 
 
+def distinct_name_set_equal(
+    expected_names: Sequence[str], predicted_names: Sequence[str]
+) -> bool:
+    """Compare only the distinct tool names, intentionally ignoring repeats."""
+
+    return set(expected_names) == set(predicted_names)
+
+
+def name_multiplicity_equal(
+    expected_names: Sequence[str], predicted_names: Sequence[str]
+) -> bool:
+    """Compare the complete tool-name multiset, including duplicate counts."""
+
+    return Counter(expected_names) == Counter(predicted_names)
+
+
 @dataclass(frozen=True)
 class TierStratifiedBootstrapResult:
     """Deterministic percentile-bootstrap result with its tier contract."""
@@ -217,7 +233,7 @@ def _validate_outcomes(
                 "tier": str(row["tier"]),
                 "exact_match": exact,
                 "tool_accuracy": tool,
-                "slot_f1": slot,
+                "paired_item_slot_f1": slot,
                 "parsed": parsed,
             }
         indexed[arm] = normalized
@@ -229,6 +245,68 @@ def _validate_outcomes(
         if any(indexed[arm][item]["tier"] != tiers[item] for item in sample_ids):
             raise AnalysisError("tier identities must agree across all four arms")
     return indexed, sample_ids, tiers
+
+
+def _validate_official_metrics(
+    official_metrics_by_arm: Mapping[str, Mapping[str, object]],
+    outcomes: Mapping[str, Mapping[str, Mapping[str, object]]],
+    sample_ids: Sequence[str],
+    tiers: Mapping[str, str],
+) -> dict[str, dict[str, Mapping[str, int | float]]]:
+    if not isinstance(official_metrics_by_arm, Mapping) or set(
+        official_metrics_by_arm
+    ) != set(ARM_ORDER):
+        raise AnalysisError("official_metrics_by_arm must cover exactly the four arms")
+    result: dict[str, dict[str, Mapping[str, int | float]]] = {}
+    tier_names = set(tiers.values())
+    for arm in ARM_ORDER:
+        arm_value = official_metrics_by_arm[arm]
+        if not isinstance(arm_value, Mapping) or set(arm_value) != {
+            "overall",
+            "per_tier",
+        }:
+            raise AnalysisError(
+                f"official_metrics_by_arm.{arm} must contain overall and per_tier"
+            )
+        per_tier = arm_value["per_tier"]
+        if not isinstance(per_tier, Mapping) or set(per_tier) != tier_names:
+            raise AnalysisError(f"{arm} official per-tier identities are incomplete")
+        normalized: dict[str, Mapping[str, int | float]] = {}
+        groups = {"overall": tuple(sample_ids)}
+        groups.update(
+            {
+                tier: tuple(item for item in sample_ids if tiers[item] == tier)
+                for tier in sorted(tier_names)
+            }
+        )
+        for group, ids in groups.items():
+            raw = arm_value["overall"] if group == "overall" else per_tier[group]
+            if not isinstance(raw, Mapping):
+                raise AnalysisError(f"{arm}/{group} official metrics must be an object")
+            samples = raw.get("samples")
+            if type(samples) is not int or samples != len(ids):
+                raise AnalysisError(f"{arm}/{group} official sample count disagrees")
+            metrics = {
+                name: _unit(raw.get(name), f"{arm}/{group}.{name}")
+                for name in (
+                    "exact_match",
+                    "tool_accuracy",
+                    "slot_precision",
+                    "slot_recall",
+                    "slot_f1",
+                )
+            }
+            for metric in ("exact_match", "tool_accuracy"):
+                item_mean = sum(float(outcomes[arm][item][metric]) for item in ids) / len(
+                    ids
+                )
+                if abs(metrics[metric] - item_mean) > 1e-12:
+                    raise AnalysisError(
+                        f"{arm}/{group} official {metric} disagrees with per-sample rows"
+                    )
+            normalized[group] = {"samples": samples, **metrics}
+        result[arm] = normalized
+    return result
 
 
 def _validate_population(sample_ids: Sequence[str], tiers: Mapping[str, str]) -> None:
@@ -298,8 +376,8 @@ def _validate_selector(
             )
         result[item] = {
             "name": _boolean(
-                row.get("name_multiset_correct"),
-                f"selector_diagnostics/{item}.name_multiset_correct",
+                row.get("distinct_name_set_correct"),
+                f"selector_diagnostics/{item}.distinct_name_set_correct",
             ),
             "multiplicity": _boolean(
                 row.get("multiplicity_correct"),
@@ -330,7 +408,7 @@ def _validate_joint(
                 f"joint_diagnostics/{item}.{prefix}_{suffix}",
             )
             for prefix in prefixes
-            for suffix in ("name_multiset_correct", "multiplicity_correct")
+            for suffix in ("distinct_name_set_correct", "multiplicity_correct")
         }
     return result
 
@@ -346,7 +424,7 @@ def _validate_efficiency(
         item = efficiency_by_arm[arm]
         if not isinstance(item, Mapping):
             raise AnalysisError(f"efficiency_by_arm.{arm} must be an object")
-        for field in ("prompt_tokens", "contacts", "wall_time_seconds"):
+        for field in ("prompt_tokens", "contacts", "raw_total_latency_seconds"):
             if field not in item:
                 raise AnalysisError(f"efficiency_by_arm.{arm} must contain {field}")
             _nonnegative_number(item[field], f"efficiency_by_arm.{arm}.{field}")
@@ -356,15 +434,21 @@ def _validate_efficiency(
 
 
 def _metric_summary(
-    rows: Mapping[str, Mapping[str, object]], ids: Sequence[str]
+    rows: Mapping[str, Mapping[str, object]],
+    ids: Sequence[str],
+    official: Mapping[str, int | float],
 ) -> dict[str, int | float]:
     return {
         "samples": len(ids),
-        "exact_match": sum(float(rows[item]["exact_match"]) for item in ids)
+        "exact_match": official["exact_match"],
+        "tool_accuracy": official["tool_accuracy"],
+        "slot_precision": official["slot_precision"],
+        "slot_recall": official["slot_recall"],
+        "slot_f1": official["slot_f1"],
+        "paired_item_slot_f1": sum(
+            float(rows[item]["paired_item_slot_f1"]) for item in ids
+        )
         / len(ids),
-        "tool_accuracy": sum(float(rows[item]["tool_accuracy"]) for item in ids)
-        / len(ids),
-        "slot_f1": sum(float(rows[item]["slot_f1"]) for item in ids) / len(ids),
         "parse_rate": sum(bool(rows[item]["parsed"]) for item in ids) / len(ids),
     }
 
@@ -386,7 +470,7 @@ def _correctness_summary(
 ) -> dict[str, int | float]:
     return {
         "samples": len(ids),
-        "name_multiset_accuracy": sum(name[item] for item in ids) / len(ids),
+        "distinct_name_set_accuracy": sum(name[item] for item in ids) / len(ids),
         "multiplicity_accuracy": sum(multiplicity[item] for item in ids) / len(ids),
         "combined_accuracy": sum(
             name[item] and multiplicity[item] for item in ids
@@ -445,6 +529,8 @@ def _contrast(
     role: str,
     left: Mapping[str, Mapping[str, object]],
     right: Mapping[str, Mapping[str, object]],
+    left_official: Mapping[str, int | float],
+    right_official: Mapping[str, int | float],
     sample_ids: tuple[str, ...],
     tiers: Mapping[str, str],
     bootstrap_replicates: int,
@@ -460,7 +546,12 @@ def _contrast(
     )
     ties = len(sample_ids) - saves - harms
     metrics: dict[str, Mapping[str, object]] = {}
-    for metric in ("exact_match", "tool_accuracy", "slot_f1", "parse_rate"):
+    for metric in (
+        "exact_match",
+        "tool_accuracy",
+        "paired_item_slot_f1",
+        "parse_rate",
+    ):
 
         def statistic(ids: Sequence[str], metric_name: str = metric) -> float:
             if metric_name == "parse_rate":
@@ -484,6 +575,11 @@ def _contrast(
             "point_estimate": bootstrap.point_estimate,
             "paired_bootstrap": bootstrap.as_json(),
         }
+    metrics["official_corpus_micro_slot_f1"] = {
+        "point_estimate": float(left_official["slot_f1"])
+        - float(right_official["slot_f1"]),
+        "paired_bootstrap": None,
+    }
 
     def tier_exact(ids: tuple[str, ...]) -> Mapping[str, int]:
         tier_saves = sum(
@@ -519,6 +615,7 @@ def _contrast(
 def analyze_select_fill_comparison(
     *,
     outcomes_by_arm: Mapping[str, Sequence[Mapping[str, object]]],
+    official_metrics_by_arm: Mapping[str, Mapping[str, object]],
     candidate_reachability: Sequence[Mapping[str, object]],
     selector_diagnostics: Sequence[Mapping[str, object]],
     joint_diagnostics: Sequence[Mapping[str, object]],
@@ -544,6 +641,9 @@ def analyze_select_fill_comparison(
     outcomes, sample_ids, tiers = _validate_outcomes(outcomes_by_arm)
     if population_mode:
         _validate_population(sample_ids, tiers)
+    official = _validate_official_metrics(
+        official_metrics_by_arm, outcomes, sample_ids, tiers
+    )
     reachable = _validate_reachability(candidate_reachability, sample_ids, tiers)
     selector = _validate_selector(selector_diagnostics, sample_ids, tiers)
     joint = _validate_joint(joint_diagnostics, sample_ids, tiers)
@@ -557,7 +657,7 @@ def analyze_select_fill_comparison(
     joint_correct: dict[str, dict[str, bool]] = {}
     for stage in ("one_call", "draft", "revised"):
         names = {
-            item: bool(joint[item][f"{stage}_name_multiset_correct"])
+            item: bool(joint[item][f"{stage}_distinct_name_set_correct"])
             for item in sample_ids
         }
         multiplicities = {
@@ -582,7 +682,7 @@ def analyze_select_fill_comparison(
         JOINT_ONE_CALL: joint_correct["one_call"],
         JOINT_DRAFT_REVISE: joint_correct["revised"],
         SELECT_THEN_FILL: {
-            item: selector_name[item] and selector_multiplicity[item]
+            item: selector_multiplicity[item]
             for item in sample_ids
         },
     }
@@ -591,7 +691,7 @@ def analyze_select_fill_comparison(
             official_tool_correct = bool(outcomes[arm][item]["tool_accuracy"])
             if selected_correct[arm][item] != official_tool_correct:
                 raise AnalysisError(
-                    f"{arm}/{item} sealed name/multiplicity diagnostic disagrees "
+                    f"{arm}/{item} sealed multiplicity diagnostic disagrees "
                     "with official tool accuracy"
                 )
             if selected_correct[arm][item] and not reachable[item]:
@@ -644,7 +744,7 @@ def analyze_select_fill_comparison(
                 "eligible_rows": 0,
                 "exact_count": 0,
                 "exact_accuracy": None,
-                "slot_f1": None,
+                "paired_item_slot_f1": None,
                 "parse_rate": None,
             }
         rows = outcomes[SELECT_THEN_FILL]
@@ -653,7 +753,10 @@ def analyze_select_fill_comparison(
             "exact_count": int(sum(float(rows[item]["exact_match"]) for item in ids)),
             "exact_accuracy": sum(float(rows[item]["exact_match"]) for item in ids)
             / len(ids),
-            "slot_f1": sum(float(rows[item]["slot_f1"]) for item in ids) / len(ids),
+            "paired_item_slot_f1": sum(
+                float(rows[item]["paired_item_slot_f1"]) for item in ids
+            )
+            / len(ids),
             "parse_rate": sum(bool(rows[item]["parsed"]) for item in ids) / len(ids),
         }
 
@@ -662,6 +765,8 @@ def analyze_select_fill_comparison(
             role="primary",
             left=outcomes[SELECT_THEN_FILL],
             right=outcomes[JOINT_DRAFT_REVISE],
+            left_official=official[SELECT_THEN_FILL]["overall"],
+            right_official=official[JOINT_DRAFT_REVISE]["overall"],
             sample_ids=sample_ids,
             tiers=tiers,
             bootstrap_replicates=bootstrap_replicates,
@@ -671,6 +776,8 @@ def analyze_select_fill_comparison(
             role="secondary",
             left=outcomes[SELECT_THEN_FILL],
             right=outcomes[JOINT_ONE_CALL],
+            left_official=official[SELECT_THEN_FILL]["overall"],
+            right_official=official[JOINT_ONE_CALL]["overall"],
             sample_ids=sample_ids,
             tiers=tiers,
             bootstrap_replicates=bootstrap_replicates,
@@ -680,6 +787,8 @@ def analyze_select_fill_comparison(
             role="secondary",
             left=outcomes[SELECT_THEN_FILL],
             right=outcomes[DIRECT_M0],
+            left_official=official[SELECT_THEN_FILL]["overall"],
+            right_official=official[DIRECT_M0]["overall"],
             sample_ids=sample_ids,
             tiers=tiers,
             bootstrap_replicates=bootstrap_replicates,
@@ -699,7 +808,11 @@ def analyze_select_fill_comparison(
             for name in both_joint
         ),
         "nonnegative_slot_effect_vs_both_joint_controls": all(
-            float(contrasts[name]["metrics"]["slot_f1"]["point_estimate"])
+            float(
+                contrasts[name]["metrics"]["official_corpus_micro_slot_f1"][
+                    "point_estimate"
+                ]
+            )
             >= 0.0
             for name in both_joint
         ),
@@ -733,7 +846,7 @@ def analyze_select_fill_comparison(
         multiplicity=selector_multiplicity,
     ) if multi_call_ids else {
         "samples": 0,
-        "name_multiset_accuracy": None,
+        "distinct_name_set_accuracy": None,
         "multiplicity_accuracy": None,
         "combined_accuracy": None,
     }
@@ -752,12 +865,14 @@ def analyze_select_fill_comparison(
         },
         "arms": {
             arm: {
-                "overall": _metric_summary(outcomes[arm], sample_ids),
+                "overall": _metric_summary(
+                    outcomes[arm], sample_ids, official[arm]["overall"]
+                ),
                 "per_tier": _with_tiers(
                     sample_ids,
                     tiers,
                     lambda ids, arm_name=arm: _metric_summary(
-                        outcomes[arm_name], ids
+                        outcomes[arm_name], ids, official[arm_name][tiers[ids[0]]]
                     ),
                 ),
             }
@@ -786,7 +901,7 @@ def analyze_select_fill_comparison(
         "conditional_fill_diagnostic": {
             "diagnostic_only": True,
             "conditioning_event": (
-                "sealed SELECT name multiset and multiplicity are both correct"
+                "sealed SELECT name multiplicity matches the expected calls"
             ),
             "causal_decision_criterion": "paired final exact outcome",
             "overall": conditional_summary(conditional_ids),
@@ -823,5 +938,7 @@ __all__ = [
     "AnalysisError",
     "TierStratifiedBootstrapResult",
     "analyze_select_fill_comparison",
+    "distinct_name_set_equal",
+    "name_multiplicity_equal",
     "tier_stratified_paired_bootstrap",
 ]

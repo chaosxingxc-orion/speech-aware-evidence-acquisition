@@ -14,6 +14,8 @@ from speech_aware_evidence_acquisition.analysis.a2t_select_fill_comparison impor
     SELECT_THEN_FILL,
     AnalysisError,
     analyze_select_fill_comparison,
+    distinct_name_set_equal,
+    name_multiplicity_equal,
     tier_stratified_paired_bootstrap,
 )
 
@@ -77,8 +79,8 @@ def _inputs() -> dict[str, object]:
             "sample_id": sample_id,
             "tier": sample_id.split(":", 1)[0],
             "sealed": True,
-            "name_multiset_correct": index not in {3, 5},
-            "multiplicity_correct": index != 6,
+            "distinct_name_set_correct": index not in {3, 5},
+            "multiplicity_correct": index not in {3, 5, 6},
             "gold_call_count": 2 if index in {1, 6} else 1,
         }
         for index, sample_id in enumerate(IDS)
@@ -88,12 +90,12 @@ def _inputs() -> dict[str, object]:
             "sample_id": sample_id,
             "tier": sample_id.split(":", 1)[0],
             "sealed": True,
-            "one_call_name_multiset_correct": index != 5,
-            "one_call_multiplicity_correct": index != 6,
-            "draft_name_multiset_correct": index not in {4, 5},
-            "draft_multiplicity_correct": index != 6,
-            "revised_name_multiset_correct": index != 5,
-            "revised_multiplicity_correct": index != 6,
+            "one_call_distinct_name_set_correct": index != 5,
+            "one_call_multiplicity_correct": index not in {5, 6},
+            "draft_distinct_name_set_correct": index != 5,
+            "draft_multiplicity_correct": index not in {5, 6},
+            "revised_distinct_name_set_correct": index != 5,
+            "revised_multiplicity_correct": index not in {5, 6},
         }
         for index, sample_id in enumerate(IDS)
     ]
@@ -101,12 +103,41 @@ def _inputs() -> dict[str, object]:
         arm: {
             "prompt_tokens": 1000 + index,
             "contacts": 8 * (2 if arm in {JOINT_DRAFT_REVISE, SELECT_THEN_FILL} else 1),
-            "wall_time_seconds": 20.0 + index,
+            "raw_total_latency_seconds": 20.0 + index,
         }
         for index, arm in enumerate(ARM_ORDER)
     }
+    official = {}
+    for arm, rows in outcomes.items():
+        per_tier = {}
+        for tier in sorted({str(row["tier"]) for row in rows}):
+            tier_rows = [row for row in rows if row["tier"] == tier]
+            per_tier[tier] = {
+                "samples": len(tier_rows),
+                "exact_match": sum(float(row["exact_match"]) for row in tier_rows)
+                / len(tier_rows),
+                "tool_accuracy": sum(float(row["tool_accuracy"]) for row in tier_rows)
+                / len(tier_rows),
+                "slot_precision": 0.8,
+                "slot_recall": 0.6,
+                "slot_f1": 0.6857142857142857,
+            }
+        official[arm] = {
+            "overall": {
+                "samples": len(rows),
+                "exact_match": sum(float(row["exact_match"]) for row in rows)
+                / len(rows),
+                "tool_accuracy": sum(float(row["tool_accuracy"]) for row in rows)
+                / len(rows),
+                "slot_precision": 0.75,
+                "slot_recall": 0.5,
+                "slot_f1": 0.6,
+            },
+            "per_tier": per_tier,
+        }
     return {
         "outcomes_by_arm": outcomes,
+        "official_metrics_by_arm": official,
         "candidate_reachability": reachability,
         "selector_diagnostics": selector,
         "joint_diagnostics": joint,
@@ -114,6 +145,32 @@ def _inputs() -> dict[str, object]:
         "post_seal": True,
         "bootstrap_replicates": 250,
     }
+
+
+def _refresh_official_accuracy(inputs: dict[str, object]) -> None:
+    outcomes = inputs["outcomes_by_arm"]
+    official = inputs["official_metrics_by_arm"]
+    assert isinstance(outcomes, dict) and isinstance(official, dict)
+    for arm, rows in outcomes.items():
+        groups = {
+            "overall": rows,
+            **{
+                tier: [row for row in rows if row["tier"] == tier]
+                for tier in sorted({str(row["tier"]) for row in rows})
+            },
+        }
+        for group, members in groups.items():
+            target = (
+                official[arm]["overall"]
+                if group == "overall"
+                else official[arm]["per_tier"][group]
+            )
+            target["exact_match"] = sum(
+                float(row["exact_match"]) for row in members
+            ) / len(members)
+            target["tool_accuracy"] = sum(
+                float(row["tool_accuracy"]) for row in members
+            ) / len(members)
 
 
 def test_builds_metrics_diagnostics_attribution_and_paired_effects() -> None:
@@ -128,7 +185,10 @@ def test_builds_metrics_diagnostics_attribution_and_paired_effects() -> None:
         "samples": 8,
         "exact_match": 3 / 8,
         "tool_accuracy": 5 / 8,
-        "slot_f1": 11 / 16,
+        "slot_precision": 0.75,
+        "slot_recall": 0.5,
+        "slot_f1": 0.6,
+        "paired_item_slot_f1": 11 / 16,
         "parse_rate": 7 / 8,
     }
     assert report["arms"][SELECT_THEN_FILL]["per_tier"]["tier1_direct"][
@@ -149,17 +209,17 @@ def test_builds_metrics_diagnostics_attribution_and_paired_effects() -> None:
     assert report["attribution"][DIRECT_M0]["overall"]["counts"]["SUPPLY"] == 0
     assert report["selector_diagnostics"]["overall"] == {
         "samples": 8,
-        "name_multiset_accuracy": 6 / 8,
-        "multiplicity_accuracy": 7 / 8,
+        "distinct_name_set_accuracy": 6 / 8,
+        "multiplicity_accuracy": 5 / 8,
         "combined_accuracy": 5 / 8,
     }
     assert report["selector_diagnostics"]["multi_call"]["samples"] == 2
     assert report["joint_name_diagnostics"]["draft"]["overall"][
         "combined_accuracy"
-    ] == 5 / 8
+    ] == 6 / 8
     conditional = report["conditional_fill_diagnostic"]
     assert conditional["conditioning_event"] == (
-        "sealed SELECT name multiset and multiplicity are both correct"
+        "sealed SELECT name multiplicity matches the expected calls"
     )
     assert conditional["overall"]["eligible_rows"] == 5
     assert conditional["overall"]["exact_accuracy"] == 3 / 5
@@ -181,6 +241,28 @@ def test_builds_metrics_diagnostics_attribution_and_paired_effects() -> None:
         "split_vs_direct_m0",
     }
     assert report["efficiency"] == inputs["efficiency_by_arm"]
+
+
+def test_official_micro_slot_f1_is_not_replaced_by_item_macro() -> None:
+    inputs = _inputs()
+    report = analyze_select_fill_comparison(**inputs)
+
+    overall = report["arms"][SELECT_THEN_FILL]["overall"]
+    assert overall["slot_f1"] == 0.6
+    assert overall["paired_item_slot_f1"] == 11 / 16
+    primary = report["paired_contrasts"]["split_vs_revise"]
+    assert "slot_f1" not in primary["metrics"]
+    assert "paired_item_slot_f1" in primary["metrics"]
+
+
+def test_duplicate_names_use_distinct_set_and_counter_predicates() -> None:
+    expected = ("calendar.create", "calendar.create", "mail.send")
+
+    assert distinct_name_set_equal(expected, ("calendar.create", "mail.send"))
+    assert not name_multiplicity_equal(expected, ("calendar.create", "mail.send"))
+    assert name_multiplicity_equal(
+        expected, ("mail.send", "calendar.create", "calendar.create")
+    )
 
 
 def test_attribution_is_mutually_exclusive_and_exhaustive_per_arm_and_tier() -> None:
@@ -239,15 +321,16 @@ def test_preregistered_promotion_requires_every_gate() -> None:
     for row in inputs["candidate_reachability"]:
         row["required_tools_reachable"] = True
     for row in inputs["selector_diagnostics"]:
-        row.update(name_multiset_correct=True, multiplicity_correct=True)
+        row.update(distinct_name_set_correct=True, multiplicity_correct=True)
     for row in inputs["joint_diagnostics"]:
         row.update(
-            one_call_name_multiset_correct=False,
+            one_call_distinct_name_set_correct=False,
             one_call_multiplicity_correct=False,
-            revised_name_multiset_correct=False,
+            revised_distinct_name_set_correct=False,
             revised_multiplicity_correct=False,
         )
 
+    _refresh_official_accuracy(inputs)
     report = analyze_select_fill_comparison(**inputs)
 
     decision = report["promotion_decision"]
@@ -264,6 +347,7 @@ def test_preregistered_promotion_requires_every_gate() -> None:
         regressed_outcomes[DIRECT_M0][index].update(
             exact_match=1.0, tool_accuracy=1.0
         )
+    _refresh_official_accuracy(regressed)
     failed = analyze_select_fill_comparison(**regressed)["promotion_decision"]
     assert failed["promote"] is False
     assert failed["gates"]["no_tier_over_one_net_exact_loss"] is False
@@ -310,7 +394,7 @@ def test_refuses_gold_derived_inputs_before_post_seal() -> None:
         ),
         (
             lambda data: data["selector_diagnostics"][0].__setitem__(
-                "name_multiset_correct", False
+                "multiplicity_correct", False
             ),
             "disagrees with official tool accuracy",
         ),
@@ -362,7 +446,7 @@ def test_population_mode_requires_exactly_104_identities_and_13_per_tier() -> No
             "sample_id": sample_id,
             "tier": sample_id.split(":", 1)[0],
             "sealed": True,
-            "name_multiset_correct": True,
+            "distinct_name_set_correct": True,
             "multiplicity_correct": True,
             "gold_call_count": 1,
         }
@@ -373,11 +457,11 @@ def test_population_mode_requires_exactly_104_identities_and_13_per_tier() -> No
             "sample_id": sample_id,
             "tier": sample_id.split(":", 1)[0],
             "sealed": True,
-            "one_call_name_multiset_correct": True,
+            "one_call_distinct_name_set_correct": True,
             "one_call_multiplicity_correct": True,
-            "draft_name_multiset_correct": True,
+            "draft_distinct_name_set_correct": True,
             "draft_multiplicity_correct": True,
-            "revised_name_multiset_correct": True,
+            "revised_distinct_name_set_correct": True,
             "revised_multiplicity_correct": True,
         }
         for sample_id in population_ids
