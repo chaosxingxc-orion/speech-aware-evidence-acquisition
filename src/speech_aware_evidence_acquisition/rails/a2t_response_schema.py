@@ -432,6 +432,7 @@ def audio2tool_selection_response_format(
     candidate_tool_names: Sequence[str],
     *,
     schema_name: str = "audio2tool_tool_selection",
+    min_calls: int = 0,
     max_calls: int = DEFAULT_MAX_CALLS,
 ) -> dict[str, object]:
     """Build a strict argument-free tool-selection response schema.
@@ -443,8 +444,17 @@ def audio2tool_selection_response_format(
 
     if not isinstance(schema_name, str) or _IDENTIFIER.fullmatch(schema_name) is None:
         raise A2tResponseSchemaError("schema_name must be an ASCII identifier")
-    if isinstance(max_calls, bool) or not isinstance(max_calls, int) or max_calls < 1:
-        raise A2tResponseSchemaError("max_calls must be a positive integer")
+    if (
+        isinstance(min_calls, bool)
+        or isinstance(max_calls, bool)
+        or not isinstance(min_calls, int)
+        or not isinstance(max_calls, int)
+        or min_calls < 0
+        or max_calls < min_calls
+    ):
+        raise A2tResponseSchemaError(
+            "selection bounds must be non-negative integers with min <= max"
+        )
     registry = _load_registry(registry_rows)
     if isinstance(candidate_tool_names, (str, bytes)):
         raise A2tResponseSchemaError("at least one candidate tool is required")
@@ -475,7 +485,7 @@ def audio2tool_selection_response_format(
             "strict": True,
             "schema": {
                 "type": "array",
-                "minItems": 0,
+                "minItems": min_calls,
                 "maxItems": max_calls,
                 "items": {
                     "type": "object",

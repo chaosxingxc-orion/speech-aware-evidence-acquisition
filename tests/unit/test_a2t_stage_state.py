@@ -27,6 +27,9 @@ SPEECH = "2" * 64
 QUERY = "3" * 64
 RESPONSE = "4" * 64
 PREDECESSOR = "5" * 64
+CANDIDATES = ("set_timer", "send_message", "get_weather")
+GROUND = "6" * 64
+SCHEMA = "7" * 64
 
 
 def _select_envelope():
@@ -36,6 +39,9 @@ def _select_envelope():
         speech_packet_sha256=SPEECH,
         source_query_state_sha256=QUERY,
         source_response_sha256=RESPONSE,
+        candidate_tool_names=CANDIDATES,
+        ground_sha256=GROUND,
+        response_schema_sha256=SCHEMA,
         predecessor_envelope_sha256=None,
         occurrences=(
             SelectOccurrence("occurrence-000", "set_timer"),
@@ -52,6 +58,11 @@ def _parse_select(text: str, **overrides: object):
         "expected_speech_packet_sha256": SPEECH,
         "expected_stage": SELECT_STAGE,
         "expected_predecessor_envelope_sha256": None,
+        "expected_source_query_state_sha256": QUERY,
+        "expected_source_response_sha256": RESPONSE,
+        "expected_candidate_tool_names": CANDIDATES,
+        "expected_ground_sha256": GROUND,
+        "expected_response_schema_sha256": SCHEMA,
     }
     expected.update(overrides)
     return parse_stage_state_envelope(text, **expected)
@@ -98,6 +109,9 @@ def test_joint_draft_round_trip_preserves_call_order_repeats_and_argument_values
         speech_packet_sha256=SPEECH,
         source_query_state_sha256=QUERY,
         source_response_sha256=RESPONSE,
+        candidate_tool_names=CANDIDATES,
+        ground_sha256=GROUND,
+        response_schema_sha256=SCHEMA,
         predecessor_envelope_sha256=PREDECESSOR,
         calls=(
             JointDraftCall.from_arguments(
@@ -118,6 +132,11 @@ def test_joint_draft_round_trip_preserves_call_order_repeats_and_argument_values
         expected_speech_packet_sha256=SPEECH,
         expected_stage=JOINT_DRAFT_STAGE,
         expected_predecessor_envelope_sha256=PREDECESSOR,
+        expected_source_query_state_sha256=QUERY,
+        expected_source_response_sha256=RESPONSE,
+        expected_candidate_tool_names=CANDIDATES,
+        expected_ground_sha256=GROUND,
+        expected_response_schema_sha256=SCHEMA,
     )
 
     assert isinstance(parsed.payload, JointDraftPayload)
@@ -191,6 +210,11 @@ def test_parser_rejects_fences_noncanonical_bytes_and_non_ascii(candidate) -> No
         ("expected_speech_packet_sha256", "6" * 64, "speech"),
         ("expected_stage", JOINT_DRAFT_STAGE, "stage"),
         ("expected_predecessor_envelope_sha256", "6" * 64, "predecessor"),
+        ("expected_source_query_state_sha256", "8" * 64, "source query"),
+        ("expected_source_response_sha256", "8" * 64, "source response"),
+        ("expected_candidate_tool_names", ("other_tool",), "candidate"),
+        ("expected_ground_sha256", "8" * 64, "ground"),
+        ("expected_response_schema_sha256", "8" * 64, "response schema"),
     ],
 )
 def test_parser_rejects_wrong_expected_bindings(
@@ -240,8 +264,11 @@ def test_builders_reject_invalid_hashes_occurrence_ids_and_mutable_arguments() -
             speech_packet_sha256=SPEECH,
             source_query_state_sha256=QUERY,
             source_response_sha256=RESPONSE,
+            candidate_tool_names=CANDIDATES,
+            ground_sha256=GROUND,
+            response_schema_sha256=SCHEMA,
             predecessor_envelope_sha256=None,
-            occurrences=(),
+            occurrences=(SelectOccurrence("occurrence-000", "set_timer"),),
         )
     with pytest.raises(StageStateError, match="occurrence"):
         build_select_stage_envelope(
@@ -250,6 +277,9 @@ def test_builders_reject_invalid_hashes_occurrence_ids_and_mutable_arguments() -
             speech_packet_sha256=SPEECH,
             source_query_state_sha256=QUERY,
             source_response_sha256=RESPONSE,
+            candidate_tool_names=CANDIDATES,
+            ground_sha256=GROUND,
+            response_schema_sha256=SCHEMA,
             predecessor_envelope_sha256=None,
             occurrences=(
                 SelectOccurrence("occurrence-000", "set_timer"),
@@ -260,6 +290,30 @@ def test_builders_reject_invalid_hashes_occurrence_ids_and_mutable_arguments() -
     call = JointDraftCall.from_arguments("set_timer", source)
     source["value"].append(3)
     assert call.arguments == {"value": [1, 2]}
+
+
+def test_stage_boundary_rejects_empty_too_many_and_out_of_candidate_calls() -> None:
+    for occurrences, message in (
+        ((), "between 1 and 7"),
+        (
+            tuple(SelectOccurrence(f"occurrence-{index:03d}", "set_timer") for index in range(8)),
+            "between 1 and 7",
+        ),
+        ((SelectOccurrence("occurrence-000", "outside_tool"),), "candidate"),
+    ):
+        with pytest.raises(StageStateError, match=message):
+            build_select_stage_envelope(
+                sample_identity_sha256=SAMPLE,
+                split_identity_sha256=SPLIT,
+                speech_packet_sha256=SPEECH,
+                source_query_state_sha256=QUERY,
+                source_response_sha256=RESPONSE,
+                candidate_tool_names=CANDIDATES,
+                ground_sha256=GROUND,
+                response_schema_sha256=SCHEMA,
+                predecessor_envelope_sha256=None,
+                occurrences=occurrences,
+            )
 
 
 def test_parsed_argument_views_cannot_mutate_the_sealed_envelope() -> None:

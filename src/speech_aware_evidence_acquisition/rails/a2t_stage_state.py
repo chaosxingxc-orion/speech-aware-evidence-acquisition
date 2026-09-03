@@ -17,6 +17,9 @@ from typing import Mapping, Sequence
 STAGE_STATE_SCHEMA = "a2t-stage-state-envelope-v1"
 SELECT_STAGE = "SELECT"
 JOINT_DRAFT_STAGE = "JOINT_DRAFT"
+MIN_STAGE_CALLS = 1
+MAX_STAGE_CALLS = 7
+MAX_CANDIDATE_TOOLS = 32
 
 _STAGES = frozenset({SELECT_STAGE, JOINT_DRAFT_STAGE})
 _SHA256 = re.compile(r"[0-9a-f]{64}", flags=re.ASCII)
@@ -34,6 +37,9 @@ _ENVELOPE_KEYS = frozenset(
         "payload_sha256",
         "source_query_state_sha256",
         "source_response_sha256",
+        "candidate_set_sha256",
+        "ground_sha256",
+        "response_schema_sha256",
         "envelope_sha256",
     }
 )
@@ -134,6 +140,38 @@ def _require_exact_keys(
     if not isinstance(value, dict) or frozenset(value) != expected:
         raise StageStateError(f"{field} has missing or extra keys")
     return value
+
+
+def _candidate_binding(candidate_tool_names: Sequence[str]) -> tuple[tuple[str, ...], str]:
+    if isinstance(candidate_tool_names, (str, bytes)):
+        raise StageStateError("candidate tools must be a sequence")
+    try:
+        names = tuple(candidate_tool_names)
+    except TypeError as error:
+        raise StageStateError("candidate tools must be a sequence") from error
+    if (
+        not 1 <= len(names) <= MAX_CANDIDATE_TOOLS
+        or len(names) != len(set(names))
+        or any(not isinstance(name, str) or _TOOL_NAME.fullmatch(name) is None for name in names)
+    ):
+        raise StageStateError(
+            "candidate tools must contain between 1 and 32 unique ASCII identifiers"
+        )
+    return names, _sha256(list(names))
+
+
+def _validate_payload_candidates(
+    payload: StagePayload, candidate_tool_names: Sequence[str]
+) -> None:
+    names, _binding = _candidate_binding(candidate_tool_names)
+    if isinstance(payload, SelectPayload):
+        payload_names = tuple(item.tool_name for item in payload.occurrences)
+    else:
+        payload_names = tuple(item.name for item in payload.calls)
+    if not MIN_STAGE_CALLS <= len(payload_names) <= MAX_STAGE_CALLS:
+        raise StageStateError("stage calls must contain between 1 and 7 occurrences")
+    if not set(payload_names).issubset(names):
+        raise StageStateError("stage call is outside the bound candidate set")
 
 
 @dataclass(frozen=True)
@@ -253,6 +291,9 @@ class StageStateEnvelope:
     payload_sha256: str
     source_query_state_sha256: str
     source_response_sha256: str
+    candidate_set_sha256: str
+    ground_sha256: str
+    response_schema_sha256: str
     envelope_sha256: str
     schema: str = STAGE_STATE_SCHEMA
 
@@ -267,6 +308,9 @@ class StageStateEnvelope:
             field="source_query_state_sha256",
         )
         _require_hash(self.source_response_sha256, field="source_response_sha256")
+        _require_hash(self.candidate_set_sha256, field="candidate_set_sha256")
+        _require_hash(self.ground_sha256, field="ground_sha256")
+        _require_hash(self.response_schema_sha256, field="response_schema_sha256")
         _require_optional_hash(
             self.predecessor_envelope_sha256,
             field="predecessor_envelope_sha256",
@@ -298,6 +342,9 @@ class StageStateEnvelope:
             "payload_sha256": self.payload_sha256,
             "source_query_state_sha256": self.source_query_state_sha256,
             "source_response_sha256": self.source_response_sha256,
+            "candidate_set_sha256": self.candidate_set_sha256,
+            "ground_sha256": self.ground_sha256,
+            "response_schema_sha256": self.response_schema_sha256,
         }
 
     def as_json(self) -> dict[str, object]:
@@ -317,7 +364,14 @@ def _build_envelope(
     payload: StagePayload,
     source_query_state_sha256: str,
     source_response_sha256: str,
+    candidate_tool_names: Sequence[str],
+    ground_sha256: str,
+    response_schema_sha256: str,
 ) -> StageStateEnvelope:
+    _validate_payload_candidates(payload, candidate_tool_names)
+    _candidate_names, candidate_set_sha256 = _candidate_binding(
+        candidate_tool_names
+    )
     payload_sha256 = _sha256(payload.as_json())
     body = {
         "schema": STAGE_STATE_SCHEMA,
@@ -330,6 +384,9 @@ def _build_envelope(
         "payload_sha256": payload_sha256,
         "source_query_state_sha256": source_query_state_sha256,
         "source_response_sha256": source_response_sha256,
+        "candidate_set_sha256": candidate_set_sha256,
+        "ground_sha256": ground_sha256,
+        "response_schema_sha256": response_schema_sha256,
     }
     return StageStateEnvelope(
         sample_identity_sha256=sample_identity_sha256,
@@ -341,6 +398,9 @@ def _build_envelope(
         payload_sha256=payload_sha256,
         source_query_state_sha256=source_query_state_sha256,
         source_response_sha256=source_response_sha256,
+        candidate_set_sha256=candidate_set_sha256,
+        ground_sha256=ground_sha256,
+        response_schema_sha256=response_schema_sha256,
         envelope_sha256=_sha256(body),
     )
 
@@ -352,6 +412,9 @@ def build_select_stage_envelope(
     speech_packet_sha256: str,
     source_query_state_sha256: str,
     source_response_sha256: str,
+    candidate_tool_names: Sequence[str],
+    ground_sha256: str,
+    response_schema_sha256: str,
     predecessor_envelope_sha256: str | None,
     occurrences: Sequence[SelectOccurrence],
 ) -> StageStateEnvelope:
@@ -372,6 +435,9 @@ def build_select_stage_envelope(
         payload=payload,
         source_query_state_sha256=source_query_state_sha256,
         source_response_sha256=source_response_sha256,
+        candidate_tool_names=candidate_tool_names,
+        ground_sha256=ground_sha256,
+        response_schema_sha256=response_schema_sha256,
     )
 
 
@@ -382,6 +448,9 @@ def build_joint_draft_stage_envelope(
     speech_packet_sha256: str,
     source_query_state_sha256: str,
     source_response_sha256: str,
+    candidate_tool_names: Sequence[str],
+    ground_sha256: str,
+    response_schema_sha256: str,
     predecessor_envelope_sha256: str | None,
     calls: Sequence[JointDraftCall],
 ) -> StageStateEnvelope:
@@ -402,6 +471,9 @@ def build_joint_draft_stage_envelope(
         payload=payload,
         source_query_state_sha256=source_query_state_sha256,
         source_response_sha256=source_response_sha256,
+        candidate_tool_names=candidate_tool_names,
+        ground_sha256=ground_sha256,
+        response_schema_sha256=response_schema_sha256,
     )
 
 
@@ -486,6 +558,11 @@ def parse_stage_state_envelope(
     expected_speech_packet_sha256: str,
     expected_stage: str,
     expected_predecessor_envelope_sha256: str | None,
+    expected_source_query_state_sha256: str,
+    expected_source_response_sha256: str,
+    expected_candidate_tool_names: Sequence[str],
+    expected_ground_sha256: str,
+    expected_response_schema_sha256: str,
 ) -> StageStateEnvelope:
     """Parse and verify one envelope against its expected workflow bindings."""
 
@@ -518,6 +595,9 @@ def parse_stage_state_envelope(
         payload_sha256=document["payload_sha256"],  # type: ignore[arg-type]
         source_query_state_sha256=document["source_query_state_sha256"],  # type: ignore[arg-type]
         source_response_sha256=document["source_response_sha256"],  # type: ignore[arg-type]
+        candidate_set_sha256=document["candidate_set_sha256"],  # type: ignore[arg-type]
+        ground_sha256=document["ground_sha256"],  # type: ignore[arg-type]
+        response_schema_sha256=document["response_schema_sha256"],  # type: ignore[arg-type]
         envelope_sha256=document["envelope_sha256"],  # type: ignore[arg-type]
         schema=schema,
     )
@@ -540,6 +620,22 @@ def parse_stage_state_envelope(
         expected_predecessor_envelope_sha256,
         field="expected_predecessor_envelope_sha256",
     )
+    _require_hash(
+        expected_source_query_state_sha256,
+        field="expected_source_query_state_sha256",
+    )
+    _require_hash(
+        expected_source_response_sha256,
+        field="expected_source_response_sha256",
+    )
+    _candidate_names, expected_candidate_set_sha256 = _candidate_binding(
+        expected_candidate_tool_names
+    )
+    _require_hash(expected_ground_sha256, field="expected_ground_sha256")
+    _require_hash(
+        expected_response_schema_sha256,
+        field="expected_response_schema_sha256",
+    )
     if expected_stage not in _STAGES:
         raise StageStateError("expected stage must be SELECT or JOINT_DRAFT")
     if envelope.sample_identity_sha256 != expected_sample_identity_sha256:
@@ -555,6 +651,17 @@ def parse_stage_state_envelope(
         != expected_predecessor_envelope_sha256
     ):
         raise StageStateError("predecessor envelope binding does not match")
+    if envelope.source_query_state_sha256 != expected_source_query_state_sha256:
+        raise StageStateError("source query binding does not match")
+    if envelope.source_response_sha256 != expected_source_response_sha256:
+        raise StageStateError("source response binding does not match")
+    if envelope.candidate_set_sha256 != expected_candidate_set_sha256:
+        raise StageStateError("candidate set binding does not match")
+    if envelope.ground_sha256 != expected_ground_sha256:
+        raise StageStateError("ground binding does not match")
+    if envelope.response_schema_sha256 != expected_response_schema_sha256:
+        raise StageStateError("response schema binding does not match")
+    _validate_payload_candidates(envelope.payload, expected_candidate_tool_names)
     return envelope
 
 

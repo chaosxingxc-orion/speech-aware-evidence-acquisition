@@ -169,6 +169,14 @@ def test_selection_schema_refuses_empty_duplicate_or_unknown_candidates() -> Non
         with pytest.raises(A2tResponseSchemaError, match=message):
             audio2tool_selection_response_format(rows, candidates)
 
+    with pytest.raises(A2tResponseSchemaError, match="bounds"):
+        audio2tool_selection_response_format(
+            rows,
+            ("known",),
+            min_calls=2,
+            max_calls=1,
+        )
+
 
 def test_locked_call_schema_preserves_occurrences_positions_and_legal_types() -> None:
     rows = (

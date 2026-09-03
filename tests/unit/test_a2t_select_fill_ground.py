@@ -11,10 +11,12 @@ from speech_aware_evidence_acquisition.rails.a2t_executable_semantic_cards impor
     ToolSemanticCard,
 )
 from speech_aware_evidence_acquisition.rails.a2t_select_fill_ground import (
+    JointKnowledgeGround,
     ParameterKnowledgeGround,
     RoutingKnowledgeGround,
     SelectFillGroundError,
     build_parameter_knowledge_ground,
+    build_joint_knowledge_ground,
     build_routing_knowledge_ground,
 )
 
@@ -104,6 +106,8 @@ def test_routing_ground_is_candidate_scoped_and_uses_selection_schema() -> None:
     assert packet.text.isascii()
     assert packet.text_sha256 == hashlib.sha256(packet.text.encode("ascii")).hexdigest()
     schema = packet.response_format["json_schema"]["schema"]
+    assert schema["minItems"] == 1
+    assert schema["maxItems"] == 7
     assert schema["items"]["properties"]["name"]["enum"] == ["alpha", "beta"]
 
 
@@ -151,6 +155,36 @@ def test_parameter_ground_accepts_empty_selection() -> None:
     assert schema["minItems"] == schema["maxItems"] == 0
     assert schema["prefixItems"] == []
     assert "items" not in schema
+
+
+def test_joint_ground_exposes_the_same_routing_and_parameter_facts() -> None:
+    packet = build_joint_knowledge_ground(
+        _corpus(),
+        ("beta", "alpha"),
+        contracts_by_tool=_contracts(),
+        canonicalizers=_canonicalizers(),
+    )
+
+    assert isinstance(packet, JointKnowledgeGround)
+    assert packet.candidate_tool_names == ("beta", "alpha")
+    assert "Choose: beta operation" in packet.text
+    assert "Avoid beta for unrelated operations." in packet.text
+    assert "Required keys: mode" in packet.text
+    assert "Declared defaults for omission semantics: mode defaults to one" in packet.text
+    assert "Omission rules: Do not invent an operation from its default." in packet.text
+    assert "entity: Copy entity text from speech without substitution." in packet.text
+    assert "Role guidance: role guidance for beta" in packet.text
+    assert "Example: use it" in packet.text
+    assert "full card text" not in packet.text
+    schema = packet.response_format["json_schema"]["schema"]
+    assert schema["minItems"] == 1
+    assert schema["maxItems"] == 7
+    assert {
+        branch["properties"]["name"]["const"]
+        for branch in schema["items"]["oneOf"]
+    } == {"alpha", "beta"}
+    assert packet.report["candidate_count"] == 2
+    assert packet.report["answer_cardinality"] == {"minimum": 1, "maximum": 7}
 
 
 @pytest.mark.parametrize(

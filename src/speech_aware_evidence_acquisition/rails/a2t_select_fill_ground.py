@@ -14,6 +14,7 @@ from .a2t_executable_semantic_cards import (
     ToolSemanticCard,
 )
 from .a2t_response_schema import (
+    audio2tool_call_array_response_format,
     audio2tool_locked_call_array_response_format,
     audio2tool_selection_response_format,
 )
@@ -29,6 +30,16 @@ class SelectFillGroundError(ValueError):
 
 @dataclass(frozen=True)
 class RoutingKnowledgeGround:
+    candidate_tool_names: tuple[str, ...]
+    text: str
+    text_sha256: str
+    response_format: Mapping[str, object]
+    response_format_sha256: str
+    report: Mapping[str, object]
+
+
+@dataclass(frozen=True)
+class JointKnowledgeGround:
     candidate_tool_names: tuple[str, ...]
     text: str
     text_sha256: str
@@ -197,6 +208,42 @@ def _finish(text: str, response_format: Mapping[str, object], report: dict[str, 
     return text, hashlib.sha256(text.encode("ascii")).hexdigest(), response_hash, report
 
 
+def _parameter_lines(
+    contract: CanonicalContract, card: ToolSemanticCard
+) -> tuple[str, ...]:
+    lines = [
+        "",
+        f"Exact tool: {contract.tool_name}",
+        f"Operation: {contract.operation}",
+        f"Signature: {card.signature}",
+        f"Constraints: {contract.constraints or '(none)'}",
+        "Required keys: " + (", ".join(contract.required_keys) or "(none)"),
+        "Optional keys: " + (", ".join(contract.optional_keys) or "(none)"),
+        "Conditional keys: "
+        + (", ".join(contract.conditional_keys) or "(none)"),
+        "Forbidden keys: " + (", ".join(contract.forbidden_keys) or "(none)"),
+        "Canonical key order: "
+        + (", ".join(contract.ordered_keys) or "(none)"),
+        "Declared defaults for omission semantics: "
+        + (contract.defaults or "(none)"),
+        "Omission rules: " + (" ".join(contract.omission_rules) or "(none)"),
+        "Applicable canonicalizers: "
+        + (", ".join(contract.canonicalization_rules) or "(none)"),
+    ]
+    lines.extend(
+        f"Legal key set: {{{', '.join(keys)}}}"
+        for keys in contract.legal_key_skeletons
+    )
+    lines.extend(
+        "Compatibility: "
+        f"{rule.legal_argument_key_set} -> {rule.value_forms}"
+        for rule in card.compatibility_rules
+    )
+    lines.extend(f"Role guidance: {item}" for item in card.role_guidance)
+    lines.extend(f"Example: {item}" for item in card.examples)
+    return tuple(lines)
+
+
 def build_routing_knowledge_ground(
     corpus: ExecutableSemanticCardCorpus,
     candidate_tool_names: Sequence[str],
@@ -230,12 +277,112 @@ def build_routing_knowledge_ground(
     for card in cards:
         lines.extend((f"Exact tool: {card.tool_name}", f"Choose: {card.choose_semantics}", f"Avoid: {card.avoid_semantics}"))
     text = "\n".join(lines) + "\n"
-    response = audio2tool_selection_response_format(_registry(cards), names, schema_name="audio2tool_routing_selection", max_calls=PARAMETER_MAX_OCCURRENCES)
+    response = audio2tool_selection_response_format(
+        _registry(cards),
+        names,
+        schema_name="audio2tool_routing_selection",
+        min_calls=1,
+        max_calls=PARAMETER_MAX_OCCURRENCES,
+    )
     text, text_hash, response_hash, report = _finish(text, response, {
         "candidate_count": len(names), "task_guidance_count": len(task), "selected_tool_contracts_rendered": 0,
         "signature_rendered": 0, "examples_rendered": 0, "rendered_ascii_bytes": len(text.encode("ascii")), "byte_cap": byte_cap,
     }, byte_cap)
     return RoutingKnowledgeGround(names, text, text_hash, response, response_hash, report)
+
+
+def build_joint_knowledge_ground(
+    corpus: ExecutableSemanticCardCorpus,
+    candidate_tool_names: Sequence[str],
+    *,
+    contracts_by_tool: Mapping[str, CanonicalContract],
+    canonicalizers: Mapping[str, str],
+    byte_cap: int = 65_536,
+) -> JointKnowledgeGround:
+    """Build a K-bounded joint SELECT-and-FILL packet with 1--7 calls."""
+
+    corpus = _corpus(corpus)
+    if isinstance(byte_cap, bool) or not isinstance(byte_cap, int) or byte_cap <= 0:
+        raise SelectFillGroundError("byte cap must be a positive integer")
+    names = _names(
+        candidate_tool_names,
+        minimum=1,
+        maximum=ROUTING_MAX_CANDIDATES,
+        label="candidate list",
+        unique=True,
+    )
+    semantic_cards = _bind(corpus, names)
+    contracts, canonicalizer_descriptions = _parameter_contracts(
+        tuple(card.tool_name for card in semantic_cards),
+        contracts_by_tool=contracts_by_tool,
+        canonicalizers=canonicalizers,
+    )
+    cards = _contract_cards(contracts, corpus.cards_by_name)
+    joint_task_ids = {
+        "multi-call-ordering",
+        "correction-resolution",
+        "implicit-end-state-resolution",
+        "multiturn-carryover",
+    }
+    task = tuple(
+        card.text for card in corpus.task_cards if card.card_id in joint_task_ids
+    )
+    lines = [
+        "AUDIO2TOOL JOINT ROUTING AND PARAMETER GROUND",
+        "Select and fill between one and seven requested calls using only the exact candidate tools below.",
+        "Use choose and avoid semantics for routing, then apply only the selected tools' public parameter contracts.",
+        "Preserve requested multiplicity and spoken order; a final correction supersedes an earlier value or action.",
+        "A public default may complete an explicitly requested operation when speech omits that argument.",
+        "A default never proves that an operation was requested and must not create a new call.",
+        "TASK-WIDE GUIDANCE:",
+        *task,
+        "CANONICALIZATION RULES:",
+        *(f"{name}: {description}" for name, description in canonicalizer_descriptions),
+        "CANDIDATE CONTRACTS:",
+    ]
+    for contract, card in zip(contracts, cards, strict=True):
+        semantic = corpus.cards_by_name[contract.tool_name]
+        lines.extend(
+            (
+                f"Choose: {semantic.choose_semantics}",
+                f"Avoid: {semantic.avoid_semantics}",
+                *_parameter_lines(contract, card),
+            )
+        )
+    text = "\n".join(lines) + "\n"
+    response = audio2tool_call_array_response_format(
+        _contract_registry(contracts),
+        cards,
+        schema_name="audio2tool_joint_candidate_calls",
+        min_calls=1,
+        max_calls=PARAMETER_MAX_OCCURRENCES,
+    )
+    text, text_hash, response_hash, report = _finish(
+        text,
+        response,
+        {
+            "candidate_count": len(names),
+            "candidate_tool_names": names,
+            "task_guidance_count": len(task),
+            "selected_default_declaration_count": sum(
+                bool(contract.defaults) for contract in contracts
+            ),
+            "selected_omission_rule_count": sum(
+                len(contract.omission_rules) for contract in contracts
+            ),
+            "selected_canonicalizer_count": len(canonicalizer_descriptions),
+            "answer_cardinality": {
+                "minimum": 1,
+                "maximum": PARAMETER_MAX_OCCURRENCES,
+            },
+            "rendered_ascii_bytes": len(text.encode("ascii")),
+            "byte_cap": byte_cap,
+        },
+        byte_cap,
+    )
+    return JointKnowledgeGround(
+        names, text, text_hash, response, response_hash, report
+    )
 
 
 def build_parameter_knowledge_ground(
@@ -280,42 +427,7 @@ def build_parameter_knowledge_ground(
         *(f"{name}: {description}" for name, description in canonicalizer_descriptions),
     ]
     for contract, card in zip(contracts, cards, strict=True):
-        lines.extend(
-            (
-                "",
-                f"Exact tool: {contract.tool_name}",
-                f"Operation: {contract.operation}",
-                f"Signature: {card.signature}",
-                f"Constraints: {contract.constraints or '(none)'}",
-                "Required keys: "
-                + (", ".join(contract.required_keys) or "(none)"),
-                "Optional keys: "
-                + (", ".join(contract.optional_keys) or "(none)"),
-                "Conditional keys: "
-                + (", ".join(contract.conditional_keys) or "(none)"),
-                "Forbidden keys: "
-                + (", ".join(contract.forbidden_keys) or "(none)"),
-                "Canonical key order: "
-                + (", ".join(contract.ordered_keys) or "(none)"),
-                "Declared defaults for omission semantics: "
-                + (contract.defaults or "(none)"),
-                "Omission rules: "
-                + (" ".join(contract.omission_rules) or "(none)"),
-                "Applicable canonicalizers: "
-                + (", ".join(contract.canonicalization_rules) or "(none)"),
-            )
-        )
-        lines.extend(
-            f"Legal key set: {{{', '.join(keys)}}}"
-            for keys in contract.legal_key_skeletons
-        )
-        lines.extend(
-            "Compatibility: "
-            f"{rule.legal_argument_key_set} -> {rule.value_forms}"
-            for rule in card.compatibility_rules
-        )
-        lines.extend(f"Role guidance: {item}" for item in card.role_guidance)
-        lines.extend(f"Example: {item}" for item in card.examples)
+        lines.extend(_parameter_lines(contract, card))
     text = "\n".join(lines) + "\n"
     response = audio2tool_locked_call_array_response_format(
         _contract_registry(contracts) if contracts else _registry(corpus.tool_cards),
@@ -334,5 +446,5 @@ def build_parameter_knowledge_ground(
 
 
 __all__ = [
-    "DEFAULT_BYTE_CAP", "PARAMETER_MAX_OCCURRENCES", "ROUTING_MAX_CANDIDATES", "ParameterKnowledgeGround", "RoutingKnowledgeGround", "SelectFillGroundError", "build_parameter_knowledge_ground", "build_routing_knowledge_ground",
+    "DEFAULT_BYTE_CAP", "PARAMETER_MAX_OCCURRENCES", "ROUTING_MAX_CANDIDATES", "JointKnowledgeGround", "ParameterKnowledgeGround", "RoutingKnowledgeGround", "SelectFillGroundError", "build_joint_knowledge_ground", "build_parameter_knowledge_ground", "build_routing_knowledge_ground",
 ]

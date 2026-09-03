@@ -84,28 +84,48 @@ cohort, and all test or confirmatory surfaces.
 | `JOINT_DRAFT_REVISE` | 2 | First contact matches `JOINT_ONE_CALL`; a fresh second workflow receives only canonical draft state and prospectively frozen joint knowledge, and may revise the full answer. |
 | `SELECT_THEN_FILL` | 2 | Routing-only SELECT, then selected-only parameter FILL with names/count locked. |
 
-All arms share the same speech packet, canonical OBS state, dense retrieval ordering, frozen core,
-decoding policy, stage scheduler, and knowledge source version. The equal-contact joint arm is the
-primary comparator. `SELECT_THEN_FILL - JOINT_ONE_CALL` alone cannot distinguish decomposition
-from the benefit of an extra inference contact.
+The three agentic arms share the same speech packet, canonical OBS state, dense retrieval ordering,
+frozen core, decoding policy, stage scheduler, and knowledge source version. `DIRECT_M0` remains a
+true one-contact speech-only reference and therefore does not consume OBS. The equal-answer-contact
+joint arm is the primary comparator. `SELECT_THEN_FILL - JOINT_ONE_CALL` alone cannot distinguish
+decomposition from the benefit of an extra inference contact.
+
+Generate `JOINT_ONE_CALL` exactly once. Seal that exact response as the inherited first-contact
+draft for `JOINT_DRAFT_REVISE`; do not regenerate it. Both FILL and REVISE receive the original
+speech packet, the same canonical OBS state, and their respective sealed first-stage state. The
+joint ground exposes the same eligible routing and parameter facts for all K=32 candidates that
+the split can expose across its two stages. Different realized prompt lengths are an intended
+systems outcome and are measured without padding.
+
+Every agentic answer grammar uses the task-wide one-to-seven call cardinality contract. SELECT
+allows one to seven ordered tool occurrences; JOINT allows one to seven complete calls; FILL locks
+the exact SELECT count and names. A zero-call result is a stage/schema failure, not a valid
+abstention. The speech-only M0 output remains governed by its frozen baseline protocol and is a
+secondary comparison.
 
 Each stage runs as a separate `execute_speech_agent_workflows` invocation with `branch_count=1`,
 two generation slots, and queue depth four. Generation is never prompt-batched. The local
 embedding stage may batch at most 32 texts. Phase barriers require all 104 SELECT rows to seal
-before any FILL row starts and all 104 drafts to seal before any revision starts.
+before any FILL row starts and all 104 joint answers to seal before any revision starts.
 
 Only canonical, hash-bound state crosses a barrier. It binds sample identity, split identity,
-speech packet, source request/response, stage, predecessor state, and payload hashes. Raw responses,
-cumulative chat history, gold, reference transcripts, test annotations, and future turns never
-cross the barrier. Fresh workflow/session means a fresh semantic request context; it does not claim
-physical KV-cache erasure.
+speech packet, source request/response, candidate-set order, ground, response schema, stage,
+predecessor state, and payload hashes. The receiving workflow externally verifies every binding,
+the one-to-seven cardinality, candidate membership, and the exact legal call schema before using
+the state. Raw responses, cumulative chat history, gold, reference transcripts, test annotations,
+and future turns never cross the barrier. Fresh workflow/session means a fresh semantic request
+context; it does not claim physical KV-cache erasure.
 
 ## Context and batching rules
 
 The physical context limit remains 32,768 tokens per slot. Every actual contact must fit the exact
 24,576-token operational cap, leaving an 8,192-token reserve for speech state and loop growth.
-Measure the assembled request immediately before every contact through the pinned live template
-and tokenizer path. Never infer the FILL or REVISE length from another stage or from an average.
+Measure the assembled request immediately before every contact through the pinned live template,
+tokenizer, and JSON-schema-to-grammar path. Before a phase starts, every one of its 104 exact
+requests must pass. In particular, materialize and validate the complete dynamic FILL and REVISE
+batches after their first-stage barrier and before sending any second-stage contact. Never infer a
+length from another stage or from an average, and never allow a late overflow to create a partial
+flight.
 
 Batching remains valid only where semantics permit it:
 
@@ -127,6 +147,12 @@ For each row, assign exactly one mechanism category after sealing:
 - `FILL`: the selected name multiset and multiplicity are correct, but the final official call
   multiset is not exact;
 - `SUCCESS`: the final official exact metric is one.
+
+Apply this attribution per arm: SELECT uses the sealed selector names; JOINT reports draft and
+revised name correctness separately; M0 has full-registry access and is never assigned a K=32
+SUPPLY error. Conditional FILL accuracy is diagnostic only because conditioning on a model-selected
+event changes the compared subsets. The paired final exact outcome remains the causal decision
+criterion.
 
 Parse, schema, transport, and budget failures are reported separately. The official scorer is
 order-insensitive, so occurrence order is preserved internally but no order-improvement claim is
