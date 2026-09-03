@@ -1,0 +1,88 @@
+{
+  "schema": "saea-a2t-canonical-family-action-ground-model-free-audit-v1",
+  "execution_profile": "model-free-check",
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "outbound_network_contacts": 0,
+  "source": {
+    "path": "knowledge/audio2tool/g5-exhaustive-family-contracts-v1/corpus.json",
+    "sha256": "92684a16e39985d3c4c6e7e6d62ac54feaa357eaa7c24c744df21950e51f95e5"
+  },
+  "implementation": {
+    "path": "src/speech_aware_evidence_acquisition/rails/a2t_canonical_family_ground.py",
+    "sha256": "12cae3f3dff2e8dc71453f71f1d71bf4a3b74d1d765ed819d8eece698abb6408"
+  },
+  "coverage": {
+    "family_count": 28,
+    "tool_count": 152,
+    "strict_schema_branch_count": 349,
+    "maximum_family_tool_count": 13,
+    "maximum_family_schema_branch_count": 34,
+    "forbidden_example_marker_hits": 0
+  },
+  "qualified_compatibility": {
+    "minimum_construction_support": 2,
+    "rule_count": 43,
+    "tool_count": 35,
+    "extension_rule_count": 8,
+    "public_boolean_lexical_rule_count": 31,
+    "nullable_lexical_rule_count": 8,
+    "constrained_nullable_forms_excluded": 9,
+    "singleton_skeletons_excluded": 40,
+    "malformed_key_skeletons_excluded": 4,
+    "ambiguous_extension_skeletons_excluded": 0,
+    "source_utterances_rendered": 0,
+    "source_sample_ids_rendered": 0,
+    "call_renders_rendered": 0,
+    "concrete_argument_values_rendered": 0,
+    "reference_transcripts_rendered": 0,
+    "evaluation_rows_consumed": 0
+  },
+  "family_response_cap_proof": {
+    "frozen_construction_row_count": 12601,
+    "maximum_total_gold_call_count": 7,
+    "maximum_same_family_gold_call_count": 4,
+    "configured_maximum_family_response_calls": 4,
+    "complete_on_frozen_construction_rows": true
+  },
+  "rendered_card_ascii_bytes": {
+    "minimum": 2494,
+    "median": 4395.0,
+    "maximum": 9083,
+    "maximum_family": "smart-car-climate-environment"
+  },
+  "response_schema_ascii_bytes": {
+    "minimum": 621,
+    "median": 3020.0,
+    "maximum": 10669,
+    "maximum_family": "smart-home-lighting"
+  },
+  "conservative_request_bound": {
+    "serialized_request_ascii_bytes_maximum": 17900,
+    "bounded_observation_reserve": 1024,
+    "speech_feature_token_reserve": 169,
+    "special_token_reserve": 512,
+    "completion_token_reserve": 1024,
+    "total_maximum": 20629,
+    "operational_cap": 24576,
+    "operational_margin_minimum": 3947,
+    "physical_context": 32768,
+    "physical_context_margin_minimum": 12139,
+    "worst_family": "smart-home-lighting",
+    "method": "UTF-8 request bytes are treated as an upper bound on rendered text tokens; every runtime contact must still be remeasured after actual OBS insertion"
+  },
+  "verification": {
+    "focused_tests": {
+      "passed": 25,
+      "failed": 0
+    },
+    "related_tests": {
+      "passed": 113,
+      "skipped": 1,
+      "failed": 0
+    },
+    "scoped_ruff": "passed"
+  },
+  "disposition": "RENDERER_AND_FAMILY_SCHEMA_READY_COMPLETE_RUNTIME_NOT_YET_PREREGISTERED",
+  "claim_scope": "model-free renderer, family schema, compatibility, response-cap, and per-family request-capacity evidence only; shared OBS, runtime merge, trace sealing, post-seal ceiling, efficacy, policy, scale, test, and Stage-3 claims remain open"
+}

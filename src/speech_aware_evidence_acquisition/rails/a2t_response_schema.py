@@ -367,10 +367,10 @@ def audio2tool_call_array_response_format(
         or isinstance(max_calls, bool)
         or not isinstance(min_calls, int)
         or not isinstance(max_calls, int)
-        or min_calls < 1
+        or min_calls < 0
         or max_calls < min_calls
     ):
-        raise A2tResponseSchemaError("call bounds must be positive integers with min <= max")
+        raise A2tResponseSchemaError("call bounds must be non-negative integers with min <= max")
     registry = _load_registry(registry_rows)
     if not selected_cards:
         raise A2tResponseSchemaError("at least one selected tool card is required")

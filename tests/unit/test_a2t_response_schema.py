@@ -105,6 +105,19 @@ def test_builds_a_deterministic_strict_subset_schema_per_legal_skeleton() -> Non
         assert branch["properties"]["arguments"]["additionalProperties"] is False
 
 
+def test_strict_subset_schema_can_allow_an_empty_family_local_abstention() -> None:
+    response_format = audio2tool_call_array_response_format(
+        (_row("ping", "ping()"),),
+        (_card("ping", ((),)),),
+        min_calls=0,
+        max_calls=1,
+    )
+
+    schema = response_format["json_schema"]["schema"]
+    assert schema["minItems"] == 0
+    assert schema["maxItems"] == 1
+
+
 def test_outer_response_format_constrains_only_shape_and_registered_names() -> None:
     rows = (
         _row("setLightState", "setLightState(deviceId: String, state: OnOff?)"),
