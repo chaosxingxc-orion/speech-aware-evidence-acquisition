@@ -148,6 +148,7 @@ class _LiveChecks:
 def test_protocol_freezes_the_fair_six_contact_schedule() -> None:
     module = _launcher()
 
+    assert module.RUN_ID == "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2"
     assert module.PHASE_ORDER == (
         "M0_DIRECT",
         "OBS_SEMANTIC_STATE",
@@ -228,6 +229,56 @@ def test_candidate_identity_binds_scores_and_keeps_names_only_stage_hash() -> No
 
     assert first.candidate_set_sha256 != second.candidate_set_sha256
     assert first.candidate_order_sha256 == module.sha256_json(list(names))
+
+
+def test_prepared_bytes_match_adapter_round_trip_and_transport_serialization() -> None:
+    module = _launcher()
+    packet_id = "fresh/000"
+    body = _body("fresh:000", packet_id)
+    request = module.PreparedGenerationRequest.from_body(
+        phase=module.SELECT_PHASE,
+        sample_id="fresh:000",
+        packet_id=packet_id,
+        body=body,
+        ground_sha256=hashlib.sha256(b"Return the exact JSON answer.").hexdigest(),
+    )
+
+    # FrozenCoreAdapter first canonicalizes the full payload. The transport
+    # then decodes it, rebuilds the two messages, and finally uses stdlib
+    # json.dumps in insertion order for the physical HTTP body.
+    decoding = {key: value for key, value in body.items() if key != "messages"}
+    decoding["id_slot"] = 0
+    canonicalized = json.loads(
+        json.dumps(
+            {
+                "decoding_params": decoding,
+                "speech_feature_parts": [
+                    body["messages"][1]["content"][0]["speech_features"]
+                ],
+            },
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+    )
+    descriptor = canonicalized["speech_feature_parts"][0]
+    messages = [
+        body["messages"][0],
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "input_speech_features",
+                    "speech_features": dict(descriptor),
+                },
+                body["messages"][1]["content"][1],
+            ],
+        },
+    ]
+    physical = {"messages": messages}
+    physical.update(canonicalized["decoding_params"])
+
+    assert request.body_bytes_by_slot[0] == json.dumps(physical).encode("utf-8")
 
 
 def test_whole_phase_preflight_seals_two_slot_body_allowlist_before_sends() -> None:

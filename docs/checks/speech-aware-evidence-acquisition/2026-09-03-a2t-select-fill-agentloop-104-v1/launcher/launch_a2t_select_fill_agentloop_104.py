@@ -58,7 +58,7 @@ BUNDLE_SPLIT_IDENTITY_HASH = (
 BUNDLE_PROTOCOL_SHA256 = (
     "4f192381d41c96b55d53433035ff0566795b0fb772503a59555a0f83d15d1171"
 )
-RUN_ID = "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-V1"
+RUN_ID = "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2"
 PREPROCESS_REPORT_PATH = REPO / (
     "docs/checks/speech-aware-evidence-acquisition/"
     "2026-09-03-a2t-select-fill-fresh-preprocess-v1/preprocess-report.json"
@@ -383,16 +383,51 @@ class PreparedGenerationRequest:
         if "id_slot" in copied:
             raise RuntimeError("request template must not preselect a generation slot")
         try:
-            # This intentionally mirrors LlamaServerTransport.__call__: the
-            # physical request is stdlib json.dumps output in insertion order,
-            # not the canonical research-artifact encoding.
-            base = json.dumps(copied).encode("utf-8").decode("ascii")
+            # FrozenCoreAdapter canonicalizes and decodes its full payload
+            # before LlamaServerTransport rebuilds the message list.  That
+            # round trip sorts decoding/schema keys and speech-descriptor
+            # keys; the final HTTP body is then stdlib json.dumps output in
+            # insertion order.  Reproduce both steps exactly here.
+            normalized_messages: list[dict[str, object]] = []
+            for message in messages:
+                assert isinstance(message, Mapping)
+                content = message.get("content")
+                if isinstance(content, list):
+                    normalized_content: object = []
+                    for part in content:
+                        assert isinstance(part, Mapping)
+                        normalized_part = dict(part)
+                        descriptor = normalized_part.get("speech_features")
+                        if normalized_part.get("type") == "input_speech_features":
+                            assert isinstance(descriptor, Mapping)
+                            normalized_part["speech_features"] = json.loads(
+                                canonical_json_bytes(descriptor)
+                            )
+                        normalized_content.append(normalized_part)
+                else:
+                    normalized_content = content
+                normalized_messages.append(
+                    {"role": message.get("role"), "content": normalized_content}
+                )
+            decoding = {
+                key: value for key, value in copied.items() if key != "messages"
+            }
+            normalized_decoding = json.loads(canonical_json_bytes(decoding))
+            base_body: dict[str, object] = {"messages": normalized_messages}
+            base_body.update(normalized_decoding)
+            base = json.dumps(base_body).encode("utf-8").decode("ascii")
+            bodies_list: list[bytes] = []
+            for slot in range(SLOT_COUNT):
+                slot_decoding = {**decoding, "id_slot": slot}
+                normalized_slot_decoding = json.loads(
+                    canonical_json_bytes(slot_decoding)
+                )
+                physical: dict[str, object] = {"messages": normalized_messages}
+                physical.update(normalized_slot_decoding)
+                bodies_list.append(json.dumps(physical).encode("utf-8"))
         except (TypeError, UnicodeDecodeError, UnicodeEncodeError) as error:
             raise RuntimeError("physical generation body must be ASCII JSON") from error
-        bodies = tuple(
-            json.dumps({**copied, "id_slot": slot}).encode("utf-8")
-            for slot in range(SLOT_COUNT)
-        )
+        bodies = tuple(bodies_list)
         hashes = tuple(hashlib.sha256(item).hexdigest() for item in bodies)
         return cls(
             phase=phase,

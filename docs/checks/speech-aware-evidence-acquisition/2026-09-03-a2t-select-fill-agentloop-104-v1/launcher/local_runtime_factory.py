@@ -280,7 +280,7 @@ def parse_embedding_execution_plan(
         **{key: value for key, value in raw.items() if key in allowed}
     ).validate()
     if (
-        plan.run_id != "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-V1-EMBED"
+        plan.run_id != "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2-EMBED"
         or plan.execution_profile != "bounded-discovery-probe"
         or plan.carrier_lock_key != AUDIO2TOOL_LOCK_KEY
         or plan.split_role != "discovery"
