@@ -127,6 +127,7 @@ addopts = "--strict-markers"
 markers = [
     "requires_wsl2_execution_authority: needs the WSL2 compute authority (this repository's sole formal execution authority); the real gate refuses elsewhere, by design",
     "requires_umbrella_checkout: reads the real umbrella docs/datasets.lock.json from the adjacent-checkout layout, which is a different Git repository",
+    "requires_tfrl_vw: needs the pinned optional vowpalwabbit==9.11.2 binary runtime; base installs skip rather than emulate it",
 ]
 
 [tool.ruff]

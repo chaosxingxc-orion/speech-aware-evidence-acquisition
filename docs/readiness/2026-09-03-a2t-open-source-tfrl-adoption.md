@@ -18,6 +18,24 @@ This decision changes the controller implementation path. It does not promote
 G7, authorize new model contact, open test data, or establish an effectiveness
 claim.
 
+## Production implementation boundary
+
+The active TFRL production path is the thin adapter in
+`analysis/training_free_vw_control.py`. Local code may validate and render ADF
+examples, call the pinned upstream workspace's `learn` and `predict` methods,
+and save, load, and hash upstream policy artifacts. It must not implement a
+study-owned learner, value update, reward-memory rule, or learned action-scoring
+algorithm. Mechanically sampling the upstream probability vector with a logged
+external random draw remains adapter work; the probabilities and their updates
+remain owned by Vowpal Wabbit.
+
+The repository's earlier handwritten memory controllers, including the
+`training_free_*_memory.py` modules, are historical discovery records and are
+explicitly excluded from this active path. Keep those files intact for audit
+and reproducibility, but do not import, wrap, extend, or select them from a
+production Vowpal Wabbit launcher. Their prior results remain evidence about
+the experiments that produced them; they are not the adopted TFRL learner.
+
 ## Why Vowpal Wabbit is the primary asset
 
 Vowpal Wabbit provides the capabilities the AgentLoop needs without adding

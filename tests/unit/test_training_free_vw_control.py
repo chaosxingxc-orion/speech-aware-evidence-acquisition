@@ -21,7 +21,10 @@ from speech_aware_evidence_acquisition.analysis.training_free_vw_control import 
     build_adf_example,
     build_logged_adf_example,
     create_workspace,
+    learn_feedback,
+    load_policy_artifact,
     predict_action,
+    save_policy_artifact,
     validate_probabilities,
 )
 
@@ -207,6 +210,44 @@ class _FakeWorkspace:
         return self.result
 
 
+class _FakeLearningWorkspace:
+    def __init__(self) -> None:
+        self.examples: list[str] = []
+
+    def learn(self, example: str) -> None:
+        self.examples.append(example)
+
+
+def test_learn_feedback_builds_one_logged_example_and_delegates_to_upstream() -> None:
+    workspace = _FakeLearningWorkspace()
+
+    logged = learn_feedback(
+        workspace,
+        _state(),
+        _actions(),
+        chosen_action_id="resolve",
+        terminal_reward=1.0,
+        propensity=0.3,
+    )
+
+    assert workspace.examples == [logged.text]
+    assert logged.chosen_action_id == "resolve"
+    assert logged.cost == -1.0
+    assert logged.propensity == 0.3
+
+
+def test_learn_feedback_requires_the_upstream_learn_api() -> None:
+    with pytest.raises(VwAdapterError, match="learn"):
+        learn_feedback(
+            object(),
+            _state(),
+            _actions(),
+            chosen_action_id="resolve",
+            terminal_reward=1.0,
+            propensity=0.3,
+        )
+
+
 def test_predict_action_returns_full_distribution_and_logged_propensity() -> None:
     workspace = _FakeWorkspace([(0, 0.1), (1, 0.7), (2, 0.2)])
 
@@ -302,3 +343,155 @@ def test_create_workspace_passes_the_exact_pinned_argument_string(
 
     assert workspace is not None
     assert received == [DEFAULT_VW_CONFIG.argument_string]
+
+
+class _FakeSavingWorkspace:
+    def __init__(self, policy_bytes: bytes) -> None:
+        self.policy_bytes = policy_bytes
+        self.saved_paths: list[Path] = []
+
+    def save(self, filename: str | Path) -> None:
+        path = Path(filename)
+        self.saved_paths.append(path)
+        path.write_bytes(self.policy_bytes)
+
+
+def test_save_policy_artifact_uses_upstream_save_and_binds_bytes_version_and_config(
+    tmp_path: Path,
+) -> None:
+    artifact_path = tmp_path / "controller.vw"
+    workspace = _FakeSavingWorkspace(b"pinned-vw-policy")
+
+    receipt = save_policy_artifact(workspace, artifact_path)
+    payload = json.loads(receipt.canonical_json)
+
+    assert workspace.saved_paths == [artifact_path]
+    assert payload["schema"] == "saea-training-free-vw-policy-artifact-v1"
+    assert payload["upstream"] == {
+        "distribution": "vowpalwabbit",
+        "version": "9.11.2",
+    }
+    assert payload["configuration"]["arguments"] == list(DEFAULT_VW_CONFIG.arguments)
+    assert payload["configuration"]["adapter_receipt_sha256"] == adapter_receipt().sha256
+    assert payload["artifact"] == {
+        "bytes": len(b"pinned-vw-policy"),
+        "sha256": hashlib.sha256(b"pinned-vw-policy").hexdigest(),
+    }
+    assert payload["upstream_api"] == {
+        "load": "Workspace(arg_list=[...,--initial_regressor,PATH])",
+        "save": "Workspace.save(PATH)",
+    }
+    assert receipt.sha256 == hashlib.sha256(receipt.canonical_json.encode()).hexdigest()
+
+
+def test_save_policy_artifact_requires_upstream_save(tmp_path: Path) -> None:
+    with pytest.raises(VwAdapterError, match="save"):
+        save_policy_artifact(object(), tmp_path / "controller.vw")
+
+
+def test_load_policy_artifact_verifies_receipt_then_uses_initial_regressor_arg_list(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    import speech_aware_evidence_acquisition.analysis.training_free_vw_control as module
+
+    artifact_path = tmp_path / "controller.vw"
+    receipt = save_policy_artifact(
+        _FakeSavingWorkspace(b"verified-policy"), artifact_path
+    )
+    received: list[list[str]] = []
+    loaded_workspace = object()
+
+    def workspace_type(*, arg_list: list[str]) -> object:
+        received.append(arg_list)
+        return loaded_workspace
+
+    fake = SimpleNamespace(
+        __version__="9.11.2",
+        pyvw=SimpleNamespace(Workspace=workspace_type),
+    )
+    monkeypatch.setattr(module, "_import_vowpalwabbit", lambda: fake)
+
+    loaded = load_policy_artifact(artifact_path, receipt)
+
+    assert loaded is loaded_workspace
+    assert received == [
+        [
+            *DEFAULT_VW_CONFIG.arguments,
+            "--initial_regressor",
+            str(artifact_path),
+        ]
+    ]
+
+
+def test_load_policy_artifact_refuses_byte_drift_before_importing_runtime(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    import speech_aware_evidence_acquisition.analysis.training_free_vw_control as module
+
+    artifact_path = tmp_path / "controller.vw"
+    receipt = save_policy_artifact(_FakeSavingWorkspace(b"original"), artifact_path)
+    artifact_path.write_bytes(b"tampered")
+    imported = False
+
+    def unexpected_import() -> object:
+        nonlocal imported
+        imported = True
+        raise AssertionError("runtime import must follow artifact verification")
+
+    monkeypatch.setattr(module, "_import_vowpalwabbit", unexpected_import)
+
+    with pytest.raises(VwAdapterError, match="artifact SHA-256 mismatch"):
+        load_policy_artifact(artifact_path, receipt)
+
+    assert imported is False
+
+
+def test_load_policy_artifact_refuses_configuration_drift(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    import speech_aware_evidence_acquisition.analysis.training_free_vw_control as module
+
+    artifact_path = tmp_path / "controller.vw"
+    receipt = save_policy_artifact(_FakeSavingWorkspace(b"original"), artifact_path)
+    imported = False
+
+    def unexpected_import() -> object:
+        nonlocal imported
+        imported = True
+        raise AssertionError("runtime import must follow receipt verification")
+
+    monkeypatch.setattr(module, "_import_vowpalwabbit", unexpected_import)
+    drifted = type(DEFAULT_VW_CONFIG)(
+        arguments=(*DEFAULT_VW_CONFIG.arguments[:-2], "20260904", "--quiet")
+    )
+
+    with pytest.raises(VwAdapterError, match="configuration mismatch"):
+        load_policy_artifact(artifact_path, receipt, config=drifted)
+
+    assert imported is False
+
+
+def test_load_policy_artifact_refuses_receipt_self_hash_drift(tmp_path: Path) -> None:
+    artifact_path = tmp_path / "controller.vw"
+    receipt = save_policy_artifact(_FakeSavingWorkspace(b"original"), artifact_path)
+    drifted = type(receipt)(receipt.canonical_json, "0" * 64)
+
+    with pytest.raises(VwAdapterError, match="receipt SHA-256 mismatch"):
+        load_policy_artifact(artifact_path, drifted)
+
+
+def test_load_policy_artifact_refuses_rehashed_receipt_content_drift(
+    tmp_path: Path,
+) -> None:
+    artifact_path = tmp_path / "controller.vw"
+    receipt = save_policy_artifact(_FakeSavingWorkspace(b"original"), artifact_path)
+    payload = json.loads(receipt.canonical_json)
+    payload["upstream_api"]["load"] = "local-loader"
+    canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+    drifted = type(receipt)(
+        canonical,
+        hashlib.sha256(canonical.encode()).hexdigest(),
+    )
+
+    with pytest.raises(VwAdapterError, match="receipt content mismatch"):
+        load_policy_artifact(artifact_path, drifted)

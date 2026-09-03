@@ -1,0 +1,156 @@
+{
+  "schema": "saea-a2t-g8b-action-support-reachability-fixed16-experiment-v1",
+  "experiment_id": "SAEA-A2T-G8B-ACTION-SUPPORT-REACHABILITY-FIXED16-V1",
+  "status": "PREREGISTERED_NO_CONTACT_AUTHORIZATION",
+  "date": "2026-09-03",
+  "execution_profile": "bounded-discovery-probe",
+  "claim_scope": "Prospective Stage-2 fixed16 complete-macro-action reachability successor screen only; no policy fitting, policy effectiveness, confirmation, scale, test, or paper claim.",
+  "scientific_objective": "Determine whether four fully specified macro-actions contain a per-row branch oracle capable of reaching at least 15/16 official exact matches and greater than 0.90 official slot micro-F1 before collecting propensity-logged discovery data for an open-source controller.",
+  "population": {
+    "receipt": "docs/receipts/a2t/A2T-G8B-ACTION-SUPPORT-FIXED16.json",
+    "receipt_sha256": "9a7b60394f53578d5ab948d1e5de4737cff73d1803a86883182c90fd0cc48705",
+    "split_name": "A2T-G8B-ACTION-SUPPORT-FIXED16",
+    "split_role": "discovery",
+    "source_surface": "exact 28-row support_remainder in docs/receipts/a2t/A2T-G8-ACTION-SUPPORT-FIXED16.json",
+    "count": 16,
+    "tiers": 8,
+    "items_per_tier": 2,
+    "support_remainder_count": 12,
+    "split_identity_hash": "bd2c17552efb7139359087e313e0290aaafe9999d695d94ece48650c7d9ef5c6",
+    "selection_surfaces": ["key", "sample_id", "tier"],
+    "selection_excludes": ["task text", "audio", "gold", "outputs", "scores", "rewards", "test", "future turns"]
+  },
+  "frozen_inputs": {
+    "baseline_config": "configs/baseline/a2t-g8b-action-support-reachability-agentloop.json",
+    "same_row_direct_comparator": "Reuse the frozen G1 M0 final response by exact sample identity; make no new STOP_M0 contact.",
+    "construction_example_ground": "Reuse the exact G7 V2 frozen construction-example ground and its 28 frozen family boundaries without editing G7 artifacts.",
+    "shared_observation": "One frozen-core OBS response per row from the original complete-dialogue speech packet, shared byte-for-byte by the three agent branches.",
+    "shared_family_evidence": "Twenty-eight frozen-core family EVIDENCE responses per row, one per frozen family against the same speech packet, shared byte-for-byte by the three agent branches.",
+    "evidence_normalization": "Apply the frozen G7 strict-first normalization once. Seal the normalized all-tool sheet before deriving any branch-specific supply.",
+    "final_authority": "Every valid branch final response is authored by the frozen Qwen3-Omni core and must use the unchanged official JSON-array surface. No controller, parser, filter, or verifier may synthesize or repair a final answer."
+  },
+  "macro_actions": [
+    {
+      "action_id": "STOP_M0",
+      "definition": "Return the sealed same-row G1 M0 final response by exact identity filtering.",
+      "new_model_contacts_per_row": 0,
+      "uses_shared_obs_or_evidence": false,
+      "final_author": "frozen core in the sealed G1 M0 run"
+    },
+    {
+      "action_id": "EXHAUSTIVE_G7",
+      "definition": "Resolve once from the original speech packet, shared OBS, complete frozen all-tool execution sheet, and all 28 normalized family assessments exactly as in G7 V2.",
+      "new_branch_contacts_per_row": 1,
+      "speech_carrying_branch_contacts_per_row": 1,
+      "final_author": "frozen core"
+    },
+    {
+      "action_id": "SUPPORT_ONLY_RESOLVE",
+      "definition": "Deterministically retain only registered tools whose normalized family status is exactly support, in frozen registry order, preserve their sealed evidence references and exact execution-sheet entries, remove every contradict and uncertain candidate, and resolve once from that supply plus the original speech packet and shared OBS.",
+      "filter_is_model_free": true,
+      "empty_support_behavior": "Pass an explicit empty support-only sheet to the resolver; do not add a fallback, infer a tool, or reuse an exhaustive candidate.",
+      "new_branch_contacts_per_row": 1,
+      "speech_carrying_branch_contacts_per_row": 1,
+      "final_author": "frozen core"
+    },
+    {
+      "action_id": "DECOMPOSED_SELECT_BIND_RESOLVE",
+      "definition": "Use up to three frozen-core contacts to decompose USE without changing the shared OBS or 28-family evidence: select exact registered tool names and call order, bind arguments for only nonempty sealed selections, then author the official final response.",
+      "selection_contacts_per_row": 1,
+      "selection_scope": "The speech-carrying selection contact receives the original dialogue, shared OBS, family objectives and operations, and the complete normalized tool-status surface without argument schemas. It returns only an ordered JSON list of exact registered tool names, may preserve repeated calls, and may not emit arguments or answer the task.",
+      "binding_contacts_per_row_maximum": 1,
+      "binding_scope": "For a nonempty valid selection only, the speech-carrying binding contact receives the original dialogue, shared OBS, the sealed ordered tool selection, and only those tools' legal key skeletons and types. It returns one ordered argument object per selected call and may not add, remove, rename, reorder, or answer a tool call.",
+      "resolve_scope": "The speech-carrying final contact receives the original dialogue, shared OBS, sealed tool selection, and sealed typed bindings. It remains the only new contact in this branch authorized to emit the official tool-call JSON array.",
+      "empty_selection_behavior": "Log a model-free empty-bind passthrough, then send the empty sealed selection and empty sealed binding to final resolve without fallback, inference, repair, or reuse.",
+      "invalid_output_behavior": "Preserve the raw frozen-core stage output as the row-local invalid branch output. Do not make a later contact for that row and do not retry, repair, substitute, or synthesize a final answer.",
+      "new_branch_contacts_per_row_maximum": 3,
+      "speech_carrying_branch_contacts_per_row_maximum": 3,
+      "final_author": "frozen core for valid final resolve only"
+    }
+  ],
+  "protocol": {
+    "ordered_shared_contacts": ["OBS_SPEECH_PACKET", "EVIDENCE_28_SPEECH_PACKET"],
+    "shared_contacts_per_row": 29,
+    "ordered_branch_contacts": ["EXHAUSTIVE_G7_RESOLVE", "SUPPORT_ONLY_RESOLVE", "DECOMPOSED_SELECT", "DECOMPOSED_BIND_IF_NONEMPTY", "DECOMPOSED_RESOLVE"],
+    "new_contacts_per_row_maximum": 34,
+    "all_four_outputs_required_per_row": true,
+    "cohort_continues_after_row_local_invalid_output": true,
+    "branch_prompts_frozen_before_contact": true,
+    "branch_outputs_sealed_before_gold": true,
+    "temperature": 0,
+    "repair_contacts": 0,
+    "retries": 0,
+    "resends": 0,
+    "cumulative_raw_history": false,
+    "max_concurrent_model_requests": 2,
+    "batch_slots": 2,
+    "queue_depth": 4,
+    "sample_affine_state": true,
+    "network_jitter_testing": false,
+    "empty_selection_binding_behavior": "Record one model-free EMPTY_BIND_PASSTHROUGH event and make no binding contact. The empty sealed selection and empty sealed binding proceed to final resolve.",
+    "invalid_decomposed_output_behavior": "Treat an invalid selection or invalid binding for a nonempty valid selection as the row-local raw frozen-core invalid output; make no later row contact, retry, repair, or substitution. Continue the cohort and score all 16 rows.",
+    "decomposed_response_contract": {
+      "maximum_selection_calls": 32,
+      "selection_response_utf8_bytes_maximum": 4096,
+      "binding_response_utf8_bytes_maximum": 12288,
+      "duplicates": "Preserve every repeated exact registered name in order.",
+      "binding_alignment": "Require exactly one typed binding object per sealed selection occurrence, with identical name, count, and order.",
+      "row_local_terminal_behavior": "On any invalid decomposed-stage output, retain the raw frozen-core bytes as that branch's row-local invalid output, skip all later contacts for that row, and allow other rows and all four 16-row manifests to complete for one official score each."
+    }
+  },
+  "prompt_fit": {
+    "per_slot_context_tokens": 32768,
+    "prompt_plus_completion_tokens_maximum": 24576,
+    "operational_headroom_tokens_minimum": 8192,
+    "special_token_reserve": 512,
+    "decomposed_selection_completion_tokens": 4096,
+    "decomposed_binding_completion_tokens": 12288,
+    "measurement_rule": "Render and measure the actual serialized request, speech reserve, special-token reserve, and declared completion reserve immediately before every actual model contact. Never extrapolate later loop requests from an earlier fixed estimate.",
+    "overflow_policy": "Refuse before contact; never trim, lower a completion reserve, silently truncate, or move a sample across slots."
+  },
+  "contact_budget": {
+    "sample_count": 16,
+    "shared_model_calls": 464,
+    "branch_model_calls_maximum": 80,
+    "max_model_calls": 544,
+    "actual_dynamic_model_calls_upper_bound": 544,
+    "actual_dynamic_rule": "Each empty valid selection omits its binding model contact through the logged model-free empty-bind passthrough; each row-local invalid decomposed stage omits its later row contacts. Actual model calls may be lower but never exceed 544.",
+    "stop_m0_new_contacts": 0,
+    "embedding_contacts": 0,
+    "tokenizer_contacts": 0,
+    "paid_api_spend": 0,
+    "audio_seconds_rule": "Compute and bind the exact repeated-speech reservation from the selected rows before any future execution authorization; this preregistration does not read audio or authorize contact."
+  },
+  "sealing_and_scoring": {
+    "gold_open_rule": "Keep gold, reference transcripts, scorer outputs, and all evaluation annotations closed until four complete 16-row branch manifests, traces, retained raw invalid outputs where applicable, final responses where applicable, and costs are sealed.",
+    "official_scorer": "unchanged a2t-toolcall scorer",
+    "manifest_rule": "Run one official scorer process on each complete 16-row branch manifest, including row-local invalid outputs without later-row repair. Never shard a manifest or average partial scorer results.",
+    "outer_parallelism": "Independent complete branch manifests may be scored in parallel by an outer coordinator only after the common four-manifest gold-open condition is satisfied.",
+    "score_invocation_limit": "Exactly one official scoring invocation per complete branch manifest.",
+    "per_sample_capture": "Persist aggregate and per-sample scorer output from that same invocation; never rerun a branch scorer to recover row detail.",
+    "post_score_join_key": "exact sample identity"
+  },
+  "post_score_branch_oracle": {
+    "branch_order_for_ties": ["STOP_M0", "EXHAUSTIVE_G7", "SUPPORT_ONLY_RESOLVE", "DECOMPOSED_SELECT_BIND_RESOLVE"],
+    "per_row_selection": "For each row, choose a branch with official exact match if one exists; among tied exact branches choose the highest row-level slot F1, then tool correctness, then the frozen branch order. If no branch is exact, choose the highest row-level slot F1, then tool correctness, then the frozen branch order.",
+    "aggregate_metrics": "Construct the 16-row oracle manifest from the selected sealed branch responses and compute unchanged official exact match, tool accuracy, and slot micro-F1 once.",
+    "interpretation": "This is a gold-informed action-set ceiling only. It is not a deployable policy, training result, or unbiased policy estimate."
+  },
+  "promotion_rule": {
+    "oracle_exact_count_minimum": 15,
+    "oracle_slot_micro_f1_strictly_greater_than": 0.9,
+    "all_conditions_required": true,
+    "pass": "Only if the post-score branch oracle reaches at least 15/16 exact and slot micro-F1 greater than 0.90 may a separately preregistered approximately 100-row randomized, propensity-logged discovery experiment fit a pinned open-source controller.",
+    "failure": "If either oracle condition fails, do not fit a policy over these actions and do not proceed to the approximately 100-row controller experiment. Improve the knowledge or action set on a new identity-only discovery roster.",
+    "scale1000_closed": true,
+    "test_closed": true,
+    "confirmatory_closed": true,
+    "paper_scale_closed": true
+  },
+  "prohibitions": [
+    "This preregistration and identity receipt do not authorize model, scorer, service, tokenizer, network, audio, gold, reference transcript, task-text, output, score, reward, test, or future-turn contact.",
+    "Do not fit a controller or any repository-specific policy on this fixed16 screen.",
+    "Do not change G7 artifacts, infer unobserved counterfactuals, synthesize a final answer, repair a branch output, retry, resend, prune after scoring, or tune on test data.",
+    "Do not proceed to approximately 100 randomized rows unless both frozen oracle thresholds pass."
+  ]
+}

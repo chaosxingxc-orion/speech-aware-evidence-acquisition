@@ -15,6 +15,7 @@ import json
 import math
 import re
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Mapping, Sequence
 
 UPSTREAM_DISTRIBUTION = "vowpalwabbit"
@@ -22,6 +23,7 @@ UPSTREAM_VERSION = "9.11.2"
 UPSTREAM_PROJECT_URL = "https://github.com/VowpalWabbit/vowpal_wabbit"
 ADAPTER_SCHEMA = "saea-training-free-vw-control-adapter-v1"
 DECISION_SCHEMA = "saea-training-free-vw-control-decision-v1"
+POLICY_ARTIFACT_SCHEMA = "saea-training-free-vw-policy-artifact-v1"
 _FORBIDDEN_INFORMATION_TOKENS = frozenset({"gold", "reference", "test"})
 _PROBABILITY_SUM_TOLERANCE = 1e-6
 
@@ -304,6 +306,31 @@ def build_logged_adf_example(
     )
 
 
+def learn_feedback(
+    workspace: object,
+    state: RuntimeState,
+    actions: Sequence[MacroAction],
+    *,
+    chosen_action_id: str,
+    terminal_reward: float,
+    propensity: float,
+) -> LoggedAdfExample:
+    """Render one propensity-logged example and pass it to upstream VW."""
+
+    example = build_logged_adf_example(
+        state,
+        actions,
+        chosen_action_id=chosen_action_id,
+        terminal_reward=terminal_reward,
+        propensity=propensity,
+    )
+    try:
+        workspace.learn(example.text)  # type: ignore[attr-defined]
+    except AttributeError as error:
+        raise VwAdapterError("workspace must expose learn(example)") from error
+    return example
+
+
 def _action_score(item: object) -> tuple[int, float]:
     if hasattr(item, "action") and hasattr(item, "score"):
         index = getattr(item, "action")
@@ -421,15 +448,140 @@ def adapter_receipt(config: VwConfig = DEFAULT_VW_CONFIG) -> HashedReceipt:
     )
 
 
+def _file_identity(path: Path) -> tuple[int, str]:
+    if not path.is_file():
+        raise VwAdapterError(f"policy artifact was not written: {path}")
+    size = path.stat().st_size
+    if size <= 0:
+        raise VwAdapterError("policy artifact must not be empty")
+    with path.open("rb") as stream:
+        digest = hashlib.file_digest(stream, "sha256").hexdigest()
+    return size, digest
+
+
+def _policy_receipt_payload(
+    *, config: VwConfig, artifact_bytes: int, artifact_sha256: str
+) -> dict[str, object]:
+    config_receipt = adapter_receipt(config)
+    return {
+        "schema": POLICY_ARTIFACT_SCHEMA,
+        "upstream": {
+            "distribution": UPSTREAM_DISTRIBUTION,
+            "version": UPSTREAM_VERSION,
+        },
+        "configuration": {
+            "arguments": list(config.arguments),
+            "argument_string": config.argument_string,
+            "adapter_receipt_sha256": config_receipt.sha256,
+        },
+        "artifact": {
+            "bytes": artifact_bytes,
+            "sha256": artifact_sha256,
+        },
+        "upstream_api": {
+            "save": "Workspace.save(PATH)",
+            "load": "Workspace(arg_list=[...,--initial_regressor,PATH])",
+        },
+    }
+
+
+def save_policy_artifact(
+    workspace: object,
+    artifact_path: str | Path,
+    *,
+    config: VwConfig = DEFAULT_VW_CONFIG,
+) -> HashedReceipt:
+    """Save through upstream VW and return a version/config/byte-bound receipt."""
+
+    path = Path(artifact_path)
+    try:
+        workspace.save(path)  # type: ignore[attr-defined]
+    except AttributeError as error:
+        raise VwAdapterError("workspace must expose save(path)") from error
+    size, digest = _file_identity(path)
+    canonical = _canonical_json(
+        _policy_receipt_payload(
+            config=config,
+            artifact_bytes=size,
+            artifact_sha256=digest,
+        )
+    )
+    return HashedReceipt(
+        canonical_json=canonical,
+        sha256=hashlib.sha256(canonical.encode("utf-8")).hexdigest(),
+    )
+
+
+def _verify_policy_artifact(
+    artifact_path: Path,
+    receipt: HashedReceipt,
+    config: VwConfig,
+) -> None:
+    measured_receipt_hash = hashlib.sha256(
+        receipt.canonical_json.encode("utf-8")
+    ).hexdigest()
+    if measured_receipt_hash != receipt.sha256:
+        raise VwAdapterError("policy receipt SHA-256 mismatch")
+    try:
+        payload = json.loads(receipt.canonical_json)
+    except (json.JSONDecodeError, TypeError) as error:
+        raise VwAdapterError("policy receipt is not valid canonical JSON") from error
+    if not isinstance(payload, dict):
+        raise VwAdapterError("policy receipt must contain a JSON object")
+    if payload.get("schema") != POLICY_ARTIFACT_SCHEMA:
+        raise VwAdapterError("policy receipt schema mismatch")
+    if payload.get("upstream") != {
+        "distribution": UPSTREAM_DISTRIBUTION,
+        "version": UPSTREAM_VERSION,
+    }:
+        raise VwAdapterError("policy receipt upstream version mismatch")
+    expected_config = _policy_receipt_payload(
+        config=config,
+        artifact_bytes=0,
+        artifact_sha256="",
+    )["configuration"]
+    if payload.get("configuration") != expected_config:
+        raise VwAdapterError("policy receipt configuration mismatch")
+    size, digest = _file_identity(artifact_path)
+    artifact = payload.get("artifact")
+    if not isinstance(artifact, dict):
+        raise VwAdapterError("policy receipt lacks artifact identity")
+    if artifact.get("bytes") != size:
+        raise VwAdapterError("policy artifact byte count mismatch")
+    if artifact.get("sha256") != digest:
+        raise VwAdapterError("policy artifact SHA-256 mismatch")
+    expected_payload = _policy_receipt_payload(
+        config=config,
+        artifact_bytes=size,
+        artifact_sha256=digest,
+    )
+    if payload != expected_payload:
+        raise VwAdapterError("policy receipt content mismatch")
+
+
+def load_policy_artifact(
+    artifact_path: str | Path,
+    receipt: HashedReceipt,
+    *,
+    config: VwConfig = DEFAULT_VW_CONFIG,
+) -> object:
+    """Verify a saved policy receipt and load it through upstream VW."""
+
+    path = Path(artifact_path)
+    _verify_policy_artifact(path, receipt, config)
+    workspace_type = _pinned_workspace_type()
+    return workspace_type(
+        arg_list=[*config.arguments, "--initial_regressor", str(path)]
+    )
+
+
 def _import_vowpalwabbit() -> object:
     import vowpalwabbit
 
     return vowpalwabbit
 
 
-def create_workspace(config: VwConfig = DEFAULT_VW_CONFIG) -> object:
-    """Create the exactly pinned optional VW workspace, failing clearly."""
-
+def _pinned_workspace_type() -> object:
     try:
         package = _import_vowpalwabbit()
     except ImportError as error:
@@ -442,14 +594,21 @@ def create_workspace(config: VwConfig = DEFAULT_VW_CONFIG) -> object:
             f"Vowpal Wabbit {UPSTREAM_VERSION} is required; found {installed!r}"
         )
     try:
-        workspace_type = package.pyvw.Workspace  # type: ignore[attr-defined]
+        return package.pyvw.Workspace  # type: ignore[attr-defined]
     except AttributeError as error:
         raise VwUnavailable("Vowpal Wabbit does not expose pyvw.Workspace") from error
+
+
+def create_workspace(config: VwConfig = DEFAULT_VW_CONFIG) -> object:
+    """Create the exactly pinned optional VW workspace, failing clearly."""
+
+    workspace_type = _pinned_workspace_type()
     return workspace_type(config.argument_string)
 
 
 __all__ = [
     "ADAPTER_SCHEMA",
+    "POLICY_ARTIFACT_SCHEMA",
     "DEFAULT_VW_CONFIG",
     "ActionDecision",
     "AdfExample",
@@ -467,6 +626,9 @@ __all__ = [
     "build_adf_example",
     "build_logged_adf_example",
     "create_workspace",
+    "learn_feedback",
+    "load_policy_artifact",
     "predict_action",
+    "save_policy_artifact",
     "validate_probabilities",
 ]
