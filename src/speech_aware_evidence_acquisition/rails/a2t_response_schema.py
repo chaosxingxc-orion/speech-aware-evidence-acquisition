@@ -599,7 +599,6 @@ def audio2tool_locked_call_array_response_format(
                 "prefixItems": [
                     {"oneOf": branches_by_name[name]} for name in occurrences
                 ],
-                "items": False,
             },
         },
     }

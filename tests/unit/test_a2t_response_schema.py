@@ -196,7 +196,7 @@ def test_locked_call_schema_preserves_occurrences_positions_and_legal_types() ->
 
     document = response_format["json_schema"]["schema"]
     assert document["minItems"] == document["maxItems"] == 3
-    assert document["items"] is False
+    assert "items" not in document
     prefix = document["prefixItems"]
     assert len(prefix) == 3
     assert [
@@ -236,7 +236,6 @@ def test_locked_call_schema_allows_only_an_empty_array_for_empty_selection() -> 
         "minItems": 0,
         "maxItems": 0,
         "prefixItems": [],
-        "items": False,
     }
 
 

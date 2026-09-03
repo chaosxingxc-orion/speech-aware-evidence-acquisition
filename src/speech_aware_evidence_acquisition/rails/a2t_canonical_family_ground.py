@@ -196,6 +196,22 @@ class CanonicalFamilyGround:
             for contract in self._contracts_by_family[tag]
         )
 
+    @property
+    def contracts_by_tool(self) -> dict[str, CanonicalContract]:
+        """Return a copy of the validated public contracts keyed by tool name."""
+
+        return {
+            contract.tool_name: contract
+            for family_tag in self.family_tags
+            for contract in self._contracts_by_family[family_tag]
+        }
+
+    @property
+    def canonicalizers(self) -> dict[str, str]:
+        """Return a copy of the validated public canonicalizer descriptions."""
+
+        return dict(self._canonicalizers)
+
     @classmethod
     def from_path(
         cls,

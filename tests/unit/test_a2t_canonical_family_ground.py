@@ -88,6 +88,10 @@ def test_loads_the_frozen_corpus_without_rewriting_it() -> None:
     assert ground.corpus_sha256 == hashlib.sha256(before).hexdigest()
     assert len(ground.family_tags) == 28
     assert len(ground.tool_names) == 152
+    assert set(ground.contracts_by_tool) == set(ground.tool_names)
+    assert ground.contracts_by_tool["adjustVolume"].tool_name == "adjustVolume"
+    assert ground.canonicalizers
+    assert all(name.isascii() and text.isascii() for name, text in ground.canonicalizers.items())
     assert CORPUS.read_bytes() == before
 
 
