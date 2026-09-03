@@ -1,0 +1,77 @@
+{
+  "attempt_id": "attempt-20260903t033500z-g8c-fixed12",
+  "composed_config_sha256": "137f3caab46a5a8818c90bd526d0d7868d2ee386f4c0d5308a12763c0146fc76",
+  "contacts_sent": 0,
+  "dynamic_contact_geometry": {
+    "formula": "396 + nonempty_valid_selections - invalid_selects - invalid_binds",
+    "maximum": 408,
+    "minimum": 384
+  },
+  "implementation": {
+    "baseline_sha256": "1953bcfaeb294dd3f48085e9d24932f18e8cfd2d8ccef98222a78132af26e448",
+    "experiment_sha256": "38f17a3e4b35bdbf9eba081d6a2caa9fae871dd961a4f4e9c7e8b67b5e853a69",
+    "g8_core_sha256": "7cec5d99bbc2f1647f185298f392279d9a613ef7a018c5ccf64138eb582f295d",
+    "launcher_sha256": "a82fb1d03336d3c1ca7c4da06833a7a2c9a3ead123978df87b3be0c59d0a799e",
+    "oracle_sha256": "8b9b0df62ba6946556bc7bd13b2ef95be6c7ba22a0a4dc563acb085872c56448",
+    "parent_launcher_sha256": "65047c7a96dac5601368739944e01921510d302d844e3b28ada2e358b7379229",
+    "roster_sha256": "f00ab9486d978c334e14c96231ac45968f24c3bf8792181427703b738260dac0",
+    "scoring_batch_sha256": "493504f6dc6891ff584cd0b5261c6e608e65d5d7b3fd2e29dea8fdedad4cabba",
+    "vw_adapter_sha256": "e82c3407a4c6b9f3b5e69add51370a8f7d7cd6badc733b030fcefc49f6169081"
+  },
+  "model_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+  "openjiuwen_version": "0.1.16.post2",
+  "planned_model_calls_maximum": 408,
+  "planned_speech_audio_seconds_maximum": 2608,
+  "prompt_fit": {
+    "decomposed_bind_maximum": {
+      "completion_tokens": 12288,
+      "remaining_tokens": 14025,
+      "total_tokens": 18743
+    },
+    "decomposed_resolve_maximum": {
+      "completion_tokens": 1024,
+      "remaining_tokens": 15551,
+      "total_tokens": 17217
+    },
+    "decomposed_select": {
+      "completion_tokens": 4096,
+      "remaining_tokens": 10025,
+      "total_tokens": 22743
+    },
+    "evidence_maximum": {
+      "completion_tokens": 512,
+      "remaining_tokens": 19354,
+      "total_tokens": 13414
+    },
+    "exhaustive_resolve": {
+      "completion_tokens": 1024,
+      "remaining_tokens": 8438,
+      "total_tokens": 24330
+    },
+    "obs": {
+      "completion_tokens": 512,
+      "remaining_tokens": 31045,
+      "total_tokens": 1723
+    },
+    "support_only_resolve": {
+      "completion_tokens": 1024,
+      "remaining_tokens": 29434,
+      "total_tokens": 3334
+    },
+    "operational_cap": 24576,
+    "per_slot_context": 32768,
+    "serialized_request_counter": "utf8-byte-upper-bound",
+    "special_token_reserve": 512
+  },
+  "protocol_descriptor_sha256": "fd307e2e74714ac5dc2e89ae2c4d94c033a7546486e848afee9172d8aa0c977e",
+  "protocol_sha256": "b68f29ac9afffd9bdc4064ce4d2959c8b7b9f54f99fd80842a0496d090672465",
+  "runtime": {
+    "gpu": "NVIDIA GeForce RTX 5090 Laptop GPU",
+    "packet_count": 317,
+    "server_binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2"
+  },
+  "schema": "saea-a2t-g8c-precontact-report-v1",
+  "source_commit": "15491f268408d1c0b29fec744cd79fe5630bcde4",
+  "split_identity_hash": "acf2d1e7664987bf7154e2e45ed366b712c11e710910cf94af067e90ba4e1acb",
+  "status": "PREFLIGHT_PASSED_ZERO_CONTACT"
+}
