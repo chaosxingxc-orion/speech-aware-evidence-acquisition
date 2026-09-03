@@ -32,6 +32,7 @@ from .a2t_select_fill_comparison import (
 ROW_COUNT = 104
 TOP_K = 32
 OFFICIAL_SCORER = "a2t-toolcall"
+COST_SCORER = "cost"
 SEAL_SCHEMA = "saea-a2t-select-fill-postseal-input-seal-v1"
 ROLE_ORDER = (
     "direct_m0",
@@ -712,8 +713,18 @@ def normalize_mixed_score_payloads(
         else:
             raise PostsealError(f"{role} score result has no supported scores payload")
         scores_map = _object(scores, f"{role} scores")
-        if set(scores_map) != {OFFICIAL_SCORER}:
-            raise PostsealError(f"{role} must contain only the official scorer")
+        if set(scores_map) != {OFFICIAL_SCORER, COST_SCORER}:
+            raise PostsealError(
+                f"{role} registered scorer set must be exactly "
+                f"{OFFICIAL_SCORER!r} and {COST_SCORER!r}"
+            )
+        cost = _object(scores_map[COST_SCORER], f"{role} cost score")
+        if not isinstance(cost.get("aggregate"), Mapping) or cost.get(
+            "per_sample"
+        ) != []:
+            raise PostsealError(
+                f"{role} cost score must contain an aggregate object and empty per_sample"
+            )
         official = _object(scores_map[OFFICIAL_SCORER], f"{role} official score")
         if not isinstance(official.get("aggregate"), Mapping) or not isinstance(official.get("per_sample"), list):
             raise PostsealError(f"{role} official score payload is malformed")

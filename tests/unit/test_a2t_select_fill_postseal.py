@@ -77,9 +77,23 @@ def _official(sample_id: str = "tier:000001") -> dict[str, object]:
     return {"aggregate": aggregate, "per_sample": [row]}
 
 
+def _scores() -> dict[str, object]:
+    return {
+        "a2t-toolcall": _official(),
+        "cost": {
+            "aggregate": {
+                "samples": 1,
+                "calls": 1,
+                "audio_seconds": 1.0,
+            },
+            "per_sample": [],
+        },
+    }
+
+
 def test_reconstructs_the_exact_pre_finalize_manifest_hash(tmp_path: Path) -> None:
     manifest, before = _manifest(tmp_path / "joint.run-manifest.json")
-    scores = _write(tmp_path / "joint.scores.json", {"a2t-toolcall": _official()})
+    scores = _write(tmp_path / "joint.scores.json", _scores())
     _finalize_manifest(manifest, scores)
 
     assert reconstruct_pre_score_manifest_sha256(manifest) == before
@@ -96,10 +110,10 @@ def test_normalizes_direct_score_and_three_finalize_payloads(tmp_path: Path) -> 
             payload = {
                 "verified": True,
                 "manifest": str(manifest),
-                "scores": {"a2t-toolcall": _official()},
+                "scores": _scores(),
             }
         else:
-            scores = _write(manifest.parent / f"{role}.scores.json", {"a2t-toolcall": _official()})
+            scores = _write(manifest.parent / f"{role}.scores.json", _scores())
             _finalize_manifest(manifest, scores)
             payload = {
                 "verified": True,
@@ -133,7 +147,7 @@ def test_normalizes_all_four_score_only_payloads_without_manifest_mutation(
             {
                 "verified": True,
                 "manifest": str(manifest),
-                "scores": {"a2t-toolcall": _official()},
+                "scores": _scores(),
             },
         )
 
@@ -144,6 +158,40 @@ def test_normalizes_all_four_score_only_payloads_without_manifest_mutation(
 
     assert set(normalized) == set(roles)
     assert all(_sha(Path(sealed[role]["manifest"])) == sealed[role]["manifest_sha256"] for role in roles)
+
+
+def test_refuses_missing_or_malformed_registered_cost_score(tmp_path: Path) -> None:
+    roles = ("direct_m0", "joint_one_call", "joint_draft_revise", "select_then_fill")
+    sealed = {}
+    result_files = {}
+    for role in roles:
+        manifest, before = _manifest(tmp_path / role / f"{role}.run-manifest.json")
+        sealed[role] = {"manifest": str(manifest), "manifest_sha256": before}
+        result_files[role] = _write(
+            tmp_path / "batch" / f"{role}.score.json",
+            {
+                "verified": True,
+                "manifest": str(manifest),
+                "scores": _scores(),
+            },
+        )
+
+    payload = json.loads(result_files["joint_one_call"].read_text(encoding="utf-8"))
+    payload["scores"].pop("cost")
+    _write(result_files["joint_one_call"], payload)
+    with pytest.raises(PostsealError, match="registered scorer set"):
+        normalize_mixed_score_payloads(
+            sealed_manifests=sealed,
+            result_files=result_files,
+        )
+
+    payload["scores"]["cost"] = {"aggregate": {}, "per_sample": [{}]}
+    _write(result_files["joint_one_call"], payload)
+    with pytest.raises(PostsealError, match="cost score"):
+        normalize_mixed_score_payloads(
+            sealed_manifests=sealed,
+            result_files=result_files,
+        )
 
 
 def test_mixed_batch_requires_exact_operations_and_whole_manifests(tmp_path: Path) -> None:
