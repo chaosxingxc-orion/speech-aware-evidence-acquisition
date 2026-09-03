@@ -49,6 +49,9 @@ STRICT_CELLS = ("REGISTRY_STRICT_ACTION", "HANDBOOK_STRICT_ACTION")
 HISTORICAL_CELLS = ("REGISTRY_NO_SCHEMA", "HANDBOOK_NO_SCHEMA")
 EXPECTED_SAMPLE_COUNT = 8
 _AUTHORITY_SENTINEL = object()
+_REGISTRY_RECOVERY_RECEIPT_SCHEMA = (
+    "saea-a2t-native-structured-action-fixed8-recovery-flight-v1"
+)
 
 
 class NativeStructuredActionPostsealError(RuntimeError):
@@ -194,6 +197,126 @@ def _artifact_meta(bundle: VerifiedBundle, key: str, cell: str) -> Mapping[str, 
     return meta
 
 
+def _validate_aborted_registry_recovery(
+    *, bundle: VerifiedBundle, descriptor: Mapping[str, object]
+) -> None:
+    """Admit the one registered no-recontact recovery boundary, or refuse."""
+
+    if descriptor.get("recovered_from_aborted_attempt") is not True:
+        raise NativeStructuredActionPostsealError(
+            "REGISTRY_STRICT_ACTION must be sealed and unscored (attempt state OPENED)"
+        )
+    receipt_value = descriptor.get("recovery_receipt")
+    if not isinstance(receipt_value, (str, Path)):
+        raise NativeStructuredActionPostsealError(
+            "REGISTRY_STRICT_ACTION recovery receipt path is missing"
+        )
+    receipt_path = Path(receipt_value).resolve()
+    expected_receipt_hash = _require_sha256(
+        descriptor.get("recovery_receipt_sha256"),
+        "REGISTRY_STRICT_ACTION recovery receipt SHA-256",
+    )
+    if _sha256_file(receipt_path, "REGISTRY_STRICT_ACTION recovery receipt") != expected_receipt_hash:
+        raise NativeStructuredActionPostsealError(
+            "REGISTRY_STRICT_ACTION recovery receipt SHA-256 drift"
+        )
+    try:
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise NativeStructuredActionPostsealError(
+            f"cannot read REGISTRY_STRICT_ACTION recovery receipt: {error}"
+        ) from error
+    if not isinstance(receipt, Mapping):
+        raise NativeStructuredActionPostsealError(
+            "REGISTRY_STRICT_ACTION recovery receipt must be an object"
+        )
+    manifest = bundle.manifest
+    attempt = manifest.get("attempt")
+    if not isinstance(attempt, Mapping):
+        raise NativeStructuredActionPostsealError(
+            "REGISTRY_STRICT_ACTION sealed manifest lacks an attempt binding"
+        )
+    attempt_id = attempt.get("attempt_id")
+    if not isinstance(attempt_id, str) or not attempt_id:
+        raise NativeStructuredActionPostsealError(
+            "REGISTRY_STRICT_ACTION sealed manifest attempt id is missing"
+        )
+    recovery = receipt.get("registry_recovery")
+    if (
+        receipt.get("schema") != _REGISTRY_RECOVERY_RECEIPT_SCHEMA
+        or receipt.get("run_id") != manifest.get("run_id")
+        or not isinstance(recovery, Mapping)
+        or recovery.get("cell") != "REGISTRY_STRICT_ACTION"
+        or recovery.get("recovered_from_attempt_id") != attempt_id
+        or recovery.get("recovered_from_attempt_state") != "ABORTED"
+        or recovery.get("completed_rows") != EXPECTED_SAMPLE_COUNT
+    ):
+        raise NativeStructuredActionPostsealError(
+            "REGISTRY_STRICT_ACTION recovery receipt has invalid recovery facts"
+        )
+    if recovery.get("registry_recontacted") is not False:
+        raise NativeStructuredActionPostsealError(
+            "REGISTRY_STRICT_ACTION recovery receipt registry_recontacted must be false"
+        )
+    if recovery.get("registry_model_contacts") != 0:
+        raise NativeStructuredActionPostsealError(
+            "REGISTRY_STRICT_ACTION recovery receipt registry_model_contacts must be zero"
+        )
+    if (
+        recovery.get("successor_manifest_path") != str(bundle.manifest_path.resolve())
+        or recovery.get("successor_manifest_sha256")
+        != _sha256_file(bundle.manifest_path, "REGISTRY_STRICT_ACTION successor manifest")
+    ):
+        raise NativeStructuredActionPostsealError(
+            "REGISTRY_STRICT_ACTION recovery receipt successor manifest lineage drift"
+        )
+    source_attempt = recovery.get("source_attempt")
+    state_path_value = attempt.get("state_path")
+    if (
+        not isinstance(source_attempt, Mapping)
+        or source_attempt.get("attempt_id") != attempt_id
+        or source_attempt.get("state") != "ABORTED"
+        or not isinstance(state_path_value, str)
+        or source_attempt.get("sha256")
+        != _sha256_file(Path(state_path_value), "REGISTRY_STRICT_ACTION source attempt")
+    ):
+        raise NativeStructuredActionPostsealError(
+            "REGISTRY_STRICT_ACTION recovery receipt source attempt lineage drift"
+        )
+    original_source_artifacts = recovery.get("original_source_artifacts")
+    if (
+        not isinstance(original_source_artifacts, Mapping)
+        or not isinstance(original_source_artifacts.get("manifest_path"), str)
+        or original_source_artifacts.get("manifest_sha256")
+        != _sha256_file(
+            Path(str(original_source_artifacts["manifest_path"])),
+            "REGISTRY_STRICT_ACTION original source manifest",
+        )
+    ):
+        raise NativeStructuredActionPostsealError(
+            "REGISTRY_STRICT_ACTION recovery receipt original source lineage drift"
+        )
+    source_artifacts = recovery.get("source_artifacts")
+    if not isinstance(source_artifacts, Mapping):
+        raise NativeStructuredActionPostsealError(
+            "REGISTRY_STRICT_ACTION recovery receipt lacks source artifact hashes"
+        )
+    for artifact_key, path_key, hash_key in (
+        ("outputs", "outputs_path", "outputs_sha256"),
+        ("raw_trace", "raw_trace_path", "raw_trace_sha256"),
+        ("trace_manifest", "trace_manifest_path", "trace_manifest_sha256"),
+    ):
+        artifact = _artifact_meta(bundle, artifact_key, "REGISTRY_STRICT_ACTION")
+        if (
+            source_artifacts.get(path_key) != artifact.get("path")
+            or source_artifacts.get(hash_key) != artifact.get("sha256")
+            or original_source_artifacts.get(hash_key) != artifact.get("sha256")
+        ):
+            raise NativeStructuredActionPostsealError(
+                "REGISTRY_STRICT_ACTION recovery receipt source artifact hash drift"
+            )
+
+
 def prove_strict_cells_sealed(
     *,
     strict_seals: Mapping[str, Mapping[str, object]],
@@ -234,6 +357,12 @@ def prove_strict_cells_sealed(
         if manifest.get("status") != STATUS_COMPLETED:
             raise NativeStructuredActionPostsealError(
                 f"{cell} manifest is not COMPLETED"
+            )
+        if bundle.attempt_state == "ABORTED" and cell == "REGISTRY_STRICT_ACTION":
+            _validate_aborted_registry_recovery(bundle=bundle, descriptor=descriptor)
+        elif bundle.attempt_state != "OPENED":
+            raise NativeStructuredActionPostsealError(
+                f"{cell} must be sealed and unscored (attempt state OPENED)"
             )
         split = manifest.get("split")
         if (
@@ -382,6 +511,10 @@ def materialize_historical_subsets(
             raise NativeStructuredActionPostsealError(
                 f"{cell} historical parent failed authoritative verification: {error}"
             ) from error
+        if parent.attempt_state != "FINALIZED":
+            raise NativeStructuredActionPostsealError(
+                f"{cell} historical parent attempt must be FINALIZED"
+            )
         if parent.outputs_path is None:
             raise NativeStructuredActionPostsealError(
                 f"{cell} historical parent lacks outputs"
@@ -608,6 +741,7 @@ def build_four_job_plan(
             str(output_dir),
             "--workers",
             "4",
+            "--include-per-sample",
         ),
     )
 

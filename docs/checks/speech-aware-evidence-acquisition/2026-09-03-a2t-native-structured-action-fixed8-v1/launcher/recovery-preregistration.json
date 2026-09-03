@@ -1,0 +1,71 @@
+{
+  "schema": "saea-a2t-native-structured-action-fixed8-recovery-preregistration-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "run_id": "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1",
+  "source_flight_id": "flight-20260903T013000Z",
+  "source_mission_relpath": "runs/SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1/flight-20260903T013000Z",
+  "source_registry_attempt_id": "attempt-20260903T013000Z-registry-strict",
+  "source_registry_attempt_state": "ABORTED",
+  "source_registry_actual_calls": 8,
+  "source_registry_actual_audio_seconds": 45.096,
+  "original_handbook_attempt_id": "attempt-20260903T013000Z-handbook-strict",
+  "remaining_contact_arm": "HANDBOOK_STRICT_ACTION",
+  "remaining_model_calls": 8,
+  "remaining_exact_audio_seconds": 45.096,
+  "registry_recontact_authorized": false,
+  "contacts_at_registration": {
+    "gold": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "manifest_scorers": [
+    "a2t-toolcall"
+  ],
+  "frozen_contracts": {
+    "registered_flight_plan_sha256": "fc522f84047f6cf6d07eb90f7edd0508f3b5658507fdf59e49c8fb033710fb39",
+    "precontact_request_contract_sha256": "d8ab56922a03b8e4aecbfb10c19a984b67365f6062d0c3bb32fe0d28cf06eba8",
+    "protocol_sha256": "a6d6634e2139673acd6ddee13fe87280e906b8bca09cbfe355cab0c00507f034",
+    "response_format_sha256": "8fe5db869f044b9e952765f7bee045027ad137db2cc445ff428db5303fb1a2ed",
+    "split_identity_sha256": "f95efe70b615d71bb082f9ef804d1fa2b6f04ce4114d5d2694151cbaf44019ba"
+  },
+  "source_hashes": {
+    "failure_receipt_sha256": "91bcd679d4b44daec1642e77c7320db091ba4e343e89145a904dd6d190cb71e9",
+    "flight_plan_sha256": "4f65c56451bbda26fc59ca85f7bd628077c2c491ae6049d3653c024b6b08d1cb",
+    "precontact_plan_sha256": "7ff7d0a17b9eb73f335e5857380bbeeb0c96c8fdc6e9fd0ea4016b51ba5d24c9",
+    "registry_attempt_sha256": "53053bc4b241a7d6ff4084efe6c4843ba6ee6417278dc33ad0ff60570c73aa05",
+    "registry_manifest_before_sha256": "0ca51392548e772d3b6ff5c42c2fdc2ec0aea56d8f9bbd4097b149aeec6128ee",
+    "registry_outputs_sha256": "f4e19ab8e107e368e68f889a9dbf0df8e1f10b601b87184ee5e2e7120de79b6d",
+    "registry_successor_manifest_sha256": "1063e42726ec256c5448c759b9a58b004293b672d28ef030b454724555d77eb3",
+    "registry_trace_manifest_sha256": "3f9c352712857e189d3bebaec0481dac9b9d3306b8cb5fae1b333f100509d314",
+    "registry_trace_sha256": "08e56f7cce2882eb490958fc58f6bbbe532a73d190855929c2bba78b9f329bdb"
+  },
+  "recovery_execution_plan": {
+    "attempt_id": "attempt-20260903T013000Z-handbook-strict-recovery-v1",
+    "carrier_lock_key": "audio2tool",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.2,
+    "planned_model_calls": 16,
+    "planned_speech_audio_seconds": 91,
+    "protocol_hash": "a6d6634e2139673acd6ddee13fe87280e906b8bca09cbfe355cab0c00507f034",
+    "run_id": "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "f95efe70b615d71bb082f9ef804d1fa2b6f04ce4114d5d2694151cbaf44019ba",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "recovery_execution_plan_sha256": "a5fdb9d15e33b84949b7e267acd373675bb05d5a1d032c6b102acd5ca6baa46b",
+  "execution_protocol": {
+    "batch_size": 2,
+    "concurrency": 2,
+    "network_jitter_testing": false,
+    "queue_depth": 4,
+    "repair_contacts": 0,
+    "resends": 0,
+    "retries": 0
+  },
+  "protected_read_rule": "Do not read response meaning, gold, historical outputs, or any scorer before both strict arms are sealed. Mechanical byte-hash and bundle-contract verification is allowed.",
+  "continuation_rule": "Hash-verify the immutable registry artifacts, copy the outputs and traces byte-for-byte into a new recovery directory, write a successor manifest that changes only scorer metadata and colocated artifact paths, verify its eight-row bundle despite the terminal ABORTED attempt, then execute exactly the untouched eight handbook contacts under the recovery attempt. Never contact the registry arm again.",
+  "failure_rule": "Abort the recovery attempt if opened, stop any started service, preserve every available artifact, and do not retry, repair, resend, or recontact any row."
+}

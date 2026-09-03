@@ -53,7 +53,7 @@ def _output_row(
 
 
 def _verified_bundle(
-    tmp_path: Path, cell: str, ids=IDS, *, texts=None
+    tmp_path: Path, cell: str, ids=IDS, *, texts=None, attempt_state="FINALIZED"
 ) -> VerifiedBundle:
     manifest_path = _write(tmp_path / cell / "run-manifest.json", "{}\n")
     outputs_path = tmp_path / cell / "outputs.jsonl"
@@ -66,9 +66,22 @@ def _verified_bundle(
     _write(
         outputs_path, "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows)
     )
+    attempt_path = _write(
+        tmp_path / cell / "attempt.json",
+        json.dumps(
+            {
+                "run_id": f"FIXTURE-{cell}",
+                "attempt_id": "attempt-fixture-0001",
+                "state": attempt_state,
+            },
+            sort_keys=True,
+        )
+        + "\n",
+    )
     raw_trace = _write(tmp_path / cell / "trace.jsonl", '{"sealed":true}\n')
     trace_manifest = _write(tmp_path / cell / "trace-manifest.json", "{}\n")
     manifest = {
+        "run_id": f"FIXTURE-{cell}",
         "status": "COMPLETED",
         "split": {"ids": sorted(ids), "count": len(ids)},
         "outputs": {
@@ -97,6 +110,11 @@ def _verified_bundle(
             "attempt_id": "attempt-fixture-0001",
         },
         "session_receipt": None,
+        "attempt": {
+            "run_id": f"FIXTURE-{cell}",
+            "attempt_id": "attempt-fixture-0001",
+            "state_path": str(attempt_path),
+        },
         "cost": {"calls_used": 8},
     }
     return VerifiedBundle(
@@ -106,7 +124,7 @@ def _verified_bundle(
         outputs_rows=rows,
         trace_records={"sealed/request": {}, "sealed/response": {}},
         split_ids=frozenset(ids),
-        attempt_state="FINALIZED",
+        attempt_state=attempt_state,
     )
 
 
@@ -121,8 +139,62 @@ def _seal_descriptor(bundle: VerifiedBundle) -> dict[str, object]:
     }
 
 
+def _recovery_receipt(tmp_path: Path, bundle: VerifiedBundle) -> Path:
+    manifest = bundle.manifest
+    original_manifest = _write(tmp_path / "original-registry-manifest.json", "{}\n")
+    attempt = manifest["attempt"]
+    receipt = tmp_path / "recovery-flight-receipt.json"
+    receipt.write_text(
+        json.dumps(
+            {
+                "schema": "saea-a2t-native-structured-action-fixed8-recovery-flight-v1",
+                "run_id": manifest["run_id"],
+                "registry_recovery": {
+                    "cell": "REGISTRY_STRICT_ACTION",
+                    "recovered_from_attempt_id": "attempt-fixture-0001",
+                    "recovered_from_attempt_state": "ABORTED",
+                    "registry_recontacted": False,
+                    "registry_model_contacts": 0,
+                    "completed_rows": 8,
+                    "successor_manifest_path": str(bundle.manifest_path),
+                    "successor_manifest_sha256": _sha256(bundle.manifest_path),
+                    "source_attempt": {
+                        "attempt_id": attempt["attempt_id"],
+                        "state": "ABORTED",
+                        "sha256": _sha256(Path(attempt["state_path"])),
+                    },
+                    "original_source_artifacts": {
+                        "manifest_path": str(original_manifest),
+                        "manifest_sha256": _sha256(original_manifest),
+                        "outputs_sha256": manifest["outputs"]["sha256"],
+                        "raw_trace_sha256": manifest["raw_trace"]["sha256"],
+                        "trace_manifest_sha256": manifest["trace_manifest"]["sha256"],
+                    },
+                    "source_artifacts": {
+                        "manifest_path": str(bundle.manifest_path),
+                        "manifest_sha256": _sha256(bundle.manifest_path),
+                        "outputs_path": manifest["outputs"]["path"],
+                        "outputs_sha256": manifest["outputs"]["sha256"],
+                        "raw_trace_path": manifest["raw_trace"]["path"],
+                        "raw_trace_sha256": manifest["raw_trace"]["sha256"],
+                        "trace_manifest_path": manifest["trace_manifest"]["path"],
+                        "trace_manifest_sha256": manifest["trace_manifest"]["sha256"],
+                    },
+                },
+            },
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    return receipt
+
+
 def _authorization(tmp_path: Path):
-    bundles = {cell: _verified_bundle(tmp_path, cell) for cell in STRICT_CELLS}
+    bundles = {
+        cell: _verified_bundle(tmp_path, cell, attempt_state="OPENED")
+        for cell in STRICT_CELLS
+    }
     by_path = {bundle.manifest_path: bundle for bundle in bundles.values()}
     authorization = prove_strict_cells_sealed(
         strict_seals={
@@ -208,7 +280,10 @@ def test_proof_requires_both_complete_strict_bundles_and_all_seal_hashes(
 def test_proof_refuses_partial_or_mismatched_identity_before_protected_access(
     tmp_path: Path,
 ):
-    bundles = {cell: _verified_bundle(tmp_path, cell) for cell in STRICT_CELLS}
+    bundles = {
+        cell: _verified_bundle(tmp_path, cell, attempt_state="OPENED")
+        for cell in STRICT_CELLS
+    }
     first = bundles[STRICT_CELLS[0]]
     first.manifest["split"]["ids"] = list(IDS[:-1])
     opened: list[Path] = []
@@ -231,6 +306,184 @@ def test_proof_refuses_partial_or_mismatched_identity_before_protected_access(
         )
 
     assert len(opened) == 1
+
+
+def test_proof_requires_strict_cells_to_remain_sealed_and_unscored(
+    tmp_path: Path,
+):
+    bundles = {
+        cell: _verified_bundle(tmp_path, cell, attempt_state="FINALIZED")
+        for cell in STRICT_CELLS
+    }
+
+    with pytest.raises(
+        NativeStructuredActionPostsealError, match="sealed and unscored"
+    ):
+        prove_strict_cells_sealed(
+            strict_seals={
+                cell: _seal_descriptor(bundle) for cell, bundle in bundles.items()
+            },
+            sample_ids=IDS,
+            verifier=lambda path: {
+                bundle.manifest_path: bundle for bundle in bundles.values()
+            }[Path(path).resolve()],
+        )
+
+
+def test_proof_refuses_an_ordinary_aborted_strict_bundle(tmp_path: Path):
+    bundles = {
+        "REGISTRY_STRICT_ACTION": _verified_bundle(
+            tmp_path, "registry", attempt_state="ABORTED"
+        ),
+        "HANDBOOK_STRICT_ACTION": _verified_bundle(
+            tmp_path, "handbook", attempt_state="OPENED"
+        ),
+    }
+
+    with pytest.raises(
+        NativeStructuredActionPostsealError, match="sealed and unscored"
+    ):
+        prove_strict_cells_sealed(
+            strict_seals={
+                cell: _seal_descriptor(bundle) for cell, bundle in bundles.items()
+            },
+            sample_ids=IDS,
+            verifier=lambda path: {
+                bundle.manifest_path: bundle for bundle in bundles.values()
+            }[Path(path).resolve()],
+        )
+
+
+def test_proof_admits_only_the_hash_pinned_aborted_registry_recovery(
+    tmp_path: Path,
+):
+    registry = _verified_bundle(tmp_path, "registry", attempt_state="ABORTED")
+    handbook = _verified_bundle(tmp_path, "handbook", attempt_state="OPENED")
+    receipt = _recovery_receipt(tmp_path, registry)
+    registry_seal = _seal_descriptor(registry)
+    registry_seal.update(
+        {
+            "recovered_from_aborted_attempt": True,
+            "recovery_receipt": receipt,
+            "recovery_receipt_sha256": _sha256(receipt),
+        }
+    )
+
+    authorization = prove_strict_cells_sealed(
+        strict_seals={
+            "REGISTRY_STRICT_ACTION": registry_seal,
+            "HANDBOOK_STRICT_ACTION": _seal_descriptor(handbook),
+        },
+        sample_ids=IDS,
+        verifier=lambda path: {
+            registry.manifest_path: registry,
+            handbook.manifest_path: handbook,
+        }[Path(path).resolve()],
+    )
+
+    assert authorization.strict_bundles["REGISTRY_STRICT_ACTION"] is registry
+
+
+def test_proof_refuses_recovery_receipt_that_reports_registry_recontact(
+    tmp_path: Path,
+):
+    registry = _verified_bundle(tmp_path, "registry", attempt_state="ABORTED")
+    handbook = _verified_bundle(tmp_path, "handbook", attempt_state="OPENED")
+    receipt = _recovery_receipt(tmp_path, registry)
+    document = json.loads(receipt.read_text(encoding="utf-8"))
+    document["registry_recovery"]["registry_model_contacts"] = 1
+    receipt.write_text(json.dumps(document, sort_keys=True) + "\n", encoding="utf-8")
+    registry_seal = _seal_descriptor(registry)
+    registry_seal.update(
+        {
+            "recovered_from_aborted_attempt": True,
+            "recovery_receipt": receipt,
+            "recovery_receipt_sha256": _sha256(receipt),
+        }
+    )
+
+    with pytest.raises(
+        NativeStructuredActionPostsealError, match="registry_model_contacts"
+    ):
+        prove_strict_cells_sealed(
+            strict_seals={
+                "REGISTRY_STRICT_ACTION": registry_seal,
+                "HANDBOOK_STRICT_ACTION": _seal_descriptor(handbook),
+            },
+            sample_ids=IDS,
+            verifier=lambda path: {
+                registry.manifest_path: registry,
+                handbook.manifest_path: handbook,
+            }[Path(path).resolve()],
+        )
+
+
+def test_proof_refuses_recovery_receipt_with_stale_source_artifact_hash(
+    tmp_path: Path,
+):
+    registry = _verified_bundle(tmp_path, "registry", attempt_state="ABORTED")
+    handbook = _verified_bundle(tmp_path, "handbook", attempt_state="OPENED")
+    receipt = _recovery_receipt(tmp_path, registry)
+    document = json.loads(receipt.read_text(encoding="utf-8"))
+    document["registry_recovery"]["source_artifacts"]["outputs_sha256"] = "0" * 64
+    receipt.write_text(json.dumps(document, sort_keys=True) + "\n", encoding="utf-8")
+    registry_seal = _seal_descriptor(registry)
+    registry_seal.update(
+        {
+            "recovered_from_aborted_attempt": True,
+            "recovery_receipt": receipt,
+            "recovery_receipt_sha256": _sha256(receipt),
+        }
+    )
+
+    with pytest.raises(
+        NativeStructuredActionPostsealError, match="source artifact hash drift"
+    ):
+        prove_strict_cells_sealed(
+            strict_seals={
+                "REGISTRY_STRICT_ACTION": registry_seal,
+                "HANDBOOK_STRICT_ACTION": _seal_descriptor(handbook),
+            },
+            sample_ids=IDS,
+            verifier=lambda path: {
+                registry.manifest_path: registry,
+                handbook.manifest_path: handbook,
+            }[Path(path).resolve()],
+        )
+
+
+def test_proof_refuses_recovery_receipt_without_successor_lineage(
+    tmp_path: Path,
+):
+    registry = _verified_bundle(tmp_path, "registry", attempt_state="ABORTED")
+    handbook = _verified_bundle(tmp_path, "handbook", attempt_state="OPENED")
+    receipt = _recovery_receipt(tmp_path, registry)
+    document = json.loads(receipt.read_text(encoding="utf-8"))
+    document["registry_recovery"].pop("successor_manifest_sha256")
+    receipt.write_text(json.dumps(document, sort_keys=True) + "\n", encoding="utf-8")
+    registry_seal = _seal_descriptor(registry)
+    registry_seal.update(
+        {
+            "recovered_from_aborted_attempt": True,
+            "recovery_receipt": receipt,
+            "recovery_receipt_sha256": _sha256(receipt),
+        }
+    )
+
+    with pytest.raises(
+        NativeStructuredActionPostsealError, match="successor manifest"
+    ):
+        prove_strict_cells_sealed(
+            strict_seals={
+                "REGISTRY_STRICT_ACTION": registry_seal,
+                "HANDBOOK_STRICT_ACTION": _seal_descriptor(handbook),
+            },
+            sample_ids=IDS,
+            verifier=lambda path: {
+                registry.manifest_path: registry,
+                handbook.manifest_path: handbook,
+            }[Path(path).resolve()],
+        )
 
 
 def test_historical_materialization_is_inaccessible_without_a_valid_seal_proof(
@@ -261,6 +514,37 @@ def test_historical_materialization_is_inaccessible_without_a_valid_seal_proof(
             manifest_builder=lambda **_kwargs: pytest.fail(
                 "manifest builder must not run"
             ),
+        )
+
+
+def test_historical_materialization_requires_a_finalized_parent_attempt(
+    tmp_path: Path,
+):
+    authorization, _strict = _authorization(tmp_path / "strict")
+    parent = _verified_bundle(
+        tmp_path,
+        "parent",
+        ids=IDS + ("extra:000009",),
+        attempt_state="OPENED",
+    )
+    source = {
+        cell: {
+            "manifest": str(parent.manifest_path),
+            "manifest_sha256": _sha256(parent.manifest_path),
+            "outputs_sha256": parent.manifest["outputs"]["sha256"],
+        }
+        for cell in ("REGISTRY_NO_SCHEMA", "HANDBOOK_NO_SCHEMA")
+    }
+
+    with pytest.raises(
+        NativeStructuredActionPostsealError, match="must be FINALIZED"
+    ):
+        materialize_historical_subsets(
+            authorization=authorization,
+            historical_sources=source,
+            output_root=tmp_path / "subsets",
+            verifier=lambda _path: parent,
+            manifest_builder=lambda **_kwargs: pytest.fail("manifest must not build"),
         )
 
 
@@ -346,7 +630,7 @@ def test_builds_exactly_four_unique_whole_manifest_jobs_for_four_workers(
     assert all(job.operation == "score" for job in plan.jobs)
     assert plan.dataset_sharding is False
     assert plan.shard_metric_averaging is False
-    assert plan.command[-2:] == ("--workers", "4")
+    assert plan.command[-3:] == ("--workers", "4", "--include-per-sample")
 
     duplicate = dict(manifests)
     duplicate["HANDBOOK_STRICT_ACTION"] = duplicate["REGISTRY_STRICT_ACTION"]
