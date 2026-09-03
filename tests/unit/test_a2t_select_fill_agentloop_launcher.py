@@ -18,6 +18,9 @@ from types import SimpleNamespace
 
 import pytest
 
+from speech_aware_evidence_acquisition.rails.a2t_response_schema import (
+    A2tResponseSchemaError,
+)
 from speech_aware_evidence_acquisition.rails.a2t_stage_state import (
     SelectOccurrence,
     build_select_stage_envelope,
@@ -148,7 +151,8 @@ class _LiveChecks:
 def test_protocol_freezes_the_fair_six_contact_schedule() -> None:
     module = _launcher()
 
-    assert module.RUN_ID == "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2"
+    assert module.RUN_ID == "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V3"
+    assert module.SOURCE_RUN_ID == "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2"
     assert module.PHASE_ORDER == (
         "M0_DIRECT",
         "OBS_SEMANTIC_STATE",
@@ -159,6 +163,16 @@ def test_protocol_freezes_the_fair_six_contact_schedule() -> None:
         "FILL",
     )
     assert module.GENERATION_PHASES == (
+        "JOINT_ONE_CALL",
+        "SELECT",
+        "JOINT_DRAFT_REVISE",
+        "FILL",
+    )
+    assert module.REUSED_GENERATION_PHASES == (
+        "M0_DIRECT",
+        "OBS_SEMANTIC_STATE",
+    )
+    assert module.ALL_GENERATION_PHASES == (
         "M0_DIRECT",
         "OBS_SEMANTIC_STATE",
         "JOINT_ONE_CALL",
@@ -167,7 +181,8 @@ def test_protocol_freezes_the_fair_six_contact_schedule() -> None:
         "FILL",
     )
     assert module.SAMPLE_COUNT == 104
-    assert module.GENERATION_CONTACTS == 624
+    assert module.GENERATION_CONTACTS == 416
+    assert module.FULL_FLIGHT_GENERATION_CONTACTS == 624
     assert module.EMBEDDING_LOGICAL_ITEMS == 104
     assert module.EMBEDDING_BATCH_SIZE == 32
     assert module.EMBEDDING_PHYSICAL_REQUESTS == 4
@@ -581,7 +596,7 @@ def _authority_document(module) -> dict[str, object]:
         "bundle_split_identity_hash": module.BUNDLE_SPLIT_IDENTITY_HASH,
         "bundle_protocol_sha256": module.BUNDLE_PROTOCOL_SHA256,
         "one_shot": True,
-        "generation_contact_ceiling": 624,
+        "generation_contact_ceiling": module.GENERATION_CONTACTS,
         "embedding_physical_request_ceiling": 4,
         "hashes": {
             "coordinator_launcher_sha256": "a" * 64,
@@ -737,6 +752,24 @@ class _CoordinatorRuntime:
     def assert_attempt_unopened(self):
         self.events.append("unopened")
 
+    def rehydrate_completed_prefix(self):
+        self.events.append("rehydrate-prefix")
+        runs = {}
+        for phase in self.module.REUSED_GENERATION_PHASES:
+            requests = _requests(self.module, phase)
+            receipt = self.preflight_generation_phase(phase, requests)
+            output = self.dispatch_generation_phase(phase, requests, receipt)
+            runs[phase] = self.module.GenerationPhaseRun(
+                phase, requests, receipt, output
+            )
+        observations = self.parse_observations(runs[self.module.OBS_PHASE].output)
+        return self.module.RecoveredPrefixArtifacts(
+            m0=runs[self.module.M0_PHASE],
+            obs=runs[self.module.OBS_PHASE],
+            observations=observations,
+            source_report_sha256="d" * 64,
+        )
+
     def start_generation(self, window):
         self.events.append(f"start-generation:{window}")
 
@@ -751,6 +784,18 @@ class _CoordinatorRuntime:
 
     def generation_send_accounting(self):
         return {phase: 104 for phase in self.module.GENERATION_PHASES}
+
+    def persist_post_embedding_checkpoint(self, observations, candidates):
+        self.events.append("persist-post-embedding-checkpoint")
+        assert len(observations) == len(candidates) == 104
+        self.checkpoint_candidates = candidates
+        return {"checkpoint_sha256": "e" * 64}
+
+    def rehydrate_post_embedding_checkpoint(self, receipt, observations):
+        self.events.append("rehydrate-post-embedding-checkpoint")
+        assert receipt["checkpoint_sha256"] == "e" * 64
+        assert len(observations) == 104
+        return self.checkpoint_candidates
 
     def prepare_generation_phase(self, phase, **context):
         self.events.append(f"prepare:{phase}")
@@ -848,6 +893,9 @@ class _CoordinatorRuntime:
         self.events.append(f"manifest:{role}")
         return {"role": role, "status": "COMPLETE", "complete_rows": 104}
 
+    def seal_recovered_direct_manifest(self, role, phase_run, extras):
+        return self.seal_manifest(role, phase_run, extras)
+
     def seal_flight(self, manifests, extras):
         self.events.append("seal-flight")
         return {
@@ -883,6 +931,18 @@ def test_coordinator_enforces_both_barriers_and_only_four_final_manifests(monkey
 
     assert receipt["status"] == "SEALED"
     assert tuple(item["role"] for item in receipt["manifests"]) == module.FINAL_MANIFEST_ROLES
+    assert "start-generation:pre-embedding" not in runtime.events
+    assert runtime.events.count(f"dispatch:{module.M0_PHASE}") == 1
+    assert runtime.events.count(f"dispatch:{module.OBS_PHASE}") == 1
+    assert runtime.events.index("stop-embedding") < runtime.events.index(
+        "persist-post-embedding-checkpoint"
+    )
+    assert runtime.events.index("persist-post-embedding-checkpoint") < runtime.events.index(
+        f"prepare:{module.JOINT_PHASE}"
+    )
+    assert runtime.events.index("rehydrate-post-embedding-checkpoint") < runtime.events.index(
+        f"prepare:{module.JOINT_PHASE}"
+    )
     assert runtime.events.index("seal-stage:JOINT_DRAFT") < runtime.events.index(
         f"prepare:{module.REVISE_PHASE}"
     )
@@ -894,6 +954,39 @@ def test_coordinator_enforces_both_barriers_and_only_four_final_manifests(monkey
     ]
     assert "manifest:obs_semantic_state" not in runtime.events
     assert "manifest:select" not in runtime.events
+
+
+def test_recovery_coordinator_dispatches_only_the_416_remaining_generation_contacts(
+    monkeypatch,
+) -> None:
+    module = _launcher()
+    runtime = _CoordinatorRuntime(module)
+    packets = {
+        sample_id: {
+            "packet_id": sample_id.replace(":", "/", 1),
+            "sha256": f"{index + 900:064x}",
+        }
+        for index, sample_id in enumerate(_sample_ids())
+    }
+    monkeypatch.setattr(module, "validate_stage_barrier", lambda states, **kwargs: states)
+
+    module.execute_contact_ready_flight(
+        runtime=runtime,
+        sample_ids=_sample_ids(),
+        packet_bindings=packets,
+    )
+
+    dispatched_after_rehydration = [
+        event.removeprefix("dispatch:")
+        for event in runtime.events[runtime.events.index("start-embedding") :]
+        if event.startswith("dispatch:")
+    ]
+    assert dispatched_after_rehydration == [
+        module.JOINT_PHASE,
+        module.SELECT_PHASE,
+        module.REVISE_PHASE,
+        module.FILL_PHASE,
+    ]
 
 
 def test_malformed_select_barrier_prevents_both_second_stage_phases(monkeypatch) -> None:
@@ -923,3 +1016,60 @@ def test_malformed_select_barrier_prevents_both_second_stage_phases(monkeypatch)
 
     assert f"prepare:{module.REVISE_PHASE}" not in runtime.events
     assert f"prepare:{module.FILL_PHASE}" not in runtime.events
+
+
+@pytest.mark.parametrize(
+    "failure",
+    (
+        A2tResponseSchemaError("local response schema is malformed"),
+        ValueError("local recovered artifact is malformed"),
+    ),
+)
+def test_execute_mode_aborts_open_attempts_for_local_value_failures(
+    tmp_path,
+    monkeypatch,
+    failure,
+) -> None:
+    module = _launcher()
+    authority_path = tmp_path / "authority.json"
+    authority_path.write_text("{}\n", encoding="ascii")
+    runtime = SimpleNamespace(
+        sample_ids=(),
+        packet_bindings={},
+        aborted=[],
+        assert_contact_ready_preflight=lambda: {
+            "status": "CONTACT_READY_NO_CONTACT"
+        },
+    )
+    runtime.abort_open_attempts = runtime.aborted.append
+    authority = {
+        "hashes": {
+            "coordinator_launcher_sha256": module.sha256_file(module.Path(module.__file__)),
+            "local_runtime_factory_sha256": "a" * 64,
+        }
+    }
+    monkeypatch.setattr(module, "_validate_execution_authority", lambda _value: authority)
+    monkeypatch.setattr(module, "_load_runtime_factory", lambda *_args, **_kwargs: (
+        lambda **_kwargs: runtime
+    ))
+    monkeypatch.setattr(
+        module,
+        "execute_contact_ready_flight",
+        lambda **_kwargs: (_ for _ in ()).throw(failure),
+    )
+
+    with pytest.raises(SystemExit, match="flight refused"):
+        module.main(
+            (
+                "--execute",
+                "--authority",
+                str(authority_path),
+                "--authority-sha256",
+                module.sha256_file(authority_path),
+                "--runtime-factory",
+                "unused.py:factory",
+            )
+        )
+
+    assert len(runtime.aborted) == 1
+    assert type(failure).__name__ in runtime.aborted[0]

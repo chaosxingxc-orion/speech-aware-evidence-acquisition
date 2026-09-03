@@ -12,12 +12,18 @@ from dataclasses import asdict, dataclass, replace
 from datetime import datetime, timezone
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
+import shutil
 from threading import Lock
 import urllib.request
 
-from speech_aware_evidence_acquisition.contracts import ExecutionPlan, FrozenCoreGate
+from speech_aware_evidence_acquisition.contracts import (
+    ExecutionPlan,
+    FrozenCoreGate,
+    TraceRecord,
+)
 from speech_aware_evidence_acquisition.core.attempts import AttemptStore, STATE_OPENED
 from speech_aware_evidence_acquisition.core.base import RunResult
 from speech_aware_evidence_acquisition.core.bundle import (
@@ -192,6 +198,473 @@ def _write_jsonl(path: Path, rows: Sequence[Mapping[str, object]]) -> None:
     )
 
 
+def _read_jsonl(path: Path, *, label: str) -> tuple[Mapping[str, object], ...]:
+    try:
+        lines = Path(path).read_text(encoding="utf-8").splitlines()
+        rows = tuple(json.loads(line) for line in lines if line)
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise RuntimeError(f"{label} is not valid UTF-8 JSONL") from error
+    if not rows or any(not isinstance(row, Mapping) for row in rows):
+        raise RuntimeError(f"{label} must contain JSON objects")
+    return rows  # type: ignore[return-value]
+
+
+def _load_recovery_trace_rows(
+    *,
+    launcher: object,
+    phase: str,
+    trace_path: Path,
+    expected_trace_sha256: str,
+    requests: Sequence[object],
+    packet_bindings: Mapping[str, Mapping[str, object]],
+    sent_body_sha256_by_sample: Mapping[str, str],
+) -> object:
+    """Rehydrate one completed source phase from hash-bound trace bytes."""
+
+    _require_file_hash(
+        Path(trace_path), expected_trace_sha256, label=f"source {phase} trace"
+    )
+    prepared = tuple(requests)
+    request_by_sample = {item.sample_id: item for item in prepared}
+    sample_ids = tuple(item.sample_id for item in prepared)
+    if (
+        len(prepared) != 104
+        or len(request_by_sample) != 104
+        or set(packet_bindings) != set(sample_ids)
+        or set(sent_body_sha256_by_sample) != set(sample_ids)
+    ):
+        raise RuntimeError(f"source {phase} recovery roster drift")
+
+    records = _read_jsonl(Path(trace_path), label=f"source {phase} trace")
+    by_suffix: dict[str, dict[str, Mapping[str, object]]] = {
+        "request": {},
+        "response": {},
+        "runtime-use": {},
+    }
+    seen_record_ids: set[str] = set()
+    for document in records:
+        if set(document) != {"channel", "payload", "record_id"}:
+            raise RuntimeError(f"source {phase} trace record shape drift")
+        record_id = document.get("record_id")
+        payload = document.get("payload")
+        channel = document.get("channel")
+        if (
+            not isinstance(record_id, str)
+            or record_id in seen_record_ids
+            or not isinstance(channel, str)
+            or not isinstance(payload, Mapping)
+        ):
+            raise RuntimeError(f"source {phase} trace record identity drift")
+        TraceRecord(channel=channel, record_id=record_id, payload=payload).validate()
+        seen_record_ids.add(record_id)
+        suffix = record_id.rsplit("/", 1)[-1]
+        if suffix in by_suffix:
+            prefix = record_id[: -(len(suffix) + 1)]
+            if not prefix or prefix in by_suffix[suffix]:
+                raise RuntimeError(f"source {phase} trace request identity drift")
+            by_suffix[suffix][prefix] = payload
+
+    requests_by_id = by_suffix["request"]
+    responses_by_id = by_suffix["response"]
+    if len(requests_by_id) != 104 or set(responses_by_id) != set(requests_by_id):
+        raise RuntimeError(f"source {phase} request/response trace count drift")
+    runtime_use_by_sample = {}
+    for prefix, payload in by_suffix["runtime-use"].items():
+        suffix = "/agent-loop"
+        if not prefix.endswith(suffix):
+            raise RuntimeError("source OBS runtime-use identity is malformed")
+        sample_id = prefix[: -len(suffix)]
+        if not sample_id or sample_id in runtime_use_by_sample:
+            raise RuntimeError("source OBS runtime-use identity is duplicate")
+        runtime_use_by_sample[sample_id] = payload
+    if phase == launcher.OBS_PHASE and set(runtime_use_by_sample) != set(sample_ids):
+        raise RuntimeError("source OBS runtime-use lineage is incomplete")
+    if phase != launcher.OBS_PHASE and runtime_use_by_sample:
+        raise RuntimeError(f"source {phase} unexpectedly contains runtime-use state")
+
+    request_id_by_sample: dict[str, str] = {}
+    for request_id, request_record in requests_by_id.items():
+        inner = request_record.get("payload")
+        sample_id = inner.get("sample_id") if isinstance(inner, Mapping) else None
+        if (
+            not isinstance(sample_id, str)
+            or sample_id in request_id_by_sample
+            or sample_id not in request_by_sample
+            or request_record.get("payload_sha256") != _sha256_json(inner)
+            or inner.get("speech_packet_sha256")
+            != packet_bindings[sample_id].get("sha256")
+        ):
+            raise RuntimeError(f"source {phase} request lineage drift")
+        request_id_by_sample[sample_id] = request_id
+    if set(request_id_by_sample) != set(sample_ids):
+        raise RuntimeError(f"source {phase} trace sample set drift")
+
+    rows = []
+    query_state_hashes: set[str] = set()
+    for sample_id in sample_ids:
+        request = request_by_sample[sample_id]
+        body_sha256 = sent_body_sha256_by_sample[sample_id]
+        if body_sha256 not in request.body_sha256_by_slot:
+            raise RuntimeError(f"source {phase} request body was not preflighted")
+        request_id = request_id_by_sample[sample_id]
+        response_record = responses_by_id[request_id]
+        text = response_record.get("text")
+        if not isinstance(text, str) or not text or not text.isascii():
+            raise RuntimeError(f"source {phase} response is not non-empty ASCII")
+        response_text_sha256 = hashlib.sha256(text.encode("ascii")).hexdigest()
+        if response_record.get("response_text_sha256") != response_text_sha256:
+            raise RuntimeError(f"source {phase} response text hash drift")
+        query_state_sha256 = None
+        if phase == launcher.OBS_PHASE:
+            use = runtime_use_by_sample[sample_id]
+            contacts = use.get("use_contacts")
+            contact = contacts[0] if isinstance(contacts, list) and len(contacts) == 1 else None
+            use_response_sha256 = response_record.get("response_text_sha256")
+            if (
+                not isinstance(contact, Mapping)
+                or use.get("use_final_response_sha256") != use_response_sha256
+                or contact.get("response_sha256") != use_response_sha256
+                or not _is_sha256(contact.get("query_state_sha256"))
+            ):
+                raise RuntimeError("source OBS response/query-state lineage drift")
+            query_state_sha256 = str(contact["query_state_sha256"])
+            if query_state_sha256 in query_state_hashes:
+                raise RuntimeError("source OBS query states are not unique")
+            query_state_hashes.add(query_state_sha256)
+        rows.append(
+            launcher.GenerationResponse(
+                sample_id=sample_id,
+                phase=phase,
+                request_body_sha256=body_sha256,
+                response_bytes=text.encode("ascii"),
+                source_query_state_sha256=query_state_sha256,
+            )
+        )
+    return launcher.GenerationPhaseOutput(phase=phase, rows=tuple(rows))
+
+
+def _derive_recovered_direct_bundle_material(
+    *,
+    launcher: object,
+    trace_path: Path,
+    phase_run: object,
+    sample_ids: Sequence[str],
+) -> tuple[tuple[Mapping[str, object], ...], Mapping[str, object], Mapping[str, str]]:
+    """Derive score rows, cost, and record hashes from the frozen M0 trace."""
+
+    records = _read_jsonl(Path(trace_path), label="source M0 trace")
+    request_by_id: dict[str, Mapping[str, object]] = {}
+    response_by_id: dict[str, Mapping[str, object]] = {}
+    cost_by_id: dict[str, Mapping[str, object]] = {}
+    record_hashes: dict[str, str] = {}
+    for document in records:
+        if set(document) != {"channel", "payload", "record_id"}:
+            raise RuntimeError("source M0 trace record shape drift")
+        channel = document.get("channel")
+        record_id = document.get("record_id")
+        payload = document.get("payload")
+        if (
+            not isinstance(channel, str)
+            or not isinstance(record_id, str)
+            or record_id in record_hashes
+            or not isinstance(payload, Mapping)
+        ):
+            raise RuntimeError("source M0 trace record identity drift")
+        record = TraceRecord(channel=channel, record_id=record_id, payload=payload)
+        record_hashes[record_id] = record.content_hash()
+        for expected_channel, suffix, target in (
+            ("MODEL_REQUEST", "/request", request_by_id),
+            ("MODEL_RESPONSE", "/response", response_by_id),
+            ("COST", "/cost", cost_by_id),
+        ):
+            if channel == expected_channel:
+                if not record_id.endswith(suffix):
+                    raise RuntimeError("source M0 transport record suffix drift")
+                request_id = record_id[: -len(suffix)]
+                if not request_id or request_id in target:
+                    raise RuntimeError("source M0 transport identity drift")
+                target[request_id] = payload
+    if (
+        len(request_by_id) != 104
+        or set(response_by_id) != set(request_by_id)
+        or set(cost_by_id) != set(request_by_id)
+        or len(records) != 312
+    ):
+        raise RuntimeError("source M0 trace must contain 104 request/response/cost triplets")
+
+    response_rows = {
+        row.sample_id: row for row in getattr(getattr(phase_run, "output", None), "rows", ())
+    }
+    expected_samples = tuple(sample_ids)
+    if set(response_rows) != set(expected_samples) or len(response_rows) != 104:
+        raise RuntimeError("recovered M0 phase output roster drift")
+    request_id_by_sample: dict[str, str] = {}
+    for request_id, request in request_by_id.items():
+        inner = request.get("payload")
+        sample_id = inner.get("sample_id") if isinstance(inner, Mapping) else None
+        if (
+            not isinstance(sample_id, str)
+            or sample_id in request_id_by_sample
+            or sample_id not in response_rows
+            or request.get("arm") != GENERATION_ARM
+            or request.get("payload_sha256") != _sha256_json(inner)
+        ):
+            raise RuntimeError("source M0 request/sample lineage drift")
+        request_id_by_sample[sample_id] = request_id
+    if set(request_id_by_sample) != set(expected_samples):
+        raise RuntimeError("source M0 request roster drift")
+
+    output_rows: list[Mapping[str, object]] = []
+    totals: dict[str, int | float] = {
+        "calls_used": 0,
+        "audio_seconds_used": 0.0,
+        "latency_seconds_total": 0.0,
+        "prompt_tokens_total": 0,
+        "completion_tokens_total": 0,
+    }
+    for sample_id in sorted(expected_samples):
+        request_id = request_id_by_sample[sample_id]
+        request = request_by_id[request_id]
+        response = response_by_id[request_id]
+        cost = cost_by_id[request_id]
+        text = response.get("text")
+        if not isinstance(text, str) or not text.isascii():
+            raise RuntimeError("source M0 response text is not ASCII")
+        text_sha256 = hashlib.sha256(text.encode("ascii")).hexdigest()
+        recovered = response_rows[sample_id]
+        if (
+            response.get("response_text_sha256") != text_sha256
+            or getattr(recovered, "response_sha256", None) != text_sha256
+            or getattr(recovered, "response_bytes", None) != text.encode("ascii")
+            or not _is_sha256(request.get("payload_sha256"))
+            or not _is_sha256(response.get("response_sha256"))
+        ):
+            raise RuntimeError("source M0 response lineage drift")
+        output_rows.append(
+            {
+                "request_id": request_id,
+                "sample_id": sample_id,
+                "carrier_lock_key": AUDIO2TOOL_LOCK_KEY,
+                "arm": GENERATION_ARM,
+                "text": text,
+                "admitted": True,
+                "request_sha256": request["payload_sha256"],
+                "response_sha256": response["response_sha256"],
+                "response_text_sha256": text_sha256,
+                "phase": launcher.M0_PHASE,
+                "source_run_id": launcher.SOURCE_RUN_ID,
+            }
+        )
+        for field in (
+            "calls",
+            "audio_seconds",
+            "latency_seconds",
+            "prompt_tokens",
+            "completion_tokens",
+        ):
+            value = cost.get(field)
+            if (
+                isinstance(value, bool)
+                or not isinstance(value, (int, float))
+                or not math.isfinite(float(value))
+                or value < 0
+            ):
+                raise RuntimeError(f"source M0 cost field {field!r} is invalid")
+        if cost["calls"] != 1:
+            raise RuntimeError("source M0 cost must record one call per request")
+        totals["calls_used"] = int(totals["calls_used"]) + 1
+        totals["audio_seconds_used"] = float(totals["audio_seconds_used"]) + float(
+            cost["audio_seconds"]
+        )
+        totals["latency_seconds_total"] = float(totals["latency_seconds_total"]) + float(
+            cost["latency_seconds"]
+        )
+        totals["prompt_tokens_total"] = int(totals["prompt_tokens_total"]) + int(
+            cost["prompt_tokens"]
+        )
+        totals["completion_tokens_total"] = int(
+            totals["completion_tokens_total"]
+        ) + int(cost["completion_tokens"])
+    if totals["calls_used"] != 104:
+        raise RuntimeError("source M0 recovered cost count drift")
+    totals["tool_calls"] = 0
+    return tuple(output_rows), totals, record_hashes
+
+
+def _load_recovery_send_accounting(
+    path: Path,
+    *,
+    expected_sha256: object,
+    launcher: object,
+    sample_ids: Sequence[str],
+) -> Mapping[str, Mapping[str, str]]:
+    """Load the exact 208 durable V2 sends without opening response meaning."""
+
+    _require_file_hash(Path(path), expected_sha256, label="source send accounting")
+    rows = _read_jsonl(Path(path), label="source send accounting")
+    expected_samples = set(sample_ids)
+    result = {phase: {} for phase in launcher.REUSED_GENERATION_PHASES}
+    for row in rows:
+        phase = row.get("phase")
+        sample_id = row.get("sample_id")
+        body_sha256 = row.get("body_sha256")
+        if (
+            phase not in result
+            or not isinstance(sample_id, str)
+            or sample_id not in expected_samples
+            or sample_id in result[phase]
+            or not _is_sha256(body_sha256)
+            or row.get("status") != "CONSUMED_BEFORE_IO"
+        ):
+            raise RuntimeError("source send accounting identity drift")
+        result[phase][sample_id] = str(body_sha256)
+    if len(rows) != 208 or any(set(values) != expected_samples for values in result.values()):
+        raise RuntimeError("source send accounting must contain exactly 104 M0 and 104 OBS sends")
+    return result
+
+
+def _load_recovery_preflight(
+    path: Path,
+    *,
+    expected_sha256: object,
+    launcher: object,
+    phase: str,
+    requests: Sequence[object],
+) -> object:
+    """Rebuild and verify one source whole-phase preflight receipt."""
+
+    _require_file_hash(Path(path), expected_sha256, label=f"source {phase} preflight")
+    document = _read_json(Path(path))
+    audits_raw = document.get("audits")
+    if not isinstance(audits_raw, list) or len(audits_raw) != 104:
+        raise RuntimeError(f"source {phase} preflight audit count drift")
+    try:
+        audits = tuple(launcher.PromptBudgetAudit(**row) for row in audits_raw)
+    except (TypeError, RuntimeError) as error:
+        raise RuntimeError(f"source {phase} preflight audits are malformed") from error
+    receipt = launcher.PhaseRequestPreflightReceipt.create(phase, requests, audits)
+    if (
+        document.get("phase") != phase
+        or document.get("status") != receipt.status
+        or document.get("sample_ids") != list(receipt.sample_ids)
+        or document.get("allowed_body_hashes_by_slot")
+        != [list(values) for values in receipt.allowed_body_hashes_by_slot]
+        or document.get("receipt_sha256") != receipt.receipt_sha256
+    ):
+        raise RuntimeError(f"source {phase} preflight binding drift")
+    return launcher.validate_phase_preflight(
+        receipt,
+        requests,
+        expected_sample_ids=receipt.sample_ids,
+    )
+
+
+def _write_post_embedding_checkpoint(
+    path: Path,
+    *,
+    launcher: object,
+    run_id: str,
+    source_report_sha256: str,
+    observations: Mapping[str, object],
+    candidates: Mapping[str, object],
+) -> Mapping[str, object]:
+    """Persist the derived K32 state before any resumed generation request."""
+
+    if not _is_sha256(source_report_sha256) or set(observations) != set(candidates):
+        raise RuntimeError("post-embedding checkpoint lineage is incomplete")
+    rows = []
+    for sample_id in sorted(observations):
+        observation = observations[sample_id]
+        candidate = candidates[sample_id]
+        if (
+            candidate.sample_id != sample_id
+            or candidate.query_state_sha256 != observation.state_sha256
+        ):
+            raise RuntimeError("post-embedding candidate lineage drift")
+        rows.append(
+            {
+                "sample_id": sample_id,
+                "observation_state_sha256": observation.state_sha256,
+                "candidate_query_state_sha256": candidate.query_state_sha256,
+                "candidate_tool_names": list(candidate.tool_names),
+                "candidate_scores": list(candidate.scores),
+                "candidate_set_sha256": candidate.candidate_set_sha256,
+            }
+        )
+    if len(rows) != 104:
+        raise RuntimeError("post-embedding checkpoint requires exactly 104 rows")
+    document = {
+        "schema": "saea-a2t-select-fill-post-embedding-k32-v1",
+        "run_id": run_id,
+        "source_report_sha256": source_report_sha256,
+        "count": 104,
+        "top_k": 32,
+        "rows": rows,
+    }
+    _write_json(Path(path), document)
+    return {
+        "path": str(Path(path).resolve()),
+        "checkpoint_sha256": _sha256_file(Path(path)),
+        "count": 104,
+        "top_k": 32,
+    }
+
+
+def _load_post_embedding_checkpoint(
+    path: Path,
+    *,
+    launcher: object,
+    expected_sha256: object,
+    run_id: str,
+    source_report_sha256: str,
+    observations: Mapping[str, object],
+) -> Mapping[str, object]:
+    """Reload and independently validate the durable K32 checkpoint."""
+
+    _require_file_hash(
+        Path(path), expected_sha256, label="post-embedding checkpoint"
+    )
+    document = _read_json(Path(path))
+    rows = document.get("rows")
+    if (
+        document.get("schema") != "saea-a2t-select-fill-post-embedding-k32-v1"
+        or document.get("run_id") != run_id
+        or document.get("source_report_sha256") != source_report_sha256
+        or document.get("count") != 104
+        or document.get("top_k") != 32
+        or not isinstance(rows, list)
+        or len(rows) != 104
+    ):
+        raise RuntimeError("post-embedding checkpoint identity drift")
+    result = {}
+    for row in rows:
+        sample_id = row.get("sample_id") if isinstance(row, Mapping) else None
+        observation = observations.get(sample_id) if isinstance(sample_id, str) else None
+        names = row.get("candidate_tool_names") if isinstance(row, Mapping) else None
+        scores = row.get("candidate_scores") if isinstance(row, Mapping) else None
+        if (
+            observation is None
+            or sample_id in result
+            or not isinstance(names, list)
+            or not isinstance(scores, list)
+            or row.get("observation_state_sha256") != observation.state_sha256
+            or row.get("candidate_query_state_sha256") != observation.state_sha256
+        ):
+            raise RuntimeError("post-embedding checkpoint row lineage drift")
+        candidate = launcher.CandidateSet(
+            sample_id=sample_id,
+            tool_names=tuple(names),
+            scores=tuple(scores),
+            query_state_sha256=observation.state_sha256,
+        )
+        if row.get("candidate_set_sha256") != candidate.candidate_set_sha256:
+            raise RuntimeError("post-embedding checkpoint candidate hash drift")
+        result[sample_id] = candidate
+    if set(result) != set(observations):
+        raise RuntimeError("post-embedding checkpoint roster drift")
+    return result
+
+
 def _require_file_hash(path: Path, expected: object, *, label: str) -> Path:
     if not path.is_file() or not _is_sha256(expected) or _sha256_file(path) != expected:
         raise RuntimeError(f"{label} SHA-256 drift")
@@ -214,12 +687,12 @@ def _confined_file(root: Path, raw: object, *, label: str) -> Path:
 def parse_execution_plans(
     authority: Mapping[str, object], *, roles: Sequence[str], run_id: str
 ) -> dict[str, ExecutionPlan]:
-    """Build and bind the six generation ExecutionPlans."""
+    """Build and bind the four remaining generation ExecutionPlans."""
 
     raw = authority.get("execution_plans")
     ordered = tuple(roles)
-    if not isinstance(raw, Mapping) or tuple(raw) != ordered or len(ordered) != 6:
-        raise RuntimeError("runtime requires six ordered generation ExecutionPlans")
+    if not isinstance(raw, Mapping) or tuple(raw) != ordered or len(ordered) != 4:
+        raise RuntimeError("runtime requires four ordered generation ExecutionPlans")
     hashes = authority.get("hashes")
     preregistration = (
         hashes.get("exposure_preregistration_sha256")
@@ -247,7 +720,7 @@ def parse_execution_plans(
             or plan.split_role != "discovery"
             or plan.split_identity_hash != authority.get("split_identity_hash")
             or plan.protocol_hash != authority.get("core_protocol_sha256")
-            or plan.planned_model_calls != 624
+            or plan.planned_model_calls != 416
             or plan.planned_gpu_hours != 4.0
             or plan.planned_speech_audio_seconds != 3400
             or not plan.attempt_id
@@ -280,7 +753,7 @@ def parse_embedding_execution_plan(
         **{key: value for key, value in raw.items() if key in allowed}
     ).validate()
     if (
-        plan.run_id != "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2-EMBED"
+        plan.run_id != "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V3-EMBED"
         or plan.execution_profile != "bounded-discovery-probe"
         or plan.carrier_lock_key != AUDIO2TOOL_LOCK_KEY
         or plan.split_role != "discovery"
@@ -486,6 +959,30 @@ class LocalSelectFillRuntime:
         self.mission_dir = self.data_root / "runs" / str(authority["run_id"]) / mission_id
         if self.mission_dir.exists():
             raise RuntimeError("one-shot mission already exists")
+        source = self.spec.get("recovery_source")
+        if not isinstance(source, Mapping):
+            raise RuntimeError("authority lacks the V2 recovery source binding")
+        source_mission_id = source.get("mission_id")
+        if (
+            source.get("run_id") != getattr(launcher_module, "SOURCE_RUN_ID")
+            or not isinstance(source_mission_id, str)
+            or not source_mission_id
+            or not source_mission_id.isascii()
+            or not isinstance(source.get("hashes"), Mapping)
+        ):
+            raise RuntimeError("V2 recovery source identity is malformed")
+        self.recovery_source = source
+        self.source_mission_dir = (
+            self.data_root
+            / "runs"
+            / str(source["run_id"])
+            / source_mission_id
+        ).resolve()
+        if (
+            not self.source_mission_dir.is_dir()
+            or self.data_root not in self.source_mission_dir.parents
+        ):
+            raise RuntimeError("V2 recovery source mission is unavailable or unconfined")
         roles = tuple(getattr(launcher_module, "GENERATION_PHASES"))
         self.plans = parse_execution_plans(
             authority, roles=roles, run_id=str(authority["run_id"])
@@ -535,6 +1032,8 @@ class LocalSelectFillRuntime:
         self.embedding_client_instance: EmbeddingClient | None = None
         self.embedding_attempt = None
         self.embedding_receipt: Mapping[str, object] | None = None
+        self.recovered_prefix = None
+        self.post_embedding_checkpoint_receipt: Mapping[str, object] | None = None
 
     def _load_roster_and_packets(self) -> None:
         launcher = self.launcher
@@ -834,10 +1333,218 @@ class LocalSelectFillRuntime:
             raise RuntimeError("generation decoding parameters drift")
         return value
 
+    def _source_file(self, key: str, relpath: str) -> tuple[Path, str]:
+        hashes = self.recovery_source.get("hashes")
+        expected = hashes.get(key) if isinstance(hashes, Mapping) else None
+        path = (self.source_mission_dir / relpath).resolve()
+        if self.source_mission_dir not in path.parents:
+            raise RuntimeError(f"source recovery path {key!r} escapes its mission")
+        _require_file_hash(path, expected, label=f"source recovery {key}")
+        return path, str(expected)
+
+    def rehydrate_completed_prefix(self) -> object:
+        """Recover V2 M0/OBS bytes and prove their lineage without new I/O."""
+
+        if self.recovered_prefix is not None:
+            return self.recovered_prefix
+        launcher = self.launcher
+        m0_requests = self.prepare_generation_phase(
+            launcher.M0_PHASE,
+            sample_ids=self.sample_ids,
+            packet_bindings=self.packet_bindings,
+        )
+        obs_requests = self.prepare_generation_phase(
+            launcher.OBS_PHASE,
+            sample_ids=self.sample_ids,
+            packet_bindings=self.packet_bindings,
+        )
+        send_path, send_hash = self._source_file(
+            "generation_send_accounting_sha256", "generation-send-accounting.jsonl"
+        )
+        sends = _load_recovery_send_accounting(
+            send_path,
+            expected_sha256=send_hash,
+            launcher=launcher,
+            sample_ids=self.sample_ids,
+        )
+        m0_preflight_path, m0_preflight_hash = self._source_file(
+            "m0_preflight_sha256", "preflight/M0_DIRECT.json"
+        )
+        obs_preflight_path, obs_preflight_hash = self._source_file(
+            "obs_preflight_sha256", "preflight/OBS_SEMANTIC_STATE.json"
+        )
+        m0_preflight = _load_recovery_preflight(
+            m0_preflight_path,
+            expected_sha256=m0_preflight_hash,
+            launcher=launcher,
+            phase=launcher.M0_PHASE,
+            requests=m0_requests,
+        )
+        obs_preflight = _load_recovery_preflight(
+            obs_preflight_path,
+            expected_sha256=obs_preflight_hash,
+            launcher=launcher,
+            phase=launcher.OBS_PHASE,
+            requests=obs_requests,
+        )
+        m0_trace_path, m0_trace_hash = self._source_file(
+            "m0_trace_sha256",
+            f"m0-direct/{launcher.SOURCE_RUN_ID}.trace.jsonl",
+        )
+        obs_trace_path, obs_trace_hash = self._source_file(
+            "obs_trace_sha256",
+            f"obs-semantic-state/agent-loop/{launcher.SOURCE_RUN_ID}.trace.jsonl",
+        )
+        m0_output = _load_recovery_trace_rows(
+            launcher=launcher,
+            phase=launcher.M0_PHASE,
+            trace_path=m0_trace_path,
+            expected_trace_sha256=m0_trace_hash,
+            requests=m0_requests,
+            packet_bindings=self.packet_bindings,
+            sent_body_sha256_by_sample=sends[launcher.M0_PHASE],
+        )
+        obs_output = _load_recovery_trace_rows(
+            launcher=launcher,
+            phase=launcher.OBS_PHASE,
+            trace_path=obs_trace_path,
+            expected_trace_sha256=obs_trace_hash,
+            requests=obs_requests,
+            packet_bindings=self.packet_bindings,
+            sent_body_sha256_by_sample=sends[launcher.OBS_PHASE],
+        )
+        observations = launcher._validate_observations(
+            self.parse_observations(obs_output),
+            sample_ids=self.sample_ids,
+        )
+        if len({item.state_sha256 for item in observations.values()}) != 104:
+            raise RuntimeError("source OBS state identities are not unique")
+        authority_path, authority_hash = self._source_file(
+            "authority_binding_sha256", "authority-binding.json"
+        )
+        source_authority = _read_json(authority_path)
+        source_plans = source_authority.get("contact_plans")
+        source_m0_raw = (
+            source_plans.get(launcher.M0_PHASE)
+            if isinstance(source_plans, Mapping)
+            else None
+        )
+        if not isinstance(source_m0_raw, Mapping):
+            raise RuntimeError("source authority lacks its M0 execution plan")
+        try:
+            source_m0_plan = ExecutionPlan(**source_m0_raw).validate()
+        except (TypeError, ValueError) as error:
+            raise RuntimeError("source M0 execution plan is malformed") from error
+        if (
+            source_m0_plan.run_id != launcher.SOURCE_RUN_ID
+            or source_m0_plan.carrier_lock_key != AUDIO2TOOL_LOCK_KEY
+            or source_m0_plan.split_role != "discovery"
+            or source_m0_plan.split_identity_hash != launcher.SPLIT_IDENTITY_HASH
+            or source_m0_plan.protocol_hash
+            != "db933dfc8975b30ac8ce07526aa074874e554c1fbc055b39ebbc7719d3e936bd"
+            or source_m0_plan.planned_model_calls != 624
+            or source_m0_plan.planned_speech_audio_seconds != 3400
+            or source_m0_plan.planned_gpu_hours != 4.0
+            or not source_m0_plan.attempt_id
+        ):
+            raise RuntimeError("source M0 execution plan identity drift")
+        source_session_path, source_session_hash = self._source_file(
+            "generation_pre_embedding_session_receipt_sha256",
+            "services/generation-pre-embedding/session-receipt.json",
+        )
+        source_attempt_path = (
+            self.data_root
+            / "attempts"
+            / source_m0_plan.run_id
+            / f"{source_m0_plan.attempt_id}.json"
+        ).resolve()
+        source_hashes = self.recovery_source.get("hashes")
+        source_attempt_hash = (
+            source_hashes.get("m0_attempt_sha256")
+            if isinstance(source_hashes, Mapping)
+            else None
+        )
+        _require_file_hash(
+            source_attempt_path,
+            source_attempt_hash,
+            label="source M0 attempt",
+        )
+        source_attempt = _read_json(source_attempt_path)
+        actual = source_attempt.get("actual")
+        actual_audio_seconds = (
+            actual.get("audio_seconds") if isinstance(actual, Mapping) else None
+        )
+        if (
+            source_attempt.get("run_id") != source_m0_plan.run_id
+            or source_attempt.get("attempt_id") != source_m0_plan.attempt_id
+            or source_attempt.get("state") != "ABORTED"
+            or not isinstance(actual, Mapping)
+            or actual.get("calls") != 104
+            or isinstance(actual_audio_seconds, bool)
+            or not isinstance(actual_audio_seconds, (int, float))
+            or abs(float(actual_audio_seconds) - 549.489916) > 1e-6
+        ):
+            raise RuntimeError("source M0 attempt state or cost drift")
+        self.source_m0_plan = source_m0_plan
+        self.source_m0_trace_path = m0_trace_path
+        self.source_authority_binding_path = authority_path
+        self.source_generation_session_receipt_path = source_session_path
+        self.source_m0_attempt_path = source_attempt_path
+        embedding_path, embedding_hash = self._source_file(
+            "embedding_tool_receipt_sha256", "services/embedding/tool-receipt.json"
+        )
+        source_embedding = _read_json(embedding_path)
+        if (
+            source_embedding.get("status") != "FINALIZED"
+            or source_embedding.get("logical_items") != 104
+            or source_embedding.get("physical_requests") != 4
+        ):
+            raise RuntimeError("source embedding receipt is not the completed 104/4 pass")
+        source_report = {
+            "schema": "saea-a2t-select-fill-recovered-prefix-v1",
+            "source_run_id": launcher.SOURCE_RUN_ID,
+            "source_mission": str(self.source_mission_dir),
+            "sample_count": 104,
+            "m0_responses": 104,
+            "obs_responses": 104,
+            "obs_states": 104,
+            "source_generation_contacts": 208,
+            "source_embedding_logical_items": 104,
+            "source_embedding_physical_requests": 4,
+            "source_embedding_vectors_persisted": False,
+            "new_generation_contacts": 0,
+            "new_embedding_contacts": 0,
+            "response_meanings_opened": False,
+            "artifacts": {
+                "send_accounting_sha256": send_hash,
+                "m0_preflight_sha256": m0_preflight_hash,
+                "obs_preflight_sha256": obs_preflight_hash,
+                "m0_trace_sha256": m0_trace_hash,
+                "obs_trace_sha256": obs_trace_hash,
+                "embedding_tool_receipt_sha256": embedding_hash,
+                "authority_binding_sha256": authority_hash,
+                "generation_pre_embedding_session_receipt_sha256": source_session_hash,
+                "m0_attempt_sha256": str(source_attempt_hash),
+            },
+        }
+        self.recovery_source_report = source_report
+        self.recovered_prefix = launcher.RecoveredPrefixArtifacts(
+            m0=launcher.GenerationPhaseRun(
+                launcher.M0_PHASE, m0_requests, m0_preflight, m0_output
+            ),
+            obs=launcher.GenerationPhaseRun(
+                launcher.OBS_PHASE, obs_requests, obs_preflight, obs_output
+            ),
+            observations=observations,
+            source_report_sha256=_sha256_json(source_report),
+        )
+        return self.recovered_prefix
+
     def assert_contact_ready_preflight(self) -> Mapping[str, object]:
         if self.mission_dir.exists():
             raise RuntimeError("mission already exists")
         study_commit = require_clean_study_repo(self.repo)
+        recovered = self.rehydrate_completed_prefix()
         for plan in (*self.plans.values(), self.embedding_plan):
             attempt = self.data_root / "attempts" / plan.run_id / f"{plan.attempt_id}.json"
             if attempt.exists():
@@ -861,10 +1568,13 @@ class LocalSelectFillRuntime:
             "run_id": self.authority["run_id"],
             "study_commit": study_commit,
             "sample_count": 104,
-            "generation_plan_count": 6,
-            "generation_contact_ceiling": 624,
+            "generation_plan_count": 4,
+            "generation_contact_ceiling": 416,
             "embedding_logical_items": 104,
             "embedding_physical_requests": 4,
+            "embedding_speech_audio_seconds": 0,
+            "reused_generation_contacts": 208,
+            "recovered_prefix_sha256": recovered.source_report_sha256,
             "bundle_split_identity_sha256": BUNDLE_SPLIT_IDENTITY_SHA256,
             "contacts_made": 0,
         }
@@ -875,6 +1585,8 @@ class LocalSelectFillRuntime:
             if path.exists():
                 raise RuntimeError(f"one-shot attempt already exists: {plan.attempt_id}")
         self.mission_dir.mkdir(parents=True)
+        if self.recovered_prefix is None:
+            self.rehydrate_completed_prefix()
         _write_json(
             self.mission_dir / "authority-binding.json",
             {
@@ -882,9 +1594,15 @@ class LocalSelectFillRuntime:
                 "protocol_config": self.protocol_config,
                 "contact_plans": {key: asdict(value) for key, value in self.plans.items()},
                 "embedding_plan": asdict(self.embedding_plan),
+                "recovery_source": dict(self.recovery_source),
+                "recovered_prefix_sha256": self.recovered_prefix.source_report_sha256,
                 "bundle_split_identity_sha256": BUNDLE_SPLIT_IDENTITY_SHA256,
                 "bundle_protocol_sha256": BUNDLE_PROTOCOL_SHA256,
             },
+        )
+        _write_json(
+            self.mission_dir / "recovered-prefix-report.json",
+            self.recovery_source_report,
         )
 
     def _post_bytes(self, url: str, body: bytes, timeout: float) -> bytes:
@@ -914,7 +1632,7 @@ class LocalSelectFillRuntime:
         return json.loads(raw.decode("utf-8"))
 
     def start_generation(self, window: str) -> None:
-        if self.active is not None or window not in {"pre-embedding", "post-embedding"}:
+        if self.active is not None or window != "post-embedding":
             raise RuntimeError("generation service order violation")
         directory = self.mission_dir / "services" / f"generation-{window}"
         receipt = directory / "session-receipt.json"
@@ -1403,6 +2121,49 @@ class LocalSelectFillRuntime:
             )
         return result
 
+    def persist_post_embedding_checkpoint(
+        self,
+        observations: Mapping[str, object],
+        candidates: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        if self.active is not None or self.embedding_receipt is None:
+            raise RuntimeError("post-embedding checkpoint requires a finalized embedding pass")
+        if self.recovered_prefix is None:
+            raise RuntimeError("post-embedding checkpoint lacks recovered source lineage")
+        path = self.mission_dir / "post-embedding-k32.json"
+        if path.exists():
+            raise RuntimeError("post-embedding checkpoint already exists")
+        receipt = _write_post_embedding_checkpoint(
+            path,
+            launcher=self.launcher,
+            run_id=str(self.authority["run_id"]),
+            source_report_sha256=self.recovered_prefix.source_report_sha256,
+            observations=observations,
+            candidates=candidates,
+        )
+        self.post_embedding_checkpoint_receipt = receipt
+        _write_json(self.mission_dir / "post-embedding-k32-receipt.json", receipt)
+        return receipt
+
+    def rehydrate_post_embedding_checkpoint(
+        self,
+        receipt: Mapping[str, object],
+        observations: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        if (
+            receipt != self.post_embedding_checkpoint_receipt
+            or self.recovered_prefix is None
+        ):
+            raise RuntimeError("post-embedding checkpoint receipt identity drift")
+        return _load_post_embedding_checkpoint(
+            Path(str(receipt.get("path", ""))),
+            launcher=self.launcher,
+            expected_sha256=receipt.get("checkpoint_sha256"),
+            run_id=str(self.authority["run_id"]),
+            source_report_sha256=self.recovered_prefix.source_report_sha256,
+            observations=observations,
+        )
+
     def parse_stage_states(
         self,
         expected_stage: str,
@@ -1560,18 +2321,116 @@ class LocalSelectFillRuntime:
             "lineage_sha256": _sha256_file(lineage),
         }
 
+    def seal_recovered_direct_manifest(
+        self, role: str, phase_run: object, extras: Mapping[str, object]
+    ) -> Mapping[str, object]:
+        """Seal a standard verified M0 bundle from the immutable V2 source."""
+
+        if (
+            role != "direct_m0"
+            or phase_run.phase != self.launcher.M0_PHASE
+            or self.recovered_prefix is None
+        ):
+            raise RuntimeError("recovered direct manifest identity drift")
+        directory = self.mission_dir / "recovered-direct-m0"
+        directory.mkdir(parents=True, exist_ok=False)
+        source_run_id = self.launcher.SOURCE_RUN_ID
+        raw_trace = directory / f"{source_run_id}.trace.jsonl"
+        shutil.copyfile(self.source_m0_trace_path, raw_trace)
+        if _sha256_file(raw_trace) != _sha256_file(self.source_m0_trace_path):
+            raise RuntimeError("recovered M0 trace copy drift")
+        rows, cost, record_hashes = _derive_recovered_direct_bundle_material(
+            launcher=self.launcher,
+            trace_path=raw_trace,
+            phase_run=phase_run,
+            sample_ids=tuple(row.sample_id for row in phase_run.output.rows),
+        )
+        trace_manifest = directory / f"{source_run_id}.trace-manifest.json"
+        _write_json(
+            trace_manifest,
+            {"run_id": source_run_id, "records": dict(record_hashes)},
+        )
+        outputs = directory / f"{source_run_id}.outputs.jsonl"
+        _write_jsonl(outputs, rows)
+        prompt_audits = extras.get("prompt_budget_audits")
+        audit_rows = (
+            [audit.__dict__ for audit in prompt_audits]
+            if isinstance(prompt_audits, tuple)
+            else []
+        )
+        bundle_plan = replace(
+            self.source_m0_plan,
+            split_identity_hash=BUNDLE_SPLIT_IDENTITY_SHA256,
+            protocol_hash=BUNDLE_PROTOCOL_SHA256,
+        )
+        result = RunResult(
+            run_id=source_run_id,
+            arm=GENERATION_ARM,
+            outputs_path=outputs,
+            trace_manifest_hash=_sha256_file(trace_manifest),
+            cost=cost,
+        )
+        manifest_path = build_manifest(
+            repo_root=self.repo,
+            data_root=self.data_root,
+            composed=self.composed,
+            plan=bundle_plan,
+            verified_split=self.verified_split,
+            session_receipt_path=self.source_generation_session_receipt_path,
+            run_dir=directory,
+            status=STATUS_COMPLETED,
+            result=result,
+        )
+        manifest_document = dict(_read_json(manifest_path))
+        manifest_document["recovery_source"] = {
+            "execution_plan": asdict(self.source_m0_plan),
+            "attempt_path": str(self.source_m0_attempt_path.resolve()),
+            "attempt_sha256": _sha256_file(self.source_m0_attempt_path),
+            "attempt_state": "ABORTED",
+            "authority_binding_path": str(
+                self.source_authority_binding_path.resolve()
+            ),
+            "authority_binding_sha256": _sha256_file(
+                self.source_authority_binding_path
+            ),
+            "session_receipt_path": str(
+                self.source_generation_session_receipt_path.resolve()
+            ),
+            "session_receipt_sha256": _sha256_file(
+                self.source_generation_session_receipt_path
+            ),
+            "trace_path": str(self.source_m0_trace_path.resolve()),
+            "trace_sha256": _sha256_file(self.source_m0_trace_path),
+            "source_report_sha256": self.recovered_prefix.source_report_sha256,
+            "prompt_budget_audits_sha256": _sha256_json(audit_rows),
+            "new_model_contacts": 0,
+            "inherited_model_contacts": 104,
+        }
+        _write_json(manifest_path, manifest_document)
+        verified = verify_bundle(manifest_path)
+        if len(verified.outputs_rows) != 104 or verified.attempt_state != "ABORTED":
+            raise RuntimeError("recovered direct standard bundle verification failed")
+        return {
+            "role": role,
+            "status": "COMPLETE",
+            "complete_rows": 104,
+            "manifest": str(manifest_path),
+            "manifest_sha256": _sha256_file(manifest_path),
+        }
+
     def seal_flight(
         self, manifests: Sequence[Mapping[str, object]], events: Mapping[str, object]
     ) -> Mapping[str, object]:
-        for phase in (self.launcher.OBS_PHASE, self.launcher.SELECT_PHASE):
-            self._close_phase(phase)
+        self._close_phase(self.launcher.SELECT_PHASE)
         contacts = sum(int(self._close_phase(phase)["request_count"]) for phase in self.plans)
         if (
             self.active is not None
-            or contacts != 624
+            or contacts != 416
             or len(manifests) != 4
             or self.embedding_receipt is None
             or self.embedding_receipt.get("physical_requests") != 4
+            or self.recovered_prefix is None
+            or self.post_embedding_checkpoint_receipt is None
         ):
             raise RuntimeError("flight contact or manifest accounting drift")
         document = {
@@ -1579,10 +2438,14 @@ class LocalSelectFillRuntime:
             "status": "SEALED",
             "run_id": self.authority["run_id"],
             "generation_contacts": contacts,
+            "inherited_generation_contacts": 208,
+            "full_flight_generation_contacts": 624,
             "embedding_logical_items": 104,
             "embedding_physical_requests": 4,
             "manifests": list(manifests),
             "events": dict(events),
+            "recovered_prefix_sha256": self.recovered_prefix.source_report_sha256,
+            "post_embedding_checkpoint": dict(self.post_embedding_checkpoint_receipt),
             "gold_opened": False,
             "scorer_started": False,
         }

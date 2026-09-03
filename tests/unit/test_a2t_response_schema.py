@@ -107,6 +107,42 @@ def test_builds_a_deterministic_strict_subset_schema_per_legal_skeleton() -> Non
         assert branch["properties"]["arguments"]["additionalProperties"] is False
 
 
+def test_exact_no_public_constraint_sentinel_adds_no_schema_constraint() -> None:
+    response_format = audio2tool_call_array_response_format(
+        (
+            _row(
+                "getLightState",
+                "getLightState(deviceId: String)",
+                "No public constraint is declared.",
+            ),
+        ),
+        (_card("getLightState", (("deviceId",),)),),
+    )
+
+    device_id = _branches(response_format)[
+        ("getLightState", ("deviceId",))
+    ]["properties"]["arguments"]["properties"]["deviceId"]
+    assert device_id == {"type": "string"}
+
+
+@pytest.mark.parametrize(
+    "malformed",
+    (
+        "No public constraints are declared.",
+        "No public constraint is declared",
+        "No public constraint is declared. trailing text",
+    ),
+)
+def test_only_exact_no_public_constraint_sentinel_is_accepted(
+    malformed: str,
+) -> None:
+    with pytest.raises(A2tResponseSchemaError, match="constraints.*malformed"):
+        audio2tool_call_array_response_format(
+            (_row("getLightState", "getLightState(deviceId: String)", malformed),),
+            (_card("getLightState", (("deviceId",),)),),
+        )
+
+
 def test_strict_subset_schema_can_allow_an_empty_family_local_abstention() -> None:
     response_format = audio2tool_call_array_response_format(
         (_row("ping", "ping()"),),

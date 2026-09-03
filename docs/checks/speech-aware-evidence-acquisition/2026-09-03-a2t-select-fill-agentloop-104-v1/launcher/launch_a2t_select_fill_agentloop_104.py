@@ -58,7 +58,8 @@ BUNDLE_SPLIT_IDENTITY_HASH = (
 BUNDLE_PROTOCOL_SHA256 = (
     "4f192381d41c96b55d53433035ff0566795b0fb772503a59555a0f83d15d1171"
 )
-RUN_ID = "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2"
+SOURCE_RUN_ID = "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2"
+RUN_ID = "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V3"
 PREPROCESS_REPORT_PATH = REPO / (
     "docs/checks/speech-aware-evidence-acquisition/"
     "2026-09-03-a2t-select-fill-fresh-preprocess-v1/preprocess-report.json"
@@ -93,14 +94,17 @@ PHASE_ORDER = (
     REVISE_PHASE,
     FILL_PHASE,
 )
-GENERATION_PHASES = (
+REUSED_GENERATION_PHASES = (
     M0_PHASE,
     OBS_PHASE,
+)
+GENERATION_PHASES = (
     JOINT_PHASE,
     SELECT_PHASE,
     REVISE_PHASE,
     FILL_PHASE,
 )
+ALL_GENERATION_PHASES = REUSED_GENERATION_PHASES + GENERATION_PHASES
 FINAL_MANIFEST_ROLES = (
     "direct_m0",
     "joint_one_call",
@@ -111,6 +115,7 @@ DIAGNOSTIC_PHASES = (OBS_PHASE, SELECT_PHASE)
 
 SAMPLE_COUNT = 104
 GENERATION_CONTACTS = SAMPLE_COUNT * len(GENERATION_PHASES)
+FULL_FLIGHT_GENERATION_CONTACTS = SAMPLE_COUNT * len(ALL_GENERATION_PHASES)
 EMBEDDING_LOGICAL_ITEMS = SAMPLE_COUNT
 EMBEDDING_BATCH_SIZE = 32
 EMBEDDING_PHYSICAL_REQUESTS = math.ceil(
@@ -129,7 +134,7 @@ TOKENIZE_ENDPOINT = "/tokenize"
 AGENT_EXECUTOR_ID = "openjiuwen-workflow-v1"
 
 _SHA256 = re.compile(r"[0-9a-f]{64}", flags=re.ASCII)
-_GENERATION_PHASE_SET = frozenset(GENERATION_PHASES)
+_GENERATION_PHASE_SET = frozenset(ALL_GENERATION_PHASES)
 _FORBIDDEN_VISIBLE_KEYS = frozenset(
     {"gold", "label", "reference", "annotation", "future_turn", "test_answer"}
 )
@@ -185,7 +190,10 @@ def protocol_config() -> dict[str, object]:
         "promotion_receipt_sha256": PROMOTION_RECEIPT_SHA256,
         "phase_order": list(PHASE_ORDER),
         "generation_phases": list(GENERATION_PHASES),
+        "reused_generation_phases": list(REUSED_GENERATION_PHASES),
         "generation_contacts": GENERATION_CONTACTS,
+        "inherited_generation_contacts": SAMPLE_COUNT * len(REUSED_GENERATION_PHASES),
+        "full_flight_generation_contacts": FULL_FLIGHT_GENERATION_CONTACTS,
         "manifest_roles": list(FINAL_MANIFEST_ROLES),
         "diagnostic_phases": list(DIAGNOSTIC_PHASES),
         "retrieval": {
@@ -595,6 +603,31 @@ class GenerationPhaseRun:
     requests: tuple[PreparedGenerationRequest, ...]
     preflight: PhaseRequestPreflightReceipt
     output: GenerationPhaseOutput
+
+
+@dataclass(frozen=True)
+class RecoveredPrefixArtifacts:
+    """Hash-verified V2 M0/OBS artifacts admitted without new generation."""
+
+    m0: GenerationPhaseRun
+    obs: GenerationPhaseRun
+    observations: Mapping[str, ObservationArtifact]
+    source_report_sha256: str
+
+    def __post_init__(self) -> None:
+        _require_sha256(self.source_report_sha256, label="source recovery report hash")
+        if self.m0.phase != M0_PHASE or self.obs.phase != OBS_PHASE:
+            raise RuntimeError("recovered prefix phases are malformed")
+        sample_ids = tuple(row.sample_id for row in self.m0.output.rows)
+        if (
+            tuple(row.sample_id for row in self.obs.output.rows) != sample_ids
+            or set(self.observations) != set(sample_ids)
+            or any(
+                self.observations[sample_id].sample_id != sample_id
+                for sample_id in sample_ids
+            )
+        ):
+            raise RuntimeError("recovered prefix roster or OBS lineage drift")
 
 
 def _walk_visible(value: object, *, path: str = "body") -> None:
@@ -1432,7 +1465,7 @@ def execute_contact_ready_flight(
     sample_ids: Sequence[str],
     packet_bindings: Mapping[str, Mapping[str, object]],
 ) -> Mapping[str, object]:
-    """Execute one authority-bound flight without retries or row streaming."""
+    """Resume V2 after OBS and execute only the remaining authorized contacts."""
 
     expected = tuple(sample_ids)
     _validate_packets(expected, packet_bindings)
@@ -1444,27 +1477,15 @@ def execute_contact_ready_flight(
     ):
         raise RuntimeError("runtime generation geometry must be slots=2 queue=4")
     _hook(runtime, "assert_attempt_unopened")()
-
-    _hook(runtime, "start_generation")("pre-embedding")
-    try:
-        m0 = _run_phase(
-            runtime,
-            M0_PHASE,
-            sample_ids=expected,
-            packet_bindings=packet_bindings,
-        )
-        obs = _run_phase(
-            runtime,
-            OBS_PHASE,
-            sample_ids=expected,
-            packet_bindings=packet_bindings,
-        )
-        observations = _validate_observations(
-            _hook(runtime, "parse_observations")(obs.output),
-            sample_ids=expected,
-        )
-    finally:
-        _hook(runtime, "stop_generation")("pre-embedding")
+    recovered = _hook(runtime, "rehydrate_completed_prefix")()
+    if not isinstance(recovered, RecoveredPrefixArtifacts):
+        raise RuntimeError("runtime did not return a verified recovered prefix")
+    m0 = recovered.m0
+    obs = recovered.obs
+    observations = _validate_observations(
+        recovered.observations,
+        sample_ids=expected,
+    )
 
     _hook(runtime, "start_embedding")()
     try:
@@ -1478,6 +1499,18 @@ def execute_contact_ready_flight(
         )
     finally:
         _hook(runtime, "stop_embedding")()
+    checkpoint = _hook(runtime, "persist_post_embedding_checkpoint")(
+        observations,
+        candidates,
+    )
+    candidates = _validate_candidates(
+        _hook(runtime, "rehydrate_post_embedding_checkpoint")(
+            checkpoint,
+            observations,
+        ),
+        observations=observations,
+        sample_ids=expected,
+    )
 
     _hook(runtime, "start_generation")("post-embedding")
     try:
@@ -1597,10 +1630,10 @@ def execute_contact_ready_flight(
 
     phase_runs = (m0, obs, joint, select, revise, fill)
     audits = tuple(audit for run in phase_runs for audit in run.preflight.audits)
-    if len(audits) != GENERATION_CONTACTS:
+    if len(audits) != FULL_FLIGHT_GENERATION_CONTACTS:
         raise RuntimeError("flight must carry 624 exact prompt-budget audits")
-    if sum(len(run.output.rows) for run in phase_runs) != GENERATION_CONTACTS:
-        raise RuntimeError("flight generation contact accounting drift")
+    if sum(len(run.output.rows) for run in phase_runs) != FULL_FLIGHT_GENERATION_CONTACTS:
+        raise RuntimeError("full flight generation artifact accounting drift")
     send_accounting = _hook(runtime, "generation_send_accounting")()
     if (
         not isinstance(send_accounting, Mapping)
@@ -1643,18 +1676,28 @@ def execute_contact_ready_flight(
                     for sample_id in expected
                 }
             ),
+            "recovered_prefix_sha256": recovered.source_report_sha256,
+            "post_embedding_checkpoint_sha256": checkpoint.get(
+                "checkpoint_sha256"
+            ) if isinstance(checkpoint, Mapping) else None,
         }
-        manifests.append(
-            _validate_manifest(
-                _hook(runtime, "seal_manifest")(role, final_runs[role], extras),
-                role=role,
-            )
+        seal_hook = (
+            "seal_recovered_direct_manifest"
+            if role == "direct_m0"
+            else "seal_manifest"
         )
+        manifests.append(_validate_manifest(
+            _hook(runtime, seal_hook)(role, final_runs[role], extras),
+            role=role,
+        ))
     flight = _hook(runtime, "seal_flight")(
         tuple(manifests),
         {
             "config_sha256": CONFIG_SHA256,
             "generation_contacts": GENERATION_CONTACTS,
+            "inherited_generation_contacts": SAMPLE_COUNT
+            * len(REUSED_GENERATION_PHASES),
+            "full_flight_generation_contacts": FULL_FLIGHT_GENERATION_CONTACTS,
             "embedding_logical_items": EMBEDDING_LOGICAL_ITEMS,
             "embedding_physical_requests": EMBEDDING_PHYSICAL_REQUESTS,
             "diagnostic_phases": DIAGNOSTIC_PHASES,
@@ -1834,7 +1877,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             sample_ids=getattr(runtime, "sample_ids", ()),
             packet_bindings=getattr(runtime, "packet_bindings", {}),
         )
-    except (KeyError, OSError, RuntimeError) as error:
+    except (KeyError, OSError, RuntimeError, ValueError) as error:
         abort = getattr(runtime, "abort_open_attempts", None)
         if args.execute and callable(abort):
             abort(repr(error))
@@ -1854,6 +1897,7 @@ __all__ = [
     "EMBEDDING_PHYSICAL_REQUESTS",
     "FILL_PHASE",
     "FINAL_MANIFEST_ROLES",
+    "FULL_FLIGHT_GENERATION_CONTACTS",
     "GENERATION_CONTACTS",
     "GENERATION_PHASES",
     "GenerationPhaseOutput",
@@ -1869,7 +1913,9 @@ __all__ = [
     "PreparedGenerationRequest",
     "PromptBudgetAudit",
     "QUEUE_DEPTH",
+    "REUSED_GENERATION_PHASES",
     "REVISE_PHASE",
+    "RecoveredPrefixArtifacts",
     "SAMPLE_COUNT",
     "SELECT_PHASE",
     "SLOT_COUNT",

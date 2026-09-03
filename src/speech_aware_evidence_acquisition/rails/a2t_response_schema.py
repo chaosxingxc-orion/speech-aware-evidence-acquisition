@@ -23,6 +23,7 @@ _PARAMETER = re.compile(r"^([A-Za-z_][A-Za-z0-9_]*)\s*:\s*(.+)$")
 _CONSTRAINT = re.compile(r"([A-Za-z_][A-Za-z0-9_]*)\s*:\s*\[([^\]]*)\]")
 _NUMBER = r"-?(?:\d+(?:\.\d*)?|\.\d+)"
 _RANGE = re.compile(rf"^\s*({_NUMBER})\s*-\s*({_NUMBER})\s*$")
+_NO_PUBLIC_CONSTRAINT_SENTINEL = "No public constraint is declared."
 
 _COMPATIBILITY_FORMS = frozenset(
     {
@@ -107,7 +108,7 @@ def _parse_signature(name: str, value: object) -> tuple[_Argument, ...]:
 
 
 def _parse_constraints(name: str, value: object, keys: set[str]) -> Mapping[str, str]:
-    if value in (None, ""):
+    if value in (None, "", _NO_PUBLIC_CONSTRAINT_SENTINEL):
         return {}
     if not isinstance(value, str) or not value.isascii():
         raise A2tResponseSchemaError(
