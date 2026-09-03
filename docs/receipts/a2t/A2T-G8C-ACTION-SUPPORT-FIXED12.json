@@ -1,0 +1,113 @@
+{
+  "schema": "saea-a2t-g8c-action-support-fixed12-identity-receipt-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "date": "2026-09-03",
+  "execution_profile": "model-free-check",
+  "carrier": "audio2tool",
+  "split_name": "A2T-G8C-ACTION-SUPPORT-FIXED12",
+  "split_role": "discovery",
+  "purpose": "Prospective official-scoring successor over every untouched G8B support identity; not policy fitting and not model-contact authorization.",
+  "source_receipt": "docs/receipts/a2t/A2T-G8B-ACTION-SUPPORT-FIXED16.json",
+  "source_receipt_sha256": "9a7b60394f53578d5ab948d1e5de4737cff73d1803a86883182c90fd0cc48705",
+  "source_surface": "exact 12-row G8B support_remainder",
+  "selection": {
+    "algorithm": "Retain every source row in frozen source order.",
+    "source_count": 12,
+    "selected_count": 12,
+    "support_remainder_count": 0,
+    "fields_read": [
+      "key",
+      "sample_id",
+      "tier"
+    ],
+    "uses_task_text": false,
+    "uses_audio": false,
+    "uses_gold": false,
+    "uses_outputs": false,
+    "uses_scores": false,
+    "uses_rewards": false,
+    "uses_test": false,
+    "uses_future_turns": false,
+    "uses_model_or_tool": false,
+    "uses_network_or_tokenizer_or_scorer": false
+  },
+  "selected": [
+    {
+      "sample_id": "tier1_direct:002687",
+      "key": "audio2tool:tier1_direct:002687",
+      "tier": "tier1_direct"
+    },
+    {
+      "sample_id": "tier2_parametric:000369",
+      "key": "audio2tool:tier2_parametric:000369",
+      "tier": "tier2_parametric"
+    },
+    {
+      "sample_id": "tier2_parametric:003650",
+      "key": "audio2tool:tier2_parametric:003650",
+      "tier": "tier2_parametric"
+    },
+    {
+      "sample_id": "tier3_multi_intent:000259",
+      "key": "audio2tool:tier3_multi_intent:000259",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "sample_id": "tier4_implicit:002649",
+      "key": "audio2tool:tier4_implicit:002649",
+      "tier": "tier4_implicit"
+    },
+    {
+      "sample_id": "tier5_needle:000285",
+      "key": "audio2tool:tier5_needle:000285",
+      "tier": "tier5_needle"
+    },
+    {
+      "sample_id": "tier5_needle:003841",
+      "key": "audio2tool:tier5_needle:003841",
+      "tier": "tier5_needle"
+    },
+    {
+      "sample_id": "tier6_correction:001794",
+      "key": "audio2tool:tier6_correction:001794",
+      "tier": "tier6_correction"
+    },
+    {
+      "sample_id": "tier6_correction:002850",
+      "key": "audio2tool:tier6_correction:002850",
+      "tier": "tier6_correction"
+    },
+    {
+      "sample_id": "tier7_multiturn:000091",
+      "key": "audio2tool:tier7_multiturn:000091",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "sample_id": "tier8_intent_blending:000423",
+      "key": "audio2tool:tier8_intent_blending:000423",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "sample_id": "tier8_intent_blending:000724",
+      "key": "audio2tool:tier8_intent_blending:000724",
+      "tier": "tier8_intent_blending"
+    }
+  ],
+  "support_remainder": [],
+  "source_count": 12,
+  "selected_count": 12,
+  "support_remainder_count": 0,
+  "selected_tier_counts": {
+    "tier1_direct": 1,
+    "tier2_parametric": 2,
+    "tier3_multi_intent": 1,
+    "tier4_implicit": 1,
+    "tier5_needle": 2,
+    "tier6_correction": 2,
+    "tier7_multiturn": 1,
+    "tier8_intent_blending": 2
+  },
+  "manifest_split_identity_hash": "acf2d1e7664987bf7154e2e45ed366b712c11e710910cf94af067e90ba4e1acb",
+  "split_identity_hash": "acf2d1e7664987bf7154e2e45ed366b712c11e710910cf94af067e90ba4e1acb",
+  "status": "IDENTITY_FROZEN_NO_CONTACT_AUTHORIZATION"
+}

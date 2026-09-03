@@ -115,6 +115,15 @@ CONTROL_INSTRUCTION = _v1.CONTROL_INSTRUCTION
 BRANCH_ORDER = _v1.BRANCH_ORDER
 
 RUN_ID = "SAEA-A2T-G8B-ACTION-SUPPORT-REACHABILITY-FIXED16-V1"
+TRACE_RECORD_PREFIX = "g8b"
+DERIVATIVE_SOURCE_KIND = "sealed-g8b"
+RAW_INVALID_SOURCE_KIND = "sealed-g8b-raw-invalid-stage-response"
+FINAL_SOURCE_KIND = "sealed-g8b-frozen-core-final"
+MISSION_SUBDIR = "g8b"
+REQUEST_ID_PREFIX = "g8bfixed16"
+PREFLIGHT_SCHEMA = "saea-a2t-g8b-action-support-precontact-report-v1"
+FLIGHT_RECEIPT_SCHEMA = "saea-a2t-g8b-action-support-fixed16-flight-v1"
+BASE_DYNAMIC_CONTACTS = SAMPLE_COUNT * (SHARED_CONTACTS_PER_SAMPLE + 4)
 PROTOCOL_DESCRIPTOR = {
     "schema": "saea-a2t-g8b-action-support-reachability-protocol-v1",
     "parent_run_id": _v1.RUN_ID,
@@ -125,7 +134,8 @@ PROTOCOL_DESCRIPTOR = {
     "retry_repair_strip_substitution": False,
     "planned_contact_ceiling": MAX_MODEL_CONTACTS,
     "realized_contact_formula": (
-        "528 + nonempty_valid_selections - invalid_selects - invalid_binds"
+        f"{BASE_DYNAMIC_CONTACTS} + nonempty_valid_selections - "
+        "invalid_selects - invalid_binds"
     ),
 }
 PROTOCOL_DESCRIPTOR_SHA256 = hashlib.sha256(
@@ -458,9 +468,9 @@ def _state_geometry(states: Sequence[_WorkflowState]) -> dict[str, int]:
     invalid_selects = sum(state.invalid_stage == "DECOMPOSED_SELECT" for state in states)
     invalid_binds = sum(state.invalid_stage == "DECOMPOSED_BIND" for state in states)
     successful_resolves = SAMPLE_COUNT - invalid_selects - invalid_binds
-    expected = 528 + nonempty - invalid_selects - invalid_binds
+    expected = BASE_DYNAMIC_CONTACTS + nonempty - invalid_selects - invalid_binds
     return {
-        "base_with_all_final_resolves": 528,
+        "base_with_all_final_resolves": BASE_DYNAMIC_CONTACTS,
         "nonempty_valid_selections": nonempty,
         "invalid_selects": invalid_selects,
         "invalid_binds": invalid_binds,
@@ -475,7 +485,7 @@ def _emit_state_audits(state: _WorkflowState, trace_sink: TraceSink) -> None:
     for index, contact in enumerate(state.contacts):
         trace_sink.emit(
             "COST",
-            f"g8b:{sample_id}:contact-audit:{index:02d}",
+            f"{TRACE_RECORD_PREFIX}:{sample_id}:contact-audit:{index:02d}",
             {
                 "sample_id": contact.sample_id,
                 "contact_id": contact.contact_id,
@@ -488,7 +498,7 @@ def _emit_state_audits(state: _WorkflowState, trace_sink: TraceSink) -> None:
     for index, transition in enumerate(state.model_free_transitions):
         trace_sink.emit(
             "USE",
-            f"g8b:{sample_id}:model-free-transition:{index:02d}",
+            f"{TRACE_RECORD_PREFIX}:{sample_id}:model-free-transition:{index:02d}",
             {
                 "use_sample_id": sample_id,
                 "use_stage": transition.stage,
@@ -504,7 +514,7 @@ def _emit_state_audits(state: _WorkflowState, trace_sink: TraceSink) -> None:
         statuses[row.status] = statuses.get(row.status, 0) + 1
     trace_sink.emit(
         "OBS",
-        f"g8b:{sample_id}:obs",
+        f"{TRACE_RECORD_PREFIX}:{sample_id}:obs",
         {
             "obs_sample_id": sample_id,
             "obs_valid": state.observation.valid,
@@ -513,7 +523,7 @@ def _emit_state_audits(state: _WorkflowState, trace_sink: TraceSink) -> None:
     )
     trace_sink.emit(
         "ORG",
-        f"g8b:{sample_id}:org",
+        f"{TRACE_RECORD_PREFIX}:{sample_id}:org",
         {
             "org_sample_id": sample_id,
             "org_normalized_tool_count": len(state.normalized_sheet.assessments),
@@ -523,7 +533,7 @@ def _emit_state_audits(state: _WorkflowState, trace_sink: TraceSink) -> None:
     )
     trace_sink.emit(
         "SUPPLY",
-        f"g8b:{sample_id}:supply",
+        f"{TRACE_RECORD_PREFIX}:{sample_id}:supply",
         {
             "supply_sample_id": sample_id,
             "supply_support_tool_count": len(state.support_sheet.assessments),
@@ -564,7 +574,11 @@ def _emit_state_audits(state: _WorkflowState, trace_sink: TraceSink) -> None:
                     "use_retry_or_repair_authorized": False,
                 }
             )
-        trace_sink.emit("USE", f"g8b:{sample_id}:use:{branch.lower()}", document)
+        trace_sink.emit(
+            "USE",
+            f"{TRACE_RECORD_PREFIX}:{sample_id}:use:{branch.lower()}",
+            document,
+        )
 
 
 def run_openjiuwen_phase(
@@ -577,7 +591,7 @@ def run_openjiuwen_phase(
 ) -> FlightSummary:
     """Execute dynamic G8B waves; strict parser failures terminalize only one sample."""
     if len(surface.samples) != SAMPLE_COUNT:
-        raise RuntimeError("G8B execution requires the exact sixteen selected samples")
+        raise RuntimeError(f"G8B execution requires the exact {SAMPLE_COUNT} selected samples")
     g7 = G7ExampleGround(ground.bundles)
     g8 = G8ActionSupportCore(ground.bundles)
     states = [
@@ -804,7 +818,8 @@ def physical_and_logical_costs(summary: FlightSummary | None = None) -> dict[str
             "physical_model_contacts_minimum": MIN_MODEL_CONTACTS,
             "logical_action_contacts_nonadditive": True,
             "dynamic_formula": (
-                "528 + nonempty_valid_selections - invalid_selects - invalid_binds"
+                f"{BASE_DYNAMIC_CONTACTS} + nonempty_valid_selections - "
+                "invalid_selects - invalid_binds"
             ),
         }
     geometry = _state_geometry(summary.results)
@@ -825,8 +840,8 @@ def physical_and_logical_costs(summary: FlightSummary | None = None) -> dict[str
         "logical_action_contacts_nonadditive": True,
         "logical_action_contacts": {
             "STOP_M0": 0,
-            "EXHAUSTIVE_G7": 480,
-            "SUPPORT_ONLY_RESOLVE": 480,
+            "EXHAUSTIVE_G7": SAMPLE_COUNT * (SHARED_CONTACTS_PER_SAMPLE + 1),
+            "SUPPORT_ONLY_RESOLVE": SAMPLE_COUNT * (SHARED_CONTACTS_PER_SAMPLE + 1),
             "DECOMPOSED_SELECT_BIND_RESOLVE": decomposed,
         },
         "dynamic_formula": {
@@ -894,7 +909,7 @@ def build_branch_derivatives(
             branch=branch,
             texts={sample_id: texts[sample_id] for sample_id in ids},
             new_model_contacts=contacts[branch],
-            source_kind="sealed-g8b",
+            source_kind=DERIVATIVE_SOURCE_KIND,
         )
     return derivatives
 
@@ -963,10 +978,10 @@ def _seal_branches(
                 source_by_id[sample_id] = {
                     "action": branch,
                     "source_kind": (
-                        "sealed-g8b-raw-invalid-stage-response"
+                        RAW_INVALID_SOURCE_KIND
                         if branch == "DECOMPOSED_SELECT_BIND_RESOLVE"
                         and invalid_by_id[sample_id]["invalid_stage"]
-                        else "sealed-g8b-frozen-core-final"
+                        else FINAL_SOURCE_KIND
                     ),
                     "invalid_stage": (
                         invalid_by_id[sample_id]["invalid_stage"]
@@ -1021,7 +1036,9 @@ def _seal_branches(
         )
         _v1._bind_official_scorer(manifest)
         if len(verify_bundle(manifest).outputs_rows) != SAMPLE_COUNT:
-            raise RuntimeError(f"G8B {branch} bundle is not complete fixed16")
+            raise RuntimeError(
+                f"G8B {branch} bundle is not complete for {SAMPLE_COUNT} identities"
+            )
         manifests[branch] = manifest
         sealed[branch] = {
             "outputs": str(outputs),
@@ -1108,7 +1125,7 @@ def static_preflight(root: Path) -> dict[str, object]:
     )
     prompt_fit.update(
         {
-            "schema": "saea-a2t-g8b-action-support-precontact-report-v1",
+            "schema": PREFLIGHT_SCHEMA,
             "run_id": RUN_ID,
             "split_id": SPLIT_ID,
             "split_identity_hash": SPLIT_IDENTITY_HASH,
@@ -1166,7 +1183,7 @@ def launch(root: Path, attempt_id: str, *, execute: bool = False) -> Mapping[str
         raise RuntimeError("G8B decoder must use an explicit loopback port")
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     mission = root / "runs" / RUN_ID / f"flight-{stamp}"
-    run_dir = mission / "g8b"
+    run_dir = mission / MISSION_SUBDIR
     service_dir = mission / "service"
     run_dir.mkdir(parents=True, exist_ok=False)
     service_dir.mkdir()
@@ -1214,7 +1231,7 @@ def launch(root: Path, attempt_id: str, *, execute: bool = False) -> Mapping[str
             run_dir=run_dir / "transport-trace",
             binding=binding,
             arm="speech-feature-query",
-            request_id_prefix="g8bfixed16",
+            request_id_prefix=REQUEST_ID_PREFIX,
             speech_feature_root=FEATURE_ROOT,
             speech_packet_bindings=surface.packet_bindings,
         )
@@ -1253,7 +1270,7 @@ def launch(root: Path, attempt_id: str, *, execute: bool = False) -> Mapping[str
             session_receipt=session_receipt,
         )
         receipt = {
-            "schema": "saea-a2t-g8b-action-support-fixed16-flight-v1",
+            "schema": FLIGHT_RECEIPT_SCHEMA,
             "status": "SEALED_FOUR_BRANCHES_UNSCORED",
             "run_id": RUN_ID,
             "attempt_id": attempt_id,

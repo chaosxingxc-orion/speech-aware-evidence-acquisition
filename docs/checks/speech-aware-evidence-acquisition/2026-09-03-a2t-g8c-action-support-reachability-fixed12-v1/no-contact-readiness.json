@@ -1,0 +1,51 @@
+{
+  "schema": "saea-a2t-g8c-fixed12-no-contact-readiness-v1",
+  "run_id": "SAEA-A2T-G8C-ACTION-SUPPORT-REACHABILITY-FIXED12-V1",
+  "status": "PREPARED_UNCOMMITTED_NOT_RUN",
+  "repository_head_at_final_verification": "7d7115c72521346235b8a46a2997855c40062c4e",
+  "identity": {
+    "source_surface": "exact G8B support_remainder",
+    "source_count": 12,
+    "selected_count": 12,
+    "remaining_count": 0,
+    "split_identity_hash": "acf2d1e7664987bf7154e2e45ed366b712c11e710910cf94af067e90ba4e1acb",
+    "disjoint_from_g8_selected": true,
+    "disjoint_from_g8b_selected": true,
+    "uses_recovered_g8b_outputs_for_selection_or_tuning": false
+  },
+  "planned_geometry": {
+    "sample_count": 12,
+    "shared_contacts_per_sample": 29,
+    "maximum_contacts_per_sample": 34,
+    "base_dynamic_contacts": 396,
+    "minimum_model_contacts": 384,
+    "maximum_model_contacts": 408,
+    "dynamic_rule": "396 + nonempty_valid_selections - invalid_selects - invalid_binds",
+    "roster_audio_seconds_from_frozen_g1_metadata": 76.694,
+    "maximum_repeated_speech_audio_seconds": 2608
+  },
+  "observed_contacts_during_preparation": {
+    "model": 0,
+    "scorer": 0,
+    "gold": 0,
+    "audio_bytes": 0,
+    "service": 0,
+    "network": 0,
+    "tokenizer": 0,
+    "paid_api": 0
+  },
+  "bindings": {
+    "roster_sha256": "f00ab9486d978c334e14c96231ac45968f24c3bf8792181427703b738260dac0",
+    "baseline_sha256": "1953bcfaeb294dd3f48085e9d24932f18e8cfd2d8ccef98222a78132af26e448",
+    "experiment_sha256": "38f17a3e4b35bdbf9eba081d6a2caa9fae871dd961a4f4e9c7e8b67b5e853a69",
+    "composed_config_sha256": "137f3caab46a5a8818c90bd526d0d7868d2ee386f4c0d5308a12763c0146fc76",
+    "protocol_sha256": "b68f29ac9afffd9bdc4064ce4d2959c8b7b9f54f99fd80842a0496d090672465",
+    "protocol_descriptor_sha256": "fd307e2e74714ac5dc2e89ae2c4d94c033a7546486e848afee9172d8aa0c977e",
+    "builder_sha256": "e89fcb56150ea6e3168ade98309b7b64757c9eb5638521d354d07fc725f64850",
+    "launcher_sha256": "a82fb1d03336d3c1ca7c4da06833a7a2c9a3ead123978df87b3be0c59d0a799e",
+    "parent_launcher_sha256": "65047c7a96dac5601368739944e01921510d302d844e3b28ada2e358b7379229",
+    "design_sha256": "900dd8e4c5585611f333de597ab4200246d0397766078e013c30cf4a9b842571",
+    "preregistration_sha256": "600a600f1bbb4d55f70e75b48ef489dbce72700c71cceaaaa4af99d8da72170d"
+  },
+  "next_gate": "A separate clean-tree exact-attempt ExecutionPlan and precontact report are required before any flight."
+}
