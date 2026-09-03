@@ -1,0 +1,152 @@
+{
+  "audio_seconds_total": 45.096,
+  "carrier": "audio2tool",
+  "contacts": {
+    "audio_decode": 0,
+    "gold": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0
+  },
+  "count": 8,
+  "design": "Identity-only SHA-256 rank selection of one row per tier from the already-exposed A2T-GROUND-QUAL-104 discovery cohort.",
+  "exposure": "Already-exposed cohort; secondary discovery only. Protected confirmation and test identities remain unopened.",
+  "items": [
+    {
+      "audio_seconds": 2.857,
+      "audio_sha256": "ba95c783c939eea5c1c17ed63e23aa941a619bee15d8723c2f544d7b97b204fe",
+      "id": 62,
+      "key": "audio2tool:tier1_direct:000062",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00031/speaker_10_ecapa_speaker_21897.wav",
+      "packet_id": "tier1_direct/000062",
+      "query_block": "tier1_direct:query-00031",
+      "query_idx": 31,
+      "sample_id": "tier1_direct:000062",
+      "selection_rank_sha256": "1d6a7163a5c282ea60063c7453c8dd12b39e382db12e78d8b4522b34abdad081",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.977,
+      "audio_sha256": "96ef856a777a3e0bf4b4857641a6aa7ebad81dbb9052009fb3c078b8e940c75e",
+      "id": 1693,
+      "key": "audio2tool:tier2_parametric:001693",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_00847/speaker_00_ecapa_speaker_13555.wav",
+      "packet_id": "tier2_parametric/001693",
+      "query_block": "tier2_parametric:query-00847",
+      "query_idx": 847,
+      "sample_id": "tier2_parametric:001693",
+      "selection_rank_sha256": "03d7e4ef3a20902e123ea4de62f382df8e88fd5f3ea7533da359b09b487ef9cb",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.097,
+      "audio_sha256": "45b149c921e240d73c093088c9e26462ea0c1e8b514668d8cc4aaf9de138ef24",
+      "id": 2490,
+      "key": "audio2tool:tier3_multi_intent:002490",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01245/speaker_15_ecapa_speaker_44959.wav",
+      "packet_id": "tier3_multi_intent/002490",
+      "query_block": "tier3_multi_intent:query-01245",
+      "query_idx": 1245,
+      "sample_id": "tier3_multi_intent:002490",
+      "selection_rank_sha256": "057cfcd9a39af30833cf70159f6f7d66c8ebecf5fbd4dad1bd289943f925d823",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 3.097,
+      "audio_sha256": "8c577699293cf79884b21cb16882d82a49bfec21c317acafa4a6de73dc26772f",
+      "id": 1628,
+      "key": "audio2tool:tier4_implicit:001628",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00809/speaker_15_ecapa_speaker_39857.wav",
+      "packet_id": "tier4_implicit/001628",
+      "query_block": "tier4_implicit:query-00809",
+      "query_idx": 809,
+      "sample_id": "tier4_implicit:001628",
+      "selection_rank_sha256": "00d5d10abb612c6283f0524fbd4713f66b8d03ebed3c85de3cbf3c8a79caf814",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 13.737,
+      "audio_sha256": "f43841446bb2c6649aafaa6cc681dba20a04f02d686eb8191cc41014ec894c1f",
+      "id": 1679,
+      "key": "audio2tool:tier5_needle:001679",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00840/speaker_03_3dspeaker_speaker_3D_SPK_07671.wav",
+      "packet_id": "tier5_needle/001679",
+      "query_block": "tier5_needle:query-00840",
+      "query_idx": 840,
+      "sample_id": "tier5_needle:001679",
+      "selection_rank_sha256": "1baa6adaa88bc189ea7cee5225127db96592602892aa0c517f76a8480c647b7a",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 7.097,
+      "audio_sha256": "a86fdc5d4e1cfa4f485cd74c9c6dabdfcf5eb4ca34c91b6b0af7f27bb3bce5a2",
+      "id": 2940,
+      "key": "audio2tool:tier6_correction:002940",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01470/speaker_20_yodas_speaker_ArvqdW5XMqy.wav",
+      "packet_id": "tier6_correction/002940",
+      "query_block": "tier6_correction:query-01470",
+      "query_idx": 1470,
+      "sample_id": "tier6_correction:002940",
+      "selection_rank_sha256": "15a751a8d15f558ce9c7797ed93afe51ceab733998771068b97b005ab4583cbb",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.977,
+      "audio_sha256": "44b9666f941be3626508d458c0578ea0681875f04326faaf10913a6dc634307b",
+      "id": 293,
+      "key": "audio2tool:tier7_multiturn:000293",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00293/turn_04_user_ecapa_speaker_32144.wav",
+      "packet_id": "tier7_multiturn/000293",
+      "query_block": "tier7_multiturn:query-00293",
+      "query_idx": 293,
+      "sample_id": "tier7_multiturn:000293",
+      "selection_rank_sha256": "231274494f5571c6b3f0a41eda40040deeac38cdee6e9070bf9e28bf5986e027",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 5.257,
+      "audio_sha256": "cc513713eac93e056d9431dfb51e61b336b7a94cc6008528786e833b2dc952c7",
+      "id": 52,
+      "key": "audio2tool:tier8_intent_blending:000052",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00052/mixed.wav",
+      "packet_id": "tier8_intent_blending/000052",
+      "query_block": "tier8_intent_blending:query-00052",
+      "query_idx": 52,
+      "sample_id": "tier8_intent_blending:000052",
+      "selection_rank_sha256": "05e97037c6c1ea693ca72ee3e77077fd10412493110b8e3d6f487a37b23a9d1f",
+      "tier": "tier8_intent_blending"
+    }
+  ],
+  "schema": "saea-a2t-native-schema-roster-v1",
+  "selection_excludes": [
+    "query text",
+    "reference transcript",
+    "expected call",
+    "prior output",
+    "score",
+    "reward",
+    "test annotation"
+  ],
+  "selection_inputs": [
+    "sample_id",
+    "tier",
+    "key",
+    "query_block",
+    "identity media metadata"
+  ],
+  "selection_namespace": "speech-aware-evidence-acquisition-g8d-structured-action-fixed8-v1",
+  "selection_proof": {
+    "identity_only": true,
+    "one_per_tier": true,
+    "reversed_input_deterministic": true
+  },
+  "source": {
+    "count": 104,
+    "path": "docs/receipts/a2t/A2T-GROUND-QUAL-104.json",
+    "sha256": "eeb90abbe8695e449c676f18339db6618cb6d606d6c1e7c656626e4e9b6b6c16",
+    "split_identity_hash": "c6bb080bb264733087b3da352fe930702ec6509bc02e6a639b0f4c30c5017dac"
+  },
+  "split_identity_hash": "f95efe70b615d71bb082f9ef804d1fa2b6f04ce4114d5d2694151cbaf44019ba",
+  "split_name": "A2T-NATIVE-STRUCTURED-ACTION-FIXED8",
+  "split_role": "discovery"
+}
