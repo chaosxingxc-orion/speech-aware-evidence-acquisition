@@ -59,7 +59,7 @@ BUNDLE_PROTOCOL_SHA256 = (
     "4f192381d41c96b55d53433035ff0566795b0fb772503a59555a0f83d15d1171"
 )
 SOURCE_RUN_ID = "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2"
-RUN_ID = "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V4"
+RUN_ID = "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V5"
 PREPROCESS_REPORT_PATH = REPO / (
     "docs/checks/speech-aware-evidence-acquisition/"
     "2026-09-03-a2t-select-fill-fresh-preprocess-v1/preprocess-report.json"
@@ -1888,7 +1888,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             sample_ids=getattr(runtime, "sample_ids", ()),
             packet_bindings=getattr(runtime, "packet_bindings", {}),
         )
-    except (KeyError, OSError, RuntimeError, ValueError) as error:
+    except Exception as error:
         abort = getattr(runtime, "abort_open_attempts", None)
         if args.execute and callable(abort):
             abort(repr(error))

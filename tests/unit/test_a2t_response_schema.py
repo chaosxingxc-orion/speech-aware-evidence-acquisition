@@ -12,6 +12,7 @@ from speech_aware_evidence_acquisition.rails.a2t_response_schema import (
     A2tResponseSchemaError,
     audio2tool_call_array_response_format,
     audio2tool_locked_call_array_response_format,
+    audio2tool_locked_outer_call_array_response_format,
     audio2tool_outer_call_array_response_format,
     audio2tool_selection_response_format,
 )
@@ -305,12 +306,14 @@ def test_outer_response_format_constrains_only_shape_and_registered_names() -> N
 
     first = audio2tool_outer_call_array_response_format(
         tuple(reversed(rows)),
+        ("setLightState", "getLightState"),
         schema_name="audio2tool_outer_calls",
         min_calls=0,
         max_calls=5,
     )
     second = audio2tool_outer_call_array_response_format(
         rows,
+        ("getLightState", "setLightState"),
         schema_name="audio2tool_outer_calls",
         min_calls=0,
         max_calls=5,
@@ -333,6 +336,114 @@ def test_outer_response_format_constrains_only_shape_and_registered_names() -> N
     assert call["properties"]["arguments"] == {"type": "object"}
 
 
+def test_outer_response_format_restricts_names_to_per_sample_candidates() -> None:
+    rows = (
+        _row("selected", "selected(value: Int)"),
+        _row("alsoSelected", "alsoSelected(flag: Boolean)"),
+        _row("notSelected", "notSelected(required: String)"),
+    )
+
+    response_format = audio2tool_outer_call_array_response_format(
+        rows,
+        ("selected", "alsoSelected"),
+        min_calls=1,
+        max_calls=2,
+    )
+
+    call = response_format["json_schema"]["schema"]["items"]
+    assert call == {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string",
+                "enum": ["alsoSelected", "selected"],
+            },
+            "arguments": {"type": "object"},
+        },
+        "required": ["name", "arguments"],
+        "additionalProperties": False,
+    }
+    assert "notSelected" not in call["properties"]["name"]["enum"]
+
+
+def test_locked_outer_response_format_preserves_exact_occurrence_order() -> None:
+    rows = (
+        _row("setLightState", "setLightState(deviceId: String, level: Int)"),
+        _row("getLightState", "getLightState(deviceId: String)"),
+    )
+    occurrences = ("setLightState", "getLightState", "setLightState")
+
+    response_format = audio2tool_locked_outer_call_array_response_format(
+        rows,
+        occurrences,
+    )
+
+    document = response_format["json_schema"]["schema"]
+    assert document["minItems"] == document["maxItems"] == 3
+    assert "items" not in document
+    assert [
+        item["properties"]["name"]["const"]
+        for item in document["prefixItems"]
+    ] == list(occurrences)
+    for item in document["prefixItems"]:
+        assert item["required"] == ["name", "arguments"]
+        assert item["additionalProperties"] is False
+        assert item["properties"]["arguments"] == {"type": "object"}
+        assert "properties" not in item["properties"]["arguments"]
+        assert "required" not in item["properties"]["arguments"]
+        assert "additionalProperties" not in item["properties"]["arguments"]
+
+
+def test_locked_outer_response_format_allows_only_empty_array_for_no_occurrences() -> None:
+    response_format = audio2tool_locked_outer_call_array_response_format(
+        (_row("known", "known(required: String)"),),
+        (),
+    )
+
+    assert response_format["json_schema"]["schema"] == {
+        "type": "array",
+        "minItems": 0,
+        "maxItems": 0,
+        "prefixItems": [],
+    }
+
+
+def test_outer_response_formats_do_not_read_parameter_contract_material() -> None:
+    rows = (
+        {
+            "tool_name": "known",
+            "signature": "malformed parameter material",
+            "argument_constraints": "also malformed",
+        },
+    )
+
+    joint = audio2tool_outer_call_array_response_format(rows, ("known",))
+    fill = audio2tool_locked_outer_call_array_response_format(rows, ("known",))
+
+    assert joint["json_schema"]["schema"]["items"]["properties"]["name"] == {
+        "type": "string",
+        "enum": ["known"],
+    }
+    assert fill["json_schema"]["schema"]["prefixItems"][0]["properties"][
+        "name"
+    ] == {"const": "known"}
+
+
+def test_outer_response_formats_refuse_invalid_candidate_names() -> None:
+    rows = (_row("known", "known()"),)
+
+    for candidates, message in (
+        ((), "at least one candidate"),
+        (("known", "known"), "duplicate candidate"),
+        (("unknown",), "not in the registry"),
+    ):
+        with pytest.raises(A2tResponseSchemaError, match=message):
+            audio2tool_outer_call_array_response_format(rows, candidates)
+
+    with pytest.raises(A2tResponseSchemaError, match="not in the registry"):
+        audio2tool_locked_outer_call_array_response_format(rows, ("unknown",))
+
+
 @pytest.mark.parametrize(
     ("minimum", "maximum"),
     ((-1, 4), (2, 1), (False, 4), (0, True)),
@@ -343,6 +454,7 @@ def test_outer_response_format_rejects_invalid_bounds(
     with pytest.raises(A2tResponseSchemaError, match="call bounds"):
         audio2tool_outer_call_array_response_format(
             (_row("ping", "ping()"),),
+            ("ping",),
             min_calls=minimum,  # type: ignore[arg-type]
             max_calls=maximum,  # type: ignore[arg-type]
         )

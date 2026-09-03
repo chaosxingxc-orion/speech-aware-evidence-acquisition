@@ -157,6 +157,24 @@ def _load_registry(rows: Sequence[Mapping[str, str]]) -> Mapping[str, _Tool]:
     return registry
 
 
+def _load_registry_names(rows: Sequence[Mapping[str, str]]) -> frozenset[str]:
+    """Load only public tool identities without reading parameter material."""
+
+    names: set[str] = set()
+    for row in rows:
+        if not isinstance(row, Mapping):
+            raise A2tResponseSchemaError("registry rows must be mappings")
+        name = row.get("tool_name")
+        if not isinstance(name, str) or _IDENTIFIER.fullmatch(name) is None:
+            raise A2tResponseSchemaError("registry rows need an exact tool_name")
+        if name in names:
+            raise A2tResponseSchemaError(f"registry has duplicate tool {name!r}")
+        names.add(name)
+    if not names:
+        raise A2tResponseSchemaError("registry must contain at least one tool")
+    return frozenset(names)
+
+
 def _base_type_schema(type_name: str) -> dict[str, object]:
     lowered = type_name.lower()
     if lowered in {"boolean", "bool"}:
@@ -617,6 +635,7 @@ def audio2tool_locked_call_array_response_format(
 
 def audio2tool_outer_call_array_response_format(
     registry_rows: Sequence[Mapping[str, str]],
+    candidate_tool_names: Sequence[str] | None = None,
     *,
     schema_name: str = DEFAULT_SCHEMA_NAME,
     min_calls: int = 0,
@@ -624,10 +643,11 @@ def audio2tool_outer_call_array_response_format(
 ) -> dict[str, object]:
     """Build an outer-shape-only schema for a clean constrained-decoding factor.
 
-    This variant fixes the documented array/call envelope and registered tool
-    spelling while deliberately leaving ``arguments`` open.  It therefore
-    isolates native output-shape enforcement from the executable-card
-    intervention and from the stronger per-tool skeleton/type constraints in
+    This variant fixes the documented array/call envelope and per-sample
+    candidate tool spelling while deliberately leaving ``arguments`` open.
+    It therefore isolates native output-shape enforcement from the
+    executable-card intervention and from the stronger per-tool
+    skeleton/type constraints in
     :func:`audio2tool_call_array_response_format`.
     """
 
@@ -645,7 +665,30 @@ def audio2tool_outer_call_array_response_format(
         raise A2tResponseSchemaError(
             "call bounds must be non-negative integers with max >= 1 and min <= max"
         )
-    registry = _load_registry(registry_rows)
+    registry_names = _load_registry_names(registry_rows)
+    if candidate_tool_names is None:
+        candidate_tool_names = tuple(sorted(registry_names))
+    if isinstance(candidate_tool_names, (str, bytes)):
+        raise A2tResponseSchemaError("at least one candidate tool is required")
+    try:
+        candidates = tuple(candidate_tool_names)
+    except TypeError as error:
+        raise A2tResponseSchemaError(
+            "at least one candidate tool is required"
+        ) from error
+    if not candidates:
+        raise A2tResponseSchemaError("at least one candidate tool is required")
+    if any(not isinstance(name, str) or not name for name in candidates):
+        raise A2tResponseSchemaError(
+            "candidate tools must be non-empty registered names"
+        )
+    if len(candidates) != len(set(candidates)):
+        raise A2tResponseSchemaError("duplicate candidate tool")
+    unknown = tuple(sorted(set(candidates) - registry_names))
+    if unknown:
+        raise A2tResponseSchemaError(
+            f"candidate tool {unknown[0]!r} is not in the registry"
+        )
     return {
         "type": "json_schema",
         "json_schema": {
@@ -660,7 +703,7 @@ def audio2tool_outer_call_array_response_format(
                     "properties": {
                         "name": {
                             "type": "string",
-                            "enum": sorted(registry),
+                            "enum": sorted(candidates),
                         },
                         "arguments": {"type": "object"},
                     },
@@ -672,12 +715,75 @@ def audio2tool_outer_call_array_response_format(
     }
 
 
+def audio2tool_locked_outer_call_array_response_format(
+    registry_rows: Sequence[Mapping[str, str]],
+    selected_tool_occurrences: Sequence[str],
+    *,
+    schema_name: str = "audio2tool_locked_outer_calls",
+) -> dict[str, object]:
+    """Build an outer-only FILL schema locked to selected occurrences.
+
+    The result fixes the exact occurrence count, order, and tool name while
+    deliberately leaving every argument object open. Repeated tool names stay
+    repeated positions, and an empty selection accepts only an empty array.
+    """
+
+    if not isinstance(schema_name, str) or _IDENTIFIER.fullmatch(schema_name) is None:
+        raise A2tResponseSchemaError("schema_name must be an ASCII identifier")
+    registry_names = _load_registry_names(registry_rows)
+    if isinstance(selected_tool_occurrences, (str, bytes)):
+        raise A2tResponseSchemaError(
+            "selected tool occurrences must be a sequence"
+        )
+    try:
+        occurrences = tuple(selected_tool_occurrences)
+    except TypeError as error:
+        raise A2tResponseSchemaError(
+            "selected tool occurrences must be a sequence"
+        ) from error
+    if any(not isinstance(name, str) or not name for name in occurrences):
+        raise A2tResponseSchemaError(
+            "selected tool occurrences must contain non-empty names"
+        )
+    unknown = tuple(sorted(set(occurrences) - registry_names))
+    if unknown:
+        raise A2tResponseSchemaError(
+            f"selected tool {unknown[0]!r} is not in the registry"
+        )
+
+    def positional_call(name: str) -> dict[str, object]:
+        return {
+            "type": "object",
+            "properties": {
+                "name": {"const": name},
+                "arguments": {"type": "object"},
+            },
+            "required": ["name", "arguments"],
+            "additionalProperties": False,
+        }
+
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": schema_name,
+            "strict": True,
+            "schema": {
+                "type": "array",
+                "minItems": len(occurrences),
+                "maxItems": len(occurrences),
+                "prefixItems": [positional_call(name) for name in occurrences],
+            },
+        },
+    }
+
+
 __all__ = [
     "A2tResponseSchemaError",
     "DEFAULT_MAX_CALLS",
     "DEFAULT_SCHEMA_NAME",
     "audio2tool_call_array_response_format",
     "audio2tool_locked_call_array_response_format",
+    "audio2tool_locked_outer_call_array_response_format",
     "audio2tool_outer_call_array_response_format",
     "audio2tool_selection_response_format",
 ]

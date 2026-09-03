@@ -151,7 +151,7 @@ class _LiveChecks:
 def test_protocol_freezes_the_fair_six_contact_schedule() -> None:
     module = _launcher()
 
-    assert module.RUN_ID == "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V4"
+    assert module.RUN_ID == "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V5"
     assert module.SOURCE_RUN_ID == "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V2"
     assert module.PHASE_ORDER == (
         "M0_DIRECT",
@@ -1101,3 +1101,55 @@ def test_execute_mode_aborts_open_attempts_for_local_value_failures(
 
     assert len(runtime.aborted) == 1
     assert type(failure).__name__ in runtime.aborted[0]
+
+
+def test_execute_mode_aborts_once_for_an_arbitrary_framework_exception(
+    tmp_path,
+    monkeypatch,
+) -> None:
+    module = _launcher()
+    authority_path = tmp_path / "authority.json"
+    authority_path.write_text("{}\n", encoding="ascii")
+    runtime = SimpleNamespace(
+        sample_ids=(),
+        packet_bindings={},
+        aborted=[],
+        assert_contact_ready_preflight=lambda: {
+            "status": "CONTACT_READY_NO_CONTACT"
+        },
+    )
+    runtime.abort_open_attempts = runtime.aborted.append
+    authority = {
+        "hashes": {
+            "coordinator_launcher_sha256": module.sha256_file(
+                module.Path(module.__file__)
+            ),
+            "local_runtime_factory_sha256": "a" * 64,
+        }
+    }
+    monkeypatch.setattr(module, "_validate_execution_authority", lambda _value: authority)
+    monkeypatch.setattr(
+        module,
+        "_load_runtime_factory",
+        lambda *_args, **_kwargs: (lambda **_kwargs: runtime),
+    )
+    monkeypatch.setattr(
+        module,
+        "execute_contact_ready_flight",
+        lambda **_kwargs: (_ for _ in ()).throw(Exception("framework escaped")),
+    )
+
+    with pytest.raises(SystemExit, match="flight refused: framework escaped"):
+        module.main(
+            (
+                "--execute",
+                "--authority",
+                str(authority_path),
+                "--authority-sha256",
+                module.sha256_file(authority_path),
+                "--runtime-factory",
+                "unused.py:factory",
+            )
+        )
+
+    assert runtime.aborted == ["Exception('framework escaped')"]

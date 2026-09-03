@@ -71,7 +71,12 @@ from speech_aware_evidence_acquisition.rails.a2t_executable_semantic_cards impor
 from speech_aware_evidence_acquisition.rails.a2t_frozen_semantic_assets import (
     load_frozen_semantic_runtime_assets,
 )
+from speech_aware_evidence_acquisition.rails.a2t_response_schema import (
+    audio2tool_locked_outer_call_array_response_format,
+    audio2tool_outer_call_array_response_format,
+)
 from speech_aware_evidence_acquisition.rails.a2t_select_fill_ground import (
+    PARAMETER_MAX_OCCURRENCES,
     build_joint_knowledge_ground,
     build_parameter_knowledge_ground,
     build_routing_knowledge_ground,
@@ -753,7 +758,7 @@ def parse_embedding_execution_plan(
         **{key: value for key, value in raw.items() if key in allowed}
     ).validate()
     if (
-        plan.run_id != "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V4-EMBED"
+        plan.run_id != "SAEA-A2T-SELECT-FILL-AGENTLOOP-104-RECOVERY-V5-EMBED"
         or plan.execution_profile != "bounded-discovery-probe"
         or plan.carrier_lock_key != AUDIO2TOOL_LOCK_KEY
         or plan.split_role != "discovery"
@@ -1157,6 +1162,7 @@ class LocalSelectFillRuntime:
         lock = load_lock(umbrella_lock_path(self.repo))
         self.carrier_root = asset_dir(lock, AUDIO2TOOL_LOCK_KEY, self.data_root)
         registry = load_tool_registry(lock, self.data_root)
+        self.registry_rows = registry
         self.registered_tool_names = tuple(sorted({row["tool_name"] for row in registry}))
         if len(self.registered_tool_names) != 152:
             raise RuntimeError("Audio2Tool registry must contain exactly 152 tools")
@@ -1941,11 +1947,19 @@ class LocalSelectFillRuntime:
                 predecessor = predecessor_states.get(sample_id) if predecessor_states else None
                 if phase == self.launcher.SELECT_PHASE:
                     ground = build_routing_knowledge_ground(self.corpus, names)
+                    response_format = ground.response_format
                 elif phase in {self.launcher.JOINT_PHASE, self.launcher.REVISE_PHASE}:
                     ground = build_joint_knowledge_ground(
                         self.corpus, names,
                         contracts_by_tool=self.contracts_by_tool,
                         canonicalizers=self.canonicalizers,
+                    )
+                    response_format = audio2tool_outer_call_array_response_format(
+                        self.registry_rows,
+                        names,
+                        schema_name="audio2tool_joint_candidate_outer_calls",
+                        min_calls=1,
+                        max_calls=PARAMETER_MAX_OCCURRENCES,
                     )
                 elif phase == self.launcher.FILL_PHASE:
                     if predecessor is None or predecessor.stage != SELECT_STAGE:
@@ -1955,6 +1969,13 @@ class LocalSelectFillRuntime:
                         self.corpus, selected,
                         contracts_by_tool=self.contracts_by_tool,
                         canonicalizers=self.canonicalizers,
+                    )
+                    response_format = (
+                        audio2tool_locked_outer_call_array_response_format(
+                            self.registry_rows,
+                            selected,
+                            schema_name="audio2tool_parameter_locked_outer_calls",
+                        )
                     )
                 else:
                     raise RuntimeError("generation phase is unknown")
@@ -1970,8 +1991,8 @@ class LocalSelectFillRuntime:
                     candidate_tool_names=names,
                     ground_text=ground.text,
                     ground_sha256=ground.text_sha256,
-                    response_format=ground.response_format,
-                    response_format_sha256=ground.response_format_sha256,
+                    response_format=response_format,
+                    response_format_sha256=_sha256_json(response_format),
                     observation_state_json=observation_json,
                     observation_state_sha256=_sha256_json(json.loads(observation_json)),
                     observation_source_response_sha256=observation.source_response_sha256,
