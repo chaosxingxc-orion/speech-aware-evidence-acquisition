@@ -61,7 +61,12 @@ cards retain explicit public types and aggregate-supported compatibility forms. 
 152 registered tools, exactly 338 legal tool/skeleton branches, and 43 compatibility rules. The
 schema builder must consume none of each card's synthetic examples, rendered card text, source
 utterances, source values, sample identities, reference transcripts, evaluation rows, or gold. Its
-exact artifact and build-receipt hashes must land before contact.
+model-free build produced the canonical 91,407-byte artifact at
+`$SPEECHRL_DATA_DIR/knowledge/audio2tool/structured-action-schema-v1/response-format.json`, SHA-256
+`8fe5db869f044b9e952765f7bee045027ad137db2cc445ff428db5303fb1a2ed`. The build receipt is
+`docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-structured-action-schema-build-v1/build-receipt.json`,
+SHA-256 `2931aba40a9a94921f670b857a052e69e1fba9820250cb1a8206b9838b35c581`. It records zero
+model, tool, scorer, tokenizer, or network contact and zero evaluation or source values rendered.
 
 ## Execution and context
 

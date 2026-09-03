@@ -1,0 +1,79 @@
+{
+  "carrier_inventory": {
+    "pool_items": 30733,
+    "pool_units": 16843,
+    "usable_units": 16838
+  },
+  "contacts": {
+    "audio_seconds": 0,
+    "embedding_tool": 0,
+    "frozen_core": 0,
+    "gpu_hours": 0,
+    "network": 0,
+    "retriever": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-A2T-MF-STRUCTURED-ACTION-SCHEMA-BUILD-V1",
+  "g4_rebuild": {
+    "argument_key_count": 85,
+    "argument_pattern_family_count": 354,
+    "compatibility_rule_count": 43,
+    "corpus_sha256": "85a04fc72c49802853d0da3785f30a266a90d88275901c8292231442ef4a294f",
+    "deterministic_rebuild_equal": true
+  },
+  "offline_guard": {
+    "outbound_connection_attempts": 0,
+    "targets": []
+  },
+  "partition": {
+    "construction_forbidden_intersection_count": 0,
+    "construction_identity_sha256": "86bfc6f36fb6a562ad1134cd11d60a2ad6bb94668195d76eada97edd2ce0ce16",
+    "construction_sample_count": 22951,
+    "construction_unit_count": 12601,
+    "exposed_sample_count": 400,
+    "policy_id": "saea-a2t-block-partition-v1",
+    "proposed_eval_identity_sha256": "4d0196ec91858cdc81340ee197c085ff29726a1f1b7fe9119d4e410d62df2f90",
+    "proposed_eval_sample_count": 400,
+    "seed": 20260807
+  },
+  "schema": "saea-a2t-structured-action-schema-build-receipt-v1",
+  "schema_artifact": {
+    "ascii_only": true,
+    "branch_count": 338,
+    "canonical_json": true,
+    "compatibility_rule_count": 43,
+    "path": "$SPEECHRL_DATA_DIR/knowledge/audio2tool/structured-action-schema-v1/response-format.json",
+    "safety": {
+      "card_examples_consumed": 0,
+      "card_text_consumed": 0,
+      "evaluation_rows_consumed": 0,
+      "gold_values_rendered": 0,
+      "reference_transcripts_rendered": 0,
+      "source_argument_values_rendered": 0,
+      "source_sample_ids_rendered": 0,
+      "source_utterances_rendered": 0
+    },
+    "sha256": "8fe5db869f044b9e952765f7bee045027ad137db2cc445ff428db5303fb1a2ed",
+    "tool_count": 152,
+    "utf8_bytes": 91407
+  },
+  "scope": {
+    "config_created": false,
+    "evaluation_or_fresh_rows_rendered": 0,
+    "exposure_row_created": false,
+    "launcher_created": false,
+    "model_flight_authorized": false
+  },
+  "source_hashes": {
+    "builder": "da5c153ae02ac82ae6cf8d6c283d07afa0066f177e5266cac22e8ba0dff8b969",
+    "g4_builder": "e49c5b71348efbfdcb284d17b847efb341a3a5898324ef2432ebe9e880da080e",
+    "g4_corpus": "85a04fc72c49802853d0da3785f30a266a90d88275901c8292231442ef4a294f",
+    "g4_receipt": "f2da2a1b77a59ff7f5d9e74c2fabe1e04c87d560f4ca066c573f3d65803680fa",
+    "partition_proposal": "3bbf77a328c2983fb6299bcfe34a975624fee330a9325614dc1f84a7338678a1",
+    "registry": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4",
+    "response_schema_builder": "7625bb1a3ae9483e0aa6f05fe201daf3b2d6f07eb0c8aa31868b6c9379c3cd2d"
+  },
+  "study_commit": "1313e3c6e893aa188d76d7297834ba0be708faf5"
+}
