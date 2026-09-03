@@ -49,7 +49,22 @@ sheet seal before branch-specific supply is derived.
    legal key skeletons and types and binds their argument objects without
    changing the selection. A third speech-carrying contact authors the final
    official response from the sealed selection and bindings. An empty
-   selection stays empty; no stage may add a fallback or repair an answer.
+selection stays empty; no stage may add a fallback or repair an answer.
+
+The decomposed protocol accepts at most 32 ordered selection occurrences and
+4,096 UTF-8 bytes in the selection response. Repeated exact registered names
+remain repeated in their original order. The binding response accepts at most
+12,288 UTF-8 bytes and must contain exactly one typed argument object per
+sealed occurrence with the identical name, count, and order. Invalid JSON,
+unknown names, excessive fan-out, response overflow, skeleton drift, type
+drift, or binding misalignment aborts and terminalizes the one-shot attempt
+before its next contact. It does not trigger a retry, repair, empty-answer
+substitution, branch-manifest emission, or scoring.
+
+The selection and binding completion reserves are 4,096 and 12,288 tokens,
+respectively. These conservative reserves cover their full frozen UTF-8
+response envelopes even under the one-byte-per-token upper bound; early JSON
+termination consumes only the tokens actually generated.
 
 Every final response is authored by the frozen Qwen3-Omni core on the unchanged
 official JSON-array surface. Filters, parsers, the future controller, and the
@@ -68,6 +83,9 @@ Batch execution remains enabled with two sample-affine slots and at most two
 concurrent model requests. Network jitter is not an experimental variable.
 Before every future contact, the executor must render the actual serialized
 request and account for its speech, special-token, and completion reserves.
+It uses a conservative UTF-8 byte upper bound for the serialized text and a
+separate 512-token special-token reserve, so this contact-free measurement
+does not require a tokenizer service or underestimate text tokens.
 Each request must remain within the 24,576-token operational cap of the
 32,768-token slot and retain at least 8,192 tokens of headroom. A fixed estimate
 from an earlier loop step cannot authorize a later request. Overflow refuses
@@ -76,7 +94,8 @@ before contact and never trims.
 This document and its config are preregistration scaffolds only. A later
 execution authorization must first bind exact prompts, schemas, implementation
 hashes, runtime receipts, an `ExecutionPlan`, exact repeated-audio accounting,
-and the exposure-ledger entry. No launcher is added here.
+and the exposure-ledger entry. The contact-free launcher implementation does
+not itself authorize execution.
 
 ## Seal, score, and oracle
 
@@ -84,7 +103,9 @@ Gold remains closed until all four complete 16-row branch manifests, traces,
 final responses, and costs seal. Each complete branch manifest is then scored
 by exactly one unchanged official scorer process. Independent complete
 manifests may be scored concurrently by an outer coordinator; a manifest may
-not be sharded, and partial metrics may not be averaged.
+not be sharded, and partial metrics may not be averaged. The authoritative
+score command persists aggregate and per-sample results from that same single
+invocation. A branch scorer is never rerun to recover row detail.
 
 After scoring, construct a gold-informed per-row branch oracle. For each row,
 prefer a branch with exact match. Break exact ties by row-level slot F1, then

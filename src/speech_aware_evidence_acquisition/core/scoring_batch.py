@@ -189,21 +189,26 @@ def load_score_jobs(
     return tuple(jobs)
 
 
-def run_official_score_job(job: ScoreJob) -> ScoreProcessOutcome:
+def run_official_score_job(
+    job: ScoreJob, *, include_per_sample: bool = False
+) -> ScoreProcessOutcome:
     """Launch the existing authoritative scorer once for one whole manifest."""
 
     environment = dict(os.environ)
     environment["PYTHONDONTWRITEBYTECODE"] = "1"
+    arguments = [
+        sys.executable,
+        "-B",
+        "-m",
+        _DRIVER_MODULE,
+        "score",
+        "--manifest",
+        str(job.manifest),
+    ]
+    if include_per_sample:
+        arguments.append("--include-per-sample")
     completed = subprocess.run(
-        [
-            sys.executable,
-            "-B",
-            "-m",
-            _DRIVER_MODULE,
-            "score",
-            "--manifest",
-            str(job.manifest),
-        ],
+        arguments,
         cwd=_REPO_ROOT,
         env=environment,
         check=False,
@@ -302,6 +307,7 @@ def run_score_batch(
     max_workers: int,
     runner: ScoreRunner | None = None,
     operation: BatchOperation = "score",
+    include_per_sample: bool = False,
 ) -> dict[str, object]:
     """Run every complete job with bounded outer process concurrency.
 
@@ -387,6 +393,8 @@ def run_score_batch(
         job_operation = job.operation if operation == "per-job" else operation
         if job_operation == "finalize":
             return run_official_finalize_job(job)
+        if include_per_sample:
+            return run_official_score_job(job, include_per_sample=True)
         return run_official_score_job(job)
     started = time.perf_counter()
     completed_by_index: dict[

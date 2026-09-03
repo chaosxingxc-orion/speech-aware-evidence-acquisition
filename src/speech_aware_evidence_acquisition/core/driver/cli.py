@@ -530,9 +530,14 @@ def _cli_score(args: argparse.Namespace) -> int:
                 {
                     "manifest": str(Path(args.manifest)),
                     "verified": True,
-                    "scores": {
-                        name: result["aggregate"] for name, result in results.items()
-                    },
+                    "scores": (
+                        results
+                        if args.include_per_sample
+                        else {
+                            name: result["aggregate"]
+                            for name, result in results.items()
+                        }
+                    ),
                 },
                 indent=2,
                 sort_keys=True,
@@ -581,6 +586,7 @@ def _cli_score_batch(args: argparse.Namespace) -> int:
             if args.per_job_operation
             else ("finalize" if args.finalize else "score")
         ),
+        include_per_sample=args.include_per_sample,
     )
     print(json.dumps(summary, indent=2, sort_keys=True))
     return 0 if summary["failed"] == 0 else 1
@@ -736,6 +742,14 @@ def main(argv: list[str] | None = None) -> int:
         default="asr-wer",
         help="comma-separated scorer names (--outputs mode only)",
     )
+    score.add_argument(
+        "--include-per-sample",
+        action="store_true",
+        help=(
+            "with --manifest, include each registered scorer's existing per-sample "
+            "rows alongside its aggregate; default output remains aggregate-only"
+        ),
+    )
     score.set_defaults(func=_cli_score)
     score_batch = sub.add_parser(
         "score-batch",
@@ -762,6 +776,14 @@ def main(argv: list[str] | None = None) -> int:
         type=int,
         default=max(1, min(4, os.cpu_count() or 1)),
         help="maximum number of complete scorer processes to run concurrently",
+    )
+    score_batch.add_argument(
+        "--include-per-sample",
+        action="store_true",
+        help=(
+            "ask each complete score job for existing per-sample rows; no job is "
+            "sharded or scored again"
+        ),
     )
     score_operation = score_batch.add_mutually_exclusive_group()
     score_operation.add_argument(

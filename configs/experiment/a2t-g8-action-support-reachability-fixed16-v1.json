@@ -1,7 +1,7 @@
 {
   "schema": "saea-a2t-g8-action-support-reachability-fixed16-experiment-v1",
   "experiment_id": "SAEA-A2T-G8-ACTION-SUPPORT-REACHABILITY-FIXED16-V1",
-  "status": "PREREGISTERED_NO_CONTACT_AUTHORIZATION",
+  "status": "IMPLEMENTED_CONTACT_REQUIRES_MATCHED_LEDGER_AND_EXECUTION_PLAN",
   "date": "2026-09-03",
   "execution_profile": "bounded-discovery-probe",
   "claim_scope": "Prospective Stage-2 fixed16 complete-macro-action reachability screen only; no policy fitting, policy effectiveness, confirmation, scale, test, or paper claim.",
@@ -83,12 +83,23 @@
     "batch_slots": 2,
     "queue_depth": 4,
     "sample_affine_state": true,
-    "network_jitter_testing": false
+    "network_jitter_testing": false,
+    "decomposed_response_contract": {
+      "maximum_selection_calls": 32,
+      "selection_response_utf8_bytes_maximum": 4096,
+      "binding_response_utf8_bytes_maximum": 12288,
+      "duplicates": "Preserve every repeated exact registered name in order.",
+      "binding_alignment": "Require exactly one typed binding object per sealed selection occurrence, with identical name, count, and order.",
+      "invalid_stage_behavior": "Abort and terminalize the one-shot attempt before the next contact; do not retry, repair, substitute an empty answer, emit branch manifests, or score."
+    }
   },
   "prompt_fit": {
     "per_slot_context_tokens": 32768,
     "prompt_plus_completion_tokens_maximum": 24576,
     "operational_headroom_tokens_minimum": 8192,
+    "special_token_reserve": 512,
+    "decomposed_selection_completion_tokens": 4096,
+    "decomposed_binding_completion_tokens": 12288,
     "measurement_rule": "Render and measure the actual serialized request, speech reserve, special-token reserve, and declared completion reserve immediately before every model contact. Never extrapolate later loop requests from an earlier fixed estimate.",
     "overflow_policy": "Refuse before contact; never trim, lower a completion reserve, silently truncate, or move a sample across slots."
   },
@@ -110,6 +121,7 @@
     "manifest_rule": "Run one official scorer process on each complete branch manifest. Never shard a manifest or average partial scorer results.",
     "outer_parallelism": "Independent complete branch manifests may be scored in parallel by an outer coordinator after the common gold-open condition is satisfied.",
     "score_invocation_limit": "Exactly one official scoring invocation per complete branch manifest.",
+    "per_sample_capture": "Persist aggregate and per-sample scorer output from that same invocation; never rerun a branch scorer to recover row detail.",
     "post_score_join_key": "exact sample identity"
   },
   "post_score_branch_oracle": {
