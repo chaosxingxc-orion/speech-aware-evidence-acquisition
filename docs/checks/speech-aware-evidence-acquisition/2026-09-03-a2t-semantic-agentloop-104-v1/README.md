@@ -1,20 +1,20 @@
 # Audio2Tool semantic AgentLoop 104-row contact-ready coordinator
 
-Status: `ALL_CONTACTS_COMPLETE_ZERO_CONTACT_BUNDLE_RECOVERY_PENDING`.
+Status: `SCORED_ANALYZED_NO_SCALE`.
 
 The one-shot flight completed all 624 generation calls and all 208 logical
 embedding contacts. Final sealing failed after the first manifest was written
 because the roster's colon-key integrity digest was not the canonical
-carrier-prefixed split digest recomputed by `verify_bundle`. No scorer or gold
-has opened, and no model contact will be repeated. The separate recovery
-launcher hash-seals every immutable source trace and attempt before creating
-standard successor bundles with the canonical split and protocol identities.
+carrier-prefixed split digest recomputed by `verify_bundle`. The zero-contact
+recovery subsequently created six verified successor bundles without repeating
+a model contact. Five complete answer manifests have now been scored and the
+104-row post-seal analysis is complete.
 
 This check directory contains the fail-closed launcher coordinator and the
 zero-contact recovery for the fresh 104-row Audio2Tool discovery roster. The
 separate generation and embedding-tool exposure rows were registered before
-contact and are now fully consumed. Scoring and gold remain unopened until all
-six successor manifests verify.
+contact and are now fully consumed. Gold remained closed until all six
+successor manifests verified.
 
 The coordinator pins preprocessing report SHA-256
 `32ec7ab4b93926f81a9f352e0dbcabf669f41eec23956e94f694c987d4a45950`
@@ -79,9 +79,9 @@ job; outer parallelism may use at most four workers, but a manifest must never
 be sharded or reconstructed from averaged shard metrics.
 
 The no-contact reader reports per-tier official results and paired bootstrap
-intervals for query minus transcript, fused minus transcript, fused minus
-query, fused minus M0, and fused minus shuffled. Exact and tool contrasts also
-receive exact paired sign tests.
+intervals for transcript minus M0, query minus transcript, fused minus
+transcript, fused minus query, fused minus M0, and fused minus shuffled. Exact
+and tool contrasts also receive exact paired sign tests.
 
 OBS diagnostics always report transcript, main-model-query, and RRF-fused
 top-16 tool-ranking reachability. Ordered-call-skeleton and
@@ -116,10 +116,12 @@ the generic AgentLoop runner contract but activates and supplies no evidence.
 The model receives only the per-sample selected G5 decision cards rendered by
 the semantic phase adapter.
 
-The remaining prerequisite is an exact committed contact authority carrying
-six unused generation attempts, one unused embedding-tool attempt, and every
-source/runtime/artifact hash listed by preflight. A full
-`--preflight-contact-ready` run must then verify the complete model and runtime
-bytes, D1 media binding, both exposure rows, all seven plans, and mission
-absence without opening a service or making a contact. No model, embedding,
-tokenizer, network, gold, or scorer contact has occurred for this flight yet.
+The official outcome is recorded in `postseal-result-summary.json` and
+`docs/readiness/2026-09-03-a2t-semantic-agentloop-104-v1-verdict.md`. Transcript
+top-16 improved tool accuracy over direct M0 but did not establish stable exact
+match superiority. Same-core query generation and RRF fusion did not improve
+the transcript route. Matched evidence strongly beat the same-volume shuffled
+control, while top-16 required-tool reachability remained 92/104. The current
+method is therefore not promoted to approximately 1,000 samples; the next
+104-row experiment redesigns knowledge supply and separates ordered tool
+selection from parameter filling.

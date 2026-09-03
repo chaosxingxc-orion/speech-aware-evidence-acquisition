@@ -1,0 +1,163 @@
+{
+  "analysis_artifacts": {
+    "external_directory": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-SEMANTIC-AGENTLOOP-104-V1/mission-20260903t190000z-semantic104-v1/zero-contact-recovery-v2/official-analysis-v1",
+    "information_gain_diagnostics_sha256": "a0fa16b5465adaf3fce55b50715293e905cba489d1e7506c1a2875d2d70fb482",
+    "postseal_analysis_input_sha256": "7dbd23e74268b9855b4ac67b2eb77ba0ac07e7cadf512184e12f8583af77dae0",
+    "postseal_analysis_report_sha256": "254f9320a6eb4ac007a29d79d75749744291fee1a97eb7859b2d7e6568482dd5",
+    "receipt_v2_sha256": "cc0f4446f9d88612fb61aad7ca02653f50be0a71038284fde936b2a8825509cf",
+    "shuffle_binding_sha256": "9fb352a142891ea9222d1c9c323ce257777cd2954b2f49446ea38da7a109f841"
+  },
+  "arms": {
+    "direct_m0": {
+      "exact_match": 0.2403846153846154,
+      "parse_rate": 0.8942307692307693,
+      "slot_f1": 0.33333333333333337,
+      "tool_accuracy": 0.5096153846153846
+    },
+    "model_query_top16_use": {
+      "exact_match": 0.23076923076923078,
+      "parse_rate": 1.0,
+      "slot_f1": 0.3184713375796178,
+      "tool_accuracy": 0.5769230769230769
+    },
+    "rrf_fused_top16_use": {
+      "exact_match": 0.2403846153846154,
+      "parse_rate": 0.9903846153846154,
+      "slot_f1": 0.34951456310679613,
+      "tool_accuracy": 0.5769230769230769
+    },
+    "same_stratum_shuffled_fused_use": {
+      "exact_match": 0.038461538461538464,
+      "parse_rate": 1.0,
+      "slot_f1": 0.12060301507537688,
+      "tool_accuracy": 0.08653846153846154
+    },
+    "transcript_top16_use": {
+      "exact_match": 0.25961538461538464,
+      "parse_rate": 1.0,
+      "slot_f1": 0.3470031545741325,
+      "tool_accuracy": 0.5961538461538461
+    }
+  },
+  "decision": {
+    "approximately_1000_sample_expansion": false,
+    "fusion_selected": false,
+    "main_model_query_selected": false,
+    "next_baseline_candidate": "local transcript-vector retrieval with redesigned knowledge supply and split SELECT/FILL workflow",
+    "reason": "Sample-specific evidence has strong value, but the current AgentLoop does not produce stable exact-match superiority over direct M0 and retrieval reachability is below the 0.90-0.95 ground target."
+  },
+  "information_gain": {
+    "direct_plus_three_semantic_arms_posthoc_exact_oracle": 0.33653846153846156,
+    "direct_plus_three_semantic_arms_posthoc_tool_oracle": 0.6826923076923077,
+    "retrieval_query_minus_transcript_mean_selected_tool_overlap_of_16": 11.711538461538462,
+    "transcript_query_union_reachability": 0.9134615384615384
+  },
+  "official_score_batch": {
+    "effective_workers": 4,
+    "failed_jobs": 0,
+    "job_count": 5,
+    "manifest_sharding": false,
+    "parallel_efficiency": 0.85,
+    "throughput_speedup": 3.4,
+    "wall_seconds": 8.400872464990243
+  },
+  "paired_contrasts": {
+    "fused_minus_direct_m0": {
+      "exact_match": {
+        "ci90": [-0.057692307692307696, 0.0673076923076923],
+        "delta": 0.0,
+        "losses": 8,
+        "p_value": 1.0,
+        "ties": 88,
+        "wins": 8
+      },
+      "tool_accuracy": {
+        "ci90": [-0.009615384615384616, 0.14423076923076922],
+        "delta": 0.0673076923076923,
+        "losses": 9,
+        "p_value": 0.2295229434967041,
+        "ties": 79,
+        "wins": 16
+      }
+    },
+    "fused_minus_shuffled": {
+      "exact_match": {
+        "ci90": [0.125, 0.27884615384615385],
+        "delta": 0.20192307692307693,
+        "losses": 3,
+        "p_value": 0.000049233436584472656,
+        "ties": 77,
+        "wins": 24
+      },
+      "tool_accuracy": {
+        "ci90": [0.40384615384615385, 0.5769230769230769],
+        "delta": 0.49038461538461536,
+        "losses": 2,
+        "p_value": 8.554268404736831e-14,
+        "ties": 49,
+        "wins": 53
+      }
+    },
+    "model_query_minus_transcript": {
+      "exact_match": {
+        "ci90": [-0.0673076923076923, 0.0],
+        "delta": -0.028846153846153848,
+        "losses": 4,
+        "p_value": 0.375,
+        "ties": 99,
+        "wins": 1
+      },
+      "tool_accuracy": {
+        "ci90": [-0.057692307692307696, 0.019230769230769232],
+        "delta": -0.019230769230769232,
+        "losses": 4,
+        "p_value": 0.6875,
+        "ties": 98,
+        "wins": 2
+      }
+    },
+    "transcript_minus_direct_m0": {
+      "exact_match": {
+        "ci90": [-0.04807692307692308, 0.08653846153846154],
+        "delta": 0.019230769230769232,
+        "losses": 8,
+        "p_value": 0.8145294189453125,
+        "ties": 86,
+        "wins": 10
+      },
+      "tool_accuracy": {
+        "ci90": [0.009615384615384616, 0.16346153846153846],
+        "delta": 0.08653846153846154,
+        "losses": 9,
+        "p_value": 0.12207812070846558,
+        "ties": 77,
+        "wins": 18
+      }
+    }
+  },
+  "retrieval_reachability": {
+    "fused": {
+      "reachable_count": 92,
+      "reachable_rate": 0.8846153846153846,
+      "tool_accuracy_when_reachable": 0.6521739130434783
+    },
+    "model_query": {
+      "reachable_count": 92,
+      "reachable_rate": 0.8846153846153846,
+      "tool_accuracy_when_reachable": 0.6521739130434783
+    },
+    "shuffled_control": {
+      "reachable_count": 13,
+      "reachable_rate": 0.125
+    },
+    "transcript": {
+      "exact_match_when_reachable": 0.29347826086956524,
+      "reachable_count": 92,
+      "reachable_rate": 0.8846153846153846,
+      "tool_accuracy_when_reachable": 0.6739130434782609
+    }
+  },
+  "row_count": 104,
+  "schema": "saea-a2t-semantic-agentloop-postseal-result-summary-v1",
+  "status": "SCORED_ANALYZED_NO_SCALE"
+}
