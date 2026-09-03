@@ -1,0 +1,41 @@
+{
+  "contacts": {
+    "gold": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "flight_id": "flight-20260903T013000Z",
+  "frozen_hashes": {
+    "canonical_execution_plan_sha256": "a5fdb9d15e33b84949b7e267acd373675bb05d5a1d032c6b102acd5ca6baa46b",
+    "partial_flight_receipt_sha256": "f470ffecc75a32c5c4c91a999df2b6922ee7ba555d6680a9dc9550d253c64fdc",
+    "postseal_launcher_sha256": "72916209801452ad9d0dfd474ec31757dd95cfd559116b23feea2ac9dac40ada",
+    "recovery_execution_plan_file_sha256": "3aa2da2e71f78a507a6f443cd8d4ac3269b7e106ffd908401f0cfdba961d6763",
+    "recovery_launcher_sha256": "5b4b323bd4587a922028734545cd1eb09c95edfe7558f4ed3fbe94245c4e98ec",
+    "recovery_preregistration_sha256": "bf0658c13b8cdfa07fd372951cf662eea3ffc044b0f6dcd9e32924f778d816d1",
+    "registry_original_manifest_sha256": "0ca51392548e772d3b6ff5c42c2fdc2ec0aea56d8f9bbd4097b149aeec6128ee",
+    "registry_original_outputs_sha256": "f4e19ab8e107e368e68f889a9dbf0df8e1f10b601b87184ee5e2e7120de79b6d",
+    "registry_original_raw_trace_sha256": "08e56f7cce2882eb490958fc58f6bbbe532a73d190855929c2bba78b9f329bdb",
+    "registry_original_trace_manifest_sha256": "3f9c352712857e189d3bebaec0481dac9b9d3306b8cb5fae1b333f100509d314",
+    "registry_successor_manifest_sha256": "1063e42726ec256c5448c759b9a58b004293b672d28ef030b454724555d77eb3"
+  },
+  "handbook": {
+    "attempt_id": "attempt-20260903T013000Z-handbook-strict-recovery-v1",
+    "exact_audio_seconds": 45.096,
+    "model_contacts_remaining": 8,
+    "original_attempt_state": "NEVER_OPENED"
+  },
+  "preflight": "PASSED_ZERO_CONTACT",
+  "registry": {
+    "attempt_id": "attempt-20260903T013000Z-registry-strict",
+    "attempt_state": "ABORTED",
+    "completed_model_contacts": 8,
+    "model_contacts_remaining": 0,
+    "recontact_authorized": false,
+    "source_state": "IMMUTABLE_ORIGINAL"
+  },
+  "run_id": "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1",
+  "schema": "saea-a2t-native-structured-action-fixed8-recovery-preflight-v1",
+  "study_commit": "fe9f76c1f81fb3fb9ea80aa330880190284f2e6a"
+}
