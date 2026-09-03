@@ -1,0 +1,14 @@
+{
+  "carrier_lock_key": "audio2tool",
+  "d1_media_supplement": "receipts/artifacts/d1-a2t-semantic-agentloop-104.json",
+  "d1_media_supplement_sha256": "774f3a9afdcb36a81e35032cf424b8d46d30c17fdc82402eb7ea4d3873fc9e0f",
+  "a2t_semantic_agentloop_subset_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-fresh-agentloop-roster/flight-roster-receipt.json",
+  "a2t_semantic_agentloop_subset_receipt_sha256": "457297464e4e0acc9db541cbee5a2215d3447974c55d9c712c0cb1765623079e",
+  "a2t_semantic_agentloop_split_name": "A2T-AGENTLOOP-FRESH-FLIGHT",
+  "a2t_semantic_agentloop_split_role": "discovery",
+  "a2t_semantic_agentloop_split_identity_hash": "84c56416a36d5eb1737fa49f6b255b0a59585df8c8ff1754240a87022983eab0",
+  "a2t_semantic_agentloop_count": 104,
+  "a2t_semantic_agentloop_audio_seconds_total": 554.255707,
+  "a2t_semantic_agentloop_exposure": "Fresh discovery roster prepared without model, network, tokenizer, scorer, or audio-decoding contact. The additive D1 media receipt measures only WAV byte identity and container headers for exactly these 104 files. This fragment grants no contact authority.",
+  "a2t_semantic_agentloop_no_driver_split_name": "This fragment deliberately declares no split_name key. The roster is outside the generic probe-receipt universe and is loaded directly from its hash-pinned receipt without reading task text, gold, reference transcripts, annotations, outputs, scores, or future turns."
+}

@@ -91,7 +91,11 @@ from speech_aware_evidence_acquisition.analysis.a2t_packet_token_gate import (  
     summarize_packet_tokens,
 )
 from speech_aware_evidence_acquisition.core.base import TRANSPORTS  # noqa: E402
-from speech_aware_evidence_acquisition.core.config import compose  # noqa: E402
+from speech_aware_evidence_acquisition.core.config import (  # noqa: E402
+    compose,
+    d1_media_supplement_relpath,
+    d1_media_supplement_sha256,
+)
 from speech_aware_evidence_acquisition.core.model.speech_features import (  # noqa: E402
     PACKET_MANIFEST_NAME,
     legacy_audio_feature_cache_key,
@@ -239,9 +243,9 @@ if "--ground-qual" in sys.argv:
     )
 
 if "--semantic-agentloop" in sys.argv:
-    RUN_ID = "SAEA-SN-A2T-SEMANTIC-AGENTLOOP-104-PREPROCESS"
-    DATASET_FRAGMENT = "audio2tool-semantic-agentloop-104"
-    EXPERIMENT_FRAGMENT = "a2t-semantic-agentloop-preprocess"
+    RUN_ID = "SAEA-SN-A2T-SEMANTIC-AGENTLOOP-104-PREPROCESS-V2"
+    DATASET_FRAGMENT = "audio2tool-semantic-agentloop-104-v2"
+    EXPERIMENT_FRAGMENT = "a2t-semantic-agentloop-preprocess-v2"
     SUBSET_RECEIPT_RELPATH = (
         "docs/checks/speech-aware-evidence-acquisition/"
         "2026-09-03-a2t-fresh-agentloop-roster/flight-roster-receipt.json"
@@ -264,10 +268,10 @@ if "--semantic-agentloop" in sys.argv:
     RECEIPT_IDENTITY_KEY = "split_identity_hash"
     DIRECT_RECEIPT_SAMPLES = True
     DYNAMIC_INFERENCE_PROMPT_FIT = True
-    ATTEMPT_SUFFIX = "a2tsemanticagentlooppre"
-    REQUEST_ID_PREFIX = "a2tsemanticagentlooppre"
-    STATE_SCHEMA = "saea-a2t-semantic-agentloop-preprocess-v1"
-    REPORT_SCHEMA = "saea-a2t-semantic-agentloop-preprocess-report-v1"
+    ATTEMPT_SUFFIX = "a2tsemanticagentloopprev2"
+    REQUEST_ID_PREFIX = "a2tsemanticagentloopprev2"
+    STATE_SCHEMA = "saea-a2t-semantic-agentloop-preprocess-v2"
+    REPORT_SCHEMA = "saea-a2t-semantic-agentloop-preprocess-report-v2"
     OUT_CHECK_DIR = (
         REPO
         / "docs"
@@ -489,6 +493,8 @@ def main() -> int:
                     "packet_root": str(PACKET_ROOT),
                     "promotion_receipt": str(PROMOTION_RECEIPT),
                     "subset_receipt_sha256": SUBSET_RECEIPT_SHA256,
+                    "d1_media_supplement": d1_media_supplement_relpath(values),
+                    "d1_media_supplement_sha256": d1_media_supplement_sha256(values),
                     "prompt_fit_speech_token_ceiling": (
                         None
                         if DYNAMIC_INFERENCE_PROMPT_FIT
@@ -563,9 +569,34 @@ def main() -> int:
         )
 
     if "--preflight-only" in sys.argv and DIRECT_RECEIPT_SAMPLES:
+        preflight_gate = FrozenCoreGate.for_study_repo(
+            REPO,
+            root,
+            Path("/home/chao"),
+            runtime_receipt_relpath=RUNTIME_RECEIPT_RELPATH,
+            expected_model_lock_key=str(values["model_lock_key"]),
+            d1_media_supplement_relpath=d1_media_supplement_relpath(values),
+            d1_media_supplement_sha256=d1_media_supplement_sha256(values),
+        )
+        preflight_binding = build_payload_binding(
+            carrier_lock_key=AUDIO2TOOL_LOCK_KEY,
+            samples=samples,
+            data_root=root,
+            carrier_root=asset_dir(lock, AUDIO2TOOL_LOCK_KEY, root),
+        )
+        preflight_gate.verify_media_identity(
+            AUDIO2TOOL_LOCK_KEY,
+            {
+                sample_id: (
+                    preflight_binding.media_relpaths[sample_id],
+                    preflight_binding.sample_facts[sample_id][0],
+                )
+                for sample_id in sorted(preflight_binding.allowed_sample_ids)
+            },
+        )
         log(
-            "PREFLIGHT-ONLY PASS: receipt paths and hashes verified, zero contacts, "
-            "no socket checks, no session, no gate"
+            "PREFLIGHT-ONLY PASS: receipt paths, hashes, headers, and D1 successor "
+            "verified; zero contacts, no socket checks, no session"
         )
         return 0
 
@@ -650,7 +681,24 @@ def main() -> int:
         Path("/home/chao"),
         runtime_receipt_relpath=RUNTIME_RECEIPT_RELPATH,
         expected_model_lock_key=str(values["model_lock_key"]),
+        d1_media_supplement_relpath=d1_media_supplement_relpath(values),
+        d1_media_supplement_sha256=d1_media_supplement_sha256(values),
     )
+    payload_binding = build_payload_binding(
+        carrier_lock_key=AUDIO2TOOL_LOCK_KEY,
+        samples=samples,
+        data_root=root,
+        carrier_root=asset_dir(lock, AUDIO2TOOL_LOCK_KEY, root),
+    )
+    media_facts = {
+        sample_id: (
+            payload_binding.media_relpaths[sample_id],
+            payload_binding.sample_facts[sample_id][0],
+        )
+        for sample_id in sorted(payload_binding.allowed_sample_ids)
+    }
+    gate.verify_media_identity(AUDIO2TOOL_LOCK_KEY, media_facts)
+    log("D1 media identity PASS for %d samples before sidecar start" % len(media_facts))
     log("running the FULL frozen-core gate (decoder + mmproj attestation)")
     gate_started = time.time()
     lock_sha256 = gate.assert_model_touch_allowed(plan, full_hash=True)
@@ -696,12 +744,6 @@ def main() -> int:
             session=session,
             runtime_receipt=runtime_receipt,
             runtime_root=Path("/home/chao"),
-        )
-        payload_binding = build_payload_binding(
-            carrier_lock_key=AUDIO2TOOL_LOCK_KEY,
-            samples=samples,
-            data_root=root,
-            carrier_root=asset_dir(lock, AUDIO2TOOL_LOCK_KEY, root),
         )
         client = FrozenCoreClient(
             plan=plan,

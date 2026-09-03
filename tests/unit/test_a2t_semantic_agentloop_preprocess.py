@@ -23,6 +23,10 @@ ROSTER = (
     / "2026-09-03-a2t-fresh-agentloop-roster"
     / "flight-roster-receipt.json"
 )
+D1_SUPPLEMENT = REPO / "docs/receipts/artifacts/d1-a2t-semantic-agentloop-104.json"
+D1_SUPPLEMENT_SHA256 = (
+    "774f3a9afdcb36a81e35032cf424b8d46d30c17fdc82402eb7ea4d3873fc9e0f"
+)
 
 
 def _load_script_module():
@@ -48,7 +52,7 @@ def test_semantic_agentloop_identity_is_exactly_receipt_and_output_bound() -> No
     )
     assert completed.returncode == 0, completed.stderr
     identity = json.loads(completed.stdout)
-    assert identity["run_id"] == "SAEA-SN-A2T-SEMANTIC-AGENTLOOP-104-PREPROCESS"
+    assert identity["run_id"] == ("SAEA-SN-A2T-SEMANTIC-AGENTLOOP-104-PREPROCESS-V2")
     assert identity["subset_receipt_sha256"] == (
         "457297464e4e0acc9db541cbee5a2215d3447974c55d9c712c0cb1765623079e"
     )
@@ -61,6 +65,10 @@ def test_semantic_agentloop_identity_is_exactly_receipt_and_output_bound() -> No
     assert identity["inference_prompt_fit_policy"] == (
         "exact-current-request-required-window"
     )
+    assert identity["d1_media_supplement"] == (
+        "receipts/artifacts/d1-a2t-semantic-agentloop-104.json"
+    )
+    assert identity["d1_media_supplement_sha256"] == D1_SUPPLEMENT_SHA256
     assert identity["packet_root"] == (
         "/home/chao/feat-cache/a2t-semantic-agentloop-v1-packets-04ccc72a"
     )
@@ -69,8 +77,8 @@ def test_semantic_agentloop_identity_is_exactly_receipt_and_output_bound() -> No
     )
     assert identity["fragments"] == {
         "baseline": "speech-native-preprocess",
-        "dataset": "audio2tool-semantic-agentloop-104",
-        "experiment": "a2t-semantic-agentloop-preprocess",
+        "dataset": "audio2tool-semantic-agentloop-104-v2",
+        "experiment": "a2t-semantic-agentloop-preprocess-v2",
         "model": "q4km-preprocess-featcache-cpu-sidecar-a2t",
     }
 
@@ -79,12 +87,14 @@ def test_semantic_agentloop_fragments_compose_as_cpu_only_and_label_free() -> No
     composed = compose(
         REPO,
         "q4km-preprocess-featcache-cpu-sidecar-a2t",
-        "audio2tool-semantic-agentloop-104",
+        "audio2tool-semantic-agentloop-104-v2",
         "speech-native-preprocess",
-        "a2t-semantic-agentloop-preprocess",
+        "a2t-semantic-agentloop-preprocess-v2",
     )
     values = composed.values
-    assert values["experiment_id"] == ("SAEA-SN-A2T-SEMANTIC-AGENTLOOP-104-PREPROCESS")
+    assert values["experiment_id"] == (
+        "SAEA-SN-A2T-SEMANTIC-AGENTLOOP-104-PREPROCESS-V2"
+    )
     assert values["a2t_semantic_agentloop_subset_receipt_sha256"] == (
         "457297464e4e0acc9db541cbee5a2215d3447974c55d9c712c0cb1765623079e"
     )
@@ -95,6 +105,10 @@ def test_semantic_agentloop_fragments_compose_as_cpu_only_and_label_free() -> No
     assert args[args.index("-ngl") + 1] == "0"
     assert "--no-mmproj-offload" in args
     assert values["runtime_receipt"] == "receipts/runtime-q4km-preprocess.json"
+    assert values["d1_media_supplement"] == (
+        "receipts/artifacts/d1-a2t-semantic-agentloop-104.json"
+    )
+    assert values["d1_media_supplement_sha256"] == D1_SUPPLEMENT_SHA256
     assert values["task_instruction"] == (
         "Observe the complete speech signal for deterministic feature "
         "preprocessing. Respond with OK."
@@ -182,3 +196,27 @@ def test_committed_roster_bytes_match_the_registered_receipt_hash() -> None:
     assert hashlib.sha256(ROSTER.read_bytes()).hexdigest() == (
         "457297464e4e0acc9db541cbee5a2215d3447974c55d9c712c0cb1765623079e"
     )
+
+
+def test_committed_d1_successor_is_exactly_roster_bound() -> None:
+    roster = json.loads(ROSTER.read_text(encoding="utf-8"))
+    supplement = json.loads(D1_SUPPLEMENT.read_text(encoding="utf-8"))
+    assert hashlib.sha256(D1_SUPPLEMENT.read_bytes()).hexdigest() == (
+        D1_SUPPLEMENT_SHA256
+    )
+    assert supplement["carrier_lock_key"] == "audio2tool"
+    assert (
+        supplement["source_binding_sha256"]
+        == hashlib.sha256(ROSTER.read_bytes()).hexdigest()
+    )
+    assert supplement["count"] == roster["count"] == 104
+    assert [item["id"] for item in supplement["manifest"]] == sorted(
+        item["sample_id"] for item in roster["items"]
+    )
+    canonical = json.dumps(
+        supplement["manifest"],
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    assert supplement["manifest_sha256"] == hashlib.sha256(canonical).hexdigest()

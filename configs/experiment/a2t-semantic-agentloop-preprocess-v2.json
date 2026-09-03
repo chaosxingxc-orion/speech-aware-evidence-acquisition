@@ -1,0 +1,33 @@
+{
+  "experiment_id": "SAEA-SN-A2T-SEMANTIC-AGENTLOOP-104-PREPROCESS-V2",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Prospective successor to the zero-contact V1 refusal. Perform receipt-bound, label-free speech-feature preprocessing for the exact same fresh 104-row semantic AgentLoop discovery roster, now with an additive D1 media successor that binds every roster WAV by byte hash, byte length, header-derived duration, and sample rate. The launcher constructs samples only from receipt-pinned sample identifiers and media facts; it never loads task text, gold, reference transcripts, annotations, outputs, scores, test data, or future turns. A current-build CPU-only llama sidecar on port 8081 uses the fixed minimal one-token preprocessing prompt and legacy feature cache. After the sidecar stops, the carrier-neutral promotion primitive writes audited packets into the exclusive root /home/chao/feat-cache/a2t-semantic-agentloop-v1-packets-04ccc72a. Identity and preflight modes make no model, network, tokenizer, scorer, or audio-decoding contact. This fragment grants no run or exposure authority.",
+  "a2t_semantic_agentloop_preprocess_scope": {
+    "subset_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-fresh-agentloop-roster/flight-roster-receipt.json",
+    "subset_receipt_sha256": "457297464e4e0acc9db541cbee5a2215d3447974c55d9c712c0cb1765623079e",
+    "split_identity_hash": "84c56416a36d5eb1737fa49f6b255b0a59585df8c8ff1754240a87022983eab0",
+    "count": 104,
+    "audio_seconds_total": 554.255707,
+    "d1_media_supplement": "receipts/artifacts/d1-a2t-semantic-agentloop-104.json",
+    "d1_media_supplement_sha256": "774f3a9afdcb36a81e35032cf424b8d46d30c17fdc82402eb7ea4d3873fc9e0f",
+    "legacy_cache_dir": "/home/chao/feat-cache/audio2tool-q4km-04ccc72a",
+    "packet_root": "/home/chao/feat-cache/a2t-semantic-agentloop-v1-packets-04ccc72a",
+    "promotion_receipt": "/home/chao/feat-cache/a2t-semantic-agentloop-v1-packets-04ccc72a/A2T-SEMANTIC-AGENTLOOP-104-V1-promotion.json",
+    "packet_id_convention": "sample_id with ':' replaced by '/'",
+    "promotion_path": "core.model.speech_features.materialize_legacy_cached_speech_feature_packets, called directly after the CPU-only encoder session stops; the carrier-specific SLURP command is not used"
+  },
+  "a2t_semantic_agentloop_preprocess_boundary": {
+    "gold": "never loaded",
+    "task_text": "never loaded",
+    "identity_inputs": "receipt metadata, additive D1 media receipt, and config fragments only",
+    "preflight_inputs": "receipt metadata plus filesystem path, size, SHA-256, and WAV container-header validation; speech content is not decoded or interpreted",
+    "model_contacts_in_identity_or_preflight": 0,
+    "network_contacts_in_identity_or_preflight": 0,
+    "tokenizer_contacts_in_identity_or_preflight": 0,
+    "scorer_contacts_in_identity_or_preflight": 0,
+    "speech_content_decode_contacts_in_identity_or_preflight": 0,
+    "gpu_decoder": "not started, stopped, reconfigured, or contacted",
+    "paid_api_spend": 0,
+    "authority": "none; running requires a separately valid V2 exposure registration and execution plan"
+  }
+}

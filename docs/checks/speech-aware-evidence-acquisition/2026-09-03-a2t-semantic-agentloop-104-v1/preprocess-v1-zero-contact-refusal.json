@@ -1,0 +1,25 @@
+{
+  "schema": "saea-a2t-semantic-agentloop-preprocess-zero-contact-refusal-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "run_id": "SAEA-SN-A2T-SEMANTIC-AGENTLOOP-104-PREPROCESS",
+  "attempt_id": "attempt-20260903T115221Z-a2tsemanticagentlooppre",
+  "source_commit": "12e93f8722ecc394951122adf727f94b09332311",
+  "config_hash": "459e92147accb07c721d93a9cd029633a4b55a83324b870b96a2fd3da67aa107",
+  "status": "REFUSED_BEFORE_FIRST_MODEL_CONTACT",
+  "model_contacts": 0,
+  "speech_audio_seconds_contacted": 0,
+  "response_semantics_read": false,
+  "sidecar_started": true,
+  "sidecar_stopped_normally": true,
+  "sidecar_stop_signal": "SIGTERM",
+  "failure_layer": "pre-contact D1 media identity",
+  "failure_reason": "All 104 fresh roster samples are outside the immutable base D1 Audio2Tool 400-row media manifest. The roster, files, and byte hashes are valid, but the V1 composed configuration did not bind an additive D1 media successor.",
+  "external_artifacts": {
+    "directory": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SN-A2T-SEMANTIC-AGENTLOOP-104-PREPROCESS/attempt-20260903T115221Z-a2tsemanticagentlooppre",
+    "preprocess_state_sha256": "c9ab186fbdb2187b74e64b14adfbcaf32456002addd8eaa2dd7a01ea648c41f2",
+    "session_receipt_sha256": "d867790527c2a6fb9d78716e02b60f5fe1fed5c1b9974163e99e49e1b12093f7",
+    "session_stop_receipt_sha256": "ead0b1db1981f0e76a13cc8917dca4c47c9731ed247e08a47fe32d2d3f1f4ad1",
+    "server_log_sha256": "56730f7d80f7b7cac0cf4122b27418684c8c8320637cbeb70d9c15005a9d8e81"
+  },
+  "successor_rule": "Do not reuse this attempt. A prospective V2 must bind an exact hash-pinned additive D1 media receipt, verify all 104 identities before starting the sidecar, use a new run and attempt identity, and register its changed config and protocol hash before contact."
+}
