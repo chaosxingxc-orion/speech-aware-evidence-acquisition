@@ -1,0 +1,153 @@
+{
+  "schema": "saea-a2t-native-structured-action-parent-request-binding-v1",
+  "experiment_id": "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1",
+  "date": "2026-09-03",
+  "split_identity_hash": "f95efe70b615d71bb082f9ef804d1fa2b6f04ce4114d5d2694151cbaf44019ba",
+  "sample_count": 8,
+  "request_count": 16,
+  "source_flight": "$SPEECHRL_DATA_DIR/runs/SAEA-A2T-EXECUTABLE-GROUND-QUALIFICATION-104-V1/flight-20260902T145019Z",
+  "sources": {
+    "REGISTRY_STRICT_ACTION": {
+      "source_arm": "m0-registry-direct",
+      "source_trace_sha256": "aabf8cb42d04c7f30280151fbe0843a657061b153726043c464b855513d57cc2"
+    },
+    "HANDBOOK_STRICT_ACTION": {
+      "source_arm": "g1-full-executable-ground",
+      "source_trace_sha256": "e1865312d8fe5280e815a428a37eb4a8bb20f819c2b6977f11ba5c6d28cf225b"
+    }
+  },
+  "extraction": {
+    "selected_channel": "MODEL_REQUEST",
+    "selected_fields": [
+      "sample_id",
+      "id_slot",
+      "request_id",
+      "payload_sha256",
+      "speech_packet_sha256"
+    ],
+    "model_response_records_parsed": 0,
+    "model_response_meaning_read": false,
+    "score_records_read": 0,
+    "gold_read": false,
+    "reference_transcript_read": false,
+    "selection_or_tuning_performed": false
+  },
+  "requests": {
+    "REGISTRY_STRICT_ACTION": [
+      {
+        "sample_id": "tier1_direct:000062",
+        "id_slot": 0,
+        "source_request_id": "ground-m0-0002",
+        "source_payload_sha256": "522037d8254d28f0c407072c3c6ee5d0969f37cbf560a33818583d2f72e04681",
+        "speech_packet_sha256": "06d0268b6b8aa856732c62658083964c3938b04c279e2ab1f5e098fe6b1df250"
+      },
+      {
+        "sample_id": "tier2_parametric:001693",
+        "id_slot": 1,
+        "source_request_id": "ground-m0-0020",
+        "source_payload_sha256": "4de422d060445c3b82743a09348628b728e95d4305541956ca3e600c5106841f",
+        "speech_packet_sha256": "cd74de959b3e82e66b308aa6d41ebda5981327e23746a3f1f877f2480fded347"
+      },
+      {
+        "sample_id": "tier3_multi_intent:002490",
+        "id_slot": 1,
+        "source_request_id": "ground-m0-0032",
+        "source_payload_sha256": "0bbe5d17676f9925c741421abbff617e8eb36dd220b4757165a14f183aea670e",
+        "speech_packet_sha256": "95986900ee726ff5db23c2511b1cba049cde2693b28e2276276c1fcb1a3a8800"
+      },
+      {
+        "sample_id": "tier4_implicit:001628",
+        "id_slot": 1,
+        "source_request_id": "ground-m0-0044",
+        "source_payload_sha256": "49fcb16fcd28185c8206ce18dcee011bc840c691cf586434e5f28ed2ae18de25",
+        "speech_packet_sha256": "49baf6a06d9e16b031f1a8bd1882fc4376e9c83d274aec2e8b6c7d0768c0986f"
+      },
+      {
+        "sample_id": "tier5_needle:001679",
+        "id_slot": 1,
+        "source_request_id": "ground-m0-0056",
+        "source_payload_sha256": "f8c4223283b2ba7832d481504e84834377017b9dec859e6c75cf26f62e0835b7",
+        "speech_packet_sha256": "4a4ea507c8c9f80a2c554a0ce38d04ee0c26be9157aa551e1b430a6b3e02c1b0"
+      },
+      {
+        "sample_id": "tier6_correction:002940",
+        "id_slot": 1,
+        "source_request_id": "ground-m0-0076",
+        "source_payload_sha256": "1dad7ae07ac8bf54d37cd56cfff6d7ee7d89c2eb83684efe9e3bcbd40bd0c959",
+        "speech_packet_sha256": "35ecfd5ea71fb4afb692980b2cb35f504d91b5bcd956a0ad89240d19bb16618d"
+      },
+      {
+        "sample_id": "tier7_multiturn:000293",
+        "id_slot": 1,
+        "source_request_id": "ground-m0-0080",
+        "source_payload_sha256": "631ffd5494a3880c7b45aae91241878a5ebe789fc30cb20b9a51c040e248b679",
+        "speech_packet_sha256": "f48f5d31585c100c6039e1a018e786e6adb16f50696b02a72d37c17153ba1ab4"
+      },
+      {
+        "sample_id": "tier8_intent_blending:000052",
+        "id_slot": 0,
+        "source_request_id": "ground-m0-0093",
+        "source_payload_sha256": "f4e1ffd4f3f96b65680d2fd5200912069220d9dc673ba2ced5dae2cc88612156",
+        "speech_packet_sha256": "8414c6f66fba775c7f423ebf9a268a02a9b52ff7ef28cedbd7fedafca32408ec"
+      }
+    ],
+    "HANDBOOK_STRICT_ACTION": [
+      {
+        "sample_id": "tier1_direct:000062",
+        "id_slot": 0,
+        "source_request_id": "ground-g1-0001",
+        "source_payload_sha256": "433310661448f81efdfab2a05d61b532d1d39c841c98cc24ec1e4ff8ef6b0a59",
+        "speech_packet_sha256": "06d0268b6b8aa856732c62658083964c3938b04c279e2ab1f5e098fe6b1df250"
+      },
+      {
+        "sample_id": "tier2_parametric:001693",
+        "id_slot": 0,
+        "source_request_id": "ground-g1-0020",
+        "source_payload_sha256": "0f47b9113c854a66cf8fb2e31aa4ab1db94da931bf7b7ae2bc2e687b4878d082",
+        "speech_packet_sha256": "cd74de959b3e82e66b308aa6d41ebda5981327e23746a3f1f877f2480fded347"
+      },
+      {
+        "sample_id": "tier3_multi_intent:002490",
+        "id_slot": 1,
+        "source_request_id": "ground-g1-0032",
+        "source_payload_sha256": "4709aa83a92b6eb3ba537538ef7719609a5acf74a7dcb578a49387790ec31b53",
+        "speech_packet_sha256": "95986900ee726ff5db23c2511b1cba049cde2693b28e2276276c1fcb1a3a8800"
+      },
+      {
+        "sample_id": "tier4_implicit:001628",
+        "id_slot": 0,
+        "source_request_id": "ground-g1-0044",
+        "source_payload_sha256": "6f521bbceeb057b959e2db8996576572f947abe72cadece5eb014494f7930507",
+        "speech_packet_sha256": "49baf6a06d9e16b031f1a8bd1882fc4376e9c83d274aec2e8b6c7d0768c0986f"
+      },
+      {
+        "sample_id": "tier5_needle:001679",
+        "id_slot": 0,
+        "source_request_id": "ground-g1-0056",
+        "source_payload_sha256": "154ab155e0cf06f835ebc0be023442822d7209828a4e6f53c8e9e2921ea66ebe",
+        "speech_packet_sha256": "4a4ea507c8c9f80a2c554a0ce38d04ee0c26be9157aa551e1b430a6b3e02c1b0"
+      },
+      {
+        "sample_id": "tier6_correction:002940",
+        "id_slot": 0,
+        "source_request_id": "ground-g1-0076",
+        "source_payload_sha256": "00600235298ef2e08ccf0494f48c395f8d716c3caf24872996228f982e65658b",
+        "speech_packet_sha256": "35ecfd5ea71fb4afb692980b2cb35f504d91b5bcd956a0ad89240d19bb16618d"
+      },
+      {
+        "sample_id": "tier7_multiturn:000293",
+        "id_slot": 1,
+        "source_request_id": "ground-g1-0080",
+        "source_payload_sha256": "257737684047bdefb1365939f0de38451d75986efc53157f35664a54281aaf9c",
+        "speech_packet_sha256": "f48f5d31585c100c6039e1a018e786e6adb16f50696b02a72d37c17153ba1ab4"
+      },
+      {
+        "sample_id": "tier8_intent_blending:000052",
+        "id_slot": 1,
+        "source_request_id": "ground-g1-0093",
+        "source_payload_sha256": "4bea1835744f1d1e3967e8a92f245a6075ebcfd46bc4d617c8848de7e00f180d",
+        "speech_packet_sha256": "8414c6f66fba775c7f423ebf9a268a02a9b52ff7ef28cedbd7fedafca32408ec"
+      }
+    ]
+  }
+}
