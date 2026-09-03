@@ -1063,9 +1063,10 @@ def run_phase(
     speech_packet_bindings: Mapping[str, Mapping[str, object]],
     trace_sink: object,
     decoding_params: Mapping[str, object],
+    expected_row_count: int = FRESH_DISCOVERY_ROW_COUNT,
     agent_runner: Callable[..., object] = run_speech_native_agent_loop,
 ) -> object:
-    """Run one complete fresh 104-row phase with fixed safe concurrency."""
+    """Run one complete, prospectively sized phase with fixed concurrency."""
 
     if phase not in PHASES:
         raise SelectFillAgentLoopError("run phase is unknown")
@@ -1076,10 +1077,20 @@ def run_phase(
     ):
         raise SelectFillAgentLoopError("run phase requires its matching fresh adapter")
     if (
-        len(adapter.sample_ids) != FRESH_DISCOVERY_ROW_COUNT
-        or len(speech_packet_bindings) != FRESH_DISCOVERY_ROW_COUNT
+        isinstance(expected_row_count, bool)
+        or not isinstance(expected_row_count, int)
+        or expected_row_count <= 0
     ):
-        raise SelectFillAgentLoopError("fresh phase requires exactly 104 samples")
+        raise SelectFillAgentLoopError(
+            "expected row count must be a positive integer"
+        )
+    if (
+        len(adapter.sample_ids) != expected_row_count
+        or len(speech_packet_bindings) != expected_row_count
+    ):
+        raise SelectFillAgentLoopError(
+            f"fresh phase requires exactly {expected_row_count} samples"
+        )
     if set(adapter.sample_ids) != set(speech_packet_bindings):
         raise SelectFillAgentLoopError(
             "speech packet and phase sample identities differ"
@@ -1117,8 +1128,10 @@ def run_phase(
             "phase summary is not bound to openjiuwen-workflow-v1"
         )
     results = getattr(summary, "results", None)
-    if not isinstance(results, tuple) or len(results) != FRESH_DISCOVERY_ROW_COUNT:
-        raise SelectFillAgentLoopError("phase must return exactly 104 results")
+    if not isinstance(results, tuple) or len(results) != expected_row_count:
+        raise SelectFillAgentLoopError(
+            f"phase must return exactly {expected_row_count} results"
+        )
     result_ids: list[str] = []
     for result in results:
         sample_id = getattr(result, "sample_id", None)

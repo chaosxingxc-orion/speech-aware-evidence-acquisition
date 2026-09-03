@@ -482,3 +482,53 @@ def test_run_phase_binds_104_rows_one_contact_openjiuwen_slot2_queue4() -> None:
     )
 
     assert returned is summary
+
+
+def test_run_phase_accepts_explicitly_bound_128_row_factorial_cell() -> None:
+    samples = tuple(_sample(index) for index in range(128))
+    materials = {
+        sample.sample_id: loop.PhaseMaterial(
+            **{
+                **_material(loop.SELECT_PHASE).__dict__,
+                "sample_id": sample.sample_id,
+            }
+        )
+        for sample in samples
+    }
+    adapter = loop.FreshSelectFillPhaseAdapter(
+        split_id="fresh-factorial-split",
+        samples=samples,
+        phase=loop.SELECT_PHASE,
+        material=materials,
+    )
+    bindings = {
+        sample.sample_id: {
+            "packet_id": f"speech/{index:03d}",
+            "sha256": f"{index + 800:064x}",
+        }
+        for index, sample in enumerate(samples)
+    }
+    summary = SimpleNamespace(
+        agent_executor_id=loop.AGENT_EXECUTOR_ID,
+        results=tuple(
+            SimpleNamespace(sample_id=sample.sample_id, contacts=(object(),))
+            for sample in samples
+        ),
+    )
+
+    returned = loop.run_phase(
+        phase=loop.SELECT_PHASE,
+        data_root=SimpleNamespace(),
+        plan=SimpleNamespace(),
+        adapter=adapter,
+        core_client=SimpleNamespace(),
+        split_id="fresh-factorial-split",
+        knowledge_snapshot=SimpleNamespace(),
+        speech_packet_bindings=bindings,
+        trace_sink=SimpleNamespace(),
+        decoding_params={"temperature": 0},
+        expected_row_count=128,
+        agent_runner=lambda **_kwargs: summary,
+    )
+
+    assert returned is summary

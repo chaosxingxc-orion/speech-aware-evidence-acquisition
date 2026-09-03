@@ -19,9 +19,11 @@ from speech_aware_evidence_acquisition.rails.a2t_select_fill_ground import (
     ParameterKnowledgeGround,
     RoutingKnowledgeGround,
     SelectFillGroundError,
+    build_interface_routing_knowledge_ground,
     build_parameter_knowledge_ground,
     build_joint_knowledge_ground,
     build_routing_knowledge_ground,
+    build_sparse_parameter_knowledge_ground,
 )
 
 
@@ -115,6 +117,34 @@ def test_routing_ground_is_candidate_scoped_and_uses_selection_schema() -> None:
     assert schema["items"]["properties"]["name"]["enum"] == ["alpha", "beta"]
 
 
+def test_interface_routing_adds_shape_cues_without_parameter_values() -> None:
+    control = build_routing_knowledge_ground(_corpus(), ("beta", "alpha"))
+    packet = build_interface_routing_knowledge_ground(
+        _corpus(),
+        ("beta", "alpha"),
+        contracts_by_tool=_contracts(),
+    )
+
+    assert isinstance(packet, RoutingKnowledgeGround)
+    assert packet.candidate_tool_names == control.candidate_tool_names
+    assert packet.response_format == control.response_format
+    assert "Choose: beta operation" in packet.text
+    assert "Avoid beta for unrelated operations." in packet.text
+    assert "Signature: beta(mode: String)" in packet.text
+    assert "Required keys: mode" in packet.text
+    assert "Optional keys: (none)" in packet.text
+    assert "Legal key set: {mode}" in packet.text
+    assert "one, two" not in packet.text
+    assert "defaults to one" not in packet.text
+    assert "Omission rules:" not in packet.text
+    assert "Applicable canonicalizers:" not in packet.text
+    assert "Example:" not in packet.text
+    assert "role guidance" not in packet.text
+    assert packet.report["interface_policy"] == "key-shape-only"
+    assert packet.report["signature_rendered"] == 2
+    assert packet.report["parameter_values_rendered"] == 0
+
+
 def test_parameter_ground_deduplicates_documents_but_preserves_occurrences() -> None:
     packet = _parameter_ground("beta", "alpha", "beta")
 
@@ -159,6 +189,36 @@ def test_parameter_ground_accepts_empty_selection() -> None:
     assert schema["minItems"] == schema["maxItems"] == 0
     assert schema["prefixItems"] == []
     assert "items" not in schema
+
+
+def test_sparse_parameter_ground_binds_occurrences_and_omits_defaults() -> None:
+    control = _parameter_ground("beta", "alpha", "beta")
+    packet = build_sparse_parameter_knowledge_ground(
+        _corpus(),
+        ("beta", "alpha", "beta"),
+        contracts_by_tool=_contracts(),
+        canonicalizers=_canonicalizers(),
+    )
+
+    assert isinstance(packet, ParameterKnowledgeGround)
+    assert packet.selected_tool_occurrences == ("beta", "alpha", "beta")
+    assert packet.selected_tool_names == ("beta", "alpha")
+    assert packet.response_format == control.response_format
+    assert "Occurrence 1: beta" in packet.text
+    assert "Occurrence 2: alpha" in packet.text
+    assert "Occurrence 3: beta" in packet.text
+    assert packet.text.count("Exact tool: beta") == 1
+    assert packet.text.count("Exact tool: alpha") == 1
+    assert "Use the shortest legal key set supported by original speech" in packet.text
+    assert "emit {}" in packet.text
+    assert "Declared defaults for omission semantics:" not in packet.text
+    assert "defaults to one" not in packet.text
+    assert "Example:" not in packet.text
+    assert "Applicable canonicalizers: entity" in packet.text
+    assert packet.report["fill_policy"] == "occurrence-indexed-evidence-sparse"
+    assert packet.report["occurrence_bindings_rendered"] == 3
+    assert packet.report["selected_default_declaration_count"] == 0
+    assert packet.report["examples_rendered"] == 0
 
 
 def test_joint_ground_exposes_the_same_routing_and_parameter_facts() -> None:

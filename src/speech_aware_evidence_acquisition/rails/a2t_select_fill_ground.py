@@ -165,23 +165,34 @@ def _contract_cards(
     )
 
 
-def _parameter_contracts(
+def _selected_contracts(
     selected_names: Sequence[str],
     *,
     contracts_by_tool: Mapping[str, CanonicalContract],
-    canonicalizers: Mapping[str, str],
-) -> tuple[tuple[CanonicalContract, ...], tuple[tuple[str, str], ...]]:
+) -> tuple[CanonicalContract, ...]:
     if not isinstance(contracts_by_tool, Mapping):
         raise SelectFillGroundError("contract coverage must be a mapping")
-    unique_names = tuple(dict.fromkeys(selected_names))
     contracts: list[CanonicalContract] = []
-    for name in unique_names:
+    for name in dict.fromkeys(selected_names):
         contract = contracts_by_tool.get(name)
         if not isinstance(contract, CanonicalContract) or contract.tool_name != name:
             raise SelectFillGroundError(
                 "contract coverage must include every selected tool"
             )
         contracts.append(contract)
+    return tuple(contracts)
+
+
+def _parameter_contracts(
+    selected_names: Sequence[str],
+    *,
+    contracts_by_tool: Mapping[str, CanonicalContract],
+    canonicalizers: Mapping[str, str],
+) -> tuple[tuple[CanonicalContract, ...], tuple[tuple[str, str], ...]]:
+    contracts = _selected_contracts(
+        selected_names,
+        contracts_by_tool=contracts_by_tool,
+    )
     if not isinstance(canonicalizers, Mapping):
         raise SelectFillGroundError("canonicalizer coverage must be a mapping")
     applicable = tuple(
@@ -219,7 +230,12 @@ def _finish(text: str, response_format: Mapping[str, object], report: dict[str, 
 
 
 def _parameter_lines(
-    contract: CanonicalContract, card: ToolSemanticCard
+    contract: CanonicalContract,
+    card: ToolSemanticCard,
+    *,
+    include_default_semantics: bool = True,
+    include_examples: bool = True,
+    include_role_guidance: bool = True,
 ) -> tuple[str, ...]:
     lines = [
         "",
@@ -234,12 +250,16 @@ def _parameter_lines(
         "Forbidden keys: " + (", ".join(contract.forbidden_keys) or "(none)"),
         "Canonical key order: "
         + (", ".join(contract.ordered_keys) or "(none)"),
-        "Declared defaults for omission semantics: "
-        + (contract.defaults or "(none)"),
-        "Omission rules: " + (" ".join(contract.omission_rules) or "(none)"),
         "Applicable canonicalizers: "
         + (", ".join(contract.canonicalization_rules) or "(none)"),
     ]
+    if include_default_semantics:
+        lines[10:10] = [
+            "Declared defaults for omission semantics: "
+            + (contract.defaults or "(none)"),
+            "Omission rules: "
+            + (" ".join(contract.omission_rules) or "(none)"),
+        ]
     lines.extend(
         f"Legal key set: {{{', '.join(keys)}}}"
         for keys in contract.legal_key_skeletons
@@ -249,8 +269,10 @@ def _parameter_lines(
         f"{rule.legal_argument_key_set} -> {rule.value_forms}"
         for rule in card.compatibility_rules
     )
-    lines.extend(f"Role guidance: {item}" for item in card.role_guidance)
-    lines.extend(f"Example: {item}" for item in card.examples)
+    if include_role_guidance:
+        lines.extend(f"Role guidance: {item}" for item in card.role_guidance)
+    if include_examples:
+        lines.extend(f"Example: {item}" for item in card.examples)
     return tuple(lines)
 
 
@@ -299,6 +321,98 @@ def build_routing_knowledge_ground(
         "signature_rendered": 0, "examples_rendered": 0, "rendered_ascii_bytes": len(text.encode("ascii")), "byte_cap": byte_cap,
     }, byte_cap)
     return RoutingKnowledgeGround(names, text, text_hash, response, response_hash, report)
+
+
+def build_interface_routing_knowledge_ground(
+    corpus: ExecutableSemanticCardCorpus,
+    candidate_tool_names: Sequence[str],
+    *,
+    contracts_by_tool: Mapping[str, CanonicalContract],
+    byte_cap: int = DEFAULT_BYTE_CAP,
+) -> RoutingKnowledgeGround:
+    """Build SELECT ground with interface shape but no parameter values."""
+
+    control = build_routing_knowledge_ground(
+        corpus,
+        candidate_tool_names,
+        byte_cap=byte_cap,
+    )
+    corpus = _corpus(corpus)
+    cards = _bind(corpus, control.candidate_tool_names)
+    contracts = _selected_contracts(
+        tuple(card.tool_name for card in cards),
+        contracts_by_tool=contracts_by_tool,
+    )
+    routing_task_ids = {
+        "multi-call-ordering",
+        "correction-resolution",
+        "implicit-end-state-resolution",
+        "multiturn-carryover",
+    }
+    task = tuple(
+        card.text for card in corpus.task_cards if card.card_id in routing_task_ids
+    )
+    lines = [
+        "AUDIO2TOOL INTERFACE-AWARE ROUTING GROUND",
+        "Select only from the exact candidate tool names below.",
+        "Use operation meaning and argument shape together to reject nearby tools.",
+        "Argument keys and types identify interfaces; they do not supply argument values.",
+        "Return the requested tool occurrences in spoken order; preserve corrections and distinct intents.",
+        "TASK-WIDE GUIDANCE:",
+        *task,
+        "CANDIDATES:",
+    ]
+    for card, contract in zip(cards, contracts, strict=True):
+        signature = contract.tool_name + "(" + ", ".join(
+            f"{key}: {kind}" for key, kind in contract.types
+        ) + ")"
+        lines.extend(
+            (
+                f"Exact tool: {card.tool_name}",
+                f"Choose: {card.choose_semantics}",
+                f"Avoid: {card.avoid_semantics}",
+                f"Signature: {signature}",
+                "Required keys: "
+                + (", ".join(contract.required_keys) or "(none)"),
+                "Optional keys: "
+                + (", ".join(contract.optional_keys) or "(none)"),
+                "Conditional keys: "
+                + (", ".join(contract.conditional_keys) or "(none)"),
+                "Forbidden keys: "
+                + (", ".join(contract.forbidden_keys) or "(none)"),
+            )
+        )
+        lines.extend(
+            f"Legal key set: {{{', '.join(keys)}}}"
+            for keys in contract.legal_key_skeletons
+        )
+    text = "\n".join(lines) + "\n"
+    text, text_hash, response_hash, report = _finish(
+        text,
+        control.response_format,
+        {
+            "candidate_count": len(control.candidate_tool_names),
+            "task_guidance_count": len(task),
+            "interface_policy": "key-shape-only",
+            "selected_tool_contracts_rendered": len(contracts),
+            "signature_rendered": len(contracts),
+            "parameter_values_rendered": 0,
+            "defaults_rendered": 0,
+            "examples_rendered": 0,
+            "canonicalizers_rendered": 0,
+            "rendered_ascii_bytes": len(text.encode("ascii")),
+            "byte_cap": byte_cap,
+        },
+        byte_cap,
+    )
+    return RoutingKnowledgeGround(
+        control.candidate_tool_names,
+        text,
+        text_hash,
+        control.response_format,
+        response_hash,
+        report,
+    )
 
 
 def build_joint_knowledge_ground(
@@ -455,6 +569,113 @@ def build_parameter_knowledge_ground(
     return ParameterKnowledgeGround(tuple(card.tool_name for card in cards), occurrences, text, text_hash, response, response_hash, report)
 
 
+def build_sparse_parameter_knowledge_ground(
+    corpus: ExecutableSemanticCardCorpus,
+    selected_tool_occurrences: Sequence[str],
+    *,
+    contracts_by_tool: Mapping[str, CanonicalContract],
+    canonicalizers: Mapping[str, str],
+    byte_cap: int = DEFAULT_BYTE_CAP,
+) -> ParameterKnowledgeGround:
+    """Build an occurrence-indexed FILL packet without default completion."""
+
+    corpus = _corpus(corpus)
+    if isinstance(byte_cap, bool) or not isinstance(byte_cap, int) or byte_cap <= 0:
+        raise SelectFillGroundError("byte cap must be a positive integer")
+    occurrences = _names(
+        selected_tool_occurrences,
+        minimum=0,
+        maximum=PARAMETER_MAX_OCCURRENCES,
+        label="selected occurrences",
+        unique=False,
+    )
+    semantic_cards = _bind(corpus, occurrences)
+    contracts, canonicalizer_descriptions = _parameter_contracts(
+        tuple(card.tool_name for card in semantic_cards),
+        contracts_by_tool=contracts_by_tool,
+        canonicalizers=canonicalizers,
+    )
+    cards = _contract_cards(contracts, corpus.cards_by_name)
+    task = tuple(
+        card.text
+        for card in corpus.task_cards
+        if card.card_id
+        in {
+            "correction-resolution",
+            "implicit-end-state-resolution",
+            "multiturn-carryover",
+        }
+    )
+    lines = [
+        "AUDIO2TOOL OCCURRENCE-INDEXED EVIDENCE-SPARSE PARAMETER GROUND",
+        "Fill only the selected call positions using the selected tools' public contracts.",
+        "Bind each argument object to its exact selected occurrence position.",
+        "Use the shortest legal key set supported by original speech or canonical OBS.",
+        "Do not add an argument key or value only because a public default exists.",
+        "When no argument is supported and {} is a listed legal key set, emit {}.",
+        "Apply correction and multiturn guidance while preserving selected occurrence order.",
+        "SELECTED OCCURRENCES:",
+        *(
+            f"Occurrence {index}: {name}"
+            for index, name in enumerate(occurrences, start=1)
+        ),
+        "TASK-WIDE PARAMETER GUIDANCE:",
+        *task,
+        "CANONICALIZATION RULES:",
+        *(
+            f"{name}: {description}"
+            for name, description in canonicalizer_descriptions
+        ),
+        "UNIQUE SELECTED TOOL CONTRACTS:",
+    ]
+    for contract, card in zip(contracts, cards, strict=True):
+        lines.extend(
+            _parameter_lines(
+                contract,
+                card,
+                include_default_semantics=False,
+                include_examples=False,
+                include_role_guidance=False,
+            )
+        )
+    text = "\n".join(lines) + "\n"
+    response = audio2tool_locked_call_array_response_format(
+        _contract_registry(contracts) if contracts else _registry(corpus.tool_cards),
+        cards,
+        occurrences,
+        schema_name="audio2tool_parameter_locked_calls",
+    )
+    text, text_hash, response_hash, report = _finish(
+        text,
+        response,
+        {
+            "fill_policy": "occurrence-indexed-evidence-sparse",
+            "selected_occurrence_count": len(occurrences),
+            "occurrence_bindings_rendered": len(occurrences),
+            "selected_tool_count": len(cards),
+            "selected_tool_names": tuple(card.tool_name for card in cards),
+            "selected_default_declaration_count": 0,
+            "selected_omission_rule_count": 0,
+            "selected_canonicalizer_count": len(canonicalizer_descriptions),
+            "examples_rendered": 0,
+            "role_guidance_rendered": 0,
+            "task_guidance_count": len(task),
+            "rendered_ascii_bytes": len(text.encode("ascii")),
+            "byte_cap": byte_cap,
+        },
+        byte_cap,
+    )
+    return ParameterKnowledgeGround(
+        tuple(card.tool_name for card in cards),
+        occurrences,
+        text,
+        text_hash,
+        response,
+        response_hash,
+        report,
+    )
+
+
 __all__ = [
-    "DEFAULT_BYTE_CAP", "PARAMETER_MAX_OCCURRENCES", "ROUTING_MAX_CANDIDATES", "JointKnowledgeGround", "ParameterKnowledgeGround", "RoutingKnowledgeGround", "SelectFillGroundError", "build_joint_knowledge_ground", "build_parameter_knowledge_ground", "build_routing_knowledge_ground",
+    "DEFAULT_BYTE_CAP", "PARAMETER_MAX_OCCURRENCES", "ROUTING_MAX_CANDIDATES", "JointKnowledgeGround", "ParameterKnowledgeGround", "RoutingKnowledgeGround", "SelectFillGroundError", "build_interface_routing_knowledge_ground", "build_joint_knowledge_ground", "build_parameter_knowledge_ground", "build_routing_knowledge_ground", "build_sparse_parameter_knowledge_ground",
 ]
