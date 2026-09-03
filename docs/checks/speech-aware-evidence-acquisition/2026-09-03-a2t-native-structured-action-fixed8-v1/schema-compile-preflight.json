@@ -1,0 +1,58 @@
+{
+  "schema": "saea-a2t-native-structured-action-schema-compile-preflight-v1",
+  "experiment_id": "SAEA-A2T-NATIVE-STRUCTURED-ACTION-FIXED8-V1",
+  "date": "2026-09-03",
+  "execution_profile": "model-free-check",
+  "status": "PASSED_ZERO_CONTACT",
+  "input": {
+    "response_format_path": "$SPEECHRL_DATA_DIR/knowledge/audio2tool/structured-action-schema-v1/response-format.json",
+    "response_format_sha256": "8fe5db869f044b9e952765f7bee045027ad137db2cc445ff428db5303fb1a2ed",
+    "response_format_utf8_bytes": 91407,
+    "conversion_input": "json_schema.schema",
+    "tool_count": 152,
+    "branch_count": 338,
+    "compatibility_rule_count": 43,
+    "strict": true,
+    "array_min_items": 1,
+    "array_max_items": 4
+  },
+  "pinned_runtime": {
+    "binary": "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+    "binary_version": "8 (04ccc72a2)",
+    "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "converter_path_at_commit": "examples/json_schema_to_grammar.py",
+    "converter_sha256": "ee451dc460aa31185226e58988626f64e75ab735169fa3e484fcf16889475ae3"
+  },
+  "conversion": {
+    "command": "git -C /home/chao/llama.cpp-featcache show 04ccc72a2207347ca76161b93fd9d846dd0a8675:examples/json_schema_to_grammar.py | python3 - /tmp/saea-a2t-schema-inner.json > /tmp/saea-a2t-pinned-04ccc.grammar",
+    "success": true,
+    "grammar_utf8_bytes": 155501,
+    "grammar_sha256": "074b1db9bcce701fcfe017414c5204bc7bd3607800cf3d2135a992a5453d",
+    "deterministic_rerun_equal": true,
+    "current_checkout_converter_equal": true,
+    "outer_wrapper_rejected_as_expected": true
+  },
+  "contacts": {
+    "frozen_core": 0,
+    "server": 0,
+    "scorer": 0,
+    "tokenizer": 0,
+    "retriever": 0,
+    "embedding_tool": 0,
+    "network": 0,
+    "audio_seconds": 0,
+    "gpu_hours": 0
+  },
+  "access": {
+    "evaluation_rows": 0,
+    "gold": 0,
+    "reference_transcripts": 0,
+    "historical_fixed8_outputs": 0,
+    "historical_fixed8_scores": 0,
+    "repository_files_modified_by_preflight": 0,
+    "runtime_files_modified": 0,
+    "temporary_files_only": true
+  },
+  "interpretation": "The exact inner JSON Schema deterministically compiles with the converter bytes from the same pinned llama.cpp commit as the runtime binary. Native server request-path execution remains intentionally uncontacted until the separately bound bounded-discovery attempt."
+}
