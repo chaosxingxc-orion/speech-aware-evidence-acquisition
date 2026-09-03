@@ -1,12 +1,20 @@
 # Audio2Tool semantic AgentLoop 104-row contact-ready coordinator
 
-Status: `PREREGISTERED_CONCRETE_LOCAL_RUNTIME_NOT_EXECUTED`.
+Status: `ALL_CONTACTS_COMPLETE_ZERO_CONTACT_BUNDLE_RECOVERY_PENDING`.
 
-This check directory contains a fail-closed launcher coordinator for the fresh
-104-row Audio2Tool discovery roster. It does not authorize or perform model,
-embedding-tool, tokenizer, network, or scorer contact. It does not read gold.
-The separate generation and embedding-tool exposure rows were registered before
-contact; both remain unconsumed.
+The one-shot flight completed all 624 generation calls and all 208 logical
+embedding contacts. Final sealing failed after the first manifest was written
+because the roster's colon-key integrity digest was not the canonical
+carrier-prefixed split digest recomputed by `verify_bundle`. No scorer or gold
+has opened, and no model contact will be repeated. The separate recovery
+launcher hash-seals every immutable source trace and attempt before creating
+standard successor bundles with the canonical split and protocol identities.
+
+This check directory contains the fail-closed launcher coordinator and the
+zero-contact recovery for the fresh 104-row Audio2Tool discovery roster. The
+separate generation and embedding-tool exposure rows were registered before
+contact and are now fully consumed. Scoring and gold remain unopened until all
+six successor manifests verify.
 
 The coordinator pins preprocessing report SHA-256
 `32ec7ab4b93926f81a9f352e0dbcabf669f41eec23956e94f694c987d4a45950`
@@ -32,9 +40,13 @@ The revised frozen phase order is:
 7. 104 single-contact same-tier, same-card-count deranged fused USE requests.
 
 This is exactly 624 generation contacts. All matched arms use the same card
-renderer and differ only in ranking source. Trace material preserves the
-complete transcript, model-query, and RRF-fused rankings. It supports required
-tool-ranking ceilings and does not claim unproduced skeleton/action-set ceilings.
+renderer and differ only in ranking source. The terminal sealing failure
+occurred before the non-direct semantic sidecars were written, so the durable
+traces preserve the selected per-arm evidence but not the in-memory complete
+rankings. Post-seal analysis can therefore report top-16 required-tool
+reachability from the selected evidence; it must mark unavailable any stronger
+full-ranking, skeleton, or action-set ceiling that the durable bytes cannot
+reconstruct.
 
 Generation uses two slots and queue depth four. The service geometry is 65,536
 total context tokens with two physical 32,768-token slots. Immediately before
