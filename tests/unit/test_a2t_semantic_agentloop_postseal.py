@@ -187,6 +187,9 @@ def test_reports_all_revised_paired_contrasts_and_unavailable_trace_ceilings(
     assert report["paired_contrasts"]["query_transcript"]["tool_accuracy"][
         "point_estimate"
     ] == pytest.approx(7 / 104)
+    assert report["paired_contrasts"]["transcript_m0"]["exact_match"][
+        "point_estimate"
+    ] == pytest.approx(8 / 104)
     assert report["paired_contrasts"]["fused_transcript"]["slot_f1"][
         "point_estimate"
     ] == pytest.approx(12 / 104)
@@ -207,6 +210,45 @@ def test_reports_all_revised_paired_contrasts_and_unavailable_trace_ceilings(
     ]["status"] == "unavailable"
     assert report["promotion_gates"]["future_tfrl_over_0_90_not_required"] is True
     assert "network jitter" in report["conclusion_exclusions"]
+
+
+def test_derives_per_tier_parse_rate_from_official_per_sample_rows(
+    tmp_path: Path,
+) -> None:
+    ids = _ids()
+    descriptors = _manifest_descriptors(tmp_path)
+    payloads = {
+        arm: _score_payload(Path(descriptors[arm]["manifest"]), ids, wins=set())
+        for arm in (
+            "direct_m0",
+            "transcript_top16_use",
+            "model_query_top16_use",
+            "rrf_fused_top16_use",
+            "same_stratum_shuffled_fused_use",
+        )
+    }
+    for payload in payloads.values():
+        official = payload["scores"]["a2t-toolcall"]
+        first = official["per_sample"][0]
+        first["parsed"] = False
+        official["aggregate"]["parse_failures"] = 1
+        for tier_score in official["aggregate"]["per_tier"].values():
+            del tier_score["parse_failures"]
+
+    report = analyze_semantic_agentloop_flight(
+        manifests=descriptors,
+        score_payloads=payloads,
+        retrieval_samples=_diagnostics(ids),
+        bootstrap_replicates=10,
+        bootstrap_seed=5,
+    )
+
+    assert report["arms"]["direct_m0"]["per_tier"]["tier1"][
+        "parse_rate"
+    ] == pytest.approx(12 / 13)
+    assert report["arms"]["direct_m0"]["per_tier"]["tier2"][
+        "parse_rate"
+    ] == 1.0
 
 
 def test_refuses_incomplete_or_mismatched_future_flight_inputs(tmp_path: Path) -> None:

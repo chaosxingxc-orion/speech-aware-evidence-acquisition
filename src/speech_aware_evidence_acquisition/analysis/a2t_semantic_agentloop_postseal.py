@@ -288,10 +288,14 @@ def _per_tier(
             raise AnalysisError(
                 f"official per_tier metrics for {tier} have an invalid sample count"
             )
-        failures = score.get("parse_failures")
-        if type(failures) is not int or not 0 <= failures <= len(members):
+        failures = sum(not bool(member["parsed"]) for member in members)
+        declared_failures = score.get("parse_failures")
+        if declared_failures is not None and (
+            type(declared_failures) is not int
+            or declared_failures != failures
+        ):
             raise AnalysisError(
-                f"official per_tier metrics for {tier} have invalid parse failures"
+                f"official per_tier metrics for {tier} disagree with per-sample parse status"
             )
         result[tier] = {
             "samples": len(members),
@@ -642,6 +646,13 @@ def analyze_semantic_agentloop_flight(
         },
         "arms": arm_metrics,
         "paired_contrasts": {
+            "transcript_m0": _paired_contrast(
+                left=rows_by_arm[TRANSCRIPT_TOP16_USE],
+                right=rows_by_arm[DIRECT_M0],
+                sample_ids=sample_ids,
+                bootstrap_replicates=bootstrap_replicates,
+                bootstrap_seed=bootstrap_seed + 50,
+            ),
             "query_transcript": _paired_contrast(
                 left=rows_by_arm[MODEL_QUERY_TOP16_USE],
                 right=rows_by_arm[TRANSCRIPT_TOP16_USE],
@@ -682,7 +693,7 @@ def analyze_semantic_agentloop_flight(
         "promotion_gates": {
             "scope": "104-row discovery qualification only; not a confirmatory or paper-scale claim",
             "require_complete_verified_five_call_manifests_and_complete_obs_manifest": True,
-            "require_all_five_paired_retrieval_and_evidence_contrasts_reported": True,
+            "require_all_six_paired_retrieval_and_evidence_contrasts_reported": True,
             "require_transcript_query_fused_tool_ranking_reachability_reported": True,
             "optional_skeleton_and_action_set_ceilings_require_sealed_trace_artifacts": True,
             "require_no_network_jitter_claim": True,
