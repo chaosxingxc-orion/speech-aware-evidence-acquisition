@@ -1309,10 +1309,13 @@ def test_response_format_is_forwarded_without_replacing_messages(tmp_path):
             "name": "key_choice",
             "strict": True,
             "schema": {
-                "type": "object",
-                "properties": {"key_id": {"const": "K001"}},
-                "required": ["key_id"],
-                "additionalProperties": False,
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {"key_id": {"const": "K001"}},
+                    "required": ["key_id"],
+                    "additionalProperties": False,
+                },
             },
         },
     }
