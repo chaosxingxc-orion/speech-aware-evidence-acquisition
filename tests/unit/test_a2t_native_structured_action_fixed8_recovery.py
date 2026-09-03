@@ -159,6 +159,20 @@ def test_recovery_composed_config_preserves_identity_and_sets_one_scorer() -> No
     assert original.values["scorers"] == []
 
 
+def test_recovery_composed_config_accepts_the_real_missing_scorers_key() -> None:
+    recovery = _recovery()
+    original = ComposedConfig(
+        values={"arm": "speech-feature-query"},
+        config_hash="a" * 64,
+        fragments={"model": "frozen"},
+    )
+
+    repaired = recovery.with_registered_scorer(original)
+
+    assert repaired.values["scorers"] == ["a2t-toolcall"]
+    assert "scorers" not in original.values
+
+
 def test_registry_repair_is_hash_bound_and_accepts_complete_aborted_source(
     tmp_path: Path,
 ) -> None:

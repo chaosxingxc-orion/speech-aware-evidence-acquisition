@@ -201,8 +201,11 @@ def with_registered_scorer(composed: ComposedConfig) -> ComposedConfig:
     """Change manifest metadata only, retaining the frozen config identity."""
 
     values = dict(composed.values)
-    if values.get("scorers") != []:
-        raise RecoveryError("source composed config no longer has the observed empty scorer list")
+    if "scorers" in values and values["scorers"] != []:
+        raise RecoveryError(
+            "source composed config no longer has the observed missing or empty "
+            "scorer declaration"
+        )
     values["scorers"] = list(EXPECTED_SCORERS)
     return ComposedConfig(
         values=values,
