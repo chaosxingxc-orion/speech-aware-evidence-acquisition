@@ -598,7 +598,10 @@ def _rehash_seal(seal_path: Path) -> Mapping[str, object]:
             path = _resolve(item.get(path_key), base=seal_path.parent, label=f"{section}.{name}")
             expected = _hash(item.get(hash_key), f"{section}.{name} hash")
             if section == "manifests" and name != "direct_m0":
-                if reconstruct_pre_score_manifest_sha256(path) != expected:
+                current = _sha256_file(path, f"{section}.{name}")
+                if current != expected and reconstruct_pre_score_manifest_sha256(
+                    path
+                ) != expected:
                     raise PostsealError(f"sealed {name} pre-score manifest hash drift")
             elif _sha256_file(path, f"{section}.{name}") != expected:
                 raise PostsealError(f"sealed {section}.{name} hash drift")
@@ -615,7 +618,7 @@ def validate_mixed_score_batch(
     sealed_manifests: Mapping[str, Mapping[str, object]],
     base_dir: Path,
 ) -> Mapping[str, Path]:
-    """Validate the exact four-job, whole-manifest mixed score/finalize batch."""
+    """Validate one of the two exact four-job whole-manifest operation patterns."""
 
     jobs = summary.get("jobs")
     if (
@@ -638,27 +641,37 @@ def validate_mixed_score_batch(
     if set(sealed_manifests) != set(ROLE_ORDER):
         raise PostsealError("sealed manifests must cover exactly four roles")
     result = {}
+    operations = {}
     for value in jobs:
         job = _object(value, "score batch job")
         role = job.get("job_id")
         if role not in ROLE_ORDER or role in result:
             raise PostsealError("score batch job identities are invalid")
-        expected_operation = "score" if role == "direct_m0" else "finalize"
         sealed = sealed_manifests[str(role)]
         expected_manifest = _resolve(sealed.get("manifest"), base=base_dir, label=f"{role} manifest")
         if (
-            job.get("operation") != expected_operation
+            job.get("operation") not in {"score", "finalize"}
             or job.get("status") != "succeeded"
             or job.get("returncode") != 0
             or _resolve(job.get("manifest"), base=base_dir, label=f"{role} batch manifest") != expected_manifest
         ):
             raise PostsealError(f"{role} score job operation or manifest drift")
+        operations[str(role)] = str(job["operation"])
         result_path = _resolve(job.get("result_file"), base=base_dir, label=f"{role} result")
         if _sha256_file(result_path, f"{role} result") != _hash(job.get("result_sha256"), f"{role} result hash"):
             raise PostsealError(f"{role} score result hash drift")
         result[str(role)] = result_path
     if set(result) != set(ROLE_ORDER):
         raise PostsealError("score batch does not cover exactly four roles")
+    all_score = {role: "score" for role in ROLE_ORDER}
+    legacy_mixed = {
+        role: "score" if role == "direct_m0" else "finalize"
+        for role in ROLE_ORDER
+    }
+    if operations not in (all_score, legacy_mixed):
+        raise PostsealError(
+            "score batch operation pattern must be all-score or legacy mixed"
+        )
     return result
 
 
@@ -679,20 +692,25 @@ def normalize_mixed_score_payloads(
         payload = _read_json(Path(result_files[role]), f"{role} score result")
         if payload.get("verified") is not True or Path(str(payload.get("manifest", ""))).resolve() != manifest:
             raise PostsealError(f"{role} score result is unverified or misbound")
-        if role == "direct_m0":
-            if _sha256_file(manifest, "direct manifest") != pre_hash:
-                raise PostsealError("direct manifest changed during score-only operation")
-            scores = payload.get("scores")
-        else:
+        score_value = payload.get("scores")
+        if isinstance(score_value, Mapping):
+            if _sha256_file(manifest, f"{role} manifest") != pre_hash:
+                raise PostsealError(
+                    f"{role} manifest changed during score-only operation"
+                )
+            scores = score_value
+        elif isinstance(score_value, str) and score_value:
             if reconstruct_pre_score_manifest_sha256(manifest) != pre_hash:
                 raise PostsealError(f"{role} finalized manifest does not reconstruct to its seal")
             if payload.get("attempt_state") != "FINALIZED":
                 raise PostsealError(f"{role} finalizer did not report FINALIZED")
-            scores_path = Path(str(payload.get("scores", ""))).resolve()
+            scores_path = Path(score_value).resolve()
             manifest_scores = _object(_read_json(manifest, f"{role} manifest").get("scores"), f"{role} scores metadata")
             if scores_path != Path(str(manifest_scores.get("path", ""))).resolve() or _sha256_file(scores_path, f"{role} scores") != _hash(manifest_scores.get("sha256"), f"{role} scores hash"):
                 raise PostsealError(f"{role} scores artifact does not match finalized manifest")
             scores = _read_json(scores_path, f"{role} scores")
+        else:
+            raise PostsealError(f"{role} score result has no supported scores payload")
         scores_map = _object(scores, f"{role} scores")
         if set(scores_map) != {OFFICIAL_SCORER}:
             raise PostsealError(f"{role} must contain only the official scorer")

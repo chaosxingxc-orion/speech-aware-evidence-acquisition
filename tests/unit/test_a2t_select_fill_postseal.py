@@ -119,6 +119,33 @@ def test_normalizes_direct_score_and_three_finalize_payloads(tmp_path: Path) -> 
     assert normalized["select_then_fill"]["per_sample"][0]["slot_f1"] == 0.5
 
 
+def test_normalizes_all_four_score_only_payloads_without_manifest_mutation(
+    tmp_path: Path,
+) -> None:
+    roles = ("direct_m0", "joint_one_call", "joint_draft_revise", "select_then_fill")
+    sealed = {}
+    result_files = {}
+    for role in roles:
+        manifest, before = _manifest(tmp_path / role / f"{role}.run-manifest.json")
+        sealed[role] = {"manifest": str(manifest), "manifest_sha256": before}
+        result_files[role] = _write(
+            tmp_path / "batch" / f"{role}.score.json",
+            {
+                "verified": True,
+                "manifest": str(manifest),
+                "scores": {"a2t-toolcall": _official()},
+            },
+        )
+
+    normalized = normalize_mixed_score_payloads(
+        sealed_manifests=sealed,
+        result_files=result_files,
+    )
+
+    assert set(normalized) == set(roles)
+    assert all(_sha(Path(sealed[role]["manifest"])) == sealed[role]["manifest_sha256"] for role in roles)
+
+
 def test_mixed_batch_requires_exact_operations_and_whole_manifests(tmp_path: Path) -> None:
     manifests = {
         role: str(_manifest(tmp_path / role / f"{role}.run-manifest.json")[0])
@@ -155,6 +182,38 @@ def test_mixed_batch_requires_exact_operations_and_whole_manifests(tmp_path: Pat
         role: {"manifest": path} for role, path in manifests.items()
     }, base_dir=tmp_path)
     assert set(validated) == set(manifests)
+
+    for job in jobs:
+        job["operation"] = "score"
+    validated = validate_mixed_score_batch(
+        summary,
+        sealed_manifests={
+            role: {"manifest": path} for role, path in manifests.items()
+        },
+        base_dir=tmp_path,
+    )
+    assert set(validated) == set(manifests)
+
+    jobs[0]["operation"] = "finalize"
+    with pytest.raises(PostsealError, match="operation pattern"):
+        validate_mixed_score_batch(
+            summary,
+            sealed_manifests={
+                role: {"manifest": path} for role, path in manifests.items()
+            },
+            base_dir=tmp_path,
+        )
+    jobs[0]["operation"] = "score"
+    jobs[1]["operation"] = "finalize"
+    jobs[2]["operation"] = "score"
+    with pytest.raises(PostsealError, match="operation pattern"):
+        validate_mixed_score_batch(
+            summary,
+            sealed_manifests={
+                role: {"manifest": path} for role, path in manifests.items()
+            },
+            base_dir=tmp_path,
+        )
 
     summary["requested_max_workers"] = 5
     with pytest.raises(PostsealError, match="workers"):
