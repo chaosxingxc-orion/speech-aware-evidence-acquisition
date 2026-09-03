@@ -1,11 +1,15 @@
 import hashlib
+import json
+from pathlib import Path
 
 import pytest
 
 from speech_aware_evidence_acquisition.rails.a2t_canonical_family_ground import (
+    CanonicalFamilyGround,
     CanonicalContract,
 )
 from speech_aware_evidence_acquisition.rails.a2t_executable_semantic_cards import (
+    CompatibilityRule,
     ExecutableSemanticCardCorpus,
     TaskSemanticCard,
     ToolSemanticCard,
@@ -185,6 +189,77 @@ def test_joint_ground_exposes_the_same_routing_and_parameter_facts() -> None:
     } == {"alpha", "beta"}
     assert packet.report["candidate_count"] == 2
     assert packet.report["answer_cardinality"] == {"minimum": 1, "maximum": 7}
+
+
+def test_every_real_contract_builds_a_singleton_joint_ground() -> None:
+    repo = Path(__file__).resolve().parents[2]
+    source = (
+        repo
+        / "knowledge/audio2tool/g5-exhaustive-family-contracts-v1/corpus.json"
+    )
+    document = json.loads(source.read_text(encoding="ascii"))
+    rules = []
+    seen: set[tuple[str, tuple[str, ...]]] = set()
+    for row in document["contracts"]:
+        for skeleton in row["legal_key_skeletons"]:
+            identity = (row["tool_name"], tuple(skeleton))
+            if not skeleton or identity in seen:
+                continue
+            seen.add(identity)
+            rules.append(
+                CompatibilityRule(
+                    tool_name=row["tool_name"],
+                    legal_argument_key_set=tuple(skeleton),
+                    value_forms=(),
+                    construction_support_count=2,
+                )
+            )
+            if len(rules) == 43:
+                break
+        if len(rules) == 43:
+            break
+    ground = CanonicalFamilyGround.from_path(source, compatibility_rules=rules)
+    cards = tuple(
+        ToolSemanticCard(
+            tool_name=contract.tool_name,
+            choose_semantics=contract.operation,
+            avoid_semantics="Choose only for the exact operation meaning.",
+            signature=contract.tool_name
+            + "("
+            + ", ".join(f"{key}: {kind}" for key, kind in contract.types)
+            + ")",
+            constraints=contract.constraints,
+            legal_argument_key_sets=contract.legal_key_skeletons,
+            compatibility_rules=(),
+            role_guidance=(),
+            examples=(),
+            text="Real frozen public contract.",
+        )
+        for contract in ground.contracts_by_tool.values()
+    )
+    corpus = ExecutableSemanticCardCorpus(
+        text="Real frozen 152-tool public contract corpus.",
+        sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
+        tool_cards=cards,
+        task_cards=(
+            TaskSemanticCard("multi-call-ordering", "Preserve call order."),
+            TaskSemanticCard("correction-resolution", "Use final corrections."),
+            TaskSemanticCard(
+                "implicit-end-state-resolution", "Use the requested end state."
+            ),
+            TaskSemanticCard("multiturn-carryover", "Use relevant earlier facts."),
+        ),
+        report={},
+    )
+
+    for name in ground.tool_names:
+        packet = build_joint_knowledge_ground(
+            corpus,
+            (name,),
+            contracts_by_tool=ground.contracts_by_tool,
+            canonicalizers=ground.canonicalizers,
+        )
+        assert packet.candidate_tool_names == (name,)
 
 
 @pytest.mark.parametrize(

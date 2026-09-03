@@ -22,6 +22,7 @@ from .a2t_response_schema import (
 ROUTING_MAX_CANDIDATES = 32
 PARAMETER_MAX_OCCURRENCES = 7
 DEFAULT_BYTE_CAP = 32_768
+_NO_DECLARATION = frozenset({"", "none", "none declared", "(none)"})
 
 
 class SelectFillGroundError(ValueError):
@@ -115,6 +116,15 @@ def _registry(cards: Sequence[ToolSemanticCard]) -> tuple[dict[str, str], ...]:
     )
 
 
+def _schema_constraint(value: str) -> str:
+    """Remove prose placeholders before the strict constraint parser."""
+
+    normalized = value.strip().casefold()
+    if normalized in _NO_DECLARATION or normalized.startswith("no public "):
+        return ""
+    return value
+
+
 def _contract_registry(
     contracts: Sequence[CanonicalContract],
 ) -> tuple[dict[str, str], ...]:
@@ -125,7 +135,7 @@ def _contract_registry(
             + "("
             + ", ".join(f"{key}: {kind}" for key, kind in contract.types)
             + ")",
-            "argument_constraints": contract.constraints,
+            "argument_constraints": _schema_constraint(contract.constraints),
         }
         for contract in contracts
     )

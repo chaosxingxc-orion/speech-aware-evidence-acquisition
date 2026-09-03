@@ -14,7 +14,7 @@ import re
 from typing import Mapping, Sequence
 
 
-STAGE_STATE_SCHEMA = "a2t-stage-state-envelope-v1"
+STAGE_STATE_SCHEMA = "a2t-stage-state-envelope-v2"
 SELECT_STAGE = "SELECT"
 JOINT_DRAFT_STAGE = "JOINT_DRAFT"
 MIN_STAGE_CALLS = 1
@@ -37,6 +37,9 @@ _ENVELOPE_KEYS = frozenset(
         "payload_sha256",
         "source_query_state_sha256",
         "source_response_sha256",
+        "observation_state_sha256",
+        "observation_source_response_sha256",
+        "source_request_body_sha256",
         "candidate_set_sha256",
         "ground_sha256",
         "response_schema_sha256",
@@ -291,6 +294,9 @@ class StageStateEnvelope:
     payload_sha256: str
     source_query_state_sha256: str
     source_response_sha256: str
+    observation_state_sha256: str
+    observation_source_response_sha256: str
+    source_request_body_sha256: str
     candidate_set_sha256: str
     ground_sha256: str
     response_schema_sha256: str
@@ -308,6 +314,15 @@ class StageStateEnvelope:
             field="source_query_state_sha256",
         )
         _require_hash(self.source_response_sha256, field="source_response_sha256")
+        _require_hash(self.observation_state_sha256, field="observation_state_sha256")
+        _require_hash(
+            self.observation_source_response_sha256,
+            field="observation_source_response_sha256",
+        )
+        _require_hash(
+            self.source_request_body_sha256,
+            field="source_request_body_sha256",
+        )
         _require_hash(self.candidate_set_sha256, field="candidate_set_sha256")
         _require_hash(self.ground_sha256, field="ground_sha256")
         _require_hash(self.response_schema_sha256, field="response_schema_sha256")
@@ -342,6 +357,11 @@ class StageStateEnvelope:
             "payload_sha256": self.payload_sha256,
             "source_query_state_sha256": self.source_query_state_sha256,
             "source_response_sha256": self.source_response_sha256,
+            "observation_state_sha256": self.observation_state_sha256,
+            "observation_source_response_sha256": (
+                self.observation_source_response_sha256
+            ),
+            "source_request_body_sha256": self.source_request_body_sha256,
             "candidate_set_sha256": self.candidate_set_sha256,
             "ground_sha256": self.ground_sha256,
             "response_schema_sha256": self.response_schema_sha256,
@@ -364,6 +384,9 @@ def _build_envelope(
     payload: StagePayload,
     source_query_state_sha256: str,
     source_response_sha256: str,
+    observation_state_sha256: str,
+    observation_source_response_sha256: str,
+    source_request_body_sha256: str,
     candidate_tool_names: Sequence[str],
     ground_sha256: str,
     response_schema_sha256: str,
@@ -384,6 +407,9 @@ def _build_envelope(
         "payload_sha256": payload_sha256,
         "source_query_state_sha256": source_query_state_sha256,
         "source_response_sha256": source_response_sha256,
+        "observation_state_sha256": observation_state_sha256,
+        "observation_source_response_sha256": observation_source_response_sha256,
+        "source_request_body_sha256": source_request_body_sha256,
         "candidate_set_sha256": candidate_set_sha256,
         "ground_sha256": ground_sha256,
         "response_schema_sha256": response_schema_sha256,
@@ -398,6 +424,9 @@ def _build_envelope(
         payload_sha256=payload_sha256,
         source_query_state_sha256=source_query_state_sha256,
         source_response_sha256=source_response_sha256,
+        observation_state_sha256=observation_state_sha256,
+        observation_source_response_sha256=observation_source_response_sha256,
+        source_request_body_sha256=source_request_body_sha256,
         candidate_set_sha256=candidate_set_sha256,
         ground_sha256=ground_sha256,
         response_schema_sha256=response_schema_sha256,
@@ -412,6 +441,9 @@ def build_select_stage_envelope(
     speech_packet_sha256: str,
     source_query_state_sha256: str,
     source_response_sha256: str,
+    observation_state_sha256: str,
+    observation_source_response_sha256: str,
+    source_request_body_sha256: str,
     candidate_tool_names: Sequence[str],
     ground_sha256: str,
     response_schema_sha256: str,
@@ -435,6 +467,9 @@ def build_select_stage_envelope(
         payload=payload,
         source_query_state_sha256=source_query_state_sha256,
         source_response_sha256=source_response_sha256,
+        observation_state_sha256=observation_state_sha256,
+        observation_source_response_sha256=observation_source_response_sha256,
+        source_request_body_sha256=source_request_body_sha256,
         candidate_tool_names=candidate_tool_names,
         ground_sha256=ground_sha256,
         response_schema_sha256=response_schema_sha256,
@@ -448,6 +483,9 @@ def build_joint_draft_stage_envelope(
     speech_packet_sha256: str,
     source_query_state_sha256: str,
     source_response_sha256: str,
+    observation_state_sha256: str,
+    observation_source_response_sha256: str,
+    source_request_body_sha256: str,
     candidate_tool_names: Sequence[str],
     ground_sha256: str,
     response_schema_sha256: str,
@@ -471,6 +509,9 @@ def build_joint_draft_stage_envelope(
         payload=payload,
         source_query_state_sha256=source_query_state_sha256,
         source_response_sha256=source_response_sha256,
+        observation_state_sha256=observation_state_sha256,
+        observation_source_response_sha256=observation_source_response_sha256,
+        source_request_body_sha256=source_request_body_sha256,
         candidate_tool_names=candidate_tool_names,
         ground_sha256=ground_sha256,
         response_schema_sha256=response_schema_sha256,
@@ -560,6 +601,9 @@ def parse_stage_state_envelope(
     expected_predecessor_envelope_sha256: str | None,
     expected_source_query_state_sha256: str,
     expected_source_response_sha256: str,
+    expected_observation_state_sha256: str,
+    expected_observation_source_response_sha256: str,
+    expected_source_request_body_sha256: str,
     expected_candidate_tool_names: Sequence[str],
     expected_ground_sha256: str,
     expected_response_schema_sha256: str,
@@ -595,6 +639,11 @@ def parse_stage_state_envelope(
         payload_sha256=document["payload_sha256"],  # type: ignore[arg-type]
         source_query_state_sha256=document["source_query_state_sha256"],  # type: ignore[arg-type]
         source_response_sha256=document["source_response_sha256"],  # type: ignore[arg-type]
+        observation_state_sha256=document["observation_state_sha256"],  # type: ignore[arg-type]
+        observation_source_response_sha256=document[
+            "observation_source_response_sha256"
+        ],  # type: ignore[arg-type]
+        source_request_body_sha256=document["source_request_body_sha256"],  # type: ignore[arg-type]
         candidate_set_sha256=document["candidate_set_sha256"],  # type: ignore[arg-type]
         ground_sha256=document["ground_sha256"],  # type: ignore[arg-type]
         response_schema_sha256=document["response_schema_sha256"],  # type: ignore[arg-type]
@@ -628,6 +677,18 @@ def parse_stage_state_envelope(
         expected_source_response_sha256,
         field="expected_source_response_sha256",
     )
+    _require_hash(
+        expected_observation_state_sha256,
+        field="expected_observation_state_sha256",
+    )
+    _require_hash(
+        expected_observation_source_response_sha256,
+        field="expected_observation_source_response_sha256",
+    )
+    _require_hash(
+        expected_source_request_body_sha256,
+        field="expected_source_request_body_sha256",
+    )
     _candidate_names, expected_candidate_set_sha256 = _candidate_binding(
         expected_candidate_tool_names
     )
@@ -655,6 +716,15 @@ def parse_stage_state_envelope(
         raise StageStateError("source query binding does not match")
     if envelope.source_response_sha256 != expected_source_response_sha256:
         raise StageStateError("source response binding does not match")
+    if envelope.observation_state_sha256 != expected_observation_state_sha256:
+        raise StageStateError("observation state binding does not match")
+    if (
+        envelope.observation_source_response_sha256
+        != expected_observation_source_response_sha256
+    ):
+        raise StageStateError("observation source response binding does not match")
+    if envelope.source_request_body_sha256 != expected_source_request_body_sha256:
+        raise StageStateError("source request binding does not match")
     if envelope.candidate_set_sha256 != expected_candidate_set_sha256:
         raise StageStateError("candidate set binding does not match")
     if envelope.ground_sha256 != expected_ground_sha256:

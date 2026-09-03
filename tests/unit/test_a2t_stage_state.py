@@ -10,6 +10,7 @@ import pytest
 from speech_aware_evidence_acquisition.rails.a2t_stage_state import (
     JOINT_DRAFT_STAGE,
     SELECT_STAGE,
+    STAGE_STATE_SCHEMA,
     JointDraftCall,
     JointDraftPayload,
     SelectOccurrence,
@@ -30,6 +31,9 @@ PREDECESSOR = "5" * 64
 CANDIDATES = ("set_timer", "send_message", "get_weather")
 GROUND = "6" * 64
 SCHEMA = "7" * 64
+OBS_STATE = "8" * 64
+OBS_RESPONSE = "9" * 64
+REQUEST_BODY = "a" * 64
 
 
 def _select_envelope():
@@ -39,6 +43,9 @@ def _select_envelope():
         speech_packet_sha256=SPEECH,
         source_query_state_sha256=QUERY,
         source_response_sha256=RESPONSE,
+        observation_state_sha256=OBS_STATE,
+        observation_source_response_sha256=OBS_RESPONSE,
+        source_request_body_sha256=REQUEST_BODY,
         candidate_tool_names=CANDIDATES,
         ground_sha256=GROUND,
         response_schema_sha256=SCHEMA,
@@ -60,6 +67,9 @@ def _parse_select(text: str, **overrides: object):
         "expected_predecessor_envelope_sha256": None,
         "expected_source_query_state_sha256": QUERY,
         "expected_source_response_sha256": RESPONSE,
+        "expected_observation_state_sha256": OBS_STATE,
+        "expected_observation_source_response_sha256": OBS_RESPONSE,
+        "expected_source_request_body_sha256": REQUEST_BODY,
         "expected_candidate_tool_names": CANDIDATES,
         "expected_ground_sha256": GROUND,
         "expected_response_schema_sha256": SCHEMA,
@@ -109,6 +119,9 @@ def test_joint_draft_round_trip_preserves_call_order_repeats_and_argument_values
         speech_packet_sha256=SPEECH,
         source_query_state_sha256=QUERY,
         source_response_sha256=RESPONSE,
+        observation_state_sha256=OBS_STATE,
+        observation_source_response_sha256=OBS_RESPONSE,
+        source_request_body_sha256=REQUEST_BODY,
         candidate_tool_names=CANDIDATES,
         ground_sha256=GROUND,
         response_schema_sha256=SCHEMA,
@@ -134,6 +147,9 @@ def test_joint_draft_round_trip_preserves_call_order_repeats_and_argument_values
         expected_predecessor_envelope_sha256=PREDECESSOR,
         expected_source_query_state_sha256=QUERY,
         expected_source_response_sha256=RESPONSE,
+        expected_observation_state_sha256=OBS_STATE,
+        expected_observation_source_response_sha256=OBS_RESPONSE,
+        expected_source_request_body_sha256=REQUEST_BODY,
         expected_candidate_tool_names=CANDIDATES,
         expected_ground_sha256=GROUND,
         expected_response_schema_sha256=SCHEMA,
@@ -176,8 +192,8 @@ def test_parser_rejects_extra_missing_and_hash_drift(mutation, message: str) -> 
 def test_parser_rejects_duplicate_json_keys_at_every_depth() -> None:
     encoded = _select_envelope().to_json()
     duplicate_top = encoded.replace(
-        '"schema":"a2t-stage-state-envelope-v1"',
-        '"schema":"a2t-stage-state-envelope-v1","schema":"a2t-stage-state-envelope-v1"',
+        f'"schema":"{STAGE_STATE_SCHEMA}"',
+        f'"schema":"{STAGE_STATE_SCHEMA}","schema":"{STAGE_STATE_SCHEMA}"',
     )
     duplicate_nested = encoded.replace(
         '"occurrence_id":"occurrence-000"',
@@ -212,6 +228,13 @@ def test_parser_rejects_fences_noncanonical_bytes_and_non_ascii(candidate) -> No
         ("expected_predecessor_envelope_sha256", "6" * 64, "predecessor"),
         ("expected_source_query_state_sha256", "8" * 64, "source query"),
         ("expected_source_response_sha256", "8" * 64, "source response"),
+        ("expected_observation_state_sha256", "b" * 64, "observation state"),
+        (
+            "expected_observation_source_response_sha256",
+            "b" * 64,
+            "observation source response",
+        ),
+        ("expected_source_request_body_sha256", "b" * 64, "source request"),
         ("expected_candidate_tool_names", ("other_tool",), "candidate"),
         ("expected_ground_sha256", "8" * 64, "ground"),
         ("expected_response_schema_sha256", "8" * 64, "response schema"),
@@ -264,6 +287,9 @@ def test_builders_reject_invalid_hashes_occurrence_ids_and_mutable_arguments() -
             speech_packet_sha256=SPEECH,
             source_query_state_sha256=QUERY,
             source_response_sha256=RESPONSE,
+            observation_state_sha256=OBS_STATE,
+            observation_source_response_sha256=OBS_RESPONSE,
+            source_request_body_sha256=REQUEST_BODY,
             candidate_tool_names=CANDIDATES,
             ground_sha256=GROUND,
             response_schema_sha256=SCHEMA,
@@ -277,6 +303,9 @@ def test_builders_reject_invalid_hashes_occurrence_ids_and_mutable_arguments() -
             speech_packet_sha256=SPEECH,
             source_query_state_sha256=QUERY,
             source_response_sha256=RESPONSE,
+            observation_state_sha256=OBS_STATE,
+            observation_source_response_sha256=OBS_RESPONSE,
+            source_request_body_sha256=REQUEST_BODY,
             candidate_tool_names=CANDIDATES,
             ground_sha256=GROUND,
             response_schema_sha256=SCHEMA,
@@ -308,6 +337,9 @@ def test_stage_boundary_rejects_empty_too_many_and_out_of_candidate_calls() -> N
                 speech_packet_sha256=SPEECH,
                 source_query_state_sha256=QUERY,
                 source_response_sha256=RESPONSE,
+                observation_state_sha256=OBS_STATE,
+                observation_source_response_sha256=OBS_RESPONSE,
+                source_request_body_sha256=REQUEST_BODY,
                 candidate_tool_names=CANDIDATES,
                 ground_sha256=GROUND,
                 response_schema_sha256=SCHEMA,
