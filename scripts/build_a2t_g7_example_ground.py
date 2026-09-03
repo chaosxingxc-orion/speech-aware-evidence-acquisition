@@ -35,7 +35,7 @@ from speech_aware_evidence_acquisition.rails.knowledge_build_a2t import (  # noq
 )
 
 
-RUN_ID = "SAEA-A2T-G7-EXHAUSTIVE-EXAMPLE-GROUND-FIXED16-V1"
+RUN_ID = "SAEA-A2T-G7-MULTIMODAL-EXHAUSTIVE-EXAMPLE-GROUND-FIXED16-V2"
 PARTITION_SEED = 20260807
 G5_CORPUS = REPO / "knowledge/audio2tool/g5-exhaustive-family-contracts-v1/corpus.json"
 G7_ROSTER = REPO / "docs/receipts/a2t/A2T-G7-EXAMPLE-FIXED16.json"

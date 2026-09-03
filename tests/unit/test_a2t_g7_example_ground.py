@@ -154,6 +154,7 @@ def test_all_152_tools_start_uncertain_and_survive_every_assessment() -> None:
     sheet = core.build_execution_sheet(parsed)
 
     assert len(contexts) == 28
+    assert all(context.uses_audio is True for context in contexts)
     assert all("assessments" in context.instruction for context in contexts)
     assert all("tool_name, status, evidence" in context.instruction for context in contexts)
     assert all("support, contradict, or uncertain" in context.instruction for context in contexts)

@@ -75,7 +75,8 @@ def test_preflight_binds_identity_builder_and_exact_protocol() -> None:
     assert report["tool_count"] == 152
     assert report["slots"] == report["max_concurrent_model_requests"] == 2
     assert report["queue_depth"] == 4
-    assert report["audio_contacts_per_sample"] == 2
+    assert report["audio_contacts_per_sample"] == 30
+    assert report["text_only_contacts_per_sample"] == 0
     assert report["builder_commit"] == "7046ce6e7fbbba67ddbae5f122748e2158761e23"
 
 
@@ -104,7 +105,7 @@ def test_committed_ground_worst_case_uses_full_observation_and_keeps_headroom() 
     report = module.preflight_ground(module.load_ground(), speech_feature_tokens_max=182)
 
     assert report["worst_observation_ascii_bytes"] == 1_024
-    assert max(row["total_tokens"] for row in report["evidence_prompts"]) == 12_534
+    assert max(row["total_tokens"] for row in report["evidence_prompts"]) == 13_040
     assert report["resolve_worst_normalized_assessment_prompt"] == {
         "completion_tokens": 1_024,
         "contact_id": "g7-resolve",
@@ -164,7 +165,7 @@ def test_exact_evidence_render_names_schema_once_and_resolve_is_official_array()
     )
 
 
-def test_openjiuwen_phase_has_32_audio_and_448_text_only_contacts() -> None:
+def test_openjiuwen_phase_has_480_packet_bearing_contacts() -> None:
     ids = tuple(f"sample-{index}" for index in range(16))
     surface = module.RuntimeSurface(
         samples=tuple(SimpleNamespace(sample_id=value) for value in ids),
@@ -175,12 +176,14 @@ def test_openjiuwen_phase_has_32_audio_and_448_text_only_contacts() -> None:
     class Client:
         def __init__(self) -> None:
             self.calls = []
+            self.messages = []
 
-        def complete(self, _messages, **kwargs):
+        def complete(self, messages, **kwargs):
             self.calls.append(kwargs)
+            self.messages.append(messages)
             if kwargs.get("agent_contact_id") == "g7-obs":
                 return "The speaker requests a device action."
-            if kwargs.get("text_only_sample_id"):
+            if str(kwargs.get("agent_contact_id", "")).startswith("g7-evidence-"):
                 return "{}"
             return '{"calls":[]}'
 
@@ -212,10 +215,47 @@ def test_openjiuwen_phase_has_32_audio_and_448_text_only_contacts() -> None:
     )
 
     assert len(summary.results) == 16
-    assert sum("speech_feature_sample_id" in call for call in client.calls) == 32
-    assert sum("text_only_sample_id" in call for call in client.calls) == 448
+    assert sum("speech_feature_sample_id" in call for call in client.calls) == 480
+    assert sum("text_only_sample_id" in call for call in client.calls) == 0
+    evidence_calls = [
+        call
+        for call in client.calls
+        if str(call.get("agent_contact_id", "")).startswith("g7-evidence-")
+    ]
+    assert len(evidence_calls) == 448
+    assert all(
+        call["key_representation_id"] == "g7-example-ground:evidence"
+        and call["matcher_policy_id"]
+        == "saea-a2t-g7-exhaustive-example-ground-v1"
+        for call in evidence_calls
+    )
+    assert all("speech_feature_sample_id" in call for call in evidence_calls)
     assert len(client.calls) == 480
     assert len(sink.rows) == 64
+    for offset in range(0, 480, 30):
+        row_calls = client.calls[offset : offset + 30]
+        row_messages = client.messages[offset : offset + 30]
+        sample_id = row_calls[0]["speech_feature_sample_id"]
+        assert [call["agent_contact_id"] for call in row_calls][0] == "g7-obs"
+        assert [call["agent_contact_id"] for call in row_calls][-1] == "g7-resolve"
+        family_ids = [call["agent_contact_id"] for call in row_calls[1:29]]
+        assert len(family_ids) == len(set(family_ids)) == 28
+        for call, messages in zip(row_calls, row_messages, strict=True):
+            assert call["speech_feature_sample_id"] == sample_id
+            packets = [
+                part["speech_features"]
+                for part in messages[1]["content"]
+                if part["type"] == "input_speech_features"
+            ]
+            assert packets == [
+                {"packet_id": sample_id, "sha256": "b" * 64, "role": "query"}
+            ]
+        for messages in row_messages[1:29]:
+            text_parts = [
+                part for part in messages[1]["content"] if part["type"] == "text"
+            ]
+            assert len(text_parts) == 1
+            assert text_parts[0]["text"].count("FAMILY CONSTRUCTION EXAMPLES") == 1
 
 
 def test_recovery_reuses_bound_response_without_recontact() -> None:
@@ -286,3 +326,79 @@ def test_recovery_reuses_bound_response_without_recontact() -> None:
         )
 
     assert client.count == 29
+
+
+def test_recovery_reuses_four_obs_and_new_request_namespace_cannot_collide() -> None:
+    ground = _ground()
+    ids = tuple(f"sample-{index}" for index in range(16))
+    surface = module.RuntimeSurface(
+        samples=tuple(SimpleNamespace(sample_id=value) for value in ids),
+        packet_bindings={value: {"packet_id": value, "sha256": "b" * 64} for value in ids},
+        speech_feature_tokens_by_sample={value: 10 for value in ids},
+    )
+    contacts = {}
+    for index, sample_id in enumerate(ids[:4], start=1):
+        context = SimpleNamespace(contact_id="g7-obs", instruction=module._render_obs())
+        state = SimpleNamespace(stage="OBS", packet_binding=surface.packet_bindings[sample_id])
+        messages = module._contact_messages(state, context)
+        response = "The speaker requests a device action."
+        contacts[(sample_id, "g7-obs")] = module.RecoveryContact(
+            request_id=f"g7fixed16-{index:04d}",
+            sample_id=sample_id,
+            contact_id="g7-obs",
+            semantic_sha256=module._message_semantic_sha256(sample_id, context, messages),
+            response_text=response,
+            response_sha256=module.hashlib.sha256(response.encode()).hexdigest(),
+            slot_id=0,
+            cost={"calls": 1},
+        )
+    recovery = module.RecoveryBundle(
+        trace_path=Path("old.jsonl"),
+        trace_sha256=module.RECOVERY_TRACE_SHA256,
+        contacts=contacts,
+        cost={"calls_used": 4},
+    )
+
+    class Client:
+        def __init__(self) -> None:
+            self.count = 0
+
+        def complete(self, _messages, **kwargs):
+            self.count += 1
+            if str(kwargs.get("agent_contact_id", "")).startswith("g7-evidence-"):
+                return "{}"
+            if kwargs.get("agent_contact_id") == "g7-obs":
+                return "The speaker requests a device action."
+            return '{"calls":[]}'
+
+    class Sink:
+        def emit(self, *_args):
+            return None
+
+    def runner(states, **kwargs):
+        for current in states:
+            while kwargs["should_continue"](current):
+                count = kwargs["prepare_wave"](current, object())
+                responses = tuple(
+                    kwargs["invoke_contact"](current, index, 0)
+                    for index in range(count)
+                )
+                kwargs["aggregate_wave"](current, responses, object())
+        return states
+
+    client = Client()
+    summary = module.run_openjiuwen_phase(
+        surface=surface,
+        ground=ground,
+        client=client,
+        trace_sink=Sink(),
+        workflow_runner=runner,
+        recovery=recovery,
+    )
+
+    assert client.count == 476
+    assert sum(contact.recovered for state in summary.results for contact in state.contacts) == 4
+    assert all(
+        not contact.request_id.startswith(module.RECOVERY_REQUEST_ID_PREFIX)
+        for contact in contacts.values()
+    )

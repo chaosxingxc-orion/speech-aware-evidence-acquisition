@@ -81,13 +81,14 @@ from speech_aware_evidence_acquisition.rails.probes.a2t_factor_top1_bundle impor
 )
 
 
-RUN_ID = "SAEA-A2T-G7-EXHAUSTIVE-EXAMPLE-GROUND-FIXED16-V1"
+RUN_ID = "SAEA-A2T-G7-MULTIMODAL-EXHAUSTIVE-EXAMPLE-GROUND-FIXED16-V2"
+RECOVERY_SOURCE_RUN_ID = "SAEA-A2T-G7-EXHAUSTIVE-EXAMPLE-GROUND-FIXED16-V1"
 SPLIT_ID = "A2T-G7-EXAMPLE-FIXED16"
 SPLIT_IDENTITY_HASH = "94a10c359dfe9e6a96cd63940c4dcb52fc7206e4c0e7d855733b21b69b987212"
 ROSTER_SHA256 = "8be941c6e82527f9b63cd1f9ea09449f6cabbf175e7b2401642de455edc975c3"
 BUILDER_COMMIT = "7046ce6e7fbbba67ddbae5f122748e2158761e23"
 GROUND_SHA256 = "a5bb788a64db320b8d09de3712ede38f46c5395d8e7dd1932d8acbbf8cedc855"
-GROUND_RECEIPT_SHA256 = "f85e85b052a4cfdf3eeb8f2a82902dbfec78c4370a4f7c953d15e10421037ae5"
+GROUND_RECEIPT_SHA256 = "87fea65bb2d9c36444c28311778f0a81fd968fbf0fb69192608080e764495536"
 CONTACTS_PER_SAMPLE = 30
 SAMPLE_COUNT = 16
 MODEL_CONTACTS = CONTACTS_PER_SAMPLE * SAMPLE_COUNT
@@ -97,8 +98,8 @@ QUEUE_DEPTH = 4
 OBS_COMPLETION_TOKENS = 512
 EVIDENCE_COMPLETION_TOKENS = 512
 RESOLVE_COMPLETION_TOKENS = 1024
-COMPOSED_CONFIG_SHA256 = "2b8ca2f033fcbfe265533adeec8b3bfb8d39bb49174cedd13d2cacc492dcdf10"
-PROTOCOL_SHA256 = "6f1c4eb956dfb4519ff880d55f92f19c51e89ffba1e000d47e9a19321e55e9c7"
+COMPOSED_CONFIG_SHA256 = "0cf71b3607796dab1a18894e26713ee62fc7d85b0f600a7432d8347d33aa6a6f"
+PROTOCOL_SHA256 = "70f733b0ef97bea47bc2034c9e711e5a6988a74a3de58bfe90e4e227bbe58d1b"
 RUNTIME_ROOT = Path("/home/chao")
 FEATURE_ROOT = Path("/home/chao/feat-cache/a2t-q4km-packets-04ccc72a")
 PROMOTION_RECEIPT = FEATURE_ROOT / "A2T-G1-104-promotion.json"
@@ -108,6 +109,9 @@ G1_RECEIPT_SHA256 = "b42f0953a0d168955ba5ddfc77f2c300aacb54e48dce902d1b3d4a109c1
 PROMOTION_RECEIPT_SHA256 = "be07c69c030fc12e56e4e2e1f5e08423636a84fb823d16293fae7bf5819218bc"
 RUNTIME_RECEIPT_SHA256 = "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77"
 OPENJIUWEN_VERSION = "0.1.16.post2"
+RECOVERY_ATTEMPT_ID = "attempt-20260902t234552z-g7-fixed16"
+RECOVERY_TRACE_SHA256 = "dc21e3a06eec1380212fb39117e351a0437133269720e1e7c66c7953b0d18804"
+RECOVERY_REQUEST_ID_PREFIX = "g7fixed16r"
 WORKFLOW_TIMEOUT_SECONDS = 14_400.0
 CONTROL_INSTRUCTION = "Follow the system instruction for this registered contact."
 OFFICIAL_SCORE_PLAN: Mapping[str, object] = {
@@ -341,10 +345,11 @@ def preflight_ground(
         core.measure_prompt(
             contact_id=context.contact_id,
             text=_exact_request(
-                _contact_messages(evidence_state, context), context, with_control=False
+                _contact_messages(evidence_state, context), context, with_control=True
             ),
             token_counter=_byte_upper_bound,
             completion_tokens=EVIDENCE_COMPLETION_TOKENS,
+            speech_feature_tokens=speech_feature_tokens_max,
         )
         for context in evidence_contexts
     )
@@ -409,7 +414,8 @@ def preflight_ground(
         "ground_sha256": ground.sha256,
         "contacts": MODEL_CONTACTS,
         "contacts_per_sample": CONTACTS_PER_SAMPLE,
-        "audio_contacts_per_sample": 2,
+        "audio_contacts_per_sample": 30,
+        "text_only_contacts_per_sample": 0,
         "family_count": len(ground.bundles),
         "tool_count": len(ground.tool_names),
         "slots": SLOTS,
@@ -448,7 +454,11 @@ def execute_preflighted(
                 speech_feature_tokens_by_sample[sample_id],
             )
         elif stage == "EVIDENCE":
-            rendered, completion, speech = _render_evidence(context), EVIDENCE_COMPLETION_TOKENS, 0
+            rendered, completion, speech = (
+                _render_evidence(context),
+                EVIDENCE_COMPLETION_TOKENS,
+                speech_feature_tokens_by_sample[sample_id],
+            )
         else:
             rendered, completion, speech = (
                 _render_resolve(context),
@@ -504,7 +514,8 @@ def _contact_messages(state: object, context: object) -> tuple[Mapping[str, obje
                         "evidence_id": f"g7:family:{context.family_tag}",
                         "source_uri": f"g7-ground://{context.family_tag}",
                         "knowledge_role": "value",
-                    }
+                    },
+                    packet,
                 ],
             },
         )
@@ -591,41 +602,32 @@ class FlightSummary:
     results: tuple[_WorkflowState, ...]
 
 
-def _semantic_sha256(
-    *, sample_id: str, contact_id: str, task_instruction: str, supply: Sequence[str], packet_sha256: str | None
-) -> str:
-    return hashlib.sha256(
-        json.dumps(
-            {
-                "sample_id": sample_id,
-                "contact_id": contact_id,
-                "task_instruction": task_instruction,
-                "supply": list(supply),
-                "packet_sha256": packet_sha256,
-            },
-            sort_keys=True,
-            separators=(",", ":"),
-            ensure_ascii=True,
-        ).encode("ascii")
-    ).hexdigest()
-
-
 def _message_semantic_sha256(sample_id: str, context: object, messages: object) -> str:
-    system, user = messages
-    content = user["content"]
-    supply = [row["text"] for row in content if row["type"] == "text"]
-    packets = [
-        row["speech_features"]["sha256"]
-        for row in content
-        if row["type"] == "input_speech_features"
-    ]
-    return _semantic_sha256(
-        sample_id=sample_id,
-        contact_id=context.contact_id,
-        task_instruction=system["content"],
-        supply=supply,
-        packet_sha256=packets[0] if packets else None,
+    contact_id = context.contact_id
+    completion_tokens = (
+        OBS_COMPLETION_TOKENS
+        if contact_id == "g7-obs"
+        else RESOLVE_COMPLETION_TOKENS
+        if contact_id == "g7-resolve"
+        else EVIDENCE_COMPLETION_TOKENS
     )
+    family_text = getattr(context, "family_bundle_text", None)
+    document = {
+        "sample_id": sample_id,
+        "contact_id": contact_id,
+        "messages": messages,
+        "control_instruction": CONTROL_INSTRUCTION,
+        "decoding": {"max_tokens": completion_tokens, "temperature": 0},
+        "key_representation_id": f"g7-example-ground:{getattr(context, 'stage', 'OBS').lower()}",
+        "matcher_policy_id": "saea-a2t-g7-exhaustive-example-ground-v1",
+        "family_tag": getattr(context, "family_tag", None),
+        "family_bundle_sha256": (
+            hashlib.sha256(family_text.encode("ascii")).hexdigest()
+            if isinstance(family_text, str)
+            else None
+        ),
+    }
+    return _canonical_sha256(document)
 
 
 def _canonical_sha256(document: Mapping[str, object]) -> str:
@@ -643,17 +645,24 @@ def load_recovery_bundle(root: Path, trace_path: Path) -> RecoveryBundle:
     failure = json.loads(failure_receipt.read_text(encoding="utf-8"))
     trace_hash = _sha256(trace_path)
     if (
-        failure.get("run_id") != RUN_ID
+        failure.get("run_id") != RECOVERY_SOURCE_RUN_ID
+        or failure.get("attempt_id") != RECOVERY_ATTEMPT_ID
         or failure.get("transport_trace") != str(trace_path)
         or failure.get("transport_trace_sha256") != trace_hash
+        or trace_hash != RECOVERY_TRACE_SHA256
     ):
         raise RuntimeError("G7 recovery trace is not bound by its failure receipt")
     attempt_id = failure.get("attempt_id")
-    attempt_path = root / "attempts" / RUN_ID / f"{attempt_id}.json"
+    attempt_path = root / "attempts" / RECOVERY_SOURCE_RUN_ID / f"{attempt_id}.json"
     attempt = json.loads(attempt_path.read_text(encoding="utf-8"))
-    if attempt.get("state") != "ABORTED" or attempt.get("run_id") != RUN_ID:
+    if (
+        attempt.get("state") != "ABORTED"
+        or attempt.get("run_id") != RECOVERY_SOURCE_RUN_ID
+    ):
         raise RuntimeError("G7 recovery source attempt is not ABORTED and bound")
     rows = [json.loads(line) for line in trace_path.read_text().splitlines() if line]
+    surface = load_runtime_surface()
+    packet_bindings = surface.packet_bindings
     by_id = {row["record_id"]: row for row in rows}
     contacts: dict[tuple[str, str], RecoveryContact] = {}
     totals = {
@@ -687,38 +696,52 @@ def load_recovery_bundle(root: Path, trace_path: Path) -> RecoveryBundle:
             raise RuntimeError("G7 recovery response hash drift")
         history = payload.get("history", [])
         control = history[-1] if history else None
-        if isinstance(control, Mapping):
-            contact_id = control.get("contact_id")
-        else:
-            supplied = payload.get("supplied_evidence", [])
-            content = supplied[0]["content"] if supplied else ""
-            marker = "FAMILY CONSTRUCTION EXAMPLES\n"
-            family_text = content.split(marker, 1)[1] if marker in content else ""
-            family = next(
-                (
-                    bundle.family_tag
-                    for bundle in load_ground().bundles
-                    if bundle.text == family_text
-                ),
-                None,
+        contact_id = control.get("contact_id") if isinstance(control, Mapping) else None
+        sample_id = payload.get("sample_id")
+        binding = packet_bindings.get(sample_id) if isinstance(sample_id, str) else None
+        context = SimpleNamespace(contact_id="g7-obs", stage="OBS", instruction=_render_obs())
+        state = SimpleNamespace(stage="OBS", packet_binding=binding)
+        messages = _contact_messages(state, context) if binding is not None else None
+        expected_history = [
+            {
+                "turn": 1,
+                "role": "control",
+                "contact_id": "g7-obs",
+                "content": CONTROL_INSTRUCTION,
+                "content_sha256": hashlib.sha256(
+                    CONTROL_INSTRUCTION.encode("utf-8")
+                ).hexdigest(),
+            }
+        ]
+        if (
+            contact_id != "g7-obs"
+            or binding is None
+            or messages is None
+            or payload.get("task_instruction") != messages[0]["content"]
+            or payload.get("history") != expected_history
+            or payload.get("supplied_evidence") != []
+            or payload.get("evidence_provenance") != []
+            or payload.get("speech_feature_parts") != [messages[1]["content"][0]["speech_features"]]
+            or payload.get("speech_packet_sha256") != binding["sha256"]
+            or payload.get("query_source") != "speech_features"
+            or payload.get("key_representation_id") != "g7-example-ground:obs"
+            or payload.get("matcher_policy_id")
+            != "saea-a2t-g7-exhaustive-example-ground-v1"
+            or payload.get("mmproj_loaded") is not False
+            or payload.get("decoding_params")
+            not in (
+                {"max_tokens": 512, "temperature": 0, "id_slot": 0},
+                {"max_tokens": 512, "temperature": 0, "id_slot": 1},
             )
-            contact_id = f"g7-evidence-{family}" if family else None
-        if not isinstance(contact_id, str):
-            raise RuntimeError("G7 recovery contact identity is unavailable")
-        supply = [row["content"] for row in payload.get("supplied_evidence", [])]
-        semantic = _semantic_sha256(
-            sample_id=payload["sample_id"],
-            contact_id=contact_id,
-            task_instruction=payload["task_instruction"],
-            supply=supply,
-            packet_sha256=payload.get("speech_packet_sha256"),
-        )
-        key = (payload["sample_id"], contact_id)
+        ):
+            raise RuntimeError("G7 recovery OBS request semantic identity drift")
+        semantic = _message_semantic_sha256(sample_id, context, messages)
+        key = (sample_id, contact_id)
         if key in contacts or cost.get("calls") != 1:
             raise RuntimeError("G7 recovery contains duplicate or malformed contact")
         contacts[key] = RecoveryContact(
             request_id=request_id,
-            sample_id=payload["sample_id"],
+            sample_id=sample_id,
             contact_id=contact_id,
             semantic_sha256=semantic,
             response_text=text,
@@ -731,8 +754,13 @@ def load_recovery_bundle(root: Path, trace_path: Path) -> RecoveryBundle:
         totals["latency_seconds_total"] += float(cost.get("latency_seconds", 0))
         totals["prompt_tokens_total"] += int(cost.get("prompt_tokens", 0))
         totals["completion_tokens_total"] += int(cost.get("completion_tokens", 0))
-    if not contacts or int(attempt.get("actual", {}).get("calls", -1)) < len(contacts):
-        raise RuntimeError("G7 recovery source has no complete response triples")
+    if (
+        len(contacts) != 4
+        or any(contact_id != "g7-obs" for _, contact_id in contacts)
+        or int(attempt.get("actual", {}).get("calls", -1)) != 4
+        or any(not row.request_id.startswith("g7fixed16-") for row in contacts.values())
+    ):
+        raise RuntimeError("G7 recovery source must contain exactly four completed OBS triples")
     return RecoveryBundle(trace_path, trace_hash, contacts, totals)
 
 
@@ -744,7 +772,7 @@ def _fit_for_contact(state: _WorkflowState, context: object, messages: object) -
         if state.stage == "EVIDENCE"
         else RESOLVE_COMPLETION_TOKENS
     )
-    with_audio = state.stage in {"OBS", "RESOLVE"}
+    with_audio = True
     fit = state.core.measure_prompt(
         contact_id=context.contact_id,
         text=_exact_request(messages, context, with_control=with_audio),
@@ -835,23 +863,16 @@ def run_openjiuwen_phase(
                 "id_slot": slot_id,
             },
         }
-        if state.stage == "EVIDENCE":
-            text = client.complete(
-                messages,
-                text_only_sample_id=state.sample.sample_id,
-                **common,
-            )
-        else:
-            text = client.complete(
-                messages,
-                speech_feature_sample_id=state.sample.sample_id,
-                key_representation_id=f"g7-example-ground:{state.stage.lower()}",
-                matcher_policy_id="saea-a2t-g7-exhaustive-example-ground-v1",
-                agent_state=(),
-                agent_contact_id=context.contact_id,
-                contact_instruction=CONTROL_INSTRUCTION,
-                **common,
-            )
+        text = client.complete(
+            messages,
+            speech_feature_sample_id=state.sample.sample_id,
+            key_representation_id=f"g7-example-ground:{state.stage.lower()}",
+            matcher_policy_id="saea-a2t-g7-exhaustive-example-ground-v1",
+            agent_state=(),
+            agent_contact_id=context.contact_id,
+            contact_instruction=CONTROL_INSTRUCTION,
+            **common,
+        )
         return {
             "response_text": text,
             "slot_id": slot_id,
@@ -1225,7 +1246,7 @@ def launch(root: Path, *, recovery_trace: Path | None = None) -> Mapping[str, ob
             run_dir=run_dir / "transport-trace",
             binding=binding,
             arm="speech-feature-query",
-            request_id_prefix="g7fixed16r" if recovery is not None else "g7fixed16",
+            request_id_prefix=RECOVERY_REQUEST_ID_PREFIX if recovery is not None else "g7fixed16",
             speech_feature_root=FEATURE_ROOT,
             speech_packet_bindings=surface.packet_bindings,
         )
@@ -1272,9 +1293,9 @@ def launch(root: Path, *, recovery_trace: Path | None = None) -> Mapping[str, ob
             "study_commit": context["commit"],
             "elapsed_seconds": time.perf_counter() - started,
             "model_contacts": MODEL_CONTACTS,
-            "audio_bearing_contacts": 32,
-            "text_only_contacts": 448,
-            "delivered_speech_audio_seconds": 184.544,
+            "audio_bearing_contacts": 480,
+            "text_only_contacts": 0,
+            "delivered_speech_audio_seconds_cap": 2769,
             "adapter_carrier_reference_audio_seconds_cap": 2769,
             "scorer_contacts": 0,
             "reused_prior_contacts": len(recovery.contacts) if recovery else 0,

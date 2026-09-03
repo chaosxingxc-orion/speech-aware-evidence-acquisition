@@ -209,7 +209,7 @@ class G7ExampleGround:
             EvidenceContext(
                 contact_id=f"g7-evidence-{bundle.family_tag}",
                 stage="EVIDENCE",
-                uses_audio=False,
+                uses_audio=True,
                 observation=observation.text,
                 family_tag=bundle.family_tag,
                 family_bundle_text=bundle.text,

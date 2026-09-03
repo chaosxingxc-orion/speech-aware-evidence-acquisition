@@ -15,7 +15,7 @@
     "tokenizer": 0
   },
   "execution_profile": "model-free-check",
-  "experiment_id": "SAEA-A2T-G7-EXHAUSTIVE-EXAMPLE-GROUND-FIXED16-V1",
+  "experiment_id": "SAEA-A2T-G7-MULTIMODAL-EXHAUSTIVE-EXAMPLE-GROUND-FIXED16-V2",
   "ground": {
     "boundary": {
       "construction_query_block_count": 3871,
@@ -4178,7 +4178,7 @@
     "pool_items": 30733
   },
   "prompt_fit": {
-    "audio_contacts_per_sample": 2,
+    "audio_contacts_per_sample": 30,
     "builder_commit": "7046ce6e7fbbba67ddbae5f122748e2158761e23",
     "contacts": 480,
     "contacts_per_sample": 30,
@@ -4186,198 +4186,198 @@
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-car-body-control",
-        "prompt_tokens": 7665,
-        "remaining_tokens": 24591,
-        "total_tokens": 8177
+        "prompt_tokens": 8164,
+        "remaining_tokens": 24092,
+        "total_tokens": 8676
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-car-charging-energy",
-        "prompt_tokens": 9304,
-        "remaining_tokens": 22952,
-        "total_tokens": 9816
+        "prompt_tokens": 9806,
+        "remaining_tokens": 22450,
+        "total_tokens": 10318
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-car-climate-environment",
-        "prompt_tokens": 12022,
-        "remaining_tokens": 20234,
-        "total_tokens": 12534
+        "prompt_tokens": 12528,
+        "remaining_tokens": 19728,
+        "total_tokens": 13040
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-car-core-control",
-        "prompt_tokens": 4089,
-        "remaining_tokens": 28167,
-        "total_tokens": 4601
+        "prompt_tokens": 4588,
+        "remaining_tokens": 27668,
+        "total_tokens": 5100
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-car-diagnostics",
-        "prompt_tokens": 4969,
-        "remaining_tokens": 27287,
-        "total_tokens": 5481
+        "prompt_tokens": 5467,
+        "remaining_tokens": 26789,
+        "total_tokens": 5979
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-car-driving-dynamics",
-        "prompt_tokens": 7661,
-        "remaining_tokens": 24595,
-        "total_tokens": 8173
+        "prompt_tokens": 8164,
+        "remaining_tokens": 24092,
+        "total_tokens": 8676
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-car-fine-grained",
-        "prompt_tokens": 2637,
-        "remaining_tokens": 29619,
-        "total_tokens": 3149
+        "prompt_tokens": 3136,
+        "remaining_tokens": 29120,
+        "total_tokens": 3648
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-car-maintenance",
-        "prompt_tokens": 6325,
-        "remaining_tokens": 25931,
-        "total_tokens": 6837
+        "prompt_tokens": 6823,
+        "remaining_tokens": 25433,
+        "total_tokens": 7335
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-car-media-cabin",
-        "prompt_tokens": 7469,
-        "remaining_tokens": 24787,
-        "total_tokens": 7981
+        "prompt_tokens": 7967,
+        "remaining_tokens": 24289,
+        "total_tokens": 8479
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-car-navigation",
-        "prompt_tokens": 6513,
-        "remaining_tokens": 25743,
-        "total_tokens": 7025
+        "prompt_tokens": 7010,
+        "remaining_tokens": 25246,
+        "total_tokens": 7522
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-car-novelty",
-        "prompt_tokens": 3591,
-        "remaining_tokens": 28665,
-        "total_tokens": 4103
+        "prompt_tokens": 4085,
+        "remaining_tokens": 28171,
+        "total_tokens": 4597
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-car-security",
-        "prompt_tokens": 6075,
-        "remaining_tokens": 26181,
-        "total_tokens": 6587
+        "prompt_tokens": 6570,
+        "remaining_tokens": 25686,
+        "total_tokens": 7082
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-car-status",
-        "prompt_tokens": 6410,
-        "remaining_tokens": 25846,
-        "total_tokens": 6922
+        "prompt_tokens": 6903,
+        "remaining_tokens": 25353,
+        "total_tokens": 7415
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-home-appliances",
-        "prompt_tokens": 4252,
-        "remaining_tokens": 28004,
-        "total_tokens": 4764
+        "prompt_tokens": 4750,
+        "remaining_tokens": 27506,
+        "total_tokens": 5262
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-home-automation",
-        "prompt_tokens": 4000,
-        "remaining_tokens": 28256,
-        "total_tokens": 4512
+        "prompt_tokens": 4498,
+        "remaining_tokens": 27758,
+        "total_tokens": 5010
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-home-climate",
-        "prompt_tokens": 5722,
-        "remaining_tokens": 26534,
-        "total_tokens": 6234
+        "prompt_tokens": 6217,
+        "remaining_tokens": 26039,
+        "total_tokens": 6729
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-home-core-control",
-        "prompt_tokens": 4366,
-        "remaining_tokens": 27890,
-        "total_tokens": 4878
+        "prompt_tokens": 4866,
+        "remaining_tokens": 27390,
+        "total_tokens": 5378
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-home-device-finding",
-        "prompt_tokens": 2423,
-        "remaining_tokens": 29833,
-        "total_tokens": 2935
+        "prompt_tokens": 2925,
+        "remaining_tokens": 29331,
+        "total_tokens": 3437
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-home-diagnostics",
-        "prompt_tokens": 4506,
-        "remaining_tokens": 27750,
-        "total_tokens": 5018
+        "prompt_tokens": 5005,
+        "remaining_tokens": 27251,
+        "total_tokens": 5517
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-home-energy",
-        "prompt_tokens": 3507,
-        "remaining_tokens": 28749,
-        "total_tokens": 4019
+        "prompt_tokens": 4001,
+        "remaining_tokens": 28255,
+        "total_tokens": 4513
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-home-lighting",
-        "prompt_tokens": 6982,
-        "remaining_tokens": 25274,
-        "total_tokens": 7494
+        "prompt_tokens": 7478,
+        "remaining_tokens": 24778,
+        "total_tokens": 7990
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-home-maintenance",
-        "prompt_tokens": 4871,
-        "remaining_tokens": 27385,
-        "total_tokens": 5383
+        "prompt_tokens": 5370,
+        "remaining_tokens": 26886,
+        "total_tokens": 5882
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-home-media",
-        "prompt_tokens": 5170,
-        "remaining_tokens": 27086,
-        "total_tokens": 5682
+        "prompt_tokens": 5663,
+        "remaining_tokens": 26593,
+        "total_tokens": 6175
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-home-security",
-        "prompt_tokens": 5024,
-        "remaining_tokens": 27232,
-        "total_tokens": 5536
+        "prompt_tokens": 5520,
+        "remaining_tokens": 26736,
+        "total_tokens": 6032
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-smart-home-status",
-        "prompt_tokens": 4774,
-        "remaining_tokens": 27482,
-        "total_tokens": 5286
+        "prompt_tokens": 5268,
+        "remaining_tokens": 26988,
+        "total_tokens": 5780
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-wearables-device-state",
-        "prompt_tokens": 4090,
-        "remaining_tokens": 28166,
-        "total_tokens": 4602
+        "prompt_tokens": 4589,
+        "remaining_tokens": 27667,
+        "total_tokens": 5101
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-wearables-health-activity",
-        "prompt_tokens": 5598,
-        "remaining_tokens": 26658,
-        "total_tokens": 6110
+        "prompt_tokens": 6100,
+        "remaining_tokens": 26156,
+        "total_tokens": 6612
       },
       {
         "completion_tokens": 512,
         "contact_id": "g7-evidence-wearables-system-connectivity",
-        "prompt_tokens": 3572,
-        "remaining_tokens": 28684,
-        "total_tokens": 4084
+        "prompt_tokens": 4078,
+        "remaining_tokens": 28178,
+        "total_tokens": 4590
       }
     ],
     "family_count": 28,
@@ -4407,11 +4407,12 @@
       "total_tokens": 24094
     },
     "roster_sha256": "8be941c6e82527f9b63cd1f9ea09449f6cabbf175e7b2401642de455edc975c3",
-    "run_id": "SAEA-A2T-G7-EXHAUSTIVE-EXAMPLE-GROUND-FIXED16-V1",
+    "run_id": "SAEA-A2T-G7-MULTIMODAL-EXHAUSTIVE-EXAMPLE-GROUND-FIXED16-V2",
     "schema": "saea-a2t-g7-precontact-report-v1",
     "slots": 2,
     "split_id": "A2T-G7-EXAMPLE-FIXED16",
     "split_identity_hash": "94a10c359dfe9e6a96cd63940c4dcb52fc7206e4c0e7d855733b21b69b987212",
+    "text_only_contacts_per_sample": 0,
     "token_counter": "utf8-byte-construction-upper-bound",
     "tool_count": 152,
     "worst_observation_ascii_bytes": 1024

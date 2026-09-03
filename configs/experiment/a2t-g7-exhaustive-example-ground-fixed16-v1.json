@@ -1,10 +1,10 @@
 {
-  "schema": "saea-a2t-g7-exhaustive-example-ground-fixed16-experiment-v1",
-  "experiment_id": "SAEA-A2T-G7-EXHAUSTIVE-EXAMPLE-GROUND-FIXED16-V1",
+  "schema": "saea-a2t-g7-multimodal-exhaustive-example-ground-fixed16-experiment-v2",
+  "experiment_id": "SAEA-A2T-G7-MULTIMODAL-EXHAUSTIVE-EXAMPLE-GROUND-FIXED16-V2",
   "status": "PREREGISTERED_NO_CONTACT_AUTHORIZATION",
   "date": "2026-09-02",
   "execution_profile": "bounded-discovery-probe",
-  "claim_scope": "Prospective Stage-2 fixed16 construction-example ground screen only.",
+  "claim_scope": "Prospective Stage-2 fixed16 multimodal exhaustive upper-bound only; not a causal construction-example ablation.",
   "population": {
     "receipt": "docs/receipts/a2t/A2T-G7-EXAMPLE-FIXED16.json",
     "receipt_sha256": "8be941c6e82527f9b63cd1f9ea09449f6cabbf175e7b2401642de455edc975c3",
@@ -23,7 +23,7 @@
     "artifact_sha256": "a5bb788a64db320b8d09de3712ede38f46c5395d8e7dd1932d8acbbf8cedc855",
     "artifact_ascii_bytes": 102459,
     "build_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-02-a2t-g7-exhaustive-example-ground-fixed16-v1/ground-receipt.json",
-    "build_receipt_sha256": "f85e85b052a4cfdf3eeb8f2a82902dbfec78c4370a4f7c953d15e10421037ae5",
+    "build_receipt_sha256": "87fea65bb2d9c36444c28311778f0a81fd968fbf0fb69192608080e764495536",
     "structured_artifact": "knowledge/audio2tool/g7-construction-example-ground-v1/ground.json",
     "structured_artifact_sha256": "f890e2a0975c4517e1909ecb2dee04d38eeaa05c4f0d9830b41ac634dbc9d830",
     "artifact_status": "FROZEN_MODEL_FREE",
@@ -33,7 +33,7 @@
   },
   "protocol": {
     "contacts_per_sample": 30,
-    "ordered_contacts": ["OBS_AUDIO", "EVIDENCE_28_TEXT_ONLY", "RESOLVE_AUDIO"],
+    "ordered_contacts": ["OBS_SPEECH_PACKET", "EVIDENCE_28_SPEECH_PACKET", "RESOLVE_SPEECH_PACKET"],
     "obs_plain_english_no_tool_names": true,
     "all_tools_prepopulated_uncertain": true,
     "family_assessments_may_not_filter_supply": true,
@@ -60,11 +60,11 @@
   "contact_budget": {
     "planned_model_calls": 480,
     "sample_count": 16,
-    "audio_contacts_per_sample": 2,
-    "text_only_contacts_per_sample": 28,
-    "delivered_speech_audio_seconds": 184.544,
+    "audio_contacts_per_sample": 30,
+    "text_only_contacts_per_sample": 0,
+    "delivered_speech_audio_seconds": 2768.16,
     "adapter_carrier_reference_audio_seconds_cap": 2769,
-    "adapter_accounting_note": "The frozen adapter meters every sample-bound text-only request by carrier-reference duration even though EVIDENCE messages contain no audio. This accounting is not delivered speech and is not a scientific variable.",
+    "adapter_accounting_note": "Every contact reuses the exact sample-bound speech packet. The 2,769-second reservation conservatively covers the exact 2,768.16 delivered speech seconds.",
     "embedding_contacts": 0,
     "tokenizer_contacts": 0,
     "paid_api_spend": 0

@@ -1,6 +1,6 @@
 {
   "arm": "speech-feature-query",
-  "policy": "saea-a2t-g7-exhaustive-example-ground-v1",
+  "policy": "saea-a2t-g7-multimodal-exhaustive-example-ground-v2",
   "evidence_source": "exhaustive-construction-example-family-assessment",
   "obs_batch_samples": 2,
   "profile_queue_depth_multiplier": 2,
@@ -27,5 +27,5 @@
   "resends": 0,
   "network_jitter_testing": false,
   "cumulative_raw_history": false,
-  "task_instruction": "Observe the complete spoken dialogue in bounded plain English without naming tools. Assess every frozen construction-example family independently with the exact assessments/tool_name/status/evidence schema and only observation evidence ID o1. Resolve once from the original complete-dialogue audio, the observation, the complete all-tool execution sheet, and all normalized assessments. Return only the unchanged official JSON array of objects with exactly name and arguments."
+  "task_instruction": "Observe the complete spoken dialogue in bounded plain English without naming tools. Reuse the same bound dialogue speech packet while assessing every frozen construction-example family independently with the exact assessments/tool_name/status/evidence schema and only observation evidence ID o1. Resolve once from the original complete-dialogue speech packet, the observation, the complete all-tool execution sheet, and all normalized assessments. Return only the unchanged official JSON array of objects with exactly name and arguments."
 }
