@@ -683,6 +683,8 @@ class LocalSemanticRuntime:
         self.session = None
         self.window_receipts: dict[str, Mapping[str, object]] = {}
         self.window_session_paths: dict[str, Path] = {}
+        self.generation_media_markers: dict[str, str] = {}
+        self.generation_props_hashes: dict[str, str] = {}
         self.transports: list[object] = []
         self.phase_states: dict[str, PhaseState] = {}
         self.embedding_instance = None
@@ -818,6 +820,17 @@ class LocalSemanticRuntime:
         with urllib.request.urlopen(request, timeout=timeout) as response:
             return response.read()
 
+    def _get_json(self, url: str, timeout: float) -> Mapping[str, object]:
+        with urllib.request.urlopen(url, timeout=timeout) as response:
+            raw = response.read()
+        try:
+            value = json.loads(raw.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise RuntimeError(f"invalid loopback service JSON from {url}") from error
+        if not isinstance(value, Mapping):
+            raise RuntimeError(f"loopback service JSON is not an object: {url}")
+        return value
+
     def start_generation(self, window: str) -> None:
         if self.active is not None or window not in {"pre-embedding", "post-embedding"}:
             raise RuntimeError("generation service order or coexistence violation")
@@ -838,6 +851,22 @@ class LocalSemanticRuntime:
             role="inference",
             model_root=Path(str(self.composed.values["model_materialization_root"])),
         )
+        props = self._get_json(
+            f"http://127.0.0.1:{GENERATION_PORT}/props",
+            float(self.generation.get("timeout_seconds", 900)),
+        )
+        marker = props.get("media_marker")
+        settings = props.get("default_generation_settings")
+        if (
+            not isinstance(marker, str)
+            or not marker
+            or not marker.isascii()
+            or not isinstance(settings, Mapping)
+            or settings.get("n_ctx") != 32_768
+        ):
+            raise RuntimeError("generation /props lacks its live marker or 32,768 slot")
+        self.generation_media_markers[window] = marker
+        self.generation_props_hashes[window] = _sha256_json(props)
         self.active = f"generation:{window}"
         self.window_session_paths[window] = session_path
 
@@ -858,6 +887,10 @@ class LocalSemanticRuntime:
             "stop_path": str(stop_path),
             "stop_sha256": _sha256_file(stop_path),
             "stop": stop,
+            "props_sha256": self.generation_props_hashes[window],
+            "media_marker_sha256": hashlib.sha256(
+                self.generation_media_markers[window].encode("ascii")
+            ).hexdigest(),
         }
         self.session = None
         self.active = None
@@ -959,8 +992,16 @@ class LocalSemanticRuntime:
             )
             return json.loads(raw.decode("utf-8"))
 
+        window = (
+            "pre-embedding"
+            if role in {"direct_m0", "obs_semantic_retrieval"}
+            else "post-embedding"
+        )
+        marker = self.generation_media_markers.get(window)
+        if not isinstance(marker, str) or not marker:
+            raise RuntimeError("generation window lacks its live /props media marker")
         budget = self.launcher.ExactPromptBudgetTransport(
-            media_marker=str(self.generation["media_marker"]),
+            media_marker=marker,
             speech_packet_tokens=self.packets.speech_tokens,
             post_json=post_json,
             send=lambda url, body: self._post_bytes(url, body, timeout),
@@ -994,7 +1035,6 @@ class LocalSemanticRuntime:
             speech_feature_root=self.packets.feature_root,
             speech_packet_bindings=self.packets.bindings,
         )
-        window = "pre-embedding" if role in {"direct_m0", "obs_semantic_retrieval"} else "post-embedding"
         state = PhaseState(
             role=role,
             runner_phase=runner_phase,

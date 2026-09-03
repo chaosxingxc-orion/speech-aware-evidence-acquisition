@@ -134,6 +134,7 @@ GENERATION_SERVER_CONTEXT = PHYSICAL_CONTEXT_PER_SLOT * SLOT_COUNT
 GENERATION_SERVER_ARGS = ("-c", str(GENERATION_SERVER_CONTEXT), "-np", str(SLOT_COUNT))
 EMBEDDING_MODEL_ID = "Qwen3-Embedding-0.6B-Q8"
 EMBEDDING_ENDPOINT = "/embedding"
+PROPS_ENDPOINT = "/props"
 APPLY_TEMPLATE_ENDPOINT = "/apply-template"
 TOKENIZE_ENDPOINT = "/tokenize"
 CHAT_ENDPOINT = "/v1/chat/completions"
@@ -234,7 +235,11 @@ def protocol_config() -> dict[str, object]:
             "fallback": False,
             "repair": False,
             "response_format": "per-sample",
-            "precontact_endpoints": [APPLY_TEMPLATE_ENDPOINT, TOKENIZE_ENDPOINT],
+            "precontact_endpoints": [
+                PROPS_ENDPOINT,
+                APPLY_TEMPLATE_ENDPOINT,
+                TOKENIZE_ENDPOINT,
+            ],
         },
         "embedding": {
             "model_id": EMBEDDING_MODEL_ID,

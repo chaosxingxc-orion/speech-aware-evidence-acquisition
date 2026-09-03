@@ -38,7 +38,9 @@ tool-ranking ceilings and does not claim unproduced skeleton/action-set ceilings
 
 Generation uses two slots and queue depth four. The service geometry is 65,536
 total context tokens with two physical 32,768-token slots. Immediately before
-each generation send, the exact assembled messages and that sample's response
+each generation window, one local `/props` read binds that process's live media
+marker and verifies its 32,768-token slot. Immediately before each generation
+send, the exact assembled messages and that sample's response
 format go to `/apply-template`; each non-speech prompt segment then goes to
 `/tokenize`. The exact text count is added to that packet's recorded speech-token
 count, a two-special-token reserve, and the request's completion ceiling. The send

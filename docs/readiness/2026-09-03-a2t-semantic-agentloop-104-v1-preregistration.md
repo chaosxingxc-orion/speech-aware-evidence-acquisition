@@ -69,7 +69,9 @@ routing. Vector values do not enter Git or the final model context.
 
 The physical generation context is 65,536 tokens split across two sample-affine slots, or 32,768 per
 slot. The operational maximum required window is 24,576, reserving 8,192 tokens for prompt growth and
-implementation variance. Immediately before every generation contact, render the exact current
+implementation variance. At the start of each generation window, read `/props` once to bind the
+live process-specific media marker and verify the 32,768-token slot; this local metadata request is
+not a model generation contact. Immediately before every generation contact, render the exact current
 request with `/apply-template`, tokenize every non-speech segment with `/tokenize`, and add the
 measured speech-packet tokens, registered special-token reserve, and that request's completion
 ceiling. Refuse a request above 24,576; do not predict later-loop length from an average or trim a
