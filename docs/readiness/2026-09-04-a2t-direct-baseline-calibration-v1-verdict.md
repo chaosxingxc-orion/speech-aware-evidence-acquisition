@@ -289,3 +289,25 @@ None of this changes the verdict. It does sharpen the tier1 clarification questi
 above recommends: the paper's 92.4 requires resolving both the device domain and the
 `core_control`/`lighting` boundary from speech alone, and it is worth asking whether the
 published protocol scopes the candidate tool set per utterance rather than offering all 152.
+
+## Correction (2026-09-04, appended after the official-protocol replication; zero contacts)
+
+The official-protocol replication flight (`docs/readiness/2026-09-04-a2t-official-protocol-replication-v1-verdict.md`)
+found that the flight path ignored a baseline fragment's `task_instruction_template` field: the adapter's built-in
+`_INSTRUCTION_TEMPLATE` ("You control tools. Available tools:" + the rendered registry + "Respond with ONLY a JSON
+array of tool calls, e.g. [{"name": "x", "arguments": {}}].") was rendered regardless of the fragment. For this
+calibration that changes no number and no conclusion: preregistration section 3 already names
+`rails/adapters/audio2tool.py::_INSTRUCTION_TEMPLATE` as the instruction of both legacy cells, byte-identical to what
+A0 sent, and the prompt-fit receipt measured the rendered request itself (13,236 registry tokens). Two statements
+are corrected:
+
+- Preregistration section 3 says `configs/probes/r1_audio2tool_direct.txt` "is its source text". It is not: that
+  probe file carries a longer instruction ("You are a voice assistant that controls devices by calling tools ...")
+  that no sealed cell ever sent. The flown text is `_INSTRUCTION_TEMPLATE` alone.
+- Baseline fragments `a2t-direct-calibration.json` and `a2t-direct-packets.json` declare
+  `task_instruction_template: probes/r1_audio2tool_direct.txt`; that field was inert. Since commit 46ce43b5 the
+  field is honoured only when a fragment also sets `task_instruction_template_active: true`, so every sealed
+  calibration manifest remains reproducible byte for byte.
+
+The four sealed manifests, their hashes, the per-tier tables and the Factor A / Factor D contrasts above stand as
+written.
