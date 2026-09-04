@@ -137,6 +137,30 @@ SAMPLE_ID_SEPARATOR = ":"
 #: 2048-dimensional; the promoter re-asserts it rather than trusting bytes.
 SPEECH_PACKET_N_EMBD = 2048
 
+#: A model fragment may declare ``decoding_params.id_slot = "per-sample"``.
+#: That is a SENTINEL, not a value: the batch executor that owns slot
+#: allocation resolves it to an allocated llama-server slot integer so every
+#: request of one sample lands on one slot and keeps that sample's stable
+#: prefix in the slot's KV cache (canonical constant:
+#: ``reproduction.ojw.runner.SLOT_AFFINITY_SENTINEL``, re-declared here as a
+#: literal because that module imports openjiuwen at import time and lives
+#: behind a lazy seam). ``core.model.adapter.FrozenCoreAdapter.request``
+#: refuses the unresolved sentinel, so a runner that does not resolve it
+#: cannot make a single contact.
+SLOT_AFFINITY_SENTINEL = "per-sample"
+
+#: This harness dispatches exactly one contact at a time (``rails.runner.
+#: run_rails_experiment`` loops serially, and so does the packet direct
+#: arm), so there is never more than one in-flight request to allocate a
+#: slot for and the sentinel resolves to a single stable slot. That is also
+#: the best case for what slot affinity exists to buy: every request of a
+#: direct baseline shares the same multi-thousand-token instruction prefix,
+#: and pinning one slot keeps it in that slot's KV cache. A future
+#: concurrent dispatcher must resolve the sentinel per in-flight worker from
+#: a free-slot queue instead, exactly as ``core.policies``' fixed-batch
+#: policy and ``reproduction.ojw.runner`` already do.
+SEQUENTIAL_DISPATCH_SLOT = 0
+
 
 def _canonical_hash(document: object) -> str:
     blob = json.dumps(document, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
@@ -643,15 +667,33 @@ class FlightRuntime:
 
         study_commit = require_clean_study_repo(self._repo_root)
 
+        # Attempt accounting: CHECK availability here, RESERVE in
+        # core.model.adapter.FrozenCoreAdapter.
+        #
+        # This stage used to call open_attempt() itself. That double-opened
+        # the one-time (run_id, attempt_id) key, because FrozenCoreAdapter --
+        # "the ONLY model request path", by its own module docstring, and the
+        # place core.attempts.AttemptStore.abort_if_opened itself names as
+        # the thing that opens an attempt -- opens the SAME pair again when
+        # run_phases builds the client. Every flight through this harness
+        # therefore died at client construction with "already reserved or
+        # opened ... a retry must mint a fresh attempt_id", after preflight
+        # had already reported success. The handle this stage kept was never
+        # read by anything.
+        #
+        # The early-failure intent survives without consuming the key: an
+        # attempt file that already exists means this attempt_id was used
+        # before, which is refused HERE rather than after a server has been
+        # started and a geometry served.
         attempt_store = self._attempt_store_factory(self._data_root)
         self._attempt_store = attempt_store
-        self._attempt_handle = attempt_store.open_attempt(
-            plan.run_id,
-            plan.attempt_id,
-            carrier_lock_key=plan.carrier_lock_key,
-            reserved_calls=plan.planned_model_calls,
-            reserved_audio_seconds=plan.planned_speech_audio_seconds,
-        )
+        attempt_path = attempt_store.handle(plan.run_id, plan.attempt_id).path
+        if attempt_path.is_file():
+            raise FlightRuntimeError(
+                f"attempt {plan.run_id}/{plan.attempt_id} already exists at "
+                f"{attempt_path}; a (run_id, attempt_id) pair is a one-time key and "
+                "a retry must mint a fresh attempt_id"
+            )
 
         prompt_budget = self._assess_prompt_budget(samples)
 
@@ -666,6 +708,7 @@ class FlightRuntime:
             "carrier_lock_key": carrier_lock_key,
             "serving_geometry": dict(adapter.serving_geometry()),
             "study_commit": study_commit,
+            "attempt_reservation": "deferred to core.model.adapter.FrozenCoreAdapter",
             "prompt_budget": prompt_budget,
         }
         return self.receipts.record("preflight", payload)
@@ -1105,12 +1148,32 @@ class FlightRuntime:
         return kwargs
 
     def _decoding_params(self) -> Mapping[str, object] | None:
+        """The composed ``decoding_params``, with the slot-affinity sentinel
+        resolved (see :data:`SLOT_AFFINITY_SENTINEL`).
+
+        Passing the sentinel through unresolved is not a cosmetic slip: the
+        frozen-core adapter refuses it ("id_slot must be a non-negative
+        integer"), so every cell of a flight whose model fragment declares
+        it dies at its first contact.
+        """
+
         value = self._composed.values.get("decoding_params")
         if value is None:
             return None
         if not isinstance(value, Mapping):
             raise FlightRuntimeError("decoding_params must be a mapping when declared")
-        return dict(value)
+        resolved = dict(value)
+        id_slot = resolved.get("id_slot")
+        if id_slot == SLOT_AFFINITY_SENTINEL:
+            resolved["id_slot"] = SEQUENTIAL_DISPATCH_SLOT
+        elif id_slot is not None and (
+            isinstance(id_slot, bool) or not isinstance(id_slot, int) or id_slot < 0
+        ):
+            raise FlightRuntimeError(
+                "decoding_params.id_slot must be a non-negative integer or the "
+                f"{SLOT_AFFINITY_SENTINEL!r} sentinel, got {id_slot!r}"
+            )
+        return resolved
 
     @staticmethod
     def _rows_from_direct_summary(summary: object) -> list[Mapping[str, object]]:
@@ -1316,10 +1379,20 @@ class FlightRuntime:
         max_tokens = int(self._adapter.serving_geometry()["max_tokens"])
         tokens_per_second_estimate = contacts_per_second * max_tokens
 
+        decoding = self._decoding_params() or {}
         payload = {
             "policy": policy,
             "policy_kind": policy_kind,
             "arm": client.arm,
+            "id_slot": decoding.get("id_slot"),
+            "id_slot_resolution": (
+                f"{SLOT_AFFINITY_SENTINEL!r} sentinel resolved to slot "
+                f"{SEQUENTIAL_DISPATCH_SLOT} (this harness dispatches one contact at "
+                "a time)"
+                if self._composed.values.get("decoding_params", {}).get("id_slot")
+                == SLOT_AFFINITY_SENTINEL
+                else "declared by the model fragment; no sentinel to resolve"
+            ),
             "wall_seconds": wall_seconds,
             "contact_count": contact_count,
             "contacts_per_second": contacts_per_second,
@@ -1521,6 +1594,8 @@ __all__ = [
     "PACKET_ID_SEPARATOR",
     "REQUIRED_EXECUTION_PLAN_FIELDS",
     "SAMPLE_ID_SEPARATOR",
+    "SEQUENTIAL_DISPATCH_SLOT",
+    "SLOT_AFFINITY_SENTINEL",
     "SPEECH_FEATURE_ARM_FIELD",
     "SPEECH_PACKET_N_EMBD",
     "arm_uses_speech_feature_packets",

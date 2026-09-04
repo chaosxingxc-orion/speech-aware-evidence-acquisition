@@ -326,3 +326,39 @@ group was not attempted. `SAEA-A2T-DIRECT-CALIBRATION-SMOKE-V1` stays `consumed 
   `fixed-retrieval`, with its assertion unchanged.
 - The smoke can be re-flown as soon as this fix is committed; it needs no re-registration, since
   its row is untouched and unspent.
+
+### 2026-09-04, Phase 2c attempt 2: two more harness defects, still zero contacts
+
+The smoke was re-run after the client fix and refused again, at the NEXT link in the same chain.
+Spend is still zero on every attempt; `SAEA-A2T-DIRECT-CALIBRATION-SMOKE-V1` remains `consumed = no`
+and all four attempts to date are durably `ABORTED` with `calls 0 / audio_seconds 0.0`.
+
+- **Defect: the attempt was opened twice.** `FlightRuntime.preflight` called
+  `AttemptStore.open_attempt`, and `core.model.adapter.FrozenCoreAdapter` -- "the ONLY model request
+  path" by its own module docstring, and the opener that `AttemptStore.abort_if_opened` itself names
+  -- opens the SAME pair when `run_phases` builds the client. A `(run_id, attempt_id)` pair is a
+  one-time key, so every flight through this harness died at client construction with "already
+  reserved or opened ... a retry must mint a fresh attempt_id", AFTER preflight had reported
+  success. The handle preflight kept was never read by anything. Fixed: preflight now CHECKS
+  availability (refusing an attempt id whose file already exists, which keeps the fail-early intent)
+  and leaves the reservation to the adapter.
+- **Defect: the slot-affinity sentinel was never resolved.** All four model fragments declare
+  `decoding_params.id_slot = "per-sample"`. That is a sentinel, not a value: the batch executor that
+  owns slot allocation resolves it to an allocated llama-server slot integer
+  (`reproduction.ojw.runner.SLOT_AFFINITY_SENTINEL`, and `core.policies`' fixed-batch policy does
+  the same from a free-slot queue). `FlightRuntime` passed it through verbatim and
+  `FrozenCoreAdapter.request` refuses it, so no cell could have made a single contact. Fixed:
+  `_decoding_params()` resolves the sentinel to slot 0 -- this harness dispatches exactly one
+  contact at a time, so there is never more than one in-flight request to allocate for, and pinning
+  one slot is also the best case for the thing slot affinity exists to buy (every request of a
+  direct baseline shares the same multi-thousand-token instruction prefix). A future concurrent
+  dispatcher must resolve it per in-flight worker instead; the constant and that requirement are
+  documented at the definition. The resolution is recorded in the `run_phases` receipt.
+- **Both defects were found without spending a registered call.** The second one was caught by a
+  throwaway wire check that drives the REAL `FrozenCoreClient`, the REAL adapter, the REAL payload
+  binding and the REAL promoted packets for all four cells against a FAKE transport -- no server, no
+  GPU, no model. That check now passes for every cell: 4 contacts each, payload key set exactly
+  equal to the arm's own `ARM_VISIBLE_FIELDS` entry, 152 tool schemas present for both native cells,
+  `id_slot` resolved to 0, and the packet cells' real packet bytes loaded and hash-verified against
+  the promotion receipt. A third refusal in the same chain is therefore unlikely, though sealing and
+  official scoring remain unexercised against real bytes until the smoke actually flies.

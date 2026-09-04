@@ -651,9 +651,60 @@ def test_seal_refuses_to_run_twice(tmp_path):
         runtime.seal()
 
 
-def test_abort_marks_an_opened_attempt_aborted(tmp_path):
+def test_preflight_checks_attempt_availability_without_consuming_it(tmp_path):
+    """preflight must NOT open the attempt: core.model.adapter.
+    FrozenCoreAdapter -- the only model request path -- opens the same
+    (run_id, attempt_id) pair when run_phases builds the client, and the
+    pair is a one-time key. Double-opening it made every real flight die at
+    client construction."""
+
+    from speech_aware_evidence_acquisition.core.attempts.store import AttemptStore
+
     runtime = _make_runtime(tmp_path, happy_path=True)
     runtime.preflight()
+
+    store = AttemptStore(tmp_path / "data" / "attempts")
+    path = store.handle("SAEA-TEST-RUN-001", "attempt-001").path
+    assert not path.exists()
+    # Nothing was reserved, so there is nothing to abort yet.
+    assert runtime.abort("nothing was ever opened") is False
+
+
+def test_preflight_refuses_an_attempt_id_that_was_already_used(tmp_path):
+    from speech_aware_evidence_acquisition.core.attempts.store import AttemptStore
+
+    repo_root = _make_repo(tmp_path, "SAEA-TEST-RUN-001")
+    store = AttemptStore(tmp_path / "data" / "attempts")
+    (tmp_path / "data").mkdir(parents=True, exist_ok=True)
+    store.open_attempt(
+        "SAEA-TEST-RUN-001",
+        "attempt-001",
+        carrier_lock_key="fake-carrier",
+        reserved_calls=10,
+        reserved_audio_seconds=100.0,
+    )
+    runtime = _make_runtime(tmp_path, happy_path=True, repo_root=repo_root)
+    with pytest.raises(FlightRuntimeError, match="one-time key"):
+        runtime.preflight()
+
+
+def test_abort_marks_an_attempt_the_adapter_opened_aborted(tmp_path):
+    """The attempt an adapter reserved is still abortable through the
+    runtime -- the failure path core.attempts.AttemptStore.abort_if_opened
+    documents."""
+
+    from speech_aware_evidence_acquisition.core.attempts.store import AttemptStore
+
+    runtime = _make_runtime(tmp_path, happy_path=True)
+    runtime.preflight()
+    # Stand in for FrozenCoreAdapter's own one-time reservation.
+    AttemptStore(tmp_path / "data" / "attempts").open_attempt(
+        "SAEA-TEST-RUN-001",
+        "attempt-001",
+        carrier_lock_key="fake-carrier",
+        reserved_calls=10,
+        reserved_audio_seconds=100.0,
+    )
     assert runtime.abort("test abort") is True
     # A second abort on an already-terminal attempt is a documented no-op.
     assert runtime.abort("test abort again") is False
