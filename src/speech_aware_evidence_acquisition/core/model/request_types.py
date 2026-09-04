@@ -87,6 +87,20 @@ class CoreResponse:
     # default for every request that never asked for logprobs -- no
     # behaviour change for any caller that does not read this field.
     logprobs: object = None
+    # Native tool-calling arms (2026-09-04): the RAW ``message.tool_calls``
+    # list llama-server returned, forwarded verbatim by the transport when
+    # the response actually carried one. The transport canonicalizes those
+    # calls into the same ``[{"name": ..., "arguments": {...}}]`` TEXT shape
+    # a free-text arm produces, which is what makes one scorer serve both --
+    # and is exactly why, after the fact, a canonical JSON array in a sealed
+    # outputs row is indistinguishable from JSON the model authored as text.
+    # The calibration smoke hit that ambiguity: three of four native rows
+    # were canonical arrays and nothing recorded which mechanism produced
+    # them. Carrying the raw list here settles it at the one place that sees
+    # the envelope. ``None`` means the response carried no tool_calls key at
+    # all, i.e. the model answered as text -- the byte-identical default for
+    # every request that never asked for tools.
+    tool_calls: object = None
 
 
 def _canonical(payload: Mapping[str, object]) -> bytes:

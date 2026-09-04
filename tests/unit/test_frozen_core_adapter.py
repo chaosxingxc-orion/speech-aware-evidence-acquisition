@@ -1,6 +1,7 @@
 """Adapter choke point: allowlist exact-set, boundary, budgets, tracing,
 payload<->plan<->split value binding (I3) and media confinement (I4)."""
 
+import hashlib
 import json
 import os
 import subprocess
@@ -1369,3 +1370,84 @@ def test_concurrent_requests_never_jointly_exceed_the_audio_budget(
     store = AttemptStore(binding.data_root / "attempts")
     calls, audio = store.prior_actual_usage(plan.run_id)
     assert (calls, audio) == (3, 300.0)
+
+
+# ---------------------------------------------------------------------------
+# Phase 3a (2026-09-04): the adapter carries the envelope's raw tool_calls.
+#
+# core.model.transport canonicalizes a native message.tool_calls into the same
+# [{"name": ..., "arguments": {...}}] TEXT a free-text arm produces, and puts
+# the raw list on the envelope beside it. This is the one place that envelope
+# is parsed, so it is the one place the distinction can still be read.
+# ---------------------------------------------------------------------------
+
+
+def _native_transport(request_bytes):
+    assert isinstance(request_bytes, bytes)
+    return json.dumps(
+        {
+            "text": '[{"name": "setLighting", "arguments": {}}]',
+            "usage": {"prompt_tokens": 5, "completion_tokens": 2},
+            "tool_calls": [
+                {
+                    "id": "c0",
+                    "type": "function",
+                    "function": {"name": "setLighting", "arguments": "{}"},
+                }
+            ],
+        }
+    ).encode()
+
+
+def test_response_carries_the_raw_tool_calls_when_the_envelope_has_them(tmp_path):
+    sink = TraceSink(tmp_path / "run", "SAEA-E-000-adapter-tool-calls")
+    adapter = FrozenCoreAdapter(
+        gate=_OpenGate(),
+        plan=_plan(),
+        arm="bare-core",
+        transport=_native_transport,
+        sink=sink,
+        binding=_binding(tmp_path),
+    )
+    response = adapter.request(_payload())
+
+    assert isinstance(response.tool_calls, list)
+    assert len(response.tool_calls) == 1
+    # Raw, not canonicalized: still the server's own arguments JSON string.
+    assert response.tool_calls[0]["function"]["arguments"] == "{}"
+    # The canonical text is unchanged, which is exactly why the raw list is
+    # needed to tell a native call from model-authored JSON text.
+    assert response.text == '[{"name": "setLighting", "arguments": {}}]'
+
+
+def test_response_tool_calls_is_none_for_a_text_answer(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    response = adapter.request(_payload())
+
+    assert response.tool_calls is None
+    assert response.text == "hello world"
+
+
+def test_tool_calls_changes_no_audited_artifact(tmp_path):
+    """The sealed outputs and trace contracts are deliberately untouched:
+    this field is provenance for the run receipt, not a new payload field.
+    The response hashes must be identical whether or not the caller reads
+    it."""
+
+    sink = TraceSink(tmp_path / "run", "SAEA-E-000-adapter-tool-calls-hashes")
+    adapter = FrozenCoreAdapter(
+        gate=_OpenGate(),
+        plan=_plan(),
+        arm="bare-core",
+        transport=_native_transport,
+        sink=sink,
+        binding=_binding(tmp_path),
+    )
+    response = adapter.request(_payload())
+
+    raw = _native_transport(b"{}")
+    assert response.response_sha256 == hashlib.sha256(raw).hexdigest()
+    assert (
+        response.response_text_sha256
+        == hashlib.sha256(response.text.encode("utf-8")).hexdigest()
+    )

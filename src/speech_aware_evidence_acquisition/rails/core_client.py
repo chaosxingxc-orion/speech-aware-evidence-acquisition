@@ -445,6 +445,14 @@ class RequestTiming:
     request_sha256: str | None = None
     response_sha256: str | None = None
     response_text_sha256: str | None = None
+    # How this response actually ARRIVED (2026-09-04). The transport
+    # canonicalizes native tool calls into the same JSON-array text a
+    # free-text arm produces, so a sealed row cannot be read back to tell
+    # the two apart. ``None`` = the response carried no tool_calls key, i.e.
+    # the model answered as text; an int = how many native tool calls came
+    # back. Provenance only: it changes no audited payload, no outputs row
+    # and no trace record.
+    native_tool_calls: int | None = None
 
     def as_json(self) -> dict[str, object]:
         return {
@@ -456,6 +464,7 @@ class RequestTiming:
             "request_sha256": self.request_sha256,
             "response_sha256": self.response_sha256,
             "response_text_sha256": self.response_text_sha256,
+            "native_tool_calls": self.native_tool_calls,
         }
 
 
@@ -1213,6 +1222,11 @@ class FrozenCoreClient:
                     request_sha256=response.request_sha256,
                     response_sha256=response.response_sha256,
                     response_text_sha256=response.response_text_sha256,
+                    native_tool_calls=(
+                        len(response.tool_calls)
+                        if isinstance(response.tool_calls, list)
+                        else None
+                    ),
                 )
             )
         return response.text

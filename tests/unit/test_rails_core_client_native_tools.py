@@ -649,3 +649,69 @@ def test_the_three_unsupported_arms_are_still_refused(tmp_path):
     for arm in ("fixed-retrieval", "exemplar-context", "fixed-legal-context-replay"):
         with pytest.raises(FrozenCoreClientError, match="different field set"):
             _client(world, tmp_path / arm, arm=arm)
+
+
+# ---------------------------------------------------------------------------
+# Phase 3a (2026-09-04): a response's ARRIVAL shape, carried through.
+#
+# core.model.transport canonicalizes a native message.tool_calls into the same
+# [{"name": ..., "arguments": {...}}] text a free-text arm produces, so a
+# sealed row cannot be read back to tell them apart. core.model.CoreResponse
+# now carries the raw list; this bridge records how many came back.
+# ---------------------------------------------------------------------------
+
+
+def test_request_timing_records_native_tool_calls(tmp_path):
+    world = _World(tmp_path)
+
+    def _native_transport(request_bytes: bytes) -> bytes:
+        return json.dumps(
+            {
+                "text": '[{"name": "setLighting", "arguments": {}}]',
+                "usage": {"prompt_tokens": 3, "completion_tokens": 2},
+                "tool_calls": [
+                    {
+                        "id": "c0",
+                        "type": "function",
+                        "function": {"name": "setLighting", "arguments": "{}"},
+                    }
+                ],
+            }
+        ).encode("utf-8")
+
+    client, _, _ = _client(
+        world,
+        tmp_path,
+        arm="bare-core-native-tools",
+        transport=_native_transport,
+        tool_schemas=_TOOLS,
+    )
+    client.complete(_zero_supply_messages(world.media_relpath("s1")))
+
+    timing = client.timings[0]
+    assert timing.native_tool_calls == 1
+    assert timing.as_json()["native_tool_calls"] == 1
+
+
+def test_request_timing_records_text_arrival_as_none(tmp_path):
+    """A response with no tool_calls key is a TEXT answer -- which is what
+    the calibration smoke's native cells actually produced, and what the
+    canonical-array text alone could not reveal."""
+
+    world = _World(tmp_path)
+    client, _, _ = _client(
+        world, tmp_path, arm="bare-core-native-tools", tool_schemas=_TOOLS
+    )
+    client.complete(_zero_supply_messages(world.media_relpath("s1")))
+
+    timing = client.timings[0]
+    assert timing.native_tool_calls is None
+    assert timing.as_json()["native_tool_calls"] is None
+
+
+def test_non_native_arm_never_reports_native_tool_calls(tmp_path):
+    world = _World(tmp_path)
+    client, _, _ = _client(world, tmp_path, arm="bare-core")
+    client.complete(_zero_supply_messages(world.media_relpath("s1")))
+
+    assert client.timings[0].native_tool_calls is None

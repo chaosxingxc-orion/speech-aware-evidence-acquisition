@@ -117,10 +117,12 @@ class _FakeTiming:
         latency_seconds: float = 0.05,
         sample_id: str = "s1",
         request_id: str = "req-0001",
+        native_tool_calls: int | None = None,
     ) -> None:
         self.latency_seconds = latency_seconds
         self.sample_id = sample_id
         self.request_id = request_id
+        self.native_tool_calls = native_tool_calls
         self.request_sha256 = "a" * 64
         self.response_sha256 = "b" * 64
         self.response_text_sha256 = hashlib.sha256(b"resp").hexdigest()
@@ -1405,6 +1407,7 @@ class _TransportDrivingClient(_FakeClient):
 
     def __init__(self, **kwargs: object) -> None:
         super().__init__(**kwargs)
+        self.timings = ()
         self._transport = kwargs["transport"]
         self._arm_fields = ARM_VISIBLE_FIELDS.get(str(kwargs.get("arm")), ())
         self._tool_schemas = kwargs.get("tool_schemas")
@@ -1416,7 +1419,21 @@ class _TransportDrivingClient(_FakeClient):
             payload["tool_schemas"] = list(self._tool_schemas or [{"t": 1}])
         if type(self).drop_key is not None:
             payload.pop(type(self).drop_key, None)
-        self._transport(json.dumps(payload).encode("utf-8"))
+        response = json.loads(
+            self._transport(json.dumps(payload).encode("utf-8")).decode("utf-8")
+        )
+        # Mirror rails.core_client.FrozenCoreClient: record one timing per
+        # call, carrying how the response arrived. Without this the arrival
+        # accounting would be asserted against a fixture rather than against
+        # what the transport actually returned.
+        calls = response.get("tool_calls")
+        self.timings = tuple(self.timings) + (
+            _FakeTiming(
+                sample_id=f"s{len(self.timings) + 1}",
+                request_id=f"req-{len(self.timings) + 1:04d}",
+                native_tool_calls=len(calls) if isinstance(calls, list) else None,
+            ),
+        )
         return "[]"
 
 
@@ -1720,34 +1737,154 @@ def test_canonical_output_rows_bind_text_to_its_recorded_hash(tmp_path):
 
 
 def test_canonical_output_rows_fail_closed_without_response_hashes(tmp_path):
-    class _HashlessTiming(_FakeTiming):
-        def __init__(self, **kwargs):
-            super().__init__(**kwargs)
-            self.request_sha256 = None
-            self.response_sha256 = None
-            self.response_text_sha256 = None
-
-    class _HashlessClient(_TransportDrivingClient):
-        def __init__(self, **kwargs):
-            super().__init__(**kwargs)
-            self.timings = (
-                _HashlessTiming(sample_id="s1"),
-                _HashlessTiming(sample_id="s2"),
-            )
-
-    runtime = _wire_runtime(tmp_path, client_factory=_HashlessClient)
+    runtime = _wire_runtime(tmp_path)
     runtime.wire_check(seal_and_score=False)
+    # Blank the response identity hashes the bundle contract binds a row to;
+    # sealing must refuse rather than emit an unverifiable row.
+    for timing in runtime._client.timings:
+        timing.request_sha256 = None
+        timing.response_sha256 = None
+        timing.response_text_sha256 = None
     with pytest.raises(FlightRuntimeError, match="bundle contract binds an outputs row"):
         runtime._canonical_output_rows(runtime._client)
 
 
 def test_canonical_output_rows_fail_closed_without_a_per_request_record(tmp_path):
-    class _NoTimingClient(_TransportDrivingClient):
-        def __init__(self, **kwargs):
-            super().__init__(**kwargs)
-            self.timings = ()
-
-    runtime = _wire_runtime(tmp_path, client_factory=_NoTimingClient)
+    runtime = _wire_runtime(tmp_path)
     runtime.wire_check(seal_and_score=False)
+    # Drop the per-request records the rows are built from; sealing must
+    # refuse rather than emit a row the bundle contract cannot verify.
+    runtime._client.timings = ()
     with pytest.raises(FlightRuntimeError, match="no per-request record"):
         runtime._canonical_output_rows(runtime._client)
+
+
+# ---------------------------------------------------------------------------
+# Phase 3a: native tool calls versus text, recorded where it is still known.
+#
+# core.model.transport canonicalizes a native message.tool_calls into the SAME
+# [{"name": ..., "arguments": {...}}] text a free-text arm produces. That is
+# what lets one scorer serve both arms -- and it is why a sealed outputs row
+# cannot be read back to tell the two apart. The calibration smoke hit exactly
+# that: three of four native-arm rows were canonical JSON arrays and nothing
+# recorded which mechanism produced them.
+# ---------------------------------------------------------------------------
+
+
+def test_response_arrival_counts_separates_native_calls_from_text() -> None:
+    class _Client:
+        timings = (
+            _FakeTiming(sample_id="s1", native_tool_calls=2),
+            _FakeTiming(sample_id="s2", native_tool_calls=None),
+            _FakeTiming(sample_id="s3", native_tool_calls=1),
+        )
+
+    counts = FlightRuntime.response_arrival_counts(_Client())
+    assert counts["rows_total"] == 3
+    assert counts["rows_with_native_tool_calls"] == 2
+    assert counts["rows_answered_as_text"] == 1
+    assert counts["native_tool_calls_total"] == 3
+
+
+def test_response_arrival_counts_call_zero_is_not_text() -> None:
+    """A row whose envelope carried an EMPTY tool_calls list is still a
+    native-arm response, not a text answer; only a missing key means text."""
+
+    class _Client:
+        timings = (_FakeTiming(sample_id="s1", native_tool_calls=0),)
+
+    counts = FlightRuntime.response_arrival_counts(_Client())
+    assert counts["rows_with_native_tool_calls"] == 1
+    assert counts["rows_answered_as_text"] == 0
+    assert counts["native_tool_calls_total"] == 0
+
+
+def test_run_phases_receipt_reports_how_responses_arrived(tmp_path):
+    runtime = _make_runtime(
+        tmp_path,
+        happy_path=True,
+        config_kwargs={"arm": "bare-core", "policy": "fixed"},
+    )
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    receipt = runtime.run_phases()
+
+    arrival = receipt["response_arrival"]
+    assert arrival["rows_total"] == 2
+    assert arrival["rows_answered_as_text"] == 2
+    assert arrival["rows_with_native_tool_calls"] == 0
+
+
+def test_wire_check_reports_and_asserts_native_arrival_for_a_native_arm(tmp_path):
+    """The fake transport imitates exactly one native envelope for a native
+    arm, so the check proves the accounting distinguishes the two rather
+    than merely reporting a constant."""
+
+    runtime = _wire_runtime(
+        tmp_path,
+        config_kwargs={
+            "arm": "bare-core-native-tools",
+            "policy": "fixed",
+            "baseline_extra": {"tool_schema_fill": "audio2tool-openai-tools"},
+        },
+        tool_schema_resolver=lambda lock, root, name: [
+            {"type": "function", "function": {"name": "t"}}
+        ],
+    )
+    receipt = runtime.wire_check(seal_and_score=False)
+
+    arrival = receipt["response_arrival"]
+    assert arrival["rows_with_native_tool_calls"] == 1
+    assert arrival["rows_answered_as_text"] == 1
+    assert arrival["native_tool_calls_total"] == 1
+
+
+def test_wire_check_reports_all_text_for_a_non_native_arm(tmp_path):
+    runtime = _wire_runtime(tmp_path)
+    receipt = runtime.wire_check(seal_and_score=False)
+
+    arrival = receipt["response_arrival"]
+    assert arrival["rows_with_native_tool_calls"] == 0
+    assert arrival["rows_answered_as_text"] == 2
+
+
+def test_wire_check_refuses_when_arrival_accounting_disagrees(tmp_path):
+    """If the accounting cannot see the native envelope the transport
+    emitted, the check must refuse -- a count that reports the same number
+    either way is the ambiguity this field exists to remove."""
+
+    class _BlindClient(_TransportDrivingClient):
+        def complete(self, messages, **kwargs):
+            out = super().complete(messages, **kwargs)
+            self.timings = tuple(
+                _FakeTiming(sample_id=t.sample_id, request_id=t.request_id)
+                for t in self.timings
+            )
+            return out
+
+    runtime = _wire_runtime(
+        tmp_path,
+        client_factory=_BlindClient,
+        config_kwargs={
+            "arm": "bare-core-native-tools",
+            "policy": "fixed",
+            "baseline_extra": {"tool_schema_fill": "audio2tool-openai-tools"},
+        },
+        tool_schema_resolver=lambda lock, root, name: [
+            {"type": "function", "function": {"name": "t"}}
+        ],
+    )
+    with pytest.raises(FlightRuntimeError, match="native tool-call row"):
+        runtime.wire_check(seal_and_score=False)
+
+
+def test_wire_check_transport_emits_a_native_envelope_only_on_the_first_call() -> None:
+    transport = WireCheckTransport(native_tool_calls_on_first=True)
+    first = json.loads(transport(b"{}").decode("utf-8"))
+    second = json.loads(transport(b"{}").decode("utf-8"))
+    assert isinstance(first["tool_calls"], list) and len(first["tool_calls"]) == 1
+    assert first["tool_calls"][0]["function"]["name"] == "wire-check"
+    assert "tool_calls" not in second
+    # Default stays text-only, so no pre-existing caller changes shape.
+    assert "tool_calls" not in json.loads(WireCheckTransport()(b"{}").decode("utf-8"))

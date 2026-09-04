@@ -293,6 +293,15 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
             # keeps this None and CoreResponse.logprobs stays at its
             # byte-identical default for every caller that never reads it.
             logprobs = parsed.get("logprobs")
+            # Native tool calls (2026-09-04), read exactly like logprobs
+            # above: the transport adds this key ONLY when the server's own
+            # message carried a non-empty tool_calls list, so `.get` keeps
+            # it None for every text answer and every non-native arm. Read
+            # here and nowhere else -- this is the one place the response
+            # envelope is parsed. The sealed outputs and trace contracts are
+            # deliberately untouched: this is provenance for the run
+            # receipt, not a new audited payload field.
+            tool_calls = parsed.get("tool_calls")
         except (KeyError, TypeError, ValueError, UnicodeError) as error:
             raise FrozenCoreError(
                 f"transport returned a malformed response: {error}"
@@ -338,6 +347,7 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
             response_text_sha256=response_text_sha256,
             latency_seconds=latency,
             logprobs=logprobs,
+            tool_calls=tool_calls,
         )
 
     def record_tool_call(self, count: int = 1) -> None:

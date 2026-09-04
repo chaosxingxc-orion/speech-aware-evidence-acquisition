@@ -624,3 +624,41 @@ wire-check-clean-3.json` (SHA-256 f0a573ee3fc4802db865a9ab884469b245e646e5c39a76
 green on every link for all four cells with zero model contacts.
 
 Prerequisites 1-4 of section 4 are now closed. The 1,608-call flight has NOT been started.
+
+### 2026-09-04, Phase 3a: recording HOW a response arrived (zero contacts)
+
+Reading the sealed native rows exposed an ambiguity the smoke could not settle. Three of the four
+A1/P1 rows are canonical JSON arrays -- which is exactly what `core.model.transport` writes when
+llama-server returned `message.tool_calls`, because it canonicalizes native calls into the same
+`[{"name": ..., "arguments": {...}}]` text a free-text arm produces (that is what lets one scorer
+serve both arms). The adapter parsed only `text`/`usage`/`logprobs` off the envelope and dropped
+`tool_calls`, and the trace keeps text plus hashes, so after the fact nobody could tell a native
+tool call from JSON the model authored as text. Factor A cannot be read without that distinction.
+
+Closed at the one place that still knows, with no contact and no change to any audited artifact:
+
+- `core.model.request_types.CoreResponse` gains `tool_calls: object = None` -- the RAW list off the
+  envelope, still carrying the server's own `function.arguments` JSON string, never the canonical
+  form. `None` means the envelope had no `tool_calls` key at all, i.e. the model answered as text.
+- `core.model.adapter` reads it beside `logprobs`, in the one place the response envelope is
+  parsed. Every existing constructor call keeps working; the response hashes are unchanged, and a
+  test asserts that explicitly.
+- `rails.core_client.RequestTiming` gains `native_tool_calls: int | None`, set from that raw list,
+  and reports it in `as_json()`.
+- `FlightRuntime.response_arrival_counts()` aggregates per cell -- rows with native tool calls, rows
+  answered as text, total native calls -- into both the `run_phases` receipt and the wire-check
+  receipt. An EMPTY tool_calls list counts as a native-arm response, not as text; only a missing key
+  is text.
+- The wire check's fake transport now imitates exactly one native envelope for a native arm and none
+  for a text arm, and the check REFUSES when the accounting does not report precisely that. A count
+  that reads the same either way would be worse than none, since the canonical text is identical.
+
+**The sealed contracts are deliberately untouched**: no new outputs field, no trace schema change.
+This is provenance for the run receipt only.
+
+Verified contact-free against the real four cells: A0'/P0 report 0 native and 4 text rows, A1/P1
+report 1 native and 3 text (matching what the fake transport emitted), 152 tool schemas on both
+native arms, zero model contacts.
+
+Phase 3b is the registered 1,608-call flight; `SAEA-A2T-DIRECT-CALIBRATION-V1` remains
+`consumed = no`.

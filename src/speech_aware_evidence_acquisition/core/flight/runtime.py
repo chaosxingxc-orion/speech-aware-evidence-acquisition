@@ -323,22 +323,41 @@ class WireCheckTransport:
     """A transport double that records every request payload and answers
     :data:`WIRE_CHECK_RESPONSE_TEXT`. Never opens a socket."""
 
-    def __init__(self, response_text: str = WIRE_CHECK_RESPONSE_TEXT) -> None:
+    def __init__(
+        self,
+        response_text: str = WIRE_CHECK_RESPONSE_TEXT,
+        native_tool_calls_on_first: bool = False,
+    ) -> None:
         self.payloads: list[Mapping[str, object]] = []
         self.request_bodies: list[bytes] = []
         self._response_text = response_text
+        # When set, the FIRST response imitates a native tool-calling
+        # envelope: the raw ``message.tool_calls`` list beside the canonical
+        # text the transport would have derived from it. That is the only
+        # way a contact-free check can prove the native-versus-text
+        # accounting actually distinguishes the two, since the canonical
+        # text is byte-identical either way.
+        self._native_tool_calls_on_first = bool(native_tool_calls_on_first)
 
     def __call__(self, request_bytes: bytes) -> bytes:
         if not isinstance(request_bytes, bytes):
             raise FlightRuntimeError("transport must be handed bytes")
+        first = not self.request_bodies
         self.request_bodies.append(request_bytes)
         self.payloads.append(json.loads(request_bytes.decode("utf-8")))
-        return json.dumps(
-            {
-                "text": self._response_text,
-                "usage": {"prompt_tokens": 1, "completion_tokens": 1},
-            }
-        ).encode("utf-8")
+        envelope: dict[str, object] = {
+            "text": self._response_text,
+            "usage": {"prompt_tokens": 1, "completion_tokens": 1},
+        }
+        if first and self._native_tool_calls_on_first:
+            envelope["tool_calls"] = [
+                {
+                    "id": "wire-check-0",
+                    "type": "function",
+                    "function": {"name": "wire-check", "arguments": "{}"},
+                }
+            ]
+        return json.dumps(envelope).encode("utf-8")
 
 
 def _default_packet_promoter(
@@ -1500,6 +1519,7 @@ class FlightRuntime:
             "slot_occupancy": slot_occupancy,
             "tokens_per_second": tokens_per_second_estimate,
             "tokens_per_second_basis": "contacts_per_second_times_completion_token_ceiling_upper_bound_estimate",
+            "response_arrival": self.response_arrival_counts(client),
         }
         require_mandatory_throughput_fields(
             "run_phases", payload, ("contacts_per_second", "tokens_per_second")
@@ -1590,6 +1610,38 @@ class FlightRuntime:
             "efficiency": self.PENDING_JUDGMENT,
             "deviations": self.PENDING_JUDGMENT,
             "decision": self.PENDING_JUDGMENT,
+        }
+
+    @staticmethod
+    def response_arrival_counts(client: object) -> dict[str, object]:
+        """How this cell's responses ARRIVED: native tool calls versus text.
+
+        The transport canonicalizes native ``message.tool_calls`` into the
+        same ``[{"name": ..., "arguments": {...}}]`` text a free-text arm
+        produces -- which is what lets one scorer serve both arms, and is
+        exactly why a sealed outputs row cannot be read back to tell them
+        apart. The calibration smoke hit that ambiguity: three of four
+        native-arm rows were canonical JSON arrays with nothing recording
+        which mechanism produced them. This counts it at the one place that
+        still knows (``rails.core_client.RequestTiming.native_tool_calls``,
+        set from the adapter's own ``CoreResponse.tool_calls``) and puts the
+        answer in the run receipt, changing no audited artifact.
+        """
+
+        timings = tuple(getattr(client, "timings", ()) or ())
+        native_rows = [t for t in timings if getattr(t, "native_tool_calls", None) is not None]
+        return {
+            "rows_total": len(timings),
+            "rows_with_native_tool_calls": len(native_rows),
+            "rows_answered_as_text": len(timings) - len(native_rows),
+            "native_tool_calls_total": sum(
+                int(t.native_tool_calls) for t in native_rows
+            ),
+            "basis": (
+                "rails.core_client.RequestTiming.native_tool_calls, set from "
+                "core.model.CoreResponse.tool_calls; None means the response envelope "
+                "carried no tool_calls key at all, i.e. the model answered as text"
+            ),
         }
 
     def _canonical_output_rows(self, client: object) -> list[Mapping[str, object]]:
@@ -1887,7 +1939,10 @@ class FlightRuntime:
         run_dir.mkdir(parents=True, exist_ok=True)
 
         gate = WireCheckGate()
-        transport = WireCheckTransport(response_text=response_text)
+        native = "tool_schemas" in set(ARM_VISIBLE_FIELDS.get(arm, ()))
+        transport = WireCheckTransport(
+            response_text=response_text, native_tool_calls_on_first=native
+        )
         client_kwargs = self.frozen_core_client_kwargs(
             plan=plan, gate=gate, transport=transport, run_dir=run_dir
         )
@@ -1902,7 +1957,6 @@ class FlightRuntime:
 
         # -- the assertions each landed defect would have failed -----------
         expected_fields = set(ARM_VISIBLE_FIELDS.get(arm, ()))
-        native = "tool_schemas" in expected_fields
         problems: list[str] = []
         if len(transport.payloads) != len(self._samples):
             problems.append(
@@ -1928,6 +1982,24 @@ class FlightRuntime:
             id_slot = dict(payload.get("decoding_params") or {}).get("id_slot")
             if isinstance(id_slot, bool) or not isinstance(id_slot, int):
                 problems.append(f"request {index} id_slot is {id_slot!r}, not an integer")
+        arrival = self.response_arrival_counts(client)
+        # The transport imitated exactly one native envelope for a native
+        # arm and none for a text arm, so the accounting must report
+        # precisely that -- a count that cannot tell the two apart is the
+        # ambiguity this whole field exists to remove.
+        expected_native_rows = 1 if native else 0
+        if arrival["rows_with_native_tool_calls"] != expected_native_rows:
+            problems.append(
+                f"response-arrival accounting reports "
+                f"{arrival['rows_with_native_tool_calls']} native tool-call row(s); the "
+                f"fake transport emitted {expected_native_rows}"
+            )
+        if arrival["rows_answered_as_text"] != len(self._samples) - expected_native_rows:
+            problems.append(
+                f"response-arrival accounting reports "
+                f"{arrival['rows_answered_as_text']} text row(s) for "
+                f"{len(self._samples)} sample(s)"
+            )
         if problems:
             raise FlightRuntimeError("wire check failed: " + "; ".join(problems))
 
@@ -1981,6 +2053,7 @@ class FlightRuntime:
             },
             "trace_manifest_hash": close_receipt["trace_manifest_hash"],
             "cost": close_receipt["cost"],
+            "response_arrival": arrival,
             "seal_and_score": seal_and_score_result,
             "transport": (
                 "core.flight.runtime.WireCheckTransport (never opens a socket)"
