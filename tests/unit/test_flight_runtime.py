@@ -220,7 +220,34 @@ def _fake_bundle_verifier(manifest_path: Path) -> _FakeVerified:
     return _FakeVerified()
 
 
-def _fake_bundle_finalizer(manifest_path, lock, root, *, repo_root) -> _FakeFinalizeResult:
+def _fake_ledger_validator(bundle, cells):
+    """core.tracking.ledger_row_for_bundle reads a REAL VerifiedBundle; this
+    double asserts the same contract the real one enforces -- every
+    caller-owned column present -- without needing one."""
+
+    missing = [
+        column
+        for column in FlightRuntime.CALLER_LEDGER_COLUMNS
+        if column not in dict(cells or {})
+    ]
+    assert not missing, f"ledger row is missing {missing}"
+    return ({}, dict(cells))
+
+
+def _fake_bundle_finalizer(
+    manifest_path, lock, root, *, repo_root, ledger_cells=None
+) -> _FakeFinalizeResult:
+    """The real core.bundle.finalize_bundle validates the COMPLETE 21-column
+    ledger surface before it will score, so a caller supplying none of the
+    twelve caller-owned columns is refused. This double asserts the same
+    contract rather than ignoring the argument."""
+
+    missing = [
+        column
+        for column in FlightRuntime.CALLER_LEDGER_COLUMNS
+        if column not in dict(ledger_cells or {})
+    ]
+    assert not missing, f"finalize_bundle was given no value for {missing}"
     return _FakeFinalizeResult()
 
 
@@ -347,6 +374,7 @@ _HAPPY_PATH_KWARGS: dict[str, object] = {
     "manifest_builder": _fake_manifest_builder,
     "bundle_verifier": _fake_bundle_verifier,
     "bundle_finalizer": _fake_bundle_finalizer,
+    "ledger_validator": _fake_ledger_validator,
     "score_batch": _fake_score_batch,
     "rails_runner": _fake_rails_runner,
     "phase_runner": _fake_phase_runner,
@@ -1569,6 +1597,50 @@ def test_wire_check_seal_names_the_outputs_artifact_with_the_run_id_stem(tmp_pat
     outputs = list(Path(written["run_dir"]).glob("*.outputs.jsonl"))
     assert len(outputs) == 1
     assert outputs[0].name == f"{written['run_id']}.outputs.jsonl"
+
+
+def test_wire_check_validates_the_full_ledger_surface(tmp_path):
+    """seal() calls core.bundle.finalize_bundle, which validates the
+    COMPLETE 21-column ledger surface before it will score. A wire check
+    that skipped that let a flight die at finalize after its contacts were
+    spent (defect 9), so the check now validates the same surface."""
+
+    seen: dict[str, object] = {}
+
+    def _validator(bundle, cells):
+        seen["cells"] = dict(cells)
+        return ({}, dict(cells))
+
+    runtime = _wire_runtime(tmp_path, ledger_validator=_validator)
+    receipt = runtime.wire_check(seal_and_score=True)
+
+    assert receipt["seal_and_score"]["status"] == "OK"
+    assert receipt["seal_and_score"]["ledger_surface_validated"] is True
+    for column in FlightRuntime.CALLER_LEDGER_COLUMNS:
+        assert column in seen["cells"]
+    assert seen["cells"]["decision"] == FlightRuntime.PENDING_JUDGMENT
+    assert "fake-carrier" in seen["cells"]["speech task/carrier"]
+
+
+def test_seal_refuses_when_a_caller_owned_ledger_column_is_missing(tmp_path):
+    runtime = _make_runtime(tmp_path, happy_path=True)
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    runtime.run_phases()
+    original = FlightRuntime._default_ledger_cells
+
+    def _short(self, plan):
+        cells = original(self, plan)
+        cells.pop("decision")
+        return cells
+
+    FlightRuntime._default_ledger_cells = _short
+    try:
+        with pytest.raises(FlightRuntimeError, match="caller-owned column"):
+            runtime.seal()
+    finally:
+        FlightRuntime._default_ledger_cells = original
 
 
 def test_wire_check_records_a_refused_seal_instead_of_raising(tmp_path):

@@ -70,6 +70,7 @@ from ..config import (
 )
 from ..model.speech_features import materialize_legacy_cached_speech_feature_packets
 from ..scoring_batch import load_score_jobs, run_score_batch
+from ..tracking import ledger_row_for_bundle
 from ..session import load_runtime_receipt, start_session, stop_session
 from ..split_receipt import VerifiedSplit
 from .receipts import FLIGHT_STAGES, FlightReceipts, require_mandatory_throughput_fields
@@ -418,6 +419,7 @@ class FlightRuntime:
             lambda data_root: AttemptStore(Path(data_root) / "attempts")
         ),
         abort_attempt: Callable[..., bool] = abort_attempt_if_opened,
+        ledger_validator: Callable[..., object] = ledger_row_for_bundle,
         token_counter: Callable[[bytes], int] = _default_token_counter,
         tool_schema_resolver: Callable[[Mapping[str, object], Path, str], Sequence[Mapping[str, object]]]
         | None = _default_tool_schema_resolver,
@@ -471,6 +473,7 @@ class FlightRuntime:
         self._runtime_receipt_loader = runtime_receipt_loader
         self._attempt_store_factory = attempt_store_factory
         self._abort_attempt = abort_attempt
+        self._ledger_validator = ledger_validator
         self._token_counter = token_counter
         self._tool_schema_resolver = tool_schema_resolver
         self._lock = lock
@@ -1530,6 +1533,65 @@ class FlightRuntime:
 
     # -- stage 5: seal --------------------------------------------------
 
+    #: The twelve ledger columns ``core.tracking.bundle_ledger_cells``
+    #: deliberately does NOT derive -- "human judgment or external-index
+    #: facts this module has no basis to invent", its own words.
+    #: ``core.bundle.finalize_bundle`` validates the COMPLETE 21-column
+    #: surface before scoring, so a caller that supplies none of these makes
+    #: finalize refuse with "ledger row must have exactly the columns ...".
+    #: seal() supplied none, so every flight died at the finalizer AFTER its
+    #: contacts were spent.
+    CALLER_LEDGER_COLUMNS = (
+        "experiment_id",
+        "speech task/carrier",
+        "changed axes",
+        "shared code revision",
+        "model rev",
+        "dataset rev",
+        "MLflow run",
+        "effectiveness",
+        "reasonableness",
+        "efficiency",
+        "deviations",
+        "decision",
+    )
+
+    #: What the four judgment columns say before anyone has judged anything.
+    #: A run seals before its verdict is written, so inventing a verdict here
+    #: would be worse than saying so.
+    PENDING_JUDGMENT = "pending post-run analysis"
+
+    def _default_ledger_cells(self, plan: ExecutionPlan) -> dict[str, str]:
+        """The twelve caller-owned ledger cells, derived from this flight's
+        own composed identity where that is honest and marked pending where
+        it is a judgment nobody has made yet. A caller passing
+        ``seal(ledger_cells=...)`` overrides any of them."""
+
+        values = self._composed.values
+        fragments = dict(self._composed.fragments)
+        return {
+            "experiment_id": str(values.get("experiment_id", self._run_id)),
+            "speech task/carrier": (
+                f"{plan.carrier_lock_key}; split {self._split_id}; "
+                f"{len(self._samples)} samples"
+            ),
+            "changed axes": (
+                "model={model}; dataset={dataset}; baseline={baseline}; "
+                "experiment={experiment}".format(**fragments)
+            ),
+            "shared code revision": (
+                "none; this study declares no speechrl_common dependency"
+            ),
+            "model rev": str(values.get("model_lock_key", "")),
+            "dataset rev": str(plan.split_identity_hash),
+            "MLflow run": "not used",
+            "effectiveness": self.PENDING_JUDGMENT,
+            "reasonableness": self.PENDING_JUDGMENT,
+            "efficiency": self.PENDING_JUDGMENT,
+            "deviations": self.PENDING_JUDGMENT,
+            "decision": self.PENDING_JUDGMENT,
+        }
+
     def _canonical_output_rows(self, client: object) -> list[Mapping[str, object]]:
         """The outputs rows ``core.bundle.verify_bundle`` actually requires.
 
@@ -1600,7 +1662,12 @@ class FlightRuntime:
         return rows
 
 
-    def seal(self, *, flight_receipt_kwargs: Mapping[str, object] | None = None) -> Mapping[str, object]:
+    def seal(
+        self,
+        *,
+        flight_receipt_kwargs: Mapping[str, object] | None = None,
+        ledger_cells: Mapping[str, str] | None = None,
+    ) -> Mapping[str, object]:
         """Write ``<run_id>.outputs.jsonl`` from the samples ``run_phases``
         produced,
         close the client (which closes its owned ``TraceSink`` -- "write
@@ -1666,8 +1733,25 @@ class FlightRuntime:
             result=result,
         )
         verified = self._bundle_verifier(manifest_path)
+        merged_ledger_cells = self._default_ledger_cells(self._plan)
+        merged_ledger_cells.update(dict(ledger_cells or {}))
+        missing = [
+            column
+            for column in self.CALLER_LEDGER_COLUMNS
+            if column not in merged_ledger_cells
+        ]
+        if missing:
+            raise FlightRuntimeError(
+                f"ledger cells are missing the caller-owned column(s) {missing}; "
+                "core.bundle.finalize_bundle validates the complete ledger surface "
+                "before it will score"
+            )
         finalize_result = self._bundle_finalizer(
-            manifest_path, self._lock, self._data_root, repo_root=self._repo_root
+            manifest_path,
+            self._lock,
+            self._data_root,
+            repo_root=self._repo_root,
+            ledger_cells=merged_ledger_cells,
         )
 
         flight_receipt: Mapping[str, object] | None = None
@@ -1693,6 +1777,7 @@ class FlightRuntime:
             "outputs_row_count": len(self._output_rows),
             "trace_manifest_hash": close_receipt["trace_manifest_hash"],
             "cost": close_receipt["cost"],
+            "ledger_cells": merged_ledger_cells,
             "finalize": {
                 "scores_path": str(finalize_result.scores_path),
                 "ledger_markdown_path": str(finalize_result.ledger_markdown_path),
@@ -1961,6 +2046,26 @@ class FlightRuntime:
                 result=result,
             )
             verified = self._bundle_verifier(manifest_path)
+            # The FINALIZER too, not merely the manifest builder and the
+            # verifier. seal() calls it, and it validates the complete
+            # 21-column ledger surface before it will score; a wire check
+            # that skipped it let a flight die at finalize AFTER its
+            # contacts were spent (defect 9). It is called in validate-only
+            # mode here -- ledger cells built exactly as seal() builds them,
+            # through core.tracking.ledger_row_for_bundle -- rather than run
+            # for real, because finalize_bundle also settles the attempt
+            # this check is about to abort.
+            ledger_cells = self._default_ledger_cells(plan)
+            missing = [
+                column
+                for column in self.CALLER_LEDGER_COLUMNS
+                if column not in ledger_cells
+            ]
+            if missing:
+                raise FlightRuntimeError(
+                    f"ledger cells are missing the caller-owned column(s) {missing}"
+                )
+            self._ledger_validator(verified, ledger_cells)
             jobs_path = run_dir / "score-jobs.jsonl"
             with jobs_path.open("w", encoding="utf-8") as handle:
                 handle.write(
@@ -1978,8 +2083,9 @@ class FlightRuntime:
                 "status": "REFUSED",
                 "reason": f"{type(error).__name__}: {error}",
                 "note": (
-                    "the sealing and scoring links refuse a dirty study tree by "
-                    "design; re-run this wire check on a clean tree to exercise them"
+                    "a dirty study tree refuses a COMPLETED manifest by design, which "
+                    "is the common cause here; any other reason above is a real defect "
+                    "in the sealing or ledger path and must be fixed, not re-run"
                 ),
             }
         # A score BATCH reports a failed job in its result dict; it does not
@@ -2023,6 +2129,7 @@ class FlightRuntime:
             "outputs_row_count": len(canonical_rows),
             "score_result": score_result,
             "scorers": list(self._composed.values.get("scorers", ())),
+            "ledger_surface_validated": True,
             "numbers_are_meaningless": (
                 "these scores are computed over WireCheckTransport's canned response, "
                 "not over any model output; they prove the scoring link runs and "

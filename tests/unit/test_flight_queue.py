@@ -186,7 +186,34 @@ def _fake_bundle_verifier(manifest_path: Path) -> _FakeVerified:
     return _FakeVerified()
 
 
-def _fake_bundle_finalizer(manifest_path, lock, root, *, repo_root) -> _FakeFinalizeResult:
+def _fake_ledger_validator(bundle, cells):
+    """core.tracking.ledger_row_for_bundle reads a REAL VerifiedBundle; this
+    double asserts the same contract the real one enforces -- every
+    caller-owned column present -- without needing one."""
+
+    missing = [
+        column
+        for column in FlightRuntime.CALLER_LEDGER_COLUMNS
+        if column not in dict(cells or {})
+    ]
+    assert not missing, f"ledger row is missing {missing}"
+    return ({}, dict(cells))
+
+
+def _fake_bundle_finalizer(
+    manifest_path, lock, root, *, repo_root, ledger_cells=None
+) -> _FakeFinalizeResult:
+    """The real core.bundle.finalize_bundle validates the COMPLETE 21-column
+    ledger surface before it will score, so a caller supplying none of the
+    twelve caller-owned columns is refused. This double asserts the same
+    contract rather than ignoring the argument."""
+
+    missing = [
+        column
+        for column in FlightRuntime.CALLER_LEDGER_COLUMNS
+        if column not in dict(ledger_cells or {})
+    ]
+    assert not missing, f"finalize_bundle was given no value for {missing}"
     return _FakeFinalizeResult()
 
 
@@ -299,6 +326,8 @@ def _make_flight(
         "manifest_builder": _fake_manifest_builder,
         "bundle_verifier": _fake_bundle_verifier,
         "bundle_finalizer": _fake_bundle_finalizer,
+        "ledger_validator": _fake_ledger_validator,
+    "ledger_validator": _fake_ledger_validator,
         "score_batch": _fake_score_batch,
         "rails_runner": _fake_rails_runner,
     }

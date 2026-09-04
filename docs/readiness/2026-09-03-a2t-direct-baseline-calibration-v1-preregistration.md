@@ -491,3 +491,42 @@ reported the false green (kept deliberately -- it is the evidence for defect 8, 
 The registered 16-call smoke was NOT run in this phase; the standing rule is to stop for a commit
 once a refusal is diagnosed and fixed. `SAEA-A2T-DIRECT-CALIBRATION-SMOKE-V1` remains
 `consumed = no` with all 16 calls unspent.
+
+### 2026-09-04, Phase 2g: first real contacts, and defect 9 at the finalizer
+
+The wire check was truthfully green for all four cells this time (every scorer job succeeded), so
+the smoke launched on the still-clean tree. **Cell A0' made the campaign's first four real model
+contacts** and then died in `seal()`, at the one link the wire check did not cover.
+
+- **A0'-legacy-raw actually flew**: 4 of 4 contacts, 16.948 speech-audio seconds, 53,199 prompt
+  tokens, 120 completion tokens, 6.538 s of in-request latency, 4 admitted outputs rows with real
+  model text, a COMPLETED manifest and a verified trace. The server came up and was stopped
+  cleanly. A1 never started, because the queue raised on A0's seal.
+- **Defect 9: `seal()` called `finalize_bundle` with no ledger cells.**
+  `core.tracking.ledger_row_for_bundle` requires the complete 21-column ledger surface;
+  `core.tracking.bundle_ledger_cells` derives only nine of them and says so -- the other twelve are
+  "human judgment or external-index facts this module has no basis to invent", i.e. the caller's.
+  `seal()` supplied none, so finalize refused with "ledger row must have exactly the columns ...".
+  Fixed: `FlightRuntime.CALLER_LEDGER_COLUMNS` names those twelve, `_default_ledger_cells(plan)`
+  derives the honest ones from the flight's own composed identity and marks the four judgment
+  columns `pending post-run analysis` (a run seals before its verdict exists; inventing one would be
+  worse than saying so), `seal(ledger_cells=...)` lets a caller override any of them, and a missing
+  column now refuses in the harness with a clear message instead of deep inside tracking.
+- **The wire check's own gap, closed.** It exercised the manifest builder, the verifier and the
+  scorers but NOT the finalizer, which is why defect 9 survived a green wire check. It now validates
+  the same complete ledger surface through an injectable `ledger_validator` seam (default
+  `core.tracking.ledger_row_for_bundle`), in validate-only mode -- the real finalizer would settle
+  the very attempt the check is about to abort.
+- Four new tests: the ledger surface is validated with every caller-owned column present, `seal()`
+  refuses a missing column, the judgment columns carry the pending marker, and the finalizer doubles
+  in both test files now assert the same contract rather than ignoring the argument.
+
+**Budget position, which constrains the recovery.** The registered row allows 16 calls and 4 are
+now durably spent, leaving exactly 12 -- exactly the three remaining cells. The recovery is
+therefore NOT a re-run: A0's bundle is sealed, COMPLETED and its attempt still OPENED, so once
+defect 9 is committed it can be finalized and scored with ZERO further contacts, and only A1, P0 and
+P1 need to fly (12 calls). That lands the smoke at exactly 16 with no re-registration. Re-running
+A0' instead would need 20 calls against a 16-call row and must not be attempted.
+
+`SAEA-A2T-DIRECT-CALIBRATION-SMOKE-V1` therefore stays `consumed = no` for now, with 4 of its 16
+calls spent and one attempt OPENED pending that zero-contact finalize.
