@@ -1,0 +1,1350 @@
+{
+  "alignment_standard": "owner, 2026-09-04: aligned means within 3 points of the official number; being better than the official number by more than 3 points is also acceptable",
+  "boundary": "zero model, GPU and network contact: every number is computed from outputs JSONL files the two registered runs and their sealed predecessor already wrote, and gold enters only through the registered scorers",
+  "cells": {
+    "T1-official-pop-500": {
+      "alignment_official_vs_v2": {
+        "overall": {
+          "exact_match_delta_pp": 4.3999999999999995,
+          "official_exact_match_pct": 10.2,
+          "official_param_f1_macro_pct": 14.399999999999999,
+          "official_param_f1_micro_pct": 1.1976047904191616,
+          "official_parse_rate_pct": 100.0,
+          "official_rows_with_multiple_call_matches": 0,
+          "official_tool_accuracy_pct": 65.60000000000001,
+          "samples": 500,
+          "tool_accuracy_delta_pp": 0.0,
+          "v2_exact_match_pct": 14.6,
+          "v2_extra_keys_stripped": 109,
+          "v2_parse_failures": 0,
+          "v2_slot_f1_pct": 0.0,
+          "v2_tool_accuracy_multiset_pct": 65.60000000000001,
+          "v2_tool_accuracy_ordered_pct": 65.60000000000001
+        },
+        "per_tier": [
+          {
+            "exact_match_delta_pp": 4.3999999999999995,
+            "exact_match_within_band": false,
+            "official_exact_match_pct": 10.2,
+            "official_param_f1_macro_pct": 14.399999999999999,
+            "official_param_f1_micro_pct": 1.1976047904191616,
+            "official_tool_accuracy_pct": 65.60000000000001,
+            "rules_that_can_explain_a_gap": [
+              "default_argument_credit",
+              "primary_gold_tool_vs_full_expected_sequence"
+            ],
+            "samples": 500,
+            "tier": "tier1_direct",
+            "tool_accuracy_delta_pp": 0.0,
+            "tool_accuracy_within_band": true,
+            "v2_exact_match_pct": 14.6,
+            "v2_slot_f1_pct": 0.0,
+            "v2_tool_accuracy_multiset_pct": 65.60000000000001,
+            "v2_tool_accuracy_ordered_pct": 65.60000000000001
+          }
+        ],
+        "scorer_versions": {
+          "official": "a2t-scorer-official-b9d5383c",
+          "official_commit": "b9d5383ca30945fbafb965a04bea40117e1e8a82",
+          "official_gold": "a2t-gold-official-release-loader",
+          "parse": "a2t-parse-v2-json-or-callstring",
+          "v2": "a2t-scorer-v2",
+          "v2_gold": "a2t-gold-v1"
+        }
+      },
+      "attempt_id": "attempt-20260904T172609Z-t1officialpop500",
+      "cell_id": "T1-official-pop-500",
+      "decision": {
+        "aligned_threshold_pct": 89.4,
+        "alignment_band_pp": 3.0,
+        "extension_contingency_fires": false,
+        "outcome": "FAIL",
+        "paper_inside_ci90": false,
+        "rule": "ALIGNED = official tier-1 tool accuracy >= 89.4 (within 3 pp of the paper's 92.4, or better); CONSISTENT-WITHIN-NOISE = not ALIGNED but 92.4 inside the Wilson CI90 at n = 500; FAIL = neither"
+      },
+      "delta_pp": {
+        "exact_match": -82.2,
+        "tool_accuracy": -26.80000000000001
+      },
+      "domain_slices": {
+        "counts": {
+          "smart_car": 41,
+          "smart_home": 368,
+          "wearables": 91
+        },
+        "per_domain": {
+          "smart_car": {
+            "exact_match": {
+              "ci90_high_pct": 63.58079482998645,
+              "ci90_low_pct": 38.70724444597019,
+              "pct": 51.21951219512195,
+              "samples": 41,
+              "successes": 21
+            },
+            "param_f1_macro_pct": 53.65853658536586,
+            "tool_accuracy": {
+              "ci90_high_pct": 97.03801942618276,
+              "ci90_low_pct": 83.0433552322997,
+              "pct": 92.6829268292683,
+              "samples": 41,
+              "successes": 38
+            }
+          },
+          "smart_home": {
+            "exact_match": {
+              "ci90_high_pct": 6.454779050813916,
+              "ci90_low_pct": 2.907245355598288,
+              "pct": 4.3478260869565215,
+              "samples": 368,
+              "successes": 16
+            },
+            "param_f1_macro_pct": 9.239130434782608,
+            "tool_accuracy": {
+              "ci90_high_pct": 59.90868947167575,
+              "ci90_low_pct": 51.421057477522716,
+              "pct": 55.70652173913044,
+              "samples": 368,
+              "successes": 205
+            }
+          },
+          "wearables": {
+            "exact_match": {
+              "ci90_high_pct": 22.595726445698062,
+              "ci90_low_pct": 10.172391983856201,
+              "pct": 15.384615384615385,
+              "samples": 91,
+              "successes": 14
+            },
+            "param_f1_macro_pct": 17.582417582417584,
+            "tool_accuracy": {
+              "ci90_high_pct": 96.552473016938,
+              "ci90_low_pct": 87.75417212695429,
+              "pct": 93.4065934065934,
+              "samples": 91,
+              "successes": 85
+            }
+          }
+        },
+        "tool_accuracy_equal_domain_pct": 80.59868065833071,
+        "tool_accuracy_natural_mixture_pct": 65.60000000000001
+      },
+      "frozen_400_tier1_comparison": {
+        "cell_id": "R-official-raw",
+        "exact_match": {
+          "ci90_high_pct": 21.5672825393025,
+          "ci90_low_pct": 6.334039580454028,
+          "pct": 12.0,
+          "samples": 50,
+          "successes": 6
+        },
+        "note": "not a paired contrast: the two rosters are different populations (500 first-speaker rows over distinct queries against 50 mixed-speaker rows over 50 queries, 12 of which overlap). Reported as two independent estimates of the same tier under the same protocol",
+        "roster_effect_pp": 5.599999999999994,
+        "samples": 50,
+        "tool_accuracy": {
+          "ci90_high_pct": 70.59806569075128,
+          "ci90_low_pct": 48.375270593523304,
+          "pct": 60.0,
+          "samples": 50,
+          "successes": 30
+        }
+      },
+      "manifest_sha256": "17acd0f4c1de9b5f4c658390fb67e8a6065f1628ff09b19bcd77afa47e7f99cf",
+      "official": {
+        "exact_match": {
+          "ci90_high_pct": 12.644795588994759,
+          "ci90_low_pct": 8.183608795540659,
+          "pct": 10.2,
+          "samples": 500,
+          "successes": 51
+        },
+        "param_f1_macro_pct": 14.399999999999999,
+        "param_f1_micro_pct": 1.1976047904191616,
+        "parse_failures": 0,
+        "parse_rate_pct": 100.0,
+        "rows_with_multiple_call_matches": 0,
+        "tool_accuracy": {
+          "ci90_high_pct": 69.00204274547734,
+          "ci90_low_pct": 62.03003995807159,
+          "pct": 65.6,
+          "samples": 500,
+          "successes": 328
+        }
+      },
+      "paper": {
+        "exact_match": 92.4,
+        "tool_accuracy": 92.4
+      },
+      "run_id": "SAEA-A2T-TIER1-OFFICIAL-POPULATION-V1",
+      "samples": 500,
+      "study_commit": "e61b424a17e60106232b945a1aec5f55c7cdc4f3",
+      "tool_confusion_diagnostic": {
+        "note": "diagnostic only; no number here enters a decision. It exists because the domain slice turns the tier-1 gap into a smart_home question and this says what the smart_home wrong answers are",
+        "per_domain": {
+          "smart_car": {
+            "correct": 38,
+            "miss_predicted_name_is_a_real_registry_tool": 3,
+            "miss_predicted_tool_other_domain": 1,
+            "miss_predicted_tool_same_domain": 2,
+            "misses": 3,
+            "samples": 41
+          },
+          "smart_home": {
+            "correct": 205,
+            "miss_predicted_name_absent_from_registry": 2,
+            "miss_predicted_name_is_a_real_registry_tool": 161,
+            "miss_predicted_tool_other_domain": 82,
+            "miss_predicted_tool_same_domain": 79,
+            "misses": 163,
+            "samples": 368
+          },
+          "wearables": {
+            "correct": 85,
+            "miss_predicted_name_is_a_real_registry_tool": 6,
+            "miss_predicted_tool_other_domain": 6,
+            "misses": 6,
+            "samples": 91
+          }
+        },
+        "per_domain_category_accuracy": {
+          "smart_car/body_control": {
+            "correct": 6,
+            "pct": 100.0,
+            "samples": 6
+          },
+          "smart_car/charging_energy": {
+            "correct": 5,
+            "pct": 71.42857142857143,
+            "samples": 7
+          },
+          "smart_car/climate_environment": {
+            "correct": 5,
+            "pct": 100.0,
+            "samples": 5
+          },
+          "smart_car/core_control": {
+            "correct": 2,
+            "pct": 100.0,
+            "samples": 2
+          },
+          "smart_car/diagnostics": {
+            "correct": 3,
+            "pct": 100.0,
+            "samples": 3
+          },
+          "smart_car/driving_dynamics": {
+            "correct": 3,
+            "pct": 100.0,
+            "samples": 3
+          },
+          "smart_car/maintenance": {
+            "correct": 5,
+            "pct": 100.0,
+            "samples": 5
+          },
+          "smart_car/media_cabin": {
+            "correct": 1,
+            "pct": 50.0,
+            "samples": 2
+          },
+          "smart_car/navigation": {
+            "correct": 2,
+            "pct": 100.0,
+            "samples": 2
+          },
+          "smart_car/novelty": {
+            "correct": 1,
+            "pct": 100.0,
+            "samples": 1
+          },
+          "smart_car/security": {
+            "correct": 1,
+            "pct": 100.0,
+            "samples": 1
+          },
+          "smart_car/status": {
+            "correct": 4,
+            "pct": 100.0,
+            "samples": 4
+          },
+          "smart_home/appliances": {
+            "correct": 16,
+            "pct": 66.66666666666667,
+            "samples": 24
+          },
+          "smart_home/automation": {
+            "correct": 9,
+            "pct": 36.0,
+            "samples": 25
+          },
+          "smart_home/climate": {
+            "correct": 28,
+            "pct": 63.63636363636363,
+            "samples": 44
+          },
+          "smart_home/core_control": {
+            "correct": 14,
+            "pct": 41.1764705882353,
+            "samples": 34
+          },
+          "smart_home/device_finding": {
+            "correct": 1,
+            "pct": 20.0,
+            "samples": 5
+          },
+          "smart_home/diagnostics": {
+            "correct": 20,
+            "pct": 74.07407407407408,
+            "samples": 27
+          },
+          "smart_home/energy": {
+            "correct": 19,
+            "pct": 82.6086956521739,
+            "samples": 23
+          },
+          "smart_home/lighting": {
+            "correct": 19,
+            "pct": 37.254901960784316,
+            "samples": 51
+          },
+          "smart_home/maintenance": {
+            "correct": 30,
+            "pct": 81.08108108108108,
+            "samples": 37
+          },
+          "smart_home/media": {
+            "correct": 19,
+            "pct": 46.34146341463415,
+            "samples": 41
+          },
+          "smart_home/security": {
+            "correct": 14,
+            "pct": 45.16129032258065,
+            "samples": 31
+          },
+          "smart_home/status": {
+            "correct": 16,
+            "pct": 61.53846153846154,
+            "samples": 26
+          },
+          "wearables/device_state": {
+            "correct": 24,
+            "pct": 92.3076923076923,
+            "samples": 26
+          },
+          "wearables/health_activity": {
+            "correct": 44,
+            "pct": 91.66666666666667,
+            "samples": 48
+          },
+          "wearables/system_connectivity": {
+            "correct": 17,
+            "pct": 100.0,
+            "samples": 17
+          }
+        },
+        "registry_tools_per_domain": {
+          "smart_car": 86,
+          "smart_home": 53,
+          "wearables": 13
+        },
+        "smart_home_top_confusions": [
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "maintenance"
+            ],
+            "gold_tool": "rebootDevice",
+            "predicted_domain_category": [
+              "smart_home",
+              "automation"
+            ],
+            "predicted_tool": "restartDevice",
+            "rows": 12
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "core_control"
+            ],
+            "gold_tool": "setSecurityMode",
+            "predicted_domain_category": [
+              "smart_home",
+              "security"
+            ],
+            "predicted_tool": "armSecuritySystem",
+            "rows": 8
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "automation"
+            ],
+            "gold_tool": "activateScene",
+            "predicted_domain_category": [
+              "smart_home",
+              "automation"
+            ],
+            "predicted_tool": "activateRoutine",
+            "rows": 7
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "lighting"
+            ],
+            "gold_tool": "setColor",
+            "predicted_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "predicted_tool": "setAmbientLighting",
+            "rows": 6
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "lighting"
+            ],
+            "gold_tool": "setColorTemperature",
+            "predicted_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "predicted_tool": "setAmbientLighting",
+            "rows": 6
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "core_control"
+            ],
+            "gold_tool": "setLighting",
+            "predicted_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "predicted_tool": "setAmbientLighting",
+            "rows": 5
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "climate"
+            ],
+            "gold_tool": "getAirQuality",
+            "predicted_domain_category": [
+              "smart_home",
+              "diagnostics"
+            ],
+            "predicted_tool": "getAirQuality_diag",
+            "rows": 5
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "lighting"
+            ],
+            "gold_tool": "setGroupLightState",
+            "predicted_domain_category": [
+              "smart_home",
+              "core_control"
+            ],
+            "predicted_tool": "setLighting",
+            "rows": 5
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "core_control"
+            ],
+            "gold_tool": "setLighting",
+            "predicted_domain_category": [
+              "smart_home",
+              "lighting"
+            ],
+            "predicted_tool": "setLightState",
+            "rows": 4
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "security"
+            ],
+            "gold_tool": "setGarageDoor",
+            "predicted_domain_category": [
+              "smart_car",
+              "body_control"
+            ],
+            "predicted_tool": "setGarageOpener",
+            "rows": 4
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "media"
+            ],
+            "gold_tool": "playMedia",
+            "predicted_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "predicted_tool": "controlPlayback",
+            "rows": 4
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "diagnostics"
+            ],
+            "gold_tool": "getAirQuality_diag",
+            "predicted_domain_category": [
+              "smart_home",
+              "climate"
+            ],
+            "predicted_tool": "getAirQuality",
+            "rows": 4
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "status"
+            ],
+            "gold_tool": "getLockState",
+            "predicted_domain_category": [
+              "smart_car",
+              "status"
+            ],
+            "predicted_tool": "getLockStatus",
+            "rows": 4
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "media"
+            ],
+            "gold_tool": "playMedia",
+            "predicted_domain_category": [
+              "smart_home",
+              "media"
+            ],
+            "predicted_tool": "controlPlayback_home",
+            "rows": 3
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "media"
+            ],
+            "gold_tool": "setVolume",
+            "predicted_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "predicted_tool": "adjustVolume",
+            "rows": 3
+          }
+        ]
+      }
+    },
+    "W-official-raw-yaml": {
+      "alignment_official_vs_v2": {
+        "overall": {
+          "exact_match_delta_pp": -5.249999999999999,
+          "official_exact_match_pct": 21.75,
+          "official_param_f1_macro_pct": 32.47142857142857,
+          "official_param_f1_micro_pct": 28.402366863905325,
+          "official_parse_rate_pct": 100.0,
+          "official_rows_with_multiple_call_matches": 45,
+          "official_tool_accuracy_pct": 62.0,
+          "samples": 400,
+          "tool_accuracy_delta_pp": -9.750000000000004,
+          "v2_exact_match_pct": 16.5,
+          "v2_extra_keys_stripped": 62,
+          "v2_parse_failures": 0,
+          "v2_slot_f1_pct": 24.72924187725632,
+          "v2_tool_accuracy_multiset_pct": 53.25,
+          "v2_tool_accuracy_ordered_pct": 52.25
+        },
+        "per_tier": [
+          {
+            "exact_match_delta_pp": 4.000000000000001,
+            "exact_match_within_band": false,
+            "official_exact_match_pct": 12.0,
+            "official_param_f1_macro_pct": 20.0,
+            "official_param_f1_micro_pct": 3.0303030303030303,
+            "official_tool_accuracy_pct": 57.99999999999999,
+            "rules_that_can_explain_a_gap": [
+              "default_argument_credit",
+              "primary_gold_tool_vs_full_expected_sequence"
+            ],
+            "samples": 50,
+            "tier": "tier1_direct",
+            "tool_accuracy_delta_pp": 0.0,
+            "tool_accuracy_within_band": true,
+            "v2_exact_match_pct": 16.0,
+            "v2_slot_f1_pct": 0.0,
+            "v2_tool_accuracy_multiset_pct": 57.99999999999999,
+            "v2_tool_accuracy_ordered_pct": 57.99999999999999
+          },
+          {
+            "exact_match_delta_pp": 0.0,
+            "exact_match_within_band": true,
+            "official_exact_match_pct": 24.0,
+            "official_param_f1_macro_pct": 48.266666666666666,
+            "official_param_f1_micro_pct": 48.4472049689441,
+            "official_tool_accuracy_pct": 74.0,
+            "rules_that_can_explain_a_gap": [],
+            "samples": 50,
+            "tier": "tier2_parametric",
+            "tool_accuracy_delta_pp": 0.0,
+            "tool_accuracy_within_band": true,
+            "v2_exact_match_pct": 24.0,
+            "v2_slot_f1_pct": 40.993788819875775,
+            "v2_tool_accuracy_multiset_pct": 74.0,
+            "v2_tool_accuracy_ordered_pct": 74.0
+          },
+          {
+            "exact_match_delta_pp": -27.999999999999996,
+            "exact_match_within_band": false,
+            "official_exact_match_pct": 30.0,
+            "official_param_f1_macro_pct": 38.0,
+            "official_param_f1_micro_pct": 31.57894736842105,
+            "official_tool_accuracy_pct": 74.0,
+            "rules_that_can_explain_a_gap": [
+              "first_call_only_vs_ordered_sequence",
+              "primary_gold_tool_vs_full_expected_sequence",
+              "default_argument_credit"
+            ],
+            "samples": 50,
+            "tier": "tier3_multi_intent",
+            "tool_accuracy_delta_pp": -50.0,
+            "tool_accuracy_within_band": false,
+            "v2_exact_match_pct": 2.0,
+            "v2_slot_f1_pct": 25.43352601156069,
+            "v2_tool_accuracy_multiset_pct": 26.0,
+            "v2_tool_accuracy_ordered_pct": 24.0
+          },
+          {
+            "exact_match_delta_pp": 0.0,
+            "exact_match_within_band": true,
+            "official_exact_match_pct": 20.0,
+            "official_param_f1_macro_pct": 22.0,
+            "official_param_f1_micro_pct": 9.75609756097561,
+            "official_tool_accuracy_pct": 34.0,
+            "rules_that_can_explain_a_gap": [],
+            "samples": 50,
+            "tier": "tier4_implicit",
+            "tool_accuracy_delta_pp": 0.0,
+            "tool_accuracy_within_band": true,
+            "v2_exact_match_pct": 20.0,
+            "v2_slot_f1_pct": 10.256410256410257,
+            "v2_tool_accuracy_multiset_pct": 34.0,
+            "v2_tool_accuracy_ordered_pct": 34.0
+          },
+          {
+            "exact_match_delta_pp": -1.9999999999999991,
+            "exact_match_within_band": true,
+            "official_exact_match_pct": 18.0,
+            "official_param_f1_macro_pct": 30.266666666666666,
+            "official_param_f1_micro_pct": 33.56643356643357,
+            "official_tool_accuracy_pct": 76.0,
+            "rules_that_can_explain_a_gap": [],
+            "samples": 50,
+            "tier": "tier5_needle",
+            "tool_accuracy_delta_pp": 0.0,
+            "tool_accuracy_within_band": true,
+            "v2_exact_match_pct": 16.0,
+            "v2_slot_f1_pct": 27.631578947368425,
+            "v2_tool_accuracy_multiset_pct": 76.0,
+            "v2_tool_accuracy_ordered_pct": 76.0
+          },
+          {
+            "exact_match_delta_pp": 0.0,
+            "exact_match_within_band": true,
+            "official_exact_match_pct": 34.0,
+            "official_param_f1_macro_pct": 41.23809523809524,
+            "official_param_f1_micro_pct": 30.215827338129493,
+            "official_tool_accuracy_pct": 82.0,
+            "rules_that_can_explain_a_gap": [],
+            "samples": 50,
+            "tier": "tier6_correction",
+            "tool_accuracy_delta_pp": -1.9999999999999907,
+            "tool_accuracy_within_band": true,
+            "v2_exact_match_pct": 34.0,
+            "v2_slot_f1_pct": 28.57142857142857,
+            "v2_tool_accuracy_multiset_pct": 80.0,
+            "v2_tool_accuracy_ordered_pct": 80.0
+          },
+          {
+            "exact_match_delta_pp": 0.0,
+            "exact_match_within_band": true,
+            "official_exact_match_pct": 20.0,
+            "official_param_f1_macro_pct": 34.0,
+            "official_param_f1_micro_pct": 30.136986301369866,
+            "official_tool_accuracy_pct": 60.0,
+            "rules_that_can_explain_a_gap": [],
+            "samples": 50,
+            "tier": "tier7_multiturn",
+            "tool_accuracy_delta_pp": 0.0,
+            "tool_accuracy_within_band": true,
+            "v2_exact_match_pct": 20.0,
+            "v2_slot_f1_pct": 28.169014084507044,
+            "v2_tool_accuracy_multiset_pct": 60.0,
+            "v2_tool_accuracy_ordered_pct": 60.0
+          },
+          {
+            "exact_match_delta_pp": -16.0,
+            "exact_match_within_band": false,
+            "official_exact_match_pct": 16.0,
+            "official_param_f1_macro_pct": 26.0,
+            "official_param_f1_micro_pct": 21.311475409836067,
+            "official_tool_accuracy_pct": 38.0,
+            "rules_that_can_explain_a_gap": [
+              "first_call_only_vs_ordered_sequence",
+              "primary_gold_tool_vs_full_expected_sequence",
+              "default_argument_credit"
+            ],
+            "samples": 50,
+            "tier": "tier8_intent_blending",
+            "tool_accuracy_delta_pp": -26.0,
+            "tool_accuracy_within_band": false,
+            "v2_exact_match_pct": 0.0,
+            "v2_slot_f1_pct": 17.647058823529413,
+            "v2_tool_accuracy_multiset_pct": 18.0,
+            "v2_tool_accuracy_ordered_pct": 12.0
+          }
+        ],
+        "scorer_versions": {
+          "official": "a2t-scorer-official-b9d5383c",
+          "official_commit": "b9d5383ca30945fbafb965a04bea40117e1e8a82",
+          "official_gold": "a2t-gold-official-release-loader",
+          "parse": "a2t-parse-v2-json-or-callstring",
+          "v2": "a2t-scorer-v2",
+          "v2_gold": "a2t-gold-v1"
+        }
+      },
+      "attempt_id": "attempt-20260904T173219Z-wofficialrawyaml",
+      "cell_id": "W-official-raw-yaml",
+      "decision": {
+        "all_decision_tiers_aligned": false,
+        "all_decision_tiers_contain_the_paper_value_in_ci90": false,
+        "decision_tiers": [
+          "tier1_direct",
+          "tier2_parametric",
+          "tier5_needle",
+          "tier6_correction"
+        ],
+        "outcome": "FAIL",
+        "rule": "ALIGNED = per-tier official tool accuracy within 3 pp of the paper row or better on tiers 1, 2, 5 and 6; CONSISTENT-WITHIN-NOISE = not ALIGNED but the paper value inside the tier's Wilson CI90 (n = 50) on all four; FAIL = neither"
+      },
+      "manifest_sha256": "051ae145a7f994f5ab3d0ba4686ec0292df4d267436350da4448804075575d92",
+      "overall": {
+        "exact_match_pct": 21.75,
+        "param_f1_macro_pct": 32.47142857142857,
+        "param_f1_micro_pct": 28.402366863905325,
+        "parse_rate_pct": 100.0,
+        "rows_with_multiple_call_matches": 45,
+        "tool_accuracy_pct": 62.0
+      },
+      "paired_against_the_sealed_in_code_default_cell": {
+        "bootstrap": {
+          "ci_level": 0.9,
+          "replicates": 10000,
+          "seed": 20260903,
+          "stratification": "tier"
+        },
+        "contrasts": {
+          "exact_match": {
+            "ci_high": 0.03,
+            "ci_low": 0.0025,
+            "delta": 0.014999999999999986,
+            "harms": 3,
+            "left_cell": "R-official-raw",
+            "left_mean": 0.2025,
+            "per_stratum": [
+              {
+                "delta": 0.0,
+                "harms": 0,
+                "left_mean": 0.12,
+                "n": 50,
+                "right_mean": 0.12,
+                "saves": 0,
+                "stratum": "tier1_direct",
+                "ties": 50
+              },
+              {
+                "delta": 0.03999999999999998,
+                "harms": 0,
+                "left_mean": 0.2,
+                "n": 50,
+                "right_mean": 0.24,
+                "saves": 2,
+                "stratum": "tier2_parametric",
+                "ties": 48
+              },
+              {
+                "delta": -0.020000000000000018,
+                "harms": 1,
+                "left_mean": 0.32,
+                "n": 50,
+                "right_mean": 0.3,
+                "saves": 0,
+                "stratum": "tier3_multi_intent",
+                "ties": 49
+              },
+              {
+                "delta": 0.04000000000000001,
+                "harms": 0,
+                "left_mean": 0.16,
+                "n": 50,
+                "right_mean": 0.2,
+                "saves": 2,
+                "stratum": "tier4_implicit",
+                "ties": 48
+              },
+              {
+                "delta": 0.0,
+                "harms": 1,
+                "left_mean": 0.18,
+                "n": 50,
+                "right_mean": 0.18,
+                "saves": 1,
+                "stratum": "tier5_needle",
+                "ties": 48
+              },
+              {
+                "delta": 0.06,
+                "harms": 0,
+                "left_mean": 0.28,
+                "n": 50,
+                "right_mean": 0.34,
+                "saves": 3,
+                "stratum": "tier6_correction",
+                "ties": 47
+              },
+              {
+                "delta": 0.020000000000000018,
+                "harms": 0,
+                "left_mean": 0.18,
+                "n": 50,
+                "right_mean": 0.2,
+                "saves": 1,
+                "stratum": "tier7_multiturn",
+                "ties": 49
+              },
+              {
+                "delta": -0.01999999999999999,
+                "harms": 1,
+                "left_mean": 0.18,
+                "n": 50,
+                "right_mean": 0.16,
+                "saves": 0,
+                "stratum": "tier8_intent_blending",
+                "ties": 49
+              }
+            ],
+            "right_cell": "W-official-raw-yaml",
+            "right_mean": 0.2175,
+            "saves": 9,
+            "sign_test_p": 0.14599609375,
+            "ties": 388
+          },
+          "param_f1": {
+            "ci_high": 0.02175,
+            "ci_low": -0.004749999999999999,
+            "delta": 0.00824999999999998,
+            "harms": 10,
+            "left_cell": "R-official-raw",
+            "left_mean": 0.3164642857142857,
+            "per_stratum": [
+              {
+                "delta": 0.020000000000000018,
+                "harms": 0,
+                "left_mean": 0.18,
+                "n": 50,
+                "right_mean": 0.2,
+                "saves": 1,
+                "stratum": "tier1_direct",
+                "ties": 49
+              },
+              {
+                "delta": 0.03999999999999998,
+                "harms": 0,
+                "left_mean": 0.44266666666666665,
+                "n": 50,
+                "right_mean": 0.48266666666666663,
+                "saves": 3,
+                "stratum": "tier2_parametric",
+                "ties": 47
+              },
+              {
+                "delta": -0.053333333333333344,
+                "harms": 3,
+                "left_mean": 0.43333333333333335,
+                "n": 50,
+                "right_mean": 0.38,
+                "saves": 0,
+                "stratum": "tier3_multi_intent",
+                "ties": 47
+              },
+              {
+                "delta": 0.01666666666666669,
+                "harms": 0,
+                "left_mean": 0.2033333333333333,
+                "n": 50,
+                "right_mean": 0.22,
+                "saves": 2,
+                "stratum": "tier4_implicit",
+                "ties": 48
+              },
+              {
+                "delta": 0.009333333333333305,
+                "harms": 1,
+                "left_mean": 0.29333333333333333,
+                "n": 50,
+                "right_mean": 0.30266666666666664,
+                "saves": 1,
+                "stratum": "tier5_needle",
+                "ties": 48
+              },
+              {
+                "delta": 0.04666666666666669,
+                "harms": 1,
+                "left_mean": 0.3657142857142857,
+                "n": 50,
+                "right_mean": 0.4123809523809524,
+                "saves": 3,
+                "stratum": "tier6_correction",
+                "ties": 46
+              },
+              {
+                "delta": -0.013333333333333308,
+                "harms": 3,
+                "left_mean": 0.35333333333333333,
+                "n": 50,
+                "right_mean": 0.34,
+                "saves": 2,
+                "stratum": "tier7_multiturn",
+                "ties": 45
+              },
+              {
+                "delta": 0.0,
+                "harms": 2,
+                "left_mean": 0.26,
+                "n": 50,
+                "right_mean": 0.26,
+                "saves": 2,
+                "stratum": "tier8_intent_blending",
+                "ties": 46
+              }
+            ],
+            "right_cell": "W-official-raw-yaml",
+            "right_mean": 0.3247142857142857,
+            "saves": 14,
+            "sign_test_p": 0.5412561893463135,
+            "ties": 376
+          },
+          "parsed": {
+            "ci_high": 0.0075,
+            "ci_low": 0.0,
+            "delta": 0.0024999999999999467,
+            "harms": 0,
+            "left_cell": "R-official-raw",
+            "left_mean": 0.9975,
+            "per_stratum": [
+              {
+                "delta": 0.0,
+                "harms": 0,
+                "left_mean": 1.0,
+                "n": 50,
+                "right_mean": 1.0,
+                "saves": 0,
+                "stratum": "tier1_direct",
+                "ties": 50
+              },
+              {
+                "delta": 0.0,
+                "harms": 0,
+                "left_mean": 1.0,
+                "n": 50,
+                "right_mean": 1.0,
+                "saves": 0,
+                "stratum": "tier2_parametric",
+                "ties": 50
+              },
+              {
+                "delta": 0.0,
+                "harms": 0,
+                "left_mean": 1.0,
+                "n": 50,
+                "right_mean": 1.0,
+                "saves": 0,
+                "stratum": "tier3_multi_intent",
+                "ties": 50
+              },
+              {
+                "delta": 0.020000000000000018,
+                "harms": 0,
+                "left_mean": 0.98,
+                "n": 50,
+                "right_mean": 1.0,
+                "saves": 1,
+                "stratum": "tier4_implicit",
+                "ties": 49
+              },
+              {
+                "delta": 0.0,
+                "harms": 0,
+                "left_mean": 1.0,
+                "n": 50,
+                "right_mean": 1.0,
+                "saves": 0,
+                "stratum": "tier5_needle",
+                "ties": 50
+              },
+              {
+                "delta": 0.0,
+                "harms": 0,
+                "left_mean": 1.0,
+                "n": 50,
+                "right_mean": 1.0,
+                "saves": 0,
+                "stratum": "tier6_correction",
+                "ties": 50
+              },
+              {
+                "delta": 0.0,
+                "harms": 0,
+                "left_mean": 1.0,
+                "n": 50,
+                "right_mean": 1.0,
+                "saves": 0,
+                "stratum": "tier7_multiturn",
+                "ties": 50
+              },
+              {
+                "delta": 0.0,
+                "harms": 0,
+                "left_mean": 1.0,
+                "n": 50,
+                "right_mean": 1.0,
+                "saves": 0,
+                "stratum": "tier8_intent_blending",
+                "ties": 50
+              }
+            ],
+            "right_cell": "W-official-raw-yaml",
+            "right_mean": 1.0,
+            "saves": 1,
+            "sign_test_p": 1.0,
+            "ties": 399
+          },
+          "tool_accuracy": {
+            "ci_high": 0.03,
+            "ci_low": -0.0075,
+            "delta": 0.010000000000000009,
+            "harms": 8,
+            "left_cell": "R-official-raw",
+            "left_mean": 0.61,
+            "per_stratum": [
+              {
+                "delta": -0.020000000000000018,
+                "harms": 1,
+                "left_mean": 0.6,
+                "n": 50,
+                "right_mean": 0.58,
+                "saves": 0,
+                "stratum": "tier1_direct",
+                "ties": 49
+              },
+              {
+                "delta": 0.0,
+                "harms": 0,
+                "left_mean": 0.74,
+                "n": 50,
+                "right_mean": 0.74,
+                "saves": 0,
+                "stratum": "tier2_parametric",
+                "ties": 50
+              },
+              {
+                "delta": 0.020000000000000018,
+                "harms": 1,
+                "left_mean": 0.72,
+                "n": 50,
+                "right_mean": 0.74,
+                "saves": 2,
+                "stratum": "tier3_multi_intent",
+                "ties": 47
+              },
+              {
+                "delta": 0.06,
+                "harms": 0,
+                "left_mean": 0.28,
+                "n": 50,
+                "right_mean": 0.34,
+                "saves": 3,
+                "stratum": "tier4_implicit",
+                "ties": 47
+              },
+              {
+                "delta": -0.020000000000000018,
+                "harms": 2,
+                "left_mean": 0.78,
+                "n": 50,
+                "right_mean": 0.76,
+                "saves": 1,
+                "stratum": "tier5_needle",
+                "ties": 47
+              },
+              {
+                "delta": -0.020000000000000018,
+                "harms": 3,
+                "left_mean": 0.84,
+                "n": 50,
+                "right_mean": 0.82,
+                "saves": 2,
+                "stratum": "tier6_correction",
+                "ties": 45
+              },
+              {
+                "delta": 0.020000000000000018,
+                "harms": 0,
+                "left_mean": 0.58,
+                "n": 50,
+                "right_mean": 0.6,
+                "saves": 1,
+                "stratum": "tier7_multiturn",
+                "ties": 49
+              },
+              {
+                "delta": 0.03999999999999998,
+                "harms": 1,
+                "left_mean": 0.34,
+                "n": 50,
+                "right_mean": 0.38,
+                "saves": 3,
+                "stratum": "tier8_intent_blending",
+                "ties": 46
+              }
+            ],
+            "right_cell": "W-official-raw-yaml",
+            "right_mean": 0.62,
+            "saves": 12,
+            "sign_test_p": 0.5034446716308594,
+            "ties": 380
+          }
+        },
+        "left": {
+          "attempt_id": "attempt-20260904T135250Z-rofficialraw",
+          "cell_id": "R-official-raw",
+          "run_id": "SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-V1",
+          "system_prompt_sha256": "1c52cd2ebca6e4737b706ccc231b01f008d35276a2153000d74ec9500018258a",
+          "system_prompt_variant": "in-code-default"
+        },
+        "right": {
+          "attempt_id": "attempt-20260904T173219Z-wofficialrawyaml",
+          "cell_id": "W-official-raw-yaml",
+          "run_id": "SAEA-A2T-TIER1-OFFICIAL-POPULATION-WHITESPACE-V1",
+          "system_prompt_sha256": "aa2e344ee52c59019b938926f37498e0dc9c80bd01f6521eba5c3d81309a491d",
+          "system_prompt_variant": "example-config-yaml"
+        },
+        "shared_samples": 400
+      },
+      "per_tier": [
+        {
+          "aligned": false,
+          "ci90_high_pct": 68.7793428567355,
+          "ci90_low_pct": 46.399326170684176,
+          "delta_pp": -34.40000000000001,
+          "exact_match_pct": 12.0,
+          "multi_tool_samples": 0,
+          "paper_exact_match_pct": 92.4,
+          "paper_inside_ci90": false,
+          "paper_tool_accuracy_pct": 92.4,
+          "param_f1_macro_pct": 20.0,
+          "param_f1_micro_pct": 3.0303030303030303,
+          "parse_rate_pct": 100.0,
+          "rows_with_multiple_call_matches": 0,
+          "samples": 50,
+          "tier": "tier1_direct",
+          "tool_accuracy_pct": 57.99999999999999
+        },
+        {
+          "aligned": false,
+          "ci90_high_pct": 82.78213679006589,
+          "ci90_low_pct": 62.75387029219313,
+          "delta_pp": -10.599999999999994,
+          "exact_match_pct": 24.0,
+          "multi_tool_samples": 0,
+          "paper_exact_match_pct": 15.6,
+          "paper_inside_ci90": false,
+          "paper_tool_accuracy_pct": 84.6,
+          "param_f1_macro_pct": 48.266666666666666,
+          "param_f1_micro_pct": 48.4472049689441,
+          "parse_rate_pct": 100.0,
+          "rows_with_multiple_call_matches": 0,
+          "samples": 50,
+          "tier": "tier2_parametric",
+          "tool_accuracy_pct": 74.0
+        },
+        {
+          "aligned": true,
+          "ci90_high_pct": 82.78213679006589,
+          "ci90_low_pct": 62.75387029219313,
+          "delta_pp": -0.7000000000000028,
+          "exact_match_pct": 30.0,
+          "multi_tool_samples": 50,
+          "paper_exact_match_pct": 28.6,
+          "paper_inside_ci90": true,
+          "paper_tool_accuracy_pct": 74.7,
+          "param_f1_macro_pct": 38.0,
+          "param_f1_micro_pct": 31.57894736842105,
+          "parse_rate_pct": 100.0,
+          "rows_with_multiple_call_matches": 25,
+          "samples": 50,
+          "tier": "tier3_multi_intent",
+          "tool_accuracy_pct": 74.0
+        },
+        {
+          "aligned": true,
+          "ci90_high_pct": 45.5854497693472,
+          "ci90_low_pct": 24.05721217581345,
+          "delta_pp": 0.6000000000000014,
+          "exact_match_pct": 20.0,
+          "multi_tool_samples": 0,
+          "paper_exact_match_pct": 11.3,
+          "paper_inside_ci90": true,
+          "paper_tool_accuracy_pct": 33.4,
+          "param_f1_macro_pct": 22.0,
+          "param_f1_micro_pct": 9.75609756097561,
+          "parse_rate_pct": 100.0,
+          "rows_with_multiple_call_matches": 0,
+          "samples": 50,
+          "tier": "tier4_implicit",
+          "tool_accuracy_pct": 34.0
+        },
+        {
+          "aligned": false,
+          "ci90_high_pct": 84.43329784439197,
+          "ci90_low_pct": 64.89737649472198,
+          "delta_pp": -14.599999999999994,
+          "exact_match_pct": 18.0,
+          "multi_tool_samples": 0,
+          "paper_exact_match_pct": 36.0,
+          "paper_inside_ci90": false,
+          "paper_tool_accuracy_pct": 90.6,
+          "param_f1_macro_pct": 30.266666666666666,
+          "param_f1_micro_pct": 33.56643356643357,
+          "parse_rate_pct": 100.0,
+          "rows_with_multiple_call_matches": 0,
+          "samples": 50,
+          "tier": "tier5_needle",
+          "tool_accuracy_pct": 76.0
+        },
+        {
+          "aligned": true,
+          "ci90_high_pct": 89.21544849028852,
+          "ci90_low_pct": 71.49922761939015,
+          "delta_pp": 0.5,
+          "exact_match_pct": 34.0,
+          "multi_tool_samples": 0,
+          "paper_exact_match_pct": 24.8,
+          "paper_inside_ci90": true,
+          "paper_tool_accuracy_pct": 81.5,
+          "param_f1_macro_pct": 41.23809523809524,
+          "param_f1_micro_pct": 30.215827338129493,
+          "parse_rate_pct": 100.0,
+          "rows_with_multiple_call_matches": 1,
+          "samples": 50,
+          "tier": "tier6_correction",
+          "tool_accuracy_pct": 82.0
+        },
+        {
+          "aligned": true,
+          "ci90_high_pct": 70.59806569075128,
+          "ci90_low_pct": 48.375270593523304,
+          "delta_pp": 5.399999999999999,
+          "exact_match_pct": 20.0,
+          "multi_tool_samples": 0,
+          "paper_exact_match_pct": 16.3,
+          "paper_inside_ci90": true,
+          "paper_tool_accuracy_pct": 54.6,
+          "param_f1_macro_pct": 34.0,
+          "param_f1_micro_pct": 30.136986301369866,
+          "parse_rate_pct": 100.0,
+          "rows_with_multiple_call_matches": 0,
+          "samples": 50,
+          "tier": "tier7_multiturn",
+          "tool_accuracy_pct": 60.0
+        },
+        {
+          "aligned": false,
+          "ci90_high_pct": 49.63055403215011,
+          "ci90_low_pct": 27.601442426720368,
+          "delta_pp": -3.700000000000003,
+          "exact_match_pct": 16.0,
+          "multi_tool_samples": 50,
+          "paper_exact_match_pct": 12.4,
+          "paper_inside_ci90": true,
+          "paper_tool_accuracy_pct": 41.7,
+          "param_f1_macro_pct": 26.0,
+          "param_f1_micro_pct": 21.311475409836067,
+          "parse_rate_pct": 100.0,
+          "rows_with_multiple_call_matches": 19,
+          "samples": 50,
+          "tier": "tier8_intent_blending",
+          "tool_accuracy_pct": 38.0
+        }
+      ],
+      "run_id": "SAEA-A2T-TIER1-OFFICIAL-POPULATION-WHITESPACE-V1",
+      "samples": 400,
+      "study_commit": "e61b424a17e60106232b945a1aec5f55c7cdc4f3"
+    }
+  },
+  "paper_facing_scorer": "a2t-toolcall-official",
+  "paper_row": {
+    "tier1_direct": {
+      "exact_match": 92.4,
+      "tool_accuracy": 92.4
+    },
+    "tier2_parametric": {
+      "exact_match": 15.6,
+      "tool_accuracy": 84.6
+    },
+    "tier3_multi_intent": {
+      "exact_match": 28.6,
+      "tool_accuracy": 74.7
+    },
+    "tier4_implicit": {
+      "exact_match": 11.3,
+      "tool_accuracy": 33.4
+    },
+    "tier5_needle": {
+      "exact_match": 36.0,
+      "tool_accuracy": 90.6
+    },
+    "tier6_correction": {
+      "exact_match": 24.8,
+      "tool_accuracy": 81.5
+    },
+    "tier7_multiturn": {
+      "exact_match": 16.3,
+      "tool_accuracy": 54.6
+    },
+    "tier8_intent_blending": {
+      "exact_match": 12.4,
+      "tool_accuracy": 41.7
+    }
+  },
+  "preregistration": "docs/readiness/2026-09-04-a2t-tier1-official-population-v1-preregistration.md",
+  "schema": "saea-a2t-tier1-official-population-result-summary-v1",
+  "scorer_rule_differences": {
+    "default_argument_credit": "v2 rule V2b drops a predicted argument key absent from every same-tool gold call when its value equals that tool's registry default; the official scorer counts every extra key as a parameter error and therefore as an exact-match failure",
+    "first_call_only_vs_ordered_sequence": "the official HF path never populates all_tool_calls, so the official scorer reads only the FIRST parsed call against the PRIMARY gold tool, while a2t-toolcall-v2 compares the whole ordered predicted sequence with the whole expected sequence",
+    "numeric_and_boolean_coercion": "v2 rule V2d compares a numeric-looking string to its numeric value and 'true'/'false' to the matching boolean; the official normalize_parameters reaches a similar place by a different route, so this rule rarely separates the two alone",
+    "parameter_f1_definition": "the official parameter F1 is a macro average of per-sample key P/R/F1 while v2's slot F1 is micro over (tool, key, value) triples, so the two answer different questions and are reported side by side rather than differenced",
+    "primary_gold_tool_vs_full_expected_sequence": "official gold is the release's QuerySample (primary tool_name + verbatim extracted_params); v2 gold is a2t-gold-v1, which builds the full expected call sequence and may take primary arguments from the expected_tool_call call string"
+  },
+  "study": "speech-aware-evidence-acquisition"
+}

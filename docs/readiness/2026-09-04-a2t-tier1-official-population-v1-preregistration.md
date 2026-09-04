@@ -393,3 +393,24 @@ The two cells produced **different protocol hashes** (`abb9c4cd…` for the in-c
 `9ab1df16…` for the YAML variant), which is what a genuine difference in the system-prompt bytes
 should produce and is a second, independent confirmation that the whitespace cell is not silently
 sending the default spelling.
+
+### 2026-09-04, Phase 4 — the flights
+
+Rows `SAEA-A2T-TIER1-OFFICIAL-POPULATION-V1` (500 rows, attempt
+`attempt-20260904T172609Z-t1officialpop500`, manifest SHA-256 `17acd0f4c1de…`) and
+`SAEA-A2T-TIER1-OFFICIAL-POPULATION-WHITESPACE-V1` (400 rows, attempt
+`attempt-20260904T173219Z-wofficialrawyaml`, manifest SHA-256 `051ae145a7f9…`), both on study
+commit `e61b424a`, one attempt each, FINALIZED, zero aborted, zero orphans, no recovery
+re-registration used. Spend was exactly 500 of 540 and 400 of 410 registered calls, and
+1,668.914042 of 1,750 and 2,159.688 of 2,250 registered speech-audio seconds. GPU
+`enforced.power.limit` held 100.00 W before and after both.
+
+**Both cells FAIL the section-7 rules**, and the extension contingency does not fire. Verdict:
+`docs/readiness/2026-09-04-a2t-tier1-official-population-v1-verdict.md`; numbers in
+`result-summary.json` (SHA-256
+`4aa4941195866a4c568369d164ef33ff6ea0ec8d8434fd1157099f47baf67837`).
+
+The substance is in the verdict; in one line each: the roster is worth +5.6 pp rather than +32, the
+whitespace variant is worth nothing (+1.00 pp, sign test p = 0.5034, 380 of 400 rows tied), and at
+n = 500 tier 1 splits by domain — `wearables` 93.41 and `smart_car` 92.68 sit on the published 92.4
+while `smart_home`, 368 of the 500 rows, sits at 55.71.
