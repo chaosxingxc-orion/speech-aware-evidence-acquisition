@@ -1,0 +1,37 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 420.0,
+  "runtime_receipt": "receipts/runtime-q4km-featcache-04ccc72a.json",
+  "server_args": [
+    "-c",
+    "49152",
+    "-np",
+    "3",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0"
+  ],
+  "serving_geometry": {
+    "slots": 3,
+    "slot_tokens": 16384,
+    "max_tokens": 1024
+  },
+  "serving_geometry_basis": "Raw-audio direct cells on build 04ccc72a with the bf16 mmproj loaded. Worst-case per-slot window = 13,236 legacy registry text tokens + 514 speech tokens (35.714 s longest item x 14.4 tokens/s) + 1,024 completion ceiling + 2 registered special tokens = 14,776; -c 49152 / -np 3 gives 16,384 per slot, a margin of 1,608 tokens. The sibling fragment q4km-featcache-a2t-np4-04ccc72a.json (-np 4, 12,288 per slot) cannot hold this request at all (-2,488) and is therefore not used for these cells. core.flight.FlightRuntime.serve derives -np/-c from the adapter's serving_geometry(), so slots x slot_tokens must equal the -c above exactly.",
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample"
+  },
+  "prompt_order": "evidence-first-system-v2",
+  "server_env": {
+    "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/audio2tool-q4km-04ccc72a"
+  }
+}

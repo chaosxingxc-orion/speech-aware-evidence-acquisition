@@ -55,9 +55,9 @@ as a reweighting beside it.
 
 | Cell | D2 arm | Audio path | Prompt | Model fragment | Geometry |
 |---|---|---|---|---|---|
-| A0' legacy x raw | `bare-core` | raw audio, mmproj loaded | `configs/probes/r1_audio2tool_direct.txt` (13k-token registry text) | new raw-audio Q4_K_M fragment on build 04ccc72a (inference receipt with mmproj; `-c 49152 -np 4` as A0) | A0's |
+| A0' legacy x raw | `bare-core` | raw audio, mmproj loaded | the Audio2Tool adapter's legacy instruction (`rails/adapters/audio2tool.py::_INSTRUCTION_TEMPLATE`, byte-identical to what A0 sent; 13,236 measured registry tokens; `configs/probes/r1_audio2tool_direct.txt` is its source text) | new raw-audio Q4_K_M fragment on build 04ccc72a (inference receipt with mmproj; `-c 49152 -np 4` as A0) | A0's |
 | A1 native x raw | `bare-core-native-tools` | raw audio, mmproj loaded | `configs/probes/r1_audio2tool_direct_native_tools.txt` plus `tools` | same as A0' | A0's |
-| P0 legacy x packets | `speech-feature-query` | mmproj-free packets | legacy registry text | `configs/model/q4km-mmproj-free-speech-native-np2-a2t-max1024.json` | section 8.1: `-c 65536 -np 2` |
+| P0 legacy x packets | `speech-feature-query` | mmproj-free packets | the same adapter legacy instruction | `configs/model/q4km-mmproj-free-speech-native-np2-a2t-max1024.json` | section 8.1: `-c 65536 -np 2` |
 | P1 native x packets | `speech-feature-query-native-tools` | mmproj-free packets | native tools | same as P0 | section 8.1 |
 
 Shared: temperature 0, seed 20260803, `max_tokens` 1024, `id_slot` per-sample, one contact per item,
@@ -118,3 +118,61 @@ so its prior is low and its cost high.
 No test contact, no mechanism arm, no Q8_0 flight, no fresh roster, no training-free policy fit, no
 edit to the locked SLURP cell. It authorizes exactly the four direct cells above on the frozen 400,
 after the four prerequisites are receipted and the owner's GO is recorded in this file.
+
+## 8. Owner GO recorded 2026-09-03; execution log
+
+The owner gave GO for this calibration flight on 2026-09-03 (recorded by the lead). The flight runs
+in three phases with a hard stop between each; the study tree must be committed at every phase
+boundary because `FlightRuntime.preflight` and the bundle sealer both refuse a dirty tree.
+
+### 2026-09-04, Phase 1 (model-free preparation, zero contacts)
+
+- Built the flight roster `docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-calibration-400-roster/flight-roster-receipt.json`
+  (SHA-256 `6f352ea583d0bb91f77aad62e07bdad4d3210d066440fbfaee8e2af504853fe7`) with the new
+  `scripts/build_a2t_calibration_400_roster.py`. Nothing was drawn: the roster re-expresses the
+  frozen 400 parent receipt in the flight-roster schema and adds `media_relpath`, `audio_seconds`
+  and `audio_sha256`. 400 rows, 50 per tier, 2,159.688 s, longest item 35.714 s.
+- Verified the roster reproduces the parent split identity hash
+  `e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c` under the parent's own key
+  convention, and recorded the second, different hash the same 400 samples produce under the
+  `FlightRuntime` carrier-prefixed convention,
+  `11091b38ae9d53530952af632636d7e79a614350213e10c6c26583c37f85846b`. Section 2's hash is the
+  former; a `FlightRuntime` exposure row must carry the latter.
+- **Section 4 item 1 is amended in one respect and the packet root is renamed.** The D1 media
+  supplement this campaign's dataset fragment was to declare cannot exist: all 400 sample ids are
+  already inside the parent D1 identity closure, and `contracts.gate_media_identity` refuses any
+  supplement that duplicates a base D1 sample. Media identity is therefore verified against the
+  parent D1 manifest directly and no supplement is created. The packet root is
+  `/home/chao/feat-cache/a2t-calibration-400-packets-04ccc72a` (section 4 named
+  `a2t-calibration-q4km-packets-04ccc72a`; the roster's own name is used instead so the directory
+  matches the roster and the model fragment).
+- Landed the config fragments: dataset `audio2tool-calibration-400`; experiments
+  `a2t-calibration-400-preprocess` and `a2t-direct-calibration-400-v1`; baselines
+  `a2t-direct-calibration`, `a2t-direct-native-tools-calibration`, `a2t-direct-packets`,
+  `a2t-direct-packets-native-tools`; models `q4km-featcache-a2t-calibration-04ccc72a` (raw audio,
+  `-c 49152 -np 3`, 16,384 tokens per slot) and
+  `q4km-mmproj-free-speech-native-a2t-calibration-max1024` (packets, `-c 65535 -np 3`, 21,845
+  tokens per slot). Section 3's raw-audio geometry is therefore `-np 3`, not A0's `-np 4`: at
+  `-np 4` a slot holds 12,288 tokens and cannot carry the 13,236-token registry request at all.
+- Added the `--calibration-400` profile to `scripts/a2t_g1_preprocess.py` and ran its two
+  contact-free modes. `--emit-identity` reports config hash
+  `e2dc87187a8833050daddbcf72eccb0886c56ff9a89f7d43a81b44f2096a65a4`; `--preflight-only` PASSED and
+  measured 312 of 400 rows already warm in the current-build legacy cache, 0 of 400 packet
+  manifests present and no promotion receipt.
+- Added `scripts/flights/run_calibration_cell.py`, one generic entry that reads the four cells from
+  this experiment fragment's own `cells` array and binds the seams `saea-driver flight` leaves
+  unbound (packet promoter, speech-feature client bindings, tool-schema resolver, the packet direct
+  arm, and the session start that preserves the model fragment's full `server_args`).
+- Registered three exposure rows: `SAEA-SN-A2T-CALIBRATION-400-PREPROCESS` (400 calls, 2,300 s,
+  0.3 GPU-h), `SAEA-A2T-DIRECT-CALIBRATION-SMOKE-V1` (16 calls, 100 s, 0.2 GPU-h) and
+  `SAEA-A2T-DIRECT-CALIBRATION-V1` (1,608 calls, 9,000 s, 6.0 GPU-h), all `consumed = no`.
+- `--dry-run` preflight for all four cells passed config composition, receipt-bound split load,
+  ExecutionPlan validation, the frozen-core gate and the exposure-row cross-check, and then
+  correctly refused on the uncommitted Phase-1 tree. The prompt-budget arithmetic was reproduced
+  outside the gate: every cell is ALLOW, with worst-case required windows of 15,453 tokens
+  (legacy contract, heuristic count) and 1,659 tokens (native contract, whose tool schemas travel
+  in the request's `tools` field and are therefore not counted by the pre-flight estimate at all).
+- Section 4 item 3 is consequently load-bearing: the exact prompt-fit receipt for the two
+  native-tools cells must be measured through the pinned template before takeoff, because the
+  rendered `tools` block is invisible to the pre-flight estimator, and the raw-audio slot's
+  margin at `-np 3` is 1,608 tokens against the measured 13,236-token legacy envelope.

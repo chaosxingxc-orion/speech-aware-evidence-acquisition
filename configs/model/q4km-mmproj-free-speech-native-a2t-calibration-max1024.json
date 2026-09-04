@@ -1,0 +1,51 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8090",
+  "timeout_seconds": 900.0,
+  "runtime_receipt": "receipts/runtime-q4km-mmproj-free.json",
+  "server_args": [
+    "-c",
+    "65535",
+    "-np",
+    "3",
+    "-b",
+    "2048",
+    "-ub",
+    "512",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "--cache-prompt",
+    "--cache-ram",
+    "0",
+    "--no-cache-idle-slots",
+    "--slot-prompt-similarity",
+    "0"
+  ],
+  "serving_geometry": {
+    "slots": 3,
+    "slot_tokens": 21845,
+    "max_tokens": 1024
+  },
+  "serving_geometry_basis": "mmproj-free speech-feature-packet cells on build 04ccc72a. Worst-case per-slot window = 13,236 legacy registry text tokens + 514 speech-packet tokens (35.714 s longest item x 14.4 tokens/s) + 1,024 completion ceiling + 2 registered special tokens = 14,776; 3 slots x 21,845 = 65,535 total, a margin of 7,069 tokens per slot. -c is 65,535 rather than 65,536 so that slots x slot_tokens is exact: core.flight.FlightRuntime.serve derives -c as slot_tokens x slots from the adapter's serving_geometry(), and a one-token disagreement between this fragment and the server it starts would be a silent geometry drift.",
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample"
+  },
+  "prompt_order": "speech-query-prefix-v2",
+  "profile_slot_count": 3,
+  "speech_feature_root": "/home/chao/feat-cache/a2t-calibration-400-packets-04ccc72a",
+  "server_env": {
+    "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/a2t-calibration-400-packets-04ccc72a",
+    "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+  }
+}

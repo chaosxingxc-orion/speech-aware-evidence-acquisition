@@ -1,0 +1,22 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "obs_batch_samples": 1,
+  "allow_empty_speech_feature_evidence": true,
+  "speech_native_agent_executor_id": "openjiuwen-workflow-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/a2t-calibration-400-packets-04ccc72a/A2T-CALIBRATION-400-promotion.json",
+  "rails_arms": [
+    "zero-supply"
+  ],
+  "scorers": [
+    "a2t-toolcall",
+    "a2t-toolcall-v2",
+    "cost"
+  ],
+  "task_instruction_template": "probes/r1_audio2tool_direct.txt",
+  "task_instruction_fill": "audio2tool-tool-schemas",
+  "speech_feature_key_representation_id": "audio2tool-direct-registry-v1",
+  "speech_feature_matcher_policy_id": "saea-a2t-direct-calibration-v1"
+}

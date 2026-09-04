@@ -1,0 +1,10 @@
+{
+  "arm": "bare-core",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "rails_arms": ["zero-supply"],
+  "scorers": ["a2t-toolcall", "a2t-toolcall-v2", "cost"],
+  "task_instruction_template": "probes/r1_audio2tool_direct.txt",
+  "task_instruction_fill": "audio2tool-tool-schemas"
+}

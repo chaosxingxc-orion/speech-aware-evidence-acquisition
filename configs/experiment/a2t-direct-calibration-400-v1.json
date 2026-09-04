@@ -1,0 +1,125 @@
+{
+  "experiment_id": "SAEA-A2T-DIRECT-CALIBRATION-V1",
+  "schema": "saea-a2t-direct-calibration-experiment-v1",
+  "date": "2026-09-04",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "Calibrate this repository's Audio2Tool direct baseline against arXiv:2604.22821 Table 3 by varying the two protocol facts that have never been varied: Factor A, the output contract (13k-token raw registry text demanding a bare JSON array, versus an OpenAI-format native tools list the pinned GGUF chat template renders itself), and Factor D, the audio path (raw audio through the bf16 mmproj versus mmproj-free speech-feature packets). A0's 34 pp Tier-1 tool-accuracy miss against the paper row stopped the 2026-08-07 reproduction plan's P1 gate; the 2026-09-03 zero-contact scorer study showed scorer semantics explain part of the exact-match gap and none of the tool-selection gap (142 of 303 A0 exact-match failures are wrong tool sets, 20 of 50 on Tier 1), so the remaining gap sits in the request protocol. Preregistration: docs/readiness/2026-09-03-a2t-direct-baseline-calibration-v1-preregistration.md.",
+  "population": {
+    "carrier": "audio2tool",
+    "split_name": "A2T-CALIBRATION-400",
+    "split_role": "discovery",
+    "count": 400,
+    "strata": "50 samples per tier across all eight Audio2Tool tiers",
+    "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-calibration-400-roster/flight-roster-receipt.json",
+    "receipt_sha256": "6f352ea583d0bb91f77aad62e07bdad4d3210d066440fbfaee8e2af504853fe7",
+    "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+    "flight_split_identity_hash": "11091b38ae9d53530952af632636d7e79a614350213e10c6c26583c37f85846b",
+    "audio_seconds_one_pass": 2159.688,
+    "audio_seconds_longest_item": 35.714,
+    "selection": "the frozen 400 split, no draw; already exposed by A0 (row SAEA-BASE-a2t-a0-400)",
+    "estimand": "equal-tier reporting, with the natural construction mixture reported beside it as a reweighting"
+  },
+  "cells": [
+    {
+      "cell_id": "A0prime-legacy-raw",
+      "factor_a_output_contract": "legacy registry text, bare JSON array",
+      "factor_d_audio_path": "raw audio, bf16 mmproj loaded",
+      "arm": "bare-core",
+      "baseline_fragment": "a2t-direct-calibration",
+      "model_fragment": "q4km-featcache-a2t-calibration-04ccc72a",
+      "serving_geometry": "-c 49152 / -np 3, 16,384 tokens per slot"
+    },
+    {
+      "cell_id": "A1-native-raw",
+      "factor_a_output_contract": "native OpenAI-format tools list rendered by the pinned chat template",
+      "factor_d_audio_path": "raw audio, bf16 mmproj loaded",
+      "arm": "bare-core-native-tools",
+      "baseline_fragment": "a2t-direct-native-tools-calibration",
+      "model_fragment": "q4km-featcache-a2t-calibration-04ccc72a",
+      "serving_geometry": "-c 49152 / -np 3, 16,384 tokens per slot"
+    },
+    {
+      "cell_id": "P0-legacy-packets",
+      "factor_a_output_contract": "legacy registry text, bare JSON array",
+      "factor_d_audio_path": "mmproj-free speech-feature packets",
+      "arm": "speech-feature-query",
+      "baseline_fragment": "a2t-direct-packets",
+      "model_fragment": "q4km-mmproj-free-speech-native-a2t-calibration-max1024",
+      "serving_geometry": "-c 65535 / -np 3, 21,845 tokens per slot"
+    },
+    {
+      "cell_id": "P1-native-packets",
+      "factor_a_output_contract": "native OpenAI-format tools list rendered by the pinned chat template",
+      "factor_d_audio_path": "mmproj-free speech-feature packets",
+      "arm": "speech-feature-query-native-tools",
+      "baseline_fragment": "a2t-direct-packets-native-tools",
+      "model_fragment": "q4km-mmproj-free-speech-native-a2t-calibration-max1024",
+      "serving_geometry": "-c 65535 / -np 3, 21,845 tokens per slot"
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample",
+    "contacts_per_item": 1,
+    "evidence": "none",
+    "obs": "none",
+    "harness": "core.flight.FlightRuntime with the shared rails zero-supply direct arm and the OpenJiuwen executor for every cell",
+    "a0_not_reused_as_a_cell": "A0's build (5d9dfcb58) and D2 arm (fixed-legal-context) both differ; it stays the historical anchor, not a cell"
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "discovery",
+    "planned_model_calls": 1608,
+    "planned_gpu_hours": 6.0,
+    "planned_speech_audio_seconds": 8639
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "1,600 = 4 cells x 400 items, plus 8 canaries; registered ceiling 1,700",
+    "planned_speech_audio_seconds": "4 x 2,159.688 s = 8,638.752 s, rounded up to the integer contracts.ExecutionPlan requires; registered ceiling 9,000",
+    "planned_gpu_hours": "6.0; A0's resumed attempt ran 85 raw-audio calls in 1,895 s at -np 4, and the packet cells are faster",
+    "paid_api_spend": 0,
+    "ceilings_live_in_the_exposure_row": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are the exposure-ledger row's calls / speech audio seconds / gpu hours cells, which the gate requires to be at least these planned values"
+  },
+  "evaluation": {
+    "official_scorers": ["a2t-toolcall", "a2t-toolcall-v2", "cost"],
+    "scored_complete_manifests": 4,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "outer_parallel_workers": 4,
+    "factor_b_costs_zero_contacts": "every cell is scored with both a2t-toolcall (v1) and a2t-toolcall-v2 through core.scoring_batch, one job per complete manifest",
+    "metrics": [
+      "tool_accuracy_ordered",
+      "tool_accuracy_multiset",
+      "exact_match",
+      "slot_f1",
+      "parse_rate",
+      "prompt_tokens",
+      "latency"
+    ],
+    "mandatory_slices": [
+      "all eight tiers, with the paper row beside every tier",
+      "main effect A (native minus legacy) within each audio path",
+      "main effect D (packets minus raw) within each output contract",
+      "the A x D interaction on the paired 400",
+      "paired saves, harms, ties and the exact sign test"
+    ],
+    "paired_bootstrap_replicates": 10000,
+    "paired_bootstrap_seed": 20260903,
+    "paired_bootstrap_stratification": "tier",
+    "confidence_interval": "CI90",
+    "renderer": "analysis.paired.render_markdown"
+  },
+  "decision": {
+    "acceptance": "Acceptance of the calibration: at least one cell reaches per-tier tool-accuracy |delta| <= 5 pp against the paper row on Tiers 1, 2, 5 and 6 (the tiers the paper reports above 80 %) with the tier rank order preserved. That cell becomes the direct baseline for every later mechanism experiment and fills the umbrella published-baselines.md row.",
+    "if_no_cell_passes": "If no cell passes: the miss is itself the finding; report which factor moved tool accuracy and by how much, and stop mechanism work until the owner decides (Factor C, prompt-template variants, or a protocol clarification request to the paper's authors).",
+    "claim_surface": "Nothing here is a superiority, generality or Stage-3 claim; the population is exposed discovery data; no knob is tuned on it.",
+    "not_authorized": "No test contact, no mechanism arm, no Q8_0 flight, no fresh roster, no training-free policy fit, no edit to the locked SLURP cell.",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}

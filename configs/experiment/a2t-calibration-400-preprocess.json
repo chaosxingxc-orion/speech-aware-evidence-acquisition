@@ -1,0 +1,32 @@
+{
+  "experiment_id": "SAEA-SN-A2T-CALIBRATION-400-PREPROCESS",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Label-free, receipt-bound speech-feature preprocessing for the frozen 400-row Audio2Tool discovery split (roster A2T-CALIBRATION-400), the packet prerequisite of the direct-baseline calibration flight SAEA-A2T-DIRECT-CALIBRATION-V1 (preregistration docs/readiness/2026-09-03-a2t-direct-baseline-calibration-v1-preregistration.md, section 4 item 1). Two of the four calibration cells serve mmproj-free and therefore cannot encode audio themselves; every one of their requests needs an audited SpeechFeaturePacketV1. The launcher constructs samples only from receipt-pinned sample identifiers and media facts; it never loads task text, gold, expected tool calls, reference transcripts, annotations, outputs, scores, test data or future turns. A current-build CPU-only llama sidecar on port 8081 uses the fixed minimal one-token preprocessing prompt and the current-build legacy feature cache /home/chao/feat-cache/audio2tool-q4km-04ccc72a; the resident GPU decoder on port 8090 is never started, stopped, probed, reconfigured or contacted. After the sidecar stops, the carrier-neutral promotion primitive writes audited packets into the exclusive root /home/chao/feat-cache/a2t-calibration-400-packets-04ccc72a. Identity and preflight modes make no model, network, tokenizer, scorer or audio-decoding contact. This fragment grants no run or exposure authority.",
+  "a2t_calibration_preprocess_scope": {
+    "subset_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-calibration-400-roster/flight-roster-receipt.json",
+    "subset_receipt_sha256": "6f352ea583d0bb91f77aad62e07bdad4d3210d066440fbfaee8e2af504853fe7",
+    "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+    "count": 400,
+    "audio_seconds_total": 2159.688,
+    "d1_media_supplement": "none, by design: all 400 sample ids are already inside the parent D1 identity closure and contracts.gate_media_identity refuses a supplement that duplicates a base D1 sample",
+    "legacy_cache_dir": "/home/chao/feat-cache/audio2tool-q4km-04ccc72a",
+    "packet_root": "/home/chao/feat-cache/a2t-calibration-400-packets-04ccc72a",
+    "promotion_receipt": "/home/chao/feat-cache/a2t-calibration-400-packets-04ccc72a/A2T-CALIBRATION-400-promotion.json",
+    "packet_id_convention": "sample_id with ':' replaced by '/' (tier1_direct:000045 -> tier1_direct/000045), the same convention every other Audio2Tool packet root uses",
+    "promotion_path": "core.model.speech_features.materialize_legacy_cached_speech_feature_packets, called directly after the CPU-only encoder session stops; the carrier-specific SLURP command is not used and nothing under src/ is modified"
+  },
+  "a2t_calibration_preprocess_boundary": {
+    "gold": "never loaded",
+    "task_text": "never loaded",
+    "identity_inputs": "roster receipt metadata and config fragments only",
+    "preflight_inputs": "receipt metadata plus filesystem path, size, SHA-256 and WAV container-header validation; speech content is not decoded or interpreted",
+    "model_contacts_in_identity_or_preflight": 0,
+    "network_contacts_in_identity_or_preflight": 0,
+    "tokenizer_contacts_in_identity_or_preflight": 0,
+    "scorer_contacts_in_identity_or_preflight": 0,
+    "speech_content_decode_contacts_in_identity_or_preflight": 0,
+    "gpu_decoder": "not started, stopped, reconfigured or contacted",
+    "paid_api_spend": 0,
+    "authority": "none; running requires the separately registered exposure row SAEA-SN-A2T-CALIBRATION-400-PREPROCESS and its execution plan"
+  }
+}

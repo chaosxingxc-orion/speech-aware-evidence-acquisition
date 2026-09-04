@@ -55,6 +55,7 @@ Modes::
     python scripts/a2t_g1_preprocess.py --ground-qual --emit-identity
     python scripts/a2t_g1_preprocess.py --semantic-agentloop --emit-identity
     python scripts/a2t_g1_preprocess.py --semantic-agentloop-select-fill --emit-identity
+    python scripts/a2t_g1_preprocess.py --calibration-400 --emit-identity
 """
 
 from __future__ import annotations
@@ -184,6 +185,7 @@ profile_flags = tuple(
         "--ground-qual",
         "--semantic-agentloop",
         "--semantic-agentloop-select-fill",
+        "--calibration-400",
     )
     if flag in sys.argv
 )
@@ -329,6 +331,59 @@ if "--semantic-agentloop-select-fill" in sys.argv:
         / "checks"
         / "speech-aware-evidence-acquisition"
         / "2026-09-03-a2t-select-fill-fresh-preprocess-v1"
+    )
+
+if "--calibration-400" in sys.argv:
+    # Direct-baseline calibration flight (SAEA-A2T-DIRECT-CALIBRATION-V1):
+    # the population is the FROZEN 400-row Audio2Tool discovery split, not a
+    # fresh draw, so this profile's roster receipt only re-expresses the
+    # parent probe receipt in the flight-roster schema. Two of the four
+    # calibration cells serve mmproj-free and therefore need one audited
+    # packet per row.
+    RUN_ID = "SAEA-SN-A2T-CALIBRATION-400-PREPROCESS"
+    DATASET_FRAGMENT = "audio2tool-calibration-400"
+    EXPERIMENT_FRAGMENT = "a2t-calibration-400-preprocess"
+    SUBSET_RECEIPT_RELPATH = (
+        "docs/checks/speech-aware-evidence-acquisition/"
+        "2026-09-04-a2t-calibration-400-roster/flight-roster-receipt.json"
+    )
+    SUBSET_RECEIPT_SHA256 = (
+        "6f352ea583d0bb91f77aad62e07bdad4d3210d066440fbfaee8e2af504853fe7"
+    )
+    SPLIT_IDENTITY_HASH = (
+        "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c"
+    )
+    SUBSET_COUNT = 400
+    SUBSET_AUDIO_SECONDS = 2159.688
+    PREPROCESS_SPLIT_NAME = "A2T-CALIBRATION-400"
+    PACKET_ROOT = Path("/home/chao/feat-cache/a2t-calibration-400-packets-04ccc72a")
+    PROMOTION_RECEIPT = PACKET_ROOT / "A2T-CALIBRATION-400-promotion.json"
+    PLAN_CALLS = 400
+    PLAN_AUDIO = 2300
+    PLAN_GPU_HOURS = 0.3
+    ATTEMPT_CORE_CEILING = 420
+    # The frozen 400's longest item is 35.714 s; at the registered 14.4
+    # speech tokens per second that is 514 packet tokens, well past the
+    # 104-row rosters' 455 ceiling. 560 leaves headroom without hiding an
+    # outlier -- and under DYNAMIC_INFERENCE_PROMPT_FIT this figure only
+    # annotates the promotion receipt's token summary; every later inference
+    # request still has to prove its own exact required window.
+    PROMPT_FIT_SPEECH_TOKEN_CEILING = 560
+    DATASET_RECEIPT_HASH_KEY = "a2t_calibration_subset_receipt_sha256"
+    DATASET_RUN_IDENTITY_KEY = "a2t_calibration_split_identity_hash"
+    RECEIPT_IDENTITY_KEY = "split_identity_hash"
+    DIRECT_RECEIPT_SAMPLES = True
+    DYNAMIC_INFERENCE_PROMPT_FIT = True
+    ATTEMPT_SUFFIX = "a2tcalibration400prep"
+    REQUEST_ID_PREFIX = "a2tcalibration400prep"
+    STATE_SCHEMA = "saea-a2t-calibration-400-preprocess-v1"
+    REPORT_SCHEMA = "saea-a2t-calibration-400-preprocess-report-v1"
+    OUT_CHECK_DIR = (
+        REPO
+        / "docs"
+        / "checks"
+        / "speech-aware-evidence-acquisition"
+        / "2026-09-04-a2t-direct-calibration-400-v1"
     )
 
 
@@ -676,7 +731,7 @@ def main() -> int:
     if "--run" not in sys.argv:
         raise SystemExit(
             "usage: [--cpv2 | --ground-qual | --semantic-agentloop | "
-            "--semantic-agentloop-select-fill] "
+            "--semantic-agentloop-select-fill | --calibration-400] "
             "(--emit-identity | --preflight-only | --run)"
         )
 

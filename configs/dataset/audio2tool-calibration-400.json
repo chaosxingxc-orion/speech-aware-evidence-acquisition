@@ -1,0 +1,17 @@
+{
+  "carrier_lock_key": "audio2tool",
+  "split_id": "A2T-CALIBRATION-400",
+  "a2t_calibration_subset_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-calibration-400-roster/flight-roster-receipt.json",
+  "a2t_calibration_subset_receipt_sha256": "6f352ea583d0bb91f77aad62e07bdad4d3210d066440fbfaee8e2af504853fe7",
+  "a2t_calibration_split_name": "A2T-CALIBRATION-400",
+  "a2t_calibration_split_role": "discovery",
+  "a2t_calibration_split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+  "a2t_calibration_flight_split_identity_hash": "11091b38ae9d53530952af632636d7e79a614350213e10c6c26583c37f85846b",
+  "a2t_calibration_identity_hash_conventions": "a2t_calibration_split_identity_hash is SHA-256 over the LF-joined sorted parent 'key' values (audio2tool:<tier>:<id6>) and reproduces the parent receipt docs/receipts/probe-samples/r1-audio2tool-sample.json exactly. a2t_calibration_flight_split_identity_hash is data.splits.split_identity_hash(prefixed('audio2tool', sample_ids)) over audio2tool/<tier>:<id6>, the value core.flight.FlightRuntime.preflight computes at flight time. Both cover the same 400 samples; an exposure row must carry whichever value the code path that builds its ExecutionPlan computes.",
+  "a2t_calibration_count": 400,
+  "a2t_calibration_audio_seconds_total": 2159.688,
+  "a2t_calibration_audio_seconds_longest_item": 35.714,
+  "a2t_calibration_d1_media_supplement": "none, by design. All 400 sample ids are already inside the parent D1 identity closure (docs/receipts/artifacts/d1-identity.json carries exactly these 400 audio2tool media entries), and contracts.gate_media_identity refuses any supplement that duplicates a base D1 sample. Media identity is verified against the parent D1 manifest directly, so this fragment declares no d1_media_supplement / d1_media_supplement_sha256 pair.",
+  "a2t_calibration_exposure": "The frozen 400 discovery split already exposed by A0 (ledger row SAEA-BASE-a2t-a0-400). Nothing is drawn here; the roster receipt only re-expresses the frozen parent receipt in the flight-roster schema and adds media_relpath, audio_seconds and audio_sha256. This fragment grants no contact authority.",
+  "a2t_calibration_no_driver_split_name": "This fragment deliberately declares no split_name key. split_id names the receipt-scoped split a calibration adapter resolves from the hash-pinned roster receipt above; it is never resolved through the generic probe-receipt universe, whose 'discovery' split_role now spans 608 samples (the frozen 400 plus two 104-row post-seal AgentLoop scoring receipts)."
+}
