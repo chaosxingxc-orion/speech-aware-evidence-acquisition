@@ -85,6 +85,1145 @@
     },
     "rule": "at least one cell reaches per-tier tool-accuracy |delta| <= 5 pp against the paper row on tiers 1, 2, 5 and 6, with the tier rank order preserved"
   },
+  "addendum": {
+    "boundary": "gold entered only through data.audio2tool.load_expected_calls, the same scorer-side path the registered scorers use, and only as call COUNTS and tool NAMES; no gold argument values and no utterance text appear here",
+    "correction_to_metric_notes_tool_accuracy": "metric_notes.tool_accuracy in this file states that the registered scorer provides no ORDERED tool-accuracy variant and that the ordered column is therefore reported as not computed rather than invented. That statement is incorrect and is corrected here rather than rewritten above: the registered a2t-toolcall-v2 scorer seals BOTH rules. Its tool_accuracy field is AggregateScoreV2.tool_accuracy_ordered (the expected-vs-predicted NAME SEQUENCE match) and its tool_accuracy_multiset field is v1's multiset rule. Both were computed by the flight's own registered scoring job, per sample and per tier, and are read out below; no scoring rule was added after the flight.",
+    "model_contacts": 0,
+    "multi_call_diagnosis": {
+      "A0prime-legacy-raw": {
+        "all_tiers": {
+          "n": 400,
+          "rows_gold_multi_call": 100,
+          "rows_one_call_where_gold_multi": 1,
+          "share_one_call_where_gold_multi_pct": 1.0
+        },
+        "focus_tiers": {
+          "tier3_multi_intent": 0.0,
+          "tier8_intent_blending": 2.0
+        },
+        "native_arrival_reconciliation": {
+          "calls_attributable_to_text_rows": 475,
+          "note": "for a native arm the reconstructed total should exceed the verdict's native call total only by the few text-arriving rows whose free text still parsed as a valid call array, and the reconstructed unparsed count should sit just under the text-arriving row count -- both hold, which is independent evidence that the canonicalized array length is the native tool_call count for natively-arriving rows",
+          "reconstructed_parsed_calls_total": 475,
+          "reconstructed_rows_unparsed": 44,
+          "text_rows_that_parsed_anyway": 356,
+          "verdict_native_calls_total": 0,
+          "verdict_rows_arrived_as_text": 400,
+          "verdict_rows_arrived_native": 0
+        },
+        "native_tools_arm": false,
+        "per_tier": {
+          "tier1_direct": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 1.1,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 1,
+              "1": 48,
+              "7": 1
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 1,
+            "rows_undercount": 1,
+            "rows_unparsed": 0,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier2_parametric": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.96,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 2,
+              "1": 48
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 0,
+            "rows_undercount": 0,
+            "rows_unparsed": 2,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier3_multi_intent": {
+            "gold_call_counts": {
+              "2": 31,
+              "3": 18,
+              "4": 1
+            },
+            "mean_gold_calls": 2.4,
+            "mean_predicted_calls": 1.82,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 10,
+              "2": 29,
+              "3": 11
+            },
+            "rows_gold_multi_call": 50,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 0,
+            "rows_undercount": 3,
+            "rows_unparsed": 10,
+            "share_one_call_where_gold_multi_pct": 0.0
+          },
+          "tier4_implicit": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.74,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 13,
+              "1": 37
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 0,
+            "rows_undercount": 12,
+            "rows_unparsed": 1,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier5_needle": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.7,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 16,
+              "1": 33,
+              "2": 1
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 1,
+            "rows_undercount": 0,
+            "rows_unparsed": 16,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier6_correction": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 1.1,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 6,
+              "1": 33,
+              "2": 11
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 11,
+            "rows_undercount": 2,
+            "rows_unparsed": 4,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier7_multiturn": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.9,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 6,
+              "1": 43,
+              "2": 1
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 1,
+            "rows_undercount": 5,
+            "rows_unparsed": 1,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier8_intent_blending": {
+            "gold_call_counts": {
+              "2": 27,
+              "3": 15,
+              "4": 4,
+              "5": 2,
+              "6": 2
+            },
+            "mean_gold_calls": 2.74,
+            "mean_predicted_calls": 2.18,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 10,
+              "1": 1,
+              "2": 20,
+              "3": 14,
+              "4": 3,
+              "6": 1,
+              "8": 1
+            },
+            "rows_gold_multi_call": 50,
+            "rows_one_call_where_gold_multi": 1,
+            "rows_overcount": 10,
+            "rows_undercount": 7,
+            "rows_unparsed": 10,
+            "share_one_call_where_gold_multi_pct": 2.0
+          }
+        }
+      },
+      "A1-native-raw": {
+        "all_tiers": {
+          "n": 400,
+          "rows_gold_multi_call": 100,
+          "rows_one_call_where_gold_multi": 81,
+          "share_one_call_where_gold_multi_pct": 81.0
+        },
+        "focus_tiers": {
+          "tier3_multi_intent": 86.0,
+          "tier8_intent_blending": 76.0
+        },
+        "native_arrival_reconciliation": {
+          "calls_attributable_to_text_rows": 1,
+          "note": "for a native arm the reconstructed total should exceed the verdict's native call total only by the few text-arriving rows whose free text still parsed as a valid call array, and the reconstructed unparsed count should sit just under the text-arriving row count -- both hold, which is independent evidence that the canonicalized array length is the native tool_call count for natively-arriving rows",
+          "reconstructed_parsed_calls_total": 372,
+          "reconstructed_rows_unparsed": 52,
+          "text_rows_that_parsed_anyway": 1,
+          "verdict_native_calls_total": 371,
+          "verdict_rows_arrived_as_text": 53,
+          "verdict_rows_arrived_native": 347
+        },
+        "native_tools_arm": true,
+        "per_tier": {
+          "tier1_direct": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.78,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 11,
+              "1": 39
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 0,
+            "rows_undercount": 0,
+            "rows_unparsed": 11,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier2_parametric": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.92,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 4,
+              "1": 46
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 0,
+            "rows_undercount": 0,
+            "rows_unparsed": 4,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier3_multi_intent": {
+            "gold_call_counts": {
+              "2": 31,
+              "3": 18,
+              "4": 1
+            },
+            "mean_gold_calls": 2.4,
+            "mean_predicted_calls": 1.14,
+            "n": 50,
+            "predicted_call_counts": {
+              "1": 43,
+              "2": 7
+            },
+            "rows_gold_multi_call": 50,
+            "rows_one_call_where_gold_multi": 43,
+            "rows_overcount": 0,
+            "rows_undercount": 43,
+            "rows_unparsed": 0,
+            "share_one_call_where_gold_multi_pct": 86.0
+          },
+          "tier4_implicit": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.68,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 16,
+              "1": 34
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 0,
+            "rows_undercount": 0,
+            "rows_unparsed": 16,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier5_needle": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.98,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 1,
+              "1": 49
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 0,
+            "rows_undercount": 0,
+            "rows_unparsed": 1,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier6_correction": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.94,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 4,
+              "1": 45,
+              "2": 1
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 1,
+            "rows_undercount": 0,
+            "rows_unparsed": 4,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier7_multiturn": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.68,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 16,
+              "1": 34
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 0,
+            "rows_undercount": 0,
+            "rows_unparsed": 16,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier8_intent_blending": {
+            "gold_call_counts": {
+              "2": 27,
+              "3": 15,
+              "4": 4,
+              "5": 2,
+              "6": 2
+            },
+            "mean_gold_calls": 2.74,
+            "mean_predicted_calls": 1.32,
+            "n": 50,
+            "predicted_call_counts": {
+              "1": 38,
+              "2": 9,
+              "3": 2,
+              "4": 1
+            },
+            "rows_gold_multi_call": 50,
+            "rows_one_call_where_gold_multi": 38,
+            "rows_overcount": 2,
+            "rows_undercount": 41,
+            "rows_unparsed": 0,
+            "share_one_call_where_gold_multi_pct": 76.0
+          }
+        }
+      },
+      "P0-legacy-packets": {
+        "all_tiers": {
+          "n": 400,
+          "rows_gold_multi_call": 100,
+          "rows_one_call_where_gold_multi": 1,
+          "share_one_call_where_gold_multi_pct": 1.0
+        },
+        "focus_tiers": {
+          "tier3_multi_intent": 2.0,
+          "tier8_intent_blending": 0.0
+        },
+        "native_arrival_reconciliation": {
+          "calls_attributable_to_text_rows": 489,
+          "note": "for a native arm the reconstructed total should exceed the verdict's native call total only by the few text-arriving rows whose free text still parsed as a valid call array, and the reconstructed unparsed count should sit just under the text-arriving row count -- both hold, which is independent evidence that the canonicalized array length is the native tool_call count for natively-arriving rows",
+          "reconstructed_parsed_calls_total": 489,
+          "reconstructed_rows_unparsed": 43,
+          "text_rows_that_parsed_anyway": 357,
+          "verdict_native_calls_total": 0,
+          "verdict_rows_arrived_as_text": 400,
+          "verdict_rows_arrived_native": 0
+        },
+        "native_tools_arm": false,
+        "per_tier": {
+          "tier1_direct": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 1.08,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 1,
+              "1": 47,
+              "2": 1,
+              "5": 1
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 2,
+            "rows_undercount": 1,
+            "rows_unparsed": 0,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier2_parametric": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.94,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 4,
+              "1": 45,
+              "2": 1
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 1,
+            "rows_undercount": 0,
+            "rows_unparsed": 4,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier3_multi_intent": {
+            "gold_call_counts": {
+              "2": 31,
+              "3": 18,
+              "4": 1
+            },
+            "mean_gold_calls": 2.4,
+            "mean_predicted_calls": 2.02,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 6,
+              "1": 1,
+              "2": 29,
+              "3": 14
+            },
+            "rows_gold_multi_call": 50,
+            "rows_one_call_where_gold_multi": 1,
+            "rows_overcount": 1,
+            "rows_undercount": 4,
+            "rows_unparsed": 6,
+            "share_one_call_where_gold_multi_pct": 2.0
+          },
+          "tier4_implicit": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.82,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 12,
+              "1": 36,
+              "2": 1,
+              "3": 1
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 2,
+            "rows_undercount": 12,
+            "rows_unparsed": 0,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier5_needle": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.64,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 19,
+              "1": 30,
+              "2": 1
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 1,
+            "rows_undercount": 0,
+            "rows_unparsed": 19,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier6_correction": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 1.04,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 7,
+              "1": 34,
+              "2": 9
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 9,
+            "rows_undercount": 1,
+            "rows_unparsed": 6,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier7_multiturn": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.9,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 6,
+              "1": 43,
+              "2": 1
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 1,
+            "rows_undercount": 5,
+            "rows_unparsed": 1,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier8_intent_blending": {
+            "gold_call_counts": {
+              "2": 27,
+              "3": 15,
+              "4": 4,
+              "5": 2,
+              "6": 2
+            },
+            "mean_gold_calls": 2.74,
+            "mean_predicted_calls": 2.34,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 7,
+              "2": 22,
+              "3": 16,
+              "4": 1,
+              "5": 3,
+              "6": 1
+            },
+            "rows_gold_multi_call": 50,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 8,
+            "rows_undercount": 6,
+            "rows_unparsed": 7,
+            "share_one_call_where_gold_multi_pct": 0.0
+          }
+        }
+      },
+      "P1-native-packets": {
+        "all_tiers": {
+          "n": 400,
+          "rows_gold_multi_call": 100,
+          "rows_one_call_where_gold_multi": 84,
+          "share_one_call_where_gold_multi_pct": 84.0
+        },
+        "focus_tiers": {
+          "tier3_multi_intent": 84.0,
+          "tier8_intent_blending": 84.0
+        },
+        "native_arrival_reconciliation": {
+          "calls_attributable_to_text_rows": 1,
+          "note": "for a native arm the reconstructed total should exceed the verdict's native call total only by the few text-arriving rows whose free text still parsed as a valid call array, and the reconstructed unparsed count should sit just under the text-arriving row count -- both hold, which is independent evidence that the canonicalized array length is the native tool_call count for natively-arriving rows",
+          "reconstructed_parsed_calls_total": 369,
+          "reconstructed_rows_unparsed": 53,
+          "text_rows_that_parsed_anyway": 1,
+          "verdict_native_calls_total": 368,
+          "verdict_rows_arrived_as_text": 54,
+          "verdict_rows_arrived_native": 346
+        },
+        "native_tools_arm": true,
+        "per_tier": {
+          "tier1_direct": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.76,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 12,
+              "1": 38
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 0,
+            "rows_undercount": 0,
+            "rows_unparsed": 12,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier2_parametric": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.9,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 5,
+              "1": 45
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 0,
+            "rows_undercount": 0,
+            "rows_unparsed": 5,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier3_multi_intent": {
+            "gold_call_counts": {
+              "2": 31,
+              "3": 18,
+              "4": 1
+            },
+            "mean_gold_calls": 2.4,
+            "mean_predicted_calls": 1.16,
+            "n": 50,
+            "predicted_call_counts": {
+              "1": 42,
+              "2": 8
+            },
+            "rows_gold_multi_call": 50,
+            "rows_one_call_where_gold_multi": 42,
+            "rows_overcount": 0,
+            "rows_undercount": 42,
+            "rows_unparsed": 0,
+            "share_one_call_where_gold_multi_pct": 84.0
+          },
+          "tier4_implicit": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.72,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 14,
+              "1": 36
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 0,
+            "rows_undercount": 0,
+            "rows_unparsed": 14,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier5_needle": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.96,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 2,
+              "1": 48
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 0,
+            "rows_undercount": 0,
+            "rows_unparsed": 2,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier6_correction": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.98,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 4,
+              "1": 43,
+              "2": 3
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 3,
+            "rows_undercount": 0,
+            "rows_unparsed": 4,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier7_multiturn": {
+            "gold_call_counts": {
+              "1": 50
+            },
+            "mean_gold_calls": 1.0,
+            "mean_predicted_calls": 0.68,
+            "n": 50,
+            "predicted_call_counts": {
+              "0": 16,
+              "1": 34
+            },
+            "rows_gold_multi_call": 0,
+            "rows_one_call_where_gold_multi": 0,
+            "rows_overcount": 0,
+            "rows_undercount": 0,
+            "rows_unparsed": 16,
+            "share_one_call_where_gold_multi_pct": null
+          },
+          "tier8_intent_blending": {
+            "gold_call_counts": {
+              "2": 27,
+              "3": 15,
+              "4": 4,
+              "5": 2,
+              "6": 2
+            },
+            "mean_gold_calls": 2.74,
+            "mean_predicted_calls": 1.22,
+            "n": 50,
+            "predicted_call_counts": {
+              "1": 42,
+              "2": 5,
+              "3": 3
+            },
+            "rows_gold_multi_call": 50,
+            "rows_one_call_where_gold_multi": 42,
+            "rows_overcount": 2,
+            "rows_undercount": 42,
+            "rows_unparsed": 0,
+            "share_one_call_where_gold_multi_pct": 84.0
+          }
+        }
+      }
+    },
+    "multi_call_diagnosis_basis": "predicted call count is the length of the call array recovered from each sealed response text by reproduction.toolcall_scoring.parse_tool_calls_text, the same parse both registered scorers run; every row's parse outcome was asserted equal to the parsed flag the scorer sealed for that row, so the counts are a faithful reconstruction of what the scorer itself saw. An unparsed row counts as 0 calls, exactly as the scorer treats it. For the native-tools arms the transport canonicalizes each message.tool_call 1:1 into that array, so for a natively-arriving row this count IS the number of tool_call entries the envelope carried; per-row native counts are not themselves sealed (only per-cell totals are, in the run_phases receipt), so the canonicalized array is the faithful proxy. Gold call counts come from data.audio2tool.load_expected_calls, the scorer-side gold path, reduced to a length before anything is recorded.",
+    "ordered_vs_multiset": {
+      "A0prime-legacy-raw": {
+        "overall": {
+          "n": 400,
+          "order_penalty_pp": 1.25,
+          "tool_accuracy_multiset": 51.75,
+          "tool_accuracy_ordered": 50.5
+        },
+        "per_tier": {
+          "tier1_direct": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 64.0,
+            "tool_accuracy_ordered": 64.0
+          },
+          "tier2_parametric": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 68.0,
+            "tool_accuracy_ordered": 68.0
+          },
+          "tier3_multi_intent": {
+            "n": 50,
+            "order_penalty_pp": 4.0,
+            "tool_accuracy_multiset": 50.0,
+            "tool_accuracy_ordered": 46.0
+          },
+          "tier4_implicit": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 30.0,
+            "tool_accuracy_ordered": 30.0
+          },
+          "tier5_needle": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 60.0,
+            "tool_accuracy_ordered": 60.0
+          },
+          "tier6_correction": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 60.0,
+            "tool_accuracy_ordered": 60.0
+          },
+          "tier7_multiturn": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 56.0,
+            "tool_accuracy_ordered": 56.0
+          },
+          "tier8_intent_blending": {
+            "n": 50,
+            "order_penalty_pp": 6.0,
+            "tool_accuracy_multiset": 26.0,
+            "tool_accuracy_ordered": 20.0
+          }
+        }
+      },
+      "A1-native-raw": {
+        "overall": {
+          "n": 400,
+          "order_penalty_pp": 0.25,
+          "tool_accuracy_multiset": 46.0,
+          "tool_accuracy_ordered": 45.75
+        },
+        "per_tier": {
+          "tier1_direct": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 50.0,
+            "tool_accuracy_ordered": 50.0
+          },
+          "tier2_parametric": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 70.0,
+            "tool_accuracy_ordered": 70.0
+          },
+          "tier3_multi_intent": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 12.0,
+            "tool_accuracy_ordered": 12.0
+          },
+          "tier4_implicit": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 26.0,
+            "tool_accuracy_ordered": 26.0
+          },
+          "tier5_needle": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 80.0,
+            "tool_accuracy_ordered": 80.0
+          },
+          "tier6_correction": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 70.0,
+            "tool_accuracy_ordered": 70.0
+          },
+          "tier7_multiturn": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 48.0,
+            "tool_accuracy_ordered": 48.0
+          },
+          "tier8_intent_blending": {
+            "n": 50,
+            "order_penalty_pp": 2.0,
+            "tool_accuracy_multiset": 12.0,
+            "tool_accuracy_ordered": 10.0
+          }
+        }
+      },
+      "P0-legacy-packets": {
+        "overall": {
+          "n": 400,
+          "order_penalty_pp": 1.25,
+          "tool_accuracy_multiset": 52.75,
+          "tool_accuracy_ordered": 51.5
+        },
+        "per_tier": {
+          "tier1_direct": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 60.0,
+            "tool_accuracy_ordered": 60.0
+          },
+          "tier2_parametric": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 66.0,
+            "tool_accuracy_ordered": 66.0
+          },
+          "tier3_multi_intent": {
+            "n": 50,
+            "order_penalty_pp": 4.0,
+            "tool_accuracy_multiset": 58.0,
+            "tool_accuracy_ordered": 54.0
+          },
+          "tier4_implicit": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 30.0,
+            "tool_accuracy_ordered": 30.0
+          },
+          "tier5_needle": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 54.0,
+            "tool_accuracy_ordered": 54.0
+          },
+          "tier6_correction": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 60.0,
+            "tool_accuracy_ordered": 60.0
+          },
+          "tier7_multiturn": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 62.0,
+            "tool_accuracy_ordered": 62.0
+          },
+          "tier8_intent_blending": {
+            "n": 50,
+            "order_penalty_pp": 6.0,
+            "tool_accuracy_multiset": 32.0,
+            "tool_accuracy_ordered": 26.0
+          }
+        }
+      },
+      "P1-native-packets": {
+        "overall": {
+          "n": 400,
+          "order_penalty_pp": 0.5,
+          "tool_accuracy_multiset": 44.0,
+          "tool_accuracy_ordered": 43.5
+        },
+        "per_tier": {
+          "tier1_direct": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 50.0,
+            "tool_accuracy_ordered": 50.0
+          },
+          "tier2_parametric": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 70.0,
+            "tool_accuracy_ordered": 70.0
+          },
+          "tier3_multi_intent": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 12.0,
+            "tool_accuracy_ordered": 12.0
+          },
+          "tier4_implicit": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 22.0,
+            "tool_accuracy_ordered": 22.0
+          },
+          "tier5_needle": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 76.0,
+            "tool_accuracy_ordered": 76.0
+          },
+          "tier6_correction": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 62.0,
+            "tool_accuracy_ordered": 62.0
+          },
+          "tier7_multiturn": {
+            "n": 50,
+            "order_penalty_pp": 0.0,
+            "tool_accuracy_multiset": 48.0,
+            "tool_accuracy_ordered": 48.0
+          },
+          "tier8_intent_blending": {
+            "n": 50,
+            "order_penalty_pp": 4.0,
+            "tool_accuracy_multiset": 12.0,
+            "tool_accuracy_ordered": 8.0
+          }
+        }
+      }
+    },
+    "ordered_vs_multiset_basis": "read verbatim from each cell's sealed SAEA-A2T-DIRECT-CALIBRATION-V1.scores.json (a2t-toolcall-v2 aggregate and its per_tier block). For every cell and tier the v2 tool_accuracy_multiset column was asserted equal to the v1 a2t-toolcall tool_accuracy column, which is what identifies v2's tool_accuracy as the ordered variant rather than a relabelled multiset.",
+    "run_id": "SAEA-A2T-DIRECT-CALIBRATION-V1",
+    "schema": "saea-a2t-calibration-addendum-v1",
+    "tier1_wrong_tool_set": {
+      "A0prime-legacy-raw": {
+        "call_count_mismatch": 2,
+        "n": 50,
+        "near_neighbour_same_domain": 5,
+        "near_neighbour_same_domain_share_pct": 31.25,
+        "other_domain": 11,
+        "rows_wrong_tool_set": 18,
+        "single_call_name_absent_from_registry": 0,
+        "single_call_substitutions": 16,
+        "split": {
+          "other_domain_other_category_label": 9,
+          "other_domain_same_category_label": 2,
+          "same_domain_other_category": 5,
+          "same_domain_same_category": 0
+        },
+        "substitution_names": {
+          "other_domain_other_category_label": {
+            "enableWaterLock -> setWaterValve": 1,
+            "getBatteryLevel -> getBatteryStatus": 1,
+            "getBiometricData -> getBatteryHealth": 1,
+            "setBrightness -> setAudioVolume": 1,
+            "setTargetTemperature -> setClimate": 1,
+            "setThermostatMode -> setClimate": 1,
+            "setThermostatSchedule -> setClimate": 1,
+            "setVolume -> adjustVolume": 1,
+            "setVolume -> setAudioVolume": 1
+          },
+          "other_domain_same_category_label": {
+            "getLockState -> getLockStatus": 1,
+            "viewRemoteCamera -> getCameraStream": 1
+          },
+          "same_domain_other_category": {
+            "setBrightness -> setLighting": 1,
+            "setColor -> setLighting": 2,
+            "setColorTemperature -> setLighting": 1,
+            "setGroupLightState -> setLighting": 1
+          },
+          "same_domain_same_category": {}
+        },
+        "unparsed": 0
+      },
+      "A1-native-raw": {
+        "call_count_mismatch": 0,
+        "n": 50,
+        "near_neighbour_same_domain": 6,
+        "near_neighbour_same_domain_share_pct": 42.8571,
+        "other_domain": 8,
+        "rows_wrong_tool_set": 25,
+        "single_call_name_absent_from_registry": 0,
+        "single_call_substitutions": 14,
+        "split": {
+          "other_domain_other_category_label": 5,
+          "other_domain_same_category_label": 3,
+          "same_domain_other_category": 3,
+          "same_domain_same_category": 3
+        },
+        "substitution_names": {
+          "other_domain_other_category_label": {
+            "getBatteryLevel -> getBatteryStatus": 1,
+            "setBrightness -> adjustVolume": 1,
+            "setColor -> setAmbientLighting": 1,
+            "setThermostatMode -> setZoneTemperature": 1,
+            "setVolume -> adjustVolume": 1
+          },
+          "other_domain_same_category_label": {
+            "getLockState -> getLockStatus": 1,
+            "updateFirmware -> getSoftwareUpdateStatus": 1,
+            "viewRemoteCamera -> getCameraStream": 1
+          },
+          "same_domain_other_category": {
+            "setHumidifierState -> getThermostatState": 1,
+            "setLighting -> setLightState": 2
+          },
+          "same_domain_same_category": {
+            "setBrightness -> setLightState": 1,
+            "setColorTemperature -> setColor": 1,
+            "setGroupLightState -> setLightState": 1
+          }
+        },
+        "unparsed": 11
+      },
+      "P0-legacy-packets": {
+        "call_count_mismatch": 3,
+        "n": 50,
+        "near_neighbour_same_domain": 7,
+        "near_neighbour_same_domain_share_pct": 41.1765,
+        "other_domain": 10,
+        "rows_wrong_tool_set": 20,
+        "single_call_name_absent_from_registry": 0,
+        "single_call_substitutions": 17,
+        "split": {
+          "other_domain_other_category_label": 8,
+          "other_domain_same_category_label": 2,
+          "same_domain_other_category": 7,
+          "same_domain_same_category": 0
+        },
+        "substitution_names": {
+          "other_domain_other_category_label": {
+            "enableWaterLock -> setWaterValve": 1,
+            "getBatteryLevel -> getBatteryStatus": 1,
+            "getBiometricData -> getBatteryHealth": 1,
+            "setTargetTemperature -> setClimate": 1,
+            "setThermostatMode -> setClimate": 1,
+            "setThermostatSchedule -> setClimate": 1,
+            "setVolume -> adjustVolume": 1,
+            "setVolume -> setAudioVolume": 1
+          },
+          "other_domain_same_category_label": {
+            "getLockState -> getLockStatus": 1,
+            "viewRemoteCamera -> getCameraStream": 1
+          },
+          "same_domain_other_category": {
+            "getAirQuality -> getAirQuality_diag": 1,
+            "setBrightness -> setLighting": 2,
+            "setColor -> setLighting": 2,
+            "setColorTemperature -> setLighting": 1,
+            "setGroupLightState -> setLighting": 1
+          },
+          "same_domain_same_category": {}
+        },
+        "unparsed": 0
+      },
+      "P1-native-packets": {
+        "call_count_mismatch": 0,
+        "n": 50,
+        "near_neighbour_same_domain": 6,
+        "near_neighbour_same_domain_share_pct": 46.1538,
+        "other_domain": 7,
+        "rows_wrong_tool_set": 25,
+        "single_call_name_absent_from_registry": 0,
+        "single_call_substitutions": 13,
+        "split": {
+          "other_domain_other_category_label": 5,
+          "other_domain_same_category_label": 2,
+          "same_domain_other_category": 4,
+          "same_domain_same_category": 2
+        },
+        "substitution_names": {
+          "other_domain_other_category_label": {
+            "getBatteryLevel -> getBatteryStatus": 1,
+            "setBrightness -> adjustVolume": 1,
+            "setColor -> setAmbientLighting": 1,
+            "setThermostatMode -> setZoneTemperature": 1,
+            "setVolume -> adjustVolume": 1
+          },
+          "other_domain_same_category_label": {
+            "getLockState -> getLockStatus": 1,
+            "updateFirmware -> getSoftwareUpdateStatus": 1
+          },
+          "same_domain_other_category": {
+            "setGroupLightState -> setLighting": 1,
+            "setHumidifierState -> getApplianceState": 1,
+            "setHumidifierState -> getDeviceList": 1,
+            "setLighting -> setLightState": 1
+          },
+          "same_domain_same_category": {
+            "setBrightness -> setLightState": 1,
+            "setColorTemperature -> setColor": 1
+          }
+        },
+        "unparsed": 12
+      }
+    },
+    "tier1_wrong_tool_set_basis": "a tier1_direct row counts as wrong when its sealed a2t-toolcall (v1) tool_accuracy is below 1.0, i.e. the predicted tool-NAME multiset differs from gold's. Rows that emitted exactly one call against exactly one gold call are split by where the predicted tool_name sits relative to gold's in the tools_registry.csv domain/category taxonomy (3 domains, 28 (domain, category) families over 152 tools). FOUR buckets are reported rather than the two the question names, because the question's own exemplar -- setLighting vs setLightState -- is same-domain but CROSS-category (smart_home/core_control vs smart_home/lighting): scoring 'same family' as 'same domain AND category' alone would classify that exemplar as a different family and would report zero near-neighbour substitutions for both legacy cells. near_neighbour_same_domain recombines the two same-domain buckets and is the figure that answers the question as intended; the cross-domain buckets stay split because a substitution landing on the same category LABEL in another domain (status -> status, security -> security, maintenance -> maintenance) is a device-domain confusion rather than a naming one. Rows that failed to parse, or that emitted a different number of calls than gold, are reported separately because no single-name substitution is defined for them."
+  },
   "bootstrap": {
     "ci_level": 0.9,
     "replicates": 10000,

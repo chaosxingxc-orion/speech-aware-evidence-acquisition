@@ -153,3 +153,139 @@ generality or Stage-3 claim; the population is exposed discovery data and no kno
 Mechanism work stays stopped pending the owner's decision among the section 6 options: Factor C
 (Q8_0), prompt-template variants, or a protocol clarification request to the paper's authors — for
 which tier1's coincident metrics are the concrete question to ask.
+
+## Addendum — three questions the verdict left open
+
+Zero model contacts. Every figure below is read from the four sealed
+`SAEA-A2T-DIRECT-CALIBRATION-V1.scores.json` / `.outputs.jsonl` artifacts of the same four
+FINALIZED attempts, plus scorer-side gold (`data.audio2tool.load_expected_calls`, reduced to
+call counts and tool names) and the frozen `tools_registry.csv`. Nothing was re-scored and no
+scoring rule was added. Builder: `scripts/a2t_calibration_addendum.py`; machine-readable form:
+the `addendum` key of `result-summary.json`.
+
+### A1 — Correction: ordered tool accuracy *was* computed, and was sealed by this flight
+
+The section above ("Overall, n = 400 per cell") states that the registered scorer provides no
+ordered variant and that the ordered column is therefore **not computed**. That is wrong, and
+is corrected here rather than rewritten above. The registered `a2t-toolcall-v2` scorer seals
+**both** rules for every sample and every tier: its `tool_accuracy` field is
+`AggregateScoreV2.tool_accuracy_ordered`, the expected-versus-predicted tool-name **sequence**
+match, and its `tool_accuracy_multiset` field is v1's multiset rule. The flight's own scoring
+job computed them; they were in the artifacts all along. The identification is asserted, not
+assumed: for every cell and every tier, v2's `tool_accuracy_multiset` equals v1's
+`a2t-toolcall` `tool_accuracy` exactly, which is what distinguishes v2's `tool_accuracy` as a
+genuinely different, ordered rule rather than a relabelled multiset.
+
+### A2 — Ordered versus multiset tool accuracy (ordered / multiset)
+
+| tier | A0'-legacy-raw | A1-native-raw | P0-legacy-packets | P1-native-packets |
+|---|---:|---:|---:|---:|
+| tier1_direct | 64.0 / 64.0 | 50.0 / 50.0 | 60.0 / 60.0 | 50.0 / 50.0 |
+| tier2_parametric | 68.0 / 68.0 | 70.0 / 70.0 | 66.0 / 66.0 | 70.0 / 70.0 |
+| tier3_multi_intent | 46.0 / 50.0 | 12.0 / 12.0 | 54.0 / 58.0 | 12.0 / 12.0 |
+| tier4_implicit | 30.0 / 30.0 | 26.0 / 26.0 | 30.0 / 30.0 | 22.0 / 22.0 |
+| tier5_needle | 60.0 / 60.0 | 80.0 / 80.0 | 54.0 / 54.0 | 76.0 / 76.0 |
+| tier6_correction | 60.0 / 60.0 | 70.0 / 70.0 | 60.0 / 60.0 | 62.0 / 62.0 |
+| tier7_multiturn | 56.0 / 56.0 | 48.0 / 48.0 | 62.0 / 62.0 | 48.0 / 48.0 |
+| tier8_intent_blending | 20.0 / 26.0 | 10.0 / 12.0 | 26.0 / 32.0 | 8.0 / 12.0 |
+| **overall, n = 400** | 50.50 / 51.75 | 45.75 / 46.00 | 51.50 / 52.75 | 43.50 / 44.00 |
+
+Ordering costs 1.25 pp overall on A0', 0.25 pp on A1, 1.25 pp on P0 and 0.50 pp on P1.
+The penalty is **exactly zero on all six single-call tiers in all four cells** and appears only
+on tier3 and tier8, the two multi-call tiers — 4.0 and 6.0 pp on both legacy cells, 0.0/2.0 pp
+on A1 and 0.0/4.0 pp on P1. Ordering is therefore not a second, independent failure mode: it is
+a small correction confined to the tiers that emit more than one call, and it does not change
+the verdict or any cell's acceptance. Note that the native cells' apparently *smaller* order
+penalty is an artefact of A3 below — a cell that emits one call cannot get the order wrong.
+
+### A3 — Why the native cells collapse on tier3 and tier8: they emit one call instead of many
+
+Predicted call count is the length of the call array recovered from each sealed response by
+`reproduction.toolcall_scoring.parse_tool_calls_text`, the same parse both registered scorers
+run; every row's parse outcome was asserted equal to the `parsed` flag the scorer sealed for
+that row, and an unparsed row counts as 0 calls exactly as the scorer treats it. Gold enters
+only as a length. Tier3 and tier8 are the only tiers where gold ever asks for two or more
+calls, and there it always does: 50 of 50 rows in each.
+
+Share of the 50 gold-multi-call rows on which the cell emitted **exactly one** call:
+
+| tier | gold-multi rows | A0'-legacy-raw | A1-native-raw | P0-legacy-packets | P1-native-packets |
+|---|---:|---:|---:|---:|---:|
+| tier3_multi_intent | 50 | 0 % | 86 % | 2 % | 84 % |
+| tier8_intent_blending | 50 | 2 % | 76 % | 0 % | 84 % |
+| **both tiers** | 100 | 1 % | 81 % | 1 % | 84 % |
+
+**This is the mechanism.** The legacy contract emits one call on 1 of 100 multi-call rows; the
+native contract does it on 81 (A1) and 84 (P1) of 100. Mean calls emitted against a mean gold
+of 2.40 on tier3: A0' 1.82, P0 2.02, but A1 1.14 and P1 1.16. Against a mean gold of 2.74 on
+tier8: A0' 2.18, P0 2.34, but A1 1.32 and P1 1.22. The native cells are not choosing the wrong
+tools on these tiers — they are **stopping after the first one**. On tier3 A1 emitted a single
+call on 43 of 50 rows and never more than two; the legacy A0' emitted two on 29 and three on 11.
+
+The proxy is sound. Per-row native counts are not sealed, only the per-cell totals in the
+"Native tool calls versus text" table above, so the canonicalized array length stands in for
+them — and it reconciles exactly. Reconstructed parsed calls total 372 for A1 against 371
+native calls recorded, and 369 for P1 against 368, the difference in each case being exactly
+one text-arriving row whose free text still parsed; reconstructed unparsed rows are 52 of 53
+text-arriving rows for A1 and 53 of 54 for P1. Every natively-arriving row parsed, and its
+array length is its `tool_call` count.
+
+A second, separate native cost shows up on the single-call tiers: A1 and P1 fail to parse 11–12
+of 50 tier1 rows and 16 of 50 tier7 rows, where both legacy cells fail 0–1 and 1. Those are the
+rows that declined the tools interface and answered as prose. The native contract thus loses
+rows two ways — under-emission where gold wants many calls, and prose fallback where it wants
+one — which together account for its 5.75–8.75 pp deficit without any change in tool choice.
+
+### A4 — Tier 1: how wrong is the wrong tool?
+
+A tier1 row counts as wrong when its sealed v1 `tool_accuracy` is below 1.0. Rows that emitted
+exactly one call against exactly one gold call are placed by where the predicted `tool_name`
+sits relative to gold's in the registry taxonomy (3 domains, 28 `(domain, category)` families,
+152 tools). Four buckets are reported rather than the two the question names, because the
+question's own exemplar — `setLighting` versus `setLightState` — is itself same-domain but
+**cross-category** (`smart_home/core_control` versus `smart_home/lighting`); scoring "same
+family" as "same domain *and* category" alone would classify that exemplar as a different
+family and report **zero** near-neighbour substitutions for both legacy cells. Names only.
+
+| | A0'-legacy-raw | A1-native-raw | P0-legacy-packets | P1-native-packets |
+|---|---:|---:|---:|---:|
+| rows with wrong tool set (of 50) | 18 | 25 | 20 | 25 |
+| — unparsed (no tool set emitted) | 0 | 11 | 0 | 12 |
+| — call-count mismatch | 2 | 0 | 3 | 0 |
+| — single-call substitutions | 16 | 14 | 17 | 13 |
+| · same domain, same category | 0 | 3 | 0 | 2 |
+| · same domain, other category | 5 | 3 | 7 | 4 |
+| · other domain, same category label | 2 | 3 | 2 | 2 |
+| · other domain, other category label | 9 | 5 | 8 | 5 |
+| **same-domain share of substitutions** | 31 % | 43 % | 41 % | 46 % |
+
+Read the same-domain rows together: 5 of 16 substitutions on A0', 6 of 14 on A1, 7 of 17 on P0
+and 6 of 13 on P1 stay inside the correct device domain — 31–46 %. Under the strict
+`(domain, category)` reading only the native cells register any at all (3 on A1, 2 on P1) and
+both legacy cells register none, which is precisely why the wider split is reported.
+
+The majority of tier1 substitutions are therefore **not** naming near-misses: they cross the
+device domain, and they do so onto a functionally analogous name in the wrong one. Three
+substitutions recur in **all four** cells — `getBatteryLevel` → `getBatteryStatus`
+(`smart_home/diagnostics` → `smart_car/charging_energy`), `getLockState` → `getLockStatus`
+(`smart_home/status` → `smart_car/status`) and `setVolume` → `adjustVolume`
+(`smart_home/media` → `smart_car/media_cabin`) — and `viewRemoteCamera` → `getCameraStream`
+(`smart_car/security` → `smart_home/security`) in three. The climate group behaves the same way
+with a contract-dependent target: `setThermostatMode` / `setTargetTemperature` /
+`setThermostatSchedule` → `setClimate` on both legacy cells, `setThermostatMode` →
+`setZoneTemperature` on both native ones. These are stable properties of the
+registry-plus-prompt, not sampling noise. The failure is **device-domain disambiguation** across
+a 152-tool registry carrying three near-duplicate capability sets, not tool naming.
+
+Inside `smart_home` the residual confusion is the `core_control` versus `lighting` boundary, and
+it too is contract-dependent in the same direction: the legacy cells collapse `setBrightness` /
+`setColor` / `setColorTemperature` / `setGroupLightState` onto the generic `setLighting`, while
+the native cells collapse them — and `setLighting` itself — onto `setLightState`. The
+question's exemplar is thus real and directional, but it sits inside the same-domain bucket,
+which is 5 of 16 and 7 of 17 substitutions on the legacy cells and 6 of 14 and 6 of 13 on the
+native ones — a minority of tier1's misses either way.
+
+None of this changes the verdict. It does sharpen the tier1 clarification question the section
+above recommends: the paper's 92.4 requires resolving both the device domain and the
+`core_control`/`lighting` boundary from speech alone, and it is worth asking whether the
+published protocol scopes the candidate tool set per utterance rather than offering all 152.
