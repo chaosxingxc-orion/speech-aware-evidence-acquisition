@@ -1,5 +1,16 @@
 #!/usr/bin/env python3
-"""Build a tiers-2/5/8 Audio2Tool roster drawn the RELEASE's own way.
+"""Build an Audio2Tool official-population roster drawn the RELEASE's own way.
+
+Two flights live in this module and the filename records the first of them
+(the committed tiers-2/5/8 preregistration, verdict, dataset fragment and
+test all cite this path, so it is not renamed): ``--group tier258`` is the
+2026-09-04 tiers-2/5/8 flight this file was written for, and
+``--group tier3467`` is the 2026-09-04 flight that completes the eight-tier
+table on ``tier3_multi_intent``, ``tier4_implicit``, ``tier6_correction``
+and ``tier7_multiturn``. The tier list is the only thing that changes; the
+draw, the receipt schema, the identity conventions and the additive
+probe-sample receipt are shared, which is why the second flight extends
+this builder instead of copying it.
 
 Why this roster exists
 ----------------------
@@ -68,16 +79,65 @@ so), so the first 500 sorted query directories would be a pure
 ``smart_home`` sample on tiers 2 and 5. The draw below is uniform without
 replacement over each tier's whole population.
 
+The four remaining tiers (``--group tier3467``)
+-----------------------------------------------
+``tier3_dataset.py``, ``tier4_dataset.py`` and ``tier6_dataset.py`` spell
+``_get_audio_paths`` exactly the way ``tier1_dataset.py`` and
+``tier2_dataset.py`` do, stale-absolute-path fallback included, so their
+populations are built and verified by the same replay: 2,146, 2,132 and
+2,146 query directories, one row each.
+
+Two release facts about tier 4 are recorded rather than smoothed over.
+Seven of its 2,132 directories ship THREE or FOUR recordings instead of the
+usual two (``query_00185``, ``query_00192``, ``query_00232``,
+``query_00483``, ``query_00763``, ``query_00860``, ``query_00995``), and two
+of those (``query_00232``, ``query_00763``) carry a DUPLICATED manifest row
+— two ids naming the same ``speaker_idx`` and the same wav. Neither changes
+the pick: on all seven the released loader's first resolvable CSV row is
+still the manifest's lowest-id row, which the replay verifies directory by
+directory.
+
+``tier7_multiturn`` is the one tier whose audio does not come from the tier
+manifest at all. Its manifest rows carry no top-level ``path`` or
+``duration`` (audio lives per turn inside ``chat_history``), and
+``Tier7Dataset._get_audio_paths`` ignores ``generation_results.csv``
+entirely: it returns ``sorted(query_dir.glob("turn_*_user_*.wav"))``, so
+``BenchmarkEvaluator``'s ``audio_paths[0]`` is the FIRST user turn's wav —
+with no history and no agent turns in the prompt. This builder applies
+exactly that rule, and cross-checks it against ``chat_history[0]``, whose
+``path`` and ``duration`` agree with the glob's first pick on all 2,146
+directories.
+
+Two tier-7 exclusions, both forced by this repository rather than by the
+release, are applied to the tier-7 population before the draw and named
+individually in the receipt:
+
+* **Media identity.** The immutable D1 artifact
+  ``docs/receipts/artifacts/d1-identity.json`` already records 50 tier-7
+  sample ids — the frozen 400's tier-7 rows — bound to the FINAL user turn
+  (``data.audio2tool._entry_media`` reads ``chat_history[-1]``).
+  ``contracts.gate_media_identity`` refuses a D1 supplement that duplicates
+  a base D1 sample and re-hashes the flown file against the base record, so
+  a first-user-turn binding of those same ids can never reach the frozen
+  core. They are excluded from the draw instead of being re-bound.
+* **Scorer-side resolvability.** Four rows (ids 373, 1258, 1744, 2023) end
+  their ``chat_history`` on an AGENT turn, and ``_entry_media`` fails closed
+  on those, so putting one inside a probe-sample receipt would break
+  ``load_official_gold`` for every Audio2Tool scoring job. They are excluded
+  as well.
+
 Contact surface
 ---------------
 Label-free and contact-free. The tier manifests are read for identity and
 media facts ONLY (``id``, ``query_idx``, ``path``, ``duration``,
-``speaker_idx``, and ``domain``/``category`` for the aggregate stratum
+``speaker_idx``, ``chat_history`` turn ``role``/``path``/``duration``, and
+``domain``/``category`` for the aggregate stratum
 counts the preregistration and the verdict report); ``query``,
 ``tool_name``, ``expected_tool_call``, ``extracted_params``,
 ``additional_tool_calls``, ``background_*``, ``functions`` and
 ``instruction`` are never read. ``generation_results.csv`` is read for
-``speaker_idx``/``audio_path``/``success`` only. WAV bytes are hashed and
+``speaker_idx``/``audio_path``/``success`` only, and ``chat_history`` turns
+for ``role``/``path``/``duration`` only. WAV bytes are hashed and
 their container headers read; no audio is decoded. No model, network,
 tokenizer or scorer contact.
 
@@ -85,6 +145,8 @@ Usage::
 
     python scripts/build_a2t_tier258_official_population_roster.py           # print only
     python scripts/build_a2t_tier258_official_population_roster.py --write
+    python scripts/build_a2t_tier258_official_population_roster.py \\
+        --group tier3467 --write
 """
 
 from __future__ import annotations
@@ -137,6 +199,104 @@ OUTPUT_DIR = (
     / "2026-09-04-a2t-tier258-official-population-roster"
 )
 DEFAULT_OUTPUT = "flight-roster-receipt.json"
+
+# --- the four remaining tiers (--group tier3467) ------------------------------
+TIERS_T3467 = (
+    "tier3_multi_intent",
+    "tier4_implicit",
+    "tier6_correction",
+    "tier7_multiturn",
+)
+POPULATION_COUNTS_T3467 = {
+    "tier3_multi_intent": 2146,
+    "tier4_implicit": 2132,
+    "tier6_correction": 2146,
+    "tier7_multiturn": 2146,
+}
+# None means "the release ships a variable number here; record what it ships".
+SHIPPED_SPEAKERS_PER_QUERY_T3467 = {
+    "tier3_multi_intent": 2,
+    "tier4_implicit": None,
+    "tier6_correction": 2,
+    "tier7_multiturn": None,
+}
+OFFICIAL_LOADERS_T3467 = {
+    "tier3_multi_intent": "audio_benchmark/datasets/tier3_dataset.py::_get_audio_paths",
+    "tier4_implicit": "audio_benchmark/datasets/tier4_dataset.py::_get_audio_paths",
+    "tier6_correction": "audio_benchmark/datasets/tier6_dataset.py::_get_audio_paths",
+    "tier7_multiturn": "audio_benchmark/datasets/tier7_dataset.py::_get_audio_paths",
+}
+SPLIT_NAME_T3467 = "A2T-TIER3467-OFFICIAL-POP-2000"
+PROBE_RECEIPT_STEM_T3467 = "a2t-tier3467-official-population-2000"
+OUTPUT_DIR_T3467 = (
+    REPO
+    / "docs/checks/speech-aware-evidence-acquisition"
+    / "2026-09-04-a2t-tier3467-official-population-roster"
+)
+# tier7 is the only tier whose audio comes from the query directory rather
+# than from the tier manifest; TIER7 is its glob, verbatim from the loader.
+TIER7_TIER = "tier7_multiturn"
+TIER7_USER_TURN_GLOB = "turn_*_user_*.wav"
+PARENT_D1 = REPO / "docs/receipts/artifacts/d1-identity.json"
+
+GROUPS: dict[str, dict[str, object]] = {
+    "tier258": {
+        "tiers": TIERS,
+        "population_counts": POPULATION_COUNTS,
+        "shipped_per_query": SHIPPED_SPEAKERS_PER_QUERY,
+        "official_loaders": OFFICIAL_LOADERS,
+        "split_name": SPLIT_NAME,
+        "probe_receipt_stem": PROBE_RECEIPT_STEM,
+        "output_dir": OUTPUT_DIR,
+        "preregistration": (
+            "docs/readiness/2026-09-04-a2t-tier258-official-population-v1-"
+            "preregistration.md"
+        ),
+        "population_rule": (
+            "each tier's released population: for every query_* directory in sorted "
+            "order, the first recording the released loader resolves. On tiers 2 and "
+            "5 that is the shipped speaker with the lowest speaker_idx (the manifest "
+            "row with the lowest id); on tier 8 it is the single mixed.wav the "
+            "directory ships, whose manifest row carries speaker_idx null"
+        ),
+        "why_not_max_samples": (
+            "the release orders every subset smart_home -> wearables -> smart_car "
+            "(its own README), so max_samples 500 over sorted query directories "
+            "would be a near-pure smart_home sample on tiers 2 and 5; each tier's "
+            "draw below is uniform over its whole population"
+        ),
+    },
+    "tier3467": {
+        "tiers": TIERS_T3467,
+        "population_counts": POPULATION_COUNTS_T3467,
+        "shipped_per_query": SHIPPED_SPEAKERS_PER_QUERY_T3467,
+        "official_loaders": OFFICIAL_LOADERS_T3467,
+        "split_name": SPLIT_NAME_T3467,
+        "probe_receipt_stem": PROBE_RECEIPT_STEM_T3467,
+        "output_dir": OUTPUT_DIR_T3467,
+        "preregistration": (
+            "docs/readiness/2026-09-04-a2t-tier3467-official-population-v1-"
+            "preregistration.md"
+        ),
+        "population_rule": (
+            "each tier's released population: for every query_* directory in sorted "
+            "order, the first recording the released loader resolves. On tiers 3, 4 "
+            "and 6 that is the shipped speaker with the lowest speaker_idx (the "
+            "manifest row with the lowest id), exactly as on tiers 1 and 2; on tier 7 "
+            "the loader ignores generation_results.csv and returns "
+            "sorted(query_dir.glob('turn_*_user_*.wav')), so audio_paths[0] is the "
+            "FIRST user turn's wav -- with no chat history and no agent turn in the "
+            "prompt -- and the tier manifest's own chat_history[0] names that same "
+            "file with a matching duration on every directory"
+        ),
+        "why_not_max_samples": (
+            "the release orders every subset smart_home -> wearables -> smart_car "
+            "(its own README), so max_samples 500 over sorted query directories "
+            "would be a near-pure smart_home sample on all four tiers; each tier's "
+            "draw below is uniform over its whole population"
+        ),
+    },
+}
 
 
 def sha256_file(path: Path) -> str:
@@ -198,7 +358,11 @@ def _wav_seconds(path: Path, context: str) -> float:
 
 
 def official_population(
-    public_dir: Path, tier: str, *, verify_official_rule: bool = True
+    public_dir: Path,
+    tier: str,
+    *,
+    verify_official_rule: bool = True,
+    group: Mapping[str, object] | None = None,
 ) -> tuple[list[dict[str, object]], dict[str, object]]:
     """One tier's released population: one manifest row per query directory,
     the first shipped recording, in sorted query-directory order.
@@ -206,6 +370,17 @@ def official_population(
     Returns ``(rows, audit)`` where ``audit`` records how the manifest-first
     rule compared against a direct replay of the released loader's own walk.
     """
+
+    group = GROUPS["tier258"] if group is None else group
+    population_counts: Mapping[str, int] = group["population_counts"]  # type: ignore[assignment]
+    shipped_per_query: Mapping[str, int | None] = group["shipped_per_query"]  # type: ignore[assignment]
+    official_loaders: Mapping[str, str] = group["official_loaders"]  # type: ignore[assignment]
+    if tier == TIER7_TIER:
+        return _tier7_population(
+            public_dir,
+            expected=population_counts[tier],
+            official_loader=official_loaders[tier],
+        )
 
     manifest_path = public_dir / f"{tier}_data" / f"{tier}.json"
     audios_dir = public_dir / f"{tier}_audios"
@@ -278,21 +453,38 @@ def official_population(
             f"{tier}: the tier manifest and the on-disk query directories disagree "
             f"({len(by_query_dir)} manifest vs {len(on_disk_dirs)} on disk)"
         )
-    if len(by_query_dir) != POPULATION_COUNTS[tier]:
+    if len(by_query_dir) != population_counts[tier]:
         raise ValueError(
-            f"expected {POPULATION_COUNTS[tier]} {tier} query directories, "
+            f"expected {population_counts[tier]} {tier} query directories, "
             f"found {len(by_query_dir)}"
         )
 
-    shipped_per_query = SHIPPED_SPEAKERS_PER_QUERY[tier]
+    expected_shipped = shipped_per_query[tier]
+    shipped_counts: Counter[int] = Counter()
+    duplicate_manifest_rows: list[dict[str, object]] = []
     rows: list[dict[str, object]] = []
     for query_dir in on_disk_dirs:
         shipped = sorted(by_query_dir[query_dir], key=lambda row: int(row["id"]))
-        if len(shipped) != shipped_per_query:
+        shipped_counts[len(shipped)] += 1
+        if expected_shipped is not None and len(shipped) != expected_shipped:
             raise ValueError(
                 f"{tier}/{query_dir}: the release ships {len(shipped)} recordings, "
-                f"expected {shipped_per_query}"
+                f"expected {expected_shipped}"
             )
+        seen_wavs: dict[str, int] = {}
+        for row in shipped:
+            name = str(row["wav_name"])
+            if name in seen_wavs:
+                duplicate_manifest_rows.append(
+                    {
+                        "query_dir": query_dir,
+                        "wav_name": name,
+                        "ids": [seen_wavs[name], int(row["id"])],
+                        "speaker_idx": row["speaker_idx"],
+                    }
+                )
+            else:
+                seen_wavs[name] = int(row["id"])
         first = shipped[0]
         if tier != "tier8_intent_blending" and int(first["speaker_idx"]) != min(
             int(row["speaker_idx"]) for row in shipped
@@ -312,26 +504,211 @@ def official_population(
         rows.append(first)
 
     audit = (
-        _verify_official_rule(audios_dir, tier, rows)
+        _verify_official_rule(audios_dir, tier, rows, official_loaders)
         if verify_official_rule
         else {"performed": False, "reason": "--no-verify-official-rule"}
     )
+    if expected_shipped is None:
+        # The release ships a variable number here (tier 4). Record what it
+        # actually ships, and every duplicated manifest row, rather than
+        # asserting a count the release does not honour.
+        audit["shipped_recordings_per_query_counts"] = dict(
+            sorted((str(count), n) for count, n in shipped_counts.items())
+        )
+        audit["duplicated_manifest_rows"] = duplicate_manifest_rows
+        audit["duplicated_manifest_rows_note"] = (
+            "two manifest ids naming the same speaker_idx and the same wav in the "
+            "same query directory; the lowest-id pick is unaffected because the "
+            "duplicate is never the lowest id"
+        )
+    return rows, audit
+
+
+def _tier7_population(
+    public_dir: Path, *, expected: int, official_loader: str
+) -> tuple[list[dict[str, object]], dict[str, object]]:
+    """``tier7_multiturn``'s released population, from the query directories.
+
+    ``Tier7Dataset._get_audio_paths`` ignores ``generation_results.csv`` and
+    returns ``sorted(query_dir.glob("turn_*_user_*.wav"))``, so
+    ``BenchmarkEvaluator``'s ``audio_paths[0]`` is the FIRST user turn's wav.
+    The tier manifest carries no top-level ``path``/``duration`` for this
+    tier, so identity comes from the directory name and the media fact is
+    cross-checked against ``chat_history[0]``, whose own ``path``/
+    ``duration`` the release records for that same turn.
+    """
+
+    tier = TIER7_TIER
+    manifest_path = public_dir / f"{tier}_data" / f"{tier}.json"
+    audios_dir = public_dir / f"{tier}_audios"
+    if not manifest_path.is_file():
+        raise ValueError(f"tier manifest missing: {manifest_path}")
+    if not audios_dir.is_dir():
+        raise ValueError(f"tier audio directory missing: {audios_dir}")
+    try:
+        entries = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise ValueError(f"cannot read tier manifest {manifest_path}: {error}") from error
+    if not isinstance(entries, list) or not entries:
+        raise ValueError(f"tier manifest {manifest_path} must be a non-empty JSON list")
+
+    by_id: dict[int, Mapping[str, object]] = {}
+    for entry in entries:
+        if not isinstance(entry, Mapping):
+            raise ValueError("tier manifest item must be an object")
+        entry_id = entry.get("id")
+        if isinstance(entry_id, bool) or not isinstance(entry_id, int) or entry_id in by_id:
+            raise ValueError(f"tier manifest item is malformed: id={entry_id!r}")
+        if "path" in entry or "duration" in entry:
+            raise ValueError(
+                f"{tier}:{entry_id:06d} carries a top-level path/duration; the released "
+                "tier-7 manifest carries neither and this builder's audio rule depends "
+                "on that"
+            )
+        by_id[entry_id] = entry
+
+    on_disk_dirs = sorted(
+        path.name
+        for path in audios_dir.iterdir()
+        if path.is_dir() and path.name.startswith("query_")
+    )
+    if len(on_disk_dirs) != expected or len(by_id) != expected:
+        raise ValueError(
+            f"{tier}: expected {expected} query directories and manifest rows, found "
+            f"{len(on_disk_dirs)} and {len(by_id)}"
+        )
+    if sorted(by_id) != [int(name.split("_")[1]) for name in on_disk_dirs]:
+        raise ValueError(
+            f"{tier}: the manifest ids and the query directory numbers do not line up "
+            "one to one; the tier-7 identity rule cannot be resolved"
+        )
+
+    first_turn_indices: Counter[str] = Counter()
+    user_turn_counts: Counter[int] = Counter()
+    agent_turn_counts: Counter[int] = Counter()
+    chat_history_agreements = 0
+    rows: list[dict[str, object]] = []
+    agent_last_ids: list[int] = []
+    for query_dir in on_disk_dirs:
+        entry_id = int(query_dir.split("_")[1])
+        entry = by_id[entry_id]
+        directory = audios_dir / query_dir
+        user_turns = sorted(path.name for path in directory.glob(TIER7_USER_TURN_GLOB))
+        agent_turns = sorted(path.name for path in directory.glob("turn_*_agent_*.wav"))
+        if not user_turns:
+            raise ValueError(f"{tier}/{query_dir}: no {TIER7_USER_TURN_GLOB} to evaluate")
+        chosen = user_turns[0]
+        first_turn_indices[chosen.split("_")[1]] += 1
+        user_turn_counts[len(user_turns)] += 1
+        agent_turn_counts[len(agent_turns)] += 1
+        history = entry.get("chat_history")
+        if not isinstance(history, list) or not history:
+            raise ValueError(f"{tier}:{entry_id:06d} carries no chat_history")
+        opening = history[0]
+        if not isinstance(opening, Mapping) or opening.get("role") != "user":
+            raise ValueError(
+                f"{tier}:{entry_id:06d}: chat_history does not open on a user turn"
+            )
+        relpath = _validate_relpath(
+            opening.get("path"), tier, f"{tier}:{entry_id:06d}"
+        )
+        if relpath != f"{tier}_audios/{query_dir}/{chosen}":
+            raise ValueError(
+                f"{tier}/{query_dir}: chat_history[0] names {relpath!r} but the released "
+                f"loader's first user turn is {chosen!r}"
+            )
+        chat_history_agreements += 1
+        final = history[-1]
+        if not isinstance(final, Mapping) or final.get("role") != "user":
+            agent_last_ids.append(entry_id)
+        domain = entry.get("domain")
+        category = entry.get("category")
+        query_idx = entry.get("query_idx")
+        if not isinstance(domain, str) or not domain:
+            raise ValueError(f"tier manifest item {entry_id} has no domain")
+        if isinstance(query_idx, bool) or not isinstance(query_idx, int):
+            raise ValueError(f"tier manifest item {entry_id} has no query_idx")
+        rows.append(
+            {
+                "id": entry_id,
+                "query_idx": query_idx,
+                "speaker_idx": None,
+                "audio_relpath_in_public": relpath,
+                "audio_seconds": _seconds(
+                    opening.get("duration"), f"{tier}:{entry_id:06d}"
+                ),
+                "domain": domain,
+                "category": category if isinstance(category, str) else "",
+                "wav_name": chosen,
+                "query_dir": query_dir,
+                "tier": tier,
+                "user_turn_count": len(user_turns),
+                "agent_turn_count": len(agent_turns),
+            }
+        )
+    audit = {
+        "performed": True,
+        "method": (
+            f"replay of {official_loader} at commit {OFFICIAL_CODE_COMMIT}: "
+            f"sorted(query_dir.glob({TIER7_USER_TURN_GLOB!r}))[0], the wav "
+            "BenchmarkEvaluator evaluates as audio_paths[0] with "
+            "max_speakers_per_query 1. generation_results.csv is NOT read by this "
+            "loader, agent turns are not included (include_agent_turns defaults to "
+            "False) and no history text reaches the prompt"
+        ),
+        "query_directories": len(rows),
+        "agreements": chat_history_agreements,
+        "disagreements": 0,
+        "csv_rows_marked_unsuccessful": 0,
+        "query_directories_whose_csv_resolves_no_shipped_wav": [],
+        "how_the_file_order_rule_resolved": (
+            "the glob's first element is turn_00_user_*.wav in every one of the "
+            f"{len(rows)} directories; the tier manifest's own chat_history[0] names "
+            "that same file, with a matching duration, in every one of them, so the "
+            "released manifest and the released loader agree on the audio this tier "
+            "evaluates"
+        ),
+        "first_user_turn_index_counts": dict(sorted(first_turn_indices.items())),
+        "user_turns_per_query_counts": dict(
+            sorted((str(k), v) for k, v in user_turn_counts.items())
+        ),
+        "agent_turns_per_query_counts": dict(
+            sorted((str(k), v) for k, v in agent_turn_counts.items())
+        ),
+        "queries_where_the_first_user_turn_is_the_only_user_turn": int(
+            user_turn_counts.get(1, 0)
+        ),
+        "queries_with_later_user_turns": sum(
+            count for turns, count in user_turn_counts.items() if turns > 1
+        ),
+        "chat_history_final_turn_is_an_agent_turn": sorted(agent_last_ids),
+        "note": (
+            "the released evaluator hears only this first user turn: no chat history, "
+            "no agent turns and no later user turn reaches the request, while the gold "
+            "tool call is the one the WHOLE conversation resolves to"
+        ),
+    }
     return rows, audit
 
 
 def _verify_official_rule(
-    audios_dir: Path, tier: str, rows: Sequence[Mapping[str, object]]
+    audios_dir: Path,
+    tier: str,
+    rows: Sequence[Mapping[str, object]],
+    official_loaders: Mapping[str, str] | None = None,
 ) -> dict[str, object]:
     """Replay the released loader's own audio walk and compare its first pick
     with this builder's manifest-first pick.
 
     tier8 has no walk to replay -- the loader names ``mixed.wav`` -- so the
-    replay there is an existence check on that exact filename. For tiers 2
-    and 5 the walk is the tier-1 spelling; tier 5's own loader omits the
+    replay there is an existence check on that exact filename. For tiers 2,
+    3, 4 and 6 the walk is the tier-1 spelling; tier 5's own loader omits the
     stale-path fallback, so BOTH replays are recorded (see the module
-    docstring).
+    docstring). tier7 never reaches here: its population builder replays its
+    own glob.
     """
 
+    official_loaders = OFFICIAL_LOADERS if official_loaders is None else official_loaders
     if tier == "tier8_intent_blending":
         missing = [
             str(row["query_dir"])
@@ -417,7 +794,7 @@ def _verify_official_rule(
     audit = {
         "performed": True,
         "method": (
-            f"replay of {OFFICIAL_LOADERS[tier]} (only_successful=True, "
+            f"replay of {official_loaders[tier]} (only_successful=True, "
             "speakers_per_query=1, stale-absolute-path fallback to query_dir/<basename>) "
             "at commit " + OFFICIAL_CODE_COMMIT
         ),
@@ -452,15 +829,57 @@ def _verify_official_rule(
     return audit
 
 
+def _tier7_excluded_ids(
+    population: Sequence[Mapping[str, object]], audit: Mapping[str, object]
+) -> dict[str, object]:
+    """The tier-7 ids this repository cannot fly, and why -- see the module
+    docstring. Both exclusions are identity constraints of THIS repository,
+    not of the release."""
+
+    base_ids: set[int] = set()
+    if PARENT_D1.is_file():
+        document = json.loads(PARENT_D1.read_text(encoding="utf-8"))
+        manifest = document["carriers"][CARRIER]["layers"]["media"]["manifest"]
+        base_ids = {
+            int(str(entry["id"]).split(":")[1])
+            for entry in manifest
+            if isinstance(entry, Mapping) and str(entry.get("id", "")).startswith(f"{TIER7_TIER}:")
+        }
+    present = {int(row["id"]) for row in population}
+    in_base_d1 = sorted(base_ids & present)
+    agent_last = sorted(
+        int(value) for value in audit.get("chat_history_final_turn_is_an_agent_turn", [])
+    )
+    return {
+        "already_bound_in_base_d1_to_the_final_user_turn": in_base_d1,
+        "already_bound_in_base_d1_count": len(in_base_d1),
+        "chat_history_ends_on_an_agent_turn": agent_last,
+        "chat_history_ends_on_an_agent_turn_count": len(agent_last),
+        "excluded_ids": sorted(set(in_base_d1) | set(agent_last)),
+        "why": (
+            "docs/receipts/artifacts/d1-identity.json already binds those base-D1 "
+            "sample ids to the FINAL user turn (data.audio2tool._entry_media reads "
+            "chat_history[-1]); contracts.gate_media_identity refuses a D1 supplement "
+            "that duplicates a base D1 sample and re-hashes the flown file against the "
+            "base record, so a first-user-turn binding of the same id can never reach "
+            "the frozen core. The agent-last rows are refused by that same "
+            "_entry_media, which would break load_official_gold for every Audio2Tool "
+            "scoring job if one entered a probe-sample receipt. Both exclusions are "
+            "applied to the POPULATION before the draw and named here."
+        ),
+    }
+
+
 def build_roster(
     *,
     data_root: Path,
     seed: int = DRAW_SEED,
     count_per_tier: int = DRAW_COUNT_PER_TIER,
     verify_official_rule: bool = True,
+    group: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
     """The flight-roster receipt: ``count_per_tier`` queries from each of the
-    three tiers' released populations, one receipt, one split identity."""
+    group's tiers' released populations, one receipt, one split identity."""
 
     from speech_aware_evidence_acquisition.data.lock import (
         asset_dir,
@@ -469,6 +888,12 @@ def build_roster(
         umbrella_lock_path,
     )
     from speech_aware_evidence_acquisition.data.splits import prefixed, split_identity_hash
+
+    group = GROUPS["tier258"] if group is None else group
+    tiers: Sequence[str] = group["tiers"]  # type: ignore[assignment]
+    split_name = str(group["split_name"])
+    shipped_per_query: Mapping[str, int | None] = group["shipped_per_query"]  # type: ignore[assignment]
+    official_loaders: Mapping[str, str] = group["official_loaders"]  # type: ignore[assignment]
 
     lock = load_lock(umbrella_lock_path())
     carrier_dir = asset_dir(lock, CARRIER, data_root)
@@ -479,10 +904,17 @@ def build_roster(
     items: list[dict[str, object]] = []
     per_tier: dict[str, dict[str, object]] = {}
     facts: dict[str, dict[str, object]] = {}
-    for tier in TIERS:
+    for tier in tiers:
         population, audit = official_population(
-            public_dir, tier, verify_official_rule=verify_official_rule
+            public_dir, tier, verify_official_rule=verify_official_rule, group=group
         )
+        excluded: dict[str, object] | None = None
+        if tier == TIER7_TIER:
+            excluded = _tier7_excluded_ids(population, audit)
+            drop = set(int(value) for value in excluded["excluded_ids"])  # type: ignore[arg-type]
+            population = [row for row in population if int(row["id"]) not in drop]
+            excluded["population_before_exclusions"] = len(population) + len(drop)
+            excluded["population_after_exclusions"] = len(population)
         population.sort(key=lambda row: int(row["id"]))
         if not 0 < count_per_tier <= len(population):
             raise ValueError(
@@ -562,10 +994,30 @@ def build_roster(
             "population_audio_seconds_total": round(
                 sum(float(row["audio_seconds"]) for row in population), 6
             ),
-            "shipped_recordings_per_query": SHIPPED_SPEAKERS_PER_QUERY[tier],
-            "official_loader": OFFICIAL_LOADERS[tier],
+            "shipped_recordings_per_query": shipped_per_query[tier],
+            "official_loader": official_loaders[tier],
             "official_rule_audit": audit,
         }
+        if tier == TIER7_TIER:
+            per_tier[tier]["user_turns_per_query_counts"] = dict(
+                sorted(
+                    (str(key), value)
+                    for key, value in Counter(
+                        int(by_id[int(item["id"])]["user_turn_count"])
+                        for item in tier_items
+                    ).items()
+                )
+            )
+            per_tier[tier]["first_user_turn_index_counts"] = dict(
+                sorted(
+                    Counter(
+                        str(by_id[int(item["id"])]["wav_name"]).split("_")[1]
+                        for item in tier_items
+                    ).items()
+                )
+            )
+        if excluded is not None:
+            per_tier[tier]["excluded_from_the_population"] = excluded
 
     items.sort(key=lambda item: str(item["sample_id"]))
     identity = sha256_lines(str(item["key"]) for item in items)
@@ -577,7 +1029,7 @@ def build_roster(
         "schema": "saea-a2t-agentloop-flight-roster-receipt-v1",
         "study": "speech-aware-evidence-acquisition",
         "carrier": CARRIER,
-        "split_name": SPLIT_NAME,
+        "split_name": split_name,
         "split_role": SPLIT_ROLE,
         "part": "draw",
         "split_identity_hash": identity,
@@ -594,7 +1046,7 @@ def build_roster(
             "this roster must carry"
         ),
         "count": len(items),
-        "tier_counts": {tier: per_tier[tier]["count"] for tier in TIERS},
+        "tier_counts": {tier: per_tier[tier]["count"] for tier in tiers},
         "strata": "tier",
         "audio_seconds_total": round(sum(seconds_all), 6),
         "audio_seconds_longest_item": round(max(seconds_all), 6),
@@ -615,27 +1067,16 @@ def build_roster(
                 for item in items
             ]
         ),
-        "per_tier": {tier: per_tier[tier] for tier in TIERS},
+        "per_tier": {tier: per_tier[tier] for tier in tiers},
         "population": {
-            "rule": (
-                "each tier's released population: for every query_* directory in sorted "
-                "order, the first recording the released loader resolves. On tiers 2 and "
-                "5 that is the shipped speaker with the lowest speaker_idx (the manifest "
-                "row with the lowest id); on tier 8 it is the single mixed.wav the "
-                "directory ships, whose manifest row carries speaker_idx null"
-            ),
+            "rule": str(group["population_rule"]),
             "official_code_commit": OFFICIAL_CODE_COMMIT,
             "official_code_receipt": OFFICIAL_CODE_RECEIPT,
             "evaluator": (
                 "audio_benchmark/evaluation/evaluator.py::BenchmarkEvaluator with "
                 "max_speakers_per_query 1 evaluates audio_paths[0]"
             ),
-            "why_not_max_samples": (
-                "the release orders every subset smart_home -> wearables -> smart_car "
-                "(its own README), so max_samples 500 over sorted query directories "
-                "would be a near-pure smart_home sample on tiers 2 and 5; each tier's "
-                "draw below is uniform over its whole population"
-            ),
+            "why_not_max_samples": str(group["why_not_max_samples"]),
         },
         "selection": {
             "rule": "uniform without replacement over each tier's whole released population",
@@ -709,7 +1150,12 @@ def _overlap_report(
 
 
 def build_probe_receipt(
-    roster: Mapping[str, Any], repo_root: Path, *, roster_relpath: str, roster_sha256: str
+    roster: Mapping[str, Any],
+    repo_root: Path,
+    *,
+    roster_relpath: str,
+    roster_sha256: str,
+    group: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
     """The additive probe-sample receipt that puts this roster's NEW sample
     ids inside ``data.audio2tool``'s frozen-receipt universe.
@@ -723,9 +1169,9 @@ def build_probe_receipt(
     outside the frozen-receipt universe -- and opens no gold itself.
     """
 
-    overlap = _overlap_report(
-        roster["items"], repo_root, ignore_receipt_stems=(PROBE_RECEIPT_STEM,)
-    )
+    group = GROUPS["tier258"] if group is None else group
+    stem = str(group["probe_receipt_stem"])
+    overlap = _overlap_report(roster["items"], repo_root, ignore_receipt_stems=(stem,))
     already = set(overlap["already_in_a_probe_sample_receipt"])
     items = [
         {
@@ -740,7 +1186,7 @@ def build_probe_receipt(
     items.sort(key=lambda item: (str(item["tier"]), int(item["id"])))
     identity = sha256_lines(str(item["key"]) for item in items)
     return {
-        "probe": PROBE_RECEIPT_STEM,
+        "probe": stem,
         "carrier": CARRIER,
         "split_role": SPLIT_ROLE,
         "items": items,
@@ -762,15 +1208,16 @@ def build_probe_receipt(
             name: hits for name, hits in overlap["by_receipt"].items()
         },
         "design": (
-            "Additive identity receipt for the tiers-2/5/8 official-population roster: "
+            f"Additive identity receipt for the {roster['split_name']} "
+            "official-population roster: "
             "the sample ids of that roster that no committed audio2tool probe-sample "
             "receipt covers yet. Identifiers only -- no gold, expected call, task text, "
             "media path, annotation, output or score. It grants no contact authority; "
             "the preregistration and the exposure ledger do that."
         ),
         "authority": (
-            "docs/readiness/2026-09-04-a2t-tier258-official-population-v1-"
-            "preregistration.md fixes these discovery identities before model contact."
+            f"{group['preregistration']} fixes these discovery identities before "
+            "model contact."
         ),
         "target_gold_opened_before_receipt": False,
     }
@@ -778,6 +1225,15 @@ def build_probe_receipt(
 
 def main() -> int:
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--group",
+        choices=sorted(GROUPS),
+        default="tier258",
+        help=(
+            "which official-population tier group to build: tier258 (the flight this "
+            "file was written for) or tier3467 (the four remaining tiers)"
+        ),
+    )
     parser.add_argument("--seed", type=int, default=DRAW_SEED)
     parser.add_argument("--count-per-tier", type=int, default=DRAW_COUNT_PER_TIER)
     parser.add_argument("--data-root", type=Path)
@@ -808,13 +1264,17 @@ def main() -> int:
         if not value:
             raise SystemExit("--data-root or SPEECHRL_DATA_DIR is required")
         root = Path(value)
-    output = Path(args.output) if args.output else OUTPUT_DIR / DEFAULT_OUTPUT
+    group = GROUPS[args.group]
+    output = (
+        Path(args.output) if args.output else Path(group["output_dir"]) / DEFAULT_OUTPUT
+    )
 
     roster = build_roster(
         data_root=root,
         seed=args.seed,
         count_per_tier=args.count_per_tier,
         verify_official_rule=args.verify_official_rule,
+        group=group,
     )
     payload = json.dumps(roster, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
     roster_sha256 = hashlib.sha256(payload.encode("utf-8")).hexdigest()
@@ -831,7 +1291,11 @@ def main() -> int:
         except ValueError:
             roster_relpath = str(output)
         receipt = build_probe_receipt(
-            roster, REPO, roster_relpath=roster_relpath, roster_sha256=roster_sha256
+            roster,
+            REPO,
+            roster_relpath=roster_relpath,
+            roster_sha256=roster_sha256,
+            group=group,
         )
         receipt_payload = (
             json.dumps(receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
@@ -862,8 +1326,11 @@ def main() -> int:
                 "flight_split_identity_hash": roster["flight_split_identity_hash"],
                 "output": str(output),
                 "output_sha256": roster_sha256,
+                "group": args.group,
                 "overlap": _overlap_report(
-                    roster["items"], REPO, ignore_receipt_stems=(PROBE_RECEIPT_STEM,)
+                    roster["items"],
+                    REPO,
+                    ignore_receipt_stems=(str(group["probe_receipt_stem"]),),
                 ),
                 "per_tier": {
                     tier: {
@@ -871,7 +1338,7 @@ def main() -> int:
                         for key, value in roster["per_tier"][tier].items()
                         if key != "official_rule_audit"
                     }
-                    for tier in TIERS
+                    for tier in group["tiers"]
                 },
                 "probe_receipt": probe_receipt_summary,
                 "split_identity_hash": roster["split_identity_hash"],

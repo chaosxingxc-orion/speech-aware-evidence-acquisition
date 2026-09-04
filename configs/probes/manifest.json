@@ -84,6 +84,22 @@
       "scorer": "a2t-scorer-official-b9d5383c (the pinned Audio2Tool release's own metrics.py)",
       "success": "three outcomes per tier on the owner's 2026-09-04 alignment standard: ALIGNED = official tool accuracy within 3 pp of the published row (tier 2 84.6, tier 5 90.6, tier 8 41.7) or better; CONSISTENT-WITHIN-NOISE = the paper value inside the Wilson CI90 at n = 500 but outside 3 pp; FAIL otherwise. Reported against the Qwen-2.5-Omni-7B and weakest-published-SpeechLM floors whatever the outcome"
     },
+    "R1-audio2tool-official-tier3467-population": {
+      "arms": {
+        "direct": [
+          "r1_audio2tool_official.txt"
+        ]
+      },
+      "note": "Same template and same request as R1-audio2tool-official-tier258-population; only the tiers differ. The frozen 400 placed all four of these tiers inside the owner's 3-point band at n = 50 -- tier 3 72.0 against 74.7, tier 4 28.0 against 33.4, tier 6 84.0 against 81.5, tier 7 58.0 against 54.6 -- with a CI90 of about +/-11 pp, which cannot decide a 3-point rule either way. This draw takes 500 queries from each of those four tiers' own released populations and completes the eight-tier table at one resolution. The receipt named above carries the 1,954 sample ids of that draw which no earlier receipt covers; the other 46 resolve through r1-audio2tool-sample.json and the two 104-row post-seal AgentLoop scoring receipts.",
+      "profile": "baseline-reproduction",
+      "sample_receipt": "a2t-tier3467-official-population-2000.json",
+      "sampling": {
+        "design": "500 queries from each of the released tier3_multi_intent (2,146), tier4_implicit (2,132), tier6_correction (2,146) and tier7_multiturn (2,092 after this repository's two identity exclusions of the released 2,146) populations -- the first recording the released loader resolves in every query_* directory, which on tier 7 is the FIRST user turn's wav -- drawn uniformly without replacement per tier",
+        "seed": 20260803
+      },
+      "scorer": "a2t-scorer-official-b9d5383c (the pinned Audio2Tool release's own metrics.py)",
+      "success": "three outcomes per tier on the owner's 2026-09-04 alignment standard: ALIGNED = official tool accuracy within 3 pp of the published row (tier 3 74.7, tier 4 33.4, tier 6 81.5, tier 7 54.6) or better; CONSISTENT-WITHIN-NOISE = the paper value inside the Wilson CI90 at n = 500 but outside 3 pp; FAIL otherwise. Reported against the Qwen-2.5-Omni-7B and weakest-published-SpeechLM floors whatever the outcome"
+    },
     "R2-bba-cascade-vs-direct": {
       "arms": {
         "direct": [
@@ -198,6 +214,13 @@
       "receipt": "a2t-tier258-official-population-1500.json",
       "seed": 20260803,
       "split_identity_hash": "3a03e75e9131657741061f64450d337d69f120addb6a6c740a607ddecc028b73",
+      "split_role": "discovery"
+    },
+    "R1-audio2tool-official-tier3467-population": {
+      "n_items": 1954,
+      "receipt": "a2t-tier3467-official-population-2000.json",
+      "seed": 20260803,
+      "split_identity_hash": "4da261f6c7161cbeffd82a58fe4718d83346bcbd894560a254cab6def2e6cceb",
       "split_role": "discovery"
     },
     "R2-bba-cascade-vs-direct": {

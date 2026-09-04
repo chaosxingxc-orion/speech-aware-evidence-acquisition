@@ -1,0 +1,66 @@
+{
+  "experiment_id": "SAEA-A2T-TIER3467-OFFICIAL-POPULATION-SMOKE-V1",
+  "schema": "saea-a2t-direct-calibration-smoke-experiment-v1",
+  "date": "2026-09-04",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Four rows of T3467-official-pop-2000, end to end, before the registered 2,008-call flight: prove the -np 2 serving geometry on this roster, the released system message, the user-turn text part after the audio, sealing and the four registered Audio2Tool scorers on real sealed rows -- including the first tier-7 turn_00 user-turn wav this repository has ever put on the wire and all THREE of the roster's 654-second release-defect rows, which are the flight's worst requests. No smoke number is a task measurement.",
+  "smoke_populations": {
+    "T3467-official-pop-2000": {
+      "dataset_fragment": "audio2tool-tier3467-official-population-2000",
+      "carrier": "audio2tool",
+      "parent_split_name": "A2T-TIER3467-OFFICIAL-POP-2000",
+      "split_role": "discovery",
+      "count": 4,
+      "sample_ids": [
+        "tier3_multi_intent:003555",
+        "tier4_implicit:003373",
+        "tier6_correction:003151",
+        "tier7_multiturn:001033"
+      ],
+      "selection": "deterministic and stated before the rows were read off the roster: the LONGEST sample of each of the four tiers. That covers all four strata and every worst request in the flight -- the three 654-second release-defect rows (tier 3, tier 6 and tier 7) plus tier 4's 5.976875 s maximum.",
+      "audio_seconds_one_pass": 1969.880708,
+      "split_identity_hash": "b0646612a0d7587ea696c2e7175291e6b6f79606e8ed10ad87811294938bceea",
+      "parent_split_identity_hash": "bdd28d4231a678db2cafe3da8d006cd6a042f6d325d64079deb32a6b9c74b317"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "T3467-official-pop-2000",
+      "arm": "bare-core",
+      "baseline_fragment": "a2t-direct-official-protocol",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a"
+    }
+  ],
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 12,
+    "planned_gpu_hours": 0.2,
+    "planned_speech_audio_seconds": 5950
+  },
+  "execution_plan_basis": {
+    "calls": "4 rows x 1 contact = 4 for a clean pass. The plan registers 12 because attempt budget is enforced RUN-CUMULATIVELY: core.model.adapter.FrozenCoreAdapter re-reads every prior attempt's durable actuals for this run id on every request. 12 covers a clean pass plus up to two recoveries; the exposure row's own ceiling is 20.",
+    "speech_audio_seconds": "1,969.880708 s per pass, 5,909.642124 s across three passes, rounded up to 5,950; the exposure row's ceiling is 6,000. The number is large for a four-row smoke because three of the four rows are the release's 654-second synthesis defect, which is exactly why they are the rows that must be proved before the flight.",
+    "gpu_hours": "0.2, the registered ceiling",
+    "paid_api_spend": 0
+  },
+  "evaluation": {
+    "official_scorers": [
+      "a2t-toolcall-official",
+      "a2t-toolcall-v2",
+      "a2t-toolcall",
+      "cost"
+    ],
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "outer_parallel_workers": 4,
+    "what_is_read": "transport legality, the rendered prompt shape and its system-message hash (which must be the in-code-default variant, sha256 be7f31a2e8c7e6dd..., 16,143 chars), whether every stratum's audio encodes and returns at all -- most of all the three 654-second rows -- parse rate and throughput",
+    "what_is_not_read": "no smoke metric is a task measurement and none enters the verdict. The calibration's own smoke is the standing precedent: on four rows it saw zero native tool calls and concluded the model was declining the tools interface, which 400 rows corrected to 87 %."
+  },
+  "decision": {
+    "gate": "the cell must complete 4 of 4 contacts, seal a verifiable manifest and score without error before the registered 2,008-call flight is launched",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}
