@@ -556,3 +556,96 @@ def test_close_summary_tool_schemas_sha256_is_none_for_a_non_native_arm(tmp_path
     assert summary["tool_schemas_sha256"] is None
     assert summary["timings"][0]["tool_schemas_sha256"] is None
     assert client.timings[0].tool_schemas_sha256 is None
+
+
+# ---------------------------------------------------------------------------
+# 2026-09-04: the evidence-FREE raw-audio arms. This bridge was written for
+# "fixed-legal-context", whose field set carries supplied_evidence /
+# evidence_provenance; A0 flew zero-supply THROUGH that arm by sending two
+# empty lists. "bare-core" and "bare-core-native-tools" declare no evidence
+# fields at all, and FrozenCoreAdapter.request enforces
+# set(payload) == ARM_VISIBLE_FIELDS[arm] EXACTLY, so those two empty lists
+# are an allowlist violation for them -- which is why the direct-baseline
+# calibration's two raw cells could not be constructed at all before this.
+# ---------------------------------------------------------------------------
+
+
+def test_bare_core_arm_is_accepted_and_omits_the_evidence_fields(tmp_path):
+    world = _World(tmp_path)
+    client, _, transport = _client(world, tmp_path, arm="bare-core")
+
+    client.complete(_zero_supply_messages(world.media_relpath("s1")))
+
+    payload = transport.calls[0]
+    assert set(payload) == set(d2_leakage.ARM_VISIBLE_FIELDS["bare-core"])
+    assert "supplied_evidence" not in payload
+    assert "evidence_provenance" not in payload
+
+
+def test_bare_core_native_tools_arm_is_accepted_with_tool_schemas(tmp_path):
+    world = _World(tmp_path)
+    client, _, transport = _client(
+        world, tmp_path, arm="bare-core-native-tools", tool_schemas=_TOOLS
+    )
+
+    client.complete(_zero_supply_messages(world.media_relpath("s1")))
+
+    payload = transport.calls[0]
+    assert set(payload) == set(
+        d2_leakage.ARM_VISIBLE_FIELDS["bare-core-native-tools"]
+    )
+    assert payload["tool_schemas"] == list(_TOOLS)
+
+
+def test_bare_core_payload_equals_fixed_legal_context_minus_the_evidence_fields(
+    tmp_path,
+):
+    """Factor D of the calibration compares these two audio paths, so the
+    non-evidence half of the payload must be identical to what the
+    evidence-carrying arm sends for the same messages."""
+
+    world_bare = _World(tmp_path / "bare")
+    world_legal = _World(tmp_path / "legal")
+    bare_client, _, bare_transport = _client(
+        world_bare, tmp_path / "bare", arm="bare-core"
+    )
+    legal_client, _, legal_transport = _client(
+        world_legal, tmp_path / "legal", arm="fixed-legal-context"
+    )
+
+    bare_client.complete(_zero_supply_messages(world_bare.media_relpath("s1")))
+    legal_client.complete(_zero_supply_messages(world_legal.media_relpath("s1")))
+
+    legal_payload = dict(legal_transport.calls[0])
+    assert legal_payload.pop("supplied_evidence") == []
+    assert legal_payload.pop("evidence_provenance") == []
+    assert dict(bare_transport.calls[0]) == legal_payload
+
+
+def test_bare_core_arm_refuses_supply_text_it_cannot_record(tmp_path):
+    world = _World(tmp_path)
+    client, _, transport = _client(world, tmp_path, arm="bare-core")
+
+    messages = [
+        {"role": "system", "content": "instruction"},
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "roster: kitchen"},
+                {"type": "input_audio", "media_relpath": world.media_relpath("s1")},
+            ],
+        },
+    ]
+    with pytest.raises(FrozenCoreClientError, match="declares no evidence fields"):
+        client.complete(messages)
+    assert transport.calls == []
+
+
+def test_the_three_unsupported_arms_are_still_refused(tmp_path):
+    """Widening the accepted field sets must not accidentally admit an arm
+    whose payload this bridge does not build."""
+
+    world = _World(tmp_path)
+    for arm in ("fixed-retrieval", "exemplar-context", "fixed-legal-context-replay"):
+        with pytest.raises(FrozenCoreClientError, match="different field set"):
+            _client(world, tmp_path / arm, arm=arm)

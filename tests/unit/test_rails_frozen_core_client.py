@@ -285,9 +285,16 @@ def test_construction_rejects_a_paper_scale_profile(tmp_path):
 
 
 def test_construction_rejects_an_arm_with_a_different_field_set(tmp_path):
+    # The exemplar was "bare-core" until 2026-09-04, when this bridge learned
+    # the evidence-FREE field sets it needs for the direct-baseline
+    # calibration's two raw-audio cells (see
+    # tests/unit/test_rails_core_client_native_tools.py's own zero-supply
+    # section). The assertion itself is unchanged -- an arm whose payload
+    # this bridge does not build is still refused at construction -- so the
+    # example simply moves to an arm that genuinely remains unsupported.
     world = _World(tmp_path)
     with pytest.raises(FrozenCoreClientError, match="different field set"):
-        _client(world, tmp_path, arm="bare-core")
+        _client(world, tmp_path, arm="fixed-retrieval")
 
 
 def test_construction_rejects_an_unknown_arm(tmp_path):

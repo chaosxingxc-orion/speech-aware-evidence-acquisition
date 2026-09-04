@@ -288,3 +288,41 @@ No server or sidecar was started.
   --cells A0prime-legacy-raw,A1-native-raw --sample-ids <the four ids> --run`, then the same for
   `P0-legacy-packets,P1-native-packets`.
 - No llama-server is left resident: ports 8080 and 8090 are free and the GPU reports 0 MiB used.
+
+### 2026-09-04, Phase 2c (smoke attempt 1: refused before any contact)
+
+The registered 16-call smoke did NOT fly. The raw-geometry group
+(`A0prime-legacy-raw`, `A1-native-raw`) was dispatched through `FlightQueue` and both cells
+refused inside `run_phases`, at client construction, **before a single model contact**. The packet
+group was not attempted. `SAEA-A2T-DIRECT-CALIBRATION-SMOKE-V1` stays `consumed = no`.
+
+- **Spend: zero.** Both attempts recorded `calls 0 / audio_seconds 0.0` and produced no
+  `outputs.jsonl`, no trace and no manifest. Both are now durably `ABORTED` with the reason
+  recorded, rather than left `OPENED`.
+- **The gate and the geometry were fine.** Preflight passed for both cells against the new
+  smoke fragment (config composition, receipt-bound 4-row split, ExecutionPlan, frozen-core gate,
+  exposure-row cross-check, clean tree, attempt reservation, prompt budget), and the raw server
+  came up and was stopped cleanly -- ports 8080/8090 free and 0 MiB GPU afterwards, which is the
+  Phase-2a `stop_serving()`/`shutdown()` fix working on a failure path.
+- **Root cause.** `rails.core_client.FrozenCoreClient` accepted only four D2 field sets, every one
+  of which carries `supplied_evidence`/`evidence_provenance`, because the bridge was written for
+  `fixed-legal-context` -- the arm A0 itself flew, sending two empty evidence lists for its
+  zero-supply requests. `bare-core` and `bare-core-native-tools` declare no evidence fields at all,
+  and `core.model.adapter.FrozenCoreAdapter.request` enforces
+  `set(payload) == ARM_VISIBLE_FIELDS[arm]` EXACTLY, so those two empty lists are an allowlist
+  violation for them rather than a harmless extra. Both raw cells of this factorial were therefore
+  unreachable from the moment they were written, and slice D1a's `bare-core-native-tools` arm had
+  never been constructible at all. Nothing in preflight can see this: the client is built in
+  `run_phases`.
+- **Fix.** `_ACCEPTED_ARM_FIELD_SETS` now also admits the evidence-free field set and that set plus
+  `tool_schemas`; `complete()` omits exactly the two evidence keys for an arm whose own declared
+  fields lack them, and refuses loudly if such an arm is handed prompt-level supply text it could
+  not record. The branch reads the arm's declared fields, never an arm-name list -- the discipline
+  `core.policies.FixedPolicy.run_sample` already documents. `fixed-retrieval`,
+  `exemplar-context` and `fixed-legal-context-replay` remain refused, so nothing was over-widened.
+  Five new tests cover acceptance, payload shape, byte-identity against `fixed-legal-context` minus
+  the evidence fields, the supply-text refusal, and the three still-unsupported arms; one
+  pre-existing test that used `bare-core` as its "unsupported arm" exemplar now uses
+  `fixed-retrieval`, with its assertion unchanged.
+- The smoke can be re-flown as soon as this fix is committed; it needs no re-registration, since
+  its row is untouched and unspent.

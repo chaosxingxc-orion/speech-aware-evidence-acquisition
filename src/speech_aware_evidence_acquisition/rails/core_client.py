@@ -208,12 +208,30 @@ _NATIVE_TOOLS_SUPPORTED_ARM_FIELDS = _SUPPORTED_ARM_FIELDS | frozenset(
 _NATIVE_TOOLS_SPEECH_FEATURE_ARM_FIELDS = _SPEECH_FEATURE_ARM_FIELDS | frozenset(
     {_NATIVE_TOOLS_FIELD}
 )
+
+# Zero-supply raw-audio field sets (2026-09-04). Every field set above carries
+# "supplied_evidence"/"evidence_provenance", because this bridge was written
+# for "fixed-legal-context" (A0 flew zero-supply THROUGH that evidence-carrying
+# arm, sending empty lists). "bare-core" and "bare-core-native-tools" declare no
+# evidence fields at all, and FrozenCoreAdapter.request enforces
+# set(payload) == ARM_VISIBLE_FIELDS[arm] EXACTLY, so a payload carrying two
+# empty evidence lists is an allowlist violation for them, not a harmless
+# extra. Accepting the evidence-free field sets here -- and omitting exactly
+# those two keys from the payload for them -- is what makes the D1a arm
+# "bare-core-native-tools" reachable at all.
+_EVIDENCE_FIELDS = frozenset({"supplied_evidence", "evidence_provenance"})
+_ZERO_SUPPLY_ARM_FIELDS = _SUPPORTED_ARM_FIELDS - _EVIDENCE_FIELDS
+_NATIVE_TOOLS_ZERO_SUPPLY_ARM_FIELDS = _ZERO_SUPPLY_ARM_FIELDS | frozenset(
+    {_NATIVE_TOOLS_FIELD}
+)
 _ACCEPTED_ARM_FIELD_SETS = frozenset(
     {
         _SUPPORTED_ARM_FIELDS,
         _SPEECH_FEATURE_ARM_FIELDS,
         _NATIVE_TOOLS_SUPPORTED_ARM_FIELDS,
         _NATIVE_TOOLS_SPEECH_FEATURE_ARM_FIELDS,
+        _ZERO_SUPPLY_ARM_FIELDS,
+        _NATIVE_TOOLS_ZERO_SUPPLY_ARM_FIELDS,
     }
 )
 _SPEECH_FEATURE_FAMILY_ARM_FIELDS = frozenset(
@@ -740,6 +758,10 @@ class FrozenCoreClient:
             )
         self._is_speech_feature_arm = arm_fields in _SPEECH_FEATURE_FAMILY_ARM_FIELDS
         self._is_native_tools_arm = _NATIVE_TOOLS_FIELD in arm_fields
+        # Read off the arm's OWN declared fields, never a hardcoded arm-name
+        # list -- the same discipline core.policies.FixedPolicy.run_sample
+        # documents for its own evidence branch.
+        self._carries_evidence = bool(_EVIDENCE_FIELDS & arm_fields)
         if not isinstance(request_id_prefix, str) or not request_id_prefix:
             raise FrozenCoreClientError("request_id_prefix must be a non-empty string")
         self._plan = plan
@@ -1128,9 +1150,18 @@ class FrozenCoreClient:
             "task_instruction": task_instruction,
             "history": history,
             "decoding_params": dict(decoding_params) if decoding_params else {},
-            "supplied_evidence": supplied_evidence,
-            "evidence_provenance": evidence_provenance,
         }
+        if self._carries_evidence:
+            payload["supplied_evidence"] = supplied_evidence
+            payload["evidence_provenance"] = evidence_provenance
+        elif supply_texts:
+            # A zero-supply arm was handed prompt-level supply text. Dropping
+            # it silently would send the model text the audited payload does
+            # not record; refuse instead.
+            raise FrozenCoreClientError(
+                f"arm {self._arm!r} declares no evidence fields, so it cannot carry "
+                f"the {len(supply_texts)} supply text part(s) these messages contain"
+            )
         if speech_feature_parts is not None:
             query_part = next(
                 part for part in speech_feature_parts if part["role"] == "query"
