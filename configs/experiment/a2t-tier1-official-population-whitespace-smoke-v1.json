@@ -1,0 +1,71 @@
+{
+  "experiment_id": "SAEA-A2T-TIER1-OFFICIAL-POPULATION-WHITESPACE-SMOKE-V1",
+  "schema": "saea-a2t-direct-calibration-smoke-experiment-v1",
+  "date": "2026-09-04",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Four rows of W-official-raw-yaml, end to end, before the registered 408-call whitespace flight: prove the -np 3 serving geometry and, above all, that the YAML block-scalar system message really goes on the wire -- the whole point of the cell is a whitespace difference, so the smoke's job is to confirm the bytes, not the accuracy. The rows are the SAME four the calibration and replication smokes used. No smoke number is a task measurement.",
+  "smoke_populations": {
+    "W-official-raw-yaml": {
+      "dataset_fragment": "audio2tool-calibration-400",
+      "carrier": "audio2tool",
+      "parent_split_name": "A2T-CALIBRATION-400",
+      "split_role": "discovery",
+      "count": 4,
+      "sample_ids": [
+        "tier1_direct:000045",
+        "tier2_parametric:000045",
+        "tier5_needle:000060",
+        "tier6_correction:000008"
+      ],
+      "selection": "the SAME four rows the calibration and replication smokes used -- the lexicographically first sample of tiers 1, 2, 5 and 6 of the frozen 400",
+      "audio_seconds_one_pass": 16.948,
+      "split_identity_hash": "b30c8ec0ab426eb8428b5d833f97d9ef12f29bbed3535fcf153a36782c98ad4f",
+      "parent_split_identity_hash": "11091b38ae9d53530952af632636d7e79a614350213e10c6c26583c37f85846b"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "W-official-raw-yaml",
+      "arm": "bare-core",
+      "baseline_fragment": "a2t-direct-official-protocol-yaml-prompt",
+      "model_fragment": "q4km-featcache-a2t-official-04ccc72a"
+    }
+  ],
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 12,
+    "planned_gpu_hours": 0.2,
+    "planned_speech_audio_seconds": 68
+  },
+  "execution_plan_basis": {
+    "calls": "4 rows x 1 contact = 4 for a clean pass; 12 registered because attempt budget is run-cumulative and covers up to two recoveries. The exposure row's own ceiling is 20.",
+    "speech_audio_seconds": "16.948 s per pass, 50.844 s across three passes, rounded up to 68 (the same figure the replication smoke registered for these four rows). The exposure row's ceiling is 100.",
+    "gpu_hours": "0.2, the registered ceiling",
+    "paid_api_spend": 0
+  },
+  "evaluation": {
+    "official_scorers": [
+      "a2t-toolcall-official",
+      "a2t-toolcall-v2",
+      "a2t-toolcall",
+      "cost"
+    ],
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "outer_parallel_workers": 4,
+    "what_is_read": "transport legality, the rendered prompt shape and its system-message hash (which must be the example-config-yaml variant, sha256 eab5138317a3afca..., 16,144 chars), parse rate and throughput",
+    "what_is_not_read": "no smoke metric is a task measurement and none enters the verdict. The calibration's own smoke is the standing precedent: on four rows it saw zero native tool calls and concluded the model was declining the tools interface, which 400 rows corrected to 87 %."
+  },
+  "decision": {
+    "gate": "the cell must complete 4 of 4 contacts, seal a verifiable manifest and score without error before the registered 408-call flight is launched",
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "companion_run": {
+    "experiment_id": "SAEA-A2T-TIER1-OFFICIAL-POPULATION-SMOKE-V1",
+    "fragment": "a2t-tier1-official-population-smoke-v1",
+    "why_separate": "contracts.gate_exposure requires exactly one pre-registered exposure row per run id whose split identity hash equals the plan's, so a run id cannot span two populations. The two smoke cells therefore run under two run ids, each with its own plan and its own ledger row."
+  }
+}

@@ -29,7 +29,11 @@ PROBE_RECEIPT = REPO / "docs/receipts/probe-samples/a2t-tier1-official-populatio
 D1_SUPPLEMENT = REPO / "docs/receipts/artifacts/d1-a2t-tier1-official-population-500.json"
 DATASET = REPO / "configs/dataset/audio2tool-tier1-official-population-500.json"
 EXPERIMENT = REPO / "configs/experiment/a2t-tier1-official-population-v1.json"
+WHITESPACE = REPO / "configs/experiment/a2t-tier1-official-population-whitespace-v1.json"
 SMOKE = REPO / "configs/experiment/a2t-tier1-official-population-smoke-v1.json"
+WHITESPACE_SMOKE = (
+    REPO / "configs/experiment/a2t-tier1-official-population-whitespace-smoke-v1.json"
+)
 
 
 def _module(path: Path, name: str):
@@ -238,9 +242,22 @@ def test_dataset_fragment_pins_the_committed_bytes() -> None:
 
 
 def test_experiment_cells_fragments_and_geometry_agree() -> None:
-    experiment = _load(EXPERIMENT)
-    cells = {cell["cell_id"]: cell for cell in experiment["cells"]}
-    assert set(cells) == {"T1-official-pop-500", "W-official-raw-yaml"}
+    """The two cells fly different populations, and contracts.gate_exposure
+    allows exactly one pre-registered exposure row per run id whose split
+    identity hash equals the plan's -- so each cell is its own run id with
+    its own fragment, plan and row."""
+
+    t1 = _load(EXPERIMENT)
+    whitespace = _load(WHITESPACE)
+    assert t1["experiment_id"] == "SAEA-A2T-TIER1-OFFICIAL-POPULATION-V1"
+    assert whitespace["experiment_id"] == "SAEA-A2T-TIER1-OFFICIAL-POPULATION-WHITESPACE-V1"
+    assert [c["cell_id"] for c in t1["cells"]] == ["T1-official-pop-500"]
+    assert [c["cell_id"] for c in whitespace["cells"]] == ["W-official-raw-yaml"]
+    assert t1["companion_run"]["experiment_id"] == whitespace["experiment_id"]
+    assert whitespace["companion_run"]["experiment_id"] == t1["experiment_id"]
+    cells = {
+        cell["cell_id"]: cell for cell in (*t1["cells"], *whitespace["cells"])
+    }
     for cell in cells.values():
         baseline = _load(REPO / f"configs/baseline/{cell['baseline_fragment']}.json")
         assert baseline["arm"] == cell["arm"] == "bare-core"
@@ -309,39 +326,42 @@ def test_yaml_template_is_the_release_config_spelling() -> None:
 
 
 def test_flight_and_smoke_plans_are_run_cumulative_safe() -> None:
-    experiment = _load(EXPERIMENT)
-    plan = experiment["execution_plan"]
-    assert plan["execution_profile"] == "baseline-reproduction"
-    assert plan["split_role"] == "discovery"
-    populations = experiment["populations"]
-    total_rows = (
-        populations["A2T-TIER1-OFFICIAL-POP-500"]["count"]
-        + populations["A2T-CALIBRATION-400"]["count"]
-    )
-    total_audio = (
-        populations["A2T-TIER1-OFFICIAL-POP-500"]["audio_seconds_one_pass"]
-        + populations["A2T-CALIBRATION-400"]["audio_seconds_one_pass"]
-    )
-    assert plan["planned_model_calls"] >= total_rows
-    assert plan["planned_speech_audio_seconds"] >= math.ceil(total_audio)
-
-    smoke = _load(SMOKE)
-    smoke_plan = smoke["execution_plan"]
-    assert smoke_plan["execution_profile"] == "bounded-discovery-probe"
-    smoke_rows = sum(
-        len(population["sample_ids"]) for population in smoke["smoke_populations"].values()
-    )
-    smoke_audio = sum(
-        population["audio_seconds_one_pass"]
-        for population in smoke["smoke_populations"].values()
-    )
-    assert smoke_rows == 8
-    assert smoke_plan["planned_model_calls"] >= smoke_rows
-    assert smoke_plan["planned_speech_audio_seconds"] >= math.ceil(smoke_audio)
+    for path, profile in (
+        (EXPERIMENT, "baseline-reproduction"),
+        (WHITESPACE, "baseline-reproduction"),
+        (SMOKE, "bounded-discovery-probe"),
+        (WHITESPACE_SMOKE, "bounded-discovery-probe"),
+    ):
+        document = _load(path)
+        plan = document["execution_plan"]
+        assert set(plan) == {
+            "execution_profile",
+            "split_role",
+            "planned_model_calls",
+            "planned_gpu_hours",
+            "planned_speech_audio_seconds",
+        }
+        assert plan["execution_profile"] == profile == document["execution_profile"]
+        assert plan["split_role"] == "discovery"
+        assert isinstance(plan["planned_model_calls"], int)
+        assert isinstance(plan["planned_speech_audio_seconds"], int)
+        if "populations" in document:
+            populations = list(document["populations"].values())
+            assert len(populations) == 1
+            rows = populations[0]["count"]
+            audio = populations[0]["audio_seconds_one_pass"]
+        else:
+            populations = list(document["smoke_populations"].values())
+            assert len(populations) == 1
+            rows = len(populations[0]["sample_ids"])
+            audio = populations[0]["audio_seconds_one_pass"]
+        assert plan["planned_model_calls"] >= rows
+        assert plan["planned_speech_audio_seconds"] >= math.ceil(audio)
 
 
 def test_smoke_rows_come_from_the_rosters_they_name() -> None:
     smoke = _load(SMOKE)
+    whitespace_smoke = _load(WHITESPACE_SMOKE)
     roster_ids = {item["sample_id"] for item in _load(ROSTER)["items"]}
     t1 = smoke["smoke_populations"]["T1-official-pop-500"]
     assert set(t1["sample_ids"]) <= roster_ids
@@ -361,7 +381,9 @@ def test_smoke_rows_come_from_the_rosters_they_name() -> None:
             / "2026-09-04-a2t-calibration-400-roster/flight-roster-receipt.json"
         )["items"]
     }
-    assert set(smoke["smoke_populations"]["W-official-raw-yaml"]["sample_ids"]) <= calibration
+    assert set(
+        whitespace_smoke["smoke_populations"]["W-official-raw-yaml"]["sample_ids"]
+    ) <= calibration
 
 
 def test_d1_supplement_builder_skips_rather_than_refuses_base_overlap() -> None:

@@ -1,0 +1,161 @@
+{
+  "experiment_id": "SAEA-A2T-TIER1-OFFICIAL-POPULATION-WHITESPACE-V1",
+  "schema": "saea-a2t-direct-calibration-experiment-v1",
+  "date": "2026-09-04",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "Resolve the one place where the released Audio2Tool protocol is genuinely ambiguous. The released code carries the same four-sentence system prompt twice: the HF adapter's hard-coded default separates the sentences with single spaces (sha256 1c52cd2ebca6...), while configs/example_config.yaml carries them as a YAML block scalar, newline-separated with a trailing newline (sha256 aa2e344ee52c...), and run_benchmark.py passes that variant to the adapter whenever a config file is used. The sealed R-official-raw cell flew the in-code default; this cell flies the YAML variant on the SAME frozen 400, the SAME request and the SAME serving geometry, so the contrast is a contrast in whitespace alone. The 2026-09-04 replication verdict ranked this third among the remaining Tier-1 suspects. Preregistration: docs/readiness/2026-09-04-a2t-tier1-official-population-v1-preregistration.md.",
+  "predecessor": {
+    "run_id": "SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-V1",
+    "cell": "R-official-raw",
+    "attempt_id": "attempt-20260904T135250Z-rofficialraw",
+    "manifest_sha256": "64d0759d6cb117574e4bfdb23c3b6832b5bde7434990b74b859f56aa145a2401",
+    "verdict": "docs/readiness/2026-09-04-a2t-official-protocol-replication-v1-verdict.md"
+  },
+  "paper_row": {
+    "source": "arXiv:2604.22821 Table 3, Qwen-3-Omni-30B",
+    "tier1_direct": {
+      "tool_accuracy": 92.4,
+      "exact_match": 92.4
+    },
+    "tier2_parametric": {
+      "tool_accuracy": 84.6,
+      "exact_match": 15.6
+    },
+    "tier3_multi_intent": {
+      "tool_accuracy": 74.7,
+      "exact_match": 28.6
+    },
+    "tier4_implicit": {
+      "tool_accuracy": 33.4,
+      "exact_match": 11.3
+    },
+    "tier5_needle": {
+      "tool_accuracy": 90.6,
+      "exact_match": 36.0
+    },
+    "tier6_correction": {
+      "tool_accuracy": 81.5,
+      "exact_match": 24.8
+    },
+    "tier7_multiturn": {
+      "tool_accuracy": 54.6,
+      "exact_match": 16.3
+    },
+    "tier8_intent_blending": {
+      "tool_accuracy": 41.7,
+      "exact_match": 12.4
+    }
+  },
+  "populations": {
+    "A2T-CALIBRATION-400": {
+      "dataset_fragment": "audio2tool-calibration-400",
+      "carrier": "audio2tool",
+      "split_role": "discovery",
+      "count": 400,
+      "strata": "50 samples per tier across all eight Audio2Tool tiers",
+      "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-calibration-400-roster/flight-roster-receipt.json",
+      "receipt_sha256": "6f352ea583d0bb91f77aad62e07bdad4d3210d066440fbfaee8e2af504853fe7",
+      "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+      "flight_split_identity_hash": "11091b38ae9d53530952af632636d7e79a614350213e10c6c26583c37f85846b",
+      "audio_seconds_one_pass": 2159.688,
+      "selection": "the frozen 400 split, no draw; already exposed by A0 and by both 2026-09-04 flights. Reusing it is what makes the whitespace cell a PAIRED contrast against the sealed R-official-raw manifest at zero additional population cost.",
+      "estimand": "equal-tier reporting, with the natural construction mixture reported beside it as a reweighting"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "W-official-raw-yaml",
+      "dataset_fragment": "audio2tool-calibration-400",
+      "factor": "system-prompt whitespace: the configs/example_config.yaml block-scalar spelling instead of the adapter's in-code single-space default",
+      "factor_a_output_contract": "the published system message with the YAML variant's newline-separated, trailing-newline system_prompt (sha256 aa2e344ee52c59019b938926f37498e0dc9c80bd01f6521eba5c3d81309a491d)",
+      "factor_d_audio_path": "raw audio, bf16 mmproj loaded",
+      "user_turn": "audio first, then the fixed sentence 'Convert this voice command to a tool call.'",
+      "arm": "bare-core",
+      "baseline_fragment": "a2t-direct-official-protocol-yaml-prompt",
+      "model_fragment": "q4km-featcache-a2t-official-04ccc72a",
+      "serving_geometry": "-c 49152 -np 3, 16,384 tokens per slot -- byte-identical serving to the sealed R-official-raw cell, which is what makes the contrast a contrast in whitespace alone"
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 256,
+    "id_slot": "per-sample",
+    "contacts_per_item": 1,
+    "evidence": "none",
+    "obs": "none",
+    "harness": "core.flight.FlightRuntime with the shared rails zero-supply direct arm and the OpenJiuwen executor, entered through scripts/flights/run_calibration_cell.py -- the same harness and the same entry point every calibration and replication cell flew",
+    "official_code_pin": "b9d5383ca30945fbafb965a04bea40117e1e8a82; docs/receipts/environments/audio2tool-official-code.json",
+    "per_cell_dataset_fragment": "this run's single cell is launched with --dataset audio2tool-calibration-400, the same fragment the sealed R-official-raw cell flew"
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "discovery",
+    "planned_model_calls": 408,
+    "planned_gpu_hours": 0.5,
+    "planned_speech_audio_seconds": 2200
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "400 rows x 1 contact + 8 canaries = 408; the registered exposure ceiling is 410",
+    "planned_speech_audio_seconds": "2,159.688 s for one pass, rounded up to 2,200; the registered exposure ceiling is 2,250",
+    "planned_gpu_hours": "0.5; the sealed R-official-raw cell flew exactly these 400 rows on exactly this geometry in 429 s of generation. The registered ceiling is 0.8",
+    "paid_api_spend": 0,
+    "ceilings_live_in_the_exposure_row": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are the exposure-ledger row's calls / speech audio seconds / gpu hours cells, which the gate requires to be at least these planned values"
+  },
+  "evaluation": {
+    "official_scorers": [
+      "a2t-toolcall-official",
+      "a2t-toolcall-v2",
+      "a2t-toolcall",
+      "cost"
+    ],
+    "paper_facing_scorer": "a2t-toolcall-official",
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "outer_parallel_workers": 4,
+    "metrics": [
+      "official tool accuracy (primary gold tool)",
+      "official exact match",
+      "official parameter precision/recall/F1, macro over samples as the published code computes it",
+      "parameter F1 micro-pooled, reported beside the macro figure",
+      "parse rate",
+      "a2t-toolcall-v2 ordered tool accuracy, exact match and slot F1 under the extended parse",
+      "prompt_tokens",
+      "latency"
+    ],
+    "mandatory_slices": [
+      "all eight tiers with the paper row and a Wilson CI90 beside every tier",
+      "paired against the sealed R-official-raw manifest, same 400 rows, official scorer on both",
+      "official scorer versus the extended a2t-toolcall-v2 on the same outputs, per tier",
+      "parse rate and the count of rows whose response named more than one call"
+    ],
+    "paired_bootstrap_replicates": 10000,
+    "paired_bootstrap_seed": 20260903,
+    "paired_bootstrap_stratification": "tier",
+    "confidence_interval": "CI90",
+    "renderer": "analysis.paired.render_markdown"
+  },
+  "decision": {
+    "owner_alignment_standard": "2026-09-04 owner directive: aligned means within 3 points of the official number under both scorers; being better than the official number by more than 3 points is also acceptable.",
+    "W-official-raw-yaml": {
+      "aligned": "ALIGNED: per-tier official tool accuracy within 3 pp of the paper row, or better, on tiers 1, 2, 5 and 6.",
+      "consistent_within_noise": "CONSISTENT-WITHIN-NOISE: not ALIGNED, but the paper value lies inside the tier's Wilson CI90 (n = 50) on all four.",
+      "fail": "FAIL: neither.",
+      "reported_regardless": "the paired contrast against the sealed R-official-raw manifest over the same 400 rows answers the whitespace question whatever label the tiers earn."
+    },
+    "power_note": "n = 500 gives a binomial standard error of 1.2 pp at p = 0.92 and 2.2 pp at p = 0.5, so a 3 pp tolerance is larger than the noise and ALIGNED is a meaningful outcome rather than an artefact of a small sample. n = 50 per tier on the whitespace cell keeps the 4-7 pp standard error of the replication flight, which is why that cell's decision is stated as an alignment band with a CI90 fallback and its real information is the paired contrast.",
+    "claim_surface": "Nothing here is a superiority, generality or Stage-3 claim; the population is discovery data; no knob is tuned on it.",
+    "not_authorized": "No test contact, no mechanism arm, no Q8_0 flight (that is its own preregistered probe), no training-free policy fit, no edit to the locked SLURP cell.",
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "companion_run": {
+    "experiment_id": "SAEA-A2T-TIER1-OFFICIAL-POPULATION-V1",
+    "fragment": "a2t-tier1-official-population-v1",
+    "why_separate": "The two cells of the 2026-09-04 tier-1 official-population preregistration fly DIFFERENT populations, and contracts.gate_exposure requires exactly one pre-registered exposure row per run id whose split identity hash equals the plan's. One run id therefore cannot span two splits, so each cell is its own run id with its own plan, its own ledger row and its own ceilings. They share one preregistration document, one harness, one entry point and one verdict."
+  }
+}

@@ -3,7 +3,7 @@
   "schema": "saea-a2t-direct-calibration-smoke-experiment-v1",
   "date": "2026-09-04",
   "execution_profile": "bounded-discovery-probe",
-  "purpose": "Four rows per cell, end to end, before the registered 900-row flight: prove the two serving geometries, the two system-message spellings, the user-turn text part after the audio, sealing and the registered Audio2Tool scorers on real sealed rows. The T1 smoke deliberately INCLUDES tier1_direct:003943, the released tier-1 population's 654.6325 s wav, because that single row is the only request in this flight with no precedent in this repository's history and the flight must not discover at row 400 that the pinned runtime cannot encode it. This fragment exists for the same reason every previous smoke fragment does: the flight fragment declares the baseline-reproduction profile and a 908-call plan, and a smoke is a separate, separately registered bounded-discovery-probe run that must carry its own execution_plan. No smoke number is a task measurement.",
+  "purpose": "Four rows of T1-official-pop-500, end to end, before the registered 508-call flight: prove the -np 2 serving geometry, the released system message, the user-turn text part after the audio, sealing and the four registered Audio2Tool scorers on real sealed rows. The rows are the roster's lexicographically first, shortest, median-length and LONGEST samples, and the longest is deliberately tier1_direct:003943 -- the released tier-1 population's 654.6325 s wav, the only request in this flight with no precedent in this repository's history. The flight must not discover at row 400 that the pinned runtime cannot encode it. No smoke number is a task measurement.",
   "smoke_populations": {
     "T1-official-pop-500": {
       "dataset_fragment": "audio2tool-tier1-official-population-500",
@@ -21,23 +21,6 @@
       "audio_seconds_one_pass": 659.583333,
       "split_identity_hash": "6636db9017f6c918c4bb395ca009dcdb92975d2de1852fa0fafec4ed4d56f266",
       "parent_split_identity_hash": "4d22744c503882d4274bca4bd5bc3c77abde4711831c976b83c3354586eee54f"
-    },
-    "W-official-raw-yaml": {
-      "dataset_fragment": "audio2tool-calibration-400",
-      "carrier": "audio2tool",
-      "parent_split_name": "A2T-CALIBRATION-400",
-      "split_role": "discovery",
-      "count": 4,
-      "sample_ids": [
-        "tier1_direct:000045",
-        "tier2_parametric:000045",
-        "tier5_needle:000060",
-        "tier6_correction:000008"
-      ],
-      "selection": "the SAME four rows the calibration and replication smokes used -- the lexicographically first sample of tiers 1, 2, 5 and 6 of the frozen 400",
-      "audio_seconds_one_pass": 16.948,
-      "split_identity_hash": "b30c8ec0ab426eb8428b5d833f97d9ef12f29bbed3535fcf153a36782c98ad4f",
-      "parent_split_identity_hash": "11091b38ae9d53530952af632636d7e79a614350213e10c6c26583c37f85846b"
     }
   },
   "cells": [
@@ -46,40 +29,44 @@
       "arm": "bare-core",
       "baseline_fragment": "a2t-direct-official-protocol",
       "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a"
-    },
-    {
-      "cell_id": "W-official-raw-yaml",
-      "arm": "bare-core",
-      "baseline_fragment": "a2t-direct-official-protocol-yaml-prompt",
-      "model_fragment": "q4km-featcache-a2t-official-04ccc72a"
     }
   ],
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
     "split_role": "discovery",
-    "planned_model_calls": 24,
-    "planned_gpu_hours": 0.3,
-    "planned_speech_audio_seconds": 2100
+    "planned_model_calls": 12,
+    "planned_gpu_hours": 0.2,
+    "planned_speech_audio_seconds": 2000
   },
   "execution_plan_basis": {
-    "calls": "2 cells x 4 rows x 1 contact = 8 for a clean pass. The plan registers 24 because attempt budget is enforced RUN-CUMULATIVELY: core.model.adapter.FrozenCoreAdapter re-reads every prior attempt's durable actuals for this run id on every request and refuses when prior spend plus this attempt exceeds planned_model_calls. 24 covers a clean pass of both cells plus up to two recoveries; the exposure row's own ceiling is 30.",
-    "speech_audio_seconds": "659.583333 + 16.948 = 676.531333 s per clean pass, 2,029.594 s across three passes, rounded up to 2,100. Almost all of it is the single 654.6325 s tier-1 row the smoke exists to test.",
-    "gpu_hours": "0.3, the registered ceiling",
+    "calls": "4 rows x 1 contact = 4 for a clean pass. The plan registers 12 because attempt budget is enforced RUN-CUMULATIVELY: core.model.adapter.FrozenCoreAdapter re-reads every prior attempt's durable actuals for this run id on every request. 12 covers a clean pass plus up to two recoveries; the exposure row's own ceiling is 20.",
+    "speech_audio_seconds": "659.583333 s per pass, 1,978.75 s across three passes, rounded up to 2,000. Almost all of it is the single 654.6325 s row the smoke exists to test; the exposure row's ceiling is 2,050.",
+    "gpu_hours": "0.2, the registered ceiling",
     "paid_api_spend": 0
   },
   "evaluation": {
-    "official_scorers": ["a2t-toolcall-official", "a2t-toolcall-v2", "a2t-toolcall", "cost"],
-    "scored_complete_manifests": 2,
+    "official_scorers": [
+      "a2t-toolcall-official",
+      "a2t-toolcall-v2",
+      "a2t-toolcall",
+      "cost"
+    ],
+    "scored_complete_manifests": 1,
     "whole_manifest_jobs_only": true,
     "dataset_sharding": false,
     "outer_parallel_workers": 4,
-    "what_is_read": "transport legality, the rendered prompt shape and its two system-message hashes, whether the 654.6325 s row encodes and returns at all, parse rate and throughput",
+    "what_is_read": "transport legality, the rendered prompt shape and its system-message hash (which must be the in-code-default variant, sha256 be7f31a2e8c7e6dd..., 16,143 chars), whether the 654.6325 s row encodes and returns at all, parse rate and throughput",
     "what_is_not_read": "no smoke metric is a task measurement and none enters the verdict. The calibration's own smoke is the standing precedent: on four rows it saw zero native tool calls and concluded the model was declining the tools interface, which 400 rows corrected to 87 %."
   },
   "decision": {
-    "gate": "both cells must complete 4 of 4 contacts, seal a verifiable manifest and score without error before the registered 908-call flight is launched",
+    "gate": "the cell must complete 4 of 4 contacts, seal a verifiable manifest and score without error before the registered 508-call flight is launched",
     "long_row_contingency": "If tier1_direct:003943 cannot be served by the pinned runtime (encode failure, timeout, or a request that does not fit its slot), the flight is NOT launched with a silent 499; the preregistration's contingency is applied, the exclusion is registered with its cause, and the tier-1 number is reported on the surviving n with the exclusion named in the verdict.",
     "test_tuning": false,
     "paper_scale": false
+  },
+  "companion_run": {
+    "experiment_id": "SAEA-A2T-TIER1-OFFICIAL-POPULATION-WHITESPACE-SMOKE-V1",
+    "fragment": "a2t-tier1-official-population-whitespace-smoke-v1",
+    "why_separate": "contracts.gate_exposure requires exactly one pre-registered exposure row per run id whose split identity hash equals the plan's, so a run id cannot span two populations. The two smoke cells therefore run under two run ids, each with its own plan and its own ledger row."
   }
 }

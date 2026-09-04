@@ -1,9 +1,20 @@
 # Audio2Tool tier-1 official population, v1 — preregistration
 
-Run `SAEA-A2T-TIER1-OFFICIAL-POPULATION-V1`, profile `baseline-reproduction`, two cells
-(`T1-official-pop-500`, `W-official-raw-yaml`). Written before any model contact of this run.
+Two runs, both profile `baseline-reproduction`, one cell each. Written before any model contact of
+either.
 
-Experiment fragment: `configs/experiment/a2t-tier1-official-population-v1.json`.
+| Run id | Cell | Population | Experiment fragment |
+|---|---|---|---|
+| `SAEA-A2T-TIER1-OFFICIAL-POPULATION-V1` | `T1-official-pop-500` | A2T-TIER1-OFFICIAL-POP-500 (500) | `configs/experiment/a2t-tier1-official-population-v1.json` |
+| `SAEA-A2T-TIER1-OFFICIAL-POPULATION-WHITESPACE-V1` | `W-official-raw-yaml` | A2T-CALIBRATION-400 (400) | `configs/experiment/a2t-tier1-official-population-whitespace-v1.json` |
+
+**Why two run ids for one experiment.** `contracts.gate_exposure._require_exposure_preregistration`
+requires exactly one pre-registered exposure row per run id and refuses a plan whose split identity
+hash differs from that row's. A run id therefore cannot span two populations, and these two cells
+fly different ones. The gate refused the first attempt at a single-run-id design on 2026-09-04 and
+the design was corrected, not the gate. Everything else is shared: one preregistration, one
+harness, one entry point, one verdict, one pair of scorers.
+
 Predecessor: `docs/readiness/2026-09-04-a2t-official-protocol-replication-v1-verdict.md`
 (run `SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-V1`, cell `R-official-raw`, attempt
 `attempt-20260904T135250Z-rofficialraw`, manifest SHA-256
@@ -172,18 +183,25 @@ whitespace) is exactly what `W-official-raw-yaml` resolves. New or newly measure
 
 ## 5. Budget (ExecutionPlan)
 
-| Quantity | Planned | Registered ceiling |
-|---|---:|---:|
-| Model calls | 500 + 400 + 8 canaries = 908 | 950 |
-| Speech audio seconds | 1,668.914042 + 2,159.688 = 3,828.602042, rounded to 3,900 | 4,000 |
-| GPU hours | 1.5 | 2.0 |
-| Paid API spend | 0 | 0 |
+Per run id, because the budget contract and the exposure gate are both per run id.
 
-The smoke is a separate run id with its own plan (24 calls, 2,100 s, 0.3 GPU-h; registered ceilings
-30 / 2,100 / 0.3), because attempt budget is enforced run-cumulatively and a smoke is a separate
-`bounded-discovery-probe` registration. Budget is cumulative across every attempt of a run id.
-One-shot attempt semantics; at most one recovery re-registration; a second failure stops the flight
-and the fix is proven on a 4-row dry run.
+| Run id | Calls (planned / ceiling) | Speech seconds (planned / ceiling) | GPU hours (planned / ceiling) |
+|---|---|---|---|
+| `SAEA-A2T-TIER1-OFFICIAL-POPULATION-V1` | 508 / 540 | 1,700 / 1,750 | 1.0 / 1.2 |
+| `SAEA-A2T-TIER1-OFFICIAL-POPULATION-WHITESPACE-V1` | 408 / 410 | 2,200 / 2,250 | 0.5 / 0.8 |
+| `SAEA-A2T-TIER1-OFFICIAL-POPULATION-SMOKE-V1` | 12 / 20 | 2,000 / 2,050 | 0.2 / 0.2 |
+| `SAEA-A2T-TIER1-OFFICIAL-POPULATION-WHITESPACE-SMOKE-V1` | 12 / 20 | 68 / 100 | 0.2 / 0.2 |
+| `SAEA-A2T-TIER1-OFFICIAL-POPULATION-PROMPT-FIT-V1` | 1 / 2 | 1 / 2 | 0.3 / 0.3 |
+| `SAEA-A2T-TIER1-OFFICIAL-POPULATION-WHITESPACE-PROMPT-FIT-V1` | 1 / 2 | 1 / 2 | 0.3 / 0.3 |
+| **Flight total** | **916 / 950** | **3,900 / 4,000** | **1.5 / 2.0** |
+
+Paid API spend 0 throughout. 508 = 500 rows + 8 canaries; 408 = 400 rows + 8 canaries. The smoke
+plans register 12 rather than 4 calls because attempt budget is enforced run-cumulatively
+(`core.model.adapter.FrozenCoreAdapter` re-reads every prior attempt's durable actuals for the run
+id on every request), so a plan must cover prior spend plus its own worst case; 12 covers a clean
+pass plus up to two recoveries. The T1 smoke's 2,000 s is almost entirely the single 654.6325 s row
+it exists to test. One-shot attempt semantics; at most one recovery re-registration per flight; a
+second failure stops the flight and the fix is proven on a 4-row dry run.
 
 ## 6. Pre-contact prerequisites
 
@@ -199,8 +217,7 @@ and the fix is proven on a 4-row dry run.
    records which; both spellings' hashes are recorded. Speech cost for the T1 roster comes from the
    one-second window rule, which the script PROVES against the A2T-CALIBRATION-400 promotion
    receipt before applying it.
-4. **Exposure rows** — `SAEA-A2T-TIER1-OFFICIAL-POPULATION-PROMPT-FIT-V1`,
-   `SAEA-A2T-TIER1-OFFICIAL-POPULATION-SMOKE-V1` and `SAEA-A2T-TIER1-OFFICIAL-POPULATION-V1`, each
+4. **Exposure rows** — six, one per run id (two prompt fits, two smokes, two flights), each
    registered with `consumed = no` before the contact it authorizes.
 5. **Wire check and smoke** — `FlightRuntime.wire_check` on a clean committed tree (zero contacts),
    then a 4-row smoke per cell. The T1 smoke deliberately includes `tier1_direct:003943`, the
@@ -298,3 +315,18 @@ Filled in as the flight proceeds; every entry is written before the step it desc
   2 × `test_pemb4r`, `test_bundle` CLI, and the full-suite-only registry-pollution failure in
   `test_engineering_base_check` that passes in isolation) — plus the known
   `test_build_a2t_g6_family_sweep` collection error from the verl `scripts` shadow.
+
+### 2026-09-04, Phase 2 — prompt fit (zero generated tokens)
+
+Rows `SAEA-A2T-TIER1-OFFICIAL-POPULATION-PROMPT-FIT-V1` and
+`SAEA-A2T-TIER1-OFFICIAL-POPULATION-WHITESPACE-PROMPT-FIT-V1`, both registered before the server
+was touched.
+
+**One correction, recorded because it changed the run structure.** The first prompt-fit invocation
+for the whitespace cell was refused by `contracts.gate_exposure`: the plan carried the frozen 400's
+split identity hash while the single registered row carried the tier-1 roster's, and the gate
+requires exactly one pre-registered row per run id whose hash equals the plan's. The cause was the
+design, not the gate — one run id cannot span two populations — so the experiment was split into
+two run ids with two fragments, two plans and two ledger rows, and the T1 prompt fit was re-run
+against the corrected fragment bytes. No model contact was made under the refused plan; the refusal
+happened before the server was spawned.
