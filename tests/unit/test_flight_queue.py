@@ -1,0 +1,379 @@
+"""Unit tests for ``core.flight.queue.FlightQueue`` (C4c).
+
+Drives real ``FlightRuntime`` instances (their own model/GPU/network-facing
+seams all faked -- see ``test_flight_runtime.py``'s own module docstring for
+the same discipline) through a real ``FlightQueue`` to prove: ready-first,
+same-geometry-preferring scheduling; a ``dry_run`` flag that stops every
+flight after ``preflight()``; and that official scoring is handed to a
+background pool rather than blocking the next flight's own stages.
+"""
+
+from __future__ import annotations
+
+import json
+import subprocess
+import threading
+from pathlib import Path
+from typing import Mapping
+
+from speech_aware_evidence_acquisition.core.flight.queue import FlightQueue
+from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+from speech_aware_evidence_acquisition.rails.task_adapter import TaskAdapter
+
+# ---------------------------------------------------------------------------
+# Fakes (module-local copies -- see test_flight_runtime.py for the same
+# shapes with more extensive commentary).
+# ---------------------------------------------------------------------------
+
+
+class _FakeAudioRef:
+    def __init__(self, path: str, sha256: str) -> None:
+        self.path = path
+        self.sha256 = sha256
+
+
+class _FakeSample:
+    def __init__(self, sample_id: str, audio_seconds: float = 2.0) -> None:
+        self.sample_id = sample_id
+        self.audio_ref = _FakeAudioRef(f"{sample_id}.wav", "0" * 64)
+        self.audio_seconds = audio_seconds
+        self.media_relpath = f"{sample_id}.wav"
+
+
+class _FakeAdapter(TaskAdapter):
+    SERVING_SLOTS = 2
+    SERVING_SLOT_TOKENS = 4096
+    SERVING_MAX_TOKENS = 64
+
+    def __init__(self, lock: Mapping[str, object], root: Path) -> None:
+        self._lock = lock
+        self._root = Path(root)
+        self.samples = (_FakeSample("s1"), _FakeSample("s2"))
+
+    def load_split(self, split_id: str):
+        return self.samples
+
+    def build_task_contract(self, sample, obs) -> str:
+        return "contract"
+
+    def instruction(self, sample) -> str:
+        return "instruction"
+
+    def gold(self, sample) -> object:
+        return "gold"
+
+    def score_response(self, gold, response: str) -> Mapping[str, object]:
+        return {"ok": True}
+
+
+class _WideFakeAdapter(_FakeAdapter):
+    SERVING_SLOTS = 4
+    SERVING_SLOT_TOKENS = 2048
+    SERVING_MAX_TOKENS = 32
+
+
+class _FakeGate:
+    def assert_model_touch_allowed(self, plan) -> None:
+        pass
+
+
+class _FakeSession:
+    def __init__(self, session_id: str, host: str = "127.0.0.1", port: int = 8080, pid: int = 4242) -> None:
+        self.session_id = session_id
+        self.host = host
+        self.port = port
+        self.pid = pid
+
+
+class _FakeTiming:
+    def __init__(self, latency_seconds: float = 0.01) -> None:
+        self.latency_seconds = latency_seconds
+
+
+class _FakeClient:
+    def __init__(self, **kwargs: object) -> None:
+        self.arm = kwargs.get("arm", "test-arm")
+        self.timings = (_FakeTiming(),)
+        self.closed = False
+
+    def close(self) -> Mapping[str, object]:
+        self.closed = True
+        return {"trace_manifest_hash": "trace-hash", "cost": {"calls_used": 1}, "arm": self.arm}
+
+
+class _FakeArmResult:
+    def __init__(self, sample_id: str) -> None:
+        self.sample_id = sample_id
+        self.arm = "test-arm"
+        self.messages = []
+        self.response_text = "resp"
+        self.metrics = {}
+        self.consumption = None
+
+
+class _FakeRunSummary:
+    def __init__(self, results) -> None:
+        self.results = tuple(results)
+
+
+class _FakeVerified:
+    attempt_state = "OPENED"
+
+
+class _FakeFinalizeResult:
+    scores_path = Path("fake-scores.json")
+    ledger_markdown_path = Path("fake-ledger.md")
+    ledger_json_path = Path("fake-ledger.json")
+    attempt_state = "FINALIZED"
+
+
+def _fake_session_starter(**kwargs: object) -> _FakeSession:
+    return _FakeSession(str(kwargs["session_id"]))
+
+
+def _fake_transport_factory(values, root, *, session, runtime_receipt, runtime_root):
+    return object()
+
+
+def _fake_runtime_receipt_loader(path: Path) -> Mapping[str, object]:
+    return {"schema": "fake-runtime-receipt", "gguf_files": []}
+
+
+def _fake_packet_promoter(*, adapter, data_root, samples, workers):
+    return (["packet-1"], {"note": "fake"})
+
+
+def _fake_payload_binding_factory(**kwargs: object) -> object:
+    return object()
+
+
+def _fake_manifest_builder(**kwargs: object) -> Path:
+    run_dir = Path(kwargs["run_dir"])
+    run_dir.mkdir(parents=True, exist_ok=True)
+    plan = kwargs["plan"]
+    path = run_dir / f"{plan.run_id}.run-manifest.json"
+    path.write_text(json.dumps({"schema": "fake"}), encoding="utf-8")
+    return path
+
+
+def _fake_bundle_verifier(manifest_path: Path) -> _FakeVerified:
+    return _FakeVerified()
+
+
+def _fake_bundle_finalizer(manifest_path, lock, root, *, repo_root) -> _FakeFinalizeResult:
+    return _FakeFinalizeResult()
+
+
+def _fake_score_batch(jobs, *, output_dir, max_workers, **_kwargs) -> Mapping[str, object]:
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
+    return {"job_count": len(jobs)}
+
+
+def _fake_rails_runner(**kwargs: object) -> _FakeRunSummary:
+    return _FakeRunSummary((_FakeArmResult("s1"), _FakeArmResult("s2")))
+
+
+# ---------------------------------------------------------------------------
+# Synthetic repo/config plumbing (same shape as test_flight_runtime.py).
+# ---------------------------------------------------------------------------
+
+
+def _git(repo_root: Path, *args: str) -> None:
+    subprocess.run(["git", *args], cwd=repo_root, check=True, capture_output=True)
+
+
+def _git_init_commit(repo_root: Path) -> None:
+    _git(repo_root, "init", "-q")
+    _git(repo_root, "config", "user.email", "test@example.com")
+    _git(repo_root, "config", "user.name", "Test")
+    _git(repo_root, "add", "-A")
+    _git(repo_root, "commit", "-q", "-m", "test snapshot")
+
+
+def _write_json(path: Path, document: Mapping[str, object]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(document), encoding="utf-8")
+
+
+def _write_configs(repo_root: Path, *, carrier_lock_key: str = "fake-carrier") -> None:
+    _write_json(
+        repo_root / "configs" / "model" / "m.json",
+        {"model_lock_key": "fake-lock", "transport": "fake"},
+    )
+    _write_json(
+        repo_root / "configs" / "dataset" / "d.json",
+        {"carrier_lock_key": carrier_lock_key, "split_id": "fake-split"},
+    )
+    _write_json(repo_root / "configs" / "baseline" / "b.json", {"arm": "test-arm", "policy": "fixed"})
+    _write_json(
+        repo_root / "configs" / "experiment" / "e.json",
+        {
+            "execution_plan": {
+                "execution_profile": "bounded-discovery-probe",
+                "split_role": "discovery",
+                "planned_model_calls": 10,
+                "planned_gpu_hours": 1.0,
+                "planned_speech_audio_seconds": 100,
+            }
+        },
+    )
+
+
+def _write_exposure_ledger(repo_root: Path, run_id: str) -> None:
+    content = (
+        "| run/experiment id | consumed |\n"
+        "| --- | --- |\n"
+        f"| {run_id} | no |\n"
+    )
+    path = repo_root / "docs" / "exposure-ledger.md"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
+
+
+def _make_repo(tmp_path: Path, run_id: str) -> Path:
+    _write_configs(tmp_path)
+    _write_exposure_ledger(tmp_path, run_id)
+    _git_init_commit(tmp_path)
+    return tmp_path
+
+
+def _make_flight(
+    tmp_path: Path,
+    *,
+    run_id: str,
+    attempt_id: str,
+    adapter_cls: type = _FakeAdapter,
+    **runtime_kwargs: object,
+) -> FlightRuntime:
+    repo_root = _make_repo(tmp_path / run_id, run_id)
+    data_root = tmp_path / "data"
+    data_root.mkdir(parents=True, exist_ok=True)
+    merged: dict[str, object] = {
+        "session_starter": _fake_session_starter,
+        "transport_factory": _fake_transport_factory,
+        "runtime_receipt_loader": _fake_runtime_receipt_loader,
+        "packet_promoter": _fake_packet_promoter,
+        "payload_binding_factory": _fake_payload_binding_factory,
+        "carrier_root_resolver": lambda lock, carrier_lock_key, data_root: Path(data_root) / carrier_lock_key,
+        "client_factory": _FakeClient,
+        "manifest_builder": _fake_manifest_builder,
+        "bundle_verifier": _fake_bundle_verifier,
+        "bundle_finalizer": _fake_bundle_finalizer,
+        "score_batch": _fake_score_batch,
+        "rails_runner": _fake_rails_runner,
+    }
+    merged.update(runtime_kwargs)
+    return FlightRuntime(
+        repo_root,
+        data_root,
+        model="m",
+        dataset="d",
+        baseline="b",
+        experiment="e",
+        run_id=run_id,
+        attempt_id=attempt_id,
+        runtime_root=tmp_path / "runtime",
+        adapter_factory=lambda lock, root: adapter_cls(lock, root),
+        gate_factory=lambda *a, **kw: _FakeGate(),
+        lock={},
+        **merged,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Tests.
+# ---------------------------------------------------------------------------
+
+
+def test_queue_prefers_same_geometry_flights_over_earlier_arrivals(tmp_path):
+    order: list[str] = []
+
+    def _tracking_rails_runner(**kwargs):
+        order.append(kwargs["plan"].run_id)
+        return _fake_rails_runner(**kwargs)
+
+    starts = {"count": 0}
+
+    def _counting_session_starter(**kwargs):
+        starts["count"] += 1
+        return _FakeSession(str(kwargs["session_id"]))
+
+    flight_a = _make_flight(
+        tmp_path, run_id="SAEA-Q-NARROW-A", attempt_id="attempt-a", adapter_cls=_FakeAdapter,
+        rails_runner=_tracking_rails_runner, session_starter=_counting_session_starter,
+    )
+    flight_b = _make_flight(
+        tmp_path, run_id="SAEA-Q-WIDE-B", attempt_id="attempt-b", adapter_cls=_WideFakeAdapter,
+        rails_runner=_tracking_rails_runner, session_starter=_counting_session_starter,
+    )
+    flight_c = _make_flight(
+        tmp_path, run_id="SAEA-Q-NARROW-C", attempt_id="attempt-c", adapter_cls=_FakeAdapter,
+        rails_runner=_tracking_rails_runner, session_starter=_counting_session_starter,
+    )
+
+    queue = FlightQueue([flight_a, flight_b, flight_c])
+    entries = queue.run()
+
+    assert [entry.flight.run_id for entry in entries] == [
+        "SAEA-Q-NARROW-A",
+        "SAEA-Q-NARROW-C",
+        "SAEA-Q-WIDE-B",
+    ]
+    assert order == ["SAEA-Q-NARROW-A", "SAEA-Q-NARROW-C", "SAEA-Q-WIDE-B"]
+    # Only two real server starts: A's narrow geometry, then B's wide one --
+    # C reuses A's still-resident narrow server.
+    assert starts["count"] == 2
+    queue.drain_scores()
+    queue.shutdown()
+
+
+def test_queue_dry_run_stops_every_flight_after_preflight(tmp_path):
+    flight_a = _make_flight(tmp_path, run_id="SAEA-Q-DRY-A", attempt_id="attempt-a")
+    flight_b = _make_flight(tmp_path, run_id="SAEA-Q-DRY-B", attempt_id="attempt-b")
+
+    queue = FlightQueue([flight_a, flight_b], dry_run=True)
+    entries = queue.run()
+
+    assert len(entries) == 2
+    assert all(entry.dry_run for entry in entries)
+    assert flight_a.receipts.completed_stages() == ("preflight",)
+    assert flight_b.receipts.completed_stages() == ("preflight",)
+    queue.shutdown()
+
+
+def test_queue_overlaps_scoring_with_the_next_flights_generation(tmp_path):
+    score_started = threading.Event()
+    score_release = threading.Event()
+
+    def _blocking_score_batch(jobs, *, output_dir, max_workers, **_kwargs):
+        score_started.set()
+        assert score_release.wait(timeout=5), "score_release was never set by the test"
+        Path(output_dir).mkdir(parents=True, exist_ok=True)
+        return {"job_count": len(jobs)}
+
+    flight_a = _make_flight(
+        tmp_path, run_id="SAEA-Q-OVERLAP-A", attempt_id="attempt-a", score_batch=_blocking_score_batch
+    )
+    flight_b = _make_flight(tmp_path, run_id="SAEA-Q-OVERLAP-B", attempt_id="attempt-b")
+
+    queue = FlightQueue([flight_a, flight_b])
+    entries = queue.run()
+
+    # run() must not have blocked on flight A's still-running background
+    # score: both flights' own stages (serve/run_phases/seal) completed
+    # (proven by run() having already returned) while flight A's score is
+    # either still pending or only just starting in the background pool
+    # thread -- wait (bounded) for it to actually start rather than racing
+    # against thread-pool scheduling.
+    assert score_started.wait(timeout=5)
+    assert len(entries) == 2
+    assert entries[0].flight.run_id == "SAEA-Q-OVERLAP-A"
+    assert entries[0].score_future is not None
+    assert not entries[0].score_future.done()
+    assert entries[1].flight.receipts.has("seal")
+
+    score_release.set()
+    results = queue.drain_scores()
+    assert len(results) == 2
+    assert all(result is not None for result in results)
+    queue.shutdown()

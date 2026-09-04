@@ -708,6 +708,98 @@ def _cli_finalize(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cli_flight(args: argparse.Namespace) -> int:
+    """C4c: run one arm/carrier through the ``core.flight.FlightRuntime``
+    harness -- ``preflight -> preprocess -> serve -> run_phases -> seal ->
+    score`` (``--dry-run`` stops after ``preflight``). The adapter is
+    resolved from the dataset fragment's own ``carrier_lock_key`` through
+    ``data.carriers.carrier_task_layout(...).task_kind`` -- today exactly
+    the two registered carriers this study's ``rails.adapters`` ship an
+    adapter for (``speech-tool-use`` -> ``Audio2ToolAdapter``, ``slot-slu``
+    -> ``SlurpAdapter``); a carrier with no task layer (e.g. the ``earnings*``
+    transcription carriers) or an unregistered ``task_kind`` is refused here
+    -- construct ``core.flight.runtime.FlightRuntime`` directly with a custom
+    ``adapter_factory`` for any other carrier.
+    """
+
+    from ...data.carriers import carrier_task_layout
+    from ...data.lock import data_root, load_lock, umbrella_lock_path
+    from ...rails.adapters.audio2tool import Audio2ToolAdapter
+    from ...rails.adapters.slurp import SlurpAdapter
+    from ..flight.runtime import FlightRuntime
+    from .smoke import fresh_attempt_id
+
+    lock = load_lock(umbrella_lock_path())
+    root = data_root()
+    composed = compose(REPO_ROOT, args.model, args.dataset, args.baseline, args.experiment)
+    carrier_lock_key = composed.values.get("carrier_lock_key")
+    if not isinstance(carrier_lock_key, str) or not carrier_lock_key:
+        raise ValueError("dataset fragment must declare a non-empty carrier_lock_key")
+    task_kind = carrier_task_layout(carrier_lock_key).task_kind
+    adapter_classes = {
+        "speech-tool-use": Audio2ToolAdapter,
+        "slot-slu": SlurpAdapter,
+    }
+    adapter_class = adapter_classes.get(task_kind)
+    if adapter_class is None:
+        raise ValueError(
+            f"no flight adapter registered for task_kind {task_kind!r} (carrier "
+            f"{carrier_lock_key!r}); registered task kinds: {sorted(adapter_classes)}"
+        )
+
+    attempt_id = args.attempt_id or fresh_attempt_id()
+    runtime = FlightRuntime(
+        REPO_ROOT,
+        root,
+        model=args.model,
+        dataset=args.dataset,
+        baseline=args.baseline,
+        experiment=args.experiment,
+        run_id=args.run_id,
+        attempt_id=attempt_id,
+        runtime_root=Path(args.runtime_root),
+        adapter_factory=lambda lock_, root_: adapter_class(lock_, root_, repo_root=REPO_ROOT),
+        lock=lock,
+        campaign_active=bool(args.campaign_active),
+    )
+
+    if args.dry_run:
+        preflight_receipt = runtime.preflight()
+        print(
+            json.dumps(
+                {
+                    "run_id": args.run_id,
+                    "attempt_id": attempt_id,
+                    "stage": "preflight",
+                    "dry_run": True,
+                    "receipt": preflight_receipt,
+                },
+                indent=2,
+                sort_keys=True,
+            )
+        )
+        return 0
+
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    runtime.run_phases()
+    runtime.seal()
+    runtime.score(max_workers=args.max_workers)
+    print(
+        json.dumps(
+            {
+                "run_id": args.run_id,
+                "attempt_id": attempt_id,
+                "receipts": runtime.receipts.as_json(),
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     from ...rails.probes.pslu_flight import (  # noqa: PLC0415 (import-cycle guard)
         SPEECH_NATIVE_BOUNDARY_POLICY_IDS,
@@ -1176,6 +1268,33 @@ def main(argv: list[str] | None = None) -> int:
     speech_read.add_argument("--split-name", required=True)
     speech_read.add_argument("--output", required=True)
     speech_read.set_defaults(func=_cli_speech_native_read)
+
+    flight = sub.add_parser(
+        "flight",
+        help="C4c FlightRuntime harness: preflight -> preprocess -> serve -> "
+        "run_phases -> seal -> score for one arm/carrier",
+    )
+    flight.add_argument("--model", required=True)
+    flight.add_argument("--dataset", required=True)
+    flight.add_argument("--baseline", required=True)
+    flight.add_argument("--experiment", required=True)
+    flight.add_argument("--run-id", required=True)
+    flight.add_argument(
+        "--attempt-id", default=None, help="omit to mint a fresh attempt id"
+    )
+    flight.add_argument("--runtime-root", required=True)
+    flight.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="stop after preflight() -- no server start, no model contact",
+    )
+    flight.add_argument("--max-workers", type=int, default=1, help="score() worker count")
+    flight.add_argument(
+        "--campaign-active",
+        action="store_true",
+        help="cap preprocess() workers to 8 while a GPU campaign flies",
+    )
+    flight.set_defaults(func=_cli_flight)
 
     args = parser.parse_args(argv)
     return args.func(args)
