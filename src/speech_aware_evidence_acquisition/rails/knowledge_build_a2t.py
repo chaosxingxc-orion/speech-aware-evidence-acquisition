@@ -99,6 +99,12 @@ from .knowledge import (
     ValueBundle,
     assert_prior_scores_are_probabilities,
 )
+from .knowledge_build_common import (
+    greedy_diverse_pick,
+    hamilton_apportion,
+    jaccard,
+    shingles,
+)
 
 A2T_KB_BUILD_POLICY_ID = "saea-kb-a2t-toolshaped-v1"
 A2T_PARTITION_POLICY_ID = "saea-a2t-block-partition-v1"
@@ -637,19 +643,17 @@ class A2tKnowledgeBuildSpec:
 
 
 def _shingles(text: str) -> frozenset[str]:
-    tokens = text.lower().split()
-    if len(tokens) < 2:
-        return frozenset(tokens)
-    return frozenset(f"{a} {b}" for a, b in zip(tokens, tokens[1:]))
+    """Alias kept for backward compatibility; moved to
+    :func:`.knowledge_build_common.shingles` (C4b consolidation)."""
+
+    return shingles(text)
 
 
 def _jaccard(a: frozenset[str], b: frozenset[str]) -> float:
-    if not a and not b:
-        return 1.0
-    union = a | b
-    if not union:
-        return 0.0
-    return len(a & b) / len(union)
+    """Alias kept for backward compatibility; moved to
+    :func:`.knowledge_build_common.jaccard` (C4b consolidation)."""
+
+    return jaccard(a, b)
 
 
 def _greedy_diverse_pick(
@@ -660,78 +664,28 @@ def _greedy_diverse_pick(
     *,
     tool_cap: int,
 ) -> list[A2tKbRow]:
-    """Greedy farthest-point content-diversity selection over invocation
-    text, honoring a soft per-TOOL cap inside the stratum (bypassed only when
-    every remaining candidate is capped, so a pick is never refused). Ties
-    break through ``rng`` over the ``unit_id``-sorted tied set, so the result
-    is pool-order independent and reproducible for a fixed seed."""
+    """Alias kept for backward compatibility, same call signature as before
+    C4b consolidation: delegates to the shared, row-shape-generalized
+    :func:`.knowledge_build_common.greedy_diverse_pick` with Audio2Tool's own
+    ``text``/``unit_id``/``tool_name`` accessors plugged in."""
 
-    selected_shingles = [_shingles(row.text) for row in already_selected]
-    tool_counts: Counter[str] = Counter(row.tool_name for row in already_selected)
-    remaining = sorted(candidates, key=lambda row: row.unit_id)
-    shingle_of = {row.unit_id: _shingles(row.text) for row in remaining}
-    picked: list[A2tKbRow] = []
-    while remaining and len(picked) < count:
-        capped = {tool for tool, n in tool_counts.items() if n >= tool_cap}
-        eligible = [row for row in remaining if row.tool_name not in capped] or remaining
-        best_score: float | None = None
-        best_rows: list[A2tKbRow] = []
-        for row in eligible:
-            shingles = shingle_of[row.unit_id]
-            max_sim = max(
-                (_jaccard(shingles, other) for other in selected_shingles), default=0.0
-            )
-            novelty = 1.0 - max_sim
-            if best_score is None or novelty > best_score + 1e-12:
-                best_score, best_rows = novelty, [row]
-            elif abs(novelty - best_score) <= 1e-12:
-                best_rows.append(row)
-        chosen = (
-            sorted(best_rows, key=lambda row: row.unit_id)[rng.randrange(len(best_rows))]
-            if len(best_rows) > 1
-            else best_rows[0]
-        )
-        picked.append(chosen)
-        selected_shingles.append(shingle_of[chosen.unit_id])
-        tool_counts[chosen.tool_name] += 1
-        remaining = [row for row in remaining if row.unit_id != chosen.unit_id]
-    return picked
+    return greedy_diverse_pick(
+        candidates,
+        count,
+        already_selected,
+        rng,
+        text_of=lambda row: row.text,
+        id_of=lambda row: row.unit_id,
+        group_of=lambda row: row.tool_name,
+        group_cap=tool_cap,
+    )
 
 
 def _hamilton_apportion(capacity_by_key: Mapping[str, int], total: int) -> dict[str, int]:
-    """Largest-remainder apportionment of ``total`` seats across
-    ``capacity_by_key``, capped at each key's capacity, ties by ascending key."""
+    """Alias kept for backward compatibility; moved to
+    :func:`.knowledge_build_common.hamilton_apportion` (C4b consolidation)."""
 
-    if isinstance(total, bool) or not isinstance(total, int) or total < 0:
-        raise RailsError("_hamilton_apportion: total must be a non-negative int")
-    keys = sorted(capacity_by_key)
-    total_capacity = sum(capacity_by_key[key] for key in keys)
-    if total > total_capacity:
-        raise RailsError("_hamilton_apportion: total exceeds total capacity")
-    result = {key: 0 for key in keys}
-    if total == 0 or total_capacity == 0:
-        return result
-    raw = {key: total * capacity_by_key[key] / total_capacity for key in keys}
-    for key in keys:
-        result[key] = min(int(raw[key]), capacity_by_key[key])
-    remainder = total - sum(result.values())
-    order = sorted(keys, key=lambda key: (-(raw[key] - int(raw[key])), key))
-    guard = 0
-    while remainder > 0:
-        progressed = False
-        for key in order:
-            if remainder <= 0:
-                break
-            if result[key] < capacity_by_key[key]:
-                result[key] += 1
-                remainder -= 1
-                progressed = True
-        if not progressed:
-            raise RailsError("_hamilton_apportion: failed to converge (internal invariant)")
-        guard += 1
-        if guard > 10_000:
-            raise RailsError("_hamilton_apportion: exceeded iteration guard")
-    return result
+    return hamilton_apportion(capacity_by_key, total)
 
 
 def distribution_sample_a2t(
