@@ -268,3 +268,110 @@ gates.
 No Earnings-22 confirmatory contact. No ConEC supply arm. No mechanism arm. No self-run
 whisper-large-v3 calibration anchor (that is its own registration). No fstalign install. No test
 tuning, no paper-scale work, no superiority or generality claim.
+
+---
+
+## Phase log
+
+### 2026-09-04, Phase 1 — roster, window fit, fragments, preregistration
+
+Commit `9586e496`. Roster receipt: 44 calls, 141,348.532 s (39.2635 h), 1,593 fixed 90-second
+windows, split identity `fcc1b0bc…` recomputed against the frozen receipt, all three layers
+materialized for every call, and the window derivation reproducing the sealed ten's 342 exactly.
+Window-fit receipt, zero model contact: constant 62-token text envelope, worst prompt 1,232 tokens,
+worst requirement 2,258 against a 6,144-token slot (×2.72), completion ceiling never binding.
+
+### 2026-09-04, Phase 2 — exposure rows
+
+Commit `cd77af56`. Both rows written before any contact, both `consumed = no`.
+
+### 2026-09-04, Phase 3 — wire check
+
+Commit `fbc30257`. `core.driver smoke --dry-run` on the clean committed tree: 68 of 68 contacts
+through the real compose, split verification, plan validation, OBS slicing, sealing, all four
+manifest scorers and finalize, against a fake transport and a no-op gate. Zero sockets, zero
+llama-server processes. `asr-wer-whisper`, `asr-wer` and `entity-wer` each returned three per-sample
+rows — the proof that a four-scorer manifest actually scores, which is what the sealed August
+manifests could not do.
+
+One defect of my own, recorded: the first wire-check attempt ran all 68 contacts and then refused at
+finalize because `--ledger-cells` was absent (`core.tracking.ledger_row` is fail-closed on a missing
+column). That durably spent the wire-check run id's registered audio seconds, because
+`core/model/adapter.py` meters cumulatively across attempts of a run id. It was retired and the
+check re-flown under a fresh wire-check run id rather than by raising a budget.
+
+### 2026-09-04, Phase 4 — smoke, and the throughput go/no-go
+
+Commit `9cd2fba0`. Row `SAEA-E21-FULL44-DIRECT-BASELINE-SMOKE-V1`, attempt
+`attempt-20260904T222916Z-ef7715`, study commit `75903c26`: **68 of 68 windows, COMPLETED and
+FINALIZED in 4 minutes**, 6,034.6 speech seconds, 68 of 100 registered calls.
+
+- **VRAM, the one thing the window-fit receipt could not certify**: `-c 49152 -np 8` with the bf16
+  mmproj resident on the GPU peaks at **23,396 MiB of this card's 24,463**. It serves.
+- **The window fit holds live**: largest prompt 1,232 tokens, exactly the derived figure; largest
+  completion 326; zero requests reached the 1,024 ceiling.
+- **Throughput**: mean per-window latency **16.29 s** at eight slots against the sealed arm's
+  **89.15 s** with the mmproj on the CPU — a **5.47× speedup**, and the reason the preregistration's
+  flat 4.9 GPU-h extrapolation was never the projection. 1,593 windows projected to **1.44 h** at the
+  wall-clock rate including model load and 0.90 h at the steady-state rate. **GO.**
+
+### 2026-09-04, Phase 5 — the flight ABORTED, and the one permitted recovery
+
+Row `SAEA-E21-FULL44-DIRECT-BASELINE-V1`, attempt `attempt-20260904T223550Z-99e5d8`, study commit
+`9cd2fba0`. **ABORTED after 47 min 51 s, 925 of 1,593 windows, 22 of 44 calls** (through `4367318`),
+82,125.57 speech seconds durably spent.
+
+```
+47.51.004.242 E CUDA error: an illegal memory access was encountered
+47.51.004.250 E ggml/src/ggml-cuda/ggml-cuda.cu:104: CUDA error
+  current device: 0, in function ggml_backend_cuda_synchronize at ggml-cuda.cu:3249
+  cudaStreamSynchronize(cuda_ctx->stream())
+```
+
+llama-server aborted; `core.session.assert_session_alive` then correctly refused the next request
+because the receipt-pinned pid was gone (`/proc/717/exe` missing — "I5: liveness alone proves
+nothing"). The refusal is the rail working, not the failure.
+
+**Diagnosis.** Memory pressure at the edge of the card is the leading cause, and it is measured
+rather than guessed: llama-server started with **23,119 MiB free of 24,462** and the run reported
+**23,396 MiB used device-wide** throughout — about 1 GB of headroom — and the fault landed while
+eight slots were decoding (9.9 to 34.1 t/s each) and a ninth allocation, the mmproj encode compute
+buffer for a 90-second window, was live. The abort surfaced at a `cudaStreamSynchronize`, which is
+where an asynchronous illegal access is *always* reported, so the stack does not by itself separate
+memory pressure from a CUDA-graph fault; no log line implicates graphs either way.
+
+**The recovery, `SAEA-E21-FULL44-DIRECT-BASELINE-V2`.** A new run id is not a preference: the plan's
+budget is metered cumulatively across every attempt of a run id, so V1 has 825 of its 1,750 calls
+left — fewer than the 1,593 a complete pass needs — and a second attempt under V1 is arithmetically
+impossible.
+
+| | V1 | V2 |
+|---|---|---|
+| serving geometry | `-c 49152 -np 8` | `-c 36864 -np 6` |
+| slot tokens | 6,144 | **6,144, unchanged** |
+| server env | none | `GGML_CUDA_DISABLE_GRAPHS=1` |
+| model fragment | `q4km-e21-buf90-mmproj-gpu-04ccc72a` | `q4km-e21-buf90-mmproj-gpu-04ccc72a-np6` |
+| everything else | — | **identical** |
+
+The slot size is deliberately untouched: it is the size this preregistration's section 6 certified at
+×2.72 over the 2,258-token worst request, and 36,864 = 6 × 6,144 is a multiple of 512, so the
+server's own rounding cannot move it. Dropping the slot count frees 12,288 tokens of `q8_0` KV —
+about 640 MiB at 48 layers × 4 KV heads × 128 dims — and cuts peak concurrent activation by a
+quarter. `GGML_CUDA_DISABLE_GRAPHS=1` is **hardening, not a diagnosis**; the pinned build honours it
+(`ggml/src/ggml-cuda/common.cuh`). Because the flight rules allow exactly one recovery, both
+plausible causes are removed in the same step and **the recovery deliberately does not separate
+them** — neither knob changes a single request byte, so neither can move the number.
+
+Population, split identity, baseline fragment, experiment fragment, instruction, OBS protocol,
+evidence, decoding params, audio path, feature-cache policy and scorer list are all unchanged.
+
+**Throughput budget.** V1 measured 19.25 windows per minute at `-np 8` with graphs on. Six slots
+instead of eight costs about a quarter, and disabling CUDA graphs costs about 34 % of decode rate at
+batch > 1 by this repository's own measurement, so V2 is budgeted at 19.25 × 0.75 × 0.66 = **9.5
+windows per minute**, putting 1,593 windows at about **2.8 hours** against the 4.0-hour ceiling. No
+re-smoke is run: the smoke's two questions were VRAM and throughput, and a strictly *smaller*
+geometry answers the first a fortiori, while the second is bounded above by arithmetic even at a
+50 % total slowdown.
+
+**If V2 also fails**, the flight stops under the owner's own rule and the fix is proven on a 4-row
+dry run before anything else flies.

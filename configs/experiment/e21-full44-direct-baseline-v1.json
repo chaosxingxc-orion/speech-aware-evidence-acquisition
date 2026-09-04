@@ -74,6 +74,43 @@
       {"system": "Whisper tiny.en", "wer": 17.0}
     ]
   },
+  "recovery": {
+    "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+    "supersedes": {
+      "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V1",
+      "attempt_id": "attempt-20260904T223550Z-99e5d8",
+      "status": "ABORTED",
+      "completed_windows": 925,
+      "completed_calls": 22,
+      "planned_windows": 1593,
+      "wall_before_the_abort": "47 min 51 s of inference, 48 min of arm wall",
+      "failure_reason": "CUDA error: an illegal memory access was encountered, ggml/src/ggml-cuda/ggml-cuda.cu:104 in ggml_backend_cuda_synchronize; llama-server aborted, and core.session.assert_session_alive then correctly refused the next request because the receipt-pinned pid was gone (I5: liveness alone proves nothing)",
+      "durable_spend": {
+        "calls": 925,
+        "audio_seconds": 82125.57143749998
+      },
+      "why_a_new_run_id": "core/model/adapter.py meters planned_model_calls and planned_speech_audio_seconds cumulatively across every attempt of a run id, so V1 has 825 of its 1,750 calls left -- fewer than the 1,593 a complete pass needs. A second attempt under V1 is arithmetically impossible, which is exactly why the recovery takes a fresh run id and a fresh exposure row"
+    },
+    "diagnosis": "Memory pressure at the edge of the card is the leading cause and it is not a guess: llama-server started with 23,119 MiB free of 24,462 and the run reported 23,396 MiB used device-wide throughout, about 1 GB of headroom, and the fault landed while eight slots were decoding and a ninth allocation -- an mmproj encode compute buffer for a 90-second window -- was live. The abort surfaced at a cudaStreamSynchronize, which is where an asynchronous illegal access is always reported, so the stack does not by itself separate memory pressure from a CUDA-graph fault; no log line implicates graphs.",
+    "change": {
+      "serving_geometry": "-c 49152 -np 8 becomes -c 36864 -np 6",
+      "slot_tokens": "UNCHANGED at 6,144 -- the size the window-fit receipt certified at x2.72 over the 2,258-token worst request; 36,864 = 6 x 6,144 and is a multiple of 512",
+      "kv_freed": "12,288 tokens of q8_0 KV, about 640 MiB at 48 layers x 4 KV heads x 128 dims",
+      "server_env": "GGML_CUDA_DISABLE_GRAPHS=1 added as hardening",
+      "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "arms_file": "docs/arms/e21-full44-direct-baseline-v2.arms",
+      "unchanged": "population, split identity, baseline fragment, experiment fragment, instruction, OBS protocol, evidence, decoding params, audio path, feature-cache policy, scorer list -- so not a single request byte moves and neither knob can move the number",
+      "attribution_not_separated": "the flight rules allow exactly one recovery, so both plausible causes are removed in the same step rather than one per attempt"
+    },
+    "throughput_budget": "V1 measured 19.25 windows per minute at -np 8 with graphs on. Six slots instead of eight costs about a quarter and disabling CUDA graphs costs about 34 % of decode rate at batch > 1 by this repository's own measurement, so the recovery is budgeted at 19.25 x 0.75 x 0.66 = 9.5 windows per minute, putting 1,593 windows at about 2.8 hours against the 4.0-hour ceiling. No re-smoke is run: the smoke's two questions were VRAM and throughput, and a strictly smaller geometry answers the first a fortiori while the second is bounded above by arithmetic even at a 50 % total slowdown (2.8 h).",
+    "execution_plan": {
+      "execution_profile": "baseline-reproduction",
+      "split_role": "discovery",
+      "planned_model_calls": 1750,
+      "planned_gpu_hours": 4.0,
+      "planned_speech_audio_seconds": 150000
+    }
+  },
   "execution_plan": {
     "execution_profile": "baseline-reproduction",
     "split_role": "discovery",

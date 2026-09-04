@@ -1,0 +1,42 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 420.0,
+  "runtime_receipt": "receipts/runtime-q4km-featcache-04ccc72a.json",
+  "server_args": [
+    "-c",
+    "36864",
+    "-np",
+    "6",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0"
+  ],
+  "serving_geometry": {
+    "slots": 6,
+    "slot_tokens": 6144,
+    "max_tokens": 1024
+  },
+  "recovery_basis": "The recovery geometry for SAEA-E21-FULL44-DIRECT-BASELINE-V2, after V1 died 47 min 51 s in with 'CUDA error: an illegal memory access was encountered' at ggml-cuda.cu:104 inside ggml_backend_cuda_synchronize, having completed 925 of 1,593 windows and 22 of 44 calls. The whole V1 run sat at the edge of this card: llama-server started with 23,119 MiB free of 24,462 and the run reported 23,396 MiB used device-wide, about 1 GB of headroom, with eight slots decoding while a ninth-of-a-second mmproj encode allocated its own compute buffer. This fragment removes that edge in the one way that leaves the request bytes untouched: SLOT SIZE IS UNCHANGED at 6,144 tokens (the size the window-fit receipt certified at x2.72 over the 2,258-token worst request, and a multiple of 512 so the server's own rounding cannot move it), and only the slot COUNT drops, 8 to 6. 36,864 = 6 x 6,144, which frees 12,288 tokens of q8_0 KV -- about 640 MiB at this model's 48 layers x 4 KV heads x 128 dims -- and cuts peak concurrent activation by a quarter.",
+  "audio_path_basis": "Unchanged from q4km-e21-buf90-mmproj-gpu-04ccc72a: --no-mmproj-offload is absent, so the bf16 mmproj sha256 f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883 stays resident on the GPU and every 90-second window is encoded there.",
+  "feature_cache_basis": "server_env carries no LLAMA_MTMD_FEAT_CACHE_DIR, exactly as the V1 fragment: the legacy 26 GB /home/chao/feat-cache/q4km cache holds build-5d9dfcb58 encoder outputs for these very slices and is left untouched and unread, so this number stays homogeneous on 04ccc72a. With feat_dir unset the server's feature cache is fully inert and holds no feature RAM.",
+  "graphs_basis": "GGML_CUDA_DISABLE_GRAPHS=1 is set as hardening, not as a diagnosis. The V1 abort surfaced at a cudaStreamSynchronize, which is where an asynchronous illegal access is always reported, so the stack does not discriminate between a memory-pressure fault and a CUDA-graph fault; no log line implicates graphs, and the pinned build honours the variable (ggml/src/ggml-cuda/common.cuh: disable_cuda_graphs_due_to_env). Because the flight rules allow exactly one recovery, both plausible causes are removed in the same step and the recovery deliberately does not separate them -- neither knob changes a single request byte, so neither can move the number. The cost is throughput: this repository measured graphs worth about 34 % of decode rate at batch > 1, and 6 slots instead of 8 costs a further quarter, so the recovery is budgeted at the V1 measured 19.25 windows per minute x 0.66 x 0.75 = 9.5 per minute, which puts 1,593 windows at about 2.8 hours against the 4.0-hour ceiling.",
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample"
+  },
+  "decoding_basis": "Byte-identical to the sealed SAEA-E-005B-N10-zero arm and to the V1 fragment: greedy (temperature 0), max_tokens 1024, id_slot per-sample, seed 20260803 (inert under greedy). Only server args and server env differ, and both are serving identity, not request identity.",
+  "prompt_order": "evidence-first-system-v3",
+  "server_env": {
+    "GGML_CUDA_DISABLE_GRAPHS": "1"
+  }
+}

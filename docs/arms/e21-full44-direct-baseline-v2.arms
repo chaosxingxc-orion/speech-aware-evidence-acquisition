@@ -1,0 +1,12 @@
+# SAEA-E21-FULL44-DIRECT-BASELINE-V2 - the one permitted recovery of
+# SAEA-E21-FULL44-DIRECT-BASELINE-V1, which died 47 min 51 s in with a CUDA
+# illegal memory access after 925 of 1,593 windows. Same population, same
+# baseline fragment, same experiment fragment, same instruction, same decoding
+# -- so the request bytes are unchanged. Only the serving geometry moves:
+# -c 36864 -np 6 (slot size unchanged at 6,144 tokens) plus
+# GGML_CUDA_DISABLE_GRAPHS=1. Launch with --dataset earnings21-discovery
+# --experiment e21-full44-direct-baseline-v1
+# --model q4km-e21-buf90-mmproj-gpu-04ccc72a-np6
+# --execution-profile baseline-reproduction.
+# run_id:baseline_fragment
+SAEA-E21-FULL44-DIRECT-BASELINE-V2:e21-buf90-zero-locked-scored4
