@@ -1,0 +1,112 @@
+{
+  "artifact_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-WIRE-CHECK-V2/attempt-20260904T222222Z-15aaf5",
+  "artifact_sha256": {
+    "outputs.jsonl": "913a8cced55f027d1aafc04e0770613c1a382db721838192e9a0faa2f66b4c58",
+    "run-manifest.json": "4a2aba9edd42c9a042a331641e24e82d9edafa05f14cb3bc5bfdc3b69e3e332f",
+    "scores.json": "f4233d540639e6b456aa423f405328390596c0e9e485e77efb6f5c7c8d21cf98"
+  },
+  "attempt_id": "attempt-20260904T222222Z-15aaf5",
+  "config_fragments": {
+    "baseline": "e21-buf90-zero-locked-scored4",
+    "dataset": "fast-e21-sub3",
+    "experiment": "e21-full44-direct-baseline-v1",
+    "model": "q4km-e21-buf90-mmproj-gpu-04ccc72a"
+  },
+  "config_hash": "3256d82ea2dc4aba8dd17491700ab55a8ac7662d50fa3c3a568ec11d287bbb7b",
+  "cost": {
+    "audio_seconds_used": 6034.6005625,
+    "calls_used": 68,
+    "completion_tokens_total": 0,
+    "prompt_tokens_total": 0
+  },
+  "for_run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V1",
+  "llama_server_processes": 0,
+  "manifest_scorers": [
+    "asr-wer-whisper",
+    "asr-wer",
+    "entity-wer",
+    "cost"
+  ],
+  "protocol_hash": "c0da920412cf44a87bfab06d4fb138dbc76dd97bcd91d10fcc2d8c314dc5323e",
+  "schema": "saea-e21-full44-wire-check-receipt-v1",
+  "scores_aggregate_keys": {
+    "asr-wer": [
+      "mean_wer",
+      "samples"
+    ],
+    "asr-wer-whisper": [
+      "corpus_wer",
+      "deletions",
+      "insertions",
+      "normalizer",
+      "reference_words",
+      "samples",
+      "scorer_version",
+      "substitutions"
+    ],
+    "cost": [
+      "admitted_evidence_bytes",
+      "audio_seconds_used",
+      "calls_used",
+      "completion_tokens_total",
+      "cost_unavailable_reason",
+      "cpu_seconds",
+      "failed_attempt_audio_seconds",
+      "failed_attempt_calls",
+      "failed_attempt_cost_reason",
+      "gate_setup_seconds",
+      "gpu_sampling_reason",
+      "gpu_seconds",
+      "latency_seconds_total",
+      "peak_vram_mib",
+      "prompt_tokens_total",
+      "request_gpu_sample_count",
+      "request_gpu_samples",
+      "request_gpu_utilization_median_pct",
+      "request_gpu_utilization_p10_pct",
+      "saturated_sample_ids",
+      "saturated_slice_count",
+      "server_slot_probe_failure_count",
+      "server_slot_sample_count",
+      "server_slot_sampling_configured",
+      "server_slot_sampling_reason",
+      "skipped_sample_ids",
+      "skipped_slice_count",
+      "supplied_evidence_bytes",
+      "tool_calls",
+      "umbrella_lock_sha256"
+    ],
+    "entity-wer": [
+      "adapter_version",
+      "by_entity_type",
+      "correct",
+      "entity_wer",
+      "expected_total",
+      "f1",
+      "macro_entity_wer",
+      "precision",
+      "recall",
+      "samples",
+      "samples_with_entities"
+    ]
+  },
+  "scores_per_sample_rows": {
+    "asr-wer": 3,
+    "asr-wer-whisper": 3,
+    "cost": 0,
+    "entity-wer": 3
+  },
+  "sockets_opened": 0,
+  "split": {
+    "carrier_lock_key": "earnings21-original",
+    "count": 3,
+    "identity_hash": "7f6e88811bb2e6bc92a9aa9df569dcaf13a6efd11c48fc44f486e6121841b149",
+    "name": "fast-e21-sub3-sample",
+    "role": "discovery"
+  },
+  "status": "COMPLETED",
+  "study": "speech-aware-evidence-acquisition",
+  "study_commit": "cd77af56ec043d9022d3e873b9a26832ee37e2e5",
+  "what_this_is": "core.driver smoke --dry-run on a clean committed tree: the REAL compose, split verification, ExecutionPlan validation, OBS 90-second slicing, request assembly, bundle sealing, all four manifest scorers and finalize, against a fake in-memory transport and a no-op gate. Zero sockets opened, zero llama-server processes started, zero GPU seconds, no model touched. The response text is synthetic, so NO number below is a science claim -- what is proven is that the wiring runs end to end and that a manifest declaring four scorers actually scores.",
+  "wire_check_run_id": "SAEA-E21-FULL44-WIRE-CHECK-V2"
+}
