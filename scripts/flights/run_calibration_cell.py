@@ -550,18 +550,27 @@ def main() -> int:
         )
         return 0
 
-    log("cell %s: preflight" % args.cell)
-    runtime.preflight()
-    log("cell %s: preprocess" % args.cell)
-    runtime.preprocess(workers=args.preprocess_workers)
-    log("cell %s: serve" % args.cell)
-    runtime.serve()
-    log("cell %s: run_phases" % args.cell)
-    runtime.run_phases()
-    log("cell %s: seal" % args.cell)
-    runtime.seal()
-    log("cell %s: score" % args.cell)
-    runtime.score(max_workers=args.max_workers)
+    # try/finally around everything from serve() onward: the queue path stops
+    # its resident server in FlightQueue.shutdown(), and this single-cell path
+    # had NO counterpart -- a stage raising after serve() left an 18.5 GB
+    # llama-server resident (and orphaned when the process exited), which is
+    # exactly what blocks the next serving geometry from starting.
+    try:
+        log("cell %s: preflight" % args.cell)
+        runtime.preflight()
+        log("cell %s: preprocess" % args.cell)
+        runtime.preprocess(workers=args.preprocess_workers)
+        log("cell %s: serve" % args.cell)
+        runtime.serve()
+        log("cell %s: run_phases" % args.cell)
+        runtime.run_phases()
+        log("cell %s: seal" % args.cell)
+        runtime.seal()
+        log("cell %s: score" % args.cell)
+        runtime.score(max_workers=args.max_workers)
+    finally:
+        if runtime.stop_serving() is not None:
+            log("cell %s: server stopped" % args.cell)
     print(
         json.dumps(
             {

@@ -165,3 +165,34 @@ def test_flight_experiment_cells_and_plan_are_consistent() -> None:
     assert isinstance(plan["planned_model_calls"], int)
     assert isinstance(plan["planned_speech_audio_seconds"], int)
     assert plan["planned_speech_audio_seconds"] >= 4 * 2159.688
+
+
+def test_smoke_plan_covers_every_cell_because_budget_is_run_cumulative() -> None:
+    """core.model.adapter.FrozenCoreAdapter enforces planned_model_calls
+    RUN-cumulatively: it re-reads every prior attempt's durable actuals for
+    the run id on each request. All four smoke cells are attempts of ONE run
+    id, so a per-cell plan is exhausted the moment the second cell asks for
+    its first contact -- observed 2026-09-04 as "allows 4 calls (4 already
+    spent by other attempts on this run)". A plan must cover prior spend
+    plus its own worst case."""
+
+    smoke = _load(REPO / "configs/experiment/a2t-direct-calibration-400-smoke-v1.json")
+    plan = smoke["execution_plan"]
+    cells = len(smoke["cells"])
+    rows = len(smoke["smoke_population"]["sample_ids"])
+    assert cells == 4 and rows == 4
+    assert plan["planned_model_calls"] >= cells * rows
+    assert plan["planned_speech_audio_seconds"] >= (
+        smoke["smoke_population"]["audio_seconds_four_cells"]
+    )
+
+
+def test_flight_plan_also_covers_every_cell() -> None:
+    flight = _load(REPO / "configs/experiment/a2t-direct-calibration-400-v1.json")
+    plan = flight["execution_plan"]
+    cells = len(flight["cells"])
+    rows = flight["population"]["count"]
+    assert plan["planned_model_calls"] >= cells * rows
+    assert plan["planned_speech_audio_seconds"] >= (
+        cells * flight["population"]["audio_seconds_one_pass"]
+    )

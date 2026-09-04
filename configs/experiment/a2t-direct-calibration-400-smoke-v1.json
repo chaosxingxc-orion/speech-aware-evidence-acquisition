@@ -50,17 +50,23 @@
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
     "split_role": "discovery",
-    "planned_model_calls": 4,
-    "planned_gpu_hours": 0.05,
-    "planned_speech_audio_seconds": 17
+    "planned_model_calls": 16,
+    "planned_gpu_hours": 0.2,
+    "planned_speech_audio_seconds": 68
   },
   "execution_plan_basis": {
-    "per_attempt": "one attempt is one cell: 4 rows x 1 contact = 4 calls over 16.948 speech-audio seconds, rounded up to the integer contracts.ExecutionPlan requires",
-    "across_the_four_cells": "4 x 4 = 16 calls, 67.792 speech-audio seconds, which is what the exposure row SAEA-A2T-DIRECT-CALIBRATION-SMOKE-V1 registers as 16 calls / 100 seconds / 0.2 GPU hours",
+    "why_the_whole_smoke_and_not_one_cell": "Attempt budget is enforced RUN-CUMULATIVELY: core.model.adapter.FrozenCoreAdapter re-reads every prior attempt's durable actuals for this run_id on every request and refuses when prior_spent + this_attempt exceeds planned_model_calls. All four cells are attempts of the SAME run id, so a per-cell plan of 4 is exhausted the moment the second cell asks for its first contact -- which is exactly what happened on 2026-09-04 (\"allows 4 calls (4 already spent by other attempts on this run)\"). A plan must therefore cover prior durable spend plus its own worst case, i.e. the whole smoke.",
+    "calls": "4 rows x 1 contact x 4 cells = 16, which is also what the exposure row registers",
+    "speech_audio_seconds": "4 x 16.948 = 67.792 across the four cells, rounded up to the integer contracts.ExecutionPlan requires",
+    "gpu_hours": "0.2, the registered ceiling",
     "paid_api_spend": 0
   },
   "evaluation": {
-    "official_scorers": ["a2t-toolcall", "a2t-toolcall-v2", "cost"],
+    "official_scorers": [
+      "a2t-toolcall",
+      "a2t-toolcall-v2",
+      "cost"
+    ],
     "scored_complete_manifests": 4,
     "whole_manifest_jobs_only": true,
     "dataset_sharding": false,

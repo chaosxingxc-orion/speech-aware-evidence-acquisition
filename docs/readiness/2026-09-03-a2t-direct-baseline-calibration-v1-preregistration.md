@@ -530,3 +530,36 @@ A0' instead would need 20 calls against a 16-call row and must not be attempted.
 
 `SAEA-A2T-DIRECT-CALIBRATION-SMOKE-V1` therefore stays `consumed = no` for now, with 4 of its 16
 calls spent and one attempt OPENED pending that zero-contact finalize.
+
+### 2026-09-04, Phase 2h: A0' recovered with zero contacts; defect 11 stops A1 before its first
+
+- **A0'-legacy-raw is FINALIZED, at zero additional cost.** Its already-sealed bundle was finalized
+  and scored through `core.bundle.finalize_bundle` with exactly the ledger cells
+  `FlightRuntime.seal()` now builds; the attempt settled from OPENED to FINALIZED and all three
+  registered scorers (`a2t-toolcall`, `a2t-toolcall-v2`, `cost`) are present in its scores artifact.
+  No model was contacted. The four calls it had already spent are the only ones this cell will ever
+  cost -- it was never re-run.
+- **Defect 11: the smoke fragment's execution plan was sized per cell, but budget is enforced
+  RUN-cumulatively.** `core.model.adapter.FrozenCoreAdapter` re-reads every prior attempt's durable
+  actuals for the run id on every request and refuses when prior spend plus this attempt exceeds
+  `planned_model_calls`. All four cells are attempts of ONE run id, so the fragment's per-cell plan
+  of 4 was already exhausted by A0's 4: A1 refused at its first request, "allows 4 calls (4 already
+  spent by other attempts on this run)", **before spending anything**. Fixed in
+  `configs/experiment/a2t-direct-calibration-400-smoke-v1.json`: the plan is now the whole smoke
+  (16 calls, 68 speech-audio seconds, 0.2 GPU hours), which is also exactly what the exposure row
+  registers. Two tests now assert that both the smoke and the 400-row flight plans cover
+  cells x rows, so this class cannot regress silently.
+- **Defect 12: the single-cell CLI path never stopped its server.** `FlightQueue.shutdown()` stops
+  the resident server on the queue path; the single-cell path had no counterpart, so any stage
+  raising after `serve()` left an 18.5 GB llama-server resident (and orphaned at process exit) --
+  precisely what prevents the next serving geometry from starting. The six stages are now wrapped in
+  try/finally with `stop_serving()`. (The A1 refusal happened to leave nothing behind -- ports
+  8080/8090 free, GPU 0 MiB, no llama-server process -- but that was luck, not design.)
+
+**Budget position after this phase**: 4 of the registered 16 calls are durably spent, all by A0's
+single FINALIZED attempt (16.948 speech-audio seconds of the registered 100). Every other attempt on
+this run id is ABORTED with zero actuals. The remaining 12 calls are exactly the three remaining
+cells (A1, P0, P1) at 4 each. With the corrected 16-call plan those three can now fly under the same
+registration, landing the smoke at exactly 16 with no re-registration and no re-run.
+
+`SAEA-A2T-DIRECT-CALIBRATION-SMOKE-V1` stays `consumed = no` until the remaining three cells land.
