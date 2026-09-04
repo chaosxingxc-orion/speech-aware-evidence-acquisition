@@ -1,0 +1,1833 @@
+{
+  "acceptance": {
+    "accepted_cells": [],
+    "any_cell_accepted": false,
+    "best_cell_basis": "smallest summed absolute per-tier tool-accuracy gap to the paper row across all eight tiers; the four-tier acceptance subset picks a different cell, and both are recorded because they disagree",
+    "best_cell_for_reporting": "A0prime-legacy-raw",
+    "closeness_to_the_paper_row": {
+      "A0prime-legacy-raw": {
+        "overall_tool_accuracy": 51.74999999999999,
+        "summed_abs_delta_acceptance_tiers_pp": 97.1,
+        "summed_abs_delta_all_tiers_pp": 142.3
+      },
+      "A1-native-raw": {
+        "overall_tool_accuracy": 46.0,
+        "summed_abs_delta_acceptance_tiers_pp": 79.1,
+        "summed_abs_delta_all_tiers_pp": 185.5
+      },
+      "P0-legacy-packets": {
+        "overall_tool_accuracy": 52.75,
+        "summed_abs_delta_acceptance_tiers_pp": 109.1,
+        "summed_abs_delta_all_tiers_pp": 146.3
+      },
+      "P1-native-packets": {
+        "overall_tool_accuracy": 44.0,
+        "summed_abs_delta_acceptance_tiers_pp": 91.1,
+        "summed_abs_delta_all_tiers_pp": 201.5
+      }
+    },
+    "closest_cell_on_all_eight_tiers": "A0prime-legacy-raw",
+    "closest_cell_on_the_acceptance_tiers": "A1-native-raw",
+    "highest_overall_tool_accuracy_cell": "P0-legacy-packets",
+    "per_cell": {
+      "A0prime-legacy-raw": {
+        "accepted": false,
+        "all_four_tiers_within_5pp": false,
+        "cell_id": "A0prime-legacy-raw",
+        "rule": "per-tier tool-accuracy |delta| <= 5 pp against the paper row on tiers 1, 2, 5 and 6, with the tier rank order preserved",
+        "tier_rank_order_preserved": false,
+        "tiers_within_5pp": {
+          "tier1_direct": false,
+          "tier2_parametric": false,
+          "tier5_needle": false,
+          "tier6_correction": false
+        }
+      },
+      "A1-native-raw": {
+        "accepted": false,
+        "all_four_tiers_within_5pp": false,
+        "cell_id": "A1-native-raw",
+        "rule": "per-tier tool-accuracy |delta| <= 5 pp against the paper row on tiers 1, 2, 5 and 6, with the tier rank order preserved",
+        "tier_rank_order_preserved": false,
+        "tiers_within_5pp": {
+          "tier1_direct": false,
+          "tier2_parametric": false,
+          "tier5_needle": false,
+          "tier6_correction": false
+        }
+      },
+      "P0-legacy-packets": {
+        "accepted": false,
+        "all_four_tiers_within_5pp": false,
+        "cell_id": "P0-legacy-packets",
+        "rule": "per-tier tool-accuracy |delta| <= 5 pp against the paper row on tiers 1, 2, 5 and 6, with the tier rank order preserved",
+        "tier_rank_order_preserved": false,
+        "tiers_within_5pp": {
+          "tier1_direct": false,
+          "tier2_parametric": false,
+          "tier5_needle": false,
+          "tier6_correction": false
+        }
+      },
+      "P1-native-packets": {
+        "accepted": false,
+        "all_four_tiers_within_5pp": false,
+        "cell_id": "P1-native-packets",
+        "rule": "per-tier tool-accuracy |delta| <= 5 pp against the paper row on tiers 1, 2, 5 and 6, with the tier rank order preserved",
+        "tier_rank_order_preserved": false,
+        "tiers_within_5pp": {
+          "tier1_direct": false,
+          "tier2_parametric": false,
+          "tier5_needle": false,
+          "tier6_correction": false
+        }
+      }
+    },
+    "rule": "at least one cell reaches per-tier tool-accuracy |delta| <= 5 pp against the paper row on tiers 1, 2, 5 and 6, with the tier rank order preserved"
+  },
+  "bootstrap": {
+    "ci_level": 0.9,
+    "replicates": 10000,
+    "seed": 20260903,
+    "stratification": "tier"
+  },
+  "cells": {
+    "A0prime-legacy-raw": {
+      "attempt_id": "attempt-20260904T081627Z-a0primelegacyraw",
+      "cost": {
+        "audio_seconds_used": 2159.6879999999983,
+        "calls_used": 400,
+        "completion_tokens_per_second": 26.877094868896773,
+        "completion_tokens_total": 15060,
+        "latency_seconds_total": 560.3284162020063,
+        "mean_latency_seconds": 1.4008210405050159,
+        "prompt_tokens_per_call": 13315.1225,
+        "prompt_tokens_total": 5326049,
+        "tool_calls_counter": 0
+      },
+      "overall": {
+        "exact_match_v1": 24.0,
+        "exact_match_v2": 31.5,
+        "n": 400,
+        "parse_rate": 89.0,
+        "slot_f1_v1": 28.994444444444444,
+        "tool_accuracy_multiset": 51.74999999999999
+      },
+      "per_tier": {
+        "tier1_direct": {
+          "exact_match_v1": 14.000000000000002,
+          "exact_match_v2": 48.0,
+          "n": 50,
+          "paper_exact_match": 92.4,
+          "paper_tool_accuracy": 92.4,
+          "parse_rate": 100.0,
+          "slot_f1_v1": 0.0,
+          "tool_accuracy_delta_pp": -28.400000000000006,
+          "tool_accuracy_multiset": 64.0
+        },
+        "tier2_parametric": {
+          "exact_match_v1": 34.0,
+          "exact_match_v2": 40.0,
+          "n": 50,
+          "paper_exact_match": 15.6,
+          "paper_tool_accuracy": 84.6,
+          "parse_rate": 96.0,
+          "slot_f1_v1": 45.0,
+          "tool_accuracy_delta_pp": -16.599999999999994,
+          "tool_accuracy_multiset": 68.0
+        },
+        "tier3_multi_intent": {
+          "exact_match_v1": 4.0,
+          "exact_match_v2": 12.0,
+          "n": 50,
+          "paper_exact_match": 28.6,
+          "paper_tool_accuracy": 74.7,
+          "parse_rate": 80.0,
+          "slot_f1_v1": 22.992063492063494,
+          "tool_accuracy_delta_pp": -24.700000000000003,
+          "tool_accuracy_multiset": 50.0
+        },
+        "tier4_implicit": {
+          "exact_match_v1": 24.0,
+          "exact_match_v2": 24.0,
+          "n": 50,
+          "paper_exact_match": 11.3,
+          "paper_tool_accuracy": 33.4,
+          "parse_rate": 98.0,
+          "slot_f1_v1": 11.0,
+          "tool_accuracy_delta_pp": -3.3999999999999986,
+          "tool_accuracy_multiset": 30.0
+        },
+        "tier5_needle": {
+          "exact_match_v1": 32.0,
+          "exact_match_v2": 40.0,
+          "n": 50,
+          "paper_exact_match": 36.0,
+          "paper_tool_accuracy": 90.6,
+          "parse_rate": 68.0,
+          "slot_f1_v1": 42.076190476190476,
+          "tool_accuracy_delta_pp": -30.599999999999994,
+          "tool_accuracy_multiset": 60.0
+        },
+        "tier6_correction": {
+          "exact_match_v1": 40.0,
+          "exact_match_v2": 40.0,
+          "n": 50,
+          "paper_exact_match": 24.8,
+          "paper_tool_accuracy": 81.5,
+          "parse_rate": 92.0,
+          "slot_f1_v1": 40.476190476190474,
+          "tool_accuracy_delta_pp": -21.5,
+          "tool_accuracy_multiset": 60.0
+        },
+        "tier7_multiturn": {
+          "exact_match_v1": 42.0,
+          "exact_match_v2": 42.0,
+          "n": 50,
+          "paper_exact_match": 16.3,
+          "paper_tool_accuracy": 54.6,
+          "parse_rate": 98.0,
+          "slot_f1_v1": 50.0,
+          "tool_accuracy_delta_pp": 1.4000000000000057,
+          "tool_accuracy_multiset": 56.00000000000001
+        },
+        "tier8_intent_blending": {
+          "exact_match_v1": 2.0,
+          "exact_match_v2": 6.0,
+          "n": 50,
+          "paper_exact_match": 12.4,
+          "paper_tool_accuracy": 41.7,
+          "parse_rate": 80.0,
+          "slot_f1_v1": 20.41111111111111,
+          "tool_accuracy_delta_pp": -15.700000000000003,
+          "tool_accuracy_multiset": 26.0
+        }
+      }
+    },
+    "A1-native-raw": {
+      "attempt_id": "attempt-20260904T081627Z-a1nativeraw",
+      "cost": {
+        "audio_seconds_used": 2159.6879999999983,
+        "calls_used": 400,
+        "completion_tokens_per_second": 27.127678770064325,
+        "completion_tokens_total": 17638,
+        "latency_seconds_total": 650.1846379670242,
+        "mean_latency_seconds": 1.6254615949175604,
+        "prompt_tokens_per_call": 13837.1225,
+        "prompt_tokens_total": 5534849,
+        "tool_calls_counter": 0
+      },
+      "overall": {
+        "exact_match_v1": 24.25,
+        "exact_match_v2": 28.999999999999996,
+        "n": 400,
+        "parse_rate": 87.0,
+        "slot_f1_v1": 35.39702380952381,
+        "tool_accuracy_multiset": 46.0
+      },
+      "per_tier": {
+        "tier1_direct": {
+          "exact_match_v1": 14.000000000000002,
+          "exact_match_v2": 40.0,
+          "n": 50,
+          "paper_exact_match": 92.4,
+          "paper_tool_accuracy": 92.4,
+          "parse_rate": 78.0,
+          "slot_f1_v1": 0.0,
+          "tool_accuracy_delta_pp": -42.400000000000006,
+          "tool_accuracy_multiset": 50.0
+        },
+        "tier2_parametric": {
+          "exact_match_v1": 34.0,
+          "exact_match_v2": 38.0,
+          "n": 50,
+          "paper_exact_match": 15.6,
+          "paper_tool_accuracy": 84.6,
+          "parse_rate": 92.0,
+          "slot_f1_v1": 49.333333333333336,
+          "tool_accuracy_delta_pp": -14.599999999999994,
+          "tool_accuracy_multiset": 70.0
+        },
+        "tier3_multi_intent": {
+          "exact_match_v1": 2.0,
+          "exact_match_v2": 6.0,
+          "n": 50,
+          "paper_exact_match": 28.6,
+          "paper_tool_accuracy": 74.7,
+          "parse_rate": 100.0,
+          "slot_f1_v1": 48.06666666666667,
+          "tool_accuracy_delta_pp": -62.7,
+          "tool_accuracy_multiset": 12.0
+        },
+        "tier4_implicit": {
+          "exact_match_v1": 16.0,
+          "exact_match_v2": 16.0,
+          "n": 50,
+          "paper_exact_match": 11.3,
+          "paper_tool_accuracy": 33.4,
+          "parse_rate": 68.0,
+          "slot_f1_v1": 10.933333333333334,
+          "tool_accuracy_delta_pp": -7.399999999999999,
+          "tool_accuracy_multiset": 26.0
+        },
+        "tier5_needle": {
+          "exact_match_v1": 52.0,
+          "exact_match_v2": 56.00000000000001,
+          "n": 50,
+          "paper_exact_match": 36.0,
+          "paper_tool_accuracy": 90.6,
+          "parse_rate": 98.0,
+          "slot_f1_v1": 59.333333333333336,
+          "tool_accuracy_delta_pp": -10.599999999999994,
+          "tool_accuracy_multiset": 80.0
+        },
+        "tier6_correction": {
+          "exact_match_v1": 40.0,
+          "exact_match_v2": 40.0,
+          "n": 50,
+          "paper_exact_match": 24.8,
+          "paper_tool_accuracy": 81.5,
+          "parse_rate": 92.0,
+          "slot_f1_v1": 41.666666666666664,
+          "tool_accuracy_delta_pp": -11.5,
+          "tool_accuracy_multiset": 70.0
+        },
+        "tier7_multiturn": {
+          "exact_match_v1": 36.0,
+          "exact_match_v2": 36.0,
+          "n": 50,
+          "paper_exact_match": 16.3,
+          "paper_tool_accuracy": 54.6,
+          "parse_rate": 68.0,
+          "slot_f1_v1": 40.666666666666664,
+          "tool_accuracy_delta_pp": -6.600000000000001,
+          "tool_accuracy_multiset": 48.0
+        },
+        "tier8_intent_blending": {
+          "exact_match_v1": 0.0,
+          "exact_match_v2": 0.0,
+          "n": 50,
+          "paper_exact_match": 12.4,
+          "paper_tool_accuracy": 41.7,
+          "parse_rate": 100.0,
+          "slot_f1_v1": 33.17619047619048,
+          "tool_accuracy_delta_pp": -29.700000000000003,
+          "tool_accuracy_multiset": 12.0
+        }
+      }
+    },
+    "P0-legacy-packets": {
+      "attempt_id": "attempt-20260904T083403Z-p0legacypackets",
+      "cost": {
+        "audio_seconds_used": 2159.6879999999983,
+        "calls_used": 400,
+        "completion_tokens_per_second": 29.037542142186176,
+        "completion_tokens_total": 15299,
+        "latency_seconds_total": 526.8696615259796,
+        "mean_latency_seconds": 1.317174153814949,
+        "prompt_tokens_per_call": 13313.1225,
+        "prompt_tokens_total": 5325249,
+        "tool_calls_counter": 0
+      },
+      "overall": {
+        "exact_match_v1": 23.5,
+        "exact_match_v2": 30.75,
+        "n": 400,
+        "parse_rate": 89.25,
+        "slot_f1_v1": 29.424603174603174,
+        "tool_accuracy_multiset": 52.75
+      },
+      "per_tier": {
+        "tier1_direct": {
+          "exact_match_v1": 12.0,
+          "exact_match_v2": 44.0,
+          "n": 50,
+          "paper_exact_match": 92.4,
+          "paper_tool_accuracy": 92.4,
+          "parse_rate": 100.0,
+          "slot_f1_v1": 0.0,
+          "tool_accuracy_delta_pp": -32.400000000000006,
+          "tool_accuracy_multiset": 60.0
+        },
+        "tier2_parametric": {
+          "exact_match_v1": 34.0,
+          "exact_match_v2": 38.0,
+          "n": 50,
+          "paper_exact_match": 15.6,
+          "paper_tool_accuracy": 84.6,
+          "parse_rate": 92.0,
+          "slot_f1_v1": 45.333333333333336,
+          "tool_accuracy_delta_pp": -18.599999999999994,
+          "tool_accuracy_multiset": 66.0
+        },
+        "tier3_multi_intent": {
+          "exact_match_v1": 4.0,
+          "exact_match_v2": 14.000000000000002,
+          "n": 50,
+          "paper_exact_match": 28.6,
+          "paper_tool_accuracy": 74.7,
+          "parse_rate": 88.0,
+          "slot_f1_v1": 24.934920634920637,
+          "tool_accuracy_delta_pp": -16.70000000000001,
+          "tool_accuracy_multiset": 57.99999999999999
+        },
+        "tier4_implicit": {
+          "exact_match_v1": 22.0,
+          "exact_match_v2": 22.0,
+          "n": 50,
+          "paper_exact_match": 11.3,
+          "paper_tool_accuracy": 33.4,
+          "parse_rate": 100.0,
+          "slot_f1_v1": 14.400000000000002,
+          "tool_accuracy_delta_pp": -3.3999999999999986,
+          "tool_accuracy_multiset": 30.0
+        },
+        "tier5_needle": {
+          "exact_match_v1": 30.0,
+          "exact_match_v2": 38.0,
+          "n": 50,
+          "paper_exact_match": 36.0,
+          "paper_tool_accuracy": 90.6,
+          "parse_rate": 62.0,
+          "slot_f1_v1": 40.13333333333333,
+          "tool_accuracy_delta_pp": -36.599999999999994,
+          "tool_accuracy_multiset": 54.0
+        },
+        "tier6_correction": {
+          "exact_match_v1": 38.0,
+          "exact_match_v2": 38.0,
+          "n": 50,
+          "paper_exact_match": 24.8,
+          "paper_tool_accuracy": 81.5,
+          "parse_rate": 88.0,
+          "slot_f1_v1": 36.80952380952381,
+          "tool_accuracy_delta_pp": -21.5,
+          "tool_accuracy_multiset": 60.0
+        },
+        "tier7_multiturn": {
+          "exact_match_v1": 46.0,
+          "exact_match_v2": 46.0,
+          "n": 50,
+          "paper_exact_match": 16.3,
+          "paper_tool_accuracy": 54.6,
+          "parse_rate": 98.0,
+          "slot_f1_v1": 53.333333333333336,
+          "tool_accuracy_delta_pp": 7.399999999999999,
+          "tool_accuracy_multiset": 62.0
+        },
+        "tier8_intent_blending": {
+          "exact_match_v1": 2.0,
+          "exact_match_v2": 6.0,
+          "n": 50,
+          "paper_exact_match": 12.4,
+          "paper_tool_accuracy": 41.7,
+          "parse_rate": 86.0,
+          "slot_f1_v1": 20.452380952380953,
+          "tool_accuracy_delta_pp": -9.700000000000003,
+          "tool_accuracy_multiset": 32.0
+        }
+      }
+    },
+    "P1-native-packets": {
+      "attempt_id": "attempt-20260904T083403Z-p1nativepackets",
+      "cost": {
+        "audio_seconds_used": 2159.6879999999983,
+        "calls_used": 400,
+        "completion_tokens_per_second": 28.27299163547979,
+        "completion_tokens_total": 18705,
+        "latency_seconds_total": 661.5854537489795,
+        "mean_latency_seconds": 1.6539636343724486,
+        "prompt_tokens_per_call": 13835.1225,
+        "prompt_tokens_total": 5534049,
+        "tool_calls_counter": 0
+      },
+      "overall": {
+        "exact_match_v1": 22.75,
+        "exact_match_v2": 28.000000000000004,
+        "n": 400,
+        "parse_rate": 86.75,
+        "slot_f1_v1": 34.50059523809524,
+        "tool_accuracy_multiset": 44.0
+      },
+      "per_tier": {
+        "tier1_direct": {
+          "exact_match_v1": 14.000000000000002,
+          "exact_match_v2": 40.0,
+          "n": 50,
+          "paper_exact_match": 92.4,
+          "paper_tool_accuracy": 92.4,
+          "parse_rate": 76.0,
+          "slot_f1_v1": 0.0,
+          "tool_accuracy_delta_pp": -42.400000000000006,
+          "tool_accuracy_multiset": 50.0
+        },
+        "tier2_parametric": {
+          "exact_match_v1": 34.0,
+          "exact_match_v2": 38.0,
+          "n": 50,
+          "paper_exact_match": 15.6,
+          "paper_tool_accuracy": 84.6,
+          "parse_rate": 90.0,
+          "slot_f1_v1": 48.666666666666664,
+          "tool_accuracy_delta_pp": -14.599999999999994,
+          "tool_accuracy_multiset": 70.0
+        },
+        "tier3_multi_intent": {
+          "exact_match_v1": 2.0,
+          "exact_match_v2": 8.0,
+          "n": 50,
+          "paper_exact_match": 28.6,
+          "paper_tool_accuracy": 74.7,
+          "parse_rate": 100.0,
+          "slot_f1_v1": 44.333333333333336,
+          "tool_accuracy_delta_pp": -62.7,
+          "tool_accuracy_multiset": 12.0
+        },
+        "tier4_implicit": {
+          "exact_match_v1": 16.0,
+          "exact_match_v2": 16.0,
+          "n": 50,
+          "paper_exact_match": 11.3,
+          "paper_tool_accuracy": 33.4,
+          "parse_rate": 72.0,
+          "slot_f1_v1": 9.6,
+          "tool_accuracy_delta_pp": -11.399999999999999,
+          "tool_accuracy_multiset": 22.0
+        },
+        "tier5_needle": {
+          "exact_match_v1": 50.0,
+          "exact_match_v2": 56.00000000000001,
+          "n": 50,
+          "paper_exact_match": 36.0,
+          "paper_tool_accuracy": 90.6,
+          "parse_rate": 96.0,
+          "slot_f1_v1": 57.46666666666667,
+          "tool_accuracy_delta_pp": -14.599999999999994,
+          "tool_accuracy_multiset": 76.0
+        },
+        "tier6_correction": {
+          "exact_match_v1": 34.0,
+          "exact_match_v2": 34.0,
+          "n": 50,
+          "paper_exact_match": 24.8,
+          "paper_tool_accuracy": 81.5,
+          "parse_rate": 92.0,
+          "slot_f1_v1": 41.57142857142857,
+          "tool_accuracy_delta_pp": -19.5,
+          "tool_accuracy_multiset": 62.0
+        },
+        "tier7_multiturn": {
+          "exact_match_v1": 32.0,
+          "exact_match_v2": 32.0,
+          "n": 50,
+          "paper_exact_match": 16.3,
+          "paper_tool_accuracy": 54.6,
+          "parse_rate": 68.0,
+          "slot_f1_v1": 38.0,
+          "tool_accuracy_delta_pp": -6.600000000000001,
+          "tool_accuracy_multiset": 48.0
+        },
+        "tier8_intent_blending": {
+          "exact_match_v1": 0.0,
+          "exact_match_v2": 0.0,
+          "n": 50,
+          "paper_exact_match": 12.4,
+          "paper_tool_accuracy": 41.7,
+          "parse_rate": 100.0,
+          "slot_f1_v1": 36.36666666666667,
+          "tool_accuracy_delta_pp": -29.700000000000003,
+          "tool_accuracy_multiset": 12.0
+        }
+      }
+    }
+  },
+  "contrasts": {
+    "A_within_packets::a2t-toolcall-v2::exact_match": {
+      "bootstrap": {
+        "ci_high": 0.005,
+        "ci_level": 0.9,
+        "ci_low": -0.0625,
+        "n_replicates": 10000,
+        "point_estimate": -0.0275,
+        "seed": 20260903,
+        "sigma_hat": 0.020463107167229027
+      },
+      "delta": -0.02749999999999997,
+      "harms": 41,
+      "left_mean": 0.3075,
+      "metric": "exact_match",
+      "n": 400,
+      "per_stratum": {
+        "tier1_direct": {
+          "delta": -0.03999999999999998,
+          "harms": 6,
+          "left_mean": 0.44,
+          "n": 50,
+          "right_mean": 0.4,
+          "saves": 4,
+          "stratum": "tier1_direct",
+          "ties": 40
+        },
+        "tier2_parametric": {
+          "delta": 0.0,
+          "harms": 5,
+          "left_mean": 0.38,
+          "n": 50,
+          "right_mean": 0.38,
+          "saves": 5,
+          "stratum": "tier2_parametric",
+          "ties": 40
+        },
+        "tier3_multi_intent": {
+          "delta": -0.06000000000000001,
+          "harms": 4,
+          "left_mean": 0.14,
+          "n": 50,
+          "right_mean": 0.08,
+          "saves": 1,
+          "stratum": "tier3_multi_intent",
+          "ties": 45
+        },
+        "tier4_implicit": {
+          "delta": -0.06,
+          "harms": 4,
+          "left_mean": 0.22,
+          "n": 50,
+          "right_mean": 0.16,
+          "saves": 1,
+          "stratum": "tier4_implicit",
+          "ties": 45
+        },
+        "tier5_needle": {
+          "delta": 0.18000000000000005,
+          "harms": 5,
+          "left_mean": 0.38,
+          "n": 50,
+          "right_mean": 0.56,
+          "saves": 14,
+          "stratum": "tier5_needle",
+          "ties": 31
+        },
+        "tier6_correction": {
+          "delta": -0.03999999999999998,
+          "harms": 6,
+          "left_mean": 0.38,
+          "n": 50,
+          "right_mean": 0.34,
+          "saves": 4,
+          "stratum": "tier6_correction",
+          "ties": 40
+        },
+        "tier7_multiturn": {
+          "delta": -0.14,
+          "harms": 8,
+          "left_mean": 0.46,
+          "n": 50,
+          "right_mean": 0.32,
+          "saves": 1,
+          "stratum": "tier7_multiturn",
+          "ties": 41
+        },
+        "tier8_intent_blending": {
+          "delta": -0.06,
+          "harms": 3,
+          "left_mean": 0.06,
+          "n": 50,
+          "right_mean": 0.0,
+          "saves": 0,
+          "stratum": "tier8_intent_blending",
+          "ties": 47
+        }
+      },
+      "right_mean": 0.28,
+      "saves": 30,
+      "sign_test_p": 0.23509756240834184,
+      "ties": 329
+    },
+    "A_within_packets::a2t-toolcall::exact_match": {
+      "bootstrap": {
+        "ci_high": 0.0225,
+        "ci_level": 0.9,
+        "ci_low": -0.0375,
+        "n_replicates": 10000,
+        "point_estimate": -0.0075,
+        "seed": 20260903,
+        "sigma_hat": 0.01799757900211859
+      },
+      "delta": -0.007499999999999979,
+      "harms": 29,
+      "left_mean": 0.235,
+      "metric": "exact_match",
+      "n": 400,
+      "per_stratum": {
+        "tier1_direct": {
+          "delta": 0.020000000000000018,
+          "harms": 0,
+          "left_mean": 0.12,
+          "n": 50,
+          "right_mean": 0.14,
+          "saves": 1,
+          "stratum": "tier1_direct",
+          "ties": 49
+        },
+        "tier2_parametric": {
+          "delta": 0.0,
+          "harms": 4,
+          "left_mean": 0.34,
+          "n": 50,
+          "right_mean": 0.34,
+          "saves": 4,
+          "stratum": "tier2_parametric",
+          "ties": 42
+        },
+        "tier3_multi_intent": {
+          "delta": -0.02,
+          "harms": 1,
+          "left_mean": 0.04,
+          "n": 50,
+          "right_mean": 0.02,
+          "saves": 0,
+          "stratum": "tier3_multi_intent",
+          "ties": 49
+        },
+        "tier4_implicit": {
+          "delta": -0.06,
+          "harms": 4,
+          "left_mean": 0.22,
+          "n": 50,
+          "right_mean": 0.16,
+          "saves": 1,
+          "stratum": "tier4_implicit",
+          "ties": 45
+        },
+        "tier5_needle": {
+          "delta": 0.2,
+          "harms": 5,
+          "left_mean": 0.3,
+          "n": 50,
+          "right_mean": 0.5,
+          "saves": 15,
+          "stratum": "tier5_needle",
+          "ties": 30
+        },
+        "tier6_correction": {
+          "delta": -0.03999999999999998,
+          "harms": 6,
+          "left_mean": 0.38,
+          "n": 50,
+          "right_mean": 0.34,
+          "saves": 4,
+          "stratum": "tier6_correction",
+          "ties": 40
+        },
+        "tier7_multiturn": {
+          "delta": -0.14,
+          "harms": 8,
+          "left_mean": 0.46,
+          "n": 50,
+          "right_mean": 0.32,
+          "saves": 1,
+          "stratum": "tier7_multiturn",
+          "ties": 41
+        },
+        "tier8_intent_blending": {
+          "delta": -0.02,
+          "harms": 1,
+          "left_mean": 0.02,
+          "n": 50,
+          "right_mean": 0.0,
+          "saves": 0,
+          "stratum": "tier8_intent_blending",
+          "ties": 49
+        }
+      },
+      "right_mean": 0.2275,
+      "saves": 26,
+      "sign_test_p": 0.7877061896700435,
+      "ties": 345
+    },
+    "A_within_packets::a2t-toolcall::tool_accuracy": {
+      "bootstrap": {
+        "ci_high": -0.0475,
+        "ci_level": 0.9,
+        "ci_low": -0.13,
+        "n_replicates": 10000,
+        "point_estimate": -0.0875,
+        "seed": 20260903,
+        "sigma_hat": 0.02540527814131347
+      },
+      "delta": -0.08749999999999997,
+      "harms": 79,
+      "left_mean": 0.5275,
+      "metric": "tool_accuracy",
+      "n": 400,
+      "per_stratum": {
+        "tier1_direct": {
+          "delta": -0.09999999999999998,
+          "harms": 10,
+          "left_mean": 0.6,
+          "n": 50,
+          "right_mean": 0.5,
+          "saves": 5,
+          "stratum": "tier1_direct",
+          "ties": 35
+        },
+        "tier2_parametric": {
+          "delta": 0.039999999999999925,
+          "harms": 6,
+          "left_mean": 0.66,
+          "n": 50,
+          "right_mean": 0.7,
+          "saves": 8,
+          "stratum": "tier2_parametric",
+          "ties": 36
+        },
+        "tier3_multi_intent": {
+          "delta": -0.45999999999999996,
+          "harms": 24,
+          "left_mean": 0.58,
+          "n": 50,
+          "right_mean": 0.12,
+          "saves": 1,
+          "stratum": "tier3_multi_intent",
+          "ties": 25
+        },
+        "tier4_implicit": {
+          "delta": -0.07999999999999999,
+          "harms": 5,
+          "left_mean": 0.3,
+          "n": 50,
+          "right_mean": 0.22,
+          "saves": 1,
+          "stratum": "tier4_implicit",
+          "ties": 44
+        },
+        "tier5_needle": {
+          "delta": 0.21999999999999997,
+          "harms": 5,
+          "left_mean": 0.54,
+          "n": 50,
+          "right_mean": 0.76,
+          "saves": 16,
+          "stratum": "tier5_needle",
+          "ties": 29
+        },
+        "tier6_correction": {
+          "delta": 0.020000000000000018,
+          "harms": 8,
+          "left_mean": 0.6,
+          "n": 50,
+          "right_mean": 0.62,
+          "saves": 9,
+          "stratum": "tier6_correction",
+          "ties": 33
+        },
+        "tier7_multiturn": {
+          "delta": -0.14,
+          "harms": 9,
+          "left_mean": 0.62,
+          "n": 50,
+          "right_mean": 0.48,
+          "saves": 2,
+          "stratum": "tier7_multiturn",
+          "ties": 39
+        },
+        "tier8_intent_blending": {
+          "delta": -0.2,
+          "harms": 12,
+          "left_mean": 0.32,
+          "n": 50,
+          "right_mean": 0.12,
+          "saves": 2,
+          "stratum": "tier8_intent_blending",
+          "ties": 36
+        }
+      },
+      "right_mean": 0.44,
+      "saves": 44,
+      "sign_test_p": 0.0020450395818434725,
+      "ties": 277
+    },
+    "A_within_raw::a2t-toolcall-v2::exact_match": {
+      "bootstrap": {
+        "ci_high": 0.0075,
+        "ci_level": 0.9,
+        "ci_low": -0.0575,
+        "n_replicates": 10000,
+        "point_estimate": -0.025,
+        "seed": 20260903,
+        "sigma_hat": 0.01984465570216576
+      },
+      "delta": -0.025000000000000022,
+      "harms": 38,
+      "left_mean": 0.315,
+      "metric": "exact_match",
+      "n": 400,
+      "per_stratum": {
+        "tier1_direct": {
+          "delta": -0.07999999999999996,
+          "harms": 6,
+          "left_mean": 0.48,
+          "n": 50,
+          "right_mean": 0.4,
+          "saves": 2,
+          "stratum": "tier1_direct",
+          "ties": 42
+        },
+        "tier2_parametric": {
+          "delta": -0.020000000000000018,
+          "harms": 4,
+          "left_mean": 0.4,
+          "n": 50,
+          "right_mean": 0.38,
+          "saves": 3,
+          "stratum": "tier2_parametric",
+          "ties": 43
+        },
+        "tier3_multi_intent": {
+          "delta": -0.06,
+          "harms": 4,
+          "left_mean": 0.12,
+          "n": 50,
+          "right_mean": 0.06,
+          "saves": 1,
+          "stratum": "tier3_multi_intent",
+          "ties": 45
+        },
+        "tier4_implicit": {
+          "delta": -0.07999999999999999,
+          "harms": 5,
+          "left_mean": 0.24,
+          "n": 50,
+          "right_mean": 0.16,
+          "saves": 1,
+          "stratum": "tier4_implicit",
+          "ties": 44
+        },
+        "tier5_needle": {
+          "delta": 0.16000000000000003,
+          "harms": 5,
+          "left_mean": 0.4,
+          "n": 50,
+          "right_mean": 0.56,
+          "saves": 13,
+          "stratum": "tier5_needle",
+          "ties": 32
+        },
+        "tier6_correction": {
+          "delta": 0.0,
+          "harms": 4,
+          "left_mean": 0.4,
+          "n": 50,
+          "right_mean": 0.4,
+          "saves": 4,
+          "stratum": "tier6_correction",
+          "ties": 42
+        },
+        "tier7_multiturn": {
+          "delta": -0.06,
+          "harms": 7,
+          "left_mean": 0.42,
+          "n": 50,
+          "right_mean": 0.36,
+          "saves": 4,
+          "stratum": "tier7_multiturn",
+          "ties": 39
+        },
+        "tier8_intent_blending": {
+          "delta": -0.06,
+          "harms": 3,
+          "left_mean": 0.06,
+          "n": 50,
+          "right_mean": 0.0,
+          "saves": 0,
+          "stratum": "tier8_intent_blending",
+          "ties": 47
+        }
+      },
+      "right_mean": 0.29,
+      "saves": 28,
+      "sign_test_p": 0.267811664846587,
+      "ties": 334
+    },
+    "A_within_raw::a2t-toolcall::exact_match": {
+      "bootstrap": {
+        "ci_high": 0.03,
+        "ci_level": 0.9,
+        "ci_low": -0.025,
+        "n_replicates": 10000,
+        "point_estimate": 0.0025,
+        "seed": 20260903,
+        "sigma_hat": 0.01729369531794752
+      },
+      "delta": 0.0025000000000000022,
+      "harms": 25,
+      "left_mean": 0.24,
+      "metric": "exact_match",
+      "n": 400,
+      "per_stratum": {
+        "tier1_direct": {
+          "delta": 0.0,
+          "harms": 0,
+          "left_mean": 0.14,
+          "n": 50,
+          "right_mean": 0.14,
+          "saves": 0,
+          "stratum": "tier1_direct",
+          "ties": 50
+        },
+        "tier2_parametric": {
+          "delta": 0.0,
+          "harms": 3,
+          "left_mean": 0.34,
+          "n": 50,
+          "right_mean": 0.34,
+          "saves": 3,
+          "stratum": "tier2_parametric",
+          "ties": 44
+        },
+        "tier3_multi_intent": {
+          "delta": -0.02,
+          "harms": 1,
+          "left_mean": 0.04,
+          "n": 50,
+          "right_mean": 0.02,
+          "saves": 0,
+          "stratum": "tier3_multi_intent",
+          "ties": 49
+        },
+        "tier4_implicit": {
+          "delta": -0.07999999999999999,
+          "harms": 5,
+          "left_mean": 0.24,
+          "n": 50,
+          "right_mean": 0.16,
+          "saves": 1,
+          "stratum": "tier4_implicit",
+          "ties": 44
+        },
+        "tier5_needle": {
+          "delta": 0.2,
+          "harms": 4,
+          "left_mean": 0.32,
+          "n": 50,
+          "right_mean": 0.52,
+          "saves": 14,
+          "stratum": "tier5_needle",
+          "ties": 32
+        },
+        "tier6_correction": {
+          "delta": 0.0,
+          "harms": 4,
+          "left_mean": 0.4,
+          "n": 50,
+          "right_mean": 0.4,
+          "saves": 4,
+          "stratum": "tier6_correction",
+          "ties": 42
+        },
+        "tier7_multiturn": {
+          "delta": -0.06,
+          "harms": 7,
+          "left_mean": 0.42,
+          "n": 50,
+          "right_mean": 0.36,
+          "saves": 4,
+          "stratum": "tier7_multiturn",
+          "ties": 39
+        },
+        "tier8_intent_blending": {
+          "delta": -0.02,
+          "harms": 1,
+          "left_mean": 0.02,
+          "n": 50,
+          "right_mean": 0.0,
+          "saves": 0,
+          "stratum": "tier8_intent_blending",
+          "ties": 49
+        }
+      },
+      "right_mean": 0.2425,
+      "saves": 26,
+      "sign_test_p": 1.0,
+      "ties": 349
+    },
+    "A_within_raw::a2t-toolcall::tool_accuracy": {
+      "bootstrap": {
+        "ci_high": -0.015,
+        "ci_level": 0.9,
+        "ci_low": -0.1,
+        "n_replicates": 10000,
+        "point_estimate": -0.0575,
+        "seed": 20260903,
+        "sigma_hat": 0.025253828807479867
+      },
+      "delta": -0.05749999999999994,
+      "harms": 69,
+      "left_mean": 0.5175,
+      "metric": "tool_accuracy",
+      "n": 400,
+      "per_stratum": {
+        "tier1_direct": {
+          "delta": -0.14,
+          "harms": 10,
+          "left_mean": 0.64,
+          "n": 50,
+          "right_mean": 0.5,
+          "saves": 3,
+          "stratum": "tier1_direct",
+          "ties": 37
+        },
+        "tier2_parametric": {
+          "delta": 0.019999999999999907,
+          "harms": 6,
+          "left_mean": 0.68,
+          "n": 50,
+          "right_mean": 0.7,
+          "saves": 7,
+          "stratum": "tier2_parametric",
+          "ties": 37
+        },
+        "tier3_multi_intent": {
+          "delta": -0.38,
+          "harms": 20,
+          "left_mean": 0.5,
+          "n": 50,
+          "right_mean": 0.12,
+          "saves": 1,
+          "stratum": "tier3_multi_intent",
+          "ties": 29
+        },
+        "tier4_implicit": {
+          "delta": -0.03999999999999998,
+          "harms": 6,
+          "left_mean": 0.3,
+          "n": 50,
+          "right_mean": 0.26,
+          "saves": 4,
+          "stratum": "tier4_implicit",
+          "ties": 40
+        },
+        "tier5_needle": {
+          "delta": 0.20000000000000007,
+          "harms": 3,
+          "left_mean": 0.6,
+          "n": 50,
+          "right_mean": 0.8,
+          "saves": 13,
+          "stratum": "tier5_needle",
+          "ties": 34
+        },
+        "tier6_correction": {
+          "delta": 0.09999999999999998,
+          "harms": 6,
+          "left_mean": 0.6,
+          "n": 50,
+          "right_mean": 0.7,
+          "saves": 11,
+          "stratum": "tier6_correction",
+          "ties": 33
+        },
+        "tier7_multiturn": {
+          "delta": -0.08000000000000007,
+          "harms": 9,
+          "left_mean": 0.56,
+          "n": 50,
+          "right_mean": 0.48,
+          "saves": 5,
+          "stratum": "tier7_multiturn",
+          "ties": 36
+        },
+        "tier8_intent_blending": {
+          "delta": -0.14,
+          "harms": 9,
+          "left_mean": 0.26,
+          "n": 50,
+          "right_mean": 0.12,
+          "saves": 2,
+          "stratum": "tier8_intent_blending",
+          "ties": 39
+        }
+      },
+      "right_mean": 0.46,
+      "saves": 46,
+      "sign_test_p": 0.03975050512654258,
+      "ties": 285
+    },
+    "D_within_legacy::a2t-toolcall-v2::exact_match": {
+      "bootstrap": {
+        "ci_high": 0.0125,
+        "ci_level": 0.9,
+        "ci_low": -0.0275,
+        "n_replicates": 10000,
+        "point_estimate": -0.0075,
+        "seed": 20260903,
+        "sigma_hat": 0.012402412766776472
+      },
+      "delta": -0.007500000000000007,
+      "harms": 14,
+      "left_mean": 0.315,
+      "metric": "exact_match",
+      "n": 400,
+      "per_stratum": {
+        "tier1_direct": {
+          "delta": -0.03999999999999998,
+          "harms": 2,
+          "left_mean": 0.48,
+          "n": 50,
+          "right_mean": 0.44,
+          "saves": 0,
+          "stratum": "tier1_direct",
+          "ties": 48
+        },
+        "tier2_parametric": {
+          "delta": -0.020000000000000018,
+          "harms": 2,
+          "left_mean": 0.4,
+          "n": 50,
+          "right_mean": 0.38,
+          "saves": 1,
+          "stratum": "tier2_parametric",
+          "ties": 47
+        },
+        "tier3_multi_intent": {
+          "delta": 0.020000000000000018,
+          "harms": 0,
+          "left_mean": 0.12,
+          "n": 50,
+          "right_mean": 0.14,
+          "saves": 1,
+          "stratum": "tier3_multi_intent",
+          "ties": 49
+        },
+        "tier4_implicit": {
+          "delta": -0.01999999999999999,
+          "harms": 1,
+          "left_mean": 0.24,
+          "n": 50,
+          "right_mean": 0.22,
+          "saves": 0,
+          "stratum": "tier4_implicit",
+          "ties": 49
+        },
+        "tier5_needle": {
+          "delta": -0.020000000000000018,
+          "harms": 4,
+          "left_mean": 0.4,
+          "n": 50,
+          "right_mean": 0.38,
+          "saves": 3,
+          "stratum": "tier5_needle",
+          "ties": 43
+        },
+        "tier6_correction": {
+          "delta": -0.020000000000000018,
+          "harms": 3,
+          "left_mean": 0.4,
+          "n": 50,
+          "right_mean": 0.38,
+          "saves": 2,
+          "stratum": "tier6_correction",
+          "ties": 45
+        },
+        "tier7_multiturn": {
+          "delta": 0.040000000000000036,
+          "harms": 2,
+          "left_mean": 0.42,
+          "n": 50,
+          "right_mean": 0.46,
+          "saves": 4,
+          "stratum": "tier7_multiturn",
+          "ties": 44
+        },
+        "tier8_intent_blending": {
+          "delta": 0.0,
+          "harms": 0,
+          "left_mean": 0.06,
+          "n": 50,
+          "right_mean": 0.06,
+          "saves": 0,
+          "stratum": "tier8_intent_blending",
+          "ties": 50
+        }
+      },
+      "right_mean": 0.3075,
+      "saves": 11,
+      "sign_test_p": 0.6900379657745361,
+      "ties": 375
+    },
+    "D_within_legacy::a2t-toolcall::exact_match": {
+      "bootstrap": {
+        "ci_high": 0.0125,
+        "ci_level": 0.9,
+        "ci_low": -0.0225,
+        "n_replicates": 10000,
+        "point_estimate": -0.005,
+        "seed": 20260903,
+        "sigma_hat": 0.011070419411092788
+      },
+      "delta": -0.0050000000000000044,
+      "harms": 11,
+      "left_mean": 0.24,
+      "metric": "exact_match",
+      "n": 400,
+      "per_stratum": {
+        "tier1_direct": {
+          "delta": -0.020000000000000018,
+          "harms": 1,
+          "left_mean": 0.14,
+          "n": 50,
+          "right_mean": 0.12,
+          "saves": 0,
+          "stratum": "tier1_direct",
+          "ties": 49
+        },
+        "tier2_parametric": {
+          "delta": 0.0,
+          "harms": 1,
+          "left_mean": 0.34,
+          "n": 50,
+          "right_mean": 0.34,
+          "saves": 1,
+          "stratum": "tier2_parametric",
+          "ties": 48
+        },
+        "tier3_multi_intent": {
+          "delta": 0.0,
+          "harms": 0,
+          "left_mean": 0.04,
+          "n": 50,
+          "right_mean": 0.04,
+          "saves": 0,
+          "stratum": "tier3_multi_intent",
+          "ties": 50
+        },
+        "tier4_implicit": {
+          "delta": -0.01999999999999999,
+          "harms": 1,
+          "left_mean": 0.24,
+          "n": 50,
+          "right_mean": 0.22,
+          "saves": 0,
+          "stratum": "tier4_implicit",
+          "ties": 49
+        },
+        "tier5_needle": {
+          "delta": -0.020000000000000018,
+          "harms": 3,
+          "left_mean": 0.32,
+          "n": 50,
+          "right_mean": 0.3,
+          "saves": 2,
+          "stratum": "tier5_needle",
+          "ties": 45
+        },
+        "tier6_correction": {
+          "delta": -0.020000000000000018,
+          "harms": 3,
+          "left_mean": 0.4,
+          "n": 50,
+          "right_mean": 0.38,
+          "saves": 2,
+          "stratum": "tier6_correction",
+          "ties": 45
+        },
+        "tier7_multiturn": {
+          "delta": 0.040000000000000036,
+          "harms": 2,
+          "left_mean": 0.42,
+          "n": 50,
+          "right_mean": 0.46,
+          "saves": 4,
+          "stratum": "tier7_multiturn",
+          "ties": 44
+        },
+        "tier8_intent_blending": {
+          "delta": 0.0,
+          "harms": 0,
+          "left_mean": 0.02,
+          "n": 50,
+          "right_mean": 0.02,
+          "saves": 0,
+          "stratum": "tier8_intent_blending",
+          "ties": 50
+        }
+      },
+      "right_mean": 0.235,
+      "saves": 9,
+      "sign_test_p": 0.8238029479980469,
+      "ties": 380
+    },
+    "D_within_legacy::a2t-toolcall::tool_accuracy": {
+      "bootstrap": {
+        "ci_high": 0.0375,
+        "ci_level": 0.9,
+        "ci_low": -0.0175,
+        "n_replicates": 10000,
+        "point_estimate": 0.01,
+        "seed": 20260903,
+        "sigma_hat": 0.0163182886357608
+      },
+      "delta": 0.010000000000000009,
+      "harms": 20,
+      "left_mean": 0.5175,
+      "metric": "tool_accuracy",
+      "n": 400,
+      "per_stratum": {
+        "tier1_direct": {
+          "delta": -0.040000000000000036,
+          "harms": 2,
+          "left_mean": 0.64,
+          "n": 50,
+          "right_mean": 0.6,
+          "saves": 0,
+          "stratum": "tier1_direct",
+          "ties": 48
+        },
+        "tier2_parametric": {
+          "delta": -0.020000000000000018,
+          "harms": 3,
+          "left_mean": 0.68,
+          "n": 50,
+          "right_mean": 0.66,
+          "saves": 2,
+          "stratum": "tier2_parametric",
+          "ties": 45
+        },
+        "tier3_multi_intent": {
+          "delta": 0.07999999999999996,
+          "harms": 2,
+          "left_mean": 0.5,
+          "n": 50,
+          "right_mean": 0.58,
+          "saves": 6,
+          "stratum": "tier3_multi_intent",
+          "ties": 42
+        },
+        "tier4_implicit": {
+          "delta": 0.0,
+          "harms": 2,
+          "left_mean": 0.3,
+          "n": 50,
+          "right_mean": 0.3,
+          "saves": 2,
+          "stratum": "tier4_implicit",
+          "ties": 46
+        },
+        "tier5_needle": {
+          "delta": -0.05999999999999994,
+          "harms": 5,
+          "left_mean": 0.6,
+          "n": 50,
+          "right_mean": 0.54,
+          "saves": 2,
+          "stratum": "tier5_needle",
+          "ties": 43
+        },
+        "tier6_correction": {
+          "delta": 0.0,
+          "harms": 4,
+          "left_mean": 0.6,
+          "n": 50,
+          "right_mean": 0.6,
+          "saves": 4,
+          "stratum": "tier6_correction",
+          "ties": 42
+        },
+        "tier7_multiturn": {
+          "delta": 0.05999999999999994,
+          "harms": 1,
+          "left_mean": 0.56,
+          "n": 50,
+          "right_mean": 0.62,
+          "saves": 4,
+          "stratum": "tier7_multiturn",
+          "ties": 45
+        },
+        "tier8_intent_blending": {
+          "delta": 0.06,
+          "harms": 1,
+          "left_mean": 0.26,
+          "n": 50,
+          "right_mean": 0.32,
+          "saves": 4,
+          "stratum": "tier8_intent_blending",
+          "ties": 45
+        }
+      },
+      "right_mean": 0.5275,
+      "saves": 24,
+      "sign_test_p": 0.651587827208914,
+      "ties": 356
+    },
+    "D_within_native::a2t-toolcall-v2::exact_match": {
+      "bootstrap": {
+        "ci_high": 0.0075,
+        "ci_level": 0.9,
+        "ci_low": -0.0275,
+        "n_replicates": 10000,
+        "point_estimate": -0.01,
+        "seed": 20260903,
+        "sigma_hat": 0.011158080454876637
+      },
+      "delta": -0.009999999999999953,
+      "harms": 12,
+      "left_mean": 0.29,
+      "metric": "exact_match",
+      "n": 400,
+      "per_stratum": {
+        "tier1_direct": {
+          "delta": 0.0,
+          "harms": 1,
+          "left_mean": 0.4,
+          "n": 50,
+          "right_mean": 0.4,
+          "saves": 1,
+          "stratum": "tier1_direct",
+          "ties": 48
+        },
+        "tier2_parametric": {
+          "delta": 0.0,
+          "harms": 1,
+          "left_mean": 0.38,
+          "n": 50,
+          "right_mean": 0.38,
+          "saves": 1,
+          "stratum": "tier2_parametric",
+          "ties": 48
+        },
+        "tier3_multi_intent": {
+          "delta": 0.020000000000000004,
+          "harms": 0,
+          "left_mean": 0.06,
+          "n": 50,
+          "right_mean": 0.08,
+          "saves": 1,
+          "stratum": "tier3_multi_intent",
+          "ties": 49
+        },
+        "tier4_implicit": {
+          "delta": 0.0,
+          "harms": 0,
+          "left_mean": 0.16,
+          "n": 50,
+          "right_mean": 0.16,
+          "saves": 0,
+          "stratum": "tier4_implicit",
+          "ties": 50
+        },
+        "tier5_needle": {
+          "delta": 0.0,
+          "harms": 3,
+          "left_mean": 0.56,
+          "n": 50,
+          "right_mean": 0.56,
+          "saves": 3,
+          "stratum": "tier5_needle",
+          "ties": 44
+        },
+        "tier6_correction": {
+          "delta": -0.06,
+          "harms": 3,
+          "left_mean": 0.4,
+          "n": 50,
+          "right_mean": 0.34,
+          "saves": 0,
+          "stratum": "tier6_correction",
+          "ties": 47
+        },
+        "tier7_multiturn": {
+          "delta": -0.03999999999999998,
+          "harms": 4,
+          "left_mean": 0.36,
+          "n": 50,
+          "right_mean": 0.32,
+          "saves": 2,
+          "stratum": "tier7_multiturn",
+          "ties": 44
+        },
+        "tier8_intent_blending": {
+          "delta": 0.0,
+          "harms": 0,
+          "left_mean": 0.0,
+          "n": 50,
+          "right_mean": 0.0,
+          "saves": 0,
+          "stratum": "tier8_intent_blending",
+          "ties": 50
+        }
+      },
+      "right_mean": 0.28,
+      "saves": 8,
+      "sign_test_p": 0.5034446716308594,
+      "ties": 380
+    },
+    "D_within_native::a2t-toolcall::exact_match": {
+      "bootstrap": {
+        "ci_high": 0.0,
+        "ci_level": 0.9,
+        "ci_low": -0.0325,
+        "n_replicates": 10000,
+        "point_estimate": -0.015,
+        "seed": 20260903,
+        "sigma_hat": 0.009946537387452983
+      },
+      "delta": -0.014999999999999986,
+      "harms": 11,
+      "left_mean": 0.2425,
+      "metric": "exact_match",
+      "n": 400,
+      "per_stratum": {
+        "tier1_direct": {
+          "delta": 0.0,
+          "harms": 0,
+          "left_mean": 0.14,
+          "n": 50,
+          "right_mean": 0.14,
+          "saves": 0,
+          "stratum": "tier1_direct",
+          "ties": 50
+        },
+        "tier2_parametric": {
+          "delta": 0.0,
+          "harms": 1,
+          "left_mean": 0.34,
+          "n": 50,
+          "right_mean": 0.34,
+          "saves": 1,
+          "stratum": "tier2_parametric",
+          "ties": 48
+        },
+        "tier3_multi_intent": {
+          "delta": 0.0,
+          "harms": 0,
+          "left_mean": 0.02,
+          "n": 50,
+          "right_mean": 0.02,
+          "saves": 0,
+          "stratum": "tier3_multi_intent",
+          "ties": 50
+        },
+        "tier4_implicit": {
+          "delta": 0.0,
+          "harms": 0,
+          "left_mean": 0.16,
+          "n": 50,
+          "right_mean": 0.16,
+          "saves": 0,
+          "stratum": "tier4_implicit",
+          "ties": 50
+        },
+        "tier5_needle": {
+          "delta": -0.020000000000000018,
+          "harms": 3,
+          "left_mean": 0.52,
+          "n": 50,
+          "right_mean": 0.5,
+          "saves": 2,
+          "stratum": "tier5_needle",
+          "ties": 45
+        },
+        "tier6_correction": {
+          "delta": -0.06,
+          "harms": 3,
+          "left_mean": 0.4,
+          "n": 50,
+          "right_mean": 0.34,
+          "saves": 0,
+          "stratum": "tier6_correction",
+          "ties": 47
+        },
+        "tier7_multiturn": {
+          "delta": -0.03999999999999998,
+          "harms": 4,
+          "left_mean": 0.36,
+          "n": 50,
+          "right_mean": 0.32,
+          "saves": 2,
+          "stratum": "tier7_multiturn",
+          "ties": 44
+        },
+        "tier8_intent_blending": {
+          "delta": 0.0,
+          "harms": 0,
+          "left_mean": 0.0,
+          "n": 50,
+          "right_mean": 0.0,
+          "saves": 0,
+          "stratum": "tier8_intent_blending",
+          "ties": 50
+        }
+      },
+      "right_mean": 0.2275,
+      "saves": 5,
+      "sign_test_p": 0.210113525390625,
+      "ties": 384
+    },
+    "D_within_native::a2t-toolcall::tool_accuracy": {
+      "bootstrap": {
+        "ci_high": 0.0025,
+        "ci_level": 0.9,
+        "ci_low": -0.0425,
+        "n_replicates": 10000,
+        "point_estimate": -0.02,
+        "seed": 20260903,
+        "sigma_hat": 0.01355571812004071
+      },
+      "delta": -0.020000000000000018,
+      "harms": 19,
+      "left_mean": 0.46,
+      "metric": "tool_accuracy",
+      "n": 400,
+      "per_stratum": {
+        "tier1_direct": {
+          "delta": 0.0,
+          "harms": 2,
+          "left_mean": 0.5,
+          "n": 50,
+          "right_mean": 0.5,
+          "saves": 2,
+          "stratum": "tier1_direct",
+          "ties": 46
+        },
+        "tier2_parametric": {
+          "delta": 0.0,
+          "harms": 2,
+          "left_mean": 0.7,
+          "n": 50,
+          "right_mean": 0.7,
+          "saves": 2,
+          "stratum": "tier2_parametric",
+          "ties": 46
+        },
+        "tier3_multi_intent": {
+          "delta": 0.0,
+          "harms": 2,
+          "left_mean": 0.12,
+          "n": 50,
+          "right_mean": 0.12,
+          "saves": 2,
+          "stratum": "tier3_multi_intent",
+          "ties": 46
+        },
+        "tier4_implicit": {
+          "delta": -0.04000000000000001,
+          "harms": 2,
+          "left_mean": 0.26,
+          "n": 50,
+          "right_mean": 0.22,
+          "saves": 0,
+          "stratum": "tier4_implicit",
+          "ties": 48
+        },
+        "tier5_needle": {
+          "delta": -0.040000000000000036,
+          "harms": 3,
+          "left_mean": 0.8,
+          "n": 50,
+          "right_mean": 0.76,
+          "saves": 1,
+          "stratum": "tier5_needle",
+          "ties": 46
+        },
+        "tier6_correction": {
+          "delta": -0.07999999999999996,
+          "harms": 4,
+          "left_mean": 0.7,
+          "n": 50,
+          "right_mean": 0.62,
+          "saves": 0,
+          "stratum": "tier6_correction",
+          "ties": 46
+        },
+        "tier7_multiturn": {
+          "delta": 0.0,
+          "harms": 2,
+          "left_mean": 0.48,
+          "n": 50,
+          "right_mean": 0.48,
+          "saves": 2,
+          "stratum": "tier7_multiturn",
+          "ties": 46
+        },
+        "tier8_intent_blending": {
+          "delta": 0.0,
+          "harms": 2,
+          "left_mean": 0.12,
+          "n": 50,
+          "right_mean": 0.12,
+          "saves": 2,
+          "stratum": "tier8_intent_blending",
+          "ties": 46
+        }
+      },
+      "right_mean": 0.44,
+      "saves": 11,
+      "sign_test_p": 0.20048842206597328,
+      "ties": 370
+    }
+  },
+  "interaction": {
+    "a2t-toolcall-v2::exact_match": {
+      "a_within_packets_delta": -0.02749999999999997,
+      "a_within_raw_delta": -0.025000000000000022,
+      "basis": "difference of the two Factor-A deltas on the same paired 400; the bootstrap CI of a difference of differences is not computed here because analysis.paired contrasts two score maps, not two contrasts",
+      "interaction_delta": -0.0024999999999999467
+    },
+    "a2t-toolcall::exact_match": {
+      "a_within_packets_delta": -0.007499999999999979,
+      "a_within_raw_delta": 0.0025000000000000022,
+      "basis": "difference of the two Factor-A deltas on the same paired 400; the bootstrap CI of a difference of differences is not computed here because analysis.paired contrasts two score maps, not two contrasts",
+      "interaction_delta": -0.009999999999999981
+    },
+    "a2t-toolcall::tool_accuracy": {
+      "a_within_packets_delta": -0.08749999999999997,
+      "a_within_raw_delta": -0.05749999999999994,
+      "basis": "difference of the two Factor-A deltas on the same paired 400; the bootstrap CI of a difference of differences is not computed here because analysis.paired contrasts two score maps, not two contrasts",
+      "interaction_delta": -0.030000000000000027
+    }
+  },
+  "markdown": "## A_within_packets::a2t-toolcall-v2::exact_match (exact_match)\n\n| n | left_mean | right_mean | delta | saves | harms | ties | sign_test_p | ci_low | ci_high |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| 400 | 0.3075 | 0.2800 | -0.0275 | 30 | 41 | 329 | 0.235098 | -0.0625 | 0.0050 |\n\n| stratum | n | left_mean | right_mean | delta | saves | harms | ties |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| tier1_direct | 50 | 0.4400 | 0.4000 | -0.0400 | 4 | 6 | 40 |\n| tier2_parametric | 50 | 0.3800 | 0.3800 | 0.0000 | 5 | 5 | 40 |\n| tier3_multi_intent | 50 | 0.1400 | 0.0800 | -0.0600 | 1 | 4 | 45 |\n| tier4_implicit | 50 | 0.2200 | 0.1600 | -0.0600 | 1 | 4 | 45 |\n| tier5_needle | 50 | 0.3800 | 0.5600 | 0.1800 | 14 | 5 | 31 |\n| tier6_correction | 50 | 0.3800 | 0.3400 | -0.0400 | 4 | 6 | 40 |\n| tier7_multiturn | 50 | 0.4600 | 0.3200 | -0.1400 | 1 | 8 | 41 |\n| tier8_intent_blending | 50 | 0.0600 | 0.0000 | -0.0600 | 0 | 3 | 47 |\n\n## A_within_packets::a2t-toolcall::exact_match (exact_match)\n\n| n | left_mean | right_mean | delta | saves | harms | ties | sign_test_p | ci_low | ci_high |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| 400 | 0.2350 | 0.2275 | -0.0075 | 26 | 29 | 345 | 0.787706 | -0.0375 | 0.0225 |\n\n| stratum | n | left_mean | right_mean | delta | saves | harms | ties |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| tier1_direct | 50 | 0.1200 | 0.1400 | 0.0200 | 1 | 0 | 49 |\n| tier2_parametric | 50 | 0.3400 | 0.3400 | 0.0000 | 4 | 4 | 42 |\n| tier3_multi_intent | 50 | 0.0400 | 0.0200 | -0.0200 | 0 | 1 | 49 |\n| tier4_implicit | 50 | 0.2200 | 0.1600 | -0.0600 | 1 | 4 | 45 |\n| tier5_needle | 50 | 0.3000 | 0.5000 | 0.2000 | 15 | 5 | 30 |\n| tier6_correction | 50 | 0.3800 | 0.3400 | -0.0400 | 4 | 6 | 40 |\n| tier7_multiturn | 50 | 0.4600 | 0.3200 | -0.1400 | 1 | 8 | 41 |\n| tier8_intent_blending | 50 | 0.0200 | 0.0000 | -0.0200 | 0 | 1 | 49 |\n\n## A_within_packets::a2t-toolcall::tool_accuracy (tool_accuracy)\n\n| n | left_mean | right_mean | delta | saves | harms | ties | sign_test_p | ci_low | ci_high |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| 400 | 0.5275 | 0.4400 | -0.0875 | 44 | 79 | 277 | 0.002045 | -0.1300 | -0.0475 |\n\n| stratum | n | left_mean | right_mean | delta | saves | harms | ties |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| tier1_direct | 50 | 0.6000 | 0.5000 | -0.1000 | 5 | 10 | 35 |\n| tier2_parametric | 50 | 0.6600 | 0.7000 | 0.0400 | 8 | 6 | 36 |\n| tier3_multi_intent | 50 | 0.5800 | 0.1200 | -0.4600 | 1 | 24 | 25 |\n| tier4_implicit | 50 | 0.3000 | 0.2200 | -0.0800 | 1 | 5 | 44 |\n| tier5_needle | 50 | 0.5400 | 0.7600 | 0.2200 | 16 | 5 | 29 |\n| tier6_correction | 50 | 0.6000 | 0.6200 | 0.0200 | 9 | 8 | 33 |\n| tier7_multiturn | 50 | 0.6200 | 0.4800 | -0.1400 | 2 | 9 | 39 |\n| tier8_intent_blending | 50 | 0.3200 | 0.1200 | -0.2000 | 2 | 12 | 36 |\n\n## A_within_raw::a2t-toolcall-v2::exact_match (exact_match)\n\n| n | left_mean | right_mean | delta | saves | harms | ties | sign_test_p | ci_low | ci_high |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| 400 | 0.3150 | 0.2900 | -0.0250 | 28 | 38 | 334 | 0.267812 | -0.0575 | 0.0075 |\n\n| stratum | n | left_mean | right_mean | delta | saves | harms | ties |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| tier1_direct | 50 | 0.4800 | 0.4000 | -0.0800 | 2 | 6 | 42 |\n| tier2_parametric | 50 | 0.4000 | 0.3800 | -0.0200 | 3 | 4 | 43 |\n| tier3_multi_intent | 50 | 0.1200 | 0.0600 | -0.0600 | 1 | 4 | 45 |\n| tier4_implicit | 50 | 0.2400 | 0.1600 | -0.0800 | 1 | 5 | 44 |\n| tier5_needle | 50 | 0.4000 | 0.5600 | 0.1600 | 13 | 5 | 32 |\n| tier6_correction | 50 | 0.4000 | 0.4000 | 0.0000 | 4 | 4 | 42 |\n| tier7_multiturn | 50 | 0.4200 | 0.3600 | -0.0600 | 4 | 7 | 39 |\n| tier8_intent_blending | 50 | 0.0600 | 0.0000 | -0.0600 | 0 | 3 | 47 |\n\n## A_within_raw::a2t-toolcall::exact_match (exact_match)\n\n| n | left_mean | right_mean | delta | saves | harms | ties | sign_test_p | ci_low | ci_high |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| 400 | 0.2400 | 0.2425 | 0.0025 | 26 | 25 | 349 | 1.000000 | -0.0250 | 0.0300 |\n\n| stratum | n | left_mean | right_mean | delta | saves | harms | ties |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| tier1_direct | 50 | 0.1400 | 0.1400 | 0.0000 | 0 | 0 | 50 |\n| tier2_parametric | 50 | 0.3400 | 0.3400 | 0.0000 | 3 | 3 | 44 |\n| tier3_multi_intent | 50 | 0.0400 | 0.0200 | -0.0200 | 0 | 1 | 49 |\n| tier4_implicit | 50 | 0.2400 | 0.1600 | -0.0800 | 1 | 5 | 44 |\n| tier5_needle | 50 | 0.3200 | 0.5200 | 0.2000 | 14 | 4 | 32 |\n| tier6_correction | 50 | 0.4000 | 0.4000 | 0.0000 | 4 | 4 | 42 |\n| tier7_multiturn | 50 | 0.4200 | 0.3600 | -0.0600 | 4 | 7 | 39 |\n| tier8_intent_blending | 50 | 0.0200 | 0.0000 | -0.0200 | 0 | 1 | 49 |\n\n## A_within_raw::a2t-toolcall::tool_accuracy (tool_accuracy)\n\n| n | left_mean | right_mean | delta | saves | harms | ties | sign_test_p | ci_low | ci_high |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| 400 | 0.5175 | 0.4600 | -0.0575 | 46 | 69 | 285 | 0.039751 | -0.1000 | -0.0150 |\n\n| stratum | n | left_mean | right_mean | delta | saves | harms | ties |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| tier1_direct | 50 | 0.6400 | 0.5000 | -0.1400 | 3 | 10 | 37 |\n| tier2_parametric | 50 | 0.6800 | 0.7000 | 0.0200 | 7 | 6 | 37 |\n| tier3_multi_intent | 50 | 0.5000 | 0.1200 | -0.3800 | 1 | 20 | 29 |\n| tier4_implicit | 50 | 0.3000 | 0.2600 | -0.0400 | 4 | 6 | 40 |\n| tier5_needle | 50 | 0.6000 | 0.8000 | 0.2000 | 13 | 3 | 34 |\n| tier6_correction | 50 | 0.6000 | 0.7000 | 0.1000 | 11 | 6 | 33 |\n| tier7_multiturn | 50 | 0.5600 | 0.4800 | -0.0800 | 5 | 9 | 36 |\n| tier8_intent_blending | 50 | 0.2600 | 0.1200 | -0.1400 | 2 | 9 | 39 |\n\n## D_within_legacy::a2t-toolcall-v2::exact_match (exact_match)\n\n| n | left_mean | right_mean | delta | saves | harms | ties | sign_test_p | ci_low | ci_high |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| 400 | 0.3150 | 0.3075 | -0.0075 | 11 | 14 | 375 | 0.690038 | -0.0275 | 0.0125 |\n\n| stratum | n | left_mean | right_mean | delta | saves | harms | ties |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| tier1_direct | 50 | 0.4800 | 0.4400 | -0.0400 | 0 | 2 | 48 |\n| tier2_parametric | 50 | 0.4000 | 0.3800 | -0.0200 | 1 | 2 | 47 |\n| tier3_multi_intent | 50 | 0.1200 | 0.1400 | 0.0200 | 1 | 0 | 49 |\n| tier4_implicit | 50 | 0.2400 | 0.2200 | -0.0200 | 0 | 1 | 49 |\n| tier5_needle | 50 | 0.4000 | 0.3800 | -0.0200 | 3 | 4 | 43 |\n| tier6_correction | 50 | 0.4000 | 0.3800 | -0.0200 | 2 | 3 | 45 |\n| tier7_multiturn | 50 | 0.4200 | 0.4600 | 0.0400 | 4 | 2 | 44 |\n| tier8_intent_blending | 50 | 0.0600 | 0.0600 | 0.0000 | 0 | 0 | 50 |\n\n## D_within_legacy::a2t-toolcall::exact_match (exact_match)\n\n| n | left_mean | right_mean | delta | saves | harms | ties | sign_test_p | ci_low | ci_high |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| 400 | 0.2400 | 0.2350 | -0.0050 | 9 | 11 | 380 | 0.823803 | -0.0225 | 0.0125 |\n\n| stratum | n | left_mean | right_mean | delta | saves | harms | ties |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| tier1_direct | 50 | 0.1400 | 0.1200 | -0.0200 | 0 | 1 | 49 |\n| tier2_parametric | 50 | 0.3400 | 0.3400 | 0.0000 | 1 | 1 | 48 |\n| tier3_multi_intent | 50 | 0.0400 | 0.0400 | 0.0000 | 0 | 0 | 50 |\n| tier4_implicit | 50 | 0.2400 | 0.2200 | -0.0200 | 0 | 1 | 49 |\n| tier5_needle | 50 | 0.3200 | 0.3000 | -0.0200 | 2 | 3 | 45 |\n| tier6_correction | 50 | 0.4000 | 0.3800 | -0.0200 | 2 | 3 | 45 |\n| tier7_multiturn | 50 | 0.4200 | 0.4600 | 0.0400 | 4 | 2 | 44 |\n| tier8_intent_blending | 50 | 0.0200 | 0.0200 | 0.0000 | 0 | 0 | 50 |\n\n## D_within_legacy::a2t-toolcall::tool_accuracy (tool_accuracy)\n\n| n | left_mean | right_mean | delta | saves | harms | ties | sign_test_p | ci_low | ci_high |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| 400 | 0.5175 | 0.5275 | 0.0100 | 24 | 20 | 356 | 0.651588 | -0.0175 | 0.0375 |\n\n| stratum | n | left_mean | right_mean | delta | saves | harms | ties |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| tier1_direct | 50 | 0.6400 | 0.6000 | -0.0400 | 0 | 2 | 48 |\n| tier2_parametric | 50 | 0.6800 | 0.6600 | -0.0200 | 2 | 3 | 45 |\n| tier3_multi_intent | 50 | 0.5000 | 0.5800 | 0.0800 | 6 | 2 | 42 |\n| tier4_implicit | 50 | 0.3000 | 0.3000 | 0.0000 | 2 | 2 | 46 |\n| tier5_needle | 50 | 0.6000 | 0.5400 | -0.0600 | 2 | 5 | 43 |\n| tier6_correction | 50 | 0.6000 | 0.6000 | 0.0000 | 4 | 4 | 42 |\n| tier7_multiturn | 50 | 0.5600 | 0.6200 | 0.0600 | 4 | 1 | 45 |\n| tier8_intent_blending | 50 | 0.2600 | 0.3200 | 0.0600 | 4 | 1 | 45 |\n\n## D_within_native::a2t-toolcall-v2::exact_match (exact_match)\n\n| n | left_mean | right_mean | delta | saves | harms | ties | sign_test_p | ci_low | ci_high |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| 400 | 0.2900 | 0.2800 | -0.0100 | 8 | 12 | 380 | 0.503445 | -0.0275 | 0.0075 |\n\n| stratum | n | left_mean | right_mean | delta | saves | harms | ties |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| tier1_direct | 50 | 0.4000 | 0.4000 | 0.0000 | 1 | 1 | 48 |\n| tier2_parametric | 50 | 0.3800 | 0.3800 | 0.0000 | 1 | 1 | 48 |\n| tier3_multi_intent | 50 | 0.0600 | 0.0800 | 0.0200 | 1 | 0 | 49 |\n| tier4_implicit | 50 | 0.1600 | 0.1600 | 0.0000 | 0 | 0 | 50 |\n| tier5_needle | 50 | 0.5600 | 0.5600 | 0.0000 | 3 | 3 | 44 |\n| tier6_correction | 50 | 0.4000 | 0.3400 | -0.0600 | 0 | 3 | 47 |\n| tier7_multiturn | 50 | 0.3600 | 0.3200 | -0.0400 | 2 | 4 | 44 |\n| tier8_intent_blending | 50 | 0.0000 | 0.0000 | 0.0000 | 0 | 0 | 50 |\n\n## D_within_native::a2t-toolcall::exact_match (exact_match)\n\n| n | left_mean | right_mean | delta | saves | harms | ties | sign_test_p | ci_low | ci_high |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| 400 | 0.2425 | 0.2275 | -0.0150 | 5 | 11 | 384 | 0.210114 | -0.0325 | 0.0000 |\n\n| stratum | n | left_mean | right_mean | delta | saves | harms | ties |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| tier1_direct | 50 | 0.1400 | 0.1400 | 0.0000 | 0 | 0 | 50 |\n| tier2_parametric | 50 | 0.3400 | 0.3400 | 0.0000 | 1 | 1 | 48 |\n| tier3_multi_intent | 50 | 0.0200 | 0.0200 | 0.0000 | 0 | 0 | 50 |\n| tier4_implicit | 50 | 0.1600 | 0.1600 | 0.0000 | 0 | 0 | 50 |\n| tier5_needle | 50 | 0.5200 | 0.5000 | -0.0200 | 2 | 3 | 45 |\n| tier6_correction | 50 | 0.4000 | 0.3400 | -0.0600 | 0 | 3 | 47 |\n| tier7_multiturn | 50 | 0.3600 | 0.3200 | -0.0400 | 2 | 4 | 44 |\n| tier8_intent_blending | 50 | 0.0000 | 0.0000 | 0.0000 | 0 | 0 | 50 |\n\n## D_within_native::a2t-toolcall::tool_accuracy (tool_accuracy)\n\n| n | left_mean | right_mean | delta | saves | harms | ties | sign_test_p | ci_low | ci_high |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| 400 | 0.4600 | 0.4400 | -0.0200 | 11 | 19 | 370 | 0.200488 | -0.0425 | 0.0025 |\n\n| stratum | n | left_mean | right_mean | delta | saves | harms | ties |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| tier1_direct | 50 | 0.5000 | 0.5000 | 0.0000 | 2 | 2 | 46 |\n| tier2_parametric | 50 | 0.7000 | 0.7000 | 0.0000 | 2 | 2 | 46 |\n| tier3_multi_intent | 50 | 0.1200 | 0.1200 | 0.0000 | 2 | 2 | 46 |\n| tier4_implicit | 50 | 0.2600 | 0.2200 | -0.0400 | 0 | 2 | 48 |\n| tier5_needle | 50 | 0.8000 | 0.7600 | -0.0400 | 1 | 3 | 46 |\n| tier6_correction | 50 | 0.7000 | 0.6200 | -0.0800 | 0 | 4 | 46 |\n| tier7_multiturn | 50 | 0.4800 | 0.4800 | 0.0000 | 2 | 2 | 46 |\n| tier8_intent_blending | 50 | 0.1200 | 0.1200 | 0.0000 | 2 | 2 | 46 |\n",
+  "metric_notes": {
+    "exact_match_v1_vs_v2": "a2t-toolcall is a2t-scorer-v1; a2t-toolcall-v2 is the registered v2 rule that credits omitted registry-default arguments",
+    "tool_accuracy": "the registered a2t-toolcall scorer compares expected and predicted tool NAME MULTISETS (Counter == Counter), so this is the multiset figure. The registered scorer provides no ORDERED variant; preregistration section 6 asks for both, and the ordered column is therefore reported as not computed rather than invented here -- adding a scoring rule after the flight would make the paper-facing number something other than the dataset's standard scorer"
+  },
+  "paper_row": {
+    "tier1_direct": {
+      "exact_match": 92.4,
+      "tool_accuracy": 92.4
+    },
+    "tier2_parametric": {
+      "exact_match": 15.6,
+      "tool_accuracy": 84.6
+    },
+    "tier3_multi_intent": {
+      "exact_match": 28.6,
+      "tool_accuracy": 74.7
+    },
+    "tier4_implicit": {
+      "exact_match": 11.3,
+      "tool_accuracy": 33.4
+    },
+    "tier5_needle": {
+      "exact_match": 36.0,
+      "tool_accuracy": 90.6
+    },
+    "tier6_correction": {
+      "exact_match": 24.8,
+      "tool_accuracy": 81.5
+    },
+    "tier7_multiturn": {
+      "exact_match": 16.3,
+      "tool_accuracy": 54.6
+    },
+    "tier8_intent_blending": {
+      "exact_match": 12.4,
+      "tool_accuracy": 41.7
+    }
+  },
+  "paper_source": "arXiv:2604.22821 Table 3, as transcribed in the preregistration",
+  "run_id": "SAEA-A2T-DIRECT-CALIBRATION-V1",
+  "schema": "saea-a2t-calibration-result-v1",
+  "study": "speech-aware-evidence-acquisition"
+}

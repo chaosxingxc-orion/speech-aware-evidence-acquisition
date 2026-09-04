@@ -710,3 +710,34 @@ flushed, the `workers=1` serial route, a refused bad worker count, and the occup
 
 Phase 3b is the registered 1,608-call flight; `SAEA-A2T-DIRECT-CALIBRATION-V1` remains
 `consumed = no`.
+
+### 2026-09-04, Phase 3b: the registered flight flew; no cell passes
+
+`SAEA-A2T-DIRECT-CALIBRATION-V1` is `consumed = yes`. All four cells flew 400 rows, sealed,
+finalized and scored; 1,600 of 1,700 registered calls (1,608 planned), 8,638.752 of 9,000 registered
+speech-audio seconds, four FINALIZED attempts, none aborted, no recovery re-registration used. The
+GPU power limit held at 100.00 W with maximum SM clock 3,090 MHz for the whole flight.
+
+**No cell meets the section 6 acceptance rule**, so section 6's own contingency applies and
+mechanism work stays stopped. The full verdict is
+`docs/readiness/2026-09-04-a2t-direct-baseline-calibration-v1-verdict.md`; the numbers are
+`docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-direct-calibration-400-v1/result-summary.json`.
+
+Headline: Factor A (the native tool-calling contract) is significant and NEGATIVE for tool accuracy
+(-5.75 pp raw, p 0.040; -8.75 pp packets, p 0.0020; both CI90s exclude zero) while trading tiers --
+it gains on tier5 and tier6 and collapses on tier3 and tier8. Factor D (mmproj-free packets versus
+raw audio) is NULL on every metric, which is the first paired evidence at n=400 that the audio path
+is not what separates the September packet-based mechanism runs from A0. Together the two factors
+move tool accuracy by at most 8.75 pp against a tier1 gap of 28.4 to 42.4 pp, so the residual gap is
+not the request protocol.
+
+Two corrections to earlier readings, both from artifacts this flight produced: native tool calls
+arrived on 347 of 400 A1 rows and 346 of 400 P1 rows, so the four-row smoke's "all text" reading was
+an artefact of four rows; and the packet path is 56 % faster per contact than raw audio at the
+legacy contract, which the smoke was too small to show.
+
+Preregistration section 6 also asks for ORDERED as well as multiset tool accuracy. The registered
+`a2t-toolcall` scorer compares tool-name multisets and has no ordered variant, so the ordered column
+is reported as not computed rather than invented: adding a scoring rule after the flight would make
+the paper-facing number something other than the dataset's standard scorer. That is a gap in this
+preregistration, not in the flight.
