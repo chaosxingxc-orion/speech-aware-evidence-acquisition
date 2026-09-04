@@ -358,3 +358,38 @@ Three findings carried forward:
    disagreements), so the T1 fit rests on the mmproj encoder's measured behaviour rather than on an
    estimate. Over the 500 rows it gives min 13, median 26, p95 52, max 8,515 — that maximum is the
    654.6325 s row, and it is the only reason `T1-official-pop-500` serves two slots.
+
+### 2026-09-04, Phase 3 — wire check and smoke
+
+- `FlightRuntime.wire_check` for both cells on clean committed trees (`767e8405` for
+  `T1-official-pop-500`, `3aa45f28` for `W-official-raw-yaml`): 500 and 400 contacts through the
+  real client, adapter, payload binding and sealer against the fake gate and transport, zero
+  sockets opened. `payload_keys` is exactly `ARM_VISIBLE_FIELDS["bare-core"]` on both.
+  `seal_and_score` OK with all four registered scorers through `core.scoring_batch` as one
+  whole-manifest job. Receipts under `wire-check/`; commits `3aa45f28` and `0c4f06eb`.
+  **One defect and its fix:** the whitespace cell's first wire check reported `SCORING_FAILED`
+  because the T1 wire check had just written its receipt into a previously untracked directory, and
+  `core.scorers._assert_scoring_entry_gate` refuses to score against a dirty tree. The gate is
+  right — a run manifest must bind the exact commit that produced the run — so the T1 receipt was
+  committed first and the whitespace wire check re-run on the clean tree. Nothing was changed except
+  the order of operations.
+- Smoke rows `SAEA-A2T-TIER1-OFFICIAL-POPULATION-SMOKE-V1` (attempt
+  `attempt-20260904T172215Z-t1officialpop500`, manifest SHA-256 `dd3ef14e7a25…`) and
+  `SAEA-A2T-TIER1-OFFICIAL-POPULATION-WHITESPACE-SMOKE-V1` (attempt
+  `attempt-20260904T172359Z-wofficialrawyaml`, manifest SHA-256 `b5530a724d8e…`), both 4 of 4
+  contacts, FINALIZED, study commit `0c4f06eb`.
+
+**The smoke's decisive finding: the 654.6325 s row is servable.** `tier1_direct:003943` encoded
+through the bf16 mmproj and returned a well-formed call string, so the long-row contingency of
+section 6 item 5 does **not** fire and the flight goes with all 500 rows.
+
+**Second finding: this repository's own scorers can finally read its own official-protocol runs.**
+All eight smoke rows produced call strings and parsed under `a2t-toolcall`, `a2t-toolcall-v2` and
+`a2t-toolcall-official` alike, with zero parse failures — the parse extension working end to end,
+against the replication flight's 400 parse failures under v1/v2. No smoke accuracy figure enters
+the verdict.
+
+The two cells produced **different protocol hashes** (`abb9c4cd…` for the in-code default,
+`9ab1df16…` for the YAML variant), which is what a genuine difference in the system-prompt bytes
+should produce and is a second, independent confirmation that the whitespace cell is not silently
+sending the default spelling.
