@@ -358,6 +358,92 @@ def load_expected_calls(
     return expected
 
 
+@dataclass(frozen=True)
+class OfficialGold:
+    """One sample's ground truth in exactly the shape the pinned Audio2Tool
+    release hands its own evaluator (``audio_benchmark/datasets/
+    release_dataset.py`` -> ``QuerySample``, commit ``b9d5383c``).
+
+    Distinct from :func:`load_expected_calls` on purpose. That function
+    returns ``a2t-gold-v1`` ``ToolCall`` tuples, whose primary arguments may
+    come from the ``expected_tool_call`` CALL STRING and whose values are
+    JSON-coerced; the official evaluator never looks at the call string and
+    never coerces, it passes ``extracted_params`` straight into
+    ``normalize_parameters``. Scoring the official metric against
+    ``a2t-gold-v1`` arguments would be scoring a different gold, so the
+    official scorer reads this instead. Both are scorer-side only.
+    """
+
+    tool_name: str
+    extracted_params: Mapping[str, object]
+    additional_tool_calls: tuple[str, ...]
+
+
+def load_official_gold(
+    lock: Mapping[str, object], root: Path, *, repo_root: Path | None = None
+) -> dict[str, OfficialGold]:
+    """Scorer-side ONLY: each receipt sample's ground truth as the pinned
+    Audio2Tool release's own dataset loader would build it. Never callable
+    from the runtime request path -- gold must not enter runtime (D2).
+
+    Coercion mirrors ``ReleaseDataset._build_sample`` line for line: a
+    ``extracted_params``/``additional_tool_calls`` value that arrives as a
+    STRING is put through ``ast.literal_eval`` and degrades to ``{}``/``[]``
+    on a parse failure, exactly as upstream does. Everything else is passed
+    through untouched -- no JSON coercion of values, no call-string parsing.
+    On the pinned carrier every row already carries a mapping and a
+    list-or-null (surveyed 2026-09-04 over all 608 receipt-scoped rows:
+    456 ``(dict, None)`` and 152 ``(dict, list)``), so the string branches
+    are upstream fidelity rather than live behaviour; a value that survives
+    coercion with the wrong type fails closed here rather than silently
+    scoring as an empty expectation.
+    """
+
+    import ast
+
+    _, resolved = _resolve_items(
+        lock, root, Path(REPO_ROOT if repo_root is None else repo_root)
+    )
+    gold: dict[str, OfficialGold] = {}
+    for item in resolved:
+        entry = item.entry
+        tool_name = entry.get("tool_name")
+        if not isinstance(tool_name, str) or not tool_name.strip():
+            raise LoaderError(
+                f"manifest entry for {item.sample_id!r} lacks a non-empty tool_name"
+            )
+        params: object = entry.get("extracted_params") or {}
+        if isinstance(params, str):
+            try:
+                params = ast.literal_eval(params)
+            except (ValueError, SyntaxError):
+                params = {}
+        if not isinstance(params, Mapping):
+            raise LoaderError(
+                f"manifest entry for {item.sample_id!r} has a non-mapping "
+                f"extracted_params of type {type(params).__name__}"
+            )
+        additional: object = entry.get("additional_tool_calls") or []
+        if isinstance(additional, str):
+            try:
+                additional = ast.literal_eval(additional)
+            except (ValueError, SyntaxError):
+                additional = []
+        if not isinstance(additional, list) or not all(
+            isinstance(name, str) for name in additional
+        ):
+            raise LoaderError(
+                f"manifest entry for {item.sample_id!r} has a malformed "
+                "additional_tool_calls (expected a list of strings)"
+            )
+        gold[item.sample_id] = OfficialGold(
+            tool_name=tool_name,
+            extracted_params=dict(params),
+            additional_tool_calls=tuple(additional),
+        )
+    return gold
+
+
 _REGISTRY_COLUMNS = (
     "tool_id",
     "domain",

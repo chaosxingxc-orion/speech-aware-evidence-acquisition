@@ -1,0 +1,27 @@
+{
+  "clone_path": "SPEECHRL_DATA_DIR/repos/audio2tool",
+  "cloned_at": "2026-09-04",
+  "commit": "b9d5383ca30945fbafb965a04bea40117e1e8a82",
+  "commit_authored_at": "2026-09-04T00:03:16+00:00",
+  "commit_subject": "Add release dataset loader for the public HF dataset",
+  "environment_id": "audio2tool-official-code",
+  "license": "MIT (LICENSE at the pinned commit: \"Copyright (c) 2026 Audio2Tool Authors\")",
+  "pinned_blobs": {
+    "audio_benchmark/datasets/base.py": "4bddda1885f3c789f705acb43ff4580462918abb",
+    "audio_benchmark/datasets/release_dataset.py": "ff9b3e22096b6bd0254e32ba3ef08e1d74c11474",
+    "audio_benchmark/evaluation/evaluator.py": "84c629f87550daf9e6f8c4aeb600bd0187d3b20b",
+    "audio_benchmark/evaluation/metrics.py": "d98277bcf69795c9a0ae54e538c170abfd8c51ca",
+    "audio_benchmark/models/base.py": "977ce0cdde41b44b35ee2e6f43808d4eb16fec96",
+    "audio_benchmark/models/qwen3_omni.py": "7f5f50e91a814620f040fcd11d9a5f77760db5d9",
+    "audio_benchmark/models/qwen3_omni_vllm.py": "feec338d97760bcc3e70fe69b5d7f8f915b42c06",
+    "audio_benchmark/utils/config.py": "3af612351b289c3d94b4fa48afba6ff87a92689a",
+    "audio_benchmark/utils/tools_schema.py": "ef108a9f9c2aad42b9f4a38e369d5f88cb24d5f5",
+    "configs/example_config.yaml": "4f57feae0216192141b909b051185cdc2eb4b793"
+  },
+  "purpose": "The published reference implementation of the Audio2Tool benchmark (arXiv:2604.22821), pinned so this repository's direct-baseline replication mirrors the paper's own protocol string-for-string instead of reconstructing it. Read-only: nothing in this clone is executed by this study, and no dependency of it is installed. The vendored copies that DO enter this repository are src/speech_aware_evidence_acquisition/reproduction/audio2tool_official/{metrics.py,parse.py}, whose identity is asserted against the blob SHAs above by tests/unit/test_audio2tool_official_scorer.py.",
+  "rebuild": "git clone https://github.com/audio2tool/Audio2Tool.git $SPEECHRL_DATA_DIR/repos/audio2tool && git -C $SPEECHRL_DATA_DIR/repos/audio2tool checkout b9d5383ca30945fbafb965a04bea40117e1e8a82",
+  "schema": "saea-environment-receipt-v1",
+  "source": "https://github.com/audio2tool/Audio2Tool",
+  "verification": "Every entry of pinned_blobs was produced in the clone by `git rev-parse <commit>:<path>` on 2026-09-04; `git status --short` was empty at that commit.",
+  "what_is_not_pinned_here": "The dataset release (RVtech/Audio2Tool on HuggingFace) and its tools_registry.csv are pinned by the umbrella docs/datasets.lock.json under the audio2tool carrier key, not by this receipt. The clone's own DEFAULT_TOOLS_CSV name (audio_benchmark/taxonomy_tools_5.backtracked.csv) is absent from the published repository; the runnable path is the config's tools_file, which the example config points at the release's tools_registry.csv -- the same 152-row file this study already carries."
+}

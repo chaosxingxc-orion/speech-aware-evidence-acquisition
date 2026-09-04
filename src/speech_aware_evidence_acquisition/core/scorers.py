@@ -846,3 +846,22 @@ SCORERS.register("asr-wer-whisper", score_asr_outputs_whisper)
 from ..reproduction.a2t_scorer import score_audio2tool_outputs_v2  # noqa: E402
 
 SCORERS.register("a2t-toolcall-v2", score_audio2tool_outputs_v2)
+
+
+# ---------------------------------------------------------------------------
+# Audio2Tool tool-call scorer, OFFICIAL (2026-09-04): the pinned Audio2Tool
+# release's own metric code (github.com/audio2tool/Audio2Tool, MIT, commit
+# b9d5383ca30945fbafb965a04bea40117e1e8a82) applied to this repository's
+# sealed outputs -- the paper-facing scorer the owner's standard-scoring rule
+# requires for this carrier, now that the benchmark's evaluation code is
+# published. ``a2t-toolcall`` (v1) and ``a2t-toolcall-v2`` above are
+# UNCHANGED and stay registered; the official number is reported beside them,
+# never as a silent replacement. Same registration pattern and the same
+# uniform ``scorer(outputs_path, lock, root)`` signature; gold enters
+# scorer-side only, via ``data.audio2tool.load_official_gold`` (the release's
+# own QuerySample shape) -- never through ``data.references``.
+# ---------------------------------------------------------------------------
+
+from ..reproduction.a2t_scorer import score_audio2tool_outputs_official  # noqa: E402
+
+SCORERS.register("a2t-toolcall-official", score_audio2tool_outputs_official)
