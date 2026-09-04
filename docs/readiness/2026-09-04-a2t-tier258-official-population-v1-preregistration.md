@@ -371,3 +371,32 @@ response, while the two tier-2 rows and the tier-5 row named one each. That is e
 the tier-1 verdict identified as the source of the official/`v2` divergence on tiers 3 and 8 — the
 official scorer reads only the first parsed call — so section 7's "tier 8 under both rules" slice is
 not hypothetical.
+
+Commit `b52c22b0`.
+
+### 2026-09-04, Phase 4 — the flight
+
+Row `SAEA-A2T-TIER258-OFFICIAL-POPULATION-V1`, attempt
+`attempt-20260904T193726Z-t258officialpop1500`, study commit `b52c22b0`, manifest SHA-256
+`7de7429110e978784fc8303e632c54360d9cdbb70aa61e9d084b957f68db847f`, protocol hash `4c7db9dc…`. One
+attempt, COMPLETED and FINALIZED, zero aborted, zero orphans, no recovery re-registration used,
+`study_repo_dirt` empty. Spend was exactly **1,500 of 1,560 registered calls** (1,508 planned) and
+**9,784.337875 of 9,900 registered speech-audio seconds**. GPU `enforced.power.limit` held 100.00 W
+before and after.
+
+**Tier 8 is ALIGNED; tiers 2 and 5 FAIL.** Official tool accuracy at n = 500 per tier: tier 2 79.60
+[76.48, 82.40] against 84.6; tier 5 80.80 [77.74, 83.53] against 90.6; tier 8 **46.80** [43.16,
+50.48] against 41.7. Neither failing tier is CONSISTENT-WITHIN-NOISE — the paper value is outside
+both CI90s, which is what n = 500 was bought for.
+
+Verdict: `docs/readiness/2026-09-04-a2t-tier258-official-population-v1-verdict.md`; numbers in
+`result-summary.json` (SHA-256
+`42a88f0d2ae81a168115c729725b99be8749559cf28047fe3b8e76bf4065956f`).
+
+The substance is in the verdict; in one line each: both failures are a `smart_home` effect
+(equal-domain weighting gives tier 2 85.44 against 84.6 and tier 5 89.75 against 90.6), tier 2 is the
+one tier below a degraded model's published floor (−1.00 pp against Qwen-2.5-Omni-7B, whose 80.6 is
+inside our CI90), our exact match beats the published exact match on tiers 2 and 8 by 15.6 and 10.0
+points, the official and v2 scorers agree to 0.00 pp on both single-call tiers and diverge by 31
+points on tier 8 (496 of 500 gold rows carry additional calls, 215 of 500 responses name more than
+one), and 460 of 464 misses name another real tool of the 152-row registry.
