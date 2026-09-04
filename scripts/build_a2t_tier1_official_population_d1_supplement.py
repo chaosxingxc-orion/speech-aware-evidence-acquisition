@@ -17,9 +17,20 @@ header is read for duration and sample rate. No task text, label,
 transcript, annotation, model output, score, test datum or future turn is
 opened. No model, network, tokenizer or scorer contact.
 
+Roster-parameterised, so the 2026-09-04 tiers-2/5/8 official-population
+flight reuses this builder rather than adding a near-duplicate script: only
+``--roster`` and ``--output`` change. Nothing here is tier-specific -- the
+defaults below name the tier-1 roster because that is the flight this script
+was written for.
+
 Usage::
 
     python scripts/build_a2t_tier1_official_population_d1_supplement.py --write
+
+    python scripts/build_a2t_tier1_official_population_d1_supplement.py --write \\
+        --roster docs/checks/speech-aware-evidence-acquisition/\\
+2026-09-04-a2t-tier258-official-population-roster/flight-roster-receipt.json \\
+        --output docs/receipts/artifacts/d1-a2t-tier258-official-population-1500.json
 """
 
 from __future__ import annotations

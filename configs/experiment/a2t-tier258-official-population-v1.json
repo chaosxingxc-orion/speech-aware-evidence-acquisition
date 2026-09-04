@@ -1,0 +1,154 @@
+{
+  "experiment_id": "SAEA-A2T-TIER258-OFFICIAL-POPULATION-V1",
+  "schema": "saea-a2t-direct-calibration-experiment-v1",
+  "date": "2026-09-04",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "Buy resolution on the three tiers the frozen 400 left unresolved. On n = 50 per tier the official scorer gave tier 2 74.0 against a published 84.6, tier 5 78.0 against 90.6 and tier 8 34.0 against 41.7 -- all 'not aligned', all inside a CI90 of about +/-11 pp that cannot separate a 3-point rule. This run repeats the tier-1 official-population recipe unchanged on exactly those tiers: 500 queries per tier from each tier's own released population (the paper code's first-successful-speaker rule), one roster, one split identity hash, one cell, tier as the stratum. The protocol is untouched -- the request is byte-identical to R-official-raw and T1-official-pop-500. Preregistration: docs/readiness/2026-09-04-a2t-tier258-official-population-v1-preregistration.md.",
+  "predecessor": {
+    "run_id": "SAEA-A2T-TIER1-OFFICIAL-POPULATION-V1",
+    "cell": "T1-official-pop-500",
+    "attempt_id": "attempt-20260904T172609Z-t1officialpop500",
+    "manifest_sha256": "17acd0f4c1de9b5f4c658390fb67e8a6065f1628ff09b19bcd77afa47e7f99cf",
+    "verdict": "docs/readiness/2026-09-04-a2t-tier1-official-population-v1-verdict.md"
+  },
+  "paper_row": {
+    "source": "arXiv:2604.22821 Table 3, Qwen-3-Omni-30B",
+    "tier2_parametric": {
+      "tool_accuracy": 84.6,
+      "exact_match": 15.6,
+      "slot_f1": 21.7
+    },
+    "tier5_needle": {
+      "tool_accuracy": 90.6,
+      "exact_match": 36.0,
+      "slot_f1": 41.6
+    },
+    "tier8_intent_blending": {
+      "tool_accuracy": 41.7,
+      "exact_match": 12.4,
+      "slot_f1": 19.9
+    }
+  },
+  "published_floors": {
+    "source": "arXiv:2604.22821 Table 3, tool accuracy",
+    "qwen2_5_omni_7b": {
+      "tier2_parametric": 80.6,
+      "tier5_needle": 74.1,
+      "tier8_intent_blending": 36.5
+    },
+    "weakest_published_speechlm": {
+      "tier2_parametric": 75.3,
+      "tier5_needle": 58.9,
+      "tier8_intent_blending": 30.4,
+      "note": "Audio-Flamingo-8B on tier 2; the weakest published SpeechLM row on each tier"
+    }
+  },
+  "populations": {
+    "A2T-TIER258-OFFICIAL-POP-1500": {
+      "dataset_fragment": "audio2tool-tier258-official-population-1500",
+      "carrier": "audio2tool",
+      "split_role": "discovery",
+      "count": 1500,
+      "strata": "tier: tier2_parametric 500, tier5_needle 500, tier8_intent_blending 500",
+      "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-tier258-official-population-roster/flight-roster-receipt.json",
+      "receipt_sha256": "9e17b44e0a6889f0dc710a2ec6293fc5c9ae0f5d38f6f10ca01f1c32e528a83a",
+      "split_identity_hash": "9bd2e1c94a0f3edcf0ddde9d49ac3d9d6fd0e7a3bd205fbcb67dc1b0f8810898",
+      "flight_split_identity_hash": "adb1cee2081192760a37bf9f2447f7bc5da7135bf3a397ddad3828a79f578882",
+      "audio_seconds_one_pass": 9784.337875,
+      "audio_seconds_longest_item": 32.43375,
+      "selection": "each tier's released population (the first recording the released loader resolves in every query_* directory), sampled uniformly without replacement, seed 20260803, via random.Random(seed).sample over that tier's population in ascending manifest-id order. max_samples was NOT used: the release orders every subset smart_home -> wearables -> smart_car, so the first 500 sorted directories would be a near-pure smart_home sample on tiers 2 and 5.",
+      "estimand": "per-tier tool accuracy on each tier's own released population, estimated from a uniform 500-query sample per tier"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "T258-official-pop-1500",
+      "dataset_fragment": "audio2tool-tier258-official-population-1500",
+      "factor": "population and n: each tier's own released population at n = 500 instead of 50 stratified mixed-speaker rows",
+      "factor_a_output_contract": "unchanged from R-official-raw and T1-official-pop-500: the published system message (the adapter's hard-coded default prompt, the fixed '## Available Tools:' header, and format_tools_compact over the whole 152-row registry)",
+      "factor_d_audio_path": "raw audio, bf16 mmproj loaded",
+      "user_turn": "audio first, then the fixed sentence 'Convert this voice command to a tool call.'",
+      "arm": "bare-core",
+      "baseline_fragment": "a2t-direct-official-protocol",
+      "model_fragment": "q4km-featcache-a2t-official-04ccc72a",
+      "serving_geometry": "-c 49152 -np 3, 16,384 tokens per slot -- the same geometry R-official-raw and W-official-raw-yaml flew. The longest wav of this roster is 32.43375 s (tier5_needle:003555), so the worst request needs 3,581 + 429 + 256 + 2 = 4,268 tokens and nothing forces the tier-1 cell's -np 2."
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 256,
+    "id_slot": "per-sample",
+    "contacts_per_item": 1,
+    "evidence": "none",
+    "obs": "none",
+    "harness": "core.flight.FlightRuntime with the shared rails zero-supply direct arm and the OpenJiuwen executor, entered through scripts/flights/run_calibration_cell.py -- the same harness and the same entry point every calibration, replication and official-population cell flew",
+    "official_code_pin": "b9d5383ca30945fbafb965a04bea40117e1e8a82; docs/receipts/environments/audio2tool-official-code.json",
+    "per_cell_dataset_fragment": "this run's single cell is launched with --dataset audio2tool-tier258-official-population-1500; the runner composes model + dataset + baseline + experiment exactly as every earlier Audio2Tool direct cell did"
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "discovery",
+    "planned_model_calls": 1508,
+    "planned_gpu_hours": 1.0,
+    "planned_speech_audio_seconds": 9785
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "1,500 rows x 1 contact + 8 canaries = 1,508; the registered exposure ceiling is 1,560",
+    "planned_speech_audio_seconds": "9,784.337875 s for one pass, rounded up to the integer contracts.ExecutionPlan requires (9,785); the registered exposure ceiling is 9,900",
+    "planned_gpu_hours": "1.0; T1-official-pop-500 flew 500 raw rows in 282 s of generation at -np 2, and this cell is 1,500 rows at -np 3 with a longest wav of 32.4 s. The registered ceiling is 1.5",
+    "paid_api_spend": 0,
+    "ceilings_live_in_the_exposure_row": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are the exposure-ledger row's calls / speech audio seconds / gpu hours cells, which the gate requires to be at least these planned values"
+  },
+  "evaluation": {
+    "official_scorers": [
+      "a2t-toolcall-official",
+      "a2t-toolcall-v2",
+      "a2t-toolcall",
+      "cost"
+    ],
+    "paper_facing_scorer": "a2t-toolcall-official",
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "outer_parallel_workers": 4,
+    "metrics": [
+      "official tool accuracy (primary gold tool), per tier, with a Wilson CI90 at n = 500",
+      "official exact match",
+      "official parameter precision/recall/F1, macro over samples as the published code computes it",
+      "parameter F1 micro-pooled, reported beside the macro figure",
+      "parse rate",
+      "a2t-toolcall-v2 ordered tool accuracy, exact match and slot F1 under the extended parse",
+      "prompt_tokens",
+      "latency"
+    ],
+    "mandatory_slices": [
+      "per tier: tool accuracy, exact match and parameter F1 with a Wilson CI90 at n = 500, against the paper's row and against the Qwen-2.5-Omni-7B and weakest-published-SpeechLM floors",
+      "per tier by domain (smart_home / wearables / smart_car), natural mixture and equal-domain",
+      "tier 8 under BOTH the official first-call rule and a2t-toolcall-v2's ordered rule, with the count of rows whose response named more than one call",
+      "each tier against the frozen 400's own 50 rows of that tier, so the population effect is a difference rather than a replacement",
+      "official scorer versus the extended a2t-toolcall-v2 on the same outputs, per tier, with the rule behind any gap larger than 3 points named",
+      "parse rate and the count of rows whose response named more than one call"
+    ],
+    "confidence_interval": "CI90",
+    "renderer": "analysis.paired.render_markdown"
+  },
+  "decision": {
+    "owner_alignment_standard": "2026-09-04 owner directive, restated 2026-09-04 for this flight: aligned means within 3 points of the official number, and being better than the official number by more than 3 points is also acceptable. The number is a2t-toolcall-official's tool accuracy.",
+    "per_tier_rule": {
+      "aligned": "ALIGNED: official tool accuracy >= paper - 3.0 (tier 2 >= 81.6, tier 5 >= 87.6, tier 8 >= 38.7), or better than the paper.",
+      "consistent_within_noise": "CONSISTENT-WITHIN-NOISE: not ALIGNED, but the paper value lies inside the Wilson score CI90 for a binomial proportion at n = 500.",
+      "fail": "FAIL: neither."
+    },
+    "floor_rule": "Reported for every tier whatever the outcome: our number against Qwen-2.5-Omni-7B (tier 2 80.6, tier 5 74.1, tier 8 36.5) and against the weakest published SpeechLM row (tier 2 75.3 Audio-Flamingo-8B, tier 5 58.9, tier 8 30.4). A tier below a degraded model's published number is called out explicitly.",
+    "power_note": "n = 500 per tier gives a binomial standard error of 1.6 pp at p = 0.85, 1.3 pp at p = 0.91 and 2.2 pp at p = 0.42, so the 3 pp band is wider than the noise on all three tiers and ALIGNED is a meaningful outcome rather than an artefact of a small sample. The frozen 400's n = 50 gave 5-7 pp, which is why those three tiers could not be decided there.",
+    "claim_surface": "Nothing here is a superiority, generality or Stage-3 claim; the population is discovery data; no knob is tuned on it.",
+    "not_authorized": "No test contact, no mechanism arm, no Q8_0 flight (that is its own preregistered probe), no training-free policy fit, no edit to the locked SLURP cell, and no extension of tiers 1, 3, 4, 6 or 7.",
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "why_one_run_id": "All three tiers fly in ONE roster, ONE split identity hash and ONE run id because they are one population draw with tier as the stratum. contracts.gate_exposure requires exactly one pre-registered exposure row per run id whose split identity hash equals the plan's; a single roster satisfies that, which is why the tier-1 flight's two-run-id split (two different populations) does not recur here."
+}

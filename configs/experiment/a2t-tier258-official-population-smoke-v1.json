@@ -1,0 +1,66 @@
+{
+  "experiment_id": "SAEA-A2T-TIER258-OFFICIAL-POPULATION-SMOKE-V1",
+  "schema": "saea-a2t-direct-calibration-smoke-experiment-v1",
+  "date": "2026-09-04",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Four rows of T258-official-pop-1500, end to end, before the registered 1,508-call flight: prove the -np 3 serving geometry on this roster, the released system message, the user-turn text part after the audio, sealing and the four registered Audio2Tool scorers on real sealed rows -- including the first tier-8 mixed.wav and the first tier-5 needle wav this roster has ever put on the wire under the official protocol. No smoke number is a task measurement.",
+  "smoke_populations": {
+    "T258-official-pop-1500": {
+      "dataset_fragment": "audio2tool-tier258-official-population-1500",
+      "carrier": "audio2tool",
+      "parent_split_name": "A2T-TIER258-OFFICIAL-POP-1500",
+      "split_role": "discovery",
+      "count": 4,
+      "sample_ids": [
+        "tier2_parametric:000005",
+        "tier2_parametric:004985",
+        "tier5_needle:003555",
+        "tier8_intent_blending:000209"
+      ],
+      "selection": "deterministic and stated before the rows were read off the roster: the roster's lexicographically first sample, plus the LONGEST sample of each of the three tiers. That covers all three strata and the worst request in the flight (tier5_needle:003555, 32.43375 s).",
+      "audio_seconds_one_pass": 61.3245,
+      "split_identity_hash": "1cbe62d8c674425dcd401e6f82df82abe18dbe17bdc0d26ec93e734ed8c73726",
+      "parent_split_identity_hash": "adb1cee2081192760a37bf9f2447f7bc5da7135bf3a397ddad3828a79f578882"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "T258-official-pop-1500",
+      "arm": "bare-core",
+      "baseline_fragment": "a2t-direct-official-protocol",
+      "model_fragment": "q4km-featcache-a2t-official-04ccc72a"
+    }
+  ],
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 12,
+    "planned_gpu_hours": 0.2,
+    "planned_speech_audio_seconds": 200
+  },
+  "execution_plan_basis": {
+    "calls": "4 rows x 1 contact = 4 for a clean pass. The plan registers 12 because attempt budget is enforced RUN-CUMULATIVELY: core.model.adapter.FrozenCoreAdapter re-reads every prior attempt's durable actuals for this run id on every request. 12 covers a clean pass plus up to two recoveries; the exposure row's own ceiling is 20.",
+    "speech_audio_seconds": "61.3245 s per pass, 183.9735 s across three passes, rounded up to 200; the exposure row's ceiling is 250.",
+    "gpu_hours": "0.2, the registered ceiling",
+    "paid_api_spend": 0
+  },
+  "evaluation": {
+    "official_scorers": [
+      "a2t-toolcall-official",
+      "a2t-toolcall-v2",
+      "a2t-toolcall",
+      "cost"
+    ],
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "outer_parallel_workers": 4,
+    "what_is_read": "transport legality, the rendered prompt shape and its system-message hash (which must be the in-code-default variant, sha256 be7f31a2e8c7e6dd..., 16,143 chars), whether every stratum's audio encodes and returns at all, parse rate and throughput",
+    "what_is_not_read": "no smoke metric is a task measurement and none enters the verdict. The calibration's own smoke is the standing precedent: on four rows it saw zero native tool calls and concluded the model was declining the tools interface, which 400 rows corrected to 87 %."
+  },
+  "decision": {
+    "gate": "the cell must complete 4 of 4 contacts, seal a verifiable manifest and score without error before the registered 1,508-call flight is launched",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}
