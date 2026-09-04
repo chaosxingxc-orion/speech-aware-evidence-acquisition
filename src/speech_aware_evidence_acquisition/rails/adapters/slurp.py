@@ -22,11 +22,16 @@ Supersedes the former interface-complete stub now that ``data.slurp`` and
 ``NotImplementedError`` with a TODO; ``git log`` this file for that
 history) -- governed SLURP metadata landed 2026-08-17 (``data.slurp``
 module docstring has the full layout/split-discipline account).
+
+C2 consolidation ("one task base, thin adapters"): ``_audio_ref``,
+``assemble_prompt`` and ``extract_consumption`` used to be hand-written here;
+they are now the ``rails.task_adapter.TaskAdapter`` base's own defaults, and
+this adapter supplies only ``instruction``/``gold``/``score_response`` --
+the genuinely SLURP-specific pieces.
 """
 
 from __future__ import annotations
 
-import hashlib
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -34,9 +39,7 @@ from typing import Mapping, Sequence
 from ...data.lock import REPO_ROOT
 from ...data.slurp import SLURP_LOCK_KEY, load_slurp_ontology, load_slurp_split, render_slurp_ontology
 from ...reproduction.slurp_scoring import SlotEntity, parse_slu_response, score_slu
-from ..consumption import ConsumptionTrace, build_consumption_trace
 from ..obs import AudioRef, ObsPacket
-from ..supply import SupplyPacket
 from ..task_adapter import TaskAdapter
 
 _INSTRUCTION = (
@@ -59,8 +62,8 @@ class SlurpSample:
     off the sample entirely and re-derives it scorer-side) -- deliberately
     WITHOUT the raw sentence text (``data.slurp.SlurpRecord`` docstring).
     Carrying these fields here is loader-legal; the boundary this study's
-    own gold-leak test enforces is that ``SlurpAdapter.assemble_prompt``
-    below never renders them into prompt text."""
+    own gold-leak test enforces is that ``SlurpAdapter.instruction``/the
+    base ``assemble_prompt`` default never render them into prompt text."""
 
     sample_id: str
     audio_ref: AudioRef
@@ -76,6 +79,13 @@ class SlurpSample:
 class SlurpAdapter(TaskAdapter):
     """``TaskAdapter`` over the governed-metadata-scoped SLURP carrier
     (module docstring)."""
+
+    # Owner-documented serving geometry (rails.task_adapter.TaskAdapter.
+    # serving_geometry docstring): many slots, small per-slot budget --
+    # SLU responses are short fixed-shape JSON.
+    SERVING_SLOTS = 8
+    SERVING_SLOT_TOKENS = 8192
+    SERVING_MAX_TOKENS = 64
 
     def __init__(
         self, lock: Mapping[str, object], root: Path, *, repo_root: Path | None = None
@@ -104,7 +114,7 @@ class SlurpAdapter(TaskAdapter):
         samples = [
             SlurpSample(
                 sample_id=record.sample_id,
-                audio_ref=self._audio_ref(record.media_relpath),
+                audio_ref=self.audio_ref(record.media_relpath),
                 audio_seconds=record.audio_seconds,
                 utterance_id=record.utterance_id,
                 media_relpath=record.media_relpath,
@@ -116,11 +126,6 @@ class SlurpAdapter(TaskAdapter):
             for record in records
         ]
         return tuple(sorted(samples, key=lambda sample: sample.sample_id))
-
-    def _audio_ref(self, media_relpath: str) -> AudioRef:
-        media_path = self._root / media_relpath
-        digest = hashlib.sha256(media_path.read_bytes()).hexdigest()
-        return AudioRef(path=media_relpath, sha256=digest).validate()
 
     def build_task_contract(self, sample: SlurpSample, obs: ObsPacket) -> str:
         """Return the TRAIN-only ontology roster as stable task schema.
@@ -135,37 +140,31 @@ class SlurpAdapter(TaskAdapter):
         ontology = load_slurp_ontology(self._lock, self._root)
         return render_slurp_ontology(ontology)
 
-    def assemble_prompt(
-        self, sample: SlurpSample, supply: SupplyPacket | None
-    ) -> Sequence[Mapping[str, object]]:
-        """Fixed task instruction plus the sample's own audio -- gold-leak
-        boundary (module docstring): NOTHING from ``sample.scenario``/
-        ``action``/``intent``/``entities`` is ever read here; the only text
-        besides the fixed instruction is ``supply.prompt_block`` when a
-        caller's ``supply_builder`` chose to inject a roster."""
+    def instruction(self, sample: SlurpSample) -> str:
+        """Fixed task instruction -- gold-leak boundary (module docstring):
+        NOTHING from ``sample.scenario``/``action``/``intent``/``entities``
+        is ever read here; the same text for every sample."""
 
-        content: list[Mapping[str, object]] = []
-        if supply is not None:
-            content.append({"type": "text", "text": supply.prompt_block})
-        content.append({"type": "input_audio", "media_relpath": sample.media_relpath})
-        return (
-            {"role": "system", "content": _INSTRUCTION},
-            {"role": "user", "content": content},
-        )
+        return _INSTRUCTION
 
-    def score(self, sample: SlurpSample, response: str) -> Mapping[str, object]:
-        """Post-hoc only (module docstring): gold (``sample.scenario``/
-        ``action``/``entities``) is read HERE, never in
-        ``assemble_prompt``/``build_task_contract`` above. See
-        ``reproduction.slurp_scoring`` module docstring for the
+    def gold(self, sample: SlurpSample) -> SlurpSample:
+        """Gold IS the sample itself for SLURP: ``sample.scenario``/
+        ``action``/``entities`` already carry SLURP's own SLU gold layer
+        (class docstring) -- read HERE, never in ``assemble_prompt``/
+        ``build_task_contract`` above."""
+
+        return sample
+
+    def score_response(self, gold: SlurpSample, response: str) -> Mapping[str, object]:
+        """See ``reproduction.slurp_scoring`` module docstring for the
         ``slot_f1_exact`` vs official ``slu_f1`` distinction -- never
         mislabeled, per this mission's own instruction."""
 
         predicted_scenario, predicted_action, predicted_entities, parsed = parse_slu_response(response)
         result = score_slu(
-            gold_scenario=sample.scenario,
-            gold_action=sample.action,
-            gold_entities=sample.entities,
+            gold_scenario=gold.scenario,
+            gold_action=gold.action,
+            gold_entities=gold.entities,
             predicted_scenario=predicted_scenario,
             predicted_action=predicted_action,
             predicted_entities=tuple(predicted_entities),
@@ -173,11 +172,6 @@ class SlurpAdapter(TaskAdapter):
         metrics = dict(result.as_metrics_dict())
         metrics["parsed"] = parsed
         return metrics
-
-    def extract_consumption(
-        self, sample: SlurpSample, supply: SupplyPacket | None, response: str
-    ) -> ConsumptionTrace:
-        return build_consumption_trace(span_id="full", supply=supply, response_text=response)
 
 
 __all__ = ["SLURP_LOCK_KEY", "SlurpAdapter", "SlurpSample"]

@@ -6,7 +6,8 @@ than re-deriving it: ``data.audio2tool.load_audio2tool``/
 frozen tool-registry text, and ``reproduction.toolcall_scoring``/
 ``data.audio2tool.load_expected_calls`` for scorer-side gold -- the SAME
 scorer-side-only discipline ``reproduction.a2t_scorer`` already applies
-(gold never enters ``assemble_prompt``/``build_task_contract``, only ``score``).
+(gold never enters ``assemble_prompt``/``build_task_contract``, only through
+``gold``/``score_response``, both reached exclusively from ``score``).
 
 Carrier admission: the bounded discovery-probe carrier admitted by the
 2026-08-15 owner amendment (Amendment 1, umbrella
@@ -17,11 +18,15 @@ adapter is engineering scaffolding for that probe's rails, not the probe
 execution itself -- constructing it touches no model and no live umbrella
 lock; it only reads the same frozen probe-sample receipt(s)
 ``data.audio2tool`` already reads.
+
+C2 consolidation: ``audio_ref``/``assemble_prompt``/``extract_consumption``
+are now ``rails.task_adapter.TaskAdapter`` base defaults (see that module);
+this adapter supplies only the Audio2Tool-specific ``instruction``/``gold``/
+``score_response`` hooks.
 """
 
 from __future__ import annotations
 
-import hashlib
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -34,10 +39,8 @@ from ...data.audio2tool import (
     render_tool_schemas,
 )
 from ...data.lock import REPO_ROOT
-from ...reproduction.toolcall_scoring import parse_tool_calls_text, score_item
-from ..consumption import ConsumptionTrace, build_consumption_trace
+from ...reproduction.toolcall_scoring import ToolCall, parse_tool_calls_text, score_item
 from ..obs import AudioRef, ObsPacket
-from ..supply import SupplyPacket
 from ..task_adapter import TaskAdapter
 
 AUDIO2TOOL_OUTPUT_INSTRUCTION = (
@@ -77,8 +80,9 @@ class Audio2ToolSample:
     """One receipt-scoped Audio2Tool sample -- the ``TaskSample`` this
     adapter's methods carry throughout. ``sample_id``/``audio_ref``/
     ``audio_seconds`` satisfy ``rails.task_adapter.TaskSample``;
-    ``media_relpath`` is Audio2Tool-specific, needed by ``assemble_prompt``
-    to point the message at the actual wav."""
+    ``media_relpath`` is Audio2Tool-specific, needed by the base
+    ``TaskAdapter.assemble_prompt`` default to point the message at the
+    actual wav."""
 
     sample_id: str
     audio_ref: AudioRef
@@ -88,6 +92,14 @@ class Audio2ToolSample:
 
 class Audio2ToolAdapter(TaskAdapter):
     """``TaskAdapter`` over the frozen-receipt-scoped Audio2Tool carrier."""
+
+    # Owner-documented serving geometry (rails.task_adapter.TaskAdapter.
+    # serving_geometry docstring): fewer slots, wider per-slot budget --
+    # tool-call responses are short, but the tool registry + evidence
+    # context injected ahead of them can be large.
+    SERVING_SLOTS = 2
+    SERVING_SLOT_TOKENS = 32768
+    SERVING_MAX_TOKENS = 1024
 
     def __init__(
         self, lock: Mapping[str, object], root: Path, *, repo_root: Path | None = None
@@ -119,7 +131,7 @@ class Audio2ToolAdapter(TaskAdapter):
         samples = [
             Audio2ToolSample(
                 sample_id=ref.sample_id,
-                audio_ref=self._audio_ref(ref.media_relpath),
+                audio_ref=self.audio_ref(ref.media_relpath),
                 audio_seconds=ref.audio_seconds,
                 media_relpath=ref.media_relpath,
             )
@@ -127,11 +139,6 @@ class Audio2ToolAdapter(TaskAdapter):
             if ref.sample_id in wanted_ids
         ]
         return tuple(sorted(samples, key=lambda sample: sample.sample_id))
-
-    def _audio_ref(self, media_relpath: str) -> AudioRef:
-        media_path = self._root / media_relpath
-        digest = hashlib.sha256(media_path.read_bytes()).hexdigest()
-        return AudioRef(path=media_relpath, sha256=digest).validate()
 
     def build_task_contract(self, sample: Audio2ToolSample, obs: ObsPacket) -> str:
         """Return the full frozen tool registry as stable task schema.
@@ -144,24 +151,17 @@ class Audio2ToolAdapter(TaskAdapter):
 
         return render_tool_schemas(self._lock, self._root)
 
-    def assemble_prompt(
-        self, sample: Audio2ToolSample, supply: SupplyPacket | None
-    ) -> Sequence[Mapping[str, object]]:
-        instruction = render_audio2tool_instruction(
-            render_tool_schemas(self._lock, self._root)
-        )
-        content: list[Mapping[str, object]] = []
-        if supply is not None:
-            content.append({"type": "text", "text": supply.prompt_block})
-        content.append({"type": "input_audio", "media_relpath": sample.media_relpath})
-        return (
-            {"role": "system", "content": instruction},
-            {"role": "user", "content": content},
-        )
+    def instruction(self, sample: Audio2ToolSample) -> str:
+        """The direct-contract instruction: the frozen tool registry plus
+        the fixed output-format sentence (``render_audio2tool_instruction``)
+        -- the same text for every sample, so ``sample`` is unused."""
 
-    def score(self, sample: Audio2ToolSample, response: str) -> Mapping[str, object]:
-        """Post-hoc only (module docstring): gold is read HERE, never in
-        ``assemble_prompt``/``build_task_contract`` above."""
+        return render_audio2tool_instruction(render_tool_schemas(self._lock, self._root))
+
+    def gold(self, sample: Audio2ToolSample) -> tuple[ToolCall, ...]:
+        """Look up ``sample``'s frozen expected tool call(s) -- read HERE
+        (module docstring), never in ``assemble_prompt``/
+        ``build_task_contract`` above."""
 
         expected_by_id = load_expected_calls(self._lock, self._root, repo_root=self._repo_root)
         expected = expected_by_id.get(sample.sample_id)
@@ -169,8 +169,11 @@ class Audio2ToolAdapter(TaskAdapter):
             raise ValueError(
                 f"sample {sample.sample_id!r} is not in the frozen audio2tool probe receipt"
             )
+        return expected
+
+    def score_response(self, gold: tuple[ToolCall, ...], response: str) -> Mapping[str, object]:
         predicted, parsed = parse_tool_calls_text(response)
-        item = score_item(expected, predicted)
+        item = score_item(gold, predicted)
         return {
             "tool_accuracy": item.tool_accuracy,
             "exact_match": item.exact_match,
@@ -179,11 +182,6 @@ class Audio2ToolAdapter(TaskAdapter):
             "slot_f1": item.slot_f1,
             "parsed": parsed,
         }
-
-    def extract_consumption(
-        self, sample: Audio2ToolSample, supply: SupplyPacket | None, response: str
-    ) -> ConsumptionTrace:
-        return build_consumption_trace(span_id="full", supply=supply, response_text=response)
 
 
 __all__ = [
