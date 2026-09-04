@@ -1,0 +1,3984 @@
+{
+  "per_row_count": 1336,
+  "residuals": [],
+  "schema": "saea-a2t-scorer-v2-study-v1",
+  "sources": {
+    "a0": {
+      "arms": {
+        "zero_supply": {
+          "identity_check": {
+            "match": true,
+            "mismatches": [],
+            "overall": {
+              "exact_match": 0.2425,
+              "n": 400,
+              "tool_accuracy": 0.5425
+            },
+            "per_tier": {
+              "tier1_direct": {
+                "exact_match": 0.12,
+                "n": 50,
+                "tool_accuracy": 0.58
+              },
+              "tier2_parametric": {
+                "exact_match": 0.38,
+                "n": 50,
+                "tool_accuracy": 0.72
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.04,
+                "n": 50,
+                "tool_accuracy": 0.62
+              },
+              "tier4_implicit": {
+                "exact_match": 0.24,
+                "n": 50,
+                "tool_accuracy": 0.3
+              },
+              "tier5_needle": {
+                "exact_match": 0.3,
+                "n": 50,
+                "tool_accuracy": 0.54
+              },
+              "tier6_correction": {
+                "exact_match": 0.4,
+                "n": 50,
+                "tool_accuracy": 0.64
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.44,
+                "n": 50,
+                "tool_accuracy": 0.6
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.02,
+                "n": 50,
+                "tool_accuracy": 0.34
+              }
+            }
+          },
+          "n_rows": 400,
+          "rule_table": {
+            "V1": {
+              "overall": {
+                "exact_match": 0.2425,
+                "n": 400,
+                "tool_accuracy": 0.5425
+              },
+              "tier1_direct": {
+                "exact_match": 0.12,
+                "n": 50,
+                "tool_accuracy": 0.58
+              },
+              "tier2_parametric": {
+                "exact_match": 0.38,
+                "n": 50,
+                "tool_accuracy": 0.72
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.04,
+                "n": 50,
+                "tool_accuracy": 0.62
+              },
+              "tier4_implicit": {
+                "exact_match": 0.24,
+                "n": 50,
+                "tool_accuracy": 0.3
+              },
+              "tier5_needle": {
+                "exact_match": 0.3,
+                "n": 50,
+                "tool_accuracy": 0.54
+              },
+              "tier6_correction": {
+                "exact_match": 0.4,
+                "n": 50,
+                "tool_accuracy": 0.64
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.44,
+                "n": 50,
+                "tool_accuracy": 0.6
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.02,
+                "n": 50,
+                "tool_accuracy": 0.34
+              }
+            },
+            "V2a": {
+              "overall": {
+                "exact_match": 0.2425,
+                "n": 400,
+                "tool_accuracy": 0.53
+              },
+              "tier1_direct": {
+                "exact_match": 0.12,
+                "n": 50,
+                "tool_accuracy": 0.58
+              },
+              "tier2_parametric": {
+                "exact_match": 0.38,
+                "n": 50,
+                "tool_accuracy": 0.72
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.04,
+                "n": 50,
+                "tool_accuracy": 0.58
+              },
+              "tier4_implicit": {
+                "exact_match": 0.24,
+                "n": 50,
+                "tool_accuracy": 0.3
+              },
+              "tier5_needle": {
+                "exact_match": 0.3,
+                "n": 50,
+                "tool_accuracy": 0.54
+              },
+              "tier6_correction": {
+                "exact_match": 0.4,
+                "n": 50,
+                "tool_accuracy": 0.64
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.44,
+                "n": 50,
+                "tool_accuracy": 0.6
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.02,
+                "n": 50,
+                "tool_accuracy": 0.28
+              }
+            },
+            "V2b": {
+              "overall": {
+                "exact_match": 0.3075,
+                "n": 400,
+                "tool_accuracy": 0.5425
+              },
+              "tier1_direct": {
+                "exact_match": 0.4,
+                "n": 50,
+                "tool_accuracy": 0.58
+              },
+              "tier2_parametric": {
+                "exact_match": 0.4,
+                "n": 50,
+                "tool_accuracy": 0.72
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.14,
+                "n": 50,
+                "tool_accuracy": 0.62
+              },
+              "tier4_implicit": {
+                "exact_match": 0.24,
+                "n": 50,
+                "tool_accuracy": 0.3
+              },
+              "tier5_needle": {
+                "exact_match": 0.38,
+                "n": 50,
+                "tool_accuracy": 0.54
+              },
+              "tier6_correction": {
+                "exact_match": 0.4,
+                "n": 50,
+                "tool_accuracy": 0.64
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.44,
+                "n": 50,
+                "tool_accuracy": 0.6
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.06,
+                "n": 50,
+                "tool_accuracy": 0.34
+              }
+            },
+            "V2c": {
+              "overall": {
+                "exact_match": 0.4075,
+                "n": 400,
+                "tool_accuracy": 0.5425
+              },
+              "tier1_direct": {
+                "exact_match": 0.58,
+                "n": 50,
+                "tool_accuracy": 0.58
+              },
+              "tier2_parametric": {
+                "exact_match": 0.4,
+                "n": 50,
+                "tool_accuracy": 0.72
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.56,
+                "n": 50,
+                "tool_accuracy": 0.62
+              },
+              "tier4_implicit": {
+                "exact_match": 0.24,
+                "n": 50,
+                "tool_accuracy": 0.3
+              },
+              "tier5_needle": {
+                "exact_match": 0.38,
+                "n": 50,
+                "tool_accuracy": 0.54
+              },
+              "tier6_correction": {
+                "exact_match": 0.4,
+                "n": 50,
+                "tool_accuracy": 0.64
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.44,
+                "n": 50,
+                "tool_accuracy": 0.6
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.26,
+                "n": 50,
+                "tool_accuracy": 0.34
+              }
+            },
+            "V2d": {
+              "overall": {
+                "exact_match": 0.3125,
+                "n": 400,
+                "tool_accuracy": 0.5425
+              },
+              "tier1_direct": {
+                "exact_match": 0.4,
+                "n": 50,
+                "tool_accuracy": 0.58
+              },
+              "tier2_parametric": {
+                "exact_match": 0.44,
+                "n": 50,
+                "tool_accuracy": 0.72
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.14,
+                "n": 50,
+                "tool_accuracy": 0.62
+              },
+              "tier4_implicit": {
+                "exact_match": 0.24,
+                "n": 50,
+                "tool_accuracy": 0.3
+              },
+              "tier5_needle": {
+                "exact_match": 0.38,
+                "n": 50,
+                "tool_accuracy": 0.54
+              },
+              "tier6_correction": {
+                "exact_match": 0.4,
+                "n": 50,
+                "tool_accuracy": 0.64
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.44,
+                "n": 50,
+                "tool_accuracy": 0.6
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.06,
+                "n": 50,
+                "tool_accuracy": 0.34
+              }
+            },
+            "V2e": {
+              "overall": {
+                "exact_match": 0.3125,
+                "n": 400,
+                "tool_accuracy": 0.53
+              },
+              "tier1_direct": {
+                "exact_match": 0.4,
+                "n": 50,
+                "tool_accuracy": 0.58
+              },
+              "tier2_parametric": {
+                "exact_match": 0.44,
+                "n": 50,
+                "tool_accuracy": 0.72
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.14,
+                "n": 50,
+                "tool_accuracy": 0.58
+              },
+              "tier4_implicit": {
+                "exact_match": 0.24,
+                "n": 50,
+                "tool_accuracy": 0.3
+              },
+              "tier5_needle": {
+                "exact_match": 0.38,
+                "n": 50,
+                "tool_accuracy": 0.54
+              },
+              "tier6_correction": {
+                "exact_match": 0.4,
+                "n": 50,
+                "tool_accuracy": 0.64
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.44,
+                "n": 50,
+                "tool_accuracy": 0.6
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.06,
+                "n": 50,
+                "tool_accuracy": 0.28
+              }
+            }
+          },
+          "taxonomy": {
+            "tier1_direct": {
+              "EMPTY": 1,
+              "EXTRA_KEYS_DEFAULT_ONLY": 14,
+              "EXTRA_KEYS_NONDEFAULT": 9,
+              "TOOL_SET_WRONG": 20
+            },
+            "tier2_parametric": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 1,
+              "MISSING_KEYS_ONLY": 1,
+              "MIXED": 2,
+              "TOOL_SET_WRONG": 14,
+              "VALUE_WRONG": 13
+            },
+            "tier3_multi_intent": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 5,
+              "EXTRA_KEYS_NONDEFAULT": 21,
+              "MIXED": 2,
+              "PARSE_FAIL": 2,
+              "TOOL_ORDER_ONLY": 1,
+              "TOOL_SET_WRONG": 17
+            },
+            "tier4_implicit": {
+              "EMPTY": 10,
+              "MIXED": 1,
+              "PARSE_FAIL": 1,
+              "TOOL_SET_WRONG": 24,
+              "VALUE_WRONG": 2
+            },
+            "tier5_needle": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 4,
+              "MIXED": 2,
+              "PARSE_FAIL": 16,
+              "TOOL_SET_WRONG": 7,
+              "VALUE_WRONG": 6
+            },
+            "tier6_correction": {
+              "EMPTY": 2,
+              "MIXED": 2,
+              "PARSE_FAIL": 2,
+              "TOOL_SET_WRONG": 14,
+              "VALUE_WRONG": 10
+            },
+            "tier7_multiturn": {
+              "EMPTY": 4,
+              "MISSING_KEYS_ONLY": 1,
+              "MIXED": 1,
+              "TOOL_SET_WRONG": 16,
+              "VALUE_WRONG": 6
+            },
+            "tier8_intent_blending": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 2,
+              "EXTRA_KEYS_NONDEFAULT": 9,
+              "MIXED": 2,
+              "PARSE_FAIL": 3,
+              "TOOL_ORDER_ONLY": 2,
+              "TOOL_SET_WRONG": 30,
+              "VALUE_WRONG": 1
+            }
+          }
+        }
+      },
+      "baseline_arm": null,
+      "paired_vs_baseline": {}
+    },
+    "selectfill104": {
+      "arms": {
+        "DIRECT_M0": {
+          "identity_check": {
+            "match": true,
+            "mismatches": [],
+            "overall": {
+              "exact_match": 0.17307692307692307,
+              "n": 104,
+              "tool_accuracy": 0.40384615384615385
+            },
+            "per_tier": {
+              "tier1_direct": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier5_needle": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier6_correction": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            }
+          },
+          "n_rows": 104,
+          "rule_table": {
+            "V1": {
+              "overall": {
+                "exact_match": 0.17307692307692307,
+                "n": 104,
+                "tool_accuracy": 0.40384615384615385
+              },
+              "tier1_direct": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier5_needle": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier6_correction": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            },
+            "V2a": {
+              "overall": {
+                "exact_match": 0.17307692307692307,
+                "n": 104,
+                "tool_accuracy": 0.3942307692307692
+              },
+              "tier1_direct": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier5_needle": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier6_correction": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            },
+            "V2b": {
+              "overall": {
+                "exact_match": 0.2403846153846154,
+                "n": 104,
+                "tool_accuracy": 0.40384615384615385
+              },
+              "tier1_direct": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier5_needle": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier6_correction": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            },
+            "V2c": {
+              "overall": {
+                "exact_match": 0.27884615384615385,
+                "n": 104,
+                "tool_accuracy": 0.40384615384615385
+              },
+              "tier1_direct": {
+                "exact_match": 0.5384615384615384,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier5_needle": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier6_correction": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            },
+            "V2d": {
+              "overall": {
+                "exact_match": 0.2403846153846154,
+                "n": 104,
+                "tool_accuracy": 0.40384615384615385
+              },
+              "tier1_direct": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier5_needle": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier6_correction": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            },
+            "V2e": {
+              "overall": {
+                "exact_match": 0.2403846153846154,
+                "n": 104,
+                "tool_accuracy": 0.3942307692307692
+              },
+              "tier1_direct": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier5_needle": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier6_correction": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            }
+          },
+          "taxonomy": {
+            "tier1_direct": {
+              "EMPTY": 1,
+              "EXTRA_KEYS_DEFAULT_ONLY": 4,
+              "EXTRA_KEYS_NONDEFAULT": 1,
+              "TOOL_SET_WRONG": 5
+            },
+            "tier2_parametric": {
+              "MISSING_KEYS_ONLY": 1,
+              "PARSE_FAIL": 2,
+              "TOOL_SET_WRONG": 3,
+              "VALUE_WRONG": 3
+            },
+            "tier3_multi_intent": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 1,
+              "EXTRA_KEYS_NONDEFAULT": 1,
+              "MIXED": 1,
+              "PARSE_FAIL": 1,
+              "TOOL_ORDER_ONLY": 1,
+              "TOOL_SET_WRONG": 8
+            },
+            "tier4_implicit": {
+              "EMPTY": 4,
+              "PARSE_FAIL": 1,
+              "TOOL_SET_WRONG": 7,
+              "VALUE_WRONG": 1
+            },
+            "tier5_needle": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 1,
+              "PARSE_FAIL": 4,
+              "TOOL_SET_WRONG": 2,
+              "VALUE_WRONG": 1
+            },
+            "tier6_correction": {
+              "EMPTY": 1,
+              "PARSE_FAIL": 1,
+              "TOOL_SET_WRONG": 6,
+              "VALUE_WRONG": 2
+            },
+            "tier7_multiturn": {
+              "EMPTY": 4,
+              "MISSING_KEYS_ONLY": 1,
+              "PARSE_FAIL": 1,
+              "VALUE_WRONG": 3
+            },
+            "tier8_intent_blending": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 1,
+              "EXTRA_KEYS_NONDEFAULT": 1,
+              "PARSE_FAIL": 5,
+              "TOOL_SET_WRONG": 6
+            }
+          }
+        },
+        "JOINT_DRAFT_REVISE": {
+          "identity_check": {
+            "match": true,
+            "mismatches": [],
+            "overall": {
+              "exact_match": 0.25,
+              "n": 104,
+              "tool_accuracy": 0.6346153846153846
+            },
+            "per_tier": {
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier4_implicit": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            }
+          },
+          "n_rows": 104,
+          "rule_table": {
+            "V1": {
+              "overall": {
+                "exact_match": 0.25,
+                "n": 104,
+                "tool_accuracy": 0.6346153846153846
+              },
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier4_implicit": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            },
+            "V2a": {
+              "overall": {
+                "exact_match": 0.25,
+                "n": 104,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier4_implicit": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              }
+            },
+            "V2b": {
+              "overall": {
+                "exact_match": 0.3269230769230769,
+                "n": 104,
+                "tool_accuracy": 0.6346153846153846
+              },
+              "tier1_direct": {
+                "exact_match": 0.5384615384615384,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier4_implicit": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            },
+            "V2c": {
+              "overall": {
+                "exact_match": 0.4230769230769231,
+                "n": 104,
+                "tool_accuracy": 0.6346153846153846
+              },
+              "tier1_direct": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier4_implicit": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier5_needle": {
+                "exact_match": 0.7692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            },
+            "V2d": {
+              "overall": {
+                "exact_match": 0.3269230769230769,
+                "n": 104,
+                "tool_accuracy": 0.6346153846153846
+              },
+              "tier1_direct": {
+                "exact_match": 0.5384615384615384,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier4_implicit": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            },
+            "V2e": {
+              "overall": {
+                "exact_match": 0.3269230769230769,
+                "n": 104,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier1_direct": {
+                "exact_match": 0.5384615384615384,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier4_implicit": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              }
+            }
+          },
+          "taxonomy": {
+            "tier1_direct": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 6,
+              "EXTRA_KEYS_NONDEFAULT": 2,
+              "TOOL_SET_WRONG": 4
+            },
+            "tier2_parametric": {
+              "MISSING_KEYS_ONLY": 2,
+              "TOOL_SET_WRONG": 2,
+              "VALUE_WRONG": 5
+            },
+            "tier3_multi_intent": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 1,
+              "EXTRA_KEYS_NONDEFAULT": 4,
+              "MIXED": 3,
+              "TOOL_ORDER_ONLY": 1,
+              "TOOL_SET_WRONG": 4
+            },
+            "tier4_implicit": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 1,
+              "TOOL_SET_WRONG": 8,
+              "VALUE_WRONG": 2
+            },
+            "tier5_needle": {
+              "EXTRA_KEYS_NONDEFAULT": 1,
+              "MISSING_KEYS_ONLY": 1,
+              "TOOL_SET_WRONG": 2
+            },
+            "tier6_correction": {
+              "MISSING_KEYS_ONLY": 2,
+              "TOOL_SET_WRONG": 2,
+              "VALUE_WRONG": 3
+            },
+            "tier7_multiturn": {
+              "MISSING_KEYS_ONLY": 1,
+              "TOOL_SET_WRONG": 5,
+              "VALUE_WRONG": 3
+            },
+            "tier8_intent_blending": {
+              "EXTRA_KEYS_NONDEFAULT": 1,
+              "TOOL_ORDER_ONLY": 1,
+              "TOOL_SET_WRONG": 11
+            }
+          }
+        },
+        "JOINT_ONE_CALL": {
+          "identity_check": {
+            "match": true,
+            "mismatches": [],
+            "overall": {
+              "exact_match": 0.2403846153846154,
+              "n": 104,
+              "tool_accuracy": 0.625
+            },
+            "per_tier": {
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier4_implicit": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            }
+          },
+          "n_rows": 104,
+          "rule_table": {
+            "V1": {
+              "overall": {
+                "exact_match": 0.2403846153846154,
+                "n": 104,
+                "tool_accuracy": 0.625
+              },
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier4_implicit": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            },
+            "V2a": {
+              "overall": {
+                "exact_match": 0.2403846153846154,
+                "n": 104,
+                "tool_accuracy": 0.6057692307692307
+              },
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier4_implicit": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              }
+            },
+            "V2b": {
+              "overall": {
+                "exact_match": 0.3173076923076923,
+                "n": 104,
+                "tool_accuracy": 0.625
+              },
+              "tier1_direct": {
+                "exact_match": 0.5384615384615384,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier4_implicit": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            },
+            "V2c": {
+              "overall": {
+                "exact_match": 0.41346153846153844,
+                "n": 104,
+                "tool_accuracy": 0.625
+              },
+              "tier1_direct": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier4_implicit": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier5_needle": {
+                "exact_match": 0.7692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            },
+            "V2d": {
+              "overall": {
+                "exact_match": 0.3173076923076923,
+                "n": 104,
+                "tool_accuracy": 0.625
+              },
+              "tier1_direct": {
+                "exact_match": 0.5384615384615384,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier4_implicit": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            },
+            "V2e": {
+              "overall": {
+                "exact_match": 0.3173076923076923,
+                "n": 104,
+                "tool_accuracy": 0.6057692307692307
+              },
+              "tier1_direct": {
+                "exact_match": 0.5384615384615384,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier4_implicit": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              }
+            }
+          },
+          "taxonomy": {
+            "tier1_direct": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 6,
+              "EXTRA_KEYS_NONDEFAULT": 2,
+              "TOOL_SET_WRONG": 4
+            },
+            "tier2_parametric": {
+              "MISSING_KEYS_ONLY": 2,
+              "TOOL_SET_WRONG": 2,
+              "VALUE_WRONG": 5
+            },
+            "tier3_multi_intent": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 1,
+              "EXTRA_KEYS_NONDEFAULT": 4,
+              "MIXED": 3,
+              "TOOL_ORDER_ONLY": 1,
+              "TOOL_SET_WRONG": 4
+            },
+            "tier4_implicit": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 1,
+              "TOOL_SET_WRONG": 8,
+              "VALUE_WRONG": 2
+            },
+            "tier5_needle": {
+              "EXTRA_KEYS_NONDEFAULT": 1,
+              "MISSING_KEYS_ONLY": 1,
+              "TOOL_SET_WRONG": 2
+            },
+            "tier6_correction": {
+              "MISSING_KEYS_ONLY": 2,
+              "TOOL_SET_WRONG": 3,
+              "VALUE_WRONG": 3
+            },
+            "tier7_multiturn": {
+              "MISSING_KEYS_ONLY": 1,
+              "TOOL_SET_WRONG": 5,
+              "VALUE_WRONG": 3
+            },
+            "tier8_intent_blending": {
+              "EXTRA_KEYS_NONDEFAULT": 1,
+              "TOOL_ORDER_ONLY": 1,
+              "TOOL_SET_WRONG": 11
+            }
+          }
+        },
+        "SELECT_THEN_FILL": {
+          "identity_check": {
+            "match": true,
+            "mismatches": [],
+            "overall": {
+              "exact_match": 0.25,
+              "n": 104,
+              "tool_accuracy": 0.5961538461538461
+            },
+            "per_tier": {
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier4_implicit": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            }
+          },
+          "n_rows": 104,
+          "rule_table": {
+            "V1": {
+              "overall": {
+                "exact_match": 0.25,
+                "n": 104,
+                "tool_accuracy": 0.5961538461538461
+              },
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier4_implicit": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            },
+            "V2a": {
+              "overall": {
+                "exact_match": 0.25,
+                "n": 104,
+                "tool_accuracy": 0.5865384615384616
+              },
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier4_implicit": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            },
+            "V2b": {
+              "overall": {
+                "exact_match": 0.34615384615384615,
+                "n": 104,
+                "tool_accuracy": 0.5961538461538461
+              },
+              "tier1_direct": {
+                "exact_match": 0.6153846153846154,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier4_implicit": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              },
+              "tier5_needle": {
+                "exact_match": 0.7692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            },
+            "V2c": {
+              "overall": {
+                "exact_match": 0.41346153846153844,
+                "n": 104,
+                "tool_accuracy": 0.5961538461538461
+              },
+              "tier1_direct": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier4_implicit": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              },
+              "tier5_needle": {
+                "exact_match": 0.7692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            },
+            "V2d": {
+              "overall": {
+                "exact_match": 0.34615384615384615,
+                "n": 104,
+                "tool_accuracy": 0.5961538461538461
+              },
+              "tier1_direct": {
+                "exact_match": 0.6153846153846154,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier4_implicit": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              },
+              "tier5_needle": {
+                "exact_match": 0.7692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            },
+            "V2e": {
+              "overall": {
+                "exact_match": 0.34615384615384615,
+                "n": 104,
+                "tool_accuracy": 0.5865384615384616
+              },
+              "tier1_direct": {
+                "exact_match": 0.6153846153846154,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier2_parametric": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier4_implicit": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              },
+              "tier5_needle": {
+                "exact_match": 0.7692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              }
+            }
+          },
+          "taxonomy": {
+            "tier1_direct": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 7,
+              "EXTRA_KEYS_NONDEFAULT": 1,
+              "TOOL_SET_WRONG": 4
+            },
+            "tier2_parametric": {
+              "MISSING_KEYS_ONLY": 1,
+              "TOOL_SET_WRONG": 2,
+              "VALUE_WRONG": 5
+            },
+            "tier3_multi_intent": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 2,
+              "EXTRA_KEYS_NONDEFAULT": 3,
+              "MIXED": 3,
+              "TOOL_ORDER_ONLY": 1,
+              "TOOL_SET_WRONG": 4
+            },
+            "tier4_implicit": {
+              "TOOL_SET_WRONG": 10,
+              "VALUE_WRONG": 1
+            },
+            "tier5_needle": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 1,
+              "TOOL_SET_WRONG": 3
+            },
+            "tier6_correction": {
+              "MISSING_KEYS_ONLY": 1,
+              "MIXED": 1,
+              "TOOL_SET_WRONG": 3,
+              "VALUE_WRONG": 3
+            },
+            "tier7_multiturn": {
+              "MISSING_KEYS_ONLY": 1,
+              "TOOL_SET_WRONG": 5,
+              "VALUE_WRONG": 3
+            },
+            "tier8_intent_blending": {
+              "EXTRA_KEYS_NONDEFAULT": 2,
+              "TOOL_SET_WRONG": 11
+            }
+          }
+        }
+      },
+      "baseline_arm": "DIRECT_M0",
+      "paired_vs_baseline": {
+        "JOINT_DRAFT_REVISE": {
+          "V1": {
+            "harms": 5,
+            "n": 104,
+            "saves": 13,
+            "ties": 86
+          },
+          "V2e": {
+            "harms": 7,
+            "n": 104,
+            "saves": 16,
+            "ties": 81
+          }
+        },
+        "JOINT_ONE_CALL": {
+          "V1": {
+            "harms": 5,
+            "n": 104,
+            "saves": 12,
+            "ties": 87
+          },
+          "V2e": {
+            "harms": 7,
+            "n": 104,
+            "saves": 15,
+            "ties": 82
+          }
+        },
+        "SELECT_THEN_FILL": {
+          "V1": {
+            "harms": 5,
+            "n": 104,
+            "saves": 13,
+            "ties": 86
+          },
+          "V2e": {
+            "harms": 6,
+            "n": 104,
+            "saves": 17,
+            "ties": 81
+          }
+        }
+      }
+    },
+    "semantic104": {
+      "arms": {
+        "direct_m0": {
+          "identity_check": {
+            "match": true,
+            "mismatches": [],
+            "overall": {
+              "exact_match": 0.2403846153846154,
+              "n": 104,
+              "tool_accuracy": 0.5096153846153846
+            },
+            "per_tier": {
+              "tier1_direct": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.46153846153846156
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier5_needle": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier6_correction": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.46153846153846156
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.46153846153846156
+              }
+            }
+          },
+          "n_rows": 104,
+          "rule_table": {
+            "V1": {
+              "overall": {
+                "exact_match": 0.2403846153846154,
+                "n": 104,
+                "tool_accuracy": 0.5096153846153846
+              },
+              "tier1_direct": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.46153846153846156
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier5_needle": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier6_correction": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.46153846153846156
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.46153846153846156
+              }
+            },
+            "V2a": {
+              "overall": {
+                "exact_match": 0.2403846153846154,
+                "n": 104,
+                "tool_accuracy": 0.5
+              },
+              "tier1_direct": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier5_needle": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier6_correction": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.46153846153846156
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.46153846153846156
+              }
+            },
+            "V2b": {
+              "overall": {
+                "exact_match": 0.2980769230769231,
+                "n": 104,
+                "tool_accuracy": 0.5096153846153846
+              },
+              "tier1_direct": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.46153846153846156
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier5_needle": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier6_correction": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.46153846153846156
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.46153846153846156
+              }
+            },
+            "V2c": {
+              "overall": {
+                "exact_match": 0.36538461538461536,
+                "n": 104,
+                "tool_accuracy": 0.5096153846153846
+              },
+              "tier1_direct": {
+                "exact_match": 0.5384615384615384,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.46153846153846156
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier5_needle": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier6_correction": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.46153846153846156
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.46153846153846156
+              }
+            },
+            "V2d": {
+              "overall": {
+                "exact_match": 0.2980769230769231,
+                "n": 104,
+                "tool_accuracy": 0.5096153846153846
+              },
+              "tier1_direct": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.46153846153846156
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier5_needle": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier6_correction": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.46153846153846156
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.46153846153846156
+              }
+            },
+            "V2e": {
+              "overall": {
+                "exact_match": 0.2980769230769231,
+                "n": 104,
+                "tool_accuracy": 0.5
+              },
+              "tier1_direct": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier5_needle": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier6_correction": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.46153846153846156
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.46153846153846156
+              }
+            }
+          },
+          "taxonomy": {
+            "tier1_direct": {
+              "EMPTY": 2,
+              "EXTRA_KEYS_DEFAULT_ONLY": 3,
+              "EXTRA_KEYS_NONDEFAULT": 2,
+              "PARSE_FAIL": 1,
+              "TOOL_SET_WRONG": 3
+            },
+            "tier2_parametric": {
+              "EMPTY": 1,
+              "MISSING_KEYS_ONLY": 1,
+              "TOOL_SET_WRONG": 2,
+              "VALUE_WRONG": 3
+            },
+            "tier3_multi_intent": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 1,
+              "EXTRA_KEYS_NONDEFAULT": 2,
+              "MIXED": 2,
+              "PARSE_FAIL": 3,
+              "TOOL_ORDER_ONLY": 1,
+              "TOOL_SET_WRONG": 4
+            },
+            "tier4_implicit": {
+              "EMPTY": 1,
+              "TOOL_SET_WRONG": 12
+            },
+            "tier5_needle": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 1,
+              "PARSE_FAIL": 2,
+              "TOOL_SET_WRONG": 3,
+              "VALUE_WRONG": 2
+            },
+            "tier6_correction": {
+              "PARSE_FAIL": 3,
+              "VALUE_WRONG": 4
+            },
+            "tier7_multiturn": {
+              "EMPTY": 2,
+              "PARSE_FAIL": 1,
+              "TOOL_SET_WRONG": 4,
+              "VALUE_WRONG": 1
+            },
+            "tier8_intent_blending": {
+              "EXTRA_KEYS_NONDEFAULT": 3,
+              "MIXED": 2,
+              "PARSE_FAIL": 1,
+              "TOOL_SET_WRONG": 6
+            }
+          }
+        },
+        "model_query_top16_use": {
+          "identity_check": {
+            "match": true,
+            "mismatches": [],
+            "overall": {
+              "exact_match": 0.23076923076923078,
+              "n": 104,
+              "tool_accuracy": 0.5769230769230769
+            },
+            "per_tier": {
+              "tier1_direct": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier2_parametric": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier4_implicit": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              },
+              "tier5_needle": {
+                "exact_match": 0.6153846153846154,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              }
+            }
+          },
+          "n_rows": 104,
+          "rule_table": {
+            "V1": {
+              "overall": {
+                "exact_match": 0.23076923076923078,
+                "n": 104,
+                "tool_accuracy": 0.5769230769230769
+              },
+              "tier1_direct": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier2_parametric": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier4_implicit": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              },
+              "tier5_needle": {
+                "exact_match": 0.6153846153846154,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              }
+            },
+            "V2a": {
+              "overall": {
+                "exact_match": 0.23076923076923078,
+                "n": 104,
+                "tool_accuracy": 0.5576923076923077
+              },
+              "tier1_direct": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier2_parametric": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier4_implicit": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              },
+              "tier5_needle": {
+                "exact_match": 0.6153846153846154,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              }
+            },
+            "V2b": {
+              "overall": {
+                "exact_match": 0.3076923076923077,
+                "n": 104,
+                "tool_accuracy": 0.5769230769230769
+              },
+              "tier1_direct": {
+                "exact_match": 0.6153846153846154,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier2_parametric": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier4_implicit": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              },
+              "tier5_needle": {
+                "exact_match": 0.6153846153846154,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              }
+            },
+            "V2c": {
+              "overall": {
+                "exact_match": 0.38461538461538464,
+                "n": 104,
+                "tool_accuracy": 0.5769230769230769
+              },
+              "tier1_direct": {
+                "exact_match": 0.7692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier2_parametric": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.5384615384615384,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier4_implicit": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              },
+              "tier5_needle": {
+                "exact_match": 0.6153846153846154,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              }
+            },
+            "V2d": {
+              "overall": {
+                "exact_match": 0.3269230769230769,
+                "n": 104,
+                "tool_accuracy": 0.5769230769230769
+              },
+              "tier1_direct": {
+                "exact_match": 0.6153846153846154,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier2_parametric": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier4_implicit": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              },
+              "tier5_needle": {
+                "exact_match": 0.6153846153846154,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              }
+            },
+            "V2e": {
+              "overall": {
+                "exact_match": 0.3269230769230769,
+                "n": 104,
+                "tool_accuracy": 0.5576923076923077
+              },
+              "tier1_direct": {
+                "exact_match": 0.6153846153846154,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier2_parametric": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.6923076923076923
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier4_implicit": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              },
+              "tier5_needle": {
+                "exact_match": 0.6153846153846154,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              }
+            }
+          },
+          "taxonomy": {
+            "tier1_direct": {
+              "EMPTY": 1,
+              "EXTRA_KEYS_DEFAULT_ONLY": 6,
+              "EXTRA_KEYS_NONDEFAULT": 2,
+              "TOOL_SET_WRONG": 2
+            },
+            "tier2_parametric": {
+              "EMPTY": 1,
+              "MIXED": 1,
+              "TOOL_SET_WRONG": 3,
+              "VALUE_WRONG": 3
+            },
+            "tier3_multi_intent": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 1,
+              "EXTRA_KEYS_NONDEFAULT": 4,
+              "TOOL_ORDER_ONLY": 2,
+              "TOOL_SET_WRONG": 6
+            },
+            "tier4_implicit": {
+              "EMPTY": 4,
+              "TOOL_SET_WRONG": 7,
+              "VALUE_WRONG": 1
+            },
+            "tier5_needle": {
+              "MIXED": 1,
+              "TOOL_SET_WRONG": 2,
+              "VALUE_WRONG": 2
+            },
+            "tier6_correction": {
+              "CASE_OR_TYPE_ONLY": 1,
+              "MISSING_KEYS_ONLY": 1,
+              "MIXED": 1,
+              "TOOL_SET_WRONG": 2,
+              "VALUE_WRONG": 4
+            },
+            "tier7_multiturn": {
+              "CASE_OR_TYPE_ONLY": 1,
+              "EMPTY": 3,
+              "MISSING_KEYS_ONLY": 1,
+              "TOOL_SET_WRONG": 3,
+              "VALUE_WRONG": 1
+            },
+            "tier8_intent_blending": {
+              "EXTRA_KEYS_NONDEFAULT": 1,
+              "MISSING_KEYS_ONLY": 1,
+              "MIXED": 1,
+              "TOOL_SET_WRONG": 10
+            }
+          }
+        },
+        "rrf_fused_top16_use": {
+          "identity_check": {
+            "match": true,
+            "mismatches": [],
+            "overall": {
+              "exact_match": 0.2403846153846154,
+              "n": 104,
+              "tool_accuracy": 0.5769230769230769
+            },
+            "per_tier": {
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier4_implicit": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              }
+            }
+          },
+          "n_rows": 104,
+          "rule_table": {
+            "V1": {
+              "overall": {
+                "exact_match": 0.2403846153846154,
+                "n": 104,
+                "tool_accuracy": 0.5769230769230769
+              },
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier4_implicit": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              }
+            },
+            "V2a": {
+              "overall": {
+                "exact_match": 0.2403846153846154,
+                "n": 104,
+                "tool_accuracy": 0.5576923076923077
+              },
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier4_implicit": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              }
+            },
+            "V2b": {
+              "overall": {
+                "exact_match": 0.33653846153846156,
+                "n": 104,
+                "tool_accuracy": 0.5769230769230769
+              },
+              "tier1_direct": {
+                "exact_match": 0.5384615384615384,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier4_implicit": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              }
+            },
+            "V2c": {
+              "overall": {
+                "exact_match": 0.3942307692307692,
+                "n": 104,
+                "tool_accuracy": 0.5769230769230769
+              },
+              "tier1_direct": {
+                "exact_match": 0.6153846153846154,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.5384615384615384,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier4_implicit": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              }
+            },
+            "V2d": {
+              "overall": {
+                "exact_match": 0.3557692307692308,
+                "n": 104,
+                "tool_accuracy": 0.5769230769230769
+              },
+              "tier1_direct": {
+                "exact_match": 0.5384615384615384,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier4_implicit": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              }
+            },
+            "V2e": {
+              "overall": {
+                "exact_match": 0.3557692307692308,
+                "n": 104,
+                "tool_accuracy": 0.5576923076923077
+              },
+              "tier1_direct": {
+                "exact_match": 0.5384615384615384,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier4_implicit": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.23076923076923078
+              }
+            }
+          },
+          "taxonomy": {
+            "tier1_direct": {
+              "EMPTY": 2,
+              "EXTRA_KEYS_DEFAULT_ONLY": 6,
+              "EXTRA_KEYS_NONDEFAULT": 1,
+              "TOOL_SET_WRONG": 3
+            },
+            "tier2_parametric": {
+              "MIXED": 1,
+              "TOOL_SET_WRONG": 3,
+              "VALUE_WRONG": 3
+            },
+            "tier3_multi_intent": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 1,
+              "EXTRA_KEYS_NONDEFAULT": 4,
+              "TOOL_ORDER_ONLY": 2,
+              "TOOL_SET_WRONG": 6
+            },
+            "tier4_implicit": {
+              "EMPTY": 4,
+              "EXTRA_KEYS_DEFAULT_ONLY": 1,
+              "TOOL_SET_WRONG": 6,
+              "VALUE_WRONG": 1
+            },
+            "tier5_needle": {
+              "MIXED": 1,
+              "TOOL_SET_WRONG": 2,
+              "VALUE_WRONG": 1
+            },
+            "tier6_correction": {
+              "CASE_OR_TYPE_ONLY": 1,
+              "MISSING_KEYS_ONLY": 2,
+              "TOOL_SET_WRONG": 2,
+              "VALUE_WRONG": 4
+            },
+            "tier7_multiturn": {
+              "CASE_OR_TYPE_ONLY": 1,
+              "EMPTY": 3,
+              "MISSING_KEYS_ONLY": 1,
+              "TOOL_SET_WRONG": 3,
+              "VALUE_WRONG": 1
+            },
+            "tier8_intent_blending": {
+              "EXTRA_KEYS_NONDEFAULT": 1,
+              "MISSING_KEYS_ONLY": 1,
+              "MIXED": 1,
+              "PARSE_FAIL": 1,
+              "TOOL_SET_WRONG": 9
+            }
+          }
+        },
+        "same_stratum_shuffled_fused_use": {
+          "identity_check": {
+            "match": true,
+            "mismatches": [],
+            "overall": {
+              "exact_match": 0.038461538461538464,
+              "n": 104,
+              "tool_accuracy": 0.08653846153846154
+            },
+            "per_tier": {
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier2_parametric": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier5_needle": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier6_correction": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              }
+            }
+          },
+          "n_rows": 104,
+          "rule_table": {
+            "V1": {
+              "overall": {
+                "exact_match": 0.038461538461538464,
+                "n": 104,
+                "tool_accuracy": 0.08653846153846154
+              },
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier2_parametric": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier5_needle": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier6_correction": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              }
+            },
+            "V2a": {
+              "overall": {
+                "exact_match": 0.038461538461538464,
+                "n": 104,
+                "tool_accuracy": 0.08653846153846154
+              },
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier2_parametric": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier5_needle": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier6_correction": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              }
+            },
+            "V2b": {
+              "overall": {
+                "exact_match": 0.038461538461538464,
+                "n": 104,
+                "tool_accuracy": 0.08653846153846154
+              },
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier2_parametric": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier5_needle": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier6_correction": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              }
+            },
+            "V2c": {
+              "overall": {
+                "exact_match": 0.04807692307692308,
+                "n": 104,
+                "tool_accuracy": 0.08653846153846154
+              },
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier2_parametric": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier5_needle": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier6_correction": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              }
+            },
+            "V2d": {
+              "overall": {
+                "exact_match": 0.038461538461538464,
+                "n": 104,
+                "tool_accuracy": 0.08653846153846154
+              },
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier2_parametric": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier5_needle": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier6_correction": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              }
+            },
+            "V2e": {
+              "overall": {
+                "exact_match": 0.038461538461538464,
+                "n": 104,
+                "tool_accuracy": 0.08653846153846154
+              },
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier2_parametric": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.15384615384615385
+              },
+              "tier4_implicit": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              },
+              "tier5_needle": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier6_correction": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.07692307692307693
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.0
+              }
+            }
+          },
+          "taxonomy": {
+            "tier1_direct": {
+              "EMPTY": 11,
+              "TOOL_SET_WRONG": 1
+            },
+            "tier2_parametric": {
+              "EMPTY": 11,
+              "TOOL_SET_WRONG": 2
+            },
+            "tier3_multi_intent": {
+              "EMPTY": 7,
+              "EXTRA_KEYS_NONDEFAULT": 1,
+              "MIXED": 1,
+              "TOOL_SET_WRONG": 4
+            },
+            "tier4_implicit": {
+              "EMPTY": 10,
+              "TOOL_SET_WRONG": 3
+            },
+            "tier5_needle": {
+              "EMPTY": 11,
+              "MIXED": 1,
+              "TOOL_SET_WRONG": 1
+            },
+            "tier6_correction": {
+              "EMPTY": 10,
+              "MIXED": 1,
+              "TOOL_SET_WRONG": 2
+            },
+            "tier7_multiturn": {
+              "EMPTY": 6,
+              "TOOL_SET_WRONG": 3,
+              "VALUE_WRONG": 1
+            },
+            "tier8_intent_blending": {
+              "EMPTY": 9,
+              "TOOL_SET_WRONG": 4
+            }
+          }
+        },
+        "transcript_top16_use": {
+          "identity_check": {
+            "match": true,
+            "mismatches": [],
+            "overall": {
+              "exact_match": 0.25961538461538464,
+              "n": 104,
+              "tool_accuracy": 0.5961538461538461
+            },
+            "per_tier": {
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier4_implicit": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              }
+            }
+          },
+          "n_rows": 104,
+          "rule_table": {
+            "V1": {
+              "overall": {
+                "exact_match": 0.25961538461538464,
+                "n": 104,
+                "tool_accuracy": 0.5961538461538461
+              },
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier4_implicit": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              }
+            },
+            "V2a": {
+              "overall": {
+                "exact_match": 0.25961538461538464,
+                "n": 104,
+                "tool_accuracy": 0.5769230769230769
+              },
+              "tier1_direct": {
+                "exact_match": 0.07692307692307693,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier4_implicit": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              }
+            },
+            "V2b": {
+              "overall": {
+                "exact_match": 0.3557692307692308,
+                "n": 104,
+                "tool_accuracy": 0.5961538461538461
+              },
+              "tier1_direct": {
+                "exact_match": 0.5384615384615384,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier4_implicit": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              }
+            },
+            "V2c": {
+              "overall": {
+                "exact_match": 0.4230769230769231,
+                "n": 104,
+                "tool_accuracy": 0.5961538461538461
+              },
+              "tier1_direct": {
+                "exact_match": 0.6153846153846154,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.5384615384615384,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier4_implicit": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.15384615384615385,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              }
+            },
+            "V2d": {
+              "overall": {
+                "exact_match": 0.375,
+                "n": 104,
+                "tool_accuracy": 0.5961538461538461
+              },
+              "tier1_direct": {
+                "exact_match": 0.5384615384615384,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier4_implicit": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              }
+            },
+            "V2e": {
+              "overall": {
+                "exact_match": 0.375,
+                "n": 104,
+                "tool_accuracy": 0.5769230769230769
+              },
+              "tier1_direct": {
+                "exact_match": 0.5384615384615384,
+                "n": 13,
+                "tool_accuracy": 0.6153846153846154
+              },
+              "tier2_parametric": {
+                "exact_match": 0.46153846153846156,
+                "n": 13,
+                "tool_accuracy": 0.7692307692307693
+              },
+              "tier3_multi_intent": {
+                "exact_match": 0.23076923076923078,
+                "n": 13,
+                "tool_accuracy": 0.38461538461538464
+              },
+              "tier4_implicit": {
+                "exact_match": 0.3076923076923077,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              },
+              "tier5_needle": {
+                "exact_match": 0.6923076923076923,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier6_correction": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.8461538461538461
+              },
+              "tier7_multiturn": {
+                "exact_match": 0.38461538461538464,
+                "n": 13,
+                "tool_accuracy": 0.5384615384615384
+              },
+              "tier8_intent_blending": {
+                "exact_match": 0.0,
+                "n": 13,
+                "tool_accuracy": 0.3076923076923077
+              }
+            }
+          },
+          "taxonomy": {
+            "tier1_direct": {
+              "EMPTY": 2,
+              "EXTRA_KEYS_DEFAULT_ONLY": 6,
+              "EXTRA_KEYS_NONDEFAULT": 1,
+              "TOOL_SET_WRONG": 3
+            },
+            "tier2_parametric": {
+              "MIXED": 1,
+              "TOOL_SET_WRONG": 3,
+              "VALUE_WRONG": 3
+            },
+            "tier3_multi_intent": {
+              "EXTRA_KEYS_DEFAULT_ONLY": 1,
+              "EXTRA_KEYS_NONDEFAULT": 4,
+              "TOOL_ORDER_ONLY": 2,
+              "TOOL_SET_WRONG": 6
+            },
+            "tier4_implicit": {
+              "EMPTY": 2,
+              "EXTRA_KEYS_DEFAULT_ONLY": 1,
+              "TOOL_SET_WRONG": 7
+            },
+            "tier5_needle": {
+              "MISSING_KEYS_ONLY": 1,
+              "MIXED": 1,
+              "TOOL_SET_WRONG": 2
+            },
+            "tier6_correction": {
+              "CASE_OR_TYPE_ONLY": 1,
+              "MISSING_KEYS_ONLY": 1,
+              "MIXED": 1,
+              "TOOL_SET_WRONG": 2,
+              "VALUE_WRONG": 4
+            },
+            "tier7_multiturn": {
+              "CASE_OR_TYPE_ONLY": 1,
+              "EMPTY": 3,
+              "MISSING_KEYS_ONLY": 1,
+              "TOOL_SET_WRONG": 3,
+              "VALUE_WRONG": 1
+            },
+            "tier8_intent_blending": {
+              "EXTRA_KEYS_NONDEFAULT": 2,
+              "MISSING_KEYS_ONLY": 1,
+              "MIXED": 1,
+              "TOOL_SET_WRONG": 9
+            }
+          }
+        }
+      },
+      "baseline_arm": "direct_m0",
+      "paired_vs_baseline": {
+        "model_query_top16_use": {
+          "V1": {
+            "harms": 7,
+            "n": 104,
+            "saves": 6,
+            "ties": 91
+          },
+          "V2e": {
+            "harms": 7,
+            "n": 104,
+            "saves": 10,
+            "ties": 87
+          }
+        },
+        "rrf_fused_top16_use": {
+          "V1": {
+            "harms": 8,
+            "n": 104,
+            "saves": 8,
+            "ties": 88
+          },
+          "V2e": {
+            "harms": 8,
+            "n": 104,
+            "saves": 14,
+            "ties": 82
+          }
+        },
+        "same_stratum_shuffled_fused_use": {
+          "V1": {
+            "harms": 24,
+            "n": 104,
+            "saves": 3,
+            "ties": 77
+          },
+          "V2e": {
+            "harms": 30,
+            "n": 104,
+            "saves": 3,
+            "ties": 71
+          }
+        },
+        "transcript_top16_use": {
+          "V1": {
+            "harms": 8,
+            "n": 104,
+            "saves": 10,
+            "ties": 86
+          },
+          "V2e": {
+            "harms": 8,
+            "n": 104,
+            "saves": 16,
+            "ties": 80
+          }
+        }
+      }
+    }
+  }
+}
