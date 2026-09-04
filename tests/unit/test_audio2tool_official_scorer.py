@@ -349,3 +349,115 @@ def test_official_gold_is_the_release_shape_not_a2t_gold_v1(audio2tool_world, tm
         "calibrateThermostat",
     )
     assert len(v1["tier3_multi_intent:000004"]) == 4
+
+
+# ---------------------------------------------------------------------------
+# 3. The request side: the compact registry fill and the frozen template that
+#    together render the release's own system message.
+# ---------------------------------------------------------------------------
+
+OFFICIAL_SYSTEM_PROMPT = (
+    "You are an AI assistant that converts voice commands into tool calls. "
+    "Listen to the audio and determine which tool should be called. "
+    "Output ONLY the tool call in the format: tool_name(param1=value1, param2=value2). "
+    "If no parameters are mentioned, output: tool_name()."
+)
+
+REPO_ROOT_PATH = Path(__file__).resolve().parents[2]
+OFFICIAL_TEMPLATE = REPO_ROOT_PATH / "configs" / "probes" / "r1_audio2tool_official.txt"
+
+
+def test_official_template_bytes_are_the_release_envelope():
+    data = OFFICIAL_TEMPLATE.read_bytes()
+    assert b"\r\n" not in data
+    text = data.decode("utf-8")
+    assert text == OFFICIAL_SYSTEM_PROMPT + "\n\n## Available Tools:\n{tool_schemas}"
+    # No trailing newline: upstream builds the message as
+    # f"{system_prompt}\n\n## Available Tools:\n{tool_lines}" and tool_lines
+    # is a "\n".join with nothing after it.
+    assert not text.endswith("\n")
+
+
+def test_official_template_is_pinned_in_the_probe_manifest():
+    manifest = json.loads(
+        (REPO_ROOT_PATH / "configs" / "probes" / "manifest.json").read_text(encoding="utf-8")
+    )
+    entry = manifest["templates"]["r1_audio2tool_official.txt"]
+    assert entry["sha256"] == hashlib.sha256(OFFICIAL_TEMPLATE.read_bytes()).hexdigest()
+    probe = manifest["probes"]["R1-audio2tool-official-protocol"]
+    assert probe["arms"]["direct"] == ["r1_audio2tool_official.txt"]
+    assert probe["profile"] == "baseline-reproduction"
+    # The reconstruction template R1/A0/A0' flew is untouched.
+    assert "r1_audio2tool_direct.txt" in manifest["templates"]
+
+
+def test_compact_registry_fill_is_registered_and_renders_upstream_lines(
+    audio2tool_world,
+):
+    from speech_aware_evidence_acquisition.core.base import INSTRUCTION_FILLS
+    from speech_aware_evidence_acquisition.data.audio2tool_tools import (
+        render_registry_compact,
+    )
+
+    assert "audio2tool-registry-compact" in INSTRUCTION_FILLS.names()
+    # The pre-existing fill stays registered and is not replaced.
+    assert "audio2tool-tool-schemas" in INSTRUCTION_FILLS.names()
+
+    lock = load_lock(audio2tool_world.lock_path)
+    rendered = render_registry_compact(lock, audio2tool_world.data_root)
+    # Sorted by tool_name under plain string order, NOT by tool_id (the
+    # fixture registry lists setSecurityMode, tool_id 10, before setLighting,
+    # tool_id 2, so tool_id order would put setSecurityMode first).
+    assert rendered == (
+        "- setLighting(deviceId: String): Turns a light on.\n"
+        "- setSecurityMode(mode: Mode): Sets the security mode."
+    )
+    # Only signature and description: no defaults, no constraints.
+    assert "argument" not in rendered
+    assert "Home" not in rendered
+    assert not rendered.endswith("\n")
+
+
+def test_official_baseline_fragment_declares_the_published_protocol():
+    fragment = json.loads(
+        (
+            REPO_ROOT_PATH
+            / "configs"
+            / "baseline"
+            / "a2t-direct-official-protocol.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert fragment["arm"] == "bare-core"
+    assert fragment["task_instruction_template"] == "probes/r1_audio2tool_official.txt"
+    assert fragment["task_instruction_fill"] == "audio2tool-registry-compact"
+    assert fragment["task_instruction_template_active"] is True
+    assert fragment["user_turn_text"] == "Convert this voice command to a tool call."
+    assert fragment["user_turn_audio_first"] is True
+    # The paper-facing scorer runs first, with v2 and v1 beside it.
+    assert fragment["scorers"][0] == "a2t-toolcall-official"
+    assert {"a2t-toolcall-v2", "a2t-toolcall", "cost"} <= set(fragment["scorers"])
+    # No native tools list: the pinned adapter never sends one.
+    assert "tool_schema_fill" not in fragment
+
+
+def test_legacy_calibration_baselines_are_untouched():
+    """The four sealed calibration cells must keep flying what they flew.
+
+    They carry driver-path template keys the flight path has never honoured;
+    the opt-in flag is what keeps that true now that the flight path CAN
+    honour them.
+    """
+
+    for name in (
+        "a2t-direct-calibration",
+        "a2t-direct-native-tools-calibration",
+        "a2t-direct-packets",
+        "a2t-direct-packets-native-tools",
+    ):
+        fragment = json.loads(
+            (REPO_ROOT_PATH / "configs" / "baseline" / f"{name}.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        assert "task_instruction_template_active" not in fragment
+        assert "user_turn_text" not in fragment

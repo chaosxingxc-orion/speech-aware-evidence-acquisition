@@ -296,6 +296,51 @@ def render_openai_tools(lock: Mapping[str, object], root: Path) -> list[dict[str
     return tools
 
 
+def render_registry_compact(lock: Mapping[str, object], root: Path) -> str:
+    """``format_tools_compact`` from the pinned Audio2Tool release, over the
+    same ``tools_registry.csv`` every other fill reads.
+
+    Upstream (``audio_benchmark/utils/tools_schema.py``, commit
+    ``b9d5383ca30945fbafb965a04bea40117e1e8a82``, git blob
+    ``ef108a9f9c2aad42b9f4a38e369d5f88cb24d5f5``)::
+
+        lines = []
+        for tool in sorted(tools, key=lambda x: x['name']):
+            lines.append(f"- {tool['signature']}: {tool['description']}")
+        return chr(10).join(lines)
+
+    (the upstream body joins on a newline literal; ``chr(10)`` stands in for
+    it here only so this docstring carries no escape sequence of its own.)
+
+    Three facts this reproduces exactly, each of which would otherwise be an
+    invented choice:
+
+    * the sort key is ``tool_name`` under PLAIN Python string ordering (so
+      every capitalised name sorts before every lower-case one), not the
+      ``tool_id`` order ``render_tool_schemas``/``render_openai_tools`` use;
+    * only ``signature`` and ``description`` are rendered -- never
+      ``argument_defaults``, ``argument_constraints``, ``domain``,
+      ``category`` or ``tool_id``;
+    * there is no trailing newline: the caller supplies the surrounding
+      envelope, which upstream builds as the system prompt, a blank line,
+      the literal line ``## Available Tools:``, and then these lines.
+
+    Upstream also skips rows whose ``deprecated`` column is the string
+    ``"true"``. The pinned ``tools_registry.csv`` has no ``deprecated``
+    column at all (``data.audio2tool._REGISTRY_COLUMNS``), so upstream's
+    ``row.get('deprecated', '')`` is empty for every row and all 152 are
+    rendered; there is nothing to skip and nothing is dropped here either.
+
+    Registered as the ``audio2tool-registry-compact`` instruction fill.
+    """
+
+    rows = load_tool_registry(lock, root)
+    return "\n".join(
+        f"- {row['signature']}: {row['description']}"
+        for row in sorted(rows, key=lambda row: row["tool_name"])
+    )
+
+
 def openai_tools_sha256(tools: Sequence[Mapping[str, object]]) -> str:
     """SHA-256 over the canonical (sorted-key, compact) JSON of ``tools``."""
 

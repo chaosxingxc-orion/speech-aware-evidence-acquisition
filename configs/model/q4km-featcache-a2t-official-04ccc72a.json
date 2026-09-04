@@ -1,0 +1,39 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 420.0,
+  "runtime_receipt": "receipts/runtime-q4km-featcache-04ccc72a.json",
+  "server_args": [
+    "-c",
+    "49152",
+    "-np",
+    "3",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0"
+  ],
+  "serving_geometry": {
+    "slots": 3,
+    "slot_tokens": 16384,
+    "max_tokens": 256
+  },
+  "serving_geometry_basis": "PROVISIONAL until the prompt-fit receipt for SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-V1 lands; the measurement re-derives these three numbers and this text is rewritten with them before the flight.",
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 256,
+    "id_slot": "per-sample"
+  },
+  "prompt_order": "evidence-first-system-v2",
+  "server_env": {
+    "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/audio2tool-q4km-04ccc72a"
+  },
+  "model_materialization_root": "/home/chao",
+  "decoding_basis": "max_tokens 256 is the published protocol's own max_new_tokens (audio_benchmark/models/qwen3_omni.py generate() default and configs/example_config.yaml, commit b9d5383c), not this repository's 1024. temperature 0 is the greedy equivalent of the release's do_sample=false (its temperature 1.0 is inert under greedy decoding, and its own vLLM adapter is the sampling variant this cell does not fly). The seed stays this study's 20260803 rather than the release's 42; under greedy decoding a seed selects nothing, so the difference is recorded and inert."
+}

@@ -62,6 +62,9 @@ if (
 from speech_aware_evidence_acquisition.core.config import compose  # noqa: E402
 from speech_aware_evidence_acquisition.core.flight.queue import FlightQueue  # noqa: E402
 from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime  # noqa: E402
+from speech_aware_evidence_acquisition.core.instructions import (  # noqa: E402
+    resolve_task_instruction,
+)
 from speech_aware_evidence_acquisition.data.lock import (  # noqa: E402
     data_root,
     load_lock,
@@ -161,6 +164,55 @@ def roster_samples(
         found = {sample.sample_id for sample in samples}
         raise SystemExit("roster does not contain %r" % sorted(wanted - found))
     return tuple(sorted(samples, key=lambda sample: sample.sample_id))
+
+
+def resolve_cell_instruction(
+    values: Mapping[str, object], lock: Mapping[str, object], root: Path
+) -> str | None:
+    """The cell's system instruction, or ``None`` to fall through to the
+    adapter's own legacy registry template.
+
+    Three sources, in the order a baseline fragment may declare them:
+
+    * a literal ``task_instruction`` -- the native tool-calling calibration
+      cells, whose registry travels in the request's ``tools`` field;
+    * ``task_instruction_template`` + ``task_instruction_fill`` **with
+      ``task_instruction_template_active: true``** -- resolved through
+      ``core.instructions.resolve_task_instruction``, the same
+      frozen-template-plus-registered-fill path ``core.driver.run`` uses, so
+      a cell can fly a hash-pinned template filled with pinned carrier data
+      (the Audio2Tool official-protocol cell);
+    * neither -- the adapter's own legacy registry instruction.
+
+    Why the third key. ``a2t-direct-calibration.json`` and
+    ``a2t-direct-packets.json`` ALREADY carry the template pair, but the
+    flight path has never read it: the four sealed calibration cells went on
+    the wire with the adapter's hard-coded legacy instruction, which is what
+    their prompt-fit receipt records as ``instruction_source`` and what their
+    ``protocol_hash`` was computed over. Honouring the pair unconditionally
+    here would silently rewrite what those four sealed cells mean on any
+    re-run. The opt-in flag keeps every existing cell byte-identical while
+    letting a new fragment say plainly that its template is the wire text.
+    """
+
+    literal = values.get("task_instruction")
+    if literal is not None:
+        if not isinstance(literal, str) or not literal:
+            raise SystemExit("baseline task_instruction must be a non-empty string")
+        if values.get("task_instruction_template_active"):
+            raise SystemExit(
+                "baseline declares both a literal task_instruction and an active "
+                "task_instruction_template"
+            )
+        return literal
+    if not values.get("task_instruction_template_active"):
+        return None
+    if values.get("task_instruction_template") is None:
+        raise SystemExit(
+            "task_instruction_template_active is set but no task_instruction_template "
+            "is declared"
+        )
+    return resolve_task_instruction(values, REPO, lock, root)
 
 
 class CalibrationAdapter(Audio2ToolAdapter):
@@ -267,9 +319,7 @@ def build_runtime(
     if limit_sample_ids is None and len(samples) != int(values["a2t_calibration_count"]):
         raise SystemExit("roster resolved %d samples" % len(samples))
     split_id = str(values["split_id"])
-    instruction_text = values.get("task_instruction")
-    if instruction_text is not None and not isinstance(instruction_text, str):
-        raise SystemExit("baseline task_instruction must be a string when declared")
+    instruction_text = resolve_cell_instruction(values, lock, root)
 
     def adapter_factory(lock_, root_):
         return CalibrationAdapter(

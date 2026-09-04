@@ -1,0 +1,102 @@
+{
+  "experiment_id": "SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-V1",
+  "schema": "saea-a2t-direct-calibration-experiment-v1",
+  "date": "2026-09-04",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "Replicate the Audio2Tool paper's Qwen3-Omni direct baseline (arXiv:2604.22821 Table 3) by mirroring the benchmark's OFFICIAL CODE string-for-string, now that it is published (github.com/audio2tool/Audio2Tool, MIT, commit b9d5383ca30945fbafb965a04bea40117e1e8a82). The 2026-09-04 calibration flight SAEA-A2T-DIRECT-CALIBRATION-V1 varied the output contract and the audio path over 4 cells x 400 and missed the paper on every tier (tier 1 tool accuracy 64.0 versus 92.4); its verdict concluded the residual gap is not the two protocol facts it varied. Both cells were built from this repository's own reconstruction of an unreleased protocol. This flight removes that variable entirely: the system message, the tool rendering, the user turn, the decoding ceiling, the output parse and every metric come from the published code, and the remaining differences to the paper are enumerated as recorded deviations. Preregistration: docs/readiness/2026-09-04-a2t-official-protocol-replication-v1-preregistration.md.",
+  "population": {
+    "carrier": "audio2tool",
+    "split_name": "A2T-CALIBRATION-400",
+    "split_role": "discovery",
+    "count": 400,
+    "strata": "50 samples per tier across all eight Audio2Tool tiers",
+    "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-calibration-400-roster/flight-roster-receipt.json",
+    "receipt_sha256": "6f352ea583d0bb91f77aad62e07bdad4d3210d066440fbfaee8e2af504853fe7",
+    "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+    "flight_split_identity_hash": "11091b38ae9d53530952af632636d7e79a614350213e10c6c26583c37f85846b",
+    "audio_seconds_one_pass": 2159.688,
+    "audio_seconds_longest_item": 35.714,
+    "selection": "the frozen 400 split, no draw; already exposed by A0 (row SAEA-BASE-a2t-a0-400) and by SAEA-A2T-DIRECT-CALIBRATION-V1. Using it again is what makes the paired contrast against the sealed A0prime-legacy-raw manifest possible at zero additional population cost.",
+    "estimand": "equal-tier reporting, with the natural construction mixture reported beside it as a reweighting"
+  },
+  "cells": [
+    {
+      "cell_id": "R-official-raw",
+      "factor_a_output_contract": "the published system message: the adapter's hard-coded default system prompt, the fixed '## Available Tools:' header, and format_tools_compact over the whole 152-row registry ('- {signature}: {description}', sorted by tool_name)",
+      "factor_d_audio_path": "raw audio, bf16 mmproj loaded",
+      "user_turn": "audio first, then the fixed sentence 'Convert this voice command to a tool call.'",
+      "arm": "bare-core",
+      "baseline_fragment": "a2t-direct-official-protocol",
+      "model_fragment": "q4km-featcache-a2t-official-04ccc72a",
+      "serving_geometry": "set by the prompt-fit receipt before takeoff; the model fragment is the single authority"
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 256,
+    "id_slot": "per-sample",
+    "contacts_per_item": 1,
+    "evidence": "none",
+    "obs": "none",
+    "harness": "core.flight.FlightRuntime with the shared rails zero-supply direct arm and the OpenJiuwen executor -- the same harness every calibration cell flew, so the paired contrast against A0prime-legacy-raw differs only in the request protocol",
+    "official_code_pin": "b9d5383ca30945fbafb965a04bea40117e1e8a82; docs/receipts/environments/audio2tool-official-code.json"
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "discovery",
+    "planned_model_calls": 408,
+    "planned_gpu_hours": 1.0,
+    "planned_speech_audio_seconds": 2300
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "400 items x 1 cell x 1 contact, plus 8 canaries",
+    "planned_speech_audio_seconds": "2,159.688 s for one pass, rounded up to the integer contracts.ExecutionPlan requires and then to 2,300 as the registered ceiling",
+    "planned_gpu_hours": "1.0; the calibration's A0prime-legacy-raw cell flew the same 400 raw-audio rows in 429.4 s at -np 2 with a 13,236-token prompt, and this cell's prompt is far shorter",
+    "paid_api_spend": 0,
+    "ceilings_live_in_the_exposure_row": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are the exposure-ledger row's calls / speech audio seconds / gpu hours cells, which the gate requires to be at least these planned values"
+  },
+  "evaluation": {
+    "official_scorers": ["a2t-toolcall-official", "a2t-toolcall-v2", "a2t-toolcall", "cost"],
+    "paper_facing_scorer": "a2t-toolcall-official",
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "outer_parallel_workers": 4,
+    "metrics": [
+      "official tool accuracy (primary gold tool)",
+      "official exact match",
+      "official parameter precision/recall/F1, macro over samples as the published code computes it",
+      "parameter F1 micro-pooled, reported beside the macro figure",
+      "official multi-tool all-match on rows whose gold carries additional_tool_calls",
+      "parse rate",
+      "a2t-toolcall-v2 ordered tool accuracy and exact match",
+      "prompt_tokens",
+      "latency"
+    ],
+    "mandatory_slices": [
+      "all eight tiers, with the paper row and a Wilson CI90 beside every tier",
+      "the same per-tier table under a2t-toolcall-v2 ordered",
+      "the paired contrast against the sealed calibration cell A0prime-legacy-raw (attempt-20260904T081627Z-a0primelegacyraw), both scored by the official scorer in a zero-contact re-score",
+      "parse rate and the count of rows whose response named more than one call"
+    ],
+    "paired_bootstrap_replicates": 10000,
+    "paired_bootstrap_seed": 20260903,
+    "paired_bootstrap_stratification": "tier",
+    "confidence_interval": "CI90",
+    "renderer": "analysis.paired.render_markdown"
+  },
+  "decision": {
+    "pass": "PASS: per-tier official tool accuracy |delta| <= 5 pp against the paper row on tiers 1, 2, 5 and 6, with the tier rank order preserved.",
+    "consistent_within_noise": "CONSISTENT-WITHIN-NOISE: the paper value lies inside the tier's Wilson CI90 (n = 50 binomial) on tiers 1, 2, 5 and 6 but at least one of them is outside 5 pp.",
+    "fail": "FAIL: neither of the above.",
+    "power_note": "n = 50 per tier gives a binomial standard error of 4-7 pp across the accuracy range the paper reports, so PASS is a strong result while CONSISTENT-WITHIN-NOISE is weak evidence that calls for a larger first-speaker-per-query roster. Drawing that roster is an owner decision, not this flight's.",
+    "claim_surface": "Nothing here is a superiority, generality or Stage-3 claim; the population is exposed discovery data; no knob is tuned on it.",
+    "not_authorized": "No test contact, no mechanism arm, no Q8_0 flight, no fresh roster, no training-free policy fit, no edit to the locked SLURP cell.",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}

@@ -20,6 +20,22 @@
       "scorer": "a2t-scorer-v1 (toolcall_scoring)",
       "success": "tier rank order preserved; per-tier |delta| <= 5pp vs published Qwen-3-Omni-30B row"
     },
+    "R1-audio2tool-official-protocol": {
+      "arms": {
+        "direct": [
+          "r1_audio2tool_official.txt"
+        ]
+      },
+      "note": "The README's own fidelity caveat, discharged: R1's templates were this repository's reconstruction of an unreleased protocol, and the caveat says R1 re-runs under the released prompts with a NEW manifest entry once they appear. They appeared on 2026-09-03 (github.com/audio2tool/Audio2Tool, MIT, commit b9d5383ca30945fbafb965a04bea40117e1e8a82). This is that entry: the template below is the release's own system message shape and the run adds the release's user-turn sentence after the audio (configs/baseline/a2t-direct-official-protocol.json). r1_audio2tool_direct.txt is UNCHANGED and stays the reconstruction R1/A0/A0' flew.",
+      "profile": "baseline-reproduction",
+      "sample_receipt": "r1-audio2tool-sample.json",
+      "sampling": {
+        "design": "the SAME frozen 400 as R1-audio2tool-direct",
+        "seed": 20260807
+      },
+      "scorer": "a2t-scorer-official-b9d5383c (the pinned Audio2Tool release's own metrics.py)",
+      "success": "three outcomes: PASS = per-tier official tool accuracy |delta| <= 5pp vs the published Qwen3-Omni-30B row on tiers 1, 2, 5 and 6 with the tier rank order preserved; CONSISTENT-WITHIN-NOISE = the paper value inside the tier's Wilson CI90 (n=50) on those tiers but outside 5pp; FAIL otherwise"
+    },
     "R2-bba-cascade-vs-direct": {
       "arms": {
         "direct": [
@@ -108,6 +124,13 @@
       "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
       "split_role": "discovery"
     },
+    "R1-audio2tool-official-protocol": {
+      "n_items": 400,
+      "receipt": "r1-audio2tool-sample.json",
+      "seed": 20260807,
+      "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+      "split_role": "discovery"
+    },
     "R2-bba-cascade-vs-direct": {
       "n_items": 200,
       "receipt": "r2-bba-sample.json",
@@ -134,6 +157,9 @@
   "templates": {
     "r1_audio2tool_direct.txt": {
       "sha256": "8ea2849d9f1d948ab46734fdc99e37efaba0b78216fdd2add0f8fccb3997da9a"
+    },
+    "r1_audio2tool_official.txt": {
+      "sha256": "9005ea0a512fca7c2f4ab75e65835f03454f956b3ee3dcfe7570ef5d41fc1e65"
     },
     "r2_bba_cascade_answer.txt": {
       "sha256": "974b65e34d419ae4fbdf520ec68f6c97fde75388709a4e37031a27647ff30703"

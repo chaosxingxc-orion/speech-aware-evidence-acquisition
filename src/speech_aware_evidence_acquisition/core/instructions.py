@@ -36,6 +36,7 @@ from pathlib import Path
 from typing import Callable, Mapping
 
 from ..data.audio2tool import render_tool_schemas
+from ..data.audio2tool_tools import render_registry_compact
 from .base import INSTRUCTION_FILLS, CoreError
 
 TOOL_SCHEMAS_PLACEHOLDER = "{tool_schemas}"
@@ -43,6 +44,12 @@ TOOL_SCHEMAS_PLACEHOLDER = "{tool_schemas}"
 _TEMPLATE_RELPATH_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*(?:/[A-Za-z0-9][A-Za-z0-9._-]*)*")
 
 INSTRUCTION_FILLS.register("audio2tool-tool-schemas", render_tool_schemas)
+# The pinned Audio2Tool release's own `format_tools_compact` rendering
+# ("- {signature}: {description}", sorted by tool_name), for the cell that
+# mirrors the published protocol string-for-string. It is a SECOND fill, not
+# a replacement: every existing cell keeps naming the JSON-per-line fill
+# above and its rendered instruction is byte-identical to before.
+INSTRUCTION_FILLS.register("audio2tool-registry-compact", render_registry_compact)
 
 
 def resolve_task_instruction(

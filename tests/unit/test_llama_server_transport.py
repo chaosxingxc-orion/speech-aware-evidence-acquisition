@@ -1905,3 +1905,155 @@ def test_media_relpath_colon_in_segment_refused_at_transport(tmp_path):
     payload = _boundary_payload(tmp_path, media_relpath="media/5000001.mp3:hidden")
     with pytest.raises(FrozenCoreError, match="media_relpath"):
         transport(json.dumps(payload).encode())
+
+
+# ---------------------------------------------------------------------------
+# Fragment-driven user-turn text (2026-09-04, Audio2Tool official-protocol
+# replication). The published protocol puts a fixed sentence in the USER turn
+# AFTER the audio; every arm built before it sends a user turn of evidence
+# text plus audio only. The seam is config, not code: `user_turn_text` and
+# `user_turn_audio_first` on the composed config. These tests pin both the
+# new behaviour and the unchanged old one.
+# ---------------------------------------------------------------------------
+
+_OFFICIAL_USER_TURN = "Convert this voice command to a tool call."
+
+
+def _audio_part_for(tmp_path, payload):
+    media = tmp_path / payload["media_relpath"]
+    return {
+        "type": "input_audio",
+        "input_audio": {
+            "data": base64.b64encode(media.read_bytes()).decode("ascii"),
+            "format": "mp3",
+        },
+    }
+
+
+def test_user_turn_text_follows_the_audio_part_on_the_wire(tmp_path):
+    captured = {}
+
+    def fake_post(url, body):
+        captured["raw"] = body
+        return _canned_response()
+
+    transport = _transport(
+        _base_url(),
+        tmp_path,
+        post=fake_post,
+        prompt_order="evidence-first-system-v2",
+        user_turn_text=_OFFICIAL_USER_TURN,
+    )
+    payload = _boundary_payload(tmp_path)
+    transport(json.dumps(payload).encode())
+
+    expected_body = {
+        "messages": [
+            {"role": "system", "content": "Transcribe the speech verbatim."},
+            {
+                "role": "user",
+                "content": [
+                    _audio_part_for(tmp_path, payload),
+                    {"type": "text", "text": _OFFICIAL_USER_TURN},
+                ],
+            },
+        ],
+        "temperature": 0,
+        "seed": 20260803,
+    }
+    assert captured["raw"] == json.dumps(expected_body).encode("utf-8")
+
+
+def test_user_turn_text_also_applies_under_the_historical_v1_order(tmp_path):
+    captured = {}
+
+    def fake_post(url, body):
+        captured["body"] = json.loads(body)
+        return _canned_response()
+
+    transport = _transport(
+        _base_url(), tmp_path, post=fake_post, user_turn_text=_OFFICIAL_USER_TURN
+    )
+    payload = _boundary_payload(
+        tmp_path,
+        supplied_evidence=[{"evidence_id": "e1", "content": "ctx"}],
+    )
+    transport(json.dumps(payload).encode())
+
+    content = captured["body"]["messages"][1]["content"]
+    assert [part["type"] for part in content] == ["text", "input_audio", "text"]
+    assert content[0]["text"] == "[evidence e1] ctx"
+    assert content[-1]["text"] == _OFFICIAL_USER_TURN
+
+
+def test_user_turn_audio_first_false_puts_the_text_before_the_audio(tmp_path):
+    captured = {}
+
+    def fake_post(url, body):
+        captured["body"] = json.loads(body)
+        return _canned_response()
+
+    transport = _transport(
+        _base_url(),
+        tmp_path,
+        post=fake_post,
+        prompt_order="evidence-first-system-v2",
+        user_turn_text=_OFFICIAL_USER_TURN,
+        user_turn_audio_first=False,
+    )
+    transport(json.dumps(_boundary_payload(tmp_path)).encode())
+
+    content = captured["body"]["messages"][1]["content"]
+    assert [part["type"] for part in content] == ["text", "input_audio"]
+    assert content[0]["text"] == _OFFICIAL_USER_TURN
+
+
+def test_legacy_calibration_cell_payload_is_unchanged_without_the_seam(tmp_path):
+    """Regression for the 2026-09-04 calibration cells specifically.
+
+    A0'-legacy-raw / P0-legacy-packets fly ``prompt_order:
+    evidence-first-system-v2`` with no ``user_turn_text``. Their wire bytes
+    must be exactly what they were before the seam existed: one system
+    message, one user message whose content is the audio part ALONE.
+    """
+
+    captured = {}
+
+    def fake_post(url, body):
+        captured["raw"] = body
+        return _canned_response()
+
+    transport = _transport(
+        _base_url(), tmp_path, post=fake_post, prompt_order="evidence-first-system-v2"
+    )
+    payload = _boundary_payload(tmp_path)
+    transport(json.dumps(payload).encode())
+
+    expected_body = {
+        "messages": [
+            {"role": "system", "content": "Transcribe the speech verbatim."},
+            {"role": "user", "content": [_audio_part_for(tmp_path, payload)]},
+        ],
+        "temperature": 0,
+        "seed": 20260803,
+    }
+    assert captured["raw"] == json.dumps(expected_body).encode("utf-8")
+
+
+def test_empty_user_turn_text_is_refused_at_construction(tmp_path):
+    with pytest.raises(SessionError, match="user_turn_text"):
+        _transport(_base_url(), tmp_path, post=lambda url, body: b"", user_turn_text="   ")
+
+
+def test_user_turn_text_is_refused_under_speech_feature_orders(tmp_path):
+    feature_root = tmp_path / "features"
+    feature_root.mkdir(parents=True, exist_ok=True)
+    with pytest.raises(SessionError, match="not supported under prompt_order"):
+        _transport(
+            _base_url(),
+            tmp_path,
+            post=lambda url, body: b"",
+            prompt_order="speech-features-text-keys-v1",
+            feature_root=feature_root,
+            user_turn_text=_OFFICIAL_USER_TURN,
+        )

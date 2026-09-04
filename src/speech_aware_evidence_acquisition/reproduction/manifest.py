@@ -28,6 +28,30 @@ PROBES: dict[str, dict] = {
         "success": "tier rank order preserved; per-tier |delta| <= 5pp vs published Qwen-3-Omni-30B row",
         "profile": "baseline-reproduction",
     },
+    "R1-audio2tool-official-protocol": {
+        "arms": {"direct": ["r1_audio2tool_official.txt"]},
+        "scorer": "a2t-scorer-official-b9d5383c (the pinned Audio2Tool release's own metrics.py)",
+        "sampling": {"seed": _SEED, "design": "the SAME frozen 400 as R1-audio2tool-direct"},
+        "sample_receipt": "r1-audio2tool-sample.json",
+        "success": (
+            "three outcomes: PASS = per-tier official tool accuracy |delta| <= 5pp vs the "
+            "published Qwen3-Omni-30B row on tiers 1, 2, 5 and 6 with the tier rank order "
+            "preserved; CONSISTENT-WITHIN-NOISE = the paper value inside the tier's Wilson "
+            "CI90 (n=50) on those tiers but outside 5pp; FAIL otherwise"
+        ),
+        "profile": "baseline-reproduction",
+        "note": (
+            "The README's own fidelity caveat, discharged: R1's templates were this "
+            "repository's reconstruction of an unreleased protocol, and the caveat says R1 "
+            "re-runs under the released prompts with a NEW manifest entry once they appear. "
+            "They appeared on 2026-09-03 (github.com/audio2tool/Audio2Tool, MIT, commit "
+            "b9d5383ca30945fbafb965a04bea40117e1e8a82). This is that entry: the template "
+            "below is the release's own system message shape and the run adds the release's "
+            "user-turn sentence after the audio (configs/baseline/"
+            "a2t-direct-official-protocol.json). r1_audio2tool_direct.txt is UNCHANGED and "
+            "stays the reconstruction R1/A0/A0' flew."
+        ),
+    },
     "R2-bba-cascade-vs-direct": {
         "arms": {
             "direct": ["r2_bba_direct.txt"],

@@ -373,6 +373,8 @@ class LlamaServerTransport:
         post: Callable[[str, bytes], bytes] | None = None,
         prompt_order: str = "system-instruction-v1",
         feature_root: Path | None = None,
+        user_turn_text: str | None = None,
+        user_turn_audio_first: bool = True,
     ) -> None:
         # Prompt ordering is part of the request's identity: the bytes the
         # model sees change with it, so it is a MODEL-CONFIG field (inside the
@@ -406,6 +408,39 @@ class LlamaServerTransport:
                 f"{', '.join(repr(item) for item in sorted(_SPEECH_FEATURE_PROMPT_ORDERS))}"
             )
         self._prompt_order = prompt_order
+        # Fragment-driven user-turn text (2026-09-04, Audio2Tool official-
+        # protocol replication). The published Audio2Tool protocol puts a
+        # fixed sentence in the USER turn AFTER the audio ("Convert this
+        # voice command to a tool call."); every arm this repository had
+        # built until now sends a user turn carrying nothing but evidence
+        # text and the audio, with the whole instruction in the system
+        # message. Rather than hard-code the sentence or fork a payload
+        # builder, the composed config declares it: `user_turn_text` (the
+        # exact string, part of config_hash -> protocol_hash like every other
+        # request-shaping key) and `user_turn_audio_first` (whether it goes
+        # after or before the audio part; the official order is after).
+        # DEFAULT None: every pre-existing cell renders byte-identically,
+        # which tests/unit/test_llama_server_transport.py asserts directly.
+        if user_turn_text is not None and (
+            not isinstance(user_turn_text, str) or not user_turn_text.strip()
+        ):
+            raise SessionError(
+                "user_turn_text must be a non-empty string when declared; an empty "
+                "user text part would put a meaningless content part on the wire"
+            )
+        if user_turn_text is not None and prompt_order in _SPEECH_FEATURE_PROMPT_ORDERS:
+            # The speech-feature orders build their user content through
+            # _ordered_speech_feature_content, whose ordering contract is
+            # asserted by _assert_agent_history_suffix. Appending a free text
+            # part there would silently change what that assertion is
+            # protecting, so it is refused rather than guessed at; no packet
+            # cell of this replication is flown.
+            raise SessionError(
+                f"user_turn_text is not supported under prompt_order {prompt_order!r}; "
+                "the speech-feature orders own their user content ordering"
+            )
+        self._user_turn_text = user_turn_text
+        self._user_turn_audio_first = bool(user_turn_audio_first)
         # R0 repair T5 (I5): there is no "no session" transport, mirroring the
         # T3 fail-closed constructor discipline for PayloadBindingContext --
         # a caller can never construct a transport that could ever be asked
@@ -476,6 +511,21 @@ class LlamaServerTransport:
         identity)."""
 
         self._assert_session_still_valid()
+
+    def _user_content(self, content: list[dict[str, object]]) -> list[dict[str, object]]:
+        """``content`` plus the configured user-turn text part, if any.
+
+        Identity function when no ``user_turn_text`` is configured, which is
+        every arm that predates the Audio2Tool official-protocol cell -- see
+        the constructor's note. When it IS configured, the text part goes
+        after the whole content (the official order: audio, then the
+        sentence) or, under ``user_turn_audio_first: false``, before it.
+        """
+
+        if self._user_turn_text is None:
+            return content
+        part = {"type": "text", "text": self._user_turn_text}
+        return [*content, part] if self._user_turn_audio_first else [part, *content]
 
     def __call__(self, request_bytes: bytes) -> bytes:
         # R0 repair T5 fix-2 (IMPORTANT, reviewer-flagged): re-verify on the
@@ -625,7 +675,7 @@ class LlamaServerTransport:
             )
             messages = [
                 {"role": "system", "content": system_text},
-                {"role": "user", "content": [audio_part]},
+                {"role": "user", "content": self._user_content([audio_part])},
             ]
         elif self._prompt_order == "evidence-first-system-v3":
             # Four-tier layout (see module docstring): tier 1 [system] task
@@ -670,13 +720,14 @@ class LlamaServerTransport:
             ]
             messages = [
                 {"role": "system", "content": system_content},
-                {"role": "user", "content": [*delta_parts, audio_part]},
+                {"role": "user", "content": self._user_content([*delta_parts, audio_part])},
             ]
         else:
             content: list[dict[str, object]] = [
                 {"type": "text", "text": text} for text in evidence_texts
             ]
             content.append(audio_part)
+            content = self._user_content(content)
             messages = [
                 {"role": "system", "content": payload["task_instruction"]},
                 {"role": "user", "content": content},
@@ -824,6 +875,12 @@ def _llama_server_factory(
             if "speech_feature_root" in values
             else None
         ),
+        # Absent from every fragment that predates the Audio2Tool official-
+        # protocol cell, so those cells keep sending byte-identical requests.
+        user_turn_text=(
+            str(values["user_turn_text"]) if "user_turn_text" in values else None
+        ),
+        user_turn_audio_first=bool(values.get("user_turn_audio_first", True)),
     )
 
 
