@@ -20,24 +20,34 @@ module is touched to make this carrier work.
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import pytest
 
 from speech_aware_evidence_acquisition.core import carriers as _register_core_carriers  # noqa: F401
 from speech_aware_evidence_acquisition.core.base import CARRIERS
 from speech_aware_evidence_acquisition.data.carriers import (
+    AUDIO2TOOL,
+    SLURP,
     CarrierDescriptor,
     CarrierDescriptorError,
+    EntityLayout,
+    EvidenceLayout,
     MetadataColumns,
     ReferenceLayout,
+    TaskLayout,
+    carrier_task_layout,
     get_carrier_descriptor,
     reference_scoped_carrier_lock_keys,
     register_carrier_descriptor,
     resolve_media_identity_carrier,
+    task_scoped_carrier_lock_keys,
 )
+from speech_aware_evidence_acquisition.data.audio2tool import AUDIO2TOOL_LOCK_KEY
 from speech_aware_evidence_acquisition.data.lock import load_lock
-from speech_aware_evidence_acquisition.data.loader import load_carrier
+from speech_aware_evidence_acquisition.data.loader import LoaderError, load_carrier
 from speech_aware_evidence_acquisition.data.references import reference_tokens
+from speech_aware_evidence_acquisition.data.slurp import SLURP_LOCK_KEY
 from speech_aware_evidence_acquisition.core.scorers import score_asr_outputs
 
 _LOCK_KEY = "synthetic-lecture-original"
@@ -348,3 +358,155 @@ def test_synthetic_carrier_scores_through_the_unmodified_scoring_machinery(
     result = score_asr_outputs(outputs_path, lock, data_root)
     assert result["aggregate"]["samples"] == 1
     assert result["per_sample"][0]["wer"] == 0.0
+
+
+# ---------------------------------------------------------------------------
+# Consolidation slice C1 ("one carrier registry"): TaskLayout, the optional
+# metadata layer, and the two new receipt/governed-metadata carriers
+# (audio2tool, slurp) registered at data.carriers import time.
+# ---------------------------------------------------------------------------
+
+
+def test_audio2tool_lock_key_matches_the_canonical_loader_constant():
+    """The literal ``"audio2tool"`` quoted in data.carriers (module docstring's
+    own "quoted literally, not imported" note) must never silently drift from
+    ``data.audio2tool.AUDIO2TOOL_LOCK_KEY``."""
+
+    assert AUDIO2TOOL.lock_key == AUDIO2TOOL_LOCK_KEY
+
+
+def test_slurp_lock_key_matches_the_canonical_loader_constant():
+    assert SLURP.lock_key == SLURP_LOCK_KEY
+
+
+def test_audio2tool_descriptor_has_no_metadata_reference_evidence_entity_layer():
+    assert AUDIO2TOOL.metadata_filename is None
+    assert AUDIO2TOOL.metadata_columns is None
+    assert AUDIO2TOOL.reference is None
+    assert AUDIO2TOOL.evidence is None
+    assert AUDIO2TOOL.entity is None
+
+
+def test_slurp_descriptor_has_no_metadata_reference_evidence_entity_layer():
+    assert SLURP.metadata_filename is None
+    assert SLURP.metadata_columns is None
+    assert SLURP.reference is None
+    assert SLURP.evidence is None
+    assert SLURP.entity is None
+
+
+def test_audio2tool_task_layout_is_the_official_scorer_binding():
+    layout = carrier_task_layout(AUDIO2TOOL_LOCK_KEY)
+    assert layout == TaskLayout(
+        task_kind="speech-tool-use",
+        official_scorer_id="a2t-toolcall",
+        knowledge_layer="tool-registry",
+        stratum_key="tier",
+    )
+
+
+def test_slurp_task_layout_is_the_official_scorer_binding():
+    layout = carrier_task_layout(SLURP_LOCK_KEY)
+    assert layout == TaskLayout(
+        task_kind="slot-slu",
+        official_scorer_id="slurp-slu",
+        knowledge_layer="train-ontology",
+        stratum_key="scenario",
+    )
+
+
+def test_task_scoped_carrier_lock_keys_is_exactly_audio2tool_and_slurp():
+    assert task_scoped_carrier_lock_keys() == frozenset({AUDIO2TOOL_LOCK_KEY, SLURP_LOCK_KEY})
+
+
+def test_task_scoped_carrier_lock_keys_excludes_both_earnings_carriers():
+    scoped = task_scoped_carrier_lock_keys()
+    assert "earnings21-original" not in scoped
+    assert "earnings22-original" not in scoped
+
+
+def test_carrier_task_layout_refuses_a_carrier_with_no_task_layer():
+    with pytest.raises(CarrierDescriptorError, match="declares no task layer"):
+        carrier_task_layout("earnings21-original")
+
+
+def test_carrier_task_layout_refuses_an_unregistered_carrier():
+    with pytest.raises(CarrierDescriptorError, match="no carrier descriptor registered"):
+        carrier_task_layout("never-registered-carrier")
+
+
+def test_earnings_descriptors_declare_no_task_layer():
+    assert get_carrier_descriptor("earnings21-original").task is None
+    assert get_carrier_descriptor("earnings22-original").task is None
+
+
+# ---------------------------------------------------------------------------
+# The two earnings descriptors' full field values, frozen here so a future
+# edit to data.carriers cannot silently change either built-in carrier's
+# layout facts while adding the C1 fields above.
+# ---------------------------------------------------------------------------
+
+
+def test_earnings21_original_descriptor_fields_are_unchanged():
+    descriptor = get_carrier_descriptor("earnings21-original")
+    assert descriptor == CarrierDescriptor(
+        lock_key="earnings21-original",
+        media_subdir="media",
+        media_extension=".mp3",
+        metadata_filename="earnings21-file-metadata.csv",
+        metadata_columns=MetadataColumns(
+            id_column="file_id",
+            duration_column="audio_length",
+            sample_rate_column="sample_rate",
+        ),
+        reference=ReferenceLayout(subdir="transcripts/nlp_references", extension=".nlp"),
+        evidence=EvidenceLayout(
+            lock_key="conec",
+            subdir="earnings21/contexts",
+            extension=".txt",
+            d1_layer_key="e21_contexts",
+        ),
+        media_identity_aliases=frozenset({"conec"}),
+        entity=EntityLayout(subdir="transcripts/wer_tags", extension=".wer_tag.json"),
+        task=None,
+    )
+
+
+def test_earnings22_original_descriptor_fields_are_unchanged():
+    descriptor = get_carrier_descriptor("earnings22-original")
+    assert descriptor == CarrierDescriptor(
+        lock_key="earnings22-original",
+        media_subdir="media",
+        media_extension=".mp3",
+        metadata_filename="metadata.csv",
+        metadata_columns=MetadataColumns(
+            id_column="File ID",
+            duration_column="File Length (seconds)",
+            sample_rate_column="Sampling Rate (Hz)",
+        ),
+        reference=ReferenceLayout(subdir="transcripts/nlp_references", extension=".nlp"),
+        evidence=None,
+        media_identity_aliases=frozenset(),
+        entity=None,
+        task=None,
+    )
+
+
+def test_load_carrier_refuses_a_descriptor_with_no_metadata_layer():
+    """The one-line fail-closed guard added to ``data.loader.load_carrier``:
+    a descriptor whose sample universe is receipt/governed-metadata-scoped
+    (no per-carrier metadata CSV) must never fall through to a bare
+    ``TypeError`` from ``Path / None``."""
+
+    lock = {
+        "datasets": [
+            {
+                "name": AUDIO2TOOL_LOCK_KEY,
+                "kind": "dataset",
+                "local_subdir": "datasets/audio2tool",
+                "profiles": ["speech-aware-core"],
+            }
+        ]
+    }
+    with pytest.raises(LoaderError, match="declares no metadata layer"):
+        load_carrier(AUDIO2TOOL, lock, Path("/nonexistent"))

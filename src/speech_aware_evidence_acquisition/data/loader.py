@@ -110,6 +110,13 @@ def load_carrier(descriptor: CarrierDescriptor, lock: Mapping[str, object], root
     (``data.carriers.register_carrier_descriptor``) plus a loader registration
     (``core.carriers``) to load through the exact same code path."""
 
+    if descriptor.metadata_filename is None or descriptor.metadata_columns is None:
+        raise LoaderError(
+            f"{descriptor.lock_key} declares no metadata layer "
+            "(data.carriers.CarrierDescriptor.metadata_filename/metadata_columns is "
+            "None); load_carrier only loads a carrier whose sample universe is a "
+            "per-carrier metadata CSV -- this carrier needs its own dedicated loader"
+        )
     entry = lock_entry(lock, descriptor.lock_key)
     carrier_dir = asset_dir(lock, descriptor.lock_key, root)
     subdir = str(entry["local_subdir"]).rstrip("/")

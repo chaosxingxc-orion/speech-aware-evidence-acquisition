@@ -112,6 +112,39 @@ class EntityLayout:
 
 
 @dataclass(frozen=True)
+class TaskLayout:
+    """Consolidation slice C1 ("one carrier registry"): the paper-facing task
+    facts a carrier's own data layer cannot express on its own -- which task
+    family this carrier probes, which registered ``core.base.SCORERS`` name
+    is the OFFICIAL scorer for it, which short key names its knowledge layer
+    (if any), and which field a stratified read groups its samples by (if
+    any).
+
+    ``official_scorer_id`` names a ``core.base.SCORERS`` registry key as a
+    plain string, not a live lookup -- this module stays stdlib-only (module
+    docstring) and must not import ``core.*`` at module scope, and a scorer
+    (e.g. ``slurp-slu``) may legitimately not exist yet at the point its
+    carrier's descriptor is registered (this slice registers the STRING only;
+    building the scorer itself is a different slice's job, exactly as this
+    field's own admission note says).
+
+    ``knowledge_layer``/``stratum_key`` are short, free-text description
+    keys (not layout paths -- those still live in ``reference``/``evidence``/
+    ``entity`` below), deliberately optional: a carrier with no knowledge
+    layer of its own (earnings22-original) or no stratified read axis
+    (earnings21-original/earnings22-original, whose D1 closure is a flat
+    per-file split) declares that honestly as ``None``, the same "declare
+    absence, never guess" discipline ``CarrierDescriptor.reference``/
+    ``evidence`` already apply.
+    """
+
+    task_kind: str
+    official_scorer_id: str
+    knowledge_layer: str | None = None
+    stratum_key: str | None = None
+
+
+@dataclass(frozen=True)
 class CarrierDescriptor:
     """Every per-carrier layout fact this study's data-access layer needs.
 
@@ -121,6 +154,30 @@ class CarrierDescriptor:
     reading nothing (or the wrong carrier's files) -- see
     ``data.references``/``core.evidence`` for the two fail-closed refusals
     this makes possible.
+
+    ``metadata_filename``/``metadata_columns`` are ALSO optional (consolidation
+    slice C1): a carrier whose sample universe is authorized by its own
+    receipt or governed metadata rather than a single per-carrier metadata
+    CSV (Audio2Tool's frozen probe-sample receipt, SLURP's governed jsonl
+    splits -- see ``AUDIO2TOOL``/``SLURP`` below) declares both ``None``
+    rather than naming a CSV that does not exist. This is safe for every
+    EXISTING consumer: ``data.loader.load_carrier`` is the only reader of
+    either field (verified by repository-wide search, C1 slice) and now fails
+    closed with a clear ``LoaderError`` for a descriptor with no metadata
+    layer, instead of a bare ``TypeError`` from ``Path / None``; both
+    earnings descriptors keep declaring both fields exactly as before, so
+    ``load_carrier``'s existing behaviour for them is completely unchanged.
+
+    ``task`` (consolidation slice C1) is optional for the same "declare
+    absence honestly" reason: a carrier's paper-facing task family, official
+    scorer, knowledge layer and stratum key are facts a CONSUMER (e.g. a
+    future cross-task roster/report builder) may need to derive without
+    hand-maintaining its own carrier->task table; see :class:`TaskLayout` and
+    :func:`task_scoped_carrier_lock_keys`/:func:`carrier_task_layout` below.
+    Both earnings descriptors currently declare no ``task`` layer (their own
+    ``asr-wer`` scoring is not yet expressed this way) -- adding one for them
+    is left to whichever slice actually needs it, not invented speculatively
+    here.
 
     ``media_identity_aliases`` (MINOR 2, external-threat-model review round
     4): the set of OTHER lock keys whose D1 media identity this carrier's
@@ -140,12 +197,13 @@ class CarrierDescriptor:
     lock_key: str
     media_subdir: str
     media_extension: str
-    metadata_filename: str
-    metadata_columns: MetadataColumns
+    metadata_filename: str | None = None
+    metadata_columns: MetadataColumns | None = None
     reference: ReferenceLayout | None = None
     evidence: EvidenceLayout | None = None
     media_identity_aliases: frozenset[str] = frozenset()
     entity: EntityLayout | None = None
+    task: TaskLayout | None = None
 
 
 _REGISTRY: dict[str, CarrierDescriptor] = {}
@@ -255,6 +313,32 @@ def entity_scoped_carrier_lock_keys() -> frozenset[str]:
     return frozenset(key for key, entry in _REGISTRY.items() if entry.entity is not None)
 
 
+def task_scoped_carrier_lock_keys() -> frozenset[str]:
+    """Every registered carrier whose descriptor declares its own
+    :class:`TaskLayout` (consolidation slice C1) -- today ``audio2tool`` and
+    ``slurp`` only; the two earnings descriptors declare no ``task`` layer
+    (``CarrierDescriptor.task``'s own docstring)."""
+
+    return frozenset(key for key, entry in _REGISTRY.items() if entry.task is not None)
+
+
+def carrier_task_layout(lock_key: str) -> TaskLayout:
+    """``lock_key``'s :class:`TaskLayout`, fail-closed for an unregistered
+    carrier (:func:`get_carrier_descriptor`'s own refusal) or a registered
+    one that declares no task layer at all -- the same "declare absence,
+    refuse a guess" discipline :func:`data.references._reference_layout`/
+    :func:`core.evidence._evidence_layout` already apply for their own
+    optional layers."""
+
+    descriptor = get_carrier_descriptor(lock_key)
+    if descriptor.task is None:
+        raise CarrierDescriptorError(
+            f"carrier {lock_key!r} declares no task layer "
+            "(data.carriers.CarrierDescriptor.task is None)"
+        )
+    return descriptor.task
+
+
 # ---------------------------------------------------------------------------
 # The two built-in carriers this study actually scores today. Registered
 # unconditionally at import time (not lazily), so importing this module
@@ -320,5 +404,97 @@ EARNINGS22_ORIGINAL = register_carrier_descriptor(
         # instead of silently reading earnings21-original's contexts for an
         # earnings22 sample id (the exact defect this refactor closes).
         evidence=None,
+    )
+)
+
+
+# ---------------------------------------------------------------------------
+# The two bounded-discovery-probe carriers (2026-08-15 owner amendment,
+# module docstring of ``data/identity.py``). Neither carries a per-carrier
+# metadata CSV -- their sample universe is authorized by their OWN receipt or
+# governed metadata (Audio2Tool's frozen probe-sample receipt, SLURP's
+# governed jsonl splits), never a ``file_id,...`` table this module could
+# read generically -- so both declare ``metadata_filename``/
+# ``metadata_columns`` as ``None`` (``CarrierDescriptor``'s own docstring) and
+# neither is loadable through ``data.loader.load_carrier``; each has its own
+# dedicated loader (``data.audio2tool.load_audio2tool`` /
+# ``core.carriers.SlurpEngineeringCarrier``) that ``core.carriers`` registers
+# by lock key (consolidation slice C1).
+# ---------------------------------------------------------------------------
+
+# Lock key strings below are quoted literally (not imported) to keep this
+# module stdlib-only (module docstring: "no dependency on core.*/contracts.*
+# at module scope") -- the canonical constants they must match are
+# ``data.audio2tool.AUDIO2TOOL_LOCK_KEY`` ("audio2tool") and
+# ``data.slurp.SLURP_LOCK_KEY`` ("slurp"); the C1 unification tests pin both
+# literals against those constants directly so the two can never silently
+# drift apart.
+
+AUDIO2TOOL = register_carrier_descriptor(
+    CarrierDescriptor(
+        lock_key="audio2tool",
+        # ``data/audio2tool.py`` module docstring: "``<asset root>/
+        # tools_registry.csv`` plus ``<asset root>/public/`` holding one
+        # ``tier{N}_{name}_data/tier{N}_{name}.json`` manifest ... and one
+        # ``tier{N}_{name}_audios/query_{id:05d}/*.wav`` directory tree per
+        # tier"; ``load_audio2tool`` builds every sample's own
+        # ``media_relpath`` as ``f"{subdir}/public/{item.audio_relpath_in_
+        # public}"`` (``data/audio2tool.py::load_audio2tool``) -- "public" is
+        # the one fixed top-level subdir every tier's media tree sits under,
+        # relative to the carrier's own asset root.
+        media_subdir="public",
+        media_extension=".wav",
+        # No metadata CSV (module docstring above); no reference/evidence/
+        # entity layer either -- the receipt is this carrier's ONLY sample
+        # authority (``data/audio2tool.py`` module docstring: "pre-
+        # registration means no run may ever resolve Audio2Tool items outside
+        # it") and it never names a gold reference-transcript or evidence
+        # file this study's generic reference/evidence machinery could read.
+        task=TaskLayout(
+            task_kind="speech-tool-use",
+            official_scorer_id="a2t-toolcall",
+            knowledge_layer="tool-registry",
+            stratum_key="tier",
+        ),
+    )
+)
+
+SLURP = register_carrier_descriptor(
+    CarrierDescriptor(
+        lock_key="slurp",
+        # ``data/slurp.py``'s own ``_governed_roots`` resolves the governed
+        # audio ROOT dynamically from the lock, never a fixed subdir off a
+        # carrier asset root the way earnings21/22 do: "the umbrella lock's
+        # own ``slurp`` entry names two DISTINCT trees ... ``annotations.
+        # governed_copy`` (``datasets/slurp/metadata`` ...)" (module
+        # docstring), and ``audio_root_relpath = governed_copy[:
+        # -len("/metadata")]`` (``_governed_roots``) -- i.e. the audio root is
+        # the metadata directory's own sibling, not a literal constant this
+        # descriptor can name. Split-specific media then sits one level
+        # below that root: ``_AUDIO_SUBDIR_FOR_SPLIT: Mapping[str, str] =
+        # {"devel": "slurp_real", "test": "slurp_real", "train": "slurp_real",
+        # "train_synthetic": "slurp_synth"}`` (``data/slurp.py``). This field
+        # therefore names the concrete subdir the study's own discovery split
+        # resolves under -- ``devel``, the ``split_id`` default in
+        # ``data.identity.slurp_layers`` and the only split this study's own
+        # CLAUDE.md research boundary makes addressable without an explicit
+        # ``allow_heldout``/``allow_synthetic`` opt-in -- for descriptive/
+        # registry purposes ONLY: SLURP's real loader
+        # (``core.carriers.SlurpEngineeringCarrier`` /
+        # ``data.slurp._governed_roots``) resolves its own root straight from
+        # the lock and never reads this descriptor field at all.
+        media_subdir="slurp_real",
+        media_extension=".flac",
+        # No metadata CSV (governed jsonl splits, not a CSV table); no
+        # reference/evidence/entity layer -- SLURP's own SLU gold
+        # (scenario/action/entities) lives in ``data.slurp.SlurpRecord``, read
+        # through ``data.slurp.load_slurp_split`` directly, never through this
+        # study's generic ``.nlp``-reference/entity-sidecar machinery.
+        task=TaskLayout(
+            task_kind="slot-slu",
+            official_scorer_id="slurp-slu",
+            knowledge_layer="train-ontology",
+            stratum_key="scenario",
+        ),
     )
 )

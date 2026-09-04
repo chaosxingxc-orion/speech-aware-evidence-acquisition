@@ -97,3 +97,35 @@ build commit plus per-file GGUF SHA-256. Record every model or tool contact in
   manifest.
 - Writing candidate IDs such as R2 into package names, MLflow namespaces, or formal experiment IDs.
 - Publishing a wiki mirror or a public release without owner authorization.
+
+## Engineering base and experiment rules (owner, 2026-09-03)
+
+Owner directives of 2026-09-03 (recovery plan after the September Audio2Tool sprint); they
+restate the 2026-08-23 rulings and are enforced by `scripts/checks/engineering_base_check.py`.
+
+- **One base, thin derivations.** `rails.task_adapter.TaskAdapter`, `rails.knowledge_provider.
+  KnowledgeProvider`, `rails.controllers.EvidenceAgentController`, and `core.flight.FlightRuntime`
+  are the bases; a carrier adds one `data.carriers` descriptor, one adapter under
+  `rails/adapters/`, one scorer registration, and config fragments. No new module under
+  `rails/probes/`, no `TaskAdapter` or controller subclass elsewhere, no `launcher/` directory
+  under `docs/checks/`. Every `policy`, `evidence_source`, and `scorers` value in `configs/`
+  must resolve in a `core.base` registry.
+- **Same harness for every arm.** The direct baseline is the `direct-only` phase program of the
+  shared controller through the same `FlightRuntime` and the same OpenJiuwen executor; a
+  separate code path for a baseline is a defect.
+- **Standard scoring.** The paper-facing number comes from the dataset's standard scorer
+  (SLURP official `evaluate.py` from the pinned local clone; Audio2Tool `a2t-toolcall`
+  calibrated to arXiv:2604.22821 Table 3; Earnings WER with the Whisper normalizer beside
+  `saea-scoring-v1`), run once per complete manifest through `core.scoring_batch`, never sharded.
+- **Carriers.** Locked to Earnings21+ConEC, SLURP, Audio2Tool until the owner expands the set.
+- **Power and rosters.** Paired effectiveness claims need n >= 400 (Audio2Tool frozen 400 split,
+  SLURP DEV-500 or larger, Earnings full discovery). No fixed-8/12/16 screens. Replicate on the
+  same roster before drawing a fresh one; report natural-mixture and equal-stratum weightings.
+- **Iteration.** One experiment in flight. A new mechanism is admitted only after its predecessor
+  is replicated or root-caused to a named component. At most one recovery re-registration per
+  flight; a second failure stops the flight and the fix is proven on a 4-row dry run.
+- **Reporting.** Every verdict carries the per-stratum table; Audio2Tool tables carry the paper
+  column beside the repo column. Gates are set relative to the published ceiling, never above it.
+- **Pipeline.** CPU packet preprocessing runs in parallel (20 workers idle, 8 during a campaign)
+  and overlaps model load; one resident server per serving geometry; ready flights are queued by
+  geometry so the GPU never idles; official scoring overlaps the next flight.
