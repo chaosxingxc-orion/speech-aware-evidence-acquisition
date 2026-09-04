@@ -309,3 +309,37 @@ Filled in as the flight proceeds; every entry is written before the step it desc
   model or baseline fragment was needed because the longest wav does not force `-np 2`.
 - Found and recorded that the released `tier5_dataset.py` cannot read the released tier-5 dataset
   (section 2, deviation 3).
+- Commit `394fe142`. `python scripts/checks/engineering_base_check.py`: PASS.
+  `pytest tests/unit`: 6,021 passed, 6 failed — exactly the known pre-existing set (2 × `test_pemb3m`,
+  2 × `test_pemb4r`, `test_bundle` CLI, and the full-suite-only registry-pollution failure in
+  `test_engineering_base_check` that passes in isolation) — plus the known
+  `test_build_a2t_g6_family_sweep` collection error from the verl `scripts` shadow.
+- The three exposure rows were registered next, all `consumed = no`, before any contact
+  (commit `92821da4`). GPU `enforced.power.limit` read 100.00 W before the first server was spawned.
+
+### 2026-09-04, Phase 2 — prompt fit (zero generated tokens)
+
+Row `SAEA-A2T-TIER258-OFFICIAL-POPULATION-PROMPT-FIT-V1`, registered before the server was touched.
+One `GET /props`, one `POST /apply-template` and two `POST /tokenize`; no completion endpoint
+touched, `generations` 0.
+
+| Cell | System message | Text tokens | Worst required | Slot | Margin | Fits |
+|---|---|---:|---:|---:|---:|:--:|
+| `T258-official-pop-1500` | in-code-default, 16,143 chars, `be7f31a2…` | 3,581 | 4,268 (`tier5_needle:003555`) | 16,384 (`-np 3`) | 12,116 | yes |
+
+Receipt:
+`docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-tier258-official-population-v1/prompt-fit/prompt-fit.json`
+(SHA-256 `baf549f20fa6ee5a4e66c6c3c9922255bbabf6dfb2ee0280aebdeea62ce2bc42`).
+
+Three findings carried forward:
+
+1. **The rendered system message is the release's in-code default, verbatim.** 16,143 chars,
+   `be7f31a2e8c7e6dd…` — the same bytes the sealed `R-official-raw` and `T1-official-pop-500` cells
+   were certified against, and `system_text_verbatim_in_rendered_prompt` is true. 3,581 text tokens,
+   identical to both.
+2. **The window rule held on all 400 reference packets** (13 tokens per one-second window, zero
+   disagreements) before it was applied to this unpreprocessed roster. Over the 1,500 rows it gives
+   min 13, median 78, p95 169, max 429.
+3. **`-np 3` is certified with room to spare.** Required window min 3,852, median 3,917, max 4,268;
+   served-slot margin min 12,116 against the 8,192-token reserve; `largest_slot_count_meeting_reserve_at_this_context`
+   is 3, so `-np 4` is refused by the rule and not by hand. The tier-1 cell's `-np 2` is not needed.
