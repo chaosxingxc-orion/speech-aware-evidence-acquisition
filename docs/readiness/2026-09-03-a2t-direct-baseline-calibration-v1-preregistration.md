@@ -410,3 +410,46 @@ The payload-to-wire-body step (`tool_schemas` -> `tools`) belongs to
 `core.model.transport.LlamaServerTransport` and is covered by that transport's own committed tests;
 this check asserts at the transport seam, where the payload is what crosses. The only link now
 untested against real bytes is the server itself.
+
+### 2026-09-04, Phase 2e: the wire check pays for itself -- defect 6, found for free
+
+Running `--wire-check` on the CLEAN tree got past the git guard and immediately refused at the
+sealing link, for all four cells:
+
+    BundleError: outputs line 1 lacks required fields ['admitted', 'carrier_lock_key',
+    'request_id', 'request_sha256', 'response_sha256', 'response_text_sha256', 'text']
+
+- **Defect: `seal()` wrote outputs rows the bundle contract refuses.**
+  `core.bundle.outputs._REQUIRED_OUTPUTS_FIELDS` is a hash-bound audit contract -- `request_id`,
+  `sample_id`, `carrier_lock_key`, `arm`, `text`, `admitted` and three identity hashes -- and
+  `verify_bundle` additionally binds each row's `carrier_lock_key`/`arm` to the manifest and
+  re-derives `response_text_sha256` from the row's own `text`. `FlightRuntime.seal()` wrote its own
+  loose diagnostic dict instead (`messages`/`metrics`/`consumption`), so a sealed rails flight could
+  never verify. **On the real smoke this would have refused at seal time, after all 16 contacts had
+  been spent**; on the 400-row flight, after 1,608.
+- **Root cause underneath it**: the three hashes only ever existed on `core.model.CoreResponse`,
+  which `rails.core_client.FrozenCoreClient.complete` discarded -- it returns `response.text` alone.
+  Nothing on the rails path could have written a verifiable row.
+- **Fix, in two parts.** `RequestTiming` now carries `request_sha256`, `response_sha256` and
+  `response_text_sha256` (defaulted to `None`, so every existing construction site is untouched),
+  populated from the adapter's own `CoreResponse`; and a new
+  `FlightRuntime._canonical_output_rows()` builds exactly the contract's nine fields from those
+  per-request records, one row per sample, failing closed when a sample has no record or a record
+  lacks its hashes. Both `seal()` and the wire check's own sealing step write through it, so they
+  can never drift apart. Four new tests assert the row set against the real
+  `_REQUIRED_OUTPUTS_FIELDS`, the text-to-hash binding, and both refusals.
+- This is the third harness defect that would have cost a full campaign to discover, and the first
+  one caught before spending anything. The wire check has now paid for itself.
+
+Receipts under `docs/checks/speech-aware-evidence-acquisition/
+2026-09-04-a2t-direct-calibration-400-v1/wire-check/`: `wire-check.json` is the dirty-tree run that
+proved the client path for all four cells; `wire-check-clean.json` is the clean-tree run that found
+this defect, re-issued after the fix and therefore again recording `seal_and_score: REFUSED` -- this
+time for the ordinary dirty-tree reason, since the fix itself dirties `src/`. The client half is
+unchanged and green in both: 4 contacts per cell, payload key set equal to `ARM_VISIBLE_FIELDS[arm]`,
+152 tool schemas on both native cells, `id_slot` 0, and 4 packets hash-verified on both packet cells.
+One more `--wire-check` on the next clean tree closes the seal and scoring links for real.
+
+The registered 16-call smoke was NOT run in this phase: the standing rule is to stop for a commit
+once a refusal is diagnosed and fixed. `SAEA-A2T-DIRECT-CALIBRATION-SMOKE-V1` remains
+`consumed = no` with all 16 calls unspent.

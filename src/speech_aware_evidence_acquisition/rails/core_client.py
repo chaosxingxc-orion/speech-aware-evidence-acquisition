@@ -434,6 +434,17 @@ class RequestTiming:
     # native-tools client, so a per-request trace record names the exact
     # tool registry that request was made under without re-hashing it.
     tool_schemas_sha256: str | None = None
+    # 2026-09-04: the adapter's own per-request identity hashes, carried
+    # through instead of discarded. core.bundle.verify_bundle REQUIRES every
+    # outputs row to carry request_sha256/response_sha256/
+    # response_text_sha256 (core.bundle.outputs._REQUIRED_OUTPUTS_FIELDS),
+    # and this client -- which returns only response.text -- was the only
+    # place they existed on the rails path, so a bundle sealed from a rails
+    # flight could never verify. Defaulted to None so every pre-existing
+    # construction site is untouched.
+    request_sha256: str | None = None
+    response_sha256: str | None = None
+    response_text_sha256: str | None = None
 
     def as_json(self) -> dict[str, object]:
         return {
@@ -442,6 +453,9 @@ class RequestTiming:
             "started_at": self.started_at,
             "latency_seconds": self.latency_seconds,
             "tool_schemas_sha256": self.tool_schemas_sha256,
+            "request_sha256": self.request_sha256,
+            "response_sha256": self.response_sha256,
+            "response_text_sha256": self.response_text_sha256,
         }
 
 
@@ -1196,6 +1210,9 @@ class FrozenCoreClient:
                     started_at=started_at,
                     latency_seconds=response.latency_seconds,
                     tool_schemas_sha256=self._tool_schemas_sha256,
+                    request_sha256=response.request_sha256,
+                    response_sha256=response.response_sha256,
+                    response_text_sha256=response.response_text_sha256,
                 )
             )
         return response.text

@@ -10,6 +10,7 @@ background pool rather than blocking the next flight's own stages.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import subprocess
 import threading
@@ -86,14 +87,31 @@ class _FakeSession:
 
 
 class _FakeTiming:
-    def __init__(self, latency_seconds: float = 0.01) -> None:
+    """Mirrors rails.core_client.RequestTiming, including the per-request
+    identity hashes core.bundle.verify_bundle requires an outputs row to
+    carry (2026-09-04)."""
+
+    def __init__(
+        self,
+        latency_seconds: float = 0.01,
+        sample_id: str = "s1",
+        request_id: str = "req-0001",
+    ) -> None:
         self.latency_seconds = latency_seconds
+        self.sample_id = sample_id
+        self.request_id = request_id
+        self.request_sha256 = "a" * 64
+        self.response_sha256 = "b" * 64
+        self.response_text_sha256 = hashlib.sha256(b"resp").hexdigest()
 
 
 class _FakeClient:
     def __init__(self, **kwargs: object) -> None:
         self.arm = kwargs.get("arm", "test-arm")
-        self.timings = (_FakeTiming(),)
+        self.timings = (
+            _FakeTiming(sample_id="s1", request_id="req-0001"),
+            _FakeTiming(sample_id="s2", request_id="req-0002"),
+        )
         self.closed = False
 
     def close(self) -> Mapping[str, object]:

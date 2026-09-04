@@ -15,6 +15,7 @@ fixture already uses in this test suite.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import subprocess
 from pathlib import Path
@@ -107,15 +108,32 @@ class _FakeSession:
 
 
 class _FakeTiming:
-    def __init__(self, latency_seconds: float = 0.05) -> None:
+    """Mirrors rails.core_client.RequestTiming, including the per-request
+    identity hashes core.bundle.verify_bundle requires an outputs row to
+    carry (2026-09-04)."""
+
+    def __init__(
+        self,
+        latency_seconds: float = 0.05,
+        sample_id: str = "s1",
+        request_id: str = "req-0001",
+    ) -> None:
         self.latency_seconds = latency_seconds
+        self.sample_id = sample_id
+        self.request_id = request_id
+        self.request_sha256 = "a" * 64
+        self.response_sha256 = "b" * 64
+        self.response_text_sha256 = hashlib.sha256(b"resp").hexdigest()
 
 
 class _FakeClient:
     def __init__(self, **kwargs: object) -> None:
         self.constructor_kwargs = dict(kwargs)
         self.arm = kwargs.get("arm", "test-arm")
-        self.timings = (_FakeTiming(), _FakeTiming())
+        self.timings = (
+            _FakeTiming(sample_id="s1", request_id="req-0001"),
+            _FakeTiming(sample_id="s2", request_id="req-0002"),
+        )
         self.closed = False
 
     def close(self) -> Mapping[str, object]:
@@ -1512,3 +1530,85 @@ def test_wire_check_doubles_never_open_a_socket(tmp_path):
     assert json.loads(body.decode("utf-8"))["text"]
     with pytest.raises(FlightRuntimeError, match="bytes"):
         transport("not bytes")
+
+
+# ---------------------------------------------------------------------------
+# Phase 2e: outputs rows must satisfy the bundle contract.
+#
+# core.bundle.verify_bundle refuses any outputs row missing one of
+# core.bundle.outputs._REQUIRED_OUTPUTS_FIELDS, and binds each row's
+# carrier_lock_key/arm to the manifest while re-deriving
+# response_text_sha256 from the row's own text. seal() used to write a loose
+# diagnostic dict instead, so a sealed rails flight could never verify --
+# and the refusal landed AFTER every contact had been spent.
+# ---------------------------------------------------------------------------
+
+
+from speech_aware_evidence_acquisition.core.bundle.outputs import (  # noqa: E402
+    _REQUIRED_OUTPUTS_FIELDS,
+)
+
+
+def test_canonical_output_rows_satisfy_the_bundle_contract(tmp_path):
+    runtime = _wire_runtime(tmp_path)
+    runtime.wire_check(seal_and_score=False)
+
+    rows = runtime._canonical_output_rows(runtime._client)
+    assert len(rows) == 2
+    for row in rows:
+        assert _REQUIRED_OUTPUTS_FIELDS <= set(row)
+        assert row["carrier_lock_key"] == "fake-carrier"
+        assert row["arm"] == "bare-core"
+        assert row["admitted"] is True
+        assert isinstance(row["text"], str)
+        assert len(row["request_sha256"]) == 64
+        assert len(row["response_sha256"]) == 64
+    assert sorted(row["sample_id"] for row in rows) == ["s1", "s2"]
+    # One row per sample: the contract refuses duplicates.
+    assert len({row["sample_id"] for row in rows}) == len(rows)
+
+
+def test_canonical_output_rows_bind_text_to_its_recorded_hash(tmp_path):
+    """verify_bundle recomputes sha256(text) and refuses on a mismatch, so
+    the row's text and its recorded hash must come from the same response."""
+
+    runtime = _wire_runtime(tmp_path)
+    runtime.wire_check(seal_and_score=False)
+    rows = runtime._canonical_output_rows(runtime._client)
+    for row in rows:
+        recomputed = hashlib.sha256(str(row["text"]).encode("utf-8")).hexdigest()
+        assert recomputed == row["response_text_sha256"]
+
+
+def test_canonical_output_rows_fail_closed_without_response_hashes(tmp_path):
+    class _HashlessTiming(_FakeTiming):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.request_sha256 = None
+            self.response_sha256 = None
+            self.response_text_sha256 = None
+
+    class _HashlessClient(_TransportDrivingClient):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.timings = (
+                _HashlessTiming(sample_id="s1"),
+                _HashlessTiming(sample_id="s2"),
+            )
+
+    runtime = _wire_runtime(tmp_path, client_factory=_HashlessClient)
+    runtime.wire_check(seal_and_score=False)
+    with pytest.raises(FlightRuntimeError, match="bundle contract binds an outputs row"):
+        runtime._canonical_output_rows(runtime._client)
+
+
+def test_canonical_output_rows_fail_closed_without_a_per_request_record(tmp_path):
+    class _NoTimingClient(_TransportDrivingClient):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.timings = ()
+
+    runtime = _wire_runtime(tmp_path, client_factory=_NoTimingClient)
+    runtime.wire_check(seal_and_score=False)
+    with pytest.raises(FlightRuntimeError, match="no per-request record"):
+        runtime._canonical_output_rows(runtime._client)

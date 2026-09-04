@@ -1530,6 +1530,76 @@ class FlightRuntime:
 
     # -- stage 5: seal --------------------------------------------------
 
+    def _canonical_output_rows(self, client: object) -> list[Mapping[str, object]]:
+        """The outputs rows ``core.bundle.verify_bundle`` actually requires.
+
+        ``core.bundle.outputs._REQUIRED_OUTPUTS_FIELDS`` is a hash-bound
+        audit contract -- ``request_id``, ``sample_id``, ``carrier_lock_key``,
+        ``arm``, ``text``, ``admitted`` and the three identity hashes -- and
+        it binds each row's ``carrier_lock_key``/``arm`` to the manifest and
+        re-derives ``response_text_sha256`` from ``text``. This stage used to
+        write its own loose diagnostic dict instead (``messages``/
+        ``metrics``/``consumption``), so a sealed rails flight could never
+        verify: the bundle refused with "outputs line 1 lacks required
+        fields" AFTER every contact had been spent.
+
+        The hashes come from the client's own per-request records
+        (``rails.core_client.RequestTiming``), which is where the adapter's
+        ``CoreResponse`` identity now lands. One row per sample, as the
+        contract requires (it refuses duplicate sample ids); when a policy
+        made several contacts for one sample, the LAST one is the response
+        that stands.
+        """
+
+        timing_by_sample: dict[str, object] = {}
+        for timing in getattr(client, "timings", ()) or ():
+            timing_by_sample[timing.sample_id] = timing
+        arm = self._arm()
+        rows: list[Mapping[str, object]] = []
+        for row in self._output_rows:
+            sample_id = str(row.get("sample_id"))
+            timing = timing_by_sample.get(sample_id)
+            if timing is None:
+                raise FlightRuntimeError(
+                    f"no per-request record for sample {sample_id!r}; an outputs row "
+                    "cannot be sealed without the response identity hashes the bundle "
+                    "contract requires"
+                )
+            text = row.get("response_text")
+            if text is None:
+                text = row.get("final_response_text")
+            if not isinstance(text, str):
+                raise FlightRuntimeError(
+                    f"sample {sample_id!r} produced no response text to seal"
+                )
+            missing = [
+                name
+                for name in ("request_sha256", "response_sha256", "response_text_sha256")
+                if not getattr(timing, name, None)
+            ]
+            if missing:
+                raise FlightRuntimeError(
+                    f"per-request record for sample {sample_id!r} lacks {missing}; the "
+                    "bundle contract binds an outputs row to its response bytes"
+                )
+            rows.append(
+                {
+                    "request_id": timing.request_id,
+                    "sample_id": sample_id,
+                    "carrier_lock_key": self._plan.carrier_lock_key
+                    if self._plan is not None
+                    else self._composed.values["carrier_lock_key"],
+                    "arm": arm,
+                    "text": text,
+                    "admitted": True,
+                    "request_sha256": timing.request_sha256,
+                    "response_sha256": timing.response_sha256,
+                    "response_text_sha256": timing.response_text_sha256,
+                }
+            )
+        return rows
+
+
     def seal(self, *, flight_receipt_kwargs: Mapping[str, object] | None = None) -> Mapping[str, object]:
         """Write ``outputs.jsonl`` from the samples ``run_phases`` produced,
         close the client (which closes its owned ``TraceSink`` -- "write
@@ -1551,9 +1621,12 @@ class FlightRuntime:
         run_dir = self._run_dir()
         run_dir.mkdir(parents=True, exist_ok=True)
         outputs_path = run_dir / "outputs.jsonl"
+        canonical_rows = self._canonical_output_rows(self._client)
         with outputs_path.open("w", encoding="utf-8") as handle:
-            for row in self._output_rows:
-                handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+            for row in canonical_rows:
+                handle.write(
+                    json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n"
+                )
 
         close_receipt = self._client.close()
         result = RunResult(
@@ -1846,9 +1919,12 @@ class FlightRuntime:
         that carries the fix under test."""
 
         outputs_path = run_dir / "outputs.jsonl"
+        canonical_rows = self._canonical_output_rows(self._client)
         with outputs_path.open("w", encoding="utf-8") as handle:
-            for row in self._output_rows:
-                handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+            for row in canonical_rows:
+                handle.write(
+                    json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n"
+                )
         result = RunResult(
             run_id=plan.run_id,
             arm=close_receipt["arm"],
