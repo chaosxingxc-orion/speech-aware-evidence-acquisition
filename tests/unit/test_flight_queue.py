@@ -191,8 +191,21 @@ def _fake_bundle_finalizer(manifest_path, lock, root, *, repo_root) -> _FakeFina
 
 
 def _fake_score_batch(jobs, *, output_dir, max_workers, **_kwargs) -> Mapping[str, object]:
+    """Mirrors core.scoring_batch.run_score_batch's own success shape: it
+    reports per-job outcomes in the RESULT rather than raising, so a caller
+    that only watches for exceptions cannot tell a green batch from a red
+    one."""
+
     Path(output_dir).mkdir(parents=True, exist_ok=True)
-    return {"job_count": len(jobs)}
+    return {
+        "job_count": len(jobs),
+        "succeeded": len(jobs),
+        "failed": 0,
+        "jobs": [
+            {"job_id": getattr(job, "job_id", "j"), "status": "succeeded"}
+            for job in jobs
+        ],
+    }
 
 
 def _fake_rails_runner(**kwargs: object) -> _FakeRunSummary:

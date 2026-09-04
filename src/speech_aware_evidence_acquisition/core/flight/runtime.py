@@ -1601,7 +1601,8 @@ class FlightRuntime:
 
 
     def seal(self, *, flight_receipt_kwargs: Mapping[str, object] | None = None) -> Mapping[str, object]:
-        """Write ``outputs.jsonl`` from the samples ``run_phases`` produced,
+        """Write ``<run_id>.outputs.jsonl`` from the samples ``run_phases``
+        produced,
         close the client (which closes its owned ``TraceSink`` -- "write
         outputs JSONL + trace via the client's sink"), then
         ``manifest_builder`` (default ``core.bundle.manifest.
@@ -1620,7 +1621,13 @@ class FlightRuntime:
         self._require_prior_stages("seal")
         run_dir = self._run_dir()
         run_dir.mkdir(parents=True, exist_ok=True)
-        outputs_path = run_dir / "outputs.jsonl"
+        # `<run_id>.outputs.jsonl`, not `outputs.jsonl`: the cost scorer
+        # locates a run's manifest by the shared run_id stem
+        # (core.scorers._manifest_path_for_outputs, the same convention
+        # core.bundle.build_manifest uses for `<run_id>.run-manifest.json`)
+        # and refuses any other name. Writing the bare name made official
+        # scoring fail AFTER every contact had been spent.
+        outputs_path = run_dir / f"{self._plan.run_id}.outputs.jsonl"
         canonical_rows = self._canonical_output_rows(self._client)
         with outputs_path.open("w", encoding="utf-8") as handle:
             for row in canonical_rows:
@@ -1918,7 +1925,7 @@ class FlightRuntime:
         raised, because the wire check's whole point is to run on the tree
         that carries the fix under test."""
 
-        outputs_path = run_dir / "outputs.jsonl"
+        outputs_path = run_dir / f"{plan.run_id}.outputs.jsonl"
         canonical_rows = self._canonical_output_rows(self._client)
         with outputs_path.open("w", encoding="utf-8") as handle:
             for row in canonical_rows:
@@ -1975,12 +1982,45 @@ class FlightRuntime:
                     "design; re-run this wire check on a clean tree to exercise them"
                 ),
             }
+        # A score BATCH reports a failed job in its result dict; it does not
+        # raise. Reporting OK on "no exception" was a false green: the first
+        # clean-tree wire check said OK for all four cells while every
+        # scoring job had in fact failed (the cost scorer refused the
+        # outputs artifact's name). A green here now REQUIRES every job to
+        # have succeeded.
+        failed = score_result.get("failed") if isinstance(score_result, Mapping) else None
+        succeeded = score_result.get("succeeded") if isinstance(score_result, Mapping) else None
+        job_failures = [
+            {
+                "job_id": job.get("job_id"),
+                "error": job.get("error"),
+                "returncode": job.get("returncode"),
+                "stderr_log": job.get("stderr_log"),
+            }
+            for job in (score_result.get("jobs") or ())
+            if isinstance(score_result, Mapping) and job.get("status") != "succeeded"
+        ]
+        if failed or succeeded != len(jobs) or job_failures:
+            return {
+                "status": "SCORING_FAILED",
+                "reason": (
+                    f"{failed} of {len(jobs)} scoring job(s) failed; a wire check is "
+                    "green only when every registered scorer ran to completion"
+                ),
+                "manifest_path": str(manifest_path),
+                "manifest_sha256": _sha256_file(manifest_path),
+                "verified_attempt_state": getattr(verified, "attempt_state", None),
+                "outputs_row_count": len(canonical_rows),
+                "scorers": list(self._composed.values.get("scorers", ())),
+                "job_failures": job_failures,
+                "score_result": score_result,
+            }
         return {
             "status": "OK",
             "manifest_path": str(manifest_path),
             "manifest_sha256": _sha256_file(manifest_path),
             "verified_attempt_state": getattr(verified, "attempt_state", None),
-            "outputs_row_count": len(self._output_rows),
+            "outputs_row_count": len(canonical_rows),
             "score_result": score_result,
             "scorers": list(self._composed.values.get("scorers", ())),
             "numbers_are_meaningless": (

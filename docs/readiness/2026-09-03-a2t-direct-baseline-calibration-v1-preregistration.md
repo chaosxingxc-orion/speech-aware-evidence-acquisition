@@ -453,3 +453,41 @@ One more `--wire-check` on the next clean tree closes the seal and scoring links
 The registered 16-call smoke was NOT run in this phase: the standing rule is to stop for a commit
 once a refusal is diagnosed and fixed. `SAEA-A2T-DIRECT-CALIBRATION-SMOKE-V1` remains
 `consumed = no` with all 16 calls unspent.
+
+### 2026-09-04, Phase 2f: defect 7, and a false green in the wire check itself
+
+The clean-tree wire check reported `seal_and_score: OK` for all four cells -- and it was WRONG.
+Reading the receipt rather than the status line showed every scoring job had failed.
+
+- **Defect 7: `seal()` named the outputs artifact `outputs.jsonl`, not `<run_id>.outputs.jsonl`.**
+  The `cost` scorer locates a run's manifest by the shared run_id stem
+  (`core.scorers._manifest_path_for_outputs`, the same convention
+  `core.bundle.build_manifest` uses for `<run_id>.run-manifest.json`) and refuses any other name:
+  "cost scorer requires an outputs artifact named '<run_id>.outputs.jsonl'". The manifest built and
+  verified; only the official scoring step failed -- which on the real smoke would have landed after
+  all 16 contacts were spent, and on the 400-row flight after 1,608. Fixed in both `seal()` and the
+  wire check's own sealing step.
+- **Defect 8, in the wire check itself: a failed score batch was reported green.**
+  `core.scoring_batch.run_score_batch` reports per-job outcomes in its RESULT dict and does not
+  raise, so the wire check's "no exception means OK" was a false green that hid defect 7 behind an
+  OK line. `seal_and_score` is now green only when every job succeeded; otherwise it reports
+  `SCORING_FAILED` with each job's error, return code and stderr log. The fake score batch in the
+  unit tests was made faithful to the real success shape so this can never silently regress.
+- This is the failure mode a wiring proof is most exposed to: a check that reports what it hoped
+  rather than what happened is worse than no check. It was caught by reading the receipt the check
+  itself wrote, which is the reason the receipt records the full batch result and not just a verdict.
+
+Status of the links: contact-free client path green for all four cells (4 contacts each, payload key
+set equal to `ARM_VISIBLE_FIELDS[arm]`, 152 tool schemas on both native cells, `id_slot` 0, 4 packets
+hash-verified on both packet cells); manifest build and `verify_bundle` green; official scoring NOT
+yet observed green -- the naming fix landed after the last clean tree, so the next `--wire-check` on
+a clean tree is the first that can honestly report it.
+
+Receipts under `docs/checks/speech-aware-evidence-acquisition/
+2026-09-04-a2t-direct-calibration-400-v1/wire-check/`: `wire-check-clean-2.json` is the run that
+reported the false green (kept deliberately -- it is the evidence for defect 8, and its embedded
+`score_result` shows `succeeded: 0, failed: 1` under a status line that said OK).
+
+The registered 16-call smoke was NOT run in this phase; the standing rule is to stop for a commit
+once a refusal is diagnosed and fixed. `SAEA-A2T-DIRECT-CALIBRATION-SMOKE-V1` remains
+`consumed = no` with all 16 calls unspent.

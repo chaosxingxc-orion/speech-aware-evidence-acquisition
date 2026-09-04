@@ -225,8 +225,21 @@ def _fake_bundle_finalizer(manifest_path, lock, root, *, repo_root) -> _FakeFina
 
 
 def _fake_score_batch(jobs, *, output_dir, max_workers, **_kwargs) -> Mapping[str, object]:
+    """Mirrors core.scoring_batch.run_score_batch's own success shape: it
+    reports per-job outcomes in the RESULT rather than raising, so a caller
+    that only watches for exceptions cannot tell a green batch from a red
+    one."""
+
     Path(output_dir).mkdir(parents=True, exist_ok=True)
-    return {"job_count": len(jobs)}
+    return {
+        "job_count": len(jobs),
+        "succeeded": len(jobs),
+        "failed": 0,
+        "jobs": [
+            {"job_id": getattr(job, "job_id", "j"), "status": "succeeded"}
+            for job in jobs
+        ],
+    }
 
 
 def _fake_rails_runner(**kwargs: object) -> _FakeRunSummary:
@@ -1501,7 +1514,61 @@ def test_wire_check_seals_and_scores_when_the_links_are_available(tmp_path):
     assert seal["status"] == "OK"
     assert seal["outputs_row_count"] == 2
     assert seal["manifest_sha256"]
-    assert seal["score_result"] == {"job_count": 1}
+    assert seal["score_result"]["job_count"] == 1
+    assert seal["score_result"]["succeeded"] == 1
+    assert seal["score_result"]["failed"] == 0
+
+
+def test_wire_check_refuses_to_call_a_failed_score_batch_green(tmp_path):
+    """A score batch reports a failed job in its result dict rather than
+    raising. Reporting OK on "no exception" was a false green: the first
+    clean-tree wire check said OK for all four cells while every scoring job
+    had in fact failed."""
+
+    def _failing_score_batch(jobs, *, output_dir, max_workers, **_kwargs):
+        Path(output_dir).mkdir(parents=True, exist_ok=True)
+        return {
+            "job_count": len(jobs),
+            "succeeded": 0,
+            "failed": len(jobs),
+            "jobs": [
+                {
+                    "job_id": "j1",
+                    "status": "failed",
+                    "error": "official scorer exited with status 1",
+                    "returncode": 1,
+                    "stderr_log": "j1.stderr.log",
+                }
+            ],
+        }
+
+    runtime = _wire_runtime(tmp_path, score_batch=_failing_score_batch)
+    receipt = runtime.wire_check(seal_and_score=True)
+
+    seal = receipt["seal_and_score"]
+    assert seal["status"] == "SCORING_FAILED"
+    assert seal["job_failures"][0]["error"] == "official scorer exited with status 1"
+    assert "manifest_sha256" in seal
+
+
+def test_wire_check_seal_names_the_outputs_artifact_with_the_run_id_stem(tmp_path):
+    """core.scorers._manifest_path_for_outputs locates a run's manifest by
+    the shared run_id stem and refuses any other name, so a bare
+    'outputs.jsonl' made official scoring fail after every contact."""
+
+    written: dict[str, object] = {}
+
+    def _capturing_manifest_builder(**kwargs):
+        written["run_dir"] = Path(kwargs["run_dir"])
+        written["run_id"] = kwargs["plan"].run_id
+        return _fake_manifest_builder(**kwargs)
+
+    runtime = _wire_runtime(tmp_path, manifest_builder=_capturing_manifest_builder)
+    runtime.wire_check(seal_and_score=True)
+
+    outputs = list(Path(written["run_dir"]).glob("*.outputs.jsonl"))
+    assert len(outputs) == 1
+    assert outputs[0].name == f"{written['run_id']}.outputs.jsonl"
 
 
 def test_wire_check_records_a_refused_seal_instead_of_raising(tmp_path):
