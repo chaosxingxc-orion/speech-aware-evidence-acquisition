@@ -330,3 +330,31 @@ design, not the gate — one run id cannot span two populations — so the exper
 two run ids with two fragments, two plans and two ledger rows, and the T1 prompt fit was re-run
 against the corrected fragment bytes. No model contact was made under the refused plan; the refusal
 happened before the server was spawned.
+
+**Both fits certified, zero generated tokens.** One `GET /props`, one `POST /apply-template` and
+two `POST /tokenize` per run; no completion endpoint touched.
+
+| Cell | System message | Text tokens | Worst required | Slot | Margin | Fits |
+|---|---|---:|---:|---:|---:|:--:|
+| `T1-official-pop-500` | in-code-default, 16,143 chars, `be7f31a2…` | 3,581 | 12,354 (`tier1_direct:003943`) | 24,576 (`-np 2`) | 12,222 | yes |
+| `W-official-raw-yaml` | example-config-yaml, 16,144 chars, `eab51383…` | 3,581 | 4,307 (`tier7_multiturn:001590`) | 16,384 (`-np 3`) | 12,077 | yes |
+
+Receipts: `prompt-fit/tier1-pop-500/prompt-fit.json` (SHA-256
+`2b45b78b382dd6cff689124222ff0b64363dfdaab79963eea3fd96891fa63f1e`) and
+`prompt-fit/whitespace-400/prompt-fit.json` (SHA-256
+`9c23e0c546afa7f8e9ba9576599c73af31c06ff98f183600bf0851d209666132`), both under
+`docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-tier1-official-population-v1/`.
+Commit `e766b8da`.
+
+Three findings carried forward:
+
+1. **Both system messages appear verbatim in the rendered prompt**, and each matches one of the
+   release's own two spellings; the receipt records which, so neither cell can silently send the
+   other's bytes.
+2. **The whitespace change costs zero tokens.** Both spellings render to exactly 3,581 text tokens
+   through the pinned template, so the two cells' envelopes are identical and any outcome
+   difference in `W-official-raw-yaml` cannot be a context-length effect.
+3. **The window rule held on all 400 reference packets** (13 tokens per one-second window, zero
+   disagreements), so the T1 fit rests on the mmproj encoder's measured behaviour rather than on an
+   estimate. Over the 500 rows it gives min 13, median 26, p95 52, max 8,515 — that maximum is the
+   654.6325 s row, and it is the only reason `T1-official-pop-500` serves two slots.
