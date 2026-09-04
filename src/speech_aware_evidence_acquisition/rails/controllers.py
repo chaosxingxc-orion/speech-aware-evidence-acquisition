@@ -642,11 +642,37 @@ def register_phase_programs_v1() -> None:
     ``core.base.CoreError``'s duplicate-name refusal (mirrors
     ``rails.kb_policy.register_kb_policy_v1``)."""
 
-    for program_id in _PROGRAM_CONFIG_FILENAMES:
-        if program_id in AGENT_CONTROLLERS.names():
-            continue
-        program = default_phase_program(program_id)
-        AGENT_CONTROLLERS.register(program_id, default_controller_factory(program))
+    # Each id is written as a literal inside its own ``register`` call so the
+    # engineering-base gate (scripts/checks/engineering_base_check.py) can
+    # read the registered name set from source without importing the package.
+    registered = AGENT_CONTROLLERS.names()
+    if "phase-direct-only-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-direct-only-v1",
+            default_controller_factory(default_phase_program("phase-direct-only-v1")),
+        )
+    if "phase-direct-evidence-alpha-blend-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-direct-evidence-alpha-blend-v1",
+            default_controller_factory(
+                default_phase_program("phase-direct-evidence-alpha-blend-v1")
+            ),
+        )
+    if "phase-select-then-fill-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-select-then-fill-v1",
+            default_controller_factory(default_phase_program("phase-select-then-fill-v1")),
+        )
+    if "phase-draft-revise-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-draft-revise-v1",
+            default_controller_factory(default_phase_program("phase-draft-revise-v1")),
+        )
+    unregistered = set(_PROGRAM_CONFIG_FILENAMES) - set(AGENT_CONTROLLERS.names())
+    if unregistered:
+        raise RailsControllersError(
+            f"phase program ids without a literal registration: {sorted(unregistered)}"
+        )
 
 
 register_phase_programs_v1()

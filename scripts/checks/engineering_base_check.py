@@ -66,7 +66,7 @@ CONFIG_DIRS = ("configs/baseline", "configs/experiment")
 LAUNCHER_DIR_NAME = "launcher"
 ADAPTER_LINE_BUDGET = 260
 
-# The five files the owner rule names as the ONE place each registry may be
+# The six files the owner rule names as the ONE place each registry may be
 # populated (study CLAUDE.md "Read first" / this check's own docstring
 # above). A ``<REGISTRY_VAR>.register(...)`` call anywhere else (e.g. a
 # probe's own locally-instantiated ``core.base.Registry()`` bound to a
@@ -78,6 +78,11 @@ CANONICAL_REGISTRY_FILES = (
     f"{PACKAGE_ROOT}/core/scorers.py",
     KB_POLICY_MODULE,
     f"{PACKAGE_ROOT}/rails/knowledge_build.py",
+    # Slice C4a (2026-09-03): the four phase-program controller ids register
+    # into AGENT_CONTROLLERS from rails/controllers.py at import time; it is
+    # one of the four bases the owner rule names, so it is a canonical
+    # registration site too.
+    CONTROLLERS_MODULE,
 )
 
 # config key -> core.base registry variable, top-level only (the flat
