@@ -138,6 +138,14 @@ in tool selection, and it is still 77 pp of tier-summed gap away from the publis
   official HF adapter never populates `all_tool_calls`, so **every one of those rows is scored on its
   first call only**. That is the published protocol faithfully reproduced, not a simplification made
   here, and it applies equally to the paper's own Qwen3-Omni row.
+- **On the 100 rows whose gold asks for several calls, 48 named exactly one.** Distribution of
+  call-shaped spans: 48 rows with 1, 31 with 2, 19 with 3, 2 with 4. Per tier: tier 3 emitted one
+  call on 23 of 50 (mean 1.78 spans against a mean of 2.38 expected tools), tier 8 on 25 of 50
+  (mean 1.72 against 2.70). The calibration addendum measured the same behaviour on the legacy JSON
+  contract at **1 of 100** and on the native `tools` contract at **81–84 of 100**; the published
+  protocol sits between them, which is unsurprising given that its prompt says "Output ONLY the tool
+  call", singular. It costs this cell nothing on the headline metric, because the official metric
+  reads only the first call either way — but it is the reason `multi_tool_recall` is 0.284.
 - **`multi_tool_all_match` is 0.0 on all 100 multi-tool rows, by construction.** The official HF path
   can only ever report one predicted tool, so an unordered set match against 2+ expected tools cannot
   succeed for any model scored this way. The number is reported for completeness and carries no
