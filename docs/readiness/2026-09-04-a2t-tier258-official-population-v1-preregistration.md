@@ -343,3 +343,31 @@ Three findings carried forward:
 3. **`-np 3` is certified with room to spare.** Required window min 3,852, median 3,917, max 4,268;
    served-slot margin min 12,116 against the 8,192-token reserve; `largest_slot_count_meeting_reserve_at_this_context`
    is 3, so `-np 4` is refused by the rule and not by hand. The tier-1 cell's `-np 2` is not needed.
+
+Commit `09418c64`.
+
+### 2026-09-04, Phase 3 — wire check and smoke
+
+- `FlightRuntime.wire_check` on a clean committed tree (`2846b11f`): **1,500 contacts** through the
+  real client, adapter, payload binding and sealer against the fake gate and transport, **zero
+  sockets opened, zero servers started**. `payload_keys` is exactly `ARM_VISIBLE_FIELDS["bare-core"]`
+  (ten fields). `seal_and_score` OK with all four registered scorers through `core.scoring_batch` as
+  one whole-manifest job over a 1,500-row outputs file. Receipt
+  `wire-check/wire-check-t258-official-pop-1500.json` (SHA-256
+  `b78bc66868fa4ec66ce9f529dd5009cb0b5aca3c22803ad1398fc32232744ea5`); commit `2846b11f`.
+- Smoke row `SAEA-A2T-TIER258-OFFICIAL-POPULATION-SMOKE-V1`, attempt
+  `attempt-20260904T193223Z-t258officialpop1500`, manifest SHA-256
+  `c2b649e12690eaa9434abd6b84d57b622fb9ea597251b0affc75f16b5c593caa`, study commit `2846b11f`,
+  protocol hash `2e9e5d20…`: **4 of 4 contacts, COMPLETED and FINALIZED**, 4 of 20 registered calls
+  and 61.3245 of 250 registered speech seconds, server up in 10.0 s at `-c 49152 -np 3`.
+
+**Both new strata are servable and both parse.** All four rows returned well-formed call strings and
+parsed under `a2t-toolcall-official`, `a2t-toolcall-v2` and `a2t-toolcall` alike, with zero parse
+failures: the 32.43375 s tier-5 needle wav (the flight's worst request) and the tier-8 `mixed.wav`
+both encoded through the bf16 mmproj and returned. No smoke accuracy figure enters the verdict.
+
+**One shape finding worth carrying into the verdict.** The tier-8 row named **three** calls in one
+response, while the two tier-2 rows and the tier-5 row named one each. That is exactly the structure
+the tier-1 verdict identified as the source of the official/`v2` divergence on tiers 3 and 8 — the
+official scorer reads only the first parsed call — so section 7's "tier 8 under both rules" slice is
+not hypothetical.
