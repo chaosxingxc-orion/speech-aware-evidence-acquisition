@@ -338,3 +338,56 @@ re-flight of tiers 1, 2, 5 or 8.
 ## 9. Execution log
 
 Filled in as the flight proceeds; every entry is written before the step it describes is read.
+
+### 2026-09-04, Phase 1 — model-free preparation (zero contacts)
+
+- Reconstructed and verified each tier's released population, drew the 2,000-row roster, and landed
+  the additive probe-sample receipt and D1 media supplement.
+- Landed the dataset, experiment and smoke fragments and the probe-manifest registration; no new
+  model or baseline fragment was needed because the tier-1 flight's `-np 2` fragment is exactly
+  what the three 654-second rows require.
+- Extended the tiers-2/5/8 roster builder with a second tier group rather than copying it, and
+  re-ran the tiers-2/5/8 group to confirm its committed receipt still rebuilds **byte for byte**
+  (SHA-256 `9e17b44e…`).
+- Found and recorded three release facts: tier 4 ships three or four recordings on seven
+  directories and duplicates a manifest row on two of them; tier 7's released loader hears only the
+  first user turn while every one of its 2,146 queries has later user turns; and three rows of this
+  roster are the 654-second synthesis defect.
+- Commit `2a5b9392`. `python scripts/checks/engineering_base_check.py`: PASS.
+  `pytest tests/unit`: 6,035 passed, 6 failed — exactly the known pre-existing set (2 × `test_pemb3m`,
+  2 × `test_pemb4r`, `test_bundle` CLI, and the full-suite-only registry-pollution failure in
+  `test_engineering_base_check` that passes in isolation) — plus the known
+  `test_build_a2t_g6_family_sweep` collection error from the verl `scripts` shadow.
+- The three exposure rows were registered next, all `consumed = no`, before any contact
+  (commit `e846a694`). GPU `enforced.power.limit` read 100.00 W and no `llama-server` was resident
+  before the first row was written.
+
+### 2026-09-04, Phase 2 — prompt fit (zero generated tokens)
+
+Row `SAEA-A2T-TIER3467-OFFICIAL-POPULATION-PROMPT-FIT-V1`, registered before the server was touched.
+One `GET /props`, one `POST /apply-template` and two `POST /tokenize`; no completion endpoint
+touched, `generations` 0.
+
+| Cell | System message | Text tokens | Worst required | Slot | Margin | Fits |
+|---|---|---:|---:|---:|---:|:--:|
+| `T3467-official-pop-2000` | in-code-default, 16,143 chars, `be7f31a2…` | 3,581 | 12,354 (`tier3_multi_intent:003555`) | 24,576 (`-np 2`) | 12,222 | yes |
+
+Receipt:
+`docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-tier3467-official-population-v1/prompt-fit/prompt-fit.json`
+(SHA-256 `12e895df4697a9d0295e95aab2ab1072fbd748c8e2560ca035055f1297f6d5f6`).
+
+Three findings carried forward:
+
+1. **The rendered system message is the release's in-code default, verbatim.** 16,143 chars,
+   `be7f31a2e8c7e6dd…`, 3,581 text tokens — the same bytes and the same count the sealed
+   `R-official-raw`, `T1-official-pop-500` and `T258-official-pop-1500` cells were certified
+   against, and `system_text_verbatim_in_rendered_prompt` is true.
+2. **The window rule held on all 400 reference packets** (13 tokens per one-second window, zero
+   disagreements) before it was applied to this unpreprocessed roster. Over the 2,000 rows it gives
+   min 13, median 65, p95 117, max 8,515 — the p95 is *lower* than the tiers-2/5/8 roster's 169
+   while the max is twenty times larger, which is the shape of a roster with three outliers and
+   nothing else over 60 s.
+3. **`-np 2` is certified, and it is the largest admissible slot count.** Required window min 3,852,
+   median 3,904, max 12,354; served-slot margin min 12,222 against the 8,192-token reserve;
+   `largest_slot_count_meeting_reserve_at_this_context` is 2, so the tiers-2/5/8 cell's `-np 3` is
+   refused by the rule and not by hand.
