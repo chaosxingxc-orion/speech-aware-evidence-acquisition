@@ -1,0 +1,24 @@
+{
+  "created": "2026-09-03",
+  "environment_id": "slurp-official-eval",
+  "location": "~/.venvs/slurp-official-eval (WSL2 Ubuntu-24.04)",
+  "pins": {
+    "jiwer": "2.0.0",
+    "progress": "1.5",
+    "tabulate": "0.8.7",
+    "textdistance": "4.1.5"
+  },
+  "purpose": "Isolated interpreter for the unmodified official SLURP scripts/evaluation/evaluate.py (pinned commit 8eb16545762be97ace75334109d73824217311f1); the shared study venv carries jiwer 4.x and Python 3.12, which the pinned evaluator cannot run on.",
+  "python": "3.9.25 (uv-managed)",
+  "rebuild": "uv venv --python 3.9 ~/.venvs/slurp-official-eval && uv pip install --python ~/.venvs/slurp-official-eval/bin/python -r <requirements_source>",
+  "requirements_sha256": "5c6cd849d10947ef6397eb5da260b2de184bd7b41d115ce682519b97590c1297",
+  "requirements_source": "SPEECHRL_DATA_DIR/repos/slurp/scripts/evaluation/requirements.txt",
+  "resolution": "reproduction.slurp_official_eval.official_evaluator_python: SAEA_SLURP_OFFICIAL_PYTHON env var, else this venv's bin/python, else sys.executable",
+  "schema": "saea-environment-receipt-v1",
+  "smoke": "cd <evaluator dir> && ~/.venvs/slurp-official-eval/bin/python evaluate.py --help (exit 0 on 2026-09-03)",
+  "transitive": {
+    "levenshtein": "0.27.1",
+    "python-levenshtein": "0.27.1",
+    "rapidfuzz": "3.13.0"
+  }
+}

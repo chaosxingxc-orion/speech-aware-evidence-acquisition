@@ -60,6 +60,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -74,6 +75,30 @@ from .slurp_scoring import SLURP_SCORER_VERSION, SlotEntity, SluScore, parse_slu
 # ``reproduction.slurp_scoring``'s own docstring already names.
 SLURP_OFFICIAL_COMMIT = "8eb16545762be97ace75334109d73824217311f1"
 SLURP_OFFICIAL_SCORER_VERSION = f"slurp-official-{SLURP_OFFICIAL_COMMIT[:8]}"
+
+# The pinned evaluator's own ``requirements.txt`` (jiwer==2.0.0, tabulate==0.8.7,
+# textdistance==4.1.5, progress==1.5) is incompatible with the shared study
+# venv (jiwer 4.x renamed ``truth`` -> ``reference``; tabulate 0.8.7 does not
+# import on Python 3.12). The official script therefore runs, UNMODIFIED, in
+# its own environment built from exactly that requirements file:
+# ``~/.venvs/slurp-official-eval`` (Python 3.9, receipt
+# ``docs/receipts/environments/slurp-official-eval.json``). Resolution order:
+# ``SAEA_SLURP_OFFICIAL_PYTHON`` -> the default venv interpreter if present ->
+# ``sys.executable`` (which will fail closed on the jiwer API mismatch).
+SLURP_OFFICIAL_PYTHON_ENV = "SAEA_SLURP_OFFICIAL_PYTHON"
+SLURP_OFFICIAL_VENV_PYTHON = Path.home() / ".venvs" / "slurp-official-eval" / "bin" / "python"
+SLURP_OFFICIAL_ENV_RECEIPT = "docs/receipts/environments/slurp-official-eval.json"
+
+
+def official_evaluator_python() -> str:
+    """Interpreter that carries the evaluator's pinned requirements (above)."""
+
+    override = os.environ.get(SLURP_OFFICIAL_PYTHON_ENV)
+    if override:
+        return override
+    if SLURP_OFFICIAL_VENV_PYTHON.is_file():
+        return str(SLURP_OFFICIAL_VENV_PYTHON)
+    return sys.executable
 
 # Fallback content-identity mechanism (used only when ``git`` cannot verify
 # the checkout's own HEAD -- :func:`official_evaluator_root`'s docstring):
@@ -389,7 +414,7 @@ def run_official_evaluate(
     pred_path: Path,
     *,
     evaluator_root: Path,
-    python_executable: str = sys.executable,
+    python_executable: str | None = None,
     average: str = "micro",
 ) -> OfficialSluResult:
     """Run the REAL, unmodified ``evaluate.py`` as a subprocess.
@@ -409,6 +434,8 @@ def run_official_evaluate(
     script_path = Path(evaluator_root) / "evaluate.py"
     if not script_path.is_file():
         raise SlurpOfficialEvalError(f"official evaluate.py missing: {script_path}")
+    if python_executable is None:
+        python_executable = official_evaluator_python()
     command = [
         str(python_executable),
         str(script_path),
@@ -643,6 +670,8 @@ def score_slurp_outputs_official(
         "identity_check": identity_check,
         "scorer_version": SLURP_OFFICIAL_SCORER_VERSION,
         "evaluator_commit": SLURP_OFFICIAL_COMMIT,
+        "official_python": official.command[0],
+        "official_environment_receipt": SLURP_OFFICIAL_ENV_RECEIPT,
     }
     return {"per_sample": per_sample, "aggregate": aggregate}
 
@@ -653,6 +682,7 @@ __all__ = [
     "OfficialSluResult",
     "PredictedSlurpSample",
     "SlurpOfficialEvalError",
+    "official_evaluator_python",
     "official_evaluator_root",
     "run_official_evaluate",
     "score_slurp_outputs_official",

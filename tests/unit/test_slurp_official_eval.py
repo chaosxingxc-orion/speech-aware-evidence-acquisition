@@ -348,7 +348,7 @@ def test_run_official_evaluate_builds_command_and_parses_stdout(tmp_path, monkey
     result = run_official_evaluate(gold_path, pred_path, evaluator_root=evaluator_root)
     assert isinstance(result, OfficialSluResult)
     assert captured["cwd"] == str(evaluator_root)
-    assert captured["command"][:2] == [str(__import__("sys").executable), str(evaluator_root / "evaluate.py")]
+    assert captured["command"][:2] == [soe.official_evaluator_python(), str(evaluator_root / "evaluate.py")]
     assert "--table-layout" in captured["command"]
     assert "csv" in captured["command"]
     assert result.scenario_accuracy == pytest.approx(0.9)
