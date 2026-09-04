@@ -3,30 +3,71 @@
 Every model or tool touch (including a single-sample smoke) gets a row **before results are read**.
 Exposure claims elsewhere must carry four fields: scope, date, counts, inherited exposure.
 
-**SAEA-E21-MF-SCORING-ALIGNMENT-V1 REGISTERED — ZERO-CONTACT RE-SCORING OF THE SEALED EARNINGS-21
-N10 DIRECT-BASELINE BLOCK.** Profile `model-free-check`; reference-reading; zero model, GPU, tool,
-embedding, network and audio contacts. Re-scores the already-sealed, FINALIZED outputs of
-`SAEA-E-005B-N10-zero` (attempt-20260814T235515Z-044ccc), `SAEA-E-005B-N10-matched`
-(attempt-20260815T011459Z-30cb33) and `SAEA-E-005B-N10-names` (attempt-20260815T025126Z-30d1a1) —
-the frozen ten discovery calls of `r4-e21-sub10` on `earnings21-original`, discovery split only —
-through the registered `asr-wer`, `asr-wer-whisper` and `entity-wer` scorers, and lays the result
-beside the published Whisper-normalizer Earnings-21 bracket and the ConEC Table 2 entity bracket
-under the owner's 2026-09-04 three-point alignment rule and degraded-model floor rule. No test
-split, no confirmatory split, no new audio, no code change to any scorer. Receipts:
-`docs/checks/speech-aware-evidence-acquisition/2026-09-04-scoring-alignment-earnings/`.
+**SAEA-E21-MF-SCORING-ALIGNMENT-V1 COMPLETED — EARNINGS-21 ALIGNS AT 7.14 WER UNDER THE WHISPER
+NORMALIZER, AND THE CONEC-NAMES GAIN DOES NOT SURVIVE THAT NORMALIZER.** Profile
+`model-free-check`; reference-reading; zero model, GPU, tool, embedding, network and audio contacts.
+Re-scored the sealed, FINALIZED outputs of `SAEA-E-005B-N10-zero` (attempt-20260814T235515Z-044ccc),
+`SAEA-E-005B-N10-matched` (attempt-20260815T011459Z-30cb33) and `SAEA-E-005B-N10-names`
+(attempt-20260815T025126Z-30d1a1) — the frozen ten discovery calls of `r4-e21-sub10` on
+`earnings21-original`, 8.446 h, 342 fixed 90-s windows per arm, discovery split only — through the
+registered `asr-wer`, `asr-wer-whisper` and `entity-wer` scorers. Two identity anchors passed before
+any new number was trusted: the recomputed `asr-wer` mean equals each sealed `scores.json` value to
+0.0, and the recomputed `entity-wer` corpus value equals the prior sealed offline read under
+`derived/entity-wer/` exactly. Corpus-level Whisper-normalized WER is 7.137 / 7.241 / 7.460
+(zero / matched / names) against `openai/whisper-large-v3` 9.71 and Whisper large-v2 9.7 — ALIGNED
+under the 3-point rule, with every degraded-model floor cleared (medium.en 10.2, small.en 10.8,
+base.en 12.5, tiny.en 17.0, FastConformer 13.84, Qwen2-Audio-7B 26.06). Under the frozen
+`saea-scoring-v1` metric the same outputs give 12.025 / 12.000 / 10.278 corpus and the names arm is
+BEST; under the Whisper normalizer the ordering INVERTS and the names arm is WORST, driven by
+deletions (933 to 1,451, concentrated in calls 4385072 and 4389907) — the 2026-08-15 N10 verdict's
+WER headline is a `saea-scoring-v1` statement and does not transfer. Entity WER (mention-level
+`1 - recall`, 8,284 gold mentions) is 32.01 / 29.10 / 19.95 corpus; on ConEC's eight non-numeric
+classes 26.92 / 21.46 / 21.65, beating ConEC Table 2 row 8 on PERSON and LOC, missing on ORG/GPE,
+and failing ConEC's own no-biasing floor on PRODUCT, NORP and FAC. Defect reported, not patched: the
+sealed manifests declare `scorers: ["asr-wer","cost"]`, so the `core.scoring_batch` verified path
+(three jobs, all `verified: true`, sealed numbers reproduced) cannot emit the two new scorers for
+these bundles. Subset caveat carried everywhere: 10 of 44 calls, the pathological `4346923`
+excluded, fstalign not installed or run. Receipts:
+`docs/checks/speech-aware-evidence-acquisition/2026-09-04-scoring-alignment-earnings/`
+(`MANIFEST.sha256`: README.md 9683319d..., rescore.json aa0b0c28..., rescore.py a6d4e977...,
+verified-score-batch-read.json e071a118..., verified-score-batch-summary.json 656a9765...,
+verified-score-batch-jobs.jsonl c15a633d...); readiness note:
+`docs/readiness/2026-09-04-scoring-alignment-audit-slurp-earnings.md`.
 
-**SAEA-SLURP-MF-SCORING-ALIGNMENT-V1 REGISTERED — ZERO-CONTACT OFFICIAL-SCORER RE-READ OF THE
-SEALED SLURP DEV-1000 LOCK AND DEV-500 CONFIRMATORY ARMS.** Profile `model-free-check`;
-reference-reading on the `devel` split identity ONLY (the held-out `test` split is never named,
-loaded or scored); zero model, GPU, tool, embedding, network and audio contacts. Re-scores the
-sealed `SAEA-DEV1000-BASELINE-LOCK` arms M0 (attempt-20260825T053342Z-dev1000m0) and BLEND
-(attempt-20260825T054707Z-dev1000blend) and the sealed `SAEA-DEV500-CONFIRMATORY` arms through the
-pinned official SLURP `evaluate.py` (`slurp-slu-official`, evaluator commit
-8eb16545762be97ace75334109d73824217311f1, venv `~/.venvs/slurp-official-eval`, never modified), and
-lays the result beside the SLURP paper's Table 7/Table 8 brackets and the prompt-only He & Garner
-bracket under the owner's 2026-09-04 three-point alignment rule and degraded-model floor rule.
-N-predicted is reported against the roster for every manifest. Receipts:
-`docs/checks/speech-aware-evidence-acquisition/2026-09-04-scoring-alignment-slurp/`.
+**SAEA-SLURP-MF-SCORING-ALIGNMENT-V1 COMPLETED — NO SLURP ALIGNMENT TARGET EXISTS; INTENT CLEARS THE
+WEAKEST PUBLISHED PIPELINE, SLU-F1 FAILS IT BY 22 POINTS.** Profile `model-free-check`;
+reference-reading on the `devel` split identity ONLY (`allow_heldout=False`; the held-out `test`
+split was never named, loaded or scored); zero model, GPU, tool, embedding, network and audio
+contacts. Re-scored the sealed `SAEA-DEV1000-BASELINE-LOCK` arms M0
+(attempt-20260825T053342Z-dev1000m0) and BLEND (attempt-20260825T054707Z-dev1000blend) and the four
+sealed `SAEA-DEV500-CONFIRMATORY` arms through the registered `slurp-slu-official` scorer — the
+real, unmodified official `evaluate.py` at pinned commit 8eb16545762be97ace75334109d73824217311f1 in
+`~/.venvs/slurp-official-eval` (used, never modified), `--average micro`. All six arms passed the
+scorer's port-vs-official identity check (max |diff| 1.1e-16), and the official intent (scen_act)
+column reproduces the 2026-08-25 lock read's pooled 0.536 / 0.757 exactly. Official numbers (%):
+DEV-1000 M0 scenario 70.00 / action 61.50 / intent 53.60 / entities-strict 21.94 / Word-F1 34.66 /
+Char-F1 39.46 / SLU-F1 36.90; DEV-1000 BLEND 83.90 / 77.60 / 75.70 / 27.27 / 39.41 / 44.24 / 41.69;
+DEV-500 M0 68.20 / 61.40 / 51.80 / 19.16 / 33.25 / 38.18 / 35.54; DEV-500 BLEND 81.00 / 74.20 /
+71.80 / 22.64 / 36.82 / 41.65 / 39.09; DEV-500-NEW400 RANDRET 71.25 / 62.75 / 56.50 / 18.58 / 33.62
+/ 38.50 / 35.89; RANDICL 64.50 / 56.00 / 47.00 / 23.10 / 35.06 / 40.55 / 37.60. N-predicted equals
+n-gold on every arm (zero skipped rows), so the unanswered-counted-wrong variant equals the official
+number throughout; the receipt nevertheless demonstrates the `if gold_id in pred_examples` hazard on
+this repository's own data (the same 1,000 M0 predictions scored against the whole 8,690-recording
+devel gold set print identical numbers while 7,690 gold rows go unscored). No published prompt-only
+SLU-F1 under the official script exists for any audio LLM, so no like-for-like 3-point target is
+available: BLEND is ALIGNED against Multi-SLURP/HerMiT intent 78.33 (-2.63) and ALIGNED-BETTER
+against Google/SF-ID 72.06 (+3.64), clearing that weakest published intent floor, while both arms
+FAIL the weakest published SLU-F1 floor (Google/SF-ID 64.02) by 22 and 27 points. Rosters are
+channel-representative of devel (headset/far-field 478/522, 236/264, 194/206 against devel's
+4,173/4,517) and carry zero SLURP-synt rows; far-field scores 1.1-5.0 points BETTER than headset on
+five of six arms. Defect reported, not patched: the August SLURP flights carry no
+`*.run-manifest.json` (so `core.scoring_batch` is inapplicable) and key their rows
+`final_response_text` where every registered scorer reads `text`, so the read scored a hash-recorded
+1:1 key-rename projection of the sealed bytes with no text altered and no row added or dropped.
+Receipts: `docs/checks/speech-aware-evidence-acquisition/2026-09-04-scoring-alignment-slurp/`
+(`MANIFEST.sha256`: README.md 8c8a2d47..., rescore.json 38353ad7..., rescore.py 46f50274...,
+channel-breakdown.json 628101f3..., channel-breakdown.py b329f787...); readiness note:
+`docs/readiness/2026-09-04-scoring-alignment-audit-slurp-earnings.md`.
 
 **SAEA-A2T-MF-SCORER-V2-RESCORE-V1 COMPLETED — ZERO ARMS SKIPPED, NO VERDICT DECISION FLIPS UNDER
 V2.** Part D step 2 of the 2026-09-03 recovery plan. Zero model, GPU, embedding, or network contact:

@@ -1,0 +1,199 @@
+{
+  "arms": {
+    "DEV1000-BLEND": {
+      "attempt_id": "attempt-20260825T054707Z-dev1000blend",
+      "by_channel": {
+        "far_field": {
+          "action_accuracy": 0.7816091954022989,
+          "action_correct": 408,
+          "intent_accuracy": 0.7624521072796935,
+          "intent_correct": 398,
+          "n": 522,
+          "scenario_accuracy": 0.8505747126436781,
+          "scenario_correct": 444,
+          "unparsed": 1
+        },
+        "headset": {
+          "action_accuracy": 0.7698744769874477,
+          "action_correct": 368,
+          "intent_accuracy": 0.7510460251046025,
+          "intent_correct": 359,
+          "n": 478,
+          "scenario_accuracy": 0.8263598326359832,
+          "scenario_correct": 395,
+          "unparsed": 1
+        }
+      },
+      "pooled_intent_accuracy": 0.757,
+      "pooled_n": 1000,
+      "run_id": "SAEA-DEV1000-BASELINE-LOCK"
+    },
+    "DEV1000-M0": {
+      "attempt_id": "attempt-20260825T053342Z-dev1000m0",
+      "by_channel": {
+        "far_field": {
+          "action_accuracy": 0.6398467432950191,
+          "action_correct": 334,
+          "intent_accuracy": 0.5593869731800766,
+          "intent_correct": 292,
+          "n": 522,
+          "scenario_accuracy": 0.7241379310344828,
+          "scenario_correct": 378,
+          "unparsed": 2
+        },
+        "headset": {
+          "action_accuracy": 0.5878661087866108,
+          "action_correct": 281,
+          "intent_accuracy": 0.5104602510460251,
+          "intent_correct": 244,
+          "n": 478,
+          "scenario_accuracy": 0.6736401673640168,
+          "scenario_correct": 322,
+          "unparsed": 3
+        }
+      },
+      "pooled_intent_accuracy": 0.536,
+      "pooled_n": 1000,
+      "run_id": "SAEA-DEV1000-BASELINE-LOCK"
+    },
+    "DEV500-BLEND": {
+      "attempt_id": "attempt-20260824T205527Z-dev500blend",
+      "by_channel": {
+        "far_field": {
+          "action_accuracy": 0.7537878787878788,
+          "action_correct": 199,
+          "intent_accuracy": 0.7310606060606061,
+          "intent_correct": 193,
+          "n": 264,
+          "scenario_accuracy": 0.8295454545454546,
+          "scenario_correct": 219,
+          "unparsed": 0
+        },
+        "headset": {
+          "action_accuracy": 0.7288135593220338,
+          "action_correct": 172,
+          "intent_accuracy": 0.7033898305084746,
+          "intent_correct": 166,
+          "n": 236,
+          "scenario_accuracy": 0.788135593220339,
+          "scenario_correct": 186,
+          "unparsed": 0
+        }
+      },
+      "pooled_intent_accuracy": 0.718,
+      "pooled_n": 500,
+      "run_id": "SAEA-DEV500-CONFIRMATORY"
+    },
+    "DEV500-M0": {
+      "attempt_id": "attempt-20260824T203716Z-dev500m0",
+      "by_channel": {
+        "far_field": {
+          "action_accuracy": 0.6401515151515151,
+          "action_correct": 169,
+          "intent_accuracy": 0.5416666666666666,
+          "intent_correct": 143,
+          "n": 264,
+          "scenario_accuracy": 0.696969696969697,
+          "scenario_correct": 184,
+          "unparsed": 1
+        },
+        "headset": {
+          "action_accuracy": 0.5847457627118644,
+          "action_correct": 138,
+          "intent_accuracy": 0.4915254237288136,
+          "intent_correct": 116,
+          "n": 236,
+          "scenario_accuracy": 0.6652542372881356,
+          "scenario_correct": 157,
+          "unparsed": 2
+        }
+      },
+      "pooled_intent_accuracy": 0.518,
+      "pooled_n": 500,
+      "run_id": "SAEA-DEV500-CONFIRMATORY"
+    },
+    "DEV500-RANDICL": {
+      "attempt_id": "attempt-20260824T213948Z-dev500randicl",
+      "by_channel": {
+        "far_field": {
+          "action_accuracy": 0.5485436893203883,
+          "action_correct": 113,
+          "intent_accuracy": 0.4563106796116505,
+          "intent_correct": 94,
+          "n": 206,
+          "scenario_accuracy": 0.6504854368932039,
+          "scenario_correct": 134,
+          "unparsed": 3
+        },
+        "headset": {
+          "action_accuracy": 0.5721649484536082,
+          "action_correct": 111,
+          "intent_accuracy": 0.4845360824742268,
+          "intent_correct": 94,
+          "n": 194,
+          "scenario_accuracy": 0.6391752577319587,
+          "scenario_correct": 124,
+          "unparsed": 0
+        }
+      },
+      "pooled_intent_accuracy": 0.47,
+      "pooled_n": 400,
+      "run_id": "SAEA-DEV500-CONFIRMATORY"
+    },
+    "DEV500-RANDRET": {
+      "attempt_id": "attempt-20260824T212928Z-dev500randret",
+      "by_channel": {
+        "far_field": {
+          "action_accuracy": 0.6504854368932039,
+          "action_correct": 134,
+          "intent_accuracy": 0.5825242718446602,
+          "intent_correct": 120,
+          "n": 206,
+          "scenario_accuracy": 0.7378640776699029,
+          "scenario_correct": 152,
+          "unparsed": 0
+        },
+        "headset": {
+          "action_accuracy": 0.6030927835051546,
+          "action_correct": 117,
+          "intent_accuracy": 0.5463917525773195,
+          "intent_correct": 106,
+          "n": 194,
+          "scenario_accuracy": 0.6855670103092784,
+          "scenario_correct": 133,
+          "unparsed": 1
+        }
+      },
+      "pooled_intent_accuracy": 0.565,
+      "pooled_n": 400,
+      "run_id": "SAEA-DEV500-CONFIRMATORY"
+    }
+  },
+  "channel_rule": "SLURP recording filenames: '<stem>-headset.flac' is the close-range headset take, '<stem>.flac' the far-field mic-array take of the same sentence",
+  "devel_channel_counts": {
+    "far_field": 4517,
+    "headset": 4173
+  },
+  "roster_channel_counts": {
+    "DEV-1000": {
+      "far_field": 522,
+      "headset": 478
+    },
+    "DEV-500": {
+      "far_field": 264,
+      "headset": 236
+    },
+    "DEV-500-NEW400": {
+      "far_field": 206,
+      "headset": 194
+    }
+  },
+  "schema": "saea-slurp-channel-breakdown-v1",
+  "zero_contact": {
+    "audio_seconds": 0,
+    "gpu_seconds": 0,
+    "model_calls": 0,
+    "network_contacts": 0,
+    "tool_contacts": 0
+  }
+}

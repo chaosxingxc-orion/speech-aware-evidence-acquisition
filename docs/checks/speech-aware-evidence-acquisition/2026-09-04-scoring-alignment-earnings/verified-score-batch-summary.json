@@ -1,0 +1,62 @@
+{
+  "aggregation_rule": "no dataset sharding and no averaging of shard-level official metrics",
+  "effective_max_workers": 3,
+  "elapsed_seconds": 123.31234833000053,
+  "failed": 0,
+  "job_count": 3,
+  "jobs": [
+    {
+      "elapsed_seconds": 123.24295537499711,
+      "error": null,
+      "index": 0,
+      "job_id": "e21-n10-zero",
+      "ledger_cells": null,
+      "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-005B-N10-zero/attempt-20260814T235515Z-044ccc/SAEA-E-005B-N10-zero.run-manifest.json",
+      "operation": "score",
+      "result_file": "e21-n10-zero.score.json",
+      "result_sha256": "ece1e0a55ffaa182689020cc86c976ca37131eac32795fa024cc55c156ec9b65",
+      "returncode": 0,
+      "status": "succeeded",
+      "stderr_log": "e21-n10-zero.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_log": null
+    },
+    {
+      "elapsed_seconds": 121.7699759140014,
+      "error": null,
+      "index": 1,
+      "job_id": "e21-n10-matched",
+      "ledger_cells": null,
+      "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-005B-N10-matched/attempt-20260815T011459Z-30cb33/SAEA-E-005B-N10-matched.run-manifest.json",
+      "operation": "score",
+      "result_file": "e21-n10-matched.score.json",
+      "result_sha256": "100b529025f9cb377b73d0fe1ef3e28b7d58291980622654b05487d8a028e124",
+      "returncode": 0,
+      "status": "succeeded",
+      "stderr_log": "e21-n10-matched.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_log": null
+    },
+    {
+      "elapsed_seconds": 122.72888434999913,
+      "error": null,
+      "index": 2,
+      "job_id": "e21-n10-names",
+      "ledger_cells": null,
+      "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-005B-N10-names/attempt-20260815T025126Z-30d1a1/SAEA-E-005B-N10-names.run-manifest.json",
+      "operation": "score",
+      "result_file": "e21-n10-names.score.json",
+      "result_sha256": "68c4d079b0cc37c78fcc1122837d328871ac87444db9cea85ec4d9cea23341c2",
+      "returncode": 0,
+      "status": "succeeded",
+      "stderr_log": "e21-n10-names.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_log": null
+    }
+  ],
+  "operation": "score",
+  "parallelism_boundary": "one-complete-verified-manifest-per-process",
+  "requested_max_workers": 3,
+  "schema": "saea-parallel-score-batch-v1",
+  "succeeded": 3
+}

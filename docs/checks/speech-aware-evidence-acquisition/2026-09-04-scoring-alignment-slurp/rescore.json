@@ -1,0 +1,896 @@
+{
+  "arms": {
+    "DEV1000-BLEND": {
+      "attempt_id": "attempt-20260825T054707Z-dev1000blend",
+      "counts_on_scored_rows": {
+        "action_correct": 776,
+        "intent_correct": 757,
+        "scenario_correct": 839
+      },
+      "description": "locked knowledge cell (BLEND)",
+      "gold_rows_without_prediction": [],
+      "identity_check": {
+        "passed": true,
+        "slu_f1_abs_diff": 5.551115123125783e-17,
+        "span_f1_abs_diff": 0.0,
+        "tolerance": 1e-06
+      },
+      "n_gold_roster": 1000,
+      "n_gold_rows_without_prediction": 0,
+      "n_predicted": 1000,
+      "n_predictions_outside_roster": 0,
+      "n_unparsed_responses": 2,
+      "official": {
+        "action_accuracy": 0.776,
+        "command": [
+          "/home/chao/.venvs/slurp-official-eval/bin/python",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/evaluation/evaluate.py",
+          "-g",
+          "/tmp/saea-slurp-official-i_ub1nmw/gold.jsonl",
+          "-p",
+          "/tmp/saea-slurp-official-i_ub1nmw/predictions.jsonl",
+          "--average",
+          "micro",
+          "--errors",
+          "--table-layout",
+          "csv"
+        ],
+        "intent_accuracy": 0.757,
+        "raw": {
+          "action": {
+            "f_measure": 0.776,
+            "fn": 224.0,
+            "fp": 224.0,
+            "official_label": "Action",
+            "precision": 0.776,
+            "recall": 0.776,
+            "tp": 776.0
+          },
+          "entities": {
+            "f_measure": 0.2726719415702982,
+            "fn": 726.0,
+            "fp": 469.0,
+            "official_label": "Entities",
+            "precision": 0.32323232323232326,
+            "recall": 0.23578947368421052,
+            "tp": 224.0
+          },
+          "entities_distance_char": {
+            "f_measure": 0.44241997927347326,
+            "fn": 628.8374137667554,
+            "fp": 371.8374137667554,
+            "official_label": "Entities (distance char)",
+            "precision": 0.516364049006126,
+            "recall": 0.38700089767857293,
+            "tp": 397.0
+          },
+          "entities_distance_word": {
+            "f_measure": 0.3941250765251251,
+            "fn": 738.7944444444446,
+            "fp": 481.7944444444444,
+            "official_label": "Entities (distance word)",
+            "precision": 0.4517552455067864,
+            "recall": 0.3495350782369657,
+            "tp": 397.0
+          },
+          "intent": {
+            "f_measure": 0.757,
+            "fn": 243.0,
+            "fp": 243.0,
+            "official_label": "Intent (scen_act)",
+            "precision": 0.757,
+            "recall": 0.757,
+            "tp": 757.0
+          },
+          "scenario": {
+            "f_measure": 0.839,
+            "fn": 161.0,
+            "fp": 161.0,
+            "official_label": "Scenario",
+            "precision": 0.839,
+            "recall": 0.839,
+            "tp": 839.0
+          },
+          "slu_f1": {
+            "f_measure": 0.416878462143184,
+            "fn": 1367.6318582112,
+            "fp": 853.6318582111999,
+            "official_label": "Slu f1",
+            "precision": 0.48190376754551806,
+            "recall": 0.3673150897475453,
+            "tp": 794.0
+          }
+        },
+        "scenario_accuracy": 0.839,
+        "slu_f1": 0.416878462143184,
+        "span_f1": 0.2726719415702982
+      },
+      "port_micro": {
+        "action_accuracy": 0.776,
+        "intent_accuracy": 0.757,
+        "samples": 1000,
+        "scenario_accuracy": 0.839,
+        "slu_f1": 0.4168784621431841,
+        "slu_f1_precision": 0.4819037675455181,
+        "slu_f1_recall": 0.3673150897475453,
+        "span_f1": 0.2726719415702982,
+        "span_f1_precision": 0.32323232323232326,
+        "span_f1_recall": 0.23578947368421052
+      },
+      "predictions_outside_roster": [],
+      "projection_rule": "1:1 key rename of the sealed rows: {sample_id, text=final_response_text}; no response text altered, no row added or dropped",
+      "projection_sha256": "25c7aead3e39b4027a3edb506929b738a216a9f231b9c6e83a9c1f4edf9340f4",
+      "roster": "DEV-1000",
+      "run_id": "SAEA-DEV1000-BASELINE-LOCK",
+      "scorer_version": "slurp-official-8eb16545",
+      "sealed_outputs": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV1000-BASELINE-LOCK/attempt-20260825T054707Z-dev1000blend/arm2-blend-outputs.jsonl",
+      "sealed_outputs_rows": 1000,
+      "sealed_outputs_sha256": "542a029adca8fb8daf3618e8a049aecdba1b04aba30eafedb67099fb6e08cf14",
+      "unanswered_counted_wrong": {
+        "action_accuracy": 0.776,
+        "denominator": 1000,
+        "intent_accuracy": 0.757,
+        "note": "same numerators as the official run, denominator forced to the full roster; identical to the official numbers when nothing is missing",
+        "scenario_accuracy": 0.839
+      },
+      "unparsed_sample_ids": [
+        "slurp:devel:008655:audio-1502895086-headset",
+        "slurp:devel:012149:audio-1489153672"
+      ]
+    },
+    "DEV1000-M0": {
+      "attempt_id": "attempt-20260825T053342Z-dev1000m0",
+      "counts_on_scored_rows": {
+        "action_correct": 615,
+        "intent_correct": 536,
+        "scenario_correct": 700
+      },
+      "description": "direct baseline (M0)",
+      "gold_rows_without_prediction": [],
+      "identity_check": {
+        "passed": true,
+        "slu_f1_abs_diff": 0.0,
+        "span_f1_abs_diff": 0.0,
+        "tolerance": 1e-06
+      },
+      "n_gold_roster": 1000,
+      "n_gold_rows_without_prediction": 0,
+      "n_predicted": 1000,
+      "n_predictions_outside_roster": 0,
+      "n_unparsed_responses": 5,
+      "official": {
+        "action_accuracy": 0.615,
+        "command": [
+          "/home/chao/.venvs/slurp-official-eval/bin/python",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/evaluation/evaluate.py",
+          "-g",
+          "/tmp/saea-slurp-official-d5dtpv8d/gold.jsonl",
+          "-p",
+          "/tmp/saea-slurp-official-d5dtpv8d/predictions.jsonl",
+          "--average",
+          "micro",
+          "--errors",
+          "--table-layout",
+          "csv"
+        ],
+        "intent_accuracy": 0.536,
+        "raw": {
+          "action": {
+            "f_measure": 0.615,
+            "fn": 385.0,
+            "fp": 385.0,
+            "official_label": "Action",
+            "precision": 0.615,
+            "recall": 0.615,
+            "tp": 615.0
+          },
+          "entities": {
+            "f_measure": 0.2194244604316547,
+            "fn": 767.0,
+            "fp": 535.0,
+            "official_label": "Entities",
+            "precision": 0.25487465181058494,
+            "recall": 0.19263157894736843,
+            "tp": 183.0
+          },
+          "entities_distance_char": {
+            "f_measure": 0.39455374797193704,
+            "fn": 668.4232169899584,
+            "fp": 436.4232169899582,
+            "official_label": "Entities (distance char)",
+            "precision": 0.4520209761847502,
+            "recall": 0.35005044037576905,
+            "tp": 360.0
+          },
+          "entities_distance_word": {
+            "f_measure": 0.3465500090915898,
+            "fn": 794.8111111111111,
+            "fp": 562.8111111111111,
+            "official_label": "Entities (distance word)",
+            "precision": 0.39011233790471145,
+            "recall": 0.3117392935833662,
+            "tp": 360.0
+          },
+          "intent": {
+            "f_measure": 0.536,
+            "fn": 464.0,
+            "fp": 464.0,
+            "official_label": "Intent (scen_act)",
+            "precision": 0.536,
+            "recall": 0.536,
+            "tp": 536.0
+          },
+          "scenario": {
+            "f_measure": 0.7,
+            "fn": 300.0,
+            "fp": 300.0,
+            "official_label": "Scenario",
+            "precision": 0.7,
+            "recall": 0.7,
+            "tp": 700.0
+          },
+          "slu_f1": {
+            "f_measure": 0.36899719814826143,
+            "fn": 1463.2343281010694,
+            "fp": 999.2343281010694,
+            "official_label": "Slu f1",
+            "precision": 0.4187910793959397,
+            "recall": 0.3297859468095853,
+            "tp": 720.0
+          }
+        },
+        "scenario_accuracy": 0.7,
+        "slu_f1": 0.36899719814826143,
+        "span_f1": 0.2194244604316547
+      },
+      "port_micro": {
+        "action_accuracy": 0.615,
+        "intent_accuracy": 0.536,
+        "samples": 1000,
+        "scenario_accuracy": 0.7,
+        "slu_f1": 0.36899719814826143,
+        "slu_f1_precision": 0.4187910793959397,
+        "slu_f1_recall": 0.3297859468095853,
+        "span_f1": 0.2194244604316547,
+        "span_f1_precision": 0.25487465181058494,
+        "span_f1_recall": 0.19263157894736843
+      },
+      "predictions_outside_roster": [],
+      "projection_rule": "1:1 key rename of the sealed rows: {sample_id, text=final_response_text}; no response text altered, no row added or dropped",
+      "projection_sha256": "7b1e6e6e5d48c7c720c2b2fd622f3243d29d6591142e9a8e770edac6f4402fac",
+      "roster": "DEV-1000",
+      "run_id": "SAEA-DEV1000-BASELINE-LOCK",
+      "scorer_version": "slurp-official-8eb16545",
+      "sealed_outputs": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV1000-BASELINE-LOCK/attempt-20260825T053342Z-dev1000m0/arm1-m0-outputs.jsonl",
+      "sealed_outputs_rows": 1000,
+      "sealed_outputs_sha256": "ea7045d3cfd3d1652f568911a0c47c16d66b879e824d314a6cb5061d7f07decc",
+      "unanswered_counted_wrong": {
+        "action_accuracy": 0.615,
+        "denominator": 1000,
+        "intent_accuracy": 0.536,
+        "note": "same numerators as the official run, denominator forced to the full roster; identical to the official numbers when nothing is missing",
+        "scenario_accuracy": 0.7
+      },
+      "unparsed_sample_ids": [
+        "slurp:devel:005793:audio--1506078231-headset",
+        "slurp:devel:006111:audio-1490198869-headset",
+        "slurp:devel:008655:audio-1502895086-headset",
+        "slurp:devel:012149:audio-1489153672",
+        "slurp:devel:012165:audio-1497867713"
+      ]
+    },
+    "DEV500-BLEND": {
+      "attempt_id": "attempt-20260824T205527Z-dev500blend",
+      "counts_on_scored_rows": {
+        "action_correct": 371,
+        "intent_correct": 359,
+        "scenario_correct": 405
+      },
+      "description": "knowledge cell (BLEND)",
+      "gold_rows_without_prediction": [],
+      "identity_check": {
+        "passed": true,
+        "slu_f1_abs_diff": 0.0,
+        "span_f1_abs_diff": 0.0,
+        "tolerance": 1e-06
+      },
+      "n_gold_roster": 500,
+      "n_gold_rows_without_prediction": 0,
+      "n_predicted": 500,
+      "n_predictions_outside_roster": 0,
+      "n_unparsed_responses": 0,
+      "official": {
+        "action_accuracy": 0.7419999999999999,
+        "command": [
+          "/home/chao/.venvs/slurp-official-eval/bin/python",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/evaluation/evaluate.py",
+          "-g",
+          "/tmp/saea-slurp-official-4j2m1519/gold.jsonl",
+          "-p",
+          "/tmp/saea-slurp-official-4j2m1519/predictions.jsonl",
+          "--average",
+          "micro",
+          "--errors",
+          "--table-layout",
+          "csv"
+        ],
+        "intent_accuracy": 0.718,
+        "raw": {
+          "action": {
+            "f_measure": 0.7419999999999999,
+            "fn": 129.0,
+            "fp": 129.0,
+            "official_label": "Action",
+            "precision": 0.742,
+            "recall": 0.742,
+            "tp": 371.0
+          },
+          "entities": {
+            "f_measure": 0.22641509433962267,
+            "fn": 371.0,
+            "fp": 244.0,
+            "official_label": "Entities",
+            "precision": 0.2694610778443114,
+            "recall": 0.19522776572668113,
+            "tp": 90.0
+          },
+          "entities_distance_char": {
+            "f_measure": 0.4164719810650505,
+            "fn": 318.50418821589983,
+            "fp": 191.5041882158999,
+            "official_label": "Entities (distance char)",
+            "precision": 0.48727699913982475,
+            "recall": 0.3636333207295593,
+            "tp": 182.0
+          },
+          "entities_distance_word": {
+            "f_measure": 0.3682284904992329,
+            "fn": 375.75833333333327,
+            "fp": 248.75833333333333,
+            "official_label": "Entities (distance word)",
+            "precision": 0.42251068851444157,
+            "recall": 0.3263061959331252,
+            "tp": 182.0
+          },
+          "intent": {
+            "f_measure": 0.718,
+            "fn": 141.0,
+            "fp": 141.0,
+            "official_label": "Intent (scen_act)",
+            "precision": 0.718,
+            "recall": 0.718,
+            "tp": 359.0
+          },
+          "scenario": {
+            "f_measure": 0.81,
+            "fn": 95.0,
+            "fp": 95.0,
+            "official_label": "Scenario",
+            "precision": 0.81,
+            "recall": 0.81,
+            "tp": 405.0
+          },
+          "slu_f1": {
+            "f_measure": 0.39086722763679516,
+            "fn": 694.2625215492333,
+            "fp": 440.2625215492332,
+            "official_label": "Slu f1",
+            "precision": 0.4525885394968235,
+            "recall": 0.3439600218168226,
+            "tp": 364.0
+          }
+        },
+        "scenario_accuracy": 0.81,
+        "slu_f1": 0.39086722763679516,
+        "span_f1": 0.22641509433962267
+      },
+      "port_micro": {
+        "action_accuracy": 0.742,
+        "intent_accuracy": 0.718,
+        "samples": 500,
+        "scenario_accuracy": 0.81,
+        "slu_f1": 0.39086722763679516,
+        "slu_f1_precision": 0.4525885394968235,
+        "slu_f1_recall": 0.3439600218168226,
+        "span_f1": 0.22641509433962267,
+        "span_f1_precision": 0.2694610778443114,
+        "span_f1_recall": 0.19522776572668113
+      },
+      "predictions_outside_roster": [],
+      "projection_rule": "1:1 key rename of the sealed rows: {sample_id, text=final_response_text}; no response text altered, no row added or dropped",
+      "projection_sha256": "ee4bf5fcddfa338e83f2c8cfffc267d72bfe20759c2ee764a01bdb157aacffce",
+      "roster": "DEV-500",
+      "run_id": "SAEA-DEV500-CONFIRMATORY",
+      "scorer_version": "slurp-official-8eb16545",
+      "sealed_outputs": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV500-CONFIRMATORY/attempt-20260824T205527Z-dev500blend/arm2-blend-outputs.jsonl",
+      "sealed_outputs_rows": 500,
+      "sealed_outputs_sha256": "3ae9fef0c75cbceb7d008115522df8854d0a0db473cd553c1c44f4b7200efe0b",
+      "unanswered_counted_wrong": {
+        "action_accuracy": 0.742,
+        "denominator": 500,
+        "intent_accuracy": 0.718,
+        "note": "same numerators as the official run, denominator forced to the full roster; identical to the official numbers when nothing is missing",
+        "scenario_accuracy": 0.81
+      },
+      "unparsed_sample_ids": []
+    },
+    "DEV500-M0": {
+      "attempt_id": "attempt-20260824T203716Z-dev500m0",
+      "counts_on_scored_rows": {
+        "action_correct": 307,
+        "intent_correct": 259,
+        "scenario_correct": 341
+      },
+      "description": "direct baseline (M0)",
+      "gold_rows_without_prediction": [],
+      "identity_check": {
+        "passed": true,
+        "slu_f1_abs_diff": 0.0,
+        "span_f1_abs_diff": 0.0,
+        "tolerance": 1e-06
+      },
+      "n_gold_roster": 500,
+      "n_gold_rows_without_prediction": 0,
+      "n_predicted": 500,
+      "n_predictions_outside_roster": 0,
+      "n_unparsed_responses": 3,
+      "official": {
+        "action_accuracy": 0.614,
+        "command": [
+          "/home/chao/.venvs/slurp-official-eval/bin/python",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/evaluation/evaluate.py",
+          "-g",
+          "/tmp/saea-slurp-official-5m4dk183/gold.jsonl",
+          "-p",
+          "/tmp/saea-slurp-official-5m4dk183/predictions.jsonl",
+          "--average",
+          "micro",
+          "--errors",
+          "--table-layout",
+          "csv"
+        ],
+        "intent_accuracy": 0.518,
+        "raw": {
+          "action": {
+            "f_measure": 0.614,
+            "fn": 193.0,
+            "fp": 193.0,
+            "official_label": "Action",
+            "precision": 0.614,
+            "recall": 0.614,
+            "tp": 307.0
+          },
+          "entities": {
+            "f_measure": 0.19164619164619162,
+            "fn": 383.0,
+            "fp": 275.0,
+            "official_label": "Entities",
+            "precision": 0.22096317280453256,
+            "recall": 0.16919739696312364,
+            "tp": 78.0
+          },
+          "entities_distance_char": {
+            "f_measure": 0.3817588207995713,
+            "fn": 330.92678173578435,
+            "fp": 222.92678173578446,
+            "official_label": "Entities (distance char)",
+            "precision": 0.434090820752303,
+            "recall": 0.34068714048021226,
+            "tp": 171.0
+          },
+          "entities_distance_word": {
+            "f_measure": 0.3324584426946632,
+            "fn": 397.34999999999997,
+            "fp": 289.35,
+            "official_label": "Entities (distance word)",
+            "precision": 0.37145650048875856,
+            "recall": 0.3008709422011085,
+            "tp": 171.0
+          },
+          "intent": {
+            "f_measure": 0.518,
+            "fn": 241.0,
+            "fp": 241.0,
+            "official_label": "Intent (scen_act)",
+            "precision": 0.518,
+            "recall": 0.518,
+            "tp": 259.0
+          },
+          "scenario": {
+            "f_measure": 0.682,
+            "fn": 159.0,
+            "fp": 159.0,
+            "official_label": "Scenario",
+            "precision": 0.682,
+            "recall": 0.682,
+            "tp": 341.0
+          },
+          "slu_f1": {
+            "f_measure": 0.35540709959050437,
+            "fn": 728.2767817357845,
+            "fp": 512.2767817357844,
+            "official_label": "Slu f1",
+            "precision": 0.40033863416619897,
+            "recall": 0.31954351046029544,
+            "tp": 342.0
+          }
+        },
+        "scenario_accuracy": 0.682,
+        "slu_f1": 0.35540709959050437,
+        "span_f1": 0.19164619164619162
+      },
+      "port_micro": {
+        "action_accuracy": 0.614,
+        "intent_accuracy": 0.518,
+        "samples": 500,
+        "scenario_accuracy": 0.682,
+        "slu_f1": 0.35540709959050437,
+        "slu_f1_precision": 0.40033863416619897,
+        "slu_f1_recall": 0.31954351046029544,
+        "span_f1": 0.19164619164619162,
+        "span_f1_precision": 0.22096317280453256,
+        "span_f1_recall": 0.16919739696312364
+      },
+      "predictions_outside_roster": [],
+      "projection_rule": "1:1 key rename of the sealed rows: {sample_id, text=final_response_text}; no response text altered, no row added or dropped",
+      "projection_sha256": "e48e2cfc574890dece2c19f16d7fb0c531327dd9ecfcc66957f6306f6775e13f",
+      "roster": "DEV-500",
+      "run_id": "SAEA-DEV500-CONFIRMATORY",
+      "scorer_version": "slurp-official-8eb16545",
+      "sealed_outputs": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV500-CONFIRMATORY/attempt-20260824T203716Z-dev500m0/arm1-m0-outputs.jsonl",
+      "sealed_outputs_rows": 500,
+      "sealed_outputs_sha256": "d09fbf479a5bb48b9ff69d1499e01ed5f233bbce20b4c6196ba5bbbed787629d",
+      "unanswered_counted_wrong": {
+        "action_accuracy": 0.614,
+        "denominator": 500,
+        "intent_accuracy": 0.518,
+        "note": "same numerators as the official run, denominator forced to the full roster; identical to the official numbers when nothing is missing",
+        "scenario_accuracy": 0.682
+      },
+      "unparsed_sample_ids": [
+        "slurp:devel:005793:audio--1506078231-headset",
+        "slurp:devel:006111:audio-1490198869-headset",
+        "slurp:devel:012165:audio-1497867713"
+      ]
+    },
+    "DEV500-RANDICL": {
+      "attempt_id": "attempt-20260824T213948Z-dev500randicl",
+      "counts_on_scored_rows": {
+        "action_correct": 224,
+        "intent_correct": 188,
+        "scenario_correct": 258
+      },
+      "description": "negative control: random ICL",
+      "gold_rows_without_prediction": [],
+      "identity_check": {
+        "passed": true,
+        "slu_f1_abs_diff": 0.0,
+        "span_f1_abs_diff": 0.0,
+        "tolerance": 1e-06
+      },
+      "n_gold_roster": 400,
+      "n_gold_rows_without_prediction": 0,
+      "n_predicted": 400,
+      "n_predictions_outside_roster": 0,
+      "n_unparsed_responses": 3,
+      "official": {
+        "action_accuracy": 0.56,
+        "command": [
+          "/home/chao/.venvs/slurp-official-eval/bin/python",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/evaluation/evaluate.py",
+          "-g",
+          "/tmp/saea-slurp-official-3mm8g1x7/gold.jsonl",
+          "-p",
+          "/tmp/saea-slurp-official-3mm8g1x7/predictions.jsonl",
+          "--average",
+          "micro",
+          "--errors",
+          "--table-layout",
+          "csv"
+        ],
+        "intent_accuracy": 0.47,
+        "raw": {
+          "action": {
+            "f_measure": 0.56,
+            "fn": 176.0,
+            "fp": 176.0,
+            "official_label": "Action",
+            "precision": 0.56,
+            "recall": 0.56,
+            "tp": 224.0
+          },
+          "entities": {
+            "f_measure": 0.23100303951367782,
+            "fn": 310.0,
+            "fp": 196.0,
+            "official_label": "Entities",
+            "precision": 0.27941176470588236,
+            "recall": 0.19689119170984457,
+            "tp": 76.0
+          },
+          "entities_distance_char": {
+            "f_measure": 0.40553370541550215,
+            "fn": 269.5535105064466,
+            "fp": 155.55351050644663,
+            "official_label": "Entities (distance char)",
+            "precision": 0.4824432087173704,
+            "recall": 0.34977390451442125,
+            "tp": 145.0
+          },
+          "entities_distance_word": {
+            "f_measure": 0.35055201869610764,
+            "fn": 325.6333333333334,
+            "fp": 211.63333333333333,
+            "official_label": "Entities (distance word)",
+            "precision": 0.4065800542106739,
+            "recall": 0.308095474183724,
+            "tp": 145.0
+          },
+          "intent": {
+            "f_measure": 0.47,
+            "fn": 212.0,
+            "fp": 212.0,
+            "official_label": "Intent (scen_act)",
+            "precision": 0.47,
+            "recall": 0.47,
+            "tp": 188.0
+          },
+          "scenario": {
+            "f_measure": 0.645,
+            "fn": 142.0,
+            "fp": 142.0,
+            "official_label": "Scenario",
+            "precision": 0.645,
+            "recall": 0.645,
+            "tp": 258.0
+          },
+          "slu_f1": {
+            "f_measure": 0.37604375945532825,
+            "fn": 595.1868438397798,
+            "fp": 367.18684383977995,
+            "official_label": "Slu f1",
+            "precision": 0.4412748105327274,
+            "recall": 0.32761444887955254,
+            "tp": 290.0
+          }
+        },
+        "scenario_accuracy": 0.645,
+        "slu_f1": 0.37604375945532825,
+        "span_f1": 0.23100303951367782
+      },
+      "port_micro": {
+        "action_accuracy": 0.56,
+        "intent_accuracy": 0.47,
+        "samples": 400,
+        "scenario_accuracy": 0.645,
+        "slu_f1": 0.37604375945532825,
+        "slu_f1_precision": 0.4412748105327274,
+        "slu_f1_recall": 0.3276144488795525,
+        "span_f1": 0.23100303951367782,
+        "span_f1_precision": 0.27941176470588236,
+        "span_f1_recall": 0.19689119170984457
+      },
+      "predictions_outside_roster": [],
+      "projection_rule": "1:1 key rename of the sealed rows: {sample_id, text=final_response_text}; no response text altered, no row added or dropped",
+      "projection_sha256": "7c9e02b1fdbbaf972c5aae94437c04dd4c0ee6f3f094ba5e40dc6313be761c65",
+      "roster": "DEV-500-NEW400",
+      "run_id": "SAEA-DEV500-CONFIRMATORY",
+      "scorer_version": "slurp-official-8eb16545",
+      "sealed_outputs": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV500-CONFIRMATORY/attempt-20260824T213948Z-dev500randicl/arm4-randicl-outputs.jsonl",
+      "sealed_outputs_rows": 400,
+      "sealed_outputs_sha256": "ffbfc92d15d58db694c528864a2120487ff22c2c621ed61917064fb2d2956248",
+      "unanswered_counted_wrong": {
+        "action_accuracy": 0.56,
+        "denominator": 400,
+        "intent_accuracy": 0.47,
+        "note": "same numerators as the official run, denominator forced to the full roster; identical to the official numbers when nothing is missing",
+        "scenario_accuracy": 0.645
+      },
+      "unparsed_sample_ids": [
+        "slurp:devel:003704:audio-1494511949",
+        "slurp:devel:012165:audio-1497867713",
+        "slurp:devel:014014:audio-1434532598"
+      ]
+    },
+    "DEV500-RANDRET": {
+      "attempt_id": "attempt-20260824T212928Z-dev500randret",
+      "counts_on_scored_rows": {
+        "action_correct": 251,
+        "intent_correct": 226,
+        "scenario_correct": 285
+      },
+      "description": "negative control: random retrieval",
+      "gold_rows_without_prediction": [],
+      "identity_check": {
+        "passed": true,
+        "slu_f1_abs_diff": 0.0,
+        "span_f1_abs_diff": 0.0,
+        "tolerance": 1e-06
+      },
+      "n_gold_roster": 400,
+      "n_gold_rows_without_prediction": 0,
+      "n_predicted": 400,
+      "n_predictions_outside_roster": 0,
+      "n_unparsed_responses": 1,
+      "official": {
+        "action_accuracy": 0.6275,
+        "command": [
+          "/home/chao/.venvs/slurp-official-eval/bin/python",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/evaluation/evaluate.py",
+          "-g",
+          "/tmp/saea-slurp-official-2uolnz34/gold.jsonl",
+          "-p",
+          "/tmp/saea-slurp-official-2uolnz34/predictions.jsonl",
+          "--average",
+          "micro",
+          "--errors",
+          "--table-layout",
+          "csv"
+        ],
+        "intent_accuracy": 0.565,
+        "raw": {
+          "action": {
+            "f_measure": 0.6275,
+            "fn": 149.0,
+            "fp": 149.0,
+            "official_label": "Action",
+            "precision": 0.6275,
+            "recall": 0.6275,
+            "tp": 251.0
+          },
+          "entities": {
+            "f_measure": 0.18584070796460175,
+            "fn": 323.0,
+            "fp": 229.0,
+            "official_label": "Entities",
+            "precision": 0.21575342465753425,
+            "recall": 0.16321243523316062,
+            "tp": 63.0
+          },
+          "entities_distance_char": {
+            "f_measure": 0.3850208190502952,
+            "fn": 277.0057494947807,
+            "fp": 183.00574949478067,
+            "official_label": "Entities (distance char)",
+            "precision": 0.4403592298376343,
+            "recall": 0.34203808421334925,
+            "tp": 144.0
+          },
+          "entities_distance_word": {
+            "f_measure": 0.33617368973969886,
+            "fn": 331.34999999999997,
+            "fp": 237.35000000000002,
+            "official_label": "Entities (distance word)",
+            "precision": 0.37760587386914907,
+            "recall": 0.3029346797096876,
+            "tp": 144.0
+          },
+          "intent": {
+            "f_measure": 0.565,
+            "fn": 174.0,
+            "fp": 174.0,
+            "official_label": "Intent (scen_act)",
+            "precision": 0.565,
+            "recall": 0.565,
+            "tp": 226.0
+          },
+          "scenario": {
+            "f_measure": 0.7125,
+            "fn": 115.0,
+            "fp": 115.0,
+            "official_label": "Scenario",
+            "precision": 0.7125,
+            "recall": 0.7125,
+            "tp": 285.0
+          },
+          "slu_f1": {
+            "f_measure": 0.3589430251872002,
+            "fn": 608.3557494947808,
+            "fp": 420.35574949478064,
+            "official_label": "Slu f1",
+            "precision": 0.4065753686694994,
+            "recall": 0.32130100148554575,
+            "tp": 288.0
+          }
+        },
+        "scenario_accuracy": 0.7125,
+        "slu_f1": 0.3589430251872002,
+        "span_f1": 0.18584070796460175
+      },
+      "port_micro": {
+        "action_accuracy": 0.6275,
+        "intent_accuracy": 0.565,
+        "samples": 400,
+        "scenario_accuracy": 0.7125,
+        "slu_f1": 0.3589430251872002,
+        "slu_f1_precision": 0.4065753686694994,
+        "slu_f1_recall": 0.32130100148554575,
+        "span_f1": 0.18584070796460175,
+        "span_f1_precision": 0.21575342465753425,
+        "span_f1_recall": 0.16321243523316062
+      },
+      "predictions_outside_roster": [],
+      "projection_rule": "1:1 key rename of the sealed rows: {sample_id, text=final_response_text}; no response text altered, no row added or dropped",
+      "projection_sha256": "69e00bc962454e96a1c30b0c25097a619f21127867808e96f8713452fbf3403a",
+      "roster": "DEV-500-NEW400",
+      "run_id": "SAEA-DEV500-CONFIRMATORY",
+      "scorer_version": "slurp-official-8eb16545",
+      "sealed_outputs": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV500-CONFIRMATORY/attempt-20260824T212928Z-dev500randret/arm3-randret-outputs.jsonl",
+      "sealed_outputs_rows": 400,
+      "sealed_outputs_sha256": "aa0bab8fb606da5da0ff7a8db305b0e8a3cae77e48ea96b33dbe7b3d05015890",
+      "unanswered_counted_wrong": {
+        "action_accuracy": 0.6275,
+        "denominator": 400,
+        "intent_accuracy": 0.565,
+        "note": "same numerators as the official run, denominator forced to the full roster; identical to the official numbers when nothing is missing",
+        "scenario_accuracy": 0.7125
+      },
+      "unparsed_sample_ids": [
+        "slurp:devel:006111:audio-1490198869-headset"
+      ]
+    }
+  },
+  "evaluator": {
+    "average": "micro",
+    "commit": "8eb16545762be97ace75334109d73824217311f1",
+    "root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/evaluation"
+  },
+  "rosters": {
+    "DEV-1000": {
+      "n_items": 1000,
+      "receipt": "docs/receipts/probe-samples/DEV-1000.json",
+      "receipt_sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b",
+      "split": "devel",
+      "split_identity_hash": "9fb44e3384b8ad8e0d8f825b88eb0a3051c218b699975051d8a0481aabc0243b",
+      "split_role": "dev"
+    },
+    "DEV-500": {
+      "n_items": 500,
+      "receipt": "docs/receipts/probe-samples/DEV-500.json",
+      "receipt_sha256": "adc3e4ddd20518d279dc6c3aa42821629ca67b05eaba7802e1918f0349c2f315",
+      "split": "devel",
+      "split_identity_hash": "c0f1c7531fb8972885abf1d840cc101bbfa38ae04e3929cc46e0f5b9ef35452b",
+      "split_role": "dev"
+    },
+    "DEV-500-NEW400": {
+      "n_items": 400,
+      "receipt": "docs/receipts/probe-samples/DEV-500-NEW400.json",
+      "receipt_sha256": "86c199b204002afb8706485c6778314ef907069ea386bf72bce21179d95d95fc",
+      "split": "devel",
+      "split_identity_hash": "36c778dafb418d8f0fb80ad53fb11f2608f3ebcd4ad9f5fa3d964ff16b54898b",
+      "split_role": "dev"
+    }
+  },
+  "schema": "saea-slurp-scoring-alignment-v1",
+  "skip_hazard_demonstration": {
+    "action_accuracy": 0.615,
+    "gold_rows": 8690,
+    "gold_rows_without_prediction": 7690,
+    "intent_accuracy": 0.536,
+    "predictions": 1000,
+    "predictions_not_in_devel": 0,
+    "reading": "identical to the roster-scoped DEV1000-M0 numbers: the evaluate.py loop `if gold_id in pred_examples` never penalises an unanswered gold row",
+    "scenario_accuracy": 0.7,
+    "slu_f1": 0.36899719814826126,
+    "span_f1": 0.2194244604316547
+  },
+  "split_discipline": {
+    "allow_heldout": false,
+    "audio_subdir": "slurp_real",
+    "devel_recordings": 8690,
+    "devel_sentences": 2033,
+    "recording_filename_prefixes": [
+      "audio"
+    ],
+    "split_id": "devel",
+    "synthetic_rows": 0,
+    "test_split_touched": false
+  },
+  "zero_contact": {
+    "audio_seconds": 0,
+    "gpu_seconds": 0,
+    "model_calls": 0,
+    "network_contacts": 0,
+    "tool_contacts": 0
+  }
+}

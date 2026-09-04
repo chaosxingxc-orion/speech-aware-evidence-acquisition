@@ -1,0 +1,354 @@
+{
+  "note": "core.scoring_batch --manifest output for the three sealed Earnings-21 N10 bundles; per-sample ref_hit_mask arrays dropped for size, every count retained. The manifests declare scorers [\"asr-wer\",\"cost\"] only, so this verified path cannot emit asr-wer-whisper or entity-wer -- see README.md.",
+  "runs": {
+    "SAEA-E-005B-N10-matched": {
+      "asr-wer": {
+        "aggregate": {
+          "mean_wer": 0.12393970611951892,
+          "samples": 10
+        },
+        "per_sample": [
+          {
+            "deletions": 139,
+            "hits": 6217,
+            "insertions": 244,
+            "sample_id": "4330115",
+            "substitutions": 334,
+            "wer": 0.10717488789237668
+          },
+          {
+            "deletions": 283,
+            "hits": 10933,
+            "insertions": 573,
+            "sample_id": "4365024",
+            "substitutions": 635,
+            "wer": 0.125812167749557
+          },
+          {
+            "deletions": 92,
+            "hits": 6431,
+            "insertions": 273,
+            "sample_id": "4365948",
+            "substitutions": 262,
+            "wer": 0.09240972733971997
+          },
+          {
+            "deletions": 400,
+            "hits": 10583,
+            "insertions": 423,
+            "sample_id": "4366429",
+            "substitutions": 459,
+            "wer": 0.11204334906484881
+          },
+          {
+            "deletions": 113,
+            "hits": 3901,
+            "insertions": 176,
+            "sample_id": "4366522",
+            "substitutions": 235,
+            "wer": 0.12332313485526006
+          },
+          {
+            "deletions": 385,
+            "hits": 9438,
+            "insertions": 343,
+            "sample_id": "4384964",
+            "substitutions": 478,
+            "wer": 0.11707601203766625
+          },
+          {
+            "deletions": 177,
+            "hits": 6098,
+            "insertions": 329,
+            "sample_id": "4385072",
+            "substitutions": 330,
+            "wer": 0.12657077971233913
+          },
+          {
+            "deletions": 81,
+            "hits": 3377,
+            "insertions": 200,
+            "sample_id": "4387383",
+            "substitutions": 228,
+            "wer": 0.13809007053716765
+          },
+          {
+            "deletions": 76,
+            "hits": 3637,
+            "insertions": 252,
+            "sample_id": "4389907",
+            "substitutions": 423,
+            "wer": 0.18157640232108319
+          },
+          {
+            "deletions": 167,
+            "hits": 10584,
+            "insertions": 496,
+            "sample_id": "4397829",
+            "substitutions": 652,
+            "wer": 0.11532052968517056
+          }
+        ]
+      },
+      "cost": {
+        "admitted_evidence_bytes": 80256,
+        "audio_seconds_used": 30406.9313125,
+        "calls_used": 342,
+        "completion_tokens_total": 90753,
+        "cost_unavailable_reason": null,
+        "cpu_seconds": 171.54000000000002,
+        "failed_attempt_audio_seconds": 0.0,
+        "failed_attempt_calls": 0,
+        "failed_attempt_cost_reason": null,
+        "gate_setup_seconds": 77.27987299099914,
+        "gpu_sampling_reason": null,
+        "gpu_seconds": 4952.899193384491,
+        "latency_seconds_total": 38766.43531491897,
+        "peak_vram_mib": 22114.0,
+        "prompt_tokens_total": 1670749,
+        "saturated_sample_ids": [],
+        "saturated_slice_count": 0,
+        "skipped_sample_ids": [],
+        "skipped_slice_count": 0,
+        "supplied_evidence_bytes": 80256,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "04936d14d1f7426233235b78b912e4463d53cd3cdb9a0db113c10b55caff1af7"
+      },
+      "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-005B-N10-matched/attempt-20260815T011459Z-30cb33/SAEA-E-005B-N10-matched.run-manifest.json",
+      "verified": true
+    },
+    "SAEA-E-005B-N10-names": {
+      "asr-wer": {
+        "aggregate": {
+          "mean_wer": 0.1087878205129414,
+          "samples": 10
+        },
+        "per_sample": [
+          {
+            "deletions": 108,
+            "hits": 6279,
+            "insertions": 206,
+            "sample_id": "4330115",
+            "substitutions": 303,
+            "wer": 0.09222720478325859
+          },
+          {
+            "deletions": 311,
+            "hits": 11038,
+            "insertions": 342,
+            "sample_id": "4365024",
+            "substitutions": 502,
+            "wer": 0.09746012994683993
+          },
+          {
+            "deletions": 74,
+            "hits": 6503,
+            "insertions": 224,
+            "sample_id": "4365948",
+            "substitutions": 208,
+            "wer": 0.07457627118644068
+          },
+          {
+            "deletions": 461,
+            "hits": 10605,
+            "insertions": 290,
+            "sample_id": "4366429",
+            "substitutions": 376,
+            "wer": 0.09849676629959797
+          },
+          {
+            "deletions": 117,
+            "hits": 3938,
+            "insertions": 118,
+            "sample_id": "4366522",
+            "substitutions": 194,
+            "wer": 0.10096493292539421
+          },
+          {
+            "deletions": 296,
+            "hits": 9580,
+            "insertions": 282,
+            "sample_id": "4384964",
+            "substitutions": 425,
+            "wer": 0.0973691874575284
+          },
+          {
+            "deletions": 311,
+            "hits": 6095,
+            "insertions": 172,
+            "sample_id": "4385072",
+            "substitutions": 199,
+            "wer": 0.1032551097653293
+          },
+          {
+            "deletions": 92,
+            "hits": 3415,
+            "insertions": 126,
+            "sample_id": "4387383",
+            "substitutions": 179,
+            "wer": 0.10770482908301682
+          },
+          {
+            "deletions": 241,
+            "hits": 3501,
+            "insertions": 269,
+            "sample_id": "4389907",
+            "substitutions": 394,
+            "wer": 0.218568665377176
+          },
+          {
+            "deletions": 142,
+            "hits": 10699,
+            "insertions": 405,
+            "sample_id": "4397829",
+            "substitutions": 562,
+            "wer": 0.09725510830483206
+          }
+        ]
+      },
+      "cost": {
+        "admitted_evidence_bytes": 3237,
+        "audio_seconds_used": 30406.9313125,
+        "calls_used": 342,
+        "completion_tokens_total": 92905,
+        "cost_unavailable_reason": null,
+        "cpu_seconds": 149.93,
+        "failed_attempt_audio_seconds": 0.0,
+        "failed_attempt_calls": 0,
+        "failed_attempt_cost_reason": null,
+        "gate_setup_seconds": 72.9626662810042,
+        "gpu_sampling_reason": null,
+        "gpu_seconds": 3963.359075721238,
+        "latency_seconds_total": 30978.567171587056,
+        "peak_vram_mib": 22114.0,
+        "prompt_tokens_total": 468125,
+        "saturated_sample_ids": [],
+        "saturated_slice_count": 0,
+        "skipped_sample_ids": [],
+        "skipped_slice_count": 0,
+        "supplied_evidence_bytes": 3237,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "04936d14d1f7426233235b78b912e4463d53cd3cdb9a0db113c10b55caff1af7"
+      },
+      "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-005B-N10-names/attempt-20260815T025126Z-30d1a1/SAEA-E-005B-N10-names.run-manifest.json",
+      "verified": true
+    },
+    "SAEA-E-005B-N10-zero": {
+      "asr-wer": {
+        "aggregate": {
+          "mean_wer": 0.12384749742775314,
+          "samples": 10
+        },
+        "per_sample": [
+          {
+            "deletions": 94,
+            "hits": 6181,
+            "insertions": 277,
+            "sample_id": "4330115",
+            "substitutions": 415,
+            "wer": 0.11748878923766816
+          },
+          {
+            "deletions": 260,
+            "hits": 10955,
+            "insertions": 549,
+            "sample_id": "4365024",
+            "substitutions": 636,
+            "wer": 0.1219306387646612
+          },
+          {
+            "deletions": 80,
+            "hits": 6411,
+            "insertions": 325,
+            "sample_id": "4365948",
+            "substitutions": 294,
+            "wer": 0.1030213706705969
+          },
+          {
+            "deletions": 358,
+            "hits": 10605,
+            "insertions": 434,
+            "sample_id": "4366429",
+            "substitutions": 479,
+            "wer": 0.11108197867505681
+          },
+          {
+            "deletions": 88,
+            "hits": 3945,
+            "insertions": 164,
+            "sample_id": "4366522",
+            "substitutions": 216,
+            "wer": 0.11014356319133914
+          },
+          {
+            "deletions": 205,
+            "hits": 9592,
+            "insertions": 448,
+            "sample_id": "4384964",
+            "substitutions": 504,
+            "wer": 0.11231919231142608
+          },
+          {
+            "deletions": 89,
+            "hits": 6177,
+            "insertions": 330,
+            "sample_id": "4385072",
+            "substitutions": 339,
+            "wer": 0.11476154428463285
+          },
+          {
+            "deletions": 39,
+            "hits": 3418,
+            "insertions": 202,
+            "sample_id": "4387383",
+            "substitutions": 229,
+            "wer": 0.12750949538795442
+          },
+          {
+            "deletions": 49,
+            "hits": 3645,
+            "insertions": 322,
+            "sample_id": "4389907",
+            "substitutions": 442,
+            "wer": 0.1965667311411992
+          },
+          {
+            "deletions": 127,
+            "hits": 10573,
+            "insertions": 580,
+            "sample_id": "4397829",
+            "substitutions": 703,
+            "wer": 0.12365167061299658
+          }
+        ]
+      },
+      "cost": {
+        "admitted_evidence_bytes": 0,
+        "audio_seconds_used": 30406.9313125,
+        "calls_used": 342,
+        "completion_tokens_total": 93084,
+        "cost_unavailable_reason": null,
+        "cpu_seconds": 150.49,
+        "failed_attempt_audio_seconds": 0.0,
+        "failed_attempt_calls": 0,
+        "failed_attempt_cost_reason": null,
+        "gate_setup_seconds": 78.53244837899547,
+        "gpu_sampling_reason": null,
+        "gpu_seconds": 3898.287326849357,
+        "latency_seconds_total": 30490.147629700215,
+        "peak_vram_mib": 22110.0,
+        "prompt_tokens_total": 416404,
+        "saturated_sample_ids": [],
+        "saturated_slice_count": 0,
+        "skipped_sample_ids": [],
+        "skipped_slice_count": 0,
+        "supplied_evidence_bytes": 0,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "04936d14d1f7426233235b78b912e4463d53cd3cdb9a0db113c10b55caff1af7"
+      },
+      "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E-005B-N10-zero/attempt-20260814T235515Z-044ccc/SAEA-E-005B-N10-zero.run-manifest.json",
+      "verified": true
+    }
+  },
+  "schema": "saea-verified-score-batch-read-v1"
+}
