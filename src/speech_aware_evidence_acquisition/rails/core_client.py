@@ -47,6 +47,7 @@ retrieval-shaped arm would always leave that field meaninglessly unset.
 from __future__ import annotations
 
 import hashlib
+import json
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -187,7 +188,97 @@ _SPEECH_FEATURE_ARM_FIELDS = _SUPPORTED_ARM_FIELDS | frozenset(
     }
 )
 
+# Native tool-calling field-set extension (D1b, 2026-09-03): "for BOTH audio
+# paths" -- a client bound to EITHER the raw-audio (_SUPPORTED_ARM_FIELDS) or
+# the packet (_SPEECH_FEATURE_ARM_FIELDS) field set may ALSO be bound to that
+# same field set plus exactly one extra field, "tool_schemas" (D1a's own
+# "bare-core-native-tools" naming convention: a NEW field on a NEW arm, never
+# grown ad hoc onto an existing frozen tuple -- core.policies module
+# docstring). Only "speech-feature-query-native-tools" is a real,
+# D2-registered arm as of this slice (e0.d2_leakage.ARM_VISIBLE_FIELDS); the
+# raw-audio member of this pair is accepted here too so this acceptance logic
+# never has to change again the day a raw-audio native-tools D2 arm is
+# registered -- constructing this client for an arm name that is not in
+# ARM_VISIBLE_FIELDS still fails closed ("unknown D2 arm") exactly as it
+# always has, regardless of this field-set shape ever being reachable.
+_NATIVE_TOOLS_FIELD = "tool_schemas"
+_NATIVE_TOOLS_SUPPORTED_ARM_FIELDS = _SUPPORTED_ARM_FIELDS | frozenset(
+    {_NATIVE_TOOLS_FIELD}
+)
+_NATIVE_TOOLS_SPEECH_FEATURE_ARM_FIELDS = _SPEECH_FEATURE_ARM_FIELDS | frozenset(
+    {_NATIVE_TOOLS_FIELD}
+)
+_ACCEPTED_ARM_FIELD_SETS = frozenset(
+    {
+        _SUPPORTED_ARM_FIELDS,
+        _SPEECH_FEATURE_ARM_FIELDS,
+        _NATIVE_TOOLS_SUPPORTED_ARM_FIELDS,
+        _NATIVE_TOOLS_SPEECH_FEATURE_ARM_FIELDS,
+    }
+)
+_SPEECH_FEATURE_FAMILY_ARM_FIELDS = frozenset(
+    {_SPEECH_FEATURE_ARM_FIELDS, _NATIVE_TOOLS_SPEECH_FEATURE_ARM_FIELDS}
+)
+
 DEFAULT_RAILS_ARM = "fixed-legal-context"
+
+
+def _validate_tool_schemas(
+    tool_schemas: Sequence[Mapping[str, object]] | None,
+) -> tuple[dict[str, object], ...]:
+    """A native tool-calling arm's own ``tool_schemas`` invariant: a
+    non-empty sequence of OpenAI-format ``{"type": "function", "function":
+    {"name": ..., ...}}`` entries -- the exact shape
+    ``data.audio2tool_tools.render_openai_tools`` produces (never imported
+    here; module docstring -- this bridge's own dependency surface stays
+    light). Every entry is copied into a plain ``dict`` so the client's own
+    stored tuple never aliases a caller-owned mutable object."""
+
+    if (
+        tool_schemas is None
+        or not isinstance(tool_schemas, Sequence)
+        or isinstance(tool_schemas, (str, bytes))
+        or not tool_schemas
+    ):
+        raise FrozenCoreClientError(
+            "a native tool-calling arm requires a non-empty tool_schemas sequence"
+        )
+    validated: list[dict[str, object]] = []
+    for index, entry in enumerate(tool_schemas):
+        if not isinstance(entry, Mapping):
+            raise FrozenCoreClientError(
+                f"tool_schemas[{index}] must be a mapping, got {type(entry).__name__}"
+            )
+        if entry.get("type") != "function":
+            raise FrozenCoreClientError(
+                f"tool_schemas[{index}] must declare type 'function'"
+            )
+        function = entry.get("function")
+        if not isinstance(function, Mapping):
+            raise FrozenCoreClientError(
+                f"tool_schemas[{index}] must carry a 'function' mapping"
+            )
+        name = function.get("name")
+        if not isinstance(name, str) or not name:
+            raise FrozenCoreClientError(
+                f"tool_schemas[{index}].function.name must be a non-empty string"
+            )
+        validated.append(dict(entry))
+    return tuple(validated)
+
+
+def _tool_schemas_sha256(tool_schemas: Sequence[Mapping[str, object]]) -> str:
+    """SHA-256 of the canonical (sorted-key, compact) JSON of
+    ``tool_schemas`` -- the SAME convention as
+    ``data.audio2tool_tools.openai_tools_sha256``, re-implemented locally
+    (never imported -- module docstring) so this bridge's own dependency
+    surface stays light. A synthetic-list agreement test between the two
+    lives in tests/unit/test_rails_core_client_native_tools.py."""
+
+    blob = json.dumps(
+        list(tool_schemas), ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    )
+    return hashlib.sha256(blob.encode("utf-8")).hexdigest()
 
 
 def _probe_sample_rate_hz(path: Path) -> int:
@@ -319,6 +410,12 @@ class RequestTiming:
     sample_id: str
     started_at: str
     latency_seconds: float
+    # D1b, 2026-09-03: ``None`` for every non-native-tools client (every
+    # pre-existing caller, byte-identical); the client's own
+    # ``tool_schemas_sha256`` (constant for the client's whole life) on a
+    # native-tools client, so a per-request trace record names the exact
+    # tool registry that request was made under without re-hashing it.
+    tool_schemas_sha256: str | None = None
 
     def as_json(self) -> dict[str, object]:
         return {
@@ -326,6 +423,7 @@ class RequestTiming:
             "sample_id": self.sample_id,
             "started_at": self.started_at,
             "latency_seconds": self.latency_seconds,
+            "tool_schemas_sha256": self.tool_schemas_sha256,
         }
 
 
@@ -623,6 +721,7 @@ class FrozenCoreClient:
         now: Callable[[], float] = time.time,
         speech_feature_root: Path | None = None,
         speech_packet_bindings: Mapping[str, Mapping[str, str]] | None = None,
+        tool_schemas: Sequence[Mapping[str, object]] | None = None,
     ) -> None:
         plan.validate()
         assert_execution_scope(plan.execution_profile)
@@ -631,12 +730,16 @@ class FrozenCoreClient:
                 f"unknown D2 arm {arm!r}; D2-frozen arms are {sorted(ARM_VISIBLE_FIELDS)}"
             )
         arm_fields = frozenset(ARM_VISIBLE_FIELDS[arm])
-        if arm_fields not in {_SUPPORTED_ARM_FIELDS, _SPEECH_FEATURE_ARM_FIELDS}:
+        if arm_fields not in _ACCEPTED_ARM_FIELD_SETS:
             raise FrozenCoreClientError(
                 f"FrozenCoreClient only builds payloads for the field set "
-                f"{sorted(_SUPPORTED_ARM_FIELDS)} (D2 arm {DEFAULT_RAILS_ARM!r}); arm "
-                f"{arm!r} declares a different field set {sorted(ARM_VISIBLE_FIELDS[arm])}"
+                f"{sorted(_SUPPORTED_ARM_FIELDS)} (D2 arm {DEFAULT_RAILS_ARM!r}), that "
+                f"field set plus {_NATIVE_TOOLS_FIELD!r}, the speech-feature-query field "
+                f"set, or that field set plus {_NATIVE_TOOLS_FIELD!r}; arm {arm!r} "
+                f"declares a different field set {sorted(ARM_VISIBLE_FIELDS[arm])}"
             )
+        self._is_speech_feature_arm = arm_fields in _SPEECH_FEATURE_FAMILY_ARM_FIELDS
+        self._is_native_tools_arm = _NATIVE_TOOLS_FIELD in arm_fields
         if not isinstance(request_id_prefix, str) or not request_id_prefix:
             raise FrozenCoreClientError("request_id_prefix must be a non-empty string")
         self._plan = plan
@@ -678,7 +781,7 @@ class FrozenCoreClient:
         self._speech_packet_bindings: dict[str, dict[str, str]] = {}
         self._speech_decoder_gguf_sha256: str | None = None
         self._speech_n_embd: int | None = None
-        if arm_fields == _SPEECH_FEATURE_ARM_FIELDS:
+        if self._is_speech_feature_arm:
             if speech_feature_root is None or speech_packet_bindings is None:
                 raise FrozenCoreClientError(
                     "speech-feature-query requires speech_feature_root and complete "
@@ -749,6 +852,15 @@ class FrozenCoreClient:
         elif speech_feature_root is not None or speech_packet_bindings is not None:
             raise FrozenCoreClientError(
                 "speech feature bindings are only valid for the speech-feature-query arm"
+            )
+        self._tool_schemas: tuple[dict[str, object], ...] | None = None
+        self._tool_schemas_sha256: str | None = None
+        if self._is_native_tools_arm:
+            self._tool_schemas = _validate_tool_schemas(tool_schemas)
+            self._tool_schemas_sha256 = _tool_schemas_sha256(self._tool_schemas)
+        elif tool_schemas is not None:
+            raise FrozenCoreClientError(
+                f"arm {arm!r} is not a native tool-calling arm; tool_schemas must be omitted"
             )
 
     @property
@@ -868,9 +980,9 @@ class FrozenCoreClient:
                 raise FrozenCoreClientError(
                     "speech_feature_sample_id and text_only_sample_id are mutually exclusive"
                 )
-            if self._arm != "speech-feature-query":
+            if not self._is_speech_feature_arm:
                 raise FrozenCoreClientError(
-                    "speech_feature_sample_id requires the speech-feature-query arm"
+                    "speech_feature_sample_id requires a speech-feature-query arm"
                 )
             if (
                 not isinstance(speech_feature_sample_id, str)
@@ -940,7 +1052,7 @@ class FrozenCoreClient:
             media_relpath = self._binding.media_relpaths[sample_id]
             audio_seconds, sample_rate_hz = self._binding.sample_facts[sample_id]
         else:
-            if self._arm == "speech-feature-query":
+            if self._is_speech_feature_arm:
                 raise FrozenCoreClientError(
                     "speech-feature-query requires speech_feature_sample_id and a query "
                     "packet on every decision call"
@@ -1033,6 +1145,16 @@ class FrozenCoreClient:
                     "mmproj_loaded": False,
                 }
             )
+        # Native tool-calling arm (D1b): the ONLY payload field this bridge
+        # adds beyond what a non-native arm of the same base shape already
+        # carries -- applies identically whether the base payload above came
+        # from the raw-audio branch or the packet branch, so a native arm's
+        # payload is otherwise byte-identical to its non-native counterpart
+        # for the same messages (module docstring's own "for BOTH audio
+        # paths" acceptance rule; core.model.transport.LlamaServerTransport.
+        # __call__ forwards it verbatim as the request's `tools` key).
+        if self._is_native_tools_arm:
+            payload["tool_schemas"] = list(self._tool_schemas)
         started_at = _iso(self._now())
         response = self._adapter.request(payload)
         with self._state_lock:
@@ -1042,6 +1164,7 @@ class FrozenCoreClient:
                     sample_id=sample_id,
                     started_at=started_at,
                     latency_seconds=response.latency_seconds,
+                    tool_schemas_sha256=self._tool_schemas_sha256,
                 )
             )
         return response.text
@@ -1069,6 +1192,7 @@ class FrozenCoreClient:
         return {
             "run_id": self._plan.run_id,
             "arm": self._arm,
+            "tool_schemas_sha256": self._tool_schemas_sha256,
             "trace_manifest_hash": manifest_hash,
             "cost": self._adapter.cost_summary(),
             "flight_lock": self._flight_lock,

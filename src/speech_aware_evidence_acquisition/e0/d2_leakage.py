@@ -185,6 +185,42 @@ ARM_VISIBLE_FIELDS: dict[str, tuple[str, ...]] = {
         "matcher_policy_id",
         "mmproj_loaded",
     ),
+    # "speech-feature-query-native-tools" (D1b, 2026-09-03): speech-feature-
+    # query's own field set plus "tool_schemas" -- the native chat-template
+    # tool-calling arm for the Audio2Tool packet (formal decoder-only
+    # speech-feature) path, the second half of D1a's "bare-core-native-tools"
+    # naming convention. A NEW arm, not a mutation of the frozen
+    # "speech-feature-query" entry above (module docstring: "the arm payload
+    # vocabulary never grows without a new D2 receipt"): the packet-path
+    # decision call still answers as free text by default (speech-feature-
+    # query, unchanged); this arm instead sends the tool registry as an
+    # OpenAI-format `tools` list (core.model.transport.LlamaServerTransport.
+    # __call__ forwards it verbatim as the request's `tools` key) so the
+    # pinned GGUF chat template renders <tools>...</tools> itself and the
+    # model answers with structured tool_calls instead of free text. Exactly
+    # speech-feature-query's own fields plus "tool_schemas" -- no other field
+    # added or removed.
+    "speech-feature-query-native-tools": (
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "supplied_evidence",
+        "evidence_provenance",
+        "speech_feature_parts",
+        "speech_packet_sha256",
+        "query_source",
+        "key_representation_id",
+        "matcher_policy_id",
+        "mmproj_loaded",
+        "tool_schemas",
+    ),
 }
 
 

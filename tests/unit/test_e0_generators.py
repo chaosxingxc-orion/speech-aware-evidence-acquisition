@@ -451,10 +451,22 @@ class TestD2:
         mutating the frozen "bare-core" entry -- its own field set is exactly
         bare-core's plus "tool_schemas", nothing dropped and nothing else
         added (module docstring of e0.d2_leakage: growing the arm vocabulary
-        means a new key, never appending a field to an existing tuple)."""
+        means a new key, never appending a field to an existing tuple).
+
+        D1b (2026-09-03, extended, not weakened): the same "own field set
+        plus tool_schemas, nothing else" invariant holds for the packet-path
+        sibling arm "speech-feature-query-native-tools" introduced alongside
+        the rails bridge's own native-tools acceptance
+        (rails.core_client.FrozenCoreClient) -- and neither new arm mutates
+        any frozen entry the other one, or the base "bare-core"/
+        "speech-feature-query" arms, already declared."""
 
         assert ARM_VISIBLE_FIELDS["bare-core-native-tools"] == (
             *ARM_VISIBLE_FIELDS["bare-core"],
+            "tool_schemas",
+        )
+        assert ARM_VISIBLE_FIELDS["speech-feature-query-native-tools"] == (
+            *ARM_VISIBLE_FIELDS["speech-feature-query"],
             "tool_schemas",
         )
         artifact = build_d2(synthetic_world.lock_path)
@@ -463,8 +475,16 @@ class TestD2:
             "clean_payload_accepted": True,
             "visible_fields": list(ARM_VISIBLE_FIELDS["bare-core-native-tools"]),
         }
-        # bare-core itself is untouched by the new arm's existence.
+        assert arms["speech-feature-query-native-tools"] == {
+            "clean_payload_accepted": True,
+            "visible_fields": list(ARM_VISIBLE_FIELDS["speech-feature-query-native-tools"]),
+        }
+        # bare-core and speech-feature-query themselves are untouched by
+        # either new arm's existence.
         assert arms["bare-core"]["visible_fields"] == list(ARM_VISIBLE_FIELDS["bare-core"])
+        assert arms["speech-feature-query"]["visible_fields"] == list(
+            ARM_VISIBLE_FIELDS["speech-feature-query"]
+        )
 
     def test_excluded_keys_come_from_config_not_code(self):
         keys = excluded_lock_keys()
