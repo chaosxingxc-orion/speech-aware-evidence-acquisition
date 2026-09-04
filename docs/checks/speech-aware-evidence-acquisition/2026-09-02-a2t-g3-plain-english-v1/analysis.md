@@ -132,3 +132,33 @@ Success permits a separately frozen 40-row run; only at 36/40 exact or better ma
 fresh 88 confirmation be considered. Candidate pruning and training-free reward-guided selection
 remain downstream of a qualified ground so their action space can later choose exemplar families,
 candidate width, observation depth, and stopping without compensating for a broken knowledge base.
+
+## Correction under a2t-scorer-v2 (2026-09-03)
+
+Zero-contact offline re-score of the same three sealed `outputs.jsonl` files (40/40 rows each, v1
+identity confirmed to 4 decimals overall for every arm) under the registered `a2t-scorer-v2`
+(`analysis.a2t_v2_rescore`, `docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-scorer-v2-rescore/`).
+
+| Arm | v1 exact | v1 tool | v2 exact | v2 tool (ordered) | v2 tool (multiset) | v2 slot F1 | v1 slot F1 | parse rate |
+|---|---|---|---|---|---|---|---|---|
+| m0 | 0.2000 | 0.5250 | 0.2750 | 0.5000 | 0.5250 | 0.4324 | 0.3333 | 0.8750 |
+| matched | 0.2000 | 0.6750 | 0.2750 | 0.6500 | 0.6750 | 0.4144 | 0.3548 | 1.0000 |
+| shuffled | 0.1750 | 0.6000 | 0.1750 | 0.5750 | 0.6000 | 0.2679 | 0.2500 | 0.9750 |
+
+Paired contrasts vs. `m0` (v1 and v2, CI90, 10,000 replicates, tier-stratified; a lighter-power
+n=40 comparator than this doc's own selected-16 secondary contrast):
+
+| arm | metric | delta | saves | harms | ties | CI90 |
+|---|---|---|---|---|---|---|
+| matched | v1 exact | +0.0000 | 4 | 4 | 32 | [-0.1000, 0.1000] |
+| matched | v2 exact | +0.0000 | 5 | 5 | 30 | [-0.1250, 0.1250] |
+| matched | v1 tool | +0.1500 | 8 | 2 | 30 | [0.0250, 0.2750] |
+| matched | v2 tool (multiset) | +0.1500 | 8 | 2 | 30 | [0.0250, 0.2750] |
+| shuffled | v1 exact | -0.0250 | 5 | 6 | 29 | [-0.1250, 0.0750] |
+| shuffled | v2 exact | -0.1000 | 4 | 8 | 28 | [-0.2250, 0.0250] |
+
+Exact match ties exactly (m0=matched=8/40 under v1, 11/40 under v2) both scorings; the tool-accuracy
+gain for `matched` over `m0` (+0.1500pp, CI90 excludes zero) is unchanged in direction and
+significance under v2. This is a diagnostic/mechanism doc, not a promotion decision, so there is no
+verdict to reopen; the reading that `matched` gains tool accuracy without a corresponding exact-match
+gain (a SELECT/parameter-supply asymmetry) holds under v2 as well.

@@ -208,3 +208,31 @@ one JSON document to standard output. Its recorded input identities are:
 The scorer-side manifest entries are resolved locally from the frozen
 Audio2Tool asset for exactly the 16 output identities. The script deliberately
 does not read the speech files or task transcript fields.
+
+## Correction under a2t-scorer-v2 (2026-09-03)
+
+Zero-contact offline re-score of the same sealed `g5` outputs.jsonl (16/16 rows) and the shared
+`A2T-G1-104` M0 baseline (filtered to these same 16 sample ids), v1 identity confirmed to 4 decimals
+overall, under the registered `a2t-scorer-v2` (`analysis.a2t_v2_rescore`,
+`docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-scorer-v2-rescore/`).
+
+| System | v1 exact | v1 tool | v2 exact | v2 tool (ordered) | v2 tool (multiset) | v2 slot F1 | v1 slot F1 | parse rate |
+|---|---|---|---|---|---|---|---|---|
+| g5 | 0.1875 | 0.2500 | 0.2500 | 0.2500 | 0.2500 | 0.3200 | 0.1702 | 1.0000 |
+| m0 (same 16 ids) | 0.3750 | 0.7500 | 0.5625 | 0.7500 | 0.7500 | -- | -- | -- |
+
+Paired contrast, g5 vs. m0 (same 16 ids; v1 and v2, CI90, 10,000 replicates, tier-stratified):
+
+| metric | delta | saves | harms | ties | CI90 |
+|---|---|---|---|---|---|
+| v1 exact | -0.1875 | 1 | 4 | 11 | [-0.3125, -0.0625] |
+| v2 exact | -0.3125 | 1 | 6 | 9 | [-0.4375, -0.1875] |
+| v1 tool | -0.5000 | 0 | 8 | 8 | [-0.6250, -0.3750] |
+| v2 tool (multiset) | -0.5000 | 0 | 8 | 8 | [-0.6250, -0.3750] |
+
+g5's own EM moves under v2 (0.1875 -> 0.2500) but its deficit versus m0 is unchanged in direction and
+grows more negative in the exact-match interval ([-0.3125, -0.0625] v1 -> [-0.4375, -0.1875] v2), and
+tool accuracy is unmoved (v2's ordered and multiset tool accuracy are identical for both systems
+here, so the -0.5000 gap is scorer-version-invariant). This is a mechanism diagnostic, not a
+promotion decision; the reading that g5's exhaustive-family approach underperforms m0 on this same-16
+comparison holds under v2 as well.

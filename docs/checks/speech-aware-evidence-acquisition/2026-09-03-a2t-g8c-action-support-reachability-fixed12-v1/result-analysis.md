@@ -100,3 +100,36 @@ new small discovery roster. If the combined arm still fails, expand canonical kn
 than prune candidates. Only after an action set clears the gate may a separately registered
 approximately-100 experiment fit the already-pinned upstream Vowpal Wabbit policy. The post-RL
 target remains above 0.90; no approximately-1,000 or larger expansion occurs until gains are stable.
+
+## Correction under a2t-scorer-v2 (2026-09-03)
+
+Zero-contact offline re-score of the same four sealed branch `outputs.jsonl` files (12/12 rows each,
+v1 identity confirmed to 4 decimals overall for every branch) under the registered `a2t-scorer-v2`
+(`analysis.a2t_v2_rescore`, `docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-scorer-v2-rescore/`).
+The derived post-score oracle branch is not re-scored (it is a frozen selector over these four, not
+an independent model contact).
+
+| Branch | v1 exact | v1 tool | v2 exact | v2 tool (ordered) | v2 tool (multiset) | v2 slot F1 | v1 slot F1 | parse rate |
+|---|---|---|---|---|---|---|---|---|
+| STOP_M0 | 0.3333 | 0.8333 | 0.5000 | 0.8333 | 0.8333 | 0.6111 | 0.5116 | 1.0000 |
+| EXHAUSTIVE_G7 | 0.0833 | 0.5833 | 0.0833 | 0.5833 | 0.5833 | 0.2105 | 0.1951 | 1.0000 |
+| SUPPORT_ONLY_RESOLVE | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| DECOMPOSED_SELECT_BIND_RESOLVE | 0.0833 | 0.7500 | 0.0833 | 0.7500 | 0.7500 | 0.2857 | 0.2632 | 0.9167 |
+
+Paired contrasts vs. `STOP_M0` (v1 and v2, CI90, 10,000 replicates, tier-stratified):
+
+| branch | metric | delta | saves | harms | ties | CI90 |
+|---|---|---|---|---|---|---|
+| EXHAUSTIVE_G7 | v1 exact | -0.2500 | 0 | 3 | 9 | [-0.4167, -0.0833] |
+| EXHAUSTIVE_G7 | v2 exact | -0.4167 | 0 | 5 | 7 | [-0.5833, -0.2500] |
+| SUPPORT_ONLY_RESOLVE | v1 exact | -0.3333 | 0 | 4 | 8 | [-0.5000, -0.1667] |
+| SUPPORT_ONLY_RESOLVE | v2 exact | -0.5000 | 0 | 6 | 6 | [-0.6667, -0.3333] |
+| DECOMPOSED_SELECT_BIND_RESOLVE | v1 exact | -0.2500 | 0 | 3 | 9 | [-0.4167, -0.0833] |
+| DECOMPOSED_SELECT_BIND_RESOLVE | v2 exact | -0.4167 | 0 | 5 | 7 | [-0.5833, -0.2500] |
+
+Every branch's exact-match deficit versus `STOP_M0` stays entirely negative (CI90 excludes zero) and
+widens under v2, never flips to a save — v2's registry-default/coercion credit accrues more to
+`STOP_M0` (a byte composite of `A2T-G1-104`'s own M0 responses) than to any of the three treatment
+branches here. Tool accuracy is unchanged for every branch (ordered equals multiset throughout; no
+`TOOL_ORDER_ONLY` rows). This is a mechanism diagnostic, not a promotion decision; the doc's
+reading that none of the three action variants beats `STOP_M0` holds under v2 as well.

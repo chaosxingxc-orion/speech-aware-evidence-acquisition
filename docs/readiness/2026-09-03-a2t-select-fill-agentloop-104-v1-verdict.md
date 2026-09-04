@@ -163,3 +163,47 @@ receipt `678dc3ec30b8e855d9351d7b2f45ddd9dd25eaa5060a51e7d0f2675aee3dda1`.
 
 This result authorizes no test, confirmatory, approximately-1,000-row, Stage-3, paper-scale, or
 training-free-RL execution.
+
+## Correction under a2t-scorer-v2 (2026-09-03)
+
+Zero-contact offline re-score of the same four sealed `outputs.jsonl` files (104/104 rows each, v1
+identity confirmed to 4 decimals overall for every arm) under the registered `a2t-scorer-v2`
+(`analysis.a2t_v2_rescore`, `docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-scorer-v2-rescore/`).
+
+| Arm | v1 exact | v1 tool | v2 exact | v2 tool (ordered) | v2 tool (multiset) | v2 slot F1 | v1 slot F1 | parse rate |
+|---|---|---|---|---|---|---|---|---|
+| DIRECT_M0 | 0.1731 | 0.4038 | 0.2404 | 0.3942 | 0.4038 | 0.3712 | 0.3019 | 0.8558 |
+| JOINT_ONE_CALL | 0.2404 | 0.6250 | 0.3173 | 0.6058 | 0.6250 | 0.4756 | 0.4045 | 1.0000 |
+| JOINT_DRAFT_REVISE | 0.2500 | 0.6346 | 0.3269 | 0.6154 | 0.6346 | 0.4756 | 0.4068 | 1.0000 |
+| SELECT_THEN_FILL | 0.2500 | 0.5962 | 0.3462 | 0.5865 | 0.5962 | 0.4714 | 0.3652 | 1.0000 |
+
+Paired contrasts vs. `DIRECT_M0` (v1 and v2, CI90, 10,000 replicates, tier-stratified):
+
+| treatment | metric | delta | saves | harms | ties | CI90 |
+|---|---|---|---|---|---|---|
+| JOINT_ONE_CALL | v1 exact | +0.0673 | 12 | 5 | 87 | [0.0000, 0.1250] |
+| JOINT_ONE_CALL | v2 exact | +0.0769 | 15 | 7 | 82 | [0.0096, 0.1538] |
+| JOINT_DRAFT_REVISE | v1 exact | +0.0769 | 13 | 5 | 86 | [0.0096, 0.1346] |
+| JOINT_DRAFT_REVISE | v2 exact | +0.0865 | 16 | 7 | 81 | [0.0192, 0.1635] |
+| SELECT_THEN_FILL | v1 exact | +0.0769 | 13 | 5 | 86 | [0.0096, 0.1346] |
+| SELECT_THEN_FILL | v2 exact | +0.1058 | 17 | 6 | 81 | [0.0385, 0.1827] |
+
+These saves/harms counts reproduce the slice-S1 zero-contact study's V1/V2e numbers for this source
+exactly (e.g. `SELECT_THEN_FILL` net saves-harms grows from +8 under v1 to +11 under v2). All three
+treatment arms stay net-positive against `DIRECT_M0` under BOTH scorings, and their CI90 never
+crosses into negative territory; `JOINT_ONE_CALL`'s v1 interval touches zero exactly at its lower
+bound ([0.0000, 0.1250]) and clears it under v2 ([0.0096, 0.1538]), while `JOINT_DRAFT_REVISE` and
+`SELECT_THEN_FILL` already excluded zero under v1 and stay excluded, with wider margins, under v2 —
+no sign flip anywhere. The verdict's decision is unchanged: the current split's information contract
+remains not promoted under v2 either, and the approximately-1,000-row scale this doc closes stays
+closed.
+
+The SUPPLY/38/SELECT/36/FILL/26-success error decomposition this doc's "What the split does achieve"
+section reports depends on `analysis.a2t_select_fill_comparison.analyze_select_fill_comparison`,
+which requires the sealed K=32 candidate-reachability diagnostics, selector-name/multiplicity
+diagnostics, and joint-arm diagnostics as separate inputs alongside official per-arm outcomes — it is
+not a pure function of `(outputs.jsonl, gold)` the way the scorer is, and `analysis.a2t_select_fill_
+postseal` (the module named in this task's read-first list) exposes no v2-compatible scoring seam for
+those diagnostics either. **The SUPPLY/SELECT/FILL decomposition stays v1-based**; recomputing it
+under v2 would require re-deriving those sealed mechanism-trace diagnostics from scratch, which is
+out of scope for this offline outputs+gold re-scoring pass.

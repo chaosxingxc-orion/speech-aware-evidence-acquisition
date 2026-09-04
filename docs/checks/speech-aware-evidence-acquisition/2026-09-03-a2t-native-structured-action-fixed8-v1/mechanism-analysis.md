@@ -132,3 +132,39 @@ oracle manifest was officially scored effectively once.
 The authoritative hashes, exact external paths, and full gate record are in
 `mechanism-result.json`. The focused post-seal suite passed all 16 tests. The
 exposure ledger was not edited.
+
+## Correction under a2t-scorer-v2 (2026-09-03)
+
+Zero-contact offline re-score of the same four sealed cell `outputs.jsonl` files (8/8 rows each, v1
+identity confirmed to 4 decimals overall for every cell) under the registered `a2t-scorer-v2`
+(`analysis.a2t_v2_rescore`, `docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-scorer-v2-rescore/`).
+The derived post-score four-cell oracle is not re-scored (a frozen selector over these four cells,
+not an independent model contact).
+
+| Cell | v1 exact | v1 tool | v2 exact | v2 tool (ordered) | v2 tool (multiset) | v2 slot F1 | v1 slot F1 | parse rate |
+|---|---|---|---|---|---|---|---|---|
+| REGISTRY_NO_SCHEMA (M0) | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| REGISTRY_STRICT_ACTION | 0.2500 | 0.5000 | 0.3750 | 0.5000 | 0.5000 | 0.4615 | 0.3333 | 1.0000 |
+| HANDBOOK_NO_SCHEMA | 0.1250 | 0.6250 | 0.1250 | 0.6250 | 0.6250 | 0.4706 | 0.4211 | 1.0000 |
+| HANDBOOK_STRICT_ACTION | 0.1250 | 0.3750 | 0.2500 | 0.3750 | 0.3750 | 0.2353 | 0.2222 | 1.0000 |
+
+Paired contrasts, matching this doc's own two within-factorial comparisons (v1 and v2, CI90, 10,000
+replicates, tier-stratified over n=8):
+
+| pairing | metric | delta | saves | harms | ties | CI90 |
+|---|---|---|---|---|---|---|
+| REGISTRY_STRICT_ACTION vs REGISTRY_NO_SCHEMA | v1 exact | +0.2500 | 2 | 0 | 6 | [0.2500, 0.2500] |
+| REGISTRY_STRICT_ACTION vs REGISTRY_NO_SCHEMA | v2 exact | +0.3750 | 3 | 0 | 5 | [0.3750, 0.3750] |
+| REGISTRY_STRICT_ACTION vs REGISTRY_NO_SCHEMA | v1 tool | +0.5000 | 4 | 0 | 4 | [0.5000, 0.5000] |
+| HANDBOOK_STRICT_ACTION vs HANDBOOK_NO_SCHEMA | v1 exact | +0.0000 | 1 | 1 | 6 | [0.0000, 0.0000] |
+| HANDBOOK_STRICT_ACTION vs HANDBOOK_NO_SCHEMA | v2 exact | +0.1250 | 2 | 1 | 5 | [0.1250, 0.1250] |
+| HANDBOOK_STRICT_ACTION vs HANDBOOK_NO_SCHEMA | v1 tool | -0.2500 | 1 | 3 | 4 | [-0.2500, -0.2500] |
+
+(n=8 CI90s here are degenerate point intervals under this stratified bootstrap and should be read
+descriptively, not as evidence of significance.) The strict-action format's benefit over no-schema on
+the registry axis strengthens under v2 (saves/exact both grow); on the handbook axis, exact match
+ties under v1 (saves=harms=1) but shows a positive v2 net (saves 2 vs harms 1) while tool accuracy
+stays negative for strict-action either way -- consistent with this doc's own reading that the
+strict-schema format trades tool accuracy for higher exact-match precision once a call is attempted.
+This is a mechanism diagnostic, not a promotion decision; no gate outcome in `mechanism-result.json`
+is reopened by this correction.

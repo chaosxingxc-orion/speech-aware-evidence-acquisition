@@ -93,3 +93,40 @@ baseline. A successor may use the result only as a design lesson: freeze an exac
 and require a label-free full-batch structural liveness gate before expensive USE completion. Such
 a successor must be a separately preregistered mechanism on a non-reused discovery cohort; this
 verdict authorizes neither that flight nor any scale-up.
+
+## Correction under a2t-scorer-v2 (2026-09-03)
+
+Zero-contact offline re-score of the same sealed outputs (M0 shared with `A2T-G1-104`'s own arm1
+file, 104/104 rows; the four USE/composite arms, 104/104 rows each; v1 identity confirmed to 4
+decimals overall for every arm) under the registered `a2t-scorer-v2` (`analysis.a2t_v2_rescore`,
+`docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-scorer-v2-rescore/`).
+
+| Surface | v1 exact | v1 tool | v2 exact | v2 tool (ordered) | v2 tool (multiset) | v2 slot F1 | v1 slot F1 | parse rate |
+|---|---|---|---|---|---|---|---|---|
+| Frozen M0 | 0.2788 | 0.5962 | 0.3846 | 0.5769 | 0.5962 | 0.5362 | 0.4379 | 0.9615 |
+| Matched self-transcript evidence | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0096 |
+| Same-tier shuffled evidence | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0192 |
+| Matched exact-request resend composite | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0096 |
+| Five-fold training-free policy | 0.2788 | 0.5962 | 0.3846 | 0.5769 | 0.5962 | 0.5362 | 0.4379 | 0.9615 |
+
+Paired contrasts vs. `Frozen M0` (v1 and v2, CI90, 10,000 replicates, tier-stratified):
+
+| arm | metric | delta | saves | harms | ties | CI90 |
+|---|---|---|---|---|---|---|
+| Matched self-transcript evidence | v1 exact | -0.2788 | 0 | 29 | 75 | [-0.3365, -0.2212] |
+| Matched self-transcript evidence | v2 exact | -0.3846 | 0 | 40 | 64 | [-0.4519, -0.3173] |
+| Same-tier shuffled evidence | v1 exact | -0.2788 | 0 | 29 | 75 | [-0.3365, -0.2212] |
+| Same-tier shuffled evidence | v2 exact | -0.3846 | 0 | 40 | 64 | [-0.4519, -0.3173] |
+| Matched exact-request resend composite | v1 exact | -0.2788 | 0 | 29 | 75 | [-0.3365, -0.2212] |
+| Matched exact-request resend composite | v2 exact | -0.3846 | 0 | 40 | 64 | [-0.4519, -0.3173] |
+| Five-fold training-free policy | v1 exact | +0.0000 | 0 | 0 | 104 | [0.0000, 0.0000] |
+| Five-fold training-free policy | v2 exact | +0.0000 | 0 | 0 | 104 | [0.0000, 0.0000] |
+
+The v1-recorded scores for the three USE/composite arms were already 0.0000 across the board because
+zero output rows carried a valid nonempty tool call (this doc's "USE delivery failure" section: the
+model never emitted the required `name` key); registry-default stripping, type coercion, and ordered
+tool accuracy under v2 have no predicted call to act on either, so the outcome is IDENTICAL under v2
+(0/104 → 0/104, not 0/104 → nonzero) — v2 confirms this is a genuine delivery-contract failure, not a
+scorer artifact that a more lenient v1-vs-v2 reading could have hidden. The v1 and v2 CI90s for all
+three failed arms sit entirely below zero and never touch it, unchanged in direction. Not promoted
+under v2 either: the verdict's decision is unchanged.

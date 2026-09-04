@@ -159,3 +159,32 @@ one-shot randomized or exhaustive action branches before using post-hoc discover
 The G7 manifest retains its grandfathered `UNVERIFIED` legality declaration because its
 evidence-bearing arm does not declare the later provenance fields. This analysis does not repair
 or reinterpret that declaration.
+
+## Correction under a2t-scorer-v2 (2026-09-03)
+
+Zero-contact offline re-score of the same sealed `g7` outputs.jsonl (16/16 rows) and the shared
+`A2T-G1-104` M0 baseline (filtered to these same 16 sample ids), v1 identity confirmed to 4 decimals
+overall, under the registered `a2t-scorer-v2` (`analysis.a2t_v2_rescore`,
+`docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-scorer-v2-rescore/`).
+
+| System | v1 exact | v1 tool | v2 exact | v2 tool (ordered) | v2 tool (multiset) | v2 slot F1 | v1 slot F1 | parse rate |
+|---|---|---|---|---|---|---|---|---|
+| g7_v2 | 0.1875 | 0.4375 | 0.1875 | 0.3750 | 0.4375 | 0.4375 | 0.4058 | 1.0000 |
+| m0_same_rows | 0.2500 | 0.6875 | 0.3750 | 0.6250 | 0.6875 | -- | -- | -- |
+
+Paired contrast, g7 vs. m0 (same 16 ids; v1 and v2, CI90, 10,000 replicates, tier-stratified):
+
+| metric | delta | saves | harms | ties | CI90 |
+|---|---|---|---|---|---|
+| v1 exact | -0.0625 | 0 | 1 | 15 | [-0.1250, 0.0000] |
+| v2 exact | -0.1875 | 0 | 3 | 13 | [-0.2500, -0.1250] |
+| v1 tool | -0.2500 | 0 | 4 | 12 | [-0.3750, -0.1250] |
+| v2 tool (multiset) | -0.2500 | 0 | 4 | 12 | [-0.3750, -0.1250] |
+| v2 tool (ordered) | -0.2500 | 0 | 4 | 12 | [-0.3750, -0.1250] |
+
+g7's exact-match deficit versus m0 widens under v2 (v1 CI90 [-0.1250, 0.0000], touching zero -> v2 CI90
+[-0.2500, -0.1250], clearly excluding zero) because v2's registry-default/coercion rules resolve more
+of m0's near-misses than g7's; tool accuracy is unchanged (ordered equals multiset for both systems
+on this roster, so no `TOOL_ORDER_ONLY` row is present). This is a mechanism diagnostic, not a
+promotion decision; the reading that g7's exhaustive-example approach underperforms m0 on this
+same-16 comparison holds under v2 as well, with a somewhat stronger (not weaker) exact-match gap.

@@ -162,3 +162,29 @@ new contacts during sealing. The analysis binds these immutable inputs:
 The full paths and hashes are recorded in `analysis.json`. The analyzer is
 [`analyze.py`](./analyze.py), and its synthetic unit coverage is
 [`test_a2t_g6_result_analysis.py`](../../../../tests/unit/test_a2t_g6_result_analysis.py).
+
+## Correction under a2t-scorer-v2 (2026-09-03)
+
+Zero-contact offline re-score of the same sealed `g6-seal` outputs.jsonl (16/16 rows) and the shared
+`A2T-G1-104` M0 baseline (filtered to these same 16 sample ids), v1 identity confirmed to 4 decimals
+overall, under the registered `a2t-scorer-v2` (`analysis.a2t_v2_rescore`,
+`docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-scorer-v2-rescore/`).
+
+| System | v1 exact | v1 tool | v2 exact | v2 tool (ordered) | v2 tool (multiset) | v2 slot F1 | v1 slot F1 | parse rate |
+|---|---|---|---|---|---|---|---|---|
+| g6 (g6-seal) | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 |
+| m0 (same 16 ids) | 0.1875 | 0.3750 | 0.2500 | 0.3750 | 0.3750 | -- | -- | -- |
+
+Paired contrast, g6 vs. m0 (same 16 ids; v1 and v2, CI90, 10,000 replicates, tier-stratified):
+
+| metric | delta | saves | harms | ties | CI90 |
+|---|---|---|---|---|---|
+| v1 exact | -0.1875 | 0 | 3 | 13 | [-0.2500, -0.1250] |
+| v2 exact | -0.2500 | 0 | 4 | 12 | [-0.3750, -0.1250] |
+| v1 tool | -0.3750 | 0 | 6 | 10 | [-0.5000, -0.2500] |
+| v2 tool (multiset) | -0.3750 | 0 | 6 | 10 | [-0.5000, -0.2500] |
+
+g6 itself scores 0/16 on every metric under BOTH v1 and v2 (no predicted call this scorer version
+change resolves), so its deficit versus m0 is unchanged in direction and CI-exclusion-of-zero either
+way. This is a mechanism diagnostic, not a promotion decision; the reading that g6's family-sweep
+approach fails to produce any correct call on this roster holds under v2 as well.

@@ -112,3 +112,39 @@ that summary. This verdict uses discovery data only, makes no test-set or confir
 excludes network jitter, retry, resend, and transport timing from scientific interpretation. The
 post-training-free-RL greater-than-0.90 objective is not a baseline-admission requirement and has not
 been reached by this flight.
+
+## Correction under a2t-scorer-v2 (2026-09-03)
+
+Zero-contact offline re-score of the same five sealed `outputs.jsonl` files (104/104 rows each, v1
+identity confirmed to 4 decimals overall for every arm) under the registered `a2t-scorer-v2`
+(`analysis.a2t_v2_rescore`, `docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-scorer-v2-rescore/`).
+
+| Arm | v1 exact | v1 tool | v2 exact | v2 tool (ordered) | v2 tool (multiset) | v2 slot F1 | v1 slot F1 | parse rate |
+|---|---|---|---|---|---|---|---|---|
+| direct_m0 | 0.2404 | 0.5096 | 0.2981 | 0.5000 | 0.5096 | 0.4149 | 0.3333 | 0.8942 |
+| transcript_top16_use | 0.2596 | 0.5962 | 0.3750 | 0.5769 | 0.5962 | 0.4296 | 0.3470 | 1.0000 |
+| model_query_top16_use | 0.2308 | 0.5769 | 0.3269 | 0.5577 | 0.5769 | 0.4000 | 0.3185 | 1.0000 |
+| rrf_fused_top16_use | 0.2404 | 0.5769 | 0.3558 | 0.5577 | 0.5769 | 0.4385 | 0.3495 | 0.9904 |
+| same_stratum_shuffled_fused_use | 0.0385 | 0.0865 | 0.0385 | 0.0865 | 0.0865 | 0.1326 | 0.1206 | 1.0000 |
+
+Paired contrasts vs. `direct_m0` (v1 and v2, CI90, 10,000 replicates, tier-stratified):
+
+| treatment | metric | delta | saves | harms | ties | CI90 |
+|---|---|---|---|---|---|---|
+| transcript_top16_use | v1 exact | +0.0192 | 10 | 8 | 86 | [-0.0385, 0.0769] |
+| transcript_top16_use | v2 exact | +0.0769 | 16 | 8 | 80 | [0.0000, 0.1538] |
+| model_query_top16_use | v1 exact | -0.0096 | 6 | 7 | 91 | [-0.0673, 0.0481] |
+| model_query_top16_use | v2 exact | +0.0288 | 10 | 7 | 87 | [-0.0385, 0.0865] |
+| rrf_fused_top16_use | v1 exact | +0.0000 | 8 | 8 | 88 | [-0.0577, 0.0577] |
+| rrf_fused_top16_use | v2 exact | +0.0577 | 14 | 8 | 82 | [-0.0096, 0.1250] |
+| same_stratum_shuffled_fused_use | v1 exact | -0.2019 | 3 | 24 | 77 | [-0.2692, -0.1346] |
+| same_stratum_shuffled_fused_use | v2 exact | -0.2596 | 3 | 30 | 71 | [-0.3365, -0.1827] |
+
+These saves/harms counts reproduce the slice-S1 zero-contact study's V1/V2e numbers for this source
+exactly (e.g. `model_query_top16_use` net saves-harms flips from -1 under v1 to +3 under v2;
+`rrf_fused_top16_use` flips from 0 to +6). The v2 CI90 for `transcript_top16_use` vs `direct_m0`
+exact match is [0.0000, 0.1538] — its lower bound sits at zero rather than clearly excluding it, the
+same qualitative reading as v1's [-0.0385, 0.0769], which also crosses zero. The verdict's decision
+is unchanged: not promoted under v2 either — no arm here reaches stable exact-match superiority over
+`direct_m0` under either scoring, and the approximately-1,000-sample expansion gate this doc states
+remains closed.

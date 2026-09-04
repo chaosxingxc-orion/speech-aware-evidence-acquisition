@@ -197,3 +197,33 @@ report per-tier rather than pooled.
   `reproduction/toolcall_scoring.py` and are load-bearing for every number above.
 - **Empty-call accounting depends on the definition**, as §3 shows: 41 under the registered note-1
   definition, 17 under the flight's narrower one. Any downstream citation must say which.
+
+## Correction under a2t-scorer-v2 (2026-09-03)
+
+Zero-contact offline re-score of the same sealed `outputs.jsonl` (400/400 rows, v1 identity confirmed
+to 4 decimals overall and per tier) under the registered `a2t-scorer-v2`
+(`analysis.a2t_v2_rescore`, `docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-scorer-v2-rescore/`).
+This is a single, standalone arm (zero-supply direct baseline) with no paired treatment in this
+flight; there is no saves/harms/ties contrast to report here.
+
+| | v1 exact | v1 tool_acc | v2 exact | v2 tool_acc (ordered) | v2 tool_acc (multiset) | v2 slot F1 | v1 slot F1 | parse rate |
+|---|---|---|---|---|---|---|---|---|
+| overall (n=400) | 0.2425 | 0.5425 | 0.3125 | 0.5300 | 0.5425 | 0.4363 | 0.3434 | 0.9400 |
+
+| tier | v1 exact | v1 tool_acc | v2 exact | v2 tool_acc (ordered) | v2 tool_acc (multiset) | paper tool_acc/EM |
+|---|---|---|---|---|---|---|
+| tier1_direct | 0.1200 | 0.5800 | 0.4000 | 0.5800 | 0.5800 | 0.924/0.924 |
+| tier2_parametric | 0.3800 | 0.7200 | 0.4400 | 0.7200 | 0.7200 | 0.846/0.156 |
+| tier3_multi_intent | 0.0400 | 0.6200 | 0.1400 | 0.5800 | 0.6200 | 0.747/0.286 |
+| tier4_implicit | 0.2400 | 0.3000 | 0.2400 | 0.3000 | 0.3000 | 0.334/0.113 |
+| tier5_needle | 0.3000 | 0.5400 | 0.3800 | 0.5400 | 0.5400 | 0.906/0.360 |
+| tier6_correction | 0.4000 | 0.6400 | 0.4000 | 0.6400 | 0.6400 | 0.815/0.248 |
+| tier7_multiturn | 0.4400 | 0.6000 | 0.4400 | 0.6000 | 0.6000 | 0.546/0.163 |
+| tier8_intent_blending | 0.0200 | 0.3400 | 0.0600 | 0.2800 | 0.3400 | 0.417/0.124 |
+
+This reproduces the slice-S1 zero-contact study's V2e numbers for A0 exactly (overall 53.00/31.25,
+Tier-1 40.00 EM). This verdict carries no promotion/branch decision to re-open (§0 above: "a baseline
+read, not a probe"); the only load-bearing correction is factual — the v1-vs-paper Tier-1 EM gap this
+doc's headline reports (12.0 vs the paper's 92.4) narrows to 40.0 vs 92.4 under v2, still leaving a
+large (~52pp) residual gap that scorer semantics alone do not close (see the slice-S1 study's own
+reading: `TOOL_SET_WRONG` accounts for 46.9% of every A0 v1 failure and is untouched by any v2 rule).

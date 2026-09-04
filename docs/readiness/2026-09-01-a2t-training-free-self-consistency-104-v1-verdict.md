@@ -80,3 +80,34 @@ with the original speech retained as final authority and with a fresh approximat
 discovery cohort. Such a study requires a separately frozen prompt, ExecutionPlan, exposure row,
 group-isolated training-free contact policy, and promotion gates before any new model contact. This
 verdict does not itself authorize that study.
+
+## Correction under a2t-scorer-v2 (2026-09-03)
+
+Zero-contact offline re-score of the same sealed outputs (M0 shared with `A2T-G1-104`'s own arm1
+file, 104/104 rows; REOBSERVE_DIRECT and SUPPLY_UNION_STRIPPED, 104/104 rows each; v1 identity
+confirmed to 4 decimals overall for every arm) under the registered `a2t-scorer-v2`
+(`analysis.a2t_v2_rescore`, `docs/checks/speech-aware-evidence-acquisition/2026-09-03-a2t-scorer-v2-rescore/`).
+
+| Arm | v1 exact | v1 tool | v2 exact | v2 tool (ordered) | v2 tool (multiset) | v2 slot F1 | v1 slot F1 | parse rate |
+|---|---|---|---|---|---|---|---|---|
+| M0 | 0.2788 | 0.5962 | 0.3846 | 0.5769 | 0.5962 | 0.5362 | 0.4379 | 0.9615 |
+| REOBSERVE_DIRECT | 0.2212 | 0.5288 | 0.2981 | 0.5192 | 0.5288 | 0.4833 | 0.4063 | 0.9615 |
+| SUPPLY_UNION_STRIPPED | 0.2212 | 0.5769 | 0.2500 | 0.5577 | 0.5769 | 0.3955 | 0.3569 | 0.9231 |
+
+Paired contrasts vs. `M0` (v1 and v2, CI90, 10,000 replicates, tier-stratified; over all 104 rows,
+not restricted to the doc's own 92-row "eligible" SUPPLY_UNION_STRIPPED subset):
+
+| arm | metric | delta | saves | harms | ties | CI90 |
+|---|---|---|---|---|---|---|
+| REOBSERVE_DIRECT | v1 exact | -0.0577 | 0 | 6 | 98 | [-0.0962, -0.0192] |
+| REOBSERVE_DIRECT | v2 exact | -0.0865 | 0 | 9 | 95 | [-0.1346, -0.0481] |
+| SUPPLY_UNION_STRIPPED | v1 exact | -0.0577 | 4 | 10 | 90 | [-0.1154, 0.0000] |
+| SUPPLY_UNION_STRIPPED | v2 exact | -0.1346 | 2 | 16 | 86 | [-0.1923, -0.0769] |
+
+Both arms stay net-harmful (or, for SUPPLY_UNION_STRIPPED under v1, borderline-neutral) versus M0
+under v1; under v2 both intervals sit entirely below zero and REOBSERVE_DIRECT's v1 CI ([-0.0962,
+-0.0192], already excluding zero) and SUPPLY_UNION_STRIPPED's v2 CI ([-0.1923, -0.0769], now also
+excluding zero where v1's [-0.1154, 0.0000] merely touched it) both confirm the same direction, never
+flip to a save. No arm here becomes net-positive under v2. Not promoted under v2 either: the
+verdict's decision is unchanged, and this correction does not itself authorize the successor study
+this doc names.
