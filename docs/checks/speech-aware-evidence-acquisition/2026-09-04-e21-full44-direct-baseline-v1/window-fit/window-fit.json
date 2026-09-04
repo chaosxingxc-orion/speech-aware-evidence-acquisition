@@ -1,0 +1,60 @@
+{
+  "declared_geometry": {
+    "max_tokens": 1024,
+    "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a",
+    "server_args_context": 49152,
+    "slot_tokens": 6144,
+    "slot_tokens_is_multiple_of_512": true,
+    "slots": 8
+  },
+  "encoder_rule": {
+    "provenance": "the mmproj encoder's one-second window rule already pinned by this repository's Audio2Tool promotion receipt, where it reproduced all 400 per-packet n_tokens without an exception",
+    "residual_prompt_tokens_after_the_rule": {
+      "49": 10,
+      "62": 332
+    },
+    "rule": "n_speech_tokens = 13 * ceil(audio_seconds)",
+    "tail_window_note": "the 10 short tail windows show 49 rather than 62 because ceil rounds their fractional tail second up: the rule over-counts a tail by one second = 13 tokens, and 62 - 13 = 49. The envelope itself is constant",
+    "text_envelope_tokens": 62
+  },
+  "fit": {
+    "margin_factor": 2.721,
+    "margin_tokens": 3886,
+    "rule": "slot_tokens >= 2.0 x worst_required",
+    "slot_tokens": 6144,
+    "verdict": "FITS",
+    "worst_prompt_tokens": 1232,
+    "worst_required_basis": "13 * 90 speech + 62 text + 1024 completion ceiling + 2 special",
+    "worst_required_tokens": 2258
+  },
+  "measured_request_envelope": {
+    "audio_seconds_max": 90.0,
+    "audio_seconds_min": 8.676,
+    "completion_tokens_max": 392,
+    "completion_tokens_mean": 272.175,
+    "completion_tokens_min": 25,
+    "completions_reaching_max_tokens": 0,
+    "latency_basis": "measured with the mmproj on the CPU (--no-mmproj-offload) at -np 8 on build 5d9dfcb58; this flight moves the encoder onto the GPU, so these latencies are the pessimistic anchor the smoke re-measures, never a prediction",
+    "latency_seconds_max": 134.284,
+    "latency_seconds_mean": 89.152,
+    "latency_seconds_min": 5.152,
+    "prompt_tokens_max": 1232,
+    "prompt_tokens_mean": 1217.556,
+    "prompt_tokens_min": 166
+  },
+  "measurement_source": {
+    "attempt_id": "attempt-20260814T235515Z-044ccc",
+    "cost_records": 342,
+    "manifest_protocol_hash": "5c12568f2627bd431567b933c949006916de9722f94bb3465893b0b1e8fd2ad0",
+    "run_id": "SAEA-E-005B-N10-zero",
+    "trace_relpath": "runs/SAEA-E-005B-N10-zero/attempt-20260814T235515Z-044ccc/SAEA-E-005B-N10-zero.trace.jsonl",
+    "trace_sha256": "35b5b8c15dd0030dd5a97b7ca2ae7a4ada06f7b3bbb875785cc79de3a4c8e071",
+    "trace_sha256_matches_sealed_manifest": true,
+    "why_this_run": "its baseline fragment fixed-batch-zero-locked-buf90 is byte-identical to this flight's e21-buf90-zero-locked-scored4 apart from the scorers list, so its request envelope IS this flight's request envelope"
+  },
+  "not_certified_here": "VRAM. This receipt certifies only that the protocol's largest request fits the declared slot. Whether -c 49152 with the 2.2 GB bf16 mmproj resident on the GPU fits this machine's 24 GB is a live fact, proven by the smoke's own session receipt and server log before the flight is launched, and by the flight manifest's peak_vram_mib afterwards.",
+  "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V1",
+  "schema": "saea-e21-full44-window-fit-receipt-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "zero_contact": "no llama-server spawned, no model, GPU, tool, embedding, network or audio-decode contact, zero generated tokens; every number below is read out of an already-sealed, hash-bound trace of the identical protocol"
+}

@@ -1,0 +1,9 @@
+# SAEA-E21-FULL44-DIRECT-BASELINE-V1 - the unconditional Earnings-21 bare-core
+# number: all 44 discovery calls, one build (04ccc72a), one serving geometry
+# (-c 49152 -np 8, bf16 mmproj on the GPU), one OBS protocol (fixed 90 s, no
+# VAD trim, no overlap, no tail), the sealed 2026-08-14 arm's instruction
+# verbatim. Launch with --dataset earnings21-discovery --experiment
+# e21-full44-direct-baseline-v1 --model q4km-e21-buf90-mmproj-gpu-04ccc72a
+# --execution-profile baseline-reproduction.
+# run_id:baseline_fragment
+SAEA-E21-FULL44-DIRECT-BASELINE-V1:e21-buf90-zero-locked-scored4

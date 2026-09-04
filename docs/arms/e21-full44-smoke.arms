@@ -1,0 +1,11 @@
+# SAEA-E21-FULL44-DIRECT-BASELINE-SMOKE-V1 - the pre-flight rehearsal of
+# SAEA-E21-FULL44-DIRECT-BASELINE-V1 on the registered fast-e21-sub3 roster
+# (3 calls, split identity 7f6e88811bb2e6bc92a9aa9df569dcaf13a6efd11c48fc44f486e6121841b149).
+# Same baseline, model and experiment fragments as the flight; only the dataset
+# fragment differs, so the smoke exercises the flight's exact request shape,
+# serving geometry, audio path and scorer list end to end and measures the
+# throughput the flight's go/no-go projection is computed from. Launch with
+# --dataset fast-e21-sub3 --experiment e21-full44-direct-baseline-v1 --model
+# q4km-e21-buf90-mmproj-gpu-04ccc72a --execution-profile baseline-reproduction.
+# run_id:baseline_fragment
+SAEA-E21-FULL44-DIRECT-BASELINE-SMOKE-V1:e21-buf90-zero-locked-scored4

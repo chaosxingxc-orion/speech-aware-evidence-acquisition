@@ -1,0 +1,39 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 420.0,
+  "runtime_receipt": "receipts/runtime-q4km-featcache-04ccc72a.json",
+  "server_args": [
+    "-c",
+    "49152",
+    "-np",
+    "8",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0"
+  ],
+  "serving_geometry": {
+    "slots": 8,
+    "slot_tokens": 6144,
+    "max_tokens": 1024
+  },
+  "serving_geometry_basis": "Earnings-21 fixed 90-second OBS windows on build 04ccc72a with the bf16 mmproj RESIDENT ON THE GPU. Worst request: the mmproj encoder's pinned one-second window rule n_tokens = 13 * ceil(audio_seconds) gives 13 * 90 = 1,170 speech tokens for a full window, plus the rendered system/user text and template overhead (the sealed 2026-08-14 N10 arm measured 416,404 prompt tokens over 342 windows of this exact protocol = 1,217.6 per window), plus the 1,024-token completion ceiling and 2 special tokens: about 2,270 tokens. Geometry rule for this carrier (short prompts, long generations -- NOT the Audio2Tool 8,192-token reserve, which was derived for 13k-token tool registries and is unreachable here at any slot count): slot_tokens >= 2 x worst_required. 49,152 / 8 = 6,144 >= 2 x 2,270 = 4,540; 49,152 / 16 = 3,072 fails it. 6,144 is a multiple of 512, so llama-server's own rounding cannot make the live slot disagree with the declared one. -np 8 also equals the baseline fragment's obs_batch_slices, so client dispatch concurrency and server slot count match, exactly as the sealed 2026-08-14 arm had them.",
+  "audio_path_basis": "--no-mmproj-offload is deliberately ABSENT (the sealed August Earnings arms all carried it, i.e. they encoded audio on the CPU). This flight encodes the whole 39.26 h of Earnings-21 audio on the GPU-resident bf16 mmproj, sha256 f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883, the same file the sealed arms used. -c is reduced from the sealed arm's 81,920 to 49,152 to pay for the 2.2 GB of mmproj weights now resident in VRAM; the per-slot window still carries 2.7x the worst request.",
+  "feature_cache_basis": "server_env is deliberately EMPTY: no LLAMA_MTMD_FEAT_CACHE_DIR. The legacy 26 GB /home/chao/feat-cache/q4km cache holds encoder outputs written by build 5d9dfcb58 for these very 90-second slices, and its key is content-addressed on the decoded audio, so pointing this flight at it would silently mix another build's cached encoder outputs into a number this flight exists to make homogeneous on 04ccc72a. It is left untouched and unread. With feat_dir unset the server's feature cache is fully inert (tools/server/server-context.cpp: feat_store/feat_load return immediately), so this flight also holds no 15 GB in-process feature RAM.",
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample"
+  },
+  "decoding_basis": "Byte-identical to the sealed SAEA-E-005B-N10-zero arm's model fragment q4km-evid-v3: greedy (temperature 0), max_tokens 1024, id_slot per-sample, seed 20260803 (inert under greedy). Only the runtime receipt, the server args and the feature-cache env differ, and all three are serving identity, not request identity.",
+  "prompt_order": "evidence-first-system-v3",
+  "server_env": {}
+}

@@ -14,7 +14,7 @@
 #
 #   usage: run_arm_sequence.sh --arms <file> --dataset <frag> --experiment <frag>
 #                              --model <frag> [--out-dir DIR] [--dry-run]
-#                              [--feat-cache-dir DIR]
+#                              [--feat-cache-dir DIR] [--execution-profile NAME]
 #
 # The arm file is one `run_id:baseline_fragment` per line; `#` comments and
 # blank lines are ignored. Example (docs/arms/r4-context-dose.arms):
@@ -49,6 +49,14 @@ set -uo pipefail
 
 ARMS="" DATASET="" EXPERIMENT="" MODEL="" OUT_DIR="$HOME" DRY=0
 PLANNED_CALLS=2000 PLANNED_GPU_HOURS=30.0 PLANNED_AUDIO_SECONDS=150000
+# Execution profile of every arm in the sequence. The default is unchanged
+# (bounded-discovery-probe), so every existing arm file behaves exactly as it
+# did; a reproduction sequence passes --execution-profile
+# baseline-reproduction. contracts.assert_execution_scope is fail-closed on
+# the value and contracts.gate_exposure cross-checks it against the
+# pre-registered exposure row, so a wrong value here refuses the touch rather
+# than mislabelling a run.
+EXECUTION_PROFILE=bounded-discovery-probe
 PORT=8080 HOST=127.0.0.1
 # Feature-cache directory (docs/featcache-directories.md): opt-in only, empty
 # by default. Left unset, this script changes NOTHING -- every model
@@ -80,6 +88,7 @@ while [ $# -gt 0 ]; do
     --model) MODEL="$2"; shift 2 ;;
     --out-dir) OUT_DIR="$2"; shift 2 ;;
     --planned-model-calls) PLANNED_CALLS="$2"; shift 2 ;;
+    --execution-profile) EXECUTION_PROFILE="$2"; shift 2 ;;
     --planned-gpu-hours) PLANNED_GPU_HOURS="$2"; shift 2 ;;
     --planned-speech-audio-seconds) PLANNED_AUDIO_SECONDS="$2"; shift 2 ;;
     --port) PORT="$2"; shift 2 ;;
@@ -222,7 +231,7 @@ CELLS
     --baseline "$baseline" \
     --experiment "$EXPERIMENT" \
     --run-id "$run_id" \
-    --execution-profile bounded-discovery-probe \
+    --execution-profile "$EXECUTION_PROFILE" \
     --planned-model-calls "$PLANNED_CALLS" \
     --planned-gpu-hours "$PLANNED_GPU_HOURS" \
     --planned-speech-audio-seconds "$PLANNED_AUDIO_SECONDS" \

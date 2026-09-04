@@ -1,0 +1,136 @@
+{
+  "experiment_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V1",
+  "schema": "saea-e21-full44-direct-baseline-experiment-v1",
+  "date": "2026-09-04",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "Make the Earnings-21 alignment number unconditional. The 2026-09-04 scoring-alignment audit put this repository's bare frozen core at 7.137 corpus WER under the Whisper EnglishTextNormalizer against openai/whisper-large-v3's published 9.71 -- but on 10 of the corpus's 44 calls (8.446 h of 39.26 h, 21.5 %), a subset that excludes 4346923, the 16 kHz Industrial Goods call the Earnings-21 paper singles out as degrading every published system. Every published row is on all 44 files. This run re-flies the sealed arm's own OBS protocol over the WHOLE discovery split in one cell, one build, one serving geometry and one audio path, and declares the two scorers the sealed manifests could not emit (asr-wer-whisper, entity-wer) in the manifest itself, so the paper-facing number comes out of core.scoring_batch's verified path instead of an out-of-band read. Preregistration: docs/readiness/2026-09-04-e21-full44-direct-baseline-v1-preregistration.md.",
+  "population": {
+    "carrier": "earnings21-original",
+    "split_name": "discovery",
+    "dataset_fragment": "earnings21-discovery",
+    "split_role": "discovery",
+    "count": 44,
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "receipt": "docs/receipts/splits.json",
+    "audio_seconds_one_pass": 141348.532,
+    "audio_hours_one_pass": 39.263,
+    "fixed_90s_windows_one_pass": 1593,
+    "roster_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-e21-full44-roster/flight-roster-receipt.json",
+    "selection": "no draw: the whole frozen earnings21-original discovery split, already frozen in docs/receipts/splits.json and already exposed many times over (the frozen ten by the E-005/E-005B/P1R families, the remaining 34 by SAEA-BENCH-kb34-floor on 2026-08-14).",
+    "estimand": "corpus-level WER over all 44 calls -- the aggregation every published Earnings-21 row uses.",
+    "strata": "sector (9 levels: Basic Materials 5, Conglomerate 4, Consumer Goods 5, Financial 5, Healthcare 5, Industrial Goods 5, Services 5, Technology 5, Utilities 5) and sample_rate (5 levels: 11025 Hz 5, 16000 Hz 6, 22050 Hz 5, 24000 Hz 21, 44100 Hz 7) from earnings21-file-metadata.csv, the two strata the Earnings-21 release itself reports."
+  },
+  "design_decision": {
+    "chosen": "(a) re-run all 44 calls in one flight",
+    "rejected": "(b) run the 34 remaining calls and pool them with the sealed ten",
+    "why": "Design (b) is admissible only if build, model file hashes, audio path, window protocol and instruction are byte-identical between the sealed ten and the new 34. Two of the five fail, provably, from the sealed session receipts. BUILD: both August runs spawned binary sha256 097c96ec5a3f576f378d4d5e103928bf070647fdcc1f015eacb839503e121c68 (llama.cpp-featcache 5d9dfcb58); the pinned current build is 04ccc72a2207347ca76161b93fd9d846dd0a8675, binary d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2 (docs/receipts/runtime-q4km-featcache-04ccc72a.json), and new work runs on the pinned build. AUDIO PATH: both August runs passed --no-mmproj-offload, i.e. they encoded audio on the CPU against the legacy 26 GB feature cache; this flight encodes on the GPU-resident bf16 mmproj. The remaining three DO match (model file sha256s identical; window protocol identical -- fixed 90 s, no VAD trim, no tail, no overlap; instruction byte-identical), and the two prompt orders in play reduce to the same request for an empty evidence bank (core/model/transport.py: an empty bank with no delta candidates reduces to EXACTLY v2's shape). Even a pure pool of the two ALREADY SEALED August runs would not be one cell: SAEA-E-005B-N10-zero flew -c 81920 -np 8 and SAEA-BENCH-kb34-floor flew -c 65536 -np 16, so the 44 calls would carry two serving geometries as well as a retired build. The A2T calibration set the precedent for exactly this call: A0's build (5d9dfcb58) and D2 arm both differ, so it stays the historical anchor, not a cell.",
+    "sealed_predecessors_kept_as_anchors": {
+      "ten_calls": "SAEA-E-005B-N10-zero, attempt-20260814T235515Z-044ccc, 342 windows, 30,406.93 audio-s, corpus Whisper-normalized WER 7.137 (docs/readiness/2026-09-04-scoring-alignment-audit-slurp-earnings.md)",
+      "thirty_four_calls": "SAEA-BENCH-kb34-floor, attempt-20260814T075128Z-a74060, 1,256 windows, 111,388.92 audio-s, COMPLETED with scores null; never scored under the Whisper normalizer"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "E21-full44-bare-core-buf90",
+      "dataset_fragment": "earnings21-discovery",
+      "baseline_fragment": "e21-buf90-zero-locked-scored4",
+      "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a",
+      "arm": "bare-core",
+      "obs": "fixed 90-second windows, no VAD trim, no overlap, no rolling tail, no preprocessing; advance = buffer in obs_boundary_mode fixed",
+      "evidence": "none",
+      "serving_geometry": "-c 49152 -np 8, 6,144 tokens per slot, bf16 mmproj resident on the GPU",
+      "audio_path": "raw audio through the bf16 mmproj on the GPU; no feature cache, no CPU packet preprocessing"
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample",
+    "contacts_per_item": "one per 90-second window; 1,593 windows over 44 calls",
+    "harness": "core.driver.run_experiment_bundled through scripts/run_arm_sequence.sh -- the exact committed launcher path that produced the sealed 2026-08-14/15 Earnings arms. core.flight.FlightRuntime cannot express this protocol: rails/adapters/earnings.py yields whole calls with no windowing, and the 90-second OBS tiling lives in the registered core.base policy obs-agent-loop (reproduction.obs_loop), which FlightRuntime does not drive. Expressing it there would need a new adapter or controller, which the 2026-09-03 engineering-base rules forbid.",
+    "instruction": "byte-identical to the sealed SAEA-E-005B-N10-zero arm (configs/baseline/fixed-batch-zero-locked-buf90.json task_instruction)"
+  },
+  "published_targets": {
+    "primary": {
+      "system": "openai/whisper-large-v3",
+      "wer": 9.71,
+      "source": "Open ASR Leaderboard long-form CSV, Earnings-21, all 44 calls"
+    },
+    "secondary": [
+      {"system": "Whisper large-v2", "wer": 9.7, "source": "Whisper paper Appendix D.4, all 44"},
+      {"system": "TRADE speech-LLM", "wer": 9.75, "source": "arXiv:2606.08486 Table 2"},
+      {"system": "FastConformer FT+LCA+GT", "wer": 13.84, "source": "arXiv:2606.08486 Table 2"},
+      {"system": "Qwen2-Audio-7B", "wer": 26.06, "source": "FinAudio; normalizer unnamed, so a floor only, never a target"}
+    ]
+  },
+  "degraded_model_floors": {
+    "strict": {"system": "Whisper medium.en", "wer": 10.2},
+    "others": [
+      {"system": "Whisper small.en", "wer": 10.8},
+      {"system": "Whisper base.en", "wer": 12.5},
+      {"system": "Whisper tiny.en", "wer": 17.0}
+    ]
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "discovery",
+    "planned_model_calls": 1750,
+    "planned_gpu_hours": 4.0,
+    "planned_speech_audio_seconds": 150000
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "1,593 fixed 90-second windows over the 44 calls (ceil(duration/90) per call, verified against the sealed arms: the frozen ten reproduce 342 exactly), plus 157 of headroom for obs_slice_retry_max=1 retries; the registered exposure ceiling is 1,800.",
+    "planned_speech_audio_seconds": "141,348.532 s for one pass, rounded up with retry headroom to 150,000; the registered exposure ceiling is 155,000.",
+    "planned_gpu_hours": "4.0, the mission ceiling. The sealed 2026-08-14 arm spent 3,898 GPU-seconds on 342 windows with the mmproj on the CPU (89.2 s of wall latency per window at -np 8, dominated by CPU audio encoding). Moving the encoder to the GPU is the whole reason this projection is not simply 1593/342 x 1.08 = 5.0 GPU-h. The projection is re-measured on the smoke before takeoff and the flight is STOPPED and reported if the measured rate projects past 4.0.",
+    "paid_api_spend": 0,
+    "budget_is_run_cumulative": "core/model/adapter.py enforces planned_model_calls and planned_speech_audio_seconds across ALL attempts of a run id (prior_actual_usage). A partially-spent dead attempt therefore cannot be re-run under this run id; the one permitted recovery re-registration would take a fresh run id and a fresh exposure row.",
+    "ceilings_live_in_the_exposure_row": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are the exposure-ledger row's calls / speech audio seconds / gpu hours cells, which the gate requires to be at least these planned values."
+  },
+  "evaluation": {
+    "manifest_scorers": ["asr-wer-whisper", "asr-wer", "entity-wer", "cost"],
+    "paper_facing_scorer": "asr-wer-whisper",
+    "paper_facing_metric": "corpus WER: total substitutions + deletions + insertions over total reference words, with the Whisper EnglishTextNormalizer applied to BOTH sides and whitespace tokenization",
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "metrics": [
+      "asr-wer-whisper corpus WER (paper-facing)",
+      "asr-wer-whisper mean of per-call WER",
+      "frozen saea-scoring-v1 asr-wer corpus and mean of per-call WER",
+      "entity-wer, mention-level 1 - recall over the .nlp wer_tags sidecar under normalize_text_v1, corpus and per class",
+      "cost: calls, audio seconds, prompt/completion tokens, GPU seconds, wall"
+    ],
+    "mandatory_slices": [
+      "the per-call table for all 44 calls including 4346923",
+      "the 4346923 effect: the corpus number with and without it, stated as a delta",
+      "the ten sealed calls re-measured on this build against their sealed 7.137, as a build-and-audio-path contrast",
+      "by sector (9 levels) and by sample rate (11025 / 16000 / 22050 / 24000 / 44100 Hz), natural mixture and equal-stratum weighting",
+      "entity WER by class, with the gold mention count of every class stated",
+      "throughput: windows per minute, GPU seconds, wall, and the realized realtime factor"
+    ]
+  },
+  "decision": {
+    "owner_alignment_standard": "2026-09-04 owner directive: within 3 points of the published number, or better; and never below a degraded model's published number.",
+    "rule": {
+      "band_test": "corpus Whisper-normalized WER <= 12.71 (9.71 + 3.0)",
+      "floor_test": "corpus Whisper-normalized WER <= 10.2, the strict degraded-model floor (Whisper medium.en); the loose floor (base.en 12.5) is reported beside it whatever the outcome",
+      "aligned": "ALIGNED: band_test AND floor_test both pass",
+      "aligned_better": "ALIGNED-BETTER: corpus Whisper-normalized WER < 6.71 (9.71 - 3.0)",
+      "not_aligned": "NOT ALIGNED otherwise, with the gap decomposed call by call and the failing half of the rule named"
+    },
+    "mandatory_caveats": [
+      "Whisper's own long-form decoding heuristics move Earnings-21 by 1.1 points (10.7 greedy to 9.63 with previous-text conditioning, Whisper Table 7), so a 3-point band around 9.71 is about three times the reference literature's own protocol spread.",
+      "The Open ASR Leaderboard applies merge_compounds=True; this repository does not. That works against us.",
+      "The fstalign family (ConEC's stack) is never mixed into a WER number here; fstalign is not installed and was not run.",
+      "This is a cross-system comparison against third-party published rows, never a reproduction: no Qwen-published Earnings-21 number exists."
+    ],
+    "claim_surface": "Nothing here is a superiority, generality or Stage-3 claim; the population is discovery data; no knob is tuned on it.",
+    "not_authorized": "No Earnings-22 confirmatory contact, no ConEC supply arm, no mechanism arm, no whisper-large-v3 self-run calibration anchor (that is its own registration), no fstalign install, no test tuning.",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}
