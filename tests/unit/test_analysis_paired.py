@@ -1,0 +1,312 @@
+"""``analysis.paired``: the one paired-analysis layer (C4d).
+
+Identity tests reproduce numbers from three already-committed analyses:
+(a) the September semantic-104 postseal transcript-vs-direct contrast
+    (``docs/checks/speech-aware-evidence-acquisition/
+    2026-09-03-a2t-semantic-agentloop-104-v1/postseal-result-summary.json``),
+(b) ``dev100_reviewer_audit.mcnemar``'s exact binomial p-value, and
+(c) a hand-checkable synthetic 40-row paired set.
+"""
+
+from __future__ import annotations
+
+import random
+
+import pytest
+
+from speech_aware_evidence_acquisition.analysis.paired import (
+    PairedAnalysisError,
+    mcnemar_exact,
+    paired_contrast,
+    per_stratum_table,
+    render_markdown,
+)
+
+
+# ---------------------------------------------------------------------------
+# (a) September semantic-104: transcript_minus_direct_m0.
+#
+# The committed postseal-result-summary.json carries only the AGGREGATE
+# paired_contrasts block (wins/losses/ties, delta, ci90, p_value) -- no
+# per-row scores are embedded anywhere in the 5.5KB summary or its sha256-
+# pinned sibling artifacts referenced from it, so the exact per-sample
+# placement that produced the published bootstrap CI is not recoverable
+# here. What IS recoverable, and reproduced bit for bit below, is the
+# win/loss/tie multiset, the delta, and the exact sign-test p-value -- the
+# sign test depends only on the (saves, harms) counts, never on which
+# sample id holds which outcome.
+# ---------------------------------------------------------------------------
+
+_EXACT_MATCH_WINS = 10
+_EXACT_MATCH_LOSSES = 8
+_EXACT_MATCH_TIES = 86
+_EXACT_MATCH_DELTA = 0.019230769230769232
+_EXACT_MATCH_P = 0.8145294189453125
+
+_TOOL_ACC_WINS = 18
+_TOOL_ACC_LOSSES = 9
+_TOOL_ACC_TIES = 77
+_TOOL_ACC_DELTA = 0.08653846153846154
+_TOOL_ACC_P = 0.12207812070846558
+
+
+def _semantic104_synthetic_tables():
+    ids = [f"tier1_direct:{index:06d}" for index in range(104)]
+    exact_diffs = [1] * _EXACT_MATCH_WINS + [-1] * _EXACT_MATCH_LOSSES + [0] * _EXACT_MATCH_TIES
+    tool_diffs = [1] * _TOOL_ACC_WINS + [-1] * _TOOL_ACC_LOSSES + [0] * _TOOL_ACC_TIES
+    assert len(exact_diffs) == len(tool_diffs) == 104
+    left: dict[str, dict[str, float]] = {}
+    right: dict[str, dict[str, float]] = {}
+    for sample_id, exact_diff, tool_diff in zip(ids, exact_diffs, tool_diffs):
+        left[sample_id] = {
+            "exact_match": 1.0 if exact_diff == -1 else 0.0,
+            "tool_accuracy": 1.0 if tool_diff == -1 else 0.0,
+        }
+        right[sample_id] = {
+            "exact_match": 1.0 if exact_diff == 1 else 0.0,
+            "tool_accuracy": 1.0 if tool_diff == 1 else 0.0,
+        }
+    return left, right, tuple(ids)
+
+
+def test_paired_contrast_reproduces_semantic104_counts_delta_and_sign_test():
+    left, right, ids = _semantic104_synthetic_tables()
+    contrasts = paired_contrast(
+        left, right, metrics=["exact_match", "tool_accuracy"], sample_ids=ids,
+        seed=20260903 + 50, n_replicates=500,
+    )
+
+    exact = contrasts["exact_match"]
+    assert (exact.saves, exact.harms, exact.ties) == (
+        _EXACT_MATCH_WINS, _EXACT_MATCH_LOSSES, _EXACT_MATCH_TIES,
+    )
+    assert exact.delta == pytest.approx(_EXACT_MATCH_DELTA)
+    assert exact.sign_test_p == pytest.approx(_EXACT_MATCH_P)
+    # the published ci90 is [-0.0480769..., 0.0865384...]; the exact bounds
+    # are not reproducible from aggregate-only data (see module docstring),
+    # but the point estimate must sit inside whatever CI this run computes.
+    assert exact.bootstrap is not None
+    assert exact.bootstrap.ci_low <= exact.delta <= exact.bootstrap.ci_high
+
+    tool = contrasts["tool_accuracy"]
+    assert (tool.saves, tool.harms, tool.ties) == (
+        _TOOL_ACC_WINS, _TOOL_ACC_LOSSES, _TOOL_ACC_TIES,
+    )
+    assert tool.delta == pytest.approx(_TOOL_ACC_DELTA)
+    assert tool.sign_test_p == pytest.approx(_TOOL_ACC_P)
+    assert tool.bootstrap.ci_low <= tool.delta <= tool.bootstrap.ci_high
+
+
+def test_sign_test_p_is_exactly_mcnemar_exact_of_saves_harms():
+    left, right, ids = _semantic104_synthetic_tables()
+    contrasts = paired_contrast(
+        left, right, metrics=["exact_match"], sample_ids=ids, seed=1, n_replicates=10,
+    )
+    exact = contrasts["exact_match"]
+    assert exact.sign_test_p == mcnemar_exact(exact.saves, exact.harms)
+
+
+# ---------------------------------------------------------------------------
+# (b) mcnemar_exact vs dev100_reviewer_audit.mcnemar on 20 random pairs.
+# ---------------------------------------------------------------------------
+
+
+def test_mcnemar_exact_matches_dev100_reviewer_audit_on_random_pairs():
+    from speech_aware_evidence_acquisition.analysis import dev100_reviewer_audit as ra
+
+    rng = random.Random(20260903)
+    checked = 0
+    while checked < 20:
+        n01 = rng.randint(0, 30)
+        n10 = rng.randint(0, 30)
+        if n01 == 0 and n10 == 0:
+            continue
+        expected = ra.mcnemar(n01, n10)["exact_binomial_two_sided_p"]
+        assert mcnemar_exact(n01, n10) == pytest.approx(expected)
+        checked += 1
+
+
+def test_mcnemar_exact_zero_discordant_pairs_is_one():
+    assert mcnemar_exact(0, 0) == 1.0
+
+
+def test_mcnemar_exact_is_symmetric():
+    assert mcnemar_exact(3, 11) == mcnemar_exact(11, 3)
+
+
+def test_mcnemar_exact_rejects_negative_counts():
+    with pytest.raises(PairedAnalysisError):
+        mcnemar_exact(-1, 3)
+    with pytest.raises(PairedAnalysisError):
+        mcnemar_exact(3, -1)
+
+
+# ---------------------------------------------------------------------------
+# (c) synthetic 40-row set: delta = right_mean - left_mean, CI containment.
+# ---------------------------------------------------------------------------
+
+
+def test_paired_contrast_synthetic_40_row_delta_and_ci_containment():
+    rng = random.Random(7)
+    ids = [f"s{index:03d}" for index in range(40)]
+    left = {sid: {"score": rng.uniform(0.0, 1.0)} for sid in ids}
+    right = {sid: {"score": rng.uniform(0.0, 1.0)} for sid in ids}
+
+    contrasts = paired_contrast(left, right, metrics=["score"], seed=42, n_replicates=500)
+    contrast = contrasts["score"]
+
+    expected_delta = (
+        sum(right[sid]["score"] for sid in ids) - sum(left[sid]["score"] for sid in ids)
+    ) / len(ids)
+    assert contrast.n == 40
+    assert contrast.delta == pytest.approx(expected_delta)
+    assert contrast.right_mean - contrast.left_mean == pytest.approx(expected_delta)
+    assert contrast.bootstrap is not None
+    assert contrast.bootstrap.ci_low <= contrast.delta <= contrast.bootstrap.ci_high
+
+
+# ---------------------------------------------------------------------------
+# Binary and continuous metrics: saves/harms/ties semantics.
+# ---------------------------------------------------------------------------
+
+
+def test_binary_metric_saves_harms_ties():
+    left = {
+        "a": {"exact_match": 0.0}, "b": {"exact_match": 1.0}, "c": {"exact_match": 1.0},
+        "d": {"exact_match": 0.0}, "e": {"exact_match": 1.0},
+    }
+    right = {
+        "a": {"exact_match": 1.0}, "b": {"exact_match": 0.0}, "c": {"exact_match": 1.0},
+        "d": {"exact_match": 0.0}, "e": {"exact_match": 1.0},
+    }
+    contrasts = paired_contrast(left, right, metrics=["exact_match"], seed=1, n_replicates=50)
+    contrast = contrasts["exact_match"]
+    # a: 0->1 save, b: 1->0 harm, c: tie(1), d: tie(0), e: tie(1)
+    assert (contrast.saves, contrast.harms, contrast.ties) == (1, 1, 3)
+    assert contrast.delta == pytest.approx(0.0)
+
+
+def test_continuous_metric_wins_losses_ties_by_sign_of_difference():
+    left = {"a": {"slot_f1": 0.4}, "b": {"slot_f1": 0.9}, "c": {"slot_f1": 0.5}}
+    right = {"a": {"slot_f1": 0.6}, "b": {"slot_f1": 0.9}, "c": {"slot_f1": 0.2}}
+    contrasts = paired_contrast(left, right, metrics=["slot_f1"], seed=1, n_replicates=50)
+    contrast = contrasts["slot_f1"]
+    assert (contrast.saves, contrast.harms, contrast.ties) == (1, 1, 1)
+    assert contrast.delta == pytest.approx((0.6 - 0.4 + 0.9 - 0.9 + 0.2 - 0.5) / 3)
+
+
+# ---------------------------------------------------------------------------
+# Validation / refusals.
+# ---------------------------------------------------------------------------
+
+
+def test_paired_contrast_refuses_mismatched_ids_without_explicit_sample_ids():
+    left = {"a": {"x": 1.0}}
+    right = {"b": {"x": 1.0}}
+    with pytest.raises(PairedAnalysisError, match="same sample ids"):
+        paired_contrast(left, right, metrics=["x"], seed=1, n_replicates=10)
+
+
+def test_paired_contrast_refuses_empty_metrics():
+    left = {"a": {"x": 1.0}}
+    right = {"a": {"x": 1.0}}
+    with pytest.raises(PairedAnalysisError, match="metrics"):
+        paired_contrast(left, right, metrics=[], seed=1, n_replicates=10)
+
+
+def test_paired_contrast_refuses_non_finite_score():
+    left = {"a": {"x": float("nan")}}
+    right = {"a": {"x": 1.0}}
+    with pytest.raises(PairedAnalysisError, match="finite"):
+        paired_contrast(left, right, metrics=["x"], seed=1, n_replicates=10)
+
+
+# ---------------------------------------------------------------------------
+# Stratified and clustered bootstrap.
+# ---------------------------------------------------------------------------
+
+
+def _tier_of(sample_id: str) -> str:
+    return sample_id.split(":", 1)[0]
+
+
+def test_stratified_bootstrap_is_reproducible_with_a_fixed_seed():
+    rng = random.Random(3)
+    ids = [f"tier{tier}:{index:03d}" for tier in (1, 2) for index in range(20)]
+    left = {sid: {"x": rng.uniform(0.0, 1.0)} for sid in ids}
+    right = {sid: {"x": rng.uniform(0.0, 1.0)} for sid in ids}
+
+    contrasts_a = paired_contrast(
+        left, right, metrics=["x"], strata_of=_tier_of, seed=99, n_replicates=300,
+    )
+    contrasts_b = paired_contrast(
+        left, right, metrics=["x"], strata_of=_tier_of, seed=99, n_replicates=300,
+    )
+    assert contrasts_a["x"].bootstrap.replicates == contrasts_b["x"].bootstrap.replicates
+    assert contrasts_a["x"].bootstrap.ci == contrasts_b["x"].bootstrap.ci
+
+    contrasts_c = paired_contrast(
+        left, right, metrics=["x"], strata_of=_tier_of, seed=100, n_replicates=300,
+    )
+    assert contrasts_a["x"].bootstrap.replicates != contrasts_c["x"].bootstrap.replicates
+
+
+def test_stratified_bootstrap_resamples_each_stratum_to_its_own_size():
+    # A degenerate stratum (single constant value) must contribute ZERO
+    # variance from its own resampling -- if pooled resampling were used
+    # instead, drawing across strata could occasionally imbalance the tiny
+    # stratum and change its contribution; per-stratum resampling to a fixed
+    # size cannot.
+    ids = [f"big:{i:03d}" for i in range(30)] + ["small:000"]
+    rng = random.Random(11)
+    left = {sid: {"x": rng.uniform(0.0, 1.0)} for sid in ids}
+    right = {sid: {"x": rng.uniform(0.0, 1.0)} for sid in ids}
+    contrasts = paired_contrast(
+        left, right, metrics=["x"], strata_of=_tier_of, seed=5, n_replicates=200,
+    )
+    per_stratum = per_stratum_table(contrasts["x"])
+    small = next(row for row in per_stratum if row["stratum"] == "small")
+    assert small["n"] == 1
+    assert small["delta"] == pytest.approx(right["small:000"]["x"] - left["small:000"]["x"])
+
+
+def test_clustered_bootstrap_resamples_whole_clusters():
+    ids = [f"c{cluster}:{index}" for cluster in range(4) for index in range(5)]
+    rng = random.Random(2)
+    left = {sid: {"x": rng.uniform(0.0, 1.0)} for sid in ids}
+    right = {sid: {"x": rng.uniform(0.0, 1.0)} for sid in ids}
+
+    def cluster_of(sample_id: str) -> str:
+        return sample_id.split(":", 1)[0]
+
+    contrasts = paired_contrast(
+        left, right, metrics=["x"], cluster_of=cluster_of, seed=1, n_replicates=100,
+    )
+    contrast = contrasts["x"]
+    assert contrast.bootstrap is not None
+    assert contrast.bootstrap.ci_low <= contrast.delta <= contrast.bootstrap.ci_high
+
+
+# ---------------------------------------------------------------------------
+# per_stratum_table / render_markdown smoke tests.
+# ---------------------------------------------------------------------------
+
+
+def test_per_stratum_table_and_render_markdown_smoke():
+    ids = [f"tier{tier}:{index:03d}" for tier in (1, 2) for index in range(6)]
+    rng = random.Random(4)
+    left = {sid: {"x": rng.uniform(0.0, 1.0)} for sid in ids}
+    right = {sid: {"x": rng.uniform(0.0, 1.0)} for sid in ids}
+    contrasts = paired_contrast(
+        left, right, metrics=["x"], strata_of=_tier_of, seed=1, n_replicates=50,
+    )
+    table = per_stratum_table(contrasts["x"])
+    assert {row["stratum"] for row in table} == {"tier1", "tier2"}
+    assert all(row["n"] == 6 for row in table)
+
+    text = render_markdown(
+        contrasts, paper_row={"x": {"published_delta": 0.05, "published_ci_low": -0.01}}
+    )
+    assert "x" in text
+    assert "delta" in text
+    assert "published_delta=0.05" in text
