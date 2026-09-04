@@ -3,6 +3,31 @@
 Every model or tool touch (including a single-sample smoke) gets a row **before results are read**.
 Exposure claims elsewhere must carry four fields: scope, date, counts, inherited exposure.
 
+**SAEA-E21-MF-SCORING-ALIGNMENT-V1 REGISTERED — ZERO-CONTACT RE-SCORING OF THE SEALED EARNINGS-21
+N10 DIRECT-BASELINE BLOCK.** Profile `model-free-check`; reference-reading; zero model, GPU, tool,
+embedding, network and audio contacts. Re-scores the already-sealed, FINALIZED outputs of
+`SAEA-E-005B-N10-zero` (attempt-20260814T235515Z-044ccc), `SAEA-E-005B-N10-matched`
+(attempt-20260815T011459Z-30cb33) and `SAEA-E-005B-N10-names` (attempt-20260815T025126Z-30d1a1) —
+the frozen ten discovery calls of `r4-e21-sub10` on `earnings21-original`, discovery split only —
+through the registered `asr-wer`, `asr-wer-whisper` and `entity-wer` scorers, and lays the result
+beside the published Whisper-normalizer Earnings-21 bracket and the ConEC Table 2 entity bracket
+under the owner's 2026-09-04 three-point alignment rule and degraded-model floor rule. No test
+split, no confirmatory split, no new audio, no code change to any scorer. Receipts:
+`docs/checks/speech-aware-evidence-acquisition/2026-09-04-scoring-alignment-earnings/`.
+
+**SAEA-SLURP-MF-SCORING-ALIGNMENT-V1 REGISTERED — ZERO-CONTACT OFFICIAL-SCORER RE-READ OF THE
+SEALED SLURP DEV-1000 LOCK AND DEV-500 CONFIRMATORY ARMS.** Profile `model-free-check`;
+reference-reading on the `devel` split identity ONLY (the held-out `test` split is never named,
+loaded or scored); zero model, GPU, tool, embedding, network and audio contacts. Re-scores the
+sealed `SAEA-DEV1000-BASELINE-LOCK` arms M0 (attempt-20260825T053342Z-dev1000m0) and BLEND
+(attempt-20260825T054707Z-dev1000blend) and the sealed `SAEA-DEV500-CONFIRMATORY` arms through the
+pinned official SLURP `evaluate.py` (`slurp-slu-official`, evaluator commit
+8eb16545762be97ace75334109d73824217311f1, venv `~/.venvs/slurp-official-eval`, never modified), and
+lays the result beside the SLURP paper's Table 7/Table 8 brackets and the prompt-only He & Garner
+bracket under the owner's 2026-09-04 three-point alignment rule and degraded-model floor rule.
+N-predicted is reported against the roster for every manifest. Receipts:
+`docs/checks/speech-aware-evidence-acquisition/2026-09-04-scoring-alignment-slurp/`.
+
 **SAEA-A2T-MF-SCORER-V2-RESCORE-V1 COMPLETED — ZERO ARMS SKIPPED, NO VERDICT DECISION FLIPS UNDER
 V2.** Part D step 2 of the 2026-09-03 recovery plan. Zero model, GPU, embedding, or network contact:
 every number comes from files already written by prior, separately-registered runs; gold resolves
