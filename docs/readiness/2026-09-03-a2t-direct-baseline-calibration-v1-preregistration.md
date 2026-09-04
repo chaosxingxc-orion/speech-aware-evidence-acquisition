@@ -563,3 +563,64 @@ cells (A1, P0, P1) at 4 each. With the corrected 16-call plan those three can no
 registration, landing the smoke at exactly 16 with no re-registration and no re-run.
 
 `SAEA-A2T-DIRECT-CALIBRATION-SMOKE-V1` stays `consumed = no` until the remaining three cells land.
+
+### 2026-09-04, Phase 2i: the smoke is complete -- 16 of 16 calls, all four cells sealed and scored
+
+`SAEA-A2T-DIRECT-CALIBRATION-SMOKE-V1` is `consumed = yes`. Every one of the four cell
+configurations ran end to end, sealed a verifiable manifest, finalized and scored with all three
+registered scorers. Spend landed at **exactly 16 of 16 registered calls** and 67.792 of 100
+registered speech-audio seconds; every attempt on the row is durably FINALIZED or ABORTED and no
+llama-server was left resident.
+
+| cell | arm | parse rate | tool acc v1 | tool acc v2 | exact match (v1/v2) | slot F1 (v1/v2) |
+|---|---|---:|---:|---:|---:|---:|
+| A0'-legacy-raw | `bare-core` | 4/4 | 0.75 | 0.75 | 0.00 / 0.00 | 0.143 / 0.182 |
+| A1-native-raw | `bare-core-native-tools` | 3/4 | 0.25 | 0.25 | 0.00 / 0.00 | 0.000 / 0.000 |
+| P0-legacy-packets | `speech-feature-query` | 4/4 | 0.75 | 0.75 | 0.00 / 0.00 | 0.154 / 0.200 |
+| P1-native-packets | `speech-feature-query-native-tools` | 3/4 | 0.25 | 0.25 | 0.00 / 0.00 | 0.000 / 0.000 |
+
+**These are four-row engineering numbers and enter no verdict.** They exist to prove transport,
+sealing and scoring legality. The calibration's own numbers come only from the registered 400-row
+flight.
+
+**The native tool-calling contract did NOT come back as native tool calls.** Every cell's cost block
+records `tool_calls: 0` and no trace record in any of the four bundles mentions a `tool_calls` field;
+A1 and P1 answered in TEXT, and on the first sample the text is a refusal ("I'm sorry, but I can't
+engage the lights as requested..."), which the scorer counts as an unparsed row -- hence 3/4 parse
+rate and the 0.25 tool accuracy on both native cells. A1 and P1 produced byte-identical response
+shapes to each other, so this is a property of the output contract, not of the audio path. Section 1
+framed native `tools` as the promising half of Factor A; on four rows it is the WEAKER half, and the
+400-row flight now has a specific hypothesis to test rather than an assumption to confirm.
+
+Throughput, measured (A0's own run_phases receipt was lost with the finalizer failure; its cost
+block survives):
+
+| cell | wall | contacts/s | mean latency | slot occupancy | prompt tok | completion tok | completion tok/s |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| A0'-legacy-raw | -- | -- | 1.634 s | -- | 53,199 | 120 | 18.35 |
+| A1-native-raw | 13.455 s | 0.297 | 2.831 s | 0.421 | 55,287 | 143 | 12.63 |
+| P0-legacy-packets | 12.665 s | 0.316 | 2.607 s | 0.275 | 53,191 | 114 | 10.93 |
+| P1-native-packets | 15.057 s | 0.266 | 3.202 s | 0.284 | 55,279 | 148 | 11.56 |
+
+The native contract costs about 2,090 more prompt tokens per request than the legacy one, consistent
+with the prompt-fit measurement (13,914 versus 13,236 text tokens).
+
+Server argv actually used, per geometry, exactly as the fragments declare:
+
+* raw (A0', A1): `-c 49152 -np 2 -fa on -ngl 999 -ctk q8_0 -ctv q8_0`, role `legacy`, model root
+  `/home/chao`, 24,576 tokens per slot, ~11.6 s startup.
+* packets (P0, P1): `-c 66048 -np 3 -b 2048 -ub 512 -fa on -ngl 999 -ctk q8_0 -ctv q8_0
+  --cache-prompt --cache-ram 0 --no-cache-idle-slots --slot-prompt-similarity 0`, role `inference`,
+  22,016 tokens per slot, ~10.1 s startup. P1 REUSED P0's resident server (`reused: true`,
+  0 s startup), and the queue stopped it at shutdown.
+
+`id_slot` resolved to 0 on every cell; the packet cells promoted and hash-verified 4 packets each and
+ran the `direct-speech-feature-packets` dispatch; the raw cells promoted nothing and ran the rails
+`direct` dispatch.
+
+Contact-free wire-check receipt for this configuration:
+`docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-direct-calibration-400-v1/wire-check/
+wire-check-clean-3.json` (SHA-256 f0a573ee3fc4802db865a9ab884469b245e646e5c39a76f8c84273f44cfe7c5c),
+green on every link for all four cells with zero model contacts.
+
+Prerequisites 1-4 of section 4 are now closed. The 1,608-call flight has NOT been started.
