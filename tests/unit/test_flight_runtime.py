@@ -241,16 +241,19 @@ def _write_configs(
     carrier_lock_key: str = "fake-carrier",
     execution_plan_overrides: Mapping[str, object] | None = None,
     execution_plan_present: bool = True,
+    model_extra: Mapping[str, object] | None = None,
+    baseline_extra: Mapping[str, object] | None = None,
 ) -> None:
-    _write_json(
-        repo_root / "configs" / "model" / "m.json",
-        {"model_lock_key": "fake-lock", "transport": "fake"},
-    )
+    model_document: dict[str, object] = {"model_lock_key": "fake-lock", "transport": "fake"}
+    model_document.update(dict(model_extra or {}))
+    _write_json(repo_root / "configs" / "model" / "m.json", model_document)
     _write_json(
         repo_root / "configs" / "dataset" / "d.json",
         {"carrier_lock_key": carrier_lock_key, "split_id": "fake-split"},
     )
-    _write_json(repo_root / "configs" / "baseline" / "b.json", {"arm": arm, "policy": policy})
+    baseline_document: dict[str, object] = {"arm": arm, "policy": policy}
+    baseline_document.update(dict(baseline_extra or {}))
+    _write_json(repo_root / "configs" / "baseline" / "b.json", baseline_document)
     experiment_document: dict[str, object] = {}
     if execution_plan_present:
         execution_plan = {
@@ -688,3 +691,492 @@ def test_frozen_core_client_kwargs_matches_the_a0_launcher_keyword_set(tmp_path)
     assert kwargs["arm"] == "bare-core"
     assert isinstance(kwargs["request_id_prefix"], str) and kwargs["request_id_prefix"]
     assert seam_keys <= set(kwargs)
+
+
+# ---------------------------------------------------------------------------
+# Phase 2a: the four config-driven seam defaults, and the packet direct arm.
+# Every test below still runs entirely through fakes -- no server, no GPU, no
+# real promotion, no network.
+# ---------------------------------------------------------------------------
+
+
+from speech_aware_evidence_acquisition.core.flight import runtime as _runtime_module  # noqa: E402
+from speech_aware_evidence_acquisition.core.flight.runtime import (  # noqa: E402
+    arm_uses_speech_feature_packets,
+    merge_server_args,
+    packet_id_for_sample,
+    sample_id_for_packet,
+)
+
+_PROMOTION_DIR = "feature-root"
+_LEGACY_DIR = "legacy-cache"
+_BUILTIN_PROMOTER = _runtime_module._default_packet_promoter
+
+
+class _FakePacket:
+    def __init__(self, packet_id: str, packet_sha256: str) -> None:
+        self.packet_id = packet_id
+        self.packet_sha256 = packet_sha256
+
+
+def _write_promotion_receipt(
+    tmp_path: Path,
+    *,
+    packet_ids=("s1", "s2"),
+    feature_root: str | None = None,
+) -> Path:
+    path = tmp_path / "promotion.json"
+    _write_json(
+        path,
+        {
+            "schema": "saea-a2t-speech-packet-promotion-receipt-v1",
+            "feature_root": feature_root or str(tmp_path / _PROMOTION_DIR),
+            "legacy_cache_dir": str(tmp_path / _LEGACY_DIR),
+            "runtime_receipt_sha256": "e" * 64,
+            "packets": [
+                {
+                    "packet_id": packet_id,
+                    "packet_sha256": f"{packet_id}-sha",
+                    "decoder_gguf_sha256": "d" * 64,
+                    "mmproj_sha256": "m" * 64,
+                }
+                for packet_id in packet_ids
+            ],
+        },
+    )
+    return path
+
+
+def _packet_config_kwargs(
+    tmp_path: Path,
+    promotion_receipt: Path,
+    *,
+    arm: str = "speech-feature-query",
+    speech_feature_root: str | None = None,
+) -> dict[str, object]:
+    return {
+        "arm": arm,
+        "policy": "fixed",
+        "model_extra": {
+            "speech_feature_root": speech_feature_root or str(tmp_path / _PROMOTION_DIR)
+        },
+        "baseline_extra": {
+            "speech_packet_promotion_receipt": str(promotion_receipt),
+            "speech_feature_key_representation_id": "key-rep-v1",
+            "speech_feature_matcher_policy_id": "matcher-v1",
+        },
+    }
+
+
+# -- (a) serve() preserves the fragment's server_args ----------------------
+
+
+def test_merge_server_args_overrides_only_np_and_c() -> None:
+    merged = merge_server_args(
+        ["-c", "65536", "-np", "2", "-fa", "on", "-ngl", "999", "-ctk", "q8_0"],
+        slots=3,
+        context_tokens=49152,
+    )
+    assert merged == ["-c", "49152", "-np", "3", "-fa", "on", "-ngl", "999", "-ctk", "q8_0"]
+
+
+def test_merge_server_args_appends_missing_flags_and_keeps_the_rest() -> None:
+    assert merge_server_args(["-ngl", "999"], slots=2, context_tokens=4096) == [
+        "-ngl",
+        "999",
+        "-np",
+        "2",
+        "-c",
+        "4096",
+    ]
+
+
+def test_merge_server_args_fails_closed_on_bad_shapes() -> None:
+    with pytest.raises(FlightRuntimeError, match="list of strings"):
+        merge_server_args("-ngl 999", slots=1, context_tokens=1)
+    with pytest.raises(FlightRuntimeError, match="no value"):
+        merge_server_args(["-ngl", "999", "-np"], slots=1, context_tokens=1)
+
+
+def test_serve_passes_the_whole_fragment_argv_role_and_model_root(tmp_path):
+    captured: dict[str, object] = {}
+
+    def _capturing_session_starter(**kwargs):
+        captured.update(kwargs)
+        return _FakeSession(str(kwargs["session_id"]))
+
+    def _receipt_loader(path: Path):
+        return {"schema": "fake", "gguf_files": [], "role": "inference"}
+
+    runtime = _make_runtime(
+        tmp_path,
+        happy_path=True,
+        session_starter=_capturing_session_starter,
+        runtime_receipt_loader=_receipt_loader,
+        config_kwargs={
+            "model_extra": {
+                "server_args": ["-c", "1", "-np", "1", "-ngl", "999", "-fa", "on"],
+                "model_materialization_root": "/home/chao",
+            }
+        },
+    )
+    runtime.preflight()
+    runtime.preprocess()
+    receipt = runtime.serve()
+
+    # -ngl/-fa survive; -np/-c come from the adapter geometry (2 x 4096).
+    assert captured["extra_argv"] == ["-c", "8192", "-np", "2", "-ngl", "999", "-fa", "on"]
+    assert captured["role"] == "inference"
+    assert captured["model_root"] == Path("/home/chao")
+    assert receipt["session_role"] == "inference"
+    assert receipt["model_root"] == "/home/chao"
+
+
+def test_serve_defaults_role_to_legacy_when_the_receipt_declares_none(tmp_path):
+    captured: dict[str, object] = {}
+
+    def _capturing_session_starter(**kwargs):
+        captured.update(kwargs)
+        return _FakeSession(str(kwargs["session_id"]))
+
+    runtime = _make_runtime(
+        tmp_path, happy_path=True, session_starter=_capturing_session_starter
+    )
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+
+    assert captured["role"] == "legacy"
+    assert captured["model_root"] is None
+    # No server_args in the fragment: the derived pair is still appended.
+    assert captured["extra_argv"] == ["-np", "2", "-c", "8192"]
+
+
+# -- (b) speech-feature client bindings ------------------------------------
+
+
+def test_arm_classification_reads_the_d2_field_set() -> None:
+    assert arm_uses_speech_feature_packets("speech-feature-query") is True
+    assert arm_uses_speech_feature_packets("speech-feature-query-native-tools") is True
+    assert arm_uses_speech_feature_packets("bare-core") is False
+    assert arm_uses_speech_feature_packets("bare-core-native-tools") is False
+    # An arm this module has never heard of answers False rather than raising;
+    # FrozenCoreClient owns the "unknown D2 arm" refusal.
+    assert arm_uses_speech_feature_packets("not-an-arm") is False
+
+
+def test_packet_id_convention_round_trips() -> None:
+    assert packet_id_for_sample("tier1_direct:000045") == "tier1_direct/000045"
+    assert sample_id_for_packet("tier1_direct/000045") == "tier1_direct:000045"
+
+
+def test_client_kwargs_carry_speech_feature_bindings_for_a_packet_arm(tmp_path):
+    promotion = _write_promotion_receipt(tmp_path)
+    runtime = _make_runtime(
+        tmp_path,
+        happy_path=True,
+        config_kwargs=_packet_config_kwargs(tmp_path, promotion),
+    )
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    kwargs = runtime.frozen_core_client_kwargs()
+
+    assert kwargs["speech_feature_root"] == tmp_path / _PROMOTION_DIR
+    assert kwargs["speech_packet_bindings"] == {
+        "s1": {"packet_id": "s1", "sha256": "s1-sha"},
+        "s2": {"packet_id": "s2", "sha256": "s2-sha"},
+    }
+
+
+def test_client_kwargs_omit_speech_feature_bindings_for_a_raw_arm(tmp_path):
+    runtime = _make_runtime(
+        tmp_path,
+        happy_path=True,
+        config_kwargs={"arm": "bare-core", "policy": "fixed"},
+    )
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    kwargs = runtime.frozen_core_client_kwargs()
+
+    assert "speech_feature_root" not in kwargs
+    assert "speech_packet_bindings" not in kwargs
+
+
+def test_speech_packet_bindings_fail_closed_on_an_unpromoted_sample(tmp_path):
+    promotion = _write_promotion_receipt(tmp_path, packet_ids=("s1",))
+    runtime = _make_runtime(
+        tmp_path,
+        happy_path=True,
+        config_kwargs=_packet_config_kwargs(tmp_path, promotion),
+    )
+    runtime.preflight()
+    with pytest.raises(FlightRuntimeError, match="no promoted packet"):
+        runtime.speech_packet_bindings()
+
+
+def test_speech_feature_root_must_agree_with_the_promotion_receipt(tmp_path):
+    promotion = _write_promotion_receipt(tmp_path)
+    runtime = _make_runtime(
+        tmp_path,
+        happy_path=True,
+        config_kwargs=_packet_config_kwargs(
+            tmp_path, promotion, speech_feature_root=str(tmp_path / "somewhere-else")
+        ),
+    )
+    runtime.preflight()
+    with pytest.raises(FlightRuntimeError, match="disagrees with the promotion receipt"):
+        runtime._speech_feature_root()
+
+
+def test_packet_arm_without_a_promotion_receipt_fails_closed(tmp_path):
+    runtime = _make_runtime(
+        tmp_path,
+        happy_path=True,
+        config_kwargs={
+            "arm": "speech-feature-query",
+            "policy": "fixed",
+            "baseline_extra": {
+                "speech_feature_key_representation_id": "k",
+                "speech_feature_matcher_policy_id": "m",
+            },
+        },
+    )
+    runtime.preflight()
+    with pytest.raises(FlightRuntimeError, match="speech_packet_promotion_receipt"):
+        runtime.speech_packet_bindings()
+
+
+# -- (c) the default tool-schema resolver ----------------------------------
+
+
+class _FakeFillRegistry:
+    def __init__(self, schemas) -> None:
+        self.schemas = schemas
+        self.resolved: list[str] = []
+
+    def resolve(self, name: str):
+        self.resolved.append(name)
+        return lambda lock, data_root: self.schemas
+
+
+def test_default_tool_schema_resolver_goes_through_the_policy_registry(
+    tmp_path, monkeypatch
+):
+    schemas = [{"type": "function", "function": {"name": "t"}}]
+    registry = _FakeFillRegistry(schemas)
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.core.policies.TOOL_SCHEMA_FILLS", registry
+    )
+    runtime = _make_runtime(
+        tmp_path,
+        happy_path=True,
+        config_kwargs={
+            "arm": "bare-core-native-tools",
+            "policy": "fixed",
+            "baseline_extra": {"tool_schema_fill": "audio2tool-openai-tools"},
+        },
+    )
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    kwargs = runtime.frozen_core_client_kwargs()
+
+    assert kwargs["tool_schemas"] == schemas
+    assert registry.resolved == ["audio2tool-openai-tools"]
+
+
+def test_native_tools_arm_without_a_fill_still_fails_closed(tmp_path):
+    runtime = _make_runtime(
+        tmp_path,
+        happy_path=True,
+        config_kwargs={"arm": "bare-core-native-tools", "policy": "fixed"},
+    )
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    with pytest.raises(FlightRuntimeError, match="tool_schema_fill"):
+        runtime.frozen_core_client_kwargs()
+
+
+# -- (d) the default packet promoter ---------------------------------------
+
+
+def test_default_promoter_promotes_nothing_for_a_raw_audio_arm(tmp_path):
+    runtime = _make_runtime(
+        tmp_path,
+        happy_path=True,
+        packet_promoter=_BUILTIN_PROMOTER,
+        config_kwargs={"arm": "bare-core", "policy": "fixed"},
+    )
+    runtime.preflight()
+    receipt = runtime.preprocess()
+
+    assert receipt["packet_count"] == 0
+    assert receipt["promoter_meta"]["packets_required"] is False
+    assert receipt["promoter_meta"]["audio_path"] == "raw-audio-mmproj"
+    assert receipt["packets_per_second"] >= 0
+
+
+def test_installing_the_sentinel_directly_still_refuses(tmp_path):
+    runtime = _make_runtime(
+        tmp_path,
+        happy_path=True,
+        config_kwargs={"arm": "bare-core", "policy": "fixed"},
+    )
+    runtime._packet_promoter = _BUILTIN_PROMOTER
+    runtime.preflight()
+    with pytest.raises(FlightRuntimeError, match="fail-closed sentinel"):
+        runtime.preprocess()
+
+
+def test_default_promoter_materializes_the_registered_packets(tmp_path, monkeypatch):
+    promotion = _write_promotion_receipt(tmp_path)
+    calls: dict[str, object] = {}
+
+    def _fake_materialize(**kwargs):
+        calls.update(kwargs)
+        return (_FakePacket("s1", "s1-sha"), _FakePacket("s2", "s2-sha"))
+
+    monkeypatch.setattr(
+        _runtime_module,
+        "materialize_legacy_cached_speech_feature_packets",
+        _fake_materialize,
+    )
+    runtime = _make_runtime(
+        tmp_path,
+        happy_path=True,
+        packet_promoter=_BUILTIN_PROMOTER,
+        config_kwargs=_packet_config_kwargs(tmp_path, promotion),
+    )
+    runtime.preflight()
+    receipt = runtime.preprocess(workers=5)
+
+    assert receipt["packet_count"] == 2
+    assert receipt["promoter_meta"]["packets_required"] is True
+    assert receipt["promoter_meta"]["feature_root"] == str(tmp_path / _PROMOTION_DIR)
+    assert receipt["promoter_meta"]["promotion_receipt"] == str(promotion)
+    assert calls["feature_root"] == tmp_path / _PROMOTION_DIR
+    assert calls["legacy_cache_dir"] == tmp_path / _LEGACY_DIR
+    assert calls["encoder_receipt_sha256"] == "e" * 64
+    assert calls["decoder_gguf_sha256"] == "d" * 64
+    assert calls["mmproj_sha256"] == "m" * 64
+    assert calls["workers"] == 5
+    assert [binding["packet_id"] for binding in calls["bindings"]] == ["s1", "s2"]
+
+
+def test_default_promoter_refuses_a_packet_the_receipt_does_not_pin(tmp_path, monkeypatch):
+    promotion = _write_promotion_receipt(tmp_path)
+
+    def _fake_materialize(**kwargs):
+        return (_FakePacket("s1", "s1-sha"), _FakePacket("s2", "TAMPERED"))
+
+    monkeypatch.setattr(
+        _runtime_module,
+        "materialize_legacy_cached_speech_feature_packets",
+        _fake_materialize,
+    )
+    runtime = _make_runtime(
+        tmp_path,
+        happy_path=True,
+        packet_promoter=_BUILTIN_PROMOTER,
+        config_kwargs=_packet_config_kwargs(tmp_path, promotion),
+    )
+    runtime.preflight()
+    with pytest.raises(FlightRuntimeError, match="does not match the registered"):
+        runtime.preprocess()
+
+
+# -- blocker 2: the one-contact packet direct arm --------------------------
+
+
+class _RecordingClient(_FakeClient):
+    def __init__(self, **kwargs: object) -> None:
+        super().__init__(**kwargs)
+        self.completions: list[dict[str, object]] = []
+
+    def complete(self, messages, **kwargs):
+        self.completions.append({"messages": list(messages), **kwargs})
+        return "[]"
+
+
+def test_run_phases_carries_the_packet_arm_with_one_contact_per_sample(tmp_path):
+    promotion = _write_promotion_receipt(tmp_path)
+    rails_calls = {"count": 0}
+
+    def _rails_runner(**kwargs):
+        rails_calls["count"] += 1
+        return _fake_rails_runner(**kwargs)
+
+    runtime = _make_runtime(
+        tmp_path,
+        happy_path=True,
+        client_factory=_RecordingClient,
+        rails_runner=_rails_runner,
+        config_kwargs=_packet_config_kwargs(tmp_path, promotion),
+    )
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    receipt = runtime.run_phases()
+
+    assert receipt["policy_kind"] == "direct-speech-feature-packets"
+    assert receipt["contact_count"] == 2
+    assert rails_calls["count"] == 0
+
+    client = runtime._client
+    assert len(client.completions) == 2
+    first = client.completions[0]
+    assert first["speech_feature_sample_id"] == "s1"
+    assert first["key_representation_id"] == "key-rep-v1"
+    assert first["matcher_policy_id"] == "matcher-v1"
+    system, user = first["messages"]
+    assert system == {"role": "system", "content": "instruction"}
+    parts = user["content"]
+    assert [part["type"] for part in parts] == ["input_speech_features"]
+    assert parts[0]["speech_features"] == {
+        "packet_id": "s1",
+        "sha256": "s1-sha",
+        "role": "query",
+    }
+    assert sum(part["speech_features"]["role"] == "query" for part in parts) == 1
+
+
+def test_packet_arm_requires_both_trace_ids(tmp_path):
+    promotion = _write_promotion_receipt(tmp_path)
+    config_kwargs = _packet_config_kwargs(tmp_path, promotion)
+    del config_kwargs["baseline_extra"]["speech_feature_matcher_policy_id"]
+    runtime = _make_runtime(
+        tmp_path,
+        happy_path=True,
+        client_factory=_RecordingClient,
+        config_kwargs=config_kwargs,
+    )
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    with pytest.raises(FlightRuntimeError, match="speech_feature_matcher_policy_id"):
+        runtime.run_phases()
+
+
+def test_raw_audio_fixed_policy_still_routes_through_rails_runner(tmp_path):
+    calls = {"count": 0}
+
+    def _rails_runner(**kwargs):
+        calls["count"] += 1
+        return _fake_rails_runner(**kwargs)
+
+    runtime = _make_runtime(
+        tmp_path,
+        happy_path=True,
+        rails_runner=_rails_runner,
+        config_kwargs={"arm": "bare-core", "policy": "fixed"},
+    )
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    receipt = runtime.run_phases()
+
+    assert receipt["policy_kind"] == "direct"
+    assert calls["count"] == 1

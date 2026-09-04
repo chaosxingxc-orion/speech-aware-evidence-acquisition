@@ -33,5 +33,6 @@
   "prompt_order": "evidence-first-system-v2",
   "server_env": {
     "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/audio2tool-q4km-04ccc72a"
-  }
+  },
+  "model_materialization_root": "/home/chao"
 }

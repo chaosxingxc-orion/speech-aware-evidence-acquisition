@@ -295,6 +295,17 @@ def test_regex_extraction_agrees_with_package_import():
         from speech_aware_evidence_acquisition.rails import (
             knowledge_build as _knowledge_build,  # noqa: F401
         )
+
+        # Slice C4a (commit a80eef79) added rails/controllers.py to the
+        # check's own CANONICAL_REGISTRY_FILES -- it registers the four
+        # phase-program ids into AGENT_CONTROLLERS at import time -- but not
+        # to this agreement test's import list, so the regex side saw four
+        # ids the import side had never loaded and the two could not agree.
+        # Every canonical registry file the check scans must be imported
+        # here, or this test compares a full scan against a partial import.
+        from speech_aware_evidence_acquisition.rails import (
+            controllers as _controllers,  # noqa: F401
+        )
     except ImportError as exc:
         pytest.skip(f"package not importable in this environment: {exc}")
 

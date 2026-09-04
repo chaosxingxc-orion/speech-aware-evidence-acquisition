@@ -68,6 +68,7 @@ from ..config import (
     resolve_runtime_receipt_path,
     runtime_receipt_relpath,
 )
+from ..model.speech_features import materialize_legacy_cached_speech_feature_packets
 from ..scoring_batch import load_score_jobs, run_score_batch
 from ..session import load_runtime_receipt, start_session
 from ..split_receipt import VerifiedSplit
@@ -115,6 +116,28 @@ REQUIRED_EXECUTION_PLAN_FIELDS = (
     "planned_speech_audio_seconds",
 )
 
+#: The one ``ARM_VISIBLE_FIELDS`` entry that distinguishes the
+#: speech-feature-packet audio path (``speech-feature-query`` and
+#: ``speech-feature-query-native-tools``) from the raw-audio one
+#: (``bare-core``, ``bare-core-native-tools``, ``fixed-legal-context``, ...).
+#: Every branch below that asks "packets or raw audio?" asks it HERE, off
+#: the arm's own D2-frozen field set, never off a hardcoded arm-name list --
+#: the same discipline ``core.policies.FixedPolicy.run_sample`` already
+#: documents at length for its own evidence branch.
+SPEECH_FEATURE_ARM_FIELD = "speech_feature_parts"
+
+#: A promotion receipt's packet ids are the flight's sample ids with ``:``
+#: replaced by ``/`` (``tier1_direct:000045`` -> ``tier1_direct/000045``) --
+#: the convention every Audio2Tool packet root and every SLURP runtime view
+#: already uses, and the one ``scripts/a2t_g1_preprocess.py`` writes.
+PACKET_ID_SEPARATOR = "/"
+SAMPLE_ID_SEPARATOR = ":"
+
+#: ``core.model.speech_features`` packets for this study's frozen core are
+#: 2048-dimensional; the promoter re-asserts it rather than trusting bytes.
+SPEECH_PACKET_N_EMBD = 2048
+
+
 def _canonical_hash(document: object) -> str:
     blob = json.dumps(document, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()
@@ -139,26 +162,131 @@ def _default_token_counter(payload_bytes: bytes) -> int:
     return max(1, len(payload_bytes) // 4)
 
 
+def arm_uses_speech_feature_packets(arm: str) -> bool:
+    """Whether ``arm``'s own D2-frozen field set carries speech-feature
+    packet fields -- the single place this runtime decides "packets or raw
+    audio", for every stage that has to branch on it.
+
+    An arm this module has never heard of answers ``False`` rather than
+    raising, exactly as :meth:`FlightRuntime.frozen_core_client_kwargs`'s
+    own ``ARM_VISIBLE_FIELDS.get(arm, ())`` already does: refusing an
+    unknown arm name is ``rails.core_client.FrozenCoreClient``'s job (it
+    raises "unknown D2 arm" at construction, before any request), and
+    duplicating that refusal here would only move the error earlier for
+    fakes while changing nothing for a real flight.
+    """
+
+    return SPEECH_FEATURE_ARM_FIELD in ARM_VISIBLE_FIELDS.get(arm, ())
+
+
+def merge_server_args(
+    server_args: Sequence[object], *, slots: int, context_tokens: int
+) -> list[str]:
+    """The model fragment's own ``server_args``, with ONLY ``-np``/``-c``
+    replaced (or appended when absent) from the adapter's serving geometry.
+
+    Before this, :meth:`FlightRuntime.serve` passed ``["-np", ..., "-c", ...]``
+    and NOTHING else to ``session_starter``, silently dropping every other
+    flag the fragment declares -- including ``-ngl 999``, which is the
+    difference between serving on the GPU and serving the whole flight on
+    the CPU. The geometry still wins over the fragment for those two values
+    (the adapter is what ``serve``/``FlightQueue`` compare when deciding
+    whether a resident server can be reused), but nothing else is invented
+    or discarded here.
+    """
+
+    if isinstance(server_args, (str, bytes)) or not isinstance(server_args, Sequence):
+        raise FlightRuntimeError("model config server_args must be a list of strings")
+    merged = [str(value) for value in server_args]
+    for flag, value in (("-np", slots), ("-c", context_tokens)):
+        if flag in merged:
+            index = merged.index(flag)
+            if index + 1 >= len(merged):
+                raise FlightRuntimeError(
+                    f"model config server_args declares {flag} with no value"
+                )
+            merged[index + 1] = str(value)
+        else:
+            merged.extend([flag, str(value)])
+    return merged
+
+
+def _default_tool_schema_resolver(
+    lock: Mapping[str, object], data_root: Path, fill_name: str
+) -> Sequence[Mapping[str, object]]:
+    """Resolve a baseline fragment's ``tool_schema_fill`` name through
+    ``core.policies.TOOL_SCHEMA_FILLS`` -- the SAME registry
+    ``core.policies.FixedPolicy.run_sample`` resolves it through on the
+    non-flight path, so a native tool-calling arm sends byte-identical
+    ``tools`` whichever path it flies. Imported function-locally: this
+    module's own import surface stays light and free of the
+    ``core.policies -> rails`` direction."""
+
+    from ..policies import TOOL_SCHEMA_FILLS  # noqa: PLC0415 (light-import discipline)
+
+    return TOOL_SCHEMA_FILLS.resolve(fill_name)(lock, Path(data_root))
+
+
+def load_promotion_receipt(path: Path) -> Mapping[str, object]:
+    """Read and shape-check a ``saea-a2t-speech-packet-promotion-receipt-v1``
+    document (``scripts/a2t_g1_preprocess.py``'s own output): the hash-bound
+    record of which packets exist, under which feature root, promoted from
+    which legacy cache, under which encoder/decoder/mmproj identity."""
+
+    try:
+        document = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise FlightRuntimeError(
+            f"speech packet promotion receipt is unreadable ({path}): {error}"
+        ) from error
+    if not isinstance(document, Mapping):
+        raise FlightRuntimeError("speech packet promotion receipt must be a JSON object")
+    required = ("feature_root", "legacy_cache_dir", "runtime_receipt_sha256", "packets")
+    missing = [field for field in required if field not in document]
+    if missing:
+        raise FlightRuntimeError(
+            f"speech packet promotion receipt is missing field(s) {missing}: {path}"
+        )
+    packets = document["packets"]
+    if not isinstance(packets, list) or not packets:
+        raise FlightRuntimeError(
+            f"speech packet promotion receipt carries no packets: {path}"
+        )
+    return document
+
+
+def packet_id_for_sample(sample_id: str) -> str:
+    return sample_id.replace(SAMPLE_ID_SEPARATOR, PACKET_ID_SEPARATOR)
+
+
+def sample_id_for_packet(packet_id: str) -> str:
+    return packet_id.replace(PACKET_ID_SEPARATOR, SAMPLE_ID_SEPARATOR)
+
+
 def _default_packet_promoter(
     *, adapter: TaskAdapter, data_root: Path, samples: Sequence[object], workers: int
 ) -> tuple[Sequence[object], Mapping[str, object]]:
-    """No default wiring: promoting real speech-feature packets requires
-    carrier-specific bindings (a legacy featcache directory, a
-    ``role: "preprocess"`` runtime receipt, and the encoder/decoder/mmproj
-    SHA-256 triple it pins) that this generic, carrier-agnostic harness does
-    not derive on its own -- see ``core.model.speech_features.
-    materialize_legacy_cached_speech_feature_packets`` (the primitive
-    ``saea-driver promote-speech-packets`` itself wraps) and
-    ``core.driver.cli._cli_promote_speech_packets`` for the exact shape a
-    real ``packet_promoter`` must supply. Fails closed rather than silently
-    promoting nothing.
+    """Sentinel-only fallback.
+
+    This used to be the real default, and it fails closed because the
+    bindings a promotion needs (a legacy featcache directory, the
+    ``role: "preprocess"`` runtime receipt's hash, and the decoder/mmproj
+    SHA-256 pair) are not derivable from thin air. They ARE, however,
+    derivable from the artifact a preprocessing pass already wrote -- its
+    ``saea-a2t-speech-packet-promotion-receipt-v1`` -- so
+    :meth:`FlightRuntime._builtin_packet_promoter` now does exactly that.
+    This function survives ONLY as the identity sentinel the constructor
+    matches on to select that builtin (naming it explicitly and leaving it
+    unset are therefore the same request), plus this defensive body for the
+    one path that could still reach it: a caller that bypasses the
+    constructor and installs it directly.
     """
 
     raise FlightRuntimeError(
-        "preprocess() has no default packet_promoter wiring for a real flight; "
-        "inject one that wraps core.model.speech_features."
-        "materialize_legacy_cached_speech_feature_packets with this carrier's "
-        "legacy_cache_dir/encoder receipt/decoder+mmproj SHA-256 bindings"
+        "the fail-closed sentinel packet_promoter was installed directly; construct "
+        "FlightRuntime normally (its config-driven default resolves the baseline "
+        "fragment's speech_packet_promotion_receipt) or inject a promoter that wraps "
+        "core.model.speech_features.materialize_legacy_cached_speech_feature_packets"
     )
 
 
@@ -214,7 +342,7 @@ class FlightRuntime:
         abort_attempt: Callable[..., bool] = abort_attempt_if_opened,
         token_counter: Callable[[bytes], int] = _default_token_counter,
         tool_schema_resolver: Callable[[Mapping[str, object], Path, str], Sequence[Mapping[str, object]]]
-        | None = None,
+        | None = _default_tool_schema_resolver,
         lock: Mapping[str, object] | None = None,
         run_dir: Path | None = None,
         host: str = "127.0.0.1",
@@ -250,7 +378,14 @@ class FlightRuntime:
         self._bundle_verifier = bundle_verifier
         self._bundle_finalizer = bundle_finalizer
         self._flight_receipt_builder = flight_receipt_builder
-        self._packet_promoter = packet_promoter
+        # Leaving ``packet_promoter`` unset -- or naming the module-level
+        # sentinel explicitly, which is the same request -- selects the
+        # config-driven builtin below; any other callable is used verbatim.
+        self._packet_promoter = (
+            self._builtin_packet_promoter
+            if packet_promoter is _default_packet_promoter
+            else packet_promoter
+        )
         self._client_factory = client_factory
         self._payload_binding_factory = payload_binding_factory
         self._carrier_root_resolver = carrier_root_resolver
@@ -283,6 +418,7 @@ class FlightRuntime:
         self._client = None
         self._binding = None
         self._output_rows: list[Mapping[str, object]] = []
+        self._promotion_receipt: Mapping[str, object] | None = None
 
     # -- small read-only accessors ---------------------------------------
 
@@ -533,6 +669,161 @@ class FlightRuntime:
 
     # -- stage 2: preprocess ----------------------------------------------
 
+    def _arm(self) -> str:
+        arm = self._composed.values.get("arm")
+        if not isinstance(arm, str) or not arm:
+            raise FlightRuntimeError("baseline fragment must declare a non-empty 'arm'")
+        return arm
+
+    def uses_speech_feature_packets(self) -> bool:
+        """Whether THIS flight's arm travels the speech-feature packet audio
+        path. Requires :meth:`preflight` (the arm comes from the composed
+        baseline fragment)."""
+
+        if self._composed is None:
+            raise FlightStageOrderError("the arm is unavailable before preflight()")
+        return arm_uses_speech_feature_packets(self._arm())
+
+    def _promotion_receipt_path(self) -> Path:
+        value = self._composed.values.get("speech_packet_promotion_receipt")
+        if not isinstance(value, str) or not value:
+            raise FlightRuntimeError(
+                f"arm {self._arm()!r} travels the speech-feature packet path; its "
+                "baseline fragment must declare 'speech_packet_promotion_receipt' "
+                "(the promotion receipt a registered SAEA-SN-*-PREPROCESS pass wrote)"
+            )
+        return Path(value)
+
+    def _load_promotion_receipt(self) -> Mapping[str, object]:
+        if self._promotion_receipt is None:
+            self._promotion_receipt = load_promotion_receipt(self._promotion_receipt_path())
+        return self._promotion_receipt
+
+    def speech_packet_bindings(self) -> Mapping[str, Mapping[str, str]]:
+        """``{sample_id: {"packet_id": ..., "sha256": ...}}`` for exactly
+        this flight's samples, read from the registered promotion receipt.
+
+        This is the binding ``rails.core_client.FrozenCoreClient`` refuses to
+        be constructed without for a speech-feature arm, and which nothing
+        previously supplied on this path. Fails closed on any sample the
+        receipt does not cover -- promotion is a prerequisite, never
+        something a flight silently completes for itself.
+        """
+
+        promotion = self._load_promotion_receipt()
+        registered: dict[str, str] = {}
+        for entry in promotion["packets"]:
+            if not isinstance(entry, Mapping):
+                raise FlightRuntimeError("promotion receipt packet entry must be an object")
+            packet_id = entry.get("packet_id")
+            packet_sha256 = entry.get("packet_sha256")
+            if not isinstance(packet_id, str) or not isinstance(packet_sha256, str):
+                raise FlightRuntimeError(
+                    "promotion receipt packet entry must carry packet_id and packet_sha256"
+                )
+            registered[packet_id] = packet_sha256
+        bindings: dict[str, Mapping[str, str]] = {}
+        missing: list[str] = []
+        for sample in self._samples:
+            packet_id = packet_id_for_sample(sample.sample_id)
+            sha256 = registered.get(packet_id)
+            if sha256 is None:
+                missing.append(sample.sample_id)
+                continue
+            bindings[sample.sample_id] = {"packet_id": packet_id, "sha256": sha256}
+        if missing:
+            raise FlightRuntimeError(
+                f"{len(missing)} sample(s) have no promoted packet in "
+                f"{self._promotion_receipt_path()}, e.g. {sorted(missing)[:5]}"
+            )
+        return bindings
+
+    def _speech_feature_root(self) -> Path:
+        value = self._composed.values.get("speech_feature_root")
+        if not isinstance(value, str) or not value:
+            raise FlightRuntimeError(
+                f"arm {self._arm()!r} travels the speech-feature packet path; its "
+                "model fragment must declare 'speech_feature_root'"
+            )
+        root = Path(value)
+        promotion_root = Path(str(self._load_promotion_receipt()["feature_root"]))
+        if root != promotion_root:
+            raise FlightRuntimeError(
+                f"model fragment speech_feature_root {root} disagrees with the "
+                f"promotion receipt's feature_root {promotion_root}; refusing to "
+                "serve packets from a root this flight's identity does not pin"
+            )
+        return root
+
+    def _builtin_packet_promoter(
+        self, *, adapter: TaskAdapter, data_root: Path, samples: Sequence[object], workers: int
+    ) -> tuple[Sequence[object], Mapping[str, object]]:
+        """The config-driven default promoter (replaces the fail-closed
+        :func:`_default_packet_promoter` whenever the constructor was not
+        given an explicit one).
+
+        Raw-audio arms promote nothing and say so: their audio travels
+        through the mmproj at request time, so a packet plane would be a
+        fiction. Speech-feature arms re-materialize exactly the packets the
+        registered promotion receipt already pins, through the same
+        carrier-neutral primitive ``scripts/a2t_g1_preprocess.py`` used to
+        write it (``core.model.speech_features.
+        materialize_legacy_cached_speech_feature_packets``), and every
+        promoted packet's SHA-256 is checked against that receipt -- so this
+        stage can only ever reproduce a registered promotion, never invent
+        an unregistered one.
+        """
+
+        if not self.uses_speech_feature_packets():
+            return (), {
+                "audio_path": "raw-audio-mmproj",
+                "packets_required": False,
+                "reason": (
+                    "this arm's D2 field set carries no speech_feature_parts; its audio "
+                    "travels through the mmproj at request time and no packet is promoted"
+                ),
+            }
+        promotion = self._load_promotion_receipt()
+        feature_root = self._speech_feature_root()
+        legacy_cache_dir = Path(str(promotion["legacy_cache_dir"]))
+        registered = {
+            str(entry["packet_id"]): entry for entry in promotion["packets"]
+        }
+        first = promotion["packets"][0]
+        bindings = tuple(
+            {
+                "packet_id": packet_id_for_sample(sample.sample_id),
+                "audio_path": str(Path(data_root) / sample.media_relpath),
+            }
+            for sample in samples
+        )
+        packets = materialize_legacy_cached_speech_feature_packets(
+            feature_root=feature_root,
+            bindings=bindings,
+            legacy_cache_dir=legacy_cache_dir,
+            encoder_receipt_sha256=str(promotion["runtime_receipt_sha256"]),
+            decoder_gguf_sha256=str(first["decoder_gguf_sha256"]),
+            mmproj_sha256=str(first["mmproj_sha256"]),
+            expected_n_embd=SPEECH_PACKET_N_EMBD,
+            causal_attention=True,
+            workers=workers,
+        )
+        for packet in packets:
+            entry = registered.get(packet.packet_id)
+            if entry is None or entry.get("packet_sha256") != packet.packet_sha256:
+                raise FlightRuntimeError(
+                    f"promoted packet {packet.packet_id} does not match the registered "
+                    f"promotion receipt {self._promotion_receipt_path()}"
+                )
+        return tuple(packet.packet_id for packet in packets), {
+            "audio_path": "mmproj-free-speech-feature-packets",
+            "packets_required": True,
+            "feature_root": str(feature_root),
+            "legacy_cache_dir": str(legacy_cache_dir),
+            "promotion_receipt": str(self._promotion_receipt_path()),
+            "promotion_receipt_sha256": _sha256_file(self._promotion_receipt_path()),
+        }
+
     def preprocess(self, *, workers: int | None = None) -> Mapping[str, object]:
         """Run the adapter's ``preprocess_plan()`` through the packet
         promotion seam (defaults to a fail-closed placeholder; a real flight
@@ -636,7 +927,16 @@ class FlightRuntime:
         self._runtime_receipt = runtime_receipt
         self._gate.assert_model_touch_allowed(self._plan)
 
-        extra_argv = ["-np", str(geometry["slots"]), "-c", str(geometry["slot_tokens"] * geometry["slots"])]
+        # The fragment's own server_args, with ONLY -np/-c overridden from
+        # the adapter geometry (:func:`merge_server_args`). Passing the two
+        # derived flags alone -- what this stage used to do -- silently
+        # dropped -ngl/-fa/-ctk/-ctv and every batch and cache flag the
+        # fragment declares, i.e. served the flight on the CPU.
+        extra_argv = merge_server_args(
+            values.get("server_args", ()),
+            slots=int(geometry["slots"]),
+            context_tokens=int(geometry["slot_tokens"]) * int(geometry["slots"]),
+        )
         extra_env_value = values.get("server_env", {})
         if not isinstance(extra_env_value, Mapping):
             raise FlightRuntimeError("model config server_env must be a mapping")
@@ -646,6 +946,15 @@ class FlightRuntime:
         session_receipt_path = run_dir / f"{session_id}.session-receipt.json"
         server_log_path = run_dir / f"{session_id}.server.log"
 
+        # ``role`` and ``model_root`` are read from the SAME two places the
+        # rest of this study reads them: the runtime receipt's own ``role``
+        # (an mmproj-free inference receipt declares ``"inference"``, which
+        # is what makes ``start_session`` inject ``--no-mmproj``) and the
+        # model fragment's ``model_materialization_root`` (where the GGUF
+        # bytes actually live, e.g. /home/chao rather than the data root).
+        # Both were previously ignored here, so a packet flight would have
+        # been served WITH the mmproj and from the wrong model root.
+        configured_model_root = model_materialization_root(values)
         started = self._clock()
         session = self._session_starter(
             runtime_root=self._runtime_root,
@@ -658,6 +967,10 @@ class FlightRuntime:
             extra_env=dict(extra_env_value),
             receipt_path=session_receipt_path,
             server_log_path=server_log_path,
+            role=str(runtime_receipt.get("role", "legacy")),
+            model_root=(
+                Path(configured_model_root) if configured_model_root is not None else None
+            ),
         )
         startup_seconds = max(self._clock() - started, 0.0)
         self._session = session
@@ -680,6 +993,10 @@ class FlightRuntime:
             "pid": session.pid,
             "serving_geometry": geometry,
             "extra_argv": extra_argv,
+            "session_role": str(runtime_receipt.get("role", "legacy")),
+            "model_root": (
+                str(configured_model_root) if configured_model_root is not None else None
+            ),
             "startup_seconds": startup_seconds,
             "reused": False,
         }
@@ -728,6 +1045,15 @@ class FlightRuntime:
                     "a baseline 'tool_schema_fill' name are both required"
                 )
             kwargs["tool_schemas"] = self._tool_schema_resolver(self._lock, self._data_root, fill_name)
+        if SPEECH_FEATURE_ARM_FIELD in arm_fields:
+            # rails.core_client.FrozenCoreClient REFUSES to be constructed
+            # for a speech-feature arm without these two -- and nothing on
+            # this path supplied them, so every packet cell used to die at
+            # client construction. Both are config/receipt derived: the root
+            # from the model fragment (cross-checked against the promotion
+            # receipt), the per-sample descriptors from that same receipt.
+            kwargs["speech_feature_root"] = self._speech_feature_root()
+            kwargs["speech_packet_bindings"] = self.speech_packet_bindings()
         return kwargs
 
     def _decoding_params(self) -> Mapping[str, object] | None:
@@ -750,6 +1076,85 @@ class FlightRuntime:
                     "messages": list(getattr(result, "messages", ()) or ()),
                     "response_text": getattr(result, "response_text", None),
                     "metrics": dict(getattr(result, "metrics", {}) or {}),
+                    "consumption": consumption.as_json() if consumption is not None else None,
+                }
+            )
+        return rows
+
+    def _speech_feature_trace_ids(self) -> tuple[str, str]:
+        values = self._composed.values
+        pair = (
+            values.get("speech_feature_key_representation_id"),
+            values.get("speech_feature_matcher_policy_id"),
+        )
+        for name, value in zip(
+            ("speech_feature_key_representation_id", "speech_feature_matcher_policy_id"),
+            pair,
+            strict=True,
+        ):
+            if not isinstance(value, str) or not value:
+                raise FlightRuntimeError(
+                    f"arm {self._arm()!r} travels the speech-feature packet path; its "
+                    f"baseline fragment must declare a non-empty {name!r} "
+                    "(both ride the audited payload as ORG/CONTROL identity)"
+                )
+        return str(pair[0]), str(pair[1])
+
+    def _run_speech_feature_direct(self, client: object) -> list[Mapping[str, object]]:
+        """The fixed-policy direct arm for the speech-feature packet audio
+        path: ONE contact per sample, carrying exactly one
+        ``input_speech_features`` query descriptor.
+
+        ``rails.runner.run_rails_experiment`` cannot carry this arm: it
+        always calls ``core_client.complete(messages)`` under the AUDIO
+        invariant, and ``FrozenCoreClient`` refuses a speech-feature arm
+        without ``speech_feature_sample_id`` and a query packet ("speech-
+        feature-query requires speech_feature_sample_id and a query packet
+        on every decision call"). This is the SAME single contact, the same
+        instruction from the same adapter, the same post-hoc scoring -- only
+        the audio content part differs, which is precisely what Factor D of
+        a raw-audio-versus-packets comparison is about. It adds no phase, no
+        second contact and no evidence.
+        """
+
+        bindings = self.speech_packet_bindings()
+        key_representation_id, matcher_policy_id = self._speech_feature_trace_ids()
+        decoding_params = self._decoding_params()
+        arm = self._arm()
+        rows: list[Mapping[str, object]] = []
+        for sample in self._samples:
+            descriptor = bindings[sample.sample_id]
+            messages = (
+                {"role": "system", "content": self._adapter.instruction(sample)},
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "input_speech_features",
+                            "speech_features": {
+                                "packet_id": descriptor["packet_id"],
+                                "sha256": descriptor["sha256"],
+                                "role": "query",
+                            },
+                        }
+                    ],
+                },
+            )
+            response_text = client.complete(
+                messages,
+                decoding_params=decoding_params,
+                speech_feature_sample_id=sample.sample_id,
+                key_representation_id=key_representation_id,
+                matcher_policy_id=matcher_policy_id,
+            )
+            consumption = self._adapter.extract_consumption(sample, None, response_text)
+            rows.append(
+                {
+                    "arm": arm,
+                    "sample_id": sample.sample_id,
+                    "messages": list(messages),
+                    "response_text": response_text,
+                    "metrics": dict(self._adapter.score(sample, response_text)),
                     "consumption": consumption.as_json() if consumption is not None else None,
                 }
             )
@@ -799,7 +1204,14 @@ class FlightRuntime:
         self._client = client
 
         started = self._clock()
-        if policy == "fixed":
+        if policy == "fixed" and self.uses_speech_feature_packets():
+            # Same fixed policy, same one contact per sample -- but through
+            # the packet content part rails.runner cannot express (see
+            # :meth:`_run_speech_feature_direct`).
+            self._output_rows = self._run_speech_feature_direct(client)
+            contact_count = len(self._output_rows)
+            policy_kind = "direct-speech-feature-packets"
+        elif policy == "fixed":
             arms = tuple(baseline_values.get("rails_arms", RAILS_ARMS))
             summary = self._rails_runner(
                 data_root=self._data_root,
@@ -1058,5 +1470,14 @@ __all__ = [
     "FlightRuntimeError",
     "FlightServeGeometryMismatchError",
     "FlightStageOrderError",
+    "PACKET_ID_SEPARATOR",
     "REQUIRED_EXECUTION_PLAN_FIELDS",
+    "SAMPLE_ID_SEPARATOR",
+    "SPEECH_FEATURE_ARM_FIELD",
+    "SPEECH_PACKET_N_EMBD",
+    "arm_uses_speech_feature_packets",
+    "load_promotion_receipt",
+    "merge_server_args",
+    "packet_id_for_sample",
+    "sample_id_for_packet",
 ]

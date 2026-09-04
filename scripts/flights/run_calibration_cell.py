@@ -1,44 +1,34 @@
 #!/usr/bin/env python3
-"""One generic entry point for every cell of a factorial direct-baseline flight.
+"""Thin CLI for one cell of a factorial direct-baseline flight.
 
-``saea-driver flight`` cannot run an Audio2Tool calibration cell end to end
-today: ``core.flight.FlightRuntime``'s ``packet_promoter`` seam is
-fail-closed by design (``_default_packet_promoter``), its ``client_factory``
-default supplies no ``speech_feature_root``/``speech_packet_bindings`` for a
-speech-feature arm, its ``tool_schema_resolver`` seam is ``None`` (so a
-native tool-calling arm refuses), its ``serve`` stage derives only ``-np``
-and ``-c`` from the adapter's ``serving_geometry()`` and drops every other
-``server_args`` flag the model fragment declares, and
-``Audio2ToolAdapter.load_split("discovery")`` now resolves 608 samples (the
-frozen 400 plus two 104-row post-seal AgentLoop scoring receipts) rather
-than the calibration population. This script binds exactly those seams and
-nothing else; it adds no model-facing behaviour of its own.
+Everything this script used to bind by hand is now a config-driven default
+inside ``core.flight.FlightRuntime`` (2026-09-04, Phase 2a): the packet
+promoter resolves the baseline fragment's ``speech_packet_promotion_receipt``,
+the client factory supplies ``speech_feature_root``/``speech_packet_bindings``
+for a speech-feature arm, the tool-schema resolver goes through
+``core.policies.TOOL_SCHEMA_FILLS``, ``serve`` preserves the model fragment's
+whole ``server_args`` (plus its ``role`` and model root), and ``run_phases``
+carries the one-contact packet path itself.
 
-It is generic on purpose: the cells are READ from the experiment fragment's
-own ``cells`` array (``cell_id`` -> ``arm`` / ``baseline_fragment`` /
-``model_fragment``), so a new cell is a config edit, never a code edit. The
-only two behaviours that branch are the two audio paths the factorial itself
-is about:
+What remains here is the ONE thing that is genuinely not derivable from the
+four fragments: the adapter. ``saea-driver flight`` builds a bare
+``Audio2ToolAdapter``, whose ``load_split("discovery")`` now resolves 608
+samples (the frozen 400 plus two 104-row post-seal AgentLoop scoring
+receipts), whose serving geometry is its own class constant rather than the
+model fragment's, and whose ``instruction()`` always renders the legacy
+registry -- none of which suits a receipt-scoped factorial cell. This entry
+supplies exactly that adapter and delegates the rest.
 
-* raw audio (``bare-core`` family): the packet plane is not used, so the
-  promoter promotes nothing and says so; requests carry ``input_audio`` and
-  run through ``rails.runner.run_rails_experiment`` unchanged.
-* speech-feature packets (``speech-feature-query`` family): the promoter
-  re-materializes the registered promotion receipt's packets through
-  ``core.model.speech_features.
-  materialize_legacy_cached_speech_feature_packets``, and each request
-  carries exactly one ``input_speech_features`` query descriptor through
-  ``FrozenCoreClient.complete(..., speech_feature_sample_id=...)``.
+The cells themselves are READ from the experiment fragment's own ``cells``
+array, so a new cell is a config edit, never a code edit.
 
 Modes::
 
     python scripts/flights/run_calibration_cell.py --cell A0prime-legacy-raw --dry-run
     python scripts/flights/run_calibration_cell.py --cell A0prime-legacy-raw --run
 
-``--dry-run`` stops after ``FlightRuntime.preflight`` (config composition,
-receipt-bound split load, ExecutionPlan validation, gate open, exposure-row
-re-check, clean-tree assertion, attempt reservation and the prompt-budget
-estimate). It starts no server and makes no model contact.
+``--dry-run`` stops after ``FlightRuntime.preflight``: no server, no model
+contact.
 """
 
 from __future__ import annotations
@@ -70,38 +60,21 @@ if (
     raise SystemExit("package resolves to %s, not the main checkout" % (_pkg.__file__,))
 
 from speech_aware_evidence_acquisition.core.config import compose  # noqa: E402
-from speech_aware_evidence_acquisition.core.flight.runtime import (  # noqa: E402
-    FlightRuntime,
-    FlightRuntimeError,
-)
-from speech_aware_evidence_acquisition.core.model.speech_features import (  # noqa: E402
-    materialize_legacy_cached_speech_feature_packets,
-)
-from speech_aware_evidence_acquisition.core.policies import TOOL_SCHEMA_FILLS  # noqa: E402
-from speech_aware_evidence_acquisition.core.session import start_session  # noqa: E402
+from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime  # noqa: E402
 from speech_aware_evidence_acquisition.data.lock import (  # noqa: E402
     data_root,
     load_lock,
     umbrella_lock_path,
 )
-from speech_aware_evidence_acquisition.e0.d2_leakage import ARM_VISIBLE_FIELDS  # noqa: E402
 from speech_aware_evidence_acquisition.rails.adapters.audio2tool import (  # noqa: E402
     Audio2ToolAdapter,
     Audio2ToolSample,
 )
-from speech_aware_evidence_acquisition.rails.core_client import FrozenCoreClient  # noqa: E402
 from speech_aware_evidence_acquisition.rails.obs import AudioRef  # noqa: E402
-from speech_aware_evidence_acquisition.rails.runner import (  # noqa: E402
-    ArmResult,
-    RunSummary,
-    run_rails_experiment,
-)
 
 DEFAULT_EXPERIMENT = "a2t-direct-calibration-400-v1"
 DEFAULT_DATASET = "audio2tool-calibration-400"
 RUNTIME_ROOT = Path("/home/chao")
-PROMOTE_WORKERS = 8
-EXPECTED_N_EMBD = 2048
 
 
 def log(message: str) -> None:
@@ -117,19 +90,15 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def canonical_sha256(document: object) -> str:
-    payload = json.dumps(
-        document, ensure_ascii=False, sort_keys=True, separators=(",", ":")
-    ).encode("utf-8")
-    return hashlib.sha256(payload).hexdigest()
+def load_experiment(experiment: str) -> Mapping[str, object]:
+    path = REPO / "configs" / "experiment" / f"{experiment}.json"
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def load_cells(experiment: str) -> dict[str, Mapping[str, object]]:
     """Every cell the experiment fragment declares, keyed by ``cell_id``."""
 
-    path = REPO / "configs" / "experiment" / f"{experiment}.json"
-    document = json.loads(path.read_text(encoding="utf-8"))
-    cells = document.get("cells")
+    cells = load_experiment(experiment).get("cells")
     if not isinstance(cells, list) or not cells:
         raise SystemExit(f"experiment fragment {experiment} declares no cells")
     out: dict[str, Mapping[str, object]] = {}
@@ -141,18 +110,20 @@ def load_cells(experiment: str) -> dict[str, Mapping[str, object]]:
     return out
 
 
-def receipt_packet_id(sample_id: str) -> str:
-    return sample_id.replace(":", "/")
-
-
 def roster_samples(
-    roster_path: Path, roster_sha256: str, data_root_path: Path
+    roster_path: Path,
+    roster_sha256: str,
+    data_root_path: Path,
+    *,
+    limit_sample_ids: Sequence[str] | None = None,
 ) -> tuple[Audio2ToolSample, ...]:
     """Samples built ONLY from the hash-pinned roster receipt's media facts.
 
     The same discipline ``scripts/a2t_g1_preprocess.py`` already applies for
     a receipt-scoped roster: no carrier task data, no gold, no expected
     calls -- identifiers, media paths and measured media identity only.
+    ``limit_sample_ids`` narrows the roster to a registered smoke subset and
+    fails closed on any id the roster does not contain.
     """
 
     measured = sha256_file(roster_path)
@@ -161,10 +132,13 @@ def roster_samples(
             "roster receipt hashes to %s, not the configured %s" % (measured, roster_sha256)
         )
     receipt = json.loads(roster_path.read_text(encoding="utf-8"))
+    wanted = set(limit_sample_ids) if limit_sample_ids is not None else None
     root = Path(data_root_path).resolve()
     samples: list[Audio2ToolSample] = []
     for item in receipt["items"]:
         sample_id = item["sample_id"]
+        if wanted is not None and sample_id not in wanted:
+            continue
         media_relpath = item["media_relpath"]
         media_path = (root / media_relpath).resolve()
         media_path.relative_to(root)
@@ -182,6 +156,9 @@ def roster_samples(
                 media_relpath=media_relpath,
             )
         )
+    if wanted is not None and len(samples) != len(wanted):
+        found = {sample.sample_id for sample in samples}
+        raise SystemExit("roster does not contain %r" % sorted(wanted - found))
     return tuple(sorted(samples, key=lambda sample: sample.sample_id))
 
 
@@ -241,6 +218,7 @@ def build_runtime(
     run_id: str,
     attempt_id: str,
     campaign_active: bool,
+    limit_sample_ids: Sequence[str] | None = None,
 ) -> FlightRuntime:
     model = str(cell["model_fragment"])
     baseline = str(cell["baseline_fragment"])
@@ -265,7 +243,10 @@ def build_runtime(
             "model fragment must declare an exact serving_geometry "
             "{slots, slot_tokens, max_tokens} object"
         )
-    server_args = list(values["server_args"])
+    # FlightRuntime.serve now merges the fragment's own server_args and only
+    # overrides -np/-c from this geometry; assert the two already agree so a
+    # silent override can never be the thing that makes them agree.
+    server_args = [str(value) for value in values["server_args"]]
     declared_c = server_args[server_args.index("-c") + 1]
     declared_np = server_args[server_args.index("-np") + 1]
     if int(declared_np) != int(geometry["slots"]) or int(declared_c) != int(
@@ -276,19 +257,18 @@ def build_runtime(
             "serving_geometry %r" % (declared_c, declared_np, dict(geometry))
         )
 
-    roster_path = REPO / str(values["a2t_calibration_subset_receipt"])
     samples = roster_samples(
-        roster_path, str(values["a2t_calibration_subset_receipt_sha256"]), root
+        REPO / str(values["a2t_calibration_subset_receipt"]),
+        str(values["a2t_calibration_subset_receipt_sha256"]),
+        root,
+        limit_sample_ids=limit_sample_ids,
     )
-    if len(samples) != int(values["a2t_calibration_count"]):
+    if limit_sample_ids is None and len(samples) != int(values["a2t_calibration_count"]):
         raise SystemExit("roster resolved %d samples" % len(samples))
     split_id = str(values["split_id"])
     instruction_text = values.get("task_instruction")
     if instruction_text is not None and not isinstance(instruction_text, str):
         raise SystemExit("baseline task_instruction must be a string when declared")
-
-    arm_fields = ARM_VISIBLE_FIELDS[arm]
-    is_packet_arm = "speech_feature_parts" in arm_fields
 
     def adapter_factory(lock_, root_):
         return CalibrationAdapter(
@@ -301,169 +281,6 @@ def build_runtime(
             geometry=geometry,
         )
 
-    # ---- seam: packet promotion ----------------------------------------
-    def packet_promoter(*, adapter, data_root, samples, workers):
-        if not is_packet_arm:
-            return (), {
-                "audio_path": "raw-audio-mmproj",
-                "packets_required": False,
-                "reason": (
-                    "this cell serves raw audio through the bf16 mmproj; the speech-"
-                    "feature packet plane is not used and nothing is promoted"
-                ),
-            }
-        promotion_receipt = Path(str(values["speech_packet_promotion_receipt"]))
-        if not promotion_receipt.is_file():
-            raise FlightRuntimeError(
-                "packet cell requires the registered promotion receipt %s; run the "
-                "SAEA-SN-A2T-CALIBRATION-400-PREPROCESS pass first" % promotion_receipt
-            )
-        promotion = json.loads(promotion_receipt.read_text(encoding="utf-8"))
-        feature_root = Path(str(promotion["feature_root"]))
-        legacy_cache_dir = Path(str(promotion["legacy_cache_dir"]))
-        bindings = tuple(
-            {
-                "packet_id": receipt_packet_id(sample.sample_id),
-                "audio_path": str(Path(data_root) / sample.media_relpath),
-            }
-            for sample in samples
-        )
-        packets = materialize_legacy_cached_speech_feature_packets(
-            feature_root=feature_root,
-            bindings=bindings,
-            legacy_cache_dir=legacy_cache_dir,
-            encoder_receipt_sha256=str(promotion["runtime_receipt_sha256"]),
-            decoder_gguf_sha256=str(promotion["packets"][0]["decoder_gguf_sha256"]),
-            mmproj_sha256=str(promotion["packets"][0]["mmproj_sha256"]),
-            expected_n_embd=EXPECTED_N_EMBD,
-            causal_attention=True,
-            workers=workers,
-        )
-        registered = {entry["packet_id"]: entry["packet_sha256"] for entry in promotion["packets"]}
-        for packet in packets:
-            if registered.get(packet.packet_id) != packet.packet_sha256:
-                raise FlightRuntimeError(
-                    "packet %s does not match the registered promotion receipt"
-                    % packet.packet_id
-                )
-        packet_promoter.bindings = {
-            packet.packet_id.replace("/", ":"): {
-                "packet_id": packet.packet_id,
-                "sha256": packet.packet_sha256,
-            }
-            for packet in packets
-        }
-        packet_promoter.feature_root = feature_root
-        return tuple(packet.packet_id for packet in packets), {
-            "audio_path": "mmproj-free-speech-feature-packets",
-            "packets_required": True,
-            "feature_root": str(feature_root),
-            "promotion_receipt": str(promotion_receipt),
-            "promotion_receipt_sha256": sha256_file(promotion_receipt),
-        }
-
-    packet_promoter.bindings = {}
-    packet_promoter.feature_root = None
-
-    # ---- seam: client construction --------------------------------------
-    def client_factory(**kwargs):
-        if is_packet_arm:
-            if not packet_promoter.bindings:
-                raise FlightRuntimeError(
-                    "packet cell reached run_phases with no promoted packet bindings"
-                )
-            kwargs["speech_feature_root"] = packet_promoter.feature_root
-            kwargs["speech_packet_bindings"] = packet_promoter.bindings
-        return FrozenCoreClient(**kwargs)
-
-    # ---- seam: tool schemas ---------------------------------------------
-    def tool_schema_resolver(lock_, data_root_, fill_name):
-        return TOOL_SCHEMA_FILLS.resolve(fill_name)(lock_, data_root_)
-
-    # ---- seam: the direct arm -------------------------------------------
-    def rails_runner(**kwargs):
-        if not is_packet_arm:
-            return run_rails_experiment(**kwargs)
-        # The packet audio path: rails.runner.run_rails_experiment always
-        # calls core_client.complete() under the AUDIO invariant, so a
-        # speech-feature arm can never travel through it (FrozenCoreClient
-        # refuses: "speech-feature-query requires speech_feature_sample_id
-        # and a query packet on every decision call"). This is the same one
-        # contact per sample, with the one packet descriptor that arm's own
-        # D2 field set requires -- no extra phase, no extra contact.
-        plan = kwargs["plan"]
-        adapter = kwargs["adapter"]
-        core_client = kwargs["core_client"]
-        decoding_params = kwargs.get("decoding_params")
-        arms = tuple(kwargs.get("arms") or ("zero-supply",))
-        if len(arms) != 1:
-            raise FlightRuntimeError("a packet direct cell runs exactly one rails arm")
-        results: list[ArmResult] = []
-        for sample in adapter.load_split(kwargs["split_id"]):
-            descriptor = packet_promoter.bindings[sample.sample_id]
-            messages = (
-                {"role": "system", "content": adapter.instruction(sample)},
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "input_speech_features",
-                            "speech_features": {
-                                "packet_id": descriptor["packet_id"],
-                                "sha256": descriptor["sha256"],
-                                "role": "query",
-                            },
-                        }
-                    ],
-                },
-            )
-            response_text = core_client.complete(
-                messages,
-                decoding_params=decoding_params,
-                speech_feature_sample_id=sample.sample_id,
-                key_representation_id=str(values["speech_feature_key_representation_id"]),
-                matcher_policy_id=str(values["speech_feature_matcher_policy_id"]),
-            )
-            results.append(
-                ArmResult(
-                    arm=arms[0],
-                    sample_id=sample.sample_id,
-                    messages=tuple(messages),
-                    response_text=response_text,
-                    metrics=adapter.score(sample, response_text),
-                    consumption=adapter.extract_consumption(sample, None, response_text),
-                )
-            )
-        return RunSummary(
-            run_id=plan.run_id,
-            protocol_hash=plan.protocol_hash,
-            arms=arms,
-            results=tuple(results),
-            flight_lock=None,
-        )
-
-    # ---- seam: session start --------------------------------------------
-    def session_starter(**kwargs):
-        derived = list(kwargs.get("extra_argv") or ())
-        if derived != ["-np", str(geometry["slots"]), "-c", str(
-            int(geometry["slots"]) * int(geometry["slot_tokens"])
-        )]:
-            raise FlightRuntimeError(
-                "FlightRuntime derived unexpected server argv %r from the adapter "
-                "geometry" % (derived,)
-            )
-        # The fragment's own server_args are the authority: they already
-        # carry the SAME -np/-c (asserted above, against the same geometry
-        # object the adapter was built from) plus the flags FlightRuntime.
-        # serve does not derive (-ngl, -fa, -ctk/-ctv, batch and cache
-        # flags). Passing the derived pair alone would silently serve this
-        # flight on CPU.
-        kwargs["extra_argv"] = server_args
-        kwargs.setdefault("ready_timeout_seconds", 1800.0)
-        if is_packet_arm:
-            kwargs["role"] = "inference"
-        return start_session(**kwargs)
-
     return FlightRuntime(
         REPO,
         root,
@@ -475,11 +292,6 @@ def build_runtime(
         attempt_id=attempt_id,
         runtime_root=RUNTIME_ROOT,
         adapter_factory=adapter_factory,
-        packet_promoter=packet_promoter,
-        client_factory=client_factory,
-        tool_schema_resolver=tool_schema_resolver,
-        rails_runner=rails_runner,
-        session_starter=session_starter,
         lock=lock,
         campaign_active=campaign_active,
         host="127.0.0.1",
@@ -495,7 +307,16 @@ def main() -> int:
     parser.add_argument("--cell", required=True)
     parser.add_argument("--run-id", default=None)
     parser.add_argument("--attempt-id", default=None)
+    parser.add_argument(
+        "--sample-ids",
+        default=None,
+        help=(
+            "comma-separated roster sample ids to narrow the flight to a registered "
+            "smoke subset; omit to fly the whole roster"
+        ),
+    )
     parser.add_argument("--campaign-active", action="store_true")
+    parser.add_argument("--preprocess-workers", type=int, default=None)
     parser.add_argument("--max-workers", type=int, default=4)
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--dry-run", action="store_true")
@@ -505,19 +326,18 @@ def main() -> int:
     cells = load_cells(args.experiment)
     if args.cell not in cells:
         raise SystemExit(
-            "unknown cell %r; this experiment declares %s"
-            % (args.cell, sorted(cells))
+            "unknown cell %r; this experiment declares %s" % (args.cell, sorted(cells))
         )
     cell = cells[args.cell]
-    experiment_document = json.loads(
-        (REPO / "configs" / "experiment" / f"{args.experiment}.json").read_text(
-            encoding="utf-8"
-        )
-    )
-    run_id = args.run_id or str(experiment_document["experiment_id"])
+    run_id = args.run_id or str(load_experiment(args.experiment)["experiment_id"])
     attempt_id = args.attempt_id or "attempt-%s-%s" % (
         datetime.now(tz=timezone.utc).strftime("%Y%m%dT%H%M%SZ"),
         args.cell.replace("-", "").lower(),
+    )
+    limit_sample_ids = (
+        tuple(part.strip() for part in args.sample_ids.split(",") if part.strip())
+        if args.sample_ids
+        else None
     )
 
     runtime = build_runtime(
@@ -527,6 +347,7 @@ def main() -> int:
         run_id=run_id,
         attempt_id=attempt_id,
         campaign_active=bool(args.campaign_active),
+        limit_sample_ids=limit_sample_ids,
     )
 
     if args.dry_run:
@@ -541,6 +362,7 @@ def main() -> int:
                     "model": cell["model_fragment"],
                     "run_id": run_id,
                     "attempt_id": attempt_id,
+                    "sample_count": len(limit_sample_ids or ()) or None,
                     "dry_run": True,
                     "receipt": receipt,
                 },
@@ -554,7 +376,7 @@ def main() -> int:
     log("cell %s: preflight" % args.cell)
     runtime.preflight()
     log("cell %s: preprocess" % args.cell)
-    runtime.preprocess()
+    runtime.preprocess(workers=args.preprocess_workers)
     log("cell %s: serve" % args.cell)
     runtime.serve()
     log("cell %s: run_phases" % args.cell)

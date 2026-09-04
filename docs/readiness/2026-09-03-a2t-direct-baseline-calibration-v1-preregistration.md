@@ -176,3 +176,51 @@ boundary because `FlightRuntime.preflight` and the bundle sealer both refuse a d
   native-tools cells must be measured through the pinned template before takeoff, because the
   rendered `tools` block is invisible to the pre-flight estimator, and the raw-audio slot's
   margin at `-np 3` is 1,608 tokens against the measured 13,236-token legacy envelope.
+
+### 2026-09-04, Phase 2a (harness repair, zero contacts)
+
+Owner decision on the Phase-1 blockers: the four seams `saea-driver flight` left unbound are
+defects in the shared harness, not something a launcher may paper over, so they were fixed as
+config-driven defaults in `core/flight/runtime.py` and the flights entry shrank to adapter wiring.
+No server or sidecar was started.
+
+- **`serve` no longer discards the model fragment's `server_args`.** It now merges them
+  (`merge_server_args`), overriding only `-np`/`-c` from the adapter geometry. Before this, the
+  stage passed those two flags and nothing else, so `-ngl 999` never reached llama-server and every
+  cell of this flight would have been served on the CPU. `serve` also now passes the runtime
+  receipt's own `role` (an mmproj-free inference receipt declares `inference`, which is what makes
+  `start_session` inject `--no-mmproj`) and the fragment's `model_materialization_root`; both were
+  previously ignored, so a packet cell would have been served WITH the mmproj and from the wrong
+  model root.
+- **The client factory now supplies `speech_feature_root` and `speech_packet_bindings`** for any
+  arm whose D2 field set carries `speech_feature_parts`, read from the model fragment and from the
+  registered promotion receipt (whose `feature_root` must agree with the fragment, and which must
+  cover every sample). `rails.core_client.FrozenCoreClient` refuses to be constructed for such an
+  arm without them, so both packet cells previously died at client construction.
+- **The default tool-schema resolver** resolves a baseline fragment's `tool_schema_fill` through
+  `core.policies.TOOL_SCHEMA_FILLS`, the same registry the non-flight path uses; both native cells
+  previously refused because the seam defaulted to `None`. Verified against the real fragments:
+  152 tool schemas resolve for A1 and P1.
+- **The default packet promoter** binds
+  `core.model.speech_features.materialize_legacy_cached_speech_feature_packets` to the registered
+  promotion receipt (its own `feature_root`, `legacy_cache_dir`, encoder receipt hash and
+  decoder/mmproj hashes), and refuses any promoted packet whose SHA-256 that receipt does not pin.
+  A raw-audio arm promotes nothing and records why.
+- **`run_phases` now carries the packet audio path itself** as the fixed-policy branch for
+  speech-feature arms: one contact per sample with exactly one `input_speech_features` query
+  descriptor. `rails.runner.run_rails_experiment` cannot express it (it always calls `complete()`
+  under the audio invariant), which is why no packet cell could previously fly. Same single
+  contact, same adapter instruction, same post-hoc scoring; no extra phase and no evidence.
+- 16 new unit tests cover each default and the packet branch with fakes;
+  `pytest tests/unit/test_flight_runtime.py` is 40 passed. The engineering-base gate stays PASS.
+- Section 3's raw-audio cells serve from the data root (the fragment declares no
+  `model_materialization_root`), so their 18.5 GB GGUF loads over drvfs rather than from ext4;
+  the packet cells load from `/home/chao`. Both roots hold the pinned bytes.
+- GPU power state checked ahead of Phase 2b: `enforced.power.limit` reads 100.00 W (not the 35 W
+  Quiet-mode cap), memory 0 of 24,463 MiB used.
+- One pre-existing red test repaired in passing:
+  `tests/unit/test_engineering_base_check.py::test_regex_extraction_agrees_with_package_import`
+  compared a scan of all six canonical registry files against an import list that omitted
+  `rails/controllers.py`, so the four `phase-*-v1` AGENT_CONTROLLERS ids commit `a80eef79` made
+  visible to the scan had no import-side counterpart. The missing import was added; the check
+  itself was always PASS.
