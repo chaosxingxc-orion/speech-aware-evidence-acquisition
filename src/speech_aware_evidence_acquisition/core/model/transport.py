@@ -682,6 +682,20 @@ class LlamaServerTransport:
                 {"role": "user", "content": content},
             ]
         body: dict[str, object] = {"messages": messages}
+        # Native tool-calling arm (D1a, "bare-core-native-tools"): the ONLY
+        # payload field this transport reads outside decoding_params/prompt
+        # content. Sent verbatim as the OpenAI-compatible `tools` key so the
+        # GGUF chat template renders `<tools>...</tools>` itself -- no
+        # `tool_choice` is ever added (module goal: let the template's own
+        # default tool-use behavior decide, never force a call). Every arm
+        # that does not declare `tool_schemas` (core.policies.build_arm_payload
+        # refuses to attach it otherwise) leaves `payload.get(...)` at None
+        # here and this body is byte-identical to before this arm existed.
+        tool_schemas = payload.get("tool_schemas")
+        if tool_schemas is not None:
+            if not isinstance(tool_schemas, list) or not tool_schemas:
+                raise FrozenCoreError("payload tool_schemas must be a non-empty list")
+            body["tools"] = tool_schemas
         for key, value in dict(payload.get("decoding_params", {})).items():  # type: ignore[arg-type]
             if key in body:
                 raise FrozenCoreError(
@@ -705,7 +719,52 @@ class LlamaServerTransport:
         try:
             parsed = json.loads(raw.decode("utf-8"))
             choice = parsed["choices"][0]
-            text = choice["message"]["content"]
+            message = choice["message"]
+            # Native tool-calling arm (D1a): read tool_calls off the message
+            # ONLY when it is actually a mapping carrying a non-empty list --
+            # `isinstance` guards a malformed `message` shape from raising an
+            # uncaught AttributeError on `.get` (message could be any JSON
+            # value if the server misbehaves; a non-mapping falls straight
+            # through to the legacy `message["content"]` read below, which
+            # fails closed via the existing except clause exactly as before
+            # this arm existed).
+            response_tool_calls = (
+                message.get("tool_calls") if isinstance(message, Mapping) else None
+            )
+            tool_call_argument_parse_errors: list[int] = []
+            if isinstance(response_tool_calls, list) and response_tool_calls:
+                # Canonicalize into the SAME `[{"name": ..., "arguments":
+                # {...}}]` text shape the a2t-toolcall scorer already reads
+                # off the free-text direct arm's `text` field -- this arm
+                # requires no scorer change. Only `function.arguments`
+                # parsing is lenient (module docstring precedent: a
+                # malformed per-item value degrades rather than aborting the
+                # whole response) -- everything else about a malformed
+                # tool_calls entry (missing `function`/`name`) still raises
+                # via the existing except clause below, same as a malformed
+                # `content` always has.
+                canonical_calls: list[dict[str, object]] = []
+                for index, call in enumerate(response_tool_calls):
+                    function = call["function"]
+                    name = function["name"]
+                    raw_arguments = function.get("arguments")
+                    try:
+                        arguments = (
+                            json.loads(raw_arguments)
+                            if isinstance(raw_arguments, str)
+                            else None
+                        )
+                        if not isinstance(arguments, dict):
+                            raise ValueError(
+                                "tool call arguments must decode to a JSON object"
+                            )
+                    except (TypeError, ValueError):
+                        arguments = {}
+                        tool_call_argument_parse_errors.append(index)
+                    canonical_calls.append({"name": name, "arguments": arguments})
+                text = json.dumps(canonical_calls)
+            else:
+                text = message["content"]
             # 2026-08-08: newer llama-server usage blocks carry nested
             # OpenAI-style `*_tokens_details` objects — a valid schema
             # extension, dropped here. Anything else keeps the original
@@ -721,6 +780,14 @@ class LlamaServerTransport:
                 f"transport returned a malformed response: {error}"
             ) from error
         envelope: dict[str, object] = {"text": text, "usage": usage}
+        if isinstance(response_tool_calls, list) and response_tool_calls:
+            # Raw pass-through (unmodified: still the server's own
+            # function.arguments JSON STRING, never the parsed dict above) so
+            # a caller that wants the untouched wire shape never has to
+            # re-derive it from the canonical `text` array.
+            envelope["tool_calls"] = response_tool_calls
+            if tool_call_argument_parse_errors:
+                envelope["tool_call_argument_parse_errors"] = tool_call_argument_parse_errors
         # obs-replay-loop policy (reproduction.replay_loop, 2026-08-13): only
         # ADD the "logprobs" key when the server's own choice actually
         # carried one (i.e. the request asked for it via

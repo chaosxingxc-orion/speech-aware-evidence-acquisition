@@ -10,17 +10,52 @@ from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
+from functools import lru_cache
+from pathlib import Path
 from queue import Queue
 from typing import Mapping, Sequence
 
+from ..data.audio2tool_tools import render_openai_tools
 from ..data.loader import SampleRef
+from ..data.lock import load_lock, umbrella_lock_path
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
-from .base import POLICIES, EvidenceItem, SampleContext, SampleOutcome
+from .base import POLICIES, EvidenceItem, Registry, SampleContext, SampleOutcome
 from .tracing import set_current_trace_buffer
 
 
 class ArmError(RuntimeError):
     """An arm builder was given inputs its D2-frozen field set cannot carry."""
+
+
+# Native tool-calling arm (D1a): a named fill resolves a config's
+# "tool_schema_fill" key into an OpenAI-format `tools` list at run time,
+# mirroring core.instructions.INSTRUCTION_FILLS -- but that registry's fills
+# are `(lock, root) -> str` (one text-substitution placeholder,
+# "{tool_schemas}"); this arm needs `(lock, root) -> list[dict]` instead, a
+# shape INSTRUCTION_FILLS was never built for. Rather than adding a second
+# registry to core.base (core.policies does not own that module), the whole
+# fill vocabulary lives HERE, behind this module's own Registry instance
+# (the same core.base.Registry class every other seam already uses) and is
+# resolved entirely inside FixedPolicy.run_sample below -- run.py's
+# SampleContext.extras / config_values threading is untouched.
+TOOL_SCHEMA_FILLS = Registry("tool schema fill")
+TOOL_SCHEMA_FILLS.register("audio2tool-openai-tools", render_openai_tools)
+
+
+@lru_cache(maxsize=1)
+def _cached_umbrella_lock() -> Mapping[str, object]:
+    """The umbrella lock, parsed once per process.
+
+    A tool-schema fill is called per sample (potentially hundreds of times
+    per run, from concurrent worker threads via ``run_samples`` below); the
+    lock document itself never changes within a process's lifetime, so
+    re-reading and re-parsing the same small committed JSON file on every
+    call would be pure waste. ``data.lock.umbrella_lock_path()`` resolves a
+    fixed, checkout-relative path with no arguments, so this cache carries no
+    per-call parameter to key on.
+    """
+
+    return load_lock(umbrella_lock_path())
 
 
 def build_arm_payload(
@@ -40,6 +75,7 @@ def build_arm_payload(
     key_representation_id: str | None = None,
     matcher_policy_id: str | None = None,
     mmproj_loaded: bool | None = None,
+    tool_schemas: Sequence[Mapping[str, object]] | None = None,
 ) -> dict[str, object]:
     if arm not in ARM_VISIBLE_FIELDS:
         raise ArmError(f"unknown arm {arm!r}; D2-frozen arms are {sorted(ARM_VISIBLE_FIELDS)}")
@@ -196,6 +232,26 @@ def build_arm_payload(
         )
     elif any(value is not None for value in supplied_speech_values):
         raise ArmError(f"arm {arm!r} does not declare speech-feature fields")
+    # Native tool-calling arm (D1a): "tool_schemas" (2026-09-03 D2 addition,
+    # e0.d2_leakage.ARM_VISIBLE_FIELDS["bare-core-native-tools"]) follows the
+    # SAME "default None is a byte-identical no-op, an arm that declares the
+    # field requires it non-empty" discipline exemplar_bank/delta_candidates
+    # established above -- an empty or absent tools list would silently
+    # degrade a native tool-calling request into a plain chat completion,
+    # defeating the whole point of this arm, so it is refused rather than
+    # accepted.
+    if "tool_schemas" in arm_fields:
+        if (
+            not isinstance(tool_schemas, Sequence)
+            or isinstance(tool_schemas, (str, bytes))
+            or not tool_schemas
+        ):
+            raise ArmError(f"arm {arm!r} requires a non-empty tool_schemas sequence")
+        payload["tool_schemas"] = [dict(schema) for schema in tool_schemas]
+    elif tool_schemas is not None:
+        raise ArmError(
+            f"arm {arm!r} does not declare 'tool_schemas' in its D2-frozen field set"
+        )
     if set(payload) != set(ARM_VISIBLE_FIELDS[arm]):
         raise ArmError(
             f"arm {arm!r} builder produced a field set that diverges from the D2 freeze: "
@@ -214,10 +270,43 @@ class FixedPolicy:
     """
 
     def run_sample(self, ctx: SampleContext) -> SampleOutcome:
-        evidence = ctx.evidence if ctx.arm != "bare-core" else None
+        # Read off the arm's OWN D2-frozen field set (2026-09-03 fix, same
+        # discipline build_arm_payload's own evidence branch above already
+        # documents at length): "bare-core" used to be the ONLY arm carrying
+        # neither "supplied_evidence" nor "retrieved_evidence", so nulling
+        # ctx.evidence for exactly that literal string name was equivalent
+        # to nulling it for every evidence-free arm. "bare-core-native-tools"
+        # (D1a) is a SECOND such arm -- a hardcoded "!= 'bare-core'" string
+        # check would pass its own ctx.evidence straight through and trip
+        # build_arm_payload's "carries no evidence and no retrieval query"
+        # refusal on any non-None value (including an empty list), so this
+        # branches on the DECLARED FIELDS instead, exactly like build_arm_
+        # payload does, and stays byte-identical for "bare-core" itself.
+        arm_fields = ARM_VISIBLE_FIELDS[ctx.arm]
+        carries_evidence = "supplied_evidence" in arm_fields or "retrieved_evidence" in arm_fields
+        evidence = ctx.evidence if carries_evidence else None
         speech_kwargs: dict[str, object] = {}
+        tool_kwargs: dict[str, object] = {}
         allow_empty_evidence = False
-        if "speech_feature_parts" in ARM_VISIBLE_FIELDS[ctx.arm]:
+        if "tool_schemas" in arm_fields:
+            config_values = ctx.extras.get("config_values", {})
+            if not isinstance(config_values, Mapping):
+                raise ArmError("tool-schema context config_values must be a mapping")
+            fill_name = config_values.get("tool_schema_fill")
+            if not isinstance(fill_name, str) or not fill_name.strip():
+                raise ArmError(
+                    f"arm {ctx.arm!r} declares 'tool_schemas' but the composed "
+                    "config carries no tool_schema_fill naming a registered fill; "
+                    f"registered: {TOOL_SCHEMA_FILLS.names()}"
+                )
+            fill = TOOL_SCHEMA_FILLS.resolve(fill_name)
+            data_root = ctx.extras.get("data_root")
+            if not isinstance(data_root, Path):
+                raise ArmError(
+                    "tool-schema context requires extras['data_root'] (a Path)"
+                )
+            tool_kwargs["tool_schemas"] = fill(_cached_umbrella_lock(), data_root)
+        if "speech_feature_parts" in arm_fields:
             config_values = ctx.extras.get("config_values", {})
             if not isinstance(config_values, Mapping):
                 raise ArmError("speech-feature context config_values must be a mapping")
@@ -263,6 +352,7 @@ class FixedPolicy:
             exemplar_bank=ctx.exemplar_bank,
             allow_empty_evidence=allow_empty_evidence,
             **speech_kwargs,
+            **tool_kwargs,
         )
         response = ctx.adapter.request(payload)
         ctx.sink.emit(

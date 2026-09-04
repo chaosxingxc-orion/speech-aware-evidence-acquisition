@@ -51,7 +51,7 @@
       ]
     }
   },
-  "generated": "2026-08-13",
+  "generated": "2026-09-03",
   "negative_controls": {
     "boundary_injections": {
       "all_rejected": true,
@@ -283,6 +283,22 @@
         "decoding_params"
       ]
     },
+    "bare-core-native-tools": {
+      "clean_payload_accepted": true,
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "tool_schemas"
+      ]
+    },
     "exemplar-context": {
       "clean_payload_accepted": true,
       "visible_fields": [
@@ -353,6 +369,29 @@
         "retrieval_query",
         "retrieved_evidence",
         "evidence_provenance"
+      ]
+    },
+    "speech-feature-query": {
+      "clean_payload_accepted": true,
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "supplied_evidence",
+        "evidence_provenance",
+        "speech_feature_parts",
+        "speech_packet_sha256",
+        "query_source",
+        "key_representation_id",
+        "matcher_policy_id",
+        "mmproj_loaded"
       ]
     }
   }

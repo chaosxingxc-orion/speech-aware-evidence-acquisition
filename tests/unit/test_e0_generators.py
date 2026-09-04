@@ -31,7 +31,11 @@ from speech_aware_evidence_acquisition.e0.d1_identity import (
     build_speech_native_probe_receipt,
     build_speech_native_runtime_view,
 )
-from speech_aware_evidence_acquisition.e0.d2_leakage import build_d2, excluded_lock_keys
+from speech_aware_evidence_acquisition.e0.d2_leakage import (
+    ARM_VISIBLE_FIELDS,
+    build_d2,
+    excluded_lock_keys,
+)
 from speech_aware_evidence_acquisition.e0.d3_scoring import build_d3
 from speech_aware_evidence_acquisition.e0.d4_trace import build_d4
 from speech_aware_evidence_acquisition.e0.generate import _close
@@ -441,6 +445,26 @@ class TestD2:
         assert not set(exclusion["excluded_lock_keys"]) & set(
             exclusion["configured_lock_keys"]
         )
+
+    def test_native_tools_arm_is_bare_core_plus_tool_schemas(self, synthetic_world):
+        """D1a: "bare-core-native-tools" is a NEW arm, introduced rather than
+        mutating the frozen "bare-core" entry -- its own field set is exactly
+        bare-core's plus "tool_schemas", nothing dropped and nothing else
+        added (module docstring of e0.d2_leakage: growing the arm vocabulary
+        means a new key, never appending a field to an existing tuple)."""
+
+        assert ARM_VISIBLE_FIELDS["bare-core-native-tools"] == (
+            *ARM_VISIBLE_FIELDS["bare-core"],
+            "tool_schemas",
+        )
+        artifact = build_d2(synthetic_world.lock_path)
+        arms = artifact["runtime_visible_fields_by_arm"]
+        assert arms["bare-core-native-tools"] == {
+            "clean_payload_accepted": True,
+            "visible_fields": list(ARM_VISIBLE_FIELDS["bare-core-native-tools"]),
+        }
+        # bare-core itself is untouched by the new arm's existence.
+        assert arms["bare-core"]["visible_fields"] == list(ARM_VISIBLE_FIELDS["bare-core"])
 
     def test_excluded_keys_come_from_config_not_code(self):
         keys = excluded_lock_keys()

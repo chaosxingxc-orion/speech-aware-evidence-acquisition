@@ -47,6 +47,31 @@ ARM_VISIBLE_FIELDS: dict[str, tuple[str, ...]] = {
         "history",
         "decoding_params",
     ),
+    # "bare-core-native-tools" (D1a, 2026-09-03): bare-core's own field set
+    # plus "tool_schemas" -- the native chat-template tool-calling arm for
+    # the Audio2Tool direct baseline. A NEW arm, not a mutation of the frozen
+    # "bare-core" entry above: the direct-prompt baseline still pastes the
+    # tool registry as raw text into task_instruction (bare-core, unchanged);
+    # this arm instead sends the registry as an OpenAI-format `tools` list
+    # (core.model.transport.LlamaServerTransport.__call__ forwards it
+    # verbatim as the request's `tools` key) so the pinned GGUF chat
+    # template renders <tools>...</tools> itself and the model answers with
+    # structured tool_calls instead of free text. No evidence, no
+    # exemplar_bank, no delta_candidates, no speech-feature fields --
+    # otherwise identical to bare-core.
+    "bare-core-native-tools": (
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "tool_schemas",
+    ),
     "fixed-legal-context": (
         "request_id",
         "carrier_lock_key",
