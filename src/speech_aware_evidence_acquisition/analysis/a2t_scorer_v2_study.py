@@ -56,12 +56,16 @@ the rule the study brief pins: split ``tools_registry.csv``'s
 ``key=value`` segment's value via ``ast.literal_eval`` with a JSON-style
 fallback for the literal tokens ``null``/``true``/``false`` that
 ``ast.literal_eval`` itself rejects (the CSV's defaults are JSON-shaped,
-not Python-shaped -- ``pin=null`` is common in the real registry).
+not Python-shaped -- ``pin=null`` is common in the real registry). That
+parser, plus the type-coercing canonical value and extra-key-stripping
+helpers ``score_under_rule`` builds V2b-V2e from, now live in
+``reproduction.toolcall_scoring_v2`` (slice C3c, the registered
+``a2t-scorer-v2`` adopts this study's V2e verdict) and are imported back
+here byte-identical; this module's own behaviour is unchanged.
 """
 
 from __future__ import annotations
 
-import ast
 import json
 from collections import Counter
 from dataclasses import dataclass
@@ -75,6 +79,17 @@ from ..reproduction.toolcall_scoring import (
     score_item,
 )
 from ..reproduction.toolcall_scoring import _canonical_value  # house pattern, see a2t_pop_read.py / a2t_s2_read.py / pphon_decomp.py
+# Registry-default parsing, type-coercing canonical value, and extra-key
+# stripping now live in ``reproduction.toolcall_scoring_v2`` (slice C3c,
+# shared with the registered ``a2t-scorer-v2`` scorer); re-imported here
+# byte-identical so this study's own behaviour is unchanged.
+from ..reproduction.toolcall_scoring_v2 import (
+    _coerced_canonical_value,
+    _exact_match_coerced,
+    _strip_extra_keys,
+    build_registry_defaults,
+    parse_argument_defaults,
+)
 
 RESULT_SCHEMA = "saea-a2t-scorer-v2-study-v1"
 
@@ -98,156 +113,6 @@ _ROUND_DECIMALS = 4
 
 class ScorerV2StudyError(RuntimeError):
     """An outputs file, sealed target, or registry row cannot be read/used."""
-
-
-# ---------------------------------------------------------------------------
-# Registry-default parsing.
-# ---------------------------------------------------------------------------
-
-
-def _split_top_level(text: str) -> list[str]:
-    """Split ``text`` on commas that are outside quotes and outside any
-    bracket/brace/paren nesting (the real registry only ever nests an empty
-    ``{}``, but this stays correct for a value that legitimately embeds a
-    comma inside a container)."""
-
-    parts: list[str] = []
-    current: list[str] = []
-    depth = 0
-    quote: str | None = None
-    for char in text:
-        if quote is not None:
-            current.append(char)
-            if char == quote:
-                quote = None
-            continue
-        if char in "'\"":
-            quote = char
-            current.append(char)
-            continue
-        if char in "([{":
-            depth += 1
-            current.append(char)
-            continue
-        if char in ")]}":
-            depth -= 1
-            current.append(char)
-            continue
-        if char == "," and depth == 0:
-            parts.append("".join(current))
-            current = []
-            continue
-        current.append(char)
-    if current:
-        parts.append("".join(current))
-    return parts
-
-
-def _parse_default_literal(text: str) -> tuple[bool, object]:
-    """(ok, value) for one default's raw value text: Python literal first,
-    then the JSON-style tokens ``ast.literal_eval`` itself rejects."""
-
-    stripped = text.strip()
-    try:
-        return True, ast.literal_eval(stripped)
-    except (ValueError, SyntaxError):
-        pass
-    lowered = stripped.casefold()
-    if lowered == "null":
-        return True, None
-    if lowered == "true":
-        return True, True
-    if lowered == "false":
-        return True, False
-    try:
-        return True, json.loads(stripped)
-    except (json.JSONDecodeError, ValueError):
-        return False, None
-
-
-def parse_argument_defaults(text: str) -> dict[str, object]:
-    """One registry row's ``argument_defaults`` cell -> ``{key: value}``.
-
-    A segment that is blank, lacks ``=``, or whose value cannot be parsed by
-    either path above is silently skipped (never crashes the study over one
-    unparseable default) rather than raising -- this function only ever
-    WIDENS what counts as a known default; skipping a stray one degrades a
-    downstream rule to be slightly more conservative (fewer keys recognised
-    as default-valued), never incorrect.
-    """
-
-    result: dict[str, object] = {}
-    raw = (text or "").strip()
-    if not raw:
-        return result
-    for part in _split_top_level(raw):
-        segment = part.strip()
-        if not segment or "=" not in segment:
-            continue
-        key, _, value_text = segment.partition("=")
-        key = key.strip()
-        if not key:
-            continue
-        ok, value = _parse_default_literal(value_text)
-        if ok:
-            result[key] = value
-    return result
-
-
-def build_registry_defaults(
-    registry_rows: Sequence[Mapping[str, str]],
-) -> dict[str, dict[str, object]]:
-    """``{tool_name: {argument_key: default_value}}`` over every registry row."""
-
-    defaults: dict[str, dict[str, object]] = {}
-    for row in registry_rows:
-        tool_name = row.get("tool_name")
-        if not tool_name:
-            continue
-        defaults[tool_name] = parse_argument_defaults(row.get("argument_defaults", ""))
-    return defaults
-
-
-# ---------------------------------------------------------------------------
-# Type-coercing canonical value (V2d/V2e's EM only; V1's own
-# ``_canonical_value`` is never modified or bypassed elsewhere).
-# ---------------------------------------------------------------------------
-
-
-def _coerced_canonical_value(value: object) -> object:
-    if isinstance(value, bool):
-        return ("bool", value)
-    if isinstance(value, (int, float)):
-        return ("num", float(value))
-    if isinstance(value, str):
-        text = value.strip()
-        lowered = text.casefold()
-        if lowered in ("true", "false"):
-            return ("bool", lowered == "true")
-        try:
-            return ("num", float(text))
-        except ValueError:
-            return ("str", lowered)
-    if isinstance(value, Mapping):
-        return (
-            "map",
-            tuple(sorted((str(k), _coerced_canonical_value(v)) for k, v in value.items())),
-        )
-    if isinstance(value, (list, tuple)):
-        return ("seq", tuple(_coerced_canonical_value(item) for item in value))
-    if value is None:
-        return ("null",)
-    return ("other", repr(value))
-
-
-def _canonical_call_coerced(call: ToolCall) -> object:
-    return (call.name, _coerced_canonical_value(dict(call.arguments)))
-
-
-def _exact_match_coerced(expected: Sequence[ToolCall], predicted: Sequence[ToolCall]) -> float:
-    expected_calls = Counter(_canonical_call_coerced(call) for call in expected)
-    predicted_calls = Counter(_canonical_call_coerced(call) for call in predicted)
-    return 1.0 if expected_calls == predicted_calls else 0.0
 
 
 # ---------------------------------------------------------------------------
@@ -375,46 +240,6 @@ def classify_row(
 # ---------------------------------------------------------------------------
 # Step 3 -- candidate v2 semantics.
 # ---------------------------------------------------------------------------
-
-
-def _gold_keys_by_tool(expected: Sequence[ToolCall]) -> dict[str, set[str]]:
-    keys_by_tool: dict[str, set[str]] = {}
-    for call in expected:
-        keys_by_tool.setdefault(call.name, set()).update(call.arguments)
-    return keys_by_tool
-
-
-def _strip_extra_keys(
-    expected: Sequence[ToolCall],
-    predicted: Sequence[ToolCall],
-    defaults_by_tool: Mapping[str, Mapping[str, object]],
-    *,
-    default_only: bool,
-) -> tuple[ToolCall, ...]:
-    """Drop, from every predicted call, argument keys the SAME-NAMED gold
-    call(s) in this row never carry -- either only the default-valued ones
-    (``default_only=True``, V2b/V2d) or all of them regardless of value
-    (``default_only=False``, V2c). Tool names/order are never touched, so
-    tool_accuracy under any of these rules is identical to V1's."""
-
-    gold_keys_by_tool = _gold_keys_by_tool(expected)
-    stripped: list[ToolCall] = []
-    for call in predicted:
-        gold_keys = gold_keys_by_tool.get(call.name, set())
-        tool_defaults = defaults_by_tool.get(call.name, {})
-        new_args: dict[str, object] = {}
-        for key, value in call.arguments.items():
-            if key in gold_keys:
-                new_args[key] = value
-                continue
-            if default_only:
-                has_default = key in tool_defaults
-                if has_default and _canonical_value(value) == _canonical_value(tool_defaults[key]):
-                    continue  # drop: default-valued extra
-                new_args[key] = value  # keep: non-default extra
-            # default_only is False (V2c): unconditionally drop the extra key.
-        stripped.append(ToolCall(name=call.name, arguments=new_args))
-    return tuple(stripped)
 
 
 def score_under_rule(

@@ -828,3 +828,21 @@ def score_asr_outputs_whisper(
 
 
 SCORERS.register("asr-wer-whisper", score_asr_outputs_whisper)
+
+
+# ---------------------------------------------------------------------------
+# Audio2Tool tool-call scorer, v2 (slice C3c): the slice-S1 zero-contact
+# re-scoring study's adopted V2e semantics
+# (docs/readiness/2026-09-03-a2t-scorer-v2-zero-contact-study.md), registered
+# alongside ``a2t-toolcall`` above -- v1 stays UNCHANGED and registered; v2 is
+# reported side by side, never a replacement. Same registration pattern:
+# the function lives in ``reproduction/a2t_scorer.py`` (deliberately OUTSIDE
+# the E0 D3 frozen scoring package), imported here with the SAME uniform
+# ``scorer(outputs_path, lock, root)`` signature. Gold enters scorer-side
+# only, via ``data.audio2tool.load_expected_calls``/``load_tool_registry`` --
+# never through ``data.references``.
+# ---------------------------------------------------------------------------
+
+from ..reproduction.a2t_scorer import score_audio2tool_outputs_v2  # noqa: E402
+
+SCORERS.register("a2t-toolcall-v2", score_audio2tool_outputs_v2)
