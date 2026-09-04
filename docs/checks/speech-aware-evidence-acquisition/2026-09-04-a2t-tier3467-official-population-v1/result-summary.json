@@ -1,0 +1,1371 @@
+{
+  "alignment_band_pp": 3.0,
+  "attempt_id": "attempt-20260904T211040Z-t3467officialpop2000",
+  "cell_id": "T3467-official-pop-2000",
+  "confidence_interval": "Wilson score CI90",
+  "manifest_sha256": "1f43aab3520a0e4df0aa0b11693f518fda81b52e936e510f51c00713af016d58",
+  "overall": {
+    "official_exact_match_pct": 15.049999999999999,
+    "official_param_f1_macro_pct": 26.19369047619048,
+    "official_param_f1_micro_pct": 19.39282428702852,
+    "official_parse_failures": 8,
+    "official_parse_rate_pct": 99.6,
+    "official_tool_accuracy_pct": 54.6,
+    "rows_with_multiple_call_matches": 271,
+    "samples": 2000,
+    "v2_exact_match_pct": 10.6,
+    "v2_parse_failures": 8,
+    "v2_tool_accuracy_ordered_pct": 44.45
+  },
+  "paper_source": "arXiv:2604.22821 Table 3, Qwen-3-Omni-30B",
+  "preregistration": "docs/readiness/2026-09-04-a2t-tier3467-official-population-v1-preregistration.md",
+  "protocol_hash": "50d18adb30c8f1f63ddf2da172a5e3cdb05bf48891d867011b7864fe70d4ffd2",
+  "roster": {
+    "count": 2000,
+    "flight_split_identity_hash": "bdd28d4231a678db2cafe3da8d006cd6a042f6d325d64079deb32a6b9c74b317",
+    "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-tier3467-official-population-roster/flight-roster-receipt.json",
+    "receipt_sha256": "6cf30c18bb9df209f87662b804ed117be7f31b1b2b9e486553ba7019915fc760",
+    "split_identity_hash": "00f60263dad0ffe1d54fc68e34004e9a07de7577632a19e8b382295930108f06"
+  },
+  "run_id": "SAEA-A2T-TIER3467-OFFICIAL-POPULATION-V1",
+  "schema": "saea-a2t-tier3467-official-population-result-summary-v1",
+  "scorer_rule_differences": {
+    "default_argument_credit": "v2 rule V2b drops a predicted argument key absent from every same-tool gold call when its value equals that tool's registry default; the official scorer counts every extra key as a parameter error and therefore as an exact-match failure",
+    "first_call_only_vs_ordered_sequence": "the official HF path never populates all_tool_calls, so the official scorer reads only the FIRST parsed call against the PRIMARY gold tool, while a2t-toolcall-v2 compares the whole ordered predicted sequence with the whole expected sequence",
+    "numeric_and_boolean_coercion": "v2 rule V2d compares a numeric-looking string to its numeric value and 'true'/'false' to the matching boolean; the official normalize_parameters reaches a similar place by a different route, so this rule rarely separates the two alone",
+    "parameter_f1_definition": "the official parameter F1 is a macro average of per-sample key P/R/F1 while v2's slot F1 is micro over (tool, key, value) triples, so the two answer different questions and are reported side by side rather than differenced",
+    "primary_gold_tool_vs_full_expected_sequence": "official gold is the release's QuerySample (primary tool_name + verbatim extracted_params); v2 gold is a2t-gold-v1, which builds the full expected call sequence and may take primary arguments from the expected_tool_call call string"
+  },
+  "scorer_versions": {
+    "official": "a2t-scorer-official-b9d5383c",
+    "official_commit": "b9d5383ca30945fbafb965a04bea40117e1e8a82",
+    "official_gold": "a2t-gold-official-release-loader",
+    "official_metrics_blob_sha1": "d98277bcf69795c9a0ae54e538c170abfd8c51ca",
+    "parse": "a2t-parse-v2-json-or-callstring",
+    "v2": "a2t-scorer-v2",
+    "v2_gold": "a2t-gold-v1"
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "study_commit": "6c13fb6dbb3e6895aa2210ddd645ed6b5f317290",
+  "tiers": {
+    "tier3_multi_intent": {
+      "decision": {
+        "aligned_threshold_pct": 71.7,
+        "outcome": "FAIL",
+        "paper_inside_ci90": false,
+        "rule": "ALIGNED = official tool accuracy >= 71.7 (within 3 pp of the paper's 74.7, or better); CONSISTENT-WITHIN-NOISE = not ALIGNED but the paper value inside the Wilson CI90 at n = 500; FAIL = neither"
+      },
+      "delta_pp": {
+        "exact_match": -9.200000000000003,
+        "tool_accuracy": -9.700000000000003
+      },
+      "domain_slices": {
+        "counts": {
+          "smart_car": 41,
+          "smart_home": 368,
+          "wearables": 91
+        },
+        "per_domain": {
+          "smart_car": {
+            "exact_match": {
+              "ci90_high_pct": 72.45200578572731,
+              "ci90_low_pct": 48.14034769788247,
+              "pct": 60.97560975609756,
+              "samples": 41,
+              "successes": 25
+            },
+            "param_f1_macro_pct": 69.91869918699187,
+            "tool_accuracy": {
+              "ci90_high_pct": 90.46974520839416,
+              "ci90_low_pct": 71.30731524243515,
+              "pct": 82.92682926829268,
+              "samples": 41,
+              "successes": 34
+            }
+          },
+          "smart_home": {
+            "exact_match": {
+              "ci90_high_pct": 12.631009046067845,
+              "ci90_low_pct": 7.521250550057193,
+              "pct": 9.782608695652174,
+              "samples": 368,
+              "successes": 36
+            },
+            "param_f1_macro_pct": 26.140010351966875,
+            "tool_accuracy": {
+              "ci90_high_pct": 63.635563477441295,
+              "ci90_low_pct": 55.247348104556174,
+              "pct": 59.51086956521739,
+              "samples": 368,
+              "successes": 219
+            }
+          },
+          "wearables": {
+            "exact_match": {
+              "ci90_high_pct": 48.17607709271999,
+              "ci90_low_pct": 31.547641163812234,
+              "pct": 39.56043956043956,
+              "samples": 91,
+              "successes": 36
+            },
+            "param_f1_macro_pct": 48.75457875457875,
+            "tool_accuracy": {
+              "ci90_high_pct": 85.23738342198092,
+              "ci90_low_pct": 71.32277091506073,
+              "pct": 79.12087912087912,
+              "samples": 91,
+              "successes": 72
+            }
+          }
+        },
+        "tool_accuracy_equal_domain_pct": 73.85285931812973,
+        "tool_accuracy_natural_mixture_pct": 65.0
+      },
+      "floors": {
+        "above_qwen2_5_omni_7b": true,
+        "above_weakest_published_speechlm": true,
+        "delta_vs_qwen2_5_omni_7b_pp": 14.799999999999997,
+        "delta_vs_weakest_published_speechlm_pp": 24.4,
+        "qwen2_5_omni_7b_pct": 50.2,
+        "weakest_published_speechlm_pct": 40.6
+      },
+      "frozen_400_comparison": {
+        "cell_id": "R-official-raw",
+        "exact_match": {
+          "ci90_high_pct": 43.53318126012516,
+          "ci90_low_pct": 22.314813428180564,
+          "pct": 32.0,
+          "samples": 50,
+          "successes": 16
+        },
+        "note": "not a paired contrast: 500 first-recording rows over distinct queries against 50 rows of the frozen 400 (10 shared queries, 6 shared sample ids). Two independent estimates of the same tier under the same protocol",
+        "population_effect_pp": -7.0,
+        "samples": 50,
+        "tool_accuracy": {
+          "ci90_high_pct": 81.1060540770213,
+          "ci90_low_pct": 60.63528574838281,
+          "pct": 72.0,
+          "samples": 50,
+          "successes": 36
+        }
+      },
+      "official": {
+        "exact_match": {
+          "ci90_high_pct": 22.470299473293316,
+          "ci90_low_pct": 16.65907676205301,
+          "pct": 19.4,
+          "samples": 500,
+          "successes": 97
+        },
+        "multi_tool_gold_samples": 500,
+        "param_f1_macro_pct": 33.84571428571429,
+        "param_f1_micro_pct": 27.272727272727277,
+        "param_precision_macro_pct": 32.31666666666667,
+        "param_recall_macro_pct": 50.366666666666674,
+        "parse_failures": 0,
+        "parse_rate_pct": 100.0,
+        "rows_with_multiple_call_matches": 263,
+        "tool_accuracy": {
+          "ci90_high_pct": 68.4193400698798,
+          "ci90_low_pct": 61.419200991224955,
+          "pct": 65.0,
+          "samples": 500,
+          "successes": 325
+        }
+      },
+      "official_versus_v2": {
+        "exact_match_delta_pp": -17.400000000000002,
+        "official_exact_match_pct": 19.400000000000002,
+        "official_param_f1_macro_pct": 33.84571428571429,
+        "official_param_f1_micro_pct": 27.272727272727277,
+        "official_tool_accuracy_pct": 65.0,
+        "paper_slot_f1_pct": 35.0,
+        "rules_that_can_explain_a_gap": [
+          "first_call_only_vs_ordered_sequence",
+          "primary_gold_tool_vs_full_expected_sequence",
+          "default_argument_credit"
+        ],
+        "tool_accuracy_delta_pp": -40.2,
+        "tool_accuracy_within_band": false,
+        "v2_exact_match_pct": 2.0,
+        "v2_slot_f1_pct": 18.238993710691823,
+        "v2_tool_accuracy_multiset_pct": 28.599999999999998,
+        "v2_tool_accuracy_ordered_pct": 24.8
+      },
+      "paper": {
+        "exact_match": 28.6,
+        "slot_f1": 35.0,
+        "tool_accuracy": 74.7
+      },
+      "samples": 500,
+      "tool_confusion_diagnostic": {
+        "counts": {
+          "correct": 325,
+          "miss_predicted_name_absent_from_registry": 1,
+          "miss_predicted_name_is_a_real_registry_tool": 174,
+          "miss_predicted_tool_other_domain": 52,
+          "miss_predicted_tool_same_domain": 122,
+          "misses": 175,
+          "samples": 500
+        },
+        "note": "diagnostic only; no number here enters a decision. It asks what the wrong answers are, in the same shape the tier-1 verdict used",
+        "top_confusions": [
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "core_control"
+            ],
+            "gold_tool": "setSecurityMode",
+            "predicted_domain_category": [
+              "smart_home",
+              "security"
+            ],
+            "predicted_tool": "armSecuritySystem",
+            "rows": 7
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "lighting"
+            ],
+            "gold_tool": "setColor",
+            "predicted_domain_category": [
+              "smart_home",
+              "core_control"
+            ],
+            "predicted_tool": "setLighting",
+            "rows": 5
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "security"
+            ],
+            "gold_tool": "setGarageDoor",
+            "predicted_domain_category": [
+              "smart_car",
+              "body_control"
+            ],
+            "predicted_tool": "setGarageOpener",
+            "rows": 5
+          },
+          {
+            "gold_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "gold_tool": "controlPlayback",
+            "predicted_domain_category": [
+              "smart_home",
+              "media"
+            ],
+            "predicted_tool": "controlPlayback_home",
+            "rows": 5
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "maintenance"
+            ],
+            "gold_tool": "rebootDevice",
+            "predicted_domain_category": [
+              "smart_home",
+              "automation"
+            ],
+            "predicted_tool": "restartDevice",
+            "rows": 5
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "status"
+            ],
+            "gold_tool": "getApplianceState",
+            "predicted_domain_category": [
+              "smart_home",
+              "appliances"
+            ],
+            "predicted_tool": "getApplianceStatus",
+            "rows": 5
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "lighting"
+            ],
+            "gold_tool": "setColorTemperature",
+            "predicted_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "predicted_tool": "setAmbientLighting",
+            "rows": 4
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "climate"
+            ],
+            "gold_tool": "setFanMode",
+            "predicted_domain_category": [
+              "smart_car",
+              "climate_environment"
+            ],
+            "predicted_tool": "setFanSpeed",
+            "rows": 4
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "appliances"
+            ],
+            "gold_tool": "setApplianceMode",
+            "predicted_domain_category": [
+              "smart_home",
+              "appliances"
+            ],
+            "predicted_tool": "startCleaning",
+            "rows": 4
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "automation"
+            ],
+            "gold_tool": "activateScene",
+            "predicted_domain_category": [
+              "smart_home",
+              "automation"
+            ],
+            "predicted_tool": "activateRoutine",
+            "rows": 4
+          }
+        ]
+      }
+    },
+    "tier4_implicit": {
+      "decision": {
+        "aligned_threshold_pct": 30.4,
+        "outcome": "FAIL",
+        "paper_inside_ci90": false,
+        "rule": "ALIGNED = official tool accuracy >= 30.4 (within 3 pp of the paper's 33.4, or better); CONSISTENT-WITHIN-NOISE = not ALIGNED but the paper value inside the Wilson CI90 at n = 500; FAIL = neither"
+      },
+      "delta_pp": {
+        "exact_match": -4.9,
+        "tool_accuracy": -5.199999999999999
+      },
+      "domain_slices": {
+        "counts": {
+          "smart_car": 35,
+          "smart_home": 375,
+          "wearables": 90
+        },
+        "per_domain": {
+          "smart_car": {
+            "exact_match": {
+              "ci90_high_pct": 23.156892086926163,
+              "ci90_low_pct": 5.235600033307751,
+              "pct": 11.428571428571429,
+              "samples": 35,
+              "successes": 4
+            },
+            "param_f1_macro_pct": 28.57142857142857,
+            "tool_accuracy": {
+              "ci90_high_pct": 42.30746875934195,
+              "ci90_low_pct": 17.91058241856578,
+              "pct": 28.571428571428573,
+              "samples": 35,
+              "successes": 10
+            }
+          },
+          "smart_home": {
+            "exact_match": {
+              "ci90_high_pct": 4.7378579560484395,
+              "ci90_low_pct": 1.803095408883576,
+              "pct": 2.933333333333333,
+              "samples": 375,
+              "successes": 11
+            },
+            "param_f1_macro_pct": 11.200000000000001,
+            "tool_accuracy": {
+              "ci90_high_pct": 25.292223961528027,
+              "ci90_low_pct": 18.314640250173166,
+              "pct": 21.6,
+              "samples": 375,
+              "successes": 81
+            }
+          },
+          "wearables": {
+            "exact_match": {
+              "ci90_high_pct": 26.54499652111791,
+              "ci90_low_pct": 13.048691284909275,
+              "pct": 18.88888888888889,
+              "samples": 90,
+              "successes": 17
+            },
+            "param_f1_macro_pct": 23.851851851851848,
+            "tool_accuracy": {
+              "ci90_high_pct": 63.88378052710612,
+              "ci90_low_pct": 46.903060936103316,
+              "pct": 55.55555555555556,
+              "samples": 90,
+              "successes": 50
+            }
+          }
+        },
+        "tool_accuracy_equal_domain_pct": 35.24232804232805,
+        "tool_accuracy_natural_mixture_pct": 28.199999999999996
+      },
+      "floors": {
+        "above_qwen2_5_omni_7b": true,
+        "above_weakest_published_speechlm": true,
+        "delta_vs_qwen2_5_omni_7b_pp": 5.800000000000001,
+        "delta_vs_weakest_published_speechlm_pp": 20.299999999999997,
+        "qwen2_5_omni_7b_pct": 22.4,
+        "weakest_published_speechlm_pct": 7.9
+      },
+      "frozen_400_comparison": {
+        "cell_id": "R-official-raw",
+        "exact_match": {
+          "ci90_high_pct": 26.2328469547061,
+          "ci90_low_pct": 9.257809678760262,
+          "pct": 16.0,
+          "samples": 50,
+          "successes": 8
+        },
+        "note": "not a paired contrast: 500 first-recording rows over distinct queries against 50 rows of the frozen 400 (13 shared queries, 7 shared sample ids). Two independent estimates of the same tier under the same protocol",
+        "population_effect_pp": 0.1999999999999993,
+        "samples": 50,
+        "tool_accuracy": {
+          "ci90_high_pct": 39.36471425161717,
+          "ci90_low_pct": 18.893945922978705,
+          "pct": 28.0,
+          "samples": 50,
+          "successes": 14
+        }
+      },
+      "official": {
+        "exact_match": {
+          "ci90_high_pct": 8.44547513746867,
+          "ci90_low_pct": 4.823832178253548,
+          "pct": 6.4,
+          "samples": 500,
+          "successes": 32
+        },
+        "multi_tool_gold_samples": 0,
+        "param_f1_macro_pct": 14.693333333333333,
+        "param_f1_micro_pct": 6.552006552006552,
+        "param_precision_macro_pct": 14.666666666666666,
+        "param_recall_macro_pct": 23.166666666666664,
+        "parse_failures": 3,
+        "parse_rate_pct": 99.4,
+        "rows_with_multiple_call_matches": 0,
+        "tool_accuracy": {
+          "ci90_high_pct": 31.62049989262335,
+          "ci90_low_pct": 25.01415376523775,
+          "pct": 28.2,
+          "samples": 500,
+          "successes": 141
+        }
+      },
+      "official_versus_v2": {
+        "exact_match_delta_pp": 0.0,
+        "official_exact_match_pct": 6.4,
+        "official_param_f1_macro_pct": 14.693333333333333,
+        "official_param_f1_micro_pct": 6.552006552006552,
+        "official_tool_accuracy_pct": 28.199999999999996,
+        "paper_slot_f1_pct": 23.4,
+        "rules_that_can_explain_a_gap": [],
+        "tool_accuracy_delta_pp": 0.0,
+        "tool_accuracy_within_band": true,
+        "v2_exact_match_pct": 6.4,
+        "v2_slot_f1_pct": 5.387205387205387,
+        "v2_tool_accuracy_multiset_pct": 28.199999999999996,
+        "v2_tool_accuracy_ordered_pct": 28.199999999999996
+      },
+      "paper": {
+        "exact_match": 11.3,
+        "slot_f1": 23.4,
+        "tool_accuracy": 33.4
+      },
+      "samples": 500,
+      "tool_confusion_diagnostic": {
+        "counts": {
+          "correct": 141,
+          "miss_predicted_name_absent_from_registry": 10,
+          "miss_predicted_name_is_a_real_registry_tool": 349,
+          "miss_predicted_tool_other_domain": 212,
+          "miss_predicted_tool_same_domain": 137,
+          "misses": 359,
+          "samples": 500
+        },
+        "note": "diagnostic only; no number here enters a decision. It asks what the wrong answers are, in the same shape the tier-1 verdict used",
+        "top_confusions": [
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "core_control"
+            ],
+            "gold_tool": "setLighting",
+            "predicted_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "predicted_tool": "setAmbientLighting",
+            "rows": 10
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "device_finding"
+            ],
+            "gold_tool": "findMyDevice",
+            "predicted_domain_category": [
+              "wearables",
+              "device_state"
+            ],
+            "predicted_tool": "findPairedPhone",
+            "rows": 7
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "lighting"
+            ],
+            "gold_tool": "setBrightness",
+            "predicted_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "predicted_tool": "setAmbientLighting",
+            "rows": 6
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "lighting"
+            ],
+            "gold_tool": "setAdaptiveLighting",
+            "predicted_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "predicted_tool": "setAmbientLighting",
+            "rows": 6
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "media"
+            ],
+            "gold_tool": "setVolume",
+            "predicted_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "predicted_tool": "adjustVolume",
+            "rows": 6
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "lighting"
+            ],
+            "gold_tool": "setGroupLightState",
+            "predicted_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "predicted_tool": "setAmbientLighting",
+            "rows": 6
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "lighting"
+            ],
+            "gold_tool": "setColor",
+            "predicted_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "predicted_tool": "setAmbientLighting",
+            "rows": 5
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "lighting"
+            ],
+            "gold_tool": "setColorTemperature",
+            "predicted_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "predicted_tool": "setAmbientLighting",
+            "rows": 5
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "diagnostics"
+            ],
+            "gold_tool": "getAirQuality_diag",
+            "predicted_domain_category": [
+              "smart_car",
+              "climate_environment"
+            ],
+            "predicted_tool": "setAirQualityMode",
+            "rows": 5
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "climate"
+            ],
+            "gold_tool": "setTargetTemperature",
+            "predicted_domain_category": [
+              "smart_car",
+              "core_control"
+            ],
+            "predicted_tool": "setClimate",
+            "rows": 4
+          }
+        ]
+      }
+    },
+    "tier6_correction": {
+      "decision": {
+        "aligned_threshold_pct": 78.5,
+        "outcome": "FAIL",
+        "paper_inside_ci90": false,
+        "rule": "ALIGNED = official tool accuracy >= 78.5 (within 3 pp of the paper's 81.5, or better); CONSISTENT-WITHIN-NOISE = not ALIGNED but the paper value inside the Wilson CI90 at n = 500; FAIL = neither"
+      },
+      "delta_pp": {
+        "exact_match": -0.8000000000000007,
+        "tool_accuracy": -5.700000000000003
+      },
+      "domain_slices": {
+        "counts": {
+          "smart_car": 41,
+          "smart_home": 368,
+          "wearables": 91
+        },
+        "per_domain": {
+          "smart_car": {
+            "exact_match": {
+              "ci90_high_pct": 74.59710830185895,
+              "ci90_low_pct": 50.57132373366411,
+              "pct": 63.41463414634146,
+              "samples": 41,
+              "successes": 26
+            },
+            "param_f1_macro_pct": 70.73170731707317,
+            "tool_accuracy": {
+              "ci90_high_pct": 93.93591375346803,
+              "ci90_low_pct": 76.99330380118786,
+              "pct": 87.8048780487805,
+              "samples": 41,
+              "successes": 36
+            }
+          },
+          "smart_home": {
+            "exact_match": {
+              "ci90_high_pct": 18.258136560845056,
+              "ci90_low_pct": 12.14484646550717,
+              "pct": 14.945652173913043,
+              "samples": 368,
+              "successes": 55
+            },
+            "param_f1_macro_pct": 31.84200310559006,
+            "tool_accuracy": {
+              "ci90_high_pct": 73.87553724828884,
+              "ci90_low_pct": 66.04833295364865,
+              "pct": 70.1086956521739,
+              "samples": 368,
+              "successes": 258
+            }
+          },
+          "wearables": {
+            "exact_match": {
+              "ci90_high_pct": 51.47476742681262,
+              "ci90_low_pct": 34.65198716976205,
+              "pct": 42.857142857142854,
+              "samples": 91,
+              "successes": 39
+            },
+            "param_f1_macro_pct": 50.4029304029304,
+            "tool_accuracy": {
+              "ci90_high_pct": 96.552473016938,
+              "ci90_low_pct": 87.75417212695429,
+              "pct": 93.4065934065934,
+              "samples": 91,
+              "successes": 85
+            }
+          }
+        },
+        "tool_accuracy_equal_domain_pct": 83.77338903584926,
+        "tool_accuracy_natural_mixture_pct": 75.8
+      },
+      "floors": {
+        "above_qwen2_5_omni_7b": true,
+        "above_weakest_published_speechlm": true,
+        "delta_vs_qwen2_5_omni_7b_pp": 7.5,
+        "delta_vs_weakest_published_speechlm_pp": 31.199999999999996,
+        "qwen2_5_omni_7b_pct": 68.3,
+        "weakest_published_speechlm_pct": 44.6
+      },
+      "frozen_400_comparison": {
+        "cell_id": "R-official-raw",
+        "exact_match": {
+          "ci90_high_pct": 39.36471425161717,
+          "ci90_low_pct": 18.893945922978705,
+          "pct": 28.0,
+          "samples": 50,
+          "successes": 14
+        },
+        "note": "not a paired contrast: 500 first-recording rows over distinct queries against 50 rows of the frozen 400 (12 shared queries, 5 shared sample ids). Two independent estimates of the same tier under the same protocol",
+        "population_effect_pp": -8.200000000000003,
+        "samples": 50,
+        "tool_accuracy": {
+          "ci90_high_pct": 90.74219032123973,
+          "ci90_low_pct": 73.76715304529388,
+          "pct": 84.0,
+          "samples": 50,
+          "successes": 42
+        }
+      },
+      "official": {
+        "exact_match": {
+          "ci90_high_pct": 27.27621617457362,
+          "ci90_low_pct": 21.003645986178157,
+          "pct": 24.0,
+          "samples": 500,
+          "successes": 120
+        },
+        "multi_tool_gold_samples": 0,
+        "param_f1_macro_pct": 38.40904761904762,
+        "param_f1_micro_pct": 31.57894736842105,
+        "param_precision_macro_pct": 38.88333333333333,
+        "param_recall_macro_pct": 39.36666666666667,
+        "parse_failures": 2,
+        "parse_rate_pct": 99.6,
+        "rows_with_multiple_call_matches": 8,
+        "tool_accuracy": {
+          "ci90_high_pct": 78.8062591837197,
+          "ci90_low_pct": 72.51603144138043,
+          "pct": 75.8,
+          "samples": 500,
+          "successes": 379
+        }
+      },
+      "official_versus_v2": {
+        "exact_match_delta_pp": -0.40000000000000036,
+        "official_exact_match_pct": 24.0,
+        "official_param_f1_macro_pct": 38.40904761904762,
+        "official_param_f1_micro_pct": 31.57894736842105,
+        "official_tool_accuracy_pct": 75.8,
+        "paper_slot_f1_pct": 32.4,
+        "rules_that_can_explain_a_gap": [],
+        "tool_accuracy_delta_pp": -0.40000000000000036,
+        "tool_accuracy_within_band": true,
+        "v2_exact_match_pct": 23.599999999999998,
+        "v2_slot_f1_pct": 27.91638570465273,
+        "v2_tool_accuracy_multiset_pct": 75.4,
+        "v2_tool_accuracy_ordered_pct": 75.4
+      },
+      "paper": {
+        "exact_match": 24.8,
+        "slot_f1": 32.4,
+        "tool_accuracy": 81.5
+      },
+      "samples": 500,
+      "tool_confusion_diagnostic": {
+        "counts": {
+          "correct": 379,
+          "miss_predicted_name_absent_from_registry": 4,
+          "miss_predicted_name_is_a_real_registry_tool": 117,
+          "miss_predicted_tool_other_domain": 37,
+          "miss_predicted_tool_same_domain": 80,
+          "misses": 121,
+          "samples": 500
+        },
+        "note": "diagnostic only; no number here enters a decision. It asks what the wrong answers are, in the same shape the tier-1 verdict used",
+        "top_confusions": [
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "core_control"
+            ],
+            "gold_tool": "setSecurityMode",
+            "predicted_domain_category": [
+              "smart_home",
+              "security"
+            ],
+            "predicted_tool": "armSecuritySystem",
+            "rows": 11
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "core_control"
+            ],
+            "gold_tool": "setLighting",
+            "predicted_domain_category": [
+              "smart_home",
+              "lighting"
+            ],
+            "predicted_tool": "setLightState",
+            "rows": 8
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "maintenance"
+            ],
+            "gold_tool": "rebootDevice",
+            "predicted_domain_category": [
+              "smart_home",
+              "automation"
+            ],
+            "predicted_tool": "restartDevice",
+            "rows": 7
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "core_control"
+            ],
+            "gold_tool": "setLighting",
+            "predicted_domain_category": [
+              "smart_home",
+              "lighting"
+            ],
+            "predicted_tool": "setBrightness",
+            "rows": 5
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "lighting"
+            ],
+            "gold_tool": "setColor",
+            "predicted_domain_category": [
+              "smart_home",
+              "core_control"
+            ],
+            "predicted_tool": "setLighting",
+            "rows": 5
+          },
+          {
+            "gold_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "gold_tool": "controlPlayback",
+            "predicted_domain_category": [
+              "smart_home",
+              "media"
+            ],
+            "predicted_tool": "controlPlayback_home",
+            "rows": 5
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "lighting"
+            ],
+            "gold_tool": "setColorTemperature",
+            "predicted_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "predicted_tool": "setAmbientLighting",
+            "rows": 4
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "security"
+            ],
+            "gold_tool": "setGarageDoor",
+            "predicted_domain_category": [
+              "smart_car",
+              "body_control"
+            ],
+            "predicted_tool": "setGarageOpener",
+            "rows": 3
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "media"
+            ],
+            "gold_tool": "setVolume",
+            "predicted_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "predicted_tool": "setAudioVolume",
+            "rows": 3
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "energy"
+            ],
+            "gold_tool": "setWaterValve",
+            "predicted_domain_category": [
+              "smart_home",
+              "energy"
+            ],
+            "predicted_tool": "setPowerState",
+            "rows": 3
+          }
+        ]
+      }
+    },
+    "tier7_multiturn": {
+      "decision": {
+        "aligned_threshold_pct": 51.6,
+        "outcome": "FAIL",
+        "paper_inside_ci90": false,
+        "rule": "ALIGNED = official tool accuracy >= 51.6 (within 3 pp of the paper's 54.6, or better); CONSISTENT-WITHIN-NOISE = not ALIGNED but the paper value inside the Wilson CI90 at n = 500; FAIL = neither"
+      },
+      "delta_pp": {
+        "exact_match": -5.9,
+        "tool_accuracy": -5.200000000000003
+      },
+      "domain_slices": {
+        "counts": {
+          "smart_car": 36,
+          "smart_home": 380,
+          "wearables": 84
+        },
+        "per_domain": {
+          "smart_car": {
+            "exact_match": {
+              "ci90_high_pct": 44.169144770986364,
+              "ci90_low_pct": 19.660325763114443,
+              "pct": 30.555555555555557,
+              "samples": 36,
+              "successes": 11
+            },
+            "param_f1_macro_pct": 47.22222222222222,
+            "tool_accuracy": {
+              "ci90_high_pct": 68.31046979574703,
+              "ci90_low_pct": 42.02396719450989,
+              "pct": 55.55555555555556,
+              "samples": 36,
+              "successes": 20
+            }
+          },
+          "smart_home": {
+            "exact_match": {
+              "ci90_high_pct": 4.996242158452064,
+              "ci90_low_pct": 1.981849460777036,
+              "pct": 3.1578947368421053,
+              "samples": 380,
+              "successes": 12
+            },
+            "param_f1_macro_pct": 9.903508771929824,
+            "tool_accuracy": {
+              "ci90_high_pct": 46.842116586494306,
+              "ci90_low_pct": 38.52522366821588,
+              "pct": 42.63157894736842,
+              "samples": 380,
+              "successes": 162
+            }
+          },
+          "wearables": {
+            "exact_match": {
+              "ci90_high_pct": 43.4191590304737,
+              "ci90_low_pct": 26.594292285052383,
+              "pct": 34.523809523809526,
+              "samples": 84,
+              "successes": 29
+            },
+            "param_f1_macro_pct": 41.07142857142857,
+            "tool_accuracy": {
+              "ci90_high_pct": 83.96601775930694,
+              "ci90_low_pct": 69.08710683630076,
+              "pct": 77.38095238095238,
+              "samples": 84,
+              "successes": 65
+            }
+          }
+        },
+        "tool_accuracy_equal_domain_pct": 58.52269562795879,
+        "tool_accuracy_natural_mixture_pct": 49.4
+      },
+      "floors": {
+        "above_qwen2_5_omni_7b": true,
+        "above_weakest_published_speechlm": true,
+        "delta_vs_qwen2_5_omni_7b_pp": 1.1999999999999957,
+        "delta_vs_weakest_published_speechlm_pp": 14.899999999999999,
+        "qwen2_5_omni_7b_pct": 48.2,
+        "weakest_published_speechlm_pct": 34.5
+      },
+      "frozen_400_comparison": {
+        "cell_id": "R-official-raw",
+        "exact_match": {
+          "ci90_high_pct": 28.500772380609817,
+          "ci90_low_pct": 10.784551509711463,
+          "pct": 18.0,
+          "samples": 50,
+          "successes": 9
+        },
+        "note": "NOT two estimates of the same measurement. Zero queries are shared (all 50 tier-7 queries of the frozen 400 were excluded from this population), and more importantly the two rosters bind DIFFERENT audio for a tier-7 query: the frozen 400 sent chat_history[-1], the FINAL user turn that states the request, while the released loader -- and therefore this flight -- sends the FIRST user turn, with no history and no agent audio. The difference below is a protocol difference at least as much as a population difference",
+        "population_effect_pp": -8.600000000000001,
+        "samples": 50,
+        "tool_accuracy": {
+          "ci90_high_pct": 68.7793428567355,
+          "ci90_low_pct": 46.399326170684176,
+          "pct": 58.0,
+          "samples": 50,
+          "successes": 29
+        }
+      },
+      "official": {
+        "exact_match": {
+          "ci90_high_pct": 12.862692985939411,
+          "ci90_low_pct": 8.363558612744066,
+          "pct": 10.4,
+          "samples": 500,
+          "successes": 52
+        },
+        "multi_tool_gold_samples": 0,
+        "param_f1_macro_pct": 17.826666666666664,
+        "param_f1_micro_pct": 9.795321637426898,
+        "param_precision_macro_pct": 18.283333333333335,
+        "param_recall_macro_pct": 19.133333333333336,
+        "parse_failures": 3,
+        "parse_rate_pct": 99.4,
+        "rows_with_multiple_call_matches": 0,
+        "tool_accuracy": {
+          "ci90_high_pct": 53.07106021290879,
+          "ci90_low_pct": 45.73539814464701,
+          "pct": 49.4,
+          "samples": 500,
+          "successes": 247
+        }
+      },
+      "official_versus_v2": {
+        "exact_match_delta_pp": 0.0,
+        "official_exact_match_pct": 10.4,
+        "official_param_f1_macro_pct": 17.826666666666664,
+        "official_param_f1_micro_pct": 9.795321637426898,
+        "official_tool_accuracy_pct": 49.4,
+        "paper_slot_f1_pct": 26.8,
+        "rules_that_can_explain_a_gap": [],
+        "tool_accuracy_delta_pp": 0.0,
+        "tool_accuracy_within_band": true,
+        "v2_exact_match_pct": 10.4,
+        "v2_slot_f1_pct": 8.595548733691482,
+        "v2_tool_accuracy_multiset_pct": 49.4,
+        "v2_tool_accuracy_ordered_pct": 49.4
+      },
+      "paper": {
+        "exact_match": 16.3,
+        "slot_f1": 26.8,
+        "tool_accuracy": 54.6
+      },
+      "samples": 500,
+      "tool_confusion_diagnostic": {
+        "counts": {
+          "correct": 247,
+          "miss_predicted_name_absent_from_registry": 4,
+          "miss_predicted_name_is_a_real_registry_tool": 249,
+          "miss_predicted_tool_other_domain": 122,
+          "miss_predicted_tool_same_domain": 127,
+          "misses": 253,
+          "samples": 500
+        },
+        "note": "diagnostic only; no number here enters a decision. It asks what the wrong answers are, in the same shape the tier-1 verdict used",
+        "top_confusions": [
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "core_control"
+            ],
+            "gold_tool": "setSecurityMode",
+            "predicted_domain_category": [
+              "smart_home",
+              "security"
+            ],
+            "predicted_tool": "armSecuritySystem",
+            "rows": 13
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "core_control"
+            ],
+            "gold_tool": "setLighting",
+            "predicted_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "predicted_tool": "setAmbientLighting",
+            "rows": 8
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "diagnostics"
+            ],
+            "gold_tool": "getNetworkHealth",
+            "predicted_domain_category": [
+              "smart_home",
+              "maintenance"
+            ],
+            "predicted_tool": "runNetworkSpeedTest",
+            "rows": 8
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "device_finding"
+            ],
+            "gold_tool": "findMyDevice",
+            "predicted_domain_category": [
+              "wearables",
+              "device_state"
+            ],
+            "predicted_tool": "findPairedPhone",
+            "rows": 8
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "lighting"
+            ],
+            "gold_tool": "setColorTemperature",
+            "predicted_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "predicted_tool": "setAmbientLighting",
+            "rows": 6
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "media"
+            ],
+            "gold_tool": "setVolume",
+            "predicted_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "predicted_tool": "adjustVolume",
+            "rows": 6
+          },
+          {
+            "gold_domain_category": [
+              "smart_car",
+              "media_cabin"
+            ],
+            "gold_tool": "controlPlayback",
+            "predicted_domain_category": [
+              "smart_home",
+              "media"
+            ],
+            "predicted_tool": "playMedia",
+            "rows": 5
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "climate"
+            ],
+            "gold_tool": "setTargetTemperature",
+            "predicted_domain_category": [
+              "smart_home",
+              "climate"
+            ],
+            "predicted_tool": "setThermostatMode",
+            "rows": 4
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "security"
+            ],
+            "gold_tool": "setGarageDoor",
+            "predicted_domain_category": [
+              "smart_car",
+              "body_control"
+            ],
+            "predicted_tool": "setGarageOpener",
+            "rows": 4
+          },
+          {
+            "gold_domain_category": [
+              "smart_home",
+              "diagnostics"
+            ],
+            "gold_tool": "getAirQuality_diag",
+            "predicted_domain_category": [
+              "smart_car",
+              "climate_environment"
+            ],
+            "predicted_tool": "setAirQualityMode",
+            "rows": 4
+          }
+        ]
+      },
+      "turn_resolution": {
+        "drawn_user_turns_per_query_counts": {
+          "2": 345,
+          "3": 153,
+          "4": 2
+        },
+        "excluded_from_the_population": {
+          "already_bound_in_base_d1_count": 50,
+          "already_bound_in_base_d1_to_the_final_user_turn": [
+            9,
+            43,
+            62,
+            91,
+            214,
+            272,
+            274,
+            293,
+            318,
+            330,
+            348,
+            418,
+            440,
+            545,
+            554,
+            599,
+            637,
+            739,
+            813,
+            818,
+            1098,
+            1129,
+            1148,
+            1240,
+            1272,
+            1292,
+            1293,
+            1418,
+            1453,
+            1516,
+            1590,
+            1599,
+            1614,
+            1629,
+            1646,
+            1701,
+            1707,
+            1708,
+            1732,
+            1734,
+            1777,
+            1781,
+            1834,
+            1836,
+            1865,
+            1892,
+            1922,
+            2099,
+            2115,
+            2120
+          ],
+          "chat_history_ends_on_an_agent_turn": [
+            373,
+            1258,
+            1744,
+            2023
+          ],
+          "chat_history_ends_on_an_agent_turn_count": 4,
+          "excluded_ids": [
+            9,
+            43,
+            62,
+            91,
+            214,
+            272,
+            274,
+            293,
+            318,
+            330,
+            348,
+            373,
+            418,
+            440,
+            545,
+            554,
+            599,
+            637,
+            739,
+            813,
+            818,
+            1098,
+            1129,
+            1148,
+            1240,
+            1258,
+            1272,
+            1292,
+            1293,
+            1418,
+            1453,
+            1516,
+            1590,
+            1599,
+            1614,
+            1629,
+            1646,
+            1701,
+            1707,
+            1708,
+            1732,
+            1734,
+            1744,
+            1777,
+            1781,
+            1834,
+            1836,
+            1865,
+            1892,
+            1922,
+            2023,
+            2099,
+            2115,
+            2120
+          ],
+          "population_after_exclusions": 2092,
+          "population_before_exclusions": 2146,
+          "why": "docs/receipts/artifacts/d1-identity.json already binds those base-D1 sample ids to the FINAL user turn (data.audio2tool._entry_media reads chat_history[-1]); contracts.gate_media_identity refuses a D1 supplement that duplicates a base D1 sample and re-hashes the flown file against the base record, so a first-user-turn binding of the same id can never reach the frozen core. The agent-last rows are refused by that same _entry_media, which would break load_official_gold for every Audio2Tool scoring job if one entered a probe-sample receipt. Both exclusions are applied to the POPULATION before the draw and named here."
+        },
+        "flown_turn_index_counts": {
+          "00": 500
+        },
+        "frozen_400_binding": {
+          "rule": "data.audio2tool._entry_media reads chat_history[-1], the FINAL user turn, which is the turn that states the request",
+          "shared_sample_ids_with_this_roster": [],
+          "turn_index_counts": {
+            "02": 35,
+            "03": 1,
+            "04": 14
+          }
+        },
+        "population_first_user_turn_index_counts": {
+          "00": 2146
+        },
+        "population_user_turns_per_query_counts": {
+          "2": 1449,
+          "3": 691,
+          "4": 6
+        },
+        "queries_where_the_first_user_turn_is_the_only_user_turn": 0,
+        "queries_with_later_user_turns": 2146,
+        "rule": "audio_benchmark/datasets/tier7_dataset.py::_get_audio_paths returns sorted(query_dir.glob('turn_*_user_*.wav')) and BenchmarkEvaluator with max_speakers_per_query 1 evaluates audio_paths[0], so the request carries the FIRST user turn only -- no chat history, no agent audio, no later user turn"
+      }
+    }
+  }
+}

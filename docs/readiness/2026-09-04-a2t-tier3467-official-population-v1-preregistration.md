@@ -421,3 +421,35 @@ water"*, which the official parser cannot read at all, and the tier-3 one parsed
 wrong tool. The release's 654-second synthesis defect is junk audio, so all three are near-certain
 misses in the flight — worth at most 0.15 pp of a 2,000-row roster, and named here so the verdict's
 parse-failure count is not a surprise. No smoke accuracy figure enters the verdict.
+
+Commit `6c13fb6d`.
+
+### 2026-09-04, Phase 4 — the flight
+
+Row `SAEA-A2T-TIER3467-OFFICIAL-POPULATION-V1`, attempt
+`attempt-20260904T211040Z-t3467officialpop2000`, study commit `6c13fb6d`, manifest SHA-256
+`1f43aab3520a0e4df0aa0b11693f518fda81b52e936e510f51c00713af016d58`, protocol hash `50d18adb…`. One
+attempt, COMPLETED and FINALIZED, zero aborted, zero orphans, no recovery re-registration used,
+`study_repo_dirt` empty. Spend was exactly **2,000 of 2,080 registered calls** (2,008 planned) and
+**11,964.831167 of 12,100 registered speech-audio seconds**. GPU `enforced.power.limit` held
+100.00 W before and after.
+
+**All four tiers FAIL, and none is CONSISTENT-WITHIN-NOISE.** Official tool accuracy at n = 500 per
+tier: tier 3 65.00 [61.42, 68.42] against 74.7; tier 4 28.20 [25.01, 31.62] against 33.4; tier 6
+75.80 [72.52, 78.81] against 81.5; tier 7 49.40 [45.74, 53.07] against 54.6. The paper value lies
+outside every one of the four CI90s, which is what n = 500 was bought for: at n = 50 all four of
+these tiers sat *inside* the 3-point band and none of them could be believed.
+
+Verdict: `docs/readiness/2026-09-04-a2t-tier3467-official-population-v1-verdict.md`; numbers in
+`result-summary.json` (SHA-256
+`b2f5dd5916206823e189baacd69706444593ceb3e96eb4e8278de7bc94b9807e`).
+
+The substance is in the verdict; in one line each: all four failures are a `smart_home` effect and
+equal-domain weighting would make all four ALIGNED (73.85 / 35.24 / 83.77 / 58.52, three of them
+above the paper), which completes an eight-tier picture in which seven of eight tiers are inside the
+band under equal-domain weighting and only tier 1 is not; every tier clears both published floors,
+tier 7 by only 1.20 pp; tier 3's official/`v2` divergence is 40.20 points because all 500 of its gold
+rows carry additional expected calls while the three single-call tiers agree to 0.00–0.40 pp; tier 7
+was bound to the first user turn on all 500 rows while every one of the 2,146 tier-7 queries has
+later user turns and the frozen 400 bound the final one; and 889 of 908 misses name another real
+registry tool, with tier 4 the one tier whose misses cross domains more often than not.
