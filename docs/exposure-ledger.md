@@ -29,7 +29,7 @@ sealed manifests declare `scorers: ["asr-wer","cost"]`, so the `core.scoring_bat
 these bundles. Subset caveat carried everywhere: 10 of 44 calls, the pathological `4346923`
 excluded, fstalign not installed or run. Receipts:
 `docs/checks/speech-aware-evidence-acquisition/2026-09-04-scoring-alignment-earnings/`
-(`MANIFEST.sha256`: README.md 9683319d..., rescore.json aa0b0c28..., rescore.py a6d4e977...,
+(`MANIFEST.sha256`: README.md 32694d34..., rescore.json aa0b0c28..., rescore.py a6d4e977...,
 verified-score-batch-read.json e071a118..., verified-score-batch-summary.json 656a9765...,
 verified-score-batch-jobs.jsonl c15a633d...); readiness note:
 `docs/readiness/2026-09-04-scoring-alignment-audit-slurp-earnings.md`.

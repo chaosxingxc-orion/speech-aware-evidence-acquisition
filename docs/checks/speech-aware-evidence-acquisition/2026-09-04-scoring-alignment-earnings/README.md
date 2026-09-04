@@ -89,6 +89,22 @@ Per-call Whisper-normalized WER (%), sorted by call id:
 | 4389907 | 34.3 | 13.34 | 12.71 | 16.79 |
 | 4397829 | 74.6 | 8.19 | 8.08 | 7.96 |
 
+Per-call `saea-scoring-v1` WER (%), the frozen in-house metric, for completeness (this family has no
+published counterpart and must never be compared to one):
+
+| call | reference words | zero | matched | names |
+|---|---|---|---|---|
+| 4330115 | 6690 | 11.75 | 10.72 | 9.22 |
+| 4365024 | 11851 | 12.19 | 12.58 | 9.75 |
+| 4365948 | 6785 | 10.30 | 9.24 | 7.46 |
+| 4366429 | 11442 | 11.11 | 11.20 | 9.85 |
+| 4366522 | 4249 | 11.01 | 12.33 | 10.10 |
+| 4384964 | 10301 | 11.23 | 11.71 | 9.74 |
+| 4385072 | 6605 | 11.48 | 12.66 | 10.33 |
+| 4387383 | 3686 | 12.75 | 13.81 | 10.77 |
+| 4389907 | 4136 | 19.66 | 18.16 | 21.86 |
+| 4397829 | 11403 | 12.37 | 11.53 | 9.73 |
+
 ### The finding that matters most: the ConEC-names gain is normalizer-dependent
 
 Under the frozen `saea-scoring-v1` metric the names roster is the best arm by 1.75 points corpus /
