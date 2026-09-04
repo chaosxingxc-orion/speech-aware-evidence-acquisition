@@ -391,3 +391,33 @@ Three findings carried forward:
    median 3,904, max 12,354; served-slot margin min 12,222 against the 8,192-token reserve;
    `largest_slot_count_meeting_reserve_at_this_context` is 2, so the tiers-2/5/8 cell's `-np 3` is
    refused by the rule and not by hand.
+
+Commit `ff1cf56a`.
+
+### 2026-09-04, Phase 3 — wire check and smoke
+
+- `FlightRuntime.wire_check` on a clean committed tree (`735a7ea4`): **2,000 contacts** through the
+  real client, adapter, payload binding and sealer against the fake gate and transport, **zero
+  sockets opened, zero servers started**. `payload_keys` is exactly `ARM_VISIBLE_FIELDS["bare-core"]`
+  (ten fields). `seal_and_score` OK with all four registered scorers through `core.scoring_batch` as
+  one whole-manifest job over a 2,000-row outputs file — which is also the proof that the tier-7
+  exclusion of the four agent-last ids was sufficient, because `load_official_gold` resolves every
+  receipt item through the `_entry_media` that fails closed on them. Receipt
+  `wire-check/wire-check-t3467-official-pop-2000.json` (SHA-256
+  `1c0b4e2b4ce35ebecb96fc0511cd47286e41a789021691deb1314eb5c49df6b0`); commit `735a7ea4`.
+- Smoke row `SAEA-A2T-TIER3467-OFFICIAL-POPULATION-SMOKE-V1`, attempt
+  `attempt-20260904T210659Z-t3467officialpop2000`, manifest SHA-256
+  `ff7549374bedf6ae91479883b550672be05490b2fb98ab208222e0ae1f639da5`, study commit `735a7ea4`,
+  protocol hash `db34a8f2…`: **4 of 4 contacts, COMPLETED and FINALIZED**, 4 of 20 registered calls
+  and 1,969.880708 of 6,000 registered speech seconds, server up in 10.0 s at `-c 49152 -np 2`.
+
+**All four strata are servable**, including the first tier-7 `turn_00` user-turn wav this repository
+has ever put on the wire, and every one of the three 654-second rows encoded through the bf16 mmproj
+and returned.
+
+**One shape finding worth carrying into the verdict: the 654-second rows are not speech.** The
+tier-6 and tier-7 ones came back as prose refusals naming *"a dog eating"* and *"a dog drinking
+water"*, which the official parser cannot read at all, and the tier-3 one parsed to a plausible but
+wrong tool. The release's 654-second synthesis defect is junk audio, so all three are near-certain
+misses in the flight — worth at most 0.15 pp of a 2,000-row roster, and named here so the verdict's
+parse-failure count is not a surprise. No smoke accuracy figure enters the verdict.
