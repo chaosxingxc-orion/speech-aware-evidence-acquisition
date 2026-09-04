@@ -362,3 +362,51 @@ and all four attempts to date are durably `ABORTED` with `calls 0 / audio_second
   `id_slot` resolved to 0, and the packet cells' real packet bytes loaded and hash-verified against
   the promotion receipt. A third refusal in the same chain is therefore unlikely, though sealing and
   official scoring remain unexercised against real bytes until the smoke actually flies.
+
+### 2026-09-04, Phase 2d: the wiring proof becomes a committed mode
+
+Three defects in a row (client arm refusal, double-opened attempt, unresolved slot sentinel) were
+each found only by burning a server start on the registered smoke, and none was visible to
+preflight. That loop is now closed with a contact-free proof that runs on the working tree.
+
+- **`FlightRuntime.wire_check()`** drives a flight's entire request path against two doubles and
+  nothing else. Real: the composed fragments, the adapter and its samples, the payload binding, the
+  tool-schema resolution, the promoted speech-feature packets (loaded and hash-verified), the arm's
+  own dispatch, and the whole `FrozenCoreClient`/`FrozenCoreAdapter` stack including its payload
+  allowlist and attempt accounting. Fake: only `WireCheckGate` and `WireCheckTransport`, which never
+  opens a socket. It asserts, per request, that the payload key set equals
+  `ARM_VISIBLE_FIELDS[arm]` exactly, that `tool_schemas` is present for native arms and absent
+  otherwise, and that `id_slot` is an integer -- the three checks the three landed defects would
+  each have failed.
+- It is generic, so any carrier flying through `FlightRuntime` gets it. `preflight` was factored so
+  the check reuses exactly the same fragment/adapter/split resolution without opening the gate or
+  asserting a clean tree -- the latter would make the check unusable precisely when it matters, on
+  the tree carrying the fix under test. The fixed-policy dispatch was likewise factored so the check
+  drives the same code a real flight does.
+- Everything is written under a `WIRECHECK-` run id that is unique per invocation (attempt budget is
+  run-cumulative, so a fixed id let the first cell exhaust the second's), under
+  `<data root>/wire-check/`, never the `runs/` tree, and the attempt it opens is aborted before
+  returning. No exposure row references such a run id and none should.
+- **Sealing and official scoring are exercised in the same mode**: the check seals a manifest from
+  the fake responses and runs the registered scorers over it. A dirty study tree refuses a COMPLETED
+  manifest by design, which is RECORDED as `seal_and_score: REFUSED` rather than raised, so the
+  client half still reports. On a clean tree the same command exercises manifest, verify and the
+  three scorers for real. Any score it produces is computed over a canned response and measures
+  nothing.
+- `scripts/flights/run_calibration_cell.py --wire-check` runs it for every requested cell and writes
+  one receipt to `docs/checks/speech-aware-evidence-acquisition/
+  2026-09-04-a2t-direct-calibration-400-v1/wire-check/wire-check.json`.
+
+Result for all four calibration cells, zero model contacts and zero servers started:
+
+| cell | arm | contacts | payload keys = ARM_VISIBLE_FIELDS | tool_schemas | id_slot | packets verified |
+|---|---|---:|---|---:|---:|---:|
+| A0'-legacy-raw | `bare-core` | 4 | yes (10) | 0 | 0 | 0 |
+| A1-native-raw | `bare-core-native-tools` | 4 | yes (11) | 152 | 0 | 0 |
+| P0-legacy-packets | `speech-feature-query` | 4 | yes (18) | 0 | 0 | 4 |
+| P1-native-packets | `speech-feature-query-native-tools` | 4 | yes (19) | 152 | 0 | 4 |
+
+The payload-to-wire-body step (`tool_schemas` -> `tools`) belongs to
+`core.model.transport.LlamaServerTransport` and is covered by that transport's own committed tests;
+this check asserts at the transport seam, where the payload is what crosses. The only link now
+untested against real bytes is the server itself.

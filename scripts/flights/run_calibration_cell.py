@@ -301,6 +301,64 @@ def build_runtime(
     )
 
 
+def _run_wire_check(*, selected, runtimes, run_id, output, max_workers) -> int:
+    """Run ``FlightRuntime.wire_check`` for every requested cell and write one
+    receipt covering all of them.
+
+    Generic by construction: the cells come from the experiment fragment and
+    the check itself lives in the harness, so any carrier that flies through
+    ``FlightRuntime`` gets the same proof for free.
+    """
+
+    cells: list[Mapping[str, object]] = []
+    for cell_id, runtime in zip(selected, runtimes, strict=True):
+        log("wire check: %s" % cell_id)
+        receipt = dict(runtime.wire_check(max_workers=max_workers))
+        receipt["cell_id"] = cell_id
+        cells.append(receipt)
+        seal = receipt["seal_and_score"]
+        log(
+            "  arm=%s contacts=%d payload_keys=%d tool_schemas=%d id_slot=%s "
+            "packets_verified=%d seal_and_score=%s"
+            % (
+                receipt["arm"],
+                receipt["contact_count"],
+                len(receipt["payload_keys"]),
+                receipt["tool_schemas_count"],
+                receipt["id_slot"],
+                len(receipt["speech_packets_verified"]),
+                seal["status"],
+            )
+        )
+        if seal["status"] == "REFUSED":
+            log("  seal/score refused: %s" % seal["reason"])
+    document = {
+        "schema": "saea-a2t-calibration-wire-check-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "generated_at": datetime.now(tz=timezone.utc).isoformat(),
+        "flight_run_id": run_id,
+        "cells_checked": list(selected),
+        "model_contacts": 0,
+        "servers_started": 0,
+        "boundary": (
+            "zero model contacts: the only fakes are the gate and the transport "
+            "(core.flight.runtime.WireCheckGate / WireCheckTransport, which never "
+            "opens a socket). Any score below is computed over the transport's canned "
+            "response and is not a measurement of anything."
+        ),
+        "cells": cells,
+    }
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(
+        json.dumps(document, ensure_ascii=False, indent=2, sort_keys=True, default=str)
+        + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    log("wire-check receipt written: %s (sha256 %s)" % (output, sha256_file(output)[:12]))
+    return 0
+
+
 def _run_queue(*, selected, runtimes, run_id, dry_run, max_workers) -> int:
     """Run several cells through ``core.flight.FlightQueue``.
 
@@ -380,9 +438,31 @@ def main() -> int:
     parser.add_argument("--campaign-active", action="store_true")
     parser.add_argument("--preprocess-workers", type=int, default=None)
     parser.add_argument("--max-workers", type=int, default=4)
+    parser.add_argument(
+        "--wire-check-out",
+        type=Path,
+        default=(
+            REPO
+            / "docs/checks/speech-aware-evidence-acquisition"
+            / "2026-09-04-a2t-direct-calibration-400-v1"
+            / "wire-check"
+            / "wire-check.json"
+        ),
+        help="where --wire-check writes its receipt",
+    )
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--dry-run", action="store_true")
     mode.add_argument("--run", action="store_true")
+    mode.add_argument(
+        "--wire-check",
+        action="store_true",
+        help=(
+            "contact-free wiring proof: drive every requested cell's real client, "
+            "adapter, payload binding, tool schemas and promoted packets against a "
+            "fake transport, then seal and score the result. Starts no server and "
+            "makes zero model contacts"
+        ),
+    )
     args = parser.parse_args()
 
     cells = load_cells(args.experiment)
@@ -423,6 +503,15 @@ def main() -> int:
         )
         for cell_id in selected
     ]
+
+    if args.wire_check:
+        return _run_wire_check(
+            selected=selected,
+            runtimes=runtimes,
+            run_id=run_id,
+            output=Path(args.wire_check_out),
+            max_workers=args.max_workers,
+        )
 
     if len(selected) > 1:
         return _run_queue(

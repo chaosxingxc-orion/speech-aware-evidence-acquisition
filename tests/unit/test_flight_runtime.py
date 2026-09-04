@@ -29,6 +29,7 @@ from speech_aware_evidence_acquisition.core.flight.runtime import (
     FlightServeGeometryMismatchError,
     FlightStageOrderError,
 )
+from speech_aware_evidence_acquisition.e0.d2_leakage import ARM_VISIBLE_FIELDS
 from speech_aware_evidence_acquisition.rails.task_adapter import TaskAdapter
 
 # ---------------------------------------------------------------------------
@@ -1321,3 +1322,193 @@ def test_stop_serving_never_stops_a_reused_server(tmp_path):
     # The owner still can.
     assert owner.stop_serving() is not None
     assert len(stopped) == 1
+
+
+# ---------------------------------------------------------------------------
+# Phase 2d: wire_check() -- the contact-free wiring proof.
+# ---------------------------------------------------------------------------
+
+
+from speech_aware_evidence_acquisition.core.flight.runtime import (  # noqa: E402
+    WIRE_CHECK_RUN_ID_PREFIX,
+    WireCheckGate,
+    WireCheckTransport,
+)
+
+
+class _TransportDrivingClient(_FakeClient):
+    """A client double that actually reaches the transport, so wire_check's
+    payload assertions have something to inspect. It emits the arm's own
+    declared field set, which is what the real FrozenCoreAdapter enforces."""
+
+    drop_key: str | None = None
+    force_id_slot: object = 0
+
+    def __init__(self, **kwargs: object) -> None:
+        super().__init__(**kwargs)
+        self._transport = kwargs["transport"]
+        self._arm_fields = ARM_VISIBLE_FIELDS.get(str(kwargs.get("arm")), ())
+        self._tool_schemas = kwargs.get("tool_schemas")
+
+    def complete(self, messages, **_kwargs):
+        payload = {field: "x" for field in self._arm_fields}
+        payload["decoding_params"] = {"id_slot": type(self).force_id_slot}
+        if "tool_schemas" in payload:
+            payload["tool_schemas"] = list(self._tool_schemas or [{"t": 1}])
+        if type(self).drop_key is not None:
+            payload.pop(type(self).drop_key, None)
+        self._transport(json.dumps(payload).encode("utf-8"))
+        return "[]"
+
+
+def _calling_rails_runner(**kwargs):
+    """Mirrors rails.runner._run_one_arm: one complete() per sample. The
+    plain _fake_rails_runner never calls the client at all, so a wire check
+    driven by it would see zero requests reach the transport."""
+
+    adapter = kwargs["adapter"]
+    client = kwargs["core_client"]
+    results = []
+    for sample in adapter.load_split(kwargs["split_id"]):
+        client.complete(
+            adapter.assemble_prompt(sample, None),
+            decoding_params=kwargs.get("decoding_params"),
+        )
+        results.append(_FakeArmResult(sample.sample_id))
+    return _FakeRunSummary(results)
+
+
+def _wire_runtime(tmp_path, **kwargs):
+    merged = {
+        "happy_path": True,
+        "client_factory": _TransportDrivingClient,
+        "rails_runner": _calling_rails_runner,
+        "config_kwargs": {"arm": "bare-core", "policy": "fixed"},
+    }
+    merged.update(kwargs)
+    return _make_runtime(tmp_path, **merged)
+
+
+def test_wire_check_returns_a_zero_contact_receipt(tmp_path):
+    runtime = _wire_runtime(tmp_path)
+    receipt = runtime.wire_check(seal_and_score=False)
+
+    assert receipt["schema"] == "saea-flight-wire-check-v1"
+    assert receipt["model_contacts"] == 0
+    assert receipt["arm"] == "bare-core"
+    assert receipt["native_tools_arm"] is False
+    assert receipt["tool_schemas_count"] == 0
+    assert receipt["contact_count"] == receipt["sample_count"] == 2
+    assert receipt["payload_keys"] == sorted(ARM_VISIBLE_FIELDS["bare-core"])
+    assert receipt["payload_keys_equal_arm_visible_fields"] is True
+    assert receipt["id_slot"] == 0
+    assert len(receipt["request_body_sha256"]) == 2
+    assert receipt["seal_and_score"]["status"] == "SKIPPED"
+
+
+def test_wire_check_never_touches_the_registered_run_id(tmp_path):
+    runtime = _wire_runtime(tmp_path)
+    receipt = runtime.wire_check(seal_and_score=False)
+
+    assert receipt["flight_run_id"] == "SAEA-TEST-RUN-001"
+    assert receipt["wire_check_run_id"].startswith(
+        WIRE_CHECK_RUN_ID_PREFIX + "SAEA-TEST-RUN-001"
+    )
+    assert receipt["wire_check_run_id"] != "SAEA-TEST-RUN-001"
+    assert receipt["attempt_id"].startswith("attempt-wire-check-")
+    # Nothing was written under the registered run's own attempt tree.
+    from speech_aware_evidence_acquisition.core.attempts.store import AttemptStore
+
+    store = AttemptStore(tmp_path / "data" / "attempts")
+    assert not store.handle("SAEA-TEST-RUN-001", "attempt-001").path.exists()
+
+
+def test_wire_check_run_ids_are_unique_across_invocations(tmp_path):
+    """Attempt budget is run-cumulative, so a fixed wire-check run id would
+    let one cell's contacts exhaust the next cell's budget."""
+
+    clock = {"t": 1000.0}
+
+    def _tick():
+        clock["t"] += 1.0
+        return clock["t"]
+
+    first = _wire_runtime(tmp_path / "a", clock=_tick).wire_check(seal_and_score=False)
+    second = _wire_runtime(tmp_path / "b", clock=_tick).wire_check(seal_and_score=False)
+    assert first["wire_check_run_id"] != second["wire_check_run_id"]
+
+
+def test_wire_check_carries_tool_schemas_only_for_a_native_arm(tmp_path):
+    runtime = _wire_runtime(
+        tmp_path,
+        config_kwargs={
+            "arm": "bare-core-native-tools",
+            "policy": "fixed",
+            "baseline_extra": {"tool_schema_fill": "audio2tool-openai-tools"},
+        },
+        tool_schema_resolver=lambda lock, root, name: [
+            {"type": "function", "function": {"name": "t"}}
+        ],
+    )
+    receipt = runtime.wire_check(seal_and_score=False)
+
+    assert receipt["native_tools_arm"] is True
+    assert receipt["tool_schemas_count"] == 1
+    assert "tool_schemas" in receipt["payload_keys"]
+
+
+def test_wire_check_refuses_a_payload_that_misses_a_declared_field(tmp_path):
+    class _Dropping(_TransportDrivingClient):
+        drop_key = "task_instruction"
+
+    runtime = _wire_runtime(tmp_path, client_factory=_Dropping)
+    with pytest.raises(FlightRuntimeError, match="payload keys differ"):
+        runtime.wire_check(seal_and_score=False)
+
+
+def test_wire_check_refuses_an_unresolved_id_slot(tmp_path):
+    class _Sentinel(_TransportDrivingClient):
+        force_id_slot = "per-sample"
+
+    runtime = _wire_runtime(tmp_path, client_factory=_Sentinel)
+    with pytest.raises(FlightRuntimeError, match="not an integer"):
+        runtime.wire_check(seal_and_score=False)
+
+
+def test_wire_check_seals_and_scores_when_the_links_are_available(tmp_path):
+    runtime = _wire_runtime(tmp_path)
+    receipt = runtime.wire_check(seal_and_score=True)
+
+    seal = receipt["seal_and_score"]
+    assert seal["status"] == "OK"
+    assert seal["outputs_row_count"] == 2
+    assert seal["manifest_sha256"]
+    assert seal["score_result"] == {"job_count": 1}
+
+
+def test_wire_check_records_a_refused_seal_instead_of_raising(tmp_path):
+    def _refusing_manifest_builder(**_kwargs):
+        raise BundleError("study repo has uncommitted changes inside the load-bearing surface")
+
+    runtime = _wire_runtime(tmp_path, manifest_builder=_refusing_manifest_builder)
+    receipt = runtime.wire_check(seal_and_score=True)
+
+    seal = receipt["seal_and_score"]
+    assert seal["status"] == "REFUSED"
+    assert "uncommitted changes" in seal["reason"]
+    # The client half still reported its findings.
+    assert receipt["contact_count"] == 2
+    assert receipt["model_contacts"] == 0
+
+
+def test_wire_check_doubles_never_open_a_socket(tmp_path):
+    gate = WireCheckGate()
+    transport = WireCheckTransport()
+    plan = object()
+    assert gate.assert_model_touch_allowed(plan) == "0" * 64
+    assert gate.checked_plans == [plan]
+    body = transport(json.dumps({"a": 1}).encode("utf-8"))
+    assert transport.payloads == [{"a": 1}]
+    assert json.loads(body.decode("utf-8"))["text"]
+    with pytest.raises(FlightRuntimeError, match="bytes"):
+        transport("not bytes")

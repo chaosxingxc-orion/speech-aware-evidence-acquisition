@@ -287,6 +287,59 @@ def sample_id_for_packet(packet_id: str) -> str:
     return packet_id.replace(PACKET_ID_SEPARATOR, SAMPLE_ID_SEPARATOR)
 
 
+#: Every wire-check artifact is written under a run id carrying this
+#: prefix, so its durable attempt accounting can never be mistaken for --
+#: or summed into -- a registered run's own budget. No exposure row exists
+#: for such a run id, and none should: a wire check contacts nothing.
+WIRE_CHECK_RUN_ID_PREFIX = "WIRECHECK-"
+
+#: What the fake transport answers. Deliberately a well-formed tool-call
+#: array so the real scorers have something legal to parse: a wire check
+#: proves the SCORING LINK runs, never that any number it produces means
+#: anything.
+WIRE_CHECK_RESPONSE_TEXT = '[{"name": "wire-check", "arguments": {}}]'
+
+
+class WireCheckGate:
+    """A gate double for :meth:`FlightRuntime.wire_check`.
+
+    It authorizes nothing real: no GGUF is hashed, no exposure row is read,
+    no model is reachable, because the transport beside it never opens a
+    socket. It exists only so the REAL ``FrozenCoreAdapter`` -- which
+    demands a gate object -- can be constructed and its payload allowlist,
+    media binding and attempt accounting exercised.
+    """
+
+    def __init__(self) -> None:
+        self.checked_plans: list[object] = []
+
+    def assert_model_touch_allowed(self, plan: object, **_kwargs: object) -> str:
+        self.checked_plans.append(plan)
+        return "0" * 64
+
+
+class WireCheckTransport:
+    """A transport double that records every request payload and answers
+    :data:`WIRE_CHECK_RESPONSE_TEXT`. Never opens a socket."""
+
+    def __init__(self, response_text: str = WIRE_CHECK_RESPONSE_TEXT) -> None:
+        self.payloads: list[Mapping[str, object]] = []
+        self.request_bodies: list[bytes] = []
+        self._response_text = response_text
+
+    def __call__(self, request_bytes: bytes) -> bytes:
+        if not isinstance(request_bytes, bytes):
+            raise FlightRuntimeError("transport must be handed bytes")
+        self.request_bodies.append(request_bytes)
+        self.payloads.append(json.loads(request_bytes.decode("utf-8")))
+        return json.dumps(
+            {
+                "text": self._response_text,
+                "usage": {"prompt_tokens": 1, "completion_tokens": 1},
+            }
+        ).encode("utf-8")
+
+
 def _default_packet_promoter(
     *, adapter: TaskAdapter, data_root: Path, samples: Sequence[object], workers: int
 ) -> tuple[Sequence[object], Mapping[str, object]]:
@@ -602,21 +655,22 @@ class FlightRuntime:
             receipts.append({"phase": phase_name, **decision.to_dict()})
         return tuple(receipts)
 
-    def preflight(self) -> Mapping[str, object]:
-        """Compose the four config fragments, load and identity-hash the
-        split, build and validate the :class:`~contracts.ExecutionPlan`,
-        open the gate (``gate_factory(...)`` then
-        ``assert_model_touch_allowed``), independently re-check the
-        exposure ledger row, assert a clean study tree
-        (``core.bundle.git_commit.require_clean_study_repo``), reserve this
-        attempt in the durable :class:`~core.attempts.store.AttemptStore`,
-        and pre-assess the prompt budget for a representative request per
-        phase. Fails closed and records nothing on any failure.
+    def _prepare(self) -> tuple[Mapping[str, object], str, str, str]:
+        """Compose the four fragments, build the adapter, load and
+        identity-hash the split.
+
+        Factored out of :meth:`preflight` so :meth:`wire_check` can reuse
+        EXACTLY this resolution -- same fragments, same adapter, same
+        samples, same identity hash -- without also opening the gate,
+        asserting a clean tree or touching attempt accounting, none of which
+        a contact-free wiring proof needs (and the clean-tree assertion in
+        particular would make the check unusable precisely when it is most
+        useful: on a working tree carrying the fix under test).
         """
 
-        self._require_prior_stages("preflight")
-
-        composed = compose(self._repo_root, self._model, self._dataset, self._baseline, self._experiment)
+        composed = compose(
+            self._repo_root, self._model, self._dataset, self._baseline, self._experiment
+        )
         self._composed = composed
         values = composed.values
 
@@ -645,6 +699,26 @@ class FlightRuntime:
         if len(set(sample_ids)) != len(sample_ids):
             raise FlightRuntimeError(f"split {split_id!r} contains duplicate sample ids")
         identity_hash = split_identity_hash(prefixed(carrier_lock_key, sample_ids))
+        return values, carrier_lock_key, split_id, identity_hash
+
+    def preflight(self) -> Mapping[str, object]:
+        """Compose the four config fragments, load and identity-hash the
+        split, build and validate the :class:`~contracts.ExecutionPlan`,
+        open the gate (``gate_factory(...)`` then
+        ``assert_model_touch_allowed``), independently re-check the
+        exposure ledger row, assert a clean study tree
+        (``core.bundle.git_commit.require_clean_study_repo``), reserve this
+        attempt in the durable :class:`~core.attempts.store.AttemptStore`,
+        and pre-assess the prompt budget for a representative request per
+        phase. Fails closed and records nothing on any failure.
+        """
+
+        self._require_prior_stages("preflight")
+        values, carrier_lock_key, split_id, identity_hash = self._prepare()
+        composed = self._composed
+        adapter = self._adapter
+        samples = self._samples
+        lock = self._lock
 
         plan = self._build_execution_plan(values, carrier_lock_key, identity_hash)
         self._plan = plan
@@ -1095,14 +1169,27 @@ class FlightRuntime:
 
     # -- stage 4: run_phases ------------------------------------------------
 
-    def frozen_core_client_kwargs(self) -> Mapping[str, object]:
+    def frozen_core_client_kwargs(
+        self,
+        *,
+        plan: ExecutionPlan | None = None,
+        gate: object | None = None,
+        transport: object | None = None,
+        run_dir: Path | None = None,
+    ) -> Mapping[str, object]:
         """Build the exact kwargs :meth:`run_phases` passes to
         ``client_factory`` (default: ``rails.core_client.FrozenCoreClient``)
         -- factored out so a test can inspect them without also driving a
         real (or fake) ``rails_runner``/``phase_runner`` call. Requires
         :meth:`preflight` and :meth:`serve` to have already run."""
 
-        if self._plan is None or self._gate is None or self._transport is None:
+        # Overrides exist for :meth:`wire_check`, which builds the SAME
+        # kwargs against a fake gate/transport and a scratch plan; every
+        # caller that passes none behaves exactly as before.
+        plan = plan if plan is not None else self._plan
+        gate = gate if gate is not None else self._gate
+        transport = transport if transport is not None else self._transport
+        if plan is None or gate is None or transport is None:
             raise FlightStageOrderError(
                 "frozen_core_client_kwargs() requires preflight() and serve() to have run"
             )
@@ -1110,19 +1197,19 @@ class FlightRuntime:
         arm = baseline_values.get("arm")
         if not isinstance(arm, str) or not arm:
             raise FlightRuntimeError("baseline fragment must declare a non-empty 'arm'")
-        carrier_root = self._carrier_root_resolver(self._lock, self._plan.carrier_lock_key, self._data_root)
+        carrier_root = self._carrier_root_resolver(self._lock, plan.carrier_lock_key, self._data_root)
         binding = self._payload_binding_factory(
-            carrier_lock_key=self._plan.carrier_lock_key,
+            carrier_lock_key=plan.carrier_lock_key,
             samples=self._samples,
             data_root=self._data_root,
             carrier_root=carrier_root,
         )
         self._binding = binding
         kwargs: dict[str, object] = {
-            "plan": self._plan,
-            "gate": self._gate,
-            "transport": self._transport,
-            "run_dir": self._run_dir(),
+            "plan": plan,
+            "gate": gate,
+            "transport": transport,
+            "run_dir": run_dir if run_dir is not None else self._run_dir(),
             "binding": binding,
             "arm": arm,
             "request_id_prefix": self._request_id_prefix,
@@ -1287,6 +1374,33 @@ class FlightRuntime:
                 )
         return rows
 
+    def _dispatch_fixed_policy(
+        self, client: object, plan: ExecutionPlan
+    ) -> tuple[list[Mapping[str, object]], int, str]:
+        """The ``policy == "fixed"`` dispatch, factored out so
+        :meth:`wire_check` drives the SAME code path a real flight does --
+        a wiring proof that ran its own copy of this would prove nothing
+        about the flight."""
+
+        baseline_values = self._composed.values
+        if self.uses_speech_feature_packets():
+            # Same fixed policy, same one contact per sample -- but through
+            # the packet content part rails.runner cannot express (see
+            # :meth:`_run_speech_feature_direct`).
+            rows = self._run_speech_feature_direct(client)
+            return rows, len(rows), "direct-speech-feature-packets"
+        arms = tuple(baseline_values.get("rails_arms", RAILS_ARMS))
+        summary = self._rails_runner(
+            data_root=self._data_root,
+            plan=plan,
+            adapter=self._adapter,
+            core_client=client,
+            split_id=self._split_id,
+            arms=arms,
+            decoding_params=self._decoding_params(),
+        )
+        return self._rows_from_direct_summary(summary), len(summary.results), "direct"
+
     def run_phases(self) -> Mapping[str, object]:
         """Build a ``client_factory`` (default ``FrozenCoreClient``) from
         :meth:`frozen_core_client_kwargs`, then dispatch on the baseline
@@ -1315,27 +1429,10 @@ class FlightRuntime:
         self._client = client
 
         started = self._clock()
-        if policy == "fixed" and self.uses_speech_feature_packets():
-            # Same fixed policy, same one contact per sample -- but through
-            # the packet content part rails.runner cannot express (see
-            # :meth:`_run_speech_feature_direct`).
-            self._output_rows = self._run_speech_feature_direct(client)
-            contact_count = len(self._output_rows)
-            policy_kind = "direct-speech-feature-packets"
-        elif policy == "fixed":
-            arms = tuple(baseline_values.get("rails_arms", RAILS_ARMS))
-            summary = self._rails_runner(
-                data_root=self._data_root,
-                plan=self._plan,
-                adapter=self._adapter,
-                core_client=client,
-                split_id=self._split_id,
-                arms=arms,
-                decoding_params=self._decoding_params(),
+        if policy == "fixed":
+            self._output_rows, contact_count, policy_kind = self._dispatch_fixed_policy(
+                client, self._plan
             )
-            self._output_rows = self._rows_from_direct_summary(summary)
-            contact_count = len(summary.results)
-            policy_kind = "direct"
         else:
             program = default_phase_program(policy)
             binding = getattr(self, "_phase_program_material", None)
@@ -1560,6 +1657,263 @@ class FlightRuntime:
         require_mandatory_throughput_fields("score", payload, ("jobs_per_second",))
         return self.receipts.record("score", payload)
 
+    # -- contact-free wiring proof -----------------------------------------
+
+    def wire_check(
+        self,
+        *,
+        seal_and_score: bool = True,
+        max_workers: int = 1,
+        response_text: str = WIRE_CHECK_RESPONSE_TEXT,
+    ) -> Mapping[str, object]:
+        """Drive this flight's ENTIRE request path against a fake transport,
+        with zero model contacts, and return a receipt.
+
+        What is real here: the composed fragments, the adapter and its
+        samples, the payload binding, the tool-schema resolution, the
+        promoted speech-feature packets (loaded and hash-verified), the
+        arm's own dispatch (:meth:`_dispatch_fixed_policy`), the whole
+        ``FrozenCoreClient``/``FrozenCoreAdapter`` stack including its
+        payload allowlist and attempt accounting, and -- when
+        ``seal_and_score`` -- the manifest builder, bundle verifier and the
+        registered scorers. What is fake: exactly two things, the gate and
+        the transport (:class:`WireCheckGate`, :class:`WireCheckTransport`),
+        so nothing can reach a server.
+
+        This exists because three separate defects in this harness were each
+        discovered only by burning a server start on a registered smoke: the
+        client refused the arm, the attempt was double-opened, and the
+        slot-affinity sentinel was never resolved. None was visible to
+        :meth:`preflight`; all three would have been caught here.
+
+        Everything is written under a :data:`WIRE_CHECK_RUN_ID_PREFIX` run
+        id and the attempt it opens is aborted before returning, so no
+        registered run's durable accounting is touched.
+        """
+
+        values, carrier_lock_key, split_id, identity_hash = self._prepare()
+        arm = self._arm()
+        # A FRESH run id per invocation. Attempt budget is run-CUMULATIVE
+        # across every attempt of a run id (core.model.adapter re-reads the
+        # store's prior actuals on every request), so a fixed wire-check run
+        # id would let the first cell's contacts exhaust the second cell's
+        # budget -- which is exactly what happened the first time this ran.
+        stamp = int(self._clock() * 1000)
+        wire_run_id = f"{WIRE_CHECK_RUN_ID_PREFIX}{self._run_id}-{stamp:d}"
+        wire_attempt_id = f"attempt-wire-check-{stamp:d}"
+        declared = self._composed.values.get("execution_plan")
+        if not isinstance(declared, Mapping):
+            raise FlightRuntimeError("experiment fragment must declare an execution_plan")
+        plan = ExecutionPlan(
+            run_id=wire_run_id,
+            execution_profile=declared["execution_profile"],
+            carrier_lock_key=carrier_lock_key,
+            split_role=declared["split_role"],
+            split_identity_hash=identity_hash,
+            planned_model_calls=max(len(self._samples), 1),
+            planned_gpu_hours=declared["planned_gpu_hours"],
+            planned_speech_audio_seconds=declared["planned_speech_audio_seconds"],
+            protocol_hash=compute_protocol_hash(
+                self._composed.config_hash, arm, identity_hash
+            ),
+            attempt_id=wire_attempt_id,
+        ).validate()
+        run_dir = self._data_root / "wire-check" / wire_run_id / wire_attempt_id
+        run_dir.mkdir(parents=True, exist_ok=True)
+
+        gate = WireCheckGate()
+        transport = WireCheckTransport(response_text=response_text)
+        client_kwargs = self.frozen_core_client_kwargs(
+            plan=plan, gate=gate, transport=transport, run_dir=run_dir
+        )
+        packet_bindings = dict(client_kwargs.get("speech_packet_bindings") or {})
+        client = self._client_factory(**client_kwargs)
+        self._client = client
+
+        started = self._clock()
+        rows, contact_count, policy_kind = self._dispatch_fixed_policy(client, plan)
+        wall_seconds = max(self._clock() - started, 1e-9)
+        self._output_rows = rows
+
+        # -- the assertions each landed defect would have failed -----------
+        expected_fields = set(ARM_VISIBLE_FIELDS.get(arm, ()))
+        native = "tool_schemas" in expected_fields
+        problems: list[str] = []
+        if len(transport.payloads) != len(self._samples):
+            problems.append(
+                f"{len(transport.payloads)} request(s) reached the transport for "
+                f"{len(self._samples)} sample(s)"
+            )
+        for index, payload in enumerate(transport.payloads):
+            if set(payload) != expected_fields:
+                problems.append(
+                    f"request {index} payload keys differ from "
+                    f"ARM_VISIBLE_FIELDS[{arm!r}]: "
+                    f"{sorted(set(payload) ^ expected_fields)}"
+                )
+            schemas = payload.get("tool_schemas")
+            if native and (not isinstance(schemas, list) or not schemas):
+                problems.append(
+                    f"request {index} carries no tool_schemas for a native arm"
+                )
+            if not native and schemas is not None:
+                problems.append(
+                    f"request {index} carries tool_schemas for a non-native arm"
+                )
+            id_slot = dict(payload.get("decoding_params") or {}).get("id_slot")
+            if isinstance(id_slot, bool) or not isinstance(id_slot, int):
+                problems.append(f"request {index} id_slot is {id_slot!r}, not an integer")
+        if problems:
+            raise FlightRuntimeError("wire check failed: " + "; ".join(problems))
+
+        close_receipt = client.close()
+        seal_and_score_result: Mapping[str, object] = {
+            "status": "SKIPPED",
+            "reason": "seal_and_score=False",
+        }
+        if seal_and_score:
+            seal_and_score_result = self._wire_check_seal_and_score(
+                plan=plan,
+                run_dir=run_dir,
+                close_receipt=close_receipt,
+                max_workers=max_workers,
+            )
+        aborted = self._abort_attempt(
+            self._data_root,
+            wire_run_id,
+            wire_attempt_id,
+            reason="wire check: contact-free wiring proof, no model was ever reached",
+        )
+        first = transport.payloads[0] if transport.payloads else {}
+        return {
+            "schema": "saea-flight-wire-check-v1",
+            "flight_run_id": self._run_id,
+            "wire_check_run_id": wire_run_id,
+            "attempt_id": wire_attempt_id,
+            "attempt_aborted": bool(aborted),
+            "config_hash": self._composed.config_hash,
+            "protocol_hash": plan.protocol_hash,
+            "split_id": split_id,
+            "split_identity_hash": identity_hash,
+            "arm": arm,
+            "native_tools_arm": native,
+            "sample_count": len(self._samples),
+            "contact_count": contact_count,
+            "policy_kind": policy_kind,
+            "wall_seconds": wall_seconds,
+            "payload_keys": sorted(first),
+            "payload_keys_equal_arm_visible_fields": True,
+            "tool_schemas_count": (
+                len(first.get("tool_schemas") or []) if native else 0
+            ),
+            "id_slot": dict(first.get("decoding_params") or {}).get("id_slot"),
+            "request_body_sha256": [
+                hashlib.sha256(body).hexdigest() for body in transport.request_bodies
+            ],
+            "speech_packets_verified": {
+                sample_id: descriptor["sha256"]
+                for sample_id, descriptor in sorted(packet_bindings.items())
+            },
+            "trace_manifest_hash": close_receipt["trace_manifest_hash"],
+            "cost": close_receipt["cost"],
+            "seal_and_score": seal_and_score_result,
+            "transport": (
+                "core.flight.runtime.WireCheckTransport (never opens a socket)"
+            ),
+            "gate": "core.flight.runtime.WireCheckGate (authorizes nothing real)",
+            "payload_to_wire_tools_mapping": (
+                "payload tool_schemas -> request body 'tools' is core.model.transport."
+                "LlamaServerTransport's own step, covered by "
+                "tests/unit/test_native_tools_arm.py's transport section; this check "
+                "asserts at the transport seam, where the payload is what crosses"
+            ),
+            "model_contacts": 0,
+        }
+
+    def _wire_check_seal_and_score(
+        self,
+        *,
+        plan: ExecutionPlan,
+        run_dir: Path,
+        close_receipt: Mapping[str, object],
+        max_workers: int,
+    ) -> Mapping[str, object]:
+        """Seal a wire-check bundle from the fake responses and run the
+        registered scorers over it, so the manifest/verify/score links are
+        exercised too. A dirty study tree refuses a COMPLETED manifest by
+        design (``core.bundle.git_commit``); that is RECORDED rather than
+        raised, because the wire check's whole point is to run on the tree
+        that carries the fix under test."""
+
+        outputs_path = run_dir / "outputs.jsonl"
+        with outputs_path.open("w", encoding="utf-8") as handle:
+            for row in self._output_rows:
+                handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+        result = RunResult(
+            run_id=plan.run_id,
+            arm=close_receipt["arm"],
+            outputs_path=outputs_path,
+            trace_manifest_hash=close_receipt["trace_manifest_hash"],
+            cost=close_receipt["cost"],
+        )
+        sample_ids = tuple(sample.sample_id for sample in self._samples)
+        verified_split = VerifiedSplit(
+            name=self._split_id,
+            carrier_lock_key=plan.carrier_lock_key,
+            split_role=plan.split_role,
+            ids=tuple(sorted(sample_ids)),
+            prefixed_ids=tuple(prefixed(plan.carrier_lock_key, sample_ids)),
+            identity_hash=plan.split_identity_hash,
+        )
+        try:
+            manifest_path = self._manifest_builder(
+                repo_root=self._repo_root,
+                data_root=self._data_root,
+                composed=self._composed,
+                plan=plan,
+                verified_split=verified_split,
+                session_receipt_path=None,
+                run_dir=run_dir,
+                status="COMPLETED",
+                result=result,
+            )
+            verified = self._bundle_verifier(manifest_path)
+            jobs_path = run_dir / "score-jobs.jsonl"
+            with jobs_path.open("w", encoding="utf-8") as handle:
+                handle.write(
+                    json.dumps(
+                        {"job_id": plan.attempt_id, "manifest": str(manifest_path)}
+                    )
+                    + "\n"
+                )
+            jobs = load_score_jobs(jobs_path)
+            score_result = self._score_batch(
+                jobs, output_dir=run_dir / "score-batch", max_workers=max_workers
+            )
+        except Exception as error:  # noqa: BLE001 -- record, never mask
+            return {
+                "status": "REFUSED",
+                "reason": f"{type(error).__name__}: {error}",
+                "note": (
+                    "the sealing and scoring links refuse a dirty study tree by "
+                    "design; re-run this wire check on a clean tree to exercise them"
+                ),
+            }
+        return {
+            "status": "OK",
+            "manifest_path": str(manifest_path),
+            "manifest_sha256": _sha256_file(manifest_path),
+            "verified_attempt_state": getattr(verified, "attempt_state", None),
+            "outputs_row_count": len(self._output_rows),
+            "score_result": score_result,
+            "scorers": list(self._composed.values.get("scorers", ())),
+            "numbers_are_meaningless": (
+                "these scores are computed over WireCheckTransport's canned response, "
+                "not over any model output; they prove the scoring link runs and "
+                "nothing else"
+            ),
+        }
+
     # -- convenience --------------------------------------------------------
 
     def run_all(self) -> FlightReceipts:
@@ -1598,6 +1952,10 @@ __all__ = [
     "SLOT_AFFINITY_SENTINEL",
     "SPEECH_FEATURE_ARM_FIELD",
     "SPEECH_PACKET_N_EMBD",
+    "WIRE_CHECK_RESPONSE_TEXT",
+    "WIRE_CHECK_RUN_ID_PREFIX",
+    "WireCheckGate",
+    "WireCheckTransport",
     "arm_uses_speech_feature_packets",
     "load_promotion_receipt",
     "merge_server_args",
