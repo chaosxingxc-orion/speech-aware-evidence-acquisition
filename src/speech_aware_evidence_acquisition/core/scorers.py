@@ -35,6 +35,9 @@ class ScoringPhaseError(RuntimeError):
     """Outputs are malformed or reference/hypothesis pairing is impossible."""
 
 
+REFERENCE_READING_SCORERS = frozenset({"asr-wer", "entity-wer", "asr-wer-whisper"})
+
+
 def score_asr_outputs(
     outputs_path: Path, lock: Mapping[str, object], root: Path
 ) -> dict[str, object]:
@@ -585,8 +588,12 @@ def _assert_scoring_entry_gate(
     gate._resolve_carrier_dataset_entry(carrier_lock_key, lock)
 
     scorer_names = bundle.manifest.get("scorers")
-    if isinstance(scorer_names, list) and (
-        "asr-wer" in scorer_names or "entity-wer" in scorer_names
+    # Every scorer that reads the .nlp reference layer must trigger the D1
+    # reference-identity re-verification: asr-wer, entity-wer, and (slice C3b,
+    # 2026-09-03) asr-wer-whisper, which reads the same bytes through
+    # data.references.reference_tokens under a different normalizer.
+    if isinstance(scorer_names, list) and any(
+        name in scorer_names for name in REFERENCE_READING_SCORERS
     ):
         split_ids = getattr(bundle, "split_ids", None)
         if not split_ids:
@@ -677,3 +684,147 @@ from ..reproduction.slurp_official_eval import score_slurp_outputs_official  # n
 
 SCORERS.register("slurp-slu", score_slurp_outputs_official)
 SCORERS.register("slurp-slu-official", score_slurp_outputs_official)
+
+
+# ---------------------------------------------------------------------------
+# Whisper-normalizer WER scorer (consolidation slice C3b): the field-standard
+# WER convention most published ASR papers use on Earnings-21/22 -- OpenAI
+# Whisper's ``EnglishTextNormalizer`` (vendored read-only under
+# ``reproduction/whisper_normalizer/``, upstream tag ``v20240930`` -- see
+# that package's own ``PROVENANCE.md`` for the pinned per-file SHA-256s and
+# license), applied to BOTH reference and hypothesis text before alignment.
+# Registered as ``"asr-wer-whisper"``, reported SIDE BY SIDE with
+# ``"asr-wer"`` above -- never a replacement for it; the E0 D3 frozen
+# ``saea-scoring-v1`` stack (``scoring/normalize.py``) is untouched by this
+# addition.
+#
+# Housing note (deliberate deviation from the ``a2t-toolcall``/``slurp-slu``
+# lazy-import-a-whole-function pattern used immediately above): this
+# function's whole BODY lives here, in ``core/scorers.py``, rather than
+# being imported whole from ``reproduction/asr_wer_whisper.py``. Reason: it
+# resolves each sample's reference tokens via
+# ``data.references.reference_tokens`` -- the exact same call
+# ``score_asr_outputs`` above makes -- and
+# ``tests/contract/test_reference_import_isolation.py`` AST-enforces that
+# ``data.references`` is imported ONLY by this module (plus
+# ``data/references.py`` itself) across the whole ``src/`` tree; exactly the
+# same reason ``score_entity_wer_outputs`` above already lives here rather
+# than in a ``reproduction/`` module (unlike ``a2t-toolcall``/``slurp-slu``,
+# whose gold comes from ``data.audio2tool``/``data.slurp`` instead and so
+# never touches ``data.references`` at all). Only the reference-free pieces
+# -- the vendored normalizer wrapper and its version constants -- are
+# imported from ``reproduction.asr_wer_whisper``, via the SAME
+# lazy-import-at-append-time pattern the ``a2t-toolcall``/``slurp-slu``
+# blocks use.
+#
+# RESIDUAL (reported in this slice's own delivery report, not fixed here):
+# ``_assert_scoring_entry_gate``'s reference-identity re-verification
+# (IMPORTANT 2 in that function's own docstring, above) triggers only when a
+# bundle's configured scorers include the literal string ``"asr-wer"`` or
+# ``"entity-wer"``. This scorer ALSO reads the same ``.nlp`` reference bytes
+# (via the same ``reference_tokens`` call), but is not named in that
+# trigger -- a bundle configured with ``"asr-wer-whisper"`` and neither of
+# the other two scorers skips the D1 reference-identity re-verification.
+# This block does not edit ``_assert_scoring_entry_gate`` (out of scope for
+# this slice; that gate's trigger condition needs its own follow-up
+# decision to add ``"asr-wer-whisper"``).
+# ---------------------------------------------------------------------------
+
+from ..reproduction.asr_wer_whisper import (  # noqa: E402
+    WHISPER_NORMALIZER_NAME,
+    WHISPER_WER_SCORER_VERSION,
+    normalize_whisper_english,
+)
+
+
+def score_asr_outputs_whisper(
+    outputs_path: Path,
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    repo_root: Path = REPO_ROOT,
+) -> dict[str, object]:
+    """Whisper-normalized WER scorer: same JSONL reading and reference
+    resolution as :func:`score_asr_outputs` above, but BOTH the reference
+    text (the sample's raw reference tokens, space-joined -- the same
+    reconstruction ``score_asr_outputs`` itself uses) and the hypothesis
+    text are normalized with the vendored Whisper ``EnglishTextNormalizer``
+    (``reproduction.asr_wer_whisper.normalize_whisper_english``) and then
+    tokenized on whitespace (``str.split()``) -- NOT through the frozen
+    ``scoring.normalize.tokens_v1`` -- before ``scoring.wer.align``.
+
+    ``repo_root`` is accepted (default ``REPO_ROOT``, the same
+    test-overridable-default convention ``score_bundle``/
+    ``_assert_scoring_entry_gate`` already use) for signature symmetry with
+    this study's other scorers that DO need it (e.g.
+    ``reproduction.a2t_scorer.score_audio2tool_outputs``); this scorer's own
+    reference resolution only ever needs ``root`` (the controlled DATA
+    root), never the study checkout, so ``repo_root`` is currently unused.
+
+    Per-sample dict shape: the same keys as ``score_asr_outputs`` --
+    ``sample_id``, ``wer``, ``hits``, ``substitutions``, ``deletions``,
+    ``insertions``, ``ref_hit_mask`` -- plus ``normalizer`` (always
+    ``WHISPER_NORMALIZER_NAME``). Aggregate reports CORPUS (micro-averaged)
+    WER -- ``sum(errors) / sum(reference words)`` across the whole outputs
+    file -- unlike ``score_asr_outputs``'s own ``mean_wer`` (a macro average
+    of per-sample WER values): a corpus-level number is what the papers this
+    scorer exists to compare against report. ``scorer_version`` pins
+    ``WHISPER_WER_SCORER_VERSION``.
+    """
+
+    try:
+        text = Path(outputs_path).read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as error:
+        raise ScoringPhaseError(f"cannot read outputs {outputs_path}: {error}") from error
+    lines = text.split("\n")
+    if lines and lines[-1] == "":
+        lines = lines[:-1]
+    if not lines:
+        raise ScoringPhaseError(f"outputs file {outputs_path} is empty")
+
+    per_sample: list[dict[str, object]] = []
+    total_substitutions = total_deletions = total_insertions = total_ref_words = 0
+    for number, line in enumerate(lines, start=1):
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError as error:
+            raise ScoringPhaseError(f"outputs line {number} malformed: {error}") from error
+        raw_ref_tokens = reference_tokens(lock, root, row["carrier_lock_key"], row["sample_id"])
+        ref = normalize_whisper_english(" ".join(raw_ref_tokens)).split()
+        hyp = normalize_whisper_english(row["text"]).split()
+        result = align(ref, hyp)
+        total_substitutions += result.substitutions
+        total_deletions += result.deletions
+        total_insertions += result.insertions
+        total_ref_words += result.reference_length
+        per_sample.append(
+            {
+                "sample_id": row["sample_id"],
+                "wer": result.wer,
+                "hits": result.hits,
+                "substitutions": result.substitutions,
+                "deletions": result.deletions,
+                "insertions": result.insertions,
+                "ref_hit_mask": list(result.ref_hit_mask),
+                "normalizer": WHISPER_NORMALIZER_NAME,
+            }
+        )
+
+    total_errors = total_substitutions + total_deletions + total_insertions
+    corpus_wer = (total_errors / total_ref_words) if total_ref_words else 0.0
+    return {
+        "per_sample": per_sample,
+        "aggregate": {
+            "corpus_wer": corpus_wer,
+            "substitutions": total_substitutions,
+            "deletions": total_deletions,
+            "insertions": total_insertions,
+            "reference_words": total_ref_words,
+            "samples": len(per_sample),
+            "scorer_version": WHISPER_WER_SCORER_VERSION,
+            "normalizer": WHISPER_NORMALIZER_NAME,
+        },
+    }
+
+
+SCORERS.register("asr-wer-whisper", score_asr_outputs_whisper)

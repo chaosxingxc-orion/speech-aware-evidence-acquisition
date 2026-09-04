@@ -10,3 +10,14 @@ reference/w1-snapshot/SNAPSHOT.md and SHA256SUMS.
 The snapshot is QUARANTINED_REFERENCE_NOT_EXECUTABLE: it is not part of the installed package,
 is never imported by production code, and is covered by the repository LICENSE (all rights
 reserved, private stage).
+
+src/speech_aware_evidence_acquisition/reproduction/whisper_normalizer/ (__init__.py, basic.py,
+english.py, english.json, LICENSE) is a verbatim copy, vendored on 2026-09-03, of
+whisper/normalizers/{__init__.py,basic.py,english.py,english.json} and the repository root
+LICENSE from https://github.com/openai/whisper at pinned upstream tag v20240930. No byte of any
+file was modified. License: MIT (Copyright (c) 2022 OpenAI; full text in that directory's own
+LICENSE file). Per-file SHA-256 hashes and the byte-exactness statement:
+src/speech_aware_evidence_acquisition/reproduction/whisper_normalizer/PROVENANCE.md. Unlike the
+W1 snapshot above, this IS part of the installed package and IS imported by production code
+(reproduction/asr_wer_whisper.py, the asr-wer-whisper scorer) -- it is a small, pinned,
+read-only third-party dependency, not a quarantined reference.
