@@ -1,0 +1,751 @@
+{
+  "carrier_lock_key": "earnings21-original",
+  "construction_unit_count": 43,
+  "contacts": {
+    "audio_seconds": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0
+  },
+  "fold_count": 5,
+  "knowledge_source": "per-call ConEC context/participant-names/bias-list documents (self-supplied, no shared corpus)",
+  "ks": [
+    5,
+    16,
+    32,
+    64
+  ],
+  "q1_field_catalog": {
+    "corpus_structures": {
+      "call 4320211 (pre-existing wer_tags sidecar defect: entity id 1057 has no usable entity_type; excluded from entity-mention rows, n=43 of 44)": "gold-scoring-only",
+      "earnings21-original confirmatory remainder (beyond the 44-call discovery split)": "forbidden",
+      "one ConEC evidence document per call (no shared corpus)": "runtime-legal-input"
+    },
+    "fields": {
+      "ConEC context document (evidence_source=conec-contexts)": "runtime-legal-input",
+      "ConEC participant-names roster (evidence_source=conec-names)": "runtime-legal-input",
+      "ConEC-derived bias list (evidence_source=conec-bias-list)": "runtime-legal-input",
+      "entity mention filler text (token join of a wer_tags span)": "gold-scoring-only",
+      "reference transcript tokens (.nlp)": "forbidden",
+      "sample_id / media_relpath / audio_seconds / sample_rate_hz": "runtime-legal-input",
+      "wer_tags entity id -> entity_type sidecar": "gold-scoring-only"
+    },
+    "legality_classes": [
+      "construction-only-knowledge",
+      "forbidden",
+      "gold-scoring-only",
+      "runtime-legal-input"
+    ]
+  },
+  "q2_task_information_decomposition": {
+    "obs": "Transcribe/segment the earnings-call speech into entity-bearing spans, ASR-free at the knowledge layer.",
+    "org": "No cross-call retrieval: ConEC ships one context/names/bias-list document PER call, so organization here is selecting WHICH of the three self-supplied documents (or their extraction) to expose, not ranking across a corpus.",
+    "supply": "Expose the call's own ConEC context, names roster, and/or extracted bias-list terms as evidence.",
+    "task_kind": "entity-recall-conec",
+    "use": "The frozen core produces a transcript hypothesis whose entity spans are scored against wer_tags gold."
+  },
+  "q3_population_distribution": {
+    "natural": {
+      "counts": {
+        "4330115": 1,
+        "4341191": 1,
+        "4344338": 1,
+        "4344866": 1,
+        "4346818": 1,
+        "4346923": 1,
+        "4359732": 1,
+        "4359971": 1,
+        "4360366": 1,
+        "4360674": 1,
+        "4360717": 1,
+        "4361631": 1,
+        "4363614": 1,
+        "4364366": 1,
+        "4365024": 1,
+        "4365948": 1,
+        "4366302": 1,
+        "4366429": 1,
+        "4366522": 1,
+        "4366893": 1,
+        "4367318": 1,
+        "4367535": 1,
+        "4368670": 1,
+        "4374910": 1,
+        "4375653": 1,
+        "4382825": 1,
+        "4383161": 1,
+        "4384198": 1,
+        "4384683": 1,
+        "4384744": 1,
+        "4384964": 1,
+        "4385072": 1,
+        "4385388": 1,
+        "4385939": 1,
+        "4386541": 1,
+        "4387332": 1,
+        "4387383": 1,
+        "4387865": 1,
+        "4389907": 1,
+        "4392809": 1,
+        "4394084": 1,
+        "4397800": 1,
+        "4397829": 1
+      },
+      "shares": {
+        "4330115": 0.023255813953488372,
+        "4341191": 0.023255813953488372,
+        "4344338": 0.023255813953488372,
+        "4344866": 0.023255813953488372,
+        "4346818": 0.023255813953488372,
+        "4346923": 0.023255813953488372,
+        "4359732": 0.023255813953488372,
+        "4359971": 0.023255813953488372,
+        "4360366": 0.023255813953488372,
+        "4360674": 0.023255813953488372,
+        "4360717": 0.023255813953488372,
+        "4361631": 0.023255813953488372,
+        "4363614": 0.023255813953488372,
+        "4364366": 0.023255813953488372,
+        "4365024": 0.023255813953488372,
+        "4365948": 0.023255813953488372,
+        "4366302": 0.023255813953488372,
+        "4366429": 0.023255813953488372,
+        "4366522": 0.023255813953488372,
+        "4366893": 0.023255813953488372,
+        "4367318": 0.023255813953488372,
+        "4367535": 0.023255813953488372,
+        "4368670": 0.023255813953488372,
+        "4374910": 0.023255813953488372,
+        "4375653": 0.023255813953488372,
+        "4382825": 0.023255813953488372,
+        "4383161": 0.023255813953488372,
+        "4384198": 0.023255813953488372,
+        "4384683": 0.023255813953488372,
+        "4384744": 0.023255813953488372,
+        "4384964": 0.023255813953488372,
+        "4385072": 0.023255813953488372,
+        "4385388": 0.023255813953488372,
+        "4385939": 0.023255813953488372,
+        "4386541": 0.023255813953488372,
+        "4387332": 0.023255813953488372,
+        "4387383": 0.023255813953488372,
+        "4387865": 0.023255813953488372,
+        "4389907": 0.023255813953488372,
+        "4392809": 0.023255813953488372,
+        "4394084": 0.023255813953488372,
+        "4397800": 0.023255813953488372,
+        "4397829": 0.023255813953488372
+      },
+      "stratum_count": 43,
+      "total": 43
+    },
+    "rosters": {
+      "discovery-44": {
+        "deviation": {
+          "classification": "near-equal-stratum",
+          "roster_shares": {
+            "discovery-44": 1.0
+          },
+          "roster_total": 44,
+          "total_variation_distance_from_natural": 1.0,
+          "total_variation_distance_from_uniform_allocation": 0.0
+        },
+        "intended_n": 44,
+        "selection_rule_note": "Census, not a sample: every earnings21-original discovery-split call is both the knowledge source and the evaluation roster (module docstring); strata are call ids, so the natural distribution is uniform by construction",
+        "split_role": "discovery"
+      }
+    },
+    "strata_key": "call_id"
+  },
+  "q4_label_space_entropy": {
+    "entity_mention": {
+      "effective_label_count": 1119.9911317809306,
+      "entropy_bits": 10.129271593564319,
+      "label_count": 7328,
+      "minimum_k_for_mass": {
+        "0.50": 124,
+        "0.80": 1380,
+        "0.90": 3581,
+        "0.95": 5455,
+        "0.99": 6954,
+        "1.00": 7328
+      },
+      "normalized_entropy": 0.7889330024463848,
+      "observed_label_count": 7328,
+      "top_k_mass": {
+        "1": 0.03389287715833578,
+        "10": 0.15817565584051665,
+        "100": 0.47399322142456835,
+        "20": 0.24146673427450563,
+        "3": 0.07712631101385072,
+        "5": 0.10298630941261241,
+        "50": 0.37765205091937765
+      },
+      "total_occurrences": 37471
+    },
+    "entity_type": {
+      "effective_label_count": 10.91617002558663,
+      "entropy_bits": 3.448394865586801,
+      "label_count": 26,
+      "minimum_k_for_mass": {
+        "0.50": 3,
+        "0.80": 8,
+        "0.90": 10,
+        "0.95": 12,
+        "0.99": 17,
+        "1.00": 26
+      },
+      "normalized_entropy": 0.7336323987472722,
+      "observed_label_count": 26,
+      "top_k_mass": {
+        "1": 0.24039924208054228,
+        "10": 0.9016839689359771,
+        "100": 1.0,
+        "20": 0.9972512076005444,
+        "3": 0.5466894398334712,
+        "5": 0.6846628059032318,
+        "50": 1.0
+      },
+      "total_occurrences": 37471
+    }
+  },
+  "q5_retrieval_reachability": {
+    "item_count": 43,
+    "mention_total": 37469,
+    "mode": "self_supplied_membership",
+    "own_context_reachability": 0.3016893965678294,
+    "per_call": [
+      {
+        "item_id": "4330115",
+        "mention_count": 596,
+        "other_item_id": "4364366",
+        "own_context_present": 247,
+        "random_other_context_present": 185
+      },
+      {
+        "item_id": "4341191",
+        "mention_count": 1719,
+        "other_item_id": "4397800",
+        "own_context_present": 543,
+        "random_other_context_present": 266
+      },
+      {
+        "item_id": "4344338",
+        "mention_count": 631,
+        "other_item_id": "4374910",
+        "own_context_present": 160,
+        "random_other_context_present": 98
+      },
+      {
+        "item_id": "4344866",
+        "mention_count": 869,
+        "other_item_id": "4344338",
+        "own_context_present": 266,
+        "random_other_context_present": 111
+      },
+      {
+        "item_id": "4346818",
+        "mention_count": 1061,
+        "other_item_id": "4397829",
+        "own_context_present": 367,
+        "random_other_context_present": 323
+      },
+      {
+        "item_id": "4346923",
+        "mention_count": 1062,
+        "other_item_id": "4383161",
+        "own_context_present": 443,
+        "random_other_context_present": 72
+      },
+      {
+        "item_id": "4359732",
+        "mention_count": 1436,
+        "other_item_id": "4386541",
+        "own_context_present": 422,
+        "random_other_context_present": 148
+      },
+      {
+        "item_id": "4359971",
+        "mention_count": 1219,
+        "other_item_id": "4385388",
+        "own_context_present": 330,
+        "random_other_context_present": 258
+      },
+      {
+        "item_id": "4360366",
+        "mention_count": 1022,
+        "other_item_id": "4367535",
+        "own_context_present": 264,
+        "random_other_context_present": 193
+      },
+      {
+        "item_id": "4360674",
+        "mention_count": 1257,
+        "other_item_id": "4366429",
+        "own_context_present": 372,
+        "random_other_context_present": 177
+      },
+      {
+        "item_id": "4360717",
+        "mention_count": 989,
+        "other_item_id": "4366522",
+        "own_context_present": 285,
+        "random_other_context_present": 121
+      },
+      {
+        "item_id": "4361631",
+        "mention_count": 1057,
+        "other_item_id": "4384198",
+        "own_context_present": 344,
+        "random_other_context_present": 84
+      },
+      {
+        "item_id": "4363614",
+        "mention_count": 1026,
+        "other_item_id": "4385939",
+        "own_context_present": 254,
+        "random_other_context_present": 153
+      },
+      {
+        "item_id": "4364366",
+        "mention_count": 920,
+        "other_item_id": "4389907",
+        "own_context_present": 447,
+        "random_other_context_present": 156
+      },
+      {
+        "item_id": "4365024",
+        "mention_count": 1469,
+        "other_item_id": "4360674",
+        "own_context_present": 398,
+        "random_other_context_present": 361
+      },
+      {
+        "item_id": "4365948",
+        "mention_count": 936,
+        "other_item_id": "4368670",
+        "own_context_present": 263,
+        "random_other_context_present": 268
+      },
+      {
+        "item_id": "4366302",
+        "mention_count": 1109,
+        "other_item_id": "4394084",
+        "own_context_present": 322,
+        "random_other_context_present": 26
+      },
+      {
+        "item_id": "4366429",
+        "mention_count": 1153,
+        "other_item_id": "4384744",
+        "own_context_present": 297,
+        "random_other_context_present": 136
+      },
+      {
+        "item_id": "4366522",
+        "mention_count": 519,
+        "other_item_id": "4346818",
+        "own_context_present": 242,
+        "random_other_context_present": 95
+      },
+      {
+        "item_id": "4366893",
+        "mention_count": 709,
+        "other_item_id": "4341191",
+        "own_context_present": 160,
+        "random_other_context_present": 212
+      },
+      {
+        "item_id": "4367318",
+        "mention_count": 391,
+        "other_item_id": "4359732",
+        "own_context_present": 181,
+        "random_other_context_present": 66
+      },
+      {
+        "item_id": "4367535",
+        "mention_count": 651,
+        "other_item_id": "4384683",
+        "own_context_present": 272,
+        "random_other_context_present": 132
+      },
+      {
+        "item_id": "4368670",
+        "mention_count": 1092,
+        "other_item_id": "4384964",
+        "own_context_present": 479,
+        "random_other_context_present": 217
+      },
+      {
+        "item_id": "4374910",
+        "mention_count": 317,
+        "other_item_id": "4363614",
+        "own_context_present": 57,
+        "random_other_context_present": 52
+      },
+      {
+        "item_id": "4375653",
+        "mention_count": 972,
+        "other_item_id": "4382825",
+        "own_context_present": 315,
+        "random_other_context_present": 134
+      },
+      {
+        "item_id": "4382825",
+        "mention_count": 1275,
+        "other_item_id": "4366302",
+        "own_context_present": 317,
+        "random_other_context_present": 252
+      },
+      {
+        "item_id": "4383161",
+        "mention_count": 912,
+        "other_item_id": "4344866",
+        "own_context_present": 198,
+        "random_other_context_present": 154
+      },
+      {
+        "item_id": "4384198",
+        "mention_count": 662,
+        "other_item_id": "4346923",
+        "own_context_present": 163,
+        "random_other_context_present": 131
+      },
+      {
+        "item_id": "4384683",
+        "mention_count": 484,
+        "other_item_id": "4365948",
+        "own_context_present": 174,
+        "random_other_context_present": 74
+      },
+      {
+        "item_id": "4384744",
+        "mention_count": 1001,
+        "other_item_id": "4392809",
+        "own_context_present": 279,
+        "random_other_context_present": 170
+      },
+      {
+        "item_id": "4384964",
+        "mention_count": 931,
+        "other_item_id": "4365024",
+        "own_context_present": 262,
+        "random_other_context_present": 78
+      },
+      {
+        "item_id": "4385072",
+        "mention_count": 669,
+        "other_item_id": "4367318",
+        "own_context_present": 139,
+        "random_other_context_present": 149
+      },
+      {
+        "item_id": "4385388",
+        "mention_count": 1319,
+        "other_item_id": "4360366",
+        "own_context_present": 334,
+        "random_other_context_present": 215
+      },
+      {
+        "item_id": "4385939",
+        "mention_count": 804,
+        "other_item_id": "4330115",
+        "own_context_present": 157,
+        "random_other_context_present": 97
+      },
+      {
+        "item_id": "4386541",
+        "mention_count": 364,
+        "other_item_id": "4359971",
+        "own_context_present": 107,
+        "random_other_context_present": 84
+      },
+      {
+        "item_id": "4387332",
+        "mention_count": 430,
+        "other_item_id": "4361631",
+        "own_context_present": 102,
+        "random_other_context_present": 73
+      },
+      {
+        "item_id": "4387383",
+        "mention_count": 395,
+        "other_item_id": "4387332",
+        "own_context_present": 86,
+        "random_other_context_present": 49
+      },
+      {
+        "item_id": "4387865",
+        "mention_count": 906,
+        "other_item_id": "4387383",
+        "own_context_present": 225,
+        "random_other_context_present": 103
+      },
+      {
+        "item_id": "4389907",
+        "mention_count": 396,
+        "other_item_id": "4385072",
+        "own_context_present": 123,
+        "random_other_context_present": 32
+      },
+      {
+        "item_id": "4392809",
+        "mention_count": 336,
+        "other_item_id": "4360717",
+        "own_context_present": 108,
+        "random_other_context_present": 98
+      },
+      {
+        "item_id": "4394084",
+        "mention_count": 460,
+        "other_item_id": "4387865",
+        "own_context_present": 28,
+        "random_other_context_present": 44
+      },
+      {
+        "item_id": "4397800",
+        "mention_count": 723,
+        "other_item_id": "4375653",
+        "own_context_present": 206,
+        "random_other_context_present": 123
+      },
+      {
+        "item_id": "4397829",
+        "mention_count": 1220,
+        "other_item_id": "4366893",
+        "own_context_present": 566,
+        "random_other_context_present": 213
+      }
+    ],
+    "per_entity_type": {
+      "ABBREVIATION": {
+        "mention_count": 2323,
+        "own_context_reachability": 0.6181661644425313,
+        "random_other_context_reachability": 0.2707705553164012
+      },
+      "ALPHANUMERIC": {
+        "mention_count": 996,
+        "own_context_reachability": 0.24397590361445784,
+        "random_other_context_reachability": 0.10341365461847389
+      },
+      "CARDINAL": {
+        "mention_count": 5133,
+        "own_context_reachability": 0.4463276836158192,
+        "random_other_context_reachability": 0.3824274303526203
+      },
+      "CONTRACTION": {
+        "mention_count": 9008,
+        "own_context_reachability": 0.0053285968028419185,
+        "random_other_context_reachability": 0.0072158081705150975
+      },
+      "DATE": {
+        "mention_count": 6342,
+        "own_context_reachability": 0.17628508356985179,
+        "random_other_context_reachability": 0.1368653421633554
+      },
+      "EVENT": {
+        "mention_count": 263,
+        "own_context_reachability": 0.24334600760456274,
+        "random_other_context_reachability": 0.21673003802281368
+      },
+      "FAC": {
+        "mention_count": 38,
+        "own_context_reachability": 0.05263157894736842,
+        "random_other_context_reachability": 0.0
+      },
+      "FALLBACK": {
+        "mention_count": 65,
+        "own_context_reachability": 0.0,
+        "random_other_context_reachability": 0.0
+      },
+      "GPE": {
+        "mention_count": 1254,
+        "own_context_reachability": 0.6443381180223285,
+        "random_other_context_reachability": 0.23843700159489634
+      },
+      "LANGUAGE": {
+        "mention_count": 2,
+        "own_context_reachability": 0.5,
+        "random_other_context_reachability": 0.0
+      },
+      "LAW": {
+        "mention_count": 23,
+        "own_context_reachability": 0.17391304347826086,
+        "random_other_context_reachability": 0.0
+      },
+      "LOC": {
+        "mention_count": 298,
+        "own_context_reachability": 0.4563758389261745,
+        "random_other_context_reachability": 0.08053691275167785
+      },
+      "MONEY": {
+        "mention_count": 1867,
+        "own_context_reachability": 0.3492233529726835,
+        "random_other_context_reachability": 0.3245848955543653
+      },
+      "NORP": {
+        "mention_count": 207,
+        "own_context_reachability": 0.5893719806763285,
+        "random_other_context_reachability": 0.09178743961352658
+      },
+      "ORDINAL": {
+        "mention_count": 911,
+        "own_context_reachability": 0.7233809001097695,
+        "random_other_context_reachability": 0.5642151481888035
+      },
+      "ORG": {
+        "mention_count": 2847,
+        "own_context_reachability": 0.5293291183702142,
+        "random_other_context_reachability": 0.14436248682824027
+      },
+      "PERCENT": {
+        "mention_count": 1684,
+        "own_context_reachability": 0.07066508313539192,
+        "random_other_context_reachability": 0.058788598574821854
+      },
+      "PERSON": {
+        "mention_count": 2163,
+        "own_context_reachability": 0.7591308368007397,
+        "random_other_context_reachability": 0.13453536754507628
+      },
+      "PRODUCT": {
+        "mention_count": 209,
+        "own_context_reachability": 0.39712918660287083,
+        "random_other_context_reachability": 0.06220095693779904
+      },
+      "QUANTITY": {
+        "mention_count": 149,
+        "own_context_reachability": 0.087248322147651,
+        "random_other_context_reachability": 0.026845637583892617
+      },
+      "RANGE": {
+        "mention_count": 13,
+        "own_context_reachability": 0.0,
+        "random_other_context_reachability": 0.0
+      },
+      "TIME": {
+        "mention_count": 433,
+        "own_context_reachability": 0.04157043879907621,
+        "random_other_context_reachability": 0.009237875288683603
+      },
+      "TWITTER": {
+        "mention_count": 2,
+        "own_context_reachability": 0.0,
+        "random_other_context_reachability": 0.0
+      },
+      "WEBSITE": {
+        "mention_count": 50,
+        "own_context_reachability": 0.0,
+        "random_other_context_reachability": 0.0
+      },
+      "WORK_OF_ART": {
+        "mention_count": 25,
+        "own_context_reachability": 0.12,
+        "random_other_context_reachability": 0.0
+      },
+      "YEAR": {
+        "mention_count": 1164,
+        "own_context_reachability": 0.28780068728522334,
+        "random_other_context_reachability": 0.18384879725085912
+      }
+    },
+    "random_other_context_reachability": 0.16501641356855,
+    "seed": 20260903
+  },
+  "q6_decontamination": {
+    "cross_call_near_duplicate": {
+      "item_count": 43,
+      "metric": "token-set Jaccard",
+      "pair_count": 0,
+      "pairs": [],
+      "threshold": 0.8
+    },
+    "identity": {
+      "discovery-44": {
+        "clean": false,
+        "construction_count": 43,
+        "identity_overlap_count": 43,
+        "identity_overlap_sample": [
+          "4330115",
+          "4341191",
+          "4344338",
+          "4344866",
+          "4346818",
+          "4346923",
+          "4359732",
+          "4359971",
+          "4360366",
+          "4360674"
+        ],
+        "roster_count": 44
+      }
+    }
+  },
+  "q7_external_supplementation_ledger": {
+    "rows": [
+      {
+        "legality": "forbidden",
+        "need": "Company/ticker/person canonical spellings beyond what one call's own ConEC document lists",
+        "source": "Another call's ConEC document (explicitly a NEGATIVE-CONTROL / cross-contamination risk, not a legal supply)"
+      },
+      {
+        "legality": "runtime-legal-input",
+        "need": "A budget-bounded distillation of the raw ConEC context to fit prompt budgets",
+        "source": "core.bias_lists.extract_bias_candidates / reconstruct_bias_phrases over the SAME call's own context"
+      }
+    ]
+  },
+  "q8_power": {
+    "alpha": 0.05,
+    "by_n": {
+      "discovery-44": {
+        "DEV-1000 baseline lock (500 unexposed)": {
+          "alpha": 0.05,
+          "expected_discordant_pairs": 9.768,
+          "historical_discordant_rate": 0.222,
+          "minimum_detectable_discordant_split_delta": 0.8963982743925012,
+          "minimum_detectable_effect_pp": 19.900041691513525,
+          "n": 44,
+          "power": 0.8,
+          "z_alpha_half": 1.9599639845400536,
+          "z_power": 0.8416212335729144
+        },
+        "DEV-500 confirmatory (400 unexposed)": {
+          "alpha": 0.05,
+          "expected_discordant_pairs": 9.129999999999999,
+          "historical_discordant_rate": 0.2075,
+          "minimum_detectable_discordant_split_delta": 0.9271893798733647,
+          "minimum_detectable_effect_pp": 19.239179632372316,
+          "n": 44,
+          "power": 0.8,
+          "z_alpha_half": 1.9599639845400536,
+          "z_power": 0.8416212335729144
+        }
+      }
+    },
+    "citations": [
+      {
+        "correct_to_wrong": 2,
+        "discordant_rate": 0.2075,
+        "label": "DEV-500 confirmatory (400 unexposed)",
+        "n": 400,
+        "source": "docs/readiness/2026-08-24-dev500-confirmatory-verdict.md",
+        "wrong_to_correct": 81
+      },
+      {
+        "correct_to_wrong": 5,
+        "discordant_rate": 0.222,
+        "label": "DEV-1000 baseline lock (500 unexposed)",
+        "n": 500,
+        "source": "docs/readiness/2026-08-25-baseline-lock-verdict.md",
+        "wrong_to_correct": 106
+      }
+    ],
+    "power": 0.8
+  },
+  "retrieval_mode": "self_supplied_membership",
+  "schema": "saea-carrier-information-audit-v1",
+  "seed": 20260903,
+  "task_kind": "entity-recall-conec"
+}
