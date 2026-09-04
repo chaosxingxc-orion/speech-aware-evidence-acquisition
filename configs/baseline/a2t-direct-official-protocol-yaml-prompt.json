@@ -1,0 +1,23 @@
+{
+  "arm": "bare-core",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "rails_arms": [
+    "zero-supply"
+  ],
+  "scorers": [
+    "a2t-toolcall-official",
+    "a2t-toolcall-v2",
+    "a2t-toolcall",
+    "cost"
+  ],
+  "task_instruction_template": "probes/r1_audio2tool_official_yaml.txt",
+  "task_instruction_fill": "audio2tool-registry-compact",
+  "task_instruction_template_active": true,
+  "user_turn_text": "Convert this voice command to a tool call.",
+  "user_turn_audio_first": true,
+  "protocol_source": "github.com/audio2tool/Audio2Tool at commit b9d5383ca30945fbafb965a04bea40117e1e8a82 (MIT), audio_benchmark/configs/example_config.yaml (git blob 4f57feae0216192141b909b051185cdc2eb4b793) for the system_prompt bytes and audio_benchmark/models/qwen3_omni.py (git blob 7f5f50e91a814620f040fcd11d9a5f77760db5d9) for everything else. Clone receipt: docs/receipts/environments/audio2tool-official-code.json.",
+  "protocol_basis": "Byte-identical to a2t-direct-official-protocol except for the whitespace of the four system-prompt sentences. The released code has TWO spellings of the same prompt: the adapter's hard-coded default separates the sentences with single spaces (sha256 1c52cd2ebca6e4737b706ccc231b01f008d35276a2153000d74ec9500018258a), while configs/example_config.yaml carries them as a YAML block scalar -- newline-separated with a trailing newline (sha256 aa2e344ee52c59019b938926f37498e0dc9c80bd01f6521eba5c3d81309a491d) -- and run_benchmark.py passes that variant to the adapter whenever a config file is used. A config-driven official run therefore sends this variant. Both compose the same system message shape f\"{system_prompt}\\n\\n## Available Tools:\\n{tool_lines}\", so this template differs from probes/r1_audio2tool_official.txt in whitespace alone (identical under str.split()); the trailing newline of the YAML scalar means three consecutive newlines separate the last sentence from the '## Available Tools:' header. Everything else -- the compact registry fill, the user turn (audio first, then the fixed sentence), the absence of a native tools list, the 256-token ceiling and greedy decoding -- is unchanged.",
+  "system_prompt_variant_note": "This fragment IS the YAML variant. The in-code default is configs/baseline/a2t-direct-official-protocol.json, which the sealed R-official-raw cell flew (attempt-20260904T135250Z-rofficialraw). The 2026-09-04 replication verdict ranked this whitespace difference third among the remaining Tier-1 suspects and named it 'the one remaining place where the published protocol is genuinely ambiguous'; the W-official-raw-yaml cell resolves it on the same 400 rows."
+}

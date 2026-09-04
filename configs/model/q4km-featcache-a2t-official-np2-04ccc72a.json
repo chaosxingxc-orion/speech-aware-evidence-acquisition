@@ -1,0 +1,39 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 900.0,
+  "runtime_receipt": "receipts/runtime-q4km-featcache-04ccc72a.json",
+  "server_args": [
+    "-c",
+    "49152",
+    "-np",
+    "2",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0"
+  ],
+  "serving_geometry": {
+    "slots": 2,
+    "slot_tokens": 24576,
+    "max_tokens": 256
+  },
+  "serving_geometry_basis": "The official-protocol raw-audio geometry of q4km-featcache-a2t-official-04ccc72a, re-derived for the tier-1 official-population roster and confirmed by that roster's own prompt-fit measurement. Identical request bytes; only the slot count differs, and it differs for exactly one reason: the released tier-1 population contains tier1_direct:003943, a 654.6325 s wav (a release synthesis defect for a four-word query), against a longest item of 35.714 s on the frozen 400. Speech cost follows the mmproj encoder's exact one-second window rule n_tokens = 13 * ceil(audio_seconds), which reproduces all 400 per-packet n_tokens of the A2T-CALIBRATION-400 promotion receipt without a single exception, so that row costs 13 * 655 = 8,515 speech tokens and the worst request needs 3,581 text + 8,515 speech + 256 completion + 2 special = 12,354 tokens. Geometry rule (2026-09-03 calibration preregistration section 4 item 3, unchanged): the largest slot count whose per-slot window still clears worst-required + the 8,192-token reserve, holding total context at the 49,152 this GPU is proven to serve on the raw-audio path. 49,152/2 = 24,576 per slot leaves a margin of 12,222 (>= 8,192); 49,152/3 = 16,384 leaves 4,030 and is refused. 24,576 is a multiple of 512, so llama-server's own rounding cannot make the live slot disagree with the declared one. core.flight.FlightRuntime.serve derives -np/-c from the adapter's serving_geometry(), so slots x slot_tokens must equal the -c above exactly. The 499 other rows would fit -np 3 easily; the whole roster is served at one geometry because a cell is one request set, not two.",
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 256,
+    "id_slot": "per-sample"
+  },
+  "prompt_order": "evidence-first-system-v2",
+  "server_env": {
+    "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/audio2tool-q4km-04ccc72a"
+  },
+  "model_materialization_root": "/home/chao",
+  "decoding_basis": "Unchanged from q4km-featcache-a2t-official-04ccc72a: max_tokens 256 is the published protocol's own max_new_tokens (audio_benchmark/models/qwen3_omni.py generate() default and configs/example_config.yaml, commit b9d5383c); temperature 0 is the greedy equivalent of the release's do_sample=false; the seed stays this study's 20260803 and is inert under greedy decoding. timeout_seconds is raised from 420 to 900 for the one 654.6325 s row, whose mmproj encode has no precedent in this repository's request history; every other row is a sub-seven-second wav."
+}

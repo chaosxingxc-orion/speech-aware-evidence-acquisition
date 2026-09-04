@@ -44,6 +44,7 @@ from .audio2tool_official import metrics as official_metrics
 from .audio2tool_official.parse import parse_tool_call as official_parse_tool_call
 from .toolcall_gold import A2T_GOLD_VERSION
 from .toolcall_scoring import (
+    A2T_PARSE_VERSION,
     A2T_SCORER_VERSION,
     AggregateScore,
     ItemScore,
@@ -176,6 +177,7 @@ def score_audio2tool_outputs(
 
     overall = _aggregate_view(aggregate(items))
     overall["scorer_version"] = A2T_SCORER_VERSION
+    overall["parse_version"] = A2T_PARSE_VERSION
     overall["gold_version"] = A2T_GOLD_VERSION
     overall["parse_failures"] = parse_failures
     overall["per_tier"] = {
@@ -291,6 +293,7 @@ def score_audio2tool_outputs_v2(
 
     overall = _aggregate_view_v2(aggregate_v2(items))
     overall["scorer_version"] = A2T_SCORER_V2_VERSION
+    overall["parse_version"] = A2T_PARSE_VERSION
     overall["gold_version"] = A2T_GOLD_VERSION
     overall["parse_failures"] = parse_failures
     overall["per_tier"] = {

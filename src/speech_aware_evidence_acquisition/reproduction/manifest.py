@@ -52,6 +52,58 @@ PROBES: dict[str, dict] = {
             "stays the reconstruction R1/A0/A0' flew."
         ),
     },
+    "R1-audio2tool-official-tier1-population": {
+        "arms": {"direct": ["r1_audio2tool_official.txt"]},
+        "scorer": "a2t-scorer-official-b9d5383c (the pinned Audio2Tool release's own metrics.py)",
+        "sampling": {
+            "seed": 20260803,
+            "design": (
+                "500 of the 2,146 tier-1 queries of the RELEASE's own population (first "
+                "successful speaker of every query_* directory), drawn uniformly without "
+                "replacement"
+            ),
+        },
+        "sample_receipt": "a2t-tier1-official-population-500.json",
+        "success": (
+            "three outcomes on the owner's 2026-09-04 alignment standard: ALIGNED = "
+            "official tier-1 tool accuracy within 3 pp of the published 92.4 or better; "
+            "CONSISTENT-WITHIN-NOISE = 92.4 inside the Wilson CI90 at n = 500 but outside "
+            "3 pp; FAIL otherwise"
+        ),
+        "profile": "baseline-reproduction",
+        "note": (
+            "Same template and same request as R1-audio2tool-official-protocol; only the "
+            "POPULATION differs. The 2026-09-04 replication verdict ranked the roster "
+            "first among the remaining Tier-1 suspects because the release evaluates the "
+            "first successful speaker of every query of a tier while the frozen 400 is 50 "
+            "mixed-speaker rows per tier. The receipt named above carries the 489 sample "
+            "ids of that draw which no earlier receipt covers; the other 11 resolve "
+            "through r1-audio2tool-sample.json and the two 104-row post-seal AgentLoop "
+            "scoring receipts."
+        ),
+    },
+    "R1-audio2tool-official-protocol-yaml": {
+        "arms": {"direct": ["r1_audio2tool_official_yaml.txt"]},
+        "scorer": "a2t-scorer-official-b9d5383c (the pinned Audio2Tool release's own metrics.py)",
+        "sampling": {"seed": _SEED, "design": "the SAME frozen 400 as R1-audio2tool-direct"},
+        "sample_receipt": "r1-audio2tool-sample.json",
+        "success": (
+            "reported as a paired contrast against the sealed R-official-raw manifest on "
+            "the same 400 rows, plus the same three-outcome alignment rule on tiers 1, 2, "
+            "5 and 6"
+        ),
+        "profile": "baseline-reproduction",
+        "note": (
+            "The released code has TWO spellings of the same four-sentence system prompt: "
+            "the adapter's hard-coded default separates them with single spaces (flown as "
+            "r1_audio2tool_official.txt) and configs/example_config.yaml carries them as a "
+            "YAML block scalar, newline-separated with a trailing newline, which "
+            "run_benchmark.py passes to the adapter whenever a config file is used. This "
+            "template is that second spelling; it differs from r1_audio2tool_official.txt "
+            "in whitespace alone (identical under str.split()). r1_audio2tool_official.txt "
+            "is UNCHANGED and stays what the sealed R-official-raw cell flew."
+        ),
+    },
     "R2-bba-cascade-vs-direct": {
         "arms": {
             "direct": ["r2_bba_direct.txt"],

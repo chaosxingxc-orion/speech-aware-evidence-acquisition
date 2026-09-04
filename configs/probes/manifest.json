@@ -36,6 +36,38 @@
       "scorer": "a2t-scorer-official-b9d5383c (the pinned Audio2Tool release's own metrics.py)",
       "success": "three outcomes: PASS = per-tier official tool accuracy |delta| <= 5pp vs the published Qwen3-Omni-30B row on tiers 1, 2, 5 and 6 with the tier rank order preserved; CONSISTENT-WITHIN-NOISE = the paper value inside the tier's Wilson CI90 (n=50) on those tiers but outside 5pp; FAIL otherwise"
     },
+    "R1-audio2tool-official-protocol-yaml": {
+      "arms": {
+        "direct": [
+          "r1_audio2tool_official_yaml.txt"
+        ]
+      },
+      "note": "The released code has TWO spellings of the same four-sentence system prompt: the adapter's hard-coded default separates them with single spaces (flown as r1_audio2tool_official.txt) and configs/example_config.yaml carries them as a YAML block scalar, newline-separated with a trailing newline, which run_benchmark.py passes to the adapter whenever a config file is used. This template is that second spelling; it differs from r1_audio2tool_official.txt in whitespace alone (identical under str.split()). r1_audio2tool_official.txt is UNCHANGED and stays what the sealed R-official-raw cell flew.",
+      "profile": "baseline-reproduction",
+      "sample_receipt": "r1-audio2tool-sample.json",
+      "sampling": {
+        "design": "the SAME frozen 400 as R1-audio2tool-direct",
+        "seed": 20260807
+      },
+      "scorer": "a2t-scorer-official-b9d5383c (the pinned Audio2Tool release's own metrics.py)",
+      "success": "reported as a paired contrast against the sealed R-official-raw manifest on the same 400 rows, plus the same three-outcome alignment rule on tiers 1, 2, 5 and 6"
+    },
+    "R1-audio2tool-official-tier1-population": {
+      "arms": {
+        "direct": [
+          "r1_audio2tool_official.txt"
+        ]
+      },
+      "note": "Same template and same request as R1-audio2tool-official-protocol; only the POPULATION differs. The 2026-09-04 replication verdict ranked the roster first among the remaining Tier-1 suspects because the release evaluates the first successful speaker of every query of a tier while the frozen 400 is 50 mixed-speaker rows per tier. The receipt named above carries the 489 sample ids of that draw which no earlier receipt covers; the other 11 resolve through r1-audio2tool-sample.json and the two 104-row post-seal AgentLoop scoring receipts.",
+      "profile": "baseline-reproduction",
+      "sample_receipt": "a2t-tier1-official-population-500.json",
+      "sampling": {
+        "design": "500 of the 2,146 tier-1 queries of the RELEASE's own population (first successful speaker of every query_* directory), drawn uniformly without replacement",
+        "seed": 20260803
+      },
+      "scorer": "a2t-scorer-official-b9d5383c (the pinned Audio2Tool release's own metrics.py)",
+      "success": "three outcomes on the owner's 2026-09-04 alignment standard: ALIGNED = official tier-1 tool accuracy within 3 pp of the published 92.4 or better; CONSISTENT-WITHIN-NOISE = 92.4 inside the Wilson CI90 at n = 500 but outside 3 pp; FAIL otherwise"
+    },
     "R2-bba-cascade-vs-direct": {
       "arms": {
         "direct": [
@@ -131,6 +163,20 @@
       "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
       "split_role": "discovery"
     },
+    "R1-audio2tool-official-protocol-yaml": {
+      "n_items": 400,
+      "receipt": "r1-audio2tool-sample.json",
+      "seed": 20260807,
+      "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+      "split_role": "discovery"
+    },
+    "R1-audio2tool-official-tier1-population": {
+      "n_items": 489,
+      "receipt": "a2t-tier1-official-population-500.json",
+      "seed": 20260803,
+      "split_identity_hash": "89515aac56db4acc7eaf11537bb62ce0388a49fb3616a45d984a0f50aa2903db",
+      "split_role": "discovery"
+    },
     "R2-bba-cascade-vs-direct": {
       "n_items": 200,
       "receipt": "r2-bba-sample.json",
@@ -160,6 +206,9 @@
     },
     "r1_audio2tool_official.txt": {
       "sha256": "9005ea0a512fca7c2f4ab75e65835f03454f956b3ee3dcfe7570ef5d41fc1e65"
+    },
+    "r1_audio2tool_official_yaml.txt": {
+      "sha256": "67f224aa4064baa6337f4eb4638626ccdf84558fc8913d1df3380bb6d74cd172"
     },
     "r2_bba_cascade_answer.txt": {
       "sha256": "974b65e34d419ae4fbdf520ec68f6c97fde75388709a4e37031a27647ff30703"

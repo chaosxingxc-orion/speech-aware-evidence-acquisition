@@ -12,11 +12,16 @@ from __future__ import annotations
 import pytest
 
 from speech_aware_evidence_acquisition.reproduction.toolcall_scoring import (
+    A2T_PARSE_VERSION,
     A2T_SCORER_VERSION,
     ToolCall,
     aggregate,
+    parse_call_string_calls,
     parse_tool_calls_text,
     score_item,
+)
+from speech_aware_evidence_acquisition.reproduction.audio2tool_official.parse import (
+    parse_tool_call as official_parse_tool_call,
 )
 
 
@@ -174,5 +179,112 @@ class TestParseToolCallsText:
         assert ok is False
 
 
+class TestParseCallStringContract:
+    """The released Audio2Tool protocol's own output contract.
+
+    The published prompt asks for ``tool_name(param1=value1, ...)``, so every
+    row of a faithful replication is a call string. Before 2026-09-04 this
+    parse read only the JSON array the repository's reconstructed prompt
+    asked for, and reported 0.0 with 400 parse failures on its own
+    paper-facing run.
+    """
+
+    def test_single_call_with_arguments(self):
+        calls, ok = parse_tool_calls_text('setLighting(room="kitchen", brightness=50)')
+        assert ok is True
+        assert calls == [ToolCall(name="setLighting", arguments={"room": "kitchen", "brightness": 50})]
+
+    def test_call_without_arguments(self):
+        calls, ok = parse_tool_calls_text("stopMusic()")
+        assert ok is True
+        assert calls == [ToolCall(name="stopMusic", arguments={})]
+
+    def test_multi_call_string_keeps_order(self):
+        calls, ok = parse_tool_calls_text("a(x=1); b()")
+        assert ok is True
+        assert calls == [
+            ToolCall(name="a", arguments={"x": 1}),
+            ToolCall(name="b", arguments={}),
+        ]
+
+    def test_multi_call_over_several_lines(self):
+        text = "setTemperature(value=72)" + chr(10) + "setFanSpeed(level=high)"
+        calls, ok = parse_tool_calls_text(text)
+        assert ok is True
+        assert [c.name for c in calls] == ["setTemperature", "setFanSpeed"]
+        assert calls[1].arguments == {"level": "high"}
+
+    def test_single_quotes_are_stripped_like_upstream(self):
+        calls, _ = parse_tool_calls_text("setLighting(room='kitchen')")
+        assert calls == [ToolCall(name="setLighting", arguments={"room": "kitchen"})]
+
+    def test_boolean_and_float_values_are_coerced(self):
+        calls, _ = parse_tool_calls_text("setState(enabled=true, level=0.5)")
+        assert calls == [ToolCall(name="setState", arguments={"enabled": True, "level": 0.5})]
+
+    def test_value_case_is_preserved_for_strings(self):
+        calls, _ = parse_tool_calls_text("setMode(mode=Eco)")
+        assert calls[0].arguments == {"mode": "Eco"}
+
+    def test_upstream_regex_edge_case_value_stops_at_comma(self):
+        # Upstream's argument regex captures ``[^,'"]+``, so a comma always
+        # ends a value even inside what a human would read as one phrase.
+        calls, _ = parse_tool_calls_text('sendMessage(text=hello, world)')
+        assert calls[0].name == "sendMessage"
+        assert calls[0].arguments == {"text": "hello"}
+
+    def test_upstream_regex_edge_case_span_stops_at_first_paren(self):
+        # ``(.*?)`` is non-greedy, so the FIRST closing paren ends the span:
+        # "outer(inner(x=1)" is one match whose argument text is "inner(x=1",
+        # and the trailing ")" starts no new span. Upstream reads the same
+        # thing; this asserts the shared behaviour rather than a nicer one.
+        calls, _ = parse_tool_calls_text("outer(inner(x=1))")
+        assert calls == [ToolCall(name="outer", arguments={"x": 1})]
+        assert official_parse_tool_call("outer(inner(x=1))")[0] == "outer"
+
+    def test_span_does_not_run_across_a_newline(self):
+        assert parse_call_string_calls("foo(" + chr(10) + "x=1)") == []
+
+    def test_prose_with_a_parenthetical_is_read_as_a_call_like_upstream(self):
+        # Documented, not desirable: the released parser has exactly this
+        # behaviour, and the point of this branch is to read the same spans
+        # the official scorer reads.
+        calls, ok = parse_tool_calls_text("Use the tool (see above)")
+        assert ok is True
+        assert calls == [ToolCall(name="tool", arguments={})]
+
+    def test_json_array_keeps_priority_over_a_call_shaped_span(self):
+        text = '[{"name": "setLighting", "arguments": {"room": "kitchen"}}]'
+        calls, ok = parse_tool_calls_text(text)
+        assert ok is True
+        assert calls == [ToolCall(name="setLighting", arguments={"room": "kitchen"})]
+
+    def test_first_call_agrees_with_the_vendored_official_parser(self):
+        for text in (
+            'setLighting(room="kitchen", brightness=50)',
+            "stopMusic()",
+            "a(x=1); b()",
+            "setState(enabled=true)",
+        ):
+            official_name, _, official_params = official_parse_tool_call(text)
+            calls = parse_call_string_calls(text)
+            assert calls, text
+            assert calls[0].name == official_name
+            assert {k: str(v) for k, v in calls[0].arguments.items()} == {
+                k: str(v) for k, v in official_params.items()
+            } or all(
+                str(calls[0].arguments[k]).lower() == str(v).lower()
+                for k, v in official_params.items()
+            )
+
+    def test_text_without_any_span_still_fails_closed(self):
+        calls, ok = parse_tool_calls_text("I would turn on the lights for you.")
+        assert (calls, ok) == ([], False)
+
+
 def test_version_constant_is_pinned():
     assert A2T_SCORER_VERSION == "a2t-scorer-v1"
+
+
+def test_parse_version_constant_is_pinned():
+    assert A2T_PARSE_VERSION == "a2t-parse-v2-json-or-callstring"

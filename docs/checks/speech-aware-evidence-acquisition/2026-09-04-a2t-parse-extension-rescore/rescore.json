@@ -1,0 +1,562 @@
+{
+  "boundary": "zero model, GPU, embedding and network contact. Every number is computed from outputs JSONL files that prior, separately-registered runs already sealed; gold enters only through the registered scorers, exactly as it does when a flight finalizes.",
+  "parse_version": "a2t-parse-v2-json-or-callstring",
+  "question_1_sealed_reproduction": {
+    "claim": "the extended parse tries JSON first, so a row that parsed before parses identically now; only a row that PREVIOUSLY FAILED to parse can move",
+    "manifests": [
+      {
+        "attempt_id": "attempt-20260904T135250Z-rofficialraw",
+        "cell_id": "R-official-raw",
+        "output_contract": "call-string (the released protocol)",
+        "run_id": "SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-V1",
+        "scorers": {
+          "a2t-toolcall": {
+            "fields": {
+              "exact_match": {
+                "changed": true,
+                "extended_parse": 0.135,
+                "sealed": 0.0
+              },
+              "parse_failures": {
+                "changed": true,
+                "extended_parse": 1,
+                "sealed": 400
+              },
+              "slot_f1": {
+                "changed": true,
+                "extended_parse": 0.21326616288832914,
+                "sealed": 0.0
+              },
+              "tool_accuracy": {
+                "changed": true,
+                "extended_parse": 0.5425,
+                "sealed": 0.0
+              }
+            },
+            "reproduces_sealed": false,
+            "sealed_aggregate_found": true
+          },
+          "a2t-toolcall-v2": {
+            "fields": {
+              "exact_match": {
+                "changed": true,
+                "extended_parse": 0.1475,
+                "sealed": 0.0
+              },
+              "parse_failures": {
+                "changed": true,
+                "extended_parse": 1,
+                "sealed": 400
+              },
+              "slot_f1": {
+                "changed": true,
+                "extended_parse": 0.2311111111111111,
+                "sealed": 0.0
+              },
+              "tool_accuracy": {
+                "changed": true,
+                "extended_parse": 0.5325,
+                "sealed": 0.0
+              },
+              "tool_accuracy_multiset": {
+                "changed": true,
+                "extended_parse": 0.5425,
+                "sealed": 0.0
+              }
+            },
+            "reproduces_sealed": false,
+            "sealed_aggregate_found": true
+          }
+        }
+      },
+      {
+        "attempt_id": "attempt-20260904T081627Z-a0primelegacyraw",
+        "cell_id": "A0prime-legacy-raw",
+        "output_contract": "JSON array (this repository's reconstruction)",
+        "run_id": "SAEA-A2T-DIRECT-CALIBRATION-V1",
+        "scorers": {
+          "a2t-toolcall": {
+            "fields": {
+              "exact_match": {
+                "changed": false,
+                "extended_parse": 0.24,
+                "sealed": 0.24
+              },
+              "parse_failures": {
+                "changed": false,
+                "extended_parse": 44,
+                "sealed": 44
+              },
+              "slot_f1": {
+                "changed": false,
+                "extended_parse": 0.33522267206477735,
+                "sealed": 0.33522267206477735
+              },
+              "tool_accuracy": {
+                "changed": false,
+                "extended_parse": 0.5175,
+                "sealed": 0.5175
+              }
+            },
+            "reproduces_sealed": true,
+            "sealed_aggregate_found": true
+          },
+          "a2t-toolcall-v2": {
+            "fields": {
+              "exact_match": {
+                "changed": false,
+                "extended_parse": 0.315,
+                "sealed": 0.315
+              },
+              "parse_failures": {
+                "changed": false,
+                "extended_parse": 44,
+                "sealed": 44
+              },
+              "slot_f1": {
+                "changed": false,
+                "extended_parse": 0.42126379137412234,
+                "sealed": 0.42126379137412234
+              },
+              "tool_accuracy": {
+                "changed": false,
+                "extended_parse": 0.505,
+                "sealed": 0.505
+              },
+              "tool_accuracy_multiset": {
+                "changed": false,
+                "extended_parse": 0.5175,
+                "sealed": 0.5175
+              }
+            },
+            "reproduces_sealed": true,
+            "sealed_aggregate_found": true
+          }
+        }
+      },
+      {
+        "attempt_id": "attempt-20260904T083403Z-p0legacypackets",
+        "cell_id": "P0-legacy-packets",
+        "output_contract": "JSON array (this repository's reconstruction)",
+        "run_id": "SAEA-A2T-DIRECT-CALIBRATION-V1",
+        "scorers": {
+          "a2t-toolcall": {
+            "fields": {
+              "exact_match": {
+                "changed": false,
+                "extended_parse": 0.235,
+                "sealed": 0.235
+              },
+              "parse_failures": {
+                "changed": false,
+                "extended_parse": 43,
+                "sealed": 43
+              },
+              "slot_f1": {
+                "changed": false,
+                "extended_parse": 0.33776387802971075,
+                "sealed": 0.33776387802971075
+              },
+              "tool_accuracy": {
+                "changed": false,
+                "extended_parse": 0.5275,
+                "sealed": 0.5275
+              }
+            },
+            "reproduces_sealed": true,
+            "sealed_aggregate_found": true
+          },
+          "a2t-toolcall-v2": {
+            "fields": {
+              "exact_match": {
+                "changed": false,
+                "extended_parse": 0.3075,
+                "sealed": 0.3075
+              },
+              "parse_failures": {
+                "changed": false,
+                "extended_parse": 43,
+                "sealed": 43
+              },
+              "slot_f1": {
+                "changed": false,
+                "extended_parse": 0.421256038647343,
+                "sealed": 0.421256038647343
+              },
+              "tool_accuracy": {
+                "changed": false,
+                "extended_parse": 0.515,
+                "sealed": 0.515
+              },
+              "tool_accuracy_multiset": {
+                "changed": false,
+                "extended_parse": 0.5275,
+                "sealed": 0.5275
+              }
+            },
+            "reproduces_sealed": true,
+            "sealed_aggregate_found": true
+          }
+        }
+      },
+      {
+        "attempt_id": "attempt-20260904T081627Z-a1nativeraw",
+        "cell_id": "A1-native-raw",
+        "output_contract": "native tools list; free-form text answers",
+        "run_id": "SAEA-A2T-DIRECT-CALIBRATION-V1",
+        "scorers": {
+          "a2t-toolcall": {
+            "fields": {
+              "exact_match": {
+                "changed": false,
+                "extended_parse": 0.2425,
+                "sealed": 0.2425
+              },
+              "parse_failures": {
+                "changed": true,
+                "extended_parse": 47,
+                "sealed": 52
+              },
+              "slot_f1": {
+                "changed": false,
+                "extended_parse": 0.4385786802030457,
+                "sealed": 0.4385786802030457
+              },
+              "tool_accuracy": {
+                "changed": false,
+                "extended_parse": 0.46,
+                "sealed": 0.46
+              }
+            },
+            "reproduces_sealed": false,
+            "sealed_aggregate_found": true
+          },
+          "a2t-toolcall-v2": {
+            "fields": {
+              "exact_match": {
+                "changed": false,
+                "extended_parse": 0.29,
+                "sealed": 0.29
+              },
+              "parse_failures": {
+                "changed": true,
+                "extended_parse": 47,
+                "sealed": 52
+              },
+              "slot_f1": {
+                "changed": false,
+                "extended_parse": 0.49433106575963714,
+                "sealed": 0.49433106575963714
+              },
+              "tool_accuracy": {
+                "changed": false,
+                "extended_parse": 0.4575,
+                "sealed": 0.4575
+              },
+              "tool_accuracy_multiset": {
+                "changed": false,
+                "extended_parse": 0.46,
+                "sealed": 0.46
+              }
+            },
+            "reproduces_sealed": false,
+            "sealed_aggregate_found": true
+          }
+        }
+      },
+      {
+        "attempt_id": "attempt-20260904T083403Z-p1nativepackets",
+        "cell_id": "P1-native-packets",
+        "output_contract": "native tools list; free-form text answers",
+        "run_id": "SAEA-A2T-DIRECT-CALIBRATION-V1",
+        "scorers": {
+          "a2t-toolcall": {
+            "fields": {
+              "exact_match": {
+                "changed": false,
+                "extended_parse": 0.2275,
+                "sealed": 0.2275
+              },
+              "parse_failures": {
+                "changed": true,
+                "extended_parse": 49,
+                "sealed": 53
+              },
+              "slot_f1": {
+                "changed": false,
+                "extended_parse": 0.4184615384615385,
+                "sealed": 0.4184615384615385
+              },
+              "tool_accuracy": {
+                "changed": false,
+                "extended_parse": 0.44,
+                "sealed": 0.44
+              }
+            },
+            "reproduces_sealed": false,
+            "sealed_aggregate_found": true
+          },
+          "a2t-toolcall-v2": {
+            "fields": {
+              "exact_match": {
+                "changed": false,
+                "extended_parse": 0.28,
+                "sealed": 0.28
+              },
+              "parse_failures": {
+                "changed": true,
+                "extended_parse": 49,
+                "sealed": 53
+              },
+              "slot_f1": {
+                "changed": false,
+                "extended_parse": 0.4779582366589327,
+                "sealed": 0.4779582366589327
+              },
+              "tool_accuracy": {
+                "changed": false,
+                "extended_parse": 0.435,
+                "sealed": 0.435
+              },
+              "tool_accuracy_multiset": {
+                "changed": false,
+                "extended_parse": 0.44,
+                "sealed": 0.44
+              }
+            },
+            "reproduces_sealed": false,
+            "sealed_aggregate_found": true
+          }
+        }
+      }
+    ]
+  },
+  "question_2_official_vs_v2_alignment": {
+    "cells": [
+      {
+        "alignment_band_pp": 3.0,
+        "attempt_id": "attempt-20260904T135250Z-rofficialraw",
+        "cell_id": "R-official-raw",
+        "overall": {
+          "exact_match_delta_v2_minus_official": -5.5,
+          "official_exact_match": 20.25,
+          "official_param_f1_macro": 31.6464,
+          "official_param_f1_micro": 27.3892,
+          "official_parse_rate": 99.75,
+          "official_rows_with_multiple_call_matches": 52,
+          "official_tool_accuracy": 61.0,
+          "samples": 400,
+          "tool_accuracy_delta_v2_minus_official": -7.75,
+          "v2_coerced_values": 0,
+          "v2_exact_match": 14.75,
+          "v2_extra_keys_stripped": 66,
+          "v2_parse_failures": 1,
+          "v2_slot_f1_micro": 23.1111,
+          "v2_tool_accuracy_multiset": 54.25,
+          "v2_tool_accuracy_ordered": 53.25
+        },
+        "per_tier": [
+          {
+            "exact_match_delta_v2_minus_official": 6.0,
+            "exact_match_within_band": false,
+            "official_exact_match": 12.0,
+            "official_param_f1_macro": 18.0,
+            "official_param_f1_micro": 2.9851,
+            "official_parse_rate": 100.0,
+            "official_rows_with_multiple_call_matches": 0,
+            "official_tool_accuracy": 60.0,
+            "rules_that_can_explain_a_gap": [
+              "default_argument_credit",
+              "primary_gold_tool_vs_full_expected_sequence"
+            ],
+            "samples": 50,
+            "tier": "tier1_direct",
+            "tool_accuracy_delta_v2_minus_official": 0.0,
+            "tool_accuracy_within_band": true,
+            "v2_exact_match": 18.0,
+            "v2_parse_failures": null,
+            "v2_slot_f1_micro": 0.0,
+            "v2_slot_f1_raw_micro": 0.0,
+            "v2_tool_accuracy_multiset": 60.0,
+            "v2_tool_accuracy_ordered": 60.0
+          },
+          {
+            "exact_match_delta_v2_minus_official": 0.0,
+            "exact_match_within_band": true,
+            "official_exact_match": 20.0,
+            "official_param_f1_macro": 44.2667,
+            "official_param_f1_micro": 44.4444,
+            "official_parse_rate": 100.0,
+            "official_rows_with_multiple_call_matches": 0,
+            "official_tool_accuracy": 74.0,
+            "rules_that_can_explain_a_gap": [],
+            "samples": 50,
+            "tier": "tier2_parametric",
+            "tool_accuracy_delta_v2_minus_official": 0.0,
+            "tool_accuracy_within_band": true,
+            "v2_exact_match": 20.0,
+            "v2_parse_failures": null,
+            "v2_slot_f1_micro": 37.037,
+            "v2_slot_f1_raw_micro": 34.1463,
+            "v2_tool_accuracy_multiset": 74.0,
+            "v2_tool_accuracy_ordered": 74.0
+          },
+          {
+            "exact_match_delta_v2_minus_official": -30.0,
+            "exact_match_within_band": false,
+            "official_exact_match": 32.0,
+            "official_param_f1_macro": 43.3333,
+            "official_param_f1_micro": 36.2069,
+            "official_parse_rate": 100.0,
+            "official_rows_with_multiple_call_matches": 27,
+            "official_tool_accuracy": 72.0,
+            "rules_that_can_explain_a_gap": [
+              "first_call_only_vs_ordered_sequence",
+              "primary_gold_tool_vs_full_expected_sequence",
+              "default_argument_credit"
+            ],
+            "samples": 50,
+            "tier": "tier3_multi_intent",
+            "tool_accuracy_delta_v2_minus_official": -44.0,
+            "tool_accuracy_within_band": false,
+            "v2_exact_match": 2.0,
+            "v2_parse_failures": null,
+            "v2_slot_f1_micro": 25.9459,
+            "v2_slot_f1_raw_micro": 23.5294,
+            "v2_tool_accuracy_multiset": 30.0,
+            "v2_tool_accuracy_ordered": 28.0
+          },
+          {
+            "exact_match_delta_v2_minus_official": 0.0,
+            "exact_match_within_band": true,
+            "official_exact_match": 16.0,
+            "official_param_f1_macro": 20.3333,
+            "official_param_f1_micro": 8.1967,
+            "official_parse_rate": 98.0,
+            "official_rows_with_multiple_call_matches": 0,
+            "official_tool_accuracy": 28.0,
+            "rules_that_can_explain_a_gap": [],
+            "samples": 50,
+            "tier": "tier4_implicit",
+            "tool_accuracy_delta_v2_minus_official": 0.0,
+            "tool_accuracy_within_band": true,
+            "v2_exact_match": 16.0,
+            "v2_parse_failures": null,
+            "v2_slot_f1_micro": 7.0175,
+            "v2_slot_f1_raw_micro": 6.5574,
+            "v2_tool_accuracy_multiset": 28.0,
+            "v2_tool_accuracy_ordered": 28.0
+          },
+          {
+            "exact_match_delta_v2_minus_official": -2.0,
+            "exact_match_within_band": true,
+            "official_exact_match": 18.0,
+            "official_param_f1_macro": 29.3333,
+            "official_param_f1_micro": 32.1678,
+            "official_parse_rate": 100.0,
+            "official_rows_with_multiple_call_matches": 0,
+            "official_tool_accuracy": 78.0,
+            "rules_that_can_explain_a_gap": [],
+            "samples": 50,
+            "tier": "tier5_needle",
+            "tool_accuracy_delta_v2_minus_official": 0.0,
+            "tool_accuracy_within_band": true,
+            "v2_exact_match": 16.0,
+            "v2_parse_failures": null,
+            "v2_slot_f1_micro": 27.6316,
+            "v2_slot_f1_raw_micro": 26.9231,
+            "v2_tool_accuracy_multiset": 78.0,
+            "v2_tool_accuracy_ordered": 78.0
+          },
+          {
+            "exact_match_delta_v2_minus_official": 0.0,
+            "exact_match_within_band": true,
+            "official_exact_match": 28.0,
+            "official_param_f1_macro": 36.5714,
+            "official_param_f1_micro": 25.7143,
+            "official_parse_rate": 100.0,
+            "official_rows_with_multiple_call_matches": 0,
+            "official_tool_accuracy": 84.0,
+            "rules_that_can_explain_a_gap": [],
+            "samples": 50,
+            "tier": "tier6_correction",
+            "tool_accuracy_delta_v2_minus_official": 0.0,
+            "tool_accuracy_within_band": true,
+            "v2_exact_match": 28.0,
+            "v2_parse_failures": null,
+            "v2_slot_f1_micro": 24.4604,
+            "v2_slot_f1_raw_micro": 24.2857,
+            "v2_tool_accuracy_multiset": 84.0,
+            "v2_tool_accuracy_ordered": 84.0
+          },
+          {
+            "exact_match_delta_v2_minus_official": 0.0,
+            "exact_match_within_band": true,
+            "official_exact_match": 18.0,
+            "official_param_f1_macro": 35.3333,
+            "official_param_f1_micro": 33.1034,
+            "official_parse_rate": 100.0,
+            "official_rows_with_multiple_call_matches": 0,
+            "official_tool_accuracy": 58.0,
+            "rules_that_can_explain_a_gap": [],
+            "samples": 50,
+            "tier": "tier7_multiturn",
+            "tool_accuracy_delta_v2_minus_official": 0.0,
+            "tool_accuracy_within_band": true,
+            "v2_exact_match": 18.0,
+            "v2_parse_failures": null,
+            "v2_slot_f1_micro": 28.3688,
+            "v2_slot_f1_raw_micro": 27.3973,
+            "v2_tool_accuracy_multiset": 58.0,
+            "v2_tool_accuracy_ordered": 58.0
+          },
+          {
+            "exact_match_delta_v2_minus_official": -18.0,
+            "exact_match_within_band": false,
+            "official_exact_match": 18.0,
+            "official_param_f1_macro": 26.0,
+            "official_param_f1_micro": 18.3333,
+            "official_parse_rate": 100.0,
+            "official_rows_with_multiple_call_matches": 25,
+            "official_tool_accuracy": 34.0,
+            "rules_that_can_explain_a_gap": [
+              "first_call_only_vs_ordered_sequence",
+              "primary_gold_tool_vs_full_expected_sequence",
+              "default_argument_credit"
+            ],
+            "samples": 50,
+            "tier": "tier8_intent_blending",
+            "tool_accuracy_delta_v2_minus_official": -18.0,
+            "tool_accuracy_within_band": false,
+            "v2_exact_match": 0.0,
+            "v2_parse_failures": null,
+            "v2_slot_f1_micro": 15.8192,
+            "v2_slot_f1_raw_micro": 13.3333,
+            "v2_tool_accuracy_multiset": 22.0,
+            "v2_tool_accuracy_ordered": 16.0
+          }
+        ],
+        "run_id": "SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-V1",
+        "scorer_versions": {
+          "official": "a2t-scorer-official-b9d5383c",
+          "official_commit": "b9d5383ca30945fbafb965a04bea40117e1e8a82",
+          "official_gold": "a2t-gold-official-release-loader",
+          "parse": "a2t-parse-v2-json-or-callstring",
+          "v2": "a2t-scorer-v2",
+          "v2_gold": "a2t-gold-v1"
+        }
+      }
+    ],
+    "claim": "the same sealed outputs and the same rows, read by the dataset's standard scorer and by this repository's current scorer, per tier, with every gap wider than the owner's 3-point band attributed to a named rule",
+    "rule_differences": {
+      "default_argument_credit": "v2 (rule V2b) DROPS a predicted argument key that no same-tool gold call carries when its value equals that tool's tools_registry.csv default; the official scorer counts every extra key as a parameter error and therefore as an exact-match failure. This is why v2 exact match runs far above the official figure on tiers whose gold is argument-free -- tier 1 above all.",
+      "first_call_only_vs_ordered_sequence": "The official HF path never populates all_tool_calls, so the official scorer reads ONLY the first parsed call and compares it with the primary gold tool. a2t-toolcall-v2 compares the whole ORDERED sequence of predicted calls with the whole expected sequence, so a row that names the right first tool and then a second one, or names one tool where gold expects two, is correct for the official scorer and wrong for v2. This is the dominant rule on the multi-call tiers (3, 8) and on any tier where the model volunteers a second call.",
+      "numeric_and_boolean_coercion": "v2 (rule V2d) compares a numeric-looking string to its numeric value and 'true'/'false' to the matching boolean. The official normalize_parameters reaches a similar place by a different route (int/float -> str(v), everything else -> str(v).strip().lower()), so this rule rarely separates the two on its own; it is listed because it can, when gold carries a value whose str() and float() spellings differ (e.g. 50 vs 50.0).",
+      "parameter_f1_definition": "The official parameter F1 is per-sample precision/recall over gold KEYS and their values, averaged over samples (a macro average, despite the paper's prose). v2's slot F1 is micro over (tool, key, value) TRIPLES across the manifest, so the two numbers answer different questions and are never expected to agree; they are reported side by side, not differenced for alignment.",
+      "primary_gold_tool_vs_full_expected_sequence": "Official gold is data.audio2tool.load_official_gold -- the release's own QuerySample: a primary tool_name plus verbatim extracted_params, with additional_tool_calls used only by the separate multi-tool metric. v2 gold is a2t-gold-v1, which builds the full expected call sequence and may take primary arguments from the expected_tool_call CALL STRING. The two are different gold objects, not two readings of one."
+    }
+  },
+  "run_id": "SAEA-A2T-MF-PARSE-EXTENSION-RESCORE-V1",
+  "schema": "saea-a2t-parse-extension-rescore-v1",
+  "study": "speech-aware-evidence-acquisition"
+}

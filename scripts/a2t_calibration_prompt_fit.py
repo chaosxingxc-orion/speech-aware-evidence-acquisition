@@ -70,6 +70,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import os
 import statistics
 import sys
@@ -407,6 +408,70 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--cells",
+        default=None,
+        help=(
+            "comma-separated cell ids to measure; omit to measure every cell the "
+            "experiment fragment declares. An experiment whose cells fly DIFFERENT "
+            "rosters must be measured one cell at a time, because --dataset supplies "
+            "the roster whose per-sample speech cost the fit is computed over"
+        ),
+    )
+    parser.add_argument(
+        "--speech-token-source",
+        choices=("promotion", "window-rule"),
+        default="promotion",
+        help=(
+            "where per-sample speech token counts come from. 'promotion' reads a packet "
+            "promotion receipt's own per-packet n_tokens (exact, but only exists for a "
+            "roster that has been preprocessed). 'window-rule' applies the mmproj "
+            "encoder's one-second window rule n_tokens = window_tokens * ceil(seconds) "
+            "to the roster's measured durations, after PROVING that rule reproduces "
+            "every per-packet n_tokens of a reference promotion receipt"
+        ),
+    )
+    parser.add_argument(
+        "--speech-window-tokens",
+        type=int,
+        default=13,
+        help="tokens the mmproj encoder emits per one-second audio window",
+    )
+    parser.add_argument(
+        "--speech-token-rule-reference-receipt",
+        type=Path,
+        default=Path(
+            "/home/chao/feat-cache/a2t-calibration-400-packets-04ccc72a/"
+            "A2T-CALIBRATION-400-promotion.json"
+        ),
+        help=(
+            "promotion receipt the window rule is proved against before it is applied "
+            "to an unpreprocessed roster (--speech-token-source window-rule)"
+        ),
+    )
+    parser.add_argument(
+        "--speech-token-rule-reference-roster",
+        type=Path,
+        default=(
+            REPO
+            / "docs/checks/speech-aware-evidence-acquisition"
+            / "2026-09-04-a2t-calibration-400-roster"
+            / "flight-roster-receipt.json"
+        ),
+        help="roster supplying the reference receipt's own per-sample durations",
+    )
+    parser.add_argument(
+        "--no-legacy-np-decision",
+        dest="emit_legacy_np_decision",
+        action="store_false",
+        help=(
+            "omit the calibration's own -np 3/-np 2 threshold block from the receipt; "
+            "the generic per-slot reserve decision is the rule that applies to any cell, "
+            "and the threshold block is meaningful only for the calibration cells it was "
+            "written for"
+        ),
+    )
+    parser.set_defaults(emit_legacy_np_decision=True)
+    parser.add_argument(
         "--expect-official-system-message",
         action="store_true",
         help=(
@@ -418,13 +483,38 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def official_system_message(lock, root) -> str | None:
-    """The pinned Audio2Tool release's own system message, built by ITS code.
+# The pinned release spells the same four-sentence system prompt two ways.
+# ``in-code-default`` is the HF adapter's hard-coded default (single spaces);
+# ``example-config-yaml`` is the YAML block scalar in
+# ``configs/example_config.yaml``, which ``run_benchmark.py`` passes to the
+# adapter whenever a config file is used (newline-separated, trailing
+# newline). They differ ONLY in whitespace.
+OFFICIAL_SYSTEM_PROMPT_VARIANTS = {
+    "in-code-default": (
+        "You are an AI assistant that converts voice commands into tool calls. "
+        "Listen to the audio and determine which tool should be called. "
+        "Output ONLY the tool call in the format: tool_name(param1=value1, param2=value2). "
+        "If no parameters are mentioned, output: tool_name()."
+    ),
+    "example-config-yaml": (
+        "You are an AI assistant that converts voice commands into tool calls.\n"
+        "Listen to the audio and determine which tool should be called.\n"
+        "Output ONLY the tool call in the format: tool_name(param1=value1, param2=value2).\n"
+        "If no parameters are mentioned, output: tool_name().\n"
+    ),
+}
+
+
+def official_system_messages(lock, root) -> dict[str, str] | None:
+    """The pinned Audio2Tool release's own system messages, built by ITS code.
 
     Imported from the local clone (``utils/tools_schema.py`` is stdlib-only:
     csv, pathlib, typing -- no torch, nothing installed), so this is a
     genuinely independent rendering of the same CSV, not a re-run of this
-    repository's fill. ``None`` when the clone is absent.
+    repository's fill. ``None`` when the clone is absent. One entry per
+    system-prompt variant the release itself carries; the composed message
+    shape ``f"{system_prompt}\n\n## Available Tools:\n{tool_lines}"`` is the
+    adapter's own and is identical for both.
     """
 
     clone = Path(str(root)) / "repos" / "audio2tool"
@@ -440,13 +530,69 @@ def official_system_message(lock, root) -> str | None:
     spec.loader.exec_module(module)
     csv_path = asset_dir(lock, AUDIO2TOOL_LOCK_KEY, root) / "tools_registry.csv"
     tool_lines = module.format_tools_compact(module.load_tools_from_csv(str(csv_path)))
-    system_prompt = (
-        "You are an AI assistant that converts voice commands into tool calls. "
-        "Listen to the audio and determine which tool should be called. "
-        "Output ONLY the tool call in the format: tool_name(param1=value1, param2=value2). "
-        "If no parameters are mentioned, output: tool_name()."
-    )
-    return f"{system_prompt}\n\n## Available Tools:\n{tool_lines}"
+    return {
+        name: f"{system_prompt}\n\n## Available Tools:\n{tool_lines}"
+        for name, system_prompt in OFFICIAL_SYSTEM_PROMPT_VARIANTS.items()
+    }
+
+
+def speech_tokens_by_window_rule(roster_items, *, window_tokens: int) -> dict[str, int]:
+    """``n_tokens = window_tokens * ceil(audio_seconds)`` per roster sample."""
+
+    return {
+        str(item["sample_id"]): window_tokens * int(math.ceil(float(item["audio_seconds"])))
+        for item in roster_items
+    }
+
+
+def verify_window_rule(
+    *, promotion_path: Path, roster_path: Path, window_tokens: int
+) -> dict[str, object]:
+    """Prove the one-second window rule against a promotion receipt whose
+    per-packet ``n_tokens`` the mmproj encoder actually produced.
+
+    Refuses on the first disagreement: a rule that is only usually right is
+    not a basis for certifying that every request fits its slot.
+    """
+
+    promotion = load_promotion_receipt(promotion_path)
+    measured_tokens = {
+        str(entry["packet_id"]).replace("/", ":"): int(entry["n_tokens"])
+        for entry in promotion["packets"]
+    }
+    roster = json.loads(Path(roster_path).read_text(encoding="utf-8"))
+    checked = 0
+    for item in roster["items"]:
+        sample_id = str(item["sample_id"])
+        actual = measured_tokens.get(sample_id)
+        if actual is None:
+            raise SystemExit(
+                "window-rule reference roster sample %s is absent from the reference "
+                "promotion receipt" % sample_id
+            )
+        predicted = window_tokens * int(math.ceil(float(item["audio_seconds"])))
+        if predicted != actual:
+            raise SystemExit(
+                "window rule (%d tokens per one-second window) predicts %d speech tokens "
+                "for %s but the mmproj encoder produced %d; refusing to certify a fit on "
+                "an unproved rule" % (window_tokens, predicted, sample_id, actual)
+            )
+        checked += 1
+    if checked != len(measured_tokens):
+        raise SystemExit(
+            "window-rule verification covered %d of the reference receipt's %d packets"
+            % (checked, len(measured_tokens))
+        )
+    return {
+        "window_tokens": window_tokens,
+        "rule": "n_tokens = window_tokens * ceil(audio_seconds)",
+        "reference_promotion_receipt": str(promotion_path),
+        "reference_promotion_receipt_sha256": sha256_file(promotion_path),
+        "reference_roster": str(roster_path),
+        "reference_roster_sha256": sha256_file(roster_path),
+        "packets_checked": checked,
+        "disagreements": 0,
+    }
 
 
 def main() -> int:
@@ -454,6 +600,16 @@ def main() -> int:
     lock = load_lock(umbrella_lock_path())
     root = data_root()
     cell_rows = cells(args.experiment)
+    if args.cells:
+        wanted = [part.strip() for part in str(args.cells).split(",") if part.strip()]
+        known = {str(cell["cell_id"]) for cell in cell_rows}
+        unknown = [name for name in wanted if name not in known]
+        if unknown:
+            raise SystemExit(
+                "unknown cell(s) %r; this experiment declares %s"
+                % (unknown, sorted(known))
+            )
+        cell_rows = [cell for cell in cell_rows if str(cell["cell_id"]) in wanted]
     envelopes = [
         envelope_for(cell, lock, root, experiment=args.experiment, dataset=args.dataset)
         for cell in cell_rows
@@ -472,29 +628,49 @@ def main() -> int:
     prompt_order = str(values["prompt_order"])
     context_per_slot = int(geometry["slot_tokens"])
 
-    # ---- exact speech tokens, from the registered promotion receipt ------
-    promotion_path = Path(
-        str(args.speech_token_receipt)
-        if args.speech_token_receipt is not None
-        else str(values["speech_packet_promotion_receipt"])
-    )
-    promotion = load_promotion_receipt(promotion_path)
-    speech_by_packet: dict[str, int] = {}
-    for entry in promotion["packets"]:
-        n_tokens = entry.get("n_tokens")
-        if not isinstance(n_tokens, int) or n_tokens <= 0:
-            raise SystemExit("promotion receipt packet lacks a positive n_tokens")
-        speech_by_packet[str(entry["packet_id"])] = n_tokens
-    roster = json.loads(
-        (REPO / str(values["a2t_calibration_subset_receipt"])).read_text(encoding="utf-8")
-    )
+    # ---- per-sample speech tokens ---------------------------------------
+    # Two sources, both grounded in the mmproj encoder's own output. A roster
+    # that has been packet-preprocessed has EXACT per-packet n_tokens; a
+    # roster that has not (a raw-audio cell needs no packets) is costed by the
+    # encoder's one-second window rule, which is first proved to reproduce
+    # every per-packet n_tokens of a reference promotion receipt.
+    roster_path = REPO / str(values["a2t_calibration_subset_receipt"])
+    roster = json.loads(roster_path.read_text(encoding="utf-8"))
+    promotion_path: Path | None = None
+    window_rule_proof: dict[str, object] | None = None
     speech_by_sample: dict[str, int] = {}
-    for item in roster["items"]:
-        sample_id = str(item["sample_id"])
-        packet_id = packet_id_for_sample(sample_id)
-        if packet_id not in speech_by_packet:
-            raise SystemExit("promotion receipt does not cover %s" % sample_id)
-        speech_by_sample[sample_id] = speech_by_packet[packet_id]
+    if args.speech_token_source == "window-rule":
+        window_rule_proof = verify_window_rule(
+            promotion_path=Path(args.speech_token_rule_reference_receipt),
+            roster_path=Path(args.speech_token_rule_reference_roster),
+            window_tokens=int(args.speech_window_tokens),
+        )
+        log(
+            "window rule PROVED on %d reference packets: %d tokens per one-second window"
+            % (window_rule_proof["packets_checked"], int(args.speech_window_tokens))
+        )
+        speech_by_sample = speech_tokens_by_window_rule(
+            roster["items"], window_tokens=int(args.speech_window_tokens)
+        )
+    else:
+        promotion_path = Path(
+            str(args.speech_token_receipt)
+            if args.speech_token_receipt is not None
+            else str(values["speech_packet_promotion_receipt"])
+        )
+        promotion = load_promotion_receipt(promotion_path)
+        speech_by_packet: dict[str, int] = {}
+        for entry in promotion["packets"]:
+            n_tokens = entry.get("n_tokens")
+            if not isinstance(n_tokens, int) or n_tokens <= 0:
+                raise SystemExit("promotion receipt packet lacks a positive n_tokens")
+            speech_by_packet[str(entry["packet_id"])] = n_tokens
+        for item in roster["items"]:
+            sample_id = str(item["sample_id"])
+            packet_id = packet_id_for_sample(sample_id)
+            if packet_id not in speech_by_packet:
+                raise SystemExit("promotion receipt does not cover %s" % sample_id)
+            speech_by_sample[sample_id] = speech_by_packet[packet_id]
     if len(speech_by_sample) != int(values["a2t_calibration_count"]):
         raise SystemExit("speech token coverage is incomplete")
     # The one real wav a non-speech-feature order needs to render its
@@ -514,37 +690,54 @@ def main() -> int:
         % (probe_media_sample_id, shortest["audio_seconds"])
     )
 
-    official_message = (
-        official_system_message(lock, root)
+    official_messages = (
+        official_system_messages(lock, root)
         if args.expect_official_system_message
         else None
     )
-    if args.expect_official_system_message and official_message is None:
+    if args.expect_official_system_message and official_messages is None:
         raise SystemExit(
             "--expect-official-system-message needs the pinned Audio2Tool clone at "
             "$SPEECHRL_DATA_DIR/repos/audio2tool (see "
             "docs/receipts/environments/audio2tool-official-code.json)"
         )
-    if official_message is not None:
+    official_variant_by_cell: dict[str, str] = {}
+    if official_messages is not None:
+        # A cell must render ONE of the release's own spellings of its system
+        # message; which one is recorded per cell, because the whitespace
+        # variant is itself a factor this flight varies.
+        by_text = {text: name for name, text in official_messages.items()}
         for envelope in envelopes:
-            if envelope["system_text"] != official_message:
+            variant = by_text.get(envelope["system_text"])
+            if variant is None:
                 raise SystemExit(
-                    "cell %s renders a system message that is NOT the pinned release's "
-                    "own (%s vs %s); refusing to certify a replication prompt that "
-                    "differs from the published one"
+                    "cell %s renders a system message that is NOT one of the pinned "
+                    "release's own spellings (%s; known: %s); refusing to certify a "
+                    "replication prompt that differs from the published one"
                     % (
                         envelope["cell_id"],
                         sha256_text(envelope["system_text"])[:16],
-                        sha256_text(official_message)[:16],
+                        ", ".join(
+                            "%s=%s" % (name, sha256_text(text)[:16])
+                            for name, text in sorted(official_messages.items())
+                        ),
                     )
                 )
-        log(
-            "official system message cross-check PASS: %d chars, sha256 %s"
-            % (len(official_message), sha256_text(official_message)[:16])
-        )
+            official_variant_by_cell[str(envelope["cell_id"])] = variant
+            log(
+                "official system message cross-check PASS for %s: variant %s, %d chars, "
+                "sha256 %s"
+                % (
+                    envelope["cell_id"],
+                    variant,
+                    len(envelope["system_text"]),
+                    sha256_text(envelope["system_text"])[:16],
+                )
+            )
     log(
-        "speech tokens from promotion receipt: %d samples, min=%d max=%d"
+        "speech tokens (%s): %d samples, min=%d max=%d"
         % (
+            args.speech_token_source,
             len(speech_by_sample),
             min(speech_by_sample.values()),
             max(speech_by_sample.values()),
@@ -837,17 +1030,34 @@ def main() -> int:
             "stop_forced": bool(stop_out.get("forced")) if stop_out else None,
         },
         "contacts": counts,
-        "speech_tokens": {
-            "source": str(promotion_path),
-            "source_sha256": sha256_file(promotion_path),
-            "basis": (
-                "the promotion receipt's own per-packet n_tokens -- the mmproj "
-                "encoder's exact output for these audio bytes, therefore the true "
-                "speech-token cost on both the raw-audio and the packet path"
-            ),
-            "distribution": distribution(list(speech_by_sample.values())),
-            "registered_geometry_assumption": "35.714 s x 14.4 tokens/s = 514",
-        },
+        "speech_tokens": (
+            {
+                "source": str(promotion_path),
+                "source_sha256": sha256_file(promotion_path),
+                "basis": (
+                    "the promotion receipt's own per-packet n_tokens -- the mmproj "
+                    "encoder's exact output for these audio bytes, therefore the true "
+                    "speech-token cost on both the raw-audio and the packet path"
+                ),
+                "distribution": distribution(list(speech_by_sample.values())),
+                "registered_geometry_assumption": "35.714 s x 14.4 tokens/s = 514",
+            }
+            if promotion_path is not None
+            else {
+                "source": "window rule over the roster's measured wav durations",
+                "source_sha256": sha256_file(roster_path),
+                "basis": (
+                    "n_tokens = %d * ceil(audio_seconds), the mmproj encoder's own "
+                    "one-second window; PROVED before use against every per-packet "
+                    "n_tokens of the reference promotion receipt named in "
+                    "window_rule_proof, with zero disagreements. This roster has no "
+                    "promotion receipt of its own because a raw-audio cell needs no "
+                    "packets" % int(args.speech_window_tokens)
+                ),
+                "distribution": distribution(list(speech_by_sample.values())),
+                "window_rule_proof": window_rule_proof,
+            }
+        ),
         "cells": cell_rows_out,
         "media_stand_in": {
             "sample_id": probe_media_sample_id,
@@ -867,14 +1077,37 @@ def main() -> int:
                     "tools_registry.csv, executed from "
                     "$SPEECHRL_DATA_DIR/repos/audio2tool"
                 ),
-                "official_sha256": sha256_text(official_message),
-                "official_chars": len(official_message),
-                "rendered_sha256": sha256_text(envelopes[0]["system_text"]),
+                "variants": {
+                    name: {
+                        "sha256": sha256_text(text),
+                        "chars": len(text),
+                        "system_prompt_sha256": sha256_text(
+                            OFFICIAL_SYSTEM_PROMPT_VARIANTS[name]
+                        ),
+                    }
+                    for name, text in sorted(official_messages.items())
+                },
+                "variant_by_cell": official_variant_by_cell,
+                "rendered_sha256_by_cell": {
+                    str(envelope["cell_id"]): sha256_text(envelope["system_text"])
+                    for envelope in envelopes
+                },
             }
-            if official_message is not None
+            if official_messages is not None
             else {"status": "NOT REQUESTED"}
         ),
-        "decision": decision,
+        "decision": (
+            decision
+            if args.emit_legacy_np_decision
+            else {
+                "status": "NOT APPLICABLE",
+                "reason": (
+                    "the -np 3 / -np 2 threshold block is the 2026-09-04 calibration's "
+                    "own rule for its own two raw cells; this run is read against the "
+                    "generic per-slot reserve decision below"
+                ),
+            }
+        ),
         "reserve_decision": reserve_decision,
         "boundary": (
             "zero generated tokens: only GET /props, POST /apply-template and POST "
@@ -908,7 +1141,12 @@ def main() -> int:
                 row["every_request_fits"],
             )
         )
-    log("DECISION: %s" % decision["applied"])
+    if args.emit_legacy_np_decision:
+        log("DECISION: %s" % decision["applied"])
+    log(
+        "RESERVE DECISION: reserve=%d all_cells_meet_reserve=%s"
+        % (reserve, reserve_decision["all_cells_meet_reserve"])
+    )
     return 0
 
 
