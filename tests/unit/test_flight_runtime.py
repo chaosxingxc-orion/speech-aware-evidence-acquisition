@@ -165,6 +165,13 @@ def _fake_session_starter(**kwargs: object) -> _FakeSession:
     return _FakeSession(str(kwargs["session_id"]))
 
 
+def _fake_session_stopper(session, **kwargs) -> Mapping[str, object]:
+    # Faked for the same reason every other seam is (module docstring): the
+    # real core.session.stop_session re-verifies a live process image and
+    # socket ownership, which a _FakeSession has none of.
+    return {"termination_signal": "SIGTERM", "forced": False}
+
+
 def _fake_transport_factory(values, root, *, session, runtime_receipt, runtime_root):
     return object()
 
@@ -298,6 +305,7 @@ def _make_repo(
 
 _HAPPY_PATH_KWARGS: dict[str, object] = {
     "session_starter": _fake_session_starter,
+    "session_stopper": _fake_session_stopper,
     "transport_factory": _fake_transport_factory,
     "runtime_receipt_loader": _fake_runtime_receipt_loader,
     "packet_promoter": _fake_packet_promoter,
@@ -1180,3 +1188,85 @@ def test_raw_audio_fixed_policy_still_routes_through_rails_runner(tmp_path):
 
     assert receipt["policy_kind"] == "direct"
     assert calls["count"] == 1
+
+
+# -- Phase 2b: serve() finally has a counterpart ---------------------------
+
+
+def test_stop_serving_stops_the_session_this_flight_started(tmp_path):
+    stopped: list[object] = []
+
+    def _stopper(session, **kwargs):
+        stopped.append((session, kwargs))
+        return {"termination_signal": "SIGTERM", "forced": False}
+
+    runtime = _make_runtime(tmp_path, happy_path=True, session_stopper=_stopper)
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    receipt = runtime.stop_serving()
+
+    assert receipt == {"termination_signal": "SIGTERM", "forced": False}
+    assert len(stopped) == 1
+    session, kwargs = stopped[0]
+    assert session.session_id.startswith("SAEA-TEST-RUN-001")
+    assert kwargs["force_after_timeout"] is True
+    assert str(kwargs["receipt_path"]).endswith(".session-stop-receipt.json")
+    # Idempotent: a second call stops nothing.
+    assert runtime.stop_serving() is None
+    assert len(stopped) == 1
+
+
+def test_stop_serving_is_a_noop_before_serve(tmp_path):
+    stopped: list[object] = []
+
+    def _stopper(session, **kwargs):
+        stopped.append(session)
+        return {}
+
+    runtime = _make_runtime(tmp_path, happy_path=True, session_stopper=_stopper)
+    assert runtime.stop_serving() is None
+    runtime.preflight()
+    runtime.preprocess()
+    assert runtime.stop_serving() is None
+    assert stopped == []
+
+
+def test_stop_serving_never_stops_a_reused_server(tmp_path):
+    stopped: list[str] = []
+
+    def _stopper(session, **kwargs):
+        stopped.append(session.session_id)
+        return {"termination_signal": "SIGTERM"}
+
+    repo_a = _make_repo(tmp_path / "a", "SAEA-TEST-A")
+    repo_b = _make_repo(tmp_path / "b", "SAEA-TEST-B")
+    owner = _make_runtime(
+        tmp_path,
+        run_id="SAEA-TEST-A",
+        attempt_id="attempt-a",
+        happy_path=True,
+        repo_root=repo_a,
+        session_stopper=_stopper,
+    )
+    borrower = _make_runtime(
+        tmp_path,
+        run_id="SAEA-TEST-B",
+        attempt_id="attempt-b",
+        happy_path=True,
+        repo_root=repo_b,
+        session_stopper=_stopper,
+    )
+    owner.preflight()
+    owner.preprocess()
+    owner.serve()
+    borrower.preflight()
+    borrower.preprocess()
+    borrower.serve(reuse=owner)
+
+    # The borrower must not stop a server it does not own.
+    assert borrower.stop_serving() is None
+    assert stopped == []
+    # The owner still can.
+    assert owner.stop_serving() is not None
+    assert len(stopped) == 1

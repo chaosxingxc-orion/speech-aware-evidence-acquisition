@@ -362,6 +362,11 @@ if "--calibration-400" in sys.argv:
     PLAN_AUDIO = 2300
     PLAN_GPU_HOURS = 0.3
     ATTEMPT_CORE_CEILING = 420
+    # Owner CPU-preprocessing baseline: ~20 workers on the 24-core host when
+    # no GPU campaign is flying (8 while one is). Promotion is the only
+    # parallel phase here -- the encode loop is one contact at a time
+    # against a single CPU-only sidecar.
+    PROMOTE_WORKERS = 20
     # The frozen 400's longest item is 35.714 s; at the registered 14.4
     # speech tokens per second that is 514 packet tokens, well past the
     # 104-row rosters' 455 ceiling. 560 leaves headroom without hiding an

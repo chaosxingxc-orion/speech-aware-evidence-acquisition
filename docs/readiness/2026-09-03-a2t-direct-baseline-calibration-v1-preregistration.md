@@ -224,3 +224,67 @@ No server or sidecar was started.
   `rails/controllers.py`, so the four `phase-*-v1` AGENT_CONTROLLERS ids commit `a80eef79` made
   visible to the scan had no import-side counterpart. The missing import was added; the check
   itself was always PASS.
+
+### 2026-09-04, Phase 2b (preprocessing, prompt fit, geometry decision)
+
+- **mmproj copy not required.** `/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/`
+  already held `mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf` at exactly the receipt's
+  `f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883`, so the raw-audio cells' new
+  `model_materialization_root` resolves on ext4 with no byte copied. Verified by `sha256sum` before
+  any server started.
+- **GPU power state** checked at mission start and again immediately before serving:
+  `enforced.power.limit` 100.00 W, max SM clock 3,090 MHz, 0 MiB used, ports 8080/8090 free. Not the
+  35 W Quiet-mode cap.
+- **Preprocessing (`SAEA-SN-A2T-CALIBRATION-400-PREPROCESS`) completed.** 400 encode contacts, 0
+  failures, 2,159.688 referenced speech-audio seconds, 721.5 s wall (690.4 s in-request), then 400
+  of 400 packets promoted in about 9 s at 20 workers. Report SHA-256
+  `b30ed122a33f88e246503267a73711f5c5ac0eca14c8c383db5090e9b96e280a`; promotion receipt SHA-256
+  `2b848b86a4228452d8965f4542005e3d28d3370243b3353dfd34c10cac2f8b92`. The GPU decoder on 8090 was
+  unreachable before and after. Row flipped to consumed=yes.
+- **Measured packet speech tokens: min 13, median 65, p90 143, p95 169, max 468** -- materially
+  below the 514 the registered geometry assumed from 35.714 s x 14.4 tokens/s. Every later window
+  figure in this log uses the measured 468, not the assumption.
+- **Prompt fit (`SAEA-A2T-DIRECT-CALIBRATION-PROMPT-FIT-V1`, prerequisite 3) completed with zero
+  generated tokens** -- 1 `GET /props`, 2 `POST /apply-template`, 4 `POST /tokenize`, no completion
+  endpoint. Receipt `docs/checks/speech-aware-evidence-acquisition/
+  2026-09-04-a2t-direct-calibration-400-v1/prompt-fit/prompt-fit.json` SHA-256
+  `d867d858ec3a0a7c2a10758dc2edb61a51eaec80b1c7abec19b4753daf6888d5`.
+
+| envelope | text tokens | worst required window | A0'/A1 slot 24,576 | P0/P1 slot 22,016 |
+|---|---:|---:|---:|---:|
+| legacy registry text | 13,236 | 14,730 | margin 9,846 | margin 7,286 |
+| native `tools` list (152) | 13,914 | 15,408 | margin 9,168 | margin 6,608 |
+
+- **The native contract is LARGER than the legacy one, by 678 tokens.** Section 1 framed the native
+  path as replacing 13k tokens of pasted registry text; the pinned template in fact renders the same
+  registry back at 13,914 tokens. Factor A is therefore a contract-shape comparison at matched
+  prompt volume, not a prompt-shrinking one -- and any later reading of A that attributes a gain to
+  "less context" is unsupported by this measurement.
+- **Section 8 raw-geometry rule applied: -np 3 -> -np 2.** A1's worst request needs 15,408 tokens,
+  above the 14,800 threshold, and left only 976 tokens of margin in a 16,384-token slot. The raw
+  fragment `configs/model/q4km-featcache-a2t-calibration-04ccc72a.json` now serves `-c 49152 -np 2`
+  (24,576 tokens per slot). All four cells fit with at least 6,608 tokens of margin.
+- **Serving-geometry defect found and fixed: llama-server rounds each slot's `n_ctx` up to a
+  multiple of 512.** The packet fragment's `-c 65535 -np 3` was served back by `GET /props` as
+  22,016 tokens per slot, not the declared 21,845, so the fragment, the adapter geometry and the
+  live server disagreed. The fragment now declares the post-rounding numbers (`-c 66048 -np 3`,
+  22,016 per slot) and the measurement refuses only when the live slot is SMALLER than declared.
+- **Runtime defect found and fixed: `serve()` had no counterpart.** A flight started an 18.5 GB
+  llama-server and never stopped it, so a second serving geometry could not obtain VRAM and the
+  process orphaned the server on exit. `FlightRuntime.stop_serving()` (seam `session_stopper`,
+  default `core.session.stop_session`) now stops only a server this flight itself started -- never a
+  reused one -- and `FlightQueue` stops the resident server on a genuine geometry change and from
+  `shutdown()`, tracking the owning flight separately from the most recent user.
+- **The 16-call smoke is registered and wired but NOT yet flown.** Two blockers were found and
+  both are now closed in configuration: (1) the smoke borrowed the flight fragment, whose
+  `execution_profile` is `baseline-reproduction`, so the gate refused it against its own
+  `bounded-discovery-probe` exposure row -- a new fragment
+  `configs/experiment/a2t-direct-calibration-400-smoke-v1.json` now carries the smoke's own profile,
+  its own 4-calls-per-cell plan and the same four cells; (2) with that fixed the gate PASSES and
+  preflight advances to `require_clean_study_repo`, which refuses this phase's own working tree.
+  The smoke therefore needs one commit of the Phase-2b artifacts before it can run; nothing else
+  stands in its way. Command after the commit, one geometry group at a time:
+  `python scripts/flights/run_calibration_cell.py --experiment a2t-direct-calibration-400-smoke-v1
+  --cells A0prime-legacy-raw,A1-native-raw --sample-ids <the four ids> --run`, then the same for
+  `P0-legacy-packets,P1-native-packets`.
+- No llama-server is left resident: ports 8080 and 8090 are free and the GPU reports 0 MiB used.

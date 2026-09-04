@@ -8,7 +8,7 @@
     "-c",
     "49152",
     "-np",
-    "3",
+    "2",
     "-fa",
     "on",
     "-ngl",
@@ -19,11 +19,11 @@
     "q8_0"
   ],
   "serving_geometry": {
-    "slots": 3,
-    "slot_tokens": 16384,
+    "slots": 2,
+    "slot_tokens": 24576,
     "max_tokens": 1024
   },
-  "serving_geometry_basis": "Raw-audio direct cells on build 04ccc72a with the bf16 mmproj loaded. Worst-case per-slot window = 13,236 legacy registry text tokens + 514 speech tokens (35.714 s longest item x 14.4 tokens/s) + 1,024 completion ceiling + 2 registered special tokens = 14,776; -c 49152 / -np 3 gives 16,384 per slot, a margin of 1,608 tokens. The sibling fragment q4km-featcache-a2t-np4-04ccc72a.json (-np 4, 12,288 per slot) cannot hold this request at all (-2,488) and is therefore not used for these cells. core.flight.FlightRuntime.serve derives -np/-c from the adapter's serving_geometry(), so slots x slot_tokens must equal the -c above exactly.",
+  "serving_geometry_basis": "Raw-audio direct cells on build 04ccc72a with the bf16 mmproj loaded. -np 2, applying the preregistration section 8 rule against the MEASURED prompt fit of 2026-09-04 (docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-direct-calibration-400-v1/prompt-fit/prompt-fit.json): the native tool-calling envelope renders to 13,914 text tokens through the pinned template -- 678 MORE than the 13,236-token legacy registry text, not fewer -- so the A1 worst request needs 13,914 + 468 measured speech tokens + 1,024 completion ceiling + 2 special = 15,408 tokens. That exceeds the 14,800-token threshold at which the rule requires -np 2, and it left only 976 tokens of margin in a 16,384-token slot. At -c 49152 / -np 2 each slot holds 24,576 tokens, a margin of 9,168 for A1 and 9,846 for A0'. core.flight.FlightRuntime.serve derives -np/-c from the adapter's serving_geometry(), so slots x slot_tokens must equal the -c above exactly; 24,576 is a multiple of 512 and the server does not round it.",
   "decoding_params": {
     "temperature": 0,
     "seed": 20260803,

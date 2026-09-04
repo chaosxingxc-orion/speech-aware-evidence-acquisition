@@ -70,7 +70,7 @@ from ..config import (
 )
 from ..model.speech_features import materialize_legacy_cached_speech_feature_packets
 from ..scoring_batch import load_score_jobs, run_score_batch
-from ..session import load_runtime_receipt, start_session
+from ..session import load_runtime_receipt, start_session, stop_session
 from ..split_receipt import VerifiedSplit
 from .receipts import FLIGHT_STAGES, FlightReceipts, require_mandatory_throughput_fields
 
@@ -316,6 +316,7 @@ class FlightRuntime:
         adapter_factory: Callable[[Mapping[str, object], Path], TaskAdapter],
         runtime_root: Path,
         session_starter: Callable[..., object] = start_session,
+        session_stopper: Callable[..., Mapping[str, object]] = stop_session,
         transport_factory: Callable[..., object] | None = None,
         gate_factory: Callable[..., object] = FrozenCoreGate.for_study_repo,
         rails_runner: Callable[..., object] = run_rails_experiment,
@@ -368,6 +369,7 @@ class FlightRuntime:
         self._attempt_id = attempt_id
         self._adapter_factory = adapter_factory
         self._session_starter = session_starter
+        self._session_stopper = session_stopper
         self._transport_factory = transport_factory
         self._gate_factory = gate_factory
         self._rails_runner = rails_runner
@@ -419,6 +421,7 @@ class FlightRuntime:
         self._binding = None
         self._output_rows: list[Mapping[str, object]] = []
         self._promotion_receipt: Mapping[str, object] | None = None
+        self._owns_session = False
 
     # -- small read-only accessors ---------------------------------------
 
@@ -909,6 +912,9 @@ class FlightRuntime:
             self._transport = reuse._transport
             self._runtime_receipt = reuse._runtime_receipt
             self._session_receipt_path = reuse._session_receipt_path
+            # A reused server belongs to the flight that started it; this
+            # flight must never stop it out from under that owner.
+            self._owns_session = False
             payload = {
                 "reused_from_attempt_id": reuse.attempt_id,
                 "session_id": self._session.session_id,
@@ -975,6 +981,7 @@ class FlightRuntime:
         startup_seconds = max(self._clock() - started, 0.0)
         self._session = session
         self._session_receipt_path = session_receipt_path
+        self._owns_session = True
 
         transport_factory = self._transport_factory or TRANSPORTS.resolve(str(values["transport"]))
         transport = transport_factory(
@@ -1001,6 +1008,47 @@ class FlightRuntime:
             "reused": False,
         }
         return self.receipts.record("serve", payload)
+
+    def stop_serving(self) -> Mapping[str, object] | None:
+        """Stop the resident server THIS flight started, with its own stop
+        receipt (``core.session.stop_session``, which re-verifies process
+        identity and socket ownership before SIGTERM -- never a broad
+        ``pkill``).
+
+        Returns ``None``, and stops nothing, when this flight never served
+        or merely reused another flight's server: a reused server belongs to
+        the flight that started it.
+
+        This exists because :meth:`serve` had no counterpart. A flight left
+        an 18.5 GB llama-server resident for the life of the process (and
+        orphaned it afterwards), so a second serving geometry could not get
+        the VRAM to start -- exactly the situation a two-geometry factorial
+        walks into. ``FlightQueue`` calls this on a genuine geometry change
+        and from ``shutdown()``.
+        """
+
+        if self._session is None or not self._owns_session:
+            return None
+        receipt_path = (
+            self._session_receipt_path.with_name(
+                self._session_receipt_path.name.replace(
+                    ".session-receipt.json", ".session-stop-receipt.json"
+                )
+            )
+            if self._session_receipt_path is not None
+            else None
+        )
+        stop_receipt = self._session_stopper(
+            self._session,
+            runtime_receipt=self._runtime_receipt,
+            runtime_root=self._runtime_root,
+            receipt_path=receipt_path,
+            force_after_timeout=True,
+        )
+        self._owns_session = False
+        self._session = None
+        self._transport = None
+        return stop_receipt
 
     # -- stage 4: run_phases ------------------------------------------------
 

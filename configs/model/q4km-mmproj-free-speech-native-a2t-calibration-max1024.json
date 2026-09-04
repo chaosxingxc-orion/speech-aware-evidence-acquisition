@@ -7,7 +7,7 @@
   "runtime_receipt": "receipts/runtime-q4km-mmproj-free.json",
   "server_args": [
     "-c",
-    "65535",
+    "66048",
     "-np",
     "3",
     "-b",
@@ -31,10 +31,10 @@
   ],
   "serving_geometry": {
     "slots": 3,
-    "slot_tokens": 21845,
+    "slot_tokens": 22016,
     "max_tokens": 1024
   },
-  "serving_geometry_basis": "mmproj-free speech-feature-packet cells on build 04ccc72a. Worst-case per-slot window = 13,236 legacy registry text tokens + 514 speech-packet tokens (35.714 s longest item x 14.4 tokens/s) + 1,024 completion ceiling + 2 registered special tokens = 14,776; 3 slots x 21,845 = 65,535 total, a margin of 7,069 tokens per slot. -c is 65,535 rather than 65,536 so that slots x slot_tokens is exact: core.flight.FlightRuntime.serve derives -c as slot_tokens x slots from the adapter's serving_geometry(), and a one-token disagreement between this fragment and the server it starts would be a silent geometry drift.",
+  "serving_geometry_basis": "mmproj-free speech-feature-packet cells on build 04ccc72a. Worst-case per-slot window = 13,236 legacy registry text tokens + 468 measured packet speech tokens (the promotion receipt's own maximum) + 1,024 completion ceiling + 2 registered special tokens = 14,730; 3 slots x 22,016 = 66,048 total, a margin of 7,286 tokens per slot. The numbers are the POST-ROUNDING ones the server actually serves: llama-server rounds each slot's n_ctx up to a multiple of 512, so an earlier -c 65535 was reported back by GET /props as 22,016 tokens per slot, not 21,845. core.flight.FlightRuntime.serve derives -c as slot_tokens x slots from the adapter's serving_geometry(), so these three numbers must agree with the live server exactly or the flight is certified against a geometry nobody serves.",
   "decoding_params": {
     "temperature": 0,
     "seed": 20260803,

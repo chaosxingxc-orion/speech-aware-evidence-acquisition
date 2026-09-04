@@ -1,0 +1,1684 @@
+{
+  "artifact_preflight": {
+    "current_build_legacy_cache_entries": 312,
+    "existing_packet_manifests": 0,
+    "promotion_receipt_exists": false
+  },
+  "attempt_id": "attempt-20260904T052508Z-a2tcalibration400prep",
+  "audio_seconds_total": 2159.688,
+  "boundary": "label-free: gold never opened, no response read semantically, the registered completion is one token; the GPU decoder on 8090 was never started, stopped, reconfigured or sent a request; its loopback reachability was observed before and after",
+  "config_hash": "e2dc87187a8833050daddbcf72eccb0886c56ff9a89f7d43a81b44f2096a65a4",
+  "core_client": {
+    "cost": {
+      "audio_seconds_used": 2159.6879999999983,
+      "calls_used": 400,
+      "completion_tokens_total": 400,
+      "latency_seconds_total": 690.3851286009995,
+      "prompt_tokens_total": 42849,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "fe843e1b4789d3f3b47731ddf5b1bb42d430b05afe74292afc9ca0a6368e2864"
+    },
+    "trace_manifest_hash": "eb937eefceead7fb650b082ef4892036ba0f63b7ad7c7e0a14170a506cf4704f"
+  },
+  "count": 400,
+  "encode_contacts": 400,
+  "encode_failures": [],
+  "fragments": {
+    "baseline": "speech-native-preprocess",
+    "dataset": "audio2tool-calibration-400",
+    "experiment": "a2t-calibration-400-preprocess",
+    "model": "q4km-preprocess-featcache-cpu-sidecar-a2t"
+  },
+  "gate": {
+    "umbrella_lock_sha256": "fe843e1b4789d3f3b47731ddf5b1bb42d430b05afe74292afc9ca0a6368e2864"
+  },
+  "generated_at": "2026-09-04T05:38:56.796679+00:00",
+  "gpu_decoder_reachable_after": false,
+  "gpu_decoder_reachable_before": false,
+  "legacy_cache_dir": "/home/chao/feat-cache/audio2tool-q4km-04ccc72a",
+  "llama_cpp_build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+  "packet_root": "/home/chao/feat-cache/a2t-calibration-400-packets-04ccc72a",
+  "packets_promoted": 400,
+  "plan": {
+    "attempt_core_ceiling": 420,
+    "planned_gpu_hours": 0.3,
+    "planned_model_calls": 400,
+    "planned_speech_audio_seconds": 2300
+  },
+  "prior_cache_disclosure": "The fresh roster was loaded directly from its hash-pinned receipt, without opening carrier task data. Every promoted legacy-cache entry is read from the current-build cache directory and bound to the current runtime receipt; no older-build cache provenance is accepted.",
+  "promotion_receipt": "/home/chao/feat-cache/a2t-calibration-400-packets-04ccc72a/A2T-CALIBRATION-400-promotion.json",
+  "promotion_receipt_sha256": "2b848b86a4228452d8965f4542005e3d28d3370243b3353dfd34c10cac2f8b92",
+  "prompt_fit_inheritance_allowed": null,
+  "prompt_fit_overflow_action": "No packet is truncated. Every later inference request must add exact rendered text, this packet's measured speech tokens, special tokens, and its completion ceiling, then require the complete window to be at most 24,576 tokens.",
+  "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SN-A2T-CALIBRATION-400-PREPROCESS/attempt-20260904T052508Z-a2tcalibration400prep",
+  "run_id": "SAEA-SN-A2T-CALIBRATION-400-PREPROCESS",
+  "schema": "saea-a2t-calibration-400-preprocess-report-v1",
+  "sidecar": {
+    "pid": 631,
+    "port": 8081
+  },
+  "sidecar_stop": {
+    "forced": false,
+    "termination_signal": "SIGTERM"
+  },
+  "speech_feature_tokens": {
+    "ceiling": 560,
+    "distribution": {
+      "count": 400,
+      "max": 468,
+      "mean": 77.1225,
+      "median": 65.0,
+      "min": 13,
+      "p90": 143,
+      "p95": 169,
+      "sum": 30849
+    },
+    "packets": [
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/000045"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/000062"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/000074"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/000077"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/000167"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/000178"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/000232"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/000270"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier1_direct/000362"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/000424"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/000579"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/000593"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/000620"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/000636"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/001124"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/001128"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier1_direct/001242"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier1_direct/001422"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/001432"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/001444"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/001607"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier1_direct/001631"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/001976"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/002212"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/002300"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/002510"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/002581"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/002609"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier1_direct/002687"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/002720"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/002728"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/002763"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/003109"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/003178"
+      },
+      {
+        "n_tokens": 13,
+        "packet_id": "tier1_direct/003198"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/003210"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/003343"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/003492"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier1_direct/003562"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/003651"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/003668"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/003706"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/003713"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier1_direct/003775"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/004040"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/004082"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/004145"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/004159"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier1_direct/004218"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier1_direct/004244"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/000045"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/000068"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier2_parametric/000132"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier2_parametric/000240"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/000247"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/000369"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier2_parametric/000421"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/000525"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier2_parametric/000568"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier2_parametric/000632"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier2_parametric/000695"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier2_parametric/000704"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier2_parametric/000713"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier2_parametric/000895"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier2_parametric/001004"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier2_parametric/001014"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/001365"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/001474"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/001644"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier2_parametric/001693"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier2_parametric/001720"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier2_parametric/001869"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/001972"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier2_parametric/002069"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier2_parametric/002197"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/002289"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier2_parametric/002334"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier2_parametric/002653"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/002787"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier2_parametric/003068"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier2_parametric/003115"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/003619"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/003631"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier2_parametric/003650"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/003923"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier2_parametric/004217"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/004290"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier2_parametric/004516"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/004826"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/005385"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier2_parametric/005407"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier2_parametric/005677"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier2_parametric/005678"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier2_parametric/005732"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier2_parametric/005856"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/005859"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier2_parametric/005891"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/006028"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier2_parametric/006210"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier2_parametric/006317"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier3_multi_intent/000078"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/000259"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/000419"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/000427"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier3_multi_intent/000760"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/000855"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier3_multi_intent/000879"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier3_multi_intent/000924"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/000998"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier3_multi_intent/001251"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier3_multi_intent/001424"
+      },
+      {
+        "n_tokens": 117,
+        "packet_id": "tier3_multi_intent/001487"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier3_multi_intent/001511"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier3_multi_intent/001562"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier3_multi_intent/001732"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier3_multi_intent/001914"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/002096"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier3_multi_intent/002103"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier3_multi_intent/002163"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/002166"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/002200"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier3_multi_intent/002264"
+      },
+      {
+        "n_tokens": 117,
+        "packet_id": "tier3_multi_intent/002382"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier3_multi_intent/002405"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/002421"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier3_multi_intent/002490"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier3_multi_intent/002553"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier3_multi_intent/002560"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier3_multi_intent/002645"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/002651"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier3_multi_intent/002818"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/002915"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier3_multi_intent/002970"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/002986"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/002995"
+      },
+      {
+        "n_tokens": 117,
+        "packet_id": "tier3_multi_intent/003058"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier3_multi_intent/003153"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier3_multi_intent/003220"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier3_multi_intent/003268"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier3_multi_intent/003469"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier3_multi_intent/003642"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/003740"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier3_multi_intent/003764"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier3_multi_intent/003816"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier3_multi_intent/003868"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/003973"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/003982"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier3_multi_intent/003994"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier3_multi_intent/004025"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier3_multi_intent/004291"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/000141"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier4_implicit/000216"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/000279"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier4_implicit/000469"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier4_implicit/000562"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier4_implicit/000655"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier4_implicit/000812"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/000900"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/001010"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/001034"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/001074"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier4_implicit/001148"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier4_implicit/001389"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier4_implicit/001409"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/001513"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier4_implicit/001541"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier4_implicit/001546"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier4_implicit/001628"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier4_implicit/001759"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier4_implicit/001855"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier4_implicit/002024"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier4_implicit/002046"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier4_implicit/002071"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier4_implicit/002119"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier4_implicit/002241"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier4_implicit/002314"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier4_implicit/002376"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier4_implicit/002412"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/002563"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier4_implicit/002649"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/002718"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/002719"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier4_implicit/002943"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/002987"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier4_implicit/003049"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier4_implicit/003079"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/003199"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier4_implicit/003312"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/003317"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier4_implicit/003370"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier4_implicit/003464"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier4_implicit/003473"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier4_implicit/003484"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/003523"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/003664"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier4_implicit/003734"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier4_implicit/003949"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier4_implicit/003979"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier4_implicit/004122"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier4_implicit/004273"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier5_needle/000060"
+      },
+      {
+        "n_tokens": 169,
+        "packet_id": "tier5_needle/000061"
+      },
+      {
+        "n_tokens": 156,
+        "packet_id": "tier5_needle/000151"
+      },
+      {
+        "n_tokens": 169,
+        "packet_id": "tier5_needle/000171"
+      },
+      {
+        "n_tokens": 169,
+        "packet_id": "tier5_needle/000241"
+      },
+      {
+        "n_tokens": 182,
+        "packet_id": "tier5_needle/000285"
+      },
+      {
+        "n_tokens": 117,
+        "packet_id": "tier5_needle/000534"
+      },
+      {
+        "n_tokens": 143,
+        "packet_id": "tier5_needle/000537"
+      },
+      {
+        "n_tokens": 143,
+        "packet_id": "tier5_needle/000595"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier5_needle/000757"
+      },
+      {
+        "n_tokens": 156,
+        "packet_id": "tier5_needle/000976"
+      },
+      {
+        "n_tokens": 143,
+        "packet_id": "tier5_needle/001059"
+      },
+      {
+        "n_tokens": 182,
+        "packet_id": "tier5_needle/001248"
+      },
+      {
+        "n_tokens": 156,
+        "packet_id": "tier5_needle/001296"
+      },
+      {
+        "n_tokens": 156,
+        "packet_id": "tier5_needle/001323"
+      },
+      {
+        "n_tokens": 117,
+        "packet_id": "tier5_needle/001368"
+      },
+      {
+        "n_tokens": 182,
+        "packet_id": "tier5_needle/001430"
+      },
+      {
+        "n_tokens": 143,
+        "packet_id": "tier5_needle/001458"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier5_needle/001532"
+      },
+      {
+        "n_tokens": 169,
+        "packet_id": "tier5_needle/001656"
+      },
+      {
+        "n_tokens": 182,
+        "packet_id": "tier5_needle/001679"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier5_needle/001687"
+      },
+      {
+        "n_tokens": 156,
+        "packet_id": "tier5_needle/001719"
+      },
+      {
+        "n_tokens": 130,
+        "packet_id": "tier5_needle/001795"
+      },
+      {
+        "n_tokens": 117,
+        "packet_id": "tier5_needle/001930"
+      },
+      {
+        "n_tokens": 169,
+        "packet_id": "tier5_needle/002007"
+      },
+      {
+        "n_tokens": 156,
+        "packet_id": "tier5_needle/002054"
+      },
+      {
+        "n_tokens": 156,
+        "packet_id": "tier5_needle/002215"
+      },
+      {
+        "n_tokens": 130,
+        "packet_id": "tier5_needle/002284"
+      },
+      {
+        "n_tokens": 195,
+        "packet_id": "tier5_needle/002396"
+      },
+      {
+        "n_tokens": 182,
+        "packet_id": "tier5_needle/002428"
+      },
+      {
+        "n_tokens": 169,
+        "packet_id": "tier5_needle/002546"
+      },
+      {
+        "n_tokens": 156,
+        "packet_id": "tier5_needle/002638"
+      },
+      {
+        "n_tokens": 195,
+        "packet_id": "tier5_needle/002640"
+      },
+      {
+        "n_tokens": 130,
+        "packet_id": "tier5_needle/002753"
+      },
+      {
+        "n_tokens": 130,
+        "packet_id": "tier5_needle/003107"
+      },
+      {
+        "n_tokens": 130,
+        "packet_id": "tier5_needle/003189"
+      },
+      {
+        "n_tokens": 195,
+        "packet_id": "tier5_needle/003305"
+      },
+      {
+        "n_tokens": 130,
+        "packet_id": "tier5_needle/003341"
+      },
+      {
+        "n_tokens": 156,
+        "packet_id": "tier5_needle/003355"
+      },
+      {
+        "n_tokens": 143,
+        "packet_id": "tier5_needle/003398"
+      },
+      {
+        "n_tokens": 156,
+        "packet_id": "tier5_needle/003592"
+      },
+      {
+        "n_tokens": 156,
+        "packet_id": "tier5_needle/003841"
+      },
+      {
+        "n_tokens": 130,
+        "packet_id": "tier5_needle/003863"
+      },
+      {
+        "n_tokens": 143,
+        "packet_id": "tier5_needle/003873"
+      },
+      {
+        "n_tokens": 143,
+        "packet_id": "tier5_needle/003935"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier5_needle/003940"
+      },
+      {
+        "n_tokens": 143,
+        "packet_id": "tier5_needle/004037"
+      },
+      {
+        "n_tokens": 156,
+        "packet_id": "tier5_needle/004078"
+      },
+      {
+        "n_tokens": 156,
+        "packet_id": "tier5_needle/004242"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/000008"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/000009"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier6_correction/000168"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier6_correction/000305"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier6_correction/000398"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/000484"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier6_correction/000590"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier6_correction/000631"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/000946"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/001056"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier6_correction/001329"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier6_correction/001489"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier6_correction/001618"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier6_correction/001756"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier6_correction/001764"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier6_correction/001766"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier6_correction/001794"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/001873"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier6_correction/002178"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/002179"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier6_correction/002205"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/002270"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier6_correction/002313"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/002430"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier6_correction/002461"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier6_correction/002548"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier6_correction/002630"
+      },
+      {
+        "n_tokens": 117,
+        "packet_id": "tier6_correction/002689"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/002740"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/002850"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier6_correction/002940"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier6_correction/002999"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/003043"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier6_correction/003103"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier6_correction/003197"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier6_correction/003198"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/003226"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/003267"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier6_correction/003450"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier6_correction/003568"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/003671"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier6_correction/003783"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/003820"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier6_correction/003856"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier6_correction/003900"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier6_correction/004017"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier6_correction/004155"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier6_correction/004160"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier6_correction/004215"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier6_correction/004281"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier7_multiturn/000009"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier7_multiturn/000043"
+      },
+      {
+        "n_tokens": 455,
+        "packet_id": "tier7_multiturn/000062"
+      },
+      {
+        "n_tokens": 117,
+        "packet_id": "tier7_multiturn/000091"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier7_multiturn/000214"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier7_multiturn/000272"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier7_multiturn/000274"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier7_multiturn/000293"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier7_multiturn/000318"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier7_multiturn/000330"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier7_multiturn/000348"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier7_multiturn/000418"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier7_multiturn/000440"
+      },
+      {
+        "n_tokens": 364,
+        "packet_id": "tier7_multiturn/000545"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier7_multiturn/000554"
+      },
+      {
+        "n_tokens": 117,
+        "packet_id": "tier7_multiturn/000599"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier7_multiturn/000637"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier7_multiturn/000739"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier7_multiturn/000813"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier7_multiturn/000818"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier7_multiturn/001098"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier7_multiturn/001129"
+      },
+      {
+        "n_tokens": 143,
+        "packet_id": "tier7_multiturn/001148"
+      },
+      {
+        "n_tokens": 39,
+        "packet_id": "tier7_multiturn/001240"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier7_multiturn/001272"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier7_multiturn/001292"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier7_multiturn/001293"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier7_multiturn/001418"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier7_multiturn/001453"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier7_multiturn/001516"
+      },
+      {
+        "n_tokens": 468,
+        "packet_id": "tier7_multiturn/001590"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier7_multiturn/001599"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier7_multiturn/001614"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier7_multiturn/001629"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier7_multiturn/001646"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier7_multiturn/001701"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier7_multiturn/001707"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier7_multiturn/001708"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier7_multiturn/001732"
+      },
+      {
+        "n_tokens": 169,
+        "packet_id": "tier7_multiturn/001734"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier7_multiturn/001777"
+      },
+      {
+        "n_tokens": 338,
+        "packet_id": "tier7_multiturn/001781"
+      },
+      {
+        "n_tokens": 26,
+        "packet_id": "tier7_multiturn/001834"
+      },
+      {
+        "n_tokens": 117,
+        "packet_id": "tier7_multiturn/001836"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier7_multiturn/001865"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier7_multiturn/001892"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier7_multiturn/001922"
+      },
+      {
+        "n_tokens": 182,
+        "packet_id": "tier7_multiturn/002099"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier7_multiturn/002115"
+      },
+      {
+        "n_tokens": 312,
+        "packet_id": "tier7_multiturn/002120"
+      },
+      {
+        "n_tokens": 208,
+        "packet_id": "tier8_intent_blending/000010"
+      },
+      {
+        "n_tokens": 117,
+        "packet_id": "tier8_intent_blending/000023"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier8_intent_blending/000039"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier8_intent_blending/000052"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier8_intent_blending/000061"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier8_intent_blending/000065"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier8_intent_blending/000108"
+      },
+      {
+        "n_tokens": 117,
+        "packet_id": "tier8_intent_blending/000160"
+      },
+      {
+        "n_tokens": 117,
+        "packet_id": "tier8_intent_blending/000185"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier8_intent_blending/000192"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier8_intent_blending/000201"
+      },
+      {
+        "n_tokens": 143,
+        "packet_id": "tier8_intent_blending/000213"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier8_intent_blending/000216"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier8_intent_blending/000220"
+      },
+      {
+        "n_tokens": 130,
+        "packet_id": "tier8_intent_blending/000224"
+      },
+      {
+        "n_tokens": 143,
+        "packet_id": "tier8_intent_blending/000231"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier8_intent_blending/000245"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier8_intent_blending/000249"
+      },
+      {
+        "n_tokens": 208,
+        "packet_id": "tier8_intent_blending/000269"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier8_intent_blending/000284"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier8_intent_blending/000305"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier8_intent_blending/000324"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier8_intent_blending/000339"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier8_intent_blending/000352"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier8_intent_blending/000355"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier8_intent_blending/000358"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier8_intent_blending/000372"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier8_intent_blending/000376"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier8_intent_blending/000423"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier8_intent_blending/000426"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier8_intent_blending/000433"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier8_intent_blending/000434"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier8_intent_blending/000441"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier8_intent_blending/000475"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier8_intent_blending/000484"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier8_intent_blending/000488"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier8_intent_blending/000489"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier8_intent_blending/000494"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier8_intent_blending/000528"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier8_intent_blending/000581"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier8_intent_blending/000631"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier8_intent_blending/000656"
+      },
+      {
+        "n_tokens": 117,
+        "packet_id": "tier8_intent_blending/000673"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier8_intent_blending/000696"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier8_intent_blending/000713"
+      },
+      {
+        "n_tokens": 65,
+        "packet_id": "tier8_intent_blending/000720"
+      },
+      {
+        "n_tokens": 78,
+        "packet_id": "tier8_intent_blending/000724"
+      },
+      {
+        "n_tokens": 91,
+        "packet_id": "tier8_intent_blending/000758"
+      },
+      {
+        "n_tokens": 104,
+        "packet_id": "tier8_intent_blending/000763"
+      },
+      {
+        "n_tokens": 52,
+        "packet_id": "tier8_intent_blending/000772"
+      }
+    ],
+    "within_ceiling": true
+  },
+  "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+  "study": "speech-aware-evidence-acquisition",
+  "subset_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-calibration-400-roster/flight-roster-receipt.json",
+  "subset_receipt_sha256": "6f352ea583d0bb91f77aad62e07bdad4d3210d066440fbfaee8e2af504853fe7"
+}

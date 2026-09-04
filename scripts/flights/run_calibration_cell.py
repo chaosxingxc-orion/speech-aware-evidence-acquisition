@@ -60,6 +60,7 @@ if (
     raise SystemExit("package resolves to %s, not the main checkout" % (_pkg.__file__,))
 
 from speech_aware_evidence_acquisition.core.config import compose  # noqa: E402
+from speech_aware_evidence_acquisition.core.flight.queue import FlightQueue  # noqa: E402
 from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime  # noqa: E402
 from speech_aware_evidence_acquisition.data.lock import (  # noqa: E402
     data_root,
@@ -300,11 +301,72 @@ def build_runtime(
     )
 
 
+def _run_queue(*, selected, runtimes, run_id, dry_run, max_workers) -> int:
+    """Run several cells through ``core.flight.FlightQueue``.
+
+    The queue is the owner rule's own realization: one resident server per
+    serving geometry, reused across same-geometry cells, stopped on a
+    genuine geometry change, with each sealed cell's official scoring
+    overlapped onto the next cell's generation. ``shutdown()`` in the
+    ``finally`` is what guarantees no llama-server is left resident if a
+    cell raises mid-queue.
+    """
+
+    queue = FlightQueue(runtimes, dry_run=dry_run)
+    summary: list[Mapping[str, object]] = []
+    try:
+        log("queue: %d cell(s) -> %s" % (len(selected), ", ".join(selected)))
+        entries = queue.run()
+        if len(entries) != len(runtimes):
+            raise SystemExit(
+                "queue dispatched %d of %d cells; a cell that never became ready "
+                "was left pending rather than silently dropped"
+                % (len(entries), len(runtimes))
+            )
+        scores = queue.drain_scores()
+        for entry, score in zip(entries, scores, strict=True):
+            summary.append(
+                {
+                    "attempt_id": entry.flight.attempt_id,
+                    "dry_run": entry.dry_run,
+                    "served_geometry": entry.served_geometry,
+                    "receipts": entry.flight.receipts.as_json(),
+                    "score": score,
+                }
+            )
+    finally:
+        queue.shutdown()
+        log("queue: shut down; no server left resident")
+    print(
+        json.dumps(
+            {"run_id": run_id, "cells": selected, "entries": summary},
+            indent=2,
+            sort_keys=True,
+            default=str,
+        )
+    )
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--experiment", default=DEFAULT_EXPERIMENT)
     parser.add_argument("--dataset", default=DEFAULT_DATASET)
-    parser.add_argument("--cell", required=True)
+    parser.add_argument(
+        "--cell",
+        default=None,
+        help="one cell id; mutually exclusive with --cells",
+    )
+    parser.add_argument(
+        "--cells",
+        default=None,
+        help=(
+            "comma-separated cell ids run through core.flight.FlightQueue, which "
+            "keeps ONE resident server per serving geometry, reuses it across "
+            "same-geometry cells, stops it on a genuine geometry change, and "
+            "overlaps each sealed cell's scoring with the next cell's generation"
+        ),
+    )
     parser.add_argument("--run-id", default=None)
     parser.add_argument("--attempt-id", default=None)
     parser.add_argument(
@@ -324,31 +386,57 @@ def main() -> int:
     args = parser.parse_args()
 
     cells = load_cells(args.experiment)
-    if args.cell not in cells:
-        raise SystemExit(
-            "unknown cell %r; this experiment declares %s" % (args.cell, sorted(cells))
-        )
-    cell = cells[args.cell]
-    run_id = args.run_id or str(load_experiment(args.experiment)["experiment_id"])
-    attempt_id = args.attempt_id or "attempt-%s-%s" % (
-        datetime.now(tz=timezone.utc).strftime("%Y%m%dT%H%M%SZ"),
-        args.cell.replace("-", "").lower(),
+    if bool(args.cell) == bool(args.cells):
+        raise SystemExit("give exactly one of --cell or --cells")
+    selected = (
+        [args.cell]
+        if args.cell
+        else [part.strip() for part in args.cells.split(",") if part.strip()]
     )
+    unknown = [name for name in selected if name not in cells]
+    if unknown:
+        raise SystemExit(
+            "unknown cell(s) %r; this experiment declares %s" % (unknown, sorted(cells))
+        )
+    run_id = args.run_id or str(load_experiment(args.experiment)["experiment_id"])
+    stamp = datetime.now(tz=timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     limit_sample_ids = (
         tuple(part.strip() for part in args.sample_ids.split(",") if part.strip())
         if args.sample_ids
         else None
     )
 
-    runtime = build_runtime(
-        cell=cell,
-        dataset=args.dataset,
-        experiment=args.experiment,
-        run_id=run_id,
-        attempt_id=attempt_id,
-        campaign_active=bool(args.campaign_active),
-        limit_sample_ids=limit_sample_ids,
-    )
+    def attempt_for(cell_id: str) -> str:
+        if args.attempt_id and len(selected) == 1:
+            return args.attempt_id
+        return "attempt-%s-%s" % (stamp, cell_id.replace("-", "").lower())
+
+    runtimes = [
+        build_runtime(
+            cell=cells[cell_id],
+            dataset=args.dataset,
+            experiment=args.experiment,
+            run_id=run_id,
+            attempt_id=attempt_for(cell_id),
+            campaign_active=bool(args.campaign_active),
+            limit_sample_ids=limit_sample_ids,
+        )
+        for cell_id in selected
+    ]
+
+    if len(selected) > 1:
+        return _run_queue(
+            selected=selected,
+            runtimes=runtimes,
+            run_id=run_id,
+            dry_run=bool(args.dry_run),
+            max_workers=args.max_workers,
+        )
+
+    cell = cells[selected[0]]
+    attempt_id = attempt_for(selected[0])
+    runtime = runtimes[0]
+    args.cell = selected[0]
 
     if args.dry_run:
         receipt = runtime.preflight()

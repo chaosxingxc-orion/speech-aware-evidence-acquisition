@@ -86,6 +86,12 @@ class FlightQueue:
         self._preflighted: set[int] = set()
         self._served_geometry: Mapping[str, object] | None = None
         self._served_flight: FlightRuntime | None = None
+        # The flight that actually STARTED the resident server. Distinct
+        # from _served_flight, which is just the most recent user of it: a
+        # reusing flight does not own the process and cannot stop it, so
+        # tracking only the latest user would silently lose the owner and
+        # leave the server resident forever.
+        self._server_owner: FlightRuntime | None = None
         self._score_pool_factory = score_pool_factory
         self._score_pool_instance: object | None = None
         self.completed: list[FlightQueueEntry] = []
@@ -170,8 +176,17 @@ class FlightQueue:
 
             geometry = dict(flight.adapter.serving_geometry())
             if self._served_geometry != geometry:
+                # A genuine geometry change: stop the resident server BEFORE
+                # starting the next one. Two 18.5 GB servers do not fit in
+                # this host's VRAM, and the previous one is finished with --
+                # every flight that used it has already sealed. Without this
+                # the second geometry's server simply fails to start (and
+                # the first was orphaned when the process exited).
+                if self._server_owner is not None:
+                    self._server_owner.stop_serving()
                 flight.serve()
                 self._served_flight = flight
+                self._server_owner = flight
                 self._served_geometry = geometry
             else:
                 flight.serve(reuse=self._served_flight)
@@ -202,8 +217,21 @@ class FlightQueue:
         return tuple(results)
 
     def shutdown(self) -> None:
+        """Drain the score pool and stop the resident server, in that order.
+
+        Scoring first: ``core.scoring_batch`` reads sealed bundles off disk
+        and never contacts the server, but draining before the stop keeps
+        the ordering obvious and costs nothing. The server stop is the half
+        that used to be missing entirely -- a queue that finished its last
+        flight left llama-server resident."""
+
         if self._score_pool_instance is not None:
             self._score_pool_instance.shutdown(wait=True)  # type: ignore[attr-defined]
+        if self._server_owner is not None:
+            self._server_owner.stop_serving()
+            self._server_owner = None
+            self._served_flight = None
+            self._served_geometry = None
 
 
 __all__ = [

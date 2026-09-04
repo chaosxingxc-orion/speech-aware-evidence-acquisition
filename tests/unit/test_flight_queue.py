@@ -131,6 +131,14 @@ def _fake_session_starter(**kwargs: object) -> _FakeSession:
     return _FakeSession(str(kwargs["session_id"]))
 
 
+def _fake_session_stopper(session, **kwargs) -> Mapping[str, object]:
+    # The session_stopper seam is faked here for the same reason every other
+    # seam is (module docstring): the real core.session.stop_session
+    # re-verifies a live process image and socket ownership, which a
+    # _FakeSession has none of.
+    return {"termination_signal": "SIGTERM", "forced": False}
+
+
 def _fake_transport_factory(values, root, *, session, runtime_receipt, runtime_root):
     return object()
 
@@ -250,6 +258,7 @@ def _make_flight(
     data_root.mkdir(parents=True, exist_ok=True)
     merged: dict[str, object] = {
         "session_starter": _fake_session_starter,
+        "session_stopper": _fake_session_stopper,
         "transport_factory": _fake_transport_factory,
         "runtime_receipt_loader": _fake_runtime_receipt_loader,
         "packet_promoter": _fake_packet_promoter,
@@ -377,3 +386,129 @@ def test_queue_overlaps_scoring_with_the_next_flights_generation(tmp_path):
     assert len(results) == 2
     assert all(result is not None for result in results)
     queue.shutdown()
+
+
+# ---------------------------------------------------------------------------
+# Phase 2b: one resident server at a time, per geometry.
+# ---------------------------------------------------------------------------
+
+
+def test_queue_stops_the_resident_server_before_a_geometry_change(tmp_path):
+    events: list[str] = []
+
+    def _tracking_session_starter(**kwargs):
+        events.append("start:%s" % kwargs["session_id"])
+        return _FakeSession(str(kwargs["session_id"]))
+
+    def _tracking_stopper(session, **kwargs):
+        events.append("stop:%s" % session.session_id)
+        return {"termination_signal": "SIGTERM", "forced": False}
+
+    narrow = _make_flight(
+        tmp_path,
+        run_id="SAEA-TEST-NARROW",
+        attempt_id="attempt-narrow",
+        adapter_cls=_FakeAdapter,
+        session_starter=_tracking_session_starter,
+        session_stopper=_tracking_stopper,
+    )
+    wide = _make_flight(
+        tmp_path,
+        run_id="SAEA-TEST-WIDE",
+        attempt_id="attempt-wide",
+        adapter_cls=_WideFakeAdapter,
+        session_starter=_tracking_session_starter,
+        session_stopper=_tracking_stopper,
+    )
+    queue = FlightQueue([narrow, wide])
+    queue.run()
+    queue.drain_scores()
+    queue.shutdown()
+
+    starts = [event for event in events if event.startswith("start:")]
+    stops = [event for event in events if event.startswith("stop:")]
+    assert len(starts) == 2
+    assert len(stops) == 2
+    # The first server is stopped BEFORE the second geometry's server starts:
+    # two 18.5 GB servers do not fit in this host's VRAM.
+    assert events.index(stops[0]) < events.index(starts[1])
+    assert stops[0].endswith("attempt-narrow")
+
+
+def test_queue_does_not_stop_a_server_it_keeps_reusing(tmp_path):
+    events: list[str] = []
+
+    def _tracking_session_starter(**kwargs):
+        events.append("start")
+        return _FakeSession(str(kwargs["session_id"]))
+
+    def _tracking_stopper(session, **kwargs):
+        events.append("stop")
+        return {"termination_signal": "SIGTERM"}
+
+    flights = [
+        _make_flight(
+            tmp_path,
+            run_id="SAEA-TEST-%d" % index,
+            attempt_id="attempt-%d" % index,
+            session_starter=_tracking_session_starter,
+            session_stopper=_tracking_stopper,
+        )
+        for index in (1, 2)
+    ]
+    queue = FlightQueue(flights)
+    queue.run()
+    queue.drain_scores()
+
+    # Same geometry: one start, and nothing stopped while flights remain.
+    assert events == ["start"]
+    queue.shutdown()
+    assert events == ["start", "stop"]
+
+
+def test_queue_shutdown_stops_the_last_resident_server(tmp_path):
+    stops: list[str] = []
+
+    def _tracking_stopper(session, **kwargs):
+        stops.append(session.session_id)
+        return {"termination_signal": "SIGTERM"}
+
+    flight = _make_flight(
+        tmp_path,
+        run_id="SAEA-TEST-ONLY",
+        attempt_id="attempt-only",
+        session_stopper=_tracking_stopper,
+    )
+    queue = FlightQueue([flight])
+    queue.run()
+    queue.drain_scores()
+    assert stops == []
+    queue.shutdown()
+    assert len(stops) == 1
+    # Idempotent.
+    queue.shutdown()
+    assert len(stops) == 1
+
+
+def test_dry_run_queue_starts_and_stops_nothing(tmp_path):
+    events: list[str] = []
+
+    def _tracking_session_starter(**kwargs):
+        events.append("start")
+        return _FakeSession(str(kwargs["session_id"]))
+
+    def _tracking_stopper(session, **kwargs):
+        events.append("stop")
+        return {}
+
+    flight = _make_flight(
+        tmp_path,
+        run_id="SAEA-TEST-DRY",
+        attempt_id="attempt-dry",
+        session_starter=_tracking_session_starter,
+        session_stopper=_tracking_stopper,
+    )
+    queue = FlightQueue([flight], dry_run=True)
+    queue.run()
+    queue.shutdown()
+    assert events == []
