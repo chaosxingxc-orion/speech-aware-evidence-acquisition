@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import threading
 import time
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
@@ -70,6 +71,7 @@ from ..config import (
 )
 from ..model.speech_features import materialize_legacy_cached_speech_feature_packets
 from ..scoring_batch import load_score_jobs, run_score_batch
+from ..tracing import set_current_trace_buffer
 from ..tracking import ledger_row_for_bundle
 from ..session import load_runtime_receipt, start_session, stop_session
 from ..split_receipt import VerifiedSplit
@@ -1320,6 +1322,200 @@ class FlightRuntime:
                 )
         return str(pair[0]), str(pair[1])
 
+    def _speech_feature_contact(
+        self, client: object, sample: object, decoding_params: Mapping[str, object] | None
+    ) -> Mapping[str, object]:
+        """One packet-path contact for one sample -- the unit both the
+        serial and the concurrent dispatcher run, so the two can never
+        disagree about what a contact is."""
+
+        descriptor = self.speech_packet_bindings()[sample.sample_id]
+        key_representation_id, matcher_policy_id = self._speech_feature_trace_ids()
+        messages = (
+            {"role": "system", "content": self._adapter.instruction(sample)},
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "input_speech_features",
+                        "speech_features": {
+                            "packet_id": descriptor["packet_id"],
+                            "sha256": descriptor["sha256"],
+                            "role": "query",
+                        },
+                    }
+                ],
+            },
+        )
+        response_text = client.complete(
+            messages,
+            decoding_params=decoding_params,
+            speech_feature_sample_id=sample.sample_id,
+            key_representation_id=key_representation_id,
+            matcher_policy_id=matcher_policy_id,
+        )
+        return self._row_for(sample, messages, response_text)
+
+    def _raw_audio_contact(
+        self, client: object, sample: object, decoding_params: Mapping[str, object] | None
+    ) -> Mapping[str, object]:
+        """One raw-audio contact for one sample, assembled exactly as
+        ``rails.runner._run_one_arm`` assembles it (same
+        ``adapter.assemble_prompt(sample, None)`` zero-supply shape, same
+        ``complete``, same post-hoc scoring). The serial path still goes
+        through ``rails_runner`` itself so a ``workers=1`` flight is
+        byte-identical to the sealed smoke; this exists for the concurrent
+        path, which the serial runner cannot express."""
+
+        messages = self._adapter.assemble_prompt(sample, None)
+        response_text = client.complete(messages, decoding_params=decoding_params)
+        return self._row_for(sample, messages, response_text)
+
+    def _row_for(
+        self, sample: object, messages: object, response_text: str
+    ) -> Mapping[str, object]:
+        consumption = self._adapter.extract_consumption(sample, None, response_text)
+        return {
+            "arm": self._arm(),
+            "sample_id": sample.sample_id,
+            "messages": list(messages),
+            "response_text": response_text,
+            "metrics": dict(self._adapter.score(sample, response_text)),
+            "consumption": consumption.as_json() if consumption is not None else None,
+        }
+
+    def _dispatch_concurrent(
+        self, client: object, *, workers: int
+    ) -> tuple[list[Mapping[str, object]], dict[str, object]]:
+        """Run one contact per sample across ``workers`` threads, each
+        pinned to its own ``id_slot``.
+
+        Invariants, and why each is what it is:
+
+        * **Exactly one contact per sample.** No batching of several samples
+          into one prompt -- the arm under test is a one-contact direct
+          baseline and merging prompts would change what is measured.
+        * **A worker owns one slot for its whole life** (``0..workers-1``,
+          taken once from a free-slot queue and never returned), so no two
+          in-flight requests ever share a llama-server slot and the
+          per-sample slot-affinity semantics the sentinel encodes are
+          preserved by construction. For a one-contact policy that is the
+          whole of affinity: a sample makes exactly one request, so
+          "the sample's requests share a slot" is trivially true.
+        * **At most ``workers`` requests in flight**, because the pool has
+          exactly that many threads. Queue depth is therefore irrelevant
+          here and is deliberately not a knob: with one contact per sample
+          there is no second request behind a sample to pipeline, so the
+          only thing a deeper queue could add is more in-flight requests
+          than slots, which is exactly what the slot pinning forbids.
+        * **Deterministic order.** Samples are handed out in
+          ``self._samples`` order and results are collected back into that
+          order, so the sealed outputs rows do not depend on completion
+          timing.
+        * **Trace safety, verified rather than assumed.**
+          ``core.tracing.TraceSink.emit`` holds NO lock: it check-then-sets
+          a dict and reopens the trace file per record, so concurrent
+          workers must not write it directly. Each task therefore emits into
+          its own ``core.tracing.TraceBuffer`` (bound through the contextvar
+          ``set_current_trace_buffer``, which is per-thread), and the parent
+          flushes those buffers one at a time, in sample order, through
+          ``FrozenCoreClient.flush_trace_buffer`` -- which serializes on the
+          client's own ``_state_lock``. The client's request counter and
+          timings, and the adapter's budget and metering counters, ARE
+          already lock-guarded (``_state_lock``/``_metering_lock``), which
+          is why nothing else needs one here.
+        * **A failure aborts cleanly.** Remaining work is cancelled and the
+          first exception is re-raised, but every buffer that did complete
+          is still flushed first, so the durable trace keeps what actually
+          happened rather than losing it to the abort.
+        """
+
+        from concurrent.futures import ThreadPoolExecutor  # noqa: PLC0415
+        from queue import Queue  # noqa: PLC0415
+
+        if isinstance(workers, bool) or not isinstance(workers, int) or workers < 1:
+            raise FlightRuntimeError("workers must be a positive integer")
+        packets = self.uses_speech_feature_packets()
+        contact = self._speech_feature_contact if packets else self._raw_audio_contact
+        base_decoding = dict(self._decoding_params() or {})
+        samples = tuple(self._samples)
+
+        free_slots: "Queue[int]" = Queue()
+        for slot in range(workers):
+            free_slots.put(slot)
+        thread_state = threading.local()
+        in_flight = 0
+        max_in_flight = 0
+        slots_used: set[int] = set()
+        meter = threading.Lock()
+        buffers: dict[int, object] = {}
+        make_buffer = getattr(client, "new_trace_buffer", None)
+
+        def one(index: int, sample: object) -> Mapping[str, object]:
+            nonlocal in_flight, max_in_flight
+            slot = getattr(thread_state, "slot", None)
+            if slot is None:
+                slot = free_slots.get_nowait()
+                thread_state.slot = slot
+            with meter:
+                in_flight += 1
+                max_in_flight = max(max_in_flight, in_flight)
+                slots_used.add(slot)
+            buffer = None
+            if callable(make_buffer):
+                buffer = make_buffer()
+                set_current_trace_buffer(buffer)
+                buffers[index] = buffer
+            try:
+                decoding_params = dict(base_decoding)
+                decoding_params["id_slot"] = slot
+                return contact(client, sample, decoding_params)
+            finally:
+                if buffer is not None:
+                    set_current_trace_buffer(None)
+                with meter:
+                    in_flight -= 1
+
+        rows: list[Mapping[str, object] | None] = [None] * len(samples)
+        error: BaseException | None = None
+        with ThreadPoolExecutor(
+            max_workers=workers, thread_name_prefix="saea-flight-contact"
+        ) as pool:
+            futures = {
+                pool.submit(one, index, sample): index
+                for index, sample in enumerate(samples)
+            }
+            for future, index in futures.items():
+                try:
+                    rows[index] = future.result()
+                except BaseException as failure:  # noqa: BLE001 -- re-raised below
+                    if error is None:
+                        error = failure
+                    for pending in futures:
+                        pending.cancel()
+
+        # Flush in SAMPLE order, whatever the completion order was, and do it
+        # even when a task failed so the durable trace keeps the contacts
+        # that really happened.
+        flush = getattr(client, "flush_trace_buffer", None)
+        if callable(flush):
+            for index in sorted(buffers):
+                flush(buffers[index])
+        if error is not None:
+            raise error
+        return list(rows), {
+            "workers": workers,
+            "max_in_flight": max_in_flight,
+            "slot_ids_used": sorted(slots_used),
+            "dispatch": "concurrent",
+            "contacts_per_sample": 1,
+            "queue_depth": (
+                "not a knob: one contact per sample means nothing queues behind a "
+                "sample, and more in-flight requests than slots is what the slot "
+                "pinning exists to forbid"
+            ),
+        }
+
     def _run_speech_feature_direct(self, client: object) -> list[Mapping[str, object]]:
         """The fixed-policy direct arm for the speech-feature packet audio
         path: ONE contact per sample, carrying exactly one
@@ -1397,20 +1593,36 @@ class FlightRuntime:
         return rows
 
     def _dispatch_fixed_policy(
-        self, client: object, plan: ExecutionPlan
-    ) -> tuple[list[Mapping[str, object]], int, str]:
+        self, client: object, plan: ExecutionPlan, *, workers: int | None = None
+    ) -> tuple[list[Mapping[str, object]], int, str, dict[str, object]]:
         """The ``policy == "fixed"`` dispatch, factored out so
         :meth:`wire_check` drives the SAME code path a real flight does --
         a wiring proof that ran its own copy of this would prove nothing
         about the flight."""
 
         baseline_values = self._composed.values
-        if self.uses_speech_feature_packets():
+        packets = self.uses_speech_feature_packets()
+        resolved = (
+            int(self._adapter.serving_geometry()["slots"]) if workers is None else int(workers)
+        )
+        if resolved > 1:
+            rows, dispatch = self._dispatch_concurrent(client, workers=resolved)
+            kind = "direct-speech-feature-packets" if packets else "direct"
+            return rows, len(rows), kind, dispatch
+        serial = {
+            "workers": 1,
+            "max_in_flight": 1,
+            "slot_ids_used": [SEQUENTIAL_DISPATCH_SLOT],
+            "dispatch": "serial",
+            "contacts_per_sample": 1,
+            "queue_depth": "not a knob for a one-contact policy",
+        }
+        if packets:
             # Same fixed policy, same one contact per sample -- but through
             # the packet content part rails.runner cannot express (see
             # :meth:`_run_speech_feature_direct`).
             rows = self._run_speech_feature_direct(client)
-            return rows, len(rows), "direct-speech-feature-packets"
+            return rows, len(rows), "direct-speech-feature-packets", serial
         arms = tuple(baseline_values.get("rails_arms", RAILS_ARMS))
         summary = self._rails_runner(
             data_root=self._data_root,
@@ -1421,9 +1633,14 @@ class FlightRuntime:
             arms=arms,
             decoding_params=self._decoding_params(),
         )
-        return self._rows_from_direct_summary(summary), len(summary.results), "direct"
+        return (
+            self._rows_from_direct_summary(summary),
+            len(summary.results),
+            "direct",
+            serial,
+        )
 
-    def run_phases(self) -> Mapping[str, object]:
+    def run_phases(self, *, workers: int | None = None) -> Mapping[str, object]:
         """Build a ``client_factory`` (default ``FrozenCoreClient``) from
         :meth:`frozen_core_client_kwargs`, then dispatch on the baseline
         fragment's ``policy``: ``"fixed"`` runs ``rails_runner`` (default
@@ -1451,10 +1668,14 @@ class FlightRuntime:
         self._client = client
 
         started = self._clock()
+        dispatch: dict[str, object] = {"dispatch": "phase-program"}
         if policy == "fixed":
-            self._output_rows, contact_count, policy_kind = self._dispatch_fixed_policy(
-                client, self._plan
-            )
+            (
+                self._output_rows,
+                contact_count,
+                policy_kind,
+                dispatch,
+            ) = self._dispatch_fixed_policy(client, self._plan, workers=workers)
         else:
             program = default_phase_program(policy)
             binding = getattr(self, "_phase_program_material", None)
@@ -1487,8 +1708,15 @@ class FlightRuntime:
         average_latency = sum(latencies) / len(latencies) if latencies else 0.0
         slots = int(self._adapter.serving_geometry()["slots"])
         contacts_per_second = contact_count / wall_seconds
+        # Occupancy is measured against the slots this dispatch actually
+        # used, not against the server's slot count: a serial dispatch on a
+        # 3-slot server occupies one slot, and reporting it as a third of
+        # three would understate exactly the thing the number is for.
+        occupancy_slots = int(dispatch.get("workers") or slots)
         slot_occupancy = (
-            (contact_count * average_latency) / (wall_seconds * slots) if slots > 0 else 0.0
+            (contact_count * average_latency) / (wall_seconds * occupancy_slots)
+            if occupancy_slots > 0
+            else 0.0
         )
         # Estimate only: an UPPER BOUND (measured contact rate times this
         # task's declared completion-token ceiling), not an exact figure --
@@ -1520,6 +1748,9 @@ class FlightRuntime:
             "tokens_per_second": tokens_per_second_estimate,
             "tokens_per_second_basis": "contacts_per_second_times_completion_token_ceiling_upper_bound_estimate",
             "response_arrival": self.response_arrival_counts(client),
+            "dispatch": dispatch,
+            "serving_slots": slots,
+            "occupancy_slots": occupancy_slots,
         }
         require_mandatory_throughput_fields(
             "run_phases", payload, ("contacts_per_second", "tokens_per_second")
@@ -1881,6 +2112,7 @@ class FlightRuntime:
         *,
         seal_and_score: bool = True,
         max_workers: int = 1,
+        workers: int | None = None,
         response_text: str = WIRE_CHECK_RESPONSE_TEXT,
     ) -> Mapping[str, object]:
         """Drive this flight's ENTIRE request path against a fake transport,
@@ -1951,7 +2183,9 @@ class FlightRuntime:
         self._client = client
 
         started = self._clock()
-        rows, contact_count, policy_kind = self._dispatch_fixed_policy(client, plan)
+        rows, contact_count, policy_kind, dispatch = self._dispatch_fixed_policy(
+            client, plan, workers=workers
+        )
         wall_seconds = max(self._clock() - started, 1e-9)
         self._output_rows = rows
 
@@ -2037,6 +2271,7 @@ class FlightRuntime:
             "sample_count": len(self._samples),
             "contact_count": contact_count,
             "policy_kind": policy_kind,
+            "dispatch": dispatch,
             "wall_seconds": wall_seconds,
             "payload_keys": sorted(first),
             "payload_keys_equal_arm_visible_fields": True,

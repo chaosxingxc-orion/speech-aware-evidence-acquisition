@@ -106,6 +106,12 @@ class _FakeTiming:
 
 
 class _FakeClient:
+    def complete(self, messages, **kwargs):
+        """A client that cannot complete is not a client: the concurrent
+        dispatcher (default workers = slots) calls this directly."""
+
+        return "resp"
+
     def __init__(self, **kwargs: object) -> None:
         self.arm = kwargs.get("arm", "test-arm")
         self.timings = (
@@ -357,9 +363,12 @@ def _make_flight(
 def test_queue_prefers_same_geometry_flights_over_earlier_arrivals(tmp_path):
     order: list[str] = []
 
-    def _tracking_rails_runner(**kwargs):
+    def _tracking_client_factory(**kwargs):
+        # Dispatch order is tracked at client construction, not at the
+        # rails_runner seam: with the default concurrent dispatch
+        # (workers = slots) a fixed-policy flight never reaches that seam.
         order.append(kwargs["plan"].run_id)
-        return _fake_rails_runner(**kwargs)
+        return _FakeClient(**kwargs)
 
     starts = {"count": 0}
 
@@ -369,15 +378,15 @@ def test_queue_prefers_same_geometry_flights_over_earlier_arrivals(tmp_path):
 
     flight_a = _make_flight(
         tmp_path, run_id="SAEA-Q-NARROW-A", attempt_id="attempt-a", adapter_cls=_FakeAdapter,
-        rails_runner=_tracking_rails_runner, session_starter=_counting_session_starter,
+        client_factory=_tracking_client_factory, session_starter=_counting_session_starter,
     )
     flight_b = _make_flight(
         tmp_path, run_id="SAEA-Q-WIDE-B", attempt_id="attempt-b", adapter_cls=_WideFakeAdapter,
-        rails_runner=_tracking_rails_runner, session_starter=_counting_session_starter,
+        client_factory=_tracking_client_factory, session_starter=_counting_session_starter,
     )
     flight_c = _make_flight(
         tmp_path, run_id="SAEA-Q-NARROW-C", attempt_id="attempt-c", adapter_cls=_FakeAdapter,
-        rails_runner=_tracking_rails_runner, session_starter=_counting_session_starter,
+        client_factory=_tracking_client_factory, session_starter=_counting_session_starter,
     )
 
     queue = FlightQueue([flight_a, flight_b, flight_c])

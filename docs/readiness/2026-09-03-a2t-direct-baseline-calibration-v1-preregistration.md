@@ -662,3 +662,51 @@ native arms, zero model contacts.
 
 Phase 3b is the registered 1,608-call flight; `SAEA-A2T-DIRECT-CALIBRATION-V1` remains
 `consumed = no`.
+
+### 2026-09-04, Phase 3b-prep: concurrent dispatch against the loaded model (zero contacts)
+
+The owner's standing rule is that GPU calls are batched in parallel against the loaded model; both
+fixed-policy branches dispatched one contact at a time, so a 1,608-call flight would have run
+strictly serially on a two- or three-slot server. `FlightRuntime` now dispatches concurrently.
+
+- **A worker owns one slot for its whole life.** The pool has exactly `workers` threads and each
+  takes one id_slot (`0..workers-1`) once from a free-slot queue and never returns it, so no two
+  in-flight requests ever share a llama-server slot. For a one-contact policy that IS slot affinity:
+  a sample makes exactly one request, so "a sample's requests share a slot" holds by construction.
+- **At most `workers` requests in flight**, because the pool has that many threads. **Queue depth
+  is deliberately not a knob** and is documented as such: with one contact per sample nothing queues
+  behind a sample, so the only thing a deeper queue could add is more in-flight requests than slots,
+  which is exactly what the slot pinning forbids.
+- **No batching of samples into one prompt.** One contact per sample, unchanged; the arm under test
+  is a one-contact direct baseline and merging prompts would change what is measured.
+- **Deterministic order**: samples are handed out in split order and results collected back into it,
+  so the sealed outputs rows never depend on completion timing.
+- **Thread safety was verified, not assumed.** `rails.core_client.FrozenCoreClient` guards its
+  request counter and timings with `_state_lock`, and `core.model.adapter.FrozenCoreAdapter` guards
+  its budget check and metering with `_metering_lock` -- both already correct. `core.tracing.
+  TraceSink.emit`, however, holds NO lock: it check-then-sets a dict and reopens the trace file per
+  record. So each task emits into its own `core.tracing.TraceBuffer` (bound through the per-thread
+  contextvar `set_current_trace_buffer`) and the parent flushes them one at a time, in sample order,
+  through `flush_trace_buffer`, which serializes on the client's own lock -- the same pattern
+  `core.policies.FixedPolicy.run_samples` already uses.
+- **A failure aborts cleanly**: remaining work is cancelled and the first exception re-raised, but
+  every buffer that did complete is flushed first, so the durable trace keeps what actually
+  happened.
+- **`workers=1` keeps the serial path**, and the serial raw path still goes through `rails_runner`
+  itself, so a `workers=1` flight is byte-identical to the sealed smoke. Default is `workers =
+  slots` from the geometry.
+- The `run_phases` receipt now carries `dispatch` (workers, max_in_flight, slot_ids_used,
+  contacts_per_sample, the queue-depth note), `serving_slots` and `occupancy_slots` beside
+  `contacts_per_second` and `slot_occupancy`. **Occupancy is measured against the slots actually
+  used**, not the server's slot count: a serial dispatch on a three-slot server occupies one slot,
+  and reporting that as a third would understate the very thing the number is for.
+
+Verified contact-free on all four cells through the real client and adapter: raw cells ran 2 workers
+using slots [0, 1], packet cells 3 workers using slots [0, 1, 2], `max_in_flight == workers` on every
+cell, 4 contacts each, one contact per sample, and the native-versus-text accounting unchanged
+(A1/P1 report 1 native and 3 text as the fake transport emitted). Seven new tests pin peak in-flight
+<= slots, one-slot-per-worker, sample-ordered results, clean abort with completed traces still
+flushed, the `workers=1` serial route, a refused bad worker count, and the occupancy basis.
+
+Phase 3b is the registered 1,608-call flight; `SAEA-A2T-DIRECT-CALIBRATION-V1` remains
+`consumed = no`.

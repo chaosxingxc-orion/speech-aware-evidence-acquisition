@@ -18,6 +18,8 @@ from __future__ import annotations
 import hashlib
 import json
 import subprocess
+import threading
+import time
 from pathlib import Path
 from typing import Mapping
 
@@ -137,6 +139,17 @@ class _FakeClient:
             _FakeTiming(sample_id="s2", request_id="req-0002"),
         )
         self.closed = False
+        self.completions: list[dict] = []
+        self._lock = threading.Lock()
+
+    def complete(self, messages, **kwargs):
+        """A client that cannot complete is not a client. The concurrent
+        dispatcher calls this directly (the serial raw path still goes
+        through rails_runner), so the double has to answer."""
+
+        with self._lock:
+            self.completions.append({"messages": list(messages), **kwargs})
+        return "resp"
 
     def close(self) -> Mapping[str, object]:
         self.closed = True
@@ -644,7 +657,10 @@ def test_run_phases_routes_fixed_policy_through_rails_runner(tmp_path):
     runtime.preflight()
     runtime.preprocess()
     runtime.serve()
-    receipt = runtime.run_phases()
+    # workers=1 is the SERIAL path, and the serial raw path is the one
+    # that goes through rails_runner; the concurrent path dispatches
+    # contacts itself and never reaches that seam.
+    receipt = runtime.run_phases(workers=1)
 
     assert calls == {"rails_runner": 1, "phase_runner": 0}
     assert receipt["policy_kind"] == "direct"
@@ -1219,7 +1235,7 @@ class _RecordingClient(_FakeClient):
 
     def complete(self, messages, **kwargs):
         self.completions.append({"messages": list(messages), **kwargs})
-        return "[]"
+        return "resp"
 
 
 def test_run_phases_carries_the_packet_arm_with_one_contact_per_sample(tmp_path):
@@ -1297,9 +1313,10 @@ def test_raw_audio_fixed_policy_still_routes_through_rails_runner(tmp_path):
     runtime.preflight()
     runtime.preprocess()
     runtime.serve()
-    receipt = runtime.run_phases()
+    receipt = runtime.run_phases(workers=1)
 
     assert receipt["policy_kind"] == "direct"
+    assert receipt["dispatch"]["dispatch"] == "serial"
     assert calls["count"] == 1
 
 
@@ -1434,7 +1451,7 @@ class _TransportDrivingClient(_FakeClient):
                 native_tool_calls=len(calls) if isinstance(calls, list) else None,
             ),
         )
-        return "[]"
+        return "resp"
 
 
 def _calling_rails_runner(**kwargs):
@@ -1888,3 +1905,197 @@ def test_wire_check_transport_emits_a_native_envelope_only_on_the_first_call() -
     assert "tool_calls" not in second
     # Default stays text-only, so no pre-existing caller changes shape.
     assert "tool_calls" not in json.loads(WireCheckTransport()(b"{}").decode("utf-8"))
+
+
+# ---------------------------------------------------------------------------
+# Phase 3b-prep: concurrent dispatch. The owner asked for batched parallel
+# calls against the loaded model; both fixed-policy branches dispatched one
+# contact at a time. These tests pin the invariants that make concurrency
+# safe rather than merely fast.
+# ---------------------------------------------------------------------------
+
+
+class _ConcurrencyRecordingClient(_FakeClient):
+    """Records what actually ran in parallel: peak in-flight, the id_slot
+    each contact used, and the order contacts started in."""
+
+    delay = 0.02
+    fail_on: str | None = None
+
+    def __init__(self, **kwargs: object) -> None:
+        super().__init__(**kwargs)
+        self.in_flight = 0
+        self.max_in_flight = 0
+        self.slots_seen: list[int] = []
+        self.slot_by_thread: dict[int, set[int]] = {}
+        self.started: list[str] = []
+        self.timings = ()
+        self._guard = threading.Lock()
+
+    def complete(self, messages, **kwargs):
+        decoding = dict(kwargs.get("decoding_params") or {})
+        slot = decoding.get("id_slot")
+        with self._guard:
+            self.in_flight += 1
+            self.max_in_flight = max(self.max_in_flight, self.in_flight)
+            self.slots_seen.append(slot)
+            self.slot_by_thread.setdefault(threading.get_ident(), set()).add(slot)
+            self.started.append(str(kwargs.get("speech_feature_sample_id") or len(self.started)))
+            in_flight_now = self.in_flight
+        assert in_flight_now <= _CONCURRENCY_LIMIT["slots"], (
+            f"{in_flight_now} requests in flight for "
+            f"{_CONCURRENCY_LIMIT['slots']} slot(s)"
+        )
+        time.sleep(self.delay)
+        with self._guard:
+            self.in_flight -= 1
+            self.timings = tuple(self.timings) + (
+                _FakeTiming(
+                    sample_id=f"s{len(self.timings) + 1}",
+                    request_id=f"req-{len(self.timings) + 1:04d}",
+                ),
+            )
+        if type(self).fail_on is not None and type(self).fail_on in json.dumps(
+            list(messages), default=str
+        ):
+            raise RuntimeError("contact failed on purpose")
+        return "resp"
+
+
+_CONCURRENCY_LIMIT = {"slots": 2}
+
+
+class _ManySampleAdapter(_FakeAdapter):
+    """Eight samples over two slots, so a serial dispatch and a concurrent
+    one are distinguishable."""
+
+    def __init__(self, lock, root) -> None:
+        super().__init__(lock, root)
+        self.samples = tuple(_FakeSample(f"s{index}") for index in range(1, 9))
+
+
+def _concurrent_runtime(tmp_path, **kwargs):
+    merged = {
+        "happy_path": True,
+        "adapter_cls": _ManySampleAdapter,
+        "client_factory": _ConcurrencyRecordingClient,
+        "config_kwargs": {"arm": "bare-core", "policy": "fixed"},
+    }
+    merged.update(kwargs)
+    return _make_runtime(tmp_path, **merged)
+
+
+def test_concurrent_dispatch_holds_at_most_slots_requests_in_flight(tmp_path):
+    _CONCURRENCY_LIMIT["slots"] = 2
+    runtime = _concurrent_runtime(tmp_path)
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    receipt = runtime.run_phases()
+
+    client = runtime._client
+    assert receipt["dispatch"]["dispatch"] == "concurrent"
+    assert receipt["dispatch"]["workers"] == 2  # _FakeAdapter.SERVING_SLOTS
+    assert client.max_in_flight > 1, "nothing actually ran in parallel"
+    assert client.max_in_flight <= 2
+    assert receipt["dispatch"]["max_in_flight"] == client.max_in_flight
+    assert receipt["contact_count"] == 8
+
+
+def test_each_worker_is_pinned_to_its_own_slot(tmp_path):
+    _CONCURRENCY_LIMIT["slots"] = 2
+    runtime = _concurrent_runtime(tmp_path)
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    receipt = runtime.run_phases()
+
+    client = runtime._client
+    # Every slot id is a real slot index, and one thread never used two.
+    assert set(client.slots_seen) <= {0, 1}
+    for slots in client.slot_by_thread.values():
+        assert len(slots) == 1, f"a worker used more than one slot: {slots}"
+    # Distinct threads hold distinct slots, so no two in-flight requests
+    # ever share one.
+    held = [next(iter(slots)) for slots in client.slot_by_thread.values()]
+    assert len(held) == len(set(held))
+    assert receipt["dispatch"]["slot_ids_used"] == sorted(set(client.slots_seen))
+
+
+def test_concurrent_results_come_back_in_sample_order(tmp_path):
+    _CONCURRENCY_LIMIT["slots"] = 2
+    runtime = _concurrent_runtime(tmp_path)
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    runtime.run_phases()
+
+    ordered = [row["sample_id"] for row in runtime._output_rows]
+    assert ordered == [sample.sample_id for sample in runtime._samples]
+
+
+def test_one_failed_contact_aborts_without_losing_completed_traces(tmp_path):
+    _CONCURRENCY_LIMIT["slots"] = 2
+    flushed: list[object] = []
+
+    class _BufferingClient(_ConcurrencyRecordingClient):
+        fail_on = "s4"
+
+        def new_trace_buffer(self):
+            return {"buffer": len(flushed)}
+
+        def flush_trace_buffer(self, buffer):
+            flushed.append(buffer)
+
+    runtime = _concurrent_runtime(tmp_path, client_factory=_BufferingClient)
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    with pytest.raises(RuntimeError, match="on purpose"):
+        runtime.run_phases()
+
+    # The contacts that DID complete still had their traces flushed rather
+    # than lost to the abort.
+    assert flushed, "a failing dispatch discarded every completed trace buffer"
+
+
+def test_workers_one_keeps_the_serial_path_reproducible(tmp_path):
+    calls = {"count": 0}
+
+    def _rails_runner(**kwargs):
+        calls["count"] += 1
+        return _fake_rails_runner(**kwargs)
+
+    runtime = _concurrent_runtime(tmp_path, rails_runner=_rails_runner)
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    receipt = runtime.run_phases(workers=1)
+
+    assert calls["count"] == 1
+    assert receipt["dispatch"]["dispatch"] == "serial"
+    assert receipt["dispatch"]["max_in_flight"] == 1
+    assert runtime._client.max_in_flight == 0  # the client was never called directly
+
+
+def test_concurrent_dispatch_refuses_a_bad_worker_count(tmp_path):
+    runtime = _concurrent_runtime(tmp_path)
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    with pytest.raises(FlightRuntimeError, match="workers must be a positive integer"):
+        runtime._dispatch_concurrent(runtime._client_factory(arm="bare-core"), workers=0)
+
+
+def test_slot_occupancy_is_measured_against_the_slots_actually_used(tmp_path):
+    """A serial dispatch on a two-slot server occupies ONE slot; reporting
+    it as a half would understate exactly what the number is for."""
+
+    runtime = _concurrent_runtime(tmp_path)
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    receipt = runtime.run_phases(workers=1)
+
+    assert receipt["serving_slots"] == 2
+    assert receipt["occupancy_slots"] == 1
