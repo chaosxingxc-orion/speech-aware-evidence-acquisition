@@ -1,0 +1,1195 @@
+{
+  "attempt_id": "attempt-20260904T135250Z-rofficialraw",
+  "baseline_comparison": {
+    "baseline_attempt_id": "attempt-20260904T081627Z-a0primelegacyraw",
+    "baseline_cell": "A0prime-legacy-raw",
+    "baseline_run_id": "SAEA-A2T-DIRECT-CALIBRATION-V1",
+    "format_matched_diagnostic": {
+      "baseline_cell": {
+        "parse_rate": 0.89,
+        "per_tier": {
+          "tier1_direct": {
+            "samples": 50,
+            "tool_accuracy": 0.66
+          },
+          "tier2_parametric": {
+            "samples": 50,
+            "tool_accuracy": 0.68
+          },
+          "tier3_multi_intent": {
+            "samples": 50,
+            "tool_accuracy": 0.6
+          },
+          "tier4_implicit": {
+            "samples": 50,
+            "tool_accuracy": 0.3
+          },
+          "tier5_needle": {
+            "samples": 50,
+            "tool_accuracy": 0.62
+          },
+          "tier6_correction": {
+            "samples": 50,
+            "tool_accuracy": 0.7
+          },
+          "tier7_multiturn": {
+            "samples": 50,
+            "tool_accuracy": 0.58
+          },
+          "tier8_intent_blending": {
+            "samples": 50,
+            "tool_accuracy": 0.3
+          }
+        },
+        "rows_emitting_more_than_one_call": 93,
+        "samples": 400,
+        "tool_accuracy": 0.555
+      },
+      "note": "DIAGNOSTIC, never a paper-facing number and never part of the decision: the OFFICIAL metric and the OFFICIAL gold, with the prediction taken by the JSON-array parser the baseline cell's own contract asks for. It separates format from tool choice, which neither of the two readings above can do. The official-protocol cell's own official number is repeated beside it for reference; its output format already matches the official parser, so no swap applies to it.",
+      "official_protocol_cell_official_number": 0.61,
+      "paired": {
+        "basis": "analysis.paired on the SAME official metric and gold, with each cell's prediction taken by the parser its own output contract asks for. This is the like-for-like protocol effect; the official-on-both contrast above is dominated by format.",
+        "ci_level": 0.9,
+        "contrasts": {
+          "tool_accuracy": {
+            "ci_high": 0.0925,
+            "ci_low": 0.0175,
+            "delta": 0.05499999999999994,
+            "harms": 32,
+            "left_cell": "A0prime-legacy-raw (JSON-array parse)",
+            "left_mean": 0.555,
+            "per_stratum": [
+              {
+                "delta": -0.06000000000000005,
+                "harms": 7,
+                "left_mean": 0.66,
+                "n": 50,
+                "right_mean": 0.6,
+                "saves": 4,
+                "stratum": "tier1_direct",
+                "ties": 39
+              },
+              {
+                "delta": 0.05999999999999994,
+                "harms": 4,
+                "left_mean": 0.68,
+                "n": 50,
+                "right_mean": 0.74,
+                "saves": 7,
+                "stratum": "tier2_parametric",
+                "ties": 39
+              },
+              {
+                "delta": 0.12,
+                "harms": 3,
+                "left_mean": 0.6,
+                "n": 50,
+                "right_mean": 0.72,
+                "saves": 9,
+                "stratum": "tier3_multi_intent",
+                "ties": 38
+              },
+              {
+                "delta": -0.019999999999999962,
+                "harms": 4,
+                "left_mean": 0.3,
+                "n": 50,
+                "right_mean": 0.28,
+                "saves": 3,
+                "stratum": "tier4_implicit",
+                "ties": 43
+              },
+              {
+                "delta": 0.16000000000000003,
+                "harms": 3,
+                "left_mean": 0.62,
+                "n": 50,
+                "right_mean": 0.78,
+                "saves": 11,
+                "stratum": "tier5_needle",
+                "ties": 36
+              },
+              {
+                "delta": 0.14,
+                "harms": 2,
+                "left_mean": 0.7,
+                "n": 50,
+                "right_mean": 0.84,
+                "saves": 9,
+                "stratum": "tier6_correction",
+                "ties": 39
+              },
+              {
+                "delta": 0.0,
+                "harms": 4,
+                "left_mean": 0.58,
+                "n": 50,
+                "right_mean": 0.58,
+                "saves": 4,
+                "stratum": "tier7_multiturn",
+                "ties": 42
+              },
+              {
+                "delta": 0.040000000000000036,
+                "harms": 5,
+                "left_mean": 0.3,
+                "n": 50,
+                "right_mean": 0.34,
+                "saves": 7,
+                "stratum": "tier8_intent_blending",
+                "ties": 38
+              }
+            ],
+            "right_cell": "R-official-raw (official parse)",
+            "right_mean": 0.61,
+            "saves": 54,
+            "sign_test_p": 0.022982591907157044,
+            "ties": 314
+          }
+        },
+        "n_shared_samples": 400,
+        "replicates": 10000,
+        "seed": 20260903
+      },
+      "per_tier_versus_ours_and_the_paper": [
+        {
+          "baseline_format_matched_pct": 66.0,
+          "official_protocol_pct": 60.0,
+          "paper_pct": 92.4,
+          "protocol_effect_pp": -6.000000000000005,
+          "tier": "tier1_direct"
+        },
+        {
+          "baseline_format_matched_pct": 68.0,
+          "official_protocol_pct": 74.0,
+          "paper_pct": 84.6,
+          "protocol_effect_pp": 5.999999999999995,
+          "tier": "tier2_parametric"
+        },
+        {
+          "baseline_format_matched_pct": 60.0,
+          "official_protocol_pct": 72.0,
+          "paper_pct": 74.7,
+          "protocol_effect_pp": 12.0,
+          "tier": "tier3_multi_intent"
+        },
+        {
+          "baseline_format_matched_pct": 30.0,
+          "official_protocol_pct": 28.000000000000004,
+          "paper_pct": 33.4,
+          "protocol_effect_pp": -1.9999999999999962,
+          "tier": "tier4_implicit"
+        },
+        {
+          "baseline_format_matched_pct": 62.0,
+          "official_protocol_pct": 78.0,
+          "paper_pct": 90.6,
+          "protocol_effect_pp": 16.000000000000004,
+          "tier": "tier5_needle"
+        },
+        {
+          "baseline_format_matched_pct": 70.0,
+          "official_protocol_pct": 84.0,
+          "paper_pct": 81.5,
+          "protocol_effect_pp": 14.000000000000002,
+          "tier": "tier6_correction"
+        },
+        {
+          "baseline_format_matched_pct": 57.99999999999999,
+          "official_protocol_pct": 57.99999999999999,
+          "paper_pct": 54.6,
+          "protocol_effect_pp": 0.0,
+          "tier": "tier7_multiturn"
+        },
+        {
+          "baseline_format_matched_pct": 30.0,
+          "official_protocol_pct": 34.0,
+          "paper_pct": 41.7,
+          "protocol_effect_pp": 4.0000000000000036,
+          "tier": "tier8_intent_blending"
+        }
+      ],
+      "summed_absolute_gap_to_the_paper_pp": {
+        "baseline_cell_format_matched": 116.29999999999998,
+        "official_protocol_cell": 77.29999999999998
+      }
+    },
+    "native_on_each": {
+      "baseline_cell_under_v1_multiset": 0.5175,
+      "baseline_cell_under_v2_ordered": 0.505,
+      "note": "each cell under the scorer that can read its own output format. NOT a like-for-like metric: different scorers, different gold interpretation. Reported so neither cell is judged by a parser built for the other's contract.",
+      "official_protocol_cell_under_official": 0.61
+    },
+    "official_on_both": {
+      "baseline_overall": {
+        "exact_match": 0.0,
+        "param_f1": 0.2425,
+        "param_f1_micro": 0.0,
+        "parse_failures": 400,
+        "parse_rate": 0.0,
+        "samples": 400,
+        "tool_accuracy": 0.0
+      },
+      "baseline_per_tier": [
+        {
+          "abs_delta_pp": 92.4,
+          "ci90_high_pct": 5.133318578627011,
+          "ci90_low_pct": 0.0,
+          "delta_pp": -92.4,
+          "exact_match_pct": 0.0,
+          "multi_tool_samples": 0,
+          "paper_exact_match_pct": 92.4,
+          "paper_inside_ci90": false,
+          "paper_tool_accuracy_pct": 92.4,
+          "param_f1_macro_pct": 94.0,
+          "param_f1_micro_pct": 0.0,
+          "parse_rate_pct": 0.0,
+          "rows_with_multiple_call_matches": 0,
+          "samples": 50,
+          "tier": "tier1_direct",
+          "tool_accuracy_pct": 0.0,
+          "tool_accuracy_successes": 0,
+          "within_tolerance": false
+        },
+        {
+          "abs_delta_pp": 84.6,
+          "ci90_high_pct": 5.133318578627011,
+          "ci90_low_pct": 0.0,
+          "delta_pp": -84.6,
+          "exact_match_pct": 0.0,
+          "multi_tool_samples": 0,
+          "paper_exact_match_pct": 15.6,
+          "paper_inside_ci90": false,
+          "paper_tool_accuracy_pct": 84.6,
+          "param_f1_macro_pct": 0.0,
+          "param_f1_micro_pct": 0.0,
+          "parse_rate_pct": 0.0,
+          "rows_with_multiple_call_matches": 0,
+          "samples": 50,
+          "tier": "tier2_parametric",
+          "tool_accuracy_pct": 0.0,
+          "tool_accuracy_successes": 0,
+          "within_tolerance": false
+        },
+        {
+          "abs_delta_pp": 74.7,
+          "ci90_high_pct": 5.133318578627011,
+          "ci90_low_pct": 0.0,
+          "delta_pp": -74.7,
+          "exact_match_pct": 0.0,
+          "multi_tool_samples": 50,
+          "paper_exact_match_pct": 28.6,
+          "paper_inside_ci90": false,
+          "paper_tool_accuracy_pct": 74.7,
+          "param_f1_macro_pct": 28.000000000000004,
+          "param_f1_micro_pct": 0.0,
+          "parse_rate_pct": 0.0,
+          "rows_with_multiple_call_matches": 0,
+          "samples": 50,
+          "tier": "tier3_multi_intent",
+          "tool_accuracy_pct": 0.0,
+          "tool_accuracy_successes": 0,
+          "within_tolerance": false
+        },
+        {
+          "abs_delta_pp": 33.4,
+          "ci90_high_pct": 5.133318578627011,
+          "ci90_low_pct": 0.0,
+          "delta_pp": -33.4,
+          "exact_match_pct": 0.0,
+          "multi_tool_samples": 0,
+          "paper_exact_match_pct": 11.3,
+          "paper_inside_ci90": false,
+          "paper_tool_accuracy_pct": 33.4,
+          "param_f1_macro_pct": 18.0,
+          "param_f1_micro_pct": 0.0,
+          "parse_rate_pct": 0.0,
+          "rows_with_multiple_call_matches": 0,
+          "samples": 50,
+          "tier": "tier4_implicit",
+          "tool_accuracy_pct": 0.0,
+          "tool_accuracy_successes": 0,
+          "within_tolerance": false
+        },
+        {
+          "abs_delta_pp": 90.6,
+          "ci90_high_pct": 5.133318578627011,
+          "ci90_low_pct": 0.0,
+          "delta_pp": -90.6,
+          "exact_match_pct": 0.0,
+          "multi_tool_samples": 0,
+          "paper_exact_match_pct": 36.0,
+          "paper_inside_ci90": false,
+          "paper_tool_accuracy_pct": 90.6,
+          "param_f1_macro_pct": 24.0,
+          "param_f1_micro_pct": 0.0,
+          "parse_rate_pct": 0.0,
+          "rows_with_multiple_call_matches": 0,
+          "samples": 50,
+          "tier": "tier5_needle",
+          "tool_accuracy_pct": 0.0,
+          "tool_accuracy_successes": 0,
+          "within_tolerance": false
+        },
+        {
+          "abs_delta_pp": 81.5,
+          "ci90_high_pct": 5.133318578627011,
+          "ci90_low_pct": 0.0,
+          "delta_pp": -81.5,
+          "exact_match_pct": 0.0,
+          "multi_tool_samples": 0,
+          "paper_exact_match_pct": 24.8,
+          "paper_inside_ci90": false,
+          "paper_tool_accuracy_pct": 81.5,
+          "param_f1_macro_pct": 12.0,
+          "param_f1_micro_pct": 0.0,
+          "parse_rate_pct": 0.0,
+          "rows_with_multiple_call_matches": 0,
+          "samples": 50,
+          "tier": "tier6_correction",
+          "tool_accuracy_pct": 0.0,
+          "tool_accuracy_successes": 0,
+          "within_tolerance": false
+        },
+        {
+          "abs_delta_pp": 54.6,
+          "ci90_high_pct": 5.133318578627011,
+          "ci90_low_pct": 0.0,
+          "delta_pp": -54.6,
+          "exact_match_pct": 0.0,
+          "multi_tool_samples": 0,
+          "paper_exact_match_pct": 16.3,
+          "paper_inside_ci90": false,
+          "paper_tool_accuracy_pct": 54.6,
+          "param_f1_macro_pct": 6.0,
+          "param_f1_micro_pct": 0.0,
+          "parse_rate_pct": 0.0,
+          "rows_with_multiple_call_matches": 0,
+          "samples": 50,
+          "tier": "tier7_multiturn",
+          "tool_accuracy_pct": 0.0,
+          "tool_accuracy_successes": 0,
+          "within_tolerance": false
+        },
+        {
+          "abs_delta_pp": 41.7,
+          "ci90_high_pct": 5.133318578627011,
+          "ci90_low_pct": 0.0,
+          "delta_pp": -41.7,
+          "exact_match_pct": 0.0,
+          "multi_tool_samples": 50,
+          "paper_exact_match_pct": 12.4,
+          "paper_inside_ci90": false,
+          "paper_tool_accuracy_pct": 41.7,
+          "param_f1_macro_pct": 12.0,
+          "param_f1_micro_pct": 0.0,
+          "parse_rate_pct": 0.0,
+          "rows_with_multiple_call_matches": 0,
+          "samples": 50,
+          "tier": "tier8_intent_blending",
+          "tool_accuracy_pct": 0.0,
+          "tool_accuracy_successes": 0,
+          "within_tolerance": false
+        }
+      ],
+      "note": "the mechanical like-for-like number: the official scorer applied to both cells. It is simultaneously a measurement of whether each cell's OUTPUT FORMAT is one the official parser can read"
+    },
+    "paired": {
+      "basis": "analysis.paired over the official scorer applied to both cells, on the shared sample ids, tier-stratified",
+      "ci_level": 0.9,
+      "contrasts": {
+        "exact_match": {
+          "bootstrap_sigma_hat": 0.020172908179969987,
+          "ci_high": 0.235,
+          "ci_low": 0.17,
+          "delta": 0.2025,
+          "harms": 0,
+          "left_cell": "A0prime-legacy-raw",
+          "left_mean": 0.0,
+          "per_stratum": [
+            {
+              "delta": 0.12,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 0.12,
+              "saves": 6,
+              "stratum": "tier1_direct",
+              "ties": 44
+            },
+            {
+              "delta": 0.2,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 0.2,
+              "saves": 10,
+              "stratum": "tier2_parametric",
+              "ties": 40
+            },
+            {
+              "delta": 0.32,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 0.32,
+              "saves": 16,
+              "stratum": "tier3_multi_intent",
+              "ties": 34
+            },
+            {
+              "delta": 0.16,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 0.16,
+              "saves": 8,
+              "stratum": "tier4_implicit",
+              "ties": 42
+            },
+            {
+              "delta": 0.18,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 0.18,
+              "saves": 9,
+              "stratum": "tier5_needle",
+              "ties": 41
+            },
+            {
+              "delta": 0.28,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 0.28,
+              "saves": 14,
+              "stratum": "tier6_correction",
+              "ties": 36
+            },
+            {
+              "delta": 0.18,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 0.18,
+              "saves": 9,
+              "stratum": "tier7_multiturn",
+              "ties": 41
+            },
+            {
+              "delta": 0.18,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 0.18,
+              "saves": 9,
+              "stratum": "tier8_intent_blending",
+              "ties": 41
+            }
+          ],
+          "right_cell": "R-official-raw",
+          "right_mean": 0.2025,
+          "saves": 81,
+          "sign_test_p": 8.271806125530277e-25,
+          "ties": 319
+        },
+        "param_f1": {
+          "bootstrap_sigma_hat": 0.023274094657426553,
+          "ci_high": 0.11206071428571426,
+          "ci_low": 0.03516547619047619,
+          "delta": 0.0739642857142857,
+          "harms": 60,
+          "left_cell": "A0prime-legacy-raw",
+          "left_mean": 0.2425,
+          "per_stratum": [
+            {
+              "delta": -0.76,
+              "harms": 39,
+              "left_mean": 0.94,
+              "n": 50,
+              "right_mean": 0.18,
+              "saves": 1,
+              "stratum": "tier1_direct",
+              "ties": 10
+            },
+            {
+              "delta": 0.44266666666666665,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 0.44266666666666665,
+              "saves": 31,
+              "stratum": "tier2_parametric",
+              "ties": 19
+            },
+            {
+              "delta": 0.15333333333333332,
+              "harms": 6,
+              "left_mean": 0.28,
+              "n": 50,
+              "right_mean": 0.43333333333333335,
+              "saves": 17,
+              "stratum": "tier3_multi_intent",
+              "ties": 27
+            },
+            {
+              "delta": 0.023333333333333317,
+              "harms": 2,
+              "left_mean": 0.18,
+              "n": 50,
+              "right_mean": 0.2033333333333333,
+              "saves": 4,
+              "stratum": "tier4_implicit",
+              "ties": 44
+            },
+            {
+              "delta": 0.053333333333333344,
+              "harms": 11,
+              "left_mean": 0.24,
+              "n": 50,
+              "right_mean": 0.29333333333333333,
+              "saves": 18,
+              "stratum": "tier5_needle",
+              "ties": 21
+            },
+            {
+              "delta": 0.24571428571428572,
+              "harms": 0,
+              "left_mean": 0.12,
+              "n": 50,
+              "right_mean": 0.3657142857142857,
+              "saves": 18,
+              "stratum": "tier6_correction",
+              "ties": 32
+            },
+            {
+              "delta": 0.29333333333333333,
+              "harms": 0,
+              "left_mean": 0.06,
+              "n": 50,
+              "right_mean": 0.35333333333333333,
+              "saves": 21,
+              "stratum": "tier7_multiturn",
+              "ties": 29
+            },
+            {
+              "delta": 0.14,
+              "harms": 2,
+              "left_mean": 0.12,
+              "n": 50,
+              "right_mean": 0.26,
+              "saves": 11,
+              "stratum": "tier8_intent_blending",
+              "ties": 37
+            }
+          ],
+          "right_cell": "R-official-raw",
+          "right_mean": 0.3164642857142857,
+          "saves": 121,
+          "sign_test_p": 6.7895175741826885e-06,
+          "ties": 219
+        },
+        "parsed": {
+          "bootstrap_sigma_hat": 0.0024914710012360116,
+          "ci_high": 1.0,
+          "ci_low": 0.9925,
+          "delta": 0.9975,
+          "harms": 0,
+          "left_cell": "A0prime-legacy-raw",
+          "left_mean": 0.0,
+          "per_stratum": [
+            {
+              "delta": 1.0,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 1.0,
+              "saves": 50,
+              "stratum": "tier1_direct",
+              "ties": 0
+            },
+            {
+              "delta": 1.0,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 1.0,
+              "saves": 50,
+              "stratum": "tier2_parametric",
+              "ties": 0
+            },
+            {
+              "delta": 1.0,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 1.0,
+              "saves": 50,
+              "stratum": "tier3_multi_intent",
+              "ties": 0
+            },
+            {
+              "delta": 0.98,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 0.98,
+              "saves": 49,
+              "stratum": "tier4_implicit",
+              "ties": 1
+            },
+            {
+              "delta": 1.0,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 1.0,
+              "saves": 50,
+              "stratum": "tier5_needle",
+              "ties": 0
+            },
+            {
+              "delta": 1.0,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 1.0,
+              "saves": 50,
+              "stratum": "tier6_correction",
+              "ties": 0
+            },
+            {
+              "delta": 1.0,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 1.0,
+              "saves": 50,
+              "stratum": "tier7_multiturn",
+              "ties": 0
+            },
+            {
+              "delta": 1.0,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 1.0,
+              "saves": 50,
+              "stratum": "tier8_intent_blending",
+              "ties": 0
+            }
+          ],
+          "right_cell": "R-official-raw",
+          "right_mean": 0.9975,
+          "saves": 399,
+          "sign_test_p": 1.5490367659397273e-120,
+          "ties": 1
+        },
+        "tool_accuracy": {
+          "bootstrap_sigma_hat": 0.022385775392813625,
+          "ci_high": 0.645,
+          "ci_low": 0.5725,
+          "delta": 0.61,
+          "harms": 0,
+          "left_cell": "A0prime-legacy-raw",
+          "left_mean": 0.0,
+          "per_stratum": [
+            {
+              "delta": 0.6,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 0.6,
+              "saves": 30,
+              "stratum": "tier1_direct",
+              "ties": 20
+            },
+            {
+              "delta": 0.74,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 0.74,
+              "saves": 37,
+              "stratum": "tier2_parametric",
+              "ties": 13
+            },
+            {
+              "delta": 0.72,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 0.72,
+              "saves": 36,
+              "stratum": "tier3_multi_intent",
+              "ties": 14
+            },
+            {
+              "delta": 0.28,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 0.28,
+              "saves": 14,
+              "stratum": "tier4_implicit",
+              "ties": 36
+            },
+            {
+              "delta": 0.78,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 0.78,
+              "saves": 39,
+              "stratum": "tier5_needle",
+              "ties": 11
+            },
+            {
+              "delta": 0.84,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 0.84,
+              "saves": 42,
+              "stratum": "tier6_correction",
+              "ties": 8
+            },
+            {
+              "delta": 0.58,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 0.58,
+              "saves": 29,
+              "stratum": "tier7_multiturn",
+              "ties": 21
+            },
+            {
+              "delta": 0.34,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 50,
+              "right_mean": 0.34,
+              "saves": 17,
+              "stratum": "tier8_intent_blending",
+              "ties": 33
+            }
+          ],
+          "right_cell": "R-official-raw",
+          "right_mean": 0.61,
+          "saves": 244,
+          "sign_test_p": 7.074749280333369e-74,
+          "ties": 156
+        }
+      },
+      "n_shared_samples": 400,
+      "replicates": 10000,
+      "seed": 20260903
+    }
+  },
+  "boundary": "zero model contact and zero server. Every number is read from sealed artifacts, except the A0prime-legacy-raw official column, which re-scores that cell's already-recorded outputs JSONL through the SAME registered a2t-toolcall-official function. No scoring rule was added after the flight.",
+  "cell": "R-official-raw",
+  "decision": {
+    "all_decision_tiers_contain_the_paper_value_in_ci90": false,
+    "all_decision_tiers_within_tolerance": false,
+    "decision_tiers": [
+      "tier1_direct",
+      "tier2_parametric",
+      "tier5_needle",
+      "tier6_correction"
+    ],
+    "our_rank_order": [
+      "tier6_correction",
+      "tier5_needle",
+      "tier2_parametric",
+      "tier3_multi_intent",
+      "tier1_direct",
+      "tier7_multiturn",
+      "tier8_intent_blending",
+      "tier4_implicit"
+    ],
+    "outcome": "FAIL",
+    "paper_rank_order": [
+      "tier1_direct",
+      "tier5_needle",
+      "tier2_parametric",
+      "tier6_correction",
+      "tier3_multi_intent",
+      "tier7_multiturn",
+      "tier8_intent_blending",
+      "tier4_implicit"
+    ],
+    "per_decision_tier": {
+      "tier1_direct": {
+        "ci90_pct": [
+          48.375270593523304,
+          70.59806569075128
+        ],
+        "delta_pp": -32.400000000000006,
+        "paper_inside_ci90": false,
+        "paper_pct": 92.4,
+        "tool_accuracy_pct": 60.0,
+        "within_tolerance": false
+      },
+      "tier2_parametric": {
+        "ci90_pct": [
+          62.75387029219313,
+          82.78213679006589
+        ],
+        "delta_pp": -10.599999999999994,
+        "paper_inside_ci90": false,
+        "paper_pct": 84.6,
+        "tool_accuracy_pct": 74.0,
+        "within_tolerance": false
+      },
+      "tier5_needle": {
+        "ci90_pct": [
+          67.06774257054605,
+          86.05759902542282
+        ],
+        "delta_pp": -12.599999999999994,
+        "paper_inside_ci90": false,
+        "paper_pct": 90.6,
+        "tool_accuracy_pct": 78.0,
+        "within_tolerance": false
+      },
+      "tier6_correction": {
+        "ci90_pct": [
+          73.76715304529388,
+          90.74219032123973
+        ],
+        "delta_pp": 2.5,
+        "paper_inside_ci90": true,
+        "paper_pct": 81.5,
+        "tool_accuracy_pct": 84.0,
+        "within_tolerance": true
+      }
+    },
+    "rule": "PASS = per-tier official tool accuracy |delta| <= 5 pp against the paper row on tiers 1, 2, 5 and 6 AND the tier rank order preserved across all eight tiers; CONSISTENT-WITHIN-NOISE = not PASS but the paper value inside every decision tier's Wilson CI90 at n = 50; FAIL = neither",
+    "tier_rank_order_preserved": false,
+    "tolerance_pp": 5.0
+  },
+  "model_contacts_by_this_analysis": 0,
+  "official": {
+    "overall": {
+      "exact_match": 0.2025,
+      "gold_version": "a2t-gold-official-release-loader",
+      "multi_tool_all_match": 0.0,
+      "multi_tool_recall": 0.2836666666666667,
+      "multi_tool_samples": 100,
+      "param_exact_match": 0.2275,
+      "param_f1": 0.3164642857142857,
+      "param_f1_micro": 0.2738916256157636,
+      "param_precision": 0.3145833333333333,
+      "param_precision_micro": 0.24777183600713013,
+      "param_recall": 0.4775,
+      "param_recall_micro": 0.30616740088105726,
+      "parse_failures": 1,
+      "parse_rate": 0.9975,
+      "rows_with_multiple_call_matches": 52,
+      "samples": 400,
+      "scorer_version": "a2t-scorer-official-b9d5383c",
+      "tool_accuracy": 0.61
+    },
+    "per_tier": [
+      {
+        "abs_delta_pp": 32.400000000000006,
+        "ci90_high_pct": 70.59806569075128,
+        "ci90_low_pct": 48.375270593523304,
+        "delta_pp": -32.400000000000006,
+        "exact_match_pct": 12.0,
+        "multi_tool_samples": 0,
+        "paper_exact_match_pct": 92.4,
+        "paper_inside_ci90": false,
+        "paper_tool_accuracy_pct": 92.4,
+        "param_f1_macro_pct": 18.0,
+        "param_f1_micro_pct": 2.9850746268656714,
+        "parse_rate_pct": 100.0,
+        "rows_with_multiple_call_matches": 0,
+        "samples": 50,
+        "tier": "tier1_direct",
+        "tool_accuracy_pct": 60.0,
+        "tool_accuracy_successes": 30,
+        "within_tolerance": false
+      },
+      {
+        "abs_delta_pp": 10.599999999999994,
+        "ci90_high_pct": 82.78213679006589,
+        "ci90_low_pct": 62.75387029219313,
+        "delta_pp": -10.599999999999994,
+        "exact_match_pct": 20.0,
+        "multi_tool_samples": 0,
+        "paper_exact_match_pct": 15.6,
+        "paper_inside_ci90": false,
+        "paper_tool_accuracy_pct": 84.6,
+        "param_f1_macro_pct": 44.266666666666666,
+        "param_f1_micro_pct": 44.44444444444444,
+        "parse_rate_pct": 100.0,
+        "rows_with_multiple_call_matches": 0,
+        "samples": 50,
+        "tier": "tier2_parametric",
+        "tool_accuracy_pct": 74.0,
+        "tool_accuracy_successes": 37,
+        "within_tolerance": false
+      },
+      {
+        "abs_delta_pp": 2.700000000000003,
+        "ci90_high_pct": 81.1060540770213,
+        "ci90_low_pct": 60.63528574838281,
+        "delta_pp": -2.700000000000003,
+        "exact_match_pct": 32.0,
+        "multi_tool_samples": 50,
+        "paper_exact_match_pct": 28.6,
+        "paper_inside_ci90": true,
+        "paper_tool_accuracy_pct": 74.7,
+        "param_f1_macro_pct": 43.333333333333336,
+        "param_f1_micro_pct": 36.206896551724135,
+        "parse_rate_pct": 100.0,
+        "rows_with_multiple_call_matches": 27,
+        "samples": 50,
+        "tier": "tier3_multi_intent",
+        "tool_accuracy_pct": 72.0,
+        "tool_accuracy_successes": 36,
+        "within_tolerance": true
+      },
+      {
+        "abs_delta_pp": 5.399999999999995,
+        "ci90_high_pct": 39.36471425161717,
+        "ci90_low_pct": 18.893945922978705,
+        "delta_pp": -5.399999999999995,
+        "exact_match_pct": 16.0,
+        "multi_tool_samples": 0,
+        "paper_exact_match_pct": 11.3,
+        "paper_inside_ci90": true,
+        "paper_tool_accuracy_pct": 33.4,
+        "param_f1_macro_pct": 20.333333333333332,
+        "param_f1_micro_pct": 8.196721311475411,
+        "parse_rate_pct": 98.0,
+        "rows_with_multiple_call_matches": 0,
+        "samples": 50,
+        "tier": "tier4_implicit",
+        "tool_accuracy_pct": 28.000000000000004,
+        "tool_accuracy_successes": 14,
+        "within_tolerance": false
+      },
+      {
+        "abs_delta_pp": 12.599999999999994,
+        "ci90_high_pct": 86.05759902542282,
+        "ci90_low_pct": 67.06774257054605,
+        "delta_pp": -12.599999999999994,
+        "exact_match_pct": 18.0,
+        "multi_tool_samples": 0,
+        "paper_exact_match_pct": 36.0,
+        "paper_inside_ci90": false,
+        "paper_tool_accuracy_pct": 90.6,
+        "param_f1_macro_pct": 29.333333333333332,
+        "param_f1_micro_pct": 32.16783216783217,
+        "parse_rate_pct": 100.0,
+        "rows_with_multiple_call_matches": 0,
+        "samples": 50,
+        "tier": "tier5_needle",
+        "tool_accuracy_pct": 78.0,
+        "tool_accuracy_successes": 39,
+        "within_tolerance": false
+      },
+      {
+        "abs_delta_pp": 2.5,
+        "ci90_high_pct": 90.74219032123973,
+        "ci90_low_pct": 73.76715304529388,
+        "delta_pp": 2.5,
+        "exact_match_pct": 28.000000000000004,
+        "multi_tool_samples": 0,
+        "paper_exact_match_pct": 24.8,
+        "paper_inside_ci90": true,
+        "paper_tool_accuracy_pct": 81.5,
+        "param_f1_macro_pct": 36.57142857142857,
+        "param_f1_micro_pct": 25.71428571428571,
+        "parse_rate_pct": 100.0,
+        "rows_with_multiple_call_matches": 0,
+        "samples": 50,
+        "tier": "tier6_correction",
+        "tool_accuracy_pct": 84.0,
+        "tool_accuracy_successes": 42,
+        "within_tolerance": true
+      },
+      {
+        "abs_delta_pp": 3.3999999999999915,
+        "ci90_high_pct": 68.7793428567355,
+        "ci90_low_pct": 46.399326170684176,
+        "delta_pp": 3.3999999999999915,
+        "exact_match_pct": 18.0,
+        "multi_tool_samples": 0,
+        "paper_exact_match_pct": 16.3,
+        "paper_inside_ci90": true,
+        "paper_tool_accuracy_pct": 54.6,
+        "param_f1_macro_pct": 35.333333333333336,
+        "param_f1_micro_pct": 33.10344827586207,
+        "parse_rate_pct": 100.0,
+        "rows_with_multiple_call_matches": 0,
+        "samples": 50,
+        "tier": "tier7_multiturn",
+        "tool_accuracy_pct": 57.99999999999999,
+        "tool_accuracy_successes": 29,
+        "within_tolerance": true
+      },
+      {
+        "abs_delta_pp": 7.700000000000003,
+        "ci90_high_pct": 45.5854497693472,
+        "ci90_low_pct": 24.05721217581345,
+        "delta_pp": -7.700000000000003,
+        "exact_match_pct": 18.0,
+        "multi_tool_samples": 50,
+        "paper_exact_match_pct": 12.4,
+        "paper_inside_ci90": true,
+        "paper_tool_accuracy_pct": 41.7,
+        "param_f1_macro_pct": 26.0,
+        "param_f1_micro_pct": 18.333333333333336,
+        "parse_rate_pct": 100.0,
+        "rows_with_multiple_call_matches": 25,
+        "samples": 50,
+        "tier": "tier8_intent_blending",
+        "tool_accuracy_pct": 34.0,
+        "tool_accuracy_successes": 17,
+        "within_tolerance": false
+      }
+    ]
+  },
+  "official_code_pin": "b9d5383ca30945fbafb965a04bea40117e1e8a82",
+  "official_metrics_blob_sha1": "d98277bcf69795c9a0ae54e538c170abfd8c51ca",
+  "paper_row": {
+    "tier1_direct": {
+      "exact_match": 92.4,
+      "tool_accuracy": 92.4
+    },
+    "tier2_parametric": {
+      "exact_match": 15.6,
+      "tool_accuracy": 84.6
+    },
+    "tier3_multi_intent": {
+      "exact_match": 28.6,
+      "tool_accuracy": 74.7
+    },
+    "tier4_implicit": {
+      "exact_match": 11.3,
+      "tool_accuracy": 33.4
+    },
+    "tier5_needle": {
+      "exact_match": 36.0,
+      "tool_accuracy": 90.6
+    },
+    "tier6_correction": {
+      "exact_match": 24.8,
+      "tool_accuracy": 81.5
+    },
+    "tier7_multiturn": {
+      "exact_match": 16.3,
+      "tool_accuracy": 54.6
+    },
+    "tier8_intent_blending": {
+      "exact_match": 12.4,
+      "tool_accuracy": 41.7
+    }
+  },
+  "paper_source": "arXiv:2604.22821 Table 3, as transcribed in the preregistration",
+  "repo_scorers_on_this_cell": {
+    "a2t_toolcall_v1_overall": {
+      "exact_match": 0.0,
+      "parse_failures": 400,
+      "samples": 400,
+      "tool_accuracy": 0.0
+    },
+    "a2t_toolcall_v2_overall": {
+      "exact_match": 0.0,
+      "parse_failures": 400,
+      "samples": 400,
+      "tool_accuracy": 0.0,
+      "tool_accuracy_multiset": 0.0
+    },
+    "a2t_toolcall_v2_per_tier": [
+      {
+        "exact_match_pct": 0.0,
+        "paper_tool_accuracy_pct": 92.4,
+        "samples": 50,
+        "slot_f1_pct": 0.0,
+        "tier": "tier1_direct",
+        "tool_accuracy_multiset_pct": 0.0,
+        "tool_accuracy_ordered_pct": 0.0
+      },
+      {
+        "exact_match_pct": 0.0,
+        "paper_tool_accuracy_pct": 84.6,
+        "samples": 50,
+        "slot_f1_pct": 0.0,
+        "tier": "tier2_parametric",
+        "tool_accuracy_multiset_pct": 0.0,
+        "tool_accuracy_ordered_pct": 0.0
+      },
+      {
+        "exact_match_pct": 0.0,
+        "paper_tool_accuracy_pct": 74.7,
+        "samples": 50,
+        "slot_f1_pct": 0.0,
+        "tier": "tier3_multi_intent",
+        "tool_accuracy_multiset_pct": 0.0,
+        "tool_accuracy_ordered_pct": 0.0
+      },
+      {
+        "exact_match_pct": 0.0,
+        "paper_tool_accuracy_pct": 33.4,
+        "samples": 50,
+        "slot_f1_pct": 0.0,
+        "tier": "tier4_implicit",
+        "tool_accuracy_multiset_pct": 0.0,
+        "tool_accuracy_ordered_pct": 0.0
+      },
+      {
+        "exact_match_pct": 0.0,
+        "paper_tool_accuracy_pct": 90.6,
+        "samples": 50,
+        "slot_f1_pct": 0.0,
+        "tier": "tier5_needle",
+        "tool_accuracy_multiset_pct": 0.0,
+        "tool_accuracy_ordered_pct": 0.0
+      },
+      {
+        "exact_match_pct": 0.0,
+        "paper_tool_accuracy_pct": 81.5,
+        "samples": 50,
+        "slot_f1_pct": 0.0,
+        "tier": "tier6_correction",
+        "tool_accuracy_multiset_pct": 0.0,
+        "tool_accuracy_ordered_pct": 0.0
+      },
+      {
+        "exact_match_pct": 0.0,
+        "paper_tool_accuracy_pct": 54.6,
+        "samples": 50,
+        "slot_f1_pct": 0.0,
+        "tier": "tier7_multiturn",
+        "tool_accuracy_multiset_pct": 0.0,
+        "tool_accuracy_ordered_pct": 0.0
+      },
+      {
+        "exact_match_pct": 0.0,
+        "paper_tool_accuracy_pct": 41.7,
+        "samples": 50,
+        "slot_f1_pct": 0.0,
+        "tier": "tier8_intent_blending",
+        "tool_accuracy_multiset_pct": 0.0,
+        "tool_accuracy_ordered_pct": 0.0
+      }
+    ],
+    "note": "The published protocol asks for a CALL STRING; a2t-toolcall and a2t-toolcall-v2 parse this repository's reconstructed JSON-array contract and cannot read one. These columns measure FORMAT COMPATIBILITY, not tool choice, and are reported for completeness only -- they are not a result about the model."
+  },
+  "run_id": "SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-V1",
+  "schema": "saea-a2t-official-protocol-replication-summary-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "throughput": {
+    "audio_seconds_used": 2159.6879999999983,
+    "calls_used": 400,
+    "completion_tokens_total": 6523,
+    "latency_seconds_total": 312.98265292502765,
+    "prompt_tokens_total": 1464049
+  }
+}

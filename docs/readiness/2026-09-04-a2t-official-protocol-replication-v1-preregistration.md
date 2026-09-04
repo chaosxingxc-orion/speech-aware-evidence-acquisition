@@ -281,3 +281,31 @@ touched. Receipt:
   no rounding disagreement exists. This is one MORE slot than the calibration's raw cells could
   serve. `configs/model/q4km-featcache-a2t-official-04ccc72a.json` now carries these measured
   numbers in its `serving_geometry_basis`.
+
+### 2026-09-04, Phase 3 — wire check and smoke
+
+- `FlightRuntime.wire_check` on the clean committed tree `408a7f40`: 400 contacts through the real
+  client, adapter, payload binding and sealer against the fake gate and transport, zero sockets
+  opened. `payload_keys` equals `ARM_VISIBLE_FIELDS["bare-core"]` exactly — the user-turn text is
+  transport-level request shape bound by `config_hash`, not a payload field, so the D2 allowlist is
+  untouched by the seam. Dispatch used 3 slots. `seal_and_score` OK with all four registered
+  scorers through `core.scoring_batch` as one whole-manifest job.
+- Smoke row `SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-SMOKE-V1`, its own fragment
+  (`a2t-official-protocol-replication-400-smoke-v1`, `bounded-discovery-probe`, 12-call plan
+  because attempt budget is run-cumulative). 4 of 4 contacts, FINALIZED, manifest SHA-256
+  `c8c204e47ed7b48c0bceec49797bd20d606a29b7138136223844bc2fa4ca4b43`.
+- **The smoke's one finding, which changed how the flight is read:** under the published protocol
+  the model answers with CALL STRINGS, which is exactly what that prompt asks for and which
+  `a2t-toolcall` / `a2t-toolcall-v2` cannot parse at all — they expect the reconstructed JSON-array
+  contract. All four rows parse-failed under v1/v2 and all four parsed under the official scorer.
+  The v1/v2 columns of this flight are therefore a format mismatch, not a model result. Recorded in
+  the smoke's exposure row before the flight was launched.
+
+### 2026-09-04, Phase 4 — the flight
+
+Row `SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-V1`. 400 of 450 registered calls (408 planned),
+2,159.688 of 2,300 registered speech-audio seconds, one attempt, FINALIZED, no recovery
+re-registration, GPU held 100.00 W. Verdict:
+`docs/readiness/2026-09-04-a2t-official-protocol-replication-v1-verdict.md`. **FAIL** on the
+section-7 rule; the substantive findings — a genuine +5.50 pp protocol effect on tool selection and
+a Tier-1 result that moves the wrong way — are in that document.
