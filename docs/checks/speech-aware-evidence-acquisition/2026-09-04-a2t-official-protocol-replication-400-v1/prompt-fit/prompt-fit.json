@@ -1,0 +1,142 @@
+{
+  "attempt_id": "attempt-20260904T134108Z-a2tcalpromptfit",
+  "boundary": "zero generated tokens: only GET /props, POST /apply-template and POST /tokenize were called, none of which decodes. No gold, expected tool call, reference transcript, annotation, output, score, test datum or future turn was opened.",
+  "cells": [
+    {
+      "arm": "bare-core",
+      "cell_id": "R-official-raw",
+      "completion_token_ceiling": 256,
+      "every_request_fits": true,
+      "instruction_source": "baseline fragment task_instruction_template + fill (probes/r1_audio2tool_official.txt + audio2tool-registry-compact)",
+      "messages_sha256": "98400f19eefdf46b6a5679c565450dccb530b13eadbde6c4e065583f05c2a2ee",
+      "model_fragment": "q4km-featcache-a2t-official-04ccc72a",
+      "rendered_prompt_chars": 16309,
+      "rendered_prompt_sha256": "430c075bbb923d487ca959dc86ca7d7ade6372660001abab0223bdabcb53f231",
+      "required_window_tokens": {
+        "count": 400,
+        "max": 4307,
+        "median": 3904.0,
+        "min": 3852,
+        "p90": 3982,
+        "p95": 4008
+      },
+      "served_slot_margin_tokens": {
+        "count": 400,
+        "max": 12532,
+        "median": 12480.0,
+        "min": 12077,
+        "p90": 12519,
+        "p95": 12519
+      },
+      "slot_tokens": 16384,
+      "slots": 3,
+      "special_token_reserve": 2,
+      "system_text_chars": 16143,
+      "system_text_sha256": "be7f31a2e8c7e6dd6a2db8673a54da26051cf2c3914218532521385175ffd8bd",
+      "system_text_verbatim_in_rendered_prompt": true,
+      "text_prompt_tokens": 3581,
+      "tool_schema_fill": null,
+      "tools_count": 0,
+      "tools_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "user_turn_audio_first": true,
+      "user_turn_text": "Convert this voice command to a tool call.",
+      "worst_required_window_tokens": 4307,
+      "worst_sample_id": "tier7_multiturn:001590",
+      "worst_served_slot_margin_tokens": 12077
+    }
+  ],
+  "contacts": {
+    "GET /props": 1,
+    "POST /apply-template": 1,
+    "POST /tokenize": 2,
+    "generations": 0
+  },
+  "dataset_fragment": "audio2tool-calibration-400",
+  "decision": {
+    "applied": "rule did not fire (raw worst 4307 <= 14800); the raw model fragment stays at -np 3, 16384 tokens per slot",
+    "exceeds_threshold": false,
+    "raw_slot_tokens_in_force": 16384,
+    "raw_slots_in_force": 3,
+    "raw_worst_required_window_tokens": 4307,
+    "rule": "if the raw cells' worst request exceeds 14800 tokens, change the raw model fragment to -np 2 (24,576 tokens per slot); otherwise keep -np 3",
+    "rule_satisfied_by_the_fragment_in_force": true,
+    "threshold_tokens": 14800
+  },
+  "experiment_fragment": "a2t-official-protocol-replication-400-v1",
+  "flight_run_id": "SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-V1",
+  "generated_at": "2026-09-04T13:41:35.926848+00:00",
+  "media_stand_in": {
+    "basis": "used only for prompt orders that build a real input_audio part; the media is ONE opaque marker in the rendered prompt, so the text token count around it is identical for every sample of the roster",
+    "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01599/speaker_11_ecapa_speaker_44243.wav",
+    "sample_id": "tier1_direct:003198"
+  },
+  "official_system_message_cross_check": {
+    "official_chars": 16143,
+    "official_sha256": "be7f31a2e8c7e6dd6a2db8673a54da26051cf2c3914218532521385175ffd8bd",
+    "rendered_sha256": "be7f31a2e8c7e6dd6a2db8673a54da26051cf2c3914218532521385175ffd8bd",
+    "source": "the pinned Audio2Tool clone's own utils/tools_schema.py (format_tools_compact + load_tools_from_csv) over the same tools_registry.csv, executed from $SPEECHRL_DATA_DIR/repos/audio2tool",
+    "status": "PASS"
+  },
+  "reserve_decision": {
+    "all_cells_meet_reserve": true,
+    "cells": {
+      "R-official-raw": {
+        "context_tokens": 49152,
+        "largest_slot_count_meeting_reserve_at_this_context": 3,
+        "meets_reserve": true,
+        "slot_tokens": 16384,
+        "slot_tokens_is_multiple_of_512": true,
+        "slots": 3,
+        "worst_required_window_tokens": 4307,
+        "worst_served_slot_margin_tokens": 12077
+      }
+    },
+    "rule": "every request of a cell must fit its slot with at least 8192 tokens of reserve; slots x slot_tokens must equal the fragment's -c, and slot_tokens must be a multiple of 512 so llama-server's own rounding cannot make the live slot disagree with the declared one",
+    "slot_reserve_tokens": 8192
+  },
+  "run_id": "SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-PROMPT-FIT-V1",
+  "sample_count": 400,
+  "schema": "saea-a2t-calibration-prompt-fit-v1",
+  "server": {
+    "chat_template_sha256": "45777d2e798aae1d1ce6844e69edcb23fc0c710009554711c78efab9044da2c8",
+    "extra_argv": [
+      "-c",
+      "49152",
+      "-np",
+      "3",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "llama_cpp_build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "load_seconds": 10.025,
+    "media_marker": "<__media_SC8VvkRKxr2YvwZlri0D3QKzuowP0l6p__>",
+    "port": 8080,
+    "role": "legacy",
+    "slot_tokens_declared": 16384,
+    "slot_tokens_live": 16384,
+    "stop_forced": false,
+    "stop_signal": "SIGTERM"
+  },
+  "speech_tokens": {
+    "basis": "the promotion receipt's own per-packet n_tokens -- the mmproj encoder's exact output for these audio bytes, therefore the true speech-token cost on both the raw-audio and the packet path",
+    "distribution": {
+      "count": 400,
+      "max": 468,
+      "median": 65.0,
+      "min": 13,
+      "p90": 143,
+      "p95": 169
+    },
+    "registered_geometry_assumption": "35.714 s x 14.4 tokens/s = 514",
+    "source": "/home/chao/feat-cache/a2t-calibration-400-packets-04ccc72a/A2T-CALIBRATION-400-promotion.json",
+    "source_sha256": "2b848b86a4228452d8965f4542005e3d28d3370243b3353dfd34c10cac2f8b92"
+  },
+  "split_identity_hash": "11091b38ae9d53530952af632636d7e79a614350213e10c6c26583c37f85846b",
+  "study": "speech-aware-evidence-acquisition"
+}

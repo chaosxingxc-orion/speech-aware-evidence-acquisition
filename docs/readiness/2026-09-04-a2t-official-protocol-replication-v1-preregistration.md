@@ -235,3 +235,49 @@ fresh roster, a training-free policy fit, or any edit to the locked SLURP cell.
 ## 9. Execution log
 
 Filled in as the flight proceeds; every entry is written before the step it describes is read.
+
+### 2026-09-04, Phase 1 — model-free preparation (zero contacts)
+
+- Cloned the official code to `$SPEECHRL_DATA_DIR/repos/audio2tool` at commit `b9d5383c…` and
+  verified all ten pinned blob SHAs with `git rev-parse <commit>:<path>` in the clone; wrote
+  `docs/receipts/environments/audio2tool-official-code.json`. Commit `a4aeee3e`.
+- Vendored `metrics.py` byte-for-byte (its committed git blob in THIS repository is
+  `d98277bcf69795c9a0ae54e538c170abfd8c51ca`, the upstream blob itself) and
+  `BaseAudioModel.parse_tool_call` as `parse.py`; registered `a2t-toolcall-official` with
+  `data.audio2tool.load_official_gold` supplying the release's own `QuerySample` gold shape.
+  13 unit tests, including the blob-hash assertion and the clone re-derivation. Commit `a4aeee3e`.
+- Landed the request side: the `audio2tool-registry-compact` fill (byte-identical to the release's
+  `format_tools_compact` over the real 152-row CSV), the frozen template
+  `configs/probes/r1_audio2tool_official.txt` as a NEW probe-manifest entry
+  `R1-audio2tool-official-protocol`, the `user_turn_text` / `user_turn_audio_first` transport seam
+  (default off, with a regression test pinning the legacy calibration cell's exact wire bytes), and
+  the four fragments. Commit `46ce43b5`.
+- Full test suite: 6,259 passed, 6 failed — exactly the known pre-existing set (2 x `test_pemb3m`,
+  2 x `test_pemb4r`, `test_bundle` CLI, and one full-suite-only registry-pollution failure in
+  `test_engineering_base_check` that passes in isolation), plus the known
+  `test_build_a2t_g6_family_sweep` collection error from the verl `scripts` shadow.
+  `scripts/checks/engineering_base_check.py`: PASS.
+
+### 2026-09-04, Phase 2 — prompt fit (zero generated tokens)
+
+Row `SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-PROMPT-FIT-V1`, registered before the server was
+touched. Receipt:
+`docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-official-protocol-replication-400-v1/prompt-fit/prompt-fit.json`
+(SHA-256 `3aa8a34d5816a5360bc20b80675dc28ac97a0b8da7872115b1547612864fe1ac`). One `GET /props`, one
+`POST /apply-template`, two `POST /tokenize`, zero generations.
+
+- **Fidelity.** The rendered system message equals the pinned release's own, byte for byte:
+  16,143 characters, SHA-256 `be7f31a2e8c7e6dd6a2db8673a54da26051cf2c3914218532521385175ffd8bd`
+  from this repository's template + fill AND from the clone's own
+  `format_tools_compact(load_tools_from_csv(...))`. It appears verbatim inside the prompt the pinned
+  GGUF chat template rendered, and so does the user-turn sentence after the audio part.
+- **Envelope.** 3,581 text tokens. The reconstruction the calibration flew was **3.7x larger** than
+  the protocol it was reconstructing: 13,236 tokens for the legacy registry text, 13,914 for the
+  native `tools` list. Worst required window over all 400 requests: 4,307 tokens
+  (3,581 + 468 speech + 256 completion + 2 special), against the calibration's 14,730 / 15,408.
+- **Geometry.** Section 6 item 3's rule fixes `-c 49152 / -np 3`, 16,384 tokens per slot, worst
+  margin 12,077. `-np 4` at the same total context gives 12,288 per slot and a margin of 7,981 —
+  211 tokens short of the 8,192 reserve — and is refused. `GET /props` reported exactly 16,384, so
+  no rounding disagreement exists. This is one MORE slot than the calibration's raw cells could
+  serve. `configs/model/q4km-featcache-a2t-official-04ccc72a.json` now carries these measured
+  numbers in its `serving_geometry_basis`.
