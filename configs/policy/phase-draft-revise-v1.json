@@ -1,0 +1,22 @@
+{
+  "schema": "saea-phase-program-v1",
+  "program_id": "phase-draft-revise-v1",
+  "phases": [
+    {
+      "name": "draft",
+      "purpose": "draft",
+      "knowledge": "none",
+      "response_format_id": null,
+      "barrier": false
+    },
+    {
+      "name": "revise",
+      "purpose": "revise",
+      "knowledge": "none",
+      "response_format_id": null,
+      "barrier": false
+    }
+  ],
+  "max_contacts": 2,
+  "stop_rule": "always-run-full-program"
+}

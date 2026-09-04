@@ -1,0 +1,22 @@
+{
+  "schema": "saea-phase-program-v1",
+  "program_id": "phase-select-then-fill-v1",
+  "phases": [
+    {
+      "name": "select",
+      "purpose": "select-ordered-tool-occurrences",
+      "knowledge": "none",
+      "response_format_id": "select-response-v1",
+      "barrier": true
+    },
+    {
+      "name": "fill",
+      "purpose": "fill-locked-selected-occurrences",
+      "knowledge": "none",
+      "response_format_id": "fill-response-v1",
+      "barrier": false
+    }
+  ],
+  "max_contacts": 2,
+  "stop_rule": "always-run-full-program"
+}

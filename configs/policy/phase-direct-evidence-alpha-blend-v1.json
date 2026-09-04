@@ -1,0 +1,22 @@
+{
+  "schema": "saea-phase-program-v1",
+  "program_id": "phase-direct-evidence-alpha-blend-v1",
+  "phases": [
+    {
+      "name": "direct",
+      "purpose": "direct-decode",
+      "knowledge": "none",
+      "response_format_id": null,
+      "barrier": false
+    },
+    {
+      "name": "evidence",
+      "purpose": "evidence-decode",
+      "knowledge": "supplied",
+      "response_format_id": null,
+      "barrier": false
+    }
+  ],
+  "max_contacts": 2,
+  "stop_rule": "stop-policy-optional-early-exit"
+}

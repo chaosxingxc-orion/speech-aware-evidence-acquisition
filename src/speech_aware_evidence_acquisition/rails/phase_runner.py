@@ -1,0 +1,358 @@
+"""C4a consolidation: one whole-roster single-phase runner
+(:func:`run_agent_phase`) plus one program sequencer (:func:`run_program`),
+extracted from the near-identical ``run_phase`` bodies of
+``rails.probes.a2t_semantic_agentloop`` and
+``rails.probes.a2t_select_fill_agentloop`` and generalized over any
+:class:`~.controllers.PhaseProgram`.
+
+How the ``select-then-fill`` barrier is realized
+-------------------------------------------------
+
+``rails.runner.run_speech_native_agent_loop`` runs one independent
+per-sample trajectory per row; it has no notion of "every row reached phase
+X" partway through a run. A hard barrier between two phases (phase 2 must
+never start for ANY row before phase 1 has settled for EVERY row) therefore
+cannot live inside a single ``run_speech_native_agent_loop`` call -- it can
+only be a property of HOW MANY TIMES, and in what order, that call is made.
+
+``run_program`` realizes the barrier this way: it iterates
+``program.phases`` in declared order and, for each phase, makes exactly one
+BLOCKING, WHOLE-ROSTER call to :func:`run_agent_phase` (which itself reduces
+the program to that one phase via ``PhaseProgram.solo`` and runs it with
+``max_contacts=1`` -- one contact per sample, for every sample in the
+split). Because ``run_agent_phase`` does not return until every row's
+single contact for that phase has completed, the NEXT phase's call cannot
+begin until the whole prior phase is done -- exactly the barrier semantics
+``PhaseSpec.barrier`` declares. Each completed phase's raw response is
+sealed into a plain ``sample_id -> AgentStateArtifact`` mapping
+(:func:`_seal_phase_state`) and handed to the NEXT phase's
+``material_for_phase`` callable, so ``fill`` can read ``select``'s answer
+even though the two phases are two entirely separate
+``run_speech_native_agent_loop`` invocations with no shared runtime state
+(mirrors ``rails.probes.a2t_select_fill_agentloop``'s own external
+``PhaseMaterial.predecessor`` threading).
+
+``run_program`` applies this SAME per-phase, whole-roster sequencing to
+EVERY program, not only a barrier one: this consolidation slice does not
+implement true single-trajectory phase fusion (pipelining a fast sample's
+``fill`` contact against a slow sample's still-running ``select`` contact).
+A caller that wants a genuinely continuous multi-contact trajectory for a
+non-barrier program (e.g. ``phase-direct-evidence-alpha-blend-v1``, the way
+``rails.kb_policy.KbAlphaBlendController`` runs its own direct/evidence pair
+as one trajectory) constructs ``controllers.EvidenceAgentController``
+directly with the FULL (non-``solo``) ``PhaseProgram`` and calls
+``run_speech_native_agent_loop`` itself, bypassing ``run_program`` entirely
+-- ``EvidenceAgentController`` was built generically enough to support
+either shape (module docstring in ``rails.controllers``).
+"""
+
+from __future__ import annotations
+
+import hashlib
+from pathlib import Path
+from typing import Callable, Mapping
+
+from ..contracts import ExecutionPlan
+from ..core.base import Registry
+from .controllers import (
+    EvidenceAgentController,
+    MaterialForPhase,
+    PhaseProgram,
+    SupplyForPhase,
+)
+from .core_client import CoreClient
+from .errors import RailsError
+from .knowledge import AgentStateArtifact, KnowledgeSnapshot
+from .runner import (
+    AgentLoopSummary,
+    AgentTraceSink,
+    run_speech_native_agent_loop,
+)
+from .task_adapter import TaskAdapter
+
+#: ``material_for_phase(phase_name, context, sealed_states)`` -- the richer
+#: shape ``run_program`` calls, where ``sealed_states`` is the immediately
+#: preceding phase's own ``sample_id -> AgentStateArtifact`` mapping (empty
+#: for the program's first phase, which has no predecessor).
+ProgramMaterialForPhase = Callable[
+    [str, "object", Mapping[str, AgentStateArtifact]], "object"
+]
+
+DEFAULT_AGENT_EXECUTOR_ID = "openjiuwen-workflow-v1"
+
+
+class PhaseRunnerError(RailsError):
+    """A ``run_agent_phase``/``run_program`` input, or the phase summary it
+    got back, violated the shape this module requires."""
+
+
+def run_agent_phase(
+    *,
+    phase_name: str,
+    program: PhaseProgram,
+    adapter: TaskAdapter,
+    plan: ExecutionPlan,
+    data_root: Path,
+    core_client: CoreClient,
+    split_id: str,
+    knowledge_snapshot: KnowledgeSnapshot,
+    speech_packet_bindings: Mapping[str, Mapping[str, object]],
+    trace_sink: AgentTraceSink,
+    decoding_params: Mapping[str, object],
+    material_for_phase: MaterialForPhase,
+    supply_for_phase: SupplyForPhase | None = None,
+    expected_row_count: int | None = None,
+    slot_count: int | None = None,
+    queue_depth: int | None = None,
+    agent_executor_id: str = DEFAULT_AGENT_EXECUTOR_ID,
+    agent_runner: Callable[..., object] = run_speech_native_agent_loop,
+) -> AgentLoopSummary:
+    """Run exactly one named phase of ``program`` for the whole roster in
+    ``speech_packet_bindings``, as one blocking ``max_contacts=1`` call.
+
+    Builds a private ``core.base.Registry`` and registers a factory
+    producing one ``controllers.EvidenceAgentController`` per sample, bound
+    to ``program.solo(phase_name)`` (module docstring). ``slot_count`` /
+    ``queue_depth`` default from ``adapter.serving_geometry()`` when not
+    given (``queue_depth = 4 * slots``). Refuses ``response_format`` inside
+    the run-level ``decoding_params`` (every phase's own response format, if
+    any, comes from its ``PhaseMaterial`` instead -- mirrors
+    ``rails.runner.run_speech_native_agent_loop``'s own refusal for
+    ``id_slot``). Validates the returned summary: bound to
+    ``agent_executor_id``, exactly one contact per result, row count matches
+    ``expected_row_count`` (or ``len(speech_packet_bindings)`` when not
+    given), and sample identities are unique and match the roster exactly.
+    """
+
+    program.validate()
+    solo_program = program.solo(phase_name)
+    if not callable(material_for_phase):
+        raise PhaseRunnerError(
+            "run_agent_phase requires a callable material_for_phase"
+        )
+    if supply_for_phase is not None and not callable(supply_for_phase):
+        raise PhaseRunnerError(
+            "run_agent_phase supply_for_phase must be callable or None"
+        )
+    if not isinstance(decoding_params, Mapping) or "response_format" in decoding_params:
+        raise PhaseRunnerError(
+            "run-level decoding_params must leave response_format to each "
+            "phase's own material"
+        )
+    if not isinstance(speech_packet_bindings, Mapping) or not speech_packet_bindings:
+        raise PhaseRunnerError("speech_packet_bindings must be a non-empty mapping")
+    if expected_row_count is not None:
+        if (
+            isinstance(expected_row_count, bool)
+            or not isinstance(expected_row_count, int)
+            or expected_row_count <= 0
+        ):
+            raise PhaseRunnerError(
+                "expected_row_count must be a positive integer or None"
+            )
+        if len(speech_packet_bindings) != expected_row_count:
+            raise PhaseRunnerError(
+                f"phase {phase_name!r} requires exactly {expected_row_count} "
+                "speech packet bindings"
+            )
+
+    geometry = adapter.serving_geometry()
+    resolved_slot_count = slot_count if slot_count is not None else geometry["slots"]
+    resolved_queue_depth = (
+        queue_depth if queue_depth is not None else resolved_slot_count * 4
+    )
+    if (
+        isinstance(resolved_slot_count, bool)
+        or not isinstance(resolved_slot_count, int)
+        or resolved_slot_count <= 0
+    ):
+        raise PhaseRunnerError(
+            "slot_count (or the adapter's serving_geometry) must be a positive int"
+        )
+    if (
+        isinstance(resolved_queue_depth, bool)
+        or not isinstance(resolved_queue_depth, int)
+        or resolved_queue_depth < resolved_slot_count
+    ):
+        raise PhaseRunnerError("queue_depth must be an int >= slot_count")
+
+    controller_registry = Registry(f"phase runner controller: {solo_program.program_id}")
+    controller_registry.register(
+        solo_program.program_id,
+        lambda sample_id: EvidenceAgentController(
+            program=solo_program,
+            material_for_phase=material_for_phase,
+            supply_for_phase=supply_for_phase,
+        ),
+    )
+
+    summary = agent_runner(
+        data_root=data_root,
+        plan=plan,
+        adapter=adapter,
+        core_client=core_client,
+        split_id=split_id,
+        knowledge_snapshot=knowledge_snapshot,
+        speech_packet_bindings=speech_packet_bindings,
+        controller_policy_id=solo_program.program_id,
+        max_contacts=1,
+        slot_count=resolved_slot_count,
+        queue_depth=resolved_queue_depth,
+        trace_sink=trace_sink,
+        agent_executor_id=agent_executor_id,
+        decoding_params=decoding_params,
+        controller_registry=controller_registry,
+    )
+
+    if getattr(summary, "agent_executor_id", None) != agent_executor_id:
+        raise PhaseRunnerError(
+            f"phase {phase_name!r} summary is not bound to agent_executor_id "
+            f"{agent_executor_id!r}"
+        )
+    results = getattr(summary, "results", None)
+    if not isinstance(results, tuple) or not results:
+        raise PhaseRunnerError(
+            f"phase {phase_name!r} must return a non-empty results tuple"
+        )
+    row_target = (
+        expected_row_count if expected_row_count is not None else len(speech_packet_bindings)
+    )
+    if len(results) != row_target:
+        raise PhaseRunnerError(
+            f"phase {phase_name!r} must return exactly {row_target} results, "
+            f"got {len(results)}"
+        )
+    sample_ids: list[str] = []
+    for result in results:
+        sample_id = getattr(result, "sample_id", None)
+        contacts = getattr(result, "contacts", None)
+        if not isinstance(sample_id, str) or not sample_id:
+            raise PhaseRunnerError(f"phase {phase_name!r} result lacks a sample identity")
+        if not isinstance(contacts, tuple) or len(contacts) != 1:
+            raise PhaseRunnerError(
+                f"phase {phase_name!r} every result must contain exactly one contact"
+            )
+        sample_ids.append(sample_id)
+    if len(set(sample_ids)) != len(sample_ids):
+        raise PhaseRunnerError(f"phase {phase_name!r} results have duplicate sample ids")
+    if set(sample_ids) != set(speech_packet_bindings):
+        raise PhaseRunnerError(
+            f"phase {phase_name!r} result identities differ from speech_packet_bindings"
+        )
+    return summary
+
+
+def _seal_phase_state(
+    result: object, *, phase_name: str, producer_policy_id: str
+) -> AgentStateArtifact:
+    """Reconstruct the completed phase's sealed state purely from the
+    ``AgentLoopResult`` ``run_agent_phase`` already validated -- the same
+    ``state_id``/``state_kind`` shape ``EvidenceAgentController.advance``
+    seals internally for a continuous multi-phase trajectory, but rebuilt
+    externally here because a solo, immediate-stop phase invocation never
+    merges its own final wave into ``rails.runner``'s internal state store
+    (``rails.runner._run_agent_trajectory`` only merges ``new_agent_states``
+    on a NON-stop transition; a solo phase always stops on its one and only
+    contact). For that same reason ``result.initial_query_state`` and
+    ``result.final_query_state`` are identical here -- the trajectory never
+    advances past step 0.
+    """
+
+    final_response_text = getattr(result, "final_response_text")
+    initial_query_state = getattr(result, "initial_query_state")
+    sample_id = getattr(result, "sample_id")
+    response_sha256 = hashlib.sha256(final_response_text.encode("utf-8")).hexdigest()
+    return AgentStateArtifact(
+        state_id=f"{phase_name}:{sample_id}",
+        state_kind=f"phase:{phase_name}",
+        content=final_response_text,
+        source_query_state_sha256=initial_query_state.content_hash(),
+        source_response_sha256=response_sha256,
+        producer_policy_id=producer_policy_id,
+        cited_value_ids=(),
+    ).validate()
+
+
+def run_program(
+    *,
+    program: PhaseProgram,
+    adapter: TaskAdapter,
+    plan: ExecutionPlan,
+    data_root: Path,
+    core_client: CoreClient,
+    split_id: str,
+    knowledge_snapshot: KnowledgeSnapshot,
+    speech_packet_bindings: Mapping[str, Mapping[str, object]],
+    trace_sink: AgentTraceSink,
+    decoding_params: Mapping[str, object],
+    material_for_phase: ProgramMaterialForPhase,
+    supply_for_phase: SupplyForPhase | None = None,
+    expected_row_count: int | None = None,
+    slot_count: int | None = None,
+    queue_depth: int | None = None,
+    agent_executor_id: str = DEFAULT_AGENT_EXECUTOR_ID,
+    agent_runner: Callable[..., object] = run_speech_native_agent_loop,
+) -> tuple[AgentLoopSummary, ...]:
+    """Run every phase of ``program`` in order, each as one whole-roster
+    :func:`run_agent_phase` call (module docstring: this is how the barrier
+    is realized). Returns one ``AgentLoopSummary`` per phase, in phase order.
+
+    ``material_for_phase(phase_name, context, sealed_states)`` receives the
+    immediately preceding phase's sealed states (``sample_id ->
+    AgentStateArtifact``, built by :func:`_seal_phase_state`); the first
+    phase receives an empty mapping.
+    """
+
+    program.validate()
+    if not callable(material_for_phase):
+        raise PhaseRunnerError("run_program requires a callable material_for_phase")
+
+    summaries: list[AgentLoopSummary] = []
+    sealed_states: Mapping[str, AgentStateArtifact] = {}
+    for phase in program.phases:
+        def _phase_material_for_phase(
+            name: str,
+            context: object,
+            *,
+            _sealed: Mapping[str, AgentStateArtifact] = sealed_states,
+        ) -> object:
+            return material_for_phase(name, context, _sealed)
+
+        summary = run_agent_phase(
+            phase_name=phase.name,
+            program=program,
+            adapter=adapter,
+            plan=plan,
+            data_root=data_root,
+            core_client=core_client,
+            split_id=split_id,
+            knowledge_snapshot=knowledge_snapshot,
+            speech_packet_bindings=speech_packet_bindings,
+            trace_sink=trace_sink,
+            decoding_params=decoding_params,
+            material_for_phase=_phase_material_for_phase,
+            supply_for_phase=supply_for_phase,
+            expected_row_count=expected_row_count,
+            slot_count=slot_count,
+            queue_depth=queue_depth,
+            agent_executor_id=agent_executor_id,
+            agent_runner=agent_runner,
+        )
+        summaries.append(summary)
+        sealed_states = {
+            result.sample_id: _seal_phase_state(
+                result, phase_name=phase.name, producer_policy_id=program.program_id
+            )
+            for result in summary.results
+        }
+
+    return tuple(summaries)
+
+
+__all__ = [
+    "DEFAULT_AGENT_EXECUTOR_ID",
+    "PhaseRunnerError",
+    "ProgramMaterialForPhase",
+    "run_agent_phase",
+    "run_program",
+]
