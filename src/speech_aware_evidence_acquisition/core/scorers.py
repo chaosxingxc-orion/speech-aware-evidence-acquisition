@@ -654,3 +654,26 @@ def score_bundle(
         scorer_fn = SCORERS.resolve(str(name))
         results[str(name)] = scorer_fn(bundle.outputs_path, lock, root)
     return results
+
+
+# ---------------------------------------------------------------------------
+# SLURP official-evaluator identity-check scorer (consolidation slice C3a):
+# runs BOTH the per-sample port (``reproduction.slurp_scoring``) and the
+# REAL, unmodified official ``evaluate.py`` subprocess over the same outputs,
+# and reports their numeric identity. Same registration pattern as
+# ``a2t-toolcall`` above -- the function lives in
+# ``reproduction/slurp_official_eval.py`` (deliberately OUTSIDE the E0 D3
+# frozen scoring package), imported here (the one scorer-registration site
+# ``score_bundle`` resolves names through) with the same uniform
+# ``scorer(outputs_path, lock, root)`` signature. Registered under BOTH
+# names: ``"slurp-slu"`` is the name ``data.carriers``' own SLURP
+# ``TaskLayout.official_scorer_id`` already names (``data/carriers.py``),
+# and ``"slurp-slu-official"`` is this slice's own explicit name -- both
+# resolve the exact SAME function object, never two independent
+# implementations to keep in sync.
+# ---------------------------------------------------------------------------
+
+from ..reproduction.slurp_official_eval import score_slurp_outputs_official  # noqa: E402
+
+SCORERS.register("slurp-slu", score_slurp_outputs_official)
+SCORERS.register("slurp-slu-official", score_slurp_outputs_official)
