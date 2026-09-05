@@ -1,0 +1,132 @@
+{
+  "schema": "saea-e22-esb-wire-check-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "generated_at": "2026-09-05T04:35:14.034775+00:00",
+  "flight_run_id": "SAEA-E22-ESB-SHORTFORM-ALIGNMENT-SMOKE-V1",
+  "cells_checked": [
+    "E22-ESB-SMOKE-4"
+  ],
+  "model_contacts": 0,
+  "servers_started": 0,
+  "boundary": "zero model contacts: the only fakes are the gate and the transport (core.flight.runtime.WireCheckGate / WireCheckTransport, which never opens a socket). Any score below is computed over the transport's canned response and is not a measurement of anything.",
+  "cells": [
+    {
+      "schema": "saea-flight-wire-check-v1",
+      "flight_run_id": "SAEA-E22-ESB-SHORTFORM-ALIGNMENT-SMOKE-V1",
+      "wire_check_run_id": "WIRECHECK-SAEA-E22-ESB-SHORTFORM-ALIGNMENT-SMOKE-V1-1788582910696",
+      "attempt_id": "attempt-wire-check-1788582910696",
+      "attempt_aborted": true,
+      "config_hash": "179c08ef46eaa907fd5d52ab030478e14073139eef2c45353dcc4af826cd2b0c",
+      "protocol_hash": "d74adf8d137c63426011ae9668ee08b39857b55db10c9a4b4950b14ed96476a1",
+      "split_id": "E22-ESB-SMOKE-4",
+      "split_identity_hash": "4de75c3427fe83d752bb96476c734415c34f6db1bc6ea1985fbf0b101f205f9d",
+      "arm": "bare-core",
+      "native_tools_arm": false,
+      "sample_count": 4,
+      "contact_count": 4,
+      "policy_kind": "direct",
+      "dispatch": {
+        "workers": 8,
+        "max_in_flight": 4,
+        "slot_ids_used": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "dispatch": "concurrent",
+        "contacts_per_sample": 1,
+        "queue_depth": "not a knob: one contact per sample means nothing queues behind a sample, and more in-flight requests than slots is what the slot pinning exists to forbid"
+      },
+      "wall_seconds": 0.08409881591796875,
+      "payload_keys": [
+        "audio_seconds",
+        "carrier_lock_key",
+        "decoding_params",
+        "history",
+        "media_relpath",
+        "request_id",
+        "sample_id",
+        "sample_rate_hz",
+        "speech_ref",
+        "task_instruction"
+      ],
+      "payload_keys_equal_arm_visible_fields": true,
+      "tool_schemas_count": 0,
+      "id_slot": 3,
+      "request_body_sha256": [
+        "977762047ca9139ed29a9624073687cc0452ce1697305b0e55fb4a9c3831c1d4",
+        "f0c9dd82c9a42c8aacff131aac030e2f535fed345418efb59d2844b27e9b82b3",
+        "ea5c61b7f418c490b9381d8f8af1877591da31b58448c8094ca651b7112dbda2",
+        "d2aef17eeed81ac69c40d51a132a8986204733156fc1e70736870c67f9c27c88"
+      ],
+      "speech_packets_verified": {},
+      "trace_manifest_hash": "ddde8f08148798a162b5cde93547edb9971fafe4cd3e6dd37e7bc6690c41ba1b",
+      "cost": {
+        "calls_used": 4,
+        "audio_seconds_used": 56.7601875,
+        "latency_seconds_total": 9.202100045513362e-05,
+        "prompt_tokens_total": 4,
+        "completion_tokens_total": 4,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "response_arrival": {
+        "rows_total": 4,
+        "rows_with_native_tool_calls": 0,
+        "rows_answered_as_text": 4,
+        "native_tool_calls_total": 0,
+        "basis": "rails.core_client.RequestTiming.native_tool_calls, set from core.model.CoreResponse.tool_calls; None means the response envelope carried no tool_calls key at all, i.e. the model answered as text"
+      },
+      "seal_and_score": {
+        "status": "OK",
+        "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/WIRECHECK-SAEA-E22-ESB-SHORTFORM-ALIGNMENT-SMOKE-V1-1788582910696/attempt-wire-check-1788582910696/WIRECHECK-SAEA-E22-ESB-SHORTFORM-ALIGNMENT-SMOKE-V1-1788582910696.run-manifest.json",
+        "manifest_sha256": "1ec6bc3fc693807724f144630b61b2de060198fcbf34138383c97306834f2cca",
+        "verified_attempt_state": "OPENED",
+        "outputs_row_count": 4,
+        "score_result": {
+          "schema": "saea-parallel-score-batch-v1",
+          "operation": "score",
+          "parallelism_boundary": "one-complete-verified-manifest-per-process",
+          "aggregation_rule": "no dataset sharding and no averaging of shard-level official metrics",
+          "requested_max_workers": 1,
+          "effective_max_workers": 1,
+          "job_count": 1,
+          "succeeded": 1,
+          "failed": 0,
+          "elapsed_seconds": 1.9913778369955253,
+          "jobs": [
+            {
+              "index": 0,
+              "job_id": "attempt-wire-check-1788582910696",
+              "operation": "score",
+              "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/WIRECHECK-SAEA-E22-ESB-SHORTFORM-ALIGNMENT-SMOKE-V1-1788582910696/attempt-wire-check-1788582910696/WIRECHECK-SAEA-E22-ESB-SHORTFORM-ALIGNMENT-SMOKE-V1-1788582910696.run-manifest.json",
+              "ledger_cells": null,
+              "status": "succeeded",
+              "returncode": 0,
+              "elapsed_seconds": 1.9743818800052395,
+              "result_file": "attempt-wire-check-1788582910696.score.json",
+              "result_sha256": "ce867058a6fa790f21699eac1823943ca1990f13d0330e38829b2af517e32b0c",
+              "stdout_log": null,
+              "stderr_log": "attempt-wire-check-1788582910696.stderr.log",
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "error": null
+            }
+          ]
+        },
+        "scorers": [
+          "asr-wer-esb-whisper",
+          "asr-wer-esb",
+          "cost"
+        ],
+        "ledger_surface_validated": true,
+        "numbers_are_meaningless": "these scores are computed over WireCheckTransport's canned response, not over any model output; they prove the scoring link runs and nothing else"
+      },
+      "transport": "core.flight.runtime.WireCheckTransport (never opens a socket)",
+      "gate": "core.flight.runtime.WireCheckGate (authorizes nothing real)",
+      "payload_to_wire_tools_mapping": "payload tool_schemas -> request body 'tools' is core.model.transport.LlamaServerTransport's own step, covered by tests/unit/test_native_tools_arm.py's transport section; this check asserts at the transport seam, where the payload is what crosses",
+      "model_contacts": 0,
+      "cell_id": "E22-ESB-SMOKE-4"
+    }
+  ]
+}
