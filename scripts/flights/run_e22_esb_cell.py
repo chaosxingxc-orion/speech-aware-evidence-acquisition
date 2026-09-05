@@ -369,6 +369,7 @@ def main() -> int:
     parser.add_argument("--output", type=Path, default=None)
     parser.add_argument("--campaign-active", action="store_true")
     parser.add_argument("--workers", type=int, default=None)
+    parser.add_argument("--preprocess-workers", type=int, default=None)
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--dry-run", action="store_true")
     mode.add_argument("--wire-check", action="store_true")
@@ -460,6 +461,20 @@ def main() -> int:
     stages: dict[str, object] = {}
     stages["preflight"] = runtime.preflight()
     log("preflight ok: %d samples" % stages["preflight"]["sample_count"])
+    # FLIGHT_STAGES requires preprocess before serve for every arm. For this
+    # raw-audio arm the builtin promoter promotes nothing and says so
+    # ("this arm's D2 field set carries no speech_feature_parts"); the stage
+    # is still run, because skipping it is what FlightStageOrderError exists
+    # to catch and because the receipt it writes is the record that no packet
+    # plane was involved in this number.
+    stages["preprocess"] = runtime.preprocess(workers=args.preprocess_workers)
+    log(
+        "preprocess: %s, %d packets"
+        % (
+            stages["preprocess"]["promoter_meta"].get("audio_path"),
+            stages["preprocess"]["packet_count"],
+        )
+    )
     stages["serve"] = runtime.serve()
     log("served")
     try:
