@@ -1,0 +1,163 @@
+{
+  "attempt_id": "attempt-20260905T164134Z-a2tcalpromptfit",
+  "boundary": "zero generated tokens: only GET /props, POST /apply-template and POST /tokenize were called, none of which decodes. No gold, expected tool call, reference transcript, annotation, output, score, test datum or future turn was opened.",
+  "cells": [
+    {
+      "arm": "bare-core",
+      "cell_id": "ORG1-grouped-raw",
+      "completion_token_ceiling": 256,
+      "every_request_fits": true,
+      "instruction_source": "baseline fragment task_instruction_template + fill (probes/r1_audio2tool_official_grouped.txt + audio2tool-registry-grouped)",
+      "messages_sha256": "fd419d801b2b8c8b79f1cc41cbd9f6ccb6a1980f6c3af321756465f895e7a803",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "reference_media_marker": "<__media_oXzOt1U10k1gM5WvwdE7V15ysyuM96g9__>",
+      "rendered_prompt_chars": 16656,
+      "rendered_prompt_sha256": "40a437abdc0c0986143cee928cf4ad86db03a0155729eee4df7f588e73694b47",
+      "rendered_prompt_sha256_with_reference_marker": "7fd76c6309b56d3517c645e57a2a16d8f5e57691f2fac50d230944531a31412e",
+      "required_window_tokens": {
+        "count": 4000,
+        "max": 12441,
+        "median": 3991.0,
+        "min": 3939,
+        "p90": 4056,
+        "p95": 4082
+      },
+      "served_slot_margin_tokens": {
+        "count": 4000,
+        "max": 20637,
+        "median": 20585.0,
+        "min": 12135,
+        "p90": 20624,
+        "p95": 20624
+      },
+      "slot_tokens": 24576,
+      "slots": 2,
+      "special_token_reserve": 2,
+      "system_text_chars": 16490,
+      "system_text_sha256": "a0b5dd77cceac57d726e43a06b06a4c6699f21ec22973b0ba9ec6e8409879495",
+      "system_text_verbatim_in_rendered_prompt": true,
+      "text_prompt_tokens": 3668,
+      "tool_schema_fill": null,
+      "tools_count": 0,
+      "tools_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "user_turn_audio_first": true,
+      "user_turn_text": "Convert this voice command to a tool call.",
+      "worst_required_window_tokens": 12441,
+      "worst_sample_id": "tier1_direct:003943",
+      "worst_served_slot_margin_tokens": 12135
+    }
+  ],
+  "contacts": {
+    "GET /props": 1,
+    "POST /apply-template": 1,
+    "POST /tokenize": 2,
+    "generations": 0
+  },
+  "dataset_fragment": "audio2tool-org1-union-4000",
+  "decision": {
+    "reason": "the -np 3 / -np 2 threshold block is the 2026-09-04 calibration's own rule for its own two raw cells; this run is read against the generic per-slot reserve decision below",
+    "status": "NOT APPLICABLE"
+  },
+  "experiment_fragment": "a2t-org1-domain-grouped-4000-v1",
+  "flight_run_id": "SAEA-A2T-ORG1-DOMAIN-GROUPED-V1",
+  "generated_at": "2026-09-05T16:42:03.480804+00:00",
+  "media_stand_in": {
+    "basis": "used only for prompt orders that build a real input_audio part; the media is ONE opaque marker in the rendered prompt, so the text token count around it is identical for every sample of the roster",
+    "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_00625/speaker_00_voxpopuli_speaker_39318.wav",
+    "sample_id": "tier2_parametric:001249"
+  },
+  "official_system_message_cross_check": {
+    "registry_renderer": "grouped",
+    "rendered_sha256_by_cell": {
+      "ORG1-grouped-raw": "a0b5dd77cceac57d726e43a06b06a4c6699f21ec22973b0ba9ec6e8409879495"
+    },
+    "source": "the pinned Audio2Tool clone's own utils/tools_schema.py (format_tools_for_prompt(..., include_constraints=False) + load_tools_from_csv) over the same tools_registry.csv, executed from $SPEECHRL_DATA_DIR/repos/audio2tool",
+    "status": "PASS",
+    "variant_by_cell": {
+      "ORG1-grouped-raw": "in-code-default"
+    },
+    "variants": {
+      "example-config-yaml": {
+        "chars": 16491,
+        "sha256": "ae282f31e2edba4ac49258c72994f99ff8fd24095490e453f874e9b7b5286f70",
+        "system_prompt_sha256": "aa2e344ee52c59019b938926f37498e0dc9c80bd01f6521eba5c3d81309a491d"
+      },
+      "in-code-default": {
+        "chars": 16490,
+        "sha256": "a0b5dd77cceac57d726e43a06b06a4c6699f21ec22973b0ba9ec6e8409879495",
+        "system_prompt_sha256": "1c52cd2ebca6e4737b706ccc231b01f008d35276a2153000d74ec9500018258a"
+      }
+    }
+  },
+  "reserve_decision": {
+    "all_cells_meet_reserve": true,
+    "cells": {
+      "ORG1-grouped-raw": {
+        "context_tokens": 49152,
+        "largest_slot_count_meeting_reserve_at_this_context": 2,
+        "meets_reserve": true,
+        "slot_tokens": 24576,
+        "slot_tokens_is_multiple_of_512": true,
+        "slots": 2,
+        "worst_required_window_tokens": 12441,
+        "worst_served_slot_margin_tokens": 12135
+      }
+    },
+    "rule": "every request of a cell must fit its slot with at least 8192 tokens of reserve; slots x slot_tokens must equal the fragment's -c, and slot_tokens must be a multiple of 512 so llama-server's own rounding cannot make the live slot disagree with the declared one",
+    "slot_reserve_tokens": 8192
+  },
+  "run_id": "SAEA-A2T-ORG1-DOMAIN-GROUPED-PROMPT-FIT-V1",
+  "sample_count": 4000,
+  "schema": "saea-a2t-calibration-prompt-fit-v1",
+  "server": {
+    "chat_template_sha256": "45777d2e798aae1d1ce6844e69edcb23fc0c710009554711c78efab9044da2c8",
+    "extra_argv": [
+      "-c",
+      "49152",
+      "-np",
+      "2",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "llama_cpp_build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "load_seconds": 10.031,
+    "media_marker": "<__media_AqspLeeFI22yCmgUPnALGKO1CfaBu2Fq__>",
+    "port": 8080,
+    "role": "legacy",
+    "slot_tokens_declared": 24576,
+    "slot_tokens_live": 24576,
+    "stop_forced": false,
+    "stop_signal": "SIGTERM"
+  },
+  "speech_tokens": {
+    "basis": "n_tokens = 13 * ceil(audio_seconds), the mmproj encoder's own one-second window; PROVED before use against every per-packet n_tokens of the reference promotion receipt named in window_rule_proof, with zero disagreements. This roster has no promotion receipt of its own because a raw-audio cell needs no packets",
+    "distribution": {
+      "count": 4000,
+      "max": 8515,
+      "median": 65.0,
+      "min": 13,
+      "p90": 130,
+      "p95": 156
+    },
+    "source": "window rule over the roster's measured wav durations",
+    "source_sha256": "e5a81b71e1253ff866262991f79d132b89f4bfb47e7c8a0c0cf0aa04857b8736",
+    "window_rule_proof": {
+      "disagreements": 0,
+      "packets_checked": 400,
+      "reference_promotion_receipt": "/home/chao/feat-cache/a2t-calibration-400-packets-04ccc72a/A2T-CALIBRATION-400-promotion.json",
+      "reference_promotion_receipt_sha256": "2b848b86a4228452d8965f4542005e3d28d3370243b3353dfd34c10cac2f8b92",
+      "reference_roster": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-calibration-400-roster/flight-roster-receipt.json",
+      "reference_roster_sha256": "6f352ea583d0bb91f77aad62e07bdad4d3210d066440fbfaee8e2af504853fe7",
+      "rule": "n_tokens = window_tokens * ceil(audio_seconds)",
+      "window_tokens": 13
+    }
+  },
+  "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+  "study": "speech-aware-evidence-acquisition"
+}
