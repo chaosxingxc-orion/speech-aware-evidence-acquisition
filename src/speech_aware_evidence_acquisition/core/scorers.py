@@ -865,3 +865,41 @@ SCORERS.register("a2t-toolcall-v2", score_audio2tool_outputs_v2)
 from ..reproduction.a2t_scorer import score_audio2tool_outputs_official  # noqa: E402
 
 SCORERS.register("a2t-toolcall-official", score_audio2tool_outputs_official)
+
+
+# ---------------------------------------------------------------------------
+# ESB Earnings-22 utterance scorers (2026-09-04): the utterance-scoped twins of
+# ``asr-wer-whisper`` and ``asr-wer`` above, for the ONE same-model published
+# target this study can align against -- Qwen3-Omni-30B-A3B-Instruct's 9.79
+# zero-shot WER on the 2,735-utterance ESB "Earnings22" test subset.
+#
+# Why they are separate registrations rather than the existing two scorers:
+# an ESB utterance is not a carrier sample. ``data.references.reference_tokens``
+# resolves exactly one ``.nlp`` file per CALL id under the locked carrier tree,
+# and ``contracts.FrozenCoreGate.verify_reference_identity`` fails closed for
+# any id D1 does not record in that carrier's ``nlp_references`` manifest -- an
+# utterance is neither, and manufacturing 2,735 ``.nlp`` files inside a locked
+# dataset tree D1 hashed is not an option. So the utterance references travel
+# their own hash-pinned rail, exactly as ``a2t-toolcall``/``slurp-slu`` already
+# reach their gold through ``data.audio2tool``/``data.slurp`` instead of
+# ``data.references``. That identity guarantee is NOT skipped: it is supplied
+# fail-closed inside ``reproduction.esb_reference.load_esb_references``, which
+# re-hashes the derived reference layer against its committed receipt before a
+# single reference word is read. See that module's own docstring.
+#
+# Same registration pattern and the same uniform ``scorer(outputs_path, lock,
+# root)`` signature as every other scorer here; the bodies live in
+# ``reproduction/esb_reference.py`` (outside the E0 D3 frozen scoring package,
+# and importing ``data.references`` nowhere) and use the SAME frozen
+# ``scoring.wer.align``, the SAME ``scoring.normalize.tokens_v1`` and the SAME
+# vendored Whisper normalizer the two carrier-layer scorers use, so the two
+# Earnings numbers stay comparable metric for metric.
+# ---------------------------------------------------------------------------
+
+from ..reproduction.esb_reference import (  # noqa: E402
+    score_esb_outputs,
+    score_esb_outputs_whisper,
+)
+
+SCORERS.register("asr-wer-esb", score_esb_outputs)
+SCORERS.register("asr-wer-esb-whisper", score_esb_outputs_whisper)

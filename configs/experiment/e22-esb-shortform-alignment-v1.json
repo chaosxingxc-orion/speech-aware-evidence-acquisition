@@ -1,0 +1,186 @@
+{
+  "experiment_id": "SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1",
+  "schema": "saea-e22-esb-shortform-experiment-v1",
+  "date": "2026-09-04",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "Measure the frozen core against the ONE same-model published number this study can reach on any carrier: Qwen3-Omni-30B-A3B-Instruct's 9.79 zero-shot WER on the ESB 'Earnings22' test subset. One cell, E22-ESB-2735: every one of the 2,735 published test utterances, cut locally from the six locked earnings22-original MP3s at the published segment boundaries, one utterance per contact, raw audio through the resident bf16 mmproj, greedy, build 04ccc72a. Preregistration: docs/readiness/2026-09-04-e22-esb-shortform-alignment-v1-preregistration.md.",
+  "predecessor": {
+    "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+    "cell": "E21-full44-bare-core-buf90",
+    "verdict": "docs/readiness/2026-09-04-e21-full44-direct-baseline-v1-verdict.md",
+    "result": "ALIGNED, corpus Whisper-normalized WER 8.200 over all 44 Earnings-21 discovery calls",
+    "what_it_supplies_here": "the instruction, the decoding params, the audio path, the build, the hardened server env and the geometry rule -- everything except the corpus and the segmentation"
+  },
+  "paper_row": {
+    "primary": {
+      "system": "Qwen3-Omni-30B-A3B-Instruct, zero-shot",
+      "wer": 9.79,
+      "source": "NVIDIA NeMo AutoModel, 'Fine-Tune Qwen3-Omni for ASR'",
+      "protocol": "Whisper EnglishTextNormalizer both sides, greedy, N = 2741 utterances",
+      "note": "the ONLY same-model published number across this study's three carriers"
+    },
+    "cross_read": {
+      "system": "Qwen3-Omni-30B-A3B-Instruct on the Open ASR Leaderboard English subset",
+      "wer": 12.3,
+      "source": "Nemotron 3 Nano Omni, arXiv:2604.24954v2 Table 8",
+      "note": "two vendor reports of the SAME frozen model that disagree by 2.5 points"
+    },
+    "degraded_floors_same_column": {
+      "whisper-large-v3": 11.59,
+      "whisper-large-v3-turbo": 11.07,
+      "distil-large-v3.5": 10.83,
+      "qwen3-asr-0.6b": 10.78,
+      "qwen3-asr-1.7b": 9.73,
+      "whisper-medium.en": 12.63,
+      "whisper-small.en": 12.97,
+      "whisper-base.en": 15.09,
+      "whisper-tiny.en": 19.12
+    },
+    "floor_vintage_note": "the first five are the 2026-09-04 leaderboard revision; medium.en / small.en / base.en / tiny.en are the 2026-06-13 vintage, before the normalizer and hardware change",
+    "fine_tuned_context_only": {
+      "nemo_finetuned_qwen3_omni": 8.89,
+      "note": "a fine-tuned number, reported as context only and never as a target"
+    }
+  },
+  "populations": {
+    "E22-ESB-TEST-UTTERANCES-2735": {
+      "dataset_fragment": "earnings22-esb-utterances-2735",
+      "carrier": "earnings22-original",
+      "split_role": "dev",
+      "count": 2735,
+      "strata": "source call: 4432298 351 / 4450488 508 / 4470290 178 / 4479741 473 / 4483338 619 / 4485244 606",
+      "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-e22-esb-shortform-alignment-400-v1/roster/flight-roster-receipt.json",
+      "receipt_sha256": "72be506b01c69e30097e25e836595b261dffa826bb8d31ccf8188fdbbd879ecb",
+      "split_identity_hash": "9285b32127c684ca7edd3a0f842e772f0a308a3c5021759e8381c5c45221189d",
+      "audio_seconds_one_pass": 19494.608437,
+      "audio_seconds_longest_item": 36.360125,
+      "selection": "no draw: this is the whole published test subset",
+      "estimand": "corpus-level WER of the frozen core on the published ESB Earnings22 test subset"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "E22-ESB-2735",
+      "dataset_fragment": "earnings22-esb-utterances-2735",
+      "arm": "bare-core",
+      "baseline_fragment": "e22-esb-direct-zero",
+      "model_fragment": "q4km-e22-esb-mmproj-gpu-04ccc72a-np8",
+      "serving_geometry": "-c 32768 -np 8, 4096 tokens per slot",
+      "factor": "the published short-form segmentation, against the long-form full-44 cell"
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "runtime_receipt": "docs/receipts/runtime-q4km-featcache-04ccc72a.json",
+    "quantization": "Q4_K_M",
+    "decoder_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+    "mmproj_sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883",
+    "audio_path": "raw audio, bf16 mmproj resident on the GPU, no feature cache directory",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample",
+    "contacts_per_item": 1,
+    "evidence": "none",
+    "obs": "none -- an ESB utterance IS the request; there is no windowing here",
+    "harness": "core.flight.FlightRuntime with the shared rails zero-supply direct arm and the OpenJiuwen executor, entered through scripts/flights/run_e22_esb_cell.py -- the same harness, entry-point family and adapter-binding pattern every Audio2Tool direct cell flew",
+    "instruction": "Transcribe the speech verbatim exactly as spoken. Never insert, repeat, or add any word you do not clearly hear in the audio. Output only the transcript text.",
+    "instruction_provenance": "byte-identical to the instruction SAEA-E21-FULL44-DIRECT-BASELINE-V2 sent, itself byte-identical to the sealed 2026-08-14 fixed-batch-zero-locked-buf90 fragment"
+  },
+  "deviations_from_the_published_row": [
+    {
+      "id": "D1",
+      "deviation": "utterances cut locally from the locked MP3s instead of the published HF audio bytes",
+      "why": "no new audio asset is downloaded; the study already owns the six calls under its lock",
+      "expected_effect": "the boundaries are the published float32 start_ts/end_ts verbatim, so the SPANS match; the byte-level decode path differs (librosa 16 kHz mono from MP3 vs the release's own chunks). Three of the 2,735 end boundaries fall past the decoded parent and are clamped to it, named in the roster receipt"
+    },
+    {
+      "id": "D2",
+      "deviation": "quantization Q4_K_M against an unstated (presumably bf16) published precision",
+      "why": "the frozen core this study is authorized to reach is the Q4_K_M GGUF",
+      "expected_effect": "unknown in sign and size; it is the leading suspect for any gap"
+    },
+    {
+      "id": "D3",
+      "deviation": "prompt: this study's own three-sentence ASR instruction",
+      "why": "the published row's prompt is not published",
+      "expected_effect": "unknown; holding it identical to the Earnings-21 cell is what makes the two comparable"
+    },
+    {
+      "id": "D4",
+      "deviation": "2,735 rows against the published N = 2,741",
+      "why": "the pinned segment table contains 2,735; the gap is unexplained",
+      "expected_effect": "0.2 % of the population; recorded as unresolved, never reconciled by guesswork"
+    },
+    {
+      "id": "D5",
+      "deviation": "merge_compounds is not applied",
+      "why": "this study's Whisper-normalizer scorer does not implement it",
+      "expected_effect": "works against us"
+    }
+  ],
+  "evaluation": {
+    "official_scorers": [
+      "asr-wer-esb-whisper",
+      "asr-wer-esb",
+      "cost"
+    ],
+    "paper_facing_scorer": "asr-wer-esb-whisper",
+    "paper_facing_aggregation": "corpus: total S+D+I over total reference words",
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "merge_compounds": false,
+    "merge_compounds_note": "the Open ASR Leaderboard applies merge_compounds=True and we do not; that works against us",
+    "metrics": [
+      "corpus WER under the Whisper EnglishTextNormalizer (paper-facing)",
+      "mean of per-utterance WER under the same normalizer",
+      "corpus and mean WER under the frozen saea-scoring-v1 normalizer",
+      "substitutions / deletions / insertions and reference words",
+      "prompt_tokens, completion tokens, latency, throughput"
+    ],
+    "mandatory_slices": [
+      "the per-call table for all six ESB test calls, corpus WER under both normalizers",
+      "natural-mixture (corpus) and equal-call weightings side by side",
+      "the utterance-duration decomposition: WER by duration decile, and the 74 utterances longer than 20 s reported separately",
+      "the three utterances whose end boundary was clamped to the decoded parent, named",
+      "the Earnings-21 full-44 corpus number (8.200) beside this one, with the segmentation, corpus and metric differences named rather than compared silently"
+    ],
+    "renderer": "analysis.paired.render_markdown"
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "dev",
+    "planned_model_calls": 2743,
+    "planned_gpu_hours": 1.5,
+    "planned_speech_audio_seconds": 19500
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "2,735 rows x 1 contact + 8 canaries = 2,743; the registered exposure ceiling is 2,800",
+    "planned_speech_audio_seconds": "19,494.608437 s for one pass, rounded up to 19,500; the registered exposure ceiling is 20,500, about 5 % above the pass",
+    "planned_gpu_hours": "1.5; the registered ceiling is 2.0. The full-44 flight served 1,593 windows of 90 s each in 0.973 GPU-h at -np 6 with graphs disabled, i.e. 143,370 s of audio; this cell is 19,495 s of audio in 2,735 far shorter requests at -np 8, so the encode side is about 7x smaller and the decode side is bounded by 2,735 completions the full-44 flight's own evidence puts at a few hundred tokens each. 1.5 h is deliberately generous against that.",
+    "paid_api_spend": 0,
+    "ceilings_live_in_the_exposure_row": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are the exposure-ledger row's calls / speech audio seconds / gpu hours cells, which the gate requires to be at least these planned values. core/model/adapter.py meters the plan CUMULATIVELY across every attempt of a run id, so a partly spent dead attempt takes a fresh run id and a fresh row."
+  },
+  "decision": {
+    "owner_alignment_standard": "2026-09-04 owner directive: aligned means within 3 points of the published number, or better by more than 3; and the frozen Qwen3-Omni Q4_K_M must never score worse than a degraded (smaller / older / more quantized) model's published number on the same column.",
+    "band_test": "corpus Whisper-normalized WER <= 12.79 (9.79 + 3.0)",
+    "floor_test_strict": "corpus Whisper-normalized WER <= 11.59 (whisper-large-v3)",
+    "floor_test_loose": "corpus Whisper-normalized WER <= 15.09 (whisper-base.en), reported either way",
+    "aligned": "ALIGNED = band test AND strict floor test both pass",
+    "aligned_better": "ALIGNED-BETTER = corpus Whisper-normalized WER < 6.79 (9.79 - 3.0)",
+    "fail": "NOT ALIGNED otherwise, with the failing half of the rule named and the gap decomposed per call, plus the segmentation / quantization / serving decomposition",
+    "paper_facing_scorer": "asr-wer-esb-whisper, corpus aggregation",
+    "claim_surface": "Nothing here is a superiority, generality or Stage-3 claim. This is a one-time owner-authorized calibration read of six calls that become calibration-exposed afterwards; no knob is tuned on them and no mechanism arm is flown.",
+    "not_authorized": "No mechanism arm. No read of the other 109 confirmatory calls. No ESB validation-split read. No Q8_0 cell. No fine-tuning comparison. No fstalign. No paper-scale work.",
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "owner_decision_2026_09_04": "Owner decision 2026-09-04 (evening): the six ESB test calls 4432298, 4450488, 4470290, 4479741, 4483338, 4485244, all in the study's Earnings-22 confirmatory split, may be read ONCE for this direct-baseline calibration; they are re-designated calibration-exposed afterwards; 109 confirmatory calls remain for final reporting. No mechanism arm, no knob tuned, no other confirmatory call read.",
+  "companion_run": {
+    "experiment_id": "SAEA-E22-ESB-SHORTFORM-ALIGNMENT-SMOKE-V1",
+    "fragment": "e22-esb-shortform-alignment-smoke-v1",
+    "why_separate": "contracts.gate_exposure requires exactly one pre-registered exposure row per run id whose split identity hash equals the plan's, so a 4-row smoke and a 2,735-row flight cannot share a run id. They share one preregistration, one harness, one entry point and one verdict."
+  }
+}

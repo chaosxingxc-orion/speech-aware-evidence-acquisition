@@ -1,0 +1,43 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 420.0,
+  "runtime_receipt": "receipts/runtime-q4km-featcache-04ccc72a.json",
+  "server_args": [
+    "-c",
+    "32768",
+    "-np",
+    "8",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0"
+  ],
+  "serving_geometry": {
+    "slots": 8,
+    "slot_tokens": 4096,
+    "max_tokens": 1024
+  },
+  "serving_geometry_basis": "Derived from the ESB roster's own longest utterance by the Earnings fit rule this repository already used for the full-44 flight (slot_tokens >= 2 x worst_required, and a multiple of 512 so llama-server's own rounding cannot move the live slot). Speech cost follows the mmproj encoder's exact one-second window rule n_tokens = 13 * ceil(audio_seconds), the rule that reproduced all 342 sealed COST records of SAEA-E-005B-N10-zero and all 400 per-packet counts of the A2T calibration promotion receipt without exception: the longest utterance is 4483338-281 at 36.360125 s, so 13 * 37 = 481 speech tokens. Worst required = 481 speech + the measured text envelope (well under 100 tokens for this three-sentence instruction and a bare audio user turn) + 1024 completion + 2 special, i.e. about 1607. The declared slot is 4096, a margin of about 2489 and a ratio of about 2.55x. 8 x 4096 = 32768 exactly, which is what -c must be for core.flight.FlightRuntime.serve.",
+  "vram_basis": "STRICTLY SMALLER than every geometry this card is already proven to serve on the resident-mmproj raw-audio path: SAEA-E21-FULL44-DIRECT-BASELINE-V1 served -c 49152 -np 8 at a peak of 23396 MiB of 24463, and its recovery V2 served -c 36864 -np 6 at 22720 MiB. -c 32768 asks for 4096 fewer q8_0 KV tokens than V2 and 16384 fewer than V1, on an encode whose longest window is 36.4 s rather than 90 s. The smoke proves it live before the flight launches, and the flight manifest's peak_vram_mib records it afterwards.",
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample"
+  },
+  "decoding_basis": "Byte-identical to the sealed SAEA-E-005B-N10-zero arm and to the full-44 flight: greedy (temperature 0), max_tokens 1024, id_slot per-sample, seed 20260803 (inert under greedy). max_tokens is deliberately NOT reduced for short utterances even though the longest reference is 109 words: a smaller ceiling could truncate a rambling completion and silently improve or worsen WER, and the full-44 flight measured zero requests reaching 1024 on windows 2.5x longer than these.",
+  "graphs_basis": "GGML_CUDA_DISABLE_GRAPHS=1 is carried forward from the full-44 recovery fragment q4km-e21-buf90-mmproj-gpu-04ccc72a-np6 as INHERITED HARDENING, not as a diagnosis. That recovery flew 1593 windows to completion with graphs disabled after V1 died on a CUDA illegal memory access at ggml-cuda.cu:104; this flight starts from the hardened state rather than spending its one permitted recovery rediscovering it. The variable changes no request byte and so cannot move the number, and the throughput cost is irrelevant here: the projected flight is well under an hour against a 2.0-hour ceiling.",
+  "feature_cache_basis": "server_env carries no LLAMA_MTMD_FEAT_CACHE_DIR. The legacy 26 GB /home/chao/feat-cache/q4km cache holds build-5d9dfcb58 encoder outputs and is content-addressed on audio, so pointing at it could mix another build's features into this number; it is left untouched and unread. With feat_dir unset the server's feature cache is fully inert and holds no feature RAM.",
+  "audio_path_basis": "--no-mmproj-offload is absent, so the bf16 mmproj sha256 f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883 stays resident on the GPU and every utterance is encoded there, exactly as the full-44 flight encoded every 90-second window.",
+  "prompt_order": "evidence-first-system-v3",
+  "server_env": {
+    "GGML_CUDA_DISABLE_GRAPHS": "1"
+  }
+}

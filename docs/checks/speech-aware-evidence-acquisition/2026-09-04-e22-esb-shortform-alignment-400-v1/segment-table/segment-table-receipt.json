@@ -1,0 +1,127 @@
+{
+  "schema": "saea-e22-esb-segment-table-receipt-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "what_this_is": "A derived-split reference pinned by hash, NOT a new umbrella lock asset. It adds no entry to docs/datasets.lock.json, materializes no new audio, and is never resolved through data.lock or data.carriers. The only audio this study sends stays the locked earnings22-original MP3 bytes D1 already closed over; this table supplies the published segment BOUNDARIES those bytes are cut at, and the published reference SENTENCES they are scored against.",
+  "upstream": {
+    "repo_id": "sanchit-gandhi/earnings22_split",
+    "repo_type": "dataset",
+    "revision": "f9fb35f4134e32b9c8100199d949398fd6d08a5f",
+    "split": "test",
+    "url": "https://huggingface.co/datasets/sanchit-gandhi/earnings22_split/tree/f9fb35f4134e32b9c8100199d949398fd6d08a5f",
+    "license_note": "the split is a repartition of the Rev Earnings-22 corpus this study already licenses under its earnings22-original lock entry",
+    "esb_test_calls": [
+      "4432298",
+      "4450488",
+      "4470290",
+      "4479741",
+      "4483338",
+      "4485244"
+    ],
+    "esb_validation_calls": [
+      "4420696",
+      "4448760",
+      "4461799",
+      "4469836",
+      "4473238",
+      "4482110"
+    ],
+    "esb_validation_note": "recorded for completeness only; the validation calls are NOT read by this study and stay confirmatory"
+  },
+  "parquet_files": [
+    {
+      "path": "data/test-00000-of-00004-d1f708ede2712e90.parquet",
+      "bytes": 383221699,
+      "sha256": "59c6dda0a955fd2435ff186ff675954b14dd84ef3716dc4190844ddfa6c6622c",
+      "sha256_source": "git-lfs oid at the pinned revision (the file's own SHA-256)",
+      "xet_hash": "8e5cd221d86ce4ebda9f55585b6d566c6ea4e1c4f0addda07d4b98e9d7aab80b",
+      "locally_rehashed": true,
+      "local_sha256": "59c6dda0a955fd2435ff186ff675954b14dd84ef3716dc4190844ddfa6c6622c",
+      "local_matches_lfs_oid": true,
+      "local_relpath": "derived/e22-esb-segment-table/parquet/test-00000-of-00004-d1f708ede2712e90.parquet"
+    },
+    {
+      "path": "data/test-00001-of-00004-f75446185bfca385.parquet",
+      "bytes": 304147076,
+      "sha256": "99f92bdeb3965ee02a289100c4085d1024a0bfdb9045bcfb6c19e171c81e73ca",
+      "sha256_source": "git-lfs oid at the pinned revision (the file's own SHA-256)",
+      "xet_hash": "a5108eff5925eb781299f265ca2986652ee5537f902f92848b74b95c0e231353",
+      "locally_rehashed": true,
+      "local_sha256": "99f92bdeb3965ee02a289100c4085d1024a0bfdb9045bcfb6c19e171c81e73ca",
+      "local_matches_lfs_oid": true,
+      "local_relpath": "derived/e22-esb-segment-table/parquet/test-00001-of-00004-f75446185bfca385.parquet"
+    },
+    {
+      "path": "data/test-00002-of-00004-0090a7442c459172.parquet",
+      "bytes": 218834748,
+      "sha256": "f2f5cf44af8264547646e3e26131e993a705fc1d7adb3770a6ffecd45e13d059",
+      "sha256_source": "git-lfs oid at the pinned revision (the file's own SHA-256)",
+      "xet_hash": "abe269d53baa5ad2891e76822d1569718cd6b3fdcf37bca9ec48462b6f3612c2",
+      "locally_rehashed": true,
+      "local_sha256": "f2f5cf44af8264547646e3e26131e993a705fc1d7adb3770a6ffecd45e13d059",
+      "local_matches_lfs_oid": true,
+      "local_relpath": "derived/e22-esb-segment-table/parquet/test-00002-of-00004-0090a7442c459172.parquet"
+    },
+    {
+      "path": "data/test-00003-of-00004-c18462f0ad18104e.parquet",
+      "bytes": 194875805,
+      "sha256": "427a0c400efd66f351a1bbba2713c1255e2cb875679a84ea8262dbf39611bf8b",
+      "sha256_source": "git-lfs oid at the pinned revision (the file's own SHA-256)",
+      "xet_hash": "14f400c9d375bdf3423687f8db77626fe1a4f61e1d8717093c158f69e1cb5551",
+      "locally_rehashed": true,
+      "local_sha256": "427a0c400efd66f351a1bbba2713c1255e2cb875679a84ea8262dbf39611bf8b",
+      "local_matches_lfs_oid": true,
+      "local_relpath": "derived/e22-esb-segment-table/parquet/test-00003-of-00004-c18462f0ad18104e.parquet"
+    }
+  ],
+  "parquet_schema": [
+    "source_id:string",
+    "audio:struct<bytes: binary, path: string>",
+    "segment_id:string",
+    "sentence:string",
+    "start_ts:float",
+    "end_ts:float",
+    "id:string"
+  ],
+  "extraction": {
+    "method": "pyarrow ParquetFile.read(columns=[...]) over huggingface_hub.HfFileSystem at the pinned revision -- a COLUMN PROJECTION, so the 'audio' column is never materialized",
+    "columns": [
+      "source_id",
+      "segment_id",
+      "sentence",
+      "start_ts",
+      "end_ts",
+      "id"
+    ],
+    "audio_column_materialized": false
+  },
+  "extracted_table": {
+    "relpath": "derived/e22-esb-segment-table/segments-test.jsonl",
+    "sha256": "7ef6911bdb449152e9d30b9189dd516d360c32f381cc76f2bfbcfbf542e1ad83",
+    "bytes": 663749,
+    "rows": 2735,
+    "format": "JSONL, one object per segment, sort_keys, LF, UTF-8",
+    "location_basis": "under the controlled data root, never in Git and never inside the locked carrier tree: the 'sentence' column is gold reference text"
+  },
+  "population": {
+    "calls": 6,
+    "segments": 2735,
+    "segments_per_call": {
+      "4432298": 351,
+      "4450488": 508,
+      "4470290": 178,
+      "4479741": 473,
+      "4483338": 619,
+      "4485244": 606
+    },
+    "segment_seconds_total": 19494.856541,
+    "segment_seconds_longest": 36.360107,
+    "segment_seconds_shortest": 0.219971,
+    "segment_seconds_mean": 7.127918,
+    "segments_longer_than_20s": 74,
+    "segments_longer_than_30s": 10
+  },
+  "unresolved": {
+    "row_count_discrepancy": "this table carries 2735 test rows; the leaderboard config hf-audio/open-asr-leaderboard reports 2741 for the same Earnings22 column, and the NVIDIA NeMo AutoModel post that publishes the 9.79 target states N = 2741. The 6-row gap is UNEXPLAINED. It is recorded, not reconciled: no row is invented, dropped or re-cut to close it, and every number this study reports is over the 2,735 rows this pinned table actually contains.",
+    "timestamp_precision": "start_ts/end_ts are float32 in the upstream parquet, so a boundary carries about 1e-4 s of representation error at these magnitudes; the cut is made at the float32 value verbatim rather than at a re-rounded one"
+  }
+}

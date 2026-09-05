@@ -1,0 +1,18 @@
+{
+  "arm": "bare-core",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "rails_arms": [
+    "zero-supply"
+  ],
+  "scorers": [
+    "asr-wer-esb-whisper",
+    "asr-wer-esb",
+    "cost"
+  ],
+  "task_instruction": "Transcribe the speech verbatim exactly as spoken. Never insert, repeat, or add any word you do not clearly hear in the audio. Output only the transcript text.",
+  "instruction_basis": "Byte-identical to the instruction the Earnings-21 full-44 direct baseline sent (configs/baseline/e21-buf90-zero-locked-scored4.json, itself byte-identical to the sealed 2026-08-14 fixed-batch-zero-locked-buf90 fragment). Holding the instruction fixed across the two Earnings cells is what makes the Earnings-22 number a measurement of the corpus and the segmentation rather than of a prompt change. The published 9.79 target's own prompt is NOT published; this deviation is named in the preregistration rather than guessed at.",
+  "scorer_basis": "asr-wer-esb-whisper is the paper-facing scorer: the vendored Whisper EnglishTextNormalizer on both sides, whitespace tokenization, corpus-level aggregation (total S+D+I over total reference words) -- the same code path as the registered asr-wer-whisper, differing only in where a row's reference comes from. asr-wer-esb reports the frozen saea-scoring-v1 number beside it, exactly as the Earnings-21 verdict reports asr-wer beside asr-wer-whisper. entity-wer is absent by construction: data.carriers registers no entity layer for earnings22-original (no wer_tags sidecar exists), so entity_scoped_carrier_lock_keys fails it closed. Both ESB scorers resolve their references from a hash-pinned derived layer that reproduction.esb_reference re-verifies before reading a word; see that module's docstring for why an ESB utterance cannot travel the carrier .nlp reference rail at all.",
+  "obs_basis": "There is no OBS loop here and no windowing: an ESB utterance IS the request. policy 'fixed' sends exactly one contact per sample through core.flight.FlightRuntime's own concurrent dispatch, which is what makes this cell a short-form measurement rather than the long-form one the full-44 flight made."
+}

@@ -1,0 +1,32 @@
+{
+  "carrier_lock_key": "earnings22-original",
+  "split_id": "E22-ESB-SMOKE-4",
+  "d1_media_supplement": "receipts/artifacts/d1-e22-esb-utterances-2735.json",
+  "d1_media_supplement_sha256": "caa221ec512736f0dfad338d92e290e76b0663e188de89f97d9cbe1bb1ee906e",
+  "e22_esb_roster_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-e22-esb-shortform-alignment-400-v1/roster/flight-roster-receipt.json",
+  "e22_esb_roster_receipt_sha256": "72be506b01c69e30097e25e836595b261dffa826bb8d31ccf8188fdbbd879ecb",
+  "e22_esb_segment_table_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-e22-esb-shortform-alignment-400-v1/segment-table/segment-table-receipt.json",
+  "e22_esb_segment_table_receipt_sha256": "0c923a736839c0b8cd3e6c60b54fa6fda4bff45ce9f4d3407900be4943ad8dfc",
+  "e22_esb_reference_layer_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-e22-esb-shortform-alignment-400-v1/reference-layer/reference-layer-receipt.json",
+  "e22_esb_reference_layer_receipt_sha256": "3266c7bacd9ab530efe87762a29a1a1fcf172ea643f37f1081cc523a207f91ed",
+  "e22_esb_reference_layer_sha256": "f6fddf40d0433b4ca0758d0b1718afd5fb3f798167513d780ae86e0c5cec60e3",
+  "e22_esb_split_name": "E22-ESB-SMOKE-4",
+  "e22_esb_split_role": "dev",
+  "e22_esb_split_identity_hash": "4de75c3427fe83d752bb96476c734415c34f6db1bc6ea1985fbf0b101f205f9d",
+  "e22_esb_count": 4,
+  "e22_esb_audio_seconds_total": 56.760187,
+  "e22_esb_audio_seconds_longest_item": 36.360125,
+  "e22_esb_audio_seconds_shortest_item": 0.2199375,
+  "e22_esb_population": "Four rows of the same 2,735-row roster, chosen before any contact to bracket the roster rather than to sample it: 4483338-281 is the LONGEST utterance (36.360125 s, the window-fit and VRAM worst case), 4479741-224 the SHORTEST (0.219938 s), 4485244-409 the median (6.12 s) and 4485244-115 the p90 (14.06 s). The smoke's own WER numbers are on four rows and enter no verdict; they exist only as evidence that both ESB scorers ran on a live manifest through core.scoring_batch.",
+  "e22_esb_identity_hash_convention": "e22_esb_split_identity_hash is data.splits.split_identity_hash(prefixed('earnings22-original', sample_ids)) over earnings22-original/<call>-<segment>, the value core.flight.FlightRuntime.preflight computes at flight time and the value an exposure row must carry.",
+  "e22_esb_d1_media_supplement": "The utterance ids enter D1's identity closure through the additive media supplement named above (schema saea-d1-media-supplement-v1, the shape contracts.gate_media_identity reads); every one of the 2,735 is NEW to the immutable artifact by construction, and each chains to one of the six parent calls whose media identity D1 itself recorded. The derived WAVs live under $SPEECHRL_DATA_DIR/derived/e22-esb-utterances/v1/ and never enter Git.",
+  "e22_esb_split_role_basis": "The 2026-09-04 owner decision re-designates the six ESB test calls calibration-exposed after this one read; 109 confirmatory calls remain for final reporting. contracts.plan.STAGE2_SPLIT_ROLES admits only 'discovery' and 'dev' and refuses 'confirmatory' outright, so 'dev' -- the role that means usable for calibration and never for final reporting -- is how calibration-exposed is expressed to the machine. earnings22-original already carries this study's 'dev' role for its subset10, so the carrier/role pairing is not new. The successor receipt docs/receipts/splits-calibration-exposure-2026-09-04.json records the re-designation; docs/receipts/splits.json is NOT rewritten, its hashes are pinned.",
+  "e22_esb_reference_boundary": "The 'sentence' column is gold and NEVER enters the request path. The roster receipt this fragment names carries identifiers, media paths, measured media identity and segment spans only. References live in their own hash-pinned derived layer that only reproduction.esb_reference (scoring side) resolves.",
+  "e22_esb_exposure": "Pre-flight smoke for SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1: same baseline, model and experiment protocol, only the dataset fragment differs. This fragment grants no contact authority; the preregistration and the exposure ledger do.",
+  "e22_esb_smoke_ids": [
+    "4479741-224",
+    "4483338-281",
+    "4485244-115",
+    "4485244-409"
+  ]
+}

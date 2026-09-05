@@ -1,0 +1,514 @@
+#!/usr/bin/env python3
+"""Thin CLI for one cell of the Earnings-22 ESB short-form alignment flight.
+
+Sibling of ``scripts/flights/run_calibration_cell.py``, for the Earnings
+carrier. Everything the harness can derive from the four config fragments is
+left to ``core.flight.FlightRuntime``; what remains here is the one thing that
+is genuinely not derivable -- the adapter.
+
+``rails.adapters.earnings.Earnings21Adapter.load_split`` knows exactly two
+splits, ``"discovery"`` (all 44 Earnings-21 calls) and ``"dev"`` (the
+Earnings-22 subset10), and both yield WHOLE CALLS. An ESB utterance is neither:
+it is a derived media item cut from a parent call at a published boundary,
+carried by a hash-pinned roster receipt. This entry supplies exactly that
+adapter -- the same "bind one hash-pinned roster, read the geometry and the
+instruction from the composed config, change nothing in ``rails/adapters/``"
+shape ``CalibrationAdapter`` already has for Audio2Tool -- and delegates the
+rest.
+
+Two things are deliberately different from the Audio2Tool sibling, and both
+are consequences of the media being DERIVED rather than released:
+
+* **``carrier_root`` is the derived-utterance root, not the carrier asset
+  dir.** ``core.model.binding`` confines every payload's ``media_relpath``
+  under ``binding.carrier_root``, and these WAVs live under
+  ``$SPEECHRL_DATA_DIR/derived/e22-esb-utterances/<version>/`` rather than
+  inside the locked ``datasets/earnings21-22/earnings22`` tree -- deliberately,
+  so a derived artifact never lands inside a dataset working copy D1 hashed.
+  The ``carrier_root_resolver`` seam ``FlightRuntime`` already exposes is
+  pointed at the derived root instead. This TIGHTENS confinement rather than
+  loosening it: the derived root holds this roster's 2,735 WAVs and nothing
+  else, where the carrier root holds 125 MP3s and every transcript. The
+  per-sample exact-relpath binding check and the D1 media-identity re-hash are
+  both unchanged and both still run.
+* **``score`` is overridden to a reference-free stub.** The base
+  ``Earnings21Adapter.score_response`` scores through
+  ``core.scorers.score_asr_outputs``, which resolves a CALL's ``.nlp``
+  reference; for an utterance id that would raise, and it would also mean
+  reading gold 2,735 times inside the run loop. The per-row ``metrics`` that
+  hook produces are dropped by ``FlightRuntime._canonical_output_rows``
+  anyway -- the sealed outputs row carries only identity and text -- so the
+  paper-facing numbers come, as they must, from the manifest's declared
+  scorers through ``core.scoring_batch``.
+
+Modes::
+
+    python scripts/flights/run_e22_esb_cell.py --cell E22-ESB-SMOKE-4 --dry-run
+    python scripts/flights/run_e22_esb_cell.py --cell E22-ESB-SMOKE-4 --wire-check
+    python scripts/flights/run_e22_esb_cell.py --cell E22-ESB-SMOKE-4 --run
+
+``--dry-run`` stops after ``FlightRuntime.preflight``: no server, no model
+contact. ``--wire-check`` drives the whole request path against a fake gate and
+a fake transport: still no server and no socket.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Mapping, Sequence
+
+REPO = Path(
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition"
+)
+
+if os.environ.get("PYTHONDONTWRITEBYTECODE") != "1":
+    raise SystemExit("PYTHONDONTWRITEBYTECODE=1 is required")
+if str(REPO / "src") not in os.environ.get("PYTHONPATH", "").split(":"):
+    raise SystemExit("PYTHONPATH must contain the literal " + str(REPO / "src"))
+
+import speech_aware_evidence_acquisition as _pkg  # noqa: E402
+
+if (
+    Path(_pkg.__file__ or "")
+    != REPO / "src" / "speech_aware_evidence_acquisition" / "__init__.py"
+):
+    raise SystemExit("package resolves to %s, not the main checkout" % (_pkg.__file__,))
+
+from speech_aware_evidence_acquisition.core.config import compose  # noqa: E402
+from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime  # noqa: E402
+from speech_aware_evidence_acquisition.data.lock import (  # noqa: E402
+    data_root,
+    load_lock,
+    umbrella_lock_path,
+)
+from speech_aware_evidence_acquisition.rails.adapters.earnings import (  # noqa: E402
+    Earnings21Adapter,
+    EarningsSample,
+)
+from speech_aware_evidence_acquisition.rails.obs import AudioRef  # noqa: E402
+
+DEFAULT_EXPERIMENT = "e22-esb-shortform-alignment-v1"
+DEFAULT_DATASET = "earnings22-esb-utterances-2735"
+RUNTIME_ROOT = Path("/home/chao")
+ROSTER_SCHEMA = "saea-e22-esb-utterance-roster-receipt-v1"
+DERIVED_UTTERANCE_SUBDIR = "derived/e22-esb-utterances/v1"
+
+
+def log(message: str) -> None:
+    stamp = datetime.now(timezone.utc).strftime("%H:%M:%SZ")
+    print("[%s] %s" % (stamp, message), flush=True)
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def load_experiment(experiment: str) -> Mapping[str, object]:
+    path = REPO / "configs" / "experiment" / f"{experiment}.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def load_cells(experiment: str) -> dict[str, Mapping[str, object]]:
+    cells = load_experiment(experiment).get("cells")
+    if not isinstance(cells, list) or not cells:
+        raise SystemExit(f"experiment fragment {experiment} declares no cells")
+    out: dict[str, Mapping[str, object]] = {}
+    for cell in cells:
+        required = {"cell_id", "arm", "baseline_fragment", "model_fragment"}
+        if not isinstance(cell, Mapping) or not required <= set(cell):
+            raise SystemExit(f"experiment cell must declare {sorted(required)}")
+        out[str(cell["cell_id"])] = cell
+    return out
+
+
+def roster_samples(
+    roster_path: Path,
+    roster_sha256: str,
+    data_root_path: Path,
+    *,
+    limit_sample_ids: Sequence[str] | None = None,
+) -> tuple[EarningsSample, ...]:
+    """Samples built ONLY from the hash-pinned roster receipt's media facts.
+
+    The same discipline the Audio2Tool roster loader applies: identifiers,
+    media paths and measured media identity only -- no reference sentence, no
+    segment text, nothing a runtime path must never see. Every WAV is re-hashed
+    against the roster's own record before it can become a sample, so a byte
+    that moved on disk since the cut is caught here rather than at the gate.
+    """
+
+    measured = sha256_file(roster_path)
+    if measured != roster_sha256:
+        raise SystemExit(
+            "roster receipt hashes to %s, not the configured %s" % (measured, roster_sha256)
+        )
+    receipt = json.loads(roster_path.read_text(encoding="utf-8"))
+    if receipt.get("schema") != ROSTER_SCHEMA or receipt.get("split_role") == "test":
+        raise SystemExit("roster identity or split role is invalid")
+    wanted = set(limit_sample_ids) if limit_sample_ids is not None else None
+    root = Path(data_root_path).resolve()
+    samples: list[EarningsSample] = []
+    for item in receipt["items"]:
+        sample_id = item["sample_id"]
+        if wanted is not None and sample_id not in wanted:
+            continue
+        media_relpath = item["media_relpath"]
+        if not media_relpath.startswith(DERIVED_UTTERANCE_SUBDIR + "/"):
+            raise SystemExit("roster media path is outside the derived root: %s" % media_relpath)
+        media_path = (root / media_relpath).resolve()
+        media_path.relative_to(root)
+        if not media_path.is_file():
+            raise SystemExit("roster media file is missing: %s" % media_relpath)
+        if sha256_file(media_path) != item["audio_sha256"]:
+            raise SystemExit("audio bytes drift for %s" % sample_id)
+        samples.append(
+            EarningsSample(
+                sample_id=sample_id,
+                audio_ref=AudioRef(
+                    path=media_relpath, sha256=item["audio_sha256"]
+                ).validate(),
+                audio_seconds=float(item["audio_seconds"]),
+                media_relpath=media_relpath,
+                carrier_lock_key=str(receipt["carrier"]),
+            )
+        )
+    if wanted is not None and len(samples) != len(wanted):
+        found = {sample.sample_id for sample in samples}
+        raise SystemExit("roster does not contain %r" % sorted(wanted - found))
+    return tuple(sorted(samples, key=lambda sample: sample.sample_id))
+
+
+class EsbUtteranceAdapter(Earnings21Adapter):
+    """``Earnings21Adapter`` bound to one hash-pinned utterance roster, with
+    the instruction and the serving geometry taken from the composed config.
+
+    Every override here is data or boundary, never new task behaviour: the
+    prompt shape stays the base ``TaskAdapter.assemble_prompt`` default (one
+    system message carrying the instruction, one user message carrying the
+    audio), which is exactly the shape the Earnings-21 direct arm sent.
+    """
+
+    def __init__(
+        self,
+        lock,
+        root,
+        *,
+        repo_root,
+        split_id: str,
+        samples: Sequence[EarningsSample],
+        instruction_text: str,
+        geometry: Mapping[str, object],
+    ) -> None:
+        super().__init__(lock, root, repo_root=repo_root)
+        self._split_id = split_id
+        self._samples = tuple(samples)
+        self._instruction_text = instruction_text
+        self.SERVING_SLOTS = int(geometry["slots"])
+        self.SERVING_SLOT_TOKENS = int(geometry["slot_tokens"])
+        self.SERVING_MAX_TOKENS = int(geometry["max_tokens"])
+
+    def load_split(self, split_id):  # noqa: D102
+        if split_id != self._split_id:
+            raise ValueError(
+                "ESB utterance adapter serves only %s, not %r" % (self._split_id, split_id)
+            )
+        return self._samples
+
+    def instruction(self, sample):  # noqa: D102
+        return self._instruction_text
+
+    def score(self, sample, response):
+        """Reference-free, deliberately.
+
+        The base implementation resolves the CALL's ``.nlp`` reference through
+        ``core.scorers.score_asr_outputs``; an ESB utterance has no such file,
+        and the per-row ``metrics`` this hook produces are dropped by
+        ``FlightRuntime._canonical_output_rows`` before anything is sealed. The
+        paper-facing numbers come from the manifest's declared scorers
+        (``asr-wer-esb-whisper`` / ``asr-wer-esb`` / ``cost``) through
+        ``core.scoring_batch``, strictly after the run. Returning identity plus
+        a length keeps the run loop free of gold entirely.
+        """
+
+        return {
+            "parsed": True,
+            "sample_id": sample.sample_id,
+            "response_chars": len(response),
+            "scored_post_hoc_by": "asr-wer-esb-whisper / asr-wer-esb via core.scoring_batch",
+        }
+
+
+def build_runtime(
+    *,
+    cell: Mapping[str, object],
+    dataset: str,
+    experiment: str,
+    run_id: str,
+    attempt_id: str,
+    campaign_active: bool,
+    limit_sample_ids: Sequence[str] | None = None,
+) -> FlightRuntime:
+    model = str(cell["model_fragment"])
+    baseline = str(cell["baseline_fragment"])
+    arm = str(cell["arm"])
+    composed = compose(REPO, model, dataset, baseline, experiment)
+    values = composed.values
+    if values.get("arm") != arm:
+        raise SystemExit(
+            "cell %r declares arm %r but its baseline fragment declares %r"
+            % (cell["cell_id"], arm, values.get("arm"))
+        )
+    lock = load_lock(umbrella_lock_path())
+    root = data_root()
+
+    geometry = values.get("serving_geometry")
+    if not isinstance(geometry, Mapping) or set(geometry) != {
+        "slots",
+        "slot_tokens",
+        "max_tokens",
+    }:
+        raise SystemExit(
+            "model fragment must declare an exact serving_geometry "
+            "{slots, slot_tokens, max_tokens} object"
+        )
+    server_args = [str(value) for value in values["server_args"]]
+    declared_c = server_args[server_args.index("-c") + 1]
+    declared_np = server_args[server_args.index("-np") + 1]
+    if int(declared_np) != int(geometry["slots"]) or int(declared_c) != int(
+        geometry["slots"]
+    ) * int(geometry["slot_tokens"]):
+        raise SystemExit(
+            "model fragment server_args (-c %s -np %s) disagree with its declared "
+            "serving_geometry %r" % (declared_c, declared_np, dict(geometry))
+        )
+
+    roster_relpath = str(values["e22_esb_roster_receipt"])
+    if roster_relpath.startswith("/") or "\\" in roster_relpath:
+        raise SystemExit("e22_esb_roster_receipt must be a repo-relative POSIX path")
+    samples = roster_samples(
+        REPO / roster_relpath,
+        str(values["e22_esb_roster_receipt_sha256"]),
+        root,
+        limit_sample_ids=limit_sample_ids,
+    )
+    if len(samples) != int(values["e22_esb_count"]):
+        raise SystemExit(
+            "roster resolved %d samples, the dataset fragment declares %s"
+            % (len(samples), values["e22_esb_count"])
+        )
+
+    instruction_text = values.get("task_instruction")
+    if not isinstance(instruction_text, str) or not instruction_text:
+        raise SystemExit("baseline fragment must declare a non-empty task_instruction")
+    split_id = str(values["split_id"])
+
+    def adapter_factory(lock_, root_):
+        return EsbUtteranceAdapter(
+            lock_,
+            root_,
+            repo_root=REPO,
+            split_id=split_id,
+            samples=samples,
+            instruction_text=instruction_text,
+            geometry=geometry,
+        )
+
+    def derived_carrier_root(_lock, _carrier_lock_key, resolved_root):
+        """See this module's docstring: payload confinement is bound to the
+        derived-utterance root, which holds exactly this roster's media."""
+
+        return Path(resolved_root) / DERIVED_UTTERANCE_SUBDIR
+
+    return FlightRuntime(
+        REPO,
+        root,
+        model=model,
+        dataset=dataset,
+        baseline=baseline,
+        experiment=experiment,
+        run_id=run_id,
+        attempt_id=attempt_id,
+        runtime_root=RUNTIME_ROOT,
+        adapter_factory=adapter_factory,
+        carrier_root_resolver=derived_carrier_root,
+        lock=lock,
+        campaign_active=campaign_active,
+        host="127.0.0.1",
+        port=int(str(values["base_url"]).rsplit(":", 1)[-1]),
+        request_id_prefix="e22esb",
+    )
+
+
+def _write_receipt(path: Path, document: Mapping[str, object]) -> str:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(document, ensure_ascii=False, indent=2, default=str) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    return sha256_file(path)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--cell", required=True)
+    parser.add_argument("--experiment", default=DEFAULT_EXPERIMENT)
+    parser.add_argument("--dataset", default=None)
+    parser.add_argument("--run-id", default=None)
+    parser.add_argument("--attempt-id", default=None)
+    parser.add_argument("--output", type=Path, default=None)
+    parser.add_argument("--campaign-active", action="store_true")
+    parser.add_argument("--workers", type=int, default=None)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--dry-run", action="store_true")
+    mode.add_argument("--wire-check", action="store_true")
+    mode.add_argument("--run", action="store_true")
+    args = parser.parse_args()
+
+    experiment_doc = load_experiment(args.experiment)
+    cells = load_cells(args.experiment)
+    if args.cell not in cells:
+        raise SystemExit("unknown cell %r; known: %s" % (args.cell, sorted(cells)))
+    cell = cells[args.cell]
+    dataset = args.dataset or str(cell["dataset_fragment"])
+    run_id = args.run_id or str(experiment_doc["experiment_id"])
+    attempt_id = args.attempt_id or "attempt-%s-%s" % (
+        datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ"),
+        hashlib.sha256(f"{run_id}{args.cell}".encode()).hexdigest()[:6],
+    )
+
+    # A cell whose population entry enumerates explicit ``ids`` (the smoke)
+    # narrows the roster to exactly those rows and fails closed on any id the
+    # roster does not contain; a cell that enumerates none flies the whole
+    # roster. The narrowing is READ FROM THE REGISTERED FRAGMENT, never from a
+    # command-line list, so a smoke can never quietly fly a different four rows
+    # than the ones its exposure row names.
+    limit = None
+    populations = experiment_doc.get("populations")
+    if isinstance(populations, Mapping):
+        for value in populations.values():
+            if isinstance(value, Mapping) and value.get("dataset_fragment") == dataset:
+                if isinstance(value.get("ids"), list):
+                    limit = [str(sample_id) for sample_id in value["ids"]]
+                break
+
+    runtime = build_runtime(
+        cell=cell,
+        dataset=dataset,
+        experiment=args.experiment,
+        run_id=run_id,
+        attempt_id=attempt_id,
+        campaign_active=args.campaign_active,
+        limit_sample_ids=limit,
+    )
+
+    if args.dry_run:
+        log("dry run: preflight only, no server, no contact")
+        receipt = runtime.preflight()
+        print(json.dumps(receipt, indent=2, sort_keys=True, default=str))
+        return 0
+
+    if args.wire_check:
+        log("wire check: whole request path, fake gate and transport, zero sockets")
+        receipt = dict(runtime.wire_check(max_workers=1))
+        receipt["cell_id"] = args.cell
+        document = {
+            "schema": "saea-e22-esb-wire-check-v1",
+            "study": "speech-aware-evidence-acquisition",
+            "generated_at": datetime.now(tz=timezone.utc).isoformat(),
+            "flight_run_id": run_id,
+            "cells_checked": [args.cell],
+            "model_contacts": 0,
+            "servers_started": 0,
+            "boundary": (
+                "zero model contacts: the only fakes are the gate and the transport "
+                "(core.flight.runtime.WireCheckGate / WireCheckTransport, which never opens a "
+                "socket). Any score below is computed over the transport's canned response and "
+                "is not a measurement of anything."
+            ),
+            "cells": [receipt],
+        }
+        seal = receipt["seal_and_score"]
+        log(
+            "  arm=%s contacts=%d payload_keys=%d seal_and_score=%s"
+            % (
+                receipt["arm"],
+                receipt["contact_count"],
+                len(receipt["payload_keys"]),
+                seal["status"],
+            )
+        )
+        if seal["status"] == "REFUSED":
+            log("  seal/score refused: %s" % seal["reason"])
+        if args.output is not None:
+            log("receipt sha256 %s -> %s" % (_write_receipt(args.output, document), args.output))
+        else:
+            print(json.dumps(document, indent=2, sort_keys=True, default=str))
+        return 0 if seal["status"] != "REFUSED" else 1
+
+    log("flight: %s cell %s attempt %s" % (run_id, args.cell, attempt_id))
+    stages: dict[str, object] = {}
+    stages["preflight"] = runtime.preflight()
+    log("preflight ok: %d samples" % stages["preflight"]["sample_count"])
+    stages["serve"] = runtime.serve()
+    log("served")
+    try:
+        stages["run_phases"] = runtime.run_phases(workers=args.workers)
+        log(
+            "run_phases: %d contacts in %.1f s"
+            % (
+                stages["run_phases"]["contact_count"],
+                stages["run_phases"]["wall_seconds"],
+            )
+        )
+        stages["seal"] = runtime.seal()
+        log("sealed: %s" % stages["seal"]["manifest_path"])
+        stages["score"] = runtime.score()
+        log("scored")
+    except BaseException as failure:  # noqa: BLE001 -- re-raised below
+        # An attempt that opened and then died must be recorded ABORTED, not
+        # left dangling: core.attempts treats (run_id, attempt_id) as a
+        # one-time key and the plan's budget is metered cumulatively across
+        # every attempt of a run id, so the durable spend has to be visible to
+        # whatever recovery follows.
+        log("ABORTING attempt: %s: %s" % (type(failure).__name__, failure))
+        try:
+            runtime.abort("%s: %s" % (type(failure).__name__, failure))
+        except Exception as abort_failure:  # noqa: BLE001
+            log("abort itself failed: %s" % (abort_failure,))
+        raise
+    finally:
+        stopped = runtime.stop_serving()
+        stages["stop_serving"] = stopped
+        log("server stopped")
+
+    document = {
+        "schema": "saea-e22-esb-flight-receipt-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "generated_at": datetime.now(tz=timezone.utc).isoformat(),
+        "run_id": run_id,
+        "attempt_id": attempt_id,
+        "cell_id": args.cell,
+        "experiment": args.experiment,
+        "dataset": dataset,
+        "stages": stages,
+    }
+    if args.output is not None:
+        log("receipt sha256 %s -> %s" % (_write_receipt(args.output, document), args.output))
+    else:
+        print(json.dumps(document, indent=2, sort_keys=True, default=str))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
