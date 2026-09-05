@@ -1,9 +1,10 @@
-# Audio2Tool Q8_0 quantization probe (Factor C), v1 preregistration (DRAFT, not registered, not authorized to fly)
+# Audio2Tool Q8_0 quantization probe (Factor C), v1 preregistration (REGISTERED, owner GO 2026-09-04)
 
 Status: drafted 2026-09-04 at the owner's request ("preregister the Q8 probe too; decide together once the
-official-protocol verdict is in"). Nothing in this document authorizes a model contact. The owner decides after
-reading `docs/readiness/2026-09-04-a2t-official-protocol-replication-v1-verdict.md`; the decision and its date
-are recorded in section 8 before any prerequisite that touches the GPU is started.
+official-protocol verdict is in") and REGISTERED on the owner's 2026-09-04 GO, recorded verbatim in section 8.
+The GO was given after the official-protocol replication verdict
+(`docs/readiness/2026-09-04-a2t-official-protocol-replication-v1-verdict.md`) and the three official-population
+verdicts had been read. Nothing outside this document's own cell, budget and decision rule is authorized by it.
 
 ## 1. Why this probe exists
 
@@ -140,5 +141,25 @@ claim.
 
 ## 8. Owner decision and execution log
 
-Pending. To be filled with the owner's decision (GO / NO-GO / amended) and its date once the official-protocol
-replication verdict has been read.
+**Owner decision 2026-09-04: GO as the closing model-usage check; no author query.**
+
+The owner's reasoning, recorded as given: the alignment axes that matter are the prompt, the way the model is
+used, and the scoring script; the Audio2Tool authors will NOT be asked; quantization (Q4_K_M against the paper's
+bf16) is the last controllable "model usage" suspect, and this probe closes it. Everything else in this
+preregistration stands unchanged -- the cell, the population, the budget, the prerequisite order and the
+three-outcome decision rule of section 6 are exactly as drafted, and section 7 remains in force.
+
+Execution log:
+
+| step | artifact | status |
+|---|---|---|
+| owner GO recorded | this section | 2026-09-04 |
+| 1. Q8 kit materialized on ext4 | `/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf/` | 2026-09-05 |
+| 2. runtime receipt | `docs/receipts/runtime-q8-featcache-04ccc72a.json` | 2026-09-05 |
+| 3. model fragment | `configs/model/q8-featcache-a2t-official-04ccc72a.json` | 2026-09-05 |
+| 4. placement receipt | `.../2026-09-04-a2t-q8-quantization-probe-400-v1/placement/` | 2026-09-05 |
+| 5. prompt-fit receipt | `.../2026-09-04-a2t-q8-quantization-probe-400-v1/prompt-fit/` | 2026-09-05 |
+| 6. experiment fragment | `configs/experiment/a2t-q8-quantization-probe-400-v1.json` | 2026-09-05 |
+| 7. wire check + 4-row smoke | `.../wire-check/`, smoke run | 2026-09-05 |
+| 8. flight | `SAEA-A2T-Q8-QUANTIZATION-PROBE-V1` | 2026-09-05 |
+| verdict | `docs/readiness/2026-09-04-a2t-q8-quantization-probe-v1-verdict.md` | 2026-09-05 |
