@@ -360,3 +360,25 @@ recorded as deviation **G2**, the second and unflown suspect.
 
 Three exposure rows written before any contact: `SAEA-E22-DEV-ESB-PROMPT-A-V1`,
 `SAEA-E22-DEV-ESB-PROMPT-B-V1` and `SAEA-E22-DEV-ESB-PROMPT-AB-SMOKE-V1`.
+
+### 2026-09-05, Phase 2 — wire check
+
+Commit `2a0ec125` (registration). All four cells driven on the clean committed tree against
+`core.flight.runtime`'s `WireCheckGate` and `WireCheckTransport`: the real compose, the real adapter
+and its roster-bound samples, the real payload binding and allowlist, the real `FrozenCoreAdapter`
+accounting, the real manifest builder, the real bundle verifier and both ESB scorers over the **new**
+dev10 reference layer. Smoke cells 4 of 4 and 4 of 4, flight cells **6,038 of 6,038** and **6,038 of
+6,038**, `seal_and_score` **OK** on all four, and `core.scoring_batch` scored each sealed manifest as
+one whole-manifest job. Zero model contacts, zero servers, zero sockets. The WER figures in those
+receipts are computed over the transport's canned response and measure nothing.
+
+Running both FLIGHT cells here, not just the smoke cells, was deliberate: the dev10 reference layer
+had never been resolved by either scorer on a sealed bundle, and the 6,038-row manifest had never
+been built.
+
+**One defect of my own, caught here and fixed before any contact.** The first pass wrote each
+wire-check receipt straight into `docs/checks/`, which made the tree dirty for the *next* cell's
+scoring gate — `core.scorers._assert_scoring_entry_gate` calls `require_clean_study_repo`, so cells
+two, three and four came back `SCORING_FAILED` with `?? .../wire-check/` as the whole reason. Nothing
+was spent (a wire check contacts nothing), and the fix is procedural: the receipts are written to a
+scratch path outside the tree and copied in afterwards. The re-run is the one recorded above.
