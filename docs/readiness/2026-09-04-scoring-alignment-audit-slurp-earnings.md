@@ -335,3 +335,49 @@ aggregation, chunking, decoding-heuristic and quantization confounds together.
 
 Verdict: `docs/readiness/2026-09-04-e21-full44-direct-baseline-v1-verdict.md`. Receipts:
 `docs/checks/speech-aware-evidence-acquisition/2026-09-04-e21-full44-direct-baseline-v1/`.
+
+
+## Addendum, 2026-09-05 (second) — the Earnings-22 short-form cell flew, and it does not align
+
+Section 1.4 named "Earnings-22 short form against the one same-model published target" as the
+measurement that would still need a model contact. It was preregistered
+(`docs/readiness/2026-09-04-e22-esb-shortform-alignment-v1-preregistration.md`) on the dated owner
+allowance of 2026-09-04 that permits one read of the six ESB test calls, and flown as
+`SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1` on 2026-09-05: all 2,735 published ESB test utterances, cut
+locally from the six locked MP3s at the published boundaries, one utterance per contact, raw audio
+through the resident bf16 mmproj, greedy, build `04ccc72a`.
+
+**NOT ALIGNED. 15.937 % corpus WER under the Whisper `EnglishTextNormalizer` against
+Qwen3-Omni-30B-A3B-Instruct's own published 9.79** (+6.15) and its cross-read 12.3 (+3.64). The
+band test, the strict `whisper-large-v3` floor (11.59) and even the loose `whisper-base.en` floor
+(15.09) all fail; of the nine published floors on that column only `whisper-tiny.en`'s 19.12 is
+cleared.
+
+This is the first **same-model** comparison this study has been able to make on any carrier, and it
+sharpens what this audit's headline 1 can be read to mean. Earnings-21's 8.200 % over all 44
+discovery calls stands and is still ALIGNED — but it is a **cross-system** comparison, on
+**long-form** 90-second windows, against a **verbatim** `.nlp` reference layer. Point the same
+frozen core, the same build and the byte-identical instruction at short sentence-length clips scored
+against a **cleaned** reference and the number moves by nearly eight points. Neither result
+contradicts the other; together they say that this study's Earnings numbers are far more sensitive
+to segmentation and reference convention than to the model.
+
+The gap decomposes, and not toward recognition. Insertions are 59.2 % of all errors; the hypothesis
+runs 1.0749x the reference in length, longer on 1,556 of 2,735 rows and shorter on 317; and an
+**oracle** cut of each hypothesis to its own reference word count — a diagnostic upper bound, never
+an achievable result and never fitted — moves the figure 5.48 points to 10.456, which would sit
+inside the band and under the strict floor. Collapsing repeated words buys at most 0.33 points and
+makes the number worse when applied to the hypothesis alone; dropping every utterance under 3 s buys
+1.22. The leading suspects are the prompt (deliberately held byte-identical to the Earnings-21
+flight's, and therefore asking for verbatim disfluent output against a reference that is not
+verbatim) and the segmentation (one sentence-length clip, no context, no way to know where it ends;
+the length ratio rises monotonically from 1.039 at 16-40 s to 1.147 at 2-4 s). Quantization is
+untested by this flight and remains the live suspect for the residual 0.67 points.
+
+Section 1.4's other two open items are unchanged and are now more clearly the priority: a self-run
+`whisper-large-v3` anchor over these exact rows through this exact scorer would turn 11.59 from a
+published row into a measured one and remove the normalizer, aggregation, chunking and subset
+confounds together; and ConEC's own sentence segmentation plus the fstalign stack is still not
+installed. Full verdict:
+`docs/readiness/2026-09-04-e22-esb-shortform-alignment-v1-verdict.md`; numbers under
+`docs/checks/speech-aware-evidence-acquisition/2026-09-04-e22-esb-shortform-alignment-400-v1/verdict/`.

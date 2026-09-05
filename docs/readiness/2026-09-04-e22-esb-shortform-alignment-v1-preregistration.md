@@ -371,3 +371,37 @@ capture, and it appears identically in the sealed `SAEA-E21-FULL44-DIRECT-BASELI
 set the same `GGML_CUDA_DISABLE_GRAPHS=1`. The session receipt records `server_env_keys` only for a
 non-legacy role, so the flight additionally reads the live server process's own environment and
 records it.
+
+### 2026-09-05, Phase 4 — the flight, and the verdict
+
+Row `SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1`, attempt `attempt-20260905T044432Z-8f23ee`, study commit
+`7f5d2837`, config hash `179c08ef`, protocol hash `d74adf8d`, manifest sha256 `dbfa6efb…`:
+**COMPLETED and FINALIZED, 2,735 of 2,735 utterances**, 19,494.608 speech seconds (5.415 h), 773.5 s
+of dispatch at eight slots plus 12.0 s of startup = **0.226 GPU-h** against a 2.0-hour registered
+ceiling, 25.2x realtime, peak VRAM 22,506 MiB of 24,463, peak power 90.41 W against the 100.00 W
+enforced limit. One attempt, no recovery, no CUDA fault, no out-of-memory, no skipped contact.
+
+The window fit held live over all 2,735 requests: largest prompt **530 tokens**, exactly the figure
+section 5.1 derived before any contact; largest completion 137 against a 1,024 ceiling, which
+therefore never binds. `GGML_CUDA_DISABLE_GRAPHS=1` was read back from the live server process's own
+environment rather than assumed.
+
+**Verdict: NOT ALIGNED.** Corpus WER under the Whisper `EnglishTextNormalizer` is **15.937 %**
+against the published 9.79 (+6.15) and the cross-read 12.3 (+3.64). Band test (≤ 12.79) fails,
+strict floor (≤ 11.59) fails, loose floor (≤ 15.09) fails by 0.85; only `whisper-tiny.en`'s 19.12 is
+cleared. Full verdict, with the per-call table, the duration decomposition and the gap analysis:
+`docs/readiness/2026-09-04-e22-esb-shortform-alignment-v1-verdict.md`.
+
+The gap has a shape. Insertions are 59.2 % of all errors and the hypothesis is systematically longer
+than the reference (ratio 1.0749). An **oracle** cut of each hypothesis to its own reference word
+count — a diagnostic upper bound, not an achievable result — moves the number 5.48 points to 10.456,
+inside the band and under the strict floor, while collapsing word repeats buys at most 0.33 and
+dropping every utterance under 3 s buys 1.22. What fails here is output discipline, not acoustic
+recognition, and that points at deviation D3 (the prompt, held byte-identical to the Earnings-21
+flight's on purpose, against a cleaned rather than verbatim reference) and D1 (one sentence-length
+clip with no context). Quantization, D2, is untested by this flight and remains the live suspect for
+the residual.
+
+Nothing was tuned on this population. The owner allowance is spent: the six calls are now
+calibration-exposed, and the 109 remaining confirmatory calls were not named, loaded, decoded or
+sent.

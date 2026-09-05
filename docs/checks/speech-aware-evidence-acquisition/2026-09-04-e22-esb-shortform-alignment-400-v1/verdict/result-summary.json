@@ -1,0 +1,496 @@
+{
+  "attempt_id": "attempt-20260905T044432Z-8f23ee",
+  "attempt_state": "FINALIZED",
+  "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+  "caveats": [
+    "Two vendor reports of this same frozen model differ by 2.5 points (9.79 vs 12.3), most of the owner's 3-point tolerance; 'consistent with both' is the strongest honest reading of any number inside that spread.",
+    "The Open ASR Leaderboard applies merge_compounds=True; this repository does not. That works against us.",
+    "The published row's precision and prompt are not published. Q4_K_M and this study's own three-sentence ASR instruction are named deviations, not controls.",
+    "2,735 rows against the published N = 2,741. The six-row gap is unexplained and is recorded, never reconciled by guesswork.",
+    "Utterances were cut locally from the locked MP3s at the published float32 boundaries, not from the release's own audio chunks; three end boundaries fall past the decoded parent and were clamped to it.",
+    "fstalign was not installed and not run.",
+    "saea-scoring-v1 figures are a different metric family and must never be reported as an alignment however close they land."
+  ],
+  "cell_id": "E22-ESB-2735",
+  "clamped_utterances": [
+    {
+      "audio_seconds": 19.0601875,
+      "parent_decoded_seconds": 2643.84,
+      "reference_words": 16,
+      "sample_id": "4432298-351",
+      "segment_end_seconds": 2643.920166015625,
+      "whisper_wer_pct": 18.75
+    },
+    {
+      "audio_seconds": 13.104,
+      "parent_decoded_seconds": 1626.984,
+      "reference_words": 20,
+      "sample_id": "4470290-178",
+      "segment_end_seconds": 1627.06005859375,
+      "whisper_wer_pct": 10.0
+    },
+    {
+      "audio_seconds": 8.63625,
+      "parent_decoded_seconds": 4159.896,
+      "reference_words": 12,
+      "sample_id": "4483338-619",
+      "segment_end_seconds": 4159.97998046875,
+      "whisper_wer_pct": 16.6667
+    }
+  ],
+  "config_fragments": {
+    "baseline": "e22-esb-direct-zero",
+    "dataset": "earnings22-esb-utterances-2735",
+    "experiment": "e22-esb-shortform-alignment-v1",
+    "model": "q4km-e22-esb-mmproj-gpu-04ccc72a-np8"
+  },
+  "config_hash": "c550571c4cfc5410793f76b7aa360c55d18d915c5e40f3d95130d4d534897053",
+  "cost": {
+    "audio_seconds_used": 19494.608437500006,
+    "calls_used": 2735,
+    "completion_tokens_total": 67529,
+    "latency_seconds_total": 5530.874752224932,
+    "prompt_tokens_total": 405468,
+    "tool_calls": 0,
+    "umbrella_lock_sha256": "fe843e1b4789d3f3b47731ddf5b1bb42d430b05afe74292afc9ca0a6368e2864"
+  },
+  "counts_saea_scoring_v1": {
+    "corpus_wer_pct": 20.896,
+    "deletions": 1678,
+    "errors": 10504,
+    "insertions": 5500,
+    "mean_wer_pct": 31.6615,
+    "reference_words": 50268,
+    "substitutions": 3326,
+    "utterances": 2735
+  },
+  "counts_whisper": {
+    "corpus_wer_pct": 15.9365,
+    "deletions": 948,
+    "errors": 7796,
+    "insertions": 4612,
+    "mean_wer_pct": 28.1291,
+    "reference_words": 48919,
+    "substitutions": 2236,
+    "utterances": 2735
+  },
+  "decision": {
+    "aligned_better_threshold": 6.789999999999999,
+    "band_test_pass": false,
+    "band_test_threshold": 12.79,
+    "delta_vs_cross_read": 3.6365,
+    "delta_vs_published": 6.1465,
+    "floors": {
+      "distil-large-v3.5": {
+        "cleared": false,
+        "published": 10.83
+      },
+      "qwen3-asr-0.6b": {
+        "cleared": false,
+        "published": 10.78
+      },
+      "qwen3-asr-1.7b": {
+        "cleared": false,
+        "published": 9.73
+      },
+      "whisper-base.en": {
+        "cleared": false,
+        "published": 15.09
+      },
+      "whisper-large-v3": {
+        "cleared": false,
+        "published": 11.59
+      },
+      "whisper-large-v3-turbo": {
+        "cleared": false,
+        "published": 11.07
+      },
+      "whisper-medium.en": {
+        "cleared": false,
+        "published": 12.63
+      },
+      "whisper-small.en": {
+        "cleared": false,
+        "published": 12.97
+      },
+      "whisper-tiny.en": {
+        "cleared": true,
+        "published": 19.12
+      }
+    },
+    "loose_floor_pass": false,
+    "loose_floor_threshold": 15.09,
+    "rule": "ALIGNED = corpus Whisper-normalized WER <= 12.79 (9.79 + 3) AND <= the strict whisper-large-v3 floor 11.59; ALIGNED-BETTER = < 6.79; otherwise NOT ALIGNED",
+    "strict_floor_pass": false,
+    "strict_floor_threshold": 11.59,
+    "verdict": "NOT ALIGNED"
+  },
+  "duration_deciles_whisper": [
+    {
+      "corpus_wer_pct": 52.7607,
+      "decile": 1,
+      "deletions": 83,
+      "errors": 430,
+      "insertions": 246,
+      "mean_wer_pct": 76.9697,
+      "reference_words": 815,
+      "seconds_from": 0.22,
+      "seconds_to": 1.34,
+      "substitutions": 101,
+      "utterances": 273
+    },
+    {
+      "corpus_wer_pct": 27.7344,
+      "decile": 2,
+      "deletions": 84,
+      "errors": 497,
+      "insertions": 294,
+      "mean_wer_pct": 39.2891,
+      "reference_words": 1792,
+      "seconds_from": 1.34,
+      "seconds_to": 2.54,
+      "substitutions": 119,
+      "utterances": 274
+    },
+    {
+      "corpus_wer_pct": 27.2948,
+      "decile": 3,
+      "deletions": 89,
+      "errors": 675,
+      "insertions": 480,
+      "mean_wer_pct": 38.9213,
+      "reference_words": 2473,
+      "seconds_from": 2.54,
+      "seconds_to": 3.68,
+      "substitutions": 106,
+      "utterances": 273
+    },
+    {
+      "corpus_wer_pct": 21.5655,
+      "decile": 4,
+      "deletions": 48,
+      "errors": 686,
+      "insertions": 473,
+      "mean_wer_pct": 29.3245,
+      "reference_words": 3181,
+      "seconds_from": 3.7,
+      "seconds_to": 4.8,
+      "substitutions": 165,
+      "utterances": 274
+    },
+    {
+      "corpus_wer_pct": 17.0164,
+      "decile": 5,
+      "deletions": 73,
+      "errors": 673,
+      "insertions": 433,
+      "mean_wer_pct": 19.0887,
+      "reference_words": 3955,
+      "seconds_from": 4.82,
+      "seconds_to": 6.12,
+      "substitutions": 167,
+      "utterances": 273
+    },
+    {
+      "corpus_wer_pct": 17.1166,
+      "decile": 6,
+      "deletions": 74,
+      "errors": 818,
+      "insertions": 543,
+      "mean_wer_pct": 20.9791,
+      "reference_words": 4779,
+      "seconds_from": 6.12,
+      "seconds_to": 7.46,
+      "substitutions": 201,
+      "utterances": 274
+    },
+    {
+      "corpus_wer_pct": 13.2554,
+      "decile": 7,
+      "deletions": 90,
+      "errors": 748,
+      "insertions": 399,
+      "mean_wer_pct": 15.7808,
+      "reference_words": 5643,
+      "seconds_from": 7.46,
+      "seconds_to": 8.98,
+      "substitutions": 259,
+      "utterances": 273
+    },
+    {
+      "corpus_wer_pct": 12.535,
+      "decile": 8,
+      "deletions": 95,
+      "errors": 851,
+      "insertions": 487,
+      "mean_wer_pct": 14.0058,
+      "reference_words": 6789,
+      "seconds_from": 9.0,
+      "seconds_to": 11.02,
+      "substitutions": 269,
+      "utterances": 274
+    },
+    {
+      "corpus_wer_pct": 13.5595,
+      "decile": 9,
+      "deletions": 145,
+      "errors": 1083,
+      "insertions": 592,
+      "mean_wer_pct": 14.8773,
+      "reference_words": 7987,
+      "seconds_from": 11.02,
+      "seconds_to": 14.04,
+      "substitutions": 346,
+      "utterances": 273
+    },
+    {
+      "corpus_wer_pct": 11.6037,
+      "decile": 10,
+      "deletions": 167,
+      "errors": 1335,
+      "insertions": 665,
+      "mean_wer_pct": 12.146,
+      "reference_words": 11505,
+      "seconds_from": 14.06,
+      "seconds_to": 36.36,
+      "substitutions": 503,
+      "utterances": 274
+    }
+  ],
+  "duration_split_whisper": {
+    "at_most_20s": {
+      "corpus_wer_pct": 16.2983,
+      "count": 2661,
+      "deletions": 882,
+      "errors": 7352,
+      "insertions": 4416,
+      "mean_wer_pct": 28.5808,
+      "reference_words": 45109,
+      "substitutions": 2054,
+      "utterances": 2661
+    },
+    "longer_than_20s": {
+      "corpus_wer_pct": 11.6535,
+      "count": 74,
+      "deletions": 66,
+      "errors": 444,
+      "insertions": 196,
+      "mean_wer_pct": 11.8873,
+      "reference_words": 3810,
+      "substitutions": 182,
+      "utterances": 74
+    }
+  },
+  "earnings21_full44_for_contrast": {
+    "corpus_wer_whisper_pct": 8.2,
+    "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+    "why_not_a_comparison": "different corpus (Earnings-21 discovery, 44 calls), different segmentation (fixed 90-second long-form windows, transcripts stitched per call) and a different reference layer (the carrier's own .nlp tokens). The two numbers are printed side by side as context, never as a difference."
+  },
+  "gap_decomposition_headline": {
+    "hypothesis_to_reference_word_ratio": 1.0749,
+    "insertions_share_of_all_errors_pct": 59.16,
+    "oracle_truncation_corpus_wer_pct": 10.4561,
+    "over_generation_is_the_gap": "cutting each hypothesis to its own reference word count -- an ORACLE transform, not an achievable result -- moves the corpus figure by -5.4804 points. Over-generation therefore accounts for most of the distance to the published number; immediate word repetition and the shortest utterances account for well under a point each."
+  },
+  "headline": {
+    "corpus_wer_saea_scoring_v1_pct": 20.896,
+    "corpus_wer_whisper_pct": 15.9365,
+    "equal_call_weighted_whisper_pct": 16.7033,
+    "mean_of_per_utterance_wer_saea_scoring_v1_pct": 31.6615,
+    "mean_of_per_utterance_wer_whisper_pct": 28.1291
+  },
+  "manifest_path_sha256_recomputed": "dbfa6efbbd789cb8655c193c0e94b2e2a7dd1a56b19105c6c1a365a731325fc5",
+  "manifest_sha256": "dbfa6efbbd789cb8655c193c0e94b2e2a7dd1a56b19105c6c1a365a731325fc5",
+  "per_call": {
+    "4432298": {
+      "audio_seconds": 2527.449,
+      "frozen": {
+        "corpus_wer_pct": 25.9835,
+        "deletions": 169,
+        "errors": 1572,
+        "insertions": 834,
+        "mean_wer_pct": 33.4782,
+        "reference_words": 6050,
+        "substitutions": 569,
+        "utterances": 351
+      },
+      "whisper": {
+        "corpus_wer_pct": 22.1587,
+        "deletions": 154,
+        "errors": 1318,
+        "insertions": 716,
+        "mean_wer_pct": 30.1812,
+        "reference_words": 5948,
+        "substitutions": 448,
+        "utterances": 351
+      }
+    },
+    "4450488": {
+      "audio_seconds": 4269.868,
+      "frozen": {
+        "corpus_wer_pct": 20.383,
+        "deletions": 621,
+        "errors": 1916,
+        "insertions": 708,
+        "mean_wer_pct": 24.6475,
+        "reference_words": 9400,
+        "substitutions": 587,
+        "utterances": 508
+      },
+      "whisper": {
+        "corpus_wer_pct": 14.1132,
+        "deletions": 157,
+        "errors": 1227,
+        "insertions": 683,
+        "mean_wer_pct": 19.541,
+        "reference_words": 8694,
+        "substitutions": 387,
+        "utterances": 508
+      }
+    },
+    "4470290": {
+      "audio_seconds": 1584.824,
+      "frozen": {
+        "corpus_wer_pct": 24.6393,
+        "deletions": 108,
+        "errors": 888,
+        "insertions": 418,
+        "mean_wer_pct": 27.5722,
+        "reference_words": 3604,
+        "substitutions": 362,
+        "utterances": 178
+      },
+      "whisper": {
+        "corpus_wer_pct": 19.5457,
+        "deletions": 89,
+        "errors": 697,
+        "insertions": 343,
+        "mean_wer_pct": 23.5948,
+        "reference_words": 3566,
+        "substitutions": 265,
+        "utterances": 178
+      }
+    },
+    "4479741": {
+      "audio_seconds": 3499.841,
+      "frozen": {
+        "corpus_wer_pct": 19.6114,
+        "deletions": 300,
+        "errors": 1716,
+        "insertions": 868,
+        "mean_wer_pct": 32.7335,
+        "reference_words": 8750,
+        "substitutions": 548,
+        "utterances": 473
+      },
+      "whisper": {
+        "corpus_wer_pct": 14.533,
+        "deletions": 175,
+        "errors": 1226,
+        "insertions": 689,
+        "mean_wer_pct": 30.127,
+        "reference_words": 8436,
+        "substitutions": 362,
+        "utterances": 473
+      }
+    },
+    "4483338": {
+      "audio_seconds": 4024.266,
+      "frozen": {
+        "corpus_wer_pct": 20.2115,
+        "deletions": 288,
+        "errors": 2351,
+        "insertions": 1302,
+        "mean_wer_pct": 32.7668,
+        "reference_words": 11632,
+        "substitutions": 761,
+        "utterances": 619
+      },
+      "whisper": {
+        "corpus_wer_pct": 15.1094,
+        "deletions": 213,
+        "errors": 1740,
+        "insertions": 1049,
+        "mean_wer_pct": 28.8484,
+        "reference_words": 11516,
+        "substitutions": 478,
+        "utterances": 619
+      }
+    },
+    "4485244": {
+      "audio_seconds": 3588.359,
+      "frozen": {
+        "corpus_wer_pct": 19.027,
+        "deletions": 192,
+        "errors": 2061,
+        "insertions": 1370,
+        "mean_wer_pct": 35.7242,
+        "reference_words": 10832,
+        "substitutions": 499,
+        "utterances": 606
+      },
+      "whisper": {
+        "corpus_wer_pct": 14.7597,
+        "deletions": 160,
+        "errors": 1588,
+        "insertions": 1132,
+        "mean_wer_pct": 33.1775,
+        "reference_words": 10759,
+        "substitutions": 296,
+        "utterances": 606
+      }
+    }
+  },
+  "protocol_hash": "d81f1acae0433fa4de717716cbbb1cb2a89a6038ffaa79c18469bbcb27df44be",
+  "run_id": "SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1",
+  "schema": "saea-e22-esb-result-summary-v1",
+  "scoring_path": {
+    "aggregation": "corpus: total S+D+I over total reference words",
+    "dataset_sharding": false,
+    "merge_compounds": false,
+    "paper_facing_scorer": "asr-wer-esb-whisper",
+    "scorers_declared": [
+      "asr-wer-esb-whisper",
+      "asr-wer-esb",
+      "cost"
+    ],
+    "scoring_batch_aggregates": {},
+    "scoring_batch_verified": true,
+    "whole_manifest_jobs_only": true
+  },
+  "serve": {
+    "extra_argv": [
+      "-c",
+      "32768",
+      "-np",
+      "8",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "startup_seconds": 12.036546468734741
+  },
+  "split_identity_hash": "9285b32127c684ca7edd3a0f842e772f0a308a3c5021759e8381c5c45221189d",
+  "study": "speech-aware-evidence-acquisition",
+  "study_commit": "7f5d2837f2c92f6442ff9d820dbda71a89e1c626",
+  "targets": {
+    "cross_read_same_model": 12.3,
+    "cross_read_source": "Nemotron 3 Nano Omni, arXiv:2604.24954v2 Table 8",
+    "published_same_model": 9.79,
+    "published_source": "NVIDIA NeMo AutoModel, 'Fine-Tune Qwen3-Omni for ASR', N = 2741",
+    "vendor_disagreement_points": 2.51
+  },
+  "throughput": {
+    "average_latency_seconds": 2.0222576790584763,
+    "contact_count": 2735,
+    "contacts_per_second": 3.5358136046335966,
+    "serving_slots": 8,
+    "slot_occupancy": 0.8937907767112152,
+    "wall_seconds": 773.5136253833771
+  }
+}

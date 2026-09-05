@@ -1,0 +1,183 @@
+{
+  "boundary": "Every figure in this file is a DIAGNOSTIC computed after the fact on sealed outputs. None of it is the verdict, none of it was fitted, and the two transforms marked oracle = true use the reference's own length and are upper bounds on a component rather than achievable numbers.",
+  "by_duration_bucket": [
+    {
+      "corpus_wer_pct": 51.259,
+      "deletions": 77,
+      "hypothesis_words": 617,
+      "insertion_share_of_errors_pct": 48.42,
+      "insertions": 138,
+      "length_ratio": 1.1097,
+      "reference_words": 556,
+      "seconds_from": 0,
+      "seconds_to": 1,
+      "substitutions": 70,
+      "utterances": 209
+    },
+    {
+      "corpus_wer_pct": 31.6596,
+      "deletions": 60,
+      "hypothesis_words": 1340,
+      "insertion_share_of_errors_pct": 60.48,
+      "insertions": 225,
+      "length_ratio": 1.1404,
+      "reference_words": 1175,
+      "seconds_from": 1,
+      "seconds_to": 2,
+      "substitutions": 87,
+      "utterances": 220
+    },
+    {
+      "corpus_wer_pct": 26.1423,
+      "deletions": 128,
+      "hypothesis_words": 4595,
+      "insertion_share_of_errors_pct": 68.58,
+      "insertions": 718,
+      "length_ratio": 1.1473,
+      "reference_words": 4005,
+      "seconds_from": 2,
+      "seconds_to": 4,
+      "substitutions": 201,
+      "utterances": 454
+    },
+    {
+      "corpus_wer_pct": 17.455,
+      "deletions": 219,
+      "hypothesis_words": 14441,
+      "insertion_share_of_errors_pct": 64.77,
+      "insertions": 1489,
+      "length_ratio": 1.0964,
+      "reference_words": 13171,
+      "seconds_from": 4,
+      "seconds_to": 8,
+      "substitutions": 591,
+      "utterances": 856
+    },
+    {
+      "corpus_wer_pct": 13.1018,
+      "deletions": 339,
+      "hypothesis_words": 23350,
+      "insertion_share_of_errors_pct": 55.58,
+      "insertions": 1608,
+      "length_ratio": 1.0575,
+      "reference_words": 22081,
+      "seconds_from": 8,
+      "seconds_to": 16,
+      "substitutions": 946,
+      "utterances": 820
+    },
+    {
+      "corpus_wer_pct": 11.3479,
+      "deletions": 125,
+      "hypothesis_words": 8240,
+      "insertion_share_of_errors_pct": 48.22,
+      "insertions": 434,
+      "length_ratio": 1.039,
+      "reference_words": 7931,
+      "seconds_from": 16,
+      "seconds_to": 40,
+      "substitutions": 341,
+      "utterances": 176
+    }
+  ],
+  "empty_reference_after_normalization": {
+    "count": 4,
+    "hypothesis_words_counted_as_insertions": 13,
+    "ids": [
+      "4432298-291",
+      "4479741-422",
+      "4483338-309",
+      "4483338-364"
+    ],
+    "note": "a reference that normalizes to nothing (an isolated 'Um.', 'mm-hmm <affirmative>.' or '<inaudible>.') contributes zero reference words to the denominator while any hypothesis words it draws are counted as insertions in the numerator. Four rows of 2,735; the effect on the corpus figure is a few hundredths of a point and is recorded rather than removed."
+  },
+  "length": {
+    "excess_hypothesis_tokens": 4257,
+    "hypothesis_words": 52583,
+    "ratio": 1.0749,
+    "reference_words": 48919,
+    "utterances_with_a_longer_hypothesis": 1556,
+    "utterances_with_a_shorter_hypothesis": 317
+  },
+  "minimum_duration": {
+    "at_least_1s": {
+      "corpus_wer_pct": 15.5305,
+      "deletions": 871,
+      "delta_vs_sealed_pct": -0.406,
+      "insertions": 4474,
+      "reference_words": 48363,
+      "substitutions": 2166,
+      "utterances": 2526
+    },
+    "at_least_2s": {
+      "corpus_wer_pct": 15.1288,
+      "deletions": 811,
+      "delta_vs_sealed_pct": -0.8077,
+      "insertions": 4249,
+      "reference_words": 47188,
+      "substitutions": 2079,
+      "utterances": 2306
+    },
+    "at_least_3s": {
+      "corpus_wer_pct": 14.7144,
+      "deletions": 733,
+      "delta_vs_sealed_pct": -1.2221,
+      "insertions": 3975,
+      "reference_words": 45493,
+      "substitutions": 1986,
+      "utterances": 2093
+    }
+  },
+  "non_english_hypotheses": {
+    "count": 3,
+    "ids": [
+      "4432298-287",
+      "4432298-312",
+      "4485244-268"
+    ],
+    "note": "hypotheses containing CJK-range characters, all on sub-second clips. A real defect of the frozen core on near-empty audio, three rows of 2,735."
+  },
+  "sealed_corpus_wer_pct": 15.9365,
+  "transforms": {
+    "both_sides_immediate_repeats_collapsed": {
+      "corpus_wer_pct": 15.6054,
+      "deletions": 883,
+      "delta_vs_sealed_pct": -0.3311,
+      "insertions": 4488,
+      "oracle": false,
+      "reference_words": 48291,
+      "substitutions": 2165,
+      "what": "collapse runs of an identical word on BOTH sides"
+    },
+    "dedup_then_truncate": {
+      "corpus_wer_pct": 11.241,
+      "deletions": 1955,
+      "delta_vs_sealed_pct": -4.6955,
+      "insertions": 1091,
+      "oracle": true,
+      "reference_words": 48919,
+      "substitutions": 2453,
+      "what": "both of the above, composed; also an ORACLE bound"
+    },
+    "hypothesis_immediate_repeats_collapsed": {
+      "corpus_wer_pct": 16.5375,
+      "deletions": 1409,
+      "delta_vs_sealed_pct": 0.601,
+      "insertions": 4386,
+      "oracle": false,
+      "reference_words": 48919,
+      "substitutions": 2295,
+      "what": "collapse runs of an identical word in the HYPOTHESIS only"
+    },
+    "hypothesis_truncated_to_reference_length": {
+      "corpus_wer_pct": 10.4561,
+      "deletions": 1631,
+      "delta_vs_sealed_pct": -5.4804,
+      "insertions": 1038,
+      "oracle": true,
+      "reference_words": 48919,
+      "substitutions": 2446,
+      "what": "cut each hypothesis to its own reference word count -- an ORACLE transform that bounds the over-generation component from above and is not an achievable result"
+    }
+  }
+}
