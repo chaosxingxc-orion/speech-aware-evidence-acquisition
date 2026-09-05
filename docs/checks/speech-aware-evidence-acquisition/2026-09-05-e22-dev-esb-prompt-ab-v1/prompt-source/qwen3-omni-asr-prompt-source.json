@@ -1,0 +1,68 @@
+{
+  "schema": "saea-external-prompt-source-receipt-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "what_this_is": "Provenance for arm B's instruction. Arm B of SAEA-E22-DEV-ESB-PROMPT-B-V1 sends an ASR prompt this repository did NOT invent: it is the Qwen3-Omni authors' own English ASR prompt, taken verbatim from two independent official sources. This receipt pins those sources by URL, fetch date and SHA-256 of the exact bytes read, and quotes the lines the prompt comes from. Zero model contact; two HTTPS GETs of public documentation.",
+  "fetched_at": "2026-09-05",
+  "arm_b_instruction": "Transcribe the English audio into text.",
+  "arm_b_instruction_sha256": "8533f771edf09f036aa333ed9631e531e5a0c4493efa5f7b0f53fdcf751154d6",
+  "sources": [
+    {
+      "id": "model-card",
+      "name": "Qwen3-Omni-30B-A3B-Instruct model card",
+      "url": "https://huggingface.co/Qwen/Qwen3-Omni-30B-A3B-Instruct",
+      "fetched": "https://huggingface.co/Qwen/Qwen3-Omni-30B-A3B-Instruct/raw/main/README.md",
+      "bytes": 90295,
+      "sha256": "0e44065c4c4a27071f7239afd5b5a33af5bc2e437dd7ea9950e51aafabfde3df",
+      "section": "Setting for Evaluation -> Default Prompts",
+      "quoted_verbatim": [
+        "*   **Default Prompts**: For tasks in certain benchmarks that do not include a prompt, we use the following prompt settings:",
+        "| Task Type | Prompt |",
+        "| Auto Speech Recognition (ASR) for Chinese | 请将这段中文语音转换为纯文本。 |",
+        "| Auto Speech Recognition (ASR) for Other languages | Transcribe the <language> audio into text. |"
+      ],
+      "same_section_also_says": [
+        "*   **Decoding Strategy**: For the Qwen3-Omni series across all evaluation benchmarks, `Instruct` models use greedy decoding during generation without sampling.",
+        "*   **System Prompt**: No `system prompt` should be set for any evaluation benchmark.",
+        "*   **Input Sequence**: The question or prompt should be input as user text. Unless otherwise specified by the benchmark, the text should come **after** multimodal data in the sequence."
+      ],
+      "translation_note": "The Chinese row is quoted only to show the table's shape and is not used. Its English rendering is 'Please convert this Chinese speech into plain text.' This study's carrier is English speech and the row it uses is the 'Other languages' one."
+    },
+    {
+      "id": "official-cookbook",
+      "name": "Qwen3-Omni official cookbook, speech recognition notebook",
+      "url": "https://github.com/QwenLM/Qwen3-Omni/blob/main/cookbooks/speech_recognition.ipynb",
+      "fetched": "https://raw.githubusercontent.com/QwenLM/Qwen3-Omni/main/cookbooks/speech_recognition.ipynb",
+      "bytes": 1215283,
+      "sha256": "3827631fb46374a944178dae1e9318e94c99429be414fec4f79fd6bfdace2b3f",
+      "cell": "the English ASR cell (asr_en.wav)",
+      "quoted_verbatim": [
+        "audio_path = \"https://qianwen-res.oss-cn-beijing.aliyuncs.com/Qwen3-Omni/cookbook/asr_en.wav\"",
+        "messages = [",
+        "    {",
+        "        \"role\": \"user\",",
+        "        \"content\": [",
+        "            {\"type\": \"audio\", \"audio\": audio_path},",
+        "            {\"type\": \"text\", \"text\": \"Transcribe the English audio into text.\"},",
+        "        ]",
+        "    }",
+        "]"
+      ],
+      "why_it_matters": "The model card gives the template with a <language> placeholder; this notebook is the authors filling that placeholder in for English themselves, so arm B's exact string is theirs and not this repository's substitution. The French cell of the same notebook fills it in as 'Transcribe the French audio into text.', which confirms the pattern."
+    },
+    {
+      "id": "repo-readme",
+      "name": "QwenLM/Qwen3-Omni repository README",
+      "url": "https://github.com/QwenLM/Qwen3-Omni",
+      "fetched": "https://raw.githubusercontent.com/QwenLM/Qwen3-Omni/main/README.md",
+      "bytes": 101283,
+      "sha256": "013dbbd14768e7767a05d6a5da8dffecd0b8f36938eedaa6a5000c26484f4603",
+      "role": "read for completeness; it carries the same cookbook index and adds nothing this receipt relies on"
+    }
+  ],
+  "what_this_study_takes_and_what_it_does_not": {
+    "takes": "the instruction TEXT only: 'Transcribe the English audio into text.'",
+    "does_not_take": "the message SHAPE. The model card's same section says to set no system prompt and to put the prompt text in the user turn after the audio. Both arms of this experiment keep the sealed 2026-09-04 flight's shape -- one system message carrying the instruction, one user message carrying the audio -- so that exactly one factor differs between arm A and arm B. Message placement and the system role are recorded as deviation G2 and are a SECOND, UNFLOWN suspect.",
+    "already_matched": "greedy decoding, which both arms and the sealed flight already use (temperature 0)."
+  },
+  "boundary": "Public model documentation, read once over HTTPS. No model was contacted, no weights were downloaded, no audio was fetched, and no gold label was opened. The URLs are recorded so the quotation stays auditable; the bytes themselves are not committed to this repository."
+}

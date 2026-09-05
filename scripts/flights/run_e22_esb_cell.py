@@ -97,6 +97,11 @@ DEFAULT_EXPERIMENT = "e22-esb-shortform-alignment-v1"
 DEFAULT_DATASET = "earnings22-esb-utterances-2735"
 RUNTIME_ROOT = Path("/home/chao")
 ROSTER_SCHEMA = "saea-e22-esb-utterance-roster-receipt-v1"
+#: Where the 2026-09-04 ESB TEST utterances live. A dataset fragment may name a
+#: different derived root through ``e22_esb_derived_subdir`` (the 2026-09-05 dev
+#: subset10 population uses ``derived/e22-esb-utterances/dev-v1``); confinement
+#: is bound to whichever root the fragment declares, so each population's root
+#: still holds exactly its own roster's media and nothing else.
 DERIVED_UTTERANCE_SUBDIR = "derived/e22-esb-utterances/v1"
 
 
@@ -137,6 +142,7 @@ def roster_samples(
     data_root_path: Path,
     *,
     limit_sample_ids: Sequence[str] | None = None,
+    derived_subdir: str = DERIVED_UTTERANCE_SUBDIR,
 ) -> tuple[EarningsSample, ...]:
     """Samples built ONLY from the hash-pinned roster receipt's media facts.
 
@@ -163,7 +169,7 @@ def roster_samples(
         if wanted is not None and sample_id not in wanted:
             continue
         media_relpath = item["media_relpath"]
-        if not media_relpath.startswith(DERIVED_UTTERANCE_SUBDIR + "/"):
+        if not media_relpath.startswith(derived_subdir + "/"):
             raise SystemExit("roster media path is outside the derived root: %s" % media_relpath)
         media_path = (root / media_relpath).resolve()
         media_path.relative_to(root)
@@ -295,11 +301,22 @@ def build_runtime(
     roster_relpath = str(values["e22_esb_roster_receipt"])
     if roster_relpath.startswith("/") or "\\" in roster_relpath:
         raise SystemExit("e22_esb_roster_receipt must be a repo-relative POSIX path")
+    derived_subdir = str(values.get("e22_esb_derived_subdir", DERIVED_UTTERANCE_SUBDIR))
+    if (
+        derived_subdir.startswith("/")
+        or "\\" in derived_subdir
+        or ".." in derived_subdir.split("/")
+        or not derived_subdir.startswith("derived/")
+    ):
+        raise SystemExit(
+            "e22_esb_derived_subdir must be a relative POSIX path under 'derived/'"
+        )
     samples = roster_samples(
         REPO / roster_relpath,
         str(values["e22_esb_roster_receipt_sha256"]),
         root,
         limit_sample_ids=limit_sample_ids,
+        derived_subdir=derived_subdir,
     )
     if len(samples) != int(values["e22_esb_count"]):
         raise SystemExit(
@@ -327,7 +344,7 @@ def build_runtime(
         """See this module's docstring: payload confinement is bound to the
         derived-utterance root, which holds exactly this roster's media."""
 
-        return Path(resolved_root) / DERIVED_UTTERANCE_SUBDIR
+        return Path(resolved_root) / derived_subdir
 
     return FlightRuntime(
         REPO,

@@ -1,0 +1,13 @@
+{
+  "schema": "saea-e22-esb-reference-layer-receipt-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "carrier": "earnings22-original",
+  "split_name": "E22-ESB-DEV10-UTTERANCES",
+  "relpath": "derived/e22-esb-segment-table/e22-esb-dev10-references.jsonl",
+  "sha256": "8da3a65d33fae44b30a1d688f9d1a1ed906ba97d21aa63d18d22ff36428d366a",
+  "rows": 6038,
+  "reference_words_whitespace": 104808,
+  "source": "the 'sentence' column of sanchit-gandhi/earnings22_split split 'train', verbatim -- the same field the leaderboard scores its 'text' against",
+  "source_segment_table_receipt_sha256": "2ff3aa88788b35aa4a451e144b7dbbbb139dd836ef19f5b44472d6f32e3608e0",
+  "boundary": "RUNTIME-FORBIDDEN. These bytes live under the controlled data root, never in Git and never inside the locked carrier tree; only this receipt's SHA-256 is committed. reproduction.esb_reference re-verifies that hash before any scorer reads a reference word, and no runtime path resolves this file at all."
+}

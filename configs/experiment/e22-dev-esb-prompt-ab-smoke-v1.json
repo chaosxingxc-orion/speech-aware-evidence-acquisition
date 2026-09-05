@@ -1,0 +1,105 @@
+{
+  "experiment_id": "SAEA-E22-DEV-ESB-PROMPT-AB-SMOKE-V1",
+  "schema": "saea-e22-esb-shortform-experiment-v1",
+  "date": "2026-09-05",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "Pre-flight smoke and go/no-go for SAEA-E22-DEV-ESB-PROMPT-A-V1 and SAEA-E22-DEV-ESB-PROMPT-B-V1, on four rows of the same roster chosen before any contact to bracket it (longest, shortest, median, p90 by duration). Four reads, in order of importance: (1) does the RE-DERIVED geometry -c 40960 -np 8 serve this card with the bf16 mmproj resident, on a 78.36 s encode that is 2.2x the longest encode the sealed ESB test flight ever sent; (2) do both ESB scorers resolve references from the NEW dev10 hash-pinned layer and score a sealed manifest through core.scoring_batch; (3) what is arm B's text envelope in tokens, so the window fit can be checked against a measurement rather than a bound; (4) a wall-time reading for the two flights' projection. The smoke's own WER numbers are on four rows and enter no verdict.",
+  "populations": {
+    "E22-ESB-DEV-SMOKE-4": {
+      "dataset_fragment": "earnings22-esb-dev-utterances-smoke4",
+      "carrier": "earnings22-original",
+      "split_role": "dev",
+      "count": 4,
+      "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-e22-dev-esb-prompt-ab-v1/roster/flight-roster-receipt.json",
+      "receipt_sha256": "20437bcbde1a52b58bb48642d8809836e20073f7963f19b5ff836ead69c945c8",
+      "split_identity_hash": "5f0b843c0a1cfd607fbbca2090443610d80066dcd91804df45038f9176ab0717",
+      "ids": [
+        "4469088-654",
+        "4470684-13",
+        "4482383-119",
+        "4483937-267"
+      ],
+      "audio_seconds_one_pass": 96.959875,
+      "audio_seconds_longest_item": 78.36,
+      "selection": "deterministic and pre-registered, the same rule the 2026-09-04 ESB test smoke used: the longest utterance (the window-fit and VRAM worst case), the shortest, the median and the p90 by duration, ties broken by sample id"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "E22-ESB-DEV-SMOKE-4-A",
+      "dataset_fragment": "earnings22-esb-dev-utterances-smoke4",
+      "arm": "bare-core",
+      "baseline_fragment": "e22-esb-dev-prompt-a",
+      "model_fragment": "q4km-e22-dev-esb-mmproj-gpu-04ccc72a-np8-c40960",
+      "serving_geometry": "-c 40960 -np 8, 5120 tokens per slot -- identical to the flight",
+      "factor": "none; this is arm A's own protocol on four rows"
+    },
+    {
+      "cell_id": "E22-ESB-DEV-SMOKE-4-B",
+      "dataset_fragment": "earnings22-esb-dev-utterances-smoke4",
+      "arm": "bare-core",
+      "baseline_fragment": "e22-esb-dev-prompt-b",
+      "model_fragment": "q4km-e22-dev-esb-mmproj-gpu-04ccc72a-np8-c40960",
+      "serving_geometry": "-c 40960 -np 8, 5120 tokens per slot -- identical to the flight",
+      "factor": "none; this is arm B's own protocol on the same four rows"
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "runtime_receipt": "docs/receipts/runtime-q4km-featcache-04ccc72a.json",
+    "quantization": "Q4_K_M",
+    "decoder_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+    "mmproj_sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883",
+    "audio_path": "raw audio, bf16 mmproj resident on the GPU, no feature cache directory",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample",
+    "contacts_per_item": 1,
+    "evidence": "none",
+    "obs": "none -- an ESB utterance IS the request",
+    "harness": "core.flight.FlightRuntime, entered through scripts/flights/run_e22_esb_cell.py",
+    "instruction_arm_a": "Transcribe the speech verbatim exactly as spoken. Never insert, repeat, or add any word you do not clearly hear in the audio. Output only the transcript text.",
+    "instruction_arm_b": "Transcribe the English audio into text."
+  },
+  "evaluation": {
+    "official_scorers": [
+      "asr-wer-esb-whisper",
+      "asr-wer-esb",
+      "cost"
+    ],
+    "paper_facing_scorer": "asr-wer-esb-whisper",
+    "paper_facing_aggregation": "corpus: total S+D+I over total reference words",
+    "scored_complete_manifests": 2,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "merge_compounds": false,
+    "metrics": [
+      "prompt_tokens per request (the text envelope, per arm)",
+      "completion tokens, latency, throughput",
+      "peak VRAM and any CUDA fault or out-of-memory",
+      "whether both ESB scorers returned per-sample rows through core.scoring_batch with verified = true"
+    ],
+    "renderer": "analysis.paired.render_markdown"
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "dev",
+    "planned_model_calls": 20,
+    "planned_gpu_hours": 0.5,
+    "planned_speech_audio_seconds": 200
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "4 rows x 1 contact x 2 arms = 8, plus generous headroom; the registered ceiling is 60. Both arms fly under ONE run id as two attempts, which core.attempts allows (the (run_id, attempt_id) key is one-time, and core/model/adapter.py meters the plan cumulatively across attempts of a run id).",
+    "planned_speech_audio_seconds": "96.959875 s per arm, 193.92 s for both, rounded to 200; the registered ceiling is 400.",
+    "planned_gpu_hours": "0.5, essentially all of it model load; the registered ceiling is 1.0",
+    "paid_api_spend": 0
+  },
+  "decision": {
+    "go_no_go": "Both flights launch only if all four reads are affirmative: the -c 40960 -np 8 geometry serves the 78.36 s worst case without an out-of-memory or CUDA fault; both ESB scorers return per-sample rows on both sealed manifests through core.scoring_batch with verified = true; the measured worst prompt plus 1024 completion tokens is at most half the 5120-token slot; and the projected flight time is at or under the registered per-arm ceiling.",
+    "claim_surface": "none; a smoke's numbers enter no verdict",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}

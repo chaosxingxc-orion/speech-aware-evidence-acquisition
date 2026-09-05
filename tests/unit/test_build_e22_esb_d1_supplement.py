@@ -149,7 +149,7 @@ def test_builder_refuses_a_parent_outside_the_six_allowed_calls(tmp_path: Path) 
     module = _module()
     data_root, roster_path, parent_d1, _items = _scaffold(tmp_path)
     _rewrite_roster(roster_path, lambda doc: doc["items"][0].update({"parent_sample_id": "4420696"}))
-    with pytest.raises(ValueError, match="non-ESB-test parent"):
+    with pytest.raises(ValueError, match="this profile does not pin"):
         module.build_supplement(
             roster_path=roster_path, data_root=data_root, parent_d1_path=parent_d1
         )
@@ -194,7 +194,7 @@ def test_builder_refuses_a_roster_that_does_not_cover_all_six_calls(tmp_path: Pa
         document["count"] = len(document["items"])
 
     _rewrite_roster(roster_path, drop_one)
-    with pytest.raises(ValueError, match="not the six ESB test calls"):
+    with pytest.raises(ValueError, match=r"not this profile's 6 calls"):
         module.build_supplement(
             roster_path=roster_path, data_root=data_root, parent_d1_path=parent_d1
         )

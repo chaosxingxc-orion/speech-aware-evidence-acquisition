@@ -1,0 +1,18 @@
+{
+  "arm": "bare-core",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "rails_arms": [
+    "zero-supply"
+  ],
+  "scorers": [
+    "asr-wer-esb-whisper",
+    "asr-wer-esb",
+    "cost"
+  ],
+  "task_instruction": "Transcribe the speech verbatim exactly as spoken. Never insert, repeat, or add any word you do not clearly hear in the audio. Output only the transcript text.",
+  "instruction_basis": "ARM A, the CONTROL: byte-identical to the instruction the sealed SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1 flight sent on the ESB test subset (configs/baseline/e22-esb-direct-zero.json), itself byte-identical to the Earnings-21 full-44 direct baseline's and to the sealed 2026-08-14 fixed-batch-zero-locked-buf90 fragment. Holding this arm byte-identical to what already flew is what makes the dev A-arm number readable against the sealed test 15.937 and what makes the A/B delta a measurement of the instruction and of nothing else. CORRECTION TO A MIS-NAMING carried in the 2026-09-05 mission brief: the instruction the ESB test flight sent is this three-sentence text, NOT configs/probes/r4_transcribe_nocontext.txt ('Transcribe the speech in the audio exactly, word for word. Output only the transcript.'), which no Earnings flight of this study has sent. 'The flown instruction, byte-identical' is the binding requirement and this is those bytes.",
+  "scorer_basis": "Unchanged from e22-esb-direct-zero: asr-wer-esb-whisper is the paper-facing scorer (vendored Whisper EnglishTextNormalizer on both sides, whitespace tokenization, corpus aggregation), asr-wer-esb reports the frozen saea-scoring-v1 number beside it, and entity-wer is absent by construction because data.carriers registers no entity layer for earnings22-original. Both ESB scorers resolve their references from hash-pinned derived layers that reproduction.esb_reference re-verifies before reading a word; the dev10 layer is a SECOND layer beside the sealed test one, never an edit of it.",
+  "obs_basis": "There is no OBS loop here and no windowing: an ESB utterance IS the request. policy 'fixed' sends exactly one contact per sample through core.flight.FlightRuntime's own concurrent dispatch."
+}

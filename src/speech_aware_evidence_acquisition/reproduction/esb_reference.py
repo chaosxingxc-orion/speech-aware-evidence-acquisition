@@ -79,6 +79,21 @@ ESB_REFERENCE_RECEIPT_RELPATH = (
     "2026-09-04-e22-esb-shortform-alignment-400-v1/reference-layer/"
     "reference-layer-receipt.json"
 )
+#: The 2026-09-05 prompt A/B population: the ESB train-split utterances of this
+#: study's own Earnings-22 ``dev`` subset10. A second layer rather than an
+#: edit of the first, because the sealed 2026-09-04 manifests pin that layer's
+#: SHA-256 and its bytes must never move.
+ESB_DEV10_REFERENCE_RECEIPT_RELPATH = (
+    "docs/checks/speech-aware-evidence-acquisition/"
+    "2026-09-05-e22-dev-esb-prompt-ab-v1/reference-layer/"
+    "reference-layer-receipt.json"
+)
+#: Every layer the two ESB scorers may resolve a reference from, in a fixed
+#: order. Each is verified independently; ids may not repeat across layers.
+ESB_REFERENCE_RECEIPT_RELPATHS = (
+    ESB_REFERENCE_RECEIPT_RELPATH,
+    ESB_DEV10_REFERENCE_RECEIPT_RELPATH,
+)
 ESB_REFERENCE_RECEIPT_SCHEMA = "saea-e22-esb-reference-layer-receipt-v1"
 ESB_CARRIER_LOCK_KEY = "earnings22-original"
 ESB_WER_SCORER_VERSION = "asr-wer-esb-v1"
@@ -100,22 +115,62 @@ def _read_json(path: Path, label: str) -> Mapping[str, object]:
 
 
 def load_esb_references(
-    root: Path, *, repo_root: Path = REPO_ROOT
+    root: Path,
+    *,
+    repo_root: Path = REPO_ROOT,
+    receipt_relpaths: tuple[str, ...] = ESB_REFERENCE_RECEIPT_RELPATHS,
 ) -> dict[str, str]:
-    """``{utterance id -> reference sentence}``, hash-verified.
+    """``{utterance id -> reference sentence}``, hash-verified, over every layer.
 
     ``root`` is the controlled DATA root (the same argument every registered
-    scorer already takes); ``repo_root`` is the checkout the committed receipt
-    is read from, with the same test-overridable default convention
+    scorer already takes); ``repo_root`` is the checkout the committed receipts
+    are read from, with the same test-overridable default convention
     ``core.scorers.score_bundle`` uses.
 
     Fails closed -- never silently empty -- on a missing receipt, a schema or
     carrier mismatch, a missing reference file, a SHA-256 that has drifted
-    from the receipt, a row count that disagrees with it, a duplicate id, or
-    an empty sentence.
+    from the receipt, a row count that disagrees with it, a duplicate id, an
+    id that two layers both claim, or an empty sentence. A layer whose receipt
+    file is absent from this checkout is skipped, but at least one layer must
+    load or the call is refused.
     """
 
-    receipt_path = Path(repo_root) / ESB_REFERENCE_RECEIPT_RELPATH
+    merged: dict[str, str] = {}
+    loaded = 0
+    for relpath in receipt_relpaths:
+        if not (Path(repo_root) / relpath).is_file():
+            continue
+        layer = _load_one_esb_layer(root, repo_root=repo_root, receipt_relpath=relpath)
+        overlap = sorted(set(layer) & set(merged))
+        if overlap:
+            raise EsbReferenceError(
+                f"ESB reference layers disagree: {len(overlap)} sample id(s) appear in "
+                f"more than one hash-pinned layer (first: {overlap[0]!r}); a sample must "
+                "have exactly one reference"
+            )
+        merged.update(layer)
+        loaded += 1
+    if not loaded:
+        # No layer's receipt exists in this checkout. Load the first configured
+        # one anyway so its own fail-closed message ("cannot read ...") is what
+        # the caller sees, exactly as it did when this rail had one layer.
+        _load_one_esb_layer(
+            root, repo_root=repo_root, receipt_relpath=receipt_relpaths[0]
+        )
+        raise EsbReferenceError(
+            "no ESB reference-layer receipt was found in this checkout "
+            f"({list(receipt_relpaths)}); scoring without a hash-pinned reference layer "
+            "is refused"
+        )
+    return merged
+
+
+def _load_one_esb_layer(
+    root: Path, *, repo_root: Path, receipt_relpath: str
+) -> dict[str, str]:
+    """One hash-pinned layer, verified end to end (see :func:`load_esb_references`)."""
+
+    receipt_path = Path(repo_root) / receipt_relpath
     receipt = _read_json(receipt_path, "ESB reference-layer receipt")
     if receipt.get("schema") != ESB_REFERENCE_RECEIPT_SCHEMA:
         raise EsbReferenceError(
@@ -295,7 +350,7 @@ def score_esb_outputs(
             "samples": len(per_sample),
             "scorer_version": ESB_WER_SCORER_VERSION,
             "normalizer": "saea-scoring-v1",
-            "reference_layer": "e22-esb-test-references (hash-pinned derived layer)",
+            "reference_layer": "e22-esb hash-pinned derived layers (test + dev10)",
         },
     }
 
@@ -363,14 +418,16 @@ def score_esb_outputs_whisper(
             "scorer_version": WHISPER_WER_SCORER_VERSION,
             "normalizer": WHISPER_NORMALIZER_NAME,
             "merge_compounds": False,
-            "reference_layer": "e22-esb-test-references (hash-pinned derived layer)",
+            "reference_layer": "e22-esb hash-pinned derived layers (test + dev10)",
         },
     }
 
 
 __all__ = [
     "ESB_CARRIER_LOCK_KEY",
+    "ESB_DEV10_REFERENCE_RECEIPT_RELPATH",
     "ESB_REFERENCE_RECEIPT_RELPATH",
+    "ESB_REFERENCE_RECEIPT_RELPATHS",
     "ESB_REFERENCE_RECEIPT_SCHEMA",
     "ESB_WER_SCORER_VERSION",
     "EsbReferenceError",

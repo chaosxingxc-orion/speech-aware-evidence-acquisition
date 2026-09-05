@@ -1,0 +1,44 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 420.0,
+  "runtime_receipt": "receipts/runtime-q4km-featcache-04ccc72a.json",
+  "server_args": [
+    "-c",
+    "40960",
+    "-np",
+    "8",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0"
+  ],
+  "serving_geometry": {
+    "slots": 8,
+    "slot_tokens": 5120,
+    "max_tokens": 1024
+  },
+  "serving_geometry_basis": "Re-derived for THIS roster, because the dev subset10's ESB utterances are much longer than the test subset's: the longest is 4470684-13 at 78.360000 s against the test roster's 36.360125 s. Speech cost follows the mmproj encoder's exact one-second window rule n_tokens = 13 * ceil(audio_seconds) -- the rule that reproduced all 342 sealed COST records of SAEA-E-005B-N10-zero, all 400 per-packet counts of the A2T calibration promotion receipt, and the 530-token worst prompt the ESB test flight measured live -- so 13 * 79 = 1027 speech tokens. Worst required = 1027 speech + the 49-token text envelope the ESB test smoke measured for arm A's three-sentence instruction (arm B's one sentence is strictly shorter) + 1024 completion + 2 special = about 2102. The sealed test flight's -c 32768 -np 8 gives a 4096-token slot, and 2 x 2102 = 4204 > 4096, so it FAILS this repository's own fit rule (slot_tokens >= 2 x worst_required) on this roster. -c 40960 -np 8 gives 5120 tokens per slot -- a multiple of 512, so llama-server's own rounding cannot move it -- for a margin of 3018 tokens and a ratio of 2.44x. 8 x 5120 = 40960 exactly, which is what -c must be for core.flight.FlightRuntime.serve.",
+  "serving_geometry_deviation": "This is the ONE deviation from the sealed SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1 protocol, and it is forced by the roster rather than chosen: a 4096-token slot cannot hold this roster's longest request at the fit rule this repository already applied twice. It changes no request byte -- the same instruction, the same audio, the same decoding params, the same build, the same audio path -- so it cannot move a transcript, and it is IDENTICAL across arms A and B, so it cannot touch the paired contrast either. It is named in the preregistration as deviation G1.",
+  "vram_basis": "Between two geometries this card is already proven to serve on the resident-mmproj raw-audio path: SAEA-E21-FULL44-DIRECT-BASELINE-V1 served -c 49152 -np 8 at a peak of 23396 MiB of 24463, and its recovery V2 served -c 36864 -np 6 at 22720 MiB. -c 40960 asks for 8192 FEWER q8_0 KV tokens than the proven -np 8 geometry, on an encode whose longest window is 78.4 s rather than 90 s, so both the KV plane and the compute buffer are strictly smaller than the V1 case. VRAM is not certified by arithmetic and is not claimed here; the 4-row smoke, whose first row is the 78.36 s worst case, proves it live before the flight launches.",
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample"
+  },
+  "decoding_basis": "Byte-identical to the sealed SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1 and to the Earnings-21 full-44 flight: greedy (temperature 0), max_tokens 1024, id_slot per-sample, seed 20260803 (inert under greedy). max_tokens is deliberately NOT changed: a different ceiling could truncate a rambling completion and silently move WER, and the ESB test flight measured a largest completion of 137 against 1024, so the ceiling never bound there.",
+  "graphs_basis": "GGML_CUDA_DISABLE_GRAPHS=1 carried forward unchanged from the sealed ESB test flight and from the full-44 recovery fragment as INHERITED HARDENING, not as a diagnosis. The variable changes no request byte and so cannot move the number.",
+  "feature_cache_basis": "server_env carries no LLAMA_MTMD_FEAT_CACHE_DIR. The legacy 26 GB /home/chao/feat-cache/q4km cache holds build-5d9dfcb58 encoder outputs and is content-addressed on audio, so pointing at it could mix another build's features into these numbers; it is left untouched and unread.",
+  "audio_path_basis": "--no-mmproj-offload is absent, so the bf16 mmproj sha256 f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883 stays resident on the GPU and every utterance is encoded there, exactly as the ESB test flight encoded every utterance.",
+  "prompt_order": "evidence-first-system-v3",
+  "server_env": {
+    "GGML_CUDA_DISABLE_GRAPHS": "1"
+  }
+}

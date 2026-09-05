@@ -1,0 +1,92 @@
+{
+  "schema": "saea-e22-esb-prompt-fit-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "generated_at": "2026-09-05T07:03:48.076473+00:00",
+  "contacts": {
+    "model": 0,
+    "server": 0,
+    "tokenizer": 0,
+    "socket": 0,
+    "generated_tokens": 0,
+    "basis": "arithmetic only: the encoder's exact one-second window rule plus a text envelope the 2026-09-04 ESB test smoke already measured. Nothing is started, opened or asked."
+  },
+  "fragments": {
+    "dataset": "earnings22-esb-dev-utterances-smoke4",
+    "model": "q4km-e22-dev-esb-mmproj-gpu-04ccc72a-np8-c40960",
+    "baselines": [
+      "e22-esb-dev-prompt-a",
+      "e22-esb-dev-prompt-b"
+    ]
+  },
+  "roster": {
+    "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-e22-dev-esb-prompt-ab-v1/roster/flight-roster-receipt.json",
+    "sha256": "20437bcbde1a52b58bb48642d8809836e20073f7963f19b5ff836ead69c945c8",
+    "count": 6038,
+    "audio_seconds_total": 39292.64675
+  },
+  "rule": {
+    "speech": "n_tokens = 13 * ceil(audio_seconds)",
+    "speech_basis": "reproduces all 342 sealed COST records of SAEA-E-005B-N10-zero, all 400 per-packet counts of the A2T calibration promotion receipt, and the ESB test flight's measured 530-token worst prompt without exception",
+    "text_envelope_tokens": 49,
+    "text_envelope_source": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-e22-esb-shortform-alignment-400-v1/smoke/smoke.json",
+    "special_tokens": 2,
+    "fit": "slot_tokens >= 2 * worst_required, slot a multiple of 512"
+  },
+  "geometry": {
+    "server_args_c": 40960,
+    "server_args_np": 8,
+    "slots": 8,
+    "slot_tokens": 5120,
+    "slot_tokens_is_multiple_of_512": true,
+    "max_tokens": 1024
+  },
+  "worst_case": {
+    "sample_id": "4470684-13",
+    "audio_seconds": 78.36,
+    "speech_tokens": 1027,
+    "text_envelope_tokens": 49,
+    "completion_ceiling_tokens": 1024,
+    "special_tokens": 2,
+    "worst_required_tokens": 2102
+  },
+  "per_arm": {
+    "e22-esb-dev-prompt-a": {
+      "task_instruction": "Transcribe the speech verbatim exactly as spoken. Never insert, repeat, or add any word you do not clearly hear in the audio. Output only the transcript text.",
+      "task_instruction_sha256": "e72743ae588fff8fabcb5bdf291bb990269330950a81b7977f6b1b43e32e9156",
+      "task_instruction_chars": 158,
+      "task_instruction_whitespace_words": 27,
+      "text_envelope_tokens_bound": 49,
+      "text_envelope_basis": "measured exactly for this instruction by the 2026-09-04 ESB test smoke",
+      "worst_required_tokens": 2102,
+      "slot_tokens": 5120,
+      "margin_tokens": 3018,
+      "ratio": 2.4358,
+      "fits": true
+    },
+    "e22-esb-dev-prompt-b": {
+      "task_instruction": "Transcribe the English audio into text.",
+      "task_instruction_sha256": "8533f771edf09f036aa333ed9631e531e5a0c4493efa5f7b0f53fdcf751154d6",
+      "task_instruction_chars": 39,
+      "task_instruction_whitespace_words": 6,
+      "text_envelope_tokens_bound": 49,
+      "text_envelope_basis": "strict upper bound: this instruction is shorter than the one the 2026-09-04 ESB test smoke measured at 49 tokens; the smoke here re-measures it",
+      "worst_required_tokens": 2102,
+      "slot_tokens": 5120,
+      "margin_tokens": 3018,
+      "ratio": 2.4358,
+      "fits": true
+    }
+  },
+  "why_the_sealed_geometry_is_refused": {
+    "sealed_flight": "SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1, -c 32768 -np 8",
+    "sealed_slot_tokens": 4096,
+    "required_at_fit_rule": 4204,
+    "fits": false,
+    "note": "the sealed flight's 4096-token slot cannot hold this roster's longest request at the fit rule, which is what forces deviation G1"
+  },
+  "aggregate_projection": {
+    "speech_tokens_total_one_arm": 549861,
+    "prompt_tokens_projection_one_arm": 845723,
+    "note": "a projection for the flight to be checked against, not a measurement. The ESB test flight's own aggregate came within 0.11 % of the same arithmetic."
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "arm": "bare-core",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "rails_arms": [
+    "zero-supply"
+  ],
+  "scorers": [
+    "asr-wer-esb-whisper",
+    "asr-wer-esb",
+    "cost"
+  ],
+  "task_instruction": "Transcribe the English audio into text.",
+  "instruction_basis": "ARM B, the ALIGNED CANDIDATE, and NOT invented here. It is the Qwen3-Omni authors' own English ASR prompt, taken verbatim from two independent official sources at the pinned revision, fetched 2026-09-05: (1) the Qwen3-Omni-30B-A3B-Instruct model card, section 'Setting for Evaluation' -> 'Default Prompts', row 'Auto Speech Recognition (ASR) for Other languages' = 'Transcribe the <language> audio into text.' (https://huggingface.co/Qwen/Qwen3-Omni-30B-A3B-Instruct, README.md sha256 0e44065c4c4a2707..., 90,295 bytes); and (2) the official cookbook cookbooks/speech_recognition.ipynb, the English cell, which spells the same template out for English as 'Transcribe the English audio into text.' (https://github.com/QwenLM/Qwen3-Omni/blob/main/cookbooks/speech_recognition.ipynb, sha256 3827631fb46374a944178dae1e9318e94c99429be414fec4f79fd6bfdace2b3f). No variant, no few-shot, no post-processing, no other change of any kind.",
+  "instruction_deviation_named": "The model card's same section additionally says 'No system prompt should be set for any evaluation benchmark' and puts the prompt text in the USER turn AFTER the audio. This arm does NEITHER: it keeps the base TaskAdapter.assemble_prompt shape the sealed test flight used (one system message carrying the instruction, one user message carrying the audio), so that exactly ONE factor -- the instruction text -- differs between arm A and arm B. Message placement and the presence of a system role are therefore a SECOND, UNFLOWN suspect, named in the preregistration and reported to the owner rather than confounded into this contrast.",
+  "scorer_basis": "Identical to arm A's, byte for byte. The A/B contrast is scored by the same two scorers over the same hash-pinned dev10 reference layer.",
+  "obs_basis": "Identical to arm A's: no OBS loop, no windowing, policy 'fixed', one contact per sample."
+}

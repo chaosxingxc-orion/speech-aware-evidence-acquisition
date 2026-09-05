@@ -21,9 +21,15 @@ The parent linkage is checked rather than assumed: every roster item's
 the parent D1 media manifest with the byte identity the roster measured, so a
 derived utterance can only ever chain to media D1 itself closed over.
 
+``--profile dev10`` builds the same supplement for the ESB train-split
+utterances of this study's own Earnings-22 ``dev`` subset10 (2026-09-05 prompt
+A/B experiment); ``--profile test`` (the default) is the sealed 2026-09-04
+six-call population and is unchanged.
+
 Usage::
 
     python scripts/build_e22_esb_d1_supplement.py --write
+    python scripts/build_e22_esb_d1_supplement.py --profile dev10 --write
 """
 
 from __future__ import annotations
@@ -51,6 +57,33 @@ DEFAULT_ROSTER = (
 )
 DEFAULT_PARENT_D1 = REPO / "docs/receipts/artifacts/d1-identity.json"
 DEFAULT_OUTPUT = REPO / "docs/receipts/artifacts/d1-e22-esb-utterances-2735.json"
+
+# The ten calls docs/receipts/splits.json assigns this study's own ``dev`` role.
+DEV10_CALLS = (
+    "4453225",
+    "4469088",
+    "4470684",
+    "4474506",
+    "4479944",
+    "4481952",
+    "4482383",
+    "4482613",
+    "4483937",
+    "4485192",
+)
+DEV10_ROSTER = (
+    REPO
+    / "docs/checks/speech-aware-evidence-acquisition"
+    / "2026-09-05-e22-dev-esb-prompt-ab-v1"
+    / "roster"
+    / "flight-roster-receipt.json"
+)
+DEV10_OUTPUT = REPO / "docs/receipts/artifacts/d1-e22-esb-dev10-utterances.json"
+
+PROFILES: dict[str, dict[str, object]] = {
+    "test": {"calls": ESB_TEST_CALLS, "roster": DEFAULT_ROSTER, "output": DEFAULT_OUTPUT},
+    "dev10": {"calls": DEV10_CALLS, "roster": DEV10_ROSTER, "output": DEV10_OUTPUT},
+}
 
 
 def sha256_file(path: Path) -> str:
@@ -127,7 +160,11 @@ def _wav_facts(path: Path, sample_id: str) -> tuple[float, int]:
 
 
 def build_supplement(
-    *, roster_path: Path, data_root: Path, parent_d1_path: Path
+    *,
+    roster_path: Path,
+    data_root: Path,
+    parent_d1_path: Path,
+    calls: tuple[str, ...] = ESB_TEST_CALLS,
 ) -> dict[str, object]:
     roster_path = Path(roster_path)
     parent_d1_path = Path(parent_d1_path)
@@ -162,8 +199,10 @@ def build_supplement(
                 "derived utterance id can never collide with a parent call id"
             )
         parent_id = item.get("parent_sample_id")
-        if parent_id not in ESB_TEST_CALLS:
-            raise ValueError(f"{sample_id} names a non-ESB-test parent {parent_id!r}")
+        if parent_id not in calls:
+            raise ValueError(
+                f"{sample_id} names a parent {parent_id!r} this profile does not pin"
+            )
         parents_seen.add(str(parent_id))
         base = base_entries.get(str(parent_id))
         if base is None:
@@ -204,9 +243,10 @@ def build_supplement(
             }
         )
 
-    if sorted(parents_seen) != sorted(ESB_TEST_CALLS):
+    if sorted(parents_seen) != sorted(calls):
         raise ValueError(
-            f"roster covers parents {sorted(parents_seen)}, not the six ESB test calls"
+            f"roster covers parents {sorted(parents_seen)}, not this profile's "
+            f"{len(calls)} calls {sorted(calls)}"
         )
     ordered_ids = [str(entry["id"]) for entry in manifest]
     return {
@@ -225,12 +265,16 @@ def build_supplement(
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--roster", type=Path, default=DEFAULT_ROSTER)
+    parser.add_argument("--profile", choices=sorted(PROFILES), default="test")
+    parser.add_argument("--roster", type=Path, default=None)
     parser.add_argument("--parent-d1", type=Path, default=DEFAULT_PARENT_D1)
     parser.add_argument("--data-root", type=Path)
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--output", type=Path, default=None)
     parser.add_argument("--write", action="store_true")
     args = parser.parse_args()
+    profile = PROFILES[args.profile]
+    roster_path = Path(args.roster or profile["roster"])
+    output_path = Path(args.output or profile["output"])
     root = args.data_root
     if root is None:
         value = os.environ.get("SPEECHRL_DATA_DIR")
@@ -238,11 +282,14 @@ def main() -> int:
             raise SystemExit("--data-root or SPEECHRL_DATA_DIR is required")
         root = Path(value)
     supplement = build_supplement(
-        roster_path=args.roster, data_root=root, parent_d1_path=args.parent_d1
+        roster_path=roster_path,
+        data_root=root,
+        parent_d1_path=args.parent_d1,
+        calls=tuple(profile["calls"]),
     )
     payload = json.dumps(supplement, ensure_ascii=False, indent=2) + "\n"
     if args.write:
-        output = Path(args.output)
+        output = Path(output_path)
         output.parent.mkdir(parents=True, exist_ok=True)
         temporary = output.with_suffix(output.suffix + ".tmp")
         temporary.write_text(payload, encoding="utf-8", newline="\n")
@@ -251,11 +298,12 @@ def main() -> int:
         json.dumps(
             {
                 "count": supplement["count"],
+                "profile": args.profile,
                 "ids_sha256": supplement["ids_sha256"],
                 "manifest_sha256": supplement["manifest_sha256"],
-                "output": str(args.output),
+                "output": str(output_path),
                 "output_sha256": (
-                    sha256_file(args.output)
+                    sha256_file(output_path)
                     if args.write
                     else hashlib.sha256(payload.encode()).hexdigest()
                 ),

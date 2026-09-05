@@ -31,9 +31,21 @@ What this script does, once, with zero model contact:
    ``reproduction.esb_reference`` re-verifies that hash before a scorer may
    read a single reference word.
 
+Two populations, one builder
+----------------------------
+
+``--profile test`` (the default) is the sealed 2026-09-04 six-call ESB TEST
+subset; every value it produces is unchanged. ``--profile dev10`` cuts the ESB
+**train**-split utterances of this study's own Earnings-22 ``dev`` subset10 --
+the ten calls ``docs/receipts/splits.json`` already assigns that role -- for the
+2026-09-05 prompt A/B experiment. Same decode, same writer, same receipts, a
+different derived version directory (``dev-v1``) so the two populations' media
+never share a root.
+
 Usage::
 
     python scripts/build_e22_esb_utterance_roster.py --write
+    python scripts/build_e22_esb_utterance_roster.py --profile dev10 --write
 """
 
 from __future__ import annotations
@@ -79,6 +91,71 @@ DEFAULT_REFERENCE_OUTPUT = CHECK_DIR / "reference-layer" / "reference-layer-rece
 ROSTER_SCHEMA = "saea-e22-esb-utterance-roster-receipt-v1"
 REFERENCE_SCHEMA = "saea-e22-esb-reference-layer-receipt-v1"
 
+# The ten Earnings-22 calls docs/receipts/splits.json assigns this study's own
+# ``dev`` role. Their ESB utterance boundaries and cleaned reference sentences
+# come from the TRAIN half of the same pinned segment table.
+DEV10_CALLS = (
+    "4453225",
+    "4469088",
+    "4470684",
+    "4474506",
+    "4479944",
+    "4481952",
+    "4482383",
+    "4482613",
+    "4483937",
+    "4485192",
+)
+DEV10_VERSION = "dev-v1"
+DEV10_UTTERANCE_SUBDIR = f"derived/e22-esb-utterances/{DEV10_VERSION}"
+DEV10_REFERENCE_RELPATH = f"{SEGMENT_TABLE_SUBDIR}/e22-esb-dev10-references.jsonl"
+DEV10_CHECK_DIR = (
+    REPO
+    / "docs/checks/speech-aware-evidence-acquisition"
+    / "2026-09-05-e22-dev-esb-prompt-ab-v1"
+)
+
+PROFILES: dict[str, dict[str, object]] = {
+    "test": {
+        "calls": ESB_TEST_CALLS,
+        "version": VERSION,
+        "utterance_subdir": UTTERANCE_SUBDIR,
+        "reference_relpath": REFERENCE_RELPATH,
+        "split_name": "E22-ESB-TEST-UTTERANCES-2735",
+        "segment_receipt": DEFAULT_SEGMENT_RECEIPT,
+        "roster_output": DEFAULT_ROSTER_OUTPUT,
+        "reference_output": DEFAULT_REFERENCE_OUTPUT,
+        "upstream_split": "test",
+        "split_role_basis": (
+            "The owner decision of 2026-09-04 re-designates the six ESB test calls "
+            "calibration-exposed after this one read. contracts.plan.STAGE2_SPLIT_ROLES "
+            "carries only 'discovery' and 'dev'; 'dev' is the role whose semantics match "
+            "calibration-exposed (usable for calibration, never for final reporting), and "
+            "earnings22-original already carries this study's 'dev' role for its subset10. "
+            "The 109 calls that remain confirmatory are not named, loaded or read."
+        ),
+    },
+    "dev10": {
+        "calls": DEV10_CALLS,
+        "version": DEV10_VERSION,
+        "utterance_subdir": DEV10_UTTERANCE_SUBDIR,
+        "reference_relpath": DEV10_REFERENCE_RELPATH,
+        "split_name": "E22-ESB-DEV10-UTTERANCES",
+        "segment_receipt": DEV10_CHECK_DIR / "segment-table" / "segment-table-receipt.json",
+        "roster_output": DEV10_CHECK_DIR / "roster" / "flight-roster-receipt.json",
+        "reference_output": DEV10_CHECK_DIR / "reference-layer" / "reference-layer-receipt.json",
+        "upstream_split": "train",
+        "split_role_basis": (
+            "These ten calls ARE this study's registered earnings22-original dev "
+            "subset10 (docs/receipts/splits.json, split 'dev', identity "
+            "89b178d6b1ef46d9ca820ae54349e3d2099c60cde6d6b753ef9f66137c310028). No owner "
+            "allowance is needed and none is claimed: dev is the split this study may "
+            "optimize on. No confirmatory call is named, loaded, decoded or scored, and "
+            "the six ESB test calls this study calibrated on stay a separate population."
+        ),
+    },
+}
+
 
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
@@ -105,7 +182,11 @@ def _load_object(path: Path, label: str) -> Mapping[str, Any]:
     return document
 
 
-def load_segments(data_root: Path, segment_receipt: Mapping[str, Any]) -> list[dict[str, Any]]:
+def load_segments(
+    data_root: Path,
+    segment_receipt: Mapping[str, Any],
+    calls: Sequence[str] = ESB_TEST_CALLS,
+) -> list[dict[str, Any]]:
     """The hash-pinned segment table, verified against its own receipt."""
 
     relpath = str(segment_receipt["extracted_table"]["relpath"])
@@ -127,8 +208,10 @@ def load_segments(data_root: Path, segment_receipt: Mapping[str, Any]) -> list[d
     for row in rows:
         if set(row) != {"source_id", "segment_id", "sentence", "start_ts", "end_ts", "id"}:
             raise SystemExit(f"segment row carries unexpected columns: {sorted(row)}")
-        if row["source_id"] not in ESB_TEST_CALLS:
-            raise SystemExit(f"segment row names a non-ESB-test call: {row['source_id']!r}")
+        if row["source_id"] not in tuple(calls):
+            raise SystemExit(
+                f"segment row names a call this profile does not pin: {row['source_id']!r}"
+            )
         if row["id"] != f"{row['source_id']}-{row['segment_id']}":
             raise SystemExit(f"segment id is not <source>-<segment>: {row['id']!r}")
         if row["id"] in seen:
@@ -198,18 +281,26 @@ def _cut_one_call(job: Mapping[str, Any]) -> list[dict[str, Any]]:
 
 
 def build(
-    *, data_root: Path, segment_receipt_path: Path, workers: int
+    *,
+    data_root: Path,
+    segment_receipt_path: Path,
+    workers: int,
+    profile: Mapping[str, Any] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any], list[dict[str, Any]]]:
+    if profile is None:
+        profile = PROFILES["test"]
+    calls = tuple(profile["calls"])
+    utterance_subdir = str(profile["utterance_subdir"])
     segment_receipt = _load_object(segment_receipt_path, "segment-table receipt")
-    rows = load_segments(data_root, segment_receipt)
+    rows = load_segments(data_root, segment_receipt, calls)
     root = Path(data_root)
     jobs = []
-    for call in ESB_TEST_CALLS:
+    for call in calls:
         parent_relpath = f"{CARRIER_SUBDIR}/media/{call}.mp3"
         parent_path = root / parent_relpath
         if not parent_path.is_file():
             raise SystemExit(f"parent media is missing: {parent_path}")
-        out_relpath = f"{UTTERANCE_SUBDIR}/{call}"
+        out_relpath = f"{utterance_subdir}/{call}"
         jobs.append(
             {
                 "parent_path": str(parent_path),
@@ -235,23 +326,16 @@ def build(
                 sum(float(e["audio_seconds"]) for e in entries if e["parent_sample_id"] == call), 6
             ),
         }
-        for call in ESB_TEST_CALLS
+        for call in calls
     }
     roster = {
         "schema": ROSTER_SCHEMA,
         "study": "speech-aware-evidence-acquisition",
         "carrier": CARRIER,
-        "split_name": "E22-ESB-TEST-UTTERANCES-2735",
+        "split_name": str(profile["split_name"]),
         "split_role": "dev",
-        "split_role_basis": (
-            "The owner decision of 2026-09-04 re-designates the six ESB test calls "
-            "calibration-exposed after this one read. contracts.plan.STAGE2_SPLIT_ROLES "
-            "carries only 'discovery' and 'dev'; 'dev' is the role whose semantics match "
-            "calibration-exposed (usable for calibration, never for final reporting), and "
-            "earnings22-original already carries this study's 'dev' role for its subset10. "
-            "The 109 calls that remain confirmatory are not named, loaded or read."
-        ),
-        "version": VERSION,
+        "split_role_basis": str(profile["split_role_basis"]),
+        "version": str(profile["version"]),
         "source_segment_table": {
             "receipt": str(segment_receipt_path.relative_to(REPO)).replace("\\", "/"),
             "receipt_sha256": sha256_file(segment_receipt_path),
@@ -295,16 +379,17 @@ def build(
         "schema": REFERENCE_SCHEMA,
         "study": "speech-aware-evidence-acquisition",
         "carrier": CARRIER,
-        "split_name": "E22-ESB-TEST-UTTERANCES-2735",
-        "relpath": REFERENCE_RELPATH,
+        "split_name": str(profile["split_name"]),
+        "relpath": str(profile["reference_relpath"]),
         "sha256": hashlib.sha256(reference_payload.encode("utf-8")).hexdigest(),
         "rows": len(reference_rows),
         "reference_words_whitespace": sum(
             len(row["sentence"].split()) for row in reference_rows
         ),
         "source": (
-            "the 'sentence' column of sanchit-gandhi/earnings22_split split 'test', "
-            "verbatim -- the same field the leaderboard scores its 'text' against"
+            "the 'sentence' column of sanchit-gandhi/earnings22_split split "
+            f"{str(profile['upstream_split'])!r}, verbatim -- the same field the "
+            "leaderboard scores its 'text' against"
         ),
         "source_segment_table_receipt_sha256": sha256_file(segment_receipt_path),
         "boundary": (
@@ -320,12 +405,17 @@ def build(
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-root", type=Path)
-    parser.add_argument("--segment-receipt", type=Path, default=DEFAULT_SEGMENT_RECEIPT)
-    parser.add_argument("--roster-output", type=Path, default=DEFAULT_ROSTER_OUTPUT)
-    parser.add_argument("--reference-output", type=Path, default=DEFAULT_REFERENCE_OUTPUT)
+    parser.add_argument("--profile", choices=sorted(PROFILES), default="test")
+    parser.add_argument("--segment-receipt", type=Path, default=None)
+    parser.add_argument("--roster-output", type=Path, default=None)
+    parser.add_argument("--reference-output", type=Path, default=None)
     parser.add_argument("--workers", type=int, default=6)
     parser.add_argument("--write", action="store_true")
     args = parser.parse_args()
+    profile = PROFILES[args.profile]
+    segment_receipt = args.segment_receipt or profile["segment_receipt"]
+    roster_output = Path(args.roster_output or profile["roster_output"])
+    reference_output = Path(args.reference_output or profile["reference_output"])
     root = args.data_root
     if root is None:
         value = os.environ.get("SPEECHRL_DATA_DIR")
@@ -333,7 +423,10 @@ def main() -> int:
             raise SystemExit("--data-root or SPEECHRL_DATA_DIR is required")
         root = Path(value)
     roster, reference, reference_rows = build(
-        data_root=root, segment_receipt_path=args.segment_receipt, workers=args.workers
+        data_root=root,
+        segment_receipt_path=Path(segment_receipt),
+        workers=args.workers,
+        profile=profile,
     )
     if args.write:
         reference_path = Path(root) / reference["relpath"]
@@ -346,8 +439,8 @@ def main() -> int:
         )
         reference_path.write_text(payload, encoding="utf-8", newline="\n")
         for path, document in (
-            (Path(args.roster_output), roster),
-            (Path(args.reference_output), reference),
+            (roster_output, roster),
+            (reference_output, reference),
         ):
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(
@@ -369,9 +462,14 @@ def main() -> int:
                 "reference_rows": reference["rows"],
                 "reference_sha256": reference["sha256"],
                 "reference_words_whitespace": reference["reference_words_whitespace"],
-                "roster_output": str(args.roster_output),
+                "profile": args.profile,
+                "reference_output": str(reference_output),
+                "reference_output_sha256": (
+                    sha256_file(reference_output) if args.write else canonical_sha256(reference)
+                ),
+                "roster_output": str(roster_output),
                 "roster_output_sha256": (
-                    sha256_file(args.roster_output)
+                    sha256_file(roster_output)
                     if args.write
                     else canonical_sha256(roster)
                 ),

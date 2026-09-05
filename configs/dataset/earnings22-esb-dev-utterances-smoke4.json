@@ -1,0 +1,33 @@
+{
+  "carrier_lock_key": "earnings22-original",
+  "split_id": "E22-ESB-DEV-SMOKE-4",
+  "d1_media_supplement": "receipts/artifacts/d1-e22-esb-dev10-utterances.json",
+  "d1_media_supplement_sha256": "ad01c4eca82b2739e121886fda5d95172756c9f232e5627b1f3f42274c2946a1",
+  "e22_esb_roster_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-e22-dev-esb-prompt-ab-v1/roster/flight-roster-receipt.json",
+  "e22_esb_roster_receipt_sha256": "20437bcbde1a52b58bb48642d8809836e20073f7963f19b5ff836ead69c945c8",
+  "e22_esb_segment_table_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-e22-dev-esb-prompt-ab-v1/segment-table/segment-table-receipt.json",
+  "e22_esb_segment_table_receipt_sha256": "2ff3aa88788b35aa4a451e144b7dbbbb139dd836ef19f5b44472d6f32e3608e0",
+  "e22_esb_reference_layer_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-e22-dev-esb-prompt-ab-v1/reference-layer/reference-layer-receipt.json",
+  "e22_esb_reference_layer_receipt_sha256": "e2030bde66a5f9206351ceebd6678d44dc2b94b59435ea8c5a8301f4e895072a",
+  "e22_esb_reference_layer_sha256": "8da3a65d33fae44b30a1d688f9d1a1ed906ba97d21aa63d18d22ff36428d366a",
+  "e22_esb_derived_subdir": "derived/e22-esb-utterances/dev-v1",
+  "e22_esb_split_name": "E22-ESB-DEV-SMOKE-4",
+  "e22_esb_split_role": "dev",
+  "e22_esb_split_identity_hash": "5f0b843c0a1cfd607fbbca2090443610d80066dcd91804df45038f9176ab0717",
+  "e22_esb_count": 4,
+  "e22_esb_audio_seconds_total": 96.959875,
+  "e22_esb_audio_seconds_longest_item": 78.36,
+  "e22_esb_audio_seconds_shortest_item": 0.2199375,
+  "e22_esb_population": "Four rows of the same 6,038-row roster, chosen before any contact by the SAME deterministic rule the 2026-09-04 ESB test smoke used -- longest, shortest, median, p90 by duration, ties broken by sample id: 4470684-13 the LONGEST at 78.360000 s (the window-fit and VRAM worst case, and the reason this population needs a bigger slot than the test one), 4469088-654 the SHORTEST at 0.219938 s, 4483937-267 the median at 5.519938 s and 4482383-119 the p90 at 12.860000 s. The smoke's own WER numbers are on four rows and enter no verdict.",
+  "e22_esb_identity_hash_convention": "e22_esb_split_identity_hash is data.splits.split_identity_hash(prefixed('earnings22-original', sample_ids)) over earnings22-original/<call>-<segment>, the value core.flight.FlightRuntime.preflight computes at flight time and the value an exposure row must carry.",
+  "e22_esb_d1_media_supplement": "The same additive media supplement the full dev10 fragment names; these four ids are four of its 6,038.",
+  "e22_esb_split_role_basis": "No owner allowance is involved and none is claimed: these four utterances come from three calls of this study's registered earnings22-original dev subset10 (docs/receipts/splits.json, split 'dev'). No confirmatory call is named, loaded, decoded, scored or read.",
+  "e22_esb_reference_boundary": "The 'sentence' column is gold and NEVER enters the request path. The roster receipt this fragment names carries identifiers, media paths, measured media identity and segment spans only.",
+  "e22_esb_exposure": "Pre-flight smoke for SAEA-E22-DEV-ESB-PROMPT-A-V1 and SAEA-E22-DEV-ESB-PROMPT-B-V1: same model fragment, same roster, same scorers, both instructions; only the dataset fragment differs from the flight cells. This fragment grants no contact authority; the preregistration and the exposure ledger do.",
+  "e22_esb_smoke_ids": [
+    "4469088-654",
+    "4470684-13",
+    "4482383-119",
+    "4483937-267"
+  ]
+}
