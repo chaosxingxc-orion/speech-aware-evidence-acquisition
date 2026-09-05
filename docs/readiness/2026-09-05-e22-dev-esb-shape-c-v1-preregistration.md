@@ -329,3 +329,70 @@ transport-test module passes (78 passed, 1 skipped) and
 Arithmetic window fit re-run for arm C on both rosters at zero contacts of every kind: worst request
 **2,102** tokens against a 5,120-token slot, **×2.44**, FITS; the sealed test flight's 4,096-token slot
 still would not.
+
+### 2026-09-05, Phase 2 — the rendered-template proof
+
+Commit `aa8dac6b` (registration), then `a402f628` (one fix, below). Run
+`SAEA-E22-DEV-ESB-SHAPE-C-PROMPT-FIT-V1`. All three arms rendered through the pinned GGUF chat
+template on the live server at **zero generated tokens** — one `GET /props`, three `POST
+/apply-template`, six `POST /tokenize`, no `/completion` call of any kind. All four assertions of
+section 3.2 held: arm C's wire roles are exactly `["user"]`, its rendered prompt contains **no
+system block**, its instruction appears verbatim **after** the media marker, and arms A and B
+still show their system block. Rendered text tokens 47 / 21 / **16**; against the sealed A/B
+smoke's measured 49 and 23 envelopes (`add_special: false` here, so the flight's two special
+tokens sit on top), the arm-C prediction is **18**.
+
+One defect of my own, caught by reading the artifact rather than by a test: the first receipt
+recorded `build_commit: ""`, because the pinned runtime receipt keeps that value at
+`llama_cpp.build_commit` and the code read a non-existent top-level key. Fixed at `a402f628`;
+the render was re-run and reproduced the first attempt's token counts and all four assertions
+exactly. Both attempts are recorded.
+
+### 2026-09-05, Phase 3 — wire check
+
+Commit `a402f628`, clean tree, receipts written outside the tree. Both arm-C cells driven
+through `core.flight.runtime`'s `WireCheckGate` and `WireCheckTransport`: the real compose, the
+real adapter and its roster-bound samples, the real payload binding and allowlist, the real
+`FrozenCoreAdapter` accounting, the real manifest builder, the real bundle verifier and both ESB
+scorers. Smoke cell **4 of 4**, flight cell **6,038 of 6,038**, `seal_and_score` **OK** on both.
+Zero model contacts, zero servers, zero sockets. The tree was still clean afterwards, which is
+the lesson the A/B flight paid for.
+
+### 2026-09-05, Phase 4 — the smoke, and the go/no-go
+
+Row `SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1`, attempt `attempt-20260905T094034Z-fa6e61`, **COMPLETED
+and FINALIZED, 4 of 4**, 96.96 speech seconds, 2.4 s of dispatch after a 10.0 s model load.
+
+All four registered reads affirmative. **GO.** Every row returned a non-empty completion under
+the no-system-message shape; the text envelope measured **exactly 18 tokens on all four
+requests**, precisely the render's 16 + 2; the worst request 1,045 + 1,024 = 2,069 against a
+5,120-token slot; both ESB scorers returned per-sample rows through `core.scoring_batch` with
+`verified: true`.
+
+One observation recorded **before the flight launched**, and not a stop condition because four
+rows are not a result and the smoke's WER figures enter no verdict: on the longest row
+(`4470684-13`, 78.36 s, 32-word reference) arm C returned the single word `yet.` where arms A and
+B both returned a full transcript. The flight has since put it in proportion — collapses of that
+severity occur on 47 rows of 6,038, the same count as arm A.
+
+### 2026-09-05, Phase 5 — the flight, the analysis and the verdict
+
+Run `SAEA-E22-DEV-ESB-SHAPE-C-V1`, attempt `attempt-20260905T094322Z-2174df`, **COMPLETED and
+FINALIZED, 6,038 of 6,038**, one attempt, no recovery, no CUDA fault, no out-of-memory, no
+skipped contact. 1,652.1 s of dispatch plus 11.1 s of startup = **0.4620 GPU-h** against a
+registered 1.0 and a planned 0.6; 39,292.647 speech seconds of a registered 41,300.
+
+The window fit held live to the token: largest prompt **1,045** = `13 × ceil(78.36) = 1,027`
+speech tokens plus the 18-token envelope, and arm C's prompt-token total is exactly
+`6,038 × 5` below arm B's — the five tokens of system-block scaffolding the template no longer
+writes, on every row.
+
+`scripts/e22_dev_esb_prompt_ab_analysis.py` was generalized from two arms to N
+(`--arm NAME=run_id,run_dir,receipt`, `--contrast RIGHT-LEFT`) and **re-run on the sealed A/B
+inputs before being trusted with a third arm**, reproducing that verdict to the last digit.
+
+**Result: the shape is EXCLUDED.** Corpus WER 17.8896 against arm A's 17.5648 (+0.325), while
+the length ratio fell 1.0861 → 1.0398 and insertions fell 11,270 → 9,094 — paid for with
+deletions 2,370 → 4,975. Two of the rule's three conditions hold; the governing one does not. No
+second test read is recommended to the owner. Verdict:
+`docs/readiness/2026-09-05-e22-dev-esb-shape-c-v1-verdict.md`.

@@ -1,0 +1,233 @@
+{
+  "schema": "saea-e22-esb-flight-receipt-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "generated_at": "2026-09-05T09:41:11.950772+00:00",
+  "run_id": "SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1",
+  "attempt_id": "attempt-20260905T094034Z-fa6e61",
+  "cell_id": "E22-ESB-DEV-SMOKE-4-C",
+  "experiment": "e22-dev-esb-shape-c-smoke-v1",
+  "dataset": "earnings22-esb-dev-utterances-smoke4",
+  "stages": {
+    "preflight": {
+      "run_id": "SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1",
+      "attempt_id": "attempt-20260905T094034Z-fa6e61",
+      "config_hash": "79653caf9de896d2dc416518a49fad2dbd8f8e1187416da34af54d24924e3fa7",
+      "protocol_hash": "e4b8415446facfb02406d396eb41ad18b2fc6cf4bb6278e8dc3479331812f15a",
+      "split_identity_hash": "5f0b843c0a1cfd607fbbca2090443610d80066dcd91804df45038f9176ab0717",
+      "split_id": "E22-ESB-DEV-SMOKE-4",
+      "sample_count": 4,
+      "carrier_lock_key": "earnings22-original",
+      "serving_geometry": {
+        "slots": 8,
+        "slot_tokens": 5120,
+        "max_tokens": 1024
+      },
+      "study_commit": "a402f6281777ca27f8178904e3fe1258c2f1b8b9",
+      "attempt_reservation": "deferred to core.model.adapter.FrozenCoreAdapter",
+      "prompt_budget": [
+        {
+          "phase": "direct",
+          "breakdown": {
+            "completion_token_ceiling": 1024,
+            "rendered_text_tokens": 52,
+            "required_window_tokens": 1081,
+            "special_token_reserve": 2,
+            "speech_feature_packet_tokens": [
+              [
+                "4469088-654",
+                3
+              ]
+            ],
+            "speech_feature_tokens": 3
+          },
+          "compaction_pass": 0,
+          "decision": "ALLOW",
+          "dropped_identifiers": [],
+          "operational_margin_tokens": 23495,
+          "operational_reserve_tokens": 8192,
+          "payload_sha256": "b403007e354209b8b3ca8d8baea1ff6a8034f393fce8a95df9f16fe4da2fb9af",
+          "physical_margin_tokens": 31687,
+          "slot_limit_tokens": 32768
+        }
+      ],
+      "stage": "preflight",
+      "stage_hash": "f49a0fb811deea976b7502581c5cfa5aef1f4042b744c56b467887b570b93b83"
+    },
+    "preprocess": {
+      "kind": "speech-packets",
+      "workers_declared": 8,
+      "workers_used": 8,
+      "campaign_active": false,
+      "packet_count": 0,
+      "packet_manifest_hash": "87c8d31e8b5d31255b80221de105b1ff1d3b2dcb032197409886f06b864d1182",
+      "duration_seconds": 1.0728836059570312e-05,
+      "packets_per_second": 0.0,
+      "promoter_meta": {
+        "audio_path": "raw-audio-mmproj",
+        "packets_required": false,
+        "reason": "this arm's D2 field set carries no speech_feature_parts; its audio travels through the mmproj at request time and no packet is promoted"
+      },
+      "stage": "preprocess",
+      "stage_hash": "b5cb9b57c5ed17ab5c892adc085ca31206d0af077b6f0e8472a66eb5fb568b30"
+    },
+    "serve": {
+      "session_id": "SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1-attempt-20260905T094034Z-fa6e61",
+      "host": "127.0.0.1",
+      "port": 8080,
+      "pid": 623,
+      "serving_geometry": {
+        "slots": 8,
+        "slot_tokens": 5120,
+        "max_tokens": 1024
+      },
+      "extra_argv": [
+        "-c",
+        "40960",
+        "-np",
+        "8",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0"
+      ],
+      "session_role": "legacy",
+      "model_root": "/home/chao",
+      "startup_seconds": 10.040600061416626,
+      "reused": false,
+      "stage": "serve",
+      "stage_hash": "80b942057e5814cd08c5d0ea48afa170b991b070d895684b4eb2f494352ddc27"
+    },
+    "run_phases": {
+      "policy": "fixed",
+      "policy_kind": "direct",
+      "arm": "bare-core",
+      "id_slot": 0,
+      "id_slot_resolution": "'per-sample' sentinel resolved to slot 0 (this harness dispatches one contact at a time)",
+      "wall_seconds": 2.3796727657318115,
+      "contact_count": 4,
+      "contacts_per_second": 1.6809033820118102,
+      "average_latency_seconds": 2.0423827862505277,
+      "slot_occupancy": 0.429131016596402,
+      "tokens_per_second": 1721.2450631800937,
+      "tokens_per_second_basis": "contacts_per_second_times_completion_token_ceiling_upper_bound_estimate",
+      "response_arrival": {
+        "rows_total": 4,
+        "rows_with_native_tool_calls": 0,
+        "rows_answered_as_text": 4,
+        "native_tool_calls_total": 0,
+        "basis": "rails.core_client.RequestTiming.native_tool_calls, set from core.model.CoreResponse.tool_calls; None means the response envelope carried no tool_calls key at all, i.e. the model answered as text"
+      },
+      "dispatch": {
+        "workers": 8,
+        "max_in_flight": 4,
+        "slot_ids_used": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "dispatch": "concurrent",
+        "contacts_per_sample": 1,
+        "queue_depth": "not a knob: one contact per sample means nothing queues behind a sample, and more in-flight requests than slots is what the slot pinning exists to forbid"
+      },
+      "serving_slots": 8,
+      "occupancy_slots": 8,
+      "stage": "run_phases",
+      "stage_hash": "6ec57f0707c45aa64216308b558b7df1e177985250dfdaaefa8c643daa80bae8"
+    },
+    "seal": {
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1/attempt-20260905T094034Z-fa6e61/SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1.run-manifest.json",
+      "manifest_sha256": "c760350792ae4ba0834c81208df325d3e04199af8328cbc0bf05490b4442a7b4",
+      "verified_attempt_state": "OPENED",
+      "outputs_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1/attempt-20260905T094034Z-fa6e61/SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1.outputs.jsonl",
+      "outputs_row_count": 4,
+      "trace_manifest_hash": "9fb25952dd5305823e26c46656f5651cf5cf2e90bb3d3e2153f11ed34ae7b0d2",
+      "cost": {
+        "calls_used": 4,
+        "audio_seconds_used": 96.959875,
+        "latency_seconds_total": 8.16953114500211,
+        "prompt_tokens_total": 1359,
+        "completion_tokens_total": 62,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "fe843e1b4789d3f3b47731ddf5b1bb42d430b05afe74292afc9ca0a6368e2864"
+      },
+      "ledger_cells": {
+        "experiment_id": "SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1",
+        "speech task/carrier": "earnings22-original; split E22-ESB-DEV-SMOKE-4; 4 samples",
+        "changed axes": "model=q4km-e22-dev-esb-mmproj-gpu-04ccc72a-np8-c40960; dataset=earnings22-esb-dev-utterances-smoke4; baseline=e22-esb-dev-shape-c; experiment=e22-dev-esb-shape-c-smoke-v1",
+        "shared code revision": "none; this study declares no speechrl_common dependency",
+        "model rev": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+        "dataset rev": "5f0b843c0a1cfd607fbbca2090443610d80066dcd91804df45038f9176ab0717",
+        "MLflow run": "not used",
+        "effectiveness": "pending post-run analysis",
+        "reasonableness": "pending post-run analysis",
+        "efficiency": "pending post-run analysis",
+        "deviations": "pending post-run analysis",
+        "decision": "pending post-run analysis"
+      },
+      "finalize": {
+        "scores_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1/attempt-20260905T094034Z-fa6e61/SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1.scores.json",
+        "ledger_markdown_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1/attempt-20260905T094034Z-fa6e61/SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1.ledger-row.md",
+        "attempt_state": "FINALIZED"
+      },
+      "flight_receipt": null,
+      "stage": "seal",
+      "stage_hash": "ff9694ed7075f326f805451bd85cab96308ba04f316fc8aba2298aab5c63491b"
+    },
+    "score": {
+      "jobs_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1/attempt-20260905T094034Z-fa6e61/score-jobs.jsonl",
+      "output_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1/attempt-20260905T094034Z-fa6e61/score-batch",
+      "job_count": 1,
+      "duration_seconds": 2.020443916320801,
+      "jobs_per_second": 0.4949407364996231,
+      "result": {
+        "schema": "saea-parallel-score-batch-v1",
+        "operation": "score",
+        "parallelism_boundary": "one-complete-verified-manifest-per-process",
+        "aggregation_rule": "no dataset sharding and no averaging of shard-level official metrics",
+        "requested_max_workers": 1,
+        "effective_max_workers": 1,
+        "job_count": 1,
+        "succeeded": 1,
+        "failed": 0,
+        "elapsed_seconds": 2.014955196995288,
+        "jobs": [
+          {
+            "index": 0,
+            "job_id": "attempt-20260905T094034Z-fa6e61",
+            "operation": "score",
+            "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1/attempt-20260905T094034Z-fa6e61/SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1.run-manifest.json",
+            "ledger_cells": null,
+            "status": "succeeded",
+            "returncode": 0,
+            "elapsed_seconds": 2.0036061980063096,
+            "result_file": "attempt-20260905T094034Z-fa6e61.score.json",
+            "result_sha256": "3b4e28855c40c2ec97b910df1ac2affa1c891bcccb53d673c133ac49a6204144",
+            "stdout_log": null,
+            "stderr_log": "attempt-20260905T094034Z-fa6e61.stderr.log",
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "error": null
+          }
+        ]
+      },
+      "stage": "score",
+      "stage_hash": "1dd3a7b9a7437c0690c1ce705c9df4c3484e916c262b0f2919cb602c987593d5"
+    },
+    "stop_serving": {
+      "schema": "saea-session-stop-receipt-v1",
+      "study": "speech-aware-evidence-acquisition",
+      "session_id": "SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1-attempt-20260905T094034Z-fa6e61",
+      "session_role": "legacy",
+      "session_receipt_sha256": "1d772d1c8c50bc992c9b53680ef97af7a9267b7add112f58af85e61afd5431ef",
+      "runtime_receipt_sha256": "6446805904ca617cb9e5fcd92d31441ed376589996ddbb185697060752ce9d13",
+      "pid": 623,
+      "termination_signal": "SIGTERM",
+      "forced": false,
+      "stopped_at": "2026-09-05T09:41:11.945987+00:00"
+    }
+  }
+}

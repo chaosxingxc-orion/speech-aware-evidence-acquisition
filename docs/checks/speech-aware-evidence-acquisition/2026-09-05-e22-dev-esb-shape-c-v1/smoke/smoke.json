@@ -1,0 +1,169 @@
+{
+  "schema": "saea-e22-esb-smoke-receipt-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "run_id": "SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1",
+  "preregistration": "docs/readiness/2026-09-05-e22-dev-esb-shape-c-v1-preregistration.md",
+  "what_this_is": "The same four rows the sealed 2026-09-05 A/B smoke flew, not re-drawn, under arm C's request shape: no system message, and the instruction as user text after the audio. Its own WER numbers are on four rows and enter no verdict.",
+  "arm": {
+    "attempt_id": "attempt-20260905T094034Z-fa6e61",
+    "cell_id": "E22-ESB-DEV-SMOKE-4-C",
+    "baseline_fragment": "e22-esb-dev-shape-c",
+    "study_commit": "a402f6281777ca27f8178904e3fe1258c2f1b8b9",
+    "config_hash": "79653caf9de896d2dc416518a49fad2dbd8f8e1187416da34af54d24924e3fa7",
+    "protocol_hash": "e4b8415446facfb02406d396eb41ad18b2fc6cf4bb6278e8dc3479331812f15a",
+    "split_identity_hash": "5f0b843c0a1cfd607fbbca2090443610d80066dcd91804df45038f9176ab0717",
+    "manifest_sha256": "c760350792ae4ba0834c81208df325d3e04199af8328cbc0bf05490b4442a7b4",
+    "attempt_state": "FINALIZED",
+    "contacts": 4,
+    "dispatch_wall_seconds": 2.38,
+    "server_startup_seconds": 10.041,
+    "serving_geometry": {
+      "slots": 8,
+      "slot_tokens": 5120,
+      "max_tokens": 1024
+    },
+    "per_request": [
+      {
+        "request_id": "e22esb-0002",
+        "audio_seconds": 78.36,
+        "prompt_tokens": 1045,
+        "completion_tokens": 3,
+        "latency_seconds": 1.8327,
+        "speech_tokens_by_window_rule": 1027,
+        "text_envelope_tokens": 18
+      },
+      {
+        "request_id": "e22esb-0001",
+        "audio_seconds": 0.2199375,
+        "prompt_tokens": 31,
+        "completion_tokens": 6,
+        "latency_seconds": 1.9078,
+        "speech_tokens_by_window_rule": 13,
+        "text_envelope_tokens": 18
+      },
+      {
+        "request_id": "e22esb-0004",
+        "audio_seconds": 5.5199375,
+        "prompt_tokens": 96,
+        "completion_tokens": 20,
+        "latency_seconds": 2.1485,
+        "speech_tokens_by_window_rule": 78,
+        "text_envelope_tokens": 18
+      },
+      {
+        "request_id": "e22esb-0003",
+        "audio_seconds": 12.86,
+        "prompt_tokens": 187,
+        "completion_tokens": 33,
+        "latency_seconds": 2.2805,
+        "speech_tokens_by_window_rule": 169,
+        "text_envelope_tokens": 18
+      }
+    ],
+    "text_envelope_tokens_measured": 18,
+    "text_envelope_identical_on_every_request": true,
+    "text_envelope_against_the_sealed_arms": "arm A measured 49 and arm B 23 on these same four rows; arm C measures 18. The difference is the system block the template no longer writes. The rendered-template proof measured 16 text tokens plus the 2-token special allowance, which is exactly this figure.",
+    "worst_speech_tokens": 1027,
+    "worst_required_tokens": 2069,
+    "slot_tokens": 5120,
+    "fit_ratio": 2.4746,
+    "largest_completion_tokens": 33,
+    "completion_ceiling_tokens": 1024,
+    "completion_ceiling_ever_reached": false,
+    "cost_aggregate": {
+      "audio_seconds_used": 96.959875,
+      "calls_used": 4,
+      "completion_tokens_total": 62,
+      "latency_seconds_total": 8.16953114500211,
+      "prompt_tokens_total": 1359,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "fe843e1b4789d3f3b47731ddf5b1bb42d430b05afe74292afc9ca0a6368e2864"
+    },
+    "scorers_returned_rows": {
+      "asr-wer-esb-whisper": 4,
+      "asr-wer-esb": 4
+    },
+    "scorer_aggregates": {
+      "asr-wer-esb-whisper": {
+        "corpus_wer": 0.5068493150684932,
+        "deletions": 28,
+        "insertions": 4,
+        "mean_wer": 0.8035714285714286,
+        "merge_compounds": false,
+        "normalizer": "whisper-english-v20240930",
+        "reference_layer": "e22-esb hash-pinned derived layers (test + dev10)",
+        "reference_words": 73,
+        "references_empty_after_normalization": 0,
+        "samples": 4,
+        "scorer_version": "asr-wer-whisper-v20240930",
+        "substitutions": 5
+      },
+      "asr-wer-esb": {
+        "corpus_wer": 0.5324675324675324,
+        "deletions": 32,
+        "insertions": 4,
+        "mean_wer": 0.8178571428571428,
+        "normalizer": "saea-scoring-v1",
+        "reference_layer": "e22-esb hash-pinned derived layers (test + dev10)",
+        "reference_words": 77,
+        "samples": 4,
+        "scorer_version": "asr-wer-esb-v1",
+        "substitutions": 5
+      }
+    }
+  },
+  "per_row_against_the_sealed_arms": [
+    {
+      "sample_id": "4469088-654",
+      "audio_seconds": 0.2199375,
+      "reference_words": 2,
+      "hypothesis_words": {
+        "A": 2,
+        "B": 2,
+        "C": 4
+      },
+      "hypothesis_C": "Thank you very much."
+    },
+    {
+      "sample_id": "4470684-13",
+      "audio_seconds": 78.36,
+      "reference_words": 32,
+      "hypothesis_words": {
+        "A": 33,
+        "B": 34,
+        "C": 1
+      },
+      "hypothesis_C": "yet."
+    },
+    {
+      "sample_id": "4482383-119",
+      "audio_seconds": 12.86,
+      "reference_words": 28,
+      "hypothesis_words": {
+        "A": 28,
+        "B": 28,
+        "C": 28
+      },
+      "hypothesis_C": "This investment targeted upcoming states like Virginia, New York, and Pennsylvania, and more broadly acts to build brand awareness and a database nationally to assist future state launches."
+    },
+    {
+      "sample_id": "4483937-267",
+      "audio_seconds": 5.5199375,
+      "reference_words": 15,
+      "hypothesis_words": {
+        "A": 17,
+        "B": 17,
+        "C": 16
+      },
+      "hypothesis_C": "Is your order book visibility still around three months, or is it currently longer? Any thoughts?"
+    }
+  ],
+  "go_no_go": {
+    "every_row_returned_a_non_empty_completion": true,
+    "worst_request_at_most_half_the_slot": true,
+    "both_esb_scorers_returned_rows_through_scoring_batch": true,
+    "scoring_batch_verified": true,
+    "decision": "GO"
+  },
+  "observation_recorded_not_a_result": "On the LONGEST row, 4470684-13 at 78.36 s against a 32-word reference, arm C returned a single word where arms A and B both returned a full 33- and 34-word transcript. That one row accounts for 28 of the smoke's 32 deletions. It is recorded here because it is the opposite failure mode from the one the A/B verdict found, and because a reader of the flight numbers should know it was visible on four rows before the flight launched. FOUR ROWS ARE NOT A RESULT: the smoke's own WER figures enter no verdict, the registered go/no-go criteria are the four above, and all four are affirmative. On the other three rows arm C's transcript is complete, and on 4482383-119 it is word-for-word identical to arms A and B."
+}

@@ -32,11 +32,24 @@ metric passed in is **negated** WER: ``delta`` is then ``A_wer - B_wer``, which
 is POSITIVE when arm B is better, and ``saves`` counts utterances arm B
 improves. The raw ``B - A`` WER delta is reported beside it.
 
+2026-09-05 generalization (the shape-C flight). The reader takes N arms and N
+paired contrasts instead of exactly two arms and one contrast:
+--arm NAME=run_id,run_dir,receipt (repeatable) and --contrast RIGHT-LEFT
+(repeatable, RIGHT minus LEFT). The legacy --run-dir-a/-b flags still work
+and still default to the single B-A contrast, so the invocation that
+produced the sealed A/B verdict reproduces it unchanged; the document keeps
+paired_contrast_b_minus_a and corpus_level_delta as aliases whenever
+that contrast is among the ones requested.
+
 Usage::
 
     python scripts/e22_dev_esb_prompt_ab_analysis.py \
         --run-dir-a <...> --receipt-a <...> \
         --run-dir-b <...> --receipt-b <...> --write
+
+    python scripts/e22_dev_esb_prompt_ab_analysis.py \
+        --arm A=<run>,<dir>,<receipt> --arm B=... --arm C=... \
+        --contrast C-A --contrast C-B --primary-contrast C-A --write
 """
 
 from __future__ import annotations
@@ -45,7 +58,6 @@ import argparse
 import hashlib
 import importlib.util
 import json
-import math
 import statistics
 from datetime import datetime, timezone
 from pathlib import Path
@@ -63,6 +75,7 @@ ROSTER = CHECK / "roster" / "flight-roster-receipt.json"
 
 RUN_A = "SAEA-E22-DEV-ESB-PROMPT-A-V1"
 RUN_B = "SAEA-E22-DEV-ESB-PROMPT-B-V1"
+RUN_C = "SAEA-E22-DEV-ESB-SHAPE-C-V1"
 
 SEED = 20260903
 N_REPLICATES = 10_000
@@ -258,14 +271,72 @@ def _length_shape(references: Mapping[str, str], outputs: Mapping[str, str]) -> 
     }
 
 
+def _parse_arm_spec(spec: str) -> tuple[str, str, Path, Path]:
+    """``NAME=run_id,run_dir,receipt`` -> ``(name, run_id, run_dir, receipt)``."""
+
+    name, _, rest = spec.partition("=")
+    parts = [part for part in rest.split(",")]
+    if not name or len(parts) != 3 or not all(parts):
+        raise SystemExit(
+            "--arm expects NAME=run_id,run_dir,receipt; got %r" % (spec,)
+        )
+    return name, parts[0], Path(parts[1]), Path(parts[2])
+
+
+def _parse_contrast_spec(spec: str) -> tuple[str, str]:
+    """``RIGHT-LEFT`` -> ``(right, left)``, i.e. "RIGHT minus LEFT"."""
+
+    right, _, left = spec.partition("-")
+    if not right or not left:
+        raise SystemExit("--contrast expects RIGHT-LEFT; got %r" % (spec,))
+    return right, left
+
+
+def _corpus_wer_pct(rows_by_id: Mapping[str, Mapping[str, Any]], ids: Sequence[str]) -> float:
+    errors = words = 0
+    for sid in ids:
+        row = rows_by_id[sid]
+        errors += int(row["substitutions"]) + int(row["deletions"]) + int(row["insertions"])
+        words += len(row["ref_hit_mask"])
+    return 100.0 * errors / words if words else 0.0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--run-dir-a", type=Path, required=True)
-    parser.add_argument("--receipt-a", type=Path, required=True)
-    parser.add_argument("--run-dir-b", type=Path, required=True)
-    parser.add_argument("--receipt-b", type=Path, required=True)
+    # Legacy A/B flags: the exact invocation that produced the sealed
+    # 2026-09-05 prompt A/B verdict still works unchanged.
+    parser.add_argument("--run-dir-a", type=Path, default=None)
+    parser.add_argument("--receipt-a", type=Path, default=None)
+    parser.add_argument("--run-dir-b", type=Path, default=None)
+    parser.add_argument("--receipt-b", type=Path, default=None)
     parser.add_argument("--run-id-a", default=RUN_A)
     parser.add_argument("--run-id-b", default=RUN_B)
+    # N-arm form (2026-09-05, shape-C flight): repeatable, and it composes
+    # with the legacy flags rather than replacing them.
+    parser.add_argument(
+        "--arm",
+        action="append",
+        default=None,
+        metavar="NAME=run_id,run_dir,receipt",
+        help="repeatable; one sealed arm to read",
+    )
+    parser.add_argument(
+        "--contrast",
+        action="append",
+        default=None,
+        metavar="RIGHT-LEFT",
+        help="repeatable; a paired contrast, RIGHT minus LEFT (default B-A)",
+    )
+    parser.add_argument(
+        "--primary-contrast",
+        default=None,
+        help="the contrast the preregistered decision rule is stated on",
+    )
+    parser.add_argument("--experiment-id", default="SAEA-E22-DEV-ESB-PROMPT-AB-V1")
+    parser.add_argument(
+        "--preregistration",
+        default="docs/readiness/2026-09-05-e22-dev-esb-prompt-ab-v1-preregistration.md",
+    )
     parser.add_argument("--output-dir", type=Path, default=CHECK / "verdict")
     parser.add_argument(
         "--data-root",
@@ -274,6 +345,26 @@ def main() -> int:
     )
     parser.add_argument("--write", action="store_true")
     args = parser.parse_args()
+
+    arm_specs: dict[str, tuple[str, Path, Path]] = {}
+    if args.run_dir_a is not None:
+        arm_specs["A"] = (args.run_id_a, args.run_dir_a, args.receipt_a)
+    if args.run_dir_b is not None:
+        arm_specs["B"] = (args.run_id_b, args.run_dir_b, args.receipt_b)
+    for spec in args.arm or ():
+        name, run_id, run_dir, receipt = _parse_arm_spec(spec)
+        arm_specs[name] = (run_id, run_dir, receipt)
+    if len(arm_specs) < 2:
+        raise SystemExit("at least two arms are needed for a paired contrast")
+    arm_names = sorted(arm_specs)
+    contrasts_wanted = [
+        _parse_contrast_spec(spec) for spec in (args.contrast or ["B-A"])
+    ]
+    for right, left in contrasts_wanted:
+        for name in (right, left):
+            if name not in arm_specs:
+                raise SystemExit("contrast names arm %r, which was not supplied" % name)
+    primary = args.primary_contrast or "%s-%s" % contrasts_wanted[0]
 
     verdict_module = _verdict_module()
     corpus = verdict_module._corpus
@@ -296,13 +387,15 @@ def main() -> int:
     references = {sid: all_references[sid] for sid in items}
 
     arms = {
-        "A": _arm(args.run_dir_a, args.run_id_a, args.receipt_a),
-        "B": _arm(args.run_dir_b, args.run_id_b, args.receipt_b),
+        name: _arm(run_dir, run_id, receipt)
+        for name, (run_id, run_dir, receipt) in arm_specs.items()
     }
 
     summary_arms: dict[str, Any] = {}
     per_utterance: dict[str, dict[str, dict[str, float]]] = {}
-    for name, arm in arms.items():
+    whisper_by_id: dict[str, dict[str, Mapping[str, Any]]] = {}
+    for name in arm_names:
+        arm = arms[name]
         whisper_rows = list(arm["scores"]["asr-wer-esb-whisper"]["per_sample"])
         frozen_rows = list(arm["scores"]["asr-wer-esb"]["per_sample"])
         if len(whisper_rows) != len(items):
@@ -323,6 +416,12 @@ def main() -> int:
             references, arm["outputs"], items, overall_whisper["corpus_wer_pct"]
         )
         stages = arm["receipt"]["stages"]
+        baseline_fragment, instruction = _instruction_of(arm["manifest"])
+        baseline_doc = (
+            _load(REPO / "configs" / "baseline" / f"{baseline_fragment}.json")
+            if baseline_fragment
+            else {}
+        )
         summary_arms[name] = {
             "run_id": arm["run_id"],
             "attempt_id": arm["receipt"]["attempt_id"],
@@ -334,8 +433,20 @@ def main() -> int:
             "manifest_sha256": stages["seal"]["manifest_sha256"],
             "manifest_path_sha256_recomputed": arm["manifest_sha256_recomputed"],
             "attempt_state": stages["seal"]["finalize"]["attempt_state"],
-                "baseline_fragment": _instruction_of(arm["manifest"])[0],
-            "task_instruction": _instruction_of(arm["manifest"])[1],
+            "baseline_fragment": baseline_fragment,
+            "task_instruction": instruction,
+            "request_shape": {
+                "omit_system_message": bool(baseline_doc.get("omit_system_message", False)),
+                "user_turn_text": baseline_doc.get("user_turn_text"),
+                "user_turn_audio_first": bool(
+                    baseline_doc.get("user_turn_audio_first", True)
+                ),
+                "wire_messages": (
+                    "[user: audio, text]"
+                    if baseline_doc.get("omit_system_message")
+                    else "[system: instruction][user: audio]"
+                ),
+            },
             "cost": _cost_facts(arm["receipt"], arm["scores"]["cost"]["aggregate"]),
             "token_extremes": _token_extremes(Path(arm["run_dir"]), arm["run_id"]),
             "completion_ceiling_tokens": 1024,
@@ -363,43 +474,11 @@ def main() -> int:
             }
             for row in whisper_rows
         }
+        whisper_by_id[name] = {
+            str(row["sample_id"]): row for row in whisper_rows
+        }
 
-    # ---- the paired contrast, B minus A --------------------------------
-    contrasts = paired.paired_contrast(
-        per_utterance["A"],
-        per_utterance["B"],
-        metrics=["neg_wer"],
-        strata_of=lambda sid: items[sid]["parent_sample_id"],
-        seed=SEED,
-        n_replicates=N_REPLICATES,
-        ci_level=CI_LEVEL,
-    )
-    contrast = contrasts["neg_wer"]
-
-    # ---- the corpus-level delta, same resampling rule and seed ----------
-    # analysis.paired._bootstrap_result IS the code path paired_contrast uses;
-    # calling it here keeps one resampling rule for both CIs instead of a fifth
-    # reimplementation, which is the whole reason analysis.paired exists.
-    whisper_by_id = {
-        name: {str(row["sample_id"]): row for row in arms[name]["scores"]["asr-wer-esb-whisper"]["per_sample"]}
-        for name in ("A", "B")
-    }
-
-    def corpus_wer_pct(rows_by_id: Mapping[str, Mapping[str, Any]], ids: Sequence[str]) -> float:
-        errors = words = 0
-        for sid in ids:
-            row = rows_by_id[sid]
-            errors += int(row["substitutions"]) + int(row["deletions"]) + int(row["insertions"])
-            words += len(row["ref_hit_mask"])
-        return 100.0 * errors / words if words else 0.0
-
-    def corpus_delta(ids: Sequence[str]) -> float:
-        """A minus B in corpus WER points: POSITIVE when arm B is better."""
-
-        return corpus_wer_pct(whisper_by_id["A"], ids) - corpus_wer_pct(
-            whisper_by_id["B"], ids
-        )
-
+    # ---- the paired contrasts -------------------------------------------
     ordered_ids = tuple(sorted(items))
     strata: dict[str, tuple[str, ...]] = {}
     for sid in ordered_ids:
@@ -408,65 +487,60 @@ def main() -> int:
         strata[call] = tuple(
             sid for sid in ordered_ids if items[sid]["parent_sample_id"] == call
         )
-    corpus_boot = paired._bootstrap_result(
-        ids=ordered_ids,
-        statistic=corpus_delta,
-        n_replicates=N_REPLICATES,
-        seed=SEED,
-        ci_level=CI_LEVEL,
-        strata={name: strata[name] for name in sorted(strata)},
-        clusters={},
-    )
 
-    wer_a = summary_arms["A"]["headline"]["corpus_wer_whisper_pct"]
-    wer_b = summary_arms["B"]["headline"]["corpus_wer_whisper_pct"]
-    lower_arm = "B" if wer_b < wer_a else ("A" if wer_a < wer_b else "tie")
-    ci_low = contrast.bootstrap.ci_low if contrast.bootstrap is not None else float("nan")
-    ci_high = contrast.bootstrap.ci_high if contrast.bootstrap is not None else float("nan")
-    b_better_significant = bool(ci_low > 0.0)
+    contrast_objects: dict[str, Any] = {}
+    paired_contrasts: dict[str, Any] = {}
+    for right, left in contrasts_wanted:
+        key = f"{right}-{left}"
+        result = paired.paired_contrast(
+            per_utterance[left],
+            per_utterance[right],
+            metrics=["neg_wer"],
+            strata_of=lambda sid: items[sid]["parent_sample_id"],
+            seed=SEED,
+            n_replicates=N_REPLICATES,
+            ci_level=CI_LEVEL,
+        )
+        contrast = result["neg_wer"]
+        contrast_objects[key] = result
 
-    document = {
-        "schema": "saea-e22-esb-prompt-ab-result-summary-v1",
-        "study": "speech-aware-evidence-acquisition",
-        "generated_at": datetime.now(tz=timezone.utc).isoformat(),
-        "experiment_id": "SAEA-E22-DEV-ESB-PROMPT-AB-V1",
-        "preregistration": (
-            "docs/readiness/2026-09-05-e22-dev-esb-prompt-ab-v1-preregistration.md"
-        ),
-        "population": {
-            "roster_sha256": sha256_file(ROSTER),
-            "utterances": len(items),
-            "calls": calls,
-            "audio_seconds_total": roster["audio_seconds_total"],
-            "clamped_to_decoded_parent": roster.get("clamped_to_decoded_parent", []),
-            "split_role": "dev",
-            "boundary": (
-                "this study's own registered earnings22-original dev subset10; no "
-                "confirmatory call is named, loaded, decoded, scored or read, and the six "
-                "calibration-exposed ESB test calls are not read again"
-            ),
-        },
-        "arms": summary_arms,
-        "the_only_difference": (
-            "the task_instruction string. Same roster, same media bytes, same reference "
-            "layer, same scorers, same build, same geometry, same decoding params, same "
-            "harness, same entry point, same prompt shape."
-        ),
-        "paired_contrast_b_minus_a": {
+        def corpus_delta(ids: Sequence[str], _left=left, _right=right) -> float:
+            """LEFT minus RIGHT in corpus WER points: POSITIVE when RIGHT is better."""
+
+            return _corpus_wer_pct(whisper_by_id[_left], ids) - _corpus_wer_pct(
+                whisper_by_id[_right], ids
+            )
+
+        corpus_boot = paired._bootstrap_result(
+            ids=ordered_ids,
+            statistic=corpus_delta,
+            n_replicates=N_REPLICATES,
+            seed=SEED,
+            ci_level=CI_LEVEL,
+            strata={name: strata[name] for name in sorted(strata)},
+            clusters={},
+        )
+        wer_left = summary_arms[left]["headline"]["corpus_wer_whisper_pct"]
+        wer_right = summary_arms[right]["headline"]["corpus_wer_whisper_pct"]
+        ci_low = contrast.bootstrap.ci_low if contrast.bootstrap is not None else float("nan")
+        ci_high = contrast.bootstrap.ci_high if contrast.bootstrap is not None else float("nan")
+        paired_contrasts[key] = {
+            "right_arm": right,
+            "left_arm": left,
             "convention": (
-                "metric = NEGATED per-utterance Whisper-normalized WER, so delta = "
-                "A_wer - B_wer is POSITIVE when arm B is better and 'saves' counts "
-                "utterances arm B improves"
+                f"metric = NEGATED per-utterance Whisper-normalized WER, so delta = "
+                f"{left}_wer - {right}_wer is POSITIVE when arm {right} is better and "
+                f"'saves' counts utterances arm {right} improves"
             ),
             "n": contrast.n,
             "left_mean_neg_wer": contrast.left_mean,
             "right_mean_neg_wer": contrast.right_mean,
             "delta_neg_wer": contrast.delta,
-            "mean_per_utterance_wer_a": -contrast.left_mean,
-            "mean_per_utterance_wer_b": -contrast.right_mean,
-            "mean_per_utterance_wer_delta_b_minus_a": -contrast.delta,
-            "saves_b_better": contrast.saves,
-            "harms_b_worse": contrast.harms,
+            f"mean_per_utterance_wer_{left.lower()}": -contrast.left_mean,
+            f"mean_per_utterance_wer_{right.lower()}": -contrast.right_mean,
+            "mean_per_utterance_wer_delta_right_minus_left": -contrast.delta,
+            "saves_right_better": contrast.saves,
+            "harms_right_worse": contrast.harms,
             "ties": contrast.ties,
             "sign_test_p": contrast.sign_test_p,
             "bootstrap": {
@@ -481,53 +555,127 @@ def main() -> int:
                 "ci_high": ci_high,
                 "sigma_hat": contrast.bootstrap.sigma_hat if contrast.bootstrap else None,
             },
+            "ci90_lower_bound_above_zero": bool(ci_low > 0.0),
+            "corpus_level_delta": {
+                "convention": (
+                    f"{left}_corpus_wer - {right}_corpus_wer in points: POSITIVE when "
+                    f"arm {right} is better"
+                ),
+                "point_estimate": corpus_boot.point_estimate,
+                "ci_low": corpus_boot.ci_low,
+                "ci_high": corpus_boot.ci_high,
+                "sigma_hat": corpus_boot.sigma_hat,
+                "seed": SEED,
+                "n_replicates": N_REPLICATES,
+                "ci_level": CI_LEVEL,
+                "strata": "source call (10)",
+                "raw_right_minus_left_points": round(wer_right - wer_left, 4),
+                "note": (
+                    "the same stratified resampling rule and seed the per-utterance "
+                    "contrast uses, applied to the corpus statistic, which is the "
+                    "paper-facing aggregation"
+                ),
+            },
             "per_stratum": paired.per_stratum_table(contrast),
-        },
-        "corpus_level_delta": {
-            "convention": "A_corpus_wer - B_corpus_wer in points: POSITIVE when arm B is better",
-            "point_estimate": corpus_boot.point_estimate,
-            "ci_low": corpus_boot.ci_low,
-            "ci_high": corpus_boot.ci_high,
-            "sigma_hat": corpus_boot.sigma_hat,
-            "seed": SEED,
-            "n_replicates": N_REPLICATES,
-            "ci_level": CI_LEVEL,
-            "strata": "source call (10)",
-            "note": (
-                "the same stratified resampling rule and seed the per-utterance contrast "
-                "uses, applied to the corpus statistic, which is the paper-facing "
-                "aggregation. The preregistered decision rule is stated on the "
-                "per-utterance contrast; this is reported beside it."
+        }
+
+    lowest = min(arm_names, key=lambda name: summary_arms[name]["headline"]["corpus_wer_whisper_pct"])
+    primary_block = paired_contrasts[primary]
+    primary_right = primary_block["right_arm"]
+    primary_left = primary_block["left_arm"]
+    wer_right = summary_arms[primary_right]["headline"]["corpus_wer_whisper_pct"]
+    wer_left = summary_arms[primary_left]["headline"]["corpus_wer_whisper_pct"]
+    ratio_right = summary_arms[primary_right]["error_shape"]["length"]["ratio"]
+    ratio_left = summary_arms[primary_left]["error_shape"]["length"]["ratio"]
+
+    document = {
+        "schema": "saea-e22-esb-prompt-arm-result-summary-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "generated_at": datetime.now(tz=timezone.utc).isoformat(),
+        "experiment_id": args.experiment_id,
+        "preregistration": args.preregistration,
+        "population": {
+            "roster_sha256": sha256_file(ROSTER),
+            "utterances": len(items),
+            "calls": calls,
+            "audio_seconds_total": roster["audio_seconds_total"],
+            "clamped_to_decoded_parent": roster.get("clamped_to_decoded_parent", []),
+            "split_role": "dev",
+            "boundary": (
+                "this study's own registered earnings22-original dev subset10; no "
+                "confirmatory call is named, loaded, decoded, scored or read, and the six "
+                "calibration-exposed ESB test calls are not read again"
             ),
         },
+        "arms": summary_arms,
+        "arm_names": arm_names,
+        "held_constant": (
+            "the roster, the derived media bytes, the derived reference layer, the "
+            "scorers, the build, the quantization, the audio path, the serving geometry, "
+            "the decoding parameters, the harness and the entry point. Arms A and B "
+            "differ from each other in the instruction TEXT only; arm C differs from arm "
+            "B in the request SHAPE only, at a byte-identical instruction string."
+        ),
+        "paired_contrasts": paired_contrasts,
+        "primary_contrast": primary,
         "decision": {
             "rule": (
-                "the arm with the LOWER pooled corpus Whisper-normalized WER becomes this "
-                "study's ASR instruction for cleaned-reference protocols"
+                f"the preregistered rule is stated on contrast {primary}: arm "
+                f"{primary_right} is adopted if its pooled corpus Whisper-normalized WER "
+                f"beats arm {primary_left}, the paired CI90 lower bound is above 0, and "
+                "the hypothesis-to-reference length ratio falls toward 1.0"
             ),
-            "corpus_wer_a_pct": wer_a,
-            "corpus_wer_b_pct": wer_b,
-            "b_minus_a_points": round(wer_b - wer_a, 4),
-            "lower_arm": lower_arm,
-            "ci90_lower_bound_above_zero": b_better_significant,
-            "significance_reading": (
-                "arm B is lower and the CI90 lower bound on the paired delta is above 0"
-                if b_better_significant
-                else (
-                    "the CI90 lower bound on the paired delta is NOT above 0, so the "
-                    "prompt is not established as the explanation for the ESB test "
-                    "flight's gap; the next suspects are named without being flown"
-                )
+            f"corpus_wer_{primary_right.lower()}_pct": wer_right,
+            f"corpus_wer_{primary_left.lower()}_pct": wer_left,
+            "right_minus_left_points": round(wer_right - wer_left, 4),
+            "right_arm_is_lower": wer_right < wer_left,
+            "ci90_lower_bound_above_zero": primary_block["ci90_lower_bound_above_zero"],
+            f"length_ratio_{primary_right.lower()}": ratio_right,
+            f"length_ratio_{primary_left.lower()}": ratio_left,
+            "length_ratio_falls_toward_one": ratio_right < ratio_left,
+            "length_ratio_condition_as_preregistered": (
+                "strictly below the left arm's pooled hypothesis/reference word ratio"
             ),
+            "distance_from_one": {
+                primary_right: round(abs(ratio_right - 1.0), 4),
+                primary_left: round(abs(ratio_left - 1.0), 4),
+            },
+            "length_ratio_closer_to_one": abs(ratio_right - 1.0) < abs(ratio_left - 1.0),
+            "why_both_readings_are_reported": (
+                "the preregistered clause reads 'strictly below', which a catastrophic "
+                "UNDER-generation would also satisfy while overshooting 1.0. It cannot "
+                "change the outcome, because the rule is a conjunction whose first "
+                "condition is that the arm's corpus WER actually beats the control, and "
+                "under-generation raises WER. Both readings are printed so a reader never "
+                "has to take that on trust."
+            ),
+            "all_three_conditions_hold": bool(
+                wer_right < wer_left
+                and primary_block["ci90_lower_bound_above_zero"]
+                and ratio_right < ratio_left
+            ),
+            "lowest_corpus_wer_arm": lowest,
         },
         "band_indication_only": {
             "published_same_model_test_subset_wer": PAPER_WER,
             "cross_read_wer": CROSS_READ_WER,
             "band": BAND,
-            "arm_b_inside_band_of_9_79": wer_b <= PAPER_WER + BAND,
-            "arm_b_inside_band_of_12_3": wer_b <= CROSS_READ_WER + BAND,
-            "arm_a_inside_band_of_9_79": wer_a <= PAPER_WER + BAND,
-            "arm_a_inside_band_of_12_3": wer_a <= CROSS_READ_WER + BAND,
+            "per_arm": {
+                name: {
+                    "corpus_wer_whisper_pct": summary_arms[name]["headline"][
+                        "corpus_wer_whisper_pct"
+                    ],
+                    "inside_band_of_9_79": summary_arms[name]["headline"][
+                        "corpus_wer_whisper_pct"
+                    ]
+                    <= PAPER_WER + BAND,
+                    "inside_band_of_12_3": summary_arms[name]["headline"][
+                        "corpus_wer_whisper_pct"
+                    ]
+                    <= CROSS_READ_WER + BAND,
+                }
+                for name in arm_names
+            },
             "caveat": (
                 "INDICATION ONLY. These ten calls are this study's dev subset10, not the "
                 "published ESB test subset, and no published number covers them. No "
@@ -547,10 +695,15 @@ def main() -> int:
             ),
         },
     }
+    if "B-A" in paired_contrasts:
+        # Backwards-compatible alias: the sealed 2026-09-05 A/B verdict cites
+        # this key by name.
+        document["paired_contrast_b_minus_a"] = paired_contrasts["B-A"]
+        document["corpus_level_delta"] = paired_contrasts["B-A"]["corpus_level_delta"]
 
     output_dir = Path(args.output_dir)
     text = json.dumps(document, ensure_ascii=False, indent=2) + "\n"
-    markdown = _render_markdown(document, paired, contrasts)
+    markdown = _render_markdown(document, paired, contrast_objects)
     if args.write:
         output_dir.mkdir(parents=True, exist_ok=True)
         (output_dir / "result-summary.json").write_text(
@@ -562,18 +715,37 @@ def main() -> int:
     print(
         json.dumps(
             {
-                "corpus_wer_a_pct": wer_a,
-                "corpus_wer_b_pct": wer_b,
-                "b_minus_a_points": round(wer_b - wer_a, 4),
-                "lower_arm": lower_arm,
-                "paired_delta_neg_wer": contrast.delta,
-                "paired_ci90": [ci_low, ci_high],
-                "saves": contrast.saves,
-                "harms": contrast.harms,
-                "ties": contrast.ties,
-                "sign_test_p": contrast.sign_test_p,
-                "corpus_delta_points_a_minus_b": corpus_boot.point_estimate,
-                "corpus_delta_ci90": [corpus_boot.ci_low, corpus_boot.ci_high],
+                "corpus_wer_pct": {
+                    name: summary_arms[name]["headline"]["corpus_wer_whisper_pct"]
+                    for name in arm_names
+                },
+                "length_ratio": {
+                    name: summary_arms[name]["error_shape"]["length"]["ratio"]
+                    for name in arm_names
+                },
+                "contrasts": {
+                    key: {
+                        "delta_neg_wer": block["delta_neg_wer"],
+                        "ci90": [
+                            block["bootstrap"]["ci_low"],
+                            block["bootstrap"]["ci_high"],
+                        ],
+                        "saves": block["saves_right_better"],
+                        "harms": block["harms_right_worse"],
+                        "ties": block["ties"],
+                        "sign_test_p": block["sign_test_p"],
+                        "corpus_delta_points": block["corpus_level_delta"][
+                            "point_estimate"
+                        ],
+                        "corpus_delta_ci90": [
+                            block["corpus_level_delta"]["ci_low"],
+                            block["corpus_level_delta"]["ci_high"],
+                        ],
+                    }
+                    for key, block in paired_contrasts.items()
+                },
+                "decision": document["decision"],
+                "output_dir": str(output_dir),
                 "written": args.write,
             },
             indent=2,
@@ -583,27 +755,30 @@ def main() -> int:
     return 0
 
 
-def _render_markdown(document, paired, contrasts) -> str:
+def _render_markdown(document, paired, contrast_objects) -> str:
     arms = document["arms"]
+    arm_names = document["arm_names"]
     calls = document["population"]["calls"]
     lines: list[str] = []
-    lines.append("# Earnings-22 DEV ESB prompt A/B — tables")
+    lines.append("# Earnings-22 DEV ESB arms — tables")
     lines.append("")
     lines.append("## Headline, per arm")
     lines.append("")
     lines.append(
-        "| arm | instruction | corpus WER % (Whisper) | mean per-utt % | equal-call % | "
-        "corpus WER % (saea-scoring-v1) | S | D | I | ref words | hyp/ref length |"
+        "| arm | request shape | instruction | corpus WER % (Whisper) | mean per-utt % | "
+        "equal-call % | corpus WER % (saea-scoring-v1) | S | D | I | ref words | "
+        "hyp/ref length |"
     )
-    lines.append("|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|")
-    for name in ("A", "B"):
+    lines.append("|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|")
+    for name in arm_names:
         arm = arms[name]
         counts = arm["counts_whisper"]
         shape = arm["error_shape"]["length"]
         lines.append(
-            "| %s | `%s` | **%.3f** | %.3f | %.3f | %.3f | %d | %d | %d | %d | %.4f |"
+            "| %s | `%s` | `%s` | **%.3f** | %.3f | %.3f | %.3f | %d | %d | %d | %d | %.4f |"
             % (
                 name,
+                arm["request_shape"]["wire_messages"],
                 (arm.get("task_instruction") or "")[:70],
                 arm["headline"]["corpus_wer_whisper_pct"],
                 arm["headline"]["mean_of_per_utterance_wer_whisper_pct"],
@@ -619,34 +794,67 @@ def _render_markdown(document, paired, contrasts) -> str:
     lines.append("")
     lines.append("## Per call, corpus WER % under the Whisper normalizer")
     lines.append("")
-    lines.append("| call | utterances | ref words | arm A | arm B | B − A |")
-    lines.append("|---|---:|---:|---:|---:|---:|")
+    lines.append(
+        "| call | utterances | ref words | "
+        + " | ".join("arm %s" % name for name in arm_names)
+        + " |"
+    )
+    lines.append("|---|---:|---:|" + "---:|" * len(arm_names))
     for call in calls:
-        a = arms["A"]["per_call_whisper"][call]
-        b = arms["B"]["per_call_whisper"][call]
+        first = arms[arm_names[0]]["per_call_whisper"][call]
+        cells = " | ".join(
+            "%.3f" % arms[name]["per_call_whisper"][call]["corpus_wer_pct"]
+            for name in arm_names
+        )
         lines.append(
-            "| %s | %d | %d | %.3f | %.3f | %+.3f |"
-            % (
-                call,
-                a["utterances"],
-                a["reference_words"],
-                a["corpus_wer_pct"],
-                b["corpus_wer_pct"],
-                b["corpus_wer_pct"] - a["corpus_wer_pct"],
-            )
+            "| %s | %d | %d | %s |"
+            % (call, first["utterances"], first["reference_words"], cells)
         )
     lines.append("")
-    lines.append("## Paired per-utterance contrast (negated WER; positive = B better)")
+    lines.append("## Length ratio and WER by utterance duration")
     lines.append("")
-    lines.append(paired.render_markdown(contrasts))
+    lines.append(
+        "| duration | utterances | "
+        + " | ".join(
+            "%s ratio | %s WER %%" % (name, name) for name in arm_names
+        )
+        + " |"
+    )
+    lines.append("|---|---:|" + "---:|---:|" * len(arm_names))
+    buckets = {
+        name: {
+            (block["seconds_from"], block["seconds_to"]): block
+            for block in arms[name]["error_shape"]["by_duration_bucket"]
+        }
+        for name in arm_names
+    }
+    for key in sorted(buckets[arm_names[0]]):
+        row = buckets[arm_names[0]][key]
+        cells = " | ".join(
+            "%.3f | %.2f"
+            % (
+                buckets[name][key]["length_ratio"],
+                buckets[name][key]["corpus_wer_pct"],
+            )
+            for name in arm_names
+        )
+        lines.append(
+            "| %g–%g s | %d | %s |" % (key[0], key[1], row["utterances"], cells)
+        )
     lines.append("")
+    for name, contrasts in contrast_objects.items():
+        lines.append("## Paired per-utterance contrast %s (negated WER; positive = %s better)"
+                     % (name, name.split("-")[0]))
+        lines.append("")
+        lines.append(paired.render_markdown(contrasts))
+        lines.append("")
     lines.append("## Error shape, per arm")
     lines.append("")
     lines.append(
         "| arm | insertions share of errors % | hyp/ref length ratio | longer hyp | shorter hyp |"
     )
     lines.append("|---|---:|---:|---:|---:|")
-    for name in ("A", "B"):
+    for name in arm_names:
         counts = arms[name]["counts_whisper"]
         shape = arms[name]["error_shape"]["length"]
         errors = counts["errors"]

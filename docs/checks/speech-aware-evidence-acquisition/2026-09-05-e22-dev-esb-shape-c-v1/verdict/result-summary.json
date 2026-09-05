@@ -1,0 +1,2106 @@
+{
+  "schema": "saea-e22-esb-prompt-arm-result-summary-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "generated_at": "2026-09-05T10:18:07.322092+00:00",
+  "experiment_id": "SAEA-E22-DEV-ESB-SHAPE-C-V1",
+  "preregistration": "docs/readiness/2026-09-05-e22-dev-esb-shape-c-v1-preregistration.md",
+  "population": {
+    "roster_sha256": "20437bcbde1a52b58bb48642d8809836e20073f7963f19b5ff836ead69c945c8",
+    "utterances": 6038,
+    "calls": [
+      "4453225",
+      "4469088",
+      "4470684",
+      "4474506",
+      "4479944",
+      "4481952",
+      "4482383",
+      "4482613",
+      "4483937",
+      "4485192"
+    ],
+    "audio_seconds_total": 39292.64675,
+    "clamped_to_decoded_parent": [
+      "4481952-631"
+    ],
+    "split_role": "dev",
+    "boundary": "this study's own registered earnings22-original dev subset10; no confirmatory call is named, loaded, decoded, scored or read, and the six calibration-exposed ESB test calls are not read again"
+  },
+  "arms": {
+    "A": {
+      "run_id": "SAEA-E22-DEV-ESB-PROMPT-A-V1",
+      "attempt_id": "attempt-20260905T073641Z-f977d1",
+      "cell_id": "E22-ESB-DEV-A",
+      "study_commit": "4012521ea03e80f423a7c31da0ba85ac1b943d28",
+      "config_hash": "bae299a857be720ad6e195170bb3c641a87a2aa63c89966402a54749c19e0946",
+      "protocol_hash": "a6fc27e1689958e0bdf4a28d99f728b60094c657da6b3956b9a2c1b54f273d7e",
+      "split_identity_hash": "fc14c98bae814f1c70314393078c9aa360e3638f82bd2e77d1ddb962f8bdebb3",
+      "manifest_sha256": "3d230a2cb40bd7d7d9e9621ac7fa5af01ef835a644118216c8e811a6bccc3165",
+      "manifest_path_sha256_recomputed": "3d230a2cb40bd7d7d9e9621ac7fa5af01ef835a644118216c8e811a6bccc3165",
+      "attempt_state": "FINALIZED",
+      "baseline_fragment": "e22-esb-dev-prompt-a",
+      "task_instruction": "Transcribe the speech verbatim exactly as spoken. Never insert, repeat, or add any word you do not clearly hear in the audio. Output only the transcript text.",
+      "request_shape": {
+        "omit_system_message": false,
+        "user_turn_text": null,
+        "user_turn_audio_first": true,
+        "wire_messages": "[system: instruction][user: audio]"
+      },
+      "cost": {
+        "contacts": 6038,
+        "speech_audio_seconds": 39292.64675,
+        "dispatch_wall_seconds": 1612.9,
+        "server_startup_seconds": 12.7,
+        "gpu_hours": 0.4515,
+        "realtime_factor": 24.36,
+        "contacts_per_second": 3.744,
+        "mean_latency_seconds": 1.9272,
+        "prompt_tokens_total": 846854,
+        "prompt_tokens_mean": 140.25,
+        "completion_tokens_total": 145930,
+        "completion_tokens_mean": 24.17
+      },
+      "token_extremes": {
+        "largest_prompt_tokens": 1076,
+        "largest_completion_tokens": 130
+      },
+      "completion_ceiling_tokens": 1024,
+      "scorers_declared": [
+        "asr-wer-esb-whisper",
+        "asr-wer-esb",
+        "cost"
+      ],
+      "scoring_batch_verified": true,
+      "scoring_batch_aggregates": {},
+      "headline": {
+        "corpus_wer_whisper_pct": 17.5648,
+        "mean_of_per_utterance_wer_whisper_pct": 33.1249,
+        "corpus_wer_saea_scoring_v1_pct": 23.0423,
+        "mean_of_per_utterance_wer_saea_scoring_v1_pct": 37.1915,
+        "equal_call_weighted_whisper_pct": 17.5132
+      },
+      "counts_whisper": {
+        "utterances": 6038,
+        "substitutions": 4526,
+        "deletions": 2370,
+        "insertions": 11270,
+        "reference_words": 103423,
+        "errors": 18166,
+        "corpus_wer_pct": 17.5648,
+        "mean_wer_pct": 33.1249
+      },
+      "counts_saea_scoring_v1": {
+        "utterances": 6038,
+        "substitutions": 7478,
+        "deletions": 3173,
+        "insertions": 13704,
+        "reference_words": 105697,
+        "errors": 24355,
+        "corpus_wer_pct": 23.0423,
+        "mean_wer_pct": 37.1915
+      },
+      "per_call_whisper": {
+        "4453225": {
+          "utterances": 635,
+          "substitutions": 581,
+          "deletions": 367,
+          "insertions": 1346,
+          "reference_words": 11304,
+          "errors": 2294,
+          "corpus_wer_pct": 20.2937,
+          "mean_wer_pct": 26.2115
+        },
+        "4469088": {
+          "utterances": 922,
+          "substitutions": 511,
+          "deletions": 318,
+          "insertions": 1453,
+          "reference_words": 11493,
+          "errors": 2282,
+          "corpus_wer_pct": 19.8556,
+          "mean_wer_pct": 37.6338
+        },
+        "4470684": {
+          "utterances": 589,
+          "substitutions": 275,
+          "deletions": 192,
+          "insertions": 1086,
+          "reference_words": 10862,
+          "errors": 1553,
+          "corpus_wer_pct": 14.2976,
+          "mean_wer_pct": 23.4613
+        },
+        "4474506": {
+          "utterances": 633,
+          "substitutions": 409,
+          "deletions": 237,
+          "insertions": 1078,
+          "reference_words": 11534,
+          "errors": 1724,
+          "corpus_wer_pct": 14.9471,
+          "mean_wer_pct": 33.889
+        },
+        "4479944": {
+          "utterances": 588,
+          "substitutions": 673,
+          "deletions": 329,
+          "insertions": 1573,
+          "reference_words": 10882,
+          "errors": 2575,
+          "corpus_wer_pct": 23.6629,
+          "mean_wer_pct": 40.1396
+        },
+        "4481952": {
+          "utterances": 632,
+          "substitutions": 417,
+          "deletions": 174,
+          "insertions": 1091,
+          "reference_words": 9827,
+          "errors": 1682,
+          "corpus_wer_pct": 17.1161,
+          "mean_wer_pct": 39.7215
+        },
+        "4482383": {
+          "utterances": 469,
+          "substitutions": 385,
+          "deletions": 157,
+          "insertions": 850,
+          "reference_words": 9763,
+          "errors": 1392,
+          "corpus_wer_pct": 14.2579,
+          "mean_wer_pct": 27.0398
+        },
+        "4482613": {
+          "utterances": 592,
+          "substitutions": 774,
+          "deletions": 317,
+          "insertions": 1012,
+          "reference_words": 9168,
+          "errors": 2103,
+          "corpus_wer_pct": 22.9385,
+          "mean_wer_pct": 36.486
+        },
+        "4483937": {
+          "utterances": 517,
+          "substitutions": 258,
+          "deletions": 155,
+          "insertions": 930,
+          "reference_words": 8680,
+          "errors": 1343,
+          "corpus_wer_pct": 15.4724,
+          "mean_wer_pct": 31.7862
+        },
+        "4485192": {
+          "utterances": 461,
+          "substitutions": 243,
+          "deletions": 124,
+          "insertions": 851,
+          "reference_words": 9910,
+          "errors": 1218,
+          "corpus_wer_pct": 12.2906,
+          "mean_wer_pct": 30.3133
+        }
+      },
+      "per_call_saea_scoring_v1": {
+        "4453225": {
+          "utterances": 635,
+          "substitutions": 869,
+          "deletions": 510,
+          "insertions": 1436,
+          "reference_words": 11441,
+          "errors": 2815,
+          "corpus_wer_pct": 24.6045,
+          "mean_wer_pct": 30.5337
+        },
+        "4469088": {
+          "utterances": 922,
+          "substitutions": 713,
+          "deletions": 427,
+          "insertions": 1598,
+          "reference_words": 11827,
+          "errors": 2738,
+          "corpus_wer_pct": 23.1504,
+          "mean_wer_pct": 41.0164
+        },
+        "4470684": {
+          "utterances": 589,
+          "substitutions": 643,
+          "deletions": 532,
+          "insertions": 1313,
+          "reference_words": 11505,
+          "errors": 2488,
+          "corpus_wer_pct": 21.6254,
+          "mean_wer_pct": 29.0677
+        },
+        "4474506": {
+          "utterances": 633,
+          "substitutions": 706,
+          "deletions": 256,
+          "insertions": 1355,
+          "reference_words": 11732,
+          "errors": 2317,
+          "corpus_wer_pct": 19.7494,
+          "mean_wer_pct": 35.8374
+        },
+        "4479944": {
+          "utterances": 588,
+          "substitutions": 1204,
+          "deletions": 241,
+          "insertions": 2192,
+          "reference_words": 10920,
+          "errors": 3637,
+          "corpus_wer_pct": 33.3059,
+          "mean_wer_pct": 49.0912
+        },
+        "4481952": {
+          "utterances": 632,
+          "substitutions": 716,
+          "deletions": 236,
+          "insertions": 1278,
+          "reference_words": 10096,
+          "errors": 2230,
+          "corpus_wer_pct": 22.088,
+          "mean_wer_pct": 41.9236
+        },
+        "4482383": {
+          "utterances": 469,
+          "substitutions": 656,
+          "deletions": 185,
+          "insertions": 1139,
+          "reference_words": 9743,
+          "errors": 1980,
+          "corpus_wer_pct": 20.3223,
+          "mean_wer_pct": 32.1991
+        },
+        "4482613": {
+          "utterances": 592,
+          "substitutions": 1085,
+          "deletions": 399,
+          "insertions": 1317,
+          "reference_words": 9428,
+          "errors": 2801,
+          "corpus_wer_pct": 29.7094,
+          "mean_wer_pct": 41.9037
+        },
+        "4483937": {
+          "utterances": 517,
+          "substitutions": 463,
+          "deletions": 254,
+          "insertions": 1087,
+          "reference_words": 9128,
+          "errors": 1804,
+          "corpus_wer_pct": 19.7634,
+          "mean_wer_pct": 33.9769
+        },
+        "4485192": {
+          "utterances": 461,
+          "substitutions": 423,
+          "deletions": 133,
+          "insertions": 989,
+          "reference_words": 9877,
+          "errors": 1545,
+          "corpus_wer_pct": 15.6424,
+          "mean_wer_pct": 31.9182
+        }
+      },
+      "error_shape": {
+        "sealed_corpus_wer_pct": 17.5648,
+        "boundary": "Every figure in this file is a DIAGNOSTIC computed after the fact on sealed outputs. None of it is the verdict, none of it was fitted, and the two transforms marked oracle = true use the reference's own length and are upper bounds on a component rather than achievable numbers.",
+        "length": {
+          "reference_words": 103423,
+          "hypothesis_words": 112323,
+          "ratio": 1.0861,
+          "utterances_with_a_longer_hypothesis": 3605,
+          "utterances_with_a_shorter_hypothesis": 731,
+          "excess_hypothesis_tokens": 10247
+        },
+        "by_duration_bucket": [
+          {
+            "seconds_from": 0,
+            "seconds_to": 1,
+            "utterances": 503,
+            "hypothesis_words": 1465,
+            "length_ratio": 1.1581,
+            "insertion_share_of_errors_pct": 47.01,
+            "substitutions": 254,
+            "deletions": 225,
+            "insertions": 425,
+            "reference_words": 1265,
+            "corpus_wer_pct": 71.4625
+          },
+          {
+            "seconds_from": 1,
+            "seconds_to": 2,
+            "utterances": 483,
+            "hypothesis_words": 2926,
+            "length_ratio": 1.1875,
+            "insertion_share_of_errors_pct": 59.59,
+            "substitutions": 263,
+            "deletions": 156,
+            "insertions": 618,
+            "reference_words": 2464,
+            "corpus_wer_pct": 42.086
+          },
+          {
+            "seconds_from": 2,
+            "seconds_to": 4,
+            "utterances": 1163,
+            "hypothesis_words": 11620,
+            "length_ratio": 1.1424,
+            "insertion_share_of_errors_pct": 62.77,
+            "substitutions": 704,
+            "deletions": 380,
+            "insertions": 1828,
+            "reference_words": 10172,
+            "corpus_wer_pct": 28.6276
+          },
+          {
+            "seconds_from": 4,
+            "seconds_to": 8,
+            "utterances": 1991,
+            "hypothesis_words": 34389,
+            "length_ratio": 1.107,
+            "insertion_share_of_errors_pct": 66.94,
+            "substitutions": 1319,
+            "deletions": 637,
+            "insertions": 3961,
+            "reference_words": 31065,
+            "corpus_wer_pct": 19.0472
+          },
+          {
+            "seconds_from": 8,
+            "seconds_to": 16,
+            "utterances": 1625,
+            "hypothesis_words": 48166,
+            "length_ratio": 1.0633,
+            "insertion_share_of_errors_pct": 61.06,
+            "substitutions": 1545,
+            "deletions": 785,
+            "insertions": 3653,
+            "reference_words": 45298,
+            "corpus_wer_pct": 13.2081
+          },
+          {
+            "seconds_from": 16,
+            "seconds_to": 40,
+            "utterances": 271,
+            "hypothesis_words": 13721,
+            "length_ratio": 1.0452,
+            "insertion_share_of_errors_pct": 55.44,
+            "substitutions": 440,
+            "deletions": 187,
+            "insertions": 780,
+            "reference_words": 13128,
+            "corpus_wer_pct": 10.7176
+          }
+        ],
+        "transforms": {
+          "hypothesis_immediate_repeats_collapsed": {
+            "oracle": false,
+            "what": "collapse runs of an identical word in the HYPOTHESIS only",
+            "substitutions": 4684,
+            "deletions": 3773,
+            "insertions": 10875,
+            "reference_words": 103423,
+            "corpus_wer_pct": 18.6922,
+            "delta_vs_sealed_pct": 1.1274
+          },
+          "both_sides_immediate_repeats_collapsed": {
+            "oracle": false,
+            "what": "collapse runs of an identical word on BOTH sides",
+            "substitutions": 4398,
+            "deletions": 2096,
+            "insertions": 11103,
+            "reference_words": 101518,
+            "corpus_wer_pct": 17.3339,
+            "delta_vs_sealed_pct": -0.2309
+          },
+          "hypothesis_truncated_to_reference_length": {
+            "oracle": true,
+            "what": "cut each hypothesis to its own reference word count -- an ORACLE transform that bounds the over-generation component from above and is not an achievable result",
+            "substitutions": 4896,
+            "deletions": 3757,
+            "insertions": 2410,
+            "reference_words": 103423,
+            "corpus_wer_pct": 10.6968,
+            "delta_vs_sealed_pct": -6.868
+          },
+          "dedup_then_truncate": {
+            "oracle": true,
+            "what": "both of the above, composed; also an ORACLE bound",
+            "substitutions": 5008,
+            "deletions": 4885,
+            "insertions": 2795,
+            "reference_words": 103423,
+            "corpus_wer_pct": 12.2681,
+            "delta_vs_sealed_pct": -5.2967
+          }
+        },
+        "minimum_duration": {
+          "at_least_1s": {
+            "substitutions": 4272,
+            "deletions": 2145,
+            "insertions": 10845,
+            "reference_words": 102158,
+            "corpus_wer_pct": 16.8974,
+            "utterances": 5535,
+            "delta_vs_sealed_pct": -0.6674
+          },
+          "at_least_2s": {
+            "substitutions": 4009,
+            "deletions": 1989,
+            "insertions": 10227,
+            "reference_words": 99694,
+            "corpus_wer_pct": 16.2748,
+            "utterances": 5052,
+            "delta_vs_sealed_pct": -1.29
+          },
+          "at_least_3s": {
+            "substitutions": 3639,
+            "deletions": 1779,
+            "insertions": 9312,
+            "reference_words": 95247,
+            "corpus_wer_pct": 15.4651,
+            "utterances": 4450,
+            "delta_vs_sealed_pct": -2.0997
+          }
+        },
+        "empty_reference_after_normalization": {
+          "ids": [
+            "4469088-473",
+            "4469088-678",
+            "4469088-855",
+            "4470684-366",
+            "4470684-435",
+            "4481952-527",
+            "4481952-572",
+            "4481952-610",
+            "4482613-350",
+            "4483937-483"
+          ],
+          "count": 10,
+          "hypothesis_words_counted_as_insertions": 19,
+          "note": "a reference that normalizes to nothing (an isolated 'Um.', 'mm-hmm <affirmative>.' or '<inaudible>.') contributes zero reference words to the denominator while any hypothesis words it draws are counted as insertions in the numerator. Four rows of 2,735; the effect on the corpus figure is a few hundredths of a point and is recorded rather than removed."
+        },
+        "non_english_hypotheses": {
+          "ids": [
+            "4474506-499",
+            "4479944-181",
+            "4479944-275",
+            "4481952-268",
+            "4481952-329",
+            "4481952-330",
+            "4481952-493",
+            "4482383-333",
+            "4482383-386",
+            "4482613-14",
+            "4482613-325",
+            "4482613-414",
+            "4485192-380",
+            "4485192-440"
+          ],
+          "count": 14,
+          "note": "hypotheses containing CJK-range characters, all on sub-second clips. A real defect of the frozen core on near-empty audio, three rows of 2,735."
+        }
+      },
+      "length_shape_direct": {
+        "reference_words": 103423,
+        "hypothesis_words": 112323,
+        "ratio": 1.0861,
+        "utterances_with_a_longer_hypothesis": 3605,
+        "utterances_with_a_shorter_hypothesis": 731
+      }
+    },
+    "B": {
+      "run_id": "SAEA-E22-DEV-ESB-PROMPT-B-V1",
+      "attempt_id": "attempt-20260905T080709Z-b77462",
+      "cell_id": "E22-ESB-DEV-B",
+      "study_commit": "4012521ea03e80f423a7c31da0ba85ac1b943d28",
+      "config_hash": "c7274544584874b47342bda21c60fb6d3f4aa49a389ac8a3e74141e100c68430",
+      "protocol_hash": "c0b7fb20d312c5c4da30b05c1dadabd309be9f02ec46802db8c122ceaf2f8aff",
+      "split_identity_hash": "fc14c98bae814f1c70314393078c9aa360e3638f82bd2e77d1ddb962f8bdebb3",
+      "manifest_sha256": "776a2751bb194c1e032531a1690d163bf1c18d52f8d6e98dcb08015e7baab4c9",
+      "manifest_path_sha256_recomputed": "776a2751bb194c1e032531a1690d163bf1c18d52f8d6e98dcb08015e7baab4c9",
+      "attempt_state": "FINALIZED",
+      "baseline_fragment": "e22-esb-dev-prompt-b",
+      "task_instruction": "Transcribe the English audio into text.",
+      "request_shape": {
+        "omit_system_message": false,
+        "user_turn_text": null,
+        "user_turn_audio_first": true,
+        "wire_messages": "[system: instruction][user: audio]"
+      },
+      "cost": {
+        "contacts": 6038,
+        "speech_audio_seconds": 39292.64675,
+        "dispatch_wall_seconds": 1643.9,
+        "server_startup_seconds": 10.8,
+        "gpu_hours": 0.4596,
+        "realtime_factor": 23.9,
+        "contacts_per_second": 3.673,
+        "mean_latency_seconds": 2.0554,
+        "prompt_tokens_total": 689866,
+        "prompt_tokens_mean": 114.25,
+        "completion_tokens_total": 147980,
+        "completion_tokens_mean": 24.51
+      },
+      "token_extremes": {
+        "largest_prompt_tokens": 1050,
+        "largest_completion_tokens": 461
+      },
+      "completion_ceiling_tokens": 1024,
+      "scorers_declared": [
+        "asr-wer-esb-whisper",
+        "asr-wer-esb",
+        "cost"
+      ],
+      "scoring_batch_verified": true,
+      "scoring_batch_aggregates": {},
+      "headline": {
+        "corpus_wer_whisper_pct": 18.3944,
+        "mean_of_per_utterance_wer_whisper_pct": 35.8659,
+        "corpus_wer_saea_scoring_v1_pct": 24.1634,
+        "mean_of_per_utterance_wer_saea_scoring_v1_pct": 40.1822,
+        "equal_call_weighted_whisper_pct": 18.3664
+      },
+      "counts_whisper": {
+        "utterances": 6038,
+        "substitutions": 4563,
+        "deletions": 2479,
+        "insertions": 11982,
+        "reference_words": 103423,
+        "errors": 19024,
+        "corpus_wer_pct": 18.3944,
+        "mean_wer_pct": 35.8659
+      },
+      "counts_saea_scoring_v1": {
+        "utterances": 6038,
+        "substitutions": 7586,
+        "deletions": 3441,
+        "insertions": 14513,
+        "reference_words": 105697,
+        "errors": 25540,
+        "corpus_wer_pct": 24.1634,
+        "mean_wer_pct": 40.1822
+      },
+      "per_call_whisper": {
+        "4453225": {
+          "utterances": 635,
+          "substitutions": 598,
+          "deletions": 388,
+          "insertions": 1648,
+          "reference_words": 11304,
+          "errors": 2634,
+          "corpus_wer_pct": 23.3015,
+          "mean_wer_pct": 34.0637
+        },
+        "4469088": {
+          "utterances": 922,
+          "substitutions": 508,
+          "deletions": 348,
+          "insertions": 1511,
+          "reference_words": 11493,
+          "errors": 2367,
+          "corpus_wer_pct": 20.5951,
+          "mean_wer_pct": 39.5294
+        },
+        "4470684": {
+          "utterances": 589,
+          "substitutions": 283,
+          "deletions": 216,
+          "insertions": 1075,
+          "reference_words": 10862,
+          "errors": 1574,
+          "corpus_wer_pct": 14.4909,
+          "mean_wer_pct": 23.6865
+        },
+        "4474506": {
+          "utterances": 633,
+          "substitutions": 417,
+          "deletions": 250,
+          "insertions": 1096,
+          "reference_words": 11534,
+          "errors": 1763,
+          "corpus_wer_pct": 15.2852,
+          "mean_wer_pct": 37.3069
+        },
+        "4479944": {
+          "utterances": 588,
+          "substitutions": 666,
+          "deletions": 311,
+          "insertions": 1616,
+          "reference_words": 10882,
+          "errors": 2593,
+          "corpus_wer_pct": 23.8283,
+          "mean_wer_pct": 42.4636
+        },
+        "4481952": {
+          "utterances": 632,
+          "substitutions": 425,
+          "deletions": 192,
+          "insertions": 1055,
+          "reference_words": 9827,
+          "errors": 1672,
+          "corpus_wer_pct": 17.0143,
+          "mean_wer_pct": 39.9507
+        },
+        "4482383": {
+          "utterances": 469,
+          "substitutions": 374,
+          "deletions": 160,
+          "insertions": 817,
+          "reference_words": 9763,
+          "errors": 1351,
+          "corpus_wer_pct": 13.838,
+          "mean_wer_pct": 27.1052
+        },
+        "4482613": {
+          "utterances": 592,
+          "substitutions": 790,
+          "deletions": 284,
+          "insertions": 1061,
+          "reference_words": 9168,
+          "errors": 2135,
+          "corpus_wer_pct": 23.2875,
+          "mean_wer_pct": 37.7007
+        },
+        "4483937": {
+          "utterances": 517,
+          "substitutions": 263,
+          "deletions": 169,
+          "insertions": 1251,
+          "reference_words": 8680,
+          "errors": 1683,
+          "corpus_wer_pct": 19.3894,
+          "mean_wer_pct": 40.0443
+        },
+        "4485192": {
+          "utterances": 461,
+          "substitutions": 239,
+          "deletions": 161,
+          "insertions": 852,
+          "reference_words": 9910,
+          "errors": 1252,
+          "corpus_wer_pct": 12.6337,
+          "mean_wer_pct": 32.459
+        }
+      },
+      "per_call_saea_scoring_v1": {
+        "4453225": {
+          "utterances": 635,
+          "substitutions": 878,
+          "deletions": 546,
+          "insertions": 1774,
+          "reference_words": 11441,
+          "errors": 3198,
+          "corpus_wer_pct": 27.9521,
+          "mean_wer_pct": 39.346
+        },
+        "4469088": {
+          "utterances": 922,
+          "substitutions": 719,
+          "deletions": 458,
+          "insertions": 1637,
+          "reference_words": 11827,
+          "errors": 2814,
+          "corpus_wer_pct": 23.793,
+          "mean_wer_pct": 42.1511
+        },
+        "4470684": {
+          "utterances": 589,
+          "substitutions": 642,
+          "deletions": 634,
+          "insertions": 1293,
+          "reference_words": 11505,
+          "errors": 2569,
+          "corpus_wer_pct": 22.3294,
+          "mean_wer_pct": 29.4921
+        },
+        "4474506": {
+          "utterances": 633,
+          "substitutions": 726,
+          "deletions": 292,
+          "insertions": 1379,
+          "reference_words": 11732,
+          "errors": 2397,
+          "corpus_wer_pct": 20.4313,
+          "mean_wer_pct": 39.2386
+        },
+        "4479944": {
+          "utterances": 588,
+          "substitutions": 1207,
+          "deletions": 227,
+          "insertions": 2232,
+          "reference_words": 10920,
+          "errors": 3666,
+          "corpus_wer_pct": 33.5714,
+          "mean_wer_pct": 51.6998
+        },
+        "4481952": {
+          "utterances": 632,
+          "substitutions": 735,
+          "deletions": 257,
+          "insertions": 1270,
+          "reference_words": 10096,
+          "errors": 2262,
+          "corpus_wer_pct": 22.4049,
+          "mean_wer_pct": 43.0444
+        },
+        "4482383": {
+          "utterances": 469,
+          "substitutions": 662,
+          "deletions": 190,
+          "insertions": 1119,
+          "reference_words": 9743,
+          "errors": 1971,
+          "corpus_wer_pct": 20.2299,
+          "mean_wer_pct": 32.943
+        },
+        "4482613": {
+          "utterances": 592,
+          "substitutions": 1107,
+          "deletions": 372,
+          "insertions": 1366,
+          "reference_words": 9428,
+          "errors": 2845,
+          "corpus_wer_pct": 30.1761,
+          "mean_wer_pct": 43.8182
+        },
+        "4483937": {
+          "utterances": 517,
+          "substitutions": 467,
+          "deletions": 280,
+          "insertions": 1431,
+          "reference_words": 9128,
+          "errors": 2178,
+          "corpus_wer_pct": 23.8606,
+          "mean_wer_pct": 42.1819
+        },
+        "4485192": {
+          "utterances": 461,
+          "substitutions": 443,
+          "deletions": 185,
+          "insertions": 1012,
+          "reference_words": 9877,
+          "errors": 1640,
+          "corpus_wer_pct": 16.6042,
+          "mean_wer_pct": 34.1896
+        }
+      },
+      "error_shape": {
+        "sealed_corpus_wer_pct": 18.3944,
+        "boundary": "Every figure in this file is a DIAGNOSTIC computed after the fact on sealed outputs. None of it is the verdict, none of it was fitted, and the two transforms marked oracle = true use the reference's own length and are upper bounds on a component rather than achievable numbers.",
+        "length": {
+          "reference_words": 103423,
+          "hypothesis_words": 112926,
+          "ratio": 1.0919,
+          "utterances_with_a_longer_hypothesis": 3648,
+          "utterances_with_a_shorter_hypothesis": 740,
+          "excess_hypothesis_tokens": 10898
+        },
+        "by_duration_bucket": [
+          {
+            "seconds_from": 0,
+            "seconds_to": 1,
+            "utterances": 503,
+            "hypothesis_words": 1527,
+            "length_ratio": 1.2071,
+            "insertion_share_of_errors_pct": 50.2,
+            "substitutions": 258,
+            "deletions": 234,
+            "insertions": 496,
+            "reference_words": 1265,
+            "corpus_wer_pct": 78.1028
+          },
+          {
+            "seconds_from": 1,
+            "seconds_to": 2,
+            "utterances": 483,
+            "hypothesis_words": 2994,
+            "length_ratio": 1.2151,
+            "insertion_share_of_errors_pct": 61.96,
+            "substitutions": 269,
+            "deletions": 146,
+            "insertions": 676,
+            "reference_words": 2464,
+            "corpus_wer_pct": 44.2776
+          },
+          {
+            "seconds_from": 2,
+            "seconds_to": 4,
+            "utterances": 1163,
+            "hypothesis_words": 11987,
+            "length_ratio": 1.1784,
+            "insertion_share_of_errors_pct": 66.68,
+            "substitutions": 712,
+            "deletions": 390,
+            "insertions": 2205,
+            "reference_words": 10172,
+            "corpus_wer_pct": 32.5108
+          },
+          {
+            "seconds_from": 4,
+            "seconds_to": 8,
+            "utterances": 1991,
+            "hypothesis_words": 34752,
+            "length_ratio": 1.1187,
+            "insertion_share_of_errors_pct": 68.61,
+            "substitutions": 1342,
+            "deletions": 636,
+            "insertions": 4323,
+            "reference_words": 31065,
+            "corpus_wer_pct": 20.2833
+          },
+          {
+            "seconds_from": 8,
+            "seconds_to": 16,
+            "utterances": 1625,
+            "hypothesis_words": 47942,
+            "length_ratio": 1.0584,
+            "insertion_share_of_errors_pct": 59.35,
+            "substitutions": 1539,
+            "deletions": 862,
+            "insertions": 3506,
+            "reference_words": 45298,
+            "corpus_wer_pct": 13.0403
+          },
+          {
+            "seconds_from": 16,
+            "seconds_to": 40,
+            "utterances": 271,
+            "hypothesis_words": 13688,
+            "length_ratio": 1.0427,
+            "insertion_share_of_errors_pct": 54.11,
+            "substitutions": 443,
+            "deletions": 211,
+            "insertions": 771,
+            "reference_words": 13128,
+            "corpus_wer_pct": 10.8547
+          }
+        ],
+        "transforms": {
+          "hypothesis_immediate_repeats_collapsed": {
+            "oracle": false,
+            "what": "collapse runs of an identical word in the HYPOTHESIS only",
+            "substitutions": 4706,
+            "deletions": 3764,
+            "insertions": 11623,
+            "reference_words": 103423,
+            "corpus_wer_pct": 19.428,
+            "delta_vs_sealed_pct": 1.0336
+          },
+          "both_sides_immediate_repeats_collapsed": {
+            "oracle": false,
+            "what": "collapse runs of an identical word on BOTH sides",
+            "substitutions": 4436,
+            "deletions": 2074,
+            "insertions": 11838,
+            "reference_words": 101518,
+            "corpus_wer_pct": 18.0736,
+            "delta_vs_sealed_pct": -0.3208
+          },
+          "hypothesis_truncated_to_reference_length": {
+            "oracle": true,
+            "what": "cut each hypothesis to its own reference word count -- an ORACLE transform that bounds the over-generation component from above and is not an achievable result",
+            "substitutions": 4944,
+            "deletions": 3817,
+            "insertions": 2422,
+            "reference_words": 103423,
+            "corpus_wer_pct": 10.8129,
+            "delta_vs_sealed_pct": -7.5815
+          },
+          "dedup_then_truncate": {
+            "oracle": true,
+            "what": "both of the above, composed; also an ORACLE bound",
+            "substitutions": 5055,
+            "deletions": 4859,
+            "insertions": 2774,
+            "reference_words": 103423,
+            "corpus_wer_pct": 12.2681,
+            "delta_vs_sealed_pct": -6.1263
+          }
+        },
+        "minimum_duration": {
+          "at_least_1s": {
+            "substitutions": 4305,
+            "deletions": 2245,
+            "insertions": 11486,
+            "reference_words": 102158,
+            "corpus_wer_pct": 17.655,
+            "utterances": 5535,
+            "delta_vs_sealed_pct": -0.7394
+          },
+          "at_least_2s": {
+            "substitutions": 4036,
+            "deletions": 2099,
+            "insertions": 10810,
+            "reference_words": 99694,
+            "corpus_wer_pct": 16.997,
+            "utterances": 5052,
+            "delta_vs_sealed_pct": -1.3974
+          },
+          "at_least_3s": {
+            "substitutions": 3657,
+            "deletions": 1890,
+            "insertions": 9547,
+            "reference_words": 95247,
+            "corpus_wer_pct": 15.8472,
+            "utterances": 4450,
+            "delta_vs_sealed_pct": -2.5472
+          }
+        },
+        "empty_reference_after_normalization": {
+          "ids": [
+            "4469088-473",
+            "4469088-678",
+            "4469088-855",
+            "4470684-366",
+            "4470684-435",
+            "4481952-527",
+            "4481952-572",
+            "4481952-610",
+            "4482613-350",
+            "4483937-483"
+          ],
+          "count": 10,
+          "hypothesis_words_counted_as_insertions": 19,
+          "note": "a reference that normalizes to nothing (an isolated 'Um.', 'mm-hmm <affirmative>.' or '<inaudible>.') contributes zero reference words to the denominator while any hypothesis words it draws are counted as insertions in the numerator. Four rows of 2,735; the effect on the corpus figure is a few hundredths of a point and is recorded rather than removed."
+        },
+        "non_english_hypotheses": {
+          "ids": [
+            "4469088-522",
+            "4474506-499",
+            "4479944-275",
+            "4481952-268",
+            "4481952-329",
+            "4481952-330",
+            "4482383-333",
+            "4482383-386",
+            "4482613-391",
+            "4482613-414",
+            "4485192-380",
+            "4485192-440"
+          ],
+          "count": 12,
+          "note": "hypotheses containing CJK-range characters, all on sub-second clips. A real defect of the frozen core on near-empty audio, three rows of 2,735."
+        }
+      },
+      "length_shape_direct": {
+        "reference_words": 103423,
+        "hypothesis_words": 112926,
+        "ratio": 1.0919,
+        "utterances_with_a_longer_hypothesis": 3648,
+        "utterances_with_a_shorter_hypothesis": 740
+      }
+    },
+    "C": {
+      "run_id": "SAEA-E22-DEV-ESB-SHAPE-C-V1",
+      "attempt_id": "attempt-20260905T094322Z-2174df",
+      "cell_id": "E22-ESB-DEV-C",
+      "study_commit": "a402f6281777ca27f8178904e3fe1258c2f1b8b9",
+      "config_hash": "b9e14e330360d9ea6a1478e2677837af6973562e6341cd8c8052c9749d1e7436",
+      "protocol_hash": "b75c42cb4120589cab293f264305c043a3881df82d871fbe42badb60e73e6e13",
+      "split_identity_hash": "fc14c98bae814f1c70314393078c9aa360e3638f82bd2e77d1ddb962f8bdebb3",
+      "manifest_sha256": "a7d304eee2e85cb2e4bd5cacb9808f7aec1fa5e91733b5faf8c39dffc34341a0",
+      "manifest_path_sha256_recomputed": "a7d304eee2e85cb2e4bd5cacb9808f7aec1fa5e91733b5faf8c39dffc34341a0",
+      "attempt_state": "FINALIZED",
+      "baseline_fragment": "e22-esb-dev-shape-c",
+      "task_instruction": "Transcribe the English audio into text.",
+      "request_shape": {
+        "omit_system_message": true,
+        "user_turn_text": "Transcribe the English audio into text.",
+        "user_turn_audio_first": true,
+        "wire_messages": "[user: audio, text]"
+      },
+      "cost": {
+        "contacts": 6038,
+        "speech_audio_seconds": 39292.64675,
+        "dispatch_wall_seconds": 1652.1,
+        "server_startup_seconds": 11.1,
+        "gpu_hours": 0.462,
+        "realtime_factor": 23.78,
+        "contacts_per_second": 3.655,
+        "mean_latency_seconds": 2.0744,
+        "prompt_tokens_total": 659676,
+        "prompt_tokens_mean": 109.25,
+        "completion_tokens_total": 136361,
+        "completion_tokens_mean": 22.58
+      },
+      "token_extremes": {
+        "largest_prompt_tokens": 1045,
+        "largest_completion_tokens": 118
+      },
+      "completion_ceiling_tokens": 1024,
+      "scorers_declared": [
+        "asr-wer-esb-whisper",
+        "asr-wer-esb",
+        "cost"
+      ],
+      "scoring_batch_verified": true,
+      "scoring_batch_aggregates": {},
+      "headline": {
+        "corpus_wer_whisper_pct": 17.8896,
+        "mean_of_per_utterance_wer_whisper_pct": 31.3062,
+        "corpus_wer_saea_scoring_v1_pct": 25.207,
+        "mean_of_per_utterance_wer_saea_scoring_v1_pct": 36.9595,
+        "equal_call_weighted_whisper_pct": 17.8262
+      },
+      "counts_whisper": {
+        "utterances": 6038,
+        "substitutions": 4433,
+        "deletions": 4975,
+        "insertions": 9094,
+        "reference_words": 103423,
+        "errors": 18502,
+        "corpus_wer_pct": 17.8896,
+        "mean_wer_pct": 31.3062
+      },
+      "counts_saea_scoring_v1": {
+        "utterances": 6038,
+        "substitutions": 7870,
+        "deletions": 7981,
+        "insertions": 10792,
+        "reference_words": 105697,
+        "errors": 26643,
+        "corpus_wer_pct": 25.207,
+        "mean_wer_pct": 36.9595
+      },
+      "per_call_whisper": {
+        "4453225": {
+          "utterances": 635,
+          "substitutions": 563,
+          "deletions": 741,
+          "insertions": 1134,
+          "reference_words": 11304,
+          "errors": 2438,
+          "corpus_wer_pct": 21.5676,
+          "mean_wer_pct": 26.5733
+        },
+        "4469088": {
+          "utterances": 922,
+          "substitutions": 522,
+          "deletions": 873,
+          "insertions": 1134,
+          "reference_words": 11493,
+          "errors": 2529,
+          "corpus_wer_pct": 22.0047,
+          "mean_wer_pct": 37.1304
+        },
+        "4470684": {
+          "utterances": 589,
+          "substitutions": 263,
+          "deletions": 362,
+          "insertions": 874,
+          "reference_words": 10862,
+          "errors": 1499,
+          "corpus_wer_pct": 13.8004,
+          "mean_wer_pct": 19.9543
+        },
+        "4474506": {
+          "utterances": 633,
+          "substitutions": 373,
+          "deletions": 571,
+          "insertions": 816,
+          "reference_words": 11534,
+          "errors": 1760,
+          "corpus_wer_pct": 15.2592,
+          "mean_wer_pct": 32.16
+        },
+        "4479944": {
+          "utterances": 588,
+          "substitutions": 626,
+          "deletions": 393,
+          "insertions": 1219,
+          "reference_words": 10882,
+          "errors": 2238,
+          "corpus_wer_pct": 20.5661,
+          "mean_wer_pct": 34.3361
+        },
+        "4481952": {
+          "utterances": 632,
+          "substitutions": 404,
+          "deletions": 557,
+          "insertions": 883,
+          "reference_words": 9827,
+          "errors": 1844,
+          "corpus_wer_pct": 18.7646,
+          "mean_wer_pct": 39.584
+        },
+        "4482383": {
+          "utterances": 469,
+          "substitutions": 413,
+          "deletions": 427,
+          "insertions": 666,
+          "reference_words": 9763,
+          "errors": 1506,
+          "corpus_wer_pct": 15.4256,
+          "mean_wer_pct": 24.5951
+        },
+        "4482613": {
+          "utterances": 592,
+          "substitutions": 726,
+          "deletions": 357,
+          "insertions": 886,
+          "reference_words": 9168,
+          "errors": 1969,
+          "corpus_wer_pct": 21.4769,
+          "mean_wer_pct": 36.0434
+        },
+        "4483937": {
+          "utterances": 517,
+          "substitutions": 273,
+          "deletions": 309,
+          "insertions": 789,
+          "reference_words": 8680,
+          "errors": 1371,
+          "corpus_wer_pct": 15.7949,
+          "mean_wer_pct": 28.373
+        },
+        "4485192": {
+          "utterances": 461,
+          "substitutions": 270,
+          "deletions": 385,
+          "insertions": 693,
+          "reference_words": 9910,
+          "errors": 1348,
+          "corpus_wer_pct": 13.6024,
+          "mean_wer_pct": 28.3291
+        }
+      },
+      "per_call_saea_scoring_v1": {
+        "4453225": {
+          "utterances": 635,
+          "substitutions": 886,
+          "deletions": 1122,
+          "insertions": 1148,
+          "reference_words": 11441,
+          "errors": 3156,
+          "corpus_wer_pct": 27.585,
+          "mean_wer_pct": 32.7419
+        },
+        "4469088": {
+          "utterances": 922,
+          "substitutions": 788,
+          "deletions": 1468,
+          "insertions": 1126,
+          "reference_words": 11827,
+          "errors": 3382,
+          "corpus_wer_pct": 28.5956,
+          "mean_wer_pct": 42.0553
+        },
+        "4470684": {
+          "utterances": 589,
+          "substitutions": 683,
+          "deletions": 976,
+          "insertions": 1088,
+          "reference_words": 11505,
+          "errors": 2747,
+          "corpus_wer_pct": 23.8766,
+          "mean_wer_pct": 28.3701
+        },
+        "4474506": {
+          "utterances": 633,
+          "substitutions": 800,
+          "deletions": 887,
+          "insertions": 1024,
+          "reference_words": 11732,
+          "errors": 2711,
+          "corpus_wer_pct": 23.1077,
+          "mean_wer_pct": 36.7837
+        },
+        "4479944": {
+          "utterances": 588,
+          "substitutions": 1183,
+          "deletions": 295,
+          "insertions": 1635,
+          "reference_words": 10920,
+          "errors": 3113,
+          "corpus_wer_pct": 28.5073,
+          "mean_wer_pct": 40.9687
+        },
+        "4481952": {
+          "utterances": 632,
+          "substitutions": 752,
+          "deletions": 907,
+          "insertions": 1024,
+          "reference_words": 10096,
+          "errors": 2683,
+          "corpus_wer_pct": 26.5749,
+          "mean_wer_pct": 43.9174
+        },
+        "4482383": {
+          "utterances": 469,
+          "substitutions": 741,
+          "deletions": 508,
+          "insertions": 909,
+          "reference_words": 9743,
+          "errors": 2158,
+          "corpus_wer_pct": 22.1492,
+          "mean_wer_pct": 30.9825
+        },
+        "4482613": {
+          "utterances": 592,
+          "substitutions": 1005,
+          "deletions": 567,
+          "insertions": 1125,
+          "reference_words": 9428,
+          "errors": 2697,
+          "corpus_wer_pct": 28.6063,
+          "mean_wer_pct": 41.7128
+        },
+        "4483937": {
+          "utterances": 517,
+          "substitutions": 507,
+          "deletions": 791,
+          "insertions": 847,
+          "reference_words": 9128,
+          "errors": 2145,
+          "corpus_wer_pct": 23.4991,
+          "mean_wer_pct": 34.4821
+        },
+        "4485192": {
+          "utterances": 461,
+          "substitutions": 525,
+          "deletions": 460,
+          "insertions": 866,
+          "reference_words": 9877,
+          "errors": 1851,
+          "corpus_wer_pct": 18.7405,
+          "mean_wer_pct": 31.8956
+        }
+      },
+      "error_shape": {
+        "sealed_corpus_wer_pct": 17.8896,
+        "boundary": "Every figure in this file is a DIAGNOSTIC computed after the fact on sealed outputs. None of it is the verdict, none of it was fitted, and the two transforms marked oracle = true use the reference's own length and are upper bounds on a component rather than achievable numbers.",
+        "length": {
+          "reference_words": 103423,
+          "hypothesis_words": 107542,
+          "ratio": 1.0398,
+          "utterances_with_a_longer_hypothesis": 2659,
+          "utterances_with_a_shorter_hypothesis": 1451,
+          "excess_hypothesis_tokens": 7458
+        },
+        "by_duration_bucket": [
+          {
+            "seconds_from": 0,
+            "seconds_to": 1,
+            "utterances": 503,
+            "hypothesis_words": 1410,
+            "length_ratio": 1.1146,
+            "insertion_share_of_errors_pct": 44.26,
+            "substitutions": 242,
+            "deletions": 229,
+            "insertions": 374,
+            "reference_words": 1265,
+            "corpus_wer_pct": 66.7984
+          },
+          {
+            "seconds_from": 1,
+            "seconds_to": 2,
+            "utterances": 483,
+            "hypothesis_words": 2727,
+            "length_ratio": 1.1067,
+            "insertion_share_of_errors_pct": 51.28,
+            "substitutions": 240,
+            "deletions": 196,
+            "insertions": 459,
+            "reference_words": 2464,
+            "corpus_wer_pct": 36.3231
+          },
+          {
+            "seconds_from": 2,
+            "seconds_to": 4,
+            "utterances": 1163,
+            "hypothesis_words": 10930,
+            "length_ratio": 1.0745,
+            "insertion_share_of_errors_pct": 51.16,
+            "substitutions": 694,
+            "deletions": 657,
+            "insertions": 1415,
+            "reference_words": 10172,
+            "corpus_wer_pct": 27.1923
+          },
+          {
+            "seconds_from": 4,
+            "seconds_to": 8,
+            "utterances": 1991,
+            "hypothesis_words": 32982,
+            "length_ratio": 1.0617,
+            "insertion_share_of_errors_pct": 55.06,
+            "substitutions": 1310,
+            "deletions": 1386,
+            "insertions": 3303,
+            "reference_words": 31065,
+            "corpus_wer_pct": 19.3111
+          },
+          {
+            "seconds_from": 8,
+            "seconds_to": 16,
+            "utterances": 1625,
+            "hypothesis_words": 46268,
+            "length_ratio": 1.0214,
+            "insertion_share_of_errors_pct": 45.78,
+            "substitutions": 1511,
+            "deletions": 1967,
+            "insertions": 2937,
+            "reference_words": 45298,
+            "corpus_wer_pct": 14.1618
+          },
+          {
+            "seconds_from": 16,
+            "seconds_to": 40,
+            "utterances": 271,
+            "hypothesis_words": 13188,
+            "length_ratio": 1.0046,
+            "insertion_share_of_errors_pct": 38.1,
+            "substitutions": 435,
+            "deletions": 540,
+            "insertions": 600,
+            "reference_words": 13128,
+            "corpus_wer_pct": 11.9973
+          }
+        ],
+        "transforms": {
+          "hypothesis_immediate_repeats_collapsed": {
+            "oracle": false,
+            "what": "collapse runs of an identical word in the HYPOTHESIS only",
+            "substitutions": 4439,
+            "deletions": 5183,
+            "insertions": 9028,
+            "reference_words": 103423,
+            "corpus_wer_pct": 18.0327,
+            "delta_vs_sealed_pct": 0.1431
+          },
+          "both_sides_immediate_repeats_collapsed": {
+            "oracle": false,
+            "what": "collapse runs of an identical word on BOTH sides",
+            "substitutions": 4221,
+            "deletions": 3444,
+            "insertions": 9194,
+            "reference_words": 101518,
+            "corpus_wer_pct": 16.6069,
+            "delta_vs_sealed_pct": -1.2827
+          },
+          "hypothesis_truncated_to_reference_length": {
+            "oracle": true,
+            "what": "cut each hypothesis to its own reference word count -- an ORACLE transform that bounds the over-generation component from above and is not an achievable result",
+            "substitutions": 4668,
+            "deletions": 5682,
+            "insertions": 2343,
+            "reference_words": 103423,
+            "corpus_wer_pct": 12.2729,
+            "delta_vs_sealed_pct": -5.6167
+          },
+          "dedup_then_truncate": {
+            "oracle": true,
+            "what": "both of the above, composed; also an ORACLE bound",
+            "substitutions": 4667,
+            "deletions": 5862,
+            "insertions": 2386,
+            "reference_words": 103423,
+            "corpus_wer_pct": 12.4876,
+            "delta_vs_sealed_pct": -5.402
+          }
+        },
+        "minimum_duration": {
+          "at_least_1s": {
+            "substitutions": 4191,
+            "deletions": 4746,
+            "insertions": 8720,
+            "reference_words": 102158,
+            "corpus_wer_pct": 17.284,
+            "utterances": 5535,
+            "delta_vs_sealed_pct": -0.6056
+          },
+          "at_least_2s": {
+            "substitutions": 3951,
+            "deletions": 4550,
+            "insertions": 8261,
+            "reference_words": 99694,
+            "corpus_wer_pct": 16.8134,
+            "utterances": 5052,
+            "delta_vs_sealed_pct": -1.0762
+          },
+          "at_least_3s": {
+            "substitutions": 3580,
+            "deletions": 4230,
+            "insertions": 7541,
+            "reference_words": 95247,
+            "corpus_wer_pct": 16.117,
+            "utterances": 4450,
+            "delta_vs_sealed_pct": -1.7726
+          }
+        },
+        "empty_reference_after_normalization": {
+          "ids": [
+            "4469088-473",
+            "4469088-678",
+            "4469088-855",
+            "4470684-366",
+            "4470684-435",
+            "4481952-527",
+            "4481952-572",
+            "4481952-610",
+            "4482613-350",
+            "4483937-483"
+          ],
+          "count": 10,
+          "hypothesis_words_counted_as_insertions": 25,
+          "note": "a reference that normalizes to nothing (an isolated 'Um.', 'mm-hmm <affirmative>.' or '<inaudible>.') contributes zero reference words to the denominator while any hypothesis words it draws are counted as insertions in the numerator. Four rows of 2,735; the effect on the corpus figure is a few hundredths of a point and is recorded rather than removed."
+        },
+        "non_english_hypotheses": {
+          "ids": [],
+          "count": 0,
+          "note": "hypotheses containing CJK-range characters, all on sub-second clips. A real defect of the frozen core on near-empty audio, three rows of 2,735."
+        }
+      },
+      "length_shape_direct": {
+        "reference_words": 103423,
+        "hypothesis_words": 107542,
+        "ratio": 1.0398,
+        "utterances_with_a_longer_hypothesis": 2659,
+        "utterances_with_a_shorter_hypothesis": 1451
+      }
+    }
+  },
+  "arm_names": [
+    "A",
+    "B",
+    "C"
+  ],
+  "held_constant": "the roster, the derived media bytes, the derived reference layer, the scorers, the build, the quantization, the audio path, the serving geometry, the decoding parameters, the harness and the entry point. Arms A and B differ from each other in the instruction TEXT only; arm C differs from arm B in the request SHAPE only, at a byte-identical instruction string.",
+  "paired_contrasts": {
+    "C-A": {
+      "right_arm": "C",
+      "left_arm": "A",
+      "convention": "metric = NEGATED per-utterance Whisper-normalized WER, so delta = A_wer - C_wer is POSITIVE when arm C is better and 'saves' counts utterances arm C improves",
+      "n": 6038,
+      "left_mean_neg_wer": -0.33124948167124285,
+      "right_mean_neg_wer": -0.313061650596914,
+      "delta_neg_wer": 0.018187831074328864,
+      "mean_per_utterance_wer_a": 0.33124948167124285,
+      "mean_per_utterance_wer_c": 0.313061650596914,
+      "mean_per_utterance_wer_delta_right_minus_left": -0.018187831074328864,
+      "saves_right_better": 1436,
+      "harms_right_worse": 1537,
+      "ties": 3065,
+      "sign_test_p": 0.06663394053993509,
+      "bootstrap": {
+        "seed": 20260903,
+        "n_replicates": 10000,
+        "ci_level": 0.9,
+        "strata": "source call (10)",
+        "point_estimate": 0.01818783107432887,
+        "ci_low": 0.011220685943422147,
+        "ci_high": 0.02510775132038834,
+        "sigma_hat": 0.004189137083762831
+      },
+      "ci90_lower_bound_above_zero": true,
+      "corpus_level_delta": {
+        "convention": "A_corpus_wer - C_corpus_wer in points: POSITIVE when arm C is better",
+        "point_estimate": -0.3248793788615707,
+        "ci_low": -0.5297096399850838,
+        "ci_high": -0.1160013358863229,
+        "sigma_hat": 0.1260771138059615,
+        "seed": 20260903,
+        "n_replicates": 10000,
+        "ci_level": 0.9,
+        "strata": "source call (10)",
+        "raw_right_minus_left_points": 0.3248,
+        "note": "the same stratified resampling rule and seed the per-utterance contrast uses, applied to the corpus statistic, which is the paper-facing aggregation"
+      },
+      "per_stratum": [
+        {
+          "stratum": "4453225",
+          "n": 635,
+          "left_mean": -0.2621151096418959,
+          "right_mean": -0.2657327585808677,
+          "delta": -0.003617648938971818,
+          "saves": 148,
+          "harms": 203,
+          "ties": 284
+        },
+        {
+          "stratum": "4469088",
+          "n": 922,
+          "left_mean": -0.3763376850415527,
+          "right_mean": -0.3713038564018305,
+          "delta": 0.005033828639722182,
+          "saves": 179,
+          "harms": 286,
+          "ties": 457
+        },
+        {
+          "stratum": "4470684",
+          "n": 589,
+          "left_mean": -0.23461280804830248,
+          "right_mean": -0.19954310529558816,
+          "delta": 0.035069702752714316,
+          "saves": 151,
+          "harms": 116,
+          "ties": 322
+        },
+        {
+          "stratum": "4474506",
+          "n": 633,
+          "left_mean": -0.33889007561263684,
+          "right_mean": -0.3215998319882779,
+          "delta": 0.017290243624358936,
+          "saves": 146,
+          "harms": 158,
+          "ties": 329
+        },
+        {
+          "stratum": "4479944",
+          "n": 588,
+          "left_mean": -0.4013964534579756,
+          "right_mean": -0.3433605590540704,
+          "delta": 0.058035894403905164,
+          "saves": 237,
+          "harms": 82,
+          "ties": 269
+        },
+        {
+          "stratum": "4481952",
+          "n": 632,
+          "left_mean": -0.39721530534034516,
+          "right_mean": -0.3958397381970492,
+          "delta": 0.0013755671432959526,
+          "saves": 128,
+          "harms": 185,
+          "ties": 319
+        },
+        {
+          "stratum": "4482383",
+          "n": 469,
+          "left_mean": -0.2703977730083817,
+          "right_mean": -0.24595064360232227,
+          "delta": 0.02444712940605942,
+          "saves": 118,
+          "harms": 132,
+          "ties": 219
+        },
+        {
+          "stratum": "4482613",
+          "n": 592,
+          "left_mean": -0.3648599259605662,
+          "right_mean": -0.3604343215449893,
+          "delta": 0.004425604415576934,
+          "saves": 160,
+          "harms": 123,
+          "ties": 309
+        },
+        {
+          "stratum": "4483937",
+          "n": 517,
+          "left_mean": -0.3178620009002009,
+          "right_mean": -0.28372977526811627,
+          "delta": 0.03413222563208462,
+          "saves": 96,
+          "harms": 126,
+          "ties": 295
+        },
+        {
+          "stratum": "4485192",
+          "n": 461,
+          "left_mean": -0.30313252605948365,
+          "right_mean": -0.28329114762056246,
+          "delta": 0.019841378438921198,
+          "saves": 73,
+          "harms": 126,
+          "ties": 262
+        }
+      ]
+    },
+    "C-B": {
+      "right_arm": "C",
+      "left_arm": "B",
+      "convention": "metric = NEGATED per-utterance Whisper-normalized WER, so delta = B_wer - C_wer is POSITIVE when arm C is better and 'saves' counts utterances arm C improves",
+      "n": 6038,
+      "left_mean_neg_wer": -0.35865893104593494,
+      "right_mean_neg_wer": -0.313061650596914,
+      "delta_neg_wer": 0.04559728044902095,
+      "mean_per_utterance_wer_b": 0.35865893104593494,
+      "mean_per_utterance_wer_c": 0.313061650596914,
+      "mean_per_utterance_wer_delta_right_minus_left": -0.04559728044902095,
+      "saves_right_better": 1493,
+      "harms_right_worse": 1466,
+      "ties": 3079,
+      "sign_test_p": 0.6326787769105233,
+      "bootstrap": {
+        "seed": 20260903,
+        "n_replicates": 10000,
+        "ci_level": 0.9,
+        "strata": "source call (10)",
+        "point_estimate": 0.04559728044902078,
+        "ci_low": 0.030317601927954446,
+        "ci_high": 0.06407722001718104,
+        "sigma_hat": 0.010376303926177314
+      },
+      "ci90_lower_bound_above_zero": true,
+      "corpus_level_delta": {
+        "convention": "B_corpus_wer - C_corpus_wer in points: POSITIVE when arm C is better",
+        "point_estimate": 0.5047233207313653,
+        "ci_low": -0.17181836711643828,
+        "ci_high": 1.3440815074666537,
+        "sigma_hat": 0.46771911930171467,
+        "seed": 20260903,
+        "n_replicates": 10000,
+        "ci_level": 0.9,
+        "strata": "source call (10)",
+        "raw_right_minus_left_points": -0.5048,
+        "note": "the same stratified resampling rule and seed the per-utterance contrast uses, applied to the corpus statistic, which is the paper-facing aggregation"
+      },
+      "per_stratum": [
+        {
+          "stratum": "4453225",
+          "n": 635,
+          "left_mean": -0.34063719269457515,
+          "right_mean": -0.2657327585808677,
+          "delta": 0.07490443411370745,
+          "saves": 154,
+          "harms": 193,
+          "ties": 288
+        },
+        {
+          "stratum": "4469088",
+          "n": 922,
+          "left_mean": -0.39529403119398665,
+          "right_mean": -0.3713038564018305,
+          "delta": 0.02399017479215615,
+          "saves": 193,
+          "harms": 268,
+          "ties": 461
+        },
+        {
+          "stratum": "4470684",
+          "n": 589,
+          "left_mean": -0.2368648070521977,
+          "right_mean": -0.19954310529558816,
+          "delta": 0.03732170175660954,
+          "saves": 164,
+          "harms": 108,
+          "ties": 317
+        },
+        {
+          "stratum": "4474506",
+          "n": 633,
+          "left_mean": -0.37306882668644237,
+          "right_mean": -0.3215998319882779,
+          "delta": 0.05146899469816446,
+          "saves": 168,
+          "harms": 148,
+          "ties": 317
+        },
+        {
+          "stratum": "4479944",
+          "n": 588,
+          "left_mean": -0.42463624451921167,
+          "right_mean": -0.3433605590540704,
+          "delta": 0.08127568546514125,
+          "saves": 237,
+          "harms": 83,
+          "ties": 268
+        },
+        {
+          "stratum": "4481952",
+          "n": 632,
+          "left_mean": -0.39950681657084947,
+          "right_mean": -0.3958397381970492,
+          "delta": 0.003667078373800259,
+          "saves": 121,
+          "harms": 176,
+          "ties": 335
+        },
+        {
+          "stratum": "4482383",
+          "n": 469,
+          "left_mean": -0.2710520548744763,
+          "right_mean": -0.24595064360232227,
+          "delta": 0.02510141127215404,
+          "saves": 99,
+          "harms": 139,
+          "ties": 231
+        },
+        {
+          "stratum": "4482613",
+          "n": 592,
+          "left_mean": -0.3770069907430071,
+          "right_mean": -0.3604343215449893,
+          "delta": 0.01657266919801781,
+          "saves": 171,
+          "harms": 120,
+          "ties": 301
+        },
+        {
+          "stratum": "4483937",
+          "n": 517,
+          "left_mean": -0.4004425915519456,
+          "right_mean": -0.28372977526811627,
+          "delta": 0.11671281628382935,
+          "saves": 104,
+          "harms": 112,
+          "ties": 301
+        },
+        {
+          "stratum": "4485192",
+          "n": 461,
+          "left_mean": -0.32459041420555895,
+          "right_mean": -0.28329114762056246,
+          "delta": 0.0412992665849965,
+          "saves": 82,
+          "harms": 119,
+          "ties": 260
+        }
+      ]
+    },
+    "B-A": {
+      "right_arm": "B",
+      "left_arm": "A",
+      "convention": "metric = NEGATED per-utterance Whisper-normalized WER, so delta = A_wer - B_wer is POSITIVE when arm B is better and 'saves' counts utterances arm B improves",
+      "n": 6038,
+      "left_mean_neg_wer": -0.33124948167124285,
+      "right_mean_neg_wer": -0.35865893104593494,
+      "delta_neg_wer": -0.027409449374692085,
+      "mean_per_utterance_wer_a": 0.33124948167124285,
+      "mean_per_utterance_wer_b": 0.35865893104593494,
+      "mean_per_utterance_wer_delta_right_minus_left": 0.027409449374692085,
+      "saves_right_better": 686,
+      "harms_right_worse": 821,
+      "ties": 4531,
+      "sign_test_p": 0.0005525225119838559,
+      "bootstrap": {
+        "seed": 20260903,
+        "n_replicates": 10000,
+        "ci_level": 0.9,
+        "strata": "source call (10)",
+        "point_estimate": -0.02740944937469202,
+        "ci_low": -0.0449336417097872,
+        "ci_high": -0.013256304451767604,
+        "sigma_hat": 0.009813907204775485
+      },
+      "ci90_lower_bound_above_zero": false,
+      "corpus_level_delta": {
+        "convention": "A_corpus_wer - B_corpus_wer in points: POSITIVE when arm B is better",
+        "point_estimate": -0.829602699592936,
+        "ci_low": -1.6529996937798637,
+        "ci_high": -0.17185378823820804,
+        "sigma_hat": 0.4550094507655303,
+        "seed": 20260903,
+        "n_replicates": 10000,
+        "ci_level": 0.9,
+        "strata": "source call (10)",
+        "raw_right_minus_left_points": 0.8296,
+        "note": "the same stratified resampling rule and seed the per-utterance contrast uses, applied to the corpus statistic, which is the paper-facing aggregation"
+      },
+      "per_stratum": [
+        {
+          "stratum": "4453225",
+          "n": 635,
+          "left_mean": -0.2621151096418959,
+          "right_mean": -0.34063719269457515,
+          "delta": -0.07852208305267927,
+          "saves": 93,
+          "harms": 111,
+          "ties": 431
+        },
+        {
+          "stratum": "4469088",
+          "n": 922,
+          "left_mean": -0.3763376850415527,
+          "right_mean": -0.39529403119398665,
+          "delta": -0.018956346152433967,
+          "saves": 81,
+          "harms": 126,
+          "ties": 715
+        },
+        {
+          "stratum": "4470684",
+          "n": 589,
+          "left_mean": -0.23461280804830248,
+          "right_mean": -0.2368648070521977,
+          "delta": -0.002251999003895222,
+          "saves": 59,
+          "harms": 71,
+          "ties": 459
+        },
+        {
+          "stratum": "4474506",
+          "n": 633,
+          "left_mean": -0.33889007561263684,
+          "right_mean": -0.37306882668644237,
+          "delta": -0.034178751073805524,
+          "saves": 54,
+          "harms": 89,
+          "ties": 490
+        },
+        {
+          "stratum": "4479944",
+          "n": 588,
+          "left_mean": -0.4013964534579756,
+          "right_mean": -0.42463624451921167,
+          "delta": -0.02323979106123608,
+          "saves": 88,
+          "harms": 76,
+          "ties": 424
+        },
+        {
+          "stratum": "4481952",
+          "n": 632,
+          "left_mean": -0.39721530534034516,
+          "right_mean": -0.39950681657084947,
+          "delta": -0.002291511230504306,
+          "saves": 73,
+          "harms": 81,
+          "ties": 478
+        },
+        {
+          "stratum": "4482383",
+          "n": 469,
+          "left_mean": -0.2703977730083817,
+          "right_mean": -0.2710520548744763,
+          "delta": -0.0006542818660946192,
+          "saves": 67,
+          "harms": 47,
+          "ties": 355
+        },
+        {
+          "stratum": "4482613",
+          "n": 592,
+          "left_mean": -0.3648599259605662,
+          "right_mean": -0.3770069907430071,
+          "delta": -0.012147064782440875,
+          "saves": 82,
+          "harms": 100,
+          "ties": 410
+        },
+        {
+          "stratum": "4483937",
+          "n": 517,
+          "left_mean": -0.3178620009002009,
+          "right_mean": -0.4004425915519456,
+          "delta": -0.08258059065174472,
+          "saves": 44,
+          "harms": 64,
+          "ties": 409
+        },
+        {
+          "stratum": "4485192",
+          "n": 461,
+          "left_mean": -0.30313252605948365,
+          "right_mean": -0.32459041420555895,
+          "delta": -0.0214578881460753,
+          "saves": 45,
+          "harms": 56,
+          "ties": 360
+        }
+      ]
+    }
+  },
+  "primary_contrast": "C-A",
+  "decision": {
+    "rule": "the preregistered rule is stated on contrast C-A: arm C is adopted if its pooled corpus Whisper-normalized WER beats arm A, the paired CI90 lower bound is above 0, and the hypothesis-to-reference length ratio falls toward 1.0",
+    "corpus_wer_c_pct": 17.8896,
+    "corpus_wer_a_pct": 17.5648,
+    "right_minus_left_points": 0.3248,
+    "right_arm_is_lower": false,
+    "ci90_lower_bound_above_zero": true,
+    "length_ratio_c": 1.0398,
+    "length_ratio_a": 1.0861,
+    "length_ratio_falls_toward_one": true,
+    "length_ratio_condition_as_preregistered": "strictly below the left arm's pooled hypothesis/reference word ratio",
+    "distance_from_one": {
+      "C": 0.0398,
+      "A": 0.0861
+    },
+    "length_ratio_closer_to_one": true,
+    "why_both_readings_are_reported": "the preregistered clause reads 'strictly below', which a catastrophic UNDER-generation would also satisfy while overshooting 1.0. It cannot change the outcome, because the rule is a conjunction whose first condition is that the arm's corpus WER actually beats the control, and under-generation raises WER. Both readings are printed so a reader never has to take that on trust.",
+    "all_three_conditions_hold": false,
+    "lowest_corpus_wer_arm": "A"
+  },
+  "band_indication_only": {
+    "published_same_model_test_subset_wer": 9.79,
+    "cross_read_wer": 12.3,
+    "band": 3.0,
+    "per_arm": {
+      "A": {
+        "corpus_wer_whisper_pct": 17.5648,
+        "inside_band_of_9_79": false,
+        "inside_band_of_12_3": false
+      },
+      "B": {
+        "corpus_wer_whisper_pct": 18.3944,
+        "inside_band_of_9_79": false,
+        "inside_band_of_12_3": false
+      },
+      "C": {
+        "corpus_wer_whisper_pct": 17.8896,
+        "inside_band_of_9_79": false,
+        "inside_band_of_12_3": false
+      }
+    },
+    "caveat": "INDICATION ONLY. These ten calls are this study's dev subset10, not the published ESB test subset, and no published number covers them. No alignment verdict is issued here."
+  },
+  "sealed_test_flight_for_context": {
+    "run_id": "SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1",
+    "population": "the six ESB TEST calls, 2,735 utterances",
+    "corpus_wer_whisper_pct": 15.937,
+    "verdict": "NOT ALIGNED",
+    "caveat": "a DIFFERENT population. Arm A here sends that flight's instruction byte for byte, so the two arm-A numbers are protocol-comparable, but the corpora differ and the difference between them is not an effect of anything this experiment manipulated."
+  },
+  "paired_contrast_b_minus_a": {
+    "right_arm": "B",
+    "left_arm": "A",
+    "convention": "metric = NEGATED per-utterance Whisper-normalized WER, so delta = A_wer - B_wer is POSITIVE when arm B is better and 'saves' counts utterances arm B improves",
+    "n": 6038,
+    "left_mean_neg_wer": -0.33124948167124285,
+    "right_mean_neg_wer": -0.35865893104593494,
+    "delta_neg_wer": -0.027409449374692085,
+    "mean_per_utterance_wer_a": 0.33124948167124285,
+    "mean_per_utterance_wer_b": 0.35865893104593494,
+    "mean_per_utterance_wer_delta_right_minus_left": 0.027409449374692085,
+    "saves_right_better": 686,
+    "harms_right_worse": 821,
+    "ties": 4531,
+    "sign_test_p": 0.0005525225119838559,
+    "bootstrap": {
+      "seed": 20260903,
+      "n_replicates": 10000,
+      "ci_level": 0.9,
+      "strata": "source call (10)",
+      "point_estimate": -0.02740944937469202,
+      "ci_low": -0.0449336417097872,
+      "ci_high": -0.013256304451767604,
+      "sigma_hat": 0.009813907204775485
+    },
+    "ci90_lower_bound_above_zero": false,
+    "corpus_level_delta": {
+      "convention": "A_corpus_wer - B_corpus_wer in points: POSITIVE when arm B is better",
+      "point_estimate": -0.829602699592936,
+      "ci_low": -1.6529996937798637,
+      "ci_high": -0.17185378823820804,
+      "sigma_hat": 0.4550094507655303,
+      "seed": 20260903,
+      "n_replicates": 10000,
+      "ci_level": 0.9,
+      "strata": "source call (10)",
+      "raw_right_minus_left_points": 0.8296,
+      "note": "the same stratified resampling rule and seed the per-utterance contrast uses, applied to the corpus statistic, which is the paper-facing aggregation"
+    },
+    "per_stratum": [
+      {
+        "stratum": "4453225",
+        "n": 635,
+        "left_mean": -0.2621151096418959,
+        "right_mean": -0.34063719269457515,
+        "delta": -0.07852208305267927,
+        "saves": 93,
+        "harms": 111,
+        "ties": 431
+      },
+      {
+        "stratum": "4469088",
+        "n": 922,
+        "left_mean": -0.3763376850415527,
+        "right_mean": -0.39529403119398665,
+        "delta": -0.018956346152433967,
+        "saves": 81,
+        "harms": 126,
+        "ties": 715
+      },
+      {
+        "stratum": "4470684",
+        "n": 589,
+        "left_mean": -0.23461280804830248,
+        "right_mean": -0.2368648070521977,
+        "delta": -0.002251999003895222,
+        "saves": 59,
+        "harms": 71,
+        "ties": 459
+      },
+      {
+        "stratum": "4474506",
+        "n": 633,
+        "left_mean": -0.33889007561263684,
+        "right_mean": -0.37306882668644237,
+        "delta": -0.034178751073805524,
+        "saves": 54,
+        "harms": 89,
+        "ties": 490
+      },
+      {
+        "stratum": "4479944",
+        "n": 588,
+        "left_mean": -0.4013964534579756,
+        "right_mean": -0.42463624451921167,
+        "delta": -0.02323979106123608,
+        "saves": 88,
+        "harms": 76,
+        "ties": 424
+      },
+      {
+        "stratum": "4481952",
+        "n": 632,
+        "left_mean": -0.39721530534034516,
+        "right_mean": -0.39950681657084947,
+        "delta": -0.002291511230504306,
+        "saves": 73,
+        "harms": 81,
+        "ties": 478
+      },
+      {
+        "stratum": "4482383",
+        "n": 469,
+        "left_mean": -0.2703977730083817,
+        "right_mean": -0.2710520548744763,
+        "delta": -0.0006542818660946192,
+        "saves": 67,
+        "harms": 47,
+        "ties": 355
+      },
+      {
+        "stratum": "4482613",
+        "n": 592,
+        "left_mean": -0.3648599259605662,
+        "right_mean": -0.3770069907430071,
+        "delta": -0.012147064782440875,
+        "saves": 82,
+        "harms": 100,
+        "ties": 410
+      },
+      {
+        "stratum": "4483937",
+        "n": 517,
+        "left_mean": -0.3178620009002009,
+        "right_mean": -0.4004425915519456,
+        "delta": -0.08258059065174472,
+        "saves": 44,
+        "harms": 64,
+        "ties": 409
+      },
+      {
+        "stratum": "4485192",
+        "n": 461,
+        "left_mean": -0.30313252605948365,
+        "right_mean": -0.32459041420555895,
+        "delta": -0.0214578881460753,
+        "saves": 45,
+        "harms": 56,
+        "ties": 360
+      }
+    ]
+  },
+  "corpus_level_delta": {
+    "convention": "A_corpus_wer - B_corpus_wer in points: POSITIVE when arm B is better",
+    "point_estimate": -0.829602699592936,
+    "ci_low": -1.6529996937798637,
+    "ci_high": -0.17185378823820804,
+    "sigma_hat": 0.4550094507655303,
+    "seed": 20260903,
+    "n_replicates": 10000,
+    "ci_level": 0.9,
+    "strata": "source call (10)",
+    "raw_right_minus_left_points": 0.8296,
+    "note": "the same stratified resampling rule and seed the per-utterance contrast uses, applied to the corpus statistic, which is the paper-facing aggregation"
+  }
+}

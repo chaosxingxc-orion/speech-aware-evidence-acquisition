@@ -1,0 +1,160 @@
+{
+  "schema": "saea-e22-esb-prompt-fit-render-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "generated_at": "2026-09-05T09:35:32.328207+00:00",
+  "run_id": "SAEA-E22-DEV-ESB-SHAPE-C-PROMPT-FIT-V1",
+  "attempt_id": "attempt-20260905T093504Z-e22shapecfit",
+  "contacts": {
+    "GET /props": 1,
+    "POST /apply-template": 3,
+    "POST /tokenize": 6,
+    "generations": 0,
+    "generated_tokens": 0,
+    "basis": "only GET /props, POST /apply-template and POST /tokenize are called, none of which decodes. The server is spawned under a gate-checked contracts.ExecutionPlan bound to this run id's own exposure row and stopped with its own stop receipt."
+  },
+  "fragments": {
+    "dataset": "earnings22-esb-dev-utterances-6038",
+    "model": "q4km-e22-dev-esb-mmproj-gpu-04ccc72a-np8-c40960",
+    "experiment": "e22-dev-esb-shape-c-v1",
+    "baselines": [
+      "e22-esb-dev-prompt-a",
+      "e22-esb-dev-prompt-b",
+      "e22-esb-dev-shape-c"
+    ],
+    "gate_baseline": "e22-esb-dev-shape-c"
+  },
+  "server": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "server_args": [
+      "-c",
+      "40960",
+      "-np",
+      "8",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "declared_slots": 8,
+    "declared_slot_tokens": 5120,
+    "live_slot_n_ctx": 5120,
+    "model_load_seconds": 10.0,
+    "chat_template_sha256": "45777d2e798aae1d1ce6844e69edcb23fc0c710009554711c78efab9044da2c8",
+    "media_marker": "<__media_QS42UwuUJ5EOMdoufEOLAOcV0a6lQ098__>"
+  },
+  "media_stand_in": {
+    "sample_id": "4469088-654",
+    "media_relpath": "derived/e22-esb-utterances/dev-v1/4469088/4469088-654.wav",
+    "audio_seconds": 0.2199375,
+    "selection": "the roster's shortest utterance, deterministic"
+  },
+  "method": "the wire messages are captured from the REAL LlamaServerTransport -- resolved through the same TRANSPORTS registry entry, from the same composed config, driven with a real core.policies.build_arm_payload payload, with only its HTTP sender replaced -- and then rendered through the pinned GGUF chat template by POST /apply-template. Nothing about the request shape is re-spelled here.",
+  "per_arm": {
+    "e22-esb-dev-prompt-a": {
+      "config_hash": "6e85b7f0f1925747e0c3d711eecbb0599af15f5720c74bab78016a24af127cd3",
+      "arm": "bare-core",
+      "task_instruction": "Transcribe the speech verbatim exactly as spoken. Never insert, repeat, or add any word you do not clearly hear in the audio. Output only the transcript text.",
+      "task_instruction_sha256": "e72743ae588fff8fabcb5bdf291bb990269330950a81b7977f6b1b43e32e9156",
+      "omit_system_message": false,
+      "user_turn_text": null,
+      "user_turn_audio_first": true,
+      "wire_message_roles": [
+        "system",
+        "user"
+      ],
+      "wire_messages_sha256": "e7579407bd56e074d5c21941e9f4af9af7ed4120c7a49c98ae245fe73ac0082e",
+      "wire_user_content_types": [
+        "input_audio"
+      ],
+      "rendered_prompt": "<|im_start|>system\nTranscribe the speech verbatim exactly as spoken. Never insert, repeat, or add any word you do not clearly hear in the audio. Output only the transcript text.<|im_end|>\n<|im_start|>user\n<__media_QS42UwuUJ5EOMdoufEOLAOcV0a6lQ098__><|im_end|>\n<|im_start|>assistant\n",
+      "rendered_prompt_sha256": "42dcaf3f0cecf0ed8dc11d2bb32562789a683119ecdbdbd8d87376c0b2ec7d40",
+      "rendered_prompt_chars": 282,
+      "rendered_text_tokens": 47,
+      "system_block_rendered": true,
+      "instruction_verbatim_in_rendered_prompt": true,
+      "audio_placeholder_precedes_instruction": false,
+      "media_marker_char_index": 205,
+      "instruction_char_indexes": [
+        19
+      ],
+      "worst_required_tokens": 2100,
+      "media_stand_in_speech_tokens": 13
+    },
+    "e22-esb-dev-prompt-b": {
+      "config_hash": "6ab8ce9634662fad2a875ad73cdfac3aebc265a300131642e457fdacc2ba9594",
+      "arm": "bare-core",
+      "task_instruction": "Transcribe the English audio into text.",
+      "task_instruction_sha256": "8533f771edf09f036aa333ed9631e531e5a0c4493efa5f7b0f53fdcf751154d6",
+      "omit_system_message": false,
+      "user_turn_text": null,
+      "user_turn_audio_first": true,
+      "wire_message_roles": [
+        "system",
+        "user"
+      ],
+      "wire_messages_sha256": "b636fa2edb37b5916a1c4e2cd8259991a77d51c5d7eead60f0873ab9df3e82cb",
+      "wire_user_content_types": [
+        "input_audio"
+      ],
+      "rendered_prompt": "<|im_start|>system\nTranscribe the English audio into text.<|im_end|>\n<|im_start|>user\n<__media_QS42UwuUJ5EOMdoufEOLAOcV0a6lQ098__><|im_end|>\n<|im_start|>assistant\n",
+      "rendered_prompt_sha256": "7685decdcb97af0afbd058ad06ae39acdf469e62df688465c0326fd3483f520f",
+      "rendered_prompt_chars": 163,
+      "rendered_text_tokens": 21,
+      "system_block_rendered": true,
+      "instruction_verbatim_in_rendered_prompt": true,
+      "audio_placeholder_precedes_instruction": false,
+      "media_marker_char_index": 86,
+      "instruction_char_indexes": [
+        19
+      ],
+      "worst_required_tokens": 2074,
+      "media_stand_in_speech_tokens": 13
+    },
+    "e22-esb-dev-shape-c": {
+      "config_hash": "b9e14e330360d9ea6a1478e2677837af6973562e6341cd8c8052c9749d1e7436",
+      "arm": "bare-core",
+      "task_instruction": "Transcribe the English audio into text.",
+      "task_instruction_sha256": "8533f771edf09f036aa333ed9631e531e5a0c4493efa5f7b0f53fdcf751154d6",
+      "omit_system_message": true,
+      "user_turn_text": "Transcribe the English audio into text.",
+      "user_turn_audio_first": true,
+      "wire_message_roles": [
+        "user"
+      ],
+      "wire_messages_sha256": "2f3d1e036551044a4e8909cfe0a64e7eadee55d0e53b7830e747708b63598d9e",
+      "wire_user_content_types": [
+        "input_audio",
+        "text"
+      ],
+      "rendered_prompt": "<|im_start|>user\n<__media_QS42UwuUJ5EOMdoufEOLAOcV0a6lQ098__>Transcribe the English audio into text.<|im_end|>\n<|im_start|>assistant\n",
+      "rendered_prompt_sha256": "ca42c8fe447ac0e99b88a0e1dda77e90f6965e4baeecf4746feb69d00ca2a746",
+      "rendered_prompt_chars": 133,
+      "rendered_text_tokens": 16,
+      "system_block_rendered": false,
+      "instruction_verbatim_in_rendered_prompt": true,
+      "audio_placeholder_precedes_instruction": true,
+      "media_marker_char_index": 17,
+      "instruction_char_indexes": [
+        61
+      ],
+      "worst_required_tokens": 2069,
+      "media_stand_in_speech_tokens": 13
+    }
+  },
+  "proof": {
+    "shape_c_sends_no_system_message": true,
+    "shape_c_audio_precedes_the_instruction": true,
+    "shape_c_instruction_is_on_the_wire": true,
+    "controls_still_render_a_system_block": true,
+    "control_arms": [
+      "e22-esb-dev-prompt-a",
+      "e22-esb-dev-prompt-b"
+    ],
+    "why_the_controls_matter": "an absent system block only proves anything if the same check can SEE one; arms A and B are rendered through the identical route and must still show theirs. It also proves the pinned template does not inject a default system prompt of its own when the request carries none -- which, if it did, would make this whole experiment measure something else.",
+    "all_assertions_hold": true
+  }
+}
