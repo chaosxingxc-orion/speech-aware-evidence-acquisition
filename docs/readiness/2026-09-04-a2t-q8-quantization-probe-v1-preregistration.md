@@ -163,3 +163,11 @@ Execution log:
 | 7. wire check + 4-row smoke | `.../wire-check/`, smoke run | 2026-09-05 |
 | 8. flight | `SAEA-A2T-Q8-QUANTIZATION-PROBE-V1` | 2026-09-05 |
 | verdict | `docs/readiness/2026-09-04-a2t-q8-quantization-probe-v1-verdict.md` | 2026-09-05 |
+
+Outcome, 2026-09-05: **QUANTIZATION-EXCLUDED**. Pooled over the four acceptance tiers the paired
+Q8-minus-Q4 tool accuracy is +0.50 pp with a CI90 of [-1.50, +2.50] pp, which contains zero. Tier 1 is 60.0 %
+on both decoders with zero discordant rows, and the `wearables` domain is 72.63 % on both across 95 rows.
+Over all eight tiers there is a small real lift (+2.25 pp, CI90 [+0.25, +4.25]) concentrated in tier 8.
+Cost: 7.85x the per-call latency of the resident Q4_K_M core. The flight spent 400 of 450 registered calls,
+2,159.688 of 2,300 registered speech-audio seconds and about 0.29 of 4.0 registered GPU hours, on one
+attempt with no recovery re-registration.
