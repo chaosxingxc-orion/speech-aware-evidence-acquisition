@@ -294,3 +294,44 @@ scorer and this study's own correctness definition agree on this carrier with no
   (BLEND 75.70 clears the weakest published trained pipeline), slot filling does not (SLU-F1 41.69
   against a 64.02 floor) — the exact asymmetry He & Garner found for a text cascade, and the exact
   asymmetry an evidence-acquisition control plane exists to attack.
+
+---
+
+## Addendum, 2026-09-05 — the Earnings-21 subset caveat is discharged
+
+Section 1.3's subset caveat and section 1.4's first bullet are both closed, and section 3's defect 1
+is durably fixed. `SAEA-E21-FULL44-DIRECT-BASELINE-V2` (attempt `attempt-20260904T233816Z-bcd338`,
+study commit `44db2e9d`) flew **all 44 discovery calls** — 39.263 h, 1,593 fixed 90-second windows —
+under the sealed arm's own protocol on build `04ccc72a` with the bf16 mmproj resident on the GPU, and
+declared `asr-wer-whisper`, `asr-wer`, `entity-wer` and `cost` **in the manifest**, so the
+paper-facing number now comes out of `core.scoring_batch`'s verified path instead of the out-of-band
+read this audit had to use.
+
+**Corpus WER under the Whisper `EnglishTextNormalizer`, all 44 calls: 8.200 %** against
+`openai/whisper-large-v3`'s 9.71 — **ALIGNED** (band ≤ 12.71 pass; strict Whisper medium.en floor
+≤ 10.2 pass; every other floor cleared; ALIGNED-BETTER < 6.71 not reached).
+
+Three things this audit could not know, now measured:
+
+1. **`4346923` costs 0.312 points.** The 43 calls without it score 7.888; its own WER is 18.94 %, the
+   worst of the 44. The caveat was right that it matters, and it is now inside the number.
+2. **The 7.137 → 8.200 gap is the corpus, not the build.** The same ten calls re-measured on the new
+   build and the new audio path score **7.185** (+0.048), while the other 34 score **8.470**. The
+   August number was right about what it measured; what it measured was the easier half.
+3. **Entity WER over all 44** is 30.36 % corpus over 38,366 gold mentions (the ten gave 32.01 % over
+   8,284). The per-class table is in the verdict.
+
+Section 3's defect 1 is fixed for future Earnings runs exactly as this audit recommended — in the
+manifest scorer list, not by rewriting a sealed artifact. One new defect surfaced on the way and is
+recorded there too: call `4320211` references an entity id its `wer_tags` sidecar never lists (one id
+of 38,377 across the 44 calls), which refused all four scorers on the sealed manifest until
+`data.references` learned to label an absent annotation `__UNTYPED__` and count it. The regression
+anchor holds to the digit: this audit's own published `SAEA-E-005B-N10-zero` entity numbers —
+32.01 % over 8,284 mentions — reproduce unchanged after that repair.
+
+Section 1.4's remaining bullets stand unchanged, and its **whisper-large-v3 calibration anchor on our
+own rows** is now the obvious next move: it is the only route that removes the normalizer,
+aggregation, chunking, decoding-heuristic and quantization confounds together.
+
+Verdict: `docs/readiness/2026-09-04-e21-full44-direct-baseline-v1-verdict.md`. Receipts:
+`docs/checks/speech-aware-evidence-acquisition/2026-09-04-e21-full44-direct-baseline-v1/`.

@@ -73,6 +73,8 @@ def _corpus(rows: list[dict[str, object]]) -> dict[str, float]:
         "hits": hits,
         "reference_words": ref,
         "corpus_wer_pct": round(100.0 * (subs + dele + ins) / ref, 4) if ref else 0.0,
+        # unrounded, for the identity check against the scorer's own aggregate
+        "corpus_wer_exact": ((subs + dele + ins) / ref) if ref else 0.0,
         "mean_of_per_call_wer_pct": (
             round(100.0 * sum(float(row["wer"]) for row in rows) / len(rows), 4)
             if rows
@@ -161,7 +163,7 @@ def build(args: argparse.Namespace) -> dict:
     saea_all = _corpus([saea[i] for i in ids])
 
     aggregate_reported = score_read["asr-wer-whisper"]["aggregate"]
-    recomputed = corpus_all["corpus_wer_pct"] / 100.0
+    recomputed = corpus_all["corpus_wer_exact"]
     if abs(recomputed - float(aggregate_reported["corpus_wer"])) > 1e-9:
         raise SystemExit(
             "recomputed corpus WER disagrees with the scorer's own aggregate: "
