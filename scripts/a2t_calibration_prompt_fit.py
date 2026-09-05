@@ -472,6 +472,20 @@ def parse_args() -> argparse.Namespace:
     )
     parser.set_defaults(emit_legacy_np_decision=True)
     parser.add_argument(
+        "--reference-media-marker",
+        default=None,
+        help=(
+            "a PRIOR receipt's server.media_marker. llama-server mints a fresh random "
+            "media marker per session, so two renderings of the same prompt on the same "
+            "template never share a rendered_prompt_sha256 even when every other byte is "
+            "identical. When this is given, the receipt additionally records the rendered "
+            "prompt hashed with this server's marker REPLACED by the reference one: if "
+            "that equals the prior receipt's rendered_prompt_sha256, the two prompts are "
+            "byte-identical apart from the nonce, which is a proof rather than an "
+            "inference. Omitted by default, so every existing receipt reproduces exactly"
+        ),
+    )
+    parser.add_argument(
         "--expect-official-system-message",
         action="store_true",
         help=(
@@ -871,6 +885,18 @@ def main() -> int:
                 ),
                 "user_turn_text": envelope["user_turn_text"],
                 "user_turn_audio_first": bool(envelope["user_turn_audio_first"]),
+                **(
+                    {
+                        "reference_media_marker": str(args.reference_media_marker),
+                        "rendered_prompt_sha256_with_reference_marker": sha256_text(
+                            prompt.replace(
+                                media_marker, str(args.reference_media_marker)
+                            )
+                        ),
+                    }
+                    if args.reference_media_marker
+                    else {}
+                ),
             }
             log(
                 "envelope measured: %s tools=%d -> %d text tokens"

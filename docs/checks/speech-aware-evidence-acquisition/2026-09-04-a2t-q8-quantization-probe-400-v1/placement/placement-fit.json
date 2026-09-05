@@ -1,0 +1,500 @@
+{
+  "attempt_id": "attempt-20260905T104924Z-a2tq8placement",
+  "boundary": "zero generated tokens: each trial starts the pinned server, reads GET /props and stops it. No completion endpoint is touched, no sample is sent, no gold or task text is opened. The registered call ceiling exists only because contracts.ExecutionPlan requires a positive budget",
+  "chosen": {
+    "free_mib": 2228,
+    "host_available_mib": 54633,
+    "load_seconds": 5.014,
+    "n_cpu_moe": 24,
+    "offload_flag": "--n-cpu-moe",
+    "server_args": [
+      "-c",
+      "49152",
+      "-np",
+      "3",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--n-cpu-moe",
+      "24"
+    ],
+    "server_rss_mib": 16005,
+    "used_mib": 21910
+  },
+  "flight_run_id": "SAEA-A2T-Q8-QUANTIZATION-PROBE-V1",
+  "generated_at": "2026-09-05T10:51:13.777321+00:00",
+  "gpu_power_limit_watts": {
+    "after": 100.0,
+    "before": 100.0
+  },
+  "min_free_mib": 1536,
+  "model": {
+    "feature_cache_dir": "/home/chao/feat-cache/audio2tool-q4km-04ccc72a",
+    "gguf_files": [
+      {
+        "bytes": 32484494336,
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf/Qwen3-Omni-30B-A3B-Instruct-Q8_0.gguf",
+        "sha256": "8a50e5a7d29ae6a28fea9ca45e3bb0a142e76ec07e6787a7703cd498eb08ffaa"
+      },
+      {
+        "bytes": 2207465568,
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+        "sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+      }
+    ],
+    "llama_cpp_build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf",
+    "model_materialization_root": "/home/chao",
+    "runtime_receipt": "receipts/runtime-q8-featcache-04ccc72a.json",
+    "runtime_receipt_sha256": "dd3365beb213ea6edb578cd0607238a585631f7e21fa42e5df7db7f302e078d2"
+  },
+  "preregistration": "docs/readiness/2026-09-04-a2t-q8-quantization-probe-v1-preregistration.md",
+  "rule": "start from --cpu-moe (every expert layer in host RAM), then lower N in steps of 4 while a zero-token server start still leaves at least 1536 MiB free on the card at the declared serving geometry; the largest GPU-resident share that satisfies the rule is the value",
+  "run_id": "SAEA-A2T-Q8-PLACEMENT-FIT-V1",
+  "schema": "saea-a2t-q8-placement-fit-v1",
+  "serving_geometry": {
+    "base_server_args": [
+      "-c",
+      "49152",
+      "-np",
+      "3",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "context_tokens": 49152,
+    "slot_tokens": 16384,
+    "slots": 3
+  },
+  "step": 4,
+  "study": "speech-aware-evidence-acquisition",
+  "total_generated_tokens": 0,
+  "trials": [
+    {
+      "completion_endpoint_touched": false,
+      "declared_slot_tokens": 16384,
+      "device_memory_after_stop_mib": {
+        "free_mib": 24137,
+        "total_mib": 24463,
+        "used_mib": 0
+      },
+      "device_memory_before_mib": {
+        "free_mib": 24137,
+        "total_mib": 24463,
+        "used_mib": 0
+      },
+      "device_memory_resident_mib": {
+        "free_mib": 16916,
+        "total_mib": 24463,
+        "used_mib": 7222
+      },
+      "free_mib": 16916,
+      "generated_tokens": 0,
+      "host_memory_resident_mib": {
+        "available_mib": 54612,
+        "free_mib": 21190,
+        "total_mib": 56236
+      },
+      "label": "--cpu-moe (all expert layers on CPU)",
+      "live_slot_n_ctx": 16384,
+      "load_seconds": 5.027,
+      "meets_min_free": true,
+      "n_cpu_moe": 48,
+      "offload_flag": "--cpu-moe",
+      "props_ok": true,
+      "server_args": [
+        "-c",
+        "49152",
+        "-np",
+        "3",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0",
+        "--cpu-moe"
+      ],
+      "server_rss_mib": 31173,
+      "stop_forced": false,
+      "stop_signal": "SIGTERM"
+    },
+    {
+      "completion_endpoint_touched": false,
+      "declared_slot_tokens": 16384,
+      "device_memory_after_stop_mib": {
+        "free_mib": 24137,
+        "total_mib": 24463,
+        "used_mib": 0
+      },
+      "device_memory_before_mib": {
+        "free_mib": 24137,
+        "total_mib": 24463,
+        "used_mib": 0
+      },
+      "device_memory_resident_mib": {
+        "free_mib": 14468,
+        "total_mib": 24463,
+        "used_mib": 9670
+      },
+      "free_mib": 14468,
+      "generated_tokens": 0,
+      "host_memory_resident_mib": {
+        "available_mib": 54616,
+        "free_mib": 21111,
+        "total_mib": 56236
+      },
+      "label": "--n-cpu-moe 44",
+      "live_slot_n_ctx": 16384,
+      "load_seconds": 5.022,
+      "meets_min_free": true,
+      "n_cpu_moe": 44,
+      "offload_flag": "--n-cpu-moe",
+      "props_ok": true,
+      "server_args": [
+        "-c",
+        "49152",
+        "-np",
+        "3",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0",
+        "--n-cpu-moe",
+        "44"
+      ],
+      "server_rss_mib": 28647,
+      "stop_forced": false,
+      "stop_signal": "SIGTERM"
+    },
+    {
+      "completion_endpoint_touched": false,
+      "declared_slot_tokens": 16384,
+      "device_memory_after_stop_mib": {
+        "free_mib": 24137,
+        "total_mib": 24463,
+        "used_mib": 0
+      },
+      "device_memory_before_mib": {
+        "free_mib": 24137,
+        "total_mib": 24463,
+        "used_mib": 0
+      },
+      "device_memory_resident_mib": {
+        "free_mib": 12020,
+        "total_mib": 24463,
+        "used_mib": 12118
+      },
+      "free_mib": 12020,
+      "generated_tokens": 0,
+      "host_memory_resident_mib": {
+        "available_mib": 54618,
+        "free_mib": 21112,
+        "total_mib": 56236
+      },
+      "label": "--n-cpu-moe 40",
+      "live_slot_n_ctx": 16384,
+      "load_seconds": 5.01,
+      "meets_min_free": true,
+      "n_cpu_moe": 40,
+      "offload_flag": "--n-cpu-moe",
+      "props_ok": true,
+      "server_args": [
+        "-c",
+        "49152",
+        "-np",
+        "3",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0",
+        "--n-cpu-moe",
+        "40"
+      ],
+      "server_rss_mib": 26119,
+      "stop_forced": false,
+      "stop_signal": "SIGTERM"
+    },
+    {
+      "completion_endpoint_touched": false,
+      "declared_slot_tokens": 16384,
+      "device_memory_after_stop_mib": {
+        "free_mib": 24137,
+        "total_mib": 24463,
+        "used_mib": 0
+      },
+      "device_memory_before_mib": {
+        "free_mib": 24137,
+        "total_mib": 24463,
+        "used_mib": 0
+      },
+      "device_memory_resident_mib": {
+        "free_mib": 9572,
+        "total_mib": 24463,
+        "used_mib": 14566
+      },
+      "free_mib": 9572,
+      "generated_tokens": 0,
+      "host_memory_resident_mib": {
+        "available_mib": 54620,
+        "free_mib": 21114,
+        "total_mib": 56236
+      },
+      "label": "--n-cpu-moe 36",
+      "live_slot_n_ctx": 16384,
+      "load_seconds": 5.014,
+      "meets_min_free": true,
+      "n_cpu_moe": 36,
+      "offload_flag": "--n-cpu-moe",
+      "props_ok": true,
+      "server_args": [
+        "-c",
+        "49152",
+        "-np",
+        "3",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0",
+        "--n-cpu-moe",
+        "36"
+      ],
+      "server_rss_mib": 23590,
+      "stop_forced": false,
+      "stop_signal": "SIGTERM"
+    },
+    {
+      "completion_endpoint_touched": false,
+      "declared_slot_tokens": 16384,
+      "device_memory_after_stop_mib": {
+        "free_mib": 24137,
+        "total_mib": 24463,
+        "used_mib": 0
+      },
+      "device_memory_before_mib": {
+        "free_mib": 24137,
+        "total_mib": 24463,
+        "used_mib": 0
+      },
+      "device_memory_resident_mib": {
+        "free_mib": 7124,
+        "total_mib": 24463,
+        "used_mib": 17014
+      },
+      "free_mib": 7124,
+      "generated_tokens": 0,
+      "host_memory_resident_mib": {
+        "available_mib": 54629,
+        "free_mib": 21123,
+        "total_mib": 56236
+      },
+      "label": "--n-cpu-moe 32",
+      "live_slot_n_ctx": 16384,
+      "load_seconds": 5.009,
+      "meets_min_free": true,
+      "n_cpu_moe": 32,
+      "offload_flag": "--n-cpu-moe",
+      "props_ok": true,
+      "server_args": [
+        "-c",
+        "49152",
+        "-np",
+        "3",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0",
+        "--n-cpu-moe",
+        "32"
+      ],
+      "server_rss_mib": 21061,
+      "stop_forced": false,
+      "stop_signal": "SIGTERM"
+    },
+    {
+      "completion_endpoint_touched": false,
+      "declared_slot_tokens": 16384,
+      "device_memory_after_stop_mib": {
+        "free_mib": 24137,
+        "total_mib": 24463,
+        "used_mib": 0
+      },
+      "device_memory_before_mib": {
+        "free_mib": 24137,
+        "total_mib": 24463,
+        "used_mib": 0
+      },
+      "device_memory_resident_mib": {
+        "free_mib": 4676,
+        "total_mib": 24463,
+        "used_mib": 19462
+      },
+      "free_mib": 4676,
+      "generated_tokens": 0,
+      "host_memory_resident_mib": {
+        "available_mib": 54633,
+        "free_mib": 21127,
+        "total_mib": 56236
+      },
+      "label": "--n-cpu-moe 28",
+      "live_slot_n_ctx": 16384,
+      "load_seconds": 5.941,
+      "meets_min_free": true,
+      "n_cpu_moe": 28,
+      "offload_flag": "--n-cpu-moe",
+      "props_ok": true,
+      "server_args": [
+        "-c",
+        "49152",
+        "-np",
+        "3",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0",
+        "--n-cpu-moe",
+        "28"
+      ],
+      "server_rss_mib": 18533,
+      "stop_forced": false,
+      "stop_signal": "SIGTERM"
+    },
+    {
+      "completion_endpoint_touched": false,
+      "declared_slot_tokens": 16384,
+      "device_memory_after_stop_mib": {
+        "free_mib": 24137,
+        "total_mib": 24463,
+        "used_mib": 0
+      },
+      "device_memory_before_mib": {
+        "free_mib": 24137,
+        "total_mib": 24463,
+        "used_mib": 0
+      },
+      "device_memory_resident_mib": {
+        "free_mib": 2228,
+        "total_mib": 24463,
+        "used_mib": 21910
+      },
+      "free_mib": 2228,
+      "generated_tokens": 0,
+      "host_memory_resident_mib": {
+        "available_mib": 54633,
+        "free_mib": 21128,
+        "total_mib": 56236
+      },
+      "label": "--n-cpu-moe 24",
+      "live_slot_n_ctx": 16384,
+      "load_seconds": 5.014,
+      "meets_min_free": true,
+      "n_cpu_moe": 24,
+      "offload_flag": "--n-cpu-moe",
+      "props_ok": true,
+      "server_args": [
+        "-c",
+        "49152",
+        "-np",
+        "3",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0",
+        "--n-cpu-moe",
+        "24"
+      ],
+      "server_rss_mib": 16005,
+      "stop_forced": false,
+      "stop_signal": "SIGTERM"
+    },
+    {
+      "completion_endpoint_touched": false,
+      "declared_slot_tokens": 16384,
+      "device_memory_after_stop_mib": {
+        "free_mib": 24137,
+        "total_mib": 24463,
+        "used_mib": 0
+      },
+      "device_memory_before_mib": {
+        "free_mib": 24137,
+        "total_mib": 24463,
+        "used_mib": 0
+      },
+      "device_memory_resident_mib": {
+        "free_mib": 14,
+        "total_mib": 24463,
+        "used_mib": 24124
+      },
+      "free_mib": 14,
+      "generated_tokens": 0,
+      "host_memory_resident_mib": {
+        "available_mib": 54634,
+        "free_mib": 21129,
+        "total_mib": 56236
+      },
+      "label": "--n-cpu-moe 20",
+      "live_slot_n_ctx": 16384,
+      "load_seconds": 5.008,
+      "meets_min_free": false,
+      "n_cpu_moe": 20,
+      "offload_flag": "--n-cpu-moe",
+      "props_ok": true,
+      "server_args": [
+        "-c",
+        "49152",
+        "-np",
+        "3",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0",
+        "--n-cpu-moe",
+        "20"
+      ],
+      "server_rss_mib": 13476,
+      "stop_forced": false,
+      "stop_signal": "SIGTERM"
+    }
+  ],
+  "trials_run": 8
+}

@@ -1,0 +1,58 @@
+{
+  "experiment_id": "SAEA-A2T-Q8-QUANTIZATION-PROBE-SMOKE-V1",
+  "schema": "saea-a2t-direct-calibration-smoke-experiment-v1",
+  "date": "2026-09-04",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Four-row end-to-end smoke of the C-q8-official-raw cell before the registered 400-row Q8_0 quantization probe: prove that the Q8_0 decoder serves at the placement the placement receipt fixed, that the template-plus-fill system message and the user-turn text part after the audio survive the decoder swap, that the sealed feature cache is HIT rather than re-encoded, and that sealing and the four registered Audio2Tool scorers work on real sealed rows. It also produces the ONE number this smoke exists to produce besides legality: seconds per call, from which the 400-row wall time is projected against the registered 4.0 GPU-hour ceiling. If the projection exceeds the ceiling the flight does not take off and the owner is asked, rather than the roster being shrunk. The flight fragment a2t-q8-quantization-probe-400-v1 declares the baseline-reproduction profile and a 408-call plan, so a smoke is a separate, separately registered bounded-discovery-probe run carrying its own execution_plan. No smoke number is a task measurement.",
+  "smoke_population": {
+    "carrier": "audio2tool",
+    "parent_split_name": "A2T-CALIBRATION-400",
+    "split_role": "discovery",
+    "count": 4,
+    "sample_ids": [
+      "tier1_direct:000045",
+      "tier2_parametric:000045",
+      "tier5_needle:000060",
+      "tier6_correction:000008"
+    ],
+    "selection": "the SAME four rows the 2026-09-04 calibration and official-protocol replication smokes used -- the lexicographically first sample of tiers 1, 2, 5 and 6 of the frozen 400, the four tiers the acceptance rule reads",
+    "audio_seconds_one_pass": 16.948,
+    "split_identity_hash": "b30c8ec0ab426eb8428b5d833f97d9ef12f29bbed3535fcf153a36782c98ad4f",
+    "parent_split_identity_hash": "11091b38ae9d53530952af632636d7e79a614350213e10c6c26583c37f85846b"
+  },
+  "cells": [
+    {
+      "cell_id": "C-q8-official-raw",
+      "arm": "bare-core",
+      "baseline_fragment": "a2t-direct-official-protocol",
+      "model_fragment": "q8-featcache-a2t-official-04ccc72a"
+    }
+  ],
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 12,
+    "planned_gpu_hours": 0.5,
+    "planned_speech_audio_seconds": 68
+  },
+  "execution_plan_basis": {
+    "calls": "4 rows x 1 contact = 4 for a clean first attempt. The plan registers 12 because attempt budget is enforced RUN-CUMULATIVELY: core.model.adapter.FrozenCoreAdapter re-reads every prior attempt's durable actuals for this run id on every request and refuses when prior spend plus this attempt exceeds planned_model_calls. 12 covers a clean attempt plus up to two recoveries; the exposure row's own ceiling is 20.",
+    "speech_audio_seconds": "16.948 s for one pass, 67.792 s across four passes, rounded up to the integer contracts.ExecutionPlan requires; the exposure row's ceiling is 100.",
+    "gpu_hours": "0.5 rather than the replication smoke's 0.2, because the Q8_0 decoder is 30.3 GiB and loads with expert tensors mapped from ext4 into host RAM; the model load alone is a materially larger share of a four-row run than it was for the resident Q4_K_M kit",
+    "paid_api_spend": 0
+  },
+  "evaluation": {
+    "official_scorers": ["a2t-toolcall-official", "a2t-toolcall-v2", "a2t-toolcall", "cost"],
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "outer_parallel_workers": 4,
+    "what_is_read": "transport legality, the rendered prompt shape, feature-cache hits, parse rate and throughput only",
+    "what_is_not_read": "no smoke metric is a task measurement and none enters the verdict. The calibration's own smoke is the standing precedent for why: on four rows it saw zero native tool calls and concluded the model was declining the tools interface, which 400 rows corrected to 87 %."
+  },
+  "decision": {
+    "gate": "the cell must complete 4 of 4 contacts, seal a verifiable manifest and score without error, and its projected 400-row wall time must sit inside the registered 4.0 GPU-hour ceiling, before the registered 408-call flight is launched",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}

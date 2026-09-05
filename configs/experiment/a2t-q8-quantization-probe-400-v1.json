@@ -1,0 +1,105 @@
+{
+  "experiment_id": "SAEA-A2T-Q8-QUANTIZATION-PROBE-V1",
+  "schema": "saea-a2t-direct-calibration-experiment-v1",
+  "date": "2026-09-04",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "Measure the decoder-quantization cost of this study's frozen core ONCE, on the same 400 rows and the same published protocol the sealed R-official-raw cell flew. Every Audio2Tool number this study has produced is a Q4_K_M number; the paper (arXiv:2604.22821 Table 3) ran the bf16 HF model. One cell, C-q8-official-raw, is byte-identical to R-official-raw in every request byte and every scoring rule, with exactly one difference: the decoder GGUF is the umbrella lock's Q8_0 file instead of the Q4_K_M requant, served with -ngl 999 plus --n-cpu-moe N because 32,484,494,336 bytes cannot be resident on a 24,463 MiB card. N was fixed model-free by the preregistered VRAM fit rule before any generation (placement receipt). The owner's 2026-09-04 GO calls this the closing model-usage check: the alignment axes that matter are the prompt, the way the model is used and the scoring script; the prompt and the scoring script are already the published ones, and quantization is the last controllable model-usage suspect. Preregistration: docs/readiness/2026-09-04-a2t-q8-quantization-probe-v1-preregistration.md.",
+  "population": {
+    "carrier": "audio2tool",
+    "split_name": "A2T-CALIBRATION-400",
+    "split_role": "discovery",
+    "count": 400,
+    "strata": "50 samples per tier across all eight Audio2Tool tiers",
+    "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-calibration-400-roster/flight-roster-receipt.json",
+    "receipt_sha256": "6f352ea583d0bb91f77aad62e07bdad4d3210d066440fbfaee8e2af504853fe7",
+    "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+    "flight_split_identity_hash": "11091b38ae9d53530952af632636d7e79a614350213e10c6c26583c37f85846b",
+    "audio_seconds_one_pass": 2159.688,
+    "audio_seconds_longest_item": 35.714,
+    "selection": "the frozen 400 split, no draw; already exposed by A0 (row SAEA-BASE-a2t-a0-400), by SAEA-A2T-DIRECT-CALIBRATION-V1 and by SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-V1. Using it again is what makes the paired contrast against the sealed R-official-raw manifest possible at zero additional population cost.",
+    "estimand": "equal-tier reporting, with the per-domain slices (wearables / smart_car / smart_home) reported beside it because every official-population verdict of 2026-09-04 found smart_home to be the weak stratum"
+  },
+  "cells": [
+    {
+      "cell_id": "C-q8-official-raw",
+      "factor_c_quantization": "Q8_0 decoder (umbrella lock key qwen3-omni-30b-a3b-instruct-gguf, 32,484,494,336 bytes) instead of the Q4_K_M requant, with the SAME bf16 mmproj file",
+      "factor_a_output_contract": "unchanged from R-official-raw: the published system message (the adapter's hard-coded default system prompt, the fixed '## Available Tools:' header, and format_tools_compact over the whole 152-row registry)",
+      "factor_d_audio_path": "raw audio, bf16 mmproj loaded, the SAME feature-cache directory the sealed Q4 cell used",
+      "user_turn": "audio first, then the fixed sentence 'Convert this voice command to a tool call.'",
+      "arm": "bare-core",
+      "baseline_fragment": "a2t-direct-official-protocol",
+      "model_fragment": "q8-featcache-a2t-official-04ccc72a",
+      "serving_geometry": "identical to the sealed R-official-raw cell's (-c 49152 -np 3, 16,384 tokens per slot); the model fragment is the single authority and its --n-cpu-moe value comes from the placement receipt"
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "quantization": "Q8_0",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 256,
+    "id_slot": "per-sample",
+    "contacts_per_item": 1,
+    "evidence": "none",
+    "obs": "none",
+    "harness": "core.flight.FlightRuntime with the shared rails zero-supply direct arm and the OpenJiuwen executor -- the same harness the sealed R-official-raw cell flew, so the paired contrast differs only in the decoder quantization and the weight placement it forces",
+    "official_code_pin": "b9d5383ca30945fbafb965a04bea40117e1e8a82; docs/receipts/environments/audio2tool-official-code.json",
+    "placement_caveat": "expert offload is a numerical-implementation detail, not a protocol factor: CPU and CUDA kernels accumulate in different orders, so rare greedy ties can flip. Recorded as a caveat in the verdict, never read as a factor."
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "discovery",
+    "planned_model_calls": 408,
+    "planned_gpu_hours": 3.0,
+    "planned_speech_audio_seconds": 2160
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "400 items x 1 cell x 1 contact, plus 8 canaries",
+    "planned_speech_audio_seconds": "2,159.688 s for one pass, rounded up to the integer contracts.ExecutionPlan requires; the registered ceiling is 2,300",
+    "planned_gpu_hours": "3.0; the naive partial-offload measurement of August was 4.17x slower than resident Q4_K_M, but expert offload keeps attention on the GPU and the published prompt is 3.7x shorter than the reconstruction, so 3.0 h is a conservative plan against a 4.0 h registered ceiling. The 4-row smoke's wall-time projection is the binding pre-takeoff check: if it projects past the ceiling the flight does not take off and the owner is asked, rather than the roster being shrunk.",
+    "paid_api_spend": 0,
+    "ceilings_live_in_the_exposure_row": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are the exposure-ledger row's calls / speech audio seconds / gpu hours cells, which the gate requires to be at least these planned values"
+  },
+  "evaluation": {
+    "official_scorers": ["a2t-toolcall-official", "a2t-toolcall-v2", "a2t-toolcall", "cost"],
+    "paper_facing_scorer": "a2t-toolcall-official",
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "outer_parallel_workers": 4,
+    "metrics": [
+      "official tool accuracy (primary gold tool)",
+      "official exact match",
+      "official parameter precision/recall/F1, macro over samples as the published code computes it",
+      "parameter F1 micro-pooled, reported beside the macro figure",
+      "parse rate",
+      "a2t-toolcall-v2 ordered tool accuracy, exact match and slot F1",
+      "prompt_tokens",
+      "latency",
+      "GPU and host memory in use at the served placement"
+    ],
+    "mandatory_slices": [
+      "all eight tiers, with the paper row and a Wilson CI90 beside every tier",
+      "the paired contrast C-q8 minus R-official-raw over the same 400 rows, per tier and pooled, under the official scorer and under a2t-toolcall-v2",
+      "per-domain tables (wearables / smart_car / smart_home), natural mixture and equal-domain",
+      "parse rate and the count of rows whose response named more than one call",
+      "throughput: seconds per call, calls per second at the declared slots, model load seconds"
+    ],
+    "paired_bootstrap_replicates": 10000,
+    "paired_bootstrap_seed": 20260903,
+    "paired_bootstrap_stratification": "tier",
+    "confidence_interval": "CI90",
+    "renderer": "analysis.paired.render_markdown"
+  },
+  "decision": {
+    "quantization_dominant": "QUANTIZATION-DOMINANT: the pooled Q8 minus Q4 tool-accuracy CI90 lower bound is above 0 on the four acceptance tiers (1, 2, 5, 6) AND C-q8 is PASS or CONSISTENT-WITHIN-NOISE against the paper on those tiers.",
+    "quantization_excluded": "QUANTIZATION-EXCLUDED: the pooled CI90 includes 0.",
+    "partial": "PARTIAL: otherwise; report the fraction of each tier's gap closed by Q8 and stop.",
+    "consequences": "No outcome changes the operating core by itself, tunes any knob, or opens any test data. Q8_0 becoming the Audio2Tool operating core is a separate owner decision informed by the throughput this probe records.",
+    "claim_surface": "Nothing here is a superiority, generality or Stage-3 claim; the population is exposed discovery data; no knob is tuned on it.",
+    "not_authorized": "No test contact, no mechanism arm, no fresh roster, no Q5_K_M / Q6_K / IQ variants, no rebuild or checkout of the llama.cpp tree, no edit to the chat template, no packet-path cell, no second attempt beyond the one recovery re-registration.",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}

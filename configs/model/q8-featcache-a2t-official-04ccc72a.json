@@ -1,0 +1,43 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 900.0,
+  "runtime_receipt": "receipts/runtime-q8-featcache-04ccc72a.json",
+  "server_args": [
+    "-c",
+    "49152",
+    "-np",
+    "3",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "--n-cpu-moe",
+    "24"
+  ],
+  "serving_geometry": {
+    "slots": 3,
+    "slot_tokens": 16384,
+    "max_tokens": 256
+  },
+  "serving_geometry_basis": "The Q8_0 counterpart of configs/model/q4km-featcache-a2t-official-04ccc72a.json, and deliberately identical to it in every field the request or the KV cache can see: same -c 49152 / -np 3 (16,384 tokens per slot), same -fa/-ctk/-ctv, same max_tokens 256, same prompt order, same feature-cache directory. The measured prompt fit that fixed that geometry (docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-official-protocol-replication-400-v1/prompt-fit/prompt-fit.json) is a property of the chat template and the registry text, not of the decoder quantization, and the Q8 prompt-fit receipt re-measures it on THIS server and asserts the rendered text hash is unchanged. The ONE genuine difference is weight placement, and it is forced: the Q8_0 decoder is 32,484,494,336 bytes (30.3 GiB) against a 24,463 MiB card, so it cannot be resident. --n-cpu-moe 24 keeps the Mixture-of-Experts tensors of the first 24 layers in host RAM while attention, norms, embeddings, shared parts and the remaining experts stay on the GPU. The value is the preregistered VRAM fit rule's own answer, measured model-free with zero generated tokens (placement receipt docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-q8-quantization-probe-400-v1/placement/placement-fit.json): starting from --cpu-moe (16,916 MiB free) and lowering N in steps of 4, the free-memory ladder is 44 -> 14,468, 40 -> 12,020, 36 -> 9,572, 32 -> 7,124, 28 -> 4,676, 24 -> 2,228, 20 -> 14 MiB. N = 24 is the largest GPU-resident share that still leaves at least the preregistered 1,536 MiB free; N = 20 leaves 14 MiB and is refused. At N = 24 the card holds 21,910 MiB and the server process holds 16,005 MiB of host RAM, of 54,633 MiB available. Every trial served the declared 16,384 tokens per slot exactly (GET /props), so llama-server's 512-token rounding cannot make the live slot disagree with the declared one, and core.flight.FlightRuntime.serve's slots x slot_tokens == -c invariant holds. Recorded risk, carried into the verdict rather than tuned away: llama.cpp estimates the mmproj audio encoder's worst-case compute buffer at 2,940 MiB, which is larger than the 2,228 MiB this placement leaves free. The cell reads the same feature-cache directory the sealed Q4_K_M cell filled for these exact audio bytes with this exact bf16 mmproj, so an encode should never run; a cache miss is the one way this placement could fail, and the 4-row smoke is the gate that would show it.",
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 256,
+    "id_slot": "per-sample"
+  },
+  "prompt_order": "evidence-first-system-v2",
+  "server_env": {
+    "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/audio2tool-q4km-04ccc72a"
+  },
+  "model_materialization_root": "/home/chao",
+  "decoding_basis": "Byte-identical to the Q4_K_M official-protocol fragment: max_tokens 256 is the published protocol's own max_new_tokens (audio_benchmark/models/qwen3_omni.py generate() default and configs/example_config.yaml, commit b9d5383c); temperature 0 is the greedy equivalent of the release's do_sample=false; the seed stays this study's 20260803 and selects nothing under greedy decoding.",
+  "feature_cache_basis": "The SAME directory the sealed Q4_K_M cell used, /home/chao/feat-cache/audio2tool-q4km-04ccc72a, and deliberately so despite the q4km in its name. Its entries are the bf16 mmproj encoder's outputs for these audio bytes, and the Q8 runtime receipt asserts that mmproj file is byte-identical (sha256 f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883) to the one the Q4 kit loads. Reusing it is what makes cache hits -- zero 'encoding' lines and an untouched cache directory -- the proof that the audio side of this probe did not move.",
+  "timeout_basis": "900 s rather than the Q4 fragment's 420 s. Nothing about the request changed; the decoder did. With 24 layers of expert tensors resident in host RAM every token's MoE matmul for those layers runs on the CPU, and the August partial-offload measurement of this same Q8_0 file was 4.17x slower than the resident Q4_K_M kit. The timeout is a client-side patience bound, not a protocol fact, and it is raised so a slow but correct call cannot be recorded as a transport failure."
+}
