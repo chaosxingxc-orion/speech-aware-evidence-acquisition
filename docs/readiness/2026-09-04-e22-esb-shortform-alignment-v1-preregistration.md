@@ -321,3 +321,53 @@ re-hashed against their published LFS oids). 2,735 utterances cut in 52 s on six
 supplement (`caa221ec…`) and the calibration-exposure successor receipt (`f2b3be4b…`) all written.
 Two scorers registered. Config fragments composed and both split identity hashes reproduced live:
 flight `9285b321…`, smoke `4de75c34…`.
+
+### 2026-09-05, Phase 2 — wire check
+
+Commit `229d6e63`. Both cells on the clean committed tree against
+`core.flight.runtime`'s `WireCheckGate` and `WireCheckTransport`: the real compose, the real
+adapter and its roster-bound samples, the real payload binding and allowlist, the real
+`FrozenCoreAdapter` accounting, the real manifest builder, the real bundle verifier and both new
+scorers. Smoke cell 4 of 4, flight cell **2,735 of 2,735**, `seal_and_score` OK on both, and
+`core.scoring_batch` scored the flight cell's sealed manifest as one whole-manifest job with
+`verified: true`. Zero model contacts, zero servers, zero sockets. The WER figures in those
+receipts are computed over the transport's canned response and measure nothing.
+
+Running the FLIGHT cell here, not just the smoke cell, was deliberate: `asr-wer-esb-whisper` and
+`asr-wer-esb` had never run on a sealed bundle, and the Earnings-21 flight is the reason to care —
+that manifest sealed COMPLETED and then would not score, after the GPU time was already spent.
+
+### 2026-09-05, Phase 3 — the smoke, and the go/no-go
+
+Commit `f6ed4e0d`. Row `SAEA-E22-ESB-SHORTFORM-ALIGNMENT-SMOKE-V1`, attempt
+`attempt-20260905T043920Z-a3a450`: **COMPLETED and FINALIZED, 4 of 4**, 56.76 speech seconds, in
+48 seconds end to end.
+
+All three reads affirmative. **Scorers**: both ESB scorers returned per-sample rows through
+`core.scoring_batch` with `verified: true` on live outputs. **Geometry**: `-c 32768 -np 8` served
+with the resident bf16 mmproj, eight slots at `n_ctx` 4,096 each, llama-server started with 23,119
+MiB free of 24,462, no out-of-memory and no CUDA fault. **Throughput**: mean latency 2.213 s per
+contact, projecting 2,735 contacts at eight slots to about 757 s (0.21 GPU-h) against a 2.0-hour
+ceiling; the four smoke rows average 14.19 s of audio against the roster's 7.13 s, so the
+measurement is biased long and the projection is an upper bound, not a rate measurement. **GO.**
+
+**The window fit, measured live.** Prompt tokens 62 / 140 / 244 / 530 against the
+`13 × ceil(audio_seconds)` speech costs 13 / 91 / 195 / 481 — a text envelope of **exactly 49
+tokens on all four requests**. Worst prompt 530, worst required 1,556 against a 4,096-token slot,
+**×2.63**; largest completion 141 against a 1,024 ceiling, which therefore never binds. Section
+5.1 bounded that envelope at "well under 100" and derived a worst prompt of about 530; the measured
+figure is 530 exactly.
+
+**One defect of my own, caught before any contact.** The flight runner went `preflight → serve`,
+and `FlightStageOrderError` refused it: `FLIGHT_STAGES` requires the `preprocess` stage for every
+arm, packet or not. Nothing was spent — no contact, no llama-server, no attempt reserved, no ledger
+row consumed. The runner now runs `preprocess`, which for this raw-audio arm promotes nothing and
+records that it did. Caught by flying the smoke rather than by reading the code, which is what a
+4-row smoke is for.
+
+One observation recorded so a future reader does not misread it: the server log prints
+`graphs reused = N` per slot. That counts llama.cpp's own host-side graph reuse, not CUDA graph
+capture, and it appears identically in the sealed `SAEA-E21-FULL44-DIRECT-BASELINE-V2` log, which
+set the same `GGML_CUDA_DISABLE_GRAPHS=1`. The session receipt records `server_env_keys` only for a
+non-legacy role, so the flight additionally reads the live server process's own environment and
+records it.

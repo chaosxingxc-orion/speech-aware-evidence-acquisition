@@ -1,0 +1,120 @@
+{
+  "schema": "saea-e22-esb-smoke-receipt-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "run_id": "SAEA-E22-ESB-SHORTFORM-ALIGNMENT-SMOKE-V1",
+  "attempt_id": "attempt-20260905T043920Z-a3a450",
+  "cell_id": "E22-ESB-SMOKE-4",
+  "study_commit": "f6ed4e0ddc24e8c889fd80407bd06e64addece66",
+  "config_hash": "179c08ef46eaa907fd5d52ab030478e14073139eef2c45353dcc4af826cd2b0c",
+  "protocol_hash": "d74adf8d137c63426011ae9668ee08b39857b55db10c9a4b4950b14ed96476a1",
+  "split_identity_hash": "4de75c3427fe83d752bb96476c734415c34f6db1bc6ea1985fbf0b101f205f9d",
+  "manifest_sha256": "a490a8c8bed7c4a1fa7a390533318d726b161ac934dfa33adf9f864fc71c424d",
+  "attempt_state": "FINALIZED",
+  "status": "COMPLETED and FINALIZED, 4 of 4",
+  "three_reads": {
+    "1_scorers_run_on_a_live_sealed_manifest": {
+      "verdict": "PASS",
+      "evidence": "the manifest declares asr-wer-esb-whisper, asr-wer-esb and cost; core.scoring_batch scored it as one whole-manifest job with verified = true, and both ESB scorers returned four per-sample rows. Neither scorer had ever run on a sealed bundle before. This is the read that matters most: the September Earnings-21 flight sealed COMPLETED and then would not score, after the GPU time was already spent."
+    },
+    "2_geometry_serves": {
+      "verdict": "PASS",
+      "evidence": "-c 32768 -np 8 with the bf16 mmproj resident on the GPU: eight slots at n_ctx 4096 each, llama-server started with 23,119 MiB free of 24,462, and four concurrent contacts completed with no out-of-memory and no CUDA fault. The geometry is strictly smaller than -c 49152 -np 8 (peak 23,396 MiB) and -c 36864 -np 6 (peak 22,720 MiB), both already proven on this card."
+    },
+    "3_wall_time_projection": {
+      "verdict": "PASS (GO)",
+      "measured_mean_latency_seconds": 2.213296905749303,
+      "measured_wall_seconds": 3.3161628246307373,
+      "startup_seconds": 12.130068302154541,
+      "projection": "2,735 contacts at 8 slots and the measured 2.213 s mean latency project to about 757 s (0.21 GPU-h) of dispatch. The four smoke rows average 14.19 s of audio against the roster's 7.13 s, so the measurement is biased LONG and the projection is an upper bound rather than an estimate. Even at twice the measured latency the flight lands near 0.42 h against a 2.0-hour registered ceiling. GO.",
+      "projection_caveat": "four rows is too few to measure a rate; this projection is arithmetic on a conservatively biased latency, and it is reported as such rather than as a throughput measurement"
+    }
+  },
+  "window_fit_live": {
+    "rule": "n_tokens = 13 * ceil(audio_seconds), the encoder's exact one-second window rule",
+    "per_request": [
+      {
+        "sample_id": "4479741-224",
+        "audio_seconds": 0.219938,
+        "speech_tokens_13_x_ceil": 13,
+        "prompt_tokens_measured": 62,
+        "text_envelope_tokens": 49,
+        "completion_tokens": 6
+      },
+      {
+        "sample_id": "4485244-409",
+        "audio_seconds": 6.12,
+        "speech_tokens_13_x_ceil": 91,
+        "prompt_tokens_measured": 140,
+        "text_envelope_tokens": 49,
+        "completion_tokens": 24
+      },
+      {
+        "sample_id": "4485244-115",
+        "audio_seconds": 14.06,
+        "speech_tokens_13_x_ceil": 195,
+        "prompt_tokens_measured": 244,
+        "text_envelope_tokens": 49,
+        "completion_tokens": 51
+      },
+      {
+        "sample_id": "4483338-281",
+        "audio_seconds": 36.360125,
+        "speech_tokens_13_x_ceil": 481,
+        "prompt_tokens_measured": 530,
+        "text_envelope_tokens": 49,
+        "completion_tokens": 141
+      }
+    ],
+    "text_envelope_tokens": [
+      49
+    ],
+    "text_envelope_is_constant": true,
+    "worst_prompt_tokens": 530,
+    "worst_required_tokens": 1556,
+    "slot_tokens": 4096,
+    "margin_tokens": 2540,
+    "margin_ratio": 2.632,
+    "completion_ceiling_binding": false,
+    "note": "The preregistration's section 5.1 derived the worst prompt at about 530 tokens from the 481-token speech cost of the longest utterance plus a text envelope it could only bound ('well under 100'). Measured live, that envelope is EXACTLY 49 tokens on all four requests, so the worst prompt is exactly 530 and the derivation was right for the right reason. The largest completion was 141 tokens against a 1,024 ceiling, so the ceiling never binds."
+  },
+  "cost": {
+    "calls_used": 4,
+    "audio_seconds_used": 56.7601875,
+    "latency_seconds_total": 8.853187622997211,
+    "prompt_tokens_total": 976,
+    "completion_tokens_total": 222,
+    "tool_calls": 0,
+    "umbrella_lock_sha256": "fe843e1b4789d3f3b47731ddf5b1bb42d430b05afe74292afc9ca0a6368e2864"
+  },
+  "run_phases": {
+    "contact_count": 4,
+    "wall_seconds": 3.3161628246307373,
+    "average_latency_seconds": 2.213296905749303,
+    "contacts_per_second": 1.2062133892491873,
+    "slot_occupancy": 0.3337135452623257,
+    "serving_slots": 8
+  },
+  "serve": {
+    "extra_argv": [
+      "-c",
+      "32768",
+      "-np",
+      "8",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "startup_seconds": 12.130068302154541,
+    "gpu_free_at_load_mib": 23119,
+    "gpu_total_mib": 24462,
+    "slots": 8,
+    "n_ctx_per_slot": 4096
+  },
+  "cuda_graph_note": "The server log prints 'graphs reused = N' per slot. That line counts llama.cpp's own host-side graph reuse, NOT CUDA graph capture, and it appears identically in the sealed SAEA-E21-FULL44-DIRECT-BASELINE-V2 log, which set the same GGML_CUDA_DISABLE_GRAPHS=1. It is recorded here so a future reader does not mistake it for evidence that the variable was ignored. The variable itself is passed through core.session.lifecycle.start_session's extra_env; the session receipt records server_env_keys only for a non-legacy role, so the flight additionally reads the live server process's own environment and records it.",
+  "smoke_numbers_enter_no_verdict": "The WER figures below are on four rows, one of which has a single-word reference. They exist only as evidence that both declared scorers ran on a live manifest."
+}
