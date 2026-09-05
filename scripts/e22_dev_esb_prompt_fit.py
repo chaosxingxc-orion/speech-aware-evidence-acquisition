@@ -672,7 +672,9 @@ def render(
             "gate_baseline": gate_baseline,
         },
         "server": {
-            "build_commit": str(runtime_receipt.get("build_commit", "")),
+            "build_commit": str(
+                (runtime_receipt.get("llama_cpp") or {}).get("build_commit", "")
+            ),
             "server_args": list(extra_argv),
             "declared_slots": slots,
             "declared_slot_tokens": slot_tokens,
