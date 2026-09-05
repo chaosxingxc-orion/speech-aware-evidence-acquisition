@@ -486,12 +486,26 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--official-registry-renderer",
+        choices=("compact", "grouped"),
+        default="compact",
+        help=(
+            "which of the pinned release's TWO registry renderers "
+            "--expect-official-system-message builds its reference message with: "
+            "'compact' is format_tools_compact (the sealed official-protocol cells) "
+            "and 'grouped' is format_tools_for_prompt(tools, "
+            "include_constraints=False) (the A2T-ORG-1 cell). Default 'compact', so "
+            "every existing receipt reproduces exactly"
+        ),
+    )
+    parser.add_argument(
         "--expect-official-system-message",
         action="store_true",
         help=(
             "cross-check every cell's rendered system text against the pinned "
-            "Audio2Tool clone's own system prompt + format_tools_compact over the "
-            "same registry CSV, and record both hashes in the receipt"
+            "Audio2Tool clone's own system prompt + the renderer named by "
+            "--official-registry-renderer over the same registry CSV, and record "
+            "both hashes in the receipt"
         ),
     )
     return parser.parse_args()
@@ -519,7 +533,7 @@ OFFICIAL_SYSTEM_PROMPT_VARIANTS = {
 }
 
 
-def official_system_messages(lock, root) -> dict[str, str] | None:
+def official_system_messages(lock, root, *, renderer: str = "compact") -> dict[str, str] | None:
     """The pinned Audio2Tool release's own system messages, built by ITS code.
 
     Imported from the local clone (``utils/tools_schema.py`` is stdlib-only:
@@ -529,6 +543,13 @@ def official_system_messages(lock, root) -> dict[str, str] | None:
     system-prompt variant the release itself carries; the composed message
     shape ``f"{system_prompt}\n\n## Available Tools:\n{tool_lines}"`` is the
     adapter's own and is identical for both.
+
+    ``renderer`` names which of the release's TWO registry renderers builds
+    ``tool_lines``: ``compact`` is ``format_tools_compact`` (what the sealed
+    official-protocol cells flew) and ``grouped`` is
+    ``format_tools_for_prompt(tools, include_constraints=False)`` (the
+    A2T-ORG-1 cell's single factor). The default reproduces every existing
+    receipt.
     """
 
     clone = Path(str(root)) / "repos" / "audio2tool"
@@ -543,7 +564,13 @@ def official_system_messages(lock, root) -> dict[str, str] | None:
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     csv_path = asset_dir(lock, AUDIO2TOOL_LOCK_KEY, root) / "tools_registry.csv"
-    tool_lines = module.format_tools_compact(module.load_tools_from_csv(str(csv_path)))
+    tools = module.load_tools_from_csv(str(csv_path))
+    if renderer == "grouped":
+        tool_lines = module.format_tools_for_prompt(tools, include_constraints=False)
+    elif renderer == "compact":
+        tool_lines = module.format_tools_compact(tools)
+    else:
+        raise SystemExit("unknown official registry renderer %r" % (renderer,))
     return {
         name: f"{system_prompt}\n\n## Available Tools:\n{tool_lines}"
         for name, system_prompt in OFFICIAL_SYSTEM_PROMPT_VARIANTS.items()
@@ -705,7 +732,7 @@ def main() -> int:
     )
 
     official_messages = (
-        official_system_messages(lock, root)
+        official_system_messages(lock, root, renderer=args.official_registry_renderer)
         if args.expect_official_system_message
         else None
     )
@@ -1097,11 +1124,16 @@ def main() -> int:
         "official_system_message_cross_check": (
             {
                 "status": "PASS",
+                "registry_renderer": args.official_registry_renderer,
                 "source": (
                     "the pinned Audio2Tool clone's own utils/tools_schema.py "
-                    "(format_tools_compact + load_tools_from_csv) over the same "
-                    "tools_registry.csv, executed from "
-                    "$SPEECHRL_DATA_DIR/repos/audio2tool"
+                    "(%s + load_tools_from_csv) over the same tools_registry.csv, "
+                    "executed from $SPEECHRL_DATA_DIR/repos/audio2tool"
+                    % (
+                        "format_tools_for_prompt(..., include_constraints=False)"
+                        if args.official_registry_renderer == "grouped"
+                        else "format_tools_compact"
+                    )
                 ),
                 "variants": {
                     name: {

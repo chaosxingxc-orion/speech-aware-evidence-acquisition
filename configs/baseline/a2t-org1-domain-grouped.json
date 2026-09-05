@@ -1,0 +1,25 @@
+{
+  "arm": "bare-core",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "rails_arms": [
+    "zero-supply"
+  ],
+  "scorers": [
+    "a2t-toolcall-official",
+    "a2t-toolcall-v2",
+    "a2t-toolcall",
+    "cost"
+  ],
+  "task_instruction_template": "probes/r1_audio2tool_official_grouped.txt",
+  "task_instruction_fill": "audio2tool-registry-grouped",
+  "task_instruction_template_active": true,
+  "user_turn_text": "Convert this voice command to a tool call.",
+  "user_turn_audio_first": true,
+  "factor": "ONE factor against configs/baseline/a2t-direct-official-protocol.json: which of the pinned release's two registry renderers builds the tool block. Everything else is byte-identical -- the same arm, the same policy, the same absence of evidence, the same scorers, the same system-prompt sentence and '## Available Tools:' header (r1_audio2tool_official_grouped.txt has the SAME BYTES as r1_audio2tool_official.txt, sha256 9005ea0a512fca7c2f4ab75e65835f03454f956b3ee3dcfe7570ef5d41fc1e65; it is a separate file only because configs/probes/README.md forbids reusing a template entry across probes), the same user turn with the audio first and then 'Convert this voice command to a tool call.', the same greedy decoding at max_tokens 256, the same raw audio through the bf16 mmproj.",
+  "manipulation": "task_instruction_fill names audio2tool-registry-grouped instead of audio2tool-registry-compact. The grouped fill is a port of format_tools_for_prompt(tools, include_constraints=False) from the pinned release (audio_benchmark/utils/tools_schema.py, commit b9d5383ca30945fbafb965a04bea40117e1e8a82): the same 152 rows of the same tools_registry.csv, grouped by the registry's own domain column (domains sorted; header '## {DOMAIN}' with underscores replaced by spaces and upper-cased), each domain's tools sorted by tool_name, each tool rendered as '### {signature}' followed by its description on the next line. The compact renderer the sealed cells flew drops domain and category entirely.",
+  "constraints_withheld": "include_constraints is FALSE. The release's renderer can also emit a 'Constraints: {argument_constraints}' line per tool; it is deliberately withheld here because it adds ARGUMENT knowledge that would confound the domain-cue question this cell asks. If the owner later wants it, it is a second cell, not an edit to this one.",
+  "protocol_source": "github.com/audio2tool/Audio2Tool at commit b9d5383ca30945fbafb965a04bea40117e1e8a82 (MIT), audio_benchmark/models/qwen3_omni.py (git blob 7f5f50e91a814620f040fcd11d9a5f77760db5d9) and audio_benchmark/utils/tools_schema.py. Clone receipt: docs/receipts/environments/audio2tool-official-code.json. The renderer is the release's own second function, not an invention of this repository; no system in the published Table 3 was run with it (the HF adapter hard-codes format_tools_compact), so this cell is a legitimate ORGANIZATION of the same registry and never a claim about the paper's protocol.",
+  "why_org": "A2T-ORG-1 is a knowledge-organization (ORG) mechanism in this study's terms: the knowledge supplied is the registry's own structure, at zero contact cost -- no retrieval, no second contact, no rollouts, no gold. The three official-population verdicts of 2026-09-04 put the whole Audio2Tool gap in one stratum, smart_home, where 889 of 908 misses name another real registry tool and roughly half of them the same idea's twin in smart_car; the compact rendering never tells the model which domain a tool belongs to. Preregistration: docs/readiness/2026-09-05-a2t-org1-domain-grouped-registry-v1-preregistration.md."
+}

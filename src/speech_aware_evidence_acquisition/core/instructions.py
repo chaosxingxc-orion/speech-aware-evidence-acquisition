@@ -36,7 +36,7 @@ from pathlib import Path
 from typing import Callable, Mapping
 
 from ..data.audio2tool import render_tool_schemas
-from ..data.audio2tool_tools import render_registry_compact
+from ..data.audio2tool_tools import render_registry_compact, render_registry_grouped
 from ..data.slurp import render_slurp_closed_label_inventory
 from .base import INSTRUCTION_FILLS, CoreError
 
@@ -51,6 +51,14 @@ INSTRUCTION_FILLS.register("audio2tool-tool-schemas", render_tool_schemas)
 # a replacement: every existing cell keeps naming the JSON-per-line fill
 # above and its rendered instruction is byte-identical to before.
 INSTRUCTION_FILLS.register("audio2tool-registry-compact", render_registry_compact)
+# The pinned Audio2Tool release's SECOND registry renderer,
+# `format_tools_for_prompt(tools, include_constraints=False)`: the same 152
+# rows organized by the registry's own `domain` column (sorted domain groups
+# under an upper-cased header, each tool a "### {signature}" line followed by
+# its description), constraints withheld. A2T-ORG-1's single factor. Fourth
+# fill, same `(lock, root) -> str` shape; no existing cell names it, so every
+# previously rendered instruction is byte-identical to before.
+INSTRUCTION_FILLS.register("audio2tool-registry-grouped", render_registry_grouped)
 # SLURP's closed label inventory (2026-09-05): the TRAIN-only ontology task
 # contract the sealed DEV-1000 M0 arm already sent, plus the compact closed
 # inventory that names the legal scenario/action pairs and the entity types.

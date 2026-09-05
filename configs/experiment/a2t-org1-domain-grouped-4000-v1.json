@@ -1,0 +1,192 @@
+{
+  "experiment_id": "SAEA-A2T-ORG1-DOMAIN-GROUPED-V1",
+  "schema": "saea-a2t-direct-calibration-experiment-v1",
+  "date": "2026-09-05",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "A2T-ORG-1: the study's first knowledge-organization mechanism on Audio2Tool, at zero contact cost. Every official-population verdict of 2026-09-04 put the Audio2Tool gap in one stratum, smart_home, where 889 of 908 misses name another real registry tool -- roughly half of them the same idea's twin in smart_car (setColor / setColorTemperature / setLighting answered with setAmbientLighting, setFanMode with setFanSpeed) and the rest a same-domain near-synonym (rebootDevice / restartDevice, setSecurityMode / armSecuritySystem, activateScene / activateRoutine, getApplianceState / getApplianceStatus, setLighting / setLightState). The official protocol renders the registry with format_tools_compact, which drops the registry's domain and category columns entirely, so the model is never told which domain a tool belongs to; only 11 of the 53 smart_home descriptions and 28 of the 86 smart_car descriptions mention a domain word. This cell supplies the registry's own domain STRUCTURE, and nothing else, using the release's own second renderer. Preregistration: docs/readiness/2026-09-05-a2t-org1-domain-grouped-registry-v1-preregistration.md.",
+  "hypothesis": "H1: supplying the domain structure of the registry, with no other change, recovers a measurable share of the cross-domain twin misses and therefore of the smart_home gap. The same-domain twins are expected NOT to move; that residual is the target of A2T-ORG-2 (contrast-note rollouts), which is not registered here.",
+  "predecessor": {
+    "run_id": "SAEA-A2T-TIER3467-OFFICIAL-POPULATION-V1",
+    "cell": "T3467-official-pop-2000",
+    "attempt_id": "attempt-20260904T211040Z-t3467officialpop2000",
+    "manifest_sha256": "1f43aab3520a0e4df0aa0b11693f518fda81b52e936e510f51c00713af016d58",
+    "verdict": "docs/readiness/2026-09-04-a2t-tier3467-official-population-v1-verdict.md"
+  },
+  "comparators": {
+    "basis": "the sealed official-protocol output of the SAME sample id, under the SAME scorer, from the flight that drew that part of the union roster. Nothing is re-flown on the baseline side: greedy decoding is not bitwise reproducible across batch shapes on this runtime, so the sealed bytes are the only honest comparator.",
+    "tier1_direct": {
+      "run_id": "SAEA-A2T-TIER1-OFFICIAL-POPULATION-V1",
+      "cell": "T1-official-pop-500",
+      "attempt_id": "attempt-20260904T172609Z-t1officialpop500",
+      "manifest_sha256": "17acd0f4c1de9b5f4c658390fb67e8a6065f1628ff09b19bcd77afa47e7f99cf",
+      "rows": 500
+    },
+    "tier2_parametric__tier5_needle__tier8_intent_blending": {
+      "run_id": "SAEA-A2T-TIER258-OFFICIAL-POPULATION-V1",
+      "cell": "T258-official-pop-1500",
+      "attempt_id": "attempt-20260904T193726Z-t258officialpop1500",
+      "manifest_sha256": "7de7429110e978784fc8303e632c54360d9cdbb70aa61e9d084b957f68db847f",
+      "rows": 1500
+    },
+    "tier3_multi_intent__tier4_implicit__tier6_correction__tier7_multiturn": {
+      "run_id": "SAEA-A2T-TIER3467-OFFICIAL-POPULATION-V1",
+      "cell": "T3467-official-pop-2000",
+      "attempt_id": "attempt-20260904T211040Z-t3467officialpop2000",
+      "manifest_sha256": "1f43aab3520a0e4df0aa0b11693f518fda81b52e936e510f51c00713af016d58",
+      "rows": 2000
+    }
+  },
+  "paper_row": {
+    "source": "arXiv:2604.22821 Table 3, Qwen-3-Omni-30B",
+    "tier1_direct": {
+      "tool_accuracy": 92.4,
+      "exact_match": 92.4
+    },
+    "tier2_parametric": {
+      "tool_accuracy": 84.6,
+      "exact_match": 15.6,
+      "slot_f1": 21.7
+    },
+    "tier3_multi_intent": {
+      "tool_accuracy": 74.7,
+      "exact_match": 28.6,
+      "slot_f1": 35.0
+    },
+    "tier4_implicit": {
+      "tool_accuracy": 33.4,
+      "exact_match": 11.3,
+      "slot_f1": 23.4
+    },
+    "tier5_needle": {
+      "tool_accuracy": 90.6,
+      "exact_match": 36.0,
+      "slot_f1": 41.6
+    },
+    "tier6_correction": {
+      "tool_accuracy": 81.5,
+      "exact_match": 24.8,
+      "slot_f1": 32.4
+    },
+    "tier7_multiturn": {
+      "tool_accuracy": 54.6,
+      "exact_match": 16.3,
+      "slot_f1": 26.8
+    },
+    "tier8_intent_blending": {
+      "tool_accuracy": 41.7,
+      "exact_match": 12.4,
+      "slot_f1": 19.9
+    },
+    "paper_column_note": "reported beside every tier as the owner's reporting rule requires. It is a CEILING reference, not a gate: this run's decision is a paired delta against the sealed official-protocol cells, never a threshold relative to the published row. arXiv:2604.22821 Table 3 gives no Slot F1 for tier 1."
+  },
+  "populations": {
+    "A2T-ORG1-UNION-4000": {
+      "dataset_fragment": "audio2tool-org1-union-4000",
+      "carrier": "audio2tool",
+      "split_role": "discovery",
+      "count": 4000,
+      "strata": "tier (500 each over all eight tiers) and domain (smart_home 2,792, wearables 857, smart_car 351)",
+      "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-org1-domain-grouped-roster/flight-roster-receipt.json",
+      "receipt_sha256": "e5a81b71e1253ff866262991f79d132b89f4bfb47e7c8a0c0cf0aa04857b8736",
+      "split_identity_hash": "c0c1e7ccc0a9d923e51e86be11c4aedb760a2b91c8ab166305a6877c64496ad4",
+      "flight_split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+      "audio_seconds_one_pass": 23418.083083,
+      "audio_seconds_longest_item": 654.635667,
+      "selection": "NO NEW DRAW: the set-union of the three sealed official-population rosters, id for id (tier 1 500, tiers 2/5/8 1,500, tiers 3/4/6/7 2,000). Builder scripts/build_a2t_org1_union_roster.py verifies each parent's committed SHA-256 and re-derives both of its identity hashes before merging, then re-hashes every wav and re-reads every wav header.",
+      "estimand": "the paired effect of the domain-grouped registry on official tool accuracy over the union of the three released populations this repository has already measured under the compact registry"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "ORG1-grouped-raw",
+      "dataset_fragment": "audio2tool-org1-union-4000",
+      "factor": "knowledge ORGANIZATION: the registry's own domain structure, supplied by the release's own second renderer",
+      "factor_a_output_contract": "unchanged from R-official-raw, T1-official-pop-500, T258-official-pop-1500 and T3467-official-pop-2000: the published system-prompt sentence, the fixed '## Available Tools:' header, the same 152 registry rows, the same call-string output contract. ONLY the renderer differs -- format_tools_for_prompt(tools, include_constraints=False) instead of format_tools_compact.",
+      "factor_d_audio_path": "raw audio, bf16 mmproj loaded",
+      "user_turn": "audio first, then the fixed sentence 'Convert this voice command to a tool call.'",
+      "arm": "bare-core",
+      "baseline_fragment": "a2t-org1-domain-grouped",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "serving_geometry": "-c 49152 -np 2, 24,576 tokens per slot -- the geometry T1-official-pop-500 and T3467-official-pop-2000 flew, re-derived here by the section 8.1 rule against this roster and this system message. The union carries FOUR of the release's 654-second synthesis defects (tier1_direct:003943, tier3_multi_intent:003555, tier6_correction:003151, tier7_multiturn:001033) and no other row over 56 s, so under the mmproj encoder's one-second window rule the worst row costs 8,515 speech tokens. The grouped registry renders to 16,490 chars against the compact's 16,143 (+347), so the text envelope grows by a few hundred tokens at most and -np 2 keeps well over the preregistered 8,192-token reserve while -np 3's 16,384-token slot does not. The prompt-fit receipt measures the real number and re-derives the decision before any generation.",
+      "constraints_withheld": "include_constraints is FALSE: the release's renderer can also emit a per-tool 'Constraints: ...' line, and it is withheld because it adds ARGUMENT knowledge that would confound the domain-cue question. A constraints cell, if the owner wants one, is a second cell and not an edit to this one."
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 256,
+    "id_slot": "per-sample",
+    "contacts_per_item": 1,
+    "evidence": "none",
+    "obs": "none",
+    "rollouts": "none",
+    "harness": "core.flight.FlightRuntime with the shared rails zero-supply direct arm and the OpenJiuwen executor, entered through scripts/flights/run_calibration_cell.py -- the same harness and the same entry point every calibration, replication and official-population cell flew",
+    "official_code_pin": "b9d5383ca30945fbafb965a04bea40117e1e8a82; docs/receipts/environments/audio2tool-official-code.json",
+    "per_cell_dataset_fragment": "this run's single cell is launched with --dataset audio2tool-org1-union-4000; the runner composes model + dataset + baseline + experiment exactly as every earlier Audio2Tool direct cell did"
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "discovery",
+    "planned_model_calls": 4008,
+    "planned_gpu_hours": 1.2,
+    "planned_speech_audio_seconds": 23419
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "4,000 rows x 1 contact + 8 canaries = 4,008; the registered exposure ceiling is 4,200",
+    "planned_speech_audio_seconds": "23,418.083083 s for one pass (1,668.914042 + 9,784.337875 + 11,964.831167 as the three parents recorded them), rounded up to the integer contracts.ExecutionPlan requires (23,419); the registered exposure ceiling is 24,600",
+    "planned_gpu_hours": "1.2. At -np 2 the sealed cells flew 500 rows in 282 s and 2,000 rows in 1,344 s of generation; the 1,500 tiers-2/5/8 rows flew in 934 s at -np 3 and are the short ones. 0.78 to 0.83 s per call over 4,008 calls at two slots projects roughly 2,900 s of generation. The registered ceiling is 2.0",
+    "paid_api_spend": 0,
+    "ceilings_live_in_the_exposure_row": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are the exposure-ledger row's calls / speech audio seconds / gpu hours cells, which the gate requires to be at least these planned values, and the budget is cumulative across every attempt of this run id"
+  },
+  "evaluation": {
+    "official_scorers": [
+      "a2t-toolcall-official",
+      "a2t-toolcall-v2",
+      "a2t-toolcall",
+      "cost"
+    ],
+    "paper_facing_scorer": "a2t-toolcall-official",
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "outer_parallel_workers": 4,
+    "metrics": [
+      "official tool accuracy (primary gold tool), pooled and per tier and per domain",
+      "official exact match",
+      "official parameter precision/recall/F1, macro over samples as the published code computes it, plus the micro-pooled figure beside it",
+      "parse rate",
+      "a2t-toolcall-v2 ordered tool accuracy, exact match and slot F1 under the extended parse",
+      "prompt_tokens",
+      "latency"
+    ],
+    "mandatory_slices": [
+      "POOLED paired delta on official tool accuracy against the sealed official-protocol outputs of the same 4,000 rows: saves / harms / ties, exact sign test, 10,000 bootstrap replicates stratified by tier, seed 20260903, CI90",
+      "the same delta on the natural mixture and on equal-domain weighting",
+      "per tier, with the paper column beside every tier",
+      "per domain (smart_home / wearables / smart_car), and per tier x domain",
+      "exact match, parameter F1 macro and micro, a2t-toolcall-v2 and parse rate, each as a paired delta",
+      "the confusion-pair table BEFORE and AFTER, counting the named cross-domain twins (setColor / setColorTemperature / setLighting -> setAmbientLighting, setFanMode -> setFanSpeed, setGarageDoor -> setGarageOpener, setVolume -> adjustVolume, findMyDevice -> findPairedPhone) and the named same-domain twins (rebootDevice -> restartDevice, setSecurityMode -> armSecuritySystem, activateScene -> activateRoutine, getApplianceState -> getApplianceStatus, setLighting -> setLightState, getAirQuality -> getAirQuality_diag, setGroupLightState -> setLighting)",
+      "the CROSS-DOMAIN SHARE of the gain = (baseline cross-domain-twin misses corrected) / (all misses corrected)"
+    ],
+    "confidence_interval": "CI90",
+    "renderer": "analysis.paired.render_markdown"
+  },
+  "decision": {
+    "primary": "pooled official tool accuracy, ORG-1 minus the sealed official-protocol baseline, paired over 4,000 rows",
+    "three_outcomes": {
+      "admitted": "ADMITTED: the pooled CI90 lower bound is above 0 AND the per-domain table shows the gain concentrated on smart_home cross-domain twins. ORG-1 becomes the study's first admitted knowledge-organization mechanism on Audio2Tool, and A2T-ORG-2 is registered on top of it (same roster, ORG-1 as its comparator).",
+      "null": "NULL: the CI90 includes 0. Domain structure alone is not the lever; A2T-ORG-2 is registered against the official-protocol baseline instead, and the domain cue is folded into its notes rather than tested again.",
+      "harmful": "HARMFUL: the CI90 upper bound is below 0. ORG-1 is dropped and the reason (longer prompt, header tokens) is recorded before ORG-2."
+    },
+    "baseline_is_unchanged_by_any_outcome": "No outcome changes the direct baseline: the official-protocol cell stays the comparator every mechanism is paired against.",
+    "gates_relative_to_the_published_ceiling": "The paper column is reported beside every tier as a ceiling reference. No gate is set above it and none is set relative to it: this run's decision is a paired delta and nothing else.",
+    "claim_surface": "Nothing here is a superiority, generality or Stage-3 claim; the population is discovery data already exposed on 2026-09-04; no knob is tuned on it.",
+    "not_authorized": "No test contact, no fresh roster, no rollouts, no constraints line, no retrieval or second contact, no change to the direct baseline, no Q8_0, no training-free policy fit. At most one recovery re-registration.",
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "why_one_run_id": "All eight tiers fly in ONE roster, ONE split identity hash and ONE run id because ORG-1's estimand is a single pooled paired delta with tier and domain as strata. contracts.gate_exposure requires exactly one pre-registered exposure row per run id whose split identity hash equals the plan's; a single union roster satisfies that, exactly as each of the three parent flights did for its own draw."
+}

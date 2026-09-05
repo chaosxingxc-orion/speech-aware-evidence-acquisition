@@ -1,7 +1,8 @@
-# A2T-ORG-1: domain-grouped tool registry (knowledge organization, zero rollouts), v1 preregistration (DRAFT, not registered)
+# A2T-ORG-1: domain-grouped tool registry (knowledge organization, zero rollouts), v1 preregistration (REGISTERED)
 
-Status: drafted 2026-09-05 after the owner confirmed the mechanism order (A2T-ORG-1 first). Not registered, not
-authorized to fly until the owner's GO is recorded in section 8.
+Status: drafted 2026-09-05 after the owner confirmed the mechanism order (A2T-ORG-1 first); REGISTERED the same
+day on the owner's GO, recorded verbatim in section 8. The exposure rows for the prompt fit, the smoke and the
+flight were written before the first contact.
 
 ## 1. Question and hypothesis
 
@@ -107,4 +108,67 @@ the direct baseline; no Q8_0; no superiority or Stage-3 claim. At most one recov
 
 ## 8. Owner decision and execution log
 
-Pending.
+### 8.1 Owner decision, verbatim
+
+> Owner GO 2026-09-05: fly A2T-ORG-1 as preregistered; new agent; no other change.
+
+### 8.2 What "as preregistered" resolved to
+
+Nothing in sections 1-7 was changed to fly this. Three facts were MEASURED rather than assumed and
+are recorded here because section 4 required them:
+
+1. **The union roster is 4,000 rows and needs one D1 supplement, not none.** Section 3 said "all
+   already exposed", which is true of the model contact: every row was contacted once on 2026-09-04.
+   It is not true of the D1 identity closure. `contracts.gate_media_identity` reads the immutable
+   `docs/receipts/artifacts/d1-identity.json` plus AT MOST ONE additive supplement, and the three
+   sealed official-population supplements are siblings parented to that same base rather than a
+   chain. So the union needs its own union supplement:
+   `docs/receipts/artifacts/d1-a2t-org1-union-4000.json`, 3,932 entries (495 + 1,455 + 1,982), with
+   the other 68 ids verified against the base artifact and skipped because the gate refuses a
+   supplement entry that duplicates a base sample. No new probe-sample receipt was needed: all 4,000
+   ids already resolve inside `data.audio2tool`'s frozen-receipt universe.
+2. **The grouped registry is 347 characters longer than the compact one**, not the "much longer"
+   section 4 item 2 anticipated: 16,490 chars against 16,143 for the whole system message. The
+   `### ` prefix costs two characters per tool over `- `, the newline between signature and
+   description saves one over `: `, and the blank line before each entry adds one; three domain
+   headers do the rest.
+3. **The serving geometry is unchanged at `-c 49152 -np 2`.** The union carries FOUR of the
+   release's 654-second synthesis defects (`tier1_direct:003943`, `tier3_multi_intent:003555`,
+   `tier6_correction:003151`, `tier7_multiturn:001033`) and no other row over 56 s, so the worst
+   row costs 8,515 speech tokens under the one-second window rule and the section 8.1 derivation
+   rule of `docs/readiness/2026-08-25-a2t-generality-campaign-plan.md` (largest slot count whose
+   per-slot window still clears worst-required plus the 8,192-token reserve, holding `-c` at the
+   49,152 this GPU is proven to serve on the raw path) lands on 2 slots exactly as it did for
+   `T1-official-pop-500` and `T3467-official-pop-2000`. The prompt-fit receipt re-derives it from
+   the measured token count before any generation.
+
+### 8.3 Registered identities
+
+| item | value |
+|---|---|
+| roster | `docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-org1-domain-grouped-roster/flight-roster-receipt.json` |
+| roster SHA-256 | `e5a81b71e1253ff866262991f79d132b89f4bfb47e7c8a0c0cf0aa04857b8736` |
+| split identity hash (probe-receipt convention) | `c0c1e7ccc0a9d923e51e86be11c4aedb760a2b91c8ab166305a6877c64496ad4` |
+| flight split identity hash (FlightRuntime convention) | `ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6` |
+| D1 media supplement | `docs/receipts/artifacts/d1-a2t-org1-union-4000.json` (SHA-256 `b94439af4f51d648d8969f6ff876d3a24ccd49836bac011dc8f2bb0c9364ec59`, 3,932 entries) |
+| dataset fragment | `configs/dataset/audio2tool-org1-union-4000.json` |
+| baseline fragment | `configs/baseline/a2t-org1-domain-grouped.json` |
+| probe template | `configs/probes/r1_audio2tool_official_grouped.txt` (same bytes as `r1_audio2tool_official.txt`) |
+| instruction fill | `audio2tool-registry-grouped` (`data.audio2tool_tools.render_registry_grouped`) |
+| experiment fragment | `configs/experiment/a2t-org1-domain-grouped-4000-v1.json` |
+| smoke fragment | `configs/experiment/a2t-org1-domain-grouped-4000-smoke-v1.json` |
+| model fragment | `configs/model/q4km-featcache-a2t-official-np2-04ccc72a.json` (unchanged) |
+| rendered system message | 16,490 chars, SHA-256 `a0b5dd77cceac57d726e43a06b06a4c6699f21ec22973b0ba9ec6e8409879495` |
+
+### 8.4 Exposure rows, all written before the first contact
+
+| run id | profile | calls | speech s | GPU h |
+|---|---|---:|---:|---:|
+| `SAEA-A2T-ORG1-DOMAIN-GROUPED-PROMPT-FIT-V1` | `bounded-discovery-probe` | 2 | 2 | 0.3 |
+| `SAEA-A2T-ORG1-DOMAIN-GROUPED-SMOKE-V1` | `bounded-discovery-probe` | 20 | 2,100 | 0.2 |
+| `SAEA-A2T-ORG1-DOMAIN-GROUPED-V1` | `baseline-reproduction` | 4,200 | 24,600 | 2.0 |
+
+### 8.5 Execution log
+
+Filled in by the verdict:
+`docs/readiness/2026-09-05-a2t-org1-domain-grouped-registry-v1-verdict.md`.

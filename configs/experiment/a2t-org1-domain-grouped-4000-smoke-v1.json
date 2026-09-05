@@ -1,0 +1,73 @@
+{
+  "experiment_id": "SAEA-A2T-ORG1-DOMAIN-GROUPED-SMOKE-V1",
+  "schema": "saea-a2t-direct-calibration-smoke-experiment-v1",
+  "date": "2026-09-05",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Four rows of ORG1-grouped-raw, end to end, before the registered 4,008-call flight: prove the -np 2 serving geometry on this roster under the LONGER grouped system message, prove that the domain-grouped registry goes on the wire verbatim, prove sealing and the four registered Audio2Tool scorers on real sealed rows, and produce the wall-time projection the flight is launched on. No smoke number is a task measurement.",
+  "smoke_populations": {
+    "A2T-ORG1-UNION-4000": {
+      "dataset_fragment": "audio2tool-org1-union-4000",
+      "carrier": "audio2tool",
+      "parent_split_name": "A2T-ORG1-UNION-4000",
+      "split_role": "discovery",
+      "count": 4,
+      "sample_ids": [
+        "tier2_parametric:006305",
+        "tier3_multi_intent:002421",
+        "tier6_correction:003917",
+        "tier7_multiturn:001033"
+      ],
+      "selection": "deterministic and stated before the rows were read off the roster: (1) the roster's LONGEST sample, which is the flight's worst request -- tier7_multiturn:001033 at 654.635667 s, one of the release's four synthesis defects; then (2) the MEDIAN-length sample of each of the three domains among the remaining rows, ordered by (audio_seconds, sample_id). That covers the worst request, all three domain strata and four of the eight tiers, and the three median rows are what makes the wall-time projection meaningful -- four defect rows would project nothing about 4,000 ordinary ones.",
+      "sample_domains": {
+        "tier2_parametric:006305": "smart_car",
+        "tier3_multi_intent:002421": "smart_home",
+        "tier6_correction:003917": "wearables",
+        "tier7_multiturn:001033": "smart_home"
+      },
+      "audio_seconds_one_pass": 668.102417,
+      "split_identity_hash": "fcefa5f4d3b06cf7cc5e66f6a363d885dc677df7e85862badcdb82c60d077c08",
+      "parent_split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "ORG1-grouped-raw",
+      "dataset_fragment": "audio2tool-org1-union-4000",
+      "arm": "bare-core",
+      "baseline_fragment": "a2t-org1-domain-grouped",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a"
+    }
+  ],
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 12,
+    "planned_gpu_hours": 0.2,
+    "planned_speech_audio_seconds": 2050
+  },
+  "execution_plan_basis": {
+    "calls": "4 rows x 1 contact = 4 for a clean pass. The plan registers 12 because attempt budget is enforced RUN-CUMULATIVELY: core.model.adapter.FrozenCoreAdapter re-reads every prior attempt's durable actuals for this run id on every request. 12 covers a clean pass plus up to two recoveries; the exposure row's own ceiling is 20.",
+    "speech_audio_seconds": "668.102417 s per pass, 2,004.307251 s across three passes, rounded up to 2,050; the exposure row's ceiling is 2,100. The number is dominated by the single 654.635667 s release-defect row, which is exactly why that row must be proved before the flight.",
+    "gpu_hours": "0.2, the registered ceiling",
+    "paid_api_spend": 0
+  },
+  "evaluation": {
+    "official_scorers": [
+      "a2t-toolcall-official",
+      "a2t-toolcall-v2",
+      "a2t-toolcall",
+      "cost"
+    ],
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "outer_parallel_workers": 4,
+    "what_is_read": "transport legality, the rendered prompt shape and its system-message hash (which must be the GROUPED variant, sha256 a0b5dd77cceac57d726e43a06b06a4c6699f21ec22973b0ba9ec6e8409879495, 16,490 chars), whether every stratum's audio encodes and returns at all -- most of all the 654-second row -- parse rate, and the per-call latency the flight's wall-time projection is built from",
+    "what_is_not_read": "no smoke metric is a task measurement and none enters the verdict. The calibration's own smoke is the standing precedent: on four rows it saw zero native tool calls and concluded the model was declining the tools interface, which 400 rows corrected to 87 %."
+  },
+  "decision": {
+    "gate": "the cell must complete 4 of 4 contacts, seal a verifiable manifest and score without error before the registered 4,008-call flight is launched",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}

@@ -104,6 +104,115 @@ PROBES: dict[str, dict] = {
             "is UNCHANGED and stays what the sealed R-official-raw cell flew."
         ),
     },
+    "R1-audio2tool-official-tier258-population": {
+        "arms": {"direct": ["r1_audio2tool_official.txt"]},
+        "scorer": "a2t-scorer-official-b9d5383c (the pinned Audio2Tool release's own metrics.py)",
+        "sampling": {
+            "seed": 20260803,
+            "design": (
+                "500 queries from each of the released tier2_parametric (3,160), "
+                "tier5_needle (2,146) and tier8_intent_blending (821) populations -- the "
+                "first recording the released loader resolves in every query_* directory "
+                "-- drawn uniformly without replacement per tier"
+            ),
+        },
+        "sample_receipt": "a2t-tier258-official-population-1500.json",
+        "success": (
+            "three outcomes per tier on the owner's 2026-09-04 alignment standard: "
+            "ALIGNED = official tool accuracy within 3 pp of the published row (tier 2 "
+            "84.6, tier 5 90.6, tier 8 41.7) or better; CONSISTENT-WITHIN-NOISE = the "
+            "paper value inside the Wilson CI90 at n = 500 but outside 3 pp; FAIL "
+            "otherwise. Reported against the Qwen-2.5-Omni-7B and "
+            "weakest-published-SpeechLM floors whatever the outcome"
+        ),
+        "profile": "baseline-reproduction",
+        "note": (
+            "Same template and same request as R1-audio2tool-official-tier1-population; "
+            "only the tiers and the stratification differ. The 2026-09-04 tier-1 "
+            "official-population verdict left tiers 2, 5 and 8 undecided on the frozen "
+            "400: 74.0 / 78.0 / 34.0 against a published 84.6 / 90.6 / 41.7, all inside "
+            "a CI90 of about +/-11 pp at n = 50. This draw takes 500 queries from each "
+            "of those three tiers' own released populations. The receipt named above "
+            "carries the 1,423 sample ids of that draw which no earlier receipt covers; "
+            "the other 77 resolve through r1-audio2tool-sample.json and the two 104-row "
+            "post-seal AgentLoop scoring receipts."
+        ),
+    },
+    "R1-audio2tool-official-tier3467-population": {
+        "arms": {"direct": ["r1_audio2tool_official.txt"]},
+        "scorer": "a2t-scorer-official-b9d5383c (the pinned Audio2Tool release's own metrics.py)",
+        "sampling": {
+            "seed": 20260803,
+            "design": (
+                "500 queries from each of the released tier3_multi_intent (2,146), "
+                "tier4_implicit (2,132), tier6_correction (2,146) and tier7_multiturn "
+                "(2,092 after this repository's two identity exclusions of the released "
+                "2,146) populations -- the first recording the released loader resolves "
+                "in every query_* directory, which on tier 7 is the FIRST user turn's "
+                "wav -- drawn uniformly without replacement per tier"
+            ),
+        },
+        "sample_receipt": "a2t-tier3467-official-population-2000.json",
+        "success": (
+            "three outcomes per tier on the owner's 2026-09-04 alignment standard: "
+            "ALIGNED = official tool accuracy within 3 pp of the published row (tier 3 "
+            "74.7, tier 4 33.4, tier 6 81.5, tier 7 54.6) or better; "
+            "CONSISTENT-WITHIN-NOISE = the paper value inside the Wilson CI90 at n = 500 "
+            "but outside 3 pp; FAIL otherwise. Reported against the Qwen-2.5-Omni-7B and "
+            "weakest-published-SpeechLM floors whatever the outcome"
+        ),
+        "profile": "baseline-reproduction",
+        "note": (
+            "Same template and same request as R1-audio2tool-official-tier258-population; "
+            "only the tiers differ. The frozen 400 placed all four of these tiers inside "
+            "the owner's 3-point band at n = 50 -- tier 3 72.0 against 74.7, tier 4 28.0 "
+            "against 33.4, tier 6 84.0 against 81.5, tier 7 58.0 against 54.6 -- with a "
+            "CI90 of about +/-11 pp, which cannot decide a 3-point rule either way. This "
+            "draw takes 500 queries from each of those four tiers' own released "
+            "populations and completes the eight-tier table at one resolution. The "
+            "receipt named above carries the 1,954 sample ids of that draw which no "
+            "earlier receipt covers; the other 46 resolve through "
+            "r1-audio2tool-sample.json and the two 104-row post-seal AgentLoop scoring "
+            "receipts."
+        ),
+    },
+    "R1-audio2tool-org1-domain-grouped": {
+        "arms": {"direct": ["r1_audio2tool_official_grouped.txt"]},
+        "scorer": "a2t-scorer-official-b9d5383c (the pinned Audio2Tool release's own metrics.py)",
+        "sampling": {
+            "seed": 20260803,
+            "design": (
+                "no new draw: the UNION of the three sealed official-population rosters "
+                "-- tier 1 (500), tiers 2/5/8 (1,500) and tiers 3/4/6/7 (2,000) = 4,000 "
+                "rows -- reused id for id, so every row is paired with its own sealed "
+                "official-protocol output"
+            ),
+        },
+        "success": (
+            "pooled paired delta on official tool accuracy against the sealed "
+            "official-protocol outputs of the same 4,000 rows (10,000 replicates "
+            "stratified by tier, seed 20260903, CI90, exact sign test): ADMITTED = CI90 "
+            "lower bound above 0 AND the gain concentrated on smart_home cross-domain "
+            "twins; NULL = CI90 contains 0; HARMFUL = CI90 upper bound below 0"
+        ),
+        "profile": "baseline-reproduction",
+        "note": (
+            "The pinned release ships TWO registry renderers. The sealed cells flew "
+            "format_tools_compact, which drops the registry's domain and category "
+            "columns; this template's fill is format_tools_for_prompt(tools, "
+            "include_constraints=False), which groups the same 152 rows by domain. No "
+            "system in the published Table 3 was run with it (the HF adapter hard-codes "
+            "the compact form), so this is an ORGANIZATION of the same registry, never a "
+            "claim about the paper's protocol. The template file's bytes are IDENTICAL "
+            "to r1_audio2tool_official.txt -- only the fill differs -- and "
+            "r1_audio2tool_official.txt is UNCHANGED. No sample_receipt: this roster's "
+            "4,000 ids are already bound by a2t-tier1-official-population-500.json, "
+            "a2t-tier258-official-population-1500.json, "
+            "a2t-tier3467-official-population-2000.json, r1-audio2tool-sample.json and "
+            "the two 104-row post-seal AgentLoop scoring receipts, and a receipt that "
+            "repeated them would be refused as a duplicate."
+        ),
+    },
     "R2-bba-cascade-vs-direct": {
         "arms": {
             "direct": ["r2_bba_direct.txt"],

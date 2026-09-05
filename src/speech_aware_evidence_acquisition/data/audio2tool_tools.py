@@ -341,6 +341,87 @@ def render_registry_compact(lock: Mapping[str, object], root: Path) -> str:
     )
 
 
+def render_registry_grouped(lock: Mapping[str, object], root: Path) -> str:
+    """``format_tools_for_prompt(tools, include_constraints=False)`` from the
+    pinned Audio2Tool release, over the same ``tools_registry.csv`` every
+    other fill reads.
+
+    Upstream (``audio_benchmark/utils/tools_schema.py``, commit
+    ``b9d5383ca30945fbafb965a04bea40117e1e8a82``)::
+
+        lines = []
+        domains = {}
+        for tool in tools:
+            domain = tool['domain']
+            if domain not in domains:
+                domains[domain] = []
+            domains[domain].append(tool)
+        for domain, domain_tools in sorted(domains.items()):
+            lines.append(f"NL## {domain.upper().replace('_', ' ')}")
+            for tool in sorted(domain_tools, key=lambda x: x['name']):
+                lines.append(f"NL### {tool['signature']}")
+                lines.append(f"{tool['description']}")
+                if include_constraints and tool['argument_constraints']:
+                    lines.append(f"Constraints: {tool['argument_constraints']}")
+        return chr(10).join(lines)
+
+    (``NL`` and ``chr(10)`` stand in for the newline literals the upstream
+    body writes, only so this docstring carries no escape sequence of its
+    own.)
+
+    The SECOND renderer the release ships beside ``format_tools_compact``.
+    No system in the published Table 3 was run with it -- the HF adapter
+    hard-codes the compact form -- so it is a legitimate ORGANIZATION of the
+    same registry rather than a claim about the paper's protocol. Exactly one
+    thing differs from the compact fill: the registry's own ``domain`` column
+    becomes structure (sorted domain groups under an upper-cased header, each
+    tool a ``### {signature}`` line followed by its description) instead of
+    being dropped.
+
+    Facts this reproduces exactly, each of which would otherwise be an
+    invented choice:
+
+    * ``include_constraints`` is FALSE, so ``argument_constraints`` is never
+      rendered; the argument-knowledge factor is deliberately withheld.
+    * domains are iterated in ``sorted()`` order over the domain STRING
+      (``smart_car``, ``smart_home``, ``wearables``), and within a domain the
+      sort key is ``tool_name`` under plain Python string ordering -- the
+      same key ``format_tools_compact`` uses.
+    * the header is ``domain.upper().replace('_', ' ')`` (``SMART CAR``,
+      ``SMART HOME``, ``WEARABLES``).
+    * every appended line is PREFIXED with a newline and the parts are then
+      joined on a newline, so the rendered block OPENS with a blank line and
+      carries a blank line before every header and every ``###`` entry, and
+      it has no trailing newline. The caller supplies the surrounding
+      envelope, which upstream builds as the system prompt, a blank line, the
+      literal line ``## Available Tools:``, and then this block.
+    * upstream groups over ``load_tools_from_csv``'s CSV order while
+      :func:`~..data.audio2tool.load_tool_registry` returns the same rows
+      sorted by numeric ``tool_id``. The output cannot differ: the domain
+      groups are emitted in sorted-domain order and each group is sorted by
+      name, so insertion order is not observable.
+
+    Upstream also skips rows whose ``deprecated`` column is the string
+    ``"true"``; the pinned ``tools_registry.csv`` has no ``deprecated``
+    column at all, so nothing is skipped there or here and all 152 rows are
+    rendered.
+
+    Registered as the ``audio2tool-registry-grouped`` instruction fill.
+    """
+
+    rows = load_tool_registry(lock, root)
+    grouped: dict[str, list[Mapping[str, str]]] = {}
+    for row in rows:
+        grouped.setdefault(row["domain"], []).append(row)
+    lines: list[str] = []
+    for domain, domain_rows in sorted(grouped.items()):
+        lines.append("\n## %s" % domain.upper().replace("_", " "))
+        for row in sorted(domain_rows, key=lambda row: row["tool_name"]):
+            lines.append("\n### %s" % row["signature"])
+            lines.append(str(row["description"]))
+    return "\n".join(lines)
+
+
 def openai_tools_sha256(tools: Sequence[Mapping[str, object]]) -> str:
     """SHA-256 over the canonical (sorted-key, compact) JSON of ``tools``."""
 
