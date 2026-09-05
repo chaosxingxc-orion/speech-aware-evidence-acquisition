@@ -1,0 +1,35 @@
+{
+  "experiment_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-SMOKE-V1",
+  "purpose": "FOUR-ROW SMOKE for SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1. Same baseline fragment, same model fragment, same dataset fragment, same arm, same packets, same instruction -- four samples instead of one thousand. It exists to prove the runtime end to end (preflight, packet promotion, serve, dispatch, seal as a core.bundle run manifest, official scoring) BEFORE the registered flight, because this is the first SLURP cell ever flown through core.flight.FlightRuntime: every sealed SLURP arm before it went through rails.runner's speech-native agent loop and left no *.run-manifest.json behind. Its own exposure row, its own run id, its own attempt accounting; its numbers are a wiring proof and are never reported as a result.",
+  "split_id": "DEV-1000-SMOKE-4",
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "dev",
+    "planned_model_calls": 12,
+    "planned_gpu_hours": 0.3,
+    "planned_speech_audio_seconds": 60
+  },
+  "cells": [
+    {
+      "cell_id": "closed-list-direct-smoke",
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-direct-closed-list",
+      "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+      "dataset_fragment": "slurp-speech-native-dev1000"
+    }
+  ],
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "split_id": "DEV-1000-SMOKE-4",
+      "ids": [
+        "slurp:devel:000011:audio-1497266596",
+        "slurp:devel:000053:audio-1498758443",
+        "slurp:devel:000058:audio-1488637952",
+        "slurp:devel:000068:audio-1488550098"
+      ],
+      "basis": "The first four DEV-1000 sample ids in sorted order. Named HERE, in the registered fragment, rather than passed on a command line, so a smoke can never quietly fly four different rows than the ones its exposure row names (the SAEA-E22-ESB precedent)."
+    }
+  ],
+  "budget_basis": "4 contacts plus margin for one permitted recovery within the same run id = 12 planned model calls. The four rows' own audio is 14.28 seconds; 60 is the rounded ceiling. GPU hours 0.3 covers a cold model load plus four contacts. Paid API spend 0. Plan cells are RUN-CUMULATIVE across every attempt of this run id."
+}

@@ -178,6 +178,22 @@
       },
       "scorer": "a2t-scorer-v1 components (tool selection / structure); semantic PF only via pinned local judge if unavoidable",
       "success": "one-shot > zero-shot; magnitude compared to published +10-17pp"
+    },
+    "SLURP-DEV1000-CLOSED-LIST-DIRECT": {
+      "arms": {
+        "direct": [
+          "slurp_direct_closed_list.txt"
+        ]
+      },
+      "note": "The template's fixed half is byte-identical to rails.adapters.slurp._INSTRUCTION and its {tool_schemas} fill (slurp-label-inventory) renders the UNCHANGED render_slurp_ontology task contract followed by the compact closed inventory, so the rendered instruction is the sealed DEV-1000 M0 instruction (sha256 cef52789...86b8, 5,747 chars) plus a pure 1,836-char suffix and nothing else. Correction to the premise of the 2026-09-04 audit's caveat 4: the sealed M0 prompt DID carry the 18 scenarios, the 46 actions and the 55 entity types; what it never carried is the 60-pair scenario/action intent inventory, which is what this template adds.",
+      "profile": "baseline-reproduction",
+      "sample_receipt": "DEV-1000.json",
+      "sampling": {
+        "design": "no new draw: the frozen DEV-1000 roster the sealed 2026-08-25 SAEA-DEV1000-BASELINE-LOCK arms already flew, reused id-for-id",
+        "seed": 20260823
+      },
+      "scorer": "slurp-slu-official (the real, unmodified official evaluate.py at pinned commit 8eb16545762be97ace75334109d73824217311f1 in ~/.venvs/slurp-official-eval, --average micro), run through core.scoring_batch",
+      "success": "protocol alignment, not a threshold: this arm becomes the study's SLURP direct baseline regardless of outcome, because it is the one that matches the published prompt-only protocol (He & Garner arXiv:2305.13512 put the intent inventory IN the prompt). Reported as the official-metric table beside the sealed M0 comparator, the locked BLEND arm and the published brackets, with a paired per-sample contrast."
     }
   },
   "samples": {
@@ -243,6 +259,13 @@
       "seed": 20260807,
       "split_identity_hash": "7205f865eda0fc8f3195e7ec2cb741a4fefe475f6db819373be040f83ace5069",
       "split_role": "discovery"
+    },
+    "SLURP-DEV1000-CLOSED-LIST-DIRECT": {
+      "n_items": 1000,
+      "receipt": "DEV-1000.json",
+      "seed": 20260823,
+      "split_identity_hash": "9fb44e3384b8ad8e0d8f825b88eb0a3051c218b699975051d8a0481aabc0243b",
+      "split_role": "dev"
     }
   },
   "sampling_policy": "Each carrier is sampled exactly once, by scripts/build_probe_samples.py (seeded, order-independent, metadata-only); the receipt under docs/receipts/probe-samples/ is frozen and every later experiment on that carrier resolves its items through the binding in this manifest \u2014 never through a fresh draw. Adding a carrier means adding a new receipt through the same script and regenerating this manifest; changing an existing receipt requires owner approval and a new probe entry. R4 draws from the already-frozen dev subset10 split receipt (docs/receipts/splits.json); R3 has no sample yet (data acquisition blocked).",
@@ -282,6 +305,9 @@
     },
     "shared_transcribe.txt": {
       "sha256": "44365d551299d86097791e02e931614872ee503f6d3f3d689a8a12c0c311e677"
+    },
+    "slurp_direct_closed_list.txt": {
+      "sha256": "9f2017c1b9a5cbf561a3437377ea4777d418ed19a7607f05e471f71a51dc0413"
     }
   }
 }

@@ -37,6 +37,7 @@ from typing import Callable, Mapping
 
 from ..data.audio2tool import render_tool_schemas
 from ..data.audio2tool_tools import render_registry_compact
+from ..data.slurp import render_slurp_closed_label_inventory
 from .base import INSTRUCTION_FILLS, CoreError
 
 TOOL_SCHEMAS_PLACEHOLDER = "{tool_schemas}"
@@ -50,6 +51,12 @@ INSTRUCTION_FILLS.register("audio2tool-tool-schemas", render_tool_schemas)
 # a replacement: every existing cell keeps naming the JSON-per-line fill
 # above and its rendered instruction is byte-identical to before.
 INSTRUCTION_FILLS.register("audio2tool-registry-compact", render_registry_compact)
+# SLURP's closed label inventory (2026-09-05): the TRAIN-only ontology task
+# contract the sealed DEV-1000 M0 arm already sent, plus the compact closed
+# inventory that names the legal scenario/action pairs and the entity types.
+# Third fill, same `(lock, root) -> str` shape; no existing cell names it, so
+# every previously rendered instruction is byte-identical to before.
+INSTRUCTION_FILLS.register("slurp-label-inventory", render_slurp_closed_label_inventory)
 
 
 def resolve_task_instruction(
@@ -112,3 +119,54 @@ def resolve_task_instruction(
             "rendering; refusing to send an unfilled template"
         )
     return rendered
+
+
+def resolve_active_task_instruction(
+    values: Mapping[str, object], repo_root: Path, lock: Mapping[str, object], root: Path
+) -> str | None:
+    """The wire instruction a ``core.flight.FlightRuntime`` cell sends, or
+    ``None`` to fall through to the adapter's own hard-coded text.
+
+    Three sources, in the order a baseline fragment may declare them:
+
+    * a literal ``task_instruction``;
+    * ``task_instruction_template`` + ``task_instruction_fill`` **with
+      ``task_instruction_template_active: true``**, resolved through
+      :func:`resolve_task_instruction`;
+    * neither -- the adapter's own instruction.
+
+    Why the opt-in third key rather than honouring the template pair
+    unconditionally. Several sealed cells (``a2t-direct-calibration``,
+    ``a2t-direct-packets``) ALREADY carry a template pair that their flight
+    never read: they went on the wire with the adapter's hard-coded text,
+    which is what their prompt-fit receipts record and what their
+    ``protocol_hash`` was computed over. Honouring the pair unconditionally
+    would silently rewrite what those sealed cells mean on any re-run. The
+    flag lets a NEW fragment say plainly that its template is the wire text
+    while every existing fragment stays byte-identical.
+
+    This is the shared form of the resolver ``scripts/flights/
+    run_calibration_cell.py`` introduced locally; a flight script calls it
+    and hands the result to its roster-bound adapter, because
+    ``FlightRuntime`` reads the system message from
+    ``adapter.instruction(sample)`` and has no config seam of its own.
+    """
+
+    literal = values.get("task_instruction")
+    if literal is not None:
+        if not isinstance(literal, str) or not literal:
+            raise CoreError("baseline task_instruction must be a non-empty string")
+        if values.get("task_instruction_template_active"):
+            raise CoreError(
+                "baseline declares both a literal task_instruction and an active "
+                "task_instruction_template; exactly one may be the wire text"
+            )
+        return literal
+    if not values.get("task_instruction_template_active"):
+        return None
+    if values.get("task_instruction_template") is None:
+        raise CoreError(
+            "task_instruction_template_active is set but no task_instruction_template "
+            "is declared"
+        )
+    return resolve_task_instruction(values, repo_root, lock, root)

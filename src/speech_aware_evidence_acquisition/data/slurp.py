@@ -71,6 +71,7 @@ import math
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
+from types import MappingProxyType
 from typing import Callable, Mapping, Sequence
 
 from ..reproduction.slurp_scoring import SlotEntity
@@ -127,11 +128,39 @@ class SlurpOntology:
     """Deterministic user-ontology roster (module docstring, entity clause's
     own "user-ontology matching" probe scope) -- unique scenario/action
     names and, per entity type, up to :data:`_ONTOLOGY_EXAMPLES_PER_TYPE`
-    distinct example filler values, all sorted for determinism."""
+    distinct example filler values, all sorted for determinism.
+
+    ``actions_by_scenario`` (added 2026-09-05) carries the PAIRING the three
+    flat rosters above throw away. ``scenarios`` and ``actions`` are two
+    independent sets, so a consumer reading them alone sees the 18 x 46 =
+    828 implied cross-product combinations when only 60 (scenario, action)
+    pairs actually occur in ``train``. That gap is what
+    :func:`render_slurp_label_inventory` closes and what the 2026-09-04
+    scoring-alignment audit named as the last unmatched element of the
+    published prompt-only SLURP protocol (He & Garner arXiv:2305.13512 list
+    the intent inventory IN the prompt). Defaulted to an empty mapping so
+    every caller that constructs a ``SlurpOntology`` positionally keeps
+    working unchanged.
+    """
 
     scenarios: tuple[str, ...]
     actions: tuple[str, ...]
     entity_types: Mapping[str, tuple[str, ...]]
+    actions_by_scenario: Mapping[str, tuple[str, ...]] = MappingProxyType({})
+
+    @property
+    def intents(self) -> tuple[str, ...]:
+        """The observed ``f"{scenario}_{action}"`` vocabulary, sorted -- the
+        SAME spelling :func:`_parse_record` gives ``SlurpRecord.intent``, so
+        an inventory rendered from here and a gold label compare directly."""
+
+        return tuple(
+            sorted(
+                f"{scenario}_{action}"
+                for scenario, actions in self.actions_by_scenario.items()
+                for action in actions
+            )
+        )
 
 
 @dataclass(frozen=True)
@@ -937,6 +966,7 @@ def load_slurp_ontology(
     _, _, metadata_dir = _governed_roots(lock, root)
     scenarios: set[str] = set()
     actions: set[str] = set()
+    actions_by_scenario: dict[str, set[str]] = {}
     fillers_by_type: dict[str, set[str]] = {}
     roster_splits = _ROSTER_SPLITS_WITH_SYNTHETIC if include_synthetic else _ROSTER_SPLITS_LEGAL
     for split_id in roster_splits:
@@ -951,6 +981,13 @@ def load_slurp_ontology(
                 scenarios.add(scenario)
             if isinstance(action, str) and action:
                 actions.add(action)
+            # The pairing, mined from the SAME line the two flat sets above
+            # are mined from, so the inventory can never disagree with them
+            # about which labels exist. Recorded only when BOTH fields are
+            # present and non-empty -- a half-labelled line contributes to
+            # neither the pair nor a phantom scenario with no actions.
+            if isinstance(scenario, str) and scenario and isinstance(action, str) and action:
+                actions_by_scenario.setdefault(scenario, set()).add(action)
             try:
                 tokens_by_id = _tokens_by_id(raw.get("tokens"), context)
             except LoaderError:
@@ -977,6 +1014,10 @@ def load_slurp_ontology(
         scenarios=tuple(sorted(scenarios)),
         actions=tuple(sorted(actions)),
         entity_types=entity_types,
+        actions_by_scenario={
+            scenario: tuple(sorted(scenario_actions))
+            for scenario, scenario_actions in sorted(actions_by_scenario.items())
+        },
     )
 
 
@@ -996,6 +1037,79 @@ def render_slurp_ontology(ontology: SlurpOntology) -> str:
     return json.dumps(document, ensure_ascii=False, sort_keys=True)
 
 
+_LABEL_INVENTORY_HEADER = (
+    "Closed label inventory. Choose the scenario, the action and every entity "
+    "type ONLY from the lists below. Never invent a label, never abbreviate "
+    "one, and never pair a scenario with an action that is not listed on its "
+    "own line."
+)
+
+
+def render_slurp_label_inventory(ontology: SlurpOntology) -> str:
+    """The COMPACT closed label inventory: one line per scenario naming the
+    actions observed with it, then one line naming every entity type.
+
+    Deliberately NOT another JSON document (that is
+    :func:`render_slurp_ontology`'s job) and deliberately carrying no example
+    fillers: this block's whole content is the closed LABEL space -- the 18
+    scenarios, the actions legal under each of them (60 pairs on the real
+    ``train`` corpus), and the 55 entity type names. Adding examples here
+    would make it a few-shot block instead of the zero-shot label inventory
+    the published prompt-only protocol uses.
+
+    Determinism: scenarios sorted, actions sorted within a scenario, entity
+    types sorted -- the same ordering discipline
+    :func:`render_slurp_ontology` already applies, so the rendered bytes are
+    a pure function of the pinned ``train.jsonl``.
+
+    Fails closed on an ontology with no pairing (e.g. one built before
+    ``actions_by_scenario`` existed): an inventory that silently omitted the
+    intent pairing would be exactly the defect this function exists to fix.
+    """
+
+    if not ontology.actions_by_scenario:
+        raise LoaderError(
+            "SlurpOntology carries no actions_by_scenario pairing; refusing to render a "
+            "label inventory whose whole purpose is the scenario/action pairing"
+        )
+    pair_lines = [
+        f"{scenario}: {', '.join(actions)}"
+        for scenario, actions in sorted(ontology.actions_by_scenario.items())
+    ]
+    pair_count = sum(len(actions) for actions in ontology.actions_by_scenario.values())
+    entity_types = sorted(ontology.entity_types)
+    return "\n".join(
+        (
+            _LABEL_INVENTORY_HEADER,
+            f"Legal scenario -> action pairs ({pair_count} intents in total; the "
+            'value of "action" must appear on the line of the chosen "scenario"):',
+            *pair_lines,
+            f'Entity types ({len(entity_types)} in total; every "type" must be '
+            f"exactly one of these): {', '.join(entity_types)}",
+        )
+    )
+
+
+def render_slurp_closed_label_inventory(lock: Mapping[str, object], root: Path) -> str:
+    """``core.base.INSTRUCTION_FILLS`` entry ``"slurp-label-inventory"``:
+    the UNCHANGED :func:`render_slurp_ontology` task contract, followed by
+    the compact closed inventory of :func:`render_slurp_label_inventory`.
+
+    The ordering and the blank-line join are load-bearing. The first half is
+    byte-identical to the task contract the sealed 2026-08-25 DEV-1000 M0
+    arm already sent (``rails.runner._agent_messages`` appended exactly this
+    rendering under a ``"Task contract:"`` header), so an arm using this
+    fill differs from that sealed comparator by a pure SUFFIX and by nothing
+    else -- which is what makes the paired contrast a measurement of the
+    closed inventory rather than of a rewritten prompt.
+
+    Signature matches every other instruction fill: ``(lock, root) -> str``.
+    """
+
+    ontology = load_slurp_ontology(lock, root)
+    return f"{render_slurp_ontology(ontology)}\n\n{render_slurp_label_inventory(ontology)}"
+
+
 __all__ = [
     "SLURP_LOCK_KEY",
     "SlurpOntology",
@@ -1005,5 +1119,7 @@ __all__ = [
     "load_slurp_ontology",
     "load_slurp_split",
     "load_slurp_train_material",
+    "render_slurp_closed_label_inventory",
+    "render_slurp_label_inventory",
     "render_slurp_ontology",
 ]

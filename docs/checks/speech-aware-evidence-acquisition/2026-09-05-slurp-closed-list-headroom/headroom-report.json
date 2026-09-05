@@ -1,0 +1,312 @@
+{
+  "arms": {
+    "DEV-1000 BLEND": {
+      "action_outside_the_listed_set": {
+        "count": 2,
+        "percent": 0.2
+      },
+      "entity_mentions": 693,
+      "entity_type_outside_the_listed_set": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "outputs_relpath": "runs/SAEA-DEV1000-BASELINE-LOCK/attempt-20260825T054707Z-dev1000blend/arm2-blend-outputs.jsonl",
+      "outputs_sha256": "542a029adca8fb8daf3618e8a049aecdba1b04aba30eafedb67099fb6e08cf14",
+      "pair_not_observed_in_train": {
+        "count": 21,
+        "percent": 2.1
+      },
+      "rows": 1000,
+      "scenario_outside_the_listed_set": {
+        "count": 2,
+        "percent": 0.2
+      },
+      "top_off_inventory_actions": [
+        [
+          "None",
+          2
+        ]
+      ],
+      "top_off_inventory_entity_types": [],
+      "top_off_inventory_pairs": [
+        [
+          "general/query",
+          12
+        ],
+        [
+          "qa/query",
+          7
+        ],
+        [
+          "None/None",
+          2
+        ]
+      ],
+      "top_off_inventory_scenarios": [
+        [
+          "None",
+          2
+        ]
+      ],
+      "unparsed_rows": 2
+    },
+    "DEV-1000 M0": {
+      "action_outside_the_listed_set": {
+        "count": 69,
+        "percent": 6.9
+      },
+      "entity_mentions": 718,
+      "entity_type_outside_the_listed_set": {
+        "count": 2,
+        "percent": 0.28
+      },
+      "outputs_relpath": "runs/SAEA-DEV1000-BASELINE-LOCK/attempt-20260825T053342Z-dev1000m0/arm1-m0-outputs.jsonl",
+      "outputs_sha256": "ea7045d3cfd3d1652f568911a0c47c16d66b879e824d314a6cb5061d7f07decc",
+      "pair_not_observed_in_train": {
+        "count": 322,
+        "percent": 32.2
+      },
+      "rows": 1000,
+      "scenario_outside_the_listed_set": {
+        "count": 86,
+        "percent": 8.6
+      },
+      "top_off_inventory_actions": [
+        [
+          "play",
+          51
+        ],
+        [
+          "player_setting",
+          9
+        ],
+        [
+          "None",
+          5
+        ],
+        [
+          "hue_lightdown",
+          1
+        ],
+        [
+          "open",
+          1
+        ],
+        [
+          "recommendation",
+          1
+        ],
+        [
+          "reply",
+          1
+        ]
+      ],
+      "top_off_inventory_entity_types": [
+        [
+          "country_name",
+          1
+        ],
+        [
+          "stock",
+          1
+        ]
+      ],
+      "top_off_inventory_pairs": [
+        [
+          "general/query",
+          42
+        ],
+        [
+          "music/play",
+          34
+        ],
+        [
+          "qa/query",
+          30
+        ],
+        [
+          "cooking/createoradd",
+          21
+        ],
+        [
+          "calendar/createoradd",
+          17
+        ],
+        [
+          "recommendation/query",
+          14
+        ],
+        [
+          "events/query",
+          12
+        ],
+        [
+          "movies/query",
+          9
+        ]
+      ],
+      "top_off_inventory_scenarios": [
+        [
+          "events",
+          12
+        ],
+        [
+          "movies",
+          9
+        ],
+        [
+          "radio",
+          8
+        ],
+        [
+          "stock",
+          7
+        ],
+        [
+          "joke",
+          6
+        ],
+        [
+          "game",
+          6
+        ],
+        [
+          "None",
+          5
+        ],
+        [
+          "maths",
+          5
+        ]
+      ],
+      "unparsed_rows": 5
+    }
+  },
+  "contacts": {
+    "audio_decode": 0,
+    "embedding": 0,
+    "gpu_seconds": 0,
+    "model": 0,
+    "network": 0,
+    "tool": 0
+  },
+  "exposure_row": "SAEA-SLURP-MF-CLOSED-LIST-HEADROOM-V1",
+  "generated_at": "2026-09-05T05:46:21.032565+00:00",
+  "gold_note": "No devel or test annotation is opened anywhere in this script. The only label source is data.slurp.load_slurp_ontology with include_synthetic=False, which reads train.jsonl and nothing else; the question asked of each sealed prediction is whether it names a LEGAL label, never whether it is correct.",
+  "gold_read": false,
+  "inventory": {
+    "actions": 46,
+    "actions_by_scenario": {
+      "alarm": [
+        "query",
+        "remove",
+        "set"
+      ],
+      "audio": [
+        "volume_down",
+        "volume_mute",
+        "volume_other",
+        "volume_up"
+      ],
+      "calendar": [
+        "query",
+        "remove",
+        "set"
+      ],
+      "cooking": [
+        "query",
+        "recipe"
+      ],
+      "datetime": [
+        "convert",
+        "query"
+      ],
+      "email": [
+        "addcontact",
+        "query",
+        "querycontact",
+        "sendemail"
+      ],
+      "general": [
+        "greet",
+        "joke",
+        "quirky"
+      ],
+      "iot": [
+        "cleaning",
+        "coffee",
+        "hue_lightchange",
+        "hue_lightdim",
+        "hue_lightoff",
+        "hue_lighton",
+        "hue_lightup",
+        "wemo_off",
+        "wemo_on"
+      ],
+      "lists": [
+        "createoradd",
+        "query",
+        "remove"
+      ],
+      "music": [
+        "dislikeness",
+        "likeness",
+        "query",
+        "settings"
+      ],
+      "news": [
+        "query"
+      ],
+      "play": [
+        "audiobook",
+        "game",
+        "music",
+        "podcasts",
+        "radio"
+      ],
+      "qa": [
+        "currency",
+        "definition",
+        "factoid",
+        "maths",
+        "stock"
+      ],
+      "recommendation": [
+        "events",
+        "locations",
+        "movies"
+      ],
+      "social": [
+        "post",
+        "query"
+      ],
+      "takeaway": [
+        "order",
+        "query"
+      ],
+      "transport": [
+        "query",
+        "taxi",
+        "ticket",
+        "traffic"
+      ],
+      "weather": [
+        "query"
+      ]
+    },
+    "entity_types": 55,
+    "implied_cross_product": 828,
+    "instruction_fill_chars": 7260,
+    "instruction_fill_sha256": "0600ca2a8aebc26e23b84acb4a2eb52ab01c0ec5f17ff1494d072d2cc88177fb",
+    "label_inventory_chars": 1834,
+    "label_inventory_sha256": "e2b3c0542b80bc7b58fba7386d7b8e1223f04864b665cb2630988d424f3be10b",
+    "observed_scenario_action_pairs": 60,
+    "scenarios": 18,
+    "source": "train.jsonl through data.slurp.load_slurp_ontology(include_synthetic=False)",
+    "task_contract_chars": 5424,
+    "task_contract_sha256": "c7ef7f06e022c524a2743aea4dfc6a9f5ce5f99c32eda1699e3970ea986e24b1"
+  },
+  "reading": "The sealed M0 prompt already carried the scenario list, the action list and the entity-type list, and its predictions respect them at 91.4 / 93.1 / 99.7 percent. It never carried the PAIRING, and 32.20 percent of its predictions are a pair that does not occur in train -- an upper bound on what a closed intent inventory can repair, and 69 percent of M0's own 46.4-point intent error. BLEND, which supplies TRAIN-mined exemplars carrying real intent pairs, drives the same figure to 2.10 percent, so a large part of what the knowledge plane supplies on this carrier is the intent pairing itself.",
+  "schema": "saea-slurp-closed-list-headroom-v1",
+  "study": "speech-aware-evidence-acquisition"
+}

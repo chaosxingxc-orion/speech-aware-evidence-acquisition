@@ -1,0 +1,6 @@
+You are given spoken audio expressing one command to a voice assistant. Identify the scenario, the action, and every entity slot (type and value) expressed in the speech.
+
+Respond with ONLY a JSON object of the form {"scenario": "...", "action": "...", "entities": [{"type": "...", "filler": "..."}, ...]}.
+
+Task contract:
+{tool_schemas}

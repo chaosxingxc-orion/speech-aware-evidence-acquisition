@@ -115,6 +115,40 @@ PROBES: dict[str, dict] = {
         "success": "cascade > direct, paired-significant (McNemar)",
         "profile": "bounded-discovery-probe",
     },
+    "SLURP-DEV1000-CLOSED-LIST-DIRECT": {
+        "arms": {"direct": ["slurp_direct_closed_list.txt"]},
+        "scorer": (
+            "slurp-slu-official (the real, unmodified official evaluate.py at pinned commit "
+            "8eb16545762be97ace75334109d73824217311f1 in ~/.venvs/slurp-official-eval, "
+            "--average micro), run through core.scoring_batch"
+        ),
+        "sampling": {
+            "seed": 20260823,
+            "design": (
+                "no new draw: the frozen DEV-1000 roster the sealed 2026-08-25 "
+                "SAEA-DEV1000-BASELINE-LOCK arms already flew, reused id-for-id"
+            ),
+        },
+        "sample_receipt": "DEV-1000.json",
+        "success": (
+            "protocol alignment, not a threshold: this arm becomes the study's SLURP direct "
+            "baseline regardless of outcome, because it is the one that matches the published "
+            "prompt-only protocol (He & Garner arXiv:2305.13512 put the intent inventory IN the "
+            "prompt). Reported as the official-metric table beside the sealed M0 comparator, the "
+            "locked BLEND arm and the published brackets, with a paired per-sample contrast."
+        ),
+        "profile": "baseline-reproduction",
+        "note": (
+            "The template's fixed half is byte-identical to rails.adapters.slurp._INSTRUCTION and "
+            "its {tool_schemas} fill (slurp-label-inventory) renders the UNCHANGED "
+            "render_slurp_ontology task contract followed by the compact closed inventory, so the "
+            "rendered instruction is the sealed DEV-1000 M0 instruction (sha256 cef52789...86b8, "
+            "5,747 chars) plus a pure 1,836-char suffix and nothing else. Correction to the "
+            "premise of the 2026-09-04 audit's caveat 4: the sealed M0 prompt DID carry the 18 "
+            "scenarios, the 46 actions and the 55 entity types; what it never carried is the "
+            "60-pair scenario/action intent inventory, which is what this template adds."
+        ),
+    },
     "R3-airbench-slurp-ic": {
         "arms": {
             "direct": ["r3_airbench_ic_direct.txt"],

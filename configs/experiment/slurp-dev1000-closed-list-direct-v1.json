@@ -1,0 +1,72 @@
+{
+  "experiment_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1",
+  "purpose": "SLURP DEV-1000 CLOSED-LIST DIRECT BASELINE -- one arm, one contact per sample, no knowledge. The sealed 2026-08-25 DEV-1000 M0 arm's prompt, its roster, its packets, its build, its geometry and its decoding, with the closed label inventory appended to the instruction and NOTHING else changed. The inventory names the 18 scenarios with the actions legal under each (the 60 (scenario, action) pairs observed in train), the 55 entity types, and the constraint to choose only from those lists. Registered because the sealed M0 arm's prompt, while it did enumerate scenarios, actions and entity types, never enumerated the PAIRING, and a model-free structural read of its own 1,000 sealed predictions found 32.20 percent of them naming a (scenario, action) pair that does not occur in train. This fragment authorizes the FLIGHT, its mechanical landing and its official scoring; it makes no test claim, no superiority claim, no generalization claim and no Stage-3 claim.",
+  "split_id": "DEV-1000",
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "dev",
+    "planned_model_calls": 1050,
+    "planned_gpu_hours": 1.0,
+    "planned_speech_audio_seconds": 3000
+  },
+  "cells": [
+    {
+      "cell_id": "closed-list-direct",
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-direct-closed-list",
+      "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+      "dataset_fragment": "slurp-speech-native-dev1000"
+    }
+  ],
+  "closed_list_authority": {
+    "owner_directive": "2026-09-04: align the basic results first; the axes that matter are the prompt, the way the model is used, and the scoring script.",
+    "scoring_alignment_audit": "docs/readiness/2026-09-04-scoring-alignment-audit-slurp-earnings.md",
+    "preregistration": "docs/readiness/2026-09-05-slurp-closed-list-direct-baseline-v1-preregistration.md",
+    "engineering_rules": "study CLAUDE.md, 'Engineering base and experiment rules (owner, 2026-09-03)'",
+    "probe_manifest_entry": "SLURP-DEV1000-CLOSED-LIST-DIRECT"
+  },
+  "comparator": {
+    "sealed_m0_run_id": "SAEA-DEV1000-BASELINE-LOCK",
+    "sealed_m0_attempt_id": "attempt-20260825T053342Z-dev1000m0",
+    "sealed_m0_outputs_relpath": "runs/SAEA-DEV1000-BASELINE-LOCK/attempt-20260825T053342Z-dev1000m0/arm1-m0-outputs.jsonl",
+    "sealed_m0_outputs_sha256_prefix": "ea7045d3cfd3d165",
+    "sealed_m0_instruction_sha256": "cef527896e9beef5774305e01dc29192fc2d5ca89fba5143e82f0b91a7cb86b8",
+    "sealed_m0_official": {
+      "scenario": 70.0,
+      "action": 61.5,
+      "intent_scen_act": 53.6,
+      "entities_strict": 21.94,
+      "word_f1": 34.66,
+      "char_f1": 39.46,
+      "slu_f1": 36.9
+    },
+    "sealed_blend_official": {
+      "scenario": 83.9,
+      "action": 77.6,
+      "intent_scen_act": 75.7,
+      "entities_strict": 27.27,
+      "word_f1": 39.41,
+      "char_f1": 44.24,
+      "slu_f1": 41.69
+    },
+    "sealed_blend_note": "BLEND is the locked knowledge cell (retrieval plus alpha-blend over a TRAIN-mined knowledge plane), not a baseline. It is reported here so the verdict can say how much of its +22.1 pp intent margin over M0 survives against a prompt-aligned direct arm.",
+    "published_brackets": {
+      "google_sf_id_weakest_pipeline": {"intent": 72.06, "slu_f1": 64.02, "source": "SLURP paper Tables 7 and 8, official test split"},
+      "multi_slurp_hermit_strong_pipeline": {"intent": 78.33, "slu_f1": 70.84, "source": "SLURP paper Tables 7 and 8, official test split"},
+      "gold_hermit_oracle_transcripts": {"intent": 84.84, "source": "SLURP paper Table 7, official test split"},
+      "chatgpt_prompt_only_oracle_transcripts": {"intent": 79.25, "slot_f1": "12.03 to 13.35", "source": "He and Garner arXiv:2305.13512, 60 intents listed in the prompt; the slot F1 is NOT this script's SLU-F1 block"}
+    },
+    "bracket_caveats": "Every published row is the official TEST split; this arm flies a scenario-stratified DEV roster. No published prompt-only SLU-F1 computed with the official script exists for any audio LLM, so no like-for-like target is available and none is claimed."
+  },
+  "decision_rule": {
+    "preregistered": "The closed-list arm becomes the study's SLURP direct baseline regardless of outcome, because it is the protocol-aligned one. The read reports, without a pass/fail gate on the headline: the full official-metric table, N-predicted and skipped, whether each metric is within 3 points of each published bracket or better, the paired per-sample contrast against the sealed M0 rows on the same 1,000 and separately on the unexposed 500, and how much of BLEND's margin survives.",
+    "one_touch": "One attempt, one seal, one registered read. No knob change and no re-fly on the strength of the number.",
+    "populations": {
+      "pooled": {"name": "DEV-1000", "count": 1000, "receipt": "docs/receipts/probe-samples/DEV-1000.json"},
+      "prior_exposed": {"name": "DEV-500", "count": 500, "receipt": "docs/receipts/probe-samples/DEV-500.json"},
+      "unexposed_at_the_lock_tier": {"name": "DEV-1000-NEW500", "count": 500, "receipt": "docs/receipts/probe-samples/DEV-1000-NEW500.json"}
+    },
+    "exposure_note": "No new exposure: this is the same 1,000 devel rows the sealed lock arms already flew. The DEV-500 / NEW500 partition is preserved for reporting only and is never used to select at flight time."
+  },
+  "budget_basis": "1,000 contacts, one per sample, plus margin for the harness's own accounting = 1,050 planned model calls. Metered speech is the roster's own 2,884.7936875 seconds rounded up to 3,000. GPU hours 1.0 against a sealed M0 arm that flew the same 1,000 contacts on the same geometry in about 13 wall-clock minutes. Paid API spend 0. Plan cells are RUN-CUMULATIVE across every attempt of this run id."
+}
