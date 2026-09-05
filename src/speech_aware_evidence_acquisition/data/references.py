@@ -104,6 +104,41 @@ def reference_tokens(
 # ---------------------------------------------------------------------------
 
 
+UNTYPED_ENTITY_TYPE = "__UNTYPED__"
+"""``entity_type`` given to a mention whose entity ID the carrier's own
+``wer_tags`` sidecar never lists at all.
+
+This exists because the Earnings-21 release ships one such ID. Call
+``4320211``'s ``.nlp`` tags a token with entity ID ``1057`` while its
+``4320211.wer_tag.json`` sidecar carries only IDs ``0``-``904``: one ID of the
+38,377 the 44 discovery calls reference, covering one tagged token of 55,294
+(0.0026 % and 0.0018 %). It is an annotation gap in the corpus, not a defect of
+this repository, and it is unfixable from here.
+
+Before 2026-09-04 this function refused outright on that ID, which is correct in
+spirit -- a mention whose class the corpus never recorded must never be silently
+GIVEN one -- but wrong in blast radius: ``core.scorers.score_bundle`` runs a
+manifest's whole scorer list, so one missing annotation on one token refused
+``asr-wer-whisper``, ``asr-wer``, ``entity-wer`` and ``cost`` together for a
+sealed 44-call run, and left it unfinalizable. The repair keeps the guarantee and
+drops the blast radius: such a mention is still never given a real class, it is
+labelled ``__UNTYPED__``, and because ``score_entity_wer_outputs`` reports
+``by_entity_type`` it then appears as its own row with its own gold-mention count
+in every table the scorer produces. The defect travels with the number instead of
+destroying it.
+
+The leading double underscore is what keeps the sentinel out of the label space:
+every entity type either layer uses is an uppercase spaCy-style tag (``ORG``,
+``PERSON``, ``CARDINAL``, ``YEAR``, ``CONTRACTION``, ...), so ``__UNTYPED__``
+cannot collide with one.
+
+What still fails closed, unchanged: a missing, unreadable, non-JSON or
+non-object sidecar; and an entity ID the sidecar DOES list but whose entry is
+not a mapping or whose ``entity_type`` is not a string. That second case is a
+corrupt annotation rather than an absent one, and it stays fatal.
+"""
+
+
 @dataclass(frozen=True)
 class EntityMention:
     """One entity mention: the reference-token positions sharing one
@@ -179,7 +214,12 @@ def reference_entity_mentions(
     :func:`speech_aware_evidence_acquisition.data.carriers.entity_scoped_carrier_lock_keys`).
     Fails closed (:class:`ReferenceError`) for any other carrier, a missing or
     malformed sidecar, a missing ``wer_tags`` column, a non-literal or
-    wrong-shaped ``wer_tags`` cell, or an entity ID the sidecar never labels.
+    wrong-shaped ``wer_tags`` cell, or an entity ID the sidecar LISTS but does
+    not usably label (a corrupt annotation). An entity ID the sidecar does not
+    list AT ALL is an absent annotation rather than a corrupt one and yields a
+    mention typed :data:`UNTYPED_ENTITY_TYPE` -- see that constant's own
+    docstring for the Earnings-21 release gap that forced the distinction and
+    for why it is not a weakening.
 
     Consumed at SCORING time only (same discipline as :func:`reference_tokens`
     -- this module is RUNTIME-FORBIDDEN, AST-enforced, module docstring).
@@ -252,16 +292,26 @@ def reference_entity_mentions(
 
     mentions: list[EntityMention] = []
     for entity_id, indices in groups.items():
-        type_entry = sidecar.get(entity_id)
-        if not isinstance(type_entry, Mapping) or not isinstance(type_entry.get("entity_type"), str):
-            raise ReferenceError(
-                f"entity id {entity_id!r} (referenced by {ref_path}) has no usable "
-                f"entity_type in {sidecar_path}"
-            )
+        if entity_id in sidecar:
+            # LISTED but not usably labelled: a corrupt annotation, still fatal.
+            type_entry = sidecar[entity_id]
+            if not isinstance(type_entry, Mapping) or not isinstance(
+                type_entry.get("entity_type"), str
+            ):
+                raise ReferenceError(
+                    f"entity id {entity_id!r} (referenced by {ref_path}) is listed in "
+                    f"{sidecar_path} but has no usable entity_type there"
+                )
+            entity_type = str(type_entry["entity_type"])
+        else:
+            # NOT LISTED at all: an absent annotation. Labelled, counted and
+            # reported rather than silently typed or fatally refused --
+            # UNTYPED_ENTITY_TYPE's own docstring carries the whole argument.
+            entity_type = UNTYPED_ENTITY_TYPE
         mentions.append(
             EntityMention(
                 entity_id=entity_id,
-                entity_type=type_entry["entity_type"],
+                entity_type=entity_type,
                 token_indices=tuple(indices),
                 tokens=tuple(tokens[index] for index in indices),
             )

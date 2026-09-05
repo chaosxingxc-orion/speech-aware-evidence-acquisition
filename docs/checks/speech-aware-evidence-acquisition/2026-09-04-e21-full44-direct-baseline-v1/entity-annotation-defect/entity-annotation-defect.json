@@ -1,0 +1,49 @@
+{
+  "defect": {
+    "affected_calls": {
+      "4320211": {
+        "absent_ids": [
+          "1057"
+        ],
+        "absent_tokens": 1,
+        "corrupt_ids": [],
+        "ids_in_call": 906,
+        "sidecar_entries": 905
+      }
+    },
+    "calls_scanned": 44,
+    "carrier": "earnings21-original",
+    "entity_ids_scanned": 38377,
+    "ids_absent_from_the_sidecar": 1,
+    "ids_absent_pct": 0.0026,
+    "ids_listed_but_corrupt": 0,
+    "layer": "transcripts/wer_tags sidecar against the .nlp wer_tags column",
+    "origin": "an annotation gap in the Earnings-21 release itself, not a defect of this repository and not fixable from here",
+    "tagged_tokens_scanned": 55294,
+    "tokens_under_absent_ids": 1,
+    "tokens_under_absent_ids_pct": 0.0018
+  },
+  "regression_anchor": {
+    "identical": true,
+    "published_2026_09_04_audit": {
+      "corpus_entity_wer_pct": 32.01,
+      "gold_mentions": 8284
+    },
+    "recomputed_after_the_repair": {
+      "corpus_entity_wer_pct": 32.01,
+      "gold_mentions": 8284
+    },
+    "source": "SAEA-E-005B-N10-zero sealed outputs, attempt-20260814T235515Z-044ccc, the ten frozen discovery calls",
+    "untyped_class_present_in_the_ten": false,
+    "why_it_must_be_identical": "none of the ten calls references an absent entity id, so the new branch is never taken for them and the number cannot move"
+  },
+  "repair": {
+    "module": "src/speech_aware_evidence_acquisition/data/references.py",
+    "rule": "an entity id the sidecar LISTS but does not usably label stays fatal (a corrupt annotation); an entity id the sidecar does not list AT ALL is labelled __UNTYPED__ and counted, so it appears as its own row with its own gold-mention count in every by_entity_type table the scorer produces",
+    "why_not_a_weakening": "the guarantee the old refusal protected was that a mention whose class the corpus never recorded is never GIVEN one; the sentinel keeps that guarantee exactly and drops only the blast radius, which was one missing token annotation refusing all four scorers on a sealed 44-call run"
+  },
+  "schema": "saea-e21-entity-annotation-defect-receipt-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "what_this_is": "the scope and the regression anchor for the data.references repair that let SAEA-E21-FULL44-DIRECT-BASELINE-V2 finalize. The V2 flight COMPLETED all 1593 windows and then could not be scored at all: core.scorers.score_bundle runs a manifest's whole scorer list, and entity-wer refused on one missing annotation.",
+  "zero_contact": "no model, GPU, llama-server, tool, embedding, network or audio-decode contact; a structural scan of the corpus annotation layers plus one re-score of an already-published sealed read"
+}

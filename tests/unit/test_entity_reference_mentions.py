@@ -8,6 +8,7 @@ import pytest
 from speech_aware_evidence_acquisition.data.carriers import entity_scoped_carrier_lock_keys
 from speech_aware_evidence_acquisition.data.lock import load_lock
 from speech_aware_evidence_acquisition.data.references import (
+    UNTYPED_ENTITY_TYPE,
     EntityMention,
     ReferenceError,
     reference_entity_mentions,
@@ -95,13 +96,64 @@ def test_token_with_multiple_entity_ids_contributes_to_each(synthetic_world):
     assert all(mention.token_indices == (0,) for mention in mentions)
 
 
-def test_missing_entity_type_for_referenced_id_fails_closed(synthetic_world):
+def test_entity_id_absent_from_the_sidecar_is_labelled_untyped(synthetic_world):
+    """An ID the sidecar never LISTS is an absent annotation, not a corrupt one.
+
+    The Earnings-21 release ships exactly one (call 4320211's `.nlp` tags a token
+    with entity ID 1057 while its sidecar carries only 0-904). Refusing outright
+    used to take the whole manifest's scorer list down with it; the mention is
+    now labelled UNTYPED_ENTITY_TYPE, so it is still never given a real class but
+    it is counted and it shows up in `by_entity_type` -- see that constant's own
+    docstring."""
+
+    nlp = synthetic_world.e21 / "transcripts" / "nlp_references" / "4000001.nlp"
+    _write_nlp(nlp, [("Acme", "['0']"), ("Corp", "['1']")])
+    sidecar = synthetic_world.e21 / "transcripts" / "wer_tags" / "4000001.wer_tag.json"
+    _write_sidecar(sidecar, {"0": {"entity_type": "ORG"}})
+    lock = load_lock(synthetic_world.lock_path)
+    mentions = reference_entity_mentions(
+        lock, synthetic_world.data_root, "earnings21-original", "4000001"
+    )
+    assert mentions == [
+        EntityMention(
+            entity_id="0", entity_type="ORG", token_indices=(0,), tokens=("Acme",)
+        ),
+        EntityMention(
+            entity_id="1",
+            entity_type=UNTYPED_ENTITY_TYPE,
+            token_indices=(1,),
+            tokens=("Corp",),
+        ),
+    ]
+
+
+def test_untyped_sentinel_cannot_collide_with_a_real_entity_type():
+    """Every label either gold layer uses is an uppercase spaCy-style tag, so a
+    leading-double-underscore sentinel is outside that space by construction."""
+
+    assert UNTYPED_ENTITY_TYPE.startswith("__")
+    assert not UNTYPED_ENTITY_TYPE.strip("_").islower()
+
+
+def test_listed_entity_id_with_an_unusable_entity_type_still_fails_closed(synthetic_world):
+    """A LISTED ID whose entry is corrupt is a different case and stays fatal."""
+
     nlp = synthetic_world.e21 / "transcripts" / "nlp_references" / "4000001.nlp"
     _write_nlp(nlp, [("Acme", "['0']")])
     sidecar = synthetic_world.e21 / "transcripts" / "wer_tags" / "4000001.wer_tag.json"
-    _write_sidecar(sidecar, {})
+    _write_sidecar(sidecar, {"0": {"entity_type": 7}})
     lock = load_lock(synthetic_world.lock_path)
-    with pytest.raises(ReferenceError, match="entity_type"):
+    with pytest.raises(ReferenceError, match="no usable entity_type"):
+        reference_entity_mentions(lock, synthetic_world.data_root, "earnings21-original", "4000001")
+
+
+def test_listed_entity_id_whose_entry_is_not_a_mapping_still_fails_closed(synthetic_world):
+    nlp = synthetic_world.e21 / "transcripts" / "nlp_references" / "4000001.nlp"
+    _write_nlp(nlp, [("Acme", "['0']")])
+    sidecar = synthetic_world.e21 / "transcripts" / "wer_tags" / "4000001.wer_tag.json"
+    _write_sidecar(sidecar, {"0": "ORG"})
+    lock = load_lock(synthetic_world.lock_path)
+    with pytest.raises(ReferenceError, match="no usable entity_type"):
         reference_entity_mentions(lock, synthetic_world.data_root, "earnings21-original", "4000001")
 
 
