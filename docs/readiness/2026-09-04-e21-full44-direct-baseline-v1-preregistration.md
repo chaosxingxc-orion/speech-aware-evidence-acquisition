@@ -375,3 +375,41 @@ geometry answers the first a fortiori, while the second is bounded above by arit
 
 **If V2 also fails**, the flight stops under the owner's own rule and the fix is proven on a 4-row
 dry run before anything else flies.
+
+### 2026-09-04/05, Phase 6 — the recovery flight, and the verdict
+
+Row `SAEA-E21-FULL44-DIRECT-BASELINE-V2`, attempt `attempt-20260904T233816Z-bcd338`, study commit
+`44db2e9d`, config hash `e4b133d1…`, protocol hash `06f7f308…`: **COMPLETED and FINALIZED, 1,593 of
+1,593 windows**, 141,345.85 speech seconds (39.263 h), **0.973 GPU-h** against a 4.0-hour ceiling,
+peak VRAM 22,720 MiB of 24,463 (676 MiB below V1's, exactly the KV the geometry change freed), zero
+skipped and zero saturated slices, 40.3× realtime. Measured throughput 17.5 windows per minute — well
+above the 9.5 the recovery budgeted, so disabling CUDA graphs cost far less than the 34 % assumed.
+
+Two things happened between the seal and the verdict, both recorded in the verdict's section 8.
+
+**The manifest sealed COMPLETED and then would not score.** `core.scorers.score_bundle` runs a
+manifest's whole scorer list; `asr-wer-whisper` and `asr-wer` both got through all 44 calls and then
+`entity-wer` refused, because call `4320211` references entity id `1057` and its `wer_tag.json`
+sidecar lists only ids 0–904. Scope, measured over every one of the 44 calls: **one id of 38,377, one
+tagged token of 55,294** (0.0026 % and 0.0018 %), zero listed-but-corrupt ids anywhere. An annotation
+gap in the Earnings-21 release, unfixable from here, and it made a completed 44-call flight
+unfinalizable.
+
+`data.references.reference_entity_mentions` now splits two cases the old check conflated: an id the
+sidecar **lists** but does not usably label stays fatal, and an id it **does not list at all** yields
+a mention typed `__UNTYPED__` — never a real class, always counted, visible as its own
+`by_entity_type` row. Regression anchor, holding to the digit: the sealed `SAEA-E-005B-N10-zero`
+outputs re-score to the 2026-09-04 audit's published 32.01 % over 8,284 mentions, with no
+`__UNTYPED__` class among the ten. Commit `d2d243f3`; receipt
+`docs/checks/…/2026-09-04-e21-full44-direct-baseline-v1/entity-annotation-defect/`.
+
+**Then it finalized**, and `core.scoring_batch` re-scored the sealed manifest as one whole-manifest
+verified job (`verified: true`, never sharded).
+
+**Verdict: ALIGNED.** Corpus WER under the Whisper `EnglishTextNormalizer` over all 44 calls is
+**8.200 %** against `openai/whisper-large-v3`'s **9.71** (−1.51); band test ≤ 12.71 pass, strict
+medium.en floor ≤ 10.2 pass, ALIGNED-BETTER < 6.71 not reached. `4346923` is inside the number and
+costs +0.312 points. The ten sealed calls re-measured here score 7.185 against their sealed 7.137, so
+the distance from August's 7.137 to this 8.200 is the corpus (the other 34 score 8.470), not the
+build. Full verdict: `docs/readiness/2026-09-04-e21-full44-direct-baseline-v1-verdict.md`.
+Commit `54e4c501`.
