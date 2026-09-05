@@ -1,0 +1,3553 @@
+{
+  "allow_heldout": false,
+  "bootstrap": {
+    "ci_level": 0.9,
+    "n_replicates": 10000,
+    "seed": 20260807
+  },
+  "contacts": {
+    "embedding": 0,
+    "gpu_seconds": 0,
+    "model": 0,
+    "network": 0,
+    "tool": 0
+  },
+  "generated_at": "2026-09-05T06:15:25.946002+00:00",
+  "inputs": {
+    "BLEND": {
+      "projection_needed": true,
+      "projection_sha256": "25c7aead3e39b4027a3edb506929b738a216a9f231b9c6e83a9c1f4edf9340f4",
+      "rows": 1000,
+      "source_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV1000-BASELINE-LOCK/attempt-20260825T054707Z-dev1000blend/arm2-blend-outputs.jsonl",
+      "source_sha256": "542a029adca8fb8daf3618e8a049aecdba1b04aba30eafedb67099fb6e08cf14"
+    },
+    "CLOSED-LIST": {
+      "projection_needed": false,
+      "projection_sha256": "37ee1ca676d5b086abab9cb4801c3d513b3dfa95456d21300d170a52f16465d6",
+      "rows": 1000,
+      "source_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.outputs.jsonl",
+      "source_sha256": "34fda7fa51410e0f4f7e8ba7c35f867c32f53c244de63af5386860486fcb885b"
+    },
+    "M0": {
+      "projection_needed": true,
+      "projection_sha256": "7b1e6e6e5d48c7c720c2b2fd622f3243d29d6591142e9a8e770edac6f4402fac",
+      "rows": 1000,
+      "source_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-DEV1000-BASELINE-LOCK/attempt-20260825T053342Z-dev1000m0/arm1-m0-outputs.jsonl",
+      "source_sha256": "ea7045d3cfd3d1652f568911a0c47c16d66b879e824d314a6cb5061d7f07decc"
+    }
+  },
+  "n_predicted": {
+    "BLEND": {
+      "rows_in_outputs": 1000,
+      "rows_scored": 1000,
+      "skipped": 0,
+      "unparsed": 2
+    },
+    "CLOSED-LIST": {
+      "rows_in_outputs": 1000,
+      "rows_scored": 1000,
+      "skipped": 0,
+      "unparsed": 3
+    },
+    "M0": {
+      "rows_in_outputs": 1000,
+      "rows_scored": 1000,
+      "skipped": 0,
+      "unparsed": 5
+    }
+  },
+  "off_inventory": {
+    "BLEND": {
+      "action_outside_the_listed_set_percent": 0.2,
+      "entity_mentions": 693,
+      "entity_type_outside_the_listed_set_percent": 0.0,
+      "pair_not_observed_in_train_count": 21,
+      "pair_not_observed_in_train_percent": 2.1,
+      "rows": 1000,
+      "scenario_outside_the_listed_set_percent": 0.2,
+      "top_off_inventory_pairs": [
+        [
+          "general/query",
+          12
+        ],
+        [
+          "qa/query",
+          7
+        ],
+        [
+          "None/None",
+          2
+        ]
+      ],
+      "unparsed_rows": 2
+    },
+    "CLOSED-LIST": {
+      "action_outside_the_listed_set_percent": 0.9,
+      "entity_mentions": 547,
+      "entity_type_outside_the_listed_set_percent": 0.0,
+      "pair_not_observed_in_train_count": 42,
+      "pair_not_observed_in_train_percent": 4.2,
+      "rows": 1000,
+      "scenario_outside_the_listed_set_percent": 2.4,
+      "top_off_inventory_pairs": [
+        [
+          "locations/query",
+          10
+        ],
+        [
+          "events/query",
+          8
+        ],
+        [
+          "None/None",
+          3
+        ],
+        [
+          "music/play",
+          2
+        ],
+        [
+          "general/query",
+          2
+        ],
+        [
+          "calendar/createoradd",
+          2
+        ],
+        [
+          "audio/play",
+          2
+        ],
+        [
+          "audio/audiobook",
+          2
+        ]
+      ],
+      "unparsed_rows": 3
+    },
+    "M0": {
+      "action_outside_the_listed_set_percent": 6.9,
+      "entity_mentions": 718,
+      "entity_type_outside_the_listed_set_percent": 0.28,
+      "pair_not_observed_in_train_count": 322,
+      "pair_not_observed_in_train_percent": 32.2,
+      "rows": 1000,
+      "scenario_outside_the_listed_set_percent": 8.6,
+      "top_off_inventory_pairs": [
+        [
+          "general/query",
+          42
+        ],
+        [
+          "music/play",
+          34
+        ],
+        [
+          "qa/query",
+          30
+        ],
+        [
+          "cooking/createoradd",
+          21
+        ],
+        [
+          "calendar/createoradd",
+          17
+        ],
+        [
+          "recommendation/query",
+          14
+        ],
+        [
+          "events/query",
+          12
+        ],
+        [
+          "movies/query",
+          9
+        ]
+      ],
+      "unparsed_rows": 5
+    }
+  },
+  "official": {
+    "BLEND": {
+      "aggregate": {
+        "action_accuracy": 0.776,
+        "command": [
+          "/home/chao/.venvs/slurp-official-eval/bin/python",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/evaluation/evaluate.py",
+          "-g",
+          "/tmp/saea-slurp-official-csgcqnbp/gold.jsonl",
+          "-p",
+          "/tmp/saea-slurp-official-csgcqnbp/predictions.jsonl",
+          "--average",
+          "micro",
+          "--errors",
+          "--table-layout",
+          "csv"
+        ],
+        "intent_accuracy": 0.757,
+        "raw": {
+          "action": {
+            "f_measure": 0.776,
+            "fn": 224.0,
+            "fp": 224.0,
+            "official_label": "Action",
+            "precision": 0.776,
+            "recall": 0.776,
+            "tp": 776.0
+          },
+          "entities": {
+            "f_measure": 0.2726719415702982,
+            "fn": 726.0,
+            "fp": 469.0,
+            "official_label": "Entities",
+            "precision": 0.32323232323232326,
+            "recall": 0.23578947368421052,
+            "tp": 224.0
+          },
+          "entities_distance_char": {
+            "f_measure": 0.44241997927347326,
+            "fn": 628.8374137667554,
+            "fp": 371.8374137667554,
+            "official_label": "Entities (distance char)",
+            "precision": 0.516364049006126,
+            "recall": 0.38700089767857293,
+            "tp": 397.0
+          },
+          "entities_distance_word": {
+            "f_measure": 0.3941250765251251,
+            "fn": 738.7944444444446,
+            "fp": 481.7944444444444,
+            "official_label": "Entities (distance word)",
+            "precision": 0.4517552455067864,
+            "recall": 0.3495350782369657,
+            "tp": 397.0
+          },
+          "intent": {
+            "f_measure": 0.757,
+            "fn": 243.0,
+            "fp": 243.0,
+            "official_label": "Intent (scen_act)",
+            "precision": 0.757,
+            "recall": 0.757,
+            "tp": 757.0
+          },
+          "scenario": {
+            "f_measure": 0.839,
+            "fn": 161.0,
+            "fp": 161.0,
+            "official_label": "Scenario",
+            "precision": 0.839,
+            "recall": 0.839,
+            "tp": 839.0
+          },
+          "slu_f1": {
+            "f_measure": 0.416878462143184,
+            "fn": 1367.6318582111999,
+            "fp": 853.6318582111998,
+            "official_label": "Slu f1",
+            "precision": 0.48190376754551806,
+            "recall": 0.3673150897475453,
+            "tp": 794.0
+          }
+        },
+        "scenario_accuracy": 0.839,
+        "slu_f1": 0.416878462143184,
+        "span_f1": 0.2726719415702982,
+        "stdout": "Scenario,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.839,0.839,0.839,839.0,161.0,161.0 \n\nAction,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.776,0.776,0.776,776.0,224.0,224.0 \n\nIntent (scen_act),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.757,0.757,0.757,757.0,243.0,243.0 \n\nEntities,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.32323232323232326,0.23578947368421052,0.2726719415702982,224.0,469.0,726.0 \n\nEntities (distance word),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.4517552455067864,0.3495350782369657,0.3941250765251251,397.0,481.7944444444444,738.7944444444446 \n\nEntities (distance char),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.516364049006126,0.38700089767857293,0.44241997927347326,397.0,371.8374137667554,628.8374137667554 \n\nSlu f1,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.48190376754551806,0.3673150897475453,0.416878462143184,794.0,853.6318582111998,1367.6318582111999 \n\n"
+      },
+      "identity_check": {
+        "passed": true,
+        "slu_f1_abs_diff": 5.551115123125783e-17,
+        "span_f1_abs_diff": 0.0,
+        "tolerance": 1e-06
+      },
+      "port_micro": {
+        "action_accuracy": 0.776,
+        "intent_accuracy": 0.757,
+        "samples": 1000,
+        "scenario_accuracy": 0.839,
+        "slu_f1": 0.4168784621431841,
+        "slu_f1_precision": 0.4819037675455181,
+        "slu_f1_recall": 0.3673150897475453,
+        "span_f1": 0.2726719415702982,
+        "span_f1_precision": 0.32323232323232326,
+        "span_f1_recall": 0.23578947368421052
+      },
+      "scorer_version": "slurp-official-8eb16545"
+    },
+    "CLOSED-LIST": {
+      "aggregate": {
+        "action_accuracy": 0.739,
+        "command": [
+          "/home/chao/.venvs/slurp-official-eval/bin/python",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/evaluation/evaluate.py",
+          "-g",
+          "/tmp/saea-slurp-official-1msy4fny/gold.jsonl",
+          "-p",
+          "/tmp/saea-slurp-official-1msy4fny/predictions.jsonl",
+          "--average",
+          "micro",
+          "--errors",
+          "--table-layout",
+          "csv"
+        ],
+        "intent_accuracy": 0.714,
+        "raw": {
+          "action": {
+            "f_measure": 0.739,
+            "fn": 261.0,
+            "fp": 261.0,
+            "official_label": "Action",
+            "precision": 0.739,
+            "recall": 0.739,
+            "tp": 739.0
+          },
+          "entities": {
+            "f_measure": 0.21910487641950566,
+            "fn": 786.0,
+            "fp": 383.0,
+            "official_label": "Entities",
+            "precision": 0.29981718464351004,
+            "recall": 0.1726315789473684,
+            "tp": 164.0
+          },
+          "entities_distance_char": {
+            "f_measure": 0.38200677318794474,
+            "fn": 704.621690577958,
+            "fp": 301.62169057795757,
+            "official_label": "Entities (distance char)",
+            "precision": 0.507654242060214,
+            "recall": 0.3062163824238726,
+            "tp": 311.0
+          },
+          "entities_distance_word": {
+            "f_measure": 0.336867696084921,
+            "fn": 813.711111111111,
+            "fp": 410.71111111111117,
+            "official_label": "Entities (distance word)",
+            "precision": 0.4309203436277981,
+            "recall": 0.276515450881214,
+            "tp": 311.0
+          },
+          "intent": {
+            "f_measure": 0.714,
+            "fn": 286.0,
+            "fp": 286.0,
+            "official_label": "Intent (scen_act)",
+            "precision": 0.714,
+            "recall": 0.714,
+            "tp": 714.0
+          },
+          "scenario": {
+            "f_measure": 0.81,
+            "fn": 190.0,
+            "fp": 190.0,
+            "official_label": "Scenario",
+            "precision": 0.81,
+            "recall": 0.81,
+            "tp": 810.0
+          },
+          "slu_f1": {
+            "f_measure": 0.358020063510733,
+            "fn": 1518.3328016890687,
+            "fp": 712.3328016890687,
+            "official_label": "Slu f1",
+            "precision": 0.46615057294000395,
+            "recall": 0.29060901160284114,
+            "tp": 622.0
+          }
+        },
+        "scenario_accuracy": 0.81,
+        "slu_f1": 0.358020063510733,
+        "span_f1": 0.21910487641950566,
+        "stdout": "Scenario,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.81,0.81,0.81,810.0,190.0,190.0 \n\nAction,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.739,0.739,0.739,739.0,261.0,261.0 \n\nIntent (scen_act),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.714,0.714,0.714,714.0,286.0,286.0 \n\nEntities,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.29981718464351004,0.1726315789473684,0.21910487641950566,164.0,383.0,786.0 \n\nEntities (distance word),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.4309203436277981,0.276515450881214,0.336867696084921,311.0,410.71111111111117,813.711111111111 \n\nEntities (distance char),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.507654242060214,0.3062163824238726,0.38200677318794474,311.0,301.62169057795757,704.621690577958 \n\nSlu f1,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.46615057294000395,0.29060901160284114,0.358020063510733,622.0,712.3328016890687,1518.3328016890687 \n\n"
+      },
+      "identity_check": {
+        "passed": true,
+        "slu_f1_abs_diff": 0.0,
+        "span_f1_abs_diff": 0.0,
+        "tolerance": 1e-06
+      },
+      "port_micro": {
+        "action_accuracy": 0.739,
+        "intent_accuracy": 0.714,
+        "samples": 1000,
+        "scenario_accuracy": 0.81,
+        "slu_f1": 0.358020063510733,
+        "slu_f1_precision": 0.46615057294000395,
+        "slu_f1_recall": 0.29060901160284114,
+        "span_f1": 0.21910487641950566,
+        "span_f1_precision": 0.29981718464351004,
+        "span_f1_recall": 0.1726315789473684
+      },
+      "scorer_version": "slurp-official-8eb16545"
+    },
+    "M0": {
+      "aggregate": {
+        "action_accuracy": 0.615,
+        "command": [
+          "/home/chao/.venvs/slurp-official-eval/bin/python",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/evaluation/evaluate.py",
+          "-g",
+          "/tmp/saea-slurp-official-99ojd8r8/gold.jsonl",
+          "-p",
+          "/tmp/saea-slurp-official-99ojd8r8/predictions.jsonl",
+          "--average",
+          "micro",
+          "--errors",
+          "--table-layout",
+          "csv"
+        ],
+        "intent_accuracy": 0.536,
+        "raw": {
+          "action": {
+            "f_measure": 0.615,
+            "fn": 385.0,
+            "fp": 385.0,
+            "official_label": "Action",
+            "precision": 0.615,
+            "recall": 0.615,
+            "tp": 615.0
+          },
+          "entities": {
+            "f_measure": 0.2194244604316547,
+            "fn": 767.0,
+            "fp": 535.0,
+            "official_label": "Entities",
+            "precision": 0.25487465181058494,
+            "recall": 0.19263157894736843,
+            "tp": 183.0
+          },
+          "entities_distance_char": {
+            "f_measure": 0.39455374797193704,
+            "fn": 668.4232169899584,
+            "fp": 436.4232169899582,
+            "official_label": "Entities (distance char)",
+            "precision": 0.4520209761847502,
+            "recall": 0.35005044037576905,
+            "tp": 360.0
+          },
+          "entities_distance_word": {
+            "f_measure": 0.3465500090915898,
+            "fn": 794.8111111111111,
+            "fp": 562.8111111111111,
+            "official_label": "Entities (distance word)",
+            "precision": 0.39011233790471145,
+            "recall": 0.3117392935833662,
+            "tp": 360.0
+          },
+          "intent": {
+            "f_measure": 0.536,
+            "fn": 464.0,
+            "fp": 464.0,
+            "official_label": "Intent (scen_act)",
+            "precision": 0.536,
+            "recall": 0.536,
+            "tp": 536.0
+          },
+          "scenario": {
+            "f_measure": 0.7,
+            "fn": 300.0,
+            "fp": 300.0,
+            "official_label": "Scenario",
+            "precision": 0.7,
+            "recall": 0.7,
+            "tp": 700.0
+          },
+          "slu_f1": {
+            "f_measure": 0.3689971981482614,
+            "fn": 1463.2343281010692,
+            "fp": 999.2343281010693,
+            "official_label": "Slu f1",
+            "precision": 0.4187910793959397,
+            "recall": 0.3297859468095854,
+            "tp": 720.0
+          }
+        },
+        "scenario_accuracy": 0.7,
+        "slu_f1": 0.3689971981482614,
+        "span_f1": 0.2194244604316547,
+        "stdout": "Scenario,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.7,0.7,0.7,700.0,300.0,300.0 \n\nAction,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.615,0.615,0.615,615.0,385.0,385.0 \n\nIntent (scen_act),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.536,0.536,0.536,536.0,464.0,464.0 \n\nEntities,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.25487465181058494,0.19263157894736843,0.2194244604316547,183.0,535.0,767.0 \n\nEntities (distance word),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.39011233790471145,0.3117392935833662,0.3465500090915898,360.0,562.8111111111111,794.8111111111111 \n\nEntities (distance char),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.4520209761847502,0.35005044037576905,0.39455374797193704,360.0,436.4232169899582,668.4232169899584 \n\nSlu f1,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.4187910793959397,0.3297859468095854,0.3689971981482614,720.0,999.2343281010693,1463.2343281010692 \n\n"
+      },
+      "identity_check": {
+        "passed": true,
+        "slu_f1_abs_diff": 5.551115123125783e-17,
+        "span_f1_abs_diff": 0.0,
+        "tolerance": 1e-06
+      },
+      "port_micro": {
+        "action_accuracy": 0.615,
+        "intent_accuracy": 0.536,
+        "samples": 1000,
+        "scenario_accuracy": 0.7,
+        "slu_f1": 0.36899719814826143,
+        "slu_f1_precision": 0.4187910793959397,
+        "slu_f1_recall": 0.3297859468095853,
+        "span_f1": 0.2194244604316547,
+        "span_f1_precision": 0.25487465181058494,
+        "span_f1_recall": 0.19263157894736843
+      },
+      "scorer_version": "slurp-official-8eb16545"
+    }
+  },
+  "paired_blend_over_closed_list": {
+    "pooled_1000": {
+      "scenario_action_exact": {
+        "bootstrap": {
+          "ci_high": 0.063,
+          "ci_level": 0.9,
+          "ci_low": 0.023,
+          "n_replicates": 10000,
+          "point_estimate": 0.043,
+          "seed": 20260807,
+          "sigma_hat": 0.012147256542528441
+        },
+        "delta": 0.04300000000000004,
+        "harms": 63,
+        "left_mean": 0.714,
+        "metric": "scenario_action_exact",
+        "n": 1000,
+        "per_stratum": {
+          "alarm": {
+            "delta": 0.017241379310344862,
+            "harms": 1,
+            "left_mean": 0.8793103448275862,
+            "n": 58,
+            "right_mean": 0.896551724137931,
+            "saves": 2,
+            "stratum": "alarm",
+            "ties": 55
+          },
+          "audio": {
+            "delta": -0.033333333333333326,
+            "harms": 2,
+            "left_mean": 0.7333333333333333,
+            "n": 30,
+            "right_mean": 0.7,
+            "saves": 1,
+            "stratum": "audio",
+            "ties": 27
+          },
+          "calendar": {
+            "delta": 0.032786885245901676,
+            "harms": 2,
+            "left_mean": 0.6557377049180327,
+            "n": 61,
+            "right_mean": 0.6885245901639344,
+            "saves": 4,
+            "stratum": "calendar",
+            "ties": 55
+          },
+          "cooking": {
+            "delta": 0.21621621621621623,
+            "harms": 1,
+            "left_mean": 0.5945945945945946,
+            "n": 37,
+            "right_mean": 0.8108108108108109,
+            "saves": 9,
+            "stratum": "cooking",
+            "ties": 27
+          },
+          "datetime": {
+            "delta": 0.016393442622950838,
+            "harms": 4,
+            "left_mean": 0.819672131147541,
+            "n": 61,
+            "right_mean": 0.8360655737704918,
+            "saves": 5,
+            "stratum": "datetime",
+            "ties": 52
+          },
+          "email": {
+            "delta": 0.06557377049180324,
+            "harms": 2,
+            "left_mean": 0.8360655737704918,
+            "n": 61,
+            "right_mean": 0.9016393442622951,
+            "saves": 6,
+            "stratum": "email",
+            "ties": 53
+          },
+          "general": {
+            "delta": -0.14754098360655737,
+            "harms": 11,
+            "left_mean": 0.3442622950819672,
+            "n": 61,
+            "right_mean": 0.19672131147540983,
+            "saves": 2,
+            "stratum": "general",
+            "ties": 48
+          },
+          "iot": {
+            "delta": -0.13114754098360648,
+            "harms": 9,
+            "left_mean": 0.8524590163934426,
+            "n": 61,
+            "right_mean": 0.7213114754098361,
+            "saves": 1,
+            "stratum": "iot",
+            "ties": 51
+          },
+          "lists": {
+            "delta": 0.033333333333333326,
+            "harms": 1,
+            "left_mean": 0.8666666666666667,
+            "n": 60,
+            "right_mean": 0.9,
+            "saves": 3,
+            "stratum": "lists",
+            "ties": 56
+          },
+          "music": {
+            "delta": -0.21568627450980393,
+            "harms": 12,
+            "left_mean": 0.8431372549019608,
+            "n": 51,
+            "right_mean": 0.6274509803921569,
+            "saves": 1,
+            "stratum": "music",
+            "ties": 38
+          },
+          "news": {
+            "delta": 0.08333333333333337,
+            "harms": 0,
+            "left_mean": 0.7833333333333333,
+            "n": 60,
+            "right_mean": 0.8666666666666667,
+            "saves": 5,
+            "stratum": "news",
+            "ties": 55
+          },
+          "play": {
+            "delta": 0.45,
+            "harms": 2,
+            "left_mean": 0.38333333333333336,
+            "n": 60,
+            "right_mean": 0.8333333333333334,
+            "saves": 29,
+            "stratum": "play",
+            "ties": 29
+          },
+          "qa": {
+            "delta": 0.033333333333333326,
+            "harms": 3,
+            "left_mean": 0.5833333333333334,
+            "n": 60,
+            "right_mean": 0.6166666666666667,
+            "saves": 5,
+            "stratum": "qa",
+            "ties": 52
+          },
+          "recommendation": {
+            "delta": 0.1333333333333333,
+            "harms": 7,
+            "left_mean": 0.4666666666666667,
+            "n": 60,
+            "right_mean": 0.6,
+            "saves": 15,
+            "stratum": "recommendation",
+            "ties": 38
+          },
+          "social": {
+            "delta": 0.016666666666666607,
+            "harms": 2,
+            "left_mean": 0.8,
+            "n": 60,
+            "right_mean": 0.8166666666666667,
+            "saves": 3,
+            "stratum": "social",
+            "ties": 55
+          },
+          "takeaway": {
+            "delta": 0.05128205128205121,
+            "harms": 1,
+            "left_mean": 0.7692307692307693,
+            "n": 39,
+            "right_mean": 0.8205128205128205,
+            "saves": 3,
+            "stratum": "takeaway",
+            "ties": 35
+          },
+          "transport": {
+            "delta": 0.16666666666666663,
+            "harms": 2,
+            "left_mean": 0.7166666666666667,
+            "n": 60,
+            "right_mean": 0.8833333333333333,
+            "saves": 12,
+            "stratum": "transport",
+            "ties": 46
+          },
+          "weather": {
+            "delta": -0.01666666666666672,
+            "harms": 1,
+            "left_mean": 0.9333333333333333,
+            "n": 60,
+            "right_mean": 0.9166666666666666,
+            "saves": 0,
+            "stratum": "weather",
+            "ties": 59
+          }
+        },
+        "right_mean": 0.757,
+        "saves": 106,
+        "sign_test_p": 0.0011697855781307761,
+        "ties": 831
+      }
+    },
+    "unexposed_new500": {
+      "scenario_action_exact": {
+        "bootstrap": {
+          "ci_high": 0.056,
+          "ci_level": 0.9,
+          "ci_low": -0.002,
+          "n_replicates": 10000,
+          "point_estimate": 0.026,
+          "seed": 20260807,
+          "sigma_hat": 0.017550455354776413
+        },
+        "delta": 0.026000000000000023,
+        "harms": 36,
+        "left_mean": 0.732,
+        "metric": "scenario_action_exact",
+        "n": 500,
+        "per_stratum": {
+          "alarm": {
+            "delta": 0.033333333333333326,
+            "harms": 1,
+            "left_mean": 0.8666666666666667,
+            "n": 30,
+            "right_mean": 0.9,
+            "saves": 2,
+            "stratum": "alarm",
+            "ties": 27
+          },
+          "audio": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 1.0,
+            "n": 2,
+            "right_mean": 1.0,
+            "saves": 0,
+            "stratum": "audio",
+            "ties": 2
+          },
+          "calendar": {
+            "delta": 0.030303030303030276,
+            "harms": 2,
+            "left_mean": 0.6060606060606061,
+            "n": 33,
+            "right_mean": 0.6363636363636364,
+            "saves": 3,
+            "stratum": "calendar",
+            "ties": 28
+          },
+          "cooking": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.5555555555555556,
+            "n": 9,
+            "right_mean": 0.5555555555555556,
+            "saves": 0,
+            "stratum": "cooking",
+            "ties": 9
+          },
+          "datetime": {
+            "delta": 0.06060606060606055,
+            "harms": 2,
+            "left_mean": 0.8181818181818182,
+            "n": 33,
+            "right_mean": 0.8787878787878788,
+            "saves": 4,
+            "stratum": "datetime",
+            "ties": 27
+          },
+          "email": {
+            "delta": 0.06060606060606055,
+            "harms": 1,
+            "left_mean": 0.8484848484848485,
+            "n": 33,
+            "right_mean": 0.9090909090909091,
+            "saves": 3,
+            "stratum": "email",
+            "ties": 29
+          },
+          "general": {
+            "delta": -0.18181818181818182,
+            "harms": 8,
+            "left_mean": 0.36363636363636365,
+            "n": 33,
+            "right_mean": 0.18181818181818182,
+            "saves": 2,
+            "stratum": "general",
+            "ties": 23
+          },
+          "iot": {
+            "delta": -0.1515151515151515,
+            "harms": 5,
+            "left_mean": 0.9090909090909091,
+            "n": 33,
+            "right_mean": 0.7575757575757576,
+            "saves": 0,
+            "stratum": "iot",
+            "ties": 28
+          },
+          "lists": {
+            "delta": 0.03125,
+            "harms": 1,
+            "left_mean": 0.84375,
+            "n": 32,
+            "right_mean": 0.875,
+            "saves": 2,
+            "stratum": "lists",
+            "ties": 29
+          },
+          "music": {
+            "delta": -0.26086956521739135,
+            "harms": 6,
+            "left_mean": 0.8260869565217391,
+            "n": 23,
+            "right_mean": 0.5652173913043478,
+            "saves": 0,
+            "stratum": "music",
+            "ties": 17
+          },
+          "news": {
+            "delta": 0.09375,
+            "harms": 0,
+            "left_mean": 0.8125,
+            "n": 32,
+            "right_mean": 0.90625,
+            "saves": 3,
+            "stratum": "news",
+            "ties": 29
+          },
+          "play": {
+            "delta": 0.375,
+            "harms": 1,
+            "left_mean": 0.4375,
+            "n": 32,
+            "right_mean": 0.8125,
+            "saves": 13,
+            "stratum": "play",
+            "ties": 18
+          },
+          "qa": {
+            "delta": 0.03125,
+            "harms": 2,
+            "left_mean": 0.625,
+            "n": 32,
+            "right_mean": 0.65625,
+            "saves": 3,
+            "stratum": "qa",
+            "ties": 27
+          },
+          "recommendation": {
+            "delta": 0.125,
+            "harms": 2,
+            "left_mean": 0.59375,
+            "n": 32,
+            "right_mean": 0.71875,
+            "saves": 6,
+            "stratum": "recommendation",
+            "ties": 24
+          },
+          "social": {
+            "delta": 0.0,
+            "harms": 1,
+            "left_mean": 0.7878787878787878,
+            "n": 33,
+            "right_mean": 0.7878787878787878,
+            "saves": 1,
+            "stratum": "social",
+            "ties": 31
+          },
+          "takeaway": {
+            "delta": 0.0,
+            "harms": 1,
+            "left_mean": 0.9166666666666666,
+            "n": 12,
+            "right_mean": 0.9166666666666666,
+            "saves": 1,
+            "stratum": "takeaway",
+            "ties": 10
+          },
+          "transport": {
+            "delta": 0.12121212121212122,
+            "harms": 2,
+            "left_mean": 0.696969696969697,
+            "n": 33,
+            "right_mean": 0.8181818181818182,
+            "saves": 6,
+            "stratum": "transport",
+            "ties": 25
+          },
+          "weather": {
+            "delta": -0.030303030303030387,
+            "harms": 1,
+            "left_mean": 0.9393939393939394,
+            "n": 33,
+            "right_mean": 0.9090909090909091,
+            "saves": 0,
+            "stratum": "weather",
+            "ties": 32
+          }
+        },
+        "right_mean": 0.758,
+        "saves": 49,
+        "sign_test_p": 0.19276043534155876,
+        "ties": 415
+      }
+    }
+  },
+  "paired_blend_over_sealed_m0": {
+    "pooled_1000": {
+      "scenario_action_exact": {
+        "bootstrap": {
+          "ci_high": 0.24,
+          "ci_level": 0.9,
+          "ci_low": 0.202,
+          "n_replicates": 10000,
+          "point_estimate": 0.221,
+          "seed": 20260807,
+          "sigma_hat": 0.011410175863675372
+        },
+        "delta": 0.22099999999999997,
+        "harms": 8,
+        "left_mean": 0.536,
+        "metric": "scenario_action_exact",
+        "n": 1000,
+        "per_stratum": {
+          "alarm": {
+            "delta": 0.034482758620689724,
+            "harms": 0,
+            "left_mean": 0.8620689655172413,
+            "n": 58,
+            "right_mean": 0.896551724137931,
+            "saves": 2,
+            "stratum": "alarm",
+            "ties": 56
+          },
+          "audio": {
+            "delta": 0.39999999999999997,
+            "harms": 0,
+            "left_mean": 0.3,
+            "n": 30,
+            "right_mean": 0.7,
+            "saves": 12,
+            "stratum": "audio",
+            "ties": 18
+          },
+          "calendar": {
+            "delta": 0.26229508196721313,
+            "harms": 0,
+            "left_mean": 0.4262295081967213,
+            "n": 61,
+            "right_mean": 0.6885245901639344,
+            "saves": 16,
+            "stratum": "calendar",
+            "ties": 45
+          },
+          "cooking": {
+            "delta": 0.7297297297297298,
+            "harms": 1,
+            "left_mean": 0.08108108108108109,
+            "n": 37,
+            "right_mean": 0.8108108108108109,
+            "saves": 28,
+            "stratum": "cooking",
+            "ties": 8
+          },
+          "datetime": {
+            "delta": 0.032786885245901676,
+            "harms": 0,
+            "left_mean": 0.8032786885245902,
+            "n": 61,
+            "right_mean": 0.8360655737704918,
+            "saves": 2,
+            "stratum": "datetime",
+            "ties": 59
+          },
+          "email": {
+            "delta": 0.09836065573770492,
+            "harms": 1,
+            "left_mean": 0.8032786885245902,
+            "n": 61,
+            "right_mean": 0.9016393442622951,
+            "saves": 7,
+            "stratum": "email",
+            "ties": 53
+          },
+          "general": {
+            "delta": 0.16393442622950818,
+            "harms": 0,
+            "left_mean": 0.03278688524590164,
+            "n": 61,
+            "right_mean": 0.19672131147540983,
+            "saves": 10,
+            "stratum": "general",
+            "ties": 51
+          },
+          "iot": {
+            "delta": 0.14754098360655743,
+            "harms": 1,
+            "left_mean": 0.5737704918032787,
+            "n": 61,
+            "right_mean": 0.7213114754098361,
+            "saves": 10,
+            "stratum": "iot",
+            "ties": 50
+          },
+          "lists": {
+            "delta": 0.050000000000000044,
+            "harms": 0,
+            "left_mean": 0.85,
+            "n": 60,
+            "right_mean": 0.9,
+            "saves": 3,
+            "stratum": "lists",
+            "ties": 57
+          },
+          "music": {
+            "delta": 0.0,
+            "harms": 3,
+            "left_mean": 0.6274509803921569,
+            "n": 51,
+            "right_mean": 0.6274509803921569,
+            "saves": 3,
+            "stratum": "music",
+            "ties": 45
+          },
+          "news": {
+            "delta": 0.09999999999999998,
+            "harms": 0,
+            "left_mean": 0.7666666666666667,
+            "n": 60,
+            "right_mean": 0.8666666666666667,
+            "saves": 6,
+            "stratum": "news",
+            "ties": 54
+          },
+          "play": {
+            "delta": 0.8333333333333334,
+            "harms": 0,
+            "left_mean": 0.0,
+            "n": 60,
+            "right_mean": 0.8333333333333334,
+            "saves": 50,
+            "stratum": "play",
+            "ties": 10
+          },
+          "qa": {
+            "delta": 0.4166666666666667,
+            "harms": 0,
+            "left_mean": 0.2,
+            "n": 60,
+            "right_mean": 0.6166666666666667,
+            "saves": 25,
+            "stratum": "qa",
+            "ties": 35
+          },
+          "recommendation": {
+            "delta": 0.6,
+            "harms": 0,
+            "left_mean": 0.0,
+            "n": 60,
+            "right_mean": 0.6,
+            "saves": 36,
+            "stratum": "recommendation",
+            "ties": 24
+          },
+          "social": {
+            "delta": 0.033333333333333326,
+            "harms": 1,
+            "left_mean": 0.7833333333333333,
+            "n": 60,
+            "right_mean": 0.8166666666666667,
+            "saves": 3,
+            "stratum": "social",
+            "ties": 56
+          },
+          "takeaway": {
+            "delta": 0.07692307692307687,
+            "harms": 0,
+            "left_mean": 0.7435897435897436,
+            "n": 39,
+            "right_mean": 0.8205128205128205,
+            "saves": 3,
+            "stratum": "takeaway",
+            "ties": 36
+          },
+          "transport": {
+            "delta": 0.21666666666666667,
+            "harms": 0,
+            "left_mean": 0.6666666666666666,
+            "n": 60,
+            "right_mean": 0.8833333333333333,
+            "saves": 13,
+            "stratum": "transport",
+            "ties": 47
+          },
+          "weather": {
+            "delta": -0.01666666666666672,
+            "harms": 1,
+            "left_mean": 0.9333333333333333,
+            "n": 60,
+            "right_mean": 0.9166666666666666,
+            "saves": 0,
+            "stratum": "weather",
+            "ties": 59
+          }
+        },
+        "right_mean": 0.757,
+        "saves": 229,
+        "sign_test_p": 2.05509182748597e-57,
+        "ties": 763
+      }
+    }
+  },
+  "paired_closed_list_over_sealed_m0": {
+    "pooled_1000": {
+      "action_exact": {
+        "bootstrap": {
+          "ci_high": 0.144,
+          "ci_level": 0.9,
+          "ci_low": 0.104,
+          "n_replicates": 10000,
+          "point_estimate": 0.124,
+          "seed": 20260809,
+          "sigma_hat": 0.012234621821290596
+        },
+        "delta": 0.124,
+        "harms": 34,
+        "left_mean": 0.615,
+        "metric": "action_exact",
+        "n": 1000,
+        "per_stratum": {
+          "alarm": {
+            "delta": 0.017241379310344862,
+            "harms": 2,
+            "left_mean": 0.8793103448275862,
+            "n": 58,
+            "right_mean": 0.896551724137931,
+            "saves": 3,
+            "stratum": "alarm",
+            "ties": 53
+          },
+          "audio": {
+            "delta": 0.06666666666666665,
+            "harms": 0,
+            "left_mean": 0.6666666666666666,
+            "n": 30,
+            "right_mean": 0.7333333333333333,
+            "saves": 2,
+            "stratum": "audio",
+            "ties": 28
+          },
+          "calendar": {
+            "delta": 0.16393442622950827,
+            "harms": 2,
+            "left_mean": 0.5737704918032787,
+            "n": 61,
+            "right_mean": 0.7377049180327869,
+            "saves": 12,
+            "stratum": "calendar",
+            "ties": 47
+          },
+          "cooking": {
+            "delta": 0.5135135135135136,
+            "harms": 1,
+            "left_mean": 0.08108108108108109,
+            "n": 37,
+            "right_mean": 0.5945945945945946,
+            "saves": 20,
+            "stratum": "cooking",
+            "ties": 16
+          },
+          "datetime": {
+            "delta": -0.049180327868852514,
+            "harms": 6,
+            "left_mean": 0.9016393442622951,
+            "n": 61,
+            "right_mean": 0.8524590163934426,
+            "saves": 3,
+            "stratum": "datetime",
+            "ties": 52
+          },
+          "email": {
+            "delta": -0.0491803278688524,
+            "harms": 5,
+            "left_mean": 0.8852459016393442,
+            "n": 61,
+            "right_mean": 0.8360655737704918,
+            "saves": 2,
+            "stratum": "email",
+            "ties": 54
+          },
+          "general": {
+            "delta": 0.21311475409836064,
+            "harms": 0,
+            "left_mean": 0.13114754098360656,
+            "n": 61,
+            "right_mean": 0.3442622950819672,
+            "saves": 13,
+            "stratum": "general",
+            "ties": 48
+          },
+          "iot": {
+            "delta": 0.13114754098360648,
+            "harms": 1,
+            "left_mean": 0.7213114754098361,
+            "n": 61,
+            "right_mean": 0.8524590163934426,
+            "saves": 9,
+            "stratum": "iot",
+            "ties": 51
+          },
+          "lists": {
+            "delta": -0.01666666666666672,
+            "harms": 2,
+            "left_mean": 0.9,
+            "n": 60,
+            "right_mean": 0.8833333333333333,
+            "saves": 1,
+            "stratum": "lists",
+            "ties": 57
+          },
+          "music": {
+            "delta": 0.1568627450980392,
+            "harms": 1,
+            "left_mean": 0.7254901960784313,
+            "n": 51,
+            "right_mean": 0.8823529411764706,
+            "saves": 9,
+            "stratum": "music",
+            "ties": 41
+          },
+          "news": {
+            "delta": 0.0,
+            "harms": 2,
+            "left_mean": 0.9333333333333333,
+            "n": 60,
+            "right_mean": 0.9333333333333333,
+            "saves": 2,
+            "stratum": "news",
+            "ties": 56
+          },
+          "play": {
+            "delta": 0.2833333333333333,
+            "harms": 1,
+            "left_mean": 0.13333333333333333,
+            "n": 60,
+            "right_mean": 0.4166666666666667,
+            "saves": 18,
+            "stratum": "play",
+            "ties": 41
+          },
+          "qa": {
+            "delta": 0.35000000000000003,
+            "harms": 0,
+            "left_mean": 0.23333333333333334,
+            "n": 60,
+            "right_mean": 0.5833333333333334,
+            "saves": 21,
+            "stratum": "qa",
+            "ties": 39
+          },
+          "recommendation": {
+            "delta": 0.4666666666666667,
+            "harms": 0,
+            "left_mean": 0.0,
+            "n": 60,
+            "right_mean": 0.4666666666666667,
+            "saves": 28,
+            "stratum": "recommendation",
+            "ties": 32
+          },
+          "social": {
+            "delta": -0.033333333333333326,
+            "harms": 5,
+            "left_mean": 0.8333333333333334,
+            "n": 60,
+            "right_mean": 0.8,
+            "saves": 3,
+            "stratum": "social",
+            "ties": 52
+          },
+          "takeaway": {
+            "delta": 0.02564102564102566,
+            "harms": 2,
+            "left_mean": 0.7435897435897436,
+            "n": 39,
+            "right_mean": 0.7692307692307693,
+            "saves": 3,
+            "stratum": "takeaway",
+            "ties": 34
+          },
+          "transport": {
+            "delta": 0.06666666666666665,
+            "harms": 4,
+            "left_mean": 0.6666666666666666,
+            "n": 60,
+            "right_mean": 0.7333333333333333,
+            "saves": 8,
+            "stratum": "transport",
+            "ties": 48
+          },
+          "weather": {
+            "delta": 0.01666666666666672,
+            "harms": 0,
+            "left_mean": 0.95,
+            "n": 60,
+            "right_mean": 0.9666666666666667,
+            "saves": 1,
+            "stratum": "weather",
+            "ties": 59
+          }
+        },
+        "right_mean": 0.739,
+        "saves": 158,
+        "sign_test_p": 2.6228310919022504e-20,
+        "ties": 808
+      },
+      "scenario_action_exact": {
+        "bootstrap": {
+          "ci_high": 0.199,
+          "ci_level": 0.9,
+          "ci_low": 0.15699999999999997,
+          "n_replicates": 10000,
+          "point_estimate": 0.178,
+          "seed": 20260807,
+          "sigma_hat": 0.012416499602947684
+        },
+        "delta": 0.17799999999999994,
+        "harms": 19,
+        "left_mean": 0.536,
+        "metric": "scenario_action_exact",
+        "n": 1000,
+        "per_stratum": {
+          "alarm": {
+            "delta": 0.017241379310344862,
+            "harms": 2,
+            "left_mean": 0.8620689655172413,
+            "n": 58,
+            "right_mean": 0.8793103448275862,
+            "saves": 3,
+            "stratum": "alarm",
+            "ties": 53
+          },
+          "audio": {
+            "delta": 0.4333333333333333,
+            "harms": 0,
+            "left_mean": 0.3,
+            "n": 30,
+            "right_mean": 0.7333333333333333,
+            "saves": 13,
+            "stratum": "audio",
+            "ties": 17
+          },
+          "calendar": {
+            "delta": 0.22950819672131145,
+            "harms": 0,
+            "left_mean": 0.4262295081967213,
+            "n": 61,
+            "right_mean": 0.6557377049180327,
+            "saves": 14,
+            "stratum": "calendar",
+            "ties": 47
+          },
+          "cooking": {
+            "delta": 0.5135135135135136,
+            "harms": 1,
+            "left_mean": 0.08108108108108109,
+            "n": 37,
+            "right_mean": 0.5945945945945946,
+            "saves": 20,
+            "stratum": "cooking",
+            "ties": 16
+          },
+          "datetime": {
+            "delta": 0.016393442622950838,
+            "harms": 3,
+            "left_mean": 0.8032786885245902,
+            "n": 61,
+            "right_mean": 0.819672131147541,
+            "saves": 4,
+            "stratum": "datetime",
+            "ties": 54
+          },
+          "email": {
+            "delta": 0.032786885245901676,
+            "harms": 3,
+            "left_mean": 0.8032786885245902,
+            "n": 61,
+            "right_mean": 0.8360655737704918,
+            "saves": 5,
+            "stratum": "email",
+            "ties": 53
+          },
+          "general": {
+            "delta": 0.3114754098360656,
+            "harms": 0,
+            "left_mean": 0.03278688524590164,
+            "n": 61,
+            "right_mean": 0.3442622950819672,
+            "saves": 19,
+            "stratum": "general",
+            "ties": 42
+          },
+          "iot": {
+            "delta": 0.2786885245901639,
+            "harms": 0,
+            "left_mean": 0.5737704918032787,
+            "n": 61,
+            "right_mean": 0.8524590163934426,
+            "saves": 17,
+            "stratum": "iot",
+            "ties": 44
+          },
+          "lists": {
+            "delta": 0.01666666666666672,
+            "harms": 0,
+            "left_mean": 0.85,
+            "n": 60,
+            "right_mean": 0.8666666666666667,
+            "saves": 1,
+            "stratum": "lists",
+            "ties": 59
+          },
+          "music": {
+            "delta": 0.21568627450980393,
+            "harms": 1,
+            "left_mean": 0.6274509803921569,
+            "n": 51,
+            "right_mean": 0.8431372549019608,
+            "saves": 12,
+            "stratum": "music",
+            "ties": 38
+          },
+          "news": {
+            "delta": 0.016666666666666607,
+            "harms": 1,
+            "left_mean": 0.7666666666666667,
+            "n": 60,
+            "right_mean": 0.7833333333333333,
+            "saves": 2,
+            "stratum": "news",
+            "ties": 57
+          },
+          "play": {
+            "delta": 0.38333333333333336,
+            "harms": 0,
+            "left_mean": 0.0,
+            "n": 60,
+            "right_mean": 0.38333333333333336,
+            "saves": 23,
+            "stratum": "play",
+            "ties": 37
+          },
+          "qa": {
+            "delta": 0.38333333333333336,
+            "harms": 0,
+            "left_mean": 0.2,
+            "n": 60,
+            "right_mean": 0.5833333333333334,
+            "saves": 23,
+            "stratum": "qa",
+            "ties": 37
+          },
+          "recommendation": {
+            "delta": 0.4666666666666667,
+            "harms": 0,
+            "left_mean": 0.0,
+            "n": 60,
+            "right_mean": 0.4666666666666667,
+            "saves": 28,
+            "stratum": "recommendation",
+            "ties": 32
+          },
+          "social": {
+            "delta": 0.01666666666666672,
+            "harms": 2,
+            "left_mean": 0.7833333333333333,
+            "n": 60,
+            "right_mean": 0.8,
+            "saves": 3,
+            "stratum": "social",
+            "ties": 55
+          },
+          "takeaway": {
+            "delta": 0.02564102564102566,
+            "harms": 2,
+            "left_mean": 0.7435897435897436,
+            "n": 39,
+            "right_mean": 0.7692307692307693,
+            "saves": 3,
+            "stratum": "takeaway",
+            "ties": 34
+          },
+          "transport": {
+            "delta": 0.050000000000000044,
+            "harms": 4,
+            "left_mean": 0.6666666666666666,
+            "n": 60,
+            "right_mean": 0.7166666666666667,
+            "saves": 7,
+            "stratum": "transport",
+            "ties": 49
+          },
+          "weather": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.9333333333333333,
+            "n": 60,
+            "right_mean": 0.9333333333333333,
+            "saves": 0,
+            "stratum": "weather",
+            "ties": 60
+          }
+        },
+        "right_mean": 0.714,
+        "saves": 197,
+        "sign_test_p": 1.7279765458127626e-38,
+        "ties": 784
+      },
+      "scenario_exact": {
+        "bootstrap": {
+          "ci_high": 0.127,
+          "ci_level": 0.9,
+          "ci_low": 0.093,
+          "n_replicates": 10000,
+          "point_estimate": 0.11,
+          "seed": 20260808,
+          "sigma_hat": 0.010584421335151016
+        },
+        "delta": 0.1100000000000001,
+        "harms": 16,
+        "left_mean": 0.7,
+        "metric": "scenario_exact",
+        "n": 1000,
+        "per_stratum": {
+          "alarm": {
+            "delta": 0.01724137931034475,
+            "harms": 0,
+            "left_mean": 0.9137931034482759,
+            "n": 58,
+            "right_mean": 0.9310344827586207,
+            "saves": 1,
+            "stratum": "alarm",
+            "ties": 57
+          },
+          "audio": {
+            "delta": 0.4333333333333334,
+            "harms": 0,
+            "left_mean": 0.3333333333333333,
+            "n": 30,
+            "right_mean": 0.7666666666666667,
+            "saves": 13,
+            "stratum": "audio",
+            "ties": 17
+          },
+          "calendar": {
+            "delta": 0.06557377049180335,
+            "harms": 0,
+            "left_mean": 0.7540983606557377,
+            "n": 61,
+            "right_mean": 0.819672131147541,
+            "saves": 4,
+            "stratum": "calendar",
+            "ties": 57
+          },
+          "cooking": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.8918918918918919,
+            "n": 37,
+            "right_mean": 0.8918918918918919,
+            "saves": 0,
+            "stratum": "cooking",
+            "ties": 37
+          },
+          "datetime": {
+            "delta": 0.032786885245901676,
+            "harms": 0,
+            "left_mean": 0.8524590163934426,
+            "n": 61,
+            "right_mean": 0.8852459016393442,
+            "saves": 2,
+            "stratum": "datetime",
+            "ties": 59
+          },
+          "email": {
+            "delta": 0.06557377049180335,
+            "harms": 0,
+            "left_mean": 0.8688524590163934,
+            "n": 61,
+            "right_mean": 0.9344262295081968,
+            "saves": 4,
+            "stratum": "email",
+            "ties": 57
+          },
+          "general": {
+            "delta": 0.1147540983606557,
+            "harms": 1,
+            "left_mean": 0.4426229508196721,
+            "n": 61,
+            "right_mean": 0.5573770491803278,
+            "saves": 8,
+            "stratum": "general",
+            "ties": 52
+          },
+          "iot": {
+            "delta": 0.2295081967213114,
+            "harms": 0,
+            "left_mean": 0.7377049180327869,
+            "n": 61,
+            "right_mean": 0.9672131147540983,
+            "saves": 14,
+            "stratum": "iot",
+            "ties": 47
+          },
+          "lists": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.8833333333333333,
+            "n": 60,
+            "right_mean": 0.8833333333333333,
+            "saves": 0,
+            "stratum": "lists",
+            "ties": 60
+          },
+          "music": {
+            "delta": 0.0980392156862745,
+            "harms": 0,
+            "left_mean": 0.8627450980392157,
+            "n": 51,
+            "right_mean": 0.9607843137254902,
+            "saves": 5,
+            "stratum": "music",
+            "ties": 46
+          },
+          "news": {
+            "delta": 0.016666666666666607,
+            "harms": 1,
+            "left_mean": 0.7666666666666667,
+            "n": 60,
+            "right_mean": 0.7833333333333333,
+            "saves": 2,
+            "stratum": "news",
+            "ties": 57
+          },
+          "play": {
+            "delta": 0.43333333333333335,
+            "harms": 0,
+            "left_mean": 0.016666666666666666,
+            "n": 60,
+            "right_mean": 0.45,
+            "saves": 26,
+            "stratum": "play",
+            "ties": 34
+          },
+          "qa": {
+            "delta": 0.16666666666666663,
+            "harms": 7,
+            "left_mean": 0.5166666666666667,
+            "n": 60,
+            "right_mean": 0.6833333333333333,
+            "saves": 17,
+            "stratum": "qa",
+            "ties": 36
+          },
+          "recommendation": {
+            "delta": 0.30000000000000004,
+            "harms": 1,
+            "left_mean": 0.21666666666666667,
+            "n": 60,
+            "right_mean": 0.5166666666666667,
+            "saves": 19,
+            "stratum": "recommendation",
+            "ties": 40
+          },
+          "social": {
+            "delta": -0.01666666666666672,
+            "harms": 3,
+            "left_mean": 0.8333333333333334,
+            "n": 60,
+            "right_mean": 0.8166666666666667,
+            "saves": 2,
+            "stratum": "social",
+            "ties": 55
+          },
+          "takeaway": {
+            "delta": 0.02564102564102555,
+            "harms": 1,
+            "left_mean": 0.9230769230769231,
+            "n": 39,
+            "right_mean": 0.9487179487179487,
+            "saves": 2,
+            "stratum": "takeaway",
+            "ties": 36
+          },
+          "transport": {
+            "delta": 0.08333333333333337,
+            "harms": 2,
+            "left_mean": 0.85,
+            "n": 60,
+            "right_mean": 0.9333333333333333,
+            "saves": 7,
+            "stratum": "transport",
+            "ties": 51
+          },
+          "weather": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.9333333333333333,
+            "n": 60,
+            "right_mean": 0.9333333333333333,
+            "saves": 0,
+            "stratum": "weather",
+            "ties": 60
+          }
+        },
+        "right_mean": 0.81,
+        "saves": 126,
+        "sign_test_p": 2.2258113520509096e-22,
+        "ties": 858
+      },
+      "slot_f1_exact_f1": {
+        "bootstrap": {
+          "ci_high": -0.00481357142857144,
+          "ci_level": 0.9,
+          "ci_low": -0.029410952380952378,
+          "n_replicates": 10000,
+          "point_estimate": -0.01701904761904762,
+          "seed": 20260810,
+          "sigma_hat": 0.0075023766442749535
+        },
+        "delta": -0.0170190476190476,
+        "harms": 50,
+        "left_mean": 0.14661190476190475,
+        "metric": "slot_f1_exact_f1",
+        "n": 1000,
+        "per_stratum": {
+          "alarm": {
+            "delta": 0.016091954022988506,
+            "harms": 2,
+            "left_mean": 0.08850574712643677,
+            "n": 58,
+            "right_mean": 0.10459770114942528,
+            "saves": 2,
+            "stratum": "alarm",
+            "ties": 54
+          },
+          "audio": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.0,
+            "n": 30,
+            "right_mean": 0.0,
+            "saves": 0,
+            "stratum": "audio",
+            "ties": 30
+          },
+          "calendar": {
+            "delta": -0.00858704137392663,
+            "harms": 2,
+            "left_mean": 0.0676424668227947,
+            "n": 61,
+            "right_mean": 0.059055425448868076,
+            "saves": 1,
+            "stratum": "calendar",
+            "ties": 58
+          },
+          "cooking": {
+            "delta": 0.03603603603603606,
+            "harms": 2,
+            "left_mean": 0.14414414414414414,
+            "n": 37,
+            "right_mean": 0.1801801801801802,
+            "saves": 3,
+            "stratum": "cooking",
+            "ties": 32
+          },
+          "datetime": {
+            "delta": -0.0360655737704918,
+            "harms": 3,
+            "left_mean": 0.18032786885245902,
+            "n": 61,
+            "right_mean": 0.14426229508196722,
+            "saves": 1,
+            "stratum": "datetime",
+            "ties": 57
+          },
+          "email": {
+            "delta": -0.005464480874316946,
+            "harms": 3,
+            "left_mean": 0.13934426229508196,
+            "n": 61,
+            "right_mean": 0.133879781420765,
+            "saves": 2,
+            "stratum": "email",
+            "ties": 56
+          },
+          "general": {
+            "delta": -0.01639344262295082,
+            "harms": 1,
+            "left_mean": 0.03278688524590164,
+            "n": 61,
+            "right_mean": 0.01639344262295082,
+            "saves": 0,
+            "stratum": "general",
+            "ties": 60
+          },
+          "iot": {
+            "delta": -0.04918032786885243,
+            "harms": 3,
+            "left_mean": 0.28415300546448086,
+            "n": 61,
+            "right_mean": 0.23497267759562843,
+            "saves": 0,
+            "stratum": "iot",
+            "ties": 58
+          },
+          "lists": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.06666666666666667,
+            "n": 60,
+            "right_mean": 0.06666666666666667,
+            "saves": 0,
+            "stratum": "lists",
+            "ties": 60
+          },
+          "music": {
+            "delta": -0.0196078431372549,
+            "harms": 1,
+            "left_mean": 0.09803921568627451,
+            "n": 51,
+            "right_mean": 0.0784313725490196,
+            "saves": 0,
+            "stratum": "music",
+            "ties": 50
+          },
+          "news": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.11944444444444445,
+            "n": 60,
+            "right_mean": 0.11944444444444445,
+            "saves": 0,
+            "stratum": "news",
+            "ties": 60
+          },
+          "play": {
+            "delta": -0.04999999999999999,
+            "harms": 5,
+            "left_mean": 0.33611111111111114,
+            "n": 60,
+            "right_mean": 0.28611111111111115,
+            "saves": 2,
+            "stratum": "play",
+            "ties": 53
+          },
+          "qa": {
+            "delta": -0.07499999999999998,
+            "harms": 6,
+            "left_mean": 0.31666666666666665,
+            "n": 60,
+            "right_mean": 0.24166666666666667,
+            "saves": 1,
+            "stratum": "qa",
+            "ties": 53
+          },
+          "recommendation": {
+            "delta": -0.034444444444444444,
+            "harms": 8,
+            "left_mean": 0.3227777777777778,
+            "n": 60,
+            "right_mean": 0.28833333333333333,
+            "saves": 6,
+            "stratum": "recommendation",
+            "ties": 46
+          },
+          "social": {
+            "delta": 0.030555555555555558,
+            "harms": 1,
+            "left_mean": 0.02222222222222222,
+            "n": 60,
+            "right_mean": 0.05277777777777778,
+            "saves": 4,
+            "stratum": "social",
+            "ties": 55
+          },
+          "takeaway": {
+            "delta": -0.011111111111111127,
+            "harms": 5,
+            "left_mean": 0.11538461538461539,
+            "n": 39,
+            "right_mean": 0.10427350427350426,
+            "saves": 4,
+            "stratum": "takeaway",
+            "ties": 30
+          },
+          "transport": {
+            "delta": -0.051031746031746025,
+            "harms": 7,
+            "left_mean": 0.14142857142857143,
+            "n": 60,
+            "right_mean": 0.0903968253968254,
+            "saves": 5,
+            "stratum": "transport",
+            "ties": 48
+          },
+          "weather": {
+            "delta": 0.0,
+            "harms": 1,
+            "left_mean": 0.06944444444444445,
+            "n": 60,
+            "right_mean": 0.06944444444444445,
+            "saves": 2,
+            "stratum": "weather",
+            "ties": 57
+          }
+        },
+        "right_mean": 0.12959285714285715,
+        "saves": 33,
+        "sign_test_p": 0.07841962481580761,
+        "ties": 917
+      }
+    },
+    "prior_exposed_dev500": {
+      "action_exact": {
+        "bootstrap": {
+          "ci_high": 0.136,
+          "ci_level": 0.9,
+          "ci_low": 0.08,
+          "n_replicates": 10000,
+          "point_estimate": 0.108,
+          "seed": 20260809,
+          "sigma_hat": 0.016563611582019182
+        },
+        "delta": 0.10799999999999998,
+        "harms": 17,
+        "left_mean": 0.614,
+        "metric": "action_exact",
+        "n": 500,
+        "per_stratum": {
+          "alarm": {
+            "delta": 0.07142857142857151,
+            "harms": 0,
+            "left_mean": 0.8571428571428571,
+            "n": 28,
+            "right_mean": 0.9285714285714286,
+            "saves": 2,
+            "stratum": "alarm",
+            "ties": 26
+          },
+          "audio": {
+            "delta": 0.0714285714285714,
+            "harms": 0,
+            "left_mean": 0.6428571428571429,
+            "n": 28,
+            "right_mean": 0.7142857142857143,
+            "saves": 2,
+            "stratum": "audio",
+            "ties": 26
+          },
+          "calendar": {
+            "delta": 0.1428571428571428,
+            "harms": 1,
+            "left_mean": 0.6428571428571429,
+            "n": 28,
+            "right_mean": 0.7857142857142857,
+            "saves": 5,
+            "stratum": "calendar",
+            "ties": 22
+          },
+          "cooking": {
+            "delta": 0.5357142857142857,
+            "harms": 0,
+            "left_mean": 0.07142857142857142,
+            "n": 28,
+            "right_mean": 0.6071428571428571,
+            "saves": 15,
+            "stratum": "cooking",
+            "ties": 13
+          },
+          "datetime": {
+            "delta": -0.0357142857142857,
+            "harms": 3,
+            "left_mean": 0.8571428571428571,
+            "n": 28,
+            "right_mean": 0.8214285714285714,
+            "saves": 2,
+            "stratum": "datetime",
+            "ties": 23
+          },
+          "email": {
+            "delta": -0.07142857142857151,
+            "harms": 2,
+            "left_mean": 0.8928571428571429,
+            "n": 28,
+            "right_mean": 0.8214285714285714,
+            "saves": 0,
+            "stratum": "email",
+            "ties": 26
+          },
+          "general": {
+            "delta": 0.1785714285714286,
+            "harms": 0,
+            "left_mean": 0.14285714285714285,
+            "n": 28,
+            "right_mean": 0.32142857142857145,
+            "saves": 5,
+            "stratum": "general",
+            "ties": 23
+          },
+          "iot": {
+            "delta": 0.1428571428571428,
+            "harms": 1,
+            "left_mean": 0.6428571428571429,
+            "n": 28,
+            "right_mean": 0.7857142857142857,
+            "saves": 5,
+            "stratum": "iot",
+            "ties": 22
+          },
+          "lists": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.9285714285714286,
+            "n": 28,
+            "right_mean": 0.9285714285714286,
+            "saves": 0,
+            "stratum": "lists",
+            "ties": 28
+          },
+          "music": {
+            "delta": 0.07142857142857151,
+            "harms": 1,
+            "left_mean": 0.8214285714285714,
+            "n": 28,
+            "right_mean": 0.8928571428571429,
+            "saves": 3,
+            "stratum": "music",
+            "ties": 24
+          },
+          "news": {
+            "delta": -0.0357142857142857,
+            "harms": 1,
+            "left_mean": 0.9642857142857143,
+            "n": 28,
+            "right_mean": 0.9285714285714286,
+            "saves": 0,
+            "stratum": "news",
+            "ties": 27
+          },
+          "play": {
+            "delta": 0.21428571428571427,
+            "harms": 1,
+            "left_mean": 0.17857142857142858,
+            "n": 28,
+            "right_mean": 0.39285714285714285,
+            "saves": 7,
+            "stratum": "play",
+            "ties": 20
+          },
+          "qa": {
+            "delta": 0.3571428571428571,
+            "harms": 0,
+            "left_mean": 0.17857142857142858,
+            "n": 28,
+            "right_mean": 0.5357142857142857,
+            "saves": 10,
+            "stratum": "qa",
+            "ties": 18
+          },
+          "recommendation": {
+            "delta": 0.32142857142857145,
+            "harms": 0,
+            "left_mean": 0.0,
+            "n": 28,
+            "right_mean": 0.32142857142857145,
+            "saves": 9,
+            "stratum": "recommendation",
+            "ties": 19
+          },
+          "social": {
+            "delta": -0.07407407407407407,
+            "harms": 3,
+            "left_mean": 0.8888888888888888,
+            "n": 27,
+            "right_mean": 0.8148148148148148,
+            "saves": 1,
+            "stratum": "social",
+            "ties": 23
+          },
+          "takeaway": {
+            "delta": -0.03703703703703698,
+            "harms": 2,
+            "left_mean": 0.7407407407407407,
+            "n": 27,
+            "right_mean": 0.7037037037037037,
+            "saves": 1,
+            "stratum": "takeaway",
+            "ties": 24
+          },
+          "transport": {
+            "delta": 0.07407407407407407,
+            "harms": 2,
+            "left_mean": 0.6666666666666666,
+            "n": 27,
+            "right_mean": 0.7407407407407407,
+            "saves": 4,
+            "stratum": "transport",
+            "ties": 21
+          },
+          "weather": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.9629629629629629,
+            "n": 27,
+            "right_mean": 0.9629629629629629,
+            "saves": 0,
+            "stratum": "weather",
+            "ties": 27
+          }
+        },
+        "right_mean": 0.722,
+        "saves": 71,
+        "sign_test_p": 5.1539546966008475e-09,
+        "ties": 412
+      },
+      "scenario_action_exact": {
+        "bootstrap": {
+          "ci_high": 0.208,
+          "ci_level": 0.9,
+          "ci_low": 0.152,
+          "n_replicates": 10000,
+          "point_estimate": 0.18,
+          "seed": 20260807,
+          "sigma_hat": 0.01729613819440629
+        },
+        "delta": 0.17999999999999994,
+        "harms": 8,
+        "left_mean": 0.516,
+        "metric": "scenario_action_exact",
+        "n": 500,
+        "per_stratum": {
+          "alarm": {
+            "delta": 0.07142857142857151,
+            "harms": 0,
+            "left_mean": 0.8214285714285714,
+            "n": 28,
+            "right_mean": 0.8928571428571429,
+            "saves": 2,
+            "stratum": "alarm",
+            "ties": 26
+          },
+          "audio": {
+            "delta": 0.4285714285714286,
+            "harms": 0,
+            "left_mean": 0.2857142857142857,
+            "n": 28,
+            "right_mean": 0.7142857142857143,
+            "saves": 12,
+            "stratum": "audio",
+            "ties": 16
+          },
+          "calendar": {
+            "delta": 0.2142857142857143,
+            "harms": 0,
+            "left_mean": 0.5,
+            "n": 28,
+            "right_mean": 0.7142857142857143,
+            "saves": 6,
+            "stratum": "calendar",
+            "ties": 22
+          },
+          "cooking": {
+            "delta": 0.5357142857142857,
+            "harms": 0,
+            "left_mean": 0.07142857142857142,
+            "n": 28,
+            "right_mean": 0.6071428571428571,
+            "saves": 15,
+            "stratum": "cooking",
+            "ties": 13
+          },
+          "datetime": {
+            "delta": 0.0357142857142857,
+            "harms": 1,
+            "left_mean": 0.7857142857142857,
+            "n": 28,
+            "right_mean": 0.8214285714285714,
+            "saves": 2,
+            "stratum": "datetime",
+            "ties": 25
+          },
+          "email": {
+            "delta": 0.0357142857142857,
+            "harms": 1,
+            "left_mean": 0.7857142857142857,
+            "n": 28,
+            "right_mean": 0.8214285714285714,
+            "saves": 2,
+            "stratum": "email",
+            "ties": 25
+          },
+          "general": {
+            "delta": 0.28571428571428575,
+            "harms": 0,
+            "left_mean": 0.03571428571428571,
+            "n": 28,
+            "right_mean": 0.32142857142857145,
+            "saves": 8,
+            "stratum": "general",
+            "ties": 20
+          },
+          "iot": {
+            "delta": 0.3214285714285714,
+            "harms": 0,
+            "left_mean": 0.4642857142857143,
+            "n": 28,
+            "right_mean": 0.7857142857142857,
+            "saves": 9,
+            "stratum": "iot",
+            "ties": 19
+          },
+          "lists": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.8928571428571429,
+            "n": 28,
+            "right_mean": 0.8928571428571429,
+            "saves": 0,
+            "stratum": "lists",
+            "ties": 28
+          },
+          "music": {
+            "delta": 0.1785714285714285,
+            "harms": 1,
+            "left_mean": 0.6785714285714286,
+            "n": 28,
+            "right_mean": 0.8571428571428571,
+            "saves": 6,
+            "stratum": "music",
+            "ties": 21
+          },
+          "news": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.75,
+            "n": 28,
+            "right_mean": 0.75,
+            "saves": 0,
+            "stratum": "news",
+            "ties": 28
+          },
+          "play": {
+            "delta": 0.32142857142857145,
+            "harms": 0,
+            "left_mean": 0.0,
+            "n": 28,
+            "right_mean": 0.32142857142857145,
+            "saves": 9,
+            "stratum": "play",
+            "ties": 19
+          },
+          "qa": {
+            "delta": 0.42857142857142855,
+            "harms": 0,
+            "left_mean": 0.10714285714285714,
+            "n": 28,
+            "right_mean": 0.5357142857142857,
+            "saves": 12,
+            "stratum": "qa",
+            "ties": 16
+          },
+          "recommendation": {
+            "delta": 0.32142857142857145,
+            "harms": 0,
+            "left_mean": 0.0,
+            "n": 28,
+            "right_mean": 0.32142857142857145,
+            "saves": 9,
+            "stratum": "recommendation",
+            "ties": 19
+          },
+          "social": {
+            "delta": 0.0,
+            "harms": 1,
+            "left_mean": 0.8148148148148148,
+            "n": 27,
+            "right_mean": 0.8148148148148148,
+            "saves": 1,
+            "stratum": "social",
+            "ties": 25
+          },
+          "takeaway": {
+            "delta": -0.03703703703703698,
+            "harms": 2,
+            "left_mean": 0.7407407407407407,
+            "n": 27,
+            "right_mean": 0.7037037037037037,
+            "saves": 1,
+            "stratum": "takeaway",
+            "ties": 24
+          },
+          "transport": {
+            "delta": 0.07407407407407407,
+            "harms": 2,
+            "left_mean": 0.6666666666666666,
+            "n": 27,
+            "right_mean": 0.7407407407407407,
+            "saves": 4,
+            "stratum": "transport",
+            "ties": 21
+          },
+          "weather": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.9259259259259259,
+            "n": 27,
+            "right_mean": 0.9259259259259259,
+            "saves": 0,
+            "stratum": "weather",
+            "ties": 27
+          }
+        },
+        "right_mean": 0.696,
+        "saves": 98,
+        "sign_test_p": 8.079958819833451e-21,
+        "ties": 394
+      },
+      "scenario_exact": {
+        "bootstrap": {
+          "ci_high": 0.134,
+          "ci_level": 0.9,
+          "ci_low": 0.086,
+          "n_replicates": 10000,
+          "point_estimate": 0.11,
+          "seed": 20260808,
+          "sigma_hat": 0.014643424406879697
+        },
+        "delta": 0.10999999999999999,
+        "harms": 7,
+        "left_mean": 0.68,
+        "metric": "scenario_exact",
+        "n": 500,
+        "per_stratum": {
+          "alarm": {
+            "delta": 0.03571428571428581,
+            "harms": 0,
+            "left_mean": 0.8571428571428571,
+            "n": 28,
+            "right_mean": 0.8928571428571429,
+            "saves": 1,
+            "stratum": "alarm",
+            "ties": 27
+          },
+          "audio": {
+            "delta": 0.42857142857142855,
+            "harms": 0,
+            "left_mean": 0.32142857142857145,
+            "n": 28,
+            "right_mean": 0.75,
+            "saves": 12,
+            "stratum": "audio",
+            "ties": 16
+          },
+          "calendar": {
+            "delta": 0.0357142857142857,
+            "harms": 0,
+            "left_mean": 0.7857142857142857,
+            "n": 28,
+            "right_mean": 0.8214285714285714,
+            "saves": 1,
+            "stratum": "calendar",
+            "ties": 27
+          },
+          "cooking": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.8928571428571429,
+            "n": 28,
+            "right_mean": 0.8928571428571429,
+            "saves": 0,
+            "stratum": "cooking",
+            "ties": 28
+          },
+          "datetime": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.8571428571428571,
+            "n": 28,
+            "right_mean": 0.8571428571428571,
+            "saves": 0,
+            "stratum": "datetime",
+            "ties": 28
+          },
+          "email": {
+            "delta": 0.07142857142857151,
+            "harms": 0,
+            "left_mean": 0.8571428571428571,
+            "n": 28,
+            "right_mean": 0.9285714285714286,
+            "saves": 2,
+            "stratum": "email",
+            "ties": 26
+          },
+          "general": {
+            "delta": 0.14285714285714285,
+            "harms": 0,
+            "left_mean": 0.39285714285714285,
+            "n": 28,
+            "right_mean": 0.5357142857142857,
+            "saves": 4,
+            "stratum": "general",
+            "ties": 24
+          },
+          "iot": {
+            "delta": 0.2857142857142857,
+            "harms": 0,
+            "left_mean": 0.6428571428571429,
+            "n": 28,
+            "right_mean": 0.9285714285714286,
+            "saves": 8,
+            "stratum": "iot",
+            "ties": 20
+          },
+          "lists": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.8928571428571429,
+            "n": 28,
+            "right_mean": 0.8928571428571429,
+            "saves": 0,
+            "stratum": "lists",
+            "ties": 28
+          },
+          "music": {
+            "delta": 0.1428571428571429,
+            "harms": 0,
+            "left_mean": 0.8214285714285714,
+            "n": 28,
+            "right_mean": 0.9642857142857143,
+            "saves": 4,
+            "stratum": "music",
+            "ties": 24
+          },
+          "news": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.75,
+            "n": 28,
+            "right_mean": 0.75,
+            "saves": 0,
+            "stratum": "news",
+            "ties": 28
+          },
+          "play": {
+            "delta": 0.39285714285714285,
+            "harms": 0,
+            "left_mean": 0.0,
+            "n": 28,
+            "right_mean": 0.39285714285714285,
+            "saves": 11,
+            "stratum": "play",
+            "ties": 17
+          },
+          "qa": {
+            "delta": 0.1785714285714286,
+            "harms": 3,
+            "left_mean": 0.4642857142857143,
+            "n": 28,
+            "right_mean": 0.6428571428571429,
+            "saves": 8,
+            "stratum": "qa",
+            "ties": 17
+          },
+          "recommendation": {
+            "delta": 0.2142857142857143,
+            "harms": 1,
+            "left_mean": 0.14285714285714285,
+            "n": 28,
+            "right_mean": 0.35714285714285715,
+            "saves": 7,
+            "stratum": "recommendation",
+            "ties": 20
+          },
+          "social": {
+            "delta": 0.0,
+            "harms": 1,
+            "left_mean": 0.8148148148148148,
+            "n": 27,
+            "right_mean": 0.8148148148148148,
+            "saves": 1,
+            "stratum": "social",
+            "ties": 25
+          },
+          "takeaway": {
+            "delta": 0.0,
+            "harms": 1,
+            "left_mean": 0.9259259259259259,
+            "n": 27,
+            "right_mean": 0.9259259259259259,
+            "saves": 1,
+            "stratum": "takeaway",
+            "ties": 25
+          },
+          "transport": {
+            "delta": 0.03703703703703698,
+            "harms": 1,
+            "left_mean": 0.9259259259259259,
+            "n": 27,
+            "right_mean": 0.9629629629629629,
+            "saves": 2,
+            "stratum": "transport",
+            "ties": 24
+          },
+          "weather": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.9259259259259259,
+            "n": 27,
+            "right_mean": 0.9259259259259259,
+            "saves": 0,
+            "stratum": "weather",
+            "ties": 27
+          }
+        },
+        "right_mean": 0.79,
+        "saves": 62,
+        "sign_test_p": 4.102799046681871e-12,
+        "ties": 431
+      },
+      "slot_f1_exact_f1": {
+        "bootstrap": {
+          "ci_high": 0.007657142857142855,
+          "ci_level": 0.9,
+          "ci_low": -0.02374285714285713,
+          "n_replicates": 10000,
+          "point_estimate": -0.00800952380952381,
+          "seed": 20260810,
+          "sigma_hat": 0.009605857440502259
+        },
+        "delta": -0.008009523809523814,
+        "harms": 19,
+        "left_mean": 0.12224761904761905,
+        "metric": "slot_f1_exact_f1",
+        "n": 500,
+        "per_stratum": {
+          "alarm": {
+            "delta": 0.07142857142857142,
+            "harms": 0,
+            "left_mean": 0.049999999999999996,
+            "n": 28,
+            "right_mean": 0.12142857142857143,
+            "saves": 2,
+            "stratum": "alarm",
+            "ties": 26
+          },
+          "audio": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.0,
+            "n": 28,
+            "right_mean": 0.0,
+            "saves": 0,
+            "stratum": "audio",
+            "ties": 28
+          },
+          "calendar": {
+            "delta": -0.02040816326530613,
+            "harms": 1,
+            "left_mean": 0.07993197278911565,
+            "n": 28,
+            "right_mean": 0.05952380952380952,
+            "saves": 0,
+            "stratum": "calendar",
+            "ties": 27
+          },
+          "cooking": {
+            "delta": 0.011904761904761946,
+            "harms": 2,
+            "left_mean": 0.15476190476190474,
+            "n": 28,
+            "right_mean": 0.16666666666666669,
+            "saves": 2,
+            "stratum": "cooking",
+            "ties": 24
+          },
+          "datetime": {
+            "delta": 0.004761904761904745,
+            "harms": 0,
+            "left_mean": 0.16666666666666669,
+            "n": 28,
+            "right_mean": 0.17142857142857143,
+            "saves": 1,
+            "stratum": "datetime",
+            "ties": 27
+          },
+          "email": {
+            "delta": -0.023809523809523808,
+            "harms": 1,
+            "left_mean": 0.09523809523809523,
+            "n": 28,
+            "right_mean": 0.07142857142857142,
+            "saves": 0,
+            "stratum": "email",
+            "ties": 27
+          },
+          "general": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.03571428571428571,
+            "n": 28,
+            "right_mean": 0.03571428571428571,
+            "saves": 0,
+            "stratum": "general",
+            "ties": 28
+          },
+          "iot": {
+            "delta": -0.035714285714285726,
+            "harms": 1,
+            "left_mean": 0.2380952380952381,
+            "n": 28,
+            "right_mean": 0.20238095238095238,
+            "saves": 0,
+            "stratum": "iot",
+            "ties": 27
+          },
+          "lists": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.07142857142857142,
+            "n": 28,
+            "right_mean": 0.07142857142857142,
+            "saves": 0,
+            "stratum": "lists",
+            "ties": 28
+          },
+          "music": {
+            "delta": -0.03571428571428571,
+            "harms": 1,
+            "left_mean": 0.10714285714285714,
+            "n": 28,
+            "right_mean": 0.07142857142857142,
+            "saves": 0,
+            "stratum": "music",
+            "ties": 27
+          },
+          "news": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.07142857142857142,
+            "n": 28,
+            "right_mean": 0.07142857142857142,
+            "saves": 0,
+            "stratum": "news",
+            "ties": 28
+          },
+          "play": {
+            "delta": -0.035714285714285754,
+            "harms": 2,
+            "left_mean": 0.34523809523809523,
+            "n": 28,
+            "right_mean": 0.3095238095238095,
+            "saves": 1,
+            "stratum": "play",
+            "ties": 25
+          },
+          "qa": {
+            "delta": -0.0357142857142857,
+            "harms": 2,
+            "left_mean": 0.21428571428571427,
+            "n": 28,
+            "right_mean": 0.17857142857142858,
+            "saves": 1,
+            "stratum": "qa",
+            "ties": 25
+          },
+          "recommendation": {
+            "delta": -0.10714285714285714,
+            "harms": 4,
+            "left_mean": 0.21666666666666665,
+            "n": 28,
+            "right_mean": 0.10952380952380951,
+            "saves": 1,
+            "stratum": "recommendation",
+            "ties": 23
+          },
+          "social": {
+            "delta": -0.006172839506172839,
+            "harms": 1,
+            "left_mean": 0.04938271604938271,
+            "n": 27,
+            "right_mean": 0.043209876543209874,
+            "saves": 1,
+            "stratum": "social",
+            "ties": 25
+          },
+          "takeaway": {
+            "delta": 0.10123456790123456,
+            "harms": 1,
+            "left_mean": 0.04938271604938271,
+            "n": 27,
+            "right_mean": 0.15061728395061727,
+            "saves": 4,
+            "stratum": "takeaway",
+            "ties": 22
+          },
+          "transport": {
+            "delta": -0.011111111111111127,
+            "harms": 2,
+            "left_mean": 0.1328042328042328,
+            "n": 27,
+            "right_mean": 0.12169312169312169,
+            "saves": 3,
+            "stratum": "transport",
+            "ties": 22
+          },
+          "weather": {
+            "delta": -0.018518518518518517,
+            "harms": 1,
+            "left_mean": 0.11728395061728394,
+            "n": 27,
+            "right_mean": 0.09876543209876543,
+            "saves": 1,
+            "stratum": "weather",
+            "ties": 25
+          }
+        },
+        "right_mean": 0.11423809523809524,
+        "saves": 17,
+        "sign_test_p": 0.8679394004284404,
+        "ties": 464
+      }
+    },
+    "unexposed_new500": {
+      "action_exact": {
+        "bootstrap": {
+          "ci_high": 0.17,
+          "ci_level": 0.9,
+          "ci_low": 0.112,
+          "n_replicates": 10000,
+          "point_estimate": 0.14,
+          "seed": 20260809,
+          "sigma_hat": 0.017776878861037446
+        },
+        "delta": 0.14,
+        "harms": 17,
+        "left_mean": 0.616,
+        "metric": "action_exact",
+        "n": 500,
+        "per_stratum": {
+          "alarm": {
+            "delta": -0.033333333333333326,
+            "harms": 2,
+            "left_mean": 0.9,
+            "n": 30,
+            "right_mean": 0.8666666666666667,
+            "saves": 1,
+            "stratum": "alarm",
+            "ties": 27
+          },
+          "audio": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 1.0,
+            "n": 2,
+            "right_mean": 1.0,
+            "saves": 0,
+            "stratum": "audio",
+            "ties": 2
+          },
+          "calendar": {
+            "delta": 0.18181818181818188,
+            "harms": 1,
+            "left_mean": 0.5151515151515151,
+            "n": 33,
+            "right_mean": 0.696969696969697,
+            "saves": 7,
+            "stratum": "calendar",
+            "ties": 25
+          },
+          "cooking": {
+            "delta": 0.4444444444444445,
+            "harms": 1,
+            "left_mean": 0.1111111111111111,
+            "n": 9,
+            "right_mean": 0.5555555555555556,
+            "saves": 5,
+            "stratum": "cooking",
+            "ties": 3
+          },
+          "datetime": {
+            "delta": -0.06060606060606066,
+            "harms": 3,
+            "left_mean": 0.9393939393939394,
+            "n": 33,
+            "right_mean": 0.8787878787878788,
+            "saves": 1,
+            "stratum": "datetime",
+            "ties": 29
+          },
+          "email": {
+            "delta": -0.030303030303030276,
+            "harms": 3,
+            "left_mean": 0.8787878787878788,
+            "n": 33,
+            "right_mean": 0.8484848484848485,
+            "saves": 2,
+            "stratum": "email",
+            "ties": 28
+          },
+          "general": {
+            "delta": 0.24242424242424243,
+            "harms": 0,
+            "left_mean": 0.12121212121212122,
+            "n": 33,
+            "right_mean": 0.36363636363636365,
+            "saves": 8,
+            "stratum": "general",
+            "ties": 25
+          },
+          "iot": {
+            "delta": 0.12121212121212122,
+            "harms": 0,
+            "left_mean": 0.7878787878787878,
+            "n": 33,
+            "right_mean": 0.9090909090909091,
+            "saves": 4,
+            "stratum": "iot",
+            "ties": 29
+          },
+          "lists": {
+            "delta": -0.03125,
+            "harms": 2,
+            "left_mean": 0.875,
+            "n": 32,
+            "right_mean": 0.84375,
+            "saves": 1,
+            "stratum": "lists",
+            "ties": 29
+          },
+          "music": {
+            "delta": 0.26086956521739124,
+            "harms": 0,
+            "left_mean": 0.6086956521739131,
+            "n": 23,
+            "right_mean": 0.8695652173913043,
+            "saves": 6,
+            "stratum": "music",
+            "ties": 17
+          },
+          "news": {
+            "delta": 0.03125,
+            "harms": 1,
+            "left_mean": 0.90625,
+            "n": 32,
+            "right_mean": 0.9375,
+            "saves": 2,
+            "stratum": "news",
+            "ties": 29
+          },
+          "play": {
+            "delta": 0.34375,
+            "harms": 0,
+            "left_mean": 0.09375,
+            "n": 32,
+            "right_mean": 0.4375,
+            "saves": 11,
+            "stratum": "play",
+            "ties": 21
+          },
+          "qa": {
+            "delta": 0.34375,
+            "harms": 0,
+            "left_mean": 0.28125,
+            "n": 32,
+            "right_mean": 0.625,
+            "saves": 11,
+            "stratum": "qa",
+            "ties": 21
+          },
+          "recommendation": {
+            "delta": 0.59375,
+            "harms": 0,
+            "left_mean": 0.0,
+            "n": 32,
+            "right_mean": 0.59375,
+            "saves": 19,
+            "stratum": "recommendation",
+            "ties": 13
+          },
+          "social": {
+            "delta": 0.0,
+            "harms": 2,
+            "left_mean": 0.7878787878787878,
+            "n": 33,
+            "right_mean": 0.7878787878787878,
+            "saves": 2,
+            "stratum": "social",
+            "ties": 29
+          },
+          "takeaway": {
+            "delta": 0.16666666666666663,
+            "harms": 0,
+            "left_mean": 0.75,
+            "n": 12,
+            "right_mean": 0.9166666666666666,
+            "saves": 2,
+            "stratum": "takeaway",
+            "ties": 10
+          },
+          "transport": {
+            "delta": 0.06060606060606066,
+            "harms": 2,
+            "left_mean": 0.6666666666666666,
+            "n": 33,
+            "right_mean": 0.7272727272727273,
+            "saves": 4,
+            "stratum": "transport",
+            "ties": 27
+          },
+          "weather": {
+            "delta": 0.030303030303030276,
+            "harms": 0,
+            "left_mean": 0.9393939393939394,
+            "n": 33,
+            "right_mean": 0.9696969696969697,
+            "saves": 1,
+            "stratum": "weather",
+            "ties": 32
+          }
+        },
+        "right_mean": 0.756,
+        "saves": 87,
+        "sign_test_p": 1.6725939198413861e-12,
+        "ties": 396
+      },
+      "scenario_action_exact": {
+        "bootstrap": {
+          "ci_high": 0.204,
+          "ci_level": 0.9,
+          "ci_low": 0.148,
+          "n_replicates": 10000,
+          "point_estimate": 0.176,
+          "seed": 20260807,
+          "sigma_hat": 0.017594208564183842
+        },
+        "delta": 0.17599999999999993,
+        "harms": 11,
+        "left_mean": 0.556,
+        "metric": "scenario_action_exact",
+        "n": 500,
+        "per_stratum": {
+          "alarm": {
+            "delta": -0.033333333333333326,
+            "harms": 2,
+            "left_mean": 0.9,
+            "n": 30,
+            "right_mean": 0.8666666666666667,
+            "saves": 1,
+            "stratum": "alarm",
+            "ties": 27
+          },
+          "audio": {
+            "delta": 0.5,
+            "harms": 0,
+            "left_mean": 0.5,
+            "n": 2,
+            "right_mean": 1.0,
+            "saves": 1,
+            "stratum": "audio",
+            "ties": 1
+          },
+          "calendar": {
+            "delta": 0.24242424242424243,
+            "harms": 0,
+            "left_mean": 0.36363636363636365,
+            "n": 33,
+            "right_mean": 0.6060606060606061,
+            "saves": 8,
+            "stratum": "calendar",
+            "ties": 25
+          },
+          "cooking": {
+            "delta": 0.4444444444444445,
+            "harms": 1,
+            "left_mean": 0.1111111111111111,
+            "n": 9,
+            "right_mean": 0.5555555555555556,
+            "saves": 5,
+            "stratum": "cooking",
+            "ties": 3
+          },
+          "datetime": {
+            "delta": 0.0,
+            "harms": 2,
+            "left_mean": 0.8181818181818182,
+            "n": 33,
+            "right_mean": 0.8181818181818182,
+            "saves": 2,
+            "stratum": "datetime",
+            "ties": 29
+          },
+          "email": {
+            "delta": 0.030303030303030276,
+            "harms": 2,
+            "left_mean": 0.8181818181818182,
+            "n": 33,
+            "right_mean": 0.8484848484848485,
+            "saves": 3,
+            "stratum": "email",
+            "ties": 28
+          },
+          "general": {
+            "delta": 0.33333333333333337,
+            "harms": 0,
+            "left_mean": 0.030303030303030304,
+            "n": 33,
+            "right_mean": 0.36363636363636365,
+            "saves": 11,
+            "stratum": "general",
+            "ties": 22
+          },
+          "iot": {
+            "delta": 0.24242424242424243,
+            "harms": 0,
+            "left_mean": 0.6666666666666666,
+            "n": 33,
+            "right_mean": 0.9090909090909091,
+            "saves": 8,
+            "stratum": "iot",
+            "ties": 25
+          },
+          "lists": {
+            "delta": 0.03125,
+            "harms": 0,
+            "left_mean": 0.8125,
+            "n": 32,
+            "right_mean": 0.84375,
+            "saves": 1,
+            "stratum": "lists",
+            "ties": 31
+          },
+          "music": {
+            "delta": 0.26086956521739135,
+            "harms": 0,
+            "left_mean": 0.5652173913043478,
+            "n": 23,
+            "right_mean": 0.8260869565217391,
+            "saves": 6,
+            "stratum": "music",
+            "ties": 17
+          },
+          "news": {
+            "delta": 0.03125,
+            "harms": 1,
+            "left_mean": 0.78125,
+            "n": 32,
+            "right_mean": 0.8125,
+            "saves": 2,
+            "stratum": "news",
+            "ties": 29
+          },
+          "play": {
+            "delta": 0.4375,
+            "harms": 0,
+            "left_mean": 0.0,
+            "n": 32,
+            "right_mean": 0.4375,
+            "saves": 14,
+            "stratum": "play",
+            "ties": 18
+          },
+          "qa": {
+            "delta": 0.34375,
+            "harms": 0,
+            "left_mean": 0.28125,
+            "n": 32,
+            "right_mean": 0.625,
+            "saves": 11,
+            "stratum": "qa",
+            "ties": 21
+          },
+          "recommendation": {
+            "delta": 0.59375,
+            "harms": 0,
+            "left_mean": 0.0,
+            "n": 32,
+            "right_mean": 0.59375,
+            "saves": 19,
+            "stratum": "recommendation",
+            "ties": 13
+          },
+          "social": {
+            "delta": 0.030303030303030276,
+            "harms": 1,
+            "left_mean": 0.7575757575757576,
+            "n": 33,
+            "right_mean": 0.7878787878787878,
+            "saves": 2,
+            "stratum": "social",
+            "ties": 30
+          },
+          "takeaway": {
+            "delta": 0.16666666666666663,
+            "harms": 0,
+            "left_mean": 0.75,
+            "n": 12,
+            "right_mean": 0.9166666666666666,
+            "saves": 2,
+            "stratum": "takeaway",
+            "ties": 10
+          },
+          "transport": {
+            "delta": 0.030303030303030387,
+            "harms": 2,
+            "left_mean": 0.6666666666666666,
+            "n": 33,
+            "right_mean": 0.696969696969697,
+            "saves": 3,
+            "stratum": "transport",
+            "ties": 28
+          },
+          "weather": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.9393939393939394,
+            "n": 33,
+            "right_mean": 0.9393939393939394,
+            "saves": 0,
+            "stratum": "weather",
+            "ties": 33
+          }
+        },
+        "right_mean": 0.732,
+        "saves": 99,
+        "sign_test_p": 7.369793042206746e-19,
+        "ties": 390
+      },
+      "scenario_exact": {
+        "bootstrap": {
+          "ci_high": 0.136,
+          "ci_level": 0.9,
+          "ci_low": 0.086,
+          "n_replicates": 10000,
+          "point_estimate": 0.11,
+          "seed": 20260808,
+          "sigma_hat": 0.015396128921258098
+        },
+        "delta": 0.10999999999999999,
+        "harms": 9,
+        "left_mean": 0.72,
+        "metric": "scenario_exact",
+        "n": 500,
+        "per_stratum": {
+          "alarm": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.9666666666666667,
+            "n": 30,
+            "right_mean": 0.9666666666666667,
+            "saves": 0,
+            "stratum": "alarm",
+            "ties": 30
+          },
+          "audio": {
+            "delta": 0.5,
+            "harms": 0,
+            "left_mean": 0.5,
+            "n": 2,
+            "right_mean": 1.0,
+            "saves": 1,
+            "stratum": "audio",
+            "ties": 1
+          },
+          "calendar": {
+            "delta": 0.09090909090909094,
+            "harms": 0,
+            "left_mean": 0.7272727272727273,
+            "n": 33,
+            "right_mean": 0.8181818181818182,
+            "saves": 3,
+            "stratum": "calendar",
+            "ties": 30
+          },
+          "cooking": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.8888888888888888,
+            "n": 9,
+            "right_mean": 0.8888888888888888,
+            "saves": 0,
+            "stratum": "cooking",
+            "ties": 9
+          },
+          "datetime": {
+            "delta": 0.06060606060606055,
+            "harms": 0,
+            "left_mean": 0.8484848484848485,
+            "n": 33,
+            "right_mean": 0.9090909090909091,
+            "saves": 2,
+            "stratum": "datetime",
+            "ties": 31
+          },
+          "email": {
+            "delta": 0.06060606060606066,
+            "harms": 0,
+            "left_mean": 0.8787878787878788,
+            "n": 33,
+            "right_mean": 0.9393939393939394,
+            "saves": 2,
+            "stratum": "email",
+            "ties": 31
+          },
+          "general": {
+            "delta": 0.09090909090909094,
+            "harms": 1,
+            "left_mean": 0.48484848484848486,
+            "n": 33,
+            "right_mean": 0.5757575757575758,
+            "saves": 4,
+            "stratum": "general",
+            "ties": 28
+          },
+          "iot": {
+            "delta": 0.18181818181818177,
+            "harms": 0,
+            "left_mean": 0.8181818181818182,
+            "n": 33,
+            "right_mean": 1.0,
+            "saves": 6,
+            "stratum": "iot",
+            "ties": 27
+          },
+          "lists": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.875,
+            "n": 32,
+            "right_mean": 0.875,
+            "saves": 0,
+            "stratum": "lists",
+            "ties": 32
+          },
+          "music": {
+            "delta": 0.0434782608695653,
+            "harms": 0,
+            "left_mean": 0.9130434782608695,
+            "n": 23,
+            "right_mean": 0.9565217391304348,
+            "saves": 1,
+            "stratum": "music",
+            "ties": 22
+          },
+          "news": {
+            "delta": 0.03125,
+            "harms": 1,
+            "left_mean": 0.78125,
+            "n": 32,
+            "right_mean": 0.8125,
+            "saves": 2,
+            "stratum": "news",
+            "ties": 29
+          },
+          "play": {
+            "delta": 0.46875,
+            "harms": 0,
+            "left_mean": 0.03125,
+            "n": 32,
+            "right_mean": 0.5,
+            "saves": 15,
+            "stratum": "play",
+            "ties": 17
+          },
+          "qa": {
+            "delta": 0.15625,
+            "harms": 4,
+            "left_mean": 0.5625,
+            "n": 32,
+            "right_mean": 0.71875,
+            "saves": 9,
+            "stratum": "qa",
+            "ties": 19
+          },
+          "recommendation": {
+            "delta": 0.375,
+            "harms": 0,
+            "left_mean": 0.28125,
+            "n": 32,
+            "right_mean": 0.65625,
+            "saves": 12,
+            "stratum": "recommendation",
+            "ties": 20
+          },
+          "social": {
+            "delta": -0.030303030303030276,
+            "harms": 2,
+            "left_mean": 0.8484848484848485,
+            "n": 33,
+            "right_mean": 0.8181818181818182,
+            "saves": 1,
+            "stratum": "social",
+            "ties": 30
+          },
+          "takeaway": {
+            "delta": 0.08333333333333337,
+            "harms": 0,
+            "left_mean": 0.9166666666666666,
+            "n": 12,
+            "right_mean": 1.0,
+            "saves": 1,
+            "stratum": "takeaway",
+            "ties": 11
+          },
+          "transport": {
+            "delta": 0.12121212121212122,
+            "harms": 1,
+            "left_mean": 0.7878787878787878,
+            "n": 33,
+            "right_mean": 0.9090909090909091,
+            "saves": 5,
+            "stratum": "transport",
+            "ties": 27
+          },
+          "weather": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.9393939393939394,
+            "n": 33,
+            "right_mean": 0.9393939393939394,
+            "saves": 0,
+            "stratum": "weather",
+            "ties": 33
+          }
+        },
+        "right_mean": 0.83,
+        "saves": 64,
+        "sign_test_p": 2.378889919863532e-11,
+        "ties": 427
+      },
+      "slot_f1_exact_f1": {
+        "bootstrap": {
+          "ci_high": -0.008161428571428578,
+          "ci_level": 0.9,
+          "ci_low": -0.04386714285714284,
+          "n_replicates": 10000,
+          "point_estimate": -0.026028571428571432,
+          "seed": 20260810,
+          "sigma_hat": 0.010933410920008057
+        },
+        "delta": -0.02602857142857143,
+        "harms": 31,
+        "left_mean": 0.17097619047619048,
+        "metric": "slot_f1_exact_f1",
+        "n": 500,
+        "per_stratum": {
+          "alarm": {
+            "delta": -0.03555555555555556,
+            "harms": 2,
+            "left_mean": 0.12444444444444444,
+            "n": 30,
+            "right_mean": 0.08888888888888888,
+            "saves": 0,
+            "stratum": "alarm",
+            "ties": 28
+          },
+          "audio": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.0,
+            "n": 2,
+            "right_mean": 0.0,
+            "saves": 0,
+            "stratum": "audio",
+            "ties": 2
+          },
+          "calendar": {
+            "delta": 0.0014430014430014473,
+            "harms": 1,
+            "left_mean": 0.05721500721500721,
+            "n": 33,
+            "right_mean": 0.05865800865800866,
+            "saves": 1,
+            "stratum": "calendar",
+            "ties": 31
+          },
+          "cooking": {
+            "delta": 0.1111111111111111,
+            "harms": 0,
+            "left_mean": 0.1111111111111111,
+            "n": 9,
+            "right_mean": 0.2222222222222222,
+            "saves": 1,
+            "stratum": "cooking",
+            "ties": 8
+          },
+          "datetime": {
+            "delta": -0.07070707070707069,
+            "harms": 3,
+            "left_mean": 0.1919191919191919,
+            "n": 33,
+            "right_mean": 0.12121212121212122,
+            "saves": 0,
+            "stratum": "datetime",
+            "ties": 30
+          },
+          "email": {
+            "delta": 0.01010101010101011,
+            "harms": 2,
+            "left_mean": 0.17676767676767677,
+            "n": 33,
+            "right_mean": 0.18686868686868688,
+            "saves": 2,
+            "stratum": "email",
+            "ties": 29
+          },
+          "general": {
+            "delta": -0.030303030303030304,
+            "harms": 1,
+            "left_mean": 0.030303030303030304,
+            "n": 33,
+            "right_mean": 0.0,
+            "saves": 0,
+            "stratum": "general",
+            "ties": 32
+          },
+          "iot": {
+            "delta": -0.06060606060606061,
+            "harms": 2,
+            "left_mean": 0.3232323232323232,
+            "n": 33,
+            "right_mean": 0.2626262626262626,
+            "saves": 0,
+            "stratum": "iot",
+            "ties": 31
+          },
+          "lists": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.0625,
+            "n": 32,
+            "right_mean": 0.0625,
+            "saves": 0,
+            "stratum": "lists",
+            "ties": 32
+          },
+          "music": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.08695652173913043,
+            "n": 23,
+            "right_mean": 0.08695652173913043,
+            "saves": 0,
+            "stratum": "music",
+            "ties": 23
+          },
+          "news": {
+            "delta": 0.0,
+            "harms": 0,
+            "left_mean": 0.16145833333333334,
+            "n": 32,
+            "right_mean": 0.16145833333333334,
+            "saves": 0,
+            "stratum": "news",
+            "ties": 32
+          },
+          "play": {
+            "delta": -0.0625,
+            "harms": 3,
+            "left_mean": 0.328125,
+            "n": 32,
+            "right_mean": 0.265625,
+            "saves": 1,
+            "stratum": "play",
+            "ties": 28
+          },
+          "qa": {
+            "delta": -0.109375,
+            "harms": 4,
+            "left_mean": 0.40625,
+            "n": 32,
+            "right_mean": 0.296875,
+            "saves": 0,
+            "stratum": "qa",
+            "ties": 28
+          },
+          "recommendation": {
+            "delta": 0.02916666666666662,
+            "harms": 4,
+            "left_mean": 0.415625,
+            "n": 32,
+            "right_mean": 0.44479166666666664,
+            "saves": 5,
+            "stratum": "recommendation",
+            "ties": 23
+          },
+          "social": {
+            "delta": 0.06060606060606061,
+            "harms": 0,
+            "left_mean": 0.0,
+            "n": 33,
+            "right_mean": 0.06060606060606061,
+            "saves": 3,
+            "stratum": "social",
+            "ties": 30
+          },
+          "takeaway": {
+            "delta": -0.2638888888888889,
+            "harms": 4,
+            "left_mean": 0.2638888888888889,
+            "n": 12,
+            "right_mean": 0.0,
+            "saves": 0,
+            "stratum": "takeaway",
+            "ties": 8
+          },
+          "transport": {
+            "delta": -0.08369408369408371,
+            "harms": 5,
+            "left_mean": 0.1484848484848485,
+            "n": 33,
+            "right_mean": 0.06479076479076479,
+            "saves": 2,
+            "stratum": "transport",
+            "ties": 26
+          },
+          "weather": {
+            "delta": 0.015151515151515152,
+            "harms": 0,
+            "left_mean": 0.030303030303030304,
+            "n": 33,
+            "right_mean": 0.045454545454545456,
+            "saves": 1,
+            "stratum": "weather",
+            "ties": 32
+          }
+        },
+        "right_mean": 0.14494761904761905,
+        "saves": 16,
+        "sign_test_p": 0.03998605682605216,
+        "ties": 453
+      }
+    }
+  },
+  "populations": {
+    "pooled": 1000,
+    "prior_exposed_dev500": 500,
+    "unexposed_new500": 500
+  },
+  "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1",
+  "schema": "saea-slurp-closed-list-direct-read-v1",
+  "split_id": "devel",
+  "study": "speech-aware-evidence-acquisition"
+}

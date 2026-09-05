@@ -381,3 +381,68 @@ confounds together; and ConEC's own sentence segmentation plus the fstalign stac
 installed. Full verdict:
 `docs/readiness/2026-09-04-e22-esb-shortform-alignment-v1-verdict.md`; numbers under
 `docs/checks/speech-aware-evidence-acquisition/2026-09-04-e22-esb-shortform-alignment-400-v1/verdict/`.
+
+---
+
+## Addendum, 2026-09-05 — SLURP caveat 4 is wrong, and section 2.2's closed-label-list arm has flown
+
+Two corrections and one result. Verdict:
+`docs/readiness/2026-09-05-slurp-closed-list-direct-baseline-v1-verdict.md`; receipts under
+`docs/checks/speech-aware-evidence-acquisition/2026-09-05-slurp-closed-list-direct-baseline-v1/`
+and `.../2026-09-05-slurp-closed-list-headroom/`.
+
+**Correction 1 — caveat 4 is factually wrong about the flown arm.** It states that this study
+"scores free-form `{scenario, action}` strings against gold strings with no closed label list
+offered to the model". A closed list *was* offered. `_INSTRUCTION` is only half the system
+message: `rails/runner.py::_agent_messages` appends `"\n\nTask contract:\n"` plus
+`SlurpAdapter.build_task_contract`, which is `render_slurp_ontology(load_slurp_ontology(...))`.
+All 1,000 sealed DEV-1000 M0 `MODEL_REQUEST` records carry one identical 5,747-character
+instruction (sha256 `cef52789…86b8`) enumerating **18 scenarios, 46 actions and 55 entity types**
+with 263 example fillers. What it never carried is the **pairing**: two flat lists imply
+18 x 46 = 828 intents where only **60** `(scenario, action)` pairs occur in train, and
+`SlurpOntology` had no field able to hold them. The audit's conclusion that the protocol was
+harder than the literature's still stands; its stated reason does not.
+
+**Correction 2 — the gap was measurable on the audit's own sealed bytes.** Model-free row
+`SAEA-SLURP-MF-CLOSED-LIST-HEADROOM-V1`, zero contacts, no gold: **32.20 %** of M0's sealed
+predictions name a `(scenario, action)` pair that does not occur in train, against 8.60 %
+naming an unlisted scenario, 6.90 % an unlisted action and 0.28 % an unlisted entity type. The
+three lists the prompt did carry were respected; the one it did not carry held 69 % of M0's
+46.4-point intent error. BLEND's figure is 2.10 %.
+
+**Section 2.2's missing arm has now flown** (`SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1`): the
+sealed M0 prompt plus a pure 1,836-character suffix naming the 60 legal pairs, the 55 entity
+types and the closed-choice constraint, everything else identical — same 1,000 rows at the same
+identity hash, same packets, same build, same `-np 8 -c 65536`, same greedy `max_tokens 64`, one
+contact per sample.
+
+| arm | scenario | action | **intent** | entities strict | Word-F1 | Char-F1 | **SLU-F1** |
+|---|---|---|---|---|---|---|---|
+| **closed-list direct** | 81.00 | 73.90 | **71.40** | 21.91 | 33.69 | 38.20 | **35.80** |
+| DEV-1000 M0 | 70.00 | 61.50 | 53.60 | 21.94 | 34.66 | 39.46 | 36.90 |
+| DEV-1000 BLEND | 83.90 | 77.60 | 75.70 | 27.27 | 39.41 | 44.24 | 41.69 |
+
+Three things follow for this audit's own conclusions.
+
+1. **The asymmetry is confirmed and is now measured on an aligned baseline.** Intent +17.80 pp
+   paired (CI90 [+15.70, +19.90]; +17.60 on the unexposed 500), SLU-F1 −1.10. Intent
+   classification survives prompting; slot filling does not. Intent 71.40 is **aligned** with
+   Google/SF-ID 72.06 (−0.66) and with ChatGPT-on-Whisper-ASR 72.89 (−1.49); SLU-F1 35.80 still
+   **fails the 64.02 degraded-model floor** by 28.22. Scenario 81.00 clears the 78.87 floor;
+   action 73.90 misses the 74.31 floor by 0.41.
+2. **"BLEND clears the weakest published trained pipeline" needs re-scoping.** BLEND's +22.10 pp
+   intent margin was measured against M0. Against the protocol-aligned arm it is **+4.30 pp**
+   pooled, and **+2.60 pp with a 90 % CI of [−0.20, +5.60]** on the rows unexposed at the lock
+   tier. 80.5 % of the locked knowledge cell's SLURP intent gain is reproducible from 1,836
+   characters of prompt, with no retrieval and no second contact. The 2026-08-25 lock statistic
+   itself is unchanged; what it *means* is not.
+3. **Defect 2 is discharged for this carrier.** This was the first SLURP cell flown through
+   `core.flight.FlightRuntime`. Its seal wrote a real `*.run-manifest.json` with canonical rows
+   keyed `text`, and `core.scoring_batch` ran all three declared scorers over the complete
+   manifest in one process. Only the two sealed August arms still needed the key-rename
+   projection; the sealed M0 and BLEND columns above reproduce this audit's numbers exactly, to
+   the second decimal, on all seven metrics.
+
+Section 2.2's other two open items are unchanged: the official test split remains untouched, and
+a natural-mixture devel read is still owed before any single "SLURP devel" number is quoted
+beside a natural-mixture published row.

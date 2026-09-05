@@ -1,0 +1,156 @@
+{
+  "schema": "saea-slurp-closed-list-direct-result-summary-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1",
+  "attempt_id": "attempt-20260905T060424Z-2c5596",
+  "generated_at": "2026-09-05",
+  "verdict": "THE CLOSED-LIST ARM IS THE STUDY'S SLURP DIRECT BASELINE. Intent (scen_act) 71.40 against the sealed M0 comparator's 53.60, +17.80 pp paired, and SLU-F1 35.80 against 36.90, -1.10. The intent gain is the He and Garner asymmetry reproduced on audio input; the slot layer does not move. Four fifths of the locked BLEND cell's SLURP intent margin over M0 is reproduced by a prompt-side label inventory with zero retrieval and zero extra contacts.",
+  "authority": {
+    "preregistration": "docs/readiness/2026-09-05-slurp-closed-list-direct-baseline-v1-preregistration.md",
+    "verdict": "docs/readiness/2026-09-05-slurp-closed-list-direct-baseline-v1-verdict.md",
+    "experiment_fragment": "configs/experiment/slurp-dev1000-closed-list-direct-v1.json",
+    "headroom_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-slurp-closed-list-headroom/",
+    "exposure_rows": [
+      "SAEA-SLURP-MF-CLOSED-LIST-HEADROOM-V1",
+      "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-SMOKE-V1",
+      "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1"
+    ]
+  },
+  "identity": {
+    "study_commit_at_takeoff": "aae0a90d1a6fd3bb858e9b1ec011ad2c168bd336",
+    "config_hash": "6be064ba49d4b3b8b430aa063b4fef46a898ce5a0b3702fe35c4896d5d1b894f",
+    "protocol_hash": "7e83a70508068d1a1c2512cabbc91b8417821ae5796038c2bc6fa4950bb951b2",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_identity_note": "recomputed from the runtime view, equal to the value the sealed 2026-08-25 M0 execution plan recorded; the population is the same 1,000 devel rows id-for-id",
+    "run_manifest_sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c",
+    "outputs_sha256": "34fda7fa51410e0f4f7e8ba7c35f867c32f53c244de63af5386860486fcb885b",
+    "wire_instruction_sha256": "4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db",
+    "wire_instruction_chars": 7583,
+    "sealed_m0_instruction_sha256": "cef527896e9beef5774305e01dc29192fc2d5ca89fba5143e82f0b91a7cb86b8",
+    "sealed_m0_instruction_chars": 5747,
+    "added_suffix_sha256": "46ee018e1bd2392c0e3654ddeacf4b7f32209da2a0c00cd7e658afe50ca0dda3",
+    "added_suffix_chars": 1836,
+    "prompt_relation": "wire instruction == sealed M0 instruction + suffix, byte for byte",
+    "template_sha256": "9f2017c1b9a5cbf561a3437377ea4777d418ed19a7607f05e471f71a51dc0413",
+    "instruction_fill": "slurp-label-inventory"
+  },
+  "official_metrics_percent": {
+    "scorer": "slurp-slu-official: the unmodified official evaluate.py at pinned commit 8eb16545762be97ace75334109d73824217311f1 in ~/.venvs/slurp-official-eval, --average micro --errors --table-layout csv, run once over the complete manifest through core.scoring_batch",
+    "port_identity_check": "passed on all three arms, absolute difference 0.0",
+    "closed_list": {
+      "scenario": 81.0,
+      "action": 73.9,
+      "intent_scen_act": 71.4,
+      "entities_strict": 21.91,
+      "word_f1": 33.69,
+      "char_f1": 38.2,
+      "slu_f1": 35.8
+    },
+    "sealed_m0": {
+      "scenario": 70.0,
+      "action": 61.5,
+      "intent_scen_act": 53.6,
+      "entities_strict": 21.94,
+      "word_f1": 34.66,
+      "char_f1": 39.46,
+      "slu_f1": 36.9
+    },
+    "sealed_blend": {
+      "scenario": 83.9,
+      "action": 77.6,
+      "intent_scen_act": 75.7,
+      "entities_strict": 27.27,
+      "word_f1": 39.41,
+      "char_f1": 44.24,
+      "slu_f1": 41.69
+    },
+    "reproduction_note": "the sealed M0 and BLEND columns reproduce the 2026-09-04 alignment audit exactly, to the second decimal, on every one of the seven metrics"
+  },
+  "n_predicted": {
+    "closed_list": {"n_gold": 1000, "n_predicted": 1000, "skipped": 0, "unparsed": 3},
+    "sealed_m0": {"n_gold": 1000, "n_predicted": 1000, "skipped": 0, "unparsed": 5},
+    "sealed_blend": {"n_gold": 1000, "n_predicted": 1000, "skipped": 0, "unparsed": 2},
+    "unanswered_counted_wrong_variant": "equal to the official number on all three arms, because skipped is zero everywhere; an unparsed row is scored and counted wrong, it is not skipped"
+  },
+  "paired_closed_list_over_sealed_m0": {
+    "statistic": "paired per-sample, delta = closed-list minus M0, stratified bootstrap N=10000 seed 20260807, CI90, exact sign test",
+    "intent_pooled_1000": {"n": 1000, "left": 53.6, "right": 71.4, "delta_pp": 17.8, "saves": 197, "harms": 19, "ties": 784, "sign_test_p": 1.73e-38, "ci90": [15.7, 19.9]},
+    "intent_prior_exposed_dev500": {"n": 500, "left": 51.6, "right": 69.6, "delta_pp": 18.0, "saves": 98, "harms": 8, "ties": 394, "sign_test_p": 8.08e-21, "ci90": [15.2, 20.8]},
+    "intent_unexposed_new500": {"n": 500, "left": 55.6, "right": 73.2, "delta_pp": 17.6, "saves": 99, "harms": 11, "ties": 390, "sign_test_p": 7.37e-19, "ci90": [14.8, 20.4]},
+    "scenario_pooled_1000": {"delta_pp": 11.0, "saves": 126, "harms": 16, "ci90": [9.3, 12.7]},
+    "action_pooled_1000": {"delta_pp": 12.4, "saves": 158, "harms": 34, "ci90": [10.4, 14.4]},
+    "slot_f1_exact_pooled_1000": {"left": 14.66, "right": 12.96, "delta_pp": -1.7, "saves": 33, "harms": 50, "ties": 917, "sign_test_p": 0.0784, "ci90": [-2.94, -0.48]}
+  },
+  "blend_margin": {
+    "blend_over_sealed_m0_intent_pooled_pp": 22.1,
+    "blend_over_sealed_m0_ci90": [20.2, 24.0],
+    "blend_over_closed_list_intent_pooled_pp": 4.3,
+    "blend_over_closed_list_ci90": [2.3, 6.3],
+    "blend_over_closed_list_sign_test_p": 0.00117,
+    "blend_over_closed_list_unexposed_new500_pp": 2.6,
+    "blend_over_closed_list_unexposed_new500_ci90": [-0.2, 5.6],
+    "blend_over_closed_list_unexposed_new500_sign_test_p": 0.193,
+    "reading": "80.5 percent of BLEND's intent margin over M0 is reproduced by the prompt-side inventory alone. What remains is +4.30 pp pooled, and on the 500 rows unexposed at the lock tier it is +2.60 pp with a 90 percent CI that includes zero."
+  },
+  "off_inventory": {
+    "definition": "share of predictions naming a (scenario, action) pair that does not occur in SLURP train, measured against the same TRAIN-only inventory the prompt carries; no gold involved",
+    "closed_list_percent": 4.2,
+    "sealed_m0_percent": 32.2,
+    "sealed_blend_percent": 2.1,
+    "closed_list_unlisted_scenario_percent": 2.4,
+    "closed_list_unlisted_action_percent": 0.9,
+    "closed_list_unlisted_entity_type_percent": 0.0,
+    "reading": "the prompt change did the thing it was designed to do: impossible pairs fall from 32.20 to 4.20 percent, a 87 percent reduction, independently of accuracy"
+  },
+  "published_brackets_percent": {
+    "rule": "aligned = within 3 points, or better; every published row is the official TEST split and a natural mixture, this arm is a scenario-stratified DEV roster",
+    "intent": [
+      {"target": "Google/SF-ID weakest published pipeline", "value": 72.06, "ours": 71.4, "delta": -0.66, "verdict": "aligned; degraded-model floor failed by 0.66"},
+      {"target": "ChatGPT on Whisper ASR, 10-shot (He and Garner)", "value": 72.89, "ours": 71.4, "delta": -1.49, "verdict": "aligned"},
+      {"target": "Multi-SLURP/HerMiT strong pipeline", "value": 78.33, "ours": 71.4, "delta": -6.93, "verdict": "not aligned"},
+      {"target": "ChatGPT on oracle transcripts, 0-shot, 60 intents in the prompt", "value": 79.25, "ours": 71.4, "delta": -7.85, "verdict": "not aligned"},
+      {"target": "Gold/HerMiT on oracle transcripts", "value": 84.84, "ours": 71.4, "delta": -13.44, "verdict": "not aligned"}
+    ],
+    "scenario": [
+      {"target": "Google/SF-ID floor", "value": 78.87, "ours": 81.0, "delta": 2.13, "verdict": "floor cleared; aligned"},
+      {"target": "Gold/HerMiT", "value": 90.15, "ours": 81.0, "delta": -9.15, "verdict": "not aligned"}
+    ],
+    "action": [
+      {"target": "Google/SF-ID floor", "value": 74.31, "ours": 73.9, "delta": -0.41, "verdict": "aligned; floor failed by 0.41"},
+      {"target": "Gold/HerMiT", "value": 86.99, "ours": 73.9, "delta": -13.09, "verdict": "not aligned"}
+    ],
+    "slu_f1": [
+      {"target": "Google/SF-ID floor", "value": 64.02, "ours": 35.8, "delta": -28.22, "verdict": "not aligned; floor failed"},
+      {"target": "Multi-SLURP/HerMiT", "value": 70.84, "ours": 35.8, "delta": -35.04, "verdict": "not aligned"},
+      {"target": "ChatGPT prompt-only slot F1 (different metric definition)", "value": "12.03 to 13.35", "ours": 35.8, "delta": "+22.5 to +23.8", "verdict": "better, but not the same metric"}
+    ]
+  },
+  "stratum_weightings_intent_percent": {
+    "natural_roster": {"m0": 53.6, "closed_list": 71.4, "delta_pp": 17.8},
+    "equal_stratum_18": {"m0": 52.52, "closed_list": 71.45, "delta_pp": 18.93},
+    "note": "the DEV-1000 roster is itself scenario-stratified, so the two weightings barely differ; neither is the published natural mixture of the test split"
+  },
+  "cost": {
+    "calls_used": 1000,
+    "calls_registered": 1050,
+    "audio_seconds_used": 2884.7936875,
+    "audio_seconds_registered": 3000,
+    "gpu_hours_used_approx": 0.105,
+    "gpu_hours_registered": 1.0,
+    "tool_calls": 0,
+    "embedding_calls": 0,
+    "paid_api_spend": 0,
+    "prompt_tokens_total": 2190161,
+    "completion_tokens_total": 26495,
+    "wall_seconds_contacts": 225.53,
+    "contacts_per_second": 4.434,
+    "tokens_per_second": 283.77,
+    "slot_occupancy": 0.899,
+    "packets_per_second": 155.25,
+    "takeoff_to_report_seconds": 378
+  },
+  "scope": {
+    "claims": "a devel-split, prompt-only, protocol-aligned direct baseline for this study's SLURP carrier, with its distance to the published brackets stated",
+    "does_not_claim": "no test contact, no superiority claim, no generalization claim, no Stage-3 activity"
+  }
+}
