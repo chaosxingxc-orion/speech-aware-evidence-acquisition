@@ -29,6 +29,7 @@ from speech_aware_evidence_acquisition.core.model import (
     materialize_legacy_cached_speech_feature_packet,
     materialize_speech_feature_packet,
 )
+from speech_aware_evidence_acquisition.core.model.transport import _llama_server_factory
 from speech_aware_evidence_acquisition.core.policies import build_arm_payload
 from speech_aware_evidence_acquisition.core.session import (
     SESSION_RECEIPT_SCHEMA,
@@ -2057,3 +2058,274 @@ def test_user_turn_text_is_refused_under_speech_feature_orders(tmp_path):
             feature_root=feature_root,
             user_turn_text=_OFFICIAL_USER_TURN,
         )
+
+
+# ---------------------------------------------------------------------------
+# Fragment-driven SYSTEM-MESSAGE SUPPRESSION (2026-09-05, Earnings-22 DEV ESB
+# shape-C arm). The Qwen3-Omni model card's "Setting for Evaluation" section
+# prescribes, for every evaluation benchmark, no system prompt and the
+# instruction text AFTER the multimodal data in the user turn. `user_turn_text`
+# already expressed the second half; `omit_system_message` expresses the first.
+# The failure mode being guarded is SILENT loss: a dropped system message would
+# take `task_instruction` (and, under the evidence-first orders, the evidence
+# block and the exemplar bank) off the wire while every receipt and protocol
+# hash still recorded them.
+# ---------------------------------------------------------------------------
+
+_OFFICIAL_ASR_INSTRUCTION = "Transcribe the English audio into text."
+
+
+def test_omit_system_message_sends_one_user_turn_with_the_audio_before_the_text(tmp_path):
+    """Arm C's exact wire bytes: no system block, audio part first, text last."""
+
+    captured = {}
+
+    def fake_post(url, body):
+        captured["raw"] = body
+        return _canned_response()
+
+    transport = _transport(
+        _base_url(),
+        tmp_path,
+        post=fake_post,
+        prompt_order="evidence-first-system-v3",
+        user_turn_text=_OFFICIAL_ASR_INSTRUCTION,
+        user_turn_audio_first=True,
+        omit_system_message=True,
+    )
+    payload = _boundary_payload(tmp_path, task_instruction=_OFFICIAL_ASR_INSTRUCTION)
+    transport(json.dumps(payload).encode())
+
+    expected_body = {
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    _audio_part_for(tmp_path, payload),
+                    {"type": "text", "text": _OFFICIAL_ASR_INSTRUCTION},
+                ],
+            }
+        ],
+        "temperature": 0,
+        "seed": 20260803,
+    }
+    assert captured["raw"] == json.dumps(expected_body).encode("utf-8")
+    assert [message["role"] for message in json.loads(captured["raw"])["messages"]] == [
+        "user"
+    ]
+
+
+@pytest.mark.parametrize(
+    "prompt_order",
+    ["system-instruction-v1", "evidence-first-system-v2", "evidence-first-system-v3"],
+)
+def test_omit_system_message_holds_under_every_non_speech_feature_order(
+    tmp_path, prompt_order
+):
+    captured = {}
+
+    def fake_post(url, body):
+        captured["body"] = json.loads(body)
+        return _canned_response()
+
+    transport = _transport(
+        _base_url(),
+        tmp_path,
+        post=fake_post,
+        prompt_order=prompt_order,
+        user_turn_text=_OFFICIAL_ASR_INSTRUCTION,
+        omit_system_message=True,
+    )
+    transport(
+        json.dumps(
+            _boundary_payload(tmp_path, task_instruction=_OFFICIAL_ASR_INSTRUCTION)
+        ).encode()
+    )
+
+    messages = captured["body"]["messages"]
+    assert len(messages) == 1
+    assert messages[0]["role"] == "user"
+    assert [part["type"] for part in messages[0]["content"]] == ["input_audio", "text"]
+    assert messages[0]["content"][-1]["text"] == _OFFICIAL_ASR_INSTRUCTION
+
+
+def test_omit_system_message_without_user_turn_text_is_refused_at_construction(tmp_path):
+    with pytest.raises(SessionError, match="omit_system_message requires user_turn_text"):
+        _transport(
+            _base_url(),
+            tmp_path,
+            post=lambda url, body: b"",
+            omit_system_message=True,
+        )
+
+
+def test_omit_system_message_is_refused_under_speech_feature_orders(tmp_path):
+    feature_root = tmp_path / "features"
+    feature_root.mkdir(parents=True, exist_ok=True)
+    with pytest.raises(SessionError, match="not supported under prompt_order"):
+        _transport(
+            _base_url(),
+            tmp_path,
+            post=lambda url, body: b"",
+            prompt_order="speech-features-text-keys-v1",
+            feature_root=feature_root,
+            user_turn_text=_OFFICIAL_ASR_INSTRUCTION,
+            omit_system_message=True,
+        )
+
+
+def test_omit_system_message_is_refused_for_a_non_bool(tmp_path):
+    with pytest.raises(SessionError, match="omit_system_message must be a bool"):
+        _transport(
+            _base_url(),
+            tmp_path,
+            post=lambda url, body: b"",
+            user_turn_text=_OFFICIAL_ASR_INSTRUCTION,
+            omit_system_message="yes",
+        )
+
+
+def test_omit_system_message_refuses_an_instruction_the_user_turn_does_not_carry(
+    tmp_path,
+):
+    """The instruction the payload records must be the instruction that is sent."""
+
+    transport = _transport(
+        _base_url(),
+        tmp_path,
+        post=lambda url, body: _canned_response(),
+        prompt_order="evidence-first-system-v3",
+        user_turn_text=_OFFICIAL_ASR_INSTRUCTION,
+        omit_system_message=True,
+    )
+    payload = _boundary_payload(tmp_path, task_instruction="Something else entirely.")
+    with pytest.raises(FrozenCoreError, match="byte-identical to the configured"):
+        transport(json.dumps(payload).encode())
+
+
+@pytest.mark.parametrize(
+    "prompt_order", ["evidence-first-system-v2", "evidence-first-system-v3"]
+)
+def test_omit_system_message_refuses_a_request_carrying_evidence(tmp_path, prompt_order):
+    transport = _transport(
+        _base_url(),
+        tmp_path,
+        post=lambda url, body: _canned_response(),
+        prompt_order=prompt_order,
+        user_turn_text=_OFFICIAL_ASR_INSTRUCTION,
+        omit_system_message=True,
+    )
+    payload = _boundary_payload(
+        tmp_path,
+        task_instruction=_OFFICIAL_ASR_INSTRUCTION,
+        supplied_evidence=[{"evidence_id": "e1", "content": "ctx"}],
+    )
+    with pytest.raises(FrozenCoreError, match="refuses a request carrying evidence"):
+        transport(json.dumps(payload).encode())
+
+
+def test_omit_system_message_refuses_a_request_carrying_an_exemplar_bank(tmp_path):
+    media = tmp_path / "media" / "5000001.mp3"
+    media.parent.mkdir(parents=True, exist_ok=True)
+    media.write_bytes(b"fake-mp3-bytes")
+    transport = _transport(
+        _base_url(),
+        tmp_path,
+        post=lambda url, body: _canned_response(),
+        prompt_order="evidence-first-system-v3",
+        user_turn_text=_OFFICIAL_ASR_INSTRUCTION,
+        omit_system_message=True,
+    )
+    payload = _boundary_payload(
+        tmp_path,
+        task_instruction=_OFFICIAL_ASR_INSTRUCTION,
+        exemplar_bank=[{"media_relpath": "media/5000001.mp3", "label": "L"}],
+    )
+    with pytest.raises(FrozenCoreError, match="carrying an exemplar bank"):
+        transport(json.dumps(payload).encode())
+
+
+def test_sealed_e22_arm_a_payload_is_byte_identical_without_the_seam(tmp_path):
+    """Regression for the sealed 2026-09-05 Earnings-22 DEV arms A and B.
+
+    They fly ``prompt_order: evidence-first-system-v3`` with no
+    ``user_turn_text`` and no ``omit_system_message``. Their wire bytes must be
+    exactly what they were before either key existed: one system message
+    carrying the instruction, one user message whose content is the audio part
+    ALONE.
+    """
+
+    captured = {}
+
+    def fake_post(url, body):
+        captured["raw"] = body
+        return _canned_response()
+
+    transport = _transport(
+        _base_url(), tmp_path, post=fake_post, prompt_order="evidence-first-system-v3"
+    )
+    payload = _boundary_payload(tmp_path)
+    transport(json.dumps(payload).encode())
+
+    expected_body = {
+        "messages": [
+            {"role": "system", "content": "Transcribe the speech verbatim."},
+            {"role": "user", "content": [_audio_part_for(tmp_path, payload)]},
+        ],
+        "temperature": 0,
+        "seed": 20260803,
+    }
+    assert captured["raw"] == json.dumps(expected_body).encode("utf-8")
+
+
+def test_transport_factory_defaults_omit_system_message_to_false(tmp_path):
+    """A composed config that never declares the key keeps the system message."""
+
+    captured = {}
+
+    def fake_post(url, body):
+        captured["body"] = json.loads(body)
+        return _canned_response()
+
+    transport = _llama_server_factory(
+        {"base_url": _base_url(), "prompt_order": "evidence-first-system-v3"},
+        tmp_path,
+        session=_fake_session(),
+        runtime_receipt=_fake_runtime_receipt(),
+        runtime_root=_live["runtime_root"],
+    )
+    transport._post = fake_post
+    transport(json.dumps(_boundary_payload(tmp_path)).encode())
+    assert [message["role"] for message in captured["body"]["messages"]] == [
+        "system",
+        "user",
+    ]
+
+
+def test_transport_factory_reads_omit_system_message_from_the_composed_config(tmp_path):
+    captured = {}
+
+    def fake_post(url, body):
+        captured["body"] = json.loads(body)
+        return _canned_response()
+
+    transport = _llama_server_factory(
+        {
+            "base_url": _base_url(),
+            "prompt_order": "evidence-first-system-v3",
+            "user_turn_text": _OFFICIAL_ASR_INSTRUCTION,
+            "user_turn_audio_first": True,
+            "omit_system_message": True,
+        },
+        tmp_path,
+        session=_fake_session(),
+        runtime_receipt=_fake_runtime_receipt(),
+        runtime_root=_live["runtime_root"],
+    )
+    transport._post = fake_post
+    transport(
+        json.dumps(
+            _boundary_payload(tmp_path, task_instruction=_OFFICIAL_ASR_INSTRUCTION)
+        ).encode()
+    )
+    assert [message["role"] for message in captured["body"]["messages"]] == ["user"]

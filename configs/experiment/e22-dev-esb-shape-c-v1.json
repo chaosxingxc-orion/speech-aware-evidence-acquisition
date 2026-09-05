@@ -1,0 +1,194 @@
+{
+  "experiment_id": "SAEA-E22-DEV-ESB-SHAPE-C-V1",
+  "schema": "saea-e22-esb-shortform-experiment-v1",
+  "date": "2026-09-05",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "ONE registered arm on the SEALED Earnings-22 DEV A/B roster, paired against the two arms already flown. Arms A and B varied the instruction TEXT and held the request SHAPE fixed; the A/B verdict falsified the text hypothesis and named the shape as the cheapest remaining suspect (its deviation G2). Arm C sends the SAME instruction string as arm B in the shape the Qwen3-Omni model card prescribes for evaluation: no system message, and the instruction as user text AFTER the audio. Everything else is byte-identical to arms A and B. Preregistration: docs/readiness/2026-09-05-e22-dev-esb-shape-c-v1-preregistration.md.",
+  "predecessor": {
+    "run_ids": [
+      "SAEA-E22-DEV-ESB-PROMPT-A-V1",
+      "SAEA-E22-DEV-ESB-PROMPT-B-V1"
+    ],
+    "verdict": "docs/readiness/2026-09-05-e22-dev-esb-prompt-ab-v1-verdict.md",
+    "result": "arm A 17.565 and arm B 18.394 corpus Whisper-normalized WER over the same 6,038 utterances; the paired CI90 excluded zero ON THE WRONG SIDE, so the authors' own prompt TEXT is 0.830 points WORSE and the prompt text is not the explanation for the sealed ESB test flight's 15.937",
+    "what_it_supplies_here": "the roster, the derived media, the derived reference layer, the D1 media supplement, the scorers, the model fragment, the geometry, the harness, the entry point, the prompt-fit route, the wire check, the smoke design, the analysis code, and BOTH sealed arms to pair against"
+  },
+  "owner_directive_2026_09_05": "Align the way the model is USED. The A/B settled the prompt text; the model card's own 'Setting for Evaluation' section prescribes a request SHAPE this study has never sent, and that is the cheapest untested factor.",
+  "paper_row": {
+    "primary": {
+      "system": "Qwen3-Omni-30B-A3B-Instruct, zero-shot",
+      "wer": 9.79,
+      "source": "NVIDIA NeMo AutoModel, 'Fine-Tune Qwen3-Omni for ASR'",
+      "protocol": "Whisper EnglishTextNormalizer both sides, greedy, N = 2741 utterances of the ESB Earnings22 TEST subset",
+      "note": "computed over the TEST subset, NOT over these ten dev calls. It appears here as an INDICATION ONLY."
+    },
+    "cross_read": {
+      "system": "Qwen3-Omni-30B-A3B-Instruct on the Open ASR Leaderboard English subset",
+      "wer": 12.3,
+      "source": "Nemotron 3 Nano Omni, arXiv:2604.24954v2 Table 8",
+      "note": "two vendor reports of the SAME frozen model that disagree by 2.5 points"
+    },
+    "population_caveat": "NO published number exists for these ten calls. Nothing in this experiment is an alignment verdict. The 3-point band around 9.79 / 12.3 is reported for orientation only and is explicitly labelled as such wherever it appears."
+  },
+  "populations": {
+    "E22-ESB-DEV10-UTTERANCES": {
+      "dataset_fragment": "earnings22-esb-dev-utterances-6038",
+      "carrier": "earnings22-original",
+      "split_role": "dev",
+      "count": 6038,
+      "strata": "source call: 4453225 635 / 4469088 922 / 4470684 589 / 4474506 633 / 4479944 588 / 4481952 632 / 4482383 469 / 4482613 592 / 4483937 517 / 4485192 461",
+      "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-e22-dev-esb-prompt-ab-v1/roster/flight-roster-receipt.json",
+      "receipt_sha256": "20437bcbde1a52b58bb48642d8809836e20073f7963f19b5ff836ead69c945c8",
+      "split_identity_hash": "fc14c98bae814f1c70314393078c9aa360e3638f82bd2e77d1ddb962f8bdebb3",
+      "audio_seconds_one_pass": 39292.64675,
+      "audio_seconds_longest_item": 78.36,
+      "selection": "no draw and no re-draw: EXACTLY the sealed A/B roster, so every contrast is within-utterance",
+      "estimand": "the paired within-utterance effect of the REQUEST SHAPE on corpus WER, at a held instruction string"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "E22-ESB-DEV-C",
+      "dataset_fragment": "earnings22-esb-dev-utterances-6038",
+      "arm": "bare-core",
+      "baseline_fragment": "e22-esb-dev-shape-c",
+      "model_fragment": "q4km-e22-dev-esb-mmproj-gpu-04ccc72a-np8-c40960",
+      "run_id": "SAEA-E22-DEV-ESB-SHAPE-C-V1",
+      "serving_geometry": "-c 40960 -np 8, 5120 tokens per slot -- the SAME model fragment file arms A and B composed",
+      "factor": "the request SHAPE: no system message, instruction as user text after the audio"
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "runtime_receipt": "docs/receipts/runtime-q4km-featcache-04ccc72a.json",
+    "quantization": "Q4_K_M",
+    "decoder_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+    "mmproj_sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883",
+    "audio_path": "raw audio, bf16 mmproj resident on the GPU, no feature cache directory",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample",
+    "contacts_per_item": 1,
+    "evidence": "none",
+    "obs": "none -- an ESB utterance IS the request; there is no windowing here",
+    "harness": "core.flight.FlightRuntime with the shared rails zero-supply direct arm and the OpenJiuwen executor, entered through scripts/flights/run_e22_esb_cell.py -- the same harness and entry point arms A and B used",
+    "prompt_shape_arms_a_and_b": "[{role: system, content: <instruction>}, {role: user, content: [input_audio]}]",
+    "prompt_shape_arm_c": "[{role: user, content: [input_audio, {type: text, text: <instruction>}]}] -- no system message at all",
+    "instruction_arm_b_and_c": "Transcribe the English audio into text.",
+    "the_only_difference_from_arm_b": "WHERE that string sits in the request. Same roster, same media bytes, same reference layer, same scorers, same build, same geometry, same decoding params, same harness, same entry point, same instruction bytes."
+  },
+  "seam": {
+    "key": "omit_system_message",
+    "module": "core.model.transport.LlamaServerTransport",
+    "why_not_a_new_module": "the owner's 2026-09-03 base rule: a carrier or an arm adds config fragments and, at most, one seam on an existing base -- never a probe module, a TaskAdapter subclass or a controller subclass. The transport is the one place the wire messages are built, so the one place a message-shape factor can be expressed. rails.task_adapter.TaskAdapter.assemble_prompt is UNCHANGED and still produces the internal [system, user] pair that rails.core_client parses into (task_instruction, media_relpath, supply_texts); only the transport's rendering of that payload changes.",
+    "fail_closed": "the transport refuses omit_system_message without a declared user_turn_text, refuses it under the speech-feature prompt orders, refuses a non-bool, refuses any request whose payload task_instruction is not byte-identical to the configured user_turn_text, and refuses any request carrying evidence or an exemplar bank (both of which travel in the system message under the evidence-first orders and would otherwise be silently dropped).",
+    "regression": "tests/unit/test_llama_server_transport.py::test_sealed_e22_arm_a_payload_is_byte_identical_without_the_seam pins the sealed arms' wire bytes; the factory defaults the key to false so every fragment that predates it renders identically."
+  },
+  "deviations": [
+    {
+      "id": "H1",
+      "deviation": "arm C sends NO system message and puts the instruction in the user turn after the audio",
+      "why": "this IS the factor under test; it is the Qwen3-Omni model card's own evaluation protocol, and it is deviation G2 of the A/B preregistration, named there as the second and unflown suspect",
+      "expected_effect": "unknown, which is why it is being measured. The mechanistic reason to expect an effect: a user-turn instruction that FOLLOWS the audio is the only form in which the model has heard the clip end before it is told what to do, which bears directly on the over-generation the A/B verdict left unexplained"
+    },
+    {
+      "id": "H2",
+      "deviation": "one new request-shaping config key (omit_system_message) in core.model.transport",
+      "why": "no existing seam could express 'no system message'; user_turn_text / user_turn_audio_first already expressed the placement half",
+      "expected_effect": "none on any sealed cell: the key defaults to false and a regression test pins the sealed A/B arms' wire bytes"
+    },
+    {
+      "id": "H3",
+      "deviation": "the population is the ten dev calls, not the published ESB test subset",
+      "why": "the confirmatory read of the six ESB test calls is spent; dev is the split this study may optimize on",
+      "expected_effect": "no number here is an alignment verdict"
+    },
+    {
+      "id": "H4",
+      "deviation": "merge_compounds is not applied",
+      "why": "this study's Whisper-normalizer scorer does not implement it",
+      "expected_effect": "identical in all three arms, so it cancels in every contrast"
+    }
+  ],
+  "evaluation": {
+    "official_scorers": [
+      "asr-wer-esb-whisper",
+      "asr-wer-esb",
+      "cost"
+    ],
+    "paper_facing_scorer": "asr-wer-esb-whisper",
+    "paper_facing_aggregation": "corpus: total S+D+I over total reference words",
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "merge_compounds": false,
+    "metrics": [
+      "corpus WER under the Whisper EnglishTextNormalizer, pooled and per call (paper-facing)",
+      "mean of per-utterance WER under the same normalizer",
+      "corpus and mean WER under the frozen saea-scoring-v1 normalizer",
+      "substitutions / deletions / insertions and reference words",
+      "hypothesis-to-reference length ratio and the insertion share of errors",
+      "the hypothesis-to-reference length ratio BY DURATION BUCKET, the A/B verdict's own diagnostic",
+      "the paired per-utterance contrasts C minus A and C minus B: saves / harms / ties, exact sign test, 10,000 call-stratified bootstrap replicates, seed 20260903, CI90",
+      "prompt_tokens, completion tokens, latency, throughput"
+    ],
+    "paired_analysis": {
+      "module": "analysis.paired.paired_contrast",
+      "contrasts": [
+        "C-A",
+        "C-B"
+      ],
+      "strata": "source call (10 strata)",
+      "seed": 20260903,
+      "n_replicates": 10000,
+      "ci_level": 0.9,
+      "metric_convention": "the per-utterance metric passed to analysis.paired is NEGATED WER, so delta = right - left = left_wer - right_wer is POSITIVE when the RIGHT arm (C) is better, and 'saves' counts utterances arm C improves. The raw C - left WER delta is reported beside it."
+    },
+    "mandatory_slices": [
+      "the per-call table for all ten dev calls, corpus WER under both normalizers, all three arms",
+      "natural-mixture (corpus) and equal-call weightings side by side, all three arms",
+      "the insertion / deletion / substitution split and the hypothesis-to-reference length ratio, all three arms",
+      "the utterance-duration decomposition with the length ratio per bucket, all three arms",
+      "the one utterance whose end boundary was clamped to the decoded parent, named",
+      "the RENDERED chat template for arm C, proving no system block and the audio placeholder before the text, with its measured token count",
+      "whether arm C's dev number would sit inside the 3-point band of 9.79 / 12.3, stated explicitly as an INDICATION ONLY because dev is not the test subset"
+    ],
+    "renderer": "analysis.paired.render_markdown"
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "dev",
+    "planned_model_calls": 6046,
+    "planned_gpu_hours": 0.6,
+    "planned_speech_audio_seconds": 39300
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "6,038 rows x 1 contact + 8 canaries = 6,046; the registered exposure ceiling is 6,350, about 5 % above the pass. core/model/adapter.py meters the plan cumulatively across every attempt of this run id.",
+    "planned_speech_audio_seconds": "39,292.64675 s for one pass, rounded up to 39,300; the registered ceiling is 41,300, about 5 % above the pass.",
+    "planned_gpu_hours": "0.6 planned against a registered ceiling of 1.0. Basis: arms A and B measured 0.4515 and 0.4596 GPU-h on exactly this roster and geometry. Arm C's request is 26 tokens smaller than arm A's and the same size as arm B's, so no more work is expected; 0.6 is about 1.3x the measured figure and 1.0 is about 2.2x.",
+    "paid_api_spend": 0,
+    "ceilings_live_in_the_exposure_row": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are the exposure-ledger row's calls / speech audio seconds / gpu hours cells, which the gate requires to be at least these planned values."
+  },
+  "decision": {
+    "rule": "If arm C's pooled corpus Whisper-normalized WER beats arm A AND the paired C-minus-A CI90 lower bound is above 0 (negated-WER convention, so 'above 0' means arm C genuinely lower) AND the hypothesis-to-reference length ratio falls toward 1.0, then the official usage shape becomes this study's ASR request shape for cleaned-reference protocols, and the verdict RECOMMENDS to the owner a second and final read of the six ESB test calls under shape C. THE OWNER DECIDES; this flight never flies it.",
+    "otherwise": "the shape is EXCLUDED as an explanation and the remaining suspects are named for the owner without being flown: (a) context-free clipping -- one sentence-length clip with no context and no way to know where it ends, which the A/B verdict implicated through a length ratio that rises monotonically as clips shorten; (b) decoding length control tied to clip duration; (c) quantization (Q4_K_M, deviation D2 of the sealed test flight).",
+    "band_indication_only": "The verdict states whether arm C's dev corpus WER would sit inside the 3-point band of the published 9.79 (and of the cross-read 12.3) as an INDICATION ONLY. These ten calls are not the test subset, no published number covers them, and no alignment verdict is issued here.",
+    "claim_surface": "No superiority, generality or Stage-3 claim. No mechanism arm. This is a request-shape selection on a dev split, plus a recommendation the owner may accept or refuse.",
+    "not_authorized": "No read of any confirmatory call. No second read of the six calibration-exposed ESB test calls -- including the recommended one, which only the owner may authorize. No fourth arm. No few-shot. No post-processing of any hypothesis. No Q8_0 cell. No mechanism arm. No test tuning, no paper-scale work.",
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "companion_runs": {
+    "prompt_fit": {
+      "experiment_id": "SAEA-E22-DEV-ESB-SHAPE-C-PROMPT-FIT-V1",
+      "why_separate": "the rendered-template proof spawns the server to call /props, /apply-template and /tokenize, which decode nothing but do open a session; contracts.gate_exposure requires exactly one pre-registered exposure row per run id, and this one's budget is nominal (1 call, 1 audio second, 0.3 planned GPU-hours) rather than the flight's."
+    },
+    "smoke": {
+      "experiment_id": "SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1",
+      "fragment": "e22-dev-esb-shape-c-smoke-v1",
+      "why_separate": "the smoke's four rows have a different split identity hash and a much smaller budget, so they cannot share a run id with the flight."
+    }
+  }
+}

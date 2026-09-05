@@ -1,0 +1,97 @@
+{
+  "experiment_id": "SAEA-E22-DEV-ESB-SHAPE-C-SMOKE-V1",
+  "schema": "saea-e22-esb-shortform-experiment-v1",
+  "date": "2026-09-05",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "Pre-flight smoke and go/no-go for SAEA-E22-DEV-ESB-SHAPE-C-V1, on the SAME four rows the A/B smoke used, so the shape's four reads are directly comparable to two already-sealed sets. Four reads, in order of importance: (1) does the frozen core answer AT ALL with no system message -- a chat template rendered without a system block is a shape this repository has never sent through a flight, and a refusal, an empty completion or a template error must be found on four rows rather than on 6,038; (2) what is arm C's text envelope in tokens, measured, against the 23 tokens arm B measured and the 49 arm A measured, so the window fit rests on a measurement; (3) do both ESB scorers score arm C's sealed manifest through core.scoring_batch with verified true; (4) a wall-time reading for the flight's projection. The smoke's own WER numbers are on four rows and enter no verdict.",
+  "populations": {
+    "E22-ESB-DEV-SMOKE-4": {
+      "dataset_fragment": "earnings22-esb-dev-utterances-smoke4",
+      "carrier": "earnings22-original",
+      "split_role": "dev",
+      "count": 4,
+      "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-e22-dev-esb-prompt-ab-v1/roster/flight-roster-receipt.json",
+      "receipt_sha256": "20437bcbde1a52b58bb48642d8809836e20073f7963f19b5ff836ead69c945c8",
+      "split_identity_hash": "5f0b843c0a1cfd607fbbca2090443610d80066dcd91804df45038f9176ab0717",
+      "ids": [
+        "4469088-654",
+        "4470684-13",
+        "4482383-119",
+        "4483937-267"
+      ],
+      "audio_seconds_one_pass": 96.959875,
+      "audio_seconds_longest_item": 78.36,
+      "selection": "not re-drawn: EXACTLY the four rows the 2026-09-05 A/B smoke flew (longest, shortest, median, p90 by duration, ties broken by sample id), so arm C's four reads sit beside arm A's and arm B's on the same audio"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "E22-ESB-DEV-SMOKE-4-C",
+      "dataset_fragment": "earnings22-esb-dev-utterances-smoke4",
+      "arm": "bare-core",
+      "baseline_fragment": "e22-esb-dev-shape-c",
+      "model_fragment": "q4km-e22-dev-esb-mmproj-gpu-04ccc72a-np8-c40960",
+      "serving_geometry": "-c 40960 -np 8, 5120 tokens per slot -- identical to the flight and to the A/B smoke",
+      "factor": "none; this is arm C's own protocol on four rows"
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "runtime_receipt": "docs/receipts/runtime-q4km-featcache-04ccc72a.json",
+    "quantization": "Q4_K_M",
+    "decoder_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+    "mmproj_sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883",
+    "audio_path": "raw audio, bf16 mmproj resident on the GPU, no feature cache directory",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample",
+    "contacts_per_item": 1,
+    "evidence": "none",
+    "obs": "none -- an ESB utterance IS the request",
+    "harness": "core.flight.FlightRuntime, entered through scripts/flights/run_e22_esb_cell.py",
+    "prompt_shape": "[{role: user, content: [input_audio, {type: text, text: 'Transcribe the English audio into text.'}]}] -- NO system message",
+    "instruction": "Transcribe the English audio into text."
+  },
+  "evaluation": {
+    "official_scorers": [
+      "asr-wer-esb-whisper",
+      "asr-wer-esb",
+      "cost"
+    ],
+    "paper_facing_scorer": "asr-wer-esb-whisper",
+    "paper_facing_aggregation": "corpus: total S+D+I over total reference words",
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "merge_compounds": false,
+    "metrics": [
+      "whether a non-empty completion comes back on every row with no system message",
+      "prompt tokens per request (the text envelope), against arm A's measured 49 and arm B's measured 23",
+      "completion tokens, latency, throughput",
+      "peak VRAM and any CUDA fault or out-of-memory",
+      "whether both ESB scorers returned per-sample rows through core.scoring_batch with verified = true"
+    ],
+    "renderer": "analysis.paired.render_markdown"
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "dev",
+    "planned_model_calls": 12,
+    "planned_gpu_hours": 0.5,
+    "planned_speech_audio_seconds": 120
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "4 rows x 1 contact = 4, plus headroom; the registered ceiling is 40.",
+    "planned_speech_audio_seconds": "96.959875 s for one pass, rounded to 120; the registered ceiling is 240.",
+    "planned_gpu_hours": "0.5, essentially all of it model load; the registered ceiling is 1.0",
+    "paid_api_spend": 0
+  },
+  "decision": {
+    "go_no_go": "The flight launches only if all four reads are affirmative: every one of the four rows returns a non-empty completion under the no-system-message shape; the measured worst prompt plus 1024 completion tokens is at most half the 5120-token slot; both ESB scorers return per-sample rows on the sealed manifest through core.scoring_batch with verified = true; and the projected flight time is at or under the registered ceiling.",
+    "claim_surface": "none; a smoke's numbers enter no verdict",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}

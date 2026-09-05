@@ -41,6 +41,17 @@ delta candidates reduces to exactly v2's shape for the same inputs. No ops
 benchmark exists yet for v3 -- unlike v1->v2 above, this is new, unmeasured
 infrastructure.
 
+Two request-shaping config keys sit beside ``prompt_order`` and travel in
+``config_hash`` -> ``protocol_hash`` exactly as it does. ``user_turn_text``
+(+ ``user_turn_audio_first``, 2026-09-04) puts a fixed sentence in the USER
+turn after the audio, which is what the published Audio2Tool protocol sends.
+``omit_system_message`` (2026-09-05) drops the system message entirely, which
+is what the Qwen3-Omni model card's "Setting for Evaluation" section
+prescribes for every evaluation benchmark ("No ``system prompt`` should be
+set"; "the text should come after multimodal data"). Both default to the
+pre-existing shape, so a cell that declares neither renders byte-identical
+requests to the ones it rendered before either key existed.
+
 Speech-feature AgentLoops use explicit cache layouts. A speech-query prefix
 places the query packet before knowledge and mutable state so a task-affine
 slot can retain the query KV across steps. The dual-prefix knowledge-speech-
@@ -375,6 +386,7 @@ class LlamaServerTransport:
         feature_root: Path | None = None,
         user_turn_text: str | None = None,
         user_turn_audio_first: bool = True,
+        omit_system_message: bool = False,
     ) -> None:
         # Prompt ordering is part of the request's identity: the bytes the
         # model sees change with it, so it is a MODEL-CONFIG field (inside the
@@ -441,6 +453,46 @@ class LlamaServerTransport:
             )
         self._user_turn_text = user_turn_text
         self._user_turn_audio_first = bool(user_turn_audio_first)
+        # Fragment-driven SYSTEM-MESSAGE SUPPRESSION (2026-09-05, Earnings-22
+        # DEV ESB shape-C arm). The Qwen3-Omni model card's "Setting for
+        # Evaluation" section states, for every evaluation benchmark, "No
+        # `system prompt` should be set" and "the text should come AFTER
+        # multimodal data in the sequence". `user_turn_text` /
+        # `user_turn_audio_first` already express the second half; this key
+        # expresses the first. It is a request-shaping config key like every
+        # other one here, so it travels inside config_hash -> protocol_hash
+        # and a cell that does not declare it renders byte-identically to
+        # before this key existed (DEFAULT False; asserted directly by
+        # tests/unit/test_llama_server_transport.py).
+        #
+        # Fail-closed, because the failure mode is SILENT: dropping the
+        # system message would otherwise drop `task_instruction` off the wire
+        # while every receipt, trace record and protocol hash still recorded
+        # it, i.e. the run would be measuring an unrecorded prompt. So the
+        # instruction must have a declared home in the user turn, and (see
+        # __call__) it must be byte-identical to the string the payload
+        # carries; evidence and exemplar banks, which live in the system
+        # message under the v2/v3 orders, are refused outright rather than
+        # silently discarded.
+        if not isinstance(omit_system_message, bool):
+            raise SessionError(
+                "omit_system_message must be a bool, got "
+                f"{type(omit_system_message).__name__}"
+            )
+        if omit_system_message and user_turn_text is None:
+            raise SessionError(
+                "omit_system_message requires user_turn_text: without a system "
+                "message the task instruction has no place on the wire, and "
+                "dropping it silently would make every recorded protocol hash "
+                "describe a prompt that was never sent"
+            )
+        if omit_system_message and prompt_order in _SPEECH_FEATURE_PROMPT_ORDERS:
+            raise SessionError(
+                f"omit_system_message is not supported under prompt_order "
+                f"{prompt_order!r}; the speech-feature orders own their message "
+                "assembly"
+            )
+        self._omit_system_message = bool(omit_system_message)
         # R0 repair T5 (I5): there is no "no session" transport, mirroring the
         # T3 fail-closed constructor discipline for PayloadBindingContext --
         # a caller can never construct a transport that could ever be asked
@@ -526,6 +578,63 @@ class LlamaServerTransport:
             return content
         part = {"type": "text", "text": self._user_turn_text}
         return [*content, part] if self._user_turn_audio_first else [part, *content]
+
+    def _messages(
+        self, system_content: object, user_content: object
+    ) -> list[dict[str, object]]:
+        """``[system, user]``, or ``[user]`` alone under ``omit_system_message``.
+
+        The one place the message list is built for every non-speech-feature
+        prompt order, so the suppression cannot be applied to one order and
+        forgotten on another. Identity behaviour (a system message followed by
+        the user message) for every cell that does not declare the key, which
+        is every cell that predates it.
+        """
+
+        user = {"role": "user", "content": user_content}
+        if self._omit_system_message:
+            return [user]
+        return [{"role": "system", "content": system_content}, user]
+
+    def _assert_system_message_suppression_is_lossless(
+        self,
+        payload: Mapping[str, object],
+        *,
+        evidence_texts: Sequence[str],
+        exemplar_bank: Sequence[object] = (),
+    ) -> None:
+        """Refuse any request whose system message carries content that would
+        be lost if the system message were dropped.
+
+        Three things can travel in a system message here: the task
+        instruction, the evidence block (v2/v3) and the exemplar bank (v3).
+        Under ``omit_system_message`` the instruction must be carried by the
+        declared ``user_turn_text`` BYTE FOR BYTE -- so what the payload,
+        the trace and the protocol hash record as ``task_instruction`` is
+        exactly what the model was told -- and the other two must be absent.
+        """
+
+        if not self._omit_system_message:
+            return
+        instruction = payload.get("task_instruction")
+        if not isinstance(instruction, str) or instruction != self._user_turn_text:
+            raise FrozenCoreError(
+                "omit_system_message requires the payload's task_instruction to be "
+                "byte-identical to the configured user_turn_text; got "
+                f"{instruction!r} against {self._user_turn_text!r}. Otherwise the "
+                "recorded instruction is not the instruction that was sent"
+            )
+        if evidence_texts:
+            raise FrozenCoreError(
+                "omit_system_message refuses a request carrying evidence: the "
+                "evidence block travels in the system message under the "
+                "evidence-first orders and would be silently dropped"
+            )
+        if exemplar_bank:
+            raise FrozenCoreError(
+                "omit_system_message refuses a request carrying an exemplar bank: "
+                "the bank travels in the system message and would be silently dropped"
+            )
 
     def __call__(self, request_bytes: bytes) -> bytes:
         # R0 repair T5 fix-2 (IMPORTANT, reviewer-flagged): re-verify on the
@@ -670,13 +779,15 @@ class LlamaServerTransport:
             # Stable-first order: [system: evidence…, instruction(+tail at its
             # end)][user: audio]. The evidence formatting strings are
             # byte-identical to v1; only their position moves.
+            self._assert_system_message_suppression_is_lossless(
+                payload, evidence_texts=evidence_texts
+            )
             system_text = "\n\n".join(
                 [*evidence_texts, str(payload["task_instruction"])]
             )
-            messages = [
-                {"role": "system", "content": system_text},
-                {"role": "user", "content": self._user_content([audio_part])},
-            ]
+            messages = self._messages(
+                system_text, self._user_content([audio_part])
+            )
         elif self._prompt_order == "evidence-first-system-v3":
             # Four-tier layout (see module docstring): tier 1 [system] task
             # instruction, tier 2 [system] the canonically-ordered exemplar
@@ -696,6 +807,9 @@ class LlamaServerTransport:
                     "payload delta_candidates must contain at most 2 entries, got "
                     f"{len(delta_candidates)}"
                 )
+            self._assert_system_message_suppression_is_lossless(
+                payload, evidence_texts=evidence_texts, exemplar_bank=exemplar_bank
+            )
             instruction_text = str(payload["task_instruction"])
             if exemplar_bank:
                 bank_entries = [
@@ -718,20 +832,19 @@ class LlamaServerTransport:
                 for index, item in enumerate(delta_candidates)
                 for part in _delta_candidate_entry(self._data_root, item, index)
             ]
-            messages = [
-                {"role": "system", "content": system_content},
-                {"role": "user", "content": self._user_content([*delta_parts, audio_part])},
-            ]
+            messages = self._messages(
+                system_content, self._user_content([*delta_parts, audio_part])
+            )
         else:
+            self._assert_system_message_suppression_is_lossless(
+                payload, evidence_texts=evidence_texts
+            )
             content: list[dict[str, object]] = [
                 {"type": "text", "text": text} for text in evidence_texts
             ]
             content.append(audio_part)
             content = self._user_content(content)
-            messages = [
-                {"role": "system", "content": payload["task_instruction"]},
-                {"role": "user", "content": content},
-            ]
+            messages = self._messages(payload["task_instruction"], content)
         body: dict[str, object] = {"messages": messages}
         # Native tool-calling arm (D1a, "bare-core-native-tools"): the ONLY
         # payload field this transport reads outside decoding_params/prompt
@@ -881,6 +994,14 @@ def _llama_server_factory(
             str(values["user_turn_text"]) if "user_turn_text" in values else None
         ),
         user_turn_audio_first=bool(values.get("user_turn_audio_first", True)),
+        # Absent from every fragment that predates the 2026-09-05 Earnings-22
+        # DEV ESB shape-C arm, so those cells keep sending byte-identical
+        # requests. Read with `values[...]` rather than `bool(values.get(...))`
+        # so a malformed value reaches the constructor's type check instead of
+        # being silently coerced to True by Python truthiness.
+        omit_system_message=(
+            values["omit_system_message"] if "omit_system_message" in values else False
+        ),
     )
 
 

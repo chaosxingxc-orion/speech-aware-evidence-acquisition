@@ -1,0 +1,24 @@
+{
+  "arm": "bare-core",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "rails_arms": [
+    "zero-supply"
+  ],
+  "scorers": [
+    "asr-wer-esb-whisper",
+    "asr-wer-esb",
+    "cost"
+  ],
+  "task_instruction": "Transcribe the English audio into text.",
+  "user_turn_text": "Transcribe the English audio into text.",
+  "user_turn_audio_first": true,
+  "omit_system_message": true,
+  "instruction_basis": "ARM C, the OFFICIAL USAGE SHAPE. The instruction STRING is byte-identical to arm B's (configs/baseline/e22-esb-dev-prompt-b.json, sha256 8533f771edf09f036aa333ed9631e531e5a0c4493efa5f7b0f53fdcf751154d6), so the A/B experiment's finding about the text is inherited unchanged and the ONLY thing this arm varies against arm B is where that string sits in the request. It is the Qwen3-Omni authors' own English ASR prompt, quoted verbatim from two independent official sources pinned in docs/checks/speech-aware-evidence-acquisition/2026-09-05-e22-dev-esb-prompt-ab-v1/prompt-source/qwen3-omni-asr-prompt-source.json: the Qwen3-Omni-30B-A3B-Instruct model card's 'Setting for Evaluation' -> 'Default Prompts' table and the official cookbook cookbooks/speech_recognition.ipynb.",
+  "shape_basis": "THE FACTOR UNDER TEST, and it is a published protocol fact rather than a design choice. The same model-card section that supplied the string also states, for every evaluation benchmark, 'No system prompt should be set for any evaluation benchmark' and 'The question or prompt should be input as user text. Unless otherwise specified by the benchmark, the text should come after multimodal data in the sequence.' omit_system_message: true drops the system message; user_turn_text carries the instruction in the USER turn; user_turn_audio_first: true puts it AFTER the audio part. The rendered wire messages are therefore exactly [{role: user, content: [input_audio, text]}], with no system block at all. Arms A and B sent [{role: system, content: <instruction>}, {role: user, content: [input_audio]}]; this is deviation G2 of the A/B preregistration, named there as the second and unflown suspect, and now flown.",
+  "instruction_and_user_turn_text_are_the_same_string_on_purpose": "core.model.transport.LlamaServerTransport refuses omit_system_message unless the payload's task_instruction is BYTE-IDENTICAL to the configured user_turn_text. Without that rail, suppressing the system message would take task_instruction off the wire while the payload, the trace records, the config hash and the protocol hash all still recorded it -- the run would be measuring a prompt nobody wrote down. Both keys therefore carry the same 39 bytes, and the invariant is a fail-closed check in the transport rather than a convention in this file.",
+  "scorer_basis": "Identical to arms A and B, byte for byte: asr-wer-esb-whisper is the paper-facing scorer (vendored Whisper EnglishTextNormalizer on both sides, whitespace tokenization, corpus aggregation), asr-wer-esb reports the frozen saea-scoring-v1 number beside it, and entity-wer is absent by construction because data.carriers registers no entity layer for earnings22-original. Both ESB scorers resolve their references from the SAME hash-pinned dev10 derived layer the A/B arms used, which reproduction.esb_reference re-verifies before reading a word.",
+  "obs_basis": "Identical to arms A and B: there is no OBS loop and no windowing -- an ESB utterance IS the request. policy 'fixed' sends exactly one contact per sample through core.flight.FlightRuntime's own concurrent dispatch.",
+  "everything_else_is_held": "Same 6,038-utterance roster, same derived media bytes, same reference layer, same scorers, same build 04ccc72a, same Q4_K_M decoder and bf16 mmproj resident on the GPU, same -c 40960 -np 8 geometry, same greedy decoding at max_tokens 1024 and seed 20260803, same harness and same entry point. The model fragment is the SAME FILE arms A and B composed, not a copy."
+}
