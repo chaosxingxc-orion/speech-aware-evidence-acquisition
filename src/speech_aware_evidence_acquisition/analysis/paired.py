@@ -55,6 +55,7 @@ import math
 import random
 import statistics
 from dataclasses import dataclass
+from fractions import Fraction
 from typing import Callable, Mapping, Sequence
 
 from . import bootstrap as bs
@@ -142,11 +143,27 @@ def mcnemar_exact(n01: int, n10: int) -> float:
     """Exact two-sided binomial McNemar p-value on ``n01``/``n10`` discordant pairs.
 
     Moved from ``dev100_reviewer_audit.mcnemar``'s ``exact_binomial_two_sided_p``
-    computation (kept byte-identical): ``tail = sum(comb(n, k) for k in
-    range(min(n01, n10) + 1)) / 2**n``, ``p = min(1.0, 2 * tail)``, where
-    ``n = n01 + n10``. Zero discordant pairs (``n == 0``) is defined here as
-    ``p = 1.0`` -- no evidence of a directional effect -- where the original
-    dict-returning ``mcnemar`` left the field absent entirely.
+    computation: ``tail = sum(comb(n, k) for k in range(min(n01, n10) + 1)) /
+    2**n``, ``p = min(1.0, 2 * tail)``, where ``n = n01 + n10``. Zero discordant
+    pairs (``n == 0``) is defined here as ``p = 1.0`` -- no evidence of a
+    directional effect -- where the original dict-returning ``mcnemar`` left the
+    field absent entirely.
+
+    2026-09-05 defect fix (Earnings-22 DEV prompt A/B: 686 saves and 821 harms,
+    n = 1,507 discordant pairs). The original spelling multiplied the exact integer numerator by the
+    float ``0.5**n``. Both halves break above a few thousand pairs: ``0.5**n``
+    UNDERFLOWS to 0.0 for ``n > 1074``, and the numerator -- which can exceed
+    ``2**5000`` -- OVERFLOWS when Python coerces it to float for the
+    multiplication, raising ``OverflowError: int too large to convert to
+    float``. The rosters this repository ran before were small enough to stay
+    inside the float range and never reached it.
+
+    The fix keeps the computation EXACT and changes no returned value in the
+    range where the old spelling worked: the ratio is formed as a
+    :class:`fractions.Fraction` of two exact integers and converted once, which
+    is correctly rounded for any magnitude and yields a true 0.0 only when the
+    real value is below the smallest positive double. No approximation, no
+    log-space term, no change of definition.
     """
 
     if isinstance(n01, bool) or not isinstance(n01, int) or n01 < 0:
@@ -157,8 +174,9 @@ def mcnemar_exact(n01: int, n10: int) -> float:
     if n == 0:
         return 1.0
     smaller = min(n01, n10)
-    tail = sum(math.comb(n, k) for k in range(smaller + 1)) * (0.5**n)
-    return min(1.0, 2.0 * tail)
+    numerator = sum(math.comb(n, k) for k in range(smaller + 1))
+    tail = Fraction(numerator, 1 << n)
+    return min(1.0, float(2 * tail))
 
 
 def _percentile(values: Sequence[float], fraction: float) -> float:

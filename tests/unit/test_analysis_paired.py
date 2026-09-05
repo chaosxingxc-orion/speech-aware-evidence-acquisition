@@ -134,6 +134,31 @@ def test_mcnemar_exact_is_symmetric():
     assert mcnemar_exact(3, 11) == mcnemar_exact(11, 3)
 
 
+def test_mcnemar_exact_survives_thousands_of_discordant_pairs():
+    """2026-09-05 regression, from the Earnings-22 DEV prompt A/B contrast.
+
+    That contrast had 686 saves and 821 harms -- 1,507 discordant pairs -- and
+    the original ``sum(comb(n, k)) * 0.5**n`` spelling raised ``OverflowError:
+    int too large to convert to float``. Both halves of that expression break
+    well before this size: ``0.5**n`` underflows to exactly 0.0 for n > 1074,
+    and the exact integer numerator (about ``2**1506`` here) exceeds the float
+    range, so Python cannot coerce it for the multiplication. Every roster this
+    repository had run before was small enough to stay inside the float range.
+    """
+
+    p = mcnemar_exact(686, 821)
+    assert 0.0 < p <= 1.0
+    assert p == pytest.approx(0.0005525225119838559, rel=1e-12)
+    assert mcnemar_exact(821, 686) == p
+    # An order of magnitude larger still, and still exact.
+    assert mcnemar_exact(2853, 2982) == pytest.approx(0.09379357949636571, rel=1e-12)
+    # A case that underflows 0.5**n without overflowing the sum.
+    assert 0.0 < mcnemar_exact(600, 600) <= 1.0
+    # And an extreme where the true value really is below the smallest positive
+    # double, so 0.0 is the correctly rounded answer rather than a failure.
+    assert mcnemar_exact(10, 5000) == 0.0
+
+
 def test_mcnemar_exact_rejects_negative_counts():
     with pytest.raises(PairedAnalysisError):
         mcnemar_exact(-1, 3)

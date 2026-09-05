@@ -418,3 +418,41 @@ One observation recorded so a future reader does not misread it: on the 0.22 s c
 (reference *"Thank you."*) arm A returned Arabic script and arm B returned *"Thank you."*. One row of
 four. It is recorded because the sealed ESB test flight logged the same class of defect — three
 Chinese hypotheses on sub-second clips — and it is **not** evidence for either arm.
+
+### 2026-09-05, Phase 4 — the two flights, and the verdict
+
+Study commit `4012521e` for both arms.
+
+Arm A, row `SAEA-E22-DEV-ESB-PROMPT-A-V1`, attempt `attempt-20260905T073641Z-f977d1`, protocol
+hash `a6fc27e1…`, manifest `3d230a2c…`: **COMPLETED and FINALIZED, 6,038 of 6,038**, 39,292.647
+speech seconds, 1,612.9 s of dispatch plus 12.7 s of startup = **0.4515 GPU-h** against a 0.75
+registered ceiling, 24.36× realtime.
+
+Arm B, row `SAEA-E22-DEV-ESB-PROMPT-B-V1`, attempt `attempt-20260905T080709Z-b77462`, protocol
+hash `c0b7fb20…`, manifest `776a2751…`: **COMPLETED and FINALIZED, 6,038 of 6,038**, the same
+39,292.647 speech seconds, 1,643.9 s plus 10.8 s = **0.4596 GPU-h**, 23.90× realtime. One
+attempt each, no recovery, no CUDA fault, no out-of-memory, no skipped contact.
+
+**Verdict: the prompt is NOT the explanation, and arm A wins.** Corpus WER under the Whisper
+`EnglishTextNormalizer` is **17.565 %** for arm A and **18.394 %** for arm B — B is **0.830
+points worse**. The paired per-utterance contrast (negated WER, 10,000 replicates stratified by
+call, seed 20260903, CI90) gives delta **−0.02741**, CI90 **[−0.0449, −0.0133]**, 686 saves, 821
+harms, 4,531 ties, sign test **p = 0.00055**; the corpus-level delta under the same rule is
+**−0.830** points, CI90 **[−1.653, −0.172]**. Both intervals lie entirely below zero, so the
+preregistered rule's second branch fires and the next suspects — context-free clipping, and the
+prompt *shape* rather than its text — are named for the owner without being flown. Full verdict:
+`docs/readiness/2026-09-05-e22-dev-esb-prompt-ab-v1-verdict.md`.
+
+**The window fit held to the token on both arms**: largest prompt 1,076 (A) and 1,050 (B),
+exactly `13 × ceil(78.36) = 1,027` speech tokens plus the 49- and 23-token envelopes the smoke
+measured, against a 5,120-token slot. The two arms' prompt-token totals differ by 156,988 =
+`6,038 × 26` exactly. Largest completion 130 (A) and 461 (B) against a 1,024 ceiling neither
+reached.
+
+**One real defect in a shared module, found here and fixed at the cause.**
+`analysis.paired.mcnemar_exact` computed `sum(comb(n, k)) * (0.5 ** n)` and raised
+`OverflowError: int too large to convert to float` on this contrast's 1,507 discordant pairs:
+the exact integer numerator leaves the float range while `0.5 ** n` has already underflowed to
+0.0 for `n > 1074`. The ratio is now an exact `Fraction` converted once — no approximation, no
+value the old spelling could compute changes — with a regression test in
+`tests/unit/test_analysis_paired.py`.

@@ -22,9 +22,19 @@ Exactly one thing differs between the arms: the `task_instruction` string.
 | `prompt-fit/prompt-fit.json` | the window fit, derived at **zero contacts of every kind** before registration: worst request 2,102 tokens against a 5,120-token slot, ×2.44; the sealed flight's 4,096-token slot would **not** fit |
 | `prompt-fit/prompt-fit-smoke4.json` | the same, for the 4-row smoke roster |
 | `prompt-source/qwen3-omni-asr-prompt-source.json` | where arm B's instruction comes from: the official model card and the official cookbook, by URL, fetch date and SHA-256, with the lines quoted |
-| `wire-check/` | the whole request path through a fake gate and a fake transport — zero model contacts, zero servers, zero sockets |
-| `smoke/` | the 4-row, both-arm go/no-go |
-| `verdict/` | the sealed numbers, the per-call tables, the paired contrast and the error-shape diagnostics |
+| `wire-check/` | the whole request path through a fake gate and a fake transport, all four cells — zero model contacts, zero servers, zero sockets |
+| `smoke/` | the 4-row, both-arm go/no-go, and both smoke flight receipts |
+| `flight/` | the two flight receipts, one per arm |
+| `verdict/` | `result-summary.json` (both arms' sealed numbers, the paired contrast, the error-shape decomposition and the decision) and `per-arm-tables.md` |
+
+## Result
+
+Arm A **17.565 %** corpus WER (Whisper normalizer) against arm B **18.394 %** over all 6,038
+utterances. The paired per-utterance delta is **−0.02741** with CI90 **[−0.0449, −0.0133]** and
+the corpus-level delta **−0.830** points with CI90 **[−1.653, −0.172]** — both entirely below
+zero, so **arm B is significantly worse** and the prompt is not the explanation for the
+2026-09-04 ESB test flight's gap. Verdict:
+`docs/readiness/2026-09-05-e22-dev-esb-prompt-ab-v1-verdict.md`.
 
 ## Boundary
 
