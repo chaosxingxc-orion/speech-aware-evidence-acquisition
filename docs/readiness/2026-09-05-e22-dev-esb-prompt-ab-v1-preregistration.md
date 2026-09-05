@@ -382,3 +382,39 @@ scoring gate — `core.scorers._assert_scoring_entry_gate` calls `require_clean_
 two, three and four came back `SCORING_FAILED` with `?? .../wire-check/` as the whole reason. Nothing
 was spent (a wire check contacts nothing), and the fix is procedural: the receipts are written to a
 scratch path outside the tree and copied in afterwards. The re-run is the one recorded above.
+
+### 2026-09-05, Phase 3 — the smoke, and the go/no-go
+
+Commit `0d918bae`. Row `SAEA-E22-DEV-ESB-PROMPT-AB-SMOKE-V1`, two attempts:
+`attempt-20260905T073142Z-5d279d` (arm A) and `attempt-20260905T073226Z-ab271d` (arm B), both
+**COMPLETED and FINALIZED, 4 of 4**, 96.96 speech seconds each, in 43 s and 25 s end to end.
+
+All four reads affirmative. **GO.**
+
+**Geometry.** `-c 40960 -np 8` served with the resident bf16 mmproj, **eight slots at `n_ctx` 5,120
+each** read back from the server log, llama-server started with 23,119 MiB free of 24,462, on the
+78.36 s worst case — 2.16× the longest encode the sealed ESB test flight ever sent. No
+out-of-memory, no CUDA fault.
+
+**Scorers.** Both ESB scorers returned four per-sample rows on both sealed manifests through
+`core.scoring_batch` with `verified: true`, resolving references from the **new** dev10 hash-pinned
+layer, which no scorer had read on a sealed bundle before.
+
+**The text envelope, measured exactly rather than bounded.** Arm A: prompt tokens 62 / 127 / 218 /
+1,076 against the `13 × ceil(audio_seconds)` speech costs 13 / 78 / 169 / 1,027 — an envelope of
+**exactly 49 tokens on all four requests**, the same figure the sealed 2026-09-04 ESB test smoke
+measured for the same instruction. Arm B: 36 / 101 / 192 / 1,050 against the same speech costs — an
+envelope of **exactly 23 tokens on all four**. Section 5.1 used 49 as a bound for both arms; the
+measurement confirms it for A and shows B is 26 tokens smaller. Worst required **2,102** (A) and
+**2,076** (B) against a 5,120-token slot, **×2.44** and **×2.47**. Largest completion 44 against a
+1,024 ceiling, which therefore never binds.
+
+**Wall time.** Projected 1,707 s of dispatch per arm (about 0.48 GPU-h) against a 0.75-hour
+registered ceiling per arm, on the sealed test flight's own measured 3.536 contacts/s at `-np 8`.
+The four smoke rows average 24.24 s of audio against the roster's 6.51 s, so a projection made from
+the smoke's own latency would be biased long and is reported as an upper bound rather than a rate.
+
+One observation recorded so a future reader does not misread it: on the 0.22 s clip `4469088-654`
+(reference *"Thank you."*) arm A returned Arabic script and arm B returned *"Thank you."*. One row of
+four. It is recorded because the sealed ESB test flight logged the same class of defect — three
+Chinese hypotheses on sub-second clips — and it is **not** evidence for either arm.

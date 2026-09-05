@@ -1,0 +1,262 @@
+{
+  "schema": "saea-e22-esb-smoke-receipt-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "run_id": "SAEA-E22-DEV-ESB-PROMPT-AB-SMOKE-V1",
+  "preregistration": "docs/readiness/2026-09-05-e22-dev-esb-prompt-ab-v1-preregistration.md",
+  "what_this_is": "Four rows of the 6,038-row roster, chosen before any contact by the deterministic longest/shortest/median/p90 rule, flown through BOTH arms under one run id as two attempts. The smoke's own WER numbers are on four rows -- one of them a two-word reference -- and enter no verdict; they exist only as evidence that both declared scorers ran on live sealed manifests over the new dev10 reference layer.",
+  "arms": {
+    "A": {
+      "attempt_id": "attempt-20260905T073142Z-5d279d",
+      "cell_id": "E22-ESB-DEV-SMOKE-4-A",
+      "study_commit": "0d918bae74c72ae4a9bcf30976e1e7a0b64087eb",
+      "config_hash": "fb5e2b9bad89a4d2457ac1aa8ca838dc9755515bc98efdc399f73b8fe3f426d9",
+      "protocol_hash": "bcb4e82568024bd635a3ff6bfea564d4512ce75719d82a0142e9fe931fb1a184",
+      "split_identity_hash": "5f0b843c0a1cfd607fbbca2090443610d80066dcd91804df45038f9176ab0717",
+      "manifest_sha256": "8e1702b40166745757a68f7c2fe9b82a4bf6c9a4a133cb8051c2c4d5989ed3f6",
+      "attempt_state": "FINALIZED",
+      "contacts": 4,
+      "dispatch_wall_seconds": 2.708,
+      "server_startup_seconds": 7.529,
+      "serving_geometry": {
+        "slots": 8,
+        "slot_tokens": 5120,
+        "max_tokens": 1024
+      },
+      "per_request": [
+        {
+          "audio_seconds": 0.2199375,
+          "prompt_tokens": 62,
+          "completion_tokens": 27,
+          "speech_tokens_by_rule": 13,
+          "text_envelope_tokens": 49,
+          "latency_seconds": 2.446
+        },
+        {
+          "audio_seconds": 5.5199375,
+          "prompt_tokens": 127,
+          "completion_tokens": 22,
+          "speech_tokens_by_rule": 78,
+          "text_envelope_tokens": 49,
+          "latency_seconds": 2.3579
+        },
+        {
+          "audio_seconds": 12.86,
+          "prompt_tokens": 218,
+          "completion_tokens": 33,
+          "speech_tokens_by_rule": 169,
+          "text_envelope_tokens": 49,
+          "latency_seconds": 2.5007
+        },
+        {
+          "audio_seconds": 78.36,
+          "prompt_tokens": 1076,
+          "completion_tokens": 43,
+          "speech_tokens_by_rule": 1027,
+          "text_envelope_tokens": 49,
+          "latency_seconds": 2.6346
+        }
+      ],
+      "text_envelope_tokens_measured": 49,
+      "text_envelope_identical_on_every_request": true,
+      "worst_speech_tokens": 1027,
+      "worst_required_tokens": 2102,
+      "slot_tokens": 5120,
+      "fit_ratio": 2.4358,
+      "largest_completion_tokens": 43,
+      "completion_ceiling_tokens": 1024,
+      "completion_ceiling_ever_reached": false,
+      "cost_aggregate": {
+        "audio_seconds_used": 96.959875,
+        "calls_used": 4,
+        "completion_tokens_total": 125,
+        "latency_seconds_total": 9.939145471013035,
+        "prompt_tokens_total": 1483,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "fe843e1b4789d3f3b47731ddf5b1bb42d430b05afe74292afc9ca0a6368e2864"
+      },
+      "scorers_returned_rows": {
+        "asr-wer-esb-whisper": 4,
+        "asr-wer-esb": 4
+      },
+      "scorer_aggregates": {
+        "asr-wer-esb-whisper": {
+          "corpus_wer": 0.1506849315068493,
+          "deletions": 0,
+          "insertions": 6,
+          "mean_wer": 0.34667487684729065,
+          "merge_compounds": false,
+          "normalizer": "whisper-english-v20240930",
+          "reference_layer": "e22-esb hash-pinned derived layers (test + dev10)",
+          "reference_words": 73,
+          "references_empty_after_normalization": 0,
+          "samples": 4,
+          "scorer_version": "asr-wer-whisper-v20240930",
+          "substitutions": 5
+        },
+        "asr-wer-esb": {
+          "corpus_wer": 0.33766233766233766,
+          "deletions": 3,
+          "insertions": 17,
+          "mean_wer": 1.7465029761904762,
+          "normalizer": "saea-scoring-v1",
+          "reference_layer": "e22-esb hash-pinned derived layers (test + dev10)",
+          "reference_words": 77,
+          "samples": 4,
+          "scorer_version": "asr-wer-esb-v1",
+          "substitutions": 6
+        }
+      },
+      "score_batch_verified": [
+        true
+      ],
+      "outputs": {
+        "4469088-654": "يُسْتَعْمَلُ لِلْمُسَاعَدَةِ",
+        "4470684-13": "Ladies and gentlemen, good morning and welcome to Hundred Graysdon here in Sandton and welcome to any of our shareholders, analysts and colleagues who are joining via the webcast. How are you doing?",
+        "4482383-119": "This investment targeted upcoming states like Virginia, New York, and Pennsylvania, and more broadly acts to build brand awareness and a database nationally to assist future state launches.",
+        "4483937-267": "Um, is your order book visibility still around three months, or is it currently longer, any longer?"
+      },
+      "mean_latency_seconds": 2.4848
+    },
+    "B": {
+      "attempt_id": "attempt-20260905T073226Z-ab271d",
+      "cell_id": "E22-ESB-DEV-SMOKE-4-B",
+      "study_commit": "0d918bae74c72ae4a9bcf30976e1e7a0b64087eb",
+      "config_hash": "714bea3213a6ad3e7f67e52e4b557a852160001f1b666cedf69d4833d8e344f7",
+      "protocol_hash": "5da433a91d5119921300b051ae46f8a0959147c79dcbf70a3fc36e2ea4bfd296",
+      "split_identity_hash": "5f0b843c0a1cfd607fbbca2090443610d80066dcd91804df45038f9176ab0717",
+      "manifest_sha256": "90baf5aa6314115a59144c5a8d0e5f01f6032393f300e067b9750a2cc53e0912",
+      "attempt_state": "FINALIZED",
+      "contacts": 4,
+      "dispatch_wall_seconds": 3.341,
+      "server_startup_seconds": 10.047,
+      "serving_geometry": {
+        "slots": 8,
+        "slot_tokens": 5120,
+        "max_tokens": 1024
+      },
+      "per_request": [
+        {
+          "audio_seconds": 0.2199375,
+          "prompt_tokens": 36,
+          "completion_tokens": 4,
+          "speech_tokens_by_rule": 13,
+          "text_envelope_tokens": 23,
+          "latency_seconds": 1.8651
+        },
+        {
+          "audio_seconds": 5.5199375,
+          "prompt_tokens": 101,
+          "completion_tokens": 22,
+          "speech_tokens_by_rule": 78,
+          "text_envelope_tokens": 23,
+          "latency_seconds": 2.1305
+        },
+        {
+          "audio_seconds": 12.86,
+          "prompt_tokens": 192,
+          "completion_tokens": 33,
+          "speech_tokens_by_rule": 169,
+          "text_envelope_tokens": 23,
+          "latency_seconds": 2.3175
+        },
+        {
+          "audio_seconds": 78.36,
+          "prompt_tokens": 1050,
+          "completion_tokens": 44,
+          "speech_tokens_by_rule": 1027,
+          "text_envelope_tokens": 23,
+          "latency_seconds": 2.5118
+        }
+      ],
+      "text_envelope_tokens_measured": 23,
+      "text_envelope_identical_on_every_request": true,
+      "worst_speech_tokens": 1027,
+      "worst_required_tokens": 2076,
+      "slot_tokens": 5120,
+      "fit_ratio": 2.4663,
+      "largest_completion_tokens": 44,
+      "completion_ceiling_tokens": 1024,
+      "completion_ceiling_ever_reached": false,
+      "cost_aggregate": {
+        "audio_seconds_used": 96.959875,
+        "calls_used": 4,
+        "completion_tokens_total": 103,
+        "latency_seconds_total": 8.824837063002633,
+        "prompt_tokens_total": 1379,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "fe843e1b4789d3f3b47731ddf5b1bb42d430b05afe74292afc9ca0a6368e2864"
+      },
+      "scorers_returned_rows": {
+        "asr-wer-esb-whisper": 4,
+        "asr-wer-esb": 4
+      },
+      "scorer_aggregates": {
+        "asr-wer-esb-whisper": {
+          "corpus_wer": 0.1643835616438356,
+          "deletions": 0,
+          "insertions": 7,
+          "mean_wer": 0.3552955665024631,
+          "merge_compounds": false,
+          "normalizer": "whisper-english-v20240930",
+          "reference_layer": "e22-esb hash-pinned derived layers (test + dev10)",
+          "reference_words": 73,
+          "references_empty_after_normalization": 0,
+          "samples": 4,
+          "scorer_version": "asr-wer-whisper-v20240930",
+          "substitutions": 5
+        },
+        "asr-wer-esb": {
+          "corpus_wer": 0.2077922077922078,
+          "deletions": 3,
+          "insertions": 7,
+          "mean_wer": 0.3793154761904762,
+          "normalizer": "saea-scoring-v1",
+          "reference_layer": "e22-esb hash-pinned derived layers (test + dev10)",
+          "reference_words": 77,
+          "samples": 4,
+          "scorer_version": "asr-wer-esb-v1",
+          "substitutions": 6
+        }
+      },
+      "score_batch_verified": [
+        true
+      ],
+      "outputs": {
+        "4469088-654": "Thank you.",
+        "4470684-13": "Ladies and gentlemen, good morning and welcome to Hundred Graysden here in Sandton and welcome to any of our shareholders, analysts and colleagues who are joining via the webcast. How are you all doing?",
+        "4482383-119": "This investment targeted upcoming states like Virginia, New York, and Pennsylvania, and more broadly acts to build brand awareness and a database nationally to assist future state launches.",
+        "4483937-267": "Um, is your order book visibility still around three months, or is it currently longer, any longer?"
+      },
+      "mean_latency_seconds": 2.2062
+    }
+  },
+  "projection": {
+    "A": {
+      "basis": "the sealed 2026-09-04 ESB test flight's own measured throughput, 2,735 contacts in 773.5 s at -np 8 = 3.536 contacts/s, on a roster averaging 7.13 s of audio per row; this roster averages 6.51 s, so the rate should hold or improve",
+      "projected_dispatch_seconds": 1707.6,
+      "projected_gpu_hours": 0.4764,
+      "registered_ceiling_gpu_hours": 0.75,
+      "smoke_mean_latency_seconds": 2.4848,
+      "smoke_rows_are_biased_long": "the four smoke rows average 24.24 s of audio against the roster's 6.51 s, so any projection made from the smoke's own latency is an upper bound, not a rate measurement"
+    },
+    "B": {
+      "basis": "the sealed 2026-09-04 ESB test flight's own measured throughput, 2,735 contacts in 773.5 s at -np 8 = 3.536 contacts/s, on a roster averaging 7.13 s of audio per row; this roster averages 6.51 s, so the rate should hold or improve",
+      "projected_dispatch_seconds": 1707.6,
+      "projected_gpu_hours": 0.4771,
+      "registered_ceiling_gpu_hours": 0.75,
+      "smoke_mean_latency_seconds": 2.2062,
+      "smoke_rows_are_biased_long": "the four smoke rows average 24.24 s of audio against the roster's 6.51 s, so any projection made from the smoke's own latency is an upper bound, not a rate measurement"
+    }
+  },
+  "go_no_go": {
+    "read_1_geometry": "PASS: -c 40960 -np 8 served with the bf16 mmproj resident, eight slots at n_ctx 5120 each (read back from the server log), llama-server started with 23,119 MiB free of 24,462, on the 78.36 s worst case -- 2.16x the longest encode the sealed ESB test flight ever sent. No out-of-memory, no CUDA fault.",
+    "read_2_scorers": "PASS: both ESB scorers returned four per-sample rows on both sealed manifests through core.scoring_batch with verified = true, resolving references from the NEW dev10 hash-pinned layer, which had never been read by a scorer on a sealed bundle.",
+    "read_3_text_envelope": "PASS, and measured exactly rather than bounded: arm A's envelope is 49 tokens on every one of its four requests -- the same figure the sealed 2026-09-04 ESB test smoke measured for the same instruction -- and arm B's is 23 tokens on every one of its four. Worst required 2,102 (A) and 2,076 (B) against a 5,120-token slot, x2.44 and x2.47. Largest completion 44 against a 1,024 ceiling, which therefore never binds.",
+    "read_4_wall_time": "PASS: projected 1,707 s of dispatch per arm (about 0.48 GPU-h) against a 0.75-hour registered ceiling per arm.",
+    "verdict": "GO"
+  },
+  "observations_recorded_not_acted_on": {
+    "shortest_clip_non_english": "on the 0.22 s clip 4469088-654 (reference 'Thank you.') arm A returned Arabic script and arm B returned 'Thank you.'. One row of four; it is recorded here because the sealed ESB test flight logged the same class of defect (three Chinese hypotheses on sub-second clips) and because a smoke must not be read as evidence for either arm.",
+    "no_number_here_enters_a_verdict": true
+  }
+}
