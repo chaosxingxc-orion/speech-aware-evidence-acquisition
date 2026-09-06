@@ -177,6 +177,27 @@ lifts only if the check in §3 establishes that the released arrays are themselv
 case the boundary-exact cut is the protocol-faithful one and the comparison becomes legitimate.
 Until then: paired against arm A, on dev, and nothing else.
 
+**UPDATE 2026-09-06 — the condition was tested and it FAILED, so the prohibition is now
+UNCONDITIONAL and the lifting clause above is dead.** The §3 check ran the same day as row
+`SAEA-E22-MF-ESB-ARRAY-DURATIONS-V1` (`model-free-check`, zero contacts of every kind), and the
+ESB release's own arrays are **not** tight: 2,732 of 2,735 published test utterances (99.89 %)
+match `end_ts − start_ts` to within a millisecond, the median difference is +0.0000316 s and the
+implied per-side pad +0.0000158 s — zero — so the arrays are the published spans; placed at their
+own published starts, 1,959 of 2,729 adjacent pairs (71.8 %) overlap, hard capped at −0.180452 s
+with a −0.139956 s median and 274.3 s delivered twice, against this study's own dev cut's 77.7 %,
+−0.18042 s cap and −0.140015 s median. Same wall, same median, same geometry, so the ~0.09 s
+per-side pad sits in the boundary table both cutters consume rather than in either cutter, and the
+published systems were handed the same onsets. **A boundary-exact number therefore stays a
+statement about this study's sensitivity to the boundary trigger on its own dev split, is never an
+alignment argument, and is never compared to 9.79 or 12.3 — there is no longer any condition under
+which that comparison becomes legitimate.** Verdict and receipts:
+`docs/readiness/2026-09-06-e22-esb-array-durations-v1.md`,
+`docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-esb-array-durations/`. The same
+check recorded a separate deviation this cell does not address and must not be read as addressing:
+the release stores each call's native container (16 kHz stereo, 22.05 kHz stereo, 24 kHz mono)
+while this study's clips are librosa-decoded 16 kHz mono from the locked MP3s, so the two paths
+agree on the span and differ on the decode.
+
 ### 1.7 Budget (ExecutionPlan, to be registered with the row)
 
 | | plan | ceiling | basis |
@@ -301,6 +322,13 @@ anything. No substitution of whisper for the frozen core in any claim. No Stage-
 
 ## 3. A cheap check that would settle the comparability question
 
+**TAKEN 2026-09-06, under an owner decision given the same day, as row
+`SAEA-E22-MF-ESB-ARRAY-DURATIONS-V1`. ANSWER: the released arrays are cut at `[start_ts, end_ts]`
+and carry the published overlap (71.8 % of adjacent pairs, cap −0.180452 s, median −0.139956 s).**
+The paragraphs below are the specification as written before the check; the result and its
+consequence for §1.6 are in the dated update at the end of §1.6 and in
+`docs/readiness/2026-09-06-e22-esb-array-durations-v1.md`.
+
 Named here because §1.6's claim rule turns on it, and because it costs no model contact at all.
 
 **The question.** Are the ESB release's own per-utterance audio arrays cut at exactly
@@ -329,8 +357,9 @@ measurement in the whole area — minutes of CPU, zero contacts — and explicit
    preconditions of §1.5 landed as receipts.
 3. Cell 2 needs: an owner GO, an **umbrella** lock entry and fetch for `whisper-large-v3`, an
    exposure row, and a GPU gap.
-4. The §3 check needs: an owner decision covering a durations-only read of the calibration-exposed
-   test shards, and its own exposure row.
+4. The §3 check needed: an owner decision covering a durations-only read of the calibration-exposed
+   test shards, and its own exposure row. **Both were given and it is DONE (2026-09-06, row
+   `SAEA-E22-MF-ESB-ARRAY-DURATIONS-V1`); its answer makes §1.6's claim rule unconditional.**
 5. One experiment in flight at a time; a new mechanism is admitted only after its predecessor is
    replicated or root-caused to a named component. Neither cell here is a mechanism — cell 1 is a
    protocol correction and cell 2 is an instrument.
