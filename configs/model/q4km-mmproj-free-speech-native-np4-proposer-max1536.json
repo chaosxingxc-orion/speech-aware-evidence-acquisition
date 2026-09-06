@@ -35,14 +35,10 @@
     "max_tokens": 1536,
     "id_slot": "per-sample"
   },
-  "prompt_order": "speech-query-prefix-v2",
+  "prompt_order": "evidence-first-system-v2",
   "profile_slot_count": 4,
-  "speech_feature_root": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
-  "server_env": {
-    "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
-    "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
-  },
-  "model_fragment_what_this_is": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64 with decoding_params.max_tokens raised from 64 to 1536 and NOTHING else: the same GGUF, the same featcache build 04ccc72a, the same packet root and decoder hash, the same -np 4 / -c 65536 server args, the same batch and cache flags, the same prompt order, the same greedy temperature 0 seed 20260803 and the same per-sample slot affinity.",
+  "server_env": {},
+  "model_fragment_what_this_is": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64 with exactly two keys changed -- decoding_params.max_tokens 64 -> 1536 and prompt_order speech-query-prefix-v2 -> evidence-first-system-v2 -- plus the two speech-feature keys dropped. Same GGUF, same featcache build 04ccc72a, same runtime receipt, same -np 4 / -c 65536 server args, same batch and cache flags, same greedy temperature 0 seed 20260803, same per-sample slot affinity.",
   "model_fragment_why_1536": "EVO-S1's PROPOSER contacts return a whole scenario's rewritten blocks, which run to about 1,100 tokens on iot (nine intents); the preregistration fixes the ceiling at 1,536 (section 5 and configs/experiment/slurp-evo-s1-proposer-v1.json shared_protocol.max_tokens). The reward cells keep 64, unchanged from KC-S1b, so the two halves of the cell need two model fragments: decoding_params lives in the model fragment and core.config.compose refuses the same key from two fragments. rails.evolution.LoopConfig.proposer_model_fragment is the field that names this one; EVO-A1 leaves it absent and both its halves keep flying one fragment.",
-  "model_fragment_speech_keys_are_inert_here": "speech_feature_root and the two LLAMA_SPEECH_* server_env entries are carried verbatim so this fragment is a one-key derivation of the reward fragment rather than a rewrite, but the construction-proposer-text arm carries no speech_feature_parts field at all (contracts.identifiers.ARM_VISIBLE_FIELDS), so FlightRuntime.uses_speech_feature_packets() is false, no packet binding is built, no promotion receipt is read and no audio part is ever sent."
+  "model_fragment_why_a_text_prompt_order": "prompt_order is evidence-first-system-v2, NOT the reward fragment's speech-query-prefix-v2, and the difference is fail-closed rather than cosmetic: core.model.transport._SPEECH_FEATURE_PROMPT_ORDERS routes the three speech orders into the formal speech-feature request path, which refuses any payload whose query_source is not 'speech_features' and which requires a non-empty speech_feature_parts list. The construction-proposer-text arm sends no audio part and no packet at all, so it cannot satisfy that contract and must not claim it. evidence-first-system-v2 is the order EVO-A1's proposer model fragment declares for the same reason. speech_feature_root and the LLAMA_SPEECH_* server_env entries are dropped for the same reason: a text-only arm has no packet root."
 }

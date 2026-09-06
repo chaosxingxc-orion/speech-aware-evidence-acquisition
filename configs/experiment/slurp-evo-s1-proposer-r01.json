@@ -547,11 +547,12 @@
   },
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
-    "planned_gpu_hours": 0.012,
-    "planned_model_calls": 54,
-    "planned_speech_audio_seconds": 168,
+    "planned_gpu_hours": 0.35,
+    "planned_model_calls": 60,
+    "planned_speech_audio_seconds": 175,
     "split_role": "discovery"
   },
+  "execution_plan_successor_basis": "A plan's budget is metered run-CUMULATIVELY across every attempt of a run id. attempt-r1-p opened, attempted ONE contact, and was ABORTED at the transport by the speech-feature prompt-order defect the model fragment has since fixed; the attempt store durably records 1 call and 2.687625 audio seconds against this run id. The successor attempt's plan therefore covers that prior spend plus this round's own worst case: 1 + 54 = 55 calls declared at 60, and 2.687625 + 167.682125 = 170.37 speech seconds declared at 175. Both stay far inside the registered ceilings of 288 calls / 700 speech seconds / 1.6 GPU-h. The arm still sends no audio part; the seconds are the anchors' own durations, which contracts.ExecutionPlan charges even for a text-only request.",
   "execution_profile": "bounded-discovery-probe",
   "experiment_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2",
   "fragment_kind": "saea-a2t-direct-calibration-experiment-v1",

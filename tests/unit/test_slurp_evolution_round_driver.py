@@ -1123,10 +1123,19 @@ def test_the_committed_evo_a1_config_declares_no_proposer_fragment() -> None:
     )
     assert fragment["decoding_params"]["max_tokens"] == 1536
     assert reward["decoding_params"]["max_tokens"] == 64
-    # one key apart, and the notes: the same GGUF, build, packet root and server args.
-    for key in ("model_lock_key", "server_args", "runtime_receipt", "prompt_order",
-                "speech_feature_root", "server_env", "base_url"):
+    # Same GGUF, same build, same runtime receipt, same geometry and cache flags.
+    for key in ("model_lock_key", "server_args", "runtime_receipt", "base_url",
+                "model_materialization_root", "transport"):
         assert fragment[key] == reward[key], key
+    # TWO deliberate differences beyond max_tokens, both fail-closed rather than
+    # cosmetic: the speech prompt orders route into the formal speech-feature request
+    # path, which refuses a payload whose query_source is not "speech_features" and
+    # requires a non-empty speech_feature_parts list. A text-only arm cannot satisfy
+    # that contract, so it must not claim it -- and it has no packet root either.
+    assert reward["prompt_order"] == "speech-query-prefix-v2"
+    assert fragment["prompt_order"] == "evidence-first-system-v2"
+    assert "speech_feature_root" not in fragment
+    assert fragment["server_env"] == {}
 
 
 def test_an_emitted_fragment_declares_the_split_id_the_flight_reads(tmp_path) -> None:

@@ -86,9 +86,13 @@ PREPROCESS_INSTRUCTION = (
     "Observe the complete speech signal for deterministic feature preprocessing. Respond with OK."
 )
 DECODING_PARAMS = {"temperature": 0, "seed": 20260803, "max_tokens": 1}
-# Registered ceilings are run-cumulative across BOTH sessions of this run id
-# (2,200 calls / 6,300 speech seconds / 2.0 GPU-h); each session declares its own
-# fold's arithmetic and the gate meters the pair.
+# A plan's budget is metered run-CUMULATIVELY across every attempt of a run id
+# (``core.model.adapter`` re-reads the attempt store's prior actuals on every
+# request), so a SUCCESSOR session must declare prior durable spend PLUS its own
+# worst case -- not its own fold's arithmetic alone. These defaults are the FIRST
+# session of each fold; ``--plan-calls`` / ``--plan-speech-seconds`` are how a
+# successor states the cumulative figure, and the registered ceilings
+# (2,200 calls / 6,300 speech seconds / 2.0 GPU-h) bound both.
 PLAN_BY_FOLD = {"a": (1090, 3085, 1.0), "b": (1090, 3155, 1.0)}
 
 
@@ -143,6 +147,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--workers", type=int, default=4, help="encode concurrency; the sidecar serves -np 4")
     parser.add_argument("--promote-workers", type=int, default=8)
     parser.add_argument("--output", type=Path, default=None)
+    parser.add_argument("--attempt-id", default=None)
+    parser.add_argument("--plan-calls", type=int, default=None,
+                        help="cumulative call ceiling this attempt declares (prior spend + its own)")
+    parser.add_argument("--plan-speech-seconds", type=int, default=None,
+                        help="cumulative speech-second ceiling this attempt declares")
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--preflight-only", action="store_true")
     mode.add_argument("--run", action="store_true")
@@ -201,7 +210,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     log("preflight: %d free (the GPU inference port %d is not touched)" % (SIDECAR_PORT, INFERENCE_PORT))
 
     calls, speech, gpu_hours = PLAN_BY_FOLD[args.fold]
-    attempt_id = "attempt-packets-fold-%s" % args.fold
+    calls = args.plan_calls if args.plan_calls is not None else calls
+    speech = args.plan_speech_seconds if args.plan_speech_seconds is not None else speech
+    attempt_id = args.attempt_id or ("attempt-packets-fold-%s" % args.fold)
     plan = ExecutionPlan(
         run_id=RUN_ID, execution_profile=str(values["execution_profile"]),
         carrier_lock_key=SLURP_LOCK_KEY, split_role="discovery",
@@ -319,6 +330,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         "config_hash": composed.config_hash,
         "split_identity_hash": str(values["split_identity_hash"]),
         "rows": len(samples), "audio_seconds": round(audio_seconds, 6),
+        "declared_plan": {"calls": calls, "speech_audio_seconds": speech,
+                          "gpu_hours": gpu_hours,
+                          "basis": "run-cumulative: prior durable spend on this run id plus this attempt's own worst case"},
         "legacy_cache_warm_before": warm,
         "contacts": contacts, "failures": failures,
         "encode_seconds": round(encode_seconds, 3),
