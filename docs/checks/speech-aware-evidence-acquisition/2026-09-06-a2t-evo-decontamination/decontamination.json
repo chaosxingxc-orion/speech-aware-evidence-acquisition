@@ -1,0 +1,137 @@
+{
+  "a_0_exemption": {
+    "artifact": "registry-6grams.json",
+    "distinct_word_6grams": 2005,
+    "grams_already_shared_with_the_evaluation_set": 14,
+    "grams_are_committed": true,
+    "rendered_characters": 15854,
+    "rendered_lines": 152,
+    "rendered_sha256": "752dd381a02028dc7345a6ac826109bdcc879d82547a9029a43d559d0de8a605",
+    "set_sha256": "6ac2aeeceadb20552c3e2972813ec7e3e966e454df5b6b01e7324b3801d3dcf9",
+    "what": "A_0's own word 6-grams: the released compact registry is the legal source of shared phrasing, so a gram of the candidate that is also a gram of an evaluation query is forgiven when the registry already carries it. illegal = (candidate & evaluation) - registry",
+    "why_committable": "the compact registry is public released text of the Audio2Tool distribution, not evaluation speech; a reviewer has to see exactly which overlaps the gate forgives"
+  },
+  "authority": "docs/readiness/2026-09-06-a2t-evo-a1-description-evolution-v1-preregistration.md",
+  "boundary": "zero model, GPU, tokenizer, embedder, retriever, scorer, network, audio-decode and paid-API contacts. Pure text over the released tier manifests' invocation fields and tools_registry.csv",
+  "carrier": "audio2tool",
+  "evaluation_grams": {
+    "distinct_word_6grams": 77899,
+    "grams_are_committed": false,
+    "invocation_texts": 9930,
+    "rule": "for every row of the population: its 'query', its 'user_request' when it has one, and EVERY string value of every 'chat_history' turn (the turn's 'content', its 'path' and its 'role'). Inherited verbatim from KC-A1's gate so the two counts reproduce; the path and role strings are a defect of that rule and are reported separately rather than silently dropped",
+    "set_sha256": "a98d5dd093571f3a63d58d91ab25dcc5ce04cc2a2ba201bbf4f56e96e00c44e9",
+    "set_sha256_convention": "sha256 over the LF-joined sorted space-joined grams, UTF-8, no trailing newline. The SET is pinned and never written: a 6-gram is six verbatim words of an evaluation query, so a committed list of them would be the leak this gate exists to prevent"
+  },
+  "evaluation_grams_speaker_only": {
+    "distinct_word_6grams": 68647,
+    "grams_are_committed": false,
+    "invocation_texts": 6310,
+    "rule": "the same rows, but only 'query', 'user_request' and each chat turn's 'content' -- what the SPEAKER actually says, with no wav path and no role token",
+    "set_sha256": "496ddfb907af2ec3f57bc157e205723a5a329e9cdee948726c65e3729ff160fc"
+  },
+  "exposure_row": "SAEA-A2T-MF-EVO-DECONTAMINATION-V1",
+  "generator": "scripts/build_a2t_evo_decontamination.py",
+  "gold_not_read": {
+    "fields_never_opened": [
+      "additional_tool_calls",
+      "background_tool_call",
+      "background_tool_name",
+      "expected_tool_call",
+      "extracted_params",
+      "functions",
+      "instruction",
+      "original_tool_call",
+      "reasoning",
+      "tool_id",
+      "tool_name"
+    ],
+    "fields_opened": [
+      "query",
+      "user_request",
+      "chat_history"
+    ],
+    "why": "the gate compares candidate text against what the SPEAKER says, which is the only leakage channel a rewritten description could have. No answer field of any evaluation row is opened"
+  },
+  "how_the_gate_is_run": "rails.proposer.validate_candidate_artifact(candidate, registry_rows=..., token_counter=<the resident server's /tokenize route>, compact_baseline_tokens=3581, evaluation_query_texts=scripts.build_a2t_evo_decontamination.evaluation_invocation_texts(...), registry_text=render_registry_compact(...), exemplar_texts=<the construction rows the draw showed>). The token counter is the ONLY part that needs a server, which is why candidate pricing is a separate bounded-discovery-probe row and this one is model-free",
+  "identity_anchors": {
+    "all_reproduced": true,
+    "compact_registry_sha256": "752dd381a02028dc7345a6ac826109bdcc879d82547a9029a43d559d0de8a605",
+    "evaluation_word_6grams": 77899,
+    "invocation_texts": 9930,
+    "kc_a1_rows": [
+      "SAEA-A2T-MF-KC-A1-DECONTAMINATION-V1",
+      "SAEA-A2T-MF-KC-A1C-DECONTAMINATION-V2"
+    ],
+    "on_disagreement": "SystemExit before a byte is written",
+    "registry_word_6grams": 2005
+  },
+  "inherited_rule_defect": {
+    "affects_kc_a1_verdict": false,
+    "decision": "KEEP the inherited superset as the GATE set. It is strictly stricter -- it can only cause a refusal, never admit a candidate the speaker-only set would refuse -- and keeping it is what lets KC-A1's two anchors reproduce exactly. The speaker-only pin is recorded beside it so a later cell can narrow the rule knowingly rather than by accident",
+    "what": "KC-A1's gate collected EVERY string value of a chat_history turn, which is the turn's content plus its wav 'path' and its 'role'. 9252 of the 77899 grams therefore come from path and role strings rather than from anything a speaker said",
+    "why_not": "both KC-A1 arms passed with ZERO shared grams, and a strictly larger refusal set cannot turn a pass into a different pass"
+  },
+  "n": 6,
+  "population": {
+    "count": 4000,
+    "per_tier": {
+      "tier1_direct": {
+        "distinct_word_6grams": 211,
+        "invocation_texts": 500,
+        "rows": 500
+      },
+      "tier2_parametric": {
+        "distinct_word_6grams": 1560,
+        "invocation_texts": 500,
+        "rows": 500
+      },
+      "tier3_multi_intent": {
+        "distinct_word_6grams": 4065,
+        "invocation_texts": 500,
+        "rows": 500
+      },
+      "tier4_implicit": {
+        "distinct_word_6grams": 1648,
+        "invocation_texts": 500,
+        "rows": 500
+      },
+      "tier5_needle": {
+        "distinct_word_6grams": 14308,
+        "invocation_texts": 500,
+        "rows": 500
+      },
+      "tier6_correction": {
+        "distinct_word_6grams": 4168,
+        "invocation_texts": 500,
+        "rows": 500
+      },
+      "tier7_multiturn": {
+        "distinct_word_6grams": 47775,
+        "invocation_texts": 6430,
+        "rows": 500
+      },
+      "tier8_intent_blending": {
+        "distinct_word_6grams": 4479,
+        "invocation_texts": 500,
+        "rows": 500
+      }
+    },
+    "roster_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-org1-domain-grouped-roster/flight-roster-receipt.json",
+    "roster_receipt_sha256": "e5a81b71e1253ff866262991f79d132b89f4bfb47e7c8a0c0cf0aa04857b8736",
+    "rows_per_tier": {
+      "tier1_direct": 500,
+      "tier2_parametric": 500,
+      "tier3_multi_intent": 500,
+      "tier4_implicit": 500,
+      "tier5_needle": 500,
+      "tier6_correction": 500,
+      "tier7_multiturn": 500,
+      "tier8_intent_blending": 500
+    },
+    "split_name": "A2T-ORG1-UNION-4000"
+  },
+  "schema": "saea-a2t-evo-decontamination-v1",
+  "status": "PREPARED_NOT_CONTACT_AUTHORITY",
+  "study": "speech-aware-evidence-acquisition",
+  "tokenizer": "rails.proposer.word_ngrams: lower-cased alphanumeric word n-grams, one tokenizer for the candidate side, the evaluation side and the registry side"
+}
