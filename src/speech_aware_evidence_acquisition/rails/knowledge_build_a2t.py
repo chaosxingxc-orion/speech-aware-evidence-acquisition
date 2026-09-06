@@ -725,9 +725,14 @@ def propose_partition(
     build's hard "at least one exemplar per tool" floor can never be starved
     by the evaluation draw; the whole BLOCK of any such rare tool is held out
     of candidacy too, because a block is shared across tiers and drawing a
-    sibling would reserve it. The excluded tools are named in the report, as
-    are the tools whose every unit already sits inside an exposed block and
-    which the construction pool therefore cannot represent at all.
+    sibling would reserve it. EVERY OTHER tool additionally keeps ONE
+    deterministic block -- the block of its lexicographically first unit --
+    out of candidacy, so the floor holds for tools that clear
+    ``tool_min_pool_rows`` yet have few free blocks; without it a per_tier=50
+    draw against the A2T-FRESH-800-bearing exposure union starves nine
+    smart_home tools. The excluded tools are named in the report, as are the
+    tools whose every unit already sits inside an exposed block and which the
+    construction pool therefore cannot represent at all.
     """
 
     rows = tuple(rows)
@@ -760,9 +765,39 @@ def propose_partition(
     # each). Protecting the whole BLOCK is the fix, and it is stated in the
     # report rather than left implicit.
     construction_only = set(construction_only_tools)
-    protected_blocks = frozenset(
+    rare_protected_blocks = frozenset(
         row.query_idx for row in free_rows if row.tool_name in construction_only
     )
+
+    # ONE-BLOCK FLOOR FOR EVERY OTHER TOOL (2026-09-05, second repair, MF-1).
+    # Protecting only the RARE tools' blocks still let the draw starve a tool
+    # that clears ``tool_min_pool_rows`` but whose free blocks are few and
+    # shared: under the exposure union that now also reserves A2T-FRESH-800,
+    # a per_tier=50 draw wiped out nine smart_home tools
+    # (broadcastMessage, castContent, controlPlayback_home, getCameraStream,
+    # rampBrightness, setAdaptiveLighting, setApplianceMode, setBrightness,
+    # setHumidifierState) and the fail-closed floor check refused the whole
+    # partition. Reserving ONE deterministic block per remaining tool -- the
+    # block of its lexicographically first unit, skipped when one of its
+    # blocks is already protected -- makes ``missing_tools`` unreachable by
+    # construction instead of leaving it to the draw's luck. The cost is
+    # bounded and reported: the extra blocks never enter eval candidacy.
+    rows_by_tool: dict[str, list[A2tKbRow]] = defaultdict(list)
+    for row in free_rows:
+        rows_by_tool[row.tool_name].append(row)
+    floor_blocks: set[int] = set()
+    for tool in sorted(rows_by_tool):
+        if tool in construction_only:
+            continue
+        tool_rows = sorted(rows_by_tool[tool], key=lambda row: row.unit_id)
+        if any(
+            row.query_idx in rare_protected_blocks or row.query_idx in floor_blocks
+            for row in tool_rows
+        ):
+            continue
+        floor_blocks.add(tool_rows[0].query_idx)
+    protected_blocks = frozenset(rare_protected_blocks | floor_blocks)
+
     candidates_by_tier: dict[str, list[A2tKbRow]] = defaultdict(list)
     for row in free_rows:
         if row.tool_name in construction_only or row.query_idx in protected_blocks:
@@ -847,7 +882,9 @@ def propose_partition(
         "construction_only_tool_units": {
             tool: tool_pool_counts[tool] for tool in construction_only_tools
         },
-        "blocks_protected_for_construction_only_tools": len(protected_blocks),
+        "blocks_protected_for_construction_only_tools": len(rare_protected_blocks),
+        "blocks_protected_for_tool_floor": len(floor_blocks),
+        "blocks_protected_total": len(protected_blocks),
         "tools_reserved_entirely_by_exposure": tools_reserved_by_exposure,
         "construction_units_by_tier": dict(
             sorted(Counter(row.tier for row in construction).items())

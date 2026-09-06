@@ -1,0 +1,588 @@
+{
+  "authority": "docs/readiness/2026-09-05-a2t-query-cue-audit-v1-preregistration.md",
+  "carrier_inventory": {
+    "gold_primary_tool_count": 151,
+    "pool_items": 30733,
+    "pool_items_by_tier": {
+      "tier1_direct": 4292,
+      "tier2_parametric": 6320,
+      "tier3_multi_intent": 4292,
+      "tier4_implicit": 4278,
+      "tier5_needle": 4292,
+      "tier6_correction": 4292,
+      "tier7_multiturn": 2146,
+      "tier8_intent_blending": 821
+    },
+    "pool_units": 16843,
+    "quarantined_unit_count": 5,
+    "quarantined_units": [
+      {
+        "reason": "gold names a call outside the tool registry",
+        "unit_id": "tier2_parametric:004865",
+        "unknown_call_names": [
+          "lianceState"
+        ]
+      },
+      {
+        "detail": "tier7_multiturn:002023: the final chat_history turn must be a user turn carrying the request audio (fail-closed)",
+        "reason": "media unresolvable under the frozen runtime protocol",
+        "unit_id": "tier7_multiturn:000666"
+      },
+      {
+        "detail": "tier7_multiturn:000373: the final chat_history turn must be a user turn carrying the request audio (fail-closed)",
+        "reason": "media unresolvable under the frozen runtime protocol",
+        "unit_id": "tier7_multiturn:002472"
+      },
+      {
+        "detail": "tier7_multiturn:001258: the final chat_history turn must be a user turn carrying the request audio (fail-closed)",
+        "reason": "media unresolvable under the frozen runtime protocol",
+        "unit_id": "tier7_multiturn:003357"
+      },
+      {
+        "detail": "tier7_multiturn:001744: the final chat_history turn must be a user turn carrying the request audio (fail-closed)",
+        "reason": "media unresolvable under the frozen runtime protocol",
+        "unit_id": "tier7_multiturn:003693"
+      }
+    ],
+    "quarantined_units_by_reason": {
+      "gold names a call outside the tool registry": 1,
+      "media unresolvable under the frozen runtime protocol": 4
+    },
+    "registry_tool_count": 152,
+    "registry_tools_never_gold": [
+      "getLockStatus"
+    ],
+    "usable_items": 30727,
+    "usable_units": 16838
+  },
+  "exposure_row": "SAEA-A2T-MF-QUERY-CUE-AUDIT-V1",
+  "generator": "scripts/run_a2t_query_cue_audit.py",
+  "kc_a1_gate": {
+    "imbalanced_target_pairs": [
+      "calibrateCameras|rebootDevice",
+      "setColor+setColorTemperature+setLighting|setAmbientLighting"
+    ],
+    "rule": "KC-A1 is admitted only if the TARGET pairs carry at least 100 of the sealed 4,000-row misses",
+    "strict_population_note": "The gate is read on the PRIMARY population. On the STRICT population the legacy 400-block proposed evaluation tier leaves fewer than 5 construction units or blocks on most twin sides, so the majority of pairs are INSUFFICIENT-DATA and the gate is UNMEASURABLE there rather than failed.",
+    "strict_population_pairs_total": 53,
+    "strict_population_pairs_unmeasurable": 41,
+    "strict_population_target_strict_mass": 62,
+    "target_component_mass": 278,
+    "target_strict_mass": 235,
+    "target_strict_mass_excluding_imbalanced": 230,
+    "threshold": 100,
+    "verdict": "PASS",
+    "verdict_excluding_imbalanced": "PASS"
+  },
+  "offline_guard": {
+    "attempted_targets": [],
+    "outbound_connection_attempts": 0
+  },
+  "org1_cross_check_by_pair": {
+    "activateRoutine|setApplianceMode": {
+      "left_to_right": 0,
+      "right_to_left": 2
+    },
+    "activateRoutine|setSecurityMode": {
+      "left_to_right": 0,
+      "right_to_left": 8
+    },
+    "activateScene|activateRoutine": {
+      "left_to_right": 24,
+      "right_to_left": 2
+    },
+    "activateScene|setSecurityMode": {
+      "left_to_right": 0,
+      "right_to_left": 2
+    },
+    "calibrateCameras|rebootDevice": {
+      "left_to_right": 0,
+      "right_to_left": 6
+    },
+    "calibrateCameras|updateFirmware": {
+      "left_to_right": 0,
+      "right_to_left": 8
+    },
+    "castContent|playMedia": {
+      "left_to_right": 3,
+      "right_to_left": 1
+    },
+    "controlPlayback_home|controlPlayback": {
+      "left_to_right": 0,
+      "right_to_left": 9
+    },
+    "controlPlayback|playMedia": {
+      "left_to_right": 2,
+      "right_to_left": 16
+    },
+    "findMyDevice|findPairedPhone": {
+      "left_to_right": 17,
+      "right_to_left": 4
+    },
+    "getAirQuality_diag|setAirQualityMode": {
+      "left_to_right": 7,
+      "right_to_left": 0
+    },
+    "getAirQuality|getAirQuality_diag": {
+      "left_to_right": 36,
+      "right_to_left": 1
+    },
+    "getApplianceState|getApplianceStatus": {
+      "left_to_right": 24,
+      "right_to_left": 4
+    },
+    "getBatteryLevel|getBatteryStatus": {
+      "left_to_right": 8,
+      "right_to_left": 0
+    },
+    "getBiometricData|getHRV": {
+      "left_to_right": 7,
+      "right_to_left": 6
+    },
+    "getBiometricData|setHapticStrength": {
+      "left_to_right": 0,
+      "right_to_left": 5
+    },
+    "getCameraStream|streamCamera": {
+      "left_to_right": 19,
+      "right_to_left": 1
+    },
+    "getHRV|setRomanceMode": {
+      "left_to_right": 4,
+      "right_to_left": 0
+    },
+    "getLightState|setAmbientLighting": {
+      "left_to_right": 3,
+      "right_to_left": 0
+    },
+    "getLockState|getLockStatus": {
+      "left_to_right": 17,
+      "right_to_left": 0
+    },
+    "getNetworkHealth|runNetworkSpeedTest": {
+      "left_to_right": 18,
+      "right_to_left": 0
+    },
+    "rampBrightness|setAmbientLighting": {
+      "left_to_right": 4,
+      "right_to_left": 0
+    },
+    "rebootDevice|restartDevice": {
+      "left_to_right": 74,
+      "right_to_left": 0
+    },
+    "rebootDevice|runNetworkSpeedTest": {
+      "left_to_right": 8,
+      "right_to_left": 0
+    },
+    "rebootDevice|streamCamera": {
+      "left_to_right": 7,
+      "right_to_left": 0
+    },
+    "resetFilterStatus|setAmbientLighting": {
+      "left_to_right": 0,
+      "right_to_left": 0
+    },
+    "setAdaptiveLighting|setAmbientLighting": {
+      "left_to_right": 4,
+      "right_to_left": 0
+    },
+    "setAlarm|setSecurityMode": {
+      "left_to_right": 0,
+      "right_to_left": 3
+    },
+    "setAmbientLighting|setBrightness": {
+      "left_to_right": 0,
+      "right_to_left": 5
+    },
+    "setAmbientLighting|setColor": {
+      "left_to_right": 0,
+      "right_to_left": 5
+    },
+    "setAmbientLighting|setColorTemperature": {
+      "left_to_right": 0,
+      "right_to_left": 9
+    },
+    "setAmbientLighting|setGroupLightState": {
+      "left_to_right": 0,
+      "right_to_left": 8
+    },
+    "setAmbientLighting|setLighting": {
+      "left_to_right": 0,
+      "right_to_left": 11
+    },
+    "setApplianceMode|startCleaning": {
+      "left_to_right": 6,
+      "right_to_left": 0
+    },
+    "setAudioVolume|setVolume": {
+      "left_to_right": 0,
+      "right_to_left": 21
+    },
+    "setBrightness|setGroupLightState": {
+      "left_to_right": 6,
+      "right_to_left": 2
+    },
+    "setBrightness|setLighting": {
+      "left_to_right": 10,
+      "right_to_left": 7
+    },
+    "setClimate|setTargetTemperature": {
+      "left_to_right": 0,
+      "right_to_left": 10
+    },
+    "setColor+setColorTemperature+setLighting|setAmbientLighting": {
+      "left_to_right": 25,
+      "right_to_left": 0
+    },
+    "setColorTemperature|setLighting": {
+      "left_to_right": 32,
+      "right_to_left": 0
+    },
+    "setColor|setLighting": {
+      "left_to_right": 32,
+      "right_to_left": 0
+    },
+    "setDoNotDisturb|setDrivingMode": {
+      "left_to_right": 4,
+      "right_to_left": 0
+    },
+    "setFanMode|setFanSpeed": {
+      "left_to_right": 18,
+      "right_to_left": 0
+    },
+    "setGarageDoor|setGarageOpener": {
+      "left_to_right": 33,
+      "right_to_left": 0
+    },
+    "setGroupLightState|setLightState": {
+      "left_to_right": 1,
+      "right_to_left": 0
+    },
+    "setGroupLightState|setLighting": {
+      "left_to_right": 14,
+      "right_to_left": 13
+    },
+    "setHvacMode|setThermostatMode": {
+      "left_to_right": 0,
+      "right_to_left": 4
+    },
+    "setLighting|setLightState": {
+      "left_to_right": 22,
+      "right_to_left": 3
+    },
+    "setLockState|setLockState_home": {
+      "left_to_right": 11,
+      "right_to_left": 0
+    },
+    "setSecurityMode|armSecuritySystem": {
+      "left_to_right": 72,
+      "right_to_left": 0
+    },
+    "setTargetTemperature|setThermostatMode": {
+      "left_to_right": 3,
+      "right_to_left": 1
+    },
+    "setVolume|adjustVolume": {
+      "left_to_right": 9,
+      "right_to_left": 0
+    },
+    "streamCamera|viewRemoteCamera": {
+      "left_to_right": 7,
+      "right_to_left": 0
+    }
+  },
+  "primary_population": {
+    "construction_blocks": 1689,
+    "construction_units": 3207,
+    "decision_counts": {
+      "INSUFFICIENT-DATA": 11,
+      "LABEL-NOISE": 2,
+      "TARGET": 22,
+      "UNCERTAIN": 18
+    },
+    "fold_seed": 20260903,
+    "folds": 5,
+    "lighting_family": [
+      "flashLights",
+      "getLightState",
+      "rampBrightness",
+      "setAdaptiveLighting",
+      "setAmbientLighting",
+      "setBrightness",
+      "setColor",
+      "setColorTemperature",
+      "setGroupLightState",
+      "setLightState",
+      "setLighting",
+      "startLightShow"
+    ],
+    "mass_by_decision": {
+      "DOMAIN-ONLY": 0,
+      "INSUFFICIENT-DATA": 186,
+      "LABEL-NOISE": 32,
+      "TARGET": 235,
+      "UNCERTAIN": 283
+    },
+    "pair_count": 53,
+    "policy_id": "saea-a2t-query-cue-audit-v1",
+    "sealed_miss_total": 1544,
+    "targets": {
+      "component_mass_total": 278,
+      "dropped_over_cap": [],
+      "maximum": 12,
+      "strict_mass_total": 235,
+      "targets": [
+        {
+          "component_mass": 186,
+          "pairs": [
+            "getLightState|setAmbientLighting",
+            "resetFilterStatus|setAmbientLighting",
+            "setAmbientLighting|setBrightness",
+            "setAmbientLighting|setColor",
+            "setAmbientLighting|setColorTemperature",
+            "setAmbientLighting|setGroupLightState",
+            "setAmbientLighting|setLighting",
+            "setBrightness|setGroupLightState",
+            "setColor+setColorTemperature+setLighting|setAmbientLighting",
+            "setGroupLightState|setLighting"
+          ],
+          "strict_mass": 147,
+          "target_id": "lighting",
+          "tools": [
+            "getLightState",
+            "resetFilterStatus",
+            "setAmbientLighting",
+            "setBrightness",
+            "setColor",
+            "setColorTemperature",
+            "setGroupLightState",
+            "setLighting"
+          ]
+        },
+        {
+          "component_mass": 48,
+          "pairs": [
+            "activateRoutine|setApplianceMode",
+            "activateRoutine|setSecurityMode",
+            "activateScene|activateRoutine",
+            "activateScene|setSecurityMode",
+            "setApplianceMode|startCleaning"
+          ],
+          "strict_mass": 44,
+          "target_id": "activateRoutine",
+          "tools": [
+            "activateRoutine",
+            "activateScene",
+            "setApplianceMode",
+            "setSecurityMode",
+            "startCleaning"
+          ]
+        },
+        {
+          "component_mass": 23,
+          "pairs": [
+            "getBiometricData|getHRV",
+            "getBiometricData|setHapticStrength",
+            "getHRV|setRomanceMode"
+          ],
+          "strict_mass": 23,
+          "target_id": "getBiometricData",
+          "tools": [
+            "getBiometricData",
+            "getHRV",
+            "setHapticStrength",
+            "setRomanceMode"
+          ]
+        },
+        {
+          "component_mass": 16,
+          "pairs": [
+            "calibrateCameras|rebootDevice",
+            "calibrateCameras|updateFirmware",
+            "rebootDevice|streamCamera"
+          ],
+          "strict_mass": 16,
+          "target_id": "calibrateCameras",
+          "tools": [
+            "calibrateCameras",
+            "rebootDevice",
+            "streamCamera",
+            "updateFirmware"
+          ]
+        },
+        {
+          "component_mass": 5,
+          "pairs": [
+            "castContent|playMedia"
+          ],
+          "strict_mass": 5,
+          "target_id": "castContent",
+          "tools": [
+            "castContent",
+            "playMedia"
+          ]
+        }
+      ],
+      "tool_count": 23
+    },
+    "thresholds": {
+      "description_gap_points": 20.0,
+      "domain_coverage_min": 0.6,
+      "min_side_blocks": 5,
+      "min_side_units": 5,
+      "separability_label_noise": 0.65,
+      "separability_target": 0.8
+    }
+  },
+  "schema": "saea-a2t-query-cue-audit-v1",
+  "sealed_sources": {
+    "baseline": [
+      {
+        "attempt": "attempt-20260904T172609Z-t1officialpop500",
+        "misses": 172,
+        "rows": 500,
+        "run_id": "SAEA-A2T-TIER1-OFFICIAL-POPULATION-V1"
+      },
+      {
+        "attempt": "attempt-20260904T193726Z-t258officialpop1500",
+        "misses": 464,
+        "rows": 1500,
+        "run_id": "SAEA-A2T-TIER258-OFFICIAL-POPULATION-V1"
+      },
+      {
+        "attempt": "attempt-20260904T211040Z-t3467officialpop2000",
+        "misses": 908,
+        "rows": 2000,
+        "run_id": "SAEA-A2T-TIER3467-OFFICIAL-POPULATION-V1"
+      }
+    ],
+    "baseline_misses": 1544,
+    "baseline_rows": 4000,
+    "org1_cross_check": [
+      {
+        "attempt": "attempt-20260905T171519Z-org1groupedraw",
+        "misses": 1673,
+        "rows": 4000,
+        "run_id": "SAEA-A2T-ORG1-DOMAIN-GROUPED-V1"
+      }
+    ],
+    "org1_misses": 1673,
+    "org1_rows": 4000
+  },
+  "strict_population": {
+    "construction_blocks": 1289,
+    "construction_units": 1667,
+    "decision_counts": {
+      "INSUFFICIENT-DATA": 41,
+      "LABEL-NOISE": 1,
+      "TARGET": 6,
+      "UNCERTAIN": 5
+    },
+    "fold_seed": 20260903,
+    "folds": 5,
+    "lighting_family": [
+      "flashLights",
+      "getLightState",
+      "rampBrightness",
+      "setAdaptiveLighting",
+      "setAmbientLighting",
+      "setBrightness",
+      "setColor",
+      "setColorTemperature",
+      "setGroupLightState",
+      "setLightState",
+      "setLighting",
+      "startLightShow"
+    ],
+    "mass_by_decision": {
+      "DOMAIN-ONLY": 0,
+      "INSUFFICIENT-DATA": 542,
+      "LABEL-NOISE": 27,
+      "TARGET": 62,
+      "UNCERTAIN": 105
+    },
+    "pair_count": 53,
+    "policy_id": "saea-a2t-query-cue-audit-v1",
+    "sealed_miss_total": 1544,
+    "targets": {
+      "component_mass_total": 62,
+      "dropped_over_cap": [],
+      "maximum": 12,
+      "strict_mass_total": 62,
+      "targets": [
+        {
+          "component_mass": 18,
+          "pairs": [
+            "getBiometricData|getHRV",
+            "getBiometricData|setHapticStrength"
+          ],
+          "strict_mass": 18,
+          "target_id": "getBiometricData",
+          "tools": [
+            "getBiometricData",
+            "getHRV",
+            "setHapticStrength"
+          ]
+        },
+        {
+          "component_mass": 18,
+          "pairs": [
+            "setGroupLightState|setLighting"
+          ],
+          "strict_mass": 18,
+          "target_id": "lighting",
+          "tools": [
+            "setGroupLightState",
+            "setLighting"
+          ]
+        },
+        {
+          "component_mass": 15,
+          "pairs": [
+            "activateScene|activateRoutine"
+          ],
+          "strict_mass": 15,
+          "target_id": "activateRoutine",
+          "tools": [
+            "activateRoutine",
+            "activateScene"
+          ]
+        },
+        {
+          "component_mass": 6,
+          "pairs": [
+            "calibrateCameras|updateFirmware"
+          ],
+          "strict_mass": 6,
+          "target_id": "calibrateCameras",
+          "tools": [
+            "calibrateCameras",
+            "updateFirmware"
+          ]
+        },
+        {
+          "component_mass": 5,
+          "pairs": [
+            "rebootDevice|streamCamera"
+          ],
+          "strict_mass": 5,
+          "target_id": "rebootDevice",
+          "tools": [
+            "rebootDevice",
+            "streamCamera"
+          ]
+        }
+      ],
+      "tool_count": 11
+    },
+    "thresholds": {
+      "description_gap_points": 20.0,
+      "domain_coverage_min": 0.6,
+      "min_side_blocks": 5,
+      "min_side_units": 5,
+      "separability_label_noise": 0.65,
+      "separability_target": 0.8
+    }
+  }
+}
