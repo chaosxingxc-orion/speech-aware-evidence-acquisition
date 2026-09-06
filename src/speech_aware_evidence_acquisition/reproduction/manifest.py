@@ -258,6 +258,44 @@ PROBES: dict[str, dict] = {
             "60-pair scenario/action intent inventory, which is what this template adds."
         ),
     },
+    "SLURP-CONSUMPTION-KU-S1": {
+        "arms": {
+            "direct_evidence": ["slurp_phase_direct.txt", "slurp_phase_evidence.txt"]
+        },
+        "scorer": (
+            "slurp-slu-official (the same pinned official evaluate.py as "
+            "SLURP-DEV1000-CLOSED-LIST-DIRECT), run through core.scoring_batch"
+        ),
+        "sampling": {
+            "seed": 20260823,
+            "design": (
+                "the same DEV-1000 roster KU-S1c and the closed-list comparator "
+                "flew, id-for-id"
+            ),
+        },
+        "sample_receipt": "DEV-1000.json",
+        "success": (
+            "Preregistered in docs/readiness/"
+            "2026-09-05-slurp-consumption-ku-s1-v1-preregistration.md and unchanged "
+            "by E6: the decision population is the unexposed NEW500 and the "
+            "comparator is the one-contact closed-list direct arm, with KU-S1c's own "
+            "draft row quoted as the contact-matched and control-turn-matched view"
+        ),
+        "profile": "bounded-discovery-probe",
+        "note": (
+            "Cell KU-S1 of the 2026-09-05 three-dimension experiment program: the "
+            "SLURP consumption dimension's RETRIEVAL cell, unblocked by enabler E6. "
+            "Neither template is the system message -- that stays the closed-list "
+            "instruction, byte-identical to the sealed SLURP direct baseline's and to "
+            "KU-S1c's. They are the two per-phase CONTROL turns of "
+            "phase-direct-evidence-alpha-blend-v1. The retrieved values are NOT in "
+            "either template and never can be: E6 removed the "
+            "fold-a-packet-into-the-instruction path, and the supply travels the "
+            "successor QueryState as typed content blocks instead. Measured against "
+            "the FULL slurp-kb-size-full snapshot (23,267 protected payloads, content "
+            "dimension included): 0 collisions for either template."
+        ),
+    },
     "SLURP-PHASE-DIRECT-ONLY": {
         "arms": {"direct": ["slurp_phase_direct.txt"]},
         "scorer": (

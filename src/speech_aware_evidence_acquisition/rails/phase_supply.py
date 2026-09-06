@@ -93,7 +93,15 @@ from . import knowledge_provider as _knowledge_provider  # noqa: F401 -- side-ef
 from .controllers import PhaseProgram, PhaseSupply
 from .errors import RailsError
 from .knowledge import KnowledgeSnapshot, QueryState
-from .kb_policy import FuseKnobs, RankWeights
+from .kb_policy import (
+    FuseKnobs,
+    RankWeights,
+    _argmax_labels,
+    _blend_scores,
+    _fused_label_scores,
+    _label_identities,
+    default_label_normalizer,
+)
 
 #: The one query/facet vector source kind this module implements: a
 #: receipt-pinned JSONL file under ``SPEECHRL_DATA_DIR``, produced BEFORE
@@ -582,6 +590,11 @@ def build_supply_for_phase(
         )
 
     seeded = set(seed_phases)
+    # The alpha-blend head, when a spec declares ``alpha`` -- computed from
+    # rails.kb_policy's OWN functions, not reimplemented, so the decision is
+    # the locked ``saea-kb-alpha-blend-v1`` decision expressed on the base.
+    label_targets = _label_identities(snapshot)
+    values_by_id = {value.value_id: value for value in snapshot.values}
 
     def supply_for_phase(phase_name: str, context: object) -> PhaseSupply | None:
         spec = specs.get(phase_name)
@@ -627,10 +640,53 @@ def build_supply_for_phase(
             rank_result=rank_result,
             fusion_decision=fusion_decision,
             expose_facets=spec.expose_facets,
+            retain_prior=_retains_prior(spec, context, rank_result, fusion_decision),
             action_target_ref=(
                 f"{spec.provider}:{spec.rank_policy}:{spec.fuse_policy}:k={spec.k}"
             ),
         ).validate()
+
+    def _retains_prior(spec, context, rank_result, fusion_decision) -> bool:
+        """``KbAlphaBlendController``'s retain-primary shortcut, expressed on
+        the base (E6).
+
+        A spec declaring ``alpha`` re-ranks the fused evidence's own label
+        distribution against the completed phase's answer as
+        ``alpha * kb + (1 - alpha) * [label == prior answer]``; when the
+        prior answer's label is the UNIQUE winner, the retrieval decision
+        itself says no further contact is needed and the trajectory stops on
+        that answer. A tie that merely includes it is dispatched, so the
+        supplied contact can break it -- exactly
+        ``rails.kb_policy.KbAlphaBlendController._advance_after_direct``,
+        whose own ``_fused_label_scores``/``_blend_scores``/
+        ``_argmax_labels`` this calls rather than reimplementing.
+
+        Absent ``alpha``: never retains, and the program runs every phase.
+        The registered default normalizer reads a SLURP-shaped compact JSON
+        answer (``rails.kb_policy.default_label_normalizer``), so a carrier
+        whose answers are not shaped that way must not declare ``alpha``.
+        """
+
+        if spec.alpha is None or not label_targets:
+            return False
+        states = getattr(context, "agent_states", ())
+        if not states:
+            return False
+        prior_label = default_label_normalizer(states[-1].content, label_targets)
+        if prior_label is None:
+            return False
+        blended = _blend_scores(
+            label_targets,
+            _fused_label_scores(
+                label_targets,
+                values_by_id,
+                fusion_decision.selected_value_ids,
+                rank_result,
+            ),
+            prior_label,
+            float(spec.alpha),
+        )
+        return _argmax_labels(blended) == (prior_label,)
 
     # ``snapshot_sha256`` is the caller's already-computed hash of the same
     # frozen snapshot; recorded here so a binding built against one snapshot
