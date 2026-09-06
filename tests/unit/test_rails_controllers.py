@@ -1,7 +1,7 @@
 """C4a: PhaseProgram/PhaseSpec config loading and strict refusal, and the
-generic EvidenceAgentController state machine across the four registered
+generic EvidenceAgentController state machine across the registered
 phase programs (direct-only, direct-evidence-alpha-blend, select-then-fill,
-draft-revise). No model, GPU, or network contact -- every test drives the
+draft-revise, slots-given-intent). No model, GPU, or network contact -- every test drives the
 controller directly with a synthetic AgentRuntimeContext, exactly the
 "isinstance-free structural check" the mission brief asks for.
 """
@@ -42,6 +42,7 @@ _EXPECTED_PROGRAM_SHAPES = {
     ),
     "phase-select-then-fill-v1": (("select", "fill"), 2, "always-run-full-program"),
     "phase-draft-revise-v1": (("draft", "revise"), 2, "always-run-full-program"),
+    "phase-slots-given-intent-v1": (("slots",), 1, "always-run-full-program"),
 }
 
 
@@ -86,7 +87,7 @@ def _material(phase_name: str, sample_id: str, *, response_format=None) -> Phase
 
 
 @pytest.mark.parametrize("program_id, shape", sorted(_EXPECTED_PROGRAM_SHAPES.items()))
-def test_load_phase_program_loads_the_four_shipped_configs(program_id, shape):
+def test_load_phase_program_loads_the_shipped_configs(program_id, shape):
     expected_names, expected_max_contacts, expected_stop_rule = shape
     path = rc.DEFAULT_PROGRAM_CONFIG_DIR / f"{program_id}.json"
     program = rc.load_phase_program(path)
@@ -98,7 +99,7 @@ def test_load_phase_program_loads_the_four_shipped_configs(program_id, shape):
         phase.validate()
 
 
-def test_registered_program_ids_match_the_four_shipped_configs():
+def test_registered_program_ids_match_the_shipped_configs():
     assert set(rc.registered_program_ids()) == set(_EXPECTED_PROGRAM_SHAPES)
 
 

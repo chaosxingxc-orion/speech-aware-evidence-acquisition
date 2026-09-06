@@ -9,15 +9,16 @@ Two pieces:
 
 * :class:`PhaseProgram` / :class:`PhaseSpec` -- a small, strictly-validated,
   content-hashable declaration of a fixed contact sequence, loaded from
-  ``configs/policy/phase-*.json`` by :func:`load_phase_program`. Four
-  programs ship with this slice: ``phase-direct-only-v1`` (one phase),
+  ``configs/policy/phase-*.json`` by :func:`load_phase_program`. Five
+  programs ship today: ``phase-direct-only-v1`` (one phase),
   ``phase-direct-evidence-alpha-blend-v1`` (direct, then an optional
   evidence contact -- the alpha-blend *scoring* stays in ``rails.kb_policy``;
   this module only sequences the two contacts and threads state),
   ``phase-select-then-fill-v1`` (a hard barrier between ``select`` and
   ``fill`` -- see :mod:`rails.phase_runner` for how the barrier is actually
-  realized), and ``phase-draft-revise-v1`` (``draft`` then ``revise``, no
-  barrier).
+  realized), ``phase-draft-revise-v1`` (``draft`` then ``revise``, no
+  barrier), and ``phase-slots-given-intent-v1`` (one slot-extraction contact
+  conditioned on an already-sealed intent).
 * :class:`EvidenceAgentController` -- one ``AgentController`` (the
   ``rails.runner.AgentController`` Protocol) that walks a ``PhaseProgram``'s
   phases in order, one contact per phase. Per-phase content (the actual
@@ -44,8 +45,8 @@ the successor ``QueryState.agent_state_ids``, exactly the discipline
 ``rails.runner._validate_new_agent_states``/``assert_agent_step_binding``
 already enforce for every other controller in this study.
 
-Registration mirrors ``rails.kb_policy.register_kb_policy_v1``: each of the
-four program ids is registered into the shared ``core.base.AGENT_CONTROLLERS``
+Registration mirrors ``rails.kb_policy.register_kb_policy_v1``: every
+program id is registered into the shared ``core.base.AGENT_CONTROLLERS``
 registry at import time, with a snapshot-free, always-safe default factory
 (a controller whose ``material_for_phase`` synthesizes a generic instruction
 per phase rather than reading any per-run injected material) -- the same
@@ -603,13 +604,18 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-direct-evidence-alpha-blend-v1": "phase-direct-evidence-alpha-blend-v1.json",
     "phase-select-then-fill-v1": "phase-select-then-fill-v1.json",
     "phase-draft-revise-v1": "phase-draft-revise-v1.json",
+    # MF-3 / KC-S1: one slot-only contact conditioned on an already-sealed
+    # intent. A single-phase program, exactly like ``phase-direct-only-v1``,
+    # because the intent is NOT re-decided here -- the sealed closed-list
+    # prediction is the input, so the arm spends one contact, not two.
+    "phase-slots-given-intent-v1": "phase-slots-given-intent-v1.json",
 }
 
 _LOADED_PROGRAMS: dict[str, PhaseProgram] = {}
 
 
 def registered_program_ids() -> tuple[str, ...]:
-    """The four program ids this module registers into
+    """The program ids this module registers into
     ``core.base.AGENT_CONTROLLERS`` (declaration order, not registry order)."""
 
     return tuple(_PROGRAM_CONFIG_FILENAMES)
@@ -635,7 +641,7 @@ def default_phase_program(program_id: str) -> PhaseProgram:
 
 
 def register_phase_programs_v1() -> None:
-    """Idempotently register the four C4a phase-program controller ids into
+    """Idempotently register this module's phase-program controller ids into
     the shared ``core.base.AGENT_CONTROLLERS`` registry. Safe to call more
     than once (a second import of this module, or a direct re-call from a
     test) -- a name already present is left untouched rather than raising
@@ -667,6 +673,13 @@ def register_phase_programs_v1() -> None:
         AGENT_CONTROLLERS.register(
             "phase-draft-revise-v1",
             default_controller_factory(default_phase_program("phase-draft-revise-v1")),
+        )
+    if "phase-slots-given-intent-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-slots-given-intent-v1",
+            default_controller_factory(
+                default_phase_program("phase-slots-given-intent-v1")
+            ),
         )
     unregistered = set(_PROGRAM_CONFIG_FILENAMES) - set(AGENT_CONTROLLERS.names())
     if unregistered:
