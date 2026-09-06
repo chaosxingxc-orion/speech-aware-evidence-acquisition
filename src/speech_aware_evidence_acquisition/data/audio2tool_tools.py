@@ -296,7 +296,77 @@ def render_openai_tools(lock: Mapping[str, object], root: Path) -> list[dict[str
     return tools
 
 
-def render_registry_compact(lock: Mapping[str, object], root: Path) -> str:
+def render_registry_compact_rows(
+    rows: Sequence[Mapping[str, str]],
+    *,
+    description_overrides: Mapping[str, str] | None = None,
+) -> str:
+    """The compact rendering of ALREADY-LOADED registry rows.
+
+    Split out of :func:`render_registry_compact` (whose body is now one call
+    to this function) so the same rendering can be exercised without a lock
+    and a materialized data root -- the evolution loop's candidate validator
+    (``rails.proposer.validate_candidate_artifact``) has to render a proposed
+    override block and measure its shape long before any flight resolves an
+    asset. The bytes are the release's, unchanged: ``"- {signature}:
+    {description}"`` per row, plain ``tool_name`` string sort, no header, no
+    trailing newline.
+
+    ``description_overrides`` replaces the ``description`` COLUMN of the named
+    tools and nothing else -- never the signature, never the sort key, never
+    the number of lines. The rendered block therefore keeps the released
+    shape exactly: same 152 lines in the same order, only some of their text
+    after the colon differs. Fail-closed on an override naming a tool the
+    registry does not carry (a typo would otherwise silently render the
+    incumbent description and make an evolution round look like a null
+    result), on a non-text or empty replacement, and on one carrying a
+    newline (which would split one row into two lines and break the shape
+    the caps are stated over).
+
+    ``None`` (the default) and an EMPTY mapping are both exactly the released
+    behaviour: the override branch is not merely skipped, it cannot be
+    reached, so the default bytes are byte-identical to before this parameter
+    existed (pinned by
+    ``tests/unit/test_audio2tool_tools.py::test_compact_default_bytes_are_
+    unchanged_on_the_real_registry`` against sha256 752dd381...).
+    """
+
+    if description_overrides:
+        by_name = {row["tool_name"]: row for row in rows}
+        for tool_name, replacement in sorted(description_overrides.items()):
+            if tool_name not in by_name:
+                raise Audio2ToolSchemaError(
+                    f"description override names {tool_name!r}, which is not a "
+                    "tools_registry.csv tool"
+                )
+            if not isinstance(replacement, str) or not replacement.strip():
+                raise Audio2ToolSchemaError(
+                    f"description override for {tool_name!r} must be non-empty text"
+                )
+            if "\n" in replacement or "\r" in replacement:
+                raise Audio2ToolSchemaError(
+                    f"description override for {tool_name!r} carries a newline; the "
+                    "compact rendering is one line per tool"
+                )
+        return "\n".join(
+            "- {}: {}".format(
+                row["signature"],
+                description_overrides.get(row["tool_name"], row["description"]),
+            )
+            for row in sorted(rows, key=lambda row: row["tool_name"])
+        )
+    return "\n".join(
+        f"- {row['signature']}: {row['description']}"
+        for row in sorted(rows, key=lambda row: row["tool_name"])
+    )
+
+
+def render_registry_compact(
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    description_overrides: Mapping[str, str] | None = None,
+) -> str:
     """``format_tools_compact`` from the pinned Audio2Tool release, over the
     same ``tools_registry.csv`` every other fill reads.
 
@@ -331,13 +401,21 @@ def render_registry_compact(lock: Mapping[str, object], root: Path) -> str:
     ``row.get('deprecated', '')`` is empty for every row and all 152 are
     rendered; there is nothing to skip and nothing is dropped here either.
 
-    Registered as the ``audio2tool-registry-compact`` instruction fill.
+    Registered as the ``audio2tool-registry-compact`` instruction fill, which
+    calls it with exactly ``(lock, root)`` -- ``description_overrides`` is
+    KEYWORD-ONLY and defaults to ``None``, so that registration, and every
+    instruction it has ever rendered, is unchanged.
+
+    ``description_overrides`` (2026-09-05, the evolution loop's state ``A_r``)
+    replaces the description column of the named tools only; see
+    :func:`render_registry_compact_rows` for the rule and its fail-closed
+    conditions. ``A_0`` is this function with no overrides, byte-identical to
+    the sealed baseline.
     """
 
     rows = load_tool_registry(lock, root)
-    return "\n".join(
-        f"- {row['signature']}: {row['description']}"
-        for row in sorted(rows, key=lambda row: row["tool_name"])
+    return render_registry_compact_rows(
+        rows, description_overrides=description_overrides
     )
 
 

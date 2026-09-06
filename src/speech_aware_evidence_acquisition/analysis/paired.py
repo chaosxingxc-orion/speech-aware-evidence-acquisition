@@ -51,11 +51,13 @@ share one stratum, checked). Passing neither calls
 
 from __future__ import annotations
 
+import json
 import math
 import random
 import statistics
 from dataclasses import dataclass
 from fractions import Fraction
+from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
 from . import bootstrap as bs
@@ -70,6 +72,7 @@ __all__ = [
     "PairedContrast",
     "mcnemar_exact",
     "paired_contrast",
+    "per_sample_scores_from_score_file",
     "per_stratum_table",
     "render_markdown",
 ]
@@ -452,6 +455,139 @@ def paired_contrast(
             per_stratum=per_stratum,
         )
     return results
+
+
+def per_sample_scores_from_score_file(
+    path: Path | str,
+    scorer_id: str,
+    metrics: Sequence[str],
+    *,
+    require_verified: bool = True,
+) -> dict[str, dict[str, float]]:
+    """One scorer's per-sample rows out of a ``core.scoring_batch`` result
+    file, in exactly the ``{sample_id: {metric: value}}`` shape
+    :func:`paired_contrast` consumes.
+
+    The input is a ``<job_id>.score.json`` as ``core.scoring_batch
+    .run_score_batch`` writes it: the verbatim stdout of ``core.driver score
+    --manifest ... --include-per-sample``, i.e.::
+
+        {"manifest": ..., "verified": true,
+         "scores": {"<scorer_id>": {"aggregate": {...},
+                                    "per_sample": [{"sample_id": ..., ...}, ...]}}}
+
+    Without ``--include-per-sample`` the driver emits ONLY each scorer's
+    ``aggregate`` block, so a file produced that way has no ``per_sample`` key
+    and is refused here rather than silently yielding an empty table.
+
+    Booleans are the reason this is a reader and not a dict comprehension:
+    the official Audio2Tool scorer records ``tool_correct`` / ``exact_match``
+    as real ``bool`` values, and :func:`paired_contrast`'s own value check
+    REJECTS ``bool`` (a deliberate guard against a metric name accidentally
+    resolving to a flag). They are the metrics every paired A2T contrast is
+    actually about, so this reader converts ``True``/``False`` to ``1.0`` /
+    ``0.0`` once, here, and hands ``paired_contrast`` plain floats.
+
+    Fail-closed on everything else: an unreadable or non-object document, a
+    missing ``scores`` block, an absent ``scorer_id``, a missing or empty
+    ``per_sample`` list, a row without usable text ``sample_id``, a duplicate
+    ``sample_id``, a requested metric absent from a row, and a metric whose
+    value is neither bool nor a finite number.
+
+    ``require_verified`` (default ``True``) additionally demands
+    ``"verified": true``. The driver sets that key only on the
+    ``--manifest`` path, which is the one that verifies the bundle's splits,
+    traces and hashes; its ``--outputs`` path prints a loud warning and
+    ``"verified": false`` precisely because such a result is NOT an audit
+    record. A paired contrast that decides an evolution round must never be
+    computed over one by accident.
+    """
+
+    if not isinstance(scorer_id, str) or not scorer_id:
+        raise PairedAnalysisError("scorer_id must be non-empty text")
+    if isinstance(metrics, (str, bytes)) or not metrics:
+        raise PairedAnalysisError("metrics must be a non-empty sequence of metric names")
+    metric_names = tuple(metrics)
+    for metric in metric_names:
+        if not isinstance(metric, str) or not metric:
+            raise PairedAnalysisError("every metric name must be non-empty text")
+    if len(set(metric_names)) != len(metric_names):
+        raise PairedAnalysisError("metrics contains a duplicate name")
+
+    score_path = Path(path)
+    try:
+        document = json.loads(score_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise PairedAnalysisError(
+            f"cannot read score file {score_path}: {error}"
+        ) from error
+    if not isinstance(document, Mapping):
+        raise PairedAnalysisError(f"score file {score_path} must be a JSON object")
+    if require_verified and document.get("verified") is not True:
+        raise PairedAnalysisError(
+            f"score file {score_path} is not a verified manifest score "
+            "(\"verified\" is not true); it is not an audit record"
+        )
+
+    scores = document.get("scores")
+    if not isinstance(scores, Mapping):
+        raise PairedAnalysisError(f"score file {score_path} carries no scores object")
+    entry = scores.get(scorer_id)
+    if not isinstance(entry, Mapping):
+        raise PairedAnalysisError(
+            f"score file {score_path} carries no scorer {scorer_id!r}; it has "
+            f"{sorted(scores)}"
+        )
+    rows = entry.get("per_sample")
+    if not isinstance(rows, list) or not rows:
+        raise PairedAnalysisError(
+            f"score file {score_path} scorer {scorer_id!r} has no non-empty "
+            "per_sample block; re-run the scorer with --include-per-sample"
+        )
+
+    table: dict[str, dict[str, float]] = {}
+    for index, row in enumerate(rows):
+        if not isinstance(row, Mapping):
+            raise PairedAnalysisError(
+                f"score file {score_path} scorer {scorer_id!r} per_sample row "
+                f"{index} is not an object"
+            )
+        sample_id = row.get("sample_id")
+        if not isinstance(sample_id, str) or not sample_id:
+            raise PairedAnalysisError(
+                f"score file {score_path} scorer {scorer_id!r} per_sample row "
+                f"{index} has no usable sample_id"
+            )
+        if sample_id in table:
+            raise PairedAnalysisError(
+                f"score file {score_path} scorer {scorer_id!r} repeats sample_id "
+                f"{sample_id!r}"
+            )
+        values: dict[str, float] = {}
+        for metric in metric_names:
+            if metric not in row:
+                raise PairedAnalysisError(
+                    f"score file {score_path} scorer {scorer_id!r} sample "
+                    f"{sample_id!r} is missing metric {metric!r}"
+                )
+            raw = row[metric]
+            if isinstance(raw, bool):
+                values[metric] = 1.0 if raw else 0.0
+                continue
+            if not isinstance(raw, (int, float)):
+                raise PairedAnalysisError(
+                    f"score file {score_path} scorer {scorer_id!r} sample "
+                    f"{sample_id!r} metric {metric!r} is not a number"
+                )
+            number = float(raw)
+            if not math.isfinite(number):
+                raise PairedAnalysisError(
+                    f"score file {score_path} scorer {scorer_id!r} sample "
+                    f"{sample_id!r} metric {metric!r} is not finite"
+                )
+            values[metric] = number
+        table[sample_id] = values
+    return table
 
 
 def per_stratum_table(contrast: PairedContrast) -> list[dict[str, object]]:
