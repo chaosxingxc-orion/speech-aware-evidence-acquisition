@@ -74,7 +74,7 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import Callable, Mapping, Sequence
 
-from ..reproduction.slurp_scoring import SlotEntity
+from ..reproduction.slurp_scoring import SlotEntity, parse_slu_response
 from .loader import LoaderError, SampleRef
 from .lock import REPO_ROOT, AssetResolutionError, lock_entry
 
@@ -1110,16 +1110,547 @@ def render_slurp_closed_label_inventory(lock: Mapping[str, object], root: Path) 
     return f"{render_slurp_ontology(ontology)}\n\n{render_slurp_label_inventory(ontology)}"
 
 
+# ---------------------------------------------------------------------------
+# Per-intent slot schema (program prerequisite MF-3)
+# ---------------------------------------------------------------------------
+
+#: Identity of the slot-schema construction rule this module implements. Bumped
+#: only when the RULE changes (threshold, example cap, counting unit, ordering);
+#: the corpus it is measured on is pinned by the umbrella lock instead.
+SLURP_INTENT_SLOT_SCHEMA_ID = "slurp-intent-slot-schema-v1"
+
+#: Receipt document schema of :func:`slurp_intent_slot_schema_receipt`.
+SLURP_INTENT_SLOT_SCHEMA_RECEIPT_SCHEMA = "saea-slurp-intent-slot-schema-v1"
+
+#: A type is listed for an intent only when it carries at least this share of
+#: that intent's TRAIN slot mentions (the preregistration's "at least 2 %").
+_INTENT_SLOT_MIN_SHARE = 0.02
+
+#: Example fillers kept per (intent, entity type), in first-seen TRAIN order.
+_INTENT_SLOT_EXAMPLES_PER_TYPE = 5
+
+#: Decimal places the stored/hashed share keeps. The FILTER always runs on the
+#: exact ratio; only the recorded number is rounded, so the schema's content
+#: hash is stable across platforms with different float repr behaviour.
+_INTENT_SLOT_SHARE_DIGITS = 6
+
+#: The two committed receipts that already establish this construction source's
+#: decontamination: the KB-BUILD receipt (verdict "clean" over its checked TRAIN
+#: sample ids against every frozen roster) and the frozen devel/test identity
+#: enumeration it was checked against. This module adds no new split read.
+SLURP_INTENT_SLOT_DECONTAMINATION_RECEIPTS: tuple[str, ...] = (
+    "docs/receipts/knowledge/slurp-kb-size-full.json",
+    "docs/receipts/knowledge/slurp-split-identity.json",
+)
+
+_SLOT_SCHEMA_HEADER = (
+    "Slot schema measured on the TRAIN split, one block per intent. A block "
+    "names the entity types that intent draws its slots from, how much of the "
+    "intent's slot mentions each type carries, and fillers heard with that "
+    "type. Use a type only when the speech supports it, and write each filler "
+    "exactly as it was spoken, in lower case, without translating, expanding, "
+    "abbreviating or reordering it."
+)
+
+
+@dataclass(frozen=True)
+class SlurpIntentSlots:
+    """One intent's TRAIN slot profile.
+
+    ``types`` is the ordered ``(entity_type, count, share)`` table kept after
+    the share floor, most frequent first, ties broken by type name. ``count``
+    is a MENTION count -- how many entity mentions of that type occur across
+    this intent's TRAIN utterances -- and ``share`` is that count divided by
+    ``mentions``, this intent's total mention mass. The mention unit is what
+    makes the shares a partition of one intent's slot mass (the exact ratios
+    sum to 1 before the floor drops the tail, and the RECORDED shares sum to
+    1 up to their own rounding); the UTTERANCE-level
+    quantity ``rails.knowledge_build`` renders as ``facet:prior`` is a
+    different measurement of the same rows and its shares routinely sum above
+    1 (17 of the 60 TRAIN intents, up to 1.97), which is why this table is
+    computed here rather than read off that facet.
+
+    ``fillers`` maps a listed entity type to up to
+    :data:`_INTENT_SLOT_EXAMPLES_PER_TYPE` distinct example fillers in
+    first-seen TRAIN order, each already lower-cased by :func:`_entity_filler`
+    exactly as the official SLURP eval script lower-cases the gold side.
+    """
+
+    intent: str
+    n: int
+    mentions: int
+    types: tuple[tuple[str, int, float], ...]
+    fillers: Mapping[str, tuple[str, ...]] = MappingProxyType({})
+
+    @property
+    def entity_types(self) -> tuple[str, ...]:
+        """The listed type names, in table order."""
+
+        return tuple(entity_type for entity_type, _count, _share in self.types)
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "intent": self.intent,
+            "utterances": self.n,
+            "slot_mentions": self.mentions,
+            "types": [
+                {
+                    "entity_type": entity_type,
+                    "count": count,
+                    "share": share,
+                    "fillers": list(self.fillers.get(entity_type, ())),
+                }
+                for entity_type, count, share in self.types
+            ],
+        }
+
+
+@dataclass(frozen=True)
+class SlurpIntentSlotSchema:
+    """The whole per-intent slot schema plus the identity of the split it was
+    mined from -- TRAIN and nothing else (:data:`_ROSTER_SPLITS_LEGAL`).
+
+    ``source_identity_hash`` is the sha256 of the newline-joined, sorted
+    ``slurp:train:{slurp_id:06d}`` utterance ids that were actually read, so a
+    receipt can bind the schema to a corpus state without carrying the rows.
+    ``intents`` is keyed by the SAME ``f"{scenario}_{action}"`` spelling
+    :func:`_parse_record` gives ``SlurpRecord.intent`` and
+    :class:`SlurpOntology.intents` renders, so a schema block, an inventory
+    line and a gold label all compare directly.
+    """
+
+    schema_id: str
+    source_split: str
+    source_identity_hash: str
+    utterance_count: int
+    min_share: float
+    examples_per_type: int
+    intents: Mapping[str, SlurpIntentSlots]
+
+    @property
+    def intent_ids(self) -> tuple[str, ...]:
+        """The intents carrying a profile, sorted (construction order)."""
+
+        return tuple(sorted(self.intents))
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "schema_id": self.schema_id,
+            "source_split": self.source_split,
+            "source_identity_hash": self.source_identity_hash,
+            "utterance_count": self.utterance_count,
+            "min_share": self.min_share,
+            "examples_per_type": self.examples_per_type,
+            "intents": [self.intents[intent].as_json() for intent in self.intent_ids],
+        }
+
+    def content_hash(self) -> str:
+        """Canonical-JSON sha256 of :meth:`as_json` (the same canonicalization
+        every other hashable document in this module uses)."""
+
+        return _canonical_sha256(self.as_json())
+
+
+def _train_utterance_id(raw: Mapping[str, object], context: str) -> str:
+    slurp_id = raw.get("slurp_id")
+    if isinstance(slurp_id, bool) or not isinstance(slurp_id, int):
+        raise LoaderError(f"{context}: slurp_id must be an int")
+    return f"slurp:train:{slurp_id:06d}"
+
+
+def load_slurp_intent_slot_schema(
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    min_share: float = _INTENT_SLOT_MIN_SHARE,
+    examples_per_type: int = _INTENT_SLOT_EXAMPLES_PER_TYPE,
+) -> SlurpIntentSlotSchema:
+    """Mine the per-intent slot schema from ``train.jsonl`` -- and only from
+    ``train.jsonl``.
+
+    Split discipline. The one metadata file this function opens is named by
+    ``_SPLIT_FILES[_ROSTER_SPLITS_LEGAL[0]]``, a module constant: there is no
+    ``split`` parameter, no ``include_synthetic`` widening (the 64.8 % devel
+    recurrence documented on :func:`load_slurp_ontology` makes the synthetic
+    pool ceiling-tier for any devel read, and this schema exists to be sent
+    during a devel-split flight), and no caller-supplied path, so a devel or
+    test file cannot be reached through this entry point at all.
+
+    Text-only, like :func:`load_slurp_ontology`: no audio is opened and no
+    per-recording existence check runs.
+
+    Determinism. Utterances are read in file order; the mention counters and
+    the first-seen filler lists are therefore a pure function of the pinned
+    bytes, the type table is sorted by ``(-count, entity_type)``, and the
+    recorded share is rounded to :data:`_INTENT_SLOT_SHARE_DIGITS` places
+    AFTER the floor test has run on the exact ratio.
+
+    Tolerance mirrors :func:`load_slurp_ontology` deliberately: a row with an
+    unusable ``tokens`` block or a malformed entity contributes no slot
+    mentions but still counts toward its intent's ``n``, so ``n`` always means
+    "TRAIN utterances with this intent". A row without a usable ``slurp_id``
+    is the one hard failure -- the schema's identity hash would otherwise be
+    unbound.
+    """
+
+    if isinstance(min_share, bool) or not isinstance(min_share, (int, float)):
+        raise LoaderError(f"min_share must be a number, got {min_share!r}")
+    if not 0.0 <= float(min_share) <= 1.0:
+        raise LoaderError(f"min_share must lie in [0, 1], got {min_share!r}")
+    if isinstance(examples_per_type, bool) or not isinstance(examples_per_type, int):
+        raise LoaderError(f"examples_per_type must be an int, got {examples_per_type!r}")
+    if examples_per_type < 0:
+        raise LoaderError("examples_per_type must not be negative")
+
+    split_id = _ROSTER_SPLITS_LEGAL[0]
+    _, _, metadata_dir = _governed_roots(lock, root)
+    metadata_path = metadata_dir / _SPLIT_FILES[split_id]
+    if not metadata_path.is_file():
+        raise LoaderError(f"SLURP split metadata file missing: {metadata_path}")
+
+    utterance_ids: set[str] = set()
+    utterances_by_intent: dict[str, int] = {}
+    mentions_by_intent: dict[str, dict[str, int]] = {}
+    fillers_by_intent_type: dict[tuple[str, str], list[str]] = {}
+    for line_no, raw in enumerate(_read_jsonl(metadata_path), start=1):
+        context = f"SLURP {split_id}.jsonl line {line_no}"
+        scenario = raw.get("scenario")
+        action = raw.get("action")
+        if not isinstance(scenario, str) or not scenario:
+            continue
+        if not isinstance(action, str) or not action:
+            continue
+        utterance_ids.add(_train_utterance_id(raw, context))
+        intent = f"{scenario}_{action}"
+        utterances_by_intent[intent] = utterances_by_intent.get(intent, 0) + 1
+        mentions_by_intent.setdefault(intent, {})
+        try:
+            tokens_by_id = _tokens_by_id(raw.get("tokens"), context)
+        except LoaderError:
+            continue
+        raw_entities = raw.get("entities")
+        if not isinstance(raw_entities, list):
+            continue
+        for entity in raw_entities:
+            if not isinstance(entity, Mapping):
+                continue
+            entity_type = entity.get("type")
+            if not isinstance(entity_type, str) or not entity_type:
+                continue
+            try:
+                filler = _entity_filler(tokens_by_id, entity.get("span"), context)
+            except LoaderError:
+                continue
+            counts = mentions_by_intent[intent]
+            counts[entity_type] = counts.get(entity_type, 0) + 1
+            examples = fillers_by_intent_type.setdefault((intent, entity_type), [])
+            if filler and len(examples) < examples_per_type and filler not in examples:
+                examples.append(filler)
+
+    if not utterances_by_intent:
+        raise LoaderError(
+            f"SLURP {split_id} metadata {metadata_path} yielded no labelled utterance; "
+            "refusing to build an empty slot schema"
+        )
+
+    profiles: dict[str, SlurpIntentSlots] = {}
+    for intent in sorted(utterances_by_intent):
+        counts = mentions_by_intent[intent]
+        mentions = sum(counts.values())
+        kept = [
+            (entity_type, count)
+            for entity_type, count in counts.items()
+            if mentions and count / mentions >= float(min_share)
+        ]
+        kept.sort(key=lambda item: (-item[1], item[0]))
+        types = tuple(
+            (entity_type, count, round(count / mentions, _INTENT_SLOT_SHARE_DIGITS))
+            for entity_type, count in kept
+        )
+        profiles[intent] = SlurpIntentSlots(
+            intent=intent,
+            n=utterances_by_intent[intent],
+            mentions=mentions,
+            types=types,
+            fillers=MappingProxyType(
+                {
+                    entity_type: tuple(
+                        fillers_by_intent_type.get((intent, entity_type), ())
+                    )
+                    for entity_type, _count, _share in types
+                }
+            ),
+        )
+    identity_hash = hashlib.sha256(
+        "\n".join(sorted(utterance_ids)).encode("utf-8")
+    ).hexdigest()
+    return SlurpIntentSlotSchema(
+        schema_id=SLURP_INTENT_SLOT_SCHEMA_ID,
+        source_split=split_id,
+        source_identity_hash=identity_hash,
+        utterance_count=len(utterance_ids),
+        min_share=float(min_share),
+        examples_per_type=examples_per_type,
+        intents=MappingProxyType(profiles),
+    )
+
+
+def render_slurp_intent_slot_schema(
+    schema: SlurpIntentSlotSchema, *, intents: Sequence[str] | None = None
+) -> str:
+    """Render ``schema`` as compact instruction text: one shared header, then
+    one block per requested intent (all of them, sorted, when ``intents`` is
+    ``None``).
+
+    The wording is deliberately NOT the ``facet:prior`` representation
+    ``rails.knowledge_build`` builds from the same rows. Two reasons, one
+    mechanical and one scientific. Mechanically, ``rails.runner.
+    _assert_agent_control_excludes_knowledge_payloads`` refuses any CONTROL
+    instruction that embeds a frozen snapshot's own facet/value payload, so a
+    schema phrased like a facet would be unsendable beside a knowledge
+    snapshot. Scientifically, this block is a USE-side instruction (which
+    types to fill and how to write a filler), not a retrieved knowledge
+    payload, and it must read as one: prose sentences, percentages and example
+    fillers rather than ``type=0.4321 (56/130)`` count pairs.
+
+    Measured on the real corpus against the full committed snapshot: zero
+    ``facet:prior`` texts are substrings of this rendering and zero rendered
+    lines are substrings of a ``facet:prior`` text.  Fourteen ``facet:content``
+    payloads ARE -- one-word or two-word TRAIN utterances such as "calendar",
+    "shopping" or "next episode" that also occur verbatim as entity fillers.
+    That overlap is a property of the corpus, not of the wording, and it is
+    harmless for the cells this schema was built for (their slot phase declares
+    ``knowledge: "none"``, so no snapshot is in play and the guard has nothing
+    to protect).  A future cell that wants BOTH this schema and a live snapshot
+    on the same contact has to resolve it deliberately -- by excluding the
+    content dimension from that snapshot, not by trimming the schema, because
+    the fillers are what the block is for.
+    """
+
+    requested = tuple(schema.intent_ids) if intents is None else tuple(intents)
+    unknown = [intent for intent in requested if intent not in schema.intents]
+    if unknown:
+        raise LoaderError(
+            f"slot schema {schema.schema_id!r} has no block for intents {sorted(unknown)}"
+        )
+    floor_pct = f"{schema.min_share * 100:g}"
+    lines: list[str] = [_SLOT_SCHEMA_HEADER]
+    for intent in requested:
+        profile = schema.intents[intent]
+        lines.append(
+            f"== {intent} == {profile.n} TRAIN utterances, "
+            f"{profile.mentions} slot mentions"
+        )
+        if not profile.types:
+            lines.append(
+                f"- no entity type reaches the {floor_pct} percent floor for this "
+                "intent; leave the entity list empty unless the speech plainly "
+                "carries one"
+            )
+            continue
+        for entity_type, _count, share in profile.types:
+            fillers = profile.fillers.get(entity_type, ())
+            spoken = "; ".join(fillers) if fillers else "no example filler recorded"
+            lines.append(
+                f"- {entity_type} ({share * 100:.1f} percent of slot mentions): {spoken}"
+            )
+    return "\n".join(lines)
+
+
+def render_slurp_closed_label_inventory_with_slot_schema(
+    lock: Mapping[str, object], root: Path
+) -> str:
+    """``core.base.INSTRUCTION_FILLS`` entry ``"slurp-intent-slot-schema"``:
+    the closed-list fill's bytes UNCHANGED, followed by the full per-intent
+    slot schema.
+
+    The pure-suffix discipline is the same one
+    :func:`render_slurp_closed_label_inventory` follows against the sealed M0
+    task contract, one layer out: an arm naming this fill differs from the
+    sealed closed-list direct baseline by a suffix and by nothing else, so a
+    paired contrast measures the slot schema rather than a rewritten prompt.
+    """
+
+    inventory = render_slurp_closed_label_inventory(lock, root)
+    schema = load_slurp_intent_slot_schema(lock, root)
+    return f"{inventory}\n\n{render_slurp_intent_slot_schema(schema)}"
+
+
+#: Process-local cache for the per-sample renderer below: the slot phase asks
+#: for one block per row, and re-mining 11,514 TRAIN utterances per row would
+#: dominate a 1,000-row flight. Keyed by the resolved governed metadata
+#: directory, which the umbrella lock pins. :func:`load_slurp_intent_slot_schema`
+#: itself is never cached, so a test that rewrites a corpus in place still sees
+#: its own bytes.
+_INTENT_SLOT_SCHEMA_CACHE: dict[str, SlurpIntentSlotSchema] = {}
+
+
+def _cached_intent_slot_schema(
+    lock: Mapping[str, object], root: Path
+) -> SlurpIntentSlotSchema:
+    _, _, metadata_dir = _governed_roots(lock, root)
+    key = str(metadata_dir)
+    cached = _INTENT_SLOT_SCHEMA_CACHE.get(key)
+    if cached is None:
+        cached = load_slurp_intent_slot_schema(lock, root)
+        _INTENT_SLOT_SCHEMA_CACHE[key] = cached
+    return cached
+
+
+def slurp_intent_from_state_content(state_content: object) -> str | None:
+    """The ``f"{scenario}_{action}"`` intent a sealed closed-list response
+    carries, or ``None`` when the response does not parse or names only half
+    of the pair.
+
+    Parsing is delegated to
+    :func:`reproduction.slurp_scoring.parse_slu_response` -- the same
+    fail-closed parser the official scorer's prediction side uses -- so the
+    slot phase conditions on EXACTLY the label the comparator scored.
+    """
+
+    if not isinstance(state_content, str) or not state_content.strip():
+        return None
+    scenario, action, _entities, parsed = parse_slu_response(state_content)
+    if not parsed:
+        return None
+    if not isinstance(scenario, str) or not scenario:
+        return None
+    if not isinstance(action, str) or not action:
+        return None
+    return f"{scenario}_{action}"
+
+
+def render_slurp_slot_schema_for_state_detail(
+    lock: Mapping[str, object],
+    root: Path,
+    state_content: object,
+    *,
+    schema: SlurpIntentSlotSchema | None = None,
+) -> tuple[str, str | None, bool]:
+    """``(text, used_intent, fallback)`` for one sealed closed-list response.
+
+    When the response parses to an intent the schema knows, ``text`` is that
+    intent's block alone and ``fallback`` is ``False``. When it does not parse,
+    names only half a pair, or names an intent absent from TRAIN, ``text`` is
+    the FULL schema, ``used_intent`` is ``None`` and ``fallback`` is ``True`` --
+    the row still gets a legal slot instruction, and the flight can report how
+    often that happened instead of silently dropping rows.
+
+    ``schema=`` lets a caller (the phase-material seam) hand in a schema it
+    already holds; otherwise the process-local cache is used.
+    """
+
+    resolved = schema if schema is not None else _cached_intent_slot_schema(lock, root)
+    intent = slurp_intent_from_state_content(state_content)
+    if intent is not None and intent in resolved.intents:
+        return render_slurp_intent_slot_schema(resolved, intents=(intent,)), intent, False
+    return render_slurp_intent_slot_schema(resolved), None, True
+
+
+def render_slurp_slot_schema_for_state(
+    lock: Mapping[str, object],
+    root: Path,
+    state_content: object,
+    *,
+    schema: SlurpIntentSlotSchema | None = None,
+) -> str:
+    """The text half of :func:`render_slurp_slot_schema_for_state_detail`."""
+
+    text, _used_intent, _fallback = render_slurp_slot_schema_for_state_detail(
+        lock, root, state_content, schema=schema
+    )
+    return text
+
+
+def slurp_intent_slot_schema_receipt(
+    schema: SlurpIntentSlotSchema, *, generator: str
+) -> dict[str, object]:
+    """The TRAIN-only governance receipt document for ``schema`` (pure: the
+    caller writes it with a canonical JSON writer).
+
+    Carries the construction rule, the source split identity, the per-intent
+    tables with their counts, shares and filler lists, the schema content hash,
+    the rendered full text's sha256 and size, and the decontamination statement
+    -- which cites, rather than repeats, the two committed receipts that
+    already established this source's cleanliness
+    (:data:`SLURP_INTENT_SLOT_DECONTAMINATION_RECEIPTS`).
+    """
+
+    rendered = render_slurp_intent_slot_schema(schema)
+    document = schema.as_json()
+    intent_blocks = document.pop("intents")
+    listed_types = sum(len(block["types"]) for block in intent_blocks)
+    filler_count = sum(
+        len(entry["fillers"]) for block in intent_blocks for entry in block["types"]
+    )
+    return {
+        "schema": SLURP_INTENT_SLOT_SCHEMA_RECEIPT_SCHEMA,
+        "generator": generator,
+        "carrier": SLURP_LOCK_KEY,
+        "construction": {
+            **document,
+            "count_unit": "entity mention",
+            "share_denominator": "this intent's TRAIN entity mentions",
+            "type_order": "descending count, ties by entity type name",
+            "filler_order": "first seen in TRAIN file order, distinct, lower case",
+        },
+        "content_hash": schema.content_hash(),
+        "rendered_full_text": {
+            "sha256": hashlib.sha256(rendered.encode("utf-8")).hexdigest(),
+            "characters": len(rendered),
+            "lines": len(rendered.split("\n")),
+        },
+        "totals": {
+            "intents": len(intent_blocks),
+            "listed_type_rows": listed_types,
+            "example_fillers": filler_count,
+            "distinct_listed_types": len(
+                {
+                    entry["entity_type"]
+                    for block in intent_blocks
+                    for entry in block["types"]
+                }
+            ),
+        },
+        "intents": intent_blocks,
+        "decontamination": {
+            "verdict": "clean",
+            "statement": (
+                "Built from the governed SLURP train.jsonl alone: no devel or test "
+                "metadata file is opened by load_slurp_intent_slot_schema, which "
+                "names its split from a module constant and takes no split "
+                "argument. The cleanliness of that TRAIN source against the frozen "
+                "devel/test identity enumeration and the DEV rosters was measured "
+                "once by the KB-BUILD receipt cited below and is not re-measured "
+                "here, because re-measuring it would mean opening those splits "
+                "again."
+            ),
+            "cited_receipts": list(SLURP_INTENT_SLOT_DECONTAMINATION_RECEIPTS),
+        },
+    }
+
 __all__ = [
+    "SLURP_INTENT_SLOT_DECONTAMINATION_RECEIPTS",
+    "SLURP_INTENT_SLOT_SCHEMA_ID",
+    "SLURP_INTENT_SLOT_SCHEMA_RECEIPT_SCHEMA",
     "SLURP_LOCK_KEY",
+    "SlurpIntentSlotSchema",
+    "SlurpIntentSlots",
     "SlurpOntology",
     "SlurpRecord",
     "SlurpTrainMaterial",
     "SlurpTrainRecording",
+    "load_slurp_intent_slot_schema",
     "load_slurp_ontology",
     "load_slurp_split",
     "load_slurp_train_material",
     "render_slurp_closed_label_inventory",
+    "render_slurp_closed_label_inventory_with_slot_schema",
+    "render_slurp_intent_slot_schema",
     "render_slurp_label_inventory",
     "render_slurp_ontology",
+    "render_slurp_slot_schema_for_state",
+    "render_slurp_slot_schema_for_state_detail",
+    "slurp_intent_from_state_content",
+    "slurp_intent_slot_schema_receipt",
 ]

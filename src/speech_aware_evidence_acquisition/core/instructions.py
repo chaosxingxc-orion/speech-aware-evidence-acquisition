@@ -37,7 +37,10 @@ from typing import Callable, Mapping
 
 from ..data.audio2tool import render_tool_schemas
 from ..data.audio2tool_tools import render_registry_compact, render_registry_grouped
-from ..data.slurp import render_slurp_closed_label_inventory
+from ..data.slurp import (
+    render_slurp_closed_label_inventory,
+    render_slurp_closed_label_inventory_with_slot_schema,
+)
 from .base import INSTRUCTION_FILLS, CoreError
 
 TOOL_SCHEMAS_PLACEHOLDER = "{tool_schemas}"
@@ -65,6 +68,14 @@ INSTRUCTION_FILLS.register("audio2tool-registry-grouped", render_registry_groupe
 # Third fill, same `(lock, root) -> str` shape; no existing cell names it, so
 # every previously rendered instruction is byte-identical to before.
 INSTRUCTION_FILLS.register("slurp-label-inventory", render_slurp_closed_label_inventory)
+# SLURP's closed label inventory followed by the per-intent TRAIN slot
+# schema (program prerequisite MF-3): a PURE SUFFIX of the fill above, so a
+# cell naming it differs from the sealed closed-list baseline by the schema
+# and by nothing else. Same `(lock, root) -> str` shape; no existing cell
+# names it, so every previously rendered instruction is byte-identical.
+INSTRUCTION_FILLS.register(
+    "slurp-intent-slot-schema", render_slurp_closed_label_inventory_with_slot_schema
+)
 
 
 def render_template_with_fill(

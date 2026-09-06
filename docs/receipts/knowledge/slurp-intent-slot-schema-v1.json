@@ -1,0 +1,3294 @@
+{
+  "carrier": "slurp",
+  "construction": {
+    "count_unit": "entity mention",
+    "examples_per_type": 5,
+    "filler_order": "first seen in TRAIN file order, distinct, lower case",
+    "min_share": 0.02,
+    "schema_id": "slurp-intent-slot-schema-v1",
+    "share_denominator": "this intent's TRAIN entity mentions",
+    "source_identity_hash": "545847bb95a9423005c71bdcc3fa74af55a3a1b6ae91409ba4070fd35bf92fef",
+    "source_split": "train",
+    "type_order": "descending count, ties by entity type name",
+    "utterance_count": 11514
+  },
+  "content_hash": "732e500af3870216c7b311369f6f190ffdb0365e497d84cf211f478036757dcc",
+  "decontamination": {
+    "cited_receipts": [
+      "docs/receipts/knowledge/slurp-kb-size-full.json",
+      "docs/receipts/knowledge/slurp-split-identity.json"
+    ],
+    "statement": "Built from the governed SLURP train.jsonl alone: no devel or test metadata file is opened by load_slurp_intent_slot_schema, which names its split from a module constant and takes no split argument. The cleanliness of that TRAIN source against the frozen devel/test identity enumeration and the DEV rosters was measured once by the KB-BUILD receipt cited below and is not re-measured here, because re-measuring it would mean opening those splits again.",
+    "verdict": "clean"
+  },
+  "generator": "scripts/build_slurp_intent_slot_schema.py",
+  "intents": [
+    {
+      "intent": "alarm_query",
+      "slot_mentions": 59,
+      "types": [
+        {
+          "count": 28,
+          "entity_type": "date",
+          "fillers": [
+            "tuesday 's",
+            "today",
+            "tomorrow",
+            "thursday",
+            "this week"
+          ],
+          "share": 0.474576
+        },
+        {
+          "count": 14,
+          "entity_type": "timeofday",
+          "fillers": [
+            "morning"
+          ],
+          "share": 0.237288
+        },
+        {
+          "count": 11,
+          "entity_type": "time",
+          "fillers": [
+            "next two days",
+            "four am",
+            "eight hundred",
+            "five am",
+            "six am"
+          ],
+          "share": 0.186441
+        },
+        {
+          "count": 2,
+          "entity_type": "alarm_type",
+          "fillers": [
+            "wake up",
+            "house alarm"
+          ],
+          "share": 0.033898
+        },
+        {
+          "count": 2,
+          "entity_type": "event_name",
+          "fillers": [
+            "meeting",
+            "flight"
+          ],
+          "share": 0.033898
+        }
+      ],
+      "utterances": 130
+    },
+    {
+      "intent": "alarm_remove",
+      "slot_mentions": 61,
+      "types": [
+        {
+          "count": 25,
+          "entity_type": "time",
+          "fillers": [
+            "seven am",
+            "eight and nine",
+            "eight pm",
+            "seven thirty am",
+            "six am"
+          ],
+          "share": 0.409836
+        },
+        {
+          "count": 20,
+          "entity_type": "date",
+          "fillers": [
+            "today 's",
+            "tenth of march two thousand seventeen",
+            "wednesday",
+            "tomorrow",
+            "monday"
+          ],
+          "share": 0.327869
+        },
+        {
+          "count": 9,
+          "entity_type": "timeofday",
+          "fillers": [
+            "morning",
+            "evening",
+            "this evening"
+          ],
+          "share": 0.147541
+        },
+        {
+          "count": 5,
+          "entity_type": "alarm_type",
+          "fillers": [
+            "wake up",
+            "soccer practice"
+          ],
+          "share": 0.081967
+        }
+      ],
+      "utterances": 78
+    },
+    {
+      "intent": "alarm_set",
+      "slot_mentions": 248,
+      "types": [
+        {
+          "count": 141,
+          "entity_type": "time",
+          "fillers": [
+            "seven thirty am",
+            "seven pm",
+            "five pm",
+            "an hour",
+            "one hour from now"
+          ],
+          "share": 0.568548
+        },
+        {
+          "count": 54,
+          "entity_type": "date",
+          "fillers": [
+            "thursday",
+            "next week 's",
+            "friday",
+            "tomorrow",
+            "tuesday"
+          ],
+          "share": 0.217742
+        },
+        {
+          "count": 24,
+          "entity_type": "timeofday",
+          "fillers": [
+            "afternoon",
+            "noon",
+            "morning",
+            "next morning",
+            "evening"
+          ],
+          "share": 0.096774
+        },
+        {
+          "count": 21,
+          "entity_type": "event_name",
+          "fillers": [
+            "dentist appointment",
+            "meeting",
+            "train",
+            "early adopters program",
+            "concert"
+          ],
+          "share": 0.084677
+        }
+      ],
+      "utterances": 182
+    },
+    {
+      "intent": "audio_volume_down",
+      "slot_mentions": 7,
+      "types": [
+        {
+          "count": 6,
+          "entity_type": "change_amount",
+          "fillers": [
+            "to twenty",
+            "twenty percent",
+            "to ten percent",
+            "to five percent",
+            "to half"
+          ],
+          "share": 0.857143
+        },
+        {
+          "count": 1,
+          "entity_type": "device_type",
+          "fillers": [
+            "radio"
+          ],
+          "share": 0.142857
+        }
+      ],
+      "utterances": 52
+    },
+    {
+      "intent": "audio_volume_mute",
+      "slot_mentions": 30,
+      "types": [
+        {
+          "count": 22,
+          "entity_type": "time",
+          "fillers": [
+            "next three hours",
+            "twenty minutes",
+            "forty minutes",
+            "two hours",
+            "until three pm"
+          ],
+          "share": 0.733333
+        },
+        {
+          "count": 4,
+          "entity_type": "device_type",
+          "fillers": [
+            "radio",
+            "television",
+            "music system",
+            "living room speakers"
+          ],
+          "share": 0.133333
+        },
+        {
+          "count": 2,
+          "entity_type": "change_amount",
+          "fillers": [
+            "to zero"
+          ],
+          "share": 0.066667
+        },
+        {
+          "count": 1,
+          "entity_type": "event_name",
+          "fillers": [
+            "meeting"
+          ],
+          "share": 0.033333
+        },
+        {
+          "count": 1,
+          "entity_type": "timeofday",
+          "fillers": [
+            "tonight"
+          ],
+          "share": 0.033333
+        }
+      ],
+      "utterances": 110
+    },
+    {
+      "intent": "audio_volume_other",
+      "slot_mentions": 1,
+      "types": [
+        {
+          "count": 1,
+          "entity_type": "change_amount",
+          "fillers": [
+            "average"
+          ],
+          "share": 1.0
+        }
+      ],
+      "utterances": 18
+    },
+    {
+      "intent": "audio_volume_up",
+      "slot_mentions": 27,
+      "types": [
+        {
+          "count": 19,
+          "entity_type": "change_amount",
+          "fillers": [
+            "to ninety",
+            "to level seven",
+            "to fifty",
+            "to fifty five percent",
+            "to sixty five percent"
+          ],
+          "share": 0.703704
+        },
+        {
+          "count": 6,
+          "entity_type": "device_type",
+          "fillers": [
+            "music player",
+            "left speaker"
+          ],
+          "share": 0.222222
+        },
+        {
+          "count": 1,
+          "entity_type": "media_type",
+          "fillers": [
+            "music"
+          ],
+          "share": 0.037037
+        },
+        {
+          "count": 1,
+          "entity_type": "song_name",
+          "fillers": [
+            "hips do n't lie"
+          ],
+          "share": 0.037037
+        }
+      ],
+      "utterances": 110
+    },
+    {
+      "intent": "calendar_query",
+      "slot_mentions": 677,
+      "types": [
+        {
+          "count": 298,
+          "entity_type": "date",
+          "fillers": [
+            "this wednesday",
+            "wednesday",
+            "tomorrow",
+            "this week",
+            "this weekend"
+          ],
+          "share": 0.440177
+        },
+        {
+          "count": 217,
+          "entity_type": "event_name",
+          "fillers": [
+            "meeting",
+            "appointments",
+            "project meeting",
+            "balloon festival",
+            "appointment"
+          ],
+          "share": 0.320532
+        },
+        {
+          "count": 75,
+          "entity_type": "time",
+          "fillers": [
+            "noon",
+            "three",
+            "future",
+            "eight am",
+            "five pm"
+          ],
+          "share": 0.110783
+        },
+        {
+          "count": 28,
+          "entity_type": "timeofday",
+          "fillers": [
+            "morning",
+            "tonight",
+            "tonight 's",
+            "afternoon",
+            "this afternoon"
+          ],
+          "share": 0.041359
+        },
+        {
+          "count": 23,
+          "entity_type": "person",
+          "fillers": [
+            "chief guest",
+            "june 's",
+            "jimmie 's",
+            "julie",
+            "steve"
+          ],
+          "share": 0.033973
+        },
+        {
+          "count": 14,
+          "entity_type": "relation",
+          "fillers": [
+            "daughter 's",
+            "clients",
+            "hairdresser",
+            "dentist",
+            "friends"
+          ],
+          "share": 0.020679
+        }
+      ],
+      "utterances": 566
+    },
+    {
+      "intent": "calendar_remove",
+      "slot_mentions": 269,
+      "types": [
+        {
+          "count": 108,
+          "entity_type": "date",
+          "fillers": [
+            "april second",
+            "tomorrow",
+            "next week",
+            "this weekend",
+            "march"
+          ],
+          "share": 0.401487
+        },
+        {
+          "count": 105,
+          "entity_type": "event_name",
+          "fillers": [
+            "hip show",
+            "appointment",
+            "new year 's eve",
+            "birthday",
+            "party"
+          ],
+          "share": 0.390335
+        },
+        {
+          "count": 25,
+          "entity_type": "time",
+          "fillers": [
+            "three pm",
+            "clear",
+            "ten am",
+            "one thirty",
+            "the next two weeks"
+          ],
+          "share": 0.092937
+        },
+        {
+          "count": 11,
+          "entity_type": "meal_type",
+          "fillers": [
+            "dinner",
+            "lunch",
+            "breakfast"
+          ],
+          "share": 0.040892
+        },
+        {
+          "count": 10,
+          "entity_type": "person",
+          "fillers": [
+            "mike",
+            "jeff 's",
+            "michael",
+            "wyatt 's",
+            "sam 's"
+          ],
+          "share": 0.037175
+        }
+      ],
+      "utterances": 312
+    },
+    {
+      "intent": "calendar_set",
+      "slot_mentions": 1645,
+      "types": [
+        {
+          "count": 531,
+          "entity_type": "event_name",
+          "fillers": [
+            "meeting",
+            "business meet",
+            "dentist appointment",
+            "interview",
+            "brothers birthday"
+          ],
+          "share": 0.322796
+        },
+        {
+          "count": 423,
+          "entity_type": "date",
+          "fillers": [
+            "three days from now",
+            "next sunday",
+            "friday",
+            "eleven march",
+            "next month"
+          ],
+          "share": 0.257143
+        },
+        {
+          "count": 271,
+          "entity_type": "time",
+          "fillers": [
+            "eight pm",
+            "eleven am",
+            "five",
+            "two pm",
+            "one pm"
+          ],
+          "share": 0.164742
+        },
+        {
+          "count": 153,
+          "entity_type": "person",
+          "fillers": [
+            "amy",
+            "joe",
+            "mr rodriguez",
+            "mary 's",
+            "hr department"
+          ],
+          "share": 0.093009
+        },
+        {
+          "count": 70,
+          "entity_type": "general_frequency",
+          "fillers": [
+            "every day",
+            "every week",
+            "everyday",
+            "repeating",
+            "every friday"
+          ],
+          "share": 0.042553
+        },
+        {
+          "count": 65,
+          "entity_type": "relation",
+          "fillers": [
+            "girlfriend",
+            "mother",
+            "secretary",
+            "friend",
+            "mom"
+          ],
+          "share": 0.039514
+        },
+        {
+          "count": 52,
+          "entity_type": "timeofday",
+          "fillers": [
+            "morning",
+            "afternoon",
+            "noon",
+            "tonight",
+            "this evening"
+          ],
+          "share": 0.031611
+        },
+        {
+          "count": 50,
+          "entity_type": "place_name",
+          "fillers": [
+            "walmart",
+            "petco",
+            "the office",
+            "rccg",
+            "summerfest"
+          ],
+          "share": 0.030395
+        }
+      ],
+      "utterances": 810
+    },
+    {
+      "intent": "cooking_query",
+      "slot_mentions": 3,
+      "types": [
+        {
+          "count": 2,
+          "entity_type": "food_type",
+          "fillers": [
+            "brown sugar",
+            "peanut butter cookies"
+          ],
+          "share": 0.666667
+        },
+        {
+          "count": 1,
+          "entity_type": "meal_type",
+          "fillers": [
+            "lunch"
+          ],
+          "share": 0.333333
+        }
+      ],
+      "utterances": 4
+    },
+    {
+      "intent": "cooking_recipe",
+      "slot_mentions": 198,
+      "types": [
+        {
+          "count": 148,
+          "entity_type": "food_type",
+          "fillers": [
+            "texas sheet cake",
+            "vegetarian lasagna",
+            "tomato soup",
+            "beef",
+            "puttanesca"
+          ],
+          "share": 0.747475
+        },
+        {
+          "count": 20,
+          "entity_type": "ingredient",
+          "fillers": [
+            "ground beef",
+            "zucchini",
+            "rice",
+            "potato",
+            "vegan egg"
+          ],
+          "share": 0.10101
+        },
+        {
+          "count": 17,
+          "entity_type": "cooking_type",
+          "fillers": [
+            "bake",
+            "sear",
+            "cook",
+            "boil",
+            "poach"
+          ],
+          "share": 0.085859
+        },
+        {
+          "count": 4,
+          "entity_type": "drink_type",
+          "fillers": [
+            "milk",
+            "sweet tea",
+            "margarita",
+            "rice wine"
+          ],
+          "share": 0.020202
+        },
+        {
+          "count": 4,
+          "entity_type": "meal_type",
+          "fillers": [
+            "breakfast",
+            "break fast",
+            "lunch",
+            "dinner"
+          ],
+          "share": 0.020202
+        }
+      ],
+      "utterances": 207
+    },
+    {
+      "intent": "datetime_convert",
+      "slot_mentions": 97,
+      "types": [
+        {
+          "count": 47,
+          "entity_type": "place_name",
+          "fillers": [
+            "tokyo",
+            "los angeles",
+            "france",
+            "new york",
+            "california"
+          ],
+          "share": 0.484536
+        },
+        {
+          "count": 31,
+          "entity_type": "time_zone",
+          "fillers": [
+            "ist",
+            "central",
+            "current",
+            "london england",
+            "g. m. t. plus five"
+          ],
+          "share": 0.319588
+        },
+        {
+          "count": 17,
+          "entity_type": "time",
+          "fillers": [
+            "six am",
+            "eight",
+            "night",
+            "six pm",
+            "midnight"
+          ],
+          "share": 0.175258
+        }
+      ],
+      "utterances": 52
+    },
+    {
+      "intent": "datetime_query",
+      "slot_mentions": 307,
+      "types": [
+        {
+          "count": 136,
+          "entity_type": "date",
+          "fillers": [
+            "fourth",
+            "fifth",
+            "today",
+            "this year",
+            "today 's"
+          ],
+          "share": 0.442997
+        },
+        {
+          "count": 118,
+          "entity_type": "place_name",
+          "fillers": [
+            "another city in us",
+            "london england",
+            "florida",
+            "miami florida",
+            "nyc"
+          ],
+          "share": 0.384365
+        },
+        {
+          "count": 24,
+          "entity_type": "time_zone",
+          "fillers": [
+            "midwest",
+            "date",
+            "pst",
+            "day",
+            "this time zone"
+          ],
+          "share": 0.078176
+        },
+        {
+          "count": 15,
+          "entity_type": "event_name",
+          "fillers": [
+            "easter sunday",
+            "birthday",
+            "valentines",
+            "easter",
+            "christmas"
+          ],
+          "share": 0.04886
+        },
+        {
+          "count": 13,
+          "entity_type": "time",
+          "fillers": [
+            "midnight",
+            "eight pm",
+            "twenty second",
+            "summer season",
+            "four pm"
+          ],
+          "share": 0.042345
+        }
+      ],
+      "utterances": 350
+    },
+    {
+      "intent": "email_addcontact",
+      "slot_mentions": 30,
+      "types": [
+        {
+          "count": 14,
+          "entity_type": "email_address",
+          "fillers": [
+            "dale@gmail dot com",
+            "ssmith@yahoo dot com",
+            "sam@gmail dot com",
+            "dbell@aol dot com",
+            "apahelp@yahoo dot com"
+          ],
+          "share": 0.466667
+        },
+        {
+          "count": 10,
+          "entity_type": "person",
+          "fillers": [
+            "jo",
+            "sarah",
+            "sam smith",
+            "daniel bell",
+            "dr rosenstock"
+          ],
+          "share": 0.333333
+        },
+        {
+          "count": 4,
+          "entity_type": "personal_info",
+          "fillers": [
+            "email"
+          ],
+          "share": 0.133333
+        },
+        {
+          "count": 1,
+          "entity_type": "list_name",
+          "fillers": [
+            "contact lists"
+          ],
+          "share": 0.033333
+        },
+        {
+          "count": 1,
+          "entity_type": "relation",
+          "fillers": [
+            "mum 's"
+          ],
+          "share": 0.033333
+        }
+      ],
+      "utterances": 54
+    },
+    {
+      "intent": "email_query",
+      "slot_mentions": 263,
+      "types": [
+        {
+          "count": 127,
+          "entity_type": "person",
+          "fillers": [
+            "anna",
+            "jane",
+            "derek",
+            "jack",
+            "joe"
+          ],
+          "share": 0.48289
+        },
+        {
+          "count": 33,
+          "entity_type": "relation",
+          "fillers": [
+            "my mother",
+            "girlfriend",
+            "mom",
+            "friends",
+            "mom 's"
+          ],
+          "share": 0.125475
+        },
+        {
+          "count": 32,
+          "entity_type": "date",
+          "fillers": [
+            "today",
+            "last night",
+            "today 's",
+            "a week ago",
+            "yesterdays"
+          ],
+          "share": 0.121673
+        },
+        {
+          "count": 31,
+          "entity_type": "email_folder",
+          "fillers": [
+            "inbox",
+            "spam",
+            "inboxes",
+            "mailbox"
+          ],
+          "share": 0.117871
+        },
+        {
+          "count": 27,
+          "entity_type": "time",
+          "fillers": [
+            "last hour",
+            "last two days",
+            "last couple of days",
+            "ten am",
+            "last twenty minutes"
+          ],
+          "share": 0.102662
+        }
+      ],
+      "utterances": 418
+    },
+    {
+      "intent": "email_querycontact",
+      "slot_mentions": 174,
+      "types": [
+        {
+          "count": 90,
+          "entity_type": "person",
+          "fillers": [
+            "alex",
+            "derek 's",
+            "john smith",
+            "john",
+            "mary s."
+          ],
+          "share": 0.517241
+        },
+        {
+          "count": 63,
+          "entity_type": "personal_info",
+          "fillers": [
+            "number",
+            "phone number",
+            "old",
+            "information",
+            "contact"
+          ],
+          "share": 0.362069
+        },
+        {
+          "count": 13,
+          "entity_type": "relation",
+          "fillers": [
+            "mom",
+            "wife",
+            "sisters",
+            "my wife 's",
+            "friend"
+          ],
+          "share": 0.074713
+        }
+      ],
+      "utterances": 127
+    },
+    {
+      "intent": "email_sendemail",
+      "slot_mentions": 375,
+      "types": [
+        {
+          "count": 165,
+          "entity_type": "person",
+          "fillers": [
+            "sandy",
+            "aran",
+            "toms principal",
+            "martin",
+            "nancy"
+          ],
+          "share": 0.44
+        },
+        {
+          "count": 90,
+          "entity_type": "relation",
+          "fillers": [
+            "company mate",
+            "sister",
+            "boss",
+            "family",
+            "supervisor"
+          ],
+          "share": 0.24
+        },
+        {
+          "count": 39,
+          "entity_type": "date",
+          "fillers": [
+            "tomorrow",
+            "tomorrow 's",
+            "today",
+            "next week",
+            "this week"
+          ],
+          "share": 0.104
+        },
+        {
+          "count": 18,
+          "entity_type": "email_address",
+          "fillers": [
+            "joejoe@gmail dot com",
+            "sdfa@hotmail dot com",
+            "blahblah@blah dot com",
+            "newmail@gmail dot com",
+            "sjobs@apple dot com"
+          ],
+          "share": 0.048
+        },
+        {
+          "count": 18,
+          "entity_type": "time",
+          "fillers": [
+            "ten pm",
+            "nine am",
+            "five pm",
+            "seven am",
+            "one pm"
+          ],
+          "share": 0.048
+        },
+        {
+          "count": 17,
+          "entity_type": "event_name",
+          "fillers": [
+            "meeting",
+            "work party",
+            "birthday",
+            "met him",
+            "party"
+          ],
+          "share": 0.045333
+        },
+        {
+          "count": 10,
+          "entity_type": "timeofday",
+          "fillers": [
+            "tonight",
+            "morning",
+            "evening"
+          ],
+          "share": 0.026667
+        }
+      ],
+      "utterances": 354
+    },
+    {
+      "intent": "general_greet",
+      "slot_mentions": 3,
+      "types": [
+        {
+          "count": 3,
+          "entity_type": "date",
+          "fillers": [
+            "today"
+          ],
+          "share": 1.0
+        }
+      ],
+      "utterances": 25
+    },
+    {
+      "intent": "general_joke",
+      "slot_mentions": 44,
+      "types": [
+        {
+          "count": 35,
+          "entity_type": "joke_type",
+          "fillers": [
+            "good",
+            "funny",
+            "latest",
+            "birds",
+            "man"
+          ],
+          "share": 0.795455
+        },
+        {
+          "count": 3,
+          "entity_type": "relation",
+          "fillers": [
+            "lawyers",
+            "kids",
+            "priest"
+          ],
+          "share": 0.068182
+        },
+        {
+          "count": 2,
+          "entity_type": "date",
+          "fillers": [
+            "today",
+            "today 's"
+          ],
+          "share": 0.045455
+        },
+        {
+          "count": 2,
+          "entity_type": "person",
+          "fillers": [
+            "sam"
+          ],
+          "share": 0.045455
+        },
+        {
+          "count": 1,
+          "entity_type": "business_type",
+          "fillers": [
+            "bar"
+          ],
+          "share": 0.022727
+        },
+        {
+          "count": 1,
+          "entity_type": "food_type",
+          "fillers": [
+            "the orange and the banana"
+          ],
+          "share": 0.022727
+        }
+      ],
+      "utterances": 72
+    },
+    {
+      "intent": "general_quirky",
+      "slot_mentions": 175,
+      "types": [
+        {
+          "count": 92,
+          "entity_type": "date",
+          "fillers": [
+            "today",
+            "friday the thirteenth",
+            "this year",
+            "this week",
+            "this month"
+          ],
+          "share": 0.525714
+        },
+        {
+          "count": 19,
+          "entity_type": "person",
+          "fillers": [
+            "mr t",
+            "the president",
+            "angelina jolie",
+            "donald trump",
+            "dolly parton"
+          ],
+          "share": 0.108571
+        },
+        {
+          "count": 16,
+          "entity_type": "place_name",
+          "fillers": [
+            "office",
+            "vietnam",
+            "my city",
+            "syria",
+            "america"
+          ],
+          "share": 0.091429
+        },
+        {
+          "count": 8,
+          "entity_type": "event_name",
+          "fillers": [
+            "meetings",
+            "party beach",
+            "japan day festival",
+            "meeting",
+            "concert"
+          ],
+          "share": 0.045714
+        },
+        {
+          "count": 8,
+          "entity_type": "relation",
+          "fillers": [
+            "kids",
+            "wife",
+            "girlfriend",
+            "old friend",
+            "son"
+          ],
+          "share": 0.045714
+        },
+        {
+          "count": 7,
+          "entity_type": "meal_type",
+          "fillers": [
+            "breakfast",
+            "dinner",
+            "lunch"
+          ],
+          "share": 0.04
+        },
+        {
+          "count": 7,
+          "entity_type": "time",
+          "fillers": [
+            "seven am",
+            "last three days",
+            "eight am",
+            "night",
+            "in six week"
+          ],
+          "share": 0.04
+        }
+      ],
+      "utterances": 555
+    },
+    {
+      "intent": "iot_cleaning",
+      "slot_mentions": 102,
+      "types": [
+        {
+          "count": 72,
+          "entity_type": "device_type",
+          "fillers": [
+            "vacuum cleaner robot",
+            "vacuum",
+            "robot vacuum cleaner",
+            "vacuum cleaner",
+            "iroomba"
+          ],
+          "share": 0.705882
+        },
+        {
+          "count": 19,
+          "entity_type": "house_place",
+          "fillers": [
+            "carpets",
+            "house",
+            "room",
+            "flat",
+            "hall"
+          ],
+          "share": 0.186275
+        },
+        {
+          "count": 7,
+          "entity_type": "time",
+          "fillers": [
+            "one pm",
+            "nine am",
+            "ten minutes",
+            "an hour",
+            "ten"
+          ],
+          "share": 0.068627
+        }
+      ],
+      "utterances": 93
+    },
+    {
+      "intent": "iot_coffee",
+      "slot_mentions": 58,
+      "types": [
+        {
+          "count": 22,
+          "entity_type": "coffee_type",
+          "fillers": [
+            "hot",
+            "cappuccino",
+            "espresso",
+            "happy juice",
+            "creamy"
+          ],
+          "share": 0.37931
+        },
+        {
+          "count": 17,
+          "entity_type": "device_type",
+          "fillers": [
+            "kettle",
+            "machine",
+            "coffee machine",
+            "coffee maker",
+            "coffee pot"
+          ],
+          "share": 0.293103
+        },
+        {
+          "count": 11,
+          "entity_type": "time",
+          "fillers": [
+            "six am",
+            "eight am",
+            "three pm",
+            "four pm",
+            "in ten minutes"
+          ],
+          "share": 0.189655
+        },
+        {
+          "count": 3,
+          "entity_type": "business_type",
+          "fillers": [
+            "coffee shop"
+          ],
+          "share": 0.051724
+        },
+        {
+          "count": 2,
+          "entity_type": "business_name",
+          "fillers": [
+            "starbucks"
+          ],
+          "share": 0.034483
+        },
+        {
+          "count": 2,
+          "entity_type": "date",
+          "fillers": [
+            "every week day",
+            "today"
+          ],
+          "share": 0.034483
+        }
+      ],
+      "utterances": 124
+    },
+    {
+      "intent": "iot_hue_lightchange",
+      "slot_mentions": 139,
+      "types": [
+        {
+          "count": 98,
+          "entity_type": "color_type",
+          "fillers": [
+            "red",
+            "blue",
+            "orange",
+            "softer",
+            "random"
+          ],
+          "share": 0.705036
+        },
+        {
+          "count": 34,
+          "entity_type": "house_place",
+          "fillers": [
+            "living room",
+            "room",
+            "house",
+            "porch",
+            "kitchen"
+          ],
+          "share": 0.244604
+        },
+        {
+          "count": 5,
+          "entity_type": "change_amount",
+          "fillers": [
+            "to one percent",
+            "to twenty percent",
+            "to fifty percent"
+          ],
+          "share": 0.035971
+        }
+      ],
+      "utterances": 125
+    },
+    {
+      "intent": "iot_hue_lightdim",
+      "slot_mentions": 32,
+      "types": [
+        {
+          "count": 21,
+          "entity_type": "house_place",
+          "fillers": [
+            "hall",
+            "living room",
+            "garden",
+            "kitchen",
+            "room"
+          ],
+          "share": 0.65625
+        },
+        {
+          "count": 9,
+          "entity_type": "change_amount",
+          "fillers": [
+            "by half",
+            "to seven",
+            "by twenty percent",
+            "a bit",
+            "a little more"
+          ],
+          "share": 0.28125
+        },
+        {
+          "count": 1,
+          "entity_type": "color_type",
+          "fillers": [
+            "dull blue"
+          ],
+          "share": 0.03125
+        },
+        {
+          "count": 1,
+          "entity_type": "device_type",
+          "fillers": [
+            "overhead"
+          ],
+          "share": 0.03125
+        }
+      ],
+      "utterances": 76
+    },
+    {
+      "intent": "iot_hue_lightoff",
+      "slot_mentions": 118,
+      "types": [
+        {
+          "count": 91,
+          "entity_type": "house_place",
+          "fillers": [
+            "bed room",
+            "kitchen",
+            "room",
+            "my room",
+            "den"
+          ],
+          "share": 0.771186
+        },
+        {
+          "count": 22,
+          "entity_type": "device_type",
+          "fillers": [
+            "porch light",
+            "all lights",
+            "smart lamp",
+            "lamp",
+            "right side of light"
+          ],
+          "share": 0.186441
+        },
+        {
+          "count": 4,
+          "entity_type": "time",
+          "fillers": [
+            "during the daytime",
+            "in ten seconds",
+            "during the day"
+          ],
+          "share": 0.033898
+        }
+      ],
+      "utterances": 153
+    },
+    {
+      "intent": "iot_hue_lighton",
+      "slot_mentions": 7,
+      "types": [
+        {
+          "count": 4,
+          "entity_type": "house_place",
+          "fillers": [
+            "hall",
+            "living room",
+            "house",
+            "corner"
+          ],
+          "share": 0.571429
+        },
+        {
+          "count": 3,
+          "entity_type": "device_type",
+          "fillers": [
+            "lights",
+            "lamp",
+            "disco lights"
+          ],
+          "share": 0.428571
+        }
+      ],
+      "utterances": 22
+    },
+    {
+      "intent": "iot_hue_lightup",
+      "slot_mentions": 25,
+      "types": [
+        {
+          "count": 17,
+          "entity_type": "house_place",
+          "fillers": [
+            "living room",
+            "room",
+            "bedroom",
+            "the room",
+            "front porch"
+          ],
+          "share": 0.68
+        },
+        {
+          "count": 7,
+          "entity_type": "change_amount",
+          "fillers": [
+            "to full power",
+            "a little",
+            "slightly",
+            "by twenty percent",
+            "at seventy percent"
+          ],
+          "share": 0.28
+        },
+        {
+          "count": 1,
+          "entity_type": "device_type",
+          "fillers": [
+            "lamp next to the sofa"
+          ],
+          "share": 0.04
+        }
+      ],
+      "utterances": 76
+    },
+    {
+      "intent": "iot_wemo_off",
+      "slot_mentions": 47,
+      "types": [
+        {
+          "count": 45,
+          "entity_type": "device_type",
+          "fillers": [
+            "smart plug socket",
+            "wemo plug",
+            "smart socket",
+            "wifi",
+            "power"
+          ],
+          "share": 0.957447
+        },
+        {
+          "count": 2,
+          "entity_type": "house_place",
+          "fillers": [
+            "kitchen",
+            "game room"
+          ],
+          "share": 0.042553
+        }
+      ],
+      "utterances": 52
+    },
+    {
+      "intent": "iot_wemo_on",
+      "slot_mentions": 37,
+      "types": [
+        {
+          "count": 33,
+          "entity_type": "device_type",
+          "fillers": [
+            "wemo plug socket",
+            "plug",
+            "mobile charger plug",
+            "smart plug socket",
+            "light socket"
+          ],
+          "share": 0.891892
+        },
+        {
+          "count": 4,
+          "entity_type": "house_place",
+          "fillers": [
+            "living room",
+            "kitchen",
+            "office",
+            "bathroom"
+          ],
+          "share": 0.108108
+        }
+      ],
+      "utterances": 48
+    },
+    {
+      "intent": "lists_createoradd",
+      "slot_mentions": 92,
+      "types": [
+        {
+          "count": 72,
+          "entity_type": "list_name",
+          "fillers": [
+            "shopping",
+            "grocery",
+            "to do",
+            "books",
+            "power tools"
+          ],
+          "share": 0.782609
+        },
+        {
+          "count": 8,
+          "entity_type": "date",
+          "fillers": [
+            "today",
+            "tomorrow",
+            "today 's",
+            "two thousand and fourteen"
+          ],
+          "share": 0.086957
+        },
+        {
+          "count": 3,
+          "entity_type": "event_name",
+          "fillers": [
+            "party",
+            "wedding invite",
+            "appointment"
+          ],
+          "share": 0.032609
+        },
+        {
+          "count": 2,
+          "entity_type": "drink_type",
+          "fillers": [
+            "coffee",
+            "water"
+          ],
+          "share": 0.021739
+        },
+        {
+          "count": 2,
+          "entity_type": "music_descriptor",
+          "fillers": [
+            "recent",
+            "new songs"
+          ],
+          "share": 0.021739
+        },
+        {
+          "count": 2,
+          "entity_type": "person",
+          "fillers": [
+            "ashley",
+            "gloria"
+          ],
+          "share": 0.021739
+        }
+      ],
+      "utterances": 177
+    },
+    {
+      "intent": "lists_query",
+      "slot_mentions": 74,
+      "types": [
+        {
+          "count": 47,
+          "entity_type": "list_name",
+          "fillers": [
+            "shopping",
+            "to do",
+            "groceries",
+            "grocery",
+            "holiday"
+          ],
+          "share": 0.635135
+        },
+        {
+          "count": 21,
+          "entity_type": "date",
+          "fillers": [
+            "today",
+            "this week",
+            "past week"
+          ],
+          "share": 0.283784
+        }
+      ],
+      "utterances": 198
+    },
+    {
+      "intent": "lists_remove",
+      "slot_mentions": 88,
+      "types": [
+        {
+          "count": 67,
+          "entity_type": "list_name",
+          "fillers": [
+            "grocery list",
+            "bank transaction",
+            "shopping",
+            "kickball",
+            "grocery"
+          ],
+          "share": 0.761364
+        },
+        {
+          "count": 7,
+          "entity_type": "date",
+          "fillers": [
+            "yesterday",
+            "this weekend",
+            "sunday",
+            "tomorrow",
+            "last month"
+          ],
+          "share": 0.079545
+        },
+        {
+          "count": 6,
+          "entity_type": "person",
+          "fillers": [
+            "ashley",
+            "frida",
+            "joe",
+            "mike stein",
+            "mark"
+          ],
+          "share": 0.068182
+        },
+        {
+          "count": 2,
+          "entity_type": "event_name",
+          "fillers": [
+            "christmas",
+            "holiday"
+          ],
+          "share": 0.022727
+        },
+        {
+          "count": 2,
+          "entity_type": "relation",
+          "fillers": [
+            "mother",
+            "co workers"
+          ],
+          "share": 0.022727
+        }
+      ],
+      "utterances": 164
+    },
+    {
+      "intent": "music_dislikeness",
+      "slot_mentions": 2,
+      "types": [
+        {
+          "count": 2,
+          "entity_type": "music_descriptor",
+          "fillers": [
+            "background"
+          ],
+          "share": 1.0
+        }
+      ],
+      "utterances": 14
+    },
+    {
+      "intent": "music_likeness",
+      "slot_mentions": 29,
+      "types": [
+        {
+          "count": 11,
+          "entity_type": "music_genre",
+          "fillers": [
+            "rock",
+            "zydeco jams",
+            "rock and roll",
+            "electronic",
+            "classic rock"
+          ],
+          "share": 0.37931
+        },
+        {
+          "count": 8,
+          "entity_type": "artist_name",
+          "fillers": [
+            "justin beibers",
+            "kfi",
+            "elton john",
+            "arijit singh",
+            "metallica"
+          ],
+          "share": 0.275862
+        },
+        {
+          "count": 3,
+          "entity_type": "music_descriptor",
+          "fillers": [
+            "background",
+            "dangal movie",
+            "sad"
+          ],
+          "share": 0.103448
+        },
+        {
+          "count": 2,
+          "entity_type": "app_name",
+          "fillers": [
+            "pandora"
+          ],
+          "share": 0.068966
+        },
+        {
+          "count": 2,
+          "entity_type": "player_setting",
+          "fillers": [
+            "repeat",
+            "replay"
+          ],
+          "share": 0.068966
+        },
+        {
+          "count": 1,
+          "entity_type": "date",
+          "fillers": [
+            "last month"
+          ],
+          "share": 0.034483
+        },
+        {
+          "count": 1,
+          "entity_type": "playlist_name",
+          "fillers": [
+            "sad songs of arijit singh"
+          ],
+          "share": 0.034483
+        },
+        {
+          "count": 1,
+          "entity_type": "song_name",
+          "fillers": [
+            "chhana mereya"
+          ],
+          "share": 0.034483
+        }
+      ],
+      "utterances": 113
+    },
+    {
+      "intent": "music_query",
+      "slot_mentions": 28,
+      "types": [
+        {
+          "count": 9,
+          "entity_type": "artist_name",
+          "fillers": [
+            "katy perry",
+            "lady antebellum",
+            "coldplay",
+            "shakira",
+            "spectre"
+          ],
+          "share": 0.321429
+        },
+        {
+          "count": 5,
+          "entity_type": "music_genre",
+          "fillers": [
+            "classic",
+            "rap",
+            "metal"
+          ],
+          "share": 0.178571
+        },
+        {
+          "count": 4,
+          "entity_type": "date",
+          "fillers": [
+            "this year",
+            "yesterday"
+          ],
+          "share": 0.142857
+        },
+        {
+          "count": 3,
+          "entity_type": "song_name",
+          "fillers": [
+            "one more cup of coffee",
+            "i just wanna dance with you",
+            "bohemian rhapsody"
+          ],
+          "share": 0.107143
+        },
+        {
+          "count": 2,
+          "entity_type": "person",
+          "fillers": [
+            "ed sheeran",
+            "justin bieber 's"
+          ],
+          "share": 0.071429
+        },
+        {
+          "count": 2,
+          "entity_type": "timeofday",
+          "fillers": [
+            "evening"
+          ],
+          "share": 0.071429
+        },
+        {
+          "count": 1,
+          "entity_type": "media_type",
+          "fillers": [
+            "music"
+          ],
+          "share": 0.035714
+        },
+        {
+          "count": 1,
+          "entity_type": "music_album",
+          "fillers": [
+            "theme song for frasier"
+          ],
+          "share": 0.035714
+        },
+        {
+          "count": 1,
+          "entity_type": "player_setting",
+          "fillers": [
+            "shuffle"
+          ],
+          "share": 0.035714
+        }
+      ],
+      "utterances": 154
+    },
+    {
+      "intent": "music_settings",
+      "slot_mentions": 58,
+      "types": [
+        {
+          "count": 41,
+          "entity_type": "player_setting",
+          "fillers": [
+            "repeat",
+            "shuffle",
+            "party mode",
+            "shazam",
+            "stop repeating"
+          ],
+          "share": 0.706897
+        },
+        {
+          "count": 4,
+          "entity_type": "device_type",
+          "fillers": [
+            "equalizer",
+            "music player"
+          ],
+          "share": 0.068966
+        },
+        {
+          "count": 4,
+          "entity_type": "media_type",
+          "fillers": [
+            "song",
+            "radio",
+            "track",
+            "songs"
+          ],
+          "share": 0.068966
+        },
+        {
+          "count": 3,
+          "entity_type": "song_name",
+          "fillers": [
+            "last song",
+            "hips do n't lie"
+          ],
+          "share": 0.051724
+        },
+        {
+          "count": 2,
+          "entity_type": "artist_name",
+          "fillers": [
+            "akon",
+            "aaron carter"
+          ],
+          "share": 0.034483
+        },
+        {
+          "count": 2,
+          "entity_type": "music_genre",
+          "fillers": [
+            "jazz"
+          ],
+          "share": 0.034483
+        }
+      ],
+      "utterances": 51
+    },
+    {
+      "intent": "news_query",
+      "slot_mentions": 473,
+      "types": [
+        {
+          "count": 177,
+          "entity_type": "news_topic",
+          "fillers": [
+            "train wreck",
+            "fake news",
+            "trump 's ties",
+            "trump 's potential ties with russia",
+            "trending"
+          ],
+          "share": 0.374207
+        },
+        {
+          "count": 129,
+          "entity_type": "media_type",
+          "fillers": [
+            "facebook",
+            "l. a. times",
+            "so clean",
+            "la times",
+            "truthdig"
+          ],
+          "share": 0.272727
+        },
+        {
+          "count": 67,
+          "entity_type": "place_name",
+          "fillers": [
+            "russia",
+            "world",
+            "ny",
+            "global",
+            "canada"
+          ],
+          "share": 0.141649
+        },
+        {
+          "count": 60,
+          "entity_type": "date",
+          "fillers": [
+            "today",
+            "today 's",
+            "yesterday",
+            "this week",
+            "march fourth two thousand and seventeenth"
+          ],
+          "share": 0.12685
+        },
+        {
+          "count": 24,
+          "entity_type": "person",
+          "fillers": [
+            "chris hedges",
+            "donald trump",
+            "brad pitt",
+            "narendra modi",
+            "donald trump 's"
+          ],
+          "share": 0.05074
+        }
+      ],
+      "utterances": 503
+    },
+    {
+      "intent": "play_audiobook",
+      "slot_mentions": 232,
+      "types": [
+        {
+          "count": 81,
+          "entity_type": "player_setting",
+          "fillers": [
+            "resume",
+            "start",
+            "where i left off",
+            "go back",
+            "continue"
+          ],
+          "share": 0.349138
+        },
+        {
+          "count": 73,
+          "entity_type": "audiobook_name",
+          "fillers": [
+            "file",
+            "war and peace",
+            "twilight",
+            "the midnight series",
+            "pride and prejudice"
+          ],
+          "share": 0.314655
+        },
+        {
+          "count": 53,
+          "entity_type": "media_type",
+          "fillers": [
+            "audio book",
+            "audiobook",
+            "audio",
+            "album",
+            "audiobooks"
+          ],
+          "share": 0.228448
+        },
+        {
+          "count": 6,
+          "entity_type": "artist_name",
+          "fillers": [
+            "michael jackson",
+            "beatles",
+            "madonna",
+            "elvis presley"
+          ],
+          "share": 0.025862
+        },
+        {
+          "count": 6,
+          "entity_type": "audiobook_author",
+          "fillers": [
+            "torey hayden",
+            "john grisham",
+            "robert louis stevenson",
+            "dean koontz",
+            "rl stine"
+          ],
+          "share": 0.025862
+        },
+        {
+          "count": 5,
+          "entity_type": "app_name",
+          "fillers": [
+            "audible"
+          ],
+          "share": 0.021552
+        },
+        {
+          "count": 5,
+          "entity_type": "time",
+          "fillers": [
+            "thirty seconds",
+            "after five minutes",
+            "after thirty min",
+            "one thousand nine hundred and eighty four"
+          ],
+          "share": 0.021552
+        }
+      ],
+      "utterances": 150
+    },
+    {
+      "intent": "play_game",
+      "slot_mentions": 89,
+      "types": [
+        {
+          "count": 87,
+          "entity_type": "game_name",
+          "fillers": [
+            "football match",
+            "scabble",
+            "mindsweeper",
+            "poker",
+            "trivia"
+          ],
+          "share": 0.977528
+        }
+      ],
+      "utterances": 112
+    },
+    {
+      "intent": "play_music",
+      "slot_mentions": 612,
+      "types": [
+        {
+          "count": 185,
+          "entity_type": "artist_name",
+          "fillers": [
+            "beatles",
+            "michael jackson",
+            "lady gaga",
+            "the used",
+            "celine dion"
+          ],
+          "share": 0.302288
+        },
+        {
+          "count": 150,
+          "entity_type": "music_genre",
+          "fillers": [
+            "country",
+            "classical",
+            "jazz",
+            "rock",
+            "pianist"
+          ],
+          "share": 0.245098
+        },
+        {
+          "count": 117,
+          "entity_type": "song_name",
+          "fillers": [
+            "thinking out loud",
+            "titanic movie",
+            "mocking bird",
+            "be warned",
+            "some blues"
+          ],
+          "share": 0.191176
+        },
+        {
+          "count": 61,
+          "entity_type": "playlist_name",
+          "fillers": [
+            "tactics",
+            "workout playlist",
+            "list five",
+            "playlist one",
+            "electronic"
+          ],
+          "share": 0.099673
+        },
+        {
+          "count": 36,
+          "entity_type": "music_descriptor",
+          "fillers": [
+            "itunes music",
+            "item one",
+            "hit song",
+            "best hits",
+            "down tempo"
+          ],
+          "share": 0.058824
+        },
+        {
+          "count": 17,
+          "entity_type": "player_setting",
+          "fillers": [
+            "shuffle",
+            "start",
+            "resume",
+            "high volume",
+            "reshuffle"
+          ],
+          "share": 0.027778
+        },
+        {
+          "count": 16,
+          "entity_type": "date",
+          "fillers": [
+            "one thousand nine hundred and ninety",
+            "two thousand",
+            "today",
+            "todays",
+            "last night"
+          ],
+          "share": 0.026144
+        }
+      ],
+      "utterances": 639
+    },
+    {
+      "intent": "play_podcasts",
+      "slot_mentions": 159,
+      "types": [
+        {
+          "count": 68,
+          "entity_type": "podcast_descriptor",
+          "fillers": [
+            "next episode",
+            "next podcast",
+            "all theory",
+            "under ten min",
+            "number three"
+          ],
+          "share": 0.427673
+        },
+        {
+          "count": 56,
+          "entity_type": "podcast_name",
+          "fillers": [
+            "the united states of anxiety",
+            "friends",
+            "drunks and dragons",
+            "shane dawson",
+            "nyt"
+          ],
+          "share": 0.352201
+        },
+        {
+          "count": 18,
+          "entity_type": "player_setting",
+          "fillers": [
+            "backward",
+            "forward",
+            "skip",
+            "move",
+            "start"
+          ],
+          "share": 0.113208
+        },
+        {
+          "count": 6,
+          "entity_type": "person",
+          "fillers": [
+            "mike",
+            "joe rogan",
+            "marc maron",
+            "seahawks",
+            "dave ramsey"
+          ],
+          "share": 0.037736
+        },
+        {
+          "count": 4,
+          "entity_type": "date",
+          "fillers": [
+            "yesterday 's",
+            "today 's",
+            "december",
+            "today"
+          ],
+          "share": 0.025157
+        }
+      ],
+      "utterances": 193
+    },
+    {
+      "intent": "play_radio",
+      "slot_mentions": 202,
+      "types": [
+        {
+          "count": 132,
+          "entity_type": "radio_name",
+          "fillers": [
+            "nine hundred and ninety nine fm",
+            "rock station",
+            "hot ninety seven",
+            "sports station",
+            "one thousand and forty eight"
+          ],
+          "share": 0.653465
+        },
+        {
+          "count": 26,
+          "entity_type": "app_name",
+          "fillers": [
+            "pandora",
+            "sirius",
+            "netflix",
+            "spotify"
+          ],
+          "share": 0.128713
+        },
+        {
+          "count": 13,
+          "entity_type": "music_genre",
+          "fillers": [
+            "jazz",
+            "hiphop",
+            "rock",
+            "classic rock",
+            "pop"
+          ],
+          "share": 0.064356
+        },
+        {
+          "count": 9,
+          "entity_type": "person",
+          "fillers": [
+            "gary mcnamara",
+            "dr demento",
+            "rush limbaugh",
+            "howard stern",
+            "alex jones"
+          ],
+          "share": 0.044554
+        },
+        {
+          "count": 8,
+          "entity_type": "device_type",
+          "fillers": [
+            "satellite radio",
+            "radio station",
+            "bedside radio",
+            "cell phone",
+            "television"
+          ],
+          "share": 0.039604
+        }
+      ],
+      "utterances": 283
+    },
+    {
+      "intent": "qa_currency",
+      "slot_mentions": 221,
+      "types": [
+        {
+          "count": 214,
+          "entity_type": "currency_name",
+          "fillers": [
+            "u. s. d.",
+            "aus",
+            "us dollar",
+            "indian rupee",
+            "euro"
+          ],
+          "share": 0.968326
+        },
+        {
+          "count": 5,
+          "entity_type": "date",
+          "fillers": [
+            "today"
+          ],
+          "share": 0.022624
+        }
+      ],
+      "utterances": 142
+    },
+    {
+      "intent": "qa_definition",
+      "slot_mentions": 225,
+      "types": [
+        {
+          "count": 225,
+          "entity_type": "definition_word",
+          "fillers": [
+            "transistor",
+            "session",
+            "word",
+            "ultraviolet ray",
+            "immigrant"
+          ],
+          "share": 1.0
+        }
+      ],
+      "utterances": 267
+    },
+    {
+      "intent": "qa_factoid",
+      "slot_mentions": 377,
+      "types": [
+        {
+          "count": 194,
+          "entity_type": "person",
+          "fillers": [
+            "richard nixon",
+            "napoleon hill",
+            "rowan atkinson",
+            "elvis",
+            "channing tatum"
+          ],
+          "share": 0.514589
+        },
+        {
+          "count": 145,
+          "entity_type": "place_name",
+          "fillers": [
+            "maryland",
+            "usa",
+            "asia",
+            "europe",
+            "botswana"
+          ],
+          "share": 0.384615
+        },
+        {
+          "count": 17,
+          "entity_type": "artist_name",
+          "fillers": [
+            "madonna",
+            "beatles",
+            "michael jackson",
+            "shakira 's",
+            "adele"
+          ],
+          "share": 0.045093
+        },
+        {
+          "count": 12,
+          "entity_type": "event_name",
+          "fillers": [
+            "birthday",
+            "aerosmith concert",
+            "paris fashion shows"
+          ],
+          "share": 0.03183
+        }
+      ],
+      "utterances": 544
+    },
+    {
+      "intent": "qa_maths",
+      "slot_mentions": 2,
+      "types": [
+        {
+          "count": 1,
+          "entity_type": "date",
+          "fillers": [
+            "this month"
+          ],
+          "share": 0.5
+        },
+        {
+          "count": 1,
+          "entity_type": "general_frequency",
+          "fillers": [
+            "every day"
+          ],
+          "share": 0.5
+        }
+      ],
+      "utterances": 78
+    },
+    {
+      "intent": "qa_stock",
+      "slot_mentions": 143,
+      "types": [
+        {
+          "count": 115,
+          "entity_type": "business_name",
+          "fillers": [
+            "i. b. m.",
+            "i. b. m. 's",
+            "apple",
+            "microsoft",
+            "intel"
+          ],
+          "share": 0.804196
+        },
+        {
+          "count": 19,
+          "entity_type": "date",
+          "fillers": [
+            "today",
+            "yesterday 's",
+            "today 's",
+            "yesterday"
+          ],
+          "share": 0.132867
+        },
+        {
+          "count": 4,
+          "entity_type": "news_topic",
+          "fillers": [
+            "stock market",
+            "stock market prices"
+          ],
+          "share": 0.027972
+        },
+        {
+          "count": 3,
+          "entity_type": "currency_name",
+          "fillers": [
+            "yen",
+            "dollar",
+            "peso"
+          ],
+          "share": 0.020979
+        }
+      ],
+      "utterances": 152
+    },
+    {
+      "intent": "recommendation_events",
+      "slot_mentions": 187,
+      "types": [
+        {
+          "count": 77,
+          "entity_type": "place_name",
+          "fillers": [
+            "chicago",
+            "san diego",
+            "pondichery",
+            "within twenty miles of manchester",
+            "quad cities"
+          ],
+          "share": 0.411765
+        },
+        {
+          "count": 50,
+          "entity_type": "date",
+          "fillers": [
+            "this weekend",
+            "this week",
+            "today",
+            "tonight",
+            "tomorrow"
+          ],
+          "share": 0.26738
+        },
+        {
+          "count": 35,
+          "entity_type": "event_name",
+          "fillers": [
+            "blue grass band",
+            "wine tasting",
+            "special holidays",
+            "free activities",
+            "street fair"
+          ],
+          "share": 0.187166
+        },
+        {
+          "count": 11,
+          "entity_type": "timeofday",
+          "fillers": [
+            "tonight"
+          ],
+          "share": 0.058824
+        },
+        {
+          "count": 6,
+          "entity_type": "business_type",
+          "fillers": [
+            "play",
+            "hamburger",
+            "show",
+            "farmers market"
+          ],
+          "share": 0.032086
+        },
+        {
+          "count": 4,
+          "entity_type": "time",
+          "fillers": [
+            "weekend",
+            "this weekend"
+          ],
+          "share": 0.02139
+        }
+      ],
+      "utterances": 190
+    },
+    {
+      "intent": "recommendation_locations",
+      "slot_mentions": 211,
+      "types": [
+        {
+          "count": 123,
+          "entity_type": "business_type",
+          "fillers": [
+            "restaurant",
+            "salon",
+            "dollars shop",
+            "shop",
+            "stores"
+          ],
+          "share": 0.582938
+        },
+        {
+          "count": 48,
+          "entity_type": "place_name",
+          "fillers": [
+            "local shopping district",
+            "babaji nagar",
+            "this area",
+            "milan",
+            "washington dc"
+          ],
+          "share": 0.227488
+        },
+        {
+          "count": 25,
+          "entity_type": "food_type",
+          "fillers": [
+            "vietnamese",
+            "thai",
+            "tapas",
+            "pizza",
+            "italian"
+          ],
+          "share": 0.118483
+        },
+        {
+          "count": 5,
+          "entity_type": "business_name",
+          "fillers": [
+            "sainsbury 's",
+            "starbucks",
+            "sweet frog",
+            "shops",
+            "amazon"
+          ],
+          "share": 0.023697
+        }
+      ],
+      "utterances": 173
+    },
+    {
+      "intent": "recommendation_movies",
+      "slot_mentions": 58,
+      "types": [
+        {
+          "count": 12,
+          "entity_type": "place_name",
+          "fillers": [
+            "theatres",
+            "amc twenty",
+            "theaters",
+            "columbia",
+            "local cinema"
+          ],
+          "share": 0.206897
+        },
+        {
+          "count": 10,
+          "entity_type": "movie_name",
+          "fillers": [
+            "learning games",
+            "swat",
+            "logan",
+            "fast and the furious",
+            "star wars"
+          ],
+          "share": 0.172414
+        },
+        {
+          "count": 9,
+          "entity_type": "movie_type",
+          "fillers": [
+            "best imdb ratings",
+            "action",
+            "justin bieber",
+            "romantic comedy",
+            "rom com"
+          ],
+          "share": 0.155172
+        },
+        {
+          "count": 6,
+          "entity_type": "business_type",
+          "fillers": [
+            "theater",
+            "theaters",
+            "theatre"
+          ],
+          "share": 0.103448
+        },
+        {
+          "count": 6,
+          "entity_type": "date",
+          "fillers": [
+            "this weekend",
+            "last friday",
+            "this week",
+            "tomorrow"
+          ],
+          "share": 0.103448
+        },
+        {
+          "count": 6,
+          "entity_type": "event_name",
+          "fillers": [
+            "movie",
+            "playing in the roosendaal cinema",
+            "logan"
+          ],
+          "share": 0.103448
+        },
+        {
+          "count": 5,
+          "entity_type": "timeofday",
+          "fillers": [
+            "tonight"
+          ],
+          "share": 0.086207
+        },
+        {
+          "count": 2,
+          "entity_type": "time",
+          "fillers": [
+            "nine pm"
+          ],
+          "share": 0.034483
+        }
+      ],
+      "utterances": 70
+    },
+    {
+      "intent": "social_post",
+      "slot_mentions": 372,
+      "types": [
+        {
+          "count": 203,
+          "entity_type": "media_type",
+          "fillers": [
+            "tweet",
+            "facebook",
+            "twitter",
+            "instagram",
+            "tweeter"
+          ],
+          "share": 0.545699
+        },
+        {
+          "count": 139,
+          "entity_type": "business_name",
+          "fillers": [
+            "targets",
+            "the president",
+            "mcdonalds",
+            "sony",
+            "local wawa"
+          ],
+          "share": 0.373656
+        }
+      ],
+      "utterances": 283
+    },
+    {
+      "intent": "social_query",
+      "slot_mentions": 110,
+      "types": [
+        {
+          "count": 67,
+          "entity_type": "media_type",
+          "fillers": [
+            "facebook",
+            "twitter",
+            "social media",
+            "facebook messenger",
+            "snapchats"
+          ],
+          "share": 0.609091
+        },
+        {
+          "count": 18,
+          "entity_type": "date",
+          "fillers": [
+            "today",
+            "last day",
+            "this week",
+            "yesterday",
+            "today 's"
+          ],
+          "share": 0.163636
+        },
+        {
+          "count": 12,
+          "entity_type": "person",
+          "fillers": [
+            "martha",
+            "amy",
+            "linda",
+            "derek",
+            "maria"
+          ],
+          "share": 0.109091
+        },
+        {
+          "count": 6,
+          "entity_type": "relation",
+          "fillers": [
+            "husbands",
+            "friends",
+            "friend",
+            "online friends"
+          ],
+          "share": 0.054545
+        },
+        {
+          "count": 3,
+          "entity_type": "time",
+          "fillers": [
+            "last hour",
+            "weekend",
+            "twenty four hours"
+          ],
+          "share": 0.027273
+        }
+      ],
+      "utterances": 108
+    },
+    {
+      "intent": "takeaway_order",
+      "slot_mentions": 222,
+      "types": [
+        {
+          "count": 91,
+          "entity_type": "food_type",
+          "fillers": [
+            "pizza pie with extra cheese",
+            "fish risotto",
+            "chinese",
+            "fast food",
+            "pizza"
+          ],
+          "share": 0.40991
+        },
+        {
+          "count": 63,
+          "entity_type": "business_name",
+          "fillers": [
+            "the golden fork",
+            "jason 's deli",
+            "sixth ave",
+            "deliveroo",
+            "dominoes"
+          ],
+          "share": 0.283784
+        },
+        {
+          "count": 38,
+          "entity_type": "order_type",
+          "fillers": [
+            "takeaway",
+            "delivery",
+            "takeout",
+            "carryout",
+            "bring home"
+          ],
+          "share": 0.171171
+        },
+        {
+          "count": 11,
+          "entity_type": "business_type",
+          "fillers": [
+            "restaurant",
+            "pizza place",
+            "restaurants"
+          ],
+          "share": 0.04955
+        },
+        {
+          "count": 6,
+          "entity_type": "meal_type",
+          "fillers": [
+            "diner",
+            "dinner",
+            "lunch"
+          ],
+          "share": 0.027027
+        },
+        {
+          "count": 5,
+          "entity_type": "time",
+          "fillers": [
+            "seven pm",
+            "this time",
+            "five pm"
+          ],
+          "share": 0.022523
+        }
+      ],
+      "utterances": 135
+    },
+    {
+      "intent": "takeaway_query",
+      "slot_mentions": 162,
+      "types": [
+        {
+          "count": 68,
+          "entity_type": "order_type",
+          "fillers": [
+            "delivery",
+            "takeaway",
+            "takeaways",
+            "deliver",
+            "to go"
+          ],
+          "share": 0.419753
+        },
+        {
+          "count": 37,
+          "entity_type": "business_name",
+          "fillers": [
+            "charley 's steakhouse",
+            "pizza hut",
+            "byron 's",
+            "olive garden",
+            "shibaru sushi"
+          ],
+          "share": 0.228395
+        },
+        {
+          "count": 29,
+          "entity_type": "business_type",
+          "fillers": [
+            "restaurant",
+            "restaurants"
+          ],
+          "share": 0.179012
+        },
+        {
+          "count": 23,
+          "entity_type": "food_type",
+          "fillers": [
+            "thai",
+            "pizza",
+            "chinese",
+            "curry",
+            "asian"
+          ],
+          "share": 0.141975
+        }
+      ],
+      "utterances": 122
+    },
+    {
+      "intent": "transport_query",
+      "slot_mentions": 384,
+      "types": [
+        {
+          "count": 178,
+          "entity_type": "place_name",
+          "fillers": [
+            "lowes in mount h nj",
+            "jodhpur station",
+            "orlando",
+            "oregon",
+            "southampton"
+          ],
+          "share": 0.463542
+        },
+        {
+          "count": 134,
+          "entity_type": "transport_type",
+          "fillers": [
+            "train",
+            "trains",
+            "walk",
+            "metro",
+            "driving"
+          ],
+          "share": 0.348958
+        },
+        {
+          "count": 30,
+          "entity_type": "date",
+          "fillers": [
+            "monday",
+            "memorial day weekend",
+            "saturday",
+            "tomorrow",
+            "sunday"
+          ],
+          "share": 0.078125
+        },
+        {
+          "count": 15,
+          "entity_type": "time",
+          "fillers": [
+            "after eleven pm",
+            "eight am",
+            "ten am",
+            "four pm",
+            "seven pm"
+          ],
+          "share": 0.039062
+        }
+      ],
+      "utterances": 227
+    },
+    {
+      "intent": "transport_taxi",
+      "slot_mentions": 173,
+      "types": [
+        {
+          "count": 70,
+          "entity_type": "transport_type",
+          "fillers": [
+            "taxi",
+            "car",
+            "cab",
+            "ride"
+          ],
+          "share": 0.404624
+        },
+        {
+          "count": 31,
+          "entity_type": "transport_agency",
+          "fillers": [
+            "uber",
+            "golden taxi",
+            "ola"
+          ],
+          "share": 0.179191
+        },
+        {
+          "count": 29,
+          "entity_type": "place_name",
+          "fillers": [
+            "gate four of the airport",
+            "airport",
+            "the airport",
+            "train station",
+            "opera"
+          ],
+          "share": 0.16763
+        },
+        {
+          "count": 21,
+          "entity_type": "time",
+          "fillers": [
+            "thirty minutes",
+            "three hundred and twenty one",
+            "one pm",
+            "three",
+            "five"
+          ],
+          "share": 0.121387
+        },
+        {
+          "count": 8,
+          "entity_type": "timeofday",
+          "fillers": [
+            "morning",
+            "tonight",
+            "evening"
+          ],
+          "share": 0.046243
+        },
+        {
+          "count": 6,
+          "entity_type": "date",
+          "fillers": [
+            "friday",
+            "tomorrow",
+            "today",
+            "thursday",
+            "twenty ninth"
+          ],
+          "share": 0.034682
+        }
+      ],
+      "utterances": 100
+    },
+    {
+      "intent": "transport_ticket",
+      "slot_mentions": 273,
+      "types": [
+        {
+          "count": 109,
+          "entity_type": "transport_type",
+          "fillers": [
+            "train"
+          ],
+          "share": 0.399267
+        },
+        {
+          "count": 96,
+          "entity_type": "place_name",
+          "fillers": [
+            "chicago",
+            "boston",
+            "new york",
+            "destination",
+            "paris"
+          ],
+          "share": 0.351648
+        },
+        {
+          "count": 36,
+          "entity_type": "date",
+          "fillers": [
+            "tomorrow",
+            "next week",
+            "thursday",
+            "july three",
+            "friday"
+          ],
+          "share": 0.131868
+        },
+        {
+          "count": 12,
+          "entity_type": "time",
+          "fillers": [
+            "five pm",
+            "night",
+            "two pm",
+            "seven pm",
+            "eight am"
+          ],
+          "share": 0.043956
+        },
+        {
+          "count": 7,
+          "entity_type": "transport_descriptor",
+          "fillers": [
+            "business class",
+            "berth seat",
+            "return",
+            "round trip",
+            "goes via miami"
+          ],
+          "share": 0.025641
+        },
+        {
+          "count": 6,
+          "entity_type": "timeofday",
+          "fillers": [
+            "this afternoon",
+            "evening",
+            "morning"
+          ],
+          "share": 0.021978
+        }
+      ],
+      "utterances": 127
+    },
+    {
+      "intent": "transport_traffic",
+      "slot_mentions": 64,
+      "types": [
+        {
+          "count": 51,
+          "entity_type": "place_name",
+          "fillers": [
+            "i twenty five",
+            "route eighty",
+            "the five",
+            "new york",
+            "jodhpur"
+          ],
+          "share": 0.796875
+        },
+        {
+          "count": 6,
+          "entity_type": "date",
+          "fillers": [
+            "today"
+          ],
+          "share": 0.09375
+        },
+        {
+          "count": 4,
+          "entity_type": "timeofday",
+          "fillers": [
+            "morning",
+            "this afternoon"
+          ],
+          "share": 0.0625
+        },
+        {
+          "count": 2,
+          "entity_type": "time",
+          "fillers": [
+            "this hour",
+            "thirty minutes"
+          ],
+          "share": 0.03125
+        }
+      ],
+      "utterances": 117
+    },
+    {
+      "intent": "weather_query",
+      "slot_mentions": 787,
+      "types": [
+        {
+          "count": 320,
+          "entity_type": "weather_descriptor",
+          "fillers": [
+            "warm clothes",
+            "coat",
+            "stay sunny",
+            "too hot for pants",
+            "sunny"
+          ],
+          "share": 0.406607
+        },
+        {
+          "count": 267,
+          "entity_type": "date",
+          "fillers": [
+            "today",
+            "today 's",
+            "tuesday",
+            "next week",
+            "todays"
+          ],
+          "share": 0.339263
+        },
+        {
+          "count": 126,
+          "entity_type": "place_name",
+          "fillers": [
+            "california",
+            "london",
+            "downtown",
+            "boston",
+            "nyc"
+          ],
+          "share": 0.160102
+        },
+        {
+          "count": 40,
+          "entity_type": "timeofday",
+          "fillers": [
+            "morning",
+            "tonight",
+            "evening",
+            "night",
+            "this afternoon"
+          ],
+          "share": 0.050826
+        },
+        {
+          "count": 29,
+          "entity_type": "time",
+          "fillers": [
+            "next seven days",
+            "after ten pm",
+            "before i leave this afternoon",
+            "ten day",
+            "twelve pm"
+          ],
+          "share": 0.036849
+        }
+      ],
+      "utterances": 573
+    }
+  ],
+  "rendered_full_text": {
+    "characters": 26720,
+    "lines": 322,
+    "sha256": "4e573a65e14c57598cc39ed1aa71cf0ac59018be162dbea3e0bfbf038203a5b9"
+  },
+  "schema": "saea-slurp-intent-slot-schema-v1",
+  "totals": {
+    "distinct_listed_types": 52,
+    "example_fillers": 1008,
+    "intents": 60,
+    "listed_type_rows": 261
+  }
+}
