@@ -7,6 +7,7 @@ built and run."""
 from __future__ import annotations
 
 import json
+import shutil
 from pathlib import Path
 from typing import Mapping, Sequence
 
@@ -18,11 +19,14 @@ from ..reproduction.conec_entity_scoring import (
 )
 from ..reproduction.numeric_value_accuracy import merge_numeric_counts
 from .e21_agentic_metric_baseline import (
+    CHECK_DIR,
     CONEC_OVERALL,
     CONEC_TABLE2,
     EVALUATION_CALLS,
+    JOBS,
     sealed_whisper_corpus,
     sealed_whisper_per_call,
+    sha256_file,
 )
 
 CONEC_CLASSES = tuple(CONEC_TABLE2)
@@ -236,3 +240,94 @@ def per_call_table(
             f"{conec['unlabelled_reference_words']} |"
         )
     return "\n".join(lines) + "\n"
+
+
+# ---------------------------------------------------------------------------
+# Receipt writing. Kept here rather than in the CLI so the script stays a thin
+# entry point (this repository's <=150-line rule for scripts/).
+# ---------------------------------------------------------------------------
+
+
+def write_json(path: Path, payload: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n"
+    )
+
+
+def _drop(rows: Sequence[Mapping[str, object]], fields: tuple[str, ...]) -> list[dict]:
+    return [{key: value for key, value in row.items() if key not in fields} for row in rows]
+
+
+def write_manifest_sha256(check_dir: Path) -> Path:
+    """Every file under the receipt directory, hashed, sorted by relative path
+    -- the same MANIFEST.sha256 convention the 2026-09-04 receipt uses."""
+
+    manifest_path = Path(check_dir) / "MANIFEST.sha256"
+    if manifest_path.exists():
+        manifest_path.unlink()
+    lines = []
+    for path in sorted(Path(check_dir).rglob("*")):
+        if path.is_file():
+            lines.append(f"{sha256_file(path)}  {path.relative_to(check_dir).as_posix()}")
+    manifest_path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    return manifest_path
+
+
+def write_receipts(
+    scores: Mapping[str, Mapping[str, object]],
+    scratch_scoring: Path,
+    bundles_dir: Path,
+) -> dict[str, object]:
+    """Write the whole 2026-09-06 receipt directory and return the summary."""
+
+    whisper = scores["asr-wer-whisper"]
+    conec = scores["conec-entity-wer-official"]
+    numeric = scores["numeric-value-accuracy-v1"]
+    summary = build_summary(
+        whisper["per_sample"], conec["per_sample"], numeric["per_sample"], conec["aggregate"]
+    )
+    summary["jobs"] = [
+        {
+            "job_id": slug,
+            "scorer": scorer,
+            "result_file": f"{slug}.score.json",
+            "result_sha256": sha256_file(Path(scratch_scoring) / f"{slug}.score.json"),
+        }
+        for slug, scorer in JOBS
+    ]
+    receipt_scoring = CHECK_DIR / "scoring"
+    receipt_scoring.mkdir(parents=True, exist_ok=True)
+    for name, source_dir in (
+        ("batch-summary.json", scratch_scoring),
+        ("jobs.jsonl", bundles_dir),
+        ("rescore-bundles.json", bundles_dir),
+    ):
+        shutil.copyfile(Path(source_dir) / name, receipt_scoring / name)
+    write_json(
+        receipt_scoring / "verified-score-read.json",
+        {
+            "_receipt_note": (
+                "core.scoring_batch --include-per-sample verified reads of the three "
+                "re-scoring manifests, one complete manifest per process, never sharded. "
+                "Per-sample ref_hit_mask arrays are dropped for size (the same reduction the "
+                "2026-09-04 receipt made); every count is retained verbatim, and the "
+                "unreduced files' sha256s are in verdict/result-summary.json's jobs block."
+            ),
+            "scores": {
+                "asr-wer-whisper": {
+                    "aggregate": whisper["aggregate"],
+                    "per_sample": _drop(whisper["per_sample"], ("ref_hit_mask",)),
+                },
+                "conec-entity-wer-official": conec,
+                "numeric-value-accuracy-v1": numeric,
+            },
+        },
+    )
+    write_json(CHECK_DIR / "verdict" / "result-summary.json", summary)
+    (CHECK_DIR / "verdict" / "per-call-table.md").write_text(
+        per_call_table(whisper["per_sample"], conec["per_sample"], numeric["per_sample"]),
+        encoding="utf-8",
+        newline="\n",
+    )
+    return summary

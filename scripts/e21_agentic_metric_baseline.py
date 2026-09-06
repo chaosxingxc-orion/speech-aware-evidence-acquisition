@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import shutil
 import sys
 from pathlib import Path
 
@@ -25,9 +24,6 @@ from speech_aware_evidence_acquisition.analysis import (  # noqa: E402
 from speech_aware_evidence_acquisition.analysis import (  # noqa: E402
     e21_agentic_metric_read as read_side,
 )
-
-RECEIPT_SCORING = build_side.CHECK_DIR / "scoring"
-VERDICT = build_side.CHECK_DIR / "verdict"
 
 
 def bundles_dir() -> Path:
@@ -42,16 +38,9 @@ def scratch_scoring() -> Path:
     return build_side.rescore_root() / "scoring"
 
 
-def _write_json(path: Path, payload: object) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n"
-    )
-
-
 def stage_build() -> int:
     bundles = build_side.build_all_bundles()
-    _write_json(bundles_dir() / "rescore-bundles.json", {"bundles": bundles})
+    read_side.write_json(bundles_dir() / "rescore-bundles.json", {"bundles": bundles})
     jobs = "".join(
         json.dumps({"job_id": bundle["job_id"], "manifest": bundle["manifest"]}) + "\n"
         for bundle in bundles
@@ -63,74 +52,22 @@ def stage_build() -> int:
 
 
 def stage_score() -> int:
-    bundles = json.loads((bundles_dir() / "rescore-bundles.json").read_text(encoding="utf-8"))["bundles"]
+    table = json.loads((bundles_dir() / "rescore-bundles.json").read_text(encoding="utf-8"))
     output_dir = scratch_scoring()
     if output_dir.exists() and any(output_dir.iterdir()):
         raise SystemExit(f"{output_dir} is not empty; core.scoring_batch refuses to overwrite")
-    summary = build_side.run_scoring(bundles, output_dir)
-    _write_json(scratch_scoring() / "batch-summary.json", summary)
+    summary = build_side.run_scoring(table["bundles"], output_dir)
+    read_side.write_json(output_dir / "batch-summary.json", summary)
     print(json.dumps({key: summary[key] for key in ("succeeded", "failed", "job_count")}))
     return 0 if summary["failed"] == 0 else 1
 
 
-def _reduce(rows: list[dict], drop: tuple[str, ...]) -> list[dict]:
-    return [{key: value for key, value in row.items() if key not in drop} for row in rows]
-
-
 def stage_read() -> int:
-    scores = {}
-    for slug, scorer in build_side.JOBS:
-        path = scratch_scoring() / f"{slug}.score.json"
-        scores[scorer] = read_side.load_scores(path, scorer)
-    whisper = scores["asr-wer-whisper"]
-    conec = scores["conec-entity-wer-official"]
-    numeric = scores["numeric-value-accuracy-v1"]
-
-    summary = read_side.build_summary(
-        whisper["per_sample"], conec["per_sample"], numeric["per_sample"], conec["aggregate"]
-    )
-    summary["jobs"] = [
-        {
-            "job_id": slug,
-            "scorer": scorer,
-            "result_file": f"{slug}.score.json",
-            "result_sha256": build_side.sha256_file(scratch_scoring() / f"{slug}.score.json"),
-        }
+    scores = {
+        scorer: read_side.load_scores(scratch_scoring() / f"{slug}.score.json", scorer)
         for slug, scorer in build_side.JOBS
-    ]
-    RECEIPT_SCORING.mkdir(parents=True, exist_ok=True)
-    for name in ("batch-summary.json", "jobs.jsonl", "rescore-bundles.json"):
-        source = scratch_scoring() / name
-        if not source.is_file():
-            source = bundles_dir() / name
-        shutil.copyfile(source, RECEIPT_SCORING / name)
-    _write_json(VERDICT / "result-summary.json", summary)
-    (VERDICT / "per-call-table.md").write_text(
-        read_side.per_call_table(
-            whisper["per_sample"], conec["per_sample"], numeric["per_sample"]
-        ),
-        encoding="utf-8",
-        newline="\n",
-    )
-    _write_json(
-        RECEIPT_SCORING / "verified-score-read.json",
-        {
-            "_receipt_note": (
-                "core.scoring_batch --include-per-sample verified reads of the three "
-                "re-scoring manifests. Per-sample ref_hit_mask arrays are dropped for size "
-                "(the same reduction the 2026-09-04 receipt made); every count is verbatim. "
-                "The unreduced files' sha256s are in verdict/result-summary.json's jobs block."
-            ),
-            "scores": {
-                "asr-wer-whisper": {
-                    "aggregate": whisper["aggregate"],
-                    "per_sample": _reduce(whisper["per_sample"], ("ref_hit_mask",)),
-                },
-                "conec-entity-wer-official": conec,
-                "numeric-value-accuracy-v1": numeric,
-            },
-        },
-    )
+    }
+    summary = read_side.write_receipts(scores, scratch_scoring(), bundles_dir())
     anchor = summary["identity_anchor"]
     print(
         json.dumps(
