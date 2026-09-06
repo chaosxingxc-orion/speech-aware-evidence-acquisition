@@ -66,6 +66,7 @@ __all__ = [
     "split_blocks",
     "realized_quota",
     "tool_capacity",
+    "joint_capacity",
     "target_capacity",
     "capacity_verdict",
     "capacity_document",
@@ -358,3 +359,76 @@ def audio_seconds_by_sample_id(lock: Mapping[str, object], root: Path) -> dict[s
             except Exception:  # noqa: BLE001 -- unresolvable media is a skip, not a stop
                 continue
     return seconds
+
+
+def joint_capacity(
+    rows: Iterable[object],
+    tools: Sequence[str],
+    *,
+    seed: int,
+    cap: int = QUOTA_CAP,
+    reserve: int = EXEMPLAR_RESERVE,
+    floor: int = QUOTA_FLOOR,
+) -> tuple[dict[str, dict[str, object]], frozenset[int]]:
+    """:func:`tool_capacity`, but with block CONTENTION resolved, plus the set
+    of blocks the target tools between them occupy.
+
+    Fourteen construction blocks of this carrier carry gold for two different
+    MF-1 target tools, so per-tool splits computed independently can hand one
+    block to fold A for one tool and to fold B for another. A contended block
+    is therefore awarded ONCE, to the tool it is worth most to, under a rule
+    fixed before the counting: a tool the independent census DROPPED never
+    takes a block from a tool it did not drop (a dropped tool needs at most
+    ``reserve`` exemplar units and no fold rows at all); otherwise the tool with
+    fewer blocks in the pool wins, because a block is worth more where blocks
+    are scarce; ties by fewer units, then by name.
+    """
+
+    owned: dict[str, list[object]] = {tool: [] for tool in tools}
+    for row in rows:
+        bucket = owned.get(getattr(row, "tool_name"))
+        if bucket is not None:
+            bucket.append(row)
+    blocks_of = {
+        tool: collections.Counter(int(getattr(row, "query_idx")) for row in members)
+        for tool, members in owned.items()
+    }
+    solo = tool_capacity(rows, tools, seed=seed, cap=cap, reserve=reserve, floor=floor)
+
+    def rank(tool: str) -> tuple[int, int, int, str]:
+        return (0 if solo[tool]["survives"] else 1, len(blocks_of[tool]), len(owned[tool]), tool)
+
+    claimants: dict[int, list[str]] = collections.defaultdict(list)
+    for tool, counts in blocks_of.items():
+        for block in counts:
+            claimants[block].append(tool)
+    winner = {block: min(names, key=rank) for block, names in claimants.items()}
+
+    report: dict[str, dict[str, object]] = {}
+    for tool in sorted(owned):
+        free = {
+            block: count for block, count in blocks_of[tool].items() if winner[block] == tool
+        }
+        quota, buckets, have = realized_quota(free, key=f"{seed}:{tool}", cap=cap, reserve=reserve)
+        survives = quota >= floor
+        report[tool] = {
+            "tool_name": tool,
+            "units": len(owned[tool]),
+            "blocks": len(blocks_of[tool]),
+            "units_after_contention": sum(free.values()),
+            "blocks_after_contention": len(free),
+            "blocks_lost_to_contention": len(blocks_of[tool]) - len(free),
+            "units_by_tier": dict(
+                sorted(
+                    collections.Counter(str(getattr(row, "tier")) for row in owned[tool]).items()
+                )
+            ),
+            "solo_quota": int(solo[tool]["fold_quota"]),
+            "rule_quota": rule_quota(sum(free.values()), reserve=reserve, cap=cap),
+            "realized_quota": quota,
+            "fold_quota": quota if survives else 0,
+            "survives": survives,
+            "blocks_by_bucket": {name: list(buckets[name]) for name in BUCKETS},
+            "units_by_bucket": dict(have),
+        }
+    return report, frozenset(winner)
