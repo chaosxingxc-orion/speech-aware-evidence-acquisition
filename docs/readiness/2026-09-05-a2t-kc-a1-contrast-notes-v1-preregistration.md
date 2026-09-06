@@ -1,11 +1,17 @@
-# KC-A1: deterministic contrast notes on the MF-1 lighting target, with KC-A1c as its same-length control, v1 preregistration (REGISTERED)
+# KC-A1: deterministic contrast notes on the MF-1 lighting target, with KC-A1c as its same-length control, v1 preregistration (STOPPED AT THE PROMPT FIT)
 
-Status: DRAFTED 2026-09-05 model-free in a worktree with zero model contacts; **section 3 CLOSED 2026-09-06 by
-the owner-coordinator on option B (lighting only)**, the two artifacts rebuilt on that decision in the main
-checkout, and section 8 worked from there. The manipulation this document registers is therefore the LIGHTING
-cluster's eight tools, not the twenty-three of the drafted version; every table below has been re-derived from
-the rebuilt bytes, and the five-target notes are retained unflown in
-`configs/knowledge/a2t-kc-a1/targets-v1.json`.
+Status: DRAFTED 2026-09-05 model-free in a worktree with zero model contacts; section 3 closed 2026-09-06 by the
+owner-coordinator on option B (lighting only), the two artifacts rebuilt on that decision in the main checkout,
+and section 8 worked from there through the decontamination gate (PASS) to the prompt fit --
+**where the cell STOPPED. The measured cost of the option-B artifact is +44 text tokens, over the binding +40
+form cap it was chosen to honour, so section 3's own void clause fires and NO cell of
+`configs/experiment/a2t-kc-a1-contrast-notes-4000-v1.json` has flown.** Section 3.2 records the measurement and
+what it voids. Everything below section 3.2 stands as registered and is what a successor artifact re-enters at;
+nothing in it was read against data.
+
+The manipulation this document registers is the LIGHTING cluster's eight tools, not the twenty-three of the
+drafted version; every table below has been re-derived from the rebuilt bytes, and the five-target notes are
+retained unflown in `configs/knowledge/a2t-kc-a1/targets-v1.json`.
 
 Program: `docs/readiness/2026-09-05-three-dimension-experiment-program.md` section 4a (KC-A1, KC-A1c) and its
 section 5 form caps. Gate: `docs/readiness/2026-09-05-a2t-query-cue-audit-v1.md` (MF-1, PASSED at 235 of the
@@ -52,21 +58,23 @@ differs.
 
 | item | value |
 |---|---|
-| target spec (FLOWN) | `configs/knowledge/a2t-kc-a1/targets-lighting-v1.json`, sha256 `445dffc83388828faaa398e1ff81c7d45ecb422d01df850a6418a869175bfab8` (re-derived by the builder into the receipt's `target_spec.sha256`) |
-| target spec (parent, retained unflown) | `configs/knowledge/a2t-kc-a1/targets-v1.json`, sha256 `e3e8c859e6fd13fbe631ea3e0f8522654bf5459b957b716281543ed23e060378`; the flown spec's `targets` array is this file's `lighting` entry with no character changed |
+| target spec (the stopped cell's) | `configs/knowledge/a2t-kc-a1/targets-lighting-v1.json`, sha256 `445dffc83388828faaa398e1ff81c7d45ecb422d01df850a6418a869175bfab8` (re-derived by the builder into the receipt's `target_spec.sha256`) |
+| target spec (parent, retained) | `configs/knowledge/a2t-kc-a1/targets-v1.json`, sha256 `e3e8c859e6fd13fbe631ea3e0f8522654bf5459b957b716281543ed23e060378`; the flown spec's `targets` array is this file's `lighting` entry with no character changed |
 | builder | `scripts/build_a2t_contrast_notes.py --targets-spec configs/knowledge/a2t-kc-a1/targets-lighting-v1.json --write`, construction rule `rails.proposer.contrast_note_records` |
 | artifact receipt | `docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-kc-a1-contrast-notes-4000-v1/artifact-receipt.json`, sha256 `a8f2170a1b89bcbd31477dd4640f94afb51cb5a24590e4133c0d1789f749b439` |
 | KC-A1 artifact | `configs/knowledge/a2t-kc-a1/contrast-notes-v1.json`, sha256 `b99da99e43c813050e6df9a11bf1910e6168c744f363dae6c1b7f64df0a1763f` |
 | KC-A1c artifact | `configs/knowledge/a2t-kc-a1/category-only-v1.json`, sha256 `2f34c2cf8bc5585257756b44975e36c6244d7c3e362beac1d5b01956a6736e33` |
-| KC-A1 fragment | `configs/baseline/a2t-kc-a1-contrast-notes.json`, composed config hash `1108f51814575b837773f21e4690bc5b7c4cb745d94c3bfd7227db4fbece388e` |
-| KC-A1c fragment | `configs/baseline/a2t-kc-a1c-category-only.json`, composed config hash `f6a9f65071296cc0dc6d50573007f711483d532bacac014e0759c9d8ebd08a0f` |
+| KC-A1 fragment | `configs/baseline/a2t-kc-a1-contrast-notes.json`, composed config hash `444e3439edfc37a37fc21be29f9b0caf2de0cf29fc06ac7eb43ef0fefd98bf15` |
+| KC-A1c fragment | `configs/baseline/a2t-kc-a1c-category-only.json`, composed config hash `0766a6edae73adcd905e663cd460b60abee5456e7b94bcecc91f67f8394b160b` |
 | KC-A1 rendered block | 152 lines, 16,015 characters, sha256 `ce1e521345270b9149bf45d6916fdd9a64e17293d0bae3e5ea63bf0b51f1a8fe` |
 | KC-A1c rendered block | 152 lines, 16,015 characters, sha256 `ac71cef2be2f5c1750425330eaf131ac9c516a843cc782f0fd8041c1548c5545` |
 | compact baseline block | 152 lines, 15,854 characters, sha256 `752dd381a02028dc7345a6ac826109bdcc879d82547a9029a43d559d0de8a605` |
 
 The composed config hash is over model + dataset + baseline + experiment together, which is why it differs from
 the drafted version's figure even where the baseline fragment's own keys are unchanged: the experiment fragment
-was re-registered on option B in the same change.
+was re-registered on option B in the same change, and again when the prompt fit's measurement was written into
+it. NEITHER COMPOSITION EVER FLEW -- these are the hashes of a composition that was stopped at section 3.2, and
+no manifest anywhere carries them.
 
 Two construction rules are executable, not prose (`rails.proposer.contrast_note_records`, refusing the build
 otherwise):
@@ -79,7 +87,7 @@ otherwise):
   treatment note's character count. A category word longer than its note is refused rather than cut, which is why
   every note is at least as long as its own category.
 
-### 2.1 The 8 notes that fly, their controls, and what each costs
+### 2.1 The 8 notes the stopped cell carries, their controls, and what each costs
 
 `note` is the appended text; `chars` its length; `control` KC-A1c's length-matched text at the same count;
 `line` the resulting description length (the 200-character cap is never approached -- the longest is 97).
@@ -94,9 +102,9 @@ otherwise):
 | `setColorTemperature` | `; kelvin only, no color` | 23 | `; lighting tool tool` + 3 sp | 86 |
 | `setGroupLightState` | `; a group, not one light` | 24 | `; lighting tool tool` + 4 sp | 79 |
 | `setLighting` | `; one light, not a group` | 24 | `; core_control tool tool` | 97 |
-| **8 tools, flown** | | **161** | | |
+| **8 tools, the cell's own** | | **161** | | |
 
-### 2.1b The 15 notes that do NOT fly
+### 2.1b The 15 notes the cell leaves out
 
 Written, priced and retained in `configs/knowledge/a2t-kc-a1/targets-v1.json`, absent from both flown
 artifacts, and reachable later per cluster or through the evolution loop. They are listed so the option-B
@@ -119,22 +127,23 @@ decision is auditable against what it declined rather than against a description
 | `updateFirmware` | `; firmware only, not reboot` | 27 | `; maintenance tool tool` + 4 sp | 80 |
 | `castContent` | `; from a url only` | 17 | `; media tool tool` | 67 |
 | `playMedia` | `; by query, not a url` | 21 | `; media tool tool` + 4 sp | 70 |
-| **15 tools, not flown** | | **316** | | |
+| **15 tools, left out** | | **316** | | |
 
 Per target, with the mass MF-1 attributes to it:
 
-| target | flown | tools | added chars | estimated added tokens | MF-1 strict mass | ORG-1 residual |
+| target | in the cell | tools | added chars | estimated added tokens | MF-1 strict mass | ORG-1 residual |
 |---|---|---:|---:|---:|---:|---:|
-| lighting | **yes** | 8 | 161 | **40** | 147 | 76 |
+| lighting | **yes** | 8 | 161 | **40 estimated, 44 MEASURED** | 147 | 76 |
 | activateRoutine | no | 5 | 98 | 25 | 44 | 44 |
 | calibrateCameras | no | 4 | 96 | 24 | 16 | 21 |
 | getBiometricData | no | 4 | 84 | 21 | 23 | 22 |
 | castContent | no | 2 | 38 | 10 | 5 | 4 |
 | all five (the rejected artifact) | no | 23 | 477 | 120 | 235 | 167 |
 
-The flown artifact is therefore **+161 characters, an estimated +40 tokens, 147 addressable rows**, and the
-builder's own gate agrees: both arms clear `rails.proposer.validate_candidate_artifact` at the un-relaxed
-`TOKEN_HEADROOM` with `token_headroom_slack_granted = 0`.
+The cell's artifact is therefore **+161 characters, 147 addressable rows, and an ESTIMATED +40 tokens that the
+prompt fit measured at +44** (section 3.2). The builder's own gate cleared both arms at the un-relaxed
+`TOKEN_HEADROOM` with `token_headroom_slack_granted = 0` -- but it was counting with the estimator, and under
+the tokenizer it names as the authority the treatment arm does not clear it.
 
 ## 3. The form cap -- CLOSED 2026-09-06 on option B
 
@@ -165,6 +174,54 @@ Two consequences worth stating before the flight rather than after it:
 2. **The four unflown targets become a within-run negative control.** Their 88 rows sit in the same 4,000 and
    receive no note, so the per-target miss-mass table separates "the notes moved their own cluster" from "the
    prompt moved everything"; section 6's report includes all five targets for exactly that reason.
+
+### 3.2 The measurement, and what it voids
+
+The prompt fit (`SAEA-A2T-KC-A1-CONTRAST-NOTES-PROMPT-FIT-V1`, 2026-09-06, zero generated tokens) measured the
+rendered system message of both arms on the pinned GGUF tokenizer behind the resident server, at the same
+`-c 49152 -np 2` geometry and under the same chat template hash
+(`45777d2e798aae1d1ce6844e69edcb23fc0c710009554711c78efab9044da2c8`) the sealed compact and grouped fits carry.
+
+| rendering | system chars | text tokens | over compact | chars per added token |
+|---|---:|---:|---:|---:|
+| compact official protocol (sealed, three 2026-09-04 fits) | 16,143 | **3,581** | — | — |
+| **KC-A1** contrast notes | 16,304 | **3,625** | **+44** | 3.659 |
+| **KC-A1c** category-only control | 16,304 | **3,611** | **+30** | 5.367 |
+| ORG-1 grouped registry (sealed, for scale) | 16,490 | 3,668 | +87 | 3.989 |
+
+**KC-A1 is 4 tokens over the +40 cap, so the cell stops here.** Option B was taken precisely to honour that cap;
+it was priced at an estimated +40 using ORG-1's measured 3.989 characters per token, and the tokenizer says these
+notes cost 3.659. The estimator was not wrong by accident: it was calibrated on ORG-1's grouped block, whose
+added bytes are `## DOMAIN` headers, newlines and `### ` prefixes, and short appended English phrases such as
+`; kelvin only, no color` tokenize denser than that. Section 3's stated void condition -- "the decision above is
+void if the measured added-token count is materially different from the +40 option B was priced at" -- is
+therefore met in the only sense that matters: the number that decided between A and B has changed sign relative
+to the cap.
+
+Two further facts the measurement establishes, both of which a successor design has to answer:
+
+1. **The control is length-matched but NOT token-matched.** The two arms are character-identical line for line
+   (16,304 characters each, the same eight lines differing from the published message at the same eight indices)
+   and are **14 tokens apart**, because KC-A1c's padding is repeated ` tool` and trailing spaces at 5.367 chars
+   per added token. A control that costs 30 tokens does not price a treatment that costs 44; it prices 68 % of
+   it. KC-A1c as built would have under-attributed the form component of any KC-A1 delta, which is the one job
+   the control exists to do. Length-matching is the wrong invariant on this carrier -- **token-matching is** --
+   and `rails.proposer.contrast_note_records` pads to a character count, not a token count.
+2. **The machine gate agreed with the cap all along; it was reading the wrong counter.**
+   `validate_candidate_artifact` passed both arms only because `scripts/build_a2t_contrast_notes.py` injects the
+   character-ratio estimator as its `token_counter`. That parameter is injected exactly so "the authority is the
+   serving geometry's own tokenizer", as the function's own docstring says. Under that authority the same
+   artifact is REFUSED. The gate did not fail; the caller fed it an estimate.
+
+What did NOT happen, and is not authorized by anything here: no wire check was run, no flight exposure row was
+registered, no smoke and no flight were flown, KC-A1c was not reached, and no note was trimmed to fit the cap. A
+note shortened to hit a token budget is no longer the artifact MF-1 priced, and trimming under measurement
+pressure is how a preregistration becomes a post-hoc fit.
+
+The decontamination gate that precedes this one PASSED and stands on its own bytes
+(`SAEA-A2T-MF-KC-A1-DECONTAMINATION-V1`, zero shared 6-grams over 77,899 evaluation 6-grams), so a successor
+artifact re-enters at section 8.3 rather than at 8.2 unless its note TEXT changes -- and any change to the note
+text re-opens 8.2.
 
 ### 3.1 The decision as it stood before it was taken (retained for audit)
 
@@ -273,14 +330,30 @@ re-registration per run id. KC-A1c flies only on an ADMITTED KC-A1.
    artifacts were rebuilt from the committed lighting-only spec, both fragments were re-emitted through
    `rails.evolution.write_candidate_fragments`, the artifact receipt was regenerated, and the experiment
    fragment's `artifacts` block was re-registered on the new bytes. The cells themselves are unchanged.
-2. **Decontamination row.** Register a model-free exposure row and, under it, re-run
+2. **Decontamination row** -- **DONE 2026-09-06, PASS.** `SAEA-A2T-MF-KC-A1-DECONTAMINATION-V1`, zero contacts:
+   the 4,000 rows' invocation text (9,930 strings, 77,899 distinct word 6-grams) against both artifacts. KC-A1
+   contributes 74 candidate 6-grams and KC-A1c 65; the intersection is 0 in both directions, so the
+   registry-exemption clause was never used. Receipt `.../decontamination/decontamination.json`, sha256
+   `e5e5c7f660d0d52d80c87d113518e98480224257441620d4a0bbfe813e57a9c0`. The original instruction follows.
+
+   Register a model-free exposure row and, under it, re-run
    `rails.proposer.validate_candidate_artifact` for both artifacts with `evaluation_query_texts` = the 4,000
    evaluation rows' query text. The builder passes an EMPTY sequence on purpose: reading that text needs a ledger
    row, and every note word is already constrained to the registry columns of its own target. A 6-gram shared
    with an evaluation query that the registry does not carry refuses the artifact.
-3. **Prompt fit** on the resident server (zero generated tokens), for both arms, recording the measured text
+3. **Prompt fit** -- **DONE 2026-09-06, and it STOPPED the cell.** `SAEA-A2T-KC-A1-CONTRAST-NOTES-PROMPT-FIT-V1`,
+   zero generated tokens: KC-A1 +44 tokens, KC-A1c +30, against a binding +40. Section 3.2 is the record.
+   `-np` was re-derived anyway and stays 2 (worst request 12,398 tokens, worst margin 12,178 against the
+   8,192-token reserve, all 4,000 fit). One declared deviation, closed in the same receipt set:
+   `--expect-official-system-message` cannot be passed by a cell that changes description cells on purpose, so
+   the property is proved offline in `.../prompt-fit/system-message-derivation.json` (sha256
+   `ed9ef42af2bc00a8fb044e0b17e0a3765cb36b744e026b2dca98d584e578b045`) -- each arm's measured
+   `system_text_sha256` reproduced by two independent paths, exactly eight lines differing from the published
+   message. The original instruction follows.
+
+   Prompt fit on the resident server (zero generated tokens), for both arms, recording the measured text
    token count of each rendered system message and re-deriving `-np` against the roster's longest wav. Section 3
-   is void if the measured added-token count is materially different from the estimated 120.
+   is void if the measured added-token count is materially different from what the flown option was priced at.
 4. **Wire check** on a clean committed tree in the MAIN checkout, then the exposure rows for both run ids, then
    the flight. The prep receipts under `wire-check-prep/` already prove the request half of both cells -- four
    payloads per cell, payload keys equal to `ARM_VISIBLE_FIELDS`, an integer `id_slot`, zero contacts, zero
@@ -291,6 +364,28 @@ re-registration per run id. KC-A1c flies only on an ADMITTED KC-A1.
    where ORG-1's own wire check ran.
 5. **One experiment in flight.** KC-A1 first, alone; KC-A1c only after KC-A1's verdict is written and only if it
    is ADMITTED.
+
+Items 4 and 5 were NOT reached: the cell stopped at item 3. No wire check was run in the main checkout, no flight
+exposure row exists for either run id, and both `SAEA-A2T-KC-A1-CONTRAST-NOTES-V1` and
+`SAEA-A2T-KC-A1C-CATEGORY-ONLY-V1` remain unregistered and unflown.
+
+## 8.1 What a successor artifact has to clear
+
+Recorded here so the next attempt is not re-derived from scratch, and explicitly NOT authorized by this document
+-- the form cap is the owner's, and the option that replaces B is the owner's too.
+
+1. **The budget is 40 tokens, and the measurement is the only authority.** The lighting notes as written cost 44.
+   Any successor is measured on the pinned tokenizer BEFORE it is registered, not estimated: the chars-per-token
+   estimator is now known to be wrong by 8 % in the unsafe direction on this family, and its calibration source
+   (ORG-1's grouped block) does not resemble short appended phrases.
+2. **The control has to be token-matched, not character-matched.** `rails.proposer.contrast_note_records` pads to
+   a character count; on this tokenizer that leaves the control 14 tokens cheaper than its treatment. A control
+   that does not cost what the treatment costs cannot price the treatment's form, which is the whole reason
+   KC-A1c exists after ORG-1.
+3. **Option C is the only design on the table that satisfies both.** Section 3's option C -- notes that REPLACE
+   description words rather than extend them -- costs about +0 tokens and is what the evolution loop's proposer
+   rewrites already do. It is a different cell with a different construction rule, and it cannot be
+   length-matched by padding, so it needs its own control design.
 
 ## 9. Deviations and limits carried from the parents
 
