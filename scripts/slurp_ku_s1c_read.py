@@ -175,6 +175,17 @@ def main() -> int:
     parser.add_argument("--outputs", type=Path, required=True)
     parser.add_argument("--run-manifest", type=Path, default=None)
     parser.add_argument("--flight-receipt", type=Path, default=None)
+    parser.add_argument(
+        "--phases",
+        type=Path,
+        default=None,
+        help=(
+            "the sealed <run_id>.phases.json. When given, the DRAFT phase's own "
+            "responses are scored as a third arm, which is what separates the two "
+            "things this cell changes at once: the added CONTROL turn (closed-list "
+            "vs draft, one contact each) and the added CONTACT (draft vs revise)."
+        ),
+    )
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
 
@@ -188,6 +199,23 @@ def main() -> int:
     for name, entries in rows.items():
         if len(entries) != 1000:
             raise SystemExit("%s carries %d rows, expected 1000" % (name, len(entries)))
+
+    if args.phases is not None:
+        phases_doc = json.loads(Path(args.phases).read_text(encoding="utf-8"))
+        draft = None
+        for summary in phases_doc["phases"]:
+            if str(summary["controller_policy_id"]).endswith(":draft"):
+                draft = {
+                    result["sample_id"]: result["final_response_text"]
+                    for result in summary["results"]
+                }
+        if draft is None or len(draft) != 1000:
+            raise SystemExit("the phases file carries no complete draft phase")
+        rows["KU-S1C-DRAFT"] = [
+            {"sample_id": sample_id, "text": text}
+            for sample_id, text in sorted(draft.items())
+        ]
+        sources["KU-S1C-DRAFT"] = args.phases
 
     tmpdir = Path(tempfile.mkdtemp(prefix="saea-slurp-kus1c-read-", dir=str(root)))
     inputs = {}
@@ -280,7 +308,7 @@ def main() -> int:
 
     text_by_arm = {
         name: {row["sample_id"]: text_of(row) for row in rows[name]}
-        for name in sources
+        for name in sorted(rows)
     }
 
     realized: dict[str, object] = {}
@@ -300,9 +328,11 @@ def main() -> int:
         realized["wall_seconds"] = run_phases.get("wall_seconds")
         realized["dispatch"] = run_phases.get("dispatch")
         # Two whole-roster waves, so every row took exactly two contacts.
-        rows = {int(entry.get("rows", 0)) for entry in (run_phases.get("phases") or [])}
+        phase_rows = {
+            int(entry.get("rows", 0)) for entry in (run_phases.get("phases") or [])
+        }
         realized["contacts_per_row"] = (
-            run_phases.get("contact_count", 0) / max(rows) if rows else None
+            run_phases.get("contact_count", 0) / max(phase_rows) if phase_rows else None
         )
 
     document = {
@@ -340,15 +370,31 @@ def main() -> int:
                     1 for row in per_sample[name].values() if not row["parsed"]
                 ),
             }
-            for name in sources
+            for name in sorted(rows)
         },
-        "entity_supply": {name: entity_mentions(rows[name]) for name in sources},
+        "entity_supply": {
+            name: entity_mentions(rows[name]) for name in sorted(rows)
+        },
         "answer_churn": {
-            "pooled_1000": answer_churn(
+            "revise_vs_closed_list_pooled_1000": answer_churn(
                 text_by_arm["CLOSED-LIST"], text_by_arm["KU-S1C"], ids_all
             ),
-            "unexposed_new500": answer_churn(
+            "revise_vs_closed_list_new500": answer_churn(
                 text_by_arm["CLOSED-LIST"], text_by_arm["KU-S1C"], new500
+            ),
+            "revise_vs_own_draft_pooled_1000": (
+                answer_churn(
+                    text_by_arm["KU-S1C-DRAFT"], text_by_arm["KU-S1C"], ids_all
+                )
+                if "KU-S1C-DRAFT" in text_by_arm
+                else None
+            ),
+            "draft_vs_closed_list_pooled_1000": (
+                answer_churn(
+                    text_by_arm["CLOSED-LIST"], text_by_arm["KU-S1C-DRAFT"], ids_all
+                )
+                if "KU-S1C-DRAFT" in text_by_arm
+                else None
             ),
         },
         "paired_ku_s1c_over_closed_list": {
@@ -356,6 +402,25 @@ def main() -> int:
             "prior_exposed_dev500": contrasts("CLOSED-LIST", "KU-S1C", dev500),
             "unexposed_new500": contrasts("CLOSED-LIST", "KU-S1C", new500),
         },
+        # The decomposition: this cell changes TWO things against the
+        # comparator at once -- it adds a CONTROL turn and it adds a CONTACT.
+        # The draft phase's own sealed responses separate them.
+        "paired_draft_over_closed_list": (
+            {
+                "pooled_1000": contrasts("CLOSED-LIST", "KU-S1C-DRAFT", ids_all),
+                "unexposed_new500": contrasts("CLOSED-LIST", "KU-S1C-DRAFT", new500),
+            }
+            if "KU-S1C-DRAFT" in per_sample
+            else None
+        ),
+        "paired_revise_over_draft": (
+            {
+                "pooled_1000": contrasts("KU-S1C-DRAFT", "KU-S1C", ids_all),
+                "unexposed_new500": contrasts("KU-S1C-DRAFT", "KU-S1C", new500),
+            }
+            if "KU-S1C-DRAFT" in per_sample
+            else None
+        ),
         "weightings": {
             metric: {
                 name: {
@@ -393,11 +458,11 @@ def main() -> int:
             "%-13s %7.2f %7.2f %8.2f %7.2f %8.2f"
             % (
                 name,
-                agg["scenario"],
-                agg["action"],
-                agg["intent"],
-                agg["slu_f1"],
-                agg["span_f1"],
+                100 * agg["scenario_accuracy"],
+                100 * agg["action_accuracy"],
+                100 * agg["intent_accuracy"],
+                100 * agg["slu_f1"],
+                100 * agg["span_f1"],
             )
         )
     print()
