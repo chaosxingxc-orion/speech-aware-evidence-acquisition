@@ -75,6 +75,19 @@ def _writer(write: bool):
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--version", default=DEFAULT_VERSION)
+    parser.add_argument(
+        "--rosters",
+        default=",".join(FOLDS),
+        help=(
+            "comma-separated roster names to build products for. The two folds are "
+            "the default and are what SAEA-SN-MF-SLURP-EVO-FOLD-SUPPLEMENTS-V2 "
+            "registered; 'exemplars' builds the SAME three artifacts for the "
+            "proposer's own pool, which the text-only proposer arm needs because its "
+            "draw ANCHORS are TRAIN rows and contracts.gate.FrozenCoreGate refuses a "
+            "TRAIN row with no additive D1 receipt (row "
+            "SAEA-SN-MF-SLURP-EVO-EXEMPLAR-SUPPLEMENT-V2)"
+        ),
+    )
     parser.add_argument("--workers", type=int, default=MAX_WORKERS)
     parser.add_argument(
         "--feature-cache-root", type=Path, default=Path.home() / "feat-cache"
@@ -94,8 +107,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     parent_sha256 = _sha256_file(PARENT_D1)
     writer = _writer(args.write)
 
+    requested = tuple(name.strip() for name in str(args.rosters).split(",") if name.strip())
+    unknown = sorted(set(requested) - set(ROSTER_SLUGS))
+    if unknown:
+        raise SystemExit(f"unknown roster name(s): {unknown}; known: {sorted(ROSTER_SLUGS)}")
+
     summary: dict[str, object] = {}
-    for name in FOLDS:
+    for name in requested:
         roster_path = ROSTERS / f"{roster_stem(name, args.version)}.json"
         products = build_fold_products(
             read_roster(roster_path),
@@ -119,6 +137,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             {
                 "written": args.write,
                 "parent_d1_sha256": parent_sha256,
+                "rosters": list(requested),
                 "folds": summary,
             },
             indent=2,

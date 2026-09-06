@@ -1,0 +1,57 @@
+{
+  "folds": {
+    "exemplars": {
+      "audio_seconds_total": 1321.0659375,
+      "channel_mix": {
+        "far_field_recordings": 215,
+        "headset_recordings": 215,
+        "headset_share": 0.5,
+        "recordings": 430
+      },
+      "count": 430,
+      "d1_ids_sha256": "7699dd41dc4da00b6044380012ce22c654c5604b29c7a3fdb9a7de780269bc74",
+      "d1_manifest_sha256": "1f77825c305aa186668b9103bd06807dca4b7168f1e304d5ddfeb127203b44ab",
+      "d1_media_supplement": "docs/receipts/artifacts/d1-slurp-evo-exemplars-v2.json",
+      "d1_media_supplement_sha256": "4c8dbe389c3fb024516940334a09184e939a980ba04e0c0520f792d6715c16bb",
+      "d1_total_bytes": 25264883,
+      "dataset_fragment": "configs/dataset/slurp-speech-native-evo-exemplars-430.json",
+      "dataset_fragment_file_sha256": "906a62eadc8a87a3c9ca2da2820c343ded81515a62169f840084241fa49b76b8",
+      "measure_rows_per_second": 175.288,
+      "measure_wall_seconds": 2.453,
+      "measure_workers": 8,
+      "packet_coverage": {
+        "feature_cache_root": "/home/chao/feat-cache",
+        "legacy_caches_on_disk": [
+          "ami-q4km",
+          "audio2tool-q4km",
+          "q4km",
+          "slurp-lco3b",
+          "slurp-lco7b",
+          "slurp-q4km"
+        ],
+        "packets_present_by_root": {
+          "slurp-q4km-packets": 0,
+          "slurp-q4km-packets-04ccc72a": 0,
+          "slurp-q4km-packets-x108-04ccc72a": 0
+        },
+        "resident_packet_root": "slurp-q4km-packets-04ccc72a",
+        "rows": 430,
+        "rows_needing_a_packet": 430
+      },
+      "probe_sample_view": "docs/receipts/probe-samples/SLURP-EVO-EXEMPLARS-V2.json",
+      "probe_sample_view_file_sha256": "8d801895da089a5b11c74203909fdc033f19c3c433b5322fdca21f3ffcbf1772",
+      "roster_canonical_sha256": "11d034fbf9eb1920805bf2abcfb4c4cd3c7591f46bc2fb72a6b443917f34380b",
+      "roster_id": "SLURP-EVO-EXEMPLARS-V2",
+      "roster_receipt": "docs/receipts/rosters/slurp-evo-exemplars-v2.json",
+      "roster_receipt_file_sha256": "0d57df6c711e494af148745db4bd3082719fd2c1d5f7e0a340075887e4fddf05",
+      "runtime_view_sha256": "7023e5a145772881a329d6ac26798ca1f63f41f021866e0e56e964113ac9ba97",
+      "split_identity_hash_receipt": "44c4d8c1e1d5e34ecce6b338480be8038468476607ef2c501a1c04976dce1166",
+      "split_identity_hash_run": "cf03c262888716b8c1801d60c87125339f24bed2f07fa35c0f6ab4f1c6ce7236"
+    }
+  },
+  "parent_d1_sha256": "9c10fad1e5b625f977a5bdc71ed0c782e5d5c76c7a13af11ce811c5e152d35e3",
+  "rosters": [
+    "exemplars"
+  ],
+  "written": true
+}

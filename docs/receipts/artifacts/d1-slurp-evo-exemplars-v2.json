@@ -1,0 +1,4743 @@
+{
+  "carrier_lock_key": "slurp",
+  "count": 430,
+  "ids_sha256": "7699dd41dc4da00b6044380012ce22c654c5604b29c7a3fdb9a7de780269bc74",
+  "manifest": [
+    {
+      "audio_seconds": 2.2396875,
+      "bytes": 47221,
+      "id": "slurp:train:000028:audio-1497868918",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497868918.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "bf5c0e7afd4c2569f2b77852a13e7c48c2460b06b0d4ae4be3616f0f213f6aaf"
+    },
+    {
+      "audio_seconds": 1.344,
+      "bytes": 24292,
+      "id": "slurp:train:000032:audio-1501758801-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501758801-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "325d213c532ccb1bde72a7d3846835213108b715a3ea4181d2c6f65eefd94a40"
+    },
+    {
+      "audio_seconds": 4.92,
+      "bytes": 103901,
+      "id": "slurp:train:000054:audio-1488554794",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488554794.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8ce5ca43ba56b9cfe7a7c30fd91aed0a23a2220107dd659cb7fb6207a751a76c"
+    },
+    {
+      "audio_seconds": 1.279875,
+      "bytes": 30512,
+      "id": "slurp:train:000114:audio-1499697814",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499697814.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ce4f72a1f57d1d149c40557f73cd99e2f3602bbea4066a738d911d9480baaf70"
+    },
+    {
+      "audio_seconds": 2.432,
+      "bytes": 43111,
+      "id": "slurp:train:000175:audio-1501778481-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501778481-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7d5d6aebcefc75e9f27b2fe7221bf7243d24e3577b176c36cdc098c88ac050c3"
+    },
+    {
+      "audio_seconds": 3.36,
+      "bytes": 71691,
+      "id": "slurp:train:000176:audio-1488563110",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488563110.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "481d1e6ee23e1128182ef69fa55f6d3289b3546dd80664155689d619e57d7c8d"
+    },
+    {
+      "audio_seconds": 2.5596875,
+      "bytes": 49328,
+      "id": "slurp:train:000184:audio-1497882046",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497882046.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f2b7fe5a6f66d07411b846e3b04ec7aab2f6bf81a62dd86974337c51ea56e4bf"
+    },
+    {
+      "audio_seconds": 2.3036875,
+      "bytes": 46664,
+      "id": "slurp:train:000192:audio-1498484858",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498484858.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c154d5fd65a3133e9927e47224362d423d61051357b525458e4e7d681ba09e3b"
+    },
+    {
+      "audio_seconds": 2.432,
+      "bytes": 41719,
+      "id": "slurp:train:000278:audio-1497883359-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497883359-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "410e3d4cf6ba958cdbc255b72336f857c7d4bb58b33cef6afb7a7e5c3818c689"
+    },
+    {
+      "audio_seconds": 3.2740625,
+      "bytes": 59785,
+      "id": "slurp:train:000285:audio-1502112524",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502112524.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "efa607bd90593832be2e571914038a364c66748aac4d305a9754770de9c074cf"
+    },
+    {
+      "audio_seconds": 1.728,
+      "bytes": 30555,
+      "id": "slurp:train:000307:audio-1494548786-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1494548786-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6600c269b6edc0c4607dc71165962ec665e6ec84241ad8a76270dc570c408973"
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "bytes": 48274,
+      "id": "slurp:train:000351:audio-1499689684",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499689684.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d782c247e4f3bee99174f22de1eb8a07f426ba318698f8a5c5a0f85137161480"
+    },
+    {
+      "audio_seconds": 3.3915625,
+      "bytes": 64843,
+      "id": "slurp:train:000433:audio-1498567822",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498567822.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4ad47261a794ef4c34d3b54904edc13e246bb3b7ca20fc881bc810c0e1685412"
+    },
+    {
+      "audio_seconds": 2.687625,
+      "bytes": 57772,
+      "id": "slurp:train:000447:audio-1490110518",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490110518.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ccdb84f527bb7c1547cecd48635f8212cd6accae77e2d5cc082d436c9f330b81"
+    },
+    {
+      "audio_seconds": 3.8395,
+      "bytes": 85055,
+      "id": "slurp:train:000481:audio-1501692513",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501692513.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "687e5cc1efd7cbd3d0fd6644346def882204cec33a6246c5a9ab58552d99e1cd"
+    },
+    {
+      "audio_seconds": 3.264,
+      "bytes": 58115,
+      "id": "slurp:train:000493:audio-1490282393-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490282393-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ea3c2aa68539ecb8bf5284533ffb4bd7155bd7b111cfde3d2bf4c2493f52600e"
+    },
+    {
+      "audio_seconds": 2.11175,
+      "bytes": 44074,
+      "id": "slurp:train:000537:audio-1494513353",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1494513353.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "489d73426a609234f5ec198abc9d86b619da3a4e081209572b9bc4d43d4bdd8a"
+    },
+    {
+      "audio_seconds": 2.88,
+      "bytes": 53705,
+      "id": "slurp:train:000549:audio-1490367329-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490367329-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "40986a841a5e22668da0f084c5c4f92953f7491a383a743febf6a36dd60ce3de"
+    },
+    {
+      "audio_seconds": 2.815625,
+      "bytes": 54441,
+      "id": "slurp:train:000574:audio-1496264954",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1496264954.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4c59f83ac1b2d6d4bac83a0b2be3a1b2a68d12f80b68cd83b76f9592ecfc09ec"
+    },
+    {
+      "audio_seconds": 1.92,
+      "bytes": 32600,
+      "id": "slurp:train:000587:audio-1490107726-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490107726-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5e0c0b9d9aaa993798223cfd5e9abfc14f95e95766e763e96674b0f20c03c210"
+    },
+    {
+      "audio_seconds": 1.6,
+      "bytes": 28601,
+      "id": "slurp:train:000619:audio-1502200270-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502200270-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9e16d54b5fd25f0e84a216bf86dbd4b44191d7bf74adf57d3a10e2f706dc251d"
+    },
+    {
+      "audio_seconds": 3.456,
+      "bytes": 66995,
+      "id": "slurp:train:000649:audio-1502893231-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502893231-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b76ef565b812dcf3660208735b45d62893d110a020bdc66f70f1f0f22f4be112"
+    },
+    {
+      "audio_seconds": 1.92,
+      "bytes": 31559,
+      "id": "slurp:train:000688:audio-1490183838-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490183838-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "80f141f948bf2aaf9171ec1fc8d424f3045b32b93766b388c5b7903604ed8a39"
+    },
+    {
+      "audio_seconds": 3.7115,
+      "bytes": 82578,
+      "id": "slurp:train:000797:audio-1489673932",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1489673932.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b4a95d0124e29fa83a4ccc26b8d0a66782fffcd6a35cb335ab7f256372887b31"
+    },
+    {
+      "audio_seconds": 2.816,
+      "bytes": 45644,
+      "id": "slurp:train:000798:audio-1434534968-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434534968-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6b7b5c39ba51408e254d3fc3320e5644bd43954db93d4a51b0eb7383702ea9b5"
+    },
+    {
+      "audio_seconds": 1.5358125,
+      "bytes": 33005,
+      "id": "slurp:train:000799:audio-1495372176",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1495372176.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "bf0fe872e299380e158564b57094a58b65547f19c15744076bbc9685cd8a7447"
+    },
+    {
+      "audio_seconds": 4.9273125,
+      "bytes": 96391,
+      "id": "slurp:train:000815:audio-1497871933",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497871933.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d4249c1aa7a3d7fa4d3c5bc1998608399ffee83085db813e7c2e9412f3073386"
+    },
+    {
+      "audio_seconds": 3.007625,
+      "bytes": 64231,
+      "id": "slurp:train:000903:audio-1490106846",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490106846.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e5b0b2fc24973a0395a29c7c87b88ba9f93307fb5a9d734221ac1b58b0ee6f7a"
+    },
+    {
+      "audio_seconds": 2.56,
+      "bytes": 41793,
+      "id": "slurp:train:000904:audio-1434529486-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434529486-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1f54164fb19278e75ae0e04f37ef762166bd90a8e3c83b267674d2af2708ee3b"
+    },
+    {
+      "audio_seconds": 2.24,
+      "bytes": 34692,
+      "id": "slurp:train:000907:audio-1498566670-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498566670-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "390f11620bf676d937bdc52fb9fe8da70df5985ccd071bd30accae65b96d465f"
+    },
+    {
+      "audio_seconds": 1.536,
+      "bytes": 27588,
+      "id": "slurp:train:000910:audio-1434528727-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434528727-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "959b6aab9da70c9e9077637f66bc1ae5ae64c42d9a84398e31ddceabfbfe589a"
+    },
+    {
+      "audio_seconds": 3.0650625,
+      "bytes": 56789,
+      "id": "slurp:train:000949:audio-1502100270",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502100270.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9fcb155ee79f9d20cdfb0e70a07a3c418f979ab257f47dfb647e9523b79a14ad"
+    },
+    {
+      "audio_seconds": 4.352,
+      "bytes": 82987,
+      "id": "slurp:train:000992:audio-1501414430-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501414430-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "46afdc759c31611ab5cd10617992382b045c2ebc1bff76ec38078ea5f0b833ab"
+    },
+    {
+      "audio_seconds": 1.344,
+      "bytes": 20263,
+      "id": "slurp:train:001003:audio-1494548537-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1494548537-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "cc9a5f18bb06cf133f79ac8af766fb961e6b2e4b9174264d2e6d30984556bf5c"
+    },
+    {
+      "audio_seconds": 4.87625,
+      "bytes": 91320,
+      "id": "slurp:train:001021:audio-1502308412",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502308412.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "66195f19e5009bcb8cd0bed904c4a1851d4378531383e16b1c487bda84fe26fe"
+    },
+    {
+      "audio_seconds": 3.008,
+      "bytes": 59769,
+      "id": "slurp:train:001022:audio-1501752250-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501752250-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "409de92112830614ad4de5877b7272f909ea1153e0f1d60e45c125103432ec78"
+    },
+    {
+      "audio_seconds": 3.2,
+      "bytes": 55586,
+      "id": "slurp:train:001062:audio-1502376041-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502376041-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "fb537bb419fbd57b0e25e43459292c0fdaa8fa5136ba1a37f885b46e97b1871a"
+    },
+    {
+      "audio_seconds": 2.879625,
+      "bytes": 60423,
+      "id": "slurp:train:001075:audio-1501690051",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501690051.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "683cf6aef50dc3159d0f4653038066a62024d88da6847f2bb49af2866a3673ab"
+    },
+    {
+      "audio_seconds": 1.79175,
+      "bytes": 37275,
+      "id": "slurp:train:001134:audio-1495371137",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1495371137.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "bdd8bb4f5473bec60dc0bf766f851c0590a7deb0d4de0e27241bc9383bc5c174"
+    },
+    {
+      "audio_seconds": 4.607375,
+      "bytes": 90861,
+      "id": "slurp:train:001165:audio-1490289884",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490289884.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "746a5531210ec07905a5b1391ad0d4d8e42061441ed03023ea2df6e04942125c"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "bytes": 63684,
+      "id": "slurp:train:001218:audio-1490956802",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490956802.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3f9f3b636bcab068c51023f66cdfe94028b32edad6bbf33fcf5b4def69e811b5"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "bytes": 63346,
+      "id": "slurp:train:001245:audio-1492781511",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1492781511.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ec31452a29a96bd324870868889664f3817157ea28dfba2ce2c2c916c1b51277"
+    },
+    {
+      "audio_seconds": 2.624,
+      "bytes": 56258,
+      "id": "slurp:train:001246:audio-1490355784-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490355784-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5d5499914c3faf0eac6f490f64ec6ab5f37a338917bdefd5bd5b6c11c2a221d7"
+    },
+    {
+      "audio_seconds": 2.5596875,
+      "bytes": 49992,
+      "id": "slurp:train:001267:audio-1499266126",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499266126.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "31f8b8111e635d29da7a2b3099e5435972c4be13c4aacd3fa2c661676626add4"
+    },
+    {
+      "audio_seconds": 4.864,
+      "bytes": 96309,
+      "id": "slurp:train:001302:audio-1499690823-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499690823-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "665025a71ee0e142f4f67c17ee84bab4a1e7ad2735736156d3089d94ed33ace3"
+    },
+    {
+      "audio_seconds": 3.5835,
+      "bytes": 71748,
+      "id": "slurp:train:001303:audio-1498578526",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498578526.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "765d26b8e3a7508ff328e25ce397ec9599c6288e769581b9df10a2e00c07b465"
+    },
+    {
+      "audio_seconds": 2.304,
+      "bytes": 39675,
+      "id": "slurp:train:001306:audio-1502895044-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502895044-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ea60994ee3a3b0925dea2bd3bcd60931e59d99220bb436b719a9e5b8e02dfcbf"
+    },
+    {
+      "audio_seconds": 1.6638125,
+      "bytes": 36353,
+      "id": "slurp:train:001359:audio-1502198853",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502198853.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8bba6f7df05132215401ce4f6d49b0db93061b82f93b9e162a48b7b7f44b954f"
+    },
+    {
+      "audio_seconds": 3.264,
+      "bytes": 51575,
+      "id": "slurp:train:001378:audio-1489674336-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1489674336-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e01db37326faba8ae60380e604fdc5897cfae60b7f954a30f3d49c49cf6c8775"
+    },
+    {
+      "audio_seconds": 3.52,
+      "bytes": 67522,
+      "id": "slurp:train:001384:audio-1497881753-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497881753-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1fe83bb3218e3f21ce86c1a0d95306e2a8205fcec62303187443db5eff76829f"
+    },
+    {
+      "audio_seconds": 4.2234375,
+      "bytes": 83889,
+      "id": "slurp:train:001386:audio-1490007321",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490007321.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0fdaa161bd18e2e2f21aaca4adb45cc00c1d5fd844e13b9c78d103226409f3f8"
+    },
+    {
+      "audio_seconds": 1.92,
+      "bytes": 34556,
+      "id": "slurp:train:001465:audio-1502197357-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502197357-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c49308b54dca9edbfa69256f61042c707c170069fc592b059defafd7e77a9682"
+    },
+    {
+      "audio_seconds": 2.176,
+      "bytes": 36233,
+      "id": "slurp:train:001471:audio--1504192312-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1504192312-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "13371b5ee836b283bf990209f359305d260e2bd6002c3d967137f51a11d00508"
+    },
+    {
+      "audio_seconds": 2.752,
+      "bytes": 52872,
+      "id": "slurp:train:001518:audio-1501768662-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501768662-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "10ca302000b30d358dad4b99f92c9accc73824f5c2aa8b217e5e4a4a451f857e"
+    },
+    {
+      "audio_seconds": 1.856,
+      "bytes": 29526,
+      "id": "slurp:train:001521:audio--1504195258-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1504195258-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0265a2773e32aea5c2653966ef3b1f6b6004ab6f87c7ba8d23a34988c308fb19"
+    },
+    {
+      "audio_seconds": 3.7755,
+      "bytes": 78067,
+      "id": "slurp:train:001522:audio-1488993218",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488993218.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "59185e86b1dfe6209d7390690f3fd94ac462d7925bd2085d6e95dd5f32cd98c1"
+    },
+    {
+      "audio_seconds": 2.751625,
+      "bytes": 61633,
+      "id": "slurp:train:001536:audio-1502300323",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502300323.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e41fd6bfd58005e824c0f8f8d01faec47bef6f68f6c62fe7561b8c286510972a"
+    },
+    {
+      "audio_seconds": 1.5358125,
+      "bytes": 33561,
+      "id": "slurp:train:001552:audio-1490201340",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490201340.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4829d31a2129c9d1b3c5fbc1d78acde988fe3885cfe88a84af9da973698c43d9"
+    },
+    {
+      "audio_seconds": 4.032,
+      "bytes": 81551,
+      "id": "slurp:train:001565:audio-1502216365-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502216365-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "86385c8520a7f7a0e0642185caf25bff3eb0e10fd0a89018041204d0cca0f5ce"
+    },
+    {
+      "audio_seconds": 4.288,
+      "bytes": 84406,
+      "id": "slurp:train:001662:audio-1502197382-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502197382-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9da6edbd0f1ca1cbd2f470429f1d4b2d27e9437967ff0591f74f8c73da6fc57c"
+    },
+    {
+      "audio_seconds": 3.3275625,
+      "bytes": 70889,
+      "id": "slurp:train:001681:audio-1498485991",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498485991.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ef36e816e70446c7007aa55743db3481396f5f9af555cbece1558e4b4808fcad"
+    },
+    {
+      "audio_seconds": 2.816,
+      "bytes": 42418,
+      "id": "slurp:train:001682:audio-1434539049-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434539049-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "27afeb9376ed22fb786d21249ceadf0f87c2d0a0154d6db27d3b9b75304d2ccf"
+    },
+    {
+      "audio_seconds": 3.4555625,
+      "bytes": 68327,
+      "id": "slurp:train:001708:audio-1498576769",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498576769.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "79cdf661e128a5d21744fec78b6d573783024b6636ecb1ec493fdce0bb3e1e93"
+    },
+    {
+      "audio_seconds": 2.496,
+      "bytes": 49045,
+      "id": "slurp:train:001717:audio-1490198503-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490198503-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "fc1b2aaa8a6990b5f4177e75f94df55d3211596436570422bd72f5f14f81e901"
+    },
+    {
+      "audio_seconds": 2.816,
+      "bytes": 45939,
+      "id": "slurp:train:001730:audio-1494418064-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1494418064-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7334d99b97077d7170f1ecf14ad973e896d2babf1a5eb44839f3960335818b7a"
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "bytes": 56295,
+      "id": "slurp:train:001764:audio-1492783903",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1492783903.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1842310e184ff452ee433c6f0939b8110e4eadd945684902894856afa183b39d"
+    },
+    {
+      "audio_seconds": 3.52,
+      "bytes": 55456,
+      "id": "slurp:train:001802:audio-1498569698-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498569698-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "fc18b982e5d811414d7186820fa58e4cb84d7fc7b400e821e8b17d8b63061886"
+    },
+    {
+      "audio_seconds": 3.8395,
+      "bytes": 85055,
+      "id": "slurp:train:001893:audio-1488971650",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488971650.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1ff1f37613d51c49a645fe7003cf31810b5ff0494915c40840b530922dde207e"
+    },
+    {
+      "audio_seconds": 2.432,
+      "bytes": 45784,
+      "id": "slurp:train:001919:audio-1502195920-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502195920-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7f883f3fcfa8bd052d5a12b090425761aca9d3b1ca069c30c35010d1fc0baf63"
+    },
+    {
+      "audio_seconds": 2.04775,
+      "bytes": 42642,
+      "id": "slurp:train:001954:audio-1498576718",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498576718.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e30f320735ca0655b3f80b6b30a6f8f0bd381cc0239159bbbf11141138800a2d"
+    },
+    {
+      "audio_seconds": 2.944,
+      "bytes": 45630,
+      "id": "slurp:train:001955:audio-1501774320-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501774320-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6a9268508948ad139e9c108037d36efc80dd342a446e44237273862467fa76a0"
+    },
+    {
+      "audio_seconds": 6.335125,
+      "bytes": 132576,
+      "id": "slurp:train:002066:audio-1489504306",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1489504306.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a3cbb6328bbca656e0a55e2608b9e82fe16475852a168409556759f25faef45f"
+    },
+    {
+      "audio_seconds": 1.956875,
+      "bytes": 35557,
+      "id": "slurp:train:002090:audio-1501688799",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501688799.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "cfc21db435aacd371bf08cf934460602a0c3832db8c1b63fc17c523ea1856d14"
+    },
+    {
+      "audio_seconds": 3.008,
+      "bytes": 59673,
+      "id": "slurp:train:002110:audio-1490956272-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490956272-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "992fe9972e806d106965d7ade5e985fc5adfecef70b2df564e3db66c69665fa9"
+    },
+    {
+      "audio_seconds": 2.24,
+      "bytes": 42716,
+      "id": "slurp:train:002185:audio-1501752207-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501752207-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "16ca131bc15d9faa995c1a187ba8452bf04b170e22f4ad1521e7b7d12fd35612"
+    },
+    {
+      "audio_seconds": 1.28,
+      "bytes": 23519,
+      "id": "slurp:train:002212:audio-1502099984-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502099984-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f4bdb43cede2ffc585f58bd8db425326b13d56a6ca8708d483e73fe40443ea07"
+    },
+    {
+      "audio_seconds": 2.17575,
+      "bytes": 44989,
+      "id": "slurp:train:002223:audio-1497860831",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497860831.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "28865d4e1ff0f3504642f6d4261dad0b2db192eee94a252b66264c14b9a88c00"
+    },
+    {
+      "audio_seconds": 2.432,
+      "bytes": 50852,
+      "id": "slurp:train:002273:audio-1501690853-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501690853-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "35e70473088134aee4c126a480f9138a8371dc7e8258e7b32a86d769741a4286"
+    },
+    {
+      "audio_seconds": 1.984,
+      "bytes": 33205,
+      "id": "slurp:train:002277:audio--1504198080-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1504198080-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b978ca92c1b496b6d9be51e5989e1d1528df5bb1b4577561bba001a5ec10c2b8"
+    },
+    {
+      "audio_seconds": 4.416,
+      "bytes": 62196,
+      "id": "slurp:train:002287:audio-1497264714-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497264714-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5958886b77366e4657d09e96fc7729e1a316ceaab082a3b7a7bd8e678e7c4f36"
+    },
+    {
+      "audio_seconds": 1.5358125,
+      "bytes": 31679,
+      "id": "slurp:train:002289:audio-1498574383",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498574383.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "cfc3441543c3e44116a5c3380ba0694cae449289bc886311c6a19dcb1c5f468a"
+    },
+    {
+      "audio_seconds": 3.4555625,
+      "bytes": 69670,
+      "id": "slurp:train:002324:audio-1488974562",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488974562.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3c309e271ded9040e13f8629c7b455a79a888f4f596076ee2fe2bfbbaac9d33a"
+    },
+    {
+      "audio_seconds": 4.45825,
+      "bytes": 96233,
+      "id": "slurp:train:002342:audio-1501157074",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501157074.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "eaefaaf7a601496c743ed4d50ed16095481dd57d610f54b8339babfbd36d9ace"
+    },
+    {
+      "audio_seconds": 2.6236875,
+      "bytes": 55486,
+      "id": "slurp:train:002347:audio-1502197597",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502197597.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f73fdfb9dbde2434cd18750fb4f96faa915291846fdca6e3990c3908c5347bc6"
+    },
+    {
+      "audio_seconds": 3.456,
+      "bytes": 65547,
+      "id": "slurp:train:002372:audio-1490262376-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490262376-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6aea86d5e73a84b2b4ce9a9f9f4d8a2635ff1ebdf2572ac45b5e6c73aa83efa3"
+    },
+    {
+      "audio_seconds": 3.072,
+      "bytes": 57917,
+      "id": "slurp:train:002415:audio-1501697560-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501697560-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c8466cad44fdd3e63a11c64dbc5106b3ba2873727f813dd8c6d1ca5564ca7897"
+    },
+    {
+      "audio_seconds": 3.071625,
+      "bytes": 64241,
+      "id": "slurp:train:002426:audio-1497864881",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497864881.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e4ef243ca78c3f6efbbfaf05a3e8a08fcb4e39e1b6461e7136049cecc6cbd30b"
+    },
+    {
+      "audio_seconds": 5.12,
+      "bytes": 90391,
+      "id": "slurp:train:002448:audio-1489672343-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1489672343-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "21c03cc573e4d429acde0db10f8dc8b08a18d2072384042a32f4765000846738"
+    },
+    {
+      "audio_seconds": 2.3676875,
+      "bytes": 42814,
+      "id": "slurp:train:002459:audio-1498566333",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498566333.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4a34c40d3ac8d94eabcbbe6de3224f5a2f012b548b8ce04519689e1da737c255"
+    },
+    {
+      "audio_seconds": 5.184,
+      "bytes": 97447,
+      "id": "slurp:train:002468:audio-1501765717-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501765717-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0c0805ee57835ede3524644c6476a34bf89d2b3070899cd2c5fbc27e5bbf26be"
+    },
+    {
+      "audio_seconds": 1.664,
+      "bytes": 32419,
+      "id": "slurp:train:002471:audio-1501751465-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501751465-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f4d70564cf90c9da7781d62763eb234feb582c8ffe04bcade861a886d9d15710"
+    },
+    {
+      "audio_seconds": 2.88,
+      "bytes": 52058,
+      "id": "slurp:train:002473:audio-1497882926-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497882926-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e6606aa606a2e7b739d00507d6f8cc54c48cad7237c90c48425b023970d82b0f"
+    },
+    {
+      "audio_seconds": 2.3036875,
+      "bytes": 41968,
+      "id": "slurp:train:002479:audio-1502218372",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502218372.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3bbdebdae53fed5f8999981abcc4c9597d4da8d87f293233cf7cadea1c0308a4"
+    },
+    {
+      "audio_seconds": 5.376,
+      "bytes": 90448,
+      "id": "slurp:train:002529:audio-1498568486-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498568486-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "da73ff6b58be7963df471d61e7fc3542e1e930cc0f1fe4afdc087f9f7a2f8e37"
+    },
+    {
+      "audio_seconds": 2.687625,
+      "bytes": 54697,
+      "id": "slurp:train:002585:audio-1434544272",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434544272.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a7c86866071bbf78fb8c6820c16e93f8794d078a24958daa9af3558c754ef004"
+    },
+    {
+      "audio_seconds": 5.056,
+      "bytes": 96922,
+      "id": "slurp:train:002592:audio-1502895892-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502895892-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0e91355a0f397b3cac8904973f407647c4444ddc2aaa5f753f7c173c789169fd"
+    },
+    {
+      "audio_seconds": 2.6236875,
+      "bytes": 56343,
+      "id": "slurp:train:002604:audio--1504198166",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1504198166.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "48ece5d5c5a7c0d1dd8ae55589c1460af8c2cfc331ab86ba3b3d1435f55e7a00"
+    },
+    {
+      "audio_seconds": 2.3676875,
+      "bytes": 51014,
+      "id": "slurp:train:002627:audio-1495371111",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1495371111.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5e5a8cf88d06872c57dbac1964db882356e0c795aa6f9256ffa70a7097369abb"
+    },
+    {
+      "audio_seconds": 7.0390625,
+      "bytes": 154039,
+      "id": "slurp:train:002628:audio-1488974021",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488974021.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d277f617880ff30a5e573004e3e7cacee4d38adfa3c644fc902e1c8b21bac056"
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "bytes": 50703,
+      "id": "slurp:train:002635:audio--1504192453",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1504192453.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5c44305e5b931795eeef714276701f80cef3e2f620c6664dae601529c63080c6"
+    },
+    {
+      "audio_seconds": 3.7115,
+      "bytes": 80639,
+      "id": "slurp:train:002671:audio--1504192839",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1504192839.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e7bcecff0ca86c938d9a0adc4fb939a368a16e441b43bc2576e4e4046f7e1d28"
+    },
+    {
+      "audio_seconds": 1.6,
+      "bytes": 29212,
+      "id": "slurp:train:002692:audio-1490288951-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490288951-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f1313aca43121fbbd79217b0496b0edfc6634a8dc58510ebb31d943c6d7b16a0"
+    },
+    {
+      "audio_seconds": 1.792,
+      "bytes": 24405,
+      "id": "slurp:train:002700:audio-1498564904-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498564904-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "89cff52d6b36efd138fe00529ab355d0450d94951d97fa3abf75ab08d80767d5"
+    },
+    {
+      "audio_seconds": 2.815625,
+      "bytes": 57707,
+      "id": "slurp:train:002706:audio-1488987617",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488987617.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "758de5e16969a08361a777b23112d25756a7a16f352e921c0b0495eef02b122c"
+    },
+    {
+      "audio_seconds": 3.3275625,
+      "bytes": 72418,
+      "id": "slurp:train:002744:audio-1490370200",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490370200.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "82ece6a4fead3add88c2e0cf36917b2c717c03312371477a4dab48b999906cc4"
+    },
+    {
+      "audio_seconds": 3.0650625,
+      "bytes": 55016,
+      "id": "slurp:train:002746:audio-1501152325",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501152325.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4305eeb158b4f461c61207a7be3897d19c2d73605010fd3e296fc81b3b30c0d5"
+    },
+    {
+      "audio_seconds": 2.8560625,
+      "bytes": 52770,
+      "id": "slurp:train:002758:audio-1502114077",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502114077.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3fd880b57d3df3433adda513740988f29c57dba24acc2b630581ac7f13838137"
+    },
+    {
+      "audio_seconds": 3.1995625,
+      "bytes": 68486,
+      "id": "slurp:train:002784:audio-1490106125",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490106125.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7ba540fa39ab3ff34d8c6519ebccace412a586786e0c6968e457ddd8df251f92"
+    },
+    {
+      "audio_seconds": 2.815625,
+      "bytes": 55723,
+      "id": "slurp:train:002854:audio-1494415727",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1494415727.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "44f947d71c0912ec6d39c1d0db1bc84453db409404c81eb11c88184addf1ffb4"
+    },
+    {
+      "audio_seconds": 2.176,
+      "bytes": 37497,
+      "id": "slurp:train:002873:audio--1504192939-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1504192939-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e40fe018b9bcec6181d0d4d3e84df1c71813f7eb17e4aa3452259ffbf2653757"
+    },
+    {
+      "audio_seconds": 1.85575,
+      "bytes": 43665,
+      "id": "slurp:train:002882:audio-1490202631",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490202631.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "adc4cce8d8722e07f98342c2cc3a9adc42e0b71ec88924608009a4ce35d5fb2d"
+    },
+    {
+      "audio_seconds": 4.543375,
+      "bytes": 87444,
+      "id": "slurp:train:002947:audio-1489154683",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1489154683.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1c6dfa58baaea35cabf89c3d7094a10f6148a56950d4b3e18d8a03878e40f999"
+    },
+    {
+      "audio_seconds": 2.88,
+      "bytes": 48358,
+      "id": "slurp:train:002954:audio-1489674144-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1489674144-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1fe11eaf042148b053109c7e587f096dba0f8e59fdbd604ea2e1b0a2abb7c4cf"
+    },
+    {
+      "audio_seconds": 1.85575,
+      "bytes": 36326,
+      "id": "slurp:train:002961:audio-1498645755",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498645755.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9942507429bb96d4bb923abf06c63b5da85b71a155e9f2ce24cff35b6cf9b400"
+    },
+    {
+      "audio_seconds": 3.204375,
+      "bytes": 54208,
+      "id": "slurp:train:002988:audio-1501697173",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501697173.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f4b0d0625466541a9ebd2148bb21a2deefdf3b9920d85e6954fbcc72d9ef531e"
+    },
+    {
+      "audio_seconds": 2.304,
+      "bytes": 38474,
+      "id": "slurp:train:002989:audio-1501777904-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501777904-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "21237fa95401bd5213e12fa4c47a00c9076ae8220fb83e5133e1d55a69401df2"
+    },
+    {
+      "audio_seconds": 2.816,
+      "bytes": 46774,
+      "id": "slurp:train:003068:audio-1497887607-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497887607-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "028212daeb1f0242729e5f7da4f522072314e5769c1dfa783c7d7e00e9af31ef"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "bytes": 54093,
+      "id": "slurp:train:003107:audio-1488984602",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488984602.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "82a95a3402cd4600130eb9ed34affb1140ba9a9d26312c63367c6389faddb8d3"
+    },
+    {
+      "audio_seconds": 4.352,
+      "bytes": 82696,
+      "id": "slurp:train:003135:audio-1490283029-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490283029-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "51328a29dedcd2c4c592df066313b052821670156ee8bf50c221e1f02c36ca04"
+    },
+    {
+      "audio_seconds": 3.4555625,
+      "bytes": 75762,
+      "id": "slurp:train:003180:audio--1504198206",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1504198206.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "581fc9c90a1a716efa1ce35bda8a0c097259f109c4955ebe2c983435f73ca5c7"
+    },
+    {
+      "audio_seconds": 5.472,
+      "bytes": 107773,
+      "id": "slurp:train:003243:audio-1501689223",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501689223.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "573a628ac549ed823bcec3e76e212bec92b3bf8e03c0b0116af24e0667551ffd"
+    },
+    {
+      "audio_seconds": 4.0954375,
+      "bytes": 85166,
+      "id": "slurp:train:003249:audio--1504195064",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1504195064.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6d0c2e239e43af87e7111dd342e055583eb6332014e76928855070a0d7801564"
+    },
+    {
+      "audio_seconds": 1.6869375,
+      "bytes": 35533,
+      "id": "slurp:train:003291:audio-1501689236",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501689236.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "adf959a37311e57d97f6c3b4baf3a8de48b7bd5f9ee5fbc632a3b83aa6442b5f"
+    },
+    {
+      "audio_seconds": 1.088,
+      "bytes": 20505,
+      "id": "slurp:train:003336:audio-1494607566-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1494607566-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "70237fa084965fe31b7ee062125a430394a4a9f5e522cd1dfe4d0b65a7380aad"
+    },
+    {
+      "audio_seconds": 2.4956875,
+      "bytes": 53748,
+      "id": "slurp:train:003382:audio-1489673877",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1489673877.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "bad5bd1b22a3c699226b02d2f1b7cd981c391d4eeeeeb30cc9f74fd17f26a086"
+    },
+    {
+      "audio_seconds": 2.176,
+      "bytes": 40980,
+      "id": "slurp:train:003448:audio-1490356238-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490356238-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c3b120177f2437638c5680ea92f3c27ba1ce76d9dc4b7f93d4651d251c913d39"
+    },
+    {
+      "audio_seconds": 2.88,
+      "bytes": 49663,
+      "id": "slurp:train:003498:audio--1506079560-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1506079560-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5da478cfe7b3aaffa5513d7ab769a33bc0ba18a3be05d2ba1ecc4240c0533c48"
+    },
+    {
+      "audio_seconds": 1.856,
+      "bytes": 24947,
+      "id": "slurp:train:003509:audio-1502376301-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502376301-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7660589de2c42a7fa1b602c66cbc0a07128340ad67b24378ce3cf024e2b9840d"
+    },
+    {
+      "audio_seconds": 2.17575,
+      "bytes": 45860,
+      "id": "slurp:train:003533:audio-1489153984",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1489153984.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1760b2a7210bca94c0b69e4e99cb2bbe4ce31375bb6ac12ecbb2e02a5b54d107"
+    },
+    {
+      "audio_seconds": 3.2635625,
+      "bytes": 69846,
+      "id": "slurp:train:003612:audio-1501751976",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501751976.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "eabd91f4cff511422f012de0a1047e7f25b33c908fb79ccee495c68d602bd1f8"
+    },
+    {
+      "audio_seconds": 2.2396875,
+      "bytes": 48884,
+      "id": "slurp:train:003639:audio-1490195961",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490195961.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "36f9eb82230b92b03950ebef605fb98d9018695871a5e704a72311c1033e5206"
+    },
+    {
+      "audio_seconds": 1.6638125,
+      "bytes": 36368,
+      "id": "slurp:train:003641:audio-1498578747",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498578747.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f8450cc6349ce540b9f5be6430f2e32085f3c50e658489a5ed247503ffe7ffa9"
+    },
+    {
+      "audio_seconds": 2.56,
+      "bytes": 42762,
+      "id": "slurp:train:003690:audio--1505404447-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1505404447-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7305ce7988901ceeba77f4ba5972a5e5ec8fffeb30a11db158699f1dfb10ef4a"
+    },
+    {
+      "audio_seconds": 2.92575,
+      "bytes": 65770,
+      "id": "slurp:train:003698:audio-1501693779",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501693779.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "518dba4c526a12eb191690ce5816192980d747a6d19dacf289570cdb2459716a"
+    },
+    {
+      "audio_seconds": 2.04775,
+      "bytes": 44666,
+      "id": "slurp:train:003699:audio-1502376115",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502376115.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "26cf3de9e792ee39495511a2325f4de999a9c2ec1e295dc508e60f8c7c06b32f"
+    },
+    {
+      "audio_seconds": 2.879625,
+      "bytes": 62433,
+      "id": "slurp:train:003735:audio-1490370177",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490370177.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6582db265d4f41473f1982a583a28c626fd97a18098a4064b07e054830b03a09"
+    },
+    {
+      "audio_seconds": 2.687625,
+      "bytes": 58010,
+      "id": "slurp:train:003748:audio-1490183979",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490183979.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0c5b712c430d20e83e44538cefaf5949bdc632b345dd80065c31c4fd105f696b"
+    },
+    {
+      "audio_seconds": 2.5596875,
+      "bytes": 49751,
+      "id": "slurp:train:003766:audio-1499266551",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499266551.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "bf0e4fa34878802cbe57b1a6547375f98a7b2497cd401b12cac975bc2a451801"
+    },
+    {
+      "audio_seconds": 2.368,
+      "bytes": 38486,
+      "id": "slurp:train:003805:audio-1501775694-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501775694-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5bca4f2f3f101597a5d778fcc88e197ae38903ecc957255b267575c05c989792"
+    },
+    {
+      "audio_seconds": 4.608,
+      "bytes": 88085,
+      "id": "slurp:train:003903:audio-1501150755-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501150755-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8be7c7f01b7435ccef1d4686838c237abd2adb06701950f8622adab3c747912c"
+    },
+    {
+      "audio_seconds": 2.88,
+      "bytes": 45921,
+      "id": "slurp:train:003925:audio-1490196010-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490196010-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c3e1b252d1b32365f4c5c5f38c68b37b34234913e4e7b55cdc72cef1d4deb649"
+    },
+    {
+      "audio_seconds": 2.112,
+      "bytes": 34807,
+      "id": "slurp:train:003945:audio-1502896845-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502896845-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "2dd36de5fa8df33d6a0fd5c7c459736a32629bea07100dccd01f2a6bad4e8b0b"
+    },
+    {
+      "audio_seconds": 2.3036875,
+      "bytes": 43469,
+      "id": "slurp:train:003976:audio-1501685714",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501685714.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "58e8fb707e564b55bf8cb5283e39204c69cb84af42cde46ec630964bb46a30f2"
+    },
+    {
+      "audio_seconds": 2.624,
+      "bytes": 43837,
+      "id": "slurp:train:004096:audio--1504195522-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1504195522-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4cb3037a18720aa44cdda9243e41fe6f5a8ed1167d1f95b68cda647a7834501f"
+    },
+    {
+      "audio_seconds": 3.8395,
+      "bytes": 82761,
+      "id": "slurp:train:004147:audio-1495370848",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1495370848.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "78a5ee9d668316b8c5522fbfc989db13335122a5e36d20ef80b9d5cb795674d1"
+    },
+    {
+      "audio_seconds": 2.17575,
+      "bytes": 52438,
+      "id": "slurp:train:004157:audio-1501756382",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501756382.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a82f31f19596fc78cbb3ff55f7203a7c687ca327b42be7b198ba81c137905447"
+    },
+    {
+      "audio_seconds": 4.479375,
+      "bytes": 94689,
+      "id": "slurp:train:004218:audio-1499696890",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499696890.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "689541ef2c46552864522cb6ea471e1d19951f624eefa89a418f8d0e5f0aa621"
+    },
+    {
+      "audio_seconds": 2.4956875,
+      "bytes": 52267,
+      "id": "slurp:train:004225:audio-1500036779",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1500036779.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "70e877128b5bb98b287271deedebfaca62c331d3b77db486977e21599077a108"
+    },
+    {
+      "audio_seconds": 1.58575,
+      "bytes": 34231,
+      "id": "slurp:train:004261:audio-1501689818",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501689818.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ece680547351129559a4eef6c6cc280ee235a9400a0661dcef8502a0a38b3377"
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "bytes": 47123,
+      "id": "slurp:train:004280:audio-1497882393",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497882393.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ddbae1a531b26279e248586e19988e38ff64daf0ebfae0165c5654e15af9de79"
+    },
+    {
+      "audio_seconds": 3.392,
+      "bytes": 59394,
+      "id": "slurp:train:004370:audio-1502895628-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502895628-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "14419e807194758bf2fdd8c16e1d73df75e0a2795cb16ae63c251fe5a679bee1"
+    },
+    {
+      "audio_seconds": 3.072,
+      "bytes": 54345,
+      "id": "slurp:train:004500:audio-1502194935-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502194935-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "08d039ae613244169564ed9a65f2f36b64d5b466cded9b868aa6b3cfe9b7fcc3"
+    },
+    {
+      "audio_seconds": 2.816,
+      "bytes": 47136,
+      "id": "slurp:train:004610:audio-1501152850-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501152850-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "36ed07cfb522c9703bad4ad0b71bf56c1908e3dccee57eb41b5c01e0ea19bc20"
+    },
+    {
+      "audio_seconds": 1.408,
+      "bytes": 26578,
+      "id": "slurp:train:004633:audio-1490286443-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490286443-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1adc5371294c4a1dedb0635c20a8b0c47f5d6207c6bbc88053b57d87ff80068f"
+    },
+    {
+      "audio_seconds": 3.008,
+      "bytes": 52975,
+      "id": "slurp:train:004640:audio-1490201975-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490201975-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "fb3c78ca139afbad0ada9ec145814a28dbbd8b99d6fa0dd978b66e3ef7304203"
+    },
+    {
+      "audio_seconds": 1.087875,
+      "bytes": 23772,
+      "id": "slurp:train:004641:audio-1494607554",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1494607554.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4ee88b28aaa1c41332fa844523f26caa99a27c2454b4f560bbc5d846673feb0f"
+    },
+    {
+      "audio_seconds": 3.5195625,
+      "bytes": 73029,
+      "id": "slurp:train:004655:audio-1497450486",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497450486.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1d1ab2b2b84f8b6df1d240e83fbc301ee5c8846eaecedd3cb0edc74f682feae4"
+    },
+    {
+      "audio_seconds": 3.1355625,
+      "bytes": 65780,
+      "id": "slurp:train:004665:audio-1490184366",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490184366.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0851688e19f32be5c15016b9256190b3c554ab60069937bad6b1420637f19cec"
+    },
+    {
+      "audio_seconds": 2.3676875,
+      "bytes": 48196,
+      "id": "slurp:train:004708:audio-1498573623",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498573623.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b8fc56ab4af920ce395e922da935beb590f8a815b6aac24e5f8654c328154ae1"
+    },
+    {
+      "audio_seconds": 2.2396875,
+      "bytes": 44605,
+      "id": "slurp:train:004830:audio-1434532771",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434532771.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f9432fda62edb52aeef7dde089895e2af05f4bddfbbcd2a1e2a41d8140ca8338"
+    },
+    {
+      "audio_seconds": 2.368,
+      "bytes": 36511,
+      "id": "slurp:train:004932:audio-1494421722-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1494421722-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "516998a4eb5775f711a5c5b26286ae66e9e9ffd73b869b6afce577452ccbfaa2"
+    },
+    {
+      "audio_seconds": 3.136,
+      "bytes": 60725,
+      "id": "slurp:train:004958:audio-1499267275-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499267275-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1c3cc7456fc03b573a8758227caf0f9b0ec23df858189319ba12b8b52bf4db0e"
+    },
+    {
+      "audio_seconds": 1.856,
+      "bytes": 23023,
+      "id": "slurp:train:004962:audio-1490192533-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490192533-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3787079ac9c9fddbd73e93392afac224c4c90bf443ec34b10d182177e2c2d943"
+    },
+    {
+      "audio_seconds": 2.5596875,
+      "bytes": 47876,
+      "id": "slurp:train:005024:audio-1498566805",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498566805.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5b763fd3d740c618d321a70fb4dc2759c07bc883dc553dd500540a69d617ceba"
+    },
+    {
+      "audio_seconds": 1.6,
+      "bytes": 26809,
+      "id": "slurp:train:005053:audio-1490286776-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490286776-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6ce4c0d60a8fc4d2f75db85d9c80b34d590886f4b4986d0d03e1ebcf9f637c63"
+    },
+    {
+      "audio_seconds": 1.3438125,
+      "bytes": 25290,
+      "id": "slurp:train:005077:audio-1498579078",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498579078.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "31fb74d31fc45c92813194be0e7d037b6b16a98d91ff468afb6ce276329dc733"
+    },
+    {
+      "audio_seconds": 3.008,
+      "bytes": 54954,
+      "id": "slurp:train:005079:audio-1498485975-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498485975-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "be593d9c2b0df0d21c8811513916c2cbef0a1932d7726a9dfdc813a68966c6e8"
+    },
+    {
+      "audio_seconds": 2.879625,
+      "bytes": 60394,
+      "id": "slurp:train:005211:audio-1499361434",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499361434.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "fae13f6ade25d83c5a7cc3d891c89cce96c258a67cdd8e7f7cd2a8d1b5336e9d"
+    },
+    {
+      "audio_seconds": 3.1995625,
+      "bytes": 66937,
+      "id": "slurp:train:005220:audio--1505407654",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1505407654.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "186e88c33986ae470b243a92d5b6b181f755f7e4e87cca9ba35d0d17c30522d6"
+    },
+    {
+      "audio_seconds": 3.008,
+      "bytes": 57597,
+      "id": "slurp:train:005228:audio-1497861441-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497861441-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d45a92f286bc6a095e786a1e61a7df06033983a805935500dffb308cffe5bb8c"
+    },
+    {
+      "audio_seconds": 2.176,
+      "bytes": 31465,
+      "id": "slurp:train:005235:audio-1498486363-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498486363-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "132f389066aaf4407b068a8f3f153dd63f77300a7ab4c6be3979971a079a231a"
+    },
+    {
+      "audio_seconds": 3.1355625,
+      "bytes": 68545,
+      "id": "slurp:train:005240:audio-1500389682",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1500389682.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "66169fab4178cbff5a8890228a6e04d7d4afefe86db08c2f62c1a368f202dd80"
+    },
+    {
+      "audio_seconds": 1.152,
+      "bytes": 18901,
+      "id": "slurp:train:005256:audio-1499266665-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499266665-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b5032905a51a065ef5c46e062a1b6514e6b84e291021c5c2e6f9d958368ab7b7"
+    },
+    {
+      "audio_seconds": 3.84,
+      "bytes": 70980,
+      "id": "slurp:train:005277:audio-1498483808-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498483808-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "594a0293f63dbfff2d1d0612b19ad64311fd299ece23231279d56c37c10bff7a"
+    },
+    {
+      "audio_seconds": 2.048,
+      "bytes": 37678,
+      "id": "slurp:train:005314:audio-1501685820-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501685820-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "cc45fab0e95da35abd05c1d97aeef44b5bd5204efcbe892200f6e2be4754a094"
+    },
+    {
+      "audio_seconds": 3.5835,
+      "bytes": 71188,
+      "id": "slurp:train:005315:audio-1495734306",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1495734306.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "832e0f1983f2902c3e3b3ea62dcdb7749009541086999abf6ebb8e540ea19dfd"
+    },
+    {
+      "audio_seconds": 3.483,
+      "bytes": 64129,
+      "id": "slurp:train:005350:audio-1501150912",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501150912.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "27f0b881a5d8fa5f423aa722fbc8dfbcadc915bdd2ea9da10df09821b2142016"
+    },
+    {
+      "audio_seconds": 4.416,
+      "bytes": 80935,
+      "id": "slurp:train:005360:audio-1501150703-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501150703-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "363aa1fe19e88c3170f5aab4900e6c7406670fa37d826be4ad2ddf10433d763c"
+    },
+    {
+      "audio_seconds": 3.0650625,
+      "bytes": 53870,
+      "id": "slurp:train:005474:audio-1501415351",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501415351.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "bb68012fc6074474dbc4dc65dcac2e77eb3c64a5bab0a02b745521cbe067b0d9"
+    },
+    {
+      "audio_seconds": 5.184,
+      "bytes": 85308,
+      "id": "slurp:train:005542:audio-1490955446-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490955446-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f0eb4ec94c91ea11e587a7c04c1c1f576d693f65202d80e20f94d2dde771b60c"
+    },
+    {
+      "audio_seconds": 2.176,
+      "bytes": 42329,
+      "id": "slurp:train:005564:audio-1490355595-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490355595-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "dd51b6802a868f58aed6c1680bfada6ecda4fc8004e0eab38e48018750be37e9"
+    },
+    {
+      "audio_seconds": 1.6638125,
+      "bytes": 35820,
+      "id": "slurp:train:005585:audio-1501753319",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501753319.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e6c0a2edbe97db6af9d0bc2b6c1f9fdf2cb4ed9a0ace67412996b9ce365d720f"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "bytes": 58687,
+      "id": "slurp:train:005586:audio-1497861411",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497861411.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "07b99764894ae88e62dcd089db6ebe36af7f5bbb3e59fe6245bac2a7325aa933"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "bytes": 51922,
+      "id": "slurp:train:005659:audio-1498565736",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498565736.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "91b4b8730924b21c72b37271867e0f4bd95cf36fee8e19960985ece62a5a8d48"
+    },
+    {
+      "audio_seconds": 5.184,
+      "bytes": 89678,
+      "id": "slurp:train:005664:audio-1492784269-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1492784269-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6df676396d3351ca47ad808af02a6d720f9c4da6cd90f4b89f6ccfd1587aa9a6"
+    },
+    {
+      "audio_seconds": 2.176,
+      "bytes": 42659,
+      "id": "slurp:train:005665:audio-1501759223-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501759223-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "cd87787e29b2018d1c3066657ec7631bec6b0eb6f5546d2c669fc25d3942373d"
+    },
+    {
+      "audio_seconds": 2.04775,
+      "bytes": 42300,
+      "id": "slurp:train:005686:audio-1498485675",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498485675.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "be0fbbb12b657e029c7e7fa6de3eb3c2c4faa90d5fc5e6b350b0d593bb6f7111"
+    },
+    {
+      "audio_seconds": 2.432,
+      "bytes": 46156,
+      "id": "slurp:train:005724:audio-1502201324-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502201324-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4cae2723ccf7bfbb9ab095018b9831b95af9d2ba155401793766c945c3a9ab46"
+    },
+    {
+      "audio_seconds": 4.48,
+      "bytes": 78741,
+      "id": "slurp:train:005737:audio-1497880767-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497880767-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "987c1b0e4e4a3be94ff8316b9837d886753422750f3cf4999456dd8e49dadcfc"
+    },
+    {
+      "audio_seconds": 2.304,
+      "bytes": 45884,
+      "id": "slurp:train:005783:audio-1500039237-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1500039237-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "af7cbc374f9a6e776df0d2f7211468777c5a66d49c270c7fee65435fe1517f8a"
+    },
+    {
+      "audio_seconds": 1.5358125,
+      "bytes": 31542,
+      "id": "slurp:train:005860:audio-1501771602",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501771602.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "07d529b9b7b135eac4cbadcfc2a90f4320b03cf0fe50ab016f1d45102b36e3c0"
+    },
+    {
+      "audio_seconds": 1.728,
+      "bytes": 33686,
+      "id": "slurp:train:005962:audio-1490357072-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490357072-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "692a02e7d81b0938f158aee86da2631c24a9435924a5947d0c2a662759bf05e0"
+    },
+    {
+      "audio_seconds": 1.344,
+      "bytes": 19296,
+      "id": "slurp:train:006017:audio-1490183795-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490183795-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9fa4a29e4c87daf8138ae1c7d5ed63c32ab7d367a70978b7a4c25a05cd397f1c"
+    },
+    {
+      "audio_seconds": 1.792,
+      "bytes": 31019,
+      "id": "slurp:train:006038:audio-1497029562-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497029562-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3aa94b37bd2833dc4a98d982005d5b6bd98e0a63264970eacc636b0ee907846e"
+    },
+    {
+      "audio_seconds": 2.816,
+      "bytes": 49472,
+      "id": "slurp:train:006047:audio-1490200103-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490200103-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8a0963a16a0c91d1810f6c76920a974eedf76659bbcd5d7028a708d92d2f8f90"
+    },
+    {
+      "audio_seconds": 2.687625,
+      "bytes": 59679,
+      "id": "slurp:train:006076:audio-1502894761",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502894761.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0a6eb41244439591aa0719aef9c5542ca80741d1087629a6a693ef26a776deff"
+    },
+    {
+      "audio_seconds": 7.423,
+      "bytes": 157086,
+      "id": "slurp:train:006086:audio-1499697466",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499697466.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "708912cebf507fd63c23dfb8906f5be910eb24b098986f4dc48ae2ddb79296c5"
+    },
+    {
+      "audio_seconds": 3.008,
+      "bytes": 55392,
+      "id": "slurp:train:006119:audio-1502216164-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502216164-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "025dcdd1a046b6d54fd528a13eef46ebcdacf4485594119e3fc70850ecd03c46"
+    },
+    {
+      "audio_seconds": 2.56,
+      "bytes": 53125,
+      "id": "slurp:train:006150:audio-1501690270-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501690270-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f649439bccbd81dff3199371bc9a23a077cc7d5813c2962bbc91267a8c95374e"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "bytes": 63843,
+      "id": "slurp:train:006168:audio-1490360133",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490360133.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "cf78e5e8ca5b447a5bafcb2caf26002ff592cc1241f69804b468b35ab7d5dcf1"
+    },
+    {
+      "audio_seconds": 3.136,
+      "bytes": 42475,
+      "id": "slurp:train:006206:audio-1490371393-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490371393-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "36ad6086c7d869896b823f84e0d829383d422f883290b776682d3d7d13b784e8"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "bytes": 59846,
+      "id": "slurp:train:006207:audio-1488984579",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488984579.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "79a1a8fff9327d72fff464eb0e161d56eec08e219f5467329f7353e6aa9e734f"
+    },
+    {
+      "audio_seconds": 2.688,
+      "bytes": 47553,
+      "id": "slurp:train:006228:audio-1490108541-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490108541-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "06b578e53afa3db80ba81f33233ee03a91e61256648fdec9c62e1294ffe36fde"
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "bytes": 53544,
+      "id": "slurp:train:006230:audio-1501753015",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501753015.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5efc5b9c9966fd2e5dfec19d54618012426deeb77e28ac5b6ef60b54c005483c"
+    },
+    {
+      "audio_seconds": 1.279875,
+      "bytes": 28170,
+      "id": "slurp:train:006252:audio-1501752347",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501752347.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ed17c72f5002600d4c00b866e01e0bbf734488718ffe647368c216320e7cfb96"
+    },
+    {
+      "audio_seconds": 2.752,
+      "bytes": 46995,
+      "id": "slurp:train:006274:audio-1492786045-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1492786045-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f690db3ac98dd634ca47c9e4bfc1b4a218bc7e23c4e51591642d8fec20aed97c"
+    },
+    {
+      "audio_seconds": 1.79175,
+      "bytes": 39521,
+      "id": "slurp:train:006276:audio-1489151181",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1489151181.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "30131f49753ea210c531c3faab6848ae820f6de5ff826e288e6dda3453e4f859"
+    },
+    {
+      "audio_seconds": 2.71675,
+      "bytes": 46421,
+      "id": "slurp:train:006365:audio-1501152473",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501152473.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "29a7009850e90c10c3b6902e906e119b19bf80603213dc4ca5137a6b248b7555"
+    },
+    {
+      "audio_seconds": 1.792,
+      "bytes": 28541,
+      "id": "slurp:train:006441:audio-1502215872-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502215872-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4959e166b9816ab573bd0b04fd0b72da63e24a4f05caf61e80bc49fcfba8c7a2"
+    },
+    {
+      "audio_seconds": 2.688,
+      "bytes": 51615,
+      "id": "slurp:train:006498:audio-1501756107-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501756107-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f607fbc88640630eabc16e4e997ef2f34446d714e58b4084328ec557780700ec"
+    },
+    {
+      "audio_seconds": 3.264,
+      "bytes": 56273,
+      "id": "slurp:train:006544:audio-1501774307-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501774307-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "73db68309308bbdf8fab9d2ea6cb5fca0ee25983d6708175c4ae4f14f09e4b24"
+    },
+    {
+      "audio_seconds": 2.24,
+      "bytes": 35374,
+      "id": "slurp:train:006552:audio-1498572908-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498572908-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ec273ad4df77fce817052ccc0437541aac4241ba3772a489632653e596897ebf"
+    },
+    {
+      "audio_seconds": 7.5509375,
+      "bytes": 154217,
+      "id": "slurp:train:006630:audio-1501690412",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501690412.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9c93bebe74914d1498c572d87281c58c631f4e81eb323e42bb27056b0d80f261"
+    },
+    {
+      "audio_seconds": 2.751625,
+      "bytes": 53915,
+      "id": "slurp:train:006631:audio-1497865112",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497865112.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0f79284a6e9c8412417c8c0cd72456ceff51b3a4a9f34fd605f747225270c4df"
+    },
+    {
+      "audio_seconds": 2.624,
+      "bytes": 47916,
+      "id": "slurp:train:006783:audio-1490006922-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490006922-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e1834af8691fd36a0289b49d8fd0b748a929dfa543c6cd2c493f349a0aaee080"
+    },
+    {
+      "audio_seconds": 2.56,
+      "bytes": 42829,
+      "id": "slurp:train:006828:audio-1501687638-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501687638-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "afaf412636b608ee1a2772915f917457be5fdd3c9c15974a61c846a114ab37e8"
+    },
+    {
+      "audio_seconds": 3.8395,
+      "bytes": 77839,
+      "id": "slurp:train:006904:audio-1490103309",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490103309.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "35e0cecc7aef546994f76f15b67ad419b10091c0c9703ddf98166136dd040f5f"
+    },
+    {
+      "audio_seconds": 2.752,
+      "bytes": 48739,
+      "id": "slurp:train:006947:audio-1501772107-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501772107-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "75915a47ed9ed7d20c099dcb4c5fcb4c2a44a73f353b3496b07e39a8e8f23bf7"
+    },
+    {
+      "audio_seconds": 3.392,
+      "bytes": 58383,
+      "id": "slurp:train:006961:audio-1502113079-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502113079-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3421aa60966815781960f7eddd81651fe6f4b4087e127ba0ddab2027711bc975"
+    },
+    {
+      "audio_seconds": 4.096,
+      "bytes": 84983,
+      "id": "slurp:train:007083:audio-1502101928-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502101928-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "526d8313abff42d8f862a06bef156b68d2bc7c14627cc4e28fe1f4da502ab12c"
+    },
+    {
+      "audio_seconds": 1.6,
+      "bytes": 29061,
+      "id": "slurp:train:007135:audio-1490356760-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490356760-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ff03195cca1b53a29b087025cced2c3df5315f86b7e7150a8f1482ba98fa8be5"
+    },
+    {
+      "audio_seconds": 7.04,
+      "bytes": 117626,
+      "id": "slurp:train:007211:audio-1497437280-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497437280-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "73553d6a8dcb0550b774ee8461c322ddf472f5360e2d9ebf7dbf321084a11845"
+    },
+    {
+      "audio_seconds": 2.752,
+      "bytes": 51322,
+      "id": "slurp:train:007221:audio-1490110527-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490110527-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d7eb8b2b5a11f9e0acab9b70cc47fd6c6787304c58175d941f84ebc07a5408c8"
+    },
+    {
+      "audio_seconds": 3.52,
+      "bytes": 47815,
+      "id": "slurp:train:007302:audio-1495733547-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1495733547-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a663ebf663c2c207f693dc3fac48fb660c1ecdb2c5f1f089487820acf4b87a72"
+    },
+    {
+      "audio_seconds": 2.5596875,
+      "bytes": 51346,
+      "id": "slurp:train:007420:audio-1434541772",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434541772.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5feff29a8aa7f90cb9c4679ead10155a1dc2b6e59d96ec4fd43cba57fe534091"
+    },
+    {
+      "audio_seconds": 1.792,
+      "bytes": 27144,
+      "id": "slurp:train:007582:audio-1497863155-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497863155-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e0ea525981c4770abeed2e72e6aab5d3bff997ae3667115d8a5b87b1771f16c5"
+    },
+    {
+      "audio_seconds": 4.0954375,
+      "bytes": 83708,
+      "id": "slurp:train:007791:audio-1489152981",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1489152981.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "22795536646b2c9f14b2939e4a9b762dcc74377262ccfebf52bba9adb8bc178f"
+    },
+    {
+      "audio_seconds": 3.622375,
+      "bytes": 67299,
+      "id": "slurp:train:007849:audio-1501698335",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501698335.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8fc5a8410f1023794e8608120bf5f4a4541fc4fee9e83c73b5b31d7398022049"
+    },
+    {
+      "audio_seconds": 1.5358125,
+      "bytes": 37993,
+      "id": "slurp:train:007926:audio-1501757033",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501757033.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "90ee9893ca592e58107c3a6917b2d6bc8c6c39fb90c057de78ce34421cb56867"
+    },
+    {
+      "audio_seconds": 2.879625,
+      "bytes": 58923,
+      "id": "slurp:train:008128:audio-1489151065",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1489151065.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e77f3028743d9c0b745785acaa569ab2da465684578b19c26ba8a55badaa0213"
+    },
+    {
+      "audio_seconds": 1.856,
+      "bytes": 29383,
+      "id": "slurp:train:008356:audio-1501687277-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501687277-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0449c514e23d4fc04fe70c6ad4a580d5efb9fd3e63fc5e6a4a9b29f95757af7a"
+    },
+    {
+      "audio_seconds": 3.7616875,
+      "bytes": 77917,
+      "id": "slurp:train:008369:audio-1501155249",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501155249.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6208936e4ad84456976d78d063e216596ff50111cabc9510acc18cbab5ec481e"
+    },
+    {
+      "audio_seconds": 4.352,
+      "bytes": 80236,
+      "id": "slurp:train:008416:audio-1502113815-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502113815-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6df2d37ca6205e3bb38ab2d500fc9d36c4829f7f540530819d9d4ba8f05dfece"
+    },
+    {
+      "audio_seconds": 2.944,
+      "bytes": 46928,
+      "id": "slurp:train:008438:audio-1434534363-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434534363-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "2660c224d032e3b5a78e574e6e00c34cadd49506de03e059f5465aa22aeb9349"
+    },
+    {
+      "audio_seconds": 4.8,
+      "bytes": 72620,
+      "id": "slurp:train:008530:audio-1434534724-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434534724-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6633606e9efec6e997a21d96bd37864c90c1001afc5de38f11fa9ea93e827c9c"
+    },
+    {
+      "audio_seconds": 4.16,
+      "bytes": 78857,
+      "id": "slurp:train:008537:audio-1490204632-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490204632-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4ca985d2831f3648a288030d176fbfbc55be4aff56c35e1132496e381d9eee49"
+    },
+    {
+      "audio_seconds": 2.816,
+      "bytes": 45098,
+      "id": "slurp:train:008593:audio-1490106806-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490106806-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5cda951ecd203561358028235dfa514aa18f3e2266fe36dab793d995cd003c2a"
+    },
+    {
+      "audio_seconds": 3.328,
+      "bytes": 67119,
+      "id": "slurp:train:008638:audio-1501693860-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501693860-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3d8c32d62136f75c67e748a9d0cff36bc0170b08fd24420bbc7c4ae0df421b5c"
+    },
+    {
+      "audio_seconds": 2.048,
+      "bytes": 38334,
+      "id": "slurp:train:008675:audio-1490262415-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490262415-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "40c02caa12633dd7a51feb02bd2de602f318205d47b4bdd9fef63e3cb8cdeeab"
+    },
+    {
+      "audio_seconds": 3.328,
+      "bytes": 55114,
+      "id": "slurp:train:008909:audio-1490367246-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490367246-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "090fde115fe094db1f689a3a3d82cb26463abfe9f1a19fbeb3fe8eaadd82a168"
+    },
+    {
+      "audio_seconds": 2.24,
+      "bytes": 38661,
+      "id": "slurp:train:008994:audio-1434529814-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434529814-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "673d6799ec5d5290f18bf7f91e71306e8d931370ef4434a3dde437e72b56d54b"
+    },
+    {
+      "audio_seconds": 4.3514375,
+      "bytes": 89513,
+      "id": "slurp:train:009036:audio-1501756689",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501756689.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9ec042c6c8c21eea3850b746ea56ae0768654167d5f52b5de57aac91a7b1c95f"
+    },
+    {
+      "audio_seconds": 3.712,
+      "bytes": 62735,
+      "id": "slurp:train:009044:audio-1495378142-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1495378142-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8784b0d051ba0c27699f5b40835cd991bfa39d449932fb30b66c61b851e6beef"
+    },
+    {
+      "audio_seconds": 4.992,
+      "bytes": 87113,
+      "id": "slurp:train:009045:audio-1499697365-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499697365-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "df5ef8bfa6ef16179ca1299b7e45075e69c8f1d7f770b4b1c0a818f338b8ed9e"
+    },
+    {
+      "audio_seconds": 3.071625,
+      "bytes": 66515,
+      "id": "slurp:train:009367:audio-1501757907",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501757907.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d3437270157fb964792f3260c5c29b84631324e6104b86c1097e3cdf7594f4ca"
+    },
+    {
+      "audio_seconds": 4.0314375,
+      "bytes": 69861,
+      "id": "slurp:train:009465:audio-1498566075",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498566075.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d5c69d2848a414f43fd3734934a547b47b4e7b33b2eff26c31229859555a7ba3"
+    },
+    {
+      "audio_seconds": 1.91975,
+      "bytes": 36194,
+      "id": "slurp:train:009475:audio-1495734574",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1495734574.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d43b38041bbf3d4a94b8126847bf5993e3c993fefb27c40f54b5b8373c04f33a"
+    },
+    {
+      "audio_seconds": 3.8395,
+      "bytes": 87045,
+      "id": "slurp:train:009616:audio-1490181500",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490181500.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d14489ecd900f871c017f0bbc9ad1239dd3df1c8b0d061fbf7fecdb17ccd448c"
+    },
+    {
+      "audio_seconds": 1.4078125,
+      "bytes": 30968,
+      "id": "slurp:train:009727:audio-1490288378",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490288378.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "18ef955ec838b6322c88a9706163b1c08fbf568766f5e4ae07f96da9b52ee056"
+    },
+    {
+      "audio_seconds": 1.85575,
+      "bytes": 37885,
+      "id": "slurp:train:009730:audio--1505407651",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1505407651.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "cba89db1d24da4d7510045443c808801cd8190432fdc32ebc4ce0f76063b0684"
+    },
+    {
+      "audio_seconds": 2.17575,
+      "bytes": 48435,
+      "id": "slurp:train:009757:audio--1504195313",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1504195313.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "19c3b31180379efd56640e7d004814aed3dcaf787dcdde1bcab50389cd53adc6"
+    },
+    {
+      "audio_seconds": 3.7115,
+      "bytes": 81518,
+      "id": "slurp:train:009784:audio--1504198463",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1504198463.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "94ac372aec7c6355d57a5be6b89df21108d1a2c5959dd7b05d87655e7672b943"
+    },
+    {
+      "audio_seconds": 3.008,
+      "bytes": 51426,
+      "id": "slurp:train:009807:audio--1504194356-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1504194356-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "398e623b2e67095923381ed5f05b19cadd7d4ae1cfab64caba2a36df5e85167b"
+    },
+    {
+      "audio_seconds": 2.688,
+      "bytes": 52289,
+      "id": "slurp:train:009920:audio-1501697908-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501697908-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "682c91532ed966bf19085ac1c7828a067e9326fc7ed3a87feaaad438cab65dfd"
+    },
+    {
+      "audio_seconds": 2.368,
+      "bytes": 39345,
+      "id": "slurp:train:009922:audio-1490108697-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490108697-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0b09e455023d67f4e0f7072f1a37dfcd89cd7c672e5d0444269b79898d928962"
+    },
+    {
+      "audio_seconds": 2.11175,
+      "bytes": 46888,
+      "id": "slurp:train:009929:audio-1488976349",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488976349.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "636e230c5808349e898d5e329c966edd458e88bf0cc4fcfea781ef5cad4eb5df"
+    },
+    {
+      "audio_seconds": 3.392,
+      "bytes": 42642,
+      "id": "slurp:train:009937:audio-1495734151-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1495734151-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "29c706d78406dde0f11f57ffba8b25b9c08a7532617ac733f1c4c6c5b6cc5142"
+    },
+    {
+      "audio_seconds": 3.264,
+      "bytes": 52760,
+      "id": "slurp:train:009945:audio-1498573370-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498573370-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "06f9720e3c09926494a048eedb9e29e79a820f331c6a985f62b3adabe74df009"
+    },
+    {
+      "audio_seconds": 2.688,
+      "bytes": 53378,
+      "id": "slurp:train:009974:audio-1502099331-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502099331-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "be4f39650a0d34fcb94b0d390ef1ce2148666265e04631c7110798b1347fd986"
+    },
+    {
+      "audio_seconds": 2.3684375,
+      "bytes": 49353,
+      "id": "slurp:train:010000:audio-1502309453",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502309453.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "249e4dc44182eb6421211a198dbde1bcf58412f30af865eaa59faf80dd9a8e00"
+    },
+    {
+      "audio_seconds": 2.816,
+      "bytes": 33101,
+      "id": "slurp:train:010005:audio-1496265107-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1496265107-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0da3f937b60825cb20a26d009d596ba77cd9130f5c7b8cb2e8c2d5e69d0992d3"
+    },
+    {
+      "audio_seconds": 5.50325,
+      "bytes": 118826,
+      "id": "slurp:train:010030:audio-1501753823",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501753823.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "08a24a8c9487757c64a09587ca477269c310b56883d8987aa83068cd4e4b817d"
+    },
+    {
+      "audio_seconds": 1.344,
+      "bytes": 21442,
+      "id": "slurp:train:010034:audio-1434527470-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434527470-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a920dc743399438f0845e611f069d13193b530d58309b1cc5b85406543a0ee62"
+    },
+    {
+      "audio_seconds": 3.9675,
+      "bytes": 79499,
+      "id": "slurp:train:010057:audio-1488989481",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488989481.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9fa20d69fe3366ea9751c85fb29b8fc19fba8d834578965bb01663f424c8e137"
+    },
+    {
+      "audio_seconds": 2.56,
+      "bytes": 46828,
+      "id": "slurp:train:010066:audio-1490368090-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490368090-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5c048ba180544776c7a8ad4a2852d2b83e7ac7faf72c7541b91addf66db9809f"
+    },
+    {
+      "audio_seconds": 2.88,
+      "bytes": 42970,
+      "id": "slurp:train:010082:audio-1498571034-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498571034-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f50b9e541d45e70b74a9a02a44c989c5506cf799cc7fc17eefbd60c1439f4d59"
+    },
+    {
+      "audio_seconds": 3.072,
+      "bytes": 50119,
+      "id": "slurp:train:010083:audio-1501685698-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501685698-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9a299ee64b98fd67678b1037f3a7f1138a80146032a57e1cb9c9c360e073c66d"
+    },
+    {
+      "audio_seconds": 2.112,
+      "bytes": 31419,
+      "id": "slurp:train:010130:audio-1501686836-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501686836-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "43db5653c4c08394a8cd817696ce3ad77de0176bb5e50d25e3f77b3ca110ba5a"
+    },
+    {
+      "audio_seconds": 3.264,
+      "bytes": 45149,
+      "id": "slurp:train:010134:audio-1490372325-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490372325-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5e0fbe9267ecc608b7e26c02dd29e23843e5e6f0de98d077a3e66e22c4267577"
+    },
+    {
+      "audio_seconds": 2.88,
+      "bytes": 51318,
+      "id": "slurp:train:010142:audio-1490286805-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490286805-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5dc160b470a442ba9e0faf661823c86b2575a4bf6a31a3545e865f641cc56abf"
+    },
+    {
+      "audio_seconds": 1.6638125,
+      "bytes": 34505,
+      "id": "slurp:train:010188:audio-1501754202",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501754202.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b322f9e5a2a050f5b022ffd3cd11fd41a2a47d25e9c7bbc8b1460855ae438b48"
+    },
+    {
+      "audio_seconds": 2.112,
+      "bytes": 37849,
+      "id": "slurp:train:010201:audio-1502375467-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502375467-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "533b1f99d2829796df87faaca4d7d61d803deb64a430984fcc1af665e081c212"
+    },
+    {
+      "audio_seconds": 2.56,
+      "bytes": 52978,
+      "id": "slurp:train:010207:audio-1502197513-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502197513-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4e675734d612263fb1a3dc6f02404fe028ea3c21baaa135583916bbd631bdc1a"
+    },
+    {
+      "audio_seconds": 4.864,
+      "bytes": 88345,
+      "id": "slurp:train:010227:audio-1497557308-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497557308-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "92d5b7cdeb1be14b88b12902ec99b7357d2b719b4d443ade29e90fe1298e65e2"
+    },
+    {
+      "audio_seconds": 2.176,
+      "bytes": 45620,
+      "id": "slurp:train:010233:audio-1502101548-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502101548-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "29a2a880f6e4e294ae4ebcb8017769cb8135f2bac22ec67722404a5a991491bf"
+    },
+    {
+      "audio_seconds": 2.944,
+      "bytes": 52520,
+      "id": "slurp:train:010240:audio-1502896643-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502896643-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "552f1baa2477281ce3981c7d1cbff520c9d38623805bf2902682a04700f50059"
+    },
+    {
+      "audio_seconds": 2.368,
+      "bytes": 41287,
+      "id": "slurp:train:010429:audio-1489673776-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1489673776-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6674e810b5206e067a247837fa397cf97b9401ed10a017c23c9d6090058f063d"
+    },
+    {
+      "audio_seconds": 2.752,
+      "bytes": 46797,
+      "id": "slurp:train:010454:audio-1497868163-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497868163-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4b5d93abe6c67b635fc8ae0a21032b30a11a5bf1830c3c3cc23f671343729595"
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "bytes": 57422,
+      "id": "slurp:train:010459:audio-1490203400",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490203400.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "61e31b2329d33505835dbfb8fcf732b5186dadf9b89e59db41b28443adb21d0d"
+    },
+    {
+      "audio_seconds": 1.856,
+      "bytes": 33537,
+      "id": "slurp:train:010495:audio-1502376907-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502376907-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c353908b0e653de0715cde65246ea1746ba0dafb6282f870d568ec2578700d72"
+    },
+    {
+      "audio_seconds": 2.496,
+      "bytes": 47822,
+      "id": "slurp:train:010514:audio-1500979875-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1500979875-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7d4d3c3a709a5cf507bf7512c7458d74c7bbcd54df1527434893f0b4e03a86f4"
+    },
+    {
+      "audio_seconds": 3.904,
+      "bytes": 78442,
+      "id": "slurp:train:010524:audio-1501764332-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501764332-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "15d4bc8295ebaf87a4ac08ba50dc5efca0a013e8946c1d57bd1a2b46145fac7b"
+    },
+    {
+      "audio_seconds": 2.5596875,
+      "bytes": 57861,
+      "id": "slurp:train:010576:audio-1489154072",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1489154072.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "505385748dfd9ef9cf65d734a7096d9d929e7233c707fd6a8f3acdc9dd8e2a72"
+    },
+    {
+      "audio_seconds": 3.3275625,
+      "bytes": 67166,
+      "id": "slurp:train:010620:audio-1488990219",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488990219.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ee780426d4ee81aee514d2881bac0a5cb5b2a1da2f264106b8ddd2fced30de6d"
+    },
+    {
+      "audio_seconds": 3.1355625,
+      "bytes": 66305,
+      "id": "slurp:train:010653:audio-1490106288",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490106288.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "829b1fbdad19bf57da7b5e6d0b2b2776bf8844b3b76b81221f47bf08e9e78477"
+    },
+    {
+      "audio_seconds": 1.85575,
+      "bytes": 41549,
+      "id": "slurp:train:010703:audio-1499089725",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499089725.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7e1e5c0bd6cadbdade5f293ec4e395b2b1bc9ea779bf4f40cd837c1f79fa9e58"
+    },
+    {
+      "audio_seconds": 2.17575,
+      "bytes": 44815,
+      "id": "slurp:train:010959:audio-1497885544",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497885544.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "19a5dc10fb91333d41940f4ce13729c8d36a69b07749f52ce7c1b4fe2796ddf0"
+    },
+    {
+      "audio_seconds": 3.3915625,
+      "bytes": 66597,
+      "id": "slurp:train:010991:audio-1494548283",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1494548283.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "74c6fb42bb8a85f78bdbf1b83d313ce3b1c3b86357877fc420fd13f297be9324"
+    },
+    {
+      "audio_seconds": 2.688,
+      "bytes": 49134,
+      "id": "slurp:train:010995:audio-1501767986-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501767986-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "54b2283c53ddcb2490da554b75a5a91b82a496492ef2a05f93cc08294a10d530"
+    },
+    {
+      "audio_seconds": 1.91975,
+      "bytes": 42602,
+      "id": "slurp:train:011010:audio-1490202707",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490202707.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1f960ebc8e547b4b94e0bc8ce7b056c994c4dcd8e1bc7c161ce30208a943876c"
+    },
+    {
+      "audio_seconds": 3.3915625,
+      "bytes": 66648,
+      "id": "slurp:train:011012:audio-1497881415",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497881415.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "67da64d7678e773e9aca0708eabd002e123182e2dcb60c7ae07aaab6b43c6a8f"
+    },
+    {
+      "audio_seconds": 3.328,
+      "bytes": 63025,
+      "id": "slurp:train:011033:audio-1501407202-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501407202-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "dcd33d90ab42894b94cca7c99e3b6456d3f65f5b7a3c265f8fb5908f1aac34af"
+    },
+    {
+      "audio_seconds": 3.13475,
+      "bytes": 60238,
+      "id": "slurp:train:011036:audio-1502099723",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502099723.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "2e3e2cf7b0fe489148b1669b41d56173f443824167f563d523990425d221c973"
+    },
+    {
+      "audio_seconds": 2.048,
+      "bytes": 38696,
+      "id": "slurp:train:011046:audio--1505324897-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1505324897-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9898864eaf0b45afb89deda7499c93ce8a9b55911aa8ddca5bcfeaefff311784"
+    },
+    {
+      "audio_seconds": 2.8560625,
+      "bytes": 52193,
+      "id": "slurp:train:011056:audio-1502113035",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502113035.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "714666f33f603e6817999070af6620d055c4c2c96c8e0d5474e76caac1efa8e1"
+    },
+    {
+      "audio_seconds": 2.815625,
+      "bytes": 62818,
+      "id": "slurp:train:011112:audio-1490104957",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490104957.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "64108edd031b9b070a080cbc80ad2aa16e015bbce054752894988f6f91353fdf"
+    },
+    {
+      "audio_seconds": 3.648,
+      "bytes": 65385,
+      "id": "slurp:train:011123:audio-1501688381-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501688381-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0dce8566b7eb179bacd7eaff888f2b031c16033de48854f6405d2e78cfe627c4"
+    },
+    {
+      "audio_seconds": 2.17575,
+      "bytes": 45321,
+      "id": "slurp:train:011136:audio-1434532990",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434532990.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e18d5b42083eba70c64a0af56f83b58f706735821eeb304ff54fb2e1725059bd"
+    },
+    {
+      "audio_seconds": 3.2,
+      "bytes": 52584,
+      "id": "slurp:train:011153:audio-1490288653-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490288653-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4b9125a7eeadf87a02415dc2d133625b8f5c02c8552391a873546d65209d5433"
+    },
+    {
+      "audio_seconds": 3.071625,
+      "bytes": 58976,
+      "id": "slurp:train:011242:audio-1495733316",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1495733316.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "56f6164490e21ab6b362ba25882bcc92c25c536dd8a3ddaedab9a63ce51ed7d4"
+    },
+    {
+      "audio_seconds": 1.91975,
+      "bytes": 43474,
+      "id": "slurp:train:011347:audio-1498646804",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498646804.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e2d5248255e21e4e0b0955ffa73a6fb92572a63a185129cff5604e7ac06bb5fd"
+    },
+    {
+      "audio_seconds": 3.52,
+      "bytes": 63338,
+      "id": "slurp:train:011408:audio-1499266363-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499266363-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7da839007fd5535e3caa4e93ee303ff4dbe6eaef909bc2fe420fa82db2c8d469"
+    },
+    {
+      "audio_seconds": 3.456,
+      "bytes": 45774,
+      "id": "slurp:train:011523:audio-1501690019-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501690019-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e34eebf21cb73a4d1b4cb0801cb0b3ab57f7f3235fba1150481cef22c7bc59ab"
+    },
+    {
+      "audio_seconds": 3.1995625,
+      "bytes": 66694,
+      "id": "slurp:train:011586:audio-1498568755",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498568755.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "577ab1266b4bfff10bd9d57090a4d26b6dbb09ba3887b7a8c3b43c2e8c3a7888"
+    },
+    {
+      "audio_seconds": 3.072,
+      "bytes": 57165,
+      "id": "slurp:train:011614:audio-1490106271-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490106271-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8d44fe8704e313bd734aca3ba33884930c6d2cb7aa469c2867b5f7cca4d766b0"
+    },
+    {
+      "audio_seconds": 2.24,
+      "bytes": 44165,
+      "id": "slurp:train:011645:audio-1490356903-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490356903-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a1aae83d9a0f257fc765ece249b6c6732fc495949ea49f336d263d538b87dec4"
+    },
+    {
+      "audio_seconds": 2.6236875,
+      "bytes": 57352,
+      "id": "slurp:train:011649:audio-1499694689",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499694689.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "92dd788dab1a74c941ebc216339c2d85b2ebef256a6f1972380e1fa8c1d0bc37"
+    },
+    {
+      "audio_seconds": 2.815625,
+      "bytes": 55853,
+      "id": "slurp:train:011657:audio--1505323765",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1505323765.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "81edce82ce9f1464a5808c40ce24067f8a1459000414ff5949b421af45e848e8"
+    },
+    {
+      "audio_seconds": 2.751625,
+      "bytes": 51286,
+      "id": "slurp:train:011750:audio-1497886924",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497886924.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5dc49cf0c1e3aa45a223422ff5f1f8ecd988940fce08ec60cad4452c47633ee5"
+    },
+    {
+      "audio_seconds": 3.456,
+      "bytes": 53613,
+      "id": "slurp:train:011792:audio-1434534577-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434534577-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "597cac3710e2b2a705f832a3024db36311ee24fd309e413c719c52acbfa8ca3e"
+    },
+    {
+      "audio_seconds": 3.1355625,
+      "bytes": 64532,
+      "id": "slurp:train:011797:audio-1490109118",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490109118.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6d5cee7912677193e8ecd3bb3dd5bba4222b5bfd1ac3d2763dfc188548e9e098"
+    },
+    {
+      "audio_seconds": 4.735375,
+      "bytes": 101010,
+      "id": "slurp:train:011799:audio-1488969836",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488969836.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "84c5607b162b1685ff40013fa395dcba10420a5edac9cb3c196b80ee4dd14f6a"
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "bytes": 54808,
+      "id": "slurp:train:011813:audio-1498566050",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498566050.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ebccea4d4fdf2b4ec1587ef5db9d968c382611f1ee60f1022c0f62e115e52e70"
+    },
+    {
+      "audio_seconds": 3.072,
+      "bytes": 49201,
+      "id": "slurp:train:011832:audio-1490019273-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490019273-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9ff52769451e0596fb0fe5830b14f6a2deba957afc0d70496dd454c3d468f4da"
+    },
+    {
+      "audio_seconds": 4.543375,
+      "bytes": 91012,
+      "id": "slurp:train:011864:audio-1498757216",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498757216.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f7a4d5acf3ccdd491af10f2b4b5fcf921cc11ff391f77d4d42d8f731ba35b131"
+    },
+    {
+      "audio_seconds": 2.368,
+      "bytes": 40298,
+      "id": "slurp:train:011874:audio-1498570385-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498570385-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "fec2f6b0564192ef25510076a8327094d18c514ed0b6d79a328f9a916a5d4645"
+    },
+    {
+      "audio_seconds": 3.3275625,
+      "bytes": 77406,
+      "id": "slurp:train:011921:audio-1492784831",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1492784831.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4da7062252a9193fc4edd8647bc8f9dad18bc18d7dbbb45cd0f5a00f5b3f8ebd"
+    },
+    {
+      "audio_seconds": 2.432,
+      "bytes": 41246,
+      "id": "slurp:train:011923:audio-1490704792-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490704792-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b1745f7b91270f519e66d52c300887377d95c1022a7b536f1d7b464e0d03b774"
+    },
+    {
+      "audio_seconds": 4.288,
+      "bytes": 61551,
+      "id": "slurp:train:011950:audio-1490184584-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490184584-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4eb6069655ed0b3ab3a8ac4cdef0260fa766eb78ff29edc4397fb7e785713381"
+    },
+    {
+      "audio_seconds": 2.752,
+      "bytes": 49131,
+      "id": "slurp:train:011965:audio-1502891315-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502891315-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8993fa70dbb5412fbdcb74d962c8b4f35f703fcdc335c65d56f0da51dd858858"
+    },
+    {
+      "audio_seconds": 2.56,
+      "bytes": 42738,
+      "id": "slurp:train:011973:audio--1504190672-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1504190672-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5e433c8f900895b8ffd58dc3904a95850c4046b6cc028fd1e01378ff8f7939b9"
+    },
+    {
+      "audio_seconds": 3.9035,
+      "bytes": 72732,
+      "id": "slurp:train:011975:audio-1497266437",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497266437.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "293413b2df2169f7a2b7950b63e4120f3cb2642ac07204a24f2586756b203357"
+    },
+    {
+      "audio_seconds": 3.072,
+      "bytes": 53589,
+      "id": "slurp:train:012002:audio-1498485337-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498485337-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c6edfe4322d1bd2adef4fdff78ccb536efe61b5eaac110ea3e9d7bf3fc936daf"
+    },
+    {
+      "audio_seconds": 3.7115,
+      "bytes": 77967,
+      "id": "slurp:train:012036:audio-1498484514",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498484514.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ff49bfca687f3e1e023bf1501d8f905e15fd119590d5436fd7a310564b60a746"
+    },
+    {
+      "audio_seconds": 1.92,
+      "bytes": 31365,
+      "id": "slurp:train:012080:audio-1494548214-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1494548214-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4725192c9b3707f3c1caee4808ce7b616d2e8fd88b967d272707c082c7678313"
+    },
+    {
+      "audio_seconds": 3.7755,
+      "bytes": 83317,
+      "id": "slurp:train:012102:audio-1499691961",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499691961.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "12a7d56b37f8e6f7537f0b51a4acd125934c60c3da4a2b797581a50be57d476a"
+    },
+    {
+      "audio_seconds": 3.712,
+      "bytes": 63457,
+      "id": "slurp:train:012113:audio-1490183597-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490183597-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d6e556719ec1756efc8ee738d5d9ef094809c839e76c08b1351de9d86a509533"
+    },
+    {
+      "audio_seconds": 1.4078125,
+      "bytes": 30822,
+      "id": "slurp:train:012123:audio-1501689980",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501689980.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0c534b964a7f2de40011f368dbac7e7c0c4cc9ecedcde33ac5fc1b7cc428e3dc"
+    },
+    {
+      "audio_seconds": 1.728,
+      "bytes": 23444,
+      "id": "slurp:train:012138:audio-1496265288-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1496265288-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7bdab47ca17e198790e0a845f7b553dbe5c261ba9f63188c0afb80d4bb05fbc2"
+    },
+    {
+      "audio_seconds": 3.7115,
+      "bytes": 80661,
+      "id": "slurp:train:012151:audio-1498484800",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498484800.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "2b9d5baeaa0bd2de6e11c2e03e3040b5dfa3a43986bfdab5584f2b93bb0e1c88"
+    },
+    {
+      "audio_seconds": 2.688,
+      "bytes": 52693,
+      "id": "slurp:train:012157:audio-1502099658-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502099658-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "825c9c6329c52bb6e37733de7366096ae62f8bbb2ff384eaa112a7284ecddd60"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "bytes": 57998,
+      "id": "slurp:train:012229:audio-1495734652",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1495734652.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d4e39a13cdcb0898452469661eb9d006c6df2da29bf4efcae4df72f4f6a88fcf"
+    },
+    {
+      "audio_seconds": 2.5596875,
+      "bytes": 51458,
+      "id": "slurp:train:012250:audio-1434534478",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434534478.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "2df3255d771c29e9a59aa043d02e777bd89340e66e7403a2d6c62eaef787c8e6"
+    },
+    {
+      "audio_seconds": 3.712,
+      "bytes": 66478,
+      "id": "slurp:train:012283:audio-1499697956-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499697956-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c97a8c94c69090c2b12ddc68ffbe73c6f98c9a0f81b0d99ef604593c5a899ded"
+    },
+    {
+      "audio_seconds": 6.4,
+      "bytes": 110632,
+      "id": "slurp:train:012335:audio-1490006240-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490006240-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "59b5a7748e905e132f755d2bf5ac049df84f2c7dbb3b787c4bc3fa84739e811b"
+    },
+    {
+      "audio_seconds": 6.527125,
+      "bytes": 129839,
+      "id": "slurp:train:012342:audio-1502218145",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502218145.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "58d4257fcb5f2a0dcb4de6da6c99880a10066cfd2db694957f2069f1acd63e0f"
+    },
+    {
+      "audio_seconds": 5.31125,
+      "bytes": 111420,
+      "id": "slurp:train:012351:audio-1488975771",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488975771.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "98f6914a61f32862c4630b23e2f9cc6ffeeadc96c6d74d032bbc0ef5cd0eb464"
+    },
+    {
+      "audio_seconds": 2.2396875,
+      "bytes": 47638,
+      "id": "slurp:train:012431:audio-1497865749",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497865749.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "2f88b8b33498ac97f38a5ef3a70188c97db55012b7b2d21d466b2cb99ea37eba"
+    },
+    {
+      "audio_seconds": 1.5998125,
+      "bytes": 36497,
+      "id": "slurp:train:012444:audio-1490292273",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490292273.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c153e356adbb051291d8875884af1b4bc57f2100342e7db23ac2c45510037c88"
+    },
+    {
+      "audio_seconds": 2.995375,
+      "bytes": 55766,
+      "id": "slurp:train:012466:audio-1501696287",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501696287.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0c0651c3c7f392542d0508b1dce16c9a94c92fbb7d9a3561c71ce22606d31358"
+    },
+    {
+      "audio_seconds": 3.136,
+      "bytes": 61923,
+      "id": "slurp:train:012520:audio-1502893913-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502893913-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0baa2e70b817df9d30467abc0641b5a4a7c6694c0dfa7e8cb6054dbea43b52d3"
+    },
+    {
+      "audio_seconds": 1.92,
+      "bytes": 32780,
+      "id": "slurp:train:012559:audio-1500037024-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1500037024-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "735947e99a8ece47e6fbcbe1e1b579ebbdbec76f4d52111e90763cdc556ff1f5"
+    },
+    {
+      "audio_seconds": 4.48,
+      "bytes": 74161,
+      "id": "slurp:train:012563:audio-1490106124-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490106124-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f34e78bdaaf19f8154671a67664d0e0f2e4289f23dbf06e0d6fee02dc556fd7f"
+    },
+    {
+      "audio_seconds": 4.096,
+      "bytes": 82298,
+      "id": "slurp:train:012567:audio-1502200342-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502200342-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e2dff14c17df5e0a7ec17e161c4fc2477da6044f0906528f56c8b39c7d0e4f6e"
+    },
+    {
+      "audio_seconds": 4.607375,
+      "bytes": 85562,
+      "id": "slurp:train:012646:audio-1497880673",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497880673.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "db54403183155d29480e410a13ffa237a963bc56d1748ed285ff918d8ed65d18"
+    },
+    {
+      "audio_seconds": 6.528,
+      "bytes": 109944,
+      "id": "slurp:train:012650:audio-1497620576-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497620576-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "cd6680b5a1ecc1e7f9408b7c7571bb0efe2b596c6f546856c12234cb94409c80"
+    },
+    {
+      "audio_seconds": 13.6940625,
+      "bytes": 273621,
+      "id": "slurp:train:012657:audio-1497557333",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497557333.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f05673115912b659f3ddf60b18a400e248d3ef06edb06a71b271332d6e2ad120"
+    },
+    {
+      "audio_seconds": 3.648,
+      "bytes": 60920,
+      "id": "slurp:train:012683:audio-1490957577-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490957577-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "fba0c009f915acb9f77af71c0355c631ef01c4338ade78727277be160251760c"
+    },
+    {
+      "audio_seconds": 4.352,
+      "bytes": 93895,
+      "id": "slurp:train:012684:audio-1501767505-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501767505-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "55f4b6ff43f04124189249129c5a2a1f4ec771862ef89c66cc6e48af2874ad09"
+    },
+    {
+      "audio_seconds": 6.848,
+      "bytes": 121457,
+      "id": "slurp:train:012865:audio-1494422283-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1494422283-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0dde3484e408e0021c46132b861ee378756e277acec79663b64ab3a14cd2f49d"
+    },
+    {
+      "audio_seconds": 3.008,
+      "bytes": 57892,
+      "id": "slurp:train:012918:audio-1490356270-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490356270-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c899f8634dc652c3bc3cc1ff904bb3d39f7f174b557e94c31d81f263324c90e4"
+    },
+    {
+      "audio_seconds": 3.84,
+      "bytes": 57367,
+      "id": "slurp:train:013070:audio-1434535642-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434535642-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9b119afc437b49e7bd4b6e8228af5f5b3d95b68384dba99461ab08a87f3c048d"
+    },
+    {
+      "audio_seconds": 2.6236875,
+      "bytes": 53436,
+      "id": "slurp:train:013116:audio-1490967810",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490967810.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d33aa488d18199fb99d87ad17ee338d1ce02838b541f02c5a1d08dc9a1ab1e73"
+    },
+    {
+      "audio_seconds": 1.088,
+      "bytes": 14632,
+      "id": "slurp:train:013232:audio-1501754486-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501754486-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "909a2760490bceaad974044cd983fee84889160880c6395c746ad1089f7b3119"
+    },
+    {
+      "audio_seconds": 0.959875,
+      "bytes": 23439,
+      "id": "slurp:train:013267:audio-1501755944",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501755944.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5ec1bc95c92a63c28b39c9217cd30a2d04058abed1e94a954529b7227f3fbc86"
+    },
+    {
+      "audio_seconds": 3.007625,
+      "bytes": 63791,
+      "id": "slurp:train:013375:audio-1490193609",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490193609.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8d3364e4df739125d1f7f83178afa226214b98f6f96fddc149ab3e729ce4b167"
+    },
+    {
+      "audio_seconds": 2.815625,
+      "bytes": 63454,
+      "id": "slurp:train:013438:audio-1488993969",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488993969.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d2987c83d0888def87df022aa9b6441780187ab54b89dd6b1b2a1816d80a0d66"
+    },
+    {
+      "audio_seconds": 5.76,
+      "bytes": 113010,
+      "id": "slurp:train:013488:audio-1492783171-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1492783171-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c828c14cf04d8fe6b31bdabc40b21ca6e04b27d5e2b33c69102c45fcbc4dc84e"
+    },
+    {
+      "audio_seconds": 5.7591875,
+      "bytes": 125892,
+      "id": "slurp:train:013527:audio-1492780757",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1492780757.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c8ab638d58af0bea1d9a521d58e7d4d8bf62162aa638d9b15f572aa5cbe5fc4e"
+    },
+    {
+      "audio_seconds": 3.9675,
+      "bytes": 83704,
+      "id": "slurp:train:013621:audio-1490183116",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490183116.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e0a360ef74ace0d085bd7559d0793cbed6ac95243c28cc3e471a3ed8c7890254"
+    },
+    {
+      "audio_seconds": 3.7115,
+      "bytes": 72987,
+      "id": "slurp:train:013835:audio-1501775193",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501775193.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "93fa8da86f5cb7dcb6aa8be745aafb415428fb33fb0ed18be24c385649c94177"
+    },
+    {
+      "audio_seconds": 1.664,
+      "bytes": 34623,
+      "id": "slurp:train:013947:audio-1490287744-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490287744-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f5bce1e599b2d0157e514ca15241e41833aea0ae68c7caee91a1f97275cd08dd"
+    },
+    {
+      "audio_seconds": 4.735375,
+      "bytes": 95227,
+      "id": "slurp:train:014057:audio-1496265972",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1496265972.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b1c951345c8ecb6168dfd886bf9f57c98f2defb4192bd6bf77c545c4537e076d"
+    },
+    {
+      "audio_seconds": 2.3684375,
+      "bytes": 43301,
+      "id": "slurp:train:014065:audio-1502099819",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502099819.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4e48e005cacee9c3271351e6160f1f64d47780015c68e2d29749d1166773ef4c"
+    },
+    {
+      "audio_seconds": 1.728,
+      "bytes": 34510,
+      "id": "slurp:train:014081:audio-1498573999-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498573999-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a4fd38827c7763041cb37ea732904ff566f780c50ca10a507d75aa7b63ed4352"
+    },
+    {
+      "audio_seconds": 1.91975,
+      "bytes": 44009,
+      "id": "slurp:train:014102:audio-1502197056",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502197056.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "76d627520411d4843bd294d59f4065ed2a522034767fdc314495789ac5100a4a"
+    },
+    {
+      "audio_seconds": 4.0954375,
+      "bytes": 87884,
+      "id": "slurp:train:014132:audio-1502892319",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502892319.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6c4fd7247a63510f1c5b06daaf05b17d2c38e4269ea02d44459cd957c194aeaf"
+    },
+    {
+      "audio_seconds": 3.1995625,
+      "bytes": 69398,
+      "id": "slurp:train:014344:audio-1490967884",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490967884.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d2e9b3a34999ac1f21a2f5cb6546bc4578f1a61445c108074f544a6e098ef948"
+    },
+    {
+      "audio_seconds": 5.63125,
+      "bytes": 122850,
+      "id": "slurp:train:014363:audio-1502895478",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502895478.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "2d9c49ebb3acabcf3dd0880e498e86a38df253c4139c5a3af23897486777ab8d"
+    },
+    {
+      "audio_seconds": 1.6638125,
+      "bytes": 36058,
+      "id": "slurp:train:014394:audio-1501687908",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501687908.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "218017aa4173a6233d9c74f8cf774b8bab2d0349bdc8e49fc1e1ce4a407a6b34"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "bytes": 65316,
+      "id": "slurp:train:014438:audio-1490202275",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490202275.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "845a6cb4c2dec91ca6d77b6b3b40c01a37f0d1cc6f20e0b76c0366a8af52785d"
+    },
+    {
+      "audio_seconds": 1.92,
+      "bytes": 38923,
+      "id": "slurp:train:014493:audio-1502101912-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502101912-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "667de723b1f4680f6c483359ced2150bb33598f4a19a38f9a6235f74ccb57320"
+    },
+    {
+      "audio_seconds": 2.88,
+      "bytes": 39443,
+      "id": "slurp:train:014682:audio-1490019601-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490019601-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "fad33a528c0600ca5b9fc7ee5cccc5fa27bb03471ef293e26b90e2d0c7bccddf"
+    },
+    {
+      "audio_seconds": 1.92,
+      "bytes": 23402,
+      "id": "slurp:train:014694:audio-1501688314-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501688314-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8ef22b6df79b4800b839c632c0c0c84958cba8e9f20163eef7ebd3507088adb7"
+    },
+    {
+      "audio_seconds": 1.536,
+      "bytes": 23975,
+      "id": "slurp:train:014712:audio-1498564922-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498564922-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8cff04aa78169fb7eec527519ffba9d47ca963af649718bb0a2aadab16399e67"
+    },
+    {
+      "audio_seconds": 1.91975,
+      "bytes": 37685,
+      "id": "slurp:train:014743:audio-1502377686",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502377686.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "186677b4f1cb9c832d869346eab7e79585b05bc04f71f9097deb992e6065e524"
+    },
+    {
+      "audio_seconds": 2.3036875,
+      "bytes": 45732,
+      "id": "slurp:train:014916:audio-1502216439",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502216439.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "56e76d74542075cff2836c4b4308c0914527068d27fc5ac38810f533b825830b"
+    },
+    {
+      "audio_seconds": 3.968,
+      "bytes": 61110,
+      "id": "slurp:train:014975:audio-1496264930-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1496264930-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "55af8922423b414acd32a1e25081bdce95f8730cf3b0fa215338df3f394f9a94"
+    },
+    {
+      "audio_seconds": 5.568,
+      "bytes": 109764,
+      "id": "slurp:train:014979:audio-1490283057-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490283057-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "036baaec43ff08bb8c7889423038978ecfe72e7fc0c98b7cc8af995b4d87b5d5"
+    },
+    {
+      "audio_seconds": 2.5596875,
+      "bytes": 48643,
+      "id": "slurp:train:015035:audio-1497887678",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497887678.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ad517830c8dd84d1f8183523d20a115ea3a1484b3bfbe49fbeb2aecaffa66c4b"
+    },
+    {
+      "audio_seconds": 3.071625,
+      "bytes": 64189,
+      "id": "slurp:train:015105:audio-1502892967",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502892967.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "bc6cb91031f49868a4458e14c8f180610f6c06c134fc62f9a8d80b362485379c"
+    },
+    {
+      "audio_seconds": 3.5526875,
+      "bytes": 58820,
+      "id": "slurp:train:015201:audio-1502113174",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502113174.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b38ed67544357b0cd705394390ef969a7378fc3f9c2c0776710325be3e1b1fc2"
+    },
+    {
+      "audio_seconds": 2.04775,
+      "bytes": 40610,
+      "id": "slurp:train:015277:audio-1498577297",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498577297.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "23342b090b82f1310fc4aec482c092c81db16314fa442bbdae80732165a56e78"
+    },
+    {
+      "audio_seconds": 3.692,
+      "bytes": 71663,
+      "id": "slurp:train:015341:audio-1502099494",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502099494.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e8f4b3e0017b64f9a4c73cdad4aa9beda68f69bcd3f0c8547f96a7c1b961312d"
+    },
+    {
+      "audio_seconds": 3.84,
+      "bytes": 74330,
+      "id": "slurp:train:015343:audio-1490204166-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490204166-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c14edbcf92886b7457a202db3723c352000036a35256f9a09693c40e345bb640"
+    },
+    {
+      "audio_seconds": 1.92,
+      "bytes": 34104,
+      "id": "slurp:train:015391:audio-1501753522-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501753522-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6f4466f09e997d6d13d5cd963315881f3d9e7849943dbcdcb2e430e5728e1a01"
+    },
+    {
+      "audio_seconds": 2.496,
+      "bytes": 47625,
+      "id": "slurp:train:015410:audio-1500978493-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1500978493-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6c68481e52b7f33fa462effef3e6e5c59a36f49a9b82a4f7a26ad4c02bb82fb8"
+    },
+    {
+      "audio_seconds": 3.2,
+      "bytes": 59635,
+      "id": "slurp:train:015422:audio-1497886513-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497886513-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7177b91eef9f3e53547585b67909bdcba6c19ac396c260c3466b33322437ac65"
+    },
+    {
+      "audio_seconds": 4.224,
+      "bytes": 81907,
+      "id": "slurp:train:015425:audio-1502216083-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502216083-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7908d6464560a5b75a2a06b7bfd7798f2c3081f2094ce6dcb4c7cae7066f799a"
+    },
+    {
+      "audio_seconds": 3.328,
+      "bytes": 52541,
+      "id": "slurp:train:015428:audio-1498564686-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498564686-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "943cf3f39536f70977abff2b7fb026303cc13dce202b72f95d89b8388d4e6709"
+    },
+    {
+      "audio_seconds": 2.112,
+      "bytes": 38617,
+      "id": "slurp:train:015434:audio-1501752507-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501752507-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "871286ea23f8cb0912a7f24828cd225ea220481a8f24725855c174c8f3a6cc80"
+    },
+    {
+      "audio_seconds": 3.4555625,
+      "bytes": 72680,
+      "id": "slurp:train:015441:audio-1499697562",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499697562.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "952759c67d9173c0b3dcb8df6aa357851d4fc0a404f77b9eccd376717e0bef43"
+    },
+    {
+      "audio_seconds": 4.864,
+      "bytes": 99401,
+      "id": "slurp:train:015452:audio-1502196103-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502196103-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e61fd0aeb1d25c5ee492af53fbe5da82cdef049b7e0a9f84864348c88238099f"
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "bytes": 51811,
+      "id": "slurp:train:015502:audio--1504190380",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1504190380.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "510c086cb82702bc32a7d2baebbb4517a58bd179af5e63467787242fece4ce15"
+    },
+    {
+      "audio_seconds": 5.44,
+      "bytes": 102795,
+      "id": "slurp:train:015534:audio-1501756591-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501756591-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e509e9c7ca2b5b93e207dfb19ad742c24b5075059c407eec5c1e64cf7027bd36"
+    },
+    {
+      "audio_seconds": 4.2874375,
+      "bytes": 96463,
+      "id": "slurp:train:015537:audio-1490107573",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490107573.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "64a8282903cd66901c360cea3100161c8e91d7fc36ee54ea70abd1b606511dfd"
+    },
+    {
+      "audio_seconds": 3.584,
+      "bytes": 50477,
+      "id": "slurp:train:015552:audio-1497438929-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497438929-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "99f5fae7273240a309bb3ec907cfaed59733fc65fc22d863b03020caa98f6ee7"
+    },
+    {
+      "audio_seconds": 7.73225,
+      "bytes": 145477,
+      "id": "slurp:train:015576:audio-1501152065",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501152065.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7075a49111f8168474c48db886c5461170bba94ab09e4c3fe99f8b94a8506dac"
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "bytes": 52082,
+      "id": "slurp:train:015577:audio-1434544372",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434544372.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "122e41081941c5310ba399b3c535deb7c24b859177c6ca86beb5e44bfe054986"
+    },
+    {
+      "audio_seconds": 3.7755,
+      "bytes": 71786,
+      "id": "slurp:train:015595:audio-1497367027",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497367027.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9943d691a5446f85185cd66793ececd3dcb949ba80840e2ff4e16f1367d13b7c"
+    },
+    {
+      "audio_seconds": 2.368,
+      "bytes": 43788,
+      "id": "slurp:train:015624:audio-1502299269-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502299269-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5a6446bdca1d1378fd7dd752412a05a80a551324d43ade1df21da68174fb12a0"
+    },
+    {
+      "audio_seconds": 3.968,
+      "bytes": 71774,
+      "id": "slurp:train:015633:audio-1499693858-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499693858-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "2098594ccb81fc36dade0ffa1649e5c0bce8159c4c04976b8339985f4d1fd83a"
+    },
+    {
+      "audio_seconds": 5.2473125,
+      "bytes": 112313,
+      "id": "slurp:train:015667:audio-1490955283",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490955283.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7f2ed91c2509dedb512e4f6ec45ee2aa911cd6fcd347ea9ecfa4e01572885c31"
+    },
+    {
+      "audio_seconds": 6.2694375,
+      "bytes": 110924,
+      "id": "slurp:train:015696:audio-1501408098",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501408098.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "02300ce57d2104f22a7f4717a77b19edefd8b799219d548c83a7f387a90ff584"
+    },
+    {
+      "audio_seconds": 4.736,
+      "bytes": 99669,
+      "id": "slurp:train:015716:audio-1502893737-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502893737-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "092cf36a8a41fb8e34c02f15e3047144c261b4198e7a95b6f3d0f92e4a7528f0"
+    },
+    {
+      "audio_seconds": 5.92,
+      "bytes": 126483,
+      "id": "slurp:train:015781:audio-1488563457",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488563457.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "00bbedaeb015958d425460abaa579cbbec1053ee4c37a0dafc2710a14c891607"
+    },
+    {
+      "audio_seconds": 3.1995625,
+      "bytes": 63563,
+      "id": "slurp:train:015834:audio-1502200347",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502200347.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7de8959570bbfc6c4df88407b9a2e24a3688e5b2ac18329c01eacf53438c41c6"
+    },
+    {
+      "audio_seconds": 3.4555625,
+      "bytes": 75075,
+      "id": "slurp:train:015865:audio-1497866251",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497866251.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "168d12ff12984df799a5aa7ac448834f4739f7e966368c4bfef8935ba0f47a48"
+    },
+    {
+      "audio_seconds": 4.0954375,
+      "bytes": 80972,
+      "id": "slurp:train:015874:audio-1497861953",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497861953.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "27a5d8cc4ae20c7ded7a9dfa87e8b65653644b2578aea2d031095bc9f52c9849"
+    },
+    {
+      "audio_seconds": 3.7755,
+      "bytes": 83421,
+      "id": "slurp:train:015929:audio-1502891141",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502891141.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "189ac0c4e33aca2500c12f1427872d6b83cac902ad4450aa97766c519c38458c"
+    },
+    {
+      "audio_seconds": 2.3036875,
+      "bytes": 50019,
+      "id": "slurp:train:015944:audio-1500039745",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1500039745.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "33bb17ede5025784ff9d98135d23e61c648b49c1dc54c90b3510b5f0838db3f1"
+    },
+    {
+      "audio_seconds": 5.37525,
+      "bytes": 121765,
+      "id": "slurp:train:015956:audio-1488975676",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488975676.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "86dec0a2bc0aefc723b641874ee72aa5f04906ddaa1e177ab3c349b99e7730d1"
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "bytes": 55552,
+      "id": "slurp:train:016004:audio-1502894291",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502894291.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "89a1e190c47cc853e9dc4fc2928d01ba22ad87e86390cc9e1c274034264e2c0c"
+    },
+    {
+      "audio_seconds": 1.91975,
+      "bytes": 40056,
+      "id": "slurp:train:016102:audio-1502376650",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502376650.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7b03cfccc82901ddd80f924635691f98a04bafb512e111f51b589866792cc1e1"
+    },
+    {
+      "audio_seconds": 2.816,
+      "bytes": 52370,
+      "id": "slurp:train:016126:audio-1502216428-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502216428-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "50d38178179a0d9533964a7ff478c37c74cc8def7abcfc91750de48c9185a679"
+    },
+    {
+      "audio_seconds": 2.112,
+      "bytes": 36197,
+      "id": "slurp:train:016155:audio-1490199777-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490199777-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "900d49d5b489f9c1d874f8525d81cc0d1bb48e4e0238c109202be1bf6c654057"
+    },
+    {
+      "audio_seconds": 3.1995625,
+      "bytes": 68187,
+      "id": "slurp:train:016192:audio-1490182051",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490182051.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0c14f511abc679bfa48b897b7a227b04c3c242c3412c9cb327cdcb97dde4e43c"
+    },
+    {
+      "audio_seconds": 1.6638125,
+      "bytes": 38059,
+      "id": "slurp:train:016329:audio-1501687739",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501687739.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "122af6738c574af81abc8cefc64b168e6ef383de8286472840c610895444fd04"
+    },
+    {
+      "audio_seconds": 2.176,
+      "bytes": 37502,
+      "id": "slurp:train:016381:audio-1502101654-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502101654-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "cc75d48d63cea92e02f1cdc05ab944c249812383a376da9bc22714645081b1f8"
+    },
+    {
+      "audio_seconds": 4.032,
+      "bytes": 79533,
+      "id": "slurp:train:016434:audio-1502195584-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502195584-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "73cd054dfbd7eb8f65e48c2a53af1faaa2c0f7a1c2fca543e1924cedea8c6c13"
+    },
+    {
+      "audio_seconds": 2.944,
+      "bytes": 56244,
+      "id": "slurp:train:016475:audio-1501756275-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501756275-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4e5e7849671f1366dd0179794152fd29af046b44722f5908891f3f040ad4a2a5"
+    },
+    {
+      "audio_seconds": 2.496,
+      "bytes": 43513,
+      "id": "slurp:train:016477:audio-1501777930-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501777930-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3b8043a2928c10192c152bbee43f86f805e84d108d9cad92f138212542b5e8f7"
+    },
+    {
+      "audio_seconds": 4.352,
+      "bytes": 76091,
+      "id": "slurp:train:016485:audio-1490282912-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490282912-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b869931c341e12d9ed046e05f5122583c5f2bbb4d4e5c89d997afbe586c99d60"
+    },
+    {
+      "audio_seconds": 4.224,
+      "bytes": 55020,
+      "id": "slurp:train:016555:audio-1495369425-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1495369425-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "feeda524e627d90559cc84fd5ffd4a110e0aa0454fff59bb00bc11d9ec8a5da3"
+    },
+    {
+      "audio_seconds": 6.528,
+      "bytes": 98417,
+      "id": "slurp:train:016625:audio-1497438933-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497438933-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3ae8ee8fa607729f80d598701936abeaba939f177711c2647d45d53b6ac00b46"
+    },
+    {
+      "audio_seconds": 2.3036875,
+      "bytes": 47188,
+      "id": "slurp:train:016629:audio-1498574355",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498574355.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d863afed28bff54acdc69b61274379e46510522271d9a787b02fcf5555febf1a"
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "bytes": 49430,
+      "id": "slurp:train:016655:audio-1490194096",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490194096.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "171d19709ae445c86d6f6599d76df7738a9c5c8b528686dd303bc377b459398a"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "bytes": 58206,
+      "id": "slurp:train:016716:audio-1498570431",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498570431.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "2d1001941acf3f4c61177f68bfa3511fd92c12e78bcba452159b6852332ee891"
+    },
+    {
+      "audio_seconds": 3.712,
+      "bytes": 63875,
+      "id": "slurp:train:016830:audio-1498483600-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498483600-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "98163f15a845d5e4e8ec9f9c0b655791e9b475bd29e7d6a7e6fbf195d4906e70"
+    },
+    {
+      "audio_seconds": 1.6,
+      "bytes": 28746,
+      "id": "slurp:train:016845:audio-1501687230-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501687230-headset.flac",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "66601f8a421b1550db23c6fe3dab69e4764e161b0ea19f4388f10893cfc3c1cb"
+    }
+  ],
+  "manifest_sha256": "1f77825c305aa186668b9103bd06807dca4b7168f1e304d5ddfeb127203b44ab",
+  "parent_d1_sha256": "9c10fad1e5b625f977a5bdc71ed0c782e5d5c76c7a13af11ce811c5e152d35e3",
+  "schema": "saea-d1-media-supplement-v1",
+  "source_binding_sha256": "11d034fbf9eb1920805bf2abcfb4c4cd3c7591f46bc2fb72a6b443917f34380b",
+  "study": "speech-aware-evidence-acquisition",
+  "total_bytes": 25264883
+}
