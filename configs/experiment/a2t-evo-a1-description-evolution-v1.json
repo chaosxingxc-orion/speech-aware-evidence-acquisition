@@ -1,0 +1,267 @@
+{
+  "experiment_id": "SAEA-A2T-EVO-A1-DESCRIPTION-EVOLUTION-V1",
+  "schema": "saea-a2t-direct-calibration-experiment-v1",
+  "date": "2026-09-06",
+  "draft_status": "DRAFT. Not registered and not flyable. The coordinator closes docs/readiness/2026-09-06-a2t-evo-a1-description-evolution-v1-preregistration.md first (A_0 and its sha256, STRICT or RELAXED targets, the curve roster), and the twelve prerequisites of that document's section 12 must land before any cell here is launched -- in particular the two fold dataset fragments, their probe-sample views, their flight-roster receipts and their D1 media supplements, none of which exists yet. Every 'PENDING' value below is filled by rails.evolution.write_candidate_fragments when round 1 is assembled.",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "EVO-A1 of the three-dimension program (docs/readiness/2026-09-05-three-dimension-experiment-program.md sections 4c and 5): the REWARD half of the evolution loop, round 1. The frozen core proposes tool-description rewrites for MF-1's confusable targets on a text-only construction arm; each portfolio is scored by the official scorer on held-out construction rows; best-of-K is kept; four rounds; one read on the sealed 4,000 at the end. This fragment carries only the speech-bearing reward flights, which are baseline-reproduction. The proposer's own text contacts are bounded-discovery-probe and need a SECOND fragment, because a composed experiment fragment declares exactly one execution_plan and therefore exactly one execution profile.",
+  "hypothesis": "H1: a best-of-K selection over descriptions the frozen core wrote from its own registry rows and block-disjoint construction exemplars produces a registry whose gain survives one read on the sealed 4,000. H2: the deterministic domain+category control is the floor a proposer must clear, and the round-1 length-matched placebo separates form from content. The ceiling is stated before takeoff and is small: 67 of MF-1's 235 addressable misses sit inside targets the loop can be rewarded on, an arithmetic maximum of +1.68 pp on the 4,000 (90 rows, +2.25 pp under the RELAXED target set).",
+  "preregistration": "docs/readiness/2026-09-06-a2t-evo-a1-description-evolution-v1-preregistration.md",
+  "predecessor": {
+    "run_id": "SAEA-A2T-KC-A1-CONTRAST-NOTES-V1",
+    "verdict": "PENDING -- the KC-A1 flight is in the air as this fragment is drafted",
+    "routing": "program section 4a: KC-A1 NULL with separability >= 0.80 routes here from the official baseline (A_0 = the released compact registry); KC-A1 ADMITTED makes its own artifact the honest A_0; KC-A1 HARMFUL forces the compact registry."
+  },
+  "state": {
+    "fill": "evolved-artifact-v1",
+    "a_0_options": {
+      "A_0-compact": {
+        "artifact": "the empty override mapping",
+        "rendered_block_sha256": "752dd381a02028dc7345a6ac826109bdcc879d82547a9029a43d559d0de8a605",
+        "rendered_characters": 15854,
+        "rendered_lines": 152
+      },
+      "A_0-kca1": {
+        "artifact": "configs/knowledge/a2t-kc-a1/contrast-notes-v1.json",
+        "artifact_sha256": "dcf84c2a5a371b658e234d0f42c1f03a7c36c5a2c090790d44e383999647cd21",
+        "condition": "only if KC-A1 is ADMITTED; if the lighting-only rebuild is what flew, that artifact and its sha256 replace this one"
+      }
+    },
+    "chosen_a_0": "PENDING -- coordinator",
+    "form_caps": "152 lines, plain tool_name sort, no headers, ASCII only, at most 200 characters per description, and the whole rendered block within compact + 40 tokens. rails.proposer.validate_candidate_artifact enforces all of them with an INJECTED token counter whose authority is the resident server's /tokenize route at prompt fit."
+  },
+  "targets": {
+    "source": "configs/knowledge/a2t-kc-a1/targets-v1.json, re-verified against the MF-1 receipt",
+    "capacity_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-construction-capacity/capacity.json",
+    "strict": {
+      "activateRoutine": ["activateRoutine", "activateScene", "setApplianceMode", "setSecurityMode", "startCleaning"],
+      "getBiometricData": ["getBiometricData", "getHRV", "setHapticStrength"],
+      "castContent": ["castContent", "playMedia"]
+    },
+    "relaxed_adds": {
+      "lighting": ["getLightState", "resetFilterStatus", "setColor", "setColorTemperature", "setGroupLightState", "setLighting"],
+      "calibrateCameras": ["rebootDevice", "streamCamera", "updateFirmware"]
+    },
+    "chosen_set": "PENDING -- coordinator; both folds already carry all eighteen fold-capable tools, so neither choice needs a fresh draw",
+    "dropped_tools": {
+      "setAmbientLighting": "9 construction units in 9 blocks -- cannot supply two folds of six plus an eight-unit exemplar reserve under any assignment",
+      "calibrateCameras": "7 units",
+      "setBrightness": "18 units, quota 4 after block indivisibility",
+      "setRomanceMode": "10 units",
+      "getLightState": "9 by the solo census, 0 after block contention: its three shared blocks went to the block-poorer playMedia. In no intact pair under either reading, so no addressable mass is lost"
+    }
+  },
+  "populations": {
+    "A2T-EVO-FOLD-A-V1": {
+      "dataset_fragment": "audio2tool-evo-fold-a-404",
+      "roster_receipt": "docs/receipts/rosters/a2t-evo-fold-a-v1.json",
+      "split_identity_hash": "d96bc099412cae49b9d2f47c3c3ed6c223e4dff913bef87cae51af43c27de3fa",
+      "split_role": "discovery",
+      "roster_role": "construction",
+      "count": 404,
+      "blocks": 256,
+      "audio_seconds_one_pass": 1913.527,
+      "audio_seconds_longest_item": 39.314,
+      "strata": "gold tool for the 284 targeted rows (18 tools at their contention-resolved quotas), tier for the 120 background rows (15 per tier over all eight tiers)",
+      "estimand": "per-target saves, harms and net against the incumbent, on that target's own rows"
+    },
+    "A2T-EVO-FOLD-B-V1": {
+      "dataset_fragment": "audio2tool-evo-fold-b-404",
+      "roster_receipt": "docs/receipts/rosters/a2t-evo-fold-b-v1.json",
+      "split_identity_hash": "2cc816cd78c3630c928818a91a6fdcb48d4e994baf64ff875310d5ecca5394bd",
+      "split_role": "discovery",
+      "roster_role": "construction",
+      "count": 404,
+      "blocks": 292,
+      "audio_seconds_one_pass": 1877.630,
+      "audio_seconds_longest_item": 49.211,
+      "strata": "identical in shape to fold A, on disjoint blocks",
+      "estimand": "the whole assembly's targeted pooled CI90 and its background CI90"
+    },
+    "A2T-EVO-EXEMPLARS-V1": {
+      "roster_receipt": "docs/receipts/rosters/a2t-evo-exemplars-v1.json",
+      "split_identity_hash": "cff83b48271e9bd8664eed90b8571dc0324ab9b7163dd687c50a3a9eb4262b8b",
+      "count": 289,
+      "blocks": 208,
+      "role": "the proposer's exemplar pool and the ONLY roster whose gold the construction-proposer-text arm may read. Text-only: it appears in NO cell of this fragment and needs no media artifact.",
+      "note": "for twelve of the twenty-three tools exactly M = 8 units remain, so the three per-round draws cannot differ in membership and are preregistered as seeded ORDERED samples."
+    },
+    "disjointness": "0 blocks shared between any two of the three rosters, 0 blocks and 0 sample ids shared with the 5,279-identity Audio2Tool exposure union, 0 duplicate sample ids. Recomputed from the receipts and fail-closed before they were written (SAEA-SN-MF-A2T-EVO-FOLD-ROSTERS-V1)."
+  },
+  "comparators": {
+    "within_round": "the incumbent A_r, re-flown on the same fold in the same round, because greedy decoding is not bitwise reproducible across batch shapes on this runtime",
+    "final": {
+      "population": "A2T-ORG1-UNION-4000",
+      "basis": "the sealed official-protocol output of the SAME sample id under the SAME scorer",
+      "tier1_direct": {"run_id": "SAEA-A2T-TIER1-OFFICIAL-POPULATION-V1", "attempt_id": "attempt-20260904T172609Z-t1officialpop500", "rows": 500},
+      "tier2_parametric__tier5_needle__tier8_intent_blending": {"run_id": "SAEA-A2T-TIER258-OFFICIAL-POPULATION-V1", "attempt_id": "attempt-20260904T193726Z-t258officialpop1500", "rows": 1500},
+      "tier3_multi_intent__tier4_implicit__tier6_correction__tier7_multiturn": {"run_id": "SAEA-A2T-TIER3467-OFFICIAL-POPULATION-V1", "attempt_id": "attempt-20260904T211040Z-t3467officialpop2000", "rows": 2000},
+      "pooled_baseline": "61.40 % official tool accuracy over the 4,000 rows (68.11 % equal-domain)"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "EVO-A1-r1-foldA-incumbent",
+      "run_id": "SAEA-A2T-EVO-A1-FOLD-A-V1",
+      "attempt_id": "attempt-r1-i",
+      "dataset_fragment": "audio2tool-evo-fold-a-404",
+      "factor": "the incumbent state A_0, re-flown so this round's pairing is against its own sealed rows",
+      "baseline_fragment": "PENDING -- A_0's own fragment (the released compact registry, or KC-A1's artifact)",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "arm": "bare-core"
+    },
+    {
+      "cell_id": "EVO-A1-r1-foldA-c1",
+      "run_id": "SAEA-A2T-EVO-A1-FOLD-A-V1",
+      "attempt_id": "attempt-r1-c1",
+      "dataset_fragment": "audio2tool-evo-fold-a-404",
+      "factor": "portfolio k=1: proposer rewrite (family 'proposer'), candidate k=1 of every chosen target merged into one registry state",
+      "baseline_fragment": "PENDING -- configs/baseline/a2t-evo-a1/evolved-artifact-<sha16>.json",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "arm": "bare-core"
+    },
+    {
+      "cell_id": "EVO-A1-r1-foldA-c2",
+      "run_id": "SAEA-A2T-EVO-A1-FOLD-A-V1",
+      "attempt_id": "attempt-r1-c2",
+      "dataset_fragment": "audio2tool-evo-fold-a-404",
+      "factor": "portfolio k=2: proposer rewrite, a different seeded ordered exemplar draw",
+      "baseline_fragment": "PENDING",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "arm": "bare-core"
+    },
+    {
+      "cell_id": "EVO-A1-r1-foldA-c3",
+      "run_id": "SAEA-A2T-EVO-A1-FOLD-A-V1",
+      "attempt_id": "attempt-r1-c3",
+      "dataset_fragment": "audio2tool-evo-fold-a-404",
+      "factor": "portfolio k=3: proposer rewrite, a third seeded ordered exemplar draw",
+      "baseline_fragment": "PENDING",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "arm": "bare-core"
+    },
+    {
+      "cell_id": "EVO-A1-r1-foldA-c4",
+      "run_id": "SAEA-A2T-EVO-A1-FOLD-A-V1",
+      "attempt_id": "attempt-r1-c4",
+      "dataset_fragment": "audio2tool-evo-fold-a-404",
+      "factor": "portfolio k=4: the DETERMINISTIC control (family 'deterministic'), the registry's own domain and category appended. Zero model contacts build it, so a round whose proposer does not beat it has learned nothing the registry already carried",
+      "baseline_fragment": "PENDING",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "arm": "bare-core"
+    },
+    {
+      "cell_id": "EVO-A1-r1-foldA-c5",
+      "run_id": "SAEA-A2T-EVO-A1-FOLD-A-V1",
+      "attempt_id": "attempt-r1-c5",
+      "dataset_fragment": "audio2tool-evo-fold-a-404",
+      "factor": "portfolio k=5: the length-matched PLACEBO (family 'placebo'), round 1 only -- a rewrite explicitly told to carry no distinguishing cue, which is what separates form from content",
+      "baseline_fragment": "PENDING",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "arm": "bare-core"
+    },
+    {
+      "cell_id": "EVO-A1-r1-foldB-incumbent",
+      "run_id": "SAEA-A2T-EVO-A1-FOLD-B-V1",
+      "attempt_id": "attempt-r1-i",
+      "dataset_fragment": "audio2tool-evo-fold-b-404",
+      "factor": "the incumbent on fold B, the confirmation's comparator",
+      "baseline_fragment": "PENDING",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "arm": "bare-core",
+      "flies_only_if": "stage one admitted at least one target"
+    },
+    {
+      "cell_id": "EVO-A1-r1-foldB-assembly",
+      "run_id": "SAEA-A2T-EVO-A1-FOLD-B-V1",
+      "attempt_id": "attempt-r1-a",
+      "dataset_fragment": "audio2tool-evo-fold-b-404",
+      "factor": "the assembled winners of every admitted target, confirmed as a WHOLE and never partially",
+      "baseline_fragment": "PENDING",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "arm": "bare-core",
+      "flies_only_if": "stage one admitted at least one target"
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 256,
+    "contacts_per_item": 1,
+    "evidence": "none",
+    "obs": "none",
+    "rollouts": "none",
+    "factor_a_output_contract": "unchanged from R-official-raw and every official-population cell: the published system-prompt sentence, the fixed '## Available Tools:' header, the same 152 registry rows in plain tool_name order, the same call-string output contract. ONLY the description column of the targeted tools differs.",
+    "factor_d_audio_path": "raw audio, bf16 mmproj loaded",
+    "user_turn": "audio first, then the fixed sentence 'Convert this voice command to a tool call.'",
+    "harness": "core.flight.FlightRuntime with the shared rails zero-supply direct arm and the OpenJiuwen executor, entered through scripts/flights/run_calibration_cell.py -- the same harness and entry point every Audio2Tool direct cell flew",
+    "official_code_pin": "b9d5383ca30945fbafb965a04bea40117e1e8a82; docs/receipts/environments/audio2tool-official-code.json",
+    "serving_geometry": "PENDING -- re-derived by the prompt fit. The folds' longest rows are 39.3 s (fold A) and 49.2 s (fold B), so under the encoder's one-second window rule the worst row costs 640 speech tokens, an order of magnitude below the union's 654-second synthesis defects; the geometry is expected to be looser than the union's -c 49152 -np 2 and must be measured, not assumed."
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "discovery",
+    "planned_model_calls": 2424,
+    "planned_gpu_hours": 0.6,
+    "planned_speech_audio_seconds": 11482
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "ROUND 1, FOLD A: 6 arms (the incumbent plus K_1 = 5 portfolios) x 404 rows = 2,424. Budgets are cumulative across every attempt of a run id, so the registered ceiling for SAEA-A2T-EVO-A1-FOLD-A-V1 is R_max x this = 9,696. Fold B is 2 arms x 404 = 808 per round, ceiling 3,232 on its own run id.",
+    "planned_speech_audio_seconds": "6 x 1,913.527 = 11,481.2, rounded up to the integer contracts.ExecutionPlan requires; fold-A ceiling 45,925.",
+    "planned_gpu_hours": "2,424 calls x 0.80 s per call = 0.54 h; 0.6 planned, ceiling 2.5 on the run id (R_max x per round). 0.80 s per call is the rate the sealed Audio2Tool cells showed at two slots, and these folds carry far shorter audio than the union, so it is conservative.",
+    "whole_cell": "17,363 calls and 87,992 speech seconds across five run ids (three speech rosters, the proposer arm and the final read); registered ceilings total 18,584 calls, 93,733 speech seconds and 6.5 GPU-h. Section 10 of the preregistration carries the table.",
+    "paid_api_spend": 0,
+    "ceilings_live_in_the_exposure_row": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are each exposure-ledger row's calls / speech audio seconds / gpu hours cells, and the budget is cumulative across every attempt of a run id."
+  },
+  "proposer_arm": {
+    "why_a_second_fragment": "A composed experiment fragment declares exactly one execution_plan object (FlightRuntime._build_execution_plan reads values['execution_plan']), and that object carries the single execution_profile contracts.assert_execution_scope validates. The proposer contacts are bounded-discovery-probe and therefore cannot share this fragment.",
+    "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1",
+    "arm": "construction-proposer-text",
+    "split_identity_hash": "cff83b48271e9bd8664eed90b8571dc0324ab9b7163dd687c50a3a9eb4262b8b",
+    "contacts": "1 per target per proposer slot: 4 per target in round 1 (three proposer draws plus the placebo), 3 per target afterwards. 12 in round 1, 39 over four rounds, ceiling 48. Zero speech seconds: the arm is text-only and sends no audio part.",
+    "blocker": "Track E3c -- the runner that renders an instruction, makes the contact, parses the response and validates the candidate -- does not exist. rails.proposer and rails.evolution supply every piece except the loop that calls them, and FlightRuntime.wire_check cannot substitute: it issues one contact per roster sample through _dispatch_fixed_policy, which never supplies the construction_targets field."
+  },
+  "evaluation": {
+    "official_scorers": ["a2t-toolcall-official", "a2t-toolcall-v2", "a2t-toolcall", "cost"],
+    "paper_facing_scorer": "a2t-toolcall-official",
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "stage_one": "rails.evolution.select_per_target on fold A, per target, gates saves >= 4 / harms <= 1 / net >= 3, winner = largest net then fewer harms then fewer override bytes then lowest k. A COUNT rule: at 6 to 20 rows per tool an interval says nothing.",
+    "stage_two": "rails.evolution.confirm_assembly on fold B: targeted pooled CI90 lower bound strictly above 0 AND background CI90 lower bound at or above -1.0 pp. Accepted as a whole, never partially.",
+    "intervals": "analysis.paired.paired_contrast, 10,000 replicates stratified by tier, seed 20260903, CI90, exact sign test",
+    "per_round_receipt": "rails.evolution.write_round_receipt under docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/; rails.evolution.replay_selection must reproduce every stage-one decision from the sealed per-sample score files alone",
+    "mandatory_slices": [
+      "the evolution curve: round versus fold-A gain, fold-B gain and curve-roster gain",
+      "the final paired delta on the 4,000 against the sealed official-protocol outputs, per tier with the arXiv:2604.22821 Table 3 column beside every tier, and per domain",
+      "natural-mixture and equal-stratum weightings",
+      "the generalization gap G = delta_foldB - delta_4000 and the transfer ratio delta_4000 / delta_foldB",
+      "the named confusion-pair table before and after, per target",
+      "the proposer minus the deterministic control, and the proposer minus the placebo, on the same rows",
+      "per candidate: six-gram decontamination verdict, exemplar overlap count, rendered token count, per-description character counts"
+    ],
+    "confidence_interval": "CI90",
+    "renderer": "analysis.paired.render_markdown"
+  },
+  "decision": {
+    "primary": "pooled official tool accuracy of the final artifact A* minus the sealed official-protocol baseline, paired over the 4,000",
+    "admitted": "ADMITTED: the 4,000 CI90 lower bound is above 0, both weightings agree in sign, and the generalization gap is at most half the construction gain",
+    "null": "NULL: the curve rose but the 4,000 CI includes 0 (reported as overfitting, with the selection rule named), or the curve never rose",
+    "kill_results": [
+      "no target admitted in rounds 1 and 2",
+      "a construction gain of at least 2 pp whose 4,000 CI90 includes 0, or a transfer ratio below 0.25",
+      "the deterministic control within 0.5 pp of the proposer",
+      "the placebo indistinguishable from the proposer candidate",
+      "every candidate failing the background tolerance"
+    ],
+    "stop_rule": "R_max = 4; stop after two consecutive rejects or an accepted gain under 0.5 pp (rails.evolution.should_stop)",
+    "gates_relative_to_the_published_ceiling": "the paper column is reported beside every tier as a ceiling reference; no gate is set above it and none relative to it",
+    "claim_surface": "no superiority, generality or Stage-3 claim. The folds are construction-role discovery rows; the 4,000 are discovery identities already exposed on 2026-09-04 and 2026-09-05; the curve roster's rows are already consumed.",
+    "not_authorized": "no test contact, no fresh roster, no A2T-FRESH-800 opening, no Q8_0, no second answering model, no parameter update, no edit to an artifact after its fragment was emitted. At most one recovery re-registration per run id.",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}
