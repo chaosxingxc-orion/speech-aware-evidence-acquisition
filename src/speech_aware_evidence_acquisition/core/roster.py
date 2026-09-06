@@ -64,6 +64,7 @@ undersized candidate pool: :class:`RosterError`, fail closed.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import random
 from collections import Counter
@@ -75,10 +76,28 @@ from ..data.splits import prefixed, split_identity_hash
 
 RECEIPT_SCHEMA = "saea-roster-receipt-v1"
 
+#: The two roles a frozen roster can have (owner decision 2026-09-05).
+#: ``"evaluation"`` is the historical default and the conservative one: the
+#: identities are exposure, they enter the Audio2Tool exposure union, and
+#: their gold labels must never be read. ``"construction"`` marks a roster
+#: whose identities may be read WITH their gold -- the same legality class as
+#: TRAIN gold entering a knowledge-base build -- and which the exposure union
+#: therefore excludes by design. The role is a property of the ROSTER, not of
+#: the split: a construction roster still carries ``split_role="discovery"``
+#: (the TRAIN90 precedent), because it is drawn from discovery data.
+EVALUATION_ROSTER_ROLE = "evaluation"
+CONSTRUCTION_ROSTER_ROLE = "construction"
+ROSTER_ROLES = frozenset({EVALUATION_ROSTER_ROLE, CONSTRUCTION_ROSTER_ROLE})
+
 __all__ = [
+    "CONSTRUCTION_ROSTER_ROLE",
+    "EVALUATION_ROSTER_ROLE",
     "RECEIPT_SCHEMA",
+    "ROSTER_ROLES",
     "RosterError",
     "RosterItem",
+    "as_probe_sample_receipt",
+    "canonical_receipt_bytes",
     "freeze_roster",
     "verify_roster",
     "write_roster",
@@ -149,6 +168,7 @@ def freeze_roster(
     exclude_sample_ids: Collection[str] = (),
     exclude_groups: Mapping[str, str] | None = None,
     roster_id: str,
+    roster_role: str = EVALUATION_ROSTER_ROLE,
 ) -> dict[str, object]:
     """Freeze a deterministic, seeded, stratified roster receipt.
 
@@ -165,6 +185,10 @@ def freeze_roster(
         raise RosterError("split_role must be non-empty text")
     if not isinstance(roster_id, str) or not roster_id:
         raise RosterError("roster_id must be non-empty text")
+    if roster_role not in ROSTER_ROLES:
+        raise RosterError(
+            f"roster_role must be one of {sorted(ROSTER_ROLES)}; got {roster_role!r}"
+        )
     if isinstance(seed, bool) or not isinstance(seed, int):
         raise RosterError("seed must be an integer")
     if isinstance(candidates, (str, bytes)):
@@ -239,6 +263,7 @@ def freeze_roster(
         "roster_id": roster_id,
         "carrier_lock_key": carrier_lock_key,
         "split_role": split_role,
+        "roster_role": roster_role,
         "seed": seed,
         "per_stratum": dict(sorted(quotas.items())),
         "strata_counts": dict(sorted(strata_counts.items())),
@@ -262,6 +287,15 @@ def verify_roster(receipt: Mapping[str, object]) -> str:
     recorded = receipt.get("split_identity_hash")
     if not isinstance(recorded, str) or not recorded:
         raise RosterError("roster receipt split_identity_hash must be non-empty text")
+    # A receipt frozen before 2026-09-05 carries no role; it is an evaluation
+    # roster, the conservative reading, and saying so here keeps every reader
+    # of a historical receipt from having to re-derive that default.
+    roster_role = receipt.get("roster_role", EVALUATION_ROSTER_ROLE)
+    if roster_role not in ROSTER_ROLES:
+        raise RosterError(
+            f"roster receipt roster_role must be one of {sorted(ROSTER_ROLES)}; "
+            f"got {roster_role!r}"
+        )
     ids: list[str] = []
     for index, item in enumerate(items):
         if not isinstance(item, Mapping):
@@ -305,6 +339,104 @@ def read_roster(path: Path) -> dict[str, object]:
         raise RosterError(f"roster receipt at {source} is not a JSON object")
     verify_roster(document)
     return document
+
+
+def canonical_receipt_bytes(receipt: Mapping[str, object]) -> bytes:
+    """The exact bytes :func:`write_roster` writes, for hashing a receipt
+    without having to re-read the file it was written to."""
+
+    return (
+        json.dumps(receipt, ensure_ascii=False, sort_keys=True, indent=2) + "\n"
+    ).encode("utf-8")
+
+
+def as_probe_sample_receipt(
+    receipt: Mapping[str, object],
+    *,
+    carrier: str,
+    design: str,
+) -> dict[str, object]:
+    """Render a ``saea-roster-receipt-v1`` in the LEGACY probe-sample shape.
+
+    Two receipt conventions coexist in this repository and neither can be
+    retired: :func:`freeze_roster`'s carrier-agnostic ``saea-roster-receipt
+    -v1`` (hash over ``prefixed(carrier, sample_ids)``), and the frozen
+    probe-sample shape that ``data.audio2tool.audio2tool_receipts`` loads and
+    strictly re-verifies (hash over each item's already carrier-prefixed
+    ``key``, and per-item ``id``/``tier``/``key`` agreement). A roster whose
+    items are never rendered into the second shape is simply not loadable by
+    the Audio2Tool carrier, so it can never be flown; dropping a
+    ``saea-roster-receipt-v1`` file into ``docs/receipts/probe-samples/``
+    instead would break loading outright, because that directory's reader
+    fails closed on every file it cannot verify.
+
+    This function is the ONE bridge between them. It copies each roster
+    item's audit ``extra`` fields verbatim (``id``, ``key``, ``tier``,
+    ``query_idx`` for Audio2Tool), recomputes the legacy hash over the
+    ``key`` values by the legacy convention -- so
+    :func:`hash_matches_legacy_receipt` is true of the result -- and carries
+    ``split_role``, ``roster_role`` and ``derived_from_roster_sha256`` so the
+    view can always be traced back to the roster receipt it renders. It never
+    mutates the roster receipt and adds no identity of its own: the two
+    documents name exactly the same samples.
+    """
+
+    verify_roster(receipt)
+    if not isinstance(carrier, str) or not carrier:
+        raise RosterError("carrier must be non-empty text")
+    if not isinstance(design, str) or not design:
+        raise RosterError("design must be non-empty text")
+    items: list[dict[str, object]] = []
+    keys: list[str] = []
+    for index, item in enumerate(receipt["items"]):  # type: ignore[index]
+        if not isinstance(item, Mapping):
+            raise RosterError(f"roster receipt items[{index}] must be an object")
+        rendered = {
+            key: value
+            for key, value in item.items()
+            if key not in {"sample_id", "stratum"}
+        }
+        key = rendered.get("key")
+        if not isinstance(key, str) or not key:
+            raise RosterError(
+                f"roster item {item.get('sample_id')!r} carries no 'key' extra; a "
+                "probe-sample view needs the carrier-prefixed identity"
+            )
+        expected_key = f"{carrier}:{item['sample_id']}"
+        if key != expected_key:
+            raise RosterError(
+                f"roster item {item.get('sample_id')!r} key {key!r} disagrees with the "
+                f"carrier-prefixed sample id {expected_key!r}"
+            )
+        items.append(rendered)
+        keys.append(key)
+    items.sort(key=lambda entry: str(entry["key"]))
+    keys.sort()
+    return {
+        "carrier": carrier,
+        "derived_from_roster_id": receipt["roster_id"],
+        "derived_from_roster_sha256": hashlib.sha256(
+            canonical_receipt_bytes(receipt)
+        ).hexdigest(),
+        "design": design,
+        "items": items,
+        "n_items": len(items),
+        "probe": receipt["roster_id"],
+        "roster_role": receipt.get("roster_role", EVALUATION_ROSTER_ROLE),
+        "seed": receipt["seed"],
+        "split_identity_hash": split_identity_hash(keys),
+        "split_identity_hash_basis": (
+            "sha256 over LF-joined sorted receipt item key values; the probe-receipt "
+            "integrity convention data.audio2tool._verify_receipt recomputes"
+        ),
+        "split_role": receipt["split_role"],
+        "strata_counts": receipt["strata_counts"],
+        "roster_split_identity_hash": receipt["split_identity_hash"],
+        "roster_split_identity_hash_basis": (
+            "sha256 over LF-joined sorted '<carrier_lock_key>/<sample_id>' ids; the "
+            "core.roster / data.splits convention"
+        ),
+    }
 
 
 def hash_matches_legacy_receipt(receipt_path: Path) -> bool:
