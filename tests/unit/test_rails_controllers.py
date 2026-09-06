@@ -16,7 +16,12 @@ import pytest
 
 from speech_aware_evidence_acquisition.core.base import AGENT_CONTROLLERS
 from speech_aware_evidence_acquisition.rails import controllers as rc
-from speech_aware_evidence_acquisition.rails.knowledge import QueryState
+from speech_aware_evidence_acquisition.rails.knowledge import (
+    FusionDecision,
+    QueryState,
+    RankedFacet,
+    RankResult,
+)
 from speech_aware_evidence_acquisition.rails.material import PhaseMaterial
 from speech_aware_evidence_acquisition.rails.runner import (
     AgentContactPlan,
@@ -70,6 +75,46 @@ def _context(query_state: QueryState, *, contact_index: int = 0, agent_states=()
         prior_response_sha256s=(),
         contact_index=contact_index,
     )
+
+
+def _phase_supply(
+    ctx: AgentRuntimeContext,
+    *,
+    value_ids: tuple[str, ...] = ("v-1",),
+    facet_ids: tuple[str, ...] = ("f-1",),
+    retain_prior: bool = False,
+    knowledge_ok: bool = False,
+) -> rc.PhaseSupply:
+    """One structurally valid PhaseSupply bound to ``ctx``'s own state.
+
+    ``knowledge_ok`` is only a documentation flag for the caller: a program
+    phase declaring ``knowledge != "supplied"`` is refused by the controller
+    itself, which is what the refusal test asserts.
+    """
+
+    _ = knowledge_ok
+    rank_result = RankResult(
+        snapshot_sha256=ctx.knowledge_snapshot_sha256,
+        query_state_sha256=ctx.query_state.content_hash(),
+        ranking_policy_id="fake-rank-v1",
+        candidates=tuple(
+            RankedFacet(facet_id=facet_id, score=1.0 - index / 10.0)
+            for index, facet_id in enumerate(facet_ids)
+        ),
+    ).validate()
+    fusion_decision = FusionDecision(
+        snapshot_sha256=ctx.knowledge_snapshot_sha256,
+        query_state_sha256=ctx.query_state.content_hash(),
+        rank_result_sha256=rank_result.content_hash(),
+        fusion_policy_id="fake-fuse-v1",
+        supporting_facet_ids=facet_ids,
+        selected_value_ids=value_ids,
+    ).validate()
+    return rc.PhaseSupply(
+        rank_result=rank_result,
+        fusion_decision=fusion_decision,
+        retain_prior=retain_prior,
+    ).validate()
 
 
 def _material(phase_name: str, sample_id: str, *, response_format=None) -> PhaseMaterial:
@@ -466,28 +511,24 @@ def test_direct_evidence_alpha_blend_stop_policy_false_continues_to_evidence():
         stop_calls.append(completed)
         return False
 
-    def supply_for_phase(name, ctx):
-        if name != "evidence":
-            return None
-        return SupplyPacket(
-            form=SupplyForm.TEXT,
-            dose=SupplyDose(n_items=1, token_count=1),
-            prompt_block="fused evidence text",
-            assembly_template_id="t1",
-            items=(SupplyItem(item_id="i1", text="fused evidence text"),),
-        )
-
     controller = rc.EvidenceAgentController(
         program=program,
         material_for_phase=lambda name, ctx: _material(name, ctx.sample_id),
-        supply_for_phase=supply_for_phase,
+        supply_for_phase=lambda name, ctx: _phase_supply(ctx),
         stop_policy=stop_policy,
     )
     contact0, advance0, contact1, advance1 = _run_two_phase_trajectory(controller)
 
     assert stop_calls == [("direct",)]
-    assert advance0.transition.action_kind == "organize"
-    assert "fused evidence text" in contact1.instruction
+    # E6: the supplied phase's transition is an ACQUIRE carrying the
+    # decision, and the supplied values travel the successor QueryState --
+    # never the instruction.
+    assert advance0.transition.action_kind == "acquire"
+    assert advance0.transition.new_value_ids == ("v-1",)
+    assert advance0.rank_result is not None
+    assert advance0.fusion_decision is not None
+    assert advance0.next_query_state.retrieved_value_ids == ("v-1",)
+    assert contact1.instruction == "Do evidence for s1"
     assert advance1.transition.action_kind == "stop"
     assert advance1.final_response_contact_id == contact1.contact_id
 
@@ -551,14 +592,174 @@ def test_evidence_agent_controller_response_format_mismatch_unexpected_is_refuse
 
 
 def test_evidence_agent_controller_rejects_bad_supply_for_phase_return_type():
-    program = rc.default_phase_program("phase-direct-only-v1")
+    program = rc.default_phase_program("phase-draft-revise-v1")
     controller = rc.EvidenceAgentController(
         program=program,
         material_for_phase=lambda name, ctx: _material(name, ctx.sample_id),
-        supply_for_phase=lambda name, ctx: "not a SupplyPacket",
+        supply_for_phase=lambda name, ctx: "not a PhaseSupply",
     )
-    with pytest.raises(rc.RailsControllersError, match="SupplyPacket"):
-        controller.initial_contact(_context(_query_state()))
+    qs0 = _query_state()
+    ctx0 = _context(qs0)
+    contact0 = controller.initial_contact(ctx0)
+    with pytest.raises(rc.RailsControllersError, match="must return a PhaseSupply"):
+        controller.advance(ctx0, contact0, "draft answer")
+
+
+def test_supply_for_phase_returning_a_bare_supply_packet_is_refused_loudly():
+    """E6: the fold-a-packet-into-the-instruction path is GONE, and the old
+    return shape fails closed instead of silently reaching the wire."""
+
+    program = rc.default_phase_program("phase-draft-revise-v1")
+    packet = SupplyPacket(
+        form=SupplyForm.TEXT,
+        dose=SupplyDose(n_items=1, token_count=1),
+        prompt_block="fused evidence text",
+        assembly_template_id="t1",
+        items=(SupplyItem(item_id="i1", text="fused evidence text"),),
+    )
+    controller = rc.EvidenceAgentController(
+        program=program,
+        material_for_phase=lambda name, ctx: _material(name, ctx.sample_id),
+        supply_for_phase=lambda name, ctx: packet,
+    )
+    qs0 = _query_state()
+    ctx0 = _context(qs0)
+    contact0 = controller.initial_contact(ctx0)
+    with pytest.raises(rc.RailsControllersError, match="bare SupplyPacket"):
+        controller.advance(ctx0, contact0, "draft answer")
+
+
+def test_supplied_phase_instruction_is_byte_identical_to_the_unsupplied_one():
+    """The property the containment rule and every paired contrast depend
+    on: turning supply ON changes the successor QueryState and NOTHING about
+    the control-turn bytes."""
+
+    program = rc.default_phase_program("phase-direct-evidence-alpha-blend-v1")
+
+    def build(supply_for_phase):
+        controller = rc.EvidenceAgentController(
+            program=program,
+            material_for_phase=lambda name, ctx: _material(name, ctx.sample_id),
+            supply_for_phase=supply_for_phase,
+        )
+        return _run_two_phase_trajectory(controller)
+
+    plain0, plain_adv0, plain1, _ = build(None)
+    supplied0, supplied_adv0, supplied1, _ = build(lambda name, ctx: _phase_supply(ctx))
+
+    assert supplied0.instruction == plain0.instruction
+    assert supplied1.instruction == plain1.instruction
+    assert supplied1.instruction.encode("utf-8") == plain1.instruction.encode("utf-8")
+    assert plain_adv0.transition.action_kind == "organize"
+    assert plain_adv0.transition.new_value_ids == ()
+    assert supplied_adv0.transition.action_kind == "acquire"
+    assert supplied_adv0.transition.new_value_ids == ("v-1",)
+
+
+def test_phase_supply_on_a_phase_that_does_not_declare_supplied_knowledge_is_refused():
+    program = rc.default_phase_program("phase-draft-revise-v1")
+    assert program.phase("revise").knowledge == "none"
+    controller = rc.EvidenceAgentController(
+        program=program,
+        material_for_phase=lambda name, ctx: _material(name, ctx.sample_id),
+        supply_for_phase=lambda name, ctx: _phase_supply(ctx),
+    )
+    qs0 = _query_state()
+    ctx0 = _context(qs0)
+    contact0 = controller.initial_contact(ctx0)
+    with pytest.raises(rc.RailsControllersError, match="declares knowledge="):
+        controller.advance(ctx0, contact0, "draft answer")
+
+
+def test_phase_supply_retain_prior_stops_on_the_completed_phase_answer():
+    program = rc.default_phase_program("phase-direct-evidence-alpha-blend-v1")
+    controller = rc.EvidenceAgentController(
+        program=program,
+        material_for_phase=lambda name, ctx: _material(name, ctx.sample_id),
+        supply_for_phase=lambda name, ctx: _phase_supply(ctx, retain_prior=True),
+    )
+    qs0 = _query_state()
+    ctx0 = _context(qs0)
+    contact0 = controller.initial_contact(ctx0)
+    advance0 = controller.advance(ctx0, contact0, "direct wins uniquely")
+
+    assert advance0.transition.action_kind == "stop"
+    assert advance0.next_contact is None
+    assert advance0.final_response_contact_id == contact0.contact_id
+
+
+def test_phase_supply_retain_prior_is_refused_on_an_always_run_full_program():
+    # No shipped program pairs "always-run-full-program" with a "supplied"
+    # phase, so this refusal needs a synthetic one.
+    program = rc.PhaseProgram(
+        program_id="synthetic-always-run-supplied-v1",
+        phases=(
+            rc.PhaseSpec(
+                name="draft",
+                purpose="draft",
+                knowledge="none",
+                response_format_id=None,
+                barrier=False,
+            ),
+            rc.PhaseSpec(
+                name="revise",
+                purpose="revise",
+                knowledge="supplied",
+                response_format_id=None,
+                barrier=False,
+            ),
+        ),
+        max_contacts=2,
+        stop_rule="always-run-full-program",
+    ).validate()
+    controller = rc.EvidenceAgentController(
+        program=program,
+        material_for_phase=lambda name, ctx: _material(name, ctx.sample_id),
+        supply_for_phase=lambda name, ctx: _phase_supply(
+            ctx, retain_prior=True, knowledge_ok=True
+        ),
+    )
+    qs0 = _query_state()
+    ctx0 = _context(qs0)
+    contact0 = controller.initial_contact(ctx0)
+    with pytest.raises(rc.RailsControllersError, match="always-run-full-program"):
+        controller.advance(ctx0, contact0, "draft answer")
+
+
+def test_phase_supply_refuses_values_already_visible_in_the_trajectory():
+    program = rc.default_phase_program("phase-direct-evidence-alpha-blend-v1")
+    controller = rc.EvidenceAgentController(
+        program=program,
+        material_for_phase=lambda name, ctx: _material(name, ctx.sample_id),
+        supply_for_phase=lambda name, ctx: _phase_supply(ctx),
+    )
+    qs0 = _query_state().__class__(
+        query_id="run:s1:step0",
+        query_sample_id="s1",
+        speech_packet_id="speech/s1",
+        speech_packet_sha256=_SHA_A,
+        use_split_identity_hash=_SHA_A,
+        loop_step=0,
+        retrieved_value_ids=("v-1",),
+    ).validate()
+    ctx0 = _context(qs0)
+    contact0 = controller.initial_contact(ctx0)
+    with pytest.raises(rc.RailsControllersError, match="already visible"):
+        controller.advance(ctx0, contact0, "direct answer")
+
+
+def test_facet_only_phase_supply_exposes_every_newly_supporting_facet():
+    program = rc.default_phase_program("phase-direct-evidence-alpha-blend-v1")
+    controller = rc.EvidenceAgentController(
+        program=program,
+        material_for_phase=lambda name, ctx: _material(name, ctx.sample_id),
+        supply_for_phase=lambda name, ctx: _phase_supply(ctx, value_ids=()),
+    )
+    _, advance0, _, _ = _run_two_phase_trajectory(controller)
+    assert advance0.transition.action_kind == "acquire"
+    assert advance0.transition.new_value_ids == ()
+    assert advance0.transition.new_facet_ids == ("f-1",)
+    assert advance0.next_query_state.visible_facet_ids == ("f-1",)
 
 
 # ---------------------------------------------------------------------------

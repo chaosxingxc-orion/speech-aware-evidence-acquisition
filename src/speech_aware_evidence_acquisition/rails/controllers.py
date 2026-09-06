@@ -25,10 +25,12 @@ Two pieces:
   instruction text, and an optional response format) is never hard-coded
   here: it comes from a caller-injected ``material_for_phase`` callable
   returning a :class:`~.material.PhaseMaterial`. An optional
-  ``supply_for_phase`` callable may return a :class:`~.supply.SupplyPacket`
-  whose ``prompt_block`` text is folded into that phase's instruction (the
-  same "prompt-level delivery only" discipline ``rails.supply`` already
-  documents) -- this module never ranks or fuses evidence itself. An
+  ``supply_for_phase`` callable may return a :class:`PhaseSupply` for the
+  NEXT phase -- a hash-bound ``RankResult``/``FusionDecision`` pair, never
+  prompt text -- which this controller turns into an ``acquire`` transition
+  and a successor ``QueryState`` carrying the selected value ids (E6,
+  2026-09-06; see "Traced supply" below). This module never ranks or fuses
+  evidence itself. An
   optional ``stop_policy`` callable lets a non-final phase decide to stop
   early instead of continuing to the next phase (used by
   ``phase-direct-evidence-alpha-blend-v1``: a caller-injected policy mirrors
@@ -36,14 +38,56 @@ Two pieces:
   skip the evidence contact" shortcut, without this module re-implementing
   that ranking/fusion decision).
 
-Every phase transition this controller emits between two of its own phases
-is ``action_kind="organize"``: it never claims new knowledge-snapshot
-values/facets (that is ``rails.kb_policy``'s job, reached only through its
-own controller); it only seals the completed phase's raw response as one
-hash-bound :class:`~.knowledge.AgentStateArtifact` and carries it forward on
-the successor ``QueryState.agent_state_ids``, exactly the discipline
+Traced supply (E6, 2026-09-06)
+-----------------------------
+
+Before E6 a ``SupplyPacket`` returned by ``supply_for_phase`` was folded as
+TEXT into the next phase's ``AgentContactPlan.instruction``. That was the
+defect the KU-S1 verdict measured
+(``docs/readiness/2026-09-05-slurp-consumption-ku-s1-v1-verdict.md`` section
+6): ``rails.runner._assert_agent_control_excludes_knowledge_payloads`` reads
+exactly ``plan.instruction``, a ``KbFacetProvider`` packet renders
+``KnowledgeValue.content`` verbatim, and 11,514 of 11,514 SLURP values are
+at or over the 8-character protected-material floor -- so every
+knowledge-supplying phase cell was illegal by construction, on 100 % of
+rows. The fold is GONE; there is no fallback and no flag to bring it back.
+
+What replaces it: ``supply_for_phase(next_phase_name, context)`` returns a
+:class:`PhaseSupply` (or ``None``). This controller then emits, on the SAME
+wave that seals the completed phase's response, one ``action_kind="acquire"``
+transition carrying that ``RankResult``/``FusionDecision`` pair -- the same
+record shapes ``rails.kb_policy.KbAlphaBlendController._advance_after_direct``
+emits, so traces of the two are directly comparable -- and a successor
+``QueryState`` whose ``retrieved_value_ids`` (and, when the decision is
+facet-bearing, ``visible_facet_ids``) grow by exactly that decision.
+``rails.runner._agent_messages`` then renders those snapshot entries as
+TYPED CONTENT BLOCKS carrying ``evidence_id`` / ``source_uri`` /
+``knowledge_role``, validated by
+``rails.knowledge.assert_knowledge_use_binding``, and the containment rule
+does not read them precisely because they are traced.
+
+The consequence worth stating twice: **a phase's instruction text is
+byte-identical whether or not that phase is supplied.** The supply reaches
+the model only through the frozen snapshot entries the successor
+``QueryState`` names; a :class:`PhaseSupply`'s optional ``packet`` is
+observational provenance and its ``prompt_block`` never reaches a request.
+
+A transition between two of this controller's phases is therefore
+``"acquire"`` when a supply decision was made and ``"organize"`` otherwise;
+either way it seals the completed phase's raw response as one hash-bound
+:class:`~.knowledge.AgentStateArtifact` and carries it forward on the
+successor ``QueryState.agent_state_ids``, exactly the discipline
 ``rails.runner._validate_new_agent_states``/``assert_agent_step_binding``
 already enforce for every other controller in this study.
+
+The FIRST phase of a program cannot be supplied by this seam: there is no
+``advance`` before it, so there is no wave on which to emit an acquire
+transition. A one-phase supplied cell (KU-A1) seeds its values into the
+initial ``QueryState`` instead, per sample, through
+``rails.runner.run_speech_native_agent_loop``'s ``bootstrap_value_ids``
+seam; ``core.flight.FlightRuntime`` resolves both from the same
+``phase_supply`` config key and says which route a phase took in its
+receipt.
 
 Registration mirrors ``rails.kb_policy.register_kb_policy_v1``: every
 program id is registered into the shared ``core.base.AGENT_CONTROLLERS``
@@ -69,7 +113,13 @@ from typing import Callable, Mapping, Sequence
 
 from ..core.base import AGENT_CONTROLLERS, RESPONSE_FORMATS
 from .errors import RailsError
-from .knowledge import AgentStateArtifact, AgentStepTransition, QueryState
+from .knowledge import (
+    AgentStateArtifact,
+    AgentStepTransition,
+    FusionDecision,
+    QueryState,
+    RankResult,
+)
 from .material import PhaseMaterial
 from .runner import (
     AgentContactPlan,
@@ -319,8 +369,72 @@ def load_phase_program(path: Path | str) -> PhaseProgram:
     return program.validate()
 
 
+@dataclass(frozen=True)
+class PhaseSupply:
+    """One phase's TRACED knowledge-supply decision (module docstring,
+    "Traced supply").
+
+    ``rank_result``/``fusion_decision`` are the hash-bound pair
+    ``rails.runner._validate_agent_knowledge_decision`` requires of every
+    ``acquire`` transition; both must be bound to the snapshot and to the
+    ``QueryState`` of the contact that just completed (the controller passes
+    exactly that state, so a supply callable computing them from
+    ``context.query_state`` is correct by construction).
+
+    ``packet`` is OBSERVATIONAL provenance only -- what a
+    ``rails.knowledge_provider.KnowledgeProvider.materialize`` produced for
+    this decision. Its ``prompt_block`` never reaches a request: the values
+    that reach the model are exactly ``fusion_decision.selected_value_ids``,
+    rendered from the frozen snapshot by
+    ``rails.runner._agent_messages`` as typed content blocks.
+
+    ``expose_facets`` promotes the decision's newly supporting facets into
+    the successor ``QueryState.visible_facet_ids`` (rendered as
+    ``knowledge_role="key"`` blocks). A decision that selects NO values is
+    facet-only acquisition and always exposes them --
+    ``rails.runner._validate_agent_knowledge_decision`` requires it.
+
+    ``retain_prior`` is the supply-side realisation of a
+    ``"stop-policy-optional-early-exit"`` program's early exit: the
+    retrieval decision itself says the completed phase's own answer already
+    stands, so no further contact is spent (this is
+    ``KbAlphaBlendController``'s retain-primary shortcut, expressed on the
+    base). It is refused on an ``"always-run-full-program"`` program.
+    """
+
+    rank_result: RankResult
+    fusion_decision: FusionDecision
+    packet: SupplyPacket | None = None
+    expose_facets: bool = False
+    retain_prior: bool = False
+    action_target_ref: str = "phase-supply-v1:recall-rank-fuse"
+
+    def validate(self) -> "PhaseSupply":
+        if not isinstance(self.rank_result, RankResult):
+            raise RailsControllersError("PhaseSupply.rank_result must be a RankResult")
+        if not isinstance(self.fusion_decision, FusionDecision):
+            raise RailsControllersError(
+                "PhaseSupply.fusion_decision must be a FusionDecision"
+            )
+        self.rank_result.validate()
+        self.fusion_decision.validate()
+        if self.packet is not None:
+            if not isinstance(self.packet, SupplyPacket):
+                raise RailsControllersError(
+                    "PhaseSupply.packet must be a SupplyPacket or None"
+                )
+            self.packet.validate()
+        for name in ("expose_facets", "retain_prior"):
+            if not isinstance(getattr(self, name), bool):
+                raise RailsControllersError(f"PhaseSupply.{name} must be a bool")
+        _require_nonempty_str(
+            self.action_target_ref, field="PhaseSupply.action_target_ref"
+        )
+        return self
+
+
 MaterialForPhase = Callable[[str, AgentRuntimeContext], PhaseMaterial]
-SupplyForPhase = Callable[[str, AgentRuntimeContext], SupplyPacket | None]
+SupplyForPhase = Callable[[str, AgentRuntimeContext], "PhaseSupply | None"]
 StopPolicy = Callable[[AgentRuntimeContext, Sequence[str]], bool]
 
 
@@ -331,9 +445,11 @@ class EvidenceAgentController:
     ``material_for_phase(phase_name, context)`` must return a validated
     :class:`~.material.PhaseMaterial`; its ``response_format`` presence must
     agree with the phase's own declared ``response_format_id`` (both
-    present, or both absent). ``supply_for_phase``, when given, may return a
-    :class:`~.supply.SupplyPacket` whose ``prompt_block`` is appended to
-    that phase's instruction text. ``stop_policy`` is consulted only for a
+    present, or both absent). ``supply_for_phase(next_phase_name, context)``,
+    when given, may return a :class:`PhaseSupply` naming the frozen-snapshot
+    values the NEXT phase should see; they travel the successor
+    ``QueryState``, never the instruction (module docstring, "Traced
+    supply"). ``stop_policy`` is consulted only for a
     program whose ``stop_rule`` is ``"stop-policy-optional-early-exit"``,
     only after a NON-FINAL phase, with the tuple of phase names completed so
     far; returning ``True`` stops the program on that phase's own response.
@@ -401,16 +517,13 @@ class EvidenceAgentController:
                 f"{phase.response_format_id!r} but material.response_format "
                 f"presence does not match ({has_format!r})"
             )
+        # E6: the instruction is the phase material's text and NOTHING
+        # else. Supply never rides the control turn (module docstring,
+        # "Traced supply"); it travels the successor QueryState. A supplied
+        # phase's control-turn bytes are therefore identical to the same
+        # phase's unsupplied bytes -- the property the containment rule and
+        # every paired contrast both depend on.
         instruction = material.instruction
-        if self._supply_for_phase is not None:
-            supply = self._supply_for_phase(phase.name, context)
-            if supply is not None:
-                if not isinstance(supply, SupplyPacket):
-                    raise RailsControllersError(
-                        "supply_for_phase must return a SupplyPacket or None"
-                    )
-                supply.validate()
-                instruction = f"{instruction}\n\nSupplied evidence:\n{supply.prompt_block}"
         decoding_params: dict[str, object] = {}
         if material.response_format is not None:
             decoding_params["response_format"] = dict(material.response_format)
@@ -479,6 +592,33 @@ class EvidenceAgentController:
         ):
             should_stop = bool(self._stop_policy(context, tuple(self._completed)))
 
+        # E6: the supply decision for the NEXT phase is taken HERE, on the
+        # wave that just completed, because that is the only wave whose
+        # transition can carry it (module docstring, "Traced supply"). The
+        # context it sees carries this phase's just-sealed state but the
+        # PRIOR QueryState -- the state the RankResult/FusionDecision must
+        # be bound to (rails.runner._validate_agent_knowledge_decision
+        # validates them against exactly that state).
+        supply: PhaseSupply | None = None
+        if not should_stop:
+            supply = self._resolve_supply(
+                self._program.phases[index + 1],
+                context,
+                artifact,
+                response_sha256,
+            )
+            if supply is not None and supply.retain_prior:
+                if self._program.stop_rule != "stop-policy-optional-early-exit":
+                    raise RailsControllersError(
+                        f"phase supply for {self._program.phases[index + 1].name!r} "
+                        "asked to retain the prior phase's answer, but program "
+                        f"{self._program.program_id!r} declares stop_rule "
+                        f"{self._program.stop_rule!r}; an early exit is legal only "
+                        "under 'stop-policy-optional-early-exit'"
+                    )
+                should_stop = True
+                supply = None
+
         if should_stop:
             transition = AgentStepTransition(
                 snapshot_sha256=context.knowledge_snapshot_sha256,
@@ -501,6 +641,17 @@ class EvidenceAgentController:
             )
 
         next_phase = self._program.phases[index + 1]
+        new_value_ids: tuple[str, ...] = ()
+        new_facet_ids: tuple[str, ...] = ()
+        action_kind = "organize"
+        action_target_refs = (
+            f"{self._program.program_id}:{phase.name}->{next_phase.name}",
+        )
+        if supply is not None:
+            new_value_ids, new_facet_ids = self._acquired_ids(supply, context)
+            action_kind = "acquire"
+            action_target_refs = (*action_target_refs, supply.action_target_ref)
+
         next_state = QueryState(
             query_id=context.query_state.query_id,
             query_sample_id=context.query_state.query_sample_id,
@@ -508,28 +659,33 @@ class EvidenceAgentController:
             speech_packet_sha256=context.query_state.speech_packet_sha256,
             use_split_identity_hash=context.query_state.use_split_identity_hash,
             loop_step=context.query_state.loop_step + 1,
-            visible_facet_ids=context.query_state.visible_facet_ids,
+            visible_facet_ids=(
+                context.query_state.visible_facet_ids + new_facet_ids
+            ),
             agent_state_ids=context.query_state.agent_state_ids + (artifact.state_id,),
-            retrieved_value_ids=context.query_state.retrieved_value_ids,
+            retrieved_value_ids=(
+                context.query_state.retrieved_value_ids + new_value_ids
+            ),
         ).validate()
         transition = AgentStepTransition(
             snapshot_sha256=context.knowledge_snapshot_sha256,
             prior_query_state_sha256=context.query_state.content_hash(),
             next_query_state_sha256=next_state.content_hash(),
-            action_kind="organize",
-            action_target_refs=(f"{self._program.program_id}:{phase.name}->{next_phase.name}",),
-            new_value_ids=(),
+            action_kind=action_kind,
+            action_target_refs=action_target_refs,
+            new_value_ids=new_value_ids,
             used_value_ids=(),
             dropped_value_ids=(),
             new_agent_state_ids=(artifact.state_id,),
             dropped_agent_state_ids=(),
+            new_facet_ids=new_facet_ids,
         ).validate()
         # A synthetic "as of the next contact" context: the runner itself
         # only reconstructs a fresh AgentRuntimeContext at the TOP of its
         # next trajectory iteration (rails.runner._run_agent_trajectory),
         # but the CONTACT dispatched for that iteration is whatever this
         # call returns as `next_contact` right now, built with whatever
-        # context material_for_phase/supply_for_phase need. This mirrors
+        # context material_for_phase needs. This mirrors
         # exactly what the runner's own _runtime_context would build next
         # (same ordering: state_store insertion order == query_state's own
         # declared agent_state_ids order, which we set above as
@@ -551,7 +707,102 @@ class EvidenceAgentController:
             next_query_state=next_state,
             new_agent_states=(artifact,),
             next_contact=next_contact,
+            rank_result=None if supply is None else supply.rank_result,
+            fusion_decision=None if supply is None else supply.fusion_decision,
         )
+
+    def _resolve_supply(
+        self,
+        next_phase: PhaseSpec,
+        context: AgentRuntimeContext,
+        artifact: AgentStateArtifact,
+        response_sha256: str,
+    ) -> "PhaseSupply | None":
+        """Call ``supply_for_phase`` for ``next_phase`` and type-check it.
+
+        The context handed on carries the just-sealed state (so a decision
+        may read the phase's own answer, exactly as
+        ``KbAlphaBlendController`` reads its direct-decode response) but the
+        UNCHANGED ``query_state``: a ``RankResult``/``FusionDecision`` must
+        be bound to the state of the contact that produced the answer.
+        """
+
+        if self._supply_for_phase is None:
+            return None
+        supply = self._supply_for_phase(
+            next_phase.name,
+            AgentRuntimeContext(
+                sample_id=context.sample_id,
+                knowledge_snapshot_sha256=context.knowledge_snapshot_sha256,
+                catalog_facet_ids=context.catalog_facet_ids,
+                catalog_value_ids=context.catalog_value_ids,
+                query_state=context.query_state,
+                task_contract=context.task_contract,
+                agent_states=context.agent_states + (artifact,),
+                prior_response_sha256s=(
+                    context.prior_response_sha256s + (response_sha256,)
+                ),
+                contact_index=context.contact_index,
+            ),
+        )
+        if supply is None:
+            return None
+        if isinstance(supply, SupplyPacket):
+            raise RailsControllersError(
+                "supply_for_phase returned a bare SupplyPacket; the "
+                "fold-a-packet-into-the-instruction path was removed in E6 "
+                "(2026-09-06) because it put frozen knowledge payloads on the "
+                "CONTROL turn. Return a PhaseSupply carrying the decision's "
+                "RankResult/FusionDecision instead, so the values travel the "
+                "traced typed-content channel"
+            )
+        if not isinstance(supply, PhaseSupply):
+            raise RailsControllersError(
+                "supply_for_phase must return a PhaseSupply or None"
+            )
+        supply.validate()
+        if next_phase.knowledge != "supplied":
+            raise RailsControllersError(
+                f"phase {next_phase.name!r} declares knowledge="
+                f"{next_phase.knowledge!r} but supply_for_phase returned a decision "
+                "for it; a supplied phase must say so in its PhaseSpec"
+            )
+        return supply
+
+    @staticmethod
+    def _acquired_ids(
+        supply: "PhaseSupply", context: AgentRuntimeContext
+    ) -> tuple[tuple[str, ...], tuple[str, ...]]:
+        """``(new_value_ids, new_facet_ids)`` for one supply decision.
+
+        Both are computed HERE from the ``FusionDecision`` rather than taken
+        from the caller, so the transition this controller emits satisfies
+        ``rails.runner._validate_agent_knowledge_decision`` by construction:
+        ``new_value_ids`` IS ``fusion_decision.selected_value_ids`` (exact
+        tuple equality is required), and ``new_facet_ids`` is a subset of
+        the decision's NEWLY supporting facets -- the whole of it when the
+        decision selects no values at all, which the runner demands of
+        facet-only acquisition.
+        """
+
+        visible_values = set(context.query_state.retrieved_value_ids)
+        selected = tuple(supply.fusion_decision.selected_value_ids)
+        repeated = [value_id for value_id in selected if value_id in visible_values]
+        if repeated:
+            raise RailsControllersError(
+                "phase supply selected values already visible in this trajectory: "
+                f"{sorted(set(repeated))}; a FusionDecision must exclude "
+                "QueryState.retrieved_value_ids (rails.kb_policy's own fuser does)"
+            )
+        visible_facets = set(context.query_state.visible_facet_ids)
+        newly_supporting = tuple(
+            facet_id
+            for facet_id in supply.fusion_decision.supporting_facet_ids
+            if facet_id not in visible_facets
+        )
+        expose = supply.expose_facets or not selected
+        return selected, (newly_supporting if expose else ())
+
 
 
 def _default_material_for_phase(program: PhaseProgram) -> MaterialForPhase:
@@ -786,6 +1037,7 @@ __all__ = [
     "MaterialForPhase",
     "PhaseProgram",
     "PhaseSpec",
+    "PhaseSupply",
     "RailsControllersError",
     "StopPolicy",
     "SupplyForPhase",
