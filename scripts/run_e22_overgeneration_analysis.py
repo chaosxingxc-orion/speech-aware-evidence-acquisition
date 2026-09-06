@@ -50,12 +50,18 @@ from speech_aware_evidence_acquisition.analysis.e22_overgeneration import (  # n
     load_flight_tokens,
     trace_path,
 )
+from speech_aware_evidence_acquisition.core.roster import read_roster  # noqa: E402
 from speech_aware_evidence_acquisition.data.lock import data_root  # noqa: E402
 from speech_aware_evidence_acquisition.e0.artifacts import write_json_artifact  # noqa: E402
 from speech_aware_evidence_acquisition.reproduction.esb_reference import (  # noqa: E402
     ESB_DEV10_REFERENCE_RECEIPT_RELPATH,
     load_esb_references,
 )
+
+#: The reserved 1,500-row dev subset the three model-usage cells fly. Read for
+#: its sample ids only, so the cap frontier can be projected onto the
+#: population a cell would actually measure.
+SUBSET_ROSTER_RELPATH = "docs/receipts/rosters/e22-dev-esb-1500-v1.json"
 
 OUT_DIR = (
     REPO_ROOT
@@ -114,12 +120,39 @@ def headline(summary: dict) -> str:
                 else ""
             )
         )
+    subset = summary.get("subset_projection")
+    if subset:
+        base = subset["baseline"]
+        lines.append(
+            f"  subset {subset['label']}: {subset['rows']} rows, uncapped WER "
+            f"{base['corpus_wer_percent']:.4f} %"
+            + (
+                f", agentic {base['agentic']['agentic_error_rate_percent']:.4f} %"
+                if "agentic" in base
+                else ""
+            )
+        )
+        for rung in subset["cap_frontier"]["rungs"]:
+            agentic = rung.get("agentic", {}).get("agentic_error_rate_percent")
+            lines.append(
+                f"    alpha {rung['alpha']:.2f}: capped {rung['rows_capped']}, "
+                f"benefit {rung['benefit_rows']}, harm {rung['harm_rows_realized']}, "
+                f"bleed cut {rung['tail_bleed_rows_capped']}/{rung['tail_bleed_rows_total']}, "
+                f"WER {rung['corpus_wer_percent']:.4f} % "
+                f"({rung['corpus_wer_delta_points']:+.4f})"
+                + (f", agentic {agentic:.4f} %" if agentic is not None else "")
+            )
     return "\n".join(lines)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--write", action="store_true", help="write the receipt directory")
+    parser.add_argument(
+        "--no-subset",
+        action="store_true",
+        help="skip the E22-DEV-ESB-1500-V1 subset projection",
+    )
     args = parser.parse_args()
 
     attempts = arm_offline_guard()
@@ -134,6 +167,13 @@ def main() -> int:
     flight_tokens = load_flight_tokens(trace_path(root, ARM))
     geometry = load_clip_geometry(REPO_ROOT)
 
+    subset_ids = None
+    subset_label = None
+    if not args.no_subset:
+        roster = read_roster(REPO_ROOT / SUBSET_ROSTER_RELPATH)
+        subset_ids = [str(item["sample_id"]) for item in roster["items"]]
+        subset_label = str(roster["roster_id"])
+
     rows = build_rows(
         references=references,
         hypotheses=hypotheses,
@@ -147,6 +187,8 @@ def main() -> int:
         outbound_targets=list(attempts.targets),
         references=references,
         segments=segments,
+        subset_ids=subset_ids,
+        subset_label=subset_label,
     )
     summary["arm_source"] = dict(ARM_SOURCES[ARM])
 

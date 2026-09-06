@@ -525,3 +525,131 @@ def test_token_profile_reports_the_ceiling_it_was_flown_under() -> None:
     assert profile["quantiles"]["max"] == 130.0
     assert profile["rows_at_ceiling"] == 0
     assert profile["total_completion_tokens"] == 140
+
+
+# ---------------------------------------------------------------------------
+# The subset projection
+# ---------------------------------------------------------------------------
+
+
+def test_population_baseline_is_the_uncapped_population() -> None:
+    from speech_aware_evidence_acquisition.analysis.e22_overgeneration import (
+        population_baseline,
+    )
+
+    rows = [
+        _row(
+            "a",
+            reference=("alpha", "bravo", "charlie", "delta"),
+            hypothesis=("alpha", "bravo", "charlie", "echo"),
+            tokens=4,
+        )
+    ]
+    baseline = population_baseline(rows)
+    assert baseline["rows"] == 1
+    assert baseline["reference_words"] == 4
+    assert baseline["substitutions"] == 1
+    assert baseline["corpus_wer_percent"] == pytest.approx(25.0)
+    assert "agentic" not in baseline
+
+
+def test_simulate_cap_takes_its_delta_against_the_baseline_it_is_given() -> None:
+    rows = [
+        _row(
+            "a",
+            seconds=100.0,
+            reference=("alpha", "bravo"),
+            hypothesis=("alpha", "bravo"),
+            tokens=2,
+        )
+    ]
+    result = simulate_cap(rows, alpha=3.0, wps_p95=5.0, tpw=1.3, baseline_wer_percent=0.0)
+    assert result["baseline_wer_percent"] == 0.0
+    assert result["corpus_wer_delta_points"] == pytest.approx(0.0)
+
+
+def test_build_receipts_runs_the_identity_gate_before_any_projection() -> None:
+    """A synthetic population fails the gate, and it fails there rather than
+    somewhere downstream -- a projection can never be produced from a
+    population the gate refused."""
+
+    from speech_aware_evidence_acquisition.analysis.e22_overgeneration import (
+        build_receipts,
+    )
+
+    with pytest.raises(OvergenerationError, match="identity gate"):
+        build_receipts(
+            rows=[_row("a")],
+            outbound_attempts=0,
+            outbound_targets=[],
+            alphas=(1.5,),
+            subset_ids=["not-a-row"],
+            subset_label="X",
+        )
+
+
+def test_the_subset_projection_refuses_an_id_the_population_lacks(monkeypatch) -> None:
+    from speech_aware_evidence_acquisition.analysis import e22_overgeneration as module
+
+    rows = [
+        _row(
+            "a",
+            reference=("alpha", "bravo", "charlie", "delta"),
+            hypothesis=("alpha", "bravo", "charlie", "delta"),
+            tokens=4,
+        )
+    ]
+    monkeypatch.setattr(
+        module,
+        "SEALED_TOTALS",
+        {"substitutions": 0, "deletions": 0, "insertions": 0, "reference_words": 4},
+    )
+    with pytest.raises(module.OvergenerationError, match="matched 0 of 1 declared ids"):
+        module.build_receipts(
+            rows=rows,
+            outbound_attempts=0,
+            outbound_targets=[],
+            alphas=(1.5,),
+            subset_ids=["not-a-row"],
+            subset_label="X",
+        )
+
+
+def test_the_subset_projection_reports_its_own_baseline(monkeypatch) -> None:
+    from speech_aware_evidence_acquisition.analysis import e22_overgeneration as module
+
+    rows = [
+        _row(
+            "a",
+            reference=("alpha", "bravo", "charlie", "delta"),
+            hypothesis=("alpha", "bravo", "charlie", "delta"),
+            tokens=4,
+        ),
+        _row(
+            "b",
+            reference=("alpha", "bravo"),
+            hypothesis=("alpha", "bravo"),
+            tokens=2,
+        ),
+    ]
+    monkeypatch.setattr(
+        module,
+        "SEALED_TOTALS",
+        {"substitutions": 0, "deletions": 0, "insertions": 0, "reference_words": 6},
+    )
+    summary, _ = module.build_receipts(
+        rows=rows,
+        outbound_attempts=0,
+        outbound_targets=[],
+        alphas=(1.5,),
+        subset_ids=["b"],
+        subset_label="SUBSET-1",
+    )
+    projection = summary["subset_projection"]
+    assert projection["label"] == "SUBSET-1"
+    assert projection["rows"] == 1
+    assert projection["baseline"]["reference_words"] == 2
+    rung = projection["cap_frontier"]["rungs"][0]
+    assert rung["baseline_wer_percent"] == pytest.approx(
+        projection["baseline"]["corpus_wer_percent"]
+    )

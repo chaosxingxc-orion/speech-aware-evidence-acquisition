@@ -22,7 +22,11 @@ scorer, network, GPU, audio decode, paid API — and the offline guard recorded 
 connection attempts**. The pass is byte-deterministic: run twice back to back it reproduces the same
 `MANIFEST.sha256`. Receipts:
 `docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-overgeneration-analysis/`
-(`summary.json` sha256 `5b6e89b5…`, `per-row-table.csv` `5e66766d…`). Module
+(`summary.json` sha256 `74bce285…`, `per-row-table.csv` `5e66766d…`). The receipt was written
+once as `5b6e89b5…` and re-written the same day, under the same row, to add the section 5.4
+subset projection the companion preregistration's prediction rests on; the per-row table and every
+figure in sections 1 to 5.3 are unchanged between the two, which is why the table's digest did not
+move. Module
 `analysis/e22_overgeneration.py`, runner `scripts/run_e22_overgeneration_analysis.py`, tests
 `tests/unit/test_e22_overgeneration.py` (41, on synthetic rows).
 
@@ -261,6 +265,35 @@ exists: **204 rows capped, 144 benefit, 60 realized harm, corpus WER 17.3327 % (
 1.9232 % (−0.0009), 490 completion tokens saved across the whole population.**
 
 It is named, not recommended. Section 7 says what it is worth.
+
+### 5.4 Projected onto the 1,500 rows a cell would actually fly
+
+The three model-usage cells fly `E22-DEV-ESB-1500-V1` (roster
+`docs/receipts/rosters/e22-dev-esb-1500-v1.json`, identity `c626e62f…`, 150 rows per call, seed
+20260906), not the full 6,038. The same frontier restricted to those rows, with the two constants
+**re-measured on the subset** because a cell that flies the subset would measure them there too:
+
+| alpha | rows capped | benefit | harm (realized) | bleed rows cut (of 218) | corpus WER % | Δ WER | agentic % | Δ agentic |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| uncapped baseline | — | — | — | — | **17.4012** | — | **1.9161** | — |
+| 0.60 | 778 | 229 | 549 | 112 | 18.3764 | +0.9752 | 3.3751 | +1.4590 |
+| 0.70 | 499 | 192 | 307 | 65 | 16.6127 | −0.7885 | 2.3237 | +0.4076 |
+| 0.80 | 311 | 134 | 177 | 32 | **16.5251** | **−0.8762** | 2.0418 | +0.1257 |
+| 0.90 | 210 | 110 | 100 | 19 | 16.5937 | −0.8076 | 1.9771 | +0.0610 |
+| 1.00 | 161 | 89 | 72 | 15 | 16.7536 | −0.6476 | 1.9542 | +0.0381 |
+| 1.25 | 83 | 51 | 32 | 7 | 17.0279 | −0.3733 | 1.9390 | +0.0229 |
+| **1.50** | **50** | **35** | **15** | **5** | **17.1765** | **−0.2248** | **1.9428** | **+0.0267** |
+| 1.75 | 35 | 28 | 7 | 3 | 17.2336 | −0.1676 | 1.9275 | +0.0114 |
+| 2.00 | 27 | 22 | 5 | 1 | 17.2679 | −0.1333 | 1.9314 | +0.0153 |
+| 2.50 | 14 | 10 | 4 | 0 | 17.3441 | −0.0571 | 1.9123 | −0.0038 |
+| 3.00 | 8 | 5 | 3 | 0 | 17.3746 | −0.0267 | 1.9161 | ±0.0000 |
+
+The shape is the full population's and the magnitudes are close, which is the point of reporting
+both. **The one thing that does not survive the projection is the exact sign of the agentic delta at
+alpha 1.5**: on 6,038 rows it is −0.0009 and on 1,500 it is +0.0267, on 50 capped rows of which 15
+are harmed. That is noise around zero at this sample size, and it is exactly why the companion
+preregistration's admission rule reads a CI90 against a non-inferiority margin rather than a point
+estimate — a rule fixed before the flight, and fixed here in the open with both numbers on the page.
 
 ## 6. Stop strings: there are none to add, and this is a code fact
 

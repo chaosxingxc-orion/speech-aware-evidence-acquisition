@@ -693,9 +693,20 @@ def kept_words(row: RowMetrics, cap: int) -> int:
 
 
 def simulate_cap(
-    rows: Sequence[RowMetrics], *, alpha: float, wps_p95: float, tpw: float
+    rows: Sequence[RowMetrics],
+    *,
+    alpha: float,
+    wps_p95: float,
+    tpw: float,
+    baseline_wer_percent: float = SEALED_CORPUS_WER_PERCENT,
 ) -> dict[str, object]:
-    """One alpha's harm/benefit frontier and its simulated corpus WER."""
+    """One alpha's harm/benefit frontier and its simulated corpus WER.
+
+    ``baseline_wer_percent`` is what the delta is taken against. It defaults to
+    the sealed full-population figure; a SUBSET projection passes that subset's
+    own uncapped number instead, because a delta against a population the cell
+    is not flying would be a different statement.
+    """
 
     capped_rows = 0
     a_priori_harm_rows = 0
@@ -767,7 +778,8 @@ def simulate_cap(
         "insertions": insertions,
         "reference_words": reference_words,
         "corpus_wer_percent": corpus,
-        "corpus_wer_delta_points": corpus - SEALED_CORPUS_WER_PERCENT,
+        "baseline_wer_percent": baseline_wer_percent,
+        "corpus_wer_delta_points": corpus - baseline_wer_percent,
     }
 
 
@@ -847,12 +859,50 @@ def simulate_agentic_rate(
     }
 
 
+def population_baseline(
+    rows: Sequence[RowMetrics],
+    *,
+    references: Mapping[str, str] | None = None,
+    segments: Mapping[str, Mapping[str, object]] | None = None,
+) -> dict[str, object]:
+    """The UNCAPPED corpus WER and agentic rate of a population.
+
+    On the full 6,038 this reproduces the sealed arm A pair; on a subset it is
+    what that subset's own cap deltas must be taken against.
+    """
+
+    block = _aggregate(rows, "uncapped")
+    baseline: dict[str, object] = {
+        "rows": block["rows"],
+        "reference_words": block["reference_words"],
+        "corpus_wer_percent": block["corpus_wer_percent"],
+        "substitutions": block["substitutions"],
+        "deletions": block["deletions"],
+        "insertions": block["insertions"],
+        "length_ratio": block["length_ratio"],
+    }
+    if references is not None and segments is not None:
+        # A cap so loose that no row is touched IS the uncapped population, so
+        # the agentic rate comes from the same code path the rungs use rather
+        # than from a second implementation.
+        baseline["agentic"] = simulate_agentic_rate(
+            rows,
+            alpha=1e9,
+            wps_p95=words_per_second_p95(rows),
+            tpw=tokens_per_word(rows),
+            references=references,
+            segments=segments,
+        )
+    return baseline
+
+
 def cap_frontier(
     rows: Sequence[RowMetrics],
     *,
     alphas: Iterable[float] = ALPHA_LADDER,
     references: Mapping[str, str] | None = None,
     segments: Mapping[str, Mapping[str, object]] | None = None,
+    baseline_wer_percent: float = SEALED_CORPUS_WER_PERCENT,
 ) -> dict[str, object]:
     """The whole alpha ladder, reported together so no single point is chosen
     by looking at the answer first.
@@ -866,7 +916,13 @@ def cap_frontier(
     tpw = tokens_per_word(rows)
     rungs = []
     for alpha in alphas:
-        rung = simulate_cap(rows, alpha=alpha, wps_p95=wps, tpw=tpw)
+        rung = simulate_cap(
+            rows,
+            alpha=alpha,
+            wps_p95=wps,
+            tpw=tpw,
+            baseline_wer_percent=baseline_wer_percent,
+        )
         if references is not None and segments is not None:
             rung["agentic"] = simulate_agentic_rate(
                 rows,
@@ -944,8 +1000,16 @@ def build_receipts(
     alphas: Iterable[float] = ALPHA_LADDER,
     references: Mapping[str, str] | None = None,
     segments: Mapping[str, Mapping[str, object]] | None = None,
+    subset_ids: Sequence[str] | None = None,
+    subset_label: str | None = None,
 ) -> tuple[dict[str, object], str]:
-    """``(summary, per-row CSV)`` -- the whole receipt payload, computed once."""
+    """``(summary, per-row CSV)`` -- the whole receipt payload, computed once.
+
+    ``subset_ids`` adds a SUBSET PROJECTION: the same cap frontier restricted
+    to a reserved roster's own rows, against that subset's own uncapped
+    baseline. The identity gate still runs on the whole sealed population, so
+    a projection can never be produced from a population that failed it.
+    """
 
     gate = identity_gate(rows)
     frontier = cap_frontier(
@@ -1003,6 +1067,34 @@ def build_receipts(
             "by measurement, and no test row was opened.",
         ],
     }
+    if subset_ids is not None:
+        keep = set(subset_ids)
+        selected = [row for row in rows if row.sample_id in keep]
+        if len(selected) != len(keep):
+            raise OvergenerationError(
+                f"the subset projection matched {len(selected)} of {len(keep)} declared ids"
+            )
+        baseline = population_baseline(
+            selected, references=references, segments=segments
+        )
+        summary["subset_projection"] = {
+            "label": subset_label or "subset",
+            "rows": len(selected),
+            "baseline": baseline,
+            "cap_frontier": cap_frontier(
+                selected,
+                alphas=alphas,
+                references=references,
+                segments=segments,
+                baseline_wer_percent=float(baseline["corpus_wer_percent"]),
+            ),
+            "constants_basis": (
+                "words_per_second_p95 and tokens_per_word are re-measured ON THE SUBSET, "
+                "because a cell that flies the subset would measure them there too; the "
+                "full-population values are in cap_frontier above and the two are reported "
+                "side by side rather than one being substituted for the other"
+            ),
+        }
     return summary, per_row_csv(rows)
 
 
@@ -1031,6 +1123,7 @@ __all__ = [
     "load_clip_geometry",
     "load_flight_tokens",
     "per_call_table",
+    "population_baseline",
     "per_row_csv",
     "sentence_final_table",
     "token_profile",
