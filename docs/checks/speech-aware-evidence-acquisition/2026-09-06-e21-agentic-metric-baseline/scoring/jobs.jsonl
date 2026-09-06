@@ -1,0 +1,3 @@
+{"job_id": "corpus-wer-anchor", "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-AGENTIC-METRIC-BASELINE-V1/rescore-corpus-wer-anchor/SAEA-E21-FULL44-DIRECT-BASELINE-V2.run-manifest.json"}
+{"job_id": "conec-entity-wer", "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-AGENTIC-METRIC-BASELINE-V1/rescore-conec-entity-wer/SAEA-E21-FULL44-DIRECT-BASELINE-V2.run-manifest.json"}
+{"job_id": "numeric-value-accuracy", "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-AGENTIC-METRIC-BASELINE-V1/rescore-numeric-value-accuracy/SAEA-E21-FULL44-DIRECT-BASELINE-V2.run-manifest.json"}

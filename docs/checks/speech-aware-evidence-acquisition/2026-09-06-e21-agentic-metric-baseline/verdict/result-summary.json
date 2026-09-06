@@ -1,0 +1,1018 @@
+{
+  "conec_entity_wer": {
+    "all_44": {
+      "all_classes": {
+        "ABBREVIATION": {
+          "deletions": 44,
+          "entity_wer_percent": 25.681995323460637,
+          "reference_words": 2566,
+          "substitutions": 615
+        },
+        "ALPHANUMERIC": {
+          "deletions": 63,
+          "entity_wer_percent": 8.901613742842269,
+          "reference_words": 1921,
+          "substitutions": 108
+        },
+        "CARDINAL": {
+          "deletions": 125,
+          "entity_wer_percent": 11.001568451714093,
+          "reference_words": 4463,
+          "substitutions": 366
+        },
+        "CONTRACTION": {
+          "deletions": 436,
+          "entity_wer_percent": 4.828210788475689,
+          "reference_words": 17667,
+          "substitutions": 417
+        },
+        "DATE": {
+          "deletions": 144,
+          "entity_wer_percent": 3.4702461957194113,
+          "reference_words": 16166,
+          "substitutions": 417
+        },
+        "EVENT": {
+          "deletions": 2,
+          "entity_wer_percent": 2.42914979757085,
+          "reference_words": 494,
+          "substitutions": 10
+        },
+        "FAC": {
+          "deletions": 7,
+          "entity_wer_percent": 21.311475409836063,
+          "reference_words": 122,
+          "substitutions": 19
+        },
+        "FALLBACK": {
+          "deletions": 19,
+          "entity_wer_percent": 47.43589743589743,
+          "reference_words": 78,
+          "substitutions": 18
+        },
+        "GPE": {
+          "deletions": 29,
+          "entity_wer_percent": 18.67273910214704,
+          "reference_words": 1537,
+          "substitutions": 258
+        },
+        "LANGUAGE": {
+          "deletions": 0,
+          "entity_wer_percent": 50.0,
+          "reference_words": 2,
+          "substitutions": 1
+        },
+        "LAW": {
+          "deletions": 0,
+          "entity_wer_percent": 3.225806451612903,
+          "reference_words": 62,
+          "substitutions": 2
+        },
+        "LOC": {
+          "deletions": 1,
+          "entity_wer_percent": 2.4742268041237114,
+          "reference_words": 485,
+          "substitutions": 11
+        },
+        "MONEY": {
+          "deletions": 20,
+          "entity_wer_percent": 12.841530054644808,
+          "reference_words": 732,
+          "substitutions": 74
+        },
+        "NORP": {
+          "deletions": 6,
+          "entity_wer_percent": 9.745762711864407,
+          "reference_words": 236,
+          "substitutions": 17
+        },
+        "ORDINAL": {
+          "deletions": 8,
+          "entity_wer_percent": 2.918918918918919,
+          "reference_words": 925,
+          "substitutions": 19
+        },
+        "ORG": {
+          "deletions": 71,
+          "entity_wer_percent": 17.212926885170752,
+          "reference_words": 4363,
+          "substitutions": 680
+        },
+        "PERCENT": {
+          "deletions": 21,
+          "entity_wer_percent": 10.171306209850108,
+          "reference_words": 1868,
+          "substitutions": 169
+        },
+        "PERSON": {
+          "deletions": 83,
+          "entity_wer_percent": 22.488858416181007,
+          "reference_words": 2917,
+          "substitutions": 573
+        },
+        "PRODUCT": {
+          "deletions": 12,
+          "entity_wer_percent": 19.230769230769234,
+          "reference_words": 390,
+          "substitutions": 63
+        },
+        "QUANTITY": {
+          "deletions": 2,
+          "entity_wer_percent": 6.422018348623854,
+          "reference_words": 327,
+          "substitutions": 19
+        },
+        "RANGE": {
+          "deletions": 1,
+          "entity_wer_percent": 50.0,
+          "reference_words": 24,
+          "substitutions": 11
+        },
+        "TIME": {
+          "deletions": 13,
+          "entity_wer_percent": 3.744798890429958,
+          "reference_words": 721,
+          "substitutions": 14
+        },
+        "TWITTER": {
+          "deletions": 0,
+          "entity_wer_percent": 0.0,
+          "reference_words": 2,
+          "substitutions": 0
+        },
+        "WEBSITE": {
+          "deletions": 0,
+          "entity_wer_percent": 10.833333333333334,
+          "reference_words": 120,
+          "substitutions": 13
+        },
+        "WORK_OF_ART": {
+          "deletions": 1,
+          "entity_wer_percent": 14.634146341463413,
+          "reference_words": 82,
+          "substitutions": 11
+        },
+        "YEAR": {
+          "deletions": 24,
+          "entity_wer_percent": 19.491525423728813,
+          "reference_words": 1180,
+          "substitutions": 206
+        },
+        "__ALL__": {
+          "deletions": 5701,
+          "entity_wer_percent": 8.19951913054355,
+          "reference_words": 359765,
+          "substitutions": 13098
+        },
+        "__NON_ENTITY__": {
+          "deletions": 4699,
+          "entity_wer_percent": 4.730375807919667,
+          "reference_words": 304331,
+          "substitutions": 9697
+        },
+        "__UNLABELLED__": {
+          "deletions": 11,
+          "entity_wer_percent": 12.846517917511832,
+          "reference_words": 1479,
+          "substitutions": 179
+        },
+        "__UNTYPED__": {
+          "deletions": 0,
+          "entity_wer_percent": 0.0,
+          "reference_words": 2,
+          "substitutions": 0
+        }
+      },
+      "calls": 44,
+      "conec_eight_classes": {
+        "EVENT": {
+          "ours_deletions": 2,
+          "ours_entity_wer_percent": 2.42914979757085,
+          "ours_reference_words": 494,
+          "ours_substitutions": 10,
+          "row1_no_biasing": 43.1,
+          "row5_oracle": 35.6,
+          "row8_whisper_large": 2.78
+        },
+        "FAC": {
+          "ours_deletions": 7,
+          "ours_entity_wer_percent": 21.311475409836063,
+          "ours_reference_words": 122,
+          "ours_substitutions": 19,
+          "row1_no_biasing": 28.7,
+          "row5_oracle": 16.6,
+          "row8_whisper_large": 21.6
+        },
+        "GPE": {
+          "ours_deletions": 29,
+          "ours_entity_wer_percent": 18.67273910214704,
+          "ours_reference_words": 1537,
+          "ours_substitutions": 258,
+          "row1_no_biasing": 18.8,
+          "row5_oracle": 12.9,
+          "row8_whisper_large": 17.0
+        },
+        "LOC": {
+          "ours_deletions": 1,
+          "ours_entity_wer_percent": 2.4742268041237114,
+          "ours_reference_words": 485,
+          "ours_substitutions": 11,
+          "row1_no_biasing": 5.85,
+          "row5_oracle": 5.46,
+          "row8_whisper_large": 5.85
+        },
+        "NORP": {
+          "ours_deletions": 6,
+          "ours_entity_wer_percent": 9.745762711864407,
+          "ours_reference_words": 236,
+          "ours_substitutions": 17,
+          "row1_no_biasing": 9.55,
+          "row5_oracle": 5.53,
+          "row8_whisper_large": 8.54
+        },
+        "ORG": {
+          "ours_deletions": 71,
+          "ours_entity_wer_percent": 17.212926885170752,
+          "ours_reference_words": 4363,
+          "ours_substitutions": 680,
+          "row1_no_biasing": 29.5,
+          "row5_oracle": 17.7,
+          "row8_whisper_large": 19.6
+        },
+        "PERSON": {
+          "ours_deletions": 83,
+          "ours_entity_wer_percent": 22.488858416181007,
+          "ours_reference_words": 2917,
+          "ours_substitutions": 573,
+          "row1_no_biasing": 45.9,
+          "row5_oracle": 13.0,
+          "row8_whisper_large": 28.9
+        },
+        "PRODUCT": {
+          "ours_deletions": 12,
+          "ours_entity_wer_percent": 19.230769230769234,
+          "ours_reference_words": 390,
+          "ours_substitutions": 63,
+          "row1_no_biasing": 24.2,
+          "row5_oracle": 19.2,
+          "row8_whisper_large": 18.7
+        }
+      },
+      "conec_published_overall": {
+        "row1_no_biasing": 10.41,
+        "row5_oracle": 9.69,
+        "row8_whisper_large": 7.98
+      },
+      "non_entity_reference_words": 304331,
+      "non_entity_wer_percent": 4.730375807919667,
+      "overall_reference_words": 359765,
+      "overall_wer_percent": 8.19951913054355,
+      "unlabelled_reference_words": 1479
+    },
+    "construction_34": {
+      "all_classes": {
+        "ABBREVIATION": {
+          "deletions": 40,
+          "entity_wer_percent": 25.646123260437374,
+          "reference_words": 2012,
+          "substitutions": 476
+        },
+        "ALPHANUMERIC": {
+          "deletions": 60,
+          "entity_wer_percent": 10.40268456375839,
+          "reference_words": 1490,
+          "substitutions": 95
+        },
+        "CARDINAL": {
+          "deletions": 104,
+          "entity_wer_percent": 11.376564277588168,
+          "reference_words": 3516,
+          "substitutions": 296
+        },
+        "CONTRACTION": {
+          "deletions": 369,
+          "entity_wer_percent": 4.990511000210867,
+          "reference_words": 14227,
+          "substitutions": 341
+        },
+        "DATE": {
+          "deletions": 116,
+          "entity_wer_percent": 3.705521472392638,
+          "reference_words": 12225,
+          "substitutions": 337
+        },
+        "EVENT": {
+          "deletions": 1,
+          "entity_wer_percent": 1.7045454545454544,
+          "reference_words": 352,
+          "substitutions": 5
+        },
+        "FAC": {
+          "deletions": 6,
+          "entity_wer_percent": 17.20430107526882,
+          "reference_words": 93,
+          "substitutions": 10
+        },
+        "FALLBACK": {
+          "deletions": 19,
+          "entity_wer_percent": 47.43589743589743,
+          "reference_words": 78,
+          "substitutions": 18
+        },
+        "GPE": {
+          "deletions": 27,
+          "entity_wer_percent": 19.366197183098592,
+          "reference_words": 1136,
+          "substitutions": 193
+        },
+        "LANGUAGE": {
+          "deletions": 0,
+          "entity_wer_percent": 50.0,
+          "reference_words": 2,
+          "substitutions": 1
+        },
+        "LAW": {
+          "deletions": 0,
+          "entity_wer_percent": 3.225806451612903,
+          "reference_words": 62,
+          "substitutions": 2
+        },
+        "LOC": {
+          "deletions": 1,
+          "entity_wer_percent": 2.535211267605634,
+          "reference_words": 355,
+          "substitutions": 8
+        },
+        "MONEY": {
+          "deletions": 15,
+          "entity_wer_percent": 13.1175468483816,
+          "reference_words": 587,
+          "substitutions": 62
+        },
+        "NORP": {
+          "deletions": 6,
+          "entity_wer_percent": 9.433962264150944,
+          "reference_words": 212,
+          "substitutions": 14
+        },
+        "ORDINAL": {
+          "deletions": 8,
+          "entity_wer_percent": 3.159340659340659,
+          "reference_words": 728,
+          "substitutions": 15
+        },
+        "ORG": {
+          "deletions": 58,
+          "entity_wer_percent": 16.0069848661234,
+          "reference_words": 3436,
+          "substitutions": 492
+        },
+        "PERCENT": {
+          "deletions": 17,
+          "entity_wer_percent": 9.71937029431896,
+          "reference_words": 1461,
+          "substitutions": 125
+        },
+        "PERSON": {
+          "deletions": 68,
+          "entity_wer_percent": 23.46850733390854,
+          "reference_words": 2318,
+          "substitutions": 476
+        },
+        "PRODUCT": {
+          "deletions": 12,
+          "entity_wer_percent": 17.956656346749224,
+          "reference_words": 323,
+          "substitutions": 46
+        },
+        "QUANTITY": {
+          "deletions": 2,
+          "entity_wer_percent": 6.73758865248227,
+          "reference_words": 282,
+          "substitutions": 17
+        },
+        "RANGE": {
+          "deletions": 1,
+          "entity_wer_percent": 45.45454545454545,
+          "reference_words": 22,
+          "substitutions": 9
+        },
+        "TIME": {
+          "deletions": 13,
+          "entity_wer_percent": 3.7433155080213902,
+          "reference_words": 561,
+          "substitutions": 8
+        },
+        "TWITTER": {
+          "deletions": 0,
+          "entity_wer_percent": 0.0,
+          "reference_words": 1,
+          "substitutions": 0
+        },
+        "WEBSITE": {
+          "deletions": 0,
+          "entity_wer_percent": 6.9306930693069315,
+          "reference_words": 101,
+          "substitutions": 7
+        },
+        "WORK_OF_ART": {
+          "deletions": 1,
+          "entity_wer_percent": 16.176470588235293,
+          "reference_words": 68,
+          "substitutions": 10
+        },
+        "YEAR": {
+          "deletions": 21,
+          "entity_wer_percent": 19.754464285714285,
+          "reference_words": 896,
+          "substitutions": 156
+        },
+        "__ALL__": {
+          "deletions": 4763,
+          "entity_wer_percent": 8.470004999753533,
+          "reference_words": 284014,
+          "substitutions": 10689
+        },
+        "__NON_ENTITY__": {
+          "deletions": 3908,
+          "entity_wer_percent": 4.945922803867289,
+          "reference_words": 240582,
+          "substitutions": 7991
+        },
+        "__UNLABELLED__": {
+          "deletions": 10,
+          "entity_wer_percent": 15.048975957257346,
+          "reference_words": 1123,
+          "substitutions": 159
+        },
+        "__UNTYPED__": {
+          "deletions": 0,
+          "entity_wer_percent": 0.0,
+          "reference_words": 2,
+          "substitutions": 0
+        }
+      },
+      "calls": 34,
+      "conec_eight_classes": {
+        "EVENT": {
+          "ours_deletions": 1,
+          "ours_entity_wer_percent": 1.7045454545454544,
+          "ours_reference_words": 352,
+          "ours_substitutions": 5,
+          "row1_no_biasing": 43.1,
+          "row5_oracle": 35.6,
+          "row8_whisper_large": 2.78
+        },
+        "FAC": {
+          "ours_deletions": 6,
+          "ours_entity_wer_percent": 17.20430107526882,
+          "ours_reference_words": 93,
+          "ours_substitutions": 10,
+          "row1_no_biasing": 28.7,
+          "row5_oracle": 16.6,
+          "row8_whisper_large": 21.6
+        },
+        "GPE": {
+          "ours_deletions": 27,
+          "ours_entity_wer_percent": 19.366197183098592,
+          "ours_reference_words": 1136,
+          "ours_substitutions": 193,
+          "row1_no_biasing": 18.8,
+          "row5_oracle": 12.9,
+          "row8_whisper_large": 17.0
+        },
+        "LOC": {
+          "ours_deletions": 1,
+          "ours_entity_wer_percent": 2.535211267605634,
+          "ours_reference_words": 355,
+          "ours_substitutions": 8,
+          "row1_no_biasing": 5.85,
+          "row5_oracle": 5.46,
+          "row8_whisper_large": 5.85
+        },
+        "NORP": {
+          "ours_deletions": 6,
+          "ours_entity_wer_percent": 9.433962264150944,
+          "ours_reference_words": 212,
+          "ours_substitutions": 14,
+          "row1_no_biasing": 9.55,
+          "row5_oracle": 5.53,
+          "row8_whisper_large": 8.54
+        },
+        "ORG": {
+          "ours_deletions": 58,
+          "ours_entity_wer_percent": 16.0069848661234,
+          "ours_reference_words": 3436,
+          "ours_substitutions": 492,
+          "row1_no_biasing": 29.5,
+          "row5_oracle": 17.7,
+          "row8_whisper_large": 19.6
+        },
+        "PERSON": {
+          "ours_deletions": 68,
+          "ours_entity_wer_percent": 23.46850733390854,
+          "ours_reference_words": 2318,
+          "ours_substitutions": 476,
+          "row1_no_biasing": 45.9,
+          "row5_oracle": 13.0,
+          "row8_whisper_large": 28.9
+        },
+        "PRODUCT": {
+          "ours_deletions": 12,
+          "ours_entity_wer_percent": 17.956656346749224,
+          "ours_reference_words": 323,
+          "ours_substitutions": 46,
+          "row1_no_biasing": 24.2,
+          "row5_oracle": 19.2,
+          "row8_whisper_large": 18.7
+        }
+      },
+      "conec_published_overall": {
+        "row1_no_biasing": 10.41,
+        "row5_oracle": 9.69,
+        "row8_whisper_large": 7.98
+      },
+      "non_entity_reference_words": 240582,
+      "non_entity_wer_percent": 4.945922803867289,
+      "overall_reference_words": 284014,
+      "overall_wer_percent": 8.470004999753533,
+      "unlabelled_reference_words": 1123
+    },
+    "evaluation_10": {
+      "all_classes": {
+        "ABBREVIATION": {
+          "deletions": 4,
+          "entity_wer_percent": 25.812274368231048,
+          "reference_words": 554,
+          "substitutions": 139
+        },
+        "ALPHANUMERIC": {
+          "deletions": 3,
+          "entity_wer_percent": 3.7122969837587005,
+          "reference_words": 431,
+          "substitutions": 13
+        },
+        "CARDINAL": {
+          "deletions": 21,
+          "entity_wer_percent": 9.609292502639915,
+          "reference_words": 947,
+          "substitutions": 70
+        },
+        "CONTRACTION": {
+          "deletions": 67,
+          "entity_wer_percent": 4.156976744186046,
+          "reference_words": 3440,
+          "substitutions": 76
+        },
+        "DATE": {
+          "deletions": 28,
+          "entity_wer_percent": 2.7404212128901295,
+          "reference_words": 3941,
+          "substitutions": 80
+        },
+        "EVENT": {
+          "deletions": 1,
+          "entity_wer_percent": 4.225352112676056,
+          "reference_words": 142,
+          "substitutions": 5
+        },
+        "FAC": {
+          "deletions": 1,
+          "entity_wer_percent": 34.48275862068966,
+          "reference_words": 29,
+          "substitutions": 9
+        },
+        "GPE": {
+          "deletions": 2,
+          "entity_wer_percent": 16.708229426433917,
+          "reference_words": 401,
+          "substitutions": 65
+        },
+        "LOC": {
+          "deletions": 0,
+          "entity_wer_percent": 2.307692307692308,
+          "reference_words": 130,
+          "substitutions": 3
+        },
+        "MONEY": {
+          "deletions": 5,
+          "entity_wer_percent": 11.724137931034482,
+          "reference_words": 145,
+          "substitutions": 12
+        },
+        "NORP": {
+          "deletions": 0,
+          "entity_wer_percent": 12.5,
+          "reference_words": 24,
+          "substitutions": 3
+        },
+        "ORDINAL": {
+          "deletions": 0,
+          "entity_wer_percent": 2.030456852791878,
+          "reference_words": 197,
+          "substitutions": 4
+        },
+        "ORG": {
+          "deletions": 13,
+          "entity_wer_percent": 21.68284789644013,
+          "reference_words": 927,
+          "substitutions": 188
+        },
+        "PERCENT": {
+          "deletions": 4,
+          "entity_wer_percent": 11.793611793611793,
+          "reference_words": 407,
+          "substitutions": 44
+        },
+        "PERSON": {
+          "deletions": 15,
+          "entity_wer_percent": 18.697829716193656,
+          "reference_words": 599,
+          "substitutions": 97
+        },
+        "PRODUCT": {
+          "deletions": 0,
+          "entity_wer_percent": 25.37313432835821,
+          "reference_words": 67,
+          "substitutions": 17
+        },
+        "QUANTITY": {
+          "deletions": 0,
+          "entity_wer_percent": 4.444444444444445,
+          "reference_words": 45,
+          "substitutions": 2
+        },
+        "RANGE": {
+          "deletions": 0,
+          "entity_wer_percent": 100.0,
+          "reference_words": 2,
+          "substitutions": 2
+        },
+        "TIME": {
+          "deletions": 0,
+          "entity_wer_percent": 3.75,
+          "reference_words": 160,
+          "substitutions": 6
+        },
+        "TWITTER": {
+          "deletions": 0,
+          "entity_wer_percent": 0.0,
+          "reference_words": 1,
+          "substitutions": 0
+        },
+        "WEBSITE": {
+          "deletions": 0,
+          "entity_wer_percent": 31.57894736842105,
+          "reference_words": 19,
+          "substitutions": 6
+        },
+        "WORK_OF_ART": {
+          "deletions": 0,
+          "entity_wer_percent": 7.142857142857142,
+          "reference_words": 14,
+          "substitutions": 1
+        },
+        "YEAR": {
+          "deletions": 3,
+          "entity_wer_percent": 18.661971830985916,
+          "reference_words": 284,
+          "substitutions": 50
+        },
+        "__ALL__": {
+          "deletions": 938,
+          "entity_wer_percent": 7.185383691304405,
+          "reference_words": 75751,
+          "substitutions": 2409
+        },
+        "__NON_ENTITY__": {
+          "deletions": 791,
+          "entity_wer_percent": 3.916924187046071,
+          "reference_words": 63749,
+          "substitutions": 1706
+        },
+        "__UNLABELLED__": {
+          "deletions": 1,
+          "entity_wer_percent": 5.8988764044943816,
+          "reference_words": 356,
+          "substitutions": 20
+        }
+      },
+      "calls": 10,
+      "conec_eight_classes": {
+        "EVENT": {
+          "ours_deletions": 1,
+          "ours_entity_wer_percent": 4.225352112676056,
+          "ours_reference_words": 142,
+          "ours_substitutions": 5,
+          "row1_no_biasing": 43.1,
+          "row5_oracle": 35.6,
+          "row8_whisper_large": 2.78
+        },
+        "FAC": {
+          "ours_deletions": 1,
+          "ours_entity_wer_percent": 34.48275862068966,
+          "ours_reference_words": 29,
+          "ours_substitutions": 9,
+          "row1_no_biasing": 28.7,
+          "row5_oracle": 16.6,
+          "row8_whisper_large": 21.6
+        },
+        "GPE": {
+          "ours_deletions": 2,
+          "ours_entity_wer_percent": 16.708229426433917,
+          "ours_reference_words": 401,
+          "ours_substitutions": 65,
+          "row1_no_biasing": 18.8,
+          "row5_oracle": 12.9,
+          "row8_whisper_large": 17.0
+        },
+        "LOC": {
+          "ours_deletions": 0,
+          "ours_entity_wer_percent": 2.307692307692308,
+          "ours_reference_words": 130,
+          "ours_substitutions": 3,
+          "row1_no_biasing": 5.85,
+          "row5_oracle": 5.46,
+          "row8_whisper_large": 5.85
+        },
+        "NORP": {
+          "ours_deletions": 0,
+          "ours_entity_wer_percent": 12.5,
+          "ours_reference_words": 24,
+          "ours_substitutions": 3,
+          "row1_no_biasing": 9.55,
+          "row5_oracle": 5.53,
+          "row8_whisper_large": 8.54
+        },
+        "ORG": {
+          "ours_deletions": 13,
+          "ours_entity_wer_percent": 21.68284789644013,
+          "ours_reference_words": 927,
+          "ours_substitutions": 188,
+          "row1_no_biasing": 29.5,
+          "row5_oracle": 17.7,
+          "row8_whisper_large": 19.6
+        },
+        "PERSON": {
+          "ours_deletions": 15,
+          "ours_entity_wer_percent": 18.697829716193656,
+          "ours_reference_words": 599,
+          "ours_substitutions": 97,
+          "row1_no_biasing": 45.9,
+          "row5_oracle": 13.0,
+          "row8_whisper_large": 28.9
+        },
+        "PRODUCT": {
+          "ours_deletions": 0,
+          "ours_entity_wer_percent": 25.37313432835821,
+          "ours_reference_words": 67,
+          "ours_substitutions": 17,
+          "row1_no_biasing": 24.2,
+          "row5_oracle": 19.2,
+          "row8_whisper_large": 18.7
+        }
+      },
+      "conec_published_overall": {
+        "row1_no_biasing": 10.41,
+        "row5_oracle": 9.69,
+        "row8_whisper_large": 7.98
+      },
+      "non_entity_reference_words": 63749,
+      "non_entity_wer_percent": 3.916924187046071,
+      "overall_reference_words": 75751,
+      "overall_wer_percent": 7.185383691304405,
+      "unlabelled_reference_words": 356
+    }
+  },
+  "conec_scorer_provenance": {
+    "definition_source": "github.com/revdotcom/fstalign@69df0b2b357f994101d630cb3f56e22b57ebcf04 (Apache-2.0): src/wer.cpp RecordTagWer, src/wer.h WerResult, src/Nlp.cpp NlpFstLoader",
+    "implementation": "definition-mirror",
+    "insertions_attributed_to_entities": false,
+    "normalizer": "whisper-english-v20240930",
+    "official_tool": "revdotcom/fstalign",
+    "official_tool_run": false,
+    "paper_source": "aclanthology.org/2024.lrec-main.328 (LREC-COLING 2024), section 4.1",
+    "scorer_version": "conec-entity-wer-fstalign-mirror-v1"
+  },
+  "corpus_wer": {
+    "all_44": {
+      "calls": 44,
+      "corpus_wer_percent": 8.19951913054355,
+      "deletions": 5701,
+      "insertions": 10700,
+      "reference_words": 359765,
+      "substitutions": 13098
+    },
+    "construction_34": {
+      "calls": 34,
+      "corpus_wer_percent": 8.470004999753533,
+      "deletions": 4763,
+      "insertions": 8604,
+      "reference_words": 284014,
+      "substitutions": 10689
+    },
+    "evaluation_10": {
+      "calls": 10,
+      "corpus_wer_percent": 7.185383691304406,
+      "deletions": 938,
+      "insertions": 2096,
+      "reference_words": 75751,
+      "substitutions": 2409
+    }
+  },
+  "identity_anchor": {
+    "calls": 44,
+    "calls_compared": 44,
+    "corpus_wer_percent": 8.19951913054355,
+    "deletions": 5701,
+    "identity_holds": true,
+    "insertions": 10700,
+    "per_call_mismatches": [],
+    "reference_words": 359765,
+    "rescored_corpus_wer_percent": 8.19951913054355,
+    "sealed_corpus_wer_percent": 8.19951913054355,
+    "substitutions": 13098
+  },
+  "jobs": [
+    {
+      "job_id": "corpus-wer-anchor",
+      "result_file": "corpus-wer-anchor.score.json",
+      "result_sha256": "e1d682a4814fabe9d9f62ed614b0244eb038e7e32db0f64099a2506ec0cc5856",
+      "scorer": "asr-wer-whisper"
+    },
+    {
+      "job_id": "conec-entity-wer",
+      "result_file": "conec-entity-wer.score.json",
+      "result_sha256": "8ec09da8ab6e21f58ec030726334cdaa070b57e1a26a5a3714dc10d7b48bd53c",
+      "scorer": "conec-entity-wer-official"
+    },
+    {
+      "job_id": "numeric-value-accuracy",
+      "result_file": "numeric-value-accuracy.score.json",
+      "result_sha256": "c3e8ff63b8315ac4751b6c1666365f4d4baa8e03db1cb24667cab8934e2a1ff5",
+      "scorer": "numeric-value-accuracy-v1"
+    }
+  ],
+  "numeric_value_accuracy": {
+    "all_44": {
+      "accuracy_percent": 90.73351140332854,
+      "by_kind": {
+        "currency": {
+          "accuracy_percent": 85.18145161290323,
+          "expected": 992,
+          "hypothesis": 904,
+          "matched": 845
+        },
+        "decimal": {
+          "accuracy_percent": 75.0,
+          "expected": 88,
+          "hypothesis": 86,
+          "matched": 66
+        },
+        "integer": {
+          "accuracy_percent": 88.33746898263027,
+          "expected": 4030,
+          "hypothesis": 4057,
+          "matched": 3560
+        },
+        "ordinal": {
+          "accuracy_percent": 98.95783988630981,
+          "expected": 2111,
+          "hypothesis": 2134,
+          "matched": 2089
+        },
+        "other": {
+          "accuracy_percent": 90.51724137931035,
+          "expected": 116,
+          "hypothesis": 124,
+          "matched": 105
+        },
+        "percent": {
+          "accuracy_percent": 88.6021505376344,
+          "expected": 1395,
+          "hypothesis": 1380,
+          "matched": 1236
+        },
+        "year": {
+          "accuracy_percent": 92.91417165668663,
+          "expected": 1002,
+          "hypothesis": 1058,
+          "matched": 931
+        }
+      },
+      "calls": 44,
+      "expected_numeric_words": 9734,
+      "matched_numeric_words": 8832,
+      "spurious_numeric_words": 911
+    },
+    "construction_34": {
+      "accuracy_percent": 90.22435897435898,
+      "by_kind": {
+        "currency": {
+          "accuracy_percent": 83.78048780487805,
+          "expected": 820,
+          "hypothesis": 736,
+          "matched": 687
+        },
+        "decimal": {
+          "accuracy_percent": 78.87323943661971,
+          "expected": 71,
+          "hypothesis": 75,
+          "matched": 56
+        },
+        "integer": {
+          "accuracy_percent": 87.75576485872037,
+          "expected": 3079,
+          "hypothesis": 3094,
+          "matched": 2702
+        },
+        "ordinal": {
+          "accuracy_percent": 98.90675241157555,
+          "expected": 1555,
+          "hypothesis": 1568,
+          "matched": 1538
+        },
+        "other": {
+          "accuracy_percent": 88.88888888888889,
+          "expected": 99,
+          "hypothesis": 107,
+          "matched": 88
+        },
+        "percent": {
+          "accuracy_percent": 89.35395814376706,
+          "expected": 1099,
+          "hypothesis": 1087,
+          "matched": 982
+        },
+        "year": {
+          "accuracy_percent": 91.89542483660131,
+          "expected": 765,
+          "hypothesis": 798,
+          "matched": 703
+        }
+      },
+      "calls": 34,
+      "expected_numeric_words": 7488,
+      "matched_numeric_words": 6756,
+      "spurious_numeric_words": 709
+    },
+    "evaluation_10": {
+      "accuracy_percent": 92.43098842386465,
+      "by_kind": {
+        "currency": {
+          "accuracy_percent": 91.86046511627907,
+          "expected": 172,
+          "hypothesis": 168,
+          "matched": 158
+        },
+        "decimal": {
+          "accuracy_percent": 58.82352941176471,
+          "expected": 17,
+          "hypothesis": 11,
+          "matched": 10
+        },
+        "integer": {
+          "accuracy_percent": 90.22082018927445,
+          "expected": 951,
+          "hypothesis": 963,
+          "matched": 858
+        },
+        "ordinal": {
+          "accuracy_percent": 99.10071942446042,
+          "expected": 556,
+          "hypothesis": 566,
+          "matched": 551
+        },
+        "other": {
+          "accuracy_percent": 100.0,
+          "expected": 17,
+          "hypothesis": 17,
+          "matched": 17
+        },
+        "percent": {
+          "accuracy_percent": 85.8108108108108,
+          "expected": 296,
+          "hypothesis": 293,
+          "matched": 254
+        },
+        "year": {
+          "accuracy_percent": 96.20253164556962,
+          "expected": 237,
+          "hypothesis": 260,
+          "matched": 228
+        }
+      },
+      "calls": 10,
+      "expected_numeric_words": 2246,
+      "matched_numeric_words": 2076,
+      "spurious_numeric_words": 202
+    }
+  },
+  "schema": "saea-e21-agentic-metric-baseline-v1",
+  "semantic_high_impact_error_rate": {
+    "blocked_on": "the Earnings-22 semantic scan (branch wt/e22) has not landed its taxonomy",
+    "expected_at": "docs/taxonomies/semantic-high-impact/ACTIVE.json",
+    "scorer": "semantic-high-impact-error-rate-v1",
+    "status": "AWAITING TAXONOMY"
+  }
+}
