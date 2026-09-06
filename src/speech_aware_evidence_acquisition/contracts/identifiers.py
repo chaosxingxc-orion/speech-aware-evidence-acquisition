@@ -34,3 +34,20 @@ E0_RECEIPT_SCHEMA = "saea-e0-closure-receipt-v1"
 RUNTIME_RECEIPT_SCHEMA = "saea-runtime-receipt-v2"
 RUNTIME_RECEIPT_SCHEMA_V3 = "saea-runtime-receipt-v3"
 SCORING_PACKAGE_RELPATH = "src/speech_aware_evidence_acquisition/scoring"
+
+# Construction-visible arms (owner decision 2026-09-05, three-dimension
+# experiment program). The frozen core may act as a PROPOSER over
+# construction rows WITH their gold labels -- the same legality class as
+# TRAIN gold entering a knowledge-base build -- on a text-only arm whose
+# outputs are artifacts (prompt text), never answers. The gold reaches the
+# request only through the single declared field named below, and only for
+# an arm named in this set; ``e0.d2_leakage`` asserts both halves of that
+# statement against the D2 freeze, and
+# ``contracts.gate_exposure._require_construction_role_for_visible_targets``
+# refuses such a touch unless the plan's split identity is a committed
+# ``roster_role == "construction"`` roster of the plan's own carrier.
+# Defined HERE, at the bottom of the contracts dependency graph, so the
+# gate, the D2 generator and the payload builders share one definition
+# instead of three drifting copies.
+CONSTRUCTION_VISIBLE_FIELD = "construction_targets"
+CONSTRUCTION_VISIBLE_ARMS = frozenset({"construction-proposer-text"})

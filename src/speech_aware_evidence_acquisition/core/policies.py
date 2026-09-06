@@ -15,6 +15,7 @@ from pathlib import Path
 from queue import Queue
 from typing import Mapping, Sequence
 
+from ..contracts import CONSTRUCTION_VISIBLE_FIELD
 from ..data.audio2tool_tools import render_openai_tools
 from ..data.loader import SampleRef
 from ..data.lock import load_lock, umbrella_lock_path
@@ -76,6 +77,7 @@ def build_arm_payload(
     matcher_policy_id: str | None = None,
     mmproj_loaded: bool | None = None,
     tool_schemas: Sequence[Mapping[str, object]] | None = None,
+    construction_targets: Sequence[Mapping[str, object]] | None = None,
 ) -> dict[str, object]:
     if arm not in ARM_VISIBLE_FIELDS:
         raise ArmError(f"unknown arm {arm!r}; D2-frozen arms are {sorted(ARM_VISIBLE_FIELDS)}")
@@ -251,6 +253,37 @@ def build_arm_payload(
     elif tool_schemas is not None:
         raise ArmError(
             f"arm {arm!r} does not declare 'tool_schemas' in its D2-frozen field set"
+        )
+    # Construction-proposer arm (E2.4, 2026-09-05): "construction_targets"
+    # follows the SAME "an arm that declares the field requires it non-empty,
+    # an arm that does not refuses it outright" discipline exemplar_bank,
+    # delta_candidates and tool_schemas established above. Empty is refused
+    # rather than accepted, because an empty target list would silently
+    # degrade the proposer contact into an ungrounded free-writing request
+    # while still claiming, in the audited payload, to be a construction
+    # proposal.
+    if CONSTRUCTION_VISIBLE_FIELD in arm_fields:
+        if (
+            not isinstance(construction_targets, Sequence)
+            or isinstance(construction_targets, (str, bytes))
+            or not construction_targets
+        ):
+            raise ArmError(
+                f"arm {arm!r} requires a non-empty construction_targets sequence"
+            )
+        entries: list[dict[str, object]] = []
+        for entry in construction_targets:
+            if not isinstance(entry, Mapping) or set(entry) != {"sample_id", "target"}:
+                raise ArmError(
+                    f"arm {arm!r} construction_targets entries must carry exactly "
+                    "'sample_id' and 'target'"
+                )
+            entries.append(dict(entry))
+        payload[CONSTRUCTION_VISIBLE_FIELD] = entries
+    elif construction_targets is not None:
+        raise ArmError(
+            f"arm {arm!r} does not declare {CONSTRUCTION_VISIBLE_FIELD!r} in its "
+            "D2-frozen field set"
         )
     if set(payload) != set(ARM_VISIBLE_FIELDS[arm]):
         raise ArmError(

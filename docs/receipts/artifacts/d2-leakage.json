@@ -1,5 +1,16 @@
 {
   "artifact_kind": "saea-e0-d2-leakage-v1",
+  "construction_gold_visibility": {
+    "arms": [
+      "construction-proposer-text"
+    ],
+    "arms_declaring_the_field": [
+      "construction-proposer-text"
+    ],
+    "boundary_argument": "Owner decision 2026-09-05. The frozen core may act as a PROPOSER over CONSTRUCTION rows with their gold labels, on this text-only arm alone. (1) Construction identities only: the gate (contracts.gate_exposure._require_construction_role_for_visible_targets) refuses the touch unless the plan's split identity hash equals a committed roster receipt whose carrier is the plan's own and whose roster_role is 'construction', and whose split role is 'discovery'. (2) Block-disjoint from every evaluation identity by construction: a construction roster is drawn from the exposure-free block partition and its zero overlap with the exposure union is recomputed and refused fail-closed before the receipt is written. The exposure union excludes construction-role rosters by design, so the two sets can never converge. (3) Outputs are ARTIFACTS -- proposed prompt text -- never answers to a scored row; they reach an evaluation contact only through the audited instruction fields, hash-pinned in a committed config fragment. (4) The contact is text-only and every FORBIDDEN_RUNTIME_FIELDS name is still rejected inside this payload, exactly as in every other arm. The legality class is the same as TRAIN gold entering a knowledge-base build.",
+    "field": "construction_targets",
+    "no_other_arm_declares_it": true
+  },
   "dependency_surface": {
     "note": "No dataset/audio library can pull excluded assets into the E0 dependency graph.",
     "project_dependencies": []
@@ -51,7 +62,7 @@
       ]
     }
   },
-  "generated": "2026-09-03",
+  "generated": "2026-09-05",
   "negative_controls": {
     "boundary_injections": {
       "all_rejected": true,
@@ -297,6 +308,22 @@
         "history",
         "decoding_params",
         "tool_schemas"
+      ]
+    },
+    "construction-proposer-text": {
+      "clean_payload_accepted": true,
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "construction_targets"
       ]
     },
     "exemplar-context": {

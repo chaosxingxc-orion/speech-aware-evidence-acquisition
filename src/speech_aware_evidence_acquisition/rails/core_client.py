@@ -56,7 +56,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Mapping, Protocol, Sequence, runtime_checkable
 
-from ..contracts import ExecutionPlan, assert_execution_scope
+from ..contracts import (
+    CONSTRUCTION_VISIBLE_FIELD,
+    ExecutionPlan,
+    assert_execution_scope,
+)
 from ..core.base import PayloadBindingContext
 from ..core.flight_lock import read_flight_lock
 from ..core.model import FrozenCoreAdapter, SliceRegistry, load_speech_feature_packets
@@ -224,6 +228,20 @@ _ZERO_SUPPLY_ARM_FIELDS = _SUPPORTED_ARM_FIELDS - _EVIDENCE_FIELDS
 _NATIVE_TOOLS_ZERO_SUPPLY_ARM_FIELDS = _ZERO_SUPPLY_ARM_FIELDS | frozenset(
     {_NATIVE_TOOLS_FIELD}
 )
+# Construction-proposer field set (E2.4, 2026-09-05): bare-core's own
+# zero-supply field set plus exactly one extra field,
+# "construction_targets" -- the D2 arm on which the frozen core may see gold,
+# and only CONSTRUCTION gold (e0.d2_leakage.ARM_VISIBLE_FIELDS
+# ["construction-proposer-text"], contracts.CONSTRUCTION_VISIBLE_ARMS). Same
+# "a NEW field on a NEW arm, never grown onto an existing frozen tuple"
+# discipline as _NATIVE_TOOLS_FIELD above. The contact is text-only: the
+# proposer is asked to write an artifact from construction exemplars, so
+# there is no audio part at all and complete() takes the
+# text_only_sample_id path.
+_CONSTRUCTION_TARGETS_FIELD = CONSTRUCTION_VISIBLE_FIELD
+_CONSTRUCTION_PROPOSER_ARM_FIELDS = _ZERO_SUPPLY_ARM_FIELDS | frozenset(
+    {_CONSTRUCTION_TARGETS_FIELD}
+)
 _ACCEPTED_ARM_FIELD_SETS = frozenset(
     {
         _SUPPORTED_ARM_FIELDS,
@@ -232,6 +250,7 @@ _ACCEPTED_ARM_FIELD_SETS = frozenset(
         _NATIVE_TOOLS_SPEECH_FEATURE_ARM_FIELDS,
         _ZERO_SUPPLY_ARM_FIELDS,
         _NATIVE_TOOLS_ZERO_SUPPLY_ARM_FIELDS,
+        _CONSTRUCTION_PROPOSER_ARM_FIELDS,
     }
 )
 _SPEECH_FEATURE_FAMILY_ARM_FIELDS = frozenset(
@@ -239,6 +258,52 @@ _SPEECH_FEATURE_FAMILY_ARM_FIELDS = frozenset(
 )
 
 DEFAULT_RAILS_ARM = "fixed-legal-context"
+
+
+def _validate_construction_targets(
+    construction_targets: Sequence[Mapping[str, object]] | None,
+) -> tuple[dict[str, str], ...]:
+    """A construction-proposer arm's own ``construction_targets`` invariant:
+    a non-empty sequence of ``{"sample_id": str, "target": str}`` entries and
+    nothing else.
+
+    The exact-key check is the point. ``target`` is the construction row's
+    gold rendered as English text (the tool-call string for Audio2Tool, the
+    ``{scenario, action, entities}`` JSON for SLURP), and an entry carrying
+    any further key would be an unaudited channel into the one arm on which
+    gold is visible at all. Every entry is copied into a plain ``dict`` so
+    the client's stored tuple never aliases a caller-owned mutable object.
+    """
+
+    if (
+        construction_targets is None
+        or not isinstance(construction_targets, Sequence)
+        or isinstance(construction_targets, (str, bytes))
+        or not construction_targets
+    ):
+        raise FrozenCoreClientError(
+            "a construction-proposer arm requires a non-empty construction_targets "
+            "sequence"
+        )
+    validated: list[dict[str, str]] = []
+    for index, entry in enumerate(construction_targets):
+        if not isinstance(entry, Mapping) or set(entry) != {"sample_id", "target"}:
+            raise FrozenCoreClientError(
+                f"construction_targets[{index}] must be a mapping with exactly the keys "
+                "{'sample_id', 'target'}"
+            )
+        sample_id = entry["sample_id"]
+        target = entry["target"]
+        if not isinstance(sample_id, str) or not sample_id:
+            raise FrozenCoreClientError(
+                f"construction_targets[{index}].sample_id must be a non-empty string"
+            )
+        if not isinstance(target, str) or not target:
+            raise FrozenCoreClientError(
+                f"construction_targets[{index}].target must be a non-empty string"
+            )
+        validated.append({"sample_id": sample_id, "target": target})
+    return tuple(validated)
 
 
 def _validate_tool_schemas(
@@ -763,6 +828,7 @@ class FrozenCoreClient:
         speech_feature_root: Path | None = None,
         speech_packet_bindings: Mapping[str, Mapping[str, str]] | None = None,
         tool_schemas: Sequence[Mapping[str, object]] | None = None,
+        construction_targets: Sequence[Mapping[str, object]] | None = None,
     ) -> None:
         plan.validate()
         assert_execution_scope(plan.execution_profile)
@@ -781,10 +847,26 @@ class FrozenCoreClient:
             )
         self._is_speech_feature_arm = arm_fields in _SPEECH_FEATURE_FAMILY_ARM_FIELDS
         self._is_native_tools_arm = _NATIVE_TOOLS_FIELD in arm_fields
+        self._is_construction_proposer_arm = _CONSTRUCTION_TARGETS_FIELD in arm_fields
         # Read off the arm's OWN declared fields, never a hardcoded arm-name
         # list -- the same discipline core.policies.FixedPolicy.run_sample
         # documents for its own evidence branch.
         self._carries_evidence = bool(_EVIDENCE_FIELDS & arm_fields)
+        # Construction targets are bound ONCE, here, BEFORE the adapter opens
+        # its durable attempt: the gold this arm may show is a property of the
+        # client's whole life, never a per-request argument a caller could
+        # widen mid-run, and a misconfigured proposer client must not burn an
+        # attempt id before it is refused.
+        self._construction_targets: tuple[dict[str, str], ...] | None = None
+        if self._is_construction_proposer_arm:
+            self._construction_targets = _validate_construction_targets(
+                construction_targets
+            )
+        elif construction_targets is not None:
+            raise FrozenCoreClientError(
+                f"arm {arm!r} is not a construction-proposer arm; construction_targets "
+                "must be omitted"
+            )
         if not isinstance(request_id_prefix, str) or not request_id_prefix:
             raise FrozenCoreClientError("request_id_prefix must be a non-empty string")
         self._plan = plan
@@ -1209,6 +1291,20 @@ class FrozenCoreClient:
         # __call__ forwards it verbatim as the request's `tools` key).
         if self._is_native_tools_arm:
             payload["tool_schemas"] = list(self._tool_schemas)
+        # Construction-proposer arm (E2.4): the one payload field that carries
+        # gold, attached only for the arm whose D2-frozen field set declares
+        # it and only on a text-only contact -- the proposer writes an
+        # artifact from construction exemplars, so an audio part would be both
+        # unnecessary and unaudited here.
+        if self._is_construction_proposer_arm:
+            if text_only_sample_id is None:
+                raise FrozenCoreClientError(
+                    f"arm {self._arm!r} is text-only; every request must name its "
+                    "text_only_sample_id"
+                )
+            payload[_CONSTRUCTION_TARGETS_FIELD] = [
+                dict(entry) for entry in self._construction_targets or ()
+            ]
         started_at = _iso(self._now())
         response = self._adapter.request(payload)
         with self._state_lock:

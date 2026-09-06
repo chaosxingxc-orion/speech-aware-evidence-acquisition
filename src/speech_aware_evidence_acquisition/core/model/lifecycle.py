@@ -10,9 +10,11 @@ method's source lives in.
 
 from __future__ import annotations
 
+import inspect
 from pathlib import Path
 from typing import Callable, Mapping
 
+from ...contracts import CONSTRUCTION_VISIBLE_ARMS
 from ..attempts import AttemptError, AttemptHandle, AttemptStore
 from ..base import PayloadBindingContext
 from . import FrozenCoreError
@@ -30,6 +32,7 @@ class _AttemptLifecycleMixin:
         plan: object,
         binding: PayloadBindingContext,
         transport: Callable[[bytes], bytes],
+        arm: str | None = None,
     ) -> tuple[str | None, Callable[[], None] | None, AttemptStore, AttemptHandle]:
         """Returns ``(lock_sha256, session_check, store, handle)`` for the
         caller to fold into its own instance fields. Raises
@@ -44,7 +47,27 @@ class _AttemptLifecycleMixin:
         # "dataset rev" staying a hand-supplied ledger cell. A duck-typed test
         # gate that returns nothing (most of this module's own unit tests use
         # one) simply yields None here -- harmless, just an absent hash.
-        lock_sha256 = gate.assert_model_touch_allowed(plan)
+        # E2.4 (2026-09-05): the arm is forwarded so the gate can refuse a
+        # construction-gold-visible arm whose plan is not bound to a committed
+        # construction roster. The capability is detected by SIGNATURE, never
+        # by catching TypeError -- catching it would swallow a genuine
+        # TypeError raised INSIDE the gate and silently retry the touch
+        # without the arm. A gate that cannot take the arm keeps its old
+        # behaviour for every ordinary arm (no test double had to change) and
+        # is refused outright for a construction-gold-visible one: that is the
+        # single case where skipping the check would be a leak.
+        gate_call = gate.assert_model_touch_allowed
+        try:
+            accepts_arm = "arm" in inspect.signature(gate_call).parameters
+        except (TypeError, ValueError):
+            accepts_arm = False
+        if not accepts_arm and arm in CONSTRUCTION_VISIBLE_ARMS:
+            raise FrozenCoreError(
+                f"arm {arm!r} makes construction gold visible to the frozen core, but "
+                "this gate cannot receive the arm and so cannot check the "
+                "construction-roster binding; model touch refused"
+            )
+        lock_sha256 = gate_call(plan, arm=arm) if accepts_arm else gate_call(plan)
         resolved_lock_sha256 = lock_sha256 if isinstance(lock_sha256, str) else None
         # I-4 (external-threat-model review): re-verify THIS run's actual
         # media -- exactly the samples its verified split can touch, via

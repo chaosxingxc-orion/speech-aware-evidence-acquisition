@@ -22,6 +22,8 @@ from pathlib import Path
 from typing import Mapping
 
 from ..contracts import (
+    CONSTRUCTION_VISIBLE_ARMS,
+    CONSTRUCTION_VISIBLE_FIELD,
     FORBIDDEN_RUNTIME_FIELDS,
     BoundaryViolation,
     TraceContractError,
@@ -71,6 +73,50 @@ ARM_VISIBLE_FIELDS: dict[str, tuple[str, ...]] = {
         "history",
         "decoding_params",
         "tool_schemas",
+    ),
+    # "construction-proposer-text" (E2.4, 2026-09-05): bare-core's own ten
+    # fields plus "construction_targets" -- the ONE arm on which the frozen
+    # core may see gold, and only CONSTRUCTION gold. A NEW arm, never a
+    # mutation of the frozen "bare-core" entry above (core.policies module
+    # docstring: "the arm payload vocabulary never grows without a new D2
+    # receipt").
+    #
+    # THE BOUNDARY ARGUMENT, stated where the field is declared.
+    # (1) WHOSE gold. Only rows of a committed `roster_role = "construction"`
+    #     roster, which the Audio2Tool exposure union excludes by design and
+    #     which is block-disjoint, by construction and by an explicit
+    #     recomputed proof, from every committed evaluation identity of the
+    #     same carrier (docs/receipts/rosters/a2t-construction-800-v1.json).
+    #     The legality class is exactly TRAIN gold entering a knowledge-base
+    #     build, which this study has always allowed.
+    # (2) HOW it is enforced, not merely intended. `contracts.gate_exposure
+    #     ._require_construction_role_for_visible_targets` refuses the touch
+    #     unless the plan's own `split_identity_hash` equals a committed
+    #     construction roster of the plan's carrier and the plan's split role
+    #     is "discovery"; every other arm is unaffected by that check.
+    # (3) WHAT comes back. The contact is TEXT-ONLY (no audio part at all)
+    #     and its output is an ARTIFACT -- proposed prompt text, a tool
+    #     description, a cue -- never an answer to a scored row. Artifacts
+    #     reach an evaluation contact only through the audited instruction
+    #     fields of a later arm, hash-pinned in a committed config fragment,
+    #     so nothing produced here can reach a scored row unlogged.
+    # (4) WHAT is still forbidden. Every entry of FORBIDDEN_RUNTIME_FIELDS is
+    #     rejected inside this payload exactly as in every other arm
+    #     (build_d2 runs assert_information_boundary on it), and no
+    #     evaluation identity can ever appear in it, because the gate binds
+    #     the whole request set to a construction roster.
+    "construction-proposer-text": (
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "construction_targets",
     ),
     "fixed-legal-context": (
         "request_id",
@@ -228,6 +274,10 @@ def _clean_payload(arm: str) -> dict[str, object]:
     payload: dict[str, object] = {field: "x" for field in ARM_VISIBLE_FIELDS[arm]}
     payload["history"] = [{"turn": 1, "role": "user", "content": "past turn only"}]
     payload["decoding_params"] = {"temperature": 0, "seed": 20260803}
+    if CONSTRUCTION_VISIBLE_FIELD in payload:
+        payload[CONSTRUCTION_VISIBLE_FIELD] = [
+            {"sample_id": "tier1_direct:000001", "target": "setLighting(state='on')"}
+        ]
     for evidence_field in ("supplied_evidence", "retrieved_evidence"):
         if evidence_field in payload:
             payload[evidence_field] = [
@@ -367,9 +417,71 @@ def _dependency_surface(repo_root: Path) -> dict[str, object]:
     }
 
 
+def _construction_visibility() -> dict[str, object]:
+    """The construction-gold visibility statement, EXECUTED, not asserted in
+    prose: exactly the arms named by ``contracts.CONSTRUCTION_VISIBLE_ARMS``
+    declare ``construction_targets``, and no other arm does. A drift in
+    either direction fails the generator closed, so the D2 artifact can never
+    record a gold-visible arm the contract layer does not know about, nor a
+    contract-declared arm the freeze does not carry."""
+
+    declaring = {
+        arm
+        for arm, fields in ARM_VISIBLE_FIELDS.items()
+        if CONSTRUCTION_VISIBLE_FIELD in fields
+    }
+    if declaring != set(CONSTRUCTION_VISIBLE_ARMS):
+        raise ArtifactError(
+            "construction-visibility drift: arms declaring "
+            f"{CONSTRUCTION_VISIBLE_FIELD!r} are {sorted(declaring)}, but "
+            f"contracts.CONSTRUCTION_VISIBLE_ARMS is {sorted(CONSTRUCTION_VISIBLE_ARMS)}"
+        )
+    for arm in sorted(declaring):
+        missing = set(ARM_VISIBLE_FIELDS["bare-core"]) - set(ARM_VISIBLE_FIELDS[arm])
+        if missing:
+            raise ArtifactError(
+                f"construction-visible arm {arm!r} drops bare-core fields {sorted(missing)}; "
+                "it must be bare-core's field set plus the one declared field"
+            )
+        if set(ARM_VISIBLE_FIELDS[arm]) != set(ARM_VISIBLE_FIELDS["bare-core"]) | {
+            CONSTRUCTION_VISIBLE_FIELD
+        }:
+            raise ArtifactError(
+                f"construction-visible arm {arm!r} carries fields beyond bare-core plus "
+                f"{CONSTRUCTION_VISIBLE_FIELD!r}"
+            )
+    return {
+        "field": CONSTRUCTION_VISIBLE_FIELD,
+        "arms": sorted(CONSTRUCTION_VISIBLE_ARMS),
+        "arms_declaring_the_field": sorted(declaring),
+        "no_other_arm_declares_it": True,
+        "boundary_argument": (
+            "Owner decision 2026-09-05. The frozen core may act as a PROPOSER over "
+            "CONSTRUCTION rows with their gold labels, on this text-only arm alone. "
+            "(1) Construction identities only: the gate "
+            "(contracts.gate_exposure._require_construction_role_for_visible_targets) "
+            "refuses the touch unless the plan's split identity hash equals a committed "
+            "roster receipt whose carrier is the plan's own and whose roster_role is "
+            "'construction', and whose split role is 'discovery'. (2) Block-disjoint "
+            "from every evaluation identity by construction: a construction roster is "
+            "drawn from the exposure-free block partition and its zero overlap with the "
+            "exposure union is recomputed and refused fail-closed before the receipt is "
+            "written. The exposure union excludes construction-role rosters by design, "
+            "so the two sets can never converge. (3) Outputs are ARTIFACTS -- proposed "
+            "prompt text -- never answers to a scored row; they reach an evaluation "
+            "contact only through the audited instruction fields, hash-pinned in a "
+            "committed config fragment. (4) The contact is text-only and every "
+            "FORBIDDEN_RUNTIME_FIELDS name is still rejected inside this payload, "
+            "exactly as in every other arm. The legality class is the same as TRAIN "
+            "gold entering a knowledge-base build."
+        ),
+    }
+
+
 def build_d2(lock_path: Path, repo_root: Path = REPO_ROOT) -> dict[str, object]:
     boundary_results = _run_boundary_negative_controls()
     trace_results = _run_trace_axis_negative_controls()
+    construction_visibility = _construction_visibility()
 
     clean_arms: dict[str, object] = {}
     for arm, fields in ARM_VISIBLE_FIELDS.items():
@@ -380,6 +492,7 @@ def build_d2(lock_path: Path, repo_root: Path = REPO_ROOT) -> dict[str, object]:
         "artifact_kind": "saea-e0-d2-leakage-v1",
         "generated": today(),
         "runtime_visible_fields_by_arm": clean_arms,
+        "construction_gold_visibility": construction_visibility,
         "forbidden_runtime_fields": sorted(FORBIDDEN_RUNTIME_FIELDS),
         "negative_controls": {
             "boundary_injections": {
