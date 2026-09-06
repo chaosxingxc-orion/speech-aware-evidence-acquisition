@@ -1,0 +1,33 @@
+{
+  "formula": "13 * ceil(audio_seconds / 0.96)",
+  "generated_at": "2026-09-06T20:25:57.110555+00:00",
+  "model_contacts": 0,
+  "packet_root": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+  "populations": [
+    {
+      "max_bound_tokens": 169,
+      "max_realized_tokens": 169,
+      "max_shortfall_tokens": 13,
+      "pass": true,
+      "population": "DEV-1000",
+      "promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
+      "rows": 1000,
+      "state": "VERIFIED",
+      "violations": []
+    },
+    {
+      "population": "SLURP-EVO-FOLD-A-V2",
+      "promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLD-A-V2-promotion.json",
+      "state": "PENDING"
+    },
+    {
+      "population": "SLURP-EVO-FOLD-B-V2",
+      "promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLD-B-V2-promotion.json",
+      "state": "PENDING"
+    }
+  ],
+  "schema": "saea-slurp-evo-s1-speech-token-bound-v1",
+  "scope": "model-free replay of the prompt fit's speech term; zero contacts, zero servers",
+  "study": "speech-aware-evidence-acquisition",
+  "verdict": "PASS"
+}

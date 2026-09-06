@@ -1,0 +1,476 @@
+{
+  "attempt_id": "attempt-20260906T202423Z-evos1promptfit",
+  "config_fragments": {
+    "baseline": "slurp-phase-slots-given-intent-schema-projected-v2-fold-a",
+    "dataset": "slurp-speech-native-evo-fold-a-1080",
+    "experiment": "slurp-evo-s1-slot-schema-v1",
+    "model": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64"
+  },
+  "config_hash": "97c708f7b18a6a082bdf708c43a0b19078c6d89e4f6e3d89686452cd414ceeab",
+  "envelopes": {
+    "incumbent_a0": {
+      "context_margin_tokens": 6148,
+      "instruction_characters": 28176,
+      "prompt_tokens_upper_bound": 10172,
+      "schema_characters": 26720,
+      "schema_tokens": 7460,
+      "speech_feature_tokens_bound": 273,
+      "text_prompt_tokens": 9897
+    },
+    "worst_admissible_candidate": {
+      "context_margin_tokens": 4709,
+      "instruction_characters": 35371,
+      "prompt_tokens_upper_bound": 11611,
+      "schema_characters": 33915,
+      "schema_tokens": 8899,
+      "speech_feature_tokens_bound": 273,
+      "text_prompt_tokens": 11336
+    }
+  },
+  "exposure_run_id": "SAEA-SLURP-EVO-S1-PROMPT-FIT-V1",
+  "folds": {
+    "slurp-speech-native-evo-fold-a-1080": {
+      "max_audio_seconds": 10.9425,
+      "max_speech_feature_tokens_bound": 156,
+      "rows": 1080,
+      "total_audio_seconds": 3084.5284375
+    },
+    "slurp-speech-native-evo-fold-b-1080": {
+      "max_audio_seconds": 19.9011875,
+      "max_speech_feature_tokens_bound": 273,
+      "rows": 1080,
+      "total_audio_seconds": 3154.797375
+    }
+  },
+  "generated_at": "2026-09-06T20:24:51.108991+00:00",
+  "generated_tokens": 0,
+  "intents": 60,
+  "model_contacts": 0,
+  "np_admissible": [
+    4,
+    2,
+    1
+  ],
+  "np_recommended": 4,
+  "np_unchanged": true,
+  "per_intent": [
+    {
+      "budget_tokens": 145,
+      "characters": 420,
+      "incumbent_tokens": 121,
+      "intent": "alarm_query"
+    },
+    {
+      "budget_tokens": 135,
+      "characters": 419,
+      "incumbent_tokens": 113,
+      "intent": "alarm_remove"
+    },
+    {
+      "budget_tokens": 148,
+      "characters": 454,
+      "incumbent_tokens": 124,
+      "intent": "alarm_set"
+    },
+    {
+      "budget_tokens": 73,
+      "characters": 230,
+      "incumbent_tokens": 61,
+      "intent": "audio_volume_down"
+    },
+    {
+      "budget_tokens": 138,
+      "characters": 439,
+      "incumbent_tokens": 115,
+      "intent": "audio_volume_mute"
+    },
+    {
+      "budget_tokens": 38,
+      "characters": 119,
+      "incumbent_tokens": 32,
+      "intent": "audio_volume_other"
+    },
+    {
+      "budget_tokens": 122,
+      "characters": 376,
+      "incumbent_tokens": 102,
+      "intent": "audio_volume_up"
+    },
+    {
+      "budget_tokens": 210,
+      "characters": 638,
+      "incumbent_tokens": 175,
+      "intent": "calendar_query"
+    },
+    {
+      "budget_tokens": 174,
+      "characters": 504,
+      "incumbent_tokens": 145,
+      "intent": "calendar_remove"
+    },
+    {
+      "budget_tokens": 267,
+      "characters": 833,
+      "incumbent_tokens": 223,
+      "intent": "calendar_set"
+    },
+    {
+      "budget_tokens": 58,
+      "characters": 186,
+      "incumbent_tokens": 49,
+      "intent": "cooking_query"
+    },
+    {
+      "budget_tokens": 170,
+      "characters": 507,
+      "incumbent_tokens": 142,
+      "intent": "cooking_recipe"
+    },
+    {
+      "budget_tokens": 120,
+      "characters": 337,
+      "incumbent_tokens": 100,
+      "intent": "datetime_convert"
+    },
+    {
+      "budget_tokens": 181,
+      "characters": 533,
+      "incumbent_tokens": 151,
+      "intent": "datetime_query"
+    },
+    {
+      "budget_tokens": 162,
+      "characters": 465,
+      "incumbent_tokens": 135,
+      "intent": "email_addcontact"
+    },
+    {
+      "budget_tokens": 178,
+      "characters": 501,
+      "incumbent_tokens": 149,
+      "intent": "email_query"
+    },
+    {
+      "budget_tokens": 112,
+      "characters": 327,
+      "incumbent_tokens": 94,
+      "intent": "email_querycontact"
+    },
+    {
+      "budget_tokens": 248,
+      "characters": 729,
+      "incumbent_tokens": 207,
+      "intent": "email_sendemail"
+    },
+    {
+      "budget_tokens": 37,
+      "characters": 103,
+      "incumbent_tokens": 31,
+      "intent": "general_greet"
+    },
+    {
+      "budget_tokens": 142,
+      "characters": 420,
+      "incumbent_tokens": 119,
+      "intent": "general_joke"
+    },
+    {
+      "budget_tokens": 237,
+      "characters": 707,
+      "incumbent_tokens": 198,
+      "intent": "general_quirky"
+    },
+    {
+      "budget_tokens": 116,
+      "characters": 342,
+      "incumbent_tokens": 97,
+      "intent": "iot_cleaning"
+    },
+    {
+      "budget_tokens": 176,
+      "characters": 525,
+      "incumbent_tokens": 147,
+      "intent": "iot_coffee"
+    },
+    {
+      "budget_tokens": 111,
+      "characters": 333,
+      "incumbent_tokens": 93,
+      "intent": "iot_hue_lightchange"
+    },
+    {
+      "budget_tokens": 123,
+      "characters": 366,
+      "incumbent_tokens": 103,
+      "intent": "iot_hue_lightdim"
+    },
+    {
+      "budget_tokens": 118,
+      "characters": 347,
+      "incumbent_tokens": 99,
+      "intent": "iot_hue_lightoff"
+    },
+    {
+      "budget_tokens": 73,
+      "characters": 212,
+      "incumbent_tokens": 61,
+      "intent": "iot_hue_lighton"
+    },
+    {
+      "budget_tokens": 112,
+      "characters": 346,
+      "incumbent_tokens": 94,
+      "intent": "iot_hue_lightup"
+    },
+    {
+      "budget_tokens": 76,
+      "characters": 224,
+      "incumbent_tokens": 64,
+      "intent": "iot_wemo_off"
+    },
+    {
+      "budget_tokens": 86,
+      "characters": 265,
+      "incumbent_tokens": 72,
+      "intent": "iot_wemo_on"
+    },
+    {
+      "budget_tokens": 164,
+      "characters": 508,
+      "incumbent_tokens": 137,
+      "intent": "lists_createoradd"
+    },
+    {
+      "budget_tokens": 73,
+      "characters": 214,
+      "incumbent_tokens": 61,
+      "intent": "lists_query"
+    },
+    {
+      "budget_tokens": 147,
+      "characters": 459,
+      "incumbent_tokens": 123,
+      "intent": "lists_remove"
+    },
+    {
+      "budget_tokens": 40,
+      "characters": 124,
+      "incumbent_tokens": 34,
+      "intent": "music_dislikeness"
+    },
+    {
+      "budget_tokens": 225,
+      "characters": 648,
+      "incumbent_tokens": 188,
+      "intent": "music_likeness"
+    },
+    {
+      "budget_tokens": 242,
+      "characters": 702,
+      "incumbent_tokens": 202,
+      "intent": "music_query"
+    },
+    {
+      "budget_tokens": 163,
+      "characters": 488,
+      "incumbent_tokens": 136,
+      "intent": "music_settings"
+    },
+    {
+      "budget_tokens": 208,
+      "characters": 597,
+      "incumbent_tokens": 174,
+      "intent": "news_query"
+    },
+    {
+      "budget_tokens": 255,
+      "characters": 783,
+      "incumbent_tokens": 213,
+      "intent": "play_audiobook"
+    },
+    {
+      "budget_tokens": 52,
+      "characters": 151,
+      "incumbent_tokens": 44,
+      "intent": "play_game"
+    },
+    {
+      "budget_tokens": 253,
+      "characters": 796,
+      "incumbent_tokens": 211,
+      "intent": "play_music"
+    },
+    {
+      "budget_tokens": 190,
+      "characters": 564,
+      "incumbent_tokens": 159,
+      "intent": "play_podcasts"
+    },
+    {
+      "budget_tokens": 194,
+      "characters": 598,
+      "incumbent_tokens": 162,
+      "intent": "play_radio"
+    },
+    {
+      "budget_tokens": 73,
+      "characters": 196,
+      "incumbent_tokens": 61,
+      "intent": "qa_currency"
+    },
+    {
+      "budget_tokens": 52,
+      "characters": 165,
+      "incumbent_tokens": 44,
+      "intent": "qa_definition"
+    },
+    {
+      "budget_tokens": 157,
+      "characters": 443,
+      "incumbent_tokens": 131,
+      "intent": "qa_factoid"
+    },
+    {
+      "budget_tokens": 56,
+      "characters": 165,
+      "incumbent_tokens": 47,
+      "intent": "qa_maths"
+    },
+    {
+      "budget_tokens": 135,
+      "characters": 376,
+      "incumbent_tokens": 113,
+      "intent": "qa_stock"
+    },
+    {
+      "budget_tokens": 186,
+      "characters": 605,
+      "incumbent_tokens": 155,
+      "intent": "recommendation_events"
+    },
+    {
+      "budget_tokens": 150,
+      "characters": 466,
+      "incumbent_tokens": 125,
+      "intent": "recommendation_locations"
+    },
+    {
+      "budget_tokens": 241,
+      "characters": 741,
+      "incumbent_tokens": 201,
+      "intent": "recommendation_movies"
+    },
+    {
+      "budget_tokens": 86,
+      "characters": 249,
+      "incumbent_tokens": 72,
+      "intent": "social_post"
+    },
+    {
+      "budget_tokens": 164,
+      "characters": 492,
+      "incumbent_tokens": 137,
+      "intent": "social_query"
+    },
+    {
+      "budget_tokens": 198,
+      "characters": 600,
+      "incumbent_tokens": 165,
+      "intent": "takeaway_order"
+    },
+    {
+      "budget_tokens": 142,
+      "characters": 426,
+      "incumbent_tokens": 119,
+      "intent": "takeaway_query"
+    },
+    {
+      "budget_tokens": 151,
+      "characters": 448,
+      "incumbent_tokens": 126,
+      "intent": "transport_query"
+    },
+    {
+      "budget_tokens": 192,
+      "characters": 584,
+      "incumbent_tokens": 160,
+      "intent": "transport_taxi"
+    },
+    {
+      "budget_tokens": 187,
+      "characters": 577,
+      "incumbent_tokens": 156,
+      "intent": "transport_ticket"
+    },
+    {
+      "budget_tokens": 114,
+      "characters": 343,
+      "incumbent_tokens": 95,
+      "intent": "transport_traffic"
+    },
+    {
+      "budget_tokens": 182,
+      "characters": 555,
+      "incumbent_tokens": 152,
+      "intent": "weather_query"
+    }
+  ],
+  "predecessor_pad_tokens": 64,
+  "prompt_order": "speech-query-prefix-v2",
+  "relative_token_budget": 0.2,
+  "schema": "saea-slurp-evo-s1-prompt-fit-v1",
+  "schema_content_hash": "732e500af3870216c7b311369f6f190ffdb0365e497d84cf211f478036757dcc",
+  "scope": "worst admissible slot envelope and the F3 token-counter binding; zero generated tokens",
+  "server_context_tokens": 65536,
+  "serving_geometry": {
+    "max_tokens": 64,
+    "slot_tokens": 16384,
+    "slots": 4
+  },
+  "session": {
+    "load_seconds": 10.03,
+    "pid": 853,
+    "session_id": "SAEA-SLURP-EVO-S1-PROMPT-FIT-V1-attempt-20260906T202423Z-evos1promptfit",
+    "stop": {
+      "forced": false,
+      "pid": 853,
+      "runtime_receipt_sha256": "f52133d0a9f3394f3228f7e25c2498de66f65cb349e6eaba50225ad691f7af12",
+      "schema": "saea-session-stop-receipt-v1",
+      "session_id": "SAEA-SLURP-EVO-S1-PROMPT-FIT-V1-attempt-20260906T202423Z-evos1promptfit",
+      "session_receipt_sha256": "bb0090471c481a88ed77816dfeecf6f91150243c52c2aeb998cf0be15998a0f3",
+      "session_role": "inference",
+      "stopped_at": "2026-09-06T20:24:51.103899+00:00",
+      "study": "speech-aware-evidence-acquisition",
+      "termination_signal": "SIGTERM"
+    }
+  },
+  "speech_token_bound": {
+    "authority": "fail-closed against all 1,000 committed DEV-1000 packets",
+    "formula": "13 * ceil(audio_seconds / 0.96)",
+    "value_used": 273
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "system_text_characters": 7583,
+  "system_text_sha256": "4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db",
+  "token_counter": {
+    "chat_template_sha256": "45777d2e798aae1d1ce6844e69edcb23fc0c710009554711c78efab9044da2c8",
+    "decoder_evaluations": 0,
+    "endpoint": "POST /tokenize",
+    "estimator_refused_by": "rails.proposer.validate_slurp_candidate_artifact (allow_estimator=False)",
+    "geometry": {
+      "context_tokens": 65536,
+      "slots": 4
+    },
+    "handed_to": "rails.evolution.run_candidates_step(..., token_counter=...) for round 1's F3",
+    "host": "127.0.0.1",
+    "port": 8080,
+    "request_counts": {
+      "GET /props": 1,
+      "POST /apply-template": 2,
+      "POST /tokenize": 68,
+      "generations": 0
+    },
+    "token_counter_id": "llama-server:/tokenize"
+  },
+  "verdict": "ALLOW"
+}
