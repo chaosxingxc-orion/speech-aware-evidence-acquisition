@@ -61,6 +61,14 @@ from typing import Callable, Mapping, Sequence
 
 SLURP_SCORER_VERSION = "slurp-scorer-v1"
 
+#: Identity of the legal-label projection rule implemented by
+#: :func:`project_slu_label` (preregistration
+#: ``docs/readiness/2026-09-06-slurp-legal-label-projection-relock-v1-preregistration.md``).
+#: Bumped only when the RULE changes (candidate set, distance, tie-break
+#: order, or which rows are eligible); the corpus the inventory and the prior
+#: are mined from is pinned by the umbrella lock instead.
+SLURP_LABEL_PROJECTION_ID = "slurp-legal-label-projection-v1"
+
 _FENCE_RE = re.compile(r"```(?:json)?\s*(.*?)```", re.DOTALL)
 
 
@@ -361,10 +369,239 @@ def _as_slu_prediction(payload: object) -> tuple[str | None, str | None, list[Sl
     return scenario, action, entities
 
 
+# ---------------------------------------------------------------------------
+# Legal-label projection (2026-09-06 owner ruling: a model-usage LOCAL
+# OPTIMIZATION, allowed before any mechanism, zero model contacts).
+#
+# The locked closed-list direct baseline still names a (scenario, action) pair
+# that does not occur in ``train`` on 4.20 % of DEV-1000
+# (docs/readiness/2026-09-05-slurp-closed-list-direct-baseline-v1-verdict.md
+# section 4). Such a label is certainly wrong -- the gold vocabulary cannot
+# contain it -- and MF-7 measured that legalising exactly this class is worth
+# about +1.4 pp intent. The projection below maps an illegal pair onto the
+# nearest legal one, deterministically, and NOTHING else: entities are never
+# touched, an unparsed response stays unparsed, and a row that already names a
+# legal pair is returned byte-identical.
+#
+# The rule lives HERE, in the pure per-sample scoring module, and takes its
+# inventory and its prior as arguments: this module deliberately imports no
+# loader (``data.slurp``), so the rule stays a pure function of its inputs and
+# is unit-testable without a corpus. ``reproduction.slurp_official_eval``
+# builds the real inventory from the pinned TRAIN corpus and passes it in.
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class LegalIntentInventory:
+    """The closed ``(scenario, action)`` label space a projection may emit,
+    plus the TRAIN prior that breaks its ties.
+
+    ``actions_by_scenario`` is the SAME pairing
+    ``data.slurp.SlurpOntology.actions_by_scenario`` carries -- 18 scenarios
+    and the 60 pairs observed in ``train`` on the real corpus -- and
+    ``intent_prior`` maps the ``f"{scenario}_{action}"`` spelling
+    ``SlurpRecord.intent`` uses to that intent's TRAIN utterance count.
+
+    Build one through :func:`legal_intent_inventory`, which validates and
+    freezes both mappings; constructing this dataclass directly bypasses
+    those checks.
+    """
+
+    actions_by_scenario: Mapping[str, tuple[str, ...]]
+    intent_prior: Mapping[str, int]
+
+    @property
+    def scenarios(self) -> tuple[str, ...]:
+        return tuple(sorted(self.actions_by_scenario))
+
+    @property
+    def pairs(self) -> frozenset[tuple[str, str]]:
+        return frozenset(
+            (scenario, action)
+            for scenario, actions in self.actions_by_scenario.items()
+            for action in actions
+        )
+
+    def prior(self, scenario: str, action: str) -> int:
+        """This intent's TRAIN utterance count, 0 when TRAIN never carried it
+        (an inventory pair with no prior entry is legal but unweighted -- it
+        loses every tie to a pair TRAIN actually saw, which is the intended
+        ordering, not a defect)."""
+
+        return int(self.intent_prior.get(f"{scenario}_{action}", 0))
+
+    def scenario_prior(self, scenario: str) -> int:
+        """The scenario's total TRAIN utterance mass, summed over its own
+        legal actions."""
+
+        return sum(
+            self.prior(scenario, action)
+            for action in self.actions_by_scenario.get(scenario, ())
+        )
+
+
+def legal_intent_inventory(
+    actions_by_scenario: Mapping[str, Sequence[str]],
+    intent_prior: Mapping[str, int] | None = None,
+) -> LegalIntentInventory:
+    """Validate and freeze a :class:`LegalIntentInventory`.
+
+    Fails closed on an empty pairing, on a scenario with no actions, and on a
+    non-text label: a projection whose target space is empty or malformed
+    would silently emit garbage into a scored prediction file, which is
+    exactly what this module exists to prevent.
+    """
+
+    if not actions_by_scenario:
+        raise ValueError(
+            "legal_intent_inventory requires a non-empty (scenario -> actions) pairing; "
+            "a projection with no legal target space can only invent labels"
+        )
+    frozen: dict[str, tuple[str, ...]] = {}
+    for scenario, actions in actions_by_scenario.items():
+        if not isinstance(scenario, str) or not scenario:
+            raise ValueError(f"legal inventory scenario must be non-empty text, got {scenario!r}")
+        if isinstance(actions, (str, bytes)) or not actions:
+            raise ValueError(
+                f"legal inventory scenario {scenario!r} must carry a non-empty action sequence"
+            )
+        for action in actions:
+            if not isinstance(action, str) or not action:
+                raise ValueError(
+                    f"legal inventory scenario {scenario!r} carries a non-text action {action!r}"
+                )
+        frozen[scenario] = tuple(sorted(set(actions)))
+    prior: dict[str, int] = {}
+    for intent, count in (intent_prior or {}).items():
+        if not isinstance(intent, str) or not intent:
+            raise ValueError(f"TRAIN prior key must be non-empty text, got {intent!r}")
+        if isinstance(count, bool) or not isinstance(count, int) or count < 0:
+            raise ValueError(
+                f"TRAIN prior for {intent!r} must be a non-negative int, got {count!r}"
+            )
+        prior[intent] = count
+    return LegalIntentInventory(
+        actions_by_scenario=dict(sorted(frozen.items())),
+        intent_prior=dict(sorted(prior.items())),
+    )
+
+
+@dataclass(frozen=True)
+class LabelProjection:
+    """One row's projection outcome. ``changed`` is ``True`` only when the
+    emitted pair differs from the parsed one; ``eligible`` says whether the
+    row was a candidate at all (a parsed row naming BOTH a scenario and an
+    action)."""
+
+    scenario: str | None
+    action: str | None
+    changed: bool
+    eligible: bool
+    source_scenario: str | None
+    source_action: str | None
+
+    @property
+    def source_intent(self) -> str | None:
+        if self.source_scenario is None or self.source_action is None:
+            return None
+        return f"{self.source_scenario}_{self.source_action}"
+
+    @property
+    def projected_intent(self) -> str | None:
+        if self.scenario is None or self.action is None:
+            return None
+        return f"{self.scenario}_{self.action}"
+
+
+def project_slu_label(
+    scenario: str | None,
+    action: str | None,
+    inventory: LegalIntentInventory,
+    *,
+    parsed: bool = True,
+) -> LabelProjection:
+    """Map an illegal ``(scenario, action)`` onto the nearest legal intent.
+
+    The rule, exactly as preregistered
+    (``docs/readiness/2026-09-06-slurp-legal-label-projection-relock-v1-preregistration.md``
+    section 1):
+
+    1. an unparsed response stays unparsed -- no label is invented;
+    2. a row missing either half (the ``{"entities": [...]}`` shape a
+       slot-only arm answers with) is untouched: there is no
+       ``scenario_action`` to project;
+    3. a row already naming one of the legal pairs is untouched;
+    4. otherwise, with ``lev`` the Levenshtein distance the char-distance
+       metric already uses:
+
+       * **the scenario is legal** -- keep it, and choose the action of that
+         scenario minimizing ``(lev(action, candidate), -prior, candidate)``:
+         smallest edit distance, then the LARGER TRAIN prior, then the
+         alphabetically first name;
+       * **the scenario is illegal** -- choose the legal scenario minimizing
+         ``(lev(scenario, candidate), -scenario_prior, candidate)`` under the
+         same three-level key, then its nearest action by the rule above.
+
+    Entities are not an argument and are never touched, so every entity-side
+    metric (entities strict, Word-F1, Char-F1, SLU-F1) is structurally
+    unchanged by this function.
+    """
+
+    if not parsed or scenario is None or action is None:
+        return LabelProjection(
+            scenario=scenario,
+            action=action,
+            changed=False,
+            eligible=False,
+            source_scenario=scenario,
+            source_action=action,
+        )
+    if (scenario, action) in inventory.pairs:
+        return LabelProjection(
+            scenario=scenario,
+            action=action,
+            changed=False,
+            eligible=True,
+            source_scenario=scenario,
+            source_action=action,
+        )
+    target_scenario = scenario
+    if scenario not in inventory.actions_by_scenario:
+        target_scenario = min(
+            inventory.scenarios,
+            key=lambda candidate: (
+                _levenshtein(scenario, candidate),
+                -inventory.scenario_prior(candidate),
+                candidate,
+            ),
+        )
+    target_action = min(
+        inventory.actions_by_scenario[target_scenario],
+        key=lambda candidate: (
+            _levenshtein(action, candidate),
+            -inventory.prior(target_scenario, candidate),
+            candidate,
+        ),
+    )
+    return LabelProjection(
+        scenario=target_scenario,
+        action=target_action,
+        changed=(target_scenario, target_action) != (scenario, action),
+        eligible=True,
+        source_scenario=scenario,
+        source_action=action,
+    )
+
+
 __all__ = [
+    "SLURP_LABEL_PROJECTION_ID",
     "SLURP_SCORER_VERSION",
+    "LabelProjection",
+    "LegalIntentInventory",
     "SlotEntity",
     "SluScore",
+    "legal_intent_inventory",
     "parse_slu_response",
+    "project_slu_label",
     "score_slu",
 ]

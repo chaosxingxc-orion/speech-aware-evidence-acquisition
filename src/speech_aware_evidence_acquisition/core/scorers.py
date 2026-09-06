@@ -680,10 +680,37 @@ def score_bundle(
 # implementations to keep in sync.
 # ---------------------------------------------------------------------------
 
-from ..reproduction.slurp_official_eval import score_slurp_outputs_official  # noqa: E402
+from ..reproduction.slurp_official_eval import (  # noqa: E402
+    score_slurp_outputs_official,
+    score_slurp_outputs_official_projected,
+)
 
 SCORERS.register("slurp-slu", score_slurp_outputs_official)
 SCORERS.register("slurp-slu-official", score_slurp_outputs_official)
+
+# ---------------------------------------------------------------------------
+# The same scorer with the LEGAL-LABEL PROJECTION on (owner ruling 2026-09-06:
+# a model-usage local optimization, allowed before any mechanism, zero model
+# contacts; preregistration
+# docs/readiness/2026-09-06-slurp-legal-label-projection-relock-v1-preregistration.md).
+#
+# A predicted (scenario, action) pair outside the 60 TRAIN intents cannot be
+# right -- the gold vocabulary does not contain it -- so it is mapped onto the
+# nearest legal pair BEFORE the official evaluate.py sees it. The parse stays
+# byte-identical, an unparsed response stays unparsed, and entities are never
+# touched, so every entity-side metric is structurally unchanged.
+#
+# Registered under BOTH names for exactly the reason the unprojected pair is:
+# "slurp-slu-projected" mirrors data.carriers' short SLURP spelling and
+# "slurp-slu-official-projected" is the explicit one; both resolve the same
+# function object, which is itself a keyword binding of
+# score_slurp_outputs_official rather than a second implementation. A run
+# manifest that declares one of these names scores through core.scoring_batch
+# over a complete manifest exactly like any other registered scorer.
+# ---------------------------------------------------------------------------
+
+SCORERS.register("slurp-slu-projected", score_slurp_outputs_official_projected)
+SCORERS.register("slurp-slu-official-projected", score_slurp_outputs_official_projected)
 
 
 # ---------------------------------------------------------------------------
