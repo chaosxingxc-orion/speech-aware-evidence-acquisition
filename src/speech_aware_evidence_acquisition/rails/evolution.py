@@ -3988,7 +3988,12 @@ def _experiment_fragment(
 
     document: dict[str, object] = {
         "experiment_id": run_id,
-        "schema": "saea-a2t-direct-calibration-experiment-v1",
+        # ``fragment_kind``, not ``schema``: ``core.config.compose`` refuses the
+        # same key from two fragments, and a SLURP dataset fragment is a
+        # ``saea-speech-native-runtime-view-v1`` document that declares ``schema``
+        # itself. Every hand-written SLURP experiment fragment already spells it
+        # this way; the VALUE is unchanged, so provenance reads the same.
+        "fragment_kind": "saea-a2t-direct-calibration-experiment-v1",
         "generated_by": "scripts/run_evolution_round.py",
         "round": round_index,
         "purpose": purpose,

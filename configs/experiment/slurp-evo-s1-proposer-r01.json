@@ -554,6 +554,7 @@
   },
   "execution_profile": "bounded-discovery-probe",
   "experiment_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2",
+  "fragment_kind": "saea-a2t-direct-calibration-experiment-v1",
   "generated_by": "scripts/run_evolution_round.py",
   "populations": [
     {
@@ -564,6 +565,5 @@
   "preregistration": "docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md",
   "purpose": "EVO-S1 round 1 PROPOSE: one text-only contact per draw on the construction-proposer-text arm. Zero audio parts are sent.",
   "round": 1,
-  "schema": "saea-a2t-direct-calibration-experiment-v1",
   "split_id": "SLURP-EVO-EXEMPLARS-V2"
 }

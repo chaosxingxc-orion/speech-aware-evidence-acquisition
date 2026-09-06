@@ -1184,3 +1184,19 @@ def test_the_committed_evo_s1_split_ids_are_the_rosters_own_names() -> None:
     ):
         roster = json.loads((repo / relpath).read_text(encoding="utf-8"))
         assert config.split_id_for(which) == roster["roster_id"], which
+
+
+def test_an_emitted_fragment_does_not_collide_with_a_runtime_view_dataset(tmp_path) -> None:
+    """``core.config.compose`` refuses the same key from two fragments, and a SLURP
+    dataset fragment is a ``saea-speech-native-runtime-view-v1`` document that
+    declares ``schema`` itself -- so an emitted fragment that also declared
+    ``schema`` could never be composed with one."""
+
+    config = _loop_config()
+    state = EvolutionState(round=0, incumbent_overrides={}).validate()
+    result = run_propose_step(state, 1, config=config, carrier=_carrier())
+    fragment = result.documents[
+        f"{config.experiments_reldir}/{config.slug}-proposer-r01.json"
+    ]
+    assert "schema" not in fragment
+    assert fragment["fragment_kind"] == "saea-a2t-direct-calibration-experiment-v1"
