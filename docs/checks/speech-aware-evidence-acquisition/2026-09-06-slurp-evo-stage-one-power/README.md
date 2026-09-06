@@ -64,7 +64,7 @@ are those rates priced at a 30-row and a 60-row fold.
 | `weather` | 60 | 12 | 0 | 6.00 | 0.00 | **PASS** | 12.00 | 0.00 | **PASS** |
 
 Clearing at 30: `social`, `transport`, `weather`. Clearing at 60: `alarm`, `calendar`, `cooking`,
-`iot`, `qa`, `social`, `weather`. Four scenarios join and one leaves.
+`iot`, `qa`, `social`, `weather`. Five scenarios join and one leaves.
 
 ## The finding the coordinator did not have in front of them
 
