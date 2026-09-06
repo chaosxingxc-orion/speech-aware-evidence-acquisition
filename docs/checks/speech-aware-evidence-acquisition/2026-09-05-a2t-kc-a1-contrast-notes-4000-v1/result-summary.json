@@ -1,0 +1,2998 @@
+{
+  "arms": {
+    "KC-A1-contrast-raw": {
+      "attempt_id": "attempt-20260906T150235Z-kca1contrastraw",
+      "cell_id": "KC-A1-contrast-raw",
+      "confusion": {
+        "after": {
+          "miss_classes": {
+            "correct": 2473,
+            "cross_domain_twin": 535,
+            "invented_name": 17,
+            "same_domain_twin": 967,
+            "unparsed": 8
+          },
+          "top_confusions": [
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setSecurityMode",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "armSecuritySystem",
+              "rows": 65
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setLighting",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "setLightState",
+              "rows": 34
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "rebootDevice",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "restartDevice",
+              "rows": 32
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setColor",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "setLighting",
+              "rows": 31
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setColorTemperature",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "setLighting",
+              "rows": 26
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "getApplianceState",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "getApplianceStatus",
+              "rows": 26
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setFanMode",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setFanSpeed",
+              "rows": 24
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "findMyDevice",
+              "predicted_domain": "wearables",
+              "predicted_tool": "findPairedPhone",
+              "rows": 24
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setGroupLightState",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "setLighting",
+              "rows": 23
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setGarageDoor",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setGarageOpener",
+              "rows": 21
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setLighting",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setAmbientLighting",
+              "rows": 20
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setVolume",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "adjustVolume",
+              "rows": 20
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "getCameraStream",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "streamCamera",
+              "rows": 15
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "activateScene",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "activateRoutine",
+              "rows": 15
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setColorTemperature",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setAmbientLighting",
+              "rows": 14
+            }
+          ]
+        },
+        "before": {
+          "miss_classes": {
+            "correct": 2456,
+            "cross_domain_twin": 621,
+            "invented_name": 16,
+            "same_domain_twin": 898,
+            "unparsed": 9
+          },
+          "top_confusions": [
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setSecurityMode",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "armSecuritySystem",
+              "rows": 64
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "rebootDevice",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "restartDevice",
+              "rows": 41
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setColorTemperature",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setAmbientLighting",
+              "rows": 35
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setLighting",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "setLightState",
+              "rows": 33
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setLighting",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setAmbientLighting",
+              "rows": 28
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setColor",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setAmbientLighting",
+              "rows": 25
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "getApplianceState",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "getApplianceStatus",
+              "rows": 25
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "findMyDevice",
+              "predicted_domain": "wearables",
+              "predicted_tool": "findPairedPhone",
+              "rows": 25
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setGarageDoor",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setGarageOpener",
+              "rows": 22
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setFanMode",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setFanSpeed",
+              "rows": 21
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setVolume",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "adjustVolume",
+              "rows": 18
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "streamCamera",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "viewRemoteCamera",
+              "rows": 17
+            },
+            {
+              "gold_domain": "smart_car",
+              "gold_tool": "controlPlayback",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "controlPlayback_home",
+              "rows": 16
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "getNetworkHealth",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "runNetworkSpeedTest",
+              "rows": 16
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "getCameraStream",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "streamCamera",
+              "rows": 15
+            }
+          ]
+        },
+        "named_twins": [
+          {
+            "class": "same_domain",
+            "delta": 1,
+            "gold_domain": "smart_home",
+            "gold_tool": "setSecurityMode",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "armSecuritySystem",
+            "rows_after": 65,
+            "rows_before": 64
+          },
+          {
+            "class": "same_domain",
+            "delta": -9,
+            "gold_domain": "smart_home",
+            "gold_tool": "rebootDevice",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "restartDevice",
+            "rows_after": 32,
+            "rows_before": 41
+          },
+          {
+            "class": "cross_domain",
+            "delta": -21,
+            "gold_domain": "smart_home",
+            "gold_tool": "setColorTemperature",
+            "predicted_domain": "smart_car",
+            "predicted_tool": "setAmbientLighting",
+            "rows_after": 14,
+            "rows_before": 35
+          },
+          {
+            "class": "same_domain",
+            "delta": 1,
+            "gold_domain": "smart_home",
+            "gold_tool": "setLighting",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "setLightState",
+            "rows_after": 34,
+            "rows_before": 33
+          },
+          {
+            "class": "cross_domain",
+            "delta": -8,
+            "gold_domain": "smart_home",
+            "gold_tool": "setLighting",
+            "predicted_domain": "smart_car",
+            "predicted_tool": "setAmbientLighting",
+            "rows_after": 20,
+            "rows_before": 28
+          },
+          {
+            "class": "cross_domain",
+            "delta": -1,
+            "gold_domain": "smart_home",
+            "gold_tool": "findMyDevice",
+            "predicted_domain": "wearables",
+            "predicted_tool": "findPairedPhone",
+            "rows_after": 24,
+            "rows_before": 25
+          },
+          {
+            "class": "same_domain",
+            "delta": 1,
+            "gold_domain": "smart_home",
+            "gold_tool": "getApplianceState",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "getApplianceStatus",
+            "rows_after": 26,
+            "rows_before": 25
+          },
+          {
+            "class": "cross_domain",
+            "delta": -15,
+            "gold_domain": "smart_home",
+            "gold_tool": "setColor",
+            "predicted_domain": "smart_car",
+            "predicted_tool": "setAmbientLighting",
+            "rows_after": 10,
+            "rows_before": 25
+          },
+          {
+            "class": "cross_domain",
+            "delta": -1,
+            "gold_domain": "smart_home",
+            "gold_tool": "setGarageDoor",
+            "predicted_domain": "smart_car",
+            "predicted_tool": "setGarageOpener",
+            "rows_after": 21,
+            "rows_before": 22
+          },
+          {
+            "class": "cross_domain",
+            "delta": 3,
+            "gold_domain": "smart_home",
+            "gold_tool": "setFanMode",
+            "predicted_domain": "smart_car",
+            "predicted_tool": "setFanSpeed",
+            "rows_after": 24,
+            "rows_before": 21
+          },
+          {
+            "class": "cross_domain",
+            "delta": 2,
+            "gold_domain": "smart_home",
+            "gold_tool": "setVolume",
+            "predicted_domain": "smart_car",
+            "predicted_tool": "adjustVolume",
+            "rows_after": 20,
+            "rows_before": 18
+          },
+          {
+            "class": "same_domain",
+            "delta": -3,
+            "gold_domain": "smart_home",
+            "gold_tool": "getNetworkHealth",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "runNetworkSpeedTest",
+            "rows_after": 13,
+            "rows_before": 16
+          },
+          {
+            "class": "same_domain",
+            "delta": 16,
+            "gold_domain": "smart_home",
+            "gold_tool": "setColor",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "setLighting",
+            "rows_after": 31,
+            "rows_before": 15
+          },
+          {
+            "class": "same_domain",
+            "delta": 8,
+            "gold_domain": "smart_home",
+            "gold_tool": "setGroupLightState",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "setLighting",
+            "rows_after": 23,
+            "rows_before": 15
+          },
+          {
+            "class": "same_domain",
+            "delta": 3,
+            "gold_domain": "smart_home",
+            "gold_tool": "activateScene",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "activateRoutine",
+            "rows_after": 15,
+            "rows_before": 12
+          },
+          {
+            "class": "same_domain",
+            "delta": 1,
+            "gold_domain": "smart_home",
+            "gold_tool": "getAirQuality",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "getAirQuality_diag",
+            "rows_after": 12,
+            "rows_before": 11
+          },
+          {
+            "class": "cross_domain",
+            "delta": -1,
+            "gold_domain": "smart_car",
+            "gold_tool": "setLockState",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "setLockState_home",
+            "rows_after": 8,
+            "rows_before": 9
+          },
+          {
+            "class": "same_domain",
+            "delta": 0,
+            "gold_domain": "wearables",
+            "gold_tool": "getBiometricData",
+            "predicted_domain": "wearables",
+            "predicted_tool": "startWorkout",
+            "rows_after": 4,
+            "rows_before": 4
+          }
+        ],
+        "named_twins_cross_domain_after": 141,
+        "named_twins_cross_domain_before": 183,
+        "named_twins_same_domain_after": 255,
+        "named_twins_same_domain_before": 236,
+        "note": "diagnostic; the miss classes are resolved from tools_registry.csv (the predicted tool's domain against the gold tool's), never asserted"
+      },
+      "decision": {
+        "baseline_unchanged": "no outcome changes the direct baseline: the official-protocol cell stays the comparator every mechanism is paired against",
+        "ci90_high_pp": 0.9749999999999999,
+        "ci90_low_pp": -0.125,
+        "cross_domain_share_of_the_gain": 0.36633663366336633,
+        "outcome": "NULL",
+        "rule": "ADMITTED = pooled CI90 lower bound above 0, both weightings agreeing in sign, and at least half of the corrected rows carrying a baseline miss whose gold AND predicted tool sit inside one MF-1 target; HARMFUL = CI90 upper bound below 0; NULL otherwise. A gain is credited as CONTENT only if the same-length control does not reach a comparable delta (cross_arm below).",
+        "rule_id": "kc-a1",
+        "target_pair_share_of_the_gain": 0.19801980198019803,
+        "weightings_agree_in_sign": true
+      },
+      "gain_decomposition": {
+        "broken_by_arm_miss_class": {
+          "cross_domain_twin": 30,
+          "invented_name": 1,
+          "same_domain_twin": 53
+        },
+        "corrected_by_baseline_miss_class": {
+          "cross_domain_twin": 37,
+          "invented_name": 3,
+          "same_domain_twin": 60,
+          "unparsed": 1
+        },
+        "corrected_on_target_pairs": 20,
+        "cross_domain_share_definition": "(baseline misses corrected whose baseline prediction was a real registry tool in ANOTHER domain) / (all baseline misses corrected)",
+        "cross_domain_share_of_the_gain": 0.36633663366336633,
+        "net": 17,
+        "rows_broken": 84,
+        "rows_corrected": 101,
+        "target_pair_share_of_the_gain": 0.19801980198019803
+      },
+      "manifest_sha256": "6ee19b383f14557305a74a0c7f2e245ccc9fe9a64d54d38ad659b73dc349fd10",
+      "mf1_targets": {
+        "miss_mass_after": {
+          "activateRoutine": 43,
+          "calibrateCameras": 17,
+          "castContent": 5,
+          "getBiometricData": 22,
+          "lighting": 178
+        },
+        "miss_mass_after_total": 265,
+        "miss_mass_before": {
+          "activateRoutine": 48,
+          "calibrateCameras": 16,
+          "castContent": 5,
+          "getBiometricData": 23,
+          "lighting": 186
+        },
+        "miss_mass_before_total": 278
+      },
+      "overall": {
+        "arm_parse_failures": 8,
+        "arm_parse_rate_pct": 99.8,
+        "arm_rows_with_multiple_call_matches": 519,
+        "arm_tool_accuracy_pct": 61.824999999999996,
+        "baseline_parse_rate_pct": 99.775,
+        "baseline_rows_with_multiple_call_matches": 486,
+        "baseline_tool_accuracy_pct": 61.4,
+        "samples": 4000
+      },
+      "param_f1": {
+        "arm_macro_pct": 30.143630952380956,
+        "arm_micro_pct": 24.961089494163424,
+        "baseline_macro_pct": 29.280119047619046,
+        "baseline_micro_pct": 24.395539326951543,
+        "note": "the official parameter F1 is a macro average of per-sample key P/R/F1; the micro figure pools keys across samples and is reported beside it"
+      },
+      "per_domain": {
+        "smart_car": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 49.403722423944345,
+              "ci90_low_pct": 40.70104108691016,
+              "pct": 45.01424501424501,
+              "samples": 351,
+              "successes": 158
+            },
+            "tool_accuracy": {
+              "ci90_high_pct": 75.02544962530979,
+              "ci90_low_pct": 67.09998571419528,
+              "pct": 71.22507122507122,
+              "samples": 351,
+              "successes": 250
+            }
+          },
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 48.26177997892724,
+              "ci90_low_pct": 39.58121519155115,
+              "pct": 43.87464387464387,
+              "samples": 351,
+              "successes": 154
+            },
+            "tool_accuracy": {
+              "ci90_high_pct": 74.75421730134609,
+              "ci90_low_pct": 66.80577595306495,
+              "pct": 70.94017094017094,
+              "samples": 351,
+              "successes": 249
+            }
+          },
+          "delta_pp": {
+            "exact_match": 1.1396011396011403,
+            "tool_accuracy": 0.2849002849002744
+          },
+          "harms": 5,
+          "n": 351,
+          "saves": 6
+        },
+        "smart_home": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 11.78448715697172,
+              "ci90_low_pct": 9.85305332991314,
+              "pct": 10.78080229226361,
+              "samples": 2792,
+              "successes": 301
+            },
+            "tool_accuracy": {
+              "ci90_high_pct": 57.092303779500156,
+              "ci90_low_pct": 54.00009916527869,
+              "pct": 55.551575931232094,
+              "samples": 2792,
+              "successes": 1551
+            }
+          },
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 11.040025249851102,
+              "ci90_low_pct": 9.16623743770745,
+              "pct": 10.064469914040115,
+              "samples": 2792,
+              "successes": 281
+            },
+            "tool_accuracy": {
+              "ci90_high_pct": 56.52167891838003,
+              "ci90_low_pct": 53.425701786937765,
+              "pct": 54.9785100286533,
+              "samples": 2792,
+              "successes": 1535
+            }
+          },
+          "delta_pp": {
+            "exact_match": 0.7163323782234947,
+            "tool_accuracy": 0.5730659025787972
+          },
+          "harms": 69,
+          "n": 2792,
+          "saves": 85
+        },
+        "wearables": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 37.01873973497683,
+              "ci90_low_pct": 31.691477147047554,
+              "pct": 34.305717619603264,
+              "samples": 857,
+              "successes": 294
+            },
+            "tool_accuracy": {
+              "ci90_high_pct": 80.63341602326078,
+              "ci90_low_pct": 76.01388649887349,
+              "pct": 78.41306884480747,
+              "samples": 857,
+              "successes": 672
+            }
+          },
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 37.61089713199801,
+              "ci90_low_pct": 32.26250871351991,
+              "pct": 34.88914819136523,
+              "samples": 857,
+              "successes": 299
+            },
+            "tool_accuracy": {
+              "ci90_high_pct": 80.63341602326078,
+              "ci90_low_pct": 76.01388649887349,
+              "pct": 78.41306884480747,
+              "samples": 857,
+              "successes": 672
+            }
+          },
+          "delta_pp": {
+            "exact_match": -0.5834305717619657,
+            "tool_accuracy": 0.0
+          },
+          "harms": 10,
+          "n": 857,
+          "saves": 10
+        }
+      },
+      "per_tier": {
+        "tier1_direct": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 13.29773471034969,
+              "ci90_low_pct": 8.724211316629919,
+              "pct": 10.8,
+              "samples": 500,
+              "successes": 54
+            },
+            "param_f1_macro_pct": 15.6,
+            "param_f1_micro_pct": 1.1747430249632893,
+            "parse_rate_pct": 100.0,
+            "tool_accuracy": {
+              "ci90_high_pct": 70.55290264692076,
+              "ci90_low_pct": 63.661957769812695,
+              "pct": 67.2,
+              "samples": 500,
+              "successes": 336
+            }
+          },
+          "arm_minus_paper_pp": -25.200000000000003,
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 12.644795588994759,
+              "ci90_low_pct": 8.183608795540659,
+              "pct": 10.2,
+              "samples": 500,
+              "successes": 51
+            },
+            "param_f1_macro_pct": 14.399999999999999,
+            "param_f1_micro_pct": 1.1976047904191616,
+            "parse_rate_pct": 100.0,
+            "tool_accuracy": {
+              "ci90_high_pct": 69.00204274547734,
+              "ci90_low_pct": 62.03003995807159,
+              "pct": 65.6,
+              "samples": 500,
+              "successes": 328
+            }
+          },
+          "baseline_minus_paper_pp": -26.80000000000001,
+          "delta_pp": {
+            "exact_match": 0.6000000000000014,
+            "tool_accuracy": 1.6000000000000085
+          },
+          "paper": {
+            "exact_match": 92.4,
+            "slot_f1": null,
+            "tool_accuracy": 92.4
+          },
+          "per_domain": {
+            "smart_car": {
+              "arm_pct": 95.1219512195122,
+              "baseline_pct": 92.6829268292683,
+              "delta_pp": 2.4390243902439024,
+              "n": 41
+            },
+            "smart_home": {
+              "arm_pct": 57.33695652173913,
+              "baseline_pct": 55.70652173913044,
+              "delta_pp": 1.6304347826086956,
+              "n": 368
+            },
+            "wearables": {
+              "arm_pct": 94.50549450549451,
+              "baseline_pct": 93.4065934065934,
+              "delta_pp": 1.098901098901099,
+              "n": 91
+            }
+          },
+          "samples": 500
+        },
+        "tier2_parametric": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 35.7249194617351,
+              "ci90_low_pct": 28.866678479087266,
+              "pct": 32.2,
+              "samples": 500,
+              "successes": 161
+            },
+            "param_f1_macro_pct": 48.89666666666667,
+            "param_f1_micro_pct": 45.559322033898304,
+            "parse_rate_pct": 100.0,
+            "tool_accuracy": {
+              "ci90_high_pct": 82.40123904926655,
+              "ci90_low_pct": 76.4801486446468,
+              "pct": 79.6,
+              "samples": 500,
+              "successes": 398
+            }
+          },
+          "arm_minus_paper_pp": -5.0,
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 34.70161437468505,
+              "ci90_low_pct": 27.900747495397,
+              "pct": 31.2,
+              "samples": 500,
+              "successes": 156
+            },
+            "param_f1_macro_pct": 48.21,
+            "param_f1_micro_pct": 45.24948735475051,
+            "parse_rate_pct": 100.0,
+            "tool_accuracy": {
+              "ci90_high_pct": 82.40123904926655,
+              "ci90_low_pct": 76.4801486446468,
+              "pct": 79.6,
+              "samples": 500,
+              "successes": 398
+            }
+          },
+          "baseline_minus_paper_pp": -5.0,
+          "delta_pp": {
+            "exact_match": 1.0000000000000036,
+            "tool_accuracy": 0.0
+          },
+          "paper": {
+            "exact_match": 15.6,
+            "slot_f1": 21.7,
+            "tool_accuracy": 84.6
+          },
+          "per_domain": {
+            "smart_car": {
+              "arm_pct": 90.9090909090909,
+              "baseline_pct": 86.36363636363636,
+              "delta_pp": 4.545454545454546,
+              "n": 22
+            },
+            "smart_home": {
+              "arm_pct": 74.5945945945946,
+              "baseline_pct": 74.5945945945946,
+              "delta_pp": 0.0,
+              "n": 370
+            },
+            "wearables": {
+              "arm_pct": 94.44444444444444,
+              "baseline_pct": 95.37037037037037,
+              "delta_pp": -0.9259259259259259,
+              "n": 108
+            }
+          },
+          "samples": 500
+        },
+        "tier3_multi_intent": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 23.310168006942952,
+              "ci90_low_pct": 17.410597084995626,
+              "pct": 20.2,
+              "samples": 500,
+              "successes": 101
+            },
+            "param_f1_macro_pct": 35.05571428571429,
+            "param_f1_micro_pct": 28.28282828282828,
+            "parse_rate_pct": 100.0,
+            "tool_accuracy": {
+              "ci90_high_pct": 69.00204274547734,
+              "ci90_low_pct": 62.03003995807159,
+              "pct": 65.6,
+              "samples": 500,
+              "successes": 328
+            }
+          },
+          "arm_minus_paper_pp": -9.100000000000009,
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 22.470299473293316,
+              "ci90_low_pct": 16.65907676205301,
+              "pct": 19.4,
+              "samples": 500,
+              "successes": 97
+            },
+            "param_f1_macro_pct": 33.84571428571429,
+            "param_f1_micro_pct": 27.272727272727277,
+            "parse_rate_pct": 100.0,
+            "tool_accuracy": {
+              "ci90_high_pct": 68.4193400698798,
+              "ci90_low_pct": 61.419200991224955,
+              "pct": 65.0,
+              "samples": 500,
+              "successes": 325
+            }
+          },
+          "baseline_minus_paper_pp": -9.700000000000003,
+          "delta_pp": {
+            "exact_match": 0.8000000000000007,
+            "tool_accuracy": 0.5999999999999943
+          },
+          "paper": {
+            "exact_match": 28.6,
+            "slot_f1": 35.0,
+            "tool_accuracy": 74.7
+          },
+          "per_domain": {
+            "smart_car": {
+              "arm_pct": 87.8048780487805,
+              "baseline_pct": 82.92682926829268,
+              "delta_pp": 4.878048780487805,
+              "n": 41
+            },
+            "smart_home": {
+              "arm_pct": 59.78260869565217,
+              "baseline_pct": 59.51086956521739,
+              "delta_pp": 0.2717391304347826,
+              "n": 368
+            },
+            "wearables": {
+              "arm_pct": 79.12087912087912,
+              "baseline_pct": 79.12087912087912,
+              "delta_pp": 0.0,
+              "n": 91
+            }
+          },
+          "samples": 500
+        },
+        "tier4_implicit": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 8.220528080530206,
+              "ci90_low_pct": 4.650932021043946,
+              "pct": 6.2,
+              "samples": 500,
+              "successes": 31
+            },
+            "param_f1_macro_pct": 14.64,
+            "param_f1_micro_pct": 5.815831987075929,
+            "parse_rate_pct": 99.4,
+            "tool_accuracy": {
+              "ci90_high_pct": 31.414470578071708,
+              "ci90_low_pct": 24.822335865641335,
+              "pct": 28.0,
+              "samples": 500,
+              "successes": 140
+            }
+          },
+          "arm_minus_paper_pp": -5.399999999999999,
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 8.44547513746867,
+              "ci90_low_pct": 4.823832178253548,
+              "pct": 6.4,
+              "samples": 500,
+              "successes": 32
+            },
+            "param_f1_macro_pct": 14.693333333333333,
+            "param_f1_micro_pct": 6.552006552006552,
+            "parse_rate_pct": 99.4,
+            "tool_accuracy": {
+              "ci90_high_pct": 31.62049989262335,
+              "ci90_low_pct": 25.01415376523775,
+              "pct": 28.2,
+              "samples": 500,
+              "successes": 141
+            }
+          },
+          "baseline_minus_paper_pp": -5.199999999999999,
+          "delta_pp": {
+            "exact_match": -0.20000000000000018,
+            "tool_accuracy": -0.1999999999999993
+          },
+          "paper": {
+            "exact_match": 11.3,
+            "slot_f1": 23.4,
+            "tool_accuracy": 33.4
+          },
+          "per_domain": {
+            "smart_car": {
+              "arm_pct": 28.571428571428573,
+              "baseline_pct": 28.571428571428573,
+              "delta_pp": 0.0,
+              "n": 35
+            },
+            "smart_home": {
+              "arm_pct": 21.333333333333332,
+              "baseline_pct": 21.6,
+              "delta_pp": -0.26666666666666666,
+              "n": 375
+            },
+            "wearables": {
+              "arm_pct": 55.55555555555556,
+              "baseline_pct": 55.55555555555556,
+              "delta_pp": 0.0,
+              "n": 90
+            }
+          },
+          "samples": 500
+        },
+        "tier5_needle": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 25.61076543420169,
+              "ci90_low_pct": 19.486319013365584,
+              "pct": 22.4,
+              "samples": 500,
+              "successes": 112
+            },
+            "param_f1_macro_pct": 36.004285714285714,
+            "param_f1_micro_pct": 34.913112164297,
+            "parse_rate_pct": 100.0,
+            "tool_accuracy": {
+              "ci90_high_pct": 83.90333472031426,
+              "ci90_low_pct": 78.16083068678361,
+              "pct": 81.2,
+              "samples": 500,
+              "successes": 406
+            }
+          },
+          "arm_minus_paper_pp": -9.399999999999991,
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 26.027711999819786,
+              "ci90_low_pct": 19.865066876043617,
+              "pct": 22.8,
+              "samples": 500,
+              "successes": 114
+            },
+            "param_f1_macro_pct": 35.868571428571435,
+            "param_f1_micro_pct": 34.75462590506838,
+            "parse_rate_pct": 100.0,
+            "tool_accuracy": {
+              "ci90_high_pct": 83.52851303675631,
+              "ci90_low_pct": 77.73995794204545,
+              "pct": 80.8,
+              "samples": 500,
+              "successes": 404
+            }
+          },
+          "baseline_minus_paper_pp": -9.799999999999997,
+          "delta_pp": {
+            "exact_match": -0.40000000000000213,
+            "tool_accuracy": 0.4000000000000057
+          },
+          "paper": {
+            "exact_match": 36.0,
+            "slot_f1": 41.6,
+            "tool_accuracy": 90.6
+          },
+          "per_domain": {
+            "smart_car": {
+              "arm_pct": 97.5609756097561,
+              "baseline_pct": 97.5609756097561,
+              "delta_pp": 0.0,
+              "n": 41
+            },
+            "smart_home": {
+              "arm_pct": 75.54347826086956,
+              "baseline_pct": 75.0,
+              "delta_pp": 0.5434782608695652,
+              "n": 368
+            },
+            "wearables": {
+              "arm_pct": 96.7032967032967,
+              "baseline_pct": 96.7032967032967,
+              "delta_pp": 0.0,
+              "n": 91
+            }
+          },
+          "samples": 500
+        },
+        "tier6_correction": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 29.556520526980467,
+              "ci90_low_pct": 23.099660989400007,
+              "pct": 26.2,
+              "samples": 500,
+              "successes": 131
+            },
+            "param_f1_macro_pct": 40.60857142857143,
+            "param_f1_micro_pct": 33.15508021390375,
+            "parse_rate_pct": 99.6,
+            "tool_accuracy": {
+              "ci90_high_pct": 80.13493312395639,
+              "ci90_low_pct": 73.97228800018021,
+              "pct": 77.2,
+              "samples": 500,
+              "successes": 386
+            }
+          },
+          "arm_minus_paper_pp": -4.299999999999997,
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 27.27621617457362,
+              "ci90_low_pct": 21.003645986178157,
+              "pct": 24.0,
+              "samples": 500,
+              "successes": 120
+            },
+            "param_f1_macro_pct": 38.40904761904762,
+            "param_f1_micro_pct": 31.57894736842105,
+            "parse_rate_pct": 99.6,
+            "tool_accuracy": {
+              "ci90_high_pct": 78.8062591837197,
+              "ci90_low_pct": 72.51603144138043,
+              "pct": 75.8,
+              "samples": 500,
+              "successes": 379
+            }
+          },
+          "baseline_minus_paper_pp": -5.700000000000003,
+          "delta_pp": {
+            "exact_match": 2.1999999999999993,
+            "tool_accuracy": 1.4000000000000057
+          },
+          "paper": {
+            "exact_match": 24.8,
+            "slot_f1": 32.4,
+            "tool_accuracy": 81.5
+          },
+          "per_domain": {
+            "smart_car": {
+              "arm_pct": 85.36585365853658,
+              "baseline_pct": 87.8048780487805,
+              "delta_pp": -2.4390243902439024,
+              "n": 41
+            },
+            "smart_home": {
+              "arm_pct": 72.28260869565217,
+              "baseline_pct": 70.1086956521739,
+              "delta_pp": 2.1739130434782608,
+              "n": 368
+            },
+            "wearables": {
+              "arm_pct": 93.4065934065934,
+              "baseline_pct": 93.4065934065934,
+              "delta_pp": 0.0,
+              "n": 91
+            }
+          },
+          "samples": 500
+        },
+        "tier7_multiturn": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 12.644795588994759,
+              "ci90_low_pct": 8.183608795540659,
+              "pct": 10.2,
+              "samples": 500,
+              "successes": 51
+            },
+            "param_f1_macro_pct": 17.956666666666663,
+            "param_f1_micro_pct": 10.419681620839363,
+            "parse_rate_pct": 99.4,
+            "tool_accuracy": {
+              "ci90_high_pct": 52.2741980424129,
+              "ci90_low_pct": 44.94087145855065,
+              "pct": 48.6,
+              "samples": 500,
+              "successes": 243
+            }
+          },
+          "arm_minus_paper_pp": -6.0,
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 12.862692985939411,
+              "ci90_low_pct": 8.363558612744066,
+              "pct": 10.4,
+              "samples": 500,
+              "successes": 52
+            },
+            "param_f1_macro_pct": 17.826666666666664,
+            "param_f1_micro_pct": 9.795321637426898,
+            "parse_rate_pct": 99.4,
+            "tool_accuracy": {
+              "ci90_high_pct": 53.07106021290879,
+              "ci90_low_pct": 45.73539814464701,
+              "pct": 49.4,
+              "samples": 500,
+              "successes": 247
+            }
+          },
+          "baseline_minus_paper_pp": -5.200000000000003,
+          "delta_pp": {
+            "exact_match": -0.20000000000000107,
+            "tool_accuracy": -0.7999999999999972
+          },
+          "paper": {
+            "exact_match": 16.3,
+            "slot_f1": 26.8,
+            "tool_accuracy": 54.6
+          },
+          "per_domain": {
+            "smart_car": {
+              "arm_pct": 55.55555555555556,
+              "baseline_pct": 55.55555555555556,
+              "delta_pp": 0.0,
+              "n": 36
+            },
+            "smart_home": {
+              "arm_pct": 41.05263157894737,
+              "baseline_pct": 42.63157894736842,
+              "delta_pp": -1.5789473684210527,
+              "n": 380
+            },
+            "wearables": {
+              "arm_pct": 79.76190476190476,
+              "baseline_pct": 77.38095238095238,
+              "delta_pp": 2.380952380952381,
+              "n": 84
+            }
+          },
+          "samples": 500
+        },
+        "tier8_intent_blending": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 25.61076543420169,
+              "ci90_low_pct": 19.486319013365584,
+              "pct": 22.4,
+              "samples": 500,
+              "successes": 112
+            },
+            "param_f1_macro_pct": 32.38714285714286,
+            "param_f1_micro_pct": 25.073746312684364,
+            "parse_rate_pct": 100.0,
+            "tool_accuracy": {
+              "ci90_high_pct": 50.877438141852416,
+              "ci90_low_pct": 43.55270086007469,
+              "pct": 47.2,
+              "samples": 500,
+              "successes": 236
+            }
+          },
+          "arm_minus_paper_pp": 5.5,
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 25.61076543420169,
+              "ci90_low_pct": 19.486319013365584,
+              "pct": 22.4,
+              "samples": 500,
+              "successes": 112
+            },
+            "param_f1_macro_pct": 30.98761904761905,
+            "param_f1_micro_pct": 23.867069486404834,
+            "parse_rate_pct": 99.8,
+            "tool_accuracy": {
+              "ci90_high_pct": 50.47783656094469,
+              "ci90_low_pct": 43.15660801268629,
+              "pct": 46.8,
+              "samples": 500,
+              "successes": 234
+            }
+          },
+          "baseline_minus_paper_pp": 5.099999999999994,
+          "delta_pp": {
+            "exact_match": 0.0,
+            "tool_accuracy": 0.4000000000000057
+          },
+          "paper": {
+            "exact_match": 12.4,
+            "slot_f1": 19.9,
+            "tool_accuracy": 41.7
+          },
+          "per_domain": {
+            "smart_car": {
+              "arm_pct": 53.191489361702125,
+              "baseline_pct": 55.319148936170215,
+              "delta_pp": -2.127659574468085,
+              "n": 94
+            },
+            "smart_home": {
+              "arm_pct": 32.82051282051282,
+              "baseline_pct": 29.743589743589745,
+              "delta_pp": 3.076923076923077,
+              "n": 195
+            },
+            "wearables": {
+              "arm_pct": 57.81990521327014,
+              "baseline_pct": 58.76777251184834,
+              "delta_pp": -0.9478672985781991,
+              "n": 211
+            }
+          },
+          "samples": 500
+        }
+      },
+      "primary": {
+        "equal_domain": {
+          "basis": "unweighted mean over the three domains of each arm's per-domain rate; the bootstrap resamples WITHIN each domain (domain-stratified) at the same seed and replicate count as the primary tier-stratified contrast",
+          "ci90_high_pp": 0.9339746743469555,
+          "ci90_low_pp": -0.33881328186109644,
+          "delta_pp": 0.2859887291596938,
+          "left_pct": 68.11058327121057,
+          "metric": "tool_accuracy",
+          "n_replicates": 10000,
+          "right_pct": 68.39657200037026,
+          "seed": 20260903
+        },
+        "metric": "official tool accuracy (a2t-toolcall-official)",
+        "natural_mixture": {
+          "arm_pct": 61.824999999999996,
+          "baseline_pct": 61.4,
+          "ci90_high_pp": 0.9749999999999999,
+          "ci90_low_pp": -0.125,
+          "delta_pp": 0.4249999999999976,
+          "harms": 84,
+          "metric": "tool_accuracy",
+          "n": 4000,
+          "n_replicates": 10000,
+          "saves": 101,
+          "seed": 20260903,
+          "sigma_hat_pp": 0.3402723287952607,
+          "sign_test_p": 0.23937768210630617,
+          "ties": 3815
+        },
+        "per_domain_table": [
+          {
+            "delta": 0.002849002849002802,
+            "harms": 5,
+            "left_mean": 0.7094017094017094,
+            "n": 351,
+            "right_mean": 0.7122507122507122,
+            "saves": 6,
+            "stratum": "smart_car",
+            "ties": 340
+          },
+          {
+            "delta": 0.005730659025787954,
+            "harms": 69,
+            "left_mean": 0.5497851002865329,
+            "n": 2792,
+            "right_mean": 0.5555157593123209,
+            "saves": 85,
+            "stratum": "smart_home",
+            "ties": 2638
+          },
+          {
+            "delta": 0.0,
+            "harms": 10,
+            "left_mean": 0.7841306884480747,
+            "n": 857,
+            "right_mean": 0.7841306884480747,
+            "saves": 10,
+            "stratum": "wearables",
+            "ties": 837
+          }
+        ],
+        "per_tier_table": [
+          {
+            "delta": 0.016000000000000014,
+            "harms": 8,
+            "left_mean": 0.656,
+            "n": 500,
+            "right_mean": 0.672,
+            "saves": 16,
+            "stratum": "tier1_direct",
+            "ties": 476
+          },
+          {
+            "delta": 0.0,
+            "harms": 12,
+            "left_mean": 0.796,
+            "n": 500,
+            "right_mean": 0.796,
+            "saves": 12,
+            "stratum": "tier2_parametric",
+            "ties": 476
+          },
+          {
+            "delta": 0.006000000000000005,
+            "harms": 14,
+            "left_mean": 0.65,
+            "n": 500,
+            "right_mean": 0.656,
+            "saves": 17,
+            "stratum": "tier3_multi_intent",
+            "ties": 469
+          },
+          {
+            "delta": -0.0019999999999999463,
+            "harms": 12,
+            "left_mean": 0.282,
+            "n": 500,
+            "right_mean": 0.28,
+            "saves": 11,
+            "stratum": "tier4_implicit",
+            "ties": 477
+          },
+          {
+            "delta": 0.0040000000000000036,
+            "harms": 5,
+            "left_mean": 0.808,
+            "n": 500,
+            "right_mean": 0.812,
+            "saves": 7,
+            "stratum": "tier5_needle",
+            "ties": 488
+          },
+          {
+            "delta": 0.014000000000000012,
+            "harms": 8,
+            "left_mean": 0.758,
+            "n": 500,
+            "right_mean": 0.772,
+            "saves": 15,
+            "stratum": "tier6_correction",
+            "ties": 477
+          },
+          {
+            "delta": -0.008000000000000007,
+            "harms": 14,
+            "left_mean": 0.494,
+            "n": 500,
+            "right_mean": 0.486,
+            "saves": 10,
+            "stratum": "tier7_multiturn",
+            "ties": 476
+          },
+          {
+            "delta": 0.003999999999999948,
+            "harms": 11,
+            "left_mean": 0.468,
+            "n": 500,
+            "right_mean": 0.472,
+            "saves": 13,
+            "stratum": "tier8_intent_blending",
+            "ties": 476
+          }
+        ]
+      },
+      "protocol_hash": "723abf29d56cd4479b82c0ea1a38416b2448d1b47d9cc62186113788f2c4939f",
+      "run_id": "SAEA-A2T-KC-A1-CONTRAST-NOTES-V1",
+      "scorer_versions": {
+        "official": "a2t-scorer-official-b9d5383c",
+        "official_commit": "b9d5383ca30945fbafb965a04bea40117e1e8a82",
+        "official_gold": "a2t-gold-official-release-loader",
+        "official_metrics_blob_sha1": "d98277bcf69795c9a0ae54e538c170abfd8c51ca",
+        "parse": "a2t-parse-v2-json-or-callstring",
+        "v2": "a2t-scorer-v2",
+        "v2_gold": "a2t-gold-v1"
+      },
+      "secondary": {
+        "exact_match": {
+          "arm_pct": 18.825,
+          "baseline_pct": 18.35,
+          "ci90_high_pp": 0.8500000000000001,
+          "ci90_low_pp": 0.1,
+          "delta_pp": 0.4750000000000004,
+          "harms": 34,
+          "metric": "exact_match",
+          "n": 4000,
+          "n_replicates": 10000,
+          "saves": 53,
+          "seed": 20260904,
+          "sigma_hat_pp": 0.23181222507398092,
+          "sign_test_p": 0.05300311301096222,
+          "ties": 3913
+        },
+        "param_f1": {
+          "arm_pct": 30.143630952380956,
+          "baseline_pct": 29.280119047619046,
+          "ci90_high_pp": 1.2983928571428571,
+          "ci90_low_pp": 0.4217142857142859,
+          "delta_pp": 0.86351190476191,
+          "harms": 104,
+          "metric": "param_f1",
+          "n": 4000,
+          "n_replicates": 10000,
+          "saves": 141,
+          "seed": 20260905,
+          "sigma_hat_pp": 0.26785821393435,
+          "sign_test_p": 0.021259986479515058,
+          "ties": 3755
+        },
+        "parse_rate": {
+          "arm_pct": 99.8,
+          "baseline_pct": 99.775,
+          "ci90_high_pp": 0.15,
+          "ci90_low_pp": -0.1,
+          "delta_pp": 0.024999999999997247,
+          "harms": 4,
+          "metric": "parse_rate",
+          "n": 4000,
+          "n_replicates": 10000,
+          "saves": 5,
+          "seed": 20260906,
+          "sigma_hat_pp": 0.07461955491022444,
+          "sign_test_p": 1.0,
+          "ties": 3991
+        },
+        "v2_exact_match": {
+          "arm_pct": 14.725,
+          "baseline_pct": 14.35,
+          "ci90_high_pp": 0.75,
+          "ci90_low_pp": 0.0,
+          "delta_pp": 0.37500000000000033,
+          "harms": 32,
+          "metric": "v2_exact_match",
+          "n": 4000,
+          "n_replicates": 10000,
+          "saves": 47,
+          "seed": 20260908,
+          "sigma_hat_pp": 0.22337483094565513,
+          "sign_test_p": 0.11466035574580126,
+          "ties": 3921
+        },
+        "v2_tool_accuracy": {
+          "arm_pct": 53.300000000000004,
+          "baseline_pct": 52.449999999999996,
+          "ci90_high_pp": 1.4749999999999999,
+          "ci90_low_pp": 0.25,
+          "delta_pp": 0.8500000000000063,
+          "harms": 91,
+          "metric": "v2_tool_accuracy",
+          "n": 4000,
+          "n_replicates": 10000,
+          "saves": 125,
+          "seed": 20260907,
+          "sigma_hat_pp": 0.3677890325988528,
+          "sign_test_p": 0.024519297467479266,
+          "ties": 3784
+        }
+      },
+      "study_commit": "99af3c745f64b47e2000fc75737a843478066dec",
+      "throughput": {
+        "audio_seconds_used": 23418.083083330024,
+        "calls_used": 4000,
+        "completion_tokens_per_call": 16.577,
+        "completion_tokens_total": 66308,
+        "latency_seconds_total": 2257.2678253249032,
+        "mean_per_call_latency_seconds": 0.5643169563312258,
+        "planned_gpu_hours": 0.75,
+        "planned_model_calls": 4008,
+        "planned_speech_audio_seconds": 23419,
+        "prompt_tokens_per_call": 3709.74825,
+        "prompt_tokens_total": 14838993,
+        "status": "COMPLETED",
+        "study_repo_dirt": []
+      }
+    },
+    "KC-A1c-category-raw": {
+      "attempt_id": "attempt-20260906T164643Z-kca1ccategoryraw",
+      "cell_id": "KC-A1c-category-raw",
+      "confusion": {
+        "after": {
+          "miss_classes": {
+            "correct": 2466,
+            "cross_domain_twin": 607,
+            "invented_name": 19,
+            "same_domain_twin": 903,
+            "unparsed": 5
+          },
+          "top_confusions": [
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setSecurityMode",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "armSecuritySystem",
+              "rows": 72
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "rebootDevice",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "restartDevice",
+              "rows": 32
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setColorTemperature",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setAmbientLighting",
+              "rows": 28
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setLighting",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "setLightState",
+              "rows": 26
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "getApplianceState",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "getApplianceStatus",
+              "rows": 25
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setLighting",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setAmbientLighting",
+              "rows": 23
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "findMyDevice",
+              "predicted_domain": "wearables",
+              "predicted_tool": "findPairedPhone",
+              "rows": 23
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setGarageDoor",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setGarageOpener",
+              "rows": 22
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setColor",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "setLighting",
+              "rows": 21
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setFanMode",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setFanSpeed",
+              "rows": 21
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setGroupLightState",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "setLighting",
+              "rows": 20
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setVolume",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "adjustVolume",
+              "rows": 19
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setAdaptiveLighting",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setAmbientLighting",
+              "rows": 17
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setColor",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setAmbientLighting",
+              "rows": 16
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "activateScene",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "activateRoutine",
+              "rows": 16
+            }
+          ]
+        },
+        "before": {
+          "miss_classes": {
+            "correct": 2456,
+            "cross_domain_twin": 621,
+            "invented_name": 16,
+            "same_domain_twin": 898,
+            "unparsed": 9
+          },
+          "top_confusions": [
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setSecurityMode",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "armSecuritySystem",
+              "rows": 64
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "rebootDevice",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "restartDevice",
+              "rows": 41
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setColorTemperature",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setAmbientLighting",
+              "rows": 35
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setLighting",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "setLightState",
+              "rows": 33
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setLighting",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setAmbientLighting",
+              "rows": 28
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setColor",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setAmbientLighting",
+              "rows": 25
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "getApplianceState",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "getApplianceStatus",
+              "rows": 25
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "findMyDevice",
+              "predicted_domain": "wearables",
+              "predicted_tool": "findPairedPhone",
+              "rows": 25
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setGarageDoor",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setGarageOpener",
+              "rows": 22
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setFanMode",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "setFanSpeed",
+              "rows": 21
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "setVolume",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "adjustVolume",
+              "rows": 18
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "streamCamera",
+              "predicted_domain": "smart_car",
+              "predicted_tool": "viewRemoteCamera",
+              "rows": 17
+            },
+            {
+              "gold_domain": "smart_car",
+              "gold_tool": "controlPlayback",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "controlPlayback_home",
+              "rows": 16
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "getNetworkHealth",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "runNetworkSpeedTest",
+              "rows": 16
+            },
+            {
+              "gold_domain": "smart_home",
+              "gold_tool": "getCameraStream",
+              "predicted_domain": "smart_home",
+              "predicted_tool": "streamCamera",
+              "rows": 15
+            }
+          ]
+        },
+        "named_twins": [
+          {
+            "class": "same_domain",
+            "delta": 8,
+            "gold_domain": "smart_home",
+            "gold_tool": "setSecurityMode",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "armSecuritySystem",
+            "rows_after": 72,
+            "rows_before": 64
+          },
+          {
+            "class": "same_domain",
+            "delta": -9,
+            "gold_domain": "smart_home",
+            "gold_tool": "rebootDevice",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "restartDevice",
+            "rows_after": 32,
+            "rows_before": 41
+          },
+          {
+            "class": "cross_domain",
+            "delta": -7,
+            "gold_domain": "smart_home",
+            "gold_tool": "setColorTemperature",
+            "predicted_domain": "smart_car",
+            "predicted_tool": "setAmbientLighting",
+            "rows_after": 28,
+            "rows_before": 35
+          },
+          {
+            "class": "same_domain",
+            "delta": -7,
+            "gold_domain": "smart_home",
+            "gold_tool": "setLighting",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "setLightState",
+            "rows_after": 26,
+            "rows_before": 33
+          },
+          {
+            "class": "cross_domain",
+            "delta": -5,
+            "gold_domain": "smart_home",
+            "gold_tool": "setLighting",
+            "predicted_domain": "smart_car",
+            "predicted_tool": "setAmbientLighting",
+            "rows_after": 23,
+            "rows_before": 28
+          },
+          {
+            "class": "cross_domain",
+            "delta": -2,
+            "gold_domain": "smart_home",
+            "gold_tool": "findMyDevice",
+            "predicted_domain": "wearables",
+            "predicted_tool": "findPairedPhone",
+            "rows_after": 23,
+            "rows_before": 25
+          },
+          {
+            "class": "same_domain",
+            "delta": 0,
+            "gold_domain": "smart_home",
+            "gold_tool": "getApplianceState",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "getApplianceStatus",
+            "rows_after": 25,
+            "rows_before": 25
+          },
+          {
+            "class": "cross_domain",
+            "delta": -9,
+            "gold_domain": "smart_home",
+            "gold_tool": "setColor",
+            "predicted_domain": "smart_car",
+            "predicted_tool": "setAmbientLighting",
+            "rows_after": 16,
+            "rows_before": 25
+          },
+          {
+            "class": "cross_domain",
+            "delta": 0,
+            "gold_domain": "smart_home",
+            "gold_tool": "setGarageDoor",
+            "predicted_domain": "smart_car",
+            "predicted_tool": "setGarageOpener",
+            "rows_after": 22,
+            "rows_before": 22
+          },
+          {
+            "class": "cross_domain",
+            "delta": 0,
+            "gold_domain": "smart_home",
+            "gold_tool": "setFanMode",
+            "predicted_domain": "smart_car",
+            "predicted_tool": "setFanSpeed",
+            "rows_after": 21,
+            "rows_before": 21
+          },
+          {
+            "class": "cross_domain",
+            "delta": 1,
+            "gold_domain": "smart_home",
+            "gold_tool": "setVolume",
+            "predicted_domain": "smart_car",
+            "predicted_tool": "adjustVolume",
+            "rows_after": 19,
+            "rows_before": 18
+          },
+          {
+            "class": "same_domain",
+            "delta": 0,
+            "gold_domain": "smart_home",
+            "gold_tool": "getNetworkHealth",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "runNetworkSpeedTest",
+            "rows_after": 16,
+            "rows_before": 16
+          },
+          {
+            "class": "same_domain",
+            "delta": 6,
+            "gold_domain": "smart_home",
+            "gold_tool": "setColor",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "setLighting",
+            "rows_after": 21,
+            "rows_before": 15
+          },
+          {
+            "class": "same_domain",
+            "delta": 5,
+            "gold_domain": "smart_home",
+            "gold_tool": "setGroupLightState",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "setLighting",
+            "rows_after": 20,
+            "rows_before": 15
+          },
+          {
+            "class": "same_domain",
+            "delta": 4,
+            "gold_domain": "smart_home",
+            "gold_tool": "activateScene",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "activateRoutine",
+            "rows_after": 16,
+            "rows_before": 12
+          },
+          {
+            "class": "same_domain",
+            "delta": -2,
+            "gold_domain": "smart_home",
+            "gold_tool": "getAirQuality",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "getAirQuality_diag",
+            "rows_after": 9,
+            "rows_before": 11
+          },
+          {
+            "class": "cross_domain",
+            "delta": -1,
+            "gold_domain": "smart_car",
+            "gold_tool": "setLockState",
+            "predicted_domain": "smart_home",
+            "predicted_tool": "setLockState_home",
+            "rows_after": 8,
+            "rows_before": 9
+          },
+          {
+            "class": "same_domain",
+            "delta": 0,
+            "gold_domain": "wearables",
+            "gold_tool": "getBiometricData",
+            "predicted_domain": "wearables",
+            "predicted_tool": "startWorkout",
+            "rows_after": 4,
+            "rows_before": 4
+          }
+        ],
+        "named_twins_cross_domain_after": 160,
+        "named_twins_cross_domain_before": 183,
+        "named_twins_same_domain_after": 241,
+        "named_twins_same_domain_before": 236,
+        "note": "diagnostic; the miss classes are resolved from tools_registry.csv (the predicted tool's domain against the gold tool's), never asserted"
+      },
+      "decision": {
+        "baseline_unchanged": "no outcome changes the direct baseline: the official-protocol cell stays the comparator every mechanism is paired against",
+        "ci90_high_pp": 0.8,
+        "ci90_low_pp": -0.3,
+        "cross_domain_share_of_the_gain": 0.32978723404255317,
+        "outcome": "NULL",
+        "rule": "ADMITTED = pooled CI90 lower bound above 0, both weightings agreeing in sign, and at least half of the corrected rows carrying a baseline miss whose gold AND predicted tool sit inside one MF-1 target; HARMFUL = CI90 upper bound below 0; NULL otherwise. A gain is credited as CONTENT only if the same-length control does not reach a comparable delta (cross_arm below).",
+        "rule_id": "kc-a1",
+        "target_pair_share_of_the_gain": 0.23404255319148937,
+        "weightings_agree_in_sign": true
+      },
+      "gain_decomposition": {
+        "broken_by_arm_miss_class": {
+          "cross_domain_twin": 37,
+          "invented_name": 2,
+          "same_domain_twin": 44,
+          "unparsed": 1
+        },
+        "corrected_by_baseline_miss_class": {
+          "cross_domain_twin": 31,
+          "invented_name": 1,
+          "same_domain_twin": 61,
+          "unparsed": 1
+        },
+        "corrected_on_target_pairs": 22,
+        "cross_domain_share_definition": "(baseline misses corrected whose baseline prediction was a real registry tool in ANOTHER domain) / (all baseline misses corrected)",
+        "cross_domain_share_of_the_gain": 0.32978723404255317,
+        "net": 10,
+        "rows_broken": 84,
+        "rows_corrected": 94,
+        "target_pair_share_of_the_gain": 0.23404255319148937
+      },
+      "manifest_sha256": "eb8660b15db5217dd5e72616d75a3920cf516837330fbae475e8fdf053684ada",
+      "mf1_targets": {
+        "miss_mass_after": {
+          "activateRoutine": 40,
+          "calibrateCameras": 16,
+          "castContent": 5,
+          "getBiometricData": 22,
+          "lighting": 175
+        },
+        "miss_mass_after_total": 258,
+        "miss_mass_before": {
+          "activateRoutine": 48,
+          "calibrateCameras": 16,
+          "castContent": 5,
+          "getBiometricData": 23,
+          "lighting": 186
+        },
+        "miss_mass_before_total": 278
+      },
+      "overall": {
+        "arm_parse_failures": 5,
+        "arm_parse_rate_pct": 99.875,
+        "arm_rows_with_multiple_call_matches": 488,
+        "arm_tool_accuracy_pct": 61.650000000000006,
+        "baseline_parse_rate_pct": 99.775,
+        "baseline_rows_with_multiple_call_matches": 486,
+        "baseline_tool_accuracy_pct": 61.4,
+        "samples": 4000
+      },
+      "param_f1": {
+        "arm_macro_pct": 29.686726190476193,
+        "arm_micro_pct": 24.64296267113168,
+        "baseline_macro_pct": 29.280119047619046,
+        "baseline_micro_pct": 24.395539326951543,
+        "note": "the official parameter F1 is a macro average of per-sample key P/R/F1; the micro figure pools keys across samples and is reported beside it"
+      },
+      "per_domain": {
+        "smart_car": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 50.2586766972541,
+              "ci90_low_pct": 41.542413068882496,
+              "pct": 45.86894586894587,
+              "samples": 351,
+              "successes": 161
+            },
+            "tool_accuracy": {
+              "ci90_high_pct": 75.02544962530979,
+              "ci90_low_pct": 67.09998571419528,
+              "pct": 71.22507122507122,
+              "samples": 351,
+              "successes": 250
+            }
+          },
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 48.26177997892724,
+              "ci90_low_pct": 39.58121519155115,
+              "pct": 43.87464387464387,
+              "samples": 351,
+              "successes": 154
+            },
+            "tool_accuracy": {
+              "ci90_high_pct": 74.75421730134609,
+              "ci90_low_pct": 66.80577595306495,
+              "pct": 70.94017094017094,
+              "samples": 351,
+              "successes": 249
+            }
+          },
+          "delta_pp": {
+            "exact_match": 1.994301994301999,
+            "tool_accuracy": 0.2849002849002744
+          },
+          "harms": 5,
+          "n": 351,
+          "saves": 6
+        },
+        "smart_home": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 11.189030246116676,
+              "ci90_low_pct": 9.30348800130714,
+              "pct": 10.207736389684813,
+              "samples": 2792,
+              "successes": 285
+            },
+            "tool_accuracy": {
+              "ci90_high_pct": 56.914005816862264,
+              "ci90_low_pct": 53.820577678085,
+              "pct": 55.372492836676216,
+              "samples": 2792,
+              "successes": 1546
+            }
+          },
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 11.040025249851102,
+              "ci90_low_pct": 9.16623743770745,
+              "pct": 10.064469914040115,
+              "samples": 2792,
+              "successes": 281
+            },
+            "tool_accuracy": {
+              "ci90_high_pct": 56.52167891838003,
+              "ci90_low_pct": 53.425701786937765,
+              "pct": 54.9785100286533,
+              "samples": 2792,
+              "successes": 1535
+            }
+          },
+          "delta_pp": {
+            "exact_match": 0.14326647564469752,
+            "tool_accuracy": 0.3939828080229191
+          },
+          "harms": 71,
+          "n": 2792,
+          "saves": 82
+        },
+        "wearables": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 36.544693973114875,
+              "ci90_low_pct": 31.234971738114698,
+              "pct": 33.838973162193696,
+              "samples": 857,
+              "successes": 290
+            },
+            "tool_accuracy": {
+              "ci90_high_pct": 80.40972997059971,
+              "ci90_low_pct": 75.77229696613715,
+              "pct": 78.17969661610269,
+              "samples": 857,
+              "successes": 670
+            }
+          },
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 37.61089713199801,
+              "ci90_low_pct": 32.26250871351991,
+              "pct": 34.88914819136523,
+              "samples": 857,
+              "successes": 299
+            },
+            "tool_accuracy": {
+              "ci90_high_pct": 80.63341602326078,
+              "ci90_low_pct": 76.01388649887349,
+              "pct": 78.41306884480747,
+              "samples": 857,
+              "successes": 672
+            }
+          },
+          "delta_pp": {
+            "exact_match": -1.050175029171534,
+            "tool_accuracy": -0.23337222870478058
+          },
+          "harms": 8,
+          "n": 857,
+          "saves": 6
+        }
+      },
+      "per_tier": {
+        "tier1_direct": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 13.29773471034969,
+              "ci90_low_pct": 8.724211316629919,
+              "pct": 10.8,
+              "samples": 500,
+              "successes": 54
+            },
+            "param_f1_macro_pct": 15.6,
+            "param_f1_micro_pct": 1.4947683109118088,
+            "parse_rate_pct": 100.0,
+            "tool_accuracy": {
+              "ci90_high_pct": 70.35928837338254,
+              "ci90_low_pct": 63.457724829202846,
+              "pct": 67.0,
+              "samples": 500,
+              "successes": 335
+            }
+          },
+          "arm_minus_paper_pp": -25.400000000000006,
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 12.644795588994759,
+              "ci90_low_pct": 8.183608795540659,
+              "pct": 10.2,
+              "samples": 500,
+              "successes": 51
+            },
+            "param_f1_macro_pct": 14.399999999999999,
+            "param_f1_micro_pct": 1.1976047904191616,
+            "parse_rate_pct": 100.0,
+            "tool_accuracy": {
+              "ci90_high_pct": 69.00204274547734,
+              "ci90_low_pct": 62.03003995807159,
+              "pct": 65.6,
+              "samples": 500,
+              "successes": 328
+            }
+          },
+          "baseline_minus_paper_pp": -26.80000000000001,
+          "delta_pp": {
+            "exact_match": 0.6000000000000014,
+            "tool_accuracy": 1.4000000000000057
+          },
+          "paper": {
+            "exact_match": 92.4,
+            "slot_f1": null,
+            "tool_accuracy": 92.4
+          },
+          "per_domain": {
+            "smart_car": {
+              "arm_pct": 92.6829268292683,
+              "baseline_pct": 92.6829268292683,
+              "delta_pp": 0.0,
+              "n": 41
+            },
+            "smart_home": {
+              "arm_pct": 57.608695652173914,
+              "baseline_pct": 55.70652173913044,
+              "delta_pp": 1.9021739130434783,
+              "n": 368
+            },
+            "wearables": {
+              "arm_pct": 93.4065934065934,
+              "baseline_pct": 93.4065934065934,
+              "delta_pp": 0.0,
+              "n": 91
+            }
+          },
+          "samples": 500
+        },
+        "tier2_parametric": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 33.88165348210468,
+              "ci90_low_pct": 27.12931953138512,
+              "pct": 30.4,
+              "samples": 500,
+              "successes": 152
+            },
+            "param_f1_macro_pct": 47.123333333333335,
+            "param_f1_micro_pct": 43.21404456448346,
+            "parse_rate_pct": 100.0,
+            "tool_accuracy": {
+              "ci90_high_pct": 81.08104784378415,
+              "ci90_low_pct": 75.01540935109277,
+              "pct": 78.2,
+              "samples": 500,
+              "successes": 391
+            }
+          },
+          "arm_minus_paper_pp": -6.3999999999999915,
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 34.70161437468505,
+              "ci90_low_pct": 27.900747495397,
+              "pct": 31.2,
+              "samples": 500,
+              "successes": 156
+            },
+            "param_f1_macro_pct": 48.21,
+            "param_f1_micro_pct": 45.24948735475051,
+            "parse_rate_pct": 100.0,
+            "tool_accuracy": {
+              "ci90_high_pct": 82.40123904926655,
+              "ci90_low_pct": 76.4801486446468,
+              "pct": 79.6,
+              "samples": 500,
+              "successes": 398
+            }
+          },
+          "baseline_minus_paper_pp": -5.0,
+          "delta_pp": {
+            "exact_match": -0.8000000000000007,
+            "tool_accuracy": -1.3999999999999915
+          },
+          "paper": {
+            "exact_match": 15.6,
+            "slot_f1": 21.7,
+            "tool_accuracy": 84.6
+          },
+          "per_domain": {
+            "smart_car": {
+              "arm_pct": 86.36363636363636,
+              "baseline_pct": 86.36363636363636,
+              "delta_pp": 0.0,
+              "n": 22
+            },
+            "smart_home": {
+              "arm_pct": 72.97297297297297,
+              "baseline_pct": 74.5945945945946,
+              "delta_pp": -1.6216216216216217,
+              "n": 370
+            },
+            "wearables": {
+              "arm_pct": 94.44444444444444,
+              "baseline_pct": 95.37037037037037,
+              "delta_pp": -0.9259259259259259,
+              "n": 108
+            }
+          },
+          "samples": 500
+        },
+        "tier3_multi_intent": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 21.839169313216395,
+              "ci90_low_pct": 16.09666527968574,
+              "pct": 18.8,
+              "samples": 500,
+              "successes": 94
+            },
+            "param_f1_macro_pct": 34.49523809523809,
+            "param_f1_micro_pct": 27.982326951399116,
+            "parse_rate_pct": 99.8,
+            "tool_accuracy": {
+              "ci90_high_pct": 68.6136418436642,
+              "ci90_low_pct": 61.62274643158862,
+              "pct": 65.2,
+              "samples": 500,
+              "successes": 326
+            }
+          },
+          "arm_minus_paper_pp": -9.5,
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 22.470299473293316,
+              "ci90_low_pct": 16.65907676205301,
+              "pct": 19.4,
+              "samples": 500,
+              "successes": 97
+            },
+            "param_f1_macro_pct": 33.84571428571429,
+            "param_f1_micro_pct": 27.272727272727277,
+            "parse_rate_pct": 100.0,
+            "tool_accuracy": {
+              "ci90_high_pct": 68.4193400698798,
+              "ci90_low_pct": 61.419200991224955,
+              "pct": 65.0,
+              "samples": 500,
+              "successes": 325
+            }
+          },
+          "baseline_minus_paper_pp": -9.700000000000003,
+          "delta_pp": {
+            "exact_match": -0.5999999999999979,
+            "tool_accuracy": 0.20000000000000284
+          },
+          "paper": {
+            "exact_match": 28.6,
+            "slot_f1": 35.0,
+            "tool_accuracy": 74.7
+          },
+          "per_domain": {
+            "smart_car": {
+              "arm_pct": 87.8048780487805,
+              "baseline_pct": 82.92682926829268,
+              "delta_pp": 4.878048780487805,
+              "n": 41
+            },
+            "smart_home": {
+              "arm_pct": 59.23913043478261,
+              "baseline_pct": 59.51086956521739,
+              "delta_pp": -0.2717391304347826,
+              "n": 368
+            },
+            "wearables": {
+              "arm_pct": 79.12087912087912,
+              "baseline_pct": 79.12087912087912,
+              "delta_pp": 0.0,
+              "n": 91
+            }
+          },
+          "samples": 500
+        },
+        "tier4_implicit": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 7.769090056797209,
+              "ci90_low_pct": 4.306675616480818,
+              "pct": 5.8,
+              "samples": 500,
+              "successes": 29
+            },
+            "param_f1_macro_pct": 14.56,
+            "param_f1_micro_pct": 6.035889070146819,
+            "parse_rate_pct": 99.8,
+            "tool_accuracy": {
+              "ci90_high_pct": 31.414470578071708,
+              "ci90_low_pct": 24.822335865641335,
+              "pct": 28.0,
+              "samples": 500,
+              "successes": 140
+            }
+          },
+          "arm_minus_paper_pp": -5.399999999999999,
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 8.44547513746867,
+              "ci90_low_pct": 4.823832178253548,
+              "pct": 6.4,
+              "samples": 500,
+              "successes": 32
+            },
+            "param_f1_macro_pct": 14.693333333333333,
+            "param_f1_micro_pct": 6.552006552006552,
+            "parse_rate_pct": 99.4,
+            "tool_accuracy": {
+              "ci90_high_pct": 31.62049989262335,
+              "ci90_low_pct": 25.01415376523775,
+              "pct": 28.2,
+              "samples": 500,
+              "successes": 141
+            }
+          },
+          "baseline_minus_paper_pp": -5.199999999999999,
+          "delta_pp": {
+            "exact_match": -0.6000000000000005,
+            "tool_accuracy": -0.1999999999999993
+          },
+          "paper": {
+            "exact_match": 11.3,
+            "slot_f1": 23.4,
+            "tool_accuracy": 33.4
+          },
+          "per_domain": {
+            "smart_car": {
+              "arm_pct": 25.714285714285715,
+              "baseline_pct": 28.571428571428573,
+              "delta_pp": -2.857142857142857,
+              "n": 35
+            },
+            "smart_home": {
+              "arm_pct": 22.4,
+              "baseline_pct": 21.6,
+              "delta_pp": 0.8,
+              "n": 375
+            },
+            "wearables": {
+              "arm_pct": 52.22222222222222,
+              "baseline_pct": 55.55555555555556,
+              "delta_pp": -3.3333333333333335,
+              "n": 90
+            }
+          },
+          "samples": 500
+        },
+        "tier5_needle": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 26.23603710912063,
+              "ci90_low_pct": 20.05458898089083,
+              "pct": 23.0,
+              "samples": 500,
+              "successes": 115
+            },
+            "param_f1_macro_pct": 35.93190476190477,
+            "param_f1_micro_pct": 35.104669887278575,
+            "parse_rate_pct": 100.0,
+            "tool_accuracy": {
+              "ci90_high_pct": 84.09056372309348,
+              "ci90_low_pct": 78.37144889815242,
+              "pct": 81.4,
+              "samples": 500,
+              "successes": 407
+            }
+          },
+          "arm_minus_paper_pp": -9.199999999999989,
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 26.027711999819786,
+              "ci90_low_pct": 19.865066876043617,
+              "pct": 22.8,
+              "samples": 500,
+              "successes": 114
+            },
+            "param_f1_macro_pct": 35.868571428571435,
+            "param_f1_micro_pct": 34.75462590506838,
+            "parse_rate_pct": 100.0,
+            "tool_accuracy": {
+              "ci90_high_pct": 83.52851303675631,
+              "ci90_low_pct": 77.73995794204545,
+              "pct": 80.8,
+              "samples": 500,
+              "successes": 404
+            }
+          },
+          "baseline_minus_paper_pp": -9.799999999999997,
+          "delta_pp": {
+            "exact_match": 0.1999999999999993,
+            "tool_accuracy": 0.6000000000000085
+          },
+          "paper": {
+            "exact_match": 36.0,
+            "slot_f1": 41.6,
+            "tool_accuracy": 90.6
+          },
+          "per_domain": {
+            "smart_car": {
+              "arm_pct": 97.5609756097561,
+              "baseline_pct": 97.5609756097561,
+              "delta_pp": 0.0,
+              "n": 41
+            },
+            "smart_home": {
+              "arm_pct": 75.81521739130434,
+              "baseline_pct": 75.0,
+              "delta_pp": 0.8152173913043478,
+              "n": 368
+            },
+            "wearables": {
+              "arm_pct": 96.7032967032967,
+              "baseline_pct": 96.7032967032967,
+              "delta_pp": 0.0,
+              "n": 91
+            }
+          },
+          "samples": 500
+        },
+        "tier6_correction": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 28.9356841544733,
+              "ci90_low_pct": 22.526955719462975,
+              "pct": 25.6,
+              "samples": 500,
+              "successes": 128
+            },
+            "param_f1_macro_pct": 39.66238095238096,
+            "param_f1_micro_pct": 32.996632996633,
+            "parse_rate_pct": 99.8,
+            "tool_accuracy": {
+              "ci90_high_pct": 79.37626270386865,
+              "ci90_low_pct": 73.13956956367569,
+              "pct": 76.4,
+              "samples": 500,
+              "successes": 382
+            }
+          },
+          "arm_minus_paper_pp": -5.099999999999994,
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 27.27621617457362,
+              "ci90_low_pct": 21.003645986178157,
+              "pct": 24.0,
+              "samples": 500,
+              "successes": 120
+            },
+            "param_f1_macro_pct": 38.40904761904762,
+            "param_f1_micro_pct": 31.57894736842105,
+            "parse_rate_pct": 99.6,
+            "tool_accuracy": {
+              "ci90_high_pct": 78.8062591837197,
+              "ci90_low_pct": 72.51603144138043,
+              "pct": 75.8,
+              "samples": 500,
+              "successes": 379
+            }
+          },
+          "baseline_minus_paper_pp": -5.700000000000003,
+          "delta_pp": {
+            "exact_match": 1.6000000000000014,
+            "tool_accuracy": 0.6000000000000085
+          },
+          "paper": {
+            "exact_match": 24.8,
+            "slot_f1": 32.4,
+            "tool_accuracy": 81.5
+          },
+          "per_domain": {
+            "smart_car": {
+              "arm_pct": 87.8048780487805,
+              "baseline_pct": 87.8048780487805,
+              "delta_pp": 0.0,
+              "n": 41
+            },
+            "smart_home": {
+              "arm_pct": 71.19565217391305,
+              "baseline_pct": 70.1086956521739,
+              "delta_pp": 1.0869565217391304,
+              "n": 368
+            },
+            "wearables": {
+              "arm_pct": 92.3076923076923,
+              "baseline_pct": 93.4065934065934,
+              "delta_pp": -1.098901098901099,
+              "n": 91
+            }
+          },
+          "samples": 500
+        },
+        "tier7_multiturn": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 13.29773471034969,
+              "ci90_low_pct": 8.724211316629919,
+              "pct": 10.8,
+              "samples": 500,
+              "successes": 54
+            },
+            "param_f1_macro_pct": 17.94,
+            "param_f1_micro_pct": 10.167029774872912,
+            "parse_rate_pct": 99.6,
+            "tool_accuracy": {
+              "ci90_high_pct": 52.473501206490106,
+              "ci90_low_pct": 45.139415508621504,
+              "pct": 48.8,
+              "samples": 500,
+              "successes": 244
+            }
+          },
+          "arm_minus_paper_pp": -5.800000000000004,
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 12.862692985939411,
+              "ci90_low_pct": 8.363558612744066,
+              "pct": 10.4,
+              "samples": 500,
+              "successes": 52
+            },
+            "param_f1_macro_pct": 17.826666666666664,
+            "param_f1_micro_pct": 9.795321637426898,
+            "parse_rate_pct": 99.4,
+            "tool_accuracy": {
+              "ci90_high_pct": 53.07106021290879,
+              "ci90_low_pct": 45.73539814464701,
+              "pct": 49.4,
+              "samples": 500,
+              "successes": 247
+            }
+          },
+          "baseline_minus_paper_pp": -5.200000000000003,
+          "delta_pp": {
+            "exact_match": 0.40000000000000036,
+            "tool_accuracy": -0.6000000000000014
+          },
+          "paper": {
+            "exact_match": 16.3,
+            "slot_f1": 26.8,
+            "tool_accuracy": 54.6
+          },
+          "per_domain": {
+            "smart_car": {
+              "arm_pct": 58.333333333333336,
+              "baseline_pct": 55.55555555555556,
+              "delta_pp": 2.7777777777777777,
+              "n": 36
+            },
+            "smart_home": {
+              "arm_pct": 40.78947368421053,
+              "baseline_pct": 42.63157894736842,
+              "delta_pp": -1.8421052631578947,
+              "n": 380
+            },
+            "wearables": {
+              "arm_pct": 80.95238095238095,
+              "baseline_pct": 77.38095238095238,
+              "delta_pp": 3.5714285714285716,
+              "n": 84
+            }
+          },
+          "samples": 500
+        },
+        "tier8_intent_blending": {
+          "arm": {
+            "exact_match": {
+              "ci90_high_pct": 25.19341752257326,
+              "ci90_low_pct": 19.107972496697883,
+              "pct": 22.0,
+              "samples": 500,
+              "successes": 110
+            },
+            "param_f1_macro_pct": 32.180952380952384,
+            "param_f1_micro_pct": 25.24714828897338,
+            "parse_rate_pct": 100.0,
+            "tool_accuracy": {
+              "ci90_high_pct": 51.87541636667078,
+              "ci90_low_pct": 44.54395870599663,
+              "pct": 48.2,
+              "samples": 500,
+              "successes": 241
+            }
+          },
+          "arm_minus_paper_pp": 6.5,
+          "baseline": {
+            "exact_match": {
+              "ci90_high_pct": 25.61076543420169,
+              "ci90_low_pct": 19.486319013365584,
+              "pct": 22.4,
+              "samples": 500,
+              "successes": 112
+            },
+            "param_f1_macro_pct": 30.98761904761905,
+            "param_f1_micro_pct": 23.867069486404834,
+            "parse_rate_pct": 99.8,
+            "tool_accuracy": {
+              "ci90_high_pct": 50.47783656094469,
+              "ci90_low_pct": 43.15660801268629,
+              "pct": 46.8,
+              "samples": 500,
+              "successes": 234
+            }
+          },
+          "baseline_minus_paper_pp": 5.099999999999994,
+          "delta_pp": {
+            "exact_match": -0.3999999999999986,
+            "tool_accuracy": 1.4000000000000057
+          },
+          "paper": {
+            "exact_match": 12.4,
+            "slot_f1": 19.9,
+            "tool_accuracy": 41.7
+          },
+          "per_domain": {
+            "smart_car": {
+              "arm_pct": 54.255319148936174,
+              "baseline_pct": 55.319148936170215,
+              "delta_pp": -1.0638297872340425,
+              "n": 94
+            },
+            "smart_home": {
+              "arm_pct": 33.84615384615385,
+              "baseline_pct": 29.743589743589745,
+              "delta_pp": 4.102564102564102,
+              "n": 195
+            },
+            "wearables": {
+              "arm_pct": 58.76777251184834,
+              "baseline_pct": 58.76777251184834,
+              "delta_pp": 0.0,
+              "n": 211
+            }
+          },
+          "samples": 500
+        }
+      },
+      "primary": {
+        "equal_domain": {
+          "basis": "unweighted mean over the three domains of each arm's per-domain rate; the bootstrap resamples WITHIN each domain (domain-stratified) at the same seed and replicate count as the primary tier-stratified contrast",
+          "ci90_high_pp": 0.7680684866654894,
+          "ci90_low_pp": -0.4828320318819929,
+          "delta_pp": 0.14850362140614112,
+          "left_pct": 68.11058327121057,
+          "metric": "tool_accuracy",
+          "n_replicates": 10000,
+          "right_pct": 68.25908689261671,
+          "seed": 20260903
+        },
+        "metric": "official tool accuracy (a2t-toolcall-official)",
+        "natural_mixture": {
+          "arm_pct": 61.650000000000006,
+          "baseline_pct": 61.4,
+          "ci90_high_pp": 0.8,
+          "ci90_low_pp": -0.3,
+          "delta_pp": 0.2500000000000058,
+          "harms": 84,
+          "metric": "tool_accuracy",
+          "n": 4000,
+          "n_replicates": 10000,
+          "saves": 94,
+          "seed": 20260903,
+          "sigma_hat_pp": 0.33233901996869103,
+          "sign_test_p": 0.500054606001611,
+          "ties": 3822
+        },
+        "per_domain_table": [
+          {
+            "delta": 0.002849002849002802,
+            "harms": 5,
+            "left_mean": 0.7094017094017094,
+            "n": 351,
+            "right_mean": 0.7122507122507122,
+            "saves": 6,
+            "stratum": "smart_car",
+            "ties": 340
+          },
+          {
+            "delta": 0.003939828080229191,
+            "harms": 71,
+            "left_mean": 0.5497851002865329,
+            "n": 2792,
+            "right_mean": 0.5537249283667621,
+            "saves": 82,
+            "stratum": "smart_home",
+            "ties": 2639
+          },
+          {
+            "delta": -0.002333722287047868,
+            "harms": 8,
+            "left_mean": 0.7841306884480747,
+            "n": 857,
+            "right_mean": 0.7817969661610268,
+            "saves": 6,
+            "stratum": "wearables",
+            "ties": 843
+          }
+        ],
+        "per_tier_table": [
+          {
+            "delta": 0.014000000000000012,
+            "harms": 7,
+            "left_mean": 0.656,
+            "n": 500,
+            "right_mean": 0.67,
+            "saves": 14,
+            "stratum": "tier1_direct",
+            "ties": 479
+          },
+          {
+            "delta": -0.014000000000000012,
+            "harms": 19,
+            "left_mean": 0.796,
+            "n": 500,
+            "right_mean": 0.782,
+            "saves": 12,
+            "stratum": "tier2_parametric",
+            "ties": 469
+          },
+          {
+            "delta": 0.0020000000000000018,
+            "harms": 16,
+            "left_mean": 0.65,
+            "n": 500,
+            "right_mean": 0.652,
+            "saves": 17,
+            "stratum": "tier3_multi_intent",
+            "ties": 467
+          },
+          {
+            "delta": -0.0019999999999999463,
+            "harms": 11,
+            "left_mean": 0.282,
+            "n": 500,
+            "right_mean": 0.28,
+            "saves": 10,
+            "stratum": "tier4_implicit",
+            "ties": 479
+          },
+          {
+            "delta": 0.005999999999999894,
+            "harms": 3,
+            "left_mean": 0.808,
+            "n": 500,
+            "right_mean": 0.814,
+            "saves": 6,
+            "stratum": "tier5_needle",
+            "ties": 491
+          },
+          {
+            "delta": 0.006000000000000005,
+            "harms": 10,
+            "left_mean": 0.758,
+            "n": 500,
+            "right_mean": 0.764,
+            "saves": 13,
+            "stratum": "tier6_correction",
+            "ties": 477
+          },
+          {
+            "delta": -0.006000000000000005,
+            "harms": 11,
+            "left_mean": 0.494,
+            "n": 500,
+            "right_mean": 0.488,
+            "saves": 8,
+            "stratum": "tier7_multiturn",
+            "ties": 481
+          },
+          {
+            "delta": 0.013999999999999957,
+            "harms": 7,
+            "left_mean": 0.468,
+            "n": 500,
+            "right_mean": 0.482,
+            "saves": 14,
+            "stratum": "tier8_intent_blending",
+            "ties": 479
+          }
+        ]
+      },
+      "protocol_hash": "5fa6e4f84c7cc1ed1d1c80e87a1dcae09ceb6379eb6209100f219a2c1cca15fb",
+      "run_id": "SAEA-A2T-KC-A1C-CATEGORY-ONLY-V1",
+      "scorer_versions": {
+        "official": "a2t-scorer-official-b9d5383c",
+        "official_commit": "b9d5383ca30945fbafb965a04bea40117e1e8a82",
+        "official_gold": "a2t-gold-official-release-loader",
+        "official_metrics_blob_sha1": "d98277bcf69795c9a0ae54e538c170abfd8c51ca",
+        "parse": "a2t-parse-v2-json-or-callstring",
+        "v2": "a2t-scorer-v2",
+        "v2_gold": "a2t-gold-v1"
+      },
+      "secondary": {
+        "exact_match": {
+          "arm_pct": 18.4,
+          "baseline_pct": 18.35,
+          "ci90_high_pp": 0.42500000000000004,
+          "ci90_low_pp": -0.325,
+          "delta_pp": 0.050000000000000044,
+          "harms": 40,
+          "metric": "exact_match",
+          "n": 4000,
+          "n_replicates": 10000,
+          "saves": 42,
+          "seed": 20260904,
+          "sigma_hat_pp": 0.22669249236300262,
+          "sign_test_p": 0.9121566075526039,
+          "ties": 3918
+        },
+        "param_f1": {
+          "arm_pct": 29.686726190476193,
+          "baseline_pct": 29.280119047619046,
+          "ci90_high_pp": 0.832925595238095,
+          "ci90_low_pp": -0.013107142857142652,
+          "delta_pp": 0.40660714285714605,
+          "harms": 102,
+          "metric": "param_f1",
+          "n": 4000,
+          "n_replicates": 10000,
+          "saves": 117,
+          "seed": 20260905,
+          "sigma_hat_pp": 0.2589455227614171,
+          "sign_test_p": 0.3441525114091502,
+          "ties": 3781
+        },
+        "parse_rate": {
+          "arm_pct": 99.875,
+          "baseline_pct": 99.775,
+          "ci90_high_pp": 0.2,
+          "ci90_low_pp": 0.0,
+          "delta_pp": 0.10000000000000009,
+          "harms": 1,
+          "metric": "parse_rate",
+          "n": 4000,
+          "n_replicates": 10000,
+          "saves": 5,
+          "seed": 20260906,
+          "sigma_hat_pp": 0.06186354257557516,
+          "sign_test_p": 0.21875,
+          "ties": 3994
+        },
+        "v2_exact_match": {
+          "arm_pct": 14.475,
+          "baseline_pct": 14.35,
+          "ci90_high_pp": 0.475,
+          "ci90_low_pp": -0.22499999999999998,
+          "delta_pp": 0.1250000000000001,
+          "harms": 34,
+          "metric": "v2_exact_match",
+          "n": 4000,
+          "n_replicates": 10000,
+          "saves": 39,
+          "seed": 20260908,
+          "sigma_hat_pp": 0.21317382836549145,
+          "sign_test_p": 0.6399729317539424,
+          "ties": 3927
+        },
+        "v2_tool_accuracy": {
+          "arm_pct": 52.55,
+          "baseline_pct": 52.449999999999996,
+          "ci90_high_pp": 0.675,
+          "ci90_low_pp": -0.475,
+          "delta_pp": 0.10000000000000009,
+          "harms": 97,
+          "metric": "v2_tool_accuracy",
+          "n": 4000,
+          "n_replicates": 10000,
+          "saves": 101,
+          "seed": 20260907,
+          "sigma_hat_pp": 0.3492912591860123,
+          "sign_test_p": 0.8312377211582069,
+          "ties": 3802
+        }
+      },
+      "study_commit": "9c803ef9abee99b47f5dfc67fab3526ef424161f",
+      "throughput": {
+        "audio_seconds_used": 23418.083083330024,
+        "calls_used": 4000,
+        "completion_tokens_per_call": 16.15325,
+        "completion_tokens_total": 64613,
+        "latency_seconds_total": 2113.301851913391,
+        "mean_per_call_latency_seconds": 0.5283254629783478,
+        "planned_gpu_hours": 0.75,
+        "planned_model_calls": 4008,
+        "planned_speech_audio_seconds": 23419,
+        "prompt_tokens_per_call": 3709.74825,
+        "prompt_tokens_total": 14838993,
+        "status": "COMPLETED",
+        "study_repo_dirt": []
+      }
+    }
+  },
+  "arms_requested": [
+    {
+      "attempt_id": "attempt-20260906T150235Z-kca1contrastraw",
+      "cell_id": "KC-A1-contrast-raw",
+      "run_id": "SAEA-A2T-KC-A1-CONTRAST-NOTES-V1"
+    },
+    {
+      "attempt_id": "attempt-20260906T164643Z-kca1ccategoryraw",
+      "cell_id": "KC-A1c-category-raw",
+      "run_id": "SAEA-A2T-KC-A1C-CATEGORY-ONLY-V1"
+    }
+  ],
+  "baseline_sources": [
+    {
+      "attempt_id": "attempt-20260904T172609Z-t1officialpop500",
+      "cell_id": "T1-official-pop-500",
+      "manifest_sha256": "17acd0f4c1de9b5f4c658390fb67e8a6065f1628ff09b19bcd77afa47e7f99cf",
+      "rows": 500,
+      "run_id": "SAEA-A2T-TIER1-OFFICIAL-POPULATION-V1",
+      "study_commit": "e61b424a17e60106232b945a1aec5f55c7cdc4f3"
+    },
+    {
+      "attempt_id": "attempt-20260904T193726Z-t258officialpop1500",
+      "cell_id": "T258-official-pop-1500",
+      "manifest_sha256": "7de7429110e978784fc8303e632c54360d9cdbb70aa61e9d084b957f68db847f",
+      "rows": 1500,
+      "run_id": "SAEA-A2T-TIER258-OFFICIAL-POPULATION-V1",
+      "study_commit": "b52c22b06b967663f56b71260dee06857f49aa6e"
+    },
+    {
+      "attempt_id": "attempt-20260904T211040Z-t3467officialpop2000",
+      "cell_id": "T3467-official-pop-2000",
+      "manifest_sha256": "1f43aab3520a0e4df0aa0b11693f518fda81b52e936e510f51c00713af016d58",
+      "rows": 2000,
+      "run_id": "SAEA-A2T-TIER3467-OFFICIAL-POPULATION-V1",
+      "study_commit": "6c13fb6dbb3e6895aa2210ddd645ed6b5f317290"
+    }
+  ],
+  "cross_arm": [
+    {
+      "arm_pct": 61.824999999999996,
+      "baseline_pct": 61.650000000000006,
+      "ci90_high_pp": 0.7000000000000001,
+      "ci90_low_pp": -0.375,
+      "content_effect_credited": false,
+      "delta_definition": "KC-A1-contrast-raw minus KC-A1c-category-raw on the same 4,000 rows",
+      "delta_pp": 0.17499999999999183,
+      "harms": 79,
+      "left_cell_id": "KC-A1c-category-raw",
+      "metric": "tool_accuracy",
+      "n": 4000,
+      "n_replicates": 10000,
+      "right_cell_id": "KC-A1-contrast-raw",
+      "rule": "a gain is credited as CONTENT only when this contrast's CI90 lower bound is above 0; a control reaching a comparable delta attributes the gain to prompt FORM instead",
+      "saves": 86,
+      "seed": 20260903,
+      "sigma_hat_pp": 0.3226492782806123,
+      "sign_test_p": 0.6405622342031336,
+      "ties": 3835
+    }
+  ],
+  "decision_rule_id": "kc-a1",
+  "mf1_target_provenance": {
+    "definition": "a miss is a TARGET-PAIR miss when the gold tool and the predicted tool sit inside the SAME MF-1 target -- the component definition of the audit's own table, resolved from the receipt and never asserted here",
+    "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-query-cue-audit/summary.json",
+    "receipt_sha256": "81ea9b79e7ca713cb5c0b788190c57ecd147cbee02456565ec02e39cd2afe732",
+    "targets": 5,
+    "tools": 23
+  },
+  "pairing": "every one of the 4,000 rows is paired with its OWN sealed official-protocol output; nothing was re-flown on the baseline side. Arm-versus-arm contrasts pair the same rows between two flown arms",
+  "paper_column_note": "reported beside every tier as a CEILING reference. No gate in this run is set relative to it: every decision is a paired delta against the sealed official-protocol cells and, for a control, against the treatment arm",
+  "paper_source": "arXiv:2604.22821 Table 3, Qwen-3-Omni-30B",
+  "roster": {
+    "count": 4000,
+    "domain_counts": {
+      "smart_car": 351,
+      "smart_home": 2792,
+      "wearables": 857
+    },
+    "flight_split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+    "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-org1-domain-grouped-roster/flight-roster-receipt.json",
+    "receipt_sha256": "e5a81b71e1253ff866262991f79d132b89f4bfb47e7c8a0c0cf0aa04857b8736",
+    "split_identity_hash": "c0c1e7ccc0a9d923e51e86be11c4aedb760a2b91c8ab166305a6877c64496ad4",
+    "tier_counts": {
+      "tier1_direct": 500,
+      "tier2_parametric": 500,
+      "tier3_multi_intent": 500,
+      "tier4_implicit": 500,
+      "tier5_needle": 500,
+      "tier6_correction": 500,
+      "tier7_multiturn": 500,
+      "tier8_intent_blending": 500
+    }
+  },
+  "schema": "saea-a2t-paired-arms-result-summary-v2",
+  "schema_note": "v2 generalizes the single-arm ORG-1 summary (schema saea-a2t-org1-domain-grouped-result-summary-v1, sealed 2026-09-05) to N arms: the per-arm block is the same computation with 'org1' renamed 'arm', and the sealed v1 file stays as sealed. Re-running the ORG-1 arm here reproduces its numbers exactly",
+  "study": "speech-aware-evidence-acquisition"
+}
