@@ -35,7 +35,7 @@ a SUCCESSOR rule and needs its own preregistration before it can be locked.
 
 | file | what it is |
 |---|---|
-| `read.py` | the exact script that produced `read.json` (`scripts/slurp_legal_label_projection_read.py`). Scoring-side only, zero contacts |
+| `read.py` | the archived, byte-identical copy of the exact script that produced `read.json`. The live path is `scripts/slurp_legal_label_projection_read.py`, and that is the one to run: the script resolves the repository from its own location, so the copy reproduces the bytes but not the invocation. Scoring-side only, zero contacts |
 | `read.json` | schema `saea-slurp-legal-label-projection-relock-read-v1`: the full read — official blocks for all ten scored sets, projection accounting and the complete `from -> to` map, paired contrasts with per-stratum tables for three populations, both weightings, the residual diagnostic and the KC-S1b fallback analysis |
 | `result-summary.json` | schema `saea-slurp-legal-label-projection-relock-result-summary-v1`: the machine-readable verdict, assembled from `read.json` alone |
 | `build_result_summary.py` | that assembler; reads nothing but `read.json` |
@@ -65,10 +65,13 @@ Reproduce:
 ```bash
 export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$PWD/src
 D=docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-legal-label-projection-relock
-python -B $D/read.py --out $D/read.json \
+python -B scripts/slurp_legal_label_projection_read.py --out $D/read.json \
   --score-dir $SPEECHRL_DATA_DIR/runs/SAEA-SLURP-MF-LEGAL-LABEL-PROJECTION-RELOCK-V1/score-batch
 python -B $D/build_result_summary.py
 ```
+
+Add `--reuse-score-dir` to re-read an existing batch instead of respawning the official
+evaluator; the batch is deterministic, so that changes no number.
 
 Score-batch artifacts (eight job results, their stderr logs and the batch summary) live under
 `$SPEECHRL_DATA_DIR/runs/SAEA-SLURP-MF-LEGAL-LABEL-PROJECTION-RELOCK-V1/score-batch/` and never
