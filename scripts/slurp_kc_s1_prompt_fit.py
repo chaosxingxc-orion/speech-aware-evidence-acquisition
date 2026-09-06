@@ -96,6 +96,9 @@ from speech_aware_evidence_acquisition.core.flight.runtime import (  # noqa: E40
 from speech_aware_evidence_acquisition.core.instructions import (  # noqa: E402
     resolve_active_task_instruction,
 )
+from speech_aware_evidence_acquisition.core.model.speech_features import (  # noqa: E402
+    load_speech_feature_packet,
+)
 from speech_aware_evidence_acquisition.core.session import (  # noqa: E402
     load_runtime_receipt,
     start_session,
@@ -145,7 +148,7 @@ CELLS = (
 DEFAULT_RUN_ID = "SAEA-SLURP-KC-S1-PROMPT-FIT-V1"
 PLAN_CALLS = 4
 PLAN_GPU_HOURS = 0.3
-PLAN_AUDIO = 60.0
+PLAN_AUDIO = 60
 
 
 def log(message: str) -> None:
@@ -193,13 +196,29 @@ def roster(values: Mapping[str, object]) -> tuple[SlurpSample, ...]:
     return tuple(sorted(samples, key=lambda sample: sample.sample_id))
 
 
-def speech_tokens_by_sample(values: Mapping[str, object]) -> dict[str, int]:
+def speech_tokens_by_sample(
+    values: Mapping[str, object], samples: Sequence[SlurpSample]
+) -> dict[str, int]:
+    """Exact speech-feature tokens per roster row, read from the promoted
+    packets themselves (``sum(chunk.n_tokens)``) rather than from the
+    14.4 tokens/second approximation the registered geometry was sized with.
+
+    The SLURP promotion receipt records packet identity but not token
+    counts, so the packets are opened; the receipt is still loaded first so
+    the feature root and the promoted set are the registered ones.
+    """
+
     receipt = load_promotion_receipt(Path(str(values["speech_packet_promotion_receipt"])))
-    by_packet = {
-        str(entry["packet_id"]).replace("/", ":"): int(entry["n_tokens"])
-        for entry in receipt["packets"]
-    }
-    return by_packet
+    promoted = {str(entry["packet_id"]) for entry in receipt["packets"]}
+    feature_root = Path(str(receipt["feature_root"]))
+    tokens: dict[str, int] = {}
+    for sample in samples:
+        packet_id = packet_id_for_sample(sample.sample_id)
+        if packet_id not in promoted:
+            raise SystemExit("promotion receipt has no packet for %s" % sample.sample_id)
+        packet = load_speech_feature_packet(feature_root, packet_id)
+        tokens[sample.sample_id] = sum(chunk.n_tokens for chunk in packet.chunks)
+    return tokens
 
 
 def system_text_for(values: Mapping[str, object], lock, root, adapter, sample) -> str:
@@ -339,13 +358,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     context_per_slot = geometry["slot_tokens"]
     maximum_completion_tokens = int(values["decoding_params"]["max_tokens"])
 
-    packet_tokens = speech_tokens_by_sample(values)
-    speech_by_sample = {}
-    for sample in samples:
-        packet_id = packet_id_for_sample(sample.sample_id)
-        if packet_id not in packet_tokens:
-            raise SystemExit("promotion receipt has no packet for %s" % sample.sample_id)
-        speech_by_sample[sample.sample_id] = packet_tokens[packet_id]
+    speech_by_sample = speech_tokens_by_sample(values, samples)
     maximum_speech_feature_tokens = max(speech_by_sample.values())
     log(
         "speech tokens from the promotion receipt: min %d max %d"
