@@ -683,6 +683,7 @@ def score_bundle(
 from ..reproduction.slurp_official_eval import (  # noqa: E402
     score_slurp_outputs_official,
     score_slurp_outputs_official_projected,
+    score_slurp_outputs_official_projected_v2,
 )
 
 SCORERS.register("slurp-slu", score_slurp_outputs_official)
@@ -711,6 +712,28 @@ SCORERS.register("slurp-slu-official", score_slurp_outputs_official)
 
 SCORERS.register("slurp-slu-projected", score_slurp_outputs_official_projected)
 SCORERS.register("slurp-slu-official-projected", score_slurp_outputs_official_projected)
+
+# ---------------------------------------------------------------------------
+# The SUCCESSOR rule slurp-legal-label-projection-v2 (preregistration
+# docs/readiness/2026-09-06-slurp-legal-label-projection-v2-preregistration.md).
+#
+# v1 repairs LEGALITY by spelling, which sends `locations` to `lists` because
+# that is what `locations` is spelled like. v2 first asks whether the illegal
+# SCENARIO slot holds a legal ACTION name -- the model answering
+# recommendation_locations as `locations`/`query` -- and if so promotes it back
+# to the scenario that owns it, falling through to v1 unchanged otherwise.
+#
+# v1 stays registered beside it, deliberately: the two rules are SIBLINGS, not
+# a revision chain, so a verdict can pair a cell against either one and v1's
+# own 2026-09-06 lock stays readable from its own scorer id whatever v2's read
+# decides. All four projected ids are keyword bindings of the same
+# score_slurp_outputs_official, never independent implementations.
+# ---------------------------------------------------------------------------
+
+SCORERS.register("slurp-slu-projected-v2", score_slurp_outputs_official_projected_v2)
+SCORERS.register(
+    "slurp-slu-official-projected-v2", score_slurp_outputs_official_projected_v2
+)
 
 
 # ---------------------------------------------------------------------------
