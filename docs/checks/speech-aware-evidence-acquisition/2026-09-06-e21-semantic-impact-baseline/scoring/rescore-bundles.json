@@ -1,0 +1,37 @@
+{
+  "bundles": [
+    {
+      "artifacts": {
+        "outputs": {
+          "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-SEMANTIC-IMPACT-BASELINE-V1/rescore-semantic-high-impact/SAEA-E21-FULL44-DIRECT-BASELINE-V2.outputs.jsonl",
+          "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DIRECT-BASELINE-V2/attempt-20260904T233816Z-bcd338/SAEA-E21-FULL44-DIRECT-BASELINE-V2.outputs.jsonl",
+          "sha256": "7d4732066d61fccff5bf0829779c24138edcf003e4338933c398416459bbe00d"
+        },
+        "raw_trace": {
+          "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-SEMANTIC-IMPACT-BASELINE-V1/rescore-semantic-high-impact/SAEA-E21-FULL44-DIRECT-BASELINE-V2.trace.jsonl",
+          "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DIRECT-BASELINE-V2/attempt-20260904T233816Z-bcd338/SAEA-E21-FULL44-DIRECT-BASELINE-V2.trace.jsonl",
+          "sha256": "c657260e0d392f084feee0dd09b23e9c7eac56c6288c15e6b05bb808378795dd"
+        },
+        "scores": {
+          "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-SEMANTIC-IMPACT-BASELINE-V1/rescore-semantic-high-impact/SAEA-E21-FULL44-DIRECT-BASELINE-V2.scores.json",
+          "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DIRECT-BASELINE-V2/attempt-20260904T233816Z-bcd338/SAEA-E21-FULL44-DIRECT-BASELINE-V2.scores.json",
+          "sha256": "d7605a2fcff040659024262bd99fcfb54511d2ac7be553ce3d9974db133da15a"
+        },
+        "session_receipt": {
+          "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-SEMANTIC-IMPACT-BASELINE-V1/rescore-semantic-high-impact/SAEA-E21-FULL44-DIRECT-BASELINE-V2.session-receipt.json",
+          "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DIRECT-BASELINE-V2/attempt-20260904T233816Z-bcd338/SAEA-E21-FULL44-DIRECT-BASELINE-V2.session-receipt.json",
+          "sha256": "0163464523d1e537f286fb800db4ff65e0ca6b93c87a092473a7731f340c8ddf"
+        },
+        "trace_manifest": {
+          "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-SEMANTIC-IMPACT-BASELINE-V1/rescore-semantic-high-impact/SAEA-E21-FULL44-DIRECT-BASELINE-V2.trace-manifest.json",
+          "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DIRECT-BASELINE-V2/attempt-20260904T233816Z-bcd338/SAEA-E21-FULL44-DIRECT-BASELINE-V2.trace-manifest.json",
+          "sha256": "605bfd2ed302c106cea08364ea2aaa1f38244dfaed7057bdea7ea5ed9594b083"
+        }
+      },
+      "job_id": "semantic-high-impact",
+      "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-SEMANTIC-IMPACT-BASELINE-V1/rescore-semantic-high-impact/SAEA-E21-FULL44-DIRECT-BASELINE-V2.run-manifest.json",
+      "manifest_sha256": "ef7622b422463057fdfaa231f78e9fc8c83dc22b82b2e1a8f0e7a93388718ebd",
+      "scorer": "semantic-high-impact-error-rate-v1"
+    }
+  ]
+}

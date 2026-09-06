@@ -1,0 +1,30 @@
+{
+  "contacts": {
+    "audio_seconds": 0,
+    "gold_or_reference_reads": 0,
+    "gpu_hours": 0,
+    "model": 0,
+    "network": 0
+  },
+  "generated_by": "scripts/build_semantic_impact_taxonomy.py",
+  "high_level": "HIGH",
+  "levels": [
+    "NONE",
+    "LOW",
+    "HIGH"
+  ],
+  "normalizer": "whisper-english-v20240930",
+  "rules": 9237,
+  "rules_by_level": {
+    "HIGH": 20,
+    "LOW": 1,
+    "NONE": 9216
+  },
+  "schema": "saea-semantic-impact-taxonomy-receipt-v1",
+  "source_module": "src/speech_aware_evidence_acquisition/analysis/e22_error_taxonomy.py",
+  "source_module_commit": "9ee2fb11e1669544283a4492dcdca60d8b7953ee",
+  "source_module_sha256": "dfea875fbbfebb5ad3034f649cb1976bccbd32816abe5770248840bb96a28a1c",
+  "taxonomy_id": "e22-semantic-scan-2026-09-06-content-impact-word-pair-v1",
+  "taxonomy_relpath": "docs/taxonomies/semantic-high-impact/ACTIVE.json",
+  "taxonomy_sha256": "e807cea417ee690ee7b0beb48bcfdbb1ae8526bc2a4768bbffc166bc31e52fea"
+}

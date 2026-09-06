@@ -284,9 +284,18 @@ def test_registered_scorer_runs_once_a_taxonomy_is_present(synthetic_world, tmp_
     assert scores["aggregate"]["high_impact_error_rate"] == pytest.approx(0.25)
 
 
-def test_the_active_taxonomy_path_does_not_exist_in_this_checkout():
-    """The Earnings-21 value of this metric is deliberately NOT computed yet."""
+def test_the_active_taxonomy_path_now_carries_the_e22_projection():
+    """Superseded 2026-09-06 (E5). This assertion used to demand the path be
+    ABSENT, so the wait for the Earnings-22 scan stayed visible. The scan landed
+    and its content-impact model was projected onto this file contract
+    (``analysis.semantic_impact_taxonomy``), so what stays visible now is that
+    the committed file loads through this module's own reader -- the scorer no
+    longer fails closed, and a taxonomy that would break it breaks here.
+    ``tests/unit/test_semantic_impact_taxonomy.py`` asserts the bytes are the
+    projection."""
 
     from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
 
-    assert not (REPO_ROOT / ACTIVE_TAXONOMY_RELPATH).exists()
+    path = REPO_ROOT / ACTIVE_TAXONOMY_RELPATH
+    assert path.is_file()
+    assert load_taxonomy(path).normalizer == "whisper-english-v20240930"

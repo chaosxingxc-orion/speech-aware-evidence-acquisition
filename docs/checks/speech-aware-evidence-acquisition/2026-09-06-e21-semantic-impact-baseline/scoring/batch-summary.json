@@ -1,0 +1,30 @@
+{
+  "aggregation_rule": "no dataset sharding and no averaging of shard-level official metrics",
+  "effective_max_workers": 1,
+  "elapsed_seconds": 568.0545184479852,
+  "failed": 0,
+  "job_count": 1,
+  "jobs": [
+    {
+      "elapsed_seconds": 568.0350708879996,
+      "error": null,
+      "index": 0,
+      "job_id": "semantic-high-impact",
+      "ledger_cells": null,
+      "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-SEMANTIC-IMPACT-BASELINE-V1/rescore-semantic-high-impact/SAEA-E21-FULL44-DIRECT-BASELINE-V2.run-manifest.json",
+      "operation": "score",
+      "result_file": "semantic-high-impact.score.json",
+      "result_sha256": "ef085873252f153dc1b903fd38568875650eb8f45c2d4d1e1ca7b86406e876c4",
+      "returncode": 0,
+      "status": "succeeded",
+      "stderr_log": "semantic-high-impact.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_log": null
+    }
+  ],
+  "operation": "score",
+  "parallelism_boundary": "one-complete-verified-manifest-per-process",
+  "requested_max_workers": 1,
+  "schema": "saea-parallel-score-batch-v1",
+  "succeeded": 1
+}

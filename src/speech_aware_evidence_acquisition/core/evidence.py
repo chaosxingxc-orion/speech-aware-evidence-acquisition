@@ -81,6 +81,28 @@ run correctly keeps failing closed at the unchanged
 ``contracts.gate_evidence_identity`` rail until a future D0/D1 update adds
 this layer; nothing here weakens that gate or bypasses it early.
 
+``conec-class-lists`` / ``conec-class-lists-placebo`` (2026-09-06, E5 /
+KC-E1 / KU-E1c, ``docs/readiness/2026-09-06-e21-kc-e1-pre-meeting-brief-v1-
+preregistration.md``): the PRE-MEETING BRIEF and its form twin. Unlike every
+source above, one call of these returns TWO items -- the participant roster
+rendered as labelled participant/organization/division lines, then the
+context document rendered as company-ticker, product-segment and residual
+term candidates, each entry carrying its Whisper-normalized form where
+casing or punctuation moves it. Two items rather than one because
+``contracts.gate_evidence_identity._route_evidence_layer_key`` routes ONE
+relpath to ONE D1 layer and the brief's two halves live under two
+(``e21_contexts`` and ``e21_participant_names``), so a fused item could
+carry a verifiable derivation chain for neither half. Both halves reuse
+``_conec_names``/``_conec_contexts`` verbatim for the read -- so the roster
+half inherits, unchanged, the D1 gap the ``conec-names`` paragraph above
+already records, and a gated run still fails closed there until a D0/D1
+update adds that layer. The rendering itself lives in ``core.class_lists``
+(module docstring: what ConEC's two files actually contain, why the
+document-derived classes are CANDIDATES rather than an inventory, and why
+the twin is a function of shape alone), whose four pure transforms are
+registered in ``core.evidence_derivation.TRANSFORMS`` and resolved in
+:func:`resolve_declared_transform_params` exactly like the bias-list ones.
+
 ``derived-candidates`` (2026-08-12, offline retrieval-gated candidate
 evidence -- the E-003R mechanism and the KC-Q3 two-pass machinery's shared
 evidence layer; see ``scripts/materialize_candidates.py``'s own module
@@ -148,7 +170,8 @@ from .bias_lists import (
     resolve_bias_list_max_entries,
     resolve_bias_phrase_max_tokens,
 )
-from .evidence_derivation import canonical_params_hash
+from .class_lists import CLASS_LIST_TRANSFORMS, resolve_max_entries_per_class
+from .evidence_derivation import TRANSFORMS, canonical_params_hash
 
 
 class OracleEvidenceError(RuntimeError):
@@ -661,6 +684,136 @@ def _conec_bias_phrases(
     return [item.validate()]
 
 
+def _class_list_item(
+    raw_item: EvidenceItem,
+    sample_id: str,
+    transform_name: str,
+    content: str,
+    max_entries: int,
+    part: str,
+) -> EvidenceItem:
+    """One half of the pre-meeting brief, wrapped exactly the way
+    ``_conec_bias_list`` wraps its own transform output: the RAW item's source
+    relpath and source sha256 carried through, so the derivation chain pins the
+    ConEC file this half was actually built from, and
+    ``core.evidence_derivation.DerivedEvidenceRegistry`` can re-invoke the SAME
+    registered transform on the SAME bytes and get this content back."""
+
+    derived_sha256 = hashlib.sha256(content.encode("utf-8")).hexdigest()
+    source_record = raw_item.derivation
+    derivation = DerivedEvidenceRecord(
+        sample_id=sample_id,
+        source_relpath=source_record.source_relpath,
+        source_sha256=source_record.source_sha256,
+        transform_name=transform_name,
+        transform_version="v1",
+        params_hash=canonical_params_hash({"max_entries_per_class": max_entries}),
+        derived_sha256=derived_sha256,
+        carrier_bound=True,
+    )
+    item = EvidenceItem(
+        evidence_id=f"{transform_name}/{sample_id}",
+        source_uri=f"{transform_name}://{raw_item.provenance['relpath']}",
+        content=content,
+        provenance={
+            **raw_item.provenance,
+            "extraction": f"{transform_name}-v1",
+            "brief_part": part,
+            "max_entries_per_class": max_entries,
+        },
+        derivation=derivation,
+        derivation_source_bytes=raw_item.derivation_source_bytes,
+    )
+    return item.validate()
+
+
+def _class_list_items(
+    lock: Mapping[str, object],
+    root: Path,
+    sample_id: str,
+    carrier_lock_key: str,
+    values: Mapping[str, object] | None,
+    *,
+    placebo: bool,
+) -> list[EvidenceItem]:
+    """E5's pre-meeting brief, or its form twin, as TWO evidence items.
+
+    Roster first, then document, because that is the order a human reads a
+    briefing in and the order ``core.model.transport`` renders the two
+    ``[evidence ...]`` blocks. Two items rather than one fused item because
+    ``contracts.gate_evidence_identity._route_evidence_layer_key`` routes one
+    relpath to one D1 layer, and the brief's two halves live under two
+    (``e21_contexts`` and ``e21_participant_names``); a fused item could carry a
+    verifiable derivation chain for neither. Both halves reuse
+    ``_conec_names``/``_conec_contexts`` verbatim for the read, so a carrier
+    with no ConEC evidence layer (earnings22-original) fails closed with their
+    wording, unchanged."""
+
+    max_entries = resolve_max_entries_per_class(values)
+    suffix = "-placebo" if placebo else ""
+    roster_raw = _conec_names(lock, root, sample_id, carrier_lock_key)[0]
+    document_raw = _conec_contexts(lock, root, sample_id, carrier_lock_key)[0]
+    params: dict[str, object] = {"max_entries_per_class": max_entries}
+    # The SAME registered transforms (core.evidence_derivation.TRANSFORMS) the
+    # registry will independently re-invoke to verify these items -- one
+    # implementation of "what does this brief say", never a second copy built
+    # inline here (core.bias_lists module docstring, "CLOSED GAP").
+    roster_transform = f"conec-class-lists-roster{suffix}"
+    document_transform = f"conec-class-lists-document{suffix}"
+    roster_content = TRANSFORMS.resolve(roster_transform, "v1").apply(roster_raw.content, params)
+    document_content = TRANSFORMS.resolve(document_transform, "v1").apply(
+        document_raw.content, params
+    )
+    return [
+        _class_list_item(
+            roster_raw, sample_id, roster_transform, roster_content, max_entries, "roster"
+        ),
+        _class_list_item(
+            document_raw,
+            sample_id,
+            document_transform,
+            document_content,
+            max_entries,
+            "document",
+        ),
+    ]
+
+
+def _conec_class_lists(
+    lock: Mapping[str, object],
+    root: Path,
+    sample_id: str,
+    carrier_lock_key: str,
+    values: Mapping[str, object] | None = None,
+) -> list[EvidenceItem]:
+    """E5 / KC-E1 (``docs/readiness/2026-09-06-e21-kc-e1-pre-meeting-brief-v1-
+    preregistration.md``): the PRE-MEETING BRIEF -- this call's ConEC
+    participant roster and context documents rendered as labelled entity-class
+    lines with the Whisper-normalized form beside each surface form. Built from
+    the call's OWN two ConEC context files and nothing else; never a reference
+    transcript, a timestamp file, a wer_tags sidecar or another call's material
+    (``core.class_lists`` module docstring for what those two files contain and
+    for the class-by-class provenance)."""
+
+    return _class_list_items(lock, root, sample_id, carrier_lock_key, values, placebo=False)
+
+
+def _conec_class_lists_placebo(
+    lock: Mapping[str, object],
+    root: Path,
+    sample_id: str,
+    carrier_lock_key: str,
+    values: Mapping[str, object] | None = None,
+) -> list[EvidenceItem]:
+    """KU-E1c's form twin of ``conec-class-lists``: the same class labels, the
+    same entry count and the same whitespace-token count per line, with every
+    entry token replaced by a position-chosen neutral placeholder. Built from
+    the SAME source bytes as the arm it controls, so the two can never drift in
+    shape (``core.class_lists.placebo_of``)."""
+
+    return _class_list_items(lock, root, sample_id, carrier_lock_key, values, placebo=True)
+
+
 def _distractor_only_bias_list(
     lock: Mapping[str, object],
     root: Path,
@@ -788,6 +941,8 @@ def resolve_declared_transform_params(
         return {"max_entries": resolve_bias_list_max_entries(values)}
     if transform_name == "conec-bias-phrases":
         return {"max_tokens": resolve_bias_phrase_max_tokens(values)}
+    if transform_name in CLASS_LIST_TRANSFORMS:
+        return {"max_entries_per_class": resolve_max_entries_per_class(values)}
     raise EvidenceError(
         f"no declared-params resolver registered for transform {transform_name!r}"
     )
@@ -801,3 +956,5 @@ EVIDENCE_SOURCES.register("oracle", _oracle_refusal)
 EVIDENCE_SOURCES.register("conec-bias-list", _conec_bias_list)
 EVIDENCE_SOURCES.register("conec-bias-phrases", _conec_bias_phrases)
 EVIDENCE_SOURCES.register("distractor-only-bias-list", _distractor_only_bias_list)
+EVIDENCE_SOURCES.register("conec-class-lists", _conec_class_lists)
+EVIDENCE_SOURCES.register("conec-class-lists-placebo", _conec_class_lists_placebo)

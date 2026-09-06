@@ -1,0 +1,1263 @@
+{
+  "brief_whitespace_tokens": {
+    "max": 2565,
+    "median": 969,
+    "min": 263,
+    "total": 44897
+  },
+  "calls": 44,
+  "carrier_lock_key": "earnings21-original",
+  "construction_calls": 34,
+  "contacts": {
+    "audio_seconds": 0,
+    "gold_or_reference_reads": 0,
+    "gpu_hours": 0,
+    "model": 0,
+    "network": 0
+  },
+  "distinct_source_files": 88,
+  "evaluation_calls": 10,
+  "evidence_sources": [
+    "conec-class-lists",
+    "conec-class-lists-placebo"
+  ],
+  "generated_by": "scripts/build_e21_brief_provenance.py",
+  "lock_path": "/mnt/d/chao_workspace/docs/datasets.lock.json",
+  "per_call_separation": "every call's two source files are keyed by that call's own sample id and are shared with no other call",
+  "placebo_matches_brief_token_count": true,
+  "rows": [
+    {
+      "brief_whitespace_tokens": 969,
+      "placebo_whitespace_tokens": 969,
+      "roster": "construction",
+      "sample_id": "4320211",
+      "sources": [
+        {
+          "derived_sha256": "0ce4464d93dfe2947b264a073ef59f407ff211f6586312582905d31d14a29e6e",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "482088a04525015ee1c45b9995865f0b234be0f4da796ccd7874824450408bcc",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4320211.names.txt",
+          "source_sha256": "0ebcbfd1683038b20a4d6ca3866c8f353dd44a16170cd8f513c5bd993302e82e",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 140
+        },
+        {
+          "derived_sha256": "8edcd8d826b4334f2e8c1aba931da6dfe080e6690d3c28f4b1c66596d62bdbd2",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "59da94caa4365d6e50b3eb849dde4d2acebb7322706f65f509e9b2329cf3e7b8",
+          "source_relpath": "datasets/conec/earnings21/contexts/4320211.txt",
+          "source_sha256": "115d26c2fe53a073e945f014124958b0e8e5adbb6ac6a629b9a94b6ea96426f7",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 829
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1265,
+      "placebo_whitespace_tokens": 1265,
+      "roster": "evaluation",
+      "sample_id": "4330115",
+      "sources": [
+        {
+          "derived_sha256": "b8b4d649f2aad82726ecf39da9e30c4b245d9cc20cb9e851bf69acd49ca7ba68",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "b528c45c5d07ecbc5767b0fab722855e3a454f9373a650903ed763c5358fc6c0",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4330115.names.txt",
+          "source_sha256": "08840410feff4b5ef428628687afc59e2231958531f31b9ed6de96867b99599c",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 162
+        },
+        {
+          "derived_sha256": "02ebdbf788c984c25620caf4a74dafdaa7f3502f30c5fa5bf8d16b9a3018dd94",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "5bf266eeeafa409bfc069b982d6e49e2b891075b1342c6ff1f94da4e8febd947",
+          "source_relpath": "datasets/conec/earnings21/contexts/4330115.txt",
+          "source_sha256": "14dcf588585b4e8f32a0c5f0055c73b0ef68780729facd8d8ac33a808549acad",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 1103
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1702,
+      "placebo_whitespace_tokens": 1702,
+      "roster": "construction",
+      "sample_id": "4341191",
+      "sources": [
+        {
+          "derived_sha256": "eac72c1aaffb3e48939c40889e3798f4a4a5e97b882b7577c4c6c92454586645",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "b29b8eee5b025c37e3e44c9d0b56066dd38ddeb24dd4b83117c8d3821ccbb73a",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4341191.names.txt",
+          "source_sha256": "ca98595cf41c6a1d3b1b18941b5c459c2b42b2d8722594eacf0619374aa13709",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 196
+        },
+        {
+          "derived_sha256": "28ab6e4c264a473afe3c4d5e3c8db61b0f0fa2538c0a707deaa185eb8d617b54",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "afae59ee43adffe329bded74ed4ec604a82e8fd0314402da42ebd63fffd4e27b",
+          "source_relpath": "datasets/conec/earnings21/contexts/4341191.txt",
+          "source_sha256": "fafc33aa62a02d4f6291a06359c417e8fcec318429485cb2608133841b6173e2",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 1506
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 797,
+      "placebo_whitespace_tokens": 797,
+      "roster": "construction",
+      "sample_id": "4344338",
+      "sources": [
+        {
+          "derived_sha256": "6df811fd1f126a2e3af08e318a878f605ab58ae5f174c67ce19dc6e91b36253d",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "6baa0177f3a5ef3c2601c25489af1234ce8848f1f90a37947f4cf10b06dd9adc",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4344338.names.txt",
+          "source_sha256": "cceb54ba8aba5c349e5fe223b91b52dba5bb78a476099484fbea74fe8cbe41c2",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 125
+        },
+        {
+          "derived_sha256": "a309c4a1112e7dbc058ee1f6a240401f07a06467340bd460a1745d1a635577ec",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "e7be68cd8d89681b2cebc996b348fddff3222854216a52696577d9c4f9a96e43",
+          "source_relpath": "datasets/conec/earnings21/contexts/4344338.txt",
+          "source_sha256": "4e403cd44f5b0fe24bcd0dbb13ad4bc19a26bcfaff368a924e7bd47b563b7999",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 672
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1374,
+      "placebo_whitespace_tokens": 1374,
+      "roster": "construction",
+      "sample_id": "4344866",
+      "sources": [
+        {
+          "derived_sha256": "e1247db313c875ee7e0b0f960a422e730a64a3db0e623cf909e8031f9c791f55",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "35deb9014d0662509706e41635c57f9bf8e306ad385a38eb09ca3a99efa2529a",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4344866.names.txt",
+          "source_sha256": "801fda045974f8c5462181f40d356c2b7fb29a9a35230d6d69dbc3d8be5fa0ea",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 164
+        },
+        {
+          "derived_sha256": "a54862844609a30e9c322a7c31f3ed9edf03a79e254113c2c4127c2923f34e17",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "f6da167715cba030eb17110445feb99483ba8b09772db814a887108227ab5284",
+          "source_relpath": "datasets/conec/earnings21/contexts/4344866.txt",
+          "source_sha256": "2a1664b02798e872880fac5399480418b44c3e85ce4f7725a95524907103da76",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 1210
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1592,
+      "placebo_whitespace_tokens": 1592,
+      "roster": "construction",
+      "sample_id": "4346818",
+      "sources": [
+        {
+          "derived_sha256": "deed09167bcf3beb32b69fa8e927d68365efacac8a49fd7151849d4126a45f6c",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "41b4252c9b95ca2fa070b4c2ce3b8ae9e3f4defc9c83b137e1b4a2bd790ecb82",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4346818.names.txt",
+          "source_sha256": "03a2bc46a7ee2d1c0a0d3d79ac861c5127366801eb817b73bebdac188b55f985",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 182
+        },
+        {
+          "derived_sha256": "ed79b0ed3e28933617c3fda0dca6c60645cf928edf0668760ce3729112e8aa8b",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "2bb6b81dba57d23658747ddb64b5f17e5cb91010a6a9f838d5b6f8d1dabdee80",
+          "source_relpath": "datasets/conec/earnings21/contexts/4346818.txt",
+          "source_sha256": "e9faba6d7a831f4b421ec0eb2ba6d3a4811d9db8b7d7659829d32f17fbd95a7c",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 1410
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1318,
+      "placebo_whitespace_tokens": 1318,
+      "roster": "construction",
+      "sample_id": "4346923",
+      "sources": [
+        {
+          "derived_sha256": "db8b0a9e9b73b92f19aea8a6e4b9862d0da1adefd807ad7a718343829be66580",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "a253687630531a710e0333e54d8d7b9504dcb1fc20dcdfb2845199c73d1bb9c0",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4346923.names.txt",
+          "source_sha256": "81a30de82786ca07c03ab5da11e8f8dea3151b511e6050de4e5812bc58d9e805",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 287
+        },
+        {
+          "derived_sha256": "02bb1b1b9a3b974cf100a00dfc9531959d44388f55ba7086e4bb0224bc73b2bd",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "f5c91898d5eab90360c91caeac1773522439555ce98973c3e24eea90204752c2",
+          "source_relpath": "datasets/conec/earnings21/contexts/4346923.txt",
+          "source_sha256": "13439a311e5c75f3cd981d5c5bae12de668e929e4911d7403ea66aaa257c8b66",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 1031
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1157,
+      "placebo_whitespace_tokens": 1157,
+      "roster": "construction",
+      "sample_id": "4359732",
+      "sources": [
+        {
+          "derived_sha256": "2bfe8c518db3ed550b18ee3811e9479e822228edb91153f32cdf7010e8aa2310",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "6bd8dfb4b807d96c1e5df776265a80233520a020658daaaa3ae195b67c1f9b63",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4359732.names.txt",
+          "source_sha256": "13b215fba21146a6e577b2aa6874846b3d78a080a38d7221ab26e71c0b05b13a",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 155
+        },
+        {
+          "derived_sha256": "edf53c220fc2c7286eb33225a2e62aabb93050bd84c8087a305bbf35562ef0aa",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "16be7b8925c999cfac9ef4db17c04c20cc56676c859c73773eb57c4cfdb49d58",
+          "source_relpath": "datasets/conec/earnings21/contexts/4359732.txt",
+          "source_sha256": "459be43f5c6c27d3aa7350dea294fee4943de45fe1504f04e9458ee4ff00d488",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 1002
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1044,
+      "placebo_whitespace_tokens": 1044,
+      "roster": "construction",
+      "sample_id": "4359971",
+      "sources": [
+        {
+          "derived_sha256": "1699d57d8cdce1407cd9d6d13fea1b5afe5e8e2d4d155c2e3e8e6835492667fa",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "4407a8eee8082387b9eb4b4fe86b1c511cc3e88e75e5e6114171bf4340a80dd8",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4359971.names.txt",
+          "source_sha256": "6e3b71715afb22f595ab95f9cd01b382cec71fd0da203bcd5f1279e387649973",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 140
+        },
+        {
+          "derived_sha256": "34d6cc4a26d0dd8ed7b0d6fcc9eaad5e1887b3cb1a7c1f977d73ed6ddfd9e87b",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "e0435566a49fa74afafcc265c4bf6c77bf8b792daf863ff2de47367fe384600c",
+          "source_relpath": "datasets/conec/earnings21/contexts/4359971.txt",
+          "source_sha256": "750b6e548925c61a5b9779a932a7fac6f6dd902052da34d503e4fdb975759a9a",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 904
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1545,
+      "placebo_whitespace_tokens": 1545,
+      "roster": "construction",
+      "sample_id": "4360366",
+      "sources": [
+        {
+          "derived_sha256": "6b6838bc0aa605a5cf0979e65c0f5bdf01aebfd1792fde92297083dd83f915aa",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "e5e4e28b759e6a3fdc30c78caff1bb8da7bd37f87a48dfa727e32cf1d249f97e",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4360366.names.txt",
+          "source_sha256": "70f225cf167edf9784ecd33fc90408879e80dd363f9636c62ca9debe827e08b1",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 227
+        },
+        {
+          "derived_sha256": "afa4f66004d599b383fa26128a695a32b6a7d3aca18690e6100ffe4975336515",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "4dbf13132dd3550d655863b2d7ac4c884c4acfc046e035dd65f67e76fbffd3d8",
+          "source_relpath": "datasets/conec/earnings21/contexts/4360366.txt",
+          "source_sha256": "64c340255a2b0823ae27942c2290c592d6c25eb060d5a68f194a7d8080a64351",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 1318
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1389,
+      "placebo_whitespace_tokens": 1389,
+      "roster": "construction",
+      "sample_id": "4360674",
+      "sources": [
+        {
+          "derived_sha256": "c8582f559ff303255c004bd5a92f18c79a74438e54e815a6c0bf90573ee4fa9a",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "14ed1aad8e564e7587e2267c9887f09dea442942e30c9136e7aabe4b19252250",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4360674.names.txt",
+          "source_sha256": "74630cd35514706607128bbd3ba13bcd0eb8a3cd20cf5e1a10c28e8e9efe001e",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 140
+        },
+        {
+          "derived_sha256": "d301ce6b09e824f3cd88eac66484ca6c232d1c89e19993c0b575c009e33d466b",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "3adc54245be89e69827fe0503883b858d64753239180922d7f1af6162e8e7511",
+          "source_relpath": "datasets/conec/earnings21/contexts/4360674.txt",
+          "source_sha256": "49c227798730cfdc18d5d40e471e5d1b7842dbdce08711b586dae8c9e1790bb7",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 1249
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1560,
+      "placebo_whitespace_tokens": 1560,
+      "roster": "construction",
+      "sample_id": "4360717",
+      "sources": [
+        {
+          "derived_sha256": "386120aedf4df52c0b001fbce7a382e79b3658b1f83bf1e5050abb25ec023633",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "3e6b511bc520b86b6f0d8ae5fe41ba797ff1da1018695f88a6c1f212495aa9c3",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4360717.names.txt",
+          "source_sha256": "3822deb5103e592deeabfde1aba72bb2c460f11af718cc154f63daeda17218ad",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 198
+        },
+        {
+          "derived_sha256": "d843d172fa791e352a3f2b0b0bfe059f0e348f022c18aaf8a7ac77343815aa80",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "992cfd9ec9858fa933b638ddf9899ea918d0e9a183d44b3ebca225214c7426c3",
+          "source_relpath": "datasets/conec/earnings21/contexts/4360717.txt",
+          "source_sha256": "b267508f3efe210e5486285e5e529fd31d494ce66023f800dac179a5ed745d64",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 1362
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 734,
+      "placebo_whitespace_tokens": 734,
+      "roster": "construction",
+      "sample_id": "4361631",
+      "sources": [
+        {
+          "derived_sha256": "f4a8ce7ec31cfe9873aee6ccc658f4cd482899c14627394811c6e08299a90a98",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "8ac7ce790199a67396e9a98d204f1e0ad1817253da0d01edc83dc0a83a32a775",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4361631.names.txt",
+          "source_sha256": "ab734b4692245b8b7b663dd3df02a701e54b94c3db2254b146af05ad1d66aded",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 168
+        },
+        {
+          "derived_sha256": "8ff1d97c17519dadbb7b5a6d3ec6d42db5294306ce1deb0941be4d1f23833089",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "7e63c2332e2f1ee7fa5607fcd69792b45eaa2c7cddcae486cca21a509d550c7f",
+          "source_relpath": "datasets/conec/earnings21/contexts/4361631.txt",
+          "source_sha256": "a544f9536ae99751e9137985c5204db46a5b070f8879d9718602bf9dcd69c0ec",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 566
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1638,
+      "placebo_whitespace_tokens": 1638,
+      "roster": "construction",
+      "sample_id": "4363614",
+      "sources": [
+        {
+          "derived_sha256": "c535dc0a0fcfc48a29843128c274f6b634521a8790ee59d4254e093be4a12b57",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "634f6018255979713c9ce3dfad0de1122d38c2593606afb5fe013038469c2ae0",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4363614.names.txt",
+          "source_sha256": "0d8acbf5f4df4272343baf077049fe7aec8a915dae64b45fd8f8ddc91ca50990",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 187
+        },
+        {
+          "derived_sha256": "44c1b8ad0366c770d9df4c1eb7c1269b43625f5daeab0d9f9f9802e077863b51",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "409846446d1dd67441f54a3cae11320d403a6981e398544bcb401d23a1b8b4d7",
+          "source_relpath": "datasets/conec/earnings21/contexts/4363614.txt",
+          "source_sha256": "59ff25a9b4cad9dc177ca72bbfbf8fc4474cfafd8b1bf7a83575d5eb761a8c62",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 1451
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1975,
+      "placebo_whitespace_tokens": 1975,
+      "roster": "construction",
+      "sample_id": "4364366",
+      "sources": [
+        {
+          "derived_sha256": "49260eb714715ce6a74c15e58368af5a48e3efd595718841f67b1d5fda8f39d9",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "fb53a3bdc7bff8f6084e8c3eccf7584a48ad6605fa2e63d9cbae71be6cb4b30d",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4364366.names.txt",
+          "source_sha256": "d2d29e8566d9f0a64bd1efdfb04f1be2740e625724c7c1b9c0f89e35d405a0e6",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 197
+        },
+        {
+          "derived_sha256": "d1741e2c6835810c6ecfe4e9616dcc18fd3ea3b1ad890cc987d4228056d488a3",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "1dec14dce0e363ba30ae89b5031322c4ce90aa869c46fc30c036f55901fcb951",
+          "source_relpath": "datasets/conec/earnings21/contexts/4364366.txt",
+          "source_sha256": "a63acc293ac7e38fef44d47782df84a9f3afec98745cead961491815daff2e81",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 1778
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 961,
+      "placebo_whitespace_tokens": 961,
+      "roster": "evaluation",
+      "sample_id": "4365024",
+      "sources": [
+        {
+          "derived_sha256": "ed0af03c967510ced9e97869b96d20543fb98a20d7a0e3aa90246d4972f367ff",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "c0ee9198af01d343c7abd5df237d00815017a702a877d2d9f42e6797224e1765",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4365024.names.txt",
+          "source_sha256": "14e2677ce560b513975b7a53f1d22313da597a790f0182ef30893f8fe05a0ecd",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 170
+        },
+        {
+          "derived_sha256": "89c28775df80e988c0c0ccccd8bd88f67e52df62d3ca8cb4e964f0252eadb9db",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "ade27b32ef4c3ce865543c3c28f4fc8a4a3b64edc9614c357259e64dd31ae26e",
+          "source_relpath": "datasets/conec/earnings21/contexts/4365024.txt",
+          "source_sha256": "bd2acffaac04b84e8ee88a3dd566a33ccf8dd3571c0bac6768c98c4cef46f50a",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 791
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1026,
+      "placebo_whitespace_tokens": 1026,
+      "roster": "evaluation",
+      "sample_id": "4365948",
+      "sources": [
+        {
+          "derived_sha256": "6858b828938429b715a70c0f060031048ab79a3dcbf0863c6ea8b9f47a8530ea",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "0db7f34deef39897166b8a97351f304745931e2c8c167c233c79002a3326850e",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4365948.names.txt",
+          "source_sha256": "390b70e2317b9f5f744b029a6f2db6e56927cdc72d1f4d8d974b8ae0101ed1d1",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 97
+        },
+        {
+          "derived_sha256": "73ef141e46298d6dd3fbb8522150d786a5e8e4986bf61daf4be7b18890098d3c",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "ea4ae14514e144ef3634b02290e3ae2c49a7d8f5ae0670ca0bbbb2c894878ea7",
+          "source_relpath": "datasets/conec/earnings21/contexts/4365948.txt",
+          "source_sha256": "ab6abb87ddd28eb25535df55539342bb2eb94418283755604add56c9cf9cb3ac",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 929
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1335,
+      "placebo_whitespace_tokens": 1335,
+      "roster": "construction",
+      "sample_id": "4366302",
+      "sources": [
+        {
+          "derived_sha256": "d44c0b6c3e1f0727f186d26150d8d1d26971e4200edbf6c6ab57da573fd8ef6b",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "31bec357584114a4d0df66744706327c1b7826e6f1c2cb165b8e757e892771c5",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4366302.names.txt",
+          "source_sha256": "c3c0ba701719b3fc51fd4f37b3368a4d783c439332cfc8742c64840a7a9796ef",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 170
+        },
+        {
+          "derived_sha256": "42c83aaed944aaac8368ffe2b60e0979dce87e24cfd6ae5bdbaa946844fec4c5",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "9d07b6758de5b55b381171bbd7d3855b2df90c0f449f61e119943544c6a9d8de",
+          "source_relpath": "datasets/conec/earnings21/contexts/4366302.txt",
+          "source_sha256": "19100dc79de4845922fdf49e7f0d8cd7eb7076753a214024b6ca673ea74008b0",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 1165
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1059,
+      "placebo_whitespace_tokens": 1059,
+      "roster": "evaluation",
+      "sample_id": "4366429",
+      "sources": [
+        {
+          "derived_sha256": "f2f7b2d006fae11d0db6b3eb91401ff5e7527674e858782ccf341df126c2f62c",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "78cf023417f581a6a2663a07de7e1f45a71421a30f17f84223d55c83b54c3642",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4366429.names.txt",
+          "source_sha256": "812ad230c76a7919bb6af461f6edc2e46ed79d71b530f262e69d2a9d29b4a48e",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 167
+        },
+        {
+          "derived_sha256": "b682b48867bc4ab2ac02e55b2942e5930b958612362b2cd0cb375478b5fae80c",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "1aa398ec12766f9194269382978fa3e8d2b9f9a76385a2f64019ebf027d5d258",
+          "source_relpath": "datasets/conec/earnings21/contexts/4366429.txt",
+          "source_sha256": "7cbb0e751b4bf115c70c7e600124e8d3cf7de37ca26bc2abd410e60220652d35",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 892
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1521,
+      "placebo_whitespace_tokens": 1521,
+      "roster": "evaluation",
+      "sample_id": "4366522",
+      "sources": [
+        {
+          "derived_sha256": "a265e1136044fd4cb742b22f7e84ba9c3a13e6c109a0f4a6bb78c048e7f7682a",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "ba4e5487bb4c9fbbbd94528089233d1fd35d94285f02bd1fb694fcb8b36b34ed",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4366522.names.txt",
+          "source_sha256": "386f2954d2b04c8d207b7a66d89e2605db060c90e6f56876ade59c0f020a6b0d",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 84
+        },
+        {
+          "derived_sha256": "de03647cf1fea2ea922daad76d2a80da8cefc10f712f70783bbec0f69138e832",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "d8c8ff9dc2363b269b89d75c153ed8e33b5f9f6a558e85bcb97afbc45d1eb65e",
+          "source_relpath": "datasets/conec/earnings21/contexts/4366522.txt",
+          "source_sha256": "5809e340f1d51dcba2a2581cd4370de2ede30c8dc3b403cb60c425e39909c4fc",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 1437
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 815,
+      "placebo_whitespace_tokens": 815,
+      "roster": "construction",
+      "sample_id": "4366893",
+      "sources": [
+        {
+          "derived_sha256": "6f081fbf190dae95c6dbc79a71f4fdbe31099ab2237fcc90f39d913f403f2219",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "b435622706d57852cb5e72db63b6de0afcaf1dcf106b4c5919885ed099fe077c",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4366893.names.txt",
+          "source_sha256": "10a128316b6fa33128caaa558a5a10c861e53c369efa26c6aa3329cee4b523d6",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 134
+        },
+        {
+          "derived_sha256": "d574d6a8c97a0b072cb04e4df8c25af56d133d1515d1b7e2985c8072569e715a",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "ecd819fc5f3b89dfdacf521e06aa66644369ceea390c961316b999f79e10e0f1",
+          "source_relpath": "datasets/conec/earnings21/contexts/4366893.txt",
+          "source_sha256": "2554fb0005539f5f9f43853bcb0d042eb7185b1f8d286f8ba01de2ab4432c446",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 681
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 531,
+      "placebo_whitespace_tokens": 531,
+      "roster": "construction",
+      "sample_id": "4367318",
+      "sources": [
+        {
+          "derived_sha256": "4e81308415c4024f38fef4cdded1a691024c9c03d45ba4b83a44650a80b48277",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "94403985960588520eb8720eaf6eba3b474a24630db2222dac08f1cefb5674fe",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4367318.names.txt",
+          "source_sha256": "966af192b2ab154bcd4b1cbaf07fbd75ef78966a1401f28fdb2a13c7ab9497c9",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 114
+        },
+        {
+          "derived_sha256": "a7d9ad2f62a8421ecde85d4ab2f06a3addd3fc54212483e8730e3f07d3107123",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "f364c467a193f6963d4cb04bf870154da3ddc8f79daf2dcbb9205b9cb0898089",
+          "source_relpath": "datasets/conec/earnings21/contexts/4367318.txt",
+          "source_sha256": "d4b2d39b598620db38b9b781966bba61268e1a4fdc1a0ee353d1acf9c2c62bff",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 417
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 787,
+      "placebo_whitespace_tokens": 787,
+      "roster": "construction",
+      "sample_id": "4367535",
+      "sources": [
+        {
+          "derived_sha256": "6144c4abf4e3bcbfc769511c1dbeb083bf8a7bbd5d7efae55f9187564f11b6e0",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "760f0370e1e7ff44c177b5f7dff9337d3ad375c2fc3ac7aceaca08ee1779f2d9",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4367535.names.txt",
+          "source_sha256": "94a14f7b496b9ee27726363583b62ee9399ac1cade1cb31bd9cdc8ae3c0449ac",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 144
+        },
+        {
+          "derived_sha256": "aeaa2c46e84a104906f2a9cbc2702970f1637783b27a3c693d3b830c3a088088",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "ed69551c735026de0cf766e09634badd9e45c6fd64ff21b78b809b9e35e9ffec",
+          "source_relpath": "datasets/conec/earnings21/contexts/4367535.txt",
+          "source_sha256": "2f6f5549ef1d91cd8a60df947de1c334f23f0532f52bbbd01d3f5e3d3b2abc15",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 643
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 2565,
+      "placebo_whitespace_tokens": 2565,
+      "roster": "construction",
+      "sample_id": "4368670",
+      "sources": [
+        {
+          "derived_sha256": "1a0ec82bbd3ae2768177603cd447a67baf1d65d032414f2eb79bca38f30f306a",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "71f731e8445bfdec91e22a220cb57a975023407457387f38f03176e48f99ea71",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4368670.names.txt",
+          "source_sha256": "fd6610dfc20b6c480e8d30369a2f4c7110929f7336709267a3109b67d00eb8ef",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 225
+        },
+        {
+          "derived_sha256": "25c3f5313a68e7f7fbf65076a8fa1e767a13d1bc7c372a7a6122e5ef5babbe49",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "2c16b2ff92975c3f4fffd1f157714c33595741bb6b30c5e476853f1be9a2aaf2",
+          "source_relpath": "datasets/conec/earnings21/contexts/4368670.txt",
+          "source_sha256": "69c0aca258e913f90741f79d4ff26c163e279ef71c8d4b55b55eb58badbd627e",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 2340
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1120,
+      "placebo_whitespace_tokens": 1120,
+      "roster": "construction",
+      "sample_id": "4374910",
+      "sources": [
+        {
+          "derived_sha256": "2fea6bd6025a9fdedc251260620e63abf67815efb150a72af4b91b3e846c0dfc",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "81dba275af9ee96cbbb5c9c81b63e43b8e4f7d0e1ab4879ebffc46eb466b1351",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4374910.names.txt",
+          "source_sha256": "6332785309b0dbaeb778f2d79d09f1f6b220988d9196570aace6684a8e239e88",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 62
+        },
+        {
+          "derived_sha256": "5859f4d276fc39f70195109523e0f44c2b4018081372aace60414285de6d8af5",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "d09d728063c1b2c378ea67aa34ea65c5cc32743184b986660546cb2ca7c97724",
+          "source_relpath": "datasets/conec/earnings21/contexts/4374910.txt",
+          "source_sha256": "2c86f863d4ec262e805adee2cb260b4845b9566ec36fa1b7d8850d0efb088cde",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 1058
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 702,
+      "placebo_whitespace_tokens": 702,
+      "roster": "construction",
+      "sample_id": "4375653",
+      "sources": [
+        {
+          "derived_sha256": "1c370cace3c4196135cc15671aa2d83a8aafde2b26de8c031518a79e75979a72",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "d3a4ef8e20854c0659d059fde775de364f8fe1326808be501ae52386f01d6d08",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4375653.names.txt",
+          "source_sha256": "6db7f28e2ee1eb548c56f49589ba1f09f12057f639fd6af22105e0b8a9bc094f",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 139
+        },
+        {
+          "derived_sha256": "0d825b592f169064fcfaa160db86999a02315eb60a8a48197a0bafe370dd45f6",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "302330990b3bd301f44d0dd1d77692240e6750e4bc954043f2387b7c98f202c9",
+          "source_relpath": "datasets/conec/earnings21/contexts/4375653.txt",
+          "source_sha256": "ad8ecd602ddc76d91fc522aa7f0ba37b9da0c1693f1c6d6fd6a88b2471e94f8d",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 563
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 850,
+      "placebo_whitespace_tokens": 850,
+      "roster": "construction",
+      "sample_id": "4382825",
+      "sources": [
+        {
+          "derived_sha256": "756552e04bc5b92a19bcb41b9edb58113e2a48f059bf9a523ae8a15ae62c08ff",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "4a39cce72d3969ce5258488e32dfa33368617b7042928c9e1822b41414a3aefb",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4382825.names.txt",
+          "source_sha256": "ef64d4e2499030da28bc047d9e640c36370053c9ffd281981f0ab7ee40e504ac",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 255
+        },
+        {
+          "derived_sha256": "fc3d652c96af19a494bcc04d8ffe1475ccb5e75e2a6caf433fdfd65ef43825aa",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "9a072d418e8d9295a668b1ebe93b91baabea6757707825b439d403bdc38933fb",
+          "source_relpath": "datasets/conec/earnings21/contexts/4382825.txt",
+          "source_sha256": "e8be686472c686ab051160d67636c5baa52c82c70198a1ceb81151b29e7804eb",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 595
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 730,
+      "placebo_whitespace_tokens": 730,
+      "roster": "construction",
+      "sample_id": "4383161",
+      "sources": [
+        {
+          "derived_sha256": "7a531f91f985b519d1a377c478216a7fc4b0f1c87a5d09d86a99e432f9e65480",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "8ba8de5904182737b0ee1ebe82369191aa3f5d9da5502efb7feddb6425e81f5f",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4383161.names.txt",
+          "source_sha256": "2454bb86c161b799f9e45e1ad7304d8cdfb3f56b1ea1e26e4dbea079ba647961",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 163
+        },
+        {
+          "derived_sha256": "50edd5e15d6ad89b1297584723f85214bc435bbb856ac6c8c1aabbf61b6dbef1",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "fad2a8fbcc2922853220123f2a7cf4308aff7d99bdc0826ce42213e965a569d4",
+          "source_relpath": "datasets/conec/earnings21/contexts/4383161.txt",
+          "source_sha256": "a4f013325d533480a8996621169f6318a1a5516544823fc75f82ab8145a93f1b",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 567
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 760,
+      "placebo_whitespace_tokens": 760,
+      "roster": "construction",
+      "sample_id": "4384198",
+      "sources": [
+        {
+          "derived_sha256": "3b32e7c052a74a7c6a66fe9d2962d722b96758db14ba307614db05fea4e9c817",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "178b8dc16e912b3335c470f6a0eae97daaf0af3c92ebd2c2df2f073b40f42192",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4384198.names.txt",
+          "source_sha256": "9cbcee310d10771b38ced1d5ad952684bbd4ab2c33e92af1b9805ffc0739243f",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 97
+        },
+        {
+          "derived_sha256": "3399dd6bf739aa781324752246c76d80a274d2aa89b962c27e7433132ef637d3",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "e0f976933c5103ee6241d5ea2c353f68bf1525d5679281259a962a4c6801335f",
+          "source_relpath": "datasets/conec/earnings21/contexts/4384198.txt",
+          "source_sha256": "f897e45796fe927e60596e9b15bc39363d8ca10858e095716641194d1ff5dde2",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 663
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 679,
+      "placebo_whitespace_tokens": 679,
+      "roster": "construction",
+      "sample_id": "4384683",
+      "sources": [
+        {
+          "derived_sha256": "cb4a6a312dd0528dff15cd7c3d5e4fe711e6d8305e89dc889325adfe00b9a043",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "2c1c69d994e878724a7129e6ab899af89f6d69c293d0e6ad79fba9d8340a15b2",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4384683.names.txt",
+          "source_sha256": "caed16993624b6f663db1995d95d5e2f12f8998adf07bc98b01349b4862a387b",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 113
+        },
+        {
+          "derived_sha256": "4369190f69e7388876329cb4bbd1427d9ca2656cd7d0e3d92a3f4657463c4e49",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "b1bb064f714485e30d121a269797b0ab053de9bc1e1f361ba320bd54d5d9b1aa",
+          "source_relpath": "datasets/conec/earnings21/contexts/4384683.txt",
+          "source_sha256": "3aa5d0bd4e85dabdc000890371ae83d3604e53bffc4e9c668218708e173c4c8c",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 566
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 444,
+      "placebo_whitespace_tokens": 444,
+      "roster": "construction",
+      "sample_id": "4384744",
+      "sources": [
+        {
+          "derived_sha256": "67b41d5d672ce1d982105a819bd309bed80ca9f5119b97eaa4dd6897c461b8dc",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "6fd0b37bc4395ab03de8a3e90abc92fdd472baff538797b2de490af503c5d81e",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4384744.names.txt",
+          "source_sha256": "1743975e9088ca5bdf5220612ed66b5997dac4d6eec13d684ec58a8b04f51a83",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 133
+        },
+        {
+          "derived_sha256": "d4334bd7e67e86a9b020096b78e540245733fd3b319ca08bb48fd5c8e8ee0de8",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "2ae73a66f8971fdad1982ad1ac065dbf19428faf0f7a3adc032094cc7bcdbcac",
+          "source_relpath": "datasets/conec/earnings21/contexts/4384744.txt",
+          "source_sha256": "d5299251fc375f392b78262c448e18b396ef9a5285f1f49c7c6e33c4e9a6ab00",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 311
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 659,
+      "placebo_whitespace_tokens": 659,
+      "roster": "evaluation",
+      "sample_id": "4384964",
+      "sources": [
+        {
+          "derived_sha256": "da3479158eeab3ae7d924de9d17ca2ad8c3539df6f49026541147f78900b1004",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "6c010b8317744b7a1ea7dfaf2f0086cc7644845b35ebc4b207631b98967cbc56",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4384964.names.txt",
+          "source_sha256": "312c3a602322fe18d80b0760fb35be4f0b4c1d185c06370cf42f2909a059e735",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 226
+        },
+        {
+          "derived_sha256": "641be0284b8dc78aa61551db2415474f8ff6348ab14ba8bbd93d6dba3fc65453",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "54f72f4522d832c15147ceff964ca6802fb3b408f1507d5bd60b814684b8a465",
+          "source_relpath": "datasets/conec/earnings21/contexts/4384964.txt",
+          "source_sha256": "e465b6bfdfc26b86f910b07a4b4810429a0a815a724c5ebbb5627ac136bf7369",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 433
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 476,
+      "placebo_whitespace_tokens": 476,
+      "roster": "evaluation",
+      "sample_id": "4385072",
+      "sources": [
+        {
+          "derived_sha256": "9a4b8a95abd98214ad6b1373cd2b904ed67253c63cb028e897520a12b9caa373",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "92a8961b016848b3d6b966906e11e29278d4ba1d5734095c38744c578e4cdbdf",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4385072.names.txt",
+          "source_sha256": "b5870173411fa18742a77bef8824341e94d657bfc10c6162c6e9193272a9e859",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 130
+        },
+        {
+          "derived_sha256": "a096180200f9033c1fe67c51ce42ba719d2f728a078e855a9fb2d50efecb55d5",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "bfd9530ae7ef9bb8d7d45931c224afa4c8706c59174c7a4b6ebe663f5d6f25ec",
+          "source_relpath": "datasets/conec/earnings21/contexts/4385072.txt",
+          "source_sha256": "5b32ea6dde3b525d3d15d692171429acfa83f47119ce489569c9aca405182a7c",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 346
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 727,
+      "placebo_whitespace_tokens": 727,
+      "roster": "construction",
+      "sample_id": "4385388",
+      "sources": [
+        {
+          "derived_sha256": "3d941a07e4195b48ab451be2c2a3a34bea94974eef88c77c3665cb00b7fb7ece",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "36d7fb25f414ade9fb761705de2d160a60c42c7088d224a61adefed0622369a6",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4385388.names.txt",
+          "source_sha256": "c29dda3c0afcd13e1c953df1c7533d28ff8724fd537ab18d1819374c479c4afd",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 165
+        },
+        {
+          "derived_sha256": "27bc646c726eb874ba142769c3704f7abf12519dba2a4f1ce80e3b45ca475fd8",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "49e8ccd75954ab14f01672bf5207b60b6d1b05d62ba3f1c6e20d4e156a39fc66",
+          "source_relpath": "datasets/conec/earnings21/contexts/4385388.txt",
+          "source_sha256": "b2f141be3f95b5c5210a584faff9759f39227354ce6154af71461f7c912cc8e7",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 562
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1042,
+      "placebo_whitespace_tokens": 1042,
+      "roster": "construction",
+      "sample_id": "4385939",
+      "sources": [
+        {
+          "derived_sha256": "7da9d43b8b9b44a80c231356b171b9533d9442ca88b30cc3226a19a530202369",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "3807092a315200fb6bd7933e43bae04fbec36548a35959bbf8433f5c118c9190",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4385939.names.txt",
+          "source_sha256": "779685b6a4e61b2d56299bd84eff0d31324479cb0f40663e19f6ae16222ed0ef",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 259
+        },
+        {
+          "derived_sha256": "50856a4e7915fae218253aef6f8af904c142461da6c25566942a9af48d369167",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "fdcbc58e700c1fb6c47c144dc502735c1b923fdc8706bd76408969ec6a6511f7",
+          "source_relpath": "datasets/conec/earnings21/contexts/4385939.txt",
+          "source_sha256": "fd8ba23eea101060e63ec08bbb3626d3c683ed448f039a8d66cdfb8f796f4307",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 783
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 525,
+      "placebo_whitespace_tokens": 525,
+      "roster": "construction",
+      "sample_id": "4386541",
+      "sources": [
+        {
+          "derived_sha256": "f0cd15e753b277bd96f2025836c5af2b7673744abcd6517ffb20b7b0450ce330",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "b1ef1785c9ff85d1923f5a8a718d89997ec8813a664482e3456286f1ac34b332",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4386541.names.txt",
+          "source_sha256": "f46c36d03297606733956b9cddb691c04159b21ccc4172cba14b2dc5528a1189",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 87
+        },
+        {
+          "derived_sha256": "6cb2524364ce5883db1d67fb54f335a30920ba8ad8111a7af0bb4163172bb034",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "18cf6ac911346069c1d2b751ea1ac8ca722baf25e063c1e525223b6868bd6fb0",
+          "source_relpath": "datasets/conec/earnings21/contexts/4386541.txt",
+          "source_sha256": "1308149855c44f6f9710884dabb839b1d6ba555e026f056b9b9087db021eaae4",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 438
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 582,
+      "placebo_whitespace_tokens": 582,
+      "roster": "construction",
+      "sample_id": "4387332",
+      "sources": [
+        {
+          "derived_sha256": "5530d296a850a201aeef4735f9b4aa6e8e2f0b4827558389b9a8ee141ed0ba3a",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "8b9b351c4217d829f1ee73a8ff4a965c3690805cf4e7b41c91140cc270118afc",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4387332.names.txt",
+          "source_sha256": "56b0ccfbe85d57b44617a32f876b2f9d59d0752b579e470bc1a8f29269df8461",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 82
+        },
+        {
+          "derived_sha256": "b553a6821d8f13a1c7e3e314b3986683decc3a9fa291608e281ef12c0df2cbe2",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "27ddbfc454478a3b49eb3d021f9c17f35c8c7a78f581664e923d722bb8baa1ce",
+          "source_relpath": "datasets/conec/earnings21/contexts/4387332.txt",
+          "source_sha256": "a282c633d40688a1959e35007cd43ddbf800109a40788d46b69bc48e915b925a",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 500
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 591,
+      "placebo_whitespace_tokens": 591,
+      "roster": "evaluation",
+      "sample_id": "4387383",
+      "sources": [
+        {
+          "derived_sha256": "4f5ea88f11ff2bf32e68dc1993b2ac3552622b87f0fad33be49d6eaac5b9343f",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "e1cfba40657a5c4c2de4bd1436503fbf3580a6072039ea85f8744e4589bedbee",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4387383.names.txt",
+          "source_sha256": "724d55b8ddd9736ae23bcc3cc9d15e815b0f24205b62f8f432bb6e8468ce7a11",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 90
+        },
+        {
+          "derived_sha256": "cb44a320559738e300e0a7715f1725e6e4c6daab069d969bb0b86559ca76ea52",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "ad281e833cfda8212281ce76f71efe49d1d84e1f1e733031099c607e5c2ab703",
+          "source_relpath": "datasets/conec/earnings21/contexts/4387383.txt",
+          "source_sha256": "841cba88f7e88ed614419afd8f73b2b2dab95f2b8bbebbefa29ccfd9730afec3",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 501
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 619,
+      "placebo_whitespace_tokens": 619,
+      "roster": "construction",
+      "sample_id": "4387865",
+      "sources": [
+        {
+          "derived_sha256": "63a3d0059f4ca6e9825d3f5429c3fa7b8b5415e5c056019e36107164f1ed278f",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "e6789b526dbaa4ab50c28bda36a03320f68ce4481b9c72e05b53041e0aa5fd52",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4387865.names.txt",
+          "source_sha256": "a6210c0ef8b0d3f6c57de6c142c5987f22356e7fdec77425aad316c83f96dc3d",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 89
+        },
+        {
+          "derived_sha256": "e00e32fe54f1a3de81b029501826f70c3c355353261c2083bddcec110ff410ec",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "0b66dfb03d7fabbc176f17146bb545056dd8e20f63ce2a41dc2a679a948f0701",
+          "source_relpath": "datasets/conec/earnings21/contexts/4387865.txt",
+          "source_sha256": "011e1c22a57704db27f15d7ad314171078972841c0dfa79c282c6f75e5d079b8",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 530
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1083,
+      "placebo_whitespace_tokens": 1083,
+      "roster": "evaluation",
+      "sample_id": "4389907",
+      "sources": [
+        {
+          "derived_sha256": "edfa4949b3a0442ea814528007ad3f9446dc5866edb8e017a470d150bd53e368",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "5ebc954981f45b557a335f210f6e8bd219751df7e4c97802f902174586eac0c3",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4389907.names.txt",
+          "source_sha256": "517467bcd2d124cea1bc5f3dd559cad6bc194bed82252a05068138e242ac5a3b",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 108
+        },
+        {
+          "derived_sha256": "73a2ad62747ca42f36ff7f2b7ac2bb6cd69a70e441e167de6d825bfaa23075d6",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "4edef4eb2c1dcb4612b670c6c9ec8ebb404251c6a7de711416c492f101a90a5b",
+          "source_relpath": "datasets/conec/earnings21/contexts/4389907.txt",
+          "source_sha256": "b5ef9d3ca03a34f96841f056ba46e1bf7725531993a3ebe2a55d2a348798481b",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 975
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 569,
+      "placebo_whitespace_tokens": 569,
+      "roster": "construction",
+      "sample_id": "4392809",
+      "sources": [
+        {
+          "derived_sha256": "5a84ab85c3250fc973339ef22e09b64b5913d79b26d635150791f7cca2282cf3",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "b65744ba8e9c14094ab075da9b3062fcd40a8b583bdd711820ac302e333dbaf8",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4392809.names.txt",
+          "source_sha256": "4a8698cd6ac11af6ab447dac221cd51e3592a12eeeab3b85db5f93ea46fbca72",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 101
+        },
+        {
+          "derived_sha256": "4ee76d9cae97fbc399a22eb5d6dc27815d75ed2652396a26541b2abecf5f1fd3",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "c3e0d43f840d87b3e7aed2f3236232e35a07e70be10b45c28a7472225d014f7c",
+          "source_relpath": "datasets/conec/earnings21/contexts/4392809.txt",
+          "source_sha256": "e59ef8a5b89fe8b42a58700bb2eb15c5c85b7ad089fdc663da9abd67098de284",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 468
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 263,
+      "placebo_whitespace_tokens": 263,
+      "roster": "construction",
+      "sample_id": "4394084",
+      "sources": [
+        {
+          "derived_sha256": "db7c7c882292e27933dd5c22109dff0b9472802a963ec077dbc151b03dbfb449",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "3b545ffa38c01f21ac134b908dfb6eb78f87b2500e2a0a4a50230943d2313434",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4394084.names.txt",
+          "source_sha256": "e82e2a2e8cf9b138368adf3278624318ae035caefd9bf7175ff3df805dccc91d",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 80
+        },
+        {
+          "derived_sha256": "afb359ce2eedd05524dc58b7dbe4e12839c9c6b83995fa0f79bd9707054e37e8",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "2b1481a2d1ba0068de0f13115dfe8324dffda8141039f4f3d427a0157b2b6be9",
+          "source_relpath": "datasets/conec/earnings21/contexts/4394084.txt",
+          "source_sha256": "7cd2fd31a2296b327c4671be472933597d106180cb01428910c7d1795a9a1d38",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 183
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 512,
+      "placebo_whitespace_tokens": 512,
+      "roster": "construction",
+      "sample_id": "4397800",
+      "sources": [
+        {
+          "derived_sha256": "486a2aa10ac1fec58c15fedf3306c33cd7ef1b68079cadb20a39446df06dce34",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "3e37ef86453ff12a6fae1d07ed908bf04ed907f3e8dfa4fa1a288e3c7c8edddb",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4397800.names.txt",
+          "source_sha256": "7d5162d1f0d58db14a137601da3833ec5cde7c20b07e6204ab4be77d93afd8f8",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 119
+        },
+        {
+          "derived_sha256": "f7881f352922d8b9209858932acf4f4d98451f4b68bd1fc54db65f92700fe6aa",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "7c44a3b70b35e89922b0fe920e6f901cc30ba7b234c327563d4c52fe5ec61a0d",
+          "source_relpath": "datasets/conec/earnings21/contexts/4397800.txt",
+          "source_sha256": "cae35ab4444c7ce8ab79b788c737eca989ededfa516bc851a2911e2f3fd71fa6",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 393
+        }
+      ]
+    },
+    {
+      "brief_whitespace_tokens": 1305,
+      "placebo_whitespace_tokens": 1305,
+      "roster": "evaluation",
+      "sample_id": "4397829",
+      "sources": [
+        {
+          "derived_sha256": "9ac949db80bfec88d554a36c4574369afc4567ae5114d2645c90009c0c3a18dc",
+          "lock_key": "conec",
+          "part": "roster",
+          "placebo_derived_sha256": "7bd8a0f48cc9a1af7834a6f7442dedc904e686e7576aef31f343ab7ef009b06c",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4397829.names.txt",
+          "source_sha256": "e90eb6fe82a1c0618fdbfc277d2f1b06854fb4c9eb02aa280823817ade29842e",
+          "transform": "conec-class-lists-roster",
+          "whitespace_tokens": 193
+        },
+        {
+          "derived_sha256": "eac60ff52d48119e2cd26021489ed5856d695c81266fa128946cb4b6cc76c97b",
+          "lock_key": "conec",
+          "part": "document",
+          "placebo_derived_sha256": "48345572d1bad508a782d890a9bac4125c0c380c64ba80b860dc335e2f200bfb",
+          "source_relpath": "datasets/conec/earnings21/contexts/4397829.txt",
+          "source_sha256": "b3819c89ff4a5c88d14527c3da167dd7c4f64a9f40053603044425864fc208ec",
+          "transform": "conec-class-lists-document",
+          "whitespace_tokens": 1112
+        }
+      ]
+    }
+  ],
+  "schema": "saea-e21-brief-provenance-v1"
+}

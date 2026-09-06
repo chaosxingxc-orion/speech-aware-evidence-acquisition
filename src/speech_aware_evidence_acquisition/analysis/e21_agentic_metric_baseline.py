@@ -118,8 +118,15 @@ def sealed_attempt_dir() -> Path:
     return data_root() / "runs" / SEALED_RUN_ID / SEALED_ATTEMPT
 
 
-def rescore_root() -> Path:
-    return data_root() / "runs" / RUN_ID
+def rescore_root(run_id: str = RUN_ID) -> Path:
+    """This row's own scratch root under the data root. ``run_id`` is a
+    parameter, not a constant, because a LATER model-free re-score of the same
+    sealed run needs its own directory: ``core.scoring_batch`` refuses a
+    non-empty output dir, and a second row sharing this one's root could not
+    run at all (E5's ``analysis.e21_semantic_impact_baseline``, which fills the
+    fourth metric this row left blank)."""
+
+    return data_root() / "runs" / run_id
 
 
 def sha256_file(path: Path) -> str:
@@ -130,14 +137,16 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def build_rescore_bundle(job_slug: str, scorer: str) -> dict[str, object]:
+def build_rescore_bundle(
+    job_slug: str, scorer: str, *, run_id: str = RUN_ID
+) -> dict[str, object]:
     """Copy the sealed artifacts into this job's own directory and write a
     manifest that differs only in artifact paths and the scorer list."""
 
     sealed_dir = sealed_attempt_dir()
     manifest_path = sealed_dir / f"{SEALED_RUN_ID}.run-manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    destination = rescore_root() / f"rescore-{job_slug}"
+    destination = rescore_root(run_id) / f"rescore-{job_slug}"
     destination.mkdir(parents=True, exist_ok=True)
 
     copies: dict[str, dict[str, str]] = {}

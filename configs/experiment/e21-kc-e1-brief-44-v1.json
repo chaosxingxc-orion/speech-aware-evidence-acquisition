@@ -1,0 +1,131 @@
+{
+  "experiment_id": "SAEA-E21-KC-E1-BRIEF-44-V1",
+  "schema": "saea-e21-kc-e1-brief-experiment-v1",
+  "date": "2026-09-06",
+  "execution_profile": "bounded-discovery-probe",
+  "status": "DRAFT -- not authorized to fly. Preregistration: docs/readiness/2026-09-06-e21-kc-e1-pre-meeting-brief-v1-preregistration.md. E5 produced the evidence source, the taxonomy, the comparator's fourth metric and these fragments; the flight is a separate decision and has its own preflight gates, listed in the preregistration's 'what the flight agent must do'.",
+  "purpose": "KC-E1 (knowledge construction) on Earnings-21: does supplying the call's own ConEC pre-meeting brief -- participants and roles, the organizations and divisions the roster names, company and ticker candidates, product and segment candidates, and the residual document terms, each class on its own labelled line with the Whisper-normalized form beside the surface form -- raise ConEC-mirror entity WER without costing corpus WER? The one factor that separates the two cells here is the brief's CONTENT: KU-E1c sends the same class labels, the same entry count and the same token budget with every entity string replaced by a neutral placeholder, so a gain that survives that comparison is knowledge, not prompt shape.",
+  "population": {
+    "carrier": "earnings21-original",
+    "split_name": "discovery",
+    "dataset_fragment": "earnings21-discovery",
+    "split_role": "discovery",
+    "count": 44,
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "receipt": "docs/receipts/splits.json",
+    "audio_seconds_one_pass": 141348.532,
+    "audio_hours_one_pass": 39.263,
+    "fixed_90s_windows_one_pass": 1593,
+    "selection": "no draw: the whole frozen earnings21-original discovery split, the same population the comparator was measured on. The E5 split (34 kb-construction, 10 r4-e21-sub10 evaluation) is a REPORTING split, not a selection: every figure is reported on all 44 and on both halves, and an evaluation claim quotes the ten's column only.",
+    "estimand": "per-entity-class ConEC-mirror entity WER, pooled over the roster being reported, paired call by call against the comparator."
+  },
+  "comparator": {
+    "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+    "attempt": "attempt-20260904T233816Z-bcd338",
+    "rows": [
+      "SAEA-E21-MF-AGENTIC-METRIC-BASELINE-V1 (asr-wer-whisper, conec-entity-wer-official, numeric-value-accuracy-v1)",
+      "SAEA-E21-MF-SEMANTIC-IMPACT-BASELINE-V1 (semantic-high-impact-error-rate-v1)"
+    ],
+    "all_44": {
+      "corpus_wer_percent": 8.2,
+      "conec_person_entity_wer_percent": 22.5,
+      "conec_org_entity_wer_percent": 17.2,
+      "numeric_value_accuracy_percent": 90.73,
+      "negation_critical_error_rate_percent": 0.0278
+    },
+    "evaluation_10": {
+      "corpus_wer_percent": 7.185,
+      "numeric_value_accuracy_percent": 92.43,
+      "negation_critical_error_rate_percent": 0.0185
+    },
+    "pairing_rule": "docs/readiness/2026-09-06-earnings-agentic-metric-baseline-v1.md section 7: same roster, same scorers, same core.scoring_batch path; the headline for a mechanism is the entity and numeric line, not corpus WER; the semantic taxonomy id must match."
+  },
+  "cells": [
+    {
+      "cell_id": "E21-kc-e1-brief-whole-prompt",
+      "dataset_fragment": "earnings21-discovery",
+      "baseline_fragment": "e21-kc-e1-brief-whole-prompt",
+      "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "arm": "fixed-legal-context",
+      "evidence": "conec-class-lists -- two items per call, the participant roster rendered as labelled participant/organization/division lines and the context document rendered as company-ticker, product-segment and residual-term candidates. Whole brief by default (brief_max_entries_per_class 0); the preflight prompt-fit gate may cap it, and the cap it sets applies IDENTICALLY to the twin cell.",
+      "obs": "fixed 90-second windows, no VAD trim, no overlap, no rolling tail, no preprocessing -- byte-identical to the comparator's OBS protocol",
+      "serving_geometry": "-c 36864 -np 6, 6,144 tokens per slot, bf16 mmproj resident on the GPU",
+      "audio_path": "raw audio through the bf16 mmproj on the GPU; no feature cache"
+    },
+    {
+      "cell_id": "E21-ku-e1c-brief-placebo",
+      "dataset_fragment": "earnings21-discovery",
+      "baseline_fragment": "e21-ku-e1c-brief-placebo",
+      "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "arm": "fixed-legal-context",
+      "evidence": "conec-class-lists-placebo -- the form twin: the same class labels, the same entry count and the same whitespace-token count per line, every entry token replaced by a neutral placeholder chosen by position alone, so two calls whose briefs have the same shape get byte-identical placebos",
+      "obs": "identical to the cell above",
+      "serving_geometry": "identical to the cell above",
+      "audio_path": "identical to the cell above"
+    }
+  ],
+  "one_factor": {
+    "between_the_two_cells": "the brief's CONTENT. The two baseline fragments differ in exactly one key, evidence_source; task_instruction, arm, policy, scorers, the OBS protocol, the cap and every decoding parameter are byte-identical.",
+    "against_the_sealed_comparator": "TWO things move, and the preregistration says so rather than hiding it: the evidence itself, and the task instruction, which has to name the reference material for an evidence arm to make sense (the study's own fixed-legal-context precedent, configs/baseline/fixed-batch-matched-locked-buf90.json, does the same). The comparator contrast is therefore reported as brief-plus-instruction; the CONTENT attribution comes from the twin."
+  },
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample",
+    "prompt_order": "evidence-first-system-v3 (from the model fragment): the evidence blocks precede the audio, which is why the instruction refers to 'the reference material above'",
+    "contacts_per_item": "one per 90-second window; 1,593 windows over 44 calls per cell",
+    "harness": "core.driver.run_experiment_bundled through scripts/run_arm_sequence.sh -- the same committed launcher path the comparator flew; core.flight.FlightRuntime cannot express the 90-second OBS tiling, which lives in the registered core.base policy obs-agent-loop"
+  },
+  "evaluation": {
+    "manifest_scorers": [
+      "asr-wer-whisper",
+      "conec-entity-wer-official",
+      "numeric-value-accuracy-v1",
+      "semantic-high-impact-error-rate-v1",
+      "cost"
+    ],
+    "paper_facing_scorer": "conec-entity-wer-official",
+    "paper_facing_metric": "ConEC-mirror entity WER per entity type, PERSON first; corpus WER stays the anchor and the harm check",
+    "scored_complete_manifests": 2,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "why_the_manifest_declares_them": "the full-44 preregistration named out-of-band scoring as the defect it existed to fix. The comparator could only get the agentic metrics through re-scoring bundles because its sealed manifest predates them; a new flight has no such excuse and declares all four.",
+    "mandatory_slices": [
+      "per entity class, with reference-word counts, beside ConEC Table 2 rows 1 / 5 / 8",
+      "all 44, the construction 34 and the evaluation 10, reported apart",
+      "the brief's token distribution on the FLIGHT tokenizer, per call, beside the whitespace counts in docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-pre-meeting-brief-provenance/",
+      "by sector (9 levels) and sample rate (5 levels), natural mixture and equal-stratum weighting",
+      "throughput: windows per minute, GPU seconds, wall, realized realtime factor, prompt and completion tokens against the comparator's 1,935,965 / 439,532"
+    ]
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 3500,
+    "planned_gpu_hours": 3.2,
+    "planned_speech_audio_seconds": 300000
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "1,593 windows per cell x 2 cells = 3,186, plus 314 of headroom for obs_slice_retry_max=1 retries. The comparator realized exactly 1,593.",
+    "planned_speech_audio_seconds": "141,345.85 realized per pass x 2 = 282,692, rounded up to 300,000 with retry headroom.",
+    "planned_gpu_hours": "the comparator realized 3,504.38 GPU-seconds (0.973 GPU-h) for one pass at this geometry. Two passes is 1.95 GPU-h before the brief, and the brief roughly triples the prompt: the comparator averaged 1,215 prompt tokens per window (1,935,965 over 1,593) and the brief adds a median 969 and a maximum 2,565 WHITESPACE tokens, so 3.2 GPU-h carries a prefill increase of well over 2x with margin. The projection is re-measured on the preflight and the flight STOPS and reports if the measured rate projects past it.",
+    "paid_api_spend": 0,
+    "budget_is_run_cumulative": "core/model/adapter.py enforces planned_model_calls and planned_speech_audio_seconds across ALL attempts of a run id; a successor plan must cover prior durable spend plus its own worst case."
+  },
+  "decision": {
+    "primary": "ConEC-mirror PERSON entity WER on the reported roster: ADMITTED if the paired lower bound of (comparator - KC-E1) is > 0 AND the same lower bound against KU-E1c is > 0.",
+    "guards": [
+      "corpus WER non-inferiority: the CI90 upper bound on (KC-E1 - comparator) must be <= 0",
+      "numeric-value accuracy not worse: CI90 lower bound on (KC-E1 - comparator) >= 0",
+      "the negation-critical error rate not worse, reported with its own power caveat (14 HIGH reference words on the evaluation ten)"
+    ],
+    "claim_surface": "discovery data, no superiority, generality or Stage-3 claim, no knob tuned on the evaluation ten.",
+    "not_authorized": "no Earnings-22 contact, no confirmatory read, no retrieval or multi-contact variant (that is KU-E1/E1c/E2), no paper-scale work.",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}

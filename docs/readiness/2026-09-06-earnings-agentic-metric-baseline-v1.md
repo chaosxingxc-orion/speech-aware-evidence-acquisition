@@ -187,10 +187,13 @@ reproduction, and no claim of superiority or generality is made from it.
 ## 6. The semantic high-impact error rate is registered and waiting
 
 `semantic-high-impact-error-rate-v1` is implemented, tested against a synthetic taxonomy, and
-registered — and it produces **no Earnings-21 value in this note**. Its taxonomy is the deliverable of
-the Earnings-22 semantic scan (branch `wt/e22`, in progress) and has not landed; the scorer fails
-closed by name until `docs/taxonomies/semantic-high-impact/ACTIVE.json` exists, and a test asserts
-that path is absent from this checkout so the wait stays visible.
+registered — and it produced **no Earnings-21 value when this note was written**. Its taxonomy is the
+deliverable of the Earnings-22 semantic scan (branch `wt/e22`, in progress) and had not landed; the
+scorer fails closed by name until `docs/taxonomies/semantic-high-impact/ACTIVE.json` exists, and a
+test asserted that path was absent from this checkout so the wait stayed visible.
+
+**Superseded 2026-09-06 by §9.** The taxonomy landed, the metric has an Earnings-21 value, and the
+absence test is replaced by one that asserts the committed file is the projection.
 
 The file contract the scan must satisfy is in
 `src/speech_aware_evidence_acquisition/reproduction/semantic_impact.py`: schema
@@ -234,3 +237,60 @@ All 44 calls, with the roster label, in
 `docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-agentic-metric-baseline/verdict/per-call-table.md`.
 Columns: corpus WER, ConEC entity WER pooled over the eight published classes, that pool's reference
 words, numeric-value accuracy, numeric values, and the per-call `__UNLABELLED__` residue.
+
+
+---
+
+## 9. 2026-09-06 — the semantic high-impact rate, measured
+
+The taxonomy landed and the fourth metric has a value. Row
+`SAEA-E21-MF-SEMANTIC-IMPACT-BASELINE-V1` (`model-free-check`), registered and committed before the
+scorer touched a reference; **zero model, GPU, tool, embedding, network and audio contact**; no
+Earnings-22 read. One more `core.scoring_batch` job over the same sealed re-scoring bundle §1 used —
+one complete verified manifest, one process, 568.1 s, never sharded. Receipts:
+`docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-semantic-impact-baseline/`; taxonomy
+receipt `.../2026-09-06-semantic-impact-taxonomy/`.
+
+**Read the next paragraph before reading the table.** The taxonomy is a mechanical projection of the
+Earnings-22 scan's committed *content-impact* model onto the exact-key `(reference word, hypothesis
+word)` shape this metric looks rules up by, and two of that model's three HIGH triggers do not
+survive the projection: a digit-bearing token is an open class after Whisper normalization, and the
+entity trigger is a per-call inventory rebuilt from that call's own references. Both were left out
+rather than approximated. **So the HIGH tier below is the scan's NEGATION trigger alone, the figure
+is a negation-critical error rate, and it is a strict lower bound on the scan's own content-impact
+HIGH rate — never quote it as the scan's 1.92 % agentic error rate.** On this carrier the two missing
+triggers are already carried, on gold annotations rather than heuristics, by
+`numeric-value-accuracy-v1` (§4) and `conec-entity-wer-official` (§3).
+
+| roster | calls | reference words | **negation-critical %** | HIGH words | LOW % | NONE % | unclassified |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| **all 44** | 44 | 359,765 | **0.0278** | 100 | 3.272 | 1.926 | 0 |
+| construction 34 | 34 | 284,014 | 0.0303 | 86 | 3.384 | 2.027 | 0 |
+| evaluation 10 | 10 | 75,751 | **0.0185** | 14 | 2.853 | 1.547 | 0 |
+
+**The decomposition closes on a number §5 already published.** The three levels partition the
+substitution-plus-deletion reference-word mass and nothing else: 100 + 11,771 + 6,928 = 18,799 = the
+sealed S 13,098 + D 5,701, i.e. 5.226 % against the 5.225 % §5 computes as this arm's own
+`(S + D) / reference words`. Zero reference words reached `__UNCLASSIFIED__`, so the taxonomy is
+total over what this corpus contains — a partial taxonomy would have shown up here rather than
+silently under-reporting.
+
+What the level split says about this carrier, stated as a decomposition of that 5.225 points and not
+as a claim: **1.926 points (36.9 %) is function-word-only churn** the scan calls impact-NONE — an
+article for an article, a dropped `the` — **3.272 points (62.6 %) is ordinary wording**, and
+**0.028 points (0.53 %) changes a negation**. Insertions carry no reference mass and are counted
+separately: 10,700 of them, of which **56 are negation-critical**. An inserted function word is
+reported LOW here where the scan says NONE, which is the one representational deviation and moves no
+rate.
+
+**As a guard it is weak, and a mechanism cell must not lean on it.** 100 HIGH reference words on all
+44 calls, **14 on the evaluation ten**, and **15 of the 44 calls carry none at all**. A cell can move
+this by a handful of words. The Earnings harm guards with real power stay corpus WER
+non-inferiority (§7) and numeric-value accuracy (§4); the negation-critical rate is reported beside
+them as a directional check and as the level decomposition above.
+
+**The comparator identity of §7 gains one line**: `SAEA-E21-MF-SEMANTIC-IMPACT-BASELINE-V1` —
+negation-critical error rate **0.0278 %** on all 44 and **0.0185 %** on the evaluation ten, under
+taxonomy `e22-semantic-scan-2026-09-06-content-impact-word-pair-v1`. Same pairing rules: a cell on
+the ten pairs against the ten's figure, and the taxonomy id must match or the two numbers are not
+comparable.
