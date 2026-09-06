@@ -311,7 +311,7 @@ def test_partition_is_block_disjoint_and_excludes_the_exposed_roster() -> None:
     rows = _corpus()
     exposed = frozenset({rows[0].sample_ids[0]})
     proposal = propose_partition(
-        rows, exposed, seed=20260807, per_tier=2, tool_min_pool_rows=3
+        rows, exposed, seed=20260807, eval_per_tier=2, tool_min_pool_rows=3
     )
     eval_ids = set(proposal.eval_sample_ids)
     construction_ids = {sid for row in proposal.construction for sid in row.sample_ids}
@@ -332,8 +332,8 @@ def test_partition_is_deterministic_and_pool_order_independent() -> None:
     shuffled = list(rows)
     random.Random(3).shuffle(shuffled)
     exposed = frozenset({rows[0].sample_ids[0]})
-    first = propose_partition(rows, exposed, per_tier=2, tool_min_pool_rows=3)
-    second = propose_partition(shuffled, exposed, per_tier=2, tool_min_pool_rows=3)
+    first = propose_partition(rows, exposed, eval_per_tier=2, tool_min_pool_rows=3)
+    second = propose_partition(shuffled, exposed, eval_per_tier=2, tool_min_pool_rows=3)
     assert first.eval_sample_ids == second.eval_sample_ids
     assert first.split_identity_hash() == second.split_identity_hash()
 
@@ -341,15 +341,169 @@ def test_partition_is_deterministic_and_pool_order_independent() -> None:
 def test_partition_refuses_a_draw_larger_than_the_free_pool() -> None:
     rows = _corpus()
     with pytest.raises(RailsError, match="block-free candidates"):
-        propose_partition(rows, frozenset(), per_tier=500, tool_min_pool_rows=3)
+        propose_partition(rows, frozenset(), eval_per_tier=500, tool_min_pool_rows=3)
 
 
 def test_partition_keeps_every_tool_in_the_construction_pool() -> None:
     rows = _corpus()
-    proposal = propose_partition(rows, frozenset(), per_tier=2)
+    proposal = propose_partition(rows, frozenset(), eval_per_tier=2)
     assert {row.tool_name for row in proposal.construction} == {
         row.tool_name for row in rows
     }
+
+
+# ---------------------------------------------------------------------------
+# The retired proposed-evaluation tier (owner-coordinator decision 2026-09-05)
+# ---------------------------------------------------------------------------
+
+
+def test_the_retired_eval_tier_hands_every_free_block_to_construction() -> None:
+    """``eval_per_tier=0`` is the DEFAULT and construction becomes every
+    block the exposure union does not hold.
+
+    The accounting is asserted exactly, not approximately: the retired
+    partition's construction pool is the legacy one PLUS every unit the
+    legacy draw's blocks had taken, the reserved-exposed side is untouched,
+    and the eval-candidacy floors -- which exist only to protect the pool
+    FROM the draw -- reserve nothing once nothing can be drawn.
+    """
+
+    rows = _corpus()
+    exposed = frozenset({rows[0].sample_ids[0]})
+    legacy = propose_partition(
+        rows, exposed, seed=20260807, eval_per_tier=2, tool_min_pool_rows=3
+    )
+    retired = propose_partition(rows, exposed, seed=20260807, tool_min_pool_rows=3)
+
+    # The default is the retirement.
+    assert propose_partition(rows, exposed, tool_min_pool_rows=3).construction == (
+        retired.construction
+    )
+    assert retired.report["eval_tier_retired"] is True
+    assert retired.report["eval_per_tier"] == 0
+    assert legacy.report["eval_tier_retired"] is False
+
+    # An empty tier, and an identity hash that is honestly the empty one, so a
+    # generator pinning the old hash fails closed instead of drifting.
+    assert retired.eval_items == ()
+    assert retired.eval_blocks == ()
+    assert retired.eval_sample_ids == ()
+    assert retired.split_identity_hash() == hashlib.sha256(b"").hexdigest()
+
+    # The exposure side is byte-identical: retirement touches ONLY the tier.
+    assert retired.reserved_exposed_blocks == legacy.reserved_exposed_blocks
+    assert retired.report["blocks_reserved_exposed"] == 1
+    assert retired.report["units_reserved_exposed"] == 3
+
+    # Exactly the legacy pool plus what the draw had held.
+    free_rows = tuple(
+        row
+        for row in rows
+        if row.query_idx not in set(legacy.reserved_exposed_blocks)
+    )
+    recovered = tuple(
+        row for row in free_rows if row.query_idx in set(legacy.eval_blocks)
+    )
+    assert len(recovered) == 18
+    assert len(retired.construction) == len(legacy.construction) + len(recovered)
+    assert {row.unit_id for row in retired.construction} == {
+        row.unit_id for row in free_rows
+    }
+    assert retired.report["units_construction"] == 42
+    assert legacy.report["units_construction"] == 24
+    assert retired.report["blocks_construction"] == 16
+    assert legacy.report["blocks_construction"] == 10
+    assert retired.report["blocks_construction"] == (
+        legacy.report["blocks_construction"] + legacy.report["blocks_eval"]
+    )
+    assert retired.report["items_construction"] == sum(
+        len(row.sample_ids) for row in free_rows
+    )
+
+    # Nothing is drawn, so nothing is protected from the draw.
+    assert retired.report["blocks_eval"] == 0
+    assert retired.report["units_eval_drawn"] == 0
+    assert retired.report["eval_items_by_tier"] == {}
+    assert retired.report["eval_draw_order"] == []
+    assert retired.report["blocks_protected_for_construction_only_tools"] == 0
+    assert retired.report["blocks_protected_for_tool_floor"] == 0
+    assert retired.report["blocks_protected_total"] == 0
+    assert legacy.report["blocks_protected_total"] == 6
+
+    # The per-tool floor is still evaluated and still reported.
+    floor = retired.report["construction_floor"]
+    assert floor["satisfied"] is True
+    assert floor["tools_missing"] == []
+    assert floor["tools_in_construction"] == floor["tools_supplied_by_free_pool"]
+    assert {row.tool_name for row in retired.construction} == {
+        row.tool_name for row in free_rows
+    }
+
+
+def test_the_legacy_eval_per_tier_reproduces_the_pre_retirement_partition() -> None:
+    """Reproducibility of every sealed receipt drawn before 2026-09-05.
+
+    The expected values are the ones the PRE-retirement implementation
+    (commit a97617ce, ``per_tier=2``) produced on this exact fixture, so this
+    test fails if the retirement changed the draw itself rather than only the
+    default.
+    """
+
+    rows = _corpus()
+    exposed = frozenset({rows[0].sample_ids[0]})
+    legacy = propose_partition(
+        rows, exposed, seed=20260807, eval_per_tier=2, tool_min_pool_rows=3
+    )
+
+    assert legacy.eval_sample_ids == (
+        "tier1_direct:000022",
+        "tier1_direct:000028",
+        "tier2_parametric:000038",
+        "tier2_parametric:000052",
+        "tier7_multiturn:000072",
+        "tier7_multiturn:000082",
+    )
+    assert legacy.split_identity_hash() == (
+        "b6b50a204e1146e8865385aa2fc3c473a200054de2ee62c59372f6f3209f9625"
+    )
+    assert legacy.eval_blocks == (104, 107, 110, 111, 112, 113)
+    assert legacy.reserved_exposed_blocks == (100,)
+    assert legacy.report["blocks_total"] == 17
+    assert legacy.report["blocks_eval"] == 6
+    assert legacy.report["blocks_construction"] == 10
+    assert legacy.report["units_construction"] == 24
+    assert legacy.report["items_construction"] == 45
+    assert legacy.report["eval_draw_order"] == [
+        "tier1_direct",
+        "tier2_parametric",
+        "tier7_multiturn",
+    ]
+    assert legacy.report["eval_items_by_tier"] == {
+        "tier1_direct": 2,
+        "tier2_parametric": 2,
+        "tier7_multiturn": 2,
+    }
+    assert legacy.report["blocks_protected_for_construction_only_tools"] == 3
+    assert legacy.report["blocks_protected_for_tool_floor"] == 3
+    assert legacy.report["construction_only_tools"] == ["rebootDevice", "setAlarm"]
+
+    # And the same on the exposure-free pool, where the draw differs.
+    free = propose_partition(
+        rows, frozenset(), seed=20260807, eval_per_tier=2, tool_min_pool_rows=3
+    )
+    assert free.split_identity_hash() == (
+        "f036189f5381dd6f77219b3476291cb86959830c2378dc8465ff3bfadbcd2bcf"
+    )
+    assert free.eval_blocks == (103, 106, 109, 111, 112, 113)
+    assert free.report["units_construction"] == 27
+
+
+def test_partition_refuses_a_negative_or_boolean_eval_per_tier() -> None:
+    rows = _corpus()
+    with pytest.raises(RailsError, match="non-negative int"):
+        propose_partition(rows, frozenset(), eval_per_tier=-1)
+    with pytest.raises(RailsError, match="non-negative int"):
+        propose_partition(rows, frozenset(), eval_per_tier=True)  # type: ignore[arg-type]
 
 
 # ---------------------------------------------------------------------------
@@ -579,7 +733,7 @@ def test_partition_protects_the_whole_block_of_a_construction_only_tool() -> Non
     siblings = [row for row in rows if row.query_idx == shared_block]
     assert len(siblings) > 1, "the fixture must share this block across tiers"
 
-    proposal = propose_partition(rows, frozenset(), per_tier=1, tool_min_pool_rows=4)
+    proposal = propose_partition(rows, frozenset(), eval_per_tier=1, tool_min_pool_rows=4)
     assert shared_block not in set(proposal.eval_blocks)
     assert rare.unit_id in {row.unit_id for row in proposal.construction}
     assert int(proposal.report["blocks_protected_for_construction_only_tools"]) >= 1
@@ -589,8 +743,9 @@ def test_partition_keeps_one_block_for_every_tool_the_free_pool_can_supply() -> 
     """The 2026-09-05 SECOND repair (MF-1): protecting only the RARE tools'
     blocks still let the draw starve a tool that clears
     ``tool_min_pool_rows`` but holds few free blocks -- under the exposure
-    union that now also reserves A2T-FRESH-800, a per_tier=50 draw wiped out
-    nine smart_home tools and the floor check refused the whole partition.
+    union that now also reserves A2T-FRESH-800, an eval_per_tier=50 draw
+    wiped out nine smart_home tools and the floor check refused the whole
+    partition.
     Every tool the free pool can supply now keeps one deterministic block, so
     the starvation branch is unreachable rather than luck-dependent."""
 
@@ -634,7 +789,7 @@ def test_partition_keeps_one_block_for_every_tool_the_free_pool_can_supply() -> 
         )
 
     proposal = propose_partition(
-        tuple(rows), frozenset(), per_tier=8, tool_min_pool_rows=5
+        tuple(rows), frozenset(), eval_per_tier=8, tool_min_pool_rows=5
     )
     report = proposal.report
     assert int(report["blocks_protected_for_construction_only_tools"]) == 0
@@ -661,7 +816,7 @@ def test_partition_names_tools_the_exposure_union_reserved_entirely() -> None:
         if row.tool_name == "getAirQuality"
         for sid in row.sample_ids
     )
-    proposal = propose_partition(rows, exposed, per_tier=1, tool_min_pool_rows=3)
+    proposal = propose_partition(rows, exposed, eval_per_tier=1, tool_min_pool_rows=3)
     assert "getAirQuality" in proposal.report["tools_reserved_entirely_by_exposure"]
     assert "getAirQuality" not in {row.tool_name for row in proposal.construction}
 

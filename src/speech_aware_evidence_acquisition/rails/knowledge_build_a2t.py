@@ -64,10 +64,13 @@ IDENTITY FACTS this module depends on, each measured rather than assumed
   :func:`propose_partition` partitions on.
 
 Decontamination is fail-closed and belt-and-braces, on the SLURP pattern:
-the selected construction units' sample ids are checked against the frozen
-exposed 400 (``docs/receipts/probe-samples/r1-audio2tool-sample.json``) AND
-against the proposed evaluation tier, and any intersection raises before a
-snapshot is returned.
+the selected construction units' sample ids are checked against the whole
+exposure union (:func:`exposed_sample_ids`, which since 2026-09-05 is every
+committed EVALUATION identity, not only the frozen 400 of
+``docs/receipts/probe-samples/r1-audio2tool-sample.json``) AND against
+whatever proposed evaluation tier the caller asked :func:`propose_partition`
+for -- empty by default since the tier was retired -- and any intersection
+raises before a snapshot is returned.
 """
 
 from __future__ import annotations
@@ -676,8 +679,15 @@ def exposed_sample_ids(repo_root: Path | None = None) -> frozenset[str]:
 @dataclass(frozen=True)
 class PartitionProposal:
     """A PROPOSED construction-versus-evaluation partition. Not a registered
-    split: registering ``eval_sample_ids`` as a flyable roster is later
-    campaign work with its own preregistration."""
+    split: registering ``eval_sample_ids`` as a flyable roster was always
+    "later campaign work with its own preregistration", and it never
+    happened -- ``A2T-FRESH-800-V1`` became the registered fresh reserve
+    instead. Since the 2026-09-05 retirement of the proposed tier,
+    ``eval_items``/``eval_blocks``/``eval_sample_ids`` are EMPTY unless the
+    caller asked for the legacy draw with ``eval_per_tier > 0``, and
+    ``split_identity_hash()`` is then the sha256 of the empty string. Every
+    field is kept so a legacy generator that pins the old identity still
+    fails CLOSED on the hash rather than on an attribute error."""
 
     policy_id: str
     seed: int
@@ -702,44 +712,86 @@ def propose_partition(
     exposed: frozenset[str],
     *,
     seed: int = 20260807,
-    per_tier: int = 50,
+    eval_per_tier: int = 0,
     tool_min_pool_rows: int = EVAL_TOOL_MIN_POOL_ROWS,
 ) -> PartitionProposal:
-    """Partition the carrier's ``query_idx`` BLOCKS three ways.
+    """Partition the carrier's ``query_idx`` BLOCKS two ways -- three when a
+    caller explicitly asks for the retired evaluation tier back.
 
-    1. **RESERVED-EXPOSED** -- every block touched by the frozen exposed 400.
-       Held out of BOTH sides. The exposed 400 itself may still fly as the
-       campaign plan's SECONDARY comparator; holding its cross-tier siblings
-       out too is the conservative choice that makes that secondary reading
-       safe against the same knowledge base.
-    2. **EVAL** -- a seeded, tier-stratified draw of ``per_tier`` items per
-       tier, each from a DISTINCT block, whose whole block is then reserved.
-       Tiers are processed in ascending order of candidate count (scarcest
-       first: tier8 has only 821 items) so a later tier can never be starved
-       by an earlier one, then by tier name; the order is deterministic and
-       independent of pool order.
+    1. **RESERVED-EXPOSED** -- every block touched by the exposure union
+       (:func:`exposed_sample_ids`). Held out of BOTH sides. An exposed
+       roster may still fly as the campaign plan's SECONDARY comparator;
+       holding its cross-tier siblings out too is the conservative choice
+       that makes that secondary reading safe against the same knowledge
+       base.
+    2. **EVAL** -- ``eval_per_tier`` is 0 by DEFAULT and the tier is then
+       EMPTY. With a positive value: a seeded, tier-stratified draw of
+       ``eval_per_tier`` items per tier, each from a DISTINCT block, whose
+       whole block is then reserved. Tiers are processed in ascending order
+       of candidate count (scarcest first: tier8 has only 821 items) so a
+       later tier can never be starved by an earlier one, then by tier name;
+       the order is deterministic and independent of pool order.
     3. **CONSTRUCTION** -- every remaining block. This is the KB TRAIN pool.
 
-    Eval candidacy additionally requires the item's gold primary tool to have
-    at least ``tool_min_pool_rows`` units in the exposure-free pool, so the
-    build's hard "at least one exemplar per tool" floor can never be starved
-    by the evaluation draw; the whole BLOCK of any such rare tool is held out
-    of candidacy too, because a block is shared across tiers and drawing a
-    sibling would reserve it. EVERY OTHER tool additionally keeps ONE
-    deterministic block -- the block of its lexicographically first unit --
-    out of candidacy, so the floor holds for tools that clear
-    ``tool_min_pool_rows`` yet have few free blocks; without it a per_tier=50
-    draw against the A2T-FRESH-800-bearing exposure union starves nine
-    smart_home tools. The excluded tools are named in the report, as are the
-    tools whose every unit already sits inside an exposed block and which the
-    construction pool therefore cannot represent at all.
+    WHY THE EVALUATION TIER IS RETIRED BY DEFAULT (owner-coordinator
+    decision 2026-09-05). The 400-block tier this function used to carve was
+    a PROPOSAL and was never registered as a flyable split; nothing has ever
+    flown it. ``A2T-FRESH-800-V1``
+    (``docs/receipts/rosters/a2t-fresh-800-v1.json``, ``roster_role``
+    ``evaluation``, RESERVED_AND_UNOPENED) is the fresh reserve now, it is
+    inside the exposure union, and its blocks are therefore already held out
+    by clause 1. The proposal only cost the construction side -- it held 204
+    of ``A2T-CONSTRUCTION-800-V1``'s 483 blocks, which is exactly the pool a
+    knowledge base is built from -- so the default now retires it and
+    construction is every block the exposure union does not hold.
+
+    REPRODUCIBILITY OF THE SEALED RECEIPTS. Passing ``eval_per_tier=50``
+    reproduces the pre-retirement partition BYTE FOR BYTE on the same rows,
+    exposure set and seed: the draw, the tier order, the floors and the
+    reported keys are unchanged, only the default moved. Every generator
+    that cites a pinned ``split_identity_hash`` from before this change --
+    ``scripts/build_a2t_g3_plain_english_cards.py``,
+    ``scripts/build_a2t_g4_semantic_cards.py``,
+    ``scripts/build_a2t_g5_family_contracts.py``,
+    ``scripts/build_a2t_g7_example_ground.py``,
+    ``scripts/build_a2t_structured_action_schema.py``,
+    ``scripts/build_a2t_frozen_semantic_runtime_assets.py`` and the frozen
+    launchers under ``docs/checks/`` -- must therefore pass
+    ``eval_per_tier=50`` to reproduce, and fails CLOSED on its pinned hash
+    if it does not.
+
+    Eval candidacy (a positive ``eval_per_tier`` only) additionally requires
+    the item's gold primary tool to have at least ``tool_min_pool_rows``
+    units in the exposure-free pool, so the build's hard "at least one
+    exemplar per tool" floor can never be starved by the evaluation draw;
+    the whole BLOCK of any such rare tool is held out of candidacy too,
+    because a block is shared across tiers and drawing a sibling would
+    reserve it. EVERY OTHER tool additionally keeps ONE deterministic block
+    -- the block of its lexicographically first unit -- out of candidacy, so
+    the floor holds for tools that clear ``tool_min_pool_rows`` yet have few
+    free blocks; without it an ``eval_per_tier=50`` draw against the
+    A2T-FRESH-800-bearing exposure union starves nine smart_home tools. With
+    the tier retired NOTHING can be drawn, so those protections reserve
+    nothing and the report's ``blocks_protected_*`` counts are 0 by
+    construction rather than by luck. The tools whose every unit already
+    sits inside an exposed block -- which the construction pool cannot
+    represent no matter how the tier is drawn -- are still named in the
+    report, and the fail-closed floor check still refuses a partition that
+    starves a tool the free pool could have supplied.
     """
 
     rows = tuple(rows)
     if not rows:
         raise RailsError("propose_partition: rows must be non-empty")
-    if isinstance(per_tier, bool) or not isinstance(per_tier, int) or per_tier <= 0:
-        raise RailsError("propose_partition: per_tier must be a positive int")
+    if (
+        isinstance(eval_per_tier, bool)
+        or not isinstance(eval_per_tier, int)
+        or eval_per_tier < 0
+    ):
+        raise RailsError(
+            "propose_partition: eval_per_tier must be a non-negative int "
+            "(0 retires the proposed evaluation tier)"
+        )
 
     exposed_blocks = frozenset(
         row.query_idx
@@ -754,80 +806,94 @@ def propose_partition(
         tool for tool, count in tool_pool_counts.items() if count < tool_min_pool_rows
     )
 
-    # BLOCK-level protection of the construction floor (2026-09-05 repair).
-    # Dropping a construction-only tool's own ROWS from eval candidacy was
-    # never enough: a query_idx block is shared across tiers, so another
-    # tier's candidate in the SAME block could still be drawn, reserving the
-    # block and taking the rare tool's last exemplar with it. Under the
-    # frozen-400-only exposure roster the free pool was large enough that
-    # this never fired; under the full exposure union it fires immediately
-    # (foldExteriorMirrors and initiateAutoPark keep exactly one free unit
-    # each). Protecting the whole BLOCK is the fix, and it is stated in the
-    # report rather than left implicit.
     construction_only = set(construction_only_tools)
-    rare_protected_blocks = frozenset(
-        row.query_idx for row in free_rows if row.tool_name in construction_only
-    )
-
-    # ONE-BLOCK FLOOR FOR EVERY OTHER TOOL (2026-09-05, second repair, MF-1).
-    # Protecting only the RARE tools' blocks still let the draw starve a tool
-    # that clears ``tool_min_pool_rows`` but whose free blocks are few and
-    # shared: under the exposure union that now also reserves A2T-FRESH-800,
-    # a per_tier=50 draw wiped out nine smart_home tools
-    # (broadcastMessage, castContent, controlPlayback_home, getCameraStream,
-    # rampBrightness, setAdaptiveLighting, setApplianceMode, setBrightness,
-    # setHumidifierState) and the fail-closed floor check refused the whole
-    # partition. Reserving ONE deterministic block per remaining tool -- the
-    # block of its lexicographically first unit, skipped when one of its
-    # blocks is already protected -- makes ``missing_tools`` unreachable by
-    # construction instead of leaving it to the draw's luck. The cost is
-    # bounded and reported: the extra blocks never enter eval candidacy.
-    rows_by_tool: dict[str, list[A2tKbRow]] = defaultdict(list)
-    for row in free_rows:
-        rows_by_tool[row.tool_name].append(row)
+    rare_protected_blocks: frozenset[int] = frozenset()
     floor_blocks: set[int] = set()
-    for tool in sorted(rows_by_tool):
-        if tool in construction_only:
-            continue
-        tool_rows = sorted(rows_by_tool[tool], key=lambda row: row.unit_id)
-        if any(
-            row.query_idx in rare_protected_blocks or row.query_idx in floor_blocks
-            for row in tool_rows
-        ):
-            continue
-        floor_blocks.add(tool_rows[0].query_idx)
-    protected_blocks = frozenset(rare_protected_blocks | floor_blocks)
-
-    candidates_by_tier: dict[str, list[A2tKbRow]] = defaultdict(list)
-    for row in free_rows:
-        if row.tool_name in construction_only or row.query_idx in protected_blocks:
-            continue
-        candidates_by_tier[row.tier].append(row)
-
-    order = sorted(candidates_by_tier, key=lambda tier: (len(candidates_by_tier[tier]), tier))
-    reserved: set[int] = set()
+    order: list[str] = []
     eval_items: list[tuple[str, int, str, str]] = []
     per_tier_drawn: dict[str, int] = {}
-    for tier in order:
-        pool = sorted(
-            (row for row in candidates_by_tier[tier] if row.query_idx not in reserved),
-            key=lambda row: row.unit_id,
+    reserved: set[int] = set()
+
+    if eval_per_tier:
+        # BLOCK-level protection of the construction floor (2026-09-05 repair).
+        # Dropping a construction-only tool's own ROWS from eval candidacy was
+        # never enough: a query_idx block is shared across tiers, so another
+        # tier's candidate in the SAME block could still be drawn, reserving the
+        # block and taking the rare tool's last exemplar with it. Under the
+        # frozen-400-only exposure roster the free pool was large enough that
+        # this never fired; under the full exposure union it fires immediately
+        # (foldExteriorMirrors and initiateAutoPark keep exactly one free unit
+        # each). Protecting the whole BLOCK is the fix, and it is stated in the
+        # report rather than left implicit.
+        rare_protected_blocks = frozenset(
+            row.query_idx for row in free_rows if row.tool_name in construction_only
         )
-        if len(pool) < per_tier:
-            raise RailsError(
-                f"propose_partition: tier {tier!r} offers only {len(pool)} block-free "
-                f"candidates for a draw of {per_tier}"
+
+        # ONE-BLOCK FLOOR FOR EVERY OTHER TOOL (2026-09-05, second repair, MF-1).
+        # Protecting only the RARE tools' blocks still let the draw starve a tool
+        # that clears ``tool_min_pool_rows`` but whose free blocks are few and
+        # shared: under the exposure union that now also reserves A2T-FRESH-800,
+        # an eval_per_tier=50 draw wiped out nine smart_home tools
+        # (broadcastMessage, castContent, controlPlayback_home, getCameraStream,
+        # rampBrightness, setAdaptiveLighting, setApplianceMode, setBrightness,
+        # setHumidifierState) and the fail-closed floor check refused the whole
+        # partition. Reserving ONE deterministic block per remaining tool -- the
+        # block of its lexicographically first unit, skipped when one of its
+        # blocks is already protected -- makes ``missing_tools`` unreachable by
+        # construction instead of leaving it to the draw's luck. The cost is
+        # bounded and reported: the extra blocks never enter eval candidacy.
+        rows_by_tool: dict[str, list[A2tKbRow]] = defaultdict(list)
+        for row in free_rows:
+            rows_by_tool[row.tool_name].append(row)
+        for tool in sorted(rows_by_tool):
+            if tool in construction_only:
+                continue
+            tool_rows = sorted(rows_by_tool[tool], key=lambda row: row.unit_id)
+            if any(
+                row.query_idx in rare_protected_blocks or row.query_idx in floor_blocks
+                for row in tool_rows
+            ):
+                continue
+            floor_blocks.add(tool_rows[0].query_idx)
+        protected_blocks = frozenset(rare_protected_blocks | floor_blocks)
+
+        candidates_by_tier: dict[str, list[A2tKbRow]] = defaultdict(list)
+        for row in free_rows:
+            if row.tool_name in construction_only or row.query_idx in protected_blocks:
+                continue
+            candidates_by_tier[row.tier].append(row)
+
+        order = sorted(
+            candidates_by_tier, key=lambda tier: (len(candidates_by_tier[tier]), tier)
+        )
+        for tier in order:
+            pool = sorted(
+                (row for row in candidates_by_tier[tier] if row.query_idx not in reserved),
+                key=lambda row: row.unit_id,
             )
-        rng = random.Random(f"{seed}:{tier}")
-        picked = rng.sample(range(len(pool)), per_tier)
-        for index in sorted(picked):
-            row = pool[index]
-            reserved.add(row.query_idx)
-            # One wav per drawn unit: the lowest item id, so the draw is a
-            # deterministic ITEM roster and never two near-identical
-            # renderings of one unit.
-            eval_items.append((row.tier, row.item_ids[0], row.text, row.tool_name))
-        per_tier_drawn[tier] = per_tier
+            if len(pool) < eval_per_tier:
+                raise RailsError(
+                    f"propose_partition: tier {tier!r} offers only {len(pool)} block-free "
+                    f"candidates for a draw of {eval_per_tier}"
+                )
+            rng = random.Random(f"{seed}:{tier}")
+            picked = rng.sample(range(len(pool)), eval_per_tier)
+            for index in sorted(picked):
+                row = pool[index]
+                reserved.add(row.query_idx)
+                # One wav per drawn unit: the lowest item id, so the draw is a
+                # deterministic ITEM roster and never two near-identical
+                # renderings of one unit.
+                eval_items.append((row.tier, row.item_ids[0], row.text, row.tool_name))
+            per_tier_drawn[tier] = eval_per_tier
+    else:
+        # THE RETIRED TIER (default). Nothing is drawn, so nothing has to be
+        # protected FROM the draw: the floors above exist only to keep eval
+        # candidacy from taking a tool's last free block, and with no candidacy
+        # they would reserve blocks against nothing. Construction is therefore
+        # every block the exposure union does not hold, and the report's
+        # protection counts are honestly 0.
+        protected_blocks = frozenset()
 
     eval_blocks = frozenset(reserved)
     construction = tuple(row for row in free_rows if row.query_idx not in eval_blocks)
@@ -865,7 +931,8 @@ def propose_partition(
     report = {
         "policy_id": A2T_PARTITION_POLICY_ID,
         "seed": seed,
-        "per_tier": per_tier,
+        "eval_per_tier": eval_per_tier,
+        "eval_tier_retired": eval_per_tier == 0,
         "eval_tool_min_pool_rows": tool_min_pool_rows,
         "blocks_total": len({row.query_idx for row in rows}),
         "blocks_reserved_exposed": len(exposed_blocks),
@@ -886,6 +953,21 @@ def propose_partition(
         "blocks_protected_for_tool_floor": len(floor_blocks),
         "blocks_protected_total": len(protected_blocks),
         "tools_reserved_entirely_by_exposure": tools_reserved_by_exposure,
+        # The per-tool construction floor, stated rather than left implicit:
+        # every tool the EXPOSURE-FREE pool can supply must survive into the
+        # construction pool. ``tools_missing`` is [] by the fail-closed check
+        # above -- it is reported so a reader of the receipt sees the floor
+        # was evaluated, not assumed.
+        "construction_floor": {
+            "rule": (
+                "every tool the exposure-free pool can supply must appear in the "
+                "construction pool"
+            ),
+            "tools_supplied_by_free_pool": len(tool_pool_counts),
+            "tools_in_construction": len({row.tool_name for row in construction}),
+            "tools_missing": missing_tools,
+            "satisfied": True,
+        },
         "construction_units_by_tier": dict(
             sorted(Counter(row.tier for row in construction).items())
         ),
@@ -1437,8 +1519,10 @@ def build_a2t_knowledge_snapshot(
     :class:`KnowledgeSnapshot` for Audio2Tool.
 
     ``rows`` must already be the CONSTRUCTION pool (the caller partitions;
-    see :func:`propose_partition`). ``forbidden_sample_ids`` must carry BOTH
-    the frozen exposed 400 and the proposed evaluation tier -- the check is
+    see :func:`propose_partition`). ``forbidden_sample_ids`` must carry the
+    whole exposure union AND whatever proposed evaluation tier the caller
+    drew (empty since the tier was retired on 2026-09-05, which is why the
+    union alone must be non-empty for this build to be legal) -- the check is
     fail-closed and belt-and-braces: the partition already guarantees
     disjointness, and this re-proves it against the snapshot that is actually
     emitted.
@@ -1523,11 +1607,14 @@ def build_a2t_knowledge_snapshot_from_lock(
     1. :func:`a2t_pool_rows` -- every ``(tier, query_idx)`` unit of the full
        carrier pool, from the governed manifests under ``root``;
     2. :func:`propose_partition` against :func:`exposed_sample_ids`
-       (``repo_root``'s committed evaluation identities) -- the construction
-       pool is what survives;
+       (``repo_root``'s committed evaluation identities) at the DEFAULT
+       ``eval_per_tier=0`` -- the proposed evaluation tier is retired, so
+       the construction pool is every block the exposure union does not
+       hold;
     3. :func:`build_a2t_knowledge_snapshot` with the forbidden roster set to
-       the exposure union PLUS the proposed evaluation tier, which is the
-       belt-and-braces decontamination roster that function requires.
+       the exposure union PLUS the proposed evaluation tier (empty under the
+       default), which is the belt-and-braces decontamination roster that
+       function requires.
 
     The governed source relpath of every tier present in the construction
     pool is threaded through, exactly as the script does, so the emitted

@@ -23,6 +23,27 @@ Usage::
     python scripts/build_a2t_knowledge_snapshot.py --size full \\
         --snapshot-label full-exposure-union-v2 \\
         --exposure-row SAEA-SN-MF-A2T-KB-EXPOSURE-UNION-V2
+    python scripts/build_a2t_knowledge_snapshot.py --size full \\
+        --eval-per-tier 50           # reproduce a pre-2026-09-05 build
+
+THE PROPOSED EVALUATION TIER IS RETIRED (owner-coordinator decision
+2026-09-05), so ``--eval-per-tier`` defaults to 0 and the construction pool
+is every ``query_idx`` block the exposure union does not hold.
+``A2T-FRESH-800-V1`` is the registered fresh reserve and is inside that
+union, so the 400-block proposal it superseded was costing the construction
+side (204 of ``A2T-CONSTRUCTION-800-V1``'s 483 blocks) and protecting
+nothing. Two consequences, both deliberate:
+
+* the G0 LEXICAL CEILING is not computed when the tier is retired. Its query
+  population WAS that tier -- the only block-disjoint, never-flown,
+  legally-readable query text this builder had. Every remaining held-out
+  query set is a registered evaluation roster whose text this repository may
+  not read. Pass ``--eval-per-tier 50`` to recompute the gate exactly as
+  before, or cite the last measurement in
+  ``docs/receipts/knowledge/a2t-kb-lexical-ceiling.json``;
+* ``docs/receipts/knowledge/a2t-partition-proposal.json`` still lands, and
+  still records the reserved-exposed blocks, but its evaluation tier is
+  empty.
 
 Artifacts::
 
@@ -143,6 +164,20 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--eval-per-tier",
+        type=int,
+        default=0,
+        help=(
+            "items per tier for the PROPOSED evaluation tier. 0 (the default) "
+            "retires it: the tier was never a registered split, A2T-FRESH-800-V1 "
+            "is the registered fresh reserve and is already inside the exposure "
+            "union, so the proposal only shrank the construction pool. A positive "
+            "value restores the pre-2026-09-05 partition byte for byte and is the "
+            "only way to recompute the G0 lexical ceiling, whose query population "
+            "is that tier"
+        ),
+    )
+    parser.add_argument(
         "--exposure-row",
         type=str,
         default=EXPOSURE_ROW_ID,
@@ -157,6 +192,9 @@ def main() -> int:
     size = _parse_size(args.size)
     snapshot_label = args.snapshot_label or _size_label(size)
     exposure_row = args.exposure_row
+    eval_per_tier = int(args.eval_per_tier)
+    if eval_per_tier < 0:
+        parser.error("--eval-per-tier must be 0 (retired) or a positive int")
 
     attempts = arm_offline_guard()
 
@@ -175,7 +213,9 @@ def main() -> int:
     partition_start = time.monotonic()
     exposure = exposed_identity_report(REPO_ROOT)
     exposed = exposed_sample_ids(REPO_ROOT)
-    partition = propose_partition(rows, exposed, seed=PARTITION_SEED)
+    partition = propose_partition(
+        rows, exposed, seed=PARTITION_SEED, eval_per_tier=eval_per_tier
+    )
     partition_seconds = time.monotonic() - partition_start
     eval_ids = frozenset(partition.eval_sample_ids)
     forbidden = frozenset(exposed) | eval_ids
@@ -185,12 +225,19 @@ def main() -> int:
         f"({exposure['sources_by_kind']})"
     )
     print(
-        f"partition: construction={partition.report['units_construction']} units, "
+        f"partition: construction={partition.report['units_construction']} units in "
+        f"{partition.report['blocks_construction']} blocks "
+        f"({partition.report['items_construction']} items), "
         f"eval={len(eval_ids)} items, exposed-reserved="
         f"{partition.report['units_reserved_exposed']} units in "
         f"{partition.report['blocks_reserved_exposed']} blocks "
         f"({partition_seconds:.2f}s)"
     )
+    if partition.report["eval_tier_retired"]:
+        print(
+            "  the proposed evaluation tier is RETIRED (--eval-per-tier 0): "
+            "construction is every block the exposure union does not hold"
+        )
 
     spec = A2tKnowledgeBuildSpec(datastore_size=size, seed=BUILD_SEED)
     build_start = time.monotonic()
@@ -262,11 +309,19 @@ def main() -> int:
             "forbidden_rosters": [
                 EXPOSED_RECEIPT_RELPATH,
                 *sorted({str(source["relpath"]) for source in exposure["sources"]}),
-                "docs/receipts/knowledge/a2t-partition-proposal.json (proposed eval tier)",
+                *(
+                    [
+                        "docs/receipts/knowledge/a2t-partition-proposal.json "
+                        "(proposed eval tier)"
+                    ]
+                    if eval_ids
+                    else []
+                ),
             ],
             "exposed_identity_count": len(exposed),
             "exposed_400_count": len(exposed),
             "proposed_eval_count": len(eval_ids),
+            "proposed_eval_tier_retired": bool(partition.report["eval_tier_retired"]),
         },
         "timing_seconds": {
             "load_pool_rows": round(load_seconds, 3),
@@ -293,10 +348,23 @@ def main() -> int:
             "exposure_row": exposure_row,
             "offline_guard": _offline_block(attempts, exposure_row),
             "status": (
-                "PROPOSAL ONLY. This document is NOT a registered split and is deliberately "
-                "NOT written under docs/receipts/probe-samples/, so it does not enter the "
-                "Audio2Tool loader's frozen sample universe. Registering the evaluation "
-                "tier as flyable is later campaign work with its own preregistration."
+                "RETIRED TIER (owner-coordinator decision 2026-09-05): the evaluation "
+                "tier is EMPTY unless --eval-per-tier is positive. It was never a "
+                "registered split and was never flown; A2T-FRESH-800-V1 "
+                "(docs/receipts/rosters/a2t-fresh-800-v1.json, roster_role evaluation, "
+                "RESERVED_AND_UNOPENED) is the registered fresh reserve and is inside "
+                "the exposure union, so its blocks are held out by the union itself. "
+                "What survives here is the RESERVED-EXPOSED / CONSTRUCTION split. This "
+                "document is still NOT written under docs/receipts/probe-samples/, so "
+                "it does not enter the Audio2Tool loader's frozen sample universe."
+                if partition.report["eval_tier_retired"]
+                else (
+                    "PROPOSAL ONLY. This document is NOT a registered split and is "
+                    "deliberately NOT written under docs/receipts/probe-samples/, so it "
+                    "does not enter the Audio2Tool loader's frozen sample universe. "
+                    "Registering the evaluation tier as flyable is later campaign work "
+                    "with its own preregistration."
+                )
             ),
             "policy_id": partition.policy_id,
             "seed": partition.seed,
@@ -316,6 +384,23 @@ def main() -> int:
 
     if args.no_ceiling or size is not None:
         print("skipping the G0 lexical ceiling (not the full snapshot, or --no-ceiling)")
+        print(f"offline guard: {attempts.count} outbound connection attempts")
+        return 0
+
+    if not eval_ids:
+        # The gate's query population WAS the proposed evaluation tier. With
+        # the tier retired there is no block-disjoint, never-flown query text
+        # this builder may read: every other held-out set is a registered
+        # evaluation roster. Refusing to invent a substitute is the honest
+        # outcome; the standing measurement stays in its own receipt and is
+        # cited with the pool it was measured on.
+        print(
+            "skipping the G0 lexical ceiling: the proposed evaluation tier is retired "
+            "(--eval-per-tier 0) and it was the gate's query population. The standing "
+            "measurement remains docs/receipts/knowledge/a2t-kb-lexical-ceiling.json, "
+            "measured on the construction pool of the run named in its own "
+            "exposure_row; pass --eval-per-tier 50 to recompute it."
+        )
         print(f"offline guard: {attempts.count} outbound connection attempts")
         return 0
 
