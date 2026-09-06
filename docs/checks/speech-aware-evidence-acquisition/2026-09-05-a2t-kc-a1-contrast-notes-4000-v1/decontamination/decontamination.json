@@ -1,0 +1,111 @@
+{
+  "arms": {
+    "kc-a1": {
+      "artifact_relpath": "configs/knowledge/a2t-kc-a1/contrast-notes-v1.json",
+      "artifact_sha256": "b99da99e43c813050e6df9a11bf1910e6168c744f363dae6c1b7f64df0a1763f",
+      "candidate_id": "af36af0049c99f4f36bd847dfb5892d22267a8b5b705d569bed6b9baf28148a9",
+      "ngram_audit": {
+        "candidate_6grams": 74,
+        "evaluation_6grams": 77899,
+        "n": 6,
+        "shared_and_absent_from_the_registry": [],
+        "shared_with_evaluation": 0
+      },
+      "status": "PASS",
+      "tools_overridden": 8,
+      "validation": {
+        "candidate_id": "af36af0049c99f4f36bd847dfb5892d22267a8b5b705d569bed6b9baf28148a9",
+        "exemplar_overlap_count": 0,
+        "exemplar_overlap_ngrams": [],
+        "max_description_chars": 97,
+        "rendered_lines": 152,
+        "rendered_sha256": "ce1e521345270b9149bf45d6916fdd9a64e17293d0bae3e5ea63bf0b51f1a8fe",
+        "rendered_tokens": 4015,
+        "schema": "saea-evolution-candidate-validation-v1",
+        "token_budget": 4015
+      }
+    },
+    "kc-a1c": {
+      "artifact_relpath": "configs/knowledge/a2t-kc-a1/category-only-v1.json",
+      "artifact_sha256": "2f34c2cf8bc5585257756b44975e36c6244d7c3e362beac1d5b01956a6736e33",
+      "candidate_id": "cfc340941e9712244bfef06d8c27ca7e1ab6bb08f6ffff6fc5bce16fb331d773",
+      "ngram_audit": {
+        "candidate_6grams": 65,
+        "evaluation_6grams": 77899,
+        "n": 6,
+        "shared_and_absent_from_the_registry": [],
+        "shared_with_evaluation": 0
+      },
+      "status": "PASS",
+      "tools_overridden": 8,
+      "validation": {
+        "candidate_id": "cfc340941e9712244bfef06d8c27ca7e1ab6bb08f6ffff6fc5bce16fb331d773",
+        "exemplar_overlap_count": 0,
+        "exemplar_overlap_ngrams": [],
+        "max_description_chars": 97,
+        "rendered_lines": 152,
+        "rendered_sha256": "ac71cef2be2f5c1750425330eaf131ac9c516a843cc782f0fd8041c1548c5545",
+        "rendered_tokens": 4015,
+        "schema": "saea-evolution-candidate-validation-v1",
+        "token_budget": 4015
+      }
+    }
+  },
+  "boundary": "zero model, GPU, tokenizer, embedder, retriever, scorer, network, audio-decode and paid-API contacts. Pure text over the committed artifacts, the released tier manifests' INVOCATION fields and tools_registry.csv.",
+  "exposure_row": "SAEA-A2T-MF-KC-A1-DECONTAMINATION-V1",
+  "generated_at": "2026-09-06T05:48:18.827710+00:00",
+  "gold_not_read": {
+    "fields_never_opened": [
+      "additional_tool_calls",
+      "expected_tool_call",
+      "extracted_params",
+      "functions",
+      "instruction",
+      "reasoning",
+      "tool_id",
+      "tool_name"
+    ],
+    "fields_opened": [
+      "query",
+      "user_request",
+      "chat_history"
+    ],
+    "why": "the gate compares candidate text against what the SPEAKER says, which is the only leakage channel an appended note could have. No answer field of any evaluation row is opened by this script."
+  },
+  "population": {
+    "count": 4000,
+    "evaluation_word_6grams": 77899,
+    "flight_split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+    "invocation_texts": 9930,
+    "roster_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-org1-domain-grouped-roster/flight-roster-receipt.json",
+    "roster_receipt_sha256": "e5a81b71e1253ff866262991f79d132b89f4bfb47e7c8a0c0cf0aa04857b8736",
+    "rows_carrying_each_field": {
+      "chat_history": 500,
+      "query": 4000,
+      "user_request": 500
+    },
+    "rows_per_tier": {
+      "tier1_direct": 500,
+      "tier2_parametric": 500,
+      "tier3_multi_intent": 500,
+      "tier4_implicit": 500,
+      "tier5_needle": 500,
+      "tier6_correction": 500,
+      "tier7_multiturn": 500,
+      "tier8_intent_blending": 500
+    },
+    "split_identity_hash": "c0c1e7ccc0a9d923e51e86be11c4aedb760a2b91c8ab166305a6877c64496ad4",
+    "split_name": "A2T-ORG1-UNION-4000"
+  },
+  "refused_arms": [],
+  "registry": {
+    "compact_chars": 15854,
+    "compact_sha256": "752dd381a02028dc7345a6ac826109bdcc879d82547a9029a43d559d0de8a605",
+    "registry_word_6grams": 2005,
+    "rows": 152
+  },
+  "schema": "saea-a2t-kc-a1-decontamination-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "token_counter": "the ORG-1 chars-per-token ESTIMATOR (3.989), not the server tokenizer: this row starts no server. The form caps are re-measured for real by the prompt fit; what this row decides is the DECONTAMINATION gate, which is character-exact and independent of any tokenizer.",
+  "verdict": "PASS"
+}
