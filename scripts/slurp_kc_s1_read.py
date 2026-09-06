@@ -64,10 +64,21 @@ CLOSED_LIST_OUTPUTS = (
     "runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/"
     "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.outputs.jsonl"
 )
+#: Per-sample metrics paired for every contrast. ``slot_f1_exact_f1`` is the
+#: primary -- the exact ({type, filler}) per-sample slot F1 the closed-list
+#: verdict paired, which is the official script's own plain ``entities``
+#: block -- and ``slu_f1_f1`` is the per-sample form of the official SLU-F1
+#: headline, whose corpus value is the aggregate anchor. The precision and
+#: recall rows say WHICH side of the recall-limited slot layer moved;
+#: ``scenario_action_exact`` is carried only to demonstrate that intent is
+#: identical by construction (every contrast on it must be exactly zero).
 PAIRED_METRICS = (
     "slot_f1_exact_f1",
+    "slu_f1_f1",
     "slu_f1_word_f1",
     "slu_f1_char_f1",
+    "slot_f1_exact_precision",
+    "slot_f1_exact_recall",
     "scenario_action_exact",
 )
 
@@ -335,27 +346,23 @@ def main() -> int:
         equal = sum(sum(v) / len(v) for v in by_stratum.values()) / max(1, len(by_stratum))
         return {"natural_mixture": round(100 * natural, 2), "equal_stratum": round(100 * equal, 2)}
 
-    schema = load_slurp_intent_slot_schema(lock, root)
-    fallback_ids = [
-        sample_id
-        for sample_id in ids_all
-        if (
-            slurp_intent_from_state_content(text_of_by_id["CLOSED-LIST"][sample_id])
-            not in schema.intents
-        )
-    ] if False else [
-        sample_id
-        for sample_id in ids_all
-        if slurp_intent_from_state_content(
-            {row["sample_id"]: text_of(row) for row in rows["CLOSED-LIST"]}[sample_id]
-        )
-        not in schema.intents
-    ]
-
     text_by_arm = {
         name: {row["sample_id"]: text_of(row) for row in rows[name]}
         for name in ("CLOSED-LIST", "KC-S1A", "KC-S1B")
     }
+
+    # Which rows KC-S1b could not give a per-intent block to, recomputed here
+    # from the sealed closed-list bytes rather than trusted from the
+    # pre-flight receipt: a row falls back exactly when its sealed response
+    # does not parse to an intent the TRAIN schema carries, which is
+    # data.slurp.render_slurp_slot_schema_for_state_detail's own rule.
+    schema = load_slurp_intent_slot_schema(lock, root)
+    fallback_ids = [
+        sample_id
+        for sample_id in ids_all
+        if slurp_intent_from_state_content(text_by_arm["CLOSED-LIST"][sample_id])
+        not in schema.intents
+    ]
 
     document = {
         "schema": "saea-slurp-kc-s1-slot-stage-read-v1",
