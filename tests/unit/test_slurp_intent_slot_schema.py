@@ -645,3 +645,89 @@ def test_real_corpus_schema_reproduces_the_committed_receipt():
         hashlib.sha256(rendered.encode("utf-8")).hexdigest()
         == document["rendered_full_text"]["sha256"]
     )
+
+
+# ---------------------------------------------------------------------------
+# The projection seam (EVO-S1, preregistration section 4)
+# ---------------------------------------------------------------------------
+
+
+def test_a_projection_repairs_an_illegal_sealed_label_before_the_block_is_picked(
+    slot_world, schema
+):
+    """An illegal sealed pair falls back to the whole schema; the projection
+    hands it a block instead.
+
+    The sealed closed-list arm answers a (scenario, action) pair TRAIN never
+    carries on 3.9 % of DEV-1000 rows, and every one of those rows is served
+    the 26,720-character full-schema fallback. The projection is the same rule
+    the re-locked comparator is SCORED through, applied one step earlier -- at
+    selection -- so the row gets a per-intent block. It is off by default, so
+    an already-flown cell keeps its own selection byte for byte.
+    """
+
+    from speech_aware_evidence_acquisition.reproduction.slurp_official_eval import (
+        load_legal_intent_inventory,
+    )
+    from speech_aware_evidence_acquisition.reproduction.slurp_scoring import (
+        project_slu_label_v2,
+    )
+
+    inventory = load_legal_intent_inventory(slot_world.lock, slot_world.data_root)
+
+    def project(scenario, action, *, parsed=True):
+        return project_slu_label_v2(scenario, action, inventory, parsed=parsed)
+
+    # "set" is a legal ACTION name that only `alarm` owns here, written into
+    # the SCENARIO slot -- exactly the confusion v2's promote branch repairs.
+    illegal = _sealed("set", "query")
+    text, used, fallback = render_slurp_slot_schema_for_state_detail(
+        slot_world.lock, slot_world.data_root, illegal
+    )
+    assert (used, fallback) == (None, True)
+    assert text == render_slurp_intent_slot_schema(schema)
+
+    text, used, fallback = render_slurp_slot_schema_for_state_detail(
+        slot_world.lock, slot_world.data_root, illegal, projection=project
+    )
+    assert (used, fallback) == ("alarm_set", False)
+    assert text == render_slurp_intent_slot_schema(schema, intents=("alarm_set",))
+
+
+def test_a_projection_never_moves_a_row_whose_label_is_already_legal(slot_world):
+    from speech_aware_evidence_acquisition.reproduction.slurp_official_eval import (
+        load_legal_intent_inventory,
+    )
+    from speech_aware_evidence_acquisition.reproduction.slurp_scoring import (
+        project_slu_label_v2,
+    )
+
+    inventory = load_legal_intent_inventory(slot_world.lock, slot_world.data_root)
+
+    def project(scenario, action, *, parsed=True):
+        return project_slu_label_v2(scenario, action, inventory, parsed=parsed)
+
+    for content in (_sealed("alarm", "set"), "not json at all", _sealed("alarm", None)):
+        plain = render_slurp_slot_schema_for_state_detail(
+            slot_world.lock, slot_world.data_root, content
+        )
+        projected = render_slurp_slot_schema_for_state_detail(
+            slot_world.lock, slot_world.data_root, content, projection=project
+        )
+        assert plain == projected
+
+
+def test_only_a_registered_projection_id_resolves():
+    from speech_aware_evidence_acquisition.rails.phase_material import (
+        SLURP_STATE_INTENT_PROJECTIONS,
+        PhaseMaterialError,
+        _slurp_intent_projection,
+    )
+
+    assert _slurp_intent_projection(None) is None
+    assert SLURP_STATE_INTENT_PROJECTIONS == (
+        "slurp-legal-label-projection-v1",
+        "slurp-legal-label-projection-v2",
+    )
+    with pytest.raises(PhaseMaterialError, match="unknown SLURP intent projection"):
+        _slurp_intent_projection("slurp-legal-label-projection-v3")

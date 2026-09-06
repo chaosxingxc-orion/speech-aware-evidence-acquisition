@@ -111,7 +111,7 @@
   },
   "artifact_reldir": "configs/knowledge/slurp-evo-s1",
   "background_tolerance_pp": -1.0,
-  "base_fragment": "slurp-phase-slots-given-intent-schema-v1",
+  "base_fragment": "slurp-phase-slots-given-intent-schema-projected-v2",
   "carrier_lock_key": "slurp",
   "cell_label": "EVO-S1",
   "decontamination": {

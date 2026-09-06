@@ -286,7 +286,7 @@ def _write(path: Path, document: object) -> None:
     )
 
 
-def _repo(root: Path, config: LoopConfig) -> Path:
+def _repo(root: Path, config: LoopConfig, *, fill_params: Mapping | None = None) -> Path:
     """A synthetic repository carrying only the base fragment the writer
     copies -- and it must already BE a state-fill arm bound to a sealed
     predecessor, because an evolved arm may differ from the admitted incumbent
@@ -306,6 +306,7 @@ def _repo(root: Path, config: LoopConfig) -> Path:
                     "instruction_template": "probes/slurp_phase_slots.txt",
                     "predecessor_binding": "sealed-manifest",
                     "state_fill": "slurp-intent-slot-schema-for-state",
+                    **({"fill_params": dict(fill_params)} if fill_params else {}),
                 }
             },
         },
@@ -952,3 +953,79 @@ def test_the_committed_loop_configs_declare_their_own_fold_sizes() -> None:
     assert (a2t.fold_a_rows, a2t.fold_b_rows) == (A2T_FOLD_ROWS, A2T_FOLD_ROWS)
     assert a2t.fold_a_speech_seconds == A2T_FOLD_A_SPEECH_SECONDS
     assert a2t.fold_b_speech_seconds == A2T_FOLD_B_SPEECH_SECONDS
+
+
+def test_the_base_fragments_projection_reaches_every_candidate_unchanged(
+    tmp_path,
+) -> None:
+    """One declaration of the projection, on the base, for every arm.
+
+    The incumbent arm flies the base fragment itself and each candidate flies
+    a copy of it, so declaring the projection once on the base is what makes
+    a round's contrast single-factor: every arm of that fold selects its
+    per-intent block from the same sealed label, and the only thing that
+    differs is the artifact.
+    """
+
+    from speech_aware_evidence_acquisition.rails.evolution import (
+        assemble_portfolio,
+        write_candidate_fragments,
+    )
+    from speech_aware_evidence_acquisition.rails.proposer import (
+        slurp_blocks_from_schema,
+        slurp_shares_only_candidate,
+    )
+
+    config = _loop_config()
+    projection = {"projection": "slurp-legal-label-projection-v2"}
+    repo = _repo(tmp_path / "run", config, fill_params=projection)
+    base = json.loads(
+        (repo / "configs" / "baseline" / f"{config.base_fragment}.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    incumbent = slurp_blocks_from_schema(_schema(floored=True), intents=INTENTS)
+    target = SCENARIOS[0]
+    candidate = slurp_shares_only_candidate(
+        {intent: incumbent[intent] for intent in ARTIFACT_KEYS[target]},
+        target_id=target,
+        round=1,
+        k=4,
+    )
+    portfolio = assemble_portfolio({}, {target: candidate})
+    written = write_candidate_fragments(
+        [portfolio],
+        base_fragment=base,
+        out_dir=repo / "configs" / "baseline",
+        artifact_dir=repo / "configs" / "knowledge" / config.slug,
+        artifact_relpath_base=repo,
+        artifact_family="slurp-slot-schema",
+        state_fill=config.state_fill,
+        state_fill_phase=config.state_fill_phase,
+        fold_variants=config.fold_predecessors,
+    )
+    assert len(written) == 2  # one fragment per fold
+    for path in written:
+        slots = json.loads(path.read_text(encoding="utf-8"))["phase_material"]["slots"]
+        assert slots["fill_params"]["projection"] == projection["projection"]
+        # and the writer's own keys are all still there
+        assert {"artifact_relpath", "artifact_sha256", "portfolio_sha256"} <= set(
+            slots["fill_params"]
+        )
+
+    # A base that tried to set a key the writer owns is refused rather than
+    # silently overwritten.
+    colliding = json.loads(json.dumps(base))
+    colliding["phase_material"]["slots"]["fill_params"] = {"artifact_sha256": "0" * 64}
+    with pytest.raises(EvolutionError, match="will not silently replace"):
+        write_candidate_fragments(
+            [portfolio],
+            base_fragment=colliding,
+            out_dir=repo / "configs" / "baseline",
+            artifact_dir=repo / "configs" / "knowledge" / config.slug,
+            artifact_relpath_base=repo,
+            artifact_family="slurp-slot-schema",
+            state_fill=config.state_fill,
+            state_fill_phase=config.state_fill_phase,
+            fold_variants=config.fold_predecessors,
+        )

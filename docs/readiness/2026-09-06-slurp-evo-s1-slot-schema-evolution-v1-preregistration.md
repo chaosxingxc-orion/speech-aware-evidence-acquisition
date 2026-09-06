@@ -172,7 +172,54 @@ round would be measuring two changes at once.
 **2,160 contacts**, one per row, `baseline-reproduction`. Its two run manifests become the `sealed-manifest`
 `predecessor_source` of every slot cell on that fold, for every round and every candidate. It is
 **incumbent-independent** — nothing the loop does can change it — which is why it is flown once and
-not per round, and it doubles as each fold's own one-contact direct comparator.
+not per round, and it doubles as each fold's own one-contact direct comparator. Registered as
+`SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2`, attempts `attempt-intent-a` and `attempt-intent-b`.
+
+### How the projection enters the predecessor binding — decided 2026-09-06
+
+The re-lock of 2026-09-06 (`docs/readiness/2026-09-06-slurp-legal-label-projection-v2-verdict.md`)
+made `slurp-slu-official-projected-v2` the scorer every pending SLURP cell reads through: the
+comparator is intent **73.10** / SLU-F1 **35.80**, not 71.40. That rule has a second application in
+this cell, one step earlier than scoring, and it is stated here because it is not free.
+
+**What it does.** The block a row is shown is chosen by parsing the intent out of that row's SEALED
+closed-list response. On DEV-1000 that response names a `(scenario, action)` pair TRAIN never
+carries on **39 of 1,000** rows and fails to parse on 3, so 42 rows (4.2 %) are served the
+26,720-character full-schema fallback instead of a per-intent block. Under
+`slurp-legal-label-projection-v2`, 39 of those 42 become legal and **17 land on the gold intent**
+(v2 verdict section 6). Projecting the sealed label *before* the block is selected therefore hands
+about 1.7 % of rows a materially better instruction — an effect the same size as the one the loop is
+trying to demonstrate.
+
+**Where it is on, and where it is off.**
+
+| population | projects? | why |
+|---|---|---|
+| **fold A and fold B**, every round, every arm | **yes**, `slurp-legal-label-projection-v2` | the fold intent manifests are this cell's OWN (`SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2`), the incumbent arm and every candidate arm read them through the same projection, and the projection is declared ONCE — on the fold base fragment — so a round stays a single-factor contrast and the loop selects on the best labels available to it |
+| **DEV-1000 final read** of `A*` | **no** | the headline comparator is KC-S1b's SEALED rows, which chose their blocks from UNPROJECTED bytes and cannot be re-flown. An `A*` arm that projected would beat them partly by better block selection rather than by the evolved schema, and the claim would no longer be about the artifact |
+
+**The seam.** `data.slurp.render_slurp_slot_schema_for_state_detail` (and
+`slurp_intent_from_state_content` beneath it) take an optional `projection=`, a rule already bound to
+its TRAIN-mined legal inventory. Both SLURP state fills —
+`slurp-intent-slot-schema-for-state` and EVO-S1's `slurp-evolved-slot-schema-for-state` — accept a
+`projection` **`fill_params` key**, resolved through
+`rails.phase_material.SLURP_STATE_INTENT_PROJECTIONS` against the same two ids `core.scorers`
+registers the scoring side under; an unregistered id is refused. **Absent by default**, so every
+already-flown cell keeps its own block selection byte for byte, KC-S1b's fragment included.
+
+The declaration lives on the fold base fragment
+`configs/baseline/slurp-phase-slots-given-intent-schema-projected-v2.json` — KC-S1b's arm plus that
+one key — and `rails.evolution.write_candidate_fragments` now MERGES a base's own `fill_params` under
+the artifact keys it owns (refusing a collision) instead of refusing any, so the incumbent arm and
+every candidate copy of it carry the identical projection. The final read flies
+`configs/baseline/slurp-phase-slots-given-intent-schema-v1.json`, unchanged.
+
+**The cost, stated before takeoff.** Fold and read now differ in one path detail as well as in
+population, so the generalization gap `G` carries a block-selection term. Its direction is
+**conservative for the claim**: the loop optimizes in a world where ~1.7 % of rows get a better
+block and is read in a world where they do not, which can only shrink the measured read gain
+relative to the fold gain. The fallback-row count is reported per read either way (section 7,
+headline evidence item 6), so a reviewer can price the term rather than infer it.
 
 **Which per-row metrics exist.** `core.scoring_batch` with `--include-per-sample` writes, per row,
 from `reproduction.slurp_official_eval.score_slurp_outputs_official`:

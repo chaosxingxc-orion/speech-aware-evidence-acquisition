@@ -724,10 +724,22 @@ def _with_state_fill(
             f"base_fragment phase_material[{phase!r}] declares no state_fill; the "
             "evolved arm must differ from the incumbent by the artifact alone"
         )
-    if entry.get("fill_params"):
+    # The base MAY carry fill_params, and EVO-S1's does: the projection its
+    # fold arms select their block through is declared once, on the base, so
+    # the incumbent arm and every candidate arm of that fold read the same
+    # sealed label. What the base may not do is set a key this writer owns --
+    # silently replacing the artifact binding would hide which arm flew.
+    inherited = entry.get("fill_params") or {}
+    if not isinstance(inherited, Mapping):
         raise EvolutionError(
-            f"base_fragment phase_material[{phase!r}] already carries fill_params; this "
-            "writer owns them and will not silently replace a caller's binding"
+            f"base_fragment phase_material[{phase!r}] fill_params must be an object"
+        )
+    collisions = sorted(set(inherited) & set(fill_params))
+    if collisions:
+        raise EvolutionError(
+            f"base_fragment phase_material[{phase!r}] fill_params already set "
+            f"{collisions}; this writer owns those keys and will not silently replace a "
+            "caller's binding"
         )
     if predecessor_source is not None and entry.get("predecessor_binding") != (
         "sealed-manifest"
@@ -741,7 +753,7 @@ def _with_state_fill(
                for key, value in material.items()}
     phase_entry = dict(entry)
     phase_entry["state_fill"] = state_fill
-    phase_entry["fill_params"] = dict(fill_params)
+    phase_entry["fill_params"] = {**dict(inherited), **dict(fill_params)}
     if predecessor_source is not None:
         phase_entry["predecessor_source"] = dict(predecessor_source)
     updated[phase] = phase_entry
