@@ -399,3 +399,80 @@ def test_the_exemplar_quota_policy_lands_in_the_exemplar_receipt() -> None:
     assert policy["target_per_scenario"] == 6
     assert policy["capped_scenarios"] == {}
     assert set(policy["realized_per_scenario"]) == set(SCENARIOS)
+
+
+# ---------------------------------------------------------------------------
+# Stage-one power: the arithmetic that justified the 60-per-scenario re-draw.
+# ---------------------------------------------------------------------------
+
+KC_S1B_TRANSPORT = {"n": 60, "saves": 12, "harms": 2}
+KC_S1B_QA = {"n": 60, "saves": 4, "harms": 0}
+KC_S1B_DATETIME = {"n": 61, "saves": 4, "harms": 0}
+
+
+def test_the_gate_prices_measured_rates_at_the_fold_size() -> None:
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        stage_one_power,
+    )
+
+    (row,) = stage_one_power({"qa": KC_S1B_QA}, 60)
+    assert row["expected_saves"] == 4.0
+    assert row["expected_harms"] == 0.0
+    assert row["clears_gate"] is True
+    (half,) = stage_one_power({"qa": KC_S1B_QA}, 30)
+    assert half["expected_saves"] == 2.0
+    assert half["clears_gate"] is False
+
+
+def test_the_absolute_harms_bound_makes_the_gate_not_scale_free() -> None:
+    """``transport`` clears at 30 rows and is refused at 60: saves double, the
+    harms bound does not. This is the finding the power receipt records."""
+
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        stage_one_power,
+    )
+
+    (at30,) = stage_one_power({"transport": KC_S1B_TRANSPORT}, 30)
+    (at60,) = stage_one_power({"transport": KC_S1B_TRANSPORT}, 60)
+    assert (at30["expected_saves"], at30["expected_harms"]) == (6.0, 1.0)
+    assert at30["clears_gate"] is True
+    assert (at60["expected_saves"], at60["expected_harms"]) == (12.0, 2.0)
+    assert at60["clears_gate"] is False
+
+
+def test_expected_counts_are_never_rounded_into_the_gate() -> None:
+    """``datetime`` prices at 3.93 saves on a 60-row fold. Rounding would admit
+    it; the preregistered gate is an absolute count and does not round."""
+
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        stage_one_power,
+    )
+
+    (row,) = stage_one_power({"datetime": KC_S1B_DATETIME}, 60)
+    assert row["expected_saves"] == pytest.approx(3.9344, abs=1e-4)
+    assert row["clears_gate"] is False
+
+
+def test_the_power_summary_counts_and_names_the_clearing_scenarios() -> None:
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        stage_one_power,
+        stage_one_power_summary,
+    )
+
+    table = stage_one_power(
+        {"qa": KC_S1B_QA, "transport": KC_S1B_TRANSPORT, "datetime": KC_S1B_DATETIME},
+        60,
+    )
+    summary = stage_one_power_summary(table)
+    assert summary == {"clears": 1, "scenarios": 3, "clearing_scenarios": ["qa"]}
+
+
+def test_a_stratum_with_no_measured_rows_is_refused() -> None:
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        stage_one_power,
+    )
+
+    with pytest.raises(ValueError):
+        stage_one_power({"ghost": {"n": 0, "saves": 0, "harms": 0}}, 60)
+    with pytest.raises(ValueError):
+        stage_one_power({"qa": KC_S1B_QA}, 0)

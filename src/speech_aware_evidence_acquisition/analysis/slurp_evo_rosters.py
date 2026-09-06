@@ -24,10 +24,20 @@ measured per-stratum saves down to 30 rows clears the stage-one count gate
 so the preregistered kill result "no scenario admitted in rounds 1 and 2"
 would most likely fire for a statistical reason rather than a mechanism one.
 The coordinator took remedy (b) of preregistration section 16 open point 1 --
-60 per scenario, 1,080 rows per fold, nine of eighteen scenarios clearing the
-gate -- and this module takes that as its ``version="V2"`` argument. Nothing
-else changed: same seed, same exclusions, same draw order, same proofs. The
-V1 receipts stay committed as history and are never overwritten.
+60 per scenario, 1,080 rows per fold -- and this module takes that as its
+``version="V2"`` argument. Nothing else changed: same seed, same exclusions,
+same draw order, same proofs. The V1 receipts stay committed as history and
+are never overwritten.
+
+:func:`stage_one_power` prices that gate at any fold size from KC-S1b's own
+per-stratum table, and the receipt under ``docs/checks/
+speech-aware-evidence-acquisition/2026-09-06-slurp-evo-stage-one-power/`` is
+the audited answer: **three of eighteen at 30 rows and seven of eighteen at
+60**, not the nine an earlier draft of the preregistration asserted. The
+re-draw is still worth its price -- it more than doubles the admissible set
+-- but the gain is smaller than it was written down as, and one scenario
+(``transport``) LEAVES the admissible set at 60 because the harms bound is
+an absolute row count that does not scale with the fold.
 
 Two rules that are decisions rather than mechanics, stated here once.
 
@@ -628,7 +638,97 @@ def roster_documents(
     return documents
 
 
+# ---------------------------------------------------------------------------
+# Stage-one power: what a fold size buys, priced on KC-S1b's own measured table.
+# ---------------------------------------------------------------------------
+
+#: Preregistration section 6 step 4. All three are ABSOLUTE row counts, not
+#: rates, because a reviewer has to be able to recount a stage-one decision by
+#: hand. The consequence is that the gate is NOT scale-free: doubling the fold
+#: doubles a scenario's expected harms while the harms bound stays at one.
+ADMISSION_GATES: Mapping[str, int] = {"saves": 4, "harms": 1, "net": 3}
+
+#: The only measured per-scenario save/harm table this study owns for the
+#: mechanism EVO-S1 evolves: KC-S1b against the closed-list direct baseline,
+#: pooled over the 1,000 DEV rows, on the reward metric.
+KC_S1B_READ_RECEIPT = (
+    "docs/checks/speech-aware-evidence-acquisition/"
+    "2026-09-05-slurp-slot-stage-kc-s1-v1/read.json"
+)
+KC_S1B_CONTRAST = "paired_kc_s1b_over_closed_list"
+KC_S1B_POPULATION = "pooled_1000"
+REWARD_METRIC = "slot_f1_exact_f1"
+
+
+def stage_one_power(
+    per_stratum: Mapping[str, Mapping[str, object]],
+    rows_per_scenario: int,
+    *,
+    gates: Mapping[str, int] = ADMISSION_GATES,
+) -> list[dict[str, object]]:
+    """Price the stage-one gate at ``rows_per_scenario``, per scenario.
+
+    The scaling rule, stated once because the answer is sensitive to it: a
+    scenario's measured saves and harms are turned into per-row RATES on the
+    population they were measured on, multiplied by the fold size, and
+    compared against the gate's own absolute constants WITHOUT rounding. No
+    other reading is preregistered -- rounding the expected counts, or
+    scaling the harms bound with the fold, each admits scenarios this one
+    does not, and the difference is not cosmetic.
+    """
+
+    if rows_per_scenario <= 0:
+        raise ValueError("rows_per_scenario must be positive")
+    table: list[dict[str, object]] = []
+    for scenario in sorted(per_stratum):
+        row = per_stratum[scenario]
+        measured = int(row["n"])  # type: ignore[arg-type]
+        if measured <= 0:
+            raise ValueError(f"stratum {scenario} has no measured rows")
+        saves = int(row["saves"])  # type: ignore[arg-type]
+        harms = int(row["harms"])  # type: ignore[arg-type]
+        expected_saves = rows_per_scenario * saves / measured
+        expected_harms = rows_per_scenario * harms / measured
+        table.append(
+            {
+                "scenario": scenario,
+                "measured_rows": measured,
+                "measured_saves": saves,
+                "measured_harms": harms,
+                "expected_saves": round(expected_saves, 4),
+                "expected_harms": round(expected_harms, 4),
+                "expected_net": round(expected_saves - expected_harms, 4),
+                "clears_gate": (
+                    expected_saves >= gates["saves"]
+                    and expected_harms <= gates["harms"]
+                    and expected_saves - expected_harms >= gates["net"]
+                ),
+            }
+        )
+    return table
+
+
+def stage_one_power_summary(
+    table: Sequence[Mapping[str, object]],
+) -> dict[str, object]:
+    """``clears`` / ``scenarios`` / the names, for a receipt or a document."""
+
+    clearing = [str(row["scenario"]) for row in table if row["clears_gate"]]
+    return {
+        "clears": len(clearing),
+        "scenarios": len(table),
+        "clearing_scenarios": clearing,
+    }
+
+
 __all__ = [
+    "ADMISSION_GATES",
+    "KC_S1B_CONTRAST",
+    "KC_S1B_POPULATION",
+    "KC_S1B_READ_RECEIPT",
+    "REWARD_METRIC",
+    "stage_one_power",
+    "stage_one_power_summary",
     "CARRIER",
     "assert_clean_cut",
     "summary_lines",
