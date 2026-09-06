@@ -1,0 +1,80 @@
+{
+  "accounting": {
+    "embedding_tool_contacts": 0,
+    "frozen_core_contacts": 0,
+    "gold_reads": 0,
+    "gpu_hours": 0.0,
+    "http_requests": 0,
+    "reload_seconds": 4.836,
+    "speech_audio_seconds": 0,
+    "total_wall_seconds": 21.492,
+    "write_seconds": 11.277
+  },
+  "carrier": "slurp",
+  "execution_profile": "model-free-check",
+  "exposure_ledger_row": "SAEA-SLURP-MF-KU-S1-FACET-VECTORS-V1",
+  "generated_at": "2026-09-06T06:51:00.905931+00:00",
+  "generator": "scripts/slurp_ku_s1_facet_vectors.py",
+  "generator_sha256": "a0d68d75d6c280e58e016e21db305f0f3e4db9ef6ed748ad8c70a8f3958125b7",
+  "not_converted": {
+    "label/prior/speaker facets": "never embedded at all; they are recalled by prior mass and exact-key agreement, never by vector similarity.",
+    "vectors-values.npz": "the VALUE vectors stay sealed and are never loaded (owner Q-K-V ruling 2026-08-23: V is consumed, never embedded as key material). The DEV-1000 lock flight never loaded them either."
+  },
+  "output": {
+    "artifact_relpath": "vectors/slurp-ku-s1/facet-vectors.jsonl",
+    "bytes": 262190415,
+    "dimension": "content",
+    "dims": 1024,
+    "id_space": "KeyFacet.facet_id of the size-full snapshot, dimension == 'content'",
+    "line_form": "{\"id\": \"<facet id>\", \"vectors\": {\"content\": [<1024 floats>]}}",
+    "round_trip": {
+      "exact": true,
+      "max_abs_delta_vs_npz": 0.0,
+      "reader": "rails.phase_supply.load_sealed_vectors"
+    },
+    "rows": 11514,
+    "sha256": "922e8e9f7f52a4305ecdf5c3b8f9cfc22b95c7a6e6901198988150acf82f8fad"
+  },
+  "purpose": "Convert the already sealed SLURP content-facet vectors into the sealed-vectors JSONL that configs/baseline/slurp-phase-blend-cl-v1.json's phase_supply.evidence.facet_source names, so cell KU-S1 can bind them through the E6 config seam. A pure format change: same vectors, same order, same numbers.",
+  "run_id": "SAEA-SLURP-MF-KU-S1-FACET-VECTORS-V1",
+  "schema": "saea-sealed-vector-conversion-receipt-v1",
+  "snapshot": {
+    "artifact_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full/snapshot.json",
+    "builder_policy_id": "saea-kb-distmodel-v1",
+    "content_facet_count": 11514,
+    "content_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+    "facet_count": 11863,
+    "file_sha256": "f1cb8e024aa239298c4c2fe19fa9a026a891136fcff4b45b88061043121475fc",
+    "snapshot_id": "slurp-kb-distmodel-76e61b0666162aa7",
+    "source_split_identity_hash": "6a6677e97a64063b8672b2d175bd6378bcf9b644346fa2d249cc2d80343b252c",
+    "value_count": 11514
+  },
+  "source": {
+    "artifact_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full/vectors-content-facets.npz",
+    "count": 11514,
+    "dims": 1024,
+    "order": "snapshot facet order (filtered to dimension == 'content'), row i <-> ids[i]",
+    "paid_by": {
+      "attempt_id": "attempt-20260824T030738Z-kbtxemb",
+      "embedder_build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+      "embedder_gguf_sha256": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439",
+      "embedding_tool_contacts": 23030,
+      "frozen_core_contacts": 0,
+      "run_id": "SAEA-SN-TOOL-KB-TEXT-EMB-PASS"
+    },
+    "sha256": "0bcb955a3a0ab84880f0d039ae702e77d1247ed23c3b8cecb468cbb1e0221c72",
+    "sha256_pin_source": "docs/receipts/knowledge/slurp-kb-size-full-embeddings.json",
+    "source_field": "KeyFacet.representation where dimension == 'content'"
+  },
+  "storage": {
+    "l2_norms": {
+      "max": 1.0000000556199464,
+      "mean": 1.000000000101982,
+      "min": 0.9999999444384399
+    },
+    "normalization_applied_by_this_pass": "none",
+    "note": "each float32 is widened to the exactly equal Python float and serialised with the shortest decimal that round-trips that double, so the JSONL reproduces the npz numbers exactly (verified above by reading the file back through the flight's own reader).",
+    "rounding_applied_by_this_pass": "none"
+  },
+  "study": "speech-aware-evidence-acquisition"
+}
