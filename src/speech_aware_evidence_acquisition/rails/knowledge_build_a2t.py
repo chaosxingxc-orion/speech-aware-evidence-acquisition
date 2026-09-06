@@ -1188,6 +1188,54 @@ def build_a2t_knowledge_snapshot(
     ).validate()
 
 
+def build_a2t_knowledge_snapshot_from_lock(
+    spec: A2tKnowledgeBuildSpec,
+    *,
+    lock: Mapping[str, object],
+    root: Path,
+    repo_root: Path | None = None,
+) -> KnowledgeSnapshot:
+    """The registered ``KNOWLEDGE_BUILDERS`` entry point for Audio2Tool.
+
+    :func:`build_a2t_knowledge_snapshot` takes an ALREADY partitioned
+    construction pool, because the partition is a governance decision the
+    caller must make explicitly. A registry entry, however, must be callable
+    from a carrier-agnostic seam that knows only the composed config, so this
+    thin wrapper performs the three steps ``scripts/build_a2t_knowledge_
+    snapshot.py`` already performs in exactly the same order, and adds
+    nothing of its own:
+
+    1. :func:`a2t_pool_rows` -- every ``(tier, query_idx)`` unit of the full
+       carrier pool, from the governed manifests under ``root``;
+    2. :func:`propose_partition` against :func:`exposed_sample_ids`
+       (``repo_root``'s committed evaluation identities) -- the construction
+       pool is what survives;
+    3. :func:`build_a2t_knowledge_snapshot` with the forbidden roster set to
+       the exposure union PLUS the proposed evaluation tier, which is the
+       belt-and-braces decontamination roster that function requires.
+
+    The governed source relpath of every tier present in the construction
+    pool is threaded through, exactly as the script does, so the emitted
+    facets name the file their text came from.
+    """
+
+    spec.validate()
+    rows, _inventory = a2t_pool_rows(lock, root)
+    exposed = exposed_sample_ids(repo_root)
+    partition = propose_partition(rows, exposed)
+    registry = load_tool_registry_by_name(lock, root)
+    return build_a2t_knowledge_snapshot(
+        spec,
+        rows=partition.construction,
+        registry=registry,
+        forbidden_sample_ids=frozenset(exposed) | frozenset(partition.eval_sample_ids),
+        governed_relpath_by_tier={
+            tier: f"datasets/audio2tool/public/{tier}_data/{tier}.json"
+            for tier in {row.tier for row in partition.construction}
+        },
+    )
+
+
 # ---------------------------------------------------------------------------
 # Coverage report
 # ---------------------------------------------------------------------------
@@ -1351,6 +1399,7 @@ __all__ = [
     "PartitionProposal",
     "a2t_pool_rows",
     "build_a2t_knowledge_snapshot",
+    "build_a2t_knowledge_snapshot_from_lock",
     "coverage_report_a2t",
     "distribution_sample_a2t",
     "exposed_sample_ids",

@@ -1005,3 +1005,24 @@ __all__ = [
     "slurp_kb_rows",
     "slurp_split_sample_ids",
 ]
+
+
+# ---------------------------------------------------------------------------
+# Audio2Tool builder registration (E2.1, 2026-09-05)
+# ---------------------------------------------------------------------------
+# The Audio2Tool builder lives in its own module (``knowledge_build_a2t``: the
+# SLURP builder above stays byte-frozen because the locked baseline cites its
+# snapshot hash), but the owner engineering base rule names THIS file as one
+# of the six canonical registration sites, so the registration itself belongs
+# here rather than beside the implementation. A BOTTOM import, not a
+# top-of-file one: ``knowledge_build_a2t`` imports nothing from this module,
+# so there is no cycle either way, and placing it here keeps the module's own
+# import block untouched.
+from .knowledge_build_a2t import (  # noqa: E402  (deliberate bottom import)
+    A2T_KB_BUILD_POLICY_ID,
+    build_a2t_knowledge_snapshot_from_lock,
+)
+
+KNOWLEDGE_BUILDERS.register(
+    A2T_KB_BUILD_POLICY_ID, build_a2t_knowledge_snapshot_from_lock
+)

@@ -14,6 +14,7 @@ socket at all.
 from __future__ import annotations
 
 import random
+from pathlib import Path
 
 import pytest
 
@@ -27,11 +28,13 @@ from speech_aware_evidence_acquisition.analysis.a2t_lexical_ceiling import (
 from speech_aware_evidence_acquisition.rails.errors import RailsError
 from speech_aware_evidence_acquisition.rails.hashing import canonical_json_bytes
 from speech_aware_evidence_acquisition.rails.knowledge import KnowledgeSnapshot
+from speech_aware_evidence_acquisition.core.base import KNOWLEDGE_BUILDERS
 from speech_aware_evidence_acquisition.rails.knowledge_build_a2t import (
     A2T_KB_BUILD_POLICY_ID,
     A2tKbRow,
     A2tKnowledgeBuildSpec,
     build_a2t_knowledge_snapshot,
+    build_a2t_knowledge_snapshot_from_lock,
     coverage_report_a2t,
     distribution_sample_a2t,
     propose_partition,
@@ -339,6 +342,37 @@ def test_partition_keeps_every_tool_in_the_construction_pool() -> None:
         row.tool_name for row in rows
     }
 
+
+# ---------------------------------------------------------------------------
+# Registry entry (E2.1)
+# ---------------------------------------------------------------------------
+
+
+def test_the_a2t_builder_resolves_through_the_shared_registry() -> None:
+    """The owner base rule: every builder a config may name resolves in a
+    ``core.base`` registry, populated only from one of the six canonical
+    files. Importing ``rails.knowledge_build`` is what performs the
+    Audio2Tool registration, so the import is the test's own arrangement."""
+
+    import speech_aware_evidence_acquisition.rails.knowledge_build  # noqa: F401
+
+    assert A2T_KB_BUILD_POLICY_ID in KNOWLEDGE_BUILDERS.names()
+    assert (
+        KNOWLEDGE_BUILDERS.resolve(A2T_KB_BUILD_POLICY_ID)
+        is build_a2t_knowledge_snapshot_from_lock
+    )
+
+
+def test_the_registered_builder_validates_its_spec_before_touching_the_lock() -> None:
+    """Fail-closed ordering: a foreign carrier is refused by the spec itself,
+    before ``a2t_pool_rows`` can open a single governed manifest -- so the
+    registry entry can never read another carrier's bytes."""
+
+    spec = A2tKnowledgeBuildSpec(carrier_lock_key="slurp")
+    with pytest.raises(RailsError, match="Audio2Tool-only"):
+        build_a2t_knowledge_snapshot_from_lock(
+            spec, lock={}, root=Path("/nonexistent"), repo_root=Path("/nonexistent")
+        )
 
 # ---------------------------------------------------------------------------
 # Lexical ceiling and the G0 gate
