@@ -7,10 +7,11 @@
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
     "split_role": "dev",
-    "planned_model_calls": 1050,
-    "planned_gpu_hours": 1.0,
-    "planned_speech_audio_seconds": 3000
+    "planned_model_calls": 1300,
+    "planned_gpu_hours": 2.0,
+    "planned_speech_audio_seconds": 3600
   },
+  "recovery_re_registration": "THE ONE PERMITTED RECOVERY for this run id, 2026-09-05. Attempt attempt-20260906T024148Z-af6b04 was ABORTED after 206 of 1,000 contacts when the llama.cpp featcache server died with a CUDA illegal memory access (ggml-cuda.cu:104, in ggml_backend_cuda_synchronize, at task 1446); the agent loop saw 'Remote end closed connection without response' and the flight aborted itself, leaving 206 calls and 552.9527 audio seconds durably spent on this run id. Nothing about the cell is changed: same baseline fragment, same model fragment, same geometry, same roster, same prompt bytes. Only the plan cells grow, because core.model.adapter meters them CUMULATIVELY across every attempt of a run id: 206 + 1,008 = 1,214 calls (1,300 registered), 552.9527 + 2,884.7937 = 3,437.75 audio seconds (3,600 registered), and the GPU ceiling doubles to 2.0. A SECOND failure stops this flight; the fix would then have to be proven on a 4-row dry run before any further contact.",
   "cells": [
     {
       "cell_id": "kc-s1b-slots-with-schema",
