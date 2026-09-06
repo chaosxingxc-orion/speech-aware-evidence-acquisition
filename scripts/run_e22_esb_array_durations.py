@@ -94,8 +94,10 @@ def main() -> int:
         outbound_attempts=attempts.count,
         outbound_targets=list(attempts.targets),
     )
-    summary["wall_seconds"] = round(time.time() - started, 3)
+    # Wall time is PRINTED, never stored: summary.json must be byte-deterministic
+    # so a second run of the same inputs reproduces the same MANIFEST.sha256.
     print(headline(summary))
+    print(f"wall seconds {time.time() - started:.3f}")
 
     if not args.write:
         print("\n(dry run: pass --write to emit the receipt directory)")

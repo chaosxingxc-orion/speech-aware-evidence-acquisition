@@ -16,9 +16,11 @@ stands, unconditionally. Section 1.6's conditional lifting clause is now dead, a
 Row `SAEA-E22-MF-ESB-ARRAY-DURATIONS-V1` (`model-free-check`), registered before the reading pass
 under the owner decision of 2026-09-06. **Zero frozen-core, tokenizer, embedder, retriever,
 scorer, network, GPU and paid-API contacts; zero audio seconds delivered to any service**, and the
-offline guard recorded zero outbound connection attempts. 6.6 s of wall time in one process.
-Receipts: `docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-esb-array-durations/`
-(`summary.json` sha256 `c4e28744…`, `per-utterance-table.csv` `7b10e7b1…`). Module
+offline guard recorded zero outbound connection attempts. Under nine seconds of wall time in one
+process, and the pass is **byte-deterministic**: run twice back to back it reproduces the same
+`MANIFEST.sha256`, which is why the wall time is printed and not stored. Receipts:
+`docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-esb-array-durations/`
+(`summary.json` sha256 `1316efed…`, `per-utterance-table.csv` `7b10e7b1…`). Module
 `analysis/e22_esb_array_durations.py`, runner `scripts/run_e22_esb_array_durations.py`, tests
 `tests/unit/test_e22_esb_array_durations.py` (35, on synthetic containers, a synthetic segment
 table and a synthetic parquet shard).

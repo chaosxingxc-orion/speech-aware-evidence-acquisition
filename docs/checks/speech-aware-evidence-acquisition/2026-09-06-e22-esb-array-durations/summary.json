@@ -468,6 +468,5 @@
       "tight_overlap_share": 0.01
     },
     "verdict": "RELEASED ARRAYS OVERLAP"
-  },
-  "wall_seconds": 6.578
+  }
 }
