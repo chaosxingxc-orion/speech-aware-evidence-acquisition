@@ -179,6 +179,13 @@ class SlurpTrainMaterial:
 
     This type is for offline binding only. Query inference continues to use
     :class:`SlurpRecord`, which deliberately carries no reference sentence.
+
+    ``entities`` carries the same ``{type, filler}`` gold slots
+    :class:`SlurpRecord` does, derived through the same
+    :func:`_entity_filler` join the official ``evaluate.py`` gold side uses,
+    so a TRAIN filler and a DEV gold filler compare byte-for-byte without a
+    second normalizer. ``entity_types`` stays the deduplicated type roster it
+    always was.
     """
 
     utterance_id: str
@@ -187,6 +194,7 @@ class SlurpTrainMaterial:
     sentence: str
     recordings: tuple[SlurpTrainRecording, ...]
     entity_types: tuple[str, ...] = ()
+    entities: tuple[SlotEntity, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -838,6 +846,18 @@ def load_slurp_train_material(
         entity_types = tuple(
             sorted({_entity_type(entity, context) for entity in raw_entities})
         )
+        tokens_by_id = _tokens_by_id(raw.get("tokens"), context)
+        entities = tuple(
+            SlotEntity(
+                type=_entity_type(entity, context),
+                filler=_entity_filler(
+                    tokens_by_id,
+                    entity.get("span") if isinstance(entity, Mapping) else None,
+                    context,
+                ),
+            )
+            for entity in raw_entities
+        )
         raw_recordings = raw.get("recordings")
         if not isinstance(raw_recordings, list) or not raw_recordings:
             raise LoaderError(f"{context}: recordings must be a non-empty list")
@@ -870,6 +890,7 @@ def load_slurp_train_material(
                 sentence=sentence.strip(),
                 recordings=tuple(sorted(recordings, key=lambda item: item.sample_id)),
                 entity_types=entity_types,
+                entities=entities,
             )
         )
     if not material:
