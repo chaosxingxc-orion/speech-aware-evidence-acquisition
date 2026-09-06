@@ -1,0 +1,197 @@
+{
+  "schema": "saea-a2t-kc-a1-target-spec-v1",
+  "cell": "KC-A1 / KC-A1c",
+  "purpose": "The five disjoint MF-1 TARGET tool sets and the deterministic contrast note appended inline to each targeted tool's compact registry line. Read by scripts/build_a2t_contrast_notes.py, which re-verifies every tool list against the audit receipt below before it writes an artifact.",
+  "source_receipt": {
+    "path": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-query-cue-audit/summary.json",
+    "sha256": "81ea9b79e7ca713cb5c0b788190c57ecd147cbee02456565ec02e39cd2afe732",
+    "pointer": "primary_population.targets.targets",
+    "verdict": "docs/readiness/2026-09-05-a2t-query-cue-audit-v1.md"
+  },
+  "note_rules": {
+    "shape": "The note is APPENDED to the released description on the same '- {signature}: {description}' line. Line count (152), plain tool_name sort, the absence of headers and the ASCII-only rule are unchanged; only the text after the colon grows.",
+    "prefix": "; ",
+    "vocabulary": "Every alphanumeric word of a note is either in the closed function-word list below or occurs (case-insensitively, after splitting on non-alphanumeric characters) in the registry columns -- tool_name, signature, description, domain, category, argument_constraints, argument_defaults -- of the tools of its OWN target. Nothing else may enter a note: no evaluation text, no gold call, no invented device knowledge. scripts/build_a2t_contrast_notes.py enforces this and refuses the build otherwise.",
+    "minimum_length": "Each note is at least as long as its own tool's category-only control base ('; ' + category), so KC-A1c can be padded to the SAME character count rather than truncated.",
+    "function_words": [
+      "a",
+      "an",
+      "and",
+      "any",
+      "are",
+      "as",
+      "at",
+      "be",
+      "both",
+      "by",
+      "each",
+      "for",
+      "from",
+      "in",
+      "is",
+      "its",
+      "never",
+      "no",
+      "not",
+      "of",
+      "one",
+      "only",
+      "or",
+      "other",
+      "per",
+      "same",
+      "than",
+      "that",
+      "the",
+      "this",
+      "to",
+      "with",
+      "without"
+    ]
+  },
+  "control_rules": {
+    "content": "'; ' + the registry's own category column value for the same tool, and nothing else. No domain word, no sibling name, no scope word: the control carries the FORM of a note and none of its contrast.",
+    "padding": "Extended to exactly the treatment note's character count: the neutral filler ' tool' is appended while it fits, then the remainder is trailing spaces (at most 4 by construction). The rule is deterministic and re-derived by the builder, never stored by hand.",
+    "filler": " tool",
+    "why": "KC-A1c prices the FORM of KC-A1 at the same per-line character cost with no contrast content, so KC-A1 minus KC-A1c is the content effect and KC-A1c minus the sealed baseline is the form effect. ORG-1 lost 3.23 pp at +87 tokens and +310 lines; form is the confound this control exists to measure."
+  },
+  "statements": {
+    "token_method": "ESTIMATE, not a measurement: rendered characters divided by 3.989, the chars-per-token ratio ORG-1 measured on this exact registry and tokenizer (+347 rendered characters = +87 text tokens, 2026-09-05 verdict section 5). The exact count comes from the resident server's /tokenize route at prompt fit, which no model-free step may start; the flight agent measures it before takeoff.",
+    "decontamination": "evaluation_query_texts is EMPTY in this build on purpose: the 4,000 evaluation rows' query text may not be read without a model-free ledger row, so the 6-gram decontamination against the evaluation roster is performed by the flight agent under its own row. Every note word is already constrained to the registry columns of its own target, which the builder enforces.",
+    "manipulation": "task_instruction_fill is evolved-artifact-v1 over the hash-pinned artifact {artifact}. The frozen template, the published system sentence, the 152 rows, the plain tool_name sort and the call-string output contract are the official-protocol cell's own; ONLY the description column of the MF-1 target tools differs."
+  },
+  "targets": [
+    {
+      "target_id": "lighting",
+      "strict_mass": 147,
+      "component_mass": 186,
+      "org1_residual": 76,
+      "tools": {
+        "getLightState": {
+          "note": "; returns only",
+          "derivation": "description ('Returns the current On/Off state'): this row READS and never sets, against seven setters in the same target."
+        },
+        "resetFilterStatus": {
+          "note": "; filter, not a light",
+          "derivation": "description ('filter life counter') and category maintenance against the target's lighting rows."
+        },
+        "setAmbientLighting": {
+          "note": "; smart_car cabin only",
+          "derivation": "domain smart_car and category media_cabin: the one non-home row of the target, and the tool 88 lighting misses reach for."
+        },
+        "setBrightness": {
+          "note": "; level only",
+          "derivation": "signature and argument_constraints ('level: [0-100]') against setLighting's state+level+color and setColor's colour arguments."
+        },
+        "setColor": {
+          "note": "; smart_home hsb only",
+          "derivation": "domain smart_home against setAmbientLighting's smart_car, description ('HSB') against setColorTemperature's kelvin."
+        },
+        "setColorTemperature": {
+          "note": "; kelvin only, no color",
+          "derivation": "argument_constraints ('kelvin: [2000-6500]') and description ('white light temperature') against setColor's HSB colour."
+        },
+        "setGroupLightState": {
+          "note": "; a group, not one light",
+          "derivation": "signature ('groupId') and description ('a group of lights') against the per-device rows."
+        },
+        "setLighting": {
+          "note": "; one light, not a group",
+          "derivation": "signature ('deviceId') against setGroupLightState's groupId; category core_control."
+        }
+      }
+    },
+    {
+      "target_id": "activateRoutine",
+      "strict_mass": 44,
+      "component_mass": 48,
+      "org1_residual": 44,
+      "tools": {
+        "activateRoutine": {
+          "note": "; routine, not a scene",
+          "derivation": "description ('multi-action automation routine') against activateScene's 'pre-configured smart home scene'."
+        },
+        "activateScene": {
+          "note": "; scene, not a routine",
+          "derivation": "the same two descriptions, read the other way."
+        },
+        "setApplianceMode": {
+          "note": "; one appliance only",
+          "derivation": "description ('a smart appliance') and category appliances against the two automation rows."
+        },
+        "setSecurityMode": {
+          "note": "; arming state only",
+          "derivation": "description ('the arming state of the security system') and argument_constraints (Armed_Away, Armed_Home, Disarmed)."
+        },
+        "startCleaning": {
+          "note": "; cleaning only",
+          "derivation": "description ('Starts a cleaning cycle') and category appliances against setApplianceMode's mode setting."
+        }
+      }
+    },
+    {
+      "target_id": "getBiometricData",
+      "strict_mass": 23,
+      "component_mass": 23,
+      "org1_residual": 22,
+      "tools": {
+        "getBiometricData": {
+          "note": "; any type, hrv or stress",
+          "derivation": "signature ('type: MetricType') and argument_constraints, whose own list already contains HRV and Stress -- the fact that makes getHRV a subset of this row rather than a rival."
+        },
+        "getHRV": {
+          "note": "; hrv period only",
+          "derivation": "signature ('period: TimeFrame') and argument_constraints (Today, Yesterday, Last_Week) against getBiometricData's metric list."
+        },
+        "setHapticStrength": {
+          "note": "; vibration, not biometric",
+          "derivation": "description ('haptic vibration feedback') against getBiometricData's 'biometric data'."
+        },
+        "setRomanceMode": {
+          "note": "; smart_car only",
+          "derivation": "domain smart_car: the one non-wearables row of the target."
+        }
+      }
+    },
+    {
+      "target_id": "calibrateCameras",
+      "strict_mass": 16,
+      "component_mass": 16,
+      "org1_residual": 21,
+      "tools": {
+        "calibrateCameras": {
+          "note": "; smart_car cameras only",
+          "derivation": "domain smart_car and description ('Autopilot cameras') against the three smart_home rows."
+        },
+        "rebootDevice": {
+          "note": "; reboot only, not firmware",
+          "derivation": "description ('a soft reboot') against updateFirmware's 'firmware update'."
+        },
+        "streamCamera": {
+          "note": "; live stream only",
+          "derivation": "description ('a live video stream') and category core_control against the two maintenance rows."
+        },
+        "updateFirmware": {
+          "note": "; firmware only, not reboot",
+          "derivation": "description ('a firmware update') against rebootDevice's soft reboot."
+        }
+      }
+    },
+    {
+      "target_id": "castContent",
+      "strict_mass": 5,
+      "component_mass": 5,
+      "org1_residual": 4,
+      "tools": {
+        "castContent": {
+          "note": "; from a url only",
+          "derivation": "signature ('sourceUrl') and description ('from a URL') against playMedia's query."
+        },
+        "playMedia": {
+          "note": "; by query, not a url",
+          "derivation": "signature ('query: String') and argument_constraints (Spotify, AppleMusic, YouTube, AmazonMusic, Local) against castContent's URL source."
+        }
+      }
+    }
+  ]
+}

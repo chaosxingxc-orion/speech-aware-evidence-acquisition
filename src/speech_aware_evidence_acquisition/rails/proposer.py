@@ -70,6 +70,12 @@ REGISTRY_LINE_COUNT = 152
 #: Decontamination n-gram width (program section 5: "no shared word 6-gram").
 DECONTAMINATION_NGRAM = 6
 
+#: The appended-note family's fixed shape (KC-A1): every note opens with this
+#: separator, and a category-only control is padded to the note's length with
+#: this neutral filler word before any trailing space.
+NOTE_PREFIX = "; "
+CONTROL_FILLER = " tool"
+
 FAMILIES = ("proposer", "deterministic", "placebo")
 
 #: The registry columns every proposer prompt and every gate reads.
@@ -86,6 +92,8 @@ ROW_FIELDS = (
 __all__ = [
     "CANDIDATE_SCHEMA",
     "VALIDATION_SCHEMA",
+    "NOTE_PREFIX",
+    "CONTROL_FILLER",
     "MAX_DESCRIPTION_CHARS",
     "TOKEN_HEADROOM",
     "REGISTRY_LINE_COUNT",
@@ -98,6 +106,7 @@ __all__ = [
     "candidate_bytes",
     "candidate_id_for",
     "candidate_text",
+    "contrast_note_records",
     "derive_target_id",
     "deterministic_candidate",
     "parse_proposer_response",
@@ -747,6 +756,95 @@ def proposer_candidate(
         proposer_prompt_sha256=proposer_prompt_sha256,
         exemplar_ids=exemplar_ids,
     )
+
+
+def contrast_note_records(
+    registry_rows: Sequence[Mapping[str, str]],
+    targets: Mapping[str, Mapping[str, str]],
+    *,
+    function_words: Sequence[str],
+    prefix: str = NOTE_PREFIX,
+    filler: str = CONTROL_FILLER,
+) -> list[dict[str, object]]:
+    """One record per targeted tool for the APPENDED-NOTE family (KC-A1).
+
+    ``targets`` maps a target id to that target's ``{tool_name: note}``. Each
+    record carries the released description, the note, the length-matched
+    CATEGORY-ONLY control note, and both rendered descriptions, so a caller
+    builds the treatment artifact, its control and its receipt from one pass.
+
+    Three rules, all fail-closed, and all of them exist because the ORG-1
+    verdict showed that prompt FORM moves this metric on its own:
+
+    * a note starts with ``prefix`` and is ASCII, so the released
+      ``"- {signature}: {description}"`` line keeps its shape and only grows;
+    * every alphanumeric word of a note is either a ``function_words`` entry
+      or occurs (case-insensitively) in the registry columns of the tools of
+      its OWN target. A note may therefore say nothing the registry does not
+      already say -- no invented device knowledge, and no evaluation text;
+    * the control is ``"; " + category`` extended with ``filler`` while it
+      fits and then padded with spaces to EXACTLY the note's character count,
+      so the control prices the note's form at the same per-line cost with
+      none of its contrast. A category word longer than its note is refused
+      rather than truncated, because a truncated control is neither
+      length-matched nor a category.
+    """
+
+    rows_by_name = _rows_by_name(registry_rows)
+    if not isinstance(targets, Mapping) or not targets:
+        raise ProposerError("targets must be a non-empty mapping of target id to notes")
+    if isinstance(function_words, (str, bytes)):
+        raise ProposerError("function_words must be a sequence of words")
+    allowed = {str(word).lower() for word in function_words}
+    records: list[dict[str, object]] = []
+    for target_id in sorted(targets):
+        notes = targets[target_id]
+        if not isinstance(notes, Mapping) or not notes:
+            raise ProposerError(f"target {target_id!r} carries no notes")
+        legal = set(allowed)
+        for tool in notes:
+            if tool not in rows_by_name:
+                raise ProposerError(f"target {target_id!r} names unknown tool {tool!r}")
+            for column in rows_by_name[tool].values():
+                legal |= set(_WORD_RE.findall(str(column).lower()))
+        for tool in sorted(notes):
+            row = rows_by_name[tool]
+            note = notes[tool]
+            if not isinstance(note, str) or not note.startswith(prefix) or not note.isascii():
+                raise ProposerError(
+                    f"note for {tool!r} must be ASCII text starting with {prefix!r}"
+                )
+            illegal = sorted(set(_WORD_RE.findall(note.lower())) - legal)
+            if illegal:
+                raise ProposerError(
+                    f"note for {tool!r} carries word(s) the registry does not: {illegal}"
+                )
+            control = f"{prefix}{row['category']}"
+            if len(control) > len(note):
+                raise ProposerError(
+                    f"the category-only control for {tool!r} is {len(control)} characters "
+                    f"and cannot be padded down to its {len(note)}-character note"
+                )
+            while len(control) + len(filler) <= len(note):
+                control += filler
+            padding = len(note) - len(control)
+            control += " " * padding
+            records.append(
+                {
+                    "tool_name": tool,
+                    "target_id": target_id,
+                    "domain": row["domain"],
+                    "category": row["category"],
+                    "description_chars": len(row["description"]),
+                    "note": note,
+                    "note_chars": len(note),
+                    "control_note": control,
+                    "control_space_padding": padding,
+                    "kc_a1": row["description"] + note,
+                    "kc_a1c": row["description"] + control,
+                }
+            )
+    return records
 
 
 def derive_target_id(tools: Sequence[str]) -> str:

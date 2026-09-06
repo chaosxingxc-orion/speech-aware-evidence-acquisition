@@ -1,0 +1,492 @@
+{
+  "arms": {
+    "kc-a1": {
+      "candidate": {
+        "candidate_id": "32c181800cac19c2cb9ab3c1981c78eb99c78b7e850f468f6b15564a57b89d49",
+        "cue": "the registry's own domain, category, argument names and constraints",
+        "descriptions": {
+          "activateRoutine": "Triggers a multi-action automation routine.; routine, not a scene",
+          "activateScene": "Activates a pre-configured smart home scene.; scene, not a routine",
+          "calibrateCameras": "Resets the calibration of Autopilot cameras.; smart_car cameras only",
+          "castContent": "Casts media content from a URL to a target device.; from a url only",
+          "getBiometricData": "Retrieves specific biometric data (e.g., Heart Rate, Blood Oxygen).; any type, hrv or stress",
+          "getHRV": "Retrieves Heart Rate Variability (HRV) data for a specified period.; hrv period only",
+          "getLightState": "Returns the current On/Off state and brightness of a light.; returns only",
+          "playMedia": "Plays specified media content on a target device.; by query, not a url",
+          "rebootDevice": "Performs a soft reboot of a device.; reboot only, not firmware",
+          "resetFilterStatus": "Resets the filter life counter after a filter replacement.; filter, not a light",
+          "setAmbientLighting": "Sets the color and brightness of the interior ambient lighting.; smart_car cabin only",
+          "setApplianceMode": "Sets the operating mode and parameters for a smart appliance.; one appliance only",
+          "setBrightness": "Sets the brightness level (0-100%) for a dimmable light.; level only",
+          "setColor": "Sets the color of a light using HSB (Hue/Saturation/Brightness) values.; smart_home hsb only",
+          "setColorTemperature": "Adjusts the white light temperature (Kelvin) from warm to cool.; kelvin only, no color",
+          "setGroupLightState": "Controls the state of a group of lights simultaneously.; a group, not one light",
+          "setHapticStrength": "Adjusts the intensity of haptic vibration feedback.; vibration, not biometric",
+          "setLighting": "Controls the power, brightness, and color of a light in a single command.; one light, not a group",
+          "setRomanceMode": "Displays a virtual fireplace on the screen with heater activation.; smart_car only",
+          "setSecurityMode": "Sets the arming state of the security system.; arming state only",
+          "startCleaning": "Starts a cleaning cycle on a robot vacuum/mop, optionally for specific zones.; cleaning only",
+          "streamCamera": "Starts a live video stream from a security camera.; live stream only",
+          "updateFirmware": "Initiates a firmware update for the specified device.; firmware only, not reboot"
+        },
+        "exemplar_ids": [],
+        "family": "deterministic",
+        "k": 0,
+        "proposer_prompt_sha256": null,
+        "round": 0,
+        "schema": "saea-evolution-candidate-v1",
+        "target_id": "kc-a1"
+      },
+      "measurement": {
+        "added_chars": 477,
+        "compact_chars": 15854,
+        "compact_sha256": "752dd381a02028dc7345a6ac826109bdcc879d82547a9029a43d559d0de8a605",
+        "estimated_added_tokens": 120,
+        "estimated_tokens_over_headroom": 80,
+        "program_token_headroom": 40,
+        "rendered_chars": 16331,
+        "rendered_lines": 152,
+        "rendered_sha256": "7a97cf549dccbc3bf7e97fa97b8f2293ec5c3e4c393f788f1ec159d6091ea0f6",
+        "tools_overridden": 23,
+        "within_program_token_headroom": false
+      },
+      "token_headroom_slack_granted": 80,
+      "validation": {
+        "candidate_id": "32c181800cac19c2cb9ab3c1981c78eb99c78b7e850f468f6b15564a57b89d49",
+        "exemplar_overlap_count": 0,
+        "exemplar_overlap_ngrams": [],
+        "max_description_chars": 97,
+        "rendered_lines": 152,
+        "rendered_sha256": "7a97cf549dccbc3bf7e97fa97b8f2293ec5c3e4c393f788f1ec159d6091ea0f6",
+        "rendered_tokens": 4095,
+        "schema": "saea-evolution-candidate-validation-v1",
+        "token_budget": 4095
+      }
+    },
+    "kc-a1c": {
+      "candidate": {
+        "candidate_id": "bf08a662922883e6e95dcc9a5ff75a9ca3ee5f1f0e5f402f42770d92ae565d7f",
+        "cue": null,
+        "descriptions": {
+          "activateRoutine": "Triggers a multi-action automation routine.; automation tool tool",
+          "activateScene": "Activates a pre-configured smart home scene.; automation tool tool",
+          "calibrateCameras": "Resets the calibration of Autopilot cameras.; maintenance tool tool ",
+          "castContent": "Casts media content from a URL to a target device.; media tool tool",
+          "getBiometricData": "Retrieves specific biometric data (e.g., Heart Rate, Blood Oxygen).; health_activity tool   ",
+          "getHRV": "Retrieves Heart Rate Variability (HRV) data for a specified period.; health_activity",
+          "getLightState": "Returns the current On/Off state and brightness of a light.; status tool ",
+          "playMedia": "Plays specified media content on a target device.; media tool tool    ",
+          "rebootDevice": "Performs a soft reboot of a device.; maintenance tool tool    ",
+          "resetFilterStatus": "Resets the filter life counter after a filter replacement.; maintenance tool   ",
+          "setAmbientLighting": "Sets the color and brightness of the interior ambient lighting.; media_cabin tool    ",
+          "setApplianceMode": "Sets the operating mode and parameters for a smart appliance.; appliances tool   ",
+          "setBrightness": "Sets the brightness level (0-100%) for a dimmable light.; lighting  ",
+          "setColor": "Sets the color of a light using HSB (Hue/Saturation/Brightness) values.; lighting tool tool ",
+          "setColorTemperature": "Adjusts the white light temperature (Kelvin) from warm to cool.; lighting tool tool   ",
+          "setGroupLightState": "Controls the state of a group of lights simultaneously.; lighting tool tool    ",
+          "setHapticStrength": "Adjusts the intensity of haptic vibration feedback.; system_connectivity tool",
+          "setLighting": "Controls the power, brightness, and color of a light in a single command.; core_control tool tool",
+          "setRomanceMode": "Displays a virtual fireplace on the screen with heater activation.; novelty tool  ",
+          "setSecurityMode": "Sets the arming state of the security system.; core_control tool",
+          "startCleaning": "Starts a cleaning cycle on a robot vacuum/mop, optionally for specific zones.; appliances   ",
+          "streamCamera": "Starts a live video stream from a security camera.; core_control    ",
+          "updateFirmware": "Initiates a firmware update for the specified device.; maintenance tool tool    "
+        },
+        "exemplar_ids": [],
+        "family": "deterministic",
+        "k": 1,
+        "proposer_prompt_sha256": null,
+        "round": 0,
+        "schema": "saea-evolution-candidate-v1",
+        "target_id": "kc-a1c"
+      },
+      "measurement": {
+        "added_chars": 477,
+        "compact_chars": 15854,
+        "compact_sha256": "752dd381a02028dc7345a6ac826109bdcc879d82547a9029a43d559d0de8a605",
+        "estimated_added_tokens": 120,
+        "estimated_tokens_over_headroom": 80,
+        "program_token_headroom": 40,
+        "rendered_chars": 16331,
+        "rendered_lines": 152,
+        "rendered_sha256": "dbd141cb9b3da0dfb181a9ffa2a9e17946db49a3ec51997878e4c00dd689092a",
+        "tools_overridden": 23,
+        "within_program_token_headroom": false
+      },
+      "token_headroom_slack_granted": 80,
+      "validation": {
+        "candidate_id": "bf08a662922883e6e95dcc9a5ff75a9ca3ee5f1f0e5f402f42770d92ae565d7f",
+        "exemplar_overlap_count": 0,
+        "exemplar_overlap_ngrams": [],
+        "max_description_chars": 97,
+        "rendered_lines": 152,
+        "rendered_sha256": "dbd141cb9b3da0dfb181a9ffa2a9e17946db49a3ec51997878e4c00dd689092a",
+        "rendered_tokens": 4095,
+        "schema": "saea-evolution-candidate-validation-v1",
+        "token_budget": 4095
+      }
+    }
+  },
+  "builder": "scripts/build_a2t_contrast_notes.py",
+  "decontamination": "evaluation_query_texts is EMPTY in this build on purpose: the 4,000 evaluation rows' query text may not be read without a model-free ledger row, so the 6-gram decontamination against the evaluation roster is performed by the flight agent under its own row. Every note word is already constrained to the registry columns of its own target, which the builder enforces.",
+  "files": {
+    "kc-a1": {
+      "artifact_relpath": "configs/knowledge/a2t-kc-a1/contrast-notes-v1.json",
+      "artifact_sha256": "dcf84c2a5a371b658e234d0f42c1f03a7c36c5a2c090790d44e383999647cd21",
+      "baseline_fragment": "configs/baseline/a2t-kc-a1-contrast-notes.json",
+      "portfolio_sha256": "08f0b7e94df9fe7ee394ea088f53341483af04591f4c99aef1fe5afb9a053f46"
+    },
+    "kc-a1c": {
+      "artifact_relpath": "configs/knowledge/a2t-kc-a1/category-only-v1.json",
+      "artifact_sha256": "664b826a9f33ae592076a420d1e6f1e2ed9e93f429c37f610114fd444c838994",
+      "baseline_fragment": "configs/baseline/a2t-kc-a1c-category-only.json",
+      "portfolio_sha256": "09414b17ef113f0c4163a2e223b159bb1f01fa4d35b753117c92ebc404a4b871"
+    }
+  },
+  "model_contacts": 0,
+  "per_target": {
+    "activateRoutine": {
+      "added_chars": 98,
+      "estimated_added_tokens": 25,
+      "tools": 5
+    },
+    "calibrateCameras": {
+      "added_chars": 96,
+      "estimated_added_tokens": 24,
+      "tools": 4
+    },
+    "castContent": {
+      "added_chars": 38,
+      "estimated_added_tokens": 10,
+      "tools": 2
+    },
+    "getBiometricData": {
+      "added_chars": 84,
+      "estimated_added_tokens": 21,
+      "tools": 4
+    },
+    "lighting": {
+      "added_chars": 161,
+      "estimated_added_tokens": 40,
+      "tools": 8
+    }
+  },
+  "per_tool": [
+    {
+      "category": "automation",
+      "control_note": "; automation tool tool",
+      "control_space_padding": 0,
+      "description_chars": 43,
+      "domain": "smart_home",
+      "kc_a1": "Triggers a multi-action automation routine.; routine, not a scene",
+      "kc_a1c": "Triggers a multi-action automation routine.; automation tool tool",
+      "note": "; routine, not a scene",
+      "note_chars": 22,
+      "target_id": "activateRoutine",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "category": "automation",
+      "control_note": "; automation tool tool",
+      "control_space_padding": 0,
+      "description_chars": 44,
+      "domain": "smart_home",
+      "kc_a1": "Activates a pre-configured smart home scene.; scene, not a routine",
+      "kc_a1c": "Activates a pre-configured smart home scene.; automation tool tool",
+      "note": "; scene, not a routine",
+      "note_chars": 22,
+      "target_id": "activateRoutine",
+      "tool_name": "activateScene"
+    },
+    {
+      "category": "appliances",
+      "control_note": "; appliances tool   ",
+      "control_space_padding": 3,
+      "description_chars": 61,
+      "domain": "smart_home",
+      "kc_a1": "Sets the operating mode and parameters for a smart appliance.; one appliance only",
+      "kc_a1c": "Sets the operating mode and parameters for a smart appliance.; appliances tool   ",
+      "note": "; one appliance only",
+      "note_chars": 20,
+      "target_id": "activateRoutine",
+      "tool_name": "setApplianceMode"
+    },
+    {
+      "category": "core_control",
+      "control_note": "; core_control tool",
+      "control_space_padding": 0,
+      "description_chars": 45,
+      "domain": "smart_home",
+      "kc_a1": "Sets the arming state of the security system.; arming state only",
+      "kc_a1c": "Sets the arming state of the security system.; core_control tool",
+      "note": "; arming state only",
+      "note_chars": 19,
+      "target_id": "activateRoutine",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "category": "appliances",
+      "control_note": "; appliances   ",
+      "control_space_padding": 3,
+      "description_chars": 77,
+      "domain": "smart_home",
+      "kc_a1": "Starts a cleaning cycle on a robot vacuum/mop, optionally for specific zones.; cleaning only",
+      "kc_a1c": "Starts a cleaning cycle on a robot vacuum/mop, optionally for specific zones.; appliances   ",
+      "note": "; cleaning only",
+      "note_chars": 15,
+      "target_id": "activateRoutine",
+      "tool_name": "startCleaning"
+    },
+    {
+      "category": "maintenance",
+      "control_note": "; maintenance tool tool ",
+      "control_space_padding": 1,
+      "description_chars": 44,
+      "domain": "smart_car",
+      "kc_a1": "Resets the calibration of Autopilot cameras.; smart_car cameras only",
+      "kc_a1c": "Resets the calibration of Autopilot cameras.; maintenance tool tool ",
+      "note": "; smart_car cameras only",
+      "note_chars": 24,
+      "target_id": "calibrateCameras",
+      "tool_name": "calibrateCameras"
+    },
+    {
+      "category": "maintenance",
+      "control_note": "; maintenance tool tool    ",
+      "control_space_padding": 4,
+      "description_chars": 35,
+      "domain": "smart_home",
+      "kc_a1": "Performs a soft reboot of a device.; reboot only, not firmware",
+      "kc_a1c": "Performs a soft reboot of a device.; maintenance tool tool    ",
+      "note": "; reboot only, not firmware",
+      "note_chars": 27,
+      "target_id": "calibrateCameras",
+      "tool_name": "rebootDevice"
+    },
+    {
+      "category": "core_control",
+      "control_note": "; core_control    ",
+      "control_space_padding": 4,
+      "description_chars": 50,
+      "domain": "smart_home",
+      "kc_a1": "Starts a live video stream from a security camera.; live stream only",
+      "kc_a1c": "Starts a live video stream from a security camera.; core_control    ",
+      "note": "; live stream only",
+      "note_chars": 18,
+      "target_id": "calibrateCameras",
+      "tool_name": "streamCamera"
+    },
+    {
+      "category": "maintenance",
+      "control_note": "; maintenance tool tool    ",
+      "control_space_padding": 4,
+      "description_chars": 53,
+      "domain": "smart_home",
+      "kc_a1": "Initiates a firmware update for the specified device.; firmware only, not reboot",
+      "kc_a1c": "Initiates a firmware update for the specified device.; maintenance tool tool    ",
+      "note": "; firmware only, not reboot",
+      "note_chars": 27,
+      "target_id": "calibrateCameras",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "category": "media",
+      "control_note": "; media tool tool",
+      "control_space_padding": 0,
+      "description_chars": 50,
+      "domain": "smart_home",
+      "kc_a1": "Casts media content from a URL to a target device.; from a url only",
+      "kc_a1c": "Casts media content from a URL to a target device.; media tool tool",
+      "note": "; from a url only",
+      "note_chars": 17,
+      "target_id": "castContent",
+      "tool_name": "castContent"
+    },
+    {
+      "category": "media",
+      "control_note": "; media tool tool    ",
+      "control_space_padding": 4,
+      "description_chars": 49,
+      "domain": "smart_home",
+      "kc_a1": "Plays specified media content on a target device.; by query, not a url",
+      "kc_a1c": "Plays specified media content on a target device.; media tool tool    ",
+      "note": "; by query, not a url",
+      "note_chars": 21,
+      "target_id": "castContent",
+      "tool_name": "playMedia"
+    },
+    {
+      "category": "health_activity",
+      "control_note": "; health_activity tool   ",
+      "control_space_padding": 3,
+      "description_chars": 67,
+      "domain": "wearables",
+      "kc_a1": "Retrieves specific biometric data (e.g., Heart Rate, Blood Oxygen).; any type, hrv or stress",
+      "kc_a1c": "Retrieves specific biometric data (e.g., Heart Rate, Blood Oxygen).; health_activity tool   ",
+      "note": "; any type, hrv or stress",
+      "note_chars": 25,
+      "target_id": "getBiometricData",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "category": "health_activity",
+      "control_note": "; health_activity",
+      "control_space_padding": 0,
+      "description_chars": 67,
+      "domain": "wearables",
+      "kc_a1": "Retrieves Heart Rate Variability (HRV) data for a specified period.; hrv period only",
+      "kc_a1c": "Retrieves Heart Rate Variability (HRV) data for a specified period.; health_activity",
+      "note": "; hrv period only",
+      "note_chars": 17,
+      "target_id": "getBiometricData",
+      "tool_name": "getHRV"
+    },
+    {
+      "category": "system_connectivity",
+      "control_note": "; system_connectivity tool",
+      "control_space_padding": 0,
+      "description_chars": 51,
+      "domain": "wearables",
+      "kc_a1": "Adjusts the intensity of haptic vibration feedback.; vibration, not biometric",
+      "kc_a1c": "Adjusts the intensity of haptic vibration feedback.; system_connectivity tool",
+      "note": "; vibration, not biometric",
+      "note_chars": 26,
+      "target_id": "getBiometricData",
+      "tool_name": "setHapticStrength"
+    },
+    {
+      "category": "novelty",
+      "control_note": "; novelty tool  ",
+      "control_space_padding": 2,
+      "description_chars": 66,
+      "domain": "smart_car",
+      "kc_a1": "Displays a virtual fireplace on the screen with heater activation.; smart_car only",
+      "kc_a1c": "Displays a virtual fireplace on the screen with heater activation.; novelty tool  ",
+      "note": "; smart_car only",
+      "note_chars": 16,
+      "target_id": "getBiometricData",
+      "tool_name": "setRomanceMode"
+    },
+    {
+      "category": "status",
+      "control_note": "; status tool ",
+      "control_space_padding": 1,
+      "description_chars": 59,
+      "domain": "smart_home",
+      "kc_a1": "Returns the current On/Off state and brightness of a light.; returns only",
+      "kc_a1c": "Returns the current On/Off state and brightness of a light.; status tool ",
+      "note": "; returns only",
+      "note_chars": 14,
+      "target_id": "lighting",
+      "tool_name": "getLightState"
+    },
+    {
+      "category": "maintenance",
+      "control_note": "; maintenance tool   ",
+      "control_space_padding": 3,
+      "description_chars": 58,
+      "domain": "smart_home",
+      "kc_a1": "Resets the filter life counter after a filter replacement.; filter, not a light",
+      "kc_a1c": "Resets the filter life counter after a filter replacement.; maintenance tool   ",
+      "note": "; filter, not a light",
+      "note_chars": 21,
+      "target_id": "lighting",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "category": "media_cabin",
+      "control_note": "; media_cabin tool    ",
+      "control_space_padding": 4,
+      "description_chars": 63,
+      "domain": "smart_car",
+      "kc_a1": "Sets the color and brightness of the interior ambient lighting.; smart_car cabin only",
+      "kc_a1c": "Sets the color and brightness of the interior ambient lighting.; media_cabin tool    ",
+      "note": "; smart_car cabin only",
+      "note_chars": 22,
+      "target_id": "lighting",
+      "tool_name": "setAmbientLighting"
+    },
+    {
+      "category": "lighting",
+      "control_note": "; lighting  ",
+      "control_space_padding": 2,
+      "description_chars": 56,
+      "domain": "smart_home",
+      "kc_a1": "Sets the brightness level (0-100%) for a dimmable light.; level only",
+      "kc_a1c": "Sets the brightness level (0-100%) for a dimmable light.; lighting  ",
+      "note": "; level only",
+      "note_chars": 12,
+      "target_id": "lighting",
+      "tool_name": "setBrightness"
+    },
+    {
+      "category": "lighting",
+      "control_note": "; lighting tool tool ",
+      "control_space_padding": 1,
+      "description_chars": 71,
+      "domain": "smart_home",
+      "kc_a1": "Sets the color of a light using HSB (Hue/Saturation/Brightness) values.; smart_home hsb only",
+      "kc_a1c": "Sets the color of a light using HSB (Hue/Saturation/Brightness) values.; lighting tool tool ",
+      "note": "; smart_home hsb only",
+      "note_chars": 21,
+      "target_id": "lighting",
+      "tool_name": "setColor"
+    },
+    {
+      "category": "lighting",
+      "control_note": "; lighting tool tool   ",
+      "control_space_padding": 3,
+      "description_chars": 63,
+      "domain": "smart_home",
+      "kc_a1": "Adjusts the white light temperature (Kelvin) from warm to cool.; kelvin only, no color",
+      "kc_a1c": "Adjusts the white light temperature (Kelvin) from warm to cool.; lighting tool tool   ",
+      "note": "; kelvin only, no color",
+      "note_chars": 23,
+      "target_id": "lighting",
+      "tool_name": "setColorTemperature"
+    },
+    {
+      "category": "lighting",
+      "control_note": "; lighting tool tool    ",
+      "control_space_padding": 4,
+      "description_chars": 55,
+      "domain": "smart_home",
+      "kc_a1": "Controls the state of a group of lights simultaneously.; a group, not one light",
+      "kc_a1c": "Controls the state of a group of lights simultaneously.; lighting tool tool    ",
+      "note": "; a group, not one light",
+      "note_chars": 24,
+      "target_id": "lighting",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "category": "core_control",
+      "control_note": "; core_control tool tool",
+      "control_space_padding": 0,
+      "description_chars": 73,
+      "domain": "smart_home",
+      "kc_a1": "Controls the power, brightness, and color of a light in a single command.; one light, not a group",
+      "kc_a1c": "Controls the power, brightness, and color of a light in a single command.; core_control tool tool",
+      "note": "; one light, not a group",
+      "note_chars": 24,
+      "target_id": "lighting",
+      "tool_name": "setLighting"
+    }
+  ],
+  "registry": {
+    "lock_key": "audio2tool",
+    "rows": 152
+  },
+  "schema": "saea-a2t-kc-a1-artifact-receipt-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "target_spec": {
+    "audit_receipt": {
+      "path": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-query-cue-audit/summary.json",
+      "pointer": "primary_population.targets.targets",
+      "sha256": "81ea9b79e7ca713cb5c0b788190c57ecd147cbee02456565ec02e39cd2afe732",
+      "verdict": "docs/readiness/2026-09-05-a2t-query-cue-audit-v1.md"
+    },
+    "path": "configs/knowledge/a2t-kc-a1/targets-v1.json",
+    "sha256": "e3e8c859e6fd13fbe631ea3e0f8522654bf5459b957b716281543ed23e060378"
+  },
+  "token_method": "ESTIMATE, not a measurement: rendered characters divided by 3.989, the chars-per-token ratio ORG-1 measured on this exact registry and tokenizer (+347 rendered characters = +87 text tokens, 2026-09-05 verdict section 5). The exact count comes from the resident server's /tokenize route at prompt fit, which no model-free step may start; the flight agent measures it before takeoff."
+}
