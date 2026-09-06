@@ -19,9 +19,9 @@
   "task_instruction_fill": "evolved-artifact-v1",
   "task_instruction_fill_params": {
     "artifact_relpath": "configs/knowledge/a2t-kc-a1/category-only-v1.json",
-    "artifact_sha256": "664b826a9f33ae592076a420d1e6f1e2ed9e93f429c37f610114fd444c838994",
+    "artifact_sha256": "2f34c2cf8bc5585257756b44975e36c6244d7c3e362beac1d5b01956a6736e33",
     "k": 1,
-    "portfolio_sha256": "09414b17ef113f0c4163a2e223b159bb1f01fa4d35b753117c92ebc404a4b871",
+    "portfolio_sha256": "90fd856096ebe1c1a84f8aa40e5098e6ee4e9303e4751b4d3bfeade9c5e26889",
     "round": 0
   },
   "task_instruction_template": "probes/r1_audio2tool_official.txt",

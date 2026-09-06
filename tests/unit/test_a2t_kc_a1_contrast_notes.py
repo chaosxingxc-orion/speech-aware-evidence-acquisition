@@ -7,7 +7,9 @@ EXACTLY the note's character count. The registry half -- skipped on a host
 without ``tools_registry.csv`` -- resolves the two COMMITTED baseline
 fragments the way a flight resolves them and holds the shape the sealed
 official-protocol cell was measured with: 152 lines, the published system
-sentence untouched, and exactly the 23 targeted rows changed.
+sentence untouched, and exactly the LIGHTING target's eight rows changed --
+the owner's option B of 2026-09-06, which keeps the rendered block inside the
+program's +40-token form cap.
 """
 
 import json
@@ -27,7 +29,12 @@ from speech_aware_evidence_acquisition.rails.proposer import (
 )
 
 REPO = Path(__file__).resolve().parents[2]
-SPEC = REPO / "configs/knowledge/a2t-kc-a1/targets-v1.json"
+#: The spec the COMMITTED fragments were built from: lighting only. The
+#: five-target parent stays committed beside it and is what the four unflown
+#: clusters return through, so both are read here and the flown one is the
+#: subset the artifacts must match.
+SPEC = REPO / "configs/knowledge/a2t-kc-a1/targets-lighting-v1.json"
+PARENT_SPEC = REPO / "configs/knowledge/a2t-kc-a1/targets-v1.json"
 FRAGMENTS = {
     "kc-a1": (REPO / "configs/baseline/a2t-kc-a1-contrast-notes.json", "kc_a1"),
     "kc-a1c": (REPO / "configs/baseline/a2t-kc-a1c-category-only.json", "kc_a1c"),
@@ -94,6 +101,29 @@ def test_the_control_is_padded_to_exactly_the_note_length():
     assert by_tool["setColor"]["kc_a1"] == "Sets the color of a light.; smart_home color"
 
 
+def test_the_flown_spec_is_the_parents_lighting_target_unchanged():
+    """Option B narrows the target LIST and rewrites no note.
+
+    A lighting-only spec that had also reworded a note would make KC-A1 a
+    different manipulation from the one MF-1 priced, so the flown spec's one
+    target must be the parent's own entry and its rules must be the parent's.
+    """
+
+    flown = json.loads(SPEC.read_text(encoding="utf-8"))
+    parent = json.loads(PARENT_SPEC.read_text(encoding="utf-8"))
+    parent_lighting = [
+        target for target in parent["targets"] if target["target_id"] == "lighting"
+    ]
+    assert flown["targets"] == parent_lighting
+    assert len(flown["targets"][0]["tools"]) == 8
+    for key in ("schema", "source_receipt", "note_rules", "control_rules", "statements"):
+        assert flown[key] == parent[key]
+    # the parent keeps all five targets: the four unflown clusters are
+    # retained for a later per-cluster cell, not deleted.
+    assert len(parent["targets"]) == 5
+    assert flown["owner_decision"]["option"] == "B"
+
+
 def test_a_category_longer_than_its_note_is_refused_rather_than_truncated():
     with pytest.raises(ProposerError, match="cannot be padded down"):
         contrast_note_records(
@@ -142,13 +172,17 @@ def test_each_committed_fragment_renders_152_lines_with_its_overrides(arm):
     assert len(block) == 152 == len(baseline)
 
     spec = json.loads(SPEC.read_text(encoding="utf-8"))
+    assert [target["target_id"] for target in spec["targets"]] == ["lighting"]
     expected = {
         tool: body["note"]
         for target in spec["targets"]
         for tool, body in target["tools"].items()
     }
     differing = [index for index in range(152) if block[index] != baseline[index]]
-    assert len(differing) == len(expected) == 23
+    assert len(differing) == len(expected) == 8
+    # the changed rows are the lighting target's own tools and nothing else:
+    # the four unflown MF-1 targets keep their released descriptions.
+    assert {block[index].split("(", 1)[0][2:] for index in differing} == set(expected)
     for index in differing:
         # every changed line is the baseline line plus this arm's appended
         # text, so the signature half and the released description are intact

@@ -3,8 +3,8 @@
   "schema": "saea-a2t-direct-calibration-experiment-v1",
   "date": "2026-09-05",
   "execution_profile": "baseline-reproduction",
-  "purpose": "KC-A1 and its control KC-A1c of the three-dimension program (docs/readiness/2026-09-05-three-dimension-experiment-program.md section 4a). MF-1 (docs/readiness/2026-09-05-a2t-query-cue-audit-v1.md) closed with the KC-A1 gate PASSED: 235 of the sealed 4,000-row misses sit inside five disjoint TARGET tool sets whose queries separate at 0.86 to 1.00, so the cue exists in the speech and the registry's own descriptions do not carry it. KC-A1 appends a deterministic contrast note, derived from registry columns only, to the compact registry line of each of the 23 target tools; KC-A1c appends the registry's own category word alone, padded to exactly the same character count per line. ORG-1 proved that a prompt-form change costs about 3 points on this carrier, so the pair is what separates content from form: KC-A1 minus baseline is content plus form, KC-A1c minus baseline is form, KC-A1 minus KC-A1c is content.",
-  "hypothesis": "H1: a per-tool contrast note that names what separates a target's tools recovers part of the 235-row addressable mass, and the recovered rows are concentrated on TARGET-pair misses. H2 (the control): the same number of added characters carrying no contrast does not recover them. The lighting caveat MF-1 recorded stands beside H1: 147 of the 235 rows are directions ORG-1 already halved without gaining a point, so a KC-A1 gain has to come from the contrast content surviving at ORG-1's own prompt cost.",
+  "purpose": "KC-A1 and its control KC-A1c of the three-dimension program (docs/readiness/2026-09-05-three-dimension-experiment-program.md section 4a). MF-1 (docs/readiness/2026-09-05-a2t-query-cue-audit-v1.md) closed with the KC-A1 gate PASSED: 235 of the sealed 4,000-row misses sit inside five disjoint TARGET tool sets whose queries separate at 0.86 to 1.00, so the cue exists in the speech and the registry's own descriptions do not carry it. On the owner's option B of 2026-09-06 this cell targets the LIGHTING cluster ALONE -- 8 tools, 147 of the 235 addressable rows -- because that subset is the one that renders inside the program's +40-token form cap; the other four targets keep their notes in configs/knowledge/a2t-kc-a1/targets-v1.json and are not flown here. KC-A1 appends a deterministic contrast note, derived from registry columns only, to the compact registry line of each of those 8 target tools; KC-A1c appends the registry's own category word alone, padded to exactly the same character count per line. ORG-1 proved that a prompt-form change costs about 3 points on this carrier, so the pair is what separates content from form: KC-A1 minus baseline is content plus form, KC-A1c minus baseline is form, KC-A1 minus KC-A1c is content.",
+  "hypothesis": "H1: a per-tool contrast note that names what separates a target's tools recovers part of the 147-row lighting mass MF-1 attributed to this cluster, and the recovered rows are concentrated on TARGET-pair misses. H2 (the control): the same number of added characters carrying no contrast does not recover them. The lighting caveat MF-1 recorded stands beside H1 and is now the WHOLE population of the cell: all 147 of these rows are directions ORG-1 already halved without gaining a point, so a KC-A1 gain has to come from the contrast content surviving at a quarter of ORG-1's prompt cost.",
   "preregistration": "docs/readiness/2026-09-05-a2t-kc-a1-contrast-notes-v1-preregistration.md",
   "predecessor": {
     "run_id": "SAEA-A2T-ORG1-DOMAIN-GROUPED-V1",
@@ -15,15 +15,17 @@
     "lesson": "HARMFUL at -3.23 pp. The domain cue fired (cross-domain twin misses -16 %) and turned cross-domain misses into same-domain ones, and a form cost of roughly 3 points rode along with +87 text tokens and 465 lines against 155. KC-A1 keeps the 152-line shape byte-for-byte and pays a smaller, measured text cost; KC-A1c prices whatever remains of it."
   },
   "artifacts": {
-    "target_spec": "configs/knowledge/a2t-kc-a1/targets-v1.json",
-    "builder": "scripts/build_a2t_contrast_notes.py",
+    "target_spec": "configs/knowledge/a2t-kc-a1/targets-lighting-v1.json",
+    "target_spec_parent": "configs/knowledge/a2t-kc-a1/targets-v1.json",
+    "builder": "scripts/build_a2t_contrast_notes.py --targets-spec configs/knowledge/a2t-kc-a1/targets-lighting-v1.json --write",
     "artifact_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-kc-a1-contrast-notes-4000-v1/artifact-receipt.json",
     "kc_a1_artifact": "configs/knowledge/a2t-kc-a1/contrast-notes-v1.json",
-    "kc_a1_artifact_sha256": "dcf84c2a5a371b658e234d0f42c1f03a7c36c5a2c090790d44e383999647cd21",
+    "kc_a1_artifact_sha256": "b99da99e43c813050e6df9a11bf1910e6168c744f363dae6c1b7f64df0a1763f",
     "kc_a1c_artifact": "configs/knowledge/a2t-kc-a1/category-only-v1.json",
-    "kc_a1c_artifact_sha256": "664b826a9f33ae592076a420d1e6f1e2ed9e93f429c37f610114fd444c838994",
-    "form": "Both arms render through the evolved-artifact-v1 fill: the same 152 lines, the same '- {signature}: {description}' shape, the same plain tool_name sort, no headers, ASCII only, every description under the 200-character cap. Both add exactly 477 characters over the compact block (15,854 -> 16,331) and are line-for-line length-matched to each other.",
-    "form_cap_open_decision": "The program's section-5 form cap is +40 tokens over the compact rendering. The five-target artifact is estimated at +120 tokens (477 added characters at the 3.989 chars/token ratio ORG-1 measured), i.e. 80 tokens over that cap, and the lighting target alone -- 147 of the 235 addressable rows -- is estimated at exactly +40. The cap therefore has to be ratified at +120 for this fragment, or the cell has to be rebuilt lighting-only (scripts/build_a2t_contrast_notes.py --targets lighting prices it). Section 3 of the preregistration is the decision; no cell of this fragment flies before it is taken and the prompt fit has measured the true count."
+    "kc_a1c_artifact_sha256": "2f34c2cf8bc5585257756b44975e36c6244d7c3e362beac1d5b01956a6736e33",
+    "form": "Both arms render through the evolved-artifact-v1 fill: the same 152 lines, the same '- {signature}: {description}' shape, the same plain tool_name sort, no headers, ASCII only, every description under the 200-character cap. Both add exactly 161 characters over the compact block (15,854 -> 16,015) and are line-for-line length-matched to each other.",
+    "form_cap_decision": "CLOSED 2026-09-06 on owner option B (LIGHTING cluster only, +161 characters, an ESTIMATED +40 tokens), then VOIDED THE SAME DAY BY MEASUREMENT. SAEA-A2T-KC-A1-CONTRAST-NOTES-PROMPT-FIT-V1 measured the rendered system message on the pinned tokenizer at the flight's own geometry: KC-A1 3,625 text tokens against the sealed compact rendering's 3,581, i.e. +44 over a binding +40 cap, and KC-A1c 3,611, i.e. +30 on the SAME +161 characters. The estimate came from ORG-1's 3.989 chars/token, measured on a grouped block of headers and newlines; these appended phrases cost 3.659. rails.proposer.validate_candidate_artifact passed both arms only because the builder injects that estimator as its token_counter -- under the serving geometry's own tokenizer, which that injected parameter exists to make the authority, KC-A1 is REFUSED. Section 3.2 of the preregistration is the record.",
+    "flight_status": "STOPPED BEFORE ANY CONTACT, 2026-09-06. NO cell of this fragment has flown: the decontamination gate passed, the prompt fit stopped the cell on the form cap, and neither run id was ever registered as a flight exposure row. No wire check, no smoke, no flight, no scoring, no verdict. A successor artifact must be measured on the tokenizer before it is registered, and its control must be TOKEN-matched rather than character-matched -- the length-matched control measured 14 tokens cheaper than its treatment, so it would have priced 68 % of the form it exists to price. This fragment is not to be flown as it stands."
   },
   "comparators": {
     "basis": "the sealed official-protocol output of the SAME sample id under the SAME scorer, from the flight that drew that part of the union roster. Nothing is re-flown on the baseline side: greedy decoding is not bitwise reproducible across batch shapes on this runtime, so the sealed bytes are the only honest comparator. KC-A1c is additionally a comparator FOR KC-A1, paired row for row.",
@@ -85,20 +87,20 @@
       "cell_id": "KC-A1-contrast-raw",
       "run_id": "SAEA-A2T-KC-A1-CONTRAST-NOTES-V1",
       "dataset_fragment": "audio2tool-org1-union-4000",
-      "factor": "knowledge CONSTRUCTION: a deterministic contrast note, derived from the registry's own domain, category, argument names and constraints, appended inline to each of the 23 MF-1 target tools' description",
-      "factor_a_output_contract": "unchanged from R-official-raw and the three official-population cells: the published system-prompt sentence, the fixed '## Available Tools:' header, the same 152 registry rows in plain tool_name order, the same call-string output contract. ONLY the description column of 23 rows differs.",
+      "factor": "knowledge CONSTRUCTION: a deterministic contrast note, derived from the registry's own domain, category, argument names and constraints, appended inline to each of the 8 MF-1 LIGHTING target tools' description",
+      "factor_a_output_contract": "unchanged from R-official-raw and the three official-population cells: the published system-prompt sentence, the fixed '## Available Tools:' header, the same 152 registry rows in plain tool_name order, the same call-string output contract. ONLY the description column of 8 rows differs.",
       "factor_d_audio_path": "raw audio, bf16 mmproj loaded",
       "user_turn": "audio first, then the fixed sentence 'Convert this voice command to a tool call.'",
       "arm": "bare-core",
       "baseline_fragment": "a2t-kc-a1-contrast-notes",
       "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
-      "serving_geometry": "-c 49152 -np 2, 24,576 tokens per slot -- the geometry the tier-1 and tiers-3/4/6/7 official-population cells and ORG-1 flew. The union carries four 654-second synthesis defects, so under the encoder's one-second window rule the worst row costs 8,515 speech tokens; the registry block grows by 477 characters (about 120 text tokens), which leaves the 8,192-token reserve intact. The prompt fit re-derives it before any generation."
+      "serving_geometry": "-c 49152 -np 2, 24,576 tokens per slot -- the geometry the tier-1 and tiers-3/4/6/7 official-population cells and ORG-1 flew. The union carries four 654-second synthesis defects, so under the encoder's one-second window rule the worst row costs 8,515 speech tokens; the registry block grows by 161 characters (about 40 text tokens), which leaves the 8,192-token reserve intact with more margin than ORG-1 had. The prompt fit re-derives it before any generation."
     },
     {
       "cell_id": "KC-A1c-category-raw",
       "run_id": "SAEA-A2T-KC-A1C-CATEGORY-ONLY-V1",
       "dataset_fragment": "audio2tool-org1-union-4000",
-      "factor": "FORM only: the registry's own category word appended to the same 23 tools, padded with a neutral filler to exactly the same character count per line, carrying no contrast",
+      "factor": "FORM only: the registry's own category word appended to the same 8 lighting tools, padded with a neutral filler to exactly the same character count per line, carrying no contrast",
       "factor_a_output_contract": "identical to KC-A1-contrast-raw, and line-for-line length-matched to it",
       "factor_d_audio_path": "raw audio, bf16 mmproj loaded",
       "user_turn": "audio first, then the fixed sentence 'Convert this voice command to a tool call.'",

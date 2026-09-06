@@ -2,8 +2,11 @@
 """Build KC-A1's contrast-note artifact and KC-A1c's category-only control.
 
 Model-free, zero contacts. Reads ``tools_registry.csv`` through the umbrella
-lock plus the committed spec ``configs/knowledge/a2t-kc-a1/targets-v1.json``
-(whose five tool lists are re-verified against the MF-1 audit receipt), then
+lock plus a committed target spec -- ``--targets-spec``, default
+``configs/knowledge/a2t-kc-a1/targets-v1.json`` and, since the owner took
+option B on 2026-09-06, ``configs/knowledge/a2t-kc-a1/targets-lighting-v1.json``
+for the cell that flies (whose tool lists are re-verified against the MF-1
+audit receipt), then
 writes both override artifacts, both baseline fragments -- through
 ``rails.evolution.write_candidate_fragments``, official-protocol fragment as
 base -- and one receipt with the per-tool character deltas and each rendered
@@ -12,7 +15,8 @@ block's line and character totals. The note/control CONSTRUCTION rule is
 the spec's. Tokens are ESTIMATED (spec ``statements.token_method``); the
 prompt fit before takeoff measures them.
 
-Usage (WSL2): ``python scripts/build_a2t_contrast_notes.py --write``.
+Usage (WSL2): ``python scripts/build_a2t_contrast_notes.py --targets-spec
+configs/knowledge/a2t-kc-a1/targets-lighting-v1.json --write``.
 """
 
 from __future__ import annotations
@@ -172,10 +176,25 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--write", action="store_true")
     parser.add_argument("--targets", default=None, help="price a SUBSET; writes nothing")
+    parser.add_argument(
+        "--targets-spec",
+        type=Path,
+        default=SPEC,
+        help=(
+            "the COMMITTED target spec to build from. A spec may carry any subset of "
+            "the MF-1 targets -- every tool list it does carry is still re-verified "
+            "against the audit receipt -- so the owner's option-B lighting-only cell "
+            "is a committed file rather than a command-line filter. --targets stays "
+            "what it was: an ad-hoc pricing filter that writes nothing"
+        ),
+    )
     args = parser.parse_args()
     if args.targets and args.write:
         raise SystemExit("--targets prices a subset; it never writes the committed arms")
-    spec = json.loads(SPEC.read_text(encoding="utf-8"))
+    spec_path = Path(args.targets_spec)
+    if not spec_path.is_absolute():
+        spec_path = REPO / spec_path
+    spec = json.loads(spec_path.read_text(encoding="utf-8"))
     targets = verify_spec(spec)
     if args.targets:
         wanted = {part.strip() for part in args.targets.split(",") if part.strip()}
@@ -215,9 +234,10 @@ def main() -> int:
         "study": "speech-aware-evidence-acquisition",
         "builder": "scripts/build_a2t_contrast_notes.py", "model_contacts": 0,
         "target_spec": {
-            "path": "configs/knowledge/a2t-kc-a1/targets-v1.json",
-            "sha256": digest(SPEC.read_bytes()),
+            "path": spec_path.resolve().relative_to(REPO).as_posix(),
+            "sha256": digest(spec_path.read_bytes()),
             "audit_receipt": spec["source_receipt"],
+            "target_ids": sorted(targets),
         },
         "registry": {"rows": len(rows), "lock_key": "audio2tool"},
         "token_method": spec["statements"]["token_method"],

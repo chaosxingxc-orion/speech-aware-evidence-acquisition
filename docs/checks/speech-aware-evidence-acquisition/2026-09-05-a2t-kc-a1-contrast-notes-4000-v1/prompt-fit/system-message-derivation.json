@@ -1,0 +1,93 @@
+{
+  "arm_token_symmetry": {
+    "characters_equal": true,
+    "note": "the control is LENGTH-matched by construction, which the artifact receipt proves character for character. Whether it is TOKEN-matched is a fact about the tokenizer and is measured here, not assumed.",
+    "tokens_equal": false,
+    "treatment_minus_control_tokens": 14
+  },
+  "arms": {
+    "KC-A1-contrast-raw": {
+      "added_chars_over_compact": 161,
+      "added_tokens_over_compact": 44,
+      "artifact_relpath": "configs/knowledge/a2t-kc-a1/contrast-notes-v1.json",
+      "baseline_fragment": "configs/baseline/a2t-kc-a1-contrast-notes.json",
+      "derivation_agrees": true,
+      "differing_line_indices": [
+        44,
+        68,
+        78,
+        82,
+        90,
+        91,
+        105,
+        111
+      ],
+      "lines_differing_from_the_published_message": 8,
+      "measured_chars_per_added_token": 3.6591,
+      "measured_system_text_sha256": "608d857a1d34bb27f8ca3f62fe04052485b531556b38c64e07398dd954535812",
+      "measured_text_prompt_tokens": 3625,
+      "rebuilt_sha256": "608d857a1d34bb27f8ca3f62fe04052485b531556b38c64e07398dd954535812",
+      "resolved_through_the_fill_sha256": "608d857a1d34bb27f8ca3f62fe04052485b531556b38c64e07398dd954535812",
+      "system_text_chars": 16304,
+      "token_cap": 40,
+      "tools_overridden": 8,
+      "within_token_cap": false
+    },
+    "KC-A1c-category-raw": {
+      "added_chars_over_compact": 161,
+      "added_tokens_over_compact": 30,
+      "artifact_relpath": "configs/knowledge/a2t-kc-a1/category-only-v1.json",
+      "baseline_fragment": "configs/baseline/a2t-kc-a1c-category-only.json",
+      "derivation_agrees": true,
+      "differing_line_indices": [
+        44,
+        68,
+        78,
+        82,
+        90,
+        91,
+        105,
+        111
+      ],
+      "lines_differing_from_the_published_message": 8,
+      "measured_chars_per_added_token": 5.3667,
+      "measured_system_text_sha256": "e6ee7d8ac90e4b7ede0a9161c2f003c00c1624aeeb876cb46ab924c1cc759825",
+      "measured_text_prompt_tokens": 3611,
+      "rebuilt_sha256": "e6ee7d8ac90e4b7ede0a9161c2f003c00c1624aeeb876cb46ab924c1cc759825",
+      "resolved_through_the_fill_sha256": "e6ee7d8ac90e4b7ede0a9161c2f003c00c1624aeeb876cb46ab924c1cc759825",
+      "system_text_chars": 16304,
+      "token_cap": 40,
+      "tools_overridden": 8,
+      "within_token_cap": true
+    }
+  },
+  "arms_over_cap": [
+    "KC-A1-contrast-raw"
+  ],
+  "boundary": "zero model, GPU and network contacts; reads the sealed prompt-fit receipt",
+  "chat_template_sha256": "45777d2e798aae1d1ce6844e69edcb23fc0c710009554711c78efab9044da2c8",
+  "derivation_failures": [],
+  "derivation_status": "PASS",
+  "exposure_row": "SAEA-A2T-KC-A1-CONTRAST-NOTES-PROMPT-FIT-V1",
+  "form_cap_status": "OVER CAP",
+  "generated_at": "2026-09-06T05:54:20.182268+00:00",
+  "prompt_fit_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-kc-a1-contrast-notes-4000-v1/prompt-fit/prompt-fit.json",
+  "prompt_fit_receipt_sha256": "2fab20f79b321a38f86e8ecd88fcd0cf6479ef66bcf880f4ea173ce82d1b1309",
+  "published_message": {
+    "compact_message_chars": 16143,
+    "compact_message_chars_agrees": true,
+    "compact_message_chars_expected": 16143,
+    "compact_message_sha256": "be7f31a2e8c7e6dd6a2db8673a54da26051cf2c3914218532521385175ffd8bd",
+    "compact_text_prompt_tokens": 3581,
+    "compact_token_source": [
+      "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-tier1-official-population-v1/prompt-fit/tier1-pop-500/prompt-fit.json",
+      "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-tier258-official-population-v1/prompt-fit/prompt-fit.json",
+      "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-tier3467-official-population-v1/prompt-fit/prompt-fit.json"
+    ],
+    "system_prompt_sha256": "1c52cd2ebca6e4737b706ccc231b01f008d35276a2153000d74ec9500018258a",
+    "system_prompt_variant": "in-code-default"
+  },
+  "schema": "saea-a2t-kc-a1-system-message-derivation-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "why": "--expect-official-system-message refuses any cell whose system message is not byte-identical to a pinned-release spelling, which KC-A1 cannot be by construction. This is the property that flag would have proved, proved offline instead: each arm's measured system message is exactly the published message with exactly its own artifact's lines replaced."
+}
