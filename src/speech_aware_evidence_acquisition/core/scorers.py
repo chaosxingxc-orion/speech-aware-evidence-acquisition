@@ -35,7 +35,19 @@ class ScoringPhaseError(RuntimeError):
     """Outputs are malformed or reference/hypothesis pairing is impossible."""
 
 
-REFERENCE_READING_SCORERS = frozenset({"asr-wer", "entity-wer", "asr-wer-whisper"})
+REFERENCE_READING_SCORERS = frozenset(
+    {
+        "asr-wer",
+        "entity-wer",
+        "asr-wer-whisper",
+        # 2026-09-06 Earnings agentic-metric block (bottom of this module):
+        # all three read the same ``.nlp`` bytes through
+        # ``data.references.reference_tokens`` (and, for the ConEC mirror,
+        # ``reference_entity_mentions``), so all three must trigger the D1
+        # reference-identity re-verification in ``_assert_scoring_entry_gate``.
+        "conec-entity-wer-official",
+    }
+)
 
 
 def score_asr_outputs(
@@ -903,3 +915,150 @@ from ..reproduction.esb_reference import (  # noqa: E402
 
 SCORERS.register("asr-wer-esb", score_esb_outputs)
 SCORERS.register("asr-wer-esb-whisper", score_esb_outputs_whisper)
+
+
+# ---------------------------------------------------------------------------
+# Earnings agentic-metric block (2026-09-06, owner ruling "WER is not a
+# reasonable speech-agentic task"): corpus WER stays the alignment anchor
+# against the published Earnings-21 rows, and the paper-facing line for
+# Earnings MECHANISM cells becomes entity-level metrics with published numbers
+# plus a semantic high-impact error rate. Three scorers register in this
+# block, beside -- never instead of -- ``asr-wer-whisper`` / ``asr-wer`` /
+# ``entity-wer``, one metric per commit:
+#
+#   ``conec-entity-wer-official``          ConEC Table 2's per-entity-type WER
+#   ``numeric-value-accuracy-v1``          did the figures survive at all
+#   ``semantic-high-impact-error-rate-v1`` HIGH-impact reference-word mass
+#
+# All three live HERE rather than in ``reproduction/`` for the same reason
+# ``score_asr_outputs_whisper`` and ``score_entity_wer_outputs`` already do:
+# they resolve gold through ``data.references``, and
+# ``tests/contract/test_reference_import_isolation.py`` AST-enforces that this
+# module is that package's only importer. Their reference-free definitions --
+# the alignment trace, the fstalign accounting, the numeric-value contract, the
+# taxonomy interface -- live in ``reproduction.conec_entity_scoring``,
+# ``reproduction.numeric_value_accuracy`` and ``reproduction.semantic_impact``,
+# imported at append time exactly as the blocks above import theirs.
+#
+# NAMING, stated plainly because the suffix carries a promise elsewhere in this
+# module: ``a2t-toolcall-official`` runs the Audio2Tool release's own vendored
+# Python metric code and ``slurp-slu-official`` subprocesses SLURP's real
+# ``evaluate.py``. ``conec-entity-wer-official`` CANNOT do that -- ConEC's
+# metric tool is fstalign, a C++/OpenFST binary this repository does not
+# install and has never run -- so it is a DEFINITION MIRROR of fstalign's own
+# ``RecordTagWer`` accounting, read out of that project's source at a pinned
+# commit. That is not left to a docstring: every aggregate this scorer emits
+# carries ``official_tool_run: false`` and the pinned ``definition_source``,
+# so no table can quote it as an executed official metric by accident.
+# ---------------------------------------------------------------------------
+
+from ..reproduction import conec_entity_scoring as _conec  # noqa: E402
+
+
+def _outputs_rows(outputs_path: Path) -> list[dict[str, object]]:
+    """The shared JSONL read every scorer in this module performs, with the
+    identical malformed/empty refusals ``score_asr_outputs`` makes."""
+
+    try:
+        text = Path(outputs_path).read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as error:
+        raise ScoringPhaseError(f"cannot read outputs {outputs_path}: {error}") from error
+    lines = text.split("\n")
+    if lines and lines[-1] == "":
+        lines = lines[:-1]
+    if not lines:
+        raise ScoringPhaseError(f"outputs file {outputs_path} is empty")
+    rows: list[dict[str, object]] = []
+    for number, line in enumerate(lines, start=1):
+        try:
+            rows.append(json.loads(line))
+        except json.JSONDecodeError as error:
+            raise ScoringPhaseError(f"outputs line {number} malformed: {error}") from error
+    return rows
+
+
+def score_conec_entity_wer_outputs(
+    outputs_path: Path, lock: Mapping[str, object], root: Path
+) -> dict[str, object]:
+    """ConEC per-entity-type WER (definition mirror; see
+    ``reproduction.conec_entity_scoring`` for the paper quote, the pinned
+    fstalign source, and the two named differences from that tool).
+
+    Per sample: the raw ``.nlp`` reference tokens are Whisper-normalized once
+    as a whole string -- byte-identically to ``asr-wer-whisper`` -- and aligned
+    against the Whisper-normalized hypothesis, so this scorer's ``__ALL__``
+    bucket reproduces that scorer's own per-call and corpus WER exactly and
+    acts as its own identity anchor. ``wer_tags`` entity IDs are carried onto
+    that normalized sequence from a run-chunked normalization, and each
+    reference word's errors are charged to every entity ID it carries, then
+    pooled by the sidecar's ``entity_type`` -- fstalign's ``RecordTagWer``
+    rule, insertions unattributed.
+
+    Scope is ``data.carriers.entity_scoped_carrier_lock_keys()`` (today
+    ``earnings21-original`` alone), same as ``entity-wer``; any other carrier
+    fails closed.
+    """
+
+    rows = _outputs_rows(outputs_path)
+    scoped_carriers = entity_scoped_carrier_lock_keys()
+    per_sample: list[dict[str, object]] = []
+    bucket_rows: list[dict[str, dict[str, object]]] = []
+    for row in rows:
+        carrier_lock_key = row["carrier_lock_key"]
+        sample_id = row["sample_id"]
+        if carrier_lock_key not in scoped_carriers:
+            raise ScoringPhaseError(
+                f"conec-entity-wer-official has no registered entity layer for carrier "
+                f"{carrier_lock_key!r} (sample {sample_id!r}); supported carriers: "
+                f"{sorted(scoped_carriers)}"
+            )
+        try:
+            raw_tokens = reference_tokens(lock, root, carrier_lock_key, sample_id)
+            mentions = reference_entity_mentions(lock, root, carrier_lock_key, sample_id)
+        except ReferenceError as error:
+            raise ScoringPhaseError(
+                f"cannot resolve entity references for sample {sample_id!r} "
+                f"(carrier {carrier_lock_key!r}): {error}"
+            ) from error
+
+        owners_by_index: list[list[str]] = [[] for _ in raw_tokens]
+        entity_types: dict[str, str] = {}
+        for mention in mentions:
+            entity_types[mention.entity_id] = mention.entity_type
+            for index in mention.token_indices:
+                owners_by_index[index].append(mention.entity_id)
+        owners = [tuple(sorted(ids)) for ids in owners_by_index]
+
+        whole_words = _conec.whole_string_whisper_words(raw_tokens)
+        chunked_words, chunked_owners = _conec.run_chunked_whisper_words(raw_tokens, owners)
+        transferred = _conec.transfer_owners(chunked_words, chunked_owners, whole_words)
+        hypothesis_words = _conec.hypothesis_whisper_words(str(row["text"]))
+        operations = _conec.aligned_operations(whole_words, hypothesis_words)
+        _conec.operation_counts(operations, len(whole_words), len(hypothesis_words))
+        buckets = _conec.entity_wer_buckets(operations, transferred, entity_types)
+        bucket_rows.append(buckets)
+        per_sample.append(
+            {
+                "sample_id": sample_id,
+                "wer": buckets[_conec.OVERALL_BUCKET]["wer"],
+                "reference_words": buckets[_conec.OVERALL_BUCKET]["reference_words"],
+                "unlabelled_reference_words": (
+                    buckets[_conec.UNLABELLED_BUCKET]["reference_words"]
+                ),
+                "by_entity_type": buckets,
+            }
+        )
+
+    merged = _conec.merge_buckets(bucket_rows)
+    aggregate: dict[str, object] = {
+        "samples": len(per_sample),
+        "by_entity_type": merged,
+        "corpus_wer": merged[_conec.OVERALL_BUCKET]["wer"],
+        "reference_words": merged[_conec.OVERALL_BUCKET]["reference_words"],
+        "unlabelled_reference_words": merged[_conec.UNLABELLED_BUCKET]["reference_words"],
+    }
+    aggregate.update(_conec.scorer_provenance())
+    return {"per_sample": per_sample, "aggregate": aggregate}
+
+
+SCORERS.register("conec-entity-wer-official", score_conec_entity_wer_outputs)
