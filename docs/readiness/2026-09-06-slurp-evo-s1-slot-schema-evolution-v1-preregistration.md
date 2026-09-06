@@ -1,10 +1,14 @@
 # EVO-S1: slot-schema evolution on SLURP — preregistration (DRAFT)
 
-**Status: DRAFT.** This document is complete but unregistered. The coordinator closes it by (1)
-ratifying the reward metric (section 4), (2) choosing the curve/final read option (section 7), (3)
-ruling on the fold-quota power arithmetic (section 16, open point 1), (4) admitting the SLURP half of
-track E3c, which does not exist (section 12), and (5) writing the exposure rows. Nothing here
-authorizes a contact.
+**Status: DRAFT.** This document is complete but unregistered. **The coordinator ruled on
+2026-09-06** and those seven decisions are written into the sections below: the reward metric is
+ratified (section 4), read Option B is taken (section 7), the folds are re-drawn at 60 utterances
+per scenario (sections 2, 6, 10), the per-scenario harm bound replaces the background tolerance
+(section 6), F2/F3/`K`/`M`/form are fixed (section 5), decontamination's DEV-1000 read is bounded
+(section 8), and the budget is recomputed from the V2 sizes (section 10). What still closes the
+document: **admitting the SLURP half of track E3c, which does not exist (section 12), and writing
+the exposure rows.** One decision the ruling reopened and two engineering points remain open and
+are named in section 16. Nothing here authorizes a contact.
 
 Cell EVO-S1 of `docs/readiness/2026-09-05-three-dimension-experiment-program.md` (section 4c, loop
 constants section 5), the **generality rung** of the system-evolution dimension: the same loop code
@@ -16,7 +20,10 @@ and the same selection rule as EVO-A1, hash-pinned, on a second carrier. Owner d
 | MF-3, the per-intent TRAIN slot schema (`A_0`) | `docs/receipts/knowledge/slurp-intent-slot-schema-v1.json` | closed |
 | KC-S1b, the mechanism this cell evolves | `docs/readiness/2026-09-05-slurp-slot-stage-kc-s1-v1-verdict.md` | **ADMITTED**, +8.55 SLU-F1 |
 | construction capacity, `SAEA-SLURP-MF-EVO-CONSTRUCTION-CAPACITY-V1` | `docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-construction-capacity/` | closed, **no wall** |
-| the three loop rosters, `SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V1` | `docs/receipts/rosters/slurp-evo-{fold-a,fold-b,exemplars}-v1.json` | frozen |
+| the three loop rosters, `SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V2` | `docs/receipts/rosters/slurp-evo-{fold-a,fold-b,exemplars}-v2.json` | frozen, **the V2 re-draw**; V1 kept as history, never contacted |
+| the folds' flight products, `SAEA-SN-MF-SLURP-EVO-FOLD-SUPPLEMENTS-V2` | `docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-fold-supplements-v2/` | closed, **both folds hydratable** |
+| the folds' featcache packets, `SAEA-SLURP-EVO-FOLD-PACKETS-V2` | — | **NOT DONE**, and the only prerequisite that needs a model contact (section 13.3) |
+| stage-one power at the V2 fold size | `docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-stage-one-power/` | closed, **seven of eighteen** scenarios, not nine |
 | MF-5, the multi-phase seal path on SLURP | `docs/checks/speech-aware-evidence-acquisition/2026-09-05-slurp-phase-smoke-4-v1/` | closed |
 
 ---
@@ -59,10 +66,24 @@ twenty-three tools could not supply reward rows at all.
 (`iot` 9, `play` 5, `qa` 5, `audio`/`email`/`music`/`transport` 4, five scenarios 3, four 2,
 `news` and `weather` 1), and a target's candidate rewrites every block its scenario owns.
 
-The census (`capacity.json`) puts no scenario near the loop's requirement of 84 utterances of which
-24 carry entities: the thinnest are `cooking` (211 utterances) and `audio` (57 entity-bearing). It
-also orders the scenarios by how much a schema can possibly say, and the order matches KC-S1b's own
-per-stratum gains almost exactly:
+**The folds carry 60 utterances per scenario** (coordinator decision 1 of 2026-09-06, remedy (b)
+of what was section 16 open point 1), so the loop's requirement per scenario is **144 utterances of
+which 24 carry entities**, not the 84 the capacity census was computed against. The census
+(`capacity.json`) still clears it everywhere: the thinnest scenario is `cooking` at 211 utterances
+(+67 over the V2 need) and every one of the eighteen filled both folds at 60 without a single
+shortfall.
+
+One capacity edge appears at 60 and is recorded rather than absorbed. `audio` carries only 57
+entity-bearing utterances in 290; after the two folds take 120 of its utterances, **22
+entity-bearing utterances remain against an exemplar target of 24**. The folds keep their full
+quota — they are the scientific population and have to carry their scenario's own entity density,
+and reserving exemplars first would have stripped about a third of `audio`'s scorable fold rows —
+so `audio`'s exemplar pool is 22. That is still 2.75 x `M` and above the floor of `2 * M = 16`, so
+its three per-round draws still differ in membership as well as order. The cap is written into
+`docs/receipts/rosters/slurp-evo-exemplars-v2.json` under `exemplar_quota_policy`.
+
+The census also orders the scenarios by how much a schema can possibly say, and the order matches
+KC-S1b's own per-stratum gains almost exactly:
 
 | scenario | zero-entity share of TRAIN | KC-S1b gain (pp, pooled 1,000) |
 |---|---:|---:|
@@ -126,8 +147,8 @@ schema block is chosen by the intent, so the intent must be fixed before the loo
 round would be measuring two changes at once.
 
 **One closed-list direct flight over fold A and fold B, flown once, before round 1.**
-`configs/baseline/slurp-direct-closed-list.json` on the fold dataset fragments: 540 + 540 = **1,080
-contacts**, one per row, `baseline-reproduction`. Its two run manifests become the `sealed-manifest`
+`configs/baseline/slurp-direct-closed-list.json` on the fold dataset fragments: 1,080 + 1,080 =
+**2,160 contacts**, one per row, `baseline-reproduction`. Its two run manifests become the `sealed-manifest`
 `predecessor_source` of every slot cell on that fold, for every round and every candidate. It is
 **incumbent-independent** — nothing the loop does can change it — which is why it is flown once and
 not per round, and it doubles as each fold's own one-contact direct comparator.
@@ -138,8 +159,9 @@ from `reproduction.slurp_official_eval.score_slurp_outputs_official`:
 `slu_f1_word_{tp,fp,fn,f1}`, `slu_f1_char_{tp,fp,fn,f1}`, `slu_f1_{precision,recall,f1}`, and
 `parsed`.
 
-**The reward is per-row `slot_f1_exact_f1` — strict entity F1, exact `{type, filler}` match.** Four
-reasons, in order:
+**The reward is per-row `slot_f1_exact_f1` — strict entity F1, exact `{type, filler}` match.**
+**Ratified by the coordinator on 2026-09-06 (decision 6), with `slu_f1_word_f1` reported beside it
+in every round receipt.** Four reasons, in order:
 
 1. **It is the metric KC-S1b was admitted on.** Its NEW500 admission (+10.11 pp, CI90 [+8.11,
    +12.19]) and its whole per-stratum table are stated in this metric, so round 0 of the curve has a
@@ -182,10 +204,16 @@ refreshed" is a no-op here: `A_0`'s counts *are* the current TRAIN counts, so th
 byte-identical to the incumbent and worth nothing. Shares-only is the control the KC-S1b verdict
 actually calls for.
 
-**The exemplar draw.** `M = 8` utterances from that scenario's 24 in `SLURP-EVO-EXEMPLARS-V1`, drawn
+**Coordinator decision 4 of 2026-09-06 fixes this section:** F2 is shares-only, F3 is the
+token-matched form twin, `K_1 = 5` and `K = 4` thereafter, `M = 8` with uncovered intents keeping
+the incumbent block, and form is a `+20 %` relative token budget that is reported and is never a
+gate on the claim.
+
+**The exemplar draw.** `M = 8` utterances from that scenario's pool in `SLURP-EVO-EXEMPLARS-V2` — 24
+utterances in seventeen scenarios and 22 in `audio` (section 2) — drawn
 and ORDERED by `random.Random(f"{round}:{scenario}:{k}")` over the id-sorted pool. Because the pool
-is three times `M`, three draws differ in membership as well as order — unlike EVO-A1, where twelve
-tools have a pool of exactly `M`. Where a scenario has more intents than `M` (only `iot`, with 9),
+is about three times `M`, three draws differ in membership as well as order — unlike EVO-A1, where
+twelve tools have a pool of exactly `M`. Where a scenario has more intents than `M` (only `iot`, with 9),
 the draw covers intents in descending TRAIN mention mass and **any intent the draw did not cover
 keeps its incumbent block unchanged**: a candidate never rewrites a block it saw no evidence for.
 Exemplars never come from either fold.
@@ -280,34 +308,52 @@ listed type has at least one TRAIN mention for that intent; the header line byte
 Per round `r`, in order:
 
 1. **Propose.** One text contact per scenario per proposer slot on the `construction-proposer-text`
-   arm, whose plan's split identity is `SLURP-EVO-EXEMPLARS-V1`. Build F2 (and, in round 1, F3) with
+   arm, whose plan's split identity is `SLURP-EVO-EXEMPLARS-V2`. Build F2 (and, in round 1, F3) with
    no contact. Validate every candidate; a candidate that fails a form or decontamination gate is
    dropped and its slot flies the incumbent's blocks for that scenario.
 2. **Assemble.** `assemble_portfolio` merges candidate `k` of every scenario into one schema state;
    the fragment writer emits the artifact and its baseline fragment.
-3. **Fold A.** Fly the incumbent plus the `K_r` portfolios over all 540 rows of
-   `SLURP-EVO-FOLD-A-V1`, one slot contact per row against that fold's sealed intent manifest,
+3. **Fold A.** Fly the incumbent plus the `K_r` portfolios over all 1,080 rows of
+   `SLURP-EVO-FOLD-A-V2`, one slot contact per row against that fold's sealed intent manifest,
    greedy, everything else KC-S1b's. Score once per complete manifest with `slurp-slu-official`
    through `core.scoring_batch`, never sharded.
 4. **Stage one, per scenario** (`select_per_target`, gates `saves >= 4, harms <= 1, net >= 3` on
-   per-row `slot_f1_exact_f1`): slice each arm to that scenario's own 30 rows and count against the
+   per-row `slot_f1_exact_f1`): slice each arm to that scenario's own 60 rows and count against the
    incumbent. Winner = largest net, ties by fewer harms, then fewer artifact bytes, then lowest `k`.
-   A count rule, not an interval: at 30 rows a bootstrap says nothing, and a reviewer can recount it
-   by hand. **See section 16 open point 1: at 30 rows this gate is thin, and the arithmetic is
-   stated there rather than discovered afterwards.**
+   A count rule, not an interval: on a metric this sparse a bootstrap over one scenario still says
+   little, and a reviewer can recount a count rule by hand. **The V2 draw is the answer to the
+   power problem this gate had at 30 rows, and the size of that answer is now measured rather than
+   asserted:** scaling KC-S1b's measured per-stratum saves to a 60-row fold clears the gate in
+   **seven of eighteen** scenarios against three of eighteen at 30
+   (`docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-stage-one-power/power.json`,
+   model-free, from the committed KC-S1b read). Five scenarios join — `alarm`, `calendar`,
+   `cooking`, `iot` and `qa`, beside the incumbent `social` and `weather` — and **one leaves**:
+   `transport` clears at 30 rows (6.00 saves, 1.00 harms) and is refused at 60 (12.00, 2.00),
+   because the harms bound is an absolute row count that does not scale with the fold. The
+   admissible set still more than doubles, so a rounds-1-and-2 null is a statement about the
+   mechanism rather than about the sample size; but it is seven, not the nine an earlier draft of
+   this document asserted, and `transport` is a scenario the loop can no longer claim at this fold
+   size. Whether the harms bound should scale is open (section 16).
 5. **Assemble the winners** into one candidate state.
-6. **Stage two, fold B.** Fly the incumbent and the assembly over all 540 rows of
-   `SLURP-EVO-FOLD-B-V1`. Accept the assembly **whole** iff
-   * the **pooled 540-row** paired CI90 lower bound on `slot_f1_exact_f1` is strictly above 0, and
-   * **no scenario's own 30-row paired point estimate is below -1.0 pp.**
+6. **Stage two, fold B.** Fly the incumbent and the assembly over all 1,080 rows of
+   `SLURP-EVO-FOLD-B-V2`. **Coordinator decision 3 of 2026-09-06 replaces the background tolerance
+   with a per-scenario harm bound**, because on SLURP every scenario is a target and there is no
+   background population. Accept the assembly **whole** iff all three hold:
+   * the **pooled TARGETED** paired CI90 lower bound on `slot_f1_exact_f1` — over the fold-B rows of
+     the scenarios stage one admitted — is strictly above 0;
+   * **every admitted scenario, on its own 60 fold-B rows, has `harms - saves <= 1` row**; and
+   * the **non-admitted scenarios, pooled, are no worse than -1.0 pp.**
 
-   The second condition is the program's -1.0 pp background tolerance transposed: on SLURP every
-   scenario is a target, so there is no background population, and the tolerance becomes a
-   per-scenario harm bound. It is stated on the **point estimate** rather than a CI90 lower bound
-   because a CI90 over 30 rows of a sparse metric is uninformative and would accept everything; each
-   scenario's CI90 is nevertheless recorded. 10,000 replicates, stratified by scenario, seed
-   20260903, `analysis.paired.paired_contrast`. Never partially accepted.
-7. **Curve.** Read the round's incumbent (post-decision) once on the curve population of section 7.
+   The second condition is a row COUNT, not an interval, for the same reason stage one is: it says
+   that a scenario the loop claims to have improved may not go backwards by more than a single row
+   on the confirmation fold. The third keeps the tolerance the program wrote for a background
+   population and applies it where a background population actually exists here — the scenarios the
+   loop did NOT touch this round, whose blocks are the incumbent's and which should therefore move
+   only by decoding noise. Each scenario's own CI90 is recorded regardless. 10,000 replicates,
+   stratified by scenario, seed 20260903, `analysis.paired.paired_contrast`. Never partially
+   accepted.
+7. **Curve.** Under read Option B (section 7) the curve is **fold B**, already flown in step 6 at
+   no extra contact: the round's accepted incumbent against `A_0` on the 1,080 confirmation rows.
    Curve only: it decides nothing.
 8. **Stop rule** (`should_stop`): `R_max = 4`; stop after two consecutive rejects, or after an
    accepted round whose gain is under 0.5 pp.
@@ -317,7 +363,7 @@ Per round `r`, in order:
    `replay_selection` must reproduce every stage-one decision from the sealed per-sample score files
    alone.
 
-## 7. The reads — an open decision, both options priced
+## 7. The reads — Option B, chosen by the coordinator on 2026-09-06
 
 Every read is a **one-slot-contact** arm over the read roster, conditioned on the already-sealed
 closed-list intent manifest for that roster, and is paired **row for row against two sealed
@@ -336,18 +382,30 @@ FOLDS there are no sealed KC-S1b rows — the incumbent arm re-flown each round 
 two sealed comparators exist only on the DEV side; the folds carry their own one-time closed-list
 direct arm instead.
 
-| | **Option A** | **Option B** |
-|---|---|---|
-| curve, per round | OLD500 (`DEV-500`, the prior-exposed half of DEV-1000), 500 contacts, 1,422.0817 s | fold B only, **0 extra contacts** |
-| final read, once | NEW500 (`DEV-1000-NEW500`), 500 contacts, 1,462.712 s | DEV-1000, 1,000 contacts, 2,884.7937 s |
-| extra contacts over the loop | 2,000 curve + 500 final = **2,500** | **1,000** |
-| extra GPU hours | about 0.52 | about 0.21 |
-| virtue | the curve is **in distribution** with the final read: two disjoint halves of one roster, so a curve gain that does not transfer is visibly overfitting to OLD500 rather than a population change | the largest final `n`, both sealed comparators present on all 1,000 rows, and the curve costs nothing because fold B flies anyway |
-| cost | 1,500 more contacts; OLD500 has already been read by the DEV ladder, the closed-list baseline, KC-S1a and KC-S1b, so its numbers are the most re-used in the study | curve and final read sit on different distributions, so the generalization gap conflates fold-to-DEV shift with overfitting — which is exactly what the transfer ratio is for |
-| decision population | NEW500 (unexposed at the lock tier) | NEW500 within the pooled 1,000, DEV-500 reported beside it |
+**Decision 2 of 2026-09-06: read Option B.**
 
-**Neither option opens a new identity**: every row of DEV-1000 has been contacted by the closed-list
-baseline, KC-S1a and KC-S1b. **The coordinator chooses.** The budget table below is given for both.
+| | **Option B — TAKEN** | Option A — not taken |
+|---|---|---|
+| curve, per round | **fold B, 0 extra contacts** — the round's accepted incumbent against `A_0` on the 1,080 rows already flown in step 6.6 | OLD500 (`DEV-500`), 500 contacts per round, 1,422.0817 s |
+| final read, once | **DEV-1000, 1,000 contacts, 2,884.7937 s** | NEW500 (`DEV-1000-NEW500`), 500 contacts, 1,462.712 s |
+| extra contacts over the loop | **1,000** | 2,000 curve + 500 final = 2,500 |
+| extra GPU hours | **about 0.20** | about 0.51 |
+| decision population | **NEW500 within the pooled 1,000, DEV-500 reported beside it** | NEW500 alone |
+
+**Why B.** It buys the largest final `n` — both sealed comparators exist on all 1,000 DEV rows —
+and the curve costs nothing, because fold B flies every round anyway. The V2 fold size makes that
+curve worth more than it was at 540: a per-round read on 1,080 construction rows is a better
+signal than a 500-row read on a population four other rows have already consumed. The cost B
+accepts, stated plainly: curve and final read sit on different distributions, so the generalization
+gap `G` conflates fold-to-DEV shift with overfitting — which is exactly what the transfer ratio
+exists to separate, and both are reported.
+
+**No new identity is opened either way**: every row of DEV-1000 has been contacted by the
+closed-list baseline, KC-S1a and KC-S1b.
+
+**The final read of `A*` is flown once, on DEV-1000**, paired row for row against the sealed
+KC-S1b manifest (the headline) and the sealed closed-list direct manifest, with KC-S1a reported
+beside them.
 
 **Headline evidence**, in this order: (1) the curve — round versus fold-A gain, fold-B gain and curve
 gain; (2) the final paired delta against sealed KC-S1b and against the sealed closed-list direct, with
@@ -367,8 +425,10 @@ Register **`SAEA-SLURP-MF-EVO-DECONTAMINATION-V1`** (`model-free-check`, zero co
 first candidate is validated. Under it, each candidate is checked with:
 
 * **`evaluation_sentence_texts`** = the `sentence` field of every DEV-1000 row (and of NEW500 alone,
-  reported separately). **This is the only step in the whole study that opens SLURP devel sentence
-  text** — `data.slurp.load_slurp_split` deliberately does not carry it — it opens it inside the gate
+  reported separately). **Coordinator decision 5 of 2026-09-06 bounds this row exactly**: it may read
+  the DEV-1000 sentence text — rows this study has already consumed — as 6-gram SETS and nothing
+  else; `SLURP-DEV-500-B-V1` and the test split are never opened by it or by any other row of this
+  cell. **This is the only step in the whole study that opens SLURP devel sentence text** — `data.slurp.load_slurp_split` deliberately does not carry it — it opens it inside the gate
   alone, and it never renders, logs or echoes it. Refuse any candidate whose **fillers** share a word
   6-gram with a devel sentence, unless that 6-gram already occurs in `A_0`'s own 1,008 fillers. `A_0`'s
   fillers are exempt because they are TRAIN and were already sent by KC-S1b.
@@ -395,46 +455,67 @@ The loop is declared to have failed, and is stopped and reported as such, if any
 
 ## 10. Budget
 
+**Recomputed from the V2 fold sizes (coordinator decision 7 of 2026-09-06). The program's own
+line for this cell — "about 10,000 contacts, under 1.0 GPU-h" — is SUPERSEDED and must not be cited
+again.**
+
 `rails.evolution.ledger_budget` reproduces the speech arithmetic:
 `calls = R * (K + 1) * rows + R * proposer_calls`, `speech = R * (K + 1) * seconds_per_pass`.
-Fold A carries **1,542.8954 s** of audio per pass and fold B **1,608.2934 s**. Slot contacts are costed at
-**0.75 s per call**, the rate KC-S1b measured at `-np 4` (1,000 contacts in 735.9 s); proposer text
-contacts at **20 s** each (a scenario's blocks are up to about 1,100 tokens; `max_tokens` 1,536).
+Fold A carries **3,084.528438 s** of audio per pass and fold B **3,154.797375 s**, both measured
+from the V2 receipts. Proposer text contacts are costed at **20 s** each (a scenario's blocks are up
+to about 1,100 tokens; `max_tokens` 1,536) and send no audio at all.
 
-| round | fold A calls | fold B calls | proposer calls | curve calls (A) | fold speech s |
+**The slot-contact rate, and a discrepancy the coordinator should settle.** The rate used here is
+**0.7359 s per contact**, taken from the KC-S1b flight's own receipt: 1,000 contacts in 735.9065 s
+of `run_phases` wall at `-np 4`, attempt `attempt-20260906T025102Z-af6b04`
+(`docs/checks/speech-aware-evidence-acquisition/2026-09-05-slurp-slot-stage-kc-s1-v1/`
+`flight-receipt-kc-s1b.json`, `stages.run_phases.wall_seconds`; the ledger row states the same
+"1,000 contacts in 735.9 s"). The 2026-09-06 direction cites that flight's realized throughput as
+**1,008 contacts in 0.08 GPU-h** — 0.2857 s per contact, 2.6x faster — and **that figure does not
+reconcile with any committed receipt**: 1,008 is the run id's smoke plus flight call count, but no
+receipt records 288 s of wall for it (KC-S1a, the cheaper arm, took 531.3 s for 1,000). The table
+below is therefore computed at the receipt-backed rate, with the cited rate carried beside it so
+the coordinator can see both. If the cited rate is right the cell is 3.94 GPU-h; if the receipt is
+right it is 8.25.
+
+| round | fold A calls | fold B calls | proposer calls | curve calls | fold speech s |
 |---|---:|---:|---:|---:|---:|
-| 1 (`K_1 = 5`, 6 arms) | 3,240 | 1,080 | 54 | 500 | 12,474.0 |
-| 2–4 each (`K_r = 4`, 5 arms) | 2,700 | 1,080 | 54 | 500 | 10,931.1 |
-| loop total (`R_max = 4`) | 11,340 | 4,320 | 216 | 2,000 | 45,267.2 |
-| one-time intent flight | 540 | 540 | — | — | 3,151.2 |
+| 1 (`K_1 = 5`, 6 arms) | 6,480 | 2,160 | 54 | 0 | 24,816.8 |
+| 2–4 each (`K_r = 4`, 5 arms) | 5,400 | 2,160 | 54 | 0 | 21,732.2 |
+| loop total (`R_max = 4`) | 22,680 | 8,640 | 216 | 0 | 90,013.5 |
+| one-time intent flight | 1,080 | 1,080 | — | — | 6,239.3 |
 
-| | contacts | speech s | GPU h |
-|---|---:|---:|---:|
-| loop (folds + proposer) | 15,876 | 45,267.2 | 4.46 |
-| one-time intent flight | 1,080 | 3,151.2 | 0.23 |
-| **Option A** curve 4 x 500 + final NEW500 | 2,500 | 7,151.0 | 0.52 |
-| **Option B** curve 0 + final DEV-1000 | 1,000 | 2,884.8 | 0.21 |
-| **whole cell, Option A** | **19,456** | 55,569.4 | **5.21** |
-| **whole cell, Option B** | **17,956** | 51,303.1 | **4.90** |
+Under Option B the curve column is zero by construction: the curve IS fold B, already flown.
 
-**This is about twice the program's own estimate for EVO-S1** ("about 10,000, under 1.0" GPU-h,
-section 4c), and the difference is not a surprise but an arithmetic consequence of fixing the folds at
-540 rows each: the program's line was written before the fold size was chosen. The honest planned
-figure is **4.90 GPU-h (Option B)** or **5.21 (Option A)**, and the coordinator should
-either accept it or shrink the loop (section 16, open point 2). Paid API spend 0.
+| | contacts | speech s | GPU h (receipt rate) | GPU h (cited rate) |
+|---|---:|---:|---:|---:|
+| loop, folds | 31,320 | 90,013.5 | 6.40 | 2.49 |
+| loop, proposer | 216 | 0 | 1.20 | 1.20 |
+| one-time intent flight | 2,160 | 6,239.3 | 0.44 | 0.17 |
+| final read, DEV-1000 (Option B) | 1,000 | 2,884.8 | 0.20 | 0.08 |
+| **whole cell** | **34,696** | **99,137.6** | **8.25** | **3.94** |
+
+The honest planned figure is **8.25 GPU-h**, about 1.7x the 4.90 the V1 draw would have cost and
+about 8x the program's superseded estimate. What the re-draw bought is now measured: **seven of
+eighteen** scenarios can clear the stage-one gate instead of three (section 6 step 4;
+`2026-09-06-slurp-evo-stage-one-power/power.json`). That is still the difference between a testable
+loop and a preregistered null, and it is smaller than the nine this document previously claimed.
+Paid API spend 0.
 
 Registered ceilings are `R_max` times the largest per-round cost, per run id, because plan budgets are
-cumulative across every attempt of a run id:
+cumulative across every attempt of a run id — with margin where the fragment registers one, which
+is why the proposer row reads 288 against an arithmetic 216:
 
 | run id | roster | attempts | calls ceiling | speech s ceiling | profile |
 |---|---|---|---:|---:|---|
-| `SAEA-SLURP-EVO-S1-INTENT-FOLDS-V1` | folds A and B | `attempt-intent-a`, `attempt-intent-b` | 1,200 | 3,200 | `baseline-reproduction` |
-| `SAEA-SLURP-EVO-S1-FOLD-A-V1` | `SLURP-EVO-FOLD-A-V1` | `attempt-r{r}-i`, `attempt-r{r}-c{k}` | 12,960 | 37,100 | `baseline-reproduction` |
-| `SAEA-SLURP-EVO-S1-FOLD-B-V1` | `SLURP-EVO-FOLD-B-V1` | `attempt-r{r}-i`, `attempt-r{r}-a` | 4,320 | 12,900 | `baseline-reproduction` |
-| `SAEA-SLURP-EVO-S1-PROPOSER-V1` | `SLURP-EVO-EXEMPLARS-V1` | `attempt-r{r}-p-{scenario}-k{k}` | 288 | **0** | `bounded-discovery-probe` |
-| `SAEA-SLURP-EVO-S1-CURVE-OLD500-V1` (Option A only) | `DEV-500` | `attempt-r{r}-curve` | 2,000 | 5,688.4 | `baseline-reproduction` |
-| `SAEA-SLURP-EVO-S1-FINAL-V1` | NEW500 (A) or DEV-1000 (B) | `attempt-<stamp>-evofinal` | 500 / 1,050 | 1,462.8 / 2,884.8 | `baseline-reproduction` |
+| `SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2` | folds A and B | `attempt-intent-a`, `attempt-intent-b` | 2,300 | 6,500 | `baseline-reproduction` |
+| `SAEA-SLURP-EVO-S1-FOLD-A-V2` | `SLURP-EVO-FOLD-A-V2` | `attempt-r{r}-i`, `attempt-r{r}-c{k}` | 25,920 | 74,100 | `baseline-reproduction` |
+| `SAEA-SLURP-EVO-S1-FOLD-B-V2` | `SLURP-EVO-FOLD-B-V2` | `attempt-r{r}-i`, `attempt-r{r}-a` | 8,640 | 25,300 | `baseline-reproduction` |
+| `SAEA-SLURP-EVO-S1-PROPOSER-V2` | `SLURP-EVO-EXEMPLARS-V2` | `attempt-r{r}-p-{scenario}-k{k}` | 288 | **0** | `bounded-discovery-probe` |
+| `SAEA-SLURP-EVO-S1-FINAL-V2` | DEV-1000 | `attempt-<stamp>-evofinal` | 1,050 | 2,884.8 | `baseline-reproduction` |
 | `SAEA-SLURP-MF-EVO-DECONTAMINATION-V1` | — | — | 0 | 0 | `model-free-check` |
+
+There is no `CURVE-OLD500` run id: Option B spends nothing on the curve.
 
 Every row is written `consumed = no` and stays so until the loop closes. Proposer contacts are counted
 in `calls` and never in `speech_seconds`: the arm is text-only and sends no audio part at all.
@@ -447,9 +528,23 @@ Two fragments, because a composed experiment fragment declares exactly one `exec
 
 * `configs/experiment/slurp-evo-s1-slot-schema-v1.json` — the reward flights, `baseline-reproduction`,
   round 1, modelled on `configs/experiment/slurp-slot-stage-kc-s1b-v1.json`. The loop re-emits it per
-  round.
+  round. It names the V2 rosters, the V2 sizes and the decision-3 stage-two bound, and declares
+  6,480 planned calls / 18,508 speech seconds / 1.4 GPU-h for round 1 on fold A.
 * `configs/experiment/slurp-evo-s1-proposer-v1.json` — the proposer contacts,
-  `bounded-discovery-probe`. It configures a runner that does not exist (section 12).
+  `bounded-discovery-probe`, bound to `SLURP-EVO-EXEMPLARS-V2`. It configures a runner that does not
+  exist (section 12).
+
+**The two fold dataset fragments now exist** and are named by every reward cell:
+
+| fold | dataset fragment | rows | speech s | probe-sample view | D1 media supplement |
+|---|---|---:|---:|---|---|
+| A | `configs/dataset/slurp-speech-native-evo-fold-a-1080.json` | 1,080 | 3,084.528438 | `docs/receipts/probe-samples/SLURP-EVO-FOLD-A-V2.json` | `docs/receipts/artifacts/d1-slurp-evo-fold-a-v2.json` |
+| B | `configs/dataset/slurp-speech-native-evo-fold-b-1080.json` | 1,080 | 3,154.797375 | `docs/receipts/probe-samples/SLURP-EVO-FOLD-B-V2.json` | `docs/receipts/artifacts/d1-slurp-evo-fold-b-v2.json` |
+
+Each fragment carries the D1 supplement's relpath and artifact SHA-256 in the pair
+`core.config.d1_media_supplement_relpath` / `d1_media_supplement_sha256` reads, so the composed run
+config pins the supplement the gate then re-verifies. The exemplar roster needs none of these: the
+proposer arm is text-only and its plan's split identity is that receipt.
 
 Both compose `model + dataset + baseline + experiment` through the same `core.flight.FlightRuntime`
 and the same OpenJiuwen executor every SLURP cell has flown. Model fragment
@@ -554,24 +649,51 @@ python scripts/run_evolution_round.py --config configs/knowledge/slurp-evo-s1/lo
 
 ## 13. What the flight agent must do before the first contact
 
-1. **Ratify the reward metric** (section 4) and the read option (section 7).
-2. **Make the folds hydratable** — three model-free artifacts per speech-bearing roster, none of which
-   exists today, following the `TRAIN90` precedent exactly (it is the only TRAIN roster this study has
-   ever flown): a speech-native runtime-view **dataset fragment**
-   (`configs/dataset/slurp-speech-native-evo-fold-{a,b}-540.json`, schema
-   `saea-speech-native-runtime-view-v1`, per item `audio_seconds`, `audio_sha256`, `media_relpath`,
-   `packet_id`, `sample_rate_hz`); a **probe-sample view** under `docs/receipts/probe-samples/`; and a
-   **D1 media supplement** `docs/receipts/artifacts/d1-speech-native-evo-fold-{a,b}.json`
-   (`saea-d1-media-supplement-v1`). The D1 supplement is not optional: `d1-identity.json` closes over
-   the SLURP **devel** split only (8,690 recordings) and explicitly does not close over `train`. **The
-   exemplar roster needs none of them**: the proposer arm is text-only and its plan's split identity is
-   that receipt.
-3. **Preprocess the fold packets.** `~/feat-cache/slurp-q4km-packets-04ccc72a/` holds 1,000 devel
-   packets and 451 train packet directories (TRAIN90 plus the knowledge-63 sets) with per-roster
-   promotion receipts; **none of the 1,080 fold rows has a packet**, because every touched TRAIN
-   utterance was excluded from the draw. Two preprocess sessions are needed, producing
-   `EVO-FOLD-A-promotion.json` and `EVO-FOLD-B-promotion.json` on the same `04ccc72a` runtime receipt
-   (`e80c635d…d808b`). CPU work, parallelizable, and it overlaps model load.
+1. ~~**Ratify the reward metric** (section 4) and the read option (section 7).~~ **DONE**,
+   coordinator decisions 6 and 2 of 2026-09-06: the reward is per-row `slot_f1_exact_f1` with
+   Word-F1 beside it, and the read is Option B.
+2. ~~**Make the folds hydratable.**~~ **DONE**, `SAEA-SN-MF-SLURP-EVO-FOLD-SUPPLEMENTS-V2`, receipts
+   under `docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-fold-supplements-v2/`.
+   Three artifacts per fold, all from one measurement pass, following the `TRAIN90` precedent (the
+   only TRAIN roster this study has ever flown): the speech-native runtime-view **dataset fragment**
+   (`saea-speech-native-runtime-view-v1`, per item `audio_seconds`, `audio_sha256`, `media_relpath`,
+   `packet_id`, `sample_rate_hz`), the **probe-sample view** the driver enumerates through, and the
+   **D1 media supplement** — not optional, because `d1-identity.json` closes over the SLURP **devel**
+   split only (8,690 recordings, zero `slurp:train:` ids).
+
+   | | fold A | fold B |
+   |---|---|---|
+   | dataset fragment | `configs/dataset/slurp-speech-native-evo-fold-a-1080.json` | `configs/dataset/slurp-speech-native-evo-fold-b-1080.json` |
+   | `runtime_view_sha256` | `f423fd59…7918` | `fdb6ccdc…e469d` |
+   | probe-sample view | `docs/receipts/probe-samples/SLURP-EVO-FOLD-A-V2.json` | `docs/receipts/probe-samples/SLURP-EVO-FOLD-B-V2.json` |
+   | D1 supplement | `docs/receipts/artifacts/d1-slurp-evo-fold-a-v2.json` | `docs/receipts/artifacts/d1-slurp-evo-fold-b-v2.json` |
+   | supplement sha256 | `2b3d2299…8397` | `c543067e…bd32` |
+   | media bytes | 58,339,950 | 59,382,544 |
+
+   Verified offline through the production checks, not a re-implementation of them:
+   `contracts.gate.FrozenCoreGate.verify_media_identity` re-hashed all 2,160 flac files against the
+   supplements with D1 resolved through the E0 closure receipt exactly as a model touch resolves it,
+   `reproduction.probe_split.load_verified_probe_split` derived the same run identity the fragments
+   publish, and `core.roster.read_roster` recomputed both roster identities — PASS on both folds
+   (`verify.json`). **The exemplar roster needs none of them**: the proposer arm is text-only and its
+   plan's split identity is that receipt.
+3. **Preprocess the fold packets — the only prerequisite that needs a model contact, and it is not
+   yet done.** Promotion starts a llama.cpp sidecar with the decoder AND the mmproj encoder loaded
+   and issues one contact per row at `max_tokens: 1`; that is a `bounded-discovery-probe` model
+   contact (`SAEA-SN-DEV1000-PREPROCESS`, 2026-08-24, is the precedent to copy), so the model-free
+   supplements row stopped before it. The scope is **measured, not assumed**
+   (`products.json`, `packet_coverage`): **0 of 2,160 fold rows has a packet** — 0/1,080 per fold in
+   `slurp-q4km-packets`, in the resident `slurp-q4km-packets-04ccc72a` and in
+   `slurp-q4km-packets-x108-04ccc72a` — because every already-touched TRAIN utterance was excluded
+   before the draw, and a touched utterance is exactly the kind that would already carry a packet.
+   The whole of both fragments is therefore the scope: no set difference, and no derived "NEW"
+   receipt to cut, unlike DEV-1000 where 500 of 1,000 packets already existed. Two preprocess
+   sessions under `SAEA-SLURP-EVO-FOLD-PACKETS-V2`, composing
+   `q4km-preprocess-featcache-cpu-sidecar` + `slurp-speech-native-evo-fold-{a,b}-1080` +
+   `speech-native-preprocess` + a new `slurp-evo-fold-{a,b}-preprocess` experiment fragment on the
+   `04ccc72a` preprocess runtime receipt, producing `EVO-FOLD-A-V2-promotion.json` and
+   `EVO-FOLD-B-V2-promotion.json`. Budget 2,160 calls and 6,239.33 speech seconds; own GPU offload
+   zero (`-ngl 0`), CPU-parallel, and it overlaps model load.
 4. **Fly the one-time closed-list intent flight** on both folds and seal it (section 4).
 5. **Register `SAEA-SLURP-MF-EVO-DECONTAMINATION-V1`** before validating any candidate (section 8).
 6. **Prompt fit** under a `bounded-discovery-probe` row, zero generated tokens: `/apply-template` and
@@ -604,39 +726,91 @@ only**. No test contact, no fresh roster, no `DEV-500-B` opening, no Q8_0, no se
 no parameter update, no edit to an artifact after its fragment was emitted. At most one recovery
 re-registration per run id.
 
-## 16. Open points for the coordinator
+## 16. Decisions taken, and what is still open
 
-1. **The per-scenario count gate is under-powered at 30 rows, and this is the cell's biggest design
-   risk.** The gate is `saves >= 4, harms <= 1, net >= 3` on a scenario's own fold-A rows. Scale
-   KC-S1b's measured per-stratum saves — the largest slot effect this study has produced — down to 30
-   rows and only **three of eighteen** scenarios clear it: `social` 11.0 expected saves, `transport`
-   6.0, `weather` 6.0; `calendar` and `iot` 3.4, `cooking` 3.2, `alarm` 2.1, `music` 0.0. A
-   round-to-round refinement is far smaller than KC-S1b's step, so kill result 1 ("no scenario admitted
-   in rounds 1 and 2") is likely to fire for a statistical reason rather than a mechanism reason. Four
-   remedies, priced: **(a)** accept it and read kill result 1 as underpowered rather than negative;
-   **(b)** draw the folds at **60 per scenario** (1,080 rows each) — the capacity is there (`cooking`
-   still has 170 eligible utterances against a need of 144) and nine of eighteen scenarios then clear
-   the gate, at exactly double the fold cost, about +3.7 GPU-h; **(c)** keep 30 and lower the gate to
-   `saves >= 2, harms = 0, net >= 2`, which is a count rule close to noise; **(d)** demote the
-   per-scenario count gate to a diagnostic and select portfolios on the pooled 540-row interval, which
-   changes the program's selection rule. **(b) is the honest fix and it needs a fresh draw** — the
-   generator takes `--fold-quota`, and a V2 roster id would be required because the receipts refuse to
-   be overwritten.
-2. **The budget is about twice the program's estimate for this cell** (section 10): 17,956 to 19,456
-   contacts and 4.9 to 5.2 GPU-h against "about 10,000, under 1.0". Accept, or shrink `R_max`, or take
-   Option B, or take remedy 1(a) rather than 1(b).
-3. **The read option** (section 7): an in-distribution curve for 1,500 extra contacts, or the largest
-   final `n` for nothing.
-4. **`M = 8` versus `iot`'s nine intents.** Every other scenario has at most five. The stated rule is
-   that uncovered intents keep their incumbent block; the alternative is `M = max(8, intents)` for that
-   one scenario, which breaks the constant.
-5. **The shares-only control as F2** rather than "counts refreshed" (section 5). "Counts refreshed" is
-   byte-identical to the incumbent here and would be a wasted slot.
-6. **Both controls are deterministic**, so `K_1 = 5` costs 54 proposer contacts, not 90. Confirm that
-   reading rather than spending a contact on the form twin.
-7. **The per-scenario harm bound on the point estimate** rather than a CI90 lower bound (section 6.6),
-   because at 30 rows a CI90 accepts everything.
-8. **Opening SLURP devel sentence text** for decontamination (section 8) is a first for this study.
-   Confirm the row before it is written.
-9. **Track E3c**, the proposer runner, is unwritten and blocks round 1 of both EVO cells (section
-   12.4 D2).
+**The coordinator ruled on 2026-09-06.** All seven decisions are written into the sections they
+govern; this table is the index, not a second copy of the rule.
+
+| # | decision | now lives in |
+|---|---|---|
+| 1 | Folds at **60 utterances per scenario** — 1,080 rows each — exemplars 24, V2 draw, seed 20260906, same exclusions, same proofs. The V1 receipts stay committed as history and were never contacted. | sections 2, 6, 10; `SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V2` |
+| 2 | **Read Option B.** The curve is fold B per round, at no extra contact; the final read of `A*` is DEV-1000, once, paired against sealed KC-S1b (the headline) and the sealed closed-list direct, with KC-S1a beside. | section 7 |
+| 3 | **A per-scenario harm bound replaces the background tolerance**, because every scenario is a target: each admitted scenario at `harms - saves <= 1` row on fold B, the non-admitted scenarios pooled at `>= -1.0 pp`, and the pooled targeted CI90 lower bound `> 0`. | section 6.6 |
+| 4 | F2 = shares-only; F3 = token-matched form twin; `K_1 = 5`, `K = 4` thereafter; `M = 8` with uncovered intents keeping the incumbent block; form = `+20 %` relative token budget, reported, never a claim gate. | section 5 |
+| 5 | Decontamination may read **DEV-1000 sentence text — rows already consumed — as 6-gram sets**, under its own model-free row. `SLURP-DEV-500-B-V1` and the test split never. | section 8 |
+| 6 | Reward = per-row `slot_f1_exact_f1`, with Word-F1 reported beside it. | section 4 |
+| 7 | **Budget recomputed from the V2 sizes.** The program's "about 10,000 contacts, under 1.0 GPU-h" for this cell is superseded, and this document says so. | section 10 |
+
+Four consequences the ruling produced that the coordinator did not have in front of them. Three
+change no decision; the fourth reopens one, and is carried into the still-open list below rather
+than absorbed:
+
+* **`audio`'s exemplar pool is 22, not 24.** At 60 per scenario the two folds take 120 of `audio`'s
+  utterances and only 22 entity-bearing ones survive. The folds kept their full quota, because they
+  are the scientific population and must carry their scenario's own entity density — reserving
+  exemplars first would have stripped about a third of `audio`'s scorable fold rows. 22 is 2.75 x
+  `M` and above the floor of `2 * M = 16`, so the three per-round draws still differ in membership.
+  Recorded in the exemplar receipt's `exemplar_quota_policy` block (section 2).
+* **The cell now plans at 8.25 GPU-h**, against 4.90 for the V1 draw under the same read option.
+  That is the price of the re-draw and it is what decision 7 accepted; the measured return is
+  **seven** of eighteen scenarios able to clear the stage-one gate instead of three, not the nine
+  this document asserted when the decision was written up
+  (`docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-stage-one-power/`,
+  model-free, zero contacts, from the committed KC-S1b per-stratum table). Rounding the expected
+  counts admits `datetime` and scaling the harms bound admits `transport`; taking both at once is
+  how nine was reached, and neither is the gate this document preregisters.
+* **`transport` leaves the admissible set on the way up.** The stage-one gate is not scale-free:
+  doubling the fold doubles a scenario's expected harms while the harms bound stays at one absolute
+  row. `transport` — 12 saves and 2 harms in 60 measured DEV rows, the second-largest measured
+  effect in the corpus after `social` — prices at 6.00 / 1.00 on a 30-row fold and clears, and at
+  12.00 / 2.00 on a 60-row fold and is refused on the harms bound alone. Recorded, not repaired:
+  changing a preregistered gate is a coordinator decision (section 16, still open).
+* **The slot-contact rate the direction cited does not reconcile with the receipts.** The figure
+  given was "1,008 contacts in 0.08 GPU-h" (0.2857 s per contact); the KC-S1b flight receipt records
+  1,000 contacts in 735.9065 s (0.7359 s per contact), and KC-S1a, the cheaper arm, took 531.3 s for
+  1,000. Section 10 is computed at the receipt-backed rate and carries both columns. **The
+  coordinator should settle which rate the registered ceilings are written against** — it is the
+  difference between 8.25 and 3.94 planned GPU-h, not between two ways of describing the same run.
+
+### Still open
+
+One decision and two engineering points:
+
+0. **Should the stage-one harms bound scale with the fold?** This is the one thing the V2 re-draw
+   reopened. The gate is `saves >= 4, harms <= 1, net >= 3` in ABSOLUTE rows, so it is not
+   scale-free: at 60 rows `transport` prices at 12.00 saves and 2.00 harms and is refused, while at
+   30 it prices at 6.00 / 1.00 and clears. Two readings, and the coordinator picks one before
+   round 1 because it changes which scenarios the loop may claim:
+   * **keep the absolute bound** — the gate stays recountable by hand, seven scenarios are
+     admissible, and the loop simply cannot claim `transport` at this fold size; or
+   * **make the harms bound relative** (`harms <= 1 per 30 fold rows`, i.e. `<= 2` at 60) — eight
+     scenarios become admissible, `transport` returns, and the gate stops being a plain count.
+   Either way the choice is preregistered before takeoff, never after a round is read. The
+   per-scenario arithmetic for both is in
+   `docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-stage-one-power/power.json`.
+1. **`A_0`'s hash re-verification at takeoff.** The loop's round 0 must start from the exact bytes
+   KC-S1b flew. Before round 1 the flight agent re-mines the per-intent schema from TRAIN and
+   reproduces the content hash `732e500a…7dcc` against the committed receipt
+   (`docs/receipts/knowledge/slurp-intent-slot-schema-v1.json`, receipt sha256 `7e04da0e…e782`),
+   exactly as the capacity run did before counting anything; a mismatch stops the cell. This is an
+   engineering step that has not been performed against the current tree, not an open question.
+2. **The token counter binding at prompt fit.** The `+20 %` relative budget is measured through the
+   flight tokenizer and never an estimator (KC-A1 died four tokens over a forty-token cap because
+   its builder injected a chars-per-token ratio as its counter). WHICH endpoint the validator's
+   `token_counter` is injected with, and at which serving geometry, is fixed at the section-13
+   prompt fit and is not yet written down anywhere.
+
+**What blocks round 1 is none of those: it is track E3c**, the proposer runner, which does not
+exist (section 12.4 D2) and which blocks round 1 of both EVO cells. Admitting the SLURP half of
+that track, and writing the exposure rows, are what close this document.
+
+**One routing note for whoever owns section 12.** That section is the SPEC handed to track E3c and
+is not edited here; it was written against the V1 draw and three of its statements are now stale.
+E2 says "pass `scenario -> that scenario's 30 fold-A sample ids`" — it is 60. E3 restates the
+stage-two bound as "no scenario's own paired point estimate below `-1.0 pp`", which is not what
+decision 3 says: the bound is `harms - saves <= 1` row per ADMITTED scenario on fold B, with the
+`-1.0 pp` tolerance applying to the NON-admitted scenarios pooled (section 6.6 is authoritative).
+E6 still calls the stage-one gate "thin at 30 rows" and defers it to the coordinator; the
+coordinator has ruled, and the live question is the harms-bound scaling of open point 0 above. None
+of these changes what the code must do except E3, which the code must implement as section 6.6
+states it.

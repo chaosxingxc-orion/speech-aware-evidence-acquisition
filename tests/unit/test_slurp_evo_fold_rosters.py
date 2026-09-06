@@ -233,3 +233,246 @@ def test_pool_block_carries_the_eligible_count_after_exclusion() -> None:
     assert block["touched_train_utterances"] == 1
     assert block["touched_train_recordings"] == 2
     assert block["eligible_utterances"] == 9
+
+
+def test_the_version_argument_names_every_roster_and_every_receipt_stem() -> None:
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        exposure_row_id,
+        roster_id,
+        roster_stem,
+    )
+
+    assert roster_id("fold_a") == "SLURP-EVO-FOLD-A-V1"
+    assert roster_id("fold_b", "V2") == "SLURP-EVO-FOLD-B-V2"
+    assert roster_stem("exemplars", "V2") == "slurp-evo-exemplars-v2"
+    assert exposure_row_id("V2") == "SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V2"
+    rosters = cut(fold_quota=10, exemplar_quota=6, version="V2")
+    assert rosters["fold_a"]["roster_id"] == "SLURP-EVO-FOLD-A-V2"
+    assert rosters["fold_b"]["roster_id"] == "SLURP-EVO-FOLD-B-V2"
+    assert rosters["exemplars"]["roster_id"] == "SLURP-EVO-EXEMPLARS-V2"
+    proof = disjointness_proof(
+        rosters, devel_ids=(), test_ids=(), contacted_train_utterances=()
+    )
+    stems = {
+        stem
+        for stem, _document in roster_documents(
+            rosters, proof=proof, shared={}, version="V2"
+        )
+    }
+    assert stems == {
+        "slurp-evo-fold-a-v2",
+        "slurp-evo-fold-b-v2",
+        "slurp-evo-exemplars-v2",
+    }
+
+
+def test_a_malformed_version_is_refused_before_anything_is_drawn() -> None:
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        RosterSourceError,
+        roster_id,
+    )
+
+    for bad in ("v2", "2", "V", "V2a", "", None):
+        with pytest.raises(RosterSourceError):
+            roster_id("fold_a", bad)  # type: ignore[arg-type]
+
+
+def test_a_redraw_records_the_receipts_it_supersedes(tmp_path) -> None:
+    import hashlib
+    import json
+
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        RosterSourceError,
+        supersedes_block,
+    )
+
+    written: dict[str, str] = {}
+    for stem, roster in (
+        ("slurp-evo-fold-a-v1", "SLURP-EVO-FOLD-A-V1"),
+        ("slurp-evo-fold-b-v1", "SLURP-EVO-FOLD-B-V1"),
+        ("slurp-evo-exemplars-v1", "SLURP-EVO-EXEMPLARS-V1"),
+    ):
+        path = tmp_path / f"{stem}.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "roster_id": roster,
+                    "split_identity_hash": "0" * 64,
+                    "items": [{"sample_id": "slurp:train:000001:audio-1"}],
+                }
+            ),
+            encoding="utf-8",
+        )
+        written[roster] = hashlib.sha256(path.read_bytes()).hexdigest()
+
+    block = supersedes_block(tmp_path, "V1", "coordinator decision 1, 2026-09-06")
+    assert block["version"] == "V1"
+    assert block["exposure_row"] == "SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V1"
+    assert block["decision"] == "coordinator decision 1, 2026-09-06"
+    assert [row["roster_id"] for row in block["rosters"]] == list(written)
+    assert [row["receipt_file_sha256"] for row in block["rosters"]] == list(
+        written.values()
+    )
+    assert all(row["recordings"] == 1 for row in block["rosters"])
+    with pytest.raises(RosterSourceError):
+        supersedes_block(tmp_path, "V1", "")
+
+
+def test_the_shared_block_carries_the_version_and_its_exposure_row() -> None:
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import shared_block
+
+    identity = {
+        "splits": {
+            "devel": {"identity_hash": "a" * 64, "count": 8690},
+            "test": {"identity_hash": "b" * 64, "count": 13078},
+        }
+    }
+    block = shared_block(
+        corpus(per_scenario=5),
+        touched=set(),
+        touched_rows=[],
+        excluded_recordings=0,
+        split_identity=identity,
+        version="V2",
+        offline_guard={"outbound_connection_attempts": 0},
+        supersedes={"version": "V1"},
+    )
+    assert block["roster_version"] == "V2"
+    assert block["exposure_row"] == "SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V2"
+    assert block["supersedes"] == {"version": "V1"}
+    assert block["split_identity_receipt"]["devel_ids"] == 8690
+    assert block["pool"]["train_utterances"] == 10
+    assert "supersedes" not in shared_block(
+        corpus(per_scenario=5),
+        touched=set(),
+        touched_rows=[],
+        excluded_recordings=0,
+        split_identity=identity,
+        version="V1",
+        offline_guard={},
+    )
+
+
+def test_the_exemplar_target_yields_to_capacity_and_the_cap_is_recorded() -> None:
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        candidates,
+        exemplar_quotas,
+    )
+
+    # 'weather' keeps 30 entity-bearing utterances, 'social' only 10, so a
+    # target of 24 is met by one scenario and capped for the other.
+    records = [
+        *[record(i, "weather", "", entities=(SlotEntity(type="date", filler="x"),))
+          for i in range(30)],
+        *[record(100 + i, "social", "", entities=(SlotEntity(type="date", filler="x"),))
+          for i in range(10)],
+    ]
+    items, groups = candidates(records)
+    quotas, policy = exemplar_quotas(
+        items, spent=set(), groups=groups, target=24, floor=8
+    )
+    assert quotas == {"social": 10, "weather": 24}
+    assert policy["target_per_scenario"] == 24
+    assert policy["capped_scenarios"] == {"social": 10}
+    assert policy["realized_per_scenario"] == quotas
+
+
+def test_an_exemplar_pool_below_the_floor_is_refused_not_weakened() -> None:
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        RosterSourceError,
+        candidates,
+        exemplar_quotas,
+    )
+
+    records = [
+        record(i, "weather", "", entities=(SlotEntity(type="date", filler="x"),))
+        for i in range(5)
+    ]
+    items, groups = candidates(records)
+    with pytest.raises(RosterSourceError):
+        exemplar_quotas(items, spent=set(), groups=groups, target=24, floor=8)
+
+
+def test_the_exemplar_quota_policy_lands_in_the_exemplar_receipt() -> None:
+    rosters = cut(fold_quota=10, exemplar_quota=6)
+    policy = rosters["exemplars"]["exemplar_quota_policy"]
+    assert policy["target_per_scenario"] == 6
+    assert policy["capped_scenarios"] == {}
+    assert set(policy["realized_per_scenario"]) == set(SCENARIOS)
+
+
+# ---------------------------------------------------------------------------
+# Stage-one power: the arithmetic that justified the 60-per-scenario re-draw.
+# ---------------------------------------------------------------------------
+
+KC_S1B_TRANSPORT = {"n": 60, "saves": 12, "harms": 2}
+KC_S1B_QA = {"n": 60, "saves": 4, "harms": 0}
+KC_S1B_DATETIME = {"n": 61, "saves": 4, "harms": 0}
+
+
+def test_the_gate_prices_measured_rates_at_the_fold_size() -> None:
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        stage_one_power,
+    )
+
+    (row,) = stage_one_power({"qa": KC_S1B_QA}, 60)
+    assert row["expected_saves"] == 4.0
+    assert row["expected_harms"] == 0.0
+    assert row["clears_gate"] is True
+    (half,) = stage_one_power({"qa": KC_S1B_QA}, 30)
+    assert half["expected_saves"] == 2.0
+    assert half["clears_gate"] is False
+
+
+def test_the_absolute_harms_bound_makes_the_gate_not_scale_free() -> None:
+    """``transport`` clears at 30 rows and is refused at 60: saves double, the
+    harms bound does not. This is the finding the power receipt records."""
+
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        stage_one_power,
+    )
+
+    (at30,) = stage_one_power({"transport": KC_S1B_TRANSPORT}, 30)
+    (at60,) = stage_one_power({"transport": KC_S1B_TRANSPORT}, 60)
+    assert (at30["expected_saves"], at30["expected_harms"]) == (6.0, 1.0)
+    assert at30["clears_gate"] is True
+    assert (at60["expected_saves"], at60["expected_harms"]) == (12.0, 2.0)
+    assert at60["clears_gate"] is False
+
+
+def test_expected_counts_are_never_rounded_into_the_gate() -> None:
+    """``datetime`` prices at 3.93 saves on a 60-row fold. Rounding would admit
+    it; the preregistered gate is an absolute count and does not round."""
+
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        stage_one_power,
+    )
+
+    (row,) = stage_one_power({"datetime": KC_S1B_DATETIME}, 60)
+    assert row["expected_saves"] == pytest.approx(3.9344, abs=1e-4)
+    assert row["clears_gate"] is False
+
+
+def test_the_power_summary_counts_and_names_the_clearing_scenarios() -> None:
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        stage_one_power,
+        stage_one_power_summary,
+    )
+
+    table = stage_one_power(
+        {"qa": KC_S1B_QA, "transport": KC_S1B_TRANSPORT, "datetime": KC_S1B_DATETIME},
+        60,
+    )
+    summary = stage_one_power_summary(table)
+    assert summary == {"clears": 1, "scenarios": 3, "clearing_scenarios": ["qa"]}
+
+
+def test_a_stratum_with_no_measured_rows_is_refused() -> None:
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        stage_one_power,
+    )
+
+    with pytest.raises(ValueError):
+        stage_one_power({"ghost": {"n": 0, "saves": 0, "harms": 0}}, 60)
+    with pytest.raises(ValueError):
+        stage_one_power({"qa": KC_S1B_QA}, 0)

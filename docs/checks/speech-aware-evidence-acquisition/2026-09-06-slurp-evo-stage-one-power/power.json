@@ -1,0 +1,421 @@
+{
+  "contacts": {
+    "audio_decode": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "exposure_row": "SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V2",
+  "fold_sizes": {
+    "30": {
+      "clearing_scenarios": [
+        "social",
+        "transport",
+        "weather"
+      ],
+      "clears": 3,
+      "per_scenario": [
+        {
+          "clears_gate": false,
+          "expected_harms": 0.0,
+          "expected_net": 2.069,
+          "expected_saves": 2.069,
+          "measured_harms": 0,
+          "measured_rows": 58,
+          "measured_saves": 4,
+          "scenario": "alarm"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 0.0,
+          "expected_net": 1.0,
+          "expected_saves": 1.0,
+          "measured_harms": 0,
+          "measured_rows": 30,
+          "measured_saves": 1,
+          "scenario": "audio"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 0.0,
+          "expected_net": 3.4426,
+          "expected_saves": 3.4426,
+          "measured_harms": 0,
+          "measured_rows": 61,
+          "measured_saves": 7,
+          "scenario": "calendar"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 0.0,
+          "expected_net": 3.2432,
+          "expected_saves": 3.2432,
+          "measured_harms": 0,
+          "measured_rows": 37,
+          "measured_saves": 4,
+          "scenario": "cooking"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 0.0,
+          "expected_net": 1.9672,
+          "expected_saves": 1.9672,
+          "measured_harms": 0,
+          "measured_rows": 61,
+          "measured_saves": 4,
+          "scenario": "datetime"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 0.0,
+          "expected_net": 1.4754,
+          "expected_saves": 1.4754,
+          "measured_harms": 0,
+          "measured_rows": 61,
+          "measured_saves": 3,
+          "scenario": "email"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 0.0,
+          "expected_net": 1.4754,
+          "expected_saves": 1.4754,
+          "measured_harms": 0,
+          "measured_rows": 61,
+          "measured_saves": 3,
+          "scenario": "general"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 0.0,
+          "expected_net": 3.4426,
+          "expected_saves": 3.4426,
+          "measured_harms": 0,
+          "measured_rows": 61,
+          "measured_saves": 7,
+          "scenario": "iot"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 0.0,
+          "expected_net": 1.5,
+          "expected_saves": 1.5,
+          "measured_harms": 0,
+          "measured_rows": 60,
+          "measured_saves": 3,
+          "scenario": "lists"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 0.0,
+          "expected_net": 0.0,
+          "expected_saves": 0.0,
+          "measured_harms": 0,
+          "measured_rows": 51,
+          "measured_saves": 0,
+          "scenario": "music"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 0.5,
+          "expected_net": 0.5,
+          "expected_saves": 1.0,
+          "measured_harms": 1,
+          "measured_rows": 60,
+          "measured_saves": 2,
+          "scenario": "news"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 0.5,
+          "expected_net": 1.0,
+          "expected_saves": 1.5,
+          "measured_harms": 1,
+          "measured_rows": 60,
+          "measured_saves": 3,
+          "scenario": "play"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 0.0,
+          "expected_net": 2.0,
+          "expected_saves": 2.0,
+          "measured_harms": 0,
+          "measured_rows": 60,
+          "measured_saves": 4,
+          "scenario": "qa"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 0.5,
+          "expected_net": 1.0,
+          "expected_saves": 1.5,
+          "measured_harms": 1,
+          "measured_rows": 60,
+          "measured_saves": 3,
+          "scenario": "recommendation"
+        },
+        {
+          "clears_gate": true,
+          "expected_harms": 0.0,
+          "expected_net": 11.0,
+          "expected_saves": 11.0,
+          "measured_harms": 0,
+          "measured_rows": 60,
+          "measured_saves": 22,
+          "scenario": "social"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 1.5385,
+          "expected_net": 0.7692,
+          "expected_saves": 2.3077,
+          "measured_harms": 2,
+          "measured_rows": 39,
+          "measured_saves": 3,
+          "scenario": "takeaway"
+        },
+        {
+          "clears_gate": true,
+          "expected_harms": 1.0,
+          "expected_net": 5.0,
+          "expected_saves": 6.0,
+          "measured_harms": 2,
+          "measured_rows": 60,
+          "measured_saves": 12,
+          "scenario": "transport"
+        },
+        {
+          "clears_gate": true,
+          "expected_harms": 0.0,
+          "expected_net": 6.0,
+          "expected_saves": 6.0,
+          "measured_harms": 0,
+          "measured_rows": 60,
+          "measured_saves": 12,
+          "scenario": "weather"
+        }
+      ],
+      "rows_per_scenario": 30,
+      "scenarios": 18
+    },
+    "60": {
+      "clearing_scenarios": [
+        "alarm",
+        "calendar",
+        "cooking",
+        "iot",
+        "qa",
+        "social",
+        "weather"
+      ],
+      "clears": 7,
+      "per_scenario": [
+        {
+          "clears_gate": true,
+          "expected_harms": 0.0,
+          "expected_net": 4.1379,
+          "expected_saves": 4.1379,
+          "measured_harms": 0,
+          "measured_rows": 58,
+          "measured_saves": 4,
+          "scenario": "alarm"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 0.0,
+          "expected_net": 2.0,
+          "expected_saves": 2.0,
+          "measured_harms": 0,
+          "measured_rows": 30,
+          "measured_saves": 1,
+          "scenario": "audio"
+        },
+        {
+          "clears_gate": true,
+          "expected_harms": 0.0,
+          "expected_net": 6.8852,
+          "expected_saves": 6.8852,
+          "measured_harms": 0,
+          "measured_rows": 61,
+          "measured_saves": 7,
+          "scenario": "calendar"
+        },
+        {
+          "clears_gate": true,
+          "expected_harms": 0.0,
+          "expected_net": 6.4865,
+          "expected_saves": 6.4865,
+          "measured_harms": 0,
+          "measured_rows": 37,
+          "measured_saves": 4,
+          "scenario": "cooking"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 0.0,
+          "expected_net": 3.9344,
+          "expected_saves": 3.9344,
+          "measured_harms": 0,
+          "measured_rows": 61,
+          "measured_saves": 4,
+          "scenario": "datetime"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 0.0,
+          "expected_net": 2.9508,
+          "expected_saves": 2.9508,
+          "measured_harms": 0,
+          "measured_rows": 61,
+          "measured_saves": 3,
+          "scenario": "email"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 0.0,
+          "expected_net": 2.9508,
+          "expected_saves": 2.9508,
+          "measured_harms": 0,
+          "measured_rows": 61,
+          "measured_saves": 3,
+          "scenario": "general"
+        },
+        {
+          "clears_gate": true,
+          "expected_harms": 0.0,
+          "expected_net": 6.8852,
+          "expected_saves": 6.8852,
+          "measured_harms": 0,
+          "measured_rows": 61,
+          "measured_saves": 7,
+          "scenario": "iot"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 0.0,
+          "expected_net": 3.0,
+          "expected_saves": 3.0,
+          "measured_harms": 0,
+          "measured_rows": 60,
+          "measured_saves": 3,
+          "scenario": "lists"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 0.0,
+          "expected_net": 0.0,
+          "expected_saves": 0.0,
+          "measured_harms": 0,
+          "measured_rows": 51,
+          "measured_saves": 0,
+          "scenario": "music"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 1.0,
+          "expected_net": 1.0,
+          "expected_saves": 2.0,
+          "measured_harms": 1,
+          "measured_rows": 60,
+          "measured_saves": 2,
+          "scenario": "news"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 1.0,
+          "expected_net": 2.0,
+          "expected_saves": 3.0,
+          "measured_harms": 1,
+          "measured_rows": 60,
+          "measured_saves": 3,
+          "scenario": "play"
+        },
+        {
+          "clears_gate": true,
+          "expected_harms": 0.0,
+          "expected_net": 4.0,
+          "expected_saves": 4.0,
+          "measured_harms": 0,
+          "measured_rows": 60,
+          "measured_saves": 4,
+          "scenario": "qa"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 1.0,
+          "expected_net": 2.0,
+          "expected_saves": 3.0,
+          "measured_harms": 1,
+          "measured_rows": 60,
+          "measured_saves": 3,
+          "scenario": "recommendation"
+        },
+        {
+          "clears_gate": true,
+          "expected_harms": 0.0,
+          "expected_net": 22.0,
+          "expected_saves": 22.0,
+          "measured_harms": 0,
+          "measured_rows": 60,
+          "measured_saves": 22,
+          "scenario": "social"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 3.0769,
+          "expected_net": 1.5385,
+          "expected_saves": 4.6154,
+          "measured_harms": 2,
+          "measured_rows": 39,
+          "measured_saves": 3,
+          "scenario": "takeaway"
+        },
+        {
+          "clears_gate": false,
+          "expected_harms": 2.0,
+          "expected_net": 10.0,
+          "expected_saves": 12.0,
+          "measured_harms": 2,
+          "measured_rows": 60,
+          "measured_saves": 12,
+          "scenario": "transport"
+        },
+        {
+          "clears_gate": true,
+          "expected_harms": 0.0,
+          "expected_net": 12.0,
+          "expected_saves": 12.0,
+          "measured_harms": 0,
+          "measured_rows": 60,
+          "measured_saves": 12,
+          "scenario": "weather"
+        }
+      ],
+      "rows_per_scenario": 60,
+      "scenarios": 18
+    }
+  },
+  "gates": {
+    "harms": 1,
+    "net": 3,
+    "saves": 4
+  },
+  "generator": "scripts/build_slurp_evo_stage_one_power.py",
+  "scaling_rule": "A scenario's measured saves and harms become per-row rates on the population they were measured on, are multiplied by the fold size and are compared against the gate's own absolute constants without rounding. Stated because the answer is sensitive to it: rounding the expected counts admits datetime at 60, and scaling the harms bound with the fold admits transport, so a careless reading reports nine where the preregistered gate gives seven.",
+  "schema": "saea-slurp-evo-stage-one-power-v1",
+  "source": {
+    "contrast": "paired_kc_s1b_over_closed_list",
+    "file_sha256": "6b5c158b4c199c935ac82d2a1af515007c97fe6c92e647ab1d765b9e09157617",
+    "metric": "slot_f1_exact_f1",
+    "n": 1000,
+    "pooled_delta": 0.07803333333333334,
+    "pooled_harms": 7,
+    "pooled_saves": 97,
+    "population": "pooled_1000",
+    "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-slurp-slot-stage-kc-s1-v1/read.json"
+  },
+  "study": "speech-aware-evidence-acquisition"
+}
