@@ -1,0 +1,69 @@
+{
+  "attempt_id": "attempt-packets-fold-b2",
+  "audio_seconds": 3154.797375,
+  "config_fragments": {
+    "baseline": "speech-native-preprocess",
+    "dataset": "slurp-speech-native-evo-fold-b-1080",
+    "experiment": "slurp-evo-fold-b-preprocess",
+    "model": "q4km-preprocess-featcache-cpu-sidecar"
+  },
+  "config_hash": "8ef4d438b22c8543121904c95a30940bbf642eb26e4f738a371d8a1f240ebf09",
+  "contacts": 1080,
+  "core_client": {
+    "cost": {
+      "audio_seconds_used": 3154.797374999993,
+      "calls_used": 1080,
+      "completion_tokens_total": 1080,
+      "latency_seconds_total": 7579.721498308121,
+      "prompt_tokens_total": 80110,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+    },
+    "trace_manifest_hash": "854df3e48b71b4e6125fed3b826dbffa0483d1c35fe2a5b707b8490e51b4ac49"
+  },
+  "declared_plan": {
+    "basis": "run-cumulative: prior durable spend on this run id plus this attempt's own worst case",
+    "calls": 2180,
+    "gpu_hours": 1.0,
+    "speech_audio_seconds": 6290
+  },
+  "encode_rows_per_second": 0.53,
+  "encode_seconds": 2037.756,
+  "encode_workers": 4,
+  "failures": [],
+  "fold": "SLURP-EVO-FOLD-B-V2",
+  "generated_at": "2026-09-06T21:49:18.567073+00:00",
+  "gpu_offload": "-ngl 0 --no-mmproj-offload: this pass leaves the GPU free",
+  "legacy_cache_warm_before": 10,
+  "packet_tokens": {
+    "max": 260,
+    "min": 13,
+    "total": 47710
+  },
+  "promote_packets_per_second": 100.9917,
+  "promote_seconds": 10.694,
+  "promote_workers": 8,
+  "promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLD-B-V2-promotion.json",
+  "promotion_receipt_sha256": "b4b76ef7cb95816ba8f533895c80eff0bb3c451f9917cbdf297e3d039167552c",
+  "rows": 1080,
+  "run_id": "SAEA-SLURP-EVO-FOLD-PACKETS-V2",
+  "schema": "saea-slurp-evo-fold-preprocess-receipt-v1",
+  "session": {
+    "pid": 720,
+    "session_id": "SAEA-SLURP-EVO-FOLD-PACKETS-V2-attempt-packets-fold-b2-cpu-sidecar",
+    "stop": {
+      "forced": false,
+      "pid": 720,
+      "runtime_receipt_sha256": "e80c635d7344a9b4181a2b2d81330e35b626a6191fd499f95ac61b15d17d808b",
+      "schema": "saea-session-stop-receipt-v1",
+      "session_id": "SAEA-SLURP-EVO-FOLD-PACKETS-V2-attempt-packets-fold-b2-cpu-sidecar",
+      "session_receipt_sha256": "7fcc049f5122e0daef38b5017adef71658975904d03a1fe22f44243ec1bda902",
+      "session_role": "preprocess",
+      "stopped_at": "2026-09-06T21:49:07.756644+00:00",
+      "study": "speech-aware-evidence-acquisition",
+      "termination_signal": "SIGTERM"
+    }
+  },
+  "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+  "study": "speech-aware-evidence-acquisition"
+}

@@ -1,0 +1,20 @@
+{
+  "count": 2160,
+  "data_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+  "parents": [
+    {
+      "count": 1080,
+      "fold": "SLURP-EVO-FOLD-A-V2",
+      "path": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLD-A-V2-promotion.json",
+      "sha256": "2259401d19bed7cd39801c210be3d5390b2c80c214a3a1b20908214712cc1c97"
+    },
+    {
+      "count": 1080,
+      "fold": "SLURP-EVO-FOLD-B-V2",
+      "path": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLD-B-V2-promotion.json",
+      "sha256": "b4b76ef7cb95816ba8f533895c80eff0bb3c451f9917cbdf297e3d039167552c"
+    }
+  ],
+  "path": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+  "sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247"
+}
