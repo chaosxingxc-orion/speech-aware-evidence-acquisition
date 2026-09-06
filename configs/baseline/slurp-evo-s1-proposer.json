@@ -1,0 +1,18 @@
+{
+  "arm": "construction-proposer-text",
+  "evidence_source": "none",
+  "instruction_note": "This fragment declares NO task_instruction and NO task_instruction_template: the system message of every contact is that draw's own rendered proposer instruction (rails.proposer.render_slurp_proposer_instruction, verbatim in section 5 of the preregistration), resolved at flight time from the committed proposer roster, A_0's floored and unfloored TRAIN tables, the incumbent state and the carrier's TRAIN construction rows. It is never written to a receipt: a proposer prompt carries construction utterance text and gold entities, and rails.evolution.ProposerContact.as_json records identity, counts and digests only.",
+  "modality_note": "TEXT ONLY. The construction-proposer-text arm's D2-frozen field set carries construction_targets and no speech field, so no audio part is sent and no packet is opened. The exemplars reach the prompt as their TRAIN transcript plus their gold entity list -- the legality owner decision 2026-09-05 opened for this arm alone, over SLURP-EVO-EXEMPLARS-V2 and no other roster.",
+  "policy": "fixed",
+  "rails_arms": [
+    "zero-supply"
+  ],
+  "roster_note": "construction_proposer_roster_receipt, its split identity hash and construction_target_tools are declared by the PER-ROUND experiment fragment scripts/run_evolution_round.py emits, because the roster is per round and core.config.compose refuses the same key from two fragments.",
+  "scorers": [
+    "cost"
+  ],
+  "scoring_note": "Only the 'cost' scorer. A proposer response is an ARTIFACT -- a scenario's rewritten slot-schema blocks in the renderer's own grammar -- not an answer to a scored row, so SLURP's own scorers would be scoring the wrong thing and would need gold these construction samples have no business resolving. The candidates are produced afterwards, model-free, by rails.evolution.harvest_proposer_responses over the sealed manifest, and every one of them then faces the form gates, the +20 percent relative token budget on the flight tokenizer and the committed decontamination digests.",
+  "user_turn_audio_first": false,
+  "user_turn_text": "",
+  "what_this_is": "The PROPOSER arm of cell EVO-S1, the SLURP sibling of configs/baseline/a2t-evo-a1-proposer.json. Its model fragment is q4km-mmproj-free-speech-native-np4-proposer-max1536 (the reward fragment with max_tokens 1536), named by the loop config's proposer_model_fragment."
+}

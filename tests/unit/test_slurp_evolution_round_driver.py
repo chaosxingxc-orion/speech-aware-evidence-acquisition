@@ -1067,3 +1067,63 @@ def test_the_incumbent_gets_one_fragment_per_fold_when_the_predecessor_does() ->
     )
     assert a2t.incumbent_fragment("fold_a") == a2t.base_fragment
     assert a2t.incumbent_fragment("fold_b") == a2t.base_fragment
+
+
+def test_the_proposer_half_may_declare_its_own_model_fragment(tmp_path) -> None:
+    """The reward cells fly ``max_tokens`` 64 and a proposer contact returns a
+    scenario's whole block set at the preregistered ceiling of 1,536.
+    ``decoding_params`` lives in the model fragment and ``core.config.compose``
+    refuses the same key from two fragments, so the two halves need two fragments
+    and the propose step has to name the right one."""
+
+    document = _loop_config_document()
+    document["proposer_model_fragment"] = "a-text-only-fragment"
+    config = LoopConfig.from_json(document)
+    state = EvolutionState(round=0, incumbent_overrides={}).validate()
+    result = run_propose_step(state, 1, config=config, carrier=_carrier())
+    fragment = result.documents[
+        f"{config.experiments_reldir}/{config.slug}-proposer-r01.json"
+    ]
+    assert {cell["model_fragment"] for cell in fragment["cells"]} == {
+        "a-text-only-fragment"
+    }
+
+
+def test_a_loop_that_declares_no_proposer_fragment_keeps_flying_one(tmp_path) -> None:
+    """EVO-A1 leaves the field absent, so its committed config and every fragment
+    it emits are byte for byte what they were."""
+
+    config = _loop_config()
+    assert config.proposer_model_fragment is None
+    state = EvolutionState(round=0, incumbent_overrides={}).validate()
+    result = run_propose_step(state, 1, config=config, carrier=_carrier())
+    fragment = result.documents[
+        f"{config.experiments_reldir}/{config.slug}-proposer-r01.json"
+    ]
+    assert {cell["model_fragment"] for cell in fragment["cells"]} == {
+        config.model_fragment
+    }
+
+
+def test_the_committed_evo_a1_config_declares_no_proposer_fragment() -> None:
+    repo = Path(__file__).resolve().parents[2]
+    a2t = LoopConfig.from_json(
+        json.loads((repo / "configs/knowledge/a2t-evo-a1/loop-v1.json").read_text(encoding="utf-8"))
+    )
+    assert a2t.proposer_model_fragment is None
+    slurp = LoopConfig.from_json(
+        json.loads((repo / "configs/knowledge/slurp-evo-s1/loop-v1.json").read_text(encoding="utf-8"))
+    )
+    assert slurp.proposer_model_fragment == "q4km-mmproj-free-speech-native-np4-proposer-max1536"
+    fragment = json.loads(
+        (repo / "configs/model" / f"{slurp.proposer_model_fragment}.json").read_text(encoding="utf-8")
+    )
+    reward = json.loads(
+        (repo / "configs/model" / f"{slurp.model_fragment}.json").read_text(encoding="utf-8")
+    )
+    assert fragment["decoding_params"]["max_tokens"] == 1536
+    assert reward["decoding_params"]["max_tokens"] == 64
+    # one key apart, and the notes: the same GGUF, build, packet root and server args.
+    for key in ("model_lock_key", "server_args", "runtime_receipt", "prompt_order",
+                "speech_feature_root", "server_env", "base_url"):
+        assert fragment[key] == reward[key], key

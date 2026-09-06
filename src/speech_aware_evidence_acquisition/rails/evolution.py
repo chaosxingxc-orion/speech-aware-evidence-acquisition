@@ -3283,6 +3283,17 @@ class LoopConfig:
     #: flew, unchanged, because the evolved cell must differ from the admitted
     #: incumbent by the artifact alone.
     arm: str = "bare-core"
+    #: The model fragment the PROPOSER cells declare, when it is not the one
+    #: the reward cells fly. EVO-A1 leaves it absent and both halves fly
+    #: ``model_fragment``, so its committed config and every fragment it emits
+    #: are byte for byte unchanged. EVO-S1 cannot: its reward cells are
+    #: KC-S1b's arm at ``max_tokens`` 64, while a proposer contact returns a
+    #: scenario's whole block set and the preregistration fixes its ceiling at
+    #: 1,536 (section 5, "max_tokens 1536"). ``decoding_params`` lives in the
+    #: model fragment and ``core.config.compose`` refuses the same key from
+    #: two fragments, so the two halves need two fragments and the propose
+    #: step has to name the right one.
+    proposer_model_fragment: str | None = None
     receipts_reldir: str = (
         "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1"
     )
@@ -4064,7 +4075,7 @@ def run_propose_step(
                 f"-k{contact.draw.k}",
                 "arm": "construction-proposer-text",
                 "baseline_fragment": f"{config.slug}-proposer",
-                "model_fragment": config.model_fragment,
+                "model_fragment": config.proposer_model_fragment or config.model_fragment,
                 "factor": (
                     f"{contact.draw.family} draw k={contact.draw.k} for target "
                     f"{contact.draw.target_id}"

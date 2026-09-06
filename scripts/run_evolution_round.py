@@ -45,6 +45,7 @@ from speech_aware_evidence_acquisition.rails.evolution import (  # noqa: E402
 from speech_aware_evidence_acquisition.rails.evolution_carrier import (  # noqa: E402
     load_carrier_material,
     load_state,
+    slurp_candidate_validator,
 )
 
 
@@ -57,6 +58,64 @@ def _write(path: Path, document: object) -> str:
     text = json.dumps(document, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
     path.write_text(text, encoding="utf-8", newline="\n")
     return str(path)
+
+
+def _token_counter(base_url: str):
+    """The SERVING geometry's own tokenizer, as a callable.
+
+    ``rails.evolution.run_candidates_step`` leaves ``token_counter`` optional and
+    unsupplied BY DEFAULT because pricing a candidate is a model-adjacent contact
+    that belongs to the prompt-fit row, never to a driver that must make none
+    (``rails.proposer.SERVING_TOKENIZER_ID``; a candidate an estimator alone
+    admits is refused). ``--token-counter-url`` is how the flight agent hands the
+    resident server in AFTER that row has run and published its binding, which is
+    the only way round 1's F3 token-matched form twin can be built at all.
+    """
+
+    import urllib.request  # noqa: PLC0415 -- one call site, kept off the import surface
+
+    endpoint = base_url.rstrip("/") + "/tokenize"
+
+    def count(text: str) -> int:
+        body = json.dumps(
+            {"content": text, "add_special": False, "parse_special": True}
+        ).encode("utf-8")
+        request = urllib.request.Request(
+            endpoint, data=body, headers={"Content-Type": "application/json"}
+        )
+        with urllib.request.urlopen(request, timeout=180.0) as reply:  # noqa: S310
+            tokens = json.loads(reply.read().decode("utf-8")).get("tokens")
+        if not isinstance(tokens, list):
+            raise SystemExit(f"{endpoint} returned no token list")
+        return len(tokens)
+
+    return count
+
+
+def _exemplar_texts(repo_root: Path, config, propose_receipt) -> tuple[str, ...]:
+    """The construction utterances this round's proposer was actually shown.
+
+    Overlap with them is MEASURED and reported, never gated (preregistration
+    section 8), so the count is only meaningful if the texts are the rendered
+    ones. ``ProposerContact.as_json`` records ``exemplar_ids`` (a placebo's is
+    empty by construction, which is exactly right: it renders no exemplar), and
+    they are resolved through the same TRAIN-locked construction reader the
+    propose step used. No text is written to a receipt.
+    """
+
+    shown = {
+        str(sample_id)
+        for contact in propose_receipt.get("contacts", ())
+        for sample_id in contact.get("exemplar_ids", ())
+    }
+    if not shown:
+        return ()
+    material = load_carrier_material(repo_root, config, step="propose")
+    return tuple(
+        str(row["sentence"])
+        for sample_id, row in sorted(material.exemplar_rows.items())
+        if sample_id in shown
+    )
 
 
 def _responses(path: Path) -> dict[str, str]:
@@ -80,6 +139,16 @@ def main(argv: list[str] | None = None) -> int:
         "--plan-only",
         action="store_true",
         help="report which step is next and why, and write nothing",
+    )
+    parser.add_argument(
+        "--token-counter-url",
+        default=None,
+        help=(
+            "base URL of the RESIDENT server at the flight's own serving geometry "
+            "(rails.proposer.SERVING_TOKENIZER_ID). The candidates step needs it for "
+            "round 1's token-matched form twin and for the relative token budget; "
+            "without it a round-1 candidates step stops and names the prompt-fit row"
+        ),
     )
     args = parser.parse_args(argv)
 
@@ -113,10 +182,23 @@ def main(argv: list[str] | None = None) -> int:
     if step == "propose":
         kwargs["ledger_rows"] = ledger_rows
     elif step == "candidates":
-        kwargs["propose_receipt"] = _read(repo_root / f"{stem}/propose.json")
+        propose_receipt = _read(repo_root / f"{stem}/propose.json")
+        kwargs["propose_receipt"] = propose_receipt
         kwargs["responses"] = _responses(repo_root / f"{stem}/proposer-outputs.jsonl")
         kwargs["repo_root"] = repo_root
         kwargs["ledger_rows"] = ledger_rows
+        if args.token_counter_url:
+            counter = _token_counter(args.token_counter_url)
+            kwargs["token_counter"] = counter
+            if config.artifact_family == "slurp-slot-schema":
+                kwargs["validator"] = slurp_candidate_validator(
+                    repo_root,
+                    config,
+                    carrier,
+                    state,
+                    token_counter=counter,
+                    exemplar_texts=_exemplar_texts(repo_root, config, propose_receipt),
+                )
     elif step == "select":
         kwargs["candidates_receipt"] = _read(repo_root / f"{stem}/candidates.json")
         kwargs["score_files"] = _read(repo_root / f"{stem}/fold-a-scores.json")

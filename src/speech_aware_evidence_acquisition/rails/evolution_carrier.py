@@ -51,6 +51,7 @@ __all__ = [
     "read_roster_document",
     "rows_of_target_from_roster",
     "sentinel_rows_from_roster",
+    "slurp_candidate_validator",
 ]
 
 
@@ -466,6 +467,89 @@ def _slurp_carrier_material(
         entity_type_names=entity_type_names,
         fold_b_rows_of_target=fold_b_rows_of_target,
     )
+
+
+def slurp_candidate_validator(
+    repo_root: Path,
+    config: LoopConfig,
+    carrier: CarrierMaterial,
+    state: EvolutionState,
+    *,
+    token_counter,
+    exemplar_texts: Sequence[str] = (),
+):
+    """EVO-S1's form + decontamination gate, bound to committed artifacts.
+
+    The gate itself lives in ``rails.proposer.validate_slurp_candidate_artifact``
+    and this function only resolves its inputs, which is why it belongs here
+    rather than in ``rails.evolution``: the incumbent block texts (``A_r``
+    rendered through the ONE renderer), ``A_0``'s own 1,008 TRAIN fillers as the
+    exempt baseline, and the committed decontamination artifact read through
+    ``load_evaluation_ngram_digests``.
+
+    **No devel text is opened.** The evaluation side arrives as the hash-pinned
+    6-gram DIGESTS ``SAEA-SLURP-MF-EVO-DECONTAMINATION-V1`` already built and
+    committed; that row is the one licensed to read SLURP devel sentences and it
+    has spent its licence. ``token_counter`` is the flight's own
+    ``/tokenize`` -- ``allow_estimator`` is never passed, so a candidate priced
+    any other way is refused.
+    """
+
+    from .evolution import _checked_slurp_incumbent, slot_schema_for  # noqa: PLC0415
+    from .proposer import (  # noqa: PLC0415
+        SERVING_TOKENIZER_ID,
+        _slurp_fillers_of,
+        load_evaluation_ngram_digests,
+        slurp_block_texts,
+        validate_slurp_candidate_artifact,
+    )
+
+    if config.artifact_family != "slurp-slot-schema":
+        raise EvolutionError(
+            f"slurp_candidate_validator serves the SLURP artifact family, not "
+            f"{config.artifact_family!r}"
+        )
+    if carrier.slot_schema is None or carrier.unfloored_schema is None:
+        raise EvolutionError("the validator needs A_0 and the unfloored TRAIN table")
+    declared = dict(config.decontamination or {})
+    relpath = declared.get("artifact_relpath")
+    if not isinstance(relpath, str) or not relpath:
+        raise EvolutionError(
+            "the loop config must name its committed decontamination artifact"
+        )
+    path = Path(repo_root) / relpath
+    measured = hashlib.sha256(path.read_bytes()).hexdigest()
+    expected = declared.get("artifact_sha256")
+    if isinstance(expected, str) and expected and measured != expected:
+        raise EvolutionError(
+            f"decontamination artifact {relpath} hashes to {measured}, not the "
+            f"configured {expected}"
+        )
+    digests = sorted(load_evaluation_ngram_digests(json.loads(path.read_text(encoding="utf-8"))))
+
+    incumbent = _checked_slurp_incumbent(state.incumbent_overrides, carrier.slot_schema)
+    incumbent_blocks = slurp_block_texts(
+        slot_schema_for(incumbent, carrier.slot_schema, carrier.unfloored_schema),
+        intents=tuple(sorted(incumbent)),
+    )
+    baseline_fillers = tuple(
+        _slurp_fillers_of(dict(_checked_slurp_incumbent({}, carrier.slot_schema)))
+    )
+
+    def validate(candidate):
+        return validate_slurp_candidate_artifact(
+            candidate,
+            unfloored=carrier.unfloored_schema,
+            base=carrier.slot_schema,
+            incumbent_blocks=incumbent_blocks,
+            token_counter=token_counter,
+            token_counter_id=SERVING_TOKENIZER_ID,
+            evaluation_ngram_digests=digests,
+            baseline_filler_texts=baseline_fillers,
+            exemplar_texts=tuple(str(text) for text in exemplar_texts),
+        ).as_json()
+
+    return validate
 
 
 def _data_root() -> Path:
