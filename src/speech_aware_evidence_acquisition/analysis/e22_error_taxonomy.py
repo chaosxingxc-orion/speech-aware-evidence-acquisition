@@ -559,10 +559,26 @@ def _digits(tokens: Iterable[str]) -> str:
     return "".join(_DIGIT_RE.findall(" ".join(tokens)))
 
 
+#: Symbols that carry meaning rather than layout. A sign, a currency mark or a
+#: percent sign is part of the VALUE, so two sides that differ in them are never
+#: a format equivalence however their letters and digits line up: ``-18`` against
+#: ``18`` is a sign flip and ``14.9%`` against ``14.9`` drops the unit.
+MEANINGFUL_SYMBOLS = "+-$%"
+
+
 def _squash(tokens: Iterable[str]) -> str:
     """Letters and digits only, no spaces -- the shape ``merge_compounds`` compares on."""
 
     return "".join(character for token in tokens for character in token if character.isalnum())
+
+
+def _meaningful_symbols(tokens: Iterable[str]) -> Counter[str]:
+    return Counter(
+        character
+        for token in tokens
+        for character in token
+        if character in MEANINGFUL_SYMBOLS
+    )
 
 
 def _merge_compound_window(span: ErrorSpan) -> str | None:
@@ -599,8 +615,11 @@ def _merge_compound_window(span: ErrorSpan) -> str | None:
                 else span.hyp_tokens + span.hyp_right[:right]
             )
             squashed = _squash(reference)
-            if len(squashed) >= 2 and squashed == _squash(hypothesis) and reference != hypothesis:
-                return "symbol-only" if len(reference) == len(hypothesis) else "merge-compound"
+            if len(squashed) < 2 or squashed != _squash(hypothesis) or reference == hypothesis:
+                continue
+            if _meaningful_symbols(reference) != _meaningful_symbols(hypothesis):
+                continue
+            return "symbol-only" if len(reference) == len(hypothesis) else "merge-compound"
     return None
 
 
@@ -738,10 +757,14 @@ def classify_span(span: ErrorSpan, context: UtteranceContext) -> tuple[str, str]
     compound = _merge_compound_window(span)
     if compound is not None:
         return "format-convention", f"format-convention/{compound}"
-    if span.op == "SUB":
+    if span.op == "SUB" and _meaningful_symbols(ref) == _meaningful_symbols(hyp):
         if _normalizes_equal(ref, hyp):
             return "format-convention", "format-convention/whisper-refold"
-        if _digits(ref) and _digits(ref) == _digits(hyp):
+        if (
+            _digits(ref)
+            and _digits(ref) == _digits(hyp)
+            and _meaningful_symbols(ref) == _meaningful_symbols(hyp)
+        ):
             return "format-convention", "format-convention/numeric-equal"
 
     # 2. reference-style conventions -- the transcript's rules, not the speech.

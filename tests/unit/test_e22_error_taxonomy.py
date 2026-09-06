@@ -9,6 +9,7 @@ tests pin the pieces it is built from.
 from __future__ import annotations
 
 import random
+from dataclasses import replace
 
 import pytest
 
@@ -133,9 +134,23 @@ def test_merge_compound_does_not_fire_on_a_genuinely_missing_word():
     assert "format-convention/merge-compound" not in rules_of(context)
 
 
-def test_symbol_only_is_named_apart_from_a_compound_split():
-    context = make_context("a tier one at 14.9%.", "a tier one at 14.9")
-    assert "format-convention/symbol-only" in rules_of(context)
+def test_symbol_only_covers_a_difference_of_layout_punctuation_alone():
+    context = replace(
+        make_context("placeholder", "placeholder"),
+        ref_tokens=("we", "grew", "b.c", "again"),
+        hyp_tokens=("we", "grew", "bc", "again"),
+    )
+    assert rules_of(context) == ["format-convention/symbol-only"]
+
+
+def test_a_sign_flip_is_never_a_format_equivalence():
+    context = make_context("gone from minus 18 to minus 5", "gone from 18 to 5")
+    assert not any(rule.startswith("format-convention/") for rule in rules_of(context))
+
+
+def test_a_dropped_percent_sign_is_never_a_format_equivalence():
+    context = make_context("a tier one at 14.9 percent", "a tier one at 14.9")
+    assert not any(rule.startswith("format-convention/") for rule in rules_of(context))
 
 
 def test_a_token_with_no_alphanumeric_character_is_a_stray_punctuation_token():
