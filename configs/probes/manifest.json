@@ -227,6 +227,23 @@
       "scorer": "slurp-slu-official (the real, unmodified official evaluate.py at pinned commit 8eb16545762be97ace75334109d73824217311f1 in ~/.venvs/slurp-official-eval, --average micro), run through core.scoring_batch",
       "success": "protocol alignment, not a threshold: this arm becomes the study's SLURP direct baseline regardless of outcome, because it is the one that matches the published prompt-only protocol (He & Garner arXiv:2305.13512 put the intent inventory IN the prompt). Reported as the official-metric table beside the sealed M0 comparator, the locked BLEND arm and the published brackets, with a paired per-sample contrast."
     },
+    "SLURP-CONSUMPTION-KU-S1C": {
+      "arms": {
+        "draft_revise": [
+          "slurp_phase_direct.txt",
+          "slurp_phase_revise.txt"
+        ]
+      },
+      "note": "Cell KU-S1c of the 2026-09-05 three-dimension experiment program: the EQUAL-CONTACT, NO-KNOWLEDGE control of the SLURP consumption dimension. Neither template is the system message -- that stays the closed-list instruction (slurp_direct_closed_list.txt rendered through the slurp-label-inventory fill), byte-identical to the sealed SLURP direct baseline's. They are the two per-phase CONTROL turns of phase-draft-revise-v1: slurp_phase_direct.txt (reused unchanged from SLURP-PHASE-DIRECT-ONLY) asks phase 'draft' for the answer, and slurp_phase_revise.txt asks phase 'revise' to correct or repeat it, with the model's own draft appended after it by the append-sealed-state predecessor binding. Both directives are short and name no scenario, no action, no entity type and no example filler, so no ontology text rides the control turn -- the KC-S1 leakage finding applied by construction. configs/baseline/slurp-phase-draft-revise-v1.json.",
+      "profile": "bounded-discovery-probe",
+      "sample_receipt": "DEV-1000.json",
+      "sampling": {
+        "design": "no new draw: the frozen DEV-1000 roster the sealed closed-list direct baseline flew, reused id-for-id, with the DEV-500 / NEW500 partition preserved for reporting",
+        "seed": 20260823
+      },
+      "scorer": "slurp-slu-official (the same pinned official evaluate.py at commit 8eb16545762be97ace75334109d73824217311f1 as SLURP-DEV1000-CLOSED-LIST-DIRECT), run once per complete manifest through core.scoring_batch. The sealed response is a FULL SLU object, the same shape the closed-list baseline sealed, so the whole official table comes straight from the sealed rows with no projection anywhere.",
+      "success": "KU-S1c is REPORTED, NEVER DECIDED: it carries no admission gate of its own. It delivers the official-metric table beside the closed-list comparator, the paired per-sample contrasts on NEW500 and pooled under both weightings, the realized contacts per row and the gain per extra contact, and every later two-contact SLURP cell states its delta net of it."
+    },
     "SLURP-PHASE-DIRECT-ONLY": {
       "arms": {
         "direct": [
@@ -331,6 +348,13 @@
       "split_identity_hash": "7205f865eda0fc8f3195e7ec2cb741a4fefe475f6db819373be040f83ace5069",
       "split_role": "discovery"
     },
+    "SLURP-CONSUMPTION-KU-S1C": {
+      "n_items": 1000,
+      "receipt": "DEV-1000.json",
+      "seed": 20260823,
+      "split_identity_hash": "9fb44e3384b8ad8e0d8f825b88eb0a3051c218b699975051d8a0481aabc0243b",
+      "split_role": "dev"
+    },
     "SLURP-DEV1000-CLOSED-LIST-DIRECT": {
       "n_items": 1000,
       "receipt": "DEV-1000.json",
@@ -398,6 +422,9 @@
     },
     "slurp_phase_direct.txt": {
       "sha256": "d02f194c3c8a8375a15c28f7ca874f30bd2ad34d60e8ff9cdbc654572ebf9d50"
+    },
+    "slurp_phase_revise.txt": {
+      "sha256": "236d1ee5a31300912b3e2404a4baf24b47a2c01f190f701467417e0c047cc518"
     },
     "slurp_phase_slots.txt": {
       "sha256": "221ed0d343b0a543eda98008312938da25bde204a131efe8427ea8e3934a5e1f"

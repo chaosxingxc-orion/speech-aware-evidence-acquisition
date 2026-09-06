@@ -1,0 +1,41 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "phase-draft-revise-v1",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
+  "speech_feature_key_representation_id": "saea-slurp-phase-draft-revise-v1:draft",
+  "speech_feature_matcher_policy_id": "saea-slurp-phase-draft-revise-v1",
+  "scorers": [
+    "slurp-slu-official",
+    "slurp-slu",
+    "cost"
+  ],
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template_active": true,
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-label-prior-speaker/snapshot.json",
+  "knowledge_snapshot_sha256": "07f94807d173b2f2bdda9dcd95b21354e018234a208a76683d0ca4989d9ffa65",
+  "phase_material": {
+    "draft": {
+      "instruction_template": "probes/slurp_phase_direct.txt",
+      "instruction_fill": null,
+      "response_format_id": null,
+      "predecessor_binding": "none"
+    },
+    "revise": {
+      "instruction_template": "probes/slurp_phase_revise.txt",
+      "instruction_fill": null,
+      "response_format_id": null,
+      "predecessor_binding": "append-sealed-state"
+    }
+  },
+  "what_this_is": "Cell KU-S1c of the 2026-09-05 three-dimension experiment program: the EQUAL-CONTACT, NO-KNOWLEDGE CONTROL of the SLURP consumption dimension. Two contacts per DEV-1000 row over the same closed-list task: phase 'draft' answers the spoken command, phase 'revise' is shown the model's own draft and asked to correct it or repeat it. No knowledge is retrieved, supplied or rendered anywhere, and the second contact sees nothing the first did not except the first's own answer. It is the control every two-contact SLURP cell's delta is stated net of (the program's contact-accounting rule), and on its own it answers one question the slot-stage cells could not: does a second look at the same audio with the same information move INTENT?",
+  "the_system_message_is_the_baseline_s": "task_instruction_template and task_instruction_fill are byte-identical to configs/baseline/slurp-direct-closed-list.json's, so the system message this cell sends is the same 7,583-character instruction (sha256 4073f79e...37db) the sealed closed-list direct baseline sent. The ONLY thing this cell adds to that arm's wire is the phase CONTROL turn -- probes/slurp_phase_direct.txt on the first contact, probes/slurp_phase_revise.txt plus the appended draft on the second.",
+  "the_control_turns_carry_no_ontology": "Both control turns are short directives that name no scenario, no action, no entity type and no example filler; they defer to 'the task contract already given in the system message above'. That is the KC-S1 finding applied by construction: SLURP's own label vocabulary collides with the leakage rule rails.runner._assert_agent_control_excludes_knowledge_payloads when it rides the control turn, so the inventory stays in the system message, which that rule does not read.",
+  "the_predecessor_is_the_model_s_own_draft": "predecessor_binding 'append-sealed-state' means rails.phase_runner.run_program threads THIS run's phase-1 sealed AgentStateArtifact for the same sample into phase 2's material, and rails.phase_material appends it after the static directive under the fixed prefix 'Prior phase response'. Nothing else enters: no gold, no reference transcript, no sealed manifest of another run, no knowledge value or facet.",
+  "knowledge_is_bound_but_invisible": "rails.runner.run_speech_native_agent_loop requires a validated, non-empty KnowledgeSnapshot for every agent-loop contact even when no phase consumes one; both phases of phase-draft-revise-v1 declare knowledge 'none' and the snapshot is bound with empty bootstrap ids, so no facet and no value is rendered into any prompt. What the binding buys is the leakage rule. The snapshot named here is the TRAIN snapshot WITHOUT its content dimension (docs/receipts/knowledge/slurp-kb-size-full-label-prior-speaker.json): 349 label/speaker/prior facets plus all 11,514 exemplar values, 11,863 protected payloads, the same snapshot KC-S1a and KC-S1b flew. Measured before takeoff: the full size-full snapshot's content facets refuse 78 of the 1,000 sealed closed-list responses (57 of them for the word 'calendar'), and phase 2 of this program appends exactly such a response to its control turn, so binding size-full here would have killed the flight mid-roster on about 7.8 percent of rows. This snapshot refuses none of them, and neither control turn collides with any of its 11,863 payloads.",
+  "serving_geometry": "No override: the SlurpAdapter defaults (8 slots x 8,192 slot tokens, 64 completion tokens) stand, which is exactly the geometry the sealed closed-list comparator flew (-np 8 -c 65536). Both control turns are short and the appended draft is one small JSON object, so the worst envelope is far inside an 8,192-token slot; unlike KC-S1b this cell has no per-sample schema block and needs no wider slot. Matching the comparator's geometry removes one difference from the contrast rather than adding one.",
+  "scorer_basis": "Unchanged from configs/baseline/slurp-direct-closed-list.json: slurp-slu-official is the paper-facing scorer (the real, unmodified official evaluate.py at pinned commit 8eb16545762be97ace75334109d73824217311f1, --average micro), slurp-slu names the carrier's own scorer id, and both run once over the complete manifest through core.scoring_batch, never sharded. This cell's sealed response is a FULL SLU object (scenario, action, entities), the same shape the closed-list baseline sealed, so the whole official table comes straight from the sealed rows with no projection anywhere."
+}

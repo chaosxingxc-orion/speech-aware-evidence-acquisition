@@ -1,0 +1,188 @@
+{
+  "control_turn_templates": {
+    "draft": {
+      "chars": 262,
+      "relpath": "configs/probes/slurp_phase_direct.txt",
+      "sha256": "d02f194c3c8a8375a15c28f7ca874f30bd2ad34d60e8ff9cdbc654572ebf9d50"
+    },
+    "revise": {
+      "chars": 477,
+      "relpath": "configs/probes/slurp_phase_revise.txt",
+      "sha256": "236d1ee5a31300912b3e2404a4baf24b47a2c01f190f701467417e0c047cc518"
+    }
+  },
+  "embedding_contacts": 0,
+  "generated_at": "2026-09-06T03:50:43.907646+00:00",
+  "gold_reads": 0,
+  "gpu_contacts": 0,
+  "model_contacts": 0,
+  "rule": "rails.runner._assert_agent_control_excludes_knowledge_payloads: an AgentContactPlan.instruction may not contain, casefolded, any facet representation or value content of the bound snapshot whose stripped length is at least 8 characters. It reads the CONTROL turn only; the system message (adapter.instruction plus the task contract) is not read by it.",
+  "schema": "saea-slurp-consumption-containment-analysis-v1",
+  "sealed_closed_list_outputs": {
+    "relpath": "runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.outputs.jsonl",
+    "rows": 1000
+  },
+  "snapshots": {
+    "slurp-kb-size-full": {
+      "dimensions": [
+        "content",
+        "label",
+        "prior",
+        "speaker"
+      ],
+      "facets": 11863,
+      "kb_facet_top5_supply_block": {
+        "chars": 3224,
+        "distinct_protected_payloads_embedded": 19,
+        "first_payloads": [
+          "wake me up at nine am on friday",
+          "please set the lighting suitable for reading",
+          "turn off my smart plug socket",
+          "how do i poach an egg",
+          "how to create buttermilk from milk"
+        ],
+        "refused": true
+      },
+      "protected_payloads": 23267,
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full/snapshot.json",
+      "revise_control_turn_colliding_sample_ids": [
+        "slurp:devel:001211:audio-1490020990",
+        "slurp:devel:001615:audio-1501696517",
+        "slurp:devel:002757:audio-1489498739",
+        "slurp:devel:003056:audio-1494606695",
+        "slurp:devel:003972:audio-1501757095",
+        "slurp:devel:004519:audio-1494608505-headset",
+        "slurp:devel:004551:audio-1499693621",
+        "slurp:devel:004778:audio-1497024085",
+        "slurp:devel:005184:audio-1494418249-headset",
+        "slurp:devel:005362:audio-1502890769-headset",
+        "slurp:devel:005744:audio-1495733552",
+        "slurp:devel:005824:audio-1501774564-headset",
+        "slurp:devel:006246:audio-1500388245",
+        "slurp:devel:006734:audio-1501696074-headset",
+        "slurp:devel:006792:audio-1497438427",
+        "slurp:devel:006821:audio-1488623318",
+        "slurp:devel:006827:audio-1490372159",
+        "slurp:devel:006875:audio-1434537043-headset",
+        "slurp:devel:006914:audio-1497887113-headset",
+        "slurp:devel:007034:audio-1500039695",
+        "slurp:devel:007035:audio-1488970054",
+        "slurp:devel:007066:audio-1498484428",
+        "slurp:devel:007070:audio-1495734465",
+        "slurp:devel:007086:audio-1488991292",
+        "slurp:devel:007108:audio-1501691416-headset",
+        "slurp:devel:007229:audio-1490287996-headset",
+        "slurp:devel:007255:audio-1489504288-headset",
+        "slurp:devel:007310:audio-1501686906",
+        "slurp:devel:007381:audio-1501686582-headset",
+        "slurp:devel:007620:audio-1501772807",
+        "slurp:devel:007684:audio-1490357297-headset",
+        "slurp:devel:007732:audio-1502376806-headset",
+        "slurp:devel:007738:audio-1489153308",
+        "slurp:devel:007871:audio-1502311539-headset",
+        "slurp:devel:007977:audio--1506079227-headset",
+        "slurp:devel:008039:audio-1490105633-headset",
+        "slurp:devel:008046:audio-1489152651",
+        "slurp:devel:008089:audio-1434529153-headset",
+        "slurp:devel:008127:audio-1502100385",
+        "slurp:devel:008207:audio-1490195630-headset",
+        "slurp:devel:008282:audio-1502201237-headset",
+        "slurp:devel:008311:audio-1501152391",
+        "slurp:devel:008315:audio-1497361542",
+        "slurp:devel:008325:audio-1502218005-headset",
+        "slurp:devel:008333:audio-1502893972",
+        "slurp:devel:008463:audio-1501155119-headset",
+        "slurp:devel:008522:audio-1494512376-headset",
+        "slurp:devel:008549:audio-1497860446",
+        "slurp:devel:008606:audio-1498485987-headset",
+        "slurp:devel:008655:audio-1502895086-headset",
+        "slurp:devel:008697:audio-1499266692-headset",
+        "slurp:devel:008749:audio-1501768398-headset",
+        "slurp:devel:008751:audio-1501778664-headset",
+        "slurp:devel:008783:audio-1501752158-headset",
+        "slurp:devel:008802:audio--1505323810",
+        "slurp:devel:008834:audio-1495377848-headset",
+        "slurp:devel:008895:audio-1500979505",
+        "slurp:devel:008953:audio-1502377490",
+        "slurp:devel:009008:audio-1498570322",
+        "slurp:devel:009040:audio-1502114639",
+        "slurp:devel:009067:audio-1498575778",
+        "slurp:devel:009069:audio-1499688544",
+        "slurp:devel:009136:audio-1498569834-headset",
+        "slurp:devel:010450:audio-1500040567",
+        "slurp:devel:010453:audio-1501777397",
+        "slurp:devel:010457:audio-1488623074",
+        "slurp:devel:010554:audio-1502896090-headset",
+        "slurp:devel:010763:audio-1497884591",
+        "slurp:devel:010870:audio-1490802092-headset",
+        "slurp:devel:010901:audio-1490289538-headset",
+        "slurp:devel:011004:audio-1498566394-headset",
+        "slurp:devel:011399:audio--1506520656",
+        "slurp:devel:011440:audio-1502200339-headset",
+        "slurp:devel:011666:audio-1498565773-headset",
+        "slurp:devel:011729:audio-1495377370-headset",
+        "slurp:devel:012119:audio-1490262301",
+        "slurp:devel:013107:audio-1490021632-headset",
+        "slurp:devel:016991:audio-1499697069"
+      ],
+      "revise_control_turn_collision_count": 78,
+      "revise_control_turn_collision_payload_histogram": {
+        "calendar": 57,
+        "change song": 2,
+        "clothing": 1,
+        "donald trump": 1,
+        "jane doe": 1,
+        "new york time": 1,
+        "next episode": 2,
+        "politics": 4,
+        "shopping": 7,
+        "to do list": 2
+      },
+      "revise_control_turn_collision_rate": 0.078,
+      "sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+      "static_control_turn_collision_count": 0,
+      "static_control_turn_collisions": {
+        "draft": null,
+        "revise": null
+      },
+      "values": 11514,
+      "values_at_or_over_8_chars": 11514
+    },
+    "slurp-kb-size-full-label-prior-speaker": {
+      "dimensions": [
+        "label",
+        "prior",
+        "speaker"
+      ],
+      "facets": 349,
+      "kb_facet_top5_supply_block": {
+        "chars": 3224,
+        "distinct_protected_payloads_embedded": 9,
+        "first_payloads": [
+          "entity-type prior for intent 'alarm_set' from full train counts (n=182 utterances): time=0.7473 (136/182); date=0.2857 (52/182); timeofday=0.1319 (24/182); event_name=0.1154 (21/182); alarm_type=0.0110 (2/182); general_frequency=0.0110 (2/182); relation=0.0110 (2/182); order_type=0.0055 (1/182); time_zone=0.0055 (1/182).",
+          "entity-type prior for intent 'cooking_recipe' from full train counts (n=207 utterances): food_type=0.7101 (147/207); ingredient=0.0870 (18/207); cooking_type=0.0821 (17/207); drink_type=0.0193 (4/207); business_name=0.0097 (2/207); meal_type=0.0097 (2/207); app_name=0.0048 (1/207); date=0.0048 (1/207); event_name=0.0048 (1/207).",
+          "entity-type prior for intent 'iot_hue_lightchange' from full train counts (n=125 utterances): color_type=0.7280 (91/125); house_place=0.2720 (34/125); change_amount=0.0400 (5/125); player_setting=0.0080 (1/125); time=0.0080 (1/125).",
+          "entity-type prior for intent 'iot_wemo_off' from full train counts (n=52 utterances): device_type=0.8269 (43/52); house_place=0.0385 (2/52).",
+          "exemplar sentence: \"wake me up at nine am on friday\" -> intent alarm_set (scenario=alarm, action=set). slot type=filler pairs: date=friday; time=nine am. date surface-form variants observed elsewhere in train: a week ago, after some days, after two days, all days, april time surface-form variants observed elsewhere in train: a day, a week before, after church, after eleven pm, after five hours. entity-type prior for intent 'alarm_set' from full train counts (n=182 utterances): time=0.7473 (136/182); date=0.2857 (52/182); timeofday=0.1319 (24/182); event_name=0.1154 (21/182); alarm_type=0.0110 (2/182); general_frequency=0.0110 (2/182); relation=0.0110 (2/182); order_type=0.0055 (1/182); time_zone=0.0055 (1/182)."
+        ],
+        "refused": true
+      },
+      "protected_payloads": 11863,
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-label-prior-speaker/snapshot.json",
+      "revise_control_turn_colliding_sample_ids": [],
+      "revise_control_turn_collision_count": 0,
+      "revise_control_turn_collision_payload_histogram": {},
+      "revise_control_turn_collision_rate": 0.0,
+      "sha256": "07f94807d173b2f2bdda9dcd95b21354e018234a208a76683d0ca4989d9ffa65",
+      "static_control_turn_collision_count": 0,
+      "static_control_turn_collisions": {
+        "draft": null,
+        "revise": null
+      },
+      "values": 11514,
+      "values_at_or_over_8_chars": 11514
+    }
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "tool_contacts": 0
+}

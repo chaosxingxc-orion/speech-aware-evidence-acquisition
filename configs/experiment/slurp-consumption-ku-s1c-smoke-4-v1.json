@@ -1,0 +1,44 @@
+{
+  "experiment_id": "SAEA-SLURP-KU-S1C-SMOKE-4-V1",
+  "fragment_kind": "saea-phase-program-smoke-experiment-v1",
+  "date": "2026-09-05",
+  "purpose": "FOUR-ROW END-TO-END SMOKE of cell KU-S1c before its registered flight. It proves, on real rows, everything this cell adds to the wiring MF-5 and the KC-S1 smoke already proved: a TWO-phase program through rails.phase_runner.run_program (two whole-roster waves, not one), the append-sealed-state predecessor binding threading THIS run's own phase-1 answer into phase 2's control turn, the -np 8 geometry, the full-SLU response shape parsing through reproduction.slurp_scoring.parse_slu_response on both phases, the one-row-per-sample seal that keeps only the LAST phase's response, and all three declared scorers over the complete manifest through core.scoring_batch. Its eight responses are a wiring proof: no number in this run is a task measurement, a comparator or a mechanism result, and none enters a verdict.",
+  "split_id": "DEV-1000-KU-S1C-SMOKE-4",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "dev",
+    "planned_model_calls": 24,
+    "planned_gpu_hours": 0.3,
+    "planned_speech_audio_seconds": 120
+  },
+  "cells": [
+    {
+      "cell_id": "ku-s1c-smoke",
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-draft-revise-v1",
+      "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+      "dataset_fragment": "slurp-speech-native-dev1000"
+    }
+  ],
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "split_id": "DEV-1000-KU-S1C-SMOKE-4",
+      "ids": [
+        "slurp:devel:000011:audio-1497266596",
+        "slurp:devel:000053:audio-1498758443",
+        "slurp:devel:000058:audio-1488637952",
+        "slurp:devel:000068:audio-1488550098"
+      ],
+      "basis": "The SAME four rows the sealed closed-list wiring proof, the MF-5 SLURP phase smoke and the KC-S1 smoke all flew: the first four DEV-1000 sample ids in sorted order. Named HERE, in the registered fragment, rather than passed on a command line, so a smoke can never quietly fly four different rows than the ones its exposure row names (the SAEA-E22-ESB precedent). Flight split identity hash e335c74149794af0f2301954b6e92cde2a4134d65ebe6069173a1a556b7a04b3, audio 15.011 s per pass.",
+      "audio_seconds_one_pass": 15.011
+    }
+  ],
+  "budget_basis": "4 rows x 2 phases x 1 contact = 8 contacts, plus margin for the one permitted recovery re-registration within this run id = 24 planned model calls. The four rows' own audio is 15.011 seconds per pass and this cell makes TWO passes = 30.022 s; 120 is the rounded ceiling including a recovery. GPU hours 0.3 covers a cold model load plus eight contacts. Paid API spend 0.",
+  "gate": "PASS requires: 8 of 8 contacts; exactly TWO phases in the run_phases receipt, phase-draft-revise-v1:draft and phase-draft-revise-v1:revise, each with rows 4 and contacts 4, in that order; a sealed run manifest with exactly 4 canonical outputs rows, one per sample, no duplicates, each carrying the REVISE phase's response; a phases.json beside it whose sha256 the seal receipt records; every payload's last history turn role equal to control; the revise contact instruction equal to the static revise directive plus this sample's own draft under the 'Prior phase response' prefix; and all three declared scorers running to completion over the complete manifest through core.scoring_batch.",
+  "what_is_not_read": "No smoke metric is a task measurement. The SLURP comparator stays SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1 (scenario 81.0 / action 73.9 / intent 71.4 / SLU-F1 35.8) and this smoke arm is not comparable with it on four rows in any case.",
+  "decision": {
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}

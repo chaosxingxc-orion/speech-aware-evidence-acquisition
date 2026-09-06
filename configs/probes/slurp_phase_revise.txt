@@ -1,0 +1,5 @@
+Reconsider the spoken command carried in this request. Your own previous answer to it is repeated below as the prior phase response.
+
+Judge that answer against the same spoken command. If any part of it is wrong, replace it with the corrected answer; if all of it is right, repeat it unchanged.
+
+Return exactly one JSON object in the form the task contract already given in the system message above specifies, and nothing else: no explanation, no code fence, no second object.

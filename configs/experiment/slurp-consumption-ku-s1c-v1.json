@@ -1,0 +1,33 @@
+{
+  "experiment_id": "SAEA-SLURP-KU-S1C-DRAFT-REVISE-DEV1000-V1",
+  "fragment_kind": "saea-slurp-consumption-experiment-v1",
+  "date": "2026-09-05",
+  "purpose": "Cell KU-S1c of the 2026-09-05 three-dimension experiment program: the EQUAL-CONTACT, NO-KNOWLEDGE CONTROL of the SLURP consumption dimension. Two contacts per DEV-1000 row over the same closed-list task: phase 'draft' answers the spoken command, phase 'revise' is shown the model's own draft and asked to correct it or repeat it. No knowledge is retrieved, supplied or rendered anywhere. It is the control every two-contact SLURP cell's delta is stated net of, and on its own it answers a question the slot-stage cells could not: whether a second look at the same audio with the same information moves the INTENT layer (KC-S1a held intent identical by construction and could say nothing about it).",
+  "split_id": "DEV-1000",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "dev",
+    "planned_model_calls": 2100,
+    "planned_gpu_hours": 1.0,
+    "planned_speech_audio_seconds": 6000
+  },
+  "cells": [
+    {
+      "cell_id": "ku-s1c-draft-revise",
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-draft-revise-v1",
+      "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+      "dataset_fragment": "slurp-speech-native-dev1000"
+    }
+  ],
+  "population": "The whole frozen DEV-1000 runtime view, id for id, at split identity hash 8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84 -- the roster the sealed closed-list direct baseline flew. No new draw and no new exposure. The DEV-500 / NEW500 partition is preserved for reporting; the decision population for any cell this control serves is NEW500.",
+  "comparator": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1, run manifest sha256 f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c, official scenario 81.00 / action 73.90 / intent 71.40 / entities strict 21.91 / Word-F1 33.69 / Char-F1 38.20 / SLU-F1 35.80. Same roster, same system message bytes, same build, same greedy decoding, same -np 8 geometry; the single difference is the phase CONTROL turn and the second contact.",
+  "realized_contacts": "Exactly 2 per row, for every row. rails.phase_runner.run_program runs each phase as one blocking whole-roster max_contacts=1 call, so phase-draft-revise-v1's stop rule 'always-run-full-program' is realized as two complete waves and no row can exit after one contact. The flight reports the realized count from the run_phases receipt rather than assuming it.",
+  "budget_basis": "1,000 rows x 2 contacts = 2,000 registered contacts plus 8 canaries = 2,008; 2,100 is the registered ceiling. The roster's own audio is 2,884.7937 seconds and this cell makes TWO passes over it = 5,769.5874 s; 6,000 is the ceiling. GPU hours planned 0.3 (the sealed closed-list arm used about 0.105 at -np 8 for one pass; this cell makes two passes on the same geometry), ceiling 1.0. Tool contacts 0, embedding contacts 0, paid API spend 0. Plan cells are RUN-CUMULATIVE across every attempt of this run id and at most one recovery re-registration is permitted.",
+  "decision": {
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "decision_rule": "KU-S1c has NO admission gate of its own and is REPORTED, NEVER DECIDED (the three-dimension program's own words for this cell). What it delivers is: its full official-metric table beside the closed-list comparator; its paired per-sample contrast against the sealed closed-list baseline on NEW500 and pooled, for intent (scen_act), scenario, action, SLU-F1 and its components, under both natural-mixture and equal-stratum weightings; its realized contacts per row; and the gain per extra contact. Every later two-contact SLURP cell states its delta net of this arm.",
+  "ku_s1_companion_cell": "The preregistration docs/readiness/2026-09-05-slurp-consumption-ku-s1-v1-preregistration.md registers TWO cells. KU-S1 (BLEND-CL: phase-direct-evidence-alpha-blend-v1 with KbFacetProvider top-5 supply at the lock candidate's knobs) is REFUSED BEFORE REGISTRATION on a measured, structural blocker and therefore has no experiment fragment, no exposure row and no attempt; section 6 of that preregistration carries the measurement and names the exact component to fix. This fragment is KU-S1c alone."
+}
