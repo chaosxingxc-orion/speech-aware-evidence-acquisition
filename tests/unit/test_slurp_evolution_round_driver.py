@@ -194,7 +194,11 @@ def _carrier() -> CarrierMaterial:
 
 
 def _loop_config() -> LoopConfig:
-    return LoopConfig.from_json(
+    return LoopConfig.from_json(_loop_config_document())
+
+
+def _loop_config_document() -> dict:
+    return (
         {
             "carrier_lock_key": CARRIER,
             "target_kind": "scenario",
@@ -865,3 +869,49 @@ def test_round_one_refuses_to_price_the_form_twin_without_a_tokenizer(tmp_path) 
             fold_a_rows=12,
             fold_a_speech_seconds=24.0,
         )
+
+
+def test_the_a_0_pins_stop_the_cell_when_train_stops_reproducing_them() -> None:
+    """`A_0`'s closure is executed, not transcribed.
+
+    Round 0 of the curve is the admitted KC-S1b mechanism only if the loop
+    starts from exactly the bytes KC-S1b flew, so the committed loop config
+    pins the floored schema's content hash, the unfloored table's, and the
+    TRAIN source identity both were mined from -- and `assert_a_0` raises
+    rather than warns when a mining disagrees with any of them.
+    """
+
+    floored = _schema(floored=True)
+    unfloored = _schema(floored=False)
+    document = {
+        **json.loads(json.dumps(_loop_config_document())),
+        "a_0": {
+            "receipt_relpath": "docs/receipts/knowledge/synthetic.json",
+            "receipt_sha256": "c" * 64,
+            "content_hash": floored.content_hash(),
+            "unfloored_content_hash": unfloored.content_hash(),
+            "source_identity_hash": floored.source_identity_hash,
+            "utterance_count": floored.utterance_count,
+        },
+    }
+    config = LoopConfig.from_json(document)
+    # The measured tables reproduce every pin, and the receipt digest the
+    # caller measured is checked beside them.
+    assert config.assert_a_0(
+        floored=floored, unfloored=unfloored, receipt_sha256="c" * 64
+    ) is config
+
+    for wrong in ("content_hash", "unfloored_content_hash", "source_identity_hash"):
+        drifted = LoopConfig.from_json(
+            {**document, "a_0": {**document["a_0"], wrong: "0" * 64}}
+        )
+        with pytest.raises(EvolutionError, match="does not reproduce the pinned"):
+            drifted.assert_a_0(floored=floored, unfloored=unfloored)
+    with pytest.raises(EvolutionError, match="does not reproduce the pinned"):
+        config.assert_a_0(
+            floored=floored, unfloored=unfloored, receipt_sha256="d" * 64
+        )
+    # A loop that declares no pins (EVO-A1) is untouched.
+    assert LoopConfig.from_json(document | {"a_0": None}).assert_a_0(
+        floored=floored, unfloored=unfloored
+    )

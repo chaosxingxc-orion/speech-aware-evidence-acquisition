@@ -1,4 +1,14 @@
 {
+  "a_0": {
+    "closure_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-a0-closure/a0-closure.json",
+    "content_hash": "732e500af3870216c7b311369f6f190ffdb0365e497d84cf211f478036757dcc",
+    "note": "Checked against the freshly mined TRAIN tables by LoopConfig.assert_a_0, called from rails.evolution_carrier every time the loop loads carrier material, so the pin is executed rather than transcribed. content_hash is the floored schema KC-S1b flew byte for byte (60 intents, 261 type rows over 52 types, 1,008 fillers); unfloored_content_hash is the min_share 0.0 mining (60 intents, 432 type rows over 55 types, 1,281 fillers), which nothing pinned before the closure row and which is the SOLE authority for every count, every share and every intent's 1 + L line cap -- i.e. for everything a candidate cannot write.",
+    "receipt_relpath": "docs/receipts/knowledge/slurp-intent-slot-schema-v1.json",
+    "receipt_sha256": "7e04da0ec29d0e9d6c473697d2b84bd1e0fc1d9ba28880ef2cf8b6f908bbe782",
+    "source_identity_hash": "545847bb95a9423005c71bdcc3fa74af55a3a1b6ae91409ba4070fd35bf92fef",
+    "unfloored_content_hash": "72fa23f70bfbe640d2ff84bb0035e1216dfc4f67bf1a31f7f8b8f64ebdc2e575",
+    "utterance_count": 11514
+  },
   "arm": "speech-feature-query",
   "artifact_family": "slurp-slot-schema",
   "artifact_keys": {

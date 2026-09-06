@@ -110,10 +110,31 @@ named here so a null on them is not read afterwards as a loop failure.
 | shape | 60 intents, 261 listed type rows over 52 distinct types, 1,008 example fillers |
 | per-intent block | 494 to 1,224 characters |
 | full rendering (the fallback) | 26,720 characters, 322 lines, sha256 `4e573a65e14c57598cc39ed1aa71cf0ac59018be162dbea3e0bfbf038203a5b9`, about 7,500 tokens |
+| **unfloored table** (`min_share = 0.0`) | content hash `72fa23f70bfbe640d2ff84bb0035e1216dfc4f67bf1a31f7f8b8f64ebdc2e575`, same TRAIN source identity, 60 intents, **432** listed type rows over **55** distinct types, 1,281 fillers |
 
 **`A_0` is byte-identical to the artifact KC-S1b flew**, which is what makes round 0 of the curve the
 admitted mechanism rather than a re-derivation of it. The capacity run re-mined it from TRAIN and
 reproduced the content hash exactly before counting anything.
+
+**CLOSED, 2026-09-06 — and the closure is executed, not transcribed.** What was section 16 open
+point 1 has been performed against the current tree: `scripts/verify_slurp_evo_a0.py` re-mines the
+schema from `train.jsonl`, re-hashes the committed receipt file, and raises rather than reports if
+any of the eleven published quantities above fails to reproduce. All eleven reproduced
+(`docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-a0-closure/a0-closure.json`).
+The **unfloored table is now pinned too, and it was pinned nowhere before**: it is the sole
+authority for every type's TRAIN count, every share and every intent's `1 + L` line cap — that is,
+for everything a candidate *cannot* write — so a loop that validated candidates against an
+unpinned table would be enforcing an unstated contract. Both hashes live in
+`configs/knowledge/slurp-evo-s1/loop-v1.json` under `a_0`, and `LoopConfig.assert_a_0` checks them
+against the freshly mined tables **every time `rails.evolution_carrier` loads carrier material**;
+a mismatch stops the cell before a candidate is built.
+
+The same closure proves the third thing round 1 needs and which no other receipt stated: all **430**
+rows of `SLURP-EVO-EXEMPLARS-V2` resolve through the construction-role gate — the roster receipt
+verified fail-closed by `core.roster.verify_roster`, then
+`data.slurp.load_slurp_train_construction_rows`, the TRAIN-locked reader that is the one caller
+licensed to carry sentence text beside gold — and **all 430 carry at least one gold entity**, in the
+eighteen scenario strata at 24 each and 22 in `audio`, every one at or above the `2 * M = 16` floor.
 
 **The rendering rule is KC-S1b's, unchanged.** `data.slurp.render_slurp_intent_slot_schema` emits one
 shared header sentence, then per intent

@@ -3214,6 +3214,16 @@ class LoopConfig:
     #: The harm bound that replaces the background population when every
     #: stratum is a target.
     harm_bound: PerTargetHarmBound | None = None
+    #: ``A_0``'s pins: the committed receipt's relpath and file sha256, the
+    #: floored schema's content hash (the bytes KC-S1b flew), the UNFLOORED
+    #: table's content hash, and the TRAIN source identity both were mined
+    #: from. Config rather than code, and verified at carrier load
+    #: (:meth:`assert_a_0`) rather than merely recorded: round 0 of the curve
+    #: is the admitted mechanism only if the loop starts from exactly those
+    #: bytes, and the unfloored table -- the sole authority for every count,
+    #: every share and every intent's line cap -- was pinned nowhere at all
+    #: before the closure row. A mismatch stops the cell.
+    a_0: Mapping[str, object] | None = None
     #: What this cell's candidates step records about the decontamination
     #: gate: the registered model-free row and what each of its inputs IS.
     #: Config rather than code because the answer is cell knowledge -- EVO-A1
@@ -3379,6 +3389,49 @@ class LoopConfig:
         config.target_objects()
         config.assert_sentinels_are_target_tools()
         return config
+
+    def assert_a_0(
+        self, *, floored, unfloored, receipt_sha256: str | None = None
+    ) -> "LoopConfig":
+        """Refuse a round whose ``A_0`` is not the artifact the config pins.
+
+        No-op when the config declares no ``a_0`` block (EVO-A1, whose state
+        is the released registry and whose identity the lock already pins).
+        For EVO-S1 every declared key is checked against the freshly mined
+        schemas, and a disagreement raises: preregistration section 16 open
+        point 1 makes this an engineering step that must actually run, not a
+        number transcribed into a document.
+        """
+
+        if not self.a_0:
+            return self
+        pins = dict(self.a_0)
+        measured = {
+            "content_hash": floored.content_hash(),
+            "unfloored_content_hash": unfloored.content_hash(),
+            "source_identity_hash": floored.source_identity_hash,
+            "utterance_count": floored.utterance_count,
+        }
+        if receipt_sha256 is not None:
+            measured["receipt_sha256"] = receipt_sha256
+        if unfloored.source_identity_hash != floored.source_identity_hash:
+            raise EvolutionError(
+                "the floored and unfloored TRAIN minings read different corpora; "
+                "A_0 cannot be closed"
+            )
+        wrong = sorted(
+            key
+            for key, value in pins.items()
+            if key in measured and measured[key] != value
+        )
+        if wrong:
+            raise EvolutionError(
+                "A_0 does not reproduce the pinned artifact: "
+                + "; ".join(f"{key} is {measured[key]!r}, pinned {pins[key]!r}" for key in wrong)
+                + ". Round 0 of the curve is the admitted mechanism only if the loop "
+                "starts from exactly those bytes; the cell stops here"
+            )
+        return self
 
     def assert_sentinels_are_target_tools(self) -> "LoopConfig":
         """A sentinel is a MEMBER of the target it guards, never a stranger.
