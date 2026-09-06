@@ -39,6 +39,7 @@ from speech_aware_evidence_acquisition.analysis.e22_esb_array_durations import (
     per_utterance_table,
     read_shard_headers,
     resolve_shards,
+    segment_id_coverage,
     verdict,
 )
 
@@ -484,6 +485,17 @@ def test_per_call_overlap_reports_every_call_separately() -> None:
     assert table["A"]["overlapping_pairs"] == 2
     assert table["B"]["overlapping_pairs"] == 0
     assert table["A"]["overlap_seconds"] == pytest.approx(0.3, abs=1e-3)
+
+
+def test_segment_id_coverage_finds_the_indices_the_release_does_not_ship() -> None:
+    arrays = synthetic_arrays()
+    arrays.pop("A-1")
+    coverage = segment_id_coverage(arrays)
+    assert coverage["by_call"]["A"]["missing_indices"] == [1]
+    assert coverage["by_call"]["B"]["missing_indices"] == []
+    assert coverage["rows"] == 4
+    assert coverage["missing_indices_total"] == 1
+    assert coverage["rows_plus_missing"] == 5
 
 
 def test_container_profile_aggregates_shapes_without_reading_a_sample() -> None:

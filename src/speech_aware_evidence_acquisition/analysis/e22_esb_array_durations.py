@@ -686,6 +686,41 @@ def per_call_overlap(pairs: Sequence[AdjacentPair]) -> dict[str, dict[str, Any]]
     return dict(sorted(table.items()))
 
 
+def segment_id_coverage(arrays: Mapping[str, ReleasedArray]) -> dict[str, Any]:
+    """Which published segment indices the release actually ships, per call.
+
+    A by-product of the join, computed from identifiers this check already
+    holds and costing no additional read. It exists because the 2026-09-04
+    segment-table receipt records an UNEXPLAINED six-row gap between the
+    2,735 rows the pinned table carries and the 2,741 the leaderboard config
+    and the NeMo post both state. If the shipped rows are a proper subset of a
+    contiguous index range, the size of the hole is decidable here.
+    """
+
+    by_call: dict[str, list[int]] = {}
+    for array in arrays.values():
+        by_call.setdefault(array.call, []).append(array.segment_index)
+    calls: dict[str, dict[str, Any]] = {}
+    missing_total = 0
+    for call, indices in sorted(by_call.items()):
+        present = set(indices)
+        lowest, highest = min(present), max(present)
+        missing = sorted(set(range(lowest, highest + 1)) - present)
+        missing_total += len(missing)
+        calls[call] = {
+            "rows": len(indices),
+            "min_index": lowest,
+            "max_index": highest,
+            "missing_indices": missing,
+        }
+    return {
+        "by_call": calls,
+        "rows": len(arrays),
+        "missing_indices_total": missing_total,
+        "rows_plus_missing": len(arrays) + missing_total,
+    }
+
+
 def container_profile(arrays: Mapping[str, ReleasedArray]) -> dict[str, Any]:
     """What the released containers are, aggregated. No sample is read."""
 
@@ -933,6 +968,7 @@ def build_summary(
             ),
         },
         "containers": container_profile(arrays),
+        "segment_id_coverage": segment_id_coverage(arrays),
         "difference_distribution": differences,
         "released_gap_distribution": released,
         "published_gap_distribution": published,
@@ -1011,6 +1047,7 @@ __all__ = [
     "parse_wav_header",
     "per_call_overlap",
     "per_utterance_table",
+    "segment_id_coverage",
     "read_shard_headers",
     "resolve_shards",
     "verdict",
