@@ -50,7 +50,7 @@ from ...rails.context_budget import (
 )
 from ...rails.controllers import default_phase_program
 from ...rails.core_client import FrozenCoreClient, build_payload_binding
-from ...rails.phase_runner import run_program
+from ...rails.phase_runner import run_continuous_program, run_program
 from ...rails.runner import RAILS_ARMS, run_rails_experiment
 from ...rails.task_adapter import TaskAdapter
 from ..attempts.store import AttemptStore
@@ -354,6 +354,7 @@ def render_phase_prompt_envelopes(
     sample_id: str,
     sealed_states_by_phase: Mapping[str, Mapping[str, object]] | None = None,
     state_fill_by_phase: Mapping[str, object] | None = None,
+    supply_blocks_by_phase: Mapping[str, Sequence[tuple[str, str]]] | None = None,
     completion_token_ceiling: int,
 ) -> dict[str, tuple[Mapping[str, object], ...]]:
     """``{phase: envelope}`` for ONE sample of a phase program.
@@ -382,6 +383,13 @@ def render_phase_prompt_envelopes(
     ``_phase_prompt_payloads`` estimate) and a caller that measures the exact
     text share one code path.
 
+    ``supply_blocks_by_phase`` (E6) is the traced knowledge a SUPPLIED phase
+    carries, in the exact ``"[evidence <id>] <content>"`` wire form. It never
+    touches the instruction -- that is the whole point of the traced channel
+    -- but it IS part of the request, so a prompt estimate that omitted it
+    would under-count exactly the cell the estimate exists for. ``None`` by
+    default and byte-identical to the pre-E6 rendering.
+
     ``state_fill_by_phase`` is the LAST thing appended, after the state block
     -- the same position and the same blank-line join
     ``rails.phase_material.build_material_for_phase`` uses, which is the real
@@ -406,6 +414,7 @@ def render_phase_prompt_envelopes(
     pad = "x" * (PHASE_PREDECESSOR_PAD_BYTES_PER_TOKEN * int(completion_token_ceiling))
     states = dict(sealed_states_by_phase or {})
     fills = dict(state_fill_by_phase or {})
+    supply_blocks = dict(supply_blocks_by_phase or {})
     envelopes: dict[str, tuple[Mapping[str, object], ...]] = {}
     for phase in phase_names:
         spec = specs[phase]
@@ -440,6 +449,7 @@ def render_phase_prompt_envelopes(
             prompt_order=prompt_order,
             packet_descriptor=packet_descriptor,
             contact_id=f"{program_id}:{phase}:{sample_id}",
+            supply_blocks=tuple(supply_blocks.get(phase, ())),
         )
     return envelopes
 
@@ -574,6 +584,7 @@ class FlightRuntime:
         gate_factory: Callable[..., object] = FrozenCoreGate.for_study_repo,
         rails_runner: Callable[..., object] = run_rails_experiment,
         phase_runner: Callable[..., object] = run_program,
+        continuous_phase_runner: Callable[..., object] = run_continuous_program,
         score_batch: Callable[..., Mapping[str, object]] = run_score_batch,
         clock: Callable[[], float] = time.time,
         # -- additional seams the C4c brief calls for "through seams" but
@@ -628,6 +639,7 @@ class FlightRuntime:
         self._gate_factory = gate_factory
         self._rails_runner = rails_runner
         self._phase_runner = phase_runner
+        self._continuous_phase_runner = continuous_phase_runner
         self._score_batch = score_batch
         self._clock = clock
         self._manifest_builder = manifest_builder
@@ -684,6 +696,12 @@ class FlightRuntime:
         self._phase_summaries: tuple[object, ...] = ()
         self._phase_program_material: Mapping[str, object] | None = None
         self._phase_material_receipt: Mapping[str, object] | None = None
+        # E6: what the baseline fragment's ``phase_supply`` resolved to --
+        # the identity record (never the vectors), and the injection seam
+        # for a provider this harness cannot construct from the frozen
+        # KnowledgeSnapshot alone.
+        self._phase_supply_receipt: Mapping[str, object] | None = None
+        self._phase_supply_providers: Mapping[str, object] | None = None
         self._promotion_receipt: Mapping[str, object] | None = None
         self._owns_session = False
 
@@ -901,6 +919,8 @@ class FlightRuntime:
                 )
             fills[phase] = fill
 
+        supply_blocks = self._phase_supply_prompt_bound(program)
+
         payloads: dict[str, bytes] = {}
         for sample in samples:
             sample_id = str(sample.sample_id)
@@ -915,6 +935,7 @@ class FlightRuntime:
                 sample_id=sample_id,
                 sealed_states_by_phase=sealed_states,
                 state_fill_by_phase=fills,
+                supply_blocks_by_phase=supply_blocks,
                 completion_token_ceiling=ceiling,
             )
             for phase, envelope in envelopes.items():
@@ -924,6 +945,57 @@ class FlightRuntime:
                 if len(blob) > len(payloads.get(phase, b"")):
                     payloads[phase] = blob
         return payloads
+
+    def _phase_supply_prompt_bound(
+        self, program: object
+    ) -> dict[str, tuple[tuple[str, str], ...]]:
+        """An UPPER BOUND on the traced blocks each supplied phase adds (E6).
+
+        The exact per-sample selection is a function of that sample's sealed
+        query vector, and rendering it here would mean loading the vector
+        file and running recall/rank/fuse 1,000 times inside a fail-early
+        estimate. The bound instead takes the ``k`` LONGEST values in the
+        frozen snapshot (and, for a facet-exposing phase, the ``m`` longest
+        facet representations): no per-sample decision can select more than
+        ``k`` values, and none can select a longer one, so this is a true
+        ceiling and it errs in the SAFE direction -- the same discipline
+        :func:`render_phase_prompt_envelopes` already applies to an
+        ``append-sealed-state`` predecessor it cannot know yet.
+
+        The exact per-request measurement remains the pinned prompt-fit
+        receipt.
+        """
+
+        from ...rails.phase_supply import (  # noqa: PLC0415 (cycle guard)
+            load_phase_supply_specs,
+        )
+
+        specs = load_phase_supply_specs(self._composed.values, program)
+        if not specs:
+            return {}
+        snapshot = self._load_knowledge_snapshot()
+        by_length = sorted(
+            snapshot.values, key=lambda value: (-len(value.content), value.value_id)
+        )
+        facets_by_length = sorted(
+            snapshot.facets,
+            key=lambda facet: (-len(facet.representation), facet.facet_id),
+        )
+        bound: dict[str, tuple[tuple[str, str], ...]] = {}
+        for phase, spec in specs.items():
+            blocks: list[tuple[str, str]] = []
+            if spec.expose_facets:
+                width = int((spec.fuse_coverage or {}).get("m", spec.k))
+                blocks.extend(
+                    (f"[evidence key:{facet.facet_id}] {facet.representation}", "key")
+                    for facet in facets_by_length[:width]
+                )
+            blocks.extend(
+                (f"[evidence {value.value_id}] {value.content}", "value")
+                for value in by_length[: spec.k]
+            )
+            bound[phase] = tuple(blocks)
+        return bound
 
     def _verify_phase_prompt_fit(self) -> Mapping[str, object] | None:
         """Verify a PINNED phase prompt-fit receipt against what this flight
@@ -2265,20 +2337,57 @@ class FlightRuntime:
         sink = binding.get("trace_sink")
         if sink is None or sink is client:
             sink = TraceBuffer(plan.run_id)
-        summaries = self._phase_runner(
-            program=program,
-            adapter=self._adapter,
-            plan=plan,
-            data_root=self._data_root,
-            core_client=client,
-            split_id=self._split_id,
-            knowledge_snapshot=binding["knowledge_snapshot"],
-            speech_packet_bindings=binding["speech_packet_bindings"],
-            trace_sink=sink,
-            decoding_params=self._phase_decoding_params(),
-            material_for_phase=binding["material_for_phase"],
-            supply_for_phase=binding.get("supply_for_phase"),
+        supply_for_phase = binding.get("supply_for_phase")
+        supply_specs = binding.get("supply_specs") or {}
+        facet_seed, value_seed = self._phase_supply_seeds(
+            program, binding, supply_specs
         )
+        # E6: a program with a supplied NON-FIRST phase must run as ONE
+        # continuous trajectory. run_program executes each phase as its own
+        # whole-roster max_contacts=1 wave, so a phase's controller never
+        # reaches its own advance -- and advance is the only place a traced
+        # acquire transition can be emitted (rails.controllers, "Traced
+        # supply"). A program with no supply, or whose only supply is the
+        # pre-flight-seeded FIRST phase, keeps the per-phase barrier form.
+        continuous = bool(
+            set(supply_specs) - {program.phase_names()[0]}
+        )
+        if continuous:
+            summaries = (
+                self._continuous_phase_runner(
+                    program=program,
+                    adapter=self._adapter,
+                    plan=plan,
+                    data_root=self._data_root,
+                    core_client=client,
+                    split_id=self._split_id,
+                    knowledge_snapshot=binding["knowledge_snapshot"],
+                    speech_packet_bindings=binding["speech_packet_bindings"],
+                    trace_sink=sink,
+                    decoding_params=self._phase_decoding_params(),
+                    material_for_phase=binding["material_for_phase"],
+                    supply_for_phase=supply_for_phase,
+                    bootstrap_facet_ids=facet_seed.get(program.phase_names()[0], ()),
+                    bootstrap_value_ids=value_seed.get(program.phase_names()[0], ()),
+                ),
+            )
+        else:
+            summaries = self._phase_runner(
+                program=program,
+                adapter=self._adapter,
+                plan=plan,
+                data_root=self._data_root,
+                core_client=client,
+                split_id=self._split_id,
+                knowledge_snapshot=binding["knowledge_snapshot"],
+                speech_packet_bindings=binding["speech_packet_bindings"],
+                trace_sink=sink,
+                decoding_params=self._phase_decoding_params(),
+                material_for_phase=binding["material_for_phase"],
+                supply_for_phase=supply_for_phase,
+                bootstrap_facet_ids_by_phase=facet_seed,
+                bootstrap_value_ids_by_phase=value_seed,
+            )
         flush = getattr(client, "flush_trace_buffer", None)
         if isinstance(sink, TraceBuffer) and callable(flush):
             flush(sink)
@@ -2296,18 +2405,71 @@ class FlightRuntime:
             for summary in self._phase_summaries
         ]
         dispatch: dict[str, object] = {
-            "dispatch": "phase-program",
+            "dispatch": "phase-program-continuous" if continuous else "phase-program",
             "program_id": program.program_id,
             "phase_names": list(program.phase_names()),
             "contacts_per_sample": len(program.phases),
-            "barrier": "whole-roster per phase (rails.phase_runner.run_program)",
+            "barrier": (
+                "none: one continuous trajectory per sample "
+                "(rails.phase_runner.run_continuous_program) -- required so a "
+                "supplied phase's acquire transition can be emitted"
+                if continuous
+                else "whole-roster per phase (rails.phase_runner.run_program)"
+            ),
             "material_source": (
                 "bind_phase_program_material override"
                 if self._phase_program_material is not None
                 else "baseline fragment phase_material (rails.phase_material)"
             ),
+            "supplied_phases": sorted(supply_specs),
+            "seeded_supply_phases": sorted(set(facet_seed) | set(value_seed)),
         }
         return rows, contact_count, "phase-program", dispatch, phase_receipt
+
+    def _phase_supply_seeds(
+        self,
+        program: object,
+        binding: Mapping[str, object],
+        supply_specs: Mapping[str, object],
+    ) -> tuple[dict[str, object], dict[str, object]]:
+        """``({phase: facet seed}, {phase: value seed})`` for a supplied
+        FIRST phase (E6).
+
+        Only the first phase can be seeded, and only the first phase needs
+        to be: every later phase carries its supply on the preceding wave's
+        ``acquire`` transition. Empty for every other program.
+        """
+
+        from ...rails.phase_supply import (  # noqa: PLC0415 (cycle guard)
+            build_bootstrap_selection,
+        )
+
+        if not supply_specs:
+            return {}, {}
+        first_phase = program.phase_names()[0]
+        spec = supply_specs.get(first_phase)
+        if spec is None:
+            return {}, {}
+        supply_for_phase = binding.get("supply_for_phase")
+        factories = getattr(supply_for_phase, "provider_factories", {}) or {}
+        query_tables = getattr(supply_for_phase, "query_tables", {}) or {}
+        factory = factories.get(first_phase)
+        provider = None if factory is None else factory()
+        if provider is None:
+            raise FlightRuntimeError(
+                f"phase_supply seeds the first phase {first_phase!r} but no provider "
+                "was resolved for it"
+            )
+        facets, values = build_bootstrap_selection(
+            spec,
+            provider=provider,
+            query_vectors_by_sample=query_tables.get(first_phase, {}),
+            speech_packet_bindings=binding["speech_packet_bindings"],
+            split_identity_hash=self._plan.split_identity_hash,
+        )
+        return ({first_phase: facets} if facets else {}), (
+            {first_phase: values} if values else {}
+        )
 
     def run_phases(self, *, workers: int | None = None) -> Mapping[str, object]:
         """Build a ``client_factory`` (default ``FrozenCoreClient``) from
@@ -2331,6 +2493,7 @@ class FlightRuntime:
         policy = baseline_values.get("policy")
         if not isinstance(policy, str) or not policy:
             raise FlightRuntimeError("baseline fragment must declare a non-empty 'policy'")
+        self._assert_phase_supply_is_legal_for(policy)
 
         client_kwargs = self.frozen_core_client_kwargs()
         client = self._client_factory(**client_kwargs)
@@ -2407,6 +2570,11 @@ class FlightRuntime:
             # a caller-supplied bind_phase_program_material override (whose
             # material this harness never rendered and cannot describe).
             "phase_material": self._phase_material_receipt,
+            # E6: which phases this flight supplied, with what provider,
+            # policy ids, knobs and pinned vector files -- never the vectors
+            # and never any snapshot content. None for a cell that supplies
+            # nothing.
+            "phase_supply": self._phase_supply_receipt,
             "contacts_per_second": contacts_per_second,
             "average_latency_seconds": average_latency,
             "slot_occupancy": slot_occupancy,
@@ -2421,6 +2589,19 @@ class FlightRuntime:
             "run_phases", payload, ("contacts_per_second", "tokens_per_second")
         )
         return self.receipts.record("run_phases", payload)
+
+    def _assert_phase_supply_is_legal_for(self, policy: str) -> None:
+        """A ``policy == "fixed"`` direct arm has no phases at all, so a
+        ``phase_supply`` block on it is dead config that would silently
+        supply nothing (E6). Refused, loudly, before any contact."""
+
+        declared = self._composed.values.get("phase_supply")
+        if policy == "fixed" and declared:
+            raise FlightRuntimeError(
+                "baseline fragment declares 'phase_supply' but policy is 'fixed'; a "
+                "direct arm runs no phase program and would supply nothing. Declare a "
+                "phase-program policy, or drop the phase_supply block"
+            )
 
     def _phase_decoding_params(self) -> Mapping[str, object]:
         """The run-level decoding params a PHASE program may carry.
@@ -2586,6 +2767,7 @@ class FlightRuntime:
         self._phase_material_receipt = phase_material_receipt(
             specs, static_text, formats
         )
+        supply_for_phase, supply_specs = self._resolve_phase_supply(program, snapshot)
         return {
             "knowledge_snapshot": snapshot,
             "speech_packet_bindings": self.speech_packet_bindings(),
@@ -2596,9 +2778,98 @@ class FlightRuntime:
                 response_format_by_phase=formats,
                 per_sample_states=per_sample_states,
             ),
-            "supply_for_phase": None,
+            "supply_for_phase": supply_for_phase,
+            "supply_specs": supply_specs,
             "trace_sink": client,
         }
+
+    def _resolve_phase_supply(
+        self, program: object, snapshot: object
+    ) -> tuple[object | None, Mapping[str, object]]:
+        """Resolve the baseline fragment's ``phase_supply`` into the
+        ``supply_for_phase`` callable ``rails.controllers`` consults (E6).
+
+        Config only: every id resolves in a ``core.base`` registry, every
+        vector file is pinned by sha256 and re-hashed here, and NOTHING this
+        returns can put text on a control turn -- a supplied phase's
+        instruction is byte-identical to the same phase's unsupplied one
+        (``rails.controllers``, "Traced supply").
+
+        Refusals, all before any contact:
+
+        * a ``phase_supply`` entry for a phase the program does not declare,
+          or for a phase whose ``PhaseSpec.knowledge`` is not ``"supplied"``
+          (``rails.phase_supply.load_phase_supply_specs``);
+        * a supplied FIRST phase, which cannot carry an ``acquire``
+          transition because no ``advance`` precedes it. Its selection is
+          per-sample seeded into the initial ``QueryState`` instead, through
+          ``rails.runner``'s ``bootstrap_value_ids`` mapping form -- but the
+          decision has to be computable before the flight, so it is refused
+          here unless a provider was injected for it;
+        * an ``embedding-server`` query source (declared, never resolvable).
+        """
+
+        from ...rails.phase_supply import (  # noqa: PLC0415 (cycle guard)
+            build_supply_for_phase,
+            load_phase_supply_specs,
+            phase_supply_receipt,
+        )
+
+        specs = load_phase_supply_specs(self._composed.values, program)
+        if not specs:
+            self._phase_supply_receipt = None
+            return None, {}
+        first_phase = program.phase_names()[0]
+        if first_phase in specs and self._phase_supply_providers is None:
+            raise FlightRuntimeError(
+                f"phase_supply declares the FIRST phase {first_phase!r} of program "
+                f"{getattr(program, 'program_id', program)!r}. A first phase has no "
+                "preceding advance, so it cannot carry an acquire transition; its "
+                "selection has to be computed before the flight and seeded into each "
+                "sample's initial QueryState. Bind the built provider through "
+                "bind_phase_supply_providers so this runtime can compute it, or move "
+                "the supply to a later phase"
+            )
+        providers = self._phase_supply_providers
+        supply_for_phase = build_supply_for_phase(
+            specs,
+            snapshot=snapshot,
+            snapshot_sha256=snapshot.content_hash(),
+            data_root=self._data_root,
+            provider_for_phase=(
+                None if providers is None else lambda phase: providers.get(phase)
+            ),
+            seed_phases=(first_phase,) if first_phase in specs else (),
+        )
+        self._phase_supply_receipt = phase_supply_receipt(
+            specs,
+            getattr(supply_for_phase, "query_vector_rows", {}),
+            getattr(supply_for_phase, "facet_vector_rows", {}),
+        )
+        return supply_for_phase, specs
+
+    def bind_phase_supply_providers(
+        self, providers: Mapping[str, object]
+    ) -> None:
+        """Inject a built ``rails.knowledge_provider.KnowledgeProvider`` per
+        supplied phase (E6).
+
+        ``rails.phase_supply`` can construct ``kb-facet-v1`` on its own --
+        its whole state IS the frozen ``KnowledgeSnapshot`` this runtime
+        already loaded and hash-verified. Every other registered provider
+        needs an artifact this harness has no way to build from a snapshot
+        (the Audio2Tool ``dense-centroid-v1`` semantic index), so it comes
+        in here rather than through a launcher script. The provider id in
+        the fragment still has to resolve in
+        ``core.base.KNOWLEDGE_PROVIDERS``; this seam supplies the INSTANCE,
+        never the identity.
+        """
+
+        if not isinstance(providers, Mapping) or not providers:
+            raise FlightRuntimeError(
+                "bind_phase_supply_providers needs a non-empty {phase: provider} mapping"
+            )
+        self._phase_supply_providers = dict(providers)
 
     def bind_phase_program_material(
         self,
@@ -2622,6 +2893,7 @@ class FlightRuntime:
             "speech_packet_bindings": speech_packet_bindings,
             "material_for_phase": material_for_phase,
             "supply_for_phase": supply_for_phase,
+            "supply_specs": {},
             "trace_sink": trace_sink,
         }
 
@@ -3199,6 +3471,42 @@ class FlightRuntime:
                     problems.append(
                         f"request {index} control turn carries an empty instruction"
                     )
+        # E6: a supplied phase's knowledge rides TYPED CONTENT BLOCKS, not
+        # the control turn. Count them at the transport seam and prove they
+        # are typed: an untyped block is knowledge the containment rule
+        # cannot distinguish from smuggled instruction text, and a supplied
+        # cell with zero blocks is a cell that supplied nothing.
+        typed_blocks: list[int] = []
+        for index, payload in enumerate(transport.payloads):
+            items = payload.get("supplied_evidence") or []
+            typed_blocks.append(len(items))
+            for position, item in enumerate(items):
+                if not isinstance(item, Mapping):
+                    problems.append(
+                        f"request {index} supplied_evidence[{position}] is not an object"
+                    )
+                    continue
+                missing = [
+                    field
+                    for field in ("evidence_id", "source_uri", "content")
+                    if not str(item.get(field) or "").strip()
+                ]
+                if missing:
+                    problems.append(
+                        f"request {index} supplied_evidence[{position}] lacks "
+                        f"{missing}; a traced block carries its own provenance"
+                    )
+                if item.get("knowledge_role") not in {"key", "value"}:
+                    problems.append(
+                        f"request {index} supplied_evidence[{position}] carries "
+                        f"knowledge_role {item.get('knowledge_role')!r}, not "
+                        "'key'/'value'"
+                    )
+        if self._phase_supply_receipt is not None and not any(typed_blocks):
+            problems.append(
+                "this cell declares phase_supply but not one request carried a typed "
+                "knowledge block; the supply never reached the wire"
+            )
         if problems:
             raise FlightRuntimeError("wire check failed: " + "; ".join(problems))
 
@@ -3240,6 +3548,13 @@ class FlightRuntime:
             "policy_kind": policy_kind,
             "phases": phase_receipt,
             "phase_material": self._phase_material_receipt,
+            "phase_supply": self._phase_supply_receipt,
+            # E6: how many TYPED knowledge blocks each request carried, in
+            # request order -- the observable proof that a supplied phase's
+            # knowledge travelled the traced channel and not the control
+            # turn (whose role is asserted separately above).
+            "typed_knowledge_blocks": typed_blocks,
+            "typed_knowledge_blocks_total": sum(typed_blocks),
             "dispatch": dispatch,
             "wall_seconds": wall_seconds,
             "payload_keys": sorted(first),

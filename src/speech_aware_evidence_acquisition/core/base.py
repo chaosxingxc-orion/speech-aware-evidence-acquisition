@@ -63,6 +63,16 @@ KNOWLEDGE_BUILDERS = Registry("knowledge builder")
 KNOWLEDGE_RANKERS = Registry("knowledge ranker")
 KNOWLEDGE_FUSERS = Registry("knowledge fuser")
 AGENT_CONTROLLERS = Registry("Agent controller")
+# E6 (2026-09-06): the one knowledge-provider registry. It used to live in
+# ``rails.knowledge_provider`` as an admitted stopgap ("core.base should
+# eventually host it alongside KNOWLEDGE_BUILDERS/RANKERS/FUSERS", that
+# module's own docstring). It moves here because a baseline fragment's
+# ``phase_supply.provider`` must RESOLVE IN A core.base REGISTRY like every
+# other config-declared component id, and
+# ``scripts/checks/engineering_base_check.py`` reads that resolution from
+# source. ``rails.knowledge_provider.KNOWLEDGE_PROVIDERS`` is now a
+# re-export of this object, so every existing caller is unaffected.
+KNOWLEDGE_PROVIDERS = Registry("knowledge provider")
 # E1 (2026-09-05): named structured-response formats a phase program's
 # config may bind to one phase. ``rails.controllers.PhaseSpec`` already
 # declares a ``response_format_id`` per phase but nothing resolved it, so

@@ -911,6 +911,35 @@ def _initial_query_state(
     ).validate()
 
 
+def _per_sample_bootstrap(
+    values: object,
+    sample_ids: Sequence[str],
+    *,
+    field: str,
+) -> Mapping[str, Sequence[str]] | None:
+    """``None`` for the flat, run-wide form; a per-sample mapping otherwise.
+
+    E6: a supplied FIRST phase has no preceding ``advance`` to carry an
+    ``acquire`` transition, so its (per-sample) selection is seeded into the
+    initial ``QueryState`` instead -- ``rails.runner._agent_messages`` then
+    renders it as the same typed content blocks with the same
+    ``evidence_id``/``source_uri``/``knowledge_role``, and the SUPPLY trace
+    record reports it per sample as ``supply_bootstrap_*_ids``. The run-wide
+    sequence form is unchanged and remains the default.
+    """
+
+    if values is None or isinstance(values, (str, bytes)) or not isinstance(
+        values, Mapping
+    ):
+        return None
+    unknown = sorted(set(values) - set(sample_ids))
+    if unknown:
+        raise RailsRunnerError(
+            f"{field} names sample(s) outside this split: {unknown[:5]}"
+        )
+    return values
+
+
 def _validated_bootstrap_value_ids(
     snapshot: KnowledgeSnapshot,
     values: Sequence[str],
@@ -1858,8 +1887,11 @@ def run_speech_native_agent_loop(
     knowledge_snapshot: KnowledgeSnapshot,
     speech_packet_bindings: Mapping[str, Mapping[str, object]],
     controller_policy_id: str,
-    bootstrap_facet_ids: Sequence[str] = (),
-    bootstrap_value_ids: Sequence[str] = (),
+    # Either a run-wide sequence (the original form: the same ids for every
+    # sample) or, E6, a ``{sample_id: [ids]}`` mapping for a supplied FIRST
+    # phase whose selection is per sample (see _per_sample_bootstrap).
+    bootstrap_facet_ids: Sequence[str] | Mapping[str, Sequence[str]] = (),
+    bootstrap_value_ids: Sequence[str] | Mapping[str, Sequence[str]] = (),
     max_contacts: int,
     slot_count: int,
     queue_depth: int,
@@ -1891,11 +1923,20 @@ def run_speech_native_agent_loop(
     # _assert_agent_control_excludes_knowledge_payloads. The frozen snapshot
     # never changes within a run, so both are safe to compute exactly once.
     protected_material = _protected_knowledge_material(knowledge_snapshot)
-    bootstrap_facets = _validated_bootstrap_facet_ids(
-        knowledge_snapshot, bootstrap_facet_ids
+    # Resolved against the roster once the split is known (below); the
+    # run-wide form is validated here so a malformed flat sequence still
+    # refuses before any adapter work.
+    per_sample_facets_raw = bootstrap_facet_ids
+    per_sample_values_raw = bootstrap_value_ids
+    bootstrap_facets = (
+        ()
+        if isinstance(bootstrap_facet_ids, Mapping)
+        else _validated_bootstrap_facet_ids(knowledge_snapshot, bootstrap_facet_ids)
     )
-    bootstrap_ids = _validated_bootstrap_value_ids(
-        knowledge_snapshot, bootstrap_value_ids
+    bootstrap_ids = (
+        ()
+        if isinstance(bootstrap_value_ids, Mapping)
+        else _validated_bootstrap_value_ids(knowledge_snapshot, bootstrap_value_ids)
     )
     if (
         not callable(getattr(trace_sink, "emit", None))
@@ -1983,6 +2024,13 @@ def run_speech_native_agent_loop(
             f"budget {plan.planned_model_calls}"
         )
 
+    per_sample_facets = _per_sample_bootstrap(
+        per_sample_facets_raw, sample_ids, field="bootstrap_facet_ids"
+    )
+    per_sample_values = _per_sample_bootstrap(
+        per_sample_values_raw, sample_ids, field="bootstrap_value_ids"
+    )
+
     prepared_tasks: list[_PreparedAgentTask] = []
     for index, sample in enumerate(samples):
         obs = default_obs_packet(sample)
@@ -1995,8 +2043,22 @@ def run_speech_native_agent_loop(
             plan=plan,
             sample=sample,
             descriptor=speech_packet_bindings[sample.sample_id],
-            bootstrap_facet_ids=bootstrap_facets,
-            bootstrap_value_ids=bootstrap_ids,
+            bootstrap_facet_ids=(
+                bootstrap_facets
+                if per_sample_facets is None
+                else _validated_bootstrap_facet_ids(
+                    knowledge_snapshot,
+                    tuple(per_sample_facets.get(sample.sample_id, ())),
+                )
+            ),
+            bootstrap_value_ids=(
+                bootstrap_ids
+                if per_sample_values is None
+                else _validated_bootstrap_value_ids(
+                    knowledge_snapshot,
+                    tuple(per_sample_values.get(sample.sample_id, ())),
+                )
+            ),
         )
         prepared_tasks.append(
             _PreparedAgentTask(

@@ -691,6 +691,7 @@ def render_phase_envelope(
     packet_descriptor: Mapping[str, object],
     contact_id: str,
     agent_state: Sequence[Mapping[str, object]] = (),
+    supply_blocks: Sequence[tuple[str, str]] = (),
 ) -> tuple[Mapping[str, object], ...]:
     """The EXACT transport message pair one phase contact crosses the wire as.
 
@@ -709,6 +710,17 @@ def render_phase_envelope(
     a contact: ``rails.core_client.FrozenCoreClient`` assembles the identical
     shape at request time from ``agent_state``/``agent_contact_id``/
     ``contact_instruction``.
+
+    ``supply_blocks`` (E6) is the traced knowledge a SUPPLIED phase carries:
+    ``(rendered_text, knowledge_role)`` pairs in the exact
+    ``"[evidence <id>] <content>"`` form
+    ``core.model.transport.LlamaServerTransport`` builds from a payload's
+    ``supplied_evidence``, with ``knowledge_role`` ``"key"`` or ``"value"``.
+    Empty by default, and the rendering is then byte-identical to what it
+    always was, so a pinned prompt-fit receipt measured before this
+    parameter existed still verifies. A caller that renders a supplied phase
+    and does NOT pass its blocks is counting a prompt shorter than the one
+    that goes on the wire.
     """
 
     from ..core.model import FrozenCoreError  # noqa: PLC0415 (cycle guard)
@@ -743,14 +755,19 @@ def render_phase_envelope(
             contact_instruction=instruction,
         )
     )
+    roles = tuple(role for _text, role in supply_blocks)
+    if any(role not in {"key", "value"} for role in roles):
+        raise PhaseMaterialError(
+            "render_phase_envelope supply_blocks roles must be 'key' or 'value'"
+        )
     try:
         state_texts = _speech_history_texts(history)
         ordered_content = _ordered_speech_feature_content(
             prompt_order=prompt_order,
-            evidence_texts=[],
+            evidence_texts=[text for text, _role in supply_blocks],
             feature_parts=[feature],
             state_texts=state_texts,
-            knowledge_roles=(),
+            knowledge_roles=roles,
         )
         _assert_agent_history_suffix(
             prompt_order=prompt_order,
