@@ -1,0 +1,112 @@
+{
+  "schema": "saea-a2t-kc-a1-target-spec-v1",
+  "cell": "KC-A1 / KC-A1c",
+  "purpose": "The MF-1 LIGHTING target's eight tools and the deterministic contrast note appended inline to each one's compact registry line. Read by scripts/build_a2t_contrast_notes.py through --targets-spec, which re-verifies the tool list against the audit receipt below before it writes an artifact. This spec is the owner's option B of 2026-09-06: KC-A1 targets the lighting cluster only, 147 of the 235 addressable rows, so the rendered registry block stays inside the program's +40-token form cap (section 5 of docs/readiness/2026-09-05-three-dimension-experiment-program.md). The four remaining MF-1 targets -- activateRoutine, getBiometricData, calibrateCameras, castContent -- keep their notes in configs/knowledge/a2t-kc-a1/targets-v1.json and are NOT flown by this cell; they return per cluster later or inside the evolution loop.",
+  "owner_decision": {
+    "date": "2026-09-06",
+    "option": "B",
+    "verbatim": "Option B: KC-A1 targets the LIGHTING cluster only (147 of the 235 addressable rows), so the rendered registry block stays within the +40-token form cap (section 5 of the program; the five-target inline notes were priced at about +120 tokens and are rejected on that cap). The remaining MF-1 targets (activateRoutine, getBiometricData, calibrateCameras, castContent) are NOT flown here; they return per cluster later or inside the evolution loop. KC-A1c (the length-matched category-only control) keeps the same lighting-only tool set.",
+    "parent_spec": "configs/knowledge/a2t-kc-a1/targets-v1.json",
+    "parent_spec_note": "Every note, control rule and derivation below is copied from the parent spec without one character changed; only the target LIST is narrowed, which is what keeps KC-A1 a subset of the artifact MF-1 priced rather than a rewrite of it."
+  },
+  "source_receipt": {
+    "path": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-query-cue-audit/summary.json",
+    "sha256": "81ea9b79e7ca713cb5c0b788190c57ecd147cbee02456565ec02e39cd2afe732",
+    "pointer": "primary_population.targets.targets",
+    "verdict": "docs/readiness/2026-09-05-a2t-query-cue-audit-v1.md"
+  },
+  "note_rules": {
+    "shape": "The note is APPENDED to the released description on the same '- {signature}: {description}' line. Line count (152), plain tool_name sort, the absence of headers and the ASCII-only rule are unchanged; only the text after the colon grows.",
+    "prefix": "; ",
+    "vocabulary": "Every alphanumeric word of a note is either in the closed function-word list below or occurs (case-insensitively, after splitting on non-alphanumeric characters) in the registry columns -- tool_name, signature, description, domain, category, argument_constraints, argument_defaults -- of the tools of its OWN target. Nothing else may enter a note: no evaluation text, no gold call, no invented device knowledge. scripts/build_a2t_contrast_notes.py enforces this and refuses the build otherwise.",
+    "minimum_length": "Each note is at least as long as its own tool's category-only control base ('; ' + category), so KC-A1c can be padded to the SAME character count rather than truncated.",
+    "function_words": [
+      "a",
+      "an",
+      "and",
+      "any",
+      "are",
+      "as",
+      "at",
+      "be",
+      "both",
+      "by",
+      "each",
+      "for",
+      "from",
+      "in",
+      "is",
+      "its",
+      "never",
+      "no",
+      "not",
+      "of",
+      "one",
+      "only",
+      "or",
+      "other",
+      "per",
+      "same",
+      "than",
+      "that",
+      "the",
+      "this",
+      "to",
+      "with",
+      "without"
+    ]
+  },
+  "control_rules": {
+    "content": "'; ' + the registry's own category column value for the same tool, and nothing else. No domain word, no sibling name, no scope word: the control carries the FORM of a note and none of its contrast.",
+    "padding": "Extended to exactly the treatment note's character count: the neutral filler ' tool' is appended while it fits, then the remainder is trailing spaces (at most 4 by construction). The rule is deterministic and re-derived by the builder, never stored by hand.",
+    "filler": " tool",
+    "why": "KC-A1c prices the FORM of KC-A1 at the same per-line character cost with no contrast content, so KC-A1 minus KC-A1c is the content effect and KC-A1c minus the sealed baseline is the form effect. ORG-1 lost 3.23 pp at +87 tokens and +310 lines; form is the confound this control exists to measure."
+  },
+  "statements": {
+    "token_method": "ESTIMATE, not a measurement: rendered characters divided by 3.989, the chars-per-token ratio ORG-1 measured on this exact registry and tokenizer (+347 rendered characters = +87 text tokens, 2026-09-05 verdict section 5). The exact count comes from the resident server's /tokenize route at prompt fit, which no model-free step may start; the flight agent measures it before takeoff.",
+    "decontamination": "evaluation_query_texts is EMPTY in this build on purpose: the 4,000 evaluation rows' query text may not be read without a model-free ledger row, so the 6-gram decontamination against the evaluation roster is performed by the flight agent under its own row. Every note word is already constrained to the registry columns of its own target, which the builder enforces.",
+    "manipulation": "task_instruction_fill is evolved-artifact-v1 over the hash-pinned artifact {artifact}. The frozen template, the published system sentence, the 152 rows, the plain tool_name sort and the call-string output contract are the official-protocol cell's own; ONLY the description column of the MF-1 target tools differs."
+  },
+  "targets": [
+    {
+      "target_id": "lighting",
+      "strict_mass": 147,
+      "component_mass": 186,
+      "org1_residual": 76,
+      "tools": {
+        "getLightState": {
+          "note": "; returns only",
+          "derivation": "description ('Returns the current On/Off state'): this row READS and never sets, against seven setters in the same target."
+        },
+        "resetFilterStatus": {
+          "note": "; filter, not a light",
+          "derivation": "description ('filter life counter') and category maintenance against the target's lighting rows."
+        },
+        "setAmbientLighting": {
+          "note": "; smart_car cabin only",
+          "derivation": "domain smart_car and category media_cabin: the one non-home row of the target, and the tool 88 lighting misses reach for."
+        },
+        "setBrightness": {
+          "note": "; level only",
+          "derivation": "signature and argument_constraints ('level: [0-100]') against setLighting's state+level+color and setColor's colour arguments."
+        },
+        "setColor": {
+          "note": "; smart_home hsb only",
+          "derivation": "domain smart_home against setAmbientLighting's smart_car, description ('HSB') against setColorTemperature's kelvin."
+        },
+        "setColorTemperature": {
+          "note": "; kelvin only, no color",
+          "derivation": "argument_constraints ('kelvin: [2000-6500]') and description ('white light temperature') against setColor's HSB colour."
+        },
+        "setGroupLightState": {
+          "note": "; a group, not one light",
+          "derivation": "signature ('groupId') and description ('a group of lights') against the per-device rows."
+        },
+        "setLighting": {
+          "note": "; one light, not a group",
+          "derivation": "signature ('deviceId') against setGroupLightState's groupId; category core_control."
+        }
+      }
+    }
+  ]
+}

@@ -19,9 +19,9 @@
   "task_instruction_fill": "evolved-artifact-v1",
   "task_instruction_fill_params": {
     "artifact_relpath": "configs/knowledge/a2t-kc-a1/contrast-notes-v1.json",
-    "artifact_sha256": "dcf84c2a5a371b658e234d0f42c1f03a7c36c5a2c090790d44e383999647cd21",
+    "artifact_sha256": "b99da99e43c813050e6df9a11bf1910e6168c744f363dae6c1b7f64df0a1763f",
     "k": 0,
-    "portfolio_sha256": "08f0b7e94df9fe7ee394ea088f53341483af04591f4c99aef1fe5afb9a053f46",
+    "portfolio_sha256": "32d1a696e1878e13c643e7a79b4a66634ce4990d169b80a79c7807f52b596fb0",
     "round": 0
   },
   "task_instruction_template": "probes/r1_audio2tool_official.txt",

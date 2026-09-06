@@ -1,9 +1,11 @@
-# KC-A1: deterministic contrast notes on the MF-1 targets, with KC-A1c as its same-length control, v1 preregistration (DRAFTED)
+# KC-A1: deterministic contrast notes on the MF-1 lighting target, with KC-A1c as its same-length control, v1 preregistration (REGISTERED)
 
-Status: DRAFTED 2026-09-05, prepared model-free in a worktree with zero model contacts. It is NOT registered:
-section 3 carries one open owner decision (the form cap), and section 8 lists what the flight agent must do
-between the owner GO and the first contact. No exposure row exists yet, and no cell of
-`configs/experiment/a2t-kc-a1-contrast-notes-4000-v1.json` may fly before both are closed.
+Status: DRAFTED 2026-09-05 model-free in a worktree with zero model contacts; **section 3 CLOSED 2026-09-06 by
+the owner-coordinator on option B (lighting only)**, the two artifacts rebuilt on that decision in the main
+checkout, and section 8 worked from there. The manipulation this document registers is therefore the LIGHTING
+cluster's eight tools, not the twenty-three of the drafted version; every table below has been re-derived from
+the rebuilt bytes, and the five-target notes are retained unflown in
+`configs/knowledge/a2t-kc-a1/targets-v1.json`.
 
 Program: `docs/readiness/2026-09-05-three-dimension-experiment-program.md` section 4a (KC-A1, KC-A1c) and its
 section 5 form caps. Gate: `docs/readiness/2026-09-05-a2t-query-cue-audit-v1.md` (MF-1, PASSED at 235 of the
@@ -27,14 +29,16 @@ MF-1 established three facts that make KC-A1 worth flying and bound what it can 
 
 H1 (content): a per-tool contrast note that names what separates a target's tools -- built only from the
 registry's own `domain`, `category`, argument names and `argument_constraints` columns -- recovers part of the
-235-row mass, and the rows it recovers are concentrated on TARGET-pair misses.
+addressable mass, and the rows it recovers are concentrated on TARGET-pair misses. Under the owner's option B
+(section 3) the mass this cell can address is the lighting target's own **147 rows**, not the five targets'
+235; the other four targets' 88 rows are inside the metric as unmanipulated rows and are reported as such.
 
 H2 (form, the control): the same number of added characters carrying the registry's `category` word and nothing
 else does not recover them. KC-A1 minus baseline is content plus form; KC-A1c minus baseline is form; KC-A1 minus
 KC-A1c is content.
 
-The expected value is explicitly not "recover 235 rows": MF-1's separability is a lower bound on what a lexical
-discriminator exists for and says nothing about whether 23 short notes can transfer it to a frozen core reading
+The expected value is explicitly not "recover 147 rows": MF-1's separability is a lower bound on what a lexical
+discriminator exists for and says nothing about whether 8 short notes can transfer it to a frozen core reading
 152 tools.
 
 ## 2. The manipulation
@@ -43,20 +47,26 @@ Both arms render through the registered `evolved-artifact-v1` fill over a hash-p
 so the shape of the sealed official-protocol cell is preserved byte for byte: 152 lines of
 `- {signature}: {description}`, plain `tool_name` sort, no headers, ASCII only, the published system sentence and
 the `## Available Tools:` wrapper unchanged, the same user turn, greedy decoding, `max_tokens` 256, raw audio
-through the bf16 mmproj, build `04ccc72a`, Q4_K_M. ONLY the description column of 23 rows differs.
+through the bf16 mmproj, build `04ccc72a`, Q4_K_M. ONLY the description column of the lighting target's 8 rows
+differs.
 
 | item | value |
 |---|---|
-| target spec | `configs/knowledge/a2t-kc-a1/targets-v1.json`, sha256 `e3e8c859e6fd13fbe631ea3e0f8522654bf5459b957b716281543ed23e060378` (re-derived by the builder into the receipt's `target_spec.sha256`) |
-| builder | `scripts/build_a2t_contrast_notes.py`, construction rule `rails.proposer.contrast_note_records` |
-| artifact receipt | `docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-kc-a1-contrast-notes-4000-v1/artifact-receipt.json` |
-| KC-A1 artifact | `configs/knowledge/a2t-kc-a1/contrast-notes-v1.json`, sha256 `dcf84c2a5a371b658e234d0f42c1f03a7c36c5a2c090790d44e383999647cd21` |
-| KC-A1c artifact | `configs/knowledge/a2t-kc-a1/category-only-v1.json`, sha256 `664b826a9f33ae592076a420d1e6f1e2ed9e93f429c37f610114fd444c838994` |
-| KC-A1 fragment | `configs/baseline/a2t-kc-a1-contrast-notes.json`, config hash `c737726722f88b3f18f6964d9753b89ad2ec44dfb79921c26b5f92cddd7cb56a` |
-| KC-A1c fragment | `configs/baseline/a2t-kc-a1c-category-only.json`, config hash `71db5e99af107df69bb3f3f61242e46a79bfe5a628a76c92613608ab9eff49dd` |
-| KC-A1 rendered block | 152 lines, 16,331 characters, sha256 `7a97cf549dccbc3bf7e97fa97b8f2293ec5c3e4c393f788f1ec159d6091ea0f6` |
-| KC-A1c rendered block | 152 lines, 16,331 characters, sha256 `dbd141cb9b3da0dfb181a9ffa2a9e17946db49a3ec51997878e4c00dd689092a` |
+| target spec (FLOWN) | `configs/knowledge/a2t-kc-a1/targets-lighting-v1.json`, sha256 `445dffc83388828faaa398e1ff81c7d45ecb422d01df850a6418a869175bfab8` (re-derived by the builder into the receipt's `target_spec.sha256`) |
+| target spec (parent, retained unflown) | `configs/knowledge/a2t-kc-a1/targets-v1.json`, sha256 `e3e8c859e6fd13fbe631ea3e0f8522654bf5459b957b716281543ed23e060378`; the flown spec's `targets` array is this file's `lighting` entry with no character changed |
+| builder | `scripts/build_a2t_contrast_notes.py --targets-spec configs/knowledge/a2t-kc-a1/targets-lighting-v1.json --write`, construction rule `rails.proposer.contrast_note_records` |
+| artifact receipt | `docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-kc-a1-contrast-notes-4000-v1/artifact-receipt.json`, sha256 `a8f2170a1b89bcbd31477dd4640f94afb51cb5a24590e4133c0d1789f749b439` |
+| KC-A1 artifact | `configs/knowledge/a2t-kc-a1/contrast-notes-v1.json`, sha256 `b99da99e43c813050e6df9a11bf1910e6168c744f363dae6c1b7f64df0a1763f` |
+| KC-A1c artifact | `configs/knowledge/a2t-kc-a1/category-only-v1.json`, sha256 `2f34c2cf8bc5585257756b44975e36c6244d7c3e362beac1d5b01956a6736e33` |
+| KC-A1 fragment | `configs/baseline/a2t-kc-a1-contrast-notes.json`, composed config hash `1108f51814575b837773f21e4690bc5b7c4cb745d94c3bfd7227db4fbece388e` |
+| KC-A1c fragment | `configs/baseline/a2t-kc-a1c-category-only.json`, composed config hash `f6a9f65071296cc0dc6d50573007f711483d532bacac014e0759c9d8ebd08a0f` |
+| KC-A1 rendered block | 152 lines, 16,015 characters, sha256 `ce1e521345270b9149bf45d6916fdd9a64e17293d0bae3e5ea63bf0b51f1a8fe` |
+| KC-A1c rendered block | 152 lines, 16,015 characters, sha256 `ac71cef2be2f5c1750425330eaf131ac9c516a843cc782f0fd8041c1548c5545` |
 | compact baseline block | 152 lines, 15,854 characters, sha256 `752dd381a02028dc7345a6ac826109bdcc879d82547a9029a43d559d0de8a605` |
+
+The composed config hash is over model + dataset + baseline + experiment together, which is why it differs from
+the drafted version's figure even where the baseline fragment's own keys are unchanged: the experiment fragment
+was re-registered on option B in the same change.
 
 Two construction rules are executable, not prose (`rails.proposer.contrast_note_records`, refusing the build
 otherwise):
@@ -69,7 +79,7 @@ otherwise):
   treatment note's character count. A category word longer than its note is refused rather than cut, which is why
   every note is at least as long as its own category.
 
-### 2.1 The 23 notes, their controls, and what each costs
+### 2.1 The 8 notes that fly, their controls, and what each costs
 
 `note` is the appended text; `chars` its length; `control` KC-A1c's length-matched text at the same count;
 `line` the resulting description length (the 200-character cap is never approached -- the longest is 97).
@@ -84,6 +94,16 @@ otherwise):
 | `setColorTemperature` | `; kelvin only, no color` | 23 | `; lighting tool tool` + 3 sp | 86 |
 | `setGroupLightState` | `; a group, not one light` | 24 | `; lighting tool tool` + 4 sp | 79 |
 | `setLighting` | `; one light, not a group` | 24 | `; core_control tool tool` | 97 |
+| **8 tools, flown** | | **161** | | |
+
+### 2.1b The 15 notes that do NOT fly
+
+Written, priced and retained in `configs/knowledge/a2t-kc-a1/targets-v1.json`, absent from both flown
+artifacts, and reachable later per cluster or through the evolution loop. They are listed so the option-B
+decision is auditable against what it declined rather than against a description of it.
+
+| tool | note | chars | control (same length) | line |
+|---|---|---:|---|---:|
 | `activateRoutine` | `; routine, not a scene` | 22 | `; automation tool tool` | 65 |
 | `activateScene` | `; scene, not a routine` | 22 | `; automation tool tool` | 66 |
 | `setApplianceMode` | `; one appliance only` | 20 | `; appliances tool` + 3 sp | 81 |
@@ -99,19 +119,54 @@ otherwise):
 | `updateFirmware` | `; firmware only, not reboot` | 27 | `; maintenance tool tool` + 4 sp | 80 |
 | `castContent` | `; from a url only` | 17 | `; media tool tool` | 67 |
 | `playMedia` | `; by query, not a url` | 21 | `; media tool tool` + 4 sp | 70 |
+| **15 tools, not flown** | | **316** | | |
 
 Per target, with the mass MF-1 attributes to it:
 
-| target | tools | added chars | estimated added tokens | MF-1 strict mass | ORG-1 residual |
-|---|---:|---:|---:|---:|---:|
-| lighting | 8 | 161 | 40 | 147 | 76 |
-| activateRoutine | 5 | 98 | 25 | 44 | 44 |
-| calibrateCameras | 4 | 96 | 24 | 16 | 21 |
-| getBiometricData | 4 | 84 | 21 | 23 | 22 |
-| castContent | 2 | 38 | 10 | 5 | 4 |
-| **all five** | **23** | **477** | **120** | **235** | **167** |
+| target | flown | tools | added chars | estimated added tokens | MF-1 strict mass | ORG-1 residual |
+|---|---|---:|---:|---:|---:|---:|
+| lighting | **yes** | 8 | 161 | **40** | 147 | 76 |
+| activateRoutine | no | 5 | 98 | 25 | 44 | 44 |
+| calibrateCameras | no | 4 | 96 | 24 | 16 | 21 |
+| getBiometricData | no | 4 | 84 | 21 | 23 | 22 |
+| castContent | no | 2 | 38 | 10 | 5 | 4 |
+| all five (the rejected artifact) | no | 23 | 477 | 120 | 235 | 167 |
 
-## 3. The form cap -- one OPEN owner decision, and the reason it is open
+The flown artifact is therefore **+161 characters, an estimated +40 tokens, 147 addressable rows**, and the
+builder's own gate agrees: both arms clear `rails.proposer.validate_candidate_artifact` at the un-relaxed
+`TOKEN_HEADROOM` with `token_headroom_slack_granted = 0`.
+
+## 3. The form cap -- CLOSED 2026-09-06 on option B
+
+**The owner-coordinator's decision, verbatim:**
+
+> Option B: KC-A1 targets the LIGHTING cluster only (147 of the 235 addressable rows), so the rendered registry
+> block stays within the +40-token form cap (section 5 of the program; the five-target inline notes were priced
+> at about +120 tokens and are rejected on that cap). The remaining MF-1 targets (activateRoutine,
+> getBiometricData, calibrateCameras, castContent) are NOT flown here; they return per cluster later or inside
+> the evolution loop. KC-A1c (the length-matched category-only control) keeps the same lighting-only tool set.
+
+What it changed, and nothing else did: `configs/knowledge/a2t-kc-a1/targets-lighting-v1.json` was added as the
+committed flown spec (the parent's `lighting` entry copied without one character altered, plus the decision
+recorded in an `owner_decision` block); `scripts/build_a2t_contrast_notes.py` grew one `--targets-spec` argument
+so a subset is a committed file rather than a command-line filter, with `--targets` left as the pricing filter it
+was; both artifacts, both baseline fragments and the artifact receipt were regenerated from that spec; the
+experiment fragment's `artifacts` block was re-registered on the new bytes. The estimated form cost falls from
++477 characters / +120 tokens to **+161 characters / +40 tokens**, the addressable mass from 235 to 147 rows,
+and the manipulated line count from 23 to 8. Section 4's population, section 5's budget, section 6's analysis and
+decision rule, section 7's prohibitions and section 9's deviations are untouched by the decision.
+
+Two consequences worth stating before the flight rather than after it:
+
+1. **The cell is now aimed exactly where ORG-1 already failed.** All 147 rows are lighting directions the grouped
+   registry halved (147 to 76) while losing 3.23 pp overall. KC-A1 is the test of whether the same neighbourhood
+   responds to distinguishing CONTENT at a quarter of ORG-1's prompt cost. That makes it a sharper test, not an
+   easier one.
+2. **The four unflown targets become a within-run negative control.** Their 88 rows sit in the same 4,000 and
+   receive no note, so the per-target miss-mass table separates "the notes moved their own cluster" from "the
+   prompt moved everything"; section 6's report includes all five targets for exactly that reason.
+
+### 3.1 The decision as it stood before it was taken (retained for audit)
 
 The program's section 5 caps a candidate rendering at **+40 tokens over the compact block**, and the MF-1 verdict
 asks for that cap to be enforced "from round 0". The five-target artifact is **+477 characters, an estimated +120
@@ -129,17 +184,19 @@ Nothing else in this document depends on which one the owner takes.
 | **B. lighting only** | rebuild with `scripts/build_a2t_contrast_notes.py --targets lighting` | +161 chars, est. **+40 tokens -- inside the cap** | 147 of 235 rows (63 %) |
 | **C. rewrite instead of append** | not built: notes would REPLACE description words rather than extend them | about +0 tokens | 235, but the arm is no longer an append and KC-A1c can no longer be length-matched by padding |
 
-The implementer's recommendation is **A**, with **B** as the fallback if the owner wants the cap honoured
+The implementer's recommendation was **A**, with **B** as the fallback if the owner wanted the cap honoured
 literally: the whole point of KC-A1c is to price the form, so a form cost that is measured and controlled is
 different in kind from ORG-1's, which was confounded with a 3x line-count change and never controlled. Option C
 is recorded because it is the only design that satisfies the cap and the content requirement at once, and because
 it is what the evolution loop's proposer rewrites will do; it is a different cell, not an edit to this one.
+**The owner took B**, and the recommendation is left standing above as it was written so the record shows what
+was declined.
 
-**Token counts here are estimates, not measurements.** The exact count needs the pinned GGUF tokenizer behind the
-resident server's `/tokenize` route, which no model-free step may start. The estimator is this repository's own
-ORG-1 measurement (+347 rendered characters = +87 text tokens, i.e. 3.989 characters per token). The prompt fit
-before takeoff measures the true value, and the decision above is void if the measured number is materially
-different from 120.
+**Token counts in this section are estimates, not measurements.** The exact count needs the pinned GGUF tokenizer
+behind the resident server's `/tokenize` route, which no model-free step may start. The estimator is this
+repository's own ORG-1 measurement (+347 rendered characters = +87 text tokens, i.e. 3.989 characters per token).
+The prompt fit before takeoff measures the true value, and the decision above is void if the measured added-token
+count is materially different from the **+40** option B was priced at.
 
 ## 4. Population and pairing
 
@@ -170,8 +227,8 @@ Two run ids, two exposure rows: `SAEA-A2T-KC-A1-CONTRAST-NOTES-V1` (cell `KC-A1-
 | paid API spend | 0 | 0 | |
 
 Serving geometry `-c 49152 -np 2` (24,576 tokens per slot), the geometry the tier-1, tiers-3/4/6/7 and ORG-1
-cells flew; the registry block grows by about 120 tokens, which leaves the 8,192-token reserve intact against the
-roster's four 654-second rows (8,515 speech tokens). The prompt fit re-derives it.
+cells flew; the registry block grows by about 40 tokens, which leaves the 8,192-token reserve intact against the
+roster's four 654-second rows (8,515 speech tokens) with more margin than ORG-1 had. The prompt fit re-derives it.
 
 ## 6. Analysis and decision (fixed before takeoff)
 
@@ -194,8 +251,8 @@ baseline, over 4,000 rows.
 
 **The control clause.** An ADMITTED KC-A1 is credited as a CONTENT effect only if KC-A1c does not reach a
 comparable delta, preregistered as: the KC-A1-minus-KC-A1c contrast on the same 4,000 rows has a CI90 lower bound
-above 0. If it does not, the gain is attributed to prompt FORM and the finding is that 477 characters of any text
-in those 23 lines move the metric -- which would be a result about this frozen core's prompt sensitivity, not
+above 0. If it does not, the gain is attributed to prompt FORM and the finding is that 161 characters of any text
+in those 8 lines move the metric -- which would be a result about this frozen core's prompt sensitivity, not
 about knowledge.
 
 Reported beside the decision, every time: the per-stratum table with the paper column; the five targets' own miss
@@ -212,9 +269,10 @@ re-registration per run id. KC-A1c flies only on an ADMITTED KC-A1.
 
 ## 8. What the flight agent must do between the owner GO and the first contact
 
-1. **Close section 3**: record the owner's choice of A, B or C verbatim. Option B requires rebuilding the two
-   artifacts with `--targets lighting` and re-emitting both fragments; the experiment fragment's cells are
-   otherwise unchanged.
+1. **Close section 3** -- **DONE 2026-09-06**: the owner's choice is recorded verbatim in section 3, both
+   artifacts were rebuilt from the committed lighting-only spec, both fragments were re-emitted through
+   `rails.evolution.write_candidate_fragments`, the artifact receipt was regenerated, and the experiment
+   fragment's `artifacts` block was re-registered on the new bytes. The cells themselves are unchanged.
 2. **Decontamination row.** Register a model-free exposure row and, under it, re-run
    `rails.proposer.validate_candidate_artifact` for both artifacts with `evaluation_query_texts` = the 4,000
    evaluation rows' query text. The builder passes an EMPTY sequence on purpose: reading that text needs a ledger
