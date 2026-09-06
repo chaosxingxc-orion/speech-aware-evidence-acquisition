@@ -553,7 +553,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             log("%s: %d envelopes measured" % (cell_id, measured))
     finally:
         stop_out = stop_session(
-            session, receipt_path=run_dir / "session.stop-receipt.json"
+            session,
+            runtime_receipt=runtime_receipt,
+            runtime_root=RUNTIME_ROOT,
+            receipt_path=run_dir / "session.stop-receipt.json",
+            force_after_timeout=True,
         )
         log("server stopped")
 
