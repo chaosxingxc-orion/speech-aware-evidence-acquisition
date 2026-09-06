@@ -190,3 +190,46 @@ def test_the_touched_train_source_list_is_explicit_and_readable(tmp_path) -> Non
     assert union == {"slurp:train:000001", "slurp:train:000002"}
     assert [row["new_utterances"] for row in rows] == [1, 1]
     assert len(TOUCHED_TRAIN_SOURCES) == len(set(TOUCHED_TRAIN_SOURCES))
+
+
+def test_assert_clean_cut_refuses_an_overlap_and_a_second_recording() -> None:
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        RosterSourceError,
+        assert_clean_cut,
+    )
+
+    assert_clean_cut(
+        {
+            "shared_recordings_fold_a_fold_b": 0,
+            "max_recordings_per_utterance_fold_a": 1,
+        }
+    )
+    with pytest.raises(RosterSourceError):
+        assert_clean_cut(
+            {
+                "shared_recordings_fold_a_fold_b": 1,
+                "max_recordings_per_utterance_fold_a": 1,
+            }
+        )
+    with pytest.raises(RosterSourceError):
+        assert_clean_cut(
+            {
+                "shared_recordings_fold_a_fold_b": 0,
+                "max_recordings_per_utterance_fold_a": 2,
+            }
+        )
+
+
+def test_pool_block_carries_the_eligible_count_after_exclusion() -> None:
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import pool_block
+
+    records = corpus(per_scenario=5)
+    touched = {utterance_of(records[0].sample_id)}
+    block = pool_block(
+        records, touched=touched, excluded_recordings=2, touched_rows=[]
+    )
+    assert block["train_utterances"] == 10
+    assert block["train_recordings"] == 20
+    assert block["touched_train_utterances"] == 1
+    assert block["touched_train_recordings"] == 2
+    assert block["eligible_utterances"] == 9

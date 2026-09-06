@@ -2,16 +2,11 @@
 """CLI: freeze the three EVO-S1 loop rosters (MODEL-FREE, identity only).
 
 Exposure row ``SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V1``, registered before the
-first draw; the cut and its proof live in ``analysis.slurp_evo_rosters``, the
-quotas in ``analysis.slurp_evo_capacity``. Authority
-``docs/readiness/2026-09-05-three-dimension-experiment-program.md`` sections
-4c and 5, census ``docs/checks/speech-aware-evidence-acquisition/
-2026-09-06-slurp-evo-construction-capacity/capacity.json``.
-
-ZERO CONTACTS: no frozen core, tokenizer, embedder, retriever, scorer,
-network, GPU or audio decode; flac HEADERS only, so each candidate's duration
-reaches the receipt for the budget table. ``--write`` lands the receipts;
-without it the draw only prints.
+first draw; the cut, its proof and its receipt blocks live in
+``analysis.slurp_evo_rosters``. Authority
+``docs/readiness/2026-09-05-three-dimension-experiment-program.md`` sections 4c
+and 5. ZERO CONTACTS: flac HEADERS only, so a duration reaches the receipt.
+``--write`` lands them.
 """
 
 from __future__ import annotations
@@ -33,10 +28,12 @@ from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (  # no
     EXEMPLAR_QUOTA,
     FOLD_QUOTA,
     SEED,
-    TOUCHED_TRAIN_SOURCES,
+    assert_clean_cut,
     disjointness_proof,
     freeze_evo_rosters,
+    pool_block,
     roster_documents,
+    summary_lines,
     touched_train_utterances,
     utterance_of,
 )
@@ -51,10 +48,8 @@ from speech_aware_evidence_acquisition.data.slurp import load_slurp_split  # noq
 AUTHORITY = "docs/readiness/2026-09-05-three-dimension-experiment-program.md"
 EXPOSURE_ROW_ID = "SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V1"
 CAPACITY_ROW_ID = "SAEA-SLURP-MF-EVO-CONSTRUCTION-CAPACITY-V1"
-CAPACITY_RECEIPT = (
-    "docs/checks/speech-aware-evidence-acquisition/"
-    "2026-09-06-slurp-evo-construction-capacity/capacity.json"
-)
+CAPACITY_DIR = "docs/checks/speech-aware-evidence-acquisition"
+CAPACITY_RECEIPT = f"{CAPACITY_DIR}/2026-09-06-slurp-evo-construction-capacity/capacity.json"
 SPLIT_IDENTITY = REPO_ROOT / "docs/receipts/knowledge/slurp-split-identity.json"
 ROSTERS = REPO_ROOT / "docs/receipts/rosters"
 
@@ -95,18 +90,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         test_ids=identity["splits"]["test"]["ids"],
         contacted_train_utterances=sorted(touched),
     )
-    offenders = {
-        key: value
-        for key, value in proof.items()
-        if value != 0 and not key.startswith("max_recordings")
-    }
-    bad_blocks = {
-        key: value
-        for key, value in proof.items()
-        if key.startswith("max_recordings") and value != 1
-    }
-    if offenders or bad_blocks:
-        raise SystemExit(f"refusing to write: disjointness proof failed: {offenders} {bad_blocks}")
+    assert_clean_cut(proof)
 
     documents = roster_documents(
         cut,
@@ -117,27 +101,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             "exposure_row": EXPOSURE_ROW_ID,
             "capacity_row": CAPACITY_ROW_ID,
             "capacity_receipt": CAPACITY_RECEIPT,
-            "pool": {
-                "source": "the governed SLURP train split, every real recording",
-                "train_recordings": len(records),
-                "train_utterances": len(
-                    {utterance_of(record.sample_id) for record in records}
-                ),
-                "entity_bearing_utterances": len(
-                    {
-                        utterance_of(record.sample_id)
-                        for record in records
-                        if record.entities
-                    }
-                ),
-                "touched_train_utterances": len(touched),
-                "touched_train_recordings": len(excluded_ids),
-                "eligible_utterances": len(
-                    {utterance_of(record.sample_id) for record in records} - touched
-                ),
-                "touched_train_source_count": len(TOUCHED_TRAIN_SOURCES),
-                "touched_train_sources": touched_rows,
-            },
+            "pool": pool_block(
+                records,
+                touched=touched,
+                excluded_recordings=len(excluded_ids),
+                touched_rows=touched_rows,
+            ),
             "split_identity_receipt": {
                 "relpath": "docs/receipts/knowledge/slurp-split-identity.json",
                 "devel_identity_hash": identity["splits"]["devel"]["identity_hash"],
@@ -158,15 +127,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             },
         },
     )
-    for _stem, document in documents:
-        print(
-            f"{document['roster_id']}: {len(document['items'])} recordings, "
-            f"{document['distinct_utterances']} utterances, "
-            f"{document['audio_seconds_total']:.4f} s, "
-            f"{document['headset_share'] * 100:.1f} % headset, "
-            f"identity {document['split_identity_hash']}"
-        )
-        print(f"  strata: {document['strata_counts']}")
+    for line in summary_lines(documents):
+        print(line)
     print(f"disjointness proof: {json.dumps(proof, sort_keys=True)}")
     print(f"offline guard: {attempts.count} outbound connection attempts")
     if not args.write:

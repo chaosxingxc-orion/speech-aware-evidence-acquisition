@@ -44,7 +44,7 @@ from __future__ import annotations
 import re
 from collections import Counter
 from pathlib import Path
-from typing import Mapping, Sequence
+from typing import Collection, Mapping, Sequence
 
 from ..core.roster import CONSTRUCTION_ROSTER_ROLE, RosterItem, freeze_roster
 from ..data.slurp import SlurpRecord
@@ -291,6 +291,66 @@ def disjointness_proof(
     return proof
 
 
+def summary_lines(
+    documents: Sequence[tuple[str, Mapping[str, object]]]
+) -> list[str]:
+    """One line per roster plus its strata, for the generator's stdout."""
+
+    lines: list[str] = []
+    for _stem, document in documents:
+        lines.append(
+            f"{document['roster_id']}: {len(document['items'])} recordings, "  # type: ignore[arg-type]
+            f"{document['distinct_utterances']} utterances, "
+            f"{float(document['audio_seconds_total']):.4f} s, "
+            f"{float(document['headset_share']) * 100:.1f} % headset, "
+            f"identity {document['split_identity_hash']}"
+        )
+        lines.append(f"  strata: {document['strata_counts']}")
+    return lines
+
+
+def assert_clean_cut(proof: Mapping[str, object]) -> None:
+    """Refuse a cut whose proof is not perfect; the write never sees it.
+
+    Every count in the proof must be 0 except the per-roster
+    ``max_recordings_per_utterance_*`` entries, which must be exactly 1.
+    """
+
+    def expected(key: str) -> int:
+        return 1 if key.startswith("max_recordings_per_utterance") else 0
+
+    offenders = {
+        key: value for key, value in proof.items() if value != expected(key)
+    }
+    if offenders:
+        raise RosterSourceError(f"the EVO-S1 cut is not disjoint: {offenders}")
+
+
+def pool_block(
+    records: Sequence[SlurpRecord],
+    *,
+    touched: Collection[str],
+    excluded_recordings: int,
+    touched_rows: Sequence[Mapping[str, object]],
+) -> dict[str, object]:
+    """The ``pool`` block every roster receipt carries: what the draw saw."""
+
+    blocks = {utterance_of(record.sample_id) for record in records}
+    return {
+        "source": "the governed SLURP train split, every real recording",
+        "train_recordings": len(records),
+        "train_utterances": len(blocks),
+        "entity_bearing_utterances": len(
+            {utterance_of(record.sample_id) for record in records if record.entities}
+        ),
+        "touched_train_utterances": len(set(touched)),
+        "touched_train_recordings": excluded_recordings,
+        "eligible_utterances": len(blocks - set(touched)),
+        "touched_train_source_count": len(TOUCHED_TRAIN_SOURCES),
+        "touched_train_sources": list(touched_rows),
+    }
+
+
 def roster_documents(
     cut: Mapping[str, Mapping[str, object]],
     *,
@@ -330,6 +390,9 @@ def roster_documents(
 
 __all__ = [
     "CARRIER",
+    "assert_clean_cut",
+    "summary_lines",
+    "pool_block",
     "TOUCHED_TRAIN_SOURCES",
     "RosterSourceError",
     "touched_train_utterances",
