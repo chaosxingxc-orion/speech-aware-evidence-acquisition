@@ -1,0 +1,225 @@
+{
+  "arm": "speech-feature-query",
+  "artifact_family": "slurp-slot-schema",
+  "artifact_keys": {
+    "alarm": [
+      "alarm_set",
+      "alarm_remove",
+      "alarm_query"
+    ],
+    "audio": [
+      "audio_volume_mute",
+      "audio_volume_up",
+      "audio_volume_down",
+      "audio_volume_other"
+    ],
+    "calendar": [
+      "calendar_set",
+      "calendar_query",
+      "calendar_remove"
+    ],
+    "cooking": [
+      "cooking_recipe",
+      "cooking_query"
+    ],
+    "datetime": [
+      "datetime_query",
+      "datetime_convert"
+    ],
+    "email": [
+      "email_sendemail",
+      "email_query",
+      "email_querycontact",
+      "email_addcontact"
+    ],
+    "general": [
+      "general_quirky",
+      "general_joke",
+      "general_greet"
+    ],
+    "iot": [
+      "iot_hue_lightchange",
+      "iot_hue_lightoff",
+      "iot_cleaning",
+      "iot_coffee",
+      "iot_wemo_off",
+      "iot_wemo_on",
+      "iot_hue_lightdim",
+      "iot_hue_lightup",
+      "iot_hue_lighton"
+    ],
+    "lists": [
+      "lists_createoradd",
+      "lists_remove",
+      "lists_query"
+    ],
+    "music": [
+      "music_settings",
+      "music_likeness",
+      "music_query",
+      "music_dislikeness"
+    ],
+    "news": [
+      "news_query"
+    ],
+    "play": [
+      "play_music",
+      "play_audiobook",
+      "play_radio",
+      "play_podcasts",
+      "play_game"
+    ],
+    "qa": [
+      "qa_factoid",
+      "qa_definition",
+      "qa_currency",
+      "qa_stock",
+      "qa_maths"
+    ],
+    "recommendation": [
+      "recommendation_locations",
+      "recommendation_events",
+      "recommendation_movies"
+    ],
+    "social": [
+      "social_post",
+      "social_query"
+    ],
+    "takeaway": [
+      "takeaway_order",
+      "takeaway_query"
+    ],
+    "transport": [
+      "transport_query",
+      "transport_ticket",
+      "transport_taxi",
+      "transport_traffic"
+    ],
+    "weather": [
+      "weather_query"
+    ]
+  },
+  "artifact_reldir": "configs/knowledge/slurp-evo-s1",
+  "background_tolerance_pp": -1.0,
+  "base_fragment": "slurp-phase-slots-given-intent-schema-v1",
+  "carrier_lock_key": "slurp",
+  "cell_label": "EVO-S1",
+  "decontamination": {
+    "baseline_filler_texts": "A_0's own 1,008 TRAIN fillers, which KC-S1b already sent and which are therefore exempt: refusing them would refuse the incumbent itself",
+    "evaluation_sentence_texts": "the SLURP devel sentences, opened inside rails.proposer.validate_slurp_candidate_artifact alone and never rendered; a first for this study and confirmed as its own model-free row (preregistration section 8)",
+    "exemplar_texts": "the construction rows each candidate's proposer was shown; overlap is measured and reported, never gated",
+    "row": "SAEA-SLURP-MF-EVO-DECONTAMINATION-V1"
+  },
+  "deterministic_placebo": true,
+  "deterministic_slot": 4,
+  "exemplar_roster_relpath": "docs/receipts/rosters/slurp-evo-exemplars-v2.json",
+  "exemplars_per_scenario": 8,
+  "experiments_reldir": "configs/experiment",
+  "fold_a_dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+  "fold_a_roster_relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+  "fold_a_run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V1",
+  "fold_b_dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+  "fold_b_roster_relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+  "fold_b_run_id": "SAEA-SLURP-EVO-S1-FOLD-B-V1",
+  "fold_predecessors": {
+    "fold-a": {
+      "manifest_relpath": "runs/SAEA-SLURP-EVO-S1-INTENT-FOLDS-V1/attempt-intent-a/SAEA-SLURP-EVO-S1-INTENT-FOLDS-V1.run-manifest.json",
+      "manifest_sha256": "PENDING",
+      "producer_policy_id": "SAEA-SLURP-EVO-S1-INTENT-FOLDS-V1"
+    },
+    "fold-b": {
+      "manifest_relpath": "runs/SAEA-SLURP-EVO-S1-INTENT-FOLDS-V1/attempt-intent-b/SAEA-SLURP-EVO-S1-INTENT-FOLDS-V1.run-manifest.json",
+      "manifest_sha256": "PENDING",
+      "producer_policy_id": "SAEA-SLURP-EVO-S1-INTENT-FOLDS-V1"
+    }
+  },
+  "fragment_reldir": "configs/baseline",
+  "gates": {
+    "harms": 1,
+    "net": 3,
+    "saves": 4
+  },
+  "harm_bound": {
+    "max_net_harm_rows": 1,
+    "unadmitted_tolerance_pp": -1.0
+  },
+  "harms_per_rows": 30,
+  "max_rounds": 4,
+  "metric": "slot_f1_exact_f1",
+  "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+  "n_replicates": 10000,
+  "note": "The EVO-S1 loop, as data. scripts/run_evolution_round.py carries no cell knowledge of its own; every value here is preregistered in docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md. NOT FLYABLE YET, and the two reasons are visible in this file: fold_predecessors carries manifest_sha256 PENDING until the one-time closed-list intent flight seals on both folds (section 4), and the three roster relpaths name the V2 draw of section 16 open point 1 remedy (b) -- 60 utterances per scenario, 1,080 rows per fold, which is what makes the preregistered 4/1/3 stage-one gate reachable for nine of eighteen scenarios instead of three. targets are the eighteen SCENARIOS, one stratum member each (target_kind scenario); artifact_keys are the sixty INTENTS those scenarios own, in descending TRAIN mention mass, which is the order the proposer is shown the blocks in and therefore the order it must return them in. The two controls are deterministic (deterministic_placebo), so a round costs 54 proposer contacts and not 90, and the round-1 form twin needs a token counter bound to the resident server's /tokenize. Both harm rules are RATES at harms_per_rows 30 (owner, 2026-09-06): on the V2 draw's 60 rows per scenario, stage one admits a candidate with at most 2 harms and stage three tolerates harms - saves <= 2, while EVO-A1's 20-row tool quotas keep reading 1 without declaring the field.",
+  "placebo_slot": 5,
+  "preregistration": "docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md",
+  "proposer_run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V1",
+  "proposer_slots": [
+    1,
+    2,
+    3
+  ],
+  "receipts_reldir": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-s1",
+  "rosters_reldir": "docs/receipts/rosters",
+  "schema": "saea-evolution-loop-config-v1",
+  "scorer_id": "slurp-slu-official",
+  "seed": 20260903,
+  "slug": "slurp-evo-s1",
+  "state_fill": "slurp-evolved-slot-schema-for-state",
+  "state_fill_phase": "slots",
+  "target_kind": "scenario",
+  "targets": {
+    "alarm": [
+      "alarm"
+    ],
+    "audio": [
+      "audio"
+    ],
+    "calendar": [
+      "calendar"
+    ],
+    "cooking": [
+      "cooking"
+    ],
+    "datetime": [
+      "datetime"
+    ],
+    "email": [
+      "email"
+    ],
+    "general": [
+      "general"
+    ],
+    "iot": [
+      "iot"
+    ],
+    "lists": [
+      "lists"
+    ],
+    "music": [
+      "music"
+    ],
+    "news": [
+      "news"
+    ],
+    "play": [
+      "play"
+    ],
+    "qa": [
+      "qa"
+    ],
+    "recommendation": [
+      "recommendation"
+    ],
+    "social": [
+      "social"
+    ],
+    "takeaway": [
+      "takeaway"
+    ],
+    "transport": [
+      "transport"
+    ],
+    "weather": [
+      "weather"
+    ]
+  }
+}

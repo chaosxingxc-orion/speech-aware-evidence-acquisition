@@ -1,0 +1,5240 @@
+{
+  "authority": "docs/readiness/2026-09-05-three-dimension-experiment-program.md",
+  "block_disjointness": {
+    "any_vs_exposure_union_blocks": 0,
+    "any_vs_exposure_union_sample_ids": 0,
+    "distinct_blocks": 292,
+    "duplicate_sample_ids_across_rosters": 0,
+    "exposure_union_blocks": 2956,
+    "exposure_union_sample_ids": 5279,
+    "fold_a_vs_exemplars_blocks": 0,
+    "fold_a_vs_fold_b_blocks": 0,
+    "fold_b_vs_exemplars_blocks": 0,
+    "policy": "block-level: a query_idx block is the leakage unit, because the carrier re-renders one base scenario at several tiers. Every block belongs to at most one of the three rosters, by construction and re-proved here"
+  },
+  "capacity_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-construction-capacity/capacity.json",
+  "capacity_row": "SAEA-A2T-MF-EVO-CONSTRUCTION-CAPACITY-V1",
+  "carrier_lock_key": "audio2tool",
+  "design": "EVO-A1 loop roster, roster_role 'construction' (owner decision 2026-09-05): these identities may be read WITH their gold offline, and gold may reach the frozen core only through the text-only 'construction-proposer-text' arm as prompt artifacts, never answers. split_role stays 'discovery', the TRAIN90 precedent. Block-disjoint from the Audio2Tool exposure union, from the reserved A2T-FRESH-800-V1, and from the other two EVO rosters.",
+  "excluded_count": 451,
+  "exposure_row": "SAEA-SN-MF-A2T-EVO-FOLD-ROSTERS-V1",
+  "exposure_union": {
+    "excluded_roster_role": "construction",
+    "note": "Union of every committed EVALUATION identity of the audio2tool carrier: probe-sample receipts, additive D1 media supplements, and roster-v1 receipts whose roster_role is 'evaluation'. Construction-role rosters are excluded by design (owner decision 2026-09-05: construction identities may be read with their gold labels, evaluation identities never can).",
+    "policy_id": "saea-a2t-exposure-union-v1",
+    "source_count": 14,
+    "sources": [
+      {
+        "kind": "probe-sample",
+        "name": "a2t-tier1-official-population-500",
+        "new_sample_ids": 489,
+        "relpath": "docs/receipts/probe-samples/a2t-tier1-official-population-500.json",
+        "roster_role": "evaluation",
+        "sample_ids": 489
+      },
+      {
+        "kind": "probe-sample",
+        "name": "a2t-tier258-official-population-1500",
+        "new_sample_ids": 1423,
+        "relpath": "docs/receipts/probe-samples/a2t-tier258-official-population-1500.json",
+        "roster_role": "evaluation",
+        "sample_ids": 1423
+      },
+      {
+        "kind": "probe-sample",
+        "name": "a2t-tier3467-official-population-2000",
+        "new_sample_ids": 1954,
+        "relpath": "docs/receipts/probe-samples/a2t-tier3467-official-population-2000.json",
+        "roster_role": "evaluation",
+        "sample_ids": 1954
+      },
+      {
+        "kind": "probe-sample",
+        "name": "r1-audio2tool-sample",
+        "new_sample_ids": 400,
+        "relpath": "docs/receipts/probe-samples/r1-audio2tool-sample.json",
+        "roster_role": "evaluation",
+        "sample_ids": 400
+      },
+      {
+        "kind": "probe-sample",
+        "name": "select-fill-agentloop-104-postseal-scoring",
+        "new_sample_ids": 104,
+        "relpath": "docs/receipts/probe-samples/select-fill-agentloop-104-postseal-scoring.json",
+        "roster_role": "evaluation",
+        "sample_ids": 104
+      },
+      {
+        "kind": "probe-sample",
+        "name": "semantic-agentloop-104-postseal-scoring",
+        "new_sample_ids": 104,
+        "relpath": "docs/receipts/probe-samples/semantic-agentloop-104-postseal-scoring.json",
+        "roster_role": "evaluation",
+        "sample_ids": 104
+      },
+      {
+        "kind": "d1-media-supplement",
+        "name": "d1-a2t-g3-dialogue-5",
+        "new_sample_ids": 5,
+        "relpath": "docs/receipts/artifacts/d1-a2t-g3-dialogue-5.json",
+        "roster_role": "evaluation",
+        "sample_ids": 5
+      },
+      {
+        "kind": "d1-media-supplement",
+        "name": "d1-a2t-org1-union-4000",
+        "new_sample_ids": 0,
+        "relpath": "docs/receipts/artifacts/d1-a2t-org1-union-4000.json",
+        "roster_role": "evaluation",
+        "sample_ids": 3932
+      },
+      {
+        "kind": "d1-media-supplement",
+        "name": "d1-a2t-semantic-agentloop-104",
+        "new_sample_ids": 0,
+        "relpath": "docs/receipts/artifacts/d1-a2t-semantic-agentloop-104.json",
+        "roster_role": "evaluation",
+        "sample_ids": 104
+      },
+      {
+        "kind": "d1-media-supplement",
+        "name": "d1-a2t-semantic-agentloop-select-fill-104",
+        "new_sample_ids": 0,
+        "relpath": "docs/receipts/artifacts/d1-a2t-semantic-agentloop-select-fill-104.json",
+        "roster_role": "evaluation",
+        "sample_ids": 104
+      },
+      {
+        "kind": "d1-media-supplement",
+        "name": "d1-a2t-tier1-official-population-500",
+        "new_sample_ids": 0,
+        "relpath": "docs/receipts/artifacts/d1-a2t-tier1-official-population-500.json",
+        "roster_role": "evaluation",
+        "sample_ids": 495
+      },
+      {
+        "kind": "d1-media-supplement",
+        "name": "d1-a2t-tier258-official-population-1500",
+        "new_sample_ids": 0,
+        "relpath": "docs/receipts/artifacts/d1-a2t-tier258-official-population-1500.json",
+        "roster_role": "evaluation",
+        "sample_ids": 1455
+      },
+      {
+        "kind": "d1-media-supplement",
+        "name": "d1-a2t-tier3467-official-population-2000",
+        "new_sample_ids": 0,
+        "relpath": "docs/receipts/artifacts/d1-a2t-tier3467-official-population-2000.json",
+        "roster_role": "evaluation",
+        "sample_ids": 1982
+      },
+      {
+        "kind": "roster-receipt",
+        "name": "a2t-fresh-800-v1",
+        "new_sample_ids": 800,
+        "relpath": "docs/receipts/rosters/a2t-fresh-800-v1.json",
+        "roster_role": "evaluation",
+        "sample_ids": 800
+      }
+    ],
+    "sources_by_kind": {
+      "d1-media-supplement": 7,
+      "probe-sample": 6,
+      "roster-receipt": 1
+    },
+    "union_sample_ids": 5279
+  },
+  "gate_exposure_identity_hash": "2cc816cd78c3630c928818a91a6fdcb48d4e994baf64ff875310d5ecca5394bd",
+  "generator": "scripts/build_a2t_evo_fold_rosters.py",
+  "items": [
+    {
+      "id": 13,
+      "key": "audio2tool:tier1_direct:000013",
+      "query_idx": 2106,
+      "sample_id": "tier1_direct:000013",
+      "stratum": "setLighting",
+      "tier": "tier1_direct",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 157,
+      "key": "audio2tool:tier1_direct:000157",
+      "query_idx": 2178,
+      "sample_id": "tier1_direct:000157",
+      "stratum": "setColor",
+      "tier": "tier1_direct",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 163,
+      "key": "audio2tool:tier1_direct:000163",
+      "query_idx": 2181,
+      "sample_id": "tier1_direct:000163",
+      "stratum": "setColor",
+      "tier": "tier1_direct",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 165,
+      "key": "audio2tool:tier1_direct:000165",
+      "query_idx": 2182,
+      "sample_id": "tier1_direct:000165",
+      "stratum": "setColor",
+      "tier": "tier1_direct",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 233,
+      "key": "audio2tool:tier1_direct:000233",
+      "query_idx": 2216,
+      "sample_id": "tier1_direct:000233",
+      "stratum": "setColorTemperature",
+      "tier": "tier1_direct",
+      "tool_name": "setColorTemperature"
+    },
+    {
+      "id": 715,
+      "key": "audio2tool:tier1_direct:000715",
+      "query_idx": 2457,
+      "sample_id": "tier1_direct:000715",
+      "stratum": "background:tier1_direct",
+      "tier": "tier1_direct",
+      "tool_name": "setLockState"
+    },
+    {
+      "id": 725,
+      "key": "audio2tool:tier1_direct:000725",
+      "query_idx": 2462,
+      "sample_id": "tier1_direct:000725",
+      "stratum": "setSecurityMode",
+      "tier": "tier1_direct",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 729,
+      "key": "audio2tool:tier1_direct:000729",
+      "query_idx": 2464,
+      "sample_id": "tier1_direct:000729",
+      "stratum": "setSecurityMode",
+      "tier": "tier1_direct",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 741,
+      "key": "audio2tool:tier1_direct:000741",
+      "query_idx": 2470,
+      "sample_id": "tier1_direct:000741",
+      "stratum": "setSecurityMode",
+      "tier": "tier1_direct",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 755,
+      "key": "audio2tool:tier1_direct:000755",
+      "query_idx": 2477,
+      "sample_id": "tier1_direct:000755",
+      "stratum": "setSecurityMode",
+      "tier": "tier1_direct",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 971,
+      "key": "audio2tool:tier1_direct:000971",
+      "query_idx": 2585,
+      "sample_id": "tier1_direct:000971",
+      "stratum": "playMedia",
+      "tier": "tier1_direct",
+      "tool_name": "playMedia"
+    },
+    {
+      "id": 1165,
+      "key": "audio2tool:tier1_direct:001165",
+      "query_idx": 2682,
+      "sample_id": "tier1_direct:001165",
+      "stratum": "castContent",
+      "tier": "tier1_direct",
+      "tool_name": "castContent"
+    },
+    {
+      "id": 1185,
+      "key": "audio2tool:tier1_direct:001185",
+      "query_idx": 2692,
+      "sample_id": "tier1_direct:001185",
+      "stratum": "castContent",
+      "tier": "tier1_direct",
+      "tool_name": "castContent"
+    },
+    {
+      "id": 1299,
+      "key": "audio2tool:tier1_direct:001299",
+      "query_idx": 2749,
+      "sample_id": "tier1_direct:001299",
+      "stratum": "startCleaning",
+      "tier": "tier1_direct",
+      "tool_name": "startCleaning"
+    },
+    {
+      "id": 1695,
+      "key": "audio2tool:tier1_direct:001695",
+      "query_idx": 2947,
+      "sample_id": "tier1_direct:001695",
+      "stratum": "activateScene",
+      "tier": "tier1_direct",
+      "tool_name": "activateScene"
+    },
+    {
+      "id": 1883,
+      "key": "audio2tool:tier1_direct:001883",
+      "query_idx": 3041,
+      "sample_id": "tier1_direct:001883",
+      "stratum": "background:tier1_direct",
+      "tier": "tier1_direct",
+      "tool_name": "getNetworkHealth"
+    },
+    {
+      "id": 1951,
+      "key": "audio2tool:tier1_direct:001951",
+      "query_idx": 3075,
+      "sample_id": "tier1_direct:001951",
+      "stratum": "background:tier1_direct",
+      "tier": "tier1_direct",
+      "tool_name": "getBatteryLevel"
+    },
+    {
+      "id": 1963,
+      "key": "audio2tool:tier1_direct:001963",
+      "query_idx": 3081,
+      "sample_id": "tier1_direct:001963",
+      "stratum": "background:tier1_direct",
+      "tier": "tier1_direct",
+      "tool_name": "getBatteryLevel"
+    },
+    {
+      "id": 2521,
+      "key": "audio2tool:tier1_direct:002521",
+      "query_idx": 3360,
+      "sample_id": "tier1_direct:002521",
+      "stratum": "background:tier1_direct",
+      "tier": "tier1_direct",
+      "tool_name": "calibrateThermostat"
+    },
+    {
+      "id": 2627,
+      "key": "audio2tool:tier1_direct:002627",
+      "query_idx": 3413,
+      "sample_id": "tier1_direct:002627",
+      "stratum": "resetFilterStatus",
+      "tier": "tier1_direct",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 2703,
+      "key": "audio2tool:tier1_direct:002703",
+      "query_idx": 3451,
+      "sample_id": "tier1_direct:002703",
+      "stratum": "setLighting",
+      "tier": "tier1_direct",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 2759,
+      "key": "audio2tool:tier1_direct:002759",
+      "query_idx": 3479,
+      "sample_id": "tier1_direct:002759",
+      "stratum": "setLighting",
+      "tier": "tier1_direct",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 2897,
+      "key": "audio2tool:tier1_direct:002897",
+      "query_idx": 3848,
+      "sample_id": "tier1_direct:002897",
+      "stratum": "background:tier1_direct",
+      "tier": "tier1_direct",
+      "tool_name": "findMyDevice"
+    },
+    {
+      "id": 3011,
+      "key": "audio2tool:tier1_direct:003011",
+      "query_idx": 4355,
+      "sample_id": "tier1_direct:003011",
+      "stratum": "activateRoutine",
+      "tier": "tier1_direct",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 3055,
+      "key": "audio2tool:tier1_direct:003055",
+      "query_idx": 4377,
+      "sample_id": "tier1_direct:003055",
+      "stratum": "activateRoutine",
+      "tier": "tier1_direct",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 3095,
+      "key": "audio2tool:tier1_direct:003095",
+      "query_idx": 4397,
+      "sample_id": "tier1_direct:003095",
+      "stratum": "setGroupLightState",
+      "tier": "tier1_direct",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 3195,
+      "key": "audio2tool:tier1_direct:003195",
+      "query_idx": 3547,
+      "sample_id": "tier1_direct:003195",
+      "stratum": "getBiometricData",
+      "tier": "tier1_direct",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 3215,
+      "key": "audio2tool:tier1_direct:003215",
+      "query_idx": 3557,
+      "sample_id": "tier1_direct:003215",
+      "stratum": "getBiometricData",
+      "tier": "tier1_direct",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 3391,
+      "key": "audio2tool:tier1_direct:003391",
+      "query_idx": 3645,
+      "sample_id": "tier1_direct:003391",
+      "stratum": "background:tier1_direct",
+      "tier": "tier1_direct",
+      "tool_name": "setDoNotDisturb"
+    },
+    {
+      "id": 3559,
+      "key": "audio2tool:tier1_direct:003559",
+      "query_idx": 3729,
+      "sample_id": "tier1_direct:003559",
+      "stratum": "background:tier1_direct",
+      "tier": "tier1_direct",
+      "tool_name": "installApp"
+    },
+    {
+      "id": 3979,
+      "key": "audio2tool:tier1_direct:003979",
+      "query_idx": 145,
+      "sample_id": "tier1_direct:003979",
+      "stratum": "background:tier1_direct",
+      "tier": "tier1_direct",
+      "tool_name": "setSteeringWheelHeat"
+    },
+    {
+      "id": 4093,
+      "key": "audio2tool:tier1_direct:004093",
+      "query_idx": 1066,
+      "sample_id": "tier1_direct:004093",
+      "stratum": "background:tier1_direct",
+      "tier": "tier1_direct",
+      "tool_name": "controlPlayback"
+    },
+    {
+      "id": 4123,
+      "key": "audio2tool:tier1_direct:004123",
+      "query_idx": 1294,
+      "sample_id": "tier1_direct:004123",
+      "stratum": "background:tier1_direct",
+      "tier": "tier1_direct",
+      "tool_name": "searchPOI"
+    },
+    {
+      "id": 4161,
+      "key": "audio2tool:tier1_direct:004161",
+      "query_idx": 1580,
+      "sample_id": "tier1_direct:004161",
+      "stratum": "background:tier1_direct",
+      "tier": "tier1_direct",
+      "tool_name": "getLockState"
+    },
+    {
+      "id": 4265,
+      "key": "audio2tool:tier1_direct:004265",
+      "query_idx": 4135,
+      "sample_id": "tier1_direct:004265",
+      "stratum": "background:tier1_direct",
+      "tier": "tier1_direct",
+      "tool_name": "flashLights"
+    },
+    {
+      "id": 4271,
+      "key": "audio2tool:tier1_direct:004271",
+      "query_idx": 4164,
+      "sample_id": "tier1_direct:004271",
+      "stratum": "background:tier1_direct",
+      "tier": "tier1_direct",
+      "tool_name": "setCargoState"
+    },
+    {
+      "id": 4283,
+      "key": "audio2tool:tier1_direct:004283",
+      "query_idx": 4254,
+      "sample_id": "tier1_direct:004283",
+      "stratum": "background:tier1_direct",
+      "tier": "tier1_direct",
+      "tool_name": "setFollowDistance"
+    },
+    {
+      "id": 137,
+      "key": "audio2tool:tier2_parametric:000137",
+      "query_idx": 2268,
+      "sample_id": "tier2_parametric:000137",
+      "stratum": "setColor",
+      "tier": "tier2_parametric",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 189,
+      "key": "audio2tool:tier2_parametric:000189",
+      "query_idx": 2294,
+      "sample_id": "tier2_parametric:000189",
+      "stratum": "setColor",
+      "tier": "tier2_parametric",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 847,
+      "key": "audio2tool:tier2_parametric:000847",
+      "query_idx": 2823,
+      "sample_id": "tier2_parametric:000847",
+      "stratum": "setColorTemperature",
+      "tier": "tier2_parametric",
+      "tool_name": "setColorTemperature"
+    },
+    {
+      "id": 849,
+      "key": "audio2tool:tier2_parametric:000849",
+      "query_idx": 2824,
+      "sample_id": "tier2_parametric:000849",
+      "stratum": "setColorTemperature",
+      "tier": "tier2_parametric",
+      "tool_name": "setColorTemperature"
+    },
+    {
+      "id": 893,
+      "key": "audio2tool:tier2_parametric:000893",
+      "query_idx": 2846,
+      "sample_id": "tier2_parametric:000893",
+      "stratum": "setColorTemperature",
+      "tier": "tier2_parametric",
+      "tool_name": "setColorTemperature"
+    },
+    {
+      "id": 1005,
+      "key": "audio2tool:tier2_parametric:001005",
+      "query_idx": 2902,
+      "sample_id": "tier2_parametric:001005",
+      "stratum": "background:tier2_parametric",
+      "tier": "tier2_parametric",
+      "tool_name": "armSecuritySystem"
+    },
+    {
+      "id": 1471,
+      "key": "audio2tool:tier2_parametric:001471",
+      "query_idx": 3135,
+      "sample_id": "tier2_parametric:001471",
+      "stratum": "background:tier2_parametric",
+      "tier": "tier2_parametric",
+      "tool_name": "setVolume"
+    },
+    {
+      "id": 1515,
+      "key": "audio2tool:tier2_parametric:001515",
+      "query_idx": 3157,
+      "sample_id": "tier2_parametric:001515",
+      "stratum": "setApplianceMode",
+      "tier": "tier2_parametric",
+      "tool_name": "setApplianceMode"
+    },
+    {
+      "id": 1523,
+      "key": "audio2tool:tier2_parametric:001523",
+      "query_idx": 3161,
+      "sample_id": "tier2_parametric:001523",
+      "stratum": "setApplianceMode",
+      "tier": "tier2_parametric",
+      "tool_name": "setApplianceMode"
+    },
+    {
+      "id": 1531,
+      "key": "audio2tool:tier2_parametric:001531",
+      "query_idx": 3165,
+      "sample_id": "tier2_parametric:001531",
+      "stratum": "setApplianceMode",
+      "tier": "tier2_parametric",
+      "tool_name": "setApplianceMode"
+    },
+    {
+      "id": 1533,
+      "key": "audio2tool:tier2_parametric:001533",
+      "query_idx": 3166,
+      "sample_id": "tier2_parametric:001533",
+      "stratum": "setApplianceMode",
+      "tier": "tier2_parametric",
+      "tool_name": "setApplianceMode"
+    },
+    {
+      "id": 1567,
+      "key": "audio2tool:tier2_parametric:001567",
+      "query_idx": 3183,
+      "sample_id": "tier2_parametric:001567",
+      "stratum": "setApplianceMode",
+      "tier": "tier2_parametric",
+      "tool_name": "setApplianceMode"
+    },
+    {
+      "id": 1569,
+      "key": "audio2tool:tier2_parametric:001569",
+      "query_idx": 3184,
+      "sample_id": "tier2_parametric:001569",
+      "stratum": "setApplianceMode",
+      "tier": "tier2_parametric",
+      "tool_name": "setApplianceMode"
+    },
+    {
+      "id": 1733,
+      "key": "audio2tool:tier2_parametric:001733",
+      "query_idx": 3266,
+      "sample_id": "tier2_parametric:001733",
+      "stratum": "playMedia",
+      "tier": "tier2_parametric",
+      "tool_name": "playMedia"
+    },
+    {
+      "id": 1823,
+      "key": "audio2tool:tier2_parametric:001823",
+      "query_idx": 3311,
+      "sample_id": "tier2_parametric:001823",
+      "stratum": "castContent",
+      "tier": "tier2_parametric",
+      "tool_name": "castContent"
+    },
+    {
+      "id": 1833,
+      "key": "audio2tool:tier2_parametric:001833",
+      "query_idx": 3316,
+      "sample_id": "tier2_parametric:001833",
+      "stratum": "castContent",
+      "tier": "tier2_parametric",
+      "tool_name": "castContent"
+    },
+    {
+      "id": 2315,
+      "key": "audio2tool:tier2_parametric:002315",
+      "query_idx": 3557,
+      "sample_id": "tier2_parametric:002315",
+      "stratum": "startCleaning",
+      "tier": "tier2_parametric",
+      "tool_name": "startCleaning"
+    },
+    {
+      "id": 2341,
+      "key": "audio2tool:tier2_parametric:002341",
+      "query_idx": 3570,
+      "sample_id": "tier2_parametric:002341",
+      "stratum": "startCleaning",
+      "tier": "tier2_parametric",
+      "tool_name": "startCleaning"
+    },
+    {
+      "id": 2353,
+      "key": "audio2tool:tier2_parametric:002353",
+      "query_idx": 3576,
+      "sample_id": "tier2_parametric:002353",
+      "stratum": "startCleaning",
+      "tier": "tier2_parametric",
+      "tool_name": "startCleaning"
+    },
+    {
+      "id": 2369,
+      "key": "audio2tool:tier2_parametric:002369",
+      "query_idx": 3584,
+      "sample_id": "tier2_parametric:002369",
+      "stratum": "startCleaning",
+      "tier": "tier2_parametric",
+      "tool_name": "startCleaning"
+    },
+    {
+      "id": 2377,
+      "key": "audio2tool:tier2_parametric:002377",
+      "query_idx": 3588,
+      "sample_id": "tier2_parametric:002377",
+      "stratum": "startCleaning",
+      "tier": "tier2_parametric",
+      "tool_name": "startCleaning"
+    },
+    {
+      "id": 2379,
+      "key": "audio2tool:tier2_parametric:002379",
+      "query_idx": 3589,
+      "sample_id": "tier2_parametric:002379",
+      "stratum": "startCleaning",
+      "tier": "tier2_parametric",
+      "tool_name": "startCleaning"
+    },
+    {
+      "id": 2875,
+      "key": "audio2tool:tier2_parametric:002875",
+      "query_idx": 3837,
+      "sample_id": "tier2_parametric:002875",
+      "stratum": "background:tier2_parametric",
+      "tier": "tier2_parametric",
+      "tool_name": "getApplianceStatus"
+    },
+    {
+      "id": 3051,
+      "key": "audio2tool:tier2_parametric:003051",
+      "query_idx": 3925,
+      "sample_id": "tier2_parametric:003051",
+      "stratum": "background:tier2_parametric",
+      "tier": "tier2_parametric",
+      "tool_name": "getEnergyUsage"
+    },
+    {
+      "id": 3085,
+      "key": "audio2tool:tier2_parametric:003085",
+      "query_idx": 3942,
+      "sample_id": "tier2_parametric:003085",
+      "stratum": "background:tier2_parametric",
+      "tier": "tier2_parametric",
+      "tool_name": "getEnergyUsage"
+    },
+    {
+      "id": 3103,
+      "key": "audio2tool:tier2_parametric:003103",
+      "query_idx": 3951,
+      "sample_id": "tier2_parametric:003103",
+      "stratum": "activateScene",
+      "tier": "tier2_parametric",
+      "tool_name": "activateScene"
+    },
+    {
+      "id": 3107,
+      "key": "audio2tool:tier2_parametric:003107",
+      "query_idx": 3953,
+      "sample_id": "tier2_parametric:003107",
+      "stratum": "activateScene",
+      "tier": "tier2_parametric",
+      "tool_name": "activateScene"
+    },
+    {
+      "id": 3111,
+      "key": "audio2tool:tier2_parametric:003111",
+      "query_idx": 3955,
+      "sample_id": "tier2_parametric:003111",
+      "stratum": "activateScene",
+      "tier": "tier2_parametric",
+      "tool_name": "activateScene"
+    },
+    {
+      "id": 3119,
+      "key": "audio2tool:tier2_parametric:003119",
+      "query_idx": 3959,
+      "sample_id": "tier2_parametric:003119",
+      "stratum": "activateScene",
+      "tier": "tier2_parametric",
+      "tool_name": "activateScene"
+    },
+    {
+      "id": 3127,
+      "key": "audio2tool:tier2_parametric:003127",
+      "query_idx": 3963,
+      "sample_id": "tier2_parametric:003127",
+      "stratum": "activateScene",
+      "tier": "tier2_parametric",
+      "tool_name": "activateScene"
+    },
+    {
+      "id": 3135,
+      "key": "audio2tool:tier2_parametric:003135",
+      "query_idx": 3967,
+      "sample_id": "tier2_parametric:003135",
+      "stratum": "activateScene",
+      "tier": "tier2_parametric",
+      "tool_name": "activateScene"
+    },
+    {
+      "id": 3153,
+      "key": "audio2tool:tier2_parametric:003153",
+      "query_idx": 3976,
+      "sample_id": "tier2_parametric:003153",
+      "stratum": "activateScene",
+      "tier": "tier2_parametric",
+      "tool_name": "activateScene"
+    },
+    {
+      "id": 3161,
+      "key": "audio2tool:tier2_parametric:003161",
+      "query_idx": 3980,
+      "sample_id": "tier2_parametric:003161",
+      "stratum": "activateScene",
+      "tier": "tier2_parametric",
+      "tool_name": "activateScene"
+    },
+    {
+      "id": 3173,
+      "key": "audio2tool:tier2_parametric:003173",
+      "query_idx": 3986,
+      "sample_id": "tier2_parametric:003173",
+      "stratum": "activateScene",
+      "tier": "tier2_parametric",
+      "tool_name": "activateScene"
+    },
+    {
+      "id": 3187,
+      "key": "audio2tool:tier2_parametric:003187",
+      "query_idx": 3993,
+      "sample_id": "tier2_parametric:003187",
+      "stratum": "activateScene",
+      "tier": "tier2_parametric",
+      "tool_name": "activateScene"
+    },
+    {
+      "id": 3191,
+      "key": "audio2tool:tier2_parametric:003191",
+      "query_idx": 3995,
+      "sample_id": "tier2_parametric:003191",
+      "stratum": "activateScene",
+      "tier": "tier2_parametric",
+      "tool_name": "activateScene"
+    },
+    {
+      "id": 3193,
+      "key": "audio2tool:tier2_parametric:003193",
+      "query_idx": 3996,
+      "sample_id": "tier2_parametric:003193",
+      "stratum": "activateScene",
+      "tier": "tier2_parametric",
+      "tool_name": "activateScene"
+    },
+    {
+      "id": 3197,
+      "key": "audio2tool:tier2_parametric:003197",
+      "query_idx": 3998,
+      "sample_id": "tier2_parametric:003197",
+      "stratum": "activateScene",
+      "tier": "tier2_parametric",
+      "tool_name": "activateScene"
+    },
+    {
+      "id": 3203,
+      "key": "audio2tool:tier2_parametric:003203",
+      "query_idx": 4001,
+      "sample_id": "tier2_parametric:003203",
+      "stratum": "background:tier2_parametric",
+      "tier": "tier2_parametric",
+      "tool_name": "getNetworkHealth"
+    },
+    {
+      "id": 3257,
+      "key": "audio2tool:tier2_parametric:003257",
+      "query_idx": 4028,
+      "sample_id": "tier2_parametric:003257",
+      "stratum": "background:tier2_parametric",
+      "tier": "tier2_parametric",
+      "tool_name": "getNetworkHealth"
+    },
+    {
+      "id": 3269,
+      "key": "audio2tool:tier2_parametric:003269",
+      "query_idx": 4034,
+      "sample_id": "tier2_parametric:003269",
+      "stratum": "background:tier2_parametric",
+      "tier": "tier2_parametric",
+      "tool_name": "getNetworkHealth"
+    },
+    {
+      "id": 3275,
+      "key": "audio2tool:tier2_parametric:003275",
+      "query_idx": 4037,
+      "sample_id": "tier2_parametric:003275",
+      "stratum": "background:tier2_parametric",
+      "tier": "tier2_parametric",
+      "tool_name": "getNetworkHealth"
+    },
+    {
+      "id": 3359,
+      "key": "audio2tool:tier2_parametric:003359",
+      "query_idx": 4079,
+      "sample_id": "tier2_parametric:003359",
+      "stratum": "background:tier2_parametric",
+      "tier": "tier2_parametric",
+      "tool_name": "restartDevice"
+    },
+    {
+      "id": 3807,
+      "key": "audio2tool:tier2_parametric:003807",
+      "query_idx": 4303,
+      "sample_id": "tier2_parametric:003807",
+      "stratum": "background:tier2_parametric",
+      "tier": "tier2_parametric",
+      "tool_name": "getBatteryLevel"
+    },
+    {
+      "id": 3945,
+      "key": "audio2tool:tier2_parametric:003945",
+      "query_idx": 4422,
+      "sample_id": "tier2_parametric:003945",
+      "stratum": "rebootDevice",
+      "tier": "tier2_parametric",
+      "tool_name": "rebootDevice"
+    },
+    {
+      "id": 3947,
+      "key": "audio2tool:tier2_parametric:003947",
+      "query_idx": 4423,
+      "sample_id": "tier2_parametric:003947",
+      "stratum": "rebootDevice",
+      "tier": "tier2_parametric",
+      "tool_name": "rebootDevice"
+    },
+    {
+      "id": 3973,
+      "key": "audio2tool:tier2_parametric:003973",
+      "query_idx": 4436,
+      "sample_id": "tier2_parametric:003973",
+      "stratum": "rebootDevice",
+      "tier": "tier2_parametric",
+      "tool_name": "rebootDevice"
+    },
+    {
+      "id": 3991,
+      "key": "audio2tool:tier2_parametric:003991",
+      "query_idx": 4445,
+      "sample_id": "tier2_parametric:003991",
+      "stratum": "rebootDevice",
+      "tier": "tier2_parametric",
+      "tool_name": "rebootDevice"
+    },
+    {
+      "id": 4207,
+      "key": "audio2tool:tier2_parametric:004207",
+      "query_idx": 4703,
+      "sample_id": "tier2_parametric:004207",
+      "stratum": "streamCamera",
+      "tier": "tier2_parametric",
+      "tool_name": "streamCamera"
+    },
+    {
+      "id": 4209,
+      "key": "audio2tool:tier2_parametric:004209",
+      "query_idx": 4704,
+      "sample_id": "tier2_parametric:004209",
+      "stratum": "streamCamera",
+      "tier": "tier2_parametric",
+      "tool_name": "streamCamera"
+    },
+    {
+      "id": 4215,
+      "key": "audio2tool:tier2_parametric:004215",
+      "query_idx": 4707,
+      "sample_id": "tier2_parametric:004215",
+      "stratum": "streamCamera",
+      "tier": "tier2_parametric",
+      "tool_name": "streamCamera"
+    },
+    {
+      "id": 4231,
+      "key": "audio2tool:tier2_parametric:004231",
+      "query_idx": 4715,
+      "sample_id": "tier2_parametric:004231",
+      "stratum": "streamCamera",
+      "tier": "tier2_parametric",
+      "tool_name": "streamCamera"
+    },
+    {
+      "id": 4235,
+      "key": "audio2tool:tier2_parametric:004235",
+      "query_idx": 4717,
+      "sample_id": "tier2_parametric:004235",
+      "stratum": "streamCamera",
+      "tier": "tier2_parametric",
+      "tool_name": "streamCamera"
+    },
+    {
+      "id": 4243,
+      "key": "audio2tool:tier2_parametric:004243",
+      "query_idx": 4721,
+      "sample_id": "tier2_parametric:004243",
+      "stratum": "streamCamera",
+      "tier": "tier2_parametric",
+      "tool_name": "streamCamera"
+    },
+    {
+      "id": 4247,
+      "key": "audio2tool:tier2_parametric:004247",
+      "query_idx": 4723,
+      "sample_id": "tier2_parametric:004247",
+      "stratum": "streamCamera",
+      "tier": "tier2_parametric",
+      "tool_name": "streamCamera"
+    },
+    {
+      "id": 4249,
+      "key": "audio2tool:tier2_parametric:004249",
+      "query_idx": 4724,
+      "sample_id": "tier2_parametric:004249",
+      "stratum": "streamCamera",
+      "tier": "tier2_parametric",
+      "tool_name": "streamCamera"
+    },
+    {
+      "id": 4253,
+      "key": "audio2tool:tier2_parametric:004253",
+      "query_idx": 4726,
+      "sample_id": "tier2_parametric:004253",
+      "stratum": "streamCamera",
+      "tier": "tier2_parametric",
+      "tool_name": "streamCamera"
+    },
+    {
+      "id": 4257,
+      "key": "audio2tool:tier2_parametric:004257",
+      "query_idx": 4728,
+      "sample_id": "tier2_parametric:004257",
+      "stratum": "streamCamera",
+      "tier": "tier2_parametric",
+      "tool_name": "streamCamera"
+    },
+    {
+      "id": 4265,
+      "key": "audio2tool:tier2_parametric:004265",
+      "query_idx": 4732,
+      "sample_id": "tier2_parametric:004265",
+      "stratum": "streamCamera",
+      "tier": "tier2_parametric",
+      "tool_name": "streamCamera"
+    },
+    {
+      "id": 4267,
+      "key": "audio2tool:tier2_parametric:004267",
+      "query_idx": 4733,
+      "sample_id": "tier2_parametric:004267",
+      "stratum": "streamCamera",
+      "tier": "tier2_parametric",
+      "tool_name": "streamCamera"
+    },
+    {
+      "id": 4273,
+      "key": "audio2tool:tier2_parametric:004273",
+      "query_idx": 4736,
+      "sample_id": "tier2_parametric:004273",
+      "stratum": "streamCamera",
+      "tier": "tier2_parametric",
+      "tool_name": "streamCamera"
+    },
+    {
+      "id": 4277,
+      "key": "audio2tool:tier2_parametric:004277",
+      "query_idx": 4738,
+      "sample_id": "tier2_parametric:004277",
+      "stratum": "streamCamera",
+      "tier": "tier2_parametric",
+      "tool_name": "streamCamera"
+    },
+    {
+      "id": 4287,
+      "key": "audio2tool:tier2_parametric:004287",
+      "query_idx": 4743,
+      "sample_id": "tier2_parametric:004287",
+      "stratum": "streamCamera",
+      "tier": "tier2_parametric",
+      "tool_name": "streamCamera"
+    },
+    {
+      "id": 4293,
+      "key": "audio2tool:tier2_parametric:004293",
+      "query_idx": 4746,
+      "sample_id": "tier2_parametric:004293",
+      "stratum": "streamCamera",
+      "tier": "tier2_parametric",
+      "tool_name": "streamCamera"
+    },
+    {
+      "id": 4295,
+      "key": "audio2tool:tier2_parametric:004295",
+      "query_idx": 4747,
+      "sample_id": "tier2_parametric:004295",
+      "stratum": "streamCamera",
+      "tier": "tier2_parametric",
+      "tool_name": "streamCamera"
+    },
+    {
+      "id": 4297,
+      "key": "audio2tool:tier2_parametric:004297",
+      "query_idx": 4748,
+      "sample_id": "tier2_parametric:004297",
+      "stratum": "streamCamera",
+      "tier": "tier2_parametric",
+      "tool_name": "streamCamera"
+    },
+    {
+      "id": 4301,
+      "key": "audio2tool:tier2_parametric:004301",
+      "query_idx": 4800,
+      "sample_id": "tier2_parametric:004301",
+      "stratum": "resetFilterStatus",
+      "tier": "tier2_parametric",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 4307,
+      "key": "audio2tool:tier2_parametric:004307",
+      "query_idx": 4803,
+      "sample_id": "tier2_parametric:004307",
+      "stratum": "resetFilterStatus",
+      "tier": "tier2_parametric",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 4317,
+      "key": "audio2tool:tier2_parametric:004317",
+      "query_idx": 4808,
+      "sample_id": "tier2_parametric:004317",
+      "stratum": "resetFilterStatus",
+      "tier": "tier2_parametric",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 4349,
+      "key": "audio2tool:tier2_parametric:004349",
+      "query_idx": 4824,
+      "sample_id": "tier2_parametric:004349",
+      "stratum": "resetFilterStatus",
+      "tier": "tier2_parametric",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 4365,
+      "key": "audio2tool:tier2_parametric:004365",
+      "query_idx": 4832,
+      "sample_id": "tier2_parametric:004365",
+      "stratum": "resetFilterStatus",
+      "tier": "tier2_parametric",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 4369,
+      "key": "audio2tool:tier2_parametric:004369",
+      "query_idx": 4834,
+      "sample_id": "tier2_parametric:004369",
+      "stratum": "resetFilterStatus",
+      "tier": "tier2_parametric",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 4377,
+      "key": "audio2tool:tier2_parametric:004377",
+      "query_idx": 4838,
+      "sample_id": "tier2_parametric:004377",
+      "stratum": "resetFilterStatus",
+      "tier": "tier2_parametric",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 4379,
+      "key": "audio2tool:tier2_parametric:004379",
+      "query_idx": 4839,
+      "sample_id": "tier2_parametric:004379",
+      "stratum": "resetFilterStatus",
+      "tier": "tier2_parametric",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 4381,
+      "key": "audio2tool:tier2_parametric:004381",
+      "query_idx": 4840,
+      "sample_id": "tier2_parametric:004381",
+      "stratum": "resetFilterStatus",
+      "tier": "tier2_parametric",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 4383,
+      "key": "audio2tool:tier2_parametric:004383",
+      "query_idx": 4841,
+      "sample_id": "tier2_parametric:004383",
+      "stratum": "resetFilterStatus",
+      "tier": "tier2_parametric",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 4385,
+      "key": "audio2tool:tier2_parametric:004385",
+      "query_idx": 4842,
+      "sample_id": "tier2_parametric:004385",
+      "stratum": "resetFilterStatus",
+      "tier": "tier2_parametric",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 4389,
+      "key": "audio2tool:tier2_parametric:004389",
+      "query_idx": 4844,
+      "sample_id": "tier2_parametric:004389",
+      "stratum": "resetFilterStatus",
+      "tier": "tier2_parametric",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 4391,
+      "key": "audio2tool:tier2_parametric:004391",
+      "query_idx": 4845,
+      "sample_id": "tier2_parametric:004391",
+      "stratum": "resetFilterStatus",
+      "tier": "tier2_parametric",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 4393,
+      "key": "audio2tool:tier2_parametric:004393",
+      "query_idx": 4846,
+      "sample_id": "tier2_parametric:004393",
+      "stratum": "resetFilterStatus",
+      "tier": "tier2_parametric",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 4585,
+      "key": "audio2tool:tier2_parametric:004585",
+      "query_idx": 4942,
+      "sample_id": "tier2_parametric:004585",
+      "stratum": "background:tier2_parametric",
+      "tier": "tier2_parametric",
+      "tool_name": "calibrateThermostat"
+    },
+    {
+      "id": 4603,
+      "key": "audio2tool:tier2_parametric:004603",
+      "query_idx": 4951,
+      "sample_id": "tier2_parametric:004603",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4609,
+      "key": "audio2tool:tier2_parametric:004609",
+      "query_idx": 4954,
+      "sample_id": "tier2_parametric:004609",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4617,
+      "key": "audio2tool:tier2_parametric:004617",
+      "query_idx": 4958,
+      "sample_id": "tier2_parametric:004617",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4619,
+      "key": "audio2tool:tier2_parametric:004619",
+      "query_idx": 4959,
+      "sample_id": "tier2_parametric:004619",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4629,
+      "key": "audio2tool:tier2_parametric:004629",
+      "query_idx": 4964,
+      "sample_id": "tier2_parametric:004629",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4631,
+      "key": "audio2tool:tier2_parametric:004631",
+      "query_idx": 4965,
+      "sample_id": "tier2_parametric:004631",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4635,
+      "key": "audio2tool:tier2_parametric:004635",
+      "query_idx": 4967,
+      "sample_id": "tier2_parametric:004635",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4637,
+      "key": "audio2tool:tier2_parametric:004637",
+      "query_idx": 4968,
+      "sample_id": "tier2_parametric:004637",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4649,
+      "key": "audio2tool:tier2_parametric:004649",
+      "query_idx": 4974,
+      "sample_id": "tier2_parametric:004649",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4655,
+      "key": "audio2tool:tier2_parametric:004655",
+      "query_idx": 4977,
+      "sample_id": "tier2_parametric:004655",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4659,
+      "key": "audio2tool:tier2_parametric:004659",
+      "query_idx": 4979,
+      "sample_id": "tier2_parametric:004659",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4661,
+      "key": "audio2tool:tier2_parametric:004661",
+      "query_idx": 4980,
+      "sample_id": "tier2_parametric:004661",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4663,
+      "key": "audio2tool:tier2_parametric:004663",
+      "query_idx": 4981,
+      "sample_id": "tier2_parametric:004663",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4665,
+      "key": "audio2tool:tier2_parametric:004665",
+      "query_idx": 4982,
+      "sample_id": "tier2_parametric:004665",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4671,
+      "key": "audio2tool:tier2_parametric:004671",
+      "query_idx": 4985,
+      "sample_id": "tier2_parametric:004671",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4675,
+      "key": "audio2tool:tier2_parametric:004675",
+      "query_idx": 4987,
+      "sample_id": "tier2_parametric:004675",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4685,
+      "key": "audio2tool:tier2_parametric:004685",
+      "query_idx": 4992,
+      "sample_id": "tier2_parametric:004685",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4689,
+      "key": "audio2tool:tier2_parametric:004689",
+      "query_idx": 4994,
+      "sample_id": "tier2_parametric:004689",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4695,
+      "key": "audio2tool:tier2_parametric:004695",
+      "query_idx": 4997,
+      "sample_id": "tier2_parametric:004695",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4697,
+      "key": "audio2tool:tier2_parametric:004697",
+      "query_idx": 4998,
+      "sample_id": "tier2_parametric:004697",
+      "stratum": "updateFirmware",
+      "tier": "tier2_parametric",
+      "tool_name": "updateFirmware"
+    },
+    {
+      "id": 4703,
+      "key": "audio2tool:tier2_parametric:004703",
+      "query_idx": 5251,
+      "sample_id": "tier2_parametric:004703",
+      "stratum": "activateRoutine",
+      "tier": "tier2_parametric",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 4707,
+      "key": "audio2tool:tier2_parametric:004707",
+      "query_idx": 5253,
+      "sample_id": "tier2_parametric:004707",
+      "stratum": "activateRoutine",
+      "tier": "tier2_parametric",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 4711,
+      "key": "audio2tool:tier2_parametric:004711",
+      "query_idx": 5255,
+      "sample_id": "tier2_parametric:004711",
+      "stratum": "activateRoutine",
+      "tier": "tier2_parametric",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 4733,
+      "key": "audio2tool:tier2_parametric:004733",
+      "query_idx": 5266,
+      "sample_id": "tier2_parametric:004733",
+      "stratum": "activateRoutine",
+      "tier": "tier2_parametric",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 4747,
+      "key": "audio2tool:tier2_parametric:004747",
+      "query_idx": 5273,
+      "sample_id": "tier2_parametric:004747",
+      "stratum": "activateRoutine",
+      "tier": "tier2_parametric",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 4751,
+      "key": "audio2tool:tier2_parametric:004751",
+      "query_idx": 5275,
+      "sample_id": "tier2_parametric:004751",
+      "stratum": "activateRoutine",
+      "tier": "tier2_parametric",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 4763,
+      "key": "audio2tool:tier2_parametric:004763",
+      "query_idx": 5281,
+      "sample_id": "tier2_parametric:004763",
+      "stratum": "activateRoutine",
+      "tier": "tier2_parametric",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 4795,
+      "key": "audio2tool:tier2_parametric:004795",
+      "query_idx": 5297,
+      "sample_id": "tier2_parametric:004795",
+      "stratum": "activateRoutine",
+      "tier": "tier2_parametric",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 4799,
+      "key": "audio2tool:tier2_parametric:004799",
+      "query_idx": 5299,
+      "sample_id": "tier2_parametric:004799",
+      "stratum": "activateRoutine",
+      "tier": "tier2_parametric",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 4813,
+      "key": "audio2tool:tier2_parametric:004813",
+      "query_idx": 5556,
+      "sample_id": "tier2_parametric:004813",
+      "stratum": "setGroupLightState",
+      "tier": "tier2_parametric",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 4815,
+      "key": "audio2tool:tier2_parametric:004815",
+      "query_idx": 5557,
+      "sample_id": "tier2_parametric:004815",
+      "stratum": "setGroupLightState",
+      "tier": "tier2_parametric",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 4823,
+      "key": "audio2tool:tier2_parametric:004823",
+      "query_idx": 5561,
+      "sample_id": "tier2_parametric:004823",
+      "stratum": "setGroupLightState",
+      "tier": "tier2_parametric",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 4827,
+      "key": "audio2tool:tier2_parametric:004827",
+      "query_idx": 5563,
+      "sample_id": "tier2_parametric:004827",
+      "stratum": "setGroupLightState",
+      "tier": "tier2_parametric",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 4837,
+      "key": "audio2tool:tier2_parametric:004837",
+      "query_idx": 5568,
+      "sample_id": "tier2_parametric:004837",
+      "stratum": "setGroupLightState",
+      "tier": "tier2_parametric",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 4839,
+      "key": "audio2tool:tier2_parametric:004839",
+      "query_idx": 5569,
+      "sample_id": "tier2_parametric:004839",
+      "stratum": "setGroupLightState",
+      "tier": "tier2_parametric",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 4843,
+      "key": "audio2tool:tier2_parametric:004843",
+      "query_idx": 5571,
+      "sample_id": "tier2_parametric:004843",
+      "stratum": "setGroupLightState",
+      "tier": "tier2_parametric",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 4851,
+      "key": "audio2tool:tier2_parametric:004851",
+      "query_idx": 5575,
+      "sample_id": "tier2_parametric:004851",
+      "stratum": "setGroupLightState",
+      "tier": "tier2_parametric",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 4857,
+      "key": "audio2tool:tier2_parametric:004857",
+      "query_idx": 5578,
+      "sample_id": "tier2_parametric:004857",
+      "stratum": "setGroupLightState",
+      "tier": "tier2_parametric",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 4873,
+      "key": "audio2tool:tier2_parametric:004873",
+      "query_idx": 5586,
+      "sample_id": "tier2_parametric:004873",
+      "stratum": "setGroupLightState",
+      "tier": "tier2_parametric",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 4883,
+      "key": "audio2tool:tier2_parametric:004883",
+      "query_idx": 5591,
+      "sample_id": "tier2_parametric:004883",
+      "stratum": "setGroupLightState",
+      "tier": "tier2_parametric",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 4893,
+      "key": "audio2tool:tier2_parametric:004893",
+      "query_idx": 5596,
+      "sample_id": "tier2_parametric:004893",
+      "stratum": "setGroupLightState",
+      "tier": "tier2_parametric",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 4895,
+      "key": "audio2tool:tier2_parametric:004895",
+      "query_idx": 5597,
+      "sample_id": "tier2_parametric:004895",
+      "stratum": "setGroupLightState",
+      "tier": "tier2_parametric",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 4899,
+      "key": "audio2tool:tier2_parametric:004899",
+      "query_idx": 5599,
+      "sample_id": "tier2_parametric:004899",
+      "stratum": "setGroupLightState",
+      "tier": "tier2_parametric",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 5357,
+      "key": "audio2tool:tier2_parametric:005357",
+      "query_idx": 4678,
+      "sample_id": "tier2_parametric:005357",
+      "stratum": "background:tier2_parametric",
+      "tier": "tier2_parametric",
+      "tool_name": "getActivitySummary"
+    },
+    {
+      "id": 5411,
+      "key": "audio2tool:tier2_parametric:005411",
+      "query_idx": 4755,
+      "sample_id": "tier2_parametric:005411",
+      "stratum": "getBiometricData",
+      "tier": "tier2_parametric",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 5423,
+      "key": "audio2tool:tier2_parametric:005423",
+      "query_idx": 4761,
+      "sample_id": "tier2_parametric:005423",
+      "stratum": "getBiometricData",
+      "tier": "tier2_parametric",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 5435,
+      "key": "audio2tool:tier2_parametric:005435",
+      "query_idx": 4767,
+      "sample_id": "tier2_parametric:005435",
+      "stratum": "getBiometricData",
+      "tier": "tier2_parametric",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 5441,
+      "key": "audio2tool:tier2_parametric:005441",
+      "query_idx": 4770,
+      "sample_id": "tier2_parametric:005441",
+      "stratum": "getBiometricData",
+      "tier": "tier2_parametric",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 5463,
+      "key": "audio2tool:tier2_parametric:005463",
+      "query_idx": 4781,
+      "sample_id": "tier2_parametric:005463",
+      "stratum": "getBiometricData",
+      "tier": "tier2_parametric",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 5471,
+      "key": "audio2tool:tier2_parametric:005471",
+      "query_idx": 4785,
+      "sample_id": "tier2_parametric:005471",
+      "stratum": "getBiometricData",
+      "tier": "tier2_parametric",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 5485,
+      "key": "audio2tool:tier2_parametric:005485",
+      "query_idx": 4792,
+      "sample_id": "tier2_parametric:005485",
+      "stratum": "getBiometricData",
+      "tier": "tier2_parametric",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 5489,
+      "key": "audio2tool:tier2_parametric:005489",
+      "query_idx": 4794,
+      "sample_id": "tier2_parametric:005489",
+      "stratum": "getBiometricData",
+      "tier": "tier2_parametric",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 5495,
+      "key": "audio2tool:tier2_parametric:005495",
+      "query_idx": 4797,
+      "sample_id": "tier2_parametric:005495",
+      "stratum": "getBiometricData",
+      "tier": "tier2_parametric",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 5609,
+      "key": "audio2tool:tier2_parametric:005609",
+      "query_idx": 5304,
+      "sample_id": "tier2_parametric:005609",
+      "stratum": "background:tier2_parametric",
+      "tier": "tier2_parametric",
+      "tool_name": "setAlarm"
+    },
+    {
+      "id": 5717,
+      "key": "audio2tool:tier2_parametric:005717",
+      "query_idx": 5408,
+      "sample_id": "tier2_parametric:005717",
+      "stratum": "getHRV",
+      "tier": "tier2_parametric",
+      "tool_name": "getHRV"
+    },
+    {
+      "id": 5721,
+      "key": "audio2tool:tier2_parametric:005721",
+      "query_idx": 5410,
+      "sample_id": "tier2_parametric:005721",
+      "stratum": "getHRV",
+      "tier": "tier2_parametric",
+      "tool_name": "getHRV"
+    },
+    {
+      "id": 5727,
+      "key": "audio2tool:tier2_parametric:005727",
+      "query_idx": 5413,
+      "sample_id": "tier2_parametric:005727",
+      "stratum": "getHRV",
+      "tier": "tier2_parametric",
+      "tool_name": "getHRV"
+    },
+    {
+      "id": 5729,
+      "key": "audio2tool:tier2_parametric:005729",
+      "query_idx": 5414,
+      "sample_id": "tier2_parametric:005729",
+      "stratum": "getHRV",
+      "tier": "tier2_parametric",
+      "tool_name": "getHRV"
+    },
+    {
+      "id": 5735,
+      "key": "audio2tool:tier2_parametric:005735",
+      "query_idx": 5417,
+      "sample_id": "tier2_parametric:005735",
+      "stratum": "getHRV",
+      "tier": "tier2_parametric",
+      "tool_name": "getHRV"
+    },
+    {
+      "id": 5743,
+      "key": "audio2tool:tier2_parametric:005743",
+      "query_idx": 5421,
+      "sample_id": "tier2_parametric:005743",
+      "stratum": "getHRV",
+      "tier": "tier2_parametric",
+      "tool_name": "getHRV"
+    },
+    {
+      "id": 5747,
+      "key": "audio2tool:tier2_parametric:005747",
+      "query_idx": 5423,
+      "sample_id": "tier2_parametric:005747",
+      "stratum": "getHRV",
+      "tier": "tier2_parametric",
+      "tool_name": "getHRV"
+    },
+    {
+      "id": 5751,
+      "key": "audio2tool:tier2_parametric:005751",
+      "query_idx": 5425,
+      "sample_id": "tier2_parametric:005751",
+      "stratum": "getHRV",
+      "tier": "tier2_parametric",
+      "tool_name": "getHRV"
+    },
+    {
+      "id": 5755,
+      "key": "audio2tool:tier2_parametric:005755",
+      "query_idx": 5427,
+      "sample_id": "tier2_parametric:005755",
+      "stratum": "getHRV",
+      "tier": "tier2_parametric",
+      "tool_name": "getHRV"
+    },
+    {
+      "id": 5773,
+      "key": "audio2tool:tier2_parametric:005773",
+      "query_idx": 5436,
+      "sample_id": "tier2_parametric:005773",
+      "stratum": "getHRV",
+      "tier": "tier2_parametric",
+      "tool_name": "getHRV"
+    },
+    {
+      "id": 5775,
+      "key": "audio2tool:tier2_parametric:005775",
+      "query_idx": 5437,
+      "sample_id": "tier2_parametric:005775",
+      "stratum": "getHRV",
+      "tier": "tier2_parametric",
+      "tool_name": "getHRV"
+    },
+    {
+      "id": 5785,
+      "key": "audio2tool:tier2_parametric:005785",
+      "query_idx": 5442,
+      "sample_id": "tier2_parametric:005785",
+      "stratum": "getHRV",
+      "tier": "tier2_parametric",
+      "tool_name": "getHRV"
+    },
+    {
+      "id": 5799,
+      "key": "audio2tool:tier2_parametric:005799",
+      "query_idx": 5449,
+      "sample_id": "tier2_parametric:005799",
+      "stratum": "getHRV",
+      "tier": "tier2_parametric",
+      "tool_name": "getHRV"
+    },
+    {
+      "id": 5917,
+      "key": "audio2tool:tier2_parametric:005917",
+      "query_idx": 5658,
+      "sample_id": "tier2_parametric:005917",
+      "stratum": "setHapticStrength",
+      "tier": "tier2_parametric",
+      "tool_name": "setHapticStrength"
+    },
+    {
+      "id": 5929,
+      "key": "audio2tool:tier2_parametric:005929",
+      "query_idx": 5664,
+      "sample_id": "tier2_parametric:005929",
+      "stratum": "setHapticStrength",
+      "tier": "tier2_parametric",
+      "tool_name": "setHapticStrength"
+    },
+    {
+      "id": 5935,
+      "key": "audio2tool:tier2_parametric:005935",
+      "query_idx": 5667,
+      "sample_id": "tier2_parametric:005935",
+      "stratum": "setHapticStrength",
+      "tier": "tier2_parametric",
+      "tool_name": "setHapticStrength"
+    },
+    {
+      "id": 5939,
+      "key": "audio2tool:tier2_parametric:005939",
+      "query_idx": 5669,
+      "sample_id": "tier2_parametric:005939",
+      "stratum": "setHapticStrength",
+      "tier": "tier2_parametric",
+      "tool_name": "setHapticStrength"
+    },
+    {
+      "id": 5947,
+      "key": "audio2tool:tier2_parametric:005947",
+      "query_idx": 5673,
+      "sample_id": "tier2_parametric:005947",
+      "stratum": "setHapticStrength",
+      "tier": "tier2_parametric",
+      "tool_name": "setHapticStrength"
+    },
+    {
+      "id": 5949,
+      "key": "audio2tool:tier2_parametric:005949",
+      "query_idx": 5674,
+      "sample_id": "tier2_parametric:005949",
+      "stratum": "setHapticStrength",
+      "tier": "tier2_parametric",
+      "tool_name": "setHapticStrength"
+    },
+    {
+      "id": 5951,
+      "key": "audio2tool:tier2_parametric:005951",
+      "query_idx": 5675,
+      "sample_id": "tier2_parametric:005951",
+      "stratum": "setHapticStrength",
+      "tier": "tier2_parametric",
+      "tool_name": "setHapticStrength"
+    },
+    {
+      "id": 5959,
+      "key": "audio2tool:tier2_parametric:005959",
+      "query_idx": 5679,
+      "sample_id": "tier2_parametric:005959",
+      "stratum": "setHapticStrength",
+      "tier": "tier2_parametric",
+      "tool_name": "setHapticStrength"
+    },
+    {
+      "id": 5963,
+      "key": "audio2tool:tier2_parametric:005963",
+      "query_idx": 5681,
+      "sample_id": "tier2_parametric:005963",
+      "stratum": "setHapticStrength",
+      "tier": "tier2_parametric",
+      "tool_name": "setHapticStrength"
+    },
+    {
+      "id": 5989,
+      "key": "audio2tool:tier2_parametric:005989",
+      "query_idx": 5694,
+      "sample_id": "tier2_parametric:005989",
+      "stratum": "setHapticStrength",
+      "tier": "tier2_parametric",
+      "tool_name": "setHapticStrength"
+    },
+    {
+      "id": 5991,
+      "key": "audio2tool:tier2_parametric:005991",
+      "query_idx": 5695,
+      "sample_id": "tier2_parametric:005991",
+      "stratum": "setHapticStrength",
+      "tier": "tier2_parametric",
+      "tool_name": "setHapticStrength"
+    },
+    {
+      "id": 6229,
+      "key": "audio2tool:tier2_parametric:006229",
+      "query_idx": 1621,
+      "sample_id": "tier2_parametric:006229",
+      "stratum": "background:tier2_parametric",
+      "tier": "tier2_parametric",
+      "tool_name": "getDoorStatus"
+    },
+    {
+      "id": 157,
+      "key": "audio2tool:tier3_multi_intent:000157",
+      "query_idx": 2178,
+      "sample_id": "tier3_multi_intent:000157",
+      "stratum": "setColor",
+      "tier": "tier3_multi_intent",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 163,
+      "key": "audio2tool:tier3_multi_intent:000163",
+      "query_idx": 2181,
+      "sample_id": "tier3_multi_intent:000163",
+      "stratum": "setColor",
+      "tier": "tier3_multi_intent",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 165,
+      "key": "audio2tool:tier3_multi_intent:000165",
+      "query_idx": 2182,
+      "sample_id": "tier3_multi_intent:000165",
+      "stratum": "setColor",
+      "tier": "tier3_multi_intent",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 233,
+      "key": "audio2tool:tier3_multi_intent:000233",
+      "query_idx": 2216,
+      "sample_id": "tier3_multi_intent:000233",
+      "stratum": "setColorTemperature",
+      "tier": "tier3_multi_intent",
+      "tool_name": "setColorTemperature"
+    },
+    {
+      "id": 519,
+      "key": "audio2tool:tier3_multi_intent:000519",
+      "query_idx": 2359,
+      "sample_id": "tier3_multi_intent:000519",
+      "stratum": "background:tier3_multi_intent",
+      "tier": "tier3_multi_intent",
+      "tool_name": "setFanMode"
+    },
+    {
+      "id": 529,
+      "key": "audio2tool:tier3_multi_intent:000529",
+      "query_idx": 2364,
+      "sample_id": "tier3_multi_intent:000529",
+      "stratum": "background:tier3_multi_intent",
+      "tier": "tier3_multi_intent",
+      "tool_name": "setFanMode"
+    },
+    {
+      "id": 551,
+      "key": "audio2tool:tier3_multi_intent:000551",
+      "query_idx": 2375,
+      "sample_id": "tier3_multi_intent:000551",
+      "stratum": "background:tier3_multi_intent",
+      "tier": "tier3_multi_intent",
+      "tool_name": "getAirQuality"
+    },
+    {
+      "id": 711,
+      "key": "audio2tool:tier3_multi_intent:000711",
+      "query_idx": 2455,
+      "sample_id": "tier3_multi_intent:000711",
+      "stratum": "background:tier3_multi_intent",
+      "tier": "tier3_multi_intent",
+      "tool_name": "setLockState"
+    },
+    {
+      "id": 725,
+      "key": "audio2tool:tier3_multi_intent:000725",
+      "query_idx": 2462,
+      "sample_id": "tier3_multi_intent:000725",
+      "stratum": "setSecurityMode",
+      "tier": "tier3_multi_intent",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 741,
+      "key": "audio2tool:tier3_multi_intent:000741",
+      "query_idx": 2470,
+      "sample_id": "tier3_multi_intent:000741",
+      "stratum": "setSecurityMode",
+      "tier": "tier3_multi_intent",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 789,
+      "key": "audio2tool:tier3_multi_intent:000789",
+      "query_idx": 2494,
+      "sample_id": "tier3_multi_intent:000789",
+      "stratum": "background:tier3_multi_intent",
+      "tier": "tier3_multi_intent",
+      "tool_name": "getCameraStream"
+    },
+    {
+      "id": 971,
+      "key": "audio2tool:tier3_multi_intent:000971",
+      "query_idx": 2585,
+      "sample_id": "tier3_multi_intent:000971",
+      "stratum": "playMedia",
+      "tier": "tier3_multi_intent",
+      "tool_name": "playMedia"
+    },
+    {
+      "id": 1165,
+      "key": "audio2tool:tier3_multi_intent:001165",
+      "query_idx": 2682,
+      "sample_id": "tier3_multi_intent:001165",
+      "stratum": "castContent",
+      "tier": "tier3_multi_intent",
+      "tool_name": "castContent"
+    },
+    {
+      "id": 1185,
+      "key": "audio2tool:tier3_multi_intent:001185",
+      "query_idx": 2692,
+      "sample_id": "tier3_multi_intent:001185",
+      "stratum": "castContent",
+      "tier": "tier3_multi_intent",
+      "tool_name": "castContent"
+    },
+    {
+      "id": 1299,
+      "key": "audio2tool:tier3_multi_intent:001299",
+      "query_idx": 2749,
+      "sample_id": "tier3_multi_intent:001299",
+      "stratum": "startCleaning",
+      "tier": "tier3_multi_intent",
+      "tool_name": "startCleaning"
+    },
+    {
+      "id": 1695,
+      "key": "audio2tool:tier3_multi_intent:001695",
+      "query_idx": 2947,
+      "sample_id": "tier3_multi_intent:001695",
+      "stratum": "activateScene",
+      "tier": "tier3_multi_intent",
+      "tool_name": "activateScene"
+    },
+    {
+      "id": 1827,
+      "key": "audio2tool:tier3_multi_intent:001827",
+      "query_idx": 3013,
+      "sample_id": "tier3_multi_intent:001827",
+      "stratum": "rebootDevice",
+      "tier": "tier3_multi_intent",
+      "tool_name": "rebootDevice"
+    },
+    {
+      "id": 1881,
+      "key": "audio2tool:tier3_multi_intent:001881",
+      "query_idx": 3040,
+      "sample_id": "tier3_multi_intent:001881",
+      "stratum": "background:tier3_multi_intent",
+      "tier": "tier3_multi_intent",
+      "tool_name": "getNetworkHealth"
+    },
+    {
+      "id": 2423,
+      "key": "audio2tool:tier3_multi_intent:002423",
+      "query_idx": 3311,
+      "sample_id": "tier3_multi_intent:002423",
+      "stratum": "rebootDevice",
+      "tier": "tier3_multi_intent",
+      "tool_name": "rebootDevice"
+    },
+    {
+      "id": 2433,
+      "key": "audio2tool:tier3_multi_intent:002433",
+      "query_idx": 3316,
+      "sample_id": "tier3_multi_intent:002433",
+      "stratum": "rebootDevice",
+      "tier": "tier3_multi_intent",
+      "tool_name": "rebootDevice"
+    },
+    {
+      "id": 2627,
+      "key": "audio2tool:tier3_multi_intent:002627",
+      "query_idx": 3413,
+      "sample_id": "tier3_multi_intent:002627",
+      "stratum": "resetFilterStatus",
+      "tier": "tier3_multi_intent",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 2685,
+      "key": "audio2tool:tier3_multi_intent:002685",
+      "query_idx": 3442,
+      "sample_id": "tier3_multi_intent:002685",
+      "stratum": "background:tier3_multi_intent",
+      "tier": "tier3_multi_intent",
+      "tool_name": "runNetworkSpeedTest"
+    },
+    {
+      "id": 2703,
+      "key": "audio2tool:tier3_multi_intent:002703",
+      "query_idx": 3451,
+      "sample_id": "tier3_multi_intent:002703",
+      "stratum": "setLighting",
+      "tier": "tier3_multi_intent",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 2717,
+      "key": "audio2tool:tier3_multi_intent:002717",
+      "query_idx": 3458,
+      "sample_id": "tier3_multi_intent:002717",
+      "stratum": "setLighting",
+      "tier": "tier3_multi_intent",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 2759,
+      "key": "audio2tool:tier3_multi_intent:002759",
+      "query_idx": 3479,
+      "sample_id": "tier3_multi_intent:002759",
+      "stratum": "setLighting",
+      "tier": "tier3_multi_intent",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 3011,
+      "key": "audio2tool:tier3_multi_intent:003011",
+      "query_idx": 4355,
+      "sample_id": "tier3_multi_intent:003011",
+      "stratum": "activateRoutine",
+      "tier": "tier3_multi_intent",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 3055,
+      "key": "audio2tool:tier3_multi_intent:003055",
+      "query_idx": 4377,
+      "sample_id": "tier3_multi_intent:003055",
+      "stratum": "activateRoutine",
+      "tier": "tier3_multi_intent",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 3095,
+      "key": "audio2tool:tier3_multi_intent:003095",
+      "query_idx": 4397,
+      "sample_id": "tier3_multi_intent:003095",
+      "stratum": "setGroupLightState",
+      "tier": "tier3_multi_intent",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 3195,
+      "key": "audio2tool:tier3_multi_intent:003195",
+      "query_idx": 3547,
+      "sample_id": "tier3_multi_intent:003195",
+      "stratum": "getBiometricData",
+      "tier": "tier3_multi_intent",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 4057,
+      "key": "audio2tool:tier3_multi_intent:004057",
+      "query_idx": 741,
+      "sample_id": "tier3_multi_intent:004057",
+      "stratum": "background:tier3_multi_intent",
+      "tier": "tier3_multi_intent",
+      "tool_name": "setChargingAmperage"
+    },
+    {
+      "id": 4103,
+      "key": "audio2tool:tier3_multi_intent:004103",
+      "query_idx": 1116,
+      "sample_id": "tier3_multi_intent:004103",
+      "stratum": "background:tier3_multi_intent",
+      "tier": "tier3_multi_intent",
+      "tool_name": "setExternalSpeakerOutput"
+    },
+    {
+      "id": 4123,
+      "key": "audio2tool:tier3_multi_intent:004123",
+      "query_idx": 1278,
+      "sample_id": "tier3_multi_intent:004123",
+      "stratum": "background:tier3_multi_intent",
+      "tier": "tier3_multi_intent",
+      "tool_name": "cancelNavigation"
+    },
+    {
+      "id": 4199,
+      "key": "audio2tool:tier3_multi_intent:004199",
+      "query_idx": 1836,
+      "sample_id": "tier3_multi_intent:004199",
+      "stratum": "background:tier3_multi_intent",
+      "tier": "tier3_multi_intent",
+      "tool_name": "resetTPMSSensors"
+    },
+    {
+      "id": 4211,
+      "key": "audio2tool:tier3_multi_intent:004211",
+      "query_idx": 1965,
+      "sample_id": "tier3_multi_intent:004211",
+      "stratum": "background:tier3_multi_intent",
+      "tier": "tier3_multi_intent",
+      "tool_name": "setChargeLimit"
+    },
+    {
+      "id": 4261,
+      "key": "audio2tool:tier3_multi_intent:004261",
+      "query_idx": 4095,
+      "sample_id": "tier3_multi_intent:004261",
+      "stratum": "background:tier3_multi_intent",
+      "tier": "tier3_multi_intent",
+      "tool_name": "honkHorn"
+    },
+    {
+      "id": 4267,
+      "key": "audio2tool:tier3_multi_intent:004267",
+      "query_idx": 4122,
+      "sample_id": "tier3_multi_intent:004267",
+      "stratum": "background:tier3_multi_intent",
+      "tier": "tier3_multi_intent",
+      "tool_name": "flashLights"
+    },
+    {
+      "id": 4275,
+      "key": "audio2tool:tier3_multi_intent:004275",
+      "query_idx": 4197,
+      "sample_id": "tier3_multi_intent:004275",
+      "stratum": "background:tier3_multi_intent",
+      "tier": "tier3_multi_intent",
+      "tool_name": "setSunroofPosition"
+    },
+    {
+      "id": 13,
+      "key": "audio2tool:tier4_implicit:000013",
+      "query_idx": 2106,
+      "sample_id": "tier4_implicit:000013",
+      "stratum": "setLighting",
+      "tier": "tier4_implicit",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 155,
+      "key": "audio2tool:tier4_implicit:000155",
+      "query_idx": 2178,
+      "sample_id": "tier4_implicit:000155",
+      "stratum": "setColor",
+      "tier": "tier4_implicit",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 161,
+      "key": "audio2tool:tier4_implicit:000161",
+      "query_idx": 2181,
+      "sample_id": "tier4_implicit:000161",
+      "stratum": "setColor",
+      "tier": "tier4_implicit",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 163,
+      "key": "audio2tool:tier4_implicit:000163",
+      "query_idx": 2182,
+      "sample_id": "tier4_implicit:000163",
+      "stratum": "setColor",
+      "tier": "tier4_implicit",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 231,
+      "key": "audio2tool:tier4_implicit:000231",
+      "query_idx": 2216,
+      "sample_id": "tier4_implicit:000231",
+      "stratum": "setColorTemperature",
+      "tier": "tier4_implicit",
+      "tool_name": "setColorTemperature"
+    },
+    {
+      "id": 719,
+      "key": "audio2tool:tier4_implicit:000719",
+      "query_idx": 2462,
+      "sample_id": "tier4_implicit:000719",
+      "stratum": "setSecurityMode",
+      "tier": "tier4_implicit",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 723,
+      "key": "audio2tool:tier4_implicit:000723",
+      "query_idx": 2464,
+      "sample_id": "tier4_implicit:000723",
+      "stratum": "setSecurityMode",
+      "tier": "tier4_implicit",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 733,
+      "key": "audio2tool:tier4_implicit:000733",
+      "query_idx": 2470,
+      "sample_id": "tier4_implicit:000733",
+      "stratum": "setSecurityMode",
+      "tier": "tier4_implicit",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 747,
+      "key": "audio2tool:tier4_implicit:000747",
+      "query_idx": 2477,
+      "sample_id": "tier4_implicit:000747",
+      "stratum": "setSecurityMode",
+      "tier": "tier4_implicit",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 799,
+      "key": "audio2tool:tier4_implicit:000799",
+      "query_idx": 2503,
+      "sample_id": "tier4_implicit:000799",
+      "stratum": "background:tier4_implicit",
+      "tier": "tier4_implicit",
+      "tool_name": "getCameraStream"
+    },
+    {
+      "id": 855,
+      "key": "audio2tool:tier4_implicit:000855",
+      "query_idx": 2531,
+      "sample_id": "tier4_implicit:000855",
+      "stratum": "background:tier4_implicit",
+      "tier": "tier4_implicit",
+      "tool_name": "getCameraEvent"
+    },
+    {
+      "id": 963,
+      "key": "audio2tool:tier4_implicit:000963",
+      "query_idx": 2585,
+      "sample_id": "tier4_implicit:000963",
+      "stratum": "playMedia",
+      "tier": "tier4_implicit",
+      "tool_name": "playMedia"
+    },
+    {
+      "id": 1045,
+      "key": "audio2tool:tier4_implicit:001045",
+      "query_idx": 2625,
+      "sample_id": "tier4_implicit:001045",
+      "stratum": "background:tier4_implicit",
+      "tier": "tier4_implicit",
+      "tool_name": "controlPlayback"
+    },
+    {
+      "id": 1159,
+      "key": "audio2tool:tier4_implicit:001159",
+      "query_idx": 2682,
+      "sample_id": "tier4_implicit:001159",
+      "stratum": "castContent",
+      "tier": "tier4_implicit",
+      "tool_name": "castContent"
+    },
+    {
+      "id": 1179,
+      "key": "audio2tool:tier4_implicit:001179",
+      "query_idx": 2692,
+      "sample_id": "tier4_implicit:001179",
+      "stratum": "castContent",
+      "tier": "tier4_implicit",
+      "tool_name": "castContent"
+    },
+    {
+      "id": 1293,
+      "key": "audio2tool:tier4_implicit:001293",
+      "query_idx": 2749,
+      "sample_id": "tier4_implicit:001293",
+      "stratum": "startCleaning",
+      "tier": "tier4_implicit",
+      "tool_name": "startCleaning"
+    },
+    {
+      "id": 1689,
+      "key": "audio2tool:tier4_implicit:001689",
+      "query_idx": 2947,
+      "sample_id": "tier4_implicit:001689",
+      "stratum": "activateScene",
+      "tier": "tier4_implicit",
+      "tool_name": "activateScene"
+    },
+    {
+      "id": 1993,
+      "key": "audio2tool:tier4_implicit:001993",
+      "query_idx": 3098,
+      "sample_id": "tier4_implicit:001993",
+      "stratum": "background:tier4_implicit",
+      "tier": "tier4_implicit",
+      "tool_name": "getAirQuality_diag"
+    },
+    {
+      "id": 2427,
+      "key": "audio2tool:tier4_implicit:002427",
+      "query_idx": 3316,
+      "sample_id": "tier4_implicit:002427",
+      "stratum": "rebootDevice",
+      "tier": "tier4_implicit",
+      "tool_name": "rebootDevice"
+    },
+    {
+      "id": 2619,
+      "key": "audio2tool:tier4_implicit:002619",
+      "query_idx": 3413,
+      "sample_id": "tier4_implicit:002619",
+      "stratum": "resetFilterStatus",
+      "tier": "tier4_implicit",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 2707,
+      "key": "audio2tool:tier4_implicit:002707",
+      "query_idx": 3458,
+      "sample_id": "tier4_implicit:002707",
+      "stratum": "setLighting",
+      "tier": "tier4_implicit",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 2747,
+      "key": "audio2tool:tier4_implicit:002747",
+      "query_idx": 3479,
+      "sample_id": "tier4_implicit:002747",
+      "stratum": "setLighting",
+      "tier": "tier4_implicit",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 2911,
+      "key": "audio2tool:tier4_implicit:002911",
+      "query_idx": 3861,
+      "sample_id": "tier4_implicit:002911",
+      "stratum": "background:tier4_implicit",
+      "tier": "tier4_implicit",
+      "tool_name": "findMyDevice"
+    },
+    {
+      "id": 3041,
+      "key": "audio2tool:tier4_implicit:003041",
+      "query_idx": 4377,
+      "sample_id": "tier4_implicit:003041",
+      "stratum": "activateRoutine",
+      "tier": "tier4_implicit",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 3081,
+      "key": "audio2tool:tier4_implicit:003081",
+      "query_idx": 4397,
+      "sample_id": "tier4_implicit:003081",
+      "stratum": "setGroupLightState",
+      "tier": "tier4_implicit",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 3181,
+      "key": "audio2tool:tier4_implicit:003181",
+      "query_idx": 3547,
+      "sample_id": "tier4_implicit:003181",
+      "stratum": "getBiometricData",
+      "tier": "tier4_implicit",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 3201,
+      "key": "audio2tool:tier4_implicit:003201",
+      "query_idx": 3557,
+      "sample_id": "tier4_implicit:003201",
+      "stratum": "getBiometricData",
+      "tier": "tier4_implicit",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 3411,
+      "key": "audio2tool:tier4_implicit:003411",
+      "query_idx": 3662,
+      "sample_id": "tier4_implicit:003411",
+      "stratum": "background:tier4_implicit",
+      "tier": "tier4_implicit",
+      "tool_name": "setAlwaysOnDisplay"
+    },
+    {
+      "id": 3963,
+      "key": "audio2tool:tier4_implicit:003963",
+      "query_idx": 142,
+      "sample_id": "tier4_implicit:003963",
+      "stratum": "background:tier4_implicit",
+      "tier": "tier4_implicit",
+      "tool_name": "setSteeringWheelHeat"
+    },
+    {
+      "id": 4009,
+      "key": "audio2tool:tier4_implicit:004009",
+      "query_idx": 477,
+      "sample_id": "tier4_implicit:004009",
+      "stratum": "background:tier4_implicit",
+      "tier": "tier4_implicit",
+      "tool_name": "setGarageOpener"
+    },
+    {
+      "id": 4011,
+      "key": "audio2tool:tier4_implicit:004011",
+      "query_idx": 491,
+      "sample_id": "tier4_implicit:004011",
+      "stratum": "background:tier4_implicit",
+      "tier": "tier4_implicit",
+      "tool_name": "setAutonomousDriving"
+    },
+    {
+      "id": 4133,
+      "key": "audio2tool:tier4_implicit:004133",
+      "query_idx": 1451,
+      "sample_id": "tier4_implicit:004133",
+      "stratum": "background:tier4_implicit",
+      "tier": "tier4_implicit",
+      "tool_name": "getBatteryHealth"
+    },
+    {
+      "id": 4143,
+      "key": "audio2tool:tier4_implicit:004143",
+      "query_idx": 1540,
+      "sample_id": "tier4_implicit:004143",
+      "stratum": "background:tier4_implicit",
+      "tier": "tier4_implicit",
+      "tool_name": "getEnergyConsumption"
+    },
+    {
+      "id": 4161,
+      "key": "audio2tool:tier4_implicit:004161",
+      "query_idx": 1676,
+      "sample_id": "tier4_implicit:004161",
+      "stratum": "background:tier4_implicit",
+      "tier": "tier4_implicit",
+      "tool_name": "getLocation"
+    },
+    {
+      "id": 4213,
+      "key": "audio2tool:tier4_implicit:004213",
+      "query_idx": 2087,
+      "sample_id": "tier4_implicit:004213",
+      "stratum": "background:tier4_implicit",
+      "tier": "tier4_implicit",
+      "tool_name": "setEmissionsMode"
+    },
+    {
+      "id": 4265,
+      "key": "audio2tool:tier4_implicit:004265",
+      "query_idx": 4225,
+      "sample_id": "tier4_implicit:004265",
+      "stratum": "background:tier4_implicit",
+      "tier": "tier4_implicit",
+      "tool_name": "setCruiseSpeed"
+    },
+    {
+      "id": 4275,
+      "key": "audio2tool:tier4_implicit:004275",
+      "query_idx": 4293,
+      "sample_id": "tier4_implicit:004275",
+      "stratum": "background:tier4_implicit",
+      "tier": "tier4_implicit",
+      "tool_name": "getSoftwareUpdateStatus"
+    },
+    {
+      "id": 13,
+      "key": "audio2tool:tier5_needle:000013",
+      "query_idx": 2106,
+      "sample_id": "tier5_needle:000013",
+      "stratum": "setLighting",
+      "tier": "tier5_needle",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 157,
+      "key": "audio2tool:tier5_needle:000157",
+      "query_idx": 2178,
+      "sample_id": "tier5_needle:000157",
+      "stratum": "setColor",
+      "tier": "tier5_needle",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 163,
+      "key": "audio2tool:tier5_needle:000163",
+      "query_idx": 2181,
+      "sample_id": "tier5_needle:000163",
+      "stratum": "setColor",
+      "tier": "tier5_needle",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 165,
+      "key": "audio2tool:tier5_needle:000165",
+      "query_idx": 2182,
+      "sample_id": "tier5_needle:000165",
+      "stratum": "setColor",
+      "tier": "tier5_needle",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 233,
+      "key": "audio2tool:tier5_needle:000233",
+      "query_idx": 2216,
+      "sample_id": "tier5_needle:000233",
+      "stratum": "setColorTemperature",
+      "tier": "tier5_needle",
+      "tool_name": "setColorTemperature"
+    },
+    {
+      "id": 277,
+      "key": "audio2tool:tier5_needle:000277",
+      "query_idx": 2238,
+      "sample_id": "tier5_needle:000277",
+      "stratum": "background:tier5_needle",
+      "tier": "tier5_needle",
+      "tool_name": "setAdaptiveLighting"
+    },
+    {
+      "id": 411,
+      "key": "audio2tool:tier5_needle:000411",
+      "query_idx": 2305,
+      "sample_id": "tier5_needle:000411",
+      "stratum": "background:tier5_needle",
+      "tier": "tier5_needle",
+      "tool_name": "setThermostatMode"
+    },
+    {
+      "id": 649,
+      "key": "audio2tool:tier5_needle:000649",
+      "query_idx": 2424,
+      "sample_id": "tier5_needle:000649",
+      "stratum": "background:tier5_needle",
+      "tier": "tier5_needle",
+      "tool_name": "setHumidifierState"
+    },
+    {
+      "id": 689,
+      "key": "audio2tool:tier5_needle:000689",
+      "query_idx": 2444,
+      "sample_id": "tier5_needle:000689",
+      "stratum": "background:tier5_needle",
+      "tier": "tier5_needle",
+      "tool_name": "setLockState"
+    },
+    {
+      "id": 725,
+      "key": "audio2tool:tier5_needle:000725",
+      "query_idx": 2462,
+      "sample_id": "tier5_needle:000725",
+      "stratum": "setSecurityMode",
+      "tier": "tier5_needle",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 729,
+      "key": "audio2tool:tier5_needle:000729",
+      "query_idx": 2464,
+      "sample_id": "tier5_needle:000729",
+      "stratum": "setSecurityMode",
+      "tier": "tier5_needle",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 741,
+      "key": "audio2tool:tier5_needle:000741",
+      "query_idx": 2470,
+      "sample_id": "tier5_needle:000741",
+      "stratum": "setSecurityMode",
+      "tier": "tier5_needle",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 971,
+      "key": "audio2tool:tier5_needle:000971",
+      "query_idx": 2585,
+      "sample_id": "tier5_needle:000971",
+      "stratum": "playMedia",
+      "tier": "tier5_needle",
+      "tool_name": "playMedia"
+    },
+    {
+      "id": 1095,
+      "key": "audio2tool:tier5_needle:001095",
+      "query_idx": 2647,
+      "sample_id": "tier5_needle:001095",
+      "stratum": "background:tier5_needle",
+      "tier": "tier5_needle",
+      "tool_name": "setVolume"
+    },
+    {
+      "id": 1135,
+      "key": "audio2tool:tier5_needle:001135",
+      "query_idx": 2667,
+      "sample_id": "tier5_needle:001135",
+      "stratum": "background:tier5_needle",
+      "tier": "tier5_needle",
+      "tool_name": "setVolume"
+    },
+    {
+      "id": 1165,
+      "key": "audio2tool:tier5_needle:001165",
+      "query_idx": 2682,
+      "sample_id": "tier5_needle:001165",
+      "stratum": "castContent",
+      "tier": "tier5_needle",
+      "tool_name": "castContent"
+    },
+    {
+      "id": 1185,
+      "key": "audio2tool:tier5_needle:001185",
+      "query_idx": 2692,
+      "sample_id": "tier5_needle:001185",
+      "stratum": "castContent",
+      "tier": "tier5_needle",
+      "tool_name": "castContent"
+    },
+    {
+      "id": 1299,
+      "key": "audio2tool:tier5_needle:001299",
+      "query_idx": 2749,
+      "sample_id": "tier5_needle:001299",
+      "stratum": "startCleaning",
+      "tier": "tier5_needle",
+      "tool_name": "startCleaning"
+    },
+    {
+      "id": 1695,
+      "key": "audio2tool:tier5_needle:001695",
+      "query_idx": 2947,
+      "sample_id": "tier5_needle:001695",
+      "stratum": "activateScene",
+      "tier": "tier5_needle",
+      "tool_name": "activateScene"
+    },
+    {
+      "id": 1869,
+      "key": "audio2tool:tier5_needle:001869",
+      "query_idx": 3034,
+      "sample_id": "tier5_needle:001869",
+      "stratum": "background:tier5_needle",
+      "tier": "tier5_needle",
+      "tool_name": "getNetworkHealth"
+    },
+    {
+      "id": 2423,
+      "key": "audio2tool:tier5_needle:002423",
+      "query_idx": 3311,
+      "sample_id": "tier5_needle:002423",
+      "stratum": "rebootDevice",
+      "tier": "tier5_needle",
+      "tool_name": "rebootDevice"
+    },
+    {
+      "id": 2627,
+      "key": "audio2tool:tier5_needle:002627",
+      "query_idx": 3413,
+      "sample_id": "tier5_needle:002627",
+      "stratum": "resetFilterStatus",
+      "tier": "tier5_needle",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 2703,
+      "key": "audio2tool:tier5_needle:002703",
+      "query_idx": 3451,
+      "sample_id": "tier5_needle:002703",
+      "stratum": "setLighting",
+      "tier": "tier5_needle",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 2717,
+      "key": "audio2tool:tier5_needle:002717",
+      "query_idx": 3458,
+      "sample_id": "tier5_needle:002717",
+      "stratum": "setLighting",
+      "tier": "tier5_needle",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 2759,
+      "key": "audio2tool:tier5_needle:002759",
+      "query_idx": 3479,
+      "sample_id": "tier5_needle:002759",
+      "stratum": "setLighting",
+      "tier": "tier5_needle",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 2991,
+      "key": "audio2tool:tier5_needle:002991",
+      "query_idx": 4345,
+      "sample_id": "tier5_needle:002991",
+      "stratum": "background:tier5_needle",
+      "tier": "tier5_needle",
+      "tool_name": "getDeviceList"
+    },
+    {
+      "id": 3011,
+      "key": "audio2tool:tier5_needle:003011",
+      "query_idx": 4355,
+      "sample_id": "tier5_needle:003011",
+      "stratum": "activateRoutine",
+      "tier": "tier5_needle",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 3055,
+      "key": "audio2tool:tier5_needle:003055",
+      "query_idx": 4377,
+      "sample_id": "tier5_needle:003055",
+      "stratum": "activateRoutine",
+      "tier": "tier5_needle",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 3095,
+      "key": "audio2tool:tier5_needle:003095",
+      "query_idx": 4397,
+      "sample_id": "tier5_needle:003095",
+      "stratum": "setGroupLightState",
+      "tier": "tier5_needle",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 3195,
+      "key": "audio2tool:tier5_needle:003195",
+      "query_idx": 3547,
+      "sample_id": "tier5_needle:003195",
+      "stratum": "getBiometricData",
+      "tier": "tier5_needle",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 3215,
+      "key": "audio2tool:tier5_needle:003215",
+      "query_idx": 3557,
+      "sample_id": "tier5_needle:003215",
+      "stratum": "getBiometricData",
+      "tier": "tier5_needle",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 3787,
+      "key": "audio2tool:tier5_needle:003787",
+      "query_idx": 4473,
+      "sample_id": "tier5_needle:003787",
+      "stratum": "background:tier5_needle",
+      "tier": "tier5_needle",
+      "tool_name": "getSleepSummary"
+    },
+    {
+      "id": 3999,
+      "key": "audio2tool:tier5_needle:003999",
+      "query_idx": 280,
+      "sample_id": "tier5_needle:003999",
+      "stratum": "background:tier5_needle",
+      "tier": "tier5_needle",
+      "tool_name": "ventWindows"
+    },
+    {
+      "id": 4151,
+      "key": "audio2tool:tier5_needle:004151",
+      "query_idx": 1510,
+      "sample_id": "tier5_needle:004151",
+      "stratum": "background:tier5_needle",
+      "tier": "tier5_needle",
+      "tool_name": "getActiveAlerts"
+    },
+    {
+      "id": 4219,
+      "key": "audio2tool:tier5_needle:004219",
+      "query_idx": 2018,
+      "sample_id": "tier5_needle:004219",
+      "stratum": "background:tier5_needle",
+      "tier": "tier5_needle",
+      "tool_name": "startLightShow"
+    },
+    {
+      "id": 4231,
+      "key": "audio2tool:tier5_needle:004231",
+      "query_idx": 3838,
+      "sample_id": "tier5_needle:004231",
+      "stratum": "background:tier5_needle",
+      "tier": "tier5_needle",
+      "tool_name": "setMirrorAngle"
+    },
+    {
+      "id": 4263,
+      "key": "audio2tool:tier5_needle:004263",
+      "query_idx": 4109,
+      "sample_id": "tier5_needle:004263",
+      "stratum": "background:tier5_needle",
+      "tier": "tier5_needle",
+      "tool_name": "honkHorn"
+    },
+    {
+      "id": 4285,
+      "key": "audio2tool:tier5_needle:004285",
+      "query_idx": 4261,
+      "sample_id": "tier5_needle:004285",
+      "stratum": "background:tier5_needle",
+      "tier": "tier5_needle",
+      "tool_name": "getVehicleInfo"
+    },
+    {
+      "id": 157,
+      "key": "audio2tool:tier6_correction:000157",
+      "query_idx": 2178,
+      "sample_id": "tier6_correction:000157",
+      "stratum": "setColor",
+      "tier": "tier6_correction",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 163,
+      "key": "audio2tool:tier6_correction:000163",
+      "query_idx": 2181,
+      "sample_id": "tier6_correction:000163",
+      "stratum": "setColor",
+      "tier": "tier6_correction",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 165,
+      "key": "audio2tool:tier6_correction:000165",
+      "query_idx": 2182,
+      "sample_id": "tier6_correction:000165",
+      "stratum": "setColor",
+      "tier": "tier6_correction",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 233,
+      "key": "audio2tool:tier6_correction:000233",
+      "query_idx": 2216,
+      "sample_id": "tier6_correction:000233",
+      "stratum": "setColorTemperature",
+      "tier": "tier6_correction",
+      "tool_name": "setColorTemperature"
+    },
+    {
+      "id": 725,
+      "key": "audio2tool:tier6_correction:000725",
+      "query_idx": 2462,
+      "sample_id": "tier6_correction:000725",
+      "stratum": "setSecurityMode",
+      "tier": "tier6_correction",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 741,
+      "key": "audio2tool:tier6_correction:000741",
+      "query_idx": 2470,
+      "sample_id": "tier6_correction:000741",
+      "stratum": "setSecurityMode",
+      "tier": "tier6_correction",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 755,
+      "key": "audio2tool:tier6_correction:000755",
+      "query_idx": 2477,
+      "sample_id": "tier6_correction:000755",
+      "stratum": "setSecurityMode",
+      "tier": "tier6_correction",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 971,
+      "key": "audio2tool:tier6_correction:000971",
+      "query_idx": 2585,
+      "sample_id": "tier6_correction:000971",
+      "stratum": "playMedia",
+      "tier": "tier6_correction",
+      "tool_name": "playMedia"
+    },
+    {
+      "id": 1165,
+      "key": "audio2tool:tier6_correction:001165",
+      "query_idx": 2682,
+      "sample_id": "tier6_correction:001165",
+      "stratum": "castContent",
+      "tier": "tier6_correction",
+      "tool_name": "castContent"
+    },
+    {
+      "id": 1185,
+      "key": "audio2tool:tier6_correction:001185",
+      "query_idx": 2692,
+      "sample_id": "tier6_correction:001185",
+      "stratum": "castContent",
+      "tier": "tier6_correction",
+      "tool_name": "castContent"
+    },
+    {
+      "id": 1299,
+      "key": "audio2tool:tier6_correction:001299",
+      "query_idx": 2749,
+      "sample_id": "tier6_correction:001299",
+      "stratum": "startCleaning",
+      "tier": "tier6_correction",
+      "tool_name": "startCleaning"
+    },
+    {
+      "id": 1695,
+      "key": "audio2tool:tier6_correction:001695",
+      "query_idx": 2947,
+      "sample_id": "tier6_correction:001695",
+      "stratum": "activateScene",
+      "tier": "tier6_correction",
+      "tool_name": "activateScene"
+    },
+    {
+      "id": 1865,
+      "key": "audio2tool:tier6_correction:001865",
+      "query_idx": 3032,
+      "sample_id": "tier6_correction:001865",
+      "stratum": "background:tier6_correction",
+      "tier": "tier6_correction",
+      "tool_name": "getNetworkHealth"
+    },
+    {
+      "id": 2273,
+      "key": "audio2tool:tier6_correction:002273",
+      "query_idx": 3236,
+      "sample_id": "tier6_correction:002273",
+      "stratum": "background:tier6_correction",
+      "tier": "tier6_correction",
+      "tool_name": "getSensorState"
+    },
+    {
+      "id": 2627,
+      "key": "audio2tool:tier6_correction:002627",
+      "query_idx": 3413,
+      "sample_id": "tier6_correction:002627",
+      "stratum": "resetFilterStatus",
+      "tier": "tier6_correction",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 2699,
+      "key": "audio2tool:tier6_correction:002699",
+      "query_idx": 3449,
+      "sample_id": "tier6_correction:002699",
+      "stratum": "background:tier6_correction",
+      "tier": "tier6_correction",
+      "tool_name": "runNetworkSpeedTest"
+    },
+    {
+      "id": 2703,
+      "key": "audio2tool:tier6_correction:002703",
+      "query_idx": 3451,
+      "sample_id": "tier6_correction:002703",
+      "stratum": "setLighting",
+      "tier": "tier6_correction",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 2717,
+      "key": "audio2tool:tier6_correction:002717",
+      "query_idx": 3458,
+      "sample_id": "tier6_correction:002717",
+      "stratum": "setLighting",
+      "tier": "tier6_correction",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 2759,
+      "key": "audio2tool:tier6_correction:002759",
+      "query_idx": 3479,
+      "sample_id": "tier6_correction:002759",
+      "stratum": "setLighting",
+      "tier": "tier6_correction",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 2947,
+      "key": "audio2tool:tier6_correction:002947",
+      "query_idx": 4323,
+      "sample_id": "tier6_correction:002947",
+      "stratum": "background:tier6_correction",
+      "tier": "tier6_correction",
+      "tool_name": "getDeviceList"
+    },
+    {
+      "id": 3011,
+      "key": "audio2tool:tier6_correction:003011",
+      "query_idx": 4355,
+      "sample_id": "tier6_correction:003011",
+      "stratum": "activateRoutine",
+      "tier": "tier6_correction",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 3055,
+      "key": "audio2tool:tier6_correction:003055",
+      "query_idx": 4377,
+      "sample_id": "tier6_correction:003055",
+      "stratum": "activateRoutine",
+      "tier": "tier6_correction",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 3095,
+      "key": "audio2tool:tier6_correction:003095",
+      "query_idx": 4397,
+      "sample_id": "tier6_correction:003095",
+      "stratum": "setGroupLightState",
+      "tier": "tier6_correction",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 3195,
+      "key": "audio2tool:tier6_correction:003195",
+      "query_idx": 3547,
+      "sample_id": "tier6_correction:003195",
+      "stratum": "getBiometricData",
+      "tier": "tier6_correction",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 3215,
+      "key": "audio2tool:tier6_correction:003215",
+      "query_idx": 3557,
+      "sample_id": "tier6_correction:003215",
+      "stratum": "getBiometricData",
+      "tier": "tier6_correction",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 3769,
+      "key": "audio2tool:tier6_correction:003769",
+      "query_idx": 4464,
+      "sample_id": "tier6_correction:003769",
+      "stratum": "background:tier6_correction",
+      "tier": "tier6_correction",
+      "tool_name": "stopWorkout"
+    },
+    {
+      "id": 3793,
+      "key": "audio2tool:tier6_correction:003793",
+      "query_idx": 4476,
+      "sample_id": "tier6_correction:003793",
+      "stratum": "background:tier6_correction",
+      "tier": "tier6_correction",
+      "tool_name": "getSleepSummary"
+    },
+    {
+      "id": 4093,
+      "key": "audio2tool:tier6_correction:004093",
+      "query_idx": 1045,
+      "sample_id": "tier6_correction:004093",
+      "stratum": "background:tier6_correction",
+      "tier": "tier6_correction",
+      "tool_name": "setMediaSource"
+    },
+    {
+      "id": 4107,
+      "key": "audio2tool:tier6_correction:004107",
+      "query_idx": 1145,
+      "sample_id": "tier6_correction:004107",
+      "stratum": "background:tier6_correction",
+      "tier": "tier6_correction",
+      "tool_name": "launchInCarGaming"
+    },
+    {
+      "id": 4117,
+      "key": "audio2tool:tier6_correction:004117",
+      "query_idx": 1227,
+      "sample_id": "tier6_correction:004117",
+      "stratum": "background:tier6_correction",
+      "tier": "tier6_correction",
+      "tool_name": "setDestination"
+    },
+    {
+      "id": 4129,
+      "key": "audio2tool:tier6_correction:004129",
+      "query_idx": 1316,
+      "sample_id": "tier6_correction:004129",
+      "stratum": "background:tier6_correction",
+      "tier": "tier6_correction",
+      "tool_name": "searchPOI"
+    },
+    {
+      "id": 4137,
+      "key": "audio2tool:tier6_correction:004137",
+      "query_idx": 1371,
+      "sample_id": "tier6_correction:004137",
+      "stratum": "background:tier6_correction",
+      "tier": "tier6_correction",
+      "tool_name": "setVoiceGuidance"
+    },
+    {
+      "id": 4139,
+      "key": "audio2tool:tier6_correction:004139",
+      "query_idx": 1394,
+      "sample_id": "tier6_correction:004139",
+      "stratum": "background:tier6_correction",
+      "tier": "tier6_correction",
+      "tool_name": "getRouteSummary"
+    },
+    {
+      "id": 4211,
+      "key": "audio2tool:tier6_correction:004211",
+      "query_idx": 1970,
+      "sample_id": "tier6_correction:004211",
+      "stratum": "background:tier6_correction",
+      "tier": "tier6_correction",
+      "tool_name": "setChargeLimit"
+    },
+    {
+      "id": 4257,
+      "key": "audio2tool:tier6_correction:004257",
+      "query_idx": 4060,
+      "sample_id": "tier6_correction:004257",
+      "stratum": "background:tier6_correction",
+      "tier": "tier6_correction",
+      "tool_name": "getChargingSession"
+    },
+    {
+      "id": 4279,
+      "key": "audio2tool:tier6_correction:004279",
+      "query_idx": 4226,
+      "sample_id": "tier6_correction:004279",
+      "stratum": "background:tier6_correction",
+      "tier": "tier6_correction",
+      "tool_name": "setCruiseSpeed"
+    },
+    {
+      "id": 7,
+      "key": "audio2tool:tier7_multiturn:000007",
+      "query_idx": 2106,
+      "sample_id": "tier7_multiturn:000007",
+      "stratum": "setLighting",
+      "tier": "tier7_multiturn",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 79,
+      "key": "audio2tool:tier7_multiturn:000079",
+      "query_idx": 2178,
+      "sample_id": "tier7_multiturn:000079",
+      "stratum": "setColor",
+      "tier": "tier7_multiturn",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 82,
+      "key": "audio2tool:tier7_multiturn:000082",
+      "query_idx": 2181,
+      "sample_id": "tier7_multiturn:000082",
+      "stratum": "setColor",
+      "tier": "tier7_multiturn",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 83,
+      "key": "audio2tool:tier7_multiturn:000083",
+      "query_idx": 2182,
+      "sample_id": "tier7_multiturn:000083",
+      "stratum": "setColor",
+      "tier": "tier7_multiturn",
+      "tool_name": "setColor"
+    },
+    {
+      "id": 117,
+      "key": "audio2tool:tier7_multiturn:000117",
+      "query_idx": 2216,
+      "sample_id": "tier7_multiturn:000117",
+      "stratum": "setColorTemperature",
+      "tier": "tier7_multiturn",
+      "tool_name": "setColorTemperature"
+    },
+    {
+      "id": 241,
+      "key": "audio2tool:tier7_multiturn:000241",
+      "query_idx": 2340,
+      "sample_id": "tier7_multiturn:000241",
+      "stratum": "background:tier7_multiturn",
+      "tier": "tier7_multiturn",
+      "tool_name": "setFanMode"
+    },
+    {
+      "id": 332,
+      "key": "audio2tool:tier7_multiturn:000332",
+      "query_idx": 2431,
+      "sample_id": "tier7_multiturn:000332",
+      "stratum": "background:tier7_multiturn",
+      "tier": "tier7_multiturn",
+      "tool_name": "setLockState"
+    },
+    {
+      "id": 363,
+      "key": "audio2tool:tier7_multiturn:000363",
+      "query_idx": 2462,
+      "sample_id": "tier7_multiturn:000363",
+      "stratum": "setSecurityMode",
+      "tier": "tier7_multiturn",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 365,
+      "key": "audio2tool:tier7_multiturn:000365",
+      "query_idx": 2464,
+      "sample_id": "tier7_multiturn:000365",
+      "stratum": "setSecurityMode",
+      "tier": "tier7_multiturn",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 371,
+      "key": "audio2tool:tier7_multiturn:000371",
+      "query_idx": 2470,
+      "sample_id": "tier7_multiturn:000371",
+      "stratum": "setSecurityMode",
+      "tier": "tier7_multiturn",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 378,
+      "key": "audio2tool:tier7_multiturn:000378",
+      "query_idx": 2477,
+      "sample_id": "tier7_multiturn:000378",
+      "stratum": "setSecurityMode",
+      "tier": "tier7_multiturn",
+      "tool_name": "setSecurityMode"
+    },
+    {
+      "id": 486,
+      "key": "audio2tool:tier7_multiturn:000486",
+      "query_idx": 2585,
+      "sample_id": "tier7_multiturn:000486",
+      "stratum": "playMedia",
+      "tier": "tier7_multiturn",
+      "tool_name": "playMedia"
+    },
+    {
+      "id": 583,
+      "key": "audio2tool:tier7_multiturn:000583",
+      "query_idx": 2682,
+      "sample_id": "tier7_multiturn:000583",
+      "stratum": "castContent",
+      "tier": "tier7_multiturn",
+      "tool_name": "castContent"
+    },
+    {
+      "id": 593,
+      "key": "audio2tool:tier7_multiturn:000593",
+      "query_idx": 2692,
+      "sample_id": "tier7_multiturn:000593",
+      "stratum": "castContent",
+      "tier": "tier7_multiturn",
+      "tool_name": "castContent"
+    },
+    {
+      "id": 615,
+      "key": "audio2tool:tier7_multiturn:000615",
+      "query_idx": 2714,
+      "sample_id": "tier7_multiturn:000615",
+      "stratum": "background:tier7_multiturn",
+      "tier": "tier7_multiturn",
+      "tool_name": "setInputSource"
+    },
+    {
+      "id": 650,
+      "key": "audio2tool:tier7_multiturn:000650",
+      "query_idx": 2749,
+      "sample_id": "tier7_multiturn:000650",
+      "stratum": "startCleaning",
+      "tier": "tier7_multiturn",
+      "tool_name": "startCleaning"
+    },
+    {
+      "id": 848,
+      "key": "audio2tool:tier7_multiturn:000848",
+      "query_idx": 2947,
+      "sample_id": "tier7_multiturn:000848",
+      "stratum": "activateScene",
+      "tier": "tier7_multiturn",
+      "tool_name": "activateScene"
+    },
+    {
+      "id": 1212,
+      "key": "audio2tool:tier7_multiturn:001212",
+      "query_idx": 3311,
+      "sample_id": "tier7_multiturn:001212",
+      "stratum": "rebootDevice",
+      "tier": "tier7_multiturn",
+      "tool_name": "rebootDevice"
+    },
+    {
+      "id": 1217,
+      "key": "audio2tool:tier7_multiturn:001217",
+      "query_idx": 3316,
+      "sample_id": "tier7_multiturn:001217",
+      "stratum": "rebootDevice",
+      "tier": "tier7_multiturn",
+      "tool_name": "rebootDevice"
+    },
+    {
+      "id": 1276,
+      "key": "audio2tool:tier7_multiturn:001276",
+      "query_idx": 3375,
+      "sample_id": "tier7_multiturn:001276",
+      "stratum": "background:tier7_multiturn",
+      "tier": "tier7_multiturn",
+      "tool_name": "calibrateThermostat"
+    },
+    {
+      "id": 1314,
+      "key": "audio2tool:tier7_multiturn:001314",
+      "query_idx": 3413,
+      "sample_id": "tier7_multiturn:001314",
+      "stratum": "resetFilterStatus",
+      "tier": "tier7_multiturn",
+      "tool_name": "resetFilterStatus"
+    },
+    {
+      "id": 1352,
+      "key": "audio2tool:tier7_multiturn:001352",
+      "query_idx": 3451,
+      "sample_id": "tier7_multiturn:001352",
+      "stratum": "setLighting",
+      "tier": "tier7_multiturn",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 1359,
+      "key": "audio2tool:tier7_multiturn:001359",
+      "query_idx": 3458,
+      "sample_id": "tier7_multiturn:001359",
+      "stratum": "setLighting",
+      "tier": "tier7_multiturn",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 1380,
+      "key": "audio2tool:tier7_multiturn:001380",
+      "query_idx": 3479,
+      "sample_id": "tier7_multiturn:001380",
+      "stratum": "setLighting",
+      "tier": "tier7_multiturn",
+      "tool_name": "setLighting"
+    },
+    {
+      "id": 1506,
+      "key": "audio2tool:tier7_multiturn:001506",
+      "query_idx": 4355,
+      "sample_id": "tier7_multiturn:001506",
+      "stratum": "activateRoutine",
+      "tier": "tier7_multiturn",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 1528,
+      "key": "audio2tool:tier7_multiturn:001528",
+      "query_idx": 4377,
+      "sample_id": "tier7_multiturn:001528",
+      "stratum": "activateRoutine",
+      "tier": "tier7_multiturn",
+      "tool_name": "activateRoutine"
+    },
+    {
+      "id": 1548,
+      "key": "audio2tool:tier7_multiturn:001548",
+      "query_idx": 4397,
+      "sample_id": "tier7_multiturn:001548",
+      "stratum": "setGroupLightState",
+      "tier": "tier7_multiturn",
+      "tool_name": "setGroupLightState"
+    },
+    {
+      "id": 1598,
+      "key": "audio2tool:tier7_multiturn:001598",
+      "query_idx": 3547,
+      "sample_id": "tier7_multiturn:001598",
+      "stratum": "getBiometricData",
+      "tier": "tier7_multiturn",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 1608,
+      "key": "audio2tool:tier7_multiturn:001608",
+      "query_idx": 3557,
+      "sample_id": "tier7_multiturn:001608",
+      "stratum": "getBiometricData",
+      "tier": "tier7_multiturn",
+      "tool_name": "getBiometricData"
+    },
+    {
+      "id": 1983,
+      "key": "audio2tool:tier7_multiturn:001983",
+      "query_idx": 41,
+      "sample_id": "tier7_multiturn:001983",
+      "stratum": "background:tier7_multiturn",
+      "tier": "tier7_multiturn",
+      "tool_name": "setFanSpeed"
+    },
+    {
+      "id": 2005,
+      "key": "audio2tool:tier7_multiturn:002005",
+      "query_idx": 397,
+      "sample_id": "tier7_multiturn:002005",
+      "stratum": "background:tier7_multiturn",
+      "tier": "tier7_multiturn",
+      "tool_name": "setSecureStorageAccess"
+    },
+    {
+      "id": 2040,
+      "key": "audio2tool:tier7_multiturn:002040",
+      "query_idx": 951,
+      "sample_id": "tier7_multiturn:002040",
+      "stratum": "background:tier7_multiturn",
+      "tier": "tier7_multiturn",
+      "tool_name": "viewRemoteCamera"
+    },
+    {
+      "id": 2046,
+      "key": "audio2tool:tier7_multiturn:002046",
+      "query_idx": 1072,
+      "sample_id": "tier7_multiturn:002046",
+      "stratum": "background:tier7_multiturn",
+      "tier": "tier7_multiturn",
+      "tool_name": "controlPlayback"
+    },
+    {
+      "id": 2049,
+      "key": "audio2tool:tier7_multiturn:002049",
+      "query_idx": 1103,
+      "sample_id": "tier7_multiturn:002049",
+      "stratum": "background:tier7_multiturn",
+      "tier": "tier7_multiturn",
+      "tool_name": "setPassengerQuietMode"
+    },
+    {
+      "id": 2059,
+      "key": "audio2tool:tier7_multiturn:002059",
+      "query_idx": 1244,
+      "sample_id": "tier7_multiturn:002059",
+      "stratum": "background:tier7_multiturn",
+      "tier": "tier7_multiturn",
+      "tool_name": "addTripStop"
+    },
+    {
+      "id": 2085,
+      "key": "audio2tool:tier7_multiturn:002085",
+      "query_idx": 1638,
+      "sample_id": "tier7_multiturn:002085",
+      "stratum": "background:tier7_multiturn",
+      "tier": "tier7_multiturn",
+      "tool_name": "getChargeState"
+    },
+    {
+      "id": 2100,
+      "key": "audio2tool:tier7_multiturn:002100",
+      "query_idx": 1872,
+      "sample_id": "tier7_multiturn:002100",
+      "stratum": "background:tier7_multiturn",
+      "tier": "tier7_multiturn",
+      "tool_name": "wiperServiceMode"
+    },
+    {
+      "id": 2129,
+      "key": "audio2tool:tier7_multiturn:002129",
+      "query_idx": 4062,
+      "sample_id": "tier7_multiturn:002129",
+      "stratum": "background:tier7_multiturn",
+      "tier": "tier7_multiturn",
+      "tool_name": "getChargingSession"
+    },
+    {
+      "id": 2131,
+      "key": "audio2tool:tier7_multiturn:002131",
+      "query_idx": 4103,
+      "sample_id": "tier7_multiturn:002131",
+      "stratum": "background:tier7_multiturn",
+      "tier": "tier7_multiturn",
+      "tool_name": "honkHorn"
+    },
+    {
+      "id": 2144,
+      "key": "audio2tool:tier7_multiturn:002144",
+      "query_idx": 4284,
+      "sample_id": "tier7_multiturn:002144",
+      "stratum": "background:tier7_multiturn",
+      "tier": "tier7_multiturn",
+      "tool_name": "getVehicleInfo"
+    },
+    {
+      "id": 40,
+      "key": "audio2tool:tier8_intent_blending:000040",
+      "query_idx": 373,
+      "sample_id": "tier8_intent_blending:000040",
+      "stratum": "background:tier8_intent_blending",
+      "tier": "tier8_intent_blending",
+      "tool_name": "getDeviceList"
+    },
+    {
+      "id": 82,
+      "key": "audio2tool:tier8_intent_blending:000082",
+      "query_idx": 415,
+      "sample_id": "tier8_intent_blending:000082",
+      "stratum": "background:tier8_intent_blending",
+      "tier": "tier8_intent_blending",
+      "tool_name": "getEnergyUsage"
+    },
+    {
+      "id": 105,
+      "key": "audio2tool:tier8_intent_blending:000105",
+      "query_idx": 438,
+      "sample_id": "tier8_intent_blending:000105",
+      "stratum": "background:tier8_intent_blending",
+      "tier": "tier8_intent_blending",
+      "tool_name": "getBatteryLevel"
+    },
+    {
+      "id": 119,
+      "key": "audio2tool:tier8_intent_blending:000119",
+      "query_idx": 452,
+      "sample_id": "tier8_intent_blending:000119",
+      "stratum": "rebootDevice",
+      "tier": "tier8_intent_blending",
+      "tool_name": "rebootDevice"
+    },
+    {
+      "id": 177,
+      "key": "audio2tool:tier8_intent_blending:000177",
+      "query_idx": 510,
+      "sample_id": "tier8_intent_blending:000177",
+      "stratum": "background:tier8_intent_blending",
+      "tier": "tier8_intent_blending",
+      "tool_name": "getLockState"
+    },
+    {
+      "id": 263,
+      "key": "audio2tool:tier8_intent_blending:000263",
+      "query_idx": 596,
+      "sample_id": "tier8_intent_blending:000263",
+      "stratum": "background:tier8_intent_blending",
+      "tier": "tier8_intent_blending",
+      "tool_name": "getThermostatState"
+    },
+    {
+      "id": 344,
+      "key": "audio2tool:tier8_intent_blending:000344",
+      "query_idx": 677,
+      "sample_id": "tier8_intent_blending:000344",
+      "stratum": "background:tier8_intent_blending",
+      "tier": "tier8_intent_blending",
+      "tool_name": "startWorkout"
+    },
+    {
+      "id": 395,
+      "key": "audio2tool:tier8_intent_blending:000395",
+      "query_idx": 728,
+      "sample_id": "tier8_intent_blending:000395",
+      "stratum": "getHRV",
+      "tier": "tier8_intent_blending",
+      "tool_name": "getHRV"
+    },
+    {
+      "id": 402,
+      "key": "audio2tool:tier8_intent_blending:000402",
+      "query_idx": 735,
+      "sample_id": "tier8_intent_blending:000402",
+      "stratum": "setHapticStrength",
+      "tier": "tier8_intent_blending",
+      "tool_name": "setHapticStrength"
+    },
+    {
+      "id": 439,
+      "key": "audio2tool:tier8_intent_blending:000439",
+      "query_idx": 772,
+      "sample_id": "tier8_intent_blending:000439",
+      "stratum": "getHRV",
+      "tier": "tier8_intent_blending",
+      "tool_name": "getHRV"
+    },
+    {
+      "id": 465,
+      "key": "audio2tool:tier8_intent_blending:000465",
+      "query_idx": 798,
+      "sample_id": "tier8_intent_blending:000465",
+      "stratum": "background:tier8_intent_blending",
+      "tier": "tier8_intent_blending",
+      "tool_name": "enableWaterLock"
+    },
+    {
+      "id": 467,
+      "key": "audio2tool:tier8_intent_blending:000467",
+      "query_idx": 800,
+      "sample_id": "tier8_intent_blending:000467",
+      "stratum": "background:tier8_intent_blending",
+      "tier": "tier8_intent_blending",
+      "tool_name": "setAlarm"
+    },
+    {
+      "id": 491,
+      "key": "audio2tool:tier8_intent_blending:000491",
+      "query_idx": 824,
+      "sample_id": "tier8_intent_blending:000491",
+      "stratum": "background:tier8_intent_blending",
+      "tier": "tier8_intent_blending",
+      "tool_name": "stopWorkout"
+    },
+    {
+      "id": 495,
+      "key": "audio2tool:tier8_intent_blending:000495",
+      "query_idx": 828,
+      "sample_id": "tier8_intent_blending:000495",
+      "stratum": "background:tier8_intent_blending",
+      "tier": "tier8_intent_blending",
+      "tool_name": "setAlarm"
+    },
+    {
+      "id": 580,
+      "key": "audio2tool:tier8_intent_blending:000580",
+      "query_idx": 913,
+      "sample_id": "tier8_intent_blending:000580",
+      "stratum": "background:tier8_intent_blending",
+      "tier": "tier8_intent_blending",
+      "tool_name": "setAlwaysOnDisplay"
+    },
+    {
+      "id": 707,
+      "key": "audio2tool:tier8_intent_blending:000707",
+      "query_idx": 90,
+      "sample_id": "tier8_intent_blending:000707",
+      "stratum": "background:tier8_intent_blending",
+      "tier": "tier8_intent_blending",
+      "tool_name": "setPetComfortMode"
+    },
+    {
+      "id": 717,
+      "key": "audio2tool:tier8_intent_blending:000717",
+      "query_idx": 106,
+      "sample_id": "tier8_intent_blending:000717",
+      "stratum": "background:tier8_intent_blending",
+      "tier": "tier8_intent_blending",
+      "tool_name": "setFollowDistance"
+    },
+    {
+      "id": 725,
+      "key": "audio2tool:tier8_intent_blending:000725",
+      "query_idx": 120,
+      "sample_id": "tier8_intent_blending:000725",
+      "stratum": "background:tier8_intent_blending",
+      "tier": "tier8_intent_blending",
+      "tool_name": "setChargingAmperage"
+    },
+    {
+      "id": 797,
+      "key": "audio2tool:tier8_intent_blending:000797",
+      "query_idx": 275,
+      "sample_id": "tier8_intent_blending:000797",
+      "stratum": "background:tier8_intent_blending",
+      "tier": "tier8_intent_blending",
+      "tool_name": "getBatteryStatus"
+    }
+  ],
+  "offline_guard": {
+    "attempted_targets": [],
+    "exposure_row": "SAEA-SN-MF-A2T-EVO-FOLD-ROSTERS-V1",
+    "outbound_connection_attempts": 0
+  },
+  "per_stratum": {
+    "activateRoutine": 20,
+    "activateScene": 19,
+    "background:tier1_direct": 15,
+    "background:tier2_parametric": 15,
+    "background:tier3_multi_intent": 15,
+    "background:tier4_implicit": 15,
+    "background:tier5_needle": 15,
+    "background:tier6_correction": 15,
+    "background:tier7_multiturn": 15,
+    "background:tier8_intent_blending": 15,
+    "castContent": 14,
+    "getBiometricData": 20,
+    "getHRV": 15,
+    "playMedia": 7,
+    "rebootDevice": 12,
+    "resetFilterStatus": 20,
+    "setApplianceMode": 6,
+    "setColor": 20,
+    "setColorTemperature": 9,
+    "setGroupLightState": 20,
+    "setHapticStrength": 12,
+    "setLighting": 20,
+    "setSecurityMode": 20,
+    "startCleaning": 12,
+    "streamCamera": 18,
+    "updateFirmware": 20
+  },
+  "pool": {
+    "background_candidate_blocks": 1152,
+    "background_candidate_units": 1955,
+    "carrier_units_total": 16838,
+    "construction_units": 3207,
+    "exemplar_units_available": {
+      "activateRoutine": 25,
+      "activateScene": 8,
+      "calibrateCameras": 7,
+      "castContent": 8,
+      "getBiometricData": 10,
+      "getHRV": 21,
+      "getLightState": 21,
+      "playMedia": 8,
+      "rebootDevice": 14,
+      "resetFilterStatus": 21,
+      "setAmbientLighting": 9,
+      "setApplianceMode": 8,
+      "setBrightness": 9,
+      "setColor": 9,
+      "setColorTemperature": 9,
+      "setGroupLightState": 15,
+      "setHapticStrength": 9,
+      "setLighting": 43,
+      "setRomanceMode": 8,
+      "setSecurityMode": 11,
+      "startCleaning": 8,
+      "streamCamera": 8,
+      "updateFirmware": 15
+    },
+    "fold_eligible_blocks": 1687,
+    "fold_eligible_units": 3201,
+    "source": "the V3 exposure-free construction pool, runtime wav at most 60 s",
+    "target_tool_blocks": 535
+  },
+  "role": "stage-two confirmation rows, fold B",
+  "roster_id": "A2T-EVO-FOLD-B-V1",
+  "roster_role": "construction",
+  "sample_selection_rule": "one wav per (tier, query_idx) unit: the unit's lowest manifest id, which is the release's own first-successful-speaker pick",
+  "schema": "saea-roster-receipt-v1",
+  "seed": 20260906,
+  "split_identity_hash": "2cc816cd78c3630c928818a91a6fdcb48d4e994baf64ff875310d5ecca5394bd",
+  "split_role": "discovery",
+  "status": "FROZEN_CONSTRUCTION_ROSTER",
+  "strata_counts": {
+    "activateRoutine": 20,
+    "activateScene": 19,
+    "background:tier1_direct": 15,
+    "background:tier2_parametric": 15,
+    "background:tier3_multi_intent": 15,
+    "background:tier4_implicit": 15,
+    "background:tier5_needle": 15,
+    "background:tier6_correction": 15,
+    "background:tier7_multiturn": 15,
+    "background:tier8_intent_blending": 15,
+    "castContent": 14,
+    "getBiometricData": 20,
+    "getHRV": 15,
+    "playMedia": 7,
+    "rebootDevice": 12,
+    "resetFilterStatus": 20,
+    "setApplianceMode": 6,
+    "setColor": 20,
+    "setColorTemperature": 9,
+    "setGroupLightState": 20,
+    "setHapticStrength": 12,
+    "setLighting": 20,
+    "setSecurityMode": 20,
+    "startCleaning": 12,
+    "streamCamera": 18,
+    "updateFirmware": 20
+  },
+  "target_gold_opened_before_receipt": false,
+  "tool_capacity": {
+    "activateRoutine": {
+      "blocks": 46,
+      "blocks_after_contention": 46,
+      "blocks_by_bucket": {
+        "exemplars": [
+          5250,
+          5252,
+          5254,
+          5256,
+          5258,
+          5259,
+          5261,
+          5262,
+          5263,
+          5265,
+          5267,
+          5268,
+          5270,
+          5274,
+          5277,
+          5278,
+          5279,
+          5280,
+          5283,
+          5287,
+          5289,
+          5291,
+          5293,
+          5294,
+          5295
+        ],
+        "fold_a": [
+          611,
+          4376,
+          4379,
+          5257,
+          5269,
+          5276,
+          5284,
+          5285,
+          5286,
+          5296
+        ],
+        "fold_b": [
+          4355,
+          4377,
+          5251,
+          5253,
+          5255,
+          5266,
+          5273,
+          5275,
+          5281,
+          5297,
+          5299
+        ]
+      },
+      "blocks_lost_to_contention": 0,
+      "fold_quota": 20,
+      "realized_quota": 20,
+      "rule_quota": 20,
+      "solo_quota": 20,
+      "survives": true,
+      "tool_name": "activateRoutine",
+      "units": 65,
+      "units_after_contention": 65,
+      "units_by_bucket": {
+        "exemplars": 25,
+        "fold_a": 20,
+        "fold_b": 20
+      },
+      "units_by_tier": {
+        "tier1_direct": 4,
+        "tier2_parametric": 41,
+        "tier3_multi_intent": 4,
+        "tier4_implicit": 3,
+        "tier5_needle": 4,
+        "tier6_correction": 4,
+        "tier7_multiturn": 4,
+        "tier8_intent_blending": 1
+      }
+    },
+    "activateScene": {
+      "blocks": 36,
+      "blocks_after_contention": 36,
+      "blocks_by_bucket": {
+        "exemplars": [
+          3965,
+          3968,
+          3971,
+          3973,
+          3983,
+          3985,
+          3989,
+          3991
+        ],
+        "fold_a": [
+          2960,
+          3952,
+          3954,
+          3960,
+          3962,
+          3969,
+          3972,
+          3975,
+          3978,
+          3979,
+          3984,
+          3988,
+          3990,
+          3994
+        ],
+        "fold_b": [
+          2947,
+          3951,
+          3953,
+          3955,
+          3959,
+          3963,
+          3967,
+          3976,
+          3980,
+          3986,
+          3993,
+          3995,
+          3996,
+          3998
+        ]
+      },
+      "blocks_lost_to_contention": 0,
+      "fold_quota": 19,
+      "realized_quota": 19,
+      "rule_quota": 19,
+      "solo_quota": 19,
+      "survives": true,
+      "tool_name": "activateScene",
+      "units": 46,
+      "units_after_contention": 46,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 19,
+        "fold_b": 19
+      },
+      "units_by_tier": {
+        "tier1_direct": 2,
+        "tier2_parametric": 34,
+        "tier3_multi_intent": 2,
+        "tier4_implicit": 2,
+        "tier5_needle": 2,
+        "tier6_correction": 2,
+        "tier7_multiturn": 2
+      }
+    },
+    "calibrateCameras": {
+      "blocks": 7,
+      "blocks_after_contention": 7,
+      "blocks_by_bucket": {
+        "exemplars": [
+          159,
+          1803,
+          1806,
+          1810,
+          1812,
+          1822,
+          1823
+        ],
+        "fold_a": [],
+        "fold_b": []
+      },
+      "blocks_lost_to_contention": 0,
+      "fold_quota": 0,
+      "realized_quota": 0,
+      "rule_quota": 0,
+      "solo_quota": 0,
+      "survives": false,
+      "tool_name": "calibrateCameras",
+      "units": 7,
+      "units_after_contention": 7,
+      "units_by_bucket": {
+        "exemplars": 7,
+        "fold_a": 0,
+        "fold_b": 0
+      },
+      "units_by_tier": {
+        "tier1_direct": 1,
+        "tier4_implicit": 1,
+        "tier5_needle": 1,
+        "tier6_correction": 1,
+        "tier7_multiturn": 2,
+        "tier8_intent_blending": 1
+      }
+    },
+    "castContent": {
+      "blocks": 10,
+      "blocks_after_contention": 10,
+      "blocks_by_bucket": {
+        "exemplars": [
+          2689,
+          3307,
+          3333
+        ],
+        "fold_a": [
+          2675,
+          2677,
+          2694
+        ],
+        "fold_b": [
+          2682,
+          2692,
+          3311,
+          3316
+        ]
+      },
+      "blocks_lost_to_contention": 0,
+      "fold_quota": 14,
+      "realized_quota": 14,
+      "rule_quota": 15,
+      "solo_quota": 14,
+      "survives": true,
+      "tool_name": "castContent",
+      "units": 39,
+      "units_after_contention": 39,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 17,
+        "fold_b": 14
+      },
+      "units_by_tier": {
+        "tier1_direct": 6,
+        "tier2_parametric": 4,
+        "tier3_multi_intent": 6,
+        "tier4_implicit": 6,
+        "tier5_needle": 6,
+        "tier6_correction": 5,
+        "tier7_multiturn": 6
+      }
+    },
+    "getBiometricData": {
+      "blocks": 41,
+      "blocks_after_contention": 40,
+      "blocks_by_bucket": {
+        "exemplars": [
+          745,
+          983,
+          4774,
+          4778,
+          4783,
+          4789,
+          4790,
+          4793,
+          4798,
+          4799
+        ],
+        "fold_a": [
+          904,
+          3549,
+          4750,
+          4751,
+          4758,
+          4760,
+          4762,
+          4763,
+          4765,
+          4766,
+          4775,
+          4779,
+          4780,
+          4782,
+          4784
+        ],
+        "fold_b": [
+          3547,
+          4755,
+          4757,
+          4759,
+          4761,
+          4767,
+          4770,
+          4781,
+          4785,
+          4786,
+          4791,
+          4792,
+          4794,
+          4795,
+          4797
+        ]
+      },
+      "blocks_lost_to_contention": 1,
+      "fold_quota": 20,
+      "realized_quota": 20,
+      "rule_quota": 20,
+      "solo_quota": 20,
+      "survives": true,
+      "tool_name": "getBiometricData",
+      "units": 56,
+      "units_after_contention": 50,
+      "units_by_bucket": {
+        "exemplars": 10,
+        "fold_a": 20,
+        "fold_b": 20
+      },
+      "units_by_tier": {
+        "tier1_direct": 3,
+        "tier2_parametric": 35,
+        "tier3_multi_intent": 3,
+        "tier4_implicit": 3,
+        "tier5_needle": 3,
+        "tier6_correction": 3,
+        "tier7_multiturn": 3,
+        "tier8_intent_blending": 3
+      }
+    },
+    "getHRV": {
+      "blocks": 41,
+      "blocks_after_contention": 39,
+      "blocks_by_bucket": {
+        "exemplars": [
+          829,
+          853,
+          945,
+          5400,
+          5402,
+          5409,
+          5432,
+          5438,
+          5439
+        ],
+        "fold_a": [
+          836,
+          5403,
+          5419,
+          5420,
+          5422,
+          5428,
+          5429,
+          5431,
+          5434,
+          5440,
+          5441,
+          5443,
+          5444,
+          5447,
+          5448
+        ],
+        "fold_b": [
+          728,
+          772,
+          5408,
+          5410,
+          5413,
+          5414,
+          5417,
+          5421,
+          5423,
+          5425,
+          5427,
+          5436,
+          5437,
+          5442,
+          5449
+        ]
+      },
+      "blocks_lost_to_contention": 2,
+      "fold_quota": 15,
+      "realized_quota": 15,
+      "rule_quota": 15,
+      "solo_quota": 20,
+      "survives": true,
+      "tool_name": "getHRV",
+      "units": 51,
+      "units_after_contention": 39,
+      "units_by_bucket": {
+        "exemplars": 9,
+        "fold_a": 15,
+        "fold_b": 15
+      },
+      "units_by_tier": {
+        "tier1_direct": 2,
+        "tier2_parametric": 33,
+        "tier3_multi_intent": 2,
+        "tier4_implicit": 2,
+        "tier5_needle": 2,
+        "tier6_correction": 2,
+        "tier7_multiturn": 2,
+        "tier8_intent_blending": 6
+      }
+    },
+    "getLightState": {
+      "blocks": 9,
+      "blocks_after_contention": 6,
+      "blocks_by_bucket": {
+        "exemplars": [
+          3248,
+          3784,
+          3789,
+          3799
+        ],
+        "fold_a": [
+          3754
+        ],
+        "fold_b": [
+          3786
+        ]
+      },
+      "blocks_lost_to_contention": 3,
+      "fold_quota": 0,
+      "realized_quota": 1,
+      "rule_quota": 1,
+      "solo_quota": 9,
+      "survives": false,
+      "tool_name": "getLightState",
+      "units": 29,
+      "units_after_contention": 11,
+      "units_by_bucket": {
+        "exemplars": 9,
+        "fold_a": 1,
+        "fold_b": 1
+      },
+      "units_by_tier": {
+        "tier1_direct": 4,
+        "tier2_parametric": 5,
+        "tier3_multi_intent": 4,
+        "tier4_implicit": 4,
+        "tier5_needle": 4,
+        "tier6_correction": 4,
+        "tier7_multiturn": 4
+      }
+    },
+    "playMedia": {
+      "blocks": 7,
+      "blocks_after_contention": 7,
+      "blocks_by_bucket": {
+        "exemplars": [
+          2592,
+          3253,
+          3263
+        ],
+        "fold_a": [
+          2606,
+          3277
+        ],
+        "fold_b": [
+          2585,
+          3266
+        ]
+      },
+      "blocks_lost_to_contention": 0,
+      "fold_quota": 7,
+      "realized_quota": 7,
+      "rule_quota": 7,
+      "solo_quota": 7,
+      "survives": true,
+      "tool_name": "playMedia",
+      "units": 22,
+      "units_after_contention": 22,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 7,
+        "fold_b": 7
+      },
+      "units_by_tier": {
+        "tier1_direct": 3,
+        "tier2_parametric": 4,
+        "tier3_multi_intent": 3,
+        "tier4_implicit": 3,
+        "tier5_needle": 3,
+        "tier6_correction": 3,
+        "tier7_multiturn": 3
+      }
+    },
+    "rebootDevice": {
+      "blocks": 15,
+      "blocks_after_contention": 12,
+      "blocks_by_bucket": {
+        "exemplars": [
+          574,
+          3023,
+          4440
+        ],
+        "fold_a": [
+          3011,
+          3026
+        ],
+        "fold_b": [
+          435,
+          452,
+          3013,
+          4422,
+          4423,
+          4436,
+          4445
+        ]
+      },
+      "blocks_lost_to_contention": 3,
+      "fold_quota": 12,
+      "realized_quota": 12,
+      "rule_quota": 12,
+      "solo_quota": 20,
+      "survives": true,
+      "tool_name": "rebootDevice",
+      "units": 50,
+      "units_after_contention": 32,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 12,
+        "fold_b": 12
+      },
+      "units_by_tier": {
+        "tier1_direct": 7,
+        "tier2_parametric": 5,
+        "tier3_multi_intent": 7,
+        "tier4_implicit": 7,
+        "tier5_needle": 7,
+        "tier6_correction": 7,
+        "tier7_multiturn": 7,
+        "tier8_intent_blending": 3
+      }
+    },
+    "resetFilterStatus": {
+      "blocks": 46,
+      "blocks_after_contention": 46,
+      "blocks_by_bucket": {
+        "exemplars": [
+          381,
+          4801,
+          4804,
+          4805,
+          4806,
+          4807,
+          4810,
+          4815,
+          4816,
+          4817,
+          4818,
+          4819,
+          4820,
+          4821,
+          4822,
+          4831,
+          4835,
+          4836,
+          4837,
+          4847,
+          4848
+        ],
+        "fold_a": [
+          3400,
+          3405,
+          4809,
+          4814,
+          4823,
+          4827,
+          4828,
+          4830,
+          4833,
+          4849
+        ],
+        "fold_b": [
+          3413,
+          4800,
+          4803,
+          4808,
+          4824,
+          4832,
+          4834,
+          4838,
+          4839,
+          4840,
+          4841,
+          4842,
+          4844,
+          4845,
+          4846
+        ]
+      },
+      "blocks_lost_to_contention": 0,
+      "fold_quota": 20,
+      "realized_quota": 20,
+      "rule_quota": 20,
+      "solo_quota": 20,
+      "survives": true,
+      "tool_name": "resetFilterStatus",
+      "units": 61,
+      "units_after_contention": 61,
+      "units_by_bucket": {
+        "exemplars": 21,
+        "fold_a": 20,
+        "fold_b": 20
+      },
+      "units_by_tier": {
+        "tier1_direct": 3,
+        "tier2_parametric": 42,
+        "tier3_multi_intent": 3,
+        "tier4_implicit": 3,
+        "tier5_needle": 3,
+        "tier6_correction": 3,
+        "tier7_multiturn": 3,
+        "tier8_intent_blending": 1
+      }
+    },
+    "setAmbientLighting": {
+      "blocks": 9,
+      "blocks_after_contention": 9,
+      "blocks_by_bucket": {
+        "exemplars": [
+          1171,
+          1173,
+          1174,
+          1181,
+          1182,
+          1184,
+          1193,
+          1194,
+          2097
+        ],
+        "fold_a": [],
+        "fold_b": []
+      },
+      "blocks_lost_to_contention": 0,
+      "fold_quota": 0,
+      "realized_quota": 0,
+      "rule_quota": 0,
+      "solo_quota": 0,
+      "survives": false,
+      "tool_name": "setAmbientLighting",
+      "units": 9,
+      "units_after_contention": 9,
+      "units_by_bucket": {
+        "exemplars": 9,
+        "fold_a": 0,
+        "fold_b": 0
+      },
+      "units_by_tier": {
+        "tier1_direct": 2,
+        "tier2_parametric": 1,
+        "tier3_multi_intent": 1,
+        "tier5_needle": 2,
+        "tier6_correction": 2,
+        "tier7_multiturn": 1
+      }
+    },
+    "setApplianceMode": {
+      "blocks": 10,
+      "blocks_after_contention": 10,
+      "blocks_by_bucket": {
+        "exemplars": [
+          2801,
+          3150,
+          3194
+        ],
+        "fold_a": [
+          2793
+        ],
+        "fold_b": [
+          3157,
+          3161,
+          3165,
+          3166,
+          3183,
+          3184
+        ]
+      },
+      "blocks_lost_to_contention": 0,
+      "fold_quota": 6,
+      "realized_quota": 6,
+      "rule_quota": 6,
+      "solo_quota": 6,
+      "survives": true,
+      "tool_name": "setApplianceMode",
+      "units": 20,
+      "units_after_contention": 20,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 6,
+        "fold_b": 6
+      },
+      "units_by_tier": {
+        "tier1_direct": 2,
+        "tier2_parametric": 8,
+        "tier3_multi_intent": 2,
+        "tier4_implicit": 2,
+        "tier5_needle": 2,
+        "tier6_correction": 2,
+        "tier7_multiturn": 2
+      }
+    },
+    "setBrightness": {
+      "blocks": 8,
+      "blocks_after_contention": 6,
+      "blocks_by_bucket": {
+        "exemplars": [
+          2137,
+          2778,
+          2789
+        ],
+        "fold_a": [
+          2146
+        ],
+        "fold_b": [
+          2780,
+          2784
+        ]
+      },
+      "blocks_lost_to_contention": 2,
+      "fold_quota": 0,
+      "realized_quota": 2,
+      "rule_quota": 4,
+      "solo_quota": 0,
+      "survives": false,
+      "tool_name": "setBrightness",
+      "units": 18,
+      "units_after_contention": 16,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 6,
+        "fold_b": 2
+      },
+      "units_by_tier": {
+        "tier1_direct": 2,
+        "tier2_parametric": 6,
+        "tier3_multi_intent": 2,
+        "tier4_implicit": 2,
+        "tier5_needle": 2,
+        "tier6_correction": 2,
+        "tier7_multiturn": 2
+      }
+    },
+    "setColor": {
+      "blocks": 14,
+      "blocks_after_contention": 14,
+      "blocks_by_bucket": {
+        "exemplars": [
+          2180,
+          2282,
+          2286,
+          2299
+        ],
+        "fold_a": [
+          384,
+          2167,
+          2179,
+          2189,
+          2264
+        ],
+        "fold_b": [
+          2178,
+          2181,
+          2182,
+          2268,
+          2294
+        ]
+      },
+      "blocks_lost_to_contention": 0,
+      "fold_quota": 20,
+      "realized_quota": 20,
+      "rule_quota": 20,
+      "solo_quota": 20,
+      "survives": true,
+      "tool_name": "setColor",
+      "units": 49,
+      "units_after_contention": 49,
+      "units_by_bucket": {
+        "exemplars": 9,
+        "fold_a": 20,
+        "fold_b": 20
+      },
+      "units_by_tier": {
+        "tier1_direct": 7,
+        "tier2_parametric": 6,
+        "tier3_multi_intent": 7,
+        "tier4_implicit": 7,
+        "tier5_needle": 7,
+        "tier6_correction": 7,
+        "tier7_multiturn": 7,
+        "tier8_intent_blending": 1
+      }
+    },
+    "setColorTemperature": {
+      "blocks": 10,
+      "blocks_after_contention": 9,
+      "blocks_by_bucket": {
+        "exemplars": [
+          386,
+          2198,
+          2848
+        ],
+        "fold_a": [
+          2205,
+          2214
+        ],
+        "fold_b": [
+          2216,
+          2823,
+          2824,
+          2846
+        ]
+      },
+      "blocks_lost_to_contention": 1,
+      "fold_quota": 9,
+      "realized_quota": 9,
+      "rule_quota": 10,
+      "solo_quota": 10,
+      "survives": true,
+      "tool_name": "setColorTemperature",
+      "units": 30,
+      "units_after_contention": 29,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 12,
+        "fold_b": 9
+      },
+      "units_by_tier": {
+        "tier1_direct": 4,
+        "tier2_parametric": 5,
+        "tier3_multi_intent": 4,
+        "tier4_implicit": 4,
+        "tier5_needle": 4,
+        "tier6_correction": 4,
+        "tier7_multiturn": 4,
+        "tier8_intent_blending": 1
+      }
+    },
+    "setGroupLightState": {
+      "blocks": 40,
+      "blocks_after_contention": 40,
+      "blocks_by_bucket": {
+        "exemplars": [
+          515,
+          5550,
+          5551,
+          5552,
+          5554,
+          5564,
+          5567,
+          5572,
+          5574,
+          5576,
+          5580,
+          5582,
+          5584,
+          5594,
+          5595
+        ],
+        "fold_a": [
+          341,
+          4390,
+          4393,
+          5553,
+          5573,
+          5577,
+          5589,
+          5590,
+          5592,
+          5593
+        ],
+        "fold_b": [
+          4397,
+          5556,
+          5557,
+          5561,
+          5563,
+          5568,
+          5569,
+          5571,
+          5575,
+          5578,
+          5586,
+          5591,
+          5596,
+          5597,
+          5599
+        ]
+      },
+      "blocks_lost_to_contention": 0,
+      "fold_quota": 20,
+      "realized_quota": 20,
+      "rule_quota": 20,
+      "solo_quota": 20,
+      "survives": true,
+      "tool_name": "setGroupLightState",
+      "units": 55,
+      "units_after_contention": 55,
+      "units_by_bucket": {
+        "exemplars": 15,
+        "fold_a": 20,
+        "fold_b": 20
+      },
+      "units_by_tier": {
+        "tier1_direct": 3,
+        "tier2_parametric": 35,
+        "tier3_multi_intent": 3,
+        "tier4_implicit": 3,
+        "tier5_needle": 3,
+        "tier6_correction": 3,
+        "tier7_multiturn": 3,
+        "tier8_intent_blending": 2
+      }
+    },
+    "setHapticStrength": {
+      "blocks": 34,
+      "blocks_after_contention": 33,
+      "blocks_by_bucket": {
+        "exemplars": [
+          5654,
+          5656,
+          5659,
+          5663,
+          5680,
+          5683,
+          5690,
+          5696,
+          5697
+        ],
+        "fold_a": [
+          967,
+          5650,
+          5660,
+          5676,
+          5677,
+          5684,
+          5686,
+          5687,
+          5688,
+          5689,
+          5691,
+          5698
+        ],
+        "fold_b": [
+          735,
+          5658,
+          5664,
+          5667,
+          5669,
+          5673,
+          5674,
+          5675,
+          5679,
+          5681,
+          5694,
+          5695
+        ]
+      },
+      "blocks_lost_to_contention": 1,
+      "fold_quota": 12,
+      "realized_quota": 12,
+      "rule_quota": 12,
+      "solo_quota": 15,
+      "survives": true,
+      "tool_name": "setHapticStrength",
+      "units": 38,
+      "units_after_contention": 33,
+      "units_by_bucket": {
+        "exemplars": 9,
+        "fold_a": 12,
+        "fold_b": 12
+      },
+      "units_by_tier": {
+        "tier1_direct": 1,
+        "tier2_parametric": 31,
+        "tier3_multi_intent": 1,
+        "tier4_implicit": 1,
+        "tier5_needle": 1,
+        "tier7_multiturn": 1,
+        "tier8_intent_blending": 2
+      }
+    },
+    "setLighting": {
+      "blocks": 46,
+      "blocks_after_contention": 46,
+      "blocks_by_bucket": {
+        "exemplars": [
+          403,
+          3467,
+          4560,
+          4561,
+          4562,
+          4563,
+          4564,
+          4565,
+          4566,
+          4567,
+          4568,
+          4569,
+          4570,
+          4571,
+          4572,
+          4573,
+          4575,
+          4576,
+          4577,
+          4578,
+          4579,
+          4580,
+          4581,
+          4582,
+          4583,
+          4584,
+          4585,
+          4586,
+          4587,
+          4588,
+          4590,
+          4591,
+          4592,
+          4593,
+          4594,
+          4597,
+          4598,
+          4599
+        ],
+        "fold_a": [
+          2105,
+          2117,
+          3450,
+          3455
+        ],
+        "fold_b": [
+          2106,
+          3451,
+          3458,
+          3479
+        ]
+      },
+      "blocks_lost_to_contention": 0,
+      "fold_quota": 20,
+      "realized_quota": 20,
+      "rule_quota": 20,
+      "solo_quota": 20,
+      "survives": true,
+      "tool_name": "setLighting",
+      "units": 89,
+      "units_after_contention": 89,
+      "units_by_bucket": {
+        "exemplars": 43,
+        "fold_a": 23,
+        "fold_b": 23
+      },
+      "units_by_tier": {
+        "tier1_direct": 9,
+        "tier2_parametric": 36,
+        "tier3_multi_intent": 9,
+        "tier4_implicit": 8,
+        "tier5_needle": 9,
+        "tier6_correction": 9,
+        "tier7_multiturn": 8,
+        "tier8_intent_blending": 1
+      }
+    },
+    "setRomanceMode": {
+      "blocks": 10,
+      "blocks_after_contention": 10,
+      "blocks_by_bucket": {
+        "exemplars": [
+          182,
+          2041,
+          2042,
+          2043,
+          2045,
+          2049,
+          2054,
+          2615
+        ],
+        "fold_a": [
+          2067
+        ],
+        "fold_b": [
+          2057
+        ]
+      },
+      "blocks_lost_to_contention": 0,
+      "fold_quota": 0,
+      "realized_quota": 1,
+      "rule_quota": 1,
+      "solo_quota": 0,
+      "survives": false,
+      "tool_name": "setRomanceMode",
+      "units": 10,
+      "units_after_contention": 10,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 1,
+        "fold_b": 1
+      },
+      "units_by_tier": {
+        "tier1_direct": 1,
+        "tier2_parametric": 1,
+        "tier3_multi_intent": 2,
+        "tier5_needle": 2,
+        "tier6_correction": 1,
+        "tier7_multiturn": 2,
+        "tier8_intent_blending": 1
+      }
+    },
+    "setSecurityMode": {
+      "blocks": 14,
+      "blocks_after_contention": 14,
+      "blocks_by_bucket": {
+        "exemplars": [
+          337,
+          589,
+          3484,
+          4503,
+          4536,
+          4543
+        ],
+        "fold_a": [
+          2483,
+          2487,
+          3485,
+          3503
+        ],
+        "fold_b": [
+          2462,
+          2464,
+          2470,
+          2477
+        ]
+      },
+      "blocks_lost_to_contention": 0,
+      "fold_quota": 20,
+      "realized_quota": 20,
+      "rule_quota": 20,
+      "solo_quota": 20,
+      "survives": true,
+      "tool_name": "setSecurityMode",
+      "units": 59,
+      "units_after_contention": 59,
+      "units_by_bucket": {
+        "exemplars": 11,
+        "fold_a": 24,
+        "fold_b": 24
+      },
+      "units_by_tier": {
+        "tier1_direct": 9,
+        "tier2_parametric": 3,
+        "tier3_multi_intent": 9,
+        "tier4_implicit": 9,
+        "tier5_needle": 9,
+        "tier6_correction": 9,
+        "tier7_multiturn": 9,
+        "tier8_intent_blending": 2
+      }
+    },
+    "startCleaning": {
+      "blocks": 12,
+      "blocks_after_contention": 12,
+      "blocks_by_bucket": {
+        "exemplars": [
+          2754,
+          3590,
+          3594
+        ],
+        "fold_a": [
+          2731,
+          2742
+        ],
+        "fold_b": [
+          2749,
+          3557,
+          3570,
+          3576,
+          3584,
+          3588,
+          3589
+        ]
+      },
+      "blocks_lost_to_contention": 0,
+      "fold_quota": 12,
+      "realized_quota": 12,
+      "rule_quota": 12,
+      "solo_quota": 12,
+      "survives": true,
+      "tool_name": "startCleaning",
+      "units": 32,
+      "units_after_contention": 32,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 12,
+        "fold_b": 12
+      },
+      "units_by_tier": {
+        "tier1_direct": 4,
+        "tier2_parametric": 8,
+        "tier3_multi_intent": 4,
+        "tier4_implicit": 4,
+        "tier5_needle": 4,
+        "tier6_correction": 4,
+        "tier7_multiturn": 4
+      }
+    },
+    "streamCamera": {
+      "blocks": 39,
+      "blocks_after_contention": 39,
+      "blocks_by_bucket": {
+        "exemplars": [
+          4709,
+          4713,
+          4716,
+          4720,
+          4725,
+          4730,
+          4739,
+          4742
+        ],
+        "fold_a": [
+          3515,
+          4700,
+          4702,
+          4706,
+          4710,
+          4711,
+          4714,
+          4718,
+          4722,
+          4731,
+          4735,
+          4740,
+          4741
+        ],
+        "fold_b": [
+          4703,
+          4704,
+          4707,
+          4715,
+          4717,
+          4721,
+          4723,
+          4724,
+          4726,
+          4728,
+          4732,
+          4733,
+          4736,
+          4738,
+          4743,
+          4746,
+          4747,
+          4748
+        ]
+      },
+      "blocks_lost_to_contention": 0,
+      "fold_quota": 18,
+      "realized_quota": 18,
+      "rule_quota": 18,
+      "solo_quota": 18,
+      "survives": true,
+      "tool_name": "streamCamera",
+      "units": 44,
+      "units_after_contention": 44,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 18,
+        "fold_b": 18
+      },
+      "units_by_tier": {
+        "tier1_direct": 1,
+        "tier2_parametric": 38,
+        "tier3_multi_intent": 1,
+        "tier4_implicit": 1,
+        "tier5_needle": 1,
+        "tier6_correction": 1,
+        "tier7_multiturn": 1
+      }
+    },
+    "updateFirmware": {
+      "blocks": 45,
+      "blocks_after_contention": 44,
+      "blocks_by_bucket": {
+        "exemplars": [
+          4960,
+          4963,
+          4966,
+          4970,
+          4972,
+          4976,
+          4984,
+          4990,
+          4993
+        ],
+        "fold_a": [
+          659,
+          3352,
+          4953,
+          4955,
+          4957,
+          4961,
+          4962,
+          4969,
+          4973,
+          4983,
+          4986,
+          4988,
+          4991,
+          4996,
+          4999
+        ],
+        "fold_b": [
+          4951,
+          4954,
+          4958,
+          4959,
+          4964,
+          4965,
+          4967,
+          4968,
+          4974,
+          4977,
+          4979,
+          4980,
+          4981,
+          4982,
+          4985,
+          4987,
+          4992,
+          4994,
+          4997,
+          4998
+        ]
+      },
+      "blocks_lost_to_contention": 1,
+      "fold_quota": 20,
+      "realized_quota": 20,
+      "rule_quota": 20,
+      "solo_quota": 20,
+      "survives": true,
+      "tool_name": "updateFirmware",
+      "units": 55,
+      "units_after_contention": 49,
+      "units_by_bucket": {
+        "exemplars": 9,
+        "fold_a": 20,
+        "fold_b": 20
+      },
+      "units_by_tier": {
+        "tier1_direct": 2,
+        "tier2_parametric": 42,
+        "tier3_multi_intent": 2,
+        "tier4_implicit": 2,
+        "tier5_needle": 2,
+        "tier6_correction": 2,
+        "tier7_multiturn": 2,
+        "tier8_intent_blending": 1
+      }
+    }
+  }
+}

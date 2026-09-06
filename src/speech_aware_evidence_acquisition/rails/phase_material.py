@@ -68,7 +68,9 @@ launcher.
 
 from __future__ import annotations
 
+import hashlib
 import json
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -177,6 +179,117 @@ PHASE_STATE_FILLS.register(
 )
 
 
+def _slurp_evolved_slot_schema_state_fill(
+    *,
+    artifact_relpath: str,
+    artifact_sha256: str,
+    **provenance: object,
+):
+    """Factory for ``"slurp-evolved-slot-schema-for-state"`` (EVO-S1).
+
+    A sibling of ``"slurp-intent-slot-schema-for-state"`` and deliberately
+    nothing more: same selection rule (the intent parsed out of the SEALED
+    closed-list response), same grammar, same one-block-per-row shape, same
+    FULL-schema fallback when the response does not parse or names a
+    (scenario, action) pair TRAIN never carries. The single difference is
+    WHICH blocks it renders -- the evolved ones a round's committed artifact
+    names.
+
+    ``artifact_relpath`` and ``artifact_sha256`` come from the phase's
+    ``fill_params``, which ``rails.evolution.write_candidate_fragments``
+    emits, and the digest is re-checked over the file's own bytes here: a
+    fragment can therefore never fly against an artifact edited after the
+    fragment was written. ``provenance`` absorbs the writer's other pinning
+    keys (``portfolio_sha256``, ``round``, ``k``); they are inside the config
+    hash so a receipt says which portfolio flew, and this factory does not
+    read them.
+
+    Every intent the artifact does not name keeps its ``A_0`` block byte for
+    byte (``rails.proposer.slurp_candidate_schema``), and every count and
+    share in every block is re-derived from the unfloored TRAIN table, so a
+    candidate can never write a number.
+
+    The returned fill counts what it did: ``fill.counts["rows"]`` and
+    ``fill.counts["fallback"]`` are the per-read fallback tally the
+    preregistration requires beside every number (section 3: 42 of 1,000 rows
+    on DEV-1000).
+    """
+
+    from ..data.lock import (  # noqa: PLC0415 (cycle guard, and lazily paid)
+        REPO_ROOT,
+        data_root,
+        load_lock,
+        umbrella_lock_path,
+    )
+    from ..data.slurp import (  # noqa: PLC0415 (cycle guard)
+        load_slurp_intent_slot_schema,
+        render_slurp_slot_schema_for_state_detail,
+    )
+    from .proposer import ProposerError, slurp_candidate_schema  # noqa: PLC0415
+
+    if not isinstance(artifact_relpath, str) or not artifact_relpath.strip():
+        raise PhaseMaterialError(
+            "slurp-evolved-slot-schema-for-state needs an artifact_relpath"
+        )
+    if not isinstance(artifact_sha256, str) or not re.fullmatch(
+        r"[0-9a-f]{64}", artifact_sha256
+    ):
+        raise PhaseMaterialError(
+            "slurp-evolved-slot-schema-for-state needs a sha256 hex artifact_sha256"
+        )
+    if Path(artifact_relpath).is_absolute() or ".." in Path(artifact_relpath).parts:
+        raise PhaseMaterialError(
+            f"artifact_relpath {artifact_relpath!r} is not a plain relative path"
+        )
+    path = Path(REPO_ROOT) / artifact_relpath
+    try:
+        raw = path.read_bytes()
+    except OSError as error:
+        raise PhaseMaterialError(f"evolved slot-schema artifact missing: {path}") from error
+    measured = hashlib.sha256(raw).hexdigest()
+    if measured != artifact_sha256:
+        raise PhaseMaterialError(
+            f"evolved slot-schema artifact {artifact_relpath} hashes to {measured}, not "
+            f"the {artifact_sha256} its fragment names"
+        )
+    try:
+        blocks = json.loads(raw.decode("utf-8"))
+    except (UnicodeError, json.JSONDecodeError) as error:
+        raise PhaseMaterialError(
+            f"evolved slot-schema artifact {artifact_relpath} is not JSON: {error}"
+        ) from error
+
+    lock = load_lock(umbrella_lock_path())
+    root = data_root()
+    base = load_slurp_intent_slot_schema(lock, root)
+    unfloored = load_slurp_intent_slot_schema(lock, root, min_share=0.0)
+    try:
+        schema = slurp_candidate_schema(blocks, unfloored=unfloored, base=base)
+    except ProposerError as error:
+        raise PhaseMaterialError(
+            f"evolved slot-schema artifact {artifact_relpath} is not a legal candidate: "
+            f"{error}"
+        ) from error
+
+    counts = {"rows": 0, "fallback": 0}
+
+    def fill(state_content: str) -> str:
+        text, _used_intent, fallback = render_slurp_slot_schema_for_state_detail(
+            lock, root, state_content, schema=schema
+        )
+        counts["rows"] += 1
+        counts["fallback"] += int(bool(fallback))
+        return text
+
+    fill.counts = counts  # type: ignore[attr-defined]
+    return fill
+
+
+PHASE_STATE_FILLS.register(
+    "slurp-evolved-slot-schema-for-state", _slurp_evolved_slot_schema_state_fill
+)
+
+
 class PhaseMaterialError(RailsError):
     """A ``phase_material`` config fragment, or the material built from it,
     is invalid."""
@@ -219,9 +332,27 @@ class PhaseMaterialSpec:
             raise PhaseMaterialError(
                 f"phase {self.phase!r} fill_params must be an object"
             )
-        if self.fill_params and self.instruction_fill is None:
+        if self.fill_params and self.instruction_fill is None and self.state_fill is None:
             raise PhaseMaterialError(
-                f"phase {self.phase!r} declares fill_params but no instruction_fill"
+                f"phase {self.phase!r} declares fill_params but neither "
+                "instruction_fill nor state_fill"
+            )
+        if self.fill_params and self.instruction_fill is not None and (
+            self.state_fill is not None
+        ):
+            raise PhaseMaterialError(
+                f"phase {self.phase!r} declares fill_params with BOTH an "
+                "instruction_fill and a state_fill; the params have exactly one "
+                "consumer, and silently handing them to two builders would make the "
+                "prompt depend on which one read them"
+            )
+        if self.fill_params and self.state_fill is not None and (
+            self.response_format_id is not None
+        ):
+            raise PhaseMaterialError(
+                f"phase {self.phase!r} declares fill_params with BOTH a state_fill and "
+                "a response_format_id; resolve_response_formats would read the state "
+                "fill's own params"
             )
         if self.response_format_id is not None and (
             not isinstance(self.response_format_id, str)
@@ -482,7 +613,11 @@ def _resolved_state_fills(
                     f"registered phase state fill {specs[phase].state_fill!r} is not "
                     "callable"
                 )
-            fill = factory()
+            # ``fill_params`` reach the FACTORY, not the per-sample fill: a
+            # fill that has to open a committed artifact (EVO-S1's evolved
+            # slot schema, named by relpath and sha256) pays for it once per
+            # run, and the params are inside the config hash either way.
+            fill = factory(**dict(specs[phase].fill_params))
         if not callable(fill):
             raise PhaseMaterialError(
                 f"phase {phase!r} state fill {specs[phase].state_fill!r} did not resolve "

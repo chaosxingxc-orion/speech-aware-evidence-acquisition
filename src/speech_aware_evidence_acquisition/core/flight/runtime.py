@@ -33,6 +33,7 @@ from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
 from ...contracts import (
+    CONSTRUCTION_VISIBLE_FIELD,
     ExecutionPlan,
     FrozenCoreGate,
     _EXPOSURE_RUN_COLUMN,
@@ -50,6 +51,7 @@ from ...rails.context_budget import (
 )
 from ...rails.controllers import default_phase_program
 from ...rails.core_client import FrozenCoreClient, build_payload_binding
+from ...rails.evolution import ProposerMaterial, build_proposer_material
 from ...rails.phase_runner import run_continuous_program, run_program
 from ...rails.runner import RAILS_ARMS, run_rails_experiment
 from ...rails.task_adapter import TaskAdapter
@@ -204,6 +206,127 @@ def arm_uses_speech_feature_packets(arm: str) -> bool:
     """
 
     return SPEECH_FEATURE_ARM_FIELD in ARM_VISIBLE_FIELDS.get(arm, ())
+
+
+def arm_shows_construction_targets(arm: str) -> bool:
+    """Whether ``arm``'s D2-frozen field set carries ``construction_targets``
+    -- read off the freeze itself, never a hardcoded arm-name literal, the
+    same discipline ``core.policies.build_arm_payload`` documents for its own
+    branches. Today exactly ``"construction-proposer-text"`` answers yes."""
+
+    return CONSTRUCTION_VISIBLE_FIELD in set(ARM_VISIBLE_FIELDS.get(arm, ()))
+
+
+def _default_construction_material(
+    values: Mapping[str, object],
+    *,
+    lock: Mapping[str, object],
+    data_root: Path,
+    repo_root: Path,
+    samples: Sequence[object],
+) -> ProposerMaterial:
+    """The config-driven default for the ``construction_material_resolver``
+    seam: render every proposer contact this flight will make.
+
+    Everything it reads is committed and hash-pinned by the composed config:
+
+    * ``construction_proposer_roster_receipt`` (+ ``_sha256``) -- the
+      round's proposer roster, whose ``roster_role`` must be
+      ``"construction"`` (``rails.evolution.read_proposer_roster`` refuses
+      anything else) and whose items ARE the draws;
+    * ``construction_target_tools`` -- the round's target sets, the same
+      disjoint tool sets ``rails.evolution.Target`` carries;
+    * ``evolution_incumbent_artifact_relpath`` (+ ``_sha256``), optional --
+      ``A_r``'s override mapping; absent means ``A_0``, the released
+      registry byte for byte.
+
+    The construction rows' query text and gold calls are read HERE, at flight
+    time, from the carrier (``data.audio2tool.load_query_rows``) and are
+    rendered into the instruction and nowhere else: no construction text is
+    ever written to a receipt or committed to this repository.
+    """
+
+    from ...data.audio2tool import load_query_rows, load_tool_registry  # noqa: PLC0415
+
+    relpath = values.get("construction_proposer_roster_receipt")
+    if not isinstance(relpath, str) or not relpath:
+        raise FlightRuntimeError(
+            "a construction-proposer flight's baseline fragment must declare "
+            "'construction_proposer_roster_receipt' (the committed roster whose items "
+            "are this round's draws)"
+        )
+    receipt_path = Path(repo_root) / relpath
+    try:
+        document = json.loads(receipt_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise FlightRuntimeError(
+            f"proposer roster receipt unreadable ({receipt_path}): {error}"
+        ) from error
+    declared_sha256 = values.get("construction_proposer_roster_receipt_sha256")
+    if isinstance(declared_sha256, str) and declared_sha256:
+        measured = _sha256_file(receipt_path)
+        if measured != declared_sha256:
+            raise FlightRuntimeError(
+                f"proposer roster receipt {relpath} hashes to {measured}, not the "
+                f"configured {declared_sha256}"
+            )
+
+    target_tools = values.get("construction_target_tools")
+    if not isinstance(target_tools, Mapping) or not target_tools:
+        raise FlightRuntimeError(
+            "a construction-proposer flight's baseline fragment must declare "
+            "'construction_target_tools' (target id -> its disjoint tool set)"
+        )
+
+    incumbent_overrides: Mapping[str, str] = {}
+    incumbent_relpath = values.get("evolution_incumbent_artifact_relpath")
+    if isinstance(incumbent_relpath, str) and incumbent_relpath:
+        artifact_path = Path(repo_root) / incumbent_relpath
+        declared = values.get("evolution_incumbent_artifact_sha256")
+        if isinstance(declared, str) and declared:
+            measured = _sha256_file(artifact_path)
+            if measured != declared:
+                raise FlightRuntimeError(
+                    f"incumbent artifact {incumbent_relpath} hashes to {measured}, not "
+                    f"the configured {declared}"
+                )
+        try:
+            incumbent_overrides = json.loads(artifact_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            raise FlightRuntimeError(
+                f"incumbent artifact unreadable ({artifact_path}): {error}"
+            ) from error
+        if not isinstance(incumbent_overrides, Mapping):
+            raise FlightRuntimeError(
+                f"incumbent artifact {incumbent_relpath} must be a JSON object of "
+                "tool name to replacement description"
+            )
+
+    wanted: set[str] = set()
+    for item in document.get("items", ()):
+        if isinstance(item, Mapping):
+            wanted.add(str(item.get("sample_id")))
+            for exemplar_id in item.get("exemplar_ids", ()) or ():
+                wanted.add(str(exemplar_id))
+    exemplar_rows = load_query_rows(lock, Path(data_root), sorted(wanted))
+
+    material = build_proposer_material(
+        document,
+        registry_rows=load_tool_registry(lock, Path(data_root)),
+        target_tools={str(key): tuple(value) for key, value in target_tools.items()},
+        incumbent_overrides={str(k): str(v) for k, v in incumbent_overrides.items()},
+        exemplar_rows=exemplar_rows,
+        carrier_lock_key=str(values.get("carrier_lock_key") or "") or None,
+    )
+    roster_ids = {contact.sample_id for contact in material.contacts}
+    split_ids = {getattr(sample, "sample_id", None) for sample in samples}
+    if roster_ids != split_ids:
+        raise FlightRuntimeError(
+            "the proposer roster's draws and this flight's split disagree about which "
+            f"samples are contacted; symmetric difference "
+            f"{sorted(roster_ids ^ split_ids)[:5]}"
+        )
+    return material
 
 
 def merge_server_args(
@@ -479,9 +602,20 @@ class WireCheckGate:
 
     def __init__(self) -> None:
         self.checked_plans: list[object] = []
+        self.checked_arms: list[str | None] = []
 
-    def assert_model_touch_allowed(self, plan: object, **_kwargs: object) -> str:
+    def assert_model_touch_allowed(
+        self, plan: object, *, arm: str | None = None, **_kwargs: object
+    ) -> str:
+        # ``arm`` is NAMED rather than swallowed by ``**_kwargs`` on purpose.
+        # ``core.model.lifecycle`` detects the capability BY SIGNATURE and
+        # refuses a construction-gold-visible arm outright when the gate
+        # cannot receive it -- so a wire check of the ``construction-proposer
+        # -text`` arm would die at its first (fake) contact against a gate
+        # double that only had ``**kwargs``. It authorizes nothing either
+        # way; it records what it was told, which is what the check asserts.
         self.checked_plans.append(plan)
+        self.checked_arms.append(arm)
         return "0" * 64
 
 
@@ -609,6 +743,9 @@ class FlightRuntime:
         token_counter: Callable[[bytes], int] = _default_token_counter,
         tool_schema_resolver: Callable[[Mapping[str, object], Path, str], Sequence[Mapping[str, object]]]
         | None = _default_tool_schema_resolver,
+        construction_material_resolver: Callable[..., ProposerMaterial] = (
+            _default_construction_material
+        ),
         lock: Mapping[str, object] | None = None,
         run_dir: Path | None = None,
         host: str = "127.0.0.1",
@@ -663,6 +800,7 @@ class FlightRuntime:
         self._ledger_validator = ledger_validator
         self._token_counter = token_counter
         self._tool_schema_resolver = tool_schema_resolver
+        self._construction_material_resolver = construction_material_resolver
         self._lock = lock
         self._explicit_run_dir = Path(run_dir) if run_dir is not None else None
         self._host = host
@@ -703,6 +841,7 @@ class FlightRuntime:
         self._phase_supply_receipt: Mapping[str, object] | None = None
         self._phase_supply_providers: Mapping[str, object] | None = None
         self._promotion_receipt: Mapping[str, object] | None = None
+        self._construction_material: ProposerMaterial | None = None
         self._owns_session = False
 
     # -- small read-only accessors ---------------------------------------
@@ -747,6 +886,45 @@ class FlightRuntime:
             )
 
     # -- stage 1: preflight -----------------------------------------------
+
+    def _gate_touch(self, gate: object, plan: ExecutionPlan) -> object:
+        """``gate.assert_model_touch_allowed(plan, arm=...)``, with the arm
+        forwarded whenever the gate can receive it.
+
+        The arm exists for exactly one check,
+        ``contracts.gate_exposure._require_construction_role_for_visible_targets``,
+        which refuses a construction-gold-visible arm whose plan is not bound
+        to a committed ``roster_role == "construction"`` roster of the plan's
+        own carrier. ``core.model.lifecycle`` already forwards it at the
+        FIRST CONTACT; forwarding it here as well moves the refusal to
+        preflight and to serve, i.e. before a server has been started and
+        before an attempt id has been spent -- and a stage that cannot
+        forward it must never fly a construction-visible arm at all.
+
+        Capability is detected BY SIGNATURE, never by catching ``TypeError``:
+        catching it would swallow a genuine ``TypeError`` raised INSIDE the
+        gate and silently retry the touch without the arm. A gate that cannot
+        take the arm (every pre-existing test double) keeps its old behaviour
+        for every ordinary arm.
+        """
+
+        import inspect  # noqa: PLC0415 -- function-local, cheap, mirrors core.model.lifecycle
+
+        call = gate.assert_model_touch_allowed
+        try:
+            accepts_arm = "arm" in inspect.signature(call).parameters
+        except (TypeError, ValueError):
+            accepts_arm = False
+        arm = self._arm()
+        if not accepts_arm:
+            if arm_shows_construction_targets(arm):
+                raise FlightRuntimeError(
+                    f"arm {arm!r} makes construction gold visible to the frozen core, "
+                    "but this gate cannot receive the arm and so cannot check the "
+                    "construction-roster binding; flight refused"
+                )
+            return call(plan)
+        return call(plan, arm=arm)
 
     def _require_exposure_row_unconsumed(self, run_id: str) -> None:
         """Reuse ``contracts.gate_exposure``'s own ledger parser
@@ -1245,13 +1423,34 @@ class FlightRuntime:
             if self.uses_speech_feature_packets():
                 phase_payloads = self._phase_prompt_payloads(samples, program)
         max_tokens = int(self._adapter.serving_geometry()["max_tokens"])
-        messages = self._adapter.assemble_prompt(representative, None)
+        if self.shows_construction_targets():
+            # The proposer arm sends no audio part at all, and its prompt is
+            # NOT the adapter's instruction: it is the rendered proposer or
+            # placebo instruction for one draw. Estimating the adapter's
+            # registry prompt here would fit the wrong request entirely, so
+            # the representative is the WIDEST instruction this flight will
+            # actually send, and the speech term is one token rather than a
+            # duration (``ContextBudgetBreakdown`` measures a packet list;
+            # zero speech is what this arm sends).
+            material = self.construction_material()
+            widest = max(material.contacts, key=lambda contact: len(contact.instruction))
+            messages = (
+                {"role": "system", "content": widest.instruction},
+                {"role": "user", "content": []},
+            )
+            speech_tokens = 1
+        else:
+            messages = self._adapter.assemble_prompt(representative, None)
+            speech_tokens = max(
+                1,
+                round(
+                    float(getattr(representative, "audio_seconds", 1.0))
+                    * self._speech_tokens_per_second
+                ),
+            )
         payload_bytes = json.dumps(
             list(messages), ensure_ascii=False, sort_keys=True
         ).encode("utf-8")
-        speech_tokens = max(
-            1, round(float(getattr(representative, "audio_seconds", 1.0)) * self._speech_tokens_per_second)
-        )
         receipts: list[Mapping[str, object]] = []
         for phase_name in phase_names:
             phase_bytes = phase_payloads.get(phase_name, payload_bytes)
@@ -1364,7 +1563,7 @@ class FlightRuntime:
             d1_media_supplement_sha256=d1_media_supplement_sha256(values),
         )
         self._gate = gate
-        gate.assert_model_touch_allowed(plan)
+        self._gate_touch(gate, plan)
 
         self._require_exposure_row_unconsumed(plan.run_id)
 
@@ -1434,6 +1633,53 @@ class FlightRuntime:
         if self._composed is None:
             raise FlightStageOrderError("the arm is unavailable before preflight()")
         return arm_uses_speech_feature_packets(self._arm())
+
+    def shows_construction_targets(self) -> bool:
+        """Whether THIS flight's arm is the text-only construction-proposer
+        arm -- the ONE arm whose payload carries gold (E2.4). Requires
+        :meth:`_prepare` (the arm comes from the composed baseline
+        fragment)."""
+
+        if self._composed is None:
+            raise FlightStageOrderError("the arm is unavailable before preflight()")
+        return arm_shows_construction_targets(self._arm())
+
+    def construction_material(self) -> ProposerMaterial:
+        """This flight's rendered proposer contacts, resolved once.
+
+        Resolution is a SEAM (``construction_material_resolver``) exactly
+        like ``tool_schema_resolver`` and ``packet_promoter``: the default
+        reads the committed roster, the target sets, the incumbent artifact
+        and the carrier's own construction rows; a test injects a synthetic
+        one and never touches the carrier.
+        """
+
+        if self._construction_material is None:
+            if self._composed is None:
+                raise FlightStageOrderError(
+                    "construction material is unavailable before preflight()"
+                )
+            if not callable(self._construction_material_resolver):
+                raise FlightRuntimeError("construction_material_resolver must be callable")
+            material = self._construction_material_resolver(
+                self._composed.values,
+                lock=self._lock,
+                data_root=self._data_root,
+                repo_root=self._repo_root,
+                samples=self._samples,
+            )
+            if not isinstance(material, ProposerMaterial):
+                raise FlightRuntimeError(
+                    "construction_material_resolver must return a "
+                    "rails.evolution.ProposerMaterial"
+                )
+            if not material.contacts:
+                raise FlightRuntimeError(
+                    "the construction-proposer flight resolved zero contacts; there is "
+                    "nothing to fly"
+                )
+            self._construction_material = material
+        return self._construction_material
 
     def _promotion_receipt_path(self) -> Path:
         value = self._composed.values.get("speech_packet_promotion_receipt")
@@ -1679,7 +1925,7 @@ class FlightRuntime:
             resolve_runtime_receipt_path(self._repo_root, values)
         )
         self._runtime_receipt = runtime_receipt
-        self._gate.assert_model_touch_allowed(self._plan)
+        self._gate_touch(self._gate, self._plan)
 
         # The fragment's own server_args, with ONLY -np/-c overridden from
         # the adapter geometry (:func:`merge_server_args`). Passing the two
@@ -1863,6 +2109,19 @@ class FlightRuntime:
             # receipt), the per-sample descriptors from that same receipt.
             kwargs["speech_feature_root"] = self._speech_feature_root()
             kwargs["speech_packet_bindings"] = self.speech_packet_bindings()
+        if CONSTRUCTION_VISIBLE_FIELD in arm_fields:
+            # rails.core_client.FrozenCoreClient REFUSES to be constructed for
+            # a construction-proposer arm without its targets, and binds them
+            # ONCE for the client's whole life. The UNION of every draw's own
+            # declared targets is bound here; each request then names the
+            # ordered SUBSET its own draw showed, which can only ever narrow
+            # what the core sees (FrozenCoreClient._selected_construction_
+            # targets). This is what closes the gap the EVO-A1 preregistration
+            # section 12 item 9 named a blocker: before it, no config could
+            # reach this arm at all.
+            kwargs["construction_targets"] = [
+                dict(entry) for entry in self.construction_material().bound_targets
+            ]
         return kwargs
 
     def _decoding_params(self) -> Mapping[str, object] | None:
@@ -2255,6 +2514,66 @@ class FlightRuntime:
             for result in last.results
         ]
 
+    def _run_construction_proposer(
+        self, client: object, decoding_params: Mapping[str, object] | None
+    ) -> list[Mapping[str, object]]:
+        """The fixed-policy direct arm for the TEXT-ONLY construction-proposer
+        arm: ONE contact per DRAW, carrying that draw's rendered instruction
+        and its own ordered exemplar ids, and no audio part at all.
+
+        A thin sibling of :meth:`_run_speech_feature_direct`, and for the same
+        reason: ``rails.runner.run_rails_experiment`` cannot carry this arm
+        (it always calls ``core_client.complete(messages)`` under the AUDIO
+        invariant, and ``FrozenCoreClient`` refuses a construction-proposer
+        request that names no ``text_only_sample_id``). It adds no phase, no
+        second contact and no evidence: the instruction is the system message,
+        the user content list is EMPTY (a zero-supply arm has nowhere to
+        record a free-floating user text part), and the audited payload
+        carries the draw's own construction targets.
+
+        Rows carry no metrics on purpose. A proposer answer is an ARTIFACT --
+        a JSON object of tool descriptions -- not an answer to a scored row,
+        so running the carrier's scorer over it would be scoring the wrong
+        thing (and would need gold this sample has no business resolving).
+        The candidates are produced afterwards, model-free, by
+        ``rails.evolution.harvest_proposer_responses`` over the SEALED
+        manifest.
+        """
+
+        material = self.construction_material()
+        by_sample = material.by_sample()
+        arm = self._arm()
+        rows: list[Mapping[str, object]] = []
+        for sample in self._samples:
+            contact = by_sample.get(sample.sample_id)
+            if contact is None:
+                raise FlightRuntimeError(
+                    f"sample {sample.sample_id!r} is in this flight's split but names no "
+                    "draw in the proposer roster"
+                )
+            messages = (
+                {"role": "system", "content": contact.instruction},
+                {"role": "user", "content": []},
+            )
+            response_text = client.complete(
+                messages,
+                decoding_params=decoding_params,
+                text_only_sample_id=sample.sample_id,
+                construction_target_ids=contact.construction_target_ids,
+            )
+            rows.append(
+                {
+                    "arm": arm,
+                    "sample_id": sample.sample_id,
+                    "messages": list(messages),
+                    "response_text": response_text,
+                    "metrics": {},
+                    "consumption": None,
+                    "proposer_draw": contact.as_json(),
+                }
+            )
+        return rows
+
     def _dispatch_fixed_policy(
         self, client: object, plan: ExecutionPlan, *, workers: int | None = None
     ) -> tuple[list[Mapping[str, object]], int, str, dict[str, object]]:
@@ -2264,6 +2583,25 @@ class FlightRuntime:
         about the flight."""
 
         baseline_values = self._composed.values
+        if self.shows_construction_targets():
+            # One contact per draw, serial: a proposer round makes at most
+            # four contacts per target (twelve in round 1), so there is
+            # nothing for a worker pool to overlap, and a serial dispatch
+            # keeps the per-draw request order identical to the roster's.
+            rows = self._run_construction_proposer(client, self._decoding_params())
+            return (
+                rows,
+                len(rows),
+                "direct-construction-proposer",
+                {
+                    "workers": 1,
+                    "max_in_flight": 1,
+                    "slot_ids_used": [SEQUENTIAL_DISPATCH_SLOT],
+                    "dispatch": "serial",
+                    "contacts_per_sample": 1,
+                    "queue_depth": "not a knob for a one-contact text-only policy",
+                },
+            )
         packets = self.uses_speech_feature_packets()
         resolved = (
             int(self._adapter.serving_geometry()["slots"]) if workers is None else int(workers)
@@ -3392,6 +3730,7 @@ class FlightRuntime:
 
         gate = WireCheckGate()
         native = "tool_schemas" in set(ARM_VISIBLE_FIELDS.get(arm, ()))
+        proposer = arm_shows_construction_targets(arm)
         transport = WireCheckTransport(
             response_text=response_text, native_tool_calls_on_first=native
         )
@@ -3447,6 +3786,10 @@ class FlightRuntime:
             id_slot = dict(payload.get("decoding_params") or {}).get("id_slot")
             if isinstance(id_slot, bool) or not isinstance(id_slot, int):
                 problems.append(f"request {index} id_slot is {id_slot!r}, not an integer")
+        if proposer:
+            problems.extend(
+                self._wire_check_construction_problems(transport, contacts_per_sample)
+            )
         arrival = self.response_arrival_counts(client)
         # The transport imitated exactly one native envelope for a native
         # arm and none for a text arm, so the accounting must report
@@ -3560,6 +3903,15 @@ class FlightRuntime:
             "split_identity_hash": identity_hash,
             "arm": arm,
             "native_tools_arm": native,
+            "construction_proposer_arm": proposer,
+            # Identity and counts only, never the rendered instruction: a
+            # proposer prompt carries construction query text and gold calls,
+            # which no receipt in this repository may hold.
+            "construction_draws": (
+                [contact.as_json() for contact in self.construction_material().contacts]
+                if proposer
+                else []
+            ),
             "sample_count": len(self._samples),
             "contact_count": contact_count,
             "contacts_per_sample": contacts_per_sample,
@@ -3605,6 +3957,81 @@ class FlightRuntime:
             ),
             "model_contacts": 0,
         }
+
+    def _wire_check_construction_problems(
+        self, transport: "WireCheckTransport", contacts_per_sample: int
+    ) -> list[str]:
+        """The contact-free proof for the construction-proposer arm.
+
+        Four things, each of which a real flight would otherwise only learn
+        by spending contacts on a registered run: exactly ONE payload per
+        draw; each payload's ``construction_targets`` are EXACTLY the M
+        exemplars that draw declared, in that order; no audio field of any
+        kind reaches the wire; and the system message is the draw's own
+        rendered instruction, by sha256.
+        """
+
+        material = self.construction_material()
+        by_sample = material.by_sample()
+        problems: list[str] = []
+        if contacts_per_sample != 1:
+            problems.append(
+                f"the proposer arm is a one-contact policy but the check expects "
+                f"{contacts_per_sample} contacts per sample"
+            )
+        if len(transport.payloads) != len(material.contacts):
+            problems.append(
+                f"{len(transport.payloads)} request(s) reached the transport for "
+                f"{len(material.contacts)} draw(s); the proposer makes exactly one "
+                "contact per draw"
+            )
+        seen: set[str] = set()
+        for index, payload in enumerate(transport.payloads):
+            sample_id = str(payload.get("sample_id"))
+            if sample_id in seen:
+                problems.append(f"request {index} repeats draw sample {sample_id!r}")
+            seen.add(sample_id)
+            contact = by_sample.get(sample_id)
+            if contact is None:
+                problems.append(
+                    f"request {index} names sample {sample_id!r}, which is no draw"
+                )
+                continue
+            declared = payload.get(CONSTRUCTION_VISIBLE_FIELD)
+            if not isinstance(declared, list) or not declared:
+                problems.append(
+                    f"request {index} carries no {CONSTRUCTION_VISIBLE_FIELD} for the "
+                    "one arm whose whole purpose is to carry them"
+                )
+                continue
+            got = tuple(str(entry.get("sample_id")) for entry in declared)
+            if got != contact.construction_target_ids:
+                problems.append(
+                    f"request {index} declares construction targets {list(got)}, not "
+                    f"draw {contact.draw.draw_id}'s own "
+                    f"{list(contact.construction_target_ids)}"
+                )
+            if any(set(entry) != {"sample_id", "target"} for entry in declared):
+                problems.append(
+                    f"request {index} has a construction target entry with keys beyond "
+                    "sample_id/target"
+                )
+            instruction = str(payload.get("task_instruction") or "")
+            digest = hashlib.sha256(instruction.encode("utf-8")).hexdigest()
+            if digest != contact.prompt_sha256:
+                problems.append(
+                    f"request {index} task_instruction hashes to {digest[:16]}, not draw "
+                    f"{contact.draw.draw_id}'s pinned prompt {contact.prompt_sha256[:16]}"
+                )
+        for index, body in enumerate(transport.request_bodies):
+            text = body.decode("utf-8", errors="replace")
+            for marker in ("input_audio", "input_speech_features", "audio_url"):
+                if marker in text:
+                    problems.append(
+                        f"request body {index} carries {marker!r}; the proposer arm is "
+                        "text-only and sends no audio part at all"
+                    )
+        return problems
 
     def _wire_check_seal_and_score(
         self,

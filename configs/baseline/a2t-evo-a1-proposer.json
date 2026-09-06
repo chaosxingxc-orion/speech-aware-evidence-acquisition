@@ -1,0 +1,16 @@
+{
+  "arm": "construction-proposer-text",
+  "evidence_source": "none",
+  "instruction_note": "This fragment declares NO task_instruction and NO task_instruction_template: the system message of every contact is the draw's own rendered proposer or placebo instruction (rails.proposer.render_proposer_instruction / render_placebo_instruction), resolved at flight time by core.flight.runtime._default_construction_material from the committed roster, the registry rows, the incumbent state and the carrier's construction rows. It is never written to a receipt: a proposer prompt carries construction query text and gold calls.",
+  "policy": "fixed",
+  "rails_arms": [
+    "zero-supply"
+  ],
+  "roster_note": "construction_proposer_roster_receipt, its split identity hash and construction_target_tools are declared by the PER-ROUND experiment fragment scripts/run_evolution_round.py emits, because the roster is per round and core.config.compose refuses the same key from two fragments.",
+  "scorers": [
+    "cost"
+  ],
+  "scoring_note": "Only the 'cost' scorer. A proposer response is an ARTIFACT -- a JSON object of tool descriptions -- not an answer to a scored row, so the carrier's own scorers would be scoring the wrong thing and would need gold these construction samples have no business resolving. The candidates are produced afterwards, model-free, by rails.evolution.harvest_proposer_responses over the sealed manifest.",
+  "user_turn_audio_first": false,
+  "user_turn_text": ""
+}

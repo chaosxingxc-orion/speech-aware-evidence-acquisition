@@ -1,0 +1,69 @@
+{
+  "experiment_id": "SAEA-SLURP-EVO-S1-PROPOSER-V1",
+  "fragment_kind": "saea-slurp-slot-stage-experiment-v1",
+  "date": "2026-09-06",
+  "draft_status": "DRAFT. Not registered and NOT FLYABLE, and unlike its sibling it cannot become flyable by landing artifacts alone: the runner it configures does not exist. Track E3c -- the loop that renders a proposer instruction, makes the contact, parses the block back into an artifact and validates it -- is unwritten, and FlightRuntime.wire_check cannot substitute for it (it issues one contact per roster sample through _dispatch_fixed_policy, which never supplies the construction_targets field, while this arm makes three contacts per scenario per round and is not a per-sample cell at all). Section 12.4 D2 of the preregistration records the same blocker for EVO-A1.",
+  "purpose": "The PROPOSER half of cell EVO-S1: the frozen core's own rewrites of the per-intent slot schema, on the text-only construction-proposer arm. A separate fragment from configs/experiment/slurp-evo-s1-slot-schema-v1.json because a composed experiment fragment declares exactly one execution_plan object (FlightRuntime._build_execution_plan reads values['execution_plan']) and therefore exactly one execution_profile that contracts.assert_execution_scope validates -- the reward flights are baseline-reproduction, these contacts are bounded-discovery-probe.",
+  "preregistration": "docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md",
+  "arm": {
+    "name": "construction-proposer-text",
+    "registered_in": "contracts.identifiers.CONSTRUCTION_VISIBLE_ARMS; core.policies validates the construction_targets field this arm alone may carry",
+    "legality": "owner decision 2026-09-05: the frozen core may act as a proposer over CONSTRUCTION rows with their gold, on a text-only arm. SLURP-EVO-EXEMPLARS-V1 is the only roster whose gold this arm may read, and it is disjoint from both reward folds, from the whole devel and test enumerations, and from every TRAIN utterance this study has previously touched.",
+    "modality": "TEXT ONLY. No audio part is sent, so this run id consumes zero speech-audio seconds; the exemplars reach the prompt as their TRAIN transcript plus their gold entity list.",
+    "split_identity_hash": "ef5c40547aa99780424d907a13e84a991957302b9a4fd90a884921e5e5b13587"
+  },
+  "targets": "the eighteen SLURP scenarios; one contact per scenario per proposer slot k, three slots per round",
+  "exemplars": {
+    "roster": "SLURP-EVO-EXEMPLARS-V1",
+    "receipt": "docs/receipts/rosters/slurp-evo-exemplars-v1.json",
+    "count": 432,
+    "per_scenario": 24,
+    "M": 8,
+    "draw": "random.Random(f'{round}:{scenario}:{k}') over the scenario's id-sorted 24, taking 8 and FIXING their order. Because the pool is three times M, the three draws of a round differ in membership as well as order.",
+    "intent_coverage": "the draw covers the scenario's intents in descending TRAIN mention mass; any intent the draw did not cover keeps its incumbent block unchanged, so a candidate never rewrites a block it saw no evidence for. Only iot (9 intents) exceeds M."
+  },
+  "output_contract": "the rewritten blocks in the exact grammar data.slurp.render_slurp_intent_slot_schema emits, one block per intent in the order given, and nothing else -- no prose, no code fence, no JSON envelope. The block grammar is the contract precisely because the renderer has to be able to reproduce the artifact byte for byte. The header line and every share value are OVERWRITTEN from the unfloored TRAIN table, so a hallucinated count or percentage can never reach a flight.",
+  "instruction": "rendered offline and pinned by prompt_sha256; the verbatim text is section 5 of the preregistration. No sample identifier ever reaches it, and no devel or test row, gold or score enters it.",
+  "form_gates": "ASCII only; the header byte-identical to A_0's; at most L type lines per intent, L = that intent's unfloored TRAIN type count; at most five fillers per type; every listed type with at least one TRAIN mention for that intent; the block parses under the renderer's own grammar; the per-intent token delta against the incumbent at most +20 percent under the flight tokenizer (never an estimator). A candidate that fails any gate is dropped and its slot flies the incumbent's block for that intent.",
+  "decontamination": "SAEA-SLURP-MF-EVO-DECONTAMINATION-V1, registered before the first candidate is validated: no candidate FILLER may share a word 6-gram with a DEV-1000 sentence unless the 6-gram already occurs in A_0's own 1,008 fillers. That row is the first in this study to open SLURP devel sentence text; it opens it inside the gate alone and never renders, logs or echoes it. Overlap with the shown construction exemplars is measured and reported, never gated.",
+  "cells": [
+    {
+      "cell_id": "EVO-S1-r1-proposer",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V1",
+      "attempt_id": "attempt-r1-p-{scenario}-k{k}",
+      "arm": "construction-proposer-text",
+      "factor": "one text contact per scenario per proposer slot: the scenario's incumbent blocks, the closed entity-type name list, and M = 8 exemplar utterances with their gold entities. 18 scenarios x 3 slots = 54 contacts per round",
+      "baseline_fragment": "PENDING -- the proposer arm's own fragment; it configures a runner that does not exist",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64 (text-only path; max_tokens raised to 1536, see below)",
+      "dataset_fragment": "none -- this arm is not a per-sample cell; its plan's split identity is the exemplar roster receipt"
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1536,
+    "max_tokens_basis": "a scenario's blocks are up to about 1,100 tokens (iot, nine intents). 1,536 leaves headroom without letting a runaway generation cost a minute. The slot cells keep max_tokens 64, unchanged from KC-S1b.",
+    "contacts_per_round": 54,
+    "speech_audio_seconds": 0
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 54,
+    "planned_gpu_hours": 0.35,
+    "planned_speech_audio_seconds": 0
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "ROUND 1: 18 scenarios x 3 proposer slots = 54. The two controls (shares-only, and the round-1 token-matched form twin) are DETERMINISTIC and cost no contact, which is a real difference from EVO-A1, where the placebo spends one contact per target. Budgets are cumulative across every attempt of a run id, so the registered ceiling for this run id is R_max x 54 = 216, registered at 288 for margin.",
+    "planned_gpu_hours": "54 contacts x about 20 s each (a block set of up to 1,100 generated tokens) = 1,080 s = 0.30 h; 0.35 planned, 1.6 as the run-id ceiling over four rounds. This term is NOT negligible: over the whole loop the proposer costs about 1.2 GPU-h against the reward flights' 3.3.",
+    "planned_speech_audio_seconds": "0. The arm is text-only and sends no audio part at all, so proposer contacts are counted in calls and never in speech seconds.",
+    "paid_api_spend": 0
+  },
+  "decision": {
+    "produces": "candidate artifacts only. This fragment decides nothing: every candidate is validated by the form and decontamination gates, then scored on fold A by the reward fragment, and the selection rule lives in rails.evolution.",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}

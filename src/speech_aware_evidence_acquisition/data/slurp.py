@@ -1650,6 +1650,134 @@ def slurp_intent_slot_schema_receipt(
         },
     }
 
+def load_slurp_train_construction_rows(
+    lock: Mapping[str, object],
+    root: Path,
+    sample_ids: Sequence[str],
+) -> dict[str, dict[str, object]]:
+    """The construction material of EXACTLY the named TRAIN recordings.
+
+    The SLURP twin of ``data.audio2tool.load_query_rows`` plus
+    ``load_media_rows``, in one pass: per sample id, the intent, the sentence
+    the speaker read, the gold ``(entity type, filler)`` pairs joined exactly
+    as the official eval script joins them, and the three measured media facts
+    a roster receipt records (``media_relpath``, ``audio_seconds``,
+    ``audio_sha256``).
+
+    Split discipline, the same as :func:`load_slurp_intent_slot_schema`'s:
+    the one metadata file this function opens is named by
+    ``_SPLIT_FILES[_ROSTER_SPLITS_LEGAL[0]]``, a module constant. There is no
+    ``split`` parameter and no caller-supplied path, so a devel or test row
+    cannot be reached through this entry point at all -- which is what makes
+    it safe to be the one reader that carries SENTENCE TEXT beside gold. The
+    EVO-S1 proposer arm is the single caller licensed to send that pair to the
+    frozen core (owner decision 2026-09-05, construction rows only), and the
+    rows it may send are exactly those a committed
+    ``roster_role == "construction"`` receipt names.
+
+    Identity-scoped rather than roster-scoped for the same reason its
+    Audio2Tool twin is: the loop's exemplar pool sits outside every
+    probe-sample receipt, so a receipt-scoped loader cannot see it.
+    """
+
+    if isinstance(sample_ids, (str, bytes)):
+        raise LoaderError("sample_ids must be a sequence of SLURP sample ids")
+    split_id = _ROSTER_SPLITS_LEGAL[0]
+    wanted: dict[int, set[str]] = {}
+    for sample_id in sample_ids:
+        if not isinstance(sample_id, str):
+            raise LoaderError("every sample id must be text")
+        parts = sample_id.split(":", 3)
+        if len(parts) != 4 or parts[0] != "slurp" or parts[1] != split_id:
+            raise LoaderError(
+                f"{sample_id!r} is not a SLURP {split_id} sample id of the shape "
+                f"'slurp:{split_id}:<six digits>:<recording stem>'"
+            )
+        if not parts[2].isdigit() or len(parts[2]) != 6 or not parts[3]:
+            raise LoaderError(
+                f"{sample_id!r} is not a SLURP {split_id} sample id of the shape "
+                f"'slurp:{split_id}:<six digits>:<recording stem>'"
+            )
+        wanted.setdefault(int(parts[2]), set()).add(parts[3])
+    if not wanted:
+        raise LoaderError("sample_ids must name at least one construction row")
+
+    audio_root_relpath, audio_root, metadata_dir = _governed_roots(lock, root)
+    metadata_path = metadata_dir / _SPLIT_FILES[split_id]
+    if not metadata_path.is_file():
+        raise LoaderError(f"SLURP {split_id} metadata file missing: {metadata_path}")
+    audio_dir = audio_root / _AUDIO_SUBDIR_FOR_SPLIT[split_id]
+    audio_dir_relpath = f"{audio_root_relpath}/{_AUDIO_SUBDIR_FOR_SPLIT[split_id]}"
+
+    rows: dict[str, dict[str, object]] = {}
+    for line_no, raw in enumerate(_read_jsonl(metadata_path), start=1):
+        slurp_id = raw.get("slurp_id")
+        if isinstance(slurp_id, bool) or not isinstance(slurp_id, int):
+            raise LoaderError(f"SLURP {split_id}.jsonl line {line_no}: slurp_id must be an int")
+        stems = wanted.get(slurp_id)
+        if not stems:
+            continue
+        context = f"SLURP {split_id}.jsonl line {line_no}"
+        scenario = raw.get("scenario")
+        action = raw.get("action")
+        sentence = raw.get("sentence")
+        if not isinstance(scenario, str) or not scenario:
+            raise LoaderError(f"{context}: scenario must be a non-empty string")
+        if not isinstance(action, str) or not action:
+            raise LoaderError(f"{context}: action must be a non-empty string")
+        if not isinstance(sentence, str) or not sentence.strip():
+            raise LoaderError(f"{context}: sentence must be a non-empty string")
+        tokens_by_id = _tokens_by_id(raw.get("tokens"), context)
+        raw_entities = raw.get("entities")
+        if not isinstance(raw_entities, list):
+            raise LoaderError(f"{context}: entities must be a list")
+        entities = tuple(
+            (
+                _entity_type(entity, context),
+                _entity_filler(
+                    tokens_by_id,
+                    entity.get("span") if isinstance(entity, Mapping) else None,
+                    context,
+                ),
+            )
+            for entity in raw_entities
+        )
+        recordings = raw.get("recordings")
+        if not isinstance(recordings, list) or not recordings:
+            raise LoaderError(f"{context}: recordings must be a non-empty list")
+        for recording in recordings:
+            if not isinstance(recording, Mapping):
+                raise LoaderError(f"{context}: recording entry must be an object")
+            filename = _validate_recording_filename(recording.get("file"), context)
+            stem = filename[: -len(".flac")]
+            if stem not in stems:
+                continue
+            media_path = audio_dir / filename
+            rows[f"slurp:{split_id}:{slurp_id:06d}:{stem}"] = {
+                "utterance_id": f"slurp:{split_id}:{slurp_id:06d}",
+                "scenario": scenario,
+                "action": action,
+                "intent": f"{scenario}_{action}",
+                "sentence": sentence.strip(),
+                "entities": entities,
+                "media_relpath": f"{audio_dir_relpath}/{filename}",
+                "audio_seconds": _audio_seconds(media_path, context),
+                "audio_sha256": hashlib.sha256(media_path.read_bytes()).hexdigest(),
+            }
+    missing = sorted(
+        f"slurp:{split_id}:{slurp_id:06d}:{stem}"
+        for slurp_id, stems in wanted.items()
+        for stem in stems
+        if f"slurp:{split_id}:{slurp_id:06d}:{stem}" not in rows
+    )
+    if missing:
+        raise LoaderError(
+            f"{len(missing)} construction row(s) have no {split_id} recording; first: "
+            f"{missing[0]}"
+        )
+    return rows
+
+
 __all__ = [
     "SLURP_INTENT_SLOT_DECONTAMINATION_RECEIPTS",
     "SLURP_INTENT_SLOT_SCHEMA_ID",
@@ -1664,6 +1792,7 @@ __all__ = [
     "load_slurp_intent_slot_schema",
     "load_slurp_ontology",
     "load_slurp_split",
+    "load_slurp_train_construction_rows",
     "load_slurp_train_material",
     "render_slurp_closed_label_inventory",
     "render_slurp_closed_label_inventory_with_slot_schema",
