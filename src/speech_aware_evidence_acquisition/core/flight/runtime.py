@@ -353,6 +353,7 @@ def render_phase_prompt_envelopes(
     packet_descriptor: Mapping[str, object],
     sample_id: str,
     sealed_states_by_phase: Mapping[str, Mapping[str, object]] | None = None,
+    state_fill_by_phase: Mapping[str, object] | None = None,
     completion_token_ceiling: int,
 ) -> dict[str, tuple[Mapping[str, object], ...]]:
     """``{phase: envelope}`` for ONE sample of a phase program.
@@ -380,6 +381,18 @@ def render_phase_prompt_envelopes(
     pad, so a caller that deliberately measures the bound (this runtime's own
     ``_phase_prompt_payloads`` estimate) and a caller that measures the exact
     text share one code path.
+
+    ``state_fill_by_phase`` is the LAST thing appended, after the state block
+    -- the same position and the same blank-line join
+    ``rails.phase_material.build_material_for_phase`` uses, which is the real
+    runtime path. It is ``None`` by default and the rendering is then
+    byte-identical to what it always was, so a pinned
+    :data:`PHASE_PROMPT_FIT_SCHEMA` receipt measured before this parameter
+    existed still verifies. A caller that renders a phase declaring
+    ``state_fill`` and does NOT pass its fill is counting a prompt shorter
+    than the one that goes on the wire (for KC-S1b, by roughly 7,500 tokens),
+    which is why :meth:`FlightRuntime._phase_prompt_payloads` resolves and
+    passes them.
     """
 
     from ...rails.phase_material import (  # noqa: PLC0415 (cycle guard)
@@ -392,6 +405,7 @@ def render_phase_prompt_envelopes(
         )
     pad = "x" * (PHASE_PREDECESSOR_PAD_BYTES_PER_TOKEN * int(completion_token_ceiling))
     states = dict(sealed_states_by_phase or {})
+    fills = dict(state_fill_by_phase or {})
     envelopes: dict[str, tuple[Mapping[str, object], ...]] = {}
     for phase in phase_names:
         spec = specs[phase]
@@ -400,14 +414,26 @@ def render_phase_prompt_envelopes(
         if binding != "none":
             state = states.get(phase, {}).get(sample_id)
             if state is None:
+                state_content = pad
                 instruction = (
                     f"{instruction}\n\n{PHASE_PREDECESSOR_PAD_PREFIX}:\n{pad}"
                 )
             else:
+                state_content = str(state.content)
                 instruction = (
                     f"{instruction}\n\nPrior phase response "
                     f"({state.state_kind}):\n{state.content}"
                 )
+            fill = fills.get(phase)
+            if fill is not None:
+                rendered = fill(state_content)
+                if not isinstance(rendered, str) or not rendered.strip():
+                    raise FlightRuntimeError(
+                        f"phase {phase!r} state fill rendered no text for sample "
+                        f"{sample_id!r}; a declared fill that renders nothing would "
+                        "silently under-count the prompt it is part of"
+                    )
+                instruction = f"{instruction}\n\n{rendered}"
         envelopes[phase] = render_phase_envelope(
             system_text,
             instruction,
@@ -765,9 +791,9 @@ class FlightRuntime:
         return plan
 
     def _phase_prompt_payloads(
-        self, representative: object, program: object
+        self, samples: Sequence[object], program: object
     ) -> Mapping[str, bytes]:
-        """One representative rendered request PER PHASE for a phase program.
+        """The LARGEST rendered request PER PHASE over the WHOLE roster.
 
         A phase's own instruction rides the payload's ORG/CONTROL history
         turn, so the adapter's bare ``assemble_prompt`` -- what the direct
@@ -775,25 +801,54 @@ class FlightRuntime:
         a cell whose select phase carries a tool registry that is thousands
         of tokens of difference, i.e. exactly the kind of miss a prompt-fit
         estimate exists to catch. This renders each phase through
-        :func:`rails.phase_material.render_phase_envelope`, the same
-        transport shape the contact itself crosses the wire as.
+        :func:`render_phase_prompt_envelopes`, the same one authority the
+        pinned prompt-fit measurement and its verification use.
 
-        Two deliberate approximations, both in the SAFE direction: the
-        system text is rebuilt with ``rails.runner._agent_messages``' own
-        rule (append the adapter's task contract only when the instruction
-        does not already contain it), and a phase that appends a predecessor
-        state is padded by the completion-token ceiling's worth of ASCII,
-        because the real predecessor is one prior response and is bounded by
-        exactly that.
+        WHY EVERY SAMPLE, NOT ONE (KC-S1's defect 3, 2026-09-05). This used
+        to render ONE representative row and apply no ``state_fill`` at all.
+        Both under-count, and a prompt budget that under-counts is worse than
+        none: for KC-S1b the estimate was about 7,500 tokens short of the
+        widest real request, so its ALLOW said nothing about the phase cell
+        that actually flies. What is rendered now, per sample:
+
+        * the sample's OWN system text (``phase_program_system_text``, which
+          is ``rails.runner._agent_messages``' rule -- the adapter's
+          assembled system content plus its task contract when the
+          instruction does not already carry it) and its OWN packet
+          descriptor;
+        * for a ``sealed-manifest`` phase, that sample's REAL sealed
+          predecessor state, rebuilt from the pinned manifest exactly as
+          :meth:`_verify_phase_prompt_fit` rebuilds it;
+        * for a phase declaring a ``state_fill``, the fill's per-sample text,
+          appended last, as ``rails.phase_material.build_material_for_phase``
+          appends it on the wire.
+
+        The one remaining approximation stays, and stays in the SAFE
+        direction: an ``append-sealed-state`` phase's predecessor is this
+        run's own preceding response and does not exist yet, so it is padded
+        with the completion-token ceiling's worth of ASCII, which is exactly
+        what bounds it. A state fill over that pad renders the fill's own
+        fallback, which is its widest output.
+
+        The maximum is taken on SERIALIZED BYTES, not on tokens: this method
+        is the fail-early estimate and must not pay a real tokenizer 3 x
+        1,000 times at pre-flight; :meth:`_assess_prompt_budget` counts
+        tokens once per phase on the payload chosen here. The exact
+        per-request measurement remains the pinned prompt-fit receipt.
         """
 
-        from ...rails.obs import default_obs_packet  # noqa: PLC0415 (cycle guard)
         from ...rails.phase_material import (  # noqa: PLC0415 (cycle guard)
+            PHASE_STATE_FILLS,
             load_phase_material_specs,
-            render_phase_envelope,
             render_static_instruction,
+            sealed_states_from_manifest,
         )
 
+        samples = tuple(samples)
+        if not samples:
+            raise FlightRuntimeError(
+                "_phase_prompt_payloads needs at least one sample to render"
+            )
         baseline_values = self._composed.values
         specs = load_phase_material_specs(baseline_values, program)
         static_text = {
@@ -802,33 +857,72 @@ class FlightRuntime:
             )
             for phase, spec in specs.items()
         }
-        messages = self._adapter.assemble_prompt(representative, None)
-        system_text = str(messages[0]["content"])
-        contract = self._adapter.build_task_contract(
-            representative, default_obs_packet(representative)
-        )
-        if contract not in system_text:
-            system_text = f"{system_text}\n\nTask contract:\n{contract}"
-        descriptor = self.speech_packet_bindings()[representative.sample_id]
+        bindings = self.speech_packet_bindings()
         prompt_order = str(
             baseline_values.get("prompt_order") or "speech-query-prefix-v2"
         )
-        pad = "x" * (4 * int(self._adapter.serving_geometry()["max_tokens"]))
-        payloads: dict[str, bytes] = {}
-        for phase in program.phase_names():
-            instruction = static_text[phase]
-            if specs[phase].predecessor_binding != "none":
-                instruction = f"{instruction}\n\nPrior phase response (pad):\n{pad}"
-            envelope = render_phase_envelope(
-                system_text,
-                instruction,
-                prompt_order=prompt_order,
-                packet_descriptor=descriptor,
-                contact_id=f"{program.program_id}:{phase}:{representative.sample_id}",
+        ceiling = int(self._adapter.serving_geometry()["max_tokens"])
+        sample_ids = tuple(str(sample.sample_id) for sample in samples)
+
+        # A sealed-manifest phase's predecessor is REAL and per-sample: load
+        # the whole roster's states once, from the manifest the fragment
+        # pins, rather than padding over something already on disk.
+        sealed_states: dict[str, Mapping[str, object]] = {}
+        for phase, spec in specs.items():
+            if getattr(spec, "predecessor_binding", "none") != "sealed-manifest":
+                continue
+            source = spec.predecessor_source or {}
+            sealed_states[phase] = sealed_states_from_manifest(
+                self._data_root / str(source["manifest_relpath"]),
+                expected_sha256=str(source["manifest_sha256"]),
+                phase_name=phase,
+                producer_policy_id=str(source["producer_policy_id"]),
+                sample_ids=sample_ids,
             )
-            payloads[phase] = json.dumps(
-                list(envelope), ensure_ascii=False, sort_keys=True
-            ).encode("utf-8")
+
+        # Registered per-sample fills, resolved ONCE (a fill that reads
+        # pinned carrier data pays for it here, not per sample) through the
+        # same public registry ``build_material_for_phase`` resolves.
+        fills: dict[str, object] = {}
+        for phase, spec in specs.items():
+            name = getattr(spec, "state_fill", None)
+            if name is None:
+                continue
+            factory = PHASE_STATE_FILLS.resolve(str(name))
+            if not callable(factory):
+                raise FlightRuntimeError(
+                    f"registered phase state fill {name!r} is not callable"
+                )
+            fill = factory()
+            if not callable(fill):
+                raise FlightRuntimeError(
+                    f"phase {phase!r} state fill {name!r} did not resolve to a "
+                    "callable (state_content) -> str"
+                )
+            fills[phase] = fill
+
+        payloads: dict[str, bytes] = {}
+        for sample in samples:
+            sample_id = str(sample.sample_id)
+            envelopes = render_phase_prompt_envelopes(
+                program_id=program.program_id,
+                phase_names=program.phase_names(),
+                specs=specs,
+                static_text_by_phase=static_text,
+                system_text=phase_program_system_text(self._adapter, sample),
+                prompt_order=prompt_order,
+                packet_descriptor=bindings[sample_id],
+                sample_id=sample_id,
+                sealed_states_by_phase=sealed_states,
+                state_fill_by_phase=fills,
+                completion_token_ceiling=ceiling,
+            )
+            for phase, envelope in envelopes.items():
+                blob = json.dumps(
+                    list(envelope), ensure_ascii=False, sort_keys=True
+                ).encode("utf-8")
+                if len(blob) > len(payloads.get(phase, b"")):
+                    payloads[phase] = blob
         return payloads
 
     def _verify_phase_prompt_fit(self) -> Mapping[str, object] | None:
@@ -1051,16 +1145,19 @@ class FlightRuntime:
         }
 
     def _assess_prompt_budget(self, samples: Sequence[object]) -> tuple[Mapping[str, object], ...]:
-        """Serialize one representative request per phase through the
-        adapter and run it through ``rails.context_budget.
-        assess_context_budget`` -- a PRE-FLIGHT estimate (module docstring:
-        exact counts are required "immediately before each model contact",
-        which is what a real flight's ``token_counter`` seam must supply at
-        request time; this stage runs once, ahead of any contact).
+        """Serialize a request per phase through the adapter and run it
+        through ``rails.context_budget.assess_context_budget`` -- a PRE-FLIGHT
+        estimate (module docstring: exact counts are required "immediately
+        before each model contact", which is what a real flight's
+        ``token_counter`` seam must supply at request time; this stage runs
+        once, ahead of any contact).
 
-        For a PHASE PROGRAM the representative request is rendered per phase
-        through :meth:`_phase_prompt_payloads`, because a phase's own
-        instruction is part of what it sends.
+        For a PHASE PROGRAM the request is the WIDEST one the roster
+        produces for that phase, rendered by :meth:`_phase_prompt_payloads`
+        over every sample, because a phase's own instruction -- and its
+        per-sample predecessor state and state fill -- are part of what it
+        sends. For ``policy == "fixed"`` nothing changed: one direct
+        ``assemble_prompt`` over the representative row, exactly as before.
         """
 
         representative = samples[0]
@@ -1074,7 +1171,7 @@ class FlightRuntime:
             program = default_phase_program(str(policy))
             phase_names = program.phase_names()
             if self.uses_speech_feature_packets():
-                phase_payloads = self._phase_prompt_payloads(representative, program)
+                phase_payloads = self._phase_prompt_payloads(samples, program)
         max_tokens = int(self._adapter.serving_geometry()["max_tokens"])
         messages = self._adapter.assemble_prompt(representative, None)
         payload_bytes = json.dumps(
@@ -1168,8 +1265,10 @@ class FlightRuntime:
         attempt in the durable :class:`~core.attempts.store.AttemptStore`,
         verify a pinned phase prompt-fit receipt when the fragment declares
         one (:meth:`_verify_phase_prompt_fit`), and pre-assess the prompt
-        budget for a representative request per phase. Fails closed and
-        records nothing on any failure.
+        budget -- for a phase program, over the WIDEST request each phase
+        renders across the whole roster; for ``policy == "fixed"``, over one
+        representative request. Fails closed and records nothing on any
+        failure.
         """
 
         self._require_prior_stages("preflight")
@@ -1177,7 +1276,6 @@ class FlightRuntime:
         composed = self._composed
         adapter = self._adapter
         samples = self._samples
-        lock = self._lock
 
         plan = self._build_execution_plan(values, carrier_lock_key, identity_hash)
         self._plan = plan

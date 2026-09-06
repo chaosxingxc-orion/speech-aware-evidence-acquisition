@@ -2586,7 +2586,7 @@ def test_render_phase_prompt_envelopes_reproduces_the_estimator_bytes(tmp_path):
 
     program = default_phase_program(PHASE_PROGRAM)
     sample = runtime._samples[0]
-    estimated = runtime._phase_prompt_payloads(sample, program)
+    estimated = runtime._phase_prompt_payloads((sample,), program)
 
     specs = load_phase_material_specs(runtime._composed.values, program)
     rendered = render_phase_prompt_envelopes(
@@ -2610,3 +2610,271 @@ def test_render_phase_prompt_envelopes_reproduces_the_estimator_bytes(tmp_path):
             )
             == estimated[phase]
         )
+
+
+# ---------------------------------------------------------------------------
+# The pre-flight estimate over the WHOLE roster (KC-S1 defect 3, 2026-09-05)
+# ---------------------------------------------------------------------------
+
+
+class _PerSampleAdapter(_FakeAdapter):
+    """A fake whose system instruction GROWS with the sample.
+
+    A real roster looks like this -- KC-S1b's per-sample slot block is the
+    example that produced the defect -- and an estimate that renders one
+    representative row cannot see it.
+    """
+
+    WIDE_SAMPLE_ID = "s2"
+    WIDE_PAD = "w" * 4000
+
+    def instruction(self, sample) -> str:
+        if sample.sample_id == self.WIDE_SAMPLE_ID:
+            return f"instruction {self.WIDE_PAD}"
+        return "instruction"
+
+
+_STATE_FILL_NAME = "flight-runtime-test-state-fill"
+
+
+def _phase_packet_repo(tmp_path, run_id: str, *, phase_material=None):
+    """A committed two-phase packet repo with NO pinned prompt-fit receipt --
+    the estimate is the only thing under test here."""
+
+    repo_root = tmp_path / "repo"
+    data_root = tmp_path / "data"
+    data_root.mkdir(parents=True, exist_ok=True)
+    promotion_receipt = _write_promotion_receipt(tmp_path)
+    _write_configs(
+        repo_root,
+        arm="speech-feature-query",
+        policy=PHASE_PROGRAM,
+        model_extra={"speech_feature_root": str(tmp_path / _PROMOTION_DIR)},
+        baseline_extra={
+            "speech_packet_promotion_receipt": str(promotion_receipt),
+            "speech_feature_key_representation_id": "key-rep-v1",
+            "speech_feature_matcher_policy_id": "matcher-v1",
+            "phase_material": phase_material or _PHASE_MATERIAL,
+        },
+    )
+    for phase, body in (("draft", "Draft the tool call."), ("revise", "Revise it.")):
+        template = repo_root / "configs" / "probes" / f"{phase}.txt"
+        template.parent.mkdir(parents=True, exist_ok=True)
+        template.write_text(body + "\n", encoding="utf-8")
+    _write_exposure_ledger(repo_root, run_id)
+    _git_init_commit(repo_root)
+    return repo_root, data_root
+
+
+def test_the_phase_estimate_takes_the_max_over_every_sample(tmp_path):
+    """The estimate must not under-count a phase cell: it renders every
+    sample of the roster and keeps the widest payload per phase."""
+
+    from speech_aware_evidence_acquisition.rails.controllers import (
+        default_phase_program,
+    )
+
+    run_id = "SAEA-TEST-RUN-001"
+    repo_root, _data_root = _phase_packet_repo(tmp_path, run_id)
+    runtime = _make_runtime(
+        tmp_path,
+        run_id=run_id,
+        repo_root=repo_root,
+        adapter_cls=_PerSampleAdapter,
+        happy_path=True,
+    )
+    receipt = runtime.preflight()
+    program = default_phase_program(PHASE_PROGRAM)
+    narrow_sample, wide_sample = runtime._samples
+    assert wide_sample.sample_id == _PerSampleAdapter.WIDE_SAMPLE_ID
+
+    narrow = runtime._phase_prompt_payloads((narrow_sample,), program)
+    wide = runtime._phase_prompt_payloads((wide_sample,), program)
+    both = runtime._phase_prompt_payloads(runtime._samples, program)
+    reversed_order = runtime._phase_prompt_payloads(
+        tuple(reversed(runtime._samples)), program
+    )
+
+    for phase in program.phase_names():
+        assert len(wide[phase]) - len(narrow[phase]) >= len(_PerSampleAdapter.WIDE_PAD)
+        # The max, and it does not depend on roster order.
+        assert both[phase] == wide[phase]
+        assert reversed_order[phase] == wide[phase]
+
+    # And the receipt the estimate lands is the WIDE payload's, not the
+    # representative row's -- payload_sha256 is the exact byte identity.
+    wide_digests = {
+        phase: hashlib.sha256(payload).hexdigest() for phase, payload in wide.items()
+    }
+    assert [entry["phase"] for entry in receipt["prompt_budget"]] == list(
+        program.phase_names()
+    )
+    for entry in receipt["prompt_budget"]:
+        assert entry["payload_sha256"] == wide_digests[entry["phase"]]
+        assert entry["decision"] == "ALLOW"
+
+
+def test_the_phase_estimate_renders_the_declared_state_fill(tmp_path):
+    """A phase declaring a ``state_fill`` sends the fill's per-sample text on
+    the wire, so the estimate has to render it too -- not rendering it is
+    exactly what made KC-S1b's estimate roughly 7,500 tokens short."""
+
+    from speech_aware_evidence_acquisition.rails.controllers import (
+        default_phase_program,
+    )
+    from speech_aware_evidence_acquisition.rails.phase_material import (
+        PHASE_STATE_FILLS,
+    )
+
+    fill_text = "F" * 3000
+    seen: list[str] = []
+
+    def _factory():
+        def _fill(state_content: str) -> str:
+            seen.append(state_content)
+            return fill_text
+
+        return _fill
+
+    run_id = "SAEA-TEST-RUN-001"
+    with_fill = {
+        "draft": dict(_PHASE_MATERIAL["draft"]),
+        "revise": dict(_PHASE_MATERIAL["revise"], state_fill=_STATE_FILL_NAME),
+    }
+    repo_root, _data_root = _phase_packet_repo(
+        tmp_path, run_id, phase_material=with_fill
+    )
+    plain_root, _plain_data = _phase_packet_repo(
+        tmp_path / "plain", "SAEA-TEST-RUN-002"
+    )
+
+    runtime = _make_runtime(
+        tmp_path, run_id=run_id, repo_root=repo_root, happy_path=True
+    )
+    plain = _make_runtime(
+        tmp_path / "plain",
+        run_id="SAEA-TEST-RUN-002",
+        repo_root=plain_root,
+        happy_path=True,
+    )
+    program = default_phase_program(PHASE_PROGRAM)
+    PHASE_STATE_FILLS.register(_STATE_FILL_NAME, _factory)
+    try:
+        runtime.preflight()
+        plain.preflight()
+        filled = runtime._phase_prompt_payloads(runtime._samples, program)
+        unfilled = plain._phase_prompt_payloads(plain._samples, program)
+    finally:
+        PHASE_STATE_FILLS._entries.pop(_STATE_FILL_NAME, None)
+
+    # The fill is a pure per-sample SUFFIX on the phase that declares it, and
+    # the phase that does not declare one is untouched.
+    assert filled["draft"] == unfilled["draft"]
+    assert len(filled["revise"]) - len(unfilled["revise"]) >= len(fill_text)
+    # It is called over the pad that bounds the predecessor this run has not
+    # produced yet, once per sample per render.
+    assert seen
+    assert set(seen) == {"x" * (4 * _FakeAdapter.SERVING_MAX_TOKENS)}
+
+
+def test_a_state_fill_that_renders_nothing_is_refused() -> None:
+    """Fail-closed: a declared fill that renders no text would silently
+    under-count the prompt it is part of."""
+
+    from speech_aware_evidence_acquisition.core.flight.runtime import (
+        render_phase_prompt_envelopes,
+    )
+    from speech_aware_evidence_acquisition.rails.phase_material import (
+        PhaseMaterialSpec,
+    )
+
+    spec = PhaseMaterialSpec(
+        phase="revise",
+        purpose="revise",
+        instruction_template="probes/revise.txt",
+        predecessor_binding="append-sealed-state",
+    )
+    with pytest.raises(FlightRuntimeError, match="rendered no text"):
+        render_phase_prompt_envelopes(
+            program_id="p",
+            phase_names=("revise",),
+            specs={"revise": spec},
+            static_text_by_phase={"revise": "Revise it."},
+            system_text="sys",
+            prompt_order="speech-query-prefix-v2",
+            packet_descriptor={"packet_id": "s1", "sha256": "s1-sha"},
+            sample_id="s1",
+            state_fill_by_phase={"revise": lambda content: "   "},
+            completion_token_ceiling=8,
+        )
+
+
+def test_render_phase_prompt_envelopes_is_unchanged_without_a_state_fill() -> None:
+    """The default is byte-identical, so a prompt-fit receipt measured before
+    the seam existed still verifies."""
+
+    from speech_aware_evidence_acquisition.core.flight.runtime import (
+        phase_envelope_sha256,
+        render_phase_prompt_envelopes,
+    )
+    from speech_aware_evidence_acquisition.rails.phase_material import (
+        PhaseMaterialSpec,
+    )
+
+    spec = PhaseMaterialSpec(
+        phase="revise",
+        purpose="revise",
+        instruction_template="probes/revise.txt",
+        predecessor_binding="append-sealed-state",
+    )
+    kwargs = {
+        "program_id": "p",
+        "phase_names": ("revise",),
+        "specs": {"revise": spec},
+        "static_text_by_phase": {"revise": "Revise it."},
+        "system_text": "sys",
+        "prompt_order": "speech-query-prefix-v2",
+        "packet_descriptor": {"packet_id": "s1", "sha256": "s1-sha"},
+        "sample_id": "s1",
+        "completion_token_ceiling": 8,
+    }
+    default = render_phase_prompt_envelopes(**kwargs)
+    explicit_none = render_phase_prompt_envelopes(**kwargs, state_fill_by_phase=None)
+    empty = render_phase_prompt_envelopes(**kwargs, state_fill_by_phase={})
+    assert phase_envelope_sha256(default["revise"]) == phase_envelope_sha256(
+        explicit_none["revise"]
+    )
+    assert phase_envelope_sha256(default["revise"]) == phase_envelope_sha256(
+        empty["revise"]
+    )
+
+
+def test_the_fixed_policy_estimate_is_byte_identical_to_the_direct_payload(tmp_path):
+    """``policy == "fixed"`` never enters ``_phase_prompt_payloads``: the
+    estimate is still ONE representative ``assemble_prompt``, over one
+    ``direct`` phase."""
+
+    promotion_receipt = _write_promotion_receipt(tmp_path)
+    runtime = _make_runtime(
+        tmp_path,
+        happy_path=True,
+        adapter_cls=_PerSampleAdapter,
+        config_kwargs=_packet_config_kwargs(tmp_path, promotion_receipt),
+    )
+
+    def _refuse(*args, **kwargs):
+        raise AssertionError("the fixed policy must not render phase payloads")
+
+    runtime._phase_prompt_payloads = _refuse
+    receipt = runtime.preflight()
+
+    representative = runtime._samples[0]
+    expected = hashlib.sha256(
+        json.dumps(
+            list(runtime._adapter.assemble_prompt(representative, None)),
+            ensure_ascii=False,
+            sort_keys=True,
+        ).encode("utf-8")
+    ).hexdigest()
+    assert [entry["phase"] for entry in receipt["prompt_budget"]] == ["direct"]
+    assert receipt["prompt_budget"][0]["payload_sha256"] == expected
