@@ -233,3 +233,169 @@ def test_pool_block_carries_the_eligible_count_after_exclusion() -> None:
     assert block["touched_train_utterances"] == 1
     assert block["touched_train_recordings"] == 2
     assert block["eligible_utterances"] == 9
+
+
+def test_the_version_argument_names_every_roster_and_every_receipt_stem() -> None:
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        exposure_row_id,
+        roster_id,
+        roster_stem,
+    )
+
+    assert roster_id("fold_a") == "SLURP-EVO-FOLD-A-V1"
+    assert roster_id("fold_b", "V2") == "SLURP-EVO-FOLD-B-V2"
+    assert roster_stem("exemplars", "V2") == "slurp-evo-exemplars-v2"
+    assert exposure_row_id("V2") == "SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V2"
+    rosters = cut(fold_quota=10, exemplar_quota=6, version="V2")
+    assert rosters["fold_a"]["roster_id"] == "SLURP-EVO-FOLD-A-V2"
+    assert rosters["fold_b"]["roster_id"] == "SLURP-EVO-FOLD-B-V2"
+    assert rosters["exemplars"]["roster_id"] == "SLURP-EVO-EXEMPLARS-V2"
+    proof = disjointness_proof(
+        rosters, devel_ids=(), test_ids=(), contacted_train_utterances=()
+    )
+    stems = {
+        stem
+        for stem, _document in roster_documents(
+            rosters, proof=proof, shared={}, version="V2"
+        )
+    }
+    assert stems == {
+        "slurp-evo-fold-a-v2",
+        "slurp-evo-fold-b-v2",
+        "slurp-evo-exemplars-v2",
+    }
+
+
+def test_a_malformed_version_is_refused_before_anything_is_drawn() -> None:
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        RosterSourceError,
+        roster_id,
+    )
+
+    for bad in ("v2", "2", "V", "V2a", "", None):
+        with pytest.raises(RosterSourceError):
+            roster_id("fold_a", bad)  # type: ignore[arg-type]
+
+
+def test_a_redraw_records_the_receipts_it_supersedes(tmp_path) -> None:
+    import hashlib
+    import json
+
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        RosterSourceError,
+        supersedes_block,
+    )
+
+    written: dict[str, str] = {}
+    for stem, roster in (
+        ("slurp-evo-fold-a-v1", "SLURP-EVO-FOLD-A-V1"),
+        ("slurp-evo-fold-b-v1", "SLURP-EVO-FOLD-B-V1"),
+        ("slurp-evo-exemplars-v1", "SLURP-EVO-EXEMPLARS-V1"),
+    ):
+        path = tmp_path / f"{stem}.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "roster_id": roster,
+                    "split_identity_hash": "0" * 64,
+                    "items": [{"sample_id": "slurp:train:000001:audio-1"}],
+                }
+            ),
+            encoding="utf-8",
+        )
+        written[roster] = hashlib.sha256(path.read_bytes()).hexdigest()
+
+    block = supersedes_block(tmp_path, "V1", "coordinator decision 1, 2026-09-06")
+    assert block["version"] == "V1"
+    assert block["exposure_row"] == "SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V1"
+    assert block["decision"] == "coordinator decision 1, 2026-09-06"
+    assert [row["roster_id"] for row in block["rosters"]] == list(written)
+    assert [row["receipt_file_sha256"] for row in block["rosters"]] == list(
+        written.values()
+    )
+    assert all(row["recordings"] == 1 for row in block["rosters"])
+    with pytest.raises(RosterSourceError):
+        supersedes_block(tmp_path, "V1", "")
+
+
+def test_the_shared_block_carries_the_version_and_its_exposure_row() -> None:
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import shared_block
+
+    identity = {
+        "splits": {
+            "devel": {"identity_hash": "a" * 64, "count": 8690},
+            "test": {"identity_hash": "b" * 64, "count": 13078},
+        }
+    }
+    block = shared_block(
+        corpus(per_scenario=5),
+        touched=set(),
+        touched_rows=[],
+        excluded_recordings=0,
+        split_identity=identity,
+        version="V2",
+        offline_guard={"outbound_connection_attempts": 0},
+        supersedes={"version": "V1"},
+    )
+    assert block["roster_version"] == "V2"
+    assert block["exposure_row"] == "SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V2"
+    assert block["supersedes"] == {"version": "V1"}
+    assert block["split_identity_receipt"]["devel_ids"] == 8690
+    assert block["pool"]["train_utterances"] == 10
+    assert "supersedes" not in shared_block(
+        corpus(per_scenario=5),
+        touched=set(),
+        touched_rows=[],
+        excluded_recordings=0,
+        split_identity=identity,
+        version="V1",
+        offline_guard={},
+    )
+
+
+def test_the_exemplar_target_yields_to_capacity_and_the_cap_is_recorded() -> None:
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        candidates,
+        exemplar_quotas,
+    )
+
+    # 'weather' keeps 30 entity-bearing utterances, 'social' only 10, so a
+    # target of 24 is met by one scenario and capped for the other.
+    records = [
+        *[record(i, "weather", "", entities=(SlotEntity(type="date", filler="x"),))
+          for i in range(30)],
+        *[record(100 + i, "social", "", entities=(SlotEntity(type="date", filler="x"),))
+          for i in range(10)],
+    ]
+    items, groups = candidates(records)
+    quotas, policy = exemplar_quotas(
+        items, spent=set(), groups=groups, target=24, floor=8
+    )
+    assert quotas == {"social": 10, "weather": 24}
+    assert policy["target_per_scenario"] == 24
+    assert policy["capped_scenarios"] == {"social": 10}
+    assert policy["realized_per_scenario"] == quotas
+
+
+def test_an_exemplar_pool_below_the_floor_is_refused_not_weakened() -> None:
+    from speech_aware_evidence_acquisition.analysis.slurp_evo_rosters import (
+        RosterSourceError,
+        candidates,
+        exemplar_quotas,
+    )
+
+    records = [
+        record(i, "weather", "", entities=(SlotEntity(type="date", filler="x"),))
+        for i in range(5)
+    ]
+    items, groups = candidates(records)
+    with pytest.raises(RosterSourceError):
+        exemplar_quotas(items, spent=set(), groups=groups, target=24, floor=8)
+
+
+def test_the_exemplar_quota_policy_lands_in_the_exemplar_receipt() -> None:
+    rosters = cut(fold_quota=10, exemplar_quota=6)
+    policy = rosters["exemplars"]["exemplar_quota_policy"]
+    assert policy["target_per_scenario"] == 6
+    assert policy["capped_scenarios"] == {}
+    assert set(policy["realized_per_scenario"]) == set(SCENARIOS)

@@ -1,6 +1,8 @@
 """The three EVO-S1 loop rosters on SLURP TRAIN (model-free, identity only).
 
-Exposure row ``SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V1``. Authority
+Exposure rows ``SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V1`` (the 30-per-scenario
+draw of 2026-09-06) and ``SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V2`` (the
+60-per-scenario re-draw the coordinator ordered the same day). Authority
 ``docs/readiness/2026-09-05-three-dimension-experiment-program.md`` sections
 4c and 5; capacity ``docs/checks/speech-aware-evidence-acquisition/
 2026-09-06-slurp-evo-construction-capacity/capacity.json``.
@@ -9,13 +11,23 @@ Three slices, one set of quotas per scenario, all through
 :func:`core.roster.freeze_roster` -- the one roster freezer -- with
 ``split_role="discovery"`` and ``roster_role="construction"``:
 
-* ``SLURP-EVO-FOLD-A-V1``  -- 30 utterances per scenario, the round's
-  selection population;
-* ``SLURP-EVO-FOLD-B-V1``  -- 30 per scenario, disjoint, the confirmation
-  population;
-* ``SLURP-EVO-EXEMPLARS-V1`` -- 24 ENTITY-BEARING utterances per scenario,
-  disjoint from both folds, and the only roster whose gold the
+* ``SLURP-EVO-FOLD-A-<version>``  -- the round's selection population;
+* ``SLURP-EVO-FOLD-B-<version>``  -- the same shape on disjoint utterances,
+  the confirmation population;
+* ``SLURP-EVO-EXEMPLARS-<version>`` -- 24 ENTITY-BEARING utterances per
+  scenario, disjoint from both folds, and the only roster whose gold the
   ``construction-proposer-text`` arm may read.
+
+**Why there are two versions.** V1 drew 30 per scenario. Scaling KC-S1b's
+measured per-stratum saves down to 30 rows clears the stage-one count gate
+(``saves >= 4, harms <= 1, net >= 3``) in only three of eighteen scenarios,
+so the preregistered kill result "no scenario admitted in rounds 1 and 2"
+would most likely fire for a statistical reason rather than a mechanism one.
+The coordinator took remedy (b) of preregistration section 16 open point 1 --
+60 per scenario, 1,080 rows per fold, nine of eighteen scenarios clearing the
+gate -- and this module takes that as its ``version="V2"`` argument. Nothing
+else changed: same seed, same exclusions, same draw order, same proofs. The
+V1 receipts stay committed as history and are never overwritten.
 
 Two rules that are decisions rather than mechanics, stated here once.
 
@@ -41,6 +53,8 @@ the read population's channel mix.
 
 from __future__ import annotations
 
+import hashlib
+import json
 import re
 from collections import Counter
 from pathlib import Path
@@ -49,15 +63,81 @@ from typing import Collection, Mapping, Sequence
 from ..core.roster import CONSTRUCTION_ROSTER_ROLE, RosterItem, freeze_roster
 from ..data.slurp import SlurpRecord
 
-FOLD_A_ID = "SLURP-EVO-FOLD-A-V1"
-FOLD_B_ID = "SLURP-EVO-FOLD-B-V1"
-EXEMPLARS_ID = "SLURP-EVO-EXEMPLARS-V1"
+AUTHORITY = "docs/readiness/2026-09-05-three-dimension-experiment-program.md"
+PREREGISTRATION = (
+    "docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md"
+)
+CAPACITY_ROW_ID = "SAEA-SLURP-MF-EVO-CONSTRUCTION-CAPACITY-V1"
+CAPACITY_RECEIPT = (
+    "docs/checks/speech-aware-evidence-acquisition/"
+    "2026-09-06-slurp-evo-construction-capacity/capacity.json"
+)
+SPLIT_IDENTITY_RECEIPT = "docs/receipts/knowledge/slurp-split-identity.json"
+RESERVED_ROSTER_NOTE = (
+    "SLURP-DEV-500-B-V1 is not opened here. Its own receipt declares carrier "
+    "slurp and split_role 'dev', so every one of its identities is a member of "
+    "the devel enumeration above, which these rosters are proved disjoint from "
+    "id by id."
+)
+
+#: The three slices, in draw order, with the slug each roster id and each
+#: receipt stem is built from. One version string parameterises all three,
+#: so a re-draw is a new argument rather than a second module: the V2 draw
+#: of 2026-09-06 (60 utterances per scenario, coordinator decision 1 on
+#: preregistration section 16 open point 1) is this module at
+#: ``version="V2"``, and the V1 receipts stay committed as history.
+ROSTER_SLUGS: Mapping[str, str] = {
+    "fold_a": "fold-a",
+    "fold_b": "fold-b",
+    "exemplars": "exemplars",
+}
+DEFAULT_VERSION = "V1"
+
 CARRIER = "slurp"
 SEED = 20260906
 SPLIT_ROLE = "discovery"
 
 FOLD_QUOTA = 30
 EXEMPLAR_QUOTA = 24
+
+#: Coordinator decision 1 of 2026-09-06: remedy (b) of open point 1, folds at
+#: 60 utterances per scenario, exemplars unchanged, same seed, same
+#: exclusions, same proofs.
+FOLD_QUOTA_V2 = 60
+EXEMPLAR_QUOTA_V2 = 24
+
+#: The smallest exemplar pool a scenario may end with. ``M = 8`` utterances
+#: are drawn per proposer slot and a round has three slots, so a pool of
+#: ``2 * M`` still makes the three seeded draws differ in MEMBERSHIP and not
+#: only in order -- which is the whole reason the target is 3 x M. Below this
+#: the draw is refused rather than quietly weakened.
+EXEMPLAR_FLOOR = 16
+
+
+def _checked_version(version: str) -> str:
+    """A roster version is ``V`` followed by digits; anything else is refused."""
+
+    if (
+        not isinstance(version, str)
+        or len(version) < 2
+        or version[0] != "V"
+        or not version[1:].isdigit()
+    ):
+        raise RosterSourceError(f"roster version must look like 'V2'; got {version!r}")
+    return version
+
+
+def roster_id(name: str, version: str = DEFAULT_VERSION) -> str:
+    """``("fold_a", "V2")`` -> ``"SLURP-EVO-FOLD-A-V2"``."""
+
+    return f"SLURP-EVO-{ROSTER_SLUGS[name].upper()}-{_checked_version(version)}"
+
+
+def roster_stem(name: str, version: str = DEFAULT_VERSION) -> str:
+    """``("fold_a", "V2")`` -> ``"slurp-evo-fold-a-v2"`` (the receipt stem)."""
+
+    return f"slurp-evo-{ROSTER_SLUGS[name]}-{_checked_version(version).lower()}"
+
 
 SELECTION_RULE = (
     "core.roster.freeze_roster, one shared random.Random(seed) advanced across "
@@ -181,13 +261,79 @@ def _utterances_of(receipt: Mapping[str, object]) -> set[str]:
     return {utterance_of(sample_id) for sample_id in _sample_ids_of(receipt)}
 
 
+def exemplar_quotas(
+    entity_bearing: Sequence[RosterItem],
+    *,
+    spent: Collection[str],
+    groups: Mapping[str, str],
+    target: int,
+    floor: int = EXEMPLAR_FLOOR,
+) -> tuple[dict[str, int], dict[str, object]]:
+    """``(per-scenario quota, the policy record)`` for the exemplar draw.
+
+    The folds are drawn first and they are the scientific population: they
+    have to look like their scenario, in entity density as in everything
+    else. Drawing the exemplars first would fix that ordering problem by
+    creating a worse one -- on ``audio``, where only 57 of 290 TRAIN
+    utterances carry an entity, reserving 24 entity-bearing sentences before
+    the folds would strip about a third of the fold rows that can score at
+    all. So the folds keep their full quota and the exemplar target yields
+    where the remainder cannot meet it.
+
+    At 60 utterances per scenario per fold (the V2 draw) exactly one scenario
+    hits that wall: ``audio`` has 22 entity-bearing utterances left after both
+    folds, against a target of 24. Its pool is capped at 22, which is still
+    2.75 x ``M``, and the cap is RECORDED per scenario rather than absorbed.
+    A scenario that cannot reach ``floor`` is refused outright.
+    """
+
+    # A floor above the target is incoherent -- it would refuse a draw the
+    # caller never asked for -- so the target caps it.
+    floor = min(floor, target)
+    spent_ids = set(spent)
+    spent_groups = {groups[sid] for sid in spent_ids if sid in groups}
+    # ``freeze_roster`` picks at most one recording per group, so a stratum's
+    # capacity is its count of eligible UTTERANCES, never of recordings.
+    eligible: dict[str, set[str]] = {}
+    for item in entity_bearing:
+        group = groups.get(item.sample_id, item.sample_id)
+        if item.sample_id in spent_ids or group in spent_groups:
+            continue
+        eligible.setdefault(item.stratum, set()).add(group)
+    quotas = {stratum: min(target, len(blocks)) for stratum, blocks in eligible.items()}
+    short = {
+        stratum: count for stratum, count in quotas.items() if count < target
+    }
+    starved = sorted(stratum for stratum, count in quotas.items() if count < floor)
+    if starved:
+        raise RosterSourceError(
+            f"exemplar pool below the floor of {floor} in {starved}; the draw is "
+            "refused rather than weakened"
+        )
+    return dict(sorted(quotas.items())), {
+        "target_per_scenario": target,
+        "floor_per_scenario": floor,
+        "realized_per_scenario": dict(sorted(quotas.items())),
+        "capped_scenarios": dict(sorted(short.items())),
+        "rule": (
+            "the folds are drawn first and keep their full quota, because they "
+            "are the scientific population and must carry their scenario's own "
+            "entity density; the exemplar target yields to whatever "
+            "entity-bearing utterances the remainder holds, never below the "
+            "floor, and every capped scenario is named here."
+        ),
+    }
+
+
 def freeze_evo_rosters(
     records: Sequence[SlurpRecord],
     *,
     seed: int = SEED,
     fold_quota: int = FOLD_QUOTA,
     exemplar_quota: int = EXEMPLAR_QUOTA,
+    exemplar_floor: int = EXEMPLAR_FLOOR,
     exclude_sample_ids: Sequence[str] = (),
+    version: str = DEFAULT_VERSION,
 ) -> dict[str, dict[str, object]]:
     """Freeze fold A, fold B and the exemplar pool, in that order.
 
@@ -201,6 +347,9 @@ def freeze_evo_rosters(
     recording the frozen core has already been shown cannot be reported as
     an untouched construction population, and the corpus is large enough
     that the cleanliness costs nothing.
+
+    ``exemplar_quota`` is a TARGET, not a promise: see :func:`exemplar_quotas`
+    for what happens when the remainder after the folds cannot fill it.
     """
 
     items, groups = candidates(records)
@@ -213,7 +362,7 @@ def freeze_evo_rosters(
         split_role=SPLIT_ROLE,
         exclude_sample_ids=excluded,
         exclude_groups=groups,
-        roster_id=FOLD_A_ID,
+        roster_id=roster_id("fold_a", version),
         roster_role=CONSTRUCTION_ROSTER_ROLE,
     )
     fold_b = freeze_roster(
@@ -224,7 +373,7 @@ def freeze_evo_rosters(
         split_role=SPLIT_ROLE,
         exclude_sample_ids=sorted(set(excluded) | _sample_ids_of(fold_a)),
         exclude_groups=groups,
-        roster_id=FOLD_B_ID,
+        roster_id=roster_id("fold_b", version),
         roster_role=CONSTRUCTION_ROSTER_ROLE,
     )
     entity_bearing = [
@@ -232,19 +381,26 @@ def freeze_evo_rosters(
         for record, item in zip(records, items, strict=True)
         if record.entities
     ]
+    spent = set(excluded) | _sample_ids_of(fold_a) | _sample_ids_of(fold_b)
+    quotas, policy = exemplar_quotas(
+        entity_bearing,
+        spent=spent,
+        groups=groups,
+        target=exemplar_quota,
+        floor=exemplar_floor,
+    )
     exemplars = freeze_roster(
         carrier_lock_key=CARRIER,
         candidates=entity_bearing,
-        per_stratum=exemplar_quota,
+        per_stratum=quotas,
         seed=seed,
         split_role=SPLIT_ROLE,
-        exclude_sample_ids=sorted(
-            set(excluded) | _sample_ids_of(fold_a) | _sample_ids_of(fold_b)
-        ),
+        exclude_sample_ids=sorted(spent),
         exclude_groups=groups,
-        roster_id=EXEMPLARS_ID,
+        roster_id=roster_id("exemplars", version),
         roster_role=CONSTRUCTION_ROSTER_ROLE,
     )
+    exemplars["exemplar_quota_policy"] = policy
     return {"fold_a": fold_a, "fold_b": fold_b, "exemplars": exemplars}
 
 
@@ -351,19 +507,103 @@ def pool_block(
     }
 
 
+def exposure_row_id(version: str = DEFAULT_VERSION) -> str:
+    """The model-free exposure row that covers one draw."""
+
+    return f"SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-{_checked_version(version)}"
+
+
+def supersedes_block(
+    rosters_dir: Path, version: str, decision: str
+) -> dict[str, object]:
+    """Name, by relpath and file SHA-256, the receipts a re-draw replaces.
+
+    The superseded receipts stay committed and are never overwritten; a
+    re-draw re-uses none of their identities, so it inherits none of their
+    exposure either -- neither draw has ever been contacted.
+    """
+
+    if not decision:
+        raise RosterSourceError("a superseding draw must name the ruling that ordered it")
+    rows: list[dict[str, object]] = []
+    for name in ROSTER_SLUGS:
+        path = Path(rosters_dir) / f"{roster_stem(name, version)}.json"
+        document = json.loads(path.read_text(encoding="utf-8"))
+        rows.append(
+            {
+                "relpath": f"docs/receipts/rosters/{path.name}",
+                "roster_id": document["roster_id"],
+                "recordings": len(document["items"]),
+                "split_identity_hash": document["split_identity_hash"],
+                "receipt_file_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            }
+        )
+    return {
+        "version": version,
+        "exposure_row": exposure_row_id(version),
+        "rosters": rows,
+        "decision": decision,
+        "history_note": (
+            "The superseded receipts stay committed and are never overwritten; "
+            "this draw re-uses none of their identities and inherits none of "
+            "their exposure, because neither draw has been contacted."
+        ),
+    }
+
+
+def shared_block(
+    records: Sequence[SlurpRecord],
+    *,
+    touched: Collection[str],
+    touched_rows: Sequence[Mapping[str, object]],
+    excluded_recordings: int,
+    split_identity: Mapping[str, object],
+    version: str,
+    offline_guard: Mapping[str, object],
+    supersedes: Mapping[str, object] | None = None,
+) -> dict[str, object]:
+    """The provenance block every roster receipt of one draw carries."""
+
+    splits = split_identity["splits"]  # type: ignore[index]
+    block: dict[str, object] = {
+        "authority": AUTHORITY,
+        "preregistration": PREREGISTRATION,
+        "generator": "scripts/build_slurp_evo_fold_rosters.py",
+        "roster_version": _checked_version(version),
+        "exposure_row": exposure_row_id(version),
+        "capacity_row": CAPACITY_ROW_ID,
+        "capacity_receipt": CAPACITY_RECEIPT,
+        "pool": pool_block(
+            records,
+            touched=touched,
+            excluded_recordings=excluded_recordings,
+            touched_rows=touched_rows,
+        ),
+        "split_identity_receipt": {
+            "relpath": SPLIT_IDENTITY_RECEIPT,
+            "devel_identity_hash": splits["devel"]["identity_hash"],
+            "devel_ids": splits["devel"]["count"],
+            "test_identity_hash": splits["test"]["identity_hash"],
+            "test_ids": splits["test"]["count"],
+        },
+        "reserved_roster_note": RESERVED_ROSTER_NOTE,
+        "offline_guard": dict(offline_guard),
+    }
+    if supersedes is not None:
+        block["supersedes"] = dict(supersedes)
+    return block
+
+
 def roster_documents(
     cut: Mapping[str, Mapping[str, object]],
     *,
     proof: Mapping[str, object],
     shared: Mapping[str, object],
+    version: str = DEFAULT_VERSION,
 ) -> list[tuple[str, dict[str, object]]]:
     """``(stem, receipt)`` pairs ready for :func:`core.roster.write_roster`."""
 
-    stems = {
-        "fold_a": "slurp-evo-fold-a-v1",
-        "fold_b": "slurp-evo-fold-b-v1",
-        "exemplars": "slurp-evo-exemplars-v1",
-    }
+    stems = {name: roster_stem(name, version) for name in ROSTER_SLUGS}
     documents: list[tuple[str, dict[str, object]]] = []
     for name, stem in stems.items():
         receipt = dict(cut[name])
@@ -396,16 +636,27 @@ __all__ = [
     "TOUCHED_TRAIN_SOURCES",
     "RosterSourceError",
     "touched_train_utterances",
-    "EXEMPLARS_ID",
+    "AUTHORITY",
+    "CAPACITY_RECEIPT",
+    "CAPACITY_ROW_ID",
+    "DEFAULT_VERSION",
+    "EXEMPLAR_FLOOR",
     "EXEMPLAR_QUOTA",
-    "FOLD_A_ID",
-    "FOLD_B_ID",
+    "EXEMPLAR_QUOTA_V2",
     "FOLD_QUOTA",
+    "FOLD_QUOTA_V2",
+    "ROSTER_SLUGS",
     "SEED",
     "SELECTION_RULE",
     "candidates",
     "disjointness_proof",
+    "exemplar_quotas",
+    "exposure_row_id",
     "freeze_evo_rosters",
     "roster_documents",
+    "roster_id",
+    "roster_stem",
+    "shared_block",
+    "supersedes_block",
     "utterance_of",
 ]

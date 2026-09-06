@@ -43,38 +43,45 @@
     "least_addressable": "music (71.7 percent of its TRAIN utterances carry no entity; KC-S1b moved it 0.0 pp) and audio (80.3 percent; +3.3 pp). Named before takeoff so a null on them is not read afterwards as a loop failure."
   },
   "populations": {
-    "SLURP-EVO-FOLD-A-V1": {
-      "dataset_fragment": "slurp-speech-native-evo-fold-a-540 (PENDING -- does not exist)",
-      "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-a-v1.json",
-      "split_identity_hash": "65e19bb09bfa16dcde31c854f4bb9874ad7044ed7a6279f9cd1a47e4ac2e9398",
+    "SLURP-EVO-FOLD-A-V2": {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080 (PENDING -- lands under SAEA-SN-MF-SLURP-EVO-FOLD-SUPPLEMENTS-V2)",
+      "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "roster_receipt_file_sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
       "split_role": "discovery",
       "roster_role": "construction",
-      "count": 540,
-      "blocks": 540,
-      "audio_seconds_one_pass": 1542.8954,
-      "strata": "gold scenario, 30 utterances per scenario over all eighteen",
-      "estimand": "per-scenario saves, harms and net against the incumbent, on that scenario's own 30 rows"
+      "count": 1080,
+      "blocks": 1080,
+      "audio_seconds_one_pass": 3084.528438,
+      "headset_share": 0.484259,
+      "strata": "gold scenario, 60 utterances per scenario over all eighteen (coordinator decision 1 of 2026-09-06, remedy (b) of preregistration section 16 open point 1)",
+      "supersedes": "SLURP-EVO-FOLD-A-V1, docs/receipts/rosters/slurp-evo-fold-a-v1.json, 540 rows at split identity 65e19bb0...9398 -- committed, never contacted, kept as history",
+      "estimand": "per-scenario saves, harms and net against the incumbent, on that scenario's own 60 rows"
     },
-    "SLURP-EVO-FOLD-B-V1": {
-      "dataset_fragment": "slurp-speech-native-evo-fold-b-540 (PENDING -- does not exist)",
-      "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v1.json",
-      "split_identity_hash": "c7acacef4227d48c2dc10397b245d0b7d6e64a220f6734ca5e9af63fcd39ca72",
+    "SLURP-EVO-FOLD-B-V2": {
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080 (PENDING -- lands under SAEA-SN-MF-SLURP-EVO-FOLD-SUPPLEMENTS-V2)",
+      "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "roster_receipt_file_sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
       "split_role": "discovery",
       "roster_role": "construction",
-      "count": 540,
-      "blocks": 540,
-      "audio_seconds_one_pass": 1608.2934,
+      "count": 1080,
+      "blocks": 1080,
+      "audio_seconds_one_pass": 3154.797375,
+      "headset_share": 0.487963,
       "strata": "identical in shape to fold A, on disjoint utterances",
-      "estimand": "the whole assembly's pooled 540-row CI90 and every scenario's own 30-row point estimate against the -1.0 pp harm bound"
+      "supersedes": "SLURP-EVO-FOLD-B-V1, docs/receipts/rosters/slurp-evo-fold-b-v1.json, 540 rows at split identity c7acacef...ca72 -- committed, never contacted, kept as history",
+      "estimand": "the pooled TARGETED CI90 over the admitted scenarios' rows, each admitted scenario's own harms minus saves against the 1-row bound, and the non-admitted scenarios pooled against -1.0 pp (coordinator decision 3 of 2026-09-06)"
     },
-    "SLURP-EVO-EXEMPLARS-V1": {
-      "roster_receipt": "docs/receipts/rosters/slurp-evo-exemplars-v1.json",
-      "split_identity_hash": "ef5c40547aa99780424d907a13e84a991957302b9a4fd90a884921e5e5b13587",
-      "count": 432,
+    "SLURP-EVO-EXEMPLARS-V2": {
+      "roster_receipt": "docs/receipts/rosters/slurp-evo-exemplars-v2.json",
+      "roster_receipt_file_sha256": "0d57df6c711e494af148745db4bd3082719fd2c1d5f7e0a340075887e4fddf05",
+      "split_identity_hash": "cf03c262888716b8c1801d60c87125339f24bed2f07fa35c0f6ab4f1c6ce7236",
+      "count": 430,
       "role": "the proposer's exemplar pool and the ONLY roster whose gold the construction-proposer-text arm may read. Text-only: it appears in NO cell of this fragment and needs no media artifact.",
-      "note": "24 entity-bearing utterances per scenario against M = 8, so the three per-round draws differ in membership as well as order -- unlike EVO-A1, where twelve tools have a pool of exactly M."
+      "note": "24 entity-bearing utterances per scenario against M = 8 in seventeen of eighteen scenarios, so the three per-round draws differ in membership as well as order -- unlike EVO-A1, where twelve tools have a pool of exactly M. audio is capped at 22 by capacity: the folds are drawn first and keep their full 60 per scenario, and only 22 entity-bearing utterances remain in audio afterwards. 22 is still 2.75 x M and above the floor of 16; the cap is recorded in the roster receipt's exemplar_quota_policy block."
     },
-    "disjointness": "0 recordings and 0 utterances shared between any two of the three rosters; 0 shared with the committed devel enumeration (8,690 ids) and 0 with the test enumeration (13,078 ids); 0 shared with any of the 739 TRAIN utterances this study has already touched; exactly one recording per utterance in every roster. Recomputed from the receipts and fail-closed before they were written (SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V1)."
+    "disjointness": "0 recordings and 0 utterances shared between any two of the three rosters; 0 shared with the committed devel enumeration (8,690 ids) and 0 with the test enumeration (13,078 ids); 0 shared with any of the 739 TRAIN utterances this study has already touched; exactly one recording per utterance in every roster. All 21 counts recomputed from the receipts and fail-closed before they were written (SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V2)."
   },
   "comparators": {
     "within_round": "the incumbent A_r, re-flown on the same fold in the same round, because greedy decoding is not bitwise reproducible across batch shapes on this runtime",
@@ -103,84 +110,84 @@
   "cells": [
     {
       "cell_id": "EVO-S1-r1-foldA-incumbent",
-      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V1",
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
       "attempt_id": "attempt-r1-i",
       "arm": "speech-feature-query",
       "factor": "the incumbent state A_0 (the committed per-intent slot schema), re-flown so this round's pairing is against its own sealed rows",
-      "baseline_fragment": "PENDING -- A_0's own fold-A fragment, a copy of slurp-phase-slots-given-intent-schema-v1 bound to fold A's sealed intent manifest",
+      "baseline_fragment": "PENDING -- A_0's own fold-A fragment, a copy of slurp-phase-slots-given-intent-schema-v1 bound to fold A V2's sealed intent manifest",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
-      "dataset_fragment": "slurp-speech-native-evo-fold-a-540"
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080"
     },
     {
       "cell_id": "EVO-S1-r1-foldA-c1",
-      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V1",
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
       "attempt_id": "attempt-r1-c1",
       "arm": "speech-feature-query",
       "factor": "portfolio k=1: family 'proposer', candidate k=1 of every one of the eighteen scenarios merged into one schema state",
       "baseline_fragment": "PENDING -- configs/baseline/slurp-evo-s1/evolved-schema-<sha16>.json",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
-      "dataset_fragment": "slurp-speech-native-evo-fold-a-540"
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080"
     },
     {
       "cell_id": "EVO-S1-r1-foldA-c2",
-      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V1",
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
       "attempt_id": "attempt-r1-c2",
       "arm": "speech-feature-query",
       "factor": "portfolio k=2: family 'proposer', a different seeded ordered exemplar draw",
       "baseline_fragment": "PENDING",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
-      "dataset_fragment": "slurp-speech-native-evo-fold-a-540"
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080"
     },
     {
       "cell_id": "EVO-S1-r1-foldA-c3",
-      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V1",
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
       "attempt_id": "attempt-r1-c3",
       "arm": "speech-feature-query",
       "factor": "portfolio k=3: family 'proposer', a third seeded ordered exemplar draw",
       "baseline_fragment": "PENDING",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
-      "dataset_fragment": "slurp-speech-native-evo-fold-a-540"
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080"
     },
     {
       "cell_id": "EVO-S1-r1-foldA-c4",
-      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V1",
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
       "attempt_id": "attempt-r1-c4",
       "arm": "speech-feature-query",
       "factor": "portfolio k=4: the SHARES-ONLY control (family 'deterministic'), the incumbent blocks with every filler list deleted and types, order and shares untouched. Zero model contacts build it, so a round whose proposer does not beat it has learned nothing about fillers -- and the KC-S1b verdict attributes the whole +8.55 to the fillers",
       "baseline_fragment": "PENDING",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
-      "dataset_fragment": "slurp-speech-native-evo-fold-a-540"
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080"
     },
     {
       "cell_id": "EVO-S1-r1-foldA-c5",
-      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V1",
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
       "attempt_id": "attempt-r1-c5",
       "arm": "speech-feature-query",
       "factor": "portfolio k=5: the TOKEN-MATCHED FORM TWIN (family 'placebo'), round 1 only -- every filler replaced by a neutral placeholder at equal token count under the flight tokenizer, which is what separates filler content from prompt volume. Zero model contacts build it",
       "baseline_fragment": "PENDING",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
-      "dataset_fragment": "slurp-speech-native-evo-fold-a-540"
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080"
     },
     {
       "cell_id": "EVO-S1-r1-foldB-incumbent",
-      "run_id": "SAEA-SLURP-EVO-S1-FOLD-B-V1",
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-B-V2",
       "attempt_id": "attempt-r1-i",
       "arm": "speech-feature-query",
       "factor": "the incumbent on fold B, the confirmation's comparator",
       "baseline_fragment": "PENDING",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
-      "dataset_fragment": "slurp-speech-native-evo-fold-b-540",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "flies_only_if": "stage one admitted at least one scenario"
     },
     {
       "cell_id": "EVO-S1-r1-foldB-assembly",
-      "run_id": "SAEA-SLURP-EVO-S1-FOLD-B-V1",
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-B-V2",
       "attempt_id": "attempt-r1-a",
       "arm": "speech-feature-query",
       "factor": "the assembled winners of every admitted scenario, confirmed as a WHOLE and never partially",
       "baseline_fragment": "PENDING",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
-      "dataset_fragment": "slurp-speech-native-evo-fold-b-540",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "flies_only_if": "stage one admitted at least one scenario"
     }
   ],
@@ -203,15 +210,15 @@
   "execution_plan": {
     "execution_profile": "baseline-reproduction",
     "split_role": "discovery",
-    "planned_model_calls": 3240,
-    "planned_gpu_hours": 0.8,
-    "planned_speech_audio_seconds": 9258
+    "planned_model_calls": 6480,
+    "planned_gpu_hours": 1.4,
+    "planned_speech_audio_seconds": 18508
   },
   "execution_plan_basis": {
-    "planned_model_calls": "ROUND 1, FOLD A: 6 arms (the incumbent plus K_1 = 5 portfolios) x 540 rows = 3,240. Budgets are cumulative across every attempt of a run id, so the registered ceiling for SAEA-SLURP-EVO-S1-FOLD-A-V1 is R_max x this = 12,960. Fold B is 2 arms x 540 = 1,080 per round, ceiling 4,320 on its own run id.",
-    "planned_speech_audio_seconds": "6 x fold A's own pass duration; the fold-A ceiling is R_max x that.",
-    "planned_gpu_hours": "3,240 calls x 0.75 s per call = 0.68 h; 0.8 planned. 0.75 s per call is what KC-S1b measured at -np 4 (1,000 contacts in 735.9 s).",
-    "whole_cell": "17,956 contacts (read Option B) or 19,456 (Option A) across five or six run ids; about 4.9 to 5.2 GPU-h. That is roughly twice the program's own estimate for this cell ('about 10,000, under 1.0'), which was written before the fold size was fixed at 540. Section 10 of the preregistration carries the table and section 16 the remedies.",
+    "planned_model_calls": "ROUND 1, FOLD A: 6 arms (the incumbent plus K_1 = 5 portfolios) x 1,080 rows = 6,480. Budgets are cumulative across every attempt of a run id, so the registered ceiling for SAEA-SLURP-EVO-S1-FOLD-A-V2 is R_max x this = 25,920. Fold B is 2 arms x 1,080 = 2,160 per round, ceiling 8,640 on its own run id.",
+    "planned_speech_audio_seconds": "6 x fold A's own pass duration of 3,084.528438 s = 18,507.17; the fold-A ceiling is R_max x that = 74,028.7.",
+    "planned_gpu_hours": "6,480 calls x 0.7359 s per call = 1.32 h; 1.4 planned. 0.7359 s per call is the REALIZED rate of the KC-S1b flight at -np 4, from its own receipt: 1,000 contacts in 735.9065 s wall (attempt-20260906T025102Z-af6b04, flight-receipt-kc-s1b.json, stages.run_phases). The coordinator's 2026-09-06 note cites 1,008 contacts in 0.08 GPU-h (0.2857 s per contact); that figure does not reconcile with any committed receipt and the receipt-backed rate is used here. See preregistration section 10.",
+    "whole_cell": "34,696 contacts across five run ids at the V2 fold size, read Option B (coordinator decision 2): 22,680 fold A + 8,640 fold B + 2,160 one-time intent + 216 proposer + 1,000 final DEV-1000 read. About 8.25 GPU-h at the receipt-backed 0.7359 s per speech contact (3.94 h at the rate the coordinator cited). The program's own estimate for this cell ('about 10,000, under 1.0') is SUPERSEDED. Section 10 of the preregistration carries the table.",
     "paid_api_spend": 0,
     "ceilings_live_in_the_exposure_row": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are each exposure-ledger row's calls / speech audio seconds / gpu hours cells, and the budget is cumulative across every attempt of a run id."
   },
@@ -224,8 +231,8 @@
     "scored_complete_manifests": 1,
     "whole_manifest_jobs_only": true,
     "dataset_sharding": false,
-    "stage_one": "rails.evolution.select_per_target on fold A, per scenario, gates saves >= 4 / harms <= 1 / net >= 3 on that scenario's own 30 rows, winner = largest net then fewer harms then fewer artifact bytes then lowest k. A COUNT rule: at 30 rows an interval says nothing. SEE preregistration section 16 open point 1 -- at 30 rows this gate is thin and the arithmetic is stated before takeoff",
-    "stage_two": "rails.evolution.confirm_assembly on fold B, with the background bound REPLACED by a per-scenario harm bound (no background population exists when every scenario is a target): the pooled 540-row CI90 lower bound strictly above 0 AND no scenario's own 30-row point estimate below -1.0 pp. Accepted as a whole, never partially",
+    "stage_one": "rails.evolution.select_per_target on fold A, per scenario, gates saves >= 4 / harms <= 1 / net >= 3 on that scenario's own 60 rows, winner = largest net then fewer harms then fewer artifact bytes then lowest k. A COUNT rule: at 60 rows an interval is still uninformative on a sparse metric, and a reviewer can recount the gate by hand. The V2 draw IS the answer to preregistration section 16 open point 1: scaling KC-S1b's measured per-stratum saves to 60 rows clears the gate in nine of eighteen scenarios against three of eighteen at 30",
+    "stage_two": "rails.evolution.confirm_assembly on fold B, with the background bound REPLACED by the per-scenario harm bound of coordinator decision 3 (2026-09-06): the pooled TARGETED CI90 lower bound strictly above 0, every ADMITTED scenario at harms minus saves <= 1 row on its own 60 fold-B rows, and the NON-ADMITTED scenarios pooled at no worse than -1.0 pp. Accepted as a whole, never partially",
     "intervals": "analysis.paired.paired_contrast, 10,000 replicates stratified by scenario, seed 20260903, CI90, exact sign test",
     "per_round_receipt": "rails.evolution.write_round_receipt under docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-s1/; replay_selection must reproduce every stage-one decision from the sealed per-sample score files alone",
     "mandatory_slices": [
