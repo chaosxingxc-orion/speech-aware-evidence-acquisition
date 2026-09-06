@@ -1,0 +1,10 @@
+{
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-EVO-FOLD-PACKETS-V2",
+  "feature_root": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+  "fold": "SLURP-EVO-FOLD-B-V2",
+  "legacy_cache_dir": "/home/chao/feat-cache/slurp-q4km",
+  "preregistration": "docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md",
+  "promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLD-B-V2-promotion.json",
+  "purpose": "Section 13 item 3 of docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md, exposure row SAEA-SLURP-EVO-FOLD-PACKETS-V2: materialize the featcache encoder packets for SLURP-EVO-FOLD-B-V2 (1,080 rows, 3,154.797375 s), one of the two preprocess sessions this row authorizes. The scope was MEASURED, not assumed: SAEA-SN-MF-SLURP-EVO-FOLD-SUPPLEMENTS-V2 recorded 0 of 2,160 fold rows carrying a packet in slurp-q4km-packets, in slurp-q4km-packets-04ccc72a and in slurp-q4km-packets-x108-04ccc72a, because every already-touched TRAIN utterance was excluded before the V2 draw, so the whole fragment is the scope and there is no set difference to cut. Label-free: the CPU-only sidecar (-ngl 0 --no-mmproj-offload, decoder AND bf16 mmproj, runtime-q4km-preprocess.json) is driven with one contact per row at max_tokens 1 under a fixed minimal instruction; the legacy feature-cache key is the FNV-1a hash of the media bytes ALONE, so the prompt cannot affect the cached features and no response is read semantically. No gold, no sentence, no transcript, no scenario, no action, no intent, no entity and no score is opened by this pass. Keep the GPU inference port free: the sidecar serves on 8081. Promotion into /home/chao/feat-cache/slurp-q4km-packets-04ccc72a happens only after a verified normal sidecar stop, and SAEA-SN-DEV1000-PREPROCESS (2026-08-24) is the precedent copied."
+}
