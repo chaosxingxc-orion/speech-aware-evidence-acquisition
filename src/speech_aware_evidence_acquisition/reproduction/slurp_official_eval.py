@@ -68,8 +68,36 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
 
-from ..data.slurp import SlurpRecord, load_slurp_split
-from .slurp_scoring import SLURP_SCORER_VERSION, SlotEntity, SluScore, parse_slu_response, score_slu
+from ..data.slurp import (
+    SlurpRecord,
+    load_slurp_intent_slot_schema,
+    load_slurp_ontology,
+    load_slurp_split,
+)
+from .slurp_scoring import (
+    PROJECTION_BRANCHES,
+    SLURP_LABEL_PROJECTION_ID,
+    SLURP_LABEL_PROJECTION_V2_ID,
+    SLURP_SCORER_VERSION,
+    LegalIntentInventory,
+    SlotEntity,
+    SluScore,
+    legal_intent_inventory,
+    parse_slu_response,
+    project_slu_label,
+    project_slu_label_v2,
+    score_slu,
+)
+
+#: ``projection_version -> (rule identity, the pure rule function)``. The two
+#: rules are SIBLINGS, not a revision chain: v1 stays registered and resolvable
+#: after v2 exists, so a verdict can pair against either. One table, so a new
+#: rule cannot acquire a second code path through the parse and the official
+#: subprocess.
+_PROJECTION_RULES = {
+    "v1": (SLURP_LABEL_PROJECTION_ID, project_slu_label),
+    "v2": (SLURP_LABEL_PROJECTION_V2_ID, project_slu_label_v2),
+}
 
 # Pinned upstream commit (module docstring): the SAME commit
 # ``reproduction.slurp_scoring``'s own docstring already names.
@@ -510,6 +538,29 @@ def _aggregate_slu_score(scores: Sequence[SluScore]) -> SluScore:
 _IDENTITY_TOLERANCE = 1e-6
 
 
+def load_legal_intent_inventory(
+    lock: Mapping[str, object], root: Path
+) -> LegalIntentInventory:
+    """The closed label space and the TRAIN prior the legal-label projection
+    (:func:`reproduction.slurp_scoring.project_slu_label`) may emit into.
+
+    Both halves are mined from ``train.jsonl`` and nothing else: the pairing
+    from :func:`data.slurp.load_slurp_ontology` (``include_synthetic=False``,
+    the same TRAIN-only inventory the locked closed-list baseline's own prompt
+    suffix renders) and the prior from
+    :func:`data.slurp.load_slurp_intent_slot_schema`, whose per-intent ``n`` is
+    "TRAIN utterances with this intent". TRAIN is construction data; no devel
+    or test label reaches the rule.
+    """
+
+    ontology = load_slurp_ontology(lock, root)
+    schema = load_slurp_intent_slot_schema(lock, root)
+    return legal_intent_inventory(
+        ontology.actions_by_scenario,
+        {intent: profile.n for intent, profile in schema.intents.items()},
+    )
+
+
 def score_slurp_outputs_official(
     outputs_path: Path,
     lock: Mapping[str, object],
@@ -517,6 +568,8 @@ def score_slurp_outputs_official(
     *,
     split_id: str = "devel",
     allow_heldout: bool = False,
+    project_labels: bool = False,
+    projection_version: str = "v1",
 ) -> dict[str, object]:
     """Score one run's outputs JSONL both ways: the per-sample port
     (``reproduction.slurp_scoring.score_slu``) and the REAL official
@@ -536,6 +589,31 @@ def score_slurp_outputs_official(
     explicitly. ``load_slurp_split`` enforces the ``split_id="test"`` case a
     second time on its own -- deliberate defense in depth, not redundancy
     this function relies on alone.
+
+    LEGAL-LABEL PROJECTION (``project_labels``, default ``False`` -- the
+    unprojected path is byte-for-byte what it always was, and loads no TRAIN
+    inventory at all). When ``True``, every parsed prediction naming a
+    ``(scenario, action)`` pair OUTSIDE the 60 TRAIN intents is first mapped
+    onto the nearest legal one by
+    :func:`reproduction.slurp_scoring.project_slu_label`, and the official
+    ``evaluate.py`` then scores THAT label, unchanged. The parse itself
+    (:func:`reproduction.slurp_scoring.parse_slu_response`) is untouched: the
+    projection runs strictly between the parse and the official prediction
+    file, so an unparsed response stays unparsed and entities are never
+    rewritten. The aggregate carries a ``projection`` block (rule id,
+    eligible / changed / unchanged counts, per-branch counts, and the full
+    ``from -> to`` map, itself split by branch) and every per-sample row
+    carries ``projected`` / ``projected_from`` / ``projected_to`` /
+    ``projected_branch``, so a receipt can inspect every changed label and
+    count which branch carried it.
+
+    ``projection_version`` selects WHICH rule projects (``_PROJECTION_RULES``)
+    and is meaningful only when ``project_labels=True``: ``"v1"``
+    (:func:`reproduction.slurp_scoring.project_slu_label`, nearest legal label
+    by edit distance) or ``"v2"``
+    (:func:`reproduction.slurp_scoring.project_slu_label_v2`, promote an
+    action-named scenario to its owning scenario, else v1). An unknown version
+    fails closed rather than silently scoring under the default rule.
     """
 
     try:
@@ -579,6 +657,22 @@ def score_slurp_outputs_official(
     gold_records = load_slurp_split(lock, root, split_id, allow_heldout=allow_heldout)
     gold_by_id = {record.sample_id: record for record in gold_records}
 
+    # Built ONLY when the projection is requested: the unprojected path must
+    # not acquire a TRAIN-corpus read it never had.
+    if project_labels and projection_version not in _PROJECTION_RULES:
+        raise SlurpOfficialEvalError(
+            f"unknown projection_version {projection_version!r}; "
+            f"registered rules are {sorted(_PROJECTION_RULES)}"
+        )
+    projection_id, project = _PROJECTION_RULES[
+        projection_version if project_labels else "v1"
+    ]
+    inventory = load_legal_intent_inventory(lock, root) if project_labels else None
+    projection_counts = {"eligible": 0, "changed": 0, "unchanged": 0, "ineligible": 0}
+    branch_counts = {branch: 0 for branch in PROJECTION_BRANCHES}
+    projection_map: dict[str, int] = {}
+    branch_map: dict[str, dict[str, int]] = {}
+
     per_sample: list[dict[str, object]] = []
     predictions: list[PredictedSlurpSample] = []
     gold_selected: list[SlurpRecord] = []
@@ -595,6 +689,30 @@ def score_slurp_outputs_official(
         if not isinstance(model_text, str):
             raise SlurpOfficialEvalError(f"outputs row for {sample_id!r} lacks a text field")
         pred_scenario, pred_action, pred_entities, parsed = parse_slu_response(model_text)
+        projected = False
+        projected_from: str | None = None
+        projected_to: str | None = None
+        projected_branch: str | None = None
+        if inventory is not None:
+            outcome = project(pred_scenario, pred_action, inventory, parsed=parsed)
+            projected_branch = outcome.branch
+            branch_counts[outcome.branch] = branch_counts.get(outcome.branch, 0) + 1
+            if not outcome.eligible:
+                projection_counts["ineligible"] += 1
+            elif outcome.changed:
+                projection_counts["eligible"] += 1
+                projection_counts["changed"] += 1
+                projected = True
+                projected_from = outcome.source_intent
+                projected_to = outcome.projected_intent
+                key = f"{projected_from} -> {projected_to}"
+                projection_map[key] = projection_map.get(key, 0) + 1
+                per_branch = branch_map.setdefault(outcome.branch, {})
+                per_branch[key] = per_branch.get(key, 0) + 1
+            else:
+                projection_counts["eligible"] += 1
+                projection_counts["unchanged"] += 1
+            pred_scenario, pred_action = outcome.scenario, outcome.action
         predictions.append(
             PredictedSlurpSample(
                 sample_id=sample_id,
@@ -616,6 +734,11 @@ def score_slurp_outputs_official(
         entry = sample_score.as_metrics_dict()
         entry["sample_id"] = sample_id
         entry["parsed"] = parsed
+        if inventory is not None:
+            entry["projected"] = projected
+            entry["projected_from"] = projected_from
+            entry["projected_to"] = projected_to
+            entry["projected_branch"] = projected_branch
         per_sample.append(entry)
 
     aggregate_score = _aggregate_slu_score(sample_scores)
@@ -672,8 +795,91 @@ def score_slurp_outputs_official(
         "evaluator_commit": SLURP_OFFICIAL_COMMIT,
         "official_python": official.command[0],
         "official_environment_receipt": SLURP_OFFICIAL_ENV_RECEIPT,
+        "projection": (
+            {
+                "applied": False,
+                "projection_id": None,
+            }
+            if inventory is None
+            else {
+                "applied": True,
+                "projection_id": projection_id,
+                "projection_version": projection_version,
+                "legal_intents": len(inventory.pairs),
+                "legal_scenarios": len(inventory.scenarios),
+                "counts": dict(projection_counts),
+                "branch_counts": dict(branch_counts),
+                "map": dict(sorted(projection_map.items())),
+                "map_by_branch": {
+                    branch: dict(sorted(entries.items()))
+                    for branch, entries in sorted(branch_map.items())
+                },
+            }
+        ),
     }
     return {"per_sample": per_sample, "aggregate": aggregate}
+
+
+def score_slurp_outputs_official_projected(
+    outputs_path: Path,
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    split_id: str = "devel",
+    allow_heldout: bool = False,
+) -> dict[str, object]:
+    """:func:`score_slurp_outputs_official` with the legal-label projection
+    ON -- the registered ``"slurp-slu-official-projected"`` /
+    ``"slurp-slu-projected"`` scorers (``core/scorers.py``).
+
+    A thin keyword binding, never a second implementation: the parse, the
+    port, the official ``evaluate.py`` subprocess and the identity check are
+    the exact same code path, so the two scorer families can never drift
+    apart. It exists as a named function rather than a ``functools.partial``
+    only so the uniform ``scorer(outputs_path, lock, root)`` signature stays
+    readable in a traceback.
+    """
+
+    return score_slurp_outputs_official(
+        outputs_path,
+        lock,
+        root,
+        split_id=split_id,
+        allow_heldout=allow_heldout,
+        project_labels=True,
+        projection_version="v1",
+    )
+
+
+def score_slurp_outputs_official_projected_v2(
+    outputs_path: Path,
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    split_id: str = "devel",
+    allow_heldout: bool = False,
+) -> dict[str, object]:
+    """:func:`score_slurp_outputs_official` with the SUCCESSOR legal-label
+    projection on -- the registered ``"slurp-slu-official-projected-v2"`` /
+    ``"slurp-slu-projected-v2"`` scorers (``core/scorers.py``),
+    preregistration
+    ``docs/readiness/2026-09-06-slurp-legal-label-projection-v2-preregistration.md``.
+
+    The same thin keyword binding v1's function is, differing from it in one
+    argument: the parse, the port, the official ``evaluate.py`` subprocess and
+    the identity check are the exact same code path, so the three scorer
+    families (unprojected, v1, v2) can never drift apart.
+    """
+
+    return score_slurp_outputs_official(
+        outputs_path,
+        lock,
+        root,
+        split_id=split_id,
+        allow_heldout=allow_heldout,
+        project_labels=True,
+        projection_version="v2",
+    )
 
 
 __all__ = [
@@ -682,9 +888,12 @@ __all__ = [
     "OfficialSluResult",
     "PredictedSlurpSample",
     "SlurpOfficialEvalError",
+    "load_legal_intent_inventory",
     "official_evaluator_python",
     "official_evaluator_root",
     "run_official_evaluate",
     "score_slurp_outputs_official",
+    "score_slurp_outputs_official_projected",
+    "score_slurp_outputs_official_projected_v2",
     "write_official_inputs",
 ]

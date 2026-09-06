@@ -680,10 +680,60 @@ def score_bundle(
 # implementations to keep in sync.
 # ---------------------------------------------------------------------------
 
-from ..reproduction.slurp_official_eval import score_slurp_outputs_official  # noqa: E402
+from ..reproduction.slurp_official_eval import (  # noqa: E402
+    score_slurp_outputs_official,
+    score_slurp_outputs_official_projected,
+    score_slurp_outputs_official_projected_v2,
+)
 
 SCORERS.register("slurp-slu", score_slurp_outputs_official)
 SCORERS.register("slurp-slu-official", score_slurp_outputs_official)
+
+# ---------------------------------------------------------------------------
+# The same scorer with the LEGAL-LABEL PROJECTION on (owner ruling 2026-09-06:
+# a model-usage local optimization, allowed before any mechanism, zero model
+# contacts; preregistration
+# docs/readiness/2026-09-06-slurp-legal-label-projection-relock-v1-preregistration.md).
+#
+# A predicted (scenario, action) pair outside the 60 TRAIN intents cannot be
+# right -- the gold vocabulary does not contain it -- so it is mapped onto the
+# nearest legal pair BEFORE the official evaluate.py sees it. The parse stays
+# byte-identical, an unparsed response stays unparsed, and entities are never
+# touched, so every entity-side metric is structurally unchanged.
+#
+# Registered under BOTH names for exactly the reason the unprojected pair is:
+# "slurp-slu-projected" mirrors data.carriers' short SLURP spelling and
+# "slurp-slu-official-projected" is the explicit one; both resolve the same
+# function object, which is itself a keyword binding of
+# score_slurp_outputs_official rather than a second implementation. A run
+# manifest that declares one of these names scores through core.scoring_batch
+# over a complete manifest exactly like any other registered scorer.
+# ---------------------------------------------------------------------------
+
+SCORERS.register("slurp-slu-projected", score_slurp_outputs_official_projected)
+SCORERS.register("slurp-slu-official-projected", score_slurp_outputs_official_projected)
+
+# ---------------------------------------------------------------------------
+# The SUCCESSOR rule slurp-legal-label-projection-v2 (preregistration
+# docs/readiness/2026-09-06-slurp-legal-label-projection-v2-preregistration.md).
+#
+# v1 repairs LEGALITY by spelling, which sends `locations` to `lists` because
+# that is what `locations` is spelled like. v2 first asks whether the illegal
+# SCENARIO slot holds a legal ACTION name -- the model answering
+# recommendation_locations as `locations`/`query` -- and if so promotes it back
+# to the scenario that owns it, falling through to v1 unchanged otherwise.
+#
+# v1 stays registered beside it, deliberately: the two rules are SIBLINGS, not
+# a revision chain, so a verdict can pair a cell against either one and v1's
+# own 2026-09-06 lock stays readable from its own scorer id whatever v2's read
+# decides. All four projected ids are keyword bindings of the same
+# score_slurp_outputs_official, never independent implementations.
+# ---------------------------------------------------------------------------
+
+SCORERS.register("slurp-slu-projected-v2", score_slurp_outputs_official_projected_v2)
+SCORERS.register(
+    "slurp-slu-official-projected-v2", score_slurp_outputs_official_projected_v2
+)
 
 
 # ---------------------------------------------------------------------------

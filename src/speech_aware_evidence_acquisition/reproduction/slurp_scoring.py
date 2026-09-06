@@ -61,6 +61,39 @@ from typing import Callable, Mapping, Sequence
 
 SLURP_SCORER_VERSION = "slurp-scorer-v1"
 
+#: Identity of the legal-label projection rule implemented by
+#: :func:`project_slu_label` (preregistration
+#: ``docs/readiness/2026-09-06-slurp-legal-label-projection-relock-v1-preregistration.md``).
+#: Bumped only when the RULE changes (candidate set, distance, tie-break
+#: order, or which rows are eligible); the corpus the inventory and the prior
+#: are mined from is pinned by the umbrella lock instead.
+SLURP_LABEL_PROJECTION_ID = "slurp-legal-label-projection-v1"
+
+#: Identity of the SUCCESSOR rule implemented by :func:`project_slu_label_v2`
+#: (preregistration
+#: ``docs/readiness/2026-09-06-slurp-legal-label-projection-v2-preregistration.md``).
+#: A DIFFERENT rule, not a revision: v1 stays registered and resolvable, so a
+#: verdict can pair against either one. Same bump policy.
+SLURP_LABEL_PROJECTION_V2_ID = "slurp-legal-label-projection-v2"
+
+#: The branch of a projection rule a row took, carried on
+#: :class:`LabelProjection` so a receipt can count branches instead of
+#: inferring them from a ``from -> to`` map.
+PROJECTION_BRANCH_UNPARSED = "unparsed"
+PROJECTION_BRANCH_NO_LABEL = "no-label"
+PROJECTION_BRANCH_ALREADY_LEGAL = "already-legal"
+PROJECTION_BRANCH_PROMOTE = "promote"
+PROJECTION_BRANCH_EDIT_DISTANCE = "edit-distance"
+
+#: Every branch name, in the order a receipt reports them.
+PROJECTION_BRANCHES = (
+    PROJECTION_BRANCH_UNPARSED,
+    PROJECTION_BRANCH_NO_LABEL,
+    PROJECTION_BRANCH_ALREADY_LEGAL,
+    PROJECTION_BRANCH_PROMOTE,
+    PROJECTION_BRANCH_EDIT_DISTANCE,
+)
+
 _FENCE_RE = re.compile(r"```(?:json)?\s*(.*?)```", re.DOTALL)
 
 
@@ -361,10 +394,343 @@ def _as_slu_prediction(payload: object) -> tuple[str | None, str | None, list[Sl
     return scenario, action, entities
 
 
+# ---------------------------------------------------------------------------
+# Legal-label projection (2026-09-06 owner ruling: a model-usage LOCAL
+# OPTIMIZATION, allowed before any mechanism, zero model contacts).
+#
+# The locked closed-list direct baseline still names a (scenario, action) pair
+# that does not occur in ``train`` on 4.20 % of DEV-1000
+# (docs/readiness/2026-09-05-slurp-closed-list-direct-baseline-v1-verdict.md
+# section 4). Such a label is certainly wrong -- the gold vocabulary cannot
+# contain it -- and MF-7 measured that legalising exactly this class is worth
+# about +1.4 pp intent. The projection below maps an illegal pair onto the
+# nearest legal one, deterministically, and NOTHING else: entities are never
+# touched, an unparsed response stays unparsed, and a row that already names a
+# legal pair is returned byte-identical.
+#
+# The rule lives HERE, in the pure per-sample scoring module, and takes its
+# inventory and its prior as arguments: this module deliberately imports no
+# loader (``data.slurp``), so the rule stays a pure function of its inputs and
+# is unit-testable without a corpus. ``reproduction.slurp_official_eval``
+# builds the real inventory from the pinned TRAIN corpus and passes it in.
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class LegalIntentInventory:
+    """The closed ``(scenario, action)`` label space a projection may emit,
+    plus the TRAIN prior that breaks its ties.
+
+    ``actions_by_scenario`` is the SAME pairing
+    ``data.slurp.SlurpOntology.actions_by_scenario`` carries -- 18 scenarios
+    and the 60 pairs observed in ``train`` on the real corpus -- and
+    ``intent_prior`` maps the ``f"{scenario}_{action}"`` spelling
+    ``SlurpRecord.intent`` uses to that intent's TRAIN utterance count.
+
+    Build one through :func:`legal_intent_inventory`, which validates and
+    freezes both mappings; constructing this dataclass directly bypasses
+    those checks.
+    """
+
+    actions_by_scenario: Mapping[str, tuple[str, ...]]
+    intent_prior: Mapping[str, int]
+
+    @property
+    def scenarios(self) -> tuple[str, ...]:
+        return tuple(sorted(self.actions_by_scenario))
+
+    @property
+    def pairs(self) -> frozenset[tuple[str, str]]:
+        return frozenset(
+            (scenario, action)
+            for scenario, actions in self.actions_by_scenario.items()
+            for action in actions
+        )
+
+    def prior(self, scenario: str, action: str) -> int:
+        """This intent's TRAIN utterance count, 0 when TRAIN never carried it
+        (an inventory pair with no prior entry is legal but unweighted -- it
+        loses every tie to a pair TRAIN actually saw, which is the intended
+        ordering, not a defect)."""
+
+        return int(self.intent_prior.get(f"{scenario}_{action}", 0))
+
+    def scenario_prior(self, scenario: str) -> int:
+        """The scenario's total TRAIN utterance mass, summed over its own
+        legal actions."""
+
+        return sum(
+            self.prior(scenario, action)
+            for action in self.actions_by_scenario.get(scenario, ())
+        )
+
+    def owners_of(self, action: str) -> tuple[str, ...]:
+        """Every legal scenario whose action list carries ``action``,
+        alphabetically; empty when ``action`` is not a legal action name
+        anywhere in the inventory.
+
+        This is the whole extra structure ``slurp-legal-label-projection-v2``
+        needs (:func:`project_slu_label_v2`): it is derived from the SAME 60
+        pairs the v1 rule already reads, never from a second source.
+        """
+
+        return tuple(
+            scenario
+            for scenario in self.scenarios
+            if action in self.actions_by_scenario[scenario]
+        )
+
+
+def legal_intent_inventory(
+    actions_by_scenario: Mapping[str, Sequence[str]],
+    intent_prior: Mapping[str, int] | None = None,
+) -> LegalIntentInventory:
+    """Validate and freeze a :class:`LegalIntentInventory`.
+
+    Fails closed on an empty pairing, on a scenario with no actions, and on a
+    non-text label: a projection whose target space is empty or malformed
+    would silently emit garbage into a scored prediction file, which is
+    exactly what this module exists to prevent.
+    """
+
+    if not actions_by_scenario:
+        raise ValueError(
+            "legal_intent_inventory requires a non-empty (scenario -> actions) pairing; "
+            "a projection with no legal target space can only invent labels"
+        )
+    frozen: dict[str, tuple[str, ...]] = {}
+    for scenario, actions in actions_by_scenario.items():
+        if not isinstance(scenario, str) or not scenario:
+            raise ValueError(f"legal inventory scenario must be non-empty text, got {scenario!r}")
+        if isinstance(actions, (str, bytes)) or not actions:
+            raise ValueError(
+                f"legal inventory scenario {scenario!r} must carry a non-empty action sequence"
+            )
+        for action in actions:
+            if not isinstance(action, str) or not action:
+                raise ValueError(
+                    f"legal inventory scenario {scenario!r} carries a non-text action {action!r}"
+                )
+        frozen[scenario] = tuple(sorted(set(actions)))
+    prior: dict[str, int] = {}
+    for intent, count in (intent_prior or {}).items():
+        if not isinstance(intent, str) or not intent:
+            raise ValueError(f"TRAIN prior key must be non-empty text, got {intent!r}")
+        if isinstance(count, bool) or not isinstance(count, int) or count < 0:
+            raise ValueError(
+                f"TRAIN prior for {intent!r} must be a non-negative int, got {count!r}"
+            )
+        prior[intent] = count
+    return LegalIntentInventory(
+        actions_by_scenario=dict(sorted(frozen.items())),
+        intent_prior=dict(sorted(prior.items())),
+    )
+
+
+@dataclass(frozen=True)
+class LabelProjection:
+    """One row's projection outcome. ``changed`` is ``True`` only when the
+    emitted pair differs from the parsed one; ``eligible`` says whether the
+    row was a candidate at all (a parsed row naming BOTH a scenario and an
+    action); ``branch`` names the rule branch the row took, one of
+    :data:`PROJECTION_BRANCHES`.
+
+    ``branch`` is descriptive bookkeeping, never an input to a metric: it
+    exists so a receipt can count how many rows each branch of a rule carried
+    instead of reverse-engineering that from a ``from -> to`` map.
+    """
+
+    scenario: str | None
+    action: str | None
+    changed: bool
+    eligible: bool
+    source_scenario: str | None
+    source_action: str | None
+    branch: str = PROJECTION_BRANCH_EDIT_DISTANCE
+
+    @property
+    def source_intent(self) -> str | None:
+        if self.source_scenario is None or self.source_action is None:
+            return None
+        return f"{self.source_scenario}_{self.source_action}"
+
+    @property
+    def projected_intent(self) -> str | None:
+        if self.scenario is None or self.action is None:
+            return None
+        return f"{self.scenario}_{self.action}"
+
+
+def project_slu_label(
+    scenario: str | None,
+    action: str | None,
+    inventory: LegalIntentInventory,
+    *,
+    parsed: bool = True,
+) -> LabelProjection:
+    """Map an illegal ``(scenario, action)`` onto the nearest legal intent.
+
+    The rule, exactly as preregistered
+    (``docs/readiness/2026-09-06-slurp-legal-label-projection-relock-v1-preregistration.md``
+    section 1):
+
+    1. an unparsed response stays unparsed -- no label is invented;
+    2. a row missing either half (the ``{"entities": [...]}`` shape a
+       slot-only arm answers with) is untouched: there is no
+       ``scenario_action`` to project;
+    3. a row already naming one of the legal pairs is untouched;
+    4. otherwise, with ``lev`` the Levenshtein distance the char-distance
+       metric already uses:
+
+       * **the scenario is legal** -- keep it, and choose the action of that
+         scenario minimizing ``(lev(action, candidate), -prior, candidate)``:
+         smallest edit distance, then the LARGER TRAIN prior, then the
+         alphabetically first name;
+       * **the scenario is illegal** -- choose the legal scenario minimizing
+         ``(lev(scenario, candidate), -scenario_prior, candidate)`` under the
+         same three-level key, then its nearest action by the rule above.
+
+    Entities are not an argument and are never touched, so every entity-side
+    metric (entities strict, Word-F1, Char-F1, SLU-F1) is structurally
+    unchanged by this function.
+    """
+
+    if not parsed or scenario is None or action is None:
+        return LabelProjection(
+            scenario=scenario,
+            action=action,
+            changed=False,
+            eligible=False,
+            source_scenario=scenario,
+            source_action=action,
+            branch=(
+                PROJECTION_BRANCH_UNPARSED if not parsed else PROJECTION_BRANCH_NO_LABEL
+            ),
+        )
+    if (scenario, action) in inventory.pairs:
+        return LabelProjection(
+            scenario=scenario,
+            action=action,
+            changed=False,
+            eligible=True,
+            source_scenario=scenario,
+            source_action=action,
+            branch=PROJECTION_BRANCH_ALREADY_LEGAL,
+        )
+    target_scenario = scenario
+    if scenario not in inventory.actions_by_scenario:
+        target_scenario = min(
+            inventory.scenarios,
+            key=lambda candidate: (
+                _levenshtein(scenario, candidate),
+                -inventory.scenario_prior(candidate),
+                candidate,
+            ),
+        )
+    target_action = min(
+        inventory.actions_by_scenario[target_scenario],
+        key=lambda candidate: (
+            _levenshtein(action, candidate),
+            -inventory.prior(target_scenario, candidate),
+            candidate,
+        ),
+    )
+    return LabelProjection(
+        scenario=target_scenario,
+        action=target_action,
+        changed=(target_scenario, target_action) != (scenario, action),
+        eligible=True,
+        source_scenario=scenario,
+        source_action=action,
+        branch=PROJECTION_BRANCH_EDIT_DISTANCE,
+    )
+
+
+def project_slu_label_v2(
+    scenario: str | None,
+    action: str | None,
+    inventory: LegalIntentInventory,
+    *,
+    parsed: bool = True,
+) -> LabelProjection:
+    """``slurp-legal-label-projection-v2``: promote an action-named scenario
+    back to the scenario that owns it, and otherwise fall through to v1.
+
+    The rule, exactly as preregistered
+    (``docs/readiness/2026-09-06-slurp-legal-label-projection-v2-preregistration.md``
+    section 1). Rows 1-3 are v1's and are reached through v1's own code, not a
+    copy of it: an unparsed response stays unparsed, a row missing either half
+    is untouched, a row already naming one of the legal pairs is untouched.
+    For an ILLEGAL pair:
+
+    * **4-PROMOTE** -- if ``scenario`` is NOT a legal scenario but IS a legal
+      ACTION name, emit ``(owner, scenario)``: the model wrote the action in
+      the scenario slot (``locations/query`` for ``recommendation_locations``)
+      and put a generic action beside it, so the action name is the signal and
+      ``action`` is discarded. The owner is chosen by ``(-prior, scenario)`` --
+      the larger TRAIN prior, then alphabetically -- ONE expression whether the
+      action name has a single owner or several, so the two cases cannot drift
+      apart.
+    * **4-FALLBACK** -- otherwise :func:`project_slu_label`, unchanged.
+
+    Why this exists: v1 repairs LEGALITY by spelling, which sends ``locations``
+    to ``lists`` because that is what ``locations`` is spelled like. The
+    label's legality was never the problem; which legal label the repair picks
+    is. v1's own verdict named and priced this class and refused to lock it,
+    because it was found by reading v1's output
+    (``docs/readiness/2026-09-06-slurp-legal-label-projection-relock-v1-verdict.md``
+    section 5).
+
+    Entities are not an argument and are never touched, so every entity-side
+    metric is structurally unchanged, exactly as under v1.
+    """
+
+    base = project_slu_label(scenario, action, inventory, parsed=parsed)
+    if not base.eligible or not base.changed:
+        # Unparsed, label-free or already legal: v1 and v2 agree by
+        # construction, and the branch v1 recorded is the branch v2 took.
+        return base
+    # ``base.eligible and base.changed`` implies both halves are text and the
+    # pair is illegal -- 4-PROMOTE's precondition, checked from the SOURCE
+    # label rather than from v1's chosen target.
+    if scenario is None or scenario in inventory.actions_by_scenario:
+        # A legal scenario slot may well be right; the promotion only repairs
+        # a scenario slot that CANNOT be right.
+        return base
+    owners = inventory.owners_of(scenario)
+    if not owners:
+        return base
+    owner = min(owners, key=lambda candidate: (-inventory.prior(candidate, scenario), candidate))
+    return LabelProjection(
+        scenario=owner,
+        action=scenario,
+        # ``owner`` is a legal scenario and ``scenario`` is not, so the emitted
+        # pair can never equal the parsed one.
+        changed=True,
+        eligible=True,
+        source_scenario=scenario,
+        source_action=action,
+        branch=PROJECTION_BRANCH_PROMOTE,
+    )
+
+
 __all__ = [
+    "PROJECTION_BRANCHES",
+    "PROJECTION_BRANCH_ALREADY_LEGAL",
+    "PROJECTION_BRANCH_EDIT_DISTANCE",
+    "PROJECTION_BRANCH_NO_LABEL",
+    "PROJECTION_BRANCH_PROMOTE",
+    "PROJECTION_BRANCH_UNPARSED",
+    "SLURP_LABEL_PROJECTION_ID",
+    "SLURP_LABEL_PROJECTION_V2_ID",
     "SLURP_SCORER_VERSION",
+    "LabelProjection",
+    "LegalIntentInventory",
     "SlotEntity",
     "SluScore",
+    "legal_intent_inventory",
     "parse_slu_response",
+    "project_slu_label",
+    "project_slu_label_v2",
     "score_slu",
 ]
