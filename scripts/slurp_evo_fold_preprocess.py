@@ -141,9 +141,73 @@ def roster_samples(values: Mapping[str, object], root: Path, workers: int) -> tu
     return tuple(sorted(samples, key=lambda sample: sample.sample_id))
 
 
+def _write_union_receipt(args) -> int:
+    """One promotion receipt over both folds, from the two the sessions wrote.
+
+    Zero contacts, no server, no encoder: a deterministic merge of two committed
+    documents whose parents are recorded by sha256, so a reader can rebuild it or
+    refuse it. It exists because a candidate portfolio has ONE artifact and TWO
+    fold fragment variants copied from ONE base, and a base can name one receipt.
+    """
+
+    root = data_root()
+    parents, packets, seen = [], [], set()
+    for fold in sorted(PLAN_BY_FOLD):
+        values = compose(REPO, MODEL_FRAGMENT, f"slurp-speech-native-evo-fold-{fold}-1080",
+                         BASELINE_FRAGMENT, f"slurp-evo-fold-{fold}-preprocess").values
+        path = Path(str(values["promotion_receipt"]))
+        document = json.loads(path.read_text(encoding="utf-8"))
+        parents.append({"fold": str(values["fold"]), "path": str(path),
+                        "sha256": sha256_file(path), "count": int(document["count"])})
+        for entry in document["packets"]:
+            packet_id = str(entry["packet_id"])
+            if packet_id in seen:
+                raise SystemExit("the two folds share packet %s; they are disjoint by draw" % packet_id)
+            seen.add(packet_id)
+            packets.append(dict(entry))
+        for key in ("feature_root", "legacy_cache_dir", "runtime_receipt_sha256"):
+            if document[key] != json.loads(Path(str(parents[0]["path"])).read_text(encoding="utf-8"))[key]:
+                raise SystemExit("the two promotion receipts disagree on %s" % key)
+    first = json.loads(Path(str(parents[0]["path"])).read_text(encoding="utf-8"))
+    receipt = {
+        "schema": "saea-speech-packet-promotion-receipt-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "count": len(packets),
+        "feature_root": first["feature_root"],
+        "legacy_cache_dir": first["legacy_cache_dir"],
+        "runtime_receipt_sha256": first["runtime_receipt_sha256"],
+        "preprocess_session_id": "union of %s" % ", ".join(p["fold"] for p in parents),
+        "preprocess_session_receipt_sha256": first["preprocess_session_receipt_sha256"],
+        "preprocess_stop_receipt_sha256": first["preprocess_stop_receipt_sha256"],
+        "dataset_runtime_view_sha256": first["dataset_runtime_view_sha256"],
+        "union_of": parents,
+        "union_note": (
+            "MODEL-FREE MERGE, zero contacts. The two per-fold receipts are unchanged and are "
+            "the authority; this document exists only because a candidate portfolio has one "
+            "artifact and two fold fragment variants copied from ONE base fragment, and a base "
+            "fragment names one promotion receipt. Every packet entry is copied verbatim from "
+            "the fold receipt that promoted it, and the two folds are proved disjoint by draw."
+        ),
+        "packets": sorted(packets, key=lambda entry: str(entry["packet_id"])),
+    }
+    out = Path(first["feature_root"]) / "EVO-FOLDS-V2-promotion.json"
+    if out.exists():
+        raise SystemExit("union promotion receipt already exists: %s" % out)
+    with out.open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write(json.dumps(receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
+    summary = {"path": str(out), "sha256": sha256_file(out), "count": len(packets),
+               "parents": parents, "data_root": str(root)}
+    if args.output is not None:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        with args.output.open("w", encoding="utf-8", newline="\n") as handle:
+            handle.write(json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
+    print(json.dumps(summary, indent=2, sort_keys=True))
+    return 0
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--fold", required=True, choices=sorted(PLAN_BY_FOLD))
+    parser.add_argument("--fold", default=None, choices=sorted(PLAN_BY_FOLD))
     parser.add_argument("--workers", type=int, default=4, help="encode concurrency; the sidecar serves -np 4")
     parser.add_argument("--promote-workers", type=int, default=8)
     parser.add_argument("--output", type=Path, default=None)
@@ -155,8 +219,23 @@ def main(argv: Sequence[str] | None = None) -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--preflight-only", action="store_true")
     mode.add_argument("--run", action="store_true")
+    mode.add_argument(
+        "--union-receipt", action="store_true",
+        help=(
+            "MODEL-FREE: merge the two per-fold promotion receipts into one covering all "
+            "2,160 rows. rails.evolution.write_candidate_fragments copies ONE base fragment "
+            "into a fold-a and a fold-b variant, so the base can name only one promotion "
+            "receipt and it has to cover both folds; the per-fold receipts stay exactly as "
+            "the two sessions wrote them and this one records their sha256s as its parents"
+        ),
+    )
     args = parser.parse_args(argv)
 
+    if args.union_receipt:
+        return _write_union_receipt(args)
+
+    if args.fold is None:
+        raise SystemExit("--fold is required for --preflight-only and --run")
     dataset = f"slurp-speech-native-evo-fold-{args.fold}-1080"
     experiment = f"slurp-evo-fold-{args.fold}-preprocess"
     lock, root = load_lock(umbrella_lock_path()), data_root()

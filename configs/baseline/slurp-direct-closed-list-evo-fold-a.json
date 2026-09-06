@@ -8,9 +8,10 @@
   "no_examples_basis": "The added block carries label NAMES only: no example fillers, no exemplars, no retrieved evidence, no knowledge plane. It is the zero-shot direct baseline every mechanism must beat, not a few-shot or evidence-conditioned arm. The example fillers visible in the rendered instruction are the ones the sealed M0 contract already carried; removing them would have changed two things at once and confounded the contrast.",
   "policy": "fixed",
   "scorer_basis": "slurp-slu-official is the paper-facing scorer: the real, unmodified official evaluate.py at pinned commit 8eb16545762be97ace75334109d73824217311f1 in ~/.venvs/slurp-official-eval (used, never modified), --average micro, plus a numeric identity assertion against this study's own per-sample port. slurp-slu is the same registered function object under the name data.carriers gives SLURP's TaskLayout.official_scorer_id, declared so the manifest names the carrier's own scorer id as well. Both are run once over the complete manifest through core.scoring_batch, never sharded. The scorer refuses any row whose sample id names the held-out test split.",
+  "scorer_split_note": "TRAIN GOLD, DECLARED. The registered slurp-slu-official / slurp-slu ids resolve gold from the DEVEL split and refuse a TRAIN prediction outright -- correctly, because a devel read must never silently score against another split's gold. Every EVO-S1 fold row is a construction-role discovery utterance drawn from train.jsonl, so this arm declares the SAME official scorer at the same pinned commit 8eb16545...311f1 pointed at the split its own rows came from. Both ids are thin keyword bindings of reproduction.slurp_official_eval.score_slurp_outputs_official, never a second implementation, and naming them here is what makes the run manifest state which gold it was scored against.",
   "scorers": [
-    "slurp-slu-official",
-    "slurp-slu",
+    "slurp-slu-official-train",
+    "slurp-slu-official-projected-v2-train",
     "cost"
   ],
   "speech_feature_key_representation_id": "saea-slurp-evo-s1-intent-fold-a:direct",

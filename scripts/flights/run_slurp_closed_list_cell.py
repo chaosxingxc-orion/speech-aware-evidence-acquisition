@@ -521,6 +521,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--workers", type=int, default=None)
     parser.add_argument("--max-workers", type=int, default=1)
     parser.add_argument("--sealed-instruction", default=None)
+    parser.add_argument(
+        "--include-per-sample",
+        action="store_true",
+        help=(
+            "forward include_per_sample to core.scoring_batch. The EVOLUTION loop reads "
+            "it: a round's selection rule counts SAVES and HARMS per row against the "
+            "incumbent (rails.evolution.select_per_target), which needs the per-sample "
+            "scores the batch otherwise summarizes away. Off by default, so every "
+            "existing cell's receipt shape is unchanged"
+        ),
+    )
     parser.add_argument("--output", type=Path, default=None)
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--dry-run", action="store_true")
@@ -646,7 +657,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         stages["seal"] = runtime.seal()
         log("sealed: %s" % stages["seal"]["manifest_path"])
-        stages["score"] = runtime.score(max_workers=args.max_workers)
+        stages["score"] = runtime.score(
+            max_workers=args.max_workers, include_per_sample=args.include_per_sample
+        )
         log("scored")
     except BaseException as failure:  # noqa: BLE001 -- re-raised below
         # An attempt that opened and then died must be recorded ABORTED, not

@@ -882,6 +882,71 @@ def score_slurp_outputs_official_projected_v2(
     )
 
 
+def score_slurp_outputs_official_train(
+    outputs_path: Path,
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    allow_heldout: bool = False,
+) -> dict[str, object]:
+    """:func:`score_slurp_outputs_official` against the TRAIN gold -- the
+    registered ``"slurp-slu-official-train"`` / ``"slurp-slu-train"`` scorers.
+
+    The same thin keyword binding the projected siblings are, differing in one
+    argument: ``split_id="train"``. The parse, the port, the official
+    ``evaluate.py`` subprocess at the pinned commit and the identity check are
+    the exact same code path, so no scorer family can drift from another.
+
+    WHY IT EXISTS. Every construction-role roster this study draws -- the
+    EVO-S1 reward folds above all -- is TRAIN, and the default binding resolves
+    gold from ``devel`` and therefore refuses a TRAIN prediction outright
+    ("outputs sample_id ... is not part of SLURP split 'devel'"). That refusal
+    is correct and must stay: a devel read must never silently score against
+    another split's gold. What a TRAIN construction fold needs is the same
+    official scorer pointed at the split its own rows came from, declared in
+    the arm's own ``scorers`` list so a run manifest names which gold it was
+    scored against.
+
+    It changes nothing about a DEVEL cell. ``allow_heldout`` is accepted for
+    signature uniformity and is meaningless here: ``split_id`` is fixed to
+    ``"train"`` and the held-out refusal above keys on the sample ids
+    themselves.
+    """
+
+    return score_slurp_outputs_official(
+        outputs_path, lock, root, split_id="train", allow_heldout=allow_heldout
+    )
+
+
+def score_slurp_outputs_official_projected_v2_train(
+    outputs_path: Path,
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    allow_heldout: bool = False,
+) -> dict[str, object]:
+    """:func:`score_slurp_outputs_official_train` with the SUCCESSOR
+    legal-label projection on -- the registered
+    ``"slurp-slu-official-projected-v2-train"`` scorer.
+
+    The re-lock of 2026-09-06 made ``slurp-legal-label-projection-v2`` the rule
+    every pending SLURP cell reads its LABEL columns through; a TRAIN
+    construction fold reports its own one-contact intent comparator on that
+    same scale, and the entity columns are structurally unchanged by any
+    projection.
+    """
+
+    return score_slurp_outputs_official(
+        outputs_path,
+        lock,
+        root,
+        split_id="train",
+        allow_heldout=allow_heldout,
+        project_labels=True,
+        projection_version="v2",
+    )
+
+
 __all__ = [
     "SLURP_OFFICIAL_COMMIT",
     "SLURP_OFFICIAL_SCORER_VERSION",
@@ -893,6 +958,8 @@ __all__ = [
     "official_evaluator_root",
     "run_official_evaluate",
     "score_slurp_outputs_official",
+    "score_slurp_outputs_official_train",
+    "score_slurp_outputs_official_projected_v2_train",
     "score_slurp_outputs_official_projected",
     "score_slurp_outputs_official_projected_v2",
     "write_official_inputs",

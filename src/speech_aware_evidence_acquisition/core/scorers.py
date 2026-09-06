@@ -698,6 +698,8 @@ from ..reproduction.slurp_official_eval import (  # noqa: E402
     score_slurp_outputs_official,
     score_slurp_outputs_official_projected,
     score_slurp_outputs_official_projected_v2,
+    score_slurp_outputs_official_projected_v2_train,
+    score_slurp_outputs_official_train,
 )
 
 SCORERS.register("slurp-slu", score_slurp_outputs_official)
@@ -747,6 +749,30 @@ SCORERS.register("slurp-slu-official-projected", score_slurp_outputs_official_pr
 SCORERS.register("slurp-slu-projected-v2", score_slurp_outputs_official_projected_v2)
 SCORERS.register(
     "slurp-slu-official-projected-v2", score_slurp_outputs_official_projected_v2
+)
+
+# ---------------------------------------------------------------------------
+# The SAME official scorer against TRAIN gold, for the construction-role
+# rosters every EVO cell rewards on.
+#
+# The default binding resolves gold from ``devel`` and refuses a TRAIN
+# prediction outright -- correctly, because a devel read must never silently
+# score against another split's gold. But an EVO fold IS train: its rows are
+# construction-role discovery utterances drawn from ``train.jsonl``, and
+# scoring them needs the same official ``evaluate.py`` at the same pinned
+# commit pointed at the split those rows came from. Declaring it as its own
+# registered id is what makes a run manifest state WHICH gold it was scored
+# against, instead of a keyword hidden in a call site.
+#
+# Both are keyword bindings of ``score_slurp_outputs_official``, never
+# independent implementations, exactly like the four projected ids above.
+# ---------------------------------------------------------------------------
+
+SCORERS.register("slurp-slu-train", score_slurp_outputs_official_train)
+SCORERS.register("slurp-slu-official-train", score_slurp_outputs_official_train)
+SCORERS.register(
+    "slurp-slu-official-projected-v2-train",
+    score_slurp_outputs_official_projected_v2_train,
 )
 
 

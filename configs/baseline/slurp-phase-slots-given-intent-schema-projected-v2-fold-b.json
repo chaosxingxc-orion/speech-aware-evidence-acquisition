@@ -23,9 +23,9 @@
     }
   },
   "policy": "phase-slots-given-intent-v1",
+  "scorer_split_note": "TRAIN GOLD, DECLARED. The registered slurp-slu-official / slurp-slu ids resolve gold from the DEVEL split and refuse a TRAIN prediction outright -- correctly, because a devel read must never silently score against another split's gold. Every EVO-S1 fold row is a construction-role discovery utterance drawn from train.jsonl, so this arm declares the SAME official scorer at the same pinned commit 8eb16545...311f1 pointed at the split its own rows came from. Both ids are thin keyword bindings of reproduction.slurp_official_eval.score_slurp_outputs_official, never a second implementation, and naming them here is what makes the run manifest state which gold it was scored against.",
   "scorers": [
-    "slurp-slu-official",
-    "slurp-slu",
+    "slurp-slu-official-train",
     "cost"
   ],
   "serving_slot_tokens": 16384,
