@@ -46,6 +46,7 @@ REFERENCE_READING_SCORERS = frozenset(
         # ``reference_entity_mentions``), so all three must trigger the D1
         # reference-identity re-verification in ``_assert_scoring_entry_gate``.
         "conec-entity-wer-official",
+        "numeric-value-accuracy-v1",
     }
 )
 
@@ -953,6 +954,7 @@ SCORERS.register("asr-wer-esb-whisper", score_esb_outputs_whisper)
 # ---------------------------------------------------------------------------
 
 from ..reproduction import conec_entity_scoring as _conec  # noqa: E402
+from ..reproduction import numeric_value_accuracy as _numeric  # noqa: E402
 
 
 def _outputs_rows(outputs_path: Path) -> list[dict[str, object]]:
@@ -1062,3 +1064,42 @@ def score_conec_entity_wer_outputs(
 
 
 SCORERS.register("conec-entity-wer-official", score_conec_entity_wer_outputs)
+
+def score_numeric_value_accuracy_outputs(
+    outputs_path: Path, lock: Mapping[str, object], root: Path
+) -> dict[str, object]:
+    """``numeric-value-accuracy-v1``: the share of the reference's numeric
+    values (numbers, currencies, percentages and the digit-bearing parts of
+    dates, all after the Whisper normalizer) that the hypothesis reproduces
+    exactly, bag-matched per call and pooled over the corpus.
+
+    Needs only a reference layer -- no entity annotation -- so it is scoped to
+    any carrier ``data.references`` can resolve, unlike the two entity scorers.
+    See ``reproduction.numeric_value_accuracy`` for the definition.
+    """
+
+    rows = _outputs_rows(outputs_path)
+    per_sample: list[dict[str, object]] = []
+    for row in rows:
+        carrier_lock_key = row["carrier_lock_key"]
+        sample_id = row["sample_id"]
+        try:
+            raw_tokens = reference_tokens(lock, root, carrier_lock_key, sample_id)
+        except ReferenceError as error:
+            raise ScoringPhaseError(
+                f"cannot resolve references for sample {sample_id!r} "
+                f"(carrier {carrier_lock_key!r}): {error}"
+            ) from error
+        counts = _numeric.numeric_value_counts(
+            _numeric.reference_whisper_words(raw_tokens),
+            _numeric.whisper_words(str(row["text"])),
+        )
+        counts["sample_id"] = sample_id
+        per_sample.append(counts)
+    return {
+        "per_sample": per_sample,
+        "aggregate": _numeric.merge_numeric_counts(per_sample),
+    }
+
+
+SCORERS.register("numeric-value-accuracy-v1", score_numeric_value_accuracy_outputs)
