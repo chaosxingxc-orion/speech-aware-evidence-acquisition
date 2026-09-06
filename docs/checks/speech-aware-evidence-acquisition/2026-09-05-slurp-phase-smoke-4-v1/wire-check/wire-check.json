@@ -1,0 +1,190 @@
+{
+  "boundary": "zero model contacts: the only fakes are the gate and the transport (core.flight.runtime.WireCheckGate / WireCheckTransport, which never opens a socket). Any score below is computed over the transport's canned response and is not a measurement of anything.",
+  "cells": [
+    {
+      "arm": "speech-feature-query",
+      "attempt_aborted": true,
+      "attempt_id": "attempt-wire-check-1788656920812",
+      "cell_id": "phase-direct-only-smoke",
+      "config_hash": "99e53c8ed2e01209a8345e0189fb9712fd7cebab8da173dfff71f7e1f9800c18",
+      "contact_count": 4,
+      "contacts_per_sample": 1,
+      "cost": {
+        "audio_seconds_used": 15.011,
+        "calls_used": 4,
+        "completion_tokens_total": 4,
+        "latency_seconds_total": 0.00018685497343540192,
+        "prompt_tokens_total": 4,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "dispatch": {
+        "barrier": "whole-roster per phase (rails.phase_runner.run_program)",
+        "contacts_per_sample": 1,
+        "dispatch": "phase-program",
+        "material_source": "baseline fragment phase_material (rails.phase_material)",
+        "phase_names": [
+          "direct"
+        ],
+        "program_id": "phase-direct-only-v1"
+      },
+      "flight_run_id": "SAEA-SLURP-PHASE-SMOKE-4-V1",
+      "gate": "core.flight.runtime.WireCheckGate (authorizes nothing real)",
+      "id_slot": 0,
+      "model_contacts": 0,
+      "native_tools_arm": false,
+      "payload_keys": [
+        "audio_seconds",
+        "carrier_lock_key",
+        "decoding_params",
+        "evidence_provenance",
+        "history",
+        "key_representation_id",
+        "matcher_policy_id",
+        "media_relpath",
+        "mmproj_loaded",
+        "query_source",
+        "request_id",
+        "sample_id",
+        "sample_rate_hz",
+        "speech_feature_parts",
+        "speech_packet_sha256",
+        "speech_ref",
+        "supplied_evidence",
+        "task_instruction"
+      ],
+      "payload_keys_equal_arm_visible_fields": true,
+      "payload_to_wire_tools_mapping": "payload tool_schemas -> request body 'tools' is core.model.transport.LlamaServerTransport's own step, covered by tests/unit/test_native_tools_arm.py's transport section; this check asserts at the transport seam, where the payload is what crosses",
+      "phase_material": {
+        "phases": [
+          {
+            "instruction_chars": 262,
+            "instruction_sha256": "d02f194c3c8a8375a15c28f7ca874f30bd2ad34d60e8ff9cdbc654572ebf9d50",
+            "response_format_sha256": null,
+            "spec": {
+              "fill_params": {},
+              "instruction_fill": null,
+              "instruction_template": "probes/slurp_phase_direct.txt",
+              "phase": "direct",
+              "predecessor_binding": "none",
+              "predecessor_source": null,
+              "purpose": "direct-decode",
+              "response_format_id": null
+            }
+          }
+        ],
+        "schema": "saea-phase-material-v1"
+      },
+      "phases": [
+        {
+          "contacts": 4,
+          "phase": "phase-direct-only-v1:direct",
+          "rows": 4
+        }
+      ],
+      "policy": "phase-direct-only-v1",
+      "policy_kind": "phase-program",
+      "protocol_hash": "e295c1fb44c8f3646bd92ecf80fdedb6146c9d06c7d34a46ae102d86e2a24136",
+      "request_body_sha256": [
+        "340b83be371a45acf481ba386528c56a2088284debc92a44cb8b50a74769ed44",
+        "c8d4c9cebd22daf22430a7c2218e05f04763316dcf7b315d927708b61f671ebe",
+        "da1b624ac1a4a4dc82c571fd4ab763b24098d26817cc9be19a219ce91f6be1ca",
+        "4b181db252309d75ea12e514a67051869daf3386f8a7b3719561b847e3a00b27"
+      ],
+      "response_arrival": {
+        "basis": "rails.core_client.RequestTiming.native_tool_calls, set from core.model.CoreResponse.tool_calls; None means the response envelope carried no tool_calls key at all, i.e. the model answered as text",
+        "native_tool_calls_total": 0,
+        "rows_answered_as_text": 4,
+        "rows_total": 4,
+        "rows_with_native_tool_calls": 0
+      },
+      "sample_count": 4,
+      "schema": "saea-flight-wire-check-v1",
+      "seal_and_score": {
+        "ledger_surface_validated": true,
+        "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/WIRECHECK-SAEA-SLURP-PHASE-SMOKE-4-V1-1788656920812/attempt-wire-check-1788656920812/WIRECHECK-SAEA-SLURP-PHASE-SMOKE-4-V1-1788656920812.run-manifest.json",
+        "manifest_sha256": "7994b3f8b3e3383e389965405b3150cd6a375480dbabc6e896ff60d9b1b515f3",
+        "numbers_are_meaningless": "these scores are computed over WireCheckTransport's canned response, not over any model output; they prove the scoring link runs and nothing else",
+        "outputs_row_count": 4,
+        "score_result": {
+          "aggregation_rule": "no dataset sharding and no averaging of shard-level official metrics",
+          "effective_max_workers": 1,
+          "elapsed_seconds": 75.48316498400527,
+          "failed": 0,
+          "job_count": 1,
+          "jobs": [
+            {
+              "elapsed_seconds": 75.459632632992,
+              "error": null,
+              "index": 0,
+              "job_id": "attempt-wire-check-1788656920812",
+              "ledger_cells": null,
+              "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/WIRECHECK-SAEA-SLURP-PHASE-SMOKE-4-V1-1788656920812/attempt-wire-check-1788656920812/WIRECHECK-SAEA-SLURP-PHASE-SMOKE-4-V1-1788656920812.run-manifest.json",
+              "operation": "score",
+              "result_file": "attempt-wire-check-1788656920812.score.json",
+              "result_sha256": "fbe6aa7652db2abb84f6e7a8cdf6a0a40980ed809206fe7e900b38d4113fc218",
+              "returncode": 0,
+              "status": "succeeded",
+              "stderr_log": "attempt-wire-check-1788656920812.stderr.log",
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_log": null
+            }
+          ],
+          "operation": "score",
+          "parallelism_boundary": "one-complete-verified-manifest-per-process",
+          "requested_max_workers": 1,
+          "schema": "saea-parallel-score-batch-v1",
+          "succeeded": 1
+        },
+        "scorers": [
+          "slurp-slu-official",
+          "slurp-slu",
+          "cost"
+        ],
+        "status": "OK",
+        "verified_attempt_state": "OPENED"
+      },
+      "speech_packets_verified": {
+        "slurp:devel:000011:audio-1497266596": "941bc845a89289f24804f4b6eb5ee5faa3610330b10dcce4f0f3b09e00e1a70c",
+        "slurp:devel:000053:audio-1498758443": "754cd2d6c61af416739772cd526cbad71185b53f24476f2aeb205ec2322ade58",
+        "slurp:devel:000058:audio-1488637952": "5263292c33f339368f2a6d22a1de316c1b3fcfd57b32c1f0411c18b6fdf5e586",
+        "slurp:devel:000068:audio-1488550098": "bdf7e46b17917151e77c07d6c0cf34566305834ba138bcf68bc93eac9092410f"
+      },
+      "split_id": "DEV-1000-PHASE-SMOKE-4",
+      "split_identity_hash": "e335c74149794af0f2301954b6e92cde2a4134d65ebe6069173a1a556b7a04b3",
+      "tool_schemas_count": 0,
+      "trace_manifest_hash": "0a955e1a4c2ef0d46af3921576f614a972f090695bd5915356e9f85efcfff814",
+      "transport": "core.flight.runtime.WireCheckTransport (never opens a socket)",
+      "wall_seconds": 4.751980543136597,
+      "wire_check_run_id": "WIRECHECK-SAEA-SLURP-PHASE-SMOKE-4-V1-1788656920812"
+    }
+  ],
+  "cells_checked": [
+    "phase-direct-only-smoke"
+  ],
+  "flight_run_id": "SAEA-SLURP-PHASE-SMOKE-4-V1",
+  "generated_at": "2026-09-06T01:10:10.611047+00:00",
+  "identity": {
+    "added_suffix_chars": 1836,
+    "added_suffix_sha256": "46ee018e1bd2392c0e3654ddeacf4b7f32209da2a0c00cd7e658afe50ca0dda3",
+    "config_hash": "99e53c8ed2e01209a8345e0189fb9712fd7cebab8da173dfff71f7e1f9800c18",
+    "instruction_fill": "slurp-label-inventory",
+    "instruction_template": "probes/slurp_direct_closed_list.txt",
+    "relation": "resolved == sealed_m0_instruction + suffix",
+    "resolved_instruction_chars": 7583,
+    "resolved_instruction_sha256": "4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db",
+    "roster_view_sha256": "e148dbbcbda5b5145de9d3270f8bf7d6fb83fd00c7533f5ffa0fea1735fa0e87",
+    "sample_count": 4,
+    "sealed_m0_instruction_chars": 5747,
+    "sealed_m0_instruction_sha256": "cef527896e9beef5774305e01dc29192fc2d5ca89fba5143e82f0b91a7cb86b8",
+    "serving_geometry": {
+      "max_tokens": 64,
+      "slot_tokens": 8192,
+      "slots": 8
+    }
+  },
+  "model_contacts": 0,
+  "schema": "saea-slurp-closed-list-wire-check-v1",
+  "servers_started": 0,
+  "study": "speech-aware-evidence-acquisition"
+}
