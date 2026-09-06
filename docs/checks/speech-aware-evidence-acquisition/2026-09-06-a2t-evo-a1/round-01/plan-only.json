@@ -1,0 +1,71 @@
+{
+  "blocked_on": [],
+  "next_step": "propose",
+  "round": 1,
+  "schema": "saea-evolution-round-plan-v1",
+  "steps": [
+    {
+      "done": false,
+      "missing": [],
+      "name": "propose",
+      "reads": [],
+      "ready": true,
+      "writes": [
+        "docs/receipts/rosters/a2t-evo-a1-proposer-r01.json",
+        "configs/experiment/a2t-evo-a1-proposer-r01.json",
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-01/propose.json"
+      ]
+    },
+    {
+      "done": false,
+      "missing": [
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-01/propose.json",
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-01/proposer-outputs.jsonl"
+      ],
+      "name": "candidates",
+      "reads": [
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-01/propose.json",
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-01/proposer-outputs.jsonl"
+      ],
+      "ready": false,
+      "writes": [
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-01/candidates.json",
+        "configs/experiment/a2t-evo-a1-fold-a-r01.json"
+      ]
+    },
+    {
+      "done": false,
+      "missing": [
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-01/candidates.json",
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-01/fold-a-scores.json"
+      ],
+      "name": "select",
+      "reads": [
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-01/candidates.json",
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-01/fold-a-scores.json"
+      ],
+      "ready": false,
+      "writes": [
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-01/selection.json",
+        "configs/experiment/a2t-evo-a1-fold-b-r01.json"
+      ]
+    },
+    {
+      "done": false,
+      "missing": [
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-01/selection.json",
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-01/fold-b-scores.json"
+      ],
+      "name": "confirm",
+      "reads": [
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-01/selection.json",
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-01/fold-b-scores.json"
+      ],
+      "ready": false,
+      "writes": [
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-01/confirmation.json",
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/evolution-round-01.json"
+      ]
+    }
+  ]
+}

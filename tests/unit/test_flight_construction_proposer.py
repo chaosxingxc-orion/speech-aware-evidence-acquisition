@@ -281,6 +281,41 @@ def test_the_material_refuses_a_gold_call_that_names_another_tool() -> None:
         )
 
 
+def test_the_material_accepts_a_namespaced_gold_call_whose_bare_name_agrees() -> None:
+    """A released ``expected_tool_call`` is occasionally namespaced.
+
+    1 of the 274 rows of ``A2T-EVO-EXEMPLARS-V2`` and 3 of fold A's 424 carry
+    a head like ``smart_home.setApplianceMode`` while the row's own
+    ``tool_name`` column is the bare ``setApplianceMode``. The manifest's
+    ``tool_name`` is what the official scorer compares against, so the
+    namespace is cosmetic; refusing it would block a whole round over a
+    released-data quirk. The gold call is still rendered VERBATIM -- no gold
+    is invented or rewritten.
+    """
+
+    rows = _exemplar_rows()
+    victim = _draws()[0].exemplar_ids[0]
+    tool = rows[victim]["tool_name"]
+    rows[victim] = dict(
+        rows[victim], gold_call=f"smart_home.{rows[victim]['gold_call']}"
+    )
+    material = build_proposer_material(
+        _roster(),
+        registry_rows=_registry_rows(),
+        target_tools={TARGET_ID: TOOLS},
+        incumbent_overrides={},
+        exemplar_rows=rows,
+        carrier_lock_key=CARRIER,
+    )
+    rendered = [
+        contact.instruction
+        for contact in material.contacts
+        if victim in contact.rendered_exemplar_ids
+    ]
+    assert rendered
+    assert all(f"smart_home.{tool}(" in text for text in rendered)
+
+
 # ---------------------------------------------------------------------------
 # The real FrozenCoreClient on this arm: narrowing, never widening
 # ---------------------------------------------------------------------------

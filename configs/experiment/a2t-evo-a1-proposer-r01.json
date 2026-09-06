@@ -1,0 +1,241 @@
+{
+  "cells": [
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pcastContent-k2",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-castContent-proposer-k2",
+      "factor": "proposer draw k=2 for target castContent",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-plighting-k5",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-lighting-placebo-k5",
+      "factor": "placebo draw k=5 for target lighting",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pcalibrateCameras-k3",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-calibrateCameras-proposer-k3",
+      "factor": "proposer draw k=3 for target calibrateCameras",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pcastContent-k5",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-castContent-placebo-k5",
+      "factor": "placebo draw k=5 for target castContent",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-plighting-k3",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-lighting-proposer-k3",
+      "factor": "proposer draw k=3 for target lighting",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-plighting-k1",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-lighting-proposer-k1",
+      "factor": "proposer draw k=1 for target lighting",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pactivateRoutine-k5",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-activateRoutine-placebo-k5",
+      "factor": "placebo draw k=5 for target activateRoutine",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pactivateRoutine-k1",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-activateRoutine-proposer-k1",
+      "factor": "proposer draw k=1 for target activateRoutine",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pactivateRoutine-k3",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-activateRoutine-proposer-k3",
+      "factor": "proposer draw k=3 for target activateRoutine",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pactivateRoutine-k2",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-activateRoutine-proposer-k2",
+      "factor": "proposer draw k=2 for target activateRoutine",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pgetBiometricData-k5",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-getBiometricData-placebo-k5",
+      "factor": "placebo draw k=5 for target getBiometricData",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pgetBiometricData-k1",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-getBiometricData-proposer-k1",
+      "factor": "proposer draw k=1 for target getBiometricData",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pcalibrateCameras-k5",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-calibrateCameras-placebo-k5",
+      "factor": "placebo draw k=5 for target calibrateCameras",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pcastContent-k1",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-castContent-proposer-k1",
+      "factor": "proposer draw k=1 for target castContent",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pcalibrateCameras-k2",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-calibrateCameras-proposer-k2",
+      "factor": "proposer draw k=2 for target calibrateCameras",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-plighting-k2",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-lighting-proposer-k2",
+      "factor": "proposer draw k=2 for target lighting",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pcalibrateCameras-k1",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-calibrateCameras-proposer-k1",
+      "factor": "proposer draw k=1 for target calibrateCameras",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pcastContent-k3",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-castContent-proposer-k3",
+      "factor": "proposer draw k=3 for target castContent",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pgetBiometricData-k3",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-getBiometricData-proposer-k3",
+      "factor": "proposer draw k=3 for target getBiometricData",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pgetBiometricData-k2",
+      "baseline_fragment": "a2t-evo-a1-proposer",
+      "cell_id": "a2t-evo-a1-r1-r01-getBiometricData-proposer-k2",
+      "factor": "proposer draw k=2 for target getBiometricData",
+      "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+      "run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1"
+    }
+  ],
+  "construction_proposer_roster_receipt": "docs/receipts/rosters/a2t-evo-a1-proposer-r01.json",
+  "construction_proposer_roster_split_identity_hash": "a513b0b536cbc9b27a9c13d2f3908cda9cdaebec21fca2028fc28286af1f59d8",
+  "construction_target_tools": {
+    "activateRoutine": [
+      "activateRoutine",
+      "activateScene",
+      "setApplianceMode",
+      "setSecurityMode",
+      "startCleaning"
+    ],
+    "calibrateCameras": [
+      "calibrateCameras",
+      "rebootDevice",
+      "streamCamera",
+      "updateFirmware"
+    ],
+    "castContent": [
+      "castContent",
+      "playMedia"
+    ],
+    "getBiometricData": [
+      "getBiometricData",
+      "getHRV",
+      "setHapticStrength",
+      "setRomanceMode"
+    ],
+    "lighting": [
+      "getLightState",
+      "resetFilterStatus",
+      "setAmbientLighting",
+      "setBrightness",
+      "setColor",
+      "setColorTemperature",
+      "setGroupLightState",
+      "setLighting"
+    ]
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.01,
+    "planned_model_calls": 20,
+    "planned_speech_audio_seconds": 85,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-A2T-EVO-A1-PROPOSER-V1",
+  "generated_by": "scripts/run_evolution_round.py",
+  "populations": [
+    {
+      "arm": "construction-proposer-text",
+      "dataset_fragment": "a2t-evo-a1-proposer-r01"
+    }
+  ],
+  "preregistration": "docs/readiness/2026-09-06-a2t-evo-a1-description-evolution-v1-preregistration.md",
+  "purpose": "EVO-A1 round 1 PROPOSE: one text-only contact per draw on the construction-proposer-text arm. Zero audio parts are sent.",
+  "round": 1,
+  "schema": "saea-a2t-direct-calibration-experiment-v1"
+}

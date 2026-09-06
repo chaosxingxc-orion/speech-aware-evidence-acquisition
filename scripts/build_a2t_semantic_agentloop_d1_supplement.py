@@ -108,19 +108,40 @@ def _wav_facts(path: Path, sample_id: str) -> tuple[float, int]:
 def build_supplement(
     *, roster_path: Path, data_root: Path, parent_d1_path: Path
 ) -> dict[str, object]:
-    """Return an exact additive media receipt for the roster."""
+    """Return an exact additive media receipt for the roster.
+
+    TWO INPUT SHAPES, one rule. The usual input is a
+    ``saea-a2t-agentloop-flight-roster-receipt-v1`` view, which names its
+    carrier in ``carrier`` and its size in ``count``. A ``saea-roster-receipt
+    -v1`` is also accepted when its items already carry the four media facts:
+    the EVO-A1 per-round proposer roster (``rails.evolution
+    .proposer_roster_receipt``) is exactly that -- its items ARE the draws and
+    each one records its anchor's measured ``media_relpath``/``audio_sha256``/
+    ``audio_seconds`` -- and it has no flight-roster view because it is not a
+    speech population. Widening the reader is what keeps ONE supplement
+    builder for every roster in the study; nothing below the identity check
+    differs between the shapes, and a roster whose items lack a media fact is
+    still refused row by row.
+    """
 
     roster_path = Path(roster_path)
     parent_d1_path = Path(parent_d1_path)
     roster = _load_object(roster_path, "fresh roster")
+    schema = roster.get("schema")
+    carrier = roster.get("carrier", roster.get("carrier_lock_key"))
     if (
-        roster.get("schema") != "saea-a2t-agentloop-flight-roster-receipt-v1"
-        or roster.get("carrier") != "audio2tool"
+        schema
+        not in ("saea-a2t-agentloop-flight-roster-receipt-v1", "saea-roster-receipt-v1")
+        or carrier != "audio2tool"
         or roster.get("split_role") == "test"
     ):
         raise ValueError("fresh roster identity or split role is invalid")
     items = roster.get("items")
-    if not isinstance(items, list) or not items or roster.get("count") != len(items):
+    if not isinstance(items, list) or not items:
+        raise ValueError("fresh roster count or items are invalid")
+    # ``count`` is a flight-roster field; a saea-roster-receipt-v1 has none, and
+    # inventing one here would let a truncated file through unnoticed.
+    if "count" in roster and roster.get("count") != len(items):
         raise ValueError("fresh roster count or items are invalid")
     parent = _load_object(parent_d1_path, "parent D1")
     base_ids = _parent_ids(parent)
