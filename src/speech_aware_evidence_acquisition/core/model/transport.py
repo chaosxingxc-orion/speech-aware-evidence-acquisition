@@ -72,6 +72,7 @@ import urllib.request
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
+from ...contracts.identifiers import CONSTRUCTION_VISIBLE_FIELD
 from ..base import TRANSPORTS
 from ..session import (
     SessionError,
@@ -655,7 +656,20 @@ class LlamaServerTransport:
         # media item below goes through, never a target-audio-only special
         # case.
         audio_part = None
-        if self._prompt_order not in _SPEECH_FEATURE_PROMPT_ORDERS:
+        # The ONE text-only arm: a construction-proposer payload declares
+        # ``construction_targets`` (``contracts.identifiers.
+        # CONSTRUCTION_VISIBLE_FIELD``, the D2 freeze), writes an ARTIFACT from
+        # construction exemplars rendered into its system message, and sends no
+        # audio at all -- ``core.flight.runtime._run_construction_proposer``
+        # sends an EMPTY user content list, and ``rails.core_client`` builds the
+        # payload from ``text_only_sample_id`` for exactly that reason. The
+        # payload still NAMES its anchor's ``media_relpath`` so the gate's
+        # media-identity rail and the trace can bind a real recording, but
+        # loading those bytes onto the wire would both contradict the arm's own
+        # registered scope ("zero audio parts are sent") and be refused outright
+        # by an mmproj-free server, which is what every EVO cell serves.
+        text_only = CONSTRUCTION_VISIBLE_FIELD in payload
+        if self._prompt_order not in _SPEECH_FEATURE_PROMPT_ORDERS and not text_only:
             _, audio_part = _load_audio_part(
                 self._data_root, payload["media_relpath"], "transport media_relpath"
             )
@@ -786,7 +800,8 @@ class LlamaServerTransport:
                 [*evidence_texts, str(payload["task_instruction"])]
             )
             messages = self._messages(
-                system_text, self._user_content([audio_part])
+                system_text,
+                self._user_content([] if audio_part is None else [audio_part]),
             )
         elif self._prompt_order == "evidence-first-system-v3":
             # Four-tier layout (see module docstring): tier 1 [system] task

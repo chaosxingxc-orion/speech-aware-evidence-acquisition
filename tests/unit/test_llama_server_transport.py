@@ -2329,3 +2329,52 @@ def test_transport_factory_reads_omit_system_message_from_the_composed_config(tm
         ).encode()
     )
     assert [message["role"] for message in captured["body"]["messages"]] == ["user"]
+
+
+def test_a_construction_proposer_payload_sends_no_audio_part(tmp_path):
+    """The ONE text-only arm. Its payload still NAMES the anchor's media so the
+    gate's media-identity rail and the trace bind a real recording, but loading
+    those bytes onto the wire would contradict the arm's own registered scope
+    ("zero audio parts are sent") and is refused outright by the mmproj-free
+    server every EVO cell serves."""
+
+    captured = {}
+
+    def post(url, body):
+        captured["body"] = json.loads(body)
+        return _canned_response()
+
+    transport = _transport(
+        _base_url(), tmp_path, post=post, prompt_order="evidence-first-system-v2"
+    )
+    payload = _boundary_payload(
+        tmp_path,
+        construction_targets=[
+            {"sample_id": "tier1_direct:000001", "query": "turn on the light",
+             "gold_call": "setLighting(state='on')"}
+        ],
+    )
+    transport(json.dumps(payload).encode("utf-8"))
+    user = [m for m in captured["body"]["messages"] if m["role"] == "user"]
+    assert len(user) == 1
+    parts = user[0]["content"]
+    assert not [part for part in parts if part.get("type") == "input_audio"]
+    assert parts == []
+
+
+def test_a_payload_without_construction_targets_still_sends_its_audio(tmp_path):
+    """Identity behaviour for every other arm, which is the whole point of
+    keying on the D2-frozen field rather than on an arm-name literal."""
+
+    captured = {}
+
+    def post(url, body):
+        captured["body"] = json.loads(body)
+        return _canned_response()
+
+    transport = _transport(
+        _base_url(), tmp_path, post=post, prompt_order="evidence-first-system-v2"
+    )
+    transport(json.dumps(_boundary_payload(tmp_path)).encode("utf-8"))
+    user = [m for m in captured["body"]["messages"] if m["role"] == "user"]
+    assert [part["type"] for part in user[0]["content"]] == ["input_audio"]
