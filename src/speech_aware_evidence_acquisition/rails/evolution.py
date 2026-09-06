@@ -80,6 +80,7 @@ from .proposer import (
 TARGET_SCHEMA = "saea-evolution-target-v1"
 PORTFOLIO_SCHEMA = "saea-evolution-portfolio-v1"
 SELECTION_SCHEMA = "saea-evolution-selection-v1"
+SENTINEL_SCHEMA = "saea-evolution-sentinel-harms-v1"
 CONFIRMATION_SCHEMA = "saea-evolution-confirmation-v1"
 STATE_SCHEMA = "saea-evolution-state-v1"
 ROUND_RECEIPT_SCHEMA = "saea-evolution-round-receipt-v1"
@@ -109,6 +110,7 @@ __all__ = [
     "TARGET_SCHEMA",
     "PORTFOLIO_SCHEMA",
     "SELECTION_SCHEMA",
+    "SENTINEL_SCHEMA",
     "CONFIRMATION_SCHEMA",
     "STATE_SCHEMA",
     "ROUND_RECEIPT_SCHEMA",
@@ -130,6 +132,7 @@ __all__ = [
     "StageOneDecision",
     "select_per_target",
     "selection_record",
+    "sentinel_harms",
     "ConfirmationDecision",
     "confirm_assembly",
     "RoundOutcome",
@@ -719,6 +722,95 @@ def selection_record(
         "decisions": {
             target_id: decisions[target_id].as_json() for target_id in sorted(decisions)
         },
+    }
+
+
+def sentinel_harms(
+    incumbent_scores: Mapping[str, Mapping[str, float]],
+    portfolio_scores: Mapping[int, Mapping[str, Mapping[str, float]]],
+    *,
+    sentinel_rows: Mapping[str, Mapping[str, Sequence[str]]],
+    metric: str,
+) -> dict[str, object]:
+    """The per-target SENTINEL-HARMS line (owner decision, 2026-09-06).
+
+    A sentinel row's gold tool is one the corpus cannot give the loop enough
+    rows of to reward on, so it never enters stage one's count. It is still
+    flown, and it is the cheapest early warning the loop has: a rewrite that
+    wins its own pair by breaking the thin tool it was rewritten AGAINST shows
+    up here, by tool name and by sample id, one round before the 4,000 would
+    show it.
+
+    This REPORTS and never decides. The stage-one gates, the assembly and the
+    fold-B confirmation are exactly the preregistered ones; the 4,000 stays
+    the harm detector at scale. Counts use the same save / harm / tie sense
+    every paired reading in this repository uses, recomputed row by row here
+    because the report has to NAME the harmed rows and a bootstrap contrast
+    only counts them.
+    """
+
+    if not isinstance(metric, str) or not metric:
+        raise EvolutionError("metric must be non-empty text")
+    if not isinstance(sentinel_rows, Mapping):
+        raise EvolutionError("sentinel_rows must be a mapping of target id to tool rows")
+
+    def _score(scores: Mapping[str, Mapping[str, float]], row: str, arm: str) -> float:
+        entry = scores.get(row)
+        if not isinstance(entry, Mapping) or metric not in entry:
+            raise EvolutionError(f"{arm} carries no {metric!r} score for sentinel row {row!r}")
+        return float(entry[metric])
+
+    by_target: dict[str, object] = {}
+    for target_id in sorted(sentinel_rows):
+        tool_of = {
+            str(row): str(tool)
+            for tool, rows in sentinel_rows[target_id].items()
+            for row in rows
+        }
+        by_k: dict[str, object] = {}
+        for slot in sorted(portfolio_scores):
+            arm = portfolio_scores[slot]
+            harmed: list[dict[str, str]] = []
+            saved: list[dict[str, str]] = []
+            ties = 0
+            for row in sorted(tool_of):
+                before = _score(incumbent_scores, row, "the incumbent")
+                after = _score(arm, row, f"portfolio k={slot}")
+                if after < before:
+                    harmed.append({"sample_id": row, "tool": tool_of[row]})
+                elif after > before:
+                    saved.append({"sample_id": row, "tool": tool_of[row]})
+                else:
+                    ties += 1
+            by_k[str(slot)] = {
+                "n": len(tool_of),
+                "saves": len(saved),
+                "harms": len(harmed),
+                "ties": ties,
+                "net": len(saved) - len(harmed),
+                "harmed": harmed,
+                "saved": saved,
+            }
+        by_target[target_id] = {
+            "n": len(tool_of),
+            "tools": sorted(sentinel_rows[target_id]),
+            "by_k": by_k,
+        }
+    return {
+        "schema": SENTINEL_SCHEMA,
+        "metric": metric,
+        "rule": (
+            "a sentinel row is never a reward row: it is counted in the confirmation's "
+            "background bound and reported here by name. This line decides nothing"
+        ),
+        "rows_of_sentinel_tool": {
+            target_id: {
+                tool: list(sentinel_rows[target_id][tool])
+                for tool in sorted(sentinel_rows[target_id])
+            }
+            for target_id in sorted(sentinel_rows)
+        },
+        "by_target": by_target,
     }
 
 
@@ -2263,6 +2355,13 @@ class LoopConfig:
     fold_b_dataset_fragment: str
     metric: str
     scorer_id: str
+    # Owner decision 2026-09-06 ("RELAXED with sentinels"): target_id -> the
+    # tools of that target whose fold rows are HARM SENTINELS rather than
+    # reward rows. The loop still rewrites their descriptions -- they are the
+    # tools the model wrongly reaches for -- but the corpus cannot supply
+    # enough of their own gold rows to count saves on, so they are excluded
+    # from stage one's slice and reported by name in the sentinel-harms line.
+    sentinel_tools: Mapping[str, tuple[str, ...]] = field(default_factory=dict)
     proposer_slots: tuple[int, ...] = (1, 2, 3)
     placebo_slot: int | None = 5
     deterministic_slot: int = 4
@@ -2277,6 +2376,11 @@ class LoopConfig:
     )
     rosters_reldir: str = "docs/receipts/rosters"
     experiments_reldir: str = "configs/experiment"
+    # The three committed roster receipts this loop draws from, named here so
+    # a re-freeze is a config change rather than a code change.
+    exemplar_roster_relpath: str = "docs/receipts/rosters/a2t-evo-exemplars-v2.json"
+    fold_a_roster_relpath: str = "docs/receipts/rosters/a2t-evo-fold-a-v2.json"
+    fold_b_roster_relpath: str = "docs/receipts/rosters/a2t-evo-fold-b-v2.json"
     # FLAT, and this is a harness constraint rather than a taste: a config
     # fragment name may carry no path separator (``core.config
     # ._FRAGMENT_NAME_PATTERN``), so a fragment written into a
@@ -2301,6 +2405,13 @@ class LoopConfig:
             values["targets"] = {
                 str(key): tuple(str(tool) for tool in tools) for key, tools in raw.items()
             }
+        if "sentinel_tools" in values:
+            raw = values["sentinel_tools"]
+            if not isinstance(raw, Mapping):
+                raise EvolutionError("loop config sentinel_tools must be a mapping")
+            values["sentinel_tools"] = {
+                str(key): tuple(str(tool) for tool in tools) for key, tools in raw.items()
+            }
         for key in ("proposer_slots",):
             if key in values:
                 values[key] = tuple(int(slot) for slot in values[key])
@@ -2313,7 +2424,41 @@ class LoopConfig:
         assert_disjoint_targets(
             [Target(target_id=key, tools=tools) for key, tools in config.targets.items()]
         )
+        config.assert_sentinels_are_target_tools()
         return config
+
+    def assert_sentinels_are_target_tools(self) -> "LoopConfig":
+        """A sentinel is a MEMBER of the target it guards, never a stranger.
+
+        The loop rewrites a sentinel tool's description because the model
+        wrongly reaches for it, so it has to be inside the target's tool list;
+        naming one that is not would silently score rows no candidate could
+        ever move.
+        """
+
+        for target_id, sentinels in self.sentinel_tools.items():
+            if target_id not in self.targets:
+                raise EvolutionError(
+                    f"sentinel_tools names target {target_id!r}, which is not a target"
+                )
+            stray = sorted(set(sentinels) - set(self.targets[target_id]))
+            if stray:
+                raise EvolutionError(
+                    f"target {target_id!r} declares sentinel tool(s) {stray} it does not "
+                    "itself carry"
+                )
+            if set(sentinels) == set(self.targets[target_id]):
+                raise EvolutionError(
+                    f"target {target_id!r} is all sentinels; it has no reward row and "
+                    "must be dropped before the round, not silently"
+                )
+        return self
+
+    def reward_tools(self, target_id: str) -> tuple[str, ...]:
+        """One target's tools MINUS its sentinels: the rows stage one counts."""
+
+        sentinels = set(self.sentinel_tools.get(target_id, ()))
+        return tuple(tool for tool in self.targets[target_id] if tool not in sentinels)
 
     def target_objects(self) -> tuple[Target, ...]:
         return assert_disjoint_targets(
@@ -2620,6 +2765,11 @@ class CarrierMaterial:
     fold_b_background_rows: tuple[str, ...]
     fold_a_strata_of: Callable[[str], str] | None = None
     fold_b_strata_of: Callable[[str], str] | None = None
+    # target_id -> sentinel tool -> that tool's fold-A rows. Empty when the
+    # loop declares no sentinel, which is the V1 reading.
+    fold_a_sentinel_rows: Mapping[str, Mapping[str, tuple[str, ...]]] = field(
+        default_factory=dict
+    )
 
 
 @dataclass(frozen=True)
@@ -3104,6 +3254,16 @@ def run_select_step(
         targets=targets,
         seed=config.seed,
     )
+    sentinels = (
+        sentinel_harms(
+            incumbent_scores,
+            portfolio_scores,
+            sentinel_rows=carrier.fold_a_sentinel_rows,
+            metric=config.metric,
+        )
+        if carrier.fold_a_sentinel_rows
+        else None
+    )
     winners = {
         target_id: decision.winner
         for target_id, decision in decisions.items()
@@ -3185,6 +3345,7 @@ def run_select_step(
         "round": round_index,
         "incumbent_state_sha256": state.state_sha256(),
         "selection": record,
+        "sentinel_harms": sentinels,
         "assembly": None if assembly is None else assembly.as_json(),
         "assembly_fragment": None if assembly is None else Path(written[0]).stem,
         "winners": {target: winners[target].candidate_id for target in sorted(winners)},
@@ -3200,6 +3361,17 @@ def run_select_step(
             "admitted_targets": sorted(winners),
             "flies_fold_b": assembly is not None,
             "experiment_fragment": paths[1],
+            "sentinel_harms": (
+                {}
+                if sentinels is None
+                else {
+                    target_id: {
+                        k: block["harms"]  # type: ignore[index]
+                        for k, block in row["by_k"].items()  # type: ignore[index,union-attr]
+                    }
+                    for target_id, row in sentinels["by_target"].items()  # type: ignore[union-attr]
+                }
+            ),
         },
     )
 
@@ -3274,6 +3446,7 @@ def run_confirm_step(
     )
     extra = {
         "selection": selection,
+        "sentinel_harms": selection_receipt.get("sentinel_harms"),
         "confirmation": None if confirmation is None else confirmation.as_json(),
         "decontamination": selection_receipt.get("decontamination_inputs"),
         "stop": {"stop": stop, "reason": stop_reason},

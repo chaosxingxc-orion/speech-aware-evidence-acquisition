@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 """CLI: freeze the three EVO-A1 loop rosters (MODEL-FREE, identity only).
 
-Exposure row ``SAEA-SN-MF-A2T-EVO-FOLD-ROSTERS-V1``, registered before a byte
-is written; the cut and its proof live in ``analysis.a2t_evo_rosters``, the
-quotas in ``analysis.a2t_evo_capacity``. Authority
+``--version v1`` is the original draw, exposure row
+``SAEA-SN-MF-A2T-EVO-FOLD-ROSTERS-V1``. ``--version v2`` (the default) is the
+owner's 2026-09-06 "RELAXED with sentinels" re-freeze under
+``SAEA-SN-MF-A2T-EVO-FOLD-ROSTERS-V2``: the four tools the census dropped, plus
+``getLightState`` which block contention dropped, keep a small exemplar reserve
+and contribute every remaining block to the folds as HARM SENTINELS. A tool the
+census kept is drawn exactly as it was in V1.
+
+The cut and its proof live in ``analysis.a2t_evo_rosters``, the quotas in
+``analysis.a2t_evo_capacity``. Authority
 ``docs/readiness/2026-09-05-three-dimension-experiment-program.md`` section 5,
 census ``docs/checks/speech-aware-evidence-acquisition/
 2026-09-06-a2t-evo-construction-capacity/capacity.json``.
@@ -35,6 +42,7 @@ from speech_aware_evidence_acquisition.analysis.a2t_evo_rosters import (  # noqa
     disjointness_proof,
     freeze_evo_rosters,
     roster_documents,
+    sentinel_tools,
 )
 from speech_aware_evidence_acquisition.analysis.dev100_reviewer_audit import (  # noqa: E402
     arm_offline_guard,
@@ -53,7 +61,16 @@ from speech_aware_evidence_acquisition.rails.knowledge_build_a2t import (  # noq
 )
 
 AUTHORITY = "docs/readiness/2026-09-05-three-dimension-experiment-program.md"
-EXPOSURE_ROW_ID = "SAEA-SN-MF-A2T-EVO-FOLD-ROSTERS-V1"
+EXPOSURE_ROWS = {
+    "v1": "SAEA-SN-MF-A2T-EVO-FOLD-ROSTERS-V1",
+    "v2": "SAEA-SN-MF-A2T-EVO-FOLD-ROSTERS-V2",
+}
+OWNER_DECISION = (
+    "owner 2026-09-06, RELAXED with sentinels: a MF-1 target survives when the GOLD side "
+    "of its dominant miss direction has construction capacity, and a thin tool is kept as "
+    "a harm sentinel rather than dropped. Supersedes "
+    "SAEA-SN-MF-A2T-EVO-FOLD-ROSTERS-V1, whose receipts stay as history."
+)
 CAPACITY_ROW_ID = "SAEA-A2T-MF-EVO-CONSTRUCTION-CAPACITY-V1"
 CAPACITY_RECEIPT = (
     "docs/checks/speech-aware-evidence-acquisition/"
@@ -68,6 +85,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--seed", type=int, default=SEED)
     parser.add_argument("--background", type=int, default=BACKGROUND_ROWS)
+    parser.add_argument("--version", choices=sorted(EXPOSURE_ROWS), default="v2")
     parser.add_argument("--write", action="store_true")
     args = parser.parse_args(argv)
 
@@ -82,9 +100,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     cap = FOLD_MAX_AUDIO_SECONDS
     pool = tuple(row for row in construction if seconds.get(row.sample_ids[0], 0.0) <= cap)
     tools = sorted({tool for t in read_json(TARGET_SPEC)["targets"] for tool in t["tools"]})
-    capacity, _blocks = joint_capacity(pool, tools, seed=args.seed)
+    capacity, _blocks = joint_capacity(
+        pool, tools, seed=args.seed, sentinels=args.version != "v1"
+    )
     cut = freeze_evo_rosters(
-        pool, tools, capacity, seed=args.seed, exposed=exposed, background_rows=args.background
+        pool,
+        tools,
+        capacity,
+        seed=args.seed,
+        exposed=exposed,
+        background_rows=args.background,
+        version=args.version,
     )
 
     block_of = {sid: row.query_idx for row in all_rows for sid in row.sample_ids}
@@ -99,10 +125,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         proof=proof,
         exposure=exposure,
         exposure_blocks=len(exposure_blocks),
+        version=args.version,
         shared={
             "authority": AUTHORITY,
             "generator": "scripts/build_a2t_evo_fold_rosters.py",
-            "exposure_row": EXPOSURE_ROW_ID,
+            "exposure_row": EXPOSURE_ROWS[args.version],
+            "supersedes": None if args.version == "v1" else EXPOSURE_ROWS["v1"],
+            "owner_decision": None if args.version == "v1" else OWNER_DECISION,
             "capacity_row": CAPACITY_ROW_ID,
             "capacity_receipt": CAPACITY_RECEIPT,
             "pool": {
@@ -112,7 +141,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 **cut["pool"],
             },
             "offline_guard": {
-                "exposure_row": EXPOSURE_ROW_ID,
+                "exposure_row": EXPOSURE_ROWS[args.version],
                 "outbound_connection_attempts": attempts.count,
                 "attempted_targets": list(attempts.targets),
             },
@@ -125,6 +154,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"identity {document['split_identity_hash']}"
         )
         print(f"  strata: {document['strata_counts']}")
+    print(f"sentinel tools: {list(sentinel_tools(capacity))}")
     print(f"disjointness proof: {proof}")
     print(f"offline guard: {attempts.count} outbound connection attempts")
     if not args.write:
