@@ -1089,7 +1089,16 @@ class FlightRuntime:
                 raise FlightRuntimeError(
                     f"registered phase state fill {name!r} is not callable"
                 )
-            fill = factory()
+            # ``fill_params`` reach the FACTORY, exactly as
+            # ``rails.phase_material._resolved_state_fills`` passes them on the
+            # flight path itself. Calling ``factory()`` bare here was a real
+            # divergence rather than a shortcut: EVO-S1's evolved fill opens a
+            # committed artifact named by ``artifact_relpath``/``artifact_sha256``
+            # and cannot be built without them, so the PROMPT BUDGET -- the one
+            # pre-flight stage whose whole job is to render the widest real
+            # request -- died before a candidate arm could fly at all, while the
+            # arm it was budgeting for was fine.
+            fill = factory(**dict(getattr(spec, "fill_params", {}) or {}))
             if not callable(fill):
                 raise FlightRuntimeError(
                     f"phase {phase!r} state fill {name!r} did not resolve to a "

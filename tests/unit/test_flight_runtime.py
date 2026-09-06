@@ -2883,3 +2883,58 @@ def test_the_fixed_policy_estimate_is_byte_identical_to_the_direct_payload(tmp_p
     ).hexdigest()
     assert [entry["phase"] for entry in receipt["prompt_budget"]] == ["direct"]
     assert receipt["prompt_budget"][0]["payload_sha256"] == expected
+
+
+def test_the_phase_estimate_passes_fill_params_to_the_state_fill_factory(tmp_path):
+    """``fill_params`` reach the FACTORY on the flight path
+    (``rails.phase_material._resolved_state_fills``), and the prompt-budget
+    estimate has to call it the same way. It did not, and the divergence was
+    fail-closed rather than cosmetic: EVO-S1's evolved fill opens a committed
+    artifact named by ``artifact_relpath``/``artifact_sha256`` and cannot be
+    built without them, so the one pre-flight stage whose job is to render the
+    widest real request died before the arm it was budgeting for could fly."""
+
+    from speech_aware_evidence_acquisition.rails.controllers import (
+        default_phase_program,
+    )
+    from speech_aware_evidence_acquisition.rails.phase_material import (
+        PHASE_STATE_FILLS,
+    )
+
+    got: list[dict] = []
+
+    def _factory(**params):
+        got.append(dict(params))
+        if "artifact_relpath" not in params:
+            raise TypeError("missing required keyword-only argument: 'artifact_relpath'")
+
+        def _fill(state_content: str) -> str:
+            return "F" * 128
+
+        return _fill
+
+    name = "test-fill-with-params-v1"
+    run_id = "SAEA-TEST-RUN-003"
+    with_fill = {
+        "draft": dict(_PHASE_MATERIAL["draft"]),
+        "revise": dict(
+            _PHASE_MATERIAL["revise"],
+            state_fill=name,
+            fill_params={"artifact_relpath": "configs/knowledge/x.json",
+                         "artifact_sha256": "0" * 64},
+        ),
+    }
+    repo_root, _data_root = _phase_packet_repo(tmp_path, run_id, phase_material=with_fill)
+    runtime = _make_runtime(tmp_path, run_id=run_id, repo_root=repo_root, happy_path=True)
+    program = default_phase_program(PHASE_PROGRAM)
+    PHASE_STATE_FILLS.register(name, _factory)
+    try:
+        runtime.preflight()
+        runtime._phase_prompt_payloads(runtime._samples, program)
+    finally:
+        PHASE_STATE_FILLS._entries.pop(name, None)
+
+    assert got and got[0] == {
+        "artifact_relpath": "configs/knowledge/x.json",
+        "artifact_sha256": "0" * 64,
+    }
