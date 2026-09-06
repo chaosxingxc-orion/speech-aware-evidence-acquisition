@@ -1,250 +1,152 @@
 {
-  "experiment_id": "SAEA-SLURP-EVO-S1-SLOT-SCHEMA-V1",
-  "fragment_kind": "saea-slurp-slot-stage-experiment-v1",
-  "date": "2026-09-06",
-  "draft_status": "DRAFT. Not registered and not flyable. The coordinator ruled on 2026-09-06 (reward metric, read Option B, folds at 60 per scenario, the per-scenario harm bound, F2/F3/K/M/form, the decontamination bound and the recomputed budget) and docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md carries those decisions; it still needs the SLURP half of track E3c admitted and its exposure rows written. Of section 13's prerequisites, the two fold dataset fragments, their probe-sample views and their D1 media supplements NOW EXIST and verify through contracts.gate_media_identity.verify_media_identity (SAEA-SN-MF-SLURP-EVO-FOLD-SUPPLEMENTS-V2). Still missing before any cell here launches: the featcache packets for all 2,160 fold rows (a model contact, measured at 0 of 2,160 present), the one-time closed-list intent flight whose sealed manifests every cell below binds as its predecessor, the prompt fit, and the proposer runner of track E3c. Every 'PENDING' value is filled by the per-round fragment emitter when that round is assembled.",
-  "purpose": "Cell EVO-S1 of the 2026-09-05 three-dimension experiment program (sections 4c and 5), the generality rung of the system-evolution dimension and, by the owner directive of 2026-09-06, its PRIMARY demonstration: the same loop code and the same selection rule as EVO-A1, on SLURP, evolving the per-intent TRAIN slot schema KC-S1b admitted. This fragment carries only the speech-bearing REWARD flights, which are baseline-reproduction. The proposer's own text contacts are bounded-discovery-probe and need a SECOND fragment (configs/experiment/slurp-evo-s1-proposer-v1.json), because a composed experiment fragment declares exactly one execution_plan and therefore exactly one execution profile.",
-  "hypothesis": "H1: shown only its own incumbent block and eight construction utterances of a scenario with their gold entities, the frozen core can rewrite the per-intent slot schema so that per-row strict entity F1 rises on rows it has never seen, and a best-of-K selection over four rounds produces a schema whose gain survives one read on DEV against the SEALED KC-S1b rows. H2: the shares-only control (the incumbent blocks with every filler list deleted) is the content floor, and the token-matched form twin is the form floor. Both controls are deterministic and cost no contact.",
-  "preregistration": "docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md",
-  "predecessor": {
-    "run_id": "SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1",
-    "verdict": "ADMITTED on both preregistered conditions. SLU-F1 44.35 against the sealed closed-list direct baseline's 35.80 (+8.55), paired NEW500 slot F1 +10.11 pp CI90 [+8.11, +12.19], and +10.02 pp CI90 [+8.01, +12.10] against the equal-contact control KC-S1a. Its artifact is this cell's A_0 and its sealed rows are this cell's headline comparator.",
-    "sealed_manifest_sha256": "088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08",
-    "attempt_id": "attempt-20260906T025102Z-af6b04"
-  },
-  "state": {
-    "fill": "slurp-evolved-slot-schema-for-state (a NEW rails.phase_material.PHASE_STATE_FILLS registration, section 12.3 of the preregistration; it does not exist yet)",
-    "a_0": {
-      "artifact": "docs/receipts/knowledge/slurp-intent-slot-schema-v1.json",
-      "receipt_sha256": "7e04da0ec29d0e9d6c473697d2b84bd1e0fc1d9ba28880ef2cf8b6f908bbe782",
-      "content_hash": "732e500af3870216c7b311369f6f190ffdb0365e497d84cf211f478036757dcc",
-      "train_source_identity_hash": "545847bb95a9423005c71bdcc3fa74af55a3a1b6ae91409ba4070fd35bf92fef",
-      "shape": "60 intents, 261 listed type rows over 52 distinct entity types, 1,008 example fillers; per-intent block 494 to 1,224 characters",
-      "full_rendering": {
-        "characters": 26720,
-        "lines": 322,
-        "sha256": "4e573a65e14c57598cc39ed1aa71cf0ac59018be162dbea3e0bfbf038203a5b9",
-        "approximate_tokens": 7500,
-        "role": "the fallback block, sent when the sealed closed-list response does not parse or names a (scenario, action) pair TRAIN never carries -- 42 of 1,000 rows on DEV-1000"
-      },
-      "reproduced": "re-mined from TRAIN and reproduced to the content hash by SAEA-SLURP-MF-EVO-CONSTRUCTION-CAPACITY-V1 before a number was counted"
-    },
-    "candidate_state": "per intent, ONLY (a) which entity types to list and in what order and (b) up to five fillers per listed type. The header line and every share are re-rendered by the renderer from the unfloored TRAIN table, so a candidate can never write a number. The block grammar, the intent-selection rule, the fallback, the system message, the contact count and the roster are all unchanged from KC-S1b.",
-    "form": "token delta against the incumbent block is REPORTED per candidate; the search budget is +20 percent tokens over the incumbent block per intent, measured through the flight tokenizer (never an estimator). ASCII only; at most five fillers per type; at most L type lines per intent where L is that intent's unfloored TRAIN type count; every listed type has at least one TRAIN mention for that intent; the header byte-identical to A_0's."
-  },
-  "targets": {
-    "definition": "a target is a SLURP scenario; there are eighteen and they are disjoint by construction (one gold scenario per utterance, one scenario per intent, so no two targets write into the same block)",
-    "capacity_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-construction-capacity/capacity.json",
-    "intents_per_scenario": {
-      "alarm": 3, "audio": 4, "calendar": 3, "cooking": 2, "datetime": 2, "email": 4,
-      "general": 3, "iot": 9, "lists": 3, "music": 4, "news": 1, "play": 5, "qa": 5,
-      "recommendation": 3, "social": 2, "takeaway": 2, "transport": 4, "weather": 1
-    },
-    "least_addressable": "music (71.7 percent of its TRAIN utterances carry no entity; KC-S1b moved it 0.0 pp) and audio (80.3 percent; +3.3 pp). Named before takeoff so a null on them is not read afterwards as a loop failure."
-  },
-  "populations": {
-    "SLURP-EVO-FOLD-A-V2": {
-      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
-      "dataset_fragment_file_sha256": "4ba55688e80d8d768ec6cfc3ff4bacc9802fb34e4dab54913934015184497215",
-      "runtime_view_sha256": "f423fd59bee4ff73833f49187fde22071b4d5ea7a39243e55f728f0ccbf67918",
-      "probe_sample_view": "docs/receipts/probe-samples/SLURP-EVO-FOLD-A-V2.json",
-      "d1_media_supplement": "receipts/artifacts/d1-slurp-evo-fold-a-v2.json",
-      "d1_media_supplement_sha256": "2b3d22993cfbefa5eee54b883cee23477b9e445e3b74a5e95ed86a327eba8397",
-      "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
-      "roster_receipt_file_sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
-      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
-      "split_role": "discovery",
-      "roster_role": "construction",
-      "count": 1080,
-      "blocks": 1080,
-      "audio_seconds_one_pass": 3084.528438,
-      "headset_share": 0.484259,
-      "strata": "gold scenario, 60 utterances per scenario over all eighteen (coordinator decision 1 of 2026-09-06, remedy (b) of preregistration section 16 open point 1)",
-      "supersedes": "SLURP-EVO-FOLD-A-V1, docs/receipts/rosters/slurp-evo-fold-a-v1.json, 540 rows at split identity 65e19bb0...9398 -- committed, never contacted, kept as history",
-      "estimand": "per-scenario saves, harms and net against the incumbent, on that scenario's own 60 rows"
-    },
-    "SLURP-EVO-FOLD-B-V2": {
-      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
-      "dataset_fragment_file_sha256": "1d30c501612686004936b5dd295885d9452175e6449b4a66187c08227a322cea",
-      "runtime_view_sha256": "fdb6ccdca1a4ea69f029d80af504bae631aac7f469fe5330e726d77dc81e469d",
-      "probe_sample_view": "docs/receipts/probe-samples/SLURP-EVO-FOLD-B-V2.json",
-      "d1_media_supplement": "receipts/artifacts/d1-slurp-evo-fold-b-v2.json",
-      "d1_media_supplement_sha256": "c543067ece11f707cd6bb3fa297ffa515e596b7cbd3d445b55cce6411d49bd32",
-      "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
-      "roster_receipt_file_sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
-      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
-      "split_role": "discovery",
-      "roster_role": "construction",
-      "count": 1080,
-      "blocks": 1080,
-      "audio_seconds_one_pass": 3154.797375,
-      "headset_share": 0.487963,
-      "strata": "identical in shape to fold A, on disjoint utterances",
-      "supersedes": "SLURP-EVO-FOLD-B-V1, docs/receipts/rosters/slurp-evo-fold-b-v1.json, 540 rows at split identity c7acacef...ca72 -- committed, never contacted, kept as history",
-      "estimand": "the pooled TARGETED CI90 over the admitted scenarios' rows, each admitted scenario's own harms minus saves against the 1-row bound, and the non-admitted scenarios pooled against -1.0 pp (coordinator decision 3 of 2026-09-06)"
-    },
-    "SLURP-EVO-EXEMPLARS-V2": {
-      "roster_receipt": "docs/receipts/rosters/slurp-evo-exemplars-v2.json",
-      "roster_receipt_file_sha256": "0d57df6c711e494af148745db4bd3082719fd2c1d5f7e0a340075887e4fddf05",
-      "split_identity_hash": "cf03c262888716b8c1801d60c87125339f24bed2f07fa35c0f6ab4f1c6ce7236",
-      "count": 430,
-      "role": "the proposer's exemplar pool and the ONLY roster whose gold the construction-proposer-text arm may read. Text-only: it appears in NO cell of this fragment and needs no media artifact.",
-      "note": "24 entity-bearing utterances per scenario against M = 8 in seventeen of eighteen scenarios, so the three per-round draws differ in membership as well as order -- unlike EVO-A1, where twelve tools have a pool of exactly M. audio is capped at 22 by capacity: the folds are drawn first and keep their full 60 per scenario, and only 22 entity-bearing utterances remain in audio afterwards. 22 is still 2.75 x M and above the floor of 16; the cap is recorded in the roster receipt's exemplar_quota_policy block."
-    },
-    "disjointness": "0 recordings and 0 utterances shared between any two of the three rosters; 0 shared with the committed devel enumeration (8,690 ids) and 0 with the test enumeration (13,078 ids); 0 shared with any of the 739 TRAIN utterances this study has already touched; exactly one recording per utterance in every roster. All 21 counts recomputed from the receipts and fail-closed before they were written (SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V2)."
-  },
-  "comparators": {
-    "within_round": "the incumbent A_r, re-flown on the same fold in the same round, because greedy decoding is not bitwise reproducible across batch shapes on this runtime",
-    "on_the_folds": "the one-time closed-list direct arm of SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2, which is also the sealed intent predecessor. There are no sealed KC-S1b rows on the folds: A_0 re-flown IS the KC-S1b artifact there.",
-    "final": {
-      "population": "DEV-1000. Coordinator decision 2 of 2026-09-06 took read Option B: the curve is fold B per round at no extra contact and the final read of A* is DEV-1000 once, paired against the sealed KC-S1b manifest (the headline) and the sealed closed-list direct manifest, with KC-S1a beside. Preregistration section 7",
-      "headline": {
-        "run_id": "SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1",
-        "attempt_id": "attempt-20260906T025102Z-af6b04",
-        "manifest_sha256": "088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08",
-        "official": {"scenario": 81.0, "action": 73.9, "intent": 71.4, "entities_strict": 31.37, "word_f1": 41.58, "char_f1": 47.51, "slu_f1": 44.35}
-      },
-      "direct": {
-        "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1",
-        "attempt_id": "attempt-20260905T060424Z-2c5596",
-        "manifest_sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c",
-        "official": {"scenario": 81.0, "action": 73.9, "intent": 71.4, "entities_strict": 21.91, "word_f1": 33.69, "char_f1": 38.2, "slu_f1": 35.8}
-      },
-      "equal_contact_control": {
-        "run_id": "SAEA-SLURP-KC-S1A-SLOTS-DEV1000-V1",
-        "attempt_id": "attempt-20260906T023017Z-38c20a",
-        "note": "reported beside, never a gate"
-      }
-    }
-  },
   "cells": [
     {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-r1-i",
+      "baseline_fragment": "slurp-phase-slots-given-intent-schema-projected-v2-fold-a",
       "cell_id": "EVO-S1-r1-foldA-incumbent",
-      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
-      "attempt_id": "attempt-r1-i",
-      "arm": "speech-feature-query",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "factor": "the incumbent state A_0 (the committed per-intent slot schema), re-flown so this round's pairing is against its own sealed rows",
-      "baseline_fragment": "PENDING -- A_0's own fold-A fragment, a copy of slurp-phase-slots-given-intent-schema-v1 bound to fold A V2's sealed intent manifest",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
-      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080"
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2"
     },
     {
-      "cell_id": "EVO-S1-r1-foldA-c1",
-      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
+      "arm": "speech-feature-query",
       "attempt_id": "attempt-r1-c1",
-      "arm": "speech-feature-query",
+      "baseline_fragment": "PENDING -- configs/baseline/evolved-slot-schema-<sha16>-fold-a.json, emitted by rails.evolution.write_candidate_fragments from the projected base template",
+      "cell_id": "EVO-S1-r1-foldA-c1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "factor": "portfolio k=1: family 'proposer', candidate k=1 of every one of the eighteen scenarios merged into one schema state",
-      "baseline_fragment": "PENDING -- configs/baseline/slurp-evo-s1/evolved-schema-<sha16>.json",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
-      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080"
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2"
     },
     {
-      "cell_id": "EVO-S1-r1-foldA-c2",
-      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
+      "arm": "speech-feature-query",
       "attempt_id": "attempt-r1-c2",
-      "arm": "speech-feature-query",
+      "baseline_fragment": "PENDING",
+      "cell_id": "EVO-S1-r1-foldA-c2",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "factor": "portfolio k=2: family 'proposer', a different seeded ordered exemplar draw",
-      "baseline_fragment": "PENDING",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
-      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080"
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2"
     },
     {
-      "cell_id": "EVO-S1-r1-foldA-c3",
-      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
+      "arm": "speech-feature-query",
       "attempt_id": "attempt-r1-c3",
-      "arm": "speech-feature-query",
+      "baseline_fragment": "PENDING",
+      "cell_id": "EVO-S1-r1-foldA-c3",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "factor": "portfolio k=3: family 'proposer', a third seeded ordered exemplar draw",
-      "baseline_fragment": "PENDING",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
-      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080"
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2"
     },
     {
-      "cell_id": "EVO-S1-r1-foldA-c4",
-      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
+      "arm": "speech-feature-query",
       "attempt_id": "attempt-r1-c4",
-      "arm": "speech-feature-query",
+      "baseline_fragment": "PENDING",
+      "cell_id": "EVO-S1-r1-foldA-c4",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "factor": "portfolio k=4: the SHARES-ONLY control (family 'deterministic'), the incumbent blocks with every filler list deleted and types, order and shares untouched. Zero model contacts build it, so a round whose proposer does not beat it has learned nothing about fillers -- and the KC-S1b verdict attributes the whole +8.55 to the fillers",
-      "baseline_fragment": "PENDING",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
-      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080"
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2"
     },
     {
-      "cell_id": "EVO-S1-r1-foldA-c5",
-      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
+      "arm": "speech-feature-query",
       "attempt_id": "attempt-r1-c5",
-      "arm": "speech-feature-query",
+      "baseline_fragment": "PENDING",
+      "cell_id": "EVO-S1-r1-foldA-c5",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "factor": "portfolio k=5: the TOKEN-MATCHED FORM TWIN (family 'placebo'), round 1 only -- every filler replaced by a neutral placeholder at equal token count under the flight tokenizer, which is what separates filler content from prompt volume. Zero model contacts build it",
-      "baseline_fragment": "PENDING",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
-      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080"
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2"
     },
     {
-      "cell_id": "EVO-S1-r1-foldB-incumbent",
-      "run_id": "SAEA-SLURP-EVO-S1-FOLD-B-V2",
+      "arm": "speech-feature-query",
       "attempt_id": "attempt-r1-i",
-      "arm": "speech-feature-query",
-      "factor": "the incumbent on fold B, the confirmation's comparator",
-      "baseline_fragment": "PENDING",
-      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "baseline_fragment": "slurp-phase-slots-given-intent-schema-projected-v2-fold-b",
+      "cell_id": "EVO-S1-r1-foldB-incumbent",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
-      "flies_only_if": "stage one admitted at least one scenario"
+      "factor": "the incumbent on fold B, the confirmation's comparator",
+      "flies_only_if": "stage one admitted at least one scenario",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-B-V2"
     },
     {
-      "cell_id": "EVO-S1-r1-foldB-assembly",
-      "run_id": "SAEA-SLURP-EVO-S1-FOLD-B-V2",
-      "attempt_id": "attempt-r1-a",
       "arm": "speech-feature-query",
-      "factor": "the assembled winners of every admitted scenario, confirmed as a WHOLE and never partially",
+      "attempt_id": "attempt-r1-a",
       "baseline_fragment": "PENDING",
-      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "cell_id": "EVO-S1-r1-foldB-assembly",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
-      "flies_only_if": "stage one admitted at least one scenario"
+      "factor": "the assembled winners of every admitted scenario, confirmed as a WHOLE and never partially",
+      "flies_only_if": "stage one admitted at least one scenario",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-B-V2"
     }
   ],
-  "shared_protocol": {
-    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
-    "quantization": "Q4_K_M",
-    "temperature": 0,
-    "seed": 20260803,
-    "max_tokens": 64,
-    "contacts_per_item": 1,
-    "policy": "phase-slots-given-intent-v1",
-    "evidence_source": "none",
-    "knowledge": "none, with the snapshot's content dimension EXCLUDED -- the SLURP leakage-rule blocker of the KC-S1 verdict (deviation 1): the default size-full snapshot's one- and two-word TRAIN utterances collide by substring with SLURP's own scenario names and with ordinary English, and would refuse every schema block",
-    "knowledge_snapshot_sha256": "07f94807d173b2f2bdda9dcd95b21354e018234a208a76683d0ca4989d9ffa65",
-    "system_message": "byte-identical to the sealed closed-list baseline's, 7,583 characters, sha256 4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db",
-    "predecessor_binding": "sealed-manifest -- the one-time closed-list intent flight over that fold (SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2). Incumbent-independent, so it is flown once and bound by every round and every candidate",
-    "serving_geometry": "PENDING -- re-derived by the prompt fit. KC-S1b flew -np 4 at -c 65536 because its worst envelope is the 26,720-character full-schema fallback at about 7,500 tokens; at the +20 percent search budget that is about 9,000 and the geometry must be measured, not assumed",
-    "harness": "core.flight.FlightRuntime with rails.phase_runner.run_program over configs/policy/phase-slots-given-intent-v1.json -- the same harness, controller and phase program KC-S1a and KC-S1b flew"
+  "comparators": {
+    "final": {
+      "direct": {
+        "attempt_id": "attempt-20260905T060424Z-2c5596",
+        "manifest_sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c",
+        "official": {
+          "action": 73.9,
+          "char_f1": 38.2,
+          "entities_strict": 21.91,
+          "intent": 71.4,
+          "scenario": 81.0,
+          "slu_f1": 35.8,
+          "word_f1": 33.69
+        },
+        "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1"
+      },
+      "equal_contact_control": {
+        "attempt_id": "attempt-20260906T023017Z-38c20a",
+        "note": "reported beside, never a gate",
+        "run_id": "SAEA-SLURP-KC-S1A-SLOTS-DEV1000-V1"
+      },
+      "headline": {
+        "attempt_id": "attempt-20260906T025102Z-af6b04",
+        "manifest_sha256": "088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08",
+        "official": {
+          "action": 73.9,
+          "char_f1": 47.51,
+          "entities_strict": 31.37,
+          "intent": 71.4,
+          "scenario": 81.0,
+          "slu_f1": 44.35,
+          "word_f1": 41.58
+        },
+        "run_id": "SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1"
+      },
+      "population": "DEV-1000. Coordinator decision 2 of 2026-09-06 took read Option B: the curve is fold B per round at no extra contact and the final read of A* is DEV-1000 once, paired against the sealed KC-S1b manifest (the headline) and the sealed closed-list direct manifest, with KC-S1a beside. Preregistration section 7"
+    },
+    "on_the_folds": "the one-time closed-list direct arm of SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2, which is also the sealed intent predecessor. There are no sealed KC-S1b rows on the folds: A_0 re-flown IS the KC-S1b artifact there.",
+    "within_round": "the incumbent A_r, re-flown on the same fold in the same round, because greedy decoding is not bitwise reproducible across batch shapes on this runtime"
   },
-  "execution_plan": {
-    "execution_profile": "baseline-reproduction",
-    "split_role": "discovery",
-    "planned_model_calls": 6480,
-    "planned_gpu_hours": 1.4,
-    "planned_speech_audio_seconds": 18508
+  "date": "2026-09-06",
+  "decision": {
+    "admitted": "ADMITTED: the read's CI90 lower bound over sealed KC-S1b is above 0, both weightings agree in sign, and the generalization gap is at most half the construction gain",
+    "claim_surface": "rung 1 only. The folds are construction-role discovery rows drawn from TRAIN and disjoint from every identity this study has ever contacted; the read rows are DEV identities already contacted three times.",
+    "harmful": "HARMFUL: the read's upper bound is below 0; the schema branch ends with its form/content attribution recorded",
+    "kill_results": [
+      "no scenario admitted in rounds 1 and 2",
+      "a construction gain of at least 2 pp whose read CI90 includes 0, or a transfer ratio below 0.25",
+      "the shares-only control within 0.5 pp of the proposer",
+      "the token-matched form twin indistinguishable from the proposer candidate",
+      "every candidate failing the per-scenario harm bound"
+    ],
+    "not_authorized": "no test contact, no fresh roster, no DEV-500-B opening, no Q8_0, no second answering model, no parameter update, no edit to an artifact after its fragment was emitted. At most one recovery re-registration per run id.",
+    "null": "NULL: the curve rose but the read's CI includes 0 (reported as overfitting, with the selection rule named), or the curve never rose",
+    "paper_scale": false,
+    "primary": "the final read's paired per-row slot F1 delta against the SEALED KC-S1b rows on the decision population",
+    "stop_rule": "R_max = 4; stop after two consecutive rejects or an accepted gain under 0.5 pp (rails.evolution.should_stop)",
+    "test_tuning": false
   },
-  "execution_plan_basis": {
-    "planned_model_calls": "ROUND 1, FOLD A: 6 arms (the incumbent plus K_1 = 5 portfolios) x 1,080 rows = 6,480. Budgets are cumulative across every attempt of a run id, so the registered ceiling for SAEA-SLURP-EVO-S1-FOLD-A-V2 is R_max x this = 25,920. Fold B is 2 arms x 1,080 = 2,160 per round, ceiling 8,640 on its own run id.",
-    "planned_speech_audio_seconds": "6 x fold A's own pass duration of 3,084.528438 s = 18,507.17; the fold-A ceiling is R_max x that = 74,028.7.",
-    "planned_gpu_hours": "6,480 calls x 0.7359 s per call = 1.32 h; 1.4 planned. 0.7359 s per call is the REALIZED rate of the KC-S1b flight at -np 4, from its own receipt: 1,000 contacts in 735.9065 s wall (attempt-20260906T025102Z-af6b04, flight-receipt-kc-s1b.json, stages.run_phases). The coordinator's 2026-09-06 note cites 1,008 contacts in 0.08 GPU-h (0.2857 s per contact); that figure does not reconcile with any committed receipt and the receipt-backed rate is used here. See preregistration section 10.",
-    "whole_cell": "34,696 contacts across five run ids at the V2 fold size, read Option B (coordinator decision 2): 22,680 fold A + 8,640 fold B + 2,160 one-time intent + 216 proposer + 1,000 final DEV-1000 read. About 8.25 GPU-h at the receipt-backed 0.7359 s per speech contact (3.94 h at the rate the coordinator cited). The program's own estimate for this cell ('about 10,000, under 1.0') is SUPERSEDED. Section 10 of the preregistration carries the table.",
-    "paid_api_spend": 0,
-    "ceilings_live_in_the_exposure_row": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are each exposure-ledger row's calls / speech audio seconds / gpu hours cells, and the budget is cumulative across every attempt of a run id."
-  },
+  "draft_status": "REGISTERED preregistration, NOT YET FLYABLE, and the reason is GPU work rather than a missing decision. docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md went to REGISTERED on 2026-09-06: the loop code landed (section 12.5), the model-free pre-flight closed (the decontamination digest artifact, A_0's executable pins, the legal-label projection seam), and all seven exposure rows are registered with check_ledger_budget accepting the loop's run-cumulative worst case (docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-ledger-budget/). What is still owed, in order, all of it needing the GPU: the prompt fit (which also binds the token counter the round-1 form twin is priced on), the featcache packets for all 2,160 fold rows (measured at 0 of 2,160 present), the one-time closed-list intent flight whose two sealed manifests every cell below binds as its predecessor, then the wire check and the four-row dry run. Every 'PENDING' value is filled by the per-round fragment emitter or by that intent flight.",
   "evaluation": {
-    "official_scorers": ["slurp-slu-official", "slurp-slu", "cost"],
-    "paper_facing_scorer": "slurp-slu-official",
-    "reward_metric": "per-row slot_f1_exact_f1 (strict entity F1, exact type+filler match) -- the metric KC-S1b was admitted on, the least gameable of the per-row metrics, and not a term in the official SLU-F1's own arithmetic",
-    "reported_beside_the_reward": ["slu_f1_word_f1", "slu_f1_f1", "slot_f1_exact_precision", "slot_f1_exact_recall"],
-    "read_metric": "the official corpus SLU-F1 from the unmodified evaluate.py at pinned commit 8eb16545762be97ace75334109d73824217311f1 -- the READ metric, never the reward",
-    "scored_complete_manifests": 1,
-    "whole_manifest_jobs_only": true,
+    "confidence_interval": "CI90",
     "dataset_sharding": false,
-    "stage_one": "rails.evolution.select_per_target on fold A, per scenario, gates saves >= 4 / harms <= 1 / net >= 3 on that scenario's own 60 rows, winner = largest net then fewer harms then fewer artifact bytes then lowest k. A COUNT rule: at 60 rows an interval is still uninformative on a sparse metric, and a reviewer can recount the gate by hand. The V2 draw IS the answer to preregistration section 16 open point 1: scaling KC-S1b's measured per-stratum saves to 60 rows clears the gate in SEVEN of eighteen scenarios against three of eighteen at 30, audited in docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-stage-one-power/power.json. transport clears at 30 and is refused at 60 because the harms bound is an absolute row count that does not scale with the fold",
-    "stage_two": "rails.evolution.confirm_assembly on fold B, with the background bound REPLACED by the per-scenario harm bound of coordinator decision 3 (2026-09-06): the pooled TARGETED CI90 lower bound strictly above 0, every ADMITTED scenario at harms minus saves <= 1 row on its own 60 fold-B rows, and the NON-ADMITTED scenarios pooled at no worse than -1.0 pp. Accepted as a whole, never partially",
     "intervals": "analysis.paired.paired_contrast, 10,000 replicates stratified by scenario, seed 20260903, CI90, exact sign test",
-    "per_round_receipt": "rails.evolution.write_round_receipt under docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-s1/; replay_selection must reproduce every stage-one decision from the sealed per-sample score files alone",
     "mandatory_slices": [
       "the evolution curve: round versus fold-A gain, fold-B gain and curve gain",
       "the final paired delta against the SEALED KC-S1b rows and against the sealed closed-list direct rows, per scenario, with the published brackets beside the corpus row",
@@ -255,25 +157,163 @@
       "the fallback-row count per read (42 of 1,000 on DEV-1000 for KC-S1b)",
       "per candidate: six-gram decontamination verdict, exemplar overlap count, per-intent token delta, per-intent line and character counts"
     ],
-    "confidence_interval": "CI90",
-    "renderer": "analysis.paired.render_markdown"
-  },
-  "decision": {
-    "primary": "the final read's paired per-row slot F1 delta against the SEALED KC-S1b rows on the decision population",
-    "admitted": "ADMITTED: the read's CI90 lower bound over sealed KC-S1b is above 0, both weightings agree in sign, and the generalization gap is at most half the construction gain",
-    "null": "NULL: the curve rose but the read's CI includes 0 (reported as overfitting, with the selection rule named), or the curve never rose",
-    "harmful": "HARMFUL: the read's upper bound is below 0; the schema branch ends with its form/content attribution recorded",
-    "kill_results": [
-      "no scenario admitted in rounds 1 and 2",
-      "a construction gain of at least 2 pp whose read CI90 includes 0, or a transfer ratio below 0.25",
-      "the shares-only control within 0.5 pp of the proposer",
-      "the token-matched form twin indistinguishable from the proposer candidate",
-      "every candidate failing the per-scenario harm bound"
+    "official_scorers": [
+      "slurp-slu-official",
+      "slurp-slu",
+      "cost"
     ],
-    "stop_rule": "R_max = 4; stop after two consecutive rejects or an accepted gain under 0.5 pp (rails.evolution.should_stop)",
-    "claim_surface": "rung 1 only. The folds are construction-role discovery rows drawn from TRAIN and disjoint from every identity this study has ever contacted; the read rows are DEV identities already contacted three times.",
-    "not_authorized": "no test contact, no fresh roster, no DEV-500-B opening, no Q8_0, no second answering model, no parameter update, no edit to an artifact after its fragment was emitted. At most one recovery re-registration per run id.",
-    "test_tuning": false,
-    "paper_scale": false
+    "paper_facing_scorer": "slurp-slu-official",
+    "per_round_receipt": "rails.evolution.write_round_receipt under docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-s1/; replay_selection must reproduce every stage-one decision from the sealed per-sample score files alone",
+    "read_metric": "the official corpus SLU-F1 from the unmodified evaluate.py at pinned commit 8eb16545762be97ace75334109d73824217311f1 -- the READ metric, never the reward",
+    "renderer": "analysis.paired.render_markdown",
+    "reported_beside_the_reward": [
+      "slu_f1_word_f1",
+      "slu_f1_f1",
+      "slot_f1_exact_precision",
+      "slot_f1_exact_recall"
+    ],
+    "reward_metric": "per-row slot_f1_exact_f1 (strict entity F1, exact type+filler match) -- the metric KC-S1b was admitted on, the least gameable of the per-row metrics, and not a term in the official SLU-F1's own arithmetic",
+    "scored_complete_manifests": 1,
+    "stage_one": "rails.evolution.select_per_target on fold A, per scenario, gates saves >= 4 / harms <= 2 / net >= 3 on that scenario's own 60 rows -- saves and net are absolute counts and the harm half is the owner's RATE of 1 per 30 paired rows, floored at 1, from the single loop-config field harms_per_rows. Winner = largest net, then fewer harms, then fewer artifact bytes, then lowest k. A COUNT rule: at 60 rows an interval is still uninformative on a sparse metric, and a reviewer can recount the gate by hand from harms_allowed, n and harms, which every stage-one outcome records. The V2 draw IS the answer to the power question: scaling KC-S1b's measured per-stratum saves to 60 rows clears the gate in EIGHT of eighteen scenarios against three of eighteen at 30 rows, audited in docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-stage-one-power/power.json. transport clears at both fold sizes under the rate; it would have been refused at 60 under an absolute one-row bound, which is exactly the scale-dependence the rate removes.",
+    "stage_two": "rails.evolution.confirm_assembly on fold B, with the background bound REPLACED by the per-scenario harm bound of coordinator decision 3 (2026-09-06): the pooled TARGETED CI90 lower bound strictly above 0, every ADMITTED scenario at harms minus saves <= 2 rows on its own 60 fold-B rows (the same 1-per-30 rate stage one uses, from the same field, so the two stages cannot report two definitions of one word), and the NON-ADMITTED scenarios pooled at no worse than -1.0 pp. Accepted as a whole, never partially",
+    "whole_manifest_jobs_only": true
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "planned_gpu_hours": 1.4,
+    "planned_model_calls": 6480,
+    "planned_speech_audio_seconds": 18508,
+    "split_role": "discovery"
+  },
+  "execution_plan_basis": {
+    "ceilings_live_in_the_exposure_row": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are each exposure-ledger row's calls / speech audio seconds / gpu hours cells, and the budget is cumulative across every attempt of a run id.",
+    "paid_api_spend": 0,
+    "planned_gpu_hours": "6,480 calls x 0.7359 s per call = 1.32 h; 1.4 planned. 0.7359 s per call is the REALIZED rate of the KC-S1b flight at -np 4, from its own receipt: 1,000 contacts in 735.9065 s wall (attempt-20260906T025102Z-af6b04, flight-receipt-kc-s1b.json, stages.run_phases). The coordinator's 2026-09-06 note cites 1,008 contacts in 0.08 GPU-h (0.2857 s per contact); that figure does not reconcile with any committed receipt and the receipt-backed rate is used here. See preregistration section 10.",
+    "planned_model_calls": "ROUND 1, FOLD A: 6 arms (the incumbent plus K_1 = 5 portfolios) x 1,080 rows = 6,480. Budgets are cumulative across every attempt of a run id, so the registered ceiling for SAEA-SLURP-EVO-S1-FOLD-A-V2 is R_max x this = 25,920. Fold B is 2 arms x 1,080 = 2,160 per round, ceiling 8,640 on its own run id.",
+    "planned_speech_audio_seconds": "6 x fold A's own pass duration of 3,084.528438 s = 18,507.17; the fold-A ceiling is R_max x that = 74,028.7.",
+    "whole_cell": "34,696 contacts across five run ids at the V2 fold size, read Option B (coordinator decision 2): 22,680 fold A + 8,640 fold B + 2,160 one-time intent + 216 proposer + 1,000 final DEV-1000 read. About 8.25 GPU-h at the receipt-backed 0.7359 s per speech contact (3.94 h at the rate the coordinator cited). The program's own estimate for this cell ('about 10,000, under 1.0') is SUPERSEDED. Section 10 of the preregistration carries the table."
+  },
+  "experiment_id": "SAEA-SLURP-EVO-S1-SLOT-SCHEMA-V1",
+  "fragment_kind": "saea-slurp-slot-stage-experiment-v1",
+  "hypothesis": "H1: shown only its own incumbent block and eight construction utterances of a scenario with their gold entities, the frozen core can rewrite the per-intent slot schema so that per-row strict entity F1 rises on rows it has never seen, and a best-of-K selection over four rounds produces a schema whose gain survives one read on DEV against the SEALED KC-S1b rows. H2: the shares-only control (the incumbent blocks with every filler list deleted) is the content floor, and the token-matched form twin is the form floor. Both controls are deterministic and cost no contact.",
+  "populations": {
+    "SLURP-EVO-EXEMPLARS-V2": {
+      "count": 430,
+      "note": "24 entity-bearing utterances per scenario against M = 8 in seventeen of eighteen scenarios, so the three per-round draws differ in membership as well as order -- unlike EVO-A1, where twelve tools have a pool of exactly M. audio is capped at 22 by capacity: the folds are drawn first and keep their full 60 per scenario, and only 22 entity-bearing utterances remain in audio afterwards. 22 is still 2.75 x M and above the floor of 16; the cap is recorded in the roster receipt's exemplar_quota_policy block.",
+      "role": "the proposer's exemplar pool and the ONLY roster whose gold the construction-proposer-text arm may read. Text-only: it appears in NO cell of this fragment and needs no media artifact.",
+      "roster_receipt": "docs/receipts/rosters/slurp-evo-exemplars-v2.json",
+      "roster_receipt_file_sha256": "0d57df6c711e494af148745db4bd3082719fd2c1d5f7e0a340075887e4fddf05",
+      "split_identity_hash": "cf03c262888716b8c1801d60c87125339f24bed2f07fa35c0f6ab4f1c6ce7236"
+    },
+    "SLURP-EVO-FOLD-A-V2": {
+      "audio_seconds_one_pass": 3084.528438,
+      "blocks": 1080,
+      "count": 1080,
+      "d1_media_supplement": "receipts/artifacts/d1-slurp-evo-fold-a-v2.json",
+      "d1_media_supplement_sha256": "2b3d22993cfbefa5eee54b883cee23477b9e445e3b74a5e95ed86a327eba8397",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "dataset_fragment_file_sha256": "4ba55688e80d8d768ec6cfc3ff4bacc9802fb34e4dab54913934015184497215",
+      "estimand": "per-scenario saves, harms and net against the incumbent, on that scenario's own 60 rows",
+      "headset_share": 0.484259,
+      "probe_sample_view": "docs/receipts/probe-samples/SLURP-EVO-FOLD-A-V2.json",
+      "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "roster_receipt_file_sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+      "roster_role": "construction",
+      "runtime_view_sha256": "f423fd59bee4ff73833f49187fde22071b4d5ea7a39243e55f728f0ccbf67918",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+      "split_role": "discovery",
+      "strata": "gold scenario, 60 utterances per scenario over all eighteen (coordinator decision 1 of 2026-09-06, remedy (b) of preregistration section 16 open point 1)",
+      "supersedes": "SLURP-EVO-FOLD-A-V1, docs/receipts/rosters/slurp-evo-fold-a-v1.json, 540 rows at split identity 65e19bb0...9398 -- committed, never contacted, kept as history"
+    },
+    "SLURP-EVO-FOLD-B-V2": {
+      "audio_seconds_one_pass": 3154.797375,
+      "blocks": 1080,
+      "count": 1080,
+      "d1_media_supplement": "receipts/artifacts/d1-slurp-evo-fold-b-v2.json",
+      "d1_media_supplement_sha256": "c543067ece11f707cd6bb3fa297ffa515e596b7cbd3d445b55cce6411d49bd32",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "dataset_fragment_file_sha256": "1d30c501612686004936b5dd295885d9452175e6449b4a66187c08227a322cea",
+      "estimand": "the pooled TARGETED CI90 over the admitted scenarios' rows, each admitted scenario's own harms minus saves against the 1-row bound, and the non-admitted scenarios pooled against -1.0 pp (coordinator decision 3 of 2026-09-06)",
+      "headset_share": 0.487963,
+      "probe_sample_view": "docs/receipts/probe-samples/SLURP-EVO-FOLD-B-V2.json",
+      "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "roster_receipt_file_sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+      "roster_role": "construction",
+      "runtime_view_sha256": "fdb6ccdca1a4ea69f029d80af504bae631aac7f469fe5330e726d77dc81e469d",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+      "split_role": "discovery",
+      "strata": "identical in shape to fold A, on disjoint utterances",
+      "supersedes": "SLURP-EVO-FOLD-B-V1, docs/receipts/rosters/slurp-evo-fold-b-v1.json, 540 rows at split identity c7acacef...ca72 -- committed, never contacted, kept as history"
+    },
+    "disjointness": "0 recordings and 0 utterances shared between any two of the three rosters; 0 shared with the committed devel enumeration (8,690 ids) and 0 with the test enumeration (13,078 ids); 0 shared with any of the 739 TRAIN utterances this study has already touched; exactly one recording per utterance in every roster. All 21 counts recomputed from the receipts and fail-closed before they were written (SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V2)."
+  },
+  "predecessor": {
+    "attempt_id": "attempt-20260906T025102Z-af6b04",
+    "run_id": "SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1",
+    "sealed_manifest_sha256": "088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08",
+    "verdict": "ADMITTED on both preregistered conditions. SLU-F1 44.35 against the sealed closed-list direct baseline's 35.80 (+8.55), paired NEW500 slot F1 +10.11 pp CI90 [+8.11, +12.19], and +10.02 pp CI90 [+8.01, +12.10] against the equal-contact control KC-S1a. Its artifact is this cell's A_0 and its sealed rows are this cell's headline comparator."
+  },
+  "preregistration": "docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md",
+  "purpose": "Cell EVO-S1 of the 2026-09-05 three-dimension experiment program (sections 4c and 5), the generality rung of the system-evolution dimension and, by the owner directive of 2026-09-06, its PRIMARY demonstration: the same loop code and the same selection rule as EVO-A1, on SLURP, evolving the per-intent TRAIN slot schema KC-S1b admitted. This fragment carries only the speech-bearing REWARD flights, which are baseline-reproduction. The proposer's own text contacts are bounded-discovery-probe and need a SECOND fragment (configs/experiment/slurp-evo-s1-proposer-v1.json), because a composed experiment fragment declares exactly one execution_plan and therefore exactly one execution profile.",
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "contacts_per_item": 1,
+    "evidence_source": "none",
+    "harness": "core.flight.FlightRuntime with rails.phase_runner.run_program over configs/policy/phase-slots-given-intent-v1.json -- the same harness, controller and phase program KC-S1a and KC-S1b flew",
+    "knowledge": "none, with the snapshot's content dimension EXCLUDED -- the SLURP leakage-rule blocker of the KC-S1 verdict (deviation 1): the default size-full snapshot's one- and two-word TRAIN utterances collide by substring with SLURP's own scenario names and with ordinary English, and would refuse every schema block",
+    "knowledge_snapshot_sha256": "07f94807d173b2f2bdda9dcd95b21354e018234a208a76683d0ca4989d9ffa65",
+    "max_tokens": 64,
+    "policy": "phase-slots-given-intent-v1",
+    "predecessor_binding": "sealed-manifest -- the one-time closed-list intent flight over that fold (SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2), read through slurp-legal-label-projection-v2 before the per-intent block is selected (preregistration section 4). Incumbent-independent, so it is flown once and bound by every round and every candidate; the projection is declared ONCE on the fold base fragment so the incumbent arm and every candidate arm of a fold select their block from the same sealed label. The DEV-1000 final read does NOT project, because its headline comparator's sealed rows did not.",
+    "quantization": "Q4_K_M",
+    "seed": 20260803,
+    "serving_geometry": "PENDING -- re-derived by the prompt fit. KC-S1b flew -np 4 at -c 65536 because its worst envelope is the 26,720-character full-schema fallback at about 7,500 tokens; at the +20 percent search budget that is about 9,000 and the geometry must be measured, not assumed",
+    "system_message": "byte-identical to the sealed closed-list baseline's, 7,583 characters, sha256 4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db",
+    "temperature": 0
+  },
+  "state": {
+    "a_0": {
+      "artifact": "docs/receipts/knowledge/slurp-intent-slot-schema-v1.json",
+      "content_hash": "732e500af3870216c7b311369f6f190ffdb0365e497d84cf211f478036757dcc",
+      "full_rendering": {
+        "approximate_tokens": 7500,
+        "characters": 26720,
+        "lines": 322,
+        "role": "the fallback block, sent when the sealed closed-list response does not parse or names a (scenario, action) pair TRAIN never carries -- 42 of 1,000 rows on DEV-1000",
+        "sha256": "4e573a65e14c57598cc39ed1aa71cf0ac59018be162dbea3e0bfbf038203a5b9"
+      },
+      "receipt_sha256": "7e04da0ec29d0e9d6c473697d2b84bd1e0fc1d9ba28880ef2cf8b6f908bbe782",
+      "reproduced": "re-mined from TRAIN and reproduced to the content hash by SAEA-SLURP-MF-EVO-CONSTRUCTION-CAPACITY-V1 before a number was counted",
+      "shape": "60 intents, 261 listed type rows over 52 distinct entity types, 1,008 example fillers; per-intent block 494 to 1,224 characters",
+      "train_source_identity_hash": "545847bb95a9423005c71bdcc3fa74af55a3a1b6ae91409ba4070fd35bf92fef"
+    },
+    "candidate_state": "per intent, ONLY (a) which entity types to list and in what order and (b) up to five fillers per listed type. The header line and every share are re-rendered by the renderer from the unfloored TRAIN table, so a candidate can never write a number. The block grammar, the intent-selection rule, the fallback, the system message, the contact count and the roster are all unchanged from KC-S1b.",
+    "fill": "slurp-evolved-slot-schema-for-state (a NEW rails.phase_material.PHASE_STATE_FILLS registration, section 12.3 of the preregistration; it does not exist yet)",
+    "form": "token delta against the incumbent block is REPORTED per candidate; the search budget is +20 percent tokens over the incumbent block per intent, measured through the flight tokenizer (never an estimator). ASCII only; at most five fillers per type; at most L type lines per intent where L is that intent's unfloored TRAIN type count; every listed type has at least one TRAIN mention for that intent; the header byte-identical to A_0's."
+  },
+  "targets": {
+    "capacity_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-construction-capacity/capacity.json",
+    "definition": "a target is a SLURP scenario; there are eighteen and they are disjoint by construction (one gold scenario per utterance, one scenario per intent, so no two targets write into the same block)",
+    "intents_per_scenario": {
+      "alarm": 3,
+      "audio": 4,
+      "calendar": 3,
+      "cooking": 2,
+      "datetime": 2,
+      "email": 4,
+      "general": 3,
+      "iot": 9,
+      "lists": 3,
+      "music": 4,
+      "news": 1,
+      "play": 5,
+      "qa": 5,
+      "recommendation": 3,
+      "social": 2,
+      "takeaway": 2,
+      "transport": 4,
+      "weather": 1
+    },
+    "least_addressable": "music (71.7 percent of its TRAIN utterances carry no entity; KC-S1b moved it 0.0 pp) and audio (80.3 percent; +3.3 pp). Named before takeoff so a null on them is not read afterwards as a loop failure."
   }
 }
