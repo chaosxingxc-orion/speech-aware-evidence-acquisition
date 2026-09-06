@@ -39,6 +39,11 @@ _STEP_NEEDS = {
     "confirm": ("fold_b",),
 }
 
+#: SLURP's ``"registry"`` is the pair of TRAIN slot schemas -- ``A_0`` as
+#: KC-S1b flew it, and the same mining unfloored, which is the only authority
+#: for a type's count, its share and its intent's line cap.
+_SLURP_LOCK_KEY = "slurp"
+
 __all__ = [
     "load_carrier_material",
     "load_state",
@@ -157,28 +162,49 @@ def load_carrier_material(
     step: str,
     lock: Mapping[str, object] | None = None,
     data_root: Path | None = None,
-    exemplar_roster_relpath: str = "docs/receipts/rosters/a2t-evo-exemplars-v1.json",
-    fold_a_roster_relpath: str = "docs/receipts/rosters/a2t-evo-fold-a-v1.json",
-    fold_b_roster_relpath: str = "docs/receipts/rosters/a2t-evo-fold-b-v1.json",
+    exemplar_roster_relpath: str | None = None,
+    fold_a_roster_relpath: str | None = None,
+    fold_b_roster_relpath: str | None = None,
 ) -> CarrierMaterial:
     """The carrier material one step needs, and nothing more.
 
     ``step`` selects what is actually read (``_STEP_NEEDS``): the PROPOSE
-    step hashes every exemplar wav because the roster it freezes records
+    step hashes every exemplar recording because the roster it freezes records
     measured media facts, while SELECT and CONFIRM read only committed
     receipts and never touch the carrier at all.
+
+    Two carriers, one loader, dispatched on the loop config's own
+    ``carrier_lock_key``: Audio2Tool's material is the tool registry plus
+    query/gold-call rows, SLURP's is the pair of TRAIN slot schemas plus
+    sentence/gold-entity rows. Everything else -- which rosters, which steps
+    read what, how a fold's rows are grouped by stratum -- is shared, which is
+    what "the same loop code on a second carrier" has to mean.
     """
 
     if step not in _STEP_NEEDS:
         raise EvolutionError(f"unknown step {step!r}")
     needs = _STEP_NEEDS[step]
-    if config.carrier_lock_key != AUDIO2TOOL_LOCK_KEY:
-        raise EvolutionError(
-            f"this loader serves the {AUDIO2TOOL_LOCK_KEY!r} carrier; the config names "
-            f"{config.carrier_lock_key!r}"
-        )
     resolved_lock = lock if lock is not None else load_lock(umbrella_lock_path(repo_root))
     root = Path(data_root) if data_root is not None else _data_root()
+    exemplar_roster_relpath = exemplar_roster_relpath or config.exemplar_roster_relpath
+    fold_a_roster_relpath = fold_a_roster_relpath or config.fold_a_roster_relpath
+    fold_b_roster_relpath = fold_b_roster_relpath or config.fold_b_roster_relpath
+    if config.carrier_lock_key == _SLURP_LOCK_KEY:
+        return _slurp_carrier_material(
+            repo_root,
+            config,
+            needs=needs,
+            lock=resolved_lock,
+            root=root,
+            exemplar_roster_relpath=exemplar_roster_relpath,
+            fold_a_roster_relpath=fold_a_roster_relpath,
+            fold_b_roster_relpath=fold_b_roster_relpath,
+        )
+    if config.carrier_lock_key != AUDIO2TOOL_LOCK_KEY:
+        raise EvolutionError(
+            f"this loader serves the {AUDIO2TOOL_LOCK_KEY!r} and {_SLURP_LOCK_KEY!r} "
+            f"carriers; the config names {config.carrier_lock_key!r}"
+        )
 
     registry_rows: tuple[Mapping[str, str], ...] = ()
     if "registry" in needs:
@@ -230,6 +256,108 @@ def load_carrier_material(
         fold_a_rows_of_target=fold_a_rows_of_target,
         fold_b_targeted_rows=fold_b_targeted,
         fold_b_background_rows=fold_b_background,
+    )
+
+
+def _slurp_carrier_material(
+    repo_root: Path,
+    config: LoopConfig,
+    *,
+    needs: Sequence[str],
+    lock: Mapping[str, object],
+    root: Path,
+    exemplar_roster_relpath: str,
+    fold_a_roster_relpath: str,
+    fold_b_roster_relpath: str,
+) -> CarrierMaterial:
+    """EVO-S1's half of :func:`load_carrier_material`.
+
+    Legality, stated where the reading happens. The only rows this branch ever
+    resolves are those a committed ``roster_role == "construction"`` receipt
+    names, and the one reader that carries SENTENCE TEXT beside gold
+    (``data.slurp.load_slurp_train_construction_rows``) can reach no split but
+    TRAIN. The evaluation side of the decontamination gate -- the DEV
+    sentences -- is opened inside ``rails.proposer
+    .validate_slurp_candidate_artifact`` alone and is not reached from here.
+    """
+
+    from ..data.slurp import (  # noqa: PLC0415 (heavy carrier import, lazily paid)
+        load_slurp_intent_slot_schema,
+        load_slurp_train_construction_rows,
+    )
+
+    slot_schema = None
+    unfloored_schema = None
+    entity_type_names: tuple[str, ...] = ()
+    if "registry" in needs:
+        slot_schema = load_slurp_intent_slot_schema(lock, root)
+        unfloored_schema = load_slurp_intent_slot_schema(lock, root, min_share=0.0)
+        entity_type_names = tuple(
+            sorted(
+                {
+                    entity_type
+                    for profile in unfloored_schema.intents.values()
+                    for entity_type, _count, _share in profile.types
+                }
+            )
+        )
+
+    exemplar_pool: dict[str, tuple[str, ...]] = {}
+    exemplar_rows: Mapping[str, Mapping[str, object]] = {}
+    media_facts: Mapping[str, Mapping[str, object]] = {}
+    if "exemplars" in needs:
+        document = read_roster_document(repo_root, exemplar_roster_relpath)
+        wanted = {member for members in config.targets.values() for member in members}
+        pool: dict[str, list[str]] = {member: [] for member in sorted(wanted)}
+        for item in document.get("items", ()):
+            stratum = str(item.get("stratum"))
+            if stratum in pool:
+                pool[stratum].append(str(item["sample_id"]))
+        empty = sorted(name for name, rows in pool.items() if not rows)
+        if empty:
+            raise EvolutionError(
+                f"the exemplar roster has no construction row for {empty}; a target "
+                "whose stratum cannot be exemplified must be dropped before the draw"
+            )
+        exemplar_pool = {name: tuple(sorted(rows)) for name, rows in pool.items()}
+        every_id = sorted({sid for rows in exemplar_pool.values() for sid in rows})
+        exemplar_rows = load_slurp_train_construction_rows(lock, root, every_id)
+        if "media" in needs:
+            media_facts = {
+                sample_id: {
+                    "media_relpath": row["media_relpath"],
+                    "audio_seconds": row["audio_seconds"],
+                    "audio_sha256": row["audio_sha256"],
+                }
+                for sample_id, row in exemplar_rows.items()
+            }
+
+    fold_a_rows_of_target: Mapping[str, tuple[str, ...]] = {}
+    if "fold_a" in needs:
+        fold_a_rows_of_target = rows_of_target_from_roster(
+            read_roster_document(repo_root, fold_a_roster_relpath), config.targets
+        )
+
+    fold_b_targeted: tuple[str, ...] = ()
+    fold_b_background: tuple[str, ...] = ()
+    fold_b_rows_of_target: Mapping[str, tuple[str, ...]] = {}
+    if "fold_b" in needs:
+        fold_b = read_roster_document(repo_root, fold_b_roster_relpath)
+        fold_b_rows_of_target = rows_of_target_from_roster(fold_b, config.targets)
+        fold_b_targeted, fold_b_background = _split_fold_rows(fold_b, config.targets)
+
+    return CarrierMaterial(
+        registry_rows=(),
+        exemplar_pool=exemplar_pool,
+        media_facts=media_facts,
+        exemplar_rows=exemplar_rows,
+        fold_a_rows_of_target=fold_a_rows_of_target,
+        fold_b_targeted_rows=fold_b_targeted,
+        fold_b_background_rows=fold_b_background,
+        slot_schema=slot_schema,
+        unfloored_schema=unfloored_schema,
+        entity_type_names=entity_type_names,
+        fold_b_rows_of_target=fold_b_rows_of_target,
     )
 
 

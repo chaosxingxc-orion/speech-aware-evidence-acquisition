@@ -53,6 +53,7 @@ from __future__ import annotations
 import hashlib
 import json
 import random
+import re
 from dataclasses import dataclass, field, fields
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
@@ -64,17 +65,27 @@ from ..analysis.paired import (
 )
 from .hashing import canonical_json_bytes, content_hash
 from .proposer import (
+    A2T_DESCRIPTIONS_FAMILY,
     DECONTAMINATION_NGRAM,
+    SLURP_SLOT_SCHEMA_FAMILY,
     CandidateArtifact,
     ProposerError,
     candidate_bytes,
     deterministic_candidate,
     parse_proposer_response,
+    parse_slurp_schema_response,
     placebo_candidate,
     prompt_sha256,
     proposer_candidate,
     render_placebo_instruction,
     render_proposer_instruction,
+    render_slurp_proposer_instruction,
+    slurp_block_texts,
+    slurp_blocks_from_schema,
+    slurp_candidate_schema,
+    slurp_form_twin_candidate,
+    slurp_proposer_candidate,
+    slurp_shares_only_candidate,
 )
 
 TARGET_SCHEMA = "saea-evolution-target-v1"
@@ -95,9 +106,41 @@ ARTIFACT_STEM = "evolved-registry"
 FRAGMENT_STEM = "evolved-artifact"
 SHA_PREFIX_LENGTH = 16
 
+#: Per artifact family, ``(artifact file stem, baseline fragment stem)``.
+#: EVO-S1's artifact is a slot SCHEMA, not a registry, and its fragment is a
+#: state-fill arm rather than a task-instruction one, so calling either of
+#: them ``evolved-registry`` would misname the bytes a reviewer opens.
+ARTIFACT_FAMILY_STEMS: Mapping[str, tuple[str, str]] = {
+    A2T_DESCRIPTIONS_FAMILY: (ARTIFACT_STEM, FRAGMENT_STEM),
+    SLURP_SLOT_SCHEMA_FAMILY: ("evolved-schema", "evolved-slot-schema"),
+}
+
 #: The key under which the incumbent arm's score file is looked up during a
 #: replay; every other key is the portfolio's ``k`` rendered as text.
 INCUMBENT_KEY = "incumbent"
+
+#: What EVO-A1's candidates step records about the decontamination gate. It is
+#: a fact about THAT cell -- which registered row, which evaluation text, which
+#: legal source of shared phrasing -- so a second cell states its own in its
+#: loop config (``LoopConfig.decontamination``) rather than inheriting a
+#: paragraph about a tool registry it does not have.
+_A2T_DECONTAMINATION_INPUTS: Mapping[str, object] = {
+    "row": "SAEA-A2T-MF-EVO-DECONTAMINATION-V1",
+    "evaluation_query_texts": "the query text of all 4,000 union rows, opened inside "
+    "rails.proposer.validate_candidate_artifact alone and never rendered",
+    "registry_text": "the released compact registry, the legal source of shared "
+    "phrasing",
+    "exemplar_texts": "the construction rows each candidate's proposer was shown; "
+    "overlap is measured and reported, never gated",
+}
+
+#: What a target IS. ``"contrast"`` is EVO-A1's confusable-tool set (two or
+#: more members, by definition); ``"scenario"`` is EVO-S1's stratum (one
+#: SLURP scenario, one member).
+TARGET_KINDS = ("contrast", "scenario")
+
+#: The two folds, and the fragment-variant label each one's fragments carry.
+FOLD_KEYS: Mapping[str, str] = {"fold_a": "fold-a", "fold_b": "fold-b"}
 
 #: Preregistered constants (program section 5).
 MAX_ROUNDS = 4
@@ -121,9 +164,13 @@ __all__ = [
     "DEFAULT_SEED",
     "EvolutionError",
     "Target",
+    "TARGET_KINDS",
+    "FOLD_KEYS",
+    "ARTIFACT_FAMILY_STEMS",
     "assert_disjoint_targets",
     "Portfolio",
     "assemble_portfolio",
+    "fragment_stem",
     "write_candidate_fragments",
     "AdmissionGates",
     "CandidateOutcome",
@@ -131,6 +178,7 @@ __all__ = [
     "select_per_target",
     "selection_record",
     "ConfirmationDecision",
+    "PerTargetHarmBound",
     "confirm_assembly",
     "RoundOutcome",
     "EvolutionState",
@@ -185,18 +233,44 @@ class EvolutionError(ValueError):
 
 @dataclass(frozen=True)
 class Target:
-    """One MF-1 TARGET entry: a named, disjoint set of confusable tools."""
+    """One TARGET entry: a named, disjoint set of reward-bearing members.
+
+    Two KINDS, and the difference is not cosmetic.
+
+    ``"contrast"`` (EVO-A1's, and the default) is a hand-picked set of
+    CONFUSABLE tools. Its whole reason to exist is the separation between its
+    members, so a contrast target of one tool is a contradiction and is
+    refused.
+
+    ``"scenario"`` (EVO-S1's) is a STRATUM: one SLURP scenario, whose rows are
+    the fold rows carrying that gold scenario. There is nothing to separate --
+    the eighteen scenarios are disjoint by construction, since every utterance
+    has exactly one gold scenario and every intent belongs to exactly one
+    scenario -- so a single member is the normal case, not a degenerate one.
+    Keying such a target on intents instead would not rescue the two-member
+    rule either: ``news`` and ``weather`` own one intent each.
+    """
 
     target_id: str
     tools: tuple[str, ...]
+    kind: str = "contrast"
 
     def validate(self) -> "Target":
         if not isinstance(self.target_id, str) or not self.target_id:
             raise EvolutionError("target_id must be non-empty text")
-        if isinstance(self.tools, (str, bytes)) or len(self.tools) < 2:
+        if self.kind not in TARGET_KINDS:
             raise EvolutionError(
-                f"target {self.target_id!r} must name at least two tools; a target "
-                "of one tool has nothing to separate it from"
+                f"target {self.target_id!r} kind must be one of {list(TARGET_KINDS)}"
+            )
+        minimum = 1 if self.kind == "scenario" else 2
+        if isinstance(self.tools, (str, bytes)) or len(self.tools) < minimum:
+            if minimum == 2:
+                raise EvolutionError(
+                    f"target {self.target_id!r} must name at least two tools; a target "
+                    "of one tool has nothing to separate it from"
+                )
+            raise EvolutionError(
+                f"target {self.target_id!r} must name at least one stratum member"
             )
         for tool in self.tools:
             if not isinstance(tool, str) or not tool:
@@ -209,6 +283,7 @@ class Target:
         return {
             "schema": TARGET_SCHEMA,
             "target_id": self.target_id,
+            "kind": self.kind,
             "tools": list(self.tools),
         }
 
@@ -246,6 +321,35 @@ def assert_disjoint_targets(targets: Sequence[Target]) -> tuple[Target, ...]:
 # ---------------------------------------------------------------------------
 # Portfolios
 # ---------------------------------------------------------------------------
+
+
+def _checked_override_value(key: str, value: object, *, label: str) -> object:
+    """One artifact override value, WITHOUT deciding which family wrote it.
+
+    EVO-A1's override is one tool DESCRIPTION -- a line of text. EVO-S1's is
+    one intent BLOCK (``{"types": [...]}``), because a slot block is a
+    structure the renderer turns into text rather than text a candidate
+    writes. The incumbent state of an ACCEPTED SLURP round therefore carries
+    mappings, and a state object that insisted on text would refuse ``A_1``
+    the moment round 1 was accepted -- a failure that would land after the
+    fold-B flight had already been paid for.
+
+    What a block MEANS is checked where the family is known
+    (``rails.proposer._checked_slurp_blocks``, reached through
+    ``slurp_candidate_schema`` on every render), so this refuses only what no
+    family can mean: an empty value.
+    """
+
+    if isinstance(value, str):
+        if not value.strip():
+            raise EvolutionError(f"{label} for {key!r} must be non-empty text")
+        return value
+    if isinstance(value, Mapping) and value:
+        return value
+    raise EvolutionError(
+        f"{label} for {key!r} must be non-empty text (a description) or a non-empty "
+        "object (an artifact block)"
+    )
 
 
 @dataclass(frozen=True)
@@ -296,8 +400,7 @@ def assemble_portfolio(
     for tool, text in incumbent_overrides.items():
         if not isinstance(tool, str) or not tool:
             raise EvolutionError("incumbent_overrides has a non-text tool name")
-        if not isinstance(text, str) or not text.strip():
-            raise EvolutionError(f"incumbent override for {tool!r} must be non-empty text")
+        _checked_override_value(tool, text, label="incumbent override")
     if not isinstance(chosen, Mapping) or not chosen:
         raise EvolutionError("chosen must be a non-empty mapping of target_id to candidate")
 
@@ -367,6 +470,39 @@ def _relative_posix(path: Path, base: Path) -> str:
     return text
 
 
+def fragment_stem(
+    portfolio_sha256: str,
+    *,
+    artifact_family: str = A2T_DESCRIPTIONS_FAMILY,
+    fold: str | None = None,
+) -> str:
+    """The baseline-fragment name one portfolio gets, as a pure function.
+
+    Deterministic in the portfolio's own content hash, so re-running an
+    assembly rewrites the same bytes at the same path and a step that needs to
+    NAME a fragment (a cell's ``baseline_fragment``) never has to guess which
+    file the writer produced. ``fold`` is EVO-S1's second dimension: a slot
+    cell's sealed-intent predecessor differs per fold, so one portfolio has one
+    artifact and two fragment variants.
+
+    FLAT names with no path separator, because ``core.config
+    ._FRAGMENT_NAME_PATTERN`` refuses one.
+    """
+
+    if not isinstance(portfolio_sha256, str) or not re.fullmatch(
+        r"[0-9a-f]{64}", portfolio_sha256
+    ):
+        raise EvolutionError("portfolio_sha256 must be a sha256 hex digest")
+    if artifact_family not in ARTIFACT_FAMILY_STEMS:
+        raise EvolutionError(f"unknown artifact family {artifact_family!r}")
+    stem = f"{ARTIFACT_FAMILY_STEMS[artifact_family][1]}-{portfolio_sha256[:SHA_PREFIX_LENGTH]}"
+    if fold is None:
+        return stem
+    if not isinstance(fold, str) or not re.fullmatch(r"[a-z0-9-]+", fold):
+        raise EvolutionError(f"fold {fold!r} is not a plain lower-case name")
+    return f"{stem}-{fold}"
+
+
 def write_candidate_fragments(
     portfolios: Sequence[Portfolio],
     *,
@@ -374,6 +510,10 @@ def write_candidate_fragments(
     out_dir: Path | str,
     artifact_dir: Path | str,
     artifact_relpath_base: Path | str | None = None,
+    artifact_family: str = A2T_DESCRIPTIONS_FAMILY,
+    state_fill: str | None = None,
+    state_fill_phase: str | None = None,
+    fold_variants: Mapping[str, Mapping[str, object]] | None = None,
 ) -> list[Path]:
     """Write each portfolio's override artifact and its baseline fragment.
 
@@ -401,14 +541,58 @@ def write_candidate_fragments(
     ``artifact_relpath`` is relative to ``artifact_relpath_base`` when given
     (a repository root, say), else to ``artifact_dir`` -- i.e. the bare file
     name.
+
+    ``slurp-slot-schema`` (EVO-S1) takes the OTHER consumption path, and the
+    difference is a fact about the cell rather than a preference: SLURP reads
+    its artifact through ``rails.phase_material``'s per-sample
+    ``phase_material.<phase>.state_fill``, not through
+    ``task_instruction_fill``, because the block a row is shown depends on
+    that row's sealed intent. So the writer sets ``state_fill`` (normally
+    ``"slurp-evolved-slot-schema-for-state"``) and that phase's
+    ``fill_params`` on a base fragment that must already BE a state-fill arm
+    -- ``configs/baseline/slurp-phase-slots-given-intent-schema-v1.json``,
+    KC-S1b's own -- so an evolved arm differs from the admitted incumbent by
+    the artifact and by nothing else.
+
+    ``fold_variants`` maps a fold name to that fold's
+    ``predecessor_source`` object. EVO-S1 needs it because each fold's slot
+    cells bind THAT fold's one-time closed-list intent manifest as their
+    sealed predecessor: two folds, two manifests, two fragment variants per
+    portfolio, and the binding never changes across rounds or candidates.
     """
 
     if isinstance(portfolios, (str, bytes)) or not portfolios:
         raise EvolutionError("portfolios must be a non-empty sequence")
     if not isinstance(base_fragment, Mapping) or not base_fragment:
         raise EvolutionError("base_fragment must be a non-empty mapping")
+    if artifact_family not in ARTIFACT_FAMILY_STEMS:
+        raise EvolutionError(f"unknown artifact family {artifact_family!r}")
+    artifact_stem, _fragment_stem = ARTIFACT_FAMILY_STEMS[artifact_family]
+    state_fill_family = artifact_family != A2T_DESCRIPTIONS_FAMILY
+    if state_fill_family:
+        if not isinstance(state_fill, str) or not state_fill:
+            raise EvolutionError(
+                f"a {artifact_family!r} fragment is consumed through a per-sample state "
+                "fill; name it"
+            )
+        if not isinstance(state_fill_phase, str) or not state_fill_phase:
+            raise EvolutionError("a state-fill fragment must name the phase it fills")
+    elif state_fill is not None or state_fill_phase is not None:
+        raise EvolutionError(
+            f"a {artifact_family!r} fragment is consumed through task_instruction_fill; "
+            "it declares no state fill"
+        )
+    folds: tuple[tuple[str, Mapping[str, object] | None], ...] = ((("", None)),)
+    if fold_variants is not None:
+        if not state_fill_family:
+            raise EvolutionError("fold variants are a state-fill fragment's shape")
+        if not isinstance(fold_variants, Mapping) or not fold_variants:
+            raise EvolutionError("fold_variants must be a non-empty mapping")
+        folds = tuple(
+            (name, fold_variants[name]) for name in sorted(fold_variants)
+        )
     for owned in ("task_instruction_fill", "task_instruction_fill_params"):
-        if owned in base_fragment:
+        if owned in base_fragment and not state_fill_family:
             raise EvolutionError(
                 f"base_fragment already sets {owned!r}; this writer owns that key and "
                 "will not silently replace it"
@@ -433,27 +617,101 @@ def write_candidate_fragments(
         stem = portfolio.portfolio_sha256[:SHA_PREFIX_LENGTH]
 
         overrides = {tool: portfolio.overrides[tool] for tool in sorted(portfolio.overrides)}
-        artifact_file = artifact_path / f"{ARTIFACT_STEM}-{stem}.json"
+        artifact_file = artifact_path / f"{artifact_stem}-{stem}.json"
         artifact_bytes = canonical_json_bytes(overrides)
         artifact_file.write_bytes(artifact_bytes)
 
-        fragment = dict(base_fragment)
-        fragment["task_instruction_fill"] = EVOLVED_FILL_NAME
-        fragment["task_instruction_fill_params"] = {
+        params = {
             "artifact_relpath": _relative_posix(artifact_file, base),
             "artifact_sha256": content_hash(overrides),
             "portfolio_sha256": portfolio.portfolio_sha256,
             "round": portfolio.round,
             "k": portfolio.k,
         }
-        fragment_file = out_path / f"{FRAGMENT_STEM}-{stem}.json"
-        fragment_file.write_text(
-            json.dumps(fragment, indent=2, sort_keys=True) + "\n",
-            encoding="utf-8",
-            newline="\n",
-        )
-        written.append(fragment_file)
+        for fold_name, predecessor in folds:
+            fragment = dict(base_fragment)
+            if state_fill_family:
+                fragment["phase_material"] = _with_state_fill(
+                    base_fragment,
+                    phase=str(state_fill_phase),
+                    state_fill=str(state_fill),
+                    fill_params=params,
+                    predecessor_source=predecessor,
+                )
+            else:
+                fragment["task_instruction_fill"] = EVOLVED_FILL_NAME
+                fragment["task_instruction_fill_params"] = params
+            fragment_file = out_path / (
+                fragment_stem(
+                    portfolio.portfolio_sha256,
+                    artifact_family=artifact_family,
+                    fold=fold_name or None,
+                )
+                + ".json"
+            )
+            fragment_file.write_text(
+                json.dumps(fragment, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+            written.append(fragment_file)
     return written
+
+
+def _with_state_fill(
+    base_fragment: Mapping[str, object],
+    *,
+    phase: str,
+    state_fill: str,
+    fill_params: Mapping[str, object],
+    predecessor_source: Mapping[str, object] | None,
+) -> dict[str, object]:
+    """``base_fragment``'s ``phase_material`` with ONE phase re-pointed at the
+    evolved artifact, and everything else left exactly as the base has it.
+
+    Fail-closed on a base that is not already a state-fill arm of that phase:
+    the evolved fragment has to differ from the admitted incumbent by the
+    artifact alone, so a base without the phase, without a ``state_fill``, or
+    without the ``sealed-manifest`` predecessor a state fill reads is a
+    different arm and is refused rather than repaired.
+    """
+
+    material = base_fragment.get("phase_material")
+    if not isinstance(material, Mapping) or phase not in material:
+        raise EvolutionError(
+            f"base_fragment declares no phase_material[{phase!r}]; a state-fill "
+            "fragment is written from the arm that already carries that phase"
+        )
+    entry = material[phase]
+    if not isinstance(entry, Mapping):
+        raise EvolutionError(f"phase_material[{phase!r}] must be an object")
+    if not entry.get("state_fill"):
+        raise EvolutionError(
+            f"base_fragment phase_material[{phase!r}] declares no state_fill; the "
+            "evolved arm must differ from the incumbent by the artifact alone"
+        )
+    if entry.get("fill_params"):
+        raise EvolutionError(
+            f"base_fragment phase_material[{phase!r}] already carries fill_params; this "
+            "writer owns them and will not silently replace a caller's binding"
+        )
+    if predecessor_source is not None and entry.get("predecessor_binding") != (
+        "sealed-manifest"
+    ):
+        raise EvolutionError(
+            f"phase_material[{phase!r}] binds "
+            f"{entry.get('predecessor_binding')!r}, not 'sealed-manifest'; a per-fold "
+            "predecessor variant has nothing to replace"
+        )
+    updated = {key: dict(value) if isinstance(value, Mapping) else value
+               for key, value in material.items()}
+    phase_entry = dict(entry)
+    phase_entry["state_fill"] = state_fill
+    phase_entry["fill_params"] = dict(fill_params)
+    if predecessor_source is not None:
+        phase_entry["predecessor_source"] = dict(predecessor_source)
+    updated[phase] = phase_entry
+    return updated
 
 
 # ---------------------------------------------------------------------------
@@ -728,6 +986,53 @@ def selection_record(
 
 
 @dataclass(frozen=True)
+class PerTargetHarmBound:
+    """EVO-S1's replacement for the background population.
+
+    On SLURP every scenario is a target, so the "150 tools nobody targeted"
+    that EVO-A1's background bound watches simply do not exist, and the
+    program's -1.0 pp background tolerance has to be transposed. The
+    coordinator's transposition, encoded here exactly:
+
+    * ``max_net_harm_rows`` -- for every scenario whose candidate was ADMITTED
+      at stage one, on fold B, ``harms - saves <= 1`` on that scenario's own
+      rows. A count rule, because a CI90 over 30 rows of a sparse metric
+      accepts everything and a reviewer can recount a count by hand;
+    * ``unadmitted_tolerance_pp`` -- for the scenarios NOT admitted, whose
+      blocks the assembly leaves at the incumbent, the POOLED paired point
+      estimate stays at or above -1.0 pp. Those rows are the nearest thing
+      this cell has to a background population, and a rewrite that broke them
+      would be breaking rows it did not even claim to change;
+    * and, unchanged from EVO-A1, the pooled TARGETED CI90 lower bound above
+      zero -- here pooled over the admitted scenarios' rows.
+    """
+
+    max_net_harm_rows: int = 1
+    unadmitted_tolerance_pp: float = BACKGROUND_TOLERANCE_PP
+
+    def validate(self) -> "PerTargetHarmBound":
+        if (
+            isinstance(self.max_net_harm_rows, bool)
+            or not isinstance(self.max_net_harm_rows, int)
+            or self.max_net_harm_rows < 0
+        ):
+            raise EvolutionError("max_net_harm_rows must be a nonnegative integer")
+        if isinstance(self.unadmitted_tolerance_pp, bool) or not isinstance(
+            self.unadmitted_tolerance_pp, (int, float)
+        ):
+            raise EvolutionError(
+                "unadmitted_tolerance_pp must be a number in percentage points"
+            )
+        return self
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "max_net_harm_rows": self.max_net_harm_rows,
+            "unadmitted_tolerance_pp": float(self.unadmitted_tolerance_pp),
+        }
+
+
+@dataclass(frozen=True)
 class ConfirmationDecision:
     """The fold-B verdict on one assembled state, as a whole."""
 
@@ -735,10 +1040,12 @@ class ConfirmationDecision:
     reason: str
     metric: str
     targeted: PairedContrast
-    background: PairedContrast
+    background: PairedContrast | None
     background_tolerance_pp: float
     targeted_gain_pp: float
     background_gain_pp: float
+    harm_bound: PerTargetHarmBound | None = None
+    per_target: tuple[Mapping[str, object], ...] = ()
 
     def as_json(self) -> dict[str, object]:
         return {
@@ -750,7 +1057,9 @@ class ConfirmationDecision:
             "targeted_gain_pp": self.targeted_gain_pp,
             "background_gain_pp": self.background_gain_pp,
             "targeted": self.targeted.as_dict(),
-            "background": self.background.as_dict(),
+            "background": None if self.background is None else self.background.as_dict(),
+            "harm_bound": None if self.harm_bound is None else self.harm_bound.as_json(),
+            "per_target": [dict(record) for record in self.per_target],
         }
 
 
@@ -759,17 +1068,26 @@ def confirm_assembly(
     assembly_scores: Mapping[str, Mapping[str, float]],
     *,
     targeted_rows: Sequence[str],
-    background_rows: Sequence[str],
+    background_rows: Sequence[str] = (),
     metric: str,
     strata_of: Callable[[str], str] | None = None,
     seed: int = DEFAULT_SEED,
     background_tolerance: float = BACKGROUND_TOLERANCE_PP,
     n_replicates: int = 10_000,
     metric_is_fraction: bool = True,
+    harm_bound: PerTargetHarmBound | None = None,
+    rows_of_target: Mapping[str, Sequence[str]] | None = None,
+    admitted_targets: Sequence[str] = (),
 ) -> ConfirmationDecision:
     """Accept the whole assembly, or keep the incumbent -- never partially.
 
-    Two CI90 bounds, both required:
+    Two regimes, and which one runs is a fact about the cell rather than a
+    knob. Without ``harm_bound`` this is EVO-A1's rule, unchanged. With one it
+    is EVO-S1's, where every scenario is a target and there is therefore no
+    background population to bound; see :class:`PerTargetHarmBound`, whose
+    three parts this function evaluates and reports one by one.
+
+    EVO-A1's rule, two CI90 bounds, both required:
 
     * targeted pooled lower bound strictly ABOVE 0 -- the rewrite helped the
       rows it was written for;
@@ -794,8 +1112,19 @@ def confirm_assembly(
         raise EvolutionError("metric must be non-empty text")
     if isinstance(targeted_rows, (str, bytes)) or not targeted_rows:
         raise EvolutionError("targeted_rows must be a non-empty sequence of ids")
-    if isinstance(background_rows, (str, bytes)) or not background_rows:
-        raise EvolutionError("background_rows must be a non-empty sequence of ids")
+    if harm_bound is None:
+        if isinstance(background_rows, (str, bytes)) or not background_rows:
+            raise EvolutionError("background_rows must be a non-empty sequence of ids")
+    else:
+        harm_bound.validate()
+        if isinstance(background_rows, (str, bytes)):
+            raise EvolutionError("background_rows must be a sequence of ids")
+        if not isinstance(rows_of_target, Mapping) or not rows_of_target:
+            raise EvolutionError(
+                "a per-target harm bound needs each target's own fold-B rows"
+            )
+        if isinstance(admitted_targets, (str, bytes)):
+            raise EvolutionError("admitted_targets must be a sequence of target ids")
     targeted_ids = tuple(targeted_rows)
     background_ids = tuple(background_rows)
     overlap = set(targeted_ids) & set(background_ids)
@@ -818,21 +1147,42 @@ def confirm_assembly(
         seed=seed,
         n_replicates=n_replicates,
     )[metric]
-    background = paired_contrast(
-        incumbent_scores,
-        assembly_scores,
-        metrics=[metric],
-        sample_ids=background_ids,
-        strata_of=strata_of,
-        seed=seed,
-        n_replicates=n_replicates,
-    )[metric]
-    if targeted.bootstrap is None or background.bootstrap is None:
-        raise EvolutionError("confirmation requires both bootstrap intervals")
-
+    background = None
+    if background_ids:
+        background = paired_contrast(
+            incumbent_scores,
+            assembly_scores,
+            metrics=[metric],
+            sample_ids=background_ids,
+            strata_of=strata_of,
+            seed=seed,
+            n_replicates=n_replicates,
+        )[metric]
+    if targeted.bootstrap is None:
+        raise EvolutionError("confirmation requires the targeted bootstrap interval")
     scale = 100.0 if metric_is_fraction else 1.0
-    tolerance = background_tolerance / scale
     targeted_ok = targeted.bootstrap.ci_low > 0.0
+
+    if harm_bound is not None:
+        return _confirm_with_harm_bound(
+            incumbent_scores,
+            assembly_scores,
+            targeted=targeted,
+            background=background,
+            targeted_ok=targeted_ok,
+            metric=metric,
+            harm_bound=harm_bound,
+            rows_of_target=rows_of_target or {},
+            admitted_targets=tuple(admitted_targets),
+            strata_of=strata_of,
+            seed=seed,
+            n_replicates=n_replicates,
+            scale=scale,
+        )
+
+    if background is None or background.bootstrap is None:
+        raise EvolutionError("confirmation requires both bootstrap intervals")
+    tolerance = background_tolerance / scale
     background_ok = background.bootstrap.ci_low >= tolerance
     if targeted_ok and background_ok:
         reason = (
@@ -859,6 +1209,139 @@ def confirm_assembly(
         background_tolerance_pp=float(background_tolerance),
         targeted_gain_pp=targeted.delta * scale,
         background_gain_pp=background.delta * scale,
+    )
+
+
+def _confirm_with_harm_bound(
+    incumbent_scores: Mapping[str, Mapping[str, float]],
+    assembly_scores: Mapping[str, Mapping[str, float]],
+    *,
+    targeted: PairedContrast,
+    background: PairedContrast | None,
+    targeted_ok: bool,
+    metric: str,
+    harm_bound: PerTargetHarmBound,
+    rows_of_target: Mapping[str, Sequence[str]],
+    admitted_targets: Sequence[str],
+    strata_of: Callable[[str], str] | None,
+    seed: int,
+    n_replicates: int,
+    scale: float,
+) -> ConfirmationDecision:
+    """EVO-S1's stage two: the pooled targeted interval plus the three-part
+    per-scenario harm bound, each part measured and each part reported.
+
+    Every admitted scenario's own fold-B rows are counted (saves, harms, net,
+    delta, and its CI90 -- recorded even though the count rule is what
+    decides, so a reviewer can see how uninformative the interval is at 30
+    rows). The unadmitted scenarios are pooled into one contrast and read on
+    the POINT ESTIMATE.
+    """
+
+    per_target: list[dict[str, object]] = []
+    admitted = tuple(sorted(set(admitted_targets)))
+    unknown = sorted(set(admitted) - set(rows_of_target))
+    if unknown:
+        raise EvolutionError(f"no fold-B rows supplied for admitted target(s) {unknown}")
+    breaches: list[str] = []
+    for target_id in admitted:
+        rows = tuple(rows_of_target[target_id])
+        if not rows:
+            raise EvolutionError(f"admitted target {target_id!r} has no fold-B row")
+        contrast = paired_contrast(
+            incumbent_scores,
+            assembly_scores,
+            metrics=[metric],
+            sample_ids=rows,
+            seed=seed,
+            n_replicates=n_replicates,
+        )[metric]
+        net_harm = contrast.harms - contrast.saves
+        within = net_harm <= harm_bound.max_net_harm_rows
+        per_target.append(
+            {
+                "target_id": target_id,
+                "admitted": True,
+                "n": contrast.n,
+                "saves": contrast.saves,
+                "harms": contrast.harms,
+                "ties": contrast.ties,
+                "net_harm_rows": net_harm,
+                "delta_pp": contrast.delta * scale,
+                "ci90_low_pp": (
+                    None if contrast.bootstrap is None else contrast.bootstrap.ci_low * scale
+                ),
+                "ci90_high_pp": (
+                    None if contrast.bootstrap is None else contrast.bootstrap.ci_high * scale
+                ),
+                "within_harm_bound": within,
+            }
+        )
+        if not within:
+            breaches.append(f"{target_id} (harms - saves = {net_harm})")
+
+    unadmitted_pp = None if background is None else background.delta * scale
+    unadmitted_ok = (
+        True
+        if background is None
+        else unadmitted_pp >= harm_bound.unadmitted_tolerance_pp
+    )
+    if background is not None:
+        per_target.append(
+            {
+                "target_id": "(unadmitted, pooled)",
+                "admitted": False,
+                "n": background.n,
+                "saves": background.saves,
+                "harms": background.harms,
+                "ties": background.ties,
+                "net_harm_rows": background.harms - background.saves,
+                "delta_pp": unadmitted_pp,
+                "ci90_low_pp": (
+                    None
+                    if background.bootstrap is None
+                    else background.bootstrap.ci_low * scale
+                ),
+                "ci90_high_pp": (
+                    None
+                    if background.bootstrap is None
+                    else background.bootstrap.ci_high * scale
+                ),
+                "within_harm_bound": unadmitted_ok,
+            }
+        )
+
+    parts = [
+        f"pooled targeted CI90 lower bound {targeted.bootstrap.ci_low * scale:.3f} pp "
+        f"{'>' if targeted_ok else 'is not >'} 0",
+        (
+            f"every admitted scenario within harms - saves <= "
+            f"{harm_bound.max_net_harm_rows}"
+            if not breaches
+            else f"scenario(s) over the harm bound: {', '.join(breaches)}"
+        ),
+        (
+            "no unadmitted scenario flew"
+            if background is None
+            else (
+                f"unadmitted pooled delta {unadmitted_pp:.3f} pp "
+                f"{'>=' if unadmitted_ok else '<'} "
+                f"{harm_bound.unadmitted_tolerance_pp:.3f} pp"
+            )
+        ),
+    ]
+    accepted = bool(targeted_ok and not breaches and unadmitted_ok)
+    return ConfirmationDecision(
+        accepted=accepted,
+        reason="; ".join(parts),
+        metric=metric,
+        targeted=targeted,
+        background=background,
+        background_tolerance_pp=float(harm_bound.unadmitted_tolerance_pp),
+        targeted_gain_pp=targeted.delta * scale,
+        background_gain_pp=0.0 if unadmitted_pp is None else unadmitted_pp,
+        harm_bound=harm_bound,
+        per_target=tuple(per_target),
     )
 
 
@@ -914,8 +1397,7 @@ class EvolutionState:
         for tool, text in self.incumbent_overrides.items():
             if not isinstance(tool, str) or not tool:
                 raise EvolutionError("incumbent_overrides has a non-text tool name")
-            if not isinstance(text, str) or not text.strip():
-                raise EvolutionError(f"override for {tool!r} must be non-empty text")
+            _checked_override_value(tool, text, label="override")
         for outcome in self.history:
             if not isinstance(outcome, RoundOutcome):
                 raise EvolutionError("history must hold RoundOutcome entries")
@@ -1114,7 +1596,14 @@ def replay_selection(
     if not isinstance(targets_raw, list) or not targets_raw:
         raise EvolutionError("selection record carries no targets")
     targets = tuple(
-        Target(target_id=str(item["target_id"]), tools=tuple(item["tools"]))
+        Target(
+            target_id=str(item["target_id"]),
+            tools=tuple(item["tools"]),
+            # A scenario target has ONE member, so a replay that rebuilt it as
+            # a contrast would refuse the very receipt it is checking.
+            # Defaulted for the landed EVO-A1 records that predate the key.
+            kind=str(item.get("kind", "contrast")),
+        )
         for item in targets_raw
     )
     rows_raw = record.get("rows_of_target")
@@ -1509,6 +1998,7 @@ def plan_proposer_draws(
     placebo_slot: int | None = None,
     exemplars_per_tool: int = EXEMPLARS_PER_TOOL,
     seed: int = DEFAULT_SEED,
+    min_members: int = 2,
 ) -> tuple[ProposerDraw, ...]:
     """Every contact one round's PROPOSE step makes, in (target, k) order.
 
@@ -1561,11 +2051,16 @@ def plan_proposer_draws(
             "already the anchor of an earlier draw in this round"
         )
 
+    if isinstance(min_members, bool) or not isinstance(min_members, int) or min_members < 1:
+        raise EvolutionError("min_members must be a positive integer")
     for target_id in sorted(target_tools):
         raw_tools = target_tools[target_id]
         tools = tuple(raw_tools)
-        if isinstance(raw_tools, (str, bytes)) or len(tools) < 2:
-            raise EvolutionError(f"target {target_id!r} must name at least two tools")
+        if isinstance(raw_tools, (str, bytes)) or len(tools) < min_members:
+            raise EvolutionError(
+                f"target {target_id!r} must name at least "
+                f"{'two tools' if min_members == 2 else 'one stratum member'}"
+            )
         missing = sorted(set(tools) - set(pool_by_tool))
         if missing:
             raise EvolutionError(
@@ -1773,6 +2268,13 @@ class ProposerContact:
     prompt_sha256: str
     construction_target_ids: tuple[str, ...]
     rendered_exemplar_ids: tuple[str, ...]
+    #: The artifact keys THIS contact asked to be rewritten, in the order the
+    #: instruction gave them. EVO-A1: the target's tools. EVO-S1: only the
+    #: intents the drawn exemplars actually covered -- a candidate never
+    #: rewrites a block it saw no evidence for, so a nine-intent scenario
+    #: under M = 8 leaves the uncovered blocks at the incumbent. The harvest
+    #: parses a response against exactly this list.
+    artifact_keys: tuple[str, ...] = ()
 
     @property
     def sample_id(self) -> str:
@@ -1794,6 +2296,7 @@ class ProposerContact:
             "declared_construction_targets": len(self.construction_target_ids),
             "rendered_exemplars": len(self.rendered_exemplar_ids),
             "exemplar_ids": list(self.draw.exemplar_ids),
+            "artifact_keys": list(self.artifact_keys),
         }
 
 
@@ -1845,11 +2348,17 @@ def _incumbent_descriptions(
 def build_proposer_material(
     roster_document: Mapping[str, object],
     *,
-    registry_rows: Sequence[Mapping[str, str]],
+    registry_rows: Sequence[Mapping[str, str]] = (),
     target_tools: Mapping[str, Sequence[str]],
-    incumbent_overrides: Mapping[str, str],
-    exemplar_rows: Mapping[str, Mapping[str, str]],
+    incumbent_overrides: Mapping[str, object],
+    exemplar_rows: Mapping[str, Mapping[str, object]],
     carrier_lock_key: str | None = None,
+    artifact_family: str = A2T_DESCRIPTIONS_FAMILY,
+    artifact_keys: Mapping[str, Sequence[str]] | None = None,
+    slot_schema: object = None,
+    unfloored_schema: object = None,
+    entity_type_names: Sequence[str] = (),
+    min_members: int = 2,
 ) -> ProposerMaterial:
     """Render every contact of one committed proposer roster. Pure.
 
@@ -1881,6 +2390,19 @@ def build_proposer_material(
         raise EvolutionError("incumbent_overrides must be a mapping")
     if not isinstance(exemplar_rows, Mapping):
         raise EvolutionError("exemplar_rows must be a mapping")
+    if artifact_family == SLURP_SLOT_SCHEMA_FAMILY:
+        return _slurp_proposer_material(
+            draws,
+            target_tools=target_tools,
+            artifact_keys=artifact_keys or target_tools,
+            incumbent_overrides=incumbent_overrides,
+            exemplar_rows=exemplar_rows,
+            slot_schema=slot_schema,
+            unfloored_schema=unfloored_schema,
+            entity_type_names=entity_type_names,
+        )
+    if artifact_family != A2T_DESCRIPTIONS_FAMILY:
+        raise EvolutionError(f"unknown artifact family {artifact_family!r}")
 
     contacts: list[ProposerContact] = []
     bound: dict[str, str] = {}
@@ -1900,7 +2422,7 @@ def build_proposer_material(
 
     for draw in draws:
         tools = tuple(target_tools.get(draw.target_id, ()))
-        if len(tools) < 2:
+        if len(tools) < min_members:
             raise EvolutionError(
                 f"draw {draw.draw_id} names target {draw.target_id!r}, which the "
                 "supplied target set does not describe as two or more tools"
@@ -1968,6 +2490,7 @@ def build_proposer_material(
                 prompt_sha256=prompt_sha256(instruction),
                 construction_target_ids=declared,
                 rendered_exemplar_ids=rendered,
+                artifact_keys=tuple(sorted(tools)),
             )
         )
 
@@ -1978,6 +2501,155 @@ def build_proposer_material(
             for sample_id in sorted(bound)
         ),
     )
+
+
+def _slurp_proposer_material(
+    draws: Sequence[ProposerDraw],
+    *,
+    target_tools: Mapping[str, Sequence[str]],
+    artifact_keys: Mapping[str, Sequence[str]],
+    incumbent_overrides: Mapping[str, object],
+    exemplar_rows: Mapping[str, Mapping[str, object]],
+    slot_schema: object,
+    unfloored_schema: object,
+    entity_type_names: Sequence[str],
+) -> ProposerMaterial:
+    """EVO-S1's half of :func:`build_proposer_material`. Pure.
+
+    Three things differ from EVO-A1 and all three are preregistered.
+
+    The exemplars are ``(sample_id, intent, sentence, [(entity type, filler),
+    ...])`` rows grouped by INTENT rather than gold calls grouped by tool.
+
+    A contact asks only for the intents its own draw COVERED: section 5's
+    "any intent the draw did not cover keeps its incumbent block unchanged",
+    which for ``iot`` (nine intents against ``M = 8``) is the difference
+    between a candidate grounded in evidence and one inventing a block. The
+    covered intents are ordered by the config's own preregistered intent order
+    (descending TRAIN mention mass), which is the order the blocks are given
+    in and therefore the order they must come back in.
+
+    Every contact declares its own exemplars as its construction targets --
+    unlike EVO-A1's placebo, which declares an anchor whose gold it never
+    renders -- because EVO-S1's controls make no contact at all.
+    """
+
+    if slot_schema is None or unfloored_schema is None:
+        raise EvolutionError(
+            "the slurp-slot-schema proposer needs A_0 and the unfloored TRAIN table; "
+            "every count and share in a rendered block comes from them"
+        )
+    types = tuple(str(name) for name in entity_type_names)
+    if not types:
+        raise EvolutionError(
+            "the slurp-slot-schema proposer needs the closed entity-type name list"
+        )
+    incumbent = _checked_slurp_incumbent(incumbent_overrides, slot_schema)
+
+    contacts: list[ProposerContact] = []
+    bound: dict[str, str] = {}
+    for draw in draws:
+        members = tuple(target_tools.get(draw.target_id, ()))
+        if not members:
+            raise EvolutionError(
+                f"draw {draw.draw_id} names target {draw.target_id!r}, which the "
+                "supplied target set does not describe"
+            )
+        if draw.family != "proposer":
+            raise EvolutionError(
+                f"draw {draw.draw_id} is a {draw.family!r} draw, but every EVO-S1 "
+                "control is deterministic and makes no contact"
+            )
+        declared_intents = tuple(str(key) for key in artifact_keys.get(draw.target_id, ()))
+        if not declared_intents:
+            raise EvolutionError(
+                f"target {draw.target_id!r} declares no intent to rewrite"
+            )
+        rows: list[tuple[str, str, str, tuple[tuple[str, str], ...]]] = []
+        covered: set[str] = set()
+        for sample_id in draw.exemplar_ids:
+            row = exemplar_rows.get(sample_id)
+            if not isinstance(row, Mapping):
+                raise EvolutionError(
+                    f"no construction row supplied for {sample_id!r}; every exemplar the "
+                    "roster names must be resolvable"
+                )
+            intent = str(row.get("intent", ""))
+            sentence = str(row.get("sentence", ""))
+            if not intent or not sentence.strip():
+                raise EvolutionError(
+                    f"construction row {sample_id!r} carries no intent or sentence"
+                )
+            if intent not in declared_intents:
+                raise EvolutionError(
+                    f"construction row {sample_id!r} carries intent {intent!r}, which is "
+                    f"not one of target {draw.target_id!r}'s intents"
+                )
+            entities = tuple(
+                (str(pair[0]), str(pair[1])) for pair in row.get("entities", ())
+            )
+            covered.add(intent)
+            rows.append((sample_id, intent, sentence, entities))
+            bound[sample_id] = intent
+        order = tuple(intent for intent in declared_intents if intent in covered)
+        if not order:
+            raise EvolutionError(
+                f"draw {draw.draw_id} covered no intent of target {draw.target_id!r}"
+            )
+        blocks = slurp_block_texts(slot_schema_for(incumbent, slot_schema, unfloored_schema),
+                                   intents=order)
+        instruction = render_slurp_proposer_instruction(
+            blocks,
+            intent_order=order,
+            entity_type_names=types,
+            exemplars=[row for intent in order for row in rows if row[1] == intent],
+            line_caps={
+                intent: len(unfloored_schema.intents[intent].types) for intent in order
+            },
+            scenario=draw.target_id,
+            round=draw.round,
+            k=draw.k,
+        )
+        contacts.append(
+            ProposerContact(
+                draw=draw,
+                instruction=instruction,
+                prompt_sha256=prompt_sha256(instruction),
+                construction_target_ids=tuple(draw.exemplar_ids),
+                rendered_exemplar_ids=tuple(draw.exemplar_ids),
+                artifact_keys=order,
+            )
+        )
+    return ProposerMaterial(
+        contacts=tuple(contacts),
+        bound_targets=tuple(
+            {"sample_id": sample_id, "target": bound[sample_id]}
+            for sample_id in sorted(bound)
+        ),
+    )
+
+
+def _checked_slurp_incumbent(
+    incumbent_overrides: Mapping[str, object], slot_schema: object
+) -> dict[str, object]:
+    """``A_r`` as a full block mapping: every intent A_0 carries, overridden
+    where an accepted round changed it."""
+
+    blocks = dict(slurp_blocks_from_schema(slot_schema))
+    for intent, block in incumbent_overrides.items():
+        if intent not in blocks:
+            raise EvolutionError(
+                f"the incumbent state carries intent {intent!r}, which A_0 does not"
+            )
+        blocks[intent] = block
+    return blocks
+
+
+def slot_schema_for(blocks: Mapping[str, object], base: object, unfloored: object):
+    """The renderable schema of one block mapping -- ``rails.proposer``'s
+    builder, re-exported here so the material step reads one name."""
+
+    return slurp_candidate_schema(blocks, unfloored=unfloored, base=base)
 
 
 # ---------------------------------------------------------------------------
@@ -2033,6 +2705,10 @@ def harvest_proposer_responses(
     responses: Mapping[str, str],
     *,
     target_tools: Mapping[str, Sequence[str]],
+    artifact_family: str = A2T_DESCRIPTIONS_FAMILY,
+    allowed_entity_types: Sequence[str] = (),
+    refuse_ngrams: Sequence[str] = (),
+    min_members: int = 2,
 ) -> CandidateHarvest:
     """Turn one sealed proposer manifest into candidates. Pure, model-free.
 
@@ -2077,11 +2753,17 @@ def harvest_proposer_responses(
         family = str(record["family"])
         rounds.add(int(record["round"]))
         tools = tuple(target_tools.get(target_id, ()))
-        if len(tools) < 2:
+        if len(tools) < min_members:
             raise EvolutionError(
                 f"contact {draw_id} names target {target_id!r}, which the supplied "
                 "target set does not describe"
             )
+        # What this contact ASKED for, which for EVO-S1 is only the intents
+        # its own draw covered. Falling back to the target's members keeps a
+        # landed EVO-A1 receipt readable, since those records predate the key.
+        keys = tuple(str(value) for value in record.get("artifact_keys", ())) or tuple(
+            sorted(tools)
+        )
         text = responses.get(sample_id)
         if not isinstance(text, str) or not text.strip():
             refusals.append(
@@ -2098,6 +2780,27 @@ def harvest_proposer_responses(
             continue
         digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
         try:
+            if artifact_family == SLURP_SLOT_SCHEMA_FAMILY:
+                if family != "proposer":
+                    raise ProposerError(
+                        f"family {family!r} makes no contact on this carrier and cannot "
+                        "be harvested; both EVO-S1 controls are deterministic"
+                    )
+                candidate = slurp_proposer_candidate(
+                    parse_slurp_schema_response(
+                        text,
+                        expected_intents=keys,
+                        allowed_entity_types=allowed_entity_types,
+                        refuse_ngrams=refuse_ngrams,
+                    ),
+                    target_id=target_id,
+                    round=int(record["round"]),
+                    k=int(record["k"]),
+                    proposer_prompt_sha256=str(record["prompt_sha256"]),
+                    exemplar_ids=tuple(str(value) for value in record.get("exemplar_ids", ())),
+                )
+                candidates.append(candidate)
+                continue
             cue, descriptions = parse_proposer_response(text, expected_tools=sorted(tools))
             if family == "proposer":
                 candidate = proposer_candidate(
@@ -2272,10 +2975,59 @@ class LoopConfig:
     gates: AdmissionGates = AdmissionGates()
     background_tolerance_pp: float = BACKGROUND_TOLERANCE_PP
     n_replicates: int = 10_000
+    # -- what a target IS, and what a candidate WRITES ---------------------
+    #: ``"contrast"`` (EVO-A1) or ``"scenario"`` (EVO-S1). The kind decides
+    #: whether a one-member target is legal and how ``confirm_assembly`` is
+    #: bounded; it is config rather than code because both cells fly the same
+    #: loop.
+    target_kind: str = "contrast"
+    artifact_family: str = A2T_DESCRIPTIONS_FAMILY
+    #: ``target_id -> the artifact keys that target's candidate rewrites``.
+    #: For EVO-A1 that IS ``targets`` (a target's own tools). For EVO-S1 a
+    #: target is one SCENARIO -- the stratum its reward rows carry -- while
+    #: the artifact is keyed by INTENT, so the two mappings differ and both
+    #: are preregistered. Absent means "the same as ``targets``".
+    artifact_keys: Mapping[str, tuple[str, ...]] | None = None
+    #: EVO-S1's controls are DETERMINISTIC, so the round-1 form twin costs no
+    #: contact and must not be planned as a proposer draw.
+    deterministic_placebo: bool = False
+    #: The per-sample state fill an evolved fragment declares, and the phase
+    #: that declares it (``rails.phase_material.PHASE_STATE_FILLS``). Only a
+    #: state-fill artifact family sets these.
+    state_fill: str | None = None
+    state_fill_phase: str | None = None
+    #: ``fold name -> that fold's sealed predecessor_source object``. EVO-S1's
+    #: slot cells bind their fold's one-time closed-list intent manifest, so
+    #: one portfolio has two fragment variants and the binding never changes
+    #: across rounds or candidates.
+    fold_predecessors: Mapping[str, Mapping[str, object]] | None = None
+    #: The harm bound that replaces the background population when every
+    #: stratum is a target.
+    harm_bound: PerTargetHarmBound | None = None
+    #: What this cell's candidates step records about the decontamination
+    #: gate: the registered model-free row and what each of its inputs IS.
+    #: Config rather than code because the answer is cell knowledge -- EVO-A1
+    #: guards tool-query text against a released registry, EVO-S1 guards
+    #: fillers against SLURP devel sentences with A_0's own 1,008 fillers
+    #: exempt -- and a receipt that inherited the other cell's paragraph would
+    #: describe a gate that never ran. ``ngram`` is added by the code.
+    decontamination: Mapping[str, object] | None = None
+    #: The reward arm every cell of this loop flies. EVO-A1 flies Audio2Tool's
+    #: ``bare-core``; EVO-S1 flies the ``speech-feature-query`` arm KC-S1b
+    #: flew, unchanged, because the evolved cell must differ from the admitted
+    #: incumbent by the artifact alone.
+    arm: str = "bare-core"
     receipts_reldir: str = (
         "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1"
     )
     rosters_reldir: str = "docs/receipts/rosters"
+    #: The three committed rosters a round resolves: the proposer's exemplar
+    #: pool and the two reward folds. Config rather than a loader default, so
+    #: a fresh draw (EVO-S1's V2 folds, say) is a one-line change to a
+    #: committed file and not an edit to a function signature.
+    exemplar_roster_relpath: str = "docs/receipts/rosters/a2t-evo-exemplars-v1.json"
+    fold_a_roster_relpath: str = "docs/receipts/rosters/a2t-evo-fold-a-v1.json"
+    fold_b_roster_relpath: str = "docs/receipts/rosters/a2t-evo-fold-b-v1.json"
     experiments_reldir: str = "configs/experiment"
     # FLAT, and this is a harness constraint rather than a taste: a config
     # fragment name may carry no path separator (``core.config
@@ -2284,23 +3036,45 @@ class LoopConfig:
     fragment_reldir: str = "configs/baseline"
     artifact_reldir: str = "configs/knowledge/a2t-evo-a1"
     slug: str = "a2t-evo-a1"
+    #: What a receipt and a fragment call this cell, and which preregistration
+    #: they cite. Config, not code, so the one driver serves both cells.
+    cell_label: str = "EVO-A1"
+    preregistration: str = (
+        "docs/readiness/2026-09-06-a2t-evo-a1-description-evolution-v1-preregistration.md"
+    )
 
     @classmethod
     def from_json(cls, document: Mapping[str, object]) -> "LoopConfig":
         if not isinstance(document, Mapping) or not document:
             raise EvolutionError("loop config must be a non-empty mapping")
         known = {f.name for f in fields(cls)}
-        unknown = sorted(set(document) - known - {"schema", "note"})
+        raw_document = dict(document)
+        # EVO-S1 preregisters its draw size as ``exemplars_per_scenario``,
+        # because its targets are scenarios and calling it "per tool" there
+        # would name a thing that cell does not have. One field, two legal
+        # spellings, and never both at once.
+        if "exemplars_per_scenario" in raw_document:
+            if "exemplars_per_tool" in raw_document:
+                raise EvolutionError(
+                    "loop config sets both exemplars_per_tool and "
+                    "exemplars_per_scenario; they are one field"
+                )
+            raw_document["exemplars_per_tool"] = raw_document.pop("exemplars_per_scenario")
+        unknown = sorted(set(raw_document) - known - {"schema", "note"})
         if unknown:
             raise EvolutionError(f"loop config carries unknown key(s): {unknown}")
-        values = {key: document[key] for key in known if key in document}
-        if "targets" in values:
-            raw = values["targets"]
-            if not isinstance(raw, Mapping) or not raw:
-                raise EvolutionError("loop config targets must be a non-empty mapping")
-            values["targets"] = {
-                str(key): tuple(str(tool) for tool in tools) for key, tools in raw.items()
-            }
+        values = {key: raw_document[key] for key in known if key in raw_document}
+        for key in ("targets", "artifact_keys"):
+            if key in values and values[key] is not None:
+                raw = values[key]
+                if not isinstance(raw, Mapping) or not raw:
+                    raise EvolutionError(
+                        f"loop config {key} must be a non-empty mapping"
+                    )
+                values[key] = {
+                    str(name): tuple(str(item) for item in items)
+                    for name, items in raw.items()
+                }
         for key in ("proposer_slots",):
             if key in values:
                 values[key] = tuple(int(slot) for slot in values[key])
@@ -2309,16 +3083,92 @@ class LoopConfig:
             values["gates"] = AdmissionGates(
                 saves=int(raw["saves"]), harms=int(raw["harms"]), net=int(raw["net"])
             )
+        if values.get("harm_bound") is not None:
+            raw = values["harm_bound"]
+            if not isinstance(raw, Mapping):
+                raise EvolutionError("loop config harm_bound must be an object")
+            values["harm_bound"] = PerTargetHarmBound(
+                max_net_harm_rows=int(raw.get("max_net_harm_rows", 1)),
+                unadmitted_tolerance_pp=float(
+                    raw.get("unadmitted_tolerance_pp", BACKGROUND_TOLERANCE_PP)
+                ),
+            ).validate()
         config = cls(**values)
-        assert_disjoint_targets(
-            [Target(target_id=key, tools=tools) for key, tools in config.targets.items()]
-        )
+        if config.target_kind not in TARGET_KINDS:
+            raise EvolutionError(
+                f"loop config target_kind must be one of {list(TARGET_KINDS)}"
+            )
+        if config.artifact_family not in ARTIFACT_FAMILY_STEMS:
+            raise EvolutionError(
+                f"loop config artifact_family must be one of "
+                f"{sorted(ARTIFACT_FAMILY_STEMS)}"
+            )
+        if config.artifact_keys is not None and set(config.artifact_keys) != set(
+            config.targets
+        ):
+            raise EvolutionError(
+                "loop config artifact_keys must name exactly the same targets as "
+                "targets"
+            )
+        if (config.artifact_family != A2T_DESCRIPTIONS_FAMILY) != bool(config.state_fill):
+            raise EvolutionError(
+                "a state-fill artifact family declares a state_fill and no other family "
+                "may; this config disagrees with itself"
+            )
+        if config.fold_predecessors is not None and set(config.fold_predecessors) != set(
+            FOLD_KEYS.values()
+        ):
+            raise EvolutionError(
+                f"loop config fold_predecessors must name exactly "
+                f"{sorted(FOLD_KEYS.values())}"
+            )
+        config.target_objects()
         return config
 
     def target_objects(self) -> tuple[Target, ...]:
         return assert_disjoint_targets(
-            [Target(target_id=key, tools=tools) for key, tools in sorted(self.targets.items())]
+            [
+                Target(target_id=key, tools=tools, kind=self.target_kind)
+                for key, tools in sorted(self.targets.items())
+            ]
         )
+
+    def fold_name(self, which: str) -> str | None:
+        """The fragment-variant label of ``"fold_a"`` / ``"fold_b"``, or
+        ``None`` when this loop writes one fragment per portfolio.
+
+        A cell whose arm binds a SEALED predecessor per fold (EVO-S1's slot
+        cells, each bound to that fold's one-time closed-list intent manifest)
+        needs one fragment per fold; a cell whose arm is fold-independent
+        (EVO-A1's) needs one, and naming a fold in its fragment would suggest
+        a difference that is not there.
+        """
+
+        if which not in FOLD_KEYS:
+            raise EvolutionError(f"fold key must be one of {list(FOLD_KEYS)}")
+        if self.fold_predecessors is None:
+            return None
+        name = FOLD_KEYS[which]
+        if name not in self.fold_predecessors:
+            raise EvolutionError(
+                f"loop config fold_predecessors carries no {name!r} entry"
+            )
+        return name
+
+    def keys_of_target(self, target_id: str) -> tuple[str, ...]:
+        """The ARTIFACT keys ``target_id``'s candidate rewrites, in the order
+        the proposer instruction shows them.
+
+        EVO-A1: that target's tools. EVO-S1: that scenario's intents, in the
+        preregistered descending-TRAIN-mention-mass order the config records,
+        which is the order the blocks are given in and the order a response's
+        blocks must come back in.
+        """
+
+        table = self.artifact_keys if self.artifact_keys is not None else self.targets
+        if target_id not in table:
+            raise EvolutionError(f"loop config describes no target {target_id!r}")
+        return tuple(table[target_id])
 
     def slots_for_round(self, round_index: int) -> tuple[int, ...]:
         """The proposer slots plus, in round 1 only, the placebo slot.
@@ -2614,12 +3464,24 @@ class CarrierMaterial:
     registry_rows: tuple[Mapping[str, str], ...]
     exemplar_pool: Mapping[str, tuple[str, ...]]
     media_facts: Mapping[str, Mapping[str, object]]
-    exemplar_rows: Mapping[str, Mapping[str, str]]
+    exemplar_rows: Mapping[str, Mapping[str, object]]
     fold_a_rows_of_target: Mapping[str, tuple[str, ...]]
     fold_b_targeted_rows: tuple[str, ...]
     fold_b_background_rows: tuple[str, ...]
     fold_a_strata_of: Callable[[str], str] | None = None
     fold_b_strata_of: Callable[[str], str] | None = None
+    #: EVO-S1's own material. ``slot_schema`` is ``A_0`` (the floored TRAIN
+    #: schema KC-S1b flew) and ``unfloored_schema`` is the same mining at
+    #: ``min_share = 0.0`` -- the only authority for a type's count, its share
+    #: and its intent's line cap. ``entity_type_names`` is the closed list the
+    #: proposer instruction shows. EVO-A1 leaves all three empty.
+    slot_schema: object = None
+    unfloored_schema: object = None
+    entity_type_names: tuple[str, ...] = ()
+    #: Each target's own fold-B rows, which the per-scenario harm bound counts
+    #: on. EVO-A1's stage two reads a background population instead and leaves
+    #: this empty.
+    fold_b_rows_of_target: Mapping[str, tuple[str, ...]] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -2674,13 +3536,11 @@ def _experiment_fragment(
     return {
         "experiment_id": run_id,
         "schema": "saea-a2t-direct-calibration-experiment-v1",
-        "generated_by": "scripts/run_a2t_evolution_round.py",
+        "generated_by": "scripts/run_evolution_round.py",
         "round": round_index,
         "purpose": purpose,
         "execution_profile": profile,
-        "preregistration": (
-            "docs/readiness/2026-09-06-a2t-evo-a1-description-evolution-v1-preregistration.md"
-        ),
+        "preregistration": config.preregistration,
         "cells": [dict(cell) for cell in cells],
         "populations": [{"dataset_fragment": dataset_fragment, "arm": arm}],
         "execution_plan": {
@@ -2716,7 +3576,14 @@ def run_propose_step(
     paths = config.round_paths(round_index)["propose"]["writes"]
     slots = config.slots_for_round(round_index)
     proposer_slots = tuple(slot for slot in slots if slot != config.placebo_slot)
-    placebo_slot = config.placebo_slot if config.placebo_slot in slots else None
+    # EVO-S1's form twin is a string transformation, not a contact, so it is
+    # built in the CANDIDATES step and never planned as a draw here.
+    placebo_slot = (
+        config.placebo_slot
+        if config.placebo_slot in slots and not config.deterministic_placebo
+        else None
+    )
+    min_members = 1 if config.target_kind == "scenario" else 2
     draws = plan_proposer_draws(
         config.targets,
         carrier.exemplar_pool,
@@ -2725,6 +3592,7 @@ def run_propose_step(
         placebo_slot=placebo_slot,
         exemplars_per_tool=config.exemplars_per_tool,
         seed=config.seed,
+        min_members=min_members,
     )
     roster = proposer_roster_receipt(
         draws,
@@ -2732,6 +3600,16 @@ def run_propose_step(
         roster_id=f"{config.slug.upper()}-PROPOSER-R{round_index:02d}",
         media_facts=carrier.media_facts,
         seed=config.seed,
+        # Byte-identical to the function's own default for EVO-A1, and it has
+        # to be: a receipt that called itself "EVO-A1 proposer draws" on the
+        # SLURP cell would name the wrong preregistration to every reviewer
+        # who opened it.
+        design=(
+            f"{config.cell_label} proposer draws: one item per (round, target, family, "
+            "k) contact on the text-only 'construction-proposer-text' arm. sample_id is "
+            "the draw's anchor construction row; exemplar_ids are the rows whose gold "
+            "that contact's rendered instruction shows, in the order it shows them."
+        ),
     )
     material = build_proposer_material(
         roster,
@@ -2740,6 +3618,14 @@ def run_propose_step(
         incumbent_overrides=state.incumbent_overrides,
         exemplar_rows=carrier.exemplar_rows,
         carrier_lock_key=config.carrier_lock_key,
+        artifact_family=config.artifact_family,
+        artifact_keys={
+            target_id: config.keys_of_target(target_id) for target_id in config.targets
+        },
+        slot_schema=carrier.slot_schema,
+        unfloored_schema=carrier.unfloored_schema,
+        entity_type_names=carrier.entity_type_names,
+        min_members=min_members,
     )
     speech_seconds = sum(
         float(carrier.media_facts[draw.anchor_sample_id]["audio_seconds"]) for draw in draws
@@ -2784,7 +3670,8 @@ def run_propose_step(
         planned_speech_audio_seconds=max(1, int(speech_seconds) + 1),
         planned_gpu_hours=max(len(draws) * seconds_per_call / 3600.0, 0.01),
         purpose=(
-            f"EVO-A1 round {round_index} PROPOSE: one text-only contact per draw on the "
+            f"{config.cell_label} round {round_index} PROPOSE: one text-only contact per "
+            "draw on the "
             "construction-proposer-text arm. Zero audio parts are sent."
         ),
     )
@@ -2806,7 +3693,8 @@ def run_propose_step(
     for outcome in reversed(state.history):
         if outcome.accepted and outcome.portfolio_sha256:
             fragment["evolution_incumbent_artifact_relpath"] = (
-                f"{config.artifact_reldir}/{ARTIFACT_STEM}-"
+                f"{config.artifact_reldir}/"
+                f"{ARTIFACT_FAMILY_STEMS[config.artifact_family][0]}-"
                 f"{outcome.portfolio_sha256[:SHA_PREFIX_LENGTH]}.json"
             )
             break
@@ -2852,6 +3740,7 @@ def run_candidates_step(
     fold_a_rows: int = 404,
     fold_a_speech_seconds: float = 1913.527,
     seconds_per_call: float = 0.80,
+    token_counter: Callable[[str], int] | None = None,
 ) -> RoundStepResult:
     """Step (b): candidates, portfolios, their committed fragments, and the
     fold-A reward fragment.
@@ -2871,8 +3760,14 @@ def run_candidates_step(
     contacts = propose_receipt.get("contacts")
     if not isinstance(contacts, list) or not contacts:
         raise EvolutionError("the propose receipt carries no contact records")
+    slurp = config.artifact_family == SLURP_SLOT_SCHEMA_FAMILY
     harvest = harvest_proposer_responses(
-        contacts, responses, target_tools=config.targets
+        contacts,
+        responses,
+        target_tools=config.targets,
+        artifact_family=config.artifact_family,
+        allowed_entity_types=carrier.entity_type_names,
+        min_members=1 if config.target_kind == "scenario" else 2,
     )
 
     validations: list[Mapping[str, object]] = []
@@ -2902,16 +3797,25 @@ def run_candidates_step(
         round=harvest.round, candidates=tuple(kept), refusals=tuple(refusals)
     )
 
-    deterministic = tuple(
-        deterministic_candidate(
-            carrier.registry_rows,
-            config.targets[target_id],
-            round=round_index,
-            k=config.deterministic_slot,
-            target_id=target_id,
+    if slurp:
+        deterministic = _slurp_control_candidates(
+            state,
+            round_index,
+            config=config,
+            carrier=carrier,
+            token_counter=token_counter,
         )
-        for target_id in sorted(config.targets)
-    )
+    else:
+        deterministic = tuple(
+            deterministic_candidate(
+                carrier.registry_rows,
+                config.targets[target_id],
+                round=round_index,
+                k=config.deterministic_slot,
+                target_id=target_id,
+            )
+            for target_id in sorted(config.targets)
+        )
     portfolios = assemble_round_portfolios(
         harvest,
         incumbent_overrides=state.incumbent_overrides,
@@ -2933,6 +3837,10 @@ def run_candidates_step(
         out_dir=Path(repo_root) / config.fragment_reldir,
         artifact_dir=Path(repo_root) / config.artifact_reldir,
         artifact_relpath_base=Path(repo_root),
+        artifact_family=config.artifact_family,
+        state_fill=config.state_fill,
+        state_fill_phase=config.state_fill_phase,
+        fold_variants=config.fold_predecessors,
     )
     arms = 1 + len(portfolios)
     budget = check_ledger_budget(
@@ -2948,24 +3856,30 @@ def run_candidates_step(
             "run_id": config.fold_a_run_id,
             "attempt_id": f"attempt-r{round_index}-i",
             "dataset_fragment": config.fold_a_dataset_fragment,
-            "arm": "bare-core",
+            "arm": config.arm,
             "baseline_fragment": config.base_fragment,
             "model_fragment": config.model_fragment,
             "factor": "the incumbent A_r, re-flown so this round's pairing is against "
             "its own sealed rows",
         }
     ]
+    fold_a = config.fold_name("fold_a")
     fragment_by_slot: dict[str, str] = {}
-    for path, k in zip(written, sorted(portfolios), strict=True):
-        fragment_by_slot[str(k)] = Path(path).stem
+    for k in sorted(portfolios):
+        stem = fragment_stem(
+            portfolios[k].portfolio_sha256,
+            artifact_family=config.artifact_family,
+            fold=fold_a,
+        )
+        fragment_by_slot[str(k)] = stem
         cells.append(
             {
                 "cell_id": f"{config.slug}-r{round_index}-foldA-c{k}",
                 "run_id": config.fold_a_run_id,
                 "attempt_id": f"attempt-r{round_index}-c{k}",
                 "dataset_fragment": config.fold_a_dataset_fragment,
-                "arm": "bare-core",
-                "baseline_fragment": Path(path).stem,
+                "arm": config.arm,
+                "baseline_fragment": stem,
                 "model_fragment": config.model_fragment,
                 "factor": f"portfolio k={k}, sha256 {portfolios[k].portfolio_sha256}",
             }
@@ -2976,13 +3890,14 @@ def run_candidates_step(
         run_id=config.fold_a_run_id,
         profile="baseline-reproduction",
         dataset_fragment=config.fold_a_dataset_fragment,
-        arm="bare-core",
+        arm=config.arm,
         cells=cells,
         planned_model_calls=arms * fold_a_rows,
         planned_speech_audio_seconds=int(arms * fold_a_speech_seconds) + 1,
         planned_gpu_hours=max(arms * fold_a_rows * seconds_per_call / 3600.0, 0.01),
         purpose=(
-            f"EVO-A1 round {round_index} FOLD A: the incumbent plus {len(portfolios)} "
+            f"{config.cell_label} round {round_index} FOLD A: the incumbent plus "
+            f"{len(portfolios)} "
             "portfolios over the whole fold, one contact per row."
         ),
     )
@@ -2999,13 +3914,7 @@ def run_candidates_step(
             else "an injected token counter supplied by the caller"
         ),
         "decontamination_inputs": {
-            "row": "SAEA-A2T-MF-EVO-DECONTAMINATION-V1",
-            "evaluation_query_texts": "the query text of all 4,000 union rows, opened "
-            "inside rails.proposer.validate_candidate_artifact alone and never rendered",
-            "registry_text": "the released compact registry, the legal source of shared "
-            "phrasing",
-            "exemplar_texts": "the construction rows each candidate's proposer was "
-            "shown; overlap is measured and reported, never gated",
+            **(config.decontamination or _A2T_DECONTAMINATION_INPUTS),
             "ngram": DECONTAMINATION_NGRAM,
         },
         "portfolios": {str(k): portfolios[k].as_json() for k in sorted(portfolios)},
@@ -3025,6 +3934,66 @@ def run_candidates_step(
             "experiment_fragment": paths[1],
         },
     )
+
+
+def _slurp_control_candidates(
+    state: EvolutionState,
+    round_index: int,
+    *,
+    config: LoopConfig,
+    carrier: CarrierMaterial,
+    token_counter: Callable[[str], int] | None,
+) -> tuple[CandidateArtifact, ...]:
+    """EVO-S1's two zero-contact controls, per target.
+
+    F2, the shares-only content floor, in every round. F3, the token-matched
+    form twin, in round 1 only and as an EXTRA slot rather than a replaced
+    proposer draw -- ``K_1 = 5``, ``K_r = 4``.
+
+    F3 needs a tokenizer, and this module refuses to invent one: the
+    preregistration is explicit that the authority is the serving geometry's
+    own ``/tokenize`` and that "a candidate that only an estimator admits is
+    refused". A round-1 step invoked without one therefore stops and names the
+    prompt-fit row rather than pricing a control with a ratio.
+    """
+
+    if carrier.slot_schema is None or carrier.unfloored_schema is None:
+        raise EvolutionError(
+            "the slurp-slot-schema controls need A_0 and the unfloored TRAIN table"
+        )
+    incumbent = _checked_slurp_incumbent(state.incumbent_overrides, carrier.slot_schema)
+    controls: list[CandidateArtifact] = []
+    for target_id in sorted(config.targets):
+        keys = config.keys_of_target(target_id)
+        blocks = {intent: incumbent[intent] for intent in keys}
+        controls.append(
+            slurp_shares_only_candidate(
+                blocks,
+                target_id=target_id,
+                round=round_index,
+                k=config.deterministic_slot,
+            )
+        )
+        if round_index != 1 or config.placebo_slot is None:
+            continue
+        if token_counter is None:
+            raise EvolutionError(
+                "round 1's token-matched form twin must be priced on the serving "
+                "geometry's own tokenizer (preregistration section 5); supply "
+                "token_counter= from the prompt-fit row rather than an estimator"
+            )
+        controls.append(
+            slurp_form_twin_candidate(
+                blocks,
+                unfloored=carrier.unfloored_schema,
+                base=carrier.slot_schema,
+                token_counter=token_counter,
+                target_id=target_id,
+                round=round_index,
+                k=config.placebo_slot,
+            )
+        )
+    return tuple(controls)
 
 
 def run_select_step(
@@ -3069,6 +4038,13 @@ def run_select_step(
             cue=record["cue"],
             proposer_prompt_sha256=record["proposer_prompt_sha256"],
             exemplar_ids=tuple(record["exemplar_ids"]),
+            # The family says how to READ ``descriptions`` -- text per tool,
+            # or a block object per intent -- so a candidate rebuilt without
+            # it is rebuilt as the wrong artifact and refuses its own id.
+            # Defaulted for the landed EVO-A1 receipts that predate the key.
+            artifact_family=str(
+                record.get("artifact_family", A2T_DESCRIPTIONS_FAMILY)
+            ),
         ).validate()
         candidates_by_target.setdefault(artifact.target_id, {})[artifact.k] = artifact
 
@@ -3112,19 +4088,22 @@ def run_select_step(
     assembly = (
         assemble_portfolio(state.incumbent_overrides, winners) if winners else None
     )
-    written: list[Path] = []
     if assembly is not None:
         base = json.loads(
             (
                 Path(repo_root) / "configs" / "baseline" / f"{config.base_fragment}.json"
             ).read_text(encoding="utf-8")
         )
-        written = write_candidate_fragments(
+        write_candidate_fragments(
             [assembly],
             base_fragment=base,
             out_dir=Path(repo_root) / config.fragment_reldir,
             artifact_dir=Path(repo_root) / config.artifact_reldir,
             artifact_relpath_base=Path(repo_root),
+            artifact_family=config.artifact_family,
+            state_fill=config.state_fill,
+            state_fill_phase=config.state_fill_phase,
+            fold_variants=config.fold_predecessors,
         )
     budget = check_ledger_budget(
         ledger_rows,
@@ -3136,6 +4115,15 @@ def run_select_step(
         "reason": "no fold-B flight" if assembly is None else "no ledger rows supplied",
     }
 
+    assembly_fragment = (
+        None
+        if assembly is None
+        else fragment_stem(
+            assembly.portfolio_sha256,
+            artifact_family=config.artifact_family,
+            fold=config.fold_name("fold_b"),
+        )
+    )
     cells: list[Mapping[str, object]] = []
     if assembly is not None:
         cells = [
@@ -3144,7 +4132,7 @@ def run_select_step(
                 "run_id": config.fold_b_run_id,
                 "attempt_id": f"attempt-r{round_index}-i",
                 "dataset_fragment": config.fold_b_dataset_fragment,
-                "arm": "bare-core",
+                "arm": config.arm,
                 "baseline_fragment": config.base_fragment,
                 "model_fragment": config.model_fragment,
                 "factor": "the incumbent on fold B, the confirmation's comparator",
@@ -3154,8 +4142,8 @@ def run_select_step(
                 "run_id": config.fold_b_run_id,
                 "attempt_id": f"attempt-r{round_index}-a",
                 "dataset_fragment": config.fold_b_dataset_fragment,
-                "arm": "bare-core",
-                "baseline_fragment": Path(written[0]).stem,
+                "arm": config.arm,
+                "baseline_fragment": assembly_fragment,
                 "model_fragment": config.model_fragment,
                 "factor": "the assembled winners of every admitted target, confirmed as "
                 "a WHOLE and never partially",
@@ -3167,16 +4155,16 @@ def run_select_step(
         run_id=config.fold_b_run_id,
         profile="baseline-reproduction",
         dataset_fragment=config.fold_b_dataset_fragment,
-        arm="bare-core",
+        arm=config.arm,
         cells=cells,
         planned_model_calls=max(2 * fold_b_rows, 1),
         planned_speech_audio_seconds=int(2 * fold_b_speech_seconds) + 1,
         planned_gpu_hours=max(2 * fold_b_rows * seconds_per_call / 3600.0, 0.01),
         purpose=(
-            f"EVO-A1 round {round_index} FOLD B: the incumbent and the assembly, "
+            f"{config.cell_label} round {round_index} FOLD B: the incumbent and the assembly, "
             "confirmed as a whole."
             if assembly is not None
-            else f"EVO-A1 round {round_index} FOLD B does not fly: stage one admitted no "
+            else f"{config.cell_label} round {round_index} FOLD B does not fly: stage one admitted no "
             "target, so the round is a reject and the incumbent stands."
         ),
     )
@@ -3186,7 +4174,8 @@ def run_select_step(
         "incumbent_state_sha256": state.state_sha256(),
         "selection": record,
         "assembly": None if assembly is None else assembly.as_json(),
-        "assembly_fragment": None if assembly is None else Path(written[0]).stem,
+        "assembly_fragment": assembly_fragment,
+        "admitted_targets": sorted(winners),
         "winners": {target: winners[target].candidate_id for target in sorted(winners)},
         "flies_fold_b": assembly is not None,
         "budget": budget,
@@ -3244,6 +4233,34 @@ def run_confirm_step(
         for key in (INCUMBENT_KEY, "assembly"):
             if key not in score_files:
                 raise EvolutionError(f"score_files must map {key!r} to a score file")
+        admitted = tuple(
+            str(value) for value in selection_receipt.get("admitted_targets", ())
+        )
+        targeted_rows = carrier.fold_b_targeted_rows
+        background_rows = carrier.fold_b_background_rows
+        if config.harm_bound is not None:
+            # With every stratum a target there is no background population:
+            # the targeted rows are the ADMITTED scenarios' own fold-B rows
+            # and the "background" is what the assembly left at the incumbent.
+            if not carrier.fold_b_rows_of_target:
+                raise EvolutionError(
+                    "a per-scenario harm bound needs each target's own fold-B rows"
+                )
+            targeted_rows = tuple(
+                sorted(
+                    row
+                    for target_id in admitted
+                    for row in carrier.fold_b_rows_of_target.get(target_id, ())
+                )
+            )
+            background_rows = tuple(
+                sorted(
+                    row
+                    for target_id, rows in carrier.fold_b_rows_of_target.items()
+                    if target_id not in admitted
+                    for row in rows
+                )
+            )
         confirmation = confirm_assembly(
             per_sample_scores_from_score_file(
                 Path(score_files[INCUMBENT_KEY]), config.scorer_id, [config.metric]
@@ -3251,13 +4268,16 @@ def run_confirm_step(
             per_sample_scores_from_score_file(
                 Path(score_files["assembly"]), config.scorer_id, [config.metric]
             ),
-            targeted_rows=carrier.fold_b_targeted_rows,
-            background_rows=carrier.fold_b_background_rows,
+            targeted_rows=targeted_rows,
+            background_rows=background_rows,
             metric=config.metric,
             strata_of=carrier.fold_b_strata_of,
             seed=config.seed,
             background_tolerance=config.background_tolerance_pp,
             n_replicates=config.n_replicates,
+            harm_bound=config.harm_bound,
+            rows_of_target=carrier.fold_b_rows_of_target or None,
+            admitted_targets=admitted,
         )
 
     next_state, outcome, (stop, stop_reason) = advance_round(
