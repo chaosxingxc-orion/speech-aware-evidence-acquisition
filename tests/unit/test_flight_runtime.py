@@ -45,6 +45,11 @@ class _FakeAudioRef:
         self.path = path
         self.sha256 = sha256
 
+    def validate(self) -> "_FakeAudioRef":
+        # rails.obs.ObsPacket.validate() calls this; the phase-envelope path
+        # builds a default ObsPacket to reach the adapter's task contract.
+        return self
+
 
 class _FakeSample:
     def __init__(self, sample_id: str, audio_seconds: float = 2.0) -> None:
@@ -2257,3 +2262,351 @@ def test_slot_occupancy_is_measured_against_the_slots_actually_used(tmp_path):
 
     assert receipt["serving_slots"] == 2
     assert receipt["occupancy_slots"] == 1
+
+
+# ---------------------------------------------------------------------------
+# score(include_per_sample=...) -- what the evolution loop reads.
+# ---------------------------------------------------------------------------
+
+
+def _capturing_score_batch(seen: dict):
+    def _score_batch(jobs, **kwargs):
+        seen.update(kwargs)
+        Path(kwargs["output_dir"]).mkdir(parents=True, exist_ok=True)
+        return {"job_count": len(jobs), "succeeded": len(jobs), "failed": 0, "jobs": []}
+
+    return _score_batch
+
+
+def _sealed_runtime(tmp_path, **runtime_kwargs):
+    runtime = _make_runtime(tmp_path, happy_path=True, **runtime_kwargs)
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    runtime.run_phases()
+    runtime.seal()
+    return runtime
+
+
+def test_score_defaults_to_per_sample_off_and_says_so_in_its_receipt(tmp_path):
+    seen: dict = {}
+    runtime = _sealed_runtime(tmp_path, score_batch=_capturing_score_batch(seen))
+    receipt = runtime.score()
+
+    assert seen["include_per_sample"] is False
+    assert receipt["include_per_sample"] is False
+
+
+def test_score_forwards_include_per_sample_to_the_batch(tmp_path):
+    seen: dict = {}
+    runtime = _sealed_runtime(tmp_path, score_batch=_capturing_score_batch(seen))
+    receipt = runtime.score(include_per_sample=True)
+
+    assert seen["include_per_sample"] is True
+    assert seen["max_workers"] == 1
+    assert receipt["include_per_sample"] is True
+
+
+# ---------------------------------------------------------------------------
+# E1.3: the pinned phase prompt-fit receipt, verified at preflight.
+#
+# The whole point is that the receipt describes the envelope this flight
+# would ACTUALLY send. The tests below build the receipt the way the
+# measurement script builds it -- through the same
+# ``render_phase_prompt_envelopes`` -- then check that preflight accepts it,
+# and refuses the moment either the receipt's bytes or the rendered envelope
+# stops matching.
+# ---------------------------------------------------------------------------
+
+PHASE_PROGRAM = "phase-draft-revise-v1"
+_PHASE_MATERIAL = {
+    "draft": {
+        "instruction_template": "probes/draft.txt",
+        "predecessor_binding": "none",
+    },
+    "revise": {
+        "instruction_template": "probes/revise.txt",
+        "predecessor_binding": "append-sealed-state",
+    },
+}
+
+
+def _phase_prompt_fit_repo(tmp_path, run_id: str) -> tuple[Path, Path, Path]:
+    """A synthetic repo carrying a two-phase packet cell, its phase
+    templates, and its promotion receipt -- everything but the receipt, which
+    the caller writes before the tree is committed (preflight asserts a clean
+    study tree, so nothing may be added afterwards)."""
+
+    repo_root = tmp_path / "repo"
+    data_root = tmp_path / "data"
+    data_root.mkdir(parents=True, exist_ok=True)
+    promotion_receipt = _write_promotion_receipt(tmp_path)
+    _write_configs(
+        repo_root,
+        arm="speech-feature-query",
+        policy=PHASE_PROGRAM,
+        model_extra={"speech_feature_root": str(tmp_path / _PROMOTION_DIR)},
+        baseline_extra={
+            "speech_packet_promotion_receipt": str(promotion_receipt),
+            "speech_feature_key_representation_id": "key-rep-v1",
+            "speech_feature_matcher_policy_id": "matcher-v1",
+            "phase_material": _PHASE_MATERIAL,
+            "prompt_fit_receipt": "docs/checks/phase-prompt-fit.json",
+            "prompt_fit_receipt_sha256": "0" * 64,
+        },
+    )
+    for phase, body in (("draft", "Draft the tool call."), ("revise", "Revise it.")):
+        template = repo_root / "configs" / "probes" / f"{phase}.txt"
+        template.parent.mkdir(parents=True, exist_ok=True)
+        template.write_text(body + "\n", encoding="utf-8")
+    _write_exposure_ledger(repo_root, run_id)
+    return repo_root, data_root, promotion_receipt
+
+
+def _rendered_phase_envelope_sha256(repo_root: Path, data_root: Path) -> dict[str, str]:
+    """``{phase: envelope_sha256}`` for sample ``s1``, rendered exactly as
+    ``scripts/a2t_calibration_prompt_fit.py --phase-program`` renders it."""
+
+    from speech_aware_evidence_acquisition.core.config import compose
+    from speech_aware_evidence_acquisition.core.flight.runtime import (
+        phase_envelope_sha256,
+        phase_program_system_text,
+        render_phase_prompt_envelopes,
+    )
+    from speech_aware_evidence_acquisition.rails.controllers import (
+        default_phase_program,
+    )
+    from speech_aware_evidence_acquisition.rails.phase_material import (
+        load_phase_material_specs,
+        render_static_instruction,
+    )
+
+    composed = compose(repo_root, "m", "d", "b", "e")
+    program = default_phase_program(PHASE_PROGRAM)
+    specs = load_phase_material_specs(composed.values, program)
+    static_text = {
+        phase: render_static_instruction(spec, repo_root, {}, data_root)
+        for phase, spec in specs.items()
+    }
+    adapter = _FakeAdapter({}, data_root)
+    sample = adapter.samples[0]
+    envelopes = render_phase_prompt_envelopes(
+        program_id=program.program_id,
+        phase_names=program.phase_names(),
+        specs=specs,
+        static_text_by_phase=static_text,
+        system_text=phase_program_system_text(adapter, sample),
+        prompt_order="speech-query-prefix-v2",
+        packet_descriptor={"packet_id": "s1", "sha256": "s1-sha"},
+        sample_id=sample.sample_id,
+        completion_token_ceiling=_FakeAdapter.SERVING_MAX_TOKENS,
+    )
+    return {phase: phase_envelope_sha256(envelope) for phase, envelope in envelopes.items()}
+
+
+def _write_phase_prompt_fit_receipt(
+    repo_root: Path, data_root: Path, *, mutate: str | None = None
+) -> str:
+    """Write the receipt and return its sha256, patching the fragment's own
+    ``prompt_fit_receipt_sha256`` to match. ``mutate='envelope'`` records a
+    hash no rendering can reproduce."""
+
+    from speech_aware_evidence_acquisition.core.config import compose
+    from speech_aware_evidence_acquisition.core.flight.runtime import (
+        PHASE_PROMPT_FIT_SCHEMA,
+    )
+
+    composed = compose(repo_root, "m", "d", "b", "e")
+    digests = _rendered_phase_envelope_sha256(repo_root, data_root)
+    if mutate == "envelope":
+        digests["revise"] = "9" * 64
+    receipt = {
+        "schema": PHASE_PROMPT_FIT_SCHEMA,
+        "cells": [
+            {
+                "cell_id": "test-cell",
+                "model_fragment": "m",
+                "dataset_fragment": "d",
+                "baseline_fragment": "b",
+                "experiment_fragment": "e",
+                # Provenance only: pinning the receipt changes this hash, so
+                # the runtime matches the cell by its four fragment names.
+                "config_hash": composed.config_hash,
+                "phases": [
+                    {
+                        "phase": phase,
+                        "max_sample_id": "s1",
+                        "envelope_sha256": digests[phase],
+                        "max_text_prompt_tokens": 100,
+                        "every_request_fits": True,
+                    }
+                    for phase in ("draft", "revise")
+                ],
+            }
+        ],
+    }
+    path = repo_root / "docs" / "checks" / "phase-prompt-fit.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(receipt, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    baseline_path = repo_root / "configs" / "baseline" / "b.json"
+    document = json.loads(baseline_path.read_text(encoding="utf-8"))
+    document["prompt_fit_receipt_sha256"] = digest
+    baseline_path.write_text(json.dumps(document), encoding="utf-8")
+    return digest
+
+
+def _phase_prompt_fit_runtime(tmp_path, repo_root: Path, data_root: Path, run_id: str):
+    _git_init_commit(repo_root)
+    merged = dict(_HAPPY_PATH_KWARGS)
+    return FlightRuntime(
+        repo_root,
+        data_root,
+        model="m",
+        dataset="d",
+        baseline="b",
+        experiment="e",
+        run_id=run_id,
+        attempt_id="attempt-001",
+        runtime_root=tmp_path / "runtime",
+        adapter_factory=lambda lock, root: _FakeAdapter(lock, root),
+        gate_factory=lambda *a, **kw: _FakeGate(),
+        lock={},
+        **merged,
+    )
+
+
+def test_preflight_accepts_a_receipt_whose_envelopes_still_render(tmp_path):
+    run_id = "SAEA-TEST-RUN-001"
+    repo_root, data_root, _ = _phase_prompt_fit_repo(tmp_path, run_id)
+    digest = _write_phase_prompt_fit_receipt(repo_root, data_root)
+    runtime = _phase_prompt_fit_runtime(tmp_path, repo_root, data_root, run_id)
+
+    receipt = runtime.preflight()
+
+    fit = receipt["phase_prompt_fit"]
+    assert fit["schema"] == "saea-phase-prompt-fit-v1"
+    assert fit["cell_id"] == "test-cell"
+    assert fit["prompt_fit_receipt_sha256"] == digest
+    assert fit["program_id"] == PHASE_PROGRAM
+    assert [entry["phase"] for entry in fit["phases"]] == ["draft", "revise"]
+    assert all(len(entry["envelope_sha256"]) == 64 for entry in fit["phases"])
+
+
+def test_preflight_refuses_a_receipt_whose_envelope_drifted(tmp_path):
+    run_id = "SAEA-TEST-RUN-001"
+    repo_root, data_root, _ = _phase_prompt_fit_repo(tmp_path, run_id)
+    _write_phase_prompt_fit_receipt(repo_root, data_root, mutate="envelope")
+    runtime = _phase_prompt_fit_runtime(tmp_path, repo_root, data_root, run_id)
+
+    with pytest.raises(FlightRuntimeError, match="phase 'revise' recorded envelope"):
+        runtime.preflight()
+
+
+def test_preflight_refuses_a_receipt_whose_bytes_drifted(tmp_path):
+    run_id = "SAEA-TEST-RUN-001"
+    repo_root, data_root, _ = _phase_prompt_fit_repo(tmp_path, run_id)
+    _write_phase_prompt_fit_receipt(repo_root, data_root)
+    # The receipt is edited after its hash was pinned.
+    path = repo_root / "docs" / "checks" / "phase-prompt-fit.json"
+    path.write_text(path.read_text(encoding="utf-8") + "\n", encoding="utf-8")
+    runtime = _phase_prompt_fit_runtime(tmp_path, repo_root, data_root, run_id)
+
+    with pytest.raises(FlightRuntimeError, match="hashes to"):
+        runtime.preflight()
+
+
+def test_preflight_refuses_a_receipt_measured_for_another_cell(tmp_path):
+    run_id = "SAEA-TEST-RUN-001"
+    repo_root, data_root, _ = _phase_prompt_fit_repo(tmp_path, run_id)
+    _write_phase_prompt_fit_receipt(repo_root, data_root)
+    path = repo_root / "docs" / "checks" / "phase-prompt-fit.json"
+    document = json.loads(path.read_text(encoding="utf-8"))
+    document["cells"][0]["baseline_fragment"] = "some-other-baseline"
+    path.write_text(json.dumps(document, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+    baseline_path = repo_root / "configs" / "baseline" / "b.json"
+    baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
+    baseline["prompt_fit_receipt_sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+    baseline_path.write_text(json.dumps(baseline), encoding="utf-8")
+    runtime = _phase_prompt_fit_runtime(tmp_path, repo_root, data_root, run_id)
+
+    with pytest.raises(FlightRuntimeError, match="0 cell\\(s\\) for fragments"):
+        runtime.preflight()
+
+
+def test_preflight_refuses_a_receipt_path_with_no_pinned_hash(tmp_path):
+    run_id = "SAEA-TEST-RUN-001"
+    repo_root, data_root, _ = _phase_prompt_fit_repo(tmp_path, run_id)
+    _write_phase_prompt_fit_receipt(repo_root, data_root)
+    baseline_path = repo_root / "configs" / "baseline" / "b.json"
+    document = json.loads(baseline_path.read_text(encoding="utf-8"))
+    document.pop("prompt_fit_receipt_sha256")
+    baseline_path.write_text(json.dumps(document), encoding="utf-8")
+    runtime = _phase_prompt_fit_runtime(tmp_path, repo_root, data_root, run_id)
+
+    with pytest.raises(FlightRuntimeError, match="64-character"):
+        runtime.preflight()
+
+
+def test_a_flight_that_declares_no_receipt_verifies_nothing(tmp_path):
+    """The pre-existing behaviour, unchanged: no keys, no verification, and
+    the estimate still runs."""
+
+    runtime = _make_runtime(tmp_path, happy_path=True)
+    receipt = runtime.preflight()
+
+    assert receipt["phase_prompt_fit"] is None
+    assert receipt["prompt_budget"]
+
+
+def test_render_phase_prompt_envelopes_reproduces_the_estimator_bytes(tmp_path):
+    """One authority for the envelope. ``_phase_prompt_payloads`` (the
+    pre-flight ESTIMATE) and ``render_phase_prompt_envelopes`` (what the
+    measurement and its verification use) must build the same bytes for the
+    same inputs, or a receipt could certify a fit for a prompt the estimate
+    never saw."""
+
+    from speech_aware_evidence_acquisition.core.flight.runtime import (
+        phase_program_system_text,
+        render_phase_prompt_envelopes,
+    )
+    from speech_aware_evidence_acquisition.rails.controllers import (
+        default_phase_program,
+    )
+    from speech_aware_evidence_acquisition.rails.phase_material import (
+        load_phase_material_specs,
+        render_static_instruction,
+    )
+
+    run_id = "SAEA-TEST-RUN-001"
+    repo_root, data_root, _ = _phase_prompt_fit_repo(tmp_path, run_id)
+    _write_phase_prompt_fit_receipt(repo_root, data_root)
+    runtime = _phase_prompt_fit_runtime(tmp_path, repo_root, data_root, run_id)
+    runtime.preflight()
+
+    program = default_phase_program(PHASE_PROGRAM)
+    sample = runtime._samples[0]
+    estimated = runtime._phase_prompt_payloads(sample, program)
+
+    specs = load_phase_material_specs(runtime._composed.values, program)
+    rendered = render_phase_prompt_envelopes(
+        program_id=program.program_id,
+        phase_names=program.phase_names(),
+        specs=specs,
+        static_text_by_phase={
+            phase: render_static_instruction(spec, repo_root, {}, data_root)
+            for phase, spec in specs.items()
+        },
+        system_text=phase_program_system_text(runtime._adapter, sample),
+        prompt_order="speech-query-prefix-v2",
+        packet_descriptor=runtime.speech_packet_bindings()[sample.sample_id],
+        sample_id=sample.sample_id,
+        completion_token_ceiling=_FakeAdapter.SERVING_MAX_TOKENS,
+    )
+    for phase in program.phase_names():
+        assert (
+            json.dumps(list(rendered[phase]), ensure_ascii=False, sort_keys=True).encode(
+                "utf-8"
+            )
+            == estimated[phase]
+        )
