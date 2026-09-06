@@ -1,0 +1,62 @@
+{
+  "cells": [
+    {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-smoke-incumbent",
+      "baseline_fragment": "slurp-phase-slots-given-intent-schema-projected-v2-fold-a",
+      "cell_id": "smoke-4-foldA-incumbent",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "factor": "the incumbent A_r, re-flown so this round's pairing is against its own sealed rows",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "run_id": "SAEA-SLURP-EVO-S1-SMOKE-4-V1"
+    },
+    {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-smoke-c1",
+      "baseline_fragment": "evolved-slot-schema-2a6d8abb735078cf-fold-a",
+      "cell_id": "smoke-4-foldA-c1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "factor": "portfolio k=1, sha256 2a6d8abb735078cf0232b73d63d25df5aa19eae2af0833062b8f131d3bba3830",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "run_id": "SAEA-SLURP-EVO-S1-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-06",
+  "decision": {
+    "paper_scale": false,
+    "produces": "a wiring proof against real bytes; it decides nothing and is never read as a result.",
+    "test_tuning": false
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.2,
+    "planned_model_calls": 12,
+    "planned_speech_audio_seconds": 40,
+    "split_role": "discovery"
+  },
+  "execution_plan_basis": {
+    "paid_api_spend": 0,
+    "planned_gpu_hours": "eight contacts at the receipt-backed 0.7359 s each is 6 s; 0.2 declared for the two model loads.",
+    "planned_model_calls": "2 arms x 4 rows = 8, declared at 12 for margin across both attempts of this run id.",
+    "planned_speech_audio_seconds": "the four rows carry 9.151000 s; 2 arms x that is 18.302000, declared at 40."
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-EVO-S1-SMOKE-4-V1",
+  "fragment_kind": "saea-slurp-slot-stage-experiment-v1",
+  "populations": [
+    {
+      "arm": "speech-feature-query",
+      "count": 4,
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:003508:audio-1501697126-headset",
+        "slurp:train:010591:audio-1499090720",
+        "slurp:train:017178:audio-1497368738"
+      ]
+    }
+  ],
+  "preregistration": "docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md",
+  "purpose": "MF-5 FOUR-ROW DRY RUN of the EVO-S1 slot phase on fold A, section 13 item 8: four rows of fold A end to end through run_program, sealed and scored, on BOTH arms the round then flies at full size -- the incumbent (A_0 through the projected block selection) and portfolio k=1 (the evolved artifact through the NEW slurp-evolved-slot-schema-for-state fill, which has never flown). Eight contacts. It proves the sealed-manifest predecessor binding, the projection seam, the evolved state fill, the union packet receipt and the TRAIN scorer against real bytes before 6,480 contacts are spent on them.",
+  "split_id": "SLURP-EVO-FOLD-A-V2"
+}

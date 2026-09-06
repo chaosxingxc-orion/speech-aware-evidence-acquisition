@@ -1,0 +1,85 @@
+{
+  "cells": [
+    {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-r1-i",
+      "baseline_fragment": "slurp-phase-slots-given-intent-schema-projected-v2-fold-a",
+      "cell_id": "slurp-evo-s1-r1-foldA-incumbent",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "factor": "the incumbent A_r, re-flown so this round's pairing is against its own sealed rows",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2"
+    },
+    {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-r1-c1",
+      "baseline_fragment": "evolved-slot-schema-2a6d8abb735078cf-fold-a",
+      "cell_id": "slurp-evo-s1-r1-foldA-c1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "factor": "portfolio k=1, sha256 2a6d8abb735078cf0232b73d63d25df5aa19eae2af0833062b8f131d3bba3830",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2"
+    },
+    {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-r1-c2",
+      "baseline_fragment": "evolved-slot-schema-3c756392f4e577c5-fold-a",
+      "cell_id": "slurp-evo-s1-r1-foldA-c2",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "factor": "portfolio k=2, sha256 3c756392f4e577c5d14809fbb4bf45331b5911292ad14875098026d20e286a08",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2"
+    },
+    {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-r1-c3",
+      "baseline_fragment": "evolved-slot-schema-89a8cc828f1d523c-fold-a",
+      "cell_id": "slurp-evo-s1-r1-foldA-c3",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "factor": "portfolio k=3, sha256 89a8cc828f1d523cb7030bc4295413c67cf7d388501cca0e6ecd5b334204d53e",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2"
+    },
+    {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-r1-c4",
+      "baseline_fragment": "evolved-slot-schema-6f5baedf6caaf384-fold-a",
+      "cell_id": "slurp-evo-s1-r1-foldA-c4",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "factor": "portfolio k=4, sha256 6f5baedf6caaf38446f47420e2f35a0e2f7136a70fa820267d5217369410280a",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2"
+    },
+    {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-r1-c5",
+      "baseline_fragment": "evolved-slot-schema-c694c4b2f74d263f-fold-a",
+      "cell_id": "slurp-evo-s1-r1-foldA-c5",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "factor": "portfolio k=5, sha256 c694c4b2f74d263f285e586622f609aa6725777a1e31e0f172db4b3cd149fee4",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2"
+    }
+  ],
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "planned_gpu_hours": 1.44,
+    "planned_model_calls": 6480,
+    "planned_speech_audio_seconds": 18508,
+    "split_role": "discovery"
+  },
+  "execution_profile": "baseline-reproduction",
+  "experiment_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
+  "fragment_kind": "saea-a2t-direct-calibration-experiment-v1",
+  "generated_by": "scripts/run_evolution_round.py",
+  "populations": [
+    {
+      "arm": "speech-feature-query",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080"
+    }
+  ],
+  "preregistration": "docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md",
+  "purpose": "EVO-S1 round 1 FOLD A: the incumbent plus 5 portfolios over the whole fold, one contact per row.",
+  "round": 1,
+  "split_id": "SLURP-EVO-FOLD-A-V2"
+}
