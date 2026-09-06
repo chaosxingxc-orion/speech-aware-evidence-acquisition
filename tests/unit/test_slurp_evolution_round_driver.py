@@ -1029,3 +1029,41 @@ def test_the_base_fragments_projection_reaches_every_candidate_unchanged(
             state_fill_phase=config.state_fill_phase,
             fold_variants=config.fold_predecessors,
         )
+
+
+def test_the_incumbent_gets_one_fragment_per_fold_when_the_predecessor_does() -> None:
+    """An incumbent bound to the other fold's sealed manifest is not a
+    comparator.
+
+    EVO-S1's slot cells bind their fold's own one-time intent manifest, so the
+    fold-B incumbent cannot fly the fragment fold A's incumbent flies -- it
+    would be paired against another population's sealed rows. EVO-A1's arm is
+    fold-independent, declares no fold predecessors, and keeps one fragment
+    for both folds.
+    """
+
+    config = _loop_config()
+    assert config.incumbent_fragment("fold_a") == f"{config.base_fragment}-fold-a"
+    assert config.incumbent_fragment("fold_b") == f"{config.base_fragment}-fold-b"
+
+    repo = Path(__file__).resolve().parents[2]
+    slurp = LoopConfig.from_json(
+        json.loads(
+            (repo / "configs/knowledge/slurp-evo-s1/loop-v1.json").read_text(
+                encoding="utf-8"
+            )
+        )
+    )
+    for which in ("fold_a", "fold_b"):
+        name = slurp.incumbent_fragment(which)
+        assert (repo / "configs" / "baseline" / f"{name}.json").is_file(), name
+
+    a2t = LoopConfig.from_json(
+        json.loads(
+            (repo / "configs/knowledge/a2t-evo-a1/loop-v1.json").read_text(
+                encoding="utf-8"
+            )
+        )
+    )
+    assert a2t.incumbent_fragment("fold_a") == a2t.base_fragment
+    assert a2t.incumbent_fragment("fold_b") == a2t.base_fragment

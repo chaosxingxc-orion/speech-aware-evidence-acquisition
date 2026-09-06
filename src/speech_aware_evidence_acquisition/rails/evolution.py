@@ -3528,6 +3528,25 @@ class LoopConfig:
             )
         return name
 
+    def incumbent_fragment(self, which: str) -> str:
+        """The baseline fragment the INCUMBENT arm flies on one fold.
+
+        A cell whose arm binds a SEALED predecessor per fold needs one
+        incumbent fragment per fold for exactly the reason its candidates need
+        one per fold: the fold-B incumbent bound to fold A's intent manifest
+        would be flying against another population's sealed rows. So when
+        ``fold_predecessors`` is declared, the incumbent's fragment is
+        ``<base_fragment>-<fold>`` and both variants are committed beside the
+        base; the base itself is the template ``write_candidate_fragments``
+        copies and is never flown directly.
+
+        EVO-A1's arm is fold-independent, so it declares no fold predecessors
+        and the incumbent flies the base fragment on both folds, unchanged.
+        """
+
+        fold = self.fold_name(which)
+        return self.base_fragment if fold is None else f"{self.base_fragment}-{fold}"
+
     def keys_of_target(self, target_id: str) -> tuple[str, ...]:
         """The ARTIFACT keys ``target_id``'s candidate rewrites, in the order
         the proposer instruction shows them.
@@ -4247,7 +4266,7 @@ def run_candidates_step(
             "attempt_id": f"attempt-r{round_index}-i",
             "dataset_fragment": config.fold_a_dataset_fragment,
             "arm": config.arm,
-            "baseline_fragment": config.base_fragment,
+            "baseline_fragment": config.incumbent_fragment("fold_a"),
             "model_fragment": config.model_fragment,
             "factor": "the incumbent A_r, re-flown so this round's pairing is against "
             "its own sealed rows",
@@ -4539,7 +4558,7 @@ def run_select_step(
                 "attempt_id": f"attempt-r{round_index}-i",
                 "dataset_fragment": config.fold_b_dataset_fragment,
                 "arm": config.arm,
-                "baseline_fragment": config.base_fragment,
+                "baseline_fragment": config.incumbent_fragment("fold_b"),
                 "model_fragment": config.model_fragment,
                 "factor": "the incumbent on fold B, the confirmation's comparator",
             },

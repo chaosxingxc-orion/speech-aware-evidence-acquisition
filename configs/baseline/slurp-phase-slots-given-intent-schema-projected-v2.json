@@ -5,6 +5,7 @@
   "knowledge_is_bound_but_invisible": "As in KC-S1a, and for the same reason: the phase declares knowledge 'none', bootstrap ids stay empty, and the snapshot exists only so the leakage rule has something to enforce. The content dimension is excluded from the bound snapshot because the raw one- and two-word TRAIN utterances it carries collide by substring with SLURP's own scenario names and with ordinary English -- see the KC-S1 preregistration's deviation note. Measured against THIS snapshot's 11,863 protected payloads: zero hits in the full schema, zero in all sixty per-intent blocks, and zero in all 1,000 sealed closed-list responses.",
   "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-label-prior-speaker/snapshot.json",
   "knowledge_snapshot_sha256": "07f94807d173b2f2bdda9dcd95b21354e018234a208a76683d0ca4989d9ffa65",
+  "never_flown_directly": "This is the TEMPLATE rails.evolution.write_candidate_fragments copies for every candidate portfolio, and the file the two per-fold INCUMBENT fragments beside it are derived from. It is not itself a flyable cell: its predecessor_source is a placeholder, because the sealed intent manifest differs per fold.",
   "phase_material": {
     "slots": {
       "fill_params": {
@@ -14,7 +15,7 @@
       "instruction_template": "probes/slurp_phase_slots.txt",
       "predecessor_binding": "sealed-manifest",
       "predecessor_source": {
-        "manifest_relpath": "runs/SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2/attempt-intent-a/SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2.run-manifest.json",
+        "manifest_relpath": "PENDING -- per fold; see the two -fold-a / -fold-b variants",
         "manifest_sha256": "PENDING",
         "producer_policy_id": "SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2"
       },
