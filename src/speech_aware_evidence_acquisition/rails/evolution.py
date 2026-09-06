@@ -17,9 +17,9 @@ experiment-program.md`` section 5:
    so a round flies the incumbent plus K portfolios -- never K x targets
    separate arms. :func:`assemble_portfolio`.
 4. Stage one, on fold A, decides PER TARGET: admit a candidate iff it saves
-   at least 4 rows, harms at most 1, and nets at least 3, all measured on
-   that target's own rows; the winner is the largest net, ties broken by
-   fewer harms, then fewer bytes, then the lowest ``k``.
+   at least 4 rows, harms at most 1 per 30 rows, and nets at least 3, all
+   measured on that target's own rows; the winner is the largest net, ties
+   broken by fewer harms, then fewer bytes, then the lowest ``k``.
    :func:`select_per_target`.
 5. The winners are assembled into one candidate state and confirmed on fold
    B, as a whole and never partially: the targeted pooled CI90 lower bound
@@ -29,8 +29,10 @@ experiment-program.md`` section 5:
    gain under 0.5 pp. :func:`should_stop`.
 
 Why the two stages are different statistics, deliberately. Stage one is a
-COUNT rule on 20 units per targeted tool: at that n a bootstrap interval says
-nothing, so the gate is saves/harms/net, which is exactly the quantity a
+COUNT rule on 20 units per targeted tool (60 per targeted scenario on
+EVO-S1, which is why the harm half of the gate is a rate and not a count):
+at that n a bootstrap interval says nothing, so the gate is
+saves/harms/net, which is exactly the quantity a
 reviewer can recount by hand from the per-sample rows. Stage two is the
 interval rule, on the pooled targeted rows plus a background sample that
 exists to catch the failure mode a per-target rule cannot see -- a rewrite
@@ -148,6 +150,33 @@ MIN_ACCEPTED_GAIN_PP = 0.5
 BACKGROUND_TOLERANCE_PP = -1.0
 DEFAULT_SEED = 20260903
 
+#: The rows one tolerated harm is measured against (owner, 2026-09-06). Both
+#: harm rules in this module are RATES rather than counts: at most
+#: ``harms`` per ``HARMS_PER_ROWS`` rows, floored at the base count so that a
+#: small fold is never held to a bound looser than the base. At EVO-A1's
+#: 20-row quota the rate reproduces the old absolute rule exactly (20 // 30 =
+#: 0, floored to 1); at EVO-S1's 60 rows per scenario it reads 2.
+HARMS_PER_ROWS = 30
+
+
+def harm_allowance(base: int, *, n_rows: int | None, per_rows: int) -> int:
+    """How many harms ``base`` per ``per_rows`` rows allows over ``n_rows``.
+
+    ``n_rows is None`` means "the rows are not known here", and the answer is
+    the unscaled base -- the strictest reading, so a caller that forgets to
+    pass the denominator can only be too harsh, never too lenient.
+    """
+
+    if isinstance(base, bool) or not isinstance(base, int) or base < 0:
+        raise EvolutionError("a harm base must be a nonnegative integer")
+    if isinstance(per_rows, bool) or not isinstance(per_rows, int) or per_rows <= 0:
+        raise EvolutionError("harms_per_rows must be a positive integer")
+    if n_rows is None:
+        return base
+    if isinstance(n_rows, bool) or not isinstance(n_rows, int) or n_rows < 0:
+        raise EvolutionError("n_rows must be a nonnegative integer or None")
+    return max(base, base * (n_rows // per_rows))
+
 __all__ = [
     "TARGET_SCHEMA",
     "PORTFOLIO_SCHEMA",
@@ -162,6 +191,8 @@ __all__ = [
     "MIN_ACCEPTED_GAIN_PP",
     "BACKGROUND_TOLERANCE_PP",
     "DEFAULT_SEED",
+    "HARMS_PER_ROWS",
+    "harm_allowance",
     "EvolutionError",
     "Target",
     "TARGET_KINDS",
@@ -721,17 +752,41 @@ def _with_state_fill(
 
 @dataclass(frozen=True)
 class AdmissionGates:
-    """The preregistered stage-one counts (section 5)."""
+    """The preregistered stage-one counts (section 5).
+
+    ``saves`` and ``net`` are absolute counts. ``harms`` is a RATE (owner,
+    2026-09-06): at most ``harms`` per ``harms_per_rows`` rows of the fold the
+    candidate was counted on, never below ``harms`` itself. EVO-A1 counts 20
+    rows per target and so still admits at most one harm; EVO-S1 counts 60
+    rows per scenario and admits two. The gate that a reviewer recounts by
+    hand is therefore (saves, harms allowed at this n, net), and every
+    receipt records ``n`` and ``harms_allowed`` beside the raw counts.
+    """
 
     saves: int = 4
     harms: int = 1
     net: int = 3
+    harms_per_rows: int = HARMS_PER_ROWS
 
     def as_json(self) -> dict[str, object]:
-        return {"saves": self.saves, "harms": self.harms, "net": self.net}
+        return {
+            "saves": self.saves,
+            "harms": self.harms,
+            "net": self.net,
+            "harms_per_rows": self.harms_per_rows,
+        }
 
-    def admits(self, *, saves: int, harms: int) -> bool:
-        return saves >= self.saves and harms <= self.harms and (saves - harms) >= self.net
+    def allowed_harms(self, n_rows: int | None) -> int:
+        """The harm allowance over ``n_rows`` rows."""
+
+        return harm_allowance(self.harms, n_rows=n_rows, per_rows=self.harms_per_rows)
+
+    def admits(self, *, saves: int, harms: int, n_rows: int | None = None) -> bool:
+        return (
+            saves >= self.saves
+            and harms <= self.allowed_harms(n_rows)
+            and (saves - harms) >= self.net
+        )
 
 
 @dataclass(frozen=True)
@@ -748,6 +803,9 @@ class CandidateOutcome:
     delta: float
     bytes: int | None
     admitted: bool
+    #: The harm rate's answer at this outcome's own ``n``, recorded so the
+    #: admission can be recounted from the receipt without the config.
+    harms_allowed: int | None = None
 
     def as_json(self) -> dict[str, object]:
         return {
@@ -756,6 +814,7 @@ class CandidateOutcome:
             "n": self.n,
             "saves": self.saves,
             "harms": self.harms,
+            "harms_allowed": self.harms_allowed,
             "ties": self.ties,
             "net": self.net,
             "delta": self.delta,
@@ -844,6 +903,15 @@ def select_per_target(
     satisfy the shared API at negligible cost. The interval rule is stage
     two, :func:`confirm_assembly`.
 
+    The harm half of the gate is scaled to each outcome's own paired ``n``
+    (``AdmissionGates.harms_per_rows``), so the one gate object reads "at
+    most 1 harm" on a 20-row tool fold and "at most 2" on a 60-row scenario
+    fold, and two targets of different sizes in the SAME round are read
+    differently. The denominator is that contrast's own ``n`` and nothing
+    wider; a row named by the target but missing from a score file is
+    refused outright by ``paired_contrast``, so the allowance can never be
+    widened by a hole in the evidence.
+
     Winner: largest net, ties broken by fewer harms, then fewer override
     bytes, then the lowest ``k`` -- section 5's rule in that order.
     ``candidates`` (target_id -> k -> artifact) supplies the byte count and
@@ -898,7 +966,12 @@ def select_per_target(
                     net=net,
                     delta=contrast.delta,
                     bytes=None if artifact is None else candidate_bytes(artifact),
-                    admitted=gates.admits(saves=contrast.saves, harms=contrast.harms),
+                    admitted=gates.admits(
+                        saves=contrast.saves,
+                        harms=contrast.harms,
+                        n_rows=contrast.n,
+                    ),
+                    harms_allowed=gates.allowed_harms(contrast.n),
                 )
             )
 
@@ -995,9 +1068,12 @@ class PerTargetHarmBound:
     coordinator's transposition, encoded here exactly:
 
     * ``max_net_harm_rows`` -- for every scenario whose candidate was ADMITTED
-      at stage one, on fold B, ``harms - saves <= 1`` on that scenario's own
-      rows. A count rule, because a CI90 over 30 rows of a sparse metric
-      accepts everything and a reviewer can recount a count by hand;
+      at stage one, on fold B, ``harms - saves <= 1 per harms_per_rows rows``
+      on that scenario's own rows (owner, 2026-09-06): 1 at 30 rows, 2 at the
+      V2 draw's 60, and never below ``max_net_harm_rows`` itself, so a small
+      fold is not held to a looser bound than a large one. A count rule and
+      not an interval, because a CI90 over 30 rows of a sparse metric accepts
+      everything and a reviewer can recount a count by hand;
     * ``unadmitted_tolerance_pp`` -- for the scenarios NOT admitted, whose
       blocks the assembly leaves at the incumbent, the POOLED paired point
       estimate stays at or above -1.0 pp. Those rows are the nearest thing
@@ -1009,6 +1085,7 @@ class PerTargetHarmBound:
 
     max_net_harm_rows: int = 1
     unadmitted_tolerance_pp: float = BACKGROUND_TOLERANCE_PP
+    harms_per_rows: int = HARMS_PER_ROWS
 
     def validate(self) -> "PerTargetHarmBound":
         if (
@@ -1017,6 +1094,12 @@ class PerTargetHarmBound:
             or self.max_net_harm_rows < 0
         ):
             raise EvolutionError("max_net_harm_rows must be a nonnegative integer")
+        if (
+            isinstance(self.harms_per_rows, bool)
+            or not isinstance(self.harms_per_rows, int)
+            or self.harms_per_rows <= 0
+        ):
+            raise EvolutionError("harms_per_rows must be a positive integer")
         if isinstance(self.unadmitted_tolerance_pp, bool) or not isinstance(
             self.unadmitted_tolerance_pp, (int, float)
         ):
@@ -1025,10 +1108,18 @@ class PerTargetHarmBound:
             )
         return self
 
+    def allowed_net_harm_rows(self, n_rows: int | None) -> int:
+        """The net-harm allowance over ``n_rows`` fold-B rows."""
+
+        return harm_allowance(
+            self.max_net_harm_rows, n_rows=n_rows, per_rows=self.harms_per_rows
+        )
+
     def as_json(self) -> dict[str, object]:
         return {
             "max_net_harm_rows": self.max_net_harm_rows,
             "unadmitted_tolerance_pp": float(self.unadmitted_tolerance_pp),
+            "harms_per_rows": self.harms_per_rows,
         }
 
 
@@ -1257,7 +1348,8 @@ def _confirm_with_harm_bound(
             n_replicates=n_replicates,
         )[metric]
         net_harm = contrast.harms - contrast.saves
-        within = net_harm <= harm_bound.max_net_harm_rows
+        allowed = harm_bound.allowed_net_harm_rows(contrast.n)
+        within = net_harm <= allowed
         per_target.append(
             {
                 "target_id": target_id,
@@ -1267,6 +1359,7 @@ def _confirm_with_harm_bound(
                 "harms": contrast.harms,
                 "ties": contrast.ties,
                 "net_harm_rows": net_harm,
+                "net_harm_rows_allowed": allowed,
                 "delta_pp": contrast.delta * scale,
                 "ci90_low_pp": (
                     None if contrast.bootstrap is None else contrast.bootstrap.ci_low * scale
@@ -1278,7 +1371,10 @@ def _confirm_with_harm_bound(
             }
         )
         if not within:
-            breaches.append(f"{target_id} (harms - saves = {net_harm})")
+            breaches.append(
+                f"{target_id} (harms - saves = {net_harm} over {allowed} "
+                f"allowed at n = {contrast.n})"
+            )
 
     unadmitted_pp = None if background is None else background.delta * scale
     unadmitted_ok = (
@@ -1296,6 +1392,9 @@ def _confirm_with_harm_bound(
                 "harms": background.harms,
                 "ties": background.ties,
                 "net_harm_rows": background.harms - background.saves,
+                # The unadmitted pool is read on the point estimate, not on a
+                # count, so it has no allowance to report.
+                "net_harm_rows_allowed": None,
                 "delta_pp": unadmitted_pp,
                 "ci90_low_pp": (
                     None
@@ -1316,7 +1415,7 @@ def _confirm_with_harm_bound(
         f"{'>' if targeted_ok else 'is not >'} 0",
         (
             f"every admitted scenario within harms - saves <= "
-            f"{harm_bound.max_net_harm_rows}"
+            f"{harm_bound.max_net_harm_rows} per {harm_bound.harms_per_rows} rows"
             if not breaches
             else f"scenario(s) over the harm bound: {', '.join(breaches)}"
         ),
@@ -1590,7 +1689,13 @@ def replay_selection(
     if not isinstance(gates_raw, Mapping):
         raise EvolutionError("selection record carries no gates")
     gates = AdmissionGates(
-        saves=int(gates_raw["saves"]), harms=int(gates_raw["harms"]), net=int(gates_raw["net"])
+        saves=int(gates_raw["saves"]),
+        harms=int(gates_raw["harms"]),
+        net=int(gates_raw["net"]),
+        # The harm rate is part of the gate a receipt replays under; defaulted
+        # for any record written before the rate existed, where every fold was
+        # 20 rows and the rate and the count agree anyway.
+        harms_per_rows=int(gates_raw.get("harms_per_rows", HARMS_PER_ROWS)),
     )
     targets_raw = record.get("targets")
     if not isinstance(targets_raw, list) or not targets_raw:
@@ -2973,6 +3078,12 @@ class LoopConfig:
     seed: int = DEFAULT_SEED
     max_rounds: int = MAX_ROUNDS
     gates: AdmissionGates = AdmissionGates()
+    #: The rows one tolerated harm is measured against, for BOTH harm rules
+    #: (owner, 2026-09-06). One field rather than two, because a cell whose
+    #: stage-one and stage-three harm rates disagreed would be reporting two
+    #: different definitions of the same word. Stamped onto ``gates`` and
+    #: ``harm_bound`` at load, so both objects carry it into their receipts.
+    harms_per_rows: int = HARMS_PER_ROWS
     background_tolerance_pp: float = BACKGROUND_TOLERANCE_PP
     n_replicates: int = 10_000
     # -- what a target IS, and what a candidate WRITES ---------------------
@@ -3078,20 +3189,49 @@ class LoopConfig:
         for key in ("proposer_slots",):
             if key in values:
                 values[key] = tuple(int(slot) for slot in values[key])
+        # The harm rate is declared ONCE, at the top level, and stamped onto
+        # both harm rules below. A config that hid a second spelling of it
+        # inside ``gates`` or ``harm_bound`` would silently be ignored, so
+        # refuse it instead.
+        per_rows = values.get("harms_per_rows", HARMS_PER_ROWS)
+        if isinstance(per_rows, bool) or not isinstance(per_rows, int) or per_rows <= 0:
+            raise EvolutionError("loop config harms_per_rows must be a positive integer")
+        values["harms_per_rows"] = per_rows
         if "gates" in values:
             raw = values["gates"]
+            unknown_gate_keys = sorted(set(raw) - {"saves", "harms", "net"})
+            if unknown_gate_keys:
+                raise EvolutionError(
+                    f"loop config gates carries unknown key(s): {unknown_gate_keys}; "
+                    "the harm rate is the top-level harms_per_rows"
+                )
             values["gates"] = AdmissionGates(
-                saves=int(raw["saves"]), harms=int(raw["harms"]), net=int(raw["net"])
+                saves=int(raw["saves"]),
+                harms=int(raw["harms"]),
+                net=int(raw["net"]),
+                harms_per_rows=per_rows,
             )
+        else:
+            values["gates"] = AdmissionGates(harms_per_rows=per_rows)
         if values.get("harm_bound") is not None:
             raw = values["harm_bound"]
             if not isinstance(raw, Mapping):
                 raise EvolutionError("loop config harm_bound must be an object")
+            unknown_bound_keys = sorted(
+                set(raw) - {"max_net_harm_rows", "unadmitted_tolerance_pp"}
+            )
+            if unknown_bound_keys:
+                raise EvolutionError(
+                    f"loop config harm_bound carries unknown key(s): "
+                    f"{unknown_bound_keys}; the harm rate is the top-level "
+                    "harms_per_rows"
+                )
             values["harm_bound"] = PerTargetHarmBound(
                 max_net_harm_rows=int(raw.get("max_net_harm_rows", 1)),
                 unadmitted_tolerance_pp=float(
                     raw.get("unadmitted_tolerance_pp", BACKGROUND_TOLERANCE_PP)
                 ),
+                harms_per_rows=per_rows,
             ).validate()
         config = cls(**values)
         if config.target_kind not in TARGET_KINDS:

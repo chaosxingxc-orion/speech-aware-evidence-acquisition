@@ -733,6 +733,7 @@ def test_the_confirmation_reports_all_three_parts_of_the_harm_bound(tmp_path) ->
     assert confirmation["harm_bound"] == {
         "max_net_harm_rows": 1,
         "unadmitted_tolerance_pp": -1.0,
+        "harms_per_rows": 30,
     }
     per_target = {record["target_id"]: record for record in confirmation["per_target"]}
     assert set(per_target) == {"alarm", "weather", "(unadmitted, pooled)"}
@@ -740,6 +741,9 @@ def test_the_confirmation_reports_all_three_parts_of_the_harm_bound(tmp_path) ->
         record = per_target[scenario]
         assert record["admitted"] is True
         assert record["n"] == len(FOLD_B_ROWS[scenario])
+        # Six synthetic rows is under one 30-row unit, so the rate floors at
+        # the base count and this world reads the old absolute bound.
+        assert record["net_harm_rows_allowed"] == 1
         assert record["net_harm_rows"] <= 1
         assert record["ci90_low_pp"] is not None
         assert record["within_harm_bound"] is True
