@@ -66,7 +66,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
-from ..core.base import AGENT_CONTROLLERS
+from ..core.base import AGENT_CONTROLLERS, RESPONSE_FORMATS
 from .errors import RailsError
 from .knowledge import AgentStateArtifact, AgentStepTransition, QueryState
 from .material import PhaseMaterial
@@ -678,6 +678,92 @@ def register_phase_programs_v1() -> None:
 register_phase_programs_v1()
 
 
+# -- registered response formats (E1, 2026-09-05) -----------------------------
+#
+# ``PhaseSpec.response_format_id`` has always been a config-declared name;
+# nothing resolved it, so every phase that wanted a real structured-output
+# schema had to be handed one by a launcher. These two entries close that
+# seam for the Audio2Tool select-then-fill program. Both are
+# ``(lock, root, **params) -> Mapping`` thunks over the pinned
+# ``tools_registry.csv``, exactly the shape ``core.base.INSTRUCTION_FILLS``
+# entries use, because a 152-tool JSON schema is far too large to live in a
+# config fragment. They register HERE, in the controllers module, because
+# ``scripts/checks/engineering_base_check.py`` names this file as one of the
+# canonical registration sites and a registry populated from anywhere else
+# is exactly the fragmentation that check exists to catch.
+
+
+def _a2t_registry_rows(lock: Mapping[str, object], root: Path):
+    from ..data.audio2tool import load_tool_registry  # noqa: PLC0415 (import cost)
+
+    return load_tool_registry(lock, root)
+
+
+def select_response_format_v1(
+    lock: Mapping[str, object], root: Path, **params: object
+) -> Mapping[str, object]:
+    """``rails.a2t_response_schema.audio2tool_selection_response_format`` over
+    the WHOLE pinned registry: an array of exact tool-name objects, no
+    argument field at all -- the SELECT phase's output contract. ``params``
+    (``schema_name``, ``min_calls``, ``max_calls``) come from the baseline
+    fragment's ``phase_material.<phase>.fill_params`` and default to the
+    schema builder's own defaults; ``candidate_tool_names`` defaults to every
+    registered tool name in sorted order, so the phase is unconditioned on
+    any per-sample retrieval."""
+
+    from .a2t_response_schema import (  # noqa: PLC0415 (import cost)
+        audio2tool_selection_response_format,
+    )
+
+    rows = _a2t_registry_rows(lock, root)
+    candidates = tuple(sorted({str(row["tool_name"]) for row in rows}))
+    return audio2tool_selection_response_format(rows, candidates, **params)
+
+
+def fill_response_format_v1(
+    lock: Mapping[str, object], root: Path, **params: object
+) -> Mapping[str, object]:
+    """``rails.a2t_response_schema.audio2tool_outer_call_array_response_format``
+    over the whole pinned registry: the documented ``[{name, arguments}]``
+    envelope with an exact tool-name enum and a deliberately open
+    ``arguments`` object -- the FILL phase's output contract.
+
+    Why not ``audio2tool_locked_call_array_response_format``, which locks the
+    exact occurrence list: that schema is a function of ONE sample's SELECT
+    answer, so it cannot be a phase-level, sample-independent format at all.
+    A per-sample response format is a different seam (the phase material
+    would have to carry one schema per sample) and is deliberately out of
+    scope here; this entry is the strongest format that is genuinely static
+    for the phase.
+    """
+
+    from .a2t_response_schema import (  # noqa: PLC0415 (import cost)
+        audio2tool_outer_call_array_response_format,
+    )
+
+    return audio2tool_outer_call_array_response_format(
+        _a2t_registry_rows(lock, root), **params
+    )
+
+
+def register_response_formats_v1() -> None:
+    """Idempotently register the E1 response-format ids into the shared
+    ``core.base.RESPONSE_FORMATS`` registry (same shape and same
+    re-entrancy discipline as :func:`register_phase_programs_v1`)."""
+
+    registered = RESPONSE_FORMATS.names()
+    # Each id is a literal inside its own ``register`` call so the
+    # engineering-base gate can read the registered name set from source
+    # without importing the package.
+    if "select-response-v1" not in registered:
+        RESPONSE_FORMATS.register("select-response-v1", select_response_format_v1)
+    if "fill-response-v1" not in registered:
+        RESPONSE_FORMATS.register("fill-response-v1", fill_response_format_v1)
+
+
+register_response_formats_v1()
+
+
 __all__ = [
     "DEFAULT_PROGRAM_CONFIG_DIR",
     "PHASE_KNOWLEDGE_KINDS",
@@ -692,7 +778,10 @@ __all__ = [
     "SupplyForPhase",
     "default_controller_factory",
     "default_phase_program",
+    "fill_response_format_v1",
     "load_phase_program",
     "register_phase_programs_v1",
+    "register_response_formats_v1",
     "registered_program_ids",
+    "select_response_format_v1",
 ]

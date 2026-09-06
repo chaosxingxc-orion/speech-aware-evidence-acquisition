@@ -529,6 +529,7 @@ class FlightRuntime:
         # responses stay auditable beside the answer that was sealed.
         self._phase_summaries: tuple[object, ...] = ()
         self._phase_program_material: Mapping[str, object] | None = None
+        self._phase_material_receipt: Mapping[str, object] | None = None
         self._promotion_receipt: Mapping[str, object] | None = None
         self._owns_session = False
 
@@ -635,33 +636,110 @@ class FlightRuntime:
         assert_execution_scope(plan.execution_profile)
         return plan
 
+    def _phase_prompt_payloads(
+        self, representative: object, program: object
+    ) -> Mapping[str, bytes]:
+        """One representative rendered request PER PHASE for a phase program.
+
+        A phase's own instruction rides the payload's ORG/CONTROL history
+        turn, so the adapter's bare ``assemble_prompt`` -- what the direct
+        path estimates over -- is not the request a phase program sends. For
+        a cell whose select phase carries a tool registry that is thousands
+        of tokens of difference, i.e. exactly the kind of miss a prompt-fit
+        estimate exists to catch. This renders each phase through
+        :func:`rails.phase_material.render_phase_envelope`, the same
+        transport shape the contact itself crosses the wire as.
+
+        Two deliberate approximations, both in the SAFE direction: the
+        system text is rebuilt with ``rails.runner._agent_messages``' own
+        rule (append the adapter's task contract only when the instruction
+        does not already contain it), and a phase that appends a predecessor
+        state is padded by the completion-token ceiling's worth of ASCII,
+        because the real predecessor is one prior response and is bounded by
+        exactly that.
+        """
+
+        from ...rails.obs import default_obs_packet  # noqa: PLC0415 (cycle guard)
+        from ...rails.phase_material import (  # noqa: PLC0415 (cycle guard)
+            load_phase_material_specs,
+            render_phase_envelope,
+            render_static_instruction,
+        )
+
+        baseline_values = self._composed.values
+        specs = load_phase_material_specs(baseline_values, program)
+        static_text = {
+            phase: render_static_instruction(
+                spec, self._repo_root, self._lock, self._data_root
+            )
+            for phase, spec in specs.items()
+        }
+        messages = self._adapter.assemble_prompt(representative, None)
+        system_text = str(messages[0]["content"])
+        contract = self._adapter.build_task_contract(
+            representative, default_obs_packet(representative)
+        )
+        if contract not in system_text:
+            system_text = f"{system_text}\n\nTask contract:\n{contract}"
+        descriptor = self.speech_packet_bindings()[representative.sample_id]
+        prompt_order = str(
+            baseline_values.get("prompt_order") or "speech-query-prefix-v2"
+        )
+        pad = "x" * (4 * int(self._adapter.serving_geometry()["max_tokens"]))
+        payloads: dict[str, bytes] = {}
+        for phase in program.phase_names():
+            instruction = static_text[phase]
+            if specs[phase].predecessor_binding != "none":
+                instruction = f"{instruction}\n\nPrior phase response (pad):\n{pad}"
+            envelope = render_phase_envelope(
+                system_text,
+                instruction,
+                prompt_order=prompt_order,
+                packet_descriptor=descriptor,
+                contact_id=f"{program.program_id}:{phase}:{representative.sample_id}",
+            )
+            payloads[phase] = json.dumps(
+                list(envelope), ensure_ascii=False, sort_keys=True
+            ).encode("utf-8")
+        return payloads
+
     def _assess_prompt_budget(self, samples: Sequence[object]) -> tuple[Mapping[str, object], ...]:
         """Serialize one representative request per phase through the
         adapter and run it through ``rails.context_budget.
         assess_context_budget`` -- a PRE-FLIGHT estimate (module docstring:
         exact counts are required "immediately before each model contact",
         which is what a real flight's ``token_counter`` seam must supply at
-        request time; this stage runs once, ahead of any contact)."""
+        request time; this stage runs once, ahead of any contact).
+
+        For a PHASE PROGRAM the representative request is rendered per phase
+        through :meth:`_phase_prompt_payloads`, because a phase's own
+        instruction is part of what it sends.
+        """
 
         representative = samples[0]
         baseline_values = self._composed.values
         policy = baseline_values.get("policy")
         phase_names: tuple[str, ...]
+        phase_payloads: Mapping[str, bytes] = {}
         if policy == "fixed":
             phase_names = ("direct",)
         else:
-            phase_names = tuple(phase.name for phase in default_phase_program(str(policy)).phases)
+            program = default_phase_program(str(policy))
+            phase_names = program.phase_names()
+            if self.uses_speech_feature_packets():
+                phase_payloads = self._phase_prompt_payloads(representative, program)
         max_tokens = int(self._adapter.serving_geometry()["max_tokens"])
         messages = self._adapter.assemble_prompt(representative, None)
         payload_bytes = json.dumps(
             list(messages), ensure_ascii=False, sort_keys=True
         ).encode("utf-8")
-        rendered_tokens = self._token_counter(payload_bytes)
         speech_tokens = max(
             1, round(float(getattr(representative, "audio_seconds", 1.0)) * self._speech_tokens_per_second)
         )
         receipts: list[Mapping[str, object]] = []
         for phase_name in phase_names:
+            phase_bytes = phase_payloads.get(phase_name, payload_bytes)
+            rendered_tokens = self._token_counter(phase_bytes)
             breakdown = ContextBudgetBreakdown(
                 rendered_text_tokens=rendered_tokens,
                 speech_feature_packet_tokens=((representative.sample_id, speech_tokens),),
@@ -672,7 +750,7 @@ class FlightRuntime:
                     rendered_tokens + speech_tokens + REGISTERED_SPECIAL_TOKEN_RESERVE + max_tokens
                 ),
             )
-            candidate = ContextBudgetInput.from_payload(payload_bytes, breakdown=breakdown)
+            candidate = ContextBudgetInput.from_payload(phase_bytes, breakdown=breakdown)
             decision = assess_context_budget(candidate)
             if decision.decision.value != "ALLOW":
                 # A pre-flight estimate has no live compaction mechanism to
@@ -1704,6 +1782,84 @@ class FlightRuntime:
             serial,
         )
 
+    def _dispatch_phase_program(
+        self, client: object, plan: ExecutionPlan, policy: str
+    ) -> tuple[
+        list[Mapping[str, object]],
+        int,
+        str,
+        dict[str, object],
+        list[Mapping[str, object]],
+    ]:
+        """The ``policy != "fixed"`` dispatch, factored out for exactly the
+        reason :meth:`_dispatch_fixed_policy` is: :meth:`wire_check` drives
+        THIS code path, so a wiring proof of a phase program proves something
+        about the flight rather than about a second copy of it."""
+
+        from ..tracing import TraceBuffer  # noqa: PLC0415 (function-local, cheap)
+
+        program = default_phase_program(policy)
+        binding = self._phase_program_material
+        if binding is None:
+            # E1: a phase program whose material IS expressible in the
+            # baseline fragment binds itself here, so a two-contact cell is a
+            # config edit rather than a launcher script.
+            # bind_phase_program_material(...) remains the explicit override
+            # and, when it was called, wins outright.
+            binding = self._default_phase_program_binding(program, client)
+        # rails.runner.run_speech_native_agent_loop requires an append-only
+        # AgentTraceSink BOUND TO plan.run_id. FrozenCoreClient is not one --
+        # it owns a private TraceSink and exposes only flush_trace_buffer --
+        # so the loop gets a TraceBuffer, exactly as every sealed AgentLoop
+        # launcher in this study did, and it is flushed into the client's own
+        # sink once the whole program has settled.
+        sink = binding.get("trace_sink")
+        if sink is None or sink is client:
+            sink = TraceBuffer(plan.run_id)
+        summaries = self._phase_runner(
+            program=program,
+            adapter=self._adapter,
+            plan=plan,
+            data_root=self._data_root,
+            core_client=client,
+            split_id=self._split_id,
+            knowledge_snapshot=binding["knowledge_snapshot"],
+            speech_packet_bindings=binding["speech_packet_bindings"],
+            trace_sink=sink,
+            decoding_params=self._phase_decoding_params(),
+            material_for_phase=binding["material_for_phase"],
+            supply_for_phase=binding.get("supply_for_phase"),
+        )
+        flush = getattr(client, "flush_trace_buffer", None)
+        if isinstance(sink, TraceBuffer) and callable(flush):
+            flush(sink)
+        self._phase_summaries = tuple(summaries)
+        rows = self._rows_from_phase_summaries(self._phase_summaries, policy=policy)
+        contact_count = sum(
+            self._phase_summary_contacts(summary) for summary in self._phase_summaries
+        )
+        phase_receipt = [
+            {
+                "phase": getattr(summary, "controller_policy_id", None),
+                "rows": len(summary.results),
+                "contacts": self._phase_summary_contacts(summary),
+            }
+            for summary in self._phase_summaries
+        ]
+        dispatch: dict[str, object] = {
+            "dispatch": "phase-program",
+            "program_id": program.program_id,
+            "phase_names": list(program.phase_names()),
+            "contacts_per_sample": len(program.phases),
+            "barrier": "whole-roster per phase (rails.phase_runner.run_program)",
+            "material_source": (
+                "bind_phase_program_material override"
+                if self._phase_program_material is not None
+                else "baseline fragment phase_material (rails.phase_material)"
+            ),
+        }
+        return rows, contact_count, "phase-program", dispatch, phase_receipt
+
     def run_phases(self, *, workers: int | None = None) -> Mapping[str, object]:
         """Build a ``client_factory`` (default ``FrozenCoreClient``) from
         :meth:`frozen_core_client_kwargs`, then dispatch on the baseline
@@ -1742,43 +1898,13 @@ class FlightRuntime:
                 dispatch,
             ) = self._dispatch_fixed_policy(client, self._plan, workers=workers)
         else:
-            program = default_phase_program(policy)
-            binding = getattr(self, "_phase_program_material", None)
-            if binding is None:
-                raise FlightRuntimeError(
-                    f"policy {policy!r} is a phase program; call "
-                    "bind_phase_program_material(...) before run_phases()"
-                )
-            summaries = self._phase_runner(
-                program=program,
-                adapter=self._adapter,
-                plan=self._plan,
-                data_root=self._data_root,
-                core_client=client,
-                split_id=self._split_id,
-                knowledge_snapshot=binding["knowledge_snapshot"],
-                speech_packet_bindings=binding["speech_packet_bindings"],
-                trace_sink=binding.get("trace_sink", client),
-                decoding_params=self._decoding_params(),
-                material_for_phase=binding["material_for_phase"],
-                supply_for_phase=binding.get("supply_for_phase"),
-            )
-            self._phase_summaries = tuple(summaries)
-            self._output_rows = self._rows_from_phase_summaries(
-                self._phase_summaries, policy=policy
-            )
-            contact_count = sum(
-                self._phase_summary_contacts(summary) for summary in self._phase_summaries
-            )
-            phase_receipt = [
-                {
-                    "phase": getattr(summary, "controller_policy_id", None),
-                    "rows": len(summary.results),
-                    "contacts": self._phase_summary_contacts(summary),
-                }
-                for summary in self._phase_summaries
-            ]
-            policy_kind = "phase-program"
+            (
+                self._output_rows,
+                contact_count,
+                policy_kind,
+                dispatch,
+                phase_receipt,
+            ) = self._dispatch_phase_program(client, self._plan, policy)
         wall_seconds = max(self._clock() - started, 1e-9)
 
         timings = client.timings
@@ -1826,6 +1952,12 @@ class FlightRuntime:
             # arm, which has no phases at all. ``contact_count`` above is
             # the sum of the ``contacts`` column.
             "phases": phase_receipt,
+            # What each phase's instruction and response format actually
+            # were, by sha256 and length -- never the text itself, which can
+            # be the whole 152-tool registry. None for a direct arm, and for
+            # a caller-supplied bind_phase_program_material override (whose
+            # material this harness never rendered and cannot describe).
+            "phase_material": self._phase_material_receipt,
             "contacts_per_second": contacts_per_second,
             "average_latency_seconds": average_latency,
             "slot_occupancy": slot_occupancy,
@@ -1840,6 +1972,184 @@ class FlightRuntime:
             "run_phases", payload, ("contacts_per_second", "tokens_per_second")
         )
         return self.receipts.record("run_phases", payload)
+
+    def _phase_decoding_params(self) -> Mapping[str, object]:
+        """The run-level decoding params a PHASE program may carry.
+
+        Two keys the direct path legitimately sends are refused by the agent
+        loop and must be dropped here rather than at the call site:
+
+        * ``id_slot`` -- ``rails.runner.run_speech_native_agent_loop``
+          refuses it outright ("the runner owns it"): it hands each
+          trajectory a slot from its own pool. Every mmproj-free model
+          fragment in this repository declares ``id_slot: "per-sample"``, so
+          without this every phase-program flight would have died at its
+          first contact.
+        * ``response_format`` -- ``rails.phase_runner.run_agent_phase``
+          refuses it, because each phase's own format comes from its
+          ``PhaseMaterial`` (which is exactly what the ``RESPONSE_FORMATS``
+          registry now supplies).
+        """
+
+        params = dict(self._decoding_params() or {})
+        params.pop("id_slot", None)
+        params.pop("response_format", None)
+        return params
+
+    def _load_knowledge_snapshot(self) -> object:
+        """The frozen TRAIN snapshot named by the baseline fragment's
+        ``knowledge_snapshot_relpath``/``knowledge_snapshot_sha256``, loaded
+        from under the data root and hash-verified against the pin.
+
+        ``rails.runner.run_speech_native_agent_loop`` requires a validated,
+        non-empty ``KnowledgeSnapshot`` for EVERY agent-loop contact, even
+        one whose phases all declare ``knowledge: "none"``. Such a phase
+        binds the snapshot INVISIBLY: ``bootstrap_facet_ids``/
+        ``bootstrap_value_ids`` stay empty, so the initial ``QueryState``
+        makes no facet or value visible and ``rails.runner._agent_messages``
+        renders none of it into the prompt. The snapshot is still what the
+        runner's own leakage rules are enforced against -- which is the
+        point: a phase instruction that quoted snapshot material would be
+        refused rather than silently smuggled past traced supply.
+        """
+
+        from ...rails.knowledge import KnowledgeSnapshot  # noqa: PLC0415 (cycle guard)
+
+        values = self._composed.values
+        relpath = values.get("knowledge_snapshot_relpath")
+        expected = values.get("knowledge_snapshot_sha256")
+        if not isinstance(relpath, str) or not relpath:
+            raise FlightRuntimeError(
+                "a phase-program baseline fragment must declare "
+                "'knowledge_snapshot_relpath' (under the data root) -- the frozen "
+                "TRAIN snapshot rails.runner.run_speech_native_agent_loop requires"
+            )
+        if not isinstance(expected, str) or len(expected) != 64:
+            raise FlightRuntimeError(
+                "'knowledge_snapshot_sha256' must be the pinned 64-hex content hash of "
+                f"{relpath!r}"
+            )
+        path = self._data_root / relpath
+        if not path.is_file():
+            raise FlightRuntimeError(f"knowledge snapshot missing: {path}")
+        snapshot = KnowledgeSnapshot.from_frozen_json(
+            json.loads(path.read_text(encoding="utf-8"))
+        )
+        measured = snapshot.content_hash()
+        if measured != expected:
+            raise FlightRuntimeError(
+                f"knowledge snapshot {path} hashes to {measured}, not the configured "
+                f"{expected}"
+            )
+        return snapshot
+
+    def _default_phase_program_binding(
+        self, program: object, client: object
+    ) -> Mapping[str, object]:
+        """Build the phase-program binding from CONFIG alone (E1).
+
+        ``bind_phase_program_material`` stays the explicit override for a
+        caller that genuinely has material no fragment can express; this is
+        what a cell whose material IS expressible gets for free, so a new
+        two-contact cell is a config edit rather than a launcher script
+        (owner rule of 2026-09-03, "one base, thin derivations").
+
+        Three refusals, all BEFORE any contact:
+
+        1. the arm must travel the speech-feature packet path -- the agent
+           loop is speech-feature only (``rails.core_client.FrozenCoreClient``
+           refuses ``history`` without ``speech_feature_sample_id``);
+        2. every rendered static instruction, and every per-sample sealed
+           state that will be appended to one, must pass the SAME
+           protected-material containment rule ``rails.runner`` applies at
+           contact time -- otherwise the flight dies mid-roster, after part
+           of the budget is gone, on a defect that was fully decidable here;
+        3. everything :mod:`rails.phase_material` itself refuses: a phase
+           without material, material for a phase the program does not
+           declare, a response-format presence or id mismatch, an unfilled
+           template, a missing sealed predecessor row.
+        """
+
+        from ...rails.phase_material import (  # noqa: PLC0415 (cycle guard)
+            build_material_for_phase,
+            load_phase_material_specs,
+            phase_material_receipt,
+            render_static_instruction,
+            resolve_response_formats,
+            sealed_states_from_manifest,
+        )
+        from ...rails.runner import (  # noqa: PLC0415 (cycle guard)
+            _protected_knowledge_material,
+        )
+
+        if not self.uses_speech_feature_packets():
+            raise FlightRuntimeError(
+                f"arm {self._arm()!r} does not travel the speech-feature packet path, but "
+                f"policy {getattr(program, 'program_id', program)!r} is a phase program: "
+                "rails.runner's agent loop binds one input_speech_features query packet "
+                "per contact and rails.core_client refuses Agent history without it"
+            )
+        snapshot = self._load_knowledge_snapshot()
+        specs = load_phase_material_specs(self._composed.values, program)
+        static_text = {
+            phase: render_static_instruction(
+                spec, self._repo_root, self._lock, self._data_root
+            )
+            for phase, spec in specs.items()
+        }
+        formats = resolve_response_formats(specs, self._lock, self._data_root)
+
+        sample_ids = tuple(sample.sample_id for sample in self._samples)
+        per_sample_states: dict[str, Mapping[str, object]] = {}
+        for phase, spec in specs.items():
+            if spec.predecessor_binding != "sealed-manifest":
+                continue
+            source = spec.predecessor_source
+            per_sample_states[phase] = sealed_states_from_manifest(
+                self._data_root / str(source["manifest_relpath"]),
+                expected_sha256=str(source["manifest_sha256"]),
+                phase_name=phase,
+                producer_policy_id=str(source["producer_policy_id"]),
+                sample_ids=sample_ids,
+            )
+
+        protected = _protected_knowledge_material(snapshot)
+        offenders: list[str] = []
+        for phase, text in sorted(static_text.items()):
+            lowered = text.casefold()
+            if any(material in lowered for material in protected):
+                offenders.append(f"instruction[{phase}]")
+        for phase, states in sorted(per_sample_states.items()):
+            for sample_id, state in sorted(states.items()):
+                lowered = state.content.casefold()
+                if any(material in lowered for material in protected):
+                    offenders.append(f"sealed-state[{phase}][{sample_id}]")
+        if offenders:
+            raise FlightRuntimeError(
+                f"{len(offenders)} phase material item(s) embed frozen knowledge "
+                f"key/value payloads, e.g. {offenders[:5]}; rails.runner refuses such a "
+                "contact instruction at request time "
+                "(_assert_agent_control_excludes_knowledge_payloads), so this would have "
+                "died mid-roster. Acquire that material through traced knowledge supply "
+                "instead"
+            )
+
+        self._phase_material_receipt = phase_material_receipt(
+            specs, static_text, formats
+        )
+        return {
+            "knowledge_snapshot": snapshot,
+            "speech_packet_bindings": self.speech_packet_bindings(),
+            "material_for_phase": build_material_for_phase(
+                specs,
+                program_id=program.program_id,
+                static_text_by_phase=static_text,
+                response_format_by_phase=formats,
+                per_sample_states=per_sample_states,
+            ),
+            "supply_for_phase": None,
+            "trace_sink": client,
+        }
 
     def bind_phase_program_material(
         self,
@@ -2285,6 +2595,18 @@ class FlightRuntime:
         # store's prior actuals on every request), so a fixed wire-check run
         # id would let the first cell's contacts exhaust the second cell's
         # budget -- which is exactly what happened the first time this ran.
+        policy = values.get("policy")
+        if not isinstance(policy, str) or not policy:
+            raise FlightRuntimeError("baseline fragment must declare a non-empty 'policy'")
+        # A phase program makes ONE contact per phase per sample. The
+        # attempt budget is run-cumulative (core.model.adapter re-reads the
+        # store's prior actuals on every request), so a wire-check plan sized
+        # for one contact per sample is exhausted the moment the SECOND phase
+        # asks for its first contact -- the same defect the fresh run id
+        # below already fixed once, in the other dimension.
+        contacts_per_sample = (
+            1 if policy == "fixed" else len(default_phase_program(policy).phases)
+        )
         stamp = int(self._clock() * 1000)
         wire_run_id = f"{WIRE_CHECK_RUN_ID_PREFIX}{self._run_id}-{stamp:d}"
         wire_attempt_id = f"attempt-wire-check-{stamp:d}"
@@ -2297,7 +2619,7 @@ class FlightRuntime:
             carrier_lock_key=carrier_lock_key,
             split_role=declared["split_role"],
             split_identity_hash=identity_hash,
-            planned_model_calls=max(len(self._samples), 1),
+            planned_model_calls=max(len(self._samples) * contacts_per_sample, 1),
             planned_gpu_hours=declared["planned_gpu_hours"],
             planned_speech_audio_seconds=declared["planned_speech_audio_seconds"],
             protocol_hash=compute_protocol_hash(
@@ -2321,19 +2643,30 @@ class FlightRuntime:
         self._client = client
 
         started = self._clock()
-        rows, contact_count, policy_kind, dispatch = self._dispatch_fixed_policy(
-            client, plan, workers=workers
-        )
+        phase_receipt: list[Mapping[str, object]] = []
+        if policy == "fixed":
+            rows, contact_count, policy_kind, dispatch = self._dispatch_fixed_policy(
+                client, plan, workers=workers
+            )
+        else:
+            (
+                rows,
+                contact_count,
+                policy_kind,
+                dispatch,
+                phase_receipt,
+            ) = self._dispatch_phase_program(client, plan, policy)
         wall_seconds = max(self._clock() - started, 1e-9)
         self._output_rows = rows
 
         # -- the assertions each landed defect would have failed -----------
         expected_fields = set(ARM_VISIBLE_FIELDS.get(arm, ()))
+        expected_payloads = len(self._samples) * contacts_per_sample
         problems: list[str] = []
-        if len(transport.payloads) != len(self._samples):
+        if len(transport.payloads) != expected_payloads:
             problems.append(
                 f"{len(transport.payloads)} request(s) reached the transport for "
-                f"{len(self._samples)} sample(s)"
+                f"{len(self._samples)} sample(s) x {contacts_per_sample} phase(s)"
             )
         for index, payload in enumerate(transport.payloads):
             if set(payload) != expected_fields:
@@ -2366,12 +2699,37 @@ class FlightRuntime:
                 f"{arrival['rows_with_native_tool_calls']} native tool-call row(s); the "
                 f"fake transport emitted {expected_native_rows}"
             )
-        if arrival["rows_answered_as_text"] != len(self._samples) - expected_native_rows:
+        if arrival["rows_answered_as_text"] != expected_payloads - expected_native_rows:
             problems.append(
                 f"response-arrival accounting reports "
                 f"{arrival['rows_answered_as_text']} text row(s) for "
-                f"{len(self._samples)} sample(s)"
+                f"{expected_payloads} request(s)"
             )
+        if policy != "fixed":
+            # A phase's instruction rides the payload's ORG/CONTROL history,
+            # not the system message (rails.core_client._agent_history). If
+            # the last history turn is not the control turn, the phase's own
+            # instruction never reached the wire and the cell would have run
+            # every phase on the bare system prompt.
+            for index, payload in enumerate(transport.payloads):
+                history = payload.get("history")
+                if not isinstance(history, list) or not history:
+                    problems.append(
+                        f"request {index} carries no Agent history; a phase program's "
+                        "instruction travels on the CONTROL history turn"
+                    )
+                    continue
+                last = history[-1]
+                if not isinstance(last, Mapping) or last.get("role") != "control":
+                    problems.append(
+                        f"request {index} last history turn has role "
+                        f"{(last or {}).get('role') if isinstance(last, Mapping) else last!r}, "
+                        "not 'control'"
+                    )
+                elif not str(last.get("content") or "").strip():
+                    problems.append(
+                        f"request {index} control turn carries an empty instruction"
+                    )
         if problems:
             raise FlightRuntimeError("wire check failed: " + "; ".join(problems))
 
@@ -2408,7 +2766,11 @@ class FlightRuntime:
             "native_tools_arm": native,
             "sample_count": len(self._samples),
             "contact_count": contact_count,
+            "contacts_per_sample": contacts_per_sample,
+            "policy": policy,
             "policy_kind": policy_kind,
+            "phases": phase_receipt,
+            "phase_material": self._phase_material_receipt,
             "dispatch": dispatch,
             "wall_seconds": wall_seconds,
             "payload_keys": sorted(first),

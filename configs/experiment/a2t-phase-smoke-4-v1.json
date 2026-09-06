@@ -1,0 +1,44 @@
+{
+  "experiment_id": "SAEA-A2T-PHASE-SMOKE-4-V1",
+  "fragment_kind": "saea-phase-program-smoke-experiment-v1",
+  "date": "2026-09-05",
+  "purpose": "MF-5 for Audio2Tool: prove the multi-phase seal path end to end on four rows of the TWO-PHASE barrier program phase-select-then-fill-v1. This is the case the seal path was actually broken for -- two whole-roster phases produced two rows per sample id, which core.bundle.outputs.seal refuses AFTER every contact is spent. The smoke proves that the second phase receives the first phase's own sealed answer for the same sample, that exactly one outputs row per sample is sealed carrying the FILL phase's text, that both phases' summaries land in <run_id>.phases.json, and that the registered Audio2Tool scorers run over the sealed manifest. It is a wiring proof: its numbers are never reported as a result and never enter a verdict.",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 24,
+    "planned_gpu_hours": 0.3,
+    "planned_speech_audio_seconds": 140
+  },
+  "cells": [
+    {
+      "cell_id": "phase-select-then-fill-smoke",
+      "arm": "speech-feature-query",
+      "baseline_fragment": "a2t-phase-select-then-fill-v1",
+      "model_fragment": "q4km-mmproj-free-speech-native-a2t-calibration-max1024",
+      "dataset_fragment": "audio2tool-calibration-400"
+    }
+  ],
+  "populations": [
+    {
+      "dataset_fragment": "audio2tool-calibration-400",
+      "split_id": "A2T-CALIBRATION-400-PHASE-SMOKE-4",
+      "ids": [
+        "tier1_direct:000045",
+        "tier2_parametric:000045",
+        "tier5_needle:000060",
+        "tier6_correction:000008"
+      ],
+      "basis": "The SAME four rows the sealed SAEA-A2T-DIRECT-CALIBRATION-SMOKE-V1 wiring proof flew: the lexicographically first sample of tiers 1, 2, 5 and 6 of the frozen 400. Named HERE, in the registered fragment, rather than passed on a command line. Flight split identity hash b30c8ec0ab426eb8428b5d833f97d9ef12f29bbed3535fcf153a36782c98ad4f, audio 16.948 s one pass.",
+      "audio_seconds_one_pass": 16.948
+    }
+  ],
+  "one_profile_for_both_modes": "One execution_plan, profile bounded-discovery-probe, used for both --wire-check (a fake gate and a fake transport, zero sockets and zero model contacts, spending none of this plan) and --run. Same shape as configs/experiment/a2t-direct-calibration-400-smoke-v1.json.",
+  "budget_basis": "4 rows x 2 phases x 1 contact = 8 contacts, plus margin for the one permitted recovery re-registration within the same run id = 24 planned model calls. Attempt budget is enforced RUN-CUMULATIVELY (core.model.adapter.FrozenCoreAdapter re-reads every prior attempt's durable actuals for this run id on every request), so the plan must cover prior durable spend plus this attempt's worst case, not just one attempt. Metered speech is 2 passes x 16.948 s = 33.896 s for the flight plus recovery margin, registered at 140. GPU hours 0.3 covers a cold model load plus eight contacts. Paid API spend 0.",
+  "gate": "PASS requires: 8 of 8 contacts; exactly TWO phases in the run_phases receipt, each with rows 4 and contacts 4; contact_count 8; a sealed run manifest with exactly 4 canonical outputs rows (one per sample, no duplicates) carrying the FILL phase's text; a <run_id>.phases.json beside it with both summaries and a sha256 recorded in the seal receipt; every payload's last history turn role == control; and every declared scorer running to completion over the complete manifest through core.scoring_batch.",
+  "what_is_not_read": "No smoke metric is a task measurement, and select-then-fill is not being evaluated here as a mechanism. KU-A2 (the real select-then-fill cell) is a later, separately preregistered experiment on n >= 400 against the sealed official-population manifests, and it is admitted only after KU-S3 (section 4b of the three-dimension program).",
+  "decision": {
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}

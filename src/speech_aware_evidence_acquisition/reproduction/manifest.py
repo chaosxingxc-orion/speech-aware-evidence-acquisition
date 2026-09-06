@@ -258,6 +258,63 @@ PROBES: dict[str, dict] = {
             "60-pair scenario/action intent inventory, which is what this template adds."
         ),
     },
+    "SLURP-PHASE-DIRECT-ONLY": {
+        "arms": {"direct": ["slurp_phase_direct.txt"]},
+        "scorer": (
+            "slurp-slu-official (the same pinned official evaluate.py as "
+            "SLURP-DEV1000-CLOSED-LIST-DIRECT), run through core.scoring_batch"
+        ),
+        "sampling": {
+            "seed": 20260823,
+            "design": (
+                "no new draw: the four DEV-1000 rows the sealed closed-list wiring "
+                "proof already flew, reused id-for-id"
+            ),
+        },
+        "sample_receipt": "DEV-1000.json",
+        "success": (
+            "a wiring gate, not a threshold: 4 of 4 contacts, exactly one phase in the "
+            "run_phases receipt, one sealed outputs row per sample, a phases file whose "
+            "sha256 the seal receipt records, and every declared scorer running to "
+            "completion over the complete manifest"
+        ),
+        "profile": "bounded-discovery-probe",
+        "note": (
+            "E1/MF-5. This template is NOT the system message -- that stays the closed-list "
+            "instruction (slurp_direct_closed_list.txt). It is the per-phase CONTROL turn of "
+            "phase-direct-only-v1, which rails.core_client._agent_history appends to the "
+            "payload's history, and is the ONE thing this cell adds to the sealed closed-list "
+            "direct arm's request. configs/baseline/slurp-phase-direct-only-v1.json."
+        ),
+    },
+    "A2T-PHASE-SELECT-THEN-FILL": {
+        "arms": {"select_then_fill": ["a2t_phase_select.txt", "a2t_phase_fill.txt"]},
+        "scorer": "a2t-toolcall and a2t-toolcall-v2, run through core.scoring_batch",
+        "sampling": {
+            "seed": _SEED,
+            "design": (
+                "no new draw: the four frozen-400 rows the sealed calibration wiring proof "
+                "already flew, reused id-for-id"
+            ),
+        },
+        "sample_receipt": "r1-audio2tool-sample.json",
+        "success": (
+            "a wiring gate, not a threshold: 8 of 8 contacts, exactly two phases in the "
+            "run_phases receipt, ONE sealed outputs row per sample carrying the fill phase's "
+            "text, both summaries in the phases file, and every declared scorer running to "
+            "completion over the complete manifest"
+        ),
+        "profile": "bounded-discovery-probe",
+        "note": (
+            "E1/MF-5. Neither template is the system message -- that stays the adapter's own "
+            "legacy registry instruction, exactly as the sealed P0-legacy-packets cell sent it. "
+            "These two are the per-phase CONTROL turns of phase-select-then-fill-v1, and they "
+            "carry NO registry fill on purpose: rails.runner refuses a contact instruction "
+            "containing any facet or value text of the bound knowledge snapshot, and the "
+            "compact registry rendering contains several. configs/baseline/"
+            "a2t-phase-select-then-fill-v1.json."
+        ),
+    },
     "R3-airbench-slurp-ic": {
         "arms": {
             "direct": ["r3_airbench_ic_direct.txt"],

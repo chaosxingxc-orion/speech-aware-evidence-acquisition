@@ -88,9 +88,15 @@ CANONICAL_REGISTRY_FILES = (
 # config key -> core.base registry variable, top-level only (the flat
 # "arm program" fragment shape used throughout configs/baseline/*.json and
 # most configs/experiment/*.json).
+# ``policy`` resolves in POLICIES for a one-contact arm program and in
+# AGENT_CONTROLLERS for a phase-program id (``configs/policy/phase-*.json``,
+# registered by rails/controllers.py): ``core.flight.FlightRuntime.run_phases``
+# dispatches on exactly that distinction. The owner rule is that every
+# ``policy`` value RESOLVES IN A core.base REGISTRY, so both are legal and a
+# value in neither is still an offender.
 TOP_LEVEL_STRING_KEYS = {
-    "policy": "POLICIES",
-    "evidence_source": "EVIDENCE_SOURCES",
+    "policy": ("POLICIES", "AGENT_CONTROLLERS"),
+    "evidence_source": ("EVIDENCE_SOURCES",),
 }
 TOP_LEVEL_LIST_KEY = ("scorers", "SCORERS")
 
@@ -111,10 +117,14 @@ NESTED_ID_KEYS = {
     "knowledge_fuser_id": "KNOWLEDGE_FUSERS",
     "builder_policy_id": "KNOWLEDGE_BUILDERS",
     "knowledge_builder_id": "KNOWLEDGE_BUILDERS",
+    # E1 (2026-09-05): a phase program's per-phase structured-output
+    # contract, declared both in configs/policy/phase-*.json and, per phase,
+    # under a baseline fragment's "phase_material" object.
+    "response_format_id": "RESPONSE_FORMATS",
 }
 
 ALL_REGISTRY_VARS = (
-    set(TOP_LEVEL_STRING_KEYS.values())
+    {var for vars_ in TOP_LEVEL_STRING_KEYS.values() for var in vars_}
     | {TOP_LEVEL_LIST_KEY[1]}
     | set(NESTED_ID_KEYS.values())
 )
@@ -462,12 +472,12 @@ def rule_unregistered_config_values(
             if not isinstance(doc, dict):
                 continue
 
-            for key, var in TOP_LEVEL_STRING_KEYS.items():
+            for key, variables in TOP_LEVEL_STRING_KEYS.items():
                 value = doc.get(key)
                 if not isinstance(value, str):
                     continue
                 keys_found.add(key)
-                if value not in registered[var]:
+                if not any(value in registered[var] for var in variables):
                     offenders.append(f"{relpath}::{key}={value}")
 
             scorers_value = doc.get(scorers_key)

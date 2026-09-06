@@ -63,6 +63,15 @@ KNOWLEDGE_BUILDERS = Registry("knowledge builder")
 KNOWLEDGE_RANKERS = Registry("knowledge ranker")
 KNOWLEDGE_FUSERS = Registry("knowledge fuser")
 AGENT_CONTROLLERS = Registry("Agent controller")
+# E1 (2026-09-05): named structured-response formats a phase program's
+# config may bind to one phase. ``rails.controllers.PhaseSpec`` already
+# declares a ``response_format_id`` per phase but nothing resolved it, so
+# every phase schema had to be handed in by a launcher. An entry is a
+# callable ``(lock, root, **params) -> Mapping`` that renders a
+# response-format document from pinned carrier data at run time -- the same
+# shape and the same reason as INSTRUCTION_FILLS above (a real schema over
+# the 152-tool registry is far too large for a config fragment).
+RESPONSE_FORMATS = Registry("response format")
 
 _REQUIRED_PROVENANCE = ("lock_key", "relpath", "sha256")
 

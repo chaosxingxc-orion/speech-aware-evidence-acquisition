@@ -1,0 +1,5 @@
+Phase 1 of 2 for this spoken command: SELECTION ONLY.
+
+Listen to the request and decide which tools from the registry already given in the system message above are being asked for, in the order they are spoken. Repeat a tool name once per occurrence when the same tool is asked for more than once.
+
+Return only the ordered list of tool names in the required response shape. Do not produce any argument values in this phase; the next phase fills them.

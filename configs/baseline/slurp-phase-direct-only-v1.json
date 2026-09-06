@@ -1,0 +1,34 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "phase-direct-only-v1",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
+  "speech_feature_key_representation_id": "saea-slurp-phase-direct-only-v1:direct",
+  "speech_feature_matcher_policy_id": "saea-slurp-phase-direct-only-v1",
+  "scorers": [
+    "slurp-slu-official",
+    "slurp-slu",
+    "cost"
+  ],
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template_active": true,
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full/snapshot.json",
+  "knowledge_snapshot_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+  "phase_material": {
+    "direct": {
+      "instruction_template": "probes/slurp_phase_direct.txt",
+      "instruction_fill": null,
+      "response_format_id": null,
+      "predecessor_binding": "none"
+    }
+  },
+  "what_this_is": "The MF-5 enabler cell for SLURP: the sealed closed-list direct baseline's own prompt, roster, packets, build, geometry and decoding, flown as the ONE-PHASE phase program phase-direct-only-v1 through rails.phase_runner.run_program instead of core.flight.FlightRuntime's fixed-policy direct dispatch. It exists to prove the multi-phase seal path end to end on the cheapest possible program -- one phase, one contact per sample, no knowledge, no predecessor -- so the two-contact SLURP cells (KC-S1a/b, KU-S1/S1c, KU-S3) fly on a harness that has already been shown to seal one row per sample.",
+  "the_one_difference_from_slurp_direct_closed_list": "policy. slurp-direct-closed-list.json declares 'fixed' and goes through FlightRuntime._run_speech_feature_direct: one system message, one input_speech_features user part, no history. This fragment declares 'phase-direct-only-v1' and goes through rails.runner.run_speech_native_agent_loop, which adds exactly one thing to the payload -- the ORG/CONTROL history turn carrying probes/slurp_phase_direct.txt (rails.core_client._agent_history). The system message, the packet, the arm, the decoding parameters and the scorers are identical. Its numbers are therefore NOT interchangeable with the sealed closed-list baseline's and are never reported as that baseline; the added control turn is a real prompt difference.",
+  "knowledge_is_bound_but_invisible": "rails.runner.run_speech_native_agent_loop requires a validated, non-empty KnowledgeSnapshot for every agent-loop contact even when no phase consumes it. The frozen TRAIN snapshot named above is bound with empty bootstrap_facet_ids/bootstrap_value_ids, so the initial QueryState makes no facet and no value visible and rails.runner._agent_messages renders none of it into the prompt. What the binding actually buys is the leakage rule: core.flight.FlightRuntime refuses, before any contact, a phase instruction that contains any facet or value text of 8 characters or more, which is the same rule rails.runner enforces at request time.",
+  "instruction_basis": "Identical to slurp-direct-closed-list.json's: the sealed 2026-08-25 DEV-1000 M0 instruction (sha256 cef527896e9beef5774305e01dc29192fc2d5ca89fba5143e82f0b91a7cb86b8, 5,747 characters) plus the 1,836-character closed label inventory suffix, rendered from the same hash-pinned template and the same registered fill. The flight script asserts that prefix relation before takeoff.",
+  "arm_basis": "speech-feature-query, the same arm and audio path the sealed DEV-1000 arms flew: mmproj-free decode over pre-materialized encoder packets from the registered DEV-1000 promotion receipt, one input_speech_features query descriptor per contact.",
+  "scorer_basis": "Unchanged from slurp-direct-closed-list.json: slurp-slu-official is the paper-facing scorer (the real, unmodified official evaluate.py at pinned commit 8eb16545762be97ace75334109d73824217311f1, --average micro), slurp-slu names the carrier's own scorer id, and both are run once over the complete manifest through core.scoring_batch, never sharded."
+}

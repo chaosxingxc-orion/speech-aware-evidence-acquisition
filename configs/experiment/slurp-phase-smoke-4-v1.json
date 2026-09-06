@@ -1,0 +1,45 @@
+{
+  "experiment_id": "SAEA-SLURP-PHASE-SMOKE-4-V1",
+  "fragment_kind": "saea-phase-program-smoke-experiment-v1",
+  "date": "2026-09-05",
+  "purpose": "MF-5 for SLURP: prove the multi-phase seal path end to end on four rows. The one-phase program phase-direct-only-v1 is the cheapest program that exercises everything the two-contact SLURP cells (KC-S1a/b, KU-S1/S1c, KU-S3) need -- rails.phase_runner.run_program, the config-built phase material (rails.phase_material), the ORG/CONTROL history turn, core.flight.FlightRuntime's phase dispatch, the one-row-per-sample seal, the phases file, and the official SLURP scorer over the sealed manifest. It is a wiring proof: its numbers are never reported as a result and never enter a verdict.",
+  "split_id": "DEV-1000-PHASE-SMOKE-4",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "dev",
+    "planned_model_calls": 12,
+    "planned_gpu_hours": 0.3,
+    "planned_speech_audio_seconds": 60
+  },
+  "cells": [
+    {
+      "cell_id": "phase-direct-only-smoke",
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-direct-only-v1",
+      "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+      "dataset_fragment": "slurp-speech-native-dev1000"
+    }
+  ],
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "split_id": "DEV-1000-PHASE-SMOKE-4",
+      "ids": [
+        "slurp:devel:000011:audio-1497266596",
+        "slurp:devel:000053:audio-1498758443",
+        "slurp:devel:000058:audio-1488637952",
+        "slurp:devel:000068:audio-1488550098"
+      ],
+      "basis": "The SAME four rows the sealed SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-SMOKE-V1 wiring proof flew: the first four DEV-1000 sample ids in sorted order. Named HERE, in the registered fragment, rather than passed on a command line, so a smoke can never quietly fly four different rows than the ones its exposure row names (the SAEA-E22-ESB precedent). Flight split identity hash e335c74149794af0f2301954b6e92cde2a4134d65ebe6069173a1a556b7a04b3, audio 15.011 s.",
+      "audio_seconds_one_pass": 15.011
+    }
+  ],
+  "one_profile_for_both_modes": "This fragment carries ONE execution_plan, profile bounded-discovery-probe, and is used for both modes of the enabler: --wire-check (core.flight.FlightRuntime.wire_check, a fake gate and a fake transport, zero sockets and zero model contacts, which spends none of this plan) and --run (the four registered contacts). That is the same shape configs/experiment/slurp-dev1000-closed-list-direct-smoke-v1.json and the Audio2Tool calibration smoke already use; a second fragment declaring model-free-check would only duplicate identity for a mode that reaches nothing.",
+  "budget_basis": "4 rows x 1 phase x 1 contact = 4 contacts, plus margin for the one permitted recovery re-registration within the same run id = 12 planned model calls. Plan cells are RUN-CUMULATIVE across every attempt of this run id. The four rows' own audio is 15.011 seconds; 60 is the rounded ceiling. GPU hours 0.3 covers a cold model load plus four contacts. Paid API spend 0.",
+  "gate": "PASS requires: 4 of 4 contacts; exactly ONE phase in the run_phases receipt with rows 4 and contacts 4; contact_count 4; a sealed run manifest with exactly 4 canonical outputs rows (one per sample, no duplicates); a <run_id>.phases.json beside it whose sha256 the seal receipt records; every payload's last history turn role == control; and all three declared scorers running to completion over the complete manifest through core.scoring_batch.",
+  "what_is_not_read": "No smoke metric is a task measurement. The SLURP comparator stays SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1 (scenario 81.0 / action 73.9 / intent 71.4 / SLU-F1 35.8), and this arm is not comparable with it in any case: the phase program adds one ORG/CONTROL history turn the sealed direct arm never sent.",
+  "decision": {
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}

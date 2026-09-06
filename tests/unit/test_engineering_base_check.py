@@ -320,6 +320,9 @@ def test_regex_extraction_agrees_with_package_import():
         "KNOWLEDGE_RANKERS": set(core_base.KNOWLEDGE_RANKERS.names()),
         "KNOWLEDGE_FUSERS": set(core_base.KNOWLEDGE_FUSERS.names()),
         "KNOWLEDGE_BUILDERS": set(core_base.KNOWLEDGE_BUILDERS.names()),
+        # E1 (2026-09-05): the phase-program response formats, registered
+        # from the same canonical rails/controllers.py file.
+        "RESPONSE_FORMATS": set(core_base.RESPONSE_FORMATS.names()),
     }
 
     assert regex_registered == import_registered

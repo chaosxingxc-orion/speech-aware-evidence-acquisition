@@ -67,6 +67,79 @@ INSTRUCTION_FILLS.register("audio2tool-registry-grouped", render_registry_groupe
 INSTRUCTION_FILLS.register("slurp-label-inventory", render_slurp_closed_label_inventory)
 
 
+def render_template_with_fill(
+    template_relpath: object,
+    fill_name: object,
+    repo_root: Path,
+    lock: Mapping[str, object],
+    root: Path,
+    params: Mapping[str, object] | None = None,
+) -> str:
+    """One frozen ``configs/`` template rendered through one registered fill.
+
+    Factored verbatim out of :func:`resolve_task_instruction` (whose body is
+    now this function plus its own literal/template dispatch) so a SECOND
+    caller can render the same hash-pinned template-plus-fill material
+    without going through the baseline fragment's single
+    ``task_instruction`` slot: :mod:`rails.phase_material` renders one such
+    instruction per PHASE of a phase program, and a phase program has as
+    many instructions as it has phases.
+
+    Every refusal is the one ``resolve_task_instruction`` already made, in
+    the same order and with the same message: a template path that is not a
+    plain relative path under ``configs/``, a missing or unreadable
+    template, a missing/blank fill name, a template without the single
+    ``{tool_schemas}`` placeholder, an unknown fill, an empty fill result,
+    and a rendered text that still carries the placeholder. Substitution is
+    ``str.replace``, never ``str.format`` -- the templates legitimately
+    contain JSON braces.
+
+    ``params`` are passed to the fill as keyword arguments and ONLY when
+    non-empty, so a fill registered with the plain ``(lock, root)`` shape
+    every existing entry uses is called exactly as before.
+    """
+
+    if not isinstance(template_relpath, str) or not _TEMPLATE_RELPATH_PATTERN.fullmatch(
+        template_relpath
+    ):
+        raise CoreError(
+            f"task_instruction_template {template_relpath!r} is not a plain relative path "
+            "under configs/ (no absolute paths, no '..', no backslashes)"
+        )
+    template_path = Path(repo_root) / "configs" / template_relpath
+    if not template_path.is_file():
+        raise CoreError(f"task instruction template missing: {template_path}")
+    try:
+        template_text = template_path.read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as error:
+        raise CoreError(
+            f"cannot read task instruction template {template_path}: {error}"
+        ) from error
+
+    if not isinstance(fill_name, str) or not fill_name.strip():
+        raise CoreError(
+            "task_instruction_template requires task_instruction_fill naming a "
+            f"registered instruction fill; registered: {INSTRUCTION_FILLS.names()}"
+        )
+    if TOOL_SCHEMAS_PLACEHOLDER not in template_text:
+        raise CoreError(
+            f"task instruction template {template_path} carries no "
+            f"{TOOL_SCHEMAS_PLACEHOLDER!r} placeholder for fill {fill_name!r}; an "
+            "unfilled or unfillable template must never reach the model"
+        )
+    fill: Callable[..., str] = INSTRUCTION_FILLS.resolve(fill_name)
+    fill_text = fill(lock, root, **dict(params)) if params else fill(lock, root)
+    if not isinstance(fill_text, str) or not fill_text.strip():
+        raise CoreError(f"instruction fill {fill_name!r} rendered an empty result")
+    rendered = template_text.replace(TOOL_SCHEMAS_PLACEHOLDER, fill_text)
+    if TOOL_SCHEMAS_PLACEHOLDER in rendered:
+        raise CoreError(
+            f"task instruction still contains {TOOL_SCHEMAS_PLACEHOLDER!r} after "
+            "rendering; refusing to send an unfilled template"
+        )
+    return rendered
+
+
 def resolve_task_instruction(
     values: Mapping[str, object], repo_root: Path, lock: Mapping[str, object], root: Path
 ) -> str:
@@ -87,46 +160,13 @@ def resolve_task_instruction(
             "task_instruction_template; one is required"
         )
 
-    if not isinstance(template_rel, str) or not _TEMPLATE_RELPATH_PATTERN.fullmatch(
-        template_rel
-    ):
-        raise CoreError(
-            f"task_instruction_template {template_rel!r} is not a plain relative path "
-            "under configs/ (no absolute paths, no '..', no backslashes)"
-        )
-    template_path = Path(repo_root) / "configs" / template_rel
-    if not template_path.is_file():
-        raise CoreError(f"task instruction template missing: {template_path}")
-    try:
-        template_text = template_path.read_text(encoding="utf-8")
-    except (OSError, UnicodeError) as error:
-        raise CoreError(
-            f"cannot read task instruction template {template_path}: {error}"
-        ) from error
-
-    fill_name = values.get("task_instruction_fill")
-    if not isinstance(fill_name, str) or not fill_name.strip():
-        raise CoreError(
-            "task_instruction_template requires task_instruction_fill naming a "
-            f"registered instruction fill; registered: {INSTRUCTION_FILLS.names()}"
-        )
-    if TOOL_SCHEMAS_PLACEHOLDER not in template_text:
-        raise CoreError(
-            f"task instruction template {template_path} carries no "
-            f"{TOOL_SCHEMAS_PLACEHOLDER!r} placeholder for fill {fill_name!r}; an "
-            "unfilled or unfillable template must never reach the model"
-        )
-    fill: Callable[[Mapping[str, object], Path], str] = INSTRUCTION_FILLS.resolve(fill_name)
-    fill_text = fill(lock, root)
-    if not isinstance(fill_text, str) or not fill_text.strip():
-        raise CoreError(f"instruction fill {fill_name!r} rendered an empty result")
-    rendered = template_text.replace(TOOL_SCHEMAS_PLACEHOLDER, fill_text)
-    if TOOL_SCHEMAS_PLACEHOLDER in rendered:
-        raise CoreError(
-            f"task instruction still contains {TOOL_SCHEMAS_PLACEHOLDER!r} after "
-            "rendering; refusing to send an unfilled template"
-        )
-    return rendered
+    return render_template_with_fill(
+        template_rel,
+        values.get("task_instruction_fill"),
+        repo_root,
+        lock,
+        root,
+    )
 
 
 def resolve_active_task_instruction(

@@ -99,6 +99,34 @@ def load_experiment(experiment: str) -> Mapping[str, object]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def population_ids(
+    experiment_doc: Mapping[str, object], dataset: str
+) -> list[str] | None:
+    """Explicit sample ids for this dataset fragment, or ``None`` for the
+    whole roster.
+
+    Read from the REGISTERED fragment, never from a command line, so a smoke
+    can never quietly fly four different rows than the ones its exposure row
+    names (the SAEA-E22-ESB precedent, applied unchanged from
+    ``scripts/flights/run_slurp_closed_list_cell.py``). ``--sample-ids``
+    still exists and still wins when given, for an ad-hoc dry run; a
+    fragment that declares ``populations`` needs neither.
+    """
+
+    populations = experiment_doc.get("populations")
+    if not isinstance(populations, list):
+        return None
+    for entry in populations:
+        if not isinstance(entry, Mapping):
+            continue
+        if entry.get("dataset_fragment") != dataset:
+            continue
+        ids = entry.get("ids")
+        if isinstance(ids, list) and ids:
+            return [str(sample_id) for sample_id in ids]
+    return None
+
+
 def load_cells(experiment: str) -> dict[str, Mapping[str, object]]:
     """Every cell the experiment fragment declares, keyed by ``cell_id``."""
 
@@ -535,6 +563,10 @@ def main() -> int:
         if args.sample_ids
         else None
     )
+    if limit_sample_ids is None:
+        registered = population_ids(load_experiment(args.experiment), args.dataset)
+        if registered is not None:
+            limit_sample_ids = tuple(registered)
 
     def attempt_for(cell_id: str) -> str:
         if args.attempt_id and len(selected) == 1:

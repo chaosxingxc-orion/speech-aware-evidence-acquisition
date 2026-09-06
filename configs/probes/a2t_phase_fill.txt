@@ -1,0 +1,5 @@
+Phase 2 of 2 for this spoken command: ARGUMENTS.
+
+Your own selection from phase 1, for this same request, is quoted at the end of this instruction. Listen to the request again and produce the complete call list: keep exactly those tools, in exactly that order, and fill each call's arguments from what was actually said, using the argument names the registry in the system message above gives for that tool.
+
+Return only the call list in the required response shape, and nothing else.

@@ -851,7 +851,12 @@ def test_run_phases_refuses_an_empty_phase_summary_sequence(tmp_path):
         runtime.run_phases()
 
 
-def test_run_phases_refuses_a_phase_program_without_bound_material(tmp_path):
+def test_run_phases_refuses_a_phase_program_on_a_non_packet_arm(tmp_path):
+    """Since E1 a phase program with no explicit bind builds its own binding
+    from the baseline fragment, so the refusal is no longer "call
+    bind_phase_program_material" -- it names the actual reason. The agent
+    loop is speech-feature-packet only, and this arm is not."""
+
     runtime = _make_runtime(
         tmp_path,
         happy_path=True,
@@ -860,7 +865,9 @@ def test_run_phases_refuses_a_phase_program_without_bound_material(tmp_path):
     runtime.preflight()
     runtime.preprocess()
     runtime.serve()
-    with pytest.raises(FlightRuntimeError, match="bind_phase_program_material"):
+    with pytest.raises(
+        FlightRuntimeError, match="does not travel the speech-feature packet path"
+    ):
         runtime.run_phases()
 
 

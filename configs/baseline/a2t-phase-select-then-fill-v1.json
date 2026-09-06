@@ -1,0 +1,40 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "phase-select-then-fill-v1",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "obs_batch_samples": 1,
+  "allow_empty_speech_feature_evidence": true,
+  "speech_native_agent_executor_id": "openjiuwen-workflow-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/a2t-calibration-400-packets-04ccc72a/A2T-CALIBRATION-400-promotion.json",
+  "scorers": [
+    "a2t-toolcall",
+    "a2t-toolcall-v2",
+    "cost"
+  ],
+  "speech_feature_key_representation_id": "audio2tool-phase-select-then-fill-v1",
+  "speech_feature_matcher_policy_id": "saea-a2t-phase-select-then-fill-v1",
+  "knowledge_snapshot_relpath": "knowledge/audio2tool/saea-kb-a2t-toolshaped-v1/size-full/snapshot.json",
+  "knowledge_snapshot_sha256": "ec2f9ec454d3f16957ac08e4d7686a6f3941f22c600ff2b1b2b97ff43baf9fb2",
+  "phase_material": {
+    "select": {
+      "instruction_template": "probes/a2t_phase_select.txt",
+      "instruction_fill": null,
+      "response_format_id": "select-response-v1",
+      "predecessor_binding": "none"
+    },
+    "fill": {
+      "instruction_template": "probes/a2t_phase_fill.txt",
+      "instruction_fill": null,
+      "response_format_id": "fill-response-v1",
+      "predecessor_binding": "append-sealed-state"
+    }
+  },
+  "what_this_is": "The MF-5 enabler cell for Audio2Tool: the sealed P0-legacy-packets direct cell's own system message, roster, packets, build, geometry and decoding, flown as the TWO-PHASE barrier program phase-select-then-fill-v1. Phase 1 selects the ordered tool occurrences under a name-only response format; phase 2 receives phase 1's own sealed answer for the same sample and fills the arguments under a call-envelope response format. It exists to prove that two whole-roster phases seal ONE outputs row per sample carrying the FILL phase's text, so KU-A2 and every other two-contact Audio2Tool cell flies on a proven harness.",
+  "the_two_differences_from_a2t_direct_packets": "policy and phase_material. Everything else -- the arm, the promotion receipt, the evidence posture, the scorers, the system message -- is a2t-direct-packets.json's. The system message is the adapter's own legacy registry instruction (task_instruction_template_active is deliberately absent, exactly as in a2t-direct-packets.json, so the flight sends what the sealed P0 cell sent), which already contains data.audio2tool.render_tool_schemas verbatim, so rails.runner._agent_messages appends no second copy of the task contract.",
+  "why_the_phase_instructions_carry_no_registry_fill": "The stage plan sketched the select phase as the compact registry fill (audio2tool-registry-compact). It cannot be, and the reason is a real fail-closed rule rather than a preference. rails.runner._assert_agent_control_excludes_knowledge_payloads refuses any CONTACT INSTRUCTION containing a facet or value text of 8 characters or more from the bound KnowledgeSnapshot, and the pinned a2t-kb-size-full snapshot's tool-shaped facets include registry description fragments that occur verbatim in the compact rendering (measured: 'air quality.' and 'vibration feedback'). The registry therefore stays where it already legally lives -- the SYSTEM message, which that rule does not police -- and each phase's control turn carries only its own short phase directive. This also keeps the per-slot prompt at about 14k tokens instead of about 18k, inside the 22,016-token slot the model fragment serves.",
+  "knowledge_is_bound_but_invisible": "As in slurp-phase-direct-only-v1.json: the frozen TRAIN-side snapshot is required by rails.runner.run_speech_native_agent_loop for every agent-loop contact, is bound with empty bootstrap_facet_ids/bootstrap_value_ids so no facet or value reaches the prompt, and buys the leakage rule above. Its 22,951 source unit ids are disjoint from the frozen 400 roster (measured), which rails.runner also checks.",
+  "response_formats": "select-response-v1 and fill-response-v1 resolve through core.base.RESPONSE_FORMATS, registered in rails/controllers.py over the pinned tools_registry.csv: SELECT gets rails.a2t_response_schema.audio2tool_selection_response_format over all 152 tool names (an array of exact-name objects, no argument field at all), FILL gets audio2tool_outer_call_array_response_format over the same names (the documented [{name, arguments}] envelope with an exact-name enum and a deliberately open arguments object). The stronger audio2tool_locked_call_array_response_format is a function of ONE sample's SELECT answer and therefore cannot be a phase-level, sample-independent format; a per-sample response format is a separate seam and is not part of this enabler.",
+  "scorer_basis": "a2t-toolcall and a2t-toolcall-v2 as a2t-direct-packets.json declares them, run once over the complete manifest through core.scoring_batch. The official a2t-toolcall-official scorer is bound to the three official-population manifests and is deliberately not named here; this cell is a wiring enabler, not a paper-facing measurement.",
+  "not_a_measurement": "No number this fragment produces is a task measurement, a superiority claim or a comparator. The paired Audio2Tool contrasts are made against the sealed official-population manifests, never against a select-then-fill enabler run."
+}

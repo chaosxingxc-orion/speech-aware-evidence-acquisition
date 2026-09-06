@@ -5,6 +5,23 @@
   },
   "manifest_version": "probe-manifest-v1",
   "probes": {
+    "A2T-PHASE-SELECT-THEN-FILL": {
+      "arms": {
+        "select_then_fill": [
+          "a2t_phase_select.txt",
+          "a2t_phase_fill.txt"
+        ]
+      },
+      "note": "E1/MF-5. Neither template is the system message -- that stays the adapter's own legacy registry instruction, exactly as the sealed P0-legacy-packets cell sent it. These two are the per-phase CONTROL turns of phase-select-then-fill-v1, and they carry NO registry fill on purpose: rails.runner refuses a contact instruction containing any facet or value text of the bound knowledge snapshot, and the compact registry rendering contains several. configs/baseline/a2t-phase-select-then-fill-v1.json.",
+      "profile": "bounded-discovery-probe",
+      "sample_receipt": "r1-audio2tool-sample.json",
+      "sampling": {
+        "design": "no new draw: the four frozen-400 rows the sealed calibration wiring proof already flew, reused id-for-id",
+        "seed": 20260807
+      },
+      "scorer": "a2t-toolcall and a2t-toolcall-v2, run through core.scoring_batch",
+      "success": "a wiring gate, not a threshold: 8 of 8 contacts, exactly two phases in the run_phases receipt, ONE sealed outputs row per sample carrying the fill phase's text, both summaries in the phases file, and every declared scorer running to completion over the complete manifest"
+    },
     "R1-audio2tool-direct": {
       "arms": {
         "direct": [
@@ -209,9 +226,32 @@
       },
       "scorer": "slurp-slu-official (the real, unmodified official evaluate.py at pinned commit 8eb16545762be97ace75334109d73824217311f1 in ~/.venvs/slurp-official-eval, --average micro), run through core.scoring_batch",
       "success": "protocol alignment, not a threshold: this arm becomes the study's SLURP direct baseline regardless of outcome, because it is the one that matches the published prompt-only protocol (He & Garner arXiv:2305.13512 put the intent inventory IN the prompt). Reported as the official-metric table beside the sealed M0 comparator, the locked BLEND arm and the published brackets, with a paired per-sample contrast."
+    },
+    "SLURP-PHASE-DIRECT-ONLY": {
+      "arms": {
+        "direct": [
+          "slurp_phase_direct.txt"
+        ]
+      },
+      "note": "E1/MF-5. This template is NOT the system message -- that stays the closed-list instruction (slurp_direct_closed_list.txt). It is the per-phase CONTROL turn of phase-direct-only-v1, which rails.core_client._agent_history appends to the payload's history, and is the ONE thing this cell adds to the sealed closed-list direct arm's request. configs/baseline/slurp-phase-direct-only-v1.json.",
+      "profile": "bounded-discovery-probe",
+      "sample_receipt": "DEV-1000.json",
+      "sampling": {
+        "design": "no new draw: the four DEV-1000 rows the sealed closed-list wiring proof already flew, reused id-for-id",
+        "seed": 20260823
+      },
+      "scorer": "slurp-slu-official (the same pinned official evaluate.py as SLURP-DEV1000-CLOSED-LIST-DIRECT), run through core.scoring_batch",
+      "success": "a wiring gate, not a threshold: 4 of 4 contacts, exactly one phase in the run_phases receipt, one sealed outputs row per sample, a phases file whose sha256 the seal receipt records, and every declared scorer running to completion over the complete manifest"
     }
   },
   "samples": {
+    "A2T-PHASE-SELECT-THEN-FILL": {
+      "n_items": 400,
+      "receipt": "r1-audio2tool-sample.json",
+      "seed": 20260807,
+      "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+      "split_role": "discovery"
+    },
     "R1-audio2tool-direct": {
       "n_items": 400,
       "receipt": "r1-audio2tool-sample.json",
@@ -281,10 +321,23 @@
       "seed": 20260823,
       "split_identity_hash": "9fb44e3384b8ad8e0d8f825b88eb0a3051c218b699975051d8a0481aabc0243b",
       "split_role": "dev"
+    },
+    "SLURP-PHASE-DIRECT-ONLY": {
+      "n_items": 1000,
+      "receipt": "DEV-1000.json",
+      "seed": 20260823,
+      "split_identity_hash": "9fb44e3384b8ad8e0d8f825b88eb0a3051c218b699975051d8a0481aabc0243b",
+      "split_role": "dev"
     }
   },
   "sampling_policy": "Each carrier is sampled exactly once, by scripts/build_probe_samples.py (seeded, order-independent, metadata-only); the receipt under docs/receipts/probe-samples/ is frozen and every later experiment on that carrier resolves its items through the binding in this manifest \u2014 never through a fresh draw. Adding a carrier means adding a new receipt through the same script and regenerating this manifest; changing an existing receipt requires owner approval and a new probe entry. R4 draws from the already-frozen dev subset10 split receipt (docs/receipts/splits.json); R3 has no sample yet (data acquisition blocked).",
   "templates": {
+    "a2t_phase_fill.txt": {
+      "sha256": "4a0b4cb11e1b866035f5a9cfa84348f4a99889a05f1998b02d85a90fefc03245"
+    },
+    "a2t_phase_select.txt": {
+      "sha256": "2e561f986520c177612cd901c670476045b0de9393f73f6afbb1f8eaf597cdb8"
+    },
     "r1_audio2tool_direct.txt": {
       "sha256": "8ea2849d9f1d948ab46734fdc99e37efaba0b78216fdd2add0f8fccb3997da9a"
     },
@@ -326,6 +379,9 @@
     },
     "slurp_direct_closed_list.txt": {
       "sha256": "9f2017c1b9a5cbf561a3437377ea4777d418ed19a7607f05e471f71a51dc0413"
+    },
+    "slurp_phase_direct.txt": {
+      "sha256": "d02f194c3c8a8375a15c28f7ca874f30bd2ad34d60e8ff9cdbc654572ebf9d50"
     }
   }
 }
