@@ -1,6 +1,6 @@
 {
   "formula": "13 * ceil(audio_seconds / 0.96)",
-  "generated_at": "2026-09-06T20:25:57.110555+00:00",
+  "generated_at": "2026-09-06T21:50:23.476838+00:00",
   "model_contacts": 0,
   "packet_root": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
   "populations": [
@@ -16,14 +16,26 @@
       "violations": []
     },
     {
+      "max_bound_tokens": 156,
+      "max_realized_tokens": 143,
+      "max_shortfall_tokens": 13,
+      "pass": true,
       "population": "SLURP-EVO-FOLD-A-V2",
       "promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLD-A-V2-promotion.json",
-      "state": "PENDING"
+      "rows": 1080,
+      "state": "VERIFIED",
+      "violations": []
     },
     {
+      "max_bound_tokens": 273,
+      "max_realized_tokens": 260,
+      "max_shortfall_tokens": 13,
+      "pass": true,
       "population": "SLURP-EVO-FOLD-B-V2",
       "promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLD-B-V2-promotion.json",
-      "state": "PENDING"
+      "rows": 1080,
+      "state": "VERIFIED",
+      "violations": []
     }
   ],
   "schema": "saea-slurp-evo-s1-speech-token-bound-v1",
