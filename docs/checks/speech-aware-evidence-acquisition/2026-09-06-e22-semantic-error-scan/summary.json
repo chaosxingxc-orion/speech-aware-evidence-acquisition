@@ -5935,6 +5935,30 @@
     ]
   },
   "normalizer": "whisper-english-v20240930",
+  "reference_layer_profile": {
+    "adjacent_repeated_words_after_normalization": 1905,
+    "bracket_tags": {
+      "<affirmative>": 8,
+      "<crosstalk>": 15,
+      "<inaudible>": 117,
+      "<laugh>": 26,
+      "<silence>": 4,
+      "<unk>": 27
+    },
+    "reading": "verbatim, not cleaned: the layer carries speaker disfluency, immediate repetition, truncated words and redaction tags. The normalizer removes the fillers and the tags from both sides; it removes neither the repetitions nor the truncation stems, and no model will ever emit those",
+    "rows": 6038,
+    "rows_carrying_a_bracket_tag": 184,
+    "rows_carrying_a_truncated_word": 330,
+    "rows_with_an_adjacent_repeated_word": 1232,
+    "truncated_word_forms": 360,
+    "whisper_deleted_filler_tokens": {
+      "hmm": 8,
+      "mm": 7,
+      "uh": 2679,
+      "um": 1349
+    },
+    "whisper_deleted_filler_total": 4043
+  },
   "schema": "saea-e22-semantic-error-scan-summary-v1",
   "split_name": "E22-ESB-DEV10-UTTERANCES",
   "split_role": "dev",

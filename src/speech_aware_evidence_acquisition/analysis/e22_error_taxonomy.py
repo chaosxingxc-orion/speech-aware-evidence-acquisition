@@ -1551,6 +1551,63 @@ def build_contexts(
 # ---------------------------------------------------------------------------
 
 
+def reference_layer_profile(
+    references: Mapping[str, str], contexts: Mapping[str, UtteranceContext]
+) -> dict[str, object]:
+    """What KIND of transcript the references are, counted rather than assumed.
+
+    The 2026-09-05 shape-C verdict named "Rev's cleaned sentence transcript" as
+    the leading suspect. The layer is not cleaned: it is close to verbatim, and
+    the difference matters, because a verbatim reference carries disfluency the
+    Whisper normalizer removes from BOTH sides (so it costs nothing) alongside
+    repetition and truncation it removes from NEITHER (so it costs the model
+    every time).
+    """
+
+    filler_tokens = Counter()
+    tag_counts: Counter[str] = Counter()
+    rows_with_tag = 0
+    rows_with_stem = 0
+    stems = 0
+    rows_with_adjacent_repeat = 0
+    adjacent_repeats = 0
+    for sample_id, sentence in references.items():
+        lowered = sentence.lower()
+        for token in re.findall(r"\b(?:um|uh|hmm|mm|mhm|mmm)\b", lowered):
+            filler_tokens[token] += 1
+        tags = _TAG_RE.findall(sentence)
+        if tags:
+            rows_with_tag += 1
+        for tag in tags:
+            tag_counts[tag.lower()] += 1
+        found = truncation_stems(sentence)
+        if found:
+            rows_with_stem += 1
+            stems += len(found)
+        tokens = contexts[sample_id].ref_tokens
+        repeats = sum(1 for index in range(1, len(tokens)) if tokens[index] == tokens[index - 1])
+        if repeats:
+            rows_with_adjacent_repeat += 1
+        adjacent_repeats += repeats
+    return {
+        "rows": len(references),
+        "whisper_deleted_filler_tokens": dict(filler_tokens.most_common()),
+        "whisper_deleted_filler_total": sum(filler_tokens.values()),
+        "rows_carrying_a_bracket_tag": rows_with_tag,
+        "bracket_tags": dict(tag_counts.most_common(12)),
+        "rows_carrying_a_truncated_word": rows_with_stem,
+        "truncated_word_forms": stems,
+        "rows_with_an_adjacent_repeated_word": rows_with_adjacent_repeat,
+        "adjacent_repeated_words_after_normalization": adjacent_repeats,
+        "reading": (
+            "verbatim, not cleaned: the layer carries speaker disfluency, immediate "
+            "repetition, truncated words and redaction tags. The normalizer removes the "
+            "fillers and the tags from both sides; it removes neither the repetitions nor "
+            "the truncation stems, and no model will ever emit those"
+        ),
+    }
+
+
 def rule_examples(
     drawn: Sequence[ScoredSpan], *, per_rule: int = 4, quote_tokens: int = 12
 ) -> dict[str, list[dict[str, object]]]:
@@ -1597,11 +1654,14 @@ def build_receipts(
 
     arms: dict[str, object] = {}
     read_sample: dict[str, object] = {}
+    profile: dict[str, object] = {}
     for arm in sorted(ARM_SOURCES):
         path = outputs_path(root, arm)
         hypotheses = load_hypotheses(path)
         contexts = build_contexts(references, segments, hypotheses, entity_inventory)
         order = sorted(contexts)
+        if not profile:
+            profile = reference_layer_profile(references, contexts)
         totals, scored = scan_arm(contexts, order=order)
         sealed = SEALED_TOTALS[arm]
         measured = {
@@ -1697,6 +1757,7 @@ def build_receipts(
             "negations": sorted(NEGATIONS),
             "stopwords": sorted(STOPWORDS),
         },
+        "reference_layer_profile": profile,
         "entity_inventory_sizes": {
             call: len(forms) for call, forms in sorted(entity_inventory.items())
         },
@@ -1871,6 +1932,7 @@ __all__ = [
     "outputs_path",
     "render_tables",
     "rule_examples",
+    "reference_layer_profile",
     "ALL_RULES",
     "AUTHORIZED_FOLD_RULES",
     "BACKCHANNELS",
