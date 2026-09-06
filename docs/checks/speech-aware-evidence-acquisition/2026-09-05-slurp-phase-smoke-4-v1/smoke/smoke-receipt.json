@@ -1,0 +1,283 @@
+{
+  "attempt_id": "attempt-20260906T011230Z-472a22",
+  "baseline_fragment": "slurp-phase-direct-only-v1",
+  "cell_id": "phase-direct-only-smoke",
+  "experiment_fragment": "slurp-phase-smoke-4-v1",
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-PHASE-SMOKE-4-V1/attempt-20260906T011230Z-472a22/SAEA-SLURP-PHASE-SMOKE-4-V1.run-manifest.json",
+    "sha256": "e86f1da8b3833c094f00076d34209ba955896f2845301ba7a7a93d2724633e0b",
+    "status": "COMPLETED",
+    "study_commit": "f8cd21498406a9f446d6f87935563fd6d4568a9d"
+  },
+  "numbers_are_a_wiring_proof": "four rows measure nothing. No number in this receipt is a task measurement, a comparator or a mechanism result.",
+  "outputs": {
+    "one_row_per_sample": true,
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-PHASE-SMOKE-4-V1/attempt-20260906T011230Z-472a22/SAEA-SLURP-PHASE-SMOKE-4-V1.outputs.jsonl",
+    "row_count": 4,
+    "sha256": "216b97149f9801963a4a637e50b4fedff7c8b3f5054fab986a0ab96c7f9ea35a",
+    "unique_sample_ids": 4
+  },
+  "phases_file": {
+    "contact_count": 4,
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-PHASE-SMOKE-4-V1/attempt-20260906T011230Z-472a22/SAEA-SLURP-PHASE-SMOKE-4-V1.phases.json",
+    "phases": [
+      {
+        "contacts": 4,
+        "phase": "phase-direct-only-v1:direct",
+        "rows": 4
+      }
+    ],
+    "policy": "phase-direct-only-v1",
+    "schema": "saea-flight-phase-summaries-v1",
+    "sha256": "3db6b5efa2683d7d2a3cb10983abf289896406b30e0786b46a08b1bb55dc6238"
+  },
+  "purpose": "MF-5: the multi-phase seal path proven end to end. Derived ONLY from the sealed artifacts already on disk under SPEECHRL_DATA_DIR; this file recomputes no model output and re-runs no scorer.",
+  "run_id": "SAEA-SLURP-PHASE-SMOKE-4-V1",
+  "schema": "saea-phase-program-smoke-receipt-v1",
+  "scores": {
+    "cost": {
+      "audio_seconds_used": 15.011,
+      "calls_used": 4,
+      "completion_tokens_total": 146,
+      "latency_seconds_total": 16.969370792008704,
+      "prompt_tokens_total": 9157,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "fe843e1b4789d3f3b47731ddf5b1bb42d430b05afe74292afc9ca0a6368e2864"
+    },
+    "slurp-slu": {
+      "evaluator_commit": "8eb16545762be97ace75334109d73824217311f1",
+      "identity_check": {
+        "passed": true,
+        "slu_f1_abs_diff": 0.0,
+        "span_f1_abs_diff": 0.0,
+        "tolerance": 1e-06
+      },
+      "official": {
+        "action_accuracy": 0.75,
+        "command": [
+          "/home/chao/.venvs/slurp-official-eval/bin/python",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/evaluation/evaluate.py",
+          "-g",
+          "/tmp/saea-slurp-official-1uuku8s4/gold.jsonl",
+          "-p",
+          "/tmp/saea-slurp-official-1uuku8s4/predictions.jsonl",
+          "--average",
+          "micro",
+          "--errors",
+          "--table-layout",
+          "csv"
+        ],
+        "intent_accuracy": 0.75,
+        "raw": {
+          "action": {
+            "f_measure": 0.75,
+            "fn": 1.0,
+            "fp": 1.0,
+            "official_label": "Action",
+            "precision": 0.75,
+            "recall": 0.75,
+            "tp": 3.0
+          },
+          "entities": {
+            "f_measure": 0.3333333333333333,
+            "fn": 5.0,
+            "fp": 3.0,
+            "official_label": "Entities",
+            "precision": 0.4,
+            "recall": 0.2857142857142857,
+            "tp": 2.0
+          },
+          "entities_distance_char": {
+            "f_measure": 0.5987525987525988,
+            "fn": 3.6805555555555554,
+            "fp": 1.6805555555555556,
+            "official_label": "Entities (distance char)",
+            "precision": 0.7041564792176039,
+            "recall": 0.5207956600361664,
+            "tp": 4.0
+          },
+          "entities_distance_word": {
+            "f_measure": 0.5,
+            "fn": 5.0,
+            "fp": 3.0,
+            "official_label": "Entities (distance word)",
+            "precision": 0.5714285714285714,
+            "recall": 0.4444444444444444,
+            "tp": 4.0
+          },
+          "intent": {
+            "f_measure": 0.75,
+            "fn": 1.0,
+            "fp": 1.0,
+            "official_label": "Intent (scen_act)",
+            "precision": 0.75,
+            "recall": 0.75,
+            "tp": 3.0
+          },
+          "scenario": {
+            "f_measure": 0.75,
+            "fn": 1.0,
+            "fp": 1.0,
+            "official_label": "Scenario",
+            "precision": 0.75,
+            "recall": 0.75,
+            "tp": 3.0
+          },
+          "slu_f1": {
+            "f_measure": 0.5449385052034058,
+            "fn": 8.680555555555555,
+            "fp": 4.680555555555555,
+            "official_label": "Slu f1",
+            "precision": 0.6308871851040526,
+            "recall": 0.4796003330557868,
+            "tp": 8.0
+          }
+        },
+        "scenario_accuracy": 0.75,
+        "slu_f1": 0.5449385052034058,
+        "span_f1": 0.3333333333333333,
+        "stdout": "Scenario,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.75,0.75,0.75,3.0,1.0,1.0 \n\nAction,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.75,0.75,0.75,3.0,1.0,1.0 \n\nIntent (scen_act),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.75,0.75,0.75,3.0,1.0,1.0 \n\nEntities,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.4,0.2857142857142857,0.3333333333333333,2.0,3.0,5.0 \n\nEntities (distance word),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.5714285714285714,0.4444444444444444,0.5,4.0,3.0,5.0 \n\nEntities (distance char),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.7041564792176039,0.5207956600361664,0.5987525987525988,4.0,1.6805555555555556,3.6805555555555554 \n\nSlu f1,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.6308871851040526,0.4796003330557868,0.5449385052034058,8.0,4.680555555555555,8.680555555555555 \n\n"
+      },
+      "official_environment_receipt": "docs/receipts/environments/slurp-official-eval.json",
+      "official_python": "/home/chao/.venvs/slurp-official-eval/bin/python",
+      "port_micro": {
+        "action_accuracy": 0.75,
+        "intent_accuracy": 0.75,
+        "samples": 4,
+        "scenario_accuracy": 0.75,
+        "slu_f1": 0.5449385052034058,
+        "slu_f1_precision": 0.6308871851040526,
+        "slu_f1_recall": 0.4796003330557868,
+        "span_f1": 0.3333333333333333,
+        "span_f1_precision": 0.4,
+        "span_f1_recall": 0.2857142857142857
+      },
+      "port_scorer_version": "slurp-scorer-v1",
+      "samples": 4,
+      "scorer_version": "slurp-official-8eb16545",
+      "split_id": "devel"
+    },
+    "slurp-slu-official": {
+      "evaluator_commit": "8eb16545762be97ace75334109d73824217311f1",
+      "identity_check": {
+        "passed": true,
+        "slu_f1_abs_diff": 0.0,
+        "span_f1_abs_diff": 0.0,
+        "tolerance": 1e-06
+      },
+      "official": {
+        "action_accuracy": 0.75,
+        "command": [
+          "/home/chao/.venvs/slurp-official-eval/bin/python",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/evaluation/evaluate.py",
+          "-g",
+          "/tmp/saea-slurp-official-cnis9bri/gold.jsonl",
+          "-p",
+          "/tmp/saea-slurp-official-cnis9bri/predictions.jsonl",
+          "--average",
+          "micro",
+          "--errors",
+          "--table-layout",
+          "csv"
+        ],
+        "intent_accuracy": 0.75,
+        "raw": {
+          "action": {
+            "f_measure": 0.75,
+            "fn": 1.0,
+            "fp": 1.0,
+            "official_label": "Action",
+            "precision": 0.75,
+            "recall": 0.75,
+            "tp": 3.0
+          },
+          "entities": {
+            "f_measure": 0.3333333333333333,
+            "fn": 5.0,
+            "fp": 3.0,
+            "official_label": "Entities",
+            "precision": 0.4,
+            "recall": 0.2857142857142857,
+            "tp": 2.0
+          },
+          "entities_distance_char": {
+            "f_measure": 0.5987525987525988,
+            "fn": 3.6805555555555554,
+            "fp": 1.6805555555555556,
+            "official_label": "Entities (distance char)",
+            "precision": 0.7041564792176039,
+            "recall": 0.5207956600361664,
+            "tp": 4.0
+          },
+          "entities_distance_word": {
+            "f_measure": 0.5,
+            "fn": 5.0,
+            "fp": 3.0,
+            "official_label": "Entities (distance word)",
+            "precision": 0.5714285714285714,
+            "recall": 0.4444444444444444,
+            "tp": 4.0
+          },
+          "intent": {
+            "f_measure": 0.75,
+            "fn": 1.0,
+            "fp": 1.0,
+            "official_label": "Intent (scen_act)",
+            "precision": 0.75,
+            "recall": 0.75,
+            "tp": 3.0
+          },
+          "scenario": {
+            "f_measure": 0.75,
+            "fn": 1.0,
+            "fp": 1.0,
+            "official_label": "Scenario",
+            "precision": 0.75,
+            "recall": 0.75,
+            "tp": 3.0
+          },
+          "slu_f1": {
+            "f_measure": 0.5449385052034058,
+            "fn": 8.680555555555555,
+            "fp": 4.680555555555555,
+            "official_label": "Slu f1",
+            "precision": 0.6308871851040526,
+            "recall": 0.4796003330557868,
+            "tp": 8.0
+          }
+        },
+        "scenario_accuracy": 0.75,
+        "slu_f1": 0.5449385052034058,
+        "span_f1": 0.3333333333333333,
+        "stdout": "Scenario,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.75,0.75,0.75,3.0,1.0,1.0 \n\nAction,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.75,0.75,0.75,3.0,1.0,1.0 \n\nIntent (scen_act),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.75,0.75,0.75,3.0,1.0,1.0 \n\nEntities,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.4,0.2857142857142857,0.3333333333333333,2.0,3.0,5.0 \n\nEntities (distance word),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.5714285714285714,0.4444444444444444,0.5,4.0,3.0,5.0 \n\nEntities (distance char),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.7041564792176039,0.5207956600361664,0.5987525987525988,4.0,1.6805555555555556,3.6805555555555554 \n\nSlu f1,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.6308871851040526,0.4796003330557868,0.5449385052034058,8.0,4.680555555555555,8.680555555555555 \n\n"
+      },
+      "official_environment_receipt": "docs/receipts/environments/slurp-official-eval.json",
+      "official_python": "/home/chao/.venvs/slurp-official-eval/bin/python",
+      "port_micro": {
+        "action_accuracy": 0.75,
+        "intent_accuracy": 0.75,
+        "samples": 4,
+        "scenario_accuracy": 0.75,
+        "slu_f1": 0.5449385052034058,
+        "slu_f1_precision": 0.6308871851040526,
+        "slu_f1_recall": 0.4796003330557868,
+        "span_f1": 0.3333333333333333,
+        "span_f1_precision": 0.4,
+        "span_f1_recall": 0.2857142857142857
+      },
+      "port_scorer_version": "slurp-scorer-v1",
+      "samples": 4,
+      "scorer_version": "slurp-official-8eb16545",
+      "split_id": "devel"
+    }
+  },
+  "seal_carries_the_last_phase": {
+    "any_sealed_row_equals_an_earlier_phase_response": false,
+    "every_sealed_row_equals_the_last_phase_response": true,
+    "last_phase": "phase-direct-only-v1:direct"
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "trace_record_namespaces": {
+    "direct": 16
+  }
+}

@@ -1,0 +1,205 @@
+{
+  "attempt_id": "attempt-20260906T011707Z-phaseselectthenfillsmoke",
+  "baseline_fragment": "a2t-phase-select-then-fill-v1",
+  "cell_id": "phase-select-then-fill-smoke",
+  "experiment_fragment": "a2t-phase-smoke-4-v1",
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-PHASE-SMOKE-4-V1/attempt-20260906T011707Z-phaseselectthenfillsmoke/SAEA-A2T-PHASE-SMOKE-4-V1.run-manifest.json",
+    "sha256": "47b95c68185efe8be4413e36edd46afabd93637259c9661578e9c967de5db529",
+    "status": "COMPLETED",
+    "study_commit": "e770225d66d64f7cca9f4d692eabb2bcfd984a63"
+  },
+  "numbers_are_a_wiring_proof": "four rows measure nothing. No number in this receipt is a task measurement, a comparator or a mechanism result.",
+  "outputs": {
+    "one_row_per_sample": true,
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-PHASE-SMOKE-4-V1/attempt-20260906T011707Z-phaseselectthenfillsmoke/SAEA-A2T-PHASE-SMOKE-4-V1.outputs.jsonl",
+    "row_count": 4,
+    "sha256": "e9bd0cf4f072ff45075ee5ecd0556d82f35819992c250ffe9473a27152190ab0",
+    "unique_sample_ids": 4
+  },
+  "phases_file": {
+    "contact_count": 8,
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-PHASE-SMOKE-4-V1/attempt-20260906T011707Z-phaseselectthenfillsmoke/SAEA-A2T-PHASE-SMOKE-4-V1.phases.json",
+    "phases": [
+      {
+        "contacts": 4,
+        "phase": "phase-select-then-fill-v1:select",
+        "rows": 4
+      },
+      {
+        "contacts": 4,
+        "phase": "phase-select-then-fill-v1:fill",
+        "rows": 4
+      }
+    ],
+    "policy": "phase-select-then-fill-v1",
+    "schema": "saea-flight-phase-summaries-v1",
+    "sha256": "417333cf8a8be464daca7da0e6deb08d9545a17796e8d1ec2e1af67fce549be9"
+  },
+  "purpose": "MF-5: the multi-phase seal path proven end to end. Derived ONLY from the sealed artifacts already on disk under SPEECHRL_DATA_DIR; this file recomputes no model output and re-runs no scorer.",
+  "run_id": "SAEA-A2T-PHASE-SMOKE-4-V1",
+  "schema": "saea-phase-program-smoke-receipt-v1",
+  "scores": {
+    "a2t-toolcall": {
+      "exact_match": 0.0,
+      "gold_version": "a2t-gold-v1",
+      "parse_failures": 0,
+      "parse_version": "a2t-parse-v2-json-or-callstring",
+      "per_tier": {
+        "tier1_direct": {
+          "exact_match": 0.0,
+          "samples": 1,
+          "slot_expected_total": 0,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_predicted_total": 6,
+          "slot_recall": 0.0,
+          "slot_true_positives": 0,
+          "tool_accuracy": 0.0
+        },
+        "tier2_parametric": {
+          "exact_match": 0.0,
+          "samples": 1,
+          "slot_expected_total": 1,
+          "slot_f1": 0.0,
+          "slot_precision": 0.0,
+          "slot_predicted_total": 1,
+          "slot_recall": 0.0,
+          "slot_true_positives": 0,
+          "tool_accuracy": 1.0
+        },
+        "tier5_needle": {
+          "exact_match": 0.0,
+          "samples": 1,
+          "slot_expected_total": 2,
+          "slot_f1": 0.6666666666666666,
+          "slot_precision": 0.5,
+          "slot_predicted_total": 4,
+          "slot_recall": 1.0,
+          "slot_true_positives": 2,
+          "tool_accuracy": 1.0
+        },
+        "tier6_correction": {
+          "exact_match": 0.0,
+          "samples": 1,
+          "slot_expected_total": 2,
+          "slot_f1": 0.2,
+          "slot_precision": 0.125,
+          "slot_predicted_total": 8,
+          "slot_recall": 0.5,
+          "slot_true_positives": 1,
+          "tool_accuracy": 0.0
+        }
+      },
+      "samples": 4,
+      "scorer_version": "a2t-scorer-v1",
+      "slot_expected_total": 5,
+      "slot_f1": 0.25,
+      "slot_precision": 0.15789473684210525,
+      "slot_predicted_total": 19,
+      "slot_recall": 0.6,
+      "slot_true_positives": 3,
+      "tool_accuracy": 0.5
+    },
+    "a2t-toolcall-v2": {
+      "coerced_values": 0,
+      "exact_match": 0.25,
+      "extra_keys_stripped": 11,
+      "gold_version": "a2t-gold-v1",
+      "parse_failures": 0,
+      "parse_version": "a2t-parse-v2-json-or-callstring",
+      "per_tier": {
+        "tier1_direct": {
+          "coerced_values": 0,
+          "exact_match": 0.0,
+          "extra_keys_stripped": 5,
+          "samples": 1,
+          "slot_expected_total": 0,
+          "slot_f1": 0.0,
+          "slot_f1_raw": 0.0,
+          "slot_precision": 0.0,
+          "slot_predicted_total": 1,
+          "slot_recall": 0.0,
+          "slot_true_positives": 0,
+          "tool_accuracy": 0.0,
+          "tool_accuracy_multiset": 0.0
+        },
+        "tier2_parametric": {
+          "coerced_values": 0,
+          "exact_match": 0.0,
+          "extra_keys_stripped": 0,
+          "samples": 1,
+          "slot_expected_total": 1,
+          "slot_f1": 0.0,
+          "slot_f1_raw": 0.0,
+          "slot_precision": 0.0,
+          "slot_predicted_total": 1,
+          "slot_recall": 0.0,
+          "slot_true_positives": 0,
+          "tool_accuracy": 1.0,
+          "tool_accuracy_multiset": 1.0
+        },
+        "tier5_needle": {
+          "coerced_values": 0,
+          "exact_match": 1.0,
+          "extra_keys_stripped": 2,
+          "samples": 1,
+          "slot_expected_total": 2,
+          "slot_f1": 1.0,
+          "slot_f1_raw": 0.6666666666666666,
+          "slot_precision": 1.0,
+          "slot_predicted_total": 2,
+          "slot_recall": 1.0,
+          "slot_true_positives": 2,
+          "tool_accuracy": 1.0,
+          "tool_accuracy_multiset": 1.0
+        },
+        "tier6_correction": {
+          "coerced_values": 0,
+          "exact_match": 0.0,
+          "extra_keys_stripped": 4,
+          "samples": 1,
+          "slot_expected_total": 2,
+          "slot_f1": 0.3333333333333333,
+          "slot_f1_raw": 0.2,
+          "slot_precision": 0.25,
+          "slot_predicted_total": 4,
+          "slot_recall": 0.5,
+          "slot_true_positives": 1,
+          "tool_accuracy": 0.0,
+          "tool_accuracy_multiset": 0.0
+        }
+      },
+      "samples": 4,
+      "scorer_version": "a2t-scorer-v2",
+      "slot_expected_total": 5,
+      "slot_f1": 0.4615384615384615,
+      "slot_f1_raw": 0.25,
+      "slot_precision": 0.375,
+      "slot_predicted_total": 8,
+      "slot_recall": 0.6,
+      "slot_true_positives": 3,
+      "tool_accuracy": 0.5,
+      "tool_accuracy_multiset": 0.5
+    },
+    "cost": {
+      "audio_seconds_used": 33.896,
+      "calls_used": 8,
+      "completion_tokens_total": 276,
+      "latency_seconds_total": 55.775669854017906,
+      "prompt_tokens_total": 107456,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "fe843e1b4789d3f3b47731ddf5b1bb42d430b05afe74292afc9ca0a6368e2864"
+    }
+  },
+  "seal_carries_the_last_phase": {
+    "any_sealed_row_equals_an_earlier_phase_response": false,
+    "every_sealed_row_equals_the_last_phase_response": true,
+    "last_phase": "phase-select-then-fill-v1:fill"
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "trace_record_namespaces": {
+    "fill": 16,
+    "select": 16
+  }
+}
