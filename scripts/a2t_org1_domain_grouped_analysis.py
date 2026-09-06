@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
-"""Verdict numbers for A2T-ORG-1, the domain-grouped Audio2Tool tool registry.
+"""Verdict numbers for N Audio2Tool arms on the union 4,000 roster.
 
-Reads only bytes that are already sealed -- this run's own manifest
-(``SAEA-A2T-ORG1-DOMAIN-GROUPED-V1``) and the three 2026-09-04
-official-population manifests its 4,000 rows are paired against -- and writes
-``result-summary.json``. Zero model, GPU or network contact; gold enters only
-through the registered scorers, exactly as it does when a flight finalizes.
+Reads only bytes that are already sealed -- each arm's own manifest and the
+three 2026-09-04 official-population manifests whose 4,000 rows every arm is
+paired against -- and writes ``result-summary.json``. Zero model, GPU or
+network contact; gold enters only through the registered scorers, exactly as
+it does when a flight finalizes.
+
+2026-09-05 (KC-A1): the script was written for the single ORG-1 arm and is
+now N-arm rather than forked. ``--arm cell_id=run_id[:attempt]`` is
+repeatable; every arm is paired against the SAME sealed baseline rows (read
+once), and each arm after the first is additionally paired against the first,
+which is what separates a treatment from its same-length control. ``--rule``
+selects the preregistered decision rule (``org1``, the default, or ``kc-a1``,
+whose admission clause is the MF-1 TARGET-pair share of the gain). The per-arm
+block is the ORG-1 computation with ``org1`` renamed ``arm``, so the sealed
+2026-09-05 ORG-1 summary (schema ...-v1) stays as sealed while a re-run of
+that arm reproduces its numbers under the v2 key names.
 
 Section 6 of ``docs/readiness/2026-09-05-a2t-org1-domain-grouped-registry-v1-
 preregistration.md``, fixed before takeoff, is what this computes:
@@ -30,6 +41,7 @@ preregistration.md``, fixed before takeoff, is what this computes:
 Usage (WSL2, model-free)::
 
     python a2t_org1_domain_grouped_analysis.py --write
+    python a2t_org1_domain_grouped_analysis.py --rule kc-a1         --arm KC-A1-contrast-raw=SAEA-A2T-KC-A1-CONTRAST-NOTES-V1         --arm KC-A1c-category-raw=SAEA-A2T-KC-A1C-CATEGORY-ONLY-V1         --out-dir docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-kc-a1-contrast-notes-4000-v1 --write
 """
 
 from __future__ import annotations
@@ -43,9 +55,11 @@ from collections import Counter
 from pathlib import Path
 from typing import Mapping, Sequence
 
-REPO = Path(
-    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition"
-)
+#: The repository this file belongs to, whichever checkout that is. It was a
+#: hard-coded main-checkout path; deriving it from the file's own location is
+#: the SAME path there and additionally lets a prep worktree run the analysis
+#: against its own configs and receipts.
+REPO = Path(__file__).resolve().parents[1]
 
 RUN_ID = "SAEA-A2T-ORG1-DOMAIN-GROUPED-V1"
 CELL = "ORG1-grouped-raw"
@@ -67,6 +81,15 @@ BASELINES: tuple[tuple[str, str, str], ...] = (
         "attempt-20260904T211040Z-t3467officialpop2000",
         "T3467-official-pop-2000",
     ),
+)
+
+#: MF-1's own receipt: the five disjoint TARGET tool sets KC-A1's decision
+#: rule counts corrected rows against. Read, never restated here.
+TARGETS_RECEIPT = (
+    REPO
+    / "docs/checks/speech-aware-evidence-acquisition"
+    / "2026-09-05-a2t-query-cue-audit"
+    / "summary.json"
 )
 
 ROSTER = (
@@ -468,7 +491,7 @@ def contrast_as_dict(contrast) -> dict[str, object]:
         "metric": contrast.metric,
         "n": contrast.n,
         "baseline_pct": 100.0 * contrast.left_mean,
-        "org1_pct": 100.0 * contrast.right_mean,
+        "arm_pct": 100.0 * contrast.right_mean,
         "delta_pp": 100.0 * contrast.delta,
         "saves": contrast.saves,
         "harms": contrast.harms,
@@ -482,63 +505,81 @@ def contrast_as_dict(contrast) -> dict[str, object]:
     }
 
 
-def build(*, attempt: str) -> dict[str, object]:
+def target_map() -> tuple[dict[str, str], dict[str, object]]:
+    """``(tool -> MF-1 target id, provenance)`` from the audit receipt.
+
+    KC-A1's decision rule asks how many corrected rows were TARGET-pair
+    misses, which is a property of the MF-1 receipt and not of this run, so
+    the map is READ from that receipt with its hash recorded rather than
+    restated here. A tree without the receipt yields an empty map and every
+    target statistic is then reported as ``null``.
+    """
+
+    if not TARGETS_RECEIPT.is_file():
+        return {}, {"receipt": None, "targets": 0}
+    document = json.loads(TARGETS_RECEIPT.read_text(encoding="utf-8"))
+    targets = document["primary_population"]["targets"]["targets"]
+    by_tool = {
+        str(tool): str(entry["target_id"]) for entry in targets for tool in entry["tools"]
+    }
+    return by_tool, {
+        "receipt": str(TARGETS_RECEIPT.relative_to(REPO)).replace("\\", "/"),
+        "receipt_sha256": sha256_file(TARGETS_RECEIPT),
+        "targets": len(targets),
+        "tools": len(by_tool),
+        "definition": (
+            "a miss is a TARGET-PAIR miss when the gold tool and the predicted tool sit "
+            "inside the SAME MF-1 target -- the component definition of the audit's own "
+            "table, resolved from the receipt and never asserted here"
+        ),
+    }
+
+
+def target_pair_miss(row: Mapping[str, object], targets: Mapping[str, str]) -> str | None:
+    """The target id a miss sits inside, or ``None``."""
+
+    if row["tool_correct"] or not targets:
+        return None
+    gold, predicted = str(row["gold_tool"]), str(row["predicted_tool"] or "")
+    if gold in targets and predicted in targets and targets[gold] == targets[predicted]:
+        return targets[gold]
+    return None
+
+
+def build_arm(
+    cell_id: str,
+    run_id: str,
+    attempt: str,
+    *,
+    roster_ids: Sequence[str],
+    domains: Mapping[str, str],
+    registry: Mapping[str, Mapping[str, str]],
+    left: Mapping[str, Mapping[str, float]],
+    base_rows: Mapping[str, Mapping[str, object]],
+    targets: Mapping[str, str],
+    rule: str,
+) -> tuple[dict[str, object], dict[str, dict[str, float]], dict[str, Mapping[str, object]]]:
+    """One arm's whole paired summary against the sealed baseline.
+
+    Returns the summary plus this arm's per-sample score and official-row maps,
+    so a caller can pair two ARMS against each other without rescoring.
+    """
+
     from speech_aware_evidence_acquisition.analysis.paired import (
         paired_contrast,
         per_stratum_table,
     )
 
-    roster = json.loads(ROSTER.read_text(encoding="utf-8"))
-    domains = domain_by_sample(roster)
-    registry = registry_rows()
-    roster_ids = sorted(str(item["sample_id"]) for item in roster["items"])
-
-    org_official = rescore(RUN_ID, attempt, "a2t-toolcall-official")
-    org_v2 = rescore(RUN_ID, attempt, "a2t-toolcall-v2")
-    right, org_rows = arm_scores(org_official, org_v2)
-
-    left: dict[str, dict[str, float]] = {}
-    base_rows: dict[str, Mapping[str, object]] = {}
-    baseline_sources = []
-    for run_id, base_attempt, cell in BASELINES:
-        official = rescore(run_id, base_attempt, "a2t-toolcall-official")
-        v2 = rescore(run_id, base_attempt, "a2t-toolcall-v2")
-        scores, rows = arm_scores(official, v2)
-        overlap = set(scores) & set(left)
-        if overlap:
-            raise SystemExit(f"baseline runs overlap on {sorted(overlap)[:5]}")
-        left.update(scores)
-        base_rows.update(rows)
-        manifest_path = (
-            run_dir(run_id, base_attempt) / f"{run_id}.run-manifest.json"
-        )
-        baseline_sources.append(
-            {
-                "run_id": run_id,
-                "cell_id": cell,
-                "attempt_id": base_attempt,
-                "rows": len(scores),
-                "manifest_sha256": sha256_file(manifest_path),
-                "study_commit": str(load_manifest(run_id, base_attempt)["study_commit"]),
-            }
-        )
-
-    missing_left = [s for s in roster_ids if s not in left]
-    missing_right = [s for s in roster_ids if s not in right]
-    if missing_left or missing_right:
+    official = rescore(run_id, attempt, "a2t-toolcall-official")
+    v2 = rescore(run_id, attempt, "a2t-toolcall-v2")
+    right, arm_rows = arm_scores(official, v2)
+    missing = [sample_id for sample_id in roster_ids if sample_id not in right]
+    if missing:
         raise SystemExit(
-            "roster rows missing: baseline %d, org1 %d (first: %s / %s)"
-            % (
-                len(missing_left),
-                len(missing_right),
-                missing_left[:3],
-                missing_right[:3],
-            )
+            "%s: %d roster rows missing (first: %s)" % (cell_id, len(missing), missing[:3])
         )
-    left = {s: left[s] for s in roster_ids}
-    right = {s: right[s] for s in roster_ids}
-    base_rows = {s: base_rows[s] for s in roster_ids}
-    org_rows = {s: org_rows[s] for s in roster_ids}
+    right = {sample_id: right[sample_id] for sample_id in roster_ids}
+    arm_rows = {sample_id: arm_rows[sample_id] for sample_id in roster_ids}
 
     def tier_of(sample_id: str) -> str:
         return sample_id.rsplit(":", 1)[0]
@@ -558,7 +599,7 @@ def build(*, attempt: str) -> dict[str, object]:
         right,
         metrics=("tool_accuracy", "exact_match"),
         sample_ids=roster_ids,
-        strata_of=lambda s: domains[s],
+        strata_of=lambda sample_id: domains[sample_id],
         seed=SEED,
         n_replicates=REPLICATES,
         ci_level=CI_LEVEL,
@@ -567,20 +608,20 @@ def build(*, attempt: str) -> dict[str, object]:
     # ---- per tier, with the paper column -------------------------------
     per_tier: dict[str, object] = {}
     for tier in TIERS:
-        ids = [s for s in roster_ids if tier_of(s) == tier]
-        base_tier = [base_rows[s] for s in ids]
-        org_tier = [org_rows[s] for s in ids]
+        ids = [sample_id for sample_id in roster_ids if tier_of(sample_id) == tier]
+        base_tier = [base_rows[sample_id] for sample_id in ids]
+        arm_tier = [arm_rows[sample_id] for sample_id in ids]
         base_ta = rate(base_tier, "tool_correct")
-        org_ta = rate(org_tier, "tool_correct")
+        arm_ta = rate(arm_tier, "tool_correct")
         per_domain: dict[str, object] = {}
-        for domain in sorted({domains[s] for s in ids}):
-            members = [s for s in ids if domains[s] == domain]
+        for domain in sorted({domains[sample_id] for sample_id in ids}):
+            members = [sample_id for sample_id in ids if domains[sample_id] == domain]
             per_domain[domain] = {
                 "n": len(members),
                 "baseline_pct": 100.0
                 * sum(left[s]["tool_accuracy"] for s in members)
                 / len(members),
-                "org1_pct": 100.0
+                "arm_pct": 100.0
                 * sum(right[s]["tool_accuracy"] for s in members)
                 / len(members),
                 "delta_pp": 100.0
@@ -598,150 +639,151 @@ def build(*, attempt: str) -> dict[str, object]:
                 "param_f1_micro_pct": 100.0 * micro_param_f1(base_tier),
                 "parse_rate_pct": 100.0 * mean(base_tier, "parsed"),
             },
-            "org1": {
-                "tool_accuracy": org_ta,
-                "exact_match": rate(org_tier, "exact_match"),
-                "param_f1_macro_pct": 100.0 * mean(org_tier, "param_f1"),
-                "param_f1_micro_pct": 100.0 * micro_param_f1(org_tier),
-                "parse_rate_pct": 100.0 * mean(org_tier, "parsed"),
+            "arm": {
+                "tool_accuracy": arm_ta,
+                "exact_match": rate(arm_tier, "exact_match"),
+                "param_f1_macro_pct": 100.0 * mean(arm_tier, "param_f1"),
+                "param_f1_micro_pct": 100.0 * micro_param_f1(arm_tier),
+                "parse_rate_pct": 100.0 * mean(arm_tier, "parsed"),
             },
             "paper": PAPER[tier],
             "delta_pp": {
-                "tool_accuracy": org_ta["pct"] - base_ta["pct"],
-                "exact_match": rate(org_tier, "exact_match")["pct"]
+                "tool_accuracy": arm_ta["pct"] - base_ta["pct"],
+                "exact_match": rate(arm_tier, "exact_match")["pct"]
                 - rate(base_tier, "exact_match")["pct"],
             },
-            "org1_minus_paper_pp": org_ta["pct"] - PAPER[tier]["tool_accuracy"],
+            "arm_minus_paper_pp": arm_ta["pct"] - PAPER[tier]["tool_accuracy"],
             "baseline_minus_paper_pp": base_ta["pct"] - PAPER[tier]["tool_accuracy"],
             "per_domain": per_domain,
         }
 
     # ---- per domain ------------------------------------------------------
     per_domain_overall: dict[str, object] = {}
-    for domain in sorted(set(domains[s] for s in roster_ids)):
-        ids = [s for s in roster_ids if domains[s] == domain]
-        base_dom = [base_rows[s] for s in ids]
-        org_dom = [org_rows[s] for s in ids]
+    for domain in sorted(set(domains[sample_id] for sample_id in roster_ids)):
+        ids = [sample_id for sample_id in roster_ids if domains[sample_id] == domain]
+        base_dom = [base_rows[sample_id] for sample_id in ids]
+        arm_dom = [arm_rows[sample_id] for sample_id in ids]
         per_domain_overall[domain] = {
             "n": len(ids),
             "baseline": {
                 "tool_accuracy": rate(base_dom, "tool_correct"),
                 "exact_match": rate(base_dom, "exact_match"),
             },
-            "org1": {
-                "tool_accuracy": rate(org_dom, "tool_correct"),
-                "exact_match": rate(org_dom, "exact_match"),
+            "arm": {
+                "tool_accuracy": rate(arm_dom, "tool_correct"),
+                "exact_match": rate(arm_dom, "exact_match"),
             },
             "delta_pp": {
-                "tool_accuracy": rate(org_dom, "tool_correct")["pct"]
+                "tool_accuracy": rate(arm_dom, "tool_correct")["pct"]
                 - rate(base_dom, "tool_correct")["pct"],
-                "exact_match": rate(org_dom, "exact_match")["pct"]
+                "exact_match": rate(arm_dom, "exact_match")["pct"]
                 - rate(base_dom, "exact_match")["pct"],
             },
             "saves": sum(
-                1
-                for s in ids
-                if right[s]["tool_accuracy"] > left[s]["tool_accuracy"]
+                1 for s in ids if right[s]["tool_accuracy"] > left[s]["tool_accuracy"]
             ),
             "harms": sum(
-                1
-                for s in ids
-                if right[s]["tool_accuracy"] < left[s]["tool_accuracy"]
+                1 for s in ids if right[s]["tool_accuracy"] < left[s]["tool_accuracy"]
             ),
         }
 
     # ---- confusion, before and after ------------------------------------
     before = confusion_block(base_rows, domains, registry)
-    after = confusion_block(org_rows, domains, registry)
+    after = confusion_block(arm_rows, domains, registry)
     twins = named_twin_table(before.pop("_pairs"), after.pop("_pairs"), registry)
 
-    # ---- cross-domain share of the gain ---------------------------------
+    # ---- gain decomposition, including the MF-1 target pairs -------------
     corrected = [
-        s
-        for s in roster_ids
-        if not base_rows[s]["tool_correct"] and org_rows[s]["tool_correct"]
+        s for s in roster_ids if not base_rows[s]["tool_correct"] and arm_rows[s]["tool_correct"]
     ]
     broken = [
-        s
-        for s in roster_ids
-        if base_rows[s]["tool_correct"] and not org_rows[s]["tool_correct"]
+        s for s in roster_ids if base_rows[s]["tool_correct"] and not arm_rows[s]["tool_correct"]
     ]
     corrected_classes = Counter(
         classify_miss(base_rows[s], domains[s], registry) for s in corrected
     )
     broken_classes = Counter(
-        classify_miss(org_rows[s], domains[s], registry) for s in broken
+        classify_miss(arm_rows[s], domains[s], registry) for s in broken
     )
     cross_share = (
         corrected_classes["cross_domain_twin"] / len(corrected) if corrected else None
+    )
+    target_before = Counter(
+        target_pair_miss(row, targets)
+        for row in base_rows.values()
+        if target_pair_miss(row, targets)
+    )
+    target_after = Counter(
+        target_pair_miss(row, targets)
+        for row in arm_rows.values()
+        if target_pair_miss(row, targets)
+    )
+    corrected_on_targets = [s for s in corrected if target_pair_miss(base_rows[s], targets)]
+    target_share = (
+        len(corrected_on_targets) / len(corrected) if corrected and targets else None
     )
 
     # ---- decision --------------------------------------------------------
     primary = contrasts["tool_accuracy"]
     low = 100.0 * primary.bootstrap.ci_low
     high = 100.0 * primary.bootstrap.ci_high
-    smart_home = per_domain_overall.get("smart_home", {})
-    smart_home_delta = (
-        smart_home["delta_pp"]["tool_accuracy"] if smart_home else 0.0
-    )
-    other_deltas = [
-        block["delta_pp"]["tool_accuracy"]
-        for name, block in per_domain_overall.items()
-        if name != "smart_home"
-    ]
-    concentrated = bool(
-        smart_home_delta > 0
-        and (not other_deltas or smart_home_delta >= max(other_deltas))
-        and (cross_share is not None and cross_share >= 0.5)
-    )
-    if low > 0.0 and concentrated:
+    equal_domain = equal_domain_delta(roster_ids, left, right, domains)
+    weightings_agree = (100.0 * primary.delta) * equal_domain["delta_pp"] > 0
+    if rule == "kc-a1":
+        admitted = bool(
+            low > 0.0
+            and weightings_agree
+            and equal_domain["delta_pp"] > 0
+            and target_share is not None
+            and target_share >= 0.5
+        )
+        rule_text = (
+            "ADMITTED = pooled CI90 lower bound above 0, both weightings agreeing in sign, "
+            "and at least half of the corrected rows carrying a baseline miss whose gold "
+            "AND predicted tool sit inside one MF-1 target; HARMFUL = CI90 upper bound "
+            "below 0; NULL otherwise. A gain is credited as CONTENT only if the "
+            "same-length control does not reach a comparable delta (cross_arm below)."
+        )
+    else:
+        smart_home = per_domain_overall.get("smart_home", {})
+        smart_home_delta = smart_home["delta_pp"]["tool_accuracy"] if smart_home else 0.0
+        other_deltas = [
+            block["delta_pp"]["tool_accuracy"]
+            for name, block in per_domain_overall.items()
+            if name != "smart_home"
+        ]
+        admitted = bool(
+            low > 0.0
+            and smart_home_delta > 0
+            and (not other_deltas or smart_home_delta >= max(other_deltas))
+            and (cross_share is not None and cross_share >= 0.5)
+        )
+        rule_text = (
+            "ADMITTED = pooled CI90 lower bound above 0 AND the gain concentrated on "
+            "smart_home cross-domain twins (smart_home delta positive and at least as "
+            "large as every other domain's, and the cross-domain share of the gain at "
+            "least 0.50); NULL = CI90 includes 0, or the CI90 is positive but the gain is "
+            "not so concentrated; HARMFUL = CI90 upper bound below 0"
+        )
+    if low > 0.0 and admitted:
         outcome = "ADMITTED"
-    elif low > 0.0:
-        outcome = "NULL"
     elif high < 0.0:
         outcome = "HARMFUL"
     else:
         outcome = "NULL"
 
-    manifest = load_manifest(RUN_ID, attempt)
-    return {
-        "schema": "saea-a2t-org1-domain-grouped-result-summary-v1",
-        "study": "speech-aware-evidence-acquisition",
-        "run_id": RUN_ID,
-        "cell_id": CELL,
+    manifest = load_manifest(run_id, attempt)
+    summary = {
+        "cell_id": cell_id,
+        "run_id": run_id,
         "attempt_id": attempt,
-        "manifest_sha256": sha256_file(
-            run_dir(RUN_ID, attempt) / f"{RUN_ID}.run-manifest.json"
-        ),
+        "manifest_sha256": sha256_file(run_dir(run_id, attempt) / f"{run_id}.run-manifest.json"),
         "study_commit": manifest["study_commit"],
         "protocol_hash": manifest["protocol_hash"],
-        "preregistration": (
-            "docs/readiness/2026-09-05-a2t-org1-domain-grouped-registry-v1-preregistration.md"
-        ),
-        "paper_source": "arXiv:2604.22821 Table 3, Qwen-3-Omni-30B",
-        "paper_column_note": (
-            "reported beside every tier as a CEILING reference. No gate in this run is set "
-            "relative to it: the decision is a paired delta against the sealed "
-            "official-protocol cells"
-        ),
-        "roster": {
-            "receipt": str(ROSTER.relative_to(REPO)).replace("\\", "/"),
-            "receipt_sha256": sha256_file(ROSTER),
-            "count": int(roster["count"]),
-            "split_identity_hash": str(roster["split_identity_hash"]),
-            "flight_split_identity_hash": str(roster["flight_split_identity_hash"]),
-            "tier_counts": dict(roster["tier_counts"]),
-            "domain_counts": dict(roster["domain_counts"]),
-        },
-        "baseline_sources": baseline_sources,
-        "pairing": (
-            "every one of the 4,000 rows is paired with its OWN sealed official-protocol "
-            "output; nothing was re-flown on the baseline side"
-        ),
         "primary": {
             "metric": "official tool accuracy (a2t-toolcall-official)",
             "natural_mixture": contrast_as_dict(primary),
-            "equal_domain": equal_domain_delta(roster_ids, left, right, domains),
+            "equal_domain": equal_domain,
             "per_tier_table": per_stratum_table(primary),
             "per_domain_table": per_stratum_table(domain_contrasts["tool_accuracy"]),
         },
@@ -752,9 +794,9 @@ def build(*, attempt: str) -> dict[str, object]:
         },
         "param_f1": {
             "baseline_macro_pct": 100.0 * mean(list(base_rows.values()), "param_f1"),
-            "org1_macro_pct": 100.0 * mean(list(org_rows.values()), "param_f1"),
+            "arm_macro_pct": 100.0 * mean(list(arm_rows.values()), "param_f1"),
             "baseline_micro_pct": 100.0 * micro_param_f1(list(base_rows.values())),
-            "org1_micro_pct": 100.0 * micro_param_f1(list(org_rows.values())),
+            "arm_micro_pct": 100.0 * micro_param_f1(list(arm_rows.values())),
             "note": (
                 "the official parameter F1 is a macro average of per-sample key P/R/F1; the "
                 "micro figure pools keys across samples and is reported beside it"
@@ -788,55 +830,56 @@ def build(*, attempt: str) -> dict[str, object]:
             "rows_broken": len(broken),
             "net": len(corrected) - len(broken),
             "corrected_by_baseline_miss_class": dict(sorted(corrected_classes.items())),
-            "broken_by_org1_miss_class": dict(sorted(broken_classes.items())),
+            "broken_by_arm_miss_class": dict(sorted(broken_classes.items())),
             "cross_domain_share_of_the_gain": cross_share,
             "cross_domain_share_definition": (
                 "(baseline misses corrected whose baseline prediction was a real registry "
                 "tool in ANOTHER domain) / (all baseline misses corrected)"
             ),
+            "corrected_on_target_pairs": len(corrected_on_targets),
+            "target_pair_share_of_the_gain": target_share,
+        },
+        "mf1_targets": {
+            "miss_mass_before": dict(sorted(target_before.items())),
+            "miss_mass_after": dict(sorted(target_after.items())),
+            "miss_mass_before_total": sum(target_before.values()),
+            "miss_mass_after_total": sum(target_after.values()),
         },
         "decision": {
+            "rule_id": rule,
             "outcome": outcome,
-            "rule": (
-                "ADMITTED = pooled CI90 lower bound above 0 AND the gain concentrated on "
-                "smart_home cross-domain twins (smart_home delta positive and at least as "
-                "large as every other domain's, and the cross-domain share of the gain at "
-                "least 0.50); NULL = CI90 includes 0, or the CI90 is positive but the gain "
-                "is not so concentrated; HARMFUL = CI90 upper bound below 0"
-            ),
+            "rule": rule_text,
             "ci90_low_pp": low,
             "ci90_high_pp": high,
-            "concentrated_on_smart_home_cross_domain_twins": concentrated,
-            "smart_home_delta_pp": smart_home_delta,
-            "other_domain_deltas_pp": other_deltas,
+            "weightings_agree_in_sign": weightings_agree,
+            "target_pair_share_of_the_gain": target_share,
+            "cross_domain_share_of_the_gain": cross_share,
             "baseline_unchanged": (
                 "no outcome changes the direct baseline: the official-protocol cell stays "
                 "the comparator every mechanism is paired against"
             ),
         },
         "scorer_versions": {
-            "official": org_official["aggregate"]["scorer_version"],
-            "official_commit": org_official["aggregate"]["official_commit"],
-            "official_gold": org_official["aggregate"]["gold_version"],
-            "official_metrics_blob_sha1": org_official["aggregate"][
-                "official_metrics_blob_sha1"
-            ],
-            "v2": org_v2["aggregate"]["scorer_version"],
-            "v2_gold": org_v2["aggregate"]["gold_version"],
-            "parse": org_v2["aggregate"]["parse_version"],
+            "official": official["aggregate"]["scorer_version"],
+            "official_commit": official["aggregate"]["official_commit"],
+            "official_gold": official["aggregate"]["gold_version"],
+            "official_metrics_blob_sha1": official["aggregate"]["official_metrics_blob_sha1"],
+            "v2": v2["aggregate"]["scorer_version"],
+            "v2_gold": v2["aggregate"]["gold_version"],
+            "parse": v2["aggregate"]["parse_version"],
         },
         "overall": {
             "samples": len(roster_ids),
             "baseline_tool_accuracy_pct": 100.0 * primary.left_mean,
-            "org1_tool_accuracy_pct": 100.0 * primary.right_mean,
+            "arm_tool_accuracy_pct": 100.0 * primary.right_mean,
             "baseline_parse_rate_pct": 100.0 * mean(list(base_rows.values()), "parsed"),
-            "org1_parse_rate_pct": 100.0 * mean(list(org_rows.values()), "parsed"),
-            "org1_parse_failures": int(org_official["aggregate"]["parse_failures"]),
+            "arm_parse_rate_pct": 100.0 * mean(list(arm_rows.values()), "parsed"),
+            "arm_parse_failures": int(official["aggregate"]["parse_failures"]),
             "baseline_rows_with_multiple_call_matches": sum(
                 1 for row in base_rows.values() if int(row["official_call_matches"]) > 1
             ),
-            "org1_rows_with_multiple_call_matches": sum(
-                1 for row in org_rows.values() if int(row["official_call_matches"]) > 1
+            "arm_rows_with_multiple_call_matches": sum(
+                1 for row in arm_rows.values() if int(row["official_call_matches"]) > 1
             ),
         },
         "throughput": {
@@ -861,16 +904,178 @@ def build(*, attempt: str) -> dict[str, object]:
             "study_repo_dirt": manifest["study_repo_dirt"],
         },
     }
+    return summary, right, arm_rows
+
+
+def build(*, arms: Sequence[tuple[str, str, str]], rule: str) -> dict[str, object]:
+    """Every requested arm, each paired against the SAME sealed baseline rows,
+    plus each later arm paired against the first one.
+
+    The baselines are read once: the three official-population manifests are
+    the comparator for every arm on this roster, so N arms cost N rescorings
+    and not 4N, and every delta in the document is over one identical row set.
+    """
+
+    from speech_aware_evidence_acquisition.analysis.paired import paired_contrast
+
+    roster = json.loads(ROSTER.read_text(encoding="utf-8"))
+    domains = domain_by_sample(roster)
+    registry = registry_rows()
+    roster_ids = sorted(str(item["sample_id"]) for item in roster["items"])
+    targets, target_provenance = target_map()
+
+    left: dict[str, dict[str, float]] = {}
+    base_rows: dict[str, Mapping[str, object]] = {}
+    baseline_sources = []
+    for run_id, base_attempt, cell in BASELINES:
+        official = rescore(run_id, base_attempt, "a2t-toolcall-official")
+        v2 = rescore(run_id, base_attempt, "a2t-toolcall-v2")
+        scores, rows = arm_scores(official, v2)
+        overlap = set(scores) & set(left)
+        if overlap:
+            raise SystemExit(f"baseline runs overlap on {sorted(overlap)[:5]}")
+        left.update(scores)
+        base_rows.update(rows)
+        baseline_sources.append(
+            {
+                "run_id": run_id,
+                "cell_id": cell,
+                "attempt_id": base_attempt,
+                "rows": len(scores),
+                "manifest_sha256": sha256_file(
+                    run_dir(run_id, base_attempt) / f"{run_id}.run-manifest.json"
+                ),
+                "study_commit": str(load_manifest(run_id, base_attempt)["study_commit"]),
+            }
+        )
+    missing = [s for s in roster_ids if s not in left]
+    if missing:
+        raise SystemExit("baseline is missing %d roster rows (first: %s)" % (len(missing), missing[:3]))
+    left = {s: left[s] for s in roster_ids}
+    base_rows = {s: base_rows[s] for s in roster_ids}
+
+    summaries: dict[str, object] = {}
+    scores_by_arm: dict[str, dict[str, dict[str, float]]] = {}
+    for cell_id, run_id, attempt in arms:
+        summary, right, _ = build_arm(
+            cell_id,
+            run_id,
+            attempt,
+            roster_ids=roster_ids,
+            domains=domains,
+            registry=registry,
+            left=left,
+            base_rows=base_rows,
+            targets=targets,
+            rule=rule,
+        )
+        summaries[cell_id] = summary
+        scores_by_arm[cell_id] = right
+
+    cross_arm = []
+    first = arms[0][0]
+    for cell_id, _, _ in arms[1:]:
+        contrast = paired_contrast(
+            scores_by_arm[cell_id],
+            scores_by_arm[first],
+            metrics=("tool_accuracy",),
+            sample_ids=roster_ids,
+            strata_of=lambda sample_id: sample_id.rsplit(":", 1)[0],
+            seed=SEED,
+            n_replicates=REPLICATES,
+            ci_level=CI_LEVEL,
+        )["tool_accuracy"]
+        block = contrast_as_dict(contrast)
+        block.update(
+            {
+                "left_cell_id": cell_id,
+                "right_cell_id": first,
+                "delta_definition": f"{first} minus {cell_id} on the same 4,000 rows",
+                "content_effect_credited": 100.0 * contrast.bootstrap.ci_low > 0.0,
+                "rule": (
+                    "a gain is credited as CONTENT only when this contrast's CI90 lower "
+                    "bound is above 0; a control reaching a comparable delta attributes the "
+                    "gain to prompt FORM instead"
+                ),
+            }
+        )
+        cross_arm.append(block)
+
+    return {
+        "schema": "saea-a2t-paired-arms-result-summary-v2",
+        "study": "speech-aware-evidence-acquisition",
+        "schema_note": (
+            "v2 generalizes the single-arm ORG-1 summary (schema saea-a2t-org1-domain-"
+            "grouped-result-summary-v1, sealed 2026-09-05) to N arms: the per-arm block is "
+            "the same computation with 'org1' renamed 'arm', and the sealed v1 file stays "
+            "as sealed. Re-running the ORG-1 arm here reproduces its numbers exactly"
+        ),
+        "arms_requested": [
+            {"cell_id": cell_id, "run_id": run_id, "attempt_id": attempt}
+            for cell_id, run_id, attempt in arms
+        ],
+        "decision_rule_id": rule,
+        "paper_source": "arXiv:2604.22821 Table 3, Qwen-3-Omni-30B",
+        "paper_column_note": (
+            "reported beside every tier as a CEILING reference. No gate in this run is set "
+            "relative to it: every decision is a paired delta against the sealed "
+            "official-protocol cells and, for a control, against the treatment arm"
+        ),
+        "roster": {
+            "receipt": str(ROSTER.relative_to(REPO)).replace("\\", "/"),
+            "receipt_sha256": sha256_file(ROSTER),
+            "count": int(roster["count"]),
+            "split_identity_hash": str(roster["split_identity_hash"]),
+            "flight_split_identity_hash": str(roster["flight_split_identity_hash"]),
+            "tier_counts": dict(roster["tier_counts"]),
+            "domain_counts": dict(roster["domain_counts"]),
+        },
+        "baseline_sources": baseline_sources,
+        "mf1_target_provenance": target_provenance,
+        "pairing": (
+            "every one of the 4,000 rows is paired with its OWN sealed official-protocol "
+            "output; nothing was re-flown on the baseline side. Arm-versus-arm contrasts "
+            "pair the same rows between two flown arms"
+        ),
+        "arms": summaries,
+        "cross_arm": cross_arm,
+    }
+
+
+def parse_arm(value: str) -> tuple[str, str, str]:
+    """``cell_id=run_id[:attempt_id]``; the attempt defaults to the latest."""
+
+    cell_id, _, rest = value.partition("=")
+    if not cell_id or not rest:
+        raise SystemExit(f"--arm wants cell_id=run_id[:attempt_id], got {value!r}")
+    run_id, _, attempt = rest.partition(":")
+    return cell_id, run_id, attempt or latest_attempt(run_id)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--attempt", default=None)
+    parser.add_argument(
+        "--arm",
+        action="append",
+        default=None,
+        help=(
+            "cell_id=run_id[:attempt_id], repeatable. Every arm is paired against the same "
+            "sealed baseline rows, and each arm after the first is also paired against the "
+            "first (the treatment/control contrast). Default: the ORG-1 arm"
+        ),
+    )
+    parser.add_argument("--rule", default="org1", choices=("org1", "kc-a1"))
+    parser.add_argument("--attempt", default=None, help="attempt for the DEFAULT arm")
     parser.add_argument("--out-dir", type=Path, default=OUT_DIR)
     parser.add_argument("--write", action="store_true")
     args = parser.parse_args()
 
-    document = build(attempt=args.attempt or latest_attempt(RUN_ID))
+    arms = (
+        [parse_arm(value) for value in args.arm]
+        if args.arm
+        else [(CELL, RUN_ID, args.attempt or latest_attempt(RUN_ID))]
+    )
+    document = build(arms=arms, rule=args.rule)
     payload = json.dumps(document, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
     if args.write:
         out_dir = Path(args.out_dir)
@@ -879,128 +1084,159 @@ def main() -> int:
         out_path.write_text(payload, encoding="utf-8", newline="\n")
         print("written: %s (sha256 %s)" % (out_path, sha256_file(out_path)))
 
-    primary = document["primary"]["natural_mixture"]
-    print()
-    print(
-        "%s attempt %s  n=%d"
-        % (document["cell_id"], document["attempt_id"], document["overall"]["samples"])
-    )
-    print(
-        "POOLED official tool accuracy: baseline %.2f -> ORG-1 %.2f  delta %+.2f pp "
-        "CI90 [%+.2f, %+.2f]  saves %d harms %d ties %d  sign p=%.4f"
-        % (
-            primary["baseline_pct"],
-            primary["org1_pct"],
-            primary["delta_pp"],
-            primary["ci90_low_pp"],
-            primary["ci90_high_pp"],
-            primary["saves"],
-            primary["harms"],
-            primary["ties"],
-            primary["sign_test_p"],
-        )
-    )
-    equal = document["primary"]["equal_domain"]
-    print(
-        "EQUAL-DOMAIN: baseline %.2f -> ORG-1 %.2f  delta %+.2f pp CI90 [%+.2f, %+.2f]"
-        % (
-            equal["left_pct"],
-            equal["right_pct"],
-            equal["delta_pp"],
-            equal["ci90_low_pp"],
-            equal["ci90_high_pp"],
-        )
-    )
-    print()
-    print(
-        "%-24s %8s %8s %8s %8s %8s %6s %6s"
-        % ("tier", "base", "ORG-1", "delta", "paper", "vs paper", "saves", "harms")
-    )
-    for row in document["primary"]["per_tier_table"]:
-        tier = row["stratum"]
-        block = document["per_tier"][tier]
+    for cell_id, block in document["arms"].items():
+        primary = block["primary"]["natural_mixture"]
+        equal = block["primary"]["equal_domain"]
+        print()
+        print("%s attempt %s  n=%d" % (cell_id, block["attempt_id"], block["overall"]["samples"]))
         print(
-            "%-24s %8.2f %8.2f %+8.2f %8.1f %+8.2f %6d %6d"
+            "POOLED official tool accuracy: baseline %.2f -> arm %.2f  delta %+.2f pp "
+            "CI90 [%+.2f, %+.2f]  saves %d harms %d ties %d  sign p=%.4f"
             % (
-                tier,
-                100.0 * row["left_mean"],
-                100.0 * row["right_mean"],
-                100.0 * row["delta"],
-                block["paper"]["tool_accuracy"],
-                block["org1_minus_paper_pp"],
-                row["saves"],
-                row["harms"],
+                primary["baseline_pct"],
+                primary["arm_pct"],
+                primary["delta_pp"],
+                primary["ci90_low_pp"],
+                primary["ci90_high_pp"],
+                primary["saves"],
+                primary["harms"],
+                primary["ties"],
+                primary["sign_test_p"],
             )
         )
-    print()
-    print("by domain:")
-    for domain, block in document["per_domain"].items():
         print(
-            "  %-12s n=%-5d base %6.2f -> ORG-1 %6.2f  delta %+6.2f  saves %d harms %d"
+            "EQUAL-DOMAIN: baseline %.2f -> arm %.2f  delta %+.2f pp CI90 [%+.2f, %+.2f]"
             % (
-                domain,
-                block["n"],
-                block["baseline"]["tool_accuracy"]["pct"],
-                block["org1"]["tool_accuracy"]["pct"],
-                block["delta_pp"]["tool_accuracy"],
-                block["saves"],
-                block["harms"],
+                equal["left_pct"],
+                equal["right_pct"],
+                equal["delta_pp"],
+                equal["ci90_low_pp"],
+                equal["ci90_high_pp"],
             )
         )
-    print()
-    print("secondary:")
-    for metric, block in document["secondary"].items():
+        print()
         print(
-            "  %-18s base %7.3f -> ORG-1 %7.3f  delta %+6.3f pp CI90 [%+6.3f, %+6.3f] "
-            "saves %4d harms %4d p=%.4f"
+            "%-24s %8s %8s %8s %8s %8s %6s %6s"
+            % ("tier", "base", "arm", "delta", "paper", "vs paper", "saves", "harms")
+        )
+        for row in block["primary"]["per_tier_table"]:
+            tier = row["stratum"]
+            tier_block = block["per_tier"][tier]
+            print(
+                "%-24s %8.2f %8.2f %+8.2f %8.1f %+8.2f %6d %6d"
+                % (
+                    tier,
+                    100.0 * row["left_mean"],
+                    100.0 * row["right_mean"],
+                    100.0 * row["delta"],
+                    tier_block["paper"]["tool_accuracy"],
+                    tier_block["arm_minus_paper_pp"],
+                    row["saves"],
+                    row["harms"],
+                )
+            )
+        print()
+        print("by domain:")
+        for domain, domain_block in block["per_domain"].items():
+            print(
+                "  %-12s n=%-5d base %6.2f -> arm %6.2f  delta %+6.2f  saves %d harms %d"
+                % (
+                    domain,
+                    domain_block["n"],
+                    domain_block["baseline"]["tool_accuracy"]["pct"],
+                    domain_block["arm"]["tool_accuracy"]["pct"],
+                    domain_block["delta_pp"]["tool_accuracy"],
+                    domain_block["saves"],
+                    domain_block["harms"],
+                )
+            )
+        print()
+        print("secondary:")
+        for metric, metric_block in block["secondary"].items():
+            print(
+                "  %-18s base %7.3f -> arm %7.3f  delta %+6.3f pp CI90 [%+6.3f, %+6.3f] "
+                "saves %4d harms %4d p=%.4f"
+                % (
+                    metric,
+                    metric_block["baseline_pct"],
+                    metric_block["arm_pct"],
+                    metric_block["delta_pp"],
+                    metric_block["ci90_low_pp"],
+                    metric_block["ci90_high_pp"],
+                    metric_block["saves"],
+                    metric_block["harms"],
+                    metric_block["sign_test_p"],
+                )
+            )
+        print()
+        gain = block["gain_decomposition"]
+        print(
+            "gain: corrected %d, broken %d, net %+d; cross-domain share %s; MF-1 target-pair share %s"
             % (
-                metric,
-                block["baseline_pct"],
-                block["org1_pct"],
+                gain["rows_corrected"],
+                gain["rows_broken"],
+                gain["net"],
+                (
+                    "%.3f" % gain["cross_domain_share_of_the_gain"]
+                    if gain["cross_domain_share_of_the_gain"] is not None
+                    else "n/a"
+                ),
+                (
+                    "%.3f" % gain["target_pair_share_of_the_gain"]
+                    if gain["target_pair_share_of_the_gain"] is not None
+                    else "n/a"
+                ),
+            )
+        )
+        print("  corrected by baseline miss class: %s" % gain["corrected_by_baseline_miss_class"])
+        print("  broken by arm miss class:         %s" % gain["broken_by_arm_miss_class"])
+        print(
+            "  MF-1 target miss mass: %d -> %d  %s"
+            % (
+                block["mf1_targets"]["miss_mass_before_total"],
+                block["mf1_targets"]["miss_mass_after_total"],
+                block["mf1_targets"]["miss_mass_after"],
+            )
+        )
+        print()
+        print("miss classes before: %s" % block["confusion"]["before"]["miss_classes"])
+        print("miss classes after:  %s" % block["confusion"]["after"]["miss_classes"])
+        print()
+        print(
+            "%-26s -> %-26s %-13s %7s %7s %7s"
+            % ("gold", "predicted", "class", "before", "after", "delta")
+        )
+        for row in block["confusion"]["named_twins"]:
+            print(
+                "%-26s -> %-26s %-13s %7d %7d %+7d"
+                % (
+                    row["gold_tool"],
+                    row["predicted_tool"],
+                    row["class"],
+                    row["rows_before"],
+                    row["rows_after"],
+                    row["delta"],
+                )
+            )
+        print()
+        print("DECISION (%s): %s" % (block["decision"]["rule_id"], block["decision"]["outcome"]))
+
+    for block in document["cross_arm"]:
+        print()
+        print(
+            "ARM vs ARM: %s minus %s  delta %+.2f pp CI90 [%+.2f, %+.2f]  saves %d harms %d "
+            "-> content credited: %s"
+            % (
+                block["right_cell_id"],
+                block["left_cell_id"],
                 block["delta_pp"],
                 block["ci90_low_pp"],
                 block["ci90_high_pp"],
                 block["saves"],
                 block["harms"],
-                block["sign_test_p"],
+                block["content_effect_credited"],
             )
         )
-    print()
-    gain = document["gain_decomposition"]
-    print(
-        "gain: corrected %d, broken %d, net %+d; cross-domain share of the gain %s"
-        % (
-            gain["rows_corrected"],
-            gain["rows_broken"],
-            gain["net"],
-            (
-                "%.3f" % gain["cross_domain_share_of_the_gain"]
-                if gain["cross_domain_share_of_the_gain"] is not None
-                else "n/a"
-            ),
-        )
-    )
-    print("  corrected by baseline miss class: %s" % gain["corrected_by_baseline_miss_class"])
-    print("  broken by ORG-1 miss class:      %s" % gain["broken_by_org1_miss_class"])
-    print()
-    print("miss classes before: %s" % document["confusion"]["before"]["miss_classes"])
-    print("miss classes after:  %s" % document["confusion"]["after"]["miss_classes"])
-    print()
-    print("%-26s -> %-26s %-13s %7s %7s %7s" % ("gold", "predicted", "class", "before", "after", "delta"))
-    for row in document["confusion"]["named_twins"]:
-        print(
-            "%-26s -> %-26s %-13s %7d %7d %+7d"
-            % (
-                row["gold_tool"],
-                row["predicted_tool"],
-                row["class"],
-                row["rows_before"],
-                row["rows_after"],
-                row["delta"],
-            )
-        )
-    print()
-    print("DECISION: %s" % document["decision"]["outcome"])
     return 0
 
 

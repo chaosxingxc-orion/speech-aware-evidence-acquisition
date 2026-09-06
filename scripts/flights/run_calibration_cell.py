@@ -42,9 +42,15 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Mapping, Sequence
 
-REPO = Path(
-    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition"
-)
+#: The repository this file belongs to, whichever checkout that is. It was the
+#: main checkout's hard-coded path; deriving it from the file's own location
+#: resolves to exactly that path there, and additionally lets a model-free prep
+#: worktree run FlightRuntime.wire_check against its OWN configs before its
+#: cells are merged. The three guards below are unchanged in strength: they
+#: still refuse unless the package the interpreter imports is the one that sits
+#: beside this script, so a flight can never compose one tree's fragments and
+#: import another tree's code.
+REPO = Path(__file__).resolve().parents[2]
 
 if os.environ.get("PYTHONDONTWRITEBYTECODE") != "1":
     raise SystemExit("PYTHONDONTWRITEBYTECODE=1 is required")
@@ -57,7 +63,10 @@ if (
     Path(_pkg.__file__ or "")
     != REPO / "src" / "speech_aware_evidence_acquisition" / "__init__.py"
 ):
-    raise SystemExit("package resolves to %s, not the main checkout" % (_pkg.__file__,))
+    raise SystemExit(
+        "package resolves to %s, not this script's own checkout %s"
+        % (_pkg.__file__, REPO)
+    )
 
 from speech_aware_evidence_acquisition.core.config import compose  # noqa: E402
 from speech_aware_evidence_acquisition.core.flight.queue import FlightQueue  # noqa: E402
