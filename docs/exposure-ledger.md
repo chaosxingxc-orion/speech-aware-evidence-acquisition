@@ -1849,3 +1849,72 @@ Q-gold-text pass produces vectors and nothing else. Vectors land under
 Sibling GPU row `SAEA-SLURP-MF7-EMBEDDING-GPU-V1` (LCO-Embedding-Omni-3B and Omni-Embed-Nemotron-3B)
 is PREPARED ONLY — its commands, memory envelope and receipt schema are written into the readiness
 note and it is NOT registered, NOT run and NOT authorized by this row.
+
+**SAEA-SLURP-MF7-EMBEDDING-CPU-V1 COMPLETED — 14,514 TOOL-LEVEL ENCODER CONTACTS, 0 FROZEN-CORE, 0
+GPU.** Two encoders, both local, both CPU-only, both counted. (a) The pinned
+**Qwen3-Embedding-0.6B-Q8_0** (gguf sha256 `06507c7b…c439`) under the featcache `llama-server`
+at build commit `04ccc72a2207347ca76161b93fd9d846dd0a8675`, clean tree, binary sha256
+`d0b42ace…404f2` — byte-identical build and binary to the sealed 2026-08-24 KB text-embedding pass,
+which is what puts the queries in the same space as the sealed keys. `--embedding --pooling last
+-ngl 0 -c 4096 -b 4096 -ub 4096 -np 1 -t 6` on its own port 8092: **2,000 text contacts in 126 HTTP
+requests**, Q-draft 1,000 at **15.91 texts/s** (62.9 s) and Q-gold-text 1,000 at **32.01 texts/s**
+(31.2 s); the throughput gap is the payload, a JSON draft response being several times a devel
+sentence. Sealed key npz `vectors-content-facets.npz` re-hashed before use and matched
+(`0bcb955a…21c72`). (b) **Xiaomi GLAP** loaded from `models/glap` with
+`AutoModel.from_pretrained(..., trust_remote_code=True)`, `device="cpu"`, `torch.cuda.is_available()`
+asserted False, 12 torch threads: **1,000 audio forwards in 48.3 s (20.71 clips/s, 59.74x realtime
+over 2,884.79 speech seconds)** and **11,514 text forwards in 395.6 s (29.11 texts/s, batch 64)**.
+Audio ran at batch 1 deliberately: `DashengAudioEncoder.forward` mean-pools the padded time axis and
+drops the attention mask, so a padded batch would contaminate every short clip; `encode_text` does
+pass a padding mask, so text batching is exact. Nothing was installed: `glap_model` was never
+needed, the folder's own `modeling_glap.py` loaded under `trust_remote_code=True` against the shared
+venv's torch 2.9.1 / transformers 5.12.1 / einops / sentencepiece. The 2,884.79 speech seconds
+reproduce the sealed closed-list baseline's own `audio_seconds_used` exactly, which is the audio
+side's identity anchor. Zero completion, chat or generation endpoint was contacted by either
+encoder; zero GPU (`CUDA_VISIBLE_DEVICES` empty throughout, `nvidia-smi` showing 0 MiB and no
+compute app before, during and after). Four further tool contacts are recorded here and nowhere
+else: a **CPU loader probe of LCO-Embedding-Omni-3B** (`LCO-Embedding-Omni-3B-Q8_0.gguf` +
+`mmproj-LCO-Embedding-Omni-3b-F16.gguf`, same build, `--embedding --pooling last -ngl 0 -c 8192
+-np 1 -t 8`, port 8093), run only to decide whether the prepared GPU step is feasible: **1 text
+embedding, 2 audio embeddings and 1 audio+text fused embedding, all 2,048-dim and all successful**,
+zero GPU and zero frozen-core. It settled three facts the GPU runbook now rests on rather than
+argues: the fork-converted GGUF loads on this build, `/props` reports `modalities {vision, video,
+audio: true}`, and the multimodal embedding shape requires the server's own RANDOMISED
+`media_marker` — the literal `<__media__>` returns HTTP 500 "Failed to tokenize prompt". Section
+6.2 of the readiness note carries the detail. Vectors live under `SPEECHRL_DATA_DIR/vectors/slurp-mf7/` with per-pass receipts
+(`qwen3emb-queries.receipt.json`, `glap.receipt.json`) and never enter Git. No accuracy, admission
+or promotion claim follows from this row; its only product is vector material.
+
+**SAEA-SLURP-MF-RETRIEVAL-KEY-AUDIT-V1 COMPLETED — A SPEECH QUERY IS NOT A VIABLE RETRIEVAL KEY ON
+SLURP WITH GLAP, AND THE ONE SET THAT CLEARS THE GATE CLEARS IT BY ECHOING ITS OWN INPUT.** Profile
+`model-free-check`; zero frozen-core, GPU, network and new-audio contacts; devel split identity
+only (`allow_heldout=False`; the held-out `test` split was never named, loaded or scored). Four
+query sets against the 11,514 TRAIN utterance-text keys of snapshot `e27b2745…3a51b57`, cosine
+top-k for k in {1, 5, 10}, decision at k = 5 on the unexposed NEW500 (n = 500, sealed closed-list
+baseline intent 73.20: 134 wrong rows, 366 right). **Net corrective power, NEW500, CI90 from the
+one shared stratified paired bootstrap (10,000 replicates, seed 20260903, strata = gold scenario):
+`q-speech-glap+state` +2.40 pp [+0.80, +4.20] (21 saves / 9 harms); `q-speech-glap` −32.60 pp
+[−36.60, −28.60] (26 / 189); `q-gold-text` +13.00 pp [+9.80, +16.20] (88 / 23); `q-draft` −9.40 pp
+[−12.60, −6.20] (42 / 89).** Under the owner rule of 2026-09-06 the two text-only sets are
+diagnostics and cannot win; among the speech-containing sets `q-speech-glap+state` wins and its
+POINT ESTIMATE clears the preregistered 2 pp gate, **but its CI90 lower bound of +0.80 does not
+exclude values under the gate, and the mechanism is not retrieval**: its echo rate is **96.19 %**,
+vote accuracy is identical at k = 1 and k = 5, and the preregistered closed-form dominance margin
+of the registered ranker (0.8 raw cosine at `w_cos` 0.5 / `w_prior` 0.3 / `w_agree` 0.2) predicted
+exactly that before the run. The +2.40 decomposes as **+1.00 pp the draft label itself** (the
+sealed draft's own intent is 74.20 NEW500 / 72.60 pooled — the pooled figure reproduces the KU-S1c
+verdict's draft-phase 72.60 exactly, this read's identity anchor) **plus ~+1.40 pp from legalising
+the 20 NEW500 rows (37 of 1,000) whose draft label is outside TRAIN's 60 intents, plus ~0 pp of
+retrieved evidence**. Speech alone votes correctly on 40.60 % against a 73.20 baseline and is
+negative in 17 of 18 scenarios, though its intent recall@10 is 76.20 — the gold intent is usually
+present and the ranking is simply too weak for a vote to find it. **The gold-text branch is NOT
+closed**: with the transcript as the query, neighbour voting is worth +13.00 pp and 64.02 filler
+recall@5, so 10.60 pp of the ceiling is lost crossing the modality gap and the GPU speech encoders
+of section 6 are the real test. Filler recall@5 (reported, non-gating): 64.02 gold-text / 40.90
+`+state` / 35.28 glap / 31.47 draft. Every verdict carries its per-stratum table. Receipts:
+`docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-retrieval-key-audit/`
+(`MANIFEST.sha256`); note: `docs/readiness/2026-09-06-slurp-retrieval-key-audit-v1.md`, whose
+sections 1–4 and 6 were committed before the audit ran. No admission, promotion, superiority,
+generality or Stage-3 claim: the row's product is the recommendation NOT to fly KU-S1-prime on a
+GLAP key, and the instruction to report an echo rate beside every future retrieval cell on this
+carrier.

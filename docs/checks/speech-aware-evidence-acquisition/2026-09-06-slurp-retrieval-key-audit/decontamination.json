@@ -1,0 +1,62 @@
+{
+  "devel_sentence_text": {
+    "note": "the audit module never receives the text: it consumes vectors keyed by sample id, and no receipt field, table cell or log line carries a sentence",
+    "purpose": "q-gold-text embeddings ONLY, under SAEA-SLURP-MF-RETRIEVAL-KEY-AUDIT-V1",
+    "read": true,
+    "written_to_any_artifact": false
+  },
+  "frozen_core_contacts": 0,
+  "gpu_hours": 0.0,
+  "held_out_test_split": {
+    "loaded": false,
+    "named": false,
+    "note": "no function in this audit accepts a 'test' split id; every loader call passes allow_heldout=False"
+  },
+  "key_side": {
+    "facet_namespace": [
+      "content"
+    ],
+    "legality": "construction data, readable under the entity clause",
+    "n": 11514,
+    "split": "train"
+  },
+  "query_sets": [
+    {
+      "contains_speech": false,
+      "encoder": "qwen3-embedding-0.6b-q8_0",
+      "fuses_state": false,
+      "query_set_id": "q-draft",
+      "role": "diagnostic"
+    },
+    {
+      "contains_speech": false,
+      "encoder": "qwen3-embedding-0.6b-q8_0",
+      "fuses_state": false,
+      "query_set_id": "q-gold-text",
+      "role": "diagnostic"
+    },
+    {
+      "contains_speech": true,
+      "encoder": "glap",
+      "fuses_state": false,
+      "query_set_id": "q-speech-glap",
+      "role": "candidate"
+    },
+    {
+      "contains_speech": true,
+      "encoder": "glap",
+      "fuses_state": true,
+      "query_set_id": "q-speech-glap+state",
+      "role": "candidate"
+    }
+  ],
+  "query_side": {
+    "n": 1000,
+    "prior_exposure": "consumed by the DEV ladder before this audit; no new evaluation surface is opened",
+    "roster": "DEV-1000",
+    "split": [
+      "devel"
+    ]
+  },
+  "schema": "saea-slurp-retrieval-key-audit-v1"
+}
