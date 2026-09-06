@@ -6,7 +6,7 @@
   "rails_arms": [
     "zero-supply"
   ],
-  "roster_note": "construction_proposer_roster_receipt, its split identity hash and construction_target_tools are declared by the PER-ROUND experiment fragment scripts/run_a2t_evolution_round.py emits, because the roster is per round and core.config.compose refuses the same key from two fragments.",
+  "roster_note": "construction_proposer_roster_receipt, its split identity hash and construction_target_tools are declared by the PER-ROUND experiment fragment scripts/run_evolution_round.py emits, because the roster is per round and core.config.compose refuses the same key from two fragments.",
   "scorers": [
     "cost"
   ],

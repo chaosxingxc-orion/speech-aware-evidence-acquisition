@@ -371,7 +371,7 @@ share one fragment.
 | `configs/baseline/a2t-evo-a1-base.json` | the official-protocol cell byte for byte with `task_instruction_fill` REMOVED. `write_candidate_fragments` owns `task_instruction_fill`/`task_instruction_fill_params` and refuses a base that already sets either; with no fill declared this fragment is also the incumbent `A_0` arm's own baseline, because falling through renders the released compact registry, which is exactly what `A_0` is |
 | `configs/baseline/a2t-evo-a1-proposer.json` | the proposer arm: `arm: construction-proposer-text`, `policy: fixed`, `scorers: ["cost"]`. It declares NO instruction — every contact's system message is its draw's own rendered instruction — and no roster, because the roster is per round |
 
-**Emitted per round, by `scripts/run_a2t_evolution_round.py`:**
+**Emitted per round, by `scripts/run_evolution_round.py`:**
 
 | artefact | step |
 |---|---|
@@ -512,30 +512,30 @@ others are not, without writing anything.
 
 ```
 # what is next, and what it is waiting for
-python scripts/run_a2t_evolution_round.py --config configs/knowledge/a2t-evo-a1/loop-v1.json \
+python scripts/run_evolution_round.py --config configs/knowledge/a2t-evo-a1/loop-v1.json \
     --round 1 --plan-only
 
 # (a) the proposer roster + its bounded-discovery-probe fragment + the prompt digests
-python scripts/run_a2t_evolution_round.py --config configs/knowledge/a2t-evo-a1/loop-v1.json --round 1
+python scripts/run_evolution_round.py --config configs/knowledge/a2t-evo-a1/loop-v1.json --round 1
 
 # then FLY the proposer cells (attempt-r1-p{target}-k{k}) and copy the sealed outputs to
 #   docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-01/proposer-outputs.jsonl
 
 # (b) candidates, portfolios, their committed fragments, the fold-A fragment
-python scripts/run_a2t_evolution_round.py --config configs/knowledge/a2t-evo-a1/loop-v1.json --round 1
+python scripts/run_evolution_round.py --config configs/knowledge/a2t-evo-a1/loop-v1.json --round 1
 
 # then FLY fold A (attempt-r1-i, attempt-r1-c{k}), score once per complete manifest with
 #   include_per_sample=True, and write .../round-01/fold-a-scores.json as
 #   {"incumbent": "<path>.score.json", "1": "<path>", "4": "<path>", ...}
 
 # (c) stage one, the assembly, the fold-B fragment
-python scripts/run_a2t_evolution_round.py --config configs/knowledge/a2t-evo-a1/loop-v1.json --round 1
+python scripts/run_evolution_round.py --config configs/knowledge/a2t-evo-a1/loop-v1.json --round 1
 
 # then FLY fold B (attempt-r1-i, attempt-r1-a) and write .../round-01/fold-b-scores.json as
 #   {"incumbent": "<path>", "assembly": "<path>"}
 
 # (d) confirmation, the next incumbent, the stop rule, the round receipt
-python scripts/run_a2t_evolution_round.py --config configs/knowledge/a2t-evo-a1/loop-v1.json --round 1
+python scripts/run_evolution_round.py --config configs/knowledge/a2t-evo-a1/loop-v1.json --round 1
 ```
 
 The driver checks `ledger_budget` against the parsed exposure rows before it emits a fragment and
@@ -581,7 +581,7 @@ At most one recovery re-registration per run id.
    base -- `rails.evolution`'s draws/roster/material, the `construction_material_resolver` seam and
    `_run_construction_proposer` on `FlightRuntime`'s own `_dispatch_fixed_policy` path, the
    per-request narrowing seam on `FrozenCoreClient`, and
-   `scripts/run_a2t_evolution_round.py` -- with no launcher, no probe module and no controller or
+   `scripts/run_evolution_round.py` -- with no launcher, no probe module and no controller or
    adapter subclass. Four things it surfaced that ARE still open points, because each one changes
    what the coordinator registers rather than how the code runs:
    * the proposer run id cannot be registered at **zero speech seconds** (section 12 item 8): the

@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
-"""Drive ONE step of ONE EVO-A1 evolution round. Never contacts the model.
+"""Drive ONE step of ONE evolution round, on any carrier. No model contact.
+
+Renamed from ``run_a2t_evolution_round.py`` on 2026-09-06 (track E3d): the
+script never held any Audio2Tool knowledge -- the carrier, the targets, the
+rosters, the artifact family and the fragment names all come from the loop
+config -- so serving EVO-S1 needed a carrier branch in
+``rails.evolution_carrier`` and this rename, and NOT a second driver. A
+SLURP-specific copy would have duplicated 130 lines to change one function
+call, which is exactly the per-experiment fork the engineering-base rule
+forbids. The old path is gone rather than aliased: two entry points to one
+loop is how a receipt ends up naming a file nobody ran.
 
 Resumable by construction: every step reads its predecessor's sealed receipt
 and refuses to redo it (``rails.evolution.plan_round``), so re-running this
@@ -7,8 +17,9 @@ command after an interruption re-enters at exactly the first step that has
 not landed. The decisions live in ``rails.evolution``; this file only
 resolves paths, loads inputs and writes what a step returns.
 
-    python scripts/run_a2t_evolution_round.py --config configs/knowledge/a2t-evo-a1/loop-v1.json --round 1
-    python scripts/run_a2t_evolution_round.py --config ... --round 1 --plan-only
+    python scripts/run_evolution_round.py --config configs/knowledge/a2t-evo-a1/loop-v1.json --round 1
+    python scripts/run_evolution_round.py --config configs/knowledge/slurp-evo-s1/loop-v1.json --round 1
+    python scripts/run_evolution_round.py --config ... --round 1 --plan-only
 """
 
 from __future__ import annotations

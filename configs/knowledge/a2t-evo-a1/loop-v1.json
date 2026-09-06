@@ -17,7 +17,7 @@
   "metric": "tool_correct",
   "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
   "n_replicates": 10000,
-  "note": "The EVO-A1 loop, as data. scripts/run_a2t_evolution_round.py carries no cell knowledge of its own; every value here is preregistered in docs/readiness/2026-09-06-a2t-evo-a1-description-evolution-v1-preregistration.md. The targets below are the STRICT set (section 2); the coordinator may ratify RELAXED by adding the two reduced targets, which needs no fresh roster draw.",
+  "note": "The EVO-A1 loop, as data. scripts/run_evolution_round.py carries no cell knowledge of its own; every value here is preregistered in docs/readiness/2026-09-06-a2t-evo-a1-description-evolution-v1-preregistration.md. The targets below are the STRICT set (section 2); the coordinator may ratify RELAXED by adding the two reduced targets, which needs no fresh roster draw.",
   "placebo_slot": 5,
   "proposer_run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1",
   "proposer_slots": [
