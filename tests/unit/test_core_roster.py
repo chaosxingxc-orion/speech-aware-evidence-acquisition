@@ -22,6 +22,7 @@ from speech_aware_evidence_acquisition.core.roster import (
     canonical_receipt_bytes,
     freeze_roster,
     hash_matches_legacy_receipt,
+    mixture_quotas,
     read_roster,
     verify_roster,
     write_roster,
@@ -574,3 +575,90 @@ def test_probe_sample_view_refuses_a_key_that_disagrees_with_its_sample_id():
     roster["items"] = items
     with pytest.raises(RosterError, match="disagrees with the carrier-prefixed"):
         as_probe_sample_receipt(roster, carrier="audio2tool", design="x")
+
+
+# ---------------------------------------------------------------------------
+# mixture_quotas: reproduce a reference mixture on a depleted pool (MF-3)
+# ---------------------------------------------------------------------------
+
+
+def test_mixture_quotas_matches_the_reference_mixture_when_capacity_allows():
+    quotas = mixture_quotas(
+        100, {"a": 50, "b": 30, "c": 20}, {"a": 500, "b": 500, "c": 500}
+    )
+    assert quotas == {"a": 50, "b": 30, "c": 20}
+
+
+def test_mixture_quotas_water_fills_a_saturated_stratum():
+    """``c`` wants 20 of 100 but holds 4, so it takes 4 and the 16-seat
+    shortfall is redistributed across ``a`` and ``b`` at 50:30."""
+
+    quotas = mixture_quotas(100, {"a": 50, "b": 30, "c": 20}, {"a": 500, "b": 500, "c": 4})
+    assert quotas["c"] == 4
+    assert sum(quotas.values()) == 100
+    assert quotas["a"] == 60 and quotas["b"] == 36
+
+
+def test_mixture_quotas_gives_an_empty_stratum_a_zero_quota():
+    quotas = mixture_quotas(10, {"a": 1, "b": 1}, {"a": 10, "b": 0})
+    assert quotas == {"a": 10, "b": 0}
+
+
+def test_mixture_quotas_is_order_independent_and_deterministic():
+    weights = {"c": 20, "a": 50, "b": 30}
+    capacities = {"b": 7, "c": 500, "a": 500}
+    first = mixture_quotas(97, weights, capacities)
+    second = mixture_quotas(97, dict(reversed(list(weights.items()))), capacities)
+    assert first == second
+    assert sum(first.values()) == 97
+
+
+def test_mixture_quotas_refuses_a_total_above_the_summed_capacity():
+    with pytest.raises(RosterError, match="exceeds the summed capacity"):
+        mixture_quotas(10, {"a": 1}, {"a": 9})
+
+
+def test_mixture_quotas_refuses_when_the_surviving_strata_carry_no_weight():
+    with pytest.raises(RosterError, match="zero reference weight"):
+        mixture_quotas(5, {"a": 1, "b": 0}, {"a": 0, "b": 50})
+
+
+def test_freeze_roster_accepts_a_zero_quota_for_a_drained_stratum():
+    """The SLURP DEV-500-B case: five devel scenarios have no surviving
+    candidate after the DEV ladder, and the honest quota for them is zero."""
+
+    receipt = freeze_roster(
+        carrier_lock_key="slurp-test",
+        candidates=_candidates(),
+        per_stratum={"tier1": 3, "tier2": 0},
+        seed=1,
+        split_role="dev",
+        roster_id="TEST-ZERO",
+    )
+    assert receipt["per_stratum"] == {"tier1": 3, "tier2": 0}
+    assert receipt["strata_counts"] == {"tier1": 3}
+    assert len(receipt["items"]) == 3
+
+
+def test_freeze_roster_still_refuses_an_all_zero_quota_mapping():
+    with pytest.raises(RosterError, match="sum to zero"):
+        freeze_roster(
+            carrier_lock_key="slurp-test",
+            candidates=_candidates(),
+            per_stratum={"tier1": 0, "tier2": 0},
+            seed=1,
+            split_role="dev",
+            roster_id="TEST-EMPTY",
+        )
+
+
+def test_freeze_roster_still_refuses_a_negative_quota():
+    with pytest.raises(RosterError, match="non-negative integer"):
+        freeze_roster(
+            carrier_lock_key="slurp-test",
+            candidates=_candidates(),
+            per_stratum={"tier1": -1, "tier2": 3},
+            seed=1,
+            split_role="dev",
+            roster_id="TEST-NEGATIVE",
+        )

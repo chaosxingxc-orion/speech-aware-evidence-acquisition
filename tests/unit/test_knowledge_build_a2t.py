@@ -585,6 +585,69 @@ def test_partition_protects_the_whole_block_of_a_construction_only_tool() -> Non
     assert int(proposal.report["blocks_protected_for_construction_only_tools"]) >= 1
 
 
+def test_partition_keeps_one_block_for_every_tool_the_free_pool_can_supply() -> None:
+    """The 2026-09-05 SECOND repair (MF-1): protecting only the RARE tools'
+    blocks still let the draw starve a tool that clears
+    ``tool_min_pool_rows`` but holds few free blocks -- under the exposure
+    union that now also reserves A2T-FRESH-800, a per_tier=50 draw wiped out
+    nine smart_home tools and the floor check refused the whole partition.
+    Every tool the free pool can supply now keeps one deterministic block, so
+    the starvation branch is unreachable rather than luck-dependent."""
+
+    rows: list[A2tKbRow] = []
+    item_id = 0
+    for step in range(5):
+        item_id += 2
+        rows.append(
+            _row(
+                "tier1_direct",
+                100 + step,
+                tool="setLighting",
+                words=f"tier1 lighting request {step}",
+                arg_keys=("deviceId", "state"),
+                item_ids=(item_id, item_id + 1),
+            )
+        )
+    for step in range(5):
+        item_id += 2
+        rows.append(
+            _row(
+                "tier1_direct",
+                200 + step,
+                tool="setColor",
+                words=f"tier1 colour request {step}",
+                arg_keys=("color", "deviceId"),
+                item_ids=(item_id, item_id + 1),
+            )
+        )
+    for step in range(10):
+        item_id += 2
+        rows.append(
+            _row(
+                "tier2_parametric",
+                300 + step,
+                tool="setColor",
+                words=f"tier2 colour request {step}",
+                arg_keys=("color", "deviceId"),
+                item_ids=(item_id, item_id + 1),
+            )
+        )
+
+    proposal = propose_partition(
+        tuple(rows), frozenset(), per_tier=8, tool_min_pool_rows=5
+    )
+    report = proposal.report
+    assert int(report["blocks_protected_for_construction_only_tools"]) == 0
+    assert int(report["blocks_protected_for_tool_floor"]) == 2
+    assert int(report["blocks_protected_total"]) == 2
+    surviving = {row.tool_name for row in proposal.construction}
+    assert surviving == {"setLighting", "setColor"}
+    # The protected block is the tool's lexicographically first unit's block,
+    # and it never enters the evaluation draw.
+    assert 100 not in set(proposal.eval_blocks)
+    assert 200 not in set(proposal.eval_blocks)
+
+
 def test_partition_names_tools_the_exposure_union_reserved_entirely() -> None:
     """A tool whose every unit sits inside an exposed block cannot enter the
     construction pool however the eval tier is drawn, so it is REPORTED by

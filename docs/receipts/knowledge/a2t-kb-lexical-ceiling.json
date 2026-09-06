@@ -6,39 +6,39 @@
       "k1": 1.5,
       "tokenizer": "lowercase [a-z0-9]+ runs"
     },
-    "content_facets_ranked": 4153,
+    "content_facets_ranked": 1667,
     "gold_tool_present_in_pool": 400,
     "hits_at_k": {
-      "1": 187,
-      "128": 389,
-      "16": 335,
-      "3": 254,
-      "32": 356,
-      "5": 282,
-      "8": 304
+      "1": 153,
+      "128": 354,
+      "16": 279,
+      "3": 199,
+      "32": 309,
+      "5": 235,
+      "8": 255
     },
     "near_duplicate_audit": {
       "max_jaccard": {
         "max": 1.0,
-        "median": 0.3888888888888889,
-        "min": 0.14285714285714285,
-        "p90": 0.5769230769230769
+        "median": 0.3333333333333333,
+        "min": 0.11764705882352941,
+        "p90": 0.5
       },
       "metric": "maximum token-set Jaccard against any construction content facet",
-      "novel_subgroup_population": 383,
+      "novel_subgroup_population": 397,
       "novel_subgroup_recall_at_k": {
-        "1": 0.4516971279373368,
-        "128": 0.9712793733681462,
-        "16": 0.835509138381201,
-        "3": 0.6240208877284595,
-        "32": 0.8851174934725848,
-        "5": 0.6971279373368147,
-        "8": 0.7545691906005222
+        "1": 0.3778337531486146,
+        "128": 0.8841309823677582,
+        "16": 0.6952141057934509,
+        "3": 0.49370277078085645,
+        "32": 0.7707808564231738,
+        "5": 0.5843828715365239,
+        "8": 0.6347607052896725
       },
       "share_at_or_above": {
-        "0.5": 0.235,
-        "0.8": 0.0425,
-        "0.9": 0.0275
+        "0.5": 0.14,
+        "0.8": 0.0075,
+        "0.9": 0.005
       },
       "threshold": 0.8
     },
@@ -55,127 +55,127 @@
       "tier8_intent_blending": 50
     },
     "position": {
-      "max": 2223,
-      "median": 2,
+      "max": 1613,
+      "median": 4,
       "min": 1,
-      "p90": 37
+      "p90": 144
     },
     "random_ranking_expectation_at_k": {
-      "1": 0.012708283168793653,
-      "128": 0.7347822569319205,
-      "16": 0.18120153512260428,
-      "3": 0.03752873007858698,
-      "32": 0.3228137564254132,
-      "5": 0.06157748835236415,
-      "8": 0.09626214606169375
+      "1": 0.010773845230953823,
+      "128": 0.5717701245561929,
+      "16": 0.150095238229381,
+      "3": 0.0317106863011422,
+      "32": 0.2619938633909971,
+      "5": 0.05186228986554265,
+      "8": 0.08069075152526255
     },
     "recall_at_k": {
-      "1": 0.4675,
-      "128": 0.9725,
-      "16": 0.8375,
-      "3": 0.635,
-      "32": 0.89,
-      "5": 0.705,
-      "8": 0.76
+      "1": 0.3825,
+      "128": 0.885,
+      "16": 0.6975,
+      "3": 0.4975,
+      "32": 0.7725,
+      "5": 0.5875,
+      "8": 0.6375
     },
     "recall_at_k_by_tier": {
       "tier1_direct": {
-        "1": 0.46,
-        "128": 1.0,
-        "16": 0.86,
-        "3": 0.72,
-        "32": 0.9,
-        "5": 0.78,
-        "8": 0.8
+        "1": 0.44,
+        "128": 0.92,
+        "16": 0.84,
+        "3": 0.52,
+        "32": 0.88,
+        "5": 0.64,
+        "8": 0.76
       },
       "tier2_parametric": {
-        "1": 0.64,
-        "128": 1.0,
-        "16": 0.94,
-        "3": 0.78,
-        "32": 0.98,
-        "5": 0.86,
-        "8": 0.92
-      },
-      "tier3_multi_intent": {
-        "1": 0.28,
-        "128": 1.0,
-        "16": 0.8,
-        "3": 0.5,
-        "32": 0.92,
-        "5": 0.6,
-        "8": 0.68
-      },
-      "tier4_implicit": {
-        "1": 0.2,
-        "128": 0.88,
-        "16": 0.58,
-        "3": 0.34,
-        "32": 0.64,
-        "5": 0.38,
-        "8": 0.5
-      },
-      "tier5_needle": {
-        "1": 0.56,
+        "1": 0.8,
         "128": 0.98,
-        "16": 0.92,
-        "3": 0.74,
-        "32": 0.92,
-        "5": 0.78,
-        "8": 0.86
-      },
-      "tier6_correction": {
-        "1": 0.68,
-        "128": 0.98,
-        "16": 0.98,
-        "3": 0.86,
+        "16": 0.96,
+        "3": 0.88,
         "32": 0.98,
-        "5": 0.96,
+        "5": 0.94,
         "8": 0.96
       },
-      "tier7_multiturn": {
-        "1": 0.36,
-        "128": 0.96,
-        "16": 0.78,
-        "3": 0.46,
+      "tier3_multi_intent": {
+        "1": 0.26,
+        "128": 0.88,
+        "16": 0.62,
+        "3": 0.36,
+        "32": 0.68,
+        "5": 0.48,
+        "8": 0.54
+      },
+      "tier4_implicit": {
+        "1": 0.06,
+        "128": 0.6,
+        "16": 0.44,
+        "3": 0.22,
+        "32": 0.44,
+        "5": 0.34,
+        "8": 0.38
+      },
+      "tier5_needle": {
+        "1": 0.34,
+        "128": 0.88,
+        "16": 0.64,
+        "3": 0.4,
+        "32": 0.72,
+        "5": 0.48,
+        "8": 0.54
+      },
+      "tier6_correction": {
+        "1": 0.46,
+        "128": 0.98,
+        "16": 0.72,
+        "3": 0.64,
         "32": 0.82,
-        "5": 0.56,
-        "8": 0.6
+        "5": 0.7,
+        "8": 0.72
+      },
+      "tier7_multiturn": {
+        "1": 0.3,
+        "128": 0.86,
+        "16": 0.54,
+        "3": 0.4,
+        "32": 0.76,
+        "5": 0.5,
+        "8": 0.52
       },
       "tier8_intent_blending": {
-        "1": 0.56,
+        "1": 0.4,
         "128": 0.98,
-        "16": 0.84,
-        "3": 0.68,
-        "32": 0.96,
-        "5": 0.72,
-        "8": 0.76
+        "16": 0.82,
+        "3": 0.56,
+        "32": 0.9,
+        "5": 0.62,
+        "8": 0.68
       }
     },
     "unreachable_sample_ids": [],
     "zero_lexical_overlap_items": 0
   },
   "ceiling_policy_id": "saea-a2t-lexical-ceiling-bm25-v1",
-  "exposure_row": "SAEA-SN-MF-A2T-G0",
+  "exposure_row": "SAEA-SN-MF-A2T-KB-EXPOSURE-UNION-V2",
   "gate": {
     "a0_tool_accuracy": 0.5425,
     "authorizes": "a PASS permits stage G1 to be registered later; it authorizes no flight by itself. A STOP is the registered honest outcome and is reported unsoftened.",
     "condition": "lexical reachability ceiling at k must exceed the A0 tool accuracy",
     "gate_k": 5,
-    "lexical_ceiling_at_gate_k": 0.705,
-    "margin": 0.16249999999999998,
+    "lexical_ceiling_at_gate_k": 0.5875,
+    "margin": 0.04500000000000004,
     "verdict": "PASS"
   },
   "generator": "scripts/build_a2t_knowledge_snapshot.py",
   "offline_guard": {
     "attempted_targets": [],
-    "exposure_row": "SAEA-SN-MF-A2T-G0",
+    "exposure_row": "SAEA-SN-MF-A2T-KB-EXPOSURE-UNION-V2",
     "mechanism": "socket.socket.connect / connect_ex / socket.create_connection were replaced with counting refusals before the first input was opened",
     "outbound_connection_attempts": 0
   },
-  "proposed_eval_split_identity_hash": "d293f7c16d0aa66f301bda2279699841a3a05fd015cee44ab8d5850ea540b56d",
+  "proposed_eval_split_identity_hash": "fff6de1a42a9b446ca344e606d4d4498d480bf022e0f7f9b3352b5c303280b02",
   "proxy_disclosure": "LEXICAL PROXY, cutting BOTH ways, restated wherever this number is cited. Pessimistic in the ranking function: token overlap cannot follow paraphrase the way a dense encoder can, so a dense ranker over the same facets would place at least some gold-tool facets higher. Optimistic in the query representation: the query text is the manifest transcript of the spoken command, while at runtime the controller sees only a speech-derived percept. Neither direction dominates, so this is a ceiling on the LEXICAL channel conditioned on a PERFECT TRANSCRIPT, and the gate treats it as a necessary condition, never a sufficient one.",
   "schema": "saea-a2t-lexical-ceiling-v1",
-  "snapshot_id": "a2t-kb-toolshaped-f7b0409ab265569e",
-  "snapshot_sha256": "5eef18d3032c4981979efab88ba012211194fbe677b327363e449e7e899aabbd"
+  "snapshot_id": "a2t-kb-toolshaped-362994e06600f160",
+  "snapshot_sha256": "cc07c3e454b0d8871d6d073cd098314ee43032c9b901db4f7640be8d86bc623c"
 }

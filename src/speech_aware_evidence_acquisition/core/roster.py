@@ -153,9 +153,123 @@ def _resolve_quotas(
             raise RosterError("per_stratum must be a positive integer")
         quotas = {stratum: per_stratum for stratum in strata_present}
     for stratum, quota in quotas.items():
-        if isinstance(quota, bool) or not isinstance(quota, int) or quota <= 0:
-            raise RosterError(f"per_stratum quota for {stratum!r} must be a positive integer")
+        if isinstance(quota, bool) or not isinstance(quota, int) or quota < 0:
+            raise RosterError(
+                f"per_stratum quota for {stratum!r} must be a non-negative integer"
+            )
+    # A per-stratum MAPPING may declare 0 for a stratum the candidate population
+    # still contains: on a depleted pool (SLURP devel after the equal-per-scenario
+    # DEV ladder drained `audio`, `alarm`, `cooking`, `music` and `takeaway`) the
+    # honest quota for a scenario with no surviving candidate is zero, and forcing
+    # it to one would refuse the whole roster. A flat INTEGER per_stratum still has
+    # to be positive -- "draw N from every stratum" with N = 0 is a caller mistake,
+    # not a statement -- and the resolved quotas must still ask for at least one
+    # sample overall.
+    if sum(quotas.values()) <= 0:
+        raise RosterError("per_stratum quotas sum to zero: the roster would be empty")
     return quotas
+
+
+def mixture_quotas(
+    total: int,
+    weights: Mapping[str, float],
+    capacities: Mapping[str, int],
+) -> dict[str, int]:
+    """Per-stratum quotas that reproduce a REFERENCE mixture as closely as the
+    remaining pool allows.
+
+    ``weights`` is the mixture the roster is meant to look like -- typically
+    the FULL split's own per-stratum counts, not the depleted candidate pool's
+    -- and ``capacities`` is how many candidates each stratum actually still
+    has after exclusion. This is the counterpart of
+    :func:`_resolve_quotas`'s flat ``per_stratum`` integer and of the DEV
+    ladder's equal-per-scenario ``even_allocation``: neither can express "draw
+    500 devel utterances shaped like devel" once an earlier ladder rung has
+    drained the small scenarios.
+
+    The rule, stated once. A stratum whose capacity is BELOW its fair share of
+    ``total`` at the reference weights is SATURATED: it takes its whole
+    capacity and its shortfall is redistributed across the still-unsaturated
+    strata at the same reference weights, iterated to a fixed point (each pass
+    saturates at least one stratum, so it terminates). What remains is then
+    apportioned by largest remainder -- floor shares first, then one seat at a
+    time in descending fractional remainder with ties broken by ascending
+    stratum name. Deterministic and independent of dict order.
+
+    Fails closed: ``total`` above the summed capacity, a non-positive weight
+    on a stratum that still needs seats, or an arithmetic result that does not
+    sum to ``total`` all raise :class:`RosterError` rather than silently
+    returning a short roster.
+    """
+
+    if isinstance(total, bool) or not isinstance(total, int) or total < 0:
+        raise RosterError("mixture_quotas: total must be a non-negative int")
+    keys = sorted(set(weights) | set(capacities))
+    if not keys:
+        raise RosterError("mixture_quotas: no strata")
+    capacity = {key: int(capacities.get(key, 0)) for key in keys}
+    weight = {key: float(weights.get(key, 0.0)) for key in keys}
+    for key in keys:
+        if capacity[key] < 0:
+            raise RosterError(f"mixture_quotas: stratum {key!r} has a negative capacity")
+        if weight[key] < 0:
+            raise RosterError(f"mixture_quotas: stratum {key!r} has a negative weight")
+    if total > sum(capacity.values()):
+        raise RosterError(
+            f"mixture_quotas: total {total} exceeds the summed capacity "
+            f"{sum(capacity.values())}"
+        )
+
+    quotas = {key: 0 for key in keys}
+    active = [key for key in keys if capacity[key] > 0]
+    remaining = total
+    while True:
+        weight_sum = sum(weight[key] for key in active)
+        if remaining == 0 or not active:
+            break
+        if weight_sum <= 0:
+            raise RosterError(
+                "mixture_quotas: the strata that still have capacity carry zero "
+                "reference weight, so the mixture cannot be reproduced"
+            )
+        saturated = [
+            key
+            for key in active
+            if capacity[key] < remaining * weight[key] / weight_sum
+        ]
+        if not saturated:
+            break
+        for key in saturated:
+            quotas[key] = capacity[key]
+            remaining -= capacity[key]
+            active.remove(key)
+        if remaining < 0:  # pragma: no cover -- defensive, unreachable
+            raise RosterError("mixture_quotas: saturation over-allocated")
+
+    if remaining > 0:
+        weight_sum = sum(weight[key] for key in active)
+        raw = {key: remaining * weight[key] / weight_sum for key in active}
+        for key in active:
+            quotas[key] = min(int(raw[key]), capacity[key])
+        short = remaining - sum(quotas[key] for key in active)
+        order = sorted(active, key=lambda key: (-(raw[key] - int(raw[key])), key))
+        while short > 0:
+            progressed = False
+            for key in order:
+                if short <= 0:
+                    break
+                if quotas[key] < capacity[key]:
+                    quotas[key] += 1
+                    short -= 1
+                    progressed = True
+            if not progressed:  # pragma: no cover -- guarded by the total check
+                raise RosterError("mixture_quotas: capacity exhausted before total")
+
+    if sum(quotas.values()) != total:
+        raise RosterError(
+            f"mixture_quotas: quotas sum to {sum(quotas.values())}, not {total}"
+        )
+    return dict(sorted(quotas.items()))
 
 
 def freeze_roster(
@@ -234,6 +348,11 @@ def freeze_roster(
     selected: list[RosterItem] = []
     for stratum in sorted(quotas):
         quota = quotas[stratum]
+        if quota == 0:
+            # An explicit zero is a statement, not a starved stratum: draw
+            # nothing and do not advance the shared rng, so a drained stratum
+            # cannot shift the draws of the strata processed after it.
+            continue
         pool = sorted(by_stratum.get(stratum, ()), key=lambda item: item.sample_id)
         rng.shuffle(pool)
         chosen: list[RosterItem] = []
