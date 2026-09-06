@@ -52,9 +52,12 @@ via ``e0.artifacts.write_json_artifact``, explicit UTF-8).
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import sys
 import time
 from pathlib import Path
+from typing import Sequence
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "src"))
@@ -141,7 +144,40 @@ def freeze_split_identity() -> int:
     return 0
 
 
-def build_one(size: int | None, dimensions: tuple[str, ...]) -> int:
+def _excluded_sample_ids(relpaths: Sequence[str]) -> tuple[frozenset[str], list[dict[str, object]]]:
+    """The sample ids named by committed roster receipts, and their provenance.
+
+    Used by ``--exclude-rosters``. Every excluded roster is recorded in the build
+    receipt by relpath, file sha256 and count, so a reader can recompute exactly
+    which TRAIN rows the snapshot was built WITHOUT.
+    """
+
+    excluded: set[str] = set()
+    records: list[dict[str, object]] = []
+    for relpath in relpaths:
+        path = REPO_ROOT / relpath
+        document = json.loads(path.read_text(encoding="utf-8"))
+        ids = {str(item["sample_id"]) for item in document["items"]}
+        excluded |= ids
+        records.append(
+            {
+                "relpath": relpath,
+                "file_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                "roster_id": document.get("roster_id"),
+                "split_identity_hash": document.get("split_identity_hash"),
+                "count": len(ids),
+            }
+        )
+    return frozenset(excluded), records
+
+
+def build_one(
+    size: int | None,
+    dimensions: tuple[str, ...],
+    *,
+    exclude_rosters: Sequence[str] = (),
+    tier_suffix: str = "",
+) -> int:
     lock = load_lock(umbrella_lock_path(REPO_ROOT))
     root = data_root()
 
@@ -150,13 +186,31 @@ def build_one(size: int | None, dimensions: tuple[str, ...]) -> int:
     load_seconds = time.monotonic() - load_start
     print(f"loaded {len(rows)} TRAIN utterances in {load_seconds:.2f}s")
 
+    # ``--exclude-rosters``: drop the TRAIN utterances a committed roster claims
+    # as its QUERY population. ``rails.runner.run_speech_native_agent_loop``
+    # refuses any agent-loop run whose query samples overlap the snapshot's own
+    # ``source_sample_ids`` -- the leakage rule that makes a snapshot worth
+    # binding at all -- so a cell whose queries ARE train rows (every EVO fold)
+    # needs a snapshot built without them. The dropped rows are recorded in the
+    # receipt by roster relpath, file sha256 and count.
+    excluded_ids, excluded_records = _excluded_sample_ids(exclude_rosters)
+    if excluded_ids:
+        before = len(rows)
+        rows = tuple(
+            row for row in rows if not (set(row.sample_ids) & excluded_ids)
+        )
+        print(
+            f"excluded {before - len(rows)} TRAIN utterances named by "
+            f"{len(excluded_records)} roster receipt(s); {len(rows)} remain"
+        )
+
     spec = KnowledgeBuildSpec(
         carrier_lock_key="slurp",
         datastore_size=size,
         seed=SEED,
         dimensions=tuple(dimensions),
     ).validate()
-    tier = _tier_label(size, tuple(dimensions))
+    tier = _tier_label(size, tuple(dimensions)) + tier_suffix
     build_start = time.monotonic()
     snapshot = build_knowledge_snapshot(
         spec, lock=lock, root=root, rows=rows, repo_root=REPO_ROOT
@@ -206,6 +260,8 @@ def build_one(size: int | None, dimensions: tuple[str, ...]) -> int:
             "verdict": "clean",
             "checked_sample_count": len(snapshot.source_sample_ids),
             "forbidden_roster_receipts": list(_FORBIDDEN_ROSTER_RECEIPTS),
+            "excluded_rosters": excluded_records,
+            "excluded_sample_count": len(excluded_ids),
         },
         "timing_seconds": {
             "load_train_rows": round(load_seconds, 3),
@@ -243,12 +299,34 @@ def main() -> int:
             + "). A restricted set writes to size-<N>-<sorted dimensions>."
         ),
     )
+    parser.add_argument(
+        "--exclude-rosters",
+        default=None,
+        help=(
+            "comma-separated committed roster receipt relpaths whose sample ids are "
+            "DROPPED from the TRAIN source before the snapshot is built. Needed by any "
+            "cell whose agent-loop QUERIES are train rows: rails.runner refuses a run "
+            "whose query samples overlap the snapshot's source_sample_ids"
+        ),
+    )
+    parser.add_argument(
+        "--tier-suffix",
+        default=None,
+        help="appended to the tier label, so a restricted source never shares a path",
+    )
     args = parser.parse_args()
     if args.freeze_split_identity:
         return freeze_split_identity()
     if args.size is None:
         parser.error("pass --size <N|full> or --freeze-split-identity")
-    return build_one(_parse_size(args.size), tuple(args.dimensions))
+    return build_one(
+        _parse_size(args.size),
+        tuple(args.dimensions),
+        exclude_rosters=tuple(
+            item.strip() for item in str(args.exclude_rosters or "").split(",") if item.strip()
+        ),
+        tier_suffix=str(args.tier_suffix or ""),
+    )
 
 
 if __name__ == "__main__":

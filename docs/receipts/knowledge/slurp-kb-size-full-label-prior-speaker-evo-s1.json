@@ -1,0 +1,132 @@
+{
+  "authority": "docs/readiness/2026-08-23-knowledge-plane-baseline-rulings.md sections 1 and 5",
+  "builder_policy_id": "saea-kb-distmodel-v1",
+  "coverage_report": {
+    "action_coverage": 1.0,
+    "cluster_coverage_proxy": 1.0,
+    "counts": {
+      "selected_entity_types": 54,
+      "selected_intents": 60,
+      "selected_utterances": 9354,
+      "train_entity_types": 54,
+      "train_intents": 60,
+      "train_utterances": 9354
+    },
+    "datastore_size_actual": 9354,
+    "entity_type_coverage": 1.0,
+    "intent_coverage": 1.0,
+    "kl_selected_given_train_over_intent": 0.0,
+    "long_tail_coverage": {
+      "entity_type": {
+        "coverage": 1.0,
+        "covered_count": 1,
+        "threshold": 5,
+        "train_long_tail_count": 1
+      },
+      "intent": {
+        "coverage": 1.0,
+        "covered_count": 1,
+        "threshold": 5,
+        "train_long_tail_count": 1
+      }
+    },
+    "scenario_coverage": 1.0,
+    "speaker_histogram_summary": {
+      "distinct_speakers": 150,
+      "max_speaker_share": 0.04286936070130425,
+      "top_speakers": [
+        {
+          "count": 401,
+          "speaker_id": "FO-488"
+        },
+        {
+          "count": 375,
+          "speaker_id": "FO-234"
+        },
+        {
+          "count": 241,
+          "speaker_id": "FO-462"
+        },
+        {
+          "count": 238,
+          "speaker_id": "FE-353"
+        },
+        {
+          "count": 190,
+          "speaker_id": "ME-223"
+        },
+        {
+          "count": 182,
+          "speaker_id": "FO-219"
+        },
+        {
+          "count": 176,
+          "speaker_id": "FE-249"
+        },
+        {
+          "count": 168,
+          "speaker_id": "ME-144"
+        },
+        {
+          "count": 146,
+          "speaker_id": "FE-250"
+        },
+        {
+          "count": 146,
+          "speaker_id": "ME-369"
+        }
+      ]
+    }
+  },
+  "decontamination": {
+    "checked_sample_count": 37407,
+    "excluded_rosters": [
+      {
+        "count": 1080,
+        "file_sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+        "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+        "roster_id": "SLURP-EVO-FOLD-A-V2",
+        "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+      },
+      {
+        "count": 1080,
+        "file_sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+        "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+        "roster_id": "SLURP-EVO-FOLD-B-V2",
+        "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+      }
+    ],
+    "excluded_sample_count": 2160,
+    "forbidden_roster_receipts": [
+      "docs/receipts/knowledge/slurp-split-identity.json",
+      "docs/receipts/probe-samples/FINAL60.json",
+      "docs/receipts/probe-samples/DEV-100.json",
+      "docs/receipts/probe-samples/DEV-500.json",
+      "docs/receipts/probe-samples/DEV-1000.json"
+    ],
+    "verdict": "clean"
+  },
+  "facet_count": 348,
+  "generator": "scripts/build_knowledge_snapshot.py",
+  "schema": "saea-kb-build-receipt-v1",
+  "snapshot_artifact_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-label-prior-speaker-evo-s1/snapshot.json",
+  "snapshot_id": "slurp-kb-distmodel-f85ea70770726239",
+  "snapshot_sha256": "a2a9f99bb1d2b7634bb5686288e0fea9c7b71e31b5bd6c4b8d21ef288e810d7b",
+  "source_split_identity_hash": "22f6092dfdb4a160376e529d8e59e9215bc7701e274620d35feb1c4d82f309e9",
+  "spec": {
+    "carrier_lock_key": "slurp",
+    "datastore_size": null,
+    "dimensions": [
+      "label",
+      "speaker",
+      "prior"
+    ],
+    "seed": 20260823
+  },
+  "timing_seconds": {
+    "build_snapshot": 0.312,
+    "coverage_report": 0.045,
+    "load_train_rows": 4.006
+  },
+  "value_count": 9354
+}
