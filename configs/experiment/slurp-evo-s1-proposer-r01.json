@@ -1,0 +1,569 @@
+{
+  "cells": [
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pplay-k2",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-play-proposer-k2",
+      "factor": "proposer draw k=2 for target play",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-ptakeaway-k2",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-takeaway-proposer-k2",
+      "factor": "proposer draw k=2 for target takeaway",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pmusic-k1",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-music-proposer-k1",
+      "factor": "proposer draw k=1 for target music",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pmusic-k3",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-music-proposer-k3",
+      "factor": "proposer draw k=3 for target music",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-piot-k3",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-iot-proposer-k3",
+      "factor": "proposer draw k=3 for target iot",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pdatetime-k1",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-datetime-proposer-k1",
+      "factor": "proposer draw k=1 for target datetime",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-paudio-k1",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-audio-proposer-k1",
+      "factor": "proposer draw k=1 for target audio",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-paudio-k3",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-audio-proposer-k3",
+      "factor": "proposer draw k=3 for target audio",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-ptakeaway-k1",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-takeaway-proposer-k1",
+      "factor": "proposer draw k=1 for target takeaway",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-piot-k2",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-iot-proposer-k2",
+      "factor": "proposer draw k=2 for target iot",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pnews-k3",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-news-proposer-k3",
+      "factor": "proposer draw k=3 for target news",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pdatetime-k3",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-datetime-proposer-k3",
+      "factor": "proposer draw k=3 for target datetime",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-paudio-k2",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-audio-proposer-k2",
+      "factor": "proposer draw k=2 for target audio",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pmusic-k2",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-music-proposer-k2",
+      "factor": "proposer draw k=2 for target music",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-ptakeaway-k3",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-takeaway-proposer-k3",
+      "factor": "proposer draw k=3 for target takeaway",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-palarm-k3",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-alarm-proposer-k3",
+      "factor": "proposer draw k=3 for target alarm",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-piot-k1",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-iot-proposer-k1",
+      "factor": "proposer draw k=1 for target iot",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pnews-k2",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-news-proposer-k2",
+      "factor": "proposer draw k=2 for target news",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pweather-k3",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-weather-proposer-k3",
+      "factor": "proposer draw k=3 for target weather",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-palarm-k2",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-alarm-proposer-k2",
+      "factor": "proposer draw k=2 for target alarm",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pdatetime-k2",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-datetime-proposer-k2",
+      "factor": "proposer draw k=2 for target datetime",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pplay-k3",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-play-proposer-k3",
+      "factor": "proposer draw k=3 for target play",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pnews-k1",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-news-proposer-k1",
+      "factor": "proposer draw k=1 for target news",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pweather-k2",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-weather-proposer-k2",
+      "factor": "proposer draw k=2 for target weather",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-palarm-k1",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-alarm-proposer-k1",
+      "factor": "proposer draw k=1 for target alarm",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pweather-k1",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-weather-proposer-k1",
+      "factor": "proposer draw k=1 for target weather",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pgeneral-k3",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-general-proposer-k3",
+      "factor": "proposer draw k=3 for target general",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pgeneral-k1",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-general-proposer-k1",
+      "factor": "proposer draw k=1 for target general",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pcalendar-k2",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-calendar-proposer-k2",
+      "factor": "proposer draw k=2 for target calendar",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pcalendar-k3",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-calendar-proposer-k3",
+      "factor": "proposer draw k=3 for target calendar",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pcalendar-k1",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-calendar-proposer-k1",
+      "factor": "proposer draw k=1 for target calendar",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pplay-k1",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-play-proposer-k1",
+      "factor": "proposer draw k=1 for target play",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pcooking-k2",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-cooking-proposer-k2",
+      "factor": "proposer draw k=2 for target cooking",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pcooking-k3",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-cooking-proposer-k3",
+      "factor": "proposer draw k=3 for target cooking",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pcooking-k1",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-cooking-proposer-k1",
+      "factor": "proposer draw k=1 for target cooking",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-plists-k1",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-lists-proposer-k1",
+      "factor": "proposer draw k=1 for target lists",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-plists-k2",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-lists-proposer-k2",
+      "factor": "proposer draw k=2 for target lists",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-plists-k3",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-lists-proposer-k3",
+      "factor": "proposer draw k=3 for target lists",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-precommendation-k2",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-recommendation-proposer-k2",
+      "factor": "proposer draw k=2 for target recommendation",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-precommendation-k3",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-recommendation-proposer-k3",
+      "factor": "proposer draw k=3 for target recommendation",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-precommendation-k1",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-recommendation-proposer-k1",
+      "factor": "proposer draw k=1 for target recommendation",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-ptransport-k1",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-transport-proposer-k1",
+      "factor": "proposer draw k=1 for target transport",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-ptransport-k3",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-transport-proposer-k3",
+      "factor": "proposer draw k=3 for target transport",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-ptransport-k2",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-transport-proposer-k2",
+      "factor": "proposer draw k=2 for target transport",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pqa-k2",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-qa-proposer-k2",
+      "factor": "proposer draw k=2 for target qa",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pqa-k3",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-qa-proposer-k3",
+      "factor": "proposer draw k=3 for target qa",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pqa-k1",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-qa-proposer-k1",
+      "factor": "proposer draw k=1 for target qa",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-psocial-k1",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-social-proposer-k1",
+      "factor": "proposer draw k=1 for target social",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-psocial-k3",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-social-proposer-k3",
+      "factor": "proposer draw k=3 for target social",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-psocial-k2",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-social-proposer-k2",
+      "factor": "proposer draw k=2 for target social",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pemail-k3",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-email-proposer-k3",
+      "factor": "proposer draw k=3 for target email",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pemail-k2",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-email-proposer-k2",
+      "factor": "proposer draw k=2 for target email",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pemail-k1",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-email-proposer-k1",
+      "factor": "proposer draw k=1 for target email",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    },
+    {
+      "arm": "construction-proposer-text",
+      "attempt_id": "attempt-r1-pgeneral-k2",
+      "baseline_fragment": "slurp-evo-s1-proposer",
+      "cell_id": "slurp-evo-s1-r1-r01-general-proposer-k2",
+      "factor": "proposer draw k=2 for target general",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2"
+    }
+  ],
+  "construction_proposer_roster_receipt": "docs/receipts/rosters/slurp-evo-s1-proposer-r01.json",
+  "construction_proposer_roster_split_identity_hash": "0cb2be07b6fddc7797dcbe4348876959f96ef79cb7358f402124ddf766d8f56e",
+  "construction_target_tools": {
+    "alarm": [
+      "alarm"
+    ],
+    "audio": [
+      "audio"
+    ],
+    "calendar": [
+      "calendar"
+    ],
+    "cooking": [
+      "cooking"
+    ],
+    "datetime": [
+      "datetime"
+    ],
+    "email": [
+      "email"
+    ],
+    "general": [
+      "general"
+    ],
+    "iot": [
+      "iot"
+    ],
+    "lists": [
+      "lists"
+    ],
+    "music": [
+      "music"
+    ],
+    "news": [
+      "news"
+    ],
+    "play": [
+      "play"
+    ],
+    "qa": [
+      "qa"
+    ],
+    "recommendation": [
+      "recommendation"
+    ],
+    "social": [
+      "social"
+    ],
+    "takeaway": [
+      "takeaway"
+    ],
+    "transport": [
+      "transport"
+    ],
+    "weather": [
+      "weather"
+    ]
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.012,
+    "planned_model_calls": 54,
+    "planned_speech_audio_seconds": 168,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2",
+  "generated_by": "scripts/run_evolution_round.py",
+  "populations": [
+    {
+      "arm": "construction-proposer-text",
+      "dataset_fragment": "slurp-evo-s1-proposer-r01"
+    }
+  ],
+  "preregistration": "docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md",
+  "purpose": "EVO-S1 round 1 PROPOSE: one text-only contact per draw on the construction-proposer-text arm. Zero audio parts are sent.",
+  "round": 1,
+  "schema": "saea-a2t-direct-calibration-experiment-v1",
+  "split_id": "SLURP-EVO-EXEMPLARS-V2"
+}
