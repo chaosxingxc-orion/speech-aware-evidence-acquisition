@@ -172,7 +172,7 @@ def _bound(expose_facets: bool):
                             "relpath": "v/q.jsonl",
                             "sha256": _SHA_A,
                             "tool_contact_ledger_row": "TEST-EMB-0001",
-                            "embedded_signal": "synthetic",
+                            "embedded_signal": "speech: synthetic",
                         },
                     }
                 }

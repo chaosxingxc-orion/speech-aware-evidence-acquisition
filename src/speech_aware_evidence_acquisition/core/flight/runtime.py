@@ -2593,7 +2593,17 @@ class FlightRuntime:
     def _assert_phase_supply_is_legal_for(self, policy: str) -> None:
         """A ``policy == "fixed"`` direct arm has no phases at all, so a
         ``phase_supply`` block on it is dead config that would silently
-        supply nothing (E6). Refused, loudly, before any contact."""
+        supply nothing (E6). Refused, loudly, before any contact.
+
+        Owner rule 2026-09-06, enforced in the same place: the retrieval
+        QUERY must contain the speech signal (speech, or speech plus an
+        agent intermediate state -- never text-only). Every sealed-vector
+        ``query_source`` must DECLARE its modality as the first token of
+        ``embedded_signal``; ``rails.phase_supply`` owns the vocabulary and
+        the refusal message. Applied here to the RAW fragment so a text-only
+        query is refused before the phase program is even resolved, and
+        again inside ``PhaseSupplySpec.validate`` for every other caller.
+        """
 
         declared = self._composed.values.get("phase_supply")
         if policy == "fixed" and declared:
@@ -2602,6 +2612,15 @@ class FlightRuntime:
                 "direct arm runs no phase program and would supply nothing. Declare a "
                 "phase-program policy, or drop the phase_supply block"
             )
+        from ...rails.phase_supply import (  # noqa: PLC0415 (cycle guard)
+            PhaseSupplyError,
+            assert_phase_supply_queries_carry_speech,
+        )
+
+        try:
+            assert_phase_supply_queries_carry_speech(self._composed.values)
+        except PhaseSupplyError as error:
+            raise FlightRuntimeError(str(error)) from None
 
     def _phase_decoding_params(self) -> Mapping[str, object]:
         """The run-level decoding params a PHASE program may carry.

@@ -57,8 +57,8 @@
         "kind": "sealed-vectors",
         "relpath": "vectors/slurp-ku-s1/query-vectors.jsonl",
         "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-        "tool_contact_ledger_row": "TO BE FILLED BY THE PRE-FLIGHT EMBEDDING PASS",
-        "embedded_signal": "the sealed one-contact CLOSED-LIST DEV-1000 response text of each row, embedded once before the flight by the pinned tool-level embedder qwen3-embedding-0.6b-gguf (Qwen3-Embedding-0.6B-Q8_0.gguf, sha256 06507c7b...e439, 1,024 dimensions, llama.cpp featcache 04ccc72a, --embedding --pooling last, -ngl 0). This reproduces the SIGNAL the DEV-1000 BLEND lock recalled on -- a direct-decode answer's embedding -- from a SEALED prior run instead of in flight."
+        "tool_contact_ledger_row": "TO BE FILLED BY THE MF-7-CHOSEN SPEECH-QUERY EMBEDDING PASS. The 2026-09-06 draft-text pass SAEA-SLURP-KU-S1-QUERY-EMBEDDING-V1 is explicitly NOT it: its vectors embed response TEXT only, which the owner rule of 2026-09-06 forbids as a retrieval query. Those vectors keep their path and receipt as MF-7's diagnostic Q-draft set and as the STATE half of a future speech+state fusion.",
+        "embedded_signal": "speech+state: PLACEHOLDER, TO BE FIXED BY MF-7'S DECISION TABLE. Owner rule 2026-09-06 (binding): the retrieval query must contain the speech signal; it may be speech plus an agent intermediate state (the row's own phase-1 draft answer), but it can never be text-only. The candidate speech-containing embedders are GLAP, LCO-Embedding-Omni and Omni-Embed-Nemotron; MF-7 chooses one and chooses between speech alone and speech + draft state, and either choice is legal under rails.phase_supply.QUERY_SIGNAL_MODALITIES. Fixing this string to the realised signal (and to 'speech:' if MF-7 drops the state half) CHANGES THE CONFIG HASH and therefore the cell's identity, which is exactly the point: the declared query modality is part of what KU-S1 is."
       },
       "facet_source": {
         "kind": "sealed-vectors",

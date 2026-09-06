@@ -19,11 +19,16 @@ import json
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
 from speech_aware_evidence_acquisition.contracts import ExecutionPlan
 from speech_aware_evidence_acquisition.core.config import protocol_hash
+from speech_aware_evidence_acquisition.core.flight.runtime import (
+    FlightRuntime,
+    FlightRuntimeError,
+)
 from speech_aware_evidence_acquisition.core.tracing import TraceBuffer
 from speech_aware_evidence_acquisition.rails import controllers as rc
 from speech_aware_evidence_acquisition.rails import phase_runner as pr
@@ -305,18 +310,24 @@ def _cell_values(tmp_path: Path, sample_ids) -> dict:
         ],
     )
 
-    def source(relpath, digest):
+    def source(relpath, digest, signal):
         return {
             "kind": ps.SEALED_VECTORS_KIND,
             "relpath": relpath,
             "sha256": digest,
             "tool_contact_ledger_row": "TEST-EMB-0001",
-            "embedded_signal": "the test's own synthetic vectors",
+            "embedded_signal": signal,
         }
 
     declared = json.loads(json.dumps(_SLURP_FRAGMENT["phase_supply"]))
-    declared["evidence"]["query_source"] = source("v/q.jsonl", query_digest)
-    declared["evidence"]["facet_source"] = source("v/f.jsonl", facet_digest)
+    # The QUERY side must declare a speech-carrying modality (owner rule
+    # 2026-09-06); the KEY side is unconstrained knowledge text.
+    declared["evidence"]["query_source"] = source(
+        "v/q.jsonl", query_digest, "speech+state: the test's own synthetic vectors"
+    )
+    declared["evidence"]["facet_source"] = source(
+        "v/f.jsonl", facet_digest, "the test's own synthetic facet vectors"
+    )
     # The alpha head is exercised by its own test below; this run proves the
     # acquire path, so it must not retain the direct answer.
     declared["evidence"].pop("alpha")
@@ -562,7 +573,7 @@ def test_ku_a1_shape_passes_preflight_on_a_supplied_one_phase_program(tmp_path):
         "relpath": "v/q.jsonl",
         "sha256": digest,
         "tool_contact_ledger_row": "TEST-EMB-0002",
-        "embedded_signal": "the test's own synthetic audio-keyed vectors",
+        "embedded_signal": "speech: the test's own synthetic audio-keyed vectors",
     }
     specs = ps.load_phase_supply_specs({"phase_supply": declared}, program)
     assert specs["direct"].k == 8
@@ -635,3 +646,84 @@ def test_ku_a1_shape_passes_preflight_on_a_supplied_one_phase_program(tmp_path):
 def test_ku_a1_sketch_records_that_mf_6_gates_it():
     assert "MF-6" in _A2T_FRAGMENT["gated_by_mf_6"]
     assert "0.85" in _A2T_FRAGMENT["gated_by_mf_6"]
+
+
+# ---------------------------------------------------------------------------
+# Owner rule, 2026-09-06, at the FlightRuntime preflight
+# ---------------------------------------------------------------------------
+
+
+def _legality_stub(values):
+    """``FlightRuntime._assert_phase_supply_is_legal_for`` called unbound on
+    a stub carrying only the composed baseline values it reads -- no repo, no
+    data root, no snapshot, no contact."""
+
+    return SimpleNamespace(_composed=SimpleNamespace(values=values))
+
+
+def _query_source(signal):
+    return {
+        "kind": ps.SEALED_VECTORS_KIND,
+        "relpath": "v/q.jsonl",
+        "sha256": _SHA_A,
+        "tool_contact_ledger_row": "TEST-EMB-0003",
+        "embedded_signal": signal,
+    }
+
+
+@pytest.mark.parametrize(
+    "signal",
+    [
+        "speech: the row's own 90 s speech packet, embedded by the pinned tool "
+        "embedder before takeoff",
+        "speech+state: that packet fused with the row's own phase-1 draft answer",
+    ],
+)
+def test_flight_preflight_accepts_a_speech_carrying_query_source(signal):
+    values = {"phase_supply": {"evidence": {"query_source": _query_source(signal)}}}
+    FlightRuntime._assert_phase_supply_is_legal_for(
+        _legality_stub(values), "phase-direct-evidence-alpha-blend-v1"
+    )
+
+
+def test_flight_preflight_refuses_a_text_only_query_source():
+    """Owner rule 2026-09-06. The refusal fires on the RAW fragment, before
+    the phase program is resolved and before any vector file is opened."""
+
+    values = {
+        "phase_supply": {
+            "evidence": {
+                "query_source": _query_source(
+                    "the sealed closed-list response text of each row"
+                )
+            }
+        }
+    }
+    with pytest.raises(FlightRuntimeError, match="must DECLARE the query signal"):
+        FlightRuntime._assert_phase_supply_is_legal_for(
+            _legality_stub(values), "phase-direct-evidence-alpha-blend-v1"
+        )
+
+
+def test_flight_preflight_still_refuses_phase_supply_on_a_fixed_policy():
+    """The pre-existing E6 refusal is unchanged by the new rule."""
+
+    values = {
+        "phase_supply": {
+            "evidence": {"query_source": _query_source("speech: anything")}
+        }
+    }
+    with pytest.raises(FlightRuntimeError, match="policy is 'fixed'"):
+        FlightRuntime._assert_phase_supply_is_legal_for(_legality_stub(values), "fixed")
+
+
+def test_shipped_query_sources_declare_a_speech_modality():
+    """Both shipped fragments' QUERY sources declare a modality in the fixed
+    vocabulary; neither KEY source is required to."""
+
+    for fragment, phase in ((_SLURP_FRAGMENT, "evidence"), (_A2T_FRAGMENT, "direct")):
+        source = fragment["phase_supply"][phase]["query_source"]
+        modality = ps.query_signal_modality(source, field="query_source")
+        assert modality in ps.QUERY_SIGNAL_MODALITIES
+    facet = _SLURP_FRAGMENT["phase_supply"]["evidence"]["facet_source"]
+    assert not facet["embedded_signal"].startswith(tuple(ps.QUERY_SIGNAL_MODALITIES))

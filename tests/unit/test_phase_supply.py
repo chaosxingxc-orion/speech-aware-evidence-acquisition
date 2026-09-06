@@ -86,7 +86,7 @@ def _source(relpath: str, sha256: str) -> dict[str, object]:
         "relpath": relpath,
         "sha256": sha256,
         "tool_contact_ledger_row": "TEST-EMB-0001",
-        "embedded_signal": "the test's own synthetic vectors",
+        "embedded_signal": "speech: the test's own synthetic vectors",
     }
 
 
@@ -131,6 +131,93 @@ def test_load_phase_supply_specs_reads_the_declared_phase():
     assert spec.fuse_policy == "saea-fuse-supplyfilter-v1"
     assert (spec.k, spec.tau, spec.dimensions) == (5, 0.65, ("content",))
     assert spec.fuse_knobs().tau == 0.65
+
+
+# ---------------------------------------------------------------------------
+# Owner rule, 2026-09-06: the retrieval QUERY must contain the speech signal
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("modality", ["speech", "speech+state"])
+def test_a_query_source_declaring_a_speech_modality_is_accepted(modality):
+    source = _source("v/q.jsonl", _SHA_A)
+    source["embedded_signal"] = f"{modality}: the row's own 90 s speech packet"
+    specs = ps.load_phase_supply_specs(_fragment(source), _program())
+    assert specs["evidence"].query_source["embedded_signal"].startswith(modality)
+    assert (
+        ps.query_signal_modality(
+            specs["evidence"].query_source, field="phase_supply['evidence'].query_source"
+        )
+        == modality
+    )
+
+
+def test_a_text_only_query_source_is_refused_before_any_file_is_opened():
+    """The honest description this seam accepted BEFORE the rule -- a
+    response text embedding -- is exactly what is now refused."""
+
+    source = _source("v/q.jsonl", _SHA_A)
+    source["embedded_signal"] = (
+        "the sealed one-contact CLOSED-LIST DEV-1000 response text of each row"
+    )
+    with pytest.raises(ps.PhaseSupplyError, match="must DECLARE the query signal"):
+        ps.load_phase_supply_specs(_fragment(source), _program())
+
+
+def test_a_modality_named_inside_the_prose_does_not_count_as_a_declaration():
+    """The modality is the FIRST token, not a word somewhere in the prose:
+    a declaration a reader could miss is not a declaration."""
+
+    source = _source("v/q.jsonl", _SHA_A)
+    source["embedded_signal"] = (
+        "the draft answer text, which describes what the speech said"
+    )
+    with pytest.raises(ps.PhaseSupplyError, match="must DECLARE the query signal"):
+        ps.load_phase_supply_specs(_fragment(source), _program())
+
+
+def test_a_bare_modality_with_no_description_is_refused():
+    source = _source("v/q.jsonl", _SHA_A)
+    source["embedded_signal"] = "speech:   "
+    with pytest.raises(ps.PhaseSupplyError, match="carries no description"):
+        ps.load_phase_supply_specs(_fragment(source), _program())
+
+
+def test_the_key_side_is_unconstrained_by_the_query_rule():
+    """A facet (KEY) vector is knowledge text by construction; the rule is
+    about what the QUERY carries."""
+
+    facet = _source("v/f.jsonl", _SHA_B)
+    facet["embedded_signal"] = "KeyFacet.representation of every content facet"
+    specs = ps.load_phase_supply_specs(
+        _fragment(_source("v/q.jsonl", _SHA_A), facet_source=facet), _program()
+    )
+    assert specs["evidence"].facet_source["embedded_signal"].startswith("KeyFacet")
+
+
+def test_assert_phase_supply_queries_carry_speech_reads_a_raw_fragment():
+    """The form ``core.flight.FlightRuntime`` calls in its own preflight,
+    before the phase program is resolved."""
+
+    ok = _fragment(_source("v/q.jsonl", _SHA_A))
+    ps.assert_phase_supply_queries_carry_speech(ok)
+    ps.assert_phase_supply_queries_carry_speech({})
+    ps.assert_phase_supply_queries_carry_speech({"phase_supply": {}})
+
+    bad = _fragment(_source("v/q.jsonl", _SHA_A))
+    bad["phase_supply"]["evidence"]["query_source"]["embedded_signal"] = "plain text"
+    with pytest.raises(ps.PhaseSupplyError, match="must DECLARE the query signal"):
+        ps.assert_phase_supply_queries_carry_speech(bad)
+
+
+def test_the_phase_supply_receipt_records_the_declared_modality():
+    specs = ps.load_phase_supply_specs(
+        _fragment(_source("v/q.jsonl", _SHA_A)), _program()
+    )
+    receipt = ps.phase_supply_receipt(specs, {"evidence": 3}, {"evidence": 2})
+    assert receipt["schema"] == "saea-phase-supply-v2"
+    assert receipt["query_signal_vocabulary"] == list(ps.QUERY_SIGNAL_MODALITIES)
+    assert receipt["phases"][0]["query_signal_modality"] == "speech"
 
 
 def test_phase_supply_for_a_phase_the_program_does_not_declare_is_refused():
@@ -425,7 +512,7 @@ def test_phase_supply_receipt_never_carries_a_vector(tmp_path):
         supply_for_phase.query_vector_rows,
         supply_for_phase.facet_vector_rows,
     )
-    assert receipt["schema"] == "saea-phase-supply-v1"
+    assert receipt["schema"] == "saea-phase-supply-v2"
     (phase,) = receipt["phases"]
     assert phase["query_vector_rows"] == 1
     assert phase["facet_vector_rows"] == 2

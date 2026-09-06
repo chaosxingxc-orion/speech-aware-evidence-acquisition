@@ -33,7 +33,7 @@
         "relpath": "vectors/a2t-ku-a1/query-vectors.jsonl",
         "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
         "tool_contact_ledger_row": "TO BE FILLED BY THE PRE-FLIGHT EMBEDDING PASS",
-        "embedded_signal": "AUDIO-KEYED, zero frozen-core contacts: one pre-flight embedding per frozen-4,000 row of that row's own speech-derived query representation, by the pinned tool-level embedder, written before takeoff under its own exposure-ledger tool-contact row."
+        "embedded_signal": "speech: AUDIO-KEYED, zero frozen-core contacts: one pre-flight embedding per frozen-4,000 row of that row's own speech-derived query representation, by the pinned tool-level embedder, written before takeoff under its own exposure-ledger tool-contact row. The \"speech:\" prefix is the owner rule of 2026-09-06 declared in the fixed rails.phase_supply.QUERY_SIGNAL_MODALITIES vocabulary: the retrieval query must carry the speech signal and can never be text-only."
       }
     }
   },

@@ -20,7 +20,7 @@ declares
           "relpath": "vectors/<cell>/query-vectors.jsonl",
           "sha256": "<64 hex>",
           "tool_contact_ledger_row": "<exposure-ledger row id>",
-          "embedded_signal": "<what was embedded, in English>"
+          "embedded_signal": "speech+state: <what was embedded, in English>"
         }
       }
     }
@@ -66,6 +66,24 @@ half-implementing it (see :func:`_load_query_source`). A cell that wants the
 lock's own in-flight signal embeds a SEALED prior run's responses before the
 flight, under its own tool-contact ledger row, and pins the result here --
 the same signal, paid for once, outside the flight.
+
+The query must carry speech (owner rule, 2026-09-06)
+-----------------------------------------------------
+
+A QUERY vector must contain the speech signal -- speech alone, or speech
+plus an agent intermediate state (speech + the row's own draft answer, for
+instance) -- and may never be text-only. The rule is enforced, not merely
+written down: a ``query_source``'s ``embedded_signal`` must DECLARE its
+modality as its first token, from :data:`QUERY_SIGNAL_MODALITIES`, followed
+by ``:`` and the free English description. :func:`load_phase_supply_specs`
+refuses anything else before a file is opened, and
+:func:`assert_phase_supply_queries_carry_speech` applies the same rule to a
+raw fragment inside ``core.flight.FlightRuntime``'s own preflight. The KEY
+(facet) side is unconstrained: a key is knowledge text by construction.
+
+No inference is attempted over the prose -- no regex can decide whether a
+vector file carries speech. The fragment declares it, and the declaration
+rides the config hash, which is part of the cell's identity.
 
 The vector file is one JSON object per line::
 
@@ -138,6 +156,29 @@ _FUSE_COVERAGE_KEYS = frozenset({"m", "c", "top_l"})
 
 _SHA256_CHARS = frozenset("0123456789abcdef")
 
+#: OWNER RULE, 2026-09-06 (binding): **the retrieval QUERY must contain the
+#: speech signal.** It may be speech alone, or speech plus an agent
+#: intermediate state (speech + the draft answer, say); it can never be
+#: text-only. A text-only query vector makes the retrieval a text-retrieval
+#: experiment wearing a speech carrier's clothes, and this study's object is
+#: speech-aware evidence acquisition.
+#:
+#: The rule is machine-enforced rather than left to prose: a ``query_source``
+#: DECLARES its modality as the first token of ``embedded_signal``, in the
+#: fixed vocabulary below, followed by ``:`` and the free English description
+#: the key already carried. So::
+#:
+#:     "embedded_signal": "speech+state: the 90 s speech packet of the row
+#:                         fused with that row's own phase-1 draft answer, ..."
+#:
+#: The KEY (facet) side is deliberately UNCONSTRAINED: a key is knowledge
+#: text and always has been (``KeyFacet.representation``); the rule is about
+#: what the QUERY carries.
+QUERY_SIGNAL_MODALITIES: tuple[str, ...] = ("speech", "speech+state")
+
+#: The single character separating the declared modality from the prose.
+QUERY_SIGNAL_SEPARATOR = ":"
+
 
 class PhaseSupplyError(RailsError):
     """A ``phase_supply`` config fragment, or the binding built from it, is
@@ -185,8 +226,81 @@ def _require_unit_float(value: object, *, field: str) -> float:
     return number
 
 
+def assert_query_signal_declares_speech(embedded_signal: object, *, field: str) -> str:
+    """Return the declared query modality, or refuse (owner rule 2026-09-06).
+
+    ``embedded_signal`` of a QUERY source must begin with one of
+    :data:`QUERY_SIGNAL_MODALITIES` followed by
+    :data:`QUERY_SIGNAL_SEPARATOR` and a non-empty English description of
+    what was actually embedded. Anything else -- including the honest
+    text-only descriptions this seam accepted before the rule -- is refused
+    before any file is opened and before any contact.
+
+    This is deliberately a declaration, not an inference: no regex over
+    prose can decide whether a vector carries speech, so the fragment says
+    so in a fixed vocabulary and the claim rides the config hash, which is
+    part of the cell's identity.
+    """
+
+    text = _require_text(embedded_signal, field=field)
+    for modality in QUERY_SIGNAL_MODALITIES:
+        prefix = f"{modality}{QUERY_SIGNAL_SEPARATOR}"
+        if text.startswith(prefix):
+            if not text[len(prefix) :].strip():
+                raise PhaseSupplyError(
+                    f"{field} declares modality {modality!r} but carries no "
+                    "description after it"
+                )
+            return modality
+    raise PhaseSupplyError(
+        f"{field} must DECLARE the query signal's modality as its first token, one "
+        f"of {list(QUERY_SIGNAL_MODALITIES)} followed by "
+        f"{QUERY_SIGNAL_SEPARATOR!r} (owner rule 2026-09-06: the retrieval query "
+        "must contain the speech signal; it may be speech plus an agent "
+        "intermediate state, but never text-only). Got: "
+        f"{text[:80]!r}"
+    )
+
+
+def query_signal_modality(source: Mapping[str, object], *, field: str) -> str:
+    """The declared modality of a resolved ``query_source`` mapping."""
+
+    return assert_query_signal_declares_speech(
+        source.get("embedded_signal"), field=f"{field}.embedded_signal"
+    )
+
+
+def assert_phase_supply_queries_carry_speech(values: Mapping[str, object]) -> None:
+    """Apply the owner rule to a RAW baseline fragment, before the phase
+    program is even resolved.
+
+    ``core.flight.FlightRuntime`` calls this from its own preflight so a
+    text-only query source is refused at the earliest possible point rather
+    than at vector-load time. Fragments that declare no ``phase_supply``, and
+    ``embedding-server`` sources (already refused by name elsewhere), pass
+    through untouched.
+    """
+
+    declared = values.get("phase_supply")
+    if not isinstance(declared, Mapping):
+        return
+    for phase in sorted(declared):
+        entry = declared[phase]
+        if not isinstance(entry, Mapping):
+            continue
+        source = entry.get("query_source")
+        if not isinstance(source, Mapping):
+            continue
+        if source.get("kind") != SEALED_VECTORS_KIND:
+            continue
+        assert_query_signal_declares_speech(
+            source.get("embedded_signal"),
+            field=f"phase_supply[{phase!r}].query_source.embedded_signal",
+        )
+
+
 def _validated_source(
-    source: object, *, field: str, required: bool
+    source: object, *, field: str, required: bool, is_query: bool = False
 ) -> Mapping[str, object] | None:
     if source is None:
         if required:
@@ -218,6 +332,12 @@ def _validated_source(
         field=f"{field}.tool_contact_ledger_row",
     )
     _require_text(source.get("embedded_signal"), field=f"{field}.embedded_signal")
+    if is_query:
+        # Owner rule 2026-09-06: a QUERY vector must carry speech. The KEY
+        # side is unconstrained -- a key is knowledge text by construction.
+        assert_query_signal_declares_speech(
+            source.get("embedded_signal"), field=f"{field}.embedded_signal"
+        )
     return dict(source)
 
 
@@ -275,6 +395,7 @@ class PhaseSupplySpec:
             self.query_source,
             field=f"phase_supply[{self.phase!r}].query_source",
             required=True,
+            is_query=True,
         )
         _validated_source(
             self.facet_source,
@@ -832,22 +953,37 @@ def phase_supply_receipt(
             "spec": specs[phase].as_json(),
             "query_vector_rows": int(query_rows_by_phase.get(phase, 0)),
             "facet_vector_rows": int(facet_rows_by_phase.get(phase, 0)),
+            # Owner rule 2026-09-06, recorded per phase so a receipt says out
+            # loud which modality this run's query vectors declared.
+            "query_signal_modality": query_signal_modality(
+                specs[phase].query_source,
+                field=f"phase_supply[{phase!r}].query_source",
+            ),
         }
         for phase in sorted(specs)
     ]
-    return {"schema": "saea-phase-supply-v1", "phases": phases}
+    return {
+        "schema": "saea-phase-supply-v2",
+        "query_signal_vocabulary": list(QUERY_SIGNAL_MODALITIES),
+        "phases": phases,
+    }
 
 
 __all__ = [
     "EMBEDDING_SERVER_KIND",
+    "QUERY_SIGNAL_MODALITIES",
+    "QUERY_SIGNAL_SEPARATOR",
     "SEALED_VECTORS_KIND",
     "SEED_QUERY_ID_PREFIX",
     "VECTOR_SOURCE_KINDS",
     "PhaseSupplyError",
     "PhaseSupplySpec",
+    "assert_phase_supply_queries_carry_speech",
+    "assert_query_signal_declares_speech",
     "build_bootstrap_selection",
     "build_supply_for_phase",
     "load_phase_supply_specs",
     "load_sealed_vectors",
     "phase_supply_receipt",
+    "query_signal_modality",
 ]
