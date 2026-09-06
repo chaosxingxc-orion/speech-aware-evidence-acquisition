@@ -47,6 +47,7 @@ REFERENCE_READING_SCORERS = frozenset(
         # reference-identity re-verification in ``_assert_scoring_entry_gate``.
         "conec-entity-wer-official",
         "numeric-value-accuracy-v1",
+        "semantic-high-impact-error-rate-v1",
     }
 )
 
@@ -955,6 +956,7 @@ SCORERS.register("asr-wer-esb-whisper", score_esb_outputs_whisper)
 
 from ..reproduction import conec_entity_scoring as _conec  # noqa: E402
 from ..reproduction import numeric_value_accuracy as _numeric  # noqa: E402
+from ..reproduction import semantic_impact as _semantic  # noqa: E402
 
 
 def _outputs_rows(outputs_path: Path) -> list[dict[str, object]]:
@@ -1103,3 +1105,65 @@ def score_numeric_value_accuracy_outputs(
 
 
 SCORERS.register("numeric-value-accuracy-v1", score_numeric_value_accuracy_outputs)
+
+def score_semantic_high_impact_outputs(
+    outputs_path: Path,
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    repo_root: Path = REPO_ROOT,
+) -> dict[str, object]:
+    """``semantic-high-impact-error-rate-v1``: HIGH-impact reference-word mass
+    over reference words, under the Earnings-22 semantic scan's taxonomy.
+
+    The taxonomy is the scan's deliverable, not this scorer's invention, so
+    this registration is a HOOK: it resolves
+    ``reproduction.semantic_impact.ACTIVE_TAXONOMY_RELPATH`` inside the study
+    checkout and fails closed, naming the scan, until that file lands. The
+    metric itself is implemented and tested against a synthetic taxonomy
+    (``tests/unit/test_semantic_high_impact.py``); only its Earnings-21 VALUE
+    waits.
+    """
+
+    taxonomy_path = Path(repo_root) / _semantic.ACTIVE_TAXONOMY_RELPATH
+    if not taxonomy_path.is_file():
+        raise ScoringPhaseError(
+            f"semantic-high-impact-error-rate-v1 needs an impact taxonomy at "
+            f"{taxonomy_path}; none exists yet. The taxonomy is the deliverable of the "
+            "Earnings-22 semantic scan (branch wt/e22); this scorer refuses to invent "
+            "impact levels of its own. See reproduction/semantic_impact.py for the file "
+            "contract the scan must satisfy."
+        )
+    try:
+        taxonomy = _semantic.load_taxonomy(taxonomy_path)
+    except _semantic.TaxonomyError as error:
+        raise ScoringPhaseError(str(error)) from error
+
+    rows = _outputs_rows(outputs_path)
+    per_sample: list[dict[str, object]] = []
+    for row in rows:
+        carrier_lock_key = row["carrier_lock_key"]
+        sample_id = row["sample_id"]
+        try:
+            raw_tokens = reference_tokens(lock, root, carrier_lock_key, sample_id)
+        except ReferenceError as error:
+            raise ScoringPhaseError(
+                f"cannot resolve references for sample {sample_id!r} "
+                f"(carrier {carrier_lock_key!r}): {error}"
+            ) from error
+        reference_words = _conec.whole_string_whisper_words(raw_tokens)
+        hypothesis_words = _conec.hypothesis_whisper_words(str(row["text"]))
+        operations = _conec.aligned_operations(reference_words, hypothesis_words)
+        _conec.operation_counts(operations, len(reference_words), len(hypothesis_words))
+        counts = _semantic.semantic_impact_counts(
+            operations, reference_words, hypothesis_words, taxonomy
+        )
+        counts["sample_id"] = sample_id
+        per_sample.append(counts)
+    return {
+        "per_sample": per_sample,
+        "aggregate": _semantic.merge_semantic_counts(per_sample, taxonomy),
+    }
+
+
+SCORERS.register("semantic-high-impact-error-rate-v1", score_semantic_high_impact_outputs)
