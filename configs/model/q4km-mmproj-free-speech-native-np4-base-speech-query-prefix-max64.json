@@ -1,0 +1,48 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 420.0,
+  "runtime_receipt": "receipts/runtime-q4km-mmproj-free.json",
+  "server_args": [
+    "-c",
+    "65536",
+    "-np",
+    "4",
+    "-b",
+    "2048",
+    "-ub",
+    "512",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "--cache-prompt",
+    "--cache-ram",
+    "0",
+    "--no-cache-idle-slots",
+    "--slot-prompt-similarity",
+    "0"
+  ],
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 64,
+    "id_slot": "per-sample"
+  },
+  "prompt_order": "speech-query-prefix-v2",
+  "profile_slot_count": 4,
+  "speech_feature_root": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+  "server_env": {
+    "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+    "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+  },
+  "model_fragment_what_this_is": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64 with -np 8 replaced by -np 4 and nothing else: the same GGUF, the same featcache build, the same packet root and decoder hash, the same batch and cache flags, the same prompt order, and byte-identical decoding_params (greedy, temperature 0, seed 20260803, max_tokens 64, per-sample slot affinity).",
+  "model_fragment_why_four_slots": "Per-slot context, not throughput. The KC-S1b slot-stage cell appends a per-sample TRAIN slot-schema block to its phase instruction, and the FALLBACK block a row gets when the sealed closed-list prediction does not parse or names a (scenario, action) pair TRAIN never carries is the FULL 60-intent schema: 26,720 characters, about 7,500 tokens, on top of a 7,583-character system message. At -np 8 the 65,536-token server context divides into 8,192-token slots and such a row does not fit; at -np 4 it divides into 16,384 and it fits with roughly 6,000 tokens to spare. Concurrency is not a request-content variable (2026-09-05 closed-list verdict, deviation 2): the request bytes, the decoding parameters and the packet are unchanged, only how many of them are in flight at once. KC-S1a flies the SAME geometry so the (S1b minus S1a) contrast is geometry-matched.",
+  "model_fragment_cost_of_the_choice": "Halved slot occupancy. The sealed closed-list arm ran 1,000 contacts in 225.5 s at -np 8; the same roster at -np 4 is expected around 450 s. That is inside every budget cell of the KC-S1 cells and buys a prompt-fit margin no compaction pass would have to eat into."
+}

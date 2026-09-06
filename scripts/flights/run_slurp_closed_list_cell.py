@@ -251,12 +251,15 @@ class ClosedListSlurpAdapter(SlurpAdapter):
     Both overrides are DATA, not behaviour. ``load_split`` returns the roster
     this instance was constructed with instead of re-reading the whole devel
     split; ``instruction`` returns the config-resolved text instead of the
-    module-level ``_INSTRUCTION`` constant. The serving geometry is left
-    exactly as ``rails/adapters/slurp.py`` declares it (8 slots x 8,192 slot
+    module-level ``_INSTRUCTION`` constant. The serving geometry DEFAULTS to
+    exactly what ``rails/adapters/slurp.py`` declares (8 slots x 8,192 slot
     tokens, 64 completion tokens), which is already the geometry the sealed
-    M0 arm flew (``-np 8 -c 65536``, ``max_tokens 64``); the flight asserts
-    that against the model fragment's own ``server_args`` rather than
-    silently overriding either side.
+    M0 arm flew (``-np 8 -c 65536``, ``max_tokens 64``); a baseline fragment
+    whose per-sample prompt needs a larger slot may declare
+    ``serving_slots``/``serving_slot_tokens`` and those land on the instance
+    as data too. Either way the flight asserts the resolved geometry against
+    the model fragment's own ``server_args`` rather than silently overriding
+    one side.
     """
 
     def __init__(
@@ -268,6 +271,8 @@ class ClosedListSlurpAdapter(SlurpAdapter):
         split_id: str,
         samples: Sequence[SlurpSample],
         instruction_text: str,
+        serving_slots: int | None = None,
+        serving_slot_tokens: int | None = None,
     ) -> None:
         super().__init__(lock, root, repo_root=repo_root)
         self._split_id = split_id
@@ -275,6 +280,14 @@ class ClosedListSlurpAdapter(SlurpAdapter):
         if not isinstance(instruction_text, str) or not instruction_text:
             raise SystemExit("closed-list cell requires a non-empty resolved instruction")
         self._instruction_text = instruction_text
+        # DATA, like the other two overrides: TaskAdapter.serving_geometry
+        # reads self.SERVING_*, so a cell whose per-sample prompt needs a
+        # larger slot declares it in its baseline fragment and it lands
+        # here. Absent a declaration these stay the class defaults.
+        if serving_slots is not None:
+            self.SERVING_SLOTS = int(serving_slots)
+        if serving_slot_tokens is not None:
+            self.SERVING_SLOT_TOKENS = int(serving_slot_tokens)
 
     def load_split(self, split_id, *, allow_heldout=False, allow_synthetic=False):  # noqa: D102
         if allow_heldout or allow_synthetic:
@@ -355,13 +368,33 @@ def assert_instruction_extends_sealed_m0(instruction: str, sealed_head: str | No
     }
 
 
-def assert_geometry_matches_server_args(values: Mapping[str, object]) -> dict:
-    """The model fragment's ``-np``/``-c`` must already equal the adapter's
-    declared geometry -- ``FlightRuntime.serve`` overrides both, so a silent
-    override can never be the thing that makes them agree."""
+def resolved_geometry(values: Mapping[str, object]) -> tuple[int, int]:
+    """``(slots, slot_tokens)`` for this cell: the ``SlurpAdapter`` defaults
+    unless the BASELINE fragment declares its own.
 
-    slots = int(SlurpAdapter.SERVING_SLOTS)
-    slot_tokens = int(SlurpAdapter.SERVING_SLOT_TOKENS)
+    A cell whose per-sample prompt does not fit an 8,192-token slot has to
+    divide the same 65,536-token server context into fewer, larger slots.
+    KC-S1b is such a cell: its fallback rows carry the full 60-intent TRAIN
+    slot schema. Declaring the geometry in the baseline fragment (rather
+    than on a command line) keeps it inside the config hash, and every arm
+    of a contrast declares the same numbers so the contrast stays
+    geometry-matched. Concurrency is not a request-content variable.
+    """
+
+    slots = values.get("serving_slots", SlurpAdapter.SERVING_SLOTS)
+    slot_tokens = values.get("serving_slot_tokens", SlurpAdapter.SERVING_SLOT_TOKENS)
+    for name, value in (("serving_slots", slots), ("serving_slot_tokens", slot_tokens)):
+        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+            raise SystemExit("baseline fragment %s must be a positive int" % name)
+    return int(slots), int(slot_tokens)
+
+
+def assert_geometry_matches_server_args(values: Mapping[str, object]) -> dict:
+    """The model fragment's ``-np``/``-c`` must already equal the geometry
+    this cell will serve at -- ``FlightRuntime.serve`` overrides both, so a
+    silent override can never be the thing that makes them agree."""
+
+    slots, slot_tokens = resolved_geometry(values)
     args = [str(item) for item in values.get("server_args", [])]
     def flag(name: str) -> int:
         if name not in args:
@@ -434,6 +467,8 @@ def build_runtime(
 
     split_id = str(values["split_id"])
 
+    slots, slot_tokens = resolved_geometry(values)
+
     def adapter_factory(lock_, root_):
         return ClosedListSlurpAdapter(
             lock_,
@@ -442,6 +477,8 @@ def build_runtime(
             split_id=split_id,
             samples=samples,
             instruction_text=instruction,
+            serving_slots=slots,
+            serving_slot_tokens=slot_tokens,
         )
 
     runtime = FlightRuntime(

@@ -1,0 +1,41 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "phase-slots-given-intent-v1",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
+  "speech_feature_key_representation_id": "saea-slurp-phase-slots-given-intent-schema-v1:slots",
+  "speech_feature_matcher_policy_id": "saea-slurp-phase-slots-given-intent-schema-v1",
+  "scorers": [
+    "slurp-slu-official",
+    "slurp-slu",
+    "cost"
+  ],
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template_active": true,
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-label-prior-speaker/snapshot.json",
+  "knowledge_snapshot_sha256": "07f94807d173b2f2bdda9dcd95b21354e018234a208a76683d0ca4989d9ffa65",
+  "serving_slots": 4,
+  "serving_slot_tokens": 16384,
+  "phase_material": {
+    "slots": {
+      "instruction_template": "probes/slurp_phase_slots.txt",
+      "instruction_fill": null,
+      "response_format_id": null,
+      "predecessor_binding": "sealed-manifest",
+      "predecessor_source": {
+        "manifest_relpath": "runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.run-manifest.json",
+        "manifest_sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c",
+        "producer_policy_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1"
+      },
+      "state_fill": "slurp-intent-slot-schema-for-state"
+    }
+  },
+  "what_this_is": "Cell KC-S1b of the 2026-09-05 three-dimension experiment program: KC-S1a plus the per-intent TRAIN slot schema (prerequisite MF-3), and nothing else. THE ONE FACTOR is the state_fill key below.",
+  "the_one_difference_from_kc_s1a": "state_fill. Every other key of this fragment is byte-identical to configs/baseline/slurp-phase-slots-given-intent-v1.json apart from the two speech-feature identity ids (which must be unique per arm) and this note block. rails.phase_material.build_material_for_phase appends the registered fill's text AFTER the appended sealed state, so this cell's contact instruction is KC-S1a's contact instruction plus a pure per-sample SUFFIX, per row, by construction -- the same pure-suffix discipline data.slurp.render_slurp_closed_label_inventory follows for the system message.",
+  "what_the_fill_renders": "slurp-intent-slot-schema-for-state resolves through rails.phase_material.PHASE_STATE_FILLS to data.slurp.render_slurp_slot_schema_for_state_detail. For a row whose sealed closed-list response parses to an intent TRAIN carries, it renders THAT intent's block alone: the entity types holding at least 2 percent of the intent's TRAIN slot mentions, each with its share and up to five lower-case example fillers (494 to 1,224 characters, sixty such blocks). For a row whose sealed response does not parse or names a (scenario, action) pair TRAIN never carries, it falls back to the FULL 60-intent schema (26,720 characters) so the row still gets a legal slot instruction; the flight counts and reports those rows. TRAIN only: load_slurp_intent_slot_schema has no split parameter and can reach no devel or test file. Receipt docs/receipts/knowledge/slurp-intent-slot-schema-v1.json.",
+  "why_np4": "The fallback block is about 7,500 tokens on top of a 7,583-character system message and does not fit an 8,192-token slot. serving_slots 4 / serving_slot_tokens 16384 fits it with room to spare, and KC-S1a flies the same geometry so the contrast between them is geometry-matched.",
+  "knowledge_is_bound_but_invisible": "As in KC-S1a, and for the same reason: the phase declares knowledge 'none', bootstrap ids stay empty, and the snapshot exists only so the leakage rule has something to enforce. The content dimension is excluded from the bound snapshot because the raw one- and two-word TRAIN utterances it carries collide by substring with SLURP's own scenario names and with ordinary English -- see the KC-S1 preregistration's deviation note. Measured against THIS snapshot's 11,863 protected payloads: zero hits in the full schema, zero in all sixty per-intent blocks, and zero in all 1,000 sealed closed-list responses."
+}

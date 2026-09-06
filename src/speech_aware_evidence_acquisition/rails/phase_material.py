@@ -44,6 +44,26 @@ Three things this module deliberately does NOT do:
   ``adapter.instruction(sample)`` plus the adapter's task contract, assembled
   by ``rails.runner._agent_messages``; a phase's instruction rides the
   payload ``history`` CONTROL turn (``rails.core_client._agent_history``).
+
+One thing in a phase instruction is genuinely per sample and still config
+expressible: text derived from the PREDECESSOR STATE this phase is bound to.
+The SLURP slot stage needs the TRAIN slot schema of the intent the sealed
+closed-list contact predicted for THAT row, and there are sixty such blocks.
+A phase therefore also declares
+
+.. code-block:: json
+
+    "slots": {
+      "instruction_template": "probes/slurp_phase_slots.txt",
+      "predecessor_binding": "sealed-manifest",
+      "predecessor_source": {"...": "..."},
+      "state_fill": "slurp-intent-slot-schema-for-state"
+    }
+
+and :data:`PHASE_STATE_FILLS` resolves that name to a
+``(state_content) -> str`` callable whose output is appended after the state
+block. Still config alone, still hashed by the config hash, still no
+launcher.
 """
 
 from __future__ import annotations
@@ -53,7 +73,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Mapping, Sequence
 
-from ..core.base import RESPONSE_FORMATS
+from ..core.base import RESPONSE_FORMATS, Registry
 from ..core.instructions import (
     TOOL_SCHEMAS_PLACEHOLDER,
     _TEMPLATE_RELPATH_PATTERN,
@@ -86,6 +106,7 @@ _SPEC_KEYS = frozenset(
         "response_format_id",
         "predecessor_binding",
         "predecessor_source",
+        "state_fill",
     }
 )
 _PREDECESSOR_SOURCE_KEYS = frozenset(
@@ -96,6 +117,64 @@ _PREDECESSOR_SOURCE_KEYS = frozenset(
 #: than made configurable: a two-contact cell's paired contrast is only a
 #: single-factor contrast if this framing is the same in every arm.
 PREDECESSOR_PREFIX = "Prior phase response"
+
+#: Registered PER-SAMPLE state fills: ``name -> (() -> (state_content) -> str)``.
+#:
+#: A phase whose ``predecessor_binding`` carries a state can declare
+#: ``"state_fill": "<name>"``. :func:`build_material_for_phase` then appends
+#: ``fill(state.content)`` AFTER the appended state, so an arm that declares a
+#: state fill differs from the otherwise identical arm that does not by a pure
+#: per-sample SUFFIX -- the same single-factor discipline
+#: ``data.slurp.render_slurp_closed_label_inventory`` follows for the system
+#: message, one layer out.
+#:
+#: A registry ENTRY is a zero-argument factory returning the fill, not the fill
+#: itself, so a fill that has to read pinned carrier data pays for it once per
+#: run and only when a config actually names it. The factory resolves the
+#: umbrella lock and the data root the same way every flight entry point does
+#: (``data.lock.load_lock(umbrella_lock_path())`` / ``data.lock.data_root()``);
+#: ``build_material_for_phase``'s own ``state_fill_by_phase=`` argument stays
+#: the explicit seam for a caller that already holds them (and for tests).
+PHASE_STATE_FILLS = Registry("phase state fill")
+
+
+def _slurp_intent_slot_schema_state_fill():
+    """Factory for ``"slurp-intent-slot-schema-for-state"``.
+
+    The returned fill renders, for ONE sealed closed-list SLU response, the
+    per-intent TRAIN slot schema block of the intent that response names
+    (``data.slurp.render_slurp_slot_schema_for_state_detail``), falling back
+    to the full schema when the response does not parse or names a
+    (scenario, action) pair TRAIN never carries. TRAIN only: the loader it
+    calls has no ``split`` parameter and can reach no devel or test file.
+    """
+
+    from ..data.lock import (  # noqa: PLC0415 (cycle guard, and lazily paid)
+        data_root,
+        load_lock,
+        umbrella_lock_path,
+    )
+    from ..data.slurp import (  # noqa: PLC0415 (cycle guard)
+        load_slurp_intent_slot_schema,
+        render_slurp_slot_schema_for_state_detail,
+    )
+
+    lock = load_lock(umbrella_lock_path())
+    root = data_root()
+    schema = load_slurp_intent_slot_schema(lock, root)
+
+    def fill(state_content: str) -> str:
+        text, _used_intent, _fallback = render_slurp_slot_schema_for_state_detail(
+            lock, root, state_content, schema=schema
+        )
+        return text
+
+    return fill
+
+
+PHASE_STATE_FILLS.register(
+    "slurp-intent-slot-schema-for-state", _slurp_intent_slot_schema_state_fill
+)
 
 
 class PhaseMaterialError(RailsError):
@@ -115,6 +194,7 @@ class PhaseMaterialSpec:
     response_format_id: str | None = None
     predecessor_binding: str = "none"
     predecessor_source: Mapping[str, object] | None = None
+    state_fill: str | None = None
 
     def validate(self) -> "PhaseMaterialSpec":
         for name in ("phase", "purpose", "instruction_template"):
@@ -175,6 +255,17 @@ class PhaseMaterialSpec:
                 f"phase {self.phase!r} declares predecessor_source but its "
                 f"predecessor_binding is {self.predecessor_binding!r}"
             )
+        if self.state_fill is not None:
+            if not isinstance(self.state_fill, str) or not self.state_fill.strip():
+                raise PhaseMaterialError(
+                    f"phase {self.phase!r} state_fill must be a non-empty string or null"
+                )
+            if self.predecessor_binding == "none":
+                raise PhaseMaterialError(
+                    f"phase {self.phase!r} declares state_fill "
+                    f"{self.state_fill!r} but predecessor_binding 'none'; a state fill "
+                    "reads the predecessor state, so there has to be one"
+                )
         return self
 
     def as_json(self) -> dict[str, object]:
@@ -192,6 +283,7 @@ class PhaseMaterialSpec:
                 if self.predecessor_source is not None
                 else None
             ),
+            "state_fill": self.state_fill,
         }
 
 
@@ -255,6 +347,7 @@ def load_phase_material_specs(
             response_format_id=entry.get("response_format_id"),
             predecessor_binding=str(entry.get("predecessor_binding", "none")),
             predecessor_source=entry.get("predecessor_source"),
+            state_fill=entry.get("state_fill"),
         ).validate()
         if spec.response_format_id != phase.response_format_id:
             raise PhaseMaterialError(
@@ -346,6 +439,59 @@ def _appended(instruction: str, state: AgentStateArtifact) -> str:
     )
 
 
+def _joined(instruction: str, rendered: str) -> str:
+    """Append a per-sample state fill's text after the instruction,
+    separated by one blank line -- the same join :func:`_appended` uses for
+    the predecessor state block itself."""
+
+    return instruction + "\n\n" + rendered
+
+
+def _resolved_state_fills(
+    specs: Mapping[str, PhaseMaterialSpec],
+    explicit: Mapping[str, object] | None,
+) -> dict[str, object]:
+    """``{phase: (state_content) -> str}`` for every phase declaring one.
+
+    An explicitly supplied callable wins over the config-declared name (that
+    is what makes ``state_fill_by_phase=`` a seam a test or a caller holding
+    its own lock/root can use); otherwise the name is resolved through
+    :data:`PHASE_STATE_FILLS` and its factory is called ONCE, here, so a fill
+    that reads pinned carrier data pays for it before the first contact
+    rather than per sample. Refuses an explicit entry for a phase that
+    declares no ``state_fill``: a fill nobody declared would be an
+    undeclared, unhashed prompt difference.
+    """
+
+    supplied = dict(explicit or {})
+    declared = {phase for phase, spec in specs.items() if spec.state_fill is not None}
+    undeclared = sorted(set(supplied) - declared)
+    if undeclared:
+        raise PhaseMaterialError(
+            f"state_fill_by_phase names phase(s) {undeclared} whose material declares no "
+            "'state_fill'; a per-sample fill must be declared in config to be part of "
+            "the run's hashed identity"
+        )
+    fills: dict[str, object] = {}
+    for phase in sorted(declared):
+        fill = supplied.get(phase)
+        if fill is None:
+            factory = PHASE_STATE_FILLS.resolve(str(specs[phase].state_fill))
+            if not callable(factory):
+                raise PhaseMaterialError(
+                    f"registered phase state fill {specs[phase].state_fill!r} is not "
+                    "callable"
+                )
+            fill = factory()
+        if not callable(fill):
+            raise PhaseMaterialError(
+                f"phase {phase!r} state fill {specs[phase].state_fill!r} did not resolve "
+                "to a callable (state_content) -> str"
+            )
+        fills[phase] = fill
+    return fills
+
+
 def build_material_for_phase(
     specs: Mapping[str, PhaseMaterialSpec],
     *,
@@ -353,6 +499,7 @@ def build_material_for_phase(
     static_text_by_phase: Mapping[str, str],
     response_format_by_phase: Mapping[str, Mapping[str, object]],
     per_sample_states: Mapping[str, Mapping[str, AgentStateArtifact]] | None = None,
+    state_fill_by_phase: Mapping[str, object] | None = None,
 ):
     """Build the ``rails.phase_runner.ProgramMaterialForPhase`` callable.
 
@@ -364,6 +511,15 @@ def build_material_for_phase(
     sealed bundle. ``contact_id`` is ``"{program_id}:{phase}:{sample_id}"``,
     the same shape ``rails.controllers._default_material_for_phase`` mints.
 
+    A phase that declares ``state_fill`` gets ONE more thing, LAST: the
+    registered per-sample fill's text (:data:`PHASE_STATE_FILLS`), appended
+    after the state block. Appending last is what makes the arm that
+    declares a fill differ from the otherwise identical arm that does not by
+    a pure per-sample suffix, so their paired contrast measures the fill and
+    nothing else. ``state_fill_by_phase`` overrides the registered lookup
+    with an already-built callable for a caller that holds its own lock and
+    data root; it can only override a phase whose config declares a fill.
+
     Fail-closed on every missing piece: an unknown phase, a sample with no
     predecessor state, a phase whose response format was not resolved. All
     of them would otherwise become a silently weaker prompt on the wire.
@@ -372,6 +528,7 @@ def build_material_for_phase(
     if not isinstance(program_id, str) or not program_id:
         raise PhaseMaterialError("build_material_for_phase requires a program_id")
     states = dict(per_sample_states or {})
+    state_fills = _resolved_state_fills(specs, state_fill_by_phase)
 
     def material_for_phase(
         phase_name: str,
@@ -397,6 +554,7 @@ def build_material_for_phase(
                 f"phase {phase_name!r} has no rendered instruction text"
             ) from None
 
+        state: AgentStateArtifact | None = None
         if spec.predecessor_binding == "append-sealed-state":
             state = (sealed_states or {}).get(sample_id)
             if state is None:
@@ -413,6 +571,20 @@ def build_material_for_phase(
                     f"state was loaded for sample {sample_id!r}"
                 )
             instruction = _appended(instruction, state)
+        fill = state_fills.get(phase_name)
+        if fill is not None:
+            if state is None:
+                raise PhaseMaterialError(
+                    f"phase {phase_name!r} declares a state fill but bound no predecessor "
+                    f"state for sample {sample_id!r}"
+                )
+            rendered = fill(state.content)
+            if not isinstance(rendered, str) or not rendered.strip():
+                raise PhaseMaterialError(
+                    f"phase {phase_name!r} state fill {spec.state_fill!r} rendered no text "
+                    f"for sample {sample_id!r}"
+                )
+            instruction = _joined(instruction, rendered)
 
         response_format = response_format_by_phase.get(phase_name)
         if (spec.response_format_id is not None) != (response_format is not None):
@@ -631,6 +803,7 @@ def phase_material_receipt(
 
 
 __all__ = [
+    "PHASE_STATE_FILLS",
     "PREDECESSOR_BINDINGS",
     "PREDECESSOR_PREFIX",
     "PhaseMaterialError",

@@ -1,0 +1,31 @@
+{
+  "experiment_id": "SAEA-SLURP-KC-S1A-SLOTS-DEV1000-V1",
+  "fragment_kind": "saea-slurp-slot-stage-experiment-v1",
+  "date": "2026-09-05",
+  "purpose": "Cell KC-S1a of the 2026-09-05 three-dimension experiment program: one added slot-only contact per DEV-1000 row, conditioned on the SEALED closed-list intent and on the 55-type closed inventory the system message already carries, with NO per-intent schema. It is the contact-count control for KC-S1b: without it, any gain KC-S1b shows could be the extra contact rather than the TRAIN slot schema.",
+  "split_id": "DEV-1000",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "dev",
+    "planned_model_calls": 1050,
+    "planned_gpu_hours": 1.0,
+    "planned_speech_audio_seconds": 3000
+  },
+  "cells": [
+    {
+      "cell_id": "kc-s1a-slots-no-schema",
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-slots-given-intent-v1",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "dataset_fragment": "slurp-speech-native-dev1000"
+    }
+  ],
+  "population": "The whole frozen DEV-1000 runtime view, id for id, at split identity hash 8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84 -- the roster the sealed closed-list direct baseline flew and the roster its per-row predictions are the input of. No new draw and no new exposure. The DEV-500 / NEW500 partition is preserved for reporting; the decision population is NEW500.",
+  "comparator": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1, run manifest sha256 f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c, official scenario 81.00 / action 73.90 / intent 71.40 / entities strict 21.91 / Word-F1 33.69 / Char-F1 38.20 / SLU-F1 35.80. It is BOTH the comparator and the per-row input of this cell.",
+  "budget_basis": "1,000 registered contacts, one per DEV-1000 row, plus 8 canaries = 1,008; 1,050 is the registered ceiling. The roster's own audio is 2,884.7937 seconds and this cell makes exactly one pass over it; 3,000 is the ceiling. GPU hours planned 0.3 (the sealed closed-list arm used about 0.105 at -np 8; -np 4 roughly doubles wall time), ceiling 1.0. Paid API spend 0. Plan cells are RUN-CUMULATIVE across every attempt of this run id and at most one recovery re-registration is permitted.",
+  "decision": {
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "decision_rule": "KC-S1a has no admission gate of its own. It is reported as the contact-count reference: its paired contrast against the sealed closed-list baseline on NEW500 and pooled, and the (KC-S1b minus KC-S1a) contrast that carries KC-S1b's second admission condition."
+}

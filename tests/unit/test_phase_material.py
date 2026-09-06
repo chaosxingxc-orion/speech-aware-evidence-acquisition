@@ -25,6 +25,7 @@ from speech_aware_evidence_acquisition.rails.controllers import (
 from speech_aware_evidence_acquisition.rails.knowledge import AgentStateArtifact
 from speech_aware_evidence_acquisition.rails.material import PhaseMaterial
 from speech_aware_evidence_acquisition.rails.phase_material import (
+    PHASE_STATE_FILLS,
     PhaseMaterialError,
     PhaseMaterialSpec,
     build_material_for_phase,
@@ -363,6 +364,159 @@ def test_build_material_for_phase_reads_a_sealed_manifest_predecessor():
     )("fill", _context(), {})
 
     assert material.instruction.endswith("sealed intent")
+
+
+# ---------------------------------------------------------------------------
+# state_fill: the per-sample seam (KC-S1b)
+# ---------------------------------------------------------------------------
+
+
+def _values_with_state_fill(state_fill: object = "test-state-fill") -> dict:
+    values = _values()
+    values["phase_material"]["fill"] = {
+        "instruction_template": "probes/fill.txt",
+        "response_format_id": "fill-response-v1",
+        "predecessor_binding": "append-sealed-state",
+        "state_fill": state_fill,
+    }
+    return values
+
+
+def test_state_fill_appends_its_text_after_the_predecessor_state():
+    specs = load_phase_material_specs(_values_with_state_fill(), _program())
+    material = _built(
+        specs,
+        state_fill_by_phase={"fill": lambda content: "SCHEMA FOR " + content.upper()},
+    )("fill", _context(), {"s1": _state("s1")})
+
+    assert material.instruction == (
+        "FILL TEXT\n\nPrior phase response (phase:select):\nprior answer"
+        "\n\nSCHEMA FOR PRIOR ANSWER"
+    )
+
+
+def test_state_fill_makes_the_arm_a_pure_suffix_of_the_arm_without_one():
+    """S1b's instruction must be S1a's instruction plus a suffix, per sample.
+
+    That is the whole single-factor claim of the KC-S1b cell: the two arms
+    share a byte-identical prefix and differ only by the appended per-intent
+    schema block.
+    """
+
+    without = _built(load_phase_material_specs(_values(), _program()))(
+        "fill", _context(), {"s1": _state("s1")}
+    )
+    with_fill = _built(
+        load_phase_material_specs(_values_with_state_fill(), _program()),
+        state_fill_by_phase={"fill": lambda content: "BLOCK"},
+    )("fill", _context(), {"s1": _state("s1")})
+
+    assert with_fill.instruction.startswith(without.instruction)
+    assert with_fill.instruction[len(without.instruction) :] == "\n\nBLOCK"
+
+
+def test_state_fill_sees_the_sealed_manifest_state_content():
+    values = _values()
+    values["phase_material"]["fill"] = {
+        "instruction_template": "probes/fill.txt",
+        "response_format_id": "fill-response-v1",
+        "predecessor_binding": "sealed-manifest",
+        "predecessor_source": {
+            "manifest_relpath": "runs/x/y.run-manifest.json",
+            "manifest_sha256": HASHES["a"],
+            "producer_policy_id": "saea-earlier-cell-v1",
+        },
+        "state_fill": "test-state-fill",
+    }
+    seen: list[str] = []
+
+    def fill(content: str) -> str:
+        seen.append(content)
+        return "BLOCK"
+
+    specs = load_phase_material_specs(values, _program())
+    material = _built(
+        specs,
+        per_sample_states={"fill": {"s1": _state("s1", '{"scenario": "calendar"}')}},
+        state_fill_by_phase={"fill": fill},
+    )("fill", _context(), {})
+
+    assert seen == ['{"scenario": "calendar"}']
+    assert material.instruction.endswith("BLOCK")
+
+
+def test_state_fill_is_resolved_through_the_registry_when_not_supplied():
+    specs = load_phase_material_specs(
+        _values_with_state_fill("registry-only-test-fill"), _program()
+    )
+    PHASE_STATE_FILLS.register(
+        "registry-only-test-fill", lambda: (lambda content: "FROM REGISTRY")
+    )
+    try:
+        material = _built(specs)("fill", _context(), {"s1": _state("s1")})
+    finally:
+        PHASE_STATE_FILLS._entries.pop("registry-only-test-fill", None)
+
+    assert material.instruction.endswith("FROM REGISTRY")
+
+
+def test_state_fill_refuses_an_unregistered_name():
+    specs = load_phase_material_specs(
+        _values_with_state_fill("no-such-state-fill"), _program()
+    )
+    with pytest.raises(CoreError, match="unknown phase state fill"):
+        _built(specs)
+
+def test_state_fill_refuses_an_override_for_a_phase_that_declares_none():
+    specs = load_phase_material_specs(_values(), _program())
+    with pytest.raises(PhaseMaterialError, match="declares no 'state_fill'"):
+        _built(specs, state_fill_by_phase={"fill": lambda content: "BLOCK"})
+
+
+def test_state_fill_refuses_empty_rendered_text():
+    specs = load_phase_material_specs(_values_with_state_fill(), _program())
+    with pytest.raises(PhaseMaterialError, match="rendered no text"):
+        _built(specs, state_fill_by_phase={"fill": lambda content: "   "})(
+            "fill", _context(), {"s1": _state("s1")}
+        )
+
+
+def test_spec_refuses_a_state_fill_without_a_predecessor():
+    with pytest.raises(PhaseMaterialError, match="predecessor_binding 'none'"):
+        PhaseMaterialSpec(
+            phase="slots",
+            purpose="slot-extraction-given-intent",
+            instruction_template="probes/slurp_phase_slots.txt",
+            state_fill="slurp-intent-slot-schema-for-state",
+        ).validate()
+
+
+def test_spec_refuses_a_blank_state_fill():
+    with pytest.raises(PhaseMaterialError, match="state_fill must be"):
+        PhaseMaterialSpec(
+            phase="slots",
+            purpose="slot-extraction-given-intent",
+            instruction_template="probes/slurp_phase_slots.txt",
+            predecessor_binding="append-sealed-state",
+            state_fill="  ",
+        ).validate()
+
+
+def test_phase_material_receipt_records_the_declared_state_fill():
+    specs = load_phase_material_specs(_values_with_state_fill(), _program())
+    receipt = phase_material_receipt(
+        specs,
+        {"select": "SELECT TEXT", "fill": "FILL TEXT"},
+        {"select": {"type": "json_schema"}, "fill": {"type": "json_schema"}},
+    )
+    by_phase = {row["spec"]["phase"]: row["spec"] for row in receipt["phases"]}
+
+    assert by_phase["fill"]["state_fill"] == "test-state-fill"
+    assert by_phase["select"]["state_fill"] is None
+
+
+def test_the_slurp_state_fill_is_registered_under_its_config_name():
+    assert "slurp-intent-slot-schema-for-state" in PHASE_STATE_FILLS.names()
 
 
 # ---------------------------------------------------------------------------

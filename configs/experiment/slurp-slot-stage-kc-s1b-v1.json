@@ -1,0 +1,31 @@
+{
+  "experiment_id": "SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1",
+  "fragment_kind": "saea-slurp-slot-stage-experiment-v1",
+  "date": "2026-09-05",
+  "purpose": "Cell KC-S1b of the 2026-09-05 three-dimension experiment program: KC-S1a's slot contact plus the per-intent TRAIN slot schema of the intent the sealed closed-list baseline predicted for that row (prerequisite MF-3), and nothing else. THE ONE FACTOR is the schema block; the contact count, the roster, the system message, the packet, the build, the decoding and the serving geometry are all KC-S1a's.",
+  "split_id": "DEV-1000",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "dev",
+    "planned_model_calls": 1050,
+    "planned_gpu_hours": 1.0,
+    "planned_speech_audio_seconds": 3000
+  },
+  "cells": [
+    {
+      "cell_id": "kc-s1b-slots-with-schema",
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-slots-given-intent-schema-v1",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "dataset_fragment": "slurp-speech-native-dev1000"
+    }
+  ],
+  "population": "The whole frozen DEV-1000 runtime view, id for id, at split identity hash 8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84 -- the same roster KC-S1a and the sealed closed-list direct baseline flew. No new draw and no new exposure. The decision population is the unexposed NEW500; pooled 1,000 is reported beside it.",
+  "comparator": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1 (run manifest sha256 f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c) for the admission contrast, with SAEA-SLURP-KC-S1A-SLOTS-DEV1000-V1 beside it for the contact-count-matched contrast.",
+  "budget_basis": "Identical to KC-S1a's: 1,000 registered contacts plus 8 canaries, ceiling 1,050; 2,884.7937 audio seconds in one pass, ceiling 3,000; GPU hours planned 0.3, ceiling 1.0; paid API spend 0. Plan cells are RUN-CUMULATIVE across every attempt of this run id and at most one recovery re-registration is permitted.",
+  "decision": {
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "decision_rule": "ADMITTED iff the paired SLU-F1 CI90 lower bound is above 0 against the sealed closed-list direct baseline on the unexposed NEW500 AND the (KC-S1b minus KC-S1a) SLU-F1 CI90 lower bound is above 0 on the same population -- the schema, not the contact, has to be the lever. NULL if either interval includes 0, and USE-2b (the model's own transcript as the extraction source) becomes the next single factor. HARMFUL if an upper bound is below 0, and the slot branch ends with its form/content attribution recorded."
+}

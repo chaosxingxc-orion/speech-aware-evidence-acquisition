@@ -1,0 +1,5 @@
+Extract the entities of the spoken command carried in this request. The intent of this request has already been decided and is given below as the prior phase response; treat it as settled, do not revise it, and do not repeat it.
+
+Return exactly one JSON object and nothing else: no explanation, no code fence, no second object. The object has exactly one key, "entities", whose value is a JSON list of objects with exactly the keys "type" and "filler".
+
+Choose every "type" from the closed entity type list in the task contract already given in the system message above. Copy every "filler" verbatim from what was said, in lower case, without translating, expanding, abbreviating, reordering or correcting it. Give one object per entity mention, in the order the mentions are spoken. Return an empty list when the command carries no entity.

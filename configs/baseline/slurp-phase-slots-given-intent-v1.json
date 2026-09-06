@@ -1,0 +1,42 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "phase-slots-given-intent-v1",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
+  "speech_feature_key_representation_id": "saea-slurp-phase-slots-given-intent-v1:slots",
+  "speech_feature_matcher_policy_id": "saea-slurp-phase-slots-given-intent-v1",
+  "scorers": [
+    "slurp-slu-official",
+    "slurp-slu",
+    "cost"
+  ],
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template_active": true,
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-label-prior-speaker/snapshot.json",
+  "knowledge_snapshot_sha256": "07f94807d173b2f2bdda9dcd95b21354e018234a208a76683d0ca4989d9ffa65",
+  "serving_slots": 4,
+  "serving_slot_tokens": 16384,
+  "phase_material": {
+    "slots": {
+      "instruction_template": "probes/slurp_phase_slots.txt",
+      "instruction_fill": null,
+      "response_format_id": null,
+      "predecessor_binding": "sealed-manifest",
+      "predecessor_source": {
+        "manifest_relpath": "runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.run-manifest.json",
+        "manifest_sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c",
+        "producer_policy_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1"
+      }
+    }
+  },
+  "what_this_is": "Cell KC-S1a of the 2026-09-05 three-dimension experiment program: the CONTACT-COUNT CONTROL of the SLURP slot stage. One added contact per row that asks for the entity list alone, conditioned on the intent the SEALED closed-list direct baseline already predicted for that row, and on no per-intent schema. It exists so that KC-S1b's per-intent TRAIN slot schema can be attributed to the schema rather than to the extra contact.",
+  "the_intent_is_an_input_not_an_output": "predecessor_binding 'sealed-manifest' rebuilds one AgentStateArtifact per sample from the sealed closed-list run manifest (sha256 f908ff4c...c94c, the identity its 2026-09-05 verdict records) through rails.phase_material.sealed_states_from_manifest, which binds each state to that row's own request_sha256 / response_text_sha256. The frozen core's own prior answer is what enters the slots contact -- never gold, never a re-flown intent contact. Nothing about the closed-list baseline is re-run or changed.",
+  "the_system_message_is_the_baseline_s": "task_instruction_template and task_instruction_fill are byte-identical to configs/baseline/slurp-direct-closed-list.json's, so the system message this cell sends is the same 7,583-character instruction (sha256 4073f79e...37db) the sealed baseline sent: the sealed 2026-08-25 M0 task contract plus the 1,836-character closed label inventory, including the 55 entity type names this contact draws its types from. The ONLY thing this cell adds to the wire is the phase's CONTROL turn (probes/slurp_phase_slots.txt) and the appended sealed state.",
+  "why_the_response_is_an_object_and_not_a_bare_list": "reproduction.slurp_scoring.parse_slu_response -- the same fail-closed parser the official scorer's prediction side uses -- accepts an object whose 'entities' key holds the list and whose scenario/action are absent. Asking for {\"entities\": [...]} therefore makes the SEALED rows directly parseable by the registered scorers, so the official entity, Word-F1, Char-F1 and SLU-F1 blocks (all four of which the official evaluate.py computes from entities ALONE -- slu_f1 is fed only the word- and char-distance entity metrics) are real numbers from core.scoring_batch over the complete manifest, with no projection anywhere in the primary metric's path. A bare JSON list would have parsed to nothing.",
+  "knowledge_is_bound_but_invisible": "rails.runner.run_speech_native_agent_loop requires a validated, non-empty KnowledgeSnapshot for every agent-loop contact even when no phase consumes one; this program's single phase declares knowledge 'none' and the snapshot is bound with empty bootstrap ids, so no facet and no value is rendered into any prompt. What the binding buys is the leakage rule _assert_agent_control_excludes_knowledge_payloads. The snapshot named here is the TRAIN snapshot WITHOUT its content dimension (docs/receipts/knowledge/slurp-kb-size-full-label-prior-speaker.json): 349 label/speaker/prior facets plus all 11,514 exemplar values, 11,863 protected payloads. The default size-full snapshot could not be used, and the reason is a real defect this cell found -- see the deviation note in the KC-S1 preregistration.",
+  "serving_geometry_override": "serving_slots 4 / serving_slot_tokens 16384 (-np 4 -c 65536) instead of the SlurpAdapter default 8 x 8192. Per-slot CONTEXT, not throughput: KC-S1b's fallback rows carry the full 60-intent schema (about 7,500 tokens) and do not fit an 8,192-token slot. KC-S1a flies the same geometry so the (S1b minus S1a) contrast is geometry-matched. Concurrency is not a request-content variable.",
+  "scorer_basis": "Unchanged from configs/baseline/slurp-direct-closed-list.json: slurp-slu-official is the paper-facing scorer (the real, unmodified official evaluate.py at pinned commit 8eb16545762be97ace75334109d73824217311f1, --average micro), slurp-slu names the carrier's own scorer id, and both run once over the complete manifest through core.scoring_batch, never sharded."
+}

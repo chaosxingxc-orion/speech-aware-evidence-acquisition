@@ -242,6 +242,22 @@
       },
       "scorer": "slurp-slu-official (the same pinned official evaluate.py as SLURP-DEV1000-CLOSED-LIST-DIRECT), run through core.scoring_batch",
       "success": "a wiring gate, not a threshold: 4 of 4 contacts, exactly one phase in the run_phases receipt, one sealed outputs row per sample, a phases file whose sha256 the seal receipt records, and every declared scorer running to completion over the complete manifest"
+    },
+    "SLURP-SLOT-STAGE-KC-S1": {
+      "arms": {
+        "slots": [
+          "slurp_phase_slots.txt"
+        ]
+      },
+      "note": "Cells KC-S1a and KC-S1b of the 2026-09-05 three-dimension experiment program. This template is NOT the system message -- that stays the closed-list instruction (slurp_direct_closed_list.txt, rendered through the slurp-label-inventory fill), byte-identical to the sealed SLURP direct baseline's. It is the per-phase CONTROL turn of phase-slots-given-intent-v1, asking for the entity list alone, and it is IDENTICAL in both cells. KC-S1a sends it followed by the sealed closed-list response for the row (predecessor_binding sealed-manifest). KC-S1b sends the same bytes plus one per-sample suffix: the TRAIN slot schema block of the intent that sealed response names, appended by the registered state fill slurp-intent-slot-schema-for-state. The two cells therefore differ by a pure per-sample suffix and by nothing else. configs/baseline/slurp-phase-slots-given-intent-v1.json and configs/baseline/slurp-phase-slots-given-intent-schema-v1.json.",
+      "profile": "bounded-discovery-probe",
+      "sample_receipt": "DEV-1000.json",
+      "sampling": {
+        "design": "no new draw: the frozen DEV-1000 roster the sealed closed-list direct baseline flew, reused id-for-id, with the DEV-500 / NEW500 partition preserved for reporting",
+        "seed": 20260823
+      },
+      "scorer": "slurp-slu-official (the same pinned official evaluate.py at commit 8eb16545762be97ace75334109d73824217311f1 as SLURP-DEV1000-CLOSED-LIST-DIRECT), run once per complete manifest through core.scoring_batch; the paper-facing full-row table additionally comes from a post-seal, model-free projection that joins the sealed closed-list scenario/action to these entities and is scored by the SAME registered scorer over the complete roster.",
+      "success": "KC-S1b is ADMITTED iff its paired SLU-F1 CI90 lower bound is above 0 against the sealed closed-list direct baseline on the unexposed NEW500 AND the (KC-S1b minus KC-S1a) lower bound is above 0; NULL if either includes 0; HARMFUL if an upper bound is below 0. KC-S1a is the contact-count control and has no gate of its own."
     }
   },
   "samples": {
@@ -382,6 +398,9 @@
     },
     "slurp_phase_direct.txt": {
       "sha256": "d02f194c3c8a8375a15c28f7ca874f30bd2ad34d60e8ff9cdbc654572ebf9d50"
+    },
+    "slurp_phase_slots.txt": {
+      "sha256": "221ed0d343b0a543eda98008312938da25bde204a131efe8427ea8e3934a5e1f"
     }
   }
 }
