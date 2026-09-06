@@ -20,6 +20,9 @@ Usage::
     python scripts/build_a2t_knowledge_snapshot.py --size full --no-ceiling
     python scripts/build_a2t_knowledge_snapshot.py --size full \\
         --snapshot-label full-exposure-union-v1
+    python scripts/build_a2t_knowledge_snapshot.py --size full \\
+        --snapshot-label full-exposure-union-v2 \\
+        --exposure-row SAEA-SN-MF-A2T-KB-EXPOSURE-UNION-V2
 
 Artifacts::
 
@@ -103,9 +106,9 @@ def _size_label(size: int | None) -> str:
     return "full" if size is None else str(size)
 
 
-def _offline_block(attempts) -> dict[str, object]:
+def _offline_block(attempts, exposure_row: str = EXPOSURE_ROW_ID) -> dict[str, object]:
     return {
-        "exposure_row": EXPOSURE_ROW_ID,
+        "exposure_row": exposure_row,
         "outbound_connection_attempts": attempts.count,
         "attempted_targets": list(attempts.targets),
         "mechanism": (
@@ -139,9 +142,21 @@ def main() -> int:
             "an in-place overwrite."
         ),
     )
+    parser.add_argument(
+        "--exposure-row",
+        type=str,
+        default=EXPOSURE_ROW_ID,
+        help=(
+            "the model-free exposure-ledger row this build runs under, written into "
+            "every receipt it emits (default: the original G0 row). A rebuild whose "
+            "construction pool differs from an earlier one runs under its OWN row, so "
+            "the receipt names the row that actually produced it."
+        ),
+    )
     args = parser.parse_args()
     size = _parse_size(args.size)
     snapshot_label = args.snapshot_label or _size_label(size)
+    exposure_row = args.exposure_row
 
     attempts = arm_offline_guard()
 
@@ -220,8 +235,8 @@ def main() -> int:
         "schema": "saea-kb-a2t-build-receipt-v1",
         "generator": "scripts/build_a2t_knowledge_snapshot.py",
         "authority": AUTHORITY,
-        "exposure_row": EXPOSURE_ROW_ID,
-        "offline_guard": _offline_block(attempts),
+        "exposure_row": exposure_row,
+        "offline_guard": _offline_block(attempts, exposure_row),
         "builder_policy_id": A2T_KB_BUILD_POLICY_ID,
         "spec": {
             "carrier_lock_key": spec.carrier_lock_key,
@@ -275,8 +290,8 @@ def main() -> int:
             "schema": "saea-a2t-partition-proposal-v1",
             "generator": "scripts/build_a2t_knowledge_snapshot.py",
             "authority": AUTHORITY,
-            "exposure_row": EXPOSURE_ROW_ID,
-            "offline_guard": _offline_block(attempts),
+            "exposure_row": exposure_row,
+            "offline_guard": _offline_block(attempts, exposure_row),
             "status": (
                 "PROPOSAL ONLY. This document is NOT a registered split and is deliberately "
                 "NOT written under docs/receipts/probe-samples/, so it does not enter the "
@@ -315,8 +330,8 @@ def main() -> int:
         "schema": "saea-a2t-lexical-ceiling-v1",
         "generator": "scripts/build_a2t_knowledge_snapshot.py",
         "authority": AUTHORITY,
-        "exposure_row": EXPOSURE_ROW_ID,
-        "offline_guard": _offline_block(attempts),
+        "exposure_row": exposure_row,
+        "offline_guard": _offline_block(attempts, exposure_row),
         "ceiling_policy_id": CEILING_POLICY_ID,
         "snapshot_id": snapshot.snapshot_id,
         "snapshot_sha256": snapshot_sha256,
