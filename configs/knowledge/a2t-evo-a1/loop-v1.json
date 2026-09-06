@@ -1,0 +1,50 @@
+{
+  "background_tolerance_pp": -1.0,
+  "base_fragment": "a2t-evo-a1-base",
+  "carrier_lock_key": "audio2tool",
+  "deterministic_slot": 4,
+  "exemplars_per_tool": 8,
+  "fold_a_dataset_fragment": "audio2tool-evo-fold-a-404",
+  "fold_a_run_id": "SAEA-A2T-EVO-A1-FOLD-A-V1",
+  "fold_b_dataset_fragment": "audio2tool-evo-fold-b-404",
+  "fold_b_run_id": "SAEA-A2T-EVO-A1-FOLD-B-V1",
+  "gates": {
+    "harms": 1,
+    "net": 3,
+    "saves": 4
+  },
+  "max_rounds": 4,
+  "metric": "tool_correct",
+  "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
+  "n_replicates": 10000,
+  "note": "The EVO-A1 loop, as data. scripts/run_a2t_evolution_round.py carries no cell knowledge of its own; every value here is preregistered in docs/readiness/2026-09-06-a2t-evo-a1-description-evolution-v1-preregistration.md. The targets below are the STRICT set (section 2); the coordinator may ratify RELAXED by adding the two reduced targets, which needs no fresh roster draw.",
+  "placebo_slot": 5,
+  "proposer_run_id": "SAEA-A2T-EVO-A1-PROPOSER-V1",
+  "proposer_slots": [
+    1,
+    2,
+    3
+  ],
+  "schema": "saea-evolution-loop-config-v1",
+  "scorer_id": "a2t-toolcall-official",
+  "seed": 20260903,
+  "slug": "a2t-evo-a1",
+  "targets": {
+    "activateRoutine": [
+      "activateRoutine",
+      "activateScene",
+      "setApplianceMode",
+      "setSecurityMode",
+      "startCleaning"
+    ],
+    "castContent": [
+      "castContent",
+      "playMedia"
+    ],
+    "getBiometricData": [
+      "getBiometricData",
+      "getHRV",
+      "setHapticStrength"
+    ]
+  }
+}

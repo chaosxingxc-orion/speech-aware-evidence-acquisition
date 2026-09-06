@@ -53,7 +53,7 @@ from __future__ import annotations
 import hashlib
 import json
 import random
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
@@ -64,9 +64,11 @@ from ..analysis.paired import (
 )
 from .hashing import canonical_json_bytes, content_hash
 from .proposer import (
+    DECONTAMINATION_NGRAM,
     CandidateArtifact,
     ProposerError,
     candidate_bytes,
+    deterministic_candidate,
     parse_proposer_response,
     placebo_candidate,
     prompt_sha256,
@@ -157,9 +159,17 @@ __all__ = [
     "assemble_round_portfolios",
     "RoundStep",
     "RoundPlan",
-    "round_step_paths",
+    "LoopConfig",
     "plan_round",
     "advance_round",
+    "CarrierMaterial",
+    "RoundStepResult",
+    "STEP_RESULT_SCHEMA",
+    "run_propose_step",
+    "run_candidates_step",
+    "run_select_step",
+    "run_confirm_step",
+    "ROUND_STEP_RUNNERS",
     "check_ledger_budget",
 ]
 
@@ -2231,58 +2241,157 @@ class RoundPlan:
         }
 
 
-def round_step_paths(round_index: int) -> dict[str, dict[str, tuple[str, ...]]]:
-    """The relative artefact names each step of round ``r`` reads and writes.
+@dataclass(frozen=True)
+class LoopConfig:
+    """Everything one EVO-A1 loop is, as data.
 
-    Names only, no I/O: :func:`plan_round` takes an ``exists`` predicate so
-    the whole plan is a pure function of which receipts are present, and a
-    test can drive a full round with no filesystem at all.
-
-    ``<sealed>`` entries are produced by a FLIGHT, not by the driver: the
-    driver never contacts the model, so a step that needs a flight's output
-    simply waits for it (``blocked_on``).
+    Read from a committed JSON file (``LoopConfig.from_json``) so the driver
+    carries no cell knowledge of its own: the targets, the rosters, the run
+    ids, the fragment names and the loop constants are all preregistered
+    values, and a driver invocation that wanted different ones would have to
+    change a committed file.
     """
 
-    if isinstance(round_index, bool) or not isinstance(round_index, int) or round_index < 1:
-        raise EvolutionError("round_index must be a positive integer")
-    stem = f"round-{round_index:02d}"
-    return {
-        "propose": {
-            "reads": (),
-            "writes": (
-                f"{stem}/proposer-roster.json",
-                f"{stem}/proposer-experiment.json",
-                f"{stem}/propose.json",
-            ),
-        },
-        "candidates": {
-            "reads": (f"{stem}/propose.json", f"{stem}/proposer-outputs.jsonl"),
-            "writes": (
-                f"{stem}/candidates.json",
-                f"{stem}/fold-a-experiment.json",
-            ),
-        },
-        "select": {
-            "reads": (f"{stem}/candidates.json", f"{stem}/fold-a-scores.json"),
-            "writes": (
-                f"{stem}/selection.json",
-                f"{stem}/fold-b-experiment.json",
-            ),
-        },
-        "confirm": {
-            "reads": (f"{stem}/selection.json", f"{stem}/fold-b-scores.json"),
-            "writes": (
-                f"{stem}/confirmation.json",
-                f"evolution-round-{round_index:02d}.json",
-            ),
-        },
-    }
+    carrier_lock_key: str
+    targets: Mapping[str, tuple[str, ...]]
+    proposer_run_id: str
+    fold_a_run_id: str
+    fold_b_run_id: str
+    base_fragment: str
+    model_fragment: str
+    fold_a_dataset_fragment: str
+    fold_b_dataset_fragment: str
+    metric: str
+    scorer_id: str
+    proposer_slots: tuple[int, ...] = (1, 2, 3)
+    placebo_slot: int | None = 5
+    deterministic_slot: int = 4
+    exemplars_per_tool: int = EXEMPLARS_PER_TOOL
+    seed: int = DEFAULT_SEED
+    max_rounds: int = MAX_ROUNDS
+    gates: AdmissionGates = AdmissionGates()
+    background_tolerance_pp: float = BACKGROUND_TOLERANCE_PP
+    n_replicates: int = 10_000
+    receipts_reldir: str = (
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1"
+    )
+    rosters_reldir: str = "docs/receipts/rosters"
+    experiments_reldir: str = "configs/experiment"
+    # FLAT, and this is a harness constraint rather than a taste: a config
+    # fragment name may carry no path separator (``core.config
+    # ._FRAGMENT_NAME_PATTERN``), so a fragment written into a
+    # ``configs/baseline/<subdir>/`` tree could never be composed.
+    fragment_reldir: str = "configs/baseline"
+    artifact_reldir: str = "configs/knowledge/a2t-evo-a1"
+    slug: str = "a2t-evo-a1"
+
+    @classmethod
+    def from_json(cls, document: Mapping[str, object]) -> "LoopConfig":
+        if not isinstance(document, Mapping) or not document:
+            raise EvolutionError("loop config must be a non-empty mapping")
+        known = {f.name for f in fields(cls)}
+        unknown = sorted(set(document) - known - {"schema", "note"})
+        if unknown:
+            raise EvolutionError(f"loop config carries unknown key(s): {unknown}")
+        values = {key: document[key] for key in known if key in document}
+        if "targets" in values:
+            raw = values["targets"]
+            if not isinstance(raw, Mapping) or not raw:
+                raise EvolutionError("loop config targets must be a non-empty mapping")
+            values["targets"] = {
+                str(key): tuple(str(tool) for tool in tools) for key, tools in raw.items()
+            }
+        for key in ("proposer_slots",):
+            if key in values:
+                values[key] = tuple(int(slot) for slot in values[key])
+        if "gates" in values:
+            raw = values["gates"]
+            values["gates"] = AdmissionGates(
+                saves=int(raw["saves"]), harms=int(raw["harms"]), net=int(raw["net"])
+            )
+        config = cls(**values)
+        assert_disjoint_targets(
+            [Target(target_id=key, tools=tools) for key, tools in config.targets.items()]
+        )
+        return config
+
+    def target_objects(self) -> tuple[Target, ...]:
+        return assert_disjoint_targets(
+            [Target(target_id=key, tools=tools) for key, tools in sorted(self.targets.items())]
+        )
+
+    def slots_for_round(self, round_index: int) -> tuple[int, ...]:
+        """The proposer slots plus, in round 1 only, the placebo slot.
+
+        Preregistration section 4: ``K_1 = 5`` and ``K_r = 4`` for ``r >= 2``
+        -- the round-1 placebo is an EXTRA slot, never a replaced proposer
+        draw.
+        """
+
+        if round_index == 1 and self.placebo_slot is not None:
+            return (*self.proposer_slots, self.placebo_slot)
+        return tuple(self.proposer_slots)
+
+    def round_paths(self, round_index: int) -> dict[str, dict[str, tuple[str, ...]]]:
+        """The repository-relative artefacts each step of round ``r`` reads
+        and writes.
+
+        Names only, no I/O: :func:`plan_round` takes an ``exists`` predicate,
+        so the whole plan is a pure function of which artefacts are present
+        and a test can drive a full round with no filesystem at all.
+
+        Three of the reads are produced by a FLIGHT, not by the driver -- the
+        sealed proposer outputs and the two score indexes. The driver never
+        contacts the model, so a step that needs one simply waits for it
+        (``RoundPlan.blocked_on``).
+        """
+
+        if (
+            isinstance(round_index, bool)
+            or not isinstance(round_index, int)
+            or round_index < 1
+        ):
+            raise EvolutionError("round_index must be a positive integer")
+        stem = f"{self.receipts_reldir}/round-{round_index:02d}"
+        experiments = self.experiments_reldir
+        return {
+            "propose": {
+                "reads": (),
+                "writes": (
+                    f"{self.rosters_reldir}/{self.slug}-proposer-r{round_index:02d}.json",
+                    f"{experiments}/{self.slug}-proposer-r{round_index:02d}.json",
+                    f"{stem}/propose.json",
+                ),
+            },
+            "candidates": {
+                "reads": (f"{stem}/propose.json", f"{stem}/proposer-outputs.jsonl"),
+                "writes": (
+                    f"{stem}/candidates.json",
+                    f"{experiments}/{self.slug}-fold-a-r{round_index:02d}.json",
+                ),
+            },
+            "select": {
+                "reads": (f"{stem}/candidates.json", f"{stem}/fold-a-scores.json"),
+                "writes": (
+                    f"{stem}/selection.json",
+                    f"{experiments}/{self.slug}-fold-b-r{round_index:02d}.json",
+                ),
+            },
+            "confirm": {
+                "reads": (f"{stem}/selection.json", f"{stem}/fold-b-scores.json"),
+                "writes": (
+                    f"{stem}/confirmation.json",
+                    f"{self.receipts_reldir}/evolution-round-{round_index:02d}.json",
+                ),
+            },
+        }
 
 
 def plan_round(
     state: EvolutionState,
     round_index: int,
     *,
+    paths: Mapping[str, Mapping[str, Sequence[str]]],
     exists: Callable[[str], bool],
 ) -> RoundPlan:
     """The resumable step list for round ``round_index``. Pure.
@@ -2293,10 +2402,9 @@ def plan_round(
     exactly the first step that has not landed, and a step whose outputs are
     already sealed is never redone.
 
-    ``state`` supplies the round number the loop has actually reached, which
-    is checked against ``round_index``: a driver invoked for round 3 while
-    the state's history ends at round 1 would otherwise silently skip a
-    round's evidence.
+    ``state`` supplies the round the loop has actually reached, checked
+    against ``round_index``: a driver invoked for round 3 while the state's
+    history ends at round 1 would otherwise silently skip a round's evidence.
     """
 
     state.validate()
@@ -2311,8 +2419,9 @@ def plan_round(
             f"round_index must be the state's next round ({state.round + 1}); got "
             f"{round_index!r}"
         )
+    if not isinstance(paths, Mapping) or set(paths) != set(ROUND_STEPS):
+        raise EvolutionError(f"paths must name exactly the steps {list(ROUND_STEPS)}")
 
-    paths = round_step_paths(round_index)
     steps: list[RoundStep] = []
     predecessor_done = True
     next_step: str | None = None
@@ -2351,10 +2460,11 @@ def advance_round(
     state: EvolutionState,
     *,
     round_index: int,
-    confirmation: ConfirmationDecision,
+    confirmation: ConfirmationDecision | None,
     assembly: Portfolio | None,
     max_rounds: int = MAX_ROUNDS,
     min_accepted_gain_pp: float = MIN_ACCEPTED_GAIN_PP,
+    no_confirmation_reason: str | None = None,
 ) -> tuple[EvolutionState, RoundOutcome, tuple[bool, str]]:
     """The round's tail, as one pure step: the next incumbent, the outcome
     the stop rule reads, and the stop verdict.
@@ -2369,25 +2479,48 @@ def advance_round(
     """
 
     state.validate()
-    if not isinstance(confirmation, ConfirmationDecision):
-        raise EvolutionError("confirmation must be a ConfirmationDecision")
-    if confirmation.accepted and assembly is None:
-        raise EvolutionError(
-            "an accepted round must carry the assembly whose overrides become the "
-            "next incumbent"
-        )
+    if confirmation is None:
+        # A round in which stage one admitted no target never reaches fold B,
+        # so there is no interval to read. It is still a completed ROUND with
+        # an outcome the stop rule counts -- "two consecutive rejects" must
+        # include this one -- so the reason is required rather than invented.
+        if not isinstance(no_confirmation_reason, str) or not no_confirmation_reason:
+            raise EvolutionError(
+                "a round with no confirmation must state why it never flew one"
+            )
+        if assembly is not None:
+            raise EvolutionError(
+                "an assembly was built but no confirmation was read; a flown assembly "
+                "must be confirmed or the round is not a round"
+            )
+        accepted, gain_pp, reason = False, 0.0, no_confirmation_reason
+    else:
+        if not isinstance(confirmation, ConfirmationDecision):
+            raise EvolutionError("confirmation must be a ConfirmationDecision")
+        if no_confirmation_reason is not None:
+            raise EvolutionError(
+                "no_confirmation_reason is only for a round that read no confirmation"
+            )
+        if confirmation.accepted and assembly is None:
+            raise EvolutionError(
+                "an accepted round must carry the assembly whose overrides become the "
+                "next incumbent"
+            )
+        accepted = confirmation.accepted
+        gain_pp = float(confirmation.targeted_gain_pp)
+        reason = confirmation.reason
     if assembly is not None and not isinstance(assembly, Portfolio):
         raise EvolutionError("assembly must be a Portfolio or None")
     outcome = RoundOutcome(
         round=round_index,
-        accepted=confirmation.accepted,
-        gain_pp=float(confirmation.targeted_gain_pp),
-        reason=confirmation.reason,
+        accepted=accepted,
+        gain_pp=gain_pp,
+        reason=reason,
         portfolio_sha256=None if assembly is None else assembly.portfolio_sha256,
     ).validate()
     next_state = state.with_outcome(
         outcome,
-        overrides=dict(assembly.overrides) if (confirmation.accepted and assembly) else None,
+        overrides=dict(assembly.overrides) if (accepted and assembly) else None,
     )
     stop = should_stop(
         next_state.history,
@@ -2458,3 +2591,731 @@ def check_ledger_budget(
             + "; the registered ceiling is run-cumulative and is not raised by a driver"
         )
     return {"run_id": run_id, "planned": planned, "ceilings": ceilings, "within": True}
+
+
+# ---------------------------------------------------------------------------
+# The four steps, as pure functions over sealed receipts
+# ---------------------------------------------------------------------------
+
+
+STEP_RESULT_SCHEMA = "saea-evolution-round-step-v1"
+
+
+@dataclass(frozen=True)
+class CarrierMaterial:
+    """Everything a round's steps need from the carrier and the committed
+    rosters, resolved ONCE by the driver and handed in.
+
+    Keeping it a plain value object is what makes every step function pure
+    and testable with synthetic data: the offline dry run builds one of these
+    by hand and drives a whole round with no carrier, no lock and no wav.
+    """
+
+    registry_rows: tuple[Mapping[str, str], ...]
+    exemplar_pool: Mapping[str, tuple[str, ...]]
+    media_facts: Mapping[str, Mapping[str, object]]
+    exemplar_rows: Mapping[str, Mapping[str, str]]
+    fold_a_rows_of_target: Mapping[str, tuple[str, ...]]
+    fold_b_targeted_rows: tuple[str, ...]
+    fold_b_background_rows: tuple[str, ...]
+    fold_a_strata_of: Callable[[str], str] | None = None
+    fold_b_strata_of: Callable[[str], str] | None = None
+
+
+@dataclass(frozen=True)
+class RoundStepResult:
+    """One step's output: documents to write, the state it produced, and the
+    summary the driver prints. Nothing here is written by the step itself
+    except the two artefact writers the preregistration names
+    (:func:`write_candidate_fragments`, :func:`write_round_receipt`), whose
+    paths are reported in ``summary``."""
+
+    step: str
+    round: int
+    documents: Mapping[str, object]
+    state: EvolutionState | None
+    summary: Mapping[str, object]
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "schema": STEP_RESULT_SCHEMA,
+            "step": self.step,
+            "round": self.round,
+            "documents": sorted(self.documents),
+            "summary": dict(self.summary),
+        }
+
+
+def _experiment_fragment(
+    *,
+    config: LoopConfig,
+    round_index: int,
+    run_id: str,
+    profile: str,
+    dataset_fragment: str,
+    arm: str,
+    cells: Sequence[Mapping[str, object]],
+    planned_model_calls: int,
+    planned_speech_audio_seconds: int,
+    planned_gpu_hours: float,
+    purpose: str,
+) -> dict[str, object]:
+    """One composable experiment fragment.
+
+    A fragment declares EXACTLY ONE ``execution_plan``, and that object
+    carries the single ``execution_profile`` ``contracts.assert_execution_scope``
+    validates (``FlightRuntime._build_execution_plan`` reads
+    ``values["execution_plan"]``). That is why the reward flights
+    (``baseline-reproduction``) and the proposer contacts
+    (``bounded-discovery-probe``) get one fragment each per round rather
+    than sharing one: it is a finding about the harness, not a preference.
+    """
+
+    return {
+        "experiment_id": run_id,
+        "schema": "saea-a2t-direct-calibration-experiment-v1",
+        "generated_by": "scripts/run_a2t_evolution_round.py",
+        "round": round_index,
+        "purpose": purpose,
+        "execution_profile": profile,
+        "preregistration": (
+            "docs/readiness/2026-09-06-a2t-evo-a1-description-evolution-v1-preregistration.md"
+        ),
+        "cells": [dict(cell) for cell in cells],
+        "populations": [{"dataset_fragment": dataset_fragment, "arm": arm}],
+        "execution_plan": {
+            "execution_profile": profile,
+            "split_role": "discovery",
+            "planned_model_calls": int(planned_model_calls),
+            "planned_gpu_hours": float(planned_gpu_hours),
+            "planned_speech_audio_seconds": int(planned_speech_audio_seconds),
+        },
+    }
+
+
+def run_propose_step(
+    state: EvolutionState,
+    round_index: int,
+    *,
+    config: LoopConfig,
+    carrier: CarrierMaterial,
+    ledger_rows: Sequence[Mapping[str, str]] = (),
+    seconds_per_call: float = 0.80,
+) -> RoundStepResult:
+    """Step (a): the proposer roster receipt and its experiment fragment.
+
+    The draws are planned, the roster is frozen, and every contact is
+    RENDERED here so the step receipt can pin each prompt's sha256 -- the
+    same digest a candidate id carries, and the same one the flight's own
+    wire check recomputes. The rendered text itself never leaves this
+    process: ``ProposerContact.as_json`` records identity, counts and
+    digests only.
+    """
+
+    state.validate()
+    paths = config.round_paths(round_index)["propose"]["writes"]
+    slots = config.slots_for_round(round_index)
+    proposer_slots = tuple(slot for slot in slots if slot != config.placebo_slot)
+    placebo_slot = config.placebo_slot if config.placebo_slot in slots else None
+    draws = plan_proposer_draws(
+        config.targets,
+        carrier.exemplar_pool,
+        round=round_index,
+        proposer_slots=proposer_slots,
+        placebo_slot=placebo_slot,
+        exemplars_per_tool=config.exemplars_per_tool,
+        seed=config.seed,
+    )
+    roster = proposer_roster_receipt(
+        draws,
+        carrier_lock_key=config.carrier_lock_key,
+        roster_id=f"{config.slug.upper()}-PROPOSER-R{round_index:02d}",
+        media_facts=carrier.media_facts,
+        seed=config.seed,
+    )
+    material = build_proposer_material(
+        roster,
+        registry_rows=carrier.registry_rows,
+        target_tools=config.targets,
+        incumbent_overrides=state.incumbent_overrides,
+        exemplar_rows=carrier.exemplar_rows,
+        carrier_lock_key=config.carrier_lock_key,
+    )
+    speech_seconds = sum(
+        float(carrier.media_facts[draw.anchor_sample_id]["audio_seconds"]) for draw in draws
+    )
+    budget = check_ledger_budget(
+        ledger_rows,
+        run_id=config.proposer_run_id,
+        calls=len(draws) * config.max_rounds,
+        speech_seconds=speech_seconds * config.max_rounds,
+    ) if ledger_rows else {"checked": False, "reason": "no ledger rows supplied"}
+
+    fragment = _experiment_fragment(
+        config=config,
+        round_index=round_index,
+        run_id=config.proposer_run_id,
+        profile="bounded-discovery-probe",
+        dataset_fragment=f"{config.slug}-proposer-r{round_index:02d}",
+        arm="construction-proposer-text",
+        cells=[
+            {
+                "cell_id": f"{config.slug}-r{round_index}-{contact.draw.draw_id}",
+                "run_id": config.proposer_run_id,
+                "attempt_id": f"attempt-r{round_index}-p{contact.draw.target_id}"
+                f"-k{contact.draw.k}",
+                "arm": "construction-proposer-text",
+                "baseline_fragment": f"{config.slug}-proposer",
+                "model_fragment": config.model_fragment,
+                "factor": (
+                    f"{contact.draw.family} draw k={contact.draw.k} for target "
+                    f"{contact.draw.target_id}"
+                ),
+            }
+            for contact in material.contacts
+        ],
+        planned_model_calls=len(draws),
+        # NOT zero, and this is a harness fact rather than a claim about
+        # audio: ``core.model.FrozenCoreAdapter`` charges the payload's own
+        # ``audio_seconds`` against the plan even for a text-only request
+        # that sends no audio part, and ``contracts.ExecutionPlan`` refuses a
+        # non-positive value outright. The arm still sends no audio; the plan
+        # must nevertheless cover the anchors' durations.
+        planned_speech_audio_seconds=max(1, int(speech_seconds) + 1),
+        planned_gpu_hours=max(len(draws) * seconds_per_call / 3600.0, 0.01),
+        purpose=(
+            f"EVO-A1 round {round_index} PROPOSE: one text-only contact per draw on the "
+            "construction-proposer-text arm. Zero audio parts are sent."
+        ),
+    )
+    # The three keys ``core.flight.runtime._default_construction_material``
+    # resolves. They live in the EXPERIMENT fragment, not in the proposer's
+    # baseline fragment, because the roster is per ROUND and ``core.config
+    # .compose`` refuses the same key from two fragments.
+    fragment["construction_proposer_roster_receipt"] = paths[0]
+    fragment["construction_proposer_roster_split_identity_hash"] = roster[
+        "split_identity_hash"
+    ]
+    fragment["construction_target_tools"] = {
+        key: list(value) for key, value in sorted(config.targets.items())
+    }
+    # From round 2 the proposer is shown ``A_r`` rather than the released
+    # descriptions, and the artifact that IS ``A_r`` is the one the last
+    # ACCEPTED round's assembly wrote -- named, like every artifact this
+    # module emits, by its portfolio sha256.
+    for outcome in reversed(state.history):
+        if outcome.accepted and outcome.portfolio_sha256:
+            fragment["evolution_incumbent_artifact_relpath"] = (
+                f"{config.artifact_reldir}/{ARTIFACT_STEM}-"
+                f"{outcome.portfolio_sha256[:SHA_PREFIX_LENGTH]}.json"
+            )
+            break
+    receipt = {
+        "schema": "saea-evolution-propose-step-v1",
+        "round": round_index,
+        "roster_id": roster["roster_id"],
+        "roster_split_identity_hash": roster["split_identity_hash"],
+        "incumbent_state_sha256": state.state_sha256(),
+        "slots": list(slots),
+        "proposer_slots": list(proposer_slots),
+        "placebo_slot": placebo_slot,
+        "targets": {key: list(value) for key, value in sorted(config.targets.items())},
+        "contacts": [contact.as_json() for contact in material.contacts],
+        "budget": budget,
+    }
+    return RoundStepResult(
+        step="propose",
+        round=round_index,
+        documents={paths[0]: roster, paths[1]: fragment, paths[2]: receipt},
+        state=None,
+        summary={
+            "draws": len(draws),
+            "roster": paths[0],
+            "experiment_fragment": paths[1],
+            "next": "fly the proposer cells, then copy the sealed outputs to "
+            f"{config.receipts_reldir}/round-{round_index:02d}/proposer-outputs.jsonl",
+        },
+    )
+
+
+def run_candidates_step(
+    state: EvolutionState,
+    round_index: int,
+    *,
+    config: LoopConfig,
+    carrier: CarrierMaterial,
+    propose_receipt: Mapping[str, object],
+    responses: Mapping[str, str],
+    repo_root: Path,
+    validator: Callable[[CandidateArtifact], Mapping[str, object]] | None = None,
+    ledger_rows: Sequence[Mapping[str, str]] = (),
+    fold_a_rows: int = 404,
+    fold_a_speech_seconds: float = 1913.527,
+    seconds_per_call: float = 0.80,
+) -> RoundStepResult:
+    """Step (b): candidates, portfolios, their committed fragments, and the
+    fold-A reward fragment.
+
+    ``validator`` is the decontamination/form gate seam and is deliberately
+    OPTIONAL and deliberately not supplied by the driver: the authority on a
+    candidate's token count is the serving geometry's own tokenizer
+    (preregistration section 3 -- "never price a candidate with an
+    estimator"), which is a model-adjacent contact and belongs to the
+    prompt-fit row, not to a driver that must make none. When it is supplied
+    (the offline dry run does), a candidate it refuses is dropped into the
+    refusal record exactly like a parse failure.
+    """
+
+    state.validate()
+    paths = config.round_paths(round_index)["candidates"]["writes"]
+    contacts = propose_receipt.get("contacts")
+    if not isinstance(contacts, list) or not contacts:
+        raise EvolutionError("the propose receipt carries no contact records")
+    harvest = harvest_proposer_responses(
+        contacts, responses, target_tools=config.targets
+    )
+
+    validations: list[Mapping[str, object]] = []
+    kept: list[CandidateArtifact] = []
+    refusals = list(harvest.refusals)
+    for candidate in harvest.candidates:
+        if validator is None:
+            kept.append(candidate)
+            continue
+        try:
+            validations.append(dict(validator(candidate)))
+        except (ProposerError, EvolutionError) as error:
+            refusals.append(
+                {
+                    "draw_id": None,
+                    "sample_id": None,
+                    "target_id": candidate.target_id,
+                    "family": candidate.family,
+                    "k": candidate.k,
+                    "reason": f"validation refused: {error}",
+                    "response_sha256": None,
+                }
+            )
+            continue
+        kept.append(candidate)
+    harvest = CandidateHarvest(
+        round=harvest.round, candidates=tuple(kept), refusals=tuple(refusals)
+    )
+
+    deterministic = tuple(
+        deterministic_candidate(
+            carrier.registry_rows,
+            config.targets[target_id],
+            round=round_index,
+            k=config.deterministic_slot,
+            target_id=target_id,
+        )
+        for target_id in sorted(config.targets)
+    )
+    portfolios = assemble_round_portfolios(
+        harvest,
+        incumbent_overrides=state.incumbent_overrides,
+        extra_candidates=deterministic,
+    )
+    if not portfolios:
+        raise EvolutionError(
+            "no portfolio survived: every proposer slot was refused and the "
+            "deterministic control produced none either; the round cannot fly"
+        )
+    base = json.loads(
+        (Path(repo_root) / "configs" / "baseline" / f"{config.base_fragment}.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    written = write_candidate_fragments(
+        [portfolios[k] for k in sorted(portfolios)],
+        base_fragment=base,
+        out_dir=Path(repo_root) / config.fragment_reldir,
+        artifact_dir=Path(repo_root) / config.artifact_reldir,
+        artifact_relpath_base=Path(repo_root),
+    )
+    arms = 1 + len(portfolios)
+    budget = check_ledger_budget(
+        ledger_rows,
+        run_id=config.fold_a_run_id,
+        calls=arms * fold_a_rows * config.max_rounds,
+        speech_seconds=arms * fold_a_speech_seconds * config.max_rounds,
+    ) if ledger_rows else {"checked": False, "reason": "no ledger rows supplied"}
+
+    cells = [
+        {
+            "cell_id": f"{config.slug}-r{round_index}-foldA-incumbent",
+            "run_id": config.fold_a_run_id,
+            "attempt_id": f"attempt-r{round_index}-i",
+            "dataset_fragment": config.fold_a_dataset_fragment,
+            "arm": "bare-core",
+            "baseline_fragment": config.base_fragment,
+            "model_fragment": config.model_fragment,
+            "factor": "the incumbent A_r, re-flown so this round's pairing is against "
+            "its own sealed rows",
+        }
+    ]
+    fragment_by_slot: dict[str, str] = {}
+    for path, k in zip(written, sorted(portfolios), strict=True):
+        fragment_by_slot[str(k)] = Path(path).stem
+        cells.append(
+            {
+                "cell_id": f"{config.slug}-r{round_index}-foldA-c{k}",
+                "run_id": config.fold_a_run_id,
+                "attempt_id": f"attempt-r{round_index}-c{k}",
+                "dataset_fragment": config.fold_a_dataset_fragment,
+                "arm": "bare-core",
+                "baseline_fragment": Path(path).stem,
+                "model_fragment": config.model_fragment,
+                "factor": f"portfolio k={k}, sha256 {portfolios[k].portfolio_sha256}",
+            }
+        )
+    fragment = _experiment_fragment(
+        config=config,
+        round_index=round_index,
+        run_id=config.fold_a_run_id,
+        profile="baseline-reproduction",
+        dataset_fragment=config.fold_a_dataset_fragment,
+        arm="bare-core",
+        cells=cells,
+        planned_model_calls=arms * fold_a_rows,
+        planned_speech_audio_seconds=int(arms * fold_a_speech_seconds) + 1,
+        planned_gpu_hours=max(arms * fold_a_rows * seconds_per_call / 3600.0, 0.01),
+        purpose=(
+            f"EVO-A1 round {round_index} FOLD A: the incumbent plus {len(portfolios)} "
+            "portfolios over the whole fold, one contact per row."
+        ),
+    )
+    receipt = {
+        "schema": "saea-evolution-candidates-step-v1",
+        "round": round_index,
+        "incumbent_state_sha256": state.state_sha256(),
+        "harvest": harvest.as_json(),
+        "validations": validations,
+        "validation_authority": (
+            "the serving geometry's own tokenizer at prompt fit (preregistration "
+            "section 12 item 7); this driver makes no contact and prices no candidate"
+            if validator is None
+            else "an injected token counter supplied by the caller"
+        ),
+        "decontamination_inputs": {
+            "row": "SAEA-A2T-MF-EVO-DECONTAMINATION-V1",
+            "evaluation_query_texts": "the query text of all 4,000 union rows, opened "
+            "inside rails.proposer.validate_candidate_artifact alone and never rendered",
+            "registry_text": "the released compact registry, the legal source of shared "
+            "phrasing",
+            "exemplar_texts": "the construction rows each candidate's proposer was "
+            "shown; overlap is measured and reported, never gated",
+            "ngram": DECONTAMINATION_NGRAM,
+        },
+        "portfolios": {str(k): portfolios[k].as_json() for k in sorted(portfolios)},
+        "fragments": {slot: name for slot, name in sorted(fragment_by_slot.items())},
+        "budget": budget,
+    }
+    return RoundStepResult(
+        step="candidates",
+        round=round_index,
+        documents={paths[0]: receipt, paths[1]: fragment},
+        state=None,
+        summary={
+            "candidates": len(harvest.candidates),
+            "refusals": len(harvest.refusals),
+            "portfolios": sorted(portfolios),
+            "fragments": [str(path) for path in written],
+            "experiment_fragment": paths[1],
+        },
+    )
+
+
+def run_select_step(
+    state: EvolutionState,
+    round_index: int,
+    *,
+    config: LoopConfig,
+    carrier: CarrierMaterial,
+    candidates_receipt: Mapping[str, object],
+    score_files: Mapping[str, Path | str],
+    repo_root: Path,
+    ledger_rows: Sequence[Mapping[str, str]] = (),
+    fold_b_rows: int = 404,
+    fold_b_speech_seconds: float = 1877.630,
+    seconds_per_call: float = 0.80,
+) -> RoundStepResult:
+    """Step (c): stage one on fold A, the assembly, and the fold-B fragment.
+
+    ``score_files`` maps ``"incumbent"`` and each portfolio's ``k`` rendered
+    as text to that arm's sealed ``<job_id>.score.json`` -- the SAME index
+    :func:`replay_selection` reads, so a reviewer replays this decision from
+    the receipt and those files alone.
+    """
+
+    state.validate()
+    paths = config.round_paths(round_index)["select"]["writes"]
+    portfolios_raw = candidates_receipt.get("portfolios")
+    if not isinstance(portfolios_raw, Mapping) or not portfolios_raw:
+        raise EvolutionError("the candidates receipt carries no portfolios")
+    harvest_raw = candidates_receipt.get("harvest")
+    if not isinstance(harvest_raw, Mapping):
+        raise EvolutionError("the candidates receipt carries no harvest")
+    candidates_by_target: dict[str, dict[int, CandidateArtifact]] = {}
+    for record in harvest_raw.get("candidates", ()):
+        artifact = CandidateArtifact(
+            candidate_id=str(record["candidate_id"]),
+            family=str(record["family"]),
+            target_id=str(record["target_id"]),
+            round=int(record["round"]),
+            k=int(record["k"]),
+            descriptions=dict(record["descriptions"]),
+            cue=record["cue"],
+            proposer_prompt_sha256=record["proposer_prompt_sha256"],
+            exemplar_ids=tuple(record["exemplar_ids"]),
+        ).validate()
+        candidates_by_target.setdefault(artifact.target_id, {})[artifact.k] = artifact
+
+    if INCUMBENT_KEY not in score_files:
+        raise EvolutionError(f"score_files must map {INCUMBENT_KEY!r} to a score file")
+    incumbent_scores = per_sample_scores_from_score_file(
+        Path(score_files[INCUMBENT_KEY]), config.scorer_id, [config.metric]
+    )
+    portfolio_scores: dict[int, Mapping[str, Mapping[str, float]]] = {}
+    for key in sorted(portfolios_raw):
+        if key not in score_files:
+            raise EvolutionError(f"score_files has no entry for portfolio k={key}")
+        portfolio_scores[int(key)] = per_sample_scores_from_score_file(
+            Path(score_files[key]), config.scorer_id, [config.metric]
+        )
+    targets = config.target_objects()
+    decisions = select_per_target(
+        incumbent_scores,
+        portfolio_scores,
+        targets=targets,
+        rows_of_target=carrier.fold_a_rows_of_target,
+        metric=config.metric,
+        gates=config.gates,
+        candidates=candidates_by_target,
+        seed=config.seed,
+    )
+    record = selection_record(
+        decisions,
+        metric=config.metric,
+        scorer_id=config.scorer_id,
+        gates=config.gates,
+        rows_of_target=carrier.fold_a_rows_of_target,
+        targets=targets,
+        seed=config.seed,
+    )
+    winners = {
+        target_id: decision.winner
+        for target_id, decision in decisions.items()
+        if decision.winner is not None
+    }
+    assembly = (
+        assemble_portfolio(state.incumbent_overrides, winners) if winners else None
+    )
+    written: list[Path] = []
+    if assembly is not None:
+        base = json.loads(
+            (
+                Path(repo_root) / "configs" / "baseline" / f"{config.base_fragment}.json"
+            ).read_text(encoding="utf-8")
+        )
+        written = write_candidate_fragments(
+            [assembly],
+            base_fragment=base,
+            out_dir=Path(repo_root) / config.fragment_reldir,
+            artifact_dir=Path(repo_root) / config.artifact_reldir,
+            artifact_relpath_base=Path(repo_root),
+        )
+    budget = check_ledger_budget(
+        ledger_rows,
+        run_id=config.fold_b_run_id,
+        calls=2 * fold_b_rows * config.max_rounds,
+        speech_seconds=2 * fold_b_speech_seconds * config.max_rounds,
+    ) if (ledger_rows and assembly is not None) else {
+        "checked": False,
+        "reason": "no fold-B flight" if assembly is None else "no ledger rows supplied",
+    }
+
+    cells: list[Mapping[str, object]] = []
+    if assembly is not None:
+        cells = [
+            {
+                "cell_id": f"{config.slug}-r{round_index}-foldB-incumbent",
+                "run_id": config.fold_b_run_id,
+                "attempt_id": f"attempt-r{round_index}-i",
+                "dataset_fragment": config.fold_b_dataset_fragment,
+                "arm": "bare-core",
+                "baseline_fragment": config.base_fragment,
+                "model_fragment": config.model_fragment,
+                "factor": "the incumbent on fold B, the confirmation's comparator",
+            },
+            {
+                "cell_id": f"{config.slug}-r{round_index}-foldB-assembly",
+                "run_id": config.fold_b_run_id,
+                "attempt_id": f"attempt-r{round_index}-a",
+                "dataset_fragment": config.fold_b_dataset_fragment,
+                "arm": "bare-core",
+                "baseline_fragment": Path(written[0]).stem,
+                "model_fragment": config.model_fragment,
+                "factor": "the assembled winners of every admitted target, confirmed as "
+                "a WHOLE and never partially",
+            },
+        ]
+    fragment = _experiment_fragment(
+        config=config,
+        round_index=round_index,
+        run_id=config.fold_b_run_id,
+        profile="baseline-reproduction",
+        dataset_fragment=config.fold_b_dataset_fragment,
+        arm="bare-core",
+        cells=cells,
+        planned_model_calls=max(2 * fold_b_rows, 1),
+        planned_speech_audio_seconds=int(2 * fold_b_speech_seconds) + 1,
+        planned_gpu_hours=max(2 * fold_b_rows * seconds_per_call / 3600.0, 0.01),
+        purpose=(
+            f"EVO-A1 round {round_index} FOLD B: the incumbent and the assembly, "
+            "confirmed as a whole."
+            if assembly is not None
+            else f"EVO-A1 round {round_index} FOLD B does not fly: stage one admitted no "
+            "target, so the round is a reject and the incumbent stands."
+        ),
+    )
+    receipt = {
+        "schema": "saea-evolution-selection-step-v1",
+        "round": round_index,
+        "incumbent_state_sha256": state.state_sha256(),
+        "selection": record,
+        "assembly": None if assembly is None else assembly.as_json(),
+        "assembly_fragment": None if assembly is None else Path(written[0]).stem,
+        "winners": {target: winners[target].candidate_id for target in sorted(winners)},
+        "flies_fold_b": assembly is not None,
+        "budget": budget,
+    }
+    return RoundStepResult(
+        step="select",
+        round=round_index,
+        documents={paths[0]: receipt, paths[1]: fragment},
+        state=None,
+        summary={
+            "admitted_targets": sorted(winners),
+            "flies_fold_b": assembly is not None,
+            "experiment_fragment": paths[1],
+        },
+    )
+
+
+def run_confirm_step(
+    state: EvolutionState,
+    round_index: int,
+    *,
+    config: LoopConfig,
+    carrier: CarrierMaterial,
+    selection_receipt: Mapping[str, object],
+    score_files: Mapping[str, Path | str],
+    receipts_dir: Path,
+) -> RoundStepResult:
+    """Step (d): fold-B confirmation, the next incumbent, the stop rule and
+    the round receipt.
+
+    When stage one admitted no target there is no fold-B flight and no
+    interval to read: the round is a REJECT on that ground, recorded with
+    that reason, and the incumbent stands. That is not a special case bolted
+    on -- it is what "accept the assembly as a whole, or keep the incumbent"
+    means when there is no assembly.
+    """
+
+    state.validate()
+    paths = config.round_paths(round_index)["confirm"]["writes"]
+    assembly_raw = selection_receipt.get("assembly")
+    selection = selection_receipt.get("selection")
+    if not isinstance(selection, Mapping):
+        raise EvolutionError("the selection receipt carries no selection record")
+
+    assembly = None
+    confirmation = None
+    if isinstance(assembly_raw, Mapping):
+        assembly = Portfolio(
+            round=int(assembly_raw["round"]),
+            k=assembly_raw["k"],
+            overrides=dict(assembly_raw["overrides"]),
+            candidate_ids=dict(assembly_raw["candidate_ids"]),
+            portfolio_sha256=str(assembly_raw["portfolio_sha256"]),
+        )
+        for key in (INCUMBENT_KEY, "assembly"):
+            if key not in score_files:
+                raise EvolutionError(f"score_files must map {key!r} to a score file")
+        confirmation = confirm_assembly(
+            per_sample_scores_from_score_file(
+                Path(score_files[INCUMBENT_KEY]), config.scorer_id, [config.metric]
+            ),
+            per_sample_scores_from_score_file(
+                Path(score_files["assembly"]), config.scorer_id, [config.metric]
+            ),
+            targeted_rows=carrier.fold_b_targeted_rows,
+            background_rows=carrier.fold_b_background_rows,
+            metric=config.metric,
+            strata_of=carrier.fold_b_strata_of,
+            seed=config.seed,
+            background_tolerance=config.background_tolerance_pp,
+            n_replicates=config.n_replicates,
+        )
+
+    next_state, outcome, (stop, stop_reason) = advance_round(
+        state,
+        round_index=round_index,
+        confirmation=confirmation,
+        assembly=assembly,
+        max_rounds=config.max_rounds,
+        no_confirmation_reason=(
+            "stage one admitted no target, so no assembly was flown on fold B"
+            if confirmation is None
+            else None
+        ),
+    )
+    extra = {
+        "selection": selection,
+        "confirmation": None if confirmation is None else confirmation.as_json(),
+        "decontamination": selection_receipt.get("decontamination_inputs"),
+        "stop": {"stop": stop, "reason": stop_reason},
+    }
+    receipt_path, receipt_sha256 = write_round_receipt(
+        next_state, out_dir=Path(receipts_dir), extra=extra
+    )
+    document = {
+        "schema": "saea-evolution-confirmation-step-v1",
+        "round": round_index,
+        "accepted": outcome.accepted,
+        "gain_pp": outcome.gain_pp,
+        "reason": outcome.reason,
+        "stop": stop,
+        "stop_reason": stop_reason,
+        "next_incumbent_state_sha256": next_state.state_sha256(),
+        "round_receipt": str(Path(receipt_path).name),
+        "round_receipt_sha256": receipt_sha256,
+        "confirmation": None if confirmation is None else confirmation.as_json(),
+    }
+    return RoundStepResult(
+        step="confirm",
+        round=round_index,
+        documents={paths[0]: document},
+        state=next_state,
+        summary={
+            "accepted": outcome.accepted,
+            "gain_pp": outcome.gain_pp,
+            "stop": stop,
+            "stop_reason": stop_reason,
+            "round_receipt": str(receipt_path),
+            "round_receipt_sha256": receipt_sha256,
+        },
+    )
+
+
+#: The four step executors, keyed by step name -- the driver script resolves
+#: one of these and nothing else, which is what keeps it under 150 lines and
+#: keeps every decision in this module.
+ROUND_STEP_RUNNERS: Mapping[str, Callable[..., RoundStepResult]] = {
+    "propose": run_propose_step,
+    "candidates": run_candidates_step,
+    "select": run_select_step,
+    "confirm": run_confirm_step,
+}

@@ -49,6 +49,7 @@ engineering notes record this protocol-fidelity gap and the options.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 import re
@@ -535,6 +536,67 @@ def load_query_rows(
                 "query": str(query).strip(),
                 "gold_call": str(gold_call).strip(),
                 "tool_name": str(tool_name).strip(),
+            }
+    return rows
+
+
+def load_media_rows(
+    lock: Mapping[str, object],
+    root: Path,
+    sample_ids: Sequence[str],
+) -> dict[str, dict[str, object]]:
+    """Measured media facts for EXACTLY the named samples.
+
+    The same four facts a flight-roster receipt records --
+    ``media_relpath``/``audio_seconds``/``audio_sha256``/``sample_rate_hz`` --
+    resolved the way :func:`load_audio2tool` resolves them (the manifest's own
+    ``path``/``duration``, or the final user turn's for tier7) and MEASURED
+    from the file rather than trusted from the manifest: the sha256 is over
+    the bytes on disk and the sample rate comes from the wav header.
+
+    Identity-scoped for the same reason :func:`load_query_rows` is: the EVO-A1
+    proposer roster's anchors are construction rows outside every probe-sample
+    receipt, so the receipt-scoped loader cannot see them. It carries NO
+    ground-truth field, so it is a runtime-safe reader.
+    """
+
+    if isinstance(sample_ids, (str, bytes)):
+        raise LoaderError("sample_ids must be a sequence of audio2tool sample ids")
+    entry = lock_entry(lock, AUDIO2TOOL_LOCK_KEY)
+    subdir = str(entry["local_subdir"]).rstrip("/")
+    carrier_dir = asset_dir(lock, AUDIO2TOOL_LOCK_KEY, root)
+    public_dir = carrier_dir / "public"
+    if not public_dir.is_dir():
+        raise LoaderError(f"audio2tool public directory missing: {public_dir}")
+
+    wanted: dict[str, list[str]] = {}
+    for sample_id in sample_ids:
+        if not isinstance(sample_id, str) or not _SAMPLE_ID_RE.fullmatch(sample_id):
+            raise LoaderError(
+                f"{sample_id!r} is not an audio2tool sample id of the shape "
+                "'<tier>:<six digits>'"
+            )
+        wanted.setdefault(sample_id.partition(":")[0], []).append(sample_id)
+
+    rows: dict[str, dict[str, object]] = {}
+    for tier in sorted(wanted):
+        manifest = _tier_manifest(public_dir, tier)
+        for sample_id in sorted(set(wanted[tier])):
+            manifest_entry = manifest.get(int(sample_id.partition(":")[2]))
+            if manifest_entry is None:
+                raise LoaderError(
+                    f"sample {sample_id!r} has no row in the {tier} manifest"
+                )
+            relative, audio_seconds = _entry_media(manifest_entry, sample_id)
+            media_relpath = f"{subdir}/public/{relative}"
+            media_path = Path(root) / media_relpath
+            if not media_path.is_file():
+                raise LoaderError(f"{sample_id}: media missing: {media_path}")
+            rows[sample_id] = {
+                "media_relpath": media_relpath,
+                "audio_seconds": audio_seconds,
+                "audio_sha256": hashlib.sha256(media_path.read_bytes()).hexdigest(),
+                "sample_rate_hz": _wav_sample_rate(media_path, sample_id),
             }
     return rows
 

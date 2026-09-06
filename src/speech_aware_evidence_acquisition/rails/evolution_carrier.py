@@ -1,0 +1,239 @@
+"""The evolution loop's I/O edge: committed receipts and carrier text in,
+``rails.evolution`` value objects out.
+
+``rails.evolution`` holds the decisions and is deliberately pure -- every
+function there is a function of already-loaded documents, which is what lets
+the offline dry run drive a whole round with no carrier, no lock and no wav.
+This module is the other half: it reads the committed rosters, resolves the
+construction rows the loop needs from the carrier, and assembles the one
+:class:`~rails.evolution.CarrierMaterial` value the steps consume. It makes
+no decision of its own and contacts nothing.
+
+Legality, stated where the reading happens. The only rows this module ever
+resolves are those a committed ``roster_role == "construction"`` receipt
+names -- the loop's exemplar pool and its two folds, all three of which the
+Audio2Tool exposure union excludes by design (owner decision 2026-09-05). It
+never opens an evaluation roster's query text; the one step of the cell that
+does is the decontamination gate inside
+``rails.proposer.validate_candidate_artifact``, which is not reached from
+here.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Mapping, Sequence
+
+from ..data.audio2tool import AUDIO2TOOL_LOCK_KEY, load_query_rows, load_tool_registry
+from ..data.lock import load_lock, umbrella_lock_path
+from .evolution import CarrierMaterial, EvolutionError, EvolutionState, LoopConfig, RoundOutcome
+
+#: Which steps need which carrier material. Loading the whole lot for every
+#: step would hash every exemplar wav before a selection that reads only
+#: score files, so each step declares what it actually reads.
+_STEP_NEEDS = {
+    "propose": ("registry", "exemplars", "media"),
+    "candidates": ("registry",),
+    "select": ("fold_a",),
+    "confirm": ("fold_b",),
+}
+
+__all__ = [
+    "load_carrier_material",
+    "load_state",
+    "read_roster_document",
+    "rows_of_target_from_roster",
+]
+
+
+def read_roster_document(repo_root: Path, relpath: str) -> Mapping[str, object]:
+    """One committed roster receipt, verified fail-closed."""
+
+    from ..core.roster import RosterError, verify_roster  # noqa: PLC0415
+
+    path = Path(repo_root) / relpath
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise EvolutionError(f"roster receipt unreadable ({path}): {error}") from error
+    if not isinstance(document, Mapping):
+        raise EvolutionError(f"roster receipt {path} is not a JSON object")
+    try:
+        verify_roster(document)
+    except RosterError as error:
+        raise EvolutionError(f"roster receipt {path} is not verifiable: {error}") from error
+    return document
+
+
+def rows_of_target_from_roster(
+    document: Mapping[str, object], targets: Mapping[str, Sequence[str]]
+) -> dict[str, tuple[str, ...]]:
+    """Each target's own rows of a fold roster.
+
+    A fold roster's targeted rows are stratified by the row's GOLD TOOL
+    (the fold receipts' own ``strata`` statement), so a target's rows are
+    every item whose stratum is one of that target's tools. Background rows
+    are stratified by tier and therefore belong to no target, which is what
+    makes them the background.
+    """
+
+    by_tool: dict[str, list[str]] = {}
+    for item in document.get("items", ()):
+        if not isinstance(item, Mapping):
+            raise EvolutionError("fold roster item must be an object")
+        by_tool.setdefault(str(item.get("stratum")), []).append(str(item["sample_id"]))
+    out: dict[str, tuple[str, ...]] = {}
+    for target_id in sorted(targets):
+        rows: list[str] = []
+        for tool in sorted(targets[target_id]):
+            rows.extend(by_tool.get(tool, ()))
+        if not rows:
+            raise EvolutionError(
+                f"target {target_id!r} has no row in this fold roster; a target the "
+                "fold cannot reward must be dropped before the round, not silently"
+            )
+        out[target_id] = tuple(sorted(set(rows)))
+    return out
+
+
+def _split_fold_rows(
+    document: Mapping[str, object], targets: Mapping[str, Sequence[str]]
+) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    targeted: set[str] = set()
+    for rows in rows_of_target_from_roster(document, targets).values():
+        targeted |= set(rows)
+    every = {str(item["sample_id"]) for item in document.get("items", ())}
+    return tuple(sorted(targeted)), tuple(sorted(every - targeted))
+
+
+def load_state(repo_root: Path, config: LoopConfig, round_index: int) -> EvolutionState:
+    """``A_{r-1}`` and its history, read from the previous round's receipt.
+
+    Round 1 starts from ``A_0`` -- the empty override mapping, i.e. the
+    released compact registry byte for byte -- and every later round reads
+    the receipt :func:`rails.evolution.write_round_receipt` sealed, so the
+    state a round advances is always the state a receipt records rather than
+    something a command line asserted.
+    """
+
+    if round_index == 1:
+        return EvolutionState(round=0, incumbent_overrides={}).validate()
+    path = (
+        Path(repo_root)
+        / config.receipts_reldir
+        / f"evolution-round-{round_index - 1:02d}.json"
+    )
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise EvolutionError(
+            f"round {round_index} needs round {round_index - 1}'s sealed receipt "
+            f"({path}): {error}"
+        ) from error
+    state = document.get("state")
+    if not isinstance(state, Mapping):
+        raise EvolutionError(f"{path} carries no state block")
+    return EvolutionState(
+        round=int(state["round"]),
+        incumbent_overrides=dict(state["incumbent_overrides"]),
+        history=tuple(
+            RoundOutcome(
+                round=int(entry["round"]),
+                accepted=bool(entry["accepted"]),
+                gain_pp=float(entry["gain_pp"]),
+                reason=str(entry["reason"]),
+                portfolio_sha256=entry.get("portfolio_sha256"),
+            )
+            for entry in state.get("history", ())
+        ),
+    ).validate()
+
+
+def load_carrier_material(
+    repo_root: Path,
+    config: LoopConfig,
+    *,
+    step: str,
+    lock: Mapping[str, object] | None = None,
+    data_root: Path | None = None,
+    exemplar_roster_relpath: str = "docs/receipts/rosters/a2t-evo-exemplars-v1.json",
+    fold_a_roster_relpath: str = "docs/receipts/rosters/a2t-evo-fold-a-v1.json",
+    fold_b_roster_relpath: str = "docs/receipts/rosters/a2t-evo-fold-b-v1.json",
+) -> CarrierMaterial:
+    """The carrier material one step needs, and nothing more.
+
+    ``step`` selects what is actually read (``_STEP_NEEDS``): the PROPOSE
+    step hashes every exemplar wav because the roster it freezes records
+    measured media facts, while SELECT and CONFIRM read only committed
+    receipts and never touch the carrier at all.
+    """
+
+    if step not in _STEP_NEEDS:
+        raise EvolutionError(f"unknown step {step!r}")
+    needs = _STEP_NEEDS[step]
+    if config.carrier_lock_key != AUDIO2TOOL_LOCK_KEY:
+        raise EvolutionError(
+            f"this loader serves the {AUDIO2TOOL_LOCK_KEY!r} carrier; the config names "
+            f"{config.carrier_lock_key!r}"
+        )
+    resolved_lock = lock if lock is not None else load_lock(umbrella_lock_path(repo_root))
+    root = Path(data_root) if data_root is not None else _data_root()
+
+    registry_rows: tuple[Mapping[str, str], ...] = ()
+    if "registry" in needs:
+        registry_rows = tuple(load_tool_registry(resolved_lock, root))
+
+    exemplar_pool: dict[str, tuple[str, ...]] = {}
+    exemplar_rows: Mapping[str, Mapping[str, str]] = {}
+    media_facts: Mapping[str, Mapping[str, object]] = {}
+    if "exemplars" in needs:
+        document = read_roster_document(repo_root, exemplar_roster_relpath)
+        wanted = {tool for tools in config.targets.values() for tool in tools}
+        pool: dict[str, list[str]] = {tool: [] for tool in sorted(wanted)}
+        for item in document.get("items", ()):
+            stratum = str(item.get("stratum"))
+            if stratum in pool:
+                pool[stratum].append(str(item["sample_id"]))
+        empty = sorted(tool for tool, rows in pool.items() if not rows)
+        if empty:
+            raise EvolutionError(
+                f"the exemplar roster has no construction row for {empty}; a target "
+                "whose tool cannot be exemplified must be dropped before the draw"
+            )
+        exemplar_pool = {tool: tuple(sorted(rows)) for tool, rows in pool.items()}
+        every_id = sorted({sid for rows in exemplar_pool.values() for sid in rows})
+        exemplar_rows = load_query_rows(resolved_lock, root, every_id)
+        if "media" in needs:
+            from ..data.audio2tool import load_media_rows  # noqa: PLC0415
+
+            media_facts = load_media_rows(resolved_lock, root, every_id)
+
+    fold_a_rows_of_target: Mapping[str, tuple[str, ...]] = {}
+    if "fold_a" in needs:
+        fold_a_rows_of_target = rows_of_target_from_roster(
+            read_roster_document(repo_root, fold_a_roster_relpath), config.targets
+        )
+
+    fold_b_targeted: tuple[str, ...] = ()
+    fold_b_background: tuple[str, ...] = ()
+    if "fold_b" in needs:
+        fold_b_targeted, fold_b_background = _split_fold_rows(
+            read_roster_document(repo_root, fold_b_roster_relpath), config.targets
+        )
+
+    return CarrierMaterial(
+        registry_rows=registry_rows,
+        exemplar_pool=exemplar_pool,
+        media_facts=media_facts,
+        exemplar_rows=exemplar_rows,
+        fold_a_rows_of_target=fold_a_rows_of_target,
+        fold_b_targeted_rows=fold_b_targeted,
+        fold_b_background_rows=fold_b_background,
+    )
+
+
+def _data_root() -> Path:
+    from ..data.lock import data_root  # noqa: PLC0415
+
+    return data_root()
