@@ -52,6 +52,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import random
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
@@ -62,7 +63,17 @@ from ..analysis.paired import (
     per_sample_scores_from_score_file,
 )
 from .hashing import canonical_json_bytes, content_hash
-from .proposer import CandidateArtifact, ProposerError, candidate_bytes
+from .proposer import (
+    CandidateArtifact,
+    ProposerError,
+    candidate_bytes,
+    parse_proposer_response,
+    placebo_candidate,
+    prompt_sha256,
+    proposer_candidate,
+    render_placebo_instruction,
+    render_proposer_instruction,
+)
 
 TARGET_SCHEMA = "saea-evolution-target-v1"
 PORTFOLIO_SCHEMA = "saea-evolution-portfolio-v1"
@@ -126,6 +137,30 @@ __all__ = [
     "ReplayResult",
     "replay_selection",
     "ledger_budget",
+    "EXEMPLARS_PER_TOOL",
+    "CONTACT_FAMILIES",
+    "PROPOSER_DRAW_SCHEMA",
+    "PROPOSER_MATERIAL_SCHEMA",
+    "HARVEST_SCHEMA",
+    "ROUND_PLAN_SCHEMA",
+    "ROUND_STEPS",
+    "ProposerDraw",
+    "draw_exemplar_ids",
+    "plan_proposer_draws",
+    "proposer_roster_receipt",
+    "read_proposer_roster",
+    "ProposerContact",
+    "ProposerMaterial",
+    "build_proposer_material",
+    "CandidateHarvest",
+    "harvest_proposer_responses",
+    "assemble_round_portfolios",
+    "RoundStep",
+    "RoundPlan",
+    "round_step_paths",
+    "plan_round",
+    "advance_round",
+    "check_ledger_budget",
 ]
 
 
@@ -1237,3 +1272,1189 @@ def ledger_budget(
         "speech_seconds": passes * audio,
         "gpu_hours": calls * per_call / 3600.0,
     }
+
+
+# ---------------------------------------------------------------------------
+# The proposer flight (E3c): draws, the roster receipt, the rendered material
+# ---------------------------------------------------------------------------
+#
+# ``rails.proposer`` knows how to RENDER one instruction and how to parse one
+# answer; ``core.flight.FlightRuntime`` knows how to make one contact. What
+# was missing is the thing in between: which contacts a round makes, what
+# each one shows, and how a sealed response becomes a candidate. That is this
+# section, and it is entirely model-free -- every function here is pure over
+# committed receipts and carrier text, and none of them opens a socket.
+#
+# A proposer "roster" is a receipt whose ITEMS ARE THE DRAWS, one per
+# (round, target, family, k). It is a real ``core.roster`` receipt with
+# ``roster_role == "construction"`` so that ``contracts.gate_exposure
+# ._require_construction_role_for_visible_targets`` accepts a plan bound to
+# it; each item's ``sample_id`` is the draw's ANCHOR -- a real construction
+# row of ``A2T-EVO-EXEMPLARS-V1``, which is what makes the payload's
+# ``speech_ref``/``media_relpath``/``audio_seconds`` honest even though the
+# contact is text-only and no audio part is ever sent.
+
+
+#: Exemplars shown per tool in one proposer draw (preregistration section 4:
+#: "M = 8 block-disjoint construction exemplars per tool").
+EXEMPLARS_PER_TOOL = 8
+
+#: The families a proposer FLIGHT can carry. ``deterministic`` is absent on
+#: purpose: it is built with zero contacts (``rails.proposer
+#: .deterministic_candidate``) and therefore never draws a roster item.
+CONTACT_FAMILIES = ("proposer", "placebo")
+
+PROPOSER_DRAW_SCHEMA = "saea-evolution-proposer-draw-v1"
+PROPOSER_MATERIAL_SCHEMA = "saea-evolution-proposer-material-v1"
+
+
+@dataclass(frozen=True)
+class ProposerDraw:
+    """One proposer contact, as a roster item: which target, which slot, and
+    exactly which construction exemplars it shows, in the order it shows
+    them."""
+
+    round: int
+    target_id: str
+    family: str
+    k: int
+    exemplar_ids: tuple[str, ...]
+    anchor_sample_id: str
+
+    @property
+    def draw_id(self) -> str:
+        return f"r{self.round:02d}-{self.target_id}-{self.family}-k{self.k}"
+
+    def validate(self) -> "ProposerDraw":
+        if isinstance(self.round, bool) or not isinstance(self.round, int) or self.round < 1:
+            raise EvolutionError("a proposer draw's round must be a positive integer")
+        if not isinstance(self.target_id, str) or not self.target_id:
+            raise EvolutionError("a proposer draw needs a non-empty target_id")
+        if self.family not in CONTACT_FAMILIES:
+            raise EvolutionError(
+                f"a proposer draw's family must be one of {CONTACT_FAMILIES}; got "
+                f"{self.family!r} (the deterministic control makes no contact)"
+            )
+        if isinstance(self.k, bool) or not isinstance(self.k, int) or self.k < 1:
+            raise EvolutionError("a proposer draw's k must be a positive integer")
+        ids = tuple(self.exemplar_ids)
+        for item in ids:
+            if not isinstance(item, str) or not item:
+                raise EvolutionError("every exemplar id must be non-empty text")
+        if len(set(ids)) != len(ids):
+            raise EvolutionError(f"draw {self.draw_id} repeats an exemplar id")
+        if self.family == "proposer" and not ids:
+            raise EvolutionError(
+                f"draw {self.draw_id} is a proposer draw with no exemplars; the "
+                "instruction's whole grounding is the exemplar block"
+            )
+        if self.family == "placebo" and ids:
+            raise EvolutionError(
+                f"draw {self.draw_id} is a placebo draw carrying {len(ids)} exemplar "
+                "id(s); a placebo is shown no exemplar at all, because an exemplar's "
+                "gold call IS a distinguishing cue"
+            )
+        if not isinstance(self.anchor_sample_id, str) or not self.anchor_sample_id:
+            raise EvolutionError(f"draw {self.draw_id} needs an anchor sample id")
+        return self
+
+    def as_item(self, media_facts: Mapping[str, object]) -> dict[str, object]:
+        """This draw as one ``core.roster`` receipt item.
+
+        ``media_facts`` are the anchor row's own measured media facts
+        (``media_relpath``/``audio_sha256``/``audio_seconds``), the same
+        three ``scripts/flights/run_calibration_cell.py`` re-measures before
+        it builds a sample -- so a proposer flight hydrates through exactly
+        the entry point every other Audio2Tool cell uses. They are recorded
+        even though this arm sends no audio: the payload still names the
+        anchor's ``speech_ref``, and the I-4 media-identity gate re-hashes
+        precisely what the binding names.
+        """
+
+        self.validate()
+        if not isinstance(media_facts, Mapping):
+            raise EvolutionError(f"draw {self.draw_id} needs a media_facts mapping")
+        required = {"media_relpath", "audio_sha256", "audio_seconds"}
+        missing = sorted(required - set(media_facts))
+        if missing:
+            raise EvolutionError(
+                f"draw {self.draw_id} media facts lack {missing} for anchor "
+                f"{self.anchor_sample_id!r}"
+            )
+        return {
+            "sample_id": self.anchor_sample_id,
+            "stratum": self.target_id,
+            "schema": PROPOSER_DRAW_SCHEMA,
+            "draw_id": self.draw_id,
+            "round": self.round,
+            "target_id": self.target_id,
+            "family": self.family,
+            "k": self.k,
+            "exemplar_ids": list(self.exemplar_ids),
+            "media_relpath": str(media_facts["media_relpath"]),
+            "audio_sha256": str(media_facts["audio_sha256"]),
+            "audio_seconds": float(media_facts["audio_seconds"]),
+        }
+
+    @classmethod
+    def from_item(cls, item: Mapping[str, object]) -> "ProposerDraw":
+        if not isinstance(item, Mapping):
+            raise EvolutionError("a proposer roster item must be an object")
+        missing = sorted(
+            {"sample_id", "round", "target_id", "family", "k", "exemplar_ids"} - set(item)
+        )
+        if missing:
+            raise EvolutionError(f"proposer roster item lacks {missing}")
+        raw_ids = item["exemplar_ids"]
+        if isinstance(raw_ids, (str, bytes)) or not isinstance(raw_ids, Sequence):
+            raise EvolutionError("proposer roster item exemplar_ids must be a list")
+        return cls(
+            round=int(item["round"]),
+            target_id=str(item["target_id"]),
+            family=str(item["family"]),
+            k=int(item["k"]),
+            exemplar_ids=tuple(str(value) for value in raw_ids),
+            anchor_sample_id=str(item["sample_id"]),
+        ).validate()
+
+
+def draw_exemplar_ids(
+    pool_by_tool: Mapping[str, Sequence[str]],
+    *,
+    round: int,
+    target_id: str,
+    k: int,
+    exemplars_per_tool: int = EXEMPLARS_PER_TOOL,
+    seed: int = DEFAULT_SEED,
+) -> tuple[str, ...]:
+    """The preregistered seeded ORDERED sample (preregistration section 4).
+
+    ``A2T-EVO-EXEMPLARS-V1`` holds exactly ``M`` units for twelve of its
+    twenty-three tools, so three draws over such a pool cannot differ in
+    MEMBERSHIP; the frozen core decodes greedily, so three prompts differing
+    only in a header would return three near-identical rewrites and ``K``
+    would be decorative. The draw is therefore preregistered as: the seed
+    ``(round, target_id, k)`` selects the ``M`` exemplars where more than
+    ``M`` exist, and IN EVERY CASE fixes their order, which
+    ``rails.proposer.render_proposer_instruction`` preserves within a tool's
+    group.
+
+    The rule, stated once so it cannot drift: tools are processed in
+    ascending name order; within a tool the candidate ids are first sorted
+    (so the draw never depends on input order) and then shuffled by ONE
+    ``random.Random`` instance shared across the tools of this draw and
+    seeded by the text ``"{seed}:{round}:{target_id}:{k}"``; the first
+    ``exemplars_per_tool`` of the shuffled order are taken, in that order.
+    This is the same single-shared-rng convention ``core.roster.freeze_roster``
+    documents, and a different seed string per (round, target, k) is what
+    makes the three slots genuinely different prompts.
+    """
+
+    if not isinstance(pool_by_tool, Mapping) or not pool_by_tool:
+        raise EvolutionError("pool_by_tool must be a non-empty mapping of tool to ids")
+    if isinstance(round, bool) or not isinstance(round, int) or round < 0:
+        raise EvolutionError("round must be a nonnegative integer")
+    if isinstance(k, bool) or not isinstance(k, int) or k < 0:
+        raise EvolutionError("k must be a nonnegative integer")
+    if not isinstance(target_id, str) or not target_id:
+        raise EvolutionError("target_id must be non-empty text")
+    if (
+        isinstance(exemplars_per_tool, bool)
+        or not isinstance(exemplars_per_tool, int)
+        or exemplars_per_tool < 1
+    ):
+        raise EvolutionError("exemplars_per_tool must be a positive integer")
+
+    rng = random.Random(f"{seed}:{round}:{target_id}:{k}")
+    drawn: list[str] = []
+    seen: set[str] = set()
+    for tool in sorted(pool_by_tool):
+        candidates = pool_by_tool[tool]
+        if isinstance(candidates, (str, bytes)):
+            raise EvolutionError(f"pool_by_tool[{tool!r}] must be a sequence of ids")
+        pool = sorted(str(value) for value in candidates)
+        if not pool:
+            raise EvolutionError(
+                f"tool {tool!r} has no construction exemplar left; a target whose tool "
+                "cannot be exemplified must be dropped before the draw, not silently"
+            )
+        rng.shuffle(pool)
+        for sample_id in pool[:exemplars_per_tool]:
+            if sample_id in seen:
+                raise EvolutionError(
+                    f"exemplar {sample_id!r} is offered by two tools of target "
+                    f"{target_id!r}; the pool must be disjoint per tool"
+                )
+            seen.add(sample_id)
+            drawn.append(sample_id)
+    return tuple(drawn)
+
+
+def plan_proposer_draws(
+    target_tools: Mapping[str, Sequence[str]],
+    pool_by_tool: Mapping[str, Sequence[str]],
+    *,
+    round: int,
+    proposer_slots: Sequence[int],
+    placebo_slot: int | None = None,
+    exemplars_per_tool: int = EXEMPLARS_PER_TOOL,
+    seed: int = DEFAULT_SEED,
+) -> tuple[ProposerDraw, ...]:
+    """Every contact one round's PROPOSE step makes, in (target, k) order.
+
+    ``proposer_slots`` are the F1 slots (``(1, 2, 3)`` in every round);
+    ``placebo_slot`` is F3, which exists in round 1 only and is an EXTRA slot
+    rather than a replaced proposer draw (preregistration section 4:
+    ``K_1 = 5``, ``K_r = 4``). The F2 deterministic control is not here: it
+    makes no contact at all.
+
+    ANCHORS. Every draw needs a distinct sample id, because a flight's roster
+    is a set of samples and the bundle contract seals exactly one outputs row
+    per sample. The anchor is taken from the draw's OWN ordered exemplars --
+    the first one no earlier draw of this round already claimed -- so a
+    payload's ``speech_ref`` always names a construction row the same
+    contact's prompt actually showed. A placebo shows no exemplar at all, so
+    its anchor is drawn from its target's pool by the same seeded rule
+    (``k`` = the placebo's own slot); its payload therefore DECLARES one
+    construction target whose gold its prompt never rendered, which
+    over-declares exposure by exactly one row -- the conservative direction,
+    and recorded as such (``ProposerContact.rendered_exemplar_ids`` is empty
+    for a placebo).
+    """
+
+    if not isinstance(target_tools, Mapping) or not target_tools:
+        raise EvolutionError("target_tools must be a non-empty mapping")
+    if isinstance(proposer_slots, (str, bytes)) or not proposer_slots:
+        raise EvolutionError("proposer_slots must be a non-empty sequence of slots")
+    slots = tuple(int(slot) for slot in proposer_slots)
+    if len(set(slots)) != len(slots):
+        raise EvolutionError("proposer_slots repeats a slot")
+    if placebo_slot is not None:
+        if isinstance(placebo_slot, bool) or not isinstance(placebo_slot, int):
+            raise EvolutionError("placebo_slot must be an integer or None")
+        if placebo_slot in slots:
+            raise EvolutionError(
+                f"placebo_slot {placebo_slot} collides with a proposer slot; the "
+                "round-1 placebo is an EXTRA slot, never a replaced proposer draw"
+            )
+
+    draws: list[ProposerDraw] = []
+    used_anchors: set[str] = set()
+
+    def _anchor(candidates: Sequence[str], draw_id: str) -> str:
+        for sample_id in candidates:
+            if sample_id not in used_anchors:
+                used_anchors.add(sample_id)
+                return sample_id
+        raise EvolutionError(
+            f"draw {draw_id} cannot claim a distinct anchor: every candidate is "
+            "already the anchor of an earlier draw in this round"
+        )
+
+    for target_id in sorted(target_tools):
+        raw_tools = target_tools[target_id]
+        tools = tuple(raw_tools)
+        if isinstance(raw_tools, (str, bytes)) or len(tools) < 2:
+            raise EvolutionError(f"target {target_id!r} must name at least two tools")
+        missing = sorted(set(tools) - set(pool_by_tool))
+        if missing:
+            raise EvolutionError(
+                f"target {target_id!r} names tool(s) with no exemplar pool: {missing}"
+            )
+        pool = {tool: pool_by_tool[tool] for tool in tools}
+        for k in slots:
+            exemplars = draw_exemplar_ids(
+                pool,
+                round=round,
+                target_id=target_id,
+                k=k,
+                exemplars_per_tool=exemplars_per_tool,
+                seed=seed,
+            )
+            draws.append(
+                ProposerDraw(
+                    round=round,
+                    target_id=target_id,
+                    family="proposer",
+                    k=k,
+                    exemplar_ids=exemplars,
+                    anchor_sample_id=_anchor(
+                        exemplars, f"r{round:02d}-{target_id}-proposer-k{k}"
+                    ),
+                ).validate()
+            )
+        if placebo_slot is not None:
+            candidates = draw_exemplar_ids(
+                pool,
+                round=round,
+                target_id=target_id,
+                k=placebo_slot,
+                exemplars_per_tool=exemplars_per_tool,
+                seed=seed,
+            )
+            draws.append(
+                ProposerDraw(
+                    round=round,
+                    target_id=target_id,
+                    family="placebo",
+                    k=placebo_slot,
+                    exemplar_ids=(),
+                    anchor_sample_id=_anchor(
+                        candidates, f"r{round:02d}-{target_id}-placebo-k{placebo_slot}"
+                    ),
+                ).validate()
+            )
+    return tuple(draws)
+
+
+def proposer_roster_receipt(
+    draws: Sequence[ProposerDraw],
+    *,
+    carrier_lock_key: str,
+    roster_id: str,
+    media_facts: Mapping[str, Mapping[str, object]],
+    split_role: str = "discovery",
+    seed: int = DEFAULT_SEED,
+    design: str = "",
+) -> dict[str, object]:
+    """The committed roster receipt one round's proposer flight flies.
+
+    Shape and identity are ``core.roster``'s, not a second convention: the
+    same ``saea-roster-receipt-v1`` schema, the same
+    ``split_identity_hash`` over the LF-joined sorted carrier-prefixed sample
+    ids, and ``roster_role = "construction"``, which is exactly what
+    ``contracts.gate_exposure._require_construction_role_for_visible_targets``
+    scans ``docs/receipts/rosters/`` for. It is not produced by
+    :func:`core.roster.freeze_roster` because nothing here is a stratified
+    DRAW over a candidate pool -- the pool draw already happened, per target,
+    in :func:`plan_proposer_draws`; this only freezes it.
+
+    The returned document is verified through ``core.roster.verify_roster``
+    before it is returned, so a caller can never write an unverifiable one.
+    """
+
+    from ..core.roster import (  # noqa: PLC0415 -- function-local, breaks the core/rails cycle
+        CONSTRUCTION_ROSTER_ROLE,
+        RECEIPT_SCHEMA,
+        verify_roster,
+    )
+    from ..data.splits import prefixed, split_identity_hash  # noqa: PLC0415
+
+    if isinstance(draws, (str, bytes)) or not draws:
+        raise EvolutionError("draws must be a non-empty sequence of ProposerDraw")
+    if not isinstance(carrier_lock_key, str) or not carrier_lock_key:
+        raise EvolutionError("carrier_lock_key must be non-empty text")
+    if not isinstance(roster_id, str) or not roster_id:
+        raise EvolutionError("roster_id must be non-empty text")
+    if not isinstance(media_facts, Mapping):
+        raise EvolutionError("media_facts must be a mapping of sample id to media facts")
+
+    rounds = {draw.round for draw in draws}
+    if len(rounds) != 1:
+        raise EvolutionError(
+            f"a proposer roster is ONE round's contacts; these span rounds {sorted(rounds)}"
+        )
+    items: list[dict[str, object]] = []
+    for draw in draws:
+        if not isinstance(draw, ProposerDraw):
+            raise EvolutionError("every draw must be a ProposerDraw")
+        facts = media_facts.get(draw.anchor_sample_id)
+        if facts is None:
+            raise EvolutionError(
+                f"no media facts for anchor {draw.anchor_sample_id!r} of draw "
+                f"{draw.draw_id}"
+            )
+        items.append(draw.as_item(facts))
+    items.sort(key=lambda item: str(item["sample_id"]))
+    ids = [str(item["sample_id"]) for item in items]
+    if len(set(ids)) != len(ids):
+        raise EvolutionError("two draws claim the same anchor sample id")
+
+    strata_counts: dict[str, int] = {}
+    for item in items:
+        strata_counts[str(item["stratum"])] = strata_counts.get(str(item["stratum"]), 0) + 1
+    receipt = {
+        "schema": RECEIPT_SCHEMA,
+        "roster_id": roster_id,
+        "carrier_lock_key": carrier_lock_key,
+        "split_role": split_role,
+        "roster_role": CONSTRUCTION_ROSTER_ROLE,
+        "seed": seed,
+        "round": rounds.pop(),
+        "design": design
+        or (
+            "EVO-A1 proposer draws: one item per (round, target, family, k) contact on "
+            "the text-only 'construction-proposer-text' arm. sample_id is the draw's "
+            "anchor construction row; exemplar_ids are the rows whose gold that "
+            "contact's rendered instruction shows, in the order it shows them."
+        ),
+        "per_stratum": dict(sorted(strata_counts.items())),
+        "strata_counts": dict(sorted(strata_counts.items())),
+        "items": items,
+        "excluded_count": 0,
+        "split_identity_hash": split_identity_hash(prefixed(carrier_lock_key, ids)),
+    }
+    verify_roster(receipt)
+    return receipt
+
+
+def read_proposer_roster(
+    document: Mapping[str, object], *, carrier_lock_key: str | None = None
+) -> tuple[ProposerDraw, ...]:
+    """The draws a committed proposer roster receipt carries -- verified.
+
+    Fail-closed on anything that would let a flight show gold it was not
+    licensed for: a receipt whose recomputed identity hash disagrees with its
+    own items (``core.roster.verify_roster``), a receipt whose
+    ``roster_role`` is not ``"construction"`` (the one role whose gold may
+    cross to the frozen core at all), a carrier mismatch, or an item that is
+    not a well-formed draw.
+    """
+
+    from ..core.roster import (  # noqa: PLC0415
+        CONSTRUCTION_ROSTER_ROLE,
+        RosterError,
+        verify_roster,
+    )
+
+    if not isinstance(document, Mapping) or not document:
+        raise EvolutionError("proposer roster receipt must be a non-empty mapping")
+    try:
+        verify_roster(document)
+    except RosterError as error:
+        raise EvolutionError(f"proposer roster receipt is not verifiable: {error}") from error
+    if document.get("roster_role") != CONSTRUCTION_ROSTER_ROLE:
+        raise EvolutionError(
+            f"proposer roster receipt roster_role is "
+            f"{document.get('roster_role')!r}, not {CONSTRUCTION_ROSTER_ROLE!r}; only a "
+            "construction roster's gold may reach the frozen core"
+        )
+    if carrier_lock_key is not None and document.get("carrier_lock_key") != carrier_lock_key:
+        raise EvolutionError(
+            f"proposer roster receipt names carrier "
+            f"{document.get('carrier_lock_key')!r}, not {carrier_lock_key!r}"
+        )
+    draws = tuple(ProposerDraw.from_item(item) for item in document["items"])
+    rounds = {draw.round for draw in draws}
+    if len(rounds) != 1:
+        raise EvolutionError(
+            f"proposer roster receipt spans rounds {sorted(rounds)}; a proposer flight "
+            "is one round's contacts"
+        )
+    return draws
+
+
+@dataclass(frozen=True)
+class ProposerContact:
+    """One rendered, flyable proposer contact.
+
+    ``instruction`` is the whole system message
+    (``rails.proposer.render_proposer_instruction`` for F1,
+    ``render_placebo_instruction`` for F3) and is the ONLY place a
+    construction row's query text or gold call is ever rendered -- it is
+    built at flight time from the carrier and is never written to a receipt.
+    ``construction_target_ids`` is what the audited payload declares, in the
+    order the prompt showed; ``rendered_exemplar_ids`` is what the prompt
+    ACTUALLY showed, which for a placebo is nothing at all.
+    """
+
+    draw: ProposerDraw
+    instruction: str
+    prompt_sha256: str
+    construction_target_ids: tuple[str, ...]
+    rendered_exemplar_ids: tuple[str, ...]
+
+    @property
+    def sample_id(self) -> str:
+        return self.draw.anchor_sample_id
+
+    def as_json(self) -> dict[str, object]:
+        """Everything a receipt may record about this contact -- identity,
+        counts and digests, never the rendered text."""
+
+        return {
+            "draw_id": self.draw.draw_id,
+            "sample_id": self.sample_id,
+            "round": self.draw.round,
+            "target_id": self.draw.target_id,
+            "family": self.draw.family,
+            "k": self.draw.k,
+            "prompt_sha256": self.prompt_sha256,
+            "prompt_characters": len(self.instruction),
+            "declared_construction_targets": len(self.construction_target_ids),
+            "rendered_exemplars": len(self.rendered_exemplar_ids),
+            "exemplar_ids": list(self.draw.exemplar_ids),
+        }
+
+
+@dataclass(frozen=True)
+class ProposerMaterial:
+    """Every contact one proposer flight makes, plus the gold it may show.
+
+    ``bound_targets`` is what ``rails.core_client.FrozenCoreClient`` is
+    constructed with: the union, sorted by sample id, of every contact's own
+    declared targets. Binding the union ONCE and selecting a subset per
+    request is what keeps the module's invariant intact -- a request can
+    narrow what the core sees, never widen it.
+    """
+
+    contacts: tuple[ProposerContact, ...]
+    bound_targets: tuple[Mapping[str, str], ...]
+
+    def by_sample(self) -> dict[str, ProposerContact]:
+        return {contact.sample_id: contact for contact in self.contacts}
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "schema": PROPOSER_MATERIAL_SCHEMA,
+            "contacts": [contact.as_json() for contact in self.contacts],
+            "bound_target_count": len(self.bound_targets),
+            "bound_target_sample_ids": [
+                str(entry["sample_id"]) for entry in self.bound_targets
+            ],
+        }
+
+
+def _incumbent_descriptions(
+    rows_by_name: Mapping[str, Mapping[str, str]],
+    tools: Sequence[str],
+    incumbent_overrides: Mapping[str, str],
+) -> dict[str, str]:
+    out: dict[str, str] = {}
+    for tool in tools:
+        row = rows_by_name.get(tool)
+        if row is None:
+            raise EvolutionError(f"tool {tool!r} is not in the supplied registry rows")
+        text = incumbent_overrides.get(tool, row["description"])
+        if not isinstance(text, str) or not text.strip():
+            raise EvolutionError(f"incumbent description for {tool!r} is empty")
+        out[tool] = text
+    return out
+
+
+def build_proposer_material(
+    roster_document: Mapping[str, object],
+    *,
+    registry_rows: Sequence[Mapping[str, str]],
+    target_tools: Mapping[str, Sequence[str]],
+    incumbent_overrides: Mapping[str, str],
+    exemplar_rows: Mapping[str, Mapping[str, str]],
+    carrier_lock_key: str | None = None,
+) -> ProposerMaterial:
+    """Render every contact of one committed proposer roster. Pure.
+
+    ``exemplar_rows`` maps a construction sample id to
+    ``{"query": ..., "gold_call": ..., "tool_name": ...}`` -- exactly what
+    ``data.audio2tool.load_query_rows`` returns. It must cover every id the
+    roster's draws name (every exemplar AND every anchor), and this function
+    refuses an exemplar whose gold call does not open with its own declared
+    tool name: the instruction groups exemplars by the tool their GOLD CALL
+    names, so a silent disagreement there would put a row under the wrong
+    heading.
+
+    The placebo's ``target_lengths`` are the INCUMBENT description lengths,
+    not a later winner's: the placebo prompt is rendered in the same PROPOSE
+    step as the proposer prompts, before any fold has flown, and "length
+    matched" at that point can only mean matched to the description the
+    rewrite replaces. The refusal for a length above
+    ``rails.proposer.MAX_DESCRIPTION_CHARS`` is
+    ``render_placebo_instruction``'s own and is left where it is.
+    """
+
+    draws = read_proposer_roster(roster_document, carrier_lock_key=carrier_lock_key)
+    if not isinstance(registry_rows, Sequence) or isinstance(registry_rows, (str, bytes)):
+        raise EvolutionError("registry_rows must be a sequence of registry rows")
+    rows_by_name = {str(row["tool_name"]): row for row in registry_rows}
+    if not isinstance(target_tools, Mapping) or not target_tools:
+        raise EvolutionError("target_tools must be a non-empty mapping")
+    if not isinstance(incumbent_overrides, Mapping):
+        raise EvolutionError("incumbent_overrides must be a mapping")
+    if not isinstance(exemplar_rows, Mapping):
+        raise EvolutionError("exemplar_rows must be a mapping")
+
+    contacts: list[ProposerContact] = []
+    bound: dict[str, str] = {}
+
+    def _row(sample_id: str) -> Mapping[str, str]:
+        row = exemplar_rows.get(sample_id)
+        if not isinstance(row, Mapping):
+            raise EvolutionError(
+                f"no construction row supplied for {sample_id!r}; every exemplar and "
+                "every anchor the roster names must be resolvable"
+            )
+        for column in ("query", "gold_call", "tool_name"):
+            value = row.get(column)
+            if not isinstance(value, str) or not value.strip():
+                raise EvolutionError(f"construction row {sample_id!r} has no {column}")
+        return row
+
+    for draw in draws:
+        tools = tuple(target_tools.get(draw.target_id, ()))
+        if len(tools) < 2:
+            raise EvolutionError(
+                f"draw {draw.draw_id} names target {draw.target_id!r}, which the "
+                "supplied target set does not describe as two or more tools"
+            )
+        target_rows = []
+        for tool in sorted(tools):
+            row = rows_by_name.get(tool)
+            if row is None:
+                raise EvolutionError(
+                    f"target {draw.target_id!r} names tool {tool!r}, absent from the "
+                    "supplied registry rows"
+                )
+            target_rows.append(row)
+        incumbent = _incumbent_descriptions(rows_by_name, sorted(tools), incumbent_overrides)
+
+        if draw.family == "proposer":
+            exemplars: list[tuple[str, str, str]] = []
+            for sample_id in draw.exemplar_ids:
+                row = _row(sample_id)
+                gold_call = row["gold_call"]
+                head = gold_call.split("(", 1)[0].strip()
+                if head != row["tool_name"]:
+                    raise EvolutionError(
+                        f"construction row {sample_id!r} declares tool "
+                        f"{row['tool_name']!r} but its gold call opens with {head!r}; "
+                        "the exemplar block groups by the gold call's own tool"
+                    )
+                exemplars.append((sample_id, row["query"], gold_call))
+            instruction = render_proposer_instruction(
+                target_rows,
+                incumbent,
+                exemplars,
+                target_id=draw.target_id,
+                round=draw.round,
+                k=draw.k,
+            )
+            declared = tuple(draw.exemplar_ids)
+            rendered = tuple(draw.exemplar_ids)
+        else:
+            instruction = render_placebo_instruction(
+                target_rows,
+                incumbent,
+                target_id=draw.target_id,
+                round=draw.round,
+                k=draw.k,
+                target_lengths={tool: len(incumbent[tool]) for tool in incumbent},
+            )
+            declared = (draw.anchor_sample_id,)
+            rendered = ()
+
+        for sample_id in declared:
+            row = _row(sample_id)
+            existing = bound.get(sample_id)
+            if existing is not None and existing != row["gold_call"]:
+                raise EvolutionError(
+                    f"construction row {sample_id!r} resolves to two different gold "
+                    "calls within one flight"
+                )
+            bound[sample_id] = row["gold_call"]
+
+        contacts.append(
+            ProposerContact(
+                draw=draw,
+                instruction=instruction,
+                prompt_sha256=prompt_sha256(instruction),
+                construction_target_ids=declared,
+                rendered_exemplar_ids=rendered,
+            )
+        )
+
+    return ProposerMaterial(
+        contacts=tuple(contacts),
+        bound_targets=tuple(
+            {"sample_id": sample_id, "target": bound[sample_id]}
+            for sample_id in sorted(bound)
+        ),
+    )
+
+
+# ---------------------------------------------------------------------------
+# Harvesting a sealed proposer flight
+# ---------------------------------------------------------------------------
+
+
+HARVEST_SCHEMA = "saea-evolution-candidate-harvest-v1"
+ROUND_PLAN_SCHEMA = "saea-evolution-round-plan-v1"
+
+#: The four steps one round runs, in order. Each reads its predecessor's
+#: sealed receipt and refuses to redo it, which is the whole of the driver's
+#: resumability: a round interrupted anywhere is resumed by re-running the
+#: same command.
+ROUND_STEPS = ("propose", "candidates", "select", "confirm")
+
+
+@dataclass(frozen=True)
+class CandidateHarvest:
+    """What one sealed proposer flight yielded: the candidates that parsed
+    and validated, and the refusals, which are RECORDED and never repaired.
+
+    A refused slot is not retried and not patched: preregistration section 5
+    step 1 -- "a candidate that fails a form or decontamination gate is
+    dropped and its slot flies the incumbent's descriptions for that
+    target". Repairing a proposer answer here would be a second, unlogged
+    policy deciding what the frozen core meant.
+    """
+
+    round: int
+    candidates: tuple[CandidateArtifact, ...]
+    refusals: tuple[Mapping[str, object], ...]
+
+    def by_target_and_slot(self) -> dict[str, dict[int, CandidateArtifact]]:
+        out: dict[str, dict[int, CandidateArtifact]] = {}
+        for candidate in self.candidates:
+            out.setdefault(candidate.target_id, {})[candidate.k] = candidate
+        return out
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "schema": HARVEST_SCHEMA,
+            "round": self.round,
+            "candidates": [candidate.as_json() for candidate in self.candidates],
+            "refusals": [dict(refusal) for refusal in self.refusals],
+            "candidate_count": len(self.candidates),
+            "refusal_count": len(self.refusals),
+        }
+
+
+def harvest_proposer_responses(
+    contact_records: Sequence[Mapping[str, object]],
+    responses: Mapping[str, str],
+    *,
+    target_tools: Mapping[str, Sequence[str]],
+) -> CandidateHarvest:
+    """Turn one sealed proposer manifest into candidates. Pure, model-free.
+
+    ``contact_records`` are the PROPOSE step receipt's own contact records
+    (``ProposerContact.as_json``): identity, the prompt digest and the
+    exemplar ids, never the rendered text. ``responses`` maps a sealed
+    outputs row's ``sample_id`` to its ``text`` -- so this reads the bundle
+    the flight actually sealed, and nothing else.
+
+    Parsing is ``rails.proposer.parse_proposer_response`` (strict JSON, exact
+    keys, exact tool set) followed by the family's own constructor, both
+    fail-closed; a failure becomes a refusal record naming the draw, the
+    reason and the response's sha256, and costs exactly one candidate slot.
+    A placebo's answer is parsed by the same strict parser and its ``cue`` is
+    DISCARDED rather than stored -- ``placebo_candidate`` refuses to carry
+    one by construction, because a placebo that recorded a cue would be a
+    second proposer candidate wearing the control's label.
+    """
+
+    if isinstance(contact_records, (str, bytes)) or not contact_records:
+        raise EvolutionError("contact_records must be a non-empty sequence")
+    if not isinstance(responses, Mapping):
+        raise EvolutionError("responses must be a mapping of sample id to text")
+    if not isinstance(target_tools, Mapping) or not target_tools:
+        raise EvolutionError("target_tools must be a non-empty mapping")
+
+    candidates: list[CandidateArtifact] = []
+    refusals: list[Mapping[str, object]] = []
+    rounds: set[int] = set()
+    for record in contact_records:
+        if not isinstance(record, Mapping):
+            raise EvolutionError("every contact record must be a mapping")
+        missing = sorted(
+            {"draw_id", "sample_id", "round", "target_id", "family", "k", "prompt_sha256"}
+            - set(record)
+        )
+        if missing:
+            raise EvolutionError(f"contact record lacks {missing}")
+        draw_id = str(record["draw_id"])
+        sample_id = str(record["sample_id"])
+        target_id = str(record["target_id"])
+        family = str(record["family"])
+        rounds.add(int(record["round"]))
+        tools = tuple(target_tools.get(target_id, ()))
+        if len(tools) < 2:
+            raise EvolutionError(
+                f"contact {draw_id} names target {target_id!r}, which the supplied "
+                "target set does not describe"
+            )
+        text = responses.get(sample_id)
+        if not isinstance(text, str) or not text.strip():
+            refusals.append(
+                {
+                    "draw_id": draw_id,
+                    "sample_id": sample_id,
+                    "target_id": target_id,
+                    "family": family,
+                    "k": int(record["k"]),
+                    "reason": "the sealed manifest carries no response text for this draw",
+                    "response_sha256": None,
+                }
+            )
+            continue
+        digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        try:
+            cue, descriptions = parse_proposer_response(text, expected_tools=sorted(tools))
+            if family == "proposer":
+                candidate = proposer_candidate(
+                    cue,
+                    descriptions,
+                    target_id=target_id,
+                    round=int(record["round"]),
+                    k=int(record["k"]),
+                    proposer_prompt_sha256=str(record["prompt_sha256"]),
+                    exemplar_ids=tuple(
+                        str(value) for value in record.get("exemplar_ids", ())
+                    ),
+                )
+            elif family == "placebo":
+                candidate = placebo_candidate(
+                    descriptions,
+                    target_id=target_id,
+                    round=int(record["round"]),
+                    k=int(record["k"]),
+                    proposer_prompt_sha256=str(record["prompt_sha256"]),
+                )
+            else:
+                raise ProposerError(
+                    f"family {family!r} makes no contact and cannot be harvested"
+                )
+        except ProposerError as error:
+            refusals.append(
+                {
+                    "draw_id": draw_id,
+                    "sample_id": sample_id,
+                    "target_id": target_id,
+                    "family": family,
+                    "k": int(record["k"]),
+                    "reason": str(error),
+                    "response_sha256": digest,
+                }
+            )
+            continue
+        candidates.append(candidate)
+    if len(rounds) != 1:
+        raise EvolutionError(
+            f"contact records span rounds {sorted(rounds)}; a harvest is one round's"
+        )
+    return CandidateHarvest(
+        round=rounds.pop(), candidates=tuple(candidates), refusals=tuple(refusals)
+    )
+
+
+def assemble_round_portfolios(
+    harvest: CandidateHarvest,
+    *,
+    incumbent_overrides: Mapping[str, str],
+    extra_candidates: Sequence[CandidateArtifact] = (),
+) -> dict[int, Portfolio]:
+    """The round's portfolios, one per surviving slot ``k``.
+
+    ``extra_candidates`` carries the families that make no contact -- today
+    exactly F2, ``rails.proposer.deterministic_candidate``, which the caller
+    builds from the registry with zero contacts.
+
+    A target whose slot-``k`` candidate was refused simply does not appear in
+    that portfolio's ``chosen`` mapping, so the incumbent's descriptions
+    stand for it: preregistration section 5 step 1, stated as code rather
+    than as a comment. A slot whose every target was refused would be
+    byte-identical to the incumbent arm and is DROPPED rather than flown --
+    two arms that are identical on the wire must never look like two
+    mechanisms in the ledger.
+    """
+
+    if not isinstance(harvest, CandidateHarvest):
+        raise EvolutionError("harvest must be a CandidateHarvest")
+    if isinstance(extra_candidates, (str, bytes)):
+        raise EvolutionError("extra_candidates must be a sequence of CandidateArtifact")
+    by_slot: dict[int, dict[str, CandidateArtifact]] = {}
+    for candidate in (*harvest.candidates, *extra_candidates):
+        if not isinstance(candidate, CandidateArtifact):
+            raise EvolutionError("every candidate must be a CandidateArtifact")
+        if candidate.round != harvest.round:
+            raise EvolutionError(
+                f"candidate {candidate.candidate_id} is from round {candidate.round}, "
+                f"not this harvest's round {harvest.round}"
+            )
+        slot = by_slot.setdefault(candidate.k, {})
+        if candidate.target_id in slot:
+            raise EvolutionError(
+                f"two candidates claim target {candidate.target_id!r} in slot "
+                f"{candidate.k}"
+            )
+        slot[candidate.target_id] = candidate
+    return {
+        k: assemble_portfolio(incumbent_overrides, by_slot[k])
+        for k in sorted(by_slot)
+        if by_slot[k]
+    }
+
+
+# ---------------------------------------------------------------------------
+# The round driver: plan_round / advance_round
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class RoundStep:
+    """One step of a round: what it reads, what it writes, and whether the
+    sealed receipts on disk say it has already run."""
+
+    name: str
+    reads: tuple[str, ...]
+    writes: tuple[str, ...]
+    done: bool
+    ready: bool
+    missing: tuple[str, ...]
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "name": self.name,
+            "reads": list(self.reads),
+            "writes": list(self.writes),
+            "done": self.done,
+            "ready": self.ready,
+            "missing": list(self.missing),
+        }
+
+
+@dataclass(frozen=True)
+class RoundPlan:
+    """Which step of round ``r`` runs next, and why the others do not."""
+
+    round: int
+    steps: tuple[RoundStep, ...]
+    next_step: str | None
+    blocked_on: tuple[str, ...]
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "schema": ROUND_PLAN_SCHEMA,
+            "round": self.round,
+            "next_step": self.next_step,
+            "blocked_on": list(self.blocked_on),
+            "steps": [step.as_json() for step in self.steps],
+        }
+
+
+def round_step_paths(round_index: int) -> dict[str, dict[str, tuple[str, ...]]]:
+    """The relative artefact names each step of round ``r`` reads and writes.
+
+    Names only, no I/O: :func:`plan_round` takes an ``exists`` predicate so
+    the whole plan is a pure function of which receipts are present, and a
+    test can drive a full round with no filesystem at all.
+
+    ``<sealed>`` entries are produced by a FLIGHT, not by the driver: the
+    driver never contacts the model, so a step that needs a flight's output
+    simply waits for it (``blocked_on``).
+    """
+
+    if isinstance(round_index, bool) or not isinstance(round_index, int) or round_index < 1:
+        raise EvolutionError("round_index must be a positive integer")
+    stem = f"round-{round_index:02d}"
+    return {
+        "propose": {
+            "reads": (),
+            "writes": (
+                f"{stem}/proposer-roster.json",
+                f"{stem}/proposer-experiment.json",
+                f"{stem}/propose.json",
+            ),
+        },
+        "candidates": {
+            "reads": (f"{stem}/propose.json", f"{stem}/proposer-outputs.jsonl"),
+            "writes": (
+                f"{stem}/candidates.json",
+                f"{stem}/fold-a-experiment.json",
+            ),
+        },
+        "select": {
+            "reads": (f"{stem}/candidates.json", f"{stem}/fold-a-scores.json"),
+            "writes": (
+                f"{stem}/selection.json",
+                f"{stem}/fold-b-experiment.json",
+            ),
+        },
+        "confirm": {
+            "reads": (f"{stem}/selection.json", f"{stem}/fold-b-scores.json"),
+            "writes": (
+                f"{stem}/confirmation.json",
+                f"evolution-round-{round_index:02d}.json",
+            ),
+        },
+    }
+
+
+def plan_round(
+    state: EvolutionState,
+    round_index: int,
+    *,
+    exists: Callable[[str], bool],
+) -> RoundPlan:
+    """The resumable step list for round ``round_index``. Pure.
+
+    Every step is DONE when all of its own outputs are present, READY when
+    every input it reads is present and its predecessor is done, and blocked
+    otherwise -- so re-running the driver after an interruption re-enters at
+    exactly the first step that has not landed, and a step whose outputs are
+    already sealed is never redone.
+
+    ``state`` supplies the round number the loop has actually reached, which
+    is checked against ``round_index``: a driver invoked for round 3 while
+    the state's history ends at round 1 would otherwise silently skip a
+    round's evidence.
+    """
+
+    state.validate()
+    if not callable(exists):
+        raise EvolutionError("exists must be a callable over relative artefact names")
+    if (
+        isinstance(round_index, bool)
+        or not isinstance(round_index, int)
+        or round_index != state.round + 1
+    ):
+        raise EvolutionError(
+            f"round_index must be the state's next round ({state.round + 1}); got "
+            f"{round_index!r}"
+        )
+
+    paths = round_step_paths(round_index)
+    steps: list[RoundStep] = []
+    predecessor_done = True
+    next_step: str | None = None
+    blocked_on: tuple[str, ...] = ()
+    for name in ROUND_STEPS:
+        reads = tuple(paths[name]["reads"])
+        writes = tuple(paths[name]["writes"])
+        done = bool(writes) and all(exists(path) for path in writes)
+        missing = tuple(path for path in reads if not exists(path))
+        ready = predecessor_done and not done and not missing
+        steps.append(
+            RoundStep(
+                name=name,
+                reads=reads,
+                writes=writes,
+                done=done,
+                ready=ready,
+                missing=missing,
+            )
+        )
+        if next_step is None and not done and predecessor_done:
+            if ready:
+                next_step = name
+            else:
+                blocked_on = missing
+        predecessor_done = predecessor_done and done
+    return RoundPlan(
+        round=round_index,
+        steps=tuple(steps),
+        next_step=next_step,
+        blocked_on=blocked_on,
+    )
+
+
+def advance_round(
+    state: EvolutionState,
+    *,
+    round_index: int,
+    confirmation: ConfirmationDecision,
+    assembly: Portfolio | None,
+    max_rounds: int = MAX_ROUNDS,
+    min_accepted_gain_pp: float = MIN_ACCEPTED_GAIN_PP,
+) -> tuple[EvolutionState, RoundOutcome, tuple[bool, str]]:
+    """The round's tail, as one pure step: the next incumbent, the outcome
+    the stop rule reads, and the stop verdict.
+
+    An ACCEPTED round adopts the assembly's overrides WHOLE (fold B accepts
+    the assembly as a whole and never partially, preregistration section 5
+    step 6); a rejected round keeps the incumbent unchanged. The gain the
+    stop rule reads is the fold-B TARGETED gain in percentage points --
+    the same number :class:`ConfirmationDecision` reports -- because that is
+    the quantity the round actually confirmed, not the fold-A counts that
+    only selected among candidates.
+    """
+
+    state.validate()
+    if not isinstance(confirmation, ConfirmationDecision):
+        raise EvolutionError("confirmation must be a ConfirmationDecision")
+    if confirmation.accepted and assembly is None:
+        raise EvolutionError(
+            "an accepted round must carry the assembly whose overrides become the "
+            "next incumbent"
+        )
+    if assembly is not None and not isinstance(assembly, Portfolio):
+        raise EvolutionError("assembly must be a Portfolio or None")
+    outcome = RoundOutcome(
+        round=round_index,
+        accepted=confirmation.accepted,
+        gain_pp=float(confirmation.targeted_gain_pp),
+        reason=confirmation.reason,
+        portfolio_sha256=None if assembly is None else assembly.portfolio_sha256,
+    ).validate()
+    next_state = state.with_outcome(
+        outcome,
+        overrides=dict(assembly.overrides) if (confirmation.accepted and assembly) else None,
+    )
+    stop = should_stop(
+        next_state.history,
+        max_rounds=max_rounds,
+        min_accepted_gain_pp=min_accepted_gain_pp,
+    )
+    return next_state, outcome, stop
+
+
+def check_ledger_budget(
+    ledger_rows: Sequence[Mapping[str, str]],
+    *,
+    run_id: str,
+    calls: float,
+    speech_seconds: float,
+) -> dict[str, object]:
+    """Refuse to emit a fragment whose flight would exceed its registered row.
+
+    Plan budgets are RUN-CUMULATIVE across every attempt of a run id, so the
+    number checked here is the loop's worst case for the whole run id
+    (:func:`ledger_budget`), not one round's. ``ledger_rows`` are the parsed
+    exposure-ledger rows (``contracts._parse_ledger_tables``); the row must
+    exist exactly once, must still read ``consumed = no``, and its ``calls``
+    and ``speech audio seconds`` cells are the ceilings.
+    """
+
+    if isinstance(ledger_rows, (str, bytes)):
+        raise EvolutionError("ledger_rows must be a sequence of parsed ledger rows")
+    if not isinstance(run_id, str) or not run_id:
+        raise EvolutionError("run_id must be non-empty text")
+    matched = [
+        row
+        for row in ledger_rows
+        if isinstance(row, Mapping) and str(row.get("run/experiment id", "")).strip() == run_id
+    ]
+    if len(matched) != 1:
+        raise EvolutionError(
+            f"exposure ledger carries {len(matched)} row(s) for run {run_id!r}; exactly "
+            "one pre-registered row is required before a fragment is emitted"
+        )
+    row = matched[0]
+    if str(row.get("consumed", "")).strip().lower() != "no":
+        raise EvolutionError(
+            f"exposure row for run {run_id!r} is not consumed=no; refusing to emit a "
+            "fragment for it"
+        )
+
+    def _ceiling(column: str) -> float:
+        raw = str(row.get(column, "")).strip().replace(",", "")
+        try:
+            return float(raw)
+        except ValueError as error:
+            raise EvolutionError(
+                f"exposure row for run {run_id!r} has a non-numeric {column!r} cell "
+                f"{raw!r}"
+            ) from error
+
+    ceilings = {
+        "calls": _ceiling("calls"),
+        "speech_seconds": _ceiling("speech audio seconds"),
+    }
+    planned = {"calls": float(calls), "speech_seconds": float(speech_seconds)}
+    over = sorted(name for name in ceilings if planned[name] > ceilings[name])
+    if over:
+        raise EvolutionError(
+            f"run {run_id!r} would spend "
+            + ", ".join(f"{name}={planned[name]:g} over {ceilings[name]:g}" for name in over)
+            + "; the registered ceiling is run-cumulative and is not raised by a driver"
+        )
+    return {"run_id": run_id, "planned": planned, "ceilings": ceilings, "within": True}

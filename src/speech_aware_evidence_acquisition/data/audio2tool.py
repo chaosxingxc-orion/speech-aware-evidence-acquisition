@@ -55,7 +55,7 @@ import re
 import wave
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Mapping
+from typing import Mapping, Sequence
 
 from ..reproduction.sampling import split_identity_hash
 from ..reproduction.toolcall_gold import GoldParseError, expected_tool_calls_for_entry
@@ -442,6 +442,101 @@ def load_official_gold(
             additional_tool_calls=tuple(additional),
         )
     return gold
+
+
+#: The audio2tool sample-id shape, ``"<tier>:<six digits>"`` -- the same
+#: identity :func:`_resolve_items` builds and every receipt records, spelled
+#: from :data:`_TIER_PATTERN` so there is one tier convention in this module.
+_SAMPLE_ID_RE = re.compile(rf"(?P<tier>{_TIER_PATTERN.pattern}):(?P<id>\d{{6}})")
+
+#: The three fields :func:`load_query_rows` returns per sample.
+QUERY_ROW_FIELDS = ("query", "gold_call", "tool_name")
+
+
+def load_query_rows(
+    lock: Mapping[str, object],
+    root: Path,
+    sample_ids: Sequence[str],
+) -> dict[str, dict[str, str]]:
+    """The spoken ``query`` text, the ``expected_tool_call`` string and the
+    primary ``tool_name`` of EXACTLY the named samples, straight from the
+    tier manifests.
+
+    IDENTITY-SCOPED, and deliberately not receipt-scoped: unlike
+    :func:`load_audio2tool` (whose universe is the frozen probe receipt) this
+    reader resolves whatever ids the caller names, because the two callers
+    that need it are both outside the probe-receipt universe and both carry
+    their own legality argument:
+
+    * ``rails.evolution.build_proposer_material`` -- construction rows of a
+      committed ``roster_role == "construction"`` roster, whose gold the
+      ``construction-proposer-text`` arm may see (owner decision
+      2026-09-05, ``contracts.CONSTRUCTION_VISIBLE_ARMS``);
+    * the EVO-A1 decontamination gate (preregistration section 8), which
+      opens evaluation query text INSIDE
+      ``rails.proposer.validate_candidate_artifact`` alone and never renders,
+      logs or echoes it.
+
+    This is therefore a SCORER-SIDE / GATE-SIDE reader in the same class as
+    :func:`load_expected_calls` and :func:`load_official_gold`: it is never
+    called from a scored row's request path, and the one arm that does put
+    its output on the wire is the text-only proposer arm, whose payload
+    records every id it saw in the audited ``construction_targets`` field.
+
+    Fail-closed on a malformed id, an id absent from its tier manifest, a
+    duplicate, a row with no non-empty ``query``/``tool_name``, and a row
+    whose ``expected_tool_call`` is not a non-empty string (a construction
+    exemplar with no call string has no gold to show).
+    """
+
+    if isinstance(sample_ids, (str, bytes)):
+        raise LoaderError("sample_ids must be a sequence of audio2tool sample ids")
+    wanted: dict[str, list[str]] = {}
+    seen: set[str] = set()
+    for sample_id in sample_ids:
+        if not isinstance(sample_id, str) or not _SAMPLE_ID_RE.fullmatch(sample_id):
+            raise LoaderError(
+                f"{sample_id!r} is not an audio2tool sample id of the shape "
+                "'<tier>:<six digits>'"
+            )
+        if sample_id in seen:
+            raise LoaderError(f"duplicate audio2tool sample id {sample_id!r}")
+        seen.add(sample_id)
+        tier, _, _ = sample_id.partition(":")
+        wanted.setdefault(tier, []).append(sample_id)
+
+    carrier_dir = asset_dir(lock, AUDIO2TOOL_LOCK_KEY, root)
+    public_dir = carrier_dir / "public"
+    if not public_dir.is_dir():
+        raise LoaderError(f"audio2tool public directory missing: {public_dir}")
+
+    rows: dict[str, dict[str, str]] = {}
+    for tier in sorted(wanted):
+        manifest = _tier_manifest(public_dir, tier)
+        for sample_id in sorted(wanted[tier]):
+            entry = manifest.get(int(sample_id.partition(":")[2]))
+            if entry is None:
+                raise LoaderError(
+                    f"sample {sample_id!r} has no row in the {tier} manifest"
+                )
+            query = entry.get("query")
+            tool_name = entry.get("tool_name")
+            gold_call = entry.get("expected_tool_call")
+            for field, value in (
+                ("query", query),
+                ("tool_name", tool_name),
+                ("expected_tool_call", gold_call),
+            ):
+                if not isinstance(value, str) or not value.strip():
+                    raise LoaderError(
+                        f"sample {sample_id!r} has no usable {field} in the {tier} manifest"
+                    )
+            rows[sample_id] = {
+                "query": str(query).strip(),
+                "gold_call": str(gold_call).strip(),
+                "tool_name": str(tool_name).strip(),
+            }
+    return rows
 
 
 _REGISTRY_COLUMNS = (

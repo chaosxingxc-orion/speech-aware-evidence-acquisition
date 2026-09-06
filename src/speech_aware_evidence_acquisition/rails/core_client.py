@@ -106,6 +106,7 @@ class CoreClient(Protocol):
         agent_state: Sequence[Mapping[str, object]] | None = None,
         agent_contact_id: str | None = None,
         contact_instruction: str | None = None,
+        construction_target_ids: Sequence[str] | None = None,
     ) -> str: ...
 
 
@@ -136,6 +137,7 @@ class MockCoreClient:
         agent_state: Sequence[Mapping[str, object]] | None = None,
         agent_contact_id: str | None = None,
         contact_instruction: str | None = None,
+        construction_target_ids: Sequence[str] | None = None,
     ) -> str:
         # text_only_sample_id is accepted (never validated -- this is a mock,
         # zero real invariants live here by design, module docstring) purely
@@ -1042,6 +1044,67 @@ class FrozenCoreClient:
             record.sample_rate_hz,
         )
 
+    def _selected_construction_targets(
+        self, construction_target_ids: Sequence[str] | None
+    ) -> list[dict[str, str]]:
+        """The ``construction_targets`` entries ONE request carries: either
+        every target this client was constructed with (``None``, the
+        historical behaviour, byte-identical), or the ORDERED SUBSET the
+        caller names.
+
+        A subset can only ever NARROW what the core sees. The bound tuple is
+        still the whole of the gold this client may ever show -- it is
+        validated once, at construction, from a committed roster (see
+        ``_validate_construction_targets``) -- and a request naming an id
+        that tuple does not carry is refused rather than resolved. So the
+        module's invariant is intact: "the gold this arm may show is a
+        property of the client's whole life, never a per-request argument a
+        caller could WIDEN mid-run".
+
+        ORDER is the caller's, deliberately. The EVO-A1 exemplar draw is a
+        seeded ORDERED sample (preregistration section 4: the seed "in every
+        case fixes their ORDER"), and the rendered proposer instruction
+        preserves that order within a tool's group, so the audited payload
+        must record the same order the prompt showed -- not the order the
+        client happened to bind.
+        """
+
+        bound = self._construction_targets or ()
+        if construction_target_ids is None:
+            return [dict(entry) for entry in bound]
+        if isinstance(construction_target_ids, (str, bytes)):
+            raise FrozenCoreClientError(
+                "construction_target_ids must be a sequence of bound sample ids"
+            )
+        wanted = tuple(construction_target_ids)
+        if not wanted:
+            raise FrozenCoreClientError(
+                "construction_target_ids must name at least one bound target; an "
+                "empty target list would silently degrade the proposer contact into "
+                "an ungrounded free-writing request"
+            )
+        by_id = {entry["sample_id"]: entry for entry in bound}
+        selected: list[dict[str, str]] = []
+        seen: set[str] = set()
+        for sample_id in wanted:
+            if not isinstance(sample_id, str) or not sample_id:
+                raise FrozenCoreClientError(
+                    "every construction_target_ids entry must be a non-empty string"
+                )
+            if sample_id in seen:
+                raise FrozenCoreClientError(
+                    f"construction_target_ids repeats {sample_id!r}"
+                )
+            seen.add(sample_id)
+            entry = by_id.get(sample_id)
+            if entry is None:
+                raise FrozenCoreClientError(
+                    f"construction target {sample_id!r} was not bound at construction; "
+                    "a request can narrow the bound targets, never widen them"
+                )
+            selected.append(dict(entry))
+        return selected
+
     def complete(
         self,
         messages: Sequence[Mapping[str, object]],
@@ -1054,6 +1117,7 @@ class FrozenCoreClient:
         agent_state: Sequence[Mapping[str, object]] | None = None,
         agent_contact_id: str | None = None,
         contact_instruction: str | None = None,
+        construction_target_ids: Sequence[str] | None = None,
     ) -> str:
         """The abort's own root cause, repaired (attempt-1 accounting,
         docs/readiness/2026-08-18-pkey-preregistration-REGISTERED.md section
@@ -1302,9 +1366,14 @@ class FrozenCoreClient:
                     f"arm {self._arm!r} is text-only; every request must name its "
                     "text_only_sample_id"
                 )
-            payload[_CONSTRUCTION_TARGETS_FIELD] = [
-                dict(entry) for entry in self._construction_targets or ()
-            ]
+            payload[_CONSTRUCTION_TARGETS_FIELD] = self._selected_construction_targets(
+                construction_target_ids
+            )
+        elif construction_target_ids is not None:
+            raise FrozenCoreClientError(
+                f"arm {self._arm!r} is not a construction-proposer arm; "
+                "construction_target_ids must be omitted"
+            )
         started_at = _iso(self._now())
         response = self._adapter.request(payload)
         with self._state_lock:
