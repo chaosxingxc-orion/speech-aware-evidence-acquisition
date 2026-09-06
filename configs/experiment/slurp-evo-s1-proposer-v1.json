@@ -32,7 +32,7 @@
   "cells": [
     {
       "cell_id": "EVO-S1-r1-proposer",
-      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V1",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2",
       "attempt_id": "attempt-r1-p-{scenario}-k{k}",
       "arm": "construction-proposer-text",
       "factor": "one text contact per scenario per proposer slot: the scenario's incumbent blocks, the closed entity-type name list, and M = 8 exemplar utterances with their gold entities. 18 scenarios x 3 slots = 54 contacts per round",
@@ -59,8 +59,8 @@
     "planned_speech_audio_seconds": 0
   },
   "execution_plan_basis": {
-    "planned_model_calls": "ROUND 1: 18 scenarios x 3 proposer slots = 54. The two controls (shares-only, and the round-1 token-matched form twin) are DETERMINISTIC and cost no contact, which is a real difference from EVO-A1, where the placebo spends one contact per target. Budgets are cumulative across every attempt of a run id, so the registered ceiling for this run id is R_max x 54 = 216, registered at 288 for margin.",
-    "planned_gpu_hours": "54 contacts x about 20 s each (a block set of up to 1,100 generated tokens) = 1,080 s = 0.30 h; 0.35 planned, 1.6 as the run-id ceiling over four rounds. This term is NOT negligible: over the whole loop the proposer costs about 1.2 GPU-h against the reward flights' 3.3.",
+    "planned_model_calls": "ROUND 1: 18 scenarios x 3 proposer slots = 54. The two controls (shares-only, and the round-1 token-matched form twin) are DETERMINISTIC and cost no contact, which is a real difference from EVO-A1, where the placebo spends one contact per target. Budgets are cumulative across every attempt of a run id, so the registered ceiling for the run id SAEA-SLURP-EVO-S1-PROPOSER-V2 (experiment_id above is the FRAGMENT id and tracks this file's name; the run id tracks the V2 exemplar roster the arm's plan binds) is R_max x 54 = 216, registered at 288 for margin.",
+    "planned_gpu_hours": "54 contacts x about 20 s each (a block set of up to 1,100 generated tokens) = 1,080 s = 0.30 h; 0.35 planned, 1.6 as the run-id ceiling over four rounds. This term is NOT negligible: over the whole loop the proposer costs about 1.2 GPU-h against the reward flights' 6.40 at the V2 fold size and the receipt-backed rate (2.49 at the rate the coordinator cited). Preregistration section 10 carries both columns.",
     "planned_speech_audio_seconds": "0. The arm is text-only and sends no audio part at all, so proposer contacts are counted in calls and never in speech seconds.",
     "paid_api_spend": 0
   },

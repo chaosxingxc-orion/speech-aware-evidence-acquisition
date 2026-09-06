@@ -95,9 +95,9 @@
   },
   "comparators": {
     "within_round": "the incumbent A_r, re-flown on the same fold in the same round, because greedy decoding is not bitwise reproducible across batch shapes on this runtime",
-    "on_the_folds": "the one-time closed-list direct arm of SAEA-SLURP-EVO-S1-INTENT-FOLDS-V1, which is also the sealed intent predecessor. There are no sealed KC-S1b rows on the folds: A_0 re-flown IS the KC-S1b artifact there.",
+    "on_the_folds": "the one-time closed-list direct arm of SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2, which is also the sealed intent predecessor. There are no sealed KC-S1b rows on the folds: A_0 re-flown IS the KC-S1b artifact there.",
     "final": {
-      "population": "NEW500 (read Option A) or DEV-1000 (read Option B) -- coordinator, preregistration section 7",
+      "population": "DEV-1000. Coordinator decision 2 of 2026-09-06 took read Option B: the curve is fold B per round at no extra contact and the final read of A* is DEV-1000 once, paired against the sealed KC-S1b manifest (the headline) and the sealed closed-list direct manifest, with KC-S1a beside. Preregistration section 7",
       "headline": {
         "run_id": "SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1",
         "attempt_id": "attempt-20260906T025102Z-af6b04",
@@ -213,7 +213,7 @@
     "knowledge": "none, with the snapshot's content dimension EXCLUDED -- the SLURP leakage-rule blocker of the KC-S1 verdict (deviation 1): the default size-full snapshot's one- and two-word TRAIN utterances collide by substring with SLURP's own scenario names and with ordinary English, and would refuse every schema block",
     "knowledge_snapshot_sha256": "07f94807d173b2f2bdda9dcd95b21354e018234a208a76683d0ca4989d9ffa65",
     "system_message": "byte-identical to the sealed closed-list baseline's, 7,583 characters, sha256 4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db",
-    "predecessor_binding": "sealed-manifest -- the one-time closed-list intent flight over that fold (SAEA-SLURP-EVO-S1-INTENT-FOLDS-V1). Incumbent-independent, so it is flown once and bound by every round and every candidate",
+    "predecessor_binding": "sealed-manifest -- the one-time closed-list intent flight over that fold (SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2). Incumbent-independent, so it is flown once and bound by every round and every candidate",
     "serving_geometry": "PENDING -- re-derived by the prompt fit. KC-S1b flew -np 4 at -c 65536 because its worst envelope is the 26,720-character full-schema fallback at about 7,500 tokens; at the +20 percent search budget that is about 9,000 and the geometry must be measured, not assumed",
     "harness": "core.flight.FlightRuntime with rails.phase_runner.run_program over configs/policy/phase-slots-given-intent-v1.json -- the same harness, controller and phase program KC-S1a and KC-S1b flew"
   },
@@ -241,7 +241,7 @@
     "scored_complete_manifests": 1,
     "whole_manifest_jobs_only": true,
     "dataset_sharding": false,
-    "stage_one": "rails.evolution.select_per_target on fold A, per scenario, gates saves >= 4 / harms <= 1 / net >= 3 on that scenario's own 60 rows, winner = largest net then fewer harms then fewer artifact bytes then lowest k. A COUNT rule: at 60 rows an interval is still uninformative on a sparse metric, and a reviewer can recount the gate by hand. The V2 draw IS the answer to preregistration section 16 open point 1: scaling KC-S1b's measured per-stratum saves to 60 rows clears the gate in nine of eighteen scenarios against three of eighteen at 30",
+    "stage_one": "rails.evolution.select_per_target on fold A, per scenario, gates saves >= 4 / harms <= 1 / net >= 3 on that scenario's own 60 rows, winner = largest net then fewer harms then fewer artifact bytes then lowest k. A COUNT rule: at 60 rows an interval is still uninformative on a sparse metric, and a reviewer can recount the gate by hand. The V2 draw IS the answer to preregistration section 16 open point 1: scaling KC-S1b's measured per-stratum saves to 60 rows clears the gate in SEVEN of eighteen scenarios against three of eighteen at 30, audited in docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-stage-one-power/power.json. transport clears at 30 and is refused at 60 because the harms bound is an absolute row count that does not scale with the fold",
     "stage_two": "rails.evolution.confirm_assembly on fold B, with the background bound REPLACED by the per-scenario harm bound of coordinator decision 3 (2026-09-06): the pooled TARGETED CI90 lower bound strictly above 0, every ADMITTED scenario at harms minus saves <= 1 row on its own 60 fold-B rows, and the NON-ADMITTED scenarios pooled at no worse than -1.0 pp. Accepted as a whole, never partially",
     "intervals": "analysis.paired.paired_contrast, 10,000 replicates stratified by scenario, seed 20260903, CI90, exact sign test",
     "per_round_receipt": "rails.evolution.write_round_receipt under docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-s1/; replay_selection must reproduce every stage-one decision from the sealed per-sample score files alone",
