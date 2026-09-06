@@ -2641,7 +2641,21 @@ def build_proposer_material(
                 row = _row(sample_id)
                 gold_call = row["gold_call"]
                 head = gold_call.split("(", 1)[0].strip()
-                if head != row["tool_name"]:
+                # A released ``expected_tool_call`` is occasionally NAMESPACED
+                # ("smart_home.setApplianceMode(...)") while the row's own
+                # ``tool_name`` column is the bare name -- 1 of the 274 V2
+                # exemplar rows and 3 of fold A's 424. The manifest's
+                # ``tool_name`` is the authority the official scorer itself
+                # compares against (``reproduction.a2t_scorer`` scores
+                # ``compute_tool_accuracy(predicted, gold.tool_name)``), so the
+                # namespace is cosmetic and refusing it would drop a legal
+                # exemplar over a released-data quirk. The bare name must still
+                # AGREE: a row whose call string names a genuinely different
+                # tool (the released tier3_multi_intent:002505 pairs
+                # ``updateFirmware`` with a ``setTargetTemperature`` call) is
+                # still refused, because the exemplar block groups by tool and
+                # such a row would teach the wrong grouping.
+                if head.rsplit(".", 1)[-1] != row["tool_name"]:
                     raise EvolutionError(
                         f"construction row {sample_id!r} declares tool "
                         f"{row['tool_name']!r} but its gold call opens with {head!r}; "

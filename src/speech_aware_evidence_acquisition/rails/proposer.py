@@ -426,12 +426,22 @@ def _checked_exemplars(
 
 def _tool_of_gold_call(gold_call: str) -> str:
     """The function name a call string opens with (``setAlarm(...)`` ->
-    ``setAlarm``) -- the Audio2Tool gold format the official parser reads."""
+    ``setAlarm``) -- the Audio2Tool gold format the official parser reads.
+
+    A released ``expected_tool_call`` is occasionally NAMESPACED
+    (``smart_home.setApplianceMode(...)``) while the row's own ``tool_name``
+    column, which is what the official scorer compares a prediction against,
+    is the bare name. The last dotted segment is therefore the tool: 1 of the
+    274 rows of ``A2T-EVO-EXEMPLARS-V2`` and 3 of fold A's 424 carry such a
+    head, and grouping them under a namespaced key would refuse a legal
+    exemplar over a released-data quirk. The call string itself is still
+    rendered VERBATIM -- only the grouping key is normalized.
+    """
 
     head = gold_call.split("(", 1)[0].strip()
     if not head:
         raise ProposerError(f"gold call {gold_call!r} names no tool")
-    return head
+    return head.rsplit(".", 1)[-1]
 
 
 # ---------------------------------------------------------------------------

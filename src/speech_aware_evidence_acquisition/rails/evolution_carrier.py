@@ -295,9 +295,21 @@ def load_carrier_material(
         every_id = sorted({sid for rows in exemplar_pool.values() for sid in rows})
         exemplar_rows = load_query_rows(resolved_lock, root, every_id)
         if "media" in needs:
-            from ..data.audio2tool import load_media_rows  # noqa: PLC0415
+            # MEASURED facts, not ``data.audio2tool.load_media_rows``'s, and the
+            # difference is the one the I-4 gate refuses on. That reader returns
+            # the manifest's three-decimal ``duration`` cell as ``audio_seconds``
+            # and binds a tier-7 row to its LAST chat turn; a D1 media supplement
+            # is built from wav HEADERS and refuses a disagreement above 1e-6, so
+            # a proposer roster carrying manifest durations can never have a
+            # supplement built for it, and its anchors could never pass
+            # ``gate.verify_media_identity`` at model-touch time. This is the same
+            # function and the same tier-7 rule (the FIRST user turn, which is what
+            # the official protocol serves) that the two folds' flight-roster
+            # receipts and their supplements were built from, so every EVO-A1
+            # media artifact now agrees by construction.
+            from ..analysis.a2t_evo_capacity import measured_media_facts  # noqa: PLC0415
 
-            media_facts = load_media_rows(resolved_lock, root, every_id)
+            media_facts = measured_media_facts(resolved_lock, root, every_id)
 
     fold_a_rows_of_target: Mapping[str, tuple[str, ...]] = {}
     fold_a_sentinel_rows: Mapping[str, Mapping[str, tuple[str, ...]]] = {}
