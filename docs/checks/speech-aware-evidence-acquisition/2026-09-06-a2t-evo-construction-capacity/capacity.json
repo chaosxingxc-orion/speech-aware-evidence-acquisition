@@ -1,0 +1,1563 @@
+{
+  "authority": "docs/readiness/2026-09-05-three-dimension-experiment-program.md",
+  "exposure_row": "SAEA-A2T-MF-EVO-CONSTRUCTION-CAPACITY-V1",
+  "generator": "scripts/build_a2t_evo_construction_capacity.py",
+  "mf1_receipt": {
+    "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-query-cue-audit/summary.json",
+    "sealed_miss_total": 1544,
+    "sha256": "81ea9b79e7ca713cb5c0b788190c57ecd147cbee02456565ec02e39cd2afe732",
+    "target_strict_mass_total": 235
+  },
+  "offline_guard": {
+    "attempted_targets": [],
+    "exposure_row": "SAEA-A2T-MF-EVO-CONSTRUCTION-CAPACITY-V1",
+    "outbound_connection_attempts": 0
+  },
+  "population": {
+    "audio_seconds_cap": 60.0,
+    "carrier_units_total": 16838,
+    "construction_blocks": 1689,
+    "construction_units": 3207,
+    "fold_eligible_blocks": 1687,
+    "fold_eligible_units": 3201,
+    "partition_receipt": "docs/receipts/knowledge/a2t-partition-proposal.json",
+    "source": "the V3 exposure-free construction pool, runtime wav at most 60 s",
+    "units_over_audio_cap": 6
+  },
+  "rule": "quota_A = quota_B = min(20, floor((units - 8) / 2)), lowered to the largest whole-BLOCK split that still yields both folds and the 8-unit exemplar reserve; a tool is DROPPED below a quota of 6; a target survives only while its dominant confusion pair keeps every tool on both sides",
+  "schema": "saea-a2t-evo-construction-capacity-v1",
+  "seed": 20260906,
+  "targets": [
+    {
+      "component_mass": 186,
+      "dominant_pair": "setColor+setColorTemperature+setLighting|setAmbientLighting",
+      "dominant_pair_intact": false,
+      "dominant_pair_mass": 88,
+      "dropped_tools": [
+        "setAmbientLighting",
+        "setBrightness"
+      ],
+      "intact_pair_mass": 18,
+      "intact_pairs": [
+        {
+          "mass": 18,
+          "pair_id": "setGroupLightState|setLighting"
+        }
+      ],
+      "strict_mass": 147,
+      "survives": false,
+      "surviving_tools": [
+        "getLightState",
+        "resetFilterStatus",
+        "setColor",
+        "setColorTemperature",
+        "setGroupLightState",
+        "setLighting"
+      ],
+      "target_id": "lighting",
+      "tools": [
+        "getLightState",
+        "resetFilterStatus",
+        "setAmbientLighting",
+        "setBrightness",
+        "setColor",
+        "setColorTemperature",
+        "setGroupLightState",
+        "setLighting"
+      ]
+    },
+    {
+      "component_mass": 48,
+      "dominant_pair": "activateScene|activateRoutine",
+      "dominant_pair_intact": true,
+      "dominant_pair_mass": 15,
+      "dropped_tools": [],
+      "intact_pair_mass": 44,
+      "intact_pairs": [
+        {
+          "mass": 15,
+          "pair_id": "activateScene|activateRoutine"
+        },
+        {
+          "mass": 12,
+          "pair_id": "setApplianceMode|startCleaning"
+        },
+        {
+          "mass": 6,
+          "pair_id": "activateRoutine|setSecurityMode"
+        },
+        {
+          "mass": 6,
+          "pair_id": "activateScene|setSecurityMode"
+        },
+        {
+          "mass": 5,
+          "pair_id": "activateRoutine|setApplianceMode"
+        }
+      ],
+      "strict_mass": 44,
+      "survives": true,
+      "surviving_tools": [
+        "activateRoutine",
+        "activateScene",
+        "setApplianceMode",
+        "setSecurityMode",
+        "startCleaning"
+      ],
+      "target_id": "activateRoutine",
+      "tools": [
+        "activateRoutine",
+        "activateScene",
+        "setApplianceMode",
+        "setSecurityMode",
+        "startCleaning"
+      ]
+    },
+    {
+      "component_mass": 23,
+      "dominant_pair": "getBiometricData|getHRV",
+      "dominant_pair_intact": true,
+      "dominant_pair_mass": 13,
+      "dropped_tools": [
+        "setRomanceMode"
+      ],
+      "intact_pair_mass": 18,
+      "intact_pairs": [
+        {
+          "mass": 13,
+          "pair_id": "getBiometricData|getHRV"
+        },
+        {
+          "mass": 5,
+          "pair_id": "getBiometricData|setHapticStrength"
+        }
+      ],
+      "strict_mass": 23,
+      "survives": true,
+      "surviving_tools": [
+        "getBiometricData",
+        "getHRV",
+        "setHapticStrength"
+      ],
+      "target_id": "getBiometricData",
+      "tools": [
+        "getBiometricData",
+        "getHRV",
+        "setHapticStrength",
+        "setRomanceMode"
+      ]
+    },
+    {
+      "component_mass": 16,
+      "dominant_pair": "calibrateCameras|updateFirmware",
+      "dominant_pair_intact": false,
+      "dominant_pair_mass": 6,
+      "dropped_tools": [
+        "calibrateCameras"
+      ],
+      "intact_pair_mass": 5,
+      "intact_pairs": [
+        {
+          "mass": 5,
+          "pair_id": "rebootDevice|streamCamera"
+        }
+      ],
+      "strict_mass": 16,
+      "survives": false,
+      "surviving_tools": [
+        "rebootDevice",
+        "streamCamera",
+        "updateFirmware"
+      ],
+      "target_id": "calibrateCameras",
+      "tools": [
+        "calibrateCameras",
+        "rebootDevice",
+        "streamCamera",
+        "updateFirmware"
+      ]
+    },
+    {
+      "component_mass": 5,
+      "dominant_pair": "castContent|playMedia",
+      "dominant_pair_intact": true,
+      "dominant_pair_mass": 5,
+      "dropped_tools": [],
+      "intact_pair_mass": 5,
+      "intact_pairs": [
+        {
+          "mass": 5,
+          "pair_id": "castContent|playMedia"
+        }
+      ],
+      "strict_mass": 5,
+      "survives": true,
+      "surviving_tools": [
+        "castContent",
+        "playMedia"
+      ],
+      "target_id": "castContent",
+      "tools": [
+        "castContent",
+        "playMedia"
+      ]
+    }
+  ],
+  "tools": {
+    "activateRoutine": {
+      "blocks": 46,
+      "blocks_by_bucket": {
+        "exemplars": [
+          5250,
+          5252,
+          5254,
+          5256,
+          5258,
+          5259,
+          5261,
+          5262,
+          5263,
+          5265,
+          5267,
+          5268,
+          5270,
+          5274,
+          5277,
+          5278,
+          5279,
+          5280,
+          5283,
+          5287,
+          5289,
+          5291,
+          5293,
+          5294,
+          5295
+        ],
+        "fold_a": [
+          611,
+          4376,
+          4379,
+          5257,
+          5269,
+          5276,
+          5284,
+          5285,
+          5286,
+          5296
+        ],
+        "fold_b": [
+          4355,
+          4377,
+          5251,
+          5253,
+          5255,
+          5266,
+          5273,
+          5275,
+          5281,
+          5297,
+          5299
+        ]
+      },
+      "fold_quota": 20,
+      "realized_quota": 20,
+      "rule_quota": 20,
+      "survives": true,
+      "tool_name": "activateRoutine",
+      "units": 65,
+      "units_by_bucket": {
+        "exemplars": 25,
+        "fold_a": 20,
+        "fold_b": 20
+      },
+      "units_by_tier": {
+        "tier1_direct": 4,
+        "tier2_parametric": 41,
+        "tier3_multi_intent": 4,
+        "tier4_implicit": 3,
+        "tier5_needle": 4,
+        "tier6_correction": 4,
+        "tier7_multiturn": 4,
+        "tier8_intent_blending": 1
+      }
+    },
+    "activateScene": {
+      "blocks": 36,
+      "blocks_by_bucket": {
+        "exemplars": [
+          3965,
+          3968,
+          3971,
+          3973,
+          3983,
+          3985,
+          3989,
+          3991
+        ],
+        "fold_a": [
+          2960,
+          3952,
+          3954,
+          3960,
+          3962,
+          3969,
+          3972,
+          3975,
+          3978,
+          3979,
+          3984,
+          3988,
+          3990,
+          3994
+        ],
+        "fold_b": [
+          2947,
+          3951,
+          3953,
+          3955,
+          3959,
+          3963,
+          3967,
+          3976,
+          3980,
+          3986,
+          3993,
+          3995,
+          3996,
+          3998
+        ]
+      },
+      "fold_quota": 19,
+      "realized_quota": 19,
+      "rule_quota": 19,
+      "survives": true,
+      "tool_name": "activateScene",
+      "units": 46,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 19,
+        "fold_b": 19
+      },
+      "units_by_tier": {
+        "tier1_direct": 2,
+        "tier2_parametric": 34,
+        "tier3_multi_intent": 2,
+        "tier4_implicit": 2,
+        "tier5_needle": 2,
+        "tier6_correction": 2,
+        "tier7_multiturn": 2
+      }
+    },
+    "calibrateCameras": {
+      "blocks": 7,
+      "blocks_by_bucket": {
+        "exemplars": [
+          159,
+          1803,
+          1806,
+          1810,
+          1812,
+          1822,
+          1823
+        ],
+        "fold_a": [],
+        "fold_b": []
+      },
+      "fold_quota": 0,
+      "realized_quota": 0,
+      "rule_quota": 0,
+      "survives": false,
+      "tool_name": "calibrateCameras",
+      "units": 7,
+      "units_by_bucket": {
+        "exemplars": 7,
+        "fold_a": 0,
+        "fold_b": 0
+      },
+      "units_by_tier": {
+        "tier1_direct": 1,
+        "tier4_implicit": 1,
+        "tier5_needle": 1,
+        "tier6_correction": 1,
+        "tier7_multiturn": 2,
+        "tier8_intent_blending": 1
+      }
+    },
+    "castContent": {
+      "blocks": 10,
+      "blocks_by_bucket": {
+        "exemplars": [
+          2689,
+          3307,
+          3333
+        ],
+        "fold_a": [
+          2675,
+          2677,
+          2694
+        ],
+        "fold_b": [
+          2682,
+          2692,
+          3311,
+          3316
+        ]
+      },
+      "fold_quota": 14,
+      "realized_quota": 14,
+      "rule_quota": 15,
+      "survives": true,
+      "tool_name": "castContent",
+      "units": 39,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 17,
+        "fold_b": 14
+      },
+      "units_by_tier": {
+        "tier1_direct": 6,
+        "tier2_parametric": 4,
+        "tier3_multi_intent": 6,
+        "tier4_implicit": 6,
+        "tier5_needle": 6,
+        "tier6_correction": 5,
+        "tier7_multiturn": 6
+      }
+    },
+    "getBiometricData": {
+      "blocks": 41,
+      "blocks_by_bucket": {
+        "exemplars": [
+          745,
+          904,
+          4757,
+          4758,
+          4759,
+          4762,
+          4765,
+          4775,
+          4778,
+          4779,
+          4783,
+          4785,
+          4786,
+          4794,
+          4798,
+          4799
+        ],
+        "fold_a": [
+          3547,
+          3557,
+          4750,
+          4755,
+          4766,
+          4767,
+          4784,
+          4790,
+          4793,
+          4795
+        ],
+        "fold_b": [
+          983,
+          3549,
+          4751,
+          4760,
+          4761,
+          4763,
+          4770,
+          4774,
+          4780,
+          4781,
+          4782,
+          4789,
+          4791,
+          4792,
+          4797
+        ]
+      },
+      "fold_quota": 20,
+      "realized_quota": 20,
+      "rule_quota": 20,
+      "survives": true,
+      "tool_name": "getBiometricData",
+      "units": 56,
+      "units_by_bucket": {
+        "exemplars": 16,
+        "fold_a": 20,
+        "fold_b": 20
+      },
+      "units_by_tier": {
+        "tier1_direct": 3,
+        "tier2_parametric": 35,
+        "tier3_multi_intent": 3,
+        "tier4_implicit": 3,
+        "tier5_needle": 3,
+        "tier6_correction": 3,
+        "tier7_multiturn": 3,
+        "tier8_intent_blending": 3
+      }
+    },
+    "getHRV": {
+      "blocks": 41,
+      "blocks_by_bucket": {
+        "exemplars": [
+          829,
+          5400,
+          5402,
+          5421,
+          5425,
+          5427,
+          5429,
+          5434,
+          5436,
+          5442,
+          5449
+        ],
+        "fold_a": [
+          728,
+          772,
+          836,
+          4536,
+          5403,
+          5408,
+          5409,
+          5417,
+          5419,
+          5422,
+          5431,
+          5432,
+          5441,
+          5444,
+          5448
+        ],
+        "fold_b": [
+          853,
+          945,
+          4543,
+          5410,
+          5413,
+          5414,
+          5420,
+          5423,
+          5428,
+          5437,
+          5438,
+          5439,
+          5440,
+          5443,
+          5447
+        ]
+      },
+      "fold_quota": 20,
+      "realized_quota": 20,
+      "rule_quota": 20,
+      "survives": true,
+      "tool_name": "getHRV",
+      "units": 51,
+      "units_by_bucket": {
+        "exemplars": 11,
+        "fold_a": 20,
+        "fold_b": 20
+      },
+      "units_by_tier": {
+        "tier1_direct": 2,
+        "tier2_parametric": 33,
+        "tier3_multi_intent": 2,
+        "tier4_implicit": 2,
+        "tier5_needle": 2,
+        "tier6_correction": 2,
+        "tier7_multiturn": 2,
+        "tier8_intent_blending": 6
+      }
+    },
+    "getLightState": {
+      "blocks": 9,
+      "blocks_by_bucket": {
+        "exemplars": [
+          3266,
+          3784,
+          3786
+        ],
+        "fold_a": [
+          3253,
+          3263
+        ],
+        "fold_b": [
+          3248,
+          3754,
+          3789,
+          3799
+        ]
+      },
+      "fold_quota": 9,
+      "realized_quota": 9,
+      "rule_quota": 10,
+      "survives": true,
+      "tool_name": "getLightState",
+      "units": 29,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 12,
+        "fold_b": 9
+      },
+      "units_by_tier": {
+        "tier1_direct": 4,
+        "tier2_parametric": 5,
+        "tier3_multi_intent": 4,
+        "tier4_implicit": 4,
+        "tier5_needle": 4,
+        "tier6_correction": 4,
+        "tier7_multiturn": 4
+      }
+    },
+    "playMedia": {
+      "blocks": 7,
+      "blocks_by_bucket": {
+        "exemplars": [
+          2592,
+          3253,
+          3263
+        ],
+        "fold_a": [
+          2606,
+          3277
+        ],
+        "fold_b": [
+          2585,
+          3266
+        ]
+      },
+      "fold_quota": 7,
+      "realized_quota": 7,
+      "rule_quota": 7,
+      "survives": true,
+      "tool_name": "playMedia",
+      "units": 22,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 7,
+        "fold_b": 7
+      },
+      "units_by_tier": {
+        "tier1_direct": 3,
+        "tier2_parametric": 4,
+        "tier3_multi_intent": 3,
+        "tier4_implicit": 3,
+        "tier5_needle": 3,
+        "tier6_correction": 3,
+        "tier7_multiturn": 3
+      }
+    },
+    "rebootDevice": {
+      "blocks": 15,
+      "blocks_by_bucket": {
+        "exemplars": [
+          452,
+          574,
+          3026,
+          4422,
+          4423
+        ],
+        "fold_a": [
+          435,
+          3011,
+          3013,
+          3316,
+          4445
+        ],
+        "fold_b": [
+          3023,
+          3307,
+          3311,
+          4436,
+          4440
+        ]
+      },
+      "fold_quota": 20,
+      "realized_quota": 20,
+      "rule_quota": 20,
+      "survives": true,
+      "tool_name": "rebootDevice",
+      "units": 50,
+      "units_by_bucket": {
+        "exemplars": 10,
+        "fold_a": 20,
+        "fold_b": 20
+      },
+      "units_by_tier": {
+        "tier1_direct": 7,
+        "tier2_parametric": 5,
+        "tier3_multi_intent": 7,
+        "tier4_implicit": 7,
+        "tier5_needle": 7,
+        "tier6_correction": 7,
+        "tier7_multiturn": 7,
+        "tier8_intent_blending": 3
+      }
+    },
+    "resetFilterStatus": {
+      "blocks": 46,
+      "blocks_by_bucket": {
+        "exemplars": [
+          381,
+          4801,
+          4804,
+          4805,
+          4806,
+          4807,
+          4810,
+          4815,
+          4816,
+          4817,
+          4818,
+          4819,
+          4820,
+          4821,
+          4822,
+          4831,
+          4835,
+          4836,
+          4837,
+          4847,
+          4848
+        ],
+        "fold_a": [
+          3400,
+          3405,
+          4809,
+          4814,
+          4823,
+          4827,
+          4828,
+          4830,
+          4833,
+          4849
+        ],
+        "fold_b": [
+          3413,
+          4800,
+          4803,
+          4808,
+          4824,
+          4832,
+          4834,
+          4838,
+          4839,
+          4840,
+          4841,
+          4842,
+          4844,
+          4845,
+          4846
+        ]
+      },
+      "fold_quota": 20,
+      "realized_quota": 20,
+      "rule_quota": 20,
+      "survives": true,
+      "tool_name": "resetFilterStatus",
+      "units": 61,
+      "units_by_bucket": {
+        "exemplars": 21,
+        "fold_a": 20,
+        "fold_b": 20
+      },
+      "units_by_tier": {
+        "tier1_direct": 3,
+        "tier2_parametric": 42,
+        "tier3_multi_intent": 3,
+        "tier4_implicit": 3,
+        "tier5_needle": 3,
+        "tier6_correction": 3,
+        "tier7_multiturn": 3,
+        "tier8_intent_blending": 1
+      }
+    },
+    "setAmbientLighting": {
+      "blocks": 9,
+      "blocks_by_bucket": {
+        "exemplars": [
+          1171,
+          1173,
+          1174,
+          1181,
+          1182,
+          1184,
+          1193,
+          1194,
+          2097
+        ],
+        "fold_a": [],
+        "fold_b": []
+      },
+      "fold_quota": 0,
+      "realized_quota": 0,
+      "rule_quota": 0,
+      "survives": false,
+      "tool_name": "setAmbientLighting",
+      "units": 9,
+      "units_by_bucket": {
+        "exemplars": 9,
+        "fold_a": 0,
+        "fold_b": 0
+      },
+      "units_by_tier": {
+        "tier1_direct": 2,
+        "tier2_parametric": 1,
+        "tier3_multi_intent": 1,
+        "tier5_needle": 2,
+        "tier6_correction": 2,
+        "tier7_multiturn": 1
+      }
+    },
+    "setApplianceMode": {
+      "blocks": 10,
+      "blocks_by_bucket": {
+        "exemplars": [
+          2801,
+          3150,
+          3194
+        ],
+        "fold_a": [
+          2793
+        ],
+        "fold_b": [
+          3157,
+          3161,
+          3165,
+          3166,
+          3183,
+          3184
+        ]
+      },
+      "fold_quota": 6,
+      "realized_quota": 6,
+      "rule_quota": 6,
+      "survives": true,
+      "tool_name": "setApplianceMode",
+      "units": 20,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 6,
+        "fold_b": 6
+      },
+      "units_by_tier": {
+        "tier1_direct": 2,
+        "tier2_parametric": 8,
+        "tier3_multi_intent": 2,
+        "tier4_implicit": 2,
+        "tier5_needle": 2,
+        "tier6_correction": 2,
+        "tier7_multiturn": 2
+      }
+    },
+    "setBrightness": {
+      "blocks": 8,
+      "blocks_by_bucket": {
+        "exemplars": [
+          2137,
+          2754,
+          2793
+        ],
+        "fold_a": [
+          2146
+        ],
+        "fold_b": [
+          2778,
+          2780,
+          2784,
+          2789
+        ]
+      },
+      "fold_quota": 0,
+      "realized_quota": 4,
+      "rule_quota": 5,
+      "survives": false,
+      "tool_name": "setBrightness",
+      "units": 18,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 6,
+        "fold_b": 4
+      },
+      "units_by_tier": {
+        "tier1_direct": 2,
+        "tier2_parametric": 6,
+        "tier3_multi_intent": 2,
+        "tier4_implicit": 2,
+        "tier5_needle": 2,
+        "tier6_correction": 2,
+        "tier7_multiturn": 2
+      }
+    },
+    "setColor": {
+      "blocks": 14,
+      "blocks_by_bucket": {
+        "exemplars": [
+          2180,
+          2282,
+          2286,
+          2299
+        ],
+        "fold_a": [
+          384,
+          2167,
+          2179,
+          2189,
+          2264
+        ],
+        "fold_b": [
+          2178,
+          2181,
+          2182,
+          2268,
+          2294
+        ]
+      },
+      "fold_quota": 20,
+      "realized_quota": 20,
+      "rule_quota": 20,
+      "survives": true,
+      "tool_name": "setColor",
+      "units": 49,
+      "units_by_bucket": {
+        "exemplars": 9,
+        "fold_a": 20,
+        "fold_b": 20
+      },
+      "units_by_tier": {
+        "tier1_direct": 7,
+        "tier2_parametric": 6,
+        "tier3_multi_intent": 7,
+        "tier4_implicit": 7,
+        "tier5_needle": 7,
+        "tier6_correction": 7,
+        "tier7_multiturn": 7,
+        "tier8_intent_blending": 1
+      }
+    },
+    "setColorTemperature": {
+      "blocks": 10,
+      "blocks_by_bucket": {
+        "exemplars": [
+          2198,
+          2801,
+          2846
+        ],
+        "fold_a": [
+          2205,
+          2214
+        ],
+        "fold_b": [
+          386,
+          2216,
+          2823,
+          2824,
+          2848
+        ]
+      },
+      "fold_quota": 10,
+      "realized_quota": 10,
+      "rule_quota": 11,
+      "survives": true,
+      "tool_name": "setColorTemperature",
+      "units": 30,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 12,
+        "fold_b": 10
+      },
+      "units_by_tier": {
+        "tier1_direct": 4,
+        "tier2_parametric": 5,
+        "tier3_multi_intent": 4,
+        "tier4_implicit": 4,
+        "tier5_needle": 4,
+        "tier6_correction": 4,
+        "tier7_multiturn": 4,
+        "tier8_intent_blending": 1
+      }
+    },
+    "setGroupLightState": {
+      "blocks": 40,
+      "blocks_by_bucket": {
+        "exemplars": [
+          515,
+          5550,
+          5551,
+          5552,
+          5554,
+          5564,
+          5567,
+          5572,
+          5574,
+          5576,
+          5580,
+          5582,
+          5584,
+          5594,
+          5595
+        ],
+        "fold_a": [
+          341,
+          4390,
+          4393,
+          5553,
+          5573,
+          5577,
+          5589,
+          5590,
+          5592,
+          5593
+        ],
+        "fold_b": [
+          4397,
+          5556,
+          5557,
+          5561,
+          5563,
+          5568,
+          5569,
+          5571,
+          5575,
+          5578,
+          5586,
+          5591,
+          5596,
+          5597,
+          5599
+        ]
+      },
+      "fold_quota": 20,
+      "realized_quota": 20,
+      "rule_quota": 20,
+      "survives": true,
+      "tool_name": "setGroupLightState",
+      "units": 55,
+      "units_by_bucket": {
+        "exemplars": 15,
+        "fold_a": 20,
+        "fold_b": 20
+      },
+      "units_by_tier": {
+        "tier1_direct": 3,
+        "tier2_parametric": 35,
+        "tier3_multi_intent": 3,
+        "tier4_implicit": 3,
+        "tier5_needle": 3,
+        "tier6_correction": 3,
+        "tier7_multiturn": 3,
+        "tier8_intent_blending": 2
+      }
+    },
+    "setHapticStrength": {
+      "blocks": 34,
+      "blocks_by_bucket": {
+        "exemplars": [
+          5663,
+          5673,
+          5674,
+          5680,
+          5684,
+          5687,
+          5689,
+          5690
+        ],
+        "fold_a": [
+          735,
+          967,
+          3754,
+          5654,
+          5658,
+          5664,
+          5669,
+          5679,
+          5688,
+          5696,
+          5697
+        ],
+        "fold_b": [
+          5650,
+          5656,
+          5659,
+          5660,
+          5667,
+          5675,
+          5676,
+          5677,
+          5681,
+          5683,
+          5686,
+          5691,
+          5694,
+          5695,
+          5698
+        ]
+      },
+      "fold_quota": 15,
+      "realized_quota": 15,
+      "rule_quota": 15,
+      "survives": true,
+      "tool_name": "setHapticStrength",
+      "units": 38,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 15,
+        "fold_b": 15
+      },
+      "units_by_tier": {
+        "tier1_direct": 1,
+        "tier2_parametric": 31,
+        "tier3_multi_intent": 1,
+        "tier4_implicit": 1,
+        "tier5_needle": 1,
+        "tier7_multiturn": 1,
+        "tier8_intent_blending": 2
+      }
+    },
+    "setLighting": {
+      "blocks": 46,
+      "blocks_by_bucket": {
+        "exemplars": [
+          403,
+          3467,
+          4560,
+          4561,
+          4562,
+          4563,
+          4564,
+          4565,
+          4566,
+          4567,
+          4568,
+          4569,
+          4570,
+          4571,
+          4572,
+          4573,
+          4575,
+          4576,
+          4577,
+          4578,
+          4579,
+          4580,
+          4581,
+          4582,
+          4583,
+          4584,
+          4585,
+          4586,
+          4587,
+          4588,
+          4590,
+          4591,
+          4592,
+          4593,
+          4594,
+          4597,
+          4598,
+          4599
+        ],
+        "fold_a": [
+          2105,
+          2117,
+          3450,
+          3455
+        ],
+        "fold_b": [
+          2106,
+          3451,
+          3458,
+          3479
+        ]
+      },
+      "fold_quota": 20,
+      "realized_quota": 20,
+      "rule_quota": 20,
+      "survives": true,
+      "tool_name": "setLighting",
+      "units": 89,
+      "units_by_bucket": {
+        "exemplars": 43,
+        "fold_a": 23,
+        "fold_b": 23
+      },
+      "units_by_tier": {
+        "tier1_direct": 9,
+        "tier2_parametric": 36,
+        "tier3_multi_intent": 9,
+        "tier4_implicit": 8,
+        "tier5_needle": 9,
+        "tier6_correction": 9,
+        "tier7_multiturn": 8,
+        "tier8_intent_blending": 1
+      }
+    },
+    "setRomanceMode": {
+      "blocks": 10,
+      "blocks_by_bucket": {
+        "exemplars": [
+          182,
+          2041,
+          2042,
+          2043,
+          2045,
+          2049,
+          2054,
+          2615
+        ],
+        "fold_a": [
+          2067
+        ],
+        "fold_b": [
+          2057
+        ]
+      },
+      "fold_quota": 0,
+      "realized_quota": 1,
+      "rule_quota": 1,
+      "survives": false,
+      "tool_name": "setRomanceMode",
+      "units": 10,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 1,
+        "fold_b": 1
+      },
+      "units_by_tier": {
+        "tier1_direct": 1,
+        "tier2_parametric": 1,
+        "tier3_multi_intent": 2,
+        "tier5_needle": 2,
+        "tier6_correction": 1,
+        "tier7_multiturn": 2,
+        "tier8_intent_blending": 1
+      }
+    },
+    "setSecurityMode": {
+      "blocks": 14,
+      "blocks_by_bucket": {
+        "exemplars": [
+          337,
+          589,
+          3484,
+          4503,
+          4536,
+          4543
+        ],
+        "fold_a": [
+          2483,
+          2487,
+          3485,
+          3503
+        ],
+        "fold_b": [
+          2462,
+          2464,
+          2470,
+          2477
+        ]
+      },
+      "fold_quota": 20,
+      "realized_quota": 20,
+      "rule_quota": 20,
+      "survives": true,
+      "tool_name": "setSecurityMode",
+      "units": 59,
+      "units_by_bucket": {
+        "exemplars": 11,
+        "fold_a": 24,
+        "fold_b": 24
+      },
+      "units_by_tier": {
+        "tier1_direct": 9,
+        "tier2_parametric": 3,
+        "tier3_multi_intent": 9,
+        "tier4_implicit": 9,
+        "tier5_needle": 9,
+        "tier6_correction": 9,
+        "tier7_multiturn": 9,
+        "tier8_intent_blending": 2
+      }
+    },
+    "startCleaning": {
+      "blocks": 12,
+      "blocks_by_bucket": {
+        "exemplars": [
+          2754,
+          3590,
+          3594
+        ],
+        "fold_a": [
+          2731,
+          2742
+        ],
+        "fold_b": [
+          2749,
+          3557,
+          3570,
+          3576,
+          3584,
+          3588,
+          3589
+        ]
+      },
+      "fold_quota": 12,
+      "realized_quota": 12,
+      "rule_quota": 12,
+      "survives": true,
+      "tool_name": "startCleaning",
+      "units": 32,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 12,
+        "fold_b": 12
+      },
+      "units_by_tier": {
+        "tier1_direct": 4,
+        "tier2_parametric": 8,
+        "tier3_multi_intent": 4,
+        "tier4_implicit": 4,
+        "tier5_needle": 4,
+        "tier6_correction": 4,
+        "tier7_multiturn": 4
+      }
+    },
+    "streamCamera": {
+      "blocks": 39,
+      "blocks_by_bucket": {
+        "exemplars": [
+          4709,
+          4713,
+          4716,
+          4720,
+          4725,
+          4730,
+          4739,
+          4742
+        ],
+        "fold_a": [
+          3515,
+          4700,
+          4702,
+          4706,
+          4710,
+          4711,
+          4714,
+          4718,
+          4722,
+          4731,
+          4735,
+          4740,
+          4741
+        ],
+        "fold_b": [
+          4703,
+          4704,
+          4707,
+          4715,
+          4717,
+          4721,
+          4723,
+          4724,
+          4726,
+          4728,
+          4732,
+          4733,
+          4736,
+          4738,
+          4743,
+          4746,
+          4747,
+          4748
+        ]
+      },
+      "fold_quota": 18,
+      "realized_quota": 18,
+      "rule_quota": 18,
+      "survives": true,
+      "tool_name": "streamCamera",
+      "units": 44,
+      "units_by_bucket": {
+        "exemplars": 8,
+        "fold_a": 18,
+        "fold_b": 18
+      },
+      "units_by_tier": {
+        "tier1_direct": 1,
+        "tier2_parametric": 38,
+        "tier3_multi_intent": 1,
+        "tier4_implicit": 1,
+        "tier5_needle": 1,
+        "tier6_correction": 1,
+        "tier7_multiturn": 1
+      }
+    },
+    "updateFirmware": {
+      "blocks": 45,
+      "blocks_by_bucket": {
+        "exemplars": [
+          4951,
+          4955,
+          4959,
+          4961,
+          4963,
+          4965,
+          4967,
+          4970,
+          4973,
+          4982,
+          4985,
+          4987,
+          4988,
+          4996,
+          4999
+        ],
+        "fold_a": [
+          3352,
+          4953,
+          4954,
+          4957,
+          4958,
+          4960,
+          4966,
+          4968,
+          4976,
+          4980,
+          4981,
+          4991,
+          4992,
+          4994,
+          4998
+        ],
+        "fold_b": [
+          659,
+          3333,
+          4962,
+          4964,
+          4969,
+          4972,
+          4974,
+          4977,
+          4979,
+          4983,
+          4984,
+          4986,
+          4990,
+          4993,
+          4997
+        ]
+      },
+      "fold_quota": 20,
+      "realized_quota": 20,
+      "rule_quota": 20,
+      "survives": true,
+      "tool_name": "updateFirmware",
+      "units": 55,
+      "units_by_bucket": {
+        "exemplars": 15,
+        "fold_a": 20,
+        "fold_b": 20
+      },
+      "units_by_tier": {
+        "tier1_direct": 2,
+        "tier2_parametric": 42,
+        "tier3_multi_intent": 2,
+        "tier4_implicit": 2,
+        "tier5_needle": 2,
+        "tier6_correction": 2,
+        "tier7_multiturn": 2,
+        "tier8_intent_blending": 1
+      }
+    }
+  },
+  "verdict": {
+    "dropped_targets": [
+      "lighting",
+      "calibrateCameras"
+    ],
+    "dropped_tools": [
+      "calibrateCameras",
+      "setAmbientLighting",
+      "setBrightness",
+      "setRomanceMode"
+    ],
+    "fold_quotas": {
+      "activateRoutine": 20,
+      "activateScene": 19,
+      "castContent": 14,
+      "getBiometricData": 20,
+      "getHRV": 20,
+      "getLightState": 9,
+      "playMedia": 7,
+      "rebootDevice": 20,
+      "resetFilterStatus": 20,
+      "setApplianceMode": 6,
+      "setColor": 20,
+      "setColorTemperature": 10,
+      "setGroupLightState": 20,
+      "setHapticStrength": 15,
+      "setLighting": 20,
+      "setSecurityMode": 20,
+      "startCleaning": 12,
+      "streamCamera": 18,
+      "updateFirmware": 20
+    },
+    "relaxed": {
+      "addressable_strict_mass": 90,
+      "share_of_mf1_target_mass": 0.383,
+      "targeted_rows_per_fold": 310,
+      "targets": [
+        "lighting",
+        "activateRoutine",
+        "getBiometricData",
+        "calibrateCameras",
+        "castContent"
+      ],
+      "tools": [
+        "activateRoutine",
+        "activateScene",
+        "castContent",
+        "getBiometricData",
+        "getHRV",
+        "getLightState",
+        "playMedia",
+        "rebootDevice",
+        "resetFilterStatus",
+        "setApplianceMode",
+        "setColor",
+        "setColorTemperature",
+        "setGroupLightState",
+        "setHapticStrength",
+        "setLighting",
+        "setSecurityMode",
+        "startCleaning",
+        "streamCamera",
+        "updateFirmware"
+      ]
+    },
+    "strict": {
+      "addressable_strict_mass": 67,
+      "share_of_mf1_target_mass": 0.2851,
+      "targeted_rows_per_fold": 153,
+      "targets": [
+        "activateRoutine",
+        "getBiometricData",
+        "castContent"
+      ],
+      "tools": [
+        "activateRoutine",
+        "activateScene",
+        "castContent",
+        "getBiometricData",
+        "getHRV",
+        "playMedia",
+        "setApplianceMode",
+        "setHapticStrength",
+        "setSecurityMode",
+        "startCleaning"
+      ]
+    }
+  }
+}
