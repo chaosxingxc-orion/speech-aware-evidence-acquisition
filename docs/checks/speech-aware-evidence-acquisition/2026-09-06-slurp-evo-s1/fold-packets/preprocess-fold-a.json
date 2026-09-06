@@ -1,0 +1,63 @@
+{
+  "attempt_id": "attempt-packets-fold-a",
+  "audio_seconds": 3084.528438,
+  "config_fragments": {
+    "baseline": "speech-native-preprocess",
+    "dataset": "slurp-speech-native-evo-fold-a-1080",
+    "experiment": "slurp-evo-fold-a-preprocess",
+    "model": "q4km-preprocess-featcache-cpu-sidecar"
+  },
+  "config_hash": "6367fa32edb4837409f1eced675a9e445e05ccd7fee04968c78f4790ca808ea5",
+  "contacts": 1080,
+  "core_client": {
+    "cost": {
+      "audio_seconds_used": 3084.5284374999947,
+      "calls_used": 1080,
+      "completion_tokens_total": 1080,
+      "latency_seconds_total": 7416.518147019,
+      "prompt_tokens_total": 79629,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+    },
+    "trace_manifest_hash": "a49510a1769192f0f22866dd5a3d2d3520bb7cad8fd09e1d82929e914c367e48"
+  },
+  "encode_rows_per_second": 0.5465,
+  "encode_seconds": 1976.321,
+  "encode_workers": 4,
+  "failures": [],
+  "fold": "SLURP-EVO-FOLD-A-V2",
+  "generated_at": "2026-09-06T21:06:15.731319+00:00",
+  "gpu_offload": "-ngl 0 --no-mmproj-offload: this pass leaves the GPU free",
+  "legacy_cache_warm_before": 0,
+  "packet_tokens": {
+    "max": 143,
+    "min": 13,
+    "total": 47229
+  },
+  "promote_packets_per_second": 101.574,
+  "promote_seconds": 10.633,
+  "promote_workers": 8,
+  "promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLD-A-V2-promotion.json",
+  "promotion_receipt_sha256": "2259401d19bed7cd39801c210be3d5390b2c80c214a3a1b20908214712cc1c97",
+  "rows": 1080,
+  "run_id": "SAEA-SLURP-EVO-FOLD-PACKETS-V2",
+  "schema": "saea-slurp-evo-fold-preprocess-receipt-v1",
+  "session": {
+    "pid": 719,
+    "session_id": "SAEA-SLURP-EVO-FOLD-PACKETS-V2-attempt-packets-fold-a-cpu-sidecar",
+    "stop": {
+      "forced": false,
+      "pid": 719,
+      "runtime_receipt_sha256": "e80c635d7344a9b4181a2b2d81330e35b626a6191fd499f95ac61b15d17d808b",
+      "schema": "saea-session-stop-receipt-v1",
+      "session_id": "SAEA-SLURP-EVO-FOLD-PACKETS-V2-attempt-packets-fold-a-cpu-sidecar",
+      "session_receipt_sha256": "49d21542718b1a0bb2fd657d690668aed7feb427b85b3ea5ffc86ac2e548cbc1",
+      "session_role": "preprocess",
+      "stopped_at": "2026-09-06T21:06:05.089393+00:00",
+      "study": "speech-aware-evidence-acquisition",
+      "termination_signal": "SIGTERM"
+    }
+  },
+  "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+  "study": "speech-aware-evidence-acquisition"
+}
