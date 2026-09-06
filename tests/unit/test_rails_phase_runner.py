@@ -123,6 +123,34 @@ def test_run_agent_phase_derives_slot_count_and_queue_depth_from_adapter_geometr
     assert returned.results
 
 
+def test_run_agent_phase_namespaces_trace_records_by_phase():
+    """core.tracing.TraceSink refuses a duplicate record id and every phase
+    of a program shares one sink, so the second phase of a two-phase program
+    would kill the run on its first emitted record -- after its contacts
+    were spent. The namespace is what makes the shared sink safe."""
+
+    captured: dict[str, object] = {}
+
+    def fake_runner(**kwargs):
+        captured.update(kwargs)
+        return _bare_summary(("s1", "s2"))
+
+    pr.run_agent_phase(**_run_agent_phase_defaults(agent_runner=fake_runner))
+
+    assert captured["trace_record_namespace"] == _run_agent_phase_defaults()["phase_name"]
+
+
+def test_agent_record_base_keeps_the_suffix_every_trace_reader_matches():
+    from speech_aware_evidence_acquisition.rails.runner import _agent_record_base
+
+    assert _agent_record_base("s1", None) == "s1/agent-loop"
+    namespaced = _agent_record_base("s1", "select")
+    assert namespaced == "s1/select/agent-loop"
+    # The namespace goes BEFORE "agent-loop", so "/agent-loop/runtime-use"
+    # remains the record-id suffix existing readers match on.
+    assert f"{namespaced}/runtime-use".endswith("/agent-loop/runtime-use")
+
+
 def test_run_agent_phase_honors_explicit_slot_count_and_queue_depth():
     captured: dict[str, object] = {}
 

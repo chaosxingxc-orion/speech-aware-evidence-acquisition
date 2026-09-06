@@ -202,6 +202,13 @@ def run_agent_phase(
         agent_executor_id=agent_executor_id,
         decoding_params=decoding_params,
         controller_registry=controller_registry,
+        # Every phase of a program shares ONE trace sink, and
+        # core.tracing.TraceSink refuses a duplicate record id, so a
+        # two-phase program's second phase would kill the run on its first
+        # emitted record -- after its contacts were spent. Namespacing by
+        # phase name is what makes the shared sink safe, and it is also what
+        # lets a reader tell which phase a trace record came from.
+        trace_record_namespace=phase_name,
     )
 
     if getattr(summary, "agent_executor_id", None) != agent_executor_id:

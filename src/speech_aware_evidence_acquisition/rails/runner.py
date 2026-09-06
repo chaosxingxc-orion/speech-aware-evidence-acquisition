@@ -1710,6 +1710,25 @@ def _run_agent_openjiuwen(
     )
 
 
+def _agent_record_base(sample_id: str, record_namespace: str | None) -> str:
+    """The trace record id prefix for one sample's agent-loop records.
+
+    ``core.tracing.TraceSink`` refuses a duplicate record id, and a PHASE
+    PROGRAM runs the same sample through several separate
+    ``run_speech_native_agent_loop`` invocations that all share one sink
+    (``rails.phase_runner.run_program``), so without a namespace the second
+    phase's first record kills the run -- after its contacts are spent.
+    ``record_namespace`` is inserted BEFORE ``agent-loop`` rather than after
+    it, so ``/agent-loop/org`` and ``/agent-loop/runtime-use`` remain the
+    record-id SUFFIXES every existing trace reader matches on. ``None``
+    (every pre-existing caller) leaves the id byte-identical to before.
+    """
+
+    if record_namespace is None:
+        return f"{sample_id}/agent-loop"
+    return f"{sample_id}/{record_namespace}/agent-loop"
+
+
 def _emit_agent_runtime_trace(
     *,
     sink: AgentTraceSink,
@@ -1718,11 +1737,12 @@ def _emit_agent_runtime_trace(
     agent_executor_version: str,
     snapshot_sha256: str,
     outcome: _AgentRuntimeOutcome,
+    record_namespace: str | None = None,
 ) -> str:
     """Persist gold-free Agent state, supply, and use records in split order."""
 
     sample_id = outcome.prepared.sample.sample_id
-    record_base = f"{sample_id}/agent-loop"
+    record_base = _agent_record_base(sample_id, record_namespace)
     sink.emit(
         "ORG",
         f"{record_base}/org",
@@ -1812,10 +1832,11 @@ def _emit_agent_posthoc_trace(
     sink: AgentTraceSink,
     result: AgentLoopResult,
     runtime_trace_sha256: str,
+    record_namespace: str | None = None,
 ) -> None:
     sink.emit(
         "USE",
-        f"{result.sample_id}/agent-loop/posthoc-use",
+        f"{_agent_record_base(result.sample_id, record_namespace)}/posthoc-use",
         {
             "use_runtime_trace_sha256": runtime_trace_sha256,
             "use_final_response_sha256": hashlib.sha256(
@@ -1846,6 +1867,7 @@ def run_speech_native_agent_loop(
     agent_executor_id: str,
     decoding_params: Mapping[str, object] | None = None,
     controller_registry: Registry = AGENT_CONTROLLERS,
+    trace_record_namespace: str | None = None,
 ) -> AgentLoopSummary:
     """Run a bounded, batched, speech-native AgentLoop over one DEV split.
 
@@ -2072,6 +2094,7 @@ def run_speech_native_agent_loop(
                 agent_executor_version=agent_executor_version,
                 snapshot_sha256=snapshot_sha256,
                 outcome=outcome,
+                record_namespace=trace_record_namespace,
             )
         )
         outcome.trace_buffer.flush_into(trace_sink)
@@ -2108,6 +2131,7 @@ def run_speech_native_agent_loop(
             sink=trace_sink,
             result=results[-1],
             runtime_trace_sha256=runtime_trace_sha256,
+            record_namespace=trace_record_namespace,
         )
 
     return AgentLoopSummary(
