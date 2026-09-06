@@ -84,7 +84,7 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
         # `_AttemptLifecycleMixin._open_gate_and_attempt` (lifecycle.py) now
         # -- same order, same exceptions, see that method's own docstring.
         lock_sha256, session_check, store, handle = self._open_gate_and_attempt(
-            gate, plan, binding, transport
+            gate, plan, binding, transport, arm
         )
         self._lock_sha256 = lock_sha256
         self._plan = plan

@@ -7,7 +7,7 @@
     },
     "d2_leakage": {
       "artifact": "artifacts/d2-leakage.json",
-      "sha256": "d51fefe9dc1c5913d29702dbaff135fcdd171dbf1fc977fed089ba13d76cf03b",
+      "sha256": "d4b4516c8a49f006f83563b9d6a8d32034c6cd74b7b83c4fd39f358587938a35",
       "status": "CLOSED"
     },
     "d3_scoring": {

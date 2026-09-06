@@ -18,6 +18,8 @@ Usage::
     python scripts/build_a2t_knowledge_snapshot.py --size full
     python scripts/build_a2t_knowledge_snapshot.py --size 5000
     python scripts/build_a2t_knowledge_snapshot.py --size full --no-ceiling
+    python scripts/build_a2t_knowledge_snapshot.py --size full \\
+        --snapshot-label full-exposure-union-v1
 
 Artifacts::
 
@@ -66,6 +68,7 @@ from speech_aware_evidence_acquisition.rails.knowledge_build_a2t import (  # noq
     a2t_pool_rows,
     build_a2t_knowledge_snapshot,
     coverage_report_a2t,
+    exposed_identity_report,
     exposed_sample_ids,
     load_tool_registry_by_name,
     propose_partition,
@@ -122,8 +125,23 @@ def main() -> int:
         action="store_true",
         help="build the snapshot only; skip the G0 lexical ceiling and gate",
     )
+    parser.add_argument(
+        "--snapshot-label",
+        type=str,
+        default=None,
+        help=(
+            "directory label for the snapshot artifact under "
+            "$SPEECHRL_DATA_DIR/knowledge/audio2tool/<policy>/size-<LABEL>/ "
+            "(default: the --size value). A rebuild whose construction pool "
+            "differs from an earlier one MUST use a fresh label: the earlier "
+            "snapshot's embedding sidecar (vectors-content-facets.npz) is bound "
+            "to that snapshot's own facet order and is silently invalidated by "
+            "an in-place overwrite."
+        ),
+    )
     args = parser.parse_args()
     size = _parse_size(args.size)
+    snapshot_label = args.snapshot_label or _size_label(size)
 
     attempts = arm_offline_guard()
 
@@ -140,15 +158,22 @@ def main() -> int:
     )
 
     partition_start = time.monotonic()
+    exposure = exposed_identity_report(REPO_ROOT)
     exposed = exposed_sample_ids(REPO_ROOT)
     partition = propose_partition(rows, exposed, seed=PARTITION_SEED)
     partition_seconds = time.monotonic() - partition_start
     eval_ids = frozenset(partition.eval_sample_ids)
     forbidden = frozenset(exposed) | eval_ids
     print(
+        f"exposure union: {exposure['union_sample_ids']} sample ids from "
+        f"{exposure['source_count']} committed evaluation sources "
+        f"({exposure['sources_by_kind']})"
+    )
+    print(
         f"partition: construction={partition.report['units_construction']} units, "
         f"eval={len(eval_ids)} items, exposed-reserved="
-        f"{partition.report['units_reserved_exposed']} units "
+        f"{partition.report['units_reserved_exposed']} units in "
+        f"{partition.report['blocks_reserved_exposed']} blocks "
         f"({partition_seconds:.2f}s)"
     )
 
@@ -185,7 +210,7 @@ def main() -> int:
         / "knowledge"
         / "audio2tool"
         / A2T_KB_BUILD_POLICY_ID
-        / f"size-{_size_label(size)}"
+        / f"size-{snapshot_label}"
         / "snapshot.json"
     )
     write_json_artifact(snapshot_path, frozen)
@@ -207,6 +232,8 @@ def main() -> int:
         "snapshot_sha256": snapshot_sha256,
         "snapshot_id": snapshot.snapshot_id,
         "snapshot_artifact_relpath": str(snapshot_path.relative_to(root)),
+        "snapshot_label": snapshot_label,
+        "exposure_union": exposure,
         "source_split_identity_hash": snapshot.source_split_identity_hash,
         "facet_count": len(snapshot.facets),
         "value_count": len(snapshot.values),
@@ -219,8 +246,10 @@ def main() -> int:
             "forbidden_roster_size": len(forbidden),
             "forbidden_rosters": [
                 EXPOSED_RECEIPT_RELPATH,
+                *sorted({str(source["relpath"]) for source in exposure["sources"]}),
                 "docs/receipts/knowledge/a2t-partition-proposal.json (proposed eval tier)",
             ],
+            "exposed_identity_count": len(exposed),
             "exposed_400_count": len(exposed),
             "proposed_eval_count": len(eval_ids),
         },
@@ -256,6 +285,7 @@ def main() -> int:
             ),
             "policy_id": partition.policy_id,
             "seed": partition.seed,
+            "exposure_union": exposure,
             "report": dict(partition.report),
             "proposed_eval_split_identity_hash": partition.split_identity_hash(),
             "proposed_eval_items": [

@@ -13,7 +13,10 @@ socket at all.
 
 from __future__ import annotations
 
+import hashlib
+import json
 import random
+from pathlib import Path
 
 import pytest
 
@@ -27,13 +30,22 @@ from speech_aware_evidence_acquisition.analysis.a2t_lexical_ceiling import (
 from speech_aware_evidence_acquisition.rails.errors import RailsError
 from speech_aware_evidence_acquisition.rails.hashing import canonical_json_bytes
 from speech_aware_evidence_acquisition.rails.knowledge import KnowledgeSnapshot
+from speech_aware_evidence_acquisition.core.base import KNOWLEDGE_BUILDERS
+from speech_aware_evidence_acquisition.core.roster import (
+    RosterItem,
+    freeze_roster,
+    write_roster,
+)
 from speech_aware_evidence_acquisition.rails.knowledge_build_a2t import (
     A2T_KB_BUILD_POLICY_ID,
     A2tKbRow,
     A2tKnowledgeBuildSpec,
     build_a2t_knowledge_snapshot,
+    build_a2t_knowledge_snapshot_from_lock,
     coverage_report_a2t,
     distribution_sample_a2t,
+    exposed_identity_report,
+    exposed_sample_ids,
     propose_partition,
 )
 
@@ -339,6 +351,287 @@ def test_partition_keeps_every_tool_in_the_construction_pool() -> None:
         row.tool_name for row in rows
     }
 
+
+# ---------------------------------------------------------------------------
+# Exposure union (E2.2)
+# ---------------------------------------------------------------------------
+
+
+def _probe_receipt(
+    ids: tuple[tuple[str, int], ...], **extra: object
+) -> dict[str, object]:
+    """A minimal audio2tool probe-sample receipt in the exact legacy shape
+    ``data.audio2tool._verify_receipt`` re-verifies (``key`` = the carrier-
+    prefixed id; the hash is sha256 over the LF-joined sorted keys)."""
+
+    items = [
+        {
+            "id": item_id,
+            "key": f"audio2tool:{tier}:{item_id:06d}",
+            "query_idx": 1000 + item_id,
+            "tier": tier,
+        }
+        for tier, item_id in ids
+    ]
+    payload: dict[str, object] = {
+        "carrier": "audio2tool",
+        "design": "synthetic receipt for the exposure-union tests",
+        "items": items,
+        "probe": "synthetic",
+        "split_identity_hash": hashlib.sha256(
+            "\n".join(sorted(str(item["key"]) for item in items)).encode("utf-8")
+        ).hexdigest(),
+        "split_role": "discovery",
+    }
+    payload.update(extra)
+    return payload
+
+
+def _d1_supplement(ids: tuple[str, ...], **overrides: object) -> dict[str, object]:
+    manifest = [
+        {
+            "id": sample_id,
+            "media_relpath": f"datasets/audio2tool/public/{sample_id}.wav",
+            "bytes": 1024,
+            "sha256": "0" * 64,
+            "audio_seconds": 1.0,
+            "sample_rate_hz": 24000,
+            "roles": ["query"],
+        }
+        for sample_id in ids
+    ]
+    document: dict[str, object] = {
+        "schema": "saea-d1-media-supplement-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "carrier_lock_key": "audio2tool",
+        "parent_d1_sha256": "1" * 64,
+        "source_binding_sha256": "2" * 64,
+        "count": len(manifest),
+        "ids_sha256": "3" * 64,
+        "manifest": manifest,
+        "manifest_sha256": "4" * 64,
+        "total_bytes": 1024 * len(manifest),
+    }
+    document.update(overrides)
+    return document
+
+
+def _write_json(path: Path, document: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(document, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+
+def _synthetic_repo(tmp_path: Path) -> Path:
+    """A repository skeleton carrying one of every exposure source kind."""
+
+    probes = tmp_path / "docs" / "receipts" / "probe-samples"
+    _write_json(
+        probes / "r1-audio2tool-sample.json",
+        _probe_receipt((("tier1_direct", 1), ("tier2_parametric", 2))),
+    )
+    _write_json(
+        probes / "another-evaluation-cohort.json",
+        _probe_receipt((("tier1_direct", 3),), roster_role="evaluation"),
+    )
+    _write_json(
+        probes / "a-construction-cohort.json",
+        _probe_receipt((("tier1_direct", 4),), roster_role="construction"),
+    )
+    _write_json(
+        probes / "some-other-carrier.json",
+        {"carrier": "slurp", "items": [{"id": "x", "key": "slurp:x"}]},
+    )
+    _write_json(
+        tmp_path / "docs" / "receipts" / "artifacts" / "d1-a2t-cohort.json",
+        _d1_supplement(("tier3_multi_intent:000005", "a2t-derived:000006")),
+    )
+    return tmp_path
+
+
+def _roster_file(
+    tmp_path: Path, name: str, sample_ids: tuple[str, ...], roster_role: str
+) -> None:
+    receipt = freeze_roster(
+        carrier_lock_key="audio2tool",
+        candidates=[
+            RosterItem(sample_id=sample_id, stratum="tier1_direct")
+            for sample_id in sample_ids
+        ],
+        per_stratum=len(sample_ids),
+        seed=1,
+        split_role="discovery",
+        roster_id=name.upper(),
+    )
+    receipt["roster_role"] = roster_role
+    write_roster(receipt, tmp_path / "docs" / "receipts" / "rosters" / f"{name}.json")
+
+
+def test_exposure_union_is_every_evaluation_source_and_only_those(
+    tmp_path: Path,
+) -> None:
+    root = _synthetic_repo(tmp_path)
+    _roster_file(root, "fresh-eval", ("tier4_implicit:000007",), "evaluation")
+    _roster_file(root, "construction-800", ("tier4_implicit:000008",), "construction")
+
+    assert exposed_sample_ids(root) == frozenset(
+        {
+            "tier1_direct:000001",
+            "tier2_parametric:000002",
+            "tier1_direct:000003",
+            "tier3_multi_intent:000005",
+            "a2t-derived:000006",
+            "tier4_implicit:000007",
+        }
+    )
+
+
+def test_construction_role_sources_are_excluded_by_design(tmp_path: Path) -> None:
+    root = _synthetic_repo(tmp_path)
+    _roster_file(root, "construction-800", ("tier4_implicit:000008",), "construction")
+    union = exposed_sample_ids(root)
+    # The two identities gold may legally reach -- a construction-role
+    # probe-sample cohort and a construction-role roster -- are not exposure.
+    assert "tier1_direct:000004" not in union
+    assert "tier4_implicit:000008" not in union
+
+
+def test_exposure_report_accounts_for_every_source(tmp_path: Path) -> None:
+    root = _synthetic_repo(tmp_path)
+    _roster_file(root, "fresh-eval", ("tier4_implicit:000007",), "evaluation")
+    report = exposed_identity_report(root)
+
+    assert report["policy_id"] == "saea-a2t-exposure-union-v1"
+    assert report["excluded_roster_role"] == "construction"
+    assert report["sources_by_kind"] == {
+        "d1-media-supplement": 1,
+        "probe-sample": 2,
+        "roster-receipt": 1,
+    }
+    assert sum(int(row["new_sample_ids"]) for row in report["sources"]) == (
+        report["union_sample_ids"]
+    )
+    assert report["union_sample_ids"] == len(exposed_sample_ids(root))
+    by_name = {str(row["name"]): row for row in report["sources"]}
+    assert by_name["r1-audio2tool-sample"]["sample_ids"] == 2
+    assert by_name["d1-a2t-cohort"]["sample_ids"] == 2
+    assert "a-construction-cohort" not in by_name
+
+
+def test_union_refuses_a_malformed_d1_supplement(tmp_path: Path) -> None:
+    root = _synthetic_repo(tmp_path)
+    _write_json(
+        root / "docs" / "receipts" / "artifacts" / "d1-a2t-broken.json",
+        _d1_supplement(("tier1_direct:000009",), count=99),
+    )
+    with pytest.raises(RailsError, match="count/manifest/id-uniqueness disagree"):
+        exposed_sample_ids(root)
+
+
+def test_union_refuses_a_supplement_of_another_carrier(tmp_path: Path) -> None:
+    root = _synthetic_repo(tmp_path)
+    _write_json(
+        root / "docs" / "receipts" / "artifacts" / "d1-a2t-foreign.json",
+        _d1_supplement(("tier1_direct:000009",), carrier_lock_key="slurp"),
+    )
+    with pytest.raises(RailsError, match="names carrier"):
+        exposed_sample_ids(root)
+
+
+def test_union_refuses_an_unknown_roster_role(tmp_path: Path) -> None:
+    root = _synthetic_repo(tmp_path)
+    _write_json(
+        root / "docs" / "receipts" / "probe-samples" / "odd-role.json",
+        _probe_receipt((("tier1_direct", 10),), roster_role="calibration"),
+    )
+    with pytest.raises(RailsError, match="roster_role"):
+        exposed_sample_ids(root)
+
+
+def test_union_still_fails_closed_without_the_frozen_400(tmp_path: Path) -> None:
+    root = _synthetic_repo(tmp_path)
+    (
+        root / "docs" / "receipts" / "probe-samples" / "r1-audio2tool-sample.json"
+    ).unlink()
+    with pytest.raises(RailsError, match="r1-audio2tool-sample"):
+        exposed_sample_ids(root)
+
+
+def test_partition_protects_the_whole_block_of_a_construction_only_tool() -> None:
+    """The 2026-09-05 repair: a rare tool's row is not merely dropped from
+    eval candidacy -- its whole ``query_idx`` block is, because a sibling row
+    of another tier in the same block would otherwise reserve the block and
+    take the rare tool's last exemplar with it."""
+
+    shared_block = 100
+    rare = _row(
+        "tier5_needle",
+        shared_block,
+        tool="setAlarm",
+        words="set the alarm for the early meeting",
+        arg_keys=("time",),
+        item_ids=(9001,),
+    )
+    rows = _corpus() + (rare,)
+    siblings = [row for row in rows if row.query_idx == shared_block]
+    assert len(siblings) > 1, "the fixture must share this block across tiers"
+
+    proposal = propose_partition(rows, frozenset(), per_tier=1, tool_min_pool_rows=4)
+    assert shared_block not in set(proposal.eval_blocks)
+    assert rare.unit_id in {row.unit_id for row in proposal.construction}
+    assert int(proposal.report["blocks_protected_for_construction_only_tools"]) >= 1
+
+
+def test_partition_names_tools_the_exposure_union_reserved_entirely() -> None:
+    """A tool whose every unit sits inside an exposed block cannot enter the
+    construction pool however the eval tier is drawn, so it is REPORTED by
+    name rather than raised on -- raising would blame the draw for the union.
+    """
+
+    rows = _corpus()
+    exposed = frozenset(
+        sid
+        for row in rows
+        if row.tool_name == "getAirQuality"
+        for sid in row.sample_ids
+    )
+    proposal = propose_partition(rows, exposed, per_tier=1, tool_min_pool_rows=3)
+    assert "getAirQuality" in proposal.report["tools_reserved_entirely_by_exposure"]
+    assert "getAirQuality" not in {row.tool_name for row in proposal.construction}
+
+# ---------------------------------------------------------------------------
+# Registry entry (E2.1)
+# ---------------------------------------------------------------------------
+
+
+def test_the_a2t_builder_resolves_through_the_shared_registry() -> None:
+    """The owner base rule: every builder a config may name resolves in a
+    ``core.base`` registry, populated only from one of the six canonical
+    files. Importing ``rails.knowledge_build`` is what performs the
+    Audio2Tool registration, so the import is the test's own arrangement."""
+
+    import speech_aware_evidence_acquisition.rails.knowledge_build  # noqa: F401
+
+    assert A2T_KB_BUILD_POLICY_ID in KNOWLEDGE_BUILDERS.names()
+    assert (
+        KNOWLEDGE_BUILDERS.resolve(A2T_KB_BUILD_POLICY_ID)
+        is build_a2t_knowledge_snapshot_from_lock
+    )
+
+
+def test_the_registered_builder_validates_its_spec_before_touching_the_lock() -> None:
+    """Fail-closed ordering: a foreign carrier is refused by the spec itself,
+    before ``a2t_pool_rows`` can open a single governed manifest -- so the
+    registry entry can never read another carrier's bytes."""
+
+    spec = A2tKnowledgeBuildSpec(carrier_lock_key="slurp")
+    with pytest.raises(RailsError, match="Audio2Tool-only"):
+        build_a2t_knowledge_snapshot_from_lock(
+            spec, lock={}, root=Path("/nonexistent"), repo_root=Path("/nonexistent")
+        )
 
 # ---------------------------------------------------------------------------
 # Lexical ceiling and the G0 gate

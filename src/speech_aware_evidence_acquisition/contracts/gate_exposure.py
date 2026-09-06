@@ -7,11 +7,14 @@ pure move, no behaviour change).
 
 from __future__ import annotations
 
+import hashlib
+import json
 import math
 from pathlib import Path
 from typing import Mapping
 
 from .errors import GateClosed
+from .identifiers import CONSTRUCTION_VISIBLE_ARMS
 from .ledger import _CARRIER_CELL_TOKEN_SPLIT, _EXPOSURE_CARRIER_COLUMN, _EXPOSURE_RUN_COLUMN, _parse_ledger_tables
 from .plan import ExecutionPlan
 from .receipts import general_audio_deny_lock_keys
@@ -32,6 +35,17 @@ ALLOWED_CARRIER_PROFILES = frozenset(
         "speech-aware-small-public",
     }
 )
+
+#: Where committed roster receipts live, relative to ``source_root``. The
+#: ``contracts`` package must not import ``core`` (module docstring of
+#: ``gate.py``: the circular-import note), so the construction-role check
+#: below parses these receipts dependency-free and recomputes their identity
+#: hash with the SAME four-line convention every other identity check in this
+#: package uses: sha256 over the LF-joined, sorted, carrier-prefixed
+#: ``f"{lock_key}/{sample_id}"`` ids, no trailing newline.
+ROSTER_RECEIPTS_RELDIR = "docs/receipts/rosters"
+ROSTER_RECEIPT_SCHEMA = "saea-roster-receipt-v1"
+CONSTRUCTION_ROSTER_ROLE = "construction"
 
 
 class _ExposureAndCarrierMixin:
@@ -108,6 +122,95 @@ class _ExposureAndCarrierMixin:
                 f"{sorted(ALLOWED_CARRIER_PROFILES)}; model touch refused"
             )
         return entry
+
+    def _construction_roster_identity_hashes(
+        self, carrier_lock_key: str
+    ) -> dict[str, str]:
+        """Every committed construction-role roster of one carrier, as
+        ``{split_identity_hash: relpath}``, recomputed from the receipt's own
+        items rather than trusted from its recorded hash."""
+
+        directory = Path(self.source_root) / ROSTER_RECEIPTS_RELDIR
+        hashes: dict[str, str] = {}
+        if not directory.is_dir():
+            return hashes
+        for path in sorted(directory.glob("*.json")):
+            try:
+                document = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, UnicodeError, json.JSONDecodeError) as error:
+                raise GateClosed(f"roster receipt unreadable ({path}): {error}") from error
+            if not isinstance(document, Mapping):
+                raise GateClosed(f"roster receipt {path} must be a JSON object")
+            if document.get("schema") != ROSTER_RECEIPT_SCHEMA:
+                raise GateClosed(
+                    f"roster receipt {path} schema {document.get('schema')!r} is not "
+                    f"{ROSTER_RECEIPT_SCHEMA!r}"
+                )
+            if document.get("carrier_lock_key") != carrier_lock_key:
+                continue
+            if document.get("roster_role") != CONSTRUCTION_ROSTER_ROLE:
+                continue
+            items = document.get("items")
+            if not isinstance(items, list) or not items:
+                raise GateClosed(f"roster receipt {path} has no items")
+            ids: list[str] = []
+            for item in items:
+                if not isinstance(item, Mapping):
+                    raise GateClosed(f"roster receipt {path} has a malformed item")
+                sample_id = item.get("sample_id")
+                if not isinstance(sample_id, str) or not sample_id:
+                    raise GateClosed(
+                        f"roster receipt {path} has an item with no sample_id"
+                    )
+                ids.append(f"{carrier_lock_key}/{sample_id}")
+            if len(set(ids)) != len(ids):
+                raise GateClosed(f"roster receipt {path} repeats a sample_id")
+            measured = hashlib.sha256("\n".join(sorted(ids)).encode("utf-8")).hexdigest()
+            if measured != document.get("split_identity_hash"):
+                raise GateClosed(
+                    f"roster receipt {path} split_identity_hash does not match the hash "
+                    "recomputed from its own items; refusing a tampered receipt"
+                )
+            hashes[measured] = str(path)
+        return hashes
+
+    def _require_construction_role_for_visible_targets(
+        self, plan: "ExecutionPlan", arm: str | None
+    ) -> None:
+        """Gold may cross to the frozen core ONLY on a construction roster.
+
+        ``contracts.CONSTRUCTION_VISIBLE_ARMS`` names the arms whose D2-frozen
+        field set carries construction gold (owner decision 2026-09-05: the
+        core may act as a proposer over construction rows with their labels,
+        producing artifacts, never answers). For such an arm this gate refuses
+        the touch unless the plan's OWN ``split_identity_hash`` is that of a
+        committed ``roster_role == "construction"`` roster of the plan's own
+        carrier, and the plan's split role is ``"discovery"`` (the role a
+        construction roster keeps, the TRAIN90 precedent).
+
+        Every other arm is completely unaffected: the method returns
+        immediately, so a caller that does not pass an arm at all -- every
+        pre-existing caller -- behaves exactly as before. That is also why the
+        check fails closed on a missing arm name for a construction-visible
+        request: it can only ever be reached by naming the arm.
+        """
+
+        if arm is None or arm not in CONSTRUCTION_VISIBLE_ARMS:
+            return
+        if plan.split_role != "discovery":
+            raise GateClosed(
+                f"arm {arm!r} may see construction gold only on a discovery split; the "
+                f"plan declares split role {plan.split_role!r}; model touch refused"
+            )
+        hashes = self._construction_roster_identity_hashes(plan.carrier_lock_key)
+        if plan.split_identity_hash not in hashes:
+            raise GateClosed(
+                f"arm {arm!r} makes construction gold visible to the frozen core, so its "
+                f"split identity must be a committed roster_role='construction' roster "
+                f"of carrier {plan.carrier_lock_key!r}; "
+                f"{plan.split_identity_hash!r} is not one of "
+                f"{sorted(hashes.values()) or 'any (none committed)'}; model touch refused"
+            )
 
     def _require_exposure_preregistration(
         self, plan: "ExecutionPlan", lock: Mapping[str, object] | None = None

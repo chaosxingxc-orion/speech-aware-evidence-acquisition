@@ -31,6 +31,10 @@ from speech_aware_evidence_acquisition.e0.d1_identity import (
     build_speech_native_probe_receipt,
     build_speech_native_runtime_view,
 )
+from speech_aware_evidence_acquisition.contracts import (
+    CONSTRUCTION_VISIBLE_ARMS,
+    CONSTRUCTION_VISIBLE_FIELD,
+)
 from speech_aware_evidence_acquisition.e0.d2_leakage import (
     ARM_VISIBLE_FIELDS,
     build_d2,
@@ -485,6 +489,67 @@ class TestD2:
         assert arms["speech-feature-query"]["visible_fields"] == list(
             ARM_VISIBLE_FIELDS["speech-feature-query"]
         )
+
+    def test_construction_proposer_arm_is_bare_core_plus_one_gold_field(
+        self, synthetic_world
+    ):
+        """E2.4: "construction-proposer-text" is the ONE arm on which the
+        frozen core may see gold, and it is bare-core's own field set plus
+        exactly ``construction_targets`` -- a NEW arm, never a mutation of a
+        frozen entry."""
+
+        assert ARM_VISIBLE_FIELDS["construction-proposer-text"] == (
+            *ARM_VISIBLE_FIELDS["bare-core"],
+            CONSTRUCTION_VISIBLE_FIELD,
+        )
+        artifact = build_d2(synthetic_world.lock_path)
+        arms = artifact["runtime_visible_fields_by_arm"]
+        assert arms["construction-proposer-text"] == {
+            "clean_payload_accepted": True,
+            "visible_fields": list(ARM_VISIBLE_FIELDS["construction-proposer-text"]),
+        }
+        assert arms["bare-core"]["visible_fields"] == list(
+            ARM_VISIBLE_FIELDS["bare-core"]
+        )
+
+    def test_exactly_the_contract_declared_arms_carry_construction_gold(
+        self, synthetic_world
+    ):
+        """The D2 artifact records the visibility statement it EXECUTED: the
+        set of arms declaring ``construction_targets`` equals
+        ``contracts.CONSTRUCTION_VISIBLE_ARMS``, and no other arm carries the
+        field."""
+
+        artifact = build_d2(synthetic_world.lock_path)
+        visibility = artifact["construction_gold_visibility"]
+        assert visibility["field"] == CONSTRUCTION_VISIBLE_FIELD
+        assert visibility["arms"] == sorted(CONSTRUCTION_VISIBLE_ARMS)
+        assert visibility["arms_declaring_the_field"] == sorted(
+            CONSTRUCTION_VISIBLE_ARMS
+        )
+        assert visibility["no_other_arm_declares_it"] is True
+        assert "roster_role" in visibility["boundary_argument"]
+        carriers = {
+            arm
+            for arm, fields in ARM_VISIBLE_FIELDS.items()
+            if CONSTRUCTION_VISIBLE_FIELD in fields
+        }
+        assert carriers == set(CONSTRUCTION_VISIBLE_ARMS)
+
+    def test_a_gold_visible_arm_the_contract_does_not_declare_fails_closed(
+        self, synthetic_world, monkeypatch
+    ):
+        """Drift in either direction is refused: an arm that grows the gold
+        field without being named in the contract stops the generator, so the
+        D2 freeze can never quietly widen who sees gold."""
+
+        monkeypatch.setitem(
+            ARM_VISIBLE_FIELDS,
+            "sneaky-arm",
+            (*ARM_VISIBLE_FIELDS["bare-core"], CONSTRUCTION_VISIBLE_FIELD),
+        )
+        with pytest.raises(Exception, match="construction-visibility drift"):
+            build_d2(synthetic_world.lock_path)
 
     def test_excluded_keys_come_from_config_not_code(self):
         keys = excluded_lock_keys()

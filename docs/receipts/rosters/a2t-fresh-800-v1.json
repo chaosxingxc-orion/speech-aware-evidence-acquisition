@@ -1,0 +1,6606 @@
+{
+  "authority": "docs/readiness/2026-09-05-three-dimension-experiment-program.md",
+  "block_disjointness": {
+    "distinct_blocks": 610,
+    "exposure_union_blocks": 2346,
+    "exposure_union_sample_ids": 4479,
+    "exposure_union_sources": [
+      "docs/receipts/probe-samples/a2t-tier1-official-population-500.json",
+      "docs/receipts/probe-samples/a2t-tier258-official-population-1500.json",
+      "docs/receipts/probe-samples/a2t-tier3467-official-population-2000.json",
+      "docs/receipts/probe-samples/r1-audio2tool-sample.json",
+      "docs/receipts/probe-samples/select-fill-agentloop-104-postseal-scoring.json",
+      "docs/receipts/probe-samples/semantic-agentloop-104-postseal-scoring.json",
+      "docs/receipts/artifacts/d1-a2t-g3-dialogue-5.json",
+      "docs/receipts/artifacts/d1-a2t-org1-union-4000.json",
+      "docs/receipts/artifacts/d1-a2t-semantic-agentloop-104.json",
+      "docs/receipts/artifacts/d1-a2t-semantic-agentloop-select-fill-104.json",
+      "docs/receipts/artifacts/d1-a2t-tier1-official-population-500.json",
+      "docs/receipts/artifacts/d1-a2t-tier258-official-population-1500.json",
+      "docs/receipts/artifacts/d1-a2t-tier3467-official-population-2000.json"
+    ],
+    "overlap_between_the_two_rosters": 0,
+    "overlap_with_exposure_union_blocks": 0,
+    "overlap_with_exposure_union_sample_ids": 0,
+    "overlap_with_unmapped_exposure_ids": 0,
+    "policy": "block-level: a query_idx block is the leakage unit, because the carrier re-renders the same base scenario at several tiers"
+  },
+  "candidate_pool": {
+    "blocks_reserved_by_exposure": 2346,
+    "blocks_total": 4645,
+    "candidate_units": 6044,
+    "candidate_units_by_tier": {
+      "tier1_direct": 698,
+      "tier2_parametric": 1650,
+      "tier3_multi_intent": 695,
+      "tier4_implicit": 681,
+      "tier5_needle": 697,
+      "tier6_correction": 694,
+      "tier7_multiturn": 689,
+      "tier8_intent_blending": 240
+    },
+    "carrier_units_total": 16838,
+    "eval_tool_min_pool_rows": 8,
+    "source": "every exposure-free unit whose gold tool clears the eval floor",
+    "within_roster_group_key": "<tier>:block:<query_idx>",
+    "within_roster_group_key_rationale": "one unit per (tier, block): cross-tier siblings inside ONE roster are allowed, exactly as the released evaluation populations allow them (the 4,000-row ORG-1 union spans 2,059 blocks), because the property that matters is disjointness BETWEEN a construction roster and every evaluation identity. Demanding one unit per block ACROSS a whole roster is also infeasible on the post-union free pool: measured, tier7_multiturn offers 70 such candidates for a quota of 100."
+  },
+  "carrier_lock_key": "audio2tool",
+  "design": "RESERVED rung-3 evaluation roster. Unopened: no model, tool or scorer has seen these identities, and no probe-sample view of this receipt exists, so no flight can hydrate it. Registering it here makes it source (c) of the Audio2Tool exposure union, so every knowledge base built from now on reserves its blocks automatically. The knowledge receipts committed alongside this roster were built BEFORE it existed, so 404 of its 610 blocks (1,744 units) still sit inside that snapshot's construction pool; rebuild them (scripts/build_a2t_knowledge_snapshot.py, model-free, seconds) before any rung-3 read.",
+  "excluded_count": 0,
+  "exposure_row": "SAEA-SN-MF-A2T-CONSTRUCTION-ROSTER-V1",
+  "exposure_union": {
+    "excluded_roster_role": "construction",
+    "note": "Union of every committed EVALUATION identity of the audio2tool carrier: probe-sample receipts, additive D1 media supplements, and roster-v1 receipts whose roster_role is 'evaluation'. Construction-role rosters are excluded by design (owner decision 2026-09-05: construction identities may be read with their gold labels, evaluation identities never can).",
+    "policy_id": "saea-a2t-exposure-union-v1",
+    "source_count": 13,
+    "sources": [
+      {
+        "kind": "probe-sample",
+        "name": "a2t-tier1-official-population-500",
+        "new_sample_ids": 489,
+        "relpath": "docs/receipts/probe-samples/a2t-tier1-official-population-500.json",
+        "roster_role": "evaluation",
+        "sample_ids": 489
+      },
+      {
+        "kind": "probe-sample",
+        "name": "a2t-tier258-official-population-1500",
+        "new_sample_ids": 1423,
+        "relpath": "docs/receipts/probe-samples/a2t-tier258-official-population-1500.json",
+        "roster_role": "evaluation",
+        "sample_ids": 1423
+      },
+      {
+        "kind": "probe-sample",
+        "name": "a2t-tier3467-official-population-2000",
+        "new_sample_ids": 1954,
+        "relpath": "docs/receipts/probe-samples/a2t-tier3467-official-population-2000.json",
+        "roster_role": "evaluation",
+        "sample_ids": 1954
+      },
+      {
+        "kind": "probe-sample",
+        "name": "r1-audio2tool-sample",
+        "new_sample_ids": 400,
+        "relpath": "docs/receipts/probe-samples/r1-audio2tool-sample.json",
+        "roster_role": "evaluation",
+        "sample_ids": 400
+      },
+      {
+        "kind": "probe-sample",
+        "name": "select-fill-agentloop-104-postseal-scoring",
+        "new_sample_ids": 104,
+        "relpath": "docs/receipts/probe-samples/select-fill-agentloop-104-postseal-scoring.json",
+        "roster_role": "evaluation",
+        "sample_ids": 104
+      },
+      {
+        "kind": "probe-sample",
+        "name": "semantic-agentloop-104-postseal-scoring",
+        "new_sample_ids": 104,
+        "relpath": "docs/receipts/probe-samples/semantic-agentloop-104-postseal-scoring.json",
+        "roster_role": "evaluation",
+        "sample_ids": 104
+      },
+      {
+        "kind": "d1-media-supplement",
+        "name": "d1-a2t-g3-dialogue-5",
+        "new_sample_ids": 5,
+        "relpath": "docs/receipts/artifacts/d1-a2t-g3-dialogue-5.json",
+        "roster_role": "evaluation",
+        "sample_ids": 5
+      },
+      {
+        "kind": "d1-media-supplement",
+        "name": "d1-a2t-org1-union-4000",
+        "new_sample_ids": 0,
+        "relpath": "docs/receipts/artifacts/d1-a2t-org1-union-4000.json",
+        "roster_role": "evaluation",
+        "sample_ids": 3932
+      },
+      {
+        "kind": "d1-media-supplement",
+        "name": "d1-a2t-semantic-agentloop-104",
+        "new_sample_ids": 0,
+        "relpath": "docs/receipts/artifacts/d1-a2t-semantic-agentloop-104.json",
+        "roster_role": "evaluation",
+        "sample_ids": 104
+      },
+      {
+        "kind": "d1-media-supplement",
+        "name": "d1-a2t-semantic-agentloop-select-fill-104",
+        "new_sample_ids": 0,
+        "relpath": "docs/receipts/artifacts/d1-a2t-semantic-agentloop-select-fill-104.json",
+        "roster_role": "evaluation",
+        "sample_ids": 104
+      },
+      {
+        "kind": "d1-media-supplement",
+        "name": "d1-a2t-tier1-official-population-500",
+        "new_sample_ids": 0,
+        "relpath": "docs/receipts/artifacts/d1-a2t-tier1-official-population-500.json",
+        "roster_role": "evaluation",
+        "sample_ids": 495
+      },
+      {
+        "kind": "d1-media-supplement",
+        "name": "d1-a2t-tier258-official-population-1500",
+        "new_sample_ids": 0,
+        "relpath": "docs/receipts/artifacts/d1-a2t-tier258-official-population-1500.json",
+        "roster_role": "evaluation",
+        "sample_ids": 1455
+      },
+      {
+        "kind": "d1-media-supplement",
+        "name": "d1-a2t-tier3467-official-population-2000",
+        "new_sample_ids": 0,
+        "relpath": "docs/receipts/artifacts/d1-a2t-tier3467-official-population-2000.json",
+        "roster_role": "evaluation",
+        "sample_ids": 1982
+      }
+    ],
+    "sources_by_kind": {
+      "d1-media-supplement": 7,
+      "probe-sample": 6
+    },
+    "union_sample_ids": 4479
+  },
+  "generator": "scripts/build_a2t_construction_roster.py",
+  "items": [
+    {
+      "id": 31,
+      "key": "audio2tool:tier1_direct:000031",
+      "query_idx": 2115,
+      "sample_id": "tier1_direct:000031",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 79,
+      "key": "audio2tool:tier1_direct:000079",
+      "query_idx": 2139,
+      "sample_id": "tier1_direct:000079",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 133,
+      "key": "audio2tool:tier1_direct:000133",
+      "query_idx": 2166,
+      "sample_id": "tier1_direct:000133",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 175,
+      "key": "audio2tool:tier1_direct:000175",
+      "query_idx": 2187,
+      "sample_id": "tier1_direct:000175",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 255,
+      "key": "audio2tool:tier1_direct:000255",
+      "query_idx": 2227,
+      "sample_id": "tier1_direct:000255",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 257,
+      "key": "audio2tool:tier1_direct:000257",
+      "query_idx": 2228,
+      "sample_id": "tier1_direct:000257",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 287,
+      "key": "audio2tool:tier1_direct:000287",
+      "query_idx": 2243,
+      "sample_id": "tier1_direct:000287",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 327,
+      "key": "audio2tool:tier1_direct:000327",
+      "query_idx": 2263,
+      "sample_id": "tier1_direct:000327",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 351,
+      "key": "audio2tool:tier1_direct:000351",
+      "query_idx": 2275,
+      "sample_id": "tier1_direct:000351",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 409,
+      "key": "audio2tool:tier1_direct:000409",
+      "query_idx": 2304,
+      "sample_id": "tier1_direct:000409",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 413,
+      "key": "audio2tool:tier1_direct:000413",
+      "query_idx": 2306,
+      "sample_id": "tier1_direct:000413",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 429,
+      "key": "audio2tool:tier1_direct:000429",
+      "query_idx": 2314,
+      "sample_id": "tier1_direct:000429",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 485,
+      "key": "audio2tool:tier1_direct:000485",
+      "query_idx": 2342,
+      "sample_id": "tier1_direct:000485",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 501,
+      "key": "audio2tool:tier1_direct:000501",
+      "query_idx": 2350,
+      "sample_id": "tier1_direct:000501",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 517,
+      "key": "audio2tool:tier1_direct:000517",
+      "query_idx": 2358,
+      "sample_id": "tier1_direct:000517",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 527,
+      "key": "audio2tool:tier1_direct:000527",
+      "query_idx": 2363,
+      "sample_id": "tier1_direct:000527",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 563,
+      "key": "audio2tool:tier1_direct:000563",
+      "query_idx": 2381,
+      "sample_id": "tier1_direct:000563",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 633,
+      "key": "audio2tool:tier1_direct:000633",
+      "query_idx": 2416,
+      "sample_id": "tier1_direct:000633",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 735,
+      "key": "audio2tool:tier1_direct:000735",
+      "query_idx": 2467,
+      "sample_id": "tier1_direct:000735",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 743,
+      "key": "audio2tool:tier1_direct:000743",
+      "query_idx": 2471,
+      "sample_id": "tier1_direct:000743",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 777,
+      "key": "audio2tool:tier1_direct:000777",
+      "query_idx": 2488,
+      "sample_id": "tier1_direct:000777",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 811,
+      "key": "audio2tool:tier1_direct:000811",
+      "query_idx": 2505,
+      "sample_id": "tier1_direct:000811",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 845,
+      "key": "audio2tool:tier1_direct:000845",
+      "query_idx": 2522,
+      "sample_id": "tier1_direct:000845",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 973,
+      "key": "audio2tool:tier1_direct:000973",
+      "query_idx": 2586,
+      "sample_id": "tier1_direct:000973",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 991,
+      "key": "audio2tool:tier1_direct:000991",
+      "query_idx": 2595,
+      "sample_id": "tier1_direct:000991",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 999,
+      "key": "audio2tool:tier1_direct:000999",
+      "query_idx": 2599,
+      "sample_id": "tier1_direct:000999",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1109,
+      "key": "audio2tool:tier1_direct:001109",
+      "query_idx": 2654,
+      "sample_id": "tier1_direct:001109",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1187,
+      "key": "audio2tool:tier1_direct:001187",
+      "query_idx": 2693,
+      "sample_id": "tier1_direct:001187",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1209,
+      "key": "audio2tool:tier1_direct:001209",
+      "query_idx": 2704,
+      "sample_id": "tier1_direct:001209",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1213,
+      "key": "audio2tool:tier1_direct:001213",
+      "query_idx": 2706,
+      "sample_id": "tier1_direct:001213",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1315,
+      "key": "audio2tool:tier1_direct:001315",
+      "query_idx": 2757,
+      "sample_id": "tier1_direct:001315",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1331,
+      "key": "audio2tool:tier1_direct:001331",
+      "query_idx": 2765,
+      "sample_id": "tier1_direct:001331",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1339,
+      "key": "audio2tool:tier1_direct:001339",
+      "query_idx": 2769,
+      "sample_id": "tier1_direct:001339",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1385,
+      "key": "audio2tool:tier1_direct:001385",
+      "query_idx": 2792,
+      "sample_id": "tier1_direct:001385",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1393,
+      "key": "audio2tool:tier1_direct:001393",
+      "query_idx": 2796,
+      "sample_id": "tier1_direct:001393",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1479,
+      "key": "audio2tool:tier1_direct:001479",
+      "query_idx": 2839,
+      "sample_id": "tier1_direct:001479",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1551,
+      "key": "audio2tool:tier1_direct:001551",
+      "query_idx": 2875,
+      "sample_id": "tier1_direct:001551",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1593,
+      "key": "audio2tool:tier1_direct:001593",
+      "query_idx": 2896,
+      "sample_id": "tier1_direct:001593",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1609,
+      "key": "audio2tool:tier1_direct:001609",
+      "query_idx": 2904,
+      "sample_id": "tier1_direct:001609",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1629,
+      "key": "audio2tool:tier1_direct:001629",
+      "query_idx": 2914,
+      "sample_id": "tier1_direct:001629",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1643,
+      "key": "audio2tool:tier1_direct:001643",
+      "query_idx": 2921,
+      "sample_id": "tier1_direct:001643",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1661,
+      "key": "audio2tool:tier1_direct:001661",
+      "query_idx": 2930,
+      "sample_id": "tier1_direct:001661",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1663,
+      "key": "audio2tool:tier1_direct:001663",
+      "query_idx": 2931,
+      "sample_id": "tier1_direct:001663",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1691,
+      "key": "audio2tool:tier1_direct:001691",
+      "query_idx": 2945,
+      "sample_id": "tier1_direct:001691",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1801,
+      "key": "audio2tool:tier1_direct:001801",
+      "query_idx": 3000,
+      "sample_id": "tier1_direct:001801",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1879,
+      "key": "audio2tool:tier1_direct:001879",
+      "query_idx": 3039,
+      "sample_id": "tier1_direct:001879",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1915,
+      "key": "audio2tool:tier1_direct:001915",
+      "query_idx": 3057,
+      "sample_id": "tier1_direct:001915",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1977,
+      "key": "audio2tool:tier1_direct:001977",
+      "query_idx": 3088,
+      "sample_id": "tier1_direct:001977",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 1981,
+      "key": "audio2tool:tier1_direct:001981",
+      "query_idx": 3090,
+      "sample_id": "tier1_direct:001981",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2027,
+      "key": "audio2tool:tier1_direct:002027",
+      "query_idx": 3113,
+      "sample_id": "tier1_direct:002027",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2043,
+      "key": "audio2tool:tier1_direct:002043",
+      "query_idx": 3121,
+      "sample_id": "tier1_direct:002043",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2127,
+      "key": "audio2tool:tier1_direct:002127",
+      "query_idx": 3163,
+      "sample_id": "tier1_direct:002127",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2159,
+      "key": "audio2tool:tier1_direct:002159",
+      "query_idx": 3179,
+      "sample_id": "tier1_direct:002159",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2175,
+      "key": "audio2tool:tier1_direct:002175",
+      "query_idx": 3187,
+      "sample_id": "tier1_direct:002175",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2197,
+      "key": "audio2tool:tier1_direct:002197",
+      "query_idx": 3198,
+      "sample_id": "tier1_direct:002197",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2201,
+      "key": "audio2tool:tier1_direct:002201",
+      "query_idx": 3200,
+      "sample_id": "tier1_direct:002201",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2285,
+      "key": "audio2tool:tier1_direct:002285",
+      "query_idx": 3242,
+      "sample_id": "tier1_direct:002285",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2317,
+      "key": "audio2tool:tier1_direct:002317",
+      "query_idx": 3258,
+      "sample_id": "tier1_direct:002317",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2345,
+      "key": "audio2tool:tier1_direct:002345",
+      "query_idx": 3272,
+      "sample_id": "tier1_direct:002345",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2363,
+      "key": "audio2tool:tier1_direct:002363",
+      "query_idx": 3281,
+      "sample_id": "tier1_direct:002363",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2407,
+      "key": "audio2tool:tier1_direct:002407",
+      "query_idx": 3303,
+      "sample_id": "tier1_direct:002407",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2447,
+      "key": "audio2tool:tier1_direct:002447",
+      "query_idx": 3323,
+      "sample_id": "tier1_direct:002447",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2535,
+      "key": "audio2tool:tier1_direct:002535",
+      "query_idx": 3367,
+      "sample_id": "tier1_direct:002535",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2555,
+      "key": "audio2tool:tier1_direct:002555",
+      "query_idx": 3377,
+      "sample_id": "tier1_direct:002555",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2561,
+      "key": "audio2tool:tier1_direct:002561",
+      "query_idx": 3380,
+      "sample_id": "tier1_direct:002561",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2565,
+      "key": "audio2tool:tier1_direct:002565",
+      "query_idx": 3382,
+      "sample_id": "tier1_direct:002565",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2653,
+      "key": "audio2tool:tier1_direct:002653",
+      "query_idx": 3426,
+      "sample_id": "tier1_direct:002653",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2667,
+      "key": "audio2tool:tier1_direct:002667",
+      "query_idx": 3433,
+      "sample_id": "tier1_direct:002667",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2709,
+      "key": "audio2tool:tier1_direct:002709",
+      "query_idx": 3454,
+      "sample_id": "tier1_direct:002709",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2767,
+      "key": "audio2tool:tier1_direct:002767",
+      "query_idx": 3483,
+      "sample_id": "tier1_direct:002767",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2875,
+      "key": "audio2tool:tier1_direct:002875",
+      "query_idx": 3537,
+      "sample_id": "tier1_direct:002875",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2879,
+      "key": "audio2tool:tier1_direct:002879",
+      "query_idx": 3539,
+      "sample_id": "tier1_direct:002879",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2925,
+      "key": "audio2tool:tier1_direct:002925",
+      "query_idx": 3862,
+      "sample_id": "tier1_direct:002925",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2983,
+      "key": "audio2tool:tier1_direct:002983",
+      "query_idx": 4341,
+      "sample_id": "tier1_direct:002983",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 2997,
+      "key": "audio2tool:tier1_direct:002997",
+      "query_idx": 4348,
+      "sample_id": "tier1_direct:002997",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 3067,
+      "key": "audio2tool:tier1_direct:003067",
+      "query_idx": 4383,
+      "sample_id": "tier1_direct:003067",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 3121,
+      "key": "audio2tool:tier1_direct:003121",
+      "query_idx": 4410,
+      "sample_id": "tier1_direct:003121",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 3223,
+      "key": "audio2tool:tier1_direct:003223",
+      "query_idx": 3561,
+      "sample_id": "tier1_direct:003223",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 3245,
+      "key": "audio2tool:tier1_direct:003245",
+      "query_idx": 3572,
+      "sample_id": "tier1_direct:003245",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 3247,
+      "key": "audio2tool:tier1_direct:003247",
+      "query_idx": 3573,
+      "sample_id": "tier1_direct:003247",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 3287,
+      "key": "audio2tool:tier1_direct:003287",
+      "query_idx": 3593,
+      "sample_id": "tier1_direct:003287",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 3295,
+      "key": "audio2tool:tier1_direct:003295",
+      "query_idx": 3597,
+      "sample_id": "tier1_direct:003295",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 3443,
+      "key": "audio2tool:tier1_direct:003443",
+      "query_idx": 3671,
+      "sample_id": "tier1_direct:003443",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 3445,
+      "key": "audio2tool:tier1_direct:003445",
+      "query_idx": 3672,
+      "sample_id": "tier1_direct:003445",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 3457,
+      "key": "audio2tool:tier1_direct:003457",
+      "query_idx": 3678,
+      "sample_id": "tier1_direct:003457",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 3543,
+      "key": "audio2tool:tier1_direct:003543",
+      "query_idx": 3721,
+      "sample_id": "tier1_direct:003543",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 3597,
+      "key": "audio2tool:tier1_direct:003597",
+      "query_idx": 3748,
+      "sample_id": "tier1_direct:003597",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 3681,
+      "key": "audio2tool:tier1_direct:003681",
+      "query_idx": 3790,
+      "sample_id": "tier1_direct:003681",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 3685,
+      "key": "audio2tool:tier1_direct:003685",
+      "query_idx": 3792,
+      "sample_id": "tier1_direct:003685",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 3701,
+      "key": "audio2tool:tier1_direct:003701",
+      "query_idx": 3800,
+      "sample_id": "tier1_direct:003701",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 3725,
+      "key": "audio2tool:tier1_direct:003725",
+      "query_idx": 4442,
+      "sample_id": "tier1_direct:003725",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 3937,
+      "key": "audio2tool:tier1_direct:003937",
+      "query_idx": 4548,
+      "sample_id": "tier1_direct:003937",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 3965,
+      "key": "audio2tool:tier1_direct:003965",
+      "query_idx": 35,
+      "sample_id": "tier1_direct:003965",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 3969,
+      "key": "audio2tool:tier1_direct:003969",
+      "query_idx": 61,
+      "sample_id": "tier1_direct:003969",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 4139,
+      "key": "audio2tool:tier1_direct:004139",
+      "query_idx": 1415,
+      "sample_id": "tier1_direct:004139",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 4211,
+      "key": "audio2tool:tier1_direct:004211",
+      "query_idx": 1978,
+      "sample_id": "tier1_direct:004211",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 4223,
+      "key": "audio2tool:tier1_direct:004223",
+      "query_idx": 2068,
+      "sample_id": "tier1_direct:004223",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 4229,
+      "key": "audio2tool:tier1_direct:004229",
+      "query_idx": 3814,
+      "sample_id": "tier1_direct:004229",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 4235,
+      "key": "audio2tool:tier1_direct:004235",
+      "query_idx": 3888,
+      "sample_id": "tier1_direct:004235",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 4261,
+      "key": "audio2tool:tier1_direct:004261",
+      "query_idx": 4088,
+      "sample_id": "tier1_direct:004261",
+      "stratum": "tier1_direct",
+      "tier": "tier1_direct"
+    },
+    {
+      "id": 163,
+      "key": "audio2tool:tier2_parametric:000163",
+      "query_idx": 2281,
+      "sample_id": "tier2_parametric:000163",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 217,
+      "key": "audio2tool:tier2_parametric:000217",
+      "query_idx": 2358,
+      "sample_id": "tier2_parametric:000217",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 227,
+      "key": "audio2tool:tier2_parametric:000227",
+      "query_idx": 2363,
+      "sample_id": "tier2_parametric:000227",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 269,
+      "key": "audio2tool:tier2_parametric:000269",
+      "query_idx": 2384,
+      "sample_id": "tier2_parametric:000269",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 763,
+      "key": "audio2tool:tier2_parametric:000763",
+      "query_idx": 2781,
+      "sample_id": "tier2_parametric:000763",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 785,
+      "key": "audio2tool:tier2_parametric:000785",
+      "query_idx": 2792,
+      "sample_id": "tier2_parametric:000785",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 1113,
+      "key": "audio2tool:tier2_parametric:001113",
+      "query_idx": 2956,
+      "sample_id": "tier2_parametric:001113",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 1171,
+      "key": "audio2tool:tier2_parametric:001171",
+      "query_idx": 2985,
+      "sample_id": "tier2_parametric:001171",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 1201,
+      "key": "audio2tool:tier2_parametric:001201",
+      "query_idx": 3000,
+      "sample_id": "tier2_parametric:001201",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 1331,
+      "key": "audio2tool:tier2_parametric:001331",
+      "query_idx": 3065,
+      "sample_id": "tier2_parametric:001331",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 1387,
+      "key": "audio2tool:tier2_parametric:001387",
+      "query_idx": 3093,
+      "sample_id": "tier2_parametric:001387",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 1557,
+      "key": "audio2tool:tier2_parametric:001557",
+      "query_idx": 3178,
+      "sample_id": "tier2_parametric:001557",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 1629,
+      "key": "audio2tool:tier2_parametric:001629",
+      "query_idx": 3214,
+      "sample_id": "tier2_parametric:001629",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 1687,
+      "key": "audio2tool:tier2_parametric:001687",
+      "query_idx": 3243,
+      "sample_id": "tier2_parametric:001687",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 1741,
+      "key": "audio2tool:tier2_parametric:001741",
+      "query_idx": 3270,
+      "sample_id": "tier2_parametric:001741",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 2251,
+      "key": "audio2tool:tier2_parametric:002251",
+      "query_idx": 3525,
+      "sample_id": "tier2_parametric:002251",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 2261,
+      "key": "audio2tool:tier2_parametric:002261",
+      "query_idx": 3530,
+      "sample_id": "tier2_parametric:002261",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 2303,
+      "key": "audio2tool:tier2_parametric:002303",
+      "query_idx": 3551,
+      "sample_id": "tier2_parametric:002303",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 2329,
+      "key": "audio2tool:tier2_parametric:002329",
+      "query_idx": 3564,
+      "sample_id": "tier2_parametric:002329",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 2469,
+      "key": "audio2tool:tier2_parametric:002469",
+      "query_idx": 3634,
+      "sample_id": "tier2_parametric:002469",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 2543,
+      "key": "audio2tool:tier2_parametric:002543",
+      "query_idx": 3671,
+      "sample_id": "tier2_parametric:002543",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 2743,
+      "key": "audio2tool:tier2_parametric:002743",
+      "query_idx": 3771,
+      "sample_id": "tier2_parametric:002743",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 2829,
+      "key": "audio2tool:tier2_parametric:002829",
+      "query_idx": 3814,
+      "sample_id": "tier2_parametric:002829",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 2839,
+      "key": "audio2tool:tier2_parametric:002839",
+      "query_idx": 3819,
+      "sample_id": "tier2_parametric:002839",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 2861,
+      "key": "audio2tool:tier2_parametric:002861",
+      "query_idx": 3830,
+      "sample_id": "tier2_parametric:002861",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 2873,
+      "key": "audio2tool:tier2_parametric:002873",
+      "query_idx": 3836,
+      "sample_id": "tier2_parametric:002873",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 2965,
+      "key": "audio2tool:tier2_parametric:002965",
+      "query_idx": 3882,
+      "sample_id": "tier2_parametric:002965",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3047,
+      "key": "audio2tool:tier2_parametric:003047",
+      "query_idx": 3923,
+      "sample_id": "tier2_parametric:003047",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3073,
+      "key": "audio2tool:tier2_parametric:003073",
+      "query_idx": 3936,
+      "sample_id": "tier2_parametric:003073",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3117,
+      "key": "audio2tool:tier2_parametric:003117",
+      "query_idx": 3958,
+      "sample_id": "tier2_parametric:003117",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3133,
+      "key": "audio2tool:tier2_parametric:003133",
+      "query_idx": 3966,
+      "sample_id": "tier2_parametric:003133",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3185,
+      "key": "audio2tool:tier2_parametric:003185",
+      "query_idx": 3992,
+      "sample_id": "tier2_parametric:003185",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3217,
+      "key": "audio2tool:tier2_parametric:003217",
+      "query_idx": 4008,
+      "sample_id": "tier2_parametric:003217",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3219,
+      "key": "audio2tool:tier2_parametric:003219",
+      "query_idx": 4009,
+      "sample_id": "tier2_parametric:003219",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3245,
+      "key": "audio2tool:tier2_parametric:003245",
+      "query_idx": 4022,
+      "sample_id": "tier2_parametric:003245",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3349,
+      "key": "audio2tool:tier2_parametric:003349",
+      "query_idx": 4074,
+      "sample_id": "tier2_parametric:003349",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3507,
+      "key": "audio2tool:tier2_parametric:003507",
+      "query_idx": 4153,
+      "sample_id": "tier2_parametric:003507",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3539,
+      "key": "audio2tool:tier2_parametric:003539",
+      "query_idx": 4169,
+      "sample_id": "tier2_parametric:003539",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3543,
+      "key": "audio2tool:tier2_parametric:003543",
+      "query_idx": 4171,
+      "sample_id": "tier2_parametric:003543",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3563,
+      "key": "audio2tool:tier2_parametric:003563",
+      "query_idx": 4181,
+      "sample_id": "tier2_parametric:003563",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3571,
+      "key": "audio2tool:tier2_parametric:003571",
+      "query_idx": 4185,
+      "sample_id": "tier2_parametric:003571",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3589,
+      "key": "audio2tool:tier2_parametric:003589",
+      "query_idx": 4194,
+      "sample_id": "tier2_parametric:003589",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3599,
+      "key": "audio2tool:tier2_parametric:003599",
+      "query_idx": 4199,
+      "sample_id": "tier2_parametric:003599",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3657,
+      "key": "audio2tool:tier2_parametric:003657",
+      "query_idx": 4228,
+      "sample_id": "tier2_parametric:003657",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3677,
+      "key": "audio2tool:tier2_parametric:003677",
+      "query_idx": 4238,
+      "sample_id": "tier2_parametric:003677",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3701,
+      "key": "audio2tool:tier2_parametric:003701",
+      "query_idx": 4250,
+      "sample_id": "tier2_parametric:003701",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3765,
+      "key": "audio2tool:tier2_parametric:003765",
+      "query_idx": 4282,
+      "sample_id": "tier2_parametric:003765",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3767,
+      "key": "audio2tool:tier2_parametric:003767",
+      "query_idx": 4283,
+      "sample_id": "tier2_parametric:003767",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3985,
+      "key": "audio2tool:tier2_parametric:003985",
+      "query_idx": 4442,
+      "sample_id": "tier2_parametric:003985",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 3995,
+      "key": "audio2tool:tier2_parametric:003995",
+      "query_idx": 4447,
+      "sample_id": "tier2_parametric:003995",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 4193,
+      "key": "audio2tool:tier2_parametric:004193",
+      "query_idx": 4596,
+      "sample_id": "tier2_parametric:004193",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 4291,
+      "key": "audio2tool:tier2_parametric:004291",
+      "query_idx": 4745,
+      "sample_id": "tier2_parametric:004291",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 4323,
+      "key": "audio2tool:tier2_parametric:004323",
+      "query_idx": 4811,
+      "sample_id": "tier2_parametric:004323",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 4353,
+      "key": "audio2tool:tier2_parametric:004353",
+      "query_idx": 4826,
+      "sample_id": "tier2_parametric:004353",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 4407,
+      "key": "audio2tool:tier2_parametric:004407",
+      "query_idx": 4853,
+      "sample_id": "tier2_parametric:004407",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 4453,
+      "key": "audio2tool:tier2_parametric:004453",
+      "query_idx": 4876,
+      "sample_id": "tier2_parametric:004453",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 4479,
+      "key": "audio2tool:tier2_parametric:004479",
+      "query_idx": 4889,
+      "sample_id": "tier2_parametric:004479",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 4495,
+      "key": "audio2tool:tier2_parametric:004495",
+      "query_idx": 4897,
+      "sample_id": "tier2_parametric:004495",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 4499,
+      "key": "audio2tool:tier2_parametric:004499",
+      "query_idx": 4899,
+      "sample_id": "tier2_parametric:004499",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 4601,
+      "key": "audio2tool:tier2_parametric:004601",
+      "query_idx": 4950,
+      "sample_id": "tier2_parametric:004601",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 4613,
+      "key": "audio2tool:tier2_parametric:004613",
+      "query_idx": 4956,
+      "sample_id": "tier2_parametric:004613",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 4643,
+      "key": "audio2tool:tier2_parametric:004643",
+      "query_idx": 4971,
+      "sample_id": "tier2_parametric:004643",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 4651,
+      "key": "audio2tool:tier2_parametric:004651",
+      "query_idx": 4975,
+      "sample_id": "tier2_parametric:004651",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 4797,
+      "key": "audio2tool:tier2_parametric:004797",
+      "query_idx": 5298,
+      "sample_id": "tier2_parametric:004797",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 4817,
+      "key": "audio2tool:tier2_parametric:004817",
+      "query_idx": 5558,
+      "sample_id": "tier2_parametric:004817",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 4877,
+      "key": "audio2tool:tier2_parametric:004877",
+      "query_idx": 5588,
+      "sample_id": "tier2_parametric:004877",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 4937,
+      "key": "audio2tool:tier2_parametric:004937",
+      "query_idx": 5618,
+      "sample_id": "tier2_parametric:004937",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 4943,
+      "key": "audio2tool:tier2_parametric:004943",
+      "query_idx": 5621,
+      "sample_id": "tier2_parametric:004943",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5161,
+      "key": "audio2tool:tier2_parametric:005161",
+      "query_idx": 4480,
+      "sample_id": "tier2_parametric:005161",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5231,
+      "key": "audio2tool:tier2_parametric:005231",
+      "query_idx": 4615,
+      "sample_id": "tier2_parametric:005231",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5347,
+      "key": "audio2tool:tier2_parametric:005347",
+      "query_idx": 4673,
+      "sample_id": "tier2_parametric:005347",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5389,
+      "key": "audio2tool:tier2_parametric:005389",
+      "query_idx": 4694,
+      "sample_id": "tier2_parametric:005389",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5493,
+      "key": "audio2tool:tier2_parametric:005493",
+      "query_idx": 4796,
+      "sample_id": "tier2_parametric:005493",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5515,
+      "key": "audio2tool:tier2_parametric:005515",
+      "query_idx": 5007,
+      "sample_id": "tier2_parametric:005515",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5553,
+      "key": "audio2tool:tier2_parametric:005553",
+      "query_idx": 5026,
+      "sample_id": "tier2_parametric:005553",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5563,
+      "key": "audio2tool:tier2_parametric:005563",
+      "query_idx": 5031,
+      "sample_id": "tier2_parametric:005563",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5631,
+      "key": "audio2tool:tier2_parametric:005631",
+      "query_idx": 5315,
+      "sample_id": "tier2_parametric:005631",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5645,
+      "key": "audio2tool:tier2_parametric:005645",
+      "query_idx": 5322,
+      "sample_id": "tier2_parametric:005645",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5703,
+      "key": "audio2tool:tier2_parametric:005703",
+      "query_idx": 5401,
+      "sample_id": "tier2_parametric:005703",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5713,
+      "key": "audio2tool:tier2_parametric:005713",
+      "query_idx": 5406,
+      "sample_id": "tier2_parametric:005713",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5723,
+      "key": "audio2tool:tier2_parametric:005723",
+      "query_idx": 5411,
+      "sample_id": "tier2_parametric:005723",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5725,
+      "key": "audio2tool:tier2_parametric:005725",
+      "query_idx": 5412,
+      "sample_id": "tier2_parametric:005725",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5733,
+      "key": "audio2tool:tier2_parametric:005733",
+      "query_idx": 5416,
+      "sample_id": "tier2_parametric:005733",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5737,
+      "key": "audio2tool:tier2_parametric:005737",
+      "query_idx": 5418,
+      "sample_id": "tier2_parametric:005737",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5803,
+      "key": "audio2tool:tier2_parametric:005803",
+      "query_idx": 5451,
+      "sample_id": "tier2_parametric:005803",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5817,
+      "key": "audio2tool:tier2_parametric:005817",
+      "query_idx": 5458,
+      "sample_id": "tier2_parametric:005817",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5833,
+      "key": "audio2tool:tier2_parametric:005833",
+      "query_idx": 5466,
+      "sample_id": "tier2_parametric:005833",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5843,
+      "key": "audio2tool:tier2_parametric:005843",
+      "query_idx": 5471,
+      "sample_id": "tier2_parametric:005843",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5893,
+      "key": "audio2tool:tier2_parametric:005893",
+      "query_idx": 5496,
+      "sample_id": "tier2_parametric:005893",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5907,
+      "key": "audio2tool:tier2_parametric:005907",
+      "query_idx": 5653,
+      "sample_id": "tier2_parametric:005907",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5931,
+      "key": "audio2tool:tier2_parametric:005931",
+      "query_idx": 5665,
+      "sample_id": "tier2_parametric:005931",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5957,
+      "key": "audio2tool:tier2_parametric:005957",
+      "query_idx": 5678,
+      "sample_id": "tier2_parametric:005957",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5971,
+      "key": "audio2tool:tier2_parametric:005971",
+      "query_idx": 5685,
+      "sample_id": "tier2_parametric:005971",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 5987,
+      "key": "audio2tool:tier2_parametric:005987",
+      "query_idx": 5693,
+      "sample_id": "tier2_parametric:005987",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 6011,
+      "key": "audio2tool:tier2_parametric:006011",
+      "query_idx": 5755,
+      "sample_id": "tier2_parametric:006011",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 6039,
+      "key": "audio2tool:tier2_parametric:006039",
+      "query_idx": 5769,
+      "sample_id": "tier2_parametric:006039",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 6073,
+      "key": "audio2tool:tier2_parametric:006073",
+      "query_idx": 5786,
+      "sample_id": "tier2_parametric:006073",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 6265,
+      "key": "audio2tool:tier2_parametric:006265",
+      "query_idx": 2069,
+      "sample_id": "tier2_parametric:006265",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 6293,
+      "key": "audio2tool:tier2_parametric:006293",
+      "query_idx": 5080,
+      "sample_id": "tier2_parametric:006293",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 6299,
+      "key": "audio2tool:tier2_parametric:006299",
+      "query_idx": 5146,
+      "sample_id": "tier2_parametric:006299",
+      "stratum": "tier2_parametric",
+      "tier": "tier2_parametric"
+    },
+    {
+      "id": 1,
+      "key": "audio2tool:tier3_multi_intent:000001",
+      "query_idx": 2100,
+      "sample_id": "tier3_multi_intent:000001",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 37,
+      "key": "audio2tool:tier3_multi_intent:000037",
+      "query_idx": 2118,
+      "sample_id": "tier3_multi_intent:000037",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 57,
+      "key": "audio2tool:tier3_multi_intent:000057",
+      "query_idx": 2128,
+      "sample_id": "tier3_multi_intent:000057",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 67,
+      "key": "audio2tool:tier3_multi_intent:000067",
+      "query_idx": 2133,
+      "sample_id": "tier3_multi_intent:000067",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 131,
+      "key": "audio2tool:tier3_multi_intent:000131",
+      "query_idx": 2165,
+      "sample_id": "tier3_multi_intent:000131",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 133,
+      "key": "audio2tool:tier3_multi_intent:000133",
+      "query_idx": 2166,
+      "sample_id": "tier3_multi_intent:000133",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 175,
+      "key": "audio2tool:tier3_multi_intent:000175",
+      "query_idx": 2187,
+      "sample_id": "tier3_multi_intent:000175",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 183,
+      "key": "audio2tool:tier3_multi_intent:000183",
+      "query_idx": 2191,
+      "sample_id": "tier3_multi_intent:000183",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 227,
+      "key": "audio2tool:tier3_multi_intent:000227",
+      "query_idx": 2213,
+      "sample_id": "tier3_multi_intent:000227",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 301,
+      "key": "audio2tool:tier3_multi_intent:000301",
+      "query_idx": 2250,
+      "sample_id": "tier3_multi_intent:000301",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 335,
+      "key": "audio2tool:tier3_multi_intent:000335",
+      "query_idx": 2267,
+      "sample_id": "tier3_multi_intent:000335",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 343,
+      "key": "audio2tool:tier3_multi_intent:000343",
+      "query_idx": 2271,
+      "sample_id": "tier3_multi_intent:000343",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 345,
+      "key": "audio2tool:tier3_multi_intent:000345",
+      "query_idx": 2272,
+      "sample_id": "tier3_multi_intent:000345",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 369,
+      "key": "audio2tool:tier3_multi_intent:000369",
+      "query_idx": 2284,
+      "sample_id": "tier3_multi_intent:000369",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 491,
+      "key": "audio2tool:tier3_multi_intent:000491",
+      "query_idx": 2345,
+      "sample_id": "tier3_multi_intent:000491",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 535,
+      "key": "audio2tool:tier3_multi_intent:000535",
+      "query_idx": 2367,
+      "sample_id": "tier3_multi_intent:000535",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 571,
+      "key": "audio2tool:tier3_multi_intent:000571",
+      "query_idx": 2385,
+      "sample_id": "tier3_multi_intent:000571",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 611,
+      "key": "audio2tool:tier3_multi_intent:000611",
+      "query_idx": 2405,
+      "sample_id": "tier3_multi_intent:000611",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 627,
+      "key": "audio2tool:tier3_multi_intent:000627",
+      "query_idx": 2413,
+      "sample_id": "tier3_multi_intent:000627",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 687,
+      "key": "audio2tool:tier3_multi_intent:000687",
+      "query_idx": 2443,
+      "sample_id": "tier3_multi_intent:000687",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 721,
+      "key": "audio2tool:tier3_multi_intent:000721",
+      "query_idx": 2460,
+      "sample_id": "tier3_multi_intent:000721",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 753,
+      "key": "audio2tool:tier3_multi_intent:000753",
+      "query_idx": 2476,
+      "sample_id": "tier3_multi_intent:000753",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 787,
+      "key": "audio2tool:tier3_multi_intent:000787",
+      "query_idx": 2493,
+      "sample_id": "tier3_multi_intent:000787",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 803,
+      "key": "audio2tool:tier3_multi_intent:000803",
+      "query_idx": 2501,
+      "sample_id": "tier3_multi_intent:000803",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 859,
+      "key": "audio2tool:tier3_multi_intent:000859",
+      "query_idx": 2529,
+      "sample_id": "tier3_multi_intent:000859",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 885,
+      "key": "audio2tool:tier3_multi_intent:000885",
+      "query_idx": 2542,
+      "sample_id": "tier3_multi_intent:000885",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 965,
+      "key": "audio2tool:tier3_multi_intent:000965",
+      "query_idx": 2582,
+      "sample_id": "tier3_multi_intent:000965",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 979,
+      "key": "audio2tool:tier3_multi_intent:000979",
+      "query_idx": 2589,
+      "sample_id": "tier3_multi_intent:000979",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1117,
+      "key": "audio2tool:tier3_multi_intent:001117",
+      "query_idx": 2658,
+      "sample_id": "tier3_multi_intent:001117",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1149,
+      "key": "audio2tool:tier3_multi_intent:001149",
+      "query_idx": 2674,
+      "sample_id": "tier3_multi_intent:001149",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1167,
+      "key": "audio2tool:tier3_multi_intent:001167",
+      "query_idx": 2683,
+      "sample_id": "tier3_multi_intent:001167",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1259,
+      "key": "audio2tool:tier3_multi_intent:001259",
+      "query_idx": 2729,
+      "sample_id": "tier3_multi_intent:001259",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1265,
+      "key": "audio2tool:tier3_multi_intent:001265",
+      "query_idx": 2732,
+      "sample_id": "tier3_multi_intent:001265",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1293,
+      "key": "audio2tool:tier3_multi_intent:001293",
+      "query_idx": 2746,
+      "sample_id": "tier3_multi_intent:001293",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1333,
+      "key": "audio2tool:tier3_multi_intent:001333",
+      "query_idx": 2766,
+      "sample_id": "tier3_multi_intent:001333",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1347,
+      "key": "audio2tool:tier3_multi_intent:001347",
+      "query_idx": 2773,
+      "sample_id": "tier3_multi_intent:001347",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1353,
+      "key": "audio2tool:tier3_multi_intent:001353",
+      "query_idx": 2776,
+      "sample_id": "tier3_multi_intent:001353",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1393,
+      "key": "audio2tool:tier3_multi_intent:001393",
+      "query_idx": 2796,
+      "sample_id": "tier3_multi_intent:001393",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1483,
+      "key": "audio2tool:tier3_multi_intent:001483",
+      "query_idx": 2841,
+      "sample_id": "tier3_multi_intent:001483",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1527,
+      "key": "audio2tool:tier3_multi_intent:001527",
+      "query_idx": 2863,
+      "sample_id": "tier3_multi_intent:001527",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1583,
+      "key": "audio2tool:tier3_multi_intent:001583",
+      "query_idx": 2891,
+      "sample_id": "tier3_multi_intent:001583",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1623,
+      "key": "audio2tool:tier3_multi_intent:001623",
+      "query_idx": 2911,
+      "sample_id": "tier3_multi_intent:001623",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1649,
+      "key": "audio2tool:tier3_multi_intent:001649",
+      "query_idx": 2924,
+      "sample_id": "tier3_multi_intent:001649",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1691,
+      "key": "audio2tool:tier3_multi_intent:001691",
+      "query_idx": 2945,
+      "sample_id": "tier3_multi_intent:001691",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1727,
+      "key": "audio2tool:tier3_multi_intent:001727",
+      "query_idx": 2963,
+      "sample_id": "tier3_multi_intent:001727",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1745,
+      "key": "audio2tool:tier3_multi_intent:001745",
+      "query_idx": 2972,
+      "sample_id": "tier3_multi_intent:001745",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1791,
+      "key": "audio2tool:tier3_multi_intent:001791",
+      "query_idx": 2995,
+      "sample_id": "tier3_multi_intent:001791",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1839,
+      "key": "audio2tool:tier3_multi_intent:001839",
+      "query_idx": 3019,
+      "sample_id": "tier3_multi_intent:001839",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1843,
+      "key": "audio2tool:tier3_multi_intent:001843",
+      "query_idx": 3021,
+      "sample_id": "tier3_multi_intent:001843",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1897,
+      "key": "audio2tool:tier3_multi_intent:001897",
+      "query_idx": 3048,
+      "sample_id": "tier3_multi_intent:001897",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1995,
+      "key": "audio2tool:tier3_multi_intent:001995",
+      "query_idx": 3097,
+      "sample_id": "tier3_multi_intent:001995",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2013,
+      "key": "audio2tool:tier3_multi_intent:002013",
+      "query_idx": 3106,
+      "sample_id": "tier3_multi_intent:002013",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2077,
+      "key": "audio2tool:tier3_multi_intent:002077",
+      "query_idx": 3138,
+      "sample_id": "tier3_multi_intent:002077",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2145,
+      "key": "audio2tool:tier3_multi_intent:002145",
+      "query_idx": 3172,
+      "sample_id": "tier3_multi_intent:002145",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2267,
+      "key": "audio2tool:tier3_multi_intent:002267",
+      "query_idx": 3233,
+      "sample_id": "tier3_multi_intent:002267",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2305,
+      "key": "audio2tool:tier3_multi_intent:002305",
+      "query_idx": 3252,
+      "sample_id": "tier3_multi_intent:002305",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2325,
+      "key": "audio2tool:tier3_multi_intent:002325",
+      "query_idx": 3262,
+      "sample_id": "tier3_multi_intent:002325",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2331,
+      "key": "audio2tool:tier3_multi_intent:002331",
+      "query_idx": 3265,
+      "sample_id": "tier3_multi_intent:002331",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2375,
+      "key": "audio2tool:tier3_multi_intent:002375",
+      "query_idx": 3287,
+      "sample_id": "tier3_multi_intent:002375",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2439,
+      "key": "audio2tool:tier3_multi_intent:002439",
+      "query_idx": 3319,
+      "sample_id": "tier3_multi_intent:002439",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2445,
+      "key": "audio2tool:tier3_multi_intent:002445",
+      "query_idx": 3322,
+      "sample_id": "tier3_multi_intent:002445",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2497,
+      "key": "audio2tool:tier3_multi_intent:002497",
+      "query_idx": 3348,
+      "sample_id": "tier3_multi_intent:002497",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2511,
+      "key": "audio2tool:tier3_multi_intent:002511",
+      "query_idx": 3355,
+      "sample_id": "tier3_multi_intent:002511",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2539,
+      "key": "audio2tool:tier3_multi_intent:002539",
+      "query_idx": 3369,
+      "sample_id": "tier3_multi_intent:002539",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2569,
+      "key": "audio2tool:tier3_multi_intent:002569",
+      "query_idx": 3384,
+      "sample_id": "tier3_multi_intent:002569",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2603,
+      "key": "audio2tool:tier3_multi_intent:002603",
+      "query_idx": 3401,
+      "sample_id": "tier3_multi_intent:002603",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2693,
+      "key": "audio2tool:tier3_multi_intent:002693",
+      "query_idx": 3446,
+      "sample_id": "tier3_multi_intent:002693",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2863,
+      "key": "audio2tool:tier3_multi_intent:002863",
+      "query_idx": 3531,
+      "sample_id": "tier3_multi_intent:002863",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2877,
+      "key": "audio2tool:tier3_multi_intent:002877",
+      "query_idx": 3538,
+      "sample_id": "tier3_multi_intent:002877",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2889,
+      "key": "audio2tool:tier3_multi_intent:002889",
+      "query_idx": 3844,
+      "sample_id": "tier3_multi_intent:002889",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 2983,
+      "key": "audio2tool:tier3_multi_intent:002983",
+      "query_idx": 4341,
+      "sample_id": "tier3_multi_intent:002983",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3013,
+      "key": "audio2tool:tier3_multi_intent:003013",
+      "query_idx": 4356,
+      "sample_id": "tier3_multi_intent:003013",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3019,
+      "key": "audio2tool:tier3_multi_intent:003019",
+      "query_idx": 4359,
+      "sample_id": "tier3_multi_intent:003019",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3089,
+      "key": "audio2tool:tier3_multi_intent:003089",
+      "query_idx": 4394,
+      "sample_id": "tier3_multi_intent:003089",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3159,
+      "key": "audio2tool:tier3_multi_intent:003159",
+      "query_idx": 4429,
+      "sample_id": "tier3_multi_intent:003159",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3187,
+      "key": "audio2tool:tier3_multi_intent:003187",
+      "query_idx": 3543,
+      "sample_id": "tier3_multi_intent:003187",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3201,
+      "key": "audio2tool:tier3_multi_intent:003201",
+      "query_idx": 3550,
+      "sample_id": "tier3_multi_intent:003201",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3205,
+      "key": "audio2tool:tier3_multi_intent:003205",
+      "query_idx": 3552,
+      "sample_id": "tier3_multi_intent:003205",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3369,
+      "key": "audio2tool:tier3_multi_intent:003369",
+      "query_idx": 3634,
+      "sample_id": "tier3_multi_intent:003369",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3389,
+      "key": "audio2tool:tier3_multi_intent:003389",
+      "query_idx": 3644,
+      "sample_id": "tier3_multi_intent:003389",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3441,
+      "key": "audio2tool:tier3_multi_intent:003441",
+      "query_idx": 3670,
+      "sample_id": "tier3_multi_intent:003441",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3461,
+      "key": "audio2tool:tier3_multi_intent:003461",
+      "query_idx": 3680,
+      "sample_id": "tier3_multi_intent:003461",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3481,
+      "key": "audio2tool:tier3_multi_intent:003481",
+      "query_idx": 3690,
+      "sample_id": "tier3_multi_intent:003481",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3505,
+      "key": "audio2tool:tier3_multi_intent:003505",
+      "query_idx": 3702,
+      "sample_id": "tier3_multi_intent:003505",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3529,
+      "key": "audio2tool:tier3_multi_intent:003529",
+      "query_idx": 3714,
+      "sample_id": "tier3_multi_intent:003529",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3533,
+      "key": "audio2tool:tier3_multi_intent:003533",
+      "query_idx": 3716,
+      "sample_id": "tier3_multi_intent:003533",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3543,
+      "key": "audio2tool:tier3_multi_intent:003543",
+      "query_idx": 3721,
+      "sample_id": "tier3_multi_intent:003543",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3557,
+      "key": "audio2tool:tier3_multi_intent:003557",
+      "query_idx": 3728,
+      "sample_id": "tier3_multi_intent:003557",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3569,
+      "key": "audio2tool:tier3_multi_intent:003569",
+      "query_idx": 3734,
+      "sample_id": "tier3_multi_intent:003569",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3623,
+      "key": "audio2tool:tier3_multi_intent:003623",
+      "query_idx": 3761,
+      "sample_id": "tier3_multi_intent:003623",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3629,
+      "key": "audio2tool:tier3_multi_intent:003629",
+      "query_idx": 3764,
+      "sample_id": "tier3_multi_intent:003629",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3657,
+      "key": "audio2tool:tier3_multi_intent:003657",
+      "query_idx": 3778,
+      "sample_id": "tier3_multi_intent:003657",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3879,
+      "key": "audio2tool:tier3_multi_intent:003879",
+      "query_idx": 4519,
+      "sample_id": "tier3_multi_intent:003879",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3951,
+      "key": "audio2tool:tier3_multi_intent:003951",
+      "query_idx": 4555,
+      "sample_id": "tier3_multi_intent:003951",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 3987,
+      "key": "audio2tool:tier3_multi_intent:003987",
+      "query_idx": 205,
+      "sample_id": "tier3_multi_intent:003987",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 4117,
+      "key": "audio2tool:tier3_multi_intent:004117",
+      "query_idx": 1224,
+      "sample_id": "tier3_multi_intent:004117",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 4133,
+      "key": "audio2tool:tier3_multi_intent:004133",
+      "query_idx": 1335,
+      "sample_id": "tier3_multi_intent:004133",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 4137,
+      "key": "audio2tool:tier3_multi_intent:004137",
+      "query_idx": 1360,
+      "sample_id": "tier3_multi_intent:004137",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 4203,
+      "key": "audio2tool:tier3_multi_intent:004203",
+      "query_idx": 1882,
+      "sample_id": "tier3_multi_intent:004203",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 4227,
+      "key": "audio2tool:tier3_multi_intent:004227",
+      "query_idx": 2088,
+      "sample_id": "tier3_multi_intent:004227",
+      "stratum": "tier3_multi_intent",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "id": 1,
+      "key": "audio2tool:tier4_implicit:000001",
+      "query_idx": 2100,
+      "sample_id": "tier4_implicit:000001",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 21,
+      "key": "audio2tool:tier4_implicit:000021",
+      "query_idx": 2110,
+      "sample_id": "tier4_implicit:000021",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 33,
+      "key": "audio2tool:tier4_implicit:000033",
+      "query_idx": 2116,
+      "sample_id": "tier4_implicit:000033",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 51,
+      "key": "audio2tool:tier4_implicit:000051",
+      "query_idx": 2125,
+      "sample_id": "tier4_implicit:000051",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 107,
+      "key": "audio2tool:tier4_implicit:000107",
+      "query_idx": 2154,
+      "sample_id": "tier4_implicit:000107",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 135,
+      "key": "audio2tool:tier4_implicit:000135",
+      "query_idx": 2168,
+      "sample_id": "tier4_implicit:000135",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 201,
+      "key": "audio2tool:tier4_implicit:000201",
+      "query_idx": 2201,
+      "sample_id": "tier4_implicit:000201",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 207,
+      "key": "audio2tool:tier4_implicit:000207",
+      "query_idx": 2204,
+      "sample_id": "tier4_implicit:000207",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 333,
+      "key": "audio2tool:tier4_implicit:000333",
+      "query_idx": 2267,
+      "sample_id": "tier4_implicit:000333",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 367,
+      "key": "audio2tool:tier4_implicit:000367",
+      "query_idx": 2284,
+      "sample_id": "tier4_implicit:000367",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 409,
+      "key": "audio2tool:tier4_implicit:000409",
+      "query_idx": 2304,
+      "sample_id": "tier4_implicit:000409",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 485,
+      "key": "audio2tool:tier4_implicit:000485",
+      "query_idx": 2344,
+      "sample_id": "tier4_implicit:000485",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 559,
+      "key": "audio2tool:tier4_implicit:000559",
+      "query_idx": 2382,
+      "sample_id": "tier4_implicit:000559",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 563,
+      "key": "audio2tool:tier4_implicit:000563",
+      "query_idx": 2384,
+      "sample_id": "tier4_implicit:000563",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 671,
+      "key": "audio2tool:tier4_implicit:000671",
+      "query_idx": 2438,
+      "sample_id": "tier4_implicit:000671",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 693,
+      "key": "audio2tool:tier4_implicit:000693",
+      "query_idx": 2449,
+      "sample_id": "tier4_implicit:000693",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 703,
+      "key": "audio2tool:tier4_implicit:000703",
+      "query_idx": 2454,
+      "sample_id": "tier4_implicit:000703",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 713,
+      "key": "audio2tool:tier4_implicit:000713",
+      "query_idx": 2459,
+      "sample_id": "tier4_implicit:000713",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 715,
+      "key": "audio2tool:tier4_implicit:000715",
+      "query_idx": 2460,
+      "sample_id": "tier4_implicit:000715",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 717,
+      "key": "audio2tool:tier4_implicit:000717",
+      "query_idx": 2461,
+      "sample_id": "tier4_implicit:000717",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 721,
+      "key": "audio2tool:tier4_implicit:000721",
+      "query_idx": 2463,
+      "sample_id": "tier4_implicit:000721",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 735,
+      "key": "audio2tool:tier4_implicit:000735",
+      "query_idx": 2471,
+      "sample_id": "tier4_implicit:000735",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 771,
+      "key": "audio2tool:tier4_implicit:000771",
+      "query_idx": 2489,
+      "sample_id": "tier4_implicit:000771",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 787,
+      "key": "audio2tool:tier4_implicit:000787",
+      "query_idx": 2497,
+      "sample_id": "tier4_implicit:000787",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 829,
+      "key": "audio2tool:tier4_implicit:000829",
+      "query_idx": 2518,
+      "sample_id": "tier4_implicit:000829",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 837,
+      "key": "audio2tool:tier4_implicit:000837",
+      "query_idx": 2522,
+      "sample_id": "tier4_implicit:000837",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 877,
+      "key": "audio2tool:tier4_implicit:000877",
+      "query_idx": 2542,
+      "sample_id": "tier4_implicit:000877",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 993,
+      "key": "audio2tool:tier4_implicit:000993",
+      "query_idx": 2599,
+      "sample_id": "tier4_implicit:000993",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1093,
+      "key": "audio2tool:tier4_implicit:001093",
+      "query_idx": 2649,
+      "sample_id": "tier4_implicit:001093",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1103,
+      "key": "audio2tool:tier4_implicit:001103",
+      "query_idx": 2654,
+      "sample_id": "tier4_implicit:001103",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1105,
+      "key": "audio2tool:tier4_implicit:001105",
+      "query_idx": 2655,
+      "sample_id": "tier4_implicit:001105",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1141,
+      "key": "audio2tool:tier4_implicit:001141",
+      "query_idx": 2673,
+      "sample_id": "tier4_implicit:001141",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1181,
+      "key": "audio2tool:tier4_implicit:001181",
+      "query_idx": 2693,
+      "sample_id": "tier4_implicit:001181",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1193,
+      "key": "audio2tool:tier4_implicit:001193",
+      "query_idx": 2699,
+      "sample_id": "tier4_implicit:001193",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1201,
+      "key": "audio2tool:tier4_implicit:001201",
+      "query_idx": 2703,
+      "sample_id": "tier4_implicit:001201",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1349,
+      "key": "audio2tool:tier4_implicit:001349",
+      "query_idx": 2777,
+      "sample_id": "tier4_implicit:001349",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1387,
+      "key": "audio2tool:tier4_implicit:001387",
+      "query_idx": 2796,
+      "sample_id": "tier4_implicit:001387",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1403,
+      "key": "audio2tool:tier4_implicit:001403",
+      "query_idx": 2804,
+      "sample_id": "tier4_implicit:001403",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1431,
+      "key": "audio2tool:tier4_implicit:001431",
+      "query_idx": 2818,
+      "sample_id": "tier4_implicit:001431",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1449,
+      "key": "audio2tool:tier4_implicit:001449",
+      "query_idx": 2827,
+      "sample_id": "tier4_implicit:001449",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1455,
+      "key": "audio2tool:tier4_implicit:001455",
+      "query_idx": 2830,
+      "sample_id": "tier4_implicit:001455",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1537,
+      "key": "audio2tool:tier4_implicit:001537",
+      "query_idx": 2870,
+      "sample_id": "tier4_implicit:001537",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1581,
+      "key": "audio2tool:tier4_implicit:001581",
+      "query_idx": 2893,
+      "sample_id": "tier4_implicit:001581",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1587,
+      "key": "audio2tool:tier4_implicit:001587",
+      "query_idx": 2896,
+      "sample_id": "tier4_implicit:001587",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1589,
+      "key": "audio2tool:tier4_implicit:001589",
+      "query_idx": 2897,
+      "sample_id": "tier4_implicit:001589",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1603,
+      "key": "audio2tool:tier4_implicit:001603",
+      "query_idx": 2904,
+      "sample_id": "tier4_implicit:001603",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1685,
+      "key": "audio2tool:tier4_implicit:001685",
+      "query_idx": 2945,
+      "sample_id": "tier4_implicit:001685",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1781,
+      "key": "audio2tool:tier4_implicit:001781",
+      "query_idx": 2992,
+      "sample_id": "tier4_implicit:001781",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1795,
+      "key": "audio2tool:tier4_implicit:001795",
+      "query_idx": 2999,
+      "sample_id": "tier4_implicit:001795",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1821,
+      "key": "audio2tool:tier4_implicit:001821",
+      "query_idx": 3012,
+      "sample_id": "tier4_implicit:001821",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1835,
+      "key": "audio2tool:tier4_implicit:001835",
+      "query_idx": 3019,
+      "sample_id": "tier4_implicit:001835",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1887,
+      "key": "audio2tool:tier4_implicit:001887",
+      "query_idx": 3045,
+      "sample_id": "tier4_implicit:001887",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1893,
+      "key": "audio2tool:tier4_implicit:001893",
+      "query_idx": 3048,
+      "sample_id": "tier4_implicit:001893",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1911,
+      "key": "audio2tool:tier4_implicit:001911",
+      "query_idx": 3057,
+      "sample_id": "tier4_implicit:001911",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1935,
+      "key": "audio2tool:tier4_implicit:001935",
+      "query_idx": 3069,
+      "sample_id": "tier4_implicit:001935",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 1975,
+      "key": "audio2tool:tier4_implicit:001975",
+      "query_idx": 3089,
+      "sample_id": "tier4_implicit:001975",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 2041,
+      "key": "audio2tool:tier4_implicit:002041",
+      "query_idx": 3121,
+      "sample_id": "tier4_implicit:002041",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 2125,
+      "key": "audio2tool:tier4_implicit:002125",
+      "query_idx": 3163,
+      "sample_id": "tier4_implicit:002125",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 2139,
+      "key": "audio2tool:tier4_implicit:002139",
+      "query_idx": 3170,
+      "sample_id": "tier4_implicit:002139",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 2157,
+      "key": "audio2tool:tier4_implicit:002157",
+      "query_idx": 3179,
+      "sample_id": "tier4_implicit:002157",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 2181,
+      "key": "audio2tool:tier4_implicit:002181",
+      "query_idx": 3191,
+      "sample_id": "tier4_implicit:002181",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 2199,
+      "key": "audio2tool:tier4_implicit:002199",
+      "query_idx": 3200,
+      "sample_id": "tier4_implicit:002199",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 2235,
+      "key": "audio2tool:tier4_implicit:002235",
+      "query_idx": 3220,
+      "sample_id": "tier4_implicit:002235",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 2279,
+      "key": "audio2tool:tier4_implicit:002279",
+      "query_idx": 3242,
+      "sample_id": "tier4_implicit:002279",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 2329,
+      "key": "audio2tool:tier4_implicit:002329",
+      "query_idx": 3267,
+      "sample_id": "tier4_implicit:002329",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 2331,
+      "key": "audio2tool:tier4_implicit:002331",
+      "query_idx": 3268,
+      "sample_id": "tier4_implicit:002331",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 2341,
+      "key": "audio2tool:tier4_implicit:002341",
+      "query_idx": 3273,
+      "sample_id": "tier4_implicit:002341",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 2351,
+      "key": "audio2tool:tier4_implicit:002351",
+      "query_idx": 3278,
+      "sample_id": "tier4_implicit:002351",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 2495,
+      "key": "audio2tool:tier4_implicit:002495",
+      "query_idx": 3350,
+      "sample_id": "tier4_implicit:002495",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 2551,
+      "key": "audio2tool:tier4_implicit:002551",
+      "query_idx": 3378,
+      "sample_id": "tier4_implicit:002551",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 2583,
+      "key": "audio2tool:tier4_implicit:002583",
+      "query_idx": 3395,
+      "sample_id": "tier4_implicit:002583",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 2801,
+      "key": "audio2tool:tier4_implicit:002801",
+      "query_idx": 3506,
+      "sample_id": "tier4_implicit:002801",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 2899,
+      "key": "audio2tool:tier4_implicit:002899",
+      "query_idx": 3855,
+      "sample_id": "tier4_implicit:002899",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 3013,
+      "key": "audio2tool:tier4_implicit:003013",
+      "query_idx": 4363,
+      "sample_id": "tier4_implicit:003013",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 3107,
+      "key": "audio2tool:tier4_implicit:003107",
+      "query_idx": 4410,
+      "sample_id": "tier4_implicit:003107",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 3111,
+      "key": "audio2tool:tier4_implicit:003111",
+      "query_idx": 4412,
+      "sample_id": "tier4_implicit:003111",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 3281,
+      "key": "audio2tool:tier4_implicit:003281",
+      "query_idx": 3597,
+      "sample_id": "tier4_implicit:003281",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 3349,
+      "key": "audio2tool:tier4_implicit:003349",
+      "query_idx": 3631,
+      "sample_id": "tier4_implicit:003349",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 3359,
+      "key": "audio2tool:tier4_implicit:003359",
+      "query_idx": 3636,
+      "sample_id": "tier4_implicit:003359",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 3391,
+      "key": "audio2tool:tier4_implicit:003391",
+      "query_idx": 3652,
+      "sample_id": "tier4_implicit:003391",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 3447,
+      "key": "audio2tool:tier4_implicit:003447",
+      "query_idx": 3680,
+      "sample_id": "tier4_implicit:003447",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 3465,
+      "key": "audio2tool:tier4_implicit:003465",
+      "query_idx": 3689,
+      "sample_id": "tier4_implicit:003465",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 3467,
+      "key": "audio2tool:tier4_implicit:003467",
+      "query_idx": 3690,
+      "sample_id": "tier4_implicit:003467",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 3491,
+      "key": "audio2tool:tier4_implicit:003491",
+      "query_idx": 3702,
+      "sample_id": "tier4_implicit:003491",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 3507,
+      "key": "audio2tool:tier4_implicit:003507",
+      "query_idx": 3710,
+      "sample_id": "tier4_implicit:003507",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 3555,
+      "key": "audio2tool:tier4_implicit:003555",
+      "query_idx": 3734,
+      "sample_id": "tier4_implicit:003555",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 3639,
+      "key": "audio2tool:tier4_implicit:003639",
+      "query_idx": 3776,
+      "sample_id": "tier4_implicit:003639",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 3743,
+      "key": "audio2tool:tier4_implicit:003743",
+      "query_idx": 4458,
+      "sample_id": "tier4_implicit:003743",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 3747,
+      "key": "audio2tool:tier4_implicit:003747",
+      "query_idx": 4460,
+      "sample_id": "tier4_implicit:003747",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 3765,
+      "key": "audio2tool:tier4_implicit:003765",
+      "query_idx": 4469,
+      "sample_id": "tier4_implicit:003765",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 3939,
+      "key": "audio2tool:tier4_implicit:003939",
+      "query_idx": 4556,
+      "sample_id": "tier4_implicit:003939",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 4097,
+      "key": "audio2tool:tier4_implicit:004097",
+      "query_idx": 1192,
+      "sample_id": "tier4_implicit:004097",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 4105,
+      "key": "audio2tool:tier4_implicit:004105",
+      "query_idx": 1256,
+      "sample_id": "tier4_implicit:004105",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 4119,
+      "key": "audio2tool:tier4_implicit:004119",
+      "query_idx": 1356,
+      "sample_id": "tier4_implicit:004119",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 4159,
+      "key": "audio2tool:tier4_implicit:004159",
+      "query_idx": 1654,
+      "sample_id": "tier4_implicit:004159",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 4207,
+      "key": "audio2tool:tier4_implicit:004207",
+      "query_idx": 2061,
+      "sample_id": "tier4_implicit:004207",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 4209,
+      "key": "audio2tool:tier4_implicit:004209",
+      "query_idx": 2063,
+      "sample_id": "tier4_implicit:004209",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 4221,
+      "key": "audio2tool:tier4_implicit:004221",
+      "query_idx": 3893,
+      "sample_id": "tier4_implicit:004221",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 4253,
+      "key": "audio2tool:tier4_implicit:004253",
+      "query_idx": 4130,
+      "sample_id": "tier4_implicit:004253",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 4271,
+      "key": "audio2tool:tier4_implicit:004271",
+      "query_idx": 4264,
+      "sample_id": "tier4_implicit:004271",
+      "stratum": "tier4_implicit",
+      "tier": "tier4_implicit"
+    },
+    {
+      "id": 19,
+      "key": "audio2tool:tier5_needle:000019",
+      "query_idx": 2109,
+      "sample_id": "tier5_needle:000019",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 65,
+      "key": "audio2tool:tier5_needle:000065",
+      "query_idx": 2132,
+      "sample_id": "tier5_needle:000065",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 137,
+      "key": "audio2tool:tier5_needle:000137",
+      "query_idx": 2168,
+      "sample_id": "tier5_needle:000137",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 203,
+      "key": "audio2tool:tier5_needle:000203",
+      "query_idx": 2201,
+      "sample_id": "tier5_needle:000203",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 205,
+      "key": "audio2tool:tier5_needle:000205",
+      "query_idx": 2202,
+      "sample_id": "tier5_needle:000205",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 253,
+      "key": "audio2tool:tier5_needle:000253",
+      "query_idx": 2226,
+      "sample_id": "tier5_needle:000253",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 275,
+      "key": "audio2tool:tier5_needle:000275",
+      "query_idx": 2237,
+      "sample_id": "tier5_needle:000275",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 345,
+      "key": "audio2tool:tier5_needle:000345",
+      "query_idx": 2272,
+      "sample_id": "tier5_needle:000345",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 357,
+      "key": "audio2tool:tier5_needle:000357",
+      "query_idx": 2278,
+      "sample_id": "tier5_needle:000357",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 363,
+      "key": "audio2tool:tier5_needle:000363",
+      "query_idx": 2281,
+      "sample_id": "tier5_needle:000363",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 367,
+      "key": "audio2tool:tier5_needle:000367",
+      "query_idx": 2283,
+      "sample_id": "tier5_needle:000367",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 453,
+      "key": "audio2tool:tier5_needle:000453",
+      "query_idx": 2326,
+      "sample_id": "tier5_needle:000453",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 501,
+      "key": "audio2tool:tier5_needle:000501",
+      "query_idx": 2350,
+      "sample_id": "tier5_needle:000501",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 569,
+      "key": "audio2tool:tier5_needle:000569",
+      "query_idx": 2384,
+      "sample_id": "tier5_needle:000569",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 669,
+      "key": "audio2tool:tier5_needle:000669",
+      "query_idx": 2434,
+      "sample_id": "tier5_needle:000669",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 677,
+      "key": "audio2tool:tier5_needle:000677",
+      "query_idx": 2438,
+      "sample_id": "tier5_needle:000677",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 699,
+      "key": "audio2tool:tier5_needle:000699",
+      "query_idx": 2449,
+      "sample_id": "tier5_needle:000699",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 727,
+      "key": "audio2tool:tier5_needle:000727",
+      "query_idx": 2463,
+      "sample_id": "tier5_needle:000727",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 795,
+      "key": "audio2tool:tier5_needle:000795",
+      "query_idx": 2497,
+      "sample_id": "tier5_needle:000795",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 813,
+      "key": "audio2tool:tier5_needle:000813",
+      "query_idx": 2506,
+      "sample_id": "tier5_needle:000813",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 837,
+      "key": "audio2tool:tier5_needle:000837",
+      "query_idx": 2518,
+      "sample_id": "tier5_needle:000837",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 953,
+      "key": "audio2tool:tier5_needle:000953",
+      "query_idx": 2576,
+      "sample_id": "tier5_needle:000953",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 957,
+      "key": "audio2tool:tier5_needle:000957",
+      "query_idx": 2578,
+      "sample_id": "tier5_needle:000957",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 973,
+      "key": "audio2tool:tier5_needle:000973",
+      "query_idx": 2586,
+      "sample_id": "tier5_needle:000973",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 991,
+      "key": "audio2tool:tier5_needle:000991",
+      "query_idx": 2595,
+      "sample_id": "tier5_needle:000991",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1047,
+      "key": "audio2tool:tier5_needle:001047",
+      "query_idx": 2623,
+      "sample_id": "tier5_needle:001047",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1187,
+      "key": "audio2tool:tier5_needle:001187",
+      "query_idx": 2693,
+      "sample_id": "tier5_needle:001187",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1199,
+      "key": "audio2tool:tier5_needle:001199",
+      "query_idx": 2699,
+      "sample_id": "tier5_needle:001199",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1213,
+      "key": "audio2tool:tier5_needle:001213",
+      "query_idx": 2706,
+      "sample_id": "tier5_needle:001213",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1243,
+      "key": "audio2tool:tier5_needle:001243",
+      "query_idx": 2721,
+      "sample_id": "tier5_needle:001243",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1265,
+      "key": "audio2tool:tier5_needle:001265",
+      "query_idx": 2732,
+      "sample_id": "tier5_needle:001265",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1271,
+      "key": "audio2tool:tier5_needle:001271",
+      "query_idx": 2735,
+      "sample_id": "tier5_needle:001271",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1287,
+      "key": "audio2tool:tier5_needle:001287",
+      "query_idx": 2743,
+      "sample_id": "tier5_needle:001287",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1347,
+      "key": "audio2tool:tier5_needle:001347",
+      "query_idx": 2773,
+      "sample_id": "tier5_needle:001347",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1355,
+      "key": "audio2tool:tier5_needle:001355",
+      "query_idx": 2777,
+      "sample_id": "tier5_needle:001355",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1399,
+      "key": "audio2tool:tier5_needle:001399",
+      "query_idx": 2799,
+      "sample_id": "tier5_needle:001399",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1469,
+      "key": "audio2tool:tier5_needle:001469",
+      "query_idx": 2834,
+      "sample_id": "tier5_needle:001469",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1479,
+      "key": "audio2tool:tier5_needle:001479",
+      "query_idx": 2839,
+      "sample_id": "tier5_needle:001479",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1551,
+      "key": "audio2tool:tier5_needle:001551",
+      "query_idx": 2875,
+      "sample_id": "tier5_needle:001551",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1623,
+      "key": "audio2tool:tier5_needle:001623",
+      "query_idx": 2911,
+      "sample_id": "tier5_needle:001623",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1661,
+      "key": "audio2tool:tier5_needle:001661",
+      "query_idx": 2930,
+      "sample_id": "tier5_needle:001661",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1689,
+      "key": "audio2tool:tier5_needle:001689",
+      "query_idx": 2944,
+      "sample_id": "tier5_needle:001689",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1797,
+      "key": "audio2tool:tier5_needle:001797",
+      "query_idx": 2998,
+      "sample_id": "tier5_needle:001797",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1817,
+      "key": "audio2tool:tier5_needle:001817",
+      "query_idx": 3008,
+      "sample_id": "tier5_needle:001817",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1821,
+      "key": "audio2tool:tier5_needle:001821",
+      "query_idx": 3010,
+      "sample_id": "tier5_needle:001821",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1843,
+      "key": "audio2tool:tier5_needle:001843",
+      "query_idx": 3021,
+      "sample_id": "tier5_needle:001843",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1885,
+      "key": "audio2tool:tier5_needle:001885",
+      "query_idx": 3042,
+      "sample_id": "tier5_needle:001885",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1917,
+      "key": "audio2tool:tier5_needle:001917",
+      "query_idx": 3058,
+      "sample_id": "tier5_needle:001917",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1921,
+      "key": "audio2tool:tier5_needle:001921",
+      "query_idx": 3060,
+      "sample_id": "tier5_needle:001921",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1925,
+      "key": "audio2tool:tier5_needle:001925",
+      "query_idx": 3062,
+      "sample_id": "tier5_needle:001925",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2173,
+      "key": "audio2tool:tier5_needle:002173",
+      "query_idx": 3186,
+      "sample_id": "tier5_needle:002173",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2193,
+      "key": "audio2tool:tier5_needle:002193",
+      "query_idx": 3196,
+      "sample_id": "tier5_needle:002193",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2213,
+      "key": "audio2tool:tier5_needle:002213",
+      "query_idx": 3206,
+      "sample_id": "tier5_needle:002213",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2363,
+      "key": "audio2tool:tier5_needle:002363",
+      "query_idx": 3281,
+      "sample_id": "tier5_needle:002363",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2369,
+      "key": "audio2tool:tier5_needle:002369",
+      "query_idx": 3284,
+      "sample_id": "tier5_needle:002369",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2375,
+      "key": "audio2tool:tier5_needle:002375",
+      "query_idx": 3287,
+      "sample_id": "tier5_needle:002375",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2407,
+      "key": "audio2tool:tier5_needle:002407",
+      "query_idx": 3303,
+      "sample_id": "tier5_needle:002407",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2497,
+      "key": "audio2tool:tier5_needle:002497",
+      "query_idx": 3348,
+      "sample_id": "tier5_needle:002497",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2501,
+      "key": "audio2tool:tier5_needle:002501",
+      "query_idx": 3350,
+      "sample_id": "tier5_needle:002501",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2527,
+      "key": "audio2tool:tier5_needle:002527",
+      "query_idx": 3363,
+      "sample_id": "tier5_needle:002527",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2529,
+      "key": "audio2tool:tier5_needle:002529",
+      "query_idx": 3364,
+      "sample_id": "tier5_needle:002529",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2635,
+      "key": "audio2tool:tier5_needle:002635",
+      "query_idx": 3417,
+      "sample_id": "tier5_needle:002635",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2671,
+      "key": "audio2tool:tier5_needle:002671",
+      "query_idx": 3435,
+      "sample_id": "tier5_needle:002671",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2813,
+      "key": "audio2tool:tier5_needle:002813",
+      "query_idx": 3506,
+      "sample_id": "tier5_needle:002813",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2861,
+      "key": "audio2tool:tier5_needle:002861",
+      "query_idx": 3530,
+      "sample_id": "tier5_needle:002861",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2877,
+      "key": "audio2tool:tier5_needle:002877",
+      "query_idx": 3538,
+      "sample_id": "tier5_needle:002877",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2889,
+      "key": "audio2tool:tier5_needle:002889",
+      "query_idx": 3844,
+      "sample_id": "tier5_needle:002889",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2927,
+      "key": "audio2tool:tier5_needle:002927",
+      "query_idx": 3863,
+      "sample_id": "tier5_needle:002927",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2931,
+      "key": "audio2tool:tier5_needle:002931",
+      "query_idx": 3865,
+      "sample_id": "tier5_needle:002931",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2941,
+      "key": "audio2tool:tier5_needle:002941",
+      "query_idx": 4320,
+      "sample_id": "tier5_needle:002941",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 2983,
+      "key": "audio2tool:tier5_needle:002983",
+      "query_idx": 4341,
+      "sample_id": "tier5_needle:002983",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3121,
+      "key": "audio2tool:tier5_needle:003121",
+      "query_idx": 4410,
+      "sample_id": "tier5_needle:003121",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3125,
+      "key": "audio2tool:tier5_needle:003125",
+      "query_idx": 4412,
+      "sample_id": "tier5_needle:003125",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3159,
+      "key": "audio2tool:tier5_needle:003159",
+      "query_idx": 4429,
+      "sample_id": "tier5_needle:003159",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3175,
+      "key": "audio2tool:tier5_needle:003175",
+      "query_idx": 4437,
+      "sample_id": "tier5_needle:003175",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3201,
+      "key": "audio2tool:tier5_needle:003201",
+      "query_idx": 3550,
+      "sample_id": "tier5_needle:003201",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3295,
+      "key": "audio2tool:tier5_needle:003295",
+      "query_idx": 3597,
+      "sample_id": "tier5_needle:003295",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3297,
+      "key": "audio2tool:tier5_needle:003297",
+      "query_idx": 3598,
+      "sample_id": "tier5_needle:003297",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3313,
+      "key": "audio2tool:tier5_needle:003313",
+      "query_idx": 3606,
+      "sample_id": "tier5_needle:003313",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3317,
+      "key": "audio2tool:tier5_needle:003317",
+      "query_idx": 3608,
+      "sample_id": "tier5_needle:003317",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3349,
+      "key": "audio2tool:tier5_needle:003349",
+      "query_idx": 3624,
+      "sample_id": "tier5_needle:003349",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3457,
+      "key": "audio2tool:tier5_needle:003457",
+      "query_idx": 3678,
+      "sample_id": "tier5_needle:003457",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3479,
+      "key": "audio2tool:tier5_needle:003479",
+      "query_idx": 3689,
+      "sample_id": "tier5_needle:003479",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3485,
+      "key": "audio2tool:tier5_needle:003485",
+      "query_idx": 3692,
+      "sample_id": "tier5_needle:003485",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3545,
+      "key": "audio2tool:tier5_needle:003545",
+      "query_idx": 3722,
+      "sample_id": "tier5_needle:003545",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3569,
+      "key": "audio2tool:tier5_needle:003569",
+      "query_idx": 3734,
+      "sample_id": "tier5_needle:003569",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3639,
+      "key": "audio2tool:tier5_needle:003639",
+      "query_idx": 3769,
+      "sample_id": "tier5_needle:003639",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3653,
+      "key": "audio2tool:tier5_needle:003653",
+      "query_idx": 3776,
+      "sample_id": "tier5_needle:003653",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3657,
+      "key": "audio2tool:tier5_needle:003657",
+      "query_idx": 3778,
+      "sample_id": "tier5_needle:003657",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3659,
+      "key": "audio2tool:tier5_needle:003659",
+      "query_idx": 3779,
+      "sample_id": "tier5_needle:003659",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3701,
+      "key": "audio2tool:tier5_needle:003701",
+      "query_idx": 3800,
+      "sample_id": "tier5_needle:003701",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3735,
+      "key": "audio2tool:tier5_needle:003735",
+      "query_idx": 4447,
+      "sample_id": "tier5_needle:003735",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3883,
+      "key": "audio2tool:tier5_needle:003883",
+      "query_idx": 4521,
+      "sample_id": "tier5_needle:003883",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 3961,
+      "key": "audio2tool:tier5_needle:003961",
+      "query_idx": 5,
+      "sample_id": "tier5_needle:003961",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 4025,
+      "key": "audio2tool:tier5_needle:004025",
+      "query_idx": 500,
+      "sample_id": "tier5_needle:004025",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 4089,
+      "key": "audio2tool:tier5_needle:004089",
+      "query_idx": 1047,
+      "sample_id": "tier5_needle:004089",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 4169,
+      "key": "audio2tool:tier5_needle:004169",
+      "query_idx": 1643,
+      "sample_id": "tier5_needle:004169",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 4171,
+      "key": "audio2tool:tier5_needle:004171",
+      "query_idx": 1654,
+      "sample_id": "tier5_needle:004171",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 4233,
+      "key": "audio2tool:tier5_needle:004233",
+      "query_idx": 3878,
+      "sample_id": "tier5_needle:004233",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 4235,
+      "key": "audio2tool:tier5_needle:004235",
+      "query_idx": 3889,
+      "sample_id": "tier5_needle:004235",
+      "stratum": "tier5_needle",
+      "tier": "tier5_needle"
+    },
+    {
+      "id": 1,
+      "key": "audio2tool:tier6_correction:000001",
+      "query_idx": 2100,
+      "sample_id": "tier6_correction:000001",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 21,
+      "key": "audio2tool:tier6_correction:000021",
+      "query_idx": 2110,
+      "sample_id": "tier6_correction:000021",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 29,
+      "key": "audio2tool:tier6_correction:000029",
+      "query_idx": 2114,
+      "sample_id": "tier6_correction:000029",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 133,
+      "key": "audio2tool:tier6_correction:000133",
+      "query_idx": 2166,
+      "sample_id": "tier6_correction:000133",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 153,
+      "key": "audio2tool:tier6_correction:000153",
+      "query_idx": 2176,
+      "sample_id": "tier6_correction:000153",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 175,
+      "key": "audio2tool:tier6_correction:000175",
+      "query_idx": 2187,
+      "sample_id": "tier6_correction:000175",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 301,
+      "key": "audio2tool:tier6_correction:000301",
+      "query_idx": 2250,
+      "sample_id": "tier6_correction:000301",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 319,
+      "key": "audio2tool:tier6_correction:000319",
+      "query_idx": 2259,
+      "sample_id": "tier6_correction:000319",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 345,
+      "key": "audio2tool:tier6_correction:000345",
+      "query_idx": 2272,
+      "sample_id": "tier6_correction:000345",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 449,
+      "key": "audio2tool:tier6_correction:000449",
+      "query_idx": 2324,
+      "sample_id": "tier6_correction:000449",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 453,
+      "key": "audio2tool:tier6_correction:000453",
+      "query_idx": 2326,
+      "sample_id": "tier6_correction:000453",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 489,
+      "key": "audio2tool:tier6_correction:000489",
+      "query_idx": 2344,
+      "sample_id": "tier6_correction:000489",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 507,
+      "key": "audio2tool:tier6_correction:000507",
+      "query_idx": 2353,
+      "sample_id": "tier6_correction:000507",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 509,
+      "key": "audio2tool:tier6_correction:000509",
+      "query_idx": 2354,
+      "sample_id": "tier6_correction:000509",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 677,
+      "key": "audio2tool:tier6_correction:000677",
+      "query_idx": 2438,
+      "sample_id": "tier6_correction:000677",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 709,
+      "key": "audio2tool:tier6_correction:000709",
+      "query_idx": 2454,
+      "sample_id": "tier6_correction:000709",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 719,
+      "key": "audio2tool:tier6_correction:000719",
+      "query_idx": 2459,
+      "sample_id": "tier6_correction:000719",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 735,
+      "key": "audio2tool:tier6_correction:000735",
+      "query_idx": 2467,
+      "sample_id": "tier6_correction:000735",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 805,
+      "key": "audio2tool:tier6_correction:000805",
+      "query_idx": 2502,
+      "sample_id": "tier6_correction:000805",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 853,
+      "key": "audio2tool:tier6_correction:000853",
+      "query_idx": 2526,
+      "sample_id": "tier6_correction:000853",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 881,
+      "key": "audio2tool:tier6_correction:000881",
+      "query_idx": 2540,
+      "sample_id": "tier6_correction:000881",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1049,
+      "key": "audio2tool:tier6_correction:001049",
+      "query_idx": 2624,
+      "sample_id": "tier6_correction:001049",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1171,
+      "key": "audio2tool:tier6_correction:001171",
+      "query_idx": 2685,
+      "sample_id": "tier6_correction:001171",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1187,
+      "key": "audio2tool:tier6_correction:001187",
+      "query_idx": 2693,
+      "sample_id": "tier6_correction:001187",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1259,
+      "key": "audio2tool:tier6_correction:001259",
+      "query_idx": 2729,
+      "sample_id": "tier6_correction:001259",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1279,
+      "key": "audio2tool:tier6_correction:001279",
+      "query_idx": 2739,
+      "sample_id": "tier6_correction:001279",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1287,
+      "key": "audio2tool:tier6_correction:001287",
+      "query_idx": 2743,
+      "sample_id": "tier6_correction:001287",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1289,
+      "key": "audio2tool:tier6_correction:001289",
+      "query_idx": 2744,
+      "sample_id": "tier6_correction:001289",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1301,
+      "key": "audio2tool:tier6_correction:001301",
+      "query_idx": 2750,
+      "sample_id": "tier6_correction:001301",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1311,
+      "key": "audio2tool:tier6_correction:001311",
+      "query_idx": 2755,
+      "sample_id": "tier6_correction:001311",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1331,
+      "key": "audio2tool:tier6_correction:001331",
+      "query_idx": 2765,
+      "sample_id": "tier6_correction:001331",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1377,
+      "key": "audio2tool:tier6_correction:001377",
+      "query_idx": 2788,
+      "sample_id": "tier6_correction:001377",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1435,
+      "key": "audio2tool:tier6_correction:001435",
+      "query_idx": 2817,
+      "sample_id": "tier6_correction:001435",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1437,
+      "key": "audio2tool:tier6_correction:001437",
+      "query_idx": 2818,
+      "sample_id": "tier6_correction:001437",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1503,
+      "key": "audio2tool:tier6_correction:001503",
+      "query_idx": 2851,
+      "sample_id": "tier6_correction:001503",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1547,
+      "key": "audio2tool:tier6_correction:001547",
+      "query_idx": 2873,
+      "sample_id": "tier6_correction:001547",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1663,
+      "key": "audio2tool:tier6_correction:001663",
+      "query_idx": 2931,
+      "sample_id": "tier6_correction:001663",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1745,
+      "key": "audio2tool:tier6_correction:001745",
+      "query_idx": 2972,
+      "sample_id": "tier6_correction:001745",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1751,
+      "key": "audio2tool:tier6_correction:001751",
+      "query_idx": 2975,
+      "sample_id": "tier6_correction:001751",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1811,
+      "key": "audio2tool:tier6_correction:001811",
+      "query_idx": 3005,
+      "sample_id": "tier6_correction:001811",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1813,
+      "key": "audio2tool:tier6_correction:001813",
+      "query_idx": 3006,
+      "sample_id": "tier6_correction:001813",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1815,
+      "key": "audio2tool:tier6_correction:001815",
+      "query_idx": 3007,
+      "sample_id": "tier6_correction:001815",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1825,
+      "key": "audio2tool:tier6_correction:001825",
+      "query_idx": 3012,
+      "sample_id": "tier6_correction:001825",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1855,
+      "key": "audio2tool:tier6_correction:001855",
+      "query_idx": 3027,
+      "sample_id": "tier6_correction:001855",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1885,
+      "key": "audio2tool:tier6_correction:001885",
+      "query_idx": 3042,
+      "sample_id": "tier6_correction:001885",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1891,
+      "key": "audio2tool:tier6_correction:001891",
+      "query_idx": 3045,
+      "sample_id": "tier6_correction:001891",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1917,
+      "key": "audio2tool:tier6_correction:001917",
+      "query_idx": 3058,
+      "sample_id": "tier6_correction:001917",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1939,
+      "key": "audio2tool:tier6_correction:001939",
+      "query_idx": 3069,
+      "sample_id": "tier6_correction:001939",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1941,
+      "key": "audio2tool:tier6_correction:001941",
+      "query_idx": 3070,
+      "sample_id": "tier6_correction:001941",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1981,
+      "key": "audio2tool:tier6_correction:001981",
+      "query_idx": 3090,
+      "sample_id": "tier6_correction:001981",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1983,
+      "key": "audio2tool:tier6_correction:001983",
+      "query_idx": 3091,
+      "sample_id": "tier6_correction:001983",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 1987,
+      "key": "audio2tool:tier6_correction:001987",
+      "query_idx": 3093,
+      "sample_id": "tier6_correction:001987",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2059,
+      "key": "audio2tool:tier6_correction:002059",
+      "query_idx": 3129,
+      "sample_id": "tier6_correction:002059",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2077,
+      "key": "audio2tool:tier6_correction:002077",
+      "query_idx": 3138,
+      "sample_id": "tier6_correction:002077",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2139,
+      "key": "audio2tool:tier6_correction:002139",
+      "query_idx": 3169,
+      "sample_id": "tier6_correction:002139",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2159,
+      "key": "audio2tool:tier6_correction:002159",
+      "query_idx": 3179,
+      "sample_id": "tier6_correction:002159",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2187,
+      "key": "audio2tool:tier6_correction:002187",
+      "query_idx": 3193,
+      "sample_id": "tier6_correction:002187",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2267,
+      "key": "audio2tool:tier6_correction:002267",
+      "query_idx": 3233,
+      "sample_id": "tier6_correction:002267",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2285,
+      "key": "audio2tool:tier6_correction:002285",
+      "query_idx": 3242,
+      "sample_id": "tier6_correction:002285",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2289,
+      "key": "audio2tool:tier6_correction:002289",
+      "query_idx": 3244,
+      "sample_id": "tier6_correction:002289",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2331,
+      "key": "audio2tool:tier6_correction:002331",
+      "query_idx": 3265,
+      "sample_id": "tier6_correction:002331",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2357,
+      "key": "audio2tool:tier6_correction:002357",
+      "query_idx": 3278,
+      "sample_id": "tier6_correction:002357",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2361,
+      "key": "audio2tool:tier6_correction:002361",
+      "query_idx": 3280,
+      "sample_id": "tier6_correction:002361",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2397,
+      "key": "audio2tool:tier6_correction:002397",
+      "query_idx": 3298,
+      "sample_id": "tier6_correction:002397",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2407,
+      "key": "audio2tool:tier6_correction:002407",
+      "query_idx": 3303,
+      "sample_id": "tier6_correction:002407",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2507,
+      "key": "audio2tool:tier6_correction:002507",
+      "query_idx": 3353,
+      "sample_id": "tier6_correction:002507",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2653,
+      "key": "audio2tool:tier6_correction:002653",
+      "query_idx": 3426,
+      "sample_id": "tier6_correction:002653",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2751,
+      "key": "audio2tool:tier6_correction:002751",
+      "query_idx": 3475,
+      "sample_id": "tier6_correction:002751",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2805,
+      "key": "audio2tool:tier6_correction:002805",
+      "query_idx": 3502,
+      "sample_id": "tier6_correction:002805",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2829,
+      "key": "audio2tool:tier6_correction:002829",
+      "query_idx": 3514,
+      "sample_id": "tier6_correction:002829",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2861,
+      "key": "audio2tool:tier6_correction:002861",
+      "query_idx": 3530,
+      "sample_id": "tier6_correction:002861",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2957,
+      "key": "audio2tool:tier6_correction:002957",
+      "query_idx": 4328,
+      "sample_id": "tier6_correction:002957",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 2963,
+      "key": "audio2tool:tier6_correction:002963",
+      "query_idx": 4331,
+      "sample_id": "tier6_correction:002963",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3025,
+      "key": "audio2tool:tier6_correction:003025",
+      "query_idx": 4362,
+      "sample_id": "tier6_correction:003025",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3085,
+      "key": "audio2tool:tier6_correction:003085",
+      "query_idx": 4392,
+      "sample_id": "tier6_correction:003085",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3141,
+      "key": "audio2tool:tier6_correction:003141",
+      "query_idx": 4420,
+      "sample_id": "tier6_correction:003141",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3159,
+      "key": "audio2tool:tier6_correction:003159",
+      "query_idx": 4429,
+      "sample_id": "tier6_correction:003159",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3169,
+      "key": "audio2tool:tier6_correction:003169",
+      "query_idx": 4434,
+      "sample_id": "tier6_correction:003169",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3175,
+      "key": "audio2tool:tier6_correction:003175",
+      "query_idx": 4437,
+      "sample_id": "tier6_correction:003175",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3287,
+      "key": "audio2tool:tier6_correction:003287",
+      "query_idx": 3593,
+      "sample_id": "tier6_correction:003287",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3293,
+      "key": "audio2tool:tier6_correction:003293",
+      "query_idx": 3596,
+      "sample_id": "tier6_correction:003293",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3351,
+      "key": "audio2tool:tier6_correction:003351",
+      "query_idx": 3625,
+      "sample_id": "tier6_correction:003351",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3385,
+      "key": "audio2tool:tier6_correction:003385",
+      "query_idx": 3642,
+      "sample_id": "tier6_correction:003385",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3431,
+      "key": "audio2tool:tier6_correction:003431",
+      "query_idx": 3665,
+      "sample_id": "tier6_correction:003431",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3457,
+      "key": "audio2tool:tier6_correction:003457",
+      "query_idx": 3678,
+      "sample_id": "tier6_correction:003457",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3521,
+      "key": "audio2tool:tier6_correction:003521",
+      "query_idx": 3710,
+      "sample_id": "tier6_correction:003521",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3543,
+      "key": "audio2tool:tier6_correction:003543",
+      "query_idx": 3721,
+      "sample_id": "tier6_correction:003543",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3621,
+      "key": "audio2tool:tier6_correction:003621",
+      "query_idx": 3760,
+      "sample_id": "tier6_correction:003621",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3681,
+      "key": "audio2tool:tier6_correction:003681",
+      "query_idx": 3790,
+      "sample_id": "tier6_correction:003681",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3733,
+      "key": "audio2tool:tier6_correction:003733",
+      "query_idx": 4446,
+      "sample_id": "tier6_correction:003733",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3759,
+      "key": "audio2tool:tier6_correction:003759",
+      "query_idx": 4459,
+      "sample_id": "tier6_correction:003759",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3835,
+      "key": "audio2tool:tier6_correction:003835",
+      "query_idx": 4497,
+      "sample_id": "tier6_correction:003835",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3857,
+      "key": "audio2tool:tier6_correction:003857",
+      "query_idx": 4508,
+      "sample_id": "tier6_correction:003857",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3883,
+      "key": "audio2tool:tier6_correction:003883",
+      "query_idx": 4521,
+      "sample_id": "tier6_correction:003883",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 4109,
+      "key": "audio2tool:tier6_correction:004109",
+      "query_idx": 1167,
+      "sample_id": "tier6_correction:004109",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 4131,
+      "key": "audio2tool:tier6_correction:004131",
+      "query_idx": 1331,
+      "sample_id": "tier6_correction:004131",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 4145,
+      "key": "audio2tool:tier6_correction:004145",
+      "query_idx": 1433,
+      "sample_id": "tier6_correction:004145",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 4161,
+      "key": "audio2tool:tier6_correction:004161",
+      "query_idx": 1548,
+      "sample_id": "tier6_correction:004161",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 4175,
+      "key": "audio2tool:tier6_correction:004175",
+      "query_idx": 1662,
+      "sample_id": "tier6_correction:004175",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 4187,
+      "key": "audio2tool:tier6_correction:004187",
+      "query_idx": 1751,
+      "sample_id": "tier6_correction:004187",
+      "stratum": "tier6_correction",
+      "tier": "tier6_correction"
+    },
+    {
+      "id": 3,
+      "key": "audio2tool:tier7_multiturn:000003",
+      "query_idx": 2102,
+      "sample_id": "tier7_multiturn:000003",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 11,
+      "key": "audio2tool:tier7_multiturn:000011",
+      "query_idx": 2110,
+      "sample_id": "tier7_multiturn:000011",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 16,
+      "key": "audio2tool:tier7_multiturn:000016",
+      "query_idx": 2115,
+      "sample_id": "tier7_multiturn:000016",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 17,
+      "key": "audio2tool:tier7_multiturn:000017",
+      "query_idx": 2116,
+      "sample_id": "tier7_multiturn:000017",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 29,
+      "key": "audio2tool:tier7_multiturn:000029",
+      "query_idx": 2128,
+      "sample_id": "tier7_multiturn:000029",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 54,
+      "key": "audio2tool:tier7_multiturn:000054",
+      "query_idx": 2153,
+      "sample_id": "tier7_multiturn:000054",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 64,
+      "key": "audio2tool:tier7_multiturn:000064",
+      "query_idx": 2163,
+      "sample_id": "tier7_multiturn:000064",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 105,
+      "key": "audio2tool:tier7_multiturn:000105",
+      "query_idx": 2204,
+      "sample_id": "tier7_multiturn:000105",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 110,
+      "key": "audio2tool:tier7_multiturn:000110",
+      "query_idx": 2209,
+      "sample_id": "tier7_multiturn:000110",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 125,
+      "key": "audio2tool:tier7_multiturn:000125",
+      "query_idx": 2224,
+      "sample_id": "tier7_multiturn:000125",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 168,
+      "key": "audio2tool:tier7_multiturn:000168",
+      "query_idx": 2267,
+      "sample_id": "tier7_multiturn:000168",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 182,
+      "key": "audio2tool:tier7_multiturn:000182",
+      "query_idx": 2281,
+      "sample_id": "tier7_multiturn:000182",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 184,
+      "key": "audio2tool:tier7_multiturn:000184",
+      "query_idx": 2283,
+      "sample_id": "tier7_multiturn:000184",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 202,
+      "key": "audio2tool:tier7_multiturn:000202",
+      "query_idx": 2301,
+      "sample_id": "tier7_multiturn:000202",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 226,
+      "key": "audio2tool:tier7_multiturn:000226",
+      "query_idx": 2325,
+      "sample_id": "tier7_multiturn:000226",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 275,
+      "key": "audio2tool:tier7_multiturn:000275",
+      "query_idx": 2374,
+      "sample_id": "tier7_multiturn:000275",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 341,
+      "key": "audio2tool:tier7_multiturn:000341",
+      "query_idx": 2440,
+      "sample_id": "tier7_multiturn:000341",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 349,
+      "key": "audio2tool:tier7_multiturn:000349",
+      "query_idx": 2448,
+      "sample_id": "tier7_multiturn:000349",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 360,
+      "key": "audio2tool:tier7_multiturn:000360",
+      "query_idx": 2459,
+      "sample_id": "tier7_multiturn:000360",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 372,
+      "key": "audio2tool:tier7_multiturn:000372",
+      "query_idx": 2471,
+      "sample_id": "tier7_multiturn:000372",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 389,
+      "key": "audio2tool:tier7_multiturn:000389",
+      "query_idx": 2488,
+      "sample_id": "tier7_multiturn:000389",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 405,
+      "key": "audio2tool:tier7_multiturn:000405",
+      "query_idx": 2504,
+      "sample_id": "tier7_multiturn:000405",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 423,
+      "key": "audio2tool:tier7_multiturn:000423",
+      "query_idx": 2522,
+      "sample_id": "tier7_multiturn:000423",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 425,
+      "key": "audio2tool:tier7_multiturn:000425",
+      "query_idx": 2524,
+      "sample_id": "tier7_multiturn:000425",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 443,
+      "key": "audio2tool:tier7_multiturn:000443",
+      "query_idx": 2542,
+      "sample_id": "tier7_multiturn:000443",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 470,
+      "key": "audio2tool:tier7_multiturn:000470",
+      "query_idx": 2569,
+      "sample_id": "tier7_multiturn:000470",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 523,
+      "key": "audio2tool:tier7_multiturn:000523",
+      "query_idx": 2622,
+      "sample_id": "tier7_multiturn:000523",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 550,
+      "key": "audio2tool:tier7_multiturn:000550",
+      "query_idx": 2649,
+      "sample_id": "tier7_multiturn:000550",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 586,
+      "key": "audio2tool:tier7_multiturn:000586",
+      "query_idx": 2685,
+      "sample_id": "tier7_multiturn:000586",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 604,
+      "key": "audio2tool:tier7_multiturn:000604",
+      "query_idx": 2703,
+      "sample_id": "tier7_multiturn:000604",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 605,
+      "key": "audio2tool:tier7_multiturn:000605",
+      "query_idx": 2704,
+      "sample_id": "tier7_multiturn:000605",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 672,
+      "key": "audio2tool:tier7_multiturn:000672",
+      "query_idx": 2771,
+      "sample_id": "tier7_multiturn:000672",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 682,
+      "key": "audio2tool:tier7_multiturn:000682",
+      "query_idx": 2781,
+      "sample_id": "tier7_multiturn:000682",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 705,
+      "key": "audio2tool:tier7_multiturn:000705",
+      "query_idx": 2804,
+      "sample_id": "tier7_multiturn:000705",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 730,
+      "key": "audio2tool:tier7_multiturn:000730",
+      "query_idx": 2829,
+      "sample_id": "tier7_multiturn:000730",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 776,
+      "key": "audio2tool:tier7_multiturn:000776",
+      "query_idx": 2875,
+      "sample_id": "tier7_multiturn:000776",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 792,
+      "key": "audio2tool:tier7_multiturn:000792",
+      "query_idx": 2891,
+      "sample_id": "tier7_multiturn:000792",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 810,
+      "key": "audio2tool:tier7_multiturn:000810",
+      "query_idx": 2909,
+      "sample_id": "tier7_multiturn:000810",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 837,
+      "key": "audio2tool:tier7_multiturn:000837",
+      "query_idx": 2936,
+      "sample_id": "tier7_multiturn:000837",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 899,
+      "key": "audio2tool:tier7_multiturn:000899",
+      "query_idx": 2998,
+      "sample_id": "tier7_multiturn:000899",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 908,
+      "key": "audio2tool:tier7_multiturn:000908",
+      "query_idx": 3007,
+      "sample_id": "tier7_multiturn:000908",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 909,
+      "key": "audio2tool:tier7_multiturn:000909",
+      "query_idx": 3008,
+      "sample_id": "tier7_multiturn:000909",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 961,
+      "key": "audio2tool:tier7_multiturn:000961",
+      "query_idx": 3060,
+      "sample_id": "tier7_multiturn:000961",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 970,
+      "key": "audio2tool:tier7_multiturn:000970",
+      "query_idx": 3069,
+      "sample_id": "tier7_multiturn:000970",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 994,
+      "key": "audio2tool:tier7_multiturn:000994",
+      "query_idx": 3093,
+      "sample_id": "tier7_multiturn:000994",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1002,
+      "key": "audio2tool:tier7_multiturn:001002",
+      "query_idx": 3101,
+      "sample_id": "tier7_multiturn:001002",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1064,
+      "key": "audio2tool:tier7_multiturn:001064",
+      "query_idx": 3163,
+      "sample_id": "tier7_multiturn:001064",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1107,
+      "key": "audio2tool:tier7_multiturn:001107",
+      "query_idx": 3206,
+      "sample_id": "tier7_multiturn:001107",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1134,
+      "key": "audio2tool:tier7_multiturn:001134",
+      "query_idx": 3233,
+      "sample_id": "tier7_multiturn:001134",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1143,
+      "key": "audio2tool:tier7_multiturn:001143",
+      "query_idx": 3242,
+      "sample_id": "tier7_multiturn:001143",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1144,
+      "key": "audio2tool:tier7_multiturn:001144",
+      "query_idx": 3243,
+      "sample_id": "tier7_multiturn:001144",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1145,
+      "key": "audio2tool:tier7_multiturn:001145",
+      "query_idx": 3244,
+      "sample_id": "tier7_multiturn:001145",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1153,
+      "key": "audio2tool:tier7_multiturn:001153",
+      "query_idx": 3252,
+      "sample_id": "tier7_multiturn:001153",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1161,
+      "key": "audio2tool:tier7_multiturn:001161",
+      "query_idx": 3260,
+      "sample_id": "tier7_multiturn:001161",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1166,
+      "key": "audio2tool:tier7_multiturn:001166",
+      "query_idx": 3265,
+      "sample_id": "tier7_multiturn:001166",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1168,
+      "key": "audio2tool:tier7_multiturn:001168",
+      "query_idx": 3267,
+      "sample_id": "tier7_multiturn:001168",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1184,
+      "key": "audio2tool:tier7_multiturn:001184",
+      "query_idx": 3283,
+      "sample_id": "tier7_multiturn:001184",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1185,
+      "key": "audio2tool:tier7_multiturn:001185",
+      "query_idx": 3284,
+      "sample_id": "tier7_multiturn:001185",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1224,
+      "key": "audio2tool:tier7_multiturn:001224",
+      "query_idx": 3323,
+      "sample_id": "tier7_multiturn:001224",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1237,
+      "key": "audio2tool:tier7_multiturn:001237",
+      "query_idx": 3336,
+      "sample_id": "tier7_multiturn:001237",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1249,
+      "key": "audio2tool:tier7_multiturn:001249",
+      "query_idx": 3348,
+      "sample_id": "tier7_multiturn:001249",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1307,
+      "key": "audio2tool:tier7_multiturn:001307",
+      "query_idx": 3406,
+      "sample_id": "tier7_multiturn:001307",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1332,
+      "key": "audio2tool:tier7_multiturn:001332",
+      "query_idx": 3431,
+      "sample_id": "tier7_multiturn:001332",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1397,
+      "key": "audio2tool:tier7_multiturn:001397",
+      "query_idx": 3496,
+      "sample_id": "tier7_multiturn:001397",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1403,
+      "key": "audio2tool:tier7_multiturn:001403",
+      "query_idx": 3502,
+      "sample_id": "tier7_multiturn:001403",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1435,
+      "key": "audio2tool:tier7_multiturn:001435",
+      "query_idx": 3534,
+      "sample_id": "tier7_multiturn:001435",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1438,
+      "key": "audio2tool:tier7_multiturn:001438",
+      "query_idx": 3537,
+      "sample_id": "tier7_multiturn:001438",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1440,
+      "key": "audio2tool:tier7_multiturn:001440",
+      "query_idx": 3539,
+      "sample_id": "tier7_multiturn:001440",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1448,
+      "key": "audio2tool:tier7_multiturn:001448",
+      "query_idx": 3847,
+      "sample_id": "tier7_multiturn:001448",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1495,
+      "key": "audio2tool:tier7_multiturn:001495",
+      "query_idx": 4344,
+      "sample_id": "tier7_multiturn:001495",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1517,
+      "key": "audio2tool:tier7_multiturn:001517",
+      "query_idx": 4366,
+      "sample_id": "tier7_multiturn:001517",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1523,
+      "key": "audio2tool:tier7_multiturn:001523",
+      "query_idx": 4372,
+      "sample_id": "tier7_multiturn:001523",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1592,
+      "key": "audio2tool:tier7_multiturn:001592",
+      "query_idx": 3541,
+      "sample_id": "tier7_multiturn:001592",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1594,
+      "key": "audio2tool:tier7_multiturn:001594",
+      "query_idx": 3543,
+      "sample_id": "tier7_multiturn:001594",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1602,
+      "key": "audio2tool:tier7_multiturn:001602",
+      "query_idx": 3551,
+      "sample_id": "tier7_multiturn:001602",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1615,
+      "key": "audio2tool:tier7_multiturn:001615",
+      "query_idx": 3564,
+      "sample_id": "tier7_multiturn:001615",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1620,
+      "key": "audio2tool:tier7_multiturn:001620",
+      "query_idx": 3569,
+      "sample_id": "tier7_multiturn:001620",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1647,
+      "key": "audio2tool:tier7_multiturn:001647",
+      "query_idx": 3596,
+      "sample_id": "tier7_multiturn:001647",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1648,
+      "key": "audio2tool:tier7_multiturn:001648",
+      "query_idx": 3597,
+      "sample_id": "tier7_multiturn:001648",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1658,
+      "key": "audio2tool:tier7_multiturn:001658",
+      "query_idx": 3607,
+      "sample_id": "tier7_multiturn:001658",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1675,
+      "key": "audio2tool:tier7_multiturn:001675",
+      "query_idx": 3624,
+      "sample_id": "tier7_multiturn:001675",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1689,
+      "key": "audio2tool:tier7_multiturn:001689",
+      "query_idx": 3638,
+      "sample_id": "tier7_multiturn:001689",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1695,
+      "key": "audio2tool:tier7_multiturn:001695",
+      "query_idx": 3644,
+      "sample_id": "tier7_multiturn:001695",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1722,
+      "key": "audio2tool:tier7_multiturn:001722",
+      "query_idx": 3671,
+      "sample_id": "tier7_multiturn:001722",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1748,
+      "key": "audio2tool:tier7_multiturn:001748",
+      "query_idx": 3697,
+      "sample_id": "tier7_multiturn:001748",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1782,
+      "key": "audio2tool:tier7_multiturn:001782",
+      "query_idx": 3731,
+      "sample_id": "tier7_multiturn:001782",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1793,
+      "key": "audio2tool:tier7_multiturn:001793",
+      "query_idx": 3742,
+      "sample_id": "tier7_multiturn:001793",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1794,
+      "key": "audio2tool:tier7_multiturn:001794",
+      "query_idx": 3743,
+      "sample_id": "tier7_multiturn:001794",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1814,
+      "key": "audio2tool:tier7_multiturn:001814",
+      "query_idx": 3763,
+      "sample_id": "tier7_multiturn:001814",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1824,
+      "key": "audio2tool:tier7_multiturn:001824",
+      "query_idx": 3773,
+      "sample_id": "tier7_multiturn:001824",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1830,
+      "key": "audio2tool:tier7_multiturn:001830",
+      "query_idx": 3779,
+      "sample_id": "tier7_multiturn:001830",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1841,
+      "key": "audio2tool:tier7_multiturn:001841",
+      "query_idx": 3790,
+      "sample_id": "tier7_multiturn:001841",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1855,
+      "key": "audio2tool:tier7_multiturn:001855",
+      "query_idx": 3804,
+      "sample_id": "tier7_multiturn:001855",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1901,
+      "key": "audio2tool:tier7_multiturn:001901",
+      "query_idx": 4480,
+      "sample_id": "tier7_multiturn:001901",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 1975,
+      "key": "audio2tool:tier7_multiturn:001975",
+      "query_idx": 4554,
+      "sample_id": "tier7_multiturn:001975",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 2011,
+      "key": "audio2tool:tier7_multiturn:002011",
+      "query_idx": 485,
+      "sample_id": "tier7_multiturn:002011",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 2012,
+      "key": "audio2tool:tier7_multiturn:002012",
+      "query_idx": 486,
+      "sample_id": "tier7_multiturn:002012",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 2081,
+      "key": "audio2tool:tier7_multiturn:002081",
+      "query_idx": 1583,
+      "sample_id": "tier7_multiturn:002081",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 2082,
+      "key": "audio2tool:tier7_multiturn:002082",
+      "query_idx": 1605,
+      "sample_id": "tier7_multiturn:002082",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 2113,
+      "key": "audio2tool:tier7_multiturn:002113",
+      "query_idx": 2078,
+      "sample_id": "tier7_multiturn:002113",
+      "stratum": "tier7_multiturn",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "id": 13,
+      "key": "audio2tool:tier8_intent_blending:000013",
+      "query_idx": 346,
+      "sample_id": "tier8_intent_blending:000013",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 20,
+      "key": "audio2tool:tier8_intent_blending:000020",
+      "query_idx": 353,
+      "sample_id": "tier8_intent_blending:000020",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 32,
+      "key": "audio2tool:tier8_intent_blending:000032",
+      "query_idx": 365,
+      "sample_id": "tier8_intent_blending:000032",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 44,
+      "key": "audio2tool:tier8_intent_blending:000044",
+      "query_idx": 377,
+      "sample_id": "tier8_intent_blending:000044",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 60,
+      "key": "audio2tool:tier8_intent_blending:000060",
+      "query_idx": 393,
+      "sample_id": "tier8_intent_blending:000060",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 74,
+      "key": "audio2tool:tier8_intent_blending:000074",
+      "query_idx": 407,
+      "sample_id": "tier8_intent_blending:000074",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 91,
+      "key": "audio2tool:tier8_intent_blending:000091",
+      "query_idx": 424,
+      "sample_id": "tier8_intent_blending:000091",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 92,
+      "key": "audio2tool:tier8_intent_blending:000092",
+      "query_idx": 425,
+      "sample_id": "tier8_intent_blending:000092",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 96,
+      "key": "audio2tool:tier8_intent_blending:000096",
+      "query_idx": 429,
+      "sample_id": "tier8_intent_blending:000096",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 98,
+      "key": "audio2tool:tier8_intent_blending:000098",
+      "query_idx": 431,
+      "sample_id": "tier8_intent_blending:000098",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 120,
+      "key": "audio2tool:tier8_intent_blending:000120",
+      "query_idx": 453,
+      "sample_id": "tier8_intent_blending:000120",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 129,
+      "key": "audio2tool:tier8_intent_blending:000129",
+      "query_idx": 462,
+      "sample_id": "tier8_intent_blending:000129",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 131,
+      "key": "audio2tool:tier8_intent_blending:000131",
+      "query_idx": 464,
+      "sample_id": "tier8_intent_blending:000131",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 137,
+      "key": "audio2tool:tier8_intent_blending:000137",
+      "query_idx": 470,
+      "sample_id": "tier8_intent_blending:000137",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 143,
+      "key": "audio2tool:tier8_intent_blending:000143",
+      "query_idx": 476,
+      "sample_id": "tier8_intent_blending:000143",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 145,
+      "key": "audio2tool:tier8_intent_blending:000145",
+      "query_idx": 478,
+      "sample_id": "tier8_intent_blending:000145",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 152,
+      "key": "audio2tool:tier8_intent_blending:000152",
+      "query_idx": 485,
+      "sample_id": "tier8_intent_blending:000152",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 153,
+      "key": "audio2tool:tier8_intent_blending:000153",
+      "query_idx": 486,
+      "sample_id": "tier8_intent_blending:000153",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 154,
+      "key": "audio2tool:tier8_intent_blending:000154",
+      "query_idx": 487,
+      "sample_id": "tier8_intent_blending:000154",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 155,
+      "key": "audio2tool:tier8_intent_blending:000155",
+      "query_idx": 488,
+      "sample_id": "tier8_intent_blending:000155",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 163,
+      "key": "audio2tool:tier8_intent_blending:000163",
+      "query_idx": 496,
+      "sample_id": "tier8_intent_blending:000163",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 166,
+      "key": "audio2tool:tier8_intent_blending:000166",
+      "query_idx": 499,
+      "sample_id": "tier8_intent_blending:000166",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 167,
+      "key": "audio2tool:tier8_intent_blending:000167",
+      "query_idx": 500,
+      "sample_id": "tier8_intent_blending:000167",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 170,
+      "key": "audio2tool:tier8_intent_blending:000170",
+      "query_idx": 503,
+      "sample_id": "tier8_intent_blending:000170",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 171,
+      "key": "audio2tool:tier8_intent_blending:000171",
+      "query_idx": 504,
+      "sample_id": "tier8_intent_blending:000171",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 172,
+      "key": "audio2tool:tier8_intent_blending:000172",
+      "query_idx": 505,
+      "sample_id": "tier8_intent_blending:000172",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 178,
+      "key": "audio2tool:tier8_intent_blending:000178",
+      "query_idx": 511,
+      "sample_id": "tier8_intent_blending:000178",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 183,
+      "key": "audio2tool:tier8_intent_blending:000183",
+      "query_idx": 516,
+      "sample_id": "tier8_intent_blending:000183",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 202,
+      "key": "audio2tool:tier8_intent_blending:000202",
+      "query_idx": 535,
+      "sample_id": "tier8_intent_blending:000202",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 203,
+      "key": "audio2tool:tier8_intent_blending:000203",
+      "query_idx": 536,
+      "sample_id": "tier8_intent_blending:000203",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 234,
+      "key": "audio2tool:tier8_intent_blending:000234",
+      "query_idx": 567,
+      "sample_id": "tier8_intent_blending:000234",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 236,
+      "key": "audio2tool:tier8_intent_blending:000236",
+      "query_idx": 569,
+      "sample_id": "tier8_intent_blending:000236",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 248,
+      "key": "audio2tool:tier8_intent_blending:000248",
+      "query_idx": 581,
+      "sample_id": "tier8_intent_blending:000248",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 270,
+      "key": "audio2tool:tier8_intent_blending:000270",
+      "query_idx": 603,
+      "sample_id": "tier8_intent_blending:000270",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 271,
+      "key": "audio2tool:tier8_intent_blending:000271",
+      "query_idx": 604,
+      "sample_id": "tier8_intent_blending:000271",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 272,
+      "key": "audio2tool:tier8_intent_blending:000272",
+      "query_idx": 605,
+      "sample_id": "tier8_intent_blending:000272",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 273,
+      "key": "audio2tool:tier8_intent_blending:000273",
+      "query_idx": 606,
+      "sample_id": "tier8_intent_blending:000273",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 274,
+      "key": "audio2tool:tier8_intent_blending:000274",
+      "query_idx": 607,
+      "sample_id": "tier8_intent_blending:000274",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 277,
+      "key": "audio2tool:tier8_intent_blending:000277",
+      "query_idx": 610,
+      "sample_id": "tier8_intent_blending:000277",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 289,
+      "key": "audio2tool:tier8_intent_blending:000289",
+      "query_idx": 622,
+      "sample_id": "tier8_intent_blending:000289",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 295,
+      "key": "audio2tool:tier8_intent_blending:000295",
+      "query_idx": 628,
+      "sample_id": "tier8_intent_blending:000295",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 301,
+      "key": "audio2tool:tier8_intent_blending:000301",
+      "query_idx": 634,
+      "sample_id": "tier8_intent_blending:000301",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 307,
+      "key": "audio2tool:tier8_intent_blending:000307",
+      "query_idx": 640,
+      "sample_id": "tier8_intent_blending:000307",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 308,
+      "key": "audio2tool:tier8_intent_blending:000308",
+      "query_idx": 641,
+      "sample_id": "tier8_intent_blending:000308",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 311,
+      "key": "audio2tool:tier8_intent_blending:000311",
+      "query_idx": 644,
+      "sample_id": "tier8_intent_blending:000311",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 332,
+      "key": "audio2tool:tier8_intent_blending:000332",
+      "query_idx": 665,
+      "sample_id": "tier8_intent_blending:000332",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 336,
+      "key": "audio2tool:tier8_intent_blending:000336",
+      "query_idx": 669,
+      "sample_id": "tier8_intent_blending:000336",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 338,
+      "key": "audio2tool:tier8_intent_blending:000338",
+      "query_idx": 671,
+      "sample_id": "tier8_intent_blending:000338",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 342,
+      "key": "audio2tool:tier8_intent_blending:000342",
+      "query_idx": 675,
+      "sample_id": "tier8_intent_blending:000342",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 351,
+      "key": "audio2tool:tier8_intent_blending:000351",
+      "query_idx": 684,
+      "sample_id": "tier8_intent_blending:000351",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 354,
+      "key": "audio2tool:tier8_intent_blending:000354",
+      "query_idx": 687,
+      "sample_id": "tier8_intent_blending:000354",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 356,
+      "key": "audio2tool:tier8_intent_blending:000356",
+      "query_idx": 689,
+      "sample_id": "tier8_intent_blending:000356",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 359,
+      "key": "audio2tool:tier8_intent_blending:000359",
+      "query_idx": 692,
+      "sample_id": "tier8_intent_blending:000359",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 364,
+      "key": "audio2tool:tier8_intent_blending:000364",
+      "query_idx": 697,
+      "sample_id": "tier8_intent_blending:000364",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 374,
+      "key": "audio2tool:tier8_intent_blending:000374",
+      "query_idx": 707,
+      "sample_id": "tier8_intent_blending:000374",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 389,
+      "key": "audio2tool:tier8_intent_blending:000389",
+      "query_idx": 722,
+      "sample_id": "tier8_intent_blending:000389",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 399,
+      "key": "audio2tool:tier8_intent_blending:000399",
+      "query_idx": 732,
+      "sample_id": "tier8_intent_blending:000399",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 401,
+      "key": "audio2tool:tier8_intent_blending:000401",
+      "query_idx": 734,
+      "sample_id": "tier8_intent_blending:000401",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 419,
+      "key": "audio2tool:tier8_intent_blending:000419",
+      "query_idx": 752,
+      "sample_id": "tier8_intent_blending:000419",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 431,
+      "key": "audio2tool:tier8_intent_blending:000431",
+      "query_idx": 764,
+      "sample_id": "tier8_intent_blending:000431",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 442,
+      "key": "audio2tool:tier8_intent_blending:000442",
+      "query_idx": 775,
+      "sample_id": "tier8_intent_blending:000442",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 455,
+      "key": "audio2tool:tier8_intent_blending:000455",
+      "query_idx": 788,
+      "sample_id": "tier8_intent_blending:000455",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 461,
+      "key": "audio2tool:tier8_intent_blending:000461",
+      "query_idx": 794,
+      "sample_id": "tier8_intent_blending:000461",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 464,
+      "key": "audio2tool:tier8_intent_blending:000464",
+      "query_idx": 797,
+      "sample_id": "tier8_intent_blending:000464",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 468,
+      "key": "audio2tool:tier8_intent_blending:000468",
+      "query_idx": 801,
+      "sample_id": "tier8_intent_blending:000468",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 470,
+      "key": "audio2tool:tier8_intent_blending:000470",
+      "query_idx": 803,
+      "sample_id": "tier8_intent_blending:000470",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 507,
+      "key": "audio2tool:tier8_intent_blending:000507",
+      "query_idx": 840,
+      "sample_id": "tier8_intent_blending:000507",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 514,
+      "key": "audio2tool:tier8_intent_blending:000514",
+      "query_idx": 847,
+      "sample_id": "tier8_intent_blending:000514",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 518,
+      "key": "audio2tool:tier8_intent_blending:000518",
+      "query_idx": 851,
+      "sample_id": "tier8_intent_blending:000518",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 521,
+      "key": "audio2tool:tier8_intent_blending:000521",
+      "query_idx": 854,
+      "sample_id": "tier8_intent_blending:000521",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 529,
+      "key": "audio2tool:tier8_intent_blending:000529",
+      "query_idx": 862,
+      "sample_id": "tier8_intent_blending:000529",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 537,
+      "key": "audio2tool:tier8_intent_blending:000537",
+      "query_idx": 870,
+      "sample_id": "tier8_intent_blending:000537",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 542,
+      "key": "audio2tool:tier8_intent_blending:000542",
+      "query_idx": 875,
+      "sample_id": "tier8_intent_blending:000542",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 543,
+      "key": "audio2tool:tier8_intent_blending:000543",
+      "query_idx": 876,
+      "sample_id": "tier8_intent_blending:000543",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 548,
+      "key": "audio2tool:tier8_intent_blending:000548",
+      "query_idx": 881,
+      "sample_id": "tier8_intent_blending:000548",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 553,
+      "key": "audio2tool:tier8_intent_blending:000553",
+      "query_idx": 886,
+      "sample_id": "tier8_intent_blending:000553",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 558,
+      "key": "audio2tool:tier8_intent_blending:000558",
+      "query_idx": 891,
+      "sample_id": "tier8_intent_blending:000558",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 565,
+      "key": "audio2tool:tier8_intent_blending:000565",
+      "query_idx": 898,
+      "sample_id": "tier8_intent_blending:000565",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 566,
+      "key": "audio2tool:tier8_intent_blending:000566",
+      "query_idx": 899,
+      "sample_id": "tier8_intent_blending:000566",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 568,
+      "key": "audio2tool:tier8_intent_blending:000568",
+      "query_idx": 901,
+      "sample_id": "tier8_intent_blending:000568",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 578,
+      "key": "audio2tool:tier8_intent_blending:000578",
+      "query_idx": 911,
+      "sample_id": "tier8_intent_blending:000578",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 579,
+      "key": "audio2tool:tier8_intent_blending:000579",
+      "query_idx": 912,
+      "sample_id": "tier8_intent_blending:000579",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 585,
+      "key": "audio2tool:tier8_intent_blending:000585",
+      "query_idx": 918,
+      "sample_id": "tier8_intent_blending:000585",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 586,
+      "key": "audio2tool:tier8_intent_blending:000586",
+      "query_idx": 919,
+      "sample_id": "tier8_intent_blending:000586",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 592,
+      "key": "audio2tool:tier8_intent_blending:000592",
+      "query_idx": 925,
+      "sample_id": "tier8_intent_blending:000592",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 614,
+      "key": "audio2tool:tier8_intent_blending:000614",
+      "query_idx": 947,
+      "sample_id": "tier8_intent_blending:000614",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 628,
+      "key": "audio2tool:tier8_intent_blending:000628",
+      "query_idx": 961,
+      "sample_id": "tier8_intent_blending:000628",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 632,
+      "key": "audio2tool:tier8_intent_blending:000632",
+      "query_idx": 965,
+      "sample_id": "tier8_intent_blending:000632",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 633,
+      "key": "audio2tool:tier8_intent_blending:000633",
+      "query_idx": 966,
+      "sample_id": "tier8_intent_blending:000633",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 659,
+      "key": "audio2tool:tier8_intent_blending:000659",
+      "query_idx": 992,
+      "sample_id": "tier8_intent_blending:000659",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 667,
+      "key": "audio2tool:tier8_intent_blending:000667",
+      "query_idx": 1,
+      "sample_id": "tier8_intent_blending:000667",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 675,
+      "key": "audio2tool:tier8_intent_blending:000675",
+      "query_idx": 27,
+      "sample_id": "tier8_intent_blending:000675",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 700,
+      "key": "audio2tool:tier8_intent_blending:000700",
+      "query_idx": 74,
+      "sample_id": "tier8_intent_blending:000700",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 711,
+      "key": "audio2tool:tier8_intent_blending:000711",
+      "query_idx": 96,
+      "sample_id": "tier8_intent_blending:000711",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 751,
+      "key": "audio2tool:tier8_intent_blending:000751",
+      "query_idx": 183,
+      "sample_id": "tier8_intent_blending:000751",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 761,
+      "key": "audio2tool:tier8_intent_blending:000761",
+      "query_idx": 207,
+      "sample_id": "tier8_intent_blending:000761",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 793,
+      "key": "audio2tool:tier8_intent_blending:000793",
+      "query_idx": 269,
+      "sample_id": "tier8_intent_blending:000793",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 794,
+      "key": "audio2tool:tier8_intent_blending:000794",
+      "query_idx": 271,
+      "sample_id": "tier8_intent_blending:000794",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 809,
+      "key": "audio2tool:tier8_intent_blending:000809",
+      "query_idx": 300,
+      "sample_id": "tier8_intent_blending:000809",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "id": 817,
+      "key": "audio2tool:tier8_intent_blending:000817",
+      "query_idx": 323,
+      "sample_id": "tier8_intent_blending:000817",
+      "stratum": "tier8_intent_blending",
+      "tier": "tier8_intent_blending"
+    }
+  ],
+  "offline_guard": {
+    "attempted_targets": [],
+    "exposure_row": "SAEA-SN-MF-A2T-CONSTRUCTION-ROSTER-V1",
+    "outbound_connection_attempts": 0
+  },
+  "per_stratum": {
+    "tier1_direct": 100,
+    "tier2_parametric": 100,
+    "tier3_multi_intent": 100,
+    "tier4_implicit": 100,
+    "tier5_needle": 100,
+    "tier6_correction": 100,
+    "tier7_multiturn": 100,
+    "tier8_intent_blending": 100
+  },
+  "roster_id": "A2T-FRESH-800-V1",
+  "roster_role": "evaluation",
+  "sample_selection_rule": "one wav per (tier, query_idx) unit: the unit's lowest manifest id, which is the release's own first-successful-speaker pick",
+  "schema": "saea-roster-receipt-v1",
+  "seed": 20260803,
+  "split_identity_hash": "be0e76a1861e42c21a0a8ed9b499eef5898617bf0d689ae212ca4e78571adaef",
+  "split_role": "discovery",
+  "status": "RESERVED_AND_UNOPENED",
+  "strata_counts": {
+    "tier1_direct": 100,
+    "tier2_parametric": 100,
+    "tier3_multi_intent": 100,
+    "tier4_implicit": 100,
+    "tier5_needle": 100,
+    "tier6_correction": 100,
+    "tier7_multiturn": 100,
+    "tier8_intent_blending": 100
+  },
+  "target_gold_opened_before_receipt": false
+}

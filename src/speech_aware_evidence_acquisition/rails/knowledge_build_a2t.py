@@ -126,6 +126,24 @@ _DEFAULT_DIMENSIONS: tuple[str, ...] = ("content", "label", "prior")
 EXPOSED_RECEIPT_RELPATH = "docs/receipts/probe-samples/r1-audio2tool-sample.json"
 EXPOSED_RECEIPT_NAME = "r1-audio2tool-sample"
 
+#: Exposure-union sources (E2.2, 2026-09-05). Evaluation identity is frozen
+#: in three different places in this repository; the union reads all three.
+PROBE_SAMPLE_RELDIR = "docs/receipts/probe-samples"
+D1_SUPPLEMENT_RELDIR = "docs/receipts/artifacts"
+D1_SUPPLEMENT_GLOB = "d1-a2t-*.json"
+D1_SUPPLEMENT_SCHEMA = "saea-d1-media-supplement-v1"
+ROSTER_RECEIPTS_RELDIR = "docs/receipts/rosters"
+EXPOSURE_UNION_POLICY_ID = "saea-a2t-exposure-union-v1"
+
+#: The two roster roles (owner decision 2026-09-05). An EVALUATION roster's
+#: identities are exposure and must never be read with their gold; a
+#: CONSTRUCTION roster's identities may be, which is exactly why the union
+#: excludes them. A receipt with no ``roster_role`` field predates the
+#: distinction and is an evaluation roster.
+EVALUATION_ROSTER_ROLE = "evaluation"
+CONSTRUCTION_ROSTER_ROLE = "construction"
+_ROSTER_ROLES = frozenset({EVALUATION_ROSTER_ROLE, CONSTRUCTION_ROSTER_ROLE})
+
 _AUTHORITY = (
     "docs/readiness/2026-08-25-a2t-generality-campaign-plan.md sections 3.2, 3.3 and 3.6"
 )
@@ -409,20 +427,250 @@ def a2t_pool_rows(
 # ---------------------------------------------------------------------------
 
 
-def exposed_sample_ids(repo_root: Path | None = None) -> frozenset[str]:
-    """The frozen 400-item discovery split's sample ids, from the committed
-    receipt, via the loader's own strict verifier (the receipt's
-    ``split_identity_hash`` is recomputed fail-closed before its items are
-    trusted). Identity only -- no gold field is read."""
+def _probe_sample_source(
+    name: str, payload: Mapping[str, object]
+) -> dict[str, object] | None:
+    """One audio2tool probe-sample receipt as an exposure source.
 
-    receipts = audio2tool_receipts(Path(REPO_ROOT if repo_root is None else repo_root))
-    payload = receipts.get(EXPOSED_RECEIPT_NAME)
-    if payload is None:
+    ``roster_role`` is the E2.3 field: absent means the historical default,
+    an EVALUATION identity roster (every receipt committed before 2026-09-05
+    is one), ``"construction"`` means the identities may be read WITH their
+    gold labels and are therefore deliberately NOT exposure, and any other
+    value fails closed rather than being guessed at.
+    """
+
+    role = payload.get("roster_role", EVALUATION_ROSTER_ROLE)
+    if role not in _ROSTER_ROLES:
+        raise RailsError(
+            f"probe-sample receipt {name!r} declares roster_role {role!r}; the known "
+            f"roles are {sorted(_ROSTER_ROLES)} (fail-closed)"
+        )
+    if role != EVALUATION_ROSTER_ROLE:
+        return None
+    items = payload["items"]  # audio2tool_receipts already verified the shape
+    return {
+        "kind": "probe-sample",
+        "name": name,
+        "relpath": f"{PROBE_SAMPLE_RELDIR}/{name}.json",
+        "roster_role": role,
+        "sample_ids": frozenset(
+            f"{item['tier']}:{int(item['id']):06d}" for item in items
+        ),
+    }
+
+
+def _d1_supplement_source(path: Path) -> dict[str, object]:
+    """One committed D1 media supplement as an exposure source.
+
+    Every id under ``manifest[]`` is an identity this study has already bound
+    to real media bytes for a flight, so it is exposure whatever its shape --
+    including the derived ids (``a2t-g3-dialogue:000318``) that name no pool
+    unit at all and therefore reserve no block. Malformed is REFUSED, never
+    skipped: a supplement this reader cannot parse is a hole in the union.
+    """
+
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise RailsError(f"cannot read D1 media supplement {path}: {error}") from error
+    if not isinstance(document, Mapping):
+        raise RailsError(f"D1 media supplement {path} must be a JSON object")
+    if document.get("schema") != D1_SUPPLEMENT_SCHEMA:
+        raise RailsError(
+            f"D1 media supplement {path} schema {document.get('schema')!r} is not "
+            f"{D1_SUPPLEMENT_SCHEMA!r}"
+        )
+    if document.get("carrier_lock_key") != AUDIO2TOOL_LOCK_KEY:
+        raise RailsError(
+            f"D1 media supplement {path} names carrier "
+            f"{document.get('carrier_lock_key')!r}, not {AUDIO2TOOL_LOCK_KEY!r}"
+        )
+    manifest = document.get("manifest")
+    if not isinstance(manifest, list) or not manifest:
+        raise RailsError(f"D1 media supplement {path} has no manifest entries")
+    ids: set[str] = set()
+    for index, entry in enumerate(manifest):
+        if not isinstance(entry, Mapping):
+            raise RailsError(
+                f"D1 media supplement {path} manifest[{index}] is not an object"
+            )
+        sample_id = entry.get("id")
+        if not isinstance(sample_id, str) or not sample_id:
+            raise RailsError(
+                f"D1 media supplement {path} manifest[{index}] has no non-empty id"
+            )
+        ids.add(sample_id)
+    if document.get("count") != len(manifest) or len(ids) != len(manifest):
+        raise RailsError(
+            f"D1 media supplement {path} count/manifest/id-uniqueness disagree "
+            f"(count={document.get('count')!r}, entries={len(manifest)}, "
+            f"distinct ids={len(ids)})"
+        )
+    return {
+        "kind": "d1-media-supplement",
+        "name": path.stem,
+        "relpath": f"{D1_SUPPLEMENT_RELDIR}/{path.name}",
+        "roster_role": EVALUATION_ROSTER_ROLE,
+        "sample_ids": frozenset(ids),
+    }
+
+
+def _roster_receipt_source(path: Path) -> dict[str, object] | None:
+    """One committed ``saea-roster-receipt-v1`` as an exposure source.
+
+    Returns ``None`` for a roster this union deliberately ignores: another
+    carrier's, or an Audio2Tool roster whose ``roster_role`` is
+    ``"construction"`` -- construction identities may be read WITH their gold
+    (owner decision 2026-09-05), so excluding them is the design, not an
+    oversight. The receipt's own ``split_identity_hash`` is recomputed before
+    its items are trusted, exactly as the probe-sample reader does.
+    """
+
+    from ..core.roster import RECEIPT_SCHEMA, RosterError, verify_roster
+
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise RailsError(f"cannot read roster receipt {path}: {error}") from error
+    if not isinstance(document, Mapping):
+        raise RailsError(f"roster receipt {path} must be a JSON object")
+    if document.get("schema") != RECEIPT_SCHEMA:
+        raise RailsError(
+            f"roster receipt {path} schema {document.get('schema')!r} is not "
+            f"{RECEIPT_SCHEMA!r}"
+        )
+    if document.get("carrier_lock_key") != AUDIO2TOOL_LOCK_KEY:
+        return None
+    role = document.get("roster_role", EVALUATION_ROSTER_ROLE)
+    if role not in _ROSTER_ROLES:
+        raise RailsError(
+            f"roster receipt {path} declares roster_role {role!r}; the known roles are "
+            f"{sorted(_ROSTER_ROLES)} (fail-closed)"
+        )
+    try:
+        verify_roster(document)
+    except RosterError as error:
+        raise RailsError(f"roster receipt {path} does not verify: {error}") from error
+    if role != EVALUATION_ROSTER_ROLE:
+        return None
+    return {
+        "kind": "roster-receipt",
+        "name": path.stem,
+        "relpath": f"{ROSTER_RECEIPTS_RELDIR}/{path.name}",
+        "roster_role": role,
+        "sample_ids": frozenset(str(item["sample_id"]) for item in document["items"]),
+    }
+
+
+def _exposure_sources(repo_root: Path | None = None) -> list[dict[str, object]]:
+    """Every committed EVALUATION identity source of the Audio2Tool carrier,
+    in a deterministic order (probe samples, then D1 supplements, then
+    roster receipts; each group sorted by name).
+
+    Three kinds, because this repository froze evaluation identity in three
+    different places over the campaign and every one of them is a genuine
+    exposure record:
+
+    (a) ``docs/receipts/probe-samples/*.json`` with ``carrier == audio2tool``
+        -- the loader's own frozen sample universe (``data.audio2tool
+        .audio2tool_receipts`` verifies each one's ``split_identity_hash``
+        before this function sees it);
+    (b) ``docs/receipts/artifacts/d1-a2t-*.json`` -- the additive D1 media
+        supplements, which bind identities to media bytes for a flight and
+        exist precisely because a roster's probe-sample receipt carries only
+        the ids no earlier receipt covered;
+    (c) ``docs/receipts/rosters/*.json`` -- the ``saea-roster-receipt-v1``
+        rosters, of which only the ``roster_role == "evaluation"`` ones are
+        exposure.
+
+    The frozen 400 (``r1-audio2tool-sample``) must be present or the whole
+    union fails closed: it is the one receipt every A2T decontamination
+    argument in this repository cites, so silently building a union without
+    it would be the exact failure this function exists to prevent.
+    """
+
+    root = Path(REPO_ROOT if repo_root is None else repo_root)
+    receipts = audio2tool_receipts(root)
+    if EXPOSED_RECEIPT_NAME not in receipts:
         raise RailsError(
             f"exposed discovery receipt {EXPOSED_RECEIPT_NAME!r} not found among "
             f"{sorted(receipts)}"
         )
-    return frozenset(f"{item['tier']}:{int(item['id']):06d}" for item in payload["items"])
+    sources: list[dict[str, object]] = []
+    for name, payload in sorted(receipts.items()):
+        probe_source = _probe_sample_source(name, payload)
+        if probe_source is not None:
+            sources.append(probe_source)
+    for path in sorted((root / D1_SUPPLEMENT_RELDIR).glob(D1_SUPPLEMENT_GLOB)):
+        sources.append(_d1_supplement_source(path))
+    roster_dir = root / ROSTER_RECEIPTS_RELDIR
+    if roster_dir.is_dir():
+        for path in sorted(roster_dir.glob("*.json")):
+            source = _roster_receipt_source(path)
+            if source is not None:
+                sources.append(source)
+    return sources
+
+
+def exposed_identity_report(repo_root: Path | None = None) -> dict[str, object]:
+    """The exposure union with a per-source account of where it came from.
+
+    ``new_sample_ids`` is each source's MARGINAL contribution in the
+    deterministic order above, so the per-source numbers sum to the union
+    size and a reader can see which receipt actually widened the hold-out.
+    Identity only: no gold, no task text and no score is read anywhere here.
+    """
+
+    union: set[str] = set()
+    rows: list[dict[str, object]] = []
+    for source in _exposure_sources(repo_root):
+        ids = source["sample_ids"]
+        assert isinstance(ids, frozenset)
+        rows.append(
+            {
+                "kind": source["kind"],
+                "name": source["name"],
+                "relpath": source["relpath"],
+                "roster_role": source["roster_role"],
+                "sample_ids": len(ids),
+                "new_sample_ids": len(ids - union),
+            }
+        )
+        union |= ids
+    counts_by_kind: Counter[str] = Counter(str(row["kind"]) for row in rows)
+    return {
+        "policy_id": EXPOSURE_UNION_POLICY_ID,
+        "sources": rows,
+        "source_count": len(rows),
+        "sources_by_kind": dict(sorted(counts_by_kind.items())),
+        "union_sample_ids": len(union),
+        "excluded_roster_role": CONSTRUCTION_ROSTER_ROLE,
+        "note": (
+            "Union of every committed EVALUATION identity of the audio2tool carrier: "
+            "probe-sample receipts, additive D1 media supplements, and roster-v1 "
+            "receipts whose roster_role is 'evaluation'. Construction-role rosters are "
+            "excluded by design (owner decision 2026-09-05: construction identities may "
+            "be read with their gold labels, evaluation identities never can)."
+        ),
+    }
+
+
+def exposed_sample_ids(repo_root: Path | None = None) -> frozenset[str]:
+    """Every committed EVALUATION sample id of the Audio2Tool carrier.
+
+    Was, until 2026-09-05, the frozen 400 of ``r1-audio2tool-sample`` alone,
+    which had become a large under-count: the three official-population
+    rosters, the two 104-row AgentLoop cohorts and the ORG-1 union manifest
+    have all been flown since. See :func:`exposed_identity_report` for the
+    per-source account and :func:`_exposure_sources` for what counts.
+    """
+
+    union: set[str] = set()
+    for source in _exposure_sources(repo_root):
+        ids = source["sample_ids"]
+        assert isinstance(ids, frozenset)
+        union |= ids
+    return frozenset(union)
 
 
 @dataclass(frozen=True)
@@ -475,7 +723,11 @@ def propose_partition(
     Eval candidacy additionally requires the item's gold primary tool to have
     at least ``tool_min_pool_rows`` units in the exposure-free pool, so the
     build's hard "at least one exemplar per tool" floor can never be starved
-    by the evaluation draw. The excluded tools are named in the report.
+    by the evaluation draw; the whole BLOCK of any such rare tool is held out
+    of candidacy too, because a block is shared across tiers and drawing a
+    sibling would reserve it. The excluded tools are named in the report, as
+    are the tools whose every unit already sits inside an exposed block and
+    which the construction pool therefore cannot represent at all.
     """
 
     rows = tuple(rows)
@@ -497,9 +749,23 @@ def propose_partition(
         tool for tool, count in tool_pool_counts.items() if count < tool_min_pool_rows
     )
 
+    # BLOCK-level protection of the construction floor (2026-09-05 repair).
+    # Dropping a construction-only tool's own ROWS from eval candidacy was
+    # never enough: a query_idx block is shared across tiers, so another
+    # tier's candidate in the SAME block could still be drawn, reserving the
+    # block and taking the rare tool's last exemplar with it. Under the
+    # frozen-400-only exposure roster the free pool was large enough that
+    # this never fired; under the full exposure union it fires immediately
+    # (foldExteriorMirrors and initiateAutoPark keep exactly one free unit
+    # each). Protecting the whole BLOCK is the fix, and it is stated in the
+    # report rather than left implicit.
+    construction_only = set(construction_only_tools)
+    protected_blocks = frozenset(
+        row.query_idx for row in free_rows if row.tool_name in construction_only
+    )
     candidates_by_tier: dict[str, list[A2tKbRow]] = defaultdict(list)
     for row in free_rows:
-        if row.tool_name in construction_only_tools:
+        if row.tool_name in construction_only or row.query_idx in protected_blocks:
             continue
         candidates_by_tier[row.tier].append(row)
 
@@ -533,8 +799,18 @@ def propose_partition(
     if not construction:
         raise RailsError("propose_partition: empty construction pool")
 
+    # The floor is measured against what the EXPOSURE-FREE pool can possibly
+    # deliver, not against every tool the carrier has ever used (2026-09-05
+    # repair). A tool whose every unit sits inside an already-exposed block
+    # cannot enter the construction pool no matter how the evaluation tier is
+    # drawn, so raising on it would be blaming the draw for the exposure
+    # union; it is REPORTED by name instead, and the draw is still refused if
+    # it starves a tool the free pool could have supplied.
+    tools_reserved_by_exposure = sorted(
+        {row.tool_name for row in rows} - set(tool_pool_counts)
+    )
     missing_tools = sorted(
-        {row.tool_name for row in rows} - {row.tool_name for row in construction}
+        set(tool_pool_counts) - {row.tool_name for row in construction}
     )
     if missing_tools:
         raise RailsError(
@@ -571,6 +847,8 @@ def propose_partition(
         "construction_only_tool_units": {
             tool: tool_pool_counts[tool] for tool in construction_only_tools
         },
+        "blocks_protected_for_construction_only_tools": len(protected_blocks),
+        "tools_reserved_entirely_by_exposure": tools_reserved_by_exposure,
         "construction_units_by_tier": dict(
             sorted(Counter(row.tier for row in construction).items())
         ),
@@ -1188,6 +1466,54 @@ def build_a2t_knowledge_snapshot(
     ).validate()
 
 
+def build_a2t_knowledge_snapshot_from_lock(
+    spec: A2tKnowledgeBuildSpec,
+    *,
+    lock: Mapping[str, object],
+    root: Path,
+    repo_root: Path | None = None,
+) -> KnowledgeSnapshot:
+    """The registered ``KNOWLEDGE_BUILDERS`` entry point for Audio2Tool.
+
+    :func:`build_a2t_knowledge_snapshot` takes an ALREADY partitioned
+    construction pool, because the partition is a governance decision the
+    caller must make explicitly. A registry entry, however, must be callable
+    from a carrier-agnostic seam that knows only the composed config, so this
+    thin wrapper performs the three steps ``scripts/build_a2t_knowledge_
+    snapshot.py`` already performs in exactly the same order, and adds
+    nothing of its own:
+
+    1. :func:`a2t_pool_rows` -- every ``(tier, query_idx)`` unit of the full
+       carrier pool, from the governed manifests under ``root``;
+    2. :func:`propose_partition` against :func:`exposed_sample_ids`
+       (``repo_root``'s committed evaluation identities) -- the construction
+       pool is what survives;
+    3. :func:`build_a2t_knowledge_snapshot` with the forbidden roster set to
+       the exposure union PLUS the proposed evaluation tier, which is the
+       belt-and-braces decontamination roster that function requires.
+
+    The governed source relpath of every tier present in the construction
+    pool is threaded through, exactly as the script does, so the emitted
+    facets name the file their text came from.
+    """
+
+    spec.validate()
+    rows, _inventory = a2t_pool_rows(lock, root)
+    exposed = exposed_sample_ids(repo_root)
+    partition = propose_partition(rows, exposed)
+    registry = load_tool_registry_by_name(lock, root)
+    return build_a2t_knowledge_snapshot(
+        spec,
+        rows=partition.construction,
+        registry=registry,
+        forbidden_sample_ids=frozenset(exposed) | frozenset(partition.eval_sample_ids),
+        governed_relpath_by_tier={
+            tier: f"datasets/audio2tool/public/{tier}_data/{tier}.json"
+            for tier in {row.tier for row in partition.construction}
+        },
+    )
+
+
 # ---------------------------------------------------------------------------
 # Coverage report
 # ---------------------------------------------------------------------------
@@ -1343,16 +1669,22 @@ def coverage_report_a2t(
 __all__ = [
     "A2T_KB_BUILD_POLICY_ID",
     "A2T_PARTITION_POLICY_ID",
+    "CONSTRUCTION_ROSTER_ROLE",
+    "EVALUATION_ROSTER_ROLE",
     "EVAL_TOOL_MIN_POOL_ROWS",
     "EXPOSED_RECEIPT_RELPATH",
+    "EXPOSURE_UNION_POLICY_ID",
+    "ROSTER_RECEIPTS_RELDIR",
     "TIERS",
     "A2tKbRow",
     "A2tKnowledgeBuildSpec",
     "PartitionProposal",
     "a2t_pool_rows",
     "build_a2t_knowledge_snapshot",
+    "build_a2t_knowledge_snapshot_from_lock",
     "coverage_report_a2t",
     "distribution_sample_a2t",
+    "exposed_identity_report",
     "exposed_sample_ids",
     "load_tool_registry_by_name",
     "propose_partition",

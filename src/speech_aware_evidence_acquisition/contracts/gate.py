@@ -217,6 +217,7 @@ class FrozenCoreGate(
         *,
         full_hash: bool | None = None,
         diagnostics: dict[str, object] | None = None,
+        arm: str | None = None,
     ) -> str:
         """Refuse the touch unless a validated Stage-2 ``ExecutionPlan`` authorizes it
         AND both receipts verify. Plan/scope validation runs before any receipt or
@@ -241,6 +242,15 @@ class FrozenCoreGate(
         :meth:`_validate_runtime` with what actually happened (never merely what
         was requested) — see its own docstring.
 
+        ``arm`` (E2.4, 2026-09-05) is the D2 arm this touch will send. It is
+        optional and defaults to ``None``, so every pre-existing caller is
+        byte-identical; it exists for exactly one check,
+        :meth:`_require_construction_role_for_visible_targets`, which refuses a
+        construction-gold-visible arm whose plan is not bound to a committed
+        construction roster. Naming an arm can only ever ADD a refusal, never
+        widen anything, and the payload allowlist itself remains
+        ``core.model.FrozenCoreAdapter``'s job, unchanged.
+
         Returns the umbrella lock's SHA-256 (M-3): the lock is read exactly ONCE
         here (:meth:`_load_lock_with_hash`) and the same parsed document is
         threaded into every check below that needs it, rather than each
@@ -253,7 +263,8 @@ class FrozenCoreGate(
             raise ExecutionScopeError(
                 "a model touch requires a structured ExecutionPlan (the exact contract "
                 "type — subclasses could override validate); bare profile strings were "
-                "retired by 续93 (semantic scope gate)"
+                "retired by umbrella Decision-Log continuation entry 93 (semantic scope "
+                "gate)"
             )
         ExecutionPlan.validate(plan)
         if plan.execution_profile not in MODEL_TOUCH_PROFILES:
@@ -262,6 +273,7 @@ class FrozenCoreGate(
                 f"touch; model-facing Stage-2 profiles are {sorted(MODEL_TOUCH_PROFILES)}"
             )
         assert_wsl_execution_environment()
+        self._require_construction_role_for_visible_targets(plan, arm)
         lock, lock_sha256 = self._load_lock_with_hash()
         self._require_exposure_preregistration(plan, lock)
         self._resolve_carrier_dataset_entry(plan.carrier_lock_key, lock)

@@ -239,6 +239,82 @@ def test_unknown_arm_refused():
 
 
 # ---------------------------------------------------------------------------
+# Construction-proposer arm (E2.4, 2026-09-05): "construction_targets" is the
+# one payload field that carries gold, and it follows the same
+# "arm declares it <=> non-empty, every other arm refuses it" discipline
+# exemplar_bank established below.
+# ---------------------------------------------------------------------------
+
+_TARGETS = [
+    {"sample_id": "tier1_direct:000101", "target": "setLighting(deviceId='l1')"}
+]
+
+
+def test_construction_proposer_payload_carries_exactly_its_declared_fields():
+    payload = build_arm_payload(
+        "construction-proposer-text",
+        _REF,
+        "req-1",
+        "Propose one description.",
+        _DECODING,
+        construction_targets=_TARGETS,
+    )
+    assert set(payload) == set(ARM_VISIBLE_FIELDS["construction-proposer-text"])
+    assert payload["construction_targets"] == _TARGETS
+    # a copy, never the caller's own list objects
+    assert payload["construction_targets"][0] is not _TARGETS[0]
+
+
+def test_construction_proposer_requires_non_empty_targets():
+    for value in (None, []):
+        with pytest.raises(ArmError, match="non-empty construction_targets"):
+            build_arm_payload(
+                "construction-proposer-text",
+                _REF,
+                "req-1",
+                "T.",
+                _DECODING,
+                construction_targets=value,
+            )
+
+
+def test_construction_proposer_refuses_a_target_entry_of_any_other_shape():
+    with pytest.raises(ArmError, match="exactly"):
+        build_arm_payload(
+            "construction-proposer-text",
+            _REF,
+            "req-1",
+            "T.",
+            _DECODING,
+            construction_targets=[{"sample_id": "s", "target": "t", "extra": "x"}],
+        )
+
+
+@pytest.mark.parametrize(
+    "arm,kwargs",
+    [
+        ("bare-core", {}),
+        ("fixed-legal-context", {"evidence": _EVIDENCE}),
+        ("fixed-retrieval", {"evidence": _EVIDENCE, "retrieval_query": "acme q2"}),
+    ],
+)
+def test_every_other_arm_refuses_construction_targets(arm, kwargs):
+    with pytest.raises(ArmError, match="construction_targets"):
+        build_arm_payload(
+            arm, _REF, "req-1", "T.", _DECODING, construction_targets=_TARGETS, **kwargs
+        )
+
+
+def test_omitting_construction_targets_is_byte_identical_for_every_other_arm():
+    without = build_arm_payload("bare-core", _REF, "req-1", "T.", _DECODING)
+    with_none = build_arm_payload(
+        "bare-core", _REF, "req-1", "T.", _DECODING, construction_targets=None
+    )
+    assert without == with_none
+    assert "construction_targets" not in without
+
+
+# ---------------------------------------------------------------------------
 # Acoustic exemplar bank (core.exemplars, M-C-prime prep infrastructure):
 # no D2-frozen arm declares "exemplar_bank" yet, so the default (None) is a
 # byte-identical no-op and every arm registered today fails closed when one

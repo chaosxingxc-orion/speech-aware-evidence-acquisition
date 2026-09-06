@@ -18,12 +18,15 @@ from speech_aware_evidence_acquisition.core.roster import (
     RECEIPT_SCHEMA,
     RosterError,
     RosterItem,
+    as_probe_sample_receipt,
+    canonical_receipt_bytes,
     freeze_roster,
     hash_matches_legacy_receipt,
     read_roster,
     verify_roster,
     write_roster,
 )
+from speech_aware_evidence_acquisition.data.audio2tool import audio2tool_receipts
 from speech_aware_evidence_acquisition.data.splits import prefixed, split_identity_hash
 from speech_aware_evidence_acquisition.reproduction.sampling import (
     split_identity_hash as sampling_split_identity_hash,
@@ -400,3 +403,174 @@ def test_hash_matches_legacy_receipt_false_on_a_different_prefixing_convention(t
     path = tmp_path / "legacy.json"
     path.write_text(json.dumps(document), encoding="utf-8")
     assert hash_matches_legacy_receipt(path) is False
+
+
+# ---------------------------------------------------------------------------
+# roster_role and the legacy probe-sample view (E2.3).
+# ---------------------------------------------------------------------------
+
+
+def _a2t_candidates(n_per_tier: int = 4) -> list[RosterItem]:
+    """Audio2Tool-shaped candidates: the ``extra`` fields the legacy
+    probe-sample shape needs (``id``, ``key``, ``tier``, ``query_idx``)."""
+
+    items: list[RosterItem] = []
+    item_id = 0
+    for tier in ("tier1_direct", "tier2_parametric"):
+        for index in range(n_per_tier):
+            item_id += 1
+            sample_id = f"{tier}:{item_id:06d}"
+            items.append(
+                RosterItem(
+                    sample_id=sample_id,
+                    stratum=tier,
+                    extra={
+                        "id": item_id,
+                        "key": f"audio2tool:{sample_id}",
+                        "query_idx": 500 + index,
+                        "tier": tier,
+                    },
+                )
+            )
+    return items
+
+
+def _a2t_roster(roster_role: str = "construction") -> dict:
+    return freeze_roster(
+        carrier_lock_key="audio2tool",
+        candidates=_a2t_candidates(),
+        per_stratum=3,
+        seed=11,
+        split_role="discovery",
+        roster_id="A2T-TEST-ROSTER",
+        roster_role=roster_role,
+    )
+
+
+def test_roster_role_defaults_to_evaluation_and_lands_in_the_receipt():
+    receipt = freeze_roster(
+        carrier_lock_key="audio2tool-test",
+        candidates=_candidates(),
+        per_stratum=2,
+        seed=1,
+        split_role="discovery",
+        roster_id="TEST-ROSTER",
+    )
+    assert receipt["roster_role"] == "evaluation"
+    assert _a2t_roster("construction")["roster_role"] == "construction"
+
+
+def test_freeze_roster_refuses_an_unknown_roster_role():
+    with pytest.raises(RosterError, match="roster_role"):
+        freeze_roster(
+            carrier_lock_key="audio2tool-test",
+            candidates=_candidates(),
+            per_stratum=2,
+            seed=1,
+            split_role="discovery",
+            roster_id="TEST-ROSTER",
+            roster_role="calibration",
+        )
+
+
+def test_verify_roster_checks_the_role_and_tolerates_a_legacy_receipt():
+    receipt = dict(_a2t_roster())
+    assert verify_roster(receipt) == receipt["split_identity_hash"]
+    receipt.pop("roster_role")
+    assert verify_roster(receipt) == receipt["split_identity_hash"]
+    receipt["roster_role"] = "something-else"
+    with pytest.raises(RosterError, match="roster_role"):
+        verify_roster(receipt)
+
+
+def test_probe_sample_view_matches_the_legacy_hash_convention(tmp_path):
+    roster = _a2t_roster()
+    view = as_probe_sample_receipt(
+        roster, carrier="audio2tool", design="construction role; gold may be read"
+    )
+
+    # The roster receipt's own hash is the core.roster convention...
+    ids = [str(item["sample_id"]) for item in roster["items"]]
+    assert roster["split_identity_hash"] == split_identity_hash(
+        prefixed("audio2tool", ids)
+    )
+    # ...and the view's hash is the legacy probe-receipt convention, over the
+    # already carrier-prefixed keys. The two are different digests of the
+    # same identities, which is exactly why both documents exist.
+    assert view["split_identity_hash"] == split_identity_hash(
+        [f"audio2tool:{sample_id}" for sample_id in ids]
+    )
+    assert view["split_identity_hash"] != roster["split_identity_hash"]
+    assert view["roster_split_identity_hash"] == roster["split_identity_hash"]
+
+    path = tmp_path / "view.json"
+    path.write_text(
+        json.dumps(view, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    assert hash_matches_legacy_receipt(path) is True
+
+
+def test_probe_sample_view_carries_the_roles_and_its_parent_hash():
+    roster = _a2t_roster()
+    view = as_probe_sample_receipt(
+        roster, carrier="audio2tool", design="construction role; gold may be read"
+    )
+    assert view["split_role"] == "discovery"
+    assert view["roster_role"] == "construction"
+    assert view["derived_from_roster_id"] == "A2T-TEST-ROSTER"
+    assert view["derived_from_roster_sha256"] == hashlib.sha256(
+        canonical_receipt_bytes(roster)
+    ).hexdigest()
+    assert view["n_items"] == len(roster["items"])
+    assert {item["key"] for item in view["items"]} == {
+        f"audio2tool:{item['sample_id']}" for item in roster["items"]
+    }
+    # identity fields only: the roster's own bookkeeping never leaks into the
+    # loadable view.
+    assert not any("sample_id" in item or "stratum" in item for item in view["items"])
+
+
+def test_the_probe_sample_view_is_loadable_by_the_audio2tool_reader(tmp_path):
+    """The point of the view: ``data.audio2tool`` must accept it. That reader
+    verifies split_role, per-item id/tier/key agreement and the legacy hash,
+    and fails closed on anything it cannot verify -- which is why a
+    ``saea-roster-receipt-v1`` file must never be dropped into that
+    directory."""
+
+    view = as_probe_sample_receipt(
+        _a2t_roster(), carrier="audio2tool", design="construction role"
+    )
+    probes = tmp_path / "docs" / "receipts" / "probe-samples"
+    probes.mkdir(parents=True)
+    (probes / "a2t-test-roster.json").write_text(
+        json.dumps(view, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    loaded = audio2tool_receipts(tmp_path)
+    assert set(loaded) == {"a2t-test-roster"}
+    assert len(loaded["a2t-test-roster"]["items"]) == 6
+
+
+def test_probe_sample_view_refuses_a_roster_without_the_key_extra():
+    roster = freeze_roster(
+        carrier_lock_key="audio2tool",
+        candidates=_candidates(),
+        per_stratum=2,
+        seed=1,
+        split_role="discovery",
+        roster_id="NO-KEYS",
+    )
+    with pytest.raises(RosterError, match="carries no 'key' extra"):
+        as_probe_sample_receipt(roster, carrier="audio2tool", design="x")
+
+
+def test_probe_sample_view_refuses_a_key_that_disagrees_with_its_sample_id():
+    roster = dict(_a2t_roster())
+    items = [dict(item) for item in roster["items"]]
+    items[0]["key"] = "audio2tool:tier1_direct:999999"
+    roster["items"] = items
+    with pytest.raises(RosterError, match="disagrees with the carrier-prefixed"):
+        as_probe_sample_receipt(roster, carrier="audio2tool", design="x")
