@@ -1,12 +1,20 @@
-# EVO-A1: description evolution on Audio2Tool — preregistration (DRAFT)
+# EVO-A1: description evolution on Audio2Tool — preregistration (REGISTERED)
 
-**Status: DRAFT.** This document is complete but unregistered. The coordinator closes it by (1)
-naming `A_0` with its sha256 -- KC-A1 is VOID rather than pending, so unless the +40-token cap is
-re-priced the answer is the released compact registry (section 3), (2) naming the curve roster, and
-(3) writing the five loop exposure rows. Two items have LEFT that list. The target set is closed:
-the owner ratified RELAXED WITH SENTINELS on 2026-09-06, and section 2 is rewritten to it. Track
-E3c, the proposer runner, is landed (section 15 item 8), and the four registration facts it
-surfaced are open point 8. Nothing here authorizes a contact.
+**Status: REGISTERED, 2026-09-06.** All three of the coordinator's closing conditions are met.
+(1) **`A_0` is `A_0-compact`**, the released compact registry, sha256
+`752dd381a02028dc7345a6ac826109bdcc879d82547a9029a43d559d0de8a605` over 15,854 characters and 152
+lines, measured at 3,581 text tokens (section 3). (2) **The curve roster is
+`A2T-EVO-CURVE-400-V1`**, Option A, frozen and hash-pinned (section 7). (3) **All five loop exposure
+rows are written**, plus `SAEA-A2T-MF-EVO-DECONTAMINATION-V1`, `SAEA-SN-MF-A2T-EVO-CURVE-ROSTER-V1`
+and `SAEA-SN-MF-A2T-EVO-PROPOSER-R01-PLAN-V1` (section 10). The target set was closed by the owner
+on 2026-09-06 (RELAXED WITH SENTINELS) and section 2 is rewritten to it; track E3c, the proposer
+runner, is landed; and round 1's PROPOSE step has itself landed model-free, with
+`check_ledger_budget` accepting the round.
+
+**Registration is not authorization for a contact.** What this status means is that every gate a
+round-1 takeoff needs is closed on the model-free side. The flight agent's FIRST contact is the
+**prompt fit** of section 12 item 9, under its own `bounded-discovery-probe` row, and nothing may
+precede it.
 
 Cell EVO-A1 of `docs/readiness/2026-09-05-three-dimension-experiment-program.md` (section 4c, loop
 constants section 5). Model-free prerequisites already closed:
@@ -18,6 +26,9 @@ constants section 5). Model-free prerequisites already closed:
 | the three loop rosters, `SAEA-SN-MF-A2T-EVO-FOLD-ROSTERS-V1` (superseded, kept as history) | `docs/receipts/rosters/a2t-evo-fold-{a,b}-v1.json`, `a2t-evo-exemplars-v1.json` |
 | the three loop rosters under the sentinel rule, `SAEA-SN-MF-A2T-EVO-FOLD-ROSTERS-V2` | `docs/receipts/rosters/a2t-evo-fold-{a,b}-v2.json`, `a2t-evo-exemplars-v2.json` |
 | the folds' flight products, `SAEA-SN-MF-A2T-EVO-FOLD-SUPPLEMENTS-V2` | `docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-fold-flight-products/` |
+| the curve roster and its flight products, `SAEA-SN-MF-A2T-EVO-CURVE-ROSTER-V1` | `docs/receipts/rosters/a2t-evo-curve-400-v1.json`, `docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-curve-roster/` |
+| the decontamination gate, `SAEA-A2T-MF-EVO-DECONTAMINATION-V1` | `docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-decontamination/` |
+| the round-1 propose step and its anchors' supplement, `SAEA-SN-MF-A2T-EVO-PROPOSER-R01-PLAN-V1` | `docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-01/`, `docs/receipts/artifacts/d1-a2t-evo-proposer-r01.json` |
 
 ---
 
@@ -160,7 +171,16 @@ fail-closed before a byte was written: 0 blocks shared pairwise, 0 blocks and 0 
 the 5,279-identity exposure union, 0 duplicate ids. The V1 receipts stay as history and are never
 deleted; `scripts/build_a2t_evo_fold_rosters.py --version v1` still reproduces them byte for byte.
 
-## 3. State, and `A_0`
+## 3. State, and `A_0` — CLOSED (coordinator 2026-09-06)
+
+**`A_0` = `A_0-compact`, the released compact registry, rendered sha256
+`752dd381a02028dc7345a6ac826109bdcc879d82547a9029a43d559d0de8a605` over 15,854 characters and 152
+lines, measured at 3,581 text tokens on the pinned tokenizer.** That value is re-derived, not
+copied: `scripts/build_a2t_evo_decontamination.py` renders `A_0` through
+`data.audio2tool_tools.render_registry_compact()` with no overrides and exits before writing a byte
+unless the characters, the line count and the sha256 all reproduce. The token cap every candidate is
+measured against is therefore **3,581 + 40 = 3,621 tokens**, priced by the serving geometry's own
+`/tokenize` route at prompt fit and never by an estimator.
 
 `A_r` is a mapping from a **targeted** tool name to a replacement `description`, and nothing else.
 Rendering is always `data.audio2tool_tools.render_registry_compact(description_overrides=...)`
@@ -214,7 +234,7 @@ flies the incumbent plus `K` portfolios rather than `K x targets` arms.
 |---|---:|---|---:|---|
 | **F1 proposer** | 1, 2, 3 | every round | 1 text contact per target per k | `render_proposer_instruction`: this target's registry rows, `M = 8` block-disjoint construction exemplars per tool with their gold calls, the incumbent descriptions. Returns strict JSON `{"cue": ..., "descriptions": {...}}` |
 | **F2 deterministic** | 4 | every round | none | `deterministic_candidate`: append the registry's own `domain` and `category`. Zero model contact, so it is the floor a proposer must clear |
-| **F3 placebo** | 5 | round 1 only | 1 text contact per target | `render_placebo_instruction`: a length-matched rewrite explicitly told to carry no distinguishing cue |
+| **F3 placebo** | 5 | round 1 only | 1 text contact per target | `render_placebo_instruction`: a rewrite explicitly told to carry no distinguishing cue. The instruction asks for a LENGTH match, but the control is closed on a TOKEN match measured at prompt fit on the flight tokenizer (section 12 item 9) — a form twin is a token twin, not a character count |
 
 So **`K_1 = 5` and `K_r = 4` for r >= 2**; the program's "K = 4" is the steady-state value and the
 round-1 placebo is the extra slot, not a replacement for a proposer draw.
@@ -346,7 +366,7 @@ never a claim: the claim-bearing read is the 4,000.
 |---|---|---|---|
 | fold A | `A2T-EVO-FOLD-A-V2`, 424 rows (284 reward / 20 sentinel / 120 background), 269 blocks, identity `f84ef663…70917325` | every round, `K_r + 1` arms | per-target saves/harms/net, plus the sentinel-harms line |
 | fold B | `A2T-EVO-FOLD-B-V2`, 418 rows (284 / 14 / 120), 300 blocks, identity `b2d1f634…1758ef9d` | every round, 2 arms | targeted and background CI90 |
-| curve | the 400-row curve roster (section 7) | every round, incumbent only | the evolution curve |
+| curve | `A2T-EVO-CURVE-400-V1`, 400 rows (50 per tier), 363 blocks, 3,470.346292 s, identity `b40043be…92987f` — a strict subset of the final read's population (section 7) | every round, incumbent only, after that round's decision | the evolution curve. It decides nothing |
 | **final** | the union 4,000, `A2T-ORG1-UNION-4000` | **once**, at the end | the claim |
 
 The final read pairs `A*` row for row against the **sealed** official-protocol outputs of the same
@@ -365,29 +385,60 @@ weightings, natural-mixture and equal-stratum.
 `G <= 0.5 * delta_foldB`. **NULL** if the curve rose but the 4,000 CI includes 0 — reported as
 overfitting with the selection rule named — or if the curve never rose.
 
-## 7. The curve roster — an open decision, both options priced
+## 7. The curve roster — CLOSED (coordinator 2026-09-06): Option A, frozen
 
-The program says "the frozen 400 per round (curve only)". Two rosters answer to that name and they
-are not the same population. **The tier-1 official 500 is neither of them and is not proposed.**
+The program says "the frozen 400 per round (curve only)". Two rosters answered to that name and they
+are not the same population. The tier-1 official 500 was neither of them and was not proposed. The
+coordinator chose **Option A**, and it is now drawn, hash-pinned and committed.
 
-**Option A (proposed): `A2T-EVO-CURVE-400-V1`** — a 400-row, tier-stratified (50 per tier)
-sub-roster of the union 4,000, drawn **once** by `freeze_roster` with seed 20260906,
-`split_role = "discovery"`, `roster_role = "evaluation"`, strata = tier. Every one of its rows is
+**`A2T-EVO-CURVE-400-V1`** — a 400-row, tier-stratified (50 per tier) sub-roster of the union 4,000,
+drawn **once** by `core.roster.freeze_roster` with seed 20260906, `split_role = "discovery"`,
+`roster_role = "evaluation"`, strata = tier, no exclusion and no group key. Every one of its rows is
 **already consumed**: contacted on 2026-09-04 under the official protocol and again on 2026-09-05
 under ORG-1, each carrying a sealed official-protocol output the curve read is paired against. Its
 virtue is that the curve is a strict subset of the final read, so the curve and the evaluation
-delta are measured on one distribution and the gap is not confounded by a population change. Its
-cost is a new probe-sample-free subset receipt and its own D1 media supplement.
+delta are measured on one distribution and the gap is not confounded by a population change.
 
-**Option B: `A2T-CALIBRATION-400`** — the study's original frozen 400 (identity
-`e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c`, 2,159.688 s), which already
-carries a sealed official-protocol read (`SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-V1`, cell
-`R-official-raw`) and needs **no** D1 media supplement at all because its ids sit inside the base
-`docs/receipts/artifacts/d1-identity.json`. Its cost is that only 68 of its 400 rows are in the
-union 4,000, so the curve and the final read sit on different draws.
+| fact | value |
+|---|---|
+| rows / blocks | 400 (50 per tier over all eight) / 363 |
+| domains | smart_home 281, wearables 82, smart_car 37 |
+| audio, one pass | **3,470.346292 s**; longest row 654.635667 s, shortest 0.958417 s |
+| identity (FlightRuntime) | `b40043be23ed364b5121612b74cfbe52c044e1d83a2139c90229cdd72e92987f` |
+| identity (probe-receipt `key`) | `4df3986d29bc98a788d2ab1249e697b4c2c13269e2b3b164b1f959a7db79e49b` |
+| roster receipt | `docs/receipts/rosters/a2t-evo-curve-400-v1.json`, sha256 `443e9ac70021c12018f5511d0eca792a70c61270c2b3a79884cf293aad99bbc7` |
+| flight-roster receipt | `docs/checks/.../2026-09-06-a2t-evo-curve-roster/flight-roster-receipt.json`, sha256 `b22741ac5be7f8bf8be4bd9e46de256ff870aa0f6a6ed7e37d2cc722b9cc3af4` |
+| dataset fragment | `configs/dataset/audio2tool-evo-curve-400.json` |
+| exposure row | `SAEA-SN-MF-A2T-EVO-CURVE-ROSTER-V1` |
 
-Budget numbers below assume Option A at an estimated 2,342 s per pass (the union's 23,418.083 s
-scaled to 400 rows); Option B measures 2,159.688 s.
+**Two measured corrections to what this section used to say, and the measurement governs.**
+
+1. **One pass costs 3,470.346292 s, not the estimated 2,342 s.** The estimate scaled the union's
+   mean to 400 rows. The draw inherited **two of the union's four 654-second synthesis defects**
+   (`tier6_correction:003151` and `tier7_multiturn:001033`), which alone are 1,309.3 s — 38 % of the
+   pass. They are **kept**: the sealed baseline outputs this read pairs against were produced on
+   exactly these rows, and dodging them would make the draw a selection rather than a subset.
+2. **Its cost is NOT "a new subset receipt and its own D1 media supplement".** It needs **neither**,
+   and writing the first would be a defect: all 400 ids already resolve inside `data.audio2tool`'s
+   frozen-receipt universe (196 + 143 + 49 through the three official-population views, 8 through
+   `r1-audio2tool-sample`, 4 through `select-fill-agentloop-104-postseal-scoring`) and
+   `_resolve_items` refuses a sample id two probe-sample receipts claim, so an additive view would
+   break the loader for every Audio2Tool cell rather than add a row. All 400 are likewise already
+   inside the D1 identity closure — 392 through `d1-a2t-org1-union-4000.json` and 8 through the
+   immutable `d1-identity.json` — so the curve cell configures the union's own supplement. The
+   builder asserts both fail-closed and refuses to write if either is false.
+
+**Consequences the flight must carry.** The registered speech ceiling is `R_max x 3,470.346292 =`
+**13,882 s** (section 10), and under the encoder's one-second window rule the 654.6 s row costs 8,515
+speech tokens, so the curve cell's serving geometry is the union's rather than the folds' looser one.
+The prompt fit re-derives both.
+
+**Option B is recorded as not taken.** `A2T-CALIBRATION-400` (identity
+`e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c`, 2,159.688 s) already carries a
+sealed official-protocol read (`SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-V1`, cell `R-official-raw`)
+and needed no supplement either, but only 68 of its 400 rows are in the union 4,000, so the curve and
+the final read would have sat on different draws. That is the cost the coordinator declined to pay,
+and it is the whole reason Option A won.
 
 ## 8. Decontamination, per candidate, under its own model-free row
 
@@ -415,50 +466,62 @@ The loop is declared to have failed, and is stopped and reported as such, if any
 1. no target is admitted in rounds 1 and 2;
 2. a construction gain of at least 2 pp whose 4,000 CI90 includes 0, or a transfer ratio below 0.25;
 3. the deterministic control lands within 0.5 pp of the proposer;
-4. the placebo is indistinguishable from the proposer candidate;
+4. the placebo is indistinguishable from the proposer candidate — read against a placebo whose
+   whole-block TOKEN count, measured at prompt fit on the flight tokenizer, sits inside the proposer
+   candidates' range (section 12 item 9);
 5. every candidate fails the background tolerance.
 
 ## 10. Budget
 
-**Recomputed on the V2 sizes.** Per-round arithmetic (`rails.evolution.ledger_budget` reproduces
-the speech terms). Fold A carries **2,016.519 s** of audio per pass and fold B **1,950.418 s** --
-both larger than V1's 1,913.527 and 1,877.630 because the folds grew to 424 and 418 rows -- the
-curve roster about 2,342 s, the 4,000 23,418.083 s. Generation is costed at 0.80 s per call, the
-rate the sealed Audio2Tool cells showed at two slots; these folds are shorter-audio than the union,
-so this is conservative. The proposer term grows from 12/9 contacts per round to **20/15**, because
-five targets are flown rather than three.
+**Every term is now MEASURED rather than estimated, and two of them moved.** Per-round arithmetic
+(`rails.evolution.ledger_budget` reproduces the speech terms). Fold A carries **2,016.51925 s** of
+audio per pass and fold B **1,950.417958 s**; the curve roster **3,470.346292 s** (not the 2,342 s
+this section estimated before the draw existed — section 7), and the 4,000 23,418.083083 s.
+Generation is costed at 0.80 s per call, the rate the sealed Audio2Tool cells showed at two slots.
+The proposer term is **20 contacts in round 1 and 15 thereafter**, because five targets are flown.
 
 | round | fold A | fold B | curve | proposer | calls | speech s |
 |---|---:|---:|---:|---:|---:|---:|
-| 1 (`K_1 = 5`, 6 arms) | 2,544 | 836 | 400 | 20 | 3,800 | 18,562 |
-| 2–4 each (`K_r = 4`, 5 arms) | 2,120 | 836 | 400 | 15 | 3,371 | 16,501 |
-| loop total (R_max 4) | 8,904 | 3,344 | 1,600 | 65 | 13,913 | 68,066 |
+| 1 (`K_1 = 5`, 6 arms) | 2,544 | 836 | 400 | 20 | 3,800 | 19,554.4 |
+| 2 (`K_r = 4`, 5 arms) | 2,120 | 836 | 400 | 15 | 3,371 | 17,504.0 |
+| 3 | 2,120 | 836 | 400 | 15 | 3,371 | 17,519.6 |
+| 4 | 2,120 | 836 | 400 | 15 | 3,371 | 17,514.8 |
+| loop total (R_max 4) | 8,904 | 3,344 | 1,600 | 65 | 13,913 | 72,092.8 |
 | final read on the 4,000 | | | | | 4,008 | 23,419 |
-| **whole cell** | | | | | **17,921** | **91,485** (25.41 h) |
+| **whole cell** | | | | | **17,921** | **95,511.8** (26.53 h) |
 
-The speech columns include each round's proposer ANCHORS (about 220 s in round 1, 176 s thereafter):
-the arm sends no audio part, but `FrozenCoreAdapter` charges the payload's own `audio_seconds`
-against the plan regardless, so the seconds are an accounting term (section 12 item 8).
+The speech columns include each round's proposer ANCHORS, and those are now measured too: **84.114 s
+in round 1** (wav headers, from the landed propose step) and 50.2 / 65.8 / 61.0 s in rounds 2 to 4
+(the same deterministic draws, priced from the manifests' `duration` column). The arm sends no audio
+part, but `FrozenCoreAdapter` charges the payload's own `audio_seconds` against the plan regardless,
+so the seconds are an accounting term (section 12 item 8).
 
-Registered **ceilings are `R_max` x the per-round budget**, per run id, because plan budgets are
-cumulative across every attempt of a run id:
+Registered **ceilings are `R_max` x the WORST round**, per run id, because plan budgets are
+cumulative across every attempt of a run id. All five rows are written and are `consumed = no`:
 
-| run id | roster | attempts | calls ceiling | speech s ceiling | profile |
-|---|---|---|---:|---:|---|
-| `SAEA-A2T-EVO-A1-FOLD-A-V1` | `A2T-EVO-FOLD-A-V2` | `attempt-r{r}-i`, `attempt-r{r}-c{k}` | 10,176 | 48,397 | `baseline-reproduction` |
-| `SAEA-A2T-EVO-A1-FOLD-B-V1` | `A2T-EVO-FOLD-B-V2` | `attempt-r{r}-i`, `attempt-r{r}-a` | 3,344 | 15,604 | `baseline-reproduction` |
-| `SAEA-A2T-EVO-A1-CURVE-400-V1` | the curve roster | `attempt-r{r}-curve` | 1,600 | 9,368 | `baseline-reproduction` |
-| `SAEA-A2T-EVO-A1-PROPOSER-V1` | `A2T-EVO-EXEMPLARS-V2` | `attempt-r{r}-p{target}-k{k}` | 80 | **879** | `bounded-discovery-probe` |
-| `SAEA-A2T-EVO-A1-FINAL-4000-V1` | `A2T-ORG1-UNION-4000` | `attempt-<stamp>-evofinal` | 4,008 | 23,419 | `baseline-reproduction` |
-| **total** | | | **19,208** | **97,667** | |
+| run id | roster | attempts | calls ceiling | speech s ceiling | GPU h | profile |
+|---|---|---|---:|---:|---:|---|
+| `SAEA-A2T-EVO-A1-FOLD-A-V1` | `A2T-EVO-FOLD-A-V2` | `attempt-r{r}-i`, `attempt-r{r}-c{k}` | 10,176 | 48,397 | 2.5 | `baseline-reproduction` |
+| `SAEA-A2T-EVO-A1-FOLD-B-V1` | `A2T-EVO-FOLD-B-V2` | `attempt-r{r}-i`, `attempt-r{r}-a` | 3,344 | 15,604 | 1.0 | `baseline-reproduction` |
+| `SAEA-A2T-EVO-A1-CURVE-400-V1` | `A2T-EVO-CURVE-400-V1` | `attempt-r{r}-curve` | 1,600 | **13,882** | 0.8 | `baseline-reproduction` |
+| `SAEA-A2T-EVO-A1-PROPOSER-V1` | the per-round proposer rosters | `attempt-r{r}-p{target}-k{k}` | 80 | **400** | 0.1 | `bounded-discovery-probe` |
+| `SAEA-A2T-EVO-A1-FINAL-4000-V1` | `A2T-ORG1-UNION-4000` | `attempt-<stamp>-evofinal` | 4,008 | 23,419 | 1.0 | `baseline-reproduction` |
+| **total** | | | **19,208** | **101,702** | **5.4** | |
 
-The ceiling is `R_max` x the WORST round, not `R_max` x the average: fold A's is 4 x 6 arms x 424,
-fold B's 4 x 2 x 418. The proposer's speech ceiling is 879 s rather than 0 -- `ExecutionPlan`
-refuses a non-positive value and the adapter charges the anchors (section 12 item 8).
+Fold A's ceiling is 4 x 6 arms x 424, fold B's 4 x 2 x 418. **Two ceilings changed from this
+document's earlier draft and the measured numbers govern.** The curve's is 13,882 s rather than
+9,368, because one pass costs 3,470.346292 s (section 7). The proposer's is **400 s rather than
+879**: the four rounds' draws are deterministic and computable without a contact, their anchors sum
+to 84.1 / 50.2 / 65.8 / 61.0 s, `check_ledger_budget` compares the WORST round x `R_max`
+(4 x 84.114333 = **336.457 s**), and 400 is registered for margin. It is 400 rather than 0 because
+`ExecutionPlan` refuses a non-positive value and the adapter charges the anchors (section 12
+item 8). The landed round-1 propose step recorded exactly that check: planned 80 calls and 336.457
+speech seconds against 80 and 400, `within: true`.
 
-GPU hours: 19,208 calls x 0.80 s = 4.27 h; planned **5.0**, ceiling **6.5**, both still covering
-it. Paid API spend 0.
-Proposer contacts are counted in `calls` and never in `speech_seconds`: the arm is text-only and
+GPU hours: 19,208 calls x 0.80 s = 4.27 h nominal against **5.4** registered across the five rows.
+The curve carries 0.8 h rather than the 0.36 h a flat rate would give, because two rows of every
+pass carry 654 s of audio to encode. Paid API spend 0.
+Proposer contacts are counted in `calls` and never as audio on the wire: the arm is text-only and
 sends no audio part at all. Every row is written `consumed = no` and stays so until the loop closes.
 
 ## 11. Configuration
@@ -482,6 +545,7 @@ share one fragment.
 |---|---|
 | `configs/knowledge/a2t-evo-a1/loop-v1.json` | the loop AS DATA: targets, `sentinel_tools`, the three V2 roster relpaths, run ids, fragment names, metric, scorer, slots, gates, seed, `R_max`. `rails.evolution.LoopConfig.from_json` reads it and refuses an unknown key, an overlapping target set, or a sentinel that is not a member of the target it guards. The driver carries no cell knowledge of its own |
 | `configs/dataset/audio2tool-evo-fold-a-424.json`, `configs/dataset/audio2tool-evo-fold-b-418.json` | the two fold populations on the `a2t_calibration_*` key contract, so both folds fly through the same entry point and the same `FlightRuntime` as every other Audio2Tool direct cell. Named for their true V2 sizes; the `-404` names of the V1 draft never existed as files |
+| `configs/dataset/audio2tool-evo-curve-400.json` | the curve population on the same key contract. It configures the UNION's own D1 supplement (`receipts/artifacts/d1-a2t-org1-union-4000.json`, sha256 `b94439af…64ec59`) and no probe-sample view of its own, because all 400 ids are already inside both closures — section 7 |
 | `configs/baseline/a2t-evo-a1-base.json` | the official-protocol cell byte for byte with `task_instruction_fill` REMOVED. `write_candidate_fragments` owns `task_instruction_fill`/`task_instruction_fill_params` and refuses a base that already sets either; with no fill declared this fragment is also the incumbent `A_0` arm's own baseline, because falling through renders the released compact registry, which is exactly what `A_0` is |
 | `configs/baseline/a2t-evo-a1-proposer.json` | the proposer arm: `arm: construction-proposer-text`, `policy: fixed`, `scorers: ["cost"]`. It declares NO instruction — every contact's system message is its draw's own rendered instruction — and no roster, because the roster is per round |
 
@@ -551,14 +615,20 @@ or committed to this repository**; a receipt records identity, counts and the pr
 
 ## 12. What the flight agent must do before the first contact
 
-1. **Close A_0** (section 3) and record its sha256 in the fragment and in every exposure row.
+1. ~~**Close A_0**~~ **DONE (coordinator 2026-09-06).** `A_0 = A_0-compact`, sha256
+   `752dd381a02028dc7345a6ac826109bdcc879d82547a9029a43d559d0de8a605`, 15,854 characters, 152 lines,
+   3,581 text tokens; cap 3,621. Section 3 pins it and
+   `scripts/build_a2t_evo_decontamination.py` re-derives it fail-closed.
 2. ~~**Ratify STRICT or RELAXED**~~ **DONE (owner 2026-09-06, RELAXED with sentinels).** The
    target set is closed at five targets and 23 tools, `configs/knowledge/a2t-evo-a1/loop-v1.json`
    carries it with its `sentinel_tools` map, and the V2 rosters were re-drawn for it
    (`SAEA-SN-MF-A2T-EVO-FOLD-ROSTERS-V2`). This one DID need a fresh draw, contrary to the earlier
    reading: sentinels take blocks the V1 cut had left in the exemplar pool.
-3. **Choose the curve roster** (section 7) and, for Option A, draw it once by seed and land its
-   receipt under a model-free row.
+3. ~~**Choose the curve roster**~~ **DONE (coordinator 2026-09-06): Option A, drawn and landed**
+   under `SAEA-SN-MF-A2T-EVO-CURVE-ROSTER-V1`. `A2T-EVO-CURVE-400-V1`, 400 rows, identity
+   `b40043be…92987f`, 3,470.346292 s per pass, with its roster receipt, its flight-roster receipt
+   and its dataset fragment. It needs no probe-sample view and no D1 supplement of its own, and
+   writing the first would break the loader — section 7.
 4. ~~**Make the folds hydratable**~~ **DONE** under `SAEA-SN-MF-A2T-EVO-FOLD-SUPPLEMENTS-V2`.
    All three artifacts exist for both folds: the probe-sample views
    `docs/receipts/probe-samples/a2t-evo-fold-{a,b}-v2.json` (322 and 291 new ids, additive against
@@ -577,11 +647,32 @@ or committed to this repository**; a receipt records identity, counts and the pr
    media supplement** even though no audio part is sent. Anchors are few (twenty in round 1,
    fifteen thereafter, one per proposer or placebo contact over five targets) and are a strict
    subset of the exemplar roster, so one supplement per round is small.
-6. **Write the dataset fragments** — the two fold fragments are DONE and are named for their true
-   V2 sizes, `audio2tool-evo-fold-a-424` and `audio2tool-evo-fold-b-418`. Still outstanding: one
-   per round for the proposer roster, which the driver emits, so every cell flies through the same
-   entry point with no new code path.
-7. **Register `SAEA-A2T-MF-EVO-DECONTAMINATION-V1`** (section 8) before validating any candidate.
+   **ROUND 1 IS DONE** under `SAEA-SN-MF-A2T-EVO-PROPOSER-R01-PLAN-V1`:
+   `docs/receipts/artifacts/d1-a2t-evo-proposer-r01.json` (20 ids, 4,038,368 media bytes, sha256
+   `b6782823ca062bddac3bae543a29065fc7c5d7531d58083873c01014d9ca7f8a`), and the I-4 gate was RUN
+   rather than asserted — PASS on all 20 anchors through a real `FrozenCoreGate.for_study_repo`,
+   with an unlisted id refused as the negative control. Rounds 2 to 4 repeat this after their own
+   propose step. **A defect this closed**: the proposer roster used to record the manifest's
+   three-decimal `duration` as `audio_seconds`, which no supplement built from wav headers could
+   ever match, so this supplement was unbuildable and the anchors could never have passed the gate;
+   `load_carrier_material` now measures headers through
+   `analysis.a2t_evo_capacity.measured_media_facts`, the same function and the same FIRST-user-turn
+   tier-7 rule the folds used.
+6. **Write the dataset fragments** — the two fold fragments and the curve fragment are DONE
+   (`audio2tool-evo-fold-a-424`, `audio2tool-evo-fold-b-418`, `audio2tool-evo-curve-400`). One per
+   round for the proposer roster is emitted by the driver;
+   `configs/experiment/a2t-evo-a1-proposer-r01.json` has landed, so every cell flies through the
+   same entry point with no new code path.
+7. ~~**Register `SAEA-A2T-MF-EVO-DECONTAMINATION-V1`**~~ **DONE (2026-09-06)**, before any candidate
+   exists. Its artifact is
+   `docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-decontamination/`: the
+   evaluation gate set of **77,899** word 6-grams, PINNED at
+   `a98d5dd093571f3a63d58d91ab25dcc5ce04cc2a2ba201bbf4f56e96e00c44e9` and never listed, beside
+   `A_0`'s **2,005** registry grams committed verbatim as the exemption list. All of KC-A1's counts
+   reproduce. One inherited defect is recorded rather than silently fixed: KC-A1's rule swept in each
+   chat turn's wav `path` and `role`, so 9,252 of the 77,899 grams are not speaker text (the
+   speaker-only core is 68,647); the superset is kept because it is strictly stricter and because it
+   is what makes the anchor reproduce.
 8. **The proposer run id cannot be registered at zero speech seconds.** `contracts.ExecutionPlan`
    refuses a non-positive `planned_speech_audio_seconds` outright, and
    `core.model.FrozenCoreAdapter` charges the payload's own `audio_seconds` against the plan even
@@ -590,15 +681,33 @@ or committed to this repository**; a receipt records identity, counts and the pr
    cover the sum of its anchors' durations across every round, and the driver sizes each round's
    fragment accordingly. The ledger row's `speech audio seconds` cell is therefore an ACCOUNTING
    ceiling, not a claim that audio was heard.
-9. **Prompt fit** under a `bounded-discovery-probe` row: `/tokenize` the A_0 block and every
-   round-1 portfolio on the resident server, confirm the +40-token headroom against the sealed
-   compact registry's measured **3,581** tokens, and re-derive the serving geometry. Zero generated
+9. **Prompt fit — THE FLIGHT AGENT'S FIRST CONTACT, and nothing may precede it.** Under its own
+   `bounded-discovery-probe` row: `/tokenize` the `A_0` block and every round-1 portfolio on the
+   resident server, confirm the headroom against `A_0`'s measured **3,581** tokens (cap 3,621), and
+   re-derive the serving geometry for all four populations — the two folds, whose worst rows are
+   39.6 s and 53.8 s, and the CURVE roster, whose worst row is 654.6 s and therefore costs 8,515
+   speech tokens, so the curve cell needs the union's geometry and not the folds'. Zero generated
    tokens. A candidate that only an estimator admits is refused: KC-A1 died four tokens over a
    forty-token cap because its builder injected the ORG-1 ratio as its counter. The driver
    deliberately prices NO candidate — `run_candidates_step`'s `validator` seam is left unfilled,
    because filling it would be a contact — so this row is where `validate_candidate_artifact` runs
-   with the serving tokenizer as its `token_counter`, and a candidate it refuses is appended to that
-   round's refusal record.
+   with the serving tokenizer as its `token_counter` and with
+   `scripts.build_a2t_evo_decontamination.evaluation_invocation_texts(...)` as its
+   `evaluation_query_texts`, under `SAEA-A2T-MF-EVO-DECONTAMINATION-V1`. A candidate it refuses is
+   appended to that round's refusal record.
+
+   **The F3 placebo is TOKEN-matched here, and that is what makes it a control.** Its instruction
+   asks for a length-matched rewrite carrying no distinguishing cue, but LENGTH is not the quantity
+   the comparison is about: the owner's 2026-09-06 ruling is that a control is a FORM TWIN measured
+   on the flight tokenizer, not a character count, and KC-A1 is the standing proof that a
+   chars-per-token estimator misprices this family (3.659 chars/token on short appended English
+   against the block's own 4.427). So the prompt fit `/tokenize`s the placebo portfolio and the
+   proposer portfolios on the SAME route and records each one's whole-block token count beside
+   `A_0`'s 3,581. **Kill result 4 — "the placebo is indistinguishable from the proposer candidate"
+   — is read against a placebo whose token count sits inside the proposer candidates' range**, and a
+   placebo that lands outside it is re-drawn rather than flown, because a form twin that differs in
+   volume tests volume rather than content. The `+40` headroom stays what it always was: the loop's
+   search budget, advisory over a rewrite, never the thing the score is locked against.
 10. **Wire check every cell, the proposer included.** Both fold cells are ordinary `policy: fixed`
     speech cells and `FlightRuntime.wire_check` applies unchanged. **The proposer arm is now
     wire-checkable too** (track E3c): the check drives `_dispatch_fixed_policy` into
@@ -685,11 +794,11 @@ At most one recovery re-registration per run id.
 
 ## 15. Open points for the coordinator
 
-1. **A_0** — which of the two admissible states, with its sha256, and the token-cap baseline that
-   follows from it. **This is now the first blocker.** KC-A1's verdict decides it and KC-A1 is
-   VOID rather than pending (item 2), so as things stand `A_0` is `A_0-compact`; the coordinator
-   either says so, or re-prices the +40-token cap. `rails.evolution` cannot emit a round-1 fragment
-   until the answer and its sha256 are written into the reward fragment.
+1. ~~**A_0**~~ **CLOSED, coordinator 2026-09-06: `A_0-compact`.** The released compact registry,
+   sha256 `752dd381a02028dc7345a6ac826109bdcc879d82547a9029a43d559d0de8a605`, 15,854 characters,
+   152 lines, 3,581 text tokens, cap 3,621. The +40-token cap is NOT re-priced; it stays the loop's
+   advisory search budget over a rewrite. Section 3 carries it and the decontamination builder
+   re-derives it fail-closed before writing a byte.
 2. **KC-A1 is VOID, not pending** (master `35193cb1`): it never flew, so A_0 is the released
    compact registry unless the coordinator re-prices the +40-token cap. That result also retires
    the ORG-1 chars-per-token estimator for this family.
@@ -698,15 +807,16 @@ At most one recovery re-registration per run id.
    drops. Section 2 is rewritten to it and the V2 rosters are frozen. The lighting caveat MF-1
    raised — 147 of the 235 rows are directions ORG-1 already halved without gaining a point —
    survives the decision and is restated there.
-4. **The curve roster** — comparability (Option A) against zero supplement work (Option B).
-   **Recommendation, for a decision rather than a re-derivation:** Option A, defined as **a 400-row
-   tier-stratified subset of the union 4,000 (50 per tier) drawn ONCE by `freeze_roster` at seed
-   20260906**, `split_role = "discovery"`, `roster_role = "evaluation"`. Every one of its rows is
-   already consumed and already carries a sealed official-protocol output to pair against, so the
-   curve is a strict subset of the final read and the two are measured on one distribution. Its
-   cost is one subset receipt plus its own D1 media supplement — the same three-artifact shape just
-   built for the folds, and the reason it is not built here is that the roster is the
-   coordinator's to name, not the implementer's to pick.
+4. ~~**The curve roster**~~ **CLOSED, coordinator 2026-09-06: Option A, drawn and landed.**
+   `A2T-EVO-CURVE-400-V1` — 400 rows, 50 per tier, seed 20260906, `roster_role = "evaluation"`,
+   identity `b40043be…92987f`, 3,470.346292 s per pass, exposure row
+   `SAEA-SN-MF-A2T-EVO-CURVE-ROSTER-V1`. Two things the recommendation got wrong and the measurement
+   corrected, both now in section 7: the pass costs 3,470.3 s and not the estimated 2,342 s (the draw
+   inherited two of the union's four 654-second synthesis defects, kept because the sealed outputs it
+   pairs against were produced on exactly those rows), and its cost is NOT "one subset receipt plus
+   its own D1 media supplement" — it needs neither, and an additive probe view repeating its ids
+   would break `data.audio2tool` for every Audio2Tool cell. The registered speech ceiling moves from
+   9,368 to 13,882 s, and the curve cell inherits the union's serving geometry.
 5. **`K_1 = 5`** — the round-1 placebo as an extra slot rather than a replaced proposer draw.
 6. **The exemplar draw as a seeded ORDERED sample** — the only way `K = 3` proposer draws differ at
    all for the six tools whose V2 exemplar pool is exactly `M`, and the five sentinels whose pool is
@@ -736,16 +846,48 @@ At most one recovery re-registration per run id.
    * the **placebo** contact declares one construction target (its anchor) whose gold its prompt
      never renders -- an over-declaration of exactly one row, the conservative direction, recorded
      as such. Confirm that reading rather than giving the placebo a second arm.
-9. **The fold prerequisites are landed and no longer block round 1** (section 12 items 4 and 6):
-   the V2 rosters, both folds' probe-sample views, flight-roster receipts and D1 media supplements,
-   the two dataset fragments, and the two model-free exposure rows. What still blocks a round-1
-   takeoff is exactly four things: `A_0` (item 1); the curve roster (item 4); the five LOOP exposure
-   rows (`SAEA-A2T-EVO-A1-FOLD-A-V1`, `-FOLD-B-V1`, `-CURVE-400-V1`, `-PROPOSER-V1`,
-   `-FINAL-4000-V1`), without which `rails.evolution.check_ledger_budget` refuses to emit a
-   fragment, plus `SAEA-A2T-MF-EVO-DECONTAMINATION-V1`; and the round-1 proposer anchors' own
-   `d1-a2t-evo-proposer-r01` media supplement, which cannot be built before the `propose` step
-   writes that round's proposer roster and is therefore the flight agent's, not this document's.
-10. **A defect this work surfaced, recorded because it changes what a receipt means.** A
+9. **Every model-free prerequisite of a round-1 takeoff is now landed.** The four things this item
+   named as blockers are all closed: `A_0` (item 1), the curve roster (item 4), the five LOOP
+   exposure rows plus `SAEA-A2T-MF-EVO-DECONTAMINATION-V1`, and the round-1 anchors'
+   `d1-a2t-evo-proposer-r01` supplement. The round-1 PROPOSE step itself has landed model-free
+   (`SAEA-SN-MF-A2T-EVO-PROPOSER-R01-PLAN-V1`): 20 draws, 20 distinct anchors, 20 of 20 distinct
+   prompt digests, `check_ledger_budget` accepting 80 calls and 336.457 speech seconds against 80
+   and 400, and the I-4 gate run offline against all 20 anchors with a negative control.
+
+   **What remains is a CONTACT, not a document, and it is in this order**: (a) the prompt fit,
+   section 12 item 9, under its own `bounded-discovery-probe` row — the flight agent's FIRST
+   contact, where the serving tokenizer prices `A_0`, every round-1 portfolio and the token-matched
+   placebo, and where the serving geometry is re-derived for the folds and separately for the curve;
+   (b) the contact-free wire check of item 10 on a clean committed tree; (c) the 20 proposer cells of
+   `configs/experiment/a2t-evo-a1-proposer-r01.json`, whose sealed outputs the `candidates` step
+   blocks on. Nothing in this document authorizes any of them: the exposure rows do, and they are
+   written `consumed = no`.
+
+   **A correction to how the round-1 plan is produced, recorded because it changes what a receipt
+   means.** `--plan-only` writes NOTHING — it reports which step is next and why the others are not.
+   The artifact carrying the round's draws, anchors and prompt digests is the PROPOSE step's own
+   `round-01/propose.json`, produced by running the driver without `--plan-only`. Both are
+   model-free; only the second lands a receipt.
+
+11. **Three defects the round-1 propose step surfaced, all fixed at the base with tests, recorded
+   because two of them would have refused a flight rather than a document.**
+   * A released `expected_tool_call` is occasionally NAMESPACED — `smart_home.setApplianceMode(...)`
+     against a bare `setApplianceMode` — in 1 of the 274 rows of `A2T-EVO-EXEMPLARS-V2` and 3 of fold
+     A's 424. `build_proposer_material` demanded byte equality with the row's `tool_name` and refused
+     the whole round on `tier5_needle:001403`. The manifest's `tool_name` is the authority the
+     OFFICIAL scorer itself compares a prediction against, so the namespace is cosmetic; both guards
+     now compare the last dotted segment, the call string is still rendered VERBATIM, and a genuine
+     disagreement is still refused — the released `tier3_multi_intent:002505` pairs `updateFirmware`
+     with a `setTargetTemperature` call and is a fold-A row rather than an exemplar.
+   * The proposer roster recorded the manifest's three-decimal `duration` as `audio_seconds`, which
+     no D1 supplement built from wav HEADERS can match within 1e-6, so item 5's supplement was
+     unbuildable and the anchors could never have passed the I-4 gate. Fixed at the source — see
+     item 5.
+   * The study's one D1 supplement builder could not read a `saea-roster-receipt-v1`. It now accepts
+     either shape, so a proposer roster (which has no flight-roster view, because it is not a speech
+     population) is served by the same builder as every other roster.
+
+12. **A defect this work surfaced, recorded because it changes what a receipt means.** A
    construction roster's own flight products used to poison the pool it was drawn from:
    `rails.knowledge_build_a2t._exposure_sources` read an unmarked probe-sample receipt as
    EVALUATION exposure and every `d1-a2t-*` supplement as exposure unconditionally, so landing the
@@ -759,3 +901,10 @@ At most one recovery re-registration per run id.
    the same 14 sources with identical per-source counts, and the system is now a fixpoint. Nothing
    here for the coordinator to decide; it is recorded so a reviewer knows why the union reader has
    a construction branch.
+
+   **The fixpoint was re-verified once more when the curve roster landed.** Committing
+   `docs/receipts/rosters/a2t-evo-curve-400-v1.json` — a genuine `roster_role = "evaluation"`
+   exposure source of 400 ids — leaves the union at **5,279 identities over 15 sources instead of
+   14**, because all 400 were already inside it through the three official-population probe-sample
+   receipts. The V2 fold draw, which excludes that union, is therefore unchanged by the curve
+   roster, and no committed receipt of this cell has to be re-derived.

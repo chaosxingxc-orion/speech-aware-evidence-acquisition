@@ -2,7 +2,7 @@
   "experiment_id": "SAEA-A2T-EVO-A1-DESCRIPTION-EVOLUTION-V1",
   "schema": "saea-a2t-direct-calibration-experiment-v1",
   "date": "2026-09-06",
-  "draft_status": "DRAFT. Not registered and not flyable. The coordinator closes docs/readiness/2026-09-06-a2t-evo-a1-description-evolution-v1-preregistration.md first (A_0 and its sha256, the curve roster) and writes the five exposure rows; the target set is CLOSED (owner 2026-09-06, RELAXED with sentinels). Of section 12's twelve prerequisites the fold half is now landed: both fold dataset fragments, their probe-sample views, their flight-roster receipts and their D1 media supplements exist (SAEA-SN-MF-A2T-EVO-FOLD-SUPPLEMENTS-V2). Every 'PENDING' value below is filled by rails.evolution.write_candidate_fragments when round 1 is assembled.",
+  "draft_status": "REGISTERED 2026-09-06. docs/readiness/2026-09-06-a2t-evo-a1-description-evolution-v1-preregistration.md is REGISTERED: A_0 is the released compact registry (sha256 752dd381a02028dc7345a6ac826109bdcc879d82547a9029a43d559d0de8a605, 3,581 text tokens, cap 3,621), the curve roster is A2T-EVO-CURVE-400-V1, the target set was closed by the owner on 2026-09-06 (RELAXED with sentinels), and all five loop exposure rows plus SAEA-A2T-MF-EVO-DECONTAMINATION-V1, SAEA-SN-MF-A2T-EVO-CURVE-ROSTER-V1 and SAEA-SN-MF-A2T-EVO-PROPOSER-R01-PLAN-V1 are written and consumed=no. Round 1's PROPOSE step has landed model-free. Registration is not a contact authority: the flight agent's FIRST contact is the prompt fit of section 12 item 9, under its own bounded-discovery-probe row. Every remaining 'PENDING' value below is filled by rails.evolution.write_candidate_fragments when round 1 is assembled.",
   "execution_profile": "baseline-reproduction",
   "purpose": "EVO-A1 of the three-dimension program (docs/readiness/2026-09-05-three-dimension-experiment-program.md sections 4c and 5): the REWARD half of the evolution loop, round 1. The frozen core proposes tool-description rewrites for MF-1's confusable targets on a text-only construction arm; each portfolio is scored by the official scorer on held-out construction rows; best-of-K is kept; four rounds; one read on the sealed 4,000 at the end. This fragment carries only the speech-bearing reward flights, which are baseline-reproduction. The proposer's own text contacts are bounded-discovery-probe and need a SECOND fragment, because a composed experiment fragment declares exactly one execution_plan and therefore exactly one execution profile.",
   "hypothesis": "H1: a best-of-K selection over descriptions the frozen core wrote from its own registry rows and block-disjoint construction exemplars produces a registry whose gain survives one read on the sealed 4,000. H2: the deterministic domain+category control is the floor a proposer must clear, and the round-1 length-matched placebo separates form from content. The ceiling is stated before takeoff: under the owner's 2026-09-06 sentinel rule 216 of MF-1's 235 addressable misses sit on directions whose GOLD tool has fold rows, an arithmetic maximum of +5.40 pp on the 4,000. Only 19 rows are unreachable -- 13 whose gold is setBrightness and 6 whose gold is getLightState, both harm sentinels rather than reward tools.",
@@ -29,7 +29,7 @@
         "condition": "UNAVAILABLE as things stand: KC-A1 never flew (see predecessor.verdict), so there is no admitted artifact. Admissible only if the coordinator re-prices the +40-token cap, or KC-A1 is rebuilt to fit, flown and admitted."
       }
     },
-    "chosen_a_0": "A_0-compact unless the coordinator re-prices the +40-token cap; A_0-kca1 is unavailable because KC-A1 never flew.",
+    "chosen_a_0": "A_0-compact. CLOSED by the coordinator on 2026-09-06: the released compact registry, rendered sha256 752dd381a02028dc7345a6ac826109bdcc879d82547a9029a43d559d0de8a605 over 15,854 characters and 152 lines, 3,581 text tokens, so every candidate is capped at 3,621 tokens under the serving tokenizer. The +40-token cap is NOT re-priced and stays the loop's advisory search budget over a rewrite; A_0-kca1 remains unavailable because KC-A1 never flew. scripts/build_a2t_evo_decontamination.py re-derives all three facts fail-closed before writing a byte.",
     "token_headroom": "+40 tokens over 3,581 is about +146 characters of new phrasing across the whole block -- roughly +14 per tool at ten targeted tools, +7 at nineteen. Unlike KC-A1, whose family could only APPEND, the loop candidates REWRITE a description whole, so a proposer may spend characters the original was wasting; the budget is headroom over a rewrite, not over an append.",
     "form_caps": "152 lines, plain tool_name sort, no headers, ASCII only, at most 200 characters per description, and the whole rendered block within compact + 40 tokens. rails.proposer.validate_candidate_artifact enforces all of them with an INJECTED token counter whose authority is the resident server's /tokenize route at prompt fit."
   },
@@ -90,6 +90,23 @@
       "role": "the proposer's exemplar pool and the ONLY roster whose gold the construction-proposer-text arm may read. Text-only: it appears in NO cell of this fragment and needs no media artifact, though each round's ANCHORS need their own d1-a2t-evo-proposer-r{NN} supplement.",
       "note": "for ten of the twenty-three tools exactly M = 8 units remain and the five sentinel tools carry 3 or 4, so those draws cannot differ in membership and are preregistered as seeded ORDERED samples."
     },
+    "A2T-EVO-CURVE-400-V1": {
+      "dataset_fragment": "audio2tool-evo-curve-400",
+      "roster_receipt": "docs/receipts/rosters/a2t-evo-curve-400-v1.json",
+      "flight_roster_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-curve-roster/flight-roster-receipt.json",
+      "probe_sample_receipt": "NONE NEEDED -- all 400 ids already resolve through the three official-population views plus r1-audio2tool-sample and select-fill-agentloop-104-postseal-scoring; a receipt repeating them would be refused as a duplicate and would break the loader.",
+      "d1_media_supplement": "docs/receipts/artifacts/d1-a2t-org1-union-4000.json -- the UNION's own supplement, because 392 of the 400 sit in it and the other 8 are already inside the immutable d1-identity.json.",
+      "split_identity_hash": "b40043be23ed364b5121612b74cfbe52c044e1d83a2139c90229cdd72e92987f",
+      "split_role": "discovery",
+      "roster_role": "evaluation",
+      "count": 400,
+      "blocks": 363,
+      "audio_seconds_one_pass": 3470.346292,
+      "audio_seconds_longest_item": 654.635667,
+      "strata": "tier (50 per tier over all eight); domains smart_home 281, wearables 82, smart_car 37",
+      "estimand": "the evolution curve. Read once per round by that round's post-decision incumbent and paired against the sealed official-protocol outputs of the same ids. IT DECIDES NOTHING: no gate, no selection, no acceptance and no kill rule reads it.",
+      "serving_geometry_note": "The draw inherited two of the union's four 654-second synthesis defects, so the worst row costs 8,515 speech tokens and this cell needs the union's geometry rather than the folds' looser one. The prompt fit re-derives it."
+    },
     "supersedes": "SAEA-SN-MF-A2T-EVO-FOLD-ROSTERS-V1 (A2T-EVO-FOLD-A-V1 / -B-V1 / -EXEMPLARS-V1, 404 / 404 / 289 rows). Those receipts stay committed as history and are never flown.",
     "disjointness": "0 blocks shared between any two of the three V2 rosters, 0 blocks and 0 sample ids shared with the 5,279-identity Audio2Tool exposure union, 0 duplicate sample ids. Recomputed from the receipts and fail-closed before they were written (SAEA-SN-MF-A2T-EVO-FOLD-ROSTERS-V2)."
   },
@@ -111,7 +128,7 @@
       "attempt_id": "attempt-r1-i",
       "dataset_fragment": "audio2tool-evo-fold-a-424",
       "factor": "the incumbent state A_0, re-flown so this round's pairing is against its own sealed rows",
-      "baseline_fragment": "PENDING -- A_0's own fragment (the released compact registry, or KC-A1's artifact)",
+      "baseline_fragment": "a2t-evo-a1-base -- A_0's own fragment. It declares no task_instruction_fill, so core.instructions.resolve_task_instruction falls through to the released compact registry, which is exactly what A_0 is.",
       "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
       "arm": "bare-core"
     },
@@ -216,7 +233,7 @@
     "planned_model_calls": "ROUND 1, FOLD A: 6 arms (the incumbent plus K_1 = 5 portfolios) x 424 rows = 2,544. Budgets are cumulative across every attempt of a run id, so the registered ceiling for SAEA-A2T-EVO-A1-FOLD-A-V1 is R_max x this = 10,176. Fold B is 2 arms x 418 = 836 per round, ceiling 3,344 on its own run id.",
     "planned_speech_audio_seconds": "6 x 2,016.51925 = 12,099.1, rounded up to the integer contracts.ExecutionPlan requires; fold-A ceiling 48,397.",
     "planned_gpu_hours": "2,544 calls x 0.80 s per call = 0.57 h; 0.6 planned, ceiling 2.5 on the run id (R_max x per round). 0.80 s per call is the rate the sealed Audio2Tool cells showed at two slots, and these folds carry far shorter audio than the union, so it is conservative.",
-    "whole_cell": "17,921 calls and 91,485 speech seconds across five run ids (three speech rosters, the proposer arm and the final read); registered ceilings total 19,208 calls, 97,667 speech seconds and 6.5 GPU-h. Section 10 of the preregistration carries the table.",
+    "whole_cell": "17,921 calls and 95,511.8 speech seconds across five run ids (three speech rosters, the proposer arm and the final read); registered ceilings total 19,208 calls, 101,702 speech seconds and 5.4 GPU-h. Section 10 of the preregistration carries the table. Two ceilings are MEASURED rather than estimated: the curve is 13,882 s and not 9,368, because one pass of the drawn roster costs 3,470.346292 s; the proposer is 400 s and not 879, because the four rounds' deterministic draws put the worst round's anchors at 84.114333 s and check_ledger_budget compares that times R_max.",
     "paid_api_spend": 0,
     "ceilings_live_in_the_exposure_row": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are each exposure-ledger row's calls / speech audio seconds / gpu hours cells, and the budget is cumulative across every attempt of a run id."
   },
