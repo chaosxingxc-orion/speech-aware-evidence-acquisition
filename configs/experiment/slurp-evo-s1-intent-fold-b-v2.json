@@ -1,0 +1,52 @@
+{
+  "cells": [
+    {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-intent-b",
+      "baseline_fragment": "slurp-direct-closed-list-evo-fold-b",
+      "cell_id": "evo-s1-intent-fold-b",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "factor": "the one-time closed-list direct intent arm; the sealed predecessor of every slot cell on this fold",
+      "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+      "run_id": "SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2"
+    }
+  ],
+  "date": "2026-09-06",
+  "decision": {
+    "paper_scale": false,
+    "produces": "a sealed run manifest whose sha256 is written into configs/knowledge/slurp-evo-s1/loop-v1.json fold_predecessors and into this fold's incumbent fragment, both of which carry PENDING until it lands. It decides nothing on its own; it is also reported as this fold's one-contact direct comparator.",
+    "test_tuning": false
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "planned_gpu_hours": 0.6,
+    "planned_model_calls": 2200,
+    "planned_speech_audio_seconds": 6300,
+    "split_role": "discovery"
+  },
+  "execution_plan_basis": {
+    "cumulative": "Plan budgets are metered run-CUMULATIVELY across every attempt of a run id (core.model.adapter re-reads the attempt store's prior actuals on every request), so attempt-intent-b's plan covers fold A's realized spend plus its own worst case: 1,080 + 1,080 = 2,160 calls declared at 2,200, and 3,084.53 + 3,154.80 = 6,239.33 speech seconds declared at 6,300. attempt-intent-a declares its own fold alone. Both stay inside the registered ceilings of 2,300 calls / 6,500 speech seconds / 0.6 GPU-h.",
+    "paid_api_spend": 0,
+    "planned_gpu_hours": "1,080 contacts at the receipt-backed closed-list rate of 0.2255 s per contact (the sealed DEV-1000 arm: 1,000 contacts in 225.531 s at -np 8) is 0.07 h; declared with margin, and cumulatively for fold B.",
+    "planned_model_calls": "1,080 rows, one contact each.",
+    "planned_speech_audio_seconds": "SLURP-EVO-FOLD-B-V2 carries 3154.797375 s of audio for one pass."
+  },
+  "execution_profile": "baseline-reproduction",
+  "experiment_id": "SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2",
+  "fragment_kind": "saea-slurp-slot-stage-experiment-v1",
+  "populations": [
+    {
+      "arm": "speech-feature-query",
+      "audio_seconds_one_pass": 3154.797375,
+      "count": 1080,
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "roster_role": "construction",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+      "split_role": "discovery"
+    }
+  ],
+  "preregistration": "docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md",
+  "purpose": "Section 4 of docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md, exposure row SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2: the ONE-TIME closed-list direct intent flight over SLURP-EVO-FOLD-B-V2, flown once before round 1 and never again. Its run manifest becomes the sealed-manifest predecessor_source of EVERY slot cell on this fold, for every round and every candidate -- the schema block a row is shown is chosen by that row's intent, so the intent has to be fixed before the loop starts or every round would measure two changes at once. It is INCUMBENT-INDEPENDENT, which is why it is flown once rather than per round, and it doubles as this fold's own one-contact direct comparator, the only comparator the folds have: there are no sealed KC-S1b rows here, because A_0 re-flown IS the KC-S1b artifact on a fold. The arm is configs/baseline/slurp-direct-closed-list.json's, byte for byte, with one key changed -- the promotion receipt, which has to be this fold's own because the DEV-1000 receipt covers no TRAIN row. Same system message (7,583 characters, sha256 4073f79e...), same closed label inventory, same greedy temperature 0 seed 20260803, same max_tokens 64, same -np 8 geometry the sealed DEV-1000 closed-list arm flew.",
+  "scoring": "slurp-slu-official (the unmodified official evaluate.py at pinned commit 8eb16545...311f1), slurp-slu and cost, run once over the complete manifest through core.scoring_batch, never sharded.",
+  "split_id": "SLURP-EVO-FOLD-B-V2"
+}
