@@ -464,6 +464,9 @@ KC-S1 verdict, deviation 1).
 owned by track `wt/e3c` this wave. This section is the specification that track needs; every item was
 checked against the code as it stands at master `35193cb1`.
 
+**Status, 2026-09-06:** every item below is implemented — see 12.5 for the commits, and for the two
+things still owed before round 1 can fly.
+
 ### 12.1 `rails.proposer` — a second artifact family
 
 | # | what it assumes today | what SLURP needs |
@@ -482,11 +485,11 @@ checked against the code as it stands at master `35193cb1`.
 | # | what it assumes today | what SLURP needs |
 |---|---|---|
 | E1 | `Target.validate` refuses a target of fewer than two tools ("a target of one tool has nothing to separate it from") | a SLURP target is ONE scenario. Either relax the two-member rule per family, or give `Target` a `kind` (`"contrast"` vs `"stratum"`) whose stratum form admits a single member. `news` and `weather` own one intent each, so keying on intents does not rescue it |
-| E2 | `select_per_target(rows_of_target=...)` takes `target_id -> row ids` | works unchanged: pass `scenario -> that scenario's 30 fold-A sample ids`. **No change** |
-| E3 | `confirm_assembly` requires a NON-EMPTY `background_rows` and refuses any overlap with `targeted_rows` | with every scenario a target there is no background population. Allow `background_rows=()` and replace the background bound with the **per-scenario harm bound** of section 6.6: no scenario's own paired point estimate below `-1.0 pp`, every scenario's CI90 recorded |
+| E2 | `select_per_target(rows_of_target=...)` takes `target_id -> row ids` | works unchanged: pass `scenario -> that scenario's **60** fold-A sample ids` (the V2 draw of section 16 open point 1 remedy (b), 1,080 rows per fold). **No change** |
+| E3 | `confirm_assembly` requires a NON-EMPTY `background_rows` and refuses any overlap with `targeted_rows` | with every scenario a target there is no background population. Allow `background_rows=()` and replace the background bound with the **per-scenario harm bound**, which the owner fixed on 2026-09-06 as a RELATIVE rule in three parts, all measured on fold B: (a) for every scenario whose candidate was ADMITTED at stage one, `harms - saves <= 1 per 30 of that scenario's own rows`, floored at 1 — so **2 at the V2 draw's 60 rows**, and 1 on a 20-row fold; (b) for the scenarios NOT admitted, whose blocks the assembly leaves at the incumbent, the POOLED paired point estimate at or above `-1.0 pp`; (c) unchanged from EVO-A1, the pooled TARGETED CI90 lower bound strictly above 0, pooled over the admitted scenarios' rows. Every scenario's own counts, allowance and CI90 are recorded whichever way the verdict goes |
 | E4 | `write_candidate_fragments` emits a baseline fragment with `task_instruction_fill = evolved-artifact-v1` | SLURP consumes its artifact through `phase_material.slots.state_fill`, not `task_instruction_fill`. The writer must be family-aware: emit `configs/knowledge/slurp-evo-s1/evolved-schema-<sha16>.json` and a copy of `configs/baseline/slurp-phase-slots-given-intent-schema-v1.json` whose `phase_material.slots.state_fill` is `"slurp-evolved-slot-schema-for-state"` and which names the artifact relpath and its sha256 |
 | E5 | `ledger_budget` | works unchanged. **No change** |
-| E6 | `AdmissionGates(saves=4, harms=1, net=3)` | unchanged as a constant, but see section 16 open point 1: at 30 rows per scenario this gate is thin, and whether it stays is a coordinator decision, not a code one |
+| E6 | `AdmissionGates(saves=4, harms=1, net=3)` | **CLOSED by the owner decision of 2026-09-06.** `saves` and `net` stay absolute counts; the harm half becomes the same RATE as E3, `harms <= 1 per 30 of that candidate's own paired rows`, floored at 1. On the V2 draw's 60 rows per scenario the gate reads `saves >= 4, harms <= 2, net >= 3`; EVO-A1's 20-row tool quotas keep reading `harms <= 1` and its loop config is unchanged byte for byte. The rate is one loop-config field, `harms_per_rows` (default 30), stamped onto both `gates` and `harm_bound`; a second spelling hidden inside either object is refused. Every stage-one outcome records `harms_allowed` beside `n` and `harms`, so the admission is recountable from the receipt alone |
 
 ### 12.3 `rails.phase_material` — one new registered fill
 
@@ -511,6 +514,43 @@ Config alone; no `core/flight/runtime.py` change is needed, exactly as KC-S1b ne
 | D1 | **The sealed-intent predecessor binding per fold.** Each fold's slot cells set `phase_material.slots.predecessor_binding = "sealed-manifest"` with `predecessor_source.manifest_relpath` = that fold's one-time closed-list intent manifest. Two folds, two manifests, two fragment variants; the binding never changes across rounds or candidates |
 | D2 | **The proposer runner (track E3c), which does not exist.** `FlightRuntime.wire_check` issues one contact per roster sample through `_dispatch_fixed_policy`, which never supplies the `construction_targets` field, and the proposer makes at most three contacts per scenario per round rather than one per row. The bridge itself is already proven contact-free by `tests/unit/test_rails_core_client_construction_proposer.py`. This is the same blocker EVO-A1 records, and it blocks round 1 of both cells |
 | D3 | **A per-round fragment emitter** that writes the round's fragments and hashes them before any contact, so a cell can never fly against an artifact edited afterwards |
+
+### 12.5 E3d landed (2026-09-06)
+
+Track `wt/e3d` implemented this SPEC against the base, with zero model contacts. The commits, in
+order:
+
+| commit | what |
+|---|---|
+| `74aed99f` | `rails/proposer.py`: the second artifact family `slurp-slot-schema` — the block-grammar parser (P8), the per-family form validator (P2, P3), the SLURP sample-id regex (P4), the exemplar renderer and the verbatim instruction (P5), and the two deterministic controls F2 and F3 (P6, P7). A2T behaviour byte-identical |
+| `042bfbe2` | `rails/evolution.py`, `rails/evolution_carrier.py`, `rails/phase_material.py`, `data/slurp.py`: `target_kind: scenario` and the single-member relaxation (E1), the per-scenario harm bound in `confirm_assembly` (E3), the family-aware `write_candidate_fragments` targeting `phase_material.slots.state_fill` (E4), the `PHASE_STATE_FILLS` registration `slurp-evolved-slot-schema-for-state` (12.3), the SLURP carrier branch, the TRAIN-locked construction-row loader, and the sealed per-fold predecessor binding (D1). `ledger_budget` and `select_per_target` unchanged (E2, E5) |
+| `e3677749` | the driver: `scripts/run_a2t_evolution_round.py` renamed to `scripts/run_evolution_round.py`, carrier-agnostic through the loop config rather than forked (D3), plus `configs/knowledge/slurp-evo-s1/loop-v1.json`, this cell as data |
+| `8e0a2703` | `tests/unit/test_slurp_evolution_round_driver.py`: one whole round offline on a synthetic world, byte-identical across two runs, `replay_selection` reproducing stage one, and the harm bound rejecting a constructed breach |
+| `0cf8e617` | the owner's relative harm bound (E3, E6) at both stages, with `harms_per_rows` as the one loop-config field and `tests/unit/test_evolution_harm_rate.py` covering both carriers |
+| `6926d51b` | `tests/unit/test_slurp_proposer_family.py`: the parser's refusals, the validator's gates and the two controls, one function at a time |
+
+`engineering_base_check.py` PASS; `tests/contract` green; no new module under `rails/probes/`, no
+`TaskAdapter` or controller subclass, and the driver is 148 lines against its 150-line cap.
+
+The round is driven exactly as EVO-A1's is, four resumable steps against one config:
+
+```
+python scripts/run_evolution_round.py --config configs/knowledge/slurp-evo-s1/loop-v1.json \
+    --round 1 --plan-only
+python scripts/run_evolution_round.py --config configs/knowledge/slurp-evo-s1/loop-v1.json --round 1
+```
+
+**Still owed before round 1 can fly**, and neither is code this track could write:
+
+1. `fold_predecessors` in the loop config carries `manifest_sha256: PENDING` until the one-time
+   closed-list intent flight seals on both folds (section 4), and the three roster relpaths name the
+   V2 draw that `wt/evos2` is making.
+2. **The round-1 form twin needs a live tokenizer.** F3's padding search prices each padded variant,
+   so no precomputed table can serve it. `run_candidates_step` exposes the `token_counter` seam and
+   refuses an estimator, but `scripts/run_evolution_round.py` is model-free and binds nothing, so a
+   small prompt-fit entry point under a registered `bounded-discovery-probe` row — the repo's own
+   convention for token measurement — is owed before round 1. Rounds 2 and later have no F3 and do
+   not need it.
 
 ## 13. What the flight agent must do before the first contact
 
