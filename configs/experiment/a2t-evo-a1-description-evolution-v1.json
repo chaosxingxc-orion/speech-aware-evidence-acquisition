@@ -9,7 +9,7 @@
   "preregistration": "docs/readiness/2026-09-06-a2t-evo-a1-description-evolution-v1-preregistration.md",
   "predecessor": {
     "run_id": "SAEA-A2T-KC-A1-CONTRAST-NOTES-V1",
-    "verdict": "PENDING -- the KC-A1 flight is in the air as this fragment is drafted",
+    "verdict": "VOID -- KC-A1 never flew. Its prompt fit (master 35193cb1, 2026-09-06) measured the artifact at 3,625 text tokens against the sealed compact registry's 3,581, +44 over a binding +40 cap, and the cell own void clause fired: no wire check, no flight row, no smoke, no flight, and KC-A1c was never reached.",
     "routing": "program section 4a: KC-A1 NULL with separability >= 0.80 routes here from the official baseline (A_0 = the released compact registry); KC-A1 ADMITTED makes its own artifact the honest A_0; KC-A1 HARMFUL forces the compact registry."
   },
   "state": {
@@ -19,15 +19,18 @@
         "artifact": "the empty override mapping",
         "rendered_block_sha256": "752dd381a02028dc7345a6ac826109bdcc879d82547a9029a43d559d0de8a605",
         "rendered_characters": 15854,
-        "rendered_lines": 152
+        "rendered_lines": 152,
+        "rendered_text_tokens": 3581,
+        "token_measurement": "the pinned tokenizer via the resident server /tokenize route (master 35193cb1). The ORG-1 chars-per-token estimator (3.989) is RETIRED for this family: short appended English phrases tokenize at 3.659, which is how KC-A1 was priced at +40 and cost +44."
       },
       "A_0-kca1": {
         "artifact": "configs/knowledge/a2t-kc-a1/contrast-notes-v1.json",
         "artifact_sha256": "dcf84c2a5a371b658e234d0f42c1f03a7c36c5a2c090790d44e383999647cd21",
-        "condition": "only if KC-A1 is ADMITTED; if the lighting-only rebuild is what flew, that artifact and its sha256 replace this one"
+        "condition": "UNAVAILABLE as things stand: KC-A1 never flew (see predecessor.verdict), so there is no admitted artifact. Admissible only if the coordinator re-prices the +40-token cap, or KC-A1 is rebuilt to fit, flown and admitted."
       }
     },
-    "chosen_a_0": "PENDING -- coordinator",
+    "chosen_a_0": "A_0-compact unless the coordinator re-prices the +40-token cap; A_0-kca1 is unavailable because KC-A1 never flew.",
+    "token_headroom": "+40 tokens over 3,581 is about +146 characters of new phrasing across the whole block -- roughly +14 per tool at ten targeted tools, +7 at nineteen. Unlike KC-A1, whose family could only APPEND, the loop candidates REWRITE a description whole, so a proposer may spend characters the original was wasting; the budget is headroom over a rewrite, not over an append.",
     "form_caps": "152 lines, plain tool_name sort, no headers, ASCII only, at most 200 characters per description, and the whole rendered block within compact + 40 tokens. rails.proposer.validate_candidate_artifact enforces all of them with an INJECTED token counter whose authority is the resident server's /tokenize route at prompt fit."
   },
   "targets": {
@@ -198,7 +201,7 @@
     "user_turn": "audio first, then the fixed sentence 'Convert this voice command to a tool call.'",
     "harness": "core.flight.FlightRuntime with the shared rails zero-supply direct arm and the OpenJiuwen executor, entered through scripts/flights/run_calibration_cell.py -- the same harness and entry point every Audio2Tool direct cell flew",
     "official_code_pin": "b9d5383ca30945fbafb965a04bea40117e1e8a82; docs/receipts/environments/audio2tool-official-code.json",
-    "serving_geometry": "PENDING -- re-derived by the prompt fit. The folds' longest rows are 39.3 s (fold A) and 49.2 s (fold B), so under the encoder's one-second window rule the worst row costs 640 speech tokens, an order of magnitude below the union's 654-second synthesis defects; the geometry is expected to be looser than the union's -c 49152 -np 2 and must be measured, not assumed."
+    "serving_geometry": "PENDING -- re-derived by the prompt fit. The folds' longest rows are 39.3 s (fold A) and 49.2 s (fold B), so under the encoder's one-second window rule the worst row costs 640 speech tokens, an order of magnitude below the union's 654-second synthesis defects; the geometry is expected to be looser than the union's -c 49152 -np 2 and must be measured, not assumed. For reference, the KC-A1 prompt fit re-derived -np 2 on the 4,000 with a worst request of 12,398 tokens and a worst margin of 12,178 against the 8,192-token reserve."
   },
   "execution_plan": {
     "execution_profile": "baseline-reproduction",

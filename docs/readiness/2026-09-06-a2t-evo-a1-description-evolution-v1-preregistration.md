@@ -1,9 +1,10 @@
 # EVO-A1: description evolution on Audio2Tool — preregistration (DRAFT)
 
 **Status: DRAFT.** This document is complete but unregistered. The coordinator closes it by (1)
-taking the KC-A1 verdict, (2) naming `A_0` with its sha256, (3) ratifying the STRICT or the RELAXED
-target set, (4) naming the curve roster, and (5) writing the exposure rows. Nothing here authorizes
-a contact.
+naming `A_0` with its sha256 -- KC-A1 is VOID rather than pending, so unless the +40-token cap is
+re-priced the answer is the released compact registry (section 3), (2) ratifying the STRICT or the
+RELAXED target set, (3) naming the curve roster, (4) admitting track E3c, the proposer runner, which
+does not exist, and (5) writing the exposure rows. Nothing here authorizes a contact.
 
 Cell EVO-A1 of `docs/readiness/2026-09-05-three-dimension-experiment-program.md` (section 4c, loop
 constants section 5). Model-free prerequisites already closed:
@@ -70,7 +71,7 @@ its three shared blocks went to the block-poorer `playMedia`. It sits in no inta
 reading, so no addressable mass is lost. A RELAXED lighting target therefore flies with five
 reward-bearing tools and `getLightState` as a description-only member.
 
-## 3. State, and the two admissible `A_0`
+## 3. State, and `A_0`
 
 `A_r` is a mapping from a **targeted** tool name to a replacement `description`, and nothing else.
 Rendering is always `data.audio2tool_tools.render_registry_compact(description_overrides=...)`
@@ -80,22 +81,39 @@ through the registered `evolved-artifact-v1` fill: the same 152 lines, the same
 | candidate | artifact | rendered block |
 |---|---|---|
 | **A_0-compact** — the released compact registry, byte-identical to the sealed official baseline | the empty override mapping `{}` | 15,854 characters, 152 lines, sha256 `752dd381a02028dc7345a6ac826109bdcc879d82547a9029a43d559d0de8a605` |
-| **A_0-kca1** — KC-A1's admitted contrast artifact, *only if KC-A1 is ADMITTED* | `configs/knowledge/a2t-kc-a1/contrast-notes-v1.json`, sha256 `dcf84c2a5a371b658e234d0f42c1f03a7c36c5a2c090790d44e383999647cd21` (five targets, +477 characters) — **or** the lighting-only rebuild (`scripts/build_a2t_contrast_notes.py --targets lighting`) if that is the artifact KC-A1 actually flew | recorded by the coordinator at registration |
+| **A_0-kca1** — KC-A1's contrast artifact | `configs/knowledge/a2t-kc-a1/contrast-notes-v1.json`, sha256 `dcf84c2a5a371b658e234d0f42c1f03a7c36c5a2c090790d44e383999647cd21` | **unavailable as things stand** — see below |
 
-The coordinator names one. Program section 4a routes a **NULL** KC-A1 with separability >= 0.80 to
-"EVO-A1 from the official baseline", i.e. A_0-compact; an **ADMITTED** KC-A1 makes A_0-kca1 the
-honest starting state, and the loop then edits only the surviving targets' lines, leaving KC-A1's
-lighting and calibrateCameras notes untouched and unmeasured. A **HARMFUL** KC-A1 forces
-A_0-compact.
+**KC-A1 never flew, so there is no KC-A1 verdict and A_0 is A_0-compact.** On 2026-09-06 (master
+`35193cb1`) the KC-A1 prompt fit measured its artifact at **3,625 text tokens against the sealed
+compact registry's 3,581** — **+44 over a binding +40 cap** — and the cell's own void clause fired:
+no wire check, no flight row, no smoke, no flight, and KC-A1c was never reached. Program section
+4a's routing is unchanged in effect (EVO-A1 starts from the official baseline) but arrives by a
+different road: not a NULL result, an unflown cell. A_0-kca1 becomes admissible only if the
+coordinator re-prices the cap, or KC-A1 is rebuilt to fit, flown and admitted.
 
-**The token cap is the binding constraint, not the character cap.** The compact block is 15,854
-characters ≈ 3,974 text tokens at ORG-1's measured 3.989 chars/token. The +40-token headroom
-`rails.proposer.TOKEN_HEADROOM` enforces is therefore about **+160 characters over the whole
-block** — roughly +16 characters per tool across ten targeted tools, and +8 across nineteen. A_0-kca1
-already spends +477 characters (about +120 tokens) and the cap has to be ratified against that
-baseline rather than against compact; this is the same open decision KC-A1's own fragment records
-and it does not get re-opened here. `validate_candidate_artifact` counts tokens through an
-**injected** counter, and the authority is the resident server's `/tokenize` route at prompt fit.
+**The token cap is the binding constraint, and the estimator that priced it was wrong.** The
+measured facts, from the pinned tokenizer rather than from ORG-1's ratio:
+
+* the sealed compact block is **15,854 characters and 3,581 text tokens** — 4.427 chars/token, not
+  the 3.989 ORG-1 measured on its own grouped block;
+* short appended English phrases tokenize **denser** than that, at **3.659 chars/token**, which is
+  how KC-A1's 161 added characters were priced at +40 and cost +44;
+* the +40-token headroom `rails.proposer.TOKEN_HEADROOM` enforces is therefore worth about **+146
+  characters of new phrasing over the whole block** — roughly +14 characters per tool across ten
+  targeted tools, +7 across nineteen.
+
+**This cuts differently for EVO-A1 than for KC-A1, and it is the one structural advantage this cell
+has.** KC-A1's family could only APPEND: every note was a pure addition to a description that
+stayed. The loop's candidates REWRITE the whole description, so a proposer may spend the characters
+an original description was wasting and land inside the cap while saying something different —
+and `render_proposer_instruction` already tells it to "keep each description close in length to the
+current one". The +146-character budget is headroom over a rewrite, not over an append.
+
+**Never price a candidate with an estimator.** `validate_candidate_artifact` takes an **injected**
+`token_counter` precisely so the serving geometry's own tokenizer is the authority; KC-A1 passed its
+builder's gate and was refused under that authority by four tokens. Every EVO-A1 candidate is
+counted through the resident server's `/tokenize` route at prompt fit, and a chars-per-token ratio
+never admits one.
 
 ## 4. Action space per target and round
 
@@ -363,8 +381,10 @@ because the runner it would configure does not exist (section 12, item 9).
    other Audio2Tool cell with no new code path.
 6. **Register `SAEA-A2T-MF-EVO-DECONTAMINATION-V1`** (section 8) before validating any candidate.
 7. **Prompt fit** under a `bounded-discovery-probe` row: `/tokenize` the A_0 block and every
-   round-1 portfolio on the resident server, confirm the +40-token headroom against the ratified
-   baseline, and re-derive the serving geometry. Zero generated tokens.
+   round-1 portfolio on the resident server, confirm the +40-token headroom against the sealed
+   compact registry's measured **3,581** tokens, and re-derive the serving geometry. Zero
+   generated tokens. A candidate that only an estimator admits is refused: KC-A1 died four
+   tokens over a forty-token cap because its builder injected the ORG-1 ratio as its counter.
 8. **Wire check the reward cells** — `FlightRuntime.wire_check` drives the whole request path
    against a fake gate and transport with zero contacts, and both fold cells are ordinary
    `policy: fixed` speech cells, so it applies unchanged.
@@ -406,7 +426,9 @@ At most one recovery re-registration per run id.
 
 1. **A_0** — which of the two admissible states, with its sha256, and the token-cap baseline that
    follows from it.
-2. **The KC-A1 verdict** gates this cell entirely; the flight is running as this draft is written.
+2. **KC-A1 is VOID, not pending** (master `35193cb1`): it never flew, so A_0 is the released
+   compact registry unless the coordinator re-prices the +40-token cap. That result also retires
+   the ORG-1 chars-per-token estimator for this family.
 3. **STRICT or RELAXED** — 67 addressable rows on three targets, or 90 on five. RELAXED costs
    nothing in rows and adds the lighting pair MF-1 flagged as already-halved-without-gain.
 4. **The curve roster** — comparability (Option A) against zero supplement work (Option B).
