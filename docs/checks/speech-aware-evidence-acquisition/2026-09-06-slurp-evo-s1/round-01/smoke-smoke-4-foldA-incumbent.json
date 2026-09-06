@@ -1,0 +1,304 @@
+{
+  "attempt_id": "attempt-smoke-incumbent",
+  "cell_id": "smoke-4-foldA-incumbent",
+  "dataset": "slurp-speech-native-evo-fold-a-1080",
+  "experiment": "slurp-evo-s1-smoke-4-v1",
+  "generated_at": "2026-09-06T22:38:33.475693+00:00",
+  "identity": {
+    "added_suffix_chars": 1836,
+    "added_suffix_sha256": "46ee018e1bd2392c0e3654ddeacf4b7f32209da2a0c00cd7e658afe50ca0dda3",
+    "config_hash": "77829574a3c04042b7317725e08eee884ba451710c611b0d93e410c8eedb911f",
+    "instruction_fill": "slurp-label-inventory",
+    "instruction_template": "probes/slurp_direct_closed_list.txt",
+    "relation": "resolved == sealed_m0_instruction + suffix",
+    "resolved_instruction_chars": 7583,
+    "resolved_instruction_sha256": "4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db",
+    "roster_view_sha256": "f423fd59bee4ff73833f49187fde22071b4d5ea7a39243e55f728f0ccbf67918",
+    "sample_count": 4,
+    "sealed_m0_instruction_chars": 5747,
+    "sealed_m0_instruction_sha256": "cef527896e9beef5774305e01dc29192fc2d5ca89fba5143e82f0b91a7cb86b8",
+    "serving_geometry": {
+      "max_tokens": 64,
+      "slot_tokens": 16384,
+      "slots": 4
+    }
+  },
+  "run_id": "SAEA-SLURP-EVO-S1-SMOKE-4-V1",
+  "schema": "saea-slurp-closed-list-flight-receipt-v1",
+  "stages": {
+    "preflight": {
+      "attempt_id": "attempt-smoke-incumbent",
+      "attempt_reservation": "deferred to core.model.adapter.FrozenCoreAdapter",
+      "carrier_lock_key": "slurp",
+      "config_hash": "77829574a3c04042b7317725e08eee884ba451710c611b0d93e410c8eedb911f",
+      "phase_prompt_fit": null,
+      "prompt_budget": [
+        {
+          "breakdown": {
+            "completion_token_ceiling": 64,
+            "rendered_text_tokens": 2676,
+            "required_window_tokens": 2771,
+            "special_token_reserve": 2,
+            "speech_feature_packet_tokens": [
+              [
+                "slurp:train:000007:audio--1504197557",
+                29
+              ]
+            ],
+            "speech_feature_tokens": 29
+          },
+          "compaction_pass": 0,
+          "decision": "ALLOW",
+          "dropped_identifiers": [],
+          "operational_margin_tokens": 21805,
+          "operational_reserve_tokens": 8192,
+          "payload_sha256": "8ef9f6baedf27a8bb34020515f8ae9be1f1770da22306ee4773df14b702ab24c",
+          "phase": "slots",
+          "physical_margin_tokens": 29997,
+          "slot_limit_tokens": 32768
+        }
+      ],
+      "protocol_hash": "2425a72181e969abcb798e7d31ed5a76974f929f3fa896daaf494acbeb286864",
+      "run_id": "SAEA-SLURP-EVO-S1-SMOKE-4-V1",
+      "sample_count": 4,
+      "serving_geometry": {
+        "max_tokens": 64,
+        "slot_tokens": 16384,
+        "slots": 4
+      },
+      "split_id": "SLURP-EVO-FOLD-A-V2",
+      "split_identity_hash": "02df7e6d3d808146c6e1a9d31c8dc0b75d18a0448bea81b23bac678dec4beac6",
+      "stage": "preflight",
+      "stage_hash": "20ae80fbec3be09374a5ccbcca0e6719fcd60407d5a7e30088225897848aeb30",
+      "study_commit": "c6bd9366fa6d0e5d3b5edf1b5d504257a83aaf5d"
+    },
+    "preprocess": {
+      "campaign_active": true,
+      "duration_seconds": 0.039598941802978516,
+      "kind": "speech-packets",
+      "packet_count": 4,
+      "packet_manifest_hash": "d31a0a28174a64efb817adf4003f5d56a9afb245adb4a889b3159c4a8254fb74",
+      "packets_per_second": 101.01280028899994,
+      "promoter_meta": {
+        "audio_path": "mmproj-free-speech-feature-packets",
+        "feature_root": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+        "legacy_cache_dir": "/home/chao/feat-cache/slurp-q4km",
+        "packets_required": true,
+        "promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+        "promotion_receipt_sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247"
+      },
+      "stage": "preprocess",
+      "stage_hash": "06d8376f6bf7e6a5dd4b8dbedf8eae3b8c56787c48d13eb12b8526b74a949c2c",
+      "workers_declared": 8,
+      "workers_used": 8
+    },
+    "run_phases": {
+      "arm": "speech-feature-query",
+      "average_latency_seconds": 3.9840669187542517,
+      "contact_count": 4,
+      "contacts_per_second": 0.4954361810993929,
+      "dispatch": {
+        "barrier": "whole-roster per phase (rails.phase_runner.run_program)",
+        "contacts_per_sample": 1,
+        "dispatch": "phase-program",
+        "material_source": "baseline fragment phase_material (rails.phase_material)",
+        "phase_names": [
+          "slots"
+        ],
+        "program_id": "phase-slots-given-intent-v1",
+        "seeded_supply_phases": [],
+        "supplied_phases": []
+      },
+      "id_slot": 0,
+      "id_slot_resolution": "'per-sample' sentinel resolved to slot 0 (this harness dispatches one contact at a time)",
+      "occupancy_slots": 4,
+      "phase_material": {
+        "phases": [
+          {
+            "instruction_chars": 841,
+            "instruction_sha256": "221ed0d343b0a543eda98008312938da25bde204a131efe8427ea8e3934a5e1f",
+            "response_format_sha256": null,
+            "spec": {
+              "fill_params": {
+                "projection": "slurp-legal-label-projection-v2"
+              },
+              "instruction_fill": null,
+              "instruction_template": "probes/slurp_phase_slots.txt",
+              "phase": "slots",
+              "predecessor_binding": "sealed-manifest",
+              "predecessor_source": {
+                "manifest_relpath": "runs/SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2/attempt-intent-a/SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2.run-manifest.json",
+                "manifest_sha256": "66928b59accc27f6a0536038f14f5019806ef2ff2e1db0b6afa0f30708238463",
+                "producer_policy_id": "SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2"
+              },
+              "purpose": "slot-extraction-given-intent",
+              "response_format_id": null,
+              "state_fill": "slurp-intent-slot-schema-for-state"
+            }
+          }
+        ],
+        "schema": "saea-phase-material-v1"
+      },
+      "phase_supply": null,
+      "phases": [
+        {
+          "contacts": 4,
+          "phase": "phase-slots-given-intent-v1:slots",
+          "rows": 4
+        }
+      ],
+      "policy": "phase-slots-given-intent-v1",
+      "policy_kind": "phase-program",
+      "response_arrival": {
+        "basis": "rails.core_client.RequestTiming.native_tool_calls, set from core.model.CoreResponse.tool_calls; None means the response envelope carried no tool_calls key at all, i.e. the model answered as text",
+        "native_tool_calls_total": 0,
+        "rows_answered_as_text": 4,
+        "rows_total": 4,
+        "rows_with_native_tool_calls": 0
+      },
+      "serving_slots": 4,
+      "slot_occupancy": 0.4934627248680079,
+      "stage": "run_phases",
+      "stage_hash": "622c3fcfb74fafaf16eb1e8bafe167d34f158bea5027249e100680d30552f034",
+      "tokens_per_second": 31.707915590361146,
+      "tokens_per_second_basis": "contacts_per_second_times_completion_token_ceiling_upper_bound_estimate",
+      "wall_seconds": 8.073693752288818
+    },
+    "score": {
+      "duration_seconds": 97.55452871322632,
+      "include_per_sample": true,
+      "job_count": 1,
+      "jobs_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-EVO-S1-SMOKE-4-V1/attempt-smoke-incumbent/score-jobs.jsonl",
+      "jobs_per_second": 0.010250677371827858,
+      "output_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-EVO-S1-SMOKE-4-V1/attempt-smoke-incumbent/score-batch",
+      "result": {
+        "aggregation_rule": "no dataset sharding and no averaging of shard-level official metrics",
+        "effective_max_workers": 1,
+        "elapsed_seconds": 91.61695250301273,
+        "failed": 0,
+        "job_count": 1,
+        "jobs": [
+          {
+            "elapsed_seconds": 91.60371480800677,
+            "error": null,
+            "index": 0,
+            "job_id": "attempt-smoke-incumbent",
+            "ledger_cells": null,
+            "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-EVO-S1-SMOKE-4-V1/attempt-smoke-incumbent/SAEA-SLURP-EVO-S1-SMOKE-4-V1.run-manifest.json",
+            "operation": "score",
+            "result_file": "attempt-smoke-incumbent.score.json",
+            "result_sha256": "473ef2670a9a8d71b0285327ec7558996cc0e543f6ed17b3bd9008cf1f3ed96d",
+            "returncode": 0,
+            "status": "succeeded",
+            "stderr_log": "attempt-smoke-incumbent.stderr.log",
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_log": null
+          }
+        ],
+        "operation": "score",
+        "parallelism_boundary": "one-complete-verified-manifest-per-process",
+        "requested_max_workers": 1,
+        "schema": "saea-parallel-score-batch-v1",
+        "succeeded": 1
+      },
+      "stage": "score",
+      "stage_hash": "ccfa10543df5a713453bfb2c60d9c4f53f6034765af6ff60c2d686feb69e0e74"
+    },
+    "seal": {
+      "cost": {
+        "audio_seconds_used": 9.151,
+        "calls_used": 4,
+        "completion_tokens_total": 90,
+        "latency_seconds_total": 15.936267675017007,
+        "prompt_tokens_total": 10437,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+      },
+      "finalize": {
+        "attempt_state": "FINALIZED",
+        "ledger_markdown_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-EVO-S1-SMOKE-4-V1/attempt-smoke-incumbent/SAEA-SLURP-EVO-S1-SMOKE-4-V1.ledger-row.md",
+        "scores_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-EVO-S1-SMOKE-4-V1/attempt-smoke-incumbent/SAEA-SLURP-EVO-S1-SMOKE-4-V1.scores.json"
+      },
+      "flight_receipt": null,
+      "ledger_cells": {
+        "MLflow run": "not used",
+        "changed axes": "model=q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64; dataset=slurp-speech-native-evo-fold-a-1080; baseline=slurp-phase-slots-given-intent-schema-projected-v2-fold-a; experiment=slurp-evo-s1-smoke-4-v1",
+        "dataset rev": "02df7e6d3d808146c6e1a9d31c8dc0b75d18a0448bea81b23bac678dec4beac6",
+        "decision": "pending post-run analysis",
+        "deviations": "pending post-run analysis",
+        "effectiveness": "pending post-run analysis",
+        "efficiency": "pending post-run analysis",
+        "experiment_id": "SAEA-SLURP-EVO-S1-SMOKE-4-V1",
+        "model rev": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+        "reasonableness": "pending post-run analysis",
+        "shared code revision": "none; this study declares no speechrl_common dependency",
+        "speech task/carrier": "slurp; split SLURP-EVO-FOLD-A-V2; 4 samples"
+      },
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-EVO-S1-SMOKE-4-V1/attempt-smoke-incumbent/SAEA-SLURP-EVO-S1-SMOKE-4-V1.run-manifest.json",
+      "manifest_sha256": "b4e46fa5166780e92caea79f974101c950108cd01c6660d19516a4e31c232df1",
+      "outputs_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-EVO-S1-SMOKE-4-V1/attempt-smoke-incumbent/SAEA-SLURP-EVO-S1-SMOKE-4-V1.outputs.jsonl",
+      "outputs_row_count": 4,
+      "phase_count": 1,
+      "phases_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-EVO-S1-SMOKE-4-V1/attempt-smoke-incumbent/SAEA-SLURP-EVO-S1-SMOKE-4-V1.phases.json",
+      "phases_sha256": "b643caa7a9a3e014f1a24960d76c51b29ca012b1f3b5ff04f18130d794e89cb1",
+      "stage": "seal",
+      "stage_hash": "8170f04245d60622511b10a1336ecb6010437b12b019b61396bea52ac2815f09",
+      "trace_manifest_hash": "025b00f2fd0d2bed952a23288ff1515be706182a1873e03fab91e68aca42d239",
+      "verified_attempt_state": "OPENED"
+    },
+    "serve": {
+      "extra_argv": [
+        "-c",
+        "65536",
+        "-np",
+        "4",
+        "-b",
+        "2048",
+        "-ub",
+        "512",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0",
+        "--cache-prompt",
+        "--cache-ram",
+        "0",
+        "--no-cache-idle-slots",
+        "--slot-prompt-similarity",
+        "0"
+      ],
+      "host": "127.0.0.1",
+      "model_root": "/home/chao",
+      "pid": 1859,
+      "port": 8080,
+      "reused": false,
+      "serving_geometry": {
+        "max_tokens": 64,
+        "slot_tokens": 16384,
+        "slots": 4
+      },
+      "session_id": "SAEA-SLURP-EVO-S1-SMOKE-4-V1-attempt-smoke-incumbent",
+      "session_role": "inference",
+      "stage": "serve",
+      "stage_hash": "4fc19f72a70bfdbda31523063255342607305d3b00a322b222b69b6f0850253f",
+      "startup_seconds": 12.027212619781494
+    },
+    "stop_serving": {
+      "forced": false,
+      "pid": 1859,
+      "runtime_receipt_sha256": "f52133d0a9f3394f3228f7e25c2498de66f65cb349e6eaba50225ad691f7af12",
+      "schema": "saea-session-stop-receipt-v1",
+      "session_id": "SAEA-SLURP-EVO-S1-SMOKE-4-V1-attempt-smoke-incumbent",
+      "session_receipt_sha256": "fa424ba79572bdc4cfe2fd3d4f97b1c111a68d518831fc8775c2079ee42e545a",
+      "session_role": "inference",
+      "stopped_at": "2026-09-06T22:38:33.471188+00:00",
+      "study": "speech-aware-evidence-acquisition",
+      "termination_signal": "SIGTERM"
+    }
+  },
+  "study": "speech-aware-evidence-acquisition"
+}
