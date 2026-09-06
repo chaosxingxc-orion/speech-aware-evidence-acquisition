@@ -687,13 +687,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     for row in cell_rows:
         for phase in row["phases"]:
             log(
-                "%-14s %-8s text[min..p50..p95..max]=%d..%d..%d..%d max_sample=%s "
+                "%-20s %-8s text[min..median..p95..max]=%d..%g..%d..%d max_sample=%s "
                 "required max=%d slot=%d margin=%d fits=%s"
                 % (
                     row["cell_id"],
                     phase["phase"],
                     phase["text_prompt_tokens"]["min"],
-                    phase["text_prompt_tokens"]["p50"],
+                    phase["text_prompt_tokens"]["median"],
                     phase["text_prompt_tokens"]["p95"],
                     phase["text_prompt_tokens"]["max"],
                     phase["max_sample_id"],

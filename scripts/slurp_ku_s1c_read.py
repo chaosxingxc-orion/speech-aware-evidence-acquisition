@@ -174,6 +174,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--outputs", type=Path, required=True)
     parser.add_argument("--run-manifest", type=Path, default=None)
+    parser.add_argument("--flight-receipt", type=Path, default=None)
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
 
@@ -282,16 +283,27 @@ def main() -> int:
         for name in sources
     }
 
-    realized = None
+    realized: dict[str, object] = {}
     if args.run_manifest is not None:
         manifest = json.loads(Path(args.run_manifest).read_text(encoding="utf-8"))
-        run_phases = ((manifest.get("attempt") or {}).get("stages") or {}).get(
-            "run_phases"
+        realized["run_manifest_sha256"] = sha256_file(args.run_manifest)
+        realized["cost"] = manifest.get("cost")
+        realized["study_commit"] = manifest.get("study_commit")
+        realized["status"] = manifest.get("status")
+    if args.flight_receipt is not None:
+        receipt = json.loads(Path(args.flight_receipt).read_text(encoding="utf-8"))
+        stages = receipt.get("stages") or {}
+        run_phases = stages.get("run_phases") or {}
+        realized["attempt_id"] = receipt.get("attempt_id")
+        realized["contact_count"] = run_phases.get("contact_count")
+        realized["phases"] = run_phases.get("phases")
+        realized["wall_seconds"] = run_phases.get("wall_seconds")
+        realized["dispatch"] = run_phases.get("dispatch")
+        # Two whole-roster waves, so every row took exactly two contacts.
+        rows = {int(entry.get("rows", 0)) for entry in (run_phases.get("phases") or [])}
+        realized["contacts_per_row"] = (
+            run_phases.get("contact_count", 0) / max(rows) if rows else None
         )
-        realized = {
-            "run_manifest_sha256": sha256_file(args.run_manifest),
-            "run_phases": run_phases,
-        }
 
     document = {
         "schema": "saea-slurp-ku-s1c-consumption-read-v1",
@@ -309,7 +321,7 @@ def main() -> int:
         "allow_heldout": False,
         "bootstrap": {"seed": SEED, "n_replicates": N_REPLICATES, "ci_level": CI_LEVEL},
         "inputs": inputs,
-        "realized_contacts": realized,
+        "realized_contacts": realized or None,
         "official": {
             name: {
                 "aggregate": result["aggregate"]["official"],

@@ -17,6 +17,8 @@
   "task_instruction_template_active": true,
   "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-label-prior-speaker/snapshot.json",
   "knowledge_snapshot_sha256": "07f94807d173b2f2bdda9dcd95b21354e018234a208a76683d0ca4989d9ffa65",
+  "prompt_fit_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-slurp-consumption-ku-s1-v1/prompt-fit.json",
+  "prompt_fit_receipt_sha256": "31e8e5b74a49498bfff55ca4bc65067befa5edb8e957a82429a299903d61b291",
   "phase_material": {
     "draft": {
       "instruction_template": "probes/slurp_phase_direct.txt",
