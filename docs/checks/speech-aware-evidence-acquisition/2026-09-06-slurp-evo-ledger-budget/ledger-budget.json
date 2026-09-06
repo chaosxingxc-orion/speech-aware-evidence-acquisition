@@ -1,0 +1,216 @@
+{
+  "budget_is": "run-cumulative across every attempt of a run id, so each number below is R_max x the largest per-round cost, not one round's",
+  "contacts": {
+    "embedding": 0,
+    "gpu_hours": 0,
+    "model": 0,
+    "network": 0,
+    "paid_api_spend": 0,
+    "tool": 0
+  },
+  "generated_by": "scripts/verify_slurp_evo_ledger_budget.py",
+  "preregistration": "docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md",
+  "round": 1,
+  "round_one_propose_dry_run": {
+    "artifact_keys_asked_per_scenario": {
+      "alarm": [
+        3,
+        3,
+        3
+      ],
+      "audio": [
+        3,
+        3,
+        3
+      ],
+      "calendar": [
+        3,
+        3,
+        3
+      ],
+      "cooking": [
+        1,
+        1,
+        2
+      ],
+      "datetime": [
+        2,
+        2,
+        2
+      ],
+      "email": [
+        3,
+        3,
+        3
+      ],
+      "general": [
+        1,
+        2,
+        2
+      ],
+      "iot": [
+        3,
+        4,
+        5
+      ],
+      "lists": [
+        3,
+        3,
+        3
+      ],
+      "music": [
+        2,
+        3,
+        4
+      ],
+      "news": [
+        1,
+        1,
+        1
+      ],
+      "play": [
+        3,
+        3,
+        4
+      ],
+      "qa": [
+        4,
+        4,
+        4
+      ],
+      "recommendation": [
+        2,
+        3,
+        3
+      ],
+      "social": [
+        1,
+        1,
+        2
+      ],
+      "takeaway": [
+        2,
+        2,
+        2
+      ],
+      "transport": [
+        3,
+        3,
+        3
+      ],
+      "weather": [
+        1,
+        1,
+        1
+      ]
+    },
+    "contacts": 54,
+    "contacts_by_family": {
+      "proposer": 54
+    },
+    "distinct_anchor_rows": 54,
+    "exemplar_slots_shown": 432,
+    "fragments_it_would_emit": [
+      "docs/receipts/rosters/slurp-evo-s1-proposer-r01.json",
+      "configs/experiment/slurp-evo-s1-proposer-r01.json",
+      "docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-s1/round-01/propose.json"
+    ],
+    "incumbent_state_sha256": "6115f55b1a599b766502e1ca20159801ecc2d81613931cbc07a183bb491750d0",
+    "placebo_slot": null,
+    "prompt_characters_min_max": [
+      3655,
+      6178
+    ],
+    "prompts_all_digested": true,
+    "proposer_slots": [
+      1,
+      2,
+      3
+    ],
+    "roster_id": "SLURP-EVO-S1-PROPOSER-R01",
+    "roster_split_identity_hash": "0cb2be07b6fddc7797dcbe4348876959f96ef79cb7358f402124ddf766d8f56e",
+    "slots": [
+      1,
+      2,
+      3,
+      5
+    ],
+    "writes_nothing": true
+  },
+  "run_ids": {
+    "SAEA-SLURP-EVO-FOLD-PACKETS-V2": {
+      "ceilings": {
+        "calls": 2200.0,
+        "speech_seconds": 6300.0
+      },
+      "planned": {
+        "calls": 2160.0,
+        "speech_seconds": 6239.3258129999995
+      },
+      "run_id": "SAEA-SLURP-EVO-FOLD-PACKETS-V2",
+      "within": true
+    },
+    "SAEA-SLURP-EVO-S1-FINAL-V2": {
+      "ceilings": {
+        "calls": 1050.0,
+        "speech_seconds": 2900.0
+      },
+      "planned": {
+        "calls": 1000.0,
+        "speech_seconds": 2884.7937
+      },
+      "run_id": "SAEA-SLURP-EVO-S1-FINAL-V2",
+      "within": true
+    },
+    "SAEA-SLURP-EVO-S1-FOLD-A-V2": {
+      "ceilings": {
+        "calls": 25920.0,
+        "speech_seconds": 74100.0
+      },
+      "planned": {
+        "calls": 25920.0,
+        "speech_seconds": 74028.682512
+      },
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
+      "within": true
+    },
+    "SAEA-SLURP-EVO-S1-FOLD-B-V2": {
+      "ceilings": {
+        "calls": 8640.0,
+        "speech_seconds": 25300.0
+      },
+      "planned": {
+        "calls": 8640.0,
+        "speech_seconds": 25238.379
+      },
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-B-V2",
+      "within": true
+    },
+    "SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2": {
+      "ceilings": {
+        "calls": 2300.0,
+        "speech_seconds": 6500.0
+      },
+      "planned": {
+        "calls": 2160.0,
+        "speech_seconds": 6239.3258129999995
+      },
+      "run_id": "SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2",
+      "within": true
+    },
+    "SAEA-SLURP-EVO-S1-PROPOSER-V2": {
+      "ceilings": {
+        "calls": 288.0,
+        "speech_seconds": 700.0
+      },
+      "planned": {
+        "calls": 216.0,
+        "speech_seconds": 670.7285
+      },
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2",
+      "within": true
+    }
+  },
+  "schema": "saea-slurp-evo-ledger-budget-v1",
+  "verdict": "EVERY REGISTERED ROW ADMITS THE LOOP'S WORST CASE"
+}

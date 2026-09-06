@@ -83,6 +83,16 @@ REGISTRY_LINE_COUNT = 152
 #: Decontamination n-gram width (program section 5: "no shared word 6-gram").
 DECONTAMINATION_NGRAM = 6
 
+#: Schema of the committed EVO-S1 decontamination artifact
+#: (``docs/receipts/knowledge/slurp-evo-decontamination-v1.json``, exposure row
+#: ``SAEA-SLURP-MF-EVO-DECONTAMINATION-V1``). The artifact carries the SHA-256
+#: DIGEST of every DEV-1000 sentence 6-gram and never the 6-gram itself: the
+#: gate has to be reproducible from committed bytes, and a committed file of
+#: literal 6-grams would be six-word windows of devel sentences written into
+#: the repository, which is exactly what coordinator decision 5 of 2026-09-06
+#: forbids. Digests compare identically and reconstitute nothing.
+SLURP_DECONTAMINATION_SCHEMA = "saea-slurp-evo-decontamination-v1"
+
 #: The appended-note family's fixed shape (KC-A1): every note opens with this
 #: separator, and a category-only control is padded to the note's length with
 #: this neutral filler word before any trailing space.
@@ -150,6 +160,7 @@ __all__ = [
     "TOKEN_HEADROOM",
     "REGISTRY_LINE_COUNT",
     "DECONTAMINATION_NGRAM",
+    "SLURP_DECONTAMINATION_SCHEMA",
     "FAMILIES",
     "ARTIFACT_FAMILIES",
     "A2T_DESCRIPTIONS_FAMILY",
@@ -178,6 +189,9 @@ __all__ = [
     "render_proposer_instruction",
     "validate_candidate_artifact",
     "word_ngrams",
+    "ngram_digest",
+    "ngram_digests",
+    "load_evaluation_ngram_digests",
     # -- the SLURP slot-schema artifact family (EVO-S1) -----------------
     "parse_slurp_schema_response",
     "render_slurp_proposer_instruction",
@@ -266,6 +280,101 @@ def word_ngrams(text: str, n: int = DECONTAMINATION_NGRAM) -> set[tuple[str, ...
     if len(words) < n:
         return set()
     return {tuple(words[index : index + n]) for index in range(len(words) - n + 1)}
+
+
+def ngram_digest(gram: Sequence[str]) -> str:
+    """The SHA-256 hex digest of one word n-gram, joined by single spaces.
+
+    The whole point of the digest is that it travels where the words may not.
+    A committed decontamination artifact carries these and never the words
+    (:data:`SLURP_DECONTAMINATION_SCHEMA`), so the gate is reproducible from
+    committed bytes without those bytes being devel sentence text; and a
+    refusal names digests, so a log line cannot echo the six words a filler
+    and a devel sentence happen to share.
+    """
+
+    if isinstance(gram, (str, bytes)) or not isinstance(gram, Sequence) or not gram:
+        raise ProposerError("ngram_digest needs a non-empty sequence of words")
+    words = []
+    for word in gram:
+        if not isinstance(word, str) or not word:
+            raise ProposerError("every n-gram word must be non-empty text")
+        words.append(word)
+    return hashlib.sha256(" ".join(words).encode("utf-8")).hexdigest()
+
+
+def ngram_digests(texts: Sequence[str], n: int = DECONTAMINATION_NGRAM) -> set[str]:
+    """Every word ``n``-gram of ``texts``, as digests.
+
+    :func:`word_ngrams` is the one tokenizer for every decontamination
+    comparison in the loop, so this is exactly that set hashed -- never a
+    second notion of what a shared 6-gram is.
+    """
+
+    if isinstance(texts, (str, bytes)):
+        raise ProposerError("ngram_digests needs a sequence of texts")
+    digests: set[str] = set()
+    for item in texts:
+        if not isinstance(item, str):
+            raise ProposerError("every text entry must be a string")
+        digests |= {ngram_digest(gram) for gram in word_ngrams(item, n)}
+    return digests
+
+
+def load_evaluation_ngram_digests(document: Mapping[str, object]) -> frozenset[str]:
+    """The evaluation 6-gram digest set of a committed decontamination
+    artifact, verified fail-closed.
+
+    Checks the schema, the n-gram width, the declared count and the content
+    hash of the digest list itself, so a validator can never be handed a
+    silently truncated or hand-edited gate. The artifact is built by
+    ``scripts/build_slurp_evo_decontamination.py`` under exposure row
+    ``SAEA-SLURP-MF-EVO-DECONTAMINATION-V1``.
+    """
+
+    if not isinstance(document, Mapping) or not document:
+        raise ProposerError("decontamination artifact must be a non-empty mapping")
+    if document.get("schema") != SLURP_DECONTAMINATION_SCHEMA:
+        raise ProposerError(
+            f"decontamination artifact schema must be "
+            f"{SLURP_DECONTAMINATION_SCHEMA!r}, got {document.get('schema')!r}"
+        )
+    if document.get("ngram") != DECONTAMINATION_NGRAM:
+        raise ProposerError(
+            f"decontamination artifact is built at n={document.get('ngram')!r}; this "
+            f"gate compares {DECONTAMINATION_NGRAM}-grams"
+        )
+    raw = document.get("evaluation_ngram_digests")
+    if isinstance(raw, (str, bytes)) or not isinstance(raw, Sequence) or not raw:
+        raise ProposerError(
+            "decontamination artifact carries no evaluation_ngram_digests"
+        )
+    digests: list[str] = []
+    for entry in raw:
+        if not isinstance(entry, str) or not re.fullmatch(r"[0-9a-f]{64}", entry):
+            raise ProposerError(
+                "every evaluation_ngram_digests entry must be a sha256 hex digest"
+            )
+        digests.append(entry)
+    if sorted(digests) != digests:
+        raise ProposerError("evaluation_ngram_digests must be sorted")
+    if len(set(digests)) != len(digests):
+        raise ProposerError("evaluation_ngram_digests repeats a digest")
+    declared_count = document.get("evaluation_ngram_count")
+    if declared_count is not None and int(declared_count) != len(digests):
+        raise ProposerError(
+            f"decontamination artifact declares {declared_count} digests and carries "
+            f"{len(digests)}"
+        )
+    declared_hash = document.get("evaluation_ngram_digests_content_hash")
+    if declared_hash is not None:
+        measured = content_hash(digests)
+        if measured != declared_hash:
+            raise ProposerError(
+                f"decontamination artifact digest list hashes to {measured}, not the "
+                f"{declared_hash} it declares"
+            )
+    return frozenset(digests)
 
 
 def _rows_by_name(rows: Sequence[Mapping[str, str]]) -> dict[str, Mapping[str, str]]:
@@ -1662,23 +1771,34 @@ def _slurp_fillers_of(blocks: Mapping[str, object]) -> list[str]:
     ]
 
 
-def _illegal_filler_ngrams(
+def _illegal_filler_digests(
     fillers: Sequence[str],
-    evaluation_grams: set[tuple[str, ...]],
-    legal_grams: set[tuple[str, ...]],
+    evaluation_digests: frozenset[str],
+    legal_digests: frozenset[str],
 ) -> list[str]:
-    """The word 6-grams a candidate's FILLERS share with the evaluation
+    """The word 6-gram DIGESTS a candidate's FILLERS share with the evaluation
     sentences and A_0 does not already carry.
 
     A_0's own 1,008 fillers are exempt because they are TRAIN and KC-S1b
     already sent every one of them; refusing them would refuse the incumbent
     itself (preregistration section 8).
+
+    Digests rather than words, throughout: a shared 6-gram is by construction
+    six words of a DEV-1000 sentence, and the row that opens that text
+    (``SAEA-SLURP-MF-EVO-DECONTAMINATION-V1``) is registered on the promise
+    that it never renders, logs or echoes it. Comparing digests keeps the
+    refusal reportable without the report being the leak.
     """
 
-    grams: set[tuple[str, ...]] = set()
+    digests = _filler_digests(fillers)
+    return sorted((digests & evaluation_digests) - legal_digests)
+
+
+def _filler_digests(fillers: Sequence[str]) -> frozenset[str]:
+    digests: set[str] = set()
     for filler in fillers:
-        grams |= word_ngrams(filler)
-    return sorted(" ".join(gram) for gram in (grams & evaluation_grams) - legal_grams)
+        digests |= {ngram_digest(gram) for gram in word_ngrams(filler)}
+    return frozenset(digests)
 
 
 def _grams_of(texts: Sequence[str], label: str) -> set[tuple[str, ...]]:
@@ -1690,6 +1810,25 @@ def _grams_of(texts: Sequence[str], label: str) -> set[tuple[str, ...]]:
             raise ProposerError(f"every {label} entry must be text")
         grams |= word_ngrams(item)
     return grams
+
+
+def _digests_of(texts: Sequence[str], label: str) -> frozenset[str]:
+    """``_grams_of`` hashed -- one tokenizer, one notion of a shared 6-gram."""
+
+    return frozenset(
+        ngram_digest(gram) for gram in _grams_of(texts, label)
+    )
+
+
+def _checked_digests(digests: Sequence[str], label: str) -> frozenset[str]:
+    if isinstance(digests, (str, bytes)) or not isinstance(digests, Sequence):
+        raise ProposerError(f"{label} must be a sequence of sha256 hex digests")
+    out: set[str] = set()
+    for entry in digests:
+        if not isinstance(entry, str) or not re.fullmatch(r"[0-9a-f]{64}", entry):
+            raise ProposerError(f"every {label} entry must be a sha256 hex digest")
+        out.add(entry)
+    return frozenset(out)
 
 
 def parse_slurp_schema_response(
@@ -1795,8 +1934,12 @@ def parse_slurp_schema_response(
         )
     parsed = _checked_slurp_blocks(blocks, "blocks")
     if refuse_ngrams:
-        refused = {tuple(str(gram).split()) for gram in refuse_ngrams}
-        illegal = _illegal_filler_ngrams(_slurp_fillers_of(parsed), refused, set())
+        refused = frozenset(
+            ngram_digest(tuple(str(gram).split())) for gram in refuse_ngrams
+        )
+        illegal = _illegal_filler_digests(
+            _slurp_fillers_of(parsed), refused, frozenset()
+        )
         if illegal:
             raise ProposerError(
                 f"a filler carries {len(illegal)} refused word "
@@ -2159,6 +2302,7 @@ def validate_slurp_candidate_artifact(
     token_counter: Callable[[str], int],
     token_counter_id: str = SERVING_TOKENIZER_ID,
     evaluation_sentence_texts: Sequence[str] = (),
+    evaluation_ngram_digests: Sequence[str] = (),
     baseline_filler_texts: Sequence[str] = (),
     exemplar_texts: Sequence[str] = (),
     allow_estimator: bool = False,
@@ -2189,11 +2333,22 @@ def validate_slurp_candidate_artifact(
     cap because its builder injected a chars-per-token ratio as its counter.
 
     Decontamination (preregistration section 8): no sample identifier in a
-    filler; no word 6-gram shared between a FILLER and
-    ``evaluation_sentence_texts`` unless that 6-gram already occurs in
-    ``baseline_filler_texts`` (A_0's own 1,008 fillers, which are TRAIN and
-    were already sent by KC-S1b); overlap with ``exemplar_texts`` COUNTED and
-    reported, never gated.
+    filler; no word 6-gram shared between a FILLER and the evaluation
+    sentences unless that 6-gram already occurs in ``baseline_filler_texts``
+    (A_0's own 1,008 fillers, which are TRAIN and were already sent by
+    KC-S1b); overlap with ``exemplar_texts`` COUNTED and reported, never
+    gated.
+
+    The evaluation side arrives by EITHER of two routes, and their union is
+    what the gate compares against. ``evaluation_sentence_texts`` are raw
+    sentences, which only a caller that is itself registered to open them may
+    supply; ``evaluation_ngram_digests`` is the committed artifact's digest
+    set (:func:`load_evaluation_ngram_digests`), which is how a FLIGHT reaches
+    this gate. The flight route exists because
+    ``SAEA-SLURP-MF-EVO-DECONTAMINATION-V1`` is the one row licensed to read
+    SLURP devel sentence text, and a per-round candidate validation is not
+    that row: it consumes the row's hash-pinned product instead, so no devel
+    text is opened, held or written a second time.
     """
 
     candidate.validate()
@@ -2281,14 +2436,16 @@ def validate_slurp_candidate_artifact(
             raise ProposerError(
                 f"filler {filler!r} carries what looks like a sample identifier"
             )
-    evaluation_grams = _grams_of(evaluation_sentence_texts, "evaluation_sentence_texts")
-    legal_grams = _grams_of(baseline_filler_texts, "baseline_filler_texts")
-    illegal = _illegal_filler_ngrams(fillers, evaluation_grams, legal_grams)
+    evaluation_digests = _digests_of(
+        evaluation_sentence_texts, "evaluation_sentence_texts"
+    ) | _checked_digests(evaluation_ngram_digests, "evaluation_ngram_digests")
+    legal_digests = _digests_of(baseline_filler_texts, "baseline_filler_texts")
+    illegal = _illegal_filler_digests(fillers, evaluation_digests, legal_digests)
     if illegal:
         raise ProposerError(
             f"candidate fillers share {len(illegal)} word {DECONTAMINATION_NGRAM}-gram(s) "
-            f"with the evaluation sentences that A_0's own fillers do not carry: "
-            f"{illegal[:3]}"
+            f"with the evaluation sentences that A_0's own fillers do not carry; "
+            f"digest(s) {illegal[:3]}"
         )
     exemplar_grams = _grams_of(exemplar_texts, "exemplar_texts")
     candidate_grams: set[tuple[str, ...]] = set()

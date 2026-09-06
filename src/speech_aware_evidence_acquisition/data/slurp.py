@@ -1518,7 +1518,11 @@ def _cached_intent_slot_schema(
     return cached
 
 
-def slurp_intent_from_state_content(state_content: object) -> str | None:
+def slurp_intent_from_state_content(
+    state_content: object,
+    *,
+    projection: Callable[..., object] | None = None,
+) -> str | None:
     """The ``f"{scenario}_{action}"`` intent a sealed closed-list response
     carries, or ``None`` when the response does not parse or names only half
     of the pair.
@@ -1527,6 +1531,17 @@ def slurp_intent_from_state_content(state_content: object) -> str | None:
     :func:`reproduction.slurp_scoring.parse_slu_response` -- the same
     fail-closed parser the official scorer's prediction side uses -- so the
     slot phase conditions on EXACTLY the label the comparator scored.
+
+    ``projection``, when given, is a legal-label projection rule already
+    bound to its inventory -- ``project_slu_label`` or ``project_slu_label_v2``
+    partially applied -- called as ``projection(scenario, action,
+    parsed=True)`` and returning a
+    :class:`reproduction.slurp_scoring.LabelProjection`. It exists so a cell
+    can select its per-intent block from a REPAIRED label: 3.9 % of the
+    sealed closed-list rows name a (scenario, action) pair TRAIN never
+    carries, and those rows otherwise fall back to the full 60-intent schema.
+    The default is no projection, so every already-flown cell keeps its own
+    selection byte for byte.
     """
 
     if not isinstance(state_content, str) or not state_content.strip():
@@ -1534,6 +1549,11 @@ def slurp_intent_from_state_content(state_content: object) -> str | None:
     scenario, action, _entities, parsed = parse_slu_response(state_content)
     if not parsed:
         return None
+    if projection is not None:
+        projected = projection(scenario, action, parsed=parsed)
+        if not getattr(projected, "eligible", False):
+            return None
+        scenario, action = projected.scenario, projected.action
     if not isinstance(scenario, str) or not scenario:
         return None
     if not isinstance(action, str) or not action:
@@ -1547,6 +1567,7 @@ def render_slurp_slot_schema_for_state_detail(
     state_content: object,
     *,
     schema: SlurpIntentSlotSchema | None = None,
+    projection: Callable[..., object] | None = None,
 ) -> tuple[str, str | None, bool]:
     """``(text, used_intent, fallback)`` for one sealed closed-list response.
 
@@ -1562,7 +1583,7 @@ def render_slurp_slot_schema_for_state_detail(
     """
 
     resolved = schema if schema is not None else _cached_intent_slot_schema(lock, root)
-    intent = slurp_intent_from_state_content(state_content)
+    intent = slurp_intent_from_state_content(state_content, projection=projection)
     if intent is not None and intent in resolved.intents:
         return render_slurp_intent_slot_schema(resolved, intents=(intent,)), intent, False
     return render_slurp_intent_slot_schema(resolved), None, True
@@ -1574,11 +1595,12 @@ def render_slurp_slot_schema_for_state(
     state_content: object,
     *,
     schema: SlurpIntentSlotSchema | None = None,
+    projection: Callable[..., object] | None = None,
 ) -> str:
     """The text half of :func:`render_slurp_slot_schema_for_state_detail`."""
 
     text, _used_intent, _fallback = render_slurp_slot_schema_for_state_detail(
-        lock, root, state_content, schema=schema
+        lock, root, state_content, schema=schema, projection=projection
     )
     return text
 

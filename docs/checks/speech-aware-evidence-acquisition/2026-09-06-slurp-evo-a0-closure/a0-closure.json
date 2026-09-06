@@ -1,0 +1,75 @@
+{
+  "a_0": {
+    "content_hash": "732e500af3870216c7b311369f6f190ffdb0365e497d84cf211f478036757dcc",
+    "full_rendering": {
+      "characters": 26720,
+      "lines": 322,
+      "sha256": "4e573a65e14c57598cc39ed1aa71cf0ac59018be162dbea3e0bfbf038203a5b9"
+    },
+    "receipt": "docs/receipts/knowledge/slurp-intent-slot-schema-v1.json",
+    "receipt_sha256": "7e04da0ec29d0e9d6c473697d2b84bd1e0fc1d9ba28880ef2cf8b6f908bbe782",
+    "reproduces_kc_s1b": true,
+    "shape": {
+      "distinct_types": 52,
+      "fillers": 1008,
+      "intents": 60,
+      "type_rows": 261
+    },
+    "source_identity_hash": "545847bb95a9423005c71bdcc3fa74af55a3a1b6ae91409ba4070fd35bf92fef",
+    "utterance_count": 11514
+  },
+  "contacts": {
+    "embedding": 0,
+    "gpu_hours": 0,
+    "model": 0,
+    "network": 0,
+    "paid_api_spend": 0,
+    "tool": 0
+  },
+  "exemplar_roster": {
+    "exemplars_per_scenario_M": 8,
+    "gate": "read through rails.evolution_carrier.read_roster_document (which verifies the receipt fail-closed) and data.slurp.load_slurp_train_construction_rows, the TRAIN-locked reader that is the one caller licensed to carry sentence text beside gold",
+    "per_scenario": {
+      "alarm": 24,
+      "audio": 22,
+      "calendar": 24,
+      "cooking": 24,
+      "datetime": 24,
+      "email": 24,
+      "general": 24,
+      "iot": 24,
+      "lists": 24,
+      "music": 24,
+      "news": 24,
+      "play": 24,
+      "qa": 24,
+      "recommendation": 24,
+      "social": 24,
+      "takeaway": 24,
+      "transport": 24,
+      "weather": 24
+    },
+    "relpath": "docs/receipts/rosters/slurp-evo-exemplars-v2.json",
+    "roster_id": "SLURP-EVO-EXEMPLARS-V2",
+    "roster_role": "construction",
+    "rows": 430,
+    "rows_with_gold_entities": 430,
+    "split_identity_hash": "cf03c262888716b8c1801d60c87125339f24bed2f07fa35c0f6ab4f1c6ce7236"
+  },
+  "generated_by": "scripts/verify_slurp_evo_a0.py",
+  "preregistration": "docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md",
+  "schema": "saea-slurp-evo-a0-closure-v1",
+  "unfloored": {
+    "content_hash": "72fa23f70bfbe640d2ff84bb0035e1216dfc4f67bf1a31f7f8b8f64ebdc2e575",
+    "min_share": 0.0,
+    "role": "the only authority for a type's TRAIN count, its share and its intent's line cap (1 + L). A candidate never writes a number: the renderer re-derives every header and every share from this table, so pinning it is pinning what a candidate CANNOT change.",
+    "shape": {
+      "distinct_types": 55,
+      "fillers": 1281,
+      "intents": 60,
+      "type_rows": 432
+    },
+    "source_identity_hash": "545847bb95a9423005c71bdcc3fa74af55a3a1b6ae91409ba4070fd35bf92fef"
+  },
+  "verdict": "CLOSED"
+}

@@ -23,17 +23,23 @@ from __future__ import annotations
 
 import pytest
 
+from speech_aware_evidence_acquisition.rails.hashing import content_hash
 from speech_aware_evidence_acquisition.data.slurp import (
     SlurpIntentSlots,
     SlurpIntentSlotSchema,
 )
 from speech_aware_evidence_acquisition.rails.proposer import (
+    DECONTAMINATION_NGRAM,
     SERVING_TOKENIZER_ID,
+    SLURP_DECONTAMINATION_SCHEMA,
     SLURP_MAX_FILLERS_PER_TYPE,
     SLURP_RELATIVE_TOKEN_BUDGET,
     SLURP_SLOT_SCHEMA_FAMILY,
     ProposerError,
     candidate_text,
+    load_evaluation_ngram_digests,
+    ngram_digest,
+    ngram_digests,
     parse_slurp_schema_response,
     slurp_block_texts,
     slurp_blocks_from_schema,
@@ -445,6 +451,105 @@ def test_a_filler_sharing_a_devel_six_gram_is_refused_unless_a0_carries_it():
         evaluation_sentence_texts=(shared,),
         baseline_filler_texts=("an alarm for a quarter past six",),
     )
+
+
+def _digest_artifact(digests, **overrides):
+    ordered = sorted(digests)
+    document = {
+        "schema": SLURP_DECONTAMINATION_SCHEMA,
+        "ngram": DECONTAMINATION_NGRAM,
+        "evaluation_ngram_count": len(ordered),
+        "evaluation_ngram_digests_content_hash": content_hash(ordered),
+        "evaluation_ngram_digests": ordered,
+    }
+    document.update(overrides)
+    return document
+
+
+def test_the_committed_digest_artifact_refuses_a_candidate_the_sentences_would():
+    """The digest route is the flight's route, and it must decide identically.
+
+    A flight never opens devel sentence text: it consumes the hash-pinned
+    product of SAEA-SLURP-MF-EVO-DECONTAMINATION-V1. So the gate has to reach
+    the same verdict from digests as it reaches from the sentences themselves,
+    and the exemption has to survive the change of channel.
+    """
+
+    shared = "set an alarm for a quarter past six"
+    leaky = {
+        "alarm_set": {
+            "types": [
+                {"entity_type": "time", "fillers": ["an alarm for a quarter past six"]}
+            ]
+        }
+    }
+    digests = load_evaluation_ngram_digests(_digest_artifact(ngram_digests((shared,))))
+    with pytest.raises(ProposerError, match="word 6-gram"):
+        validate(candidate(leaky), evaluation_ngram_digests=sorted(digests))
+    assert validate(
+        candidate(leaky),
+        evaluation_ngram_digests=sorted(digests),
+        baseline_filler_texts=("an alarm for a quarter past six",),
+    )
+
+
+def test_a_refusal_names_digests_and_never_the_shared_words():
+    """The refusal message may not echo the six devel words it found.
+
+    SAEA-SLURP-MF-EVO-DECONTAMINATION-V1 is registered on the promise that the
+    text it opens is never rendered, logged or echoed; a message quoting the
+    offending gram would break that promise in every round receipt.
+    """
+
+    shared = "set an alarm for a quarter past six"
+    leaky = {
+        "alarm_set": {
+            "types": [
+                {"entity_type": "time", "fillers": ["an alarm for a quarter past six"]}
+            ]
+        }
+    }
+    with pytest.raises(ProposerError) as error:
+        validate(candidate(leaky), evaluation_sentence_texts=(shared,))
+    message = str(error.value)
+    assert "alarm for a quarter past" not in message
+    assert ngram_digest(("an", "alarm", "for", "a", "quarter", "past"))[:16] in message
+
+
+@pytest.mark.parametrize(
+    "overrides, match",
+    [
+        ({"schema": "saea-something-else"}, "schema must be"),
+        ({"ngram": 5}, "built at n="),
+        ({"evaluation_ngram_count": 99}, "declares 99"),
+        ({"evaluation_ngram_digests_content_hash": "0" * 64}, "hashes to"),
+        ({"evaluation_ngram_digests": ["not-a-digest"]}, "sha256 hex digest"),
+    ],
+)
+def test_a_tampered_decontamination_artifact_is_refused(overrides, match):
+    document = _digest_artifact(ngram_digests(("set an alarm for a quarter past six",)))
+    document.update(overrides)
+    with pytest.raises(ProposerError, match=match):
+        load_evaluation_ngram_digests(document)
+
+
+def test_the_digest_artifact_must_be_sorted_and_distinct():
+    digests = sorted(ngram_digests(("set an alarm for a quarter past six",)))
+    assert len(digests) > 1
+    with pytest.raises(ProposerError, match="must be sorted"):
+        load_evaluation_ngram_digests(
+            _digest_artifact(digests) | {"evaluation_ngram_digests": digests[::-1]}
+        )
+    repeated = [digests[0], digests[0]]
+    with pytest.raises(ProposerError, match="repeats a digest"):
+        load_evaluation_ngram_digests(
+            {
+                **_digest_artifact(digests),
+                "evaluation_ngram_digests": repeated,
+                "evaluation_ngram_count": len(repeated),
+                "evaluation_ngram_digests_content_hash": content_hash(repeated),
+            }
+        )
 
 
 def test_exemplar_overlap_is_counted_and_never_gated():

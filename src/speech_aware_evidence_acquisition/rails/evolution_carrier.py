@@ -21,6 +21,7 @@ here.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -376,6 +377,28 @@ def _slurp_carrier_material(
     if "registry" in needs:
         slot_schema = load_slurp_intent_slot_schema(lock, root)
         unfloored_schema = load_slurp_intent_slot_schema(lock, root, min_share=0.0)
+        # A_0's closure, executed rather than transcribed (preregistration
+        # section 16 open point 1). The pins live in the committed loop config
+        # and are checked against this mining before a candidate is built from
+        # it; the receipt file's own sha256 is checked here too, because the
+        # document a reviewer opens and the table the loop mines have to be
+        # the same artifact.
+        pins = config.a_0 or {}
+        receipt_relpath = pins.get("receipt_relpath")
+        receipt_sha256 = None
+        if isinstance(receipt_relpath, str) and receipt_relpath:
+            receipt_path = Path(repo_root) / receipt_relpath
+            try:
+                receipt_sha256 = hashlib.sha256(receipt_path.read_bytes()).hexdigest()
+            except OSError as error:
+                raise EvolutionError(
+                    f"the pinned A_0 receipt is unreadable ({receipt_path}): {error}"
+                ) from error
+        config.assert_a_0(
+            floored=slot_schema,
+            unfloored=unfloored_schema,
+            receipt_sha256=receipt_sha256,
+        )
         entity_type_names = tuple(
             sorted(
                 {

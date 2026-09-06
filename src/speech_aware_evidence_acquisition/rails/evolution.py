@@ -724,10 +724,22 @@ def _with_state_fill(
             f"base_fragment phase_material[{phase!r}] declares no state_fill; the "
             "evolved arm must differ from the incumbent by the artifact alone"
         )
-    if entry.get("fill_params"):
+    # The base MAY carry fill_params, and EVO-S1's does: the projection its
+    # fold arms select their block through is declared once, on the base, so
+    # the incumbent arm and every candidate arm of that fold read the same
+    # sealed label. What the base may not do is set a key this writer owns --
+    # silently replacing the artifact binding would hide which arm flew.
+    inherited = entry.get("fill_params") or {}
+    if not isinstance(inherited, Mapping):
         raise EvolutionError(
-            f"base_fragment phase_material[{phase!r}] already carries fill_params; this "
-            "writer owns them and will not silently replace a caller's binding"
+            f"base_fragment phase_material[{phase!r}] fill_params must be an object"
+        )
+    collisions = sorted(set(inherited) & set(fill_params))
+    if collisions:
+        raise EvolutionError(
+            f"base_fragment phase_material[{phase!r}] fill_params already set "
+            f"{collisions}; this writer owns those keys and will not silently replace a "
+            "caller's binding"
         )
     if predecessor_source is not None and entry.get("predecessor_binding") != (
         "sealed-manifest"
@@ -741,7 +753,7 @@ def _with_state_fill(
                for key, value in material.items()}
     phase_entry = dict(entry)
     phase_entry["state_fill"] = state_fill
-    phase_entry["fill_params"] = dict(fill_params)
+    phase_entry["fill_params"] = {**dict(inherited), **dict(fill_params)}
     if predecessor_source is not None:
         phase_entry["predecessor_source"] = dict(predecessor_source)
     updated[phase] = phase_entry
@@ -3155,6 +3167,14 @@ class RoundPlan:
         }
 
 
+#: EVO-A1's measured V2 fold sizes, which are also
+#: :class:`LoopConfig`'s defaults, so that cell's committed config keeps
+#: declaring exactly the plan it declared before the fields existed.
+A2T_FOLD_ROWS = 404
+A2T_FOLD_A_SPEECH_SECONDS = 1913.527
+A2T_FOLD_B_SPEECH_SECONDS = 1877.630
+
+
 @dataclass(frozen=True)
 class LoopConfig:
     """Everything one EVO-A1 loop is, as data.
@@ -3215,6 +3235,18 @@ class LoopConfig:
     #: EVO-S1's controls are DETERMINISTIC, so the round-1 form twin costs no
     #: contact and must not be planned as a proposer draw.
     deterministic_placebo: bool = False
+    #: The SIZE of each fold: rows per pass and speech seconds per pass. They
+    #: are what every emitted fragment's ``execution_plan`` is written from
+    #: and what :func:`check_ledger_budget` charges against the registered
+    #: ceiling, so a cell whose folds are larger than the default would
+    #: otherwise declare a plan its own flight exceeds. The defaults ARE
+    #: EVO-A1's measured V2 folds, so its committed config stays byte for byte
+    #: what it is; EVO-S1 declares 1,080 rows per fold and its own measured
+    #: pass durations.
+    fold_a_rows: int = A2T_FOLD_ROWS
+    fold_a_speech_seconds: float = A2T_FOLD_A_SPEECH_SECONDS
+    fold_b_rows: int = A2T_FOLD_ROWS
+    fold_b_speech_seconds: float = A2T_FOLD_B_SPEECH_SECONDS
     #: The per-sample state fill an evolved fragment declares, and the phase
     #: that declares it (``rails.phase_material.PHASE_STATE_FILLS``). Only a
     #: state-fill artifact family sets these.
@@ -3228,6 +3260,16 @@ class LoopConfig:
     #: The harm bound that replaces the background population when every
     #: stratum is a target.
     harm_bound: PerTargetHarmBound | None = None
+    #: ``A_0``'s pins: the committed receipt's relpath and file sha256, the
+    #: floored schema's content hash (the bytes KC-S1b flew), the UNFLOORED
+    #: table's content hash, and the TRAIN source identity both were mined
+    #: from. Config rather than code, and verified at carrier load
+    #: (:meth:`assert_a_0`) rather than merely recorded: round 0 of the curve
+    #: is the admitted mechanism only if the loop starts from exactly those
+    #: bytes, and the unfloored table -- the sole authority for every count,
+    #: every share and every intent's line cap -- was pinned nowhere at all
+    #: before the closure row. A mismatch stops the cell.
+    a_0: Mapping[str, object] | None = None
     #: What this cell's candidates step records about the decontamination
     #: gate: the registered model-free row and what each of its inputs IS.
     #: Config rather than code because the answer is cell knowledge -- EVO-A1
@@ -3394,6 +3436,49 @@ class LoopConfig:
         config.assert_sentinels_are_target_tools()
         return config
 
+    def assert_a_0(
+        self, *, floored, unfloored, receipt_sha256: str | None = None
+    ) -> "LoopConfig":
+        """Refuse a round whose ``A_0`` is not the artifact the config pins.
+
+        No-op when the config declares no ``a_0`` block (EVO-A1, whose state
+        is the released registry and whose identity the lock already pins).
+        For EVO-S1 every declared key is checked against the freshly mined
+        schemas, and a disagreement raises: preregistration section 16 open
+        point 1 makes this an engineering step that must actually run, not a
+        number transcribed into a document.
+        """
+
+        if not self.a_0:
+            return self
+        pins = dict(self.a_0)
+        measured = {
+            "content_hash": floored.content_hash(),
+            "unfloored_content_hash": unfloored.content_hash(),
+            "source_identity_hash": floored.source_identity_hash,
+            "utterance_count": floored.utterance_count,
+        }
+        if receipt_sha256 is not None:
+            measured["receipt_sha256"] = receipt_sha256
+        if unfloored.source_identity_hash != floored.source_identity_hash:
+            raise EvolutionError(
+                "the floored and unfloored TRAIN minings read different corpora; "
+                "A_0 cannot be closed"
+            )
+        wrong = sorted(
+            key
+            for key, value in pins.items()
+            if key in measured and measured[key] != value
+        )
+        if wrong:
+            raise EvolutionError(
+                "A_0 does not reproduce the pinned artifact: "
+                + "; ".join(f"{key} is {measured[key]!r}, pinned {pins[key]!r}" for key in wrong)
+                + ". Round 0 of the curve is the admitted mechanism only if the loop "
+                "starts from exactly those bytes; the cell stops here"
+            )
+        return self
+
     def assert_sentinels_are_target_tools(self) -> "LoopConfig":
         """A sentinel is a MEMBER of the target it guards, never a stranger.
 
@@ -3456,6 +3541,25 @@ class LoopConfig:
                 f"loop config fold_predecessors carries no {name!r} entry"
             )
         return name
+
+    def incumbent_fragment(self, which: str) -> str:
+        """The baseline fragment the INCUMBENT arm flies on one fold.
+
+        A cell whose arm binds a SEALED predecessor per fold needs one
+        incumbent fragment per fold for exactly the reason its candidates need
+        one per fold: the fold-B incumbent bound to fold A's intent manifest
+        would be flying against another population's sealed rows. So when
+        ``fold_predecessors`` is declared, the incumbent's fragment is
+        ``<base_fragment>-<fold>`` and both variants are committed beside the
+        base; the base itself is the template ``write_candidate_fragments``
+        copies and is never flown directly.
+
+        EVO-A1's arm is fold-independent, so it declares no fold predecessors
+        and the incumbent flies the base fragment on both folds, unchanged.
+        """
+
+        fold = self.fold_name(which)
+        return self.base_fragment if fold is None else f"{self.base_fragment}-{fold}"
 
     def keys_of_target(self, target_id: str) -> tuple[str, ...]:
         """The ARTIFACT keys ``target_id``'s candidate rewrites, in the order
@@ -4045,8 +4149,8 @@ def run_candidates_step(
     repo_root: Path,
     validator: Callable[[CandidateArtifact], Mapping[str, object]] | None = None,
     ledger_rows: Sequence[Mapping[str, str]] = (),
-    fold_a_rows: int = 404,
-    fold_a_speech_seconds: float = 1913.527,
+    fold_a_rows: int | None = None,
+    fold_a_speech_seconds: float | None = None,
     seconds_per_call: float = 0.80,
     token_counter: Callable[[str], int] | None = None,
 ) -> RoundStepResult:
@@ -4064,6 +4168,17 @@ def run_candidates_step(
     """
 
     state.validate()
+    # The fold's own size, from the committed loop config unless a caller
+    # (the offline dry run) overrides it. Config rather than a function
+    # default, because these numbers are what the emitted fragment's
+    # execution_plan is written from: a SLURP round costed at EVO-A1's 404
+    # rows would declare a plan its own 1,080-row flight exceeds.
+    fold_a_rows = config.fold_a_rows if fold_a_rows is None else fold_a_rows
+    fold_a_speech_seconds = (
+        config.fold_a_speech_seconds
+        if fold_a_speech_seconds is None
+        else fold_a_speech_seconds
+    )
     paths = config.round_paths(round_index)["candidates"]["writes"]
     contacts = propose_receipt.get("contacts")
     if not isinstance(contacts, list) or not contacts:
@@ -4165,7 +4280,7 @@ def run_candidates_step(
             "attempt_id": f"attempt-r{round_index}-i",
             "dataset_fragment": config.fold_a_dataset_fragment,
             "arm": config.arm,
-            "baseline_fragment": config.base_fragment,
+            "baseline_fragment": config.incumbent_fragment("fold_a"),
             "model_fragment": config.model_fragment,
             "factor": "the incumbent A_r, re-flown so this round's pairing is against "
             "its own sealed rows",
@@ -4314,8 +4429,8 @@ def run_select_step(
     score_files: Mapping[str, Path | str],
     repo_root: Path,
     ledger_rows: Sequence[Mapping[str, str]] = (),
-    fold_b_rows: int = 404,
-    fold_b_speech_seconds: float = 1877.630,
+    fold_b_rows: int | None = None,
+    fold_b_speech_seconds: float | None = None,
     seconds_per_call: float = 0.80,
 ) -> RoundStepResult:
     """Step (c): stage one on fold A, the assembly, and the fold-B fragment.
@@ -4327,6 +4442,12 @@ def run_select_step(
     """
 
     state.validate()
+    fold_b_rows = config.fold_b_rows if fold_b_rows is None else fold_b_rows
+    fold_b_speech_seconds = (
+        config.fold_b_speech_seconds
+        if fold_b_speech_seconds is None
+        else fold_b_speech_seconds
+    )
     paths = config.round_paths(round_index)["select"]["writes"]
     portfolios_raw = candidates_receipt.get("portfolios")
     if not isinstance(portfolios_raw, Mapping) or not portfolios_raw:
@@ -4451,7 +4572,7 @@ def run_select_step(
                 "attempt_id": f"attempt-r{round_index}-i",
                 "dataset_fragment": config.fold_b_dataset_fragment,
                 "arm": config.arm,
-                "baseline_fragment": config.base_fragment,
+                "baseline_fragment": config.incumbent_fragment("fold_b"),
                 "model_fragment": config.model_fragment,
                 "factor": "the incumbent on fold B, the confirmation's comparator",
             },

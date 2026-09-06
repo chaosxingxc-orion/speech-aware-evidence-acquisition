@@ -140,7 +140,70 @@ PREDECESSOR_PREFIX = "Prior phase response"
 PHASE_STATE_FILLS = Registry("phase state fill")
 
 
-def _slurp_intent_slot_schema_state_fill():
+#: The registered legal-label projection rules a SLURP state fill may select
+#: its block through, by the SAME ids ``core.scorers`` registers the scoring
+#: side under. Config names one of these; nothing else is resolvable, and the
+#: default is no projection at all, so every already-flown cell keeps its own
+#: selection byte for byte.
+SLURP_STATE_INTENT_PROJECTIONS = (
+    "slurp-legal-label-projection-v1",
+    "slurp-legal-label-projection-v2",
+)
+
+
+def _slurp_intent_projection(projection: str | None):
+    """A projection id from ``fill_params`` as a bound rule, or ``None``.
+
+    THE SEAM, and why it is here rather than in the scorer. The re-lock of
+    2026-09-06 changed which SCORER the SLURP comparator is read through;
+    this is the other half of the same rule, applied at SELECTION time. A
+    sealed closed-list response naming a pair TRAIN never carries -- 3.9 % of
+    DEV-1000 -- otherwise sends its row to the 26,720-character full-schema
+    fallback, and under v2 seventeen of those rows would instead get their
+    gold intent's own block.
+
+    It is a per-arm config switch rather than a global default precisely
+    because it is not free: an arm that projects while its sealed comparator
+    did not would beat that comparator partly by better block selection, so
+    the switch is set per read population and identically across the arms of
+    one contrast (preregistration section 4).
+    """
+
+    if projection is None:
+        return None
+    if not isinstance(projection, str) or projection not in (
+        SLURP_STATE_INTENT_PROJECTIONS
+    ):
+        raise PhaseMaterialError(
+            f"unknown SLURP intent projection {projection!r}; the registered rules are "
+            f"{list(SLURP_STATE_INTENT_PROJECTIONS)}"
+        )
+    from ..data.lock import (  # noqa: PLC0415 (cycle guard, and lazily paid)
+        data_root,
+        load_lock,
+        umbrella_lock_path,
+    )
+    from ..reproduction.slurp_official_eval import (  # noqa: PLC0415
+        load_legal_intent_inventory,
+    )
+    from ..reproduction.slurp_scoring import (  # noqa: PLC0415
+        project_slu_label,
+        project_slu_label_v2,
+    )
+
+    rule = {
+        SLURP_STATE_INTENT_PROJECTIONS[0]: project_slu_label,
+        SLURP_STATE_INTENT_PROJECTIONS[1]: project_slu_label_v2,
+    }[projection]
+    inventory = load_legal_intent_inventory(load_lock(umbrella_lock_path()), data_root())
+
+    def project(scenario, action, *, parsed: bool = True):
+        return rule(scenario, action, inventory, parsed=parsed)
+
+    return project
+
+
+def _slurp_intent_slot_schema_state_fill(*, projection: str | None = None):
     """Factory for ``"slurp-intent-slot-schema-for-state"``.
 
     The returned fill renders, for ONE sealed closed-list SLU response, the
@@ -149,6 +212,11 @@ def _slurp_intent_slot_schema_state_fill():
     to the full schema when the response does not parse or names a
     (scenario, action) pair TRAIN never carries. TRAIN only: the loader it
     calls has no ``split`` parameter and can reach no devel or test file.
+
+    ``projection`` (a ``fill_params`` key, absent by default) names a
+    registered legal-label projection applied to the sealed label BEFORE the
+    block is selected; see :func:`_slurp_intent_projection`. KC-S1b's own
+    fragment declares none and is unchanged.
     """
 
     from ..data.lock import (  # noqa: PLC0415 (cycle guard, and lazily paid)
@@ -164,10 +232,11 @@ def _slurp_intent_slot_schema_state_fill():
     lock = load_lock(umbrella_lock_path())
     root = data_root()
     schema = load_slurp_intent_slot_schema(lock, root)
+    project = _slurp_intent_projection(projection)
 
     def fill(state_content: str) -> str:
         text, _used_intent, _fallback = render_slurp_slot_schema_for_state_detail(
-            lock, root, state_content, schema=schema
+            lock, root, state_content, schema=schema, projection=project
         )
         return text
 
@@ -183,6 +252,7 @@ def _slurp_evolved_slot_schema_state_fill(
     *,
     artifact_relpath: str,
     artifact_sha256: str,
+    projection: str | None = None,
     **provenance: object,
 ):
     """Factory for ``"slurp-evolved-slot-schema-for-state"`` (EVO-S1).
@@ -202,7 +272,10 @@ def _slurp_evolved_slot_schema_state_fill(
     fragment was written. ``provenance`` absorbs the writer's other pinning
     keys (``portfolio_sha256``, ``round``, ``k``); they are inside the config
     hash so a receipt says which portfolio flew, and this factory does not
-    read them.
+    read them. ``projection`` is the one fill param the writer does NOT own:
+    it is declared on the base fragment and carried through unchanged, so the
+    incumbent arm and every candidate arm of one fold select their block from
+    the same sealed label (:func:`_slurp_intent_projection`).
 
     Every intent the artifact does not name keeps its ``A_0`` block byte for
     byte (``rails.proposer.slurp_candidate_schema``), and every count and
@@ -271,11 +344,12 @@ def _slurp_evolved_slot_schema_state_fill(
             f"{error}"
         ) from error
 
+    project = _slurp_intent_projection(projection)
     counts = {"rows": 0, "fallback": 0}
 
     def fill(state_content: str) -> str:
         text, _used_intent, fallback = render_slurp_slot_schema_for_state_detail(
-            lock, root, state_content, schema=schema
+            lock, root, state_content, schema=schema, projection=project
         )
         counts["rows"] += 1
         counts["fallback"] += int(bool(fallback))

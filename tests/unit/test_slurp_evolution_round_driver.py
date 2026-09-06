@@ -37,6 +37,9 @@ from speech_aware_evidence_acquisition.data.slurp import (
     SlurpIntentSlotSchema,
 )
 from speech_aware_evidence_acquisition.rails.evolution import (
+    A2T_FOLD_A_SPEECH_SECONDS,
+    A2T_FOLD_B_SPEECH_SECONDS,
+    A2T_FOLD_ROWS,
     ROUND_STEPS,
     CarrierMaterial,
     EvolutionError,
@@ -194,7 +197,11 @@ def _carrier() -> CarrierMaterial:
 
 
 def _loop_config() -> LoopConfig:
-    return LoopConfig.from_json(
+    return LoopConfig.from_json(_loop_config_document())
+
+
+def _loop_config_document() -> dict:
+    return (
         {
             "carrier_lock_key": CARRIER,
             "target_kind": "scenario",
@@ -279,7 +286,7 @@ def _write(path: Path, document: object) -> None:
     )
 
 
-def _repo(root: Path, config: LoopConfig) -> Path:
+def _repo(root: Path, config: LoopConfig, *, fill_params: Mapping | None = None) -> Path:
     """A synthetic repository carrying only the base fragment the writer
     copies -- and it must already BE a state-fill arm bound to a sealed
     predecessor, because an evolved arm may differ from the admitted incumbent
@@ -299,6 +306,7 @@ def _repo(root: Path, config: LoopConfig) -> Path:
                     "instruction_template": "probes/slurp_phase_slots.txt",
                     "predecessor_binding": "sealed-manifest",
                     "state_fill": "slurp-intent-slot-schema-for-state",
+                    **({"fill_params": dict(fill_params)} if fill_params else {}),
                 }
             },
         },
@@ -865,3 +873,197 @@ def test_round_one_refuses_to_price_the_form_twin_without_a_tokenizer(tmp_path) 
             fold_a_rows=12,
             fold_a_speech_seconds=24.0,
         )
+
+
+def test_the_a_0_pins_stop_the_cell_when_train_stops_reproducing_them() -> None:
+    """`A_0`'s closure is executed, not transcribed.
+
+    Round 0 of the curve is the admitted KC-S1b mechanism only if the loop
+    starts from exactly the bytes KC-S1b flew, so the committed loop config
+    pins the floored schema's content hash, the unfloored table's, and the
+    TRAIN source identity both were mined from -- and `assert_a_0` raises
+    rather than warns when a mining disagrees with any of them.
+    """
+
+    floored = _schema(floored=True)
+    unfloored = _schema(floored=False)
+    document = {
+        **json.loads(json.dumps(_loop_config_document())),
+        "a_0": {
+            "receipt_relpath": "docs/receipts/knowledge/synthetic.json",
+            "receipt_sha256": "c" * 64,
+            "content_hash": floored.content_hash(),
+            "unfloored_content_hash": unfloored.content_hash(),
+            "source_identity_hash": floored.source_identity_hash,
+            "utterance_count": floored.utterance_count,
+        },
+    }
+    config = LoopConfig.from_json(document)
+    # The measured tables reproduce every pin, and the receipt digest the
+    # caller measured is checked beside them.
+    assert config.assert_a_0(
+        floored=floored, unfloored=unfloored, receipt_sha256="c" * 64
+    ) is config
+
+    for wrong in ("content_hash", "unfloored_content_hash", "source_identity_hash"):
+        drifted = LoopConfig.from_json(
+            {**document, "a_0": {**document["a_0"], wrong: "0" * 64}}
+        )
+        with pytest.raises(EvolutionError, match="does not reproduce the pinned"):
+            drifted.assert_a_0(floored=floored, unfloored=unfloored)
+    with pytest.raises(EvolutionError, match="does not reproduce the pinned"):
+        config.assert_a_0(
+            floored=floored, unfloored=unfloored, receipt_sha256="d" * 64
+        )
+    # A loop that declares no pins (EVO-A1) is untouched.
+    assert LoopConfig.from_json(document | {"a_0": None}).assert_a_0(
+        floored=floored, unfloored=unfloored
+    )
+
+
+def test_the_committed_loop_configs_declare_their_own_fold_sizes() -> None:
+    """A cell's fragments are costed from its own folds, not a default.
+
+    ``run_candidates_step`` and ``run_select_step`` write each emitted
+    fragment's ``execution_plan`` from the fold size and charge it against the
+    registered exposure row, so a SLURP round costed at EVO-A1's 404 rows
+    would declare a plan its own 1,080-row flight exceeds. EVO-A1 declares
+    nothing and keeps the defaults, which are its own measured V2 folds.
+    """
+
+    repo = Path(__file__).resolve().parents[2]
+    slurp = LoopConfig.from_json(
+        json.loads(
+            (repo / "configs/knowledge/slurp-evo-s1/loop-v1.json").read_text(
+                encoding="utf-8"
+            )
+        )
+    )
+    assert (slurp.fold_a_rows, slurp.fold_b_rows) == (1080, 1080)
+    assert slurp.fold_a_speech_seconds == 3084.528438
+    assert slurp.fold_b_speech_seconds == 3154.797375
+
+    a2t = LoopConfig.from_json(
+        json.loads(
+            (repo / "configs/knowledge/a2t-evo-a1/loop-v1.json").read_text(
+                encoding="utf-8"
+            )
+        )
+    )
+    assert (a2t.fold_a_rows, a2t.fold_b_rows) == (A2T_FOLD_ROWS, A2T_FOLD_ROWS)
+    assert a2t.fold_a_speech_seconds == A2T_FOLD_A_SPEECH_SECONDS
+    assert a2t.fold_b_speech_seconds == A2T_FOLD_B_SPEECH_SECONDS
+
+
+def test_the_base_fragments_projection_reaches_every_candidate_unchanged(
+    tmp_path,
+) -> None:
+    """One declaration of the projection, on the base, for every arm.
+
+    The incumbent arm flies the base fragment itself and each candidate flies
+    a copy of it, so declaring the projection once on the base is what makes
+    a round's contrast single-factor: every arm of that fold selects its
+    per-intent block from the same sealed label, and the only thing that
+    differs is the artifact.
+    """
+
+    from speech_aware_evidence_acquisition.rails.evolution import (
+        assemble_portfolio,
+        write_candidate_fragments,
+    )
+    from speech_aware_evidence_acquisition.rails.proposer import (
+        slurp_blocks_from_schema,
+        slurp_shares_only_candidate,
+    )
+
+    config = _loop_config()
+    projection = {"projection": "slurp-legal-label-projection-v2"}
+    repo = _repo(tmp_path / "run", config, fill_params=projection)
+    base = json.loads(
+        (repo / "configs" / "baseline" / f"{config.base_fragment}.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    incumbent = slurp_blocks_from_schema(_schema(floored=True), intents=INTENTS)
+    target = SCENARIOS[0]
+    candidate = slurp_shares_only_candidate(
+        {intent: incumbent[intent] for intent in ARTIFACT_KEYS[target]},
+        target_id=target,
+        round=1,
+        k=4,
+    )
+    portfolio = assemble_portfolio({}, {target: candidate})
+    written = write_candidate_fragments(
+        [portfolio],
+        base_fragment=base,
+        out_dir=repo / "configs" / "baseline",
+        artifact_dir=repo / "configs" / "knowledge" / config.slug,
+        artifact_relpath_base=repo,
+        artifact_family="slurp-slot-schema",
+        state_fill=config.state_fill,
+        state_fill_phase=config.state_fill_phase,
+        fold_variants=config.fold_predecessors,
+    )
+    assert len(written) == 2  # one fragment per fold
+    for path in written:
+        slots = json.loads(path.read_text(encoding="utf-8"))["phase_material"]["slots"]
+        assert slots["fill_params"]["projection"] == projection["projection"]
+        # and the writer's own keys are all still there
+        assert {"artifact_relpath", "artifact_sha256", "portfolio_sha256"} <= set(
+            slots["fill_params"]
+        )
+
+    # A base that tried to set a key the writer owns is refused rather than
+    # silently overwritten.
+    colliding = json.loads(json.dumps(base))
+    colliding["phase_material"]["slots"]["fill_params"] = {"artifact_sha256": "0" * 64}
+    with pytest.raises(EvolutionError, match="will not silently replace"):
+        write_candidate_fragments(
+            [portfolio],
+            base_fragment=colliding,
+            out_dir=repo / "configs" / "baseline",
+            artifact_dir=repo / "configs" / "knowledge" / config.slug,
+            artifact_relpath_base=repo,
+            artifact_family="slurp-slot-schema",
+            state_fill=config.state_fill,
+            state_fill_phase=config.state_fill_phase,
+            fold_variants=config.fold_predecessors,
+        )
+
+
+def test_the_incumbent_gets_one_fragment_per_fold_when_the_predecessor_does() -> None:
+    """An incumbent bound to the other fold's sealed manifest is not a
+    comparator.
+
+    EVO-S1's slot cells bind their fold's own one-time intent manifest, so the
+    fold-B incumbent cannot fly the fragment fold A's incumbent flies -- it
+    would be paired against another population's sealed rows. EVO-A1's arm is
+    fold-independent, declares no fold predecessors, and keeps one fragment
+    for both folds.
+    """
+
+    config = _loop_config()
+    assert config.incumbent_fragment("fold_a") == f"{config.base_fragment}-fold-a"
+    assert config.incumbent_fragment("fold_b") == f"{config.base_fragment}-fold-b"
+
+    repo = Path(__file__).resolve().parents[2]
+    slurp = LoopConfig.from_json(
+        json.loads(
+            (repo / "configs/knowledge/slurp-evo-s1/loop-v1.json").read_text(
+                encoding="utf-8"
+            )
+        )
+    )
+    for which in ("fold_a", "fold_b"):
+        name = slurp.incumbent_fragment(which)
+        assert (repo / "configs" / "baseline" / f"{name}.json").is_file(), name
+
+    a2t = LoopConfig.from_json(
+        json.loads(
+            (repo / "configs/knowledge/a2t-evo-a1/loop-v1.json").read_text(
+                encoding="utf-8"
+            )
+        )
+    )
+    assert a2t.incumbent_fragment("fold_a") == a2t.base_fragment
+    assert a2t.incumbent_fragment("fold_b") == a2t.base_fragment
