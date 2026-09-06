@@ -2,7 +2,7 @@
   "experiment_id": "SAEA-SLURP-EVO-S1-SLOT-SCHEMA-V1",
   "fragment_kind": "saea-slurp-slot-stage-experiment-v1",
   "date": "2026-09-06",
-  "draft_status": "DRAFT. Not registered and not flyable. The coordinator closes docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md first (the reward metric, the read option, the fold-quota power ruling), and the nine prerequisites of that document's section 13 must land before any cell here is launched -- in particular the two fold dataset fragments, their probe-sample views, their D1 media supplements and their packet promotions, none of which exists yet, and the one-time closed-list intent flight whose sealed manifests every cell below binds as its predecessor. Every 'PENDING' value is filled by the per-round fragment emitter when that round is assembled.",
+  "draft_status": "DRAFT. Not registered and not flyable. The coordinator ruled on 2026-09-06 (reward metric, read Option B, folds at 60 per scenario, the per-scenario harm bound, F2/F3/K/M/form, the decontamination bound and the recomputed budget) and docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md carries those decisions; it still needs the SLURP half of track E3c admitted and its exposure rows written. Of section 13's prerequisites, the two fold dataset fragments, their probe-sample views and their D1 media supplements NOW EXIST and verify through contracts.gate_media_identity.verify_media_identity (SAEA-SN-MF-SLURP-EVO-FOLD-SUPPLEMENTS-V2). Still missing before any cell here launches: the featcache packets for all 2,160 fold rows (a model contact, measured at 0 of 2,160 present), the one-time closed-list intent flight whose sealed manifests every cell below binds as its predecessor, the prompt fit, and the proposer runner of track E3c. Every 'PENDING' value is filled by the per-round fragment emitter when that round is assembled.",
   "purpose": "Cell EVO-S1 of the 2026-09-05 three-dimension experiment program (sections 4c and 5), the generality rung of the system-evolution dimension and, by the owner directive of 2026-09-06, its PRIMARY demonstration: the same loop code and the same selection rule as EVO-A1, on SLURP, evolving the per-intent TRAIN slot schema KC-S1b admitted. This fragment carries only the speech-bearing REWARD flights, which are baseline-reproduction. The proposer's own text contacts are bounded-discovery-probe and need a SECOND fragment (configs/experiment/slurp-evo-s1-proposer-v1.json), because a composed experiment fragment declares exactly one execution_plan and therefore exactly one execution profile.",
   "hypothesis": "H1: shown only its own incumbent block and eight construction utterances of a scenario with their gold entities, the frozen core can rewrite the per-intent slot schema so that per-row strict entity F1 rises on rows it has never seen, and a best-of-K selection over four rounds produces a schema whose gain survives one read on DEV against the SEALED KC-S1b rows. H2: the shares-only control (the incumbent blocks with every filler list deleted) is the content floor, and the token-matched form twin is the form floor. Both controls are deterministic and cost no contact.",
   "preregistration": "docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md",
@@ -44,7 +44,12 @@
   },
   "populations": {
     "SLURP-EVO-FOLD-A-V2": {
-      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080 (PENDING -- lands under SAEA-SN-MF-SLURP-EVO-FOLD-SUPPLEMENTS-V2)",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "dataset_fragment_file_sha256": "4ba55688e80d8d768ec6cfc3ff4bacc9802fb34e4dab54913934015184497215",
+      "runtime_view_sha256": "f423fd59bee4ff73833f49187fde22071b4d5ea7a39243e55f728f0ccbf67918",
+      "probe_sample_view": "docs/receipts/probe-samples/SLURP-EVO-FOLD-A-V2.json",
+      "d1_media_supplement": "receipts/artifacts/d1-slurp-evo-fold-a-v2.json",
+      "d1_media_supplement_sha256": "2b3d22993cfbefa5eee54b883cee23477b9e445e3b74a5e95ed86a327eba8397",
       "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
       "roster_receipt_file_sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
       "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -59,7 +64,12 @@
       "estimand": "per-scenario saves, harms and net against the incumbent, on that scenario's own 60 rows"
     },
     "SLURP-EVO-FOLD-B-V2": {
-      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080 (PENDING -- lands under SAEA-SN-MF-SLURP-EVO-FOLD-SUPPLEMENTS-V2)",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "dataset_fragment_file_sha256": "1d30c501612686004936b5dd295885d9452175e6449b4a66187c08227a322cea",
+      "runtime_view_sha256": "fdb6ccdca1a4ea69f029d80af504bae631aac7f469fe5330e726d77dc81e469d",
+      "probe_sample_view": "docs/receipts/probe-samples/SLURP-EVO-FOLD-B-V2.json",
+      "d1_media_supplement": "receipts/artifacts/d1-slurp-evo-fold-b-v2.json",
+      "d1_media_supplement_sha256": "c543067ece11f707cd6bb3fa297ffa515e596b7cbd3d445b55cce6411d49bd32",
       "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
       "roster_receipt_file_sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
       "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",

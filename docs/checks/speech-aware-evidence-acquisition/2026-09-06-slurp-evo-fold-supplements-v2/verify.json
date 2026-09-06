@@ -1,0 +1,47 @@
+{
+  "contacts": {
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "exposure_row": "SAEA-SN-MF-SLURP-EVO-FOLD-SUPPLEMENTS-V2",
+  "folds": {
+    "fold_a": {
+      "audio_seconds_total": 3084.5284375,
+      "d1_media_supplement": "docs/receipts/artifacts/d1-slurp-evo-fold-a-v2.json",
+      "d1_media_supplement_sha256": "2b3d22993cfbefa5eee54b883cee23477b9e445e3b74a5e95ed86a327eba8397",
+      "dataset_fragment": "configs/dataset/slurp-speech-native-evo-fold-a-1080.json",
+      "load_verified_probe_split": "PASS",
+      "probe_sample_view": "docs/receipts/probe-samples/SLURP-EVO-FOLD-A-V2.json",
+      "read_roster": "PASS",
+      "receipt_identity_hash": "c0eb013d8561f924a9dd04400f7733f0b43594c93f02fdfa602142c8633e5354",
+      "roster_id": "SLURP-EVO-FOLD-A-V2",
+      "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "rows": 1080,
+      "run_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+      "runtime_view_sha256": "f423fd59bee4ff73833f49187fde22071b4d5ea7a39243e55f728f0ccbf67918",
+      "verify_media_identity": "PASS"
+    },
+    "fold_b": {
+      "audio_seconds_total": 3154.797375,
+      "d1_media_supplement": "docs/receipts/artifacts/d1-slurp-evo-fold-b-v2.json",
+      "d1_media_supplement_sha256": "c543067ece11f707cd6bb3fa297ffa515e596b7cbd3d445b55cce6411d49bd32",
+      "dataset_fragment": "configs/dataset/slurp-speech-native-evo-fold-b-1080.json",
+      "load_verified_probe_split": "PASS",
+      "probe_sample_view": "docs/receipts/probe-samples/SLURP-EVO-FOLD-B-V2.json",
+      "read_roster": "PASS",
+      "receipt_identity_hash": "5872e60e9f87905128dbfd01c2fc79c3da8d8161ff30f8ace9e061b83f6682b2",
+      "roster_id": "SLURP-EVO-FOLD-B-V2",
+      "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "rows": 1080,
+      "run_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+      "runtime_view_sha256": "fdb6ccdca1a4ea69f029d80af504bae631aac7f469fe5330e726d77dc81e469d",
+      "verify_media_identity": "PASS"
+    }
+  },
+  "parent_d1_sha256": "9c10fad1e5b625f977a5bdc71ed0c782e5d5c76c7a13af11ce811c5e152d35e3",
+  "schema": "saea-slurp-evo-fold-supplement-verification-v1",
+  "study": "speech-aware-evidence-acquisition"
+}
