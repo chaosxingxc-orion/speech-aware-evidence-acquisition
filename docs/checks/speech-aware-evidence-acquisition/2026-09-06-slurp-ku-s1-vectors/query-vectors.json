@@ -1,0 +1,161 @@
+{
+  "accounting": {
+    "embed_seconds": 94.368,
+    "embedding_tool_contacts": 1002,
+    "embedding_tool_contacts_charged": 1002,
+    "frozen_core_contacts": 0,
+    "gold_reads": 0,
+    "gpu_hours": 0.0,
+    "gpu_hours_basis": "-ngl 0: nothing offloaded; the pass is CPU-only",
+    "http_requests_guarded": 1002,
+    "paid_api_spend": 0,
+    "registered_tool_contact_ceiling": 1050,
+    "spawn_seconds": 10.024,
+    "speech_audio_seconds": 0,
+    "throughput_texts_per_second": 10.5968,
+    "total_wall_seconds": 107.069
+  },
+  "alternative_not_chosen": {
+    "candidate": "the sealed one-contact CLOSED-LIST direct baseline responses (SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1, run manifest sha256 f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c)",
+    "why_not": "those rows were produced by a policy:'fixed' one-contact arm whose request carries NO phase control turn at all. KU-S1's own phase 1 is a phase-program contact that sends probes/slurp_phase_direct.txt after the audio, and the KU-S1c verdict measured that this control turn is worth +1.2 of the +1.5 intent points that arm gained -- i.e. the two populations of answers are measurably different. KU-S1c's draft phase is the same program path, the same system message and the same static directive KU-S1's phase 1 will send, so it is the closer stand-in. Recorded so the choice is auditable rather than assumed."
+  },
+  "attempt_id": "attempt-20260906T070727Z-kus1qemb",
+  "authority": "docs/readiness/2026-09-06-slurp-consumption-ku-s1-v2-preregistration.md; enabler E6 (rails.phase_supply ships only the 'sealed-vectors' kind and refuses 'embedding-server' by name)",
+  "carrier": "slurp",
+  "deviation_from_the_lock": "The DEV-1000 BLEND lock embedded the trajectory's OWN direct answer IN FLIGHT (launch_dev1000_baseline_lock.py's RuntimeEmbeddedBlendController). This pass embeds a SEALED prior run's answer to the same question for the same row, before takeoff. Same embedder, same signal family, different provenance: a pre-flight vector cannot see a flight's own phase-1 answer. The lock's own recall signal was text-only too, which is exactly what the 2026-09-06 owner rule now forbids as a retrieval query -- so this receipt records a property of the LOCK as much as of this pass.",
+  "embedded_signal": "TEXT-ONLY, and therefore NOT a legal retrieval query under the owner rule of 2026-09-06: the SEALED phase-1 ('draft') response text of each DEV-1000 row of run SAEA-SLURP-KU-S1C-DRAFT-REVISE-DEV1000-V1 (attempt attempt-20260906T042946Z-44720f, phases file sha256 f6ed3c14...264e63), embedded once before the flight by the pinned tool-level embedder qwen3-embedding-0.6b-gguf (Qwen3-Embedding-0.6B-Q8_0.gguf, sha256 06507c7b...e439, 1,024 dimensions, llama.cpp featcache 04ccc72a, --embedding --pooling last, -ngl 0, CPU only). This reproduces the SIGNAL the DEV-1000 BLEND lock recalled on -- a direct-decode answer's embedding -- from a SEALED prior run instead of in flight. KU-S1c's draft phase is the closest sealed stand-in for KU-S1's own phase 1: same phase-program path, same byte-identical closed-list system message, same static directive probes/slurp_phase_direct.txt. The one deviation, stated and not hidden: the pre-flight vector cannot see THIS flight's own phase-1 answer.",
+  "embedded_signal_modality": "text-only",
+  "embedder": {
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "cpu_only": true,
+    "dims": 1024,
+    "gguf_relpath": "models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf",
+    "gguf_sha256": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439",
+    "gpu_layers": 0,
+    "lock_key": "qwen3-embedding-0.6b-gguf",
+    "lock_revision": "370f27d7550e0def9b39c1f16d3fbaa13aa67728",
+    "port": 8082,
+    "role": "pinned TOOL-level embedder (frozen tool-level retriever clause); never the frozen core",
+    "server_argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8082",
+      "-m",
+      "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf",
+      "--embedding",
+      "--pooling",
+      "last",
+      "-ngl",
+      "0",
+      "-c",
+      "4096",
+      "-b",
+      "4096",
+      "-ub",
+      "4096",
+      "-np",
+      "1",
+      "-t",
+      "6"
+    ],
+    "server_props": {
+      "build_info": "b8-04ccc72a2",
+      "model_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/qwen3-embedding-0.6b-gguf/Qwen3-Embedding-0.6B-Q8_0.gguf",
+      "total_slots": 1
+    },
+    "session_id": "SAEA-SLURP-KU-S1-QUERY-EMBEDDING-V1-attempt-20260906T070727Z-kus1qemb-qwen3-emb-cpu",
+    "session_pid": 7738,
+    "threads": 6,
+    "threads_note": "-t 6, not the 2026-08-24 KB pass's -t 16: a GPU flight owns the host while this pass runs and the CPU budget is shared."
+  },
+  "encode_only_check": {
+    "guard1_import": "PASS",
+    "guard2_endpoint_strings": "PASS",
+    "guard3_client_surface": "PASS",
+    "guard4_payload_keys": "PASS on all 1002 request payloads",
+    "pinned_modules": [
+      "speech_aware_evidence_acquisition.rails.embedding_client",
+      "speech_aware_evidence_acquisition.rails.local_encoder_client",
+      "speech_aware_evidence_acquisition.rails.probes.pemb3m_flight",
+      "speech_aware_evidence_acquisition.rails.probes.pemb4r_flight"
+    ],
+    "result": "PASS",
+    "runner_source": "/mnt/d/chao_workspace/saea-worktrees/wt-e6/scripts/slurp_ku_s1_query_embedding_pass.py",
+    "runner_source_sha256": "d6182b26798563014569aafaceda8ca9299603fbaa2546bd0f74a997d517c050"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "exposure_ledger_row": "SAEA-SLURP-KU-S1-QUERY-EMBEDDING-V1",
+  "generated_at": "2026-09-06T07:09:19.486727+00:00",
+  "generator": "scripts/slurp_ku_s1_query_embedding_pass.py",
+  "generator_sha256": "d6182b26798563014569aafaceda8ca9299603fbaa2546bd0f74a997d517c050",
+  "jitter_pair": {
+    "bit_identical": false,
+    "cosine": 0.9997014083444208,
+    "note": "the SAME text embedded at session start and at session end; the pass is CPU-served, so this pair is the declared tolerance evidence.",
+    "text_sha256": "11fc7957b1b069888559f171890a3d311fe531c5cc8ca535ce2a71b44663fea0",
+    "text_source": "sealed draft response of slurp:devel:000011:audio-1497266596"
+  },
+  "output": {
+    "artifact_relpath": "vectors/slurp-ku-s1/query-vectors.jsonl",
+    "bytes": 22789268,
+    "dimension": "content",
+    "dims": 1024,
+    "id_space": "DEV-1000 runtime-view sample ids (slurp:devel:<utt>:<recording>)",
+    "line_form": "{\"id\": \"<sample id>\", \"vectors\": {\"content\": [<1024 floats>]}}",
+    "round_trip": {
+      "exact": true,
+      "max_abs_delta_vs_server_response": 0.0,
+      "reader": "rails.phase_supply.load_sealed_vectors"
+    },
+    "rows": 1000,
+    "sha256": "c194adfb359ab4fcc00a1fade3ca76ac0a79c89ea72e62be6cf1eac8942ff4c6",
+    "text_sha256_first": "11fc7957b1b069888559f171890a3d311fe531c5cc8ca535ce2a71b44663fea0",
+    "text_sha256_last": "89c4dcb4e1a0d29da29a2f38a2e6271c440170d68440cd5cef5d8490cf0ea3e4"
+  },
+  "owner_rule_2026_09_06": {
+    "consequence_for_this_artifact": "These vectors embed response TEXT and are therefore NOT cell KU-S1's query vectors. configs/baseline/slurp-phase-blend-cl-v1.json leaves phase_supply.evidence.query_source.sha256 at the 64-f placeholder until MF-7 fixes a speech-containing embedder, and rails.phase_supply now REFUSES any query_source whose embedded_signal does not declare 'speech:' or 'speech+state:'.",
+    "path_is_stable": "vectors/slurp-ku-s1/query-vectors.jsonl and this receipt keep their paths so MF-7 (worktree wt-mf7) can cite them without a copy.",
+    "roles_this_artifact_keeps": [
+      "the Q-draft (text-only) arm of the MF-7 retrieval-key audit, which reads this exact path and this exact receipt",
+      "the STATE half of a future speech+state fusion, if MF-7's decision table picks the fused form"
+    ],
+    "rule": "The retrieval QUERY must contain the speech signal. It may be speech plus an agent intermediate state (for example the speech plus the draft answer), but it can never be text-only."
+  },
+  "purpose": "One embedding tool contact per DEV-1000 row over the SEALED phase-1 ('draft') response of KU-S1c. Commissioned as cell KU-S1's pre-flight query vectors and RE-SCOPED by the owner rule of 2026-09-06 before it ran; see owner_rule_2026_09_06 below for what this artifact now is.",
+  "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KU-S1-QUERY-EMBEDDING-V1/attempt-20260906T070727Z-kus1qemb",
+  "run_id": "SAEA-SLURP-KU-S1-QUERY-EMBEDDING-V1",
+  "schema": "saea-query-vector-pass-receipt-v1",
+  "source": {
+    "attempt_id": "attempt-20260906T042946Z-44720f",
+    "controller_policy_id": "phase-draft-revise-v1:draft",
+    "fields_not_read": "everything else: no gold, no reference transcript, no SLURP devel sentence text, no audio, no other run's material",
+    "fields_read": [
+      "sample_id",
+      "final_response_text"
+    ],
+    "phase": "draft",
+    "phases_file_sha256": "f6ed3c1495778f53ab660ec6f90b2360ab059aed98541b9947cefffffa264e63",
+    "roster_receipt": "docs/receipts/probe-samples/DEV-1000.json",
+    "rows": 1000,
+    "run_id": "SAEA-SLURP-KU-S1C-DRAFT-REVISE-DEV1000-V1",
+    "run_manifest_sha256": "1b5143aa1958a6dbdd16feaa13a09138275c9241175a1f4709175b71de11a74d",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev"
+  },
+  "storage": {
+    "dtype_in_flight": "float32",
+    "l2_norms": {
+      "max": 1.0000000487967884,
+      "mean": 0.9999999987892558,
+      "min": 0.9999999454313786
+    },
+    "normalization_applied_by_this_pass": "none",
+    "note": "vectors are written EXACTLY as the pinned llama.cpp server returned them (that server L2-normalizes pooled embeddings by default, which the measured norms confirm). Each float32 is widened to the exactly equal Python float and serialised with the shortest decimal that round-trips that double.",
+    "rounding_applied_by_this_pass": "none"
+  },
+  "study": "speech-aware-evidence-acquisition"
+}
