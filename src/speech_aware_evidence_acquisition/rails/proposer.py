@@ -43,6 +43,19 @@ reported rather than gated: construction rows are legally visible to the
 proposer, so overlap there is a memorization signal for the reviewer, not an
 illegality.
 
+Two ARTIFACT families, one candidate dataclass. The three families above
+say how a candidate was PRODUCED; :data:`ARTIFACT_FAMILIES` says what its
+content IS. ``a2t-descriptions`` is the mapping described above.
+``slurp-slot-schema`` (EVO-S1) is a mapping from a SLURP intent to that
+intent's slot block -- an ordered entity-type list with up to five TRAIN
+fillers each -- rendered through ``data.slurp
+.render_slurp_intent_slot_schema`` with the header line and every share
+re-derived from the unfloored TRAIN table, so a candidate can choose which
+types to list, in what order, and with which fillers, and can never write a
+number. Everything family-specific lives behind a family switch in this one
+module: there is no second candidate class, no second validator module and
+no probe.
+
 No class here defines both ``initial_contact`` and ``advance``, and nothing
 here subclasses ``rails.task_adapter.TaskAdapter``: this module is data and
 gates, and the one controller stays ``rails.controllers.EvidenceAgentController``.
@@ -78,6 +91,45 @@ CONTROL_FILLER = " tool"
 
 FAMILIES = ("proposer", "deterministic", "placebo")
 
+#: What a candidate's CONTENT is, as opposed to how it was produced.
+#: ``a2t-descriptions`` -- ``{tool_name: description}``, EVO-A1's state.
+#: ``slurp-slot-schema`` -- ``{intent: {"types": [{"entity_type": str,
+#: "fillers": [str, ...]}, ...]}}``, EVO-S1's state.
+A2T_DESCRIPTIONS_FAMILY = "a2t-descriptions"
+SLURP_SLOT_SCHEMA_FAMILY = "slurp-slot-schema"
+ARTIFACT_FAMILIES = (A2T_DESCRIPTIONS_FAMILY, SLURP_SLOT_SCHEMA_FAMILY)
+
+#: EVO-S1 form constants (preregistration sections 3 and 5).
+#: The token budget is RELATIVE -- ``+20 %`` over the INCUMBENT block, per
+#: intent -- because a SLURP block is 494 to 1,224 characters and an absolute
+#: cap would price a nine-intent scenario like a one-intent one.
+SLURP_RELATIVE_TOKEN_BUDGET = 0.20
+SLURP_MAX_FILLERS_PER_TYPE = 5
+
+#: The exact text ``data.slurp.render_slurp_intent_slot_schema`` emits for a
+#: listed type carrying no filler. It is a real renderer output (that is what
+#: the shares-only control F2 renders to), so the block parser accepts it and
+#: reads it back as an empty filler list.
+SLURP_NO_FILLER_SENTINEL = "no example filler recorded"
+
+#: The neutral placeholders the token-matched form twin (F3) writes in place
+#: of a type's fillers, one per filler POSITION, and the unit it pads with
+#: (the first entry). One word per position rather than one word repeated,
+#: because the renderer's own grammar and the block parser both refuse a type
+#: that lists the same filler twice -- so a twin built from a single repeated
+#: word would not be a legal block at all. Five entries because a type carries
+#: at most :data:`SLURP_MAX_FILLERS_PER_TYPE` fillers.
+SLURP_PLACEHOLDER_FILLERS = ("item", "thing", "one", "part", "unit")
+SLURP_PLACEHOLDER_FILLER = SLURP_PLACEHOLDER_FILLERS[0]
+
+#: The only token counter a REGISTERED EVO-S1 candidate may be priced with:
+#: the serving geometry's own tokenizer, reached over the resident server's
+#: ``/tokenize``. KC-A1 died four tokens over a forty-token cap because its
+#: builder injected a chars-per-token ratio as its counter, so an estimator is
+#: refused here unless the caller says ``allow_estimator=True`` -- which the
+#: offline tests do and a flight never may.
+SERVING_TOKENIZER_ID = "llama-server:/tokenize"
+
 #: The registry columns every proposer prompt and every gate reads.
 ROW_FIELDS = (
     "tool_name",
@@ -99,6 +151,15 @@ __all__ = [
     "REGISTRY_LINE_COUNT",
     "DECONTAMINATION_NGRAM",
     "FAMILIES",
+    "ARTIFACT_FAMILIES",
+    "A2T_DESCRIPTIONS_FAMILY",
+    "SLURP_SLOT_SCHEMA_FAMILY",
+    "SLURP_RELATIVE_TOKEN_BUDGET",
+    "SLURP_MAX_FILLERS_PER_TYPE",
+    "SLURP_NO_FILLER_SENTINEL",
+    "SLURP_PLACEHOLDER_FILLER",
+    "SLURP_PLACEHOLDER_FILLERS",
+    "SERVING_TOKENIZER_ID",
     "ROW_FIELDS",
     "ProposerError",
     "CandidateArtifact",
@@ -117,6 +178,16 @@ __all__ = [
     "render_proposer_instruction",
     "validate_candidate_artifact",
     "word_ngrams",
+    # -- the SLURP slot-schema artifact family (EVO-S1) -----------------
+    "parse_slurp_schema_response",
+    "render_slurp_proposer_instruction",
+    "slurp_proposer_candidate",
+    "slurp_shares_only_candidate",
+    "slurp_form_twin_candidate",
+    "slurp_candidate_schema",
+    "slurp_block_texts",
+    "slurp_blocks_from_schema",
+    "validate_slurp_candidate_artifact",
 ]
 
 
@@ -136,6 +207,45 @@ _WORD_RE = re.compile(r"[a-z0-9]+")
 #: was copied into the prompt.
 _SAMPLE_ID_RE = re.compile(r"tier\d_[a-z_]+:\d{6}")
 _BARE_SIX_DIGIT_RE = re.compile(r"(?<!\d)\d{6}(?!\d)")
+
+#: ``slurp:devel:001234`` / ``slurp:train:001234:headset`` -- the SLURP
+#: sample identity shape (preregistration section 12.1 item P4). Added beside
+#: the Audio2Tool shape rather than instead of it: an identifier is an
+#: identifier whichever carrier minted it, and both families refuse both.
+_SLURP_SAMPLE_ID_RE = re.compile(r"slurp:(?:train|devel|test):\d{6}(?::[A-Za-z0-9-]+)?")
+
+#: Intent and entity-type names, which SLURP spells the same way
+#: (``alarm_query``, ``definition_word``) and which the block grammar's two
+#: line shapes both key on.
+_SLURP_NAME_RE = re.compile(r"[a-z0-9_]+")
+
+#: The two line shapes ``data.slurp.render_slurp_intent_slot_schema`` emits
+#: for a block (preregistration section 12.1 item P2): the header line, which
+#: carries the intent and its TRAIN counts, and one type line per listed type.
+_SLURP_BLOCK_HEADER_RE = re.compile(
+    r"^== (?P<intent>[a-z0-9_]+) == (?P<n>\d+) TRAIN utterances, "
+    r"(?P<mentions>\d+) slot mentions$"
+)
+_SLURP_TYPE_LINE_RE = re.compile(
+    r"^- (?P<entity_type>[a-z0-9_]+) \((?P<share>\d+\.\d) percent of slot "
+    r"mentions\): (?P<fillers>\S.*)$"
+)
+
+
+def _carries_sample_identifier(text: str) -> bool:
+    """Whether ``text`` carries anything shaped like a corpus sample id.
+
+    One helper for both artifact families, so "no identifier reaches a
+    candidate" means exactly the same thing on either carrier: an Audio2Tool
+    ``tier3_multi_intent:000412``, a SLURP ``slurp:devel:001234``, or the
+    bare six-digit run of digits both shapes end in.
+    """
+
+    return bool(
+        _SAMPLE_ID_RE.search(text)
+        or _SLURP_SAMPLE_ID_RE.search(text)
+        or _BARE_SIX_DIGIT_RE.search(text)
+    )
 
 
 def word_ngrams(text: str, n: int = DECONTAMINATION_NGRAM) -> set[tuple[str, ...]]:
@@ -192,6 +302,101 @@ def _checked_descriptions(
     return out
 
 
+def _checked_slurp_blocks(
+    blocks: Mapping[str, object], label: str
+) -> dict[str, dict[str, object]]:
+    """Shape check for a ``slurp-slot-schema`` artifact. Structure only.
+
+    ``{intent: {"types": [{"entity_type": str, "fillers": [str, ...]}, ...]}}``
+    -- no counts, no shares, no header line, because a candidate never writes
+    a number: :func:`slurp_candidate_schema` re-derives all of those from the
+    unfloored TRAIN table before anything is rendered. The FORM gates (the
+    line cap, the filler cap, the relative token budget, the TRAIN-mention
+    rule) are :func:`validate_slurp_candidate_artifact`'s, one seam out, where
+    the TRAIN table and the tokenizer are in scope.
+    """
+
+    if not isinstance(blocks, Mapping) or not blocks:
+        raise ProposerError(f"{label} must be a non-empty mapping of intent to block")
+    out: dict[str, dict[str, object]] = {}
+    for intent, block in blocks.items():
+        if not isinstance(intent, str) or not intent:
+            raise ProposerError(f"{label} has a non-text intent name")
+        if not isinstance(block, Mapping) or set(block) != {"types"}:
+            raise ProposerError(
+                f"{label}[{intent!r}] must be an object carrying exactly 'types'"
+            )
+        raw_types = block["types"]
+        if isinstance(raw_types, (str, bytes)) or not isinstance(raw_types, Sequence):
+            raise ProposerError(f"{label}[{intent!r}].types must be a list")
+        if not raw_types:
+            raise ProposerError(
+                f"{label}[{intent!r}] lists no entity type; a candidate may reorder or "
+                "re-fill a block, never empty it"
+            )
+        entries: list[dict[str, object]] = []
+        seen: set[str] = set()
+        for index, entry in enumerate(raw_types):
+            if not isinstance(entry, Mapping) or set(entry) != {"entity_type", "fillers"}:
+                raise ProposerError(
+                    f"{label}[{intent!r}].types[{index}] must carry exactly "
+                    "'entity_type' and 'fillers'"
+                )
+            entity_type = entry["entity_type"]
+            if not isinstance(entity_type, str) or not _SLURP_NAME_RE.fullmatch(entity_type):
+                raise ProposerError(
+                    f"{label}[{intent!r}].types[{index}] entity_type {entity_type!r} is "
+                    "not a lower-case entity type name"
+                )
+            if entity_type in seen:
+                raise ProposerError(
+                    f"{label}[{intent!r}] lists entity type {entity_type!r} twice"
+                )
+            seen.add(entity_type)
+            raw_fillers = entry["fillers"]
+            if isinstance(raw_fillers, (str, bytes)) or not isinstance(
+                raw_fillers, Sequence
+            ):
+                raise ProposerError(
+                    f"{label}[{intent!r}].types[{index}] fillers must be a list"
+                )
+            fillers: list[str] = []
+            for filler in raw_fillers:
+                _checked_slurp_filler(filler, f"{label}[{intent!r}].{entity_type}")
+                if filler in fillers:
+                    raise ProposerError(
+                        f"{label}[{intent!r}].{entity_type} repeats filler {filler!r}"
+                    )
+                fillers.append(filler)
+            entries.append({"entity_type": entity_type, "fillers": fillers})
+        out[intent] = {"types": entries}
+    return out
+
+
+def _checked_slurp_filler(filler: object, label: str) -> str:
+    """One filler, fail-closed: ASCII, lower case, no separator, no padding.
+
+    ``"; "`` is the renderer's own filler separator, so a filler carrying one
+    would render into two fillers and the artifact would no longer be
+    reproducible from its rendering -- which is the whole reason the block
+    grammar, and not JSON, is EVO-S1's output contract.
+    """
+
+    if not isinstance(filler, str) or not filler:
+        raise ProposerError(f"{label} has an empty filler")
+    if not filler.isascii():
+        raise ProposerError(f"{label} filler {filler!r} carries non-ASCII characters")
+    if filler != filler.lower():
+        raise ProposerError(f"{label} filler {filler!r} is not lower case")
+    if filler != filler.strip() or "  " in filler:
+        raise ProposerError(f"{label} filler {filler!r} carries padding whitespace")
+    if ";" in filler or "\n" in filler or "\r" in filler:
+        raise ProposerError(
+            f"{label} filler {filler!r} carries a separator the renderer owns"
+        )
+    return filler
+
+
 def _checked_exemplars(
     exemplars: Sequence[tuple[str, str, str]],
 ) -> tuple[tuple[str, str, str], ...]:
@@ -234,19 +439,42 @@ def _tool_of_gold_call(gold_call: str) -> str:
 # ---------------------------------------------------------------------------
 
 
-def candidate_text(descriptions: Mapping[str, str], cue: str | None) -> str:
+def candidate_text(
+    descriptions: Mapping[str, object],
+    cue: str | None,
+    *,
+    artifact_family: str = A2T_DESCRIPTIONS_FAMILY,
+) -> str:
     """The candidate's own canonical text -- the thing its id hashes.
 
-    Deliberately NOT the rendered 152-line block: the block is a function of
-    the whole registry, which is fixed, so hashing it would make every
-    candidate id depend on registry bytes that never change while hiding what
-    actually differs. This is the cue line followed by one
+    Deliberately NOT the rendered block a flight sends: that rendering is a
+    function of fixed material (the whole 152-line registry; the unfloored
+    TRAIN counts and shares), so hashing it would make every candidate id
+    depend on bytes that never change while hiding what actually differs.
+
+    ``a2t-descriptions`` -- the cue line followed by one
     ``"{tool}: {description}"`` line per targeted tool in name order.
+    ``slurp-slot-schema`` -- a family marker, then one ``"== {intent}"`` line
+    per rewritten intent in name order and one
+    ``"- {entity_type}: {filler}; ..."`` line per listed type IN THE
+    CANDIDATE'S OWN ORDER: the type order is part of what the candidate chose,
+    so two candidates differing only in it must not collide.
     """
 
-    checked = _checked_descriptions(descriptions, "descriptions")
     if cue is not None and (not isinstance(cue, str) or not cue.strip()):
         raise ProposerError("cue must be non-empty text or None")
+    if artifact_family == SLURP_SLOT_SCHEMA_FAMILY:
+        blocks = _checked_slurp_blocks(descriptions, "blocks")
+        block_lines = [f"artifact: {SLURP_SLOT_SCHEMA_FAMILY}"]
+        for intent in sorted(blocks):
+            block_lines.append(f"== {intent}")
+            for entry in blocks[intent]["types"]:
+                joined = "; ".join(entry["fillers"])
+                block_lines.append(f"- {entry['entity_type']}: {joined}")
+        return "\n".join(block_lines)
+    if artifact_family != A2T_DESCRIPTIONS_FAMILY:
+        raise ProposerError(f"artifact_family must be one of {ARTIFACT_FAMILIES}")
+    checked = _checked_descriptions(descriptions, "descriptions")
     lines = ["cue: %s" % ("" if cue is None else cue)]
     lines.extend(f"{tool}: {checked[tool]}" for tool in sorted(checked))
     return "\n".join(lines)
@@ -310,21 +538,32 @@ def candidate_id_for(
 
 @dataclass(frozen=True)
 class CandidateArtifact:
-    """One target's proposed description overrides for one round and slot."""
+    """One target's proposed artifact content for one round and slot.
+
+    ``descriptions`` is the candidate's content mapping, and what its values
+    ARE depends on ``artifact_family``: ``{tool: description}`` text for
+    ``a2t-descriptions``, ``{intent: {"types": [...]}}`` blocks for
+    ``slurp-slot-schema``. The field keeps its A2T name because it is the key
+    every landed EVO-A1 receipt already carries and renaming it would make
+    those receipts unreadable; the family is what says how to read it.
+    """
 
     candidate_id: str
     family: str
     target_id: str
     round: int
     k: int
-    descriptions: Mapping[str, str]
+    descriptions: Mapping[str, object]
     cue: str | None
     proposer_prompt_sha256: str | None
     exemplar_ids: tuple[str, ...]
+    artifact_family: str = A2T_DESCRIPTIONS_FAMILY
 
     @property
     def text(self) -> str:
-        return candidate_text(self.descriptions, self.cue)
+        return candidate_text(
+            self.descriptions, self.cue, artifact_family=self.artifact_family
+        )
 
     def expected_candidate_id(self) -> str:
         return candidate_id_for(
@@ -346,7 +585,12 @@ class CandidateArtifact:
         replayed against content that is not what was flown.
         """
 
-        _checked_descriptions(self.descriptions, "descriptions")
+        if self.artifact_family not in ARTIFACT_FAMILIES:
+            raise ProposerError(f"artifact_family must be one of {ARTIFACT_FAMILIES}")
+        if self.artifact_family == SLURP_SLOT_SCHEMA_FAMILY:
+            _checked_slurp_blocks(self.descriptions, "blocks")
+        else:
+            _checked_descriptions(self.descriptions, "descriptions")
         recomputed = self.expected_candidate_id()
         if not isinstance(self.candidate_id, str) or self.candidate_id != recomputed:
             raise ProposerError(
@@ -361,7 +605,21 @@ class CandidateArtifact:
             raise ProposerError(
                 "a placebo candidate carries no distinguishing cue by construction"
             )
-        if self.family == "proposer" and (
+        if self.artifact_family == SLURP_SLOT_SCHEMA_FAMILY:
+            # A SLURP block set carries no cue: the EVO-S1 output contract is
+            # the block grammar itself, so there is nothing beside the blocks
+            # for a cue to be, and a candidate that carried one would have
+            # been parsed by something other than the block parser.
+            if self.cue is not None:
+                raise ProposerError(
+                    "a slurp-slot-schema candidate carries no cue; its whole output "
+                    "contract is the block grammar"
+                )
+            if self.family == "proposer" and self.proposer_prompt_sha256 is None:
+                raise ProposerError(
+                    "a proposer candidate must carry its prompt digest"
+                )
+        elif self.family == "proposer" and (
             self.cue is None or self.proposer_prompt_sha256 is None
         ):
             raise ProposerError(
@@ -374,6 +632,7 @@ class CandidateArtifact:
             "schema": CANDIDATE_SCHEMA,
             "candidate_id": self.candidate_id,
             "family": self.family,
+            "artifact_family": self.artifact_family,
             "target_id": self.target_id,
             "round": self.round,
             "k": self.k,
@@ -699,17 +958,21 @@ def parse_proposer_response(
 def _build(
     *,
     family: str,
-    descriptions: Mapping[str, str],
+    descriptions: Mapping[str, object],
     cue: str | None,
     target_id: str,
     round: int,
     k: int,
     proposer_prompt_sha256: str | None,
     exemplar_ids: Sequence[str],
+    artifact_family: str = A2T_DESCRIPTIONS_FAMILY,
 ) -> CandidateArtifact:
-    checked = _checked_descriptions(descriptions, "descriptions")
+    if artifact_family == SLURP_SLOT_SCHEMA_FAMILY:
+        checked: Mapping[str, object] = _checked_slurp_blocks(descriptions, "blocks")
+    else:
+        checked = _checked_descriptions(descriptions, "descriptions")
     ids = tuple(exemplar_ids)
-    text = candidate_text(checked, cue)
+    text = candidate_text(checked, cue, artifact_family=artifact_family)
     candidate = CandidateArtifact(
         candidate_id=candidate_id_for(
             text=text,
@@ -728,6 +991,7 @@ def _build(
         cue=cue,
         proposer_prompt_sha256=proposer_prompt_sha256,
         exemplar_ids=ids,
+        artifact_family=artifact_family,
     )
     return candidate.validate()
 
@@ -972,11 +1236,21 @@ class CandidateValidation:
     max_description_chars: int
     exemplar_overlap_count: int
     exemplar_overlap_ngrams: tuple[str, ...]
+    artifact_family: str = A2T_DESCRIPTIONS_FAMILY
+    token_counter_id: str = SERVING_TOKENIZER_ID
+    #: Per-artifact-key measurements, which the EVO-S1 round receipt reports
+    #: because that cell's budget is RELATIVE and per intent: one record per
+    #: rewritten intent carrying its line count, its cap, its characters and
+    #: its token delta against the incumbent block. Empty for EVO-A1, whose
+    #: budget is one absolute number over the whole rendered registry.
+    per_key: tuple[Mapping[str, object], ...] = ()
 
     def as_json(self) -> dict[str, object]:
         return {
             "schema": VALIDATION_SCHEMA,
             "candidate_id": self.candidate_id,
+            "artifact_family": self.artifact_family,
+            "token_counter_id": self.token_counter_id,
             "rendered_sha256": self.rendered_sha256,
             "rendered_lines": self.rendered_lines,
             "rendered_tokens": self.rendered_tokens,
@@ -984,6 +1258,7 @@ class CandidateValidation:
             "max_description_chars": self.max_description_chars,
             "exemplar_overlap_count": self.exemplar_overlap_count,
             "exemplar_overlap_ngrams": list(self.exemplar_overlap_ngrams),
+            "per_key": [dict(record) for record in self.per_key],
         }
 
 
@@ -1064,7 +1339,7 @@ def validate_candidate_artifact(
                 f"description for {tool!r} is {len(text)} characters, over the "
                 f"{MAX_DESCRIPTION_CHARS}-character cap"
             )
-        if _SAMPLE_ID_RE.search(text) or _BARE_SIX_DIGIT_RE.search(text):
+        if _carries_sample_identifier(text):
             raise ProposerError(
                 f"description for {tool!r} carries what looks like a sample identifier"
             )
@@ -1139,4 +1414,816 @@ def validate_candidate_artifact(
         ),
         exemplar_overlap_count=len(overlap),
         exemplar_overlap_ngrams=tuple(overlap),
+    )
+
+
+# ---------------------------------------------------------------------------
+# The SLURP slot-schema artifact family (EVO-S1)
+# ---------------------------------------------------------------------------
+#
+# What a candidate may choose, and nothing else (preregistration section 3):
+# per intent, WHICH entity types to list and in what ORDER, and up to five
+# FILLERS per listed type. The header line, every count and every share are
+# re-rendered by ``data.slurp.render_slurp_intent_slot_schema`` from the
+# UNFLOORED TRAIN table, so a candidate can never misstate what TRAIN
+# contains, and the block grammar, the intent-selection rule, the fallback,
+# the system message, the contact count and the roster are all exactly
+# KC-S1b's.
+
+
+#: Identity of the evolved schema this family builds. Distinct from
+#: ``data.slurp.SLURP_INTENT_SLOT_SCHEMA_ID`` so a rendered evolved block can
+#: never be mistaken for A_0's own in a receipt.
+SLURP_EVOLVED_SCHEMA_ID = "slurp-evolved-slot-schema-v1"
+
+
+def _slurp_schema_types():
+    """``data.slurp``'s two schema dataclasses, imported lazily.
+
+    Function-local for the same reason ``rails.phase_material`` imports them
+    that way: ``rails`` is imported by the flight runtime long before any
+    carrier is chosen, and this family is the only thing in this module that
+    needs the SLURP loader at all.
+    """
+
+    from ..data.slurp import (  # noqa: PLC0415 (cycle guard, and lazily paid)
+        SlurpIntentSlots,
+        SlurpIntentSlotSchema,
+        render_slurp_intent_slot_schema,
+    )
+
+    return SlurpIntentSlots, SlurpIntentSlotSchema, render_slurp_intent_slot_schema
+
+
+def slurp_blocks_from_schema(schema, intents: Sequence[str] | None = None):
+    """A schema's own blocks as an ARTIFACT mapping.
+
+    The inverse of :func:`slurp_candidate_schema`: it drops exactly what a
+    candidate may not write (the counts and the shares) and keeps exactly what
+    it may (the ordered type list and the fillers). This is how the incumbent
+    ``A_r`` becomes the starting point of the two deterministic controls and
+    of a round's own incumbent artifact.
+    """
+
+    requested = tuple(schema.intent_ids) if intents is None else tuple(intents)
+    blocks: dict[str, dict[str, object]] = {}
+    for intent in requested:
+        profile = schema.intents.get(intent)
+        if profile is None:
+            raise ProposerError(f"schema has no block for intent {intent!r}")
+        blocks[intent] = {
+            "types": [
+                {
+                    "entity_type": entity_type,
+                    "fillers": list(profile.fillers.get(entity_type, ())),
+                }
+                for entity_type, _count, _share in profile.types
+            ]
+        }
+    return _checked_slurp_blocks(blocks, "blocks")
+
+
+def slurp_candidate_schema(blocks: Mapping[str, object], *, unfloored, base):
+    """The flyable schema a candidate's blocks name, with every number
+    re-derived from TRAIN.
+
+    ``unfloored`` is ``data.slurp.load_slurp_intent_slot_schema(...,
+    min_share=0.0)`` -- the WHOLE TRAIN type table per intent, unfiltered --
+    and it is the only authority for a type's count and share. ``base`` is
+    ``A_0``, and every intent the candidate did not rewrite keeps its ``base``
+    block byte for byte: preregistration section 5, "any intent the draw did
+    not cover keeps its incumbent block unchanged", stated as code.
+
+    Fail-closed on a listed type TRAIN never records for that intent -- there
+    is no count to re-derive, so the block could not be rendered honestly.
+    """
+
+    SlurpIntentSlots, SlurpIntentSlotSchema, _render = _slurp_schema_types()
+    checked = _checked_slurp_blocks(blocks, "blocks")
+    unknown = sorted(set(checked) - set(base.intents))
+    if unknown:
+        raise ProposerError(f"candidate rewrites intents absent from A_0: {unknown}")
+    profiles: dict[str, object] = {}
+    for intent in sorted(base.intents):
+        if intent not in checked:
+            profiles[intent] = base.intents[intent]
+            continue
+        train = unfloored.intents.get(intent)
+        if train is None:
+            raise ProposerError(
+                f"the unfloored TRAIN table has no profile for intent {intent!r}"
+            )
+        table = {
+            entity_type: (count, share) for entity_type, count, share in train.types
+        }
+        types: list[tuple[str, int, float]] = []
+        fillers: dict[str, tuple[str, ...]] = {}
+        for entry in checked[intent]["types"]:
+            entity_type = str(entry["entity_type"])
+            measured = table.get(entity_type)
+            if measured is None or measured[0] < 1:
+                raise ProposerError(
+                    f"intent {intent!r} lists entity type {entity_type!r}, which TRAIN "
+                    "never records for it; a block may not name a type with no mention"
+                )
+            types.append((entity_type, measured[0], measured[1]))
+            fillers[entity_type] = tuple(entry["fillers"])
+        profiles[intent] = SlurpIntentSlots(
+            intent=intent,
+            n=train.n,
+            mentions=train.mentions,
+            types=tuple(types),
+            fillers=fillers,
+        )
+    return SlurpIntentSlotSchema(
+        schema_id=SLURP_EVOLVED_SCHEMA_ID,
+        source_split=unfloored.source_split,
+        source_identity_hash=unfloored.source_identity_hash,
+        utterance_count=unfloored.utterance_count,
+        min_share=base.min_share,
+        examples_per_type=SLURP_MAX_FILLERS_PER_TYPE,
+        intents=profiles,
+    )
+
+
+def slurp_block_texts(schema, intents: Sequence[str] | None = None) -> dict[str, str]:
+    """``{intent: block text}`` through the ONE renderer, shared header removed.
+
+    ``data.slurp.render_slurp_intent_slot_schema`` always emits its single
+    shared header sentence first and then one block per requested intent; a
+    BLOCK, in every sense this cell uses the word (the 494-to-1,224-character
+    unit of preregistration section 3, the thing a proposer rewrites, the
+    thing the token budget is relative to), is what follows that one line.
+    Nothing here re-implements the grammar: a second renderer would be free to
+    drift from the one the flight actually sends.
+    """
+
+    _slots, _schema_type, render = _slurp_schema_types()
+    requested = tuple(schema.intent_ids) if intents is None else tuple(intents)
+    texts: dict[str, str] = {}
+    for intent in requested:
+        rendered = render(schema, intents=(intent,))
+        head, _, block = rendered.partition("\n")
+        if not head or not block:
+            raise ProposerError(f"the renderer produced no block for intent {intent!r}")
+        texts[intent] = block
+    return texts
+
+
+def _slurp_fillers_of(blocks: Mapping[str, object]) -> list[str]:
+    return [
+        str(filler)
+        for intent in sorted(blocks)
+        for entry in blocks[intent]["types"]  # type: ignore[index]
+        for filler in entry["fillers"]
+    ]
+
+
+def _illegal_filler_ngrams(
+    fillers: Sequence[str],
+    evaluation_grams: set[tuple[str, ...]],
+    legal_grams: set[tuple[str, ...]],
+) -> list[str]:
+    """The word 6-grams a candidate's FILLERS share with the evaluation
+    sentences and A_0 does not already carry.
+
+    A_0's own 1,008 fillers are exempt because they are TRAIN and KC-S1b
+    already sent every one of them; refusing them would refuse the incumbent
+    itself (preregistration section 8).
+    """
+
+    grams: set[tuple[str, ...]] = set()
+    for filler in fillers:
+        grams |= word_ngrams(filler)
+    return sorted(" ".join(gram) for gram in (grams & evaluation_grams) - legal_grams)
+
+
+def _grams_of(texts: Sequence[str], label: str) -> set[tuple[str, ...]]:
+    if isinstance(texts, (str, bytes)):
+        raise ProposerError(f"{label} must be a sequence of texts")
+    grams: set[tuple[str, ...]] = set()
+    for item in texts:
+        if not isinstance(item, str):
+            raise ProposerError(f"every {label} entry must be text")
+        grams |= word_ngrams(item)
+    return grams
+
+
+def parse_slurp_schema_response(
+    text: str,
+    *,
+    expected_intents: Sequence[str],
+    allowed_entity_types: Sequence[str],
+    refuse_ngrams: Sequence[str] = (),
+) -> dict[str, dict[str, object]]:
+    """Read a proposer's rewritten BLOCKS back into an artifact. Fail-closed.
+
+    EVO-S1's output contract is the block grammar itself and not JSON
+    (preregistration section 12.1 item P8): the artifact has to be
+    reproducible byte for byte by ``render_slurp_intent_slot_schema``, and a
+    JSON envelope would put a second, unrendered representation between the
+    proposer and the flight.
+
+    Refused, with the failed rule named and no repair attempted: any line that
+    is neither the header shape nor the type shape; a blank line; trailing
+    whitespace; non-ASCII anywhere; an entity type outside
+    ``allowed_entity_types`` (the closed list the prompt showed); a repeated
+    intent or a repeated type inside a block; more than
+    :data:`SLURP_MAX_FILLERS_PER_TYPE` fillers on a line; a block with no type
+    line; blocks in an order other than ``expected_intents``; and a filler
+    carrying one of ``refuse_ngrams`` -- the devel word 6-grams the
+    decontamination row supplies, already minus A_0's own.
+
+    The header's counts and the type line's share ARE parsed and then
+    DISCARDED: :func:`slurp_candidate_schema` re-derives both from the
+    unfloored TRAIN table, so a hallucinated count or percentage cannot reach
+    a flight even if the proposer writes one.
+    """
+
+    if isinstance(expected_intents, (str, bytes)):
+        raise ProposerError("expected_intents must be a sequence of intent names")
+    wanted = tuple(str(intent) for intent in expected_intents)
+    if not wanted:
+        raise ProposerError("expected_intents must be non-empty")
+    if len(set(wanted)) != len(wanted):
+        raise ProposerError("expected_intents contains a duplicate")
+    if isinstance(allowed_entity_types, (str, bytes)):
+        raise ProposerError("allowed_entity_types must be a sequence of type names")
+    allowed = {str(name) for name in allowed_entity_types}
+    if not allowed:
+        raise ProposerError("allowed_entity_types must be non-empty")
+    if not isinstance(text, str) or not text.strip():
+        raise ProposerError("proposer response is empty")
+    if not text.isascii():
+        raise ProposerError("proposer response carries non-ASCII characters")
+
+    blocks: dict[str, dict[str, object]] = {}
+    order: list[str] = []
+    current: str | None = None
+    for number, line in enumerate(text.strip().split("\n"), start=1):
+        if not line.strip():
+            raise ProposerError(f"line {number} is blank; a block carries no blank line")
+        if line != line.rstrip():
+            raise ProposerError(f"line {number} carries trailing whitespace")
+        header = _SLURP_BLOCK_HEADER_RE.fullmatch(line)
+        if header is not None:
+            current = header.group("intent")
+            if current in blocks:
+                raise ProposerError(f"the response opens a second block for {current!r}")
+            blocks[current] = {"types": []}
+            order.append(current)
+            continue
+        entry = _SLURP_TYPE_LINE_RE.fullmatch(line)
+        if entry is None:
+            raise ProposerError(
+                f"line {number} is outside the block grammar: {line[:80]!r}"
+            )
+        if current is None:
+            raise ProposerError(f"line {number} is a type line before any block header")
+        entity_type = entry.group("entity_type")
+        if entity_type not in allowed:
+            raise ProposerError(
+                f"line {number} names entity type {entity_type!r}, which is not one of "
+                "the type names the instruction offered"
+            )
+        listed = blocks[current]["types"]
+        if any(item["entity_type"] == entity_type for item in listed):  # type: ignore[index]
+            raise ProposerError(
+                f"block {current!r} lists entity type {entity_type!r} twice"
+            )
+        raw = entry.group("fillers")
+        fillers = [] if raw == SLURP_NO_FILLER_SENTINEL else raw.split("; ")
+        if len(fillers) > SLURP_MAX_FILLERS_PER_TYPE:
+            raise ProposerError(
+                f"block {current!r} type {entity_type!r} lists {len(fillers)} fillers, "
+                f"over the {SLURP_MAX_FILLERS_PER_TYPE}-filler cap"
+            )
+        for filler in fillers:
+            _checked_slurp_filler(filler, f"block {current!r} type {entity_type!r}")
+        listed.append({"entity_type": entity_type, "fillers": fillers})  # type: ignore[union-attr]
+
+    empty = sorted(intent for intent in blocks if not blocks[intent]["types"])
+    if empty:
+        raise ProposerError(f"block(s) {empty} carry no entity type line")
+    if tuple(order) != wanted:
+        raise ProposerError(
+            f"the response carries blocks {order}, not exactly {list(wanted)} in that "
+            "order"
+        )
+    parsed = _checked_slurp_blocks(blocks, "blocks")
+    if refuse_ngrams:
+        refused = {tuple(str(gram).split()) for gram in refuse_ngrams}
+        illegal = _illegal_filler_ngrams(_slurp_fillers_of(parsed), refused, set())
+        if illegal:
+            raise ProposerError(
+                f"a filler carries {len(illegal)} refused word "
+                f"{DECONTAMINATION_NGRAM}-gram(s): {illegal[:3]}"
+            )
+    return parsed
+
+
+def render_slurp_proposer_instruction(
+    incumbent_blocks: Mapping[str, str],
+    *,
+    intent_order: Sequence[str],
+    entity_type_names: Sequence[str],
+    exemplars: Sequence[Sequence[object]],
+    line_caps: Mapping[str, int],
+    scenario: str,
+    round: int,
+    k: int,
+) -> str:
+    """The text-only instruction that asks the frozen core for one scenario's
+    rewritten blocks -- preregistration section 5, verbatim.
+
+    ``exemplars`` are ``(sample_id, intent, utterance text, [(entity type,
+    filler), ...])`` rows of the drawn construction sample, rendered GROUPED
+    BY INTENT and, within an intent, in the caller's own drawn order. No
+    sample id ever reaches the rendered bytes: ids group, order and seed the
+    candidate id, and nothing else.
+
+    One documented substitution decision. The verbatim rule reads "at most
+    {L} type lines per block", but ``L`` is per INTENT (that intent's
+    unfloored TRAIN type count) and a scenario owns up to nine intents. The
+    rendered number is the scenario's LARGEST cap, so the instruction never
+    understates what a block may carry, and the per-intent cap is enforced
+    where it can be enforced honestly -- in
+    :func:`validate_slurp_candidate_artifact`, against the TRAIN table, before
+    anything flies.
+    """
+
+    if not isinstance(incumbent_blocks, Mapping) or not incumbent_blocks:
+        raise ProposerError("incumbent_blocks must be a non-empty mapping")
+    if isinstance(intent_order, (str, bytes)) or not intent_order:
+        raise ProposerError("intent_order must be a non-empty sequence of intents")
+    intents = tuple(str(intent) for intent in intent_order)
+    if len(set(intents)) != len(intents):
+        raise ProposerError("intent_order repeats an intent")
+    if set(intents) != set(incumbent_blocks):
+        raise ProposerError(
+            f"incumbent_blocks must name exactly {sorted(intents)}; it names "
+            f"{sorted(incumbent_blocks)}"
+        )
+    if isinstance(entity_type_names, (str, bytes)) or not entity_type_names:
+        raise ProposerError("entity_type_names must be a non-empty sequence")
+    if not isinstance(line_caps, Mapping) or set(line_caps) != set(intents):
+        raise ProposerError(f"line_caps must name exactly {sorted(intents)}")
+    for intent in intents:
+        cap = line_caps[intent]
+        if isinstance(cap, bool) or not isinstance(cap, int) or cap < 1:
+            raise ProposerError(f"line_caps[{intent!r}] must be a positive integer")
+    if not isinstance(scenario, str) or not scenario:
+        raise ProposerError("scenario must be non-empty text")
+    if isinstance(round, bool) or not isinstance(round, int) or round < 0:
+        raise ProposerError("round must be a nonnegative integer")
+    if isinstance(k, bool) or not isinstance(k, int) or k < 0:
+        raise ProposerError("k must be a nonnegative integer")
+
+    grouped: dict[str, list[tuple[str, tuple[tuple[str, str], ...]]]] = {
+        intent: [] for intent in intents
+    }
+    for index, row in enumerate(exemplars):
+        if isinstance(row, (str, bytes)) or len(tuple(row)) != 4:
+            raise ProposerError(
+                f"exemplar {index} must be a (sample_id, intent, text, entities) row"
+            )
+        sample_id, intent, said, entities = tuple(row)
+        for name, value in (("sample_id", sample_id), ("intent", intent), ("text", said)):
+            if not isinstance(value, str) or not value.strip():
+                raise ProposerError(f"exemplar {index} {name} must be non-empty text")
+        if intent not in grouped:
+            raise ProposerError(
+                f"exemplar {index} names intent {intent!r}, which is not one of this "
+                f"scenario's intents {list(intents)}"
+            )
+        pairs: list[tuple[str, str]] = []
+        for pair in entities:
+            if isinstance(pair, (str, bytes)) or len(tuple(pair)) != 2:
+                raise ProposerError(
+                    f"exemplar {index} entities must be (entity type, filler) pairs"
+                )
+            entity_type, filler = (str(value) for value in tuple(pair))
+            pairs.append((entity_type, filler))
+        grouped[intent].append((said, tuple(pairs)))
+
+    lines = [
+        f"# scenario {scenario} | round {round} | variant {k}",
+        "",
+        "You are rewriting the slot-schema blocks a speech assistant is given before "
+        "it extracts the",
+        "entities of a spoken command. The assistant hears the command; it does not "
+        "see any text.",
+        "",
+        "A block describes one intent: which entity types that intent draws its slots "
+        "from, how much of",
+        "the intent's slot mentions each type carries, and fillers heard with that type.",
+        "",
+        "## The blocks you are rewriting",
+    ]
+    for intent in intents:
+        block = incumbent_blocks[intent]
+        if not isinstance(block, str) or not block.strip():
+            raise ProposerError(f"incumbent block for {intent!r} is empty")
+        lines.append(block)
+    lines.append("")
+    lines.append("## Entity type names you may use")
+    lines.append(", ".join(str(name) for name in entity_type_names))
+    lines.append("")
+    lines.append("## Example commands of this scenario, and the entities they carry")
+    number = 0
+    for intent in intents:
+        for said, pairs in grouped[intent]:
+            number += 1
+            lines.append(f"{number}. intent: {intent}")
+            lines.append(f"   said: {said}")
+            rendered = "; ".join(
+                f"{entity_type} = {filler}" for entity_type, filler in pairs
+            )
+            lines.append(f"   entities: {rendered or '(none)'}")
+    if number == 0:
+        raise ProposerError(
+            "a proposer instruction with no exemplar has no grounding at all"
+        )
+    lines.extend(
+        [
+            "",
+            "## Task",
+            "First decide what a reader who has only these blocks would still get wrong "
+            "on the examples",
+            "above: a type the block never lists, a type it lists that this intent "
+            "barely uses, or a filler",
+            "written in a form nobody would say out loud.",
+            "Then rewrite each block so that a reader who has only your block, and "
+            "hears one of these",
+            "commands, writes the entities the examples show.",
+            "",
+            "## Output",
+            "Reply with the rewritten blocks and nothing else -- no prose before or "
+            "after them, no code",
+            "fence, no explanation. One block per intent, in the order the blocks were "
+            "given, each in",
+            "exactly this grammar:",
+            "== {intent} == {n} TRAIN utterances, {m} slot mentions",
+            "- {entity type} ({p} percent of slot mentions): {filler}; {filler}; {filler}",
+            "Rules:",
+            "- reproduce each header line exactly as it was given to you",
+            "- every entity type name comes from the list above, and must be one this "
+            "intent actually uses",
+            f"- at most {max(int(line_caps[intent]) for intent in intents)} type lines "
+            "per block, the most used type first",
+            "- at most five fillers per type, lower case, written as they would be spoken",
+            "- ASCII only; one line per type; no blank lines; no numbering",
+            "- never write anything that is not an entity type name or a filler",
+            "- never write an identifier, a file name or a number that is not part of a "
+            "filler",
+        ]
+    )
+    return "\n".join(lines) + "\n"
+
+
+def slurp_proposer_candidate(
+    blocks: Mapping[str, object],
+    *,
+    target_id: str,
+    round: int,
+    k: int,
+    proposer_prompt_sha256: str,
+    exemplar_ids: Sequence[str],
+) -> CandidateArtifact:
+    """The frozen core's own rewrite, as :func:`parse_slurp_schema_response`
+    returned it, bound to the prompt digest and the exemplar draw."""
+
+    return _build(
+        family="proposer",
+        descriptions=blocks,
+        cue=None,
+        target_id=target_id,
+        round=round,
+        k=k,
+        proposer_prompt_sha256=proposer_prompt_sha256,
+        exemplar_ids=exemplar_ids,
+        artifact_family=SLURP_SLOT_SCHEMA_FAMILY,
+    )
+
+
+def slurp_shares_only_candidate(
+    incumbent_blocks: Mapping[str, object],
+    *,
+    target_id: str,
+    round: int,
+    k: int,
+) -> CandidateArtifact:
+    """F2, the CONTENT floor: the incumbent blocks with every filler deleted.
+
+    Types, their order and their shares are untouched; only the filler lists
+    go. Zero model contact. The KC-S1b verdict attributes its whole +8.55 to
+    "which types this intent uses, WITH the fillers TRAIN heard for them", so
+    a proposer that cannot beat a block with the fillers removed has learned
+    nothing about fillers -- and section 9 names "the shares-only control
+    within 0.5 pp of the proposer" a kill result.
+
+    This is deliberately NOT the program's alternative F2 phrasing, "counts
+    refreshed": A_0's counts ARE the current TRAIN counts, so that control
+    would be byte-identical to the incumbent and would waste a slot.
+    """
+
+    checked = _checked_slurp_blocks(incumbent_blocks, "incumbent_blocks")
+    blocks = {
+        intent: {
+            "types": [
+                {"entity_type": entry["entity_type"], "fillers": []}
+                for entry in checked[intent]["types"]
+            ]
+        }
+        for intent in checked
+    }
+    return _build(
+        family="deterministic",
+        descriptions=blocks,
+        cue=None,
+        target_id=target_id,
+        round=round,
+        k=k,
+        proposer_prompt_sha256=None,
+        exemplar_ids=(),
+        artifact_family=SLURP_SLOT_SCHEMA_FAMILY,
+    )
+
+
+def slurp_form_twin_candidate(
+    incumbent_blocks: Mapping[str, object],
+    *,
+    unfloored,
+    base,
+    token_counter: Callable[[str], int],
+    target_id: str,
+    round: int,
+    k: int,
+    tolerance: int = 0,
+    placeholders: Sequence[str] = SLURP_PLACEHOLDER_FILLERS,
+) -> CandidateArtifact:
+    """F3, the FORM floor: every filler replaced by a neutral placeholder, at
+    the incumbent block's own token count.
+
+    Deterministic, and a real difference from EVO-A1, whose placebo spends one
+    contact per target: here the twin is a string transformation priced on the
+    flight tokenizer, so ``K_1 = 5`` costs 54 proposer contacts and not 90.
+
+    The construction, per intent: replace the fillers of each type with
+    ``placeholders`` position by position, keeping the type list, its order
+    and the number of fillers per type exactly as the incumbent has them;
+    then, while the rendered block is under the incumbent's token count,
+    extend one placeholder by one more ``placeholders[0]`` word, cycling over
+    the (type, filler) positions in rendered order, so the padding never lands
+    all on one line. A block whose plain placeholders ALREADY exceed the
+    incumbent's count cannot be matched downward without deleting a filler --
+    which would change the block's shape and make it a second shares-only
+    control -- so it is refused rather than approximated.
+
+    ``tolerance`` is the per-block token slack the caller accepts; it is 0 by
+    default because the padding unit is one word and a subword tokenizer
+    prices ``" item"`` at one token, so exactness is normally reachable. A
+    flight that finds otherwise raises it deliberately and reports it.
+    """
+
+    if not callable(token_counter):
+        raise ProposerError("token_counter must be callable")
+    if isinstance(tolerance, bool) or not isinstance(tolerance, int) or tolerance < 0:
+        raise ProposerError("tolerance must be a nonnegative integer")
+    if isinstance(placeholders, (str, bytes)) or not placeholders:
+        raise ProposerError("placeholders must be a non-empty sequence of words")
+    words = tuple(str(word) for word in placeholders)
+    for word in words:
+        _checked_slurp_filler(word, "placeholders")
+    if len(set(words)) != len(words):
+        raise ProposerError("placeholders repeats a word; a type's fillers are distinct")
+    pad = words[0]
+    checked = _checked_slurp_blocks(incumbent_blocks, "incumbent_blocks")
+    incumbent_texts = slurp_block_texts(
+        slurp_candidate_schema(checked, unfloored=unfloored, base=base),
+        intents=tuple(sorted(checked)),
+    )
+
+    blocks: dict[str, dict[str, object]] = {}
+    for intent in sorted(checked):
+        target_tokens = _slurp_tokens(token_counter, incumbent_texts[intent])
+        positions: list[tuple[int, int]] = []
+        types: list[dict[str, object]] = []
+        for type_index, entry in enumerate(checked[intent]["types"]):
+            if len(entry["fillers"]) > len(words):
+                raise ProposerError(
+                    f"intent {intent!r} type {entry['entity_type']!r} carries "
+                    f"{len(entry['fillers'])} fillers but only {len(words)} distinct "
+                    "placeholders were supplied"
+                )
+            fillers = [words[index] for index in range(len(entry["fillers"]))]
+            for filler_index in range(len(fillers)):
+                positions.append((type_index, filler_index))
+            types.append({"entity_type": entry["entity_type"], "fillers": fillers})
+        if not positions:
+            raise ProposerError(
+                f"intent {intent!r} has no filler to match on; a form twin of a block "
+                "with no filler would be the shares-only control"
+            )
+        blocks[intent] = {"types": types}
+        step = 0
+        while True:
+            rendered = slurp_block_texts(
+                slurp_candidate_schema(
+                    {intent: blocks[intent]}, unfloored=unfloored, base=base
+                ),
+                intents=(intent,),
+            )[intent]
+            tokens = _slurp_tokens(token_counter, rendered)
+            if abs(tokens - target_tokens) <= tolerance:
+                break
+            if tokens > target_tokens:
+                raise ProposerError(
+                    f"the form twin of intent {intent!r} is {tokens} tokens against the "
+                    f"incumbent's {target_tokens}; a shorter twin would have to delete a "
+                    "filler, which would make it the shares-only control"
+                )
+            type_index, filler_index = positions[step % len(positions)]
+            fillers = blocks[intent]["types"][type_index]["fillers"]  # type: ignore[index]
+            fillers[filler_index] = f"{fillers[filler_index]} {pad}"
+            step += 1
+    return _build(
+        family="placebo",
+        descriptions=blocks,
+        cue=None,
+        target_id=target_id,
+        round=round,
+        k=k,
+        proposer_prompt_sha256=None,
+        exemplar_ids=(),
+        artifact_family=SLURP_SLOT_SCHEMA_FAMILY,
+    )
+
+
+def _slurp_tokens(token_counter: Callable[[str], int], text: str) -> int:
+    tokens = token_counter(text)
+    if isinstance(tokens, bool) or not isinstance(tokens, int) or tokens < 0:
+        raise ProposerError("token_counter must return a nonnegative integer")
+    return tokens
+
+
+def validate_slurp_candidate_artifact(
+    candidate: CandidateArtifact,
+    *,
+    unfloored,
+    base,
+    incumbent_blocks: Mapping[str, str],
+    token_counter: Callable[[str], int],
+    token_counter_id: str = SERVING_TOKENIZER_ID,
+    evaluation_sentence_texts: Sequence[str] = (),
+    baseline_filler_texts: Sequence[str] = (),
+    exemplar_texts: Sequence[str] = (),
+    allow_estimator: bool = False,
+) -> CandidateValidation:
+    """Every EVO-S1 form and decontamination gate, in one fail-closed pass.
+
+    Form (preregistration section 5, "Other form caps"):
+
+    * the block RENDERS, which is what proves the candidate is reproducible
+      byte for byte from the committed TRAIN table plus its own choices;
+    * the header line is byte-identical to the incumbent's -- guaranteed by
+      construction, since it is re-rendered from TRAIN, and asserted anyway;
+    * at most ``1 + L`` lines per intent, ``L`` = that intent's UNFLOORED
+      TRAIN type count;
+    * at most :data:`SLURP_MAX_FILLERS_PER_TYPE` fillers per type, ASCII,
+      lower case;
+    * every listed type carries at least one TRAIN mention for that intent
+      (:func:`slurp_candidate_schema` refuses otherwise);
+    * the block within ``+20 %`` tokens of the INCUMBENT block, measured
+      through ``token_counter``. This is a budget on the SEARCH, not a gate on
+      the claim: it exists so a round cannot buy its gain with prompt volume
+      alone, and the measured delta is reported per intent either way.
+
+    ``token_counter_id`` names the authority. A registered candidate is priced
+    on :data:`SERVING_TOKENIZER_ID` -- the resident server's own ``/tokenize``
+    -- and any other id, a character-length estimator above all, is refused
+    unless ``allow_estimator=True``. KC-A1 died four tokens over a forty-token
+    cap because its builder injected a chars-per-token ratio as its counter.
+
+    Decontamination (preregistration section 8): no sample identifier in a
+    filler; no word 6-gram shared between a FILLER and
+    ``evaluation_sentence_texts`` unless that 6-gram already occurs in
+    ``baseline_filler_texts`` (A_0's own 1,008 fillers, which are TRAIN and
+    were already sent by KC-S1b); overlap with ``exemplar_texts`` COUNTED and
+    reported, never gated.
+    """
+
+    candidate.validate()
+    if candidate.artifact_family != SLURP_SLOT_SCHEMA_FAMILY:
+        raise ProposerError(
+            f"candidate {candidate.candidate_id} is a {candidate.artifact_family!r} "
+            f"artifact, not a {SLURP_SLOT_SCHEMA_FAMILY!r} one"
+        )
+    if not callable(token_counter):
+        raise ProposerError("token_counter must be callable")
+    if not isinstance(token_counter_id, str) or not token_counter_id:
+        raise ProposerError("token_counter_id must be non-empty text")
+    if token_counter_id != SERVING_TOKENIZER_ID and not allow_estimator:
+        raise ProposerError(
+            f"token_counter_id {token_counter_id!r} is not the serving geometry's own "
+            f"tokenizer ({SERVING_TOKENIZER_ID!r}); a candidate that only an estimator "
+            "admits is refused"
+        )
+    if not isinstance(incumbent_blocks, Mapping) or not incumbent_blocks:
+        raise ProposerError("incumbent_blocks must be a non-empty mapping")
+    missing = sorted(set(candidate.descriptions) - set(incumbent_blocks))
+    if missing:
+        raise ProposerError(f"no incumbent block supplied for intent(s) {missing}")
+
+    schema = slurp_candidate_schema(
+        candidate.descriptions, unfloored=unfloored, base=base
+    )
+    intents = tuple(sorted(candidate.descriptions))
+    rendered = slurp_block_texts(schema, intents=intents)
+
+    per_key: list[dict[str, object]] = []
+    for intent in intents:
+        block = rendered[intent]
+        incumbent = incumbent_blocks[intent]
+        if not isinstance(incumbent, str) or not incumbent.strip():
+            raise ProposerError(f"incumbent block for {intent!r} is empty")
+        if block.split("\n", 1)[0] != incumbent.split("\n", 1)[0]:
+            raise ProposerError(
+                f"intent {intent!r} header line is not byte-identical to the "
+                "incumbent's"
+            )
+        train = unfloored.intents.get(intent)
+        if train is None:
+            raise ProposerError(f"the unfloored TRAIN table has no {intent!r} profile")
+        cap = 1 + len(train.types)
+        lines = block.split("\n")
+        if len(lines) > cap:
+            raise ProposerError(
+                f"intent {intent!r} block is {len(lines)} lines, over the {cap}-line cap "
+                f"(one header plus {len(train.types)} unfloored TRAIN type rows)"
+            )
+        for entry in candidate.descriptions[intent]["types"]:  # type: ignore[index]
+            if len(entry["fillers"]) > SLURP_MAX_FILLERS_PER_TYPE:
+                raise ProposerError(
+                    f"intent {intent!r} type {entry['entity_type']!r} lists "
+                    f"{len(entry['fillers'])} fillers, over the "
+                    f"{SLURP_MAX_FILLERS_PER_TYPE}-filler cap"
+                )
+        tokens = _slurp_tokens(token_counter, block)
+        incumbent_tokens = _slurp_tokens(token_counter, incumbent)
+        budget = int(incumbent_tokens * (1.0 + SLURP_RELATIVE_TOKEN_BUDGET))
+        if tokens > budget:
+            raise ProposerError(
+                f"intent {intent!r} block is {tokens} tokens against the incumbent's "
+                f"{incumbent_tokens}, over the {budget}-token relative budget "
+                f"(+{SLURP_RELATIVE_TOKEN_BUDGET:.0%})"
+            )
+        per_key.append(
+            {
+                "intent": intent,
+                "lines": len(lines),
+                "line_cap": cap,
+                "characters": len(block),
+                "tokens": tokens,
+                "incumbent_tokens": incumbent_tokens,
+                "token_delta": tokens - incumbent_tokens,
+                "token_budget": budget,
+                "types": len(lines) - 1,
+            }
+        )
+
+    fillers = _slurp_fillers_of(candidate.descriptions)
+    for filler in fillers:
+        if _carries_sample_identifier(filler):
+            raise ProposerError(
+                f"filler {filler!r} carries what looks like a sample identifier"
+            )
+    evaluation_grams = _grams_of(evaluation_sentence_texts, "evaluation_sentence_texts")
+    legal_grams = _grams_of(baseline_filler_texts, "baseline_filler_texts")
+    illegal = _illegal_filler_ngrams(fillers, evaluation_grams, legal_grams)
+    if illegal:
+        raise ProposerError(
+            f"candidate fillers share {len(illegal)} word {DECONTAMINATION_NGRAM}-gram(s) "
+            f"with the evaluation sentences that A_0's own fillers do not carry: "
+            f"{illegal[:3]}"
+        )
+    exemplar_grams = _grams_of(exemplar_texts, "exemplar_texts")
+    candidate_grams: set[tuple[str, ...]] = set()
+    for filler in fillers:
+        candidate_grams |= word_ngrams(filler)
+    overlap = sorted(" ".join(gram) for gram in candidate_grams & exemplar_grams)
+
+    whole = "\n".join(rendered[intent] for intent in intents)
+    return CandidateValidation(
+        candidate_id=candidate.candidate_id,
+        rendered_sha256=hashlib.sha256(whole.encode("utf-8")).hexdigest(),
+        rendered_lines=sum(int(record["lines"]) for record in per_key),
+        rendered_tokens=sum(int(record["tokens"]) for record in per_key),
+        token_budget=sum(int(record["token_budget"]) for record in per_key),
+        max_description_chars=max(int(record["characters"]) for record in per_key),
+        exemplar_overlap_count=len(overlap),
+        exemplar_overlap_ngrams=tuple(overlap),
+        artifact_family=SLURP_SLOT_SCHEMA_FAMILY,
+        token_counter_id=token_counter_id,
+        per_key=tuple(per_key),
     )
