@@ -222,8 +222,14 @@ re-registration per run id. KC-A1c flies only on an ADMITTED KC-A1.
 3. **Prompt fit** on the resident server (zero generated tokens), for both arms, recording the measured text
    token count of each rendered system message and re-deriving `-np` against the roster's longest wav. Section 3
    is void if the measured added-token count is materially different from the estimated 120.
-4. **Wire check** on a clean committed tree (the prep receipts under `wire-check-prep/` prove the wiring but not
-   the flight's own run ids), then the exposure rows for both run ids, then the flight.
+4. **Wire check** on a clean committed tree in the MAIN checkout, then the exposure rows for both run ids, then
+   the flight. The prep receipts under `wire-check-prep/` already prove the request half of both cells -- four
+   payloads per cell, payload keys equal to `ARM_VISIBLE_FIELDS`, an integer `id_slot`, zero contacts, zero
+   servers, the attempt aborted -- but two things they cannot prove. They carry the prep run ids and a 4-row
+   split identity hash rather than the flight's, and their seal/manifest/score half is REFUSED because
+   `core.bundle.git_commit` cannot read git status inside a WSL-side worktree (its `.git` file names a
+   Windows-style gitdir path). Neither is a defect of the cells; both resolve in the main checkout, which is
+   where ORG-1's own wire check ran.
 5. **One experiment in flight.** KC-A1 first, alone; KC-A1c only after KC-A1's verdict is written and only if it
    is ADMITTED.
 
