@@ -55,6 +55,7 @@ from speech_aware_evidence_acquisition.reproduction.slurp_official_eval import (
 )
 from speech_aware_evidence_acquisition.reproduction.slurp_scoring import (
     SLURP_LABEL_PROJECTION_ID,
+    parse_slu_response,
 )
 
 SCHEMA = "saea-slurp-legal-label-projection-relock-read-v1"
@@ -280,6 +281,15 @@ def main() -> int:
         help="empty directory for the score batch (default: under SPEECHRL_DATA_DIR)",
     )
     parser.add_argument("--workers", type=int, default=8)
+    parser.add_argument(
+        "--reuse-score-dir",
+        action="store_true",
+        help=(
+            "re-read an existing score batch instead of running it again "
+            "(the batch is deterministic; this only avoids re-spawning the official "
+            "evaluator for an analysis-side change)"
+        ),
+    )
     args = parser.parse_args()
 
     lock = load_lock(umbrella_lock_path())
@@ -298,16 +308,24 @@ def main() -> int:
     # ------------------------------------------------------------------
     score_dir = args.score_dir or (root / "runs" / ROW_ID / "score-batch")
     score_dir = Path(score_dir)
-    if score_dir.exists() and any(score_dir.iterdir()):
+    if score_dir.exists() and any(score_dir.iterdir()) and not args.reuse_score_dir:
         raise SystemExit(f"score directory is not empty: {score_dir}")
 
     manifests: dict[str, dict] = {}
     jobs: list[ScoreJob] = []
+    outputs_paths: dict[str, Path] = {}
     for arm, (run_id, attempt_id) in ARMS.items():
         sealed = sealed_manifest_path(root, run_id, attempt_id)
         if not sealed.is_file():
             raise SystemExit(f"sealed manifest missing for {arm}: {sealed}")
-        derived = write_derived_manifest(sealed, [PROJECTED_SCORER])
+        derived = (
+            sealed.with_name(
+                sealed.name.replace(".run-manifest.json", "") + DERIVED_MANIFEST_SUFFIX
+            )
+            if args.reuse_score_dir
+            else write_derived_manifest(sealed, [PROJECTED_SCORER])
+        )
+        outputs_paths[arm] = Path(read_json(sealed)["outputs"]["path"])
         manifests[arm] = {
             "run_id": run_id,
             "attempt_id": attempt_id,
@@ -322,12 +340,15 @@ def main() -> int:
         jobs.append(ScoreJob(job_id=f"{arm.lower()}-unprojected", manifest=sealed))
         jobs.append(ScoreJob(job_id=f"{arm.lower()}-projected", manifest=derived))
 
-    batch = run_score_batch(
-        jobs,
-        output_dir=score_dir,
-        max_workers=args.workers,
-        include_per_sample=True,
-    )
+    if args.reuse_score_dir:
+        batch = read_json(score_dir / "batch-summary.json")
+    else:
+        batch = run_score_batch(
+            jobs,
+            output_dir=score_dir,
+            max_workers=args.workers,
+            include_per_sample=True,
+        )
     if batch["failed"]:
         raise SystemExit(f"score batch failed: {json.dumps(batch['jobs'], indent=2)[:4000]}")
 
@@ -345,8 +366,9 @@ def main() -> int:
     run_id, attempt_id = ARMS["KU-S1C"]
     phases_path = attempt_dir(root, run_id, attempt_id) / f"{run_id}.phases.json"
     workdir = Path(tempfile.mkdtemp(prefix="saea-b1-relock-", dir=str(root)))
+    draft = draft_rows(phases_path)
     try:
-        draft_path = write_outputs(draft_rows(phases_path), workdir / "ku-s1c-draft.outputs.jsonl")
+        draft_path = write_outputs(draft, workdir / "ku-s1c-draft.outputs.jsonl")
         scored["KU-S1C-DRAFT"] = {
             "unprojected": score_slurp_outputs_official(draft_path, lock, root, split_id="devel"),
             "projected": score_slurp_outputs_official_projected(
@@ -514,6 +536,84 @@ def main() -> int:
         }
 
     # ------------------------------------------------------------------
+    # 7b. What the residual actually IS, described. NOT part of the
+    #     registered rule, NOT a metric, NOT a gate, and it changes no lock
+    #     decision -- it exists because the registered rule is a legality
+    #     repair and this says what the rows it repaired were actually doing
+    #     wrong. Two descriptions, both reported whichever wins:
+    #
+    #     * EXCHANGE: the parsed pair becomes legal when its two halves swap;
+    #     * ACTION-AS-SCENARIO: the parsed SCENARIO half is not a legal
+    #       scenario but IS a legal ACTION name, so the row named the action
+    #       in the scenario slot and a generic action beside it. The
+    #       2026-09-05 closed-list verdict named this class by eye
+    #       ("the model picking the action name as the scenario for
+    #       recommendation_locations / recommendation_events"); this counts
+    #       it, and prices what promoting it back would have recovered.
+    #
+    #     The promotion target is deterministic in the registered rule's own
+    #     style: the scenario carrying that action with the larger TRAIN
+    #     prior, ties alphabetically.
+    # ------------------------------------------------------------------
+    source_rows = {arm: rows_of(path) for arm, path in outputs_paths.items()}
+    source_rows["KU-S1C-DRAFT"] = draft
+    owners: dict[str, list[str]] = {}
+    for scenario, actions in inventory.actions_by_scenario.items():
+        for action in actions:
+            owners.setdefault(action, []).append(scenario)
+    swaps: dict[str, dict] = {}
+    for arm in arms:
+        right = by_sample(scored[arm]["projected"])
+        changed = [sid for sid in ids_all if right[sid].get("projected")]
+        parsed_by_id = {
+            row["sample_id"]: parse_slu_response(row["text"]) for row in source_rows[arm]
+        }
+        reversed_legal = reversed_gold = 0
+        action_as_scenario = promotion_gold = 0
+        promotion_map: dict[str, list[int]] = {}
+        for sample_id in changed:
+            scenario, action, _entities, was_parsed = parsed_by_id[sample_id]
+            if not was_parsed or scenario is None or action is None:
+                continue
+            record = gold[sample_id]
+            if (action, scenario) in legal_pairs:
+                reversed_legal += 1
+                reversed_gold += (action, scenario) == (record.scenario, record.action)
+            if scenario not in inventory.actions_by_scenario and scenario in owners:
+                action_as_scenario += 1
+                owner = min(
+                    owners[scenario], key=lambda c: (-inventory.prior(c, scenario), c)
+                )
+                hit = (owner, scenario) == (record.scenario, record.action)
+                promotion_gold += hit
+                key = f"{scenario}/{action} -> {owner}_{scenario}"
+                entry = promotion_map.setdefault(key, [0, 0])
+                entry[0] += 1
+                entry[1] += int(hit)
+        swaps[arm] = {
+            "changed_rows": len(changed),
+            "landed_on_gold_under_the_registered_rule": sum(
+                1 for sid in changed if right[sid]["scenario_action_exact"] == 1.0
+            ),
+            "exchange_is_legal": reversed_legal,
+            "exchange_equals_gold": reversed_gold,
+            "action_as_scenario_rows": action_as_scenario,
+            "action_as_scenario_promotion_equals_gold": promotion_gold,
+            "action_as_scenario_promotion_map": {
+                key: {"rows": value[0], "gold": value[1]}
+                for key, value in sorted(promotion_map.items())
+            },
+            "definition": (
+                "among the rows the REGISTERED projection changed: 'exchange' counts those "
+                "whose parsed pair becomes legal with its halves swapped; "
+                "'action_as_scenario' counts those whose parsed scenario is not a legal "
+                "scenario but IS a legal action name, and the promotion columns price what "
+                "sending it back to its owning scenario would have recovered. Descriptive "
+                "only -- no rule, no metric, no gate, no effect on the lock decision."
+            ),
+        }
+
+    # ------------------------------------------------------------------
     # 8. The 42 KC-S1b fallback rows.
     # ------------------------------------------------------------------
     fallback = None
@@ -623,6 +723,7 @@ def main() -> int:
         },
         "arms": tables,
         "impossible_pairs": impossible,
+        "residual_swap_diagnostic": swaps,
         "kc_s1b_fallback_rows": fallback,
         "lock": {
             "arm": LOCK_ARM,
