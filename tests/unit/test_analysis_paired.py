@@ -10,6 +10,7 @@ Identity tests reproduce numbers from three already-committed analyses:
 
 from __future__ import annotations
 
+import json
 import random
 
 import pytest
@@ -18,6 +19,7 @@ from speech_aware_evidence_acquisition.analysis.paired import (
     PairedAnalysisError,
     mcnemar_exact,
     paired_contrast,
+    per_sample_scores_from_score_file,
     per_stratum_table,
     render_markdown,
 )
@@ -335,3 +337,169 @@ def test_per_stratum_table_and_render_markdown_smoke():
     assert "x" in text
     assert "delta" in text
     assert "published_delta=0.05" in text
+
+
+# ---------------------------------------------------------------------------
+# per_sample_scores_from_score_file (E3a, 2026-09-05): the reader that turns a
+# `core.scoring_batch` `<job_id>.score.json` into the exact shape
+# `paired_contrast` consumes. Fixtures are written in the driver's own output
+# shape (`core.driver.cli._cli_score` with --include-per-sample), booleans
+# included, because booleans are the reason this reader exists.
+# ---------------------------------------------------------------------------
+
+_SCORER = "a2t-toolcall-official"
+
+
+def _score_document(rows, *, scorer=_SCORER, verified=True):
+    return {
+        "manifest": "/runs/example/manifest.json",
+        "verified": verified,
+        "scores": {
+            scorer: {
+                "aggregate": {"samples": len(rows), "tool_accuracy": 0.5},
+                "per_sample": rows,
+            }
+        },
+    }
+
+
+def _write_score_file(tmp_path, document, name="job.score.json"):
+    path = tmp_path / name
+    path.write_text(json.dumps(document, indent=2, sort_keys=True), encoding="utf-8")
+    return path
+
+
+def test_score_file_reader_converts_booleans_to_floats(tmp_path):
+    path = _write_score_file(
+        tmp_path,
+        _score_document(
+            [
+                {"sample_id": "tier1_direct:000001", "tool_correct": True, "param_f1": 0.75},
+                {"sample_id": "tier1_direct:000002", "tool_correct": False, "param_f1": 0},
+            ]
+        ),
+    )
+    table = per_sample_scores_from_score_file(path, _SCORER, ["tool_correct", "param_f1"])
+    assert table == {
+        "tier1_direct:000001": {"tool_correct": 1.0, "param_f1": 0.75},
+        "tier1_direct:000002": {"tool_correct": 0.0, "param_f1": 0.0},
+    }
+    assert all(isinstance(value, float) for row in table.values() for value in row.values())
+
+
+def test_score_file_reader_output_is_directly_usable_by_paired_contrast(tmp_path):
+    ids = [f"tier1_direct:{index:06d}" for index in range(8)]
+    left = _write_score_file(
+        tmp_path,
+        _score_document(
+            [{"sample_id": sid, "tool_correct": index >= 4} for index, sid in enumerate(ids)]
+        ),
+        name="left.score.json",
+    )
+    right = _write_score_file(
+        tmp_path,
+        _score_document(
+            [{"sample_id": sid, "tool_correct": index >= 2} for index, sid in enumerate(ids)]
+        ),
+        name="right.score.json",
+    )
+    contrasts = paired_contrast(
+        per_sample_scores_from_score_file(left, _SCORER, ["tool_correct"]),
+        per_sample_scores_from_score_file(right, _SCORER, ["tool_correct"]),
+        metrics=["tool_correct"],
+        seed=1,
+        n_replicates=50,
+    )
+    contrast = contrasts["tool_correct"]
+    assert (contrast.saves, contrast.harms, contrast.ties) == (2, 0, 6)
+    assert contrast.delta == pytest.approx(0.25)
+
+
+def test_score_file_reader_fails_closed_on_a_missing_metric(tmp_path):
+    path = _write_score_file(
+        tmp_path,
+        _score_document(
+            [
+                {"sample_id": "a", "tool_correct": True},
+                {"sample_id": "b"},
+            ]
+        ),
+    )
+    with pytest.raises(PairedAnalysisError, match="missing metric 'tool_correct'"):
+        per_sample_scores_from_score_file(path, _SCORER, ["tool_correct"])
+
+
+def test_score_file_reader_fails_closed_on_a_duplicate_sample_id(tmp_path):
+    path = _write_score_file(
+        tmp_path,
+        _score_document(
+            [
+                {"sample_id": "a", "tool_correct": True},
+                {"sample_id": "a", "tool_correct": False},
+            ]
+        ),
+    )
+    with pytest.raises(PairedAnalysisError, match="repeats sample_id"):
+        per_sample_scores_from_score_file(path, _SCORER, ["tool_correct"])
+
+
+def test_score_file_reader_fails_closed_on_an_absent_scorer(tmp_path):
+    path = _write_score_file(
+        tmp_path, _score_document([{"sample_id": "a", "tool_correct": True}])
+    )
+    with pytest.raises(PairedAnalysisError, match="carries no scorer 'slurp-slu'"):
+        per_sample_scores_from_score_file(path, "slurp-slu", ["tool_correct"])
+
+
+def test_score_file_reader_fails_closed_without_a_per_sample_block(tmp_path):
+    # What `core.driver score --manifest` prints WITHOUT --include-per-sample:
+    # aggregates only.
+    path = _write_score_file(
+        tmp_path,
+        {
+            "manifest": "/runs/example/manifest.json",
+            "verified": True,
+            "scores": {_SCORER: {"samples": 400, "tool_accuracy": 0.614}},
+        },
+    )
+    with pytest.raises(PairedAnalysisError, match="--include-per-sample"):
+        per_sample_scores_from_score_file(path, _SCORER, ["tool_correct"])
+
+
+def test_score_file_reader_refuses_an_unverified_result_unless_asked(tmp_path):
+    path = _write_score_file(
+        tmp_path,
+        _score_document([{"sample_id": "a", "tool_correct": True}], verified=False),
+    )
+    with pytest.raises(PairedAnalysisError, match="not an audit record"):
+        per_sample_scores_from_score_file(path, _SCORER, ["tool_correct"])
+    assert per_sample_scores_from_score_file(
+        path, _SCORER, ["tool_correct"], require_verified=False
+    ) == {"a": {"tool_correct": 1.0}}
+
+
+@pytest.mark.parametrize(
+    "row, message",
+    [
+        ({"sample_id": "", "tool_correct": True}, "no usable sample_id"),
+        ({"sample_id": "a", "tool_correct": "yes"}, "is not a number"),
+        ({"sample_id": "a", "tool_correct": float("nan")}, "is not finite"),
+    ],
+)
+def test_score_file_reader_refuses_malformed_rows(tmp_path, row, message):
+    path = tmp_path / "job.score.json"
+    # NaN needs a hand-written document: json.dumps emits the bare token NaN,
+    # which json.loads accepts back, which is exactly the case under test.
+    path.write_text(json.dumps(_score_document([row])), encoding="utf-8")
+    with pytest.raises(PairedAnalysisError, match=message):
+        per_sample_scores_from_score_file(path, _SCORER, ["tool_correct"])
+
+
+def test_score_file_reader_refuses_unreadable_or_non_object_documents(tmp_path):
+    missing = tmp_path / "absent.score.json"
+    with pytest.raises(PairedAnalysisError, match="cannot read score file"):
+        per_sample_scores_from_score_file(missing, _SCORER, ["tool_correct"])
+    listy = tmp_path / "list.score.json"
+    listy.write_text("[]", encoding="utf-8")
+    with pytest.raises(PairedAnalysisError, match="must be a JSON object"):
+        per_sample_scores_from_score_file(listy, _SCORER, ["tool_correct"])

@@ -11,6 +11,7 @@ ones a real registry never contains).
 
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
 
 import pytest
@@ -24,6 +25,8 @@ from speech_aware_evidence_acquisition.data.audio2tool_tools import (
     _parse_signature,
     openai_tools_sha256,
     render_openai_tools,
+    render_registry_compact,
+    render_registry_compact_rows,
 )
 from speech_aware_evidence_acquisition.data.lock import AssetResolutionError, load_lock
 
@@ -484,3 +487,137 @@ def test_render_openai_tools_real_registry_is_152_of_152():
         assert set(parameters["required"]) <= set(parameters["properties"])
         for prop in parameters["properties"].values():
             assert "default" not in prop
+
+
+# ---------------------------------------------------------------------------
+# The compact renderer's `description_overrides` seam (E3a, 2026-09-05).
+#
+# The evolution loop's state `A_r` is nothing but a set of replacement
+# descriptions, and `A_0` must stay byte-identical to the sealed baseline.
+# Two proofs of that identity, deliberately separate:
+#
+# 1. a HASH PIN on the real 152-row registry, which skips where the asset is
+#    absent (a machine without the registry cannot be asked to prove a fact
+#    about bytes it does not have);
+# 2. EXACT BYTES on the synthetic `audio2tool_world` registry, which always
+#    runs -- the same rendering code, a registry small enough to write out in
+#    full.
+# ---------------------------------------------------------------------------
+
+# sha256 of `render_registry_compact(lock, root)` over the locked
+# tools_registry.csv, measured 2026-09-05 on the primary dev host BEFORE the
+# `description_overrides` parameter existed. 152 lines, 15,854 characters.
+COMPACT_REAL_SHA256 = "752dd381a02028dc7345a6ac826109bdcc879d82547a9029a43d559d0de8a605"
+COMPACT_REAL_LINES = 152
+COMPACT_REAL_CHARS = 15854
+
+SYNTHETIC_COMPACT = (
+    "- setLighting(deviceId: String): Turns a light on.\n"
+    "- setSecurityMode(mode: Mode): Sets the security mode."
+)
+
+
+@pytest.mark.skipif(_REAL is None, reason="real audio2tool registry not available on this host")
+def test_compact_default_bytes_are_unchanged_on_the_real_registry():
+    lock, root = _REAL
+    rendered = render_registry_compact(lock, root)
+    assert hashlib.sha256(rendered.encode("utf-8")).hexdigest() == COMPACT_REAL_SHA256
+    assert len(rendered.split("\n")) == COMPACT_REAL_LINES
+    assert len(rendered) == COMPACT_REAL_CHARS
+    # None and {} are both "no override at all", not "an empty override".
+    assert render_registry_compact(lock, root, description_overrides=None) == rendered
+    assert render_registry_compact(lock, root, description_overrides={}) == rendered
+
+
+@pytest.mark.skipif(_REAL is None, reason="real audio2tool registry not available on this host")
+def test_compact_override_on_the_real_registry_changes_one_line_only():
+    from speech_aware_evidence_acquisition.data.audio2tool import load_tool_registry
+
+    lock, root = _REAL
+    rows = load_tool_registry(lock, root)
+    victim = sorted(row["tool_name"] for row in rows)[0]
+    baseline = render_registry_compact(lock, root).split("\n")
+    evolved = render_registry_compact(
+        lock, root, description_overrides={victim: "A replacement description."}
+    ).split("\n")
+    assert len(evolved) == len(baseline) == COMPACT_REAL_LINES
+    differing = [index for index in range(len(baseline)) if baseline[index] != evolved[index]]
+    assert len(differing) == 1
+    assert evolved[differing[0]].endswith(": A replacement description.")
+    # The signature half of the line, and therefore the sort key, is untouched.
+    assert evolved[differing[0]].split(":")[0] == baseline[differing[0]].split(":")[0]
+
+
+def test_compact_default_bytes_on_the_synthetic_registry(audio2tool_world):
+    lock = load_lock(audio2tool_world.lock_path)
+    rendered = render_registry_compact(lock, audio2tool_world.data_root)
+    assert rendered == SYNTHETIC_COMPACT
+    assert render_registry_compact(
+        lock, audio2tool_world.data_root, description_overrides=None
+    ) == SYNTHETIC_COMPACT
+    assert render_registry_compact(
+        lock, audio2tool_world.data_root, description_overrides={}
+    ) == SYNTHETIC_COMPACT
+
+
+def test_compact_override_keeps_the_released_shape(audio2tool_world):
+    lock = load_lock(audio2tool_world.lock_path)
+    rendered = render_registry_compact(
+        lock,
+        audio2tool_world.data_root,
+        description_overrides={"setLighting": "Switches one named lamp."},
+    )
+    assert rendered == (
+        "- setLighting(deviceId: String): Switches one named lamp.\n"
+        "- setSecurityMode(mode: Mode): Sets the security mode."
+    )
+    # Same line count, same order, no trailing newline -- only the text after
+    # the colon of one line differs.
+    assert len(rendered.split("\n")) == len(SYNTHETIC_COMPACT.split("\n"))
+    assert not rendered.endswith("\n")
+
+
+def test_compact_rows_renderer_agrees_with_the_lock_shaped_entry(audio2tool_world):
+    from speech_aware_evidence_acquisition.data.audio2tool import load_tool_registry
+
+    lock = load_lock(audio2tool_world.lock_path)
+    rows = load_tool_registry(lock, audio2tool_world.data_root)
+    overrides = {"setSecurityMode": "Arms or disarms the house."}
+    assert render_registry_compact_rows(rows) == render_registry_compact(
+        lock, audio2tool_world.data_root
+    )
+    assert render_registry_compact_rows(
+        rows, description_overrides=overrides
+    ) == render_registry_compact(
+        lock, audio2tool_world.data_root, description_overrides=overrides
+    )
+
+
+def test_compact_override_refuses_a_tool_the_registry_does_not_carry(audio2tool_world):
+    lock = load_lock(audio2tool_world.lock_path)
+    with pytest.raises(Audio2ToolSchemaError, match="not a tools_registry.csv tool"):
+        render_registry_compact(
+            lock, audio2tool_world.data_root, description_overrides={"noSuchTool": "x"}
+        )
+
+
+@pytest.mark.parametrize(
+    "replacement, message",
+    [
+        ("", "non-empty text"),
+        ("   ", "non-empty text"),
+        (7, "non-empty text"),
+        ("two\nlines", "newline"),
+        ("carriage\rreturn", "newline"),
+    ],
+)
+def test_compact_override_refuses_a_malformed_replacement(
+    audio2tool_world, replacement, message
+):
+    lock = load_lock(audio2tool_world.lock_path)
+    with pytest.raises(Audio2ToolSchemaError, match=message):
+        render_registry_compact(
+            lock,
+            audio2tool_world.data_root,
+            description_overrides={"setLighting": replacement},
+        )
