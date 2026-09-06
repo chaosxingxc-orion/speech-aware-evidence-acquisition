@@ -3,8 +3,9 @@
 **Status: DRAFT.** This document is complete but unregistered. The coordinator closes it by (1)
 naming `A_0` with its sha256 -- KC-A1 is VOID rather than pending, so unless the +40-token cap is
 re-priced the answer is the released compact registry (section 3), (2) ratifying the STRICT or the
-RELAXED target set, (3) naming the curve roster, (4) admitting track E3c, the proposer runner, which
-does not exist, and (5) writing the exposure rows. Nothing here authorizes a contact.
+RELAXED target set, (3) naming the curve roster, and (4) writing the exposure rows. Track E3c, the
+proposer runner, is no longer among them: it is landed (section 15 item 8), and the four
+registration facts it surfaced are open point 8. Nothing here authorizes a contact.
 
 Cell EVO-A1 of `docs/readiness/2026-09-05-three-dimension-experiment-program.md` (section 4c, loop
 constants section 5). Model-free prerequisites already closed:
@@ -349,23 +350,96 @@ sends no audio part at all. Every row is written `consumed = no` and stays so un
 
 ## 11. Configuration
 
-`configs/experiment/a2t-evo-a1-description-evolution-v1.json` (round 1 only; the loop re-emits the
-fragment per round). Model fragment `q4km-featcache-a2t-official-np2-04ccc72a`; the composed config
-is `model + dataset + baseline + experiment` through the same `core.flight.FlightRuntime` and the
-same OpenJiuwen executor every Audio2Tool direct cell has flown.
+Round 1's reward fragment is `configs/experiment/a2t-evo-a1-description-evolution-v1.json`; every
+later round's fragments are RE-EMITTED by the driver (below). Model fragment
+`q4km-featcache-a2t-official-np2-04ccc72a`; the composed config is `model + dataset + baseline +
+experiment` through the same `core.flight.FlightRuntime` and the same OpenJiuwen executor every
+Audio2Tool direct cell has flown.
 
 **Two profiles need two fragments, and this is a finding rather than a preference.** A composed
 experiment fragment declares exactly one `execution_plan` object
 (`FlightRuntime._build_execution_plan` reads `values["execution_plan"]`), and that object carries
 the single `execution_profile` `contracts.assert_execution_scope` validates. The reward flights
 (`baseline-reproduction`) and the proposer contacts (`bounded-discovery-probe`) therefore cannot
-share one fragment. Only the reward fragment is drafted here; the proposer fragment is deferred
-because the runner it would configure does not exist (section 12, item 9).
+share one fragment.
+
+**Committed, and hand-written once:**
+
+| fragment | what it is |
+|---|---|
+| `configs/knowledge/a2t-evo-a1/loop-v1.json` | the loop AS DATA: targets, run ids, fragment names, metric, scorer, slots, gates, seed, `R_max`. `rails.evolution.LoopConfig.from_json` reads it and refuses an unknown key or an overlapping target set. The driver carries no cell knowledge of its own |
+| `configs/baseline/a2t-evo-a1-base.json` | the official-protocol cell byte for byte with `task_instruction_fill` REMOVED. `write_candidate_fragments` owns `task_instruction_fill`/`task_instruction_fill_params` and refuses a base that already sets either; with no fill declared this fragment is also the incumbent `A_0` arm's own baseline, because falling through renders the released compact registry, which is exactly what `A_0` is |
+| `configs/baseline/a2t-evo-a1-proposer.json` | the proposer arm: `arm: construction-proposer-text`, `policy: fixed`, `scorers: ["cost"]`. It declares NO instruction — every contact's system message is its draw's own rendered instruction — and no roster, because the roster is per round |
+
+**Emitted per round, by `scripts/run_a2t_evolution_round.py`:**
+
+| artefact | step |
+|---|---|
+| `docs/receipts/rosters/a2t-evo-a1-proposer-r{NN}.json` | propose |
+| `configs/experiment/a2t-evo-a1-proposer-r{NN}.json` | propose |
+| `configs/experiment/a2t-evo-a1-fold-a-r{NN}.json` | candidates |
+| `configs/experiment/a2t-evo-a1-fold-b-r{NN}.json` | select |
+| `configs/knowledge/a2t-evo-a1/evolved-registry-<sha16>.json` and `configs/baseline/evolved-artifact-<sha16>.json`, one pair per portfolio | candidates, and once more for the assembly at select |
+| `docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-{NN}/{propose,candidates,selection,confirmation}.json` | one per step |
+| `docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/evolution-round-{NN}.json` | confirm (`write_round_receipt`) |
+
+**The portfolio fragments are FLAT under `configs/baseline/`, and that is a harness constraint
+rather than a taste.** `core.config._FRAGMENT_NAME_PATTERN` admits no path separator in a fragment
+name, so a fragment written into a `configs/baseline/<subdir>/` tree could never be composed. Their
+`configs/knowledge/a2t-evo-a1/` artifacts do live in a subdirectory: `render_evolved_registry`
+resolves an artifact by relpath under `configs/`, not as a fragment name.
+
+**The proposer arm's three config keys** — `construction_proposer_roster_receipt`,
+`construction_proposer_roster_split_identity_hash` and `construction_target_tools` — are declared by
+the PER-ROUND experiment fragment, never by the baseline fragment, because the roster is per round
+and `core.config.compose` refuses the same key from two fragments. From round 2 the fragment also
+carries `evolution_incumbent_artifact_relpath`, the artifact the last ACCEPTED round's assembly
+wrote.
+
+### The proposer roster, and why it is a roster at all
+
+A proposer "roster" is a committed `core.roster` receipt (`saea-roster-receipt-v1`,
+`roster_role = "construction"`, `split_role = "discovery"`) whose ITEMS ARE THE DRAWS — one per
+`(round, target, family, k)`. Three consequences, all of them the point:
+
+* `contracts.gate_exposure._require_construction_role_for_visible_targets` accepts a plan bound to
+  it, because the scan it performs is over `docs/receipts/rosters/` for exactly this role and
+  carrier. The identity a round's plan carries is therefore that round's own proposer roster, not
+  `A2T-EVO-EXEMPLARS-V1`'s;
+* each item's `sample_id` is the draw's ANCHOR — a real construction row of
+  `A2T-EVO-EXEMPLARS-V1`, and for a proposer draw one the same contact's prompt actually shows.
+  That is what makes the payload's `speech_ref`/`media_relpath`/`audio_seconds` honest on an arm
+  that sends no audio at all, and it is why every draw claims a distinct anchor: the bundle
+  contract seals exactly one outputs row per sample;
+* each item additionally carries `exemplar_ids` (the seeded ORDERED draw), `round`, `target_id`,
+  `family`, `k` and the anchor's measured media facts, so the roster is also the flight-roster view
+  `scripts/flights/run_calibration_cell.py` hydrates from.
+
+A **placebo** draw carries no exemplar id at all (an exemplar's gold call IS a distinguishing cue),
+so its payload declares exactly ONE construction target, its own anchor — a row whose gold its
+prompt never rendered. That over-declares exposure by one row, which is the conservative direction,
+and `ProposerContact.rendered_exemplar_ids` records what the prompt actually showed.
+
+### The proposer contact, seam by seam
+
+`FrozenCoreClient` binds the UNION of every draw's declared targets ONCE, at construction, from the
+committed roster; each request then names the ordered SUBSET its own draw showed
+(`complete(..., construction_target_ids=...)`). A request can NARROW what the frozen core sees and
+can never widen it — an id the bound tuple does not carry is refused — so the client's own invariant
+("the gold this arm may show is a property of the client's whole life") is intact. The order is the
+caller's because the draw's order is what the prompt showed.
+
+`FlightRuntime` supplies the material through the `construction_material_resolver` seam, whose
+config-driven default reads the committed roster, `tools_registry.csv`, the incumbent artifact and
+the carrier's own construction rows (`data.audio2tool.load_query_rows`) and renders every
+instruction at flight time. **No construction query text or gold call is ever written to a receipt
+or committed to this repository**; a receipt records identity, counts and the prompt's sha256.
 
 ## 12. What the flight agent must do before the first contact
 
 1. **Close A_0** (section 3) and record its sha256 in the fragment and in every exposure row.
-2. **Ratify STRICT or RELAXED** (section 2). Neither needs a fresh roster draw.
+2. **Ratify STRICT or RELAXED** (section 2) and write the chosen target set into
+   `configs/knowledge/a2t-evo-a1/loop-v1.json`. Neither reading needs a fresh roster draw.
 3. **Choose the curve roster** (section 7) and, for Option A, draw it once by seed and land its
    receipt under a model-free row.
 4. **Make the folds hydratable** — three model-free artifacts per speech-bearing roster, none of
@@ -374,35 +448,101 @@ because the runner it would configure does not exist (section 12, item 9).
    facts (`audio_sha256`, `audio_seconds`, `sample_rate`, `media_relpath`) of the shape
    `saea-a2t-agentloop-flight-roster-receipt-v1`, and a `d1-a2t-*` media supplement built with
    `scripts/build_a2t_semantic_agentloop_d1_supplement.py --roster ...` (one supplement per flight;
-   the gate accepts exactly one supplement path per run). The **exemplar roster needs none of
-   them**: the proposer arm is text-only and its plan's split identity is that receipt.
-5. **Write the dataset fragments** `audio2tool-evo-fold-a-404` and `audio2tool-evo-fold-b-404` on
-   the `a2t_calibration_*` key contract, so the folds fly through the same entry point as every
-   other Audio2Tool cell with no new code path.
-6. **Register `SAEA-A2T-MF-EVO-DECONTAMINATION-V1`** (section 8) before validating any candidate.
-7. **Prompt fit** under a `bounded-discovery-probe` row: `/tokenize` the A_0 block and every
+   the gate accepts exactly one supplement path per run).
+5. **The exemplar roster needs none of those three; its ANCHORS need a D1 media supplement.** This
+   corrects the earlier reading. `A2T-EVO-EXEMPLARS-V1` itself is never flown and needs no
+   probe-sample view: the proposer's identities come from the per-round proposer roster the driver
+   writes, which already carries the media facts a flight-roster receipt would. But
+   `core.model.lifecycle` calls `gate.verify_media_identity` for every sample the binding names, and
+   the payload names each draw's anchor, so **each round's anchors need a `d1-a2t-evo-proposer-r{NN}`
+   media supplement** even though no audio part is sent. Anchors are few (twelve in round 1, nine
+   thereafter) and are a strict subset of the exemplar roster, so one supplement per round is small.
+6. **Write the dataset fragments** `audio2tool-evo-fold-a-404` and `audio2tool-evo-fold-b-404` on
+   the `a2t_calibration_*` key contract, plus one per round for the proposer roster, so every cell
+   flies through the same entry point with no new code path.
+7. **Register `SAEA-A2T-MF-EVO-DECONTAMINATION-V1`** (section 8) before validating any candidate.
+8. **The proposer run id cannot be registered at zero speech seconds.** `contracts.ExecutionPlan`
+   refuses a non-positive `planned_speech_audio_seconds` outright, and
+   `core.model.FrozenCoreAdapter` charges the payload's own `audio_seconds` against the plan even
+   for a text-only request that sends no audio part. The arm still sends none — section 10's claim
+   about the wire is unchanged — but `SAEA-A2T-EVO-A1-PROPOSER-V1`'s registered speech ceiling must
+   cover the sum of its anchors' durations across every round, and the driver sizes each round's
+   fragment accordingly. The ledger row's `speech audio seconds` cell is therefore an ACCOUNTING
+   ceiling, not a claim that audio was heard.
+9. **Prompt fit** under a `bounded-discovery-probe` row: `/tokenize` the A_0 block and every
    round-1 portfolio on the resident server, confirm the +40-token headroom against the sealed
-   compact registry's measured **3,581** tokens, and re-derive the serving geometry. Zero
-   generated tokens. A candidate that only an estimator admits is refused: KC-A1 died four
-   tokens over a forty-token cap because its builder injected the ORG-1 ratio as its counter.
-8. **Wire check the reward cells** — `FlightRuntime.wire_check` drives the whole request path
-   against a fake gate and transport with zero contacts, and both fold cells are ordinary
-   `policy: fixed` speech cells, so it applies unchanged.
-9. **The proposer arm cannot be wire-checked, and has no runner.** `wire_check` issues one contact
-   per roster sample through `_dispatch_fixed_policy`, which never supplies the
-   `construction_targets` field; the proposer makes at most four contacts per target per round and
-   is not a per-sample cell at all. The bridge itself is already proven contact-free by
-   `tests/unit/test_rails_core_client_construction_proposer.py` (fake arm-aware gate, fake capturing
-   transport, exact field-set assertion). The equivalent pre-flight proof is therefore: render every
-   round-1 proposer and placebo instruction offline and pin each `prompt_sha256`; construct
-   `FrozenCoreClient` for the arm against that fake transport; and dry-run
-   `contracts.gate_exposure` with a plan naming `A2T-EVO-EXEMPLARS-V1`'s identity hash
-   `cff83b48271e9bd8664eed90b8571dc0324ab9b7163dd687c50a3a9eb4262b8b`, which the gate already
-   returns among the carrier's construction rosters. **Track E3c — the runner that turns a rendered
-   instruction into a contact and a parsed candidate — is unwritten and is a blocker.**
-10. **MF-5 dry run**: four rows of fold A end to end through `run_program`, sealed and scored.
-11. **Confirm the tree is clean** for the whole run: a COMPLETED manifest reads `study_commit` at
-    finalize and refuses a dirty checkout.
+   compact registry's measured **3,581** tokens, and re-derive the serving geometry. Zero generated
+   tokens. A candidate that only an estimator admits is refused: KC-A1 died four tokens over a
+   forty-token cap because its builder injected the ORG-1 ratio as its counter. The driver
+   deliberately prices NO candidate — `run_candidates_step`'s `validator` seam is left unfilled,
+   because filling it would be a contact — so this row is where `validate_candidate_artifact` runs
+   with the serving tokenizer as its `token_counter`, and a candidate it refuses is appended to that
+   round's refusal record.
+10. **Wire check every cell, the proposer included.** Both fold cells are ordinary `policy: fixed`
+    speech cells and `FlightRuntime.wire_check` applies unchanged. **The proposer arm is now
+    wire-checkable too** (track E3c): the check drives `_dispatch_fixed_policy` into
+    `_run_construction_proposer` against `WireCheckGate`/`WireCheckTransport` with zero contacts and
+    refuses unless — one payload per draw, payload keys exactly
+    `ARM_VISIBLE_FIELDS["construction-proposer-text"]`, each payload's `construction_targets` exactly
+    that draw's own exemplars in the order the seeded draw fixed and carrying no key beyond
+    `sample_id`/`target`, each `task_instruction` hashing to that draw's pinned `prompt_sha256`, and
+    no `input_audio` / `input_speech_features` / `audio_url` anywhere in any request body. The
+    receipt records the draws by identity, count and digest, never by text.
+11. **The E2.4 gate now fires at preflight.** `FlightRuntime` forwards the arm to
+    `assert_model_touch_allowed` at preflight and at serve, so a plan whose split identity is not a
+    committed `roster_role = "construction"` roster of the carrier is refused BEFORE a server is
+    started and before an attempt id is spent; a gate that cannot receive the arm refuses a
+    construction-visible flight outright rather than flying it unchecked.
+12. **MF-5 dry run**: four rows of fold A end to end through `run_program`, sealed and scored. The
+    loop's own model-free dry run is already landed and is a test
+    (`tests/unit/test_a2t_evolution_round_driver.py`): a whole round over a synthetic world, a
+    hand-written sealed proposer manifest with one valid answer and one refusal, `replay_selection`
+    reproducing every stage-one decision from the score files alone, and a second run that is
+    byte-identical.
+13. **Confirm the tree is clean** for the whole run: a COMPLETED manifest reads `study_commit` at
+    finalize and refuses a dirty checkout. The driver writes into `configs/` and `docs/`, so commit
+    each step's artefacts before the flight that reads them.
+
+### The commands, per round
+
+The driver runs one STEP per invocation and is resumable: every step reads its predecessor's sealed
+receipt and refuses to redo it, so re-running the same command after an interruption re-enters at
+exactly the first step that has not landed. `--plan-only` reports which step is next, and why the
+others are not, without writing anything.
+
+```
+# what is next, and what it is waiting for
+python scripts/run_a2t_evolution_round.py --config configs/knowledge/a2t-evo-a1/loop-v1.json \
+    --round 1 --plan-only
+
+# (a) the proposer roster + its bounded-discovery-probe fragment + the prompt digests
+python scripts/run_a2t_evolution_round.py --config configs/knowledge/a2t-evo-a1/loop-v1.json --round 1
+
+# then FLY the proposer cells (attempt-r1-p{target}-k{k}) and copy the sealed outputs to
+#   docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1/round-01/proposer-outputs.jsonl
+
+# (b) candidates, portfolios, their committed fragments, the fold-A fragment
+python scripts/run_a2t_evolution_round.py --config configs/knowledge/a2t-evo-a1/loop-v1.json --round 1
+
+# then FLY fold A (attempt-r1-i, attempt-r1-c{k}), score once per complete manifest with
+#   include_per_sample=True, and write .../round-01/fold-a-scores.json as
+#   {"incumbent": "<path>.score.json", "1": "<path>", "4": "<path>", ...}
+
+# (c) stage one, the assembly, the fold-B fragment
+python scripts/run_a2t_evolution_round.py --config configs/knowledge/a2t-evo-a1/loop-v1.json --round 1
+
+# then FLY fold B (attempt-r1-i, attempt-r1-a) and write .../round-01/fold-b-scores.json as
+#   {"incumbent": "<path>", "assembly": "<path>"}
+
+# (d) confirmation, the next incumbent, the stop rule, the round receipt
+python scripts/run_a2t_evolution_round.py --config configs/knowledge/a2t-evo-a1/loop-v1.json --round 1
+```
+
+The driver checks `ledger_budget` against the parsed exposure rows before it emits a fragment and
+refuses a run id whose registered ceiling the whole loop would exceed, or whose row is not
+`consumed = no`. It never contacts the model: the three inputs it waits on — the sealed proposer
+outputs and the two score indexes — are flight products, and a step whose input is missing BLOCKS
+rather than guesses.
 
 ## 13. Analysis
 
@@ -437,4 +577,25 @@ At most one recovery re-registration per run id.
    all for the twelve tools whose exemplar pool is exactly `M`.
 7. **Fold-B power** — 145 targeted rows under STRICT is an internal gate, not a claim; confirm that
    reading rather than raising `n`.
-8. **Track E3c**, the proposer runner, is unwritten and blocks round 1.
+8. **Track E3c is landed and no longer blocks round 1.** The proposer runner exists inside the
+   base -- `rails.evolution`'s draws/roster/material, the `construction_material_resolver` seam and
+   `_run_construction_proposer` on `FlightRuntime`'s own `_dispatch_fixed_policy` path, the
+   per-request narrowing seam on `FrozenCoreClient`, and
+   `scripts/run_a2t_evolution_round.py` -- with no launcher, no probe module and no controller or
+   adapter subclass. Four things it surfaced that ARE still open points, because each one changes
+   what the coordinator registers rather than how the code runs:
+   * the proposer run id cannot be registered at **zero speech seconds** (section 12 item 8): the
+     arm sends no audio, but `ExecutionPlan` refuses a non-positive value and the adapter charges
+     the payload's `audio_seconds` regardless. Section 10's `speech s` cell for
+     `SAEA-A2T-EVO-A1-PROPOSER-V1` must become the anchors' summed duration, read as an accounting
+     ceiling rather than as a claim that audio was heard;
+   * each round's proposer **anchors need their own `d1-a2t-evo-proposer-r{NN}` media supplement**
+     (section 12 item 5), because the I-4 media-identity gate re-hashes exactly what the binding
+     names. This is a small, per-round, model-free artifact, not a new roster;
+   * the round's plan identity is that round's **own proposer roster**, not
+     `A2T-EVO-EXEMPLARS-V1`'s `cff83b48...`. The gate's construction-role scan accepts it for the
+     same reason it would have accepted the exemplar roster, and the exemplar roster remains the
+     pool every draw is taken from;
+   * the **placebo** contact declares one construction target (its anchor) whose gold its prompt
+     never renders -- an over-declaration of exactly one row, the conservative direction, recorded
+     as such. Confirm that reading rather than giving the placebo a second arm.
