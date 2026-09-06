@@ -1,0 +1,100 @@
+{
+  "accounting": {
+    "embedding_tool_contacts": 0,
+    "frozen_core_contacts": 0,
+    "gpu_hours": 0.0
+  },
+  "encoders": [
+    {
+      "encoder": "glap",
+      "provenance": {
+        "key_vectors": {
+          "file": "vectors/slurp-mf7/glap-key-vectors.jsonl",
+          "sha256": "3a43603303161f920d5f5b636f9ddf9637a25d97d3e4321fa0826fb51ae65fac"
+        },
+        "query_vectors": {
+          "file": "vectors/slurp-mf7/glap-q-speech-query-vectors.jsonl",
+          "sha256": "6c659c9567d33e7d1b97f8911fc5230c8cab33add78a39d536022ec0325ce625"
+        }
+      },
+      "speech_query_space": {
+        "mean_cosine": 0.48824065187224375,
+        "n": 1000,
+        "nearest_other_same_label_pp": 16.9
+      },
+      "text_key_space": {
+        "mean_cosine": 0.596319456647369,
+        "n": 11514,
+        "nearest_other_same_label_pp": 63.82664582247698
+      }
+    },
+    {
+      "encoder": "lco-embedding-omni-3b",
+      "provenance": {
+        "key_vectors": {
+          "file": "vectors/slurp-mf7b/lco-key-vectors.jsonl",
+          "sha256": "990c1e46fa4d687588bd12da0a2f6a00bfab776014b9583d8258c1cba8724d74"
+        },
+        "query_vectors": {
+          "file": "vectors/slurp-mf7b/lco-q-speech-query-vectors.jsonl",
+          "sha256": "eeff9382308208f1a71dbebe46b0c66939f5032b769addf1bdf3fd0c25359fb2"
+        }
+      },
+      "speech_query_space": {
+        "mean_cosine": 0.895867038890848,
+        "n": 1000,
+        "nearest_other_same_label_pp": 20.7
+      },
+      "text_key_space": {
+        "mean_cosine": 0.5751739585176345,
+        "n": 11514,
+        "nearest_other_same_label_pp": 70.62706270627062
+      },
+      "train_text_to_label": {
+        "chance_pp": 1.6666666666666667,
+        "labels": 60,
+        "mean_cosine": 0.4992742309862109,
+        "n": 11514,
+        "nearest_label_accuracy_pp": 12.350182386659718
+      }
+    },
+    {
+      "encoder": "omni-embed-nemotron-3b",
+      "provenance": {
+        "key_vectors": {
+          "file": "vectors/slurp-mf7b/nemotron-key-vectors.jsonl",
+          "sha256": "b907220e1a8673fa788231b56b980a2875f7ed970f820b8380c9ad4a6ffcf224"
+        },
+        "query_vectors": {
+          "file": "vectors/slurp-mf7b/nemotron-q-speech-query-vectors.jsonl",
+          "sha256": "13d618ad920dc44c557556582e236a66a86322f4ae1abb5340f10be43c4ccfa8"
+        }
+      },
+      "speech_query_space": {
+        "mean_cosine": 0.17716217950910032,
+        "n": 1000,
+        "nearest_other_same_label_pp": 59.6
+      },
+      "text_key_space": {
+        "mean_cosine": 0.8692093678369531,
+        "n": 11514,
+        "nearest_other_same_label_pp": 81.47472642001043
+      },
+      "train_text_to_label": {
+        "chance_pp": 1.6666666666666667,
+        "labels": 60,
+        "mean_cosine": 0.8257251813820563,
+        "n": 11514,
+        "nearest_label_accuracy_pp": 38.35330901511204
+      }
+    }
+  ],
+  "exposure_ledger_row": "SAEA-SLURP-MF-RETRIEVAL-KEY-AUDIT-V2",
+  "note": "each tower measured on its own terms; nothing here gates the decision table, and no contact of any kind was made",
+  "populations": {
+    "labels": 60,
+    "speech_queries": 1000,
+    "text_keys": 11514
+  },
+  "schema": "saea-slurp-retrieval-key-audit-v1"
+}

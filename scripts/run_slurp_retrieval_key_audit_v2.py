@@ -91,12 +91,30 @@ DEFAULT_SETS = (
 )
 
 
+#: A key file is shared by three query sets of the same encoder, so parsing a
+#: 500 MB JSONL three times is pure waste. The cache is keyed on the resolved
+#: path and holds the SAME arrays the uncached path would have produced.
+_VECTOR_CACHE: dict[str, tuple[tuple[str, ...], object]] = {}
+_SHA_CACHE: dict[str, str] = {}
+
+
+def load_vectors_cached(path: Path):
+    key = str(path)
+    if key not in _VECTOR_CACHE:
+        _VECTOR_CACHE[key] = audit.load_vectors_jsonl(path)
+    return _VECTOR_CACHE[key]
+
+
 def sha256_file(path: Path) -> str:
+    key = str(path)
+    if key in _SHA_CACHE:
+        return _SHA_CACHE[key]
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for chunk in iter(lambda: handle.read(1 << 20), b""):
             digest.update(chunk)
-    return digest.hexdigest()
+    _SHA_CACHE[key] = digest.hexdigest()
+    return _SHA_CACHE[key]
 
 
 def write_manifest(directory: Path) -> None:
@@ -130,12 +148,12 @@ def build_query_set(
     query_path = root / query_rel
     if not query_path.is_file():
         return None
-    query_ids, query_vectors = audit.load_vectors_jsonl(query_path)
+    query_ids, query_vectors = load_vectors_cached(query_path)
     if space == "label":
         if label_rel is None or not (root / label_rel).is_file():
             return None
         key_path = root / label_rel
-        key_ids, key_vectors = audit.load_vectors_jsonl(key_path)
+        key_ids, key_vectors = load_vectors_cached(key_path)
         key_source = {"file": label_rel, "sha256": sha256_file(key_path), "sealed": False,
                       "key_space": "60 intent label descriptions",
                       "label_text_rule": LABEL_TEXT_RULE}
@@ -147,7 +165,7 @@ def build_query_set(
         key_path = root / key_rel
         if not key_path.is_file():
             return None
-        key_ids, key_vectors = audit.load_vectors_jsonl(key_path)
+        key_ids, key_vectors = load_vectors_cached(key_path)
         key_source = {"file": key_rel, "sha256": sha256_file(key_path), "sealed": False,
                       "key_space": "TRAIN utterance texts"}
     return audit.QuerySet(

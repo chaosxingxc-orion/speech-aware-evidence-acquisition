@@ -862,6 +862,85 @@ def cosine_separation(
     }
 
 
+def _nearest_other_agreement(
+    matrix: np.ndarray, labels: Sequence[str], *, chunk: int = 512
+) -> dict[str, object]:
+    """Share of rows whose nearest OTHER row carries the same label.
+
+    Chunked so an 11,514-square cosine matrix never has to exist at once.
+    """
+
+    normalised = l2_normalise(np.asarray(matrix, dtype=np.float64))
+    labels = list(labels)
+    agree = 0
+    cosine_sum = 0.0
+    cosine_count = 0
+    for start in range(0, normalised.shape[0], chunk):
+        block = normalised[start : start + chunk] @ normalised.T
+        cosine_sum += float(block.sum())
+        cosine_count += int(block.size)
+        for offset in range(block.shape[0]):
+            block[offset, start + offset] = -2.0
+        nearest = block.argmax(axis=1)
+        agree += sum(
+            1
+            for offset, index in enumerate(nearest)
+            if labels[start + offset] == labels[int(index)]
+        )
+    total = normalised.shape[0]
+    return {
+        "n": total,
+        "nearest_other_same_label_pp": 100.0 * agree / total if total else None,
+        "mean_cosine": cosine_sum / cosine_count if cosine_count else None,
+    }
+
+
+def key_space_coherence(
+    *,
+    encoder: str,
+    key_vectors: np.ndarray,
+    key_labels: Sequence[str],
+    query_vectors: np.ndarray,
+    query_labels: Sequence[str],
+    label_vectors: np.ndarray | None = None,
+    label_labels: Sequence[str] | None = None,
+) -> dict[str, object]:
+    """Is each TOWER internally healthy, independent of the modality gap?
+
+    A speech query set can fail for two very different reasons, and a verdict
+    that cannot separate them is not worth much. This asks each side on its own
+    terms -- do two TRAIN texts of the same intent land near each other, do two
+    recordings of the same intent land near each other, and does a TRAIN text
+    find its own label -- so a failure that survives all three healthy towers is
+    a cross-modal failure and nothing else.
+    """
+
+    out: dict[str, object] = {
+        "encoder": encoder,
+        "text_key_space": _nearest_other_agreement(key_vectors, key_labels),
+        "speech_query_space": _nearest_other_agreement(query_vectors, query_labels),
+    }
+    if label_vectors is not None and label_labels is not None:
+        keys = l2_normalise(np.asarray(key_vectors, dtype=np.float64))
+        labels_matrix = l2_normalise(np.asarray(label_vectors, dtype=np.float64))
+        sims = keys @ labels_matrix.T
+        best = sims.argmax(axis=1)
+        label_list = list(label_labels)
+        key_list = list(key_labels)
+        hits = sum(
+            1 for position, index in enumerate(best)
+            if label_list[int(index)] == key_list[position]
+        )
+        out["train_text_to_label"] = {
+            "n": len(key_list),
+            "labels": len(label_list),
+            "nearest_label_accuracy_pp": 100.0 * hits / len(key_list) if key_list else None,
+            "mean_cosine": float(sims.mean()),
+            "chance_pp": 100.0 / len(label_list) if label_list else None,
+        }
+    return out
+
+
 def decision_v2(
     per_set: Mapping[str, Mapping[int, Sequence[RowMeasurement]]],
     *,

@@ -495,3 +495,26 @@ def test_build_summary_omits_the_paired_block_when_the_reference_is_absent(pool)
         key_npz_sha256="1" * 64, accounting={}, reference="q-draft",
     )
     assert summary["delta_ci90"] == {}
+
+
+def test_key_space_coherence_separates_a_healthy_tower_from_a_broken_one():
+    # Text keys: two tight clusters, one per intent -> a healthy tower.
+    key_vectors = np.array(
+        [[1.0, 0.0], [0.99, 0.01], [0.0, 1.0], [0.01, 0.99]], dtype=float)
+    key_labels = ["alarm_set", "alarm_set", "email_query", "email_query"]
+    # Speech queries: interleaved, so every nearest neighbour is the wrong
+    # intent -> a tower carrying no intent structure at all.
+    query_vectors = np.array(
+        [[1.0, 0.0], [0.0, 1.0], [0.99, 0.01], [0.01, 0.99]], dtype=float)
+    query_labels = ["alarm_set", "email_query", "email_query", "alarm_set"]
+    label_vectors = np.array([[1.0, 0.0], [0.0, 1.0]], dtype=float)
+    block = audit.key_space_coherence(
+        encoder="lco-embedding-omni-3b",
+        key_vectors=key_vectors, key_labels=key_labels,
+        query_vectors=query_vectors, query_labels=query_labels,
+        label_vectors=label_vectors, label_labels=["alarm_set", "email_query"],
+    )
+    assert block["text_key_space"]["nearest_other_same_label_pp"] == pytest.approx(100.0)
+    assert block["speech_query_space"]["nearest_other_same_label_pp"] == pytest.approx(0.0)
+    assert block["train_text_to_label"]["nearest_label_accuracy_pp"] == pytest.approx(100.0)
+    assert block["train_text_to_label"]["chance_pp"] == pytest.approx(50.0)

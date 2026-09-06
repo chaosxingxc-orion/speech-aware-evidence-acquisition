@@ -1,0 +1,158 @@
+{
+  "comparator": {
+    "attempt_id": "attempt-20260905T060424Z-2c5596",
+    "identity_anchors": {
+      "passed": true,
+      "published_projected_v2": {
+        "ALL1000": 73.1,
+        "NEW500": 75.2,
+        "OLD500": 71.0
+      },
+      "published_unprojected": {
+        "ALL1000": 71.4,
+        "NEW500": 73.2,
+        "OLD500": 69.6
+      },
+      "reproduced_projected_v2": {
+        "ALL1000": 73.1,
+        "NEW500": 75.2,
+        "OLD500": 71.0
+      },
+      "reproduced_unprojected": {
+        "ALL1000": 71.4,
+        "NEW500": 73.2,
+        "OLD500": 69.6
+      }
+    },
+    "mask_sha256": "80b2ef6a45a90ff48313b3d16239131a8445ba2a79813bc63eafa85c139e6efe",
+    "outputs_sha256": "34fda7fa51410e0f4f7e8ba7c35f867c32f53c244de63af5386860486fcb885b",
+    "projection_id": "slurp-legal-label-projection-v2",
+    "rows": {
+      "ALL1000": {
+        "n": 1000,
+        "right": 731,
+        "wrong": 269
+      },
+      "NEW500": {
+        "n": 500,
+        "right": 376,
+        "wrong": 124
+      },
+      "OLD500": {
+        "n": 500,
+        "right": 355,
+        "wrong": 145
+      }
+    },
+    "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1",
+    "scorer_id": "slurp-slu-official-projected-v2",
+    "sealed_manifest_sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c"
+  },
+  "devel_sentence_text": {
+    "purpose": "MF-7b recomputes no q-gold-text vector; V1's sealed bytes are reused",
+    "read": false,
+    "written_to_any_artifact": false
+  },
+  "frozen_core_contacts": 0,
+  "gpu_hours": 0.0,
+  "held_out_test_split": {
+    "loaded": false,
+    "named": false,
+    "note": "no function in this audit accepts a 'test' split id; every loader call passes allow_heldout=False"
+  },
+  "key_side": {
+    "facet_namespace": [
+      "content"
+    ],
+    "legality": "construction data, readable under the entity clause",
+    "n": 11514,
+    "split": "train"
+  },
+  "label_key_space": {
+    "decides": false,
+    "keys": 60,
+    "source": "the closed-list inventory's own legal (scenario, action) pairs",
+    "text_rule": "saea-mf7b-label-text-v1"
+  },
+  "query_sets": [
+    {
+      "contains_speech": false,
+      "encoder": "qwen3-embedding-0.6b-q8_0",
+      "fuses_state": false,
+      "query_set_id": "q-draft",
+      "role": "diagnostic"
+    },
+    {
+      "contains_speech": false,
+      "encoder": "qwen3-embedding-0.6b-q8_0",
+      "fuses_state": false,
+      "query_set_id": "q-gold-text",
+      "role": "diagnostic"
+    },
+    {
+      "contains_speech": true,
+      "encoder": "glap",
+      "fuses_state": false,
+      "query_set_id": "q-speech-glap",
+      "role": "candidate"
+    },
+    {
+      "contains_speech": true,
+      "encoder": "glap",
+      "fuses_state": true,
+      "query_set_id": "q-speech-glap+state",
+      "role": "candidate"
+    },
+    {
+      "contains_speech": true,
+      "encoder": "lco-embedding-omni-3b",
+      "fuses_state": false,
+      "query_set_id": "q-speech-lco",
+      "role": "candidate"
+    },
+    {
+      "contains_speech": true,
+      "encoder": "lco-embedding-omni-3b",
+      "fuses_state": true,
+      "query_set_id": "q-speech-lco+state",
+      "role": "candidate"
+    },
+    {
+      "contains_speech": true,
+      "encoder": "lco-embedding-omni-3b",
+      "fuses_state": false,
+      "query_set_id": "q-speech-lco-fused",
+      "role": "candidate"
+    },
+    {
+      "contains_speech": true,
+      "encoder": "omni-embed-nemotron-3b",
+      "fuses_state": false,
+      "query_set_id": "q-speech-nemotron",
+      "role": "candidate"
+    },
+    {
+      "contains_speech": true,
+      "encoder": "omni-embed-nemotron-3b",
+      "fuses_state": true,
+      "query_set_id": "q-speech-nemotron+state",
+      "role": "candidate"
+    },
+    {
+      "contains_speech": true,
+      "encoder": "omni-embed-nemotron-3b",
+      "fuses_state": false,
+      "query_set_id": "q-speech-nemotron-fused",
+      "role": "candidate"
+    }
+  ],
+  "query_side": {
+    "n": 1000,
+    "prior_exposure": "consumed by the DEV ladder before this audit; no new evaluation surface is opened",
+    "roster": "DEV-1000",
+    "split": [
+      "devel"
+    ]
+  },
+  "schema": "saea-slurp-retrieval-key-audit-v1"
+}
