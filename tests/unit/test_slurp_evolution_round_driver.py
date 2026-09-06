@@ -1127,3 +1127,60 @@ def test_the_committed_evo_a1_config_declares_no_proposer_fragment() -> None:
     for key in ("model_lock_key", "server_args", "runtime_receipt", "prompt_order",
                 "speech_feature_root", "server_env", "base_url"):
         assert fragment[key] == reward[key], key
+
+
+def test_an_emitted_fragment_declares_the_split_id_the_flight_reads(tmp_path) -> None:
+    """``core.flight.FlightRuntime._prepare`` reads ``values["split_id"]`` off the
+    COMPOSED config; no emitted fragment carried one, so every fragment this loop
+    wrote composed and then died at preflight."""
+
+    document = _loop_config_document()
+    document["split_ids"] = {
+        "fold_a": "A-SPLIT",
+        "fold_b": "B-SPLIT",
+        "proposer": "POOL-SPLIT",
+    }
+    config = LoopConfig.from_json(document)
+    state = EvolutionState(round=0, incumbent_overrides={}).validate()
+    result = run_propose_step(state, 1, config=config, carrier=_carrier())
+    fragment = result.documents[
+        f"{config.experiments_reldir}/{config.slug}-proposer-r01.json"
+    ]
+    assert fragment["split_id"] == "POOL-SPLIT"
+
+
+def test_a_loop_that_declares_no_split_ids_emits_no_split_id(tmp_path) -> None:
+    """EVO-A1's committed fragments stay byte for byte what they are."""
+
+    config = _loop_config()
+    assert config.split_ids is None
+    assert config.split_id_for("proposer") is None
+    state = EvolutionState(round=0, incumbent_overrides={}).validate()
+    result = run_propose_step(state, 1, config=config, carrier=_carrier())
+    fragment = result.documents[
+        f"{config.experiments_reldir}/{config.slug}-proposer-r01.json"
+    ]
+    assert "split_id" not in fragment
+
+
+def test_a_partial_split_id_mapping_is_refused() -> None:
+    document = _loop_config_document()
+    document["split_ids"] = {"fold_a": "A-SPLIT"}
+    config = LoopConfig.from_json(document)
+    assert config.split_id_for("fold_a") == "A-SPLIT"
+    with pytest.raises(EvolutionError, match="declares no 'fold_b'"):
+        config.split_id_for("fold_b")
+
+
+def test_the_committed_evo_s1_split_ids_are_the_rosters_own_names() -> None:
+    repo = Path(__file__).resolve().parents[2]
+    config = LoopConfig.from_json(
+        json.loads((repo / "configs/knowledge/slurp-evo-s1/loop-v1.json").read_text(encoding="utf-8"))
+    )
+    for which, relpath in (
+        ("fold_a", config.fold_a_roster_relpath),
+        ("fold_b", config.fold_b_roster_relpath),
+        ("proposer", config.exemplar_roster_relpath),
+    ):
+        roster = json.loads((repo / relpath).read_text(encoding="utf-8"))
+        assert config.split_id_for(which) == roster["roster_id"], which

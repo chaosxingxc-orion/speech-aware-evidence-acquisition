@@ -3294,6 +3294,14 @@ class LoopConfig:
     #: two fragments, so the two halves need two fragments and the propose
     #: step has to name the right one.
     proposer_model_fragment: str | None = None
+    #: ``{"fold_a"|"fold_b"|"proposer": split id}``. ``core.flight.FlightRuntime.
+    #: _prepare`` reads ``values["split_id"]`` off the composed config and no
+    #: emitted fragment carried one, so every EVO fragment this module writes was
+    #: unflyable -- a defect the model-free steps could not see, because they never
+    #: compose. The ids are the rosters' own ``split_name`` values and are config
+    #: rather than code because the driver holds no cell knowledge. Absent means the
+    #: emitted fragment declares none, which is EVO-A1's committed state today.
+    split_ids: Mapping[str, str] | None = None
     receipts_reldir: str = (
         "docs/checks/speech-aware-evidence-acquisition/2026-09-06-a2t-evo-a1"
     )
@@ -3530,6 +3538,27 @@ class LoopConfig:
                 for key, tools in sorted(self.targets.items())
             ]
         )
+
+    def split_id_for(self, which: str) -> str | None:
+        """The split id one emitted fragment declares, or ``None``.
+
+        ``which`` is ``"fold_a"``, ``"fold_b"`` or ``"proposer"``. A config that
+        declares the mapping must name every one it uses: a silently missing id
+        would produce a fragment that composes and then dies at preflight, which is
+        exactly the failure this field exists to remove.
+        """
+
+        if self.split_ids is None:
+            return None
+        if which not in self.split_ids:
+            raise EvolutionError(
+                f"loop config split_ids declares no {which!r}; it must name every "
+                "population this loop emits a fragment for"
+            )
+        value = self.split_ids[which]
+        if not isinstance(value, str) or not value:
+            raise EvolutionError(f"loop config split_ids[{which!r}] must be non-empty text")
+        return value
 
     def fold_name(self, which: str) -> str | None:
         """The fragment-variant label of ``"fold_a"`` / ``"fold_b"``, or
@@ -3944,6 +3973,7 @@ def _experiment_fragment(
     planned_speech_audio_seconds: int,
     planned_gpu_hours: float,
     purpose: str,
+    split_id: str | None = None,
 ) -> dict[str, object]:
     """One composable experiment fragment.
 
@@ -3956,7 +3986,7 @@ def _experiment_fragment(
     than sharing one: it is a finding about the harness, not a preference.
     """
 
-    return {
+    document: dict[str, object] = {
         "experiment_id": run_id,
         "schema": "saea-a2t-direct-calibration-experiment-v1",
         "generated_by": "scripts/run_evolution_round.py",
@@ -3974,6 +4004,13 @@ def _experiment_fragment(
             "planned_speech_audio_seconds": int(planned_speech_audio_seconds),
         },
     }
+    # ``FlightRuntime._prepare`` reads this off the COMPOSED config and refuses a
+    # fragment set that declares none. It belongs to the experiment fragment
+    # because a candidate's baseline fragment is fold-independent by construction
+    # (one artifact, two fold variants) while a split id is not.
+    if split_id is not None:
+        document["split_id"] = split_id
+    return document
 
 
 def run_propose_step(
@@ -4097,6 +4134,7 @@ def run_propose_step(
             "draw on the "
             "construction-proposer-text arm. Zero audio parts are sent."
         ),
+        split_id=config.split_id_for("proposer"),
     )
     # The three keys ``core.flight.runtime._default_construction_material``
     # resolves. They live in the EXPERIMENT fragment, not in the proposer's
@@ -4334,6 +4372,7 @@ def run_candidates_step(
             f"{len(portfolios)} "
             "portfolios over the whole fold, one contact per row."
         ),
+        split_id=config.split_id_for("fold_a"),
     )
     receipt = {
         "schema": "saea-evolution-candidates-step-v1",
@@ -4617,6 +4656,7 @@ def run_select_step(
             else f"{config.cell_label} round {round_index} FOLD B does not fly: stage one admitted no "
             "target, so the round is a reject and the incumbent stands."
         ),
+        split_id=config.split_id_for("fold_b"),
     )
     receipt = {
         "schema": "saea-evolution-selection-step-v1",

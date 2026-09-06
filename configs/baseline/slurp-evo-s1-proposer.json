@@ -12,6 +12,7 @@
     "cost"
   ],
   "scoring_note": "Only the 'cost' scorer. A proposer response is an ARTIFACT -- a scenario's rewritten slot-schema blocks in the renderer's own grammar -- not an answer to a scored row, so SLURP's own scorers would be scoring the wrong thing and would need gold these construction samples have no business resolving. The candidates are produced afterwards, model-free, by rails.evolution.harvest_proposer_responses over the sealed manifest, and every one of them then faces the form gates, the +20 percent relative token budget on the flight tokenizer and the committed decontamination digests.",
+  "split_id_note": "split_id is declared by the PER-ROUND experiment fragment the driver emits, from the loop config's split_ids mapping, because it is a property of the population and not of the arm.",
   "user_turn_audio_first": false,
   "user_turn_text": "",
   "what_this_is": "The PROPOSER arm of cell EVO-S1, the SLURP sibling of configs/baseline/a2t-evo-a1-proposer.json. Its model fragment is q4km-mmproj-free-speech-native-np4-proposer-max1536 (the reward fragment with max_tokens 1536), named by the loop config's proposer_model_fragment."
