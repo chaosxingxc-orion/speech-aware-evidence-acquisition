@@ -37,6 +37,9 @@ from speech_aware_evidence_acquisition.data.slurp import (
     SlurpIntentSlotSchema,
 )
 from speech_aware_evidence_acquisition.rails.evolution import (
+    A2T_FOLD_A_SPEECH_SECONDS,
+    A2T_FOLD_B_SPEECH_SECONDS,
+    A2T_FOLD_ROWS,
     ROUND_STEPS,
     CarrierMaterial,
     EvolutionError,
@@ -915,3 +918,37 @@ def test_the_a_0_pins_stop_the_cell_when_train_stops_reproducing_them() -> None:
     assert LoopConfig.from_json(document | {"a_0": None}).assert_a_0(
         floored=floored, unfloored=unfloored
     )
+
+
+def test_the_committed_loop_configs_declare_their_own_fold_sizes() -> None:
+    """A cell's fragments are costed from its own folds, not a default.
+
+    ``run_candidates_step`` and ``run_select_step`` write each emitted
+    fragment's ``execution_plan`` from the fold size and charge it against the
+    registered exposure row, so a SLURP round costed at EVO-A1's 404 rows
+    would declare a plan its own 1,080-row flight exceeds. EVO-A1 declares
+    nothing and keeps the defaults, which are its own measured V2 folds.
+    """
+
+    repo = Path(__file__).resolve().parents[2]
+    slurp = LoopConfig.from_json(
+        json.loads(
+            (repo / "configs/knowledge/slurp-evo-s1/loop-v1.json").read_text(
+                encoding="utf-8"
+            )
+        )
+    )
+    assert (slurp.fold_a_rows, slurp.fold_b_rows) == (1080, 1080)
+    assert slurp.fold_a_speech_seconds == 3084.528438
+    assert slurp.fold_b_speech_seconds == 3154.797375
+
+    a2t = LoopConfig.from_json(
+        json.loads(
+            (repo / "configs/knowledge/a2t-evo-a1/loop-v1.json").read_text(
+                encoding="utf-8"
+            )
+        )
+    )
+    assert (a2t.fold_a_rows, a2t.fold_b_rows) == (A2T_FOLD_ROWS, A2T_FOLD_ROWS)
+    assert a2t.fold_a_speech_seconds == A2T_FOLD_A_SPEECH_SECONDS
+    assert a2t.fold_b_speech_seconds == A2T_FOLD_B_SPEECH_SECONDS

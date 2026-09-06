@@ -3141,6 +3141,14 @@ class RoundPlan:
         }
 
 
+#: EVO-A1's measured V2 fold sizes, which are also
+#: :class:`LoopConfig`'s defaults, so that cell's committed config keeps
+#: declaring exactly the plan it declared before the fields existed.
+A2T_FOLD_ROWS = 404
+A2T_FOLD_A_SPEECH_SECONDS = 1913.527
+A2T_FOLD_B_SPEECH_SECONDS = 1877.630
+
+
 @dataclass(frozen=True)
 class LoopConfig:
     """Everything one EVO-A1 loop is, as data.
@@ -3201,6 +3209,18 @@ class LoopConfig:
     #: EVO-S1's controls are DETERMINISTIC, so the round-1 form twin costs no
     #: contact and must not be planned as a proposer draw.
     deterministic_placebo: bool = False
+    #: The SIZE of each fold: rows per pass and speech seconds per pass. They
+    #: are what every emitted fragment's ``execution_plan`` is written from
+    #: and what :func:`check_ledger_budget` charges against the registered
+    #: ceiling, so a cell whose folds are larger than the default would
+    #: otherwise declare a plan its own flight exceeds. The defaults ARE
+    #: EVO-A1's measured V2 folds, so its committed config stays byte for byte
+    #: what it is; EVO-S1 declares 1,080 rows per fold and its own measured
+    #: pass durations.
+    fold_a_rows: int = A2T_FOLD_ROWS
+    fold_a_speech_seconds: float = A2T_FOLD_A_SPEECH_SECONDS
+    fold_b_rows: int = A2T_FOLD_ROWS
+    fold_b_speech_seconds: float = A2T_FOLD_B_SPEECH_SECONDS
     #: The per-sample state fill an evolved fragment declares, and the phase
     #: that declares it (``rails.phase_material.PHASE_STATE_FILLS``). Only a
     #: state-fill artifact family sets these.
@@ -4084,8 +4104,8 @@ def run_candidates_step(
     repo_root: Path,
     validator: Callable[[CandidateArtifact], Mapping[str, object]] | None = None,
     ledger_rows: Sequence[Mapping[str, str]] = (),
-    fold_a_rows: int = 404,
-    fold_a_speech_seconds: float = 1913.527,
+    fold_a_rows: int | None = None,
+    fold_a_speech_seconds: float | None = None,
     seconds_per_call: float = 0.80,
     token_counter: Callable[[str], int] | None = None,
 ) -> RoundStepResult:
@@ -4103,6 +4123,17 @@ def run_candidates_step(
     """
 
     state.validate()
+    # The fold's own size, from the committed loop config unless a caller
+    # (the offline dry run) overrides it. Config rather than a function
+    # default, because these numbers are what the emitted fragment's
+    # execution_plan is written from: a SLURP round costed at EVO-A1's 404
+    # rows would declare a plan its own 1,080-row flight exceeds.
+    fold_a_rows = config.fold_a_rows if fold_a_rows is None else fold_a_rows
+    fold_a_speech_seconds = (
+        config.fold_a_speech_seconds
+        if fold_a_speech_seconds is None
+        else fold_a_speech_seconds
+    )
     paths = config.round_paths(round_index)["candidates"]["writes"]
     contacts = propose_receipt.get("contacts")
     if not isinstance(contacts, list) or not contacts:
@@ -4353,8 +4384,8 @@ def run_select_step(
     score_files: Mapping[str, Path | str],
     repo_root: Path,
     ledger_rows: Sequence[Mapping[str, str]] = (),
-    fold_b_rows: int = 404,
-    fold_b_speech_seconds: float = 1877.630,
+    fold_b_rows: int | None = None,
+    fold_b_speech_seconds: float | None = None,
     seconds_per_call: float = 0.80,
 ) -> RoundStepResult:
     """Step (c): stage one on fold A, the assembly, and the fold-B fragment.
@@ -4366,6 +4397,12 @@ def run_select_step(
     """
 
     state.validate()
+    fold_b_rows = config.fold_b_rows if fold_b_rows is None else fold_b_rows
+    fold_b_speech_seconds = (
+        config.fold_b_speech_seconds
+        if fold_b_speech_seconds is None
+        else fold_b_speech_seconds
+    )
     paths = config.round_paths(round_index)["select"]["writes"]
     portfolios_raw = candidates_receipt.get("portfolios")
     if not isinstance(portfolios_raw, Mapping) or not portfolios_raw:
