@@ -1,0 +1,472 @@
+{
+  "analysis_version": "saea-e22-esb-array-durations-v1",
+  "centered_gap_distribution": {
+    "bucket_edges": [
+      -0.18,
+      -0.16,
+      -0.12,
+      -0.08,
+      -0.04,
+      0.0,
+      0.25,
+      1.0,
+      4.0
+    ],
+    "buckets": {
+      "(-0.04, 0]": 54,
+      "(-0.08, -0.04]": 54,
+      "(-0.12, -0.08]": 194,
+      "(-0.16, -0.12]": 952,
+      "(-0.18, -0.16]": 560,
+      "(0, 0.25]": 154,
+      "(0.25, 1]": 316,
+      "(1, 4]": 280,
+      "<= -0.18": 142,
+      "> 4": 23
+    },
+    "max": 13.839550456,
+    "mean": 0.217815829,
+    "min": -0.180463216,
+    "n": 2729,
+    "overlap_seconds_total": 274.161878035,
+    "overlapping_pairs": 1956,
+    "overlapping_share": 0.716746061,
+    "pairs": 2729,
+    "percentiles": {
+      "1": -0.180139775,
+      "25": -0.160007487,
+      "5": -0.180010449,
+      "50": -0.139950469,
+      "75": 0.12003125,
+      "95": 1.859976188,
+      "99": 3.589452875
+    },
+    "separated_pairs": 773,
+    "stdev": 0.90123928,
+    "touching_pairs": 0
+  },
+  "contacts": {
+    "embedder": 0,
+    "frozen_core": 0,
+    "gpu_hours": 0,
+    "network": 0,
+    "outbound_connection_attempts": 0,
+    "outbound_connection_targets": [],
+    "paid_api_spend": 0,
+    "retriever": 0,
+    "scorer": 0,
+    "speech_seconds_delivered_to_any_service": 0,
+    "tokenizer": 0
+  },
+  "containers": {
+    "array_seconds_total": 19494.512332341,
+    "data_bytes_total": 1147824380,
+    "distinct_shapes": 3,
+    "published_seconds_total": 19494.856541365,
+    "shapes": {
+      "16000 Hz / 2 ch / 16 bit / format 1": 351,
+      "22050 Hz / 2 ch / 16 bit / format 1": 508,
+      "24000 Hz / 1 ch / 16 bit / format 1": 1876
+    },
+    "shapes_by_call": {
+      "4432298": {
+        "16000 Hz / 2 ch / 16 bit / format 1": 351
+      },
+      "4450488": {
+        "22050 Hz / 2 ch / 16 bit / format 1": 508
+      },
+      "4470290": {
+        "24000 Hz / 1 ch / 16 bit / format 1": 178
+      },
+      "4479741": {
+        "24000 Hz / 1 ch / 16 bit / format 1": 473
+      },
+      "4483338": {
+        "24000 Hz / 1 ch / 16 bit / format 1": 619
+      },
+      "4485244": {
+        "24000 Hz / 1 ch / 16 bit / format 1": 606
+      }
+    }
+  },
+  "dev_side": "The dev population cannot answer this question offline: the 55 train shards that hold the 6,038 dev10 rows were never downloaded, only column-projected over the network, so no released dev array exists on disk. Every number here is the TEST release's.",
+  "difference_distribution": {
+    "bucket_edges": [
+      -0.09,
+      -0.01,
+      -0.001,
+      -6.25e-05,
+      6.25e-05,
+      0.001,
+      0.01,
+      0.09
+    ],
+    "buckets": {
+      "(-0.001, -6.25e-05]": 801,
+      "(-0.09, -0.01]": 1,
+      "(-6.25e-05, 6.25e-05]": 1266,
+      "(6.25e-05, 0.001]": 665,
+      "<= -0.09": 2
+    },
+    "exactly_equal": 6,
+    "frame_delta_counts": {
+      "-1": 114,
+      "-2": 207,
+      "-3": 301,
+      "-4": 230,
+      "0": 341,
+      "1": 916,
+      "2": 463,
+      "3": 67,
+      "4": 3,
+      "beyond +-4": 93
+    },
+    "implied_pad_seconds": {
+      "max_absolute": 0.074026855,
+      "mean": -6.2927e-05,
+      "median": 1.5788e-05
+    },
+    "longer_than_published": 1707,
+    "max": 0.000290365,
+    "mean": -0.000125853,
+    "min": -0.148053711,
+    "n": 2735,
+    "not_span_faithful": [
+      {
+        "array_seconds": 13.032,
+        "call": "4470290",
+        "difference_seconds": -0.148053711,
+        "published_seconds": 13.180053711,
+        "sample_id": "4470290-178",
+        "sample_rate": 24000,
+        "segment_index": 178
+      },
+      {
+        "array_seconds": 8.612125,
+        "call": "4483338",
+        "difference_seconds": -0.108089844,
+        "published_seconds": 8.720214844,
+        "sample_id": "4483338-619",
+        "sample_rate": 24000,
+        "segment_index": 619
+      },
+      {
+        "array_seconds": 19.060125,
+        "call": "4432298",
+        "difference_seconds": -0.080255859,
+        "published_seconds": 19.140380859,
+        "sample_id": "4432298-351",
+        "sample_rate": 16000,
+        "segment_index": 351
+      }
+    ],
+    "not_span_faithful_listed": 3,
+    "percentiles": {
+      "1": -0.000200521,
+      "25": -9.1797e-05,
+      "5": -0.000168164,
+      "50": 3.1576e-05,
+      "75": 6.1198e-05,
+      "95": 0.000110026,
+      "99": 0.000246745
+    },
+    "shorter_than_published": 1022,
+    "span_faithful": 2732,
+    "span_faithful_share": 0.998903108,
+    "span_tolerance_seconds": 0.001,
+    "stdev": 0.003825554
+  },
+  "execution_profile": "model-free-check",
+  "exposure_row": "SAEA-E22-MF-ESB-ARRAY-DURATIONS-V1",
+  "identity": {
+    "segment_table": {
+      "bytes": 663749,
+      "format": "JSONL, one object per segment, sort_keys, LF, UTF-8",
+      "location_basis": "under the controlled data root, never in Git and never inside the locked carrier tree: the 'sentence' column is gold reference text",
+      "relpath": "derived/e22-esb-segment-table/segments-test.jsonl",
+      "rows": 2735,
+      "sha256": "7ef6911bdb449152e9d30b9189dd516d360c32f381cc76f2bfbcfbf542e1ad83"
+    },
+    "shard_digest_policy": "inherited from the committed 2026-09-04 receipt's own local re-hash; this row may not hash the audio bytes, so shard identity rests on the pinned byte sizes plus row-for-row agreement with the hash-pinned segments-test.jsonl",
+    "shards": [
+      {
+        "bytes": 383221699,
+        "relpath": "derived/e22-esb-segment-table/parquet/test-00000-of-00004-d1f708ede2712e90.parquet",
+        "sha256_inherited": "59c6dda0a955fd2435ff186ff675954b14dd84ef3716dc4190844ddfa6c6622c"
+      },
+      {
+        "bytes": 304147076,
+        "relpath": "derived/e22-esb-segment-table/parquet/test-00001-of-00004-f75446185bfca385.parquet",
+        "sha256_inherited": "99f92bdeb3965ee02a289100c4085d1024a0bfdb9045bcfb6c19e171c81e73ca"
+      },
+      {
+        "bytes": 218834748,
+        "relpath": "derived/e22-esb-segment-table/parquet/test-00002-of-00004-0090a7442c459172.parquet",
+        "sha256_inherited": "f2f5cf44af8264547646e3e26131e993a705fc1d7adb3770a6ffecd45e13d059"
+      },
+      {
+        "bytes": 194875805,
+        "relpath": "derived/e22-esb-segment-table/parquet/test-00003-of-00004-c18462f0ad18104e.parquet",
+        "sha256_inherited": "427a0c400efd66f351a1bbba2713c1255e2cb875679a84ea8262dbf39611bf8b"
+      }
+    ],
+    "upstream": {
+      "esb_test_calls": [
+        "4432298",
+        "4450488",
+        "4470290",
+        "4479741",
+        "4483338",
+        "4485244"
+      ],
+      "esb_validation_calls": [
+        "4420696",
+        "4448760",
+        "4461799",
+        "4469836",
+        "4473238",
+        "4482110"
+      ],
+      "esb_validation_note": "recorded for completeness only; the validation calls are NOT read by this study and stay confirmatory",
+      "license_note": "the split is a repartition of the Rev Earnings-22 corpus this study already licenses under its earnings22-original lock entry",
+      "repo_id": "sanchit-gandhi/earnings22_split",
+      "repo_type": "dataset",
+      "revision": "f9fb35f4134e32b9c8100199d949398fd6d08a5f",
+      "split": "test",
+      "url": "https://huggingface.co/datasets/sanchit-gandhi/earnings22_split/tree/f9fb35f4134e32b9c8100199d949398fd6d08a5f"
+    }
+  },
+  "non_monotonic_pairs": 0,
+  "per_call_released_overlap": {
+    "4432298": {
+      "overlap_seconds": 30.372414746,
+      "overlapping_pairs": 222,
+      "overlapping_share": 0.634285714,
+      "pairs": 350
+    },
+    "4450488": {
+      "overlap_seconds": 52.774012339,
+      "overlapping_pairs": 386,
+      "overlapping_share": 0.761341223,
+      "pairs": 507
+    },
+    "4470290": {
+      "overlap_seconds": 18.244286836,
+      "overlapping_pairs": 134,
+      "overlapping_share": 0.757062147,
+      "pairs": 177
+    },
+    "4479741": {
+      "overlap_seconds": 43.473375614,
+      "overlapping_pairs": 322,
+      "overlapping_share": 0.68220339,
+      "pairs": 472
+    },
+    "4483338": {
+      "overlap_seconds": 62.095860275,
+      "overlapping_pairs": 434,
+      "overlapping_share": 0.702265372,
+      "pairs": 618
+    },
+    "4485244": {
+      "overlap_seconds": 67.31469094,
+      "overlapping_pairs": 461,
+      "overlapping_share": 0.761983471,
+      "pairs": 605
+    }
+  },
+  "population": {
+    "call_ids": [
+      "4432298",
+      "4450488",
+      "4470290",
+      "4479741",
+      "4483338",
+      "4485244"
+    ],
+    "calls": 6,
+    "split": "ESB Earnings22 test (calibration-exposed 2026-09-04)",
+    "touched_for": "durations only",
+    "utterances": 2735
+  },
+  "published_gap_distribution": {
+    "bucket_edges": [
+      -0.18,
+      -0.16,
+      -0.12,
+      -0.08,
+      -0.04,
+      0.0,
+      0.25,
+      1.0,
+      4.0
+    ],
+    "buckets": {
+      "(-0.04, 0]": 61,
+      "(-0.08, -0.04]": 53,
+      "(-0.12, -0.08]": 268,
+      "(-0.16, -0.12]": 960,
+      "(-0.18, -0.16]": 514,
+      "(0, 0.25]": 147,
+      "(0.25, 1]": 316,
+      "(1, 4]": 280,
+      "<= -0.18": 107,
+      "> 4": 23
+    },
+    "max": 13.839599609,
+    "mean": 0.217751334,
+    "min": -0.180419922,
+    "n": 2729,
+    "overlap_seconds_total": 274.282968163,
+    "overlapping_pairs": 1944,
+    "overlapping_share": 0.712348846,
+    "pairs": 2729,
+    "percentiles": {
+      "1": -0.180175781,
+      "25": -0.159973145,
+      "5": -0.179931641,
+      "50": -0.139892578,
+      "75": 0.120117188,
+      "95": 1.860025024,
+      "99": 3.5895224
+    },
+    "separated_pairs": 766,
+    "stdev": 0.901250596,
+    "touching_pairs": 19
+  },
+  "question": "Are the ESB release's own per-utterance audio arrays cut at exactly [start_ts, end_ts], and do they therefore carry the same neighbour overlap this study's own clips carry?",
+  "reads": {
+    "audio_blobs_written_or_hashed": 0,
+    "audio_samples_decoded": 0,
+    "forbidden_columns": [
+      "sentence"
+    ],
+    "header_prefix_bytes": 4096,
+    "projected_columns": [
+      "source_id",
+      "segment_id",
+      "start_ts",
+      "end_ts",
+      "id",
+      "audio.bytes"
+    ],
+    "reference_layers_opened": 0,
+    "sealed_outputs_opened": 0,
+    "text_columns_read": 0,
+    "what_left_the_blob": "the blob's byte length and its RIFF/WAVE container header only"
+  },
+  "released_gap_distribution": {
+    "bucket_edges": [
+      -0.18,
+      -0.16,
+      -0.12,
+      -0.08,
+      -0.04,
+      0.0,
+      0.25,
+      1.0,
+      4.0
+    ],
+    "buckets": {
+      "(-0.04, 0]": 58,
+      "(-0.08, -0.04]": 59,
+      "(-0.12, -0.08]": 196,
+      "(-0.16, -0.12]": 954,
+      "(-0.18, -0.16]": 555,
+      "(0, 0.25]": 151,
+      "(0.25, 1]": 316,
+      "(1, 4]": 280,
+      "<= -0.18": 137,
+      "> 4": 23
+    },
+    "max": 13.839542969,
+    "mean": 0.217754092,
+    "min": -0.180451823,
+    "n": 2729,
+    "overlap_seconds_total": 274.274640749,
+    "overlapping_pairs": 1959,
+    "overlapping_share": 0.717845365,
+    "pairs": 2729,
+    "percentiles": {
+      "1": -0.180126328,
+      "25": -0.160003052,
+      "5": -0.180001302,
+      "50": -0.139956055,
+      "75": 0.120009766,
+      "95": 1.859985555,
+      "99": 3.589494213
+    },
+    "separated_pairs": 770,
+    "stdev": 0.901248345,
+    "touching_pairs": 0
+  },
+  "schema": "saea-e22-esb-array-durations-summary-v1",
+  "segment_id_coverage": {
+    "by_call": {
+      "4432298": {
+        "max_index": 351,
+        "min_index": 0,
+        "missing_indices": [
+          23
+        ],
+        "rows": 351
+      },
+      "4450488": {
+        "max_index": 508,
+        "min_index": 0,
+        "missing_indices": [
+          467
+        ],
+        "rows": 508
+      },
+      "4470290": {
+        "max_index": 178,
+        "min_index": 0,
+        "missing_indices": [
+          23
+        ],
+        "rows": 178
+      },
+      "4479741": {
+        "max_index": 473,
+        "min_index": 0,
+        "missing_indices": [
+          467
+        ],
+        "rows": 473
+      },
+      "4483338": {
+        "max_index": 619,
+        "min_index": 0,
+        "missing_indices": [
+          467
+        ],
+        "rows": 619
+      },
+      "4485244": {
+        "max_index": 606,
+        "min_index": 0,
+        "missing_indices": [
+          467
+        ],
+        "rows": 606
+      }
+    },
+    "missing_indices_total": 6,
+    "rows": 2735,
+    "rows_plus_missing": 2741
+  },
+  "verdict": {
+    "comparability": "The published systems consume these arrays. They carry the published boundaries, so they carry the same neighbour overlap this study's cut carries, and a boundary-exact number changes the audio the protocol delivers: it stays incomparable to the published 9.79 / 12.3.",
+    "published_overlapping_share": 0.712348846,
+    "released_overlapping_share": 0.717845365,
+    "span_faithful_share": 0.998903108,
+    "thresholds": {
+      "faithful_share_for_overlap_verdict": 0.99,
+      "overlap_share_slack": 0.01,
+      "span_tolerance_seconds": 0.001,
+      "tight_overlap_share": 0.01
+    },
+    "verdict": "RELEASED ARRAYS OVERLAP"
+  }
+}

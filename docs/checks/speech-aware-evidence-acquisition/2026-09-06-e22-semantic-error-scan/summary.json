@@ -1,0 +1,5968 @@
+{
+  "agentic_error_rate_definition": "HIGH-impact reference-word mass over total reference words. A HIGH substitution or deletion charges the reference tokens it covers; a HIGH insertion charges one reference-word-equivalent at its anchor. Same denominator as the corpus WER, so the two are comparable point for point. Spans classified format-convention, reference-convention or segmentation-artifact are NONE by ruling; the strict variant re-admits segmentation-artifact.",
+  "arms": {
+    "A": {
+      "agentic_error_rate": {
+        "agentic_error_rate_percent": 1.9241,
+        "high_impact_reference_word_mass": 1990,
+        "high_impact_spans": 1424,
+        "reference_words": 103423
+      },
+      "agentic_error_rate_strict": {
+        "agentic_error_rate_percent": 2.0469,
+        "high_impact_reference_word_mass": 2117,
+        "high_impact_spans": 1551,
+        "reference_words": 103423
+      },
+      "attempt": "attempt-20260905T073641Z-f977d1",
+      "boundary_diagnostics": {
+        "head": {
+          "inserted_words": 1060,
+          "insertion_spans": 603,
+          "spans_by_containment": {
+            "contains_0.34_to_0.6": 45,
+            "contains_0.6_or_more": 287,
+            "contains_none": 244,
+            "contains_some": 27
+          },
+          "words_matched_at_0.6": 420
+        },
+        "tail": {
+          "inserted_words": 7704,
+          "insertion_spans": 2828,
+          "spans_by_containment": {
+            "contains_0.34_to_0.6": 459,
+            "contains_0.6_or_more": 868,
+            "contains_none": 741,
+            "contains_some": 760
+          },
+          "words_matched_at_0.6": 1565
+        }
+      },
+      "category_table": [
+        {
+          "category": "format-convention",
+          "error_mass": 342,
+          "impact_HIGH": 0,
+          "impact_LOW": 0,
+          "impact_NONE": 290,
+          "share_of_error_mass_percent": 1.883,
+          "spans": 290,
+          "wer_points": 0.3307
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 903,
+          "impact_HIGH": 0,
+          "impact_LOW": 0,
+          "impact_NONE": 752,
+          "share_of_error_mass_percent": 4.971,
+          "spans": 752,
+          "wer_points": 0.8731
+        },
+        {
+          "category": "segmentation-artifact",
+          "error_mass": 3746,
+          "impact_HIGH": 0,
+          "impact_LOW": 0,
+          "impact_NONE": 2269,
+          "share_of_error_mass_percent": 20.621,
+          "spans": 2269,
+          "wer_points": 3.622
+        },
+        {
+          "category": "named-entity",
+          "error_mass": 1174,
+          "impact_HIGH": 874,
+          "impact_LOW": 0,
+          "impact_NONE": 0,
+          "share_of_error_mass_percent": 6.463,
+          "spans": 874,
+          "wer_points": 1.1351
+        },
+        {
+          "category": "domain-term",
+          "error_mass": 233,
+          "impact_HIGH": 11,
+          "impact_LOW": 144,
+          "impact_NONE": 0,
+          "share_of_error_mass_percent": 1.283,
+          "spans": 155,
+          "wer_points": 0.2253
+        },
+        {
+          "category": "model-behaviour",
+          "error_mass": 5462,
+          "impact_HIGH": 133,
+          "impact_LOW": 935,
+          "impact_NONE": 337,
+          "share_of_error_mass_percent": 30.067,
+          "spans": 1405,
+          "wer_points": 5.2812
+        },
+        {
+          "category": "acoustic-misrecognition",
+          "error_mass": 1400,
+          "impact_HIGH": 132,
+          "impact_LOW": 791,
+          "impact_NONE": 128,
+          "share_of_error_mass_percent": 7.707,
+          "spans": 1051,
+          "wer_points": 1.3537
+        },
+        {
+          "category": "other",
+          "error_mass": 4906,
+          "impact_HIGH": 274,
+          "impact_LOW": 1611,
+          "impact_NONE": 1649,
+          "share_of_error_mass_percent": 27.006,
+          "spans": 3534,
+          "wer_points": 4.7436
+        }
+      ],
+      "corpus_wer_percent": 17.5648,
+      "error_spans": 10330,
+      "gap_bins": {
+        "authorized_fold_error_mass": 260,
+        "authorized_fold_rules": [
+          "format-convention/merge-compound"
+        ],
+        "authorized_fold_wer_points": 0.2514,
+        "bins": {
+          "core-capability": {
+            "error_mass": 5027,
+            "rules": [
+              "acoustic-misrecognition/string-near",
+              "model-behaviour/non-english-script",
+              "model-behaviour/hypothesis-loop",
+              "model-behaviour/truncation",
+              "model-behaviour/hypothesis-repetition",
+              "other/substituted-content-word",
+              "other/deleted-content-word",
+              "other/inserted-content-word"
+            ],
+            "share_of_error_mass_percent": 27.673,
+            "wer_points": 4.8606
+          },
+          "missing-pre-meeting-context": {
+            "error_mass": 1407,
+            "rules": [
+              "named-entity/call-inventory",
+              "domain-term/pinned-lexicon"
+            ],
+            "share_of_error_mass_percent": 7.745,
+            "wer_points": 1.3604
+          },
+          "scoring-convention": {
+            "error_mass": 360,
+            "rules": [
+              "format-convention/merge-compound",
+              "format-convention/symbol-only",
+              "format-convention/stray-punctuation-token",
+              "format-convention/whisper-refold",
+              "format-convention/numeric-equal",
+              "reference-convention/empty-reference"
+            ],
+            "share_of_error_mass_percent": 1.982,
+            "wer_points": 0.3481
+          },
+          "task-definition": {
+            "error_mass": 11372,
+            "rules": [
+              "reference-convention/redacted-region",
+              "reference-convention/false-start-stem",
+              "reference-convention/reference-repetition",
+              "reference-convention/filler-token",
+              "reference-convention/discourse-phrase",
+              "reference-convention/discourse-single",
+              "reference-convention/backchannel-variant",
+              "segmentation-artifact/neighbour-bleed",
+              "segmentation-artifact/boundary-continuation",
+              "segmentation-artifact/boundary-onset",
+              "segmentation-artifact/boundary-partial-word",
+              "model-behaviour/runaway-tail",
+              "model-behaviour/runaway-head",
+              "other/deleted-function-word",
+              "other/inserted-function-word",
+              "other/function-word-swap"
+            ],
+            "share_of_error_mass_percent": 62.6,
+            "wer_points": 10.9956
+          }
+        },
+        "fold_authorities": {
+          "format-convention/merge-compound": "Open ASR Leaderboard `merge_compounds`, which the published ESB column applies and this study does not",
+          "format-convention/numeric-equal": "the Whisper `EnglishTextNormalizer`'s number rules; the residue is digits that agree with a different surface form around them",
+          "format-convention/stray-punctuation-token": "NO PUBLISHED AUTHORITY, but no published recipe treats a token with zero alphanumeric characters as a word either: these are Rev's ellipsis marks surviving the normalizer as bare `.` / `..` tokens. Reported separately for the same reason",
+          "format-convention/symbol-only": "NO PUBLISHED AUTHORITY. The Whisper normalizer deliberately KEEPS `.%$` and the currency signs, so `$340` against `340` is a difference the recipe intends to preserve. Reported inside the scoring-convention bin so it can be subtracted, never claimed as an existing convention",
+          "format-convention/whisper-refold": "the Whisper `EnglishTextNormalizer`'s own rules, applied a second time over the span in isolation",
+          "reference-convention/empty-reference": "the ESB protocol: a reference that normalizes to nothing contributes no denominator, and the leaderboard's own recipe drops such rows"
+        },
+        "refused_folds": {
+          "reference-convention/discourse-phrase": "no authority removes 'you know' / 'I mean' from a reference",
+          "reference-convention/discourse-single": "these tokens are ordinary words as often as they are fillers; folding them would silently delete content",
+          "reference-convention/false-start-stem": "no published normalizer removes Rev's truncated-word stems; folding them would be this study inventing a convention to improve its own number",
+          "reference-convention/filler-token": "the Whisper normalizer's filler list is exactly hmm|mm|mhm|mmm|uh|um; extending it is a new convention, not an existing one",
+          "reference-convention/reference-repetition": "the 2026-09-05 A/B verdict already measured that collapsing repeats makes the number WORSE, and no ESB or leaderboard rule collapses them",
+          "segmentation-artifact/neighbour-bleed": "the ESB protocol scores each published utterance against its own sentence; crediting a neighbour's words would change the task, not the scoring"
+        },
+        "unassigned_error_mass": 0,
+        "unassigned_rules": []
+      },
+      "hypothesis_over_reference_ratio": 1.0861,
+      "hypothesis_words": 112323,
+      "identity_gate": {
+        "measured": {
+          "deletions": 2370,
+          "insertions": 11270,
+          "reference_words": 103423,
+          "substitutions": 4526
+        },
+        "reproduced": true,
+        "sealed": {
+          "deletions": 2370,
+          "insertions": 11270,
+          "reference_words": 103423,
+          "substitutions": 4526
+        }
+      },
+      "impact_table": {
+        "HIGH": {
+          "error_mass": 2566,
+          "share_of_error_mass_percent": 14.125,
+          "spans": 1424,
+          "wer_points": 2.4811
+        },
+        "LOW": {
+          "error_mass": 7866,
+          "share_of_error_mass_percent": 43.301,
+          "spans": 3481,
+          "wer_points": 7.6057
+        },
+        "NONE": {
+          "error_mass": 7734,
+          "share_of_error_mass_percent": 42.574,
+          "spans": 5425,
+          "wer_points": 7.478
+        }
+      },
+      "label": "this study's verbatim instruction, system message before the audio",
+      "outputs_sha256": "7f785db352627fbe4cd159142d779a12373f75d24e2b5fb98cc35f293b1bf336",
+      "per_call_table": [
+        {
+          "agentic_error_rate_percent": 1.1146,
+          "call": "4453225",
+          "corpus_wer_percent": 20.2937,
+          "error_mass": 2294,
+          "points_acoustic-misrecognition": 1.8135,
+          "points_domain-term": 0.3362,
+          "points_format-convention": 0.1858,
+          "points_model-behaviour": 6.2633,
+          "points_named-entity": 0.575,
+          "points_other": 5.8917,
+          "points_reference-convention": 1.9285,
+          "points_segmentation-artifact": 3.2997,
+          "reference_words": 11304
+        },
+        {
+          "agentic_error_rate_percent": 2.0186,
+          "call": "4469088",
+          "corpus_wer_percent": 19.8556,
+          "error_mass": 2282,
+          "points_acoustic-misrecognition": 1.0876,
+          "points_domain-term": 0.2088,
+          "points_format-convention": 0.2871,
+          "points_model-behaviour": 6.9347,
+          "points_named-entity": 0.9397,
+          "points_other": 5.0117,
+          "points_reference-convention": 1.2355,
+          "points_segmentation-artifact": 4.1504,
+          "reference_words": 11493
+        },
+        {
+          "agentic_error_rate_percent": 1.2152,
+          "call": "4470684",
+          "corpus_wer_percent": 14.2976,
+          "error_mass": 1553,
+          "points_acoustic-misrecognition": 0.9667,
+          "points_domain-term": 0.1381,
+          "points_format-convention": 0.2578,
+          "points_model-behaviour": 5.1188,
+          "points_named-entity": 0.6997,
+          "points_other": 2.6607,
+          "points_reference-convention": 0.7918,
+          "points_segmentation-artifact": 3.6642,
+          "reference_words": 10862
+        },
+        {
+          "agentic_error_rate_percent": 1.5086,
+          "call": "4474506",
+          "corpus_wer_percent": 14.9471,
+          "error_mass": 1724,
+          "points_acoustic-misrecognition": 1.2658,
+          "points_domain-term": 0.1301,
+          "points_format-convention": 0.4075,
+          "points_model-behaviour": 3.9275,
+          "points_named-entity": 0.6676,
+          "points_other": 4.2483,
+          "points_reference-convention": 0.6936,
+          "points_segmentation-artifact": 3.6067,
+          "reference_words": 11534
+        },
+        {
+          "agentic_error_rate_percent": 2.9958,
+          "call": "4479944",
+          "corpus_wer_percent": 23.6629,
+          "error_mass": 2575,
+          "points_acoustic-misrecognition": 2.0493,
+          "points_domain-term": 0.3951,
+          "points_format-convention": 0.2573,
+          "points_model-behaviour": 7.2321,
+          "points_named-entity": 1.553,
+          "points_other": 8.0224,
+          "points_reference-convention": 0.193,
+          "points_segmentation-artifact": 3.9607,
+          "reference_words": 10882
+        },
+        {
+          "agentic_error_rate_percent": 1.7605,
+          "call": "4481952",
+          "corpus_wer_percent": 17.1161,
+          "error_mass": 1682,
+          "points_acoustic-misrecognition": 1.3636,
+          "points_domain-term": 0.2442,
+          "points_format-convention": 0.2748,
+          "points_model-behaviour": 5.0168,
+          "points_named-entity": 1.2822,
+          "points_other": 3.5209,
+          "points_reference-convention": 1.4043,
+          "points_segmentation-artifact": 4.0094,
+          "reference_words": 9827
+        },
+        {
+          "agentic_error_rate_percent": 1.6388,
+          "call": "4482383",
+          "corpus_wer_percent": 14.2579,
+          "error_mass": 1392,
+          "points_acoustic-misrecognition": 1.2906,
+          "points_domain-term": 0.0205,
+          "points_format-convention": 0.6146,
+          "points_model-behaviour": 4.0971,
+          "points_named-entity": 1.3008,
+          "points_other": 3.4006,
+          "points_reference-convention": 0.5019,
+          "points_segmentation-artifact": 3.0319,
+          "reference_words": 9763
+        },
+        {
+          "agentic_error_rate_percent": 4.8757,
+          "call": "4482613",
+          "corpus_wer_percent": 22.9385,
+          "error_mass": 2103,
+          "points_acoustic-misrecognition": 1.9634,
+          "points_domain-term": 0.5236,
+          "points_format-convention": 0.6108,
+          "points_model-behaviour": 4.2103,
+          "points_named-entity": 2.9341,
+          "points_other": 8.3879,
+          "points_reference-convention": 0.5672,
+          "points_segmentation-artifact": 3.7413,
+          "reference_words": 9168
+        },
+        {
+          "agentic_error_rate_percent": 1.3249,
+          "call": "4483937",
+          "corpus_wer_percent": 15.4724,
+          "error_mass": 1343,
+          "points_acoustic-misrecognition": 1.0023,
+          "points_domain-term": 0.0461,
+          "points_format-convention": 0.1843,
+          "points_model-behaviour": 5.1382,
+          "points_named-entity": 0.8986,
+          "points_other": 3.7788,
+          "points_reference-convention": 0.8065,
+          "points_segmentation-artifact": 3.6175,
+          "reference_words": 8680
+        },
+        {
+          "agentic_error_rate_percent": 1.0595,
+          "call": "4485192",
+          "corpus_wer_percent": 12.2906,
+          "error_mass": 1218,
+          "points_acoustic-misrecognition": 0.6963,
+          "points_domain-term": 0.2018,
+          "points_format-convention": 0.2624,
+          "points_model-behaviour": 4.3996,
+          "points_named-entity": 0.7972,
+          "points_other": 2.3915,
+          "points_reference-convention": 0.4743,
+          "points_segmentation-artifact": 3.0676,
+          "reference_words": 9910
+        }
+      ],
+      "per_duration_table": [
+        {
+          "bucket": "0-1s",
+          "corpus_wer_percent": 71.6877,
+          "points_acoustic-misrecognition": 2.5237,
+          "points_domain-term": 0.3155,
+          "points_format-convention": 1.2618,
+          "points_model-behaviour": 23.1073,
+          "points_named-entity": 4.2587,
+          "points_other": 17.9811,
+          "points_reference-convention": 2.6814,
+          "points_segmentation-artifact": 19.5584,
+          "reference_words": 1268,
+          "utterances": 504
+        },
+        {
+          "bucket": "1-2s",
+          "corpus_wer_percent": 41.9342,
+          "points_acoustic-misrecognition": 2.2755,
+          "points_domain-term": 0.1219,
+          "points_format-convention": 0.6501,
+          "points_model-behaviour": 9.6709,
+          "points_named-entity": 3.0882,
+          "points_other": 14.2219,
+          "points_reference-convention": 1.1784,
+          "points_segmentation-artifact": 10.7273,
+          "reference_words": 2461,
+          "utterances": 482
+        },
+        {
+          "bucket": "2-4s",
+          "corpus_wer_percent": 28.6276,
+          "points_acoustic-misrecognition": 1.7401,
+          "points_domain-term": 0.3146,
+          "points_format-convention": 0.3048,
+          "points_model-behaviour": 7.7074,
+          "points_named-entity": 2.4184,
+          "points_other": 7.8647,
+          "points_reference-convention": 1.1699,
+          "points_segmentation-artifact": 7.1077,
+          "reference_words": 10172,
+          "utterances": 1163
+        },
+        {
+          "bucket": "4-8s",
+          "corpus_wer_percent": 19.0472,
+          "points_acoustic-misrecognition": 1.2361,
+          "points_domain-term": 0.1964,
+          "points_format-convention": 0.2768,
+          "points_model-behaviour": 6.4059,
+          "points_named-entity": 1.0913,
+          "points_other": 4.967,
+          "points_reference-convention": 0.7565,
+          "points_segmentation-artifact": 4.1172,
+          "reference_words": 31065,
+          "utterances": 1991
+        },
+        {
+          "bucket": "8-16s",
+          "corpus_wer_percent": 13.2081,
+          "points_acoustic-misrecognition": 1.2627,
+          "points_domain-term": 0.2009,
+          "points_format-convention": 0.3069,
+          "points_model-behaviour": 4.0002,
+          "points_named-entity": 0.7771,
+          "points_other": 3.5653,
+          "points_reference-convention": 0.8543,
+          "points_segmentation-artifact": 2.2407,
+          "reference_words": 45298,
+          "utterances": 1625
+        },
+        {
+          "bucket": "16s+",
+          "corpus_wer_percent": 10.7379,
+          "points_acoustic-misrecognition": 1.3603,
+          "points_domain-term": 0.3192,
+          "points_format-convention": 0.4104,
+          "points_model-behaviour": 2.6218,
+          "points_named-entity": 0.8131,
+          "points_other": 2.8118,
+          "points_reference-convention": 0.7523,
+          "points_segmentation-artifact": 1.6491,
+          "reference_words": 13159,
+          "utterances": 273
+        }
+      ],
+      "raw_pass": {
+        "format_only_errors": 6914,
+        "format_only_spans": 5422,
+        "raw_error_spans": 21593,
+        "raw_errors": 34583,
+        "raw_reference_words": 104808
+      },
+      "read_sample": {
+        "composition_by_rule": {
+          "acoustic-misrecognition/string-near": 168,
+          "domain-term/pinned-lexicon": 20,
+          "format-convention/merge-compound": 46,
+          "format-convention/numeric-equal": 1,
+          "format-convention/stray-punctuation-token": 4,
+          "format-convention/symbol-only": 2,
+          "model-behaviour/hypothesis-repetition": 33,
+          "model-behaviour/non-english-script": 5,
+          "model-behaviour/runaway-head": 13,
+          "model-behaviour/runaway-tail": 160,
+          "model-behaviour/truncation": 6,
+          "named-entity/call-inventory": 118,
+          "other/deleted-content-word": 50,
+          "other/deleted-function-word": 62,
+          "other/function-word-swap": 72,
+          "other/inserted-content-word": 73,
+          "other/inserted-function-word": 89,
+          "other/substituted-content-word": 142,
+          "reference-convention/backchannel-variant": 5,
+          "reference-convention/discourse-single": 3,
+          "reference-convention/empty-reference": 2,
+          "reference-convention/false-start-stem": 36,
+          "reference-convention/filler-token": 1,
+          "reference-convention/redacted-region": 15,
+          "reference-convention/reference-repetition": 43,
+          "segmentation-artifact/boundary-continuation": 193,
+          "segmentation-artifact/boundary-onset": 60,
+          "segmentation-artifact/boundary-partial-word": 14,
+          "segmentation-artifact/neighbour-bleed": 64
+        },
+        "drawn": 1500,
+        "requested": 1500,
+        "seed": 20260903,
+        "strata": "source call"
+      },
+      "read_sample_examples": {
+        "acoustic-misrecognition/string-near": [
+          {
+            "hypothesis": "cycles",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "cycle",
+            "reference_context": "h one h 2 [[ cycle ]] to continue",
+            "sample_id": "4453225-121"
+          },
+          {
+            "hypothesis": "sites",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "side",
+            "reference_context": "investor in our manufacturing [[ side ]] and i believe stephen",
+            "sample_id": "4453225-125"
+          },
+          {
+            "hypothesis": "t",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "it",
+            "reference_context": "capex is is the [[ it ]] side of ca capex",
+            "sample_id": "4453225-137"
+          },
+          {
+            "hypothesis": "dates",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "date",
+            "reference_context": "an extension of maturity [[ date ]] on our existing commercial",
+            "sample_id": "4453225-149"
+          }
+        ],
+        "domain-term/pinned-lexicon": [
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "margin",
+            "reference_context": "diluted there the group [[ margin ]] is a little ..",
+            "sample_id": "4453225-46"
+          },
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "normalized ebitda",
+            "reference_context": "[[ normalized ebitda ]] made a nice contribution",
+            "sample_id": "4453225-91"
+          },
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "creditor",
+            "reference_context": "will have some more [[ creditor ]] is payments in there",
+            "sample_id": "4469088-579"
+          },
+          {
+            "hypothesis": "margins",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "packaging good [[ ]] good margins",
+            "sample_id": "4469088-88"
+          }
+        ],
+        "format-convention/merge-compound": [
+          {
+            "hypothesis": "e",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "excellent by by the [[ ]] ey excellence in intregrity",
+            "sample_id": "4453225-282"
+          },
+          {
+            "hypothesis": "on",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "moving [[ ]] onto the normalized ebitda",
+            "sample_id": "4453225-53"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "et",
+            "reference_context": "the the energy surcharge [[ et ]] cetera",
+            "sample_id": "4469088-361"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "4",
+            "reference_context": "pre covid levels q [[ 4 ]] 2019 which is probably",
+            "sample_id": "4469088-40"
+          }
+        ],
+        "format-convention/numeric-equal": [
+          {
+            "hypothesis": "2 and the commissioning",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "place in h 2",
+            "reference_context": "phase 2 will take [[ place in h 2 ]]",
+            "sample_id": "4482613-346"
+          }
+        ],
+        "format-convention/stray-punctuation-token": [
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "..",
+            "reference_context": "move to the presentation [[ .. ]]",
+            "sample_id": "4453225-4"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "..",
+            "reference_context": "what are you [[ .. ]]",
+            "sample_id": "4453225-419"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "..",
+            "reference_context": "so [[ .. ]]",
+            "sample_id": "4482613-398"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "..",
+            "reference_context": "this [[ .. ]]",
+            "sample_id": "4482613-493"
+          }
+        ],
+        "format-convention/symbol-only": [
+          {
+            "hypothesis": "85",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "$85",
+            "reference_context": "you are in the [[ $85 ]] to 90000000 range",
+            "sample_id": "4485192-394"
+          },
+          {
+            "hypothesis": "$90000000",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "90000000",
+            "reference_context": "in the $85 to [[ 90000000 ]] range",
+            "sample_id": "4485192-398"
+          }
+        ],
+        "model-behaviour/hypothesis-repetition": [
+          {
+            "hypothesis": "the",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "on [[ ]] the e ..",
+            "sample_id": "4453225-350"
+          },
+          {
+            "hypothesis": "that makes a",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "in hot currencies so [[ ]] that makes our ..",
+            "sample_id": "4453225-583"
+          },
+          {
+            "hypothesis": "you",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "briefly maybe you just [[ ]] you you just want",
+            "sample_id": "4469088-557"
+          },
+          {
+            "hypothesis": "on",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "price increases on the [[ ]] on on the coated",
+            "sample_id": "4469088-843"
+          }
+        ],
+        "model-behaviour/non-english-script": [
+          {
+            "hypothesis": "喂喂 是哪位",
+            "impact": "HIGH",
+            "op": "SUB",
+            "reference": "0 no",
+            "reference_context": "[[ 0 no ]]",
+            "sample_id": "4474506-499"
+          },
+          {
+            "hypothesis": "这有啥问题啊",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "..",
+            "reference_context": "[[ .. ]]",
+            "sample_id": "4481952-329"
+          },
+          {
+            "hypothesis": "哦",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] hello",
+            "sample_id": "4482383-333"
+          },
+          {
+            "hypothesis": "我會做",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "that",
+            "reference_context": "so thanks for [[ that ]]",
+            "sample_id": "4482613-325"
+          }
+        ],
+        "model-behaviour/runaway-head": [
+          {
+            "hypothesis": "no that is sorry steve go ahead",
+            "impact": "HIGH",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] go ahead marco",
+            "sample_id": "4469088-372"
+          },
+          {
+            "hypothesis": "i am good how are",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] yeah",
+            "sample_id": "4469088-474"
+          },
+          {
+            "hypothesis": "more in there because",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] it looks like it",
+            "sample_id": "4469088-547"
+          },
+          {
+            "hypothesis": "i am sorry i can not hear",
+            "impact": "HIGH",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] 7",
+            "sample_id": "4474506-525"
+          }
+        ],
+        "model-behaviour/runaway-tail": [
+          {
+            "hypothesis": "but that is not the case",
+            "impact": "HIGH",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "the next 12 months [[ ]]",
+            "sample_id": "4453225-148"
+          },
+          {
+            "hypothesis": "he is a",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "that post til today [[ ]]",
+            "sample_id": "4453225-198"
+          },
+          {
+            "hypothesis": "thank you very much",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "on with the presentation [[ ]]",
+            "sample_id": "4453225-205"
+          },
+          {
+            "hypothesis": "and i thank you",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "continent and its leaders [[ ]]",
+            "sample_id": "4453225-272"
+          }
+        ],
+        "model-behaviour/truncation": [
+          {
+            "hypothesis": "",
+            "impact": "HIGH",
+            "op": "DEL",
+            "reference": "fine fine james carry on please go ahead apologies for the interruption",
+            "reference_context": "yes it is [[ fine fine james carry on please go ahead apologies for the interruption ]]",
+            "sample_id": "4469088-677"
+          },
+          {
+            "hypothesis": "",
+            "impact": "HIGH",
+            "op": "DEL",
+            "reference": "i have one question",
+            "reference_context": "[[ i have one question ]] to you",
+            "sample_id": "4470684-350"
+          },
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "we have a question from",
+            "reference_context": "[[ we have a question from ]] no question ..",
+            "sample_id": "4470684-419"
+          },
+          {
+            "hypothesis": "",
+            "impact": "HIGH",
+            "op": "DEL",
+            "reference": "greg your line is",
+            "reference_context": "[[ greg your line is ]] open",
+            "sample_id": "4474506-377"
+          }
+        ],
+        "named-entity/call-inventory": [
+          {
+            "hypothesis": "under covert",
+            "impact": "HIGH",
+            "op": "SUB",
+            "reference": "co covid",
+            "reference_context": "buy in and the [[ co covid ]] conditions in the 2020",
+            "sample_id": "4453225-111"
+          },
+          {
+            "hypothesis": "a",
+            "impact": "HIGH",
+            "op": "SUB",
+            "reference": "mna",
+            "reference_context": "a and these are [[ mna ]] transactions that are value",
+            "sample_id": "4453225-177"
+          },
+          {
+            "hypothesis": "to",
+            "impact": "HIGH",
+            "op": "SUB",
+            "reference": "orgaran",
+            "reference_context": "tests during covid on [[ orgaran ]]",
+            "sample_id": "4453225-574"
+          },
+          {
+            "hypothesis": "",
+            "impact": "HIGH",
+            "op": "DEL",
+            "reference": "hbc",
+            "reference_context": "[[ hbc ]] have a a product",
+            "sample_id": "4453225-63"
+          }
+        ],
+        "other/deleted-content-word": [
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "vial",
+            "reference_context": "converting some of our [[ vial ]] capacity that we have",
+            "sample_id": "4453225-412"
+          },
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "incremental",
+            "reference_context": "that comes with limited [[ incremental ]] capex",
+            "sample_id": "4453225-426"
+          },
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "funded",
+            "reference_context": "would be completely self [[ funded ]]",
+            "sample_id": "4453225-460"
+          },
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "kind",
+            "reference_context": "a commercial footprint and [[ kind ]] of good platform to",
+            "sample_id": "4453225-489"
+          }
+        ],
+        "other/deleted-function-word": [
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "in",
+            "reference_context": "off at 20% of [[ in ]] heps and 1200000000 rand",
+            "sample_id": "4453225-174"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "is",
+            "reference_context": "it is a it [[ is ]] a been a real",
+            "sample_id": "4453225-219"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "been",
+            "reference_context": "afri aspen will have [[ been ]] not only manufacturers we",
+            "sample_id": "4453225-260"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "at",
+            "reference_context": "presentation those sales are [[ at ]] low to now margin",
+            "sample_id": "4453225-32"
+          }
+        ],
+        "other/function-word-swap": [
+          {
+            "hypothesis": "the",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "is",
+            "reference_context": "in a conversion rate [[ is ]] 134% conversion rate",
+            "sample_id": "4453225-115"
+          },
+          {
+            "hypothesis": "on",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "of",
+            "reference_context": "are spending a lot [[ of ]] it software as we",
+            "sample_id": "4453225-139"
+          },
+          {
+            "hypothesis": "the",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "this",
+            "reference_context": "lot of information on [[ this ]] slide",
+            "sample_id": "4453225-144"
+          },
+          {
+            "hypothesis": "had",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "have",
+            "reference_context": "under these transactions we [[ have ]] a a net 735000000",
+            "sample_id": "4453225-171"
+          }
+        ],
+        "other/inserted-content-word": [
+          {
+            "hypothesis": "j and",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "we have put into [[ ]] j i am going",
+            "sample_id": "4453225-275"
+          },
+          {
+            "hypothesis": "format this",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "growth drivers in commercial [[ ]] pharma",
+            "sample_id": "4453225-295"
+          },
+          {
+            "hypothesis": "the board is shut",
+            "impact": "HIGH",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "and [[ ]] and the border shut",
+            "sample_id": "4453225-381"
+          },
+          {
+            "hypothesis": "them all and we have got to",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "got potential to reshape [[ ]] demand",
+            "sample_id": "4453225-399"
+          }
+        ],
+        "other/inserted-function-word": [
+          {
+            "hypothesis": "a",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "and and [[ ]] half 2 always better",
+            "sample_id": "4453225-106"
+          },
+          {
+            "hypothesis": "as",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "in the year [[ ]] the whole we expected",
+            "sample_id": "4453225-109"
+          },
+          {
+            "hypothesis": "the",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "which will cause [[ ]] tight flows",
+            "sample_id": "4453225-120"
+          },
+          {
+            "hypothesis": "a",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "also [[ ]] part of our capex",
+            "sample_id": "4453225-137"
+          }
+        ],
+        "other/substituted-content-word": [
+          {
+            "hypothesis": "be",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "..",
+            "reference_context": "which which will [[ .. ]]",
+            "sample_id": "4453225-119"
+          },
+          {
+            "hypothesis": "less than",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "this and",
+            "reference_context": "so [[ this and ]] the 3.5 terms imposed",
+            "sample_id": "4453225-164"
+          },
+          {
+            "hypothesis": "results",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "is",
+            "reference_context": "this year is result [[ is ]] about this year",
+            "sample_id": "4453225-235"
+          },
+          {
+            "hypothesis": "okay",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "..",
+            "reference_context": "it is [[ .. ]]",
+            "sample_id": "4453225-265"
+          }
+        ],
+        "reference-convention/backchannel-variant": [
+          {
+            "hypothesis": "yeah",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "yep",
+            "reference_context": "[[ yep ]]",
+            "sample_id": "4469088-470"
+          },
+          {
+            "hypothesis": "yeah",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "yes",
+            "reference_context": "[[ yes ]]",
+            "sample_id": "4469088-490"
+          },
+          {
+            "hypothesis": "yes",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "thanks",
+            "reference_context": "[[ thanks ]]",
+            "sample_id": "4469088-694"
+          },
+          {
+            "hypothesis": "okay",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "yeah",
+            "reference_context": "[[ yeah ]]",
+            "sample_id": "4469088-695"
+          }
+        ],
+        "reference-convention/discourse-single": [
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "yeah",
+            "reference_context": "so marketing and [[ yeah ]] marketing is a ..",
+            "sample_id": "4470684-364"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "so",
+            "reference_context": "[[ so ]] can you just talk",
+            "sample_id": "4479944-433"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "yeah",
+            "reference_context": "[[ yeah ]] thank you",
+            "sample_id": "4481952-404"
+          }
+        ],
+        "reference-convention/empty-reference": [
+          {
+            "hypothesis": "yeah i am good",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]]",
+            "sample_id": "4469088-473"
+          },
+          {
+            "hypothesis": "crystal palace",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]]",
+            "sample_id": "4481952-610"
+          }
+        ],
+        "reference-convention/false-start-stem": [
+          {
+            "hypothesis": "or",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "al",
+            "reference_context": "conversion rate is generally [[ al ]] almost always less than",
+            "sample_id": "4453225-105"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "0",
+            "reference_context": "will will put pressure [[ 0 ]] on on further improvement",
+            "sample_id": "4453225-117"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "a",
+            "reference_context": "of about 620000000 rand [[ a ]] at year end rates",
+            "sample_id": "4453225-118"
+          },
+          {
+            "hypothesis": "international",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "internat",
+            "reference_context": "was arranged by the [[ internat ]] international finance corporation",
+            "sample_id": "4453225-151"
+          }
+        ],
+        "reference-convention/filler-token": [
+          {
+            "hypothesis": "right",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "ah",
+            "reference_context": "[[ ah ]] this is you have",
+            "sample_id": "4479944-192"
+          }
+        ],
+        "reference-convention/redacted-region": [
+          {
+            "hypothesis": "were bad but we",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "last year the results [[ ]]",
+            "sample_id": "4453225-332"
+          },
+          {
+            "hypothesis": "with",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "since we last spoke [[ ]] far advanced so we",
+            "sample_id": "4453225-447"
+          },
+          {
+            "hypothesis": "reinsberg",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "as we did with [[ ]] shepherds but we are",
+            "sample_id": "4470684-397"
+          },
+          {
+            "hypothesis": "a u p",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "per transaction well versus [[ ]] but but also tie",
+            "sample_id": "4474506-328"
+          }
+        ],
+        "reference-convention/reference-repetition": [
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "he",
+            "reference_context": "[[ he ]] he was made very",
+            "sample_id": "4453225-193"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "we have",
+            "reference_context": "[[ we have ]] we have obviously being",
+            "sample_id": "4453225-277"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "and",
+            "reference_context": "to get it out [[ and ]] and it has come",
+            "sample_id": "4453225-346"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "and",
+            "reference_context": "one is [[ and ]] and you will get",
+            "sample_id": "4453225-561"
+          }
+        ],
+        "segmentation-artifact/boundary-continuation": [
+          {
+            "hypothesis": "so",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "moving 12 month average [[ ]]",
+            "sample_id": "4453225-102"
+          },
+          {
+            "hypothesis": "and",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "the last few years [[ ]]",
+            "sample_id": "4453225-124"
+          },
+          {
+            "hypothesis": "next slide",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "of the last year [[ ]]",
+            "sample_id": "4453225-166"
+          },
+          {
+            "hypothesis": "next slide",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "net 735000000 rand outflow [[ ]]",
+            "sample_id": "4453225-171"
+          }
+        ],
+        "segmentation-artifact/boundary-onset": [
+          {
+            "hypothesis": "and",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] we thought that would",
+            "sample_id": "4469088-207"
+          },
+          {
+            "hypothesis": "that",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] that that that that",
+            "sample_id": "4469088-434"
+          },
+          {
+            "hypothesis": "my",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] other concerns would be",
+            "sample_id": "4469088-661"
+          },
+          {
+            "hypothesis": "yeah",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] we got a question",
+            "sample_id": "4469088-722"
+          }
+        ],
+        "segmentation-artifact/boundary-partial-word": [
+          {
+            "hypothesis": "africa",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "african",
+            "reference_context": "own country and and [[ african ]]",
+            "sample_id": "4453225-280"
+          },
+          {
+            "hypothesis": "reporting",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "report",
+            "reference_context": "us has been integrated [[ report ]]",
+            "sample_id": "4453225-281"
+          },
+          {
+            "hypothesis": "market",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "marketplace",
+            "reference_context": "come out of the [[ marketplace ]]",
+            "sample_id": "4469088-434"
+          },
+          {
+            "hypothesis": "glenn",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "glen",
+            "reference_context": "thanks [[ glen ]]",
+            "sample_id": "4469088-635"
+          }
+        ],
+        "segmentation-artifact/neighbour-bleed": [
+          {
+            "hypothesis": "so let us start with",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "highlights into more detail [[ ]]",
+            "sample_id": "4453225-15"
+          },
+          {
+            "hypothesis": "we have",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "as bolt on acquisitions [[ ]]",
+            "sample_id": "4453225-169"
+          },
+          {
+            "hypothesis": "for us",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "is about this year [[ ]]",
+            "sample_id": "4453225-235"
+          },
+          {
+            "hypothesis": "i think",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "really had a delivery [[ ]]",
+            "sample_id": "4453225-249"
+          }
+        ]
+      },
+      "rule_table": [
+        {
+          "category": "model-behaviour",
+          "error_mass": 4635,
+          "rule": "model-behaviour/runaway-tail",
+          "spans": 1087,
+          "wer_points": 4.4816
+        },
+        {
+          "category": "segmentation-artifact",
+          "error_mass": 1775,
+          "rule": "segmentation-artifact/boundary-continuation",
+          "spans": 1288,
+          "wer_points": 1.7163
+        },
+        {
+          "category": "segmentation-artifact",
+          "error_mass": 1419,
+          "rule": "segmentation-artifact/neighbour-bleed",
+          "spans": 496,
+          "wer_points": 1.372
+        },
+        {
+          "category": "acoustic-misrecognition",
+          "error_mass": 1400,
+          "rule": "acoustic-misrecognition/string-near",
+          "spans": 1051,
+          "wer_points": 1.3537
+        },
+        {
+          "category": "other",
+          "error_mass": 1285,
+          "rule": "other/substituted-content-word",
+          "spans": 1023,
+          "wer_points": 1.2425
+        },
+        {
+          "category": "named-entity",
+          "error_mass": 1174,
+          "rule": "named-entity/call-inventory",
+          "spans": 874,
+          "wer_points": 1.1351
+        },
+        {
+          "category": "other",
+          "error_mass": 1168,
+          "rule": "other/inserted-content-word",
+          "spans": 532,
+          "wer_points": 1.1293
+        },
+        {
+          "category": "other",
+          "error_mass": 739,
+          "rule": "other/inserted-function-word",
+          "spans": 636,
+          "wer_points": 0.7145
+        },
+        {
+          "category": "other",
+          "error_mass": 610,
+          "rule": "other/deleted-content-word",
+          "spans": 330,
+          "wer_points": 0.5898
+        },
+        {
+          "category": "other",
+          "error_mass": 562,
+          "rule": "other/deleted-function-word",
+          "spans": 495,
+          "wer_points": 0.5434
+        },
+        {
+          "category": "other",
+          "error_mass": 542,
+          "rule": "other/function-word-swap",
+          "spans": 518,
+          "wer_points": 0.5241
+        },
+        {
+          "category": "segmentation-artifact",
+          "error_mass": 490,
+          "rule": "segmentation-artifact/boundary-onset",
+          "spans": 423,
+          "wer_points": 0.4738
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 376,
+          "rule": "reference-convention/reference-repetition",
+          "spans": 345,
+          "wer_points": 0.3636
+        },
+        {
+          "category": "model-behaviour",
+          "error_mass": 279,
+          "rule": "model-behaviour/hypothesis-repetition",
+          "spans": 196,
+          "wer_points": 0.2698
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 275,
+          "rule": "reference-convention/false-start-stem",
+          "spans": 249,
+          "wer_points": 0.2659
+        },
+        {
+          "category": "model-behaviour",
+          "error_mass": 263,
+          "rule": "model-behaviour/runaway-head",
+          "spans": 56,
+          "wer_points": 0.2543
+        },
+        {
+          "category": "format-convention",
+          "error_mass": 260,
+          "rule": "format-convention/merge-compound",
+          "spans": 233,
+          "wer_points": 0.2514
+        },
+        {
+          "category": "domain-term",
+          "error_mass": 233,
+          "rule": "domain-term/pinned-lexicon",
+          "spans": 155,
+          "wer_points": 0.2253
+        },
+        {
+          "category": "model-behaviour",
+          "error_mass": 222,
+          "rule": "model-behaviour/truncation",
+          "spans": 35,
+          "wer_points": 0.2147
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 177,
+          "rule": "reference-convention/redacted-region",
+          "spans": 98,
+          "wer_points": 0.1711
+        },
+        {
+          "category": "segmentation-artifact",
+          "error_mass": 62,
+          "rule": "segmentation-artifact/boundary-partial-word",
+          "spans": 62,
+          "wer_points": 0.0599
+        },
+        {
+          "category": "format-convention",
+          "error_mass": 37,
+          "rule": "format-convention/stray-punctuation-token",
+          "spans": 37,
+          "wer_points": 0.0358
+        },
+        {
+          "category": "model-behaviour",
+          "error_mass": 33,
+          "rule": "model-behaviour/non-english-script",
+          "spans": 27,
+          "wer_points": 0.0319
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 33,
+          "rule": "reference-convention/discourse-single",
+          "spans": 33,
+          "wer_points": 0.0319
+        },
+        {
+          "category": "format-convention",
+          "error_mass": 32,
+          "rule": "format-convention/numeric-equal",
+          "spans": 9,
+          "wer_points": 0.0309
+        },
+        {
+          "category": "model-behaviour",
+          "error_mass": 30,
+          "rule": "model-behaviour/hypothesis-loop",
+          "spans": 4,
+          "wer_points": 0.029
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 18,
+          "rule": "reference-convention/empty-reference",
+          "spans": 8,
+          "wer_points": 0.0174
+        },
+        {
+          "category": "format-convention",
+          "error_mass": 12,
+          "rule": "format-convention/symbol-only",
+          "spans": 10,
+          "wer_points": 0.0116
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 10,
+          "rule": "reference-convention/backchannel-variant",
+          "spans": 10,
+          "wer_points": 0.0097
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 10,
+          "rule": "reference-convention/discourse-phrase",
+          "spans": 5,
+          "wer_points": 0.0097
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 4,
+          "rule": "reference-convention/filler-token",
+          "spans": 4,
+          "wer_points": 0.0039
+        },
+        {
+          "category": "format-convention",
+          "error_mass": 1,
+          "rule": "format-convention/whisper-refold",
+          "spans": 1,
+          "wer_points": 0.001
+        }
+      ],
+      "run_id": "SAEA-E22-DEV-ESB-PROMPT-A-V1",
+      "top_patterns": [
+        {
+          "example_sample_ids": [
+            "4453225-102",
+            "4453225-121",
+            "4453225-180"
+          ],
+          "hypothesis": "so",
+          "occurrences": 201,
+          "op": "INS",
+          "reference": "",
+          "rule": "segmentation-artifact/boundary-continuation"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-106",
+            "4453225-111",
+            "4453225-124"
+          ],
+          "hypothesis": "and",
+          "occurrences": 109,
+          "op": "INS",
+          "reference": "",
+          "rule": "segmentation-artifact/boundary-continuation"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-101",
+            "4453225-105",
+            "4453225-106"
+          ],
+          "hypothesis": "a",
+          "occurrences": 85,
+          "op": "INS",
+          "reference": "",
+          "rule": "other/inserted-function-word"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-209",
+            "4453225-21",
+            "4453225-232"
+          ],
+          "hypothesis": "",
+          "occurrences": 67,
+          "op": "DEL",
+          "reference": "a",
+          "rule": "other/deleted-function-word"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-210",
+            "4453225-251",
+            "4453225-275"
+          ],
+          "hypothesis": "and",
+          "occurrences": 66,
+          "op": "INS",
+          "reference": "",
+          "rule": "other/inserted-function-word"
+        },
+        {
+          "example_sample_ids": [
+            "4479944-112",
+            "4479944-112",
+            "4479944-113"
+          ],
+          "hypothesis": "",
+          "occurrences": 60,
+          "op": "DEL",
+          "reference": "inr",
+          "rule": "named-entity/call-inventory"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-104",
+            "4453225-124",
+            "4453225-124"
+          ],
+          "hypothesis": "",
+          "occurrences": 57,
+          "op": "DEL",
+          "reference": "a",
+          "rule": "reference-convention/reference-repetition"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-112",
+            "4453225-120",
+            "4453225-165"
+          ],
+          "hypothesis": "the",
+          "occurrences": 51,
+          "op": "INS",
+          "reference": "",
+          "rule": "other/inserted-function-word"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-302",
+            "4453225-422",
+            "4453225-439"
+          ],
+          "hypothesis": "",
+          "occurrences": 50,
+          "op": "DEL",
+          "reference": "the",
+          "rule": "other/deleted-function-word"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-218",
+            "4453225-221",
+            "4453225-319"
+          ],
+          "hypothesis": "but",
+          "occurrences": 45,
+          "op": "INS",
+          "reference": "",
+          "rule": "segmentation-artifact/boundary-continuation"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-237",
+            "4469088-35",
+            "4469088-567"
+          ],
+          "hypothesis": "thank you",
+          "occurrences": 43,
+          "op": "INS",
+          "reference": "",
+          "rule": "segmentation-artifact/boundary-continuation"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-256",
+            "4453225-283",
+            "4453225-381"
+          ],
+          "hypothesis": "and",
+          "occurrences": 40,
+          "op": "INS",
+          "reference": "",
+          "rule": "segmentation-artifact/boundary-onset"
+        },
+        {
+          "example_sample_ids": [
+            "4469088-41",
+            "4469088-538",
+            "4469088-548"
+          ],
+          "hypothesis": "u",
+          "occurrences": 38,
+          "op": "INS",
+          "reference": "",
+          "rule": "format-convention/merge-compound"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-125",
+            "4453225-257",
+            "4453225-4"
+          ],
+          "hypothesis": "",
+          "occurrences": 37,
+          "op": "DEL",
+          "reference": "..",
+          "rule": "format-convention/stray-punctuation-token"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-627",
+            "4469088-623",
+            "4469088-864"
+          ],
+          "hypothesis": "thank you",
+          "occurrences": 37,
+          "op": "INS",
+          "reference": "",
+          "rule": "segmentation-artifact/neighbour-bleed"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-163",
+            "4453225-349",
+            "4453225-607"
+          ],
+          "hypothesis": "",
+          "occurrences": 35,
+          "op": "DEL",
+          "reference": "and",
+          "rule": "other/deleted-function-word"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-214",
+            "4453225-320",
+            "4453225-455"
+          ],
+          "hypothesis": "",
+          "occurrences": 34,
+          "op": "DEL",
+          "reference": "the",
+          "rule": "reference-convention/reference-repetition"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-102",
+            "4453225-109",
+            "4453225-189"
+          ],
+          "hypothesis": "a",
+          "occurrences": 32,
+          "op": "SUB",
+          "reference": "the",
+          "rule": "other/function-word-swap"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-172",
+            "4453225-309",
+            "4453225-346"
+          ],
+          "hypothesis": "",
+          "occurrences": 32,
+          "op": "DEL",
+          "reference": "and",
+          "rule": "reference-convention/reference-repetition"
+        },
+        {
+          "example_sample_ids": [
+            "4469088-105",
+            "4469088-169",
+            "4469088-294"
+          ],
+          "hypothesis": "is",
+          "occurrences": 31,
+          "op": "INS",
+          "reference": "",
+          "rule": "other/inserted-function-word"
+        }
+      ],
+      "utterances": 6038
+    },
+    "B": {
+      "agentic_error_rate": {
+        "agentic_error_rate_percent": 1.927,
+        "high_impact_reference_word_mass": 1993,
+        "high_impact_spans": 1428,
+        "reference_words": 103423
+      },
+      "agentic_error_rate_strict": {
+        "agentic_error_rate_percent": 2.0498,
+        "high_impact_reference_word_mass": 2120,
+        "high_impact_spans": 1555,
+        "reference_words": 103423
+      },
+      "attempt": "attempt-20260905T080709Z-b77462",
+      "boundary_diagnostics": {
+        "head": {
+          "inserted_words": 1537,
+          "insertion_spans": 632,
+          "spans_by_containment": {
+            "contains_0.34_to_0.6": 50,
+            "contains_0.6_or_more": 299,
+            "contains_none": 257,
+            "contains_some": 26
+          },
+          "words_matched_at_0.6": 433
+        },
+        "tail": {
+          "inserted_words": 7749,
+          "insertion_spans": 2897,
+          "spans_by_containment": {
+            "contains_0.34_to_0.6": 455,
+            "contains_0.6_or_more": 905,
+            "contains_none": 786,
+            "contains_some": 751
+          },
+          "words_matched_at_0.6": 1598
+        }
+      },
+      "category_table": [
+        {
+          "category": "format-convention",
+          "error_mass": 326,
+          "impact_HIGH": 0,
+          "impact_LOW": 0,
+          "impact_NONE": 280,
+          "share_of_error_mass_percent": 1.714,
+          "spans": 280,
+          "wer_points": 0.3152
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 1043,
+          "impact_HIGH": 0,
+          "impact_LOW": 0,
+          "impact_NONE": 862,
+          "share_of_error_mass_percent": 5.483,
+          "spans": 862,
+          "wer_points": 1.0085
+        },
+        {
+          "category": "segmentation-artifact",
+          "error_mass": 3865,
+          "impact_HIGH": 0,
+          "impact_LOW": 0,
+          "impact_NONE": 2375,
+          "share_of_error_mass_percent": 20.316,
+          "spans": 2375,
+          "wer_points": 3.7371
+        },
+        {
+          "category": "named-entity",
+          "error_mass": 1182,
+          "impact_HIGH": 866,
+          "impact_LOW": 0,
+          "impact_NONE": 0,
+          "share_of_error_mass_percent": 6.213,
+          "spans": 866,
+          "wer_points": 1.1429
+        },
+        {
+          "category": "domain-term",
+          "error_mass": 233,
+          "impact_HIGH": 9,
+          "impact_LOW": 142,
+          "impact_NONE": 0,
+          "share_of_error_mass_percent": 1.225,
+          "spans": 151,
+          "wer_points": 0.2253
+        },
+        {
+          "category": "model-behaviour",
+          "error_mass": 5834,
+          "impact_HIGH": 152,
+          "impact_LOW": 914,
+          "impact_NONE": 308,
+          "share_of_error_mass_percent": 30.667,
+          "spans": 1374,
+          "wer_points": 5.6409
+        },
+        {
+          "category": "acoustic-misrecognition",
+          "error_mass": 1395,
+          "impact_HIGH": 128,
+          "impact_LOW": 790,
+          "impact_NONE": 120,
+          "share_of_error_mass_percent": 7.333,
+          "spans": 1038,
+          "wer_points": 1.3488
+        },
+        {
+          "category": "other",
+          "error_mass": 5146,
+          "impact_HIGH": 273,
+          "impact_LOW": 1638,
+          "impact_NONE": 1613,
+          "share_of_error_mass_percent": 27.05,
+          "spans": 3524,
+          "wer_points": 4.9757
+        }
+      ],
+      "corpus_wer_percent": 18.3944,
+      "error_spans": 10470,
+      "gap_bins": {
+        "authorized_fold_error_mass": 246,
+        "authorized_fold_rules": [
+          "format-convention/merge-compound"
+        ],
+        "authorized_fold_wer_points": 0.2379,
+        "bins": {
+          "core-capability": {
+            "error_mass": 5257,
+            "rules": [
+              "acoustic-misrecognition/string-near",
+              "model-behaviour/non-english-script",
+              "model-behaviour/hypothesis-loop",
+              "model-behaviour/truncation",
+              "model-behaviour/hypothesis-repetition",
+              "other/substituted-content-word",
+              "other/deleted-content-word",
+              "other/inserted-content-word"
+            ],
+            "share_of_error_mass_percent": 27.634,
+            "wer_points": 5.083
+          },
+          "missing-pre-meeting-context": {
+            "error_mass": 1415,
+            "rules": [
+              "named-entity/call-inventory",
+              "domain-term/pinned-lexicon"
+            ],
+            "share_of_error_mass_percent": 7.438,
+            "wer_points": 1.3682
+          },
+          "scoring-convention": {
+            "error_mass": 345,
+            "rules": [
+              "format-convention/merge-compound",
+              "format-convention/symbol-only",
+              "format-convention/stray-punctuation-token",
+              "format-convention/whisper-refold",
+              "format-convention/numeric-equal",
+              "reference-convention/empty-reference"
+            ],
+            "share_of_error_mass_percent": 1.813,
+            "wer_points": 0.3336
+          },
+          "task-definition": {
+            "error_mass": 12007,
+            "rules": [
+              "reference-convention/redacted-region",
+              "reference-convention/false-start-stem",
+              "reference-convention/reference-repetition",
+              "reference-convention/filler-token",
+              "reference-convention/discourse-phrase",
+              "reference-convention/discourse-single",
+              "reference-convention/backchannel-variant",
+              "segmentation-artifact/neighbour-bleed",
+              "segmentation-artifact/boundary-continuation",
+              "segmentation-artifact/boundary-onset",
+              "segmentation-artifact/boundary-partial-word",
+              "model-behaviour/runaway-tail",
+              "model-behaviour/runaway-head",
+              "other/deleted-function-word",
+              "other/inserted-function-word",
+              "other/function-word-swap"
+            ],
+            "share_of_error_mass_percent": 63.115,
+            "wer_points": 11.6096
+          }
+        },
+        "fold_authorities": {
+          "format-convention/merge-compound": "Open ASR Leaderboard `merge_compounds`, which the published ESB column applies and this study does not",
+          "format-convention/numeric-equal": "the Whisper `EnglishTextNormalizer`'s number rules; the residue is digits that agree with a different surface form around them",
+          "format-convention/stray-punctuation-token": "NO PUBLISHED AUTHORITY, but no published recipe treats a token with zero alphanumeric characters as a word either: these are Rev's ellipsis marks surviving the normalizer as bare `.` / `..` tokens. Reported separately for the same reason",
+          "format-convention/symbol-only": "NO PUBLISHED AUTHORITY. The Whisper normalizer deliberately KEEPS `.%$` and the currency signs, so `$340` against `340` is a difference the recipe intends to preserve. Reported inside the scoring-convention bin so it can be subtracted, never claimed as an existing convention",
+          "format-convention/whisper-refold": "the Whisper `EnglishTextNormalizer`'s own rules, applied a second time over the span in isolation",
+          "reference-convention/empty-reference": "the ESB protocol: a reference that normalizes to nothing contributes no denominator, and the leaderboard's own recipe drops such rows"
+        },
+        "refused_folds": {
+          "reference-convention/discourse-phrase": "no authority removes 'you know' / 'I mean' from a reference",
+          "reference-convention/discourse-single": "these tokens are ordinary words as often as they are fillers; folding them would silently delete content",
+          "reference-convention/false-start-stem": "no published normalizer removes Rev's truncated-word stems; folding them would be this study inventing a convention to improve its own number",
+          "reference-convention/filler-token": "the Whisper normalizer's filler list is exactly hmm|mm|mhm|mmm|uh|um; extending it is a new convention, not an existing one",
+          "reference-convention/reference-repetition": "the 2026-09-05 A/B verdict already measured that collapsing repeats makes the number WORSE, and no ESB or leaderboard rule collapses them",
+          "segmentation-artifact/neighbour-bleed": "the ESB protocol scores each published utterance against its own sentence; crediting a neighbour's words would change the task, not the scoring"
+        },
+        "unassigned_error_mass": 0,
+        "unassigned_rules": []
+      },
+      "hypothesis_over_reference_ratio": 1.0919,
+      "hypothesis_words": 112926,
+      "identity_gate": {
+        "measured": {
+          "deletions": 2479,
+          "insertions": 11982,
+          "reference_words": 103423,
+          "substitutions": 4563
+        },
+        "reproduced": true,
+        "sealed": {
+          "deletions": 2479,
+          "insertions": 11982,
+          "reference_words": 103423,
+          "substitutions": 4563
+        }
+      },
+      "impact_table": {
+        "HIGH": {
+          "error_mass": 3246,
+          "share_of_error_mass_percent": 17.063,
+          "spans": 1428,
+          "wer_points": 3.1386
+        },
+        "LOW": {
+          "error_mass": 7894,
+          "share_of_error_mass_percent": 41.495,
+          "spans": 3484,
+          "wer_points": 7.6327
+        },
+        "NONE": {
+          "error_mass": 7884,
+          "share_of_error_mass_percent": 41.442,
+          "spans": 5558,
+          "wer_points": 7.6231
+        }
+      },
+      "label": "the Qwen3-Omni model-card ASR prompt, system message before the audio",
+      "outputs_sha256": "242522d50a764c49a0ddbec5186bc86da3811c1300628259291b1ae78c3aafd9",
+      "per_call_table": [
+        {
+          "agentic_error_rate_percent": 1.1766,
+          "call": "4453225",
+          "corpus_wer_percent": 23.3015,
+          "error_mass": 2634,
+          "points_acoustic-misrecognition": 1.8224,
+          "points_domain-term": 0.345,
+          "points_format-convention": 0.23,
+          "points_model-behaviour": 8.4395,
+          "points_named-entity": 0.5662,
+          "points_other": 6.4225,
+          "points_reference-convention": 2.0612,
+          "points_segmentation-artifact": 3.4147,
+          "reference_words": 11304
+        },
+        {
+          "agentic_error_rate_percent": 2.0795,
+          "call": "4469088",
+          "corpus_wer_percent": 20.5951,
+          "error_mass": 2367,
+          "points_acoustic-misrecognition": 1.0528,
+          "points_domain-term": 0.1914,
+          "points_format-convention": 0.2784,
+          "points_model-behaviour": 7.1261,
+          "points_named-entity": 0.9223,
+          "points_other": 5.1771,
+          "points_reference-convention": 1.5314,
+          "points_segmentation-artifact": 4.3157,
+          "reference_words": 11493
+        },
+        {
+          "agentic_error_rate_percent": 1.3349,
+          "call": "4470684",
+          "corpus_wer_percent": 14.4909,
+          "error_mass": 1574,
+          "points_acoustic-misrecognition": 0.9851,
+          "points_domain-term": 0.1473,
+          "points_format-convention": 0.267,
+          "points_model-behaviour": 5.0911,
+          "points_named-entity": 0.7457,
+          "points_other": 2.7343,
+          "points_reference-convention": 0.9759,
+          "points_segmentation-artifact": 3.5445,
+          "reference_words": 10862
+        },
+        {
+          "agentic_error_rate_percent": 1.5433,
+          "call": "4474506",
+          "corpus_wer_percent": 15.2852,
+          "error_mass": 1763,
+          "points_acoustic-misrecognition": 1.1878,
+          "points_domain-term": 0.1647,
+          "points_format-convention": 0.3555,
+          "points_model-behaviour": 3.8668,
+          "points_named-entity": 0.6936,
+          "points_other": 4.361,
+          "points_reference-convention": 0.8063,
+          "points_segmentation-artifact": 3.8495,
+          "reference_words": 11534
+        },
+        {
+          "agentic_error_rate_percent": 3.005,
+          "call": "4479944",
+          "corpus_wer_percent": 23.8283,
+          "error_mass": 2593,
+          "points_acoustic-misrecognition": 1.9849,
+          "points_domain-term": 0.3676,
+          "points_format-convention": 0.2389,
+          "points_model-behaviour": 7.4619,
+          "points_named-entity": 1.6909,
+          "points_other": 7.71,
+          "points_reference-convention": 0.2114,
+          "points_segmentation-artifact": 4.1628,
+          "reference_words": 10882
+        },
+        {
+          "agentic_error_rate_percent": 1.679,
+          "call": "4481952",
+          "corpus_wer_percent": 17.0143,
+          "error_mass": 1672,
+          "points_acoustic-misrecognition": 1.3738,
+          "points_domain-term": 0.2748,
+          "points_format-convention": 0.2646,
+          "points_model-behaviour": 4.5385,
+          "points_named-entity": 1.2517,
+          "points_other": 3.6532,
+          "points_reference-convention": 1.5468,
+          "points_segmentation-artifact": 4.1111,
+          "reference_words": 9827
+        },
+        {
+          "agentic_error_rate_percent": 1.5569,
+          "call": "4482383",
+          "corpus_wer_percent": 13.838,
+          "error_mass": 1351,
+          "points_acoustic-misrecognition": 1.2496,
+          "points_domain-term": 0.0819,
+          "points_format-convention": 0.5838,
+          "points_model-behaviour": 3.6874,
+          "points_named-entity": 1.2906,
+          "points_other": 3.1445,
+          "points_reference-convention": 0.6043,
+          "points_segmentation-artifact": 3.1957,
+          "reference_words": 9763
+        },
+        {
+          "agentic_error_rate_percent": 4.6902,
+          "call": "4482613",
+          "corpus_wer_percent": 23.2875,
+          "error_mass": 2135,
+          "points_acoustic-misrecognition": 2.0942,
+          "points_domain-term": 0.4799,
+          "points_format-convention": 0.5672,
+          "points_model-behaviour": 4.483,
+          "points_named-entity": 2.9559,
+          "points_other": 8.3224,
+          "points_reference-convention": 0.5563,
+          "points_segmentation-artifact": 3.8285,
+          "reference_words": 9168
+        },
+        {
+          "agentic_error_rate_percent": 1.3018,
+          "call": "4483937",
+          "corpus_wer_percent": 19.3894,
+          "error_mass": 1683,
+          "points_acoustic-misrecognition": 1.0369,
+          "points_domain-term": 0.0461,
+          "points_format-convention": 0.1267,
+          "points_model-behaviour": 6.947,
+          "points_named-entity": 0.7949,
+          "points_other": 5.8065,
+          "points_reference-convention": 0.8986,
+          "points_segmentation-artifact": 3.7327,
+          "reference_words": 8680
+        },
+        {
+          "agentic_error_rate_percent": 1.1201,
+          "call": "4485192",
+          "corpus_wer_percent": 12.6337,
+          "error_mass": 1252,
+          "points_acoustic-misrecognition": 0.6963,
+          "points_domain-term": 0.1413,
+          "points_format-convention": 0.2624,
+          "points_model-behaviour": 4.3391,
+          "points_named-entity": 0.7871,
+          "points_other": 2.553,
+          "points_reference-convention": 0.7265,
+          "points_segmentation-artifact": 3.1282,
+          "reference_words": 9910
+        }
+      ],
+      "per_duration_table": [
+        {
+          "bucket": "0-1s",
+          "corpus_wer_percent": 78.3123,
+          "points_acoustic-misrecognition": 3.5489,
+          "points_domain-term": 0.5521,
+          "points_format-convention": 1.1041,
+          "points_model-behaviour": 28.7066,
+          "points_named-entity": 4.2587,
+          "points_other": 16.877,
+          "points_reference-convention": 2.9968,
+          "points_segmentation-artifact": 20.2681,
+          "reference_words": 1268,
+          "utterances": 504
+        },
+        {
+          "bucket": "1-2s",
+          "corpus_wer_percent": 44.1284,
+          "points_acoustic-misrecognition": 2.113,
+          "points_domain-term": 0.2032,
+          "points_format-convention": 0.6095,
+          "points_model-behaviour": 11.0524,
+          "points_named-entity": 3.4539,
+          "points_other": 14.0593,
+          "points_reference-convention": 1.4222,
+          "points_segmentation-artifact": 11.215,
+          "reference_words": 2461,
+          "utterances": 482
+        },
+        {
+          "bucket": "2-4s",
+          "corpus_wer_percent": 32.5108,
+          "points_acoustic-misrecognition": 1.6221,
+          "points_domain-term": 0.3932,
+          "points_format-convention": 0.2949,
+          "points_model-behaviour": 10.8238,
+          "points_named-entity": 2.3201,
+          "points_other": 8.7593,
+          "points_reference-convention": 1.2977,
+          "points_segmentation-artifact": 6.9996,
+          "reference_words": 10172,
+          "utterances": 1163
+        },
+        {
+          "bucket": "4-8s",
+          "corpus_wer_percent": 20.2833,
+          "points_acoustic-misrecognition": 1.2876,
+          "points_domain-term": 0.1803,
+          "points_format-convention": 0.2865,
+          "points_model-behaviour": 6.7343,
+          "points_named-entity": 1.1138,
+          "points_other": 5.4241,
+          "points_reference-convention": 0.882,
+          "points_segmentation-artifact": 4.3747,
+          "reference_words": 31065,
+          "utterances": 1991
+        },
+        {
+          "bucket": "8-16s",
+          "corpus_wer_percent": 13.0403,
+          "points_acoustic-misrecognition": 1.2473,
+          "points_domain-term": 0.1876,
+          "points_format-convention": 0.2627,
+          "points_model-behaviour": 3.7198,
+          "points_named-entity": 0.7727,
+          "points_other": 3.5498,
+          "points_reference-convention": 0.989,
+          "points_segmentation-artifact": 2.3114,
+          "reference_words": 45298,
+          "utterances": 1625
+        },
+        {
+          "bucket": "16s+",
+          "corpus_wer_percent": 10.8671,
+          "points_acoustic-misrecognition": 1.2767,
+          "points_domain-term": 0.304,
+          "points_format-convention": 0.4484,
+          "points_model-behaviour": 2.4318,
+          "points_named-entity": 0.8435,
+          "points_other": 3.0549,
+          "points_reference-convention": 0.8815,
+          "points_segmentation-artifact": 1.6263,
+          "reference_words": 13159,
+          "utterances": 273
+        }
+      ],
+      "raw_pass": {
+        "format_only_errors": 6375,
+        "format_only_spans": 5139,
+        "raw_error_spans": 21700,
+        "raw_errors": 35189,
+        "raw_reference_words": 104808
+      },
+      "read_sample": {
+        "composition_by_rule": {
+          "acoustic-misrecognition/string-near": 135,
+          "domain-term/pinned-lexicon": 27,
+          "format-convention/merge-compound": 32,
+          "format-convention/numeric-equal": 1,
+          "format-convention/stray-punctuation-token": 7,
+          "format-convention/symbol-only": 1,
+          "model-behaviour/hypothesis-repetition": 25,
+          "model-behaviour/non-english-script": 6,
+          "model-behaviour/runaway-head": 7,
+          "model-behaviour/runaway-tail": 143,
+          "model-behaviour/truncation": 1,
+          "named-entity/call-inventory": 131,
+          "other/deleted-content-word": 50,
+          "other/deleted-function-word": 64,
+          "other/function-word-swap": 74,
+          "other/inserted-content-word": 78,
+          "other/inserted-function-word": 92,
+          "other/substituted-content-word": 156,
+          "reference-convention/backchannel-variant": 3,
+          "reference-convention/discourse-phrase": 1,
+          "reference-convention/discourse-single": 6,
+          "reference-convention/empty-reference": 2,
+          "reference-convention/false-start-stem": 29,
+          "reference-convention/filler-token": 1,
+          "reference-convention/redacted-region": 15,
+          "reference-convention/reference-repetition": 83,
+          "segmentation-artifact/boundary-continuation": 195,
+          "segmentation-artifact/boundary-onset": 65,
+          "segmentation-artifact/boundary-partial-word": 11,
+          "segmentation-artifact/neighbour-bleed": 59
+        },
+        "drawn": 1500,
+        "requested": 1500,
+        "seed": 20260903,
+        "strata": "source call"
+      },
+      "read_sample_examples": {
+        "acoustic-misrecognition/string-near": [
+          {
+            "hypothesis": "sites",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "side",
+            "reference_context": "investor in our manufacturing [[ side ]] and i believe stephen",
+            "sample_id": "4453225-125"
+          },
+          {
+            "hypothesis": "dates",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "date",
+            "reference_context": "an extension of maturity [[ date ]] on our existing commercial",
+            "sample_id": "4453225-149"
+          },
+          {
+            "hypothesis": "times",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "terms",
+            "reference_context": "this and the 3.5 [[ terms ]] imposed upon us by",
+            "sample_id": "4453225-164"
+          },
+          {
+            "hypothesis": "served",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "serves",
+            "reference_context": "officer in 2009 and [[ serves ]] in that in that",
+            "sample_id": "4453225-198"
+          }
+        ],
+        "domain-term/pinned-lexicon": [
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "debt",
+            "reference_context": "from that uncommonly low [[ debt ]] of balance at the",
+            "sample_id": "4453225-109"
+          },
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "debt",
+            "reference_context": "and consequently low [[ debt ]] as at the end",
+            "sample_id": "4453225-112"
+          },
+          {
+            "hypothesis": "cash flows",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "cashflow of",
+            "reference_context": "year ahead the excellent [[ cashflow of ]] this year will will",
+            "sample_id": "4453225-117"
+          },
+          {
+            "hypothesis": "margins a little",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "diluted there the group [[ ]] margin is a little",
+            "sample_id": "4453225-46"
+          }
+        ],
+        "format-convention/merge-compound": [
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "4",
+            "reference_context": "pre covid levels q [[ 4 ]] 2019 which is probably",
+            "sample_id": "4469088-40"
+          },
+          {
+            "hypothesis": "u",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "and and secondly the [[ ]] us price prices they",
+            "sample_id": "4469088-895"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "fin",
+            "reference_context": "we experienced in our [[ fin ]] prod business",
+            "sample_id": "4470684-103"
+          },
+          {
+            "hypothesis": "u",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "the bank in the [[ ]] uk",
+            "sample_id": "4470684-108"
+          }
+        ],
+        "format-convention/numeric-equal": [
+          {
+            "hypothesis": "i have 2 questions for you",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "so i will ask 2 question",
+            "reference_context": "[[ so i will ask 2 question ]]",
+            "sample_id": "4482613-448"
+          }
+        ],
+        "format-convention/stray-punctuation-token": [
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "..",
+            "reference_context": "he ceos of the [[ .. ]]",
+            "sample_id": "4453225-366"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "..",
+            "reference_context": "the numbers are [[ .. ]]",
+            "sample_id": "4469088-532"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "..",
+            "reference_context": "and no with [[ .. ]]",
+            "sample_id": "4469088-539"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "..",
+            "reference_context": "its its volumes to [[ .. ]]",
+            "sample_id": "4469088-749"
+          }
+        ],
+        "format-convention/symbol-only": [
+          {
+            "hypothesis": "$90000000",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "90000000",
+            "reference_context": "in the $85 to [[ 90000000 ]] range",
+            "sample_id": "4485192-394"
+          }
+        ],
+        "model-behaviour/hypothesis-repetition": [
+          {
+            "hypothesis": "we we have not got",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "lowering of the cost [[ ]] we we have not",
+            "sample_id": "4469088-874"
+          },
+          {
+            "hypothesis": "and",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "better improvement in bounce [[ ]] and non resolution rates",
+            "sample_id": "4479944-102"
+          },
+          {
+            "hypothesis": "credit cost",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "total annualized [[ ]] credit cost for the",
+            "sample_id": "4479944-124"
+          },
+          {
+            "hypothesis": "they",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "the recent vintage performance [[ ]] they are far superior",
+            "sample_id": "4479944-190"
+          }
+        ],
+        "model-behaviour/non-english-script": [
+          {
+            "hypothesis": "ну да",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] yeah",
+            "sample_id": "4469088-856"
+          },
+          {
+            "hypothesis": "喂",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] ..",
+            "sample_id": "4481952-329"
+          },
+          {
+            "hypothesis": "我也是",
+            "impact": "HIGH",
+            "op": "SUB",
+            "reference": "sorry",
+            "reference_context": "[[ sorry ]]",
+            "sample_id": "4481952-330"
+          },
+          {
+            "hypothesis": "小李 你来啦",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "for me",
+            "reference_context": "it that is all [[ for me ]]",
+            "sample_id": "4482383-386"
+          }
+        ],
+        "model-behaviour/runaway-head": [
+          {
+            "hypothesis": "i prove i",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] maybe april",
+            "sample_id": "4469088-499"
+          },
+          {
+            "hypothesis": "h s l states",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] hsl hdfc securities limited",
+            "sample_id": "4479944-154"
+          },
+          {
+            "hypothesis": "cher do you",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] yeah",
+            "sample_id": "4479944-183"
+          },
+          {
+            "hypothesis": "how was the",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] okay",
+            "sample_id": "4479944-293"
+          }
+        ],
+        "model-behaviour/runaway-tail": [
+          {
+            "hypothesis": "so it is a very high",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "is 134% conversion rate [[ ]]",
+            "sample_id": "4453225-115"
+          },
+          {
+            "hypothesis": "and a return",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "at ¢262 a share [[ ]]",
+            "sample_id": "4453225-12"
+          },
+          {
+            "hypothesis": "oil and gas",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "well in his presentation [[ ]]",
+            "sample_id": "4453225-136"
+          },
+          {
+            "hypothesis": "i mean i think",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "future results as well [[ ]]",
+            "sample_id": "4453225-14"
+          }
+        ],
+        "model-behaviour/truncation": [
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "and that should be in which is closest to our plant also",
+            "reference_context": "understood [[ and that should be in which is closest to our plant also ]]",
+            "sample_id": "4482613-477"
+          }
+        ],
+        "named-entity/call-inventory": [
+          {
+            "hypothesis": "e p",
+            "impact": "HIGH",
+            "op": "SUB",
+            "reference": "in heps",
+            "reference_context": "off at 20% of [[ in heps ]] and 1200000000 rand will",
+            "sample_id": "4453225-174"
+          },
+          {
+            "hypothesis": "guy",
+            "impact": "HIGH",
+            "op": "SUB",
+            "reference": "gus",
+            "reference_context": "for me is that [[ gus ]] stays with me he",
+            "sample_id": "4453225-220"
+          },
+          {
+            "hypothesis": "y excellent",
+            "impact": "HIGH",
+            "op": "SUB",
+            "reference": "ey excellence",
+            "reference_context": "excellent by by the [[ ey excellence ]] in intregrity in integrated",
+            "sample_id": "4453225-282"
+          },
+          {
+            "hypothesis": "apr",
+            "impact": "HIGH",
+            "op": "SUB",
+            "reference": "api",
+            "reference_context": "outputs particularly in our [[ api ]] business",
+            "sample_id": "4453225-316"
+          }
+        ],
+        "other/deleted-content-word": [
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "result",
+            "reference_context": "think this year is [[ result ]] is about this year",
+            "sample_id": "4453225-235"
+          },
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "j",
+            "reference_context": "we have put into [[ j ]] i am going to",
+            "sample_id": "4453225-275"
+          },
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "initiator",
+            "reference_context": "it is really the [[ initiator ]] in of our covid",
+            "sample_id": "4453225-351"
+          },
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "incremental",
+            "reference_context": "that comes with limited [[ incremental ]] capex",
+            "sample_id": "4453225-426"
+          }
+        ],
+        "other/deleted-function-word": [
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "it is",
+            "reference_context": "so you can see [[ it is ]] substantially above our 100%",
+            "sample_id": "4453225-116"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "in",
+            "reference_context": "and this is our [[ in ]] house product development and",
+            "sample_id": "4453225-138"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "we",
+            "reference_context": "all of it [[ we ]] have used i am",
+            "sample_id": "4453225-145"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "a",
+            "reference_context": "it really has been [[ a ]] an exciting journey working",
+            "sample_id": "4453225-209"
+          }
+        ],
+        "other/function-word-swap": [
+          {
+            "hypothesis": "of",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "at",
+            "reference_context": "per share coming out [[ at ]] a percent",
+            "sample_id": "4453225-100"
+          },
+          {
+            "hypothesis": "and",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "in",
+            "reference_context": "[[ in ]] half one our our",
+            "sample_id": "4453225-105"
+          },
+          {
+            "hypothesis": "that",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "the",
+            "reference_context": "and and aim at [[ the ]] 100% conversion rate and",
+            "sample_id": "4453225-121"
+          },
+          {
+            "hypothesis": "had",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "have",
+            "reference_context": "under these transactions we [[ have ]] a a net 735000000",
+            "sample_id": "4453225-171"
+          }
+        ],
+        "other/inserted-content-word": [
+          {
+            "hypothesis": "so long",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "such strong hands for [[ ]] s for so long",
+            "sample_id": "4453225-222"
+          },
+          {
+            "hypothesis": "pride",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "are increbl with incredible [[ ]] have managed to deliver",
+            "sample_id": "4453225-243"
+          },
+          {
+            "hypothesis": "coming 1st",
+            "impact": "HIGH",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "europeans and america manufacturers [[ ]] come in 1st",
+            "sample_id": "4453225-269"
+          },
+          {
+            "hypothesis": "et cetera so that is the 1st",
+            "impact": "HIGH",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "the registration in china [[ ]] etc",
+            "sample_id": "4453225-563"
+          }
+        ],
+        "other/inserted-function-word": [
+          {
+            "hypothesis": "will",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "which [[ ]] which will ..",
+            "sample_id": "4453225-119"
+          },
+          {
+            "hypothesis": "the",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "sustainability and efficiency is [[ ]] ppe and rp capex",
+            "sample_id": "4453225-165"
+          },
+          {
+            "hypothesis": "a",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "build a global manufacturing [[ ]] global distribution and global",
+            "sample_id": "4453225-239"
+          },
+          {
+            "hypothesis": "and",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "the vaccine for j [[ ]] j",
+            "sample_id": "4453225-251"
+          }
+        ],
+        "other/substituted-content-word": [
+          {
+            "hypothesis": "but",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "manufacturers",
+            "reference_context": "have been not only [[ manufacturers ]] we will also have",
+            "sample_id": "4453225-260"
+          },
+          {
+            "hypothesis": "john has",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "j j",
+            "reference_context": "that the opportunity that [[ j j ]] afforded us and the",
+            "sample_id": "4453225-267"
+          },
+          {
+            "hypothesis": "got",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "want",
+            "reference_context": "i also [[ want ]] to pay tribute to",
+            "sample_id": "4453225-268"
+          },
+          {
+            "hypothesis": "insight",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "inserts",
+            "reference_context": "just give you some [[ inserts ]] here rather j j",
+            "sample_id": "4453225-275"
+          }
+        ],
+        "reference-convention/backchannel-variant": [
+          {
+            "hypothesis": "alright",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "right",
+            "reference_context": "all [[ right ]]",
+            "sample_id": "4469088-331"
+          },
+          {
+            "hypothesis": "yes",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "thanks",
+            "reference_context": "[[ thanks ]]",
+            "sample_id": "4469088-694"
+          },
+          {
+            "hypothesis": "okay",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "yeah",
+            "reference_context": "[[ yeah ]]",
+            "sample_id": "4469088-695"
+          }
+        ],
+        "reference-convention/discourse-phrase": [
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "you know",
+            "reference_context": "the mining issues and [[ you know ]] with good mining practice",
+            "sample_id": "4481952-453"
+          }
+        ],
+        "reference-convention/discourse-single": [
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "so",
+            "reference_context": "[[ so ]] our business model involves",
+            "sample_id": "4453225-168"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "okay",
+            "reference_context": "[[ okay ]] great",
+            "sample_id": "4469088-435"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "okay",
+            "reference_context": "it just [[ okay ]]",
+            "sample_id": "4474506-573"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "right",
+            "reference_context": "have added 1100 branches [[ right ]]",
+            "sample_id": "4479944-536"
+          }
+        ],
+        "reference-convention/empty-reference": [
+          {
+            "hypothesis": "yeah i am good",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]]",
+            "sample_id": "4469088-473"
+          },
+          {
+            "hypothesis": "coming here",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]]",
+            "sample_id": "4469088-678"
+          }
+        ],
+        "reference-convention/false-start-stem": [
+          {
+            "hypothesis": "or",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "al",
+            "reference_context": "conversion rate is generally [[ al ]] almost always less than",
+            "sample_id": "4453225-105"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "y",
+            "reference_context": "a 7 year amortizing [[ y ]] loan",
+            "sample_id": "4453225-152"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "i",
+            "reference_context": "we we we were [[ i ]] we were classed as",
+            "sample_id": "4453225-282"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "cont",
+            "reference_context": "out those supply related [[ cont ]] contracts you would see",
+            "sample_id": "4453225-344"
+          }
+        ],
+        "reference-convention/filler-token": [
+          {
+            "hypothesis": "right",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "ah",
+            "reference_context": "[[ ah ]] this is you have",
+            "sample_id": "4479944-192"
+          }
+        ],
+        "reference-convention/redacted-region": [
+          {
+            "hypothesis": "now i hope",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "have been relatively prophetic [[ ]] because we have got",
+            "sample_id": "4453225-469"
+          },
+          {
+            "hypothesis": "arts",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "been no funding no [[ ]] no no equity funding",
+            "sample_id": "4453225-477"
+          },
+          {
+            "hypothesis": "of cash because of",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "for volume and utilization [[ ]] the sterile assets that",
+            "sample_id": "4453225-501"
+          },
+          {
+            "hypothesis": "renensburg",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "as we did with [[ ]] shepherds but we are",
+            "sample_id": "4470684-397"
+          }
+        ],
+        "reference-convention/reference-repetition": [
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "and",
+            "reference_context": "we would be reinstating [[ and ]] and we are very",
+            "sample_id": "4453225-172"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "he",
+            "reference_context": "[[ he ]] he was made very",
+            "sample_id": "4453225-193"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "a",
+            "reference_context": "i had to get [[ a ]] a one line summary",
+            "sample_id": "4453225-234"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "we have",
+            "reference_context": "[[ we have ]] we have obviously being",
+            "sample_id": "4453225-277"
+          }
+        ],
+        "segmentation-artifact/boundary-continuation": [
+          {
+            "hypothesis": "and",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "the last few years [[ ]]",
+            "sample_id": "4453225-124"
+          },
+          {
+            "hypothesis": "and",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "30th of june 2023 [[ ]]",
+            "sample_id": "4453225-150"
+          },
+          {
+            "hypothesis": "really",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "as bolt on acquisitions [[ ]]",
+            "sample_id": "4453225-169"
+          },
+          {
+            "hypothesis": "and",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "shift maybe strategic disposals [[ ]]",
+            "sample_id": "4453225-178"
+          }
+        ],
+        "segmentation-artifact/boundary-onset": [
+          {
+            "hypothesis": "a",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] it came in at",
+            "sample_id": "4453225-58"
+          },
+          {
+            "hypothesis": "available",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] so as new customers",
+            "sample_id": "4453225-74"
+          },
+          {
+            "hypothesis": "a large",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] normalized ebitda made a",
+            "sample_id": "4453225-91"
+          },
+          {
+            "hypothesis": "stanley",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] hi guys",
+            "sample_id": "4469088-315"
+          }
+        ],
+        "segmentation-artifact/boundary-partial-word": [
+          {
+            "hypothesis": "africa",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "african",
+            "reference_context": "own country and and [[ african ]]",
+            "sample_id": "4453225-280"
+          },
+          {
+            "hypothesis": "reporting",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "report",
+            "reference_context": "us has been integrated [[ report ]]",
+            "sample_id": "4453225-281"
+          },
+          {
+            "hypothesis": "fluctuates",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "fluctuate",
+            "reference_context": "and again it [[ fluctuate ]]",
+            "sample_id": "4474506-162"
+          },
+          {
+            "hypothesis": "pharmacist",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "pharma",
+            "reference_context": "[[ pharma ]] pharmacy is doing great",
+            "sample_id": "4474506-448"
+          }
+        ],
+        "segmentation-artifact/neighbour-bleed": [
+          {
+            "hypothesis": "for us",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "is about this year [[ ]]",
+            "sample_id": "4453225-235"
+          },
+          {
+            "hypothesis": "and we",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "to quality affordable medicines [[ ]]",
+            "sample_id": "4453225-248"
+          },
+          {
+            "hypothesis": "and you",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "at the interim presentation [[ ]]",
+            "sample_id": "4453225-417"
+          },
+          {
+            "hypothesis": "i i am sorry",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "sound keeps cutting out [[ ]]",
+            "sample_id": "4469088-128"
+          }
+        ]
+      },
+      "rule_table": [
+        {
+          "category": "model-behaviour",
+          "error_mass": 4563,
+          "rule": "model-behaviour/runaway-tail",
+          "spans": 1067,
+          "wer_points": 4.412
+        },
+        {
+          "category": "segmentation-artifact",
+          "error_mass": 1874,
+          "rule": "segmentation-artifact/boundary-continuation",
+          "spans": 1364,
+          "wer_points": 1.812
+        },
+        {
+          "category": "segmentation-artifact",
+          "error_mass": 1433,
+          "rule": "segmentation-artifact/neighbour-bleed",
+          "spans": 513,
+          "wer_points": 1.3856
+        },
+        {
+          "category": "other",
+          "error_mass": 1397,
+          "rule": "other/inserted-content-word",
+          "spans": 543,
+          "wer_points": 1.3508
+        },
+        {
+          "category": "acoustic-misrecognition",
+          "error_mass": 1395,
+          "rule": "acoustic-misrecognition/string-near",
+          "spans": 1038,
+          "wer_points": 1.3488
+        },
+        {
+          "category": "other",
+          "error_mass": 1329,
+          "rule": "other/substituted-content-word",
+          "spans": 1047,
+          "wer_points": 1.285
+        },
+        {
+          "category": "named-entity",
+          "error_mass": 1182,
+          "rule": "named-entity/call-inventory",
+          "spans": 866,
+          "wer_points": 1.1429
+        },
+        {
+          "category": "model-behaviour",
+          "error_mass": 734,
+          "rule": "model-behaviour/runaway-head",
+          "spans": 66,
+          "wer_points": 0.7097
+        },
+        {
+          "category": "other",
+          "error_mass": 725,
+          "rule": "other/inserted-function-word",
+          "spans": 625,
+          "wer_points": 0.701
+        },
+        {
+          "category": "other",
+          "error_mass": 599,
+          "rule": "other/deleted-content-word",
+          "spans": 321,
+          "wer_points": 0.5792
+        },
+        {
+          "category": "other",
+          "error_mass": 559,
+          "rule": "other/deleted-function-word",
+          "spans": 476,
+          "wer_points": 0.5405
+        },
+        {
+          "category": "other",
+          "error_mass": 537,
+          "rule": "other/function-word-swap",
+          "spans": 512,
+          "wer_points": 0.5192
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 503,
+          "rule": "reference-convention/reference-repetition",
+          "spans": 451,
+          "wer_points": 0.4864
+        },
+        {
+          "category": "segmentation-artifact",
+          "error_mass": 498,
+          "rule": "segmentation-artifact/boundary-onset",
+          "spans": 438,
+          "wer_points": 0.4815
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 274,
+          "rule": "reference-convention/false-start-stem",
+          "spans": 246,
+          "wer_points": 0.2649
+        },
+        {
+          "category": "model-behaviour",
+          "error_mass": 258,
+          "rule": "model-behaviour/hypothesis-repetition",
+          "spans": 180,
+          "wer_points": 0.2495
+        },
+        {
+          "category": "format-convention",
+          "error_mass": 246,
+          "rule": "format-convention/merge-compound",
+          "spans": 224,
+          "wer_points": 0.2379
+        },
+        {
+          "category": "domain-term",
+          "error_mass": 233,
+          "rule": "domain-term/pinned-lexicon",
+          "spans": 151,
+          "wer_points": 0.2253
+        },
+        {
+          "category": "model-behaviour",
+          "error_mass": 222,
+          "rule": "model-behaviour/truncation",
+          "spans": 36,
+          "wer_points": 0.2147
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 184,
+          "rule": "reference-convention/redacted-region",
+          "spans": 99,
+          "wer_points": 0.1779
+        },
+        {
+          "category": "segmentation-artifact",
+          "error_mass": 60,
+          "rule": "segmentation-artifact/boundary-partial-word",
+          "spans": 60,
+          "wer_points": 0.058
+        },
+        {
+          "category": "format-convention",
+          "error_mass": 36,
+          "rule": "format-convention/stray-punctuation-token",
+          "spans": 36,
+          "wer_points": 0.0348
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 34,
+          "rule": "reference-convention/discourse-single",
+          "spans": 34,
+          "wer_points": 0.0329
+        },
+        {
+          "category": "format-convention",
+          "error_mass": 31,
+          "rule": "format-convention/numeric-equal",
+          "spans": 9,
+          "wer_points": 0.03
+        },
+        {
+          "category": "model-behaviour",
+          "error_mass": 30,
+          "rule": "model-behaviour/hypothesis-loop",
+          "spans": 4,
+          "wer_points": 0.029
+        },
+        {
+          "category": "model-behaviour",
+          "error_mass": 27,
+          "rule": "model-behaviour/non-english-script",
+          "spans": 21,
+          "wer_points": 0.0261
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 19,
+          "rule": "reference-convention/empty-reference",
+          "spans": 10,
+          "wer_points": 0.0184
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 14,
+          "rule": "reference-convention/discourse-phrase",
+          "spans": 7,
+          "wer_points": 0.0135
+        },
+        {
+          "category": "format-convention",
+          "error_mass": 12,
+          "rule": "format-convention/symbol-only",
+          "spans": 10,
+          "wer_points": 0.0116
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 11,
+          "rule": "reference-convention/backchannel-variant",
+          "spans": 11,
+          "wer_points": 0.0106
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 4,
+          "rule": "reference-convention/filler-token",
+          "spans": 4,
+          "wer_points": 0.0039
+        },
+        {
+          "category": "format-convention",
+          "error_mass": 1,
+          "rule": "format-convention/whisper-refold",
+          "spans": 1,
+          "wer_points": 0.001
+        }
+      ],
+      "run_id": "SAEA-E22-DEV-ESB-PROMPT-B-V1",
+      "top_patterns": [
+        {
+          "example_sample_ids": [
+            "4453225-10",
+            "4453225-102",
+            "4453225-121"
+          ],
+          "hypothesis": "so",
+          "occurrences": 243,
+          "op": "INS",
+          "reference": "",
+          "rule": "segmentation-artifact/boundary-continuation"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-106",
+            "4453225-124",
+            "4453225-150"
+          ],
+          "hypothesis": "and",
+          "occurrences": 108,
+          "op": "INS",
+          "reference": "",
+          "rule": "segmentation-artifact/boundary-continuation"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-101",
+            "4453225-105",
+            "4453225-106"
+          ],
+          "hypothesis": "a",
+          "occurrences": 78,
+          "op": "INS",
+          "reference": "",
+          "rule": "other/inserted-function-word"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-104",
+            "4453225-124",
+            "4453225-124"
+          ],
+          "hypothesis": "",
+          "occurrences": 64,
+          "op": "DEL",
+          "reference": "a",
+          "rule": "reference-convention/reference-repetition"
+        },
+        {
+          "example_sample_ids": [
+            "4479944-112",
+            "4479944-112",
+            "4479944-113"
+          ],
+          "hypothesis": "",
+          "occurrences": 59,
+          "op": "DEL",
+          "reference": "inr",
+          "rule": "named-entity/call-inventory"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-251",
+            "4453225-359",
+            "4453225-360"
+          ],
+          "hypothesis": "and",
+          "occurrences": 58,
+          "op": "INS",
+          "reference": "",
+          "rule": "other/inserted-function-word"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-209",
+            "4453225-21",
+            "4453225-232"
+          ],
+          "hypothesis": "",
+          "occurrences": 57,
+          "op": "DEL",
+          "reference": "a",
+          "rule": "other/deleted-function-word"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-120",
+            "4453225-165",
+            "4453225-29"
+          ],
+          "hypothesis": "the",
+          "occurrences": 51,
+          "op": "INS",
+          "reference": "",
+          "rule": "other/inserted-function-word"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-134",
+            "4453225-172",
+            "4453225-309"
+          ],
+          "hypothesis": "",
+          "occurrences": 47,
+          "op": "DEL",
+          "reference": "and",
+          "rule": "reference-convention/reference-repetition"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-218",
+            "4453225-221",
+            "4453225-228"
+          ],
+          "hypothesis": "but",
+          "occurrences": 47,
+          "op": "INS",
+          "reference": "",
+          "rule": "segmentation-artifact/boundary-continuation"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-302",
+            "4453225-422",
+            "4453225-439"
+          ],
+          "hypothesis": "",
+          "occurrences": 47,
+          "op": "DEL",
+          "reference": "the",
+          "rule": "other/deleted-function-word"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-256",
+            "4453225-283",
+            "4453225-381"
+          ],
+          "hypothesis": "and",
+          "occurrences": 45,
+          "op": "INS",
+          "reference": "",
+          "rule": "segmentation-artifact/boundary-onset"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-214",
+            "4453225-320",
+            "4453225-455"
+          ],
+          "hypothesis": "",
+          "occurrences": 44,
+          "op": "DEL",
+          "reference": "the",
+          "rule": "reference-convention/reference-repetition"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-237",
+            "4469088-35",
+            "4469088-567"
+          ],
+          "hypothesis": "thank you",
+          "occurrences": 43,
+          "op": "INS",
+          "reference": "",
+          "rule": "segmentation-artifact/boundary-continuation"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-627",
+            "4469088-623",
+            "4469088-745"
+          ],
+          "hypothesis": "thank you",
+          "occurrences": 41,
+          "op": "INS",
+          "reference": "",
+          "rule": "segmentation-artifact/neighbour-bleed"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-576",
+            "4469088-41",
+            "4469088-538"
+          ],
+          "hypothesis": "u",
+          "occurrences": 39,
+          "op": "INS",
+          "reference": "",
+          "rule": "format-convention/merge-compound"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-125",
+            "4453225-245",
+            "4453225-257"
+          ],
+          "hypothesis": "",
+          "occurrences": 36,
+          "op": "DEL",
+          "reference": "..",
+          "rule": "format-convention/stray-punctuation-token"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-163",
+            "4453225-349",
+            "4469088-291"
+          ],
+          "hypothesis": "",
+          "occurrences": 35,
+          "op": "DEL",
+          "reference": "and",
+          "rule": "other/deleted-function-word"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-218",
+            "4453225-362",
+            "4453225-600"
+          ],
+          "hypothesis": "",
+          "occurrences": 31,
+          "op": "DEL",
+          "reference": "i",
+          "rule": "reference-convention/reference-repetition"
+        },
+        {
+          "example_sample_ids": [
+            "4469088-105",
+            "4469088-169",
+            "4469088-294"
+          ],
+          "hypothesis": "is",
+          "occurrences": 30,
+          "op": "INS",
+          "reference": "",
+          "rule": "other/inserted-function-word"
+        }
+      ],
+      "utterances": 6038
+    },
+    "C": {
+      "agentic_error_rate": {
+        "agentic_error_rate_percent": 1.9928,
+        "high_impact_reference_word_mass": 2061,
+        "high_impact_spans": 1375,
+        "reference_words": 103423
+      },
+      "agentic_error_rate_strict": {
+        "agentic_error_rate_percent": 2.1195,
+        "high_impact_reference_word_mass": 2192,
+        "high_impact_spans": 1506,
+        "reference_words": 103423
+      },
+      "attempt": "attempt-20260905T094322Z-2174df",
+      "boundary_diagnostics": {
+        "head": {
+          "inserted_words": 787,
+          "insertion_spans": 426,
+          "spans_by_containment": {
+            "contains_0.34_to_0.6": 34,
+            "contains_0.6_or_more": 224,
+            "contains_none": 149,
+            "contains_some": 19
+          },
+          "words_matched_at_0.6": 330
+        },
+        "tail": {
+          "inserted_words": 6499,
+          "insertion_spans": 2206,
+          "spans_by_containment": {
+            "contains_0.34_to_0.6": 384,
+            "contains_0.6_or_more": 625,
+            "contains_none": 516,
+            "contains_some": 681
+          },
+          "words_matched_at_0.6": 1281
+        }
+      },
+      "category_table": [
+        {
+          "category": "format-convention",
+          "error_mass": 290,
+          "impact_HIGH": 0,
+          "impact_LOW": 0,
+          "impact_NONE": 266,
+          "share_of_error_mass_percent": 1.567,
+          "spans": 266,
+          "wer_points": 0.2804
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 2447,
+          "impact_HIGH": 0,
+          "impact_LOW": 0,
+          "impact_NONE": 1909,
+          "share_of_error_mass_percent": 13.226,
+          "spans": 1909,
+          "wer_points": 2.366
+        },
+        {
+          "category": "segmentation-artifact",
+          "error_mass": 2882,
+          "impact_HIGH": 0,
+          "impact_LOW": 0,
+          "impact_NONE": 1624,
+          "share_of_error_mass_percent": 15.577,
+          "spans": 1624,
+          "wer_points": 2.7866
+        },
+        {
+          "category": "named-entity",
+          "error_mass": 1144,
+          "impact_HIGH": 829,
+          "impact_LOW": 0,
+          "impact_NONE": 0,
+          "share_of_error_mass_percent": 6.183,
+          "spans": 829,
+          "wer_points": 1.1061
+        },
+        {
+          "category": "domain-term",
+          "error_mass": 258,
+          "impact_HIGH": 7,
+          "impact_LOW": 155,
+          "impact_NONE": 0,
+          "share_of_error_mass_percent": 1.394,
+          "spans": 162,
+          "wer_points": 0.2495
+        },
+        {
+          "category": "model-behaviour",
+          "error_mass": 4660,
+          "impact_HIGH": 147,
+          "impact_LOW": 791,
+          "impact_NONE": 148,
+          "share_of_error_mass_percent": 25.186,
+          "spans": 1086,
+          "wer_points": 4.5058
+        },
+        {
+          "category": "acoustic-misrecognition",
+          "error_mass": 1479,
+          "impact_HIGH": 124,
+          "impact_LOW": 789,
+          "impact_NONE": 113,
+          "share_of_error_mass_percent": 7.994,
+          "spans": 1026,
+          "wer_points": 1.43
+        },
+        {
+          "category": "other",
+          "error_mass": 5342,
+          "impact_HIGH": 268,
+          "impact_LOW": 1641,
+          "impact_NONE": 1661,
+          "share_of_error_mass_percent": 28.873,
+          "spans": 3570,
+          "wer_points": 5.1652
+        }
+      ],
+      "corpus_wer_percent": 17.8896,
+      "error_spans": 10472,
+      "gap_bins": {
+        "authorized_fold_error_mass": 195,
+        "authorized_fold_rules": [
+          "format-convention/merge-compound"
+        ],
+        "authorized_fold_wer_points": 0.1885,
+        "bins": {
+          "core-capability": {
+            "error_mass": 5077,
+            "rules": [
+              "acoustic-misrecognition/string-near",
+              "model-behaviour/non-english-script",
+              "model-behaviour/hypothesis-loop",
+              "model-behaviour/truncation",
+              "model-behaviour/hypothesis-repetition",
+              "other/substituted-content-word",
+              "other/deleted-content-word",
+              "other/inserted-content-word"
+            ],
+            "share_of_error_mass_percent": 27.44,
+            "wer_points": 4.909
+          },
+          "missing-pre-meeting-context": {
+            "error_mass": 1402,
+            "rules": [
+              "named-entity/call-inventory",
+              "domain-term/pinned-lexicon"
+            ],
+            "share_of_error_mass_percent": 7.578,
+            "wer_points": 1.3556
+          },
+          "scoring-convention": {
+            "error_mass": 315,
+            "rules": [
+              "format-convention/merge-compound",
+              "format-convention/symbol-only",
+              "format-convention/stray-punctuation-token",
+              "format-convention/whisper-refold",
+              "format-convention/numeric-equal",
+              "reference-convention/empty-reference"
+            ],
+            "share_of_error_mass_percent": 1.703,
+            "wer_points": 0.3046
+          },
+          "task-definition": {
+            "error_mass": 11708,
+            "rules": [
+              "reference-convention/redacted-region",
+              "reference-convention/false-start-stem",
+              "reference-convention/reference-repetition",
+              "reference-convention/filler-token",
+              "reference-convention/discourse-phrase",
+              "reference-convention/discourse-single",
+              "reference-convention/backchannel-variant",
+              "segmentation-artifact/neighbour-bleed",
+              "segmentation-artifact/boundary-continuation",
+              "segmentation-artifact/boundary-onset",
+              "segmentation-artifact/boundary-partial-word",
+              "model-behaviour/runaway-tail",
+              "model-behaviour/runaway-head",
+              "other/deleted-function-word",
+              "other/inserted-function-word",
+              "other/function-word-swap"
+            ],
+            "share_of_error_mass_percent": 63.28,
+            "wer_points": 11.3205
+          }
+        },
+        "fold_authorities": {
+          "format-convention/merge-compound": "Open ASR Leaderboard `merge_compounds`, which the published ESB column applies and this study does not",
+          "format-convention/numeric-equal": "the Whisper `EnglishTextNormalizer`'s number rules; the residue is digits that agree with a different surface form around them",
+          "format-convention/stray-punctuation-token": "NO PUBLISHED AUTHORITY, but no published recipe treats a token with zero alphanumeric characters as a word either: these are Rev's ellipsis marks surviving the normalizer as bare `.` / `..` tokens. Reported separately for the same reason",
+          "format-convention/symbol-only": "NO PUBLISHED AUTHORITY. The Whisper normalizer deliberately KEEPS `.%$` and the currency signs, so `$340` against `340` is a difference the recipe intends to preserve. Reported inside the scoring-convention bin so it can be subtracted, never claimed as an existing convention",
+          "format-convention/whisper-refold": "the Whisper `EnglishTextNormalizer`'s own rules, applied a second time over the span in isolation",
+          "reference-convention/empty-reference": "the ESB protocol: a reference that normalizes to nothing contributes no denominator, and the leaderboard's own recipe drops such rows"
+        },
+        "refused_folds": {
+          "reference-convention/discourse-phrase": "no authority removes 'you know' / 'I mean' from a reference",
+          "reference-convention/discourse-single": "these tokens are ordinary words as often as they are fillers; folding them would silently delete content",
+          "reference-convention/false-start-stem": "no published normalizer removes Rev's truncated-word stems; folding them would be this study inventing a convention to improve its own number",
+          "reference-convention/filler-token": "the Whisper normalizer's filler list is exactly hmm|mm|mhm|mmm|uh|um; extending it is a new convention, not an existing one",
+          "reference-convention/reference-repetition": "the 2026-09-05 A/B verdict already measured that collapsing repeats makes the number WORSE, and no ESB or leaderboard rule collapses them",
+          "segmentation-artifact/neighbour-bleed": "the ESB protocol scores each published utterance against its own sentence; crediting a neighbour's words would change the task, not the scoring"
+        },
+        "unassigned_error_mass": 0,
+        "unassigned_rules": []
+      },
+      "hypothesis_over_reference_ratio": 1.0398,
+      "hypothesis_words": 107542,
+      "identity_gate": {
+        "measured": {
+          "deletions": 4975,
+          "insertions": 9094,
+          "reference_words": 103423,
+          "substitutions": 4433
+        },
+        "reproduced": true,
+        "sealed": {
+          "deletions": 4975,
+          "insertions": 9094,
+          "reference_words": 103423,
+          "substitutions": 4433
+        }
+      },
+      "impact_table": {
+        "HIGH": {
+          "error_mass": 2631,
+          "share_of_error_mass_percent": 14.22,
+          "spans": 1375,
+          "wer_points": 2.5439
+        },
+        "LOW": {
+          "error_mass": 7612,
+          "share_of_error_mass_percent": 41.141,
+          "spans": 3376,
+          "wer_points": 7.3601
+        },
+        "NONE": {
+          "error_mass": 8259,
+          "share_of_error_mass_percent": 44.638,
+          "spans": 5721,
+          "wer_points": 7.9857
+        }
+      },
+      "label": "the official request shape, no system message, instruction after the audio",
+      "outputs_sha256": "0bb0b3d6a19b379d8b9754bac023168a0fd2ba0daca966b8ecaae6f464eaca2a",
+      "per_call_table": [
+        {
+          "agentic_error_rate_percent": 1.3447,
+          "call": "4453225",
+          "corpus_wer_percent": 21.5676,
+          "error_mass": 2438,
+          "points_acoustic-misrecognition": 1.9374,
+          "points_domain-term": 0.4069,
+          "points_format-convention": 0.1769,
+          "points_model-behaviour": 5.7059,
+          "points_named-entity": 0.5485,
+          "points_other": 6.8117,
+          "points_reference-convention": 3.6536,
+          "points_segmentation-artifact": 2.3266,
+          "reference_words": 11304
+        },
+        {
+          "agentic_error_rate_percent": 2.1839,
+          "call": "4469088",
+          "corpus_wer_percent": 22.0047,
+          "error_mass": 2529,
+          "points_acoustic-misrecognition": 1.3922,
+          "points_domain-term": 0.261,
+          "points_format-convention": 0.3306,
+          "points_model-behaviour": 5.2032,
+          "points_named-entity": 1.0267,
+          "points_other": 6.4213,
+          "points_reference-convention": 4.2287,
+          "points_segmentation-artifact": 3.141,
+          "reference_words": 11493
+        },
+        {
+          "agentic_error_rate_percent": 1.2797,
+          "call": "4470684",
+          "corpus_wer_percent": 13.8004,
+          "error_mass": 1499,
+          "points_acoustic-misrecognition": 1.0403,
+          "points_domain-term": 0.0921,
+          "points_format-convention": 0.2117,
+          "points_model-behaviour": 4.8057,
+          "points_named-entity": 0.58,
+          "points_other": 2.8356,
+          "points_reference-convention": 1.6387,
+          "points_segmentation-artifact": 2.5962,
+          "reference_words": 10862
+        },
+        {
+          "agentic_error_rate_percent": 1.734,
+          "call": "4474506",
+          "corpus_wer_percent": 15.2592,
+          "error_mass": 1760,
+          "points_acoustic-misrecognition": 0.9017,
+          "points_domain-term": 0.1907,
+          "points_format-convention": 0.2601,
+          "points_model-behaviour": 3.2513,
+          "points_named-entity": 0.7456,
+          "points_other": 4.8205,
+          "points_reference-convention": 2.1675,
+          "points_segmentation-artifact": 2.9218,
+          "reference_words": 11534
+        },
+        {
+          "agentic_error_rate_percent": 3.1336,
+          "call": "4479944",
+          "corpus_wer_percent": 20.5661,
+          "error_mass": 2238,
+          "points_acoustic-misrecognition": 1.8563,
+          "points_domain-term": 0.4687,
+          "points_format-convention": 0.193,
+          "points_model-behaviour": 5.7894,
+          "points_named-entity": 1.6817,
+          "points_other": 7.1862,
+          "points_reference-convention": 0.2849,
+          "points_segmentation-artifact": 3.106,
+          "reference_words": 10882
+        },
+        {
+          "agentic_error_rate_percent": 1.6689,
+          "call": "4481952",
+          "corpus_wer_percent": 18.7646,
+          "error_mass": 1844,
+          "points_acoustic-misrecognition": 1.3534,
+          "points_domain-term": 0.2442,
+          "points_format-convention": 0.173,
+          "points_model-behaviour": 3.989,
+          "points_named-entity": 1.3127,
+          "points_other": 4.5182,
+          "points_reference-convention": 3.8872,
+          "points_segmentation-artifact": 3.2869,
+          "reference_words": 9827
+        },
+        {
+          "agentic_error_rate_percent": 1.8232,
+          "call": "4482383",
+          "corpus_wer_percent": 15.4256,
+          "error_mass": 1506,
+          "points_acoustic-misrecognition": 1.4545,
+          "points_domain-term": 0.0717,
+          "points_format-convention": 0.6965,
+          "points_model-behaviour": 3.247,
+          "points_named-entity": 1.352,
+          "points_other": 4.261,
+          "points_reference-convention": 2.1919,
+          "points_segmentation-artifact": 2.151,
+          "reference_words": 9763
+        },
+        {
+          "agentic_error_rate_percent": 4.3739,
+          "call": "4482613",
+          "corpus_wer_percent": 21.4769,
+          "error_mass": 1969,
+          "points_acoustic-misrecognition": 2.0615,
+          "points_domain-term": 0.4581,
+          "points_format-convention": 0.3599,
+          "points_model-behaviour": 4.7775,
+          "points_named-entity": 2.5414,
+          "points_other": 7.4935,
+          "points_reference-convention": 0.8508,
+          "points_segmentation-artifact": 2.9341,
+          "reference_words": 9168
+        },
+        {
+          "agentic_error_rate_percent": 1.371,
+          "call": "4483937",
+          "corpus_wer_percent": 15.7949,
+          "error_mass": 1371,
+          "points_acoustic-misrecognition": 1.3134,
+          "points_domain-term": 0.0806,
+          "points_format-convention": 0.0806,
+          "points_model-behaviour": 4.6774,
+          "points_named-entity": 0.6912,
+          "points_other": 4.2857,
+          "points_reference-convention": 1.9355,
+          "points_segmentation-artifact": 2.7304,
+          "reference_words": 8680
+        },
+        {
+          "agentic_error_rate_percent": 1.1705,
+          "call": "4485192",
+          "corpus_wer_percent": 13.6024,
+          "error_mass": 1348,
+          "points_acoustic-misrecognition": 1.0394,
+          "points_domain-term": 0.1917,
+          "points_format-convention": 0.333,
+          "points_model-behaviour": 3.4006,
+          "points_named-entity": 0.7871,
+          "points_other": 2.7144,
+          "points_reference-convention": 2.4924,
+          "points_segmentation-artifact": 2.6438,
+          "reference_words": 9910
+        }
+      ],
+      "per_duration_table": [
+        {
+          "bucket": "0-1s",
+          "corpus_wer_percent": 67.0347,
+          "points_acoustic-misrecognition": 2.9968,
+          "points_domain-term": 0.5521,
+          "points_format-convention": 1.4196,
+          "points_model-behaviour": 19.795,
+          "points_named-entity": 4.1798,
+          "points_other": 15.5363,
+          "points_reference-convention": 4.0221,
+          "points_segmentation-artifact": 18.5331,
+          "reference_words": 1268,
+          "utterances": 504
+        },
+        {
+          "bucket": "1-2s",
+          "corpus_wer_percent": 36.1642,
+          "points_acoustic-misrecognition": 2.1942,
+          "points_domain-term": 0.4063,
+          "points_format-convention": 0.772,
+          "points_model-behaviour": 5.8919,
+          "points_named-entity": 2.8444,
+          "points_other": 13.2873,
+          "points_reference-convention": 2.1942,
+          "points_segmentation-artifact": 8.5738,
+          "reference_words": 2461,
+          "utterances": 482
+        },
+        {
+          "bucket": "2-4s",
+          "corpus_wer_percent": 27.1923,
+          "points_acoustic-misrecognition": 1.8384,
+          "points_domain-term": 0.3539,
+          "points_format-convention": 0.3244,
+          "points_model-behaviour": 6.4884,
+          "points_named-entity": 2.2513,
+          "points_other": 8.3858,
+          "points_reference-convention": 2.5462,
+          "points_segmentation-artifact": 5.0039,
+          "reference_words": 10172,
+          "utterances": 1163
+        },
+        {
+          "bucket": "4-8s",
+          "corpus_wer_percent": 19.3111,
+          "points_acoustic-misrecognition": 1.2876,
+          "points_domain-term": 0.2543,
+          "points_format-convention": 0.2125,
+          "points_model-behaviour": 5.6913,
+          "points_named-entity": 1.117,
+          "points_other": 5.4048,
+          "points_reference-convention": 2.1375,
+          "points_segmentation-artifact": 3.2062,
+          "reference_words": 31065,
+          "utterances": 1991
+        },
+        {
+          "bucket": "8-16s",
+          "corpus_wer_percent": 14.1618,
+          "points_acoustic-misrecognition": 1.3533,
+          "points_domain-term": 0.1899,
+          "points_format-convention": 0.2318,
+          "points_model-behaviour": 3.4505,
+          "points_named-entity": 0.7837,
+          "points_other": 4.0223,
+          "points_reference-convention": 2.4416,
+          "points_segmentation-artifact": 1.6888,
+          "reference_words": 45298,
+          "utterances": 1625
+        },
+        {
+          "bucket": "16s+",
+          "corpus_wer_percent": 12.0222,
+          "points_acoustic-misrecognition": 1.4211,
+          "points_domain-term": 0.304,
+          "points_format-convention": 0.3724,
+          "points_model-behaviour": 2.0746,
+          "points_named-entity": 0.6839,
+          "points_other": 3.5261,
+          "points_reference-convention": 2.3786,
+          "points_segmentation-artifact": 1.2615,
+          "reference_words": 13159,
+          "utterances": 273
+        }
+      ],
+      "raw_pass": {
+        "format_only_errors": 4375,
+        "format_only_spans": 4000,
+        "raw_error_spans": 21647,
+        "raw_errors": 33787,
+        "raw_reference_words": 104808
+      },
+      "read_sample": {
+        "composition_by_rule": {
+          "acoustic-misrecognition/string-near": 150,
+          "domain-term/pinned-lexicon": 33,
+          "format-convention/merge-compound": 31,
+          "format-convention/stray-punctuation-token": 10,
+          "format-convention/whisper-refold": 1,
+          "model-behaviour/hypothesis-repetition": 2,
+          "model-behaviour/runaway-head": 5,
+          "model-behaviour/runaway-tail": 134,
+          "model-behaviour/truncation": 2,
+          "named-entity/call-inventory": 111,
+          "other/deleted-content-word": 70,
+          "other/deleted-function-word": 85,
+          "other/function-word-swap": 56,
+          "other/inserted-content-word": 74,
+          "other/inserted-function-word": 73,
+          "other/substituted-content-word": 132,
+          "reference-convention/backchannel-variant": 1,
+          "reference-convention/discourse-phrase": 11,
+          "reference-convention/discourse-single": 5,
+          "reference-convention/empty-reference": 1,
+          "reference-convention/false-start-stem": 38,
+          "reference-convention/filler-token": 2,
+          "reference-convention/redacted-region": 17,
+          "reference-convention/reference-repetition": 207,
+          "segmentation-artifact/boundary-continuation": 118,
+          "segmentation-artifact/boundary-onset": 44,
+          "segmentation-artifact/boundary-partial-word": 13,
+          "segmentation-artifact/neighbour-bleed": 74
+        },
+        "drawn": 1500,
+        "requested": 1500,
+        "seed": 20260903,
+        "strata": "source call"
+      },
+      "read_sample_examples": {
+        "acoustic-misrecognition/string-near": [
+          {
+            "hypothesis": "cycles",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "cycle",
+            "reference_context": "h one h 2 [[ cycle ]] to continue",
+            "sample_id": "4453225-121"
+          },
+          {
+            "hypothesis": "trombones",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "thrombosis",
+            "reference_context": "most notable the european [[ thrombosis ]] business",
+            "sample_id": "4453225-179"
+          },
+          {
+            "hypothesis": "its license",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "is licensed",
+            "reference_context": "course aspen being aspen [[ is licensed ]] is for africa too",
+            "sample_id": "4453225-262"
+          },
+          {
+            "hypothesis": "20%",
+            "impact": "HIGH",
+            "op": "SUB",
+            "reference": "29%",
+            "reference_context": "manufacturing which was up [[ 29% ]]",
+            "sample_id": "4453225-27"
+          }
+        ],
+        "domain-term/pinned-lexicon": [
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "debt",
+            "reference_context": "and consequently low [[ debt ]] as at the end",
+            "sample_id": "4453225-112"
+          },
+          {
+            "hypothesis": "cash flows",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "cashflow of",
+            "reference_context": "year ahead the excellent [[ cashflow of ]] this year will will",
+            "sample_id": "4453225-117"
+          },
+          {
+            "hypothesis": "revenue our",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "off at the segmental [[ ]] revenue",
+            "sample_id": "4453225-16"
+          },
+          {
+            "hypothesis": "loss",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "last",
+            "reference_context": "it will be my [[ last ]]",
+            "sample_id": "4453225-186"
+          }
+        ],
+        "format-convention/merge-compound": [
+          {
+            "hypothesis": "on",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "moving [[ ]] onto the normalized ebitda",
+            "sample_id": "4453225-53"
+          },
+          {
+            "hypothesis": "cash",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "zigzag is our operating [[ ]] cashflow conversion rate measured",
+            "sample_id": "4453225-98"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "4",
+            "reference_context": "pre covid levels q [[ 4 ]] 2019 which is probably",
+            "sample_id": "4469088-40"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "fin",
+            "reference_context": "we experienced in our [[ fin ]] prod business",
+            "sample_id": "4470684-103"
+          }
+        ],
+        "format-convention/stray-punctuation-token": [
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "..",
+            "reference_context": "and and [[ .. ]]",
+            "sample_id": "4453225-257"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "..",
+            "reference_context": "a as a a [[ .. ]]",
+            "sample_id": "4453225-70"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "..",
+            "reference_context": "there is indeed [[ .. ]]",
+            "sample_id": "4469088-395"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "..",
+            "reference_context": "[[ .. ]]",
+            "sample_id": "4469088-494"
+          }
+        ],
+        "format-convention/whisper-refold": [
+          {
+            "hypothesis": "0",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "00",
+            "reference_context": "[[ 00 ]] by the way the",
+            "sample_id": "4474506-250"
+          }
+        ],
+        "model-behaviour/hypothesis-repetition": [
+          {
+            "hypothesis": "that",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "okay operator i think [[ ]] that that is time",
+            "sample_id": "4469088-919"
+          },
+          {
+            "hypothesis": "so",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "more than 700 or [[ ]] so right",
+            "sample_id": "4479944-321"
+          }
+        ],
+        "model-behaviour/runaway-head": [
+          {
+            "hypothesis": "no i am",
+            "impact": "HIGH",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] yeah",
+            "sample_id": "4479944-213"
+          },
+          {
+            "hypothesis": "i look at that see",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] saurabh it is a",
+            "sample_id": "4479944-519"
+          },
+          {
+            "hypothesis": "sign up thanks john yeah",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] thanks johnny",
+            "sample_id": "4482383-317"
+          },
+          {
+            "hypothesis": "so i am going",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] ajay goel for the",
+            "sample_id": "4482613-132"
+          }
+        ],
+        "model-behaviour/runaway-tail": [
+          {
+            "hypothesis": "and a return",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "at ¢262 a share [[ ]]",
+            "sample_id": "4453225-12"
+          },
+          {
+            "hypothesis": "and as i said",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "in the vaccine space [[ ]]",
+            "sample_id": "4453225-134"
+          },
+          {
+            "hypothesis": "so yeah i think",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "over the many years [[ ]]",
+            "sample_id": "4453225-210"
+          },
+          {
+            "hypothesis": "just to give you a sense",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "to accelerate african access [[ ]]",
+            "sample_id": "4453225-255"
+          }
+        ],
+        "model-behaviour/truncation": [
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "the their cap",
+            "reference_context": "[[ the their cap ]] ..",
+            "sample_id": "4474506-310"
+          },
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "have a great day thank you the conference has now concluded thank",
+            "reference_context": "[[ have a great day thank you the conference has now concluded thank ]] now disconnect",
+            "sample_id": "4485192-460"
+          }
+        ],
+        "named-entity/call-inventory": [
+          {
+            "hypothesis": "it",
+            "impact": "HIGH",
+            "op": "SUB",
+            "reference": "rp",
+            "reference_context": "efficiency is ppe and [[ rp ]] capex",
+            "sample_id": "4453225-165"
+          },
+          {
+            "hypothesis": "american",
+            "impact": "HIGH",
+            "op": "SUB",
+            "reference": "america",
+            "reference_context": "of the europeans and [[ america ]] manufacturers come in 1st",
+            "sample_id": "4453225-269"
+          },
+          {
+            "hypothesis": "in africa",
+            "impact": "HIGH",
+            "op": "SUB",
+            "reference": "and african",
+            "reference_context": "our own country and [[ and african ]]",
+            "sample_id": "4453225-280"
+          },
+          {
+            "hypothesis": "just touch",
+            "impact": "HIGH",
+            "op": "SUB",
+            "reference": "gus touched",
+            "reference_context": "[[ gus touched ]] briefly on them",
+            "sample_id": "4453225-288"
+          }
+        ],
+        "other/deleted-content-word": [
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "the clear the the",
+            "reference_context": "but i think [[ the clear the the ]] what for me is",
+            "sample_id": "4453225-225"
+          },
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "address",
+            "reference_context": "has been core to [[ address ]] and inequitable access to",
+            "sample_id": "4453225-253"
+          },
+          {
+            "hypothesis": "",
+            "impact": "HIGH",
+            "op": "DEL",
+            "reference": "a well 0",
+            "reference_context": "have backed as broader [[ a well 0 ]] in communication with with",
+            "sample_id": "4453225-267"
+          },
+          {
+            "hypothesis": "",
+            "impact": "LOW",
+            "op": "DEL",
+            "reference": "you can get",
+            "reference_context": "[[ you can get ]] you can get quite",
+            "sample_id": "4453225-377"
+          }
+        ],
+        "other/deleted-function-word": [
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "the",
+            "reference_context": "[[ the ]] borrowing slide a lot",
+            "sample_id": "4453225-144"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "we",
+            "reference_context": "all of it [[ we ]] have used i am",
+            "sample_id": "4453225-145"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "and",
+            "reference_context": "under a a prerequisite [[ and ]] an internal leverage cap",
+            "sample_id": "4453225-163"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "is",
+            "reference_context": "financial director of aspen [[ is ]] south african business which",
+            "sample_id": "4453225-193"
+          }
+        ],
+        "other/function-word-swap": [
+          {
+            "hypothesis": "a",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "the",
+            "reference_context": "the green line is [[ the ]] moving 12 month average",
+            "sample_id": "4453225-102"
+          },
+          {
+            "hypothesis": "the",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "this",
+            "reference_context": "lot of information on [[ this ]] slide",
+            "sample_id": "4453225-144"
+          },
+          {
+            "hypothesis": "with",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "at",
+            "reference_context": "let us start off [[ at ]] the segmental revenue",
+            "sample_id": "4453225-16"
+          },
+          {
+            "hypothesis": "and",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "in",
+            "reference_context": "a real performer in [[ in ]] one of the when",
+            "sample_id": "4453225-345"
+          }
+        ],
+        "other/inserted-content-word": [
+          {
+            "hypothesis": "so it",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "in a conversion rate [[ ]] is 134% conversion rate",
+            "sample_id": "4453225-115"
+          },
+          {
+            "hypothesis": "so long and",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "such strong hands for [[ ]] s for so long",
+            "sample_id": "4453225-222"
+          },
+          {
+            "hypothesis": "grow and so i",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "section within the business [[ ]] grows",
+            "sample_id": "4453225-232"
+          },
+          {
+            "hypothesis": "pride",
+            "impact": "LOW",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "are increbl with incredible [[ ]] have managed to deliver",
+            "sample_id": "4453225-243"
+          }
+        ],
+        "other/inserted-function-word": [
+          {
+            "hypothesis": "as",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "in the year [[ ]] the whole we expected",
+            "sample_id": "4453225-109"
+          },
+          {
+            "hypothesis": "it",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "that know so well [[ ]] has been a real",
+            "sample_id": "4453225-219"
+          },
+          {
+            "hypothesis": "we",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "to start with what [[ ]] with sean almost finished",
+            "sample_id": "4453225-246"
+          },
+          {
+            "hypothesis": "have",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "i also [[ ]] want to pay tribute",
+            "sample_id": "4453225-268"
+          }
+        ],
+        "other/substituted-content-word": [
+          {
+            "hypothesis": "very good outcome",
+            "impact": "HIGH",
+            "op": "SUB",
+            "reference": "134% conversion rate",
+            "reference_context": "a conversion rate is [[ 134% conversion rate ]]",
+            "sample_id": "4453225-115"
+          },
+          {
+            "hypothesis": "we are very grateful",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "s for so long",
+            "reference_context": "such strong hands for [[ s for so long ]]",
+            "sample_id": "4453225-222"
+          },
+          {
+            "hypothesis": "amazing",
+            "impact": "LOW",
+            "op": "SUB",
+            "reference": "teams",
+            "reference_context": "tribute to the aspen [[ teams ]]",
+            "sample_id": "4453225-268"
+          },
+          {
+            "hypothesis": "non",
+            "impact": "HIGH",
+            "op": "SUB",
+            "reference": "9",
+            "reference_context": "the 1st of the [[ 9 ]] manufacturers in the j",
+            "sample_id": "4453225-269"
+          }
+        ],
+        "reference-convention/backchannel-variant": [
+          {
+            "hypothesis": "yes",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "hi",
+            "reference_context": "yeah [[ hi ]]",
+            "sample_id": "4479944-541"
+          }
+        ],
+        "reference-convention/discourse-phrase": [
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "you know",
+            "reference_context": "[[ you know ]] how do you ..",
+            "sample_id": "4469088-608"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "you know",
+            "reference_context": "the question on leverage [[ you know ]] if we back up",
+            "sample_id": "4474506-260"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "you know",
+            "reference_context": "least the renewal rates [[ you know ]] continuing to to pick",
+            "sample_id": "4474506-400"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "you know",
+            "reference_context": "i i think [[ you know ]] one of the things",
+            "sample_id": "4481952-221"
+          }
+        ],
+        "reference-convention/discourse-single": [
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "so",
+            "reference_context": "[[ so ]] i mean if you",
+            "sample_id": "4469088-442"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "yeah",
+            "reference_context": "and [[ yeah ]] i guess most of",
+            "sample_id": "4469088-71"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "so",
+            "reference_context": "[[ so ]] i i can not",
+            "sample_id": "4470684-372"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "yeah",
+            "reference_context": "[[ yeah ]] and well you know",
+            "sample_id": "4470684-500"
+          }
+        ],
+        "reference-convention/empty-reference": [
+          {
+            "hypothesis": "yeah i am not sure",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]]",
+            "sample_id": "4469088-473"
+          }
+        ],
+        "reference-convention/false-start-stem": [
+          {
+            "hypothesis": "or",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "al",
+            "reference_context": "conversion rate is generally [[ al ]] almost always less than",
+            "sample_id": "4453225-105"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "0 on",
+            "reference_context": "will will put pressure [[ 0 on ]] on further improvement in",
+            "sample_id": "4453225-117"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "ca",
+            "reference_context": "the it side of [[ ca ]] capex",
+            "sample_id": "4453225-137"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "s",
+            "reference_context": "[[ s ]] sean capazorio",
+            "sample_id": "4453225-188"
+          }
+        ],
+        "reference-convention/filler-token": [
+          {
+            "hypothesis": "analysis",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "huh",
+            "reference_context": "[[ huh ]]",
+            "sample_id": "4470684-356"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "ah",
+            "reference_context": "is a new norm [[ ah ]] i would not say",
+            "sample_id": "4479944-191"
+          }
+        ],
+        "reference-convention/redacted-region": [
+          {
+            "hypothesis": "gearing",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "consistent with that declined [[ ]] increasing interest cover ratio",
+            "sample_id": "4453225-161"
+          },
+          {
+            "hypothesis": "under",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "also notable [[ ]] manufacturing with the commencement",
+            "sample_id": "4453225-34"
+          },
+          {
+            "hypothesis": "hurdles",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "pose is our growth [[ ]] are demanding",
+            "sample_id": "4453225-542"
+          },
+          {
+            "hypothesis": "that we",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "that includes other challenges [[ ]]",
+            "sample_id": "4469088-472"
+          }
+        ],
+        "reference-convention/reference-repetition": [
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "and",
+            "reference_context": "[[ and ]] and half 2 always",
+            "sample_id": "4453225-106"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "the",
+            "reference_context": "and [[ the ]] the ultimate outcome of",
+            "sample_id": "4453225-115"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "a a",
+            "reference_context": "and equipment has been [[ a a ]] a strategic focus for",
+            "sample_id": "4453225-124"
+          },
+          {
+            "hypothesis": "",
+            "impact": "NONE",
+            "op": "DEL",
+            "reference": "it",
+            "reference_context": "with the market and [[ it ]] it has been a",
+            "sample_id": "4453225-13"
+          }
+        ],
+        "segmentation-artifact/boundary-continuation": [
+          {
+            "hypothesis": "we should",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "important part for us [[ ]]",
+            "sample_id": "4453225-284"
+          },
+          {
+            "hypothesis": "which is",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "they grew at 8 [[ ]]",
+            "sample_id": "4453225-301"
+          },
+          {
+            "hypothesis": "in",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "only grew at one [[ ]]",
+            "sample_id": "4453225-303"
+          },
+          {
+            "hypothesis": "so",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "reported and constant currency [[ ]]",
+            "sample_id": "4453225-325"
+          }
+        ],
+        "segmentation-artifact/boundary-onset": [
+          {
+            "hypothesis": "eva darlan",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] this i quite a",
+            "sample_id": "4453225-54"
+          },
+          {
+            "hypothesis": "thank you",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] cheers steve",
+            "sample_id": "4469088-654"
+          },
+          {
+            "hypothesis": "price",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] through the quarter the",
+            "sample_id": "4469088-796"
+          },
+          {
+            "hypothesis": "comparing",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "[[ ]] i think were you",
+            "sample_id": "4469088-835"
+          }
+        ],
+        "segmentation-artifact/boundary-partial-word": [
+          {
+            "hypothesis": "nishland",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "nishlan",
+            "reference_context": "[[ nishlan ]] you want to come",
+            "sample_id": "4470684-342"
+          },
+          {
+            "hypothesis": "fluctuates",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "fluctuate",
+            "reference_context": "and again it [[ fluctuate ]]",
+            "sample_id": "4474506-162"
+          },
+          {
+            "hypothesis": "margins",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "margin",
+            "reference_context": "to ask you gross [[ margin ]]",
+            "sample_id": "4474506-557"
+          },
+          {
+            "hypothesis": "ratio",
+            "impact": "NONE",
+            "op": "SUB",
+            "reference": "ratios",
+            "reference_context": "coming to credit cost [[ ratios ]]",
+            "sample_id": "4479944-121"
+          }
+        ],
+        "segmentation-artifact/neighbour-bleed": [
+          {
+            "hypothesis": "they are not going to",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "he stays with aspen [[ ]]",
+            "sample_id": "4453225-220"
+          },
+          {
+            "hypothesis": "for us",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "is about this year [[ ]]",
+            "sample_id": "4453225-235"
+          },
+          {
+            "hypothesis": "and then finally",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "nonetheless very very sound [[ ]]",
+            "sample_id": "4453225-26"
+          },
+          {
+            "hypothesis": "but they were",
+            "impact": "NONE",
+            "op": "INS",
+            "reference": "",
+            "reference_context": "manufacturers come in 1st [[ ]]",
+            "sample_id": "4453225-269"
+          }
+        ]
+      },
+      "rule_table": [
+        {
+          "category": "model-behaviour",
+          "error_mass": 4111,
+          "rule": "model-behaviour/runaway-tail",
+          "spans": 962,
+          "wer_points": 3.9749
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 1701,
+          "rule": "reference-convention/reference-repetition",
+          "spans": 1388,
+          "wer_points": 1.6447
+        },
+        {
+          "category": "acoustic-misrecognition",
+          "error_mass": 1479,
+          "rule": "acoustic-misrecognition/string-near",
+          "spans": 1026,
+          "wer_points": 1.43
+        },
+        {
+          "category": "segmentation-artifact",
+          "error_mass": 1279,
+          "rule": "segmentation-artifact/neighbour-bleed",
+          "spans": 434,
+          "wer_points": 1.2367
+        },
+        {
+          "category": "other",
+          "error_mass": 1236,
+          "rule": "other/substituted-content-word",
+          "spans": 977,
+          "wer_points": 1.1951
+        },
+        {
+          "category": "segmentation-artifact",
+          "error_mass": 1208,
+          "rule": "segmentation-artifact/boundary-continuation",
+          "spans": 840,
+          "wer_points": 1.168
+        },
+        {
+          "category": "named-entity",
+          "error_mass": 1144,
+          "rule": "named-entity/call-inventory",
+          "spans": 829,
+          "wer_points": 1.1061
+        },
+        {
+          "category": "other",
+          "error_mass": 1037,
+          "rule": "other/deleted-content-word",
+          "spans": 481,
+          "wer_points": 1.0027
+        },
+        {
+          "category": "other",
+          "error_mass": 1034,
+          "rule": "other/deleted-function-word",
+          "spans": 690,
+          "wer_points": 0.9998
+        },
+        {
+          "category": "other",
+          "error_mass": 989,
+          "rule": "other/inserted-content-word",
+          "spans": 451,
+          "wer_points": 0.9563
+        },
+        {
+          "category": "other",
+          "error_mass": 551,
+          "rule": "other/inserted-function-word",
+          "spans": 490,
+          "wer_points": 0.5328
+        },
+        {
+          "category": "other",
+          "error_mass": 495,
+          "rule": "other/function-word-swap",
+          "spans": 481,
+          "wer_points": 0.4786
+        },
+        {
+          "category": "segmentation-artifact",
+          "error_mass": 335,
+          "rule": "segmentation-artifact/boundary-onset",
+          "spans": 290,
+          "wer_points": 0.3239
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 303,
+          "rule": "reference-convention/false-start-stem",
+          "spans": 251,
+          "wer_points": 0.293
+        },
+        {
+          "category": "model-behaviour",
+          "error_mass": 267,
+          "rule": "model-behaviour/truncation",
+          "spans": 39,
+          "wer_points": 0.2582
+        },
+        {
+          "category": "domain-term",
+          "error_mass": 258,
+          "rule": "domain-term/pinned-lexicon",
+          "spans": 162,
+          "wer_points": 0.2495
+        },
+        {
+          "category": "model-behaviour",
+          "error_mass": 213,
+          "rule": "model-behaviour/runaway-head",
+          "spans": 44,
+          "wer_points": 0.206
+        },
+        {
+          "category": "format-convention",
+          "error_mass": 195,
+          "rule": "format-convention/merge-compound",
+          "spans": 189,
+          "wer_points": 0.1885
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 190,
+          "rule": "reference-convention/discourse-phrase",
+          "spans": 95,
+          "wer_points": 0.1837
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 153,
+          "rule": "reference-convention/redacted-region",
+          "spans": 90,
+          "wer_points": 0.1479
+        },
+        {
+          "category": "model-behaviour",
+          "error_mass": 69,
+          "rule": "model-behaviour/hypothesis-repetition",
+          "spans": 41,
+          "wer_points": 0.0667
+        },
+        {
+          "category": "segmentation-artifact",
+          "error_mass": 60,
+          "rule": "segmentation-artifact/boundary-partial-word",
+          "spans": 60,
+          "wer_points": 0.058
+        },
+        {
+          "category": "format-convention",
+          "error_mass": 57,
+          "rule": "format-convention/stray-punctuation-token",
+          "spans": 57,
+          "wer_points": 0.0551
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 55,
+          "rule": "reference-convention/discourse-single",
+          "spans": 55,
+          "wer_points": 0.0532
+        },
+        {
+          "category": "format-convention",
+          "error_mass": 28,
+          "rule": "format-convention/numeric-equal",
+          "spans": 10,
+          "wer_points": 0.0271
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 25,
+          "rule": "reference-convention/empty-reference",
+          "spans": 10,
+          "wer_points": 0.0242
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 15,
+          "rule": "reference-convention/backchannel-variant",
+          "spans": 15,
+          "wer_points": 0.0145
+        },
+        {
+          "category": "format-convention",
+          "error_mass": 9,
+          "rule": "format-convention/symbol-only",
+          "spans": 9,
+          "wer_points": 0.0087
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 5,
+          "rule": "reference-convention/filler-token",
+          "spans": 5,
+          "wer_points": 0.0048
+        },
+        {
+          "category": "format-convention",
+          "error_mass": 1,
+          "rule": "format-convention/whisper-refold",
+          "spans": 1,
+          "wer_points": 0.001
+        }
+      ],
+      "run_id": "SAEA-E22-DEV-ESB-SHAPE-C-V1",
+      "top_patterns": [
+        {
+          "example_sample_ids": [
+            "4453225-106",
+            "4453225-121",
+            "4453225-126"
+          ],
+          "hypothesis": "",
+          "occurrences": 152,
+          "op": "DEL",
+          "reference": "and",
+          "rule": "reference-convention/reference-repetition"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-103",
+            "4453225-113",
+            "4453225-115"
+          ],
+          "hypothesis": "",
+          "occurrences": 131,
+          "op": "DEL",
+          "reference": "the",
+          "rule": "reference-convention/reference-repetition"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-121",
+            "4453225-158",
+            "4453225-180"
+          ],
+          "hypothesis": "so",
+          "occurrences": 107,
+          "op": "INS",
+          "reference": "",
+          "rule": "segmentation-artifact/boundary-continuation"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-455",
+            "4469088-456",
+            "4469088-608"
+          ],
+          "hypothesis": "",
+          "occurrences": 94,
+          "op": "DEL",
+          "reference": "you know",
+          "rule": "reference-convention/discourse-phrase"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-124",
+            "4453225-162",
+            "4453225-163"
+          ],
+          "hypothesis": "",
+          "occurrences": 71,
+          "op": "DEL",
+          "reference": "a",
+          "rule": "reference-convention/reference-repetition"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-126",
+            "4453225-128",
+            "4453225-213"
+          ],
+          "hypothesis": "",
+          "occurrences": 71,
+          "op": "DEL",
+          "reference": "in",
+          "rule": "reference-convention/reference-repetition"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-214",
+            "4453225-243",
+            "4453225-294"
+          ],
+          "hypothesis": "",
+          "occurrences": 67,
+          "op": "DEL",
+          "reference": "to",
+          "rule": "reference-convention/reference-repetition"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-233",
+            "4453225-428",
+            "4453225-432"
+          ],
+          "hypothesis": "",
+          "occurrences": 64,
+          "op": "DEL",
+          "reference": "we",
+          "rule": "reference-convention/reference-repetition"
+        },
+        {
+          "example_sample_ids": [
+            "4479944-11",
+            "4479944-112",
+            "4479944-112"
+          ],
+          "hypothesis": "",
+          "occurrences": 63,
+          "op": "DEL",
+          "reference": "inr",
+          "rule": "named-entity/call-inventory"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-251",
+            "4453225-269",
+            "4453225-275"
+          ],
+          "hypothesis": "and",
+          "occurrences": 58,
+          "op": "INS",
+          "reference": "",
+          "rule": "other/inserted-function-word"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-125",
+            "4453225-245",
+            "4453225-257"
+          ],
+          "hypothesis": "",
+          "occurrences": 57,
+          "op": "DEL",
+          "reference": "..",
+          "rule": "format-convention/stray-punctuation-token"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-149",
+            "4453225-209",
+            "4453225-278"
+          ],
+          "hypothesis": "",
+          "occurrences": 56,
+          "op": "DEL",
+          "reference": "a",
+          "rule": "other/deleted-function-word"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-144",
+            "4453225-302",
+            "4453225-313"
+          ],
+          "hypothesis": "",
+          "occurrences": 55,
+          "op": "DEL",
+          "reference": "the",
+          "rule": "other/deleted-function-word"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-152",
+            "4453225-157",
+            "4453225-163"
+          ],
+          "hypothesis": "",
+          "occurrences": 55,
+          "op": "DEL",
+          "reference": "of",
+          "rule": "reference-convention/reference-repetition"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-165",
+            "4453225-269",
+            "4453225-29"
+          ],
+          "hypothesis": "the",
+          "occurrences": 52,
+          "op": "INS",
+          "reference": "",
+          "rule": "other/inserted-function-word"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-115",
+            "4453225-239",
+            "4453225-519"
+          ],
+          "hypothesis": "a",
+          "occurrences": 51,
+          "op": "INS",
+          "reference": "",
+          "rule": "other/inserted-function-word"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-218",
+            "4453225-362",
+            "4453225-600"
+          ],
+          "hypothesis": "",
+          "occurrences": 43,
+          "op": "DEL",
+          "reference": "i",
+          "rule": "reference-convention/reference-repetition"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-140",
+            "4453225-197",
+            "4453225-471"
+          ],
+          "hypothesis": "",
+          "occurrences": 41,
+          "op": "DEL",
+          "reference": "that",
+          "rule": "reference-convention/reference-repetition"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-163",
+            "4453225-203",
+            "4453225-316"
+          ],
+          "hypothesis": "",
+          "occurrences": 40,
+          "op": "DEL",
+          "reference": "and",
+          "rule": "other/deleted-function-word"
+        },
+        {
+          "example_sample_ids": [
+            "4453225-105",
+            "4453225-106",
+            "4453225-181"
+          ],
+          "hypothesis": "and",
+          "occurrences": 39,
+          "op": "INS",
+          "reference": "",
+          "rule": "segmentation-artifact/boundary-continuation"
+        }
+      ],
+      "utterances": 6038
+    }
+  },
+  "carrier": "earnings22-original",
+  "categories": [
+    "format-convention",
+    "reference-convention",
+    "segmentation-artifact",
+    "named-entity",
+    "domain-term",
+    "model-behaviour",
+    "acoustic-misrecognition",
+    "other"
+  ],
+  "contacts": {
+    "audio_decode": 0,
+    "embedder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network_attempts": 0,
+    "network_targets": [],
+    "tokenizer": 0
+  },
+  "entity_inventory_sizes": {
+    "4453225": 92,
+    "4469088": 76,
+    "4470684": 76,
+    "4474506": 91,
+    "4479944": 82,
+    "4481952": 118,
+    "4482383": 170,
+    "4482613": 192,
+    "4483937": 64,
+    "4485192": 79
+  },
+  "exposure_row": "SAEA-E22-MF-SEMANTIC-ERROR-SCAN-V1",
+  "impact_neutral_categories": [
+    "format-convention",
+    "reference-convention",
+    "segmentation-artifact"
+  ],
+  "impacts": [
+    "NONE",
+    "LOW",
+    "HIGH"
+  ],
+  "lexicons": {
+    "discourse_phrases": [
+      "you know",
+      "i mean",
+      "kind of",
+      "sort of",
+      "you see",
+      "or whatever"
+    ],
+    "discourse_singles": [
+      "actually",
+      "anyway",
+      "basically",
+      "like",
+      "ok",
+      "okay",
+      "right",
+      "so",
+      "well",
+      "yeah",
+      "yep"
+    ],
+    "domain_terms": [
+      "accretive",
+      "accrual",
+      "accruals",
+      "amortisation",
+      "amortization",
+      "amortizing",
+      "annualised",
+      "annualized",
+      "annum",
+      "arpu",
+      "arr",
+      "asp",
+      "attrition",
+      "backlog",
+      "basis",
+      "bookings",
+      "bps",
+      "buyback",
+      "cagr",
+      "capex",
+      "capitalisation",
+      "capitalization",
+      "cashflow",
+      "churn",
+      "cogs",
+      "comparable",
+      "comparables",
+      "comps",
+      "consensus",
+      "constant",
+      "coupon",
+      "covenant",
+      "covenants",
+      "creditor",
+      "creditors",
+      "currency",
+      "debt",
+      "debtor",
+      "debtors",
+      "deleveraging",
+      "depreciation",
+      "dilution",
+      "dilutive",
+      "dividend",
+      "dividends",
+      "dpo",
+      "dso",
+      "earnings",
+      "ebit",
+      "ebitda",
+      "ebitda margin",
+      "ebitdar",
+      "elasticity",
+      "eps",
+      "equity",
+      "fcf",
+      "fiscal",
+      "forecast",
+      "forex",
+      "fx",
+      "gaap",
+      "gearing",
+      "goodwill",
+      "guidance",
+      "headwind",
+      "headwinds",
+      "hedge",
+      "hedged",
+      "hedging",
+      "impairment",
+      "inorganic",
+      "interest",
+      "inventories",
+      "inventory",
+      "leverage",
+      "liquidity",
+      "loss",
+      "losses",
+      "ltv",
+      "margin",
+      "margins",
+      "maturities",
+      "mrr",
+      "nim",
+      "normalised",
+      "normalized",
+      "npl",
+      "occupancy",
+      "opex",
+      "organic",
+      "outlook",
+      "payables",
+      "penetration",
+      "pipeline",
+      "portfolio",
+      "profit",
+      "profitability",
+      "profits",
+      "provision",
+      "quarter",
+      "quarterly",
+      "receivables",
+      "reconciliation",
+      "repo",
+      "repurchase",
+      "restructuring",
+      "retail",
+      "retention",
+      "revenue",
+      "revenues",
+      "roa",
+      "roe",
+      "roic",
+      "segment",
+      "segments",
+      "sequential",
+      "sequentially",
+      "sku",
+      "solvency",
+      "spread",
+      "spreads",
+      "synergies",
+      "tailwind",
+      "tailwinds",
+      "tax",
+      "taxation",
+      "topline",
+      "underlying",
+      "utilisation",
+      "utilization",
+      "valuation",
+      "wacc",
+      "wholesale",
+      "writedown",
+      "writeoff",
+      "yield",
+      "yields",
+      "yoy"
+    ],
+    "negations": [
+      "aint",
+      "cannot",
+      "neither",
+      "never",
+      "no",
+      "none",
+      "nor",
+      "not",
+      "nothing",
+      "without"
+    ],
+    "nonlexical_fillers": [
+      "aah",
+      "ah",
+      "eh",
+      "er",
+      "erm",
+      "hm",
+      "huh",
+      "mhmm",
+      "mmhmm",
+      "uhh",
+      "uhhuh",
+      "uhm",
+      "umm"
+    ],
+    "stopwords": [
+      "a",
+      "about",
+      "all",
+      "also",
+      "am",
+      "an",
+      "and",
+      "any",
+      "are",
+      "as",
+      "at",
+      "be",
+      "because",
+      "been",
+      "being",
+      "but",
+      "by",
+      "can",
+      "could",
+      "did",
+      "do",
+      "does",
+      "down",
+      "for",
+      "from",
+      "had",
+      "has",
+      "have",
+      "he",
+      "her",
+      "here",
+      "him",
+      "his",
+      "how",
+      "i",
+      "if",
+      "in",
+      "into",
+      "is",
+      "it",
+      "its",
+      "just",
+      "may",
+      "me",
+      "might",
+      "more",
+      "most",
+      "must",
+      "my",
+      "now",
+      "of",
+      "on",
+      "or",
+      "other",
+      "our",
+      "out",
+      "over",
+      "own",
+      "quite",
+      "really",
+      "s",
+      "same",
+      "she",
+      "should",
+      "some",
+      "such",
+      "t",
+      "that",
+      "the",
+      "their",
+      "them",
+      "then",
+      "there",
+      "these",
+      "they",
+      "this",
+      "those",
+      "to",
+      "too",
+      "up",
+      "us",
+      "very",
+      "was",
+      "we",
+      "were",
+      "what",
+      "when",
+      "where",
+      "which",
+      "while",
+      "who",
+      "will",
+      "with",
+      "would",
+      "you",
+      "your"
+    ]
+  },
+  "normalizer": "whisper-english-v20240930",
+  "reference_layer_profile": {
+    "adjacent_repeated_words_after_normalization": 1905,
+    "bracket_tags": {
+      "<affirmative>": 8,
+      "<crosstalk>": 15,
+      "<inaudible>": 117,
+      "<laugh>": 26,
+      "<silence>": 4,
+      "<unk>": 27
+    },
+    "reading": "verbatim, not cleaned: the layer carries speaker disfluency, immediate repetition, truncated words and redaction tags. The normalizer removes the fillers and the tags from both sides; it removes neither the repetitions nor the truncation stems, and no model will ever emit those",
+    "rows": 6038,
+    "rows_carrying_a_bracket_tag": 184,
+    "rows_carrying_a_truncated_word": 330,
+    "rows_with_an_adjacent_repeated_word": 1232,
+    "truncated_word_forms": 360,
+    "whisper_deleted_filler_tokens": {
+      "hmm": 8,
+      "mm": 7,
+      "uh": 2679,
+      "um": 1349
+    },
+    "whisper_deleted_filler_total": 4043
+  },
+  "schema": "saea-e22-semantic-error-scan-summary-v1",
+  "split_name": "E22-ESB-DEV10-UTTERANCES",
+  "split_role": "dev",
+  "study": "speech-aware-evidence-acquisition",
+  "taxonomy_version": "saea-e22-error-taxonomy-v1",
+  "test_split_read": false
+}
