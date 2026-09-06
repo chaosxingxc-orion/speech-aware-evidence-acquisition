@@ -430,16 +430,16 @@ def a2t_pool_rows(
 # ---------------------------------------------------------------------------
 
 
-def _probe_sample_source(
-    name: str, payload: Mapping[str, object]
-) -> dict[str, object] | None:
-    """One audio2tool probe-sample receipt as an exposure source.
+def _probe_sample_source(name: str, payload: Mapping[str, object]) -> dict[str, object]:
+    """One audio2tool probe-sample receipt as an identity source.
 
     ``roster_role`` is the E2.3 field: absent means the historical default,
     an EVALUATION identity roster (every receipt committed before 2026-09-05
     is one), ``"construction"`` means the identities may be read WITH their
     gold labels and are therefore deliberately NOT exposure, and any other
-    value fails closed rather than being guessed at.
+    value fails closed rather than being guessed at. Both roles are returned;
+    :func:`_exposure_sources` keeps the evaluation ones as exposure and uses
+    the construction ones only to recognise a construction identity elsewhere.
     """
 
     role = payload.get("roster_role", EVALUATION_ROSTER_ROLE)
@@ -448,8 +448,6 @@ def _probe_sample_source(
             f"probe-sample receipt {name!r} declares roster_role {role!r}; the known "
             f"roles are {sorted(_ROSTER_ROLES)} (fail-closed)"
         )
-    if role != EVALUATION_ROSTER_ROLE:
-        return None
     items = payload["items"]  # audio2tool_receipts already verified the shape
     return {
         "kind": "probe-sample",
@@ -519,14 +517,15 @@ def _d1_supplement_source(path: Path) -> dict[str, object]:
 
 
 def _roster_receipt_source(path: Path) -> dict[str, object] | None:
-    """One committed ``saea-roster-receipt-v1`` as an exposure source.
+    """One committed ``saea-roster-receipt-v1`` as an identity source.
 
-    Returns ``None`` for a roster this union deliberately ignores: another
-    carrier's, or an Audio2Tool roster whose ``roster_role`` is
-    ``"construction"`` -- construction identities may be read WITH their gold
-    (owner decision 2026-09-05), so excluding them is the design, not an
-    oversight. The receipt's own ``split_identity_hash`` is recomputed before
-    its items are trusted, exactly as the probe-sample reader does.
+    Returns ``None`` only for another carrier's roster. An Audio2Tool roster
+    is returned with its own ``roster_role``; a ``"construction"`` one is not
+    exposure -- those identities may be read WITH their gold (owner decision
+    2026-09-05) -- and :func:`_exposure_sources` drops it from the union while
+    keeping its ids as the construction identity universe. The receipt's own
+    ``split_identity_hash`` is recomputed before its items are trusted,
+    exactly as the probe-sample reader does.
     """
 
     from ..core.roster import RECEIPT_SCHEMA, RosterError, verify_roster
@@ -554,8 +553,6 @@ def _roster_receipt_source(path: Path) -> dict[str, object] | None:
         verify_roster(document)
     except RosterError as error:
         raise RailsError(f"roster receipt {path} does not verify: {error}") from error
-    if role != EVALUATION_ROSTER_ROLE:
-        return None
     return {
         "kind": "roster-receipt",
         "name": path.stem,
@@ -586,6 +583,17 @@ def _exposure_sources(repo_root: Path | None = None) -> list[dict[str, object]]:
         rosters, of which only the ``roster_role == "evaluation"`` ones are
         exposure.
 
+    A D1 supplement carries no role of its own -- ``contracts
+    .gate_media_identity`` requires its ten keys EXACTLY, so it cannot be
+    given one -- and it is therefore read through the CONSTRUCTION IDENTITY
+    UNIVERSE the (a) and (c) receipts declare: an id a committed
+    construction-role receipt claims stays out of the union whichever
+    artifact binds its media, and a supplement all of whose ids are
+    construction is not an exposure source at all. Without that rule a
+    construction roster's own flight products would retro-actively remove
+    that roster's rows from the construction pool it was drawn from, and no
+    committed construction draw would reproduce.
+
     The frozen 400 (``r1-audio2tool-sample``) must be present or the whole
     union fails closed: it is the one receipt every A2T decontamination
     argument in this repository cites, so silently building a union without
@@ -599,19 +607,28 @@ def _exposure_sources(repo_root: Path | None = None) -> list[dict[str, object]]:
             f"exposed discovery receipt {EXPOSED_RECEIPT_NAME!r} not found among "
             f"{sorted(receipts)}"
         )
-    sources: list[dict[str, object]] = []
-    for name, payload in sorted(receipts.items()):
-        probe_source = _probe_sample_source(name, payload)
-        if probe_source is not None:
-            sources.append(probe_source)
-    for path in sorted((root / D1_SUPPLEMENT_RELDIR).glob(D1_SUPPLEMENT_GLOB)):
-        sources.append(_d1_supplement_source(path))
+    probes = [_probe_sample_source(name, payload) for name, payload in sorted(receipts.items())]
+    rosters: list[dict[str, object]] = []
     roster_dir = root / ROSTER_RECEIPTS_RELDIR
     if roster_dir.is_dir():
         for path in sorted(roster_dir.glob("*.json")):
             source = _roster_receipt_source(path)
             if source is not None:
-                sources.append(source)
+                rosters.append(source)
+    construction: set[str] = set()
+    for source in (*probes, *rosters):
+        if source["roster_role"] != EVALUATION_ROSTER_ROLE:
+            construction |= set(source["sample_ids"])  # type: ignore[arg-type]
+
+    sources = [source for source in probes if source["roster_role"] == EVALUATION_ROSTER_ROLE]
+    for path in sorted((root / D1_SUPPLEMENT_RELDIR).glob(D1_SUPPLEMENT_GLOB)):
+        supplement = _d1_supplement_source(path)
+        ids = frozenset(supplement["sample_ids"]) - construction  # type: ignore[arg-type]
+        if ids:
+            sources.append({**supplement, "sample_ids": ids})
+    sources.extend(
+        source for source in rosters if source["roster_role"] == EVALUATION_ROSTER_ROLE
+    )
     return sources
 
 

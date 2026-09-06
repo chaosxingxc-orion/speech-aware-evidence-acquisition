@@ -20,9 +20,11 @@ from speech_aware_evidence_acquisition.rails.evolution import (
     BACKGROUND_TOLERANCE_PP,
     INCUMBENT_KEY,
     MAX_ROUNDS,
+    SENTINEL_SCHEMA,
     AdmissionGates,
     EvolutionError,
     EvolutionState,
+    LoopConfig,
     Portfolio,
     RoundOutcome,
     Target,
@@ -33,6 +35,7 @@ from speech_aware_evidence_acquisition.rails.evolution import (
     replay_selection,
     select_per_target,
     selection_record,
+    sentinel_harms,
     should_stop,
     write_candidate_fragments,
     write_round_receipt,
@@ -782,3 +785,85 @@ def test_portfolio_is_a_plain_frozen_record():
     assert isinstance(portfolio, Portfolio)
     with pytest.raises(Exception):
         portfolio.round = 9  # type: ignore[misc]
+
+
+# ---------------------------------------------------------------------------
+# The sentinel-harms line (owner decision, 2026-09-06)
+# ---------------------------------------------------------------------------
+
+SENTINEL_ROWS = {"pair-a": {"thin": ["s:000000", "s:000001", "s:000002"]}}
+
+
+def test_sentinel_harms_names_every_harmed_row_and_its_tool():
+    incumbent = scores(SENTINEL_ROWS["pair-a"]["thin"], [1.0, 1.0, 0.0])
+    arm_scores = {1: scores(SENTINEL_ROWS["pair-a"]["thin"], [0.0, 1.0, 1.0])}
+    line = sentinel_harms(
+        incumbent, arm_scores, sentinel_rows=SENTINEL_ROWS, metric=METRIC
+    )
+    block = line["by_target"]["pair-a"]["by_k"]["1"]
+    assert (block["n"], block["saves"], block["harms"], block["ties"], block["net"]) == (
+        3,
+        1,
+        1,
+        1,
+        0,
+    )
+    assert block["harmed"] == [{"sample_id": "s:000000", "tool": "thin"}]
+    assert block["saved"] == [{"sample_id": "s:000002", "tool": "thin"}]
+    assert line["by_target"]["pair-a"]["tools"] == ["thin"]
+    assert line["schema"] == SENTINEL_SCHEMA
+
+
+def test_sentinel_harms_refuses_an_arm_that_never_scored_a_sentinel_row():
+    incumbent = scores(SENTINEL_ROWS["pair-a"]["thin"], [1.0, 1.0, 1.0])
+    partial = {1: scores(SENTINEL_ROWS["pair-a"]["thin"][:2], [1.0, 1.0])}
+    with pytest.raises(EvolutionError, match="no 'tool_correct' score for sentinel row"):
+        sentinel_harms(incumbent, partial, sentinel_rows=SENTINEL_ROWS, metric=METRIC)
+
+
+def loop_document(**overrides):
+    document = {
+        "schema": "saea-evolution-loop-config-v1",
+        "carrier_lock_key": "audio2tool",
+        "targets": {"lighting": ["setLighting", "setAmbientLighting"]},
+        "sentinel_tools": {"lighting": ["setAmbientLighting"]},
+        "proposer_run_id": "P",
+        "fold_a_run_id": "A",
+        "fold_b_run_id": "B",
+        "base_fragment": "base",
+        "model_fragment": "model",
+        "fold_a_dataset_fragment": "fold-a",
+        "fold_b_dataset_fragment": "fold-b",
+        "metric": METRIC,
+        "scorer_id": "a2t-toolcall-official",
+    }
+    document.update(overrides)
+    return document
+
+
+def test_loop_config_reads_sentinels_and_derives_the_reward_tools():
+    config = LoopConfig.from_json(loop_document())
+    assert config.sentinel_tools == {"lighting": ("setAmbientLighting",)}
+    assert config.reward_tools("lighting") == ("setLighting",)
+    assert config.fold_a_roster_relpath.endswith("a2t-evo-fold-a-v2.json")
+
+
+def test_loop_config_refuses_a_sentinel_that_is_not_in_its_own_target():
+    with pytest.raises(EvolutionError, match="does not.*carry"):
+        LoopConfig.from_json(
+            loop_document(sentinel_tools={"lighting": ["setColorTemperature"]})
+        )
+
+
+def test_loop_config_refuses_a_target_that_is_all_sentinels():
+    with pytest.raises(EvolutionError, match="all sentinels"):
+        LoopConfig.from_json(
+            loop_document(
+                sentinel_tools={"lighting": ["setLighting", "setAmbientLighting"]}
+            )
+        )
+
+
+def test_loop_config_refuses_sentinels_for_an_unknown_target():
+    with pytest.raises(EvolutionError, match="not a target"):
+        LoopConfig.from_json(loop_document(sentinel_tools={"nope": ["setLighting"]}))

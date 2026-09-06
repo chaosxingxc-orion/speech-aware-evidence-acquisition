@@ -675,6 +675,62 @@ def test_exposure_report_accounts_for_every_source(tmp_path: Path) -> None:
     assert "a-construction-cohort" not in by_name
 
 
+def test_a_wholly_construction_supplement_is_not_an_exposure_source(
+    tmp_path: Path,
+) -> None:
+    """A construction roster's own flight products must not poison the pool it
+    was drawn from.
+
+    A D1 media supplement carries no ``roster_role`` of its own --
+    ``contracts.gate_media_identity`` requires its ten keys EXACTLY, so one
+    cannot be given -- and it is therefore read through the CONSTRUCTION
+    IDENTITY UNIVERSE the probe-sample and roster receipts declare. Without
+    this rule, landing the media supplement of a construction fold would
+    retro-actively move that fold's rows into the exposure union, remove them
+    from the construction pool, and make the committed draw irreproducible.
+    """
+
+    root = _synthetic_repo(tmp_path)
+    _roster_file(root, "construction-800", ("tier4_implicit:000008",), "construction")
+    _write_json(
+        root / "docs" / "receipts" / "artifacts" / "d1-a2t-construction-flight.json",
+        _d1_supplement(("tier1_direct:000004", "tier4_implicit:000008")),
+    )
+
+    union = exposed_sample_ids(root)
+    assert "tier1_direct:000004" not in union
+    assert "tier4_implicit:000008" not in union
+    report = exposed_identity_report(root)
+    by_name = {str(row["name"]): row for row in report["sources"]}
+    # Not merely emptied -- it is not a source at all.
+    assert "d1-a2t-construction-flight" not in by_name
+    # The evaluation-bearing supplement beside it is untouched.
+    assert by_name["d1-a2t-cohort"]["sample_ids"] == 2
+
+
+def test_a_mixed_supplement_keeps_only_its_evaluation_identities(
+    tmp_path: Path,
+) -> None:
+    """The construction universe is SUBTRACTED from a supplement, never used to
+    drop it wholesale: a supplement that binds media for one construction id
+    and one evaluation id still exposes the evaluation id."""
+
+    root = _synthetic_repo(tmp_path)
+    _write_json(
+        root / "docs" / "receipts" / "artifacts" / "d1-a2t-mixed.json",
+        _d1_supplement(("tier1_direct:000004", "tier5_needle:000011")),
+    )
+
+    union = exposed_sample_ids(root)
+    assert "tier1_direct:000004" not in union
+    assert "tier5_needle:000011" in union
+    by_name = {
+        str(row["name"]): row for row in exposed_identity_report(root)["sources"]
+    }
+    assert by_name["d1-a2t-mixed"]["sample_ids"] == 1
+    assert by_name["d1-a2t-mixed"]["new_sample_ids"] == 1
+
+
 def test_union_refuses_a_malformed_d1_supplement(tmp_path: Path) -> None:
     root = _synthetic_repo(tmp_path)
     _write_json(

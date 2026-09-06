@@ -36,8 +36,9 @@ from typing import Iterable, Mapping, Sequence
 from ..data.audio2tool import (
     AUDIO2TOOL_LOCK_KEY,
     _entry_media,  # noqa: SLF001 -- the released manifests' own duration field
+    _validate_audio_relpath,  # noqa: SLF001 -- the loader's own path confinement
 )
-from ..data.lock import asset_dir
+from ..data.lock import asset_dir, lock_entry
 from ..rails.knowledge_build_a2t import TIERS
 
 #: ``M`` -- the proposer exemplar reserve per tool (program section 5).
@@ -49,6 +50,12 @@ QUOTA_CAP = 20
 #: Below this a tool is dropped from the loop entirely.
 QUOTA_FLOOR = 6
 
+#: Owner decision 2026-09-06 ("RELAXED with sentinels"): a tool the quota rule
+#: drops is no longer removed from the loop. It keeps at most this many
+#: exemplar units -- enough for the proposer to see WHAT the tool is -- and
+#: every remaining block of it becomes a HARM SENTINEL on one of the folds.
+SENTINEL_EXEMPLAR_CAP = 4
+
 #: Fold rows carry speech; the program caps a fold row at 60 seconds.
 FOLD_MAX_AUDIO_SECONDS = 60.0
 
@@ -59,11 +66,14 @@ __all__ = [
     "EXEMPLAR_RESERVE",
     "QUOTA_CAP",
     "QUOTA_FLOOR",
+    "SENTINEL_EXEMPLAR_CAP",
     "FOLD_MAX_AUDIO_SECONDS",
     "BUCKETS",
     "CAPACITY_SCHEMA",
+    "SENTINEL_RULE_TEXT",
     "rule_quota",
     "split_blocks",
+    "sentinel_split",
     "realized_quota",
     "tool_capacity",
     "joint_capacity",
@@ -72,6 +82,8 @@ __all__ = [
     "capacity_document",
     "read_json",
     "audio_seconds_by_sample_id",
+    "measured_media_facts",
+    "domains_by_sample_id",
     "RULE_TEXT",
 ]
 
@@ -126,6 +138,55 @@ def split_blocks(
         buckets[best].append(block)
         have[best] += units_by_block[block]
     return {name: tuple(sorted(buckets[name])) for name in BUCKETS}, have
+
+
+def sentinel_split(
+    units_by_block: Mapping[int, int],
+    *,
+    key: str,
+    cap: int = SENTINEL_EXEMPLAR_CAP,
+) -> tuple[dict[str, tuple[int, ...]], dict[str, int], int]:
+    """The THIN-tool block split (owner decision 2026-09-06).
+
+    A tool the quota rule drops is not dropped from the loop: it keeps
+    ``min(cap, units // 2)`` exemplar units, so the proposer can still see
+    what the tool is, and every block left over becomes a HARM SENTINEL,
+    split evenly between fold A and fold B with the odd block to fold A.
+
+    Two orderings, both derived from the SAME seeded
+    :func:`_order` so nothing here is a second source of randomness. The
+    exemplar reserve is paid from the SMALLEST blocks first (the reverse of
+    that order) because a block is indivisible and the reserve is a ceiling,
+    not a target: paying it with a large block would burn sentinel mass the
+    loop needs. The remainder is then dealt largest-first, alternating fold A,
+    fold B, fold A, ..., which both gives fold A the odd block and keeps the
+    two folds' sentinel UNIT counts as close as whole blocks allow.
+
+    Returns ``(blocks_by_bucket, units_by_bucket, reserve)`` -- the same
+    shape :func:`split_blocks` returns, plus the reserve it aimed at.
+    """
+
+    units = sum(units_by_block.values())
+    reserve = max(0, min(int(cap), units // 2))
+    order = _order(units_by_block, key)
+    exemplars: list[int] = []
+    have = 0
+    for block in reversed(order):
+        if have >= reserve:
+            break
+        exemplars.append(block)
+        have += units_by_block[block]
+    taken = set(exemplars)
+    remainder = [block for block in order if block not in taken]
+    buckets = {
+        "fold_a": tuple(sorted(remainder[0::2])),
+        "fold_b": tuple(sorted(remainder[1::2])),
+        "exemplars": tuple(sorted(exemplars)),
+    }
+    counts = {
+        name: sum(units_by_block[block] for block in buckets[name]) for name in BUCKETS
+    }
+    return {name: buckets[name] for name in BUCKETS}, counts, reserve
 
 
 def realized_quota(
@@ -293,6 +354,15 @@ def capacity_verdict(
     }
 
 
+#: The owner's 2026-09-06 amendment to the census rule, stated once.
+SENTINEL_RULE_TEXT = (
+    f"thin tool (fold_quota 0): keep min({SENTINEL_EXEMPLAR_CAP}, units // 2) exemplar "
+    "units, paid from the smallest blocks first, and split every remaining BLOCK evenly "
+    "between fold A and fold B as HARM SENTINELS, the odd block to fold A. A sentinel "
+    "row is never a reward row: it is counted in the confirmation's background bound and "
+    "in the round receipt's per-target sentinel-harms line"
+)
+
 #: The census rule, stated once so a receipt and this module cannot drift.
 RULE_TEXT = (
     f"quota_A = quota_B = min({QUOTA_CAP}, floor((units - {EXEMPLAR_RESERVE}) / 2)), lowered "
@@ -361,6 +431,123 @@ def audio_seconds_by_sample_id(lock: Mapping[str, object], root: Path) -> dict[s
     return seconds
 
 
+def _official_media_relpath(entry: Mapping[str, object], context: str) -> str:
+    """The wav the OFFICIAL protocol serves for one manifest entry.
+
+    Identical to ``data.audio2tool._entry_media`` except on
+    ``tier7_multiturn``, whose rows carry no top-level ``path``: the released
+    ``Tier7Dataset._get_audio_paths`` returns ``sorted(glob("turn_*_user_*.wav"))``
+    and ``BenchmarkEvaluator`` evaluates ``audio_paths[0]``, so the official
+    row is the FIRST user turn. ``_entry_media`` reads ``chat_history[-1]``
+    instead -- the P1 scaffold's final-turn binding, a protocol-fidelity gap
+    its own module docstring records -- and on every tier-7 row of these folds
+    the two differ. The three sealed official-population rosters and the
+    4,000 the loop must transfer to all fly the first turn, so these folds do
+    too.
+    """
+
+    path = entry.get("path")
+    if isinstance(path, str) and path:
+        return _validate_audio_relpath(path, context)
+    history = entry.get("chat_history")
+    if not isinstance(history, list) or not history:
+        raise ValueError(f"{context}: entry has neither a top-level path nor a chat_history")
+    for turn in history:
+        if isinstance(turn, Mapping) and turn.get("role") == "user":
+            return _validate_audio_relpath(turn.get("path"), context)
+    raise ValueError(f"{context}: chat_history carries no user turn")
+
+
+def _wav_header(path: Path, context: str) -> tuple[int, int]:
+    import wave  # noqa: PLC0415 -- container header only, never a decode
+
+    try:
+        with wave.open(str(path), "rb") as handle:
+            frames, rate = handle.getnframes(), handle.getframerate()
+    except (OSError, EOFError, wave.Error) as error:
+        raise ValueError(f"{context}: cannot read WAV header: {error}") from error
+    if frames <= 0 or rate <= 0:
+        raise ValueError(f"{context}: invalid WAV header")
+    return frames, rate
+
+
+def measured_media_facts(
+    lock: Mapping[str, object], root: Path, sample_ids: Iterable[str]
+) -> dict[str, dict[str, object]]:
+    """The four media facts a flight-roster receipt records, MEASURED.
+
+    Two deliberate differences from ``data.audio2tool.load_media_rows``, both
+    of which a fold receipt needs:
+
+    * ``audio_seconds`` is the wav header's ``frames / sample_rate``, not the
+      manifest's three-decimal ``duration`` cell. The D1 media supplement is
+      built from headers and refuses a disagreement above 1e-6, so a
+      manifest-rounded value cannot be carried into a flight binding.
+    * tier-7 rows bind the FIRST user turn (:func:`_official_media_relpath`).
+    """
+
+    subdir = str(lock_entry(lock, AUDIO2TOOL_LOCK_KEY)["local_subdir"]).rstrip("/")
+    public = Path(asset_dir(lock, AUDIO2TOOL_LOCK_KEY, root)) / "public"
+    wanted: dict[str, set[int]] = {}
+    for sample_id in sample_ids:
+        tier, _, number = str(sample_id).partition(":")
+        wanted.setdefault(tier, set()).add(int(number))
+    out: dict[str, dict[str, object]] = {}
+    for tier in sorted(wanted):
+        entries = {
+            int(entry["id"]): entry
+            for entry in read_json(public / f"{tier}_data" / f"{tier}.json")  # type: ignore[union-attr]
+        }
+        for number in sorted(wanted[tier]):
+            sample_id = f"{tier}:{number:06d}"
+            if number not in entries:
+                raise ValueError(f"{sample_id}: no row in the {tier} manifest")
+            relative = _official_media_relpath(entries[number], sample_id)
+            path = public / relative
+            if not path.is_file():
+                raise ValueError(f"{sample_id}: media missing: {path}")
+            frames, rate = _wav_header(path, sample_id)
+            out[sample_id] = {
+                "media_relpath": f"{subdir}/public/{relative}",
+                "audio_seconds": round(frames / rate, 9),
+                "audio_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                "sample_rate_hz": rate,
+            }
+    return out
+
+
+def domains_by_sample_id(
+    lock: Mapping[str, object], root: Path, sample_ids: Iterable[str]
+) -> dict[str, str]:
+    """``sample_id -> domain`` for exactly the named samples, from the released
+    tier manifests' own ``domain`` column.
+
+    Stratum metadata, the same field the A2T-ORG-1 union receipt reads for the
+    same purpose. It is recorded as aggregate counts in a receipt and never
+    reaches a request.
+    """
+
+    public = Path(asset_dir(lock, AUDIO2TOOL_LOCK_KEY, root)) / "public"
+    wanted: dict[str, set[int]] = {}
+    for sample_id in sample_ids:
+        tier, _, number = str(sample_id).partition(":")
+        wanted.setdefault(tier, set()).add(int(number))
+    out: dict[str, str] = {}
+    for tier in sorted(wanted):
+        for entry in read_json(public / f"{tier}_data" / f"{tier}.json"):  # type: ignore[union-attr]
+            if int(entry["id"]) in wanted[tier]:
+                out[f"{tier}:{int(entry['id']):06d}"] = str(entry["domain"])
+    missing = sorted(
+        f"{tier}:{number:06d}"
+        for tier, numbers in wanted.items()
+        for number in numbers
+        if f"{tier}:{number:06d}" not in out
+    )
+    if missing:
+        raise ValueError(f"no released manifest row for {missing}")
+    return out
+
+
 def joint_capacity(
     rows: Iterable[object],
     tools: Sequence[str],
@@ -369,6 +556,7 @@ def joint_capacity(
     cap: int = QUOTA_CAP,
     reserve: int = EXEMPLAR_RESERVE,
     floor: int = QUOTA_FLOOR,
+    sentinels: bool = False,
 ) -> tuple[dict[str, dict[str, object]], frozenset[int]]:
     """:func:`tool_capacity`, but with block CONTENTION resolved, plus the set
     of blocks the target tools between them occupy.
@@ -382,6 +570,13 @@ def joint_capacity(
     ``reserve`` exemplar units and no fold rows at all); otherwise the tool with
     fewer blocks in the pool wins, because a block is worth more where blocks
     are scarce; ties by fewer units, then by name.
+
+    ``sentinels`` switches on the owner's 2026-09-06 rule for the tools this
+    census DROPS: instead of spending every one of their blocks on exemplars
+    they keep at most :data:`SENTINEL_EXEMPLAR_CAP` exemplar units and
+    contribute the rest as harm sentinels (:func:`sentinel_split`). It is off
+    by default so the V1 draw and its committed receipts stay reproducible
+    byte for byte, and it changes NOTHING for a tool the census keeps.
     """
 
     owned: dict[str, list[object]] = {tool: [] for tool in tools}
@@ -411,6 +606,10 @@ def joint_capacity(
         }
         quota, buckets, have = realized_quota(free, key=f"{seed}:{tool}", cap=cap, reserve=reserve)
         survives = quota >= floor
+        sentinel = bool(sentinels) and not survives
+        sentinel_reserve = 0
+        if sentinel:
+            buckets, have, sentinel_reserve = sentinel_split(free, key=f"{seed}:{tool}")
         report[tool] = {
             "tool_name": tool,
             "units": len(owned[tool]),
@@ -431,4 +630,8 @@ def joint_capacity(
             "blocks_by_bucket": {name: list(buckets[name]) for name in BUCKETS},
             "units_by_bucket": dict(have),
         }
+        if sentinel:
+            report[tool]["sentinel"] = True
+            report[tool]["sentinel_exemplar_reserve"] = sentinel_reserve
+            report[tool]["sentinel_rule"] = SENTINEL_RULE_TEXT
     return report, frozenset(winner)

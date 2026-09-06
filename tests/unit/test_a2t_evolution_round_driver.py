@@ -17,6 +17,7 @@ this repository.
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 from pathlib import Path
 from typing import Mapping
 
@@ -36,6 +37,12 @@ from speech_aware_evidence_acquisition.rails.evolution import (
     run_propose_step,
     run_select_step,
 )
+from speech_aware_evidence_acquisition.rails.evolution_carrier import (
+    _split_fold_rows,
+    rows_of_target_from_roster,
+    sentinel_rows_from_roster,
+)
+from speech_aware_evidence_acquisition.rails.proposer import CandidateArtifact
 
 CARRIER = "audio2tool"
 TARGETS = {"castContent": ["castContent", "playMedia"]}
@@ -52,39 +59,41 @@ FOLD_B_TARGETED = tuple(f"foldB:{index:06d}" for index in range(1, 9))
 FOLD_B_BACKGROUND = tuple(f"foldB:{index:06d}" for index in range(9, 17))
 
 
+def _loop_config_document() -> dict:
+    return {
+        "carrier_lock_key": CARRIER,
+        "targets": TARGETS,
+        "proposer_run_id": "SAEA-TEST-EVO-PROPOSER",
+        "fold_a_run_id": "SAEA-TEST-EVO-FOLD-A",
+        "fold_b_run_id": "SAEA-TEST-EVO-FOLD-B",
+        "base_fragment": "evo-dry-run-base",
+        "model_fragment": "m",
+        "fold_a_dataset_fragment": "fold-a",
+        "fold_b_dataset_fragment": "fold-b",
+        "metric": METRIC,
+        "scorer_id": SCORER,
+        "proposer_slots": [1, 2],
+        "placebo_slot": 3,
+        "deterministic_slot": 4,
+        "exemplars_per_tool": 2,
+        "seed": 20260903,
+        "max_rounds": 4,
+        # Scaled to a four-row-per-tool dry run; the flight's own gates
+        # are the preregistered 4/1/3 and live in the committed loop
+        # config, never here.
+        "gates": {"saves": 2, "harms": 1, "net": 1},
+        "n_replicates": 200,
+        "receipts_reldir": "docs/checks/dry-run",
+        "rosters_reldir": "docs/receipts/rosters",
+        "experiments_reldir": "configs/experiment",
+        "fragment_reldir": "configs/baseline",
+        "artifact_reldir": "configs/knowledge/evo-dry-run",
+        "slug": "evo-dry-run",
+    }
+
+
 def _loop_config() -> LoopConfig:
-    return LoopConfig.from_json(
-        {
-            "carrier_lock_key": CARRIER,
-            "targets": TARGETS,
-            "proposer_run_id": "SAEA-TEST-EVO-PROPOSER",
-            "fold_a_run_id": "SAEA-TEST-EVO-FOLD-A",
-            "fold_b_run_id": "SAEA-TEST-EVO-FOLD-B",
-            "base_fragment": "evo-dry-run-base",
-            "model_fragment": "m",
-            "fold_a_dataset_fragment": "fold-a",
-            "fold_b_dataset_fragment": "fold-b",
-            "metric": METRIC,
-            "scorer_id": SCORER,
-            "proposer_slots": [1, 2],
-            "placebo_slot": 3,
-            "deterministic_slot": 4,
-            "exemplars_per_tool": 2,
-            "seed": 20260903,
-            "max_rounds": 4,
-            # Scaled to a four-row-per-tool dry run; the flight's own gates
-            # are the preregistered 4/1/3 and live in the committed loop
-            # config, never here.
-            "gates": {"saves": 2, "harms": 1, "net": 1},
-            "n_replicates": 200,
-            "receipts_reldir": "docs/checks/dry-run",
-            "rosters_reldir": "docs/receipts/rosters",
-            "experiments_reldir": "configs/experiment",
-            "fragment_reldir": "configs/baseline",
-            "artifact_reldir": "configs/knowledge/evo-dry-run",
-            "slug": "evo-dry-run",
-        }
-    )
+    return LoopConfig.from_json(_loop_config_document())
 
 
 def _registry_rows() -> tuple[dict[str, str], ...]:
@@ -517,4 +526,140 @@ def test_the_budget_check_refuses_a_flight_over_its_registered_ceiling() -> None
             run_id="SAEA-TEST-EVO-FOLD-A",
             calls=1,
             speech_seconds=1,
+        )
+
+
+# ---------------------------------------------------------------------------
+# The sentinel line (owner decision, 2026-09-06)
+# ---------------------------------------------------------------------------
+
+SENTINEL_TARGETS = {"castContent": ["castContent", "playMedia"]}
+
+
+def _sentinel_config() -> LoopConfig:
+    document = json.loads(json.dumps(_loop_config_document()))
+    document["sentinel_tools"] = {"castContent": ["playMedia"]}
+    return LoopConfig.from_json(document)
+
+
+def _deterministic_candidate(k: int) -> CandidateArtifact:
+    artifact = CandidateArtifact(
+        candidate_id="",
+        family="deterministic",
+        target_id="castContent",
+        round=1,
+        k=k,
+        descriptions={
+            "castContent": "Send media that is already playing to another screen.",
+            "playMedia": "Start playing a named track or show on this device.",
+        },
+        cue=None,
+        proposer_prompt_sha256=None,
+        exemplar_ids=(),
+    )
+    return replace(artifact, candidate_id=artifact.expected_candidate_id()).validate()
+
+
+def test_a_sentinel_row_is_reported_by_name_and_never_counted_as_a_reward(
+    tmp_path,
+) -> None:
+    config = _sentinel_config()
+    repo_root = _repo(tmp_path / "run", config)
+    reward = tuple(FOLD_A_ROWS["castContent"])
+    sentinel = tuple(FOLD_A_ROWS["playMedia"])
+    carrier = CarrierMaterial(
+        registry_rows=(),
+        exemplar_pool={},
+        media_facts={},
+        exemplar_rows={},
+        fold_a_rows_of_target={"castContent": reward},
+        fold_b_targeted_rows=FOLD_B_TARGETED,
+        fold_b_background_rows=FOLD_B_BACKGROUND,
+        fold_a_sentinel_rows={"castContent": {"playMedia": sentinel}},
+    )
+    every = list(reward) + list(sentinel)
+    # The incumbent misses one reward row and holds every sentinel row.
+    incumbent = {row: row != reward[0] for row in every}
+    # The candidate wins that reward row and BREAKS one sentinel row -- the
+    # failure mode the sentinel exists to catch.
+    arm = dict(incumbent)
+    arm[reward[0]] = True
+    arm[sentinel[0]] = False
+    artifact = _deterministic_candidate(4)
+    scores = {
+        "incumbent": _score_file(repo_root / "scores/i.score.json", incumbent),
+        "4": _score_file(repo_root / "scores/k4.score.json", arm),
+    }
+    result = run_select_step(
+        EvolutionState(round=0, incumbent_overrides={}).validate(),
+        1,
+        config=config,
+        carrier=carrier,
+        candidates_receipt={
+            "portfolios": {"4": {"k": 4}},
+            "harvest": {"candidates": [artifact.as_json()]},
+        },
+        score_files=scores,
+        repo_root=repo_root,
+        fold_b_rows=len(FOLD_B_TARGETED) + len(FOLD_B_BACKGROUND),
+        fold_b_speech_seconds=32.0,
+    )
+    receipt = result.documents[config.round_paths(1)["select"]["writes"][0]]
+
+    # Stage one saw the reward rows only: four, not eight.
+    assert receipt["selection"]["decisions"]["castContent"]["n_rows"] == len(reward)
+    assert receipt["selection"]["rows_of_target"]["castContent"] == sorted(reward)
+
+    # And the sentinel harm is reported by name, without changing the decision.
+    line = receipt["sentinel_harms"]
+    block = line["by_target"]["castContent"]["by_k"]["4"]
+    assert block["harms"] == 1
+    assert block["harmed"] == [{"sample_id": sentinel[0], "tool": "playMedia"}]
+    assert result.summary["sentinel_harms"] == {"castContent": {"4": 1}}
+
+
+def test_a_loop_with_no_sentinel_writes_the_line_as_null(tmp_path) -> None:
+    result = _run_round(tmp_path / "run")
+    assert result["selection_receipt"]["sentinel_harms"] is None
+
+
+def _fold_document() -> dict:
+    return {
+        "items": [
+            {"sample_id": row, "stratum": tool}
+            for tool, rows in FOLD_A_ROWS.items()
+            for row in rows
+        ]
+        + [
+            {"sample_id": f"bg:{index:06d}", "stratum": "background:tier1_direct"}
+            for index in range(3)
+        ]
+    }
+
+
+def test_a_sentinel_tools_rows_leave_the_reward_slice_and_join_the_background() -> None:
+    document = _fold_document()
+    sentinels = {"castContent": ["playMedia"]}
+    rewards = rows_of_target_from_roster(document, SENTINEL_TARGETS, sentinels)
+    assert rewards == {"castContent": tuple(sorted(FOLD_A_ROWS["castContent"]))}
+    targeted, background = _split_fold_rows(document, SENTINEL_TARGETS, sentinels)
+    assert targeted == tuple(sorted(FOLD_A_ROWS["castContent"]))
+    # Both the sentinel rows and the tier-stratified rows are background.
+    assert set(FOLD_A_ROWS["playMedia"]) <= set(background)
+    assert len(background) == len(FOLD_A_ROWS["playMedia"]) + 3
+    assert sentinel_rows_from_roster(document, SENTINEL_TARGETS, sentinels) == {
+        "castContent": {"playMedia": tuple(sorted(FOLD_A_ROWS["playMedia"]))}
+    }
+
+
+def test_without_sentinels_the_reward_slice_is_the_whole_target() -> None:
+    document = _fold_document()
+    rewards = rows_of_target_from_roster(document, SENTINEL_TARGETS)
+    assert len(rewards["castContent"]) == 8
+
+
+def test_a_sentinel_the_fold_never_drew_is_refused_rather_than_reported_empty() -> None:
+    with pytest.raises(EvolutionError, match="disagree"):
+        sentinel_rows_from_roster(
+            _fold_document(), SENTINEL_TARGETS, {"castContent": ["absentTool"]}
         )

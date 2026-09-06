@@ -49,6 +49,7 @@ __all__ = [
     "load_state",
     "read_roster_document",
     "rows_of_target_from_roster",
+    "sentinel_rows_from_roster",
 ]
 
 
@@ -71,42 +72,100 @@ def read_roster_document(repo_root: Path, relpath: str) -> Mapping[str, object]:
     return document
 
 
+def _rows_by_tool(document: Mapping[str, object]) -> dict[str, list[str]]:
+    by_tool: dict[str, list[str]] = {}
+    for item in document.get("items", ()):
+        if not isinstance(item, Mapping):
+            raise EvolutionError("fold roster item must be an object")
+        by_tool.setdefault(str(item.get("stratum")), []).append(str(item["sample_id"]))
+    return by_tool
+
+
 def rows_of_target_from_roster(
-    document: Mapping[str, object], targets: Mapping[str, Sequence[str]]
+    document: Mapping[str, object],
+    targets: Mapping[str, Sequence[str]],
+    sentinel_tools: Mapping[str, Sequence[str]] | None = None,
 ) -> dict[str, tuple[str, ...]]:
-    """Each target's own rows of a fold roster.
+    """Each target's REWARD rows of a fold roster.
 
     A fold roster's targeted rows are stratified by the row's GOLD TOOL
     (the fold receipts' own ``strata`` statement), so a target's rows are
     every item whose stratum is one of that target's tools. Background rows
     are stratified by tier and therefore belong to no target, which is what
     makes them the background.
+
+    ``sentinel_tools`` (owner decision 2026-09-06) names, per target, the
+    tools whose rows are HARM SENTINELS: they are flown and reported but they
+    are not reward rows, so they are removed here rather than inside the
+    selection, which keeps stage one exactly the preregistered count rule on
+    exactly the rows a save could ever come from.
     """
 
-    by_tool: dict[str, list[str]] = {}
-    for item in document.get("items", ()):
-        if not isinstance(item, Mapping):
-            raise EvolutionError("fold roster item must be an object")
-        by_tool.setdefault(str(item.get("stratum")), []).append(str(item["sample_id"]))
+    by_tool = _rows_by_tool(document)
+    excluded = sentinel_tools or {}
     out: dict[str, tuple[str, ...]] = {}
     for target_id in sorted(targets):
+        skip = set(excluded.get(target_id, ()))
         rows: list[str] = []
         for tool in sorted(targets[target_id]):
+            if tool in skip:
+                continue
             rows.extend(by_tool.get(tool, ()))
         if not rows:
             raise EvolutionError(
-                f"target {target_id!r} has no row in this fold roster; a target the "
-                "fold cannot reward must be dropped before the round, not silently"
+                f"target {target_id!r} has no reward row in this fold roster; a target "
+                "the fold cannot reward must be dropped before the round, not silently"
             )
         out[target_id] = tuple(sorted(set(rows)))
     return out
 
 
+def sentinel_rows_from_roster(
+    document: Mapping[str, object],
+    targets: Mapping[str, Sequence[str]],
+    sentinel_tools: Mapping[str, Sequence[str]],
+) -> dict[str, dict[str, tuple[str, ...]]]:
+    """``target_id -> sentinel tool -> that tool's rows`` of a fold roster.
+
+    A declared sentinel with no row in the fold is an error rather than an
+    empty entry: it means the roster and the loop config disagree about which
+    tools the draw actually carried, and the sentinel-harms line would then
+    quietly report nothing about a tool the proposer is still rewriting.
+    """
+
+    by_tool = _rows_by_tool(document)
+    out: dict[str, dict[str, tuple[str, ...]]] = {}
+    for target_id in sorted(sentinel_tools):
+        if target_id not in targets:
+            raise EvolutionError(f"sentinel_tools names unknown target {target_id!r}")
+        rows = {
+            tool: tuple(sorted(set(by_tool.get(tool, ()))))
+            for tool in sorted(sentinel_tools[target_id])
+        }
+        empty = sorted(tool for tool, ids in rows.items() if not ids)
+        if empty:
+            raise EvolutionError(
+                f"target {target_id!r} declares sentinel tool(s) {empty} the fold roster "
+                "carries no row for; the roster and the loop config disagree"
+            )
+        out[target_id] = rows
+    return out
+
+
 def _split_fold_rows(
-    document: Mapping[str, object], targets: Mapping[str, Sequence[str]]
+    document: Mapping[str, object],
+    targets: Mapping[str, Sequence[str]],
+    sentinel_tools: Mapping[str, Sequence[str]] | None = None,
 ) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    """``(targeted rows, background rows)``.
+
+    A sentinel row falls to the BACKGROUND, which is the owner's rule: it is
+    counted in the confirmation's background bound, never in the targeted
+    interval a candidate is accepted on.
+    """
+
     targeted: set[str] = set()
-    for rows in rows_of_target_from_roster(document, targets).values():
+    for rows in rows_of_target_from_roster(document, targets, sentinel_tools).values():
         targeted |= set(rows)
     every = {str(item["sample_id"]) for item in document.get("items", ())}
     return tuple(sorted(targeted)), tuple(sorted(every - targeted))
@@ -179,16 +238,21 @@ def load_carrier_material(
     sentence/gold-entity rows. Everything else -- which rosters, which steps
     read what, how a fold's rows are grouped by stratum -- is shared, which is
     what "the same loop code on a second carrier" has to mean.
+
+    The three roster relpaths default to the ones ``config`` names, so a
+    re-freeze (V1 -> V2) is a committed-config change; an explicit argument
+    still wins, which is what lets a test drive this against a fixture.
     """
+
+    exemplar_roster_relpath = exemplar_roster_relpath or config.exemplar_roster_relpath
+    fold_a_roster_relpath = fold_a_roster_relpath or config.fold_a_roster_relpath
+    fold_b_roster_relpath = fold_b_roster_relpath or config.fold_b_roster_relpath
 
     if step not in _STEP_NEEDS:
         raise EvolutionError(f"unknown step {step!r}")
     needs = _STEP_NEEDS[step]
     resolved_lock = lock if lock is not None else load_lock(umbrella_lock_path(repo_root))
     root = Path(data_root) if data_root is not None else _data_root()
-    exemplar_roster_relpath = exemplar_roster_relpath or config.exemplar_roster_relpath
-    fold_a_roster_relpath = fold_a_roster_relpath or config.fold_a_roster_relpath
-    fold_b_roster_relpath = fold_b_roster_relpath or config.fold_b_roster_relpath
     if config.carrier_lock_key == _SLURP_LOCK_KEY:
         return _slurp_carrier_material(
             repo_root,
@@ -236,16 +300,23 @@ def load_carrier_material(
             media_facts = load_media_rows(resolved_lock, root, every_id)
 
     fold_a_rows_of_target: Mapping[str, tuple[str, ...]] = {}
+    fold_a_sentinel_rows: Mapping[str, Mapping[str, tuple[str, ...]]] = {}
     if "fold_a" in needs:
+        fold_a = read_roster_document(repo_root, fold_a_roster_relpath)
         fold_a_rows_of_target = rows_of_target_from_roster(
-            read_roster_document(repo_root, fold_a_roster_relpath), config.targets
+            fold_a, config.targets, config.sentinel_tools
+        )
+        fold_a_sentinel_rows = sentinel_rows_from_roster(
+            fold_a, config.targets, config.sentinel_tools
         )
 
     fold_b_targeted: tuple[str, ...] = ()
     fold_b_background: tuple[str, ...] = ()
     if "fold_b" in needs:
         fold_b_targeted, fold_b_background = _split_fold_rows(
-            read_roster_document(repo_root, fold_b_roster_relpath), config.targets
+            read_roster_document(repo_root, fold_b_roster_relpath),
+            config.targets,
+            config.sentinel_tools,
         )
 
     return CarrierMaterial(
@@ -256,6 +327,7 @@ def load_carrier_material(
         fold_a_rows_of_target=fold_a_rows_of_target,
         fold_b_targeted_rows=fold_b_targeted,
         fold_b_background_rows=fold_b_background,
+        fold_a_sentinel_rows=fold_a_sentinel_rows,
     )
 
 
