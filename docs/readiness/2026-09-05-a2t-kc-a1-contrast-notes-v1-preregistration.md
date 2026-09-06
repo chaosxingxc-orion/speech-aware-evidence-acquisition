@@ -119,8 +119,9 @@ tokens** -- three times the cap, and above ORG-1's measured +87. Reducing it fur
 +40 tokens is about 160 characters, i.e. seven characters per targeted tool, which is shorter than the words the
 released descriptions already contain. An inline note over 23 tools either exceeds the cap or carries nothing.
 
-Three resolutions, and what each costs. The receipt prices all three; nothing else in this document depends on
-which one the owner takes.
+Three resolutions, and what each costs. The artifact receipt prices A and B from bytes that exist -- its
+`per_target` block is the arithmetic for any subset -- while C is an estimate for a design nothing has built.
+Nothing else in this document depends on which one the owner takes.
 
 | option | what flies | measured cost | addressable mass covered |
 |---|---|---|---|
