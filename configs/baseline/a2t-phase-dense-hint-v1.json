@@ -1,0 +1,45 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "phase-direct-only-v1",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "scorers": [
+    "a2t-toolcall",
+    "cost"
+  ],
+  "knowledge_snapshot_relpath": "knowledge/audio2tool/saea-kb-distmodel-v1/size-full/snapshot.json",
+  "knowledge_snapshot_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "phase_material": {
+    "direct": {
+      "instruction_template": "probes/a2t_phase_select.txt",
+      "instruction_fill": null,
+      "response_format_id": null,
+      "predecessor_binding": "none"
+    }
+  },
+  "phase_supply": {
+    "direct": {
+      "provider": "dense-centroid-v1",
+      "rank_policy": "saea-rank-wcos-prior-agree-v1",
+      "fuse_policy": "saea-fuse-supplyfilter-v1",
+      "k": 8,
+      "tau": 0.0,
+      "dimensions": [
+        "content"
+      ],
+      "expose_facets": false,
+      "query_source": {
+        "kind": "sealed-vectors",
+        "relpath": "vectors/a2t-ku-a1/query-vectors.jsonl",
+        "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "tool_contact_ledger_row": "TO BE FILLED BY THE PRE-FLIGHT EMBEDDING PASS",
+        "embedded_signal": "speech: AUDIO-KEYED, zero frozen-core contacts: one pre-flight embedding per frozen-4,000 row of that row's own speech-derived query representation, by the pinned tool-level embedder, written before takeoff under its own exposure-ledger tool-contact row. The \"speech:\" prefix is the owner rule of 2026-09-06 declared in the fixed rails.phase_supply.QUERY_SIGNAL_MODALITIES vocabulary: the retrieval query must carry the speech signal and can never be text-only."
+      }
+    }
+  },
+  "what_this_is": "SHAPE SKETCH for cell KU-A1 of the 2026-09-05 three-dimension experiment program: one 'Likely tools' hint from DenseCentroidProvider top-8, one contact per Audio2Tool row, official-protocol system message unchanged. It is a preflight-shaped fragment, not a flight: no vectors exist, no snapshot exists, and BOTH sha256 fields are the 64-f placeholder, so it is refused at preflight until they are replaced.",
+  "why_a_first_phase_is_a_different_route": "KU-A1 is ONE contact per row, so the supplied phase is the program's FIRST phase -- and a first phase has no preceding advance, so no wave can carry an acquire transition for it. rails.phase_supply.build_bootstrap_selection decides the selection BEFORE the flight instead (a pure function of the pinned query vectors, the frozen snapshot and the pinned knobs) and core.flight.FlightRuntime seeds it per sample into that sample's initial QueryState through rails.runner's bootstrap_value_ids mapping form. It still reaches the model only as typed content blocks with evidence_id, source_uri and knowledge_role, and the SUPPLY trace record reports it per row. What it does NOT get, stated plainly: an acquire transition, and therefore no assert_knowledge_use_binding call at contact time. The compensating evidence is that the decision is pre-flight and hash-pinned rather than runtime and unrecorded.",
+  "the_provider_must_be_injected": "dense-centroid-v1 resolves in core.base.KNOWLEDGE_PROVIDERS, but rails.phase_supply cannot CONSTRUCT it: a DenseCentroidProvider needs a built rails.a2t_semantic_router.ToolTierSemanticIndex and a SelectedToolDecisionGround, neither of which is derivable from a KnowledgeSnapshot. The built provider comes in through core.flight.FlightRuntime.bind_phase_supply_providers, which is also how tests/unit/test_a2t_phase_dense_hint.py drives this fragment with a fake provider and zero embeddings.",
+  "gated_by_mf_6": "MF-6 gates this cell: KU-A1 runs ONLY if DenseCentroid recall@8 on the construction folds and the 4,000 reaches 0.85 (program section 3). Below that bound the top-8 hint is wrong more often than it is right and the cell measures the retriever's error rate, not the consumption question. Nothing in this fragment may be flown before MF-6 reports.",
+  "the_system_message_is_unchanged": "task_instruction_template/fill are deliberately absent so the adapter's own official-protocol instruction stands byte-for-byte, exactly as the sealed official-protocol 4,000 baseline sent it. The ONLY things this cell adds to that arm's request are the phase CONTROL turn and the typed knowledge blocks."
+}

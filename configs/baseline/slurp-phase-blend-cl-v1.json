@@ -1,0 +1,81 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "phase-direct-evidence-alpha-blend-v1",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
+  "speech_feature_key_representation_id": "saea-slurp-phase-blend-cl-v1:direct",
+  "speech_feature_matcher_policy_id": "saea-slurp-phase-blend-cl-v1",
+  "scorers": [
+    "slurp-slu-official",
+    "slurp-slu",
+    "cost"
+  ],
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template_active": true,
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full/snapshot.json",
+  "knowledge_snapshot_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+  "phase_material": {
+    "direct": {
+      "instruction_template": "probes/slurp_phase_direct.txt",
+      "instruction_fill": null,
+      "response_format_id": null,
+      "predecessor_binding": "none"
+    },
+    "evidence": {
+      "instruction_template": "probes/slurp_phase_evidence.txt",
+      "instruction_fill": null,
+      "response_format_id": null,
+      "predecessor_binding": "none"
+    }
+  },
+  "phase_supply": {
+    "evidence": {
+      "provider": "kb-facet-v1",
+      "rank_policy": "saea-rank-wcos-prior-agree-v1",
+      "fuse_policy": "saea-fuse-supplyfilter-v1",
+      "k": 5,
+      "tau": 0.65,
+      "alpha": 0.45,
+      "dimensions": [
+        "content"
+      ],
+      "rank_weights": {
+        "w_cos": 0.5,
+        "w_prior": 0.3,
+        "w_agree": 0.2
+      },
+      "fuse_coverage": {
+        "m": 5,
+        "c": 2,
+        "top_l": 3
+      },
+      "expose_facets": false,
+      "query_source": {
+        "kind": "sealed-vectors",
+        "relpath": "vectors/slurp-ku-s1/query-vectors.jsonl",
+        "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "tool_contact_ledger_row": "TO BE FILLED BY THE MF-7-CHOSEN SPEECH-QUERY EMBEDDING PASS. The 2026-09-06 draft-text pass SAEA-SLURP-KU-S1-QUERY-EMBEDDING-V1 is explicitly NOT it: its vectors embed response TEXT only, which the owner rule of 2026-09-06 forbids as a retrieval query. Those vectors keep their path and receipt as MF-7's diagnostic Q-draft set and as the STATE half of a future speech+state fusion.",
+        "embedded_signal": "speech+state: PLACEHOLDER, TO BE FIXED BY MF-7'S DECISION TABLE. Owner rule 2026-09-06 (binding): the retrieval query must contain the speech signal; it may be speech plus an agent intermediate state (the row's own phase-1 draft answer), but it can never be text-only. The candidate speech-containing embedders are GLAP, LCO-Embedding-Omni and Omni-Embed-Nemotron; MF-7 chooses one and chooses between speech alone and speech + draft state, and either choice is legal under rails.phase_supply.QUERY_SIGNAL_MODALITIES. Fixing this string to the realised signal (and to 'speech:' if MF-7 drops the state half) CHANGES THE CONFIG HASH and therefore the cell's identity, which is exactly the point: the declared query modality is part of what KU-S1 is."
+      },
+      "facet_source": {
+        "kind": "sealed-vectors",
+        "relpath": "vectors/slurp-ku-s1/facet-vectors.jsonl",
+        "sha256": "922e8e9f7f52a4305ecdf5c3b8f9cfc22b95c7a6e6901198988150acf82f8fad",
+        "tool_contact_ledger_row": "already paid: docs/receipts/knowledge/slurp-kb-size-full-embeddings.json, attempt attempt-20260824T030738Z-kbtxemb, 23,030 embedding tool contacts, 0 frozen-core contacts. The JSONL at this relpath was written by the ZERO-CONTACT format conversion SAEA-SLURP-MF-KU-S1-FACET-VECTORS-V1 (2026-09-06, receipt docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-ku-s1-vectors/facet-vectors.json): 11,514 x 1,024, 262,190,415 bytes, read back through rails.phase_supply.load_sealed_vectors at max |delta| 0.0 against the npz",
+        "embedded_signal": "KeyFacet.representation of every dimension=='content' facet of the slurp-kb-size-full snapshot, already sealed as vectors-content-facets.npz (sha256 0bcb955a...1c72, 11,514 x 1,024). The JSONL named here is a pure FORMAT conversion of those exact vectors -- no new contact, no new signal. Value vectors stay SEALED and are never loaded (the 2026-08-23 Q-K-V ruling: V is consumed, never embedded as key material)."
+      }
+    }
+  },
+  "what_this_is": "Cell KU-S1 of the 2026-09-05 three-dimension experiment program: the SLURP consumption dimension's RETRIEVAL cell, refused before registration on 2026-09-05 and unblocked by enabler E6. Two contacts per DEV-1000 row over the same closed-list task: phase 'direct' answers the spoken command with nothing supplied; the retrieval decision is then taken on that wave and, unless the alpha blend retains the direct answer, phase 'evidence' answers again with the fused top-5 knowledge values in view. The question it answers is the one the KU-S1c verdict left open: what does retrieval add over the closed-list instruction?",
+  "the_supply_never_touches_the_control_turn": "This is the whole of E6 and the reason this cell can exist. The KU-S1 refusal measured that a KbFacetProvider top-5 block renders KnowledgeValue.content verbatim and that 11,514 of 11,514 SLURP values are at or over the 8-character protected-material floor, so folding a SupplyPacket into AgentContactPlan.instruction was illegal on 100 percent of rows. That fold is gone. rails.controllers.EvidenceAgentController now emits an acquire transition carrying this decision's RankResult and FusionDecision and advances the successor QueryState's retrieved_value_ids; rails.runner._agent_messages renders those values as typed content blocks with evidence_id, source_uri and knowledge_role, validated by assert_knowledge_use_binding. The evidence phase's control-turn bytes are identical to what they would be with no supply at all.",
+  "why_the_full_snapshot_is_safe_here": "This cell binds slurp-kb-size-full -- 23,267 protected payloads WITH the content dimension, the BLEND lock's own substrate -- where KU-S1c had to fall back to the label/prior/speaker snapshot. It can, because neither phase appends anything per sample to its control turn: both declare predecessor_binding 'none', so the only text the containment rule reads is the two static directives. Measured against the real snapshot on 2026-09-06: 0 collisions for probes/slurp_phase_direct.txt (262 chars) and 0 for probes/slurp_phase_evidence.txt (475 chars). KU-S1c's 78-of-1,000 phase-2 collisions came from its appended draft response, which this cell does not send.",
+  "the_knobs_are_the_lock_s": "alpha 0.45, tau 0.65, k 5, rank weights 0.5/0.3/0.2 and fusion m=5 c=2 l=3 are configs/policy/kb-policy-v2-lock-candidate.json's, unchanged. alpha is live: a spec declaring it re-ranks the fused evidence's label distribution against the direct answer as alpha*kb + (1-alpha)*[label==direct] and, when the direct label is the UNIQUE winner, retains the direct answer and spends no second contact -- rails.kb_policy.KbAlphaBlendController's own retain-primary shortcut, computed by its own _fused_label_scores/_blend_scores/_argmax_labels. Realized contacts are therefore data-dependent and must be reported, not assumed to be 2 per row. The v2 delta retain-override is NOT carried: it was falsified out of sample (docs/readiness/2026-08-25-baseline-lock-verdict.md section 3) and that file is an audit record, not a live policy.",
+  "before_this_flies": "query vectors must be produced by a speech-containing embedder chosen by MF-7 (GLAP / LCO-Embedding-Omni / Omni-Embed-Nemotron, speech alone or speech + draft state); owner rule 2026-09-06. The FACET (KEY) side is now CLOSED: vectors/slurp-ku-s1/facet-vectors.jsonl exists, is pinned above by its measured sha256, and cost zero contacts. The QUERY side is deliberately still the 64-f PLACEHOLDER, so rails.phase_supply.load_sealed_vectors WILL refuse this fragment at preflight, which is correct: the only query vectors that exist today (vectors/slurp-ku-s1/query-vectors.jsonl, run SAEA-SLURP-KU-S1-QUERY-EMBEDDING-V1, 1,002 embedding tool contacts, sha256 c194adfb...ff4c6) embed RESPONSE TEXT, and text-only is exactly what the owner rule forbids as a retrieval query. Those vectors keep their path and their receipt as MF-7's diagnostic Q-draft arm and as the STATE half of a future speech+state fusion; they are not this cell's query. When MF-7 reports: pin the chosen embedder's vectors here, set query_source.embedded_signal to the realised 'speech:' or 'speech+state:' declaration (rails.phase_supply refuses anything else), re-measure the prompt fit, and re-run the containment measurement.",
+  "what_this_cell_is_not": "It is not the DEV-1000 lock re-flown, and after the owner rule of 2026-09-06 it cannot be. The lock embedded its query vector IN FLIGHT, one tool contact per row, on that trajectory's OWN direct-decode response text (launch_dev1000_baseline_lock.py's RuntimeEmbeddedBlendController) -- a TEXT-ONLY retrieval key, which the rule now forbids. This cell's query must carry the speech signal (speech, or speech plus the row's own draft answer as the state half), so its recall runs on a different key family from the lock's by construction. Two consequences that must be stated in the verdict rather than hidden: the sealed BLEND numbers stay a REFERENCE and are not this cell's comparator, and the realised contact distribution measured under the lock's text key (retain 660 / dispatch 340, or 674 / 326 with the v2 delta override removed) is an EXPECTATION, not a prediction, because a different key changes which rows the alpha blend retains.",
+  "serving_geometry": "No override: the SlurpAdapter defaults (8 slots x 8,192 slot tokens, 64 completion tokens) stand, the geometry the sealed closed-list comparator and KU-S1c both flew. The evidence phase adds up to 5 knowledge values as typed content blocks; core.flight.FlightRuntime._phase_supply_prompt_bound bounds them with the 5 LONGEST values in the snapshot, so the prompt-fit estimate is an upper bound rather than an under-count. A pinned prompt-fit receipt must be measured and added before takeoff, as KU-S1c's was.",
+  "dispatch_note": "Because the evidence phase is supplied, FlightRuntime dispatches this program through rails.phase_runner.run_continuous_program -- ONE trajectory per sample rather than run_program's two whole-roster waves -- since a traced acquire transition can only be emitted on the advance of the phase before the supplied one. Neither phase declares a barrier, so nothing is given up. The run_phases receipt says which dispatch ran.",
+  "scorer_basis": "Unchanged from configs/baseline/slurp-direct-closed-list.json and KU-S1c: slurp-slu-official is the paper-facing scorer (the real, unmodified official evaluate.py at pinned commit 8eb16545762be97ace75334109d73824217311f1, --average micro), run once over the complete manifest through core.scoring_batch, never sharded."
+}

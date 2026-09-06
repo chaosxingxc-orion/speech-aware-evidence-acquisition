@@ -1,0 +1,5 @@
+Answer now for the spoken command carried in this request, under the task contract already given in the system message above.
+
+Retrieved knowledge entries, when present, arrive as separate evidence blocks in this request. Treat them as auxiliary support for the same spoken command, never as a replacement for it, and never as the answer.
+
+Return exactly one JSON object in the form that contract specifies, and nothing else: no explanation, no code fence, no second object.

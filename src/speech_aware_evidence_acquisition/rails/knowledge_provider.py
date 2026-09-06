@@ -36,10 +36,11 @@ concrete provider is built from caller-injected rows/vectors/evidence; a real
 flight resolves those upstream (a governed jsonl load, an embedding-server
 call, an ``EVIDENCE_SOURCES`` read) and hands the RESULT in here.
 
-``KNOWLEDGE_PROVIDERS`` (this module's own registry, module docstring
-"Residual") is a stopgap: ``core.base`` should eventually host it alongside
-``KNOWLEDGE_BUILDERS``/``KNOWLEDGE_RANKERS``/``KNOWLEDGE_FUSERS`` (this slice
-does not own ``core/base.py`` and cannot add it there).
+``KNOWLEDGE_PROVIDERS`` is the shared ``core.base`` registry (E6,
+2026-09-06 -- it used to be a local stopgap here); the three ``register``
+calls at the bottom of this module are its canonical population site, so a
+baseline fragment's ``phase_supply.provider`` resolves the same way every
+other config-declared component id does.
 """
 
 from __future__ import annotations
@@ -56,8 +57,8 @@ from ..core.base import (
     EvidenceItem,
     KNOWLEDGE_BUILDERS,
     KNOWLEDGE_FUSERS,
+    KNOWLEDGE_PROVIDERS as _CORE_KNOWLEDGE_PROVIDERS,
     KNOWLEDGE_RANKERS,
-    Registry,
 )
 from ..core import evidence as _core_evidence  # noqa: F401 -- side-effect import:
 # registers "conec-contexts"/"conec-names"/"conec-bias-list"/... into the
@@ -227,6 +228,7 @@ class KnowledgeProvider(abc.ABC):
         self._build_policy_id: str | None = None
         self._source_ids: tuple[str, ...] = ()
         self._built_at: str | None = None
+        self._pinned_sha256: str | None = None
 
     @property
     def provider_id(self) -> str:
@@ -261,6 +263,41 @@ class KnowledgeProvider(abc.ABC):
         self._build_policy_id = policy_id
         self._source_ids = tuple(source_ids)
         self._built_at = _utc_now_iso()
+
+    def adopt(
+        self,
+        built: object,
+        *,
+        policy_id: str,
+        source_ids: Sequence[str] = (),
+        snapshot_sha256: str | None = None,
+    ) -> "KnowledgeProvider":
+        """Bind an artifact this provider did NOT build itself (E6).
+
+        A flight loads and hash-verifies its frozen ``KnowledgeSnapshot``
+        once, in ``core.flight.FlightRuntime._load_knowledge_snapshot``;
+        asking the provider to re-derive it from source rows would produce a
+        second artifact under a second identity. ``adopt`` is the honest
+        alternative: it records the already-frozen object under a named
+        policy id, so ``snapshot_sha256``/``receipt``/``candidates`` see
+        exactly the artifact the flight pinned.
+
+        ``snapshot_sha256`` pins that artifact's already-computed hash.
+        :meth:`snapshot_sha256` otherwise re-canonicalises and re-hashes the
+        whole artifact on EVERY call -- three times per supply decision,
+        which at SLURP's 23,267 protected payloads times a 1,000-row roster
+        is the dominant cost of a supplied cell and buys nothing: the flight
+        already computed and verified this exact hash.
+        """
+
+        if built is None:
+            raise RailsError(f"{self.provider_id}: adopt() needs a built artifact")
+        self._record_build(built, policy_id=policy_id, source_ids=tuple(source_ids))
+        if snapshot_sha256 is not None:
+            self._pinned_sha256 = _require_sha256(
+                snapshot_sha256, field=f"{self.provider_id}.adopt snapshot_sha256"
+            )
+        return self
 
     def _built_object(self) -> object:
         if self._built is None:
@@ -306,6 +343,8 @@ class KnowledgeProvider(abc.ABC):
         sha256 of :meth:`_canonical_view`."""
 
         built = self._built_object()
+        if self._pinned_sha256 is not None:
+            return self._pinned_sha256
         native_hash = getattr(built, "content_hash", None)
         if callable(native_hash):
             return native_hash()
@@ -587,6 +626,15 @@ class KbFacetProvider(KnowledgeProvider):
             rank_result=self._last_rank_result,
             recall_scores=self._last_recall_scores,
         )
+
+    def last_rank_result(self) -> object | None:
+        """The ``RankResult`` this provider's most recent ``candidates()``
+        call produced, or ``None`` before the first call. E6's traced-supply
+        seam needs it: an ``acquire`` transition carries the RankResult AND
+        the FusionDecision, and ``candidates()`` returns only the flattened
+        :class:`Ranking` view."""
+
+        return self._last_rank_result
 
     def materialize(self, selection: object, *, query_state: QueryState) -> SupplyPacket:
         snapshot: KnowledgeSnapshot = self._built_object()
@@ -1022,21 +1070,33 @@ class ConecContextProvider(KnowledgeProvider):
 
 
 # ---------------------------------------------------------------------------
-# KNOWLEDGE_PROVIDERS -- a local registry (core.base is not owned by this slice)
+# KNOWLEDGE_PROVIDERS -- registrations into the shared core.base registry
 # ---------------------------------------------------------------------------
+#
+# E6 (2026-09-06): the registry OBJECT now lives in ``core.base`` beside
+# ``KNOWLEDGE_BUILDERS``/``KNOWLEDGE_RANKERS``/``KNOWLEDGE_FUSERS`` (the
+# residual this module's docstring named), because a baseline fragment's
+# ``phase_supply.provider`` has to resolve in a ``core.base`` registry like
+# every other config-declared component id. The name below is a plain
+# re-export, so every pre-existing importer of
+# ``rails.knowledge_provider.KNOWLEDGE_PROVIDERS`` is byte-unaffected. The
+# ``register`` calls stay HERE, where the provider classes are, and this
+# file is named in ``scripts/checks/engineering_base_check.py``'s canonical
+# registration-site list for exactly that reason.
 
-KNOWLEDGE_PROVIDERS = Registry("knowledge provider")
-KNOWLEDGE_PROVIDERS.register("kb-facet-v1", KbFacetProvider)
-KNOWLEDGE_PROVIDERS.register("dense-centroid-v1", DenseCentroidProvider)
-KNOWLEDGE_PROVIDERS.register("conec-context-v1", ConecContextProvider)
+KNOWLEDGE_PROVIDERS = _CORE_KNOWLEDGE_PROVIDERS
+if "kb-facet-v1" not in KNOWLEDGE_PROVIDERS.names():
+    KNOWLEDGE_PROVIDERS.register("kb-facet-v1", KbFacetProvider)
+if "dense-centroid-v1" not in KNOWLEDGE_PROVIDERS.names():
+    KNOWLEDGE_PROVIDERS.register("dense-centroid-v1", DenseCentroidProvider)
+if "conec-context-v1" not in KNOWLEDGE_PROVIDERS.names():
+    KNOWLEDGE_PROVIDERS.register("conec-context-v1", ConecContextProvider)
 
 
 def resolve_provider(provider_id: str, **kwargs: object) -> KnowledgeProvider:
     """Construct the registered provider class named ``provider_id`` with
-    ``kwargs``. ``core.base`` should eventually host ``KNOWLEDGE_PROVIDERS``
-    alongside ``KNOWLEDGE_BUILDERS``/``KNOWLEDGE_RANKERS``/``KNOWLEDGE_FUSERS``
-    (module docstring) -- this slice does not own ``core/base.py``.
-    """
+    ``kwargs``, through the shared ``core.base.KNOWLEDGE_PROVIDERS``
+    registry."""
 
     factory = KNOWLEDGE_PROVIDERS.resolve(provider_id)
     return factory(**kwargs)

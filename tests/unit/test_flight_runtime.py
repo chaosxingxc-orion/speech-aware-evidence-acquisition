@@ -1660,6 +1660,11 @@ def test_wire_check_returns_a_zero_contact_receipt(tmp_path):
     assert receipt["id_slot"] == 0
     assert len(receipt["request_body_sha256"]) == 2
     assert receipt["seal_and_score"]["status"] == "SKIPPED"
+    # E6: a cell that supplies nothing carries no typed knowledge block, and
+    # the receipt says so per request rather than staying silent.
+    assert receipt["typed_knowledge_blocks"] == [0, 0]
+    assert receipt["typed_knowledge_blocks_total"] == 0
+    assert receipt["phase_supply"] is None
 
 
 def test_wire_check_never_touches_the_registered_run_id(tmp_path):

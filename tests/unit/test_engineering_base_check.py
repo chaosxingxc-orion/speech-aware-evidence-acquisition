@@ -306,6 +306,13 @@ def test_regex_extraction_agrees_with_package_import():
         from speech_aware_evidence_acquisition.rails import (
             controllers as _controllers,  # noqa: F401
         )
+
+        # E6 (2026-09-06): core.base.KNOWLEDGE_PROVIDERS is populated from
+        # rails/knowledge_provider.py, now a canonical registration site, so
+        # the same rule applies to it.
+        from speech_aware_evidence_acquisition.rails import (
+            knowledge_provider as _knowledge_provider,  # noqa: F401
+        )
     except ImportError as exc:
         pytest.skip(f"package not importable in this environment: {exc}")
 
@@ -323,6 +330,9 @@ def test_regex_extraction_agrees_with_package_import():
         # E1 (2026-09-05): the phase-program response formats, registered
         # from the same canonical rails/controllers.py file.
         "RESPONSE_FORMATS": set(core_base.RESPONSE_FORMATS.names()),
+        # E6 (2026-09-06): the knowledge providers a baseline fragment's
+        # phase_supply.provider resolves against.
+        "KNOWLEDGE_PROVIDERS": set(core_base.KNOWLEDGE_PROVIDERS.names()),
     }
 
     assert regex_registered == import_registered

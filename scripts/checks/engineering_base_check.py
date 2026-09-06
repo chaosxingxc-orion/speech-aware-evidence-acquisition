@@ -32,7 +32,8 @@ Registered names for ``policy`` / ``evidence_source`` / ``scorers`` /
 knowledge-plane ids are resolved WITHOUT importing the (torch-dependent)
 package: a regex scan of the five canonical ``core.base`` population sites
 (``core/policies.py``, ``core/evidence.py``, ``core/scorers.py``,
-``rails/kb_policy.py``, ``rails/knowledge_build.py``) for
+``rails/kb_policy.py``, ``rails/knowledge_build.py``,
+``rails/controllers.py``, ``rails/knowledge_provider.py``) for
 ``<REGISTRY_VAR>.register(<literal-or-constant>, ...)`` calls, with a
 second pass over every ``src/`` module resolving bare-identifier arguments
 (e.g. ``OBS_LOOP_POLICY_NAME``) to their module-level string assignment,
@@ -61,6 +62,7 @@ PROBES_DIR = f"{PACKAGE_ROOT}/rails/probes"
 ADAPTERS_DIR = f"{PACKAGE_ROOT}/rails/adapters"
 CONTROLLERS_MODULE = f"{PACKAGE_ROOT}/rails/controllers.py"
 KB_POLICY_MODULE = f"{PACKAGE_ROOT}/rails/kb_policy.py"
+KNOWLEDGE_PROVIDER_MODULE = f"{PACKAGE_ROOT}/rails/knowledge_provider.py"
 DOCS_CHECKS_DIR = "docs/checks"
 CONFIG_DIRS = ("configs/baseline", "configs/experiment")
 LAUNCHER_DIR_NAME = "launcher"
@@ -83,6 +85,14 @@ CANONICAL_REGISTRY_FILES = (
     # one of the four bases the owner rule names, so it is a canonical
     # registration site too.
     CONTROLLERS_MODULE,
+    # E6 (2026-09-06): core.base.KNOWLEDGE_PROVIDERS is populated from
+    # rails/knowledge_provider.py -- the registry object moved to core.base
+    # so a baseline fragment's phase_supply.provider resolves like every
+    # other component id, but the three register() calls stay beside the
+    # provider classes. This file is therefore a canonical registration
+    # site, exactly as rails/kb_policy.py is for the ranker/fuser ids it
+    # registers beside their implementations.
+    KNOWLEDGE_PROVIDER_MODULE,
 )
 
 # config key -> core.base registry variable, top-level only (the flat
@@ -121,6 +131,14 @@ NESTED_ID_KEYS = {
     # contract, declared both in configs/policy/phase-*.json and, per phase,
     # under a baseline fragment's "phase_material" object.
     "response_format_id": "RESPONSE_FORMATS",
+    # E6 (2026-09-06): a baseline fragment's "phase_supply" object declares,
+    # per supplied phase, which knowledge provider ranks and fuses the
+    # frozen snapshot and under which registered rank/fuse policy. All three
+    # resolve in a core.base registry like every other component id.
+    "provider": "KNOWLEDGE_PROVIDERS",
+    "knowledge_provider_id": "KNOWLEDGE_PROVIDERS",
+    "rank_policy": "KNOWLEDGE_RANKERS",
+    "fuse_policy": "KNOWLEDGE_FUSERS",
 }
 
 ALL_REGISTRY_VARS = (
@@ -273,8 +291,9 @@ TreeReader = LiveTreeReader | CommittedTreeReader
 
 def build_registered_names(reader: TreeReader) -> dict[str, set[str]]:
     """Registered name sets for the ``core.base`` registries this check
-    cares about, resolved via regex over the five canonical population
-    files -- never by importing the package.
+    cares about, resolved via regex over the canonical population
+    files (:data:`CANONICAL_REGISTRY_FILES`) -- never by importing the
+    package.
 
     Pass 1 scans only the canonical files for ``<REGISTRY_VAR>.register(...)``
     calls; a literal string argument is used directly, a bare-identifier
