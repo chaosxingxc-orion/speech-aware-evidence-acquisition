@@ -105,8 +105,12 @@
   "carrier_lock_key": "slurp",
   "cell_label": "EVO-S1",
   "decontamination": {
+    "a0_exemption": "A_0's 1,008 TRAIN fillers carry 8 distinct 6-gram digests, of which 1 occurs in the DEV-1000 digest set and is therefore exempt. A_0 itself PASSES the gate; a filler shorter than six words yields no 6-gram at all, which is why 1,008 fillers produce 8 grams",
+    "artifact_relpath": "docs/receipts/knowledge/slurp-evo-decontamination-v1.json",
+    "artifact_sha256": "ebfe26a9bebc81403194a19880b98e34efb0bcd813d190eab56f880885dfa01d",
     "baseline_filler_texts": "A_0's own 1,008 TRAIN fillers, which KC-S1b already sent and which are therefore exempt: refusing them would refuse the incumbent itself",
-    "evaluation_sentence_texts": "the SLURP devel sentences, opened inside rails.proposer.validate_slurp_candidate_artifact alone and never rendered; a first for this study and confirmed as its own model-free row (preregistration section 8)",
+    "evaluation_ngram_digests": "the committed artifact above, read through rails.proposer.load_evaluation_ngram_digests: 2,205 sha256 digests of the DEV-1000 sentence 6-grams (NEW500 contributes 1,133 of them, a strict subset). This is the route a FLIGHT takes. SAEA-SLURP-MF-EVO-DECONTAMINATION-V1 is the one row licensed to open SLURP devel sentence text and it has already spent that licence; a per-round candidate validation consumes its hash-pinned product instead, so no devel text is opened, held, rendered or logged a second time, and a refusal names digests",
+    "evaluation_sentence_texts": "the raw-sentence route, kept for the registered model-free row and for tests. A flight passes evaluation_ngram_digests instead; the two routes are unioned by rails.proposer.validate_slurp_candidate_artifact and decide identically, which tests/unit/test_slurp_proposer_family.py asserts",
     "exemplar_texts": "the construction rows each candidate's proposer was shown; overlap is measured and reported, never gated",
     "row": "SAEA-SLURP-MF-EVO-DECONTAMINATION-V1"
   },

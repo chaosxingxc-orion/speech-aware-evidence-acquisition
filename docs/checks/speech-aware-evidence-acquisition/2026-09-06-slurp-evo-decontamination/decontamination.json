@@ -1,0 +1,40 @@
+{
+  "a0_exempt_digests": 1,
+  "a0_filler_ngram_digests": 8,
+  "a0_fillers": 1008,
+  "a0_verdict": "PASS",
+  "artifact": "docs/receipts/knowledge/slurp-evo-decontamination-v1.json",
+  "artifact_sha256": "ebfe26a9bebc81403194a19880b98e34efb0bcd813d190eab56f880885dfa01d",
+  "contacts": {
+    "audio_seconds": 0,
+    "embedding": 0,
+    "gpu_hours": 0,
+    "model": 0,
+    "network": 0,
+    "paid_api_spend": 0,
+    "tool": 0
+  },
+  "evaluation_ngram_count": 2205,
+  "exposure_row": "SAEA-SLURP-MF-EVO-DECONTAMINATION-V1",
+  "populations": {
+    "DEV-1000": {
+      "distinct_ngram_digests": 2205,
+      "probe_sample_receipt": "docs/receipts/probe-samples/DEV-1000.json",
+      "probe_sample_receipt_sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b",
+      "sentences_read": 1000,
+      "utterances": 1000
+    },
+    "DEV-1000-NEW500": {
+      "distinct_ngram_digests": 1133,
+      "probe_sample_receipt": "docs/receipts/probe-samples/DEV-1000-NEW500.json",
+      "probe_sample_receipt_sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3",
+      "sentences_read": 500,
+      "subset_of_dev1000_digests": true,
+      "utterances": 500
+    }
+  },
+  "preregistration": "docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md",
+  "reloaded_digests": 2205,
+  "schema": "saea-slurp-evo-decontamination-read-v1",
+  "text_written_anywhere": "none. No sentence, no gram and no filler string is written by this row; the artifact carries digests and counts only."
+}
