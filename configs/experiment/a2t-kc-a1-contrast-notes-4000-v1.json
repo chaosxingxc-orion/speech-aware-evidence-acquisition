@@ -3,8 +3,8 @@
   "schema": "saea-a2t-direct-calibration-experiment-v1",
   "date": "2026-09-05",
   "execution_profile": "baseline-reproduction",
-  "purpose": "KC-A1 and its control KC-A1c of the three-dimension program (docs/readiness/2026-09-05-three-dimension-experiment-program.md section 4a). MF-1 (docs/readiness/2026-09-05-a2t-query-cue-audit-v1.md) closed with the KC-A1 gate PASSED: 235 of the sealed 4,000-row misses sit inside five disjoint TARGET tool sets whose queries separate at 0.86 to 1.00, so the cue exists in the speech and the registry's own descriptions do not carry it. On the owner's option B of 2026-09-06 this cell targets the LIGHTING cluster ALONE -- 8 tools, 147 of the 235 addressable rows -- because that subset is the one that renders inside the program's +40-token form cap; the other four targets keep their notes in configs/knowledge/a2t-kc-a1/targets-v1.json and are not flown here. KC-A1 appends a deterministic contrast note, derived from registry columns only, to the compact registry line of each of those 8 target tools; KC-A1c appends the registry's own category word alone, padded to exactly the same character count per line. ORG-1 proved that a prompt-form change costs about 3 points on this carrier, so the pair is what separates content from form: KC-A1 minus baseline is content plus form, KC-A1c minus baseline is form, KC-A1 minus KC-A1c is content.",
-  "hypothesis": "H1: a per-tool contrast note that names what separates a target's tools recovers part of the 147-row lighting mass MF-1 attributed to this cluster, and the recovered rows are concentrated on TARGET-pair misses. H2 (the control): the same number of added characters carrying no contrast does not recover them. The lighting caveat MF-1 recorded stands beside H1 and is now the WHOLE population of the cell: all 147 of these rows are directions ORG-1 already halved without gaining a point, so a KC-A1 gain has to come from the contrast content surviving at a quarter of ORG-1's prompt cost.",
+  "purpose": "KC-A1 and its control KC-A1c of the three-dimension program (docs/readiness/2026-09-05-three-dimension-experiment-program.md section 4a). MF-1 (docs/readiness/2026-09-05-a2t-query-cue-audit-v1.md) closed with the KC-A1 gate PASSED: 235 of the sealed 4,000-row misses sit inside five disjoint TARGET tool sets whose queries separate at 0.86 to 1.00, so the cue exists in the speech and the registry's own descriptions do not carry it. On the owner's option B of 2026-09-06 this cell targets the LIGHTING cluster ALONE -- 8 tools, 147 of the 235 addressable rows -- the subset chosen because the five-target artifact rendered at roughly three times the program's then-binding +40-token form cap (the cap is advisory since the 2026-09-06 owner ruling, and this artifact measures +44); the other four targets keep their notes in configs/knowledge/a2t-kc-a1/targets-v1.json and are not flown here. KC-A1 appends a deterministic contrast note, derived from registry columns only, to the compact registry line of each of those 8 target tools; KC-A1c appends the registry's own category word alone, grown to exactly the same TOKEN count per line on the flight tokenizer. ORG-1 proved that a prompt-form change costs about 3 points on this carrier, so the pair is what separates content from form: KC-A1 minus baseline is content plus form, KC-A1c minus baseline is form, KC-A1 minus KC-A1c is content.",
+  "hypothesis": "H1: a per-tool contrast note that names what separates a target's tools recovers part of the 147-row lighting mass MF-1 attributed to this cluster, and the recovered rows are concentrated on TARGET-pair misses. H2 (the control): the same number of added TOKENS carrying no contrast does not recover them. The lighting caveat MF-1 recorded stands beside H1 and is now the WHOLE population of the cell: all 147 of these rows are directions ORG-1 already halved without gaining a point, so a KC-A1 gain has to come from the contrast content surviving at a quarter of ORG-1's prompt cost.",
   "preregistration": "docs/readiness/2026-09-05-a2t-kc-a1-contrast-notes-v1-preregistration.md",
   "predecessor": {
     "run_id": "SAEA-A2T-ORG1-DOMAIN-GROUPED-V1",
@@ -17,15 +17,15 @@
   "artifacts": {
     "target_spec": "configs/knowledge/a2t-kc-a1/targets-lighting-v1.json",
     "target_spec_parent": "configs/knowledge/a2t-kc-a1/targets-v1.json",
-    "builder": "scripts/build_a2t_contrast_notes.py --targets-spec configs/knowledge/a2t-kc-a1/targets-lighting-v1.json --write",
+    "builder": "scripts/build_a2t_contrast_notes.py --targets-spec configs/knowledge/a2t-kc-a1/targets-lighting-v1.json --tokenizer-url http://127.0.0.1:8080 --write (the tokenizer url is mandatory: --write refuses the retired chars-per-token estimator)",
     "artifact_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-kc-a1-contrast-notes-4000-v1/artifact-receipt.json",
     "kc_a1_artifact": "configs/knowledge/a2t-kc-a1/contrast-notes-v1.json",
     "kc_a1_artifact_sha256": "b99da99e43c813050e6df9a11bf1910e6168c744f363dae6c1b7f64df0a1763f",
     "kc_a1c_artifact": "configs/knowledge/a2t-kc-a1/category-only-v1.json",
-    "kc_a1c_artifact_sha256": "2f34c2cf8bc5585257756b44975e36c6244d7c3e362beac1d5b01956a6736e33",
-    "form": "Both arms render through the evolved-artifact-v1 fill: the same 152 lines, the same '- {signature}: {description}' shape, the same plain tool_name sort, no headers, ASCII only, every description under the 200-character cap. Both add exactly 161 characters over the compact block (15,854 -> 16,015) and are line-for-line length-matched to each other.",
-    "form_cap_decision": "CLOSED 2026-09-06 on owner option B (LIGHTING cluster only, +161 characters, an ESTIMATED +40 tokens), then VOIDED THE SAME DAY BY MEASUREMENT. SAEA-A2T-KC-A1-CONTRAST-NOTES-PROMPT-FIT-V1 measured the rendered system message on the pinned tokenizer at the flight's own geometry: KC-A1 3,625 text tokens against the sealed compact rendering's 3,581, i.e. +44 over a binding +40 cap, and KC-A1c 3,611, i.e. +30 on the SAME +161 characters. The estimate came from ORG-1's 3.989 chars/token, measured on a grouped block of headers and newlines; these appended phrases cost 3.659. rails.proposer.validate_candidate_artifact passed both arms only because the builder injects that estimator as its token_counter -- under the serving geometry's own tokenizer, which that injected parameter exists to make the authority, KC-A1 is REFUSED. Section 3.2 of the preregistration is the record.",
-    "flight_status": "STOPPED BEFORE ANY CONTACT, 2026-09-06. NO cell of this fragment has flown: the decontamination gate passed, the prompt fit stopped the cell on the form cap, and neither run id was ever registered as a flight exposure row. No wire check, no smoke, no flight, no scoring, no verdict. A successor artifact must be measured on the tokenizer before it is registered, and its control must be TOKEN-matched rather than character-matched -- the length-matched control measured 14 tokens cheaper than its treatment, so it would have priced 68 % of the form it exists to price. This fragment is not to be flown as it stands."
+    "kc_a1c_artifact_sha256": "ef99c956b274717975a84e7276554b04c9c1656646f692a9a17d66b46ce075f6",
+    "form": "Both arms render through the evolved-artifact-v1 fill: the same 152 lines, the same '- {signature}: {description}' shape, the same plain tool_name sort, no headers, ASCII only, every description under the 200-character cap (97 chars longest on KC-A1, 107 on KC-A1c). They are TOKEN-matched, not character-matched: each arm's whole rendered block measures 3,541 tokens against the compact block's 3,497 on the flight tokenizer, i.e. +44 each, and every one of the 8 changed lines costs the same number of added tokens in both arms. KC-A1 adds 161 characters and KC-A1c 213; the byte counts differ precisely because the token counts do not.",
+    "form_cap_decision": "CLOSED 2026-09-06 by owner ruling, after option B's estimate was falsified by measurement. Sequence: option B (LIGHTING only) was priced at an ESTIMATED +40 tokens; SAEA-A2T-KC-A1-CONTRAST-NOTES-PROMPT-FIT-V1 measured +44 on the pinned tokenizer and the character-matched control at +30, and the cell stopped; the owner then ruled that the +40 headroom is NOT a gate -- the invariant the program locks is the final score against a form-matched control, not a token count. The eight notes fly unaltered at +44 (no note dropped, none trimmed), the control is rebuilt TOKEN-matched, and SAEA-A2T-KC-A1-TOKEN-MATCH-V1 re-measured both arms at 3,625 system-message tokens each: +44 and +44, token symmetry exact. rails.proposer.validate_candidate_artifact is run with the server-backed counter and records 4 tokens of granted slack per arm rather than passing on an estimate. Program section 5 carries the ruling.",
+    "flight_status": "CLEARED FOR FLIGHT 2026-09-06 under the owner ruling. Both cells fly, sequentially, under this one experiment id: KC-A1-contrast-raw first, then KC-A1c-category-raw REGARDLESS of KC-A1's verdict, because the control is the attribution instrument and not a reward for an admitted treatment. The predecessor attempt (2026-09-06, run ids unregistered) stopped at the prompt fit on the form cap and flew nothing."
   },
   "comparators": {
     "basis": "the sealed official-protocol output of the SAME sample id under the SAME scorer, from the flight that drew that part of the union roster. Nothing is re-flown on the baseline side: greedy decoding is not bitwise reproducible across batch shapes on this runtime, so the sealed bytes are the only honest comparator. KC-A1c is additionally a comparator FOR KC-A1, paired row for row.",
@@ -54,14 +54,45 @@
   },
   "paper_row": {
     "source": "arXiv:2604.22821 Table 3, Qwen-3-Omni-30B",
-    "tier1_direct": {"tool_accuracy": 92.4, "exact_match": 92.4},
-    "tier2_parametric": {"tool_accuracy": 84.6, "exact_match": 15.6, "slot_f1": 21.7},
-    "tier3_multi_intent": {"tool_accuracy": 74.7, "exact_match": 28.6, "slot_f1": 35.0},
-    "tier4_implicit": {"tool_accuracy": 33.4, "exact_match": 11.3, "slot_f1": 23.4},
-    "tier5_needle": {"tool_accuracy": 90.6, "exact_match": 36.0, "slot_f1": 41.6},
-    "tier6_correction": {"tool_accuracy": 81.5, "exact_match": 24.8, "slot_f1": 32.4},
-    "tier7_multiturn": {"tool_accuracy": 54.6, "exact_match": 16.3, "slot_f1": 26.8},
-    "tier8_intent_blending": {"tool_accuracy": 41.7, "exact_match": 12.4, "slot_f1": 19.9},
+    "tier1_direct": {
+      "tool_accuracy": 92.4,
+      "exact_match": 92.4
+    },
+    "tier2_parametric": {
+      "tool_accuracy": 84.6,
+      "exact_match": 15.6,
+      "slot_f1": 21.7
+    },
+    "tier3_multi_intent": {
+      "tool_accuracy": 74.7,
+      "exact_match": 28.6,
+      "slot_f1": 35.0
+    },
+    "tier4_implicit": {
+      "tool_accuracy": 33.4,
+      "exact_match": 11.3,
+      "slot_f1": 23.4
+    },
+    "tier5_needle": {
+      "tool_accuracy": 90.6,
+      "exact_match": 36.0,
+      "slot_f1": 41.6
+    },
+    "tier6_correction": {
+      "tool_accuracy": 81.5,
+      "exact_match": 24.8,
+      "slot_f1": 32.4
+    },
+    "tier7_multiturn": {
+      "tool_accuracy": 54.6,
+      "exact_match": 16.3,
+      "slot_f1": 26.8
+    },
+    "tier8_intent_blending": {
+      "tool_accuracy": 41.7,
+      "exact_match": 12.4,
+      "slot_f1": 19.9
+    },
     "paper_column_note": "reported beside every tier as the owner's reporting rule requires. It is a CEILING reference, not a gate: this run's decision is a paired delta against the sealed official-protocol cells and against KC-A1c, never a threshold relative to the published row. arXiv:2604.22821 Table 3 gives no Slot F1 for tier 1."
   },
   "populations": {
@@ -100,15 +131,15 @@
       "cell_id": "KC-A1c-category-raw",
       "run_id": "SAEA-A2T-KC-A1C-CATEGORY-ONLY-V1",
       "dataset_fragment": "audio2tool-org1-union-4000",
-      "factor": "FORM only: the registry's own category word appended to the same 8 lighting tools, padded with a neutral filler to exactly the same character count per line, carrying no contrast",
-      "factor_a_output_contract": "identical to KC-A1-contrast-raw, and line-for-line length-matched to it",
+      "factor": "FORM only: the registry's own category word appended to the same 8 lighting tools, grown with a neutral ' tool' filler until each rendered line measures exactly the treatment line's TOKEN count, carrying no contrast",
+      "factor_a_output_contract": "identical to KC-A1-contrast-raw, and token-matched to it line for line and whole-block on the flight tokenizer",
       "factor_d_audio_path": "raw audio, bf16 mmproj loaded",
       "user_turn": "audio first, then the fixed sentence 'Convert this voice command to a tool call.'",
       "arm": "bare-core",
       "baseline_fragment": "a2t-kc-a1c-category-only",
       "model_fragment": "q4km-featcache-a2t-official-np2-04ccc72a",
-      "serving_geometry": "identical to KC-A1-contrast-raw; the two arms' system messages have the same character count",
-      "flies_only_if": "KC-A1 is ADMITTED. The fragment carries both cells so the control needs no second registration, and the flight agent skips this cell otherwise (program section 4a: 'ADMITTED -> KC-A1c same-length control'). It is a separate run id with its own exposure row, so skipping it spends nothing."
+      "serving_geometry": "identical to KC-A1-contrast-raw; the two arms' system messages measure the same 3,625 text tokens",
+      "flies_unconditionally": "YES, by the 2026-09-06 owner ruling, which withdraws the earlier 'KC-A1c flies only if KC-A1 is ADMITTED' clause. The control is what separates content from form and it is needed most when the treatment is null or harmful. It keeps its own run id and its own exposure row; it flies second, after KC-A1 is sealed and scored."
     }
   ],
   "shared_protocol": {
@@ -141,7 +172,12 @@
     "ceilings_live_in_the_exposure_row": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are each exposure-ledger row's calls / speech audio seconds / gpu hours cells, which the gate requires to be at least these planned values, and the budget is cumulative across every attempt of a run id."
   },
   "evaluation": {
-    "official_scorers": ["a2t-toolcall-official", "a2t-toolcall-v2", "a2t-toolcall", "cost"],
+    "official_scorers": [
+      "a2t-toolcall-official",
+      "a2t-toolcall-v2",
+      "a2t-toolcall",
+      "cost"
+    ],
     "paper_facing_scorer": "a2t-toolcall-official",
     "scored_complete_manifests": 1,
     "whole_manifest_jobs_only": true,
@@ -174,11 +210,11 @@
   "decision": {
     "primary": "pooled official tool accuracy, KC-A1 minus the sealed official-protocol baseline, paired over 4,000 rows",
     "three_outcomes": {
-      "admitted": "ADMITTED: the pooled CI90 lower bound is above 0, both weightings agree in sign, AND at least half of the corrected rows are TARGET-pair misses. KC-A1c then flies as the same-length control and attributes the gain to content or to form.",
-      "null": "NULL: the CI90 includes 0, or the weightings disagree, or fewer than half of the corrected rows are TARGET-pair misses. The contrast-note content is not the lever at this form cost; program section 4a routes a NULL with separability >= 0.80 to EVO-A1 from the official baseline, and KC-A1c does not fly.",
-      "harmful": "HARMFUL: the CI90 upper bound is below 0. KC-A1 is dropped with the form/content attribution recorded, and the inline-append family ends unless KC-A1c is flown deliberately to price the form."
+      "admitted": "ADMITTED: the pooled CI90 lower bound is above 0, both weightings agree in sign, AND at least half of the corrected rows are TARGET-pair misses. The content clause below then says whether the gain is content or form.",
+      "null": "NULL: the CI90 includes 0, or the weightings disagree, or fewer than half of the corrected rows are TARGET-pair misses. The contrast-note content is not the lever at this form cost; program section 4a routes a NULL with separability >= 0.80 to EVO-A1 from the official baseline. KC-A1c still flies and still prices the form.",
+      "harmful": "HARMFUL: the CI90 upper bound is below 0. KC-A1 is dropped, and KC-A1c decides whether the harm was the contrast content or the 44 tokens of added prompt -- which is the question ORG-1 could not answer."
     },
-    "control_clause": "KC-A1 is not credited as a content effect if KC-A1c reaches a comparable delta: 'comparable' is preregistered as KC-A1 minus KC-A1c having a CI90 lower bound at or below 0 on the same rows.",
+    "control_clause": "THREE-WAY DECOMPOSITION, fixed before takeoff (2026-09-06 owner ruling). Total effect = KC-A1 minus the sealed baseline; form effect = KC-A1c minus the sealed baseline; content effect = KC-A1 minus KC-A1c. Each is reported with CI90, saves/harms/ties, per tier with the paper column, per domain, under natural-mixture AND equal-domain weighting. KC-A1 is credited as a CONTENT effect only when the content contrast has a CI90 lower bound above 0; otherwise the movement is attributed to prompt form, which is a result about this frozen core's prompt sensitivity rather than about knowledge.",
     "baseline_is_unchanged_by_any_outcome": "No outcome changes the direct baseline: the official-protocol cell stays the comparator every mechanism is paired against.",
     "gates_relative_to_the_published_ceiling": "The paper column is reported beside every tier as a ceiling reference. No gate is set above it and none relative to it.",
     "claim_surface": "Nothing here is a superiority, generality or Stage-3 claim; the population is discovery data already exposed on 2026-09-04 and 2026-09-05; no knob is tuned on it.",

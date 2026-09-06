@@ -765,11 +765,12 @@ def contrast_note_records(
     function_words: Sequence[str],
     prefix: str = NOTE_PREFIX,
     filler: str = CONTROL_FILLER,
+    token_counter: Callable[[str], int] | None = None,
 ) -> list[dict[str, object]]:
     """One record per targeted tool for the APPENDED-NOTE family (KC-A1).
 
     ``targets`` maps a target id to that target's ``{tool_name: note}``. Each
-    record carries the released description, the note, the length-matched
+    record carries the released description, the note, the matched
     CATEGORY-ONLY control note, and both rendered descriptions, so a caller
     builds the treatment artifact, its control and its receipt from one pass.
 
@@ -782,12 +783,27 @@ def contrast_note_records(
       or occurs (case-insensitively) in the registry columns of the tools of
       its OWN target. A note may therefore say nothing the registry does not
       already say -- no invented device knowledge, and no evaluation text;
-    * the control is ``"; " + category`` extended with ``filler`` while it
-      fits and then padded with spaces to EXACTLY the note's character count,
-      so the control prices the note's form at the same per-line cost with
-      none of its contrast. A category word longer than its note is refused
-      rather than truncated, because a truncated control is neither
-      length-matched nor a category.
+    * the control is ``"; " + category`` grown with ``filler`` until it
+      matches the note, so the control prices the note's form at the same
+      per-line cost with none of its contrast. A category longer than its
+      note is refused rather than truncated, because a truncated control is
+      neither matched nor a category.
+
+    ``token_counter`` selects WHICH quantity the control is matched on, and
+    the owner ruling of 2026-09-06 makes that choice the whole point of the
+    control. ``None`` keeps the original CHARACTER match: filler while it
+    fits, then trailing spaces. A counter -- the serving geometry's own
+    tokenizer, injected exactly as :func:`validate_candidate_artifact` takes
+    it -- switches to a TOKEN match: whole ``filler`` repeats until the
+    rendered description cell ``description + control`` measures exactly as
+    many tokens as ``description + note``. KC-A1's first attempt showed why:
+    two arms that were character-identical line for line measured 14 tokens
+    apart (``; kelvin only, no color`` costs 3.659 characters per token,
+    repeated ``" tool"`` and trailing spaces 5.367), so a character-matched
+    control prices only part of the form it exists to price. A control that
+    cannot land exactly on the note's token count is refused rather than
+    approximated; the caller still has to assert WHOLE-BLOCK token equality,
+    which is the invariant a per-cell match only makes likely.
     """
 
     rows_by_name = _rows_by_name(registry_rows)
@@ -820,15 +836,28 @@ def contrast_note_records(
                     f"note for {tool!r} carries word(s) the registry does not: {illegal}"
                 )
             control = f"{prefix}{row['category']}"
-            if len(control) > len(note):
-                raise ProposerError(
-                    f"the category-only control for {tool!r} is {len(control)} characters "
-                    f"and cannot be padded down to its {len(note)}-character note"
+            measured: dict[str, object] = {}
+            if token_counter is None:
+                if len(control) > len(note):
+                    raise ProposerError(
+                        f"the category-only control for {tool!r} is {len(control)} "
+                        f"characters and cannot be padded down to its {len(note)}-"
+                        "character note"
+                    )
+                while len(control) + len(filler) <= len(note):
+                    control += filler
+                padding = len(note) - len(control)
+                control += " " * padding
+                measured = {"control_match": "characters", "control_space_padding": padding}
+            else:
+                control, measured = _token_matched_control(
+                    tool,
+                    str(row["description"]),
+                    note,
+                    control,
+                    filler=filler,
+                    token_counter=token_counter,
                 )
-            while len(control) + len(filler) <= len(note):
-                control += filler
-            padding = len(note) - len(control)
-            control += " " * padding
             records.append(
                 {
                     "tool_name": tool,
@@ -839,12 +868,56 @@ def contrast_note_records(
                     "note": note,
                     "note_chars": len(note),
                     "control_note": control,
-                    "control_space_padding": padding,
+                    "control_chars": len(control),
                     "kc_a1": row["description"] + note,
                     "kc_a1c": row["description"] + control,
+                    **measured,
                 }
             )
     return records
+
+
+def _token_matched_control(
+    tool: str,
+    description: str,
+    note: str,
+    control: str,
+    *,
+    filler: str,
+    token_counter: Callable[[str], int],
+) -> tuple[str, dict[str, object]]:
+    """``control`` grown by whole ``filler`` repeats until the rendered
+    description cell measures exactly the treatment cell's token count."""
+
+    target = int(token_counter(description + note))
+    measured = int(token_counter(description + control))
+    if measured > target:
+        raise ProposerError(
+            f"the category-only control for {tool!r} measures {measured} tokens and "
+            f"cannot be padded down to its {target}-token note"
+        )
+    repeats = 0
+    while measured < target:
+        grown = control + filler
+        after = int(token_counter(description + grown))
+        if after > target:
+            raise ProposerError(
+                f"the category-only control for {tool!r} cannot be token-matched: one "
+                f"more {filler!r} takes it from {measured} to {after} tokens against "
+                f"the note's {target}"
+            )
+        if after == measured:
+            raise ProposerError(
+                f"filler {filler!r} adds no token to the control for {tool!r}; it "
+                "cannot close a token gap"
+            )
+        control, measured, repeats = grown, after, repeats + 1
+    return control, {
+        "control_match": "tokens",
+        "control_filler_repeats": repeats,
+        "note_cell_tokens": target,
+        "control_cell_tokens": measured,
+    }
 
 
 def derive_target_id(tools: Sequence[str]) -> str:

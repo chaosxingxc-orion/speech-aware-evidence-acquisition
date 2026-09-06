@@ -83,7 +83,8 @@ Each dimension has a zero: the official-protocol direct baseline (construction),
 Targets T from MF-1's TARGET list, disjoint tool sets, at most 12. State `A_r` = description overrides for targeted
 tools only; `A_0` = the released compact registry, byte-identical to the sealed baseline. Rendering is always
 same-shape: 152 lines `- {signature}: {description}`, plain name sort, no headers; each description <= 200 ASCII
-characters; the whole block <= +40 tokens over compact (ORG-1 lost 3 points at +87). Per target and round, K = 4
+characters; the whole block's token delta over compact is MEASURED and REPORTED, and inside this loop <= +40
+tokens over the INCUMBENT as a search budget (see the 2026-09-06 owner ruling below). Per target and round, K = 4
 candidates: three proposer rewrites (the `construction-proposer-text` arm; input = the pair's registry rows, M = 8
 block-disjoint construction exemplars per tool with their gold calls, the incumbent descriptions; output = the
 cue that separates the tools and one description per tool, strict JSON; exemplar draws seeded by (round, target,
@@ -102,6 +103,18 @@ present in the registry; no evaluation ids or gold strings; memorization overlap
 reported. Preregistered kill results: no target admitted in rounds 1 and 2; a construction gain >= 2 pp whose
 4,000 CI90 includes 0 or transfer ratio < 0.25; the deterministic control within 0.5 pp of the proposer; the
 placebo indistinguishable; every candidate failing the background tolerance.
+
+**Owner ruling, 2026-09-06 (form cost).** The +40-token headroom is no longer a claim gate. The token delta of
+every rendered arm is MEASURED on the flight tokenizer and REPORTED (min / median / p95 / max per arm whenever it
+varies row by row, a single figure when it does not); every content artifact flies beside a token- and
+structure-matched control -- its **form twin**, matched on the tokenizer rather than on characters -- so form cost
+is priced by a flown arm instead of by a cap; and the prompt fit's slot-reserve check is the only hard bound a
+rendering has to clear. Inside the evolution loop the +40 survives as a SEARCH budget relative to the incumbent, a
+validator constraint that stops the proposer inflating descriptions round after round, and the loop's placebo
+family is the form twin of the incumbent. The ruling was taken after KC-A1's lighting artifact measured +44
+against an estimated +40 and its character-matched control measured 14 tokens cheaper than the treatment it was
+built to price: a cap enforced on an estimate stopped a cell, and a control matched on the wrong quantity would
+have mis-attributed it.
 
 ## 6. Claim ladder
 

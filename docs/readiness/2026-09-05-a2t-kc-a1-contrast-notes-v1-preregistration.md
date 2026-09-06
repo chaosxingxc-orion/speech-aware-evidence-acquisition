@@ -1,13 +1,12 @@
-# KC-A1: deterministic contrast notes on the MF-1 lighting target, with KC-A1c as its same-length control, v1 preregistration (STOPPED AT THE PROMPT FIT)
+# KC-A1: deterministic contrast notes on the MF-1 lighting target, with KC-A1c as its token-matched form twin, v1 preregistration
 
 Status: DRAFTED 2026-09-05 model-free in a worktree with zero model contacts; section 3 closed 2026-09-06 by the
 owner-coordinator on option B (lighting only), the two artifacts rebuilt on that decision in the main checkout,
-and section 8 worked from there through the decontamination gate (PASS) to the prompt fit --
-**where the cell STOPPED. The measured cost of the option-B artifact is +44 text tokens, over the binding +40
-form cap it was chosen to honour, so section 3's own void clause fires and NO cell of
-`configs/experiment/a2t-kc-a1-contrast-notes-4000-v1.json` has flown.** Section 3.2 records the measurement and
-what it voids. Everything below section 3.2 stands as registered and is what a successor artifact re-enters at;
-nothing in it was read against data.
+and section 8 worked from there through the decontamination gate (PASS) to the prompt fit -- **where the first
+attempt stopped, at +44 measured text tokens against a then-binding +40 cap (section 3.2).** The owner ruling of
+2026-09-06 (section 3.3) reopened the cell: the cap is advisory, the eight notes fly unaltered at +44, and the
+control is rebuilt TOKEN-matched rather than character-matched. Sections 3.3 and 6 carry the ruling; everything
+else stands as registered and nothing in it was read against data.
 
 The manipulation this document registers is the LIGHTING cluster's eight tools, not the twenty-three of the
 drafted version; every table below has been re-derived from the rebuilt bytes, and the five-target notes are
@@ -39,7 +38,7 @@ addressable mass, and the rows it recovers are concentrated on TARGET-pair misse
 (section 3) the mass this cell can address is the lighting target's own **147 rows**, not the five targets'
 235; the other four targets' 88 rows are inside the metric as unmanipulated rows and are reported as such.
 
-H2 (form, the control): the same number of added characters carrying the registry's `category` word and nothing
+H2 (form, the control): the same number of added TOKENS carrying the registry's `category` word and nothing
 else does not recover them. KC-A1 minus baseline is content plus form; KC-A1c minus baseline is form; KC-A1 minus
 KC-A1c is content.
 
@@ -58,23 +57,22 @@ differs.
 
 | item | value |
 |---|---|
-| target spec (the stopped cell's) | `configs/knowledge/a2t-kc-a1/targets-lighting-v1.json`, sha256 `445dffc83388828faaa398e1ff81c7d45ecb422d01df850a6418a869175bfab8` (re-derived by the builder into the receipt's `target_spec.sha256`) |
-| target spec (parent, retained) | `configs/knowledge/a2t-kc-a1/targets-v1.json`, sha256 `e3e8c859e6fd13fbe631ea3e0f8522654bf5459b957b716281543ed23e060378`; the flown spec's `targets` array is this file's `lighting` entry with no character changed |
-| builder | `scripts/build_a2t_contrast_notes.py --targets-spec configs/knowledge/a2t-kc-a1/targets-lighting-v1.json --write`, construction rule `rails.proposer.contrast_note_records` |
-| artifact receipt | `docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-kc-a1-contrast-notes-4000-v1/artifact-receipt.json`, sha256 `a8f2170a1b89bcbd31477dd4640f94afb51cb5a24590e4133c0d1789f749b439` |
+| target spec (the flown cell's) | `configs/knowledge/a2t-kc-a1/targets-lighting-v1.json`, sha256 `854cf7ea40023cb089f70091c0a09c80ec751a542a60f6f3e6b523b1d44c6e63` (re-derived by the builder into the receipt's `target_spec.sha256`) |
+| target spec (parent, retained) | `configs/knowledge/a2t-kc-a1/targets-v1.json`, sha256 `6552fb78161c0fc88a6f9955f7fcdc514c666836bdaf6ec143a2baf4566c9d4a`; the flown spec's `targets` array is this file's `lighting` entry with no character changed |
+| builder | `scripts/build_a2t_contrast_notes.py --targets-spec configs/knowledge/a2t-kc-a1/targets-lighting-v1.json --tokenizer-url http://127.0.0.1:8080 --write`, construction rule `rails.proposer.contrast_note_records` (the tokenizer url is mandatory for `--write`) |
+| artifact receipt | `docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-kc-a1-contrast-notes-4000-v1/artifact-receipt.json`, sha256 `19fe39a243e240350122061efcb51c325551b42779ac74c66e7caea267b0d14b` |
 | KC-A1 artifact | `configs/knowledge/a2t-kc-a1/contrast-notes-v1.json`, sha256 `b99da99e43c813050e6df9a11bf1910e6168c744f363dae6c1b7f64df0a1763f` |
-| KC-A1c artifact | `configs/knowledge/a2t-kc-a1/category-only-v1.json`, sha256 `2f34c2cf8bc5585257756b44975e36c6244d7c3e362beac1d5b01956a6736e33` |
-| KC-A1 fragment | `configs/baseline/a2t-kc-a1-contrast-notes.json`, composed config hash `444e3439edfc37a37fc21be29f9b0caf2de0cf29fc06ac7eb43ef0fefd98bf15` |
-| KC-A1c fragment | `configs/baseline/a2t-kc-a1c-category-only.json`, composed config hash `0766a6edae73adcd905e663cd460b60abee5456e7b94bcecc91f67f8394b160b` |
-| KC-A1 rendered block | 152 lines, 16,015 characters, sha256 `ce1e521345270b9149bf45d6916fdd9a64e17293d0bae3e5ea63bf0b51f1a8fe` |
-| KC-A1c rendered block | 152 lines, 16,015 characters, sha256 `ac71cef2be2f5c1750425330eaf131ac9c516a843cc782f0fd8041c1548c5545` |
-| compact baseline block | 152 lines, 15,854 characters, sha256 `752dd381a02028dc7345a6ac826109bdcc879d82547a9029a43d559d0de8a605` |
+| KC-A1c artifact | `configs/knowledge/a2t-kc-a1/category-only-v1.json`, sha256 `ef99c956b274717975a84e7276554b04c9c1656646f692a9a17d66b46ce075f6` |
+| KC-A1 fragment | `configs/baseline/a2t-kc-a1-contrast-notes.json`, composed config hash `738312c1b1f965d0ed803339e5f7140c23cac5f5f5b8d992810a5c055e0bcd64` |
+| KC-A1c fragment | `configs/baseline/a2t-kc-a1c-category-only.json`, composed config hash `5d6509ecd82d80d75b64dcececf5603260fcf64b63f6064f1e79a2c1d8726f8a` |
+| KC-A1 rendered block | 152 lines, 16,015 characters, 3,541 measured tokens, sha256 `ce1e521345270b9149bf45d6916fdd9a64e17293d0bae3e5ea63bf0b51f1a8fe` |
+| KC-A1c rendered block | 152 lines, 16,067 characters, 3,541 measured tokens, sha256 `7736bdb2f4a3625f015dd0a75b701c9c285aa49b3b19b4a75a1d2ce225eea64f` |
+| compact baseline block | 152 lines, 15,854 characters, 3,497 measured tokens, sha256 `752dd381a02028dc7345a6ac826109bdcc879d82547a9029a43d559d0de8a605` |
 
 The composed config hash is over model + dataset + baseline + experiment together, which is why it differs from
 the drafted version's figure even where the baseline fragment's own keys are unchanged: the experiment fragment
-was re-registered on option B in the same change, and again when the prompt fit's measurement was written into
-it. NEITHER COMPOSITION EVER FLEW -- these are the hashes of a composition that was stopped at section 3.2, and
-no manifest anywhere carries them.
+was re-registered on option B in the same change, again when the first prompt fit's measurement was written into
+it, and again on the 2026-09-06 owner ruling. THESE are the compositions that fly; the earlier ones never did.
 
 Two construction rules are executable, not prose (`rails.proposer.contrast_note_records`, refusing the build
 otherwise):
@@ -82,31 +80,38 @@ otherwise):
 * **A note may say nothing the registry does not already say.** Every alphanumeric word of a note is either in the
   spec's closed 33-word function list or occurs, case-insensitively, in the registry columns of the tools of its
   OWN target. No invented device knowledge, no evaluation text.
-* **The control is length-matched, never truncated.** KC-A1c's note is `"; " + category`, extended with the
-  neutral filler `" tool"` while it fits and then padded with at most four trailing spaces to EXACTLY the
-  treatment note's character count. A category word longer than its note is refused rather than cut, which is why
-  every note is at least as long as its own category.
+* **The control is TOKEN-matched, never truncated** (2026-09-06 owner ruling; the character match it replaces is
+  recorded in section 3.2 as the defect that voided it). KC-A1c's note is `"; " + category`, grown by whole
+  `" tool"` tokens until the rendered description cell measures EXACTLY the treatment cell's token count on the
+  flight tokenizer, and a control that cannot land on that count exactly is refused rather than approximated. A
+  category that already costs more tokens than its note is refused rather than cut.
 
-### 2.1 The 8 notes the stopped cell carries, their controls, and what each costs
+### 2.1 The 8 notes the cell flies, their token-matched controls, and what each costs
 
-`note` is the appended text; `chars` its length; `control` KC-A1c's length-matched text at the same count;
-`line` the resulting description length (the 200-character cap is never approached -- the longest is 97).
+`note` is the appended text; `+tok` the tokens it adds to that line on the flight tokenizer; `control` KC-A1c's
+text at the SAME token count; `line` the resulting description length (the 200-character cap is never approached
+-- the longest is 97 on KC-A1 and 107 on KC-A1c). Every figure is measured, not estimated.
 
-| tool | note | chars | control (same length) | line |
-|---|---|---:|---|---:|
-| `getLightState` | `; returns only` | 14 | `; status tool` + 1 sp | 73 |
-| `resetFilterStatus` | `; filter, not a light` | 21 | `; maintenance tool` + 3 sp | 79 |
-| `setAmbientLighting` | `; smart_car cabin only` | 22 | `; media_cabin tool` + 4 sp | 85 |
-| `setBrightness` | `; level only` | 12 | `; lighting` + 2 sp | 68 |
-| `setColor` | `; smart_home hsb only` | 21 | `; lighting tool tool` + 1 sp | 92 |
-| `setColorTemperature` | `; kelvin only, no color` | 23 | `; lighting tool tool` + 3 sp | 86 |
-| `setGroupLightState` | `; a group, not one light` | 24 | `; lighting tool tool` + 4 sp | 79 |
-| `setLighting` | `; one light, not a group` | 24 | `; core_control tool tool` | 97 |
-| **8 tools, the cell's own** | | **161** | | |
+| tool | note | chars | +tok | control (same tokens) | +tok |
+|---|---|---:|---:|---|---:|
+| `getLightState` | `; returns only` | 14 | 2 | `; status tool` | 2 |
+| `resetFilterStatus` | `; filter, not a light` | 21 | 5 | `; maintenance tool tool tool tool` | 5 |
+| `setAmbientLighting` | `; smart_car cabin only` | 22 | 4 | `; media_cabin tool` | 4 |
+| `setBrightness` | `; level only` | 12 | 2 | `; lighting tool` | 2 |
+| `setColor` | `; smart_home hsb only` | 21 | 5 | `; lighting tool tool tool tool` | 5 |
+| `setColorTemperature` | `; kelvin only, no color` | 23 | 6 | `; lighting tool tool tool tool tool` | 6 |
+| `setGroupLightState` | `; a group, not one light` | 24 | 6 | `; lighting tool tool tool tool tool` | 6 |
+| `setLighting` | `; one light, not a group` | 24 | 6 | `; core_control tool tool tool tool` | 6 |
+| **8 tools, the cell's own** | | **161** | **36** | **213 chars** | **36** |
+
+The per-line sum (36) is smaller than the whole-block delta (44) for both arms alike: a line measured on its own
+loses the merge its final token makes with the following newline inside the block, which costs one token per
+changed line. The arms move together at both levels, which is what the control has to do.
 
 ### 2.1b The 15 notes the cell leaves out
 
-Written, priced and retained in `configs/knowledge/a2t-kc-a1/targets-v1.json`, absent from both flown
+Their controls below are the RETIRED character-matched ones, priced before the 2026-09-06 ruling and never built
+on a tokenizer; a later per-cluster cell rebuilds them token-matched. Written, priced and retained in `configs/knowledge/a2t-kc-a1/targets-v1.json`, absent from both flown
 artifacts, and reachable later per cluster or through the evolution loop. They are listed so the option-B
 decision is auditable against what it declined rather than against a description of it.
 
@@ -223,6 +228,66 @@ The decontamination gate that precedes this one PASSED and stands on its own byt
 artifact re-enters at section 8.3 rather than at 8.2 unless its note TEXT changes -- and any change to the note
 text re-opens 8.2.
 
+### 3.3 The owner ruling that closes section 3 (2026-09-06)
+
+**Verbatim:**
+
+> OWNER RULING 2026-09-06: the +40 token cap is NOT a gate; the invariant the program locks is the FINAL SCORE
+> against a form-matched control, not a token count.
+>
+> 1. Artifact: fly the ORIGINAL eight-note lighting artifact exactly as measured at +44 tokens in attempt 1.
+>    Drop NO note. If you already added the greedy budget to `scripts/build_a2t_contrast_notes.py`, keep the
+>    tokenizer-backed counter and make the budget optional (`--token-budget` report-only for this cell); do not
+>    delete working code.
+> 2. Control KC-A1c: TOKEN-matched to the treatment per line on the server `/tokenize` (the character-matched
+>    +30 control is void). Whole-block token equality (+44 = +44) asserted by measurement in the receipt.
+> 3. Both cells fly, sequentially, under the one experiment id: KC-A1 first, then KC-A1c REGARDLESS of KC-A1's
+>    verdict (the control is the attribution instrument; the "A1c only if admitted" clause is withdrawn). Each
+>    cell has its own exposure row, wire check and scoring; one verdict document reads both: total effect
+>    = A1 - baseline, form effect = A1c - baseline, content effect = A1 - A1c, each with CI90, saves/harms, per
+>    tier with the paper column, per domain, both weightings.
+> 4. Documents, before the wire check: close preregistration section 3 with this ruling verbatim ("the cap is
+>    advisory; the form-matched control measures form cost; both cells fly"), amend section 6 with the three-way
+>    decomposition, and replace the program's section-5 "+40 tokens over compact" wording -- the token delta is
+>    REPORTED (measured on the flight tokenizer, min/median/p95/max per arm when it varies per row); every
+>    content artifact carries a token- and structure-matched control ("form twin"); the prompt-fit reserve check
+>    is the only hard bound; for the evolution loop the +40 stays as a SEARCH budget relative to the incumbent (a
+>    validator constraint that keeps the proposer from inflating descriptions), not a claim gate, and the loop's
+>    placebo family is the form twin of the incumbent.
+
+**What it changed in this repository, and nothing else did.** The eight notes, the target list and the treatment
+artifact are byte-identical to what section 3.2 measured (`configs/knowledge/a2t-kc-a1/contrast-notes-v1.json`,
+sha256 `b99da99e...`, the bytes the decontamination gate passed), so the manipulation MF-1 priced is the
+manipulation that flies. `rails.proposer.contrast_note_records` gained an injected `token_counter`: with one, the
+category-only control is grown by whole ` tool` tokens until the rendered description cell measures EXACTLY the
+treatment cell's token count, and a control that cannot land on that count is refused rather than approximated.
+`scripts/build_a2t_contrast_notes.py` gained `--tokenizer-url` (mandatory for `--write`; the chars-per-token
+estimator may no longer register an artifact), a report-only `--token-budget`, and an assertion of whole-block
+token equality between the arms before it writes anything. Only the control artifact changed
+(`category-only-v1.json`, sha256 `ef99c956...`), with its baseline fragment and the experiment fragment's
+`artifacts` block re-registered on the new bytes.
+
+**What `SAEA-A2T-KC-A1-TOKEN-MATCH-V1` measured on the same pinned tokenizer, template
+`45777d2e...`, at the same `-c 49152 -np 2` geometry:**
+
+| rendering | system chars | text tokens | over compact | block tokens | block over compact |
+|---|---:|---:|---:|---:|---:|
+| compact official protocol (sealed, three 2026-09-04 fits) | 16,143 | **3,581** | — | 3,497 | — |
+| **KC-A1** contrast notes (unchanged bytes) | 16,304 | **3,625** | **+44** | 3,541 | +44 |
+| **KC-A1c** category-only form twin (rebuilt) | 16,356 | **3,625** | **+44** | 3,541 | +44 |
+
+Token symmetry is exact: the arms differ by 0 tokens and by 52 characters, which is the point -- the byte counts
+are free to differ precisely because the token counts do not. Per line, every one of the eight changed lines
+costs the same added tokens in both arms (2, 5, 4, 2, 5, 6, 6, 6 for `getLightState`, `resetFilterStatus`,
+`setAmbientLighting`, `setBrightness`, `setColor`, `setColorTemperature`, `setGroupLightState`, `setLighting`).
+`-np` is re-derived and stays 2 (worst request 12,398 tokens on `tier1_direct:003943`, worst served-slot margin
+12,178 against the 8,192-token reserve, all 4,000 fit). The declared deviation of section 8.3 is closed the same
+way as before: `--expect-official-system-message` is not passed and
+`.../prompt-fit-v2/system-message-derivation.json` proves the property offline, PASS on both arms.
+
+Two rules carry forward beyond this cell, and both are now in program section 5: **measure on the flight
+tokenizer before registering an artifact**, and **match a control on tokens, not on characters**.
+
 ### 3.1 The decision as it stood before it was taken (retained for audit)
 
 The program's section 5 caps a candidate rendering at **+40 tokens over the compact block**, and the MF-1 verdict
@@ -301,16 +366,29 @@ baseline, over 4,000 rows.
 
 - **ADMITTED**: the pooled CI90 lower bound is above 0, both weightings agree in sign, AND at least half of the
   corrected rows carried a baseline miss whose gold and predicted tool both sit inside one MF-1 target
-  (`target_pair_share_of_the_gain >= 0.5`, computed from the audit receipt, never asserted). KC-A1c then flies.
+  (`target_pair_share_of_the_gain >= 0.5`, computed from the audit receipt, never asserted).
 - **NULL**: the CI90 includes 0, or the weightings disagree, or the target-pair share is below 0.5. Program
-  section 4a routes a NULL with separability >= 0.80 to EVO-A1 from the official baseline; KC-A1c does not fly.
+  section 4a routes a NULL with separability >= 0.80 to EVO-A1 from the official baseline.
 - **HARMFUL**: the CI90 upper bound is below 0. KC-A1 is dropped with its form/content attribution recorded.
 
-**The control clause.** An ADMITTED KC-A1 is credited as a CONTENT effect only if KC-A1c does not reach a
-comparable delta, preregistered as: the KC-A1-minus-KC-A1c contrast on the same 4,000 rows has a CI90 lower bound
-above 0. If it does not, the gain is attributed to prompt FORM and the finding is that 161 characters of any text
-in those 8 lines move the metric -- which would be a result about this frozen core's prompt sensitivity, not
-about knowledge.
+**The three-way decomposition (amended 2026-09-06 by the owner ruling of section 3.3).** KC-A1c flies after
+KC-A1 **regardless of KC-A1's verdict**: the control is the attribution instrument, and it is needed most when
+the treatment is null or harmful, which is exactly the case ORG-1 could not resolve. The earlier clause "KC-A1c
+then flies" / "KC-A1c does not fly" is withdrawn. One verdict document reads both arms and reports three
+contrasts over the same 4,000 rows, each with CI90, saves/harms/ties, the exact sign test, per tier with the
+paper column beside every tier, per domain, and under natural-mixture AND equal-domain weighting:
+
+| contrast | definition | what it measures |
+|---|---|---|
+| **total effect** | KC-A1 minus the sealed official-protocol baseline | content plus form |
+| **form effect** | KC-A1c minus the same sealed baseline | 44 tokens of contrast-free text in the same 8 lines |
+| **content effect** | KC-A1 minus KC-A1c, paired row for row | what the contrast says, at zero form difference |
+
+KC-A1 is credited as a CONTENT effect only when the content contrast has a CI90 lower bound above 0. If it does
+not, the movement is attributed to prompt FORM, and the finding is that 44 tokens of any text in those 8 lines
+move the metric -- a result about this frozen core's prompt sensitivity, not about knowledge. Because the two
+arms are token-matched (section 3.3, exact), the form effect is priced by a flown arm rather than assumed from a
+cap, which is what the 2026-09-06 ruling replaced the cap with.
 
 Reported beside the decision, every time: the per-stratum table with the paper column; the five targets' own miss
 mass before and after; the named confusion-pair table before and after; the miss-class table; exact match,
@@ -322,7 +400,8 @@ latency. The paper column is a ceiling reference and no gate is set relative to 
 No test contact; no fresh roster (`A2T-FRESH-800` stays reserved for rung 3); no rollouts; no second contact; no
 retrieval; no change to the direct baseline; no Q8_0; no edit to an artifact after its fragment was emitted (the
 fill re-hashes the bytes and refuses); no superiority, generality or Stage-3 claim. At most one recovery
-re-registration per run id. KC-A1c flies only on an ADMITTED KC-A1.
+re-registration per run id. KC-A1c flies after KC-A1 regardless of its verdict (section 3.3, 2026-09-06
+owner ruling); the earlier "only on an ADMITTED KC-A1" clause is withdrawn.
 
 ## 8. What the flight agent must do between the owner GO and the first contact
 
@@ -341,7 +420,10 @@ re-registration per run id. KC-A1c flies only on an ADMITTED KC-A1.
    evaluation rows' query text. The builder passes an EMPTY sequence on purpose: reading that text needs a ledger
    row, and every note word is already constrained to the registry columns of its own target. A 6-gram shared
    with an evaluation query that the registry does not carry refuses the artifact.
-3. **Prompt fit** -- **DONE 2026-09-06, and it STOPPED the cell.** `SAEA-A2T-KC-A1-CONTRAST-NOTES-PROMPT-FIT-V1`,
+3. **Prompt fit** -- **DONE 2026-09-06 twice.** The first pass STOPPED the cell and the second, after the
+   owner ruling, cleared it: `SAEA-A2T-KC-A1-TOKEN-MATCH-V1` measured both arms at 3,625 text tokens, +44 each,
+   token symmetry exact, receipts under `.../prompt-fit-v2/` (derivation PASS). The first pass is recorded as
+   it stood: `SAEA-A2T-KC-A1-CONTRAST-NOTES-PROMPT-FIT-V1`,
    zero generated tokens: KC-A1 +44 tokens, KC-A1c +30, against a binding +40. Section 3.2 is the record.
    `-np` was re-derived anyway and stays 2 (worst request 12,398 tokens, worst margin 12,178 against the
    8,192-token reserve, all 4,000 fit). One declared deviation, closed in the same receipt set:
@@ -362,17 +444,22 @@ re-registration per run id. KC-A1c flies only on an ADMITTED KC-A1.
    `core.bundle.git_commit` cannot read git status inside a WSL-side worktree (its `.git` file names a
    Windows-style gitdir path). Neither is a defect of the cells; both resolve in the main checkout, which is
    where ORG-1's own wire check ran.
-5. **One experiment in flight.** KC-A1 first, alone; KC-A1c only after KC-A1's verdict is written and only if it
-   is ADMITTED.
+5. **One experiment in flight.** KC-A1 first, alone and sealed; then KC-A1c, once KC-A1 is scored -- and
+   regardless of what KC-A1's verdict says, per the 2026-09-06 owner ruling of section 3.3. One verdict
+   document reads both arms and reports section 6's three-way decomposition.
 
-Items 4 and 5 were NOT reached: the cell stopped at item 3. No wire check was run in the main checkout, no flight
-exposure row exists for either run id, and both `SAEA-A2T-KC-A1-CONTRAST-NOTES-V1` and
-`SAEA-A2T-KC-A1C-CATEGORY-ONLY-V1` remain unregistered and unflown.
+Items 1 to 3 were re-done on 2026-09-06 under the owner ruling and under one measurement row,
+`SAEA-A2T-KC-A1-TOKEN-MATCH-V1`: the control was rebuilt token-matched on the flight tokenizer (the treatment
+bytes are unchanged and keep their decontamination PASS), both arms were re-measured at +44 tokens each, and
+the derivation proof was regenerated. The rebuilt CONTROL bytes take their own decontamination row before the
+wire check. Items 4 and 5 follow from there.
 
-## 8.1 What a successor artifact has to clear
+## 8.1 What a successor artifact has to clear -- ANSWERED 2026-09-06
 
-Recorded here so the next attempt is not re-derived from scratch, and explicitly NOT authorized by this document
--- the form cap is the owner's, and the option that replaces B is the owner's too.
+Written when the cell was stopped, before the owner ruled. Items 1 and 2 were adopted and are now executable
+(`--tokenizer-url` mandatory for `--write`; `contrast_note_records` token-matches an injected counter); item 3
+was not needed, because the ruling made the cap advisory rather than demanding a design that fits it. Option C
+stays on the table as a different cell. The text is kept as written.
 
 1. **The budget is 40 tokens, and the measurement is the only authority.** The lighting notes as written cost 44.
    Any successor is measured on the pinned tokenizer BEFORE it is registered, not estimated: the chars-per-token
