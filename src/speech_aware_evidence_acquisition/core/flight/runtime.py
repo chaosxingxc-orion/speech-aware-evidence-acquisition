@@ -521,6 +521,14 @@ class FlightRuntime:
         self._client = None
         self._binding = None
         self._output_rows: list[Mapping[str, object]] = []
+        # Every phase summary ``run_phases`` got back, in program order.
+        # ``_output_rows`` above carries only the LAST phase's rows (one row
+        # per sample is what the bundle contract accepts); the earlier
+        # phases are not thrown away -- ``seal`` writes all of them to
+        # ``<run_id>.phases.json`` so a two-contact cell's first-phase
+        # responses stay auditable beside the answer that was sealed.
+        self._phase_summaries: tuple[object, ...] = ()
+        self._phase_program_material: Mapping[str, object] | None = None
         self._promotion_receipt: Mapping[str, object] | None = None
         self._owns_session = False
 
@@ -1577,20 +1585,76 @@ class FlightRuntime:
         return rows
 
     @staticmethod
-    def _rows_from_phase_summaries(summaries: Sequence[object]) -> list[Mapping[str, object]]:
-        rows: list[Mapping[str, object]] = []
-        for summary in summaries:
-            phase_id = getattr(summary, "controller_policy_id", None)
-            for result in summary.results:
-                rows.append(
-                    {
-                        "phase": phase_id,
-                        "sample_id": result.sample_id,
-                        "final_response_text": getattr(result, "final_response_text", None),
-                        "contact_count": len(getattr(result, "contacts", ()) or ()),
-                    }
+    def _phase_summary_contacts(summary: object) -> int:
+        """How many model contacts one phase summary accounts for.
+
+        ``rails.phase_runner.run_agent_phase`` already validates that every
+        result of a phase carries exactly one contact, so this is normally
+        ``len(summary.results)``; summing the contact tuples instead keeps
+        the receipt honest if a future program ever runs a phase with a
+        richer per-sample trajectory.
+        """
+
+        return sum(
+            len(getattr(result, "contacts", ()) or ()) for result in summary.results
+        )
+
+    @staticmethod
+    def _rows_from_phase_summaries(
+        summaries: Sequence[object], *, policy: str
+    ) -> list[Mapping[str, object]]:
+        """ONE row per sample, carrying the LAST phase's response.
+
+        A ``PhaseProgram`` answers a sample once: the program's final phase
+        produces the text that stands (``rails.phase_runner.run_program``
+        threads each phase's sealed state into the next, and
+        ``rails.controllers.EvidenceAgentController`` keeps only the last
+        phase's response as the trajectory's answer). Emitting one row per
+        (phase, sample) -- what this used to do -- gave a two-phase program
+        two rows per sample id, which ``core.bundle.outputs.seal`` then
+        refused as duplicate sample ids AFTER every contact had been spent.
+
+        Fails closed when the phases disagree about WHICH samples they ran:
+        a program whose second phase silently dropped or added a row would
+        otherwise seal the last phase's roster while the receipt counted
+        contacts for another one, and the paired analysis downstream would
+        be comparing manifests over different sample sets.
+        """
+
+        if not summaries:
+            raise FlightRuntimeError(
+                f"phase program {policy!r} returned no phase summaries; there is "
+                "nothing to seal"
+            )
+        last = summaries[-1]
+        last_ids = tuple(result.sample_id for result in last.results)
+        if len(set(last_ids)) != len(last_ids):
+            raise FlightRuntimeError(
+                f"phase program {policy!r} final phase returned duplicate sample ids"
+            )
+        expected = set(last_ids)
+        for index, summary in enumerate(summaries[:-1]):
+            ids = {result.sample_id for result in summary.results}
+            if ids != expected:
+                phase_id = getattr(summary, "controller_policy_id", f"phase[{index}]")
+                raise FlightRuntimeError(
+                    f"phase program {policy!r} phase {phase_id!r} ran "
+                    f"{len(ids)} sample(s) but its final phase ran {len(expected)}; "
+                    f"symmetric difference {sorted(ids ^ expected)[:5]}. Every phase "
+                    "of a program must run the same whole roster, or the sealed row "
+                    "for a sample would carry a response the earlier phases never "
+                    "conditioned on"
                 )
-        return rows
+        phase_id = getattr(last, "controller_policy_id", None)
+        return [
+            {
+                "phase": phase_id,
+                "sample_id": result.sample_id,
+                "final_response_text": getattr(result, "final_response_text", None),
+                "contact_count": len(getattr(result, "contacts", ()) or ()),
+            }
+            for result in last.results
+        ]
 
     def _dispatch_fixed_policy(
         self, client: object, plan: ExecutionPlan, *, workers: int | None = None
@@ -1669,6 +1733,7 @@ class FlightRuntime:
 
         started = self._clock()
         dispatch: dict[str, object] = {"dispatch": "phase-program"}
+        phase_receipt: list[Mapping[str, object]] = []
         if policy == "fixed":
             (
                 self._output_rows,
@@ -1698,8 +1763,21 @@ class FlightRuntime:
                 material_for_phase=binding["material_for_phase"],
                 supply_for_phase=binding.get("supply_for_phase"),
             )
-            self._output_rows = self._rows_from_phase_summaries(summaries)
-            contact_count = sum(len(summary.results) for summary in summaries)
+            self._phase_summaries = tuple(summaries)
+            self._output_rows = self._rows_from_phase_summaries(
+                self._phase_summaries, policy=policy
+            )
+            contact_count = sum(
+                self._phase_summary_contacts(summary) for summary in self._phase_summaries
+            )
+            phase_receipt = [
+                {
+                    "phase": getattr(summary, "controller_policy_id", None),
+                    "rows": len(summary.results),
+                    "contacts": self._phase_summary_contacts(summary),
+                }
+                for summary in self._phase_summaries
+            ]
             policy_kind = "phase-program"
         wall_seconds = max(self._clock() - started, 1e-9)
 
@@ -1742,6 +1820,12 @@ class FlightRuntime:
             ),
             "wall_seconds": wall_seconds,
             "contact_count": contact_count,
+            # One entry per phase of a phase program, in program order:
+            # which controller policy ran it, how many rows it answered and
+            # how many contacts it spent. Empty for a fixed-policy direct
+            # arm, which has no phases at all. ``contact_count`` above is
+            # the sum of the ``contacts`` column.
+            "phases": phase_receipt,
             "contacts_per_second": contacts_per_second,
             "average_latency_seconds": average_latency,
             "slot_occupancy": slot_occupancy,
@@ -1900,6 +1984,21 @@ class FlightRuntime:
         for timing in getattr(client, "timings", ()) or ():
             timing_by_sample[timing.sample_id] = timing
         arm = self._arm()
+        # Defence in depth for the multi-phase path: the bundle refuses
+        # duplicate sample ids only inside ``core.bundle.outputs.seal``,
+        # i.e. after every contact has already been spent.
+        # ``_rows_from_phase_summaries`` now reduces a program to one row
+        # per sample, and this says so HERE, where the failure is still
+        # free, rather than trusting that it always will.
+        seen: list[str] = [str(row.get("sample_id")) for row in self._output_rows]
+        duplicates = sorted({sid for sid in seen if seen.count(sid) > 1})
+        if duplicates:
+            raise FlightRuntimeError(
+                f"{len(duplicates)} sample id(s) appear more than once in the rows to "
+                f"seal, e.g. {duplicates[:5]}; the bundle contract accepts exactly one "
+                "outputs row per sample (a policy that made several contacts for one "
+                "sample seals the LAST response, never one row per contact)"
+            )
         rows: list[Mapping[str, object]] = []
         for row in self._output_rows:
             sample_id = str(row.get("sample_id"))
@@ -1985,6 +2084,40 @@ class FlightRuntime:
                     json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n"
                 )
 
+        # `<run_id>.phases.json`: every phase summary, in program order,
+        # beside the sealed outputs. The bundle contract accepts one outputs
+        # row per sample, so a two-contact cell's FIRST phase responses have
+        # nowhere to live inside the manifest -- and they are exactly what a
+        # per-phase parse rate, a select-then-fill error attribution or a
+        # "which phase changed the answer" read needs. Written next to the
+        # outputs rather than inside them, and recorded here with its own
+        # sha256, so it is auditable without being part of the hash-bound
+        # audit contract ``core.bundle.verify`` enforces (that contract, and
+        # ``core.bundle.manifest``, are deliberately untouched).
+        phases_path: Path | None = None
+        if self._phase_summaries:
+            phases_path = run_dir / f"{self._plan.run_id}.phases.json"
+            phases_path.write_text(
+                json.dumps(
+                    {
+                        "schema": "saea-flight-phase-summaries-v1",
+                        "run_id": self._plan.run_id,
+                        "attempt_id": self._plan.attempt_id,
+                        "policy": self._composed.values.get("policy"),
+                        "phases": [
+                            summary.as_json() for summary in self._phase_summaries
+                        ],
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                    sort_keys=True,
+                    default=str,
+                )
+                + "\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+
         close_receipt = self._client.close()
         result = RunResult(
             run_id=self._plan.run_id,
@@ -2058,6 +2191,11 @@ class FlightRuntime:
             "verified_attempt_state": getattr(verified, "attempt_state", None),
             "outputs_path": str(outputs_path),
             "outputs_row_count": len(self._output_rows),
+            "phases_path": str(phases_path) if phases_path is not None else None,
+            "phases_sha256": (
+                _sha256_file(phases_path) if phases_path is not None else None
+            ),
+            "phase_count": len(self._phase_summaries),
             "trace_manifest_hash": close_receipt["trace_manifest_hash"],
             "cost": close_receipt["cost"],
             "ledger_cells": merged_ledger_cells,

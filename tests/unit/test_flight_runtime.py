@@ -172,16 +172,32 @@ class _FakeRunSummary:
 
 
 class _FakePhaseResult:
-    def __init__(self, sample_id: str) -> None:
+    def __init__(self, sample_id: str, final_response_text: str = "resp") -> None:
         self.sample_id = sample_id
-        self.final_response_text = "resp"
+        self.final_response_text = final_response_text
         self.contacts = (object(),)
 
 
 class _FakePhaseSummary:
+    """Mirrors rails.runner.AgentLoopSummary's own surface as far as
+    FlightRuntime reads it: results, controller_policy_id, and the
+    as_json() seal() writes into `<run_id>.phases.json`."""
+
     def __init__(self, results, controller_policy_id: str = "phase-direct-only-v1") -> None:
         self.results = tuple(results)
         self.controller_policy_id = controller_policy_id
+
+    def as_json(self) -> dict:
+        return {
+            "controller_policy_id": self.controller_policy_id,
+            "results": [
+                {
+                    "sample_id": result.sample_id,
+                    "final_response_text": result.final_response_text,
+                }
+                for result in self.results
+            ],
+        }
 
 
 class _FakeVerified:
@@ -698,6 +714,141 @@ def test_run_phases_routes_phase_program_policy_through_phase_runner(tmp_path):
     assert calls == {"rails_runner": 0, "phase_runner": 1}
     assert receipt["policy_kind"] == "phase-program"
     assert receipt["contact_count"] == 2
+
+
+def _two_phase_runner(**kwargs: object):
+    """A select-then-fill shaped fake: two whole-roster phases over the SAME
+    two samples, the second one carrying the text that must be sealed."""
+
+    return (
+        _FakePhaseSummary(
+            (
+                _FakePhaseResult("s1", final_response_text="draft-1"),
+                _FakePhaseResult("s2", final_response_text="draft-2"),
+            ),
+            controller_policy_id="phase-select-then-fill-v1:select",
+        ),
+        _FakePhaseSummary(
+            (_FakePhaseResult("s1"), _FakePhaseResult("s2")),
+            controller_policy_id="phase-select-then-fill-v1:fill",
+        ),
+    )
+
+
+def _bound_phase_runtime(tmp_path, phase_runner, *, policy="phase-select-then-fill-v1"):
+    runtime = _make_runtime(
+        tmp_path,
+        happy_path=True,
+        config_kwargs={"policy": policy},
+        phase_runner=phase_runner,
+    )
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    runtime.bind_phase_program_material(
+        knowledge_snapshot="fake-snapshot",
+        speech_packet_bindings={},
+        material_for_phase=lambda *a, **kw: None,
+    )
+    return runtime
+
+
+def test_run_phases_seals_one_row_per_sample_from_the_last_phase(tmp_path):
+    """The multi-phase seal contract: a two-phase program answers each
+    sample ONCE, with the final phase's text, and the receipt still accounts
+    for every phase's contacts. Emitting one row per (phase, sample) gave
+    duplicate sample ids that core.bundle.outputs.seal refused AFTER the
+    contacts were spent."""
+
+    runtime = _bound_phase_runtime(tmp_path, _two_phase_runner)
+    receipt = runtime.run_phases()
+
+    assert receipt["policy_kind"] == "phase-program"
+    assert receipt["contact_count"] == 4
+    assert receipt["phases"] == [
+        {"phase": "phase-select-then-fill-v1:select", "rows": 2, "contacts": 2},
+        {"phase": "phase-select-then-fill-v1:fill", "rows": 2, "contacts": 2},
+    ]
+
+    seal = runtime.seal()
+    assert seal["outputs_row_count"] == 2
+    rows = [
+        json.loads(line)
+        for line in Path(seal["outputs_path"]).read_text(encoding="utf-8").splitlines()
+    ]
+    assert [row["sample_id"] for row in rows] == ["s1", "s2"]
+    # The LAST phase's response is what stands, not the first phase's draft.
+    assert {row["text"] for row in rows} == {"resp"}
+
+    assert seal["phase_count"] == 2
+    phases_path = Path(seal["phases_path"])
+    assert phases_path.name == "SAEA-TEST-RUN-001.phases.json"
+    document = json.loads(phases_path.read_text(encoding="utf-8"))
+    assert document["schema"] == "saea-flight-phase-summaries-v1"
+    assert [phase["controller_policy_id"] for phase in document["phases"]] == [
+        "phase-select-then-fill-v1:select",
+        "phase-select-then-fill-v1:fill",
+    ]
+    assert (
+        seal["phases_sha256"]
+        == hashlib.sha256(phases_path.read_bytes()).hexdigest()
+    )
+
+
+def test_run_phases_refuses_phases_that_ran_different_sample_sets(tmp_path):
+    """Refused BEFORE the seal, naming the program: a phase that silently
+    dropped a row would otherwise seal a roster the earlier phases never
+    conditioned on."""
+
+    def _runner(**kwargs: object):
+        return (
+            _FakePhaseSummary(
+                (_FakePhaseResult("s1"), _FakePhaseResult("s3")),
+                controller_policy_id="phase-select-then-fill-v1:select",
+            ),
+            _FakePhaseSummary(
+                (_FakePhaseResult("s1"), _FakePhaseResult("s2")),
+                controller_policy_id="phase-select-then-fill-v1:fill",
+            ),
+        )
+
+    runtime = _bound_phase_runtime(tmp_path, _runner)
+    with pytest.raises(FlightRuntimeError, match="phase-select-then-fill-v1"):
+        runtime.run_phases()
+
+
+def test_seal_writes_no_phases_file_for_a_fixed_policy_flight(tmp_path):
+    runtime = _make_runtime(tmp_path, happy_path=True)
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    receipt = runtime.run_phases()
+    assert receipt["phases"] == []
+    seal = runtime.seal()
+    assert seal["phases_path"] is None
+    assert seal["phases_sha256"] is None
+    assert seal["phase_count"] == 0
+
+
+def test_canonical_output_rows_refuse_duplicate_sample_ids(tmp_path):
+    """The defensive check, independent of how the rows were built: the
+    bundle contract accepts one row per sample and says so here, where the
+    failure is still free."""
+
+    runtime = _make_runtime(tmp_path, happy_path=True)
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    runtime.run_phases()
+    runtime._output_rows = list(runtime._output_rows) + list(runtime._output_rows)
+    with pytest.raises(FlightRuntimeError, match="appear more than once"):
+        runtime.seal()
+
+
+def test_run_phases_refuses_an_empty_phase_summary_sequence(tmp_path):
+    runtime = _bound_phase_runtime(tmp_path, lambda **kwargs: ())
+    with pytest.raises(FlightRuntimeError, match="no phase summaries"):
+        runtime.run_phases()
 
 
 def test_run_phases_refuses_a_phase_program_without_bound_material(tmp_path):
