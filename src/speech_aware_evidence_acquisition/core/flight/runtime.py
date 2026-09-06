@@ -290,6 +290,134 @@ def sample_id_for_packet(packet_id: str) -> str:
     return packet_id.replace(PACKET_ID_SEPARATOR, SAMPLE_ID_SEPARATOR)
 
 
+#: Schema of the receipt ``scripts/a2t_calibration_prompt_fit.py
+#: --phase-program`` writes and :meth:`FlightRuntime._verify_phase_prompt_fit`
+#: verifies before any contact.
+PHASE_PROMPT_FIT_SCHEMA = "saea-phase-prompt-fit-v1"
+
+#: The literal appended to a phase instruction that binds a predecessor
+#: response which does not exist yet (``append-sealed-state`` at pre-flight
+#: time). The pad's LENGTH is the completion-token ceiling's worth of ASCII,
+#: which is the exact bound on what that predecessor can be;
+#: :meth:`FlightRuntime._phase_prompt_payloads` has always used this shape
+#: and the measurement/verification path reuses it so the two agree.
+PHASE_PREDECESSOR_PAD_PREFIX = "Prior phase response (pad)"
+
+#: Bytes of ASCII pad per completion token (``_phase_prompt_payloads``' own
+#: ``"x" * (4 * max_tokens)``).
+PHASE_PREDECESSOR_PAD_BYTES_PER_TOKEN = 4
+
+
+def phase_envelope_sha256(envelope: Sequence[Mapping[str, object]]) -> str:
+    """The identity of ONE phase contact's rendered transport envelope.
+
+    Canonical JSON over the ``(system, user)`` message pair
+    ``rails.phase_material.render_phase_envelope`` returns -- the same
+    ``sort_keys``/compact-separator rule ``_canonical_hash`` applies
+    everywhere else in this module. Defined HERE rather than in the
+    measurement script so the number the script records and the number
+    :meth:`FlightRuntime._verify_phase_prompt_fit` recomputes have exactly
+    one authority and cannot drift.
+    """
+
+    return _canonical_hash(list(envelope))
+
+
+def phase_program_system_text(adapter: object, sample: object) -> str:
+    """The system message a phase contact for ``sample`` carries.
+
+    ``rails.runner._agent_messages``' own rule, reproduced here so the
+    prompt-fit measurement and this runtime's verification build the same
+    bytes: the adapter's assembled system content, plus the adapter's task
+    contract appended when the instruction does not already contain it.
+    """
+
+    from ...rails.obs import default_obs_packet  # noqa: PLC0415 (cycle guard)
+
+    messages = adapter.assemble_prompt(sample, None)
+    system_text = str(messages[0]["content"])
+    contract = adapter.build_task_contract(sample, default_obs_packet(sample))
+    if contract not in system_text:
+        system_text = f"{system_text}\n\nTask contract:\n{contract}"
+    return system_text
+
+
+def render_phase_prompt_envelopes(
+    *,
+    program_id: str,
+    phase_names: Sequence[str],
+    specs: Mapping[str, object],
+    static_text_by_phase: Mapping[str, str],
+    system_text: str,
+    prompt_order: str,
+    packet_descriptor: Mapping[str, object],
+    sample_id: str,
+    sealed_states_by_phase: Mapping[str, Mapping[str, object]] | None = None,
+    completion_token_ceiling: int,
+) -> dict[str, tuple[Mapping[str, object], ...]]:
+    """``{phase: envelope}`` for ONE sample of a phase program.
+
+    The one authority for what a phase contact looks like before it is sent.
+    Two callers must agree byte-for-byte or the pinned receipt is worthless:
+    ``scripts/a2t_calibration_prompt_fit.py --phase-program`` (which measures
+    the envelope through the resident server) and
+    :meth:`FlightRuntime._verify_phase_prompt_fit` (which re-renders it at
+    pre-flight time and refuses on any difference).
+
+    Per phase the instruction is the rendered static text, plus the
+    predecessor binding's own suffix:
+
+    * ``none`` -- nothing appended; the envelope is EXACT.
+    * ``sealed-manifest`` -- the state this sample's row was sealed with,
+      from ``sealed_states_by_phase[phase][sample_id]``; also EXACT, and
+      genuinely per-sample.
+    * ``append-sealed-state`` -- the predecessor is this run's own preceding
+      response and does not exist yet, so the instruction is padded with
+      ``completion_token_ceiling`` tokens' worth of ASCII: an upper bound,
+      never an under-count.
+
+    A ``sealed-manifest`` phase with no state supplied falls back to the same
+    pad, so a caller that deliberately measures the bound (this runtime's own
+    ``_phase_prompt_payloads`` estimate) and a caller that measures the exact
+    text share one code path.
+    """
+
+    from ...rails.phase_material import (  # noqa: PLC0415 (cycle guard)
+        render_phase_envelope,
+    )
+
+    if not isinstance(completion_token_ceiling, int) or completion_token_ceiling <= 0:
+        raise FlightRuntimeError(
+            "render_phase_prompt_envelopes needs a positive completion_token_ceiling"
+        )
+    pad = "x" * (PHASE_PREDECESSOR_PAD_BYTES_PER_TOKEN * int(completion_token_ceiling))
+    states = dict(sealed_states_by_phase or {})
+    envelopes: dict[str, tuple[Mapping[str, object], ...]] = {}
+    for phase in phase_names:
+        spec = specs[phase]
+        instruction = static_text_by_phase[phase]
+        binding = getattr(spec, "predecessor_binding", "none")
+        if binding != "none":
+            state = states.get(phase, {}).get(sample_id)
+            if state is None:
+                instruction = (
+                    f"{instruction}\n\n{PHASE_PREDECESSOR_PAD_PREFIX}:\n{pad}"
+                )
+            else:
+                instruction = (
+                    f"{instruction}\n\nPrior phase response "
+                    f"({state.state_kind}):\n{state.content}"
+                )
+        envelopes[phase] = render_phase_envelope(
+            system_text,
+            instruction,
+            prompt_order=prompt_order,
+            packet_descriptor=packet_descriptor,
+            contact_id=f"{program_id}:{phase}:{sample_id}",
+        )
+    return envelopes
+
+
 #: Every wire-check artifact is written under a run id carrying this
 #: prefix, so its durable attempt accounting can never be mistaken for --
 #: or summed into -- a registered run's own budget. No exposure row exists
@@ -703,6 +831,225 @@ class FlightRuntime:
             ).encode("utf-8")
         return payloads
 
+    def _verify_phase_prompt_fit(self) -> Mapping[str, object] | None:
+        """Verify a PINNED phase prompt-fit receipt against what this flight
+        would actually render, before any contact.
+
+        A fragment opts in by declaring BOTH ``prompt_fit_receipt`` (a plain
+        relative path under this study repository) and
+        ``prompt_fit_receipt_sha256``. Neither key present is the pre-existing
+        behaviour: nothing is verified and ``None`` is returned. One key
+        without the other is refused -- a receipt path with no hash pins
+        nothing.
+
+        What is checked, in order, each fail-closed:
+
+        1. the receipt file's own sha256 equals the configured one;
+        2. it carries schema :data:`PHASE_PROMPT_FIT_SCHEMA`;
+        3. this flight's ``policy`` is a phase program (a receipt of this
+           schema describes per-phase envelopes and means nothing otherwise);
+        4. the receipt carries exactly ONE cell naming this flight's four
+           config fragments -- the receipt says which measurement belongs to
+           which cell and this runtime never guesses. The cell's recorded
+           ``config_hash`` is provenance, never the match key: a receipt is
+           measured from a fragment that does not yet pin it, and pinning it
+           changes that very hash;
+        5. that cell's phases are exactly the program's phases;
+        6. for EVERY phase, re-rendering the envelope for the sample the
+           receipt records as its maximum -- through
+           :func:`render_phase_prompt_envelopes`, the same function the
+           measurement used -- reproduces the recorded ``envelope_sha256``.
+
+        Step 6 is the point of the whole mechanism: a receipt measured
+        against an instruction, a registry, a template, a task contract, a
+        prompt order or a packet binding that has since changed no longer
+        describes what would go on the wire, and a flight that trusted it
+        would be certifying a fit for a prompt it is not sending.
+
+        This does NOT replace :meth:`_assess_prompt_budget`; that estimate
+        runs unchanged beside it.
+        """
+
+        from ...rails.phase_material import (  # noqa: PLC0415 (cycle guard)
+            load_phase_material_specs,
+            render_static_instruction,
+            sealed_states_from_manifest,
+        )
+
+        values = self._composed.values
+        relpath = values.get("prompt_fit_receipt")
+        expected_sha256 = values.get("prompt_fit_receipt_sha256")
+        if relpath is None and expected_sha256 is None:
+            return None
+        if not isinstance(relpath, str) or not relpath.strip():
+            raise FlightRuntimeError(
+                "prompt_fit_receipt_sha256 is declared but prompt_fit_receipt is not a "
+                "non-empty relative path; a pinned hash with no file pins nothing"
+            )
+        if not isinstance(expected_sha256, str) or len(expected_sha256) != 64:
+            raise FlightRuntimeError(
+                f"prompt_fit_receipt {relpath!r} requires a 64-character "
+                "prompt_fit_receipt_sha256; an unpinned receipt is not evidence"
+            )
+        if relpath.startswith("/") or "\\" in relpath or ".." in Path(relpath).parts:
+            raise FlightRuntimeError(
+                f"prompt_fit_receipt {relpath!r} is not a plain relative path inside "
+                "the study repository"
+            )
+        receipt_path = self._repo_root / relpath
+        if not receipt_path.is_file():
+            raise FlightRuntimeError(f"prompt_fit_receipt missing: {receipt_path}")
+        measured = _sha256_file(receipt_path)
+        if measured != expected_sha256:
+            raise FlightRuntimeError(
+                f"prompt_fit_receipt {receipt_path} hashes to {measured}, not the "
+                f"configured {expected_sha256}"
+            )
+        try:
+            document = json.loads(receipt_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            raise FlightRuntimeError(
+                f"prompt_fit_receipt {receipt_path} is unreadable: {error}"
+            ) from error
+        if not isinstance(document, Mapping) or document.get("schema") != (
+            PHASE_PROMPT_FIT_SCHEMA
+        ):
+            raise FlightRuntimeError(
+                f"prompt_fit_receipt {receipt_path} is not a "
+                f"{PHASE_PROMPT_FIT_SCHEMA} document"
+            )
+
+        policy = values.get("policy")
+        if not isinstance(policy, str) or policy == "fixed":
+            raise FlightRuntimeError(
+                f"prompt_fit_receipt {receipt_path} pins per-phase envelopes but this "
+                f"flight's policy is {policy!r}, which is not a phase program"
+            )
+        program = default_phase_program(policy)
+        if not self.uses_speech_feature_packets():
+            raise FlightRuntimeError(
+                f"prompt_fit_receipt {receipt_path} pins speech-feature packet "
+                f"envelopes but arm {self._arm()!r} does not travel the packet path"
+            )
+
+        cells = document.get("cells")
+        if not isinstance(cells, list) or not cells:
+            raise FlightRuntimeError(
+                f"prompt_fit_receipt {receipt_path} carries no cells"
+            )
+        wanted = {
+            "model_fragment": self._model,
+            "dataset_fragment": self._dataset,
+            "baseline_fragment": self._baseline,
+            "experiment_fragment": self._experiment,
+        }
+        matches = [
+            cell
+            for cell in cells
+            if isinstance(cell, Mapping)
+            and all(cell.get(key) == value for key, value in wanted.items())
+        ]
+        if len(matches) != 1:
+            raise FlightRuntimeError(
+                f"prompt_fit_receipt {receipt_path} carries {len(matches)} cell(s) for "
+                f"fragments {wanted}; it measured "
+                f"{[cell.get('cell_id') for cell in cells if isinstance(cell, Mapping)]}"
+            )
+        cell = matches[0]
+        phase_entries = cell.get("phases")
+        if not isinstance(phase_entries, list) or not phase_entries:
+            raise FlightRuntimeError(
+                f"prompt_fit_receipt {receipt_path} cell {cell.get('cell_id')!r} carries "
+                "no phases"
+            )
+        recorded = tuple(
+            str(entry.get("phase")) for entry in phase_entries if isinstance(entry, Mapping)
+        )
+        if recorded != tuple(program.phase_names()):
+            raise FlightRuntimeError(
+                f"prompt_fit_receipt {receipt_path} measured phases {list(recorded)} but "
+                f"program {program.program_id!r} declares {list(program.phase_names())}"
+            )
+
+        specs = load_phase_material_specs(values, program)
+        static_text = {
+            phase: render_static_instruction(
+                spec, self._repo_root, self._lock, self._data_root
+            )
+            for phase, spec in specs.items()
+        }
+        bindings = self.speech_packet_bindings()
+        prompt_order = str(values.get("prompt_order") or "speech-query-prefix-v2")
+        ceiling = int(self._adapter.serving_geometry()["max_tokens"])
+        samples_by_id = {sample.sample_id: sample for sample in self._samples}
+
+        verified: list[Mapping[str, object]] = []
+        for entry in phase_entries:
+            phase = str(entry["phase"])
+            sample_id = entry.get("max_sample_id")
+            recorded_sha256 = entry.get("envelope_sha256")
+            if not isinstance(sample_id, str) or not isinstance(recorded_sha256, str):
+                raise FlightRuntimeError(
+                    f"prompt_fit_receipt {receipt_path} phase {phase!r} lacks a "
+                    "max_sample_id / envelope_sha256 pair"
+                )
+            sample = samples_by_id.get(sample_id)
+            if sample is None:
+                raise FlightRuntimeError(
+                    f"prompt_fit_receipt {receipt_path} phase {phase!r} was measured on "
+                    f"sample {sample_id!r}, which this flight's split does not carry"
+                )
+            sealed_states: dict[str, Mapping[str, object]] = {}
+            spec = specs[phase]
+            if spec.predecessor_binding == "sealed-manifest":
+                source = spec.predecessor_source
+                sealed_states[phase] = sealed_states_from_manifest(
+                    self._data_root / str(source["manifest_relpath"]),
+                    expected_sha256=str(source["manifest_sha256"]),
+                    phase_name=phase,
+                    producer_policy_id=str(source["producer_policy_id"]),
+                    sample_ids=(sample_id,),
+                )
+            envelopes = render_phase_prompt_envelopes(
+                program_id=program.program_id,
+                phase_names=(phase,),
+                specs=specs,
+                static_text_by_phase=static_text,
+                system_text=phase_program_system_text(self._adapter, sample),
+                prompt_order=prompt_order,
+                packet_descriptor=bindings[sample_id],
+                sample_id=sample_id,
+                sealed_states_by_phase=sealed_states,
+                completion_token_ceiling=ceiling,
+            )
+            rebuilt = phase_envelope_sha256(envelopes[phase])
+            if rebuilt != recorded_sha256:
+                raise FlightRuntimeError(
+                    f"prompt_fit_receipt {receipt_path} phase {phase!r} recorded envelope "
+                    f"{recorded_sha256} for sample {sample_id!r} but this flight renders "
+                    f"{rebuilt}; the measured envelope is not the one this flight would "
+                    "send, so the pinned fit does not describe this contact"
+                )
+            verified.append(
+                {
+                    "phase": phase,
+                    "max_sample_id": sample_id,
+                    "envelope_sha256": rebuilt,
+                    "max_text_prompt_tokens": entry.get("max_text_prompt_tokens"),
+                    "every_request_fits": entry.get("every_request_fits"),
+                }
+            )
+        return {
+            "prompt_fit_receipt": str(receipt_path),
+            "prompt_fit_receipt_sha256": measured,
+            "schema": PHASE_PROMPT_FIT_SCHEMA,
+            "cell_id": cell.get("cell_id"),
+            "config_hash": self._composed.config_hash,
+            "measured_config_hash": cell.get("config_hash"),
+            "program_id": program.program_id,
+            "phases": verified,
+        }
+
     def _assess_prompt_budget(self, samples: Sequence[object]) -> tuple[Mapping[str, object], ...]:
         """Serialize one representative request per phase through the
         adapter and run it through ``rails.context_budget.
@@ -819,8 +1166,10 @@ class FlightRuntime:
         exposure ledger row, assert a clean study tree
         (``core.bundle.git_commit.require_clean_study_repo``), reserve this
         attempt in the durable :class:`~core.attempts.store.AttemptStore`,
-        and pre-assess the prompt budget for a representative request per
-        phase. Fails closed and records nothing on any failure.
+        verify a pinned phase prompt-fit receipt when the fragment declares
+        one (:meth:`_verify_phase_prompt_fit`), and pre-assess the prompt
+        budget for a representative request per phase. Fails closed and
+        records nothing on any failure.
         """
 
         self._require_prior_stages("preflight")
@@ -879,6 +1228,7 @@ class FlightRuntime:
                 "a retry must mint a fresh attempt_id"
             )
 
+        phase_prompt_fit = self._verify_phase_prompt_fit()
         prompt_budget = self._assess_prompt_budget(samples)
 
         payload = {
@@ -894,6 +1244,7 @@ class FlightRuntime:
             "study_commit": study_commit,
             "attempt_reservation": "deferred to core.model.adapter.FrozenCoreAdapter",
             "prompt_budget": prompt_budget,
+            "phase_prompt_fit": phase_prompt_fit,
         }
         return self.receipts.record("preflight", payload)
 
@@ -2520,11 +2871,25 @@ class FlightRuntime:
 
     # -- stage 6: score ---------------------------------------------------
 
-    def score(self, *, max_workers: int = 1, output_dir: Path | None = None) -> Mapping[str, object]:
+    def score(
+        self,
+        *,
+        max_workers: int = 1,
+        output_dir: Path | None = None,
+        include_per_sample: bool = False,
+    ) -> Mapping[str, object]:
         """``load_score_jobs`` + ``score_batch`` (default
         ``core.scoring_batch.run_score_batch``) over the exactly-one manifest
         :meth:`seal` sealed -- one job per complete manifest, never sharded
-        (``core.scoring_batch``'s own module docstring)."""
+        (``core.scoring_batch``'s own module docstring).
+
+        ``include_per_sample`` is forwarded to ``run_score_batch`` and
+        recorded in this stage's receipt. It is what the evolution loop reads:
+        a round's selection rule counts SAVES and HARMS per row against the
+        incumbent (``rails.evolution``), which needs the per-sample scores the
+        batch otherwise summarizes away. Default ``False``, so every existing
+        caller's receipt and result shape are unchanged.
+        """
 
         self._require_prior_stages("score")
         seal_payload = self.receipts.require("seal")
@@ -2539,13 +2904,19 @@ class FlightRuntime:
         resolved_output_dir = Path(output_dir) if output_dir is not None else run_dir / "score-batch"
 
         started = self._clock()
-        result = self._score_batch(jobs, output_dir=resolved_output_dir, max_workers=max_workers)
+        result = self._score_batch(
+            jobs,
+            output_dir=resolved_output_dir,
+            max_workers=max_workers,
+            include_per_sample=include_per_sample,
+        )
         duration = max(self._clock() - started, 1e-9)
 
         payload = {
             "jobs_path": str(jobs_path),
             "output_dir": str(resolved_output_dir),
             "job_count": len(jobs),
+            "include_per_sample": bool(include_per_sample),
             "duration_seconds": duration,
             "jobs_per_second": len(jobs) / duration,
             "result": result,
