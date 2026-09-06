@@ -393,3 +393,105 @@ def test_decontamination_report_states_the_split_boundaries(pool):
     assert report["frozen_core_contacts"] == 0
     assert report["key_side"]["split"] == "train"
     assert report["query_sets"][0]["role"] == "candidate"
+
+
+# ---------------------------------------------------------------------------
+# MF-7b: the cross-modal separation and the v2 decision table
+# ---------------------------------------------------------------------------
+
+
+def _engineered_rows(net_by_row, *, echo, population="NEW500"):
+    """Rows engineered to a known net corrective power and echo rate."""
+
+    out = []
+    for index, net in enumerate(net_by_row):
+        is_save = net > 0
+        is_harm = net < 0
+        out.append(
+            audit.RowMeasurement(
+                sample_id=f"s{index}", population=population, scenario="alarm",
+                intent_recall=1.0, vote_correct=1.0 if is_save else 0.0,
+                vote_intent="alarm_set", corrective_net=float(net),
+                is_save=is_save, is_harm=is_harm, baseline_correct=not is_save,
+                filler_recall=None, gold_filler_count=0,
+                echo=1.0 if index < round(echo * len(net_by_row)) else 0.0,
+            )
+        )
+    return tuple(out)
+
+
+def test_cosine_separation_splits_matched_from_unmatched_pairs(pool):
+    rows, keys = pool
+    # Query i is the unit vector of its own intent's axis, so a matched pair
+    # has cosine 1 and an unmatched one cosine 0 -- separation exactly 1.0.
+    axis = {"alarm_set": [1.0, 0.0], "email_query": [0.0, 1.0]}
+    query_vectors = np.array([axis[row.intent] for row in rows], dtype=float)
+    key_vectors = np.array([axis[key.intent] for key in keys], dtype=float)
+    query_set = audit.QuerySet(
+        query_set_id="q-speech-lco", query_ids=tuple(r.sample_id for r in rows),
+        query_vectors=query_vectors, key_ids=tuple(k.facet_id for k in keys),
+        key_vectors=key_vectors, encoder="lco-embedding-omni-3b",
+        contains_speech=True, fuses_state=False, provenance={},
+    )
+    block = audit.cosine_separation(query_set, rows, keys)
+    assert block["matched"]["mean"] == pytest.approx(1.0)
+    assert block["unmatched"]["mean"] == pytest.approx(0.0)
+    assert block["mean_delta"] == pytest.approx(1.0)
+    assert block["queries"] == 3
+    assert block["keys"] == 4
+
+
+def test_decision_v2_refuses_a_degenerate_winner_however_high_its_net():
+    per_set = {
+        # +40 pp but every vote echoes the draft: cannot license KU-S1.
+        "q-speech-lco+state": {5: _engineered_rows([1, 1, 1, 1, 0], echo=1.0)},
+        # +20 pp and no echo at all: the winner the rule is meant to find.
+        "q-speech-lco": {5: _engineered_rows([1, 1, 0, 0, 0], echo=0.0)},
+    }
+    outcome = audit.decision_v2(
+        per_set, ci_low_by_set={"q-speech-lco+state": 30.0, "q-speech-lco": 5.0})
+    assert outcome["degenerate_sets"] == ["q-speech-lco+state"]
+    assert outcome["winner"] == "q-speech-lco"
+    assert outcome["gate_cleared"] is True
+
+
+def test_decision_v2_needs_both_the_point_estimate_and_the_interval():
+    per_set = {"q-speech-nemotron": {5: _engineered_rows([1, 1, 0, 0, 0], echo=0.0)}}
+    cleared = audit.decision_v2(per_set, ci_low_by_set={"q-speech-nemotron": 0.4})
+    assert cleared["point_estimate_cleared"] is True
+    assert cleared["gate_cleared"] is True
+    refused = audit.decision_v2(per_set, ci_low_by_set={"q-speech-nemotron": -0.4})
+    assert refused["point_estimate_cleared"] is True
+    assert refused["interval_cleared"] is False
+    assert refused["gate_cleared"] is False
+    assert refused["verdict"].startswith("CLOSED")
+
+
+def test_decision_v2_closes_when_every_speech_set_is_degenerate():
+    per_set = {"q-speech-glap+state": {5: _engineered_rows([1, 1, 1, 0, 0], echo=1.0)}}
+    outcome = audit.decision_v2(per_set, ci_low_by_set={"q-speech-glap+state": 20.0})
+    assert outcome["winner"] is None
+    assert outcome["gate_cleared"] is False
+    assert outcome["verdict"].startswith("CLOSED")
+
+
+def test_build_summary_omits_the_paired_block_when_the_reference_is_absent(pool):
+    rows, keys = pool
+    query_vectors = np.eye(3, 2)
+    key_vectors = np.eye(4, 2)
+    query_set = audit.QuerySet(
+        query_set_id="q-speech-lco", query_ids=tuple(r.sample_id for r in rows),
+        query_vectors=query_vectors, key_ids=tuple(k.facet_id for k in keys),
+        key_vectors=key_vectors, encoder="lco-embedding-omni-3b",
+        contains_speech=True, fuses_state=False, provenance={},
+    )
+    weights = audit.RankWeights(w_cos=0.5, w_prior=0.3, w_agree=0.2)
+    per_set = {
+        "q-speech-lco": audit.run_query_set(query_set, rows, keys, weights, k_values=(1,))
+    }
+    summary = audit.build_summary(
+        per_set, {"q-speech-lco": query_set}, weights, decision_k=1,
+        baseline_run_id="run", draft_run_id="draft", snapshot_sha256="0" * 64,
+        key_npz_sha256="1" * 64, accounting={}, reference="q-draft",
+    )
+    assert summary["delta_ci90"] == {}

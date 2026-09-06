@@ -783,6 +783,173 @@ def decision(
     }
 
 
+#: MF-7b's echo-degeneracy threshold, in percent of the rows an echo rate is
+#: scored on. Preregistered in
+#: ``docs/readiness/2026-09-06-slurp-retrieval-key-audit-v2-preregistration.md``
+#: clause 2, on the arithmetic MF-7 section 5.3 already published: a set whose
+#: majority vote just repeats the query's own draft label is not retrieving.
+ECHO_DEGENERACY_PP = 90.0
+
+
+def cosine_separation(
+    query_set: "QuerySet",
+    dev_rows: Sequence[DevRow],
+    key_rows: Sequence[KeyRow],
+    *,
+    population: str = "ALL1000",
+) -> dict[str, object]:
+    """Cross-modal separation: the cosine distribution of MATCHED pairs (the
+    key's TRAIN intent equals the DEV row's gold intent) against UNMATCHED
+    ones.
+
+    Reported for every speech set and gating nothing. It separates two very
+    different failures a low vote accuracy can hide: an encoder that puts
+    speech and text in different regions of the space (no separation at all),
+    and one that separates them but whose ranking is still too weak for a
+    majority vote to find the gold intent (separation present, recall high,
+    vote low).
+    """
+
+    queries = align_queries(dev_rows, query_set.query_ids, query_set.query_vectors)
+    keys = align_keys(key_rows, query_set.key_ids, query_set.key_vectors)
+    if population != "ALL1000":
+        keep = [index for index, row in enumerate(dev_rows) if row.population == population]
+        queries = queries[keep]
+        rows = [dev_rows[index] for index in keep]
+    else:
+        rows = list(dev_rows)
+    cosines = cosine_matrix(queries, keys)
+    key_intents = np.asarray([row.intent for row in key_rows], dtype=object)
+    gold = np.asarray([row.intent for row in rows], dtype=object)
+    matched_mask = key_intents[None, :] == gold[:, None]
+    matched = cosines[matched_mask]
+    unmatched = cosines[~matched_mask]
+
+    def block(values: np.ndarray) -> dict[str, object]:
+        if values.size == 0:
+            return {"n": 0}
+        return {
+            "n": int(values.size),
+            "mean": float(values.mean()),
+            "sd": float(values.std(ddof=0)),
+            "p05": float(np.percentile(values, 5)),
+            "p50": float(np.percentile(values, 50)),
+            "p95": float(np.percentile(values, 95)),
+            "min": float(values.min()),
+            "max": float(values.max()),
+        }
+
+    matched_block = block(matched)
+    unmatched_block = block(unmatched)
+    sd = float(unmatched_block.get("sd", 0.0)) if unmatched_block.get("n") else 0.0
+    delta = (
+        float(matched_block["mean"]) - float(unmatched_block["mean"])
+        if matched_block.get("n") and unmatched_block.get("n")
+        else None
+    )
+    return {
+        "query_set_id": query_set.query_set_id,
+        "encoder": query_set.encoder,
+        "population": population,
+        "queries": int(queries.shape[0]),
+        "keys": int(keys.shape[0]),
+        "matched": matched_block,
+        "unmatched": unmatched_block,
+        "mean_delta": delta,
+        "standardised_separation": (
+            None if delta is None or sd == 0.0 else delta / sd
+        ),
+    }
+
+
+def decision_v2(
+    per_set: Mapping[str, Mapping[int, Sequence[RowMeasurement]]],
+    *,
+    decision_k: int = 5,
+    population: str = "NEW500",
+    ci_low_by_set: Mapping[str, float],
+    gate_pp: float = CORRECTIVE_NET_GATE_PP,
+    echo_degeneracy_pp: float = ECHO_DEGENERACY_PP,
+) -> dict[str, object]:
+    """MF-7b's preregistered decision table (v2 preregistration section 4).
+
+    Two things differ from :func:`decision`, both fixed before any v2 number
+    existed. **Degeneracy**: a set whose echo rate at the decision k on the
+    decision population is at least ``echo_degeneracy_pp`` cannot be the winner
+    that licenses KU-S1 -- its vote is its own input rather than a retrieved
+    neighbour -- though it is still measured and reported. **A two-sided
+    gate**: the winner must reach ``gate_pp`` on the point estimate AND carry a
+    CI90 lower bound strictly above zero, where ``ci_low_by_set`` supplies that
+    bound from the same single bootstrap every other figure uses.
+    """
+
+    nets: dict[str, float] = {}
+    echoes: dict[str, float | None] = {}
+    for set_id, by_k in per_set.items():
+        rows = _population_filter(list(by_k[decision_k]), population)
+        summary = summarise(rows)
+        nets[set_id] = float(summary["net_pp"])
+        echo = summary.get("echo_rate")
+        echoes[set_id] = None if echo is None else float(echo)
+
+    degenerate = sorted(
+        set_id
+        for set_id, echo in echoes.items()
+        if echo is not None and echo >= echo_degeneracy_pp
+    )
+    eligible = sorted(
+        (
+            set_id
+            for set_id in per_set
+            if set_id not in DIAGNOSTIC_ONLY and set_id not in degenerate
+        ),
+        key=lambda set_id: (
+            -nets[set_id],
+            set_id.endswith("+state"),
+            not set_id.endswith("-fused"),
+            set_id,
+        ),
+    )
+    winner = eligible[0] if eligible else None
+    runner_up = eligible[1] if len(eligible) > 1 else None
+    ci_low = None if winner is None else float(ci_low_by_set[winner])
+    point_cleared = winner is not None and nets[winner] >= gate_pp
+    interval_cleared = ci_low is not None and ci_low > 0.0
+    gate_cleared = bool(point_cleared and interval_cleared)
+    gold_net = nets.get("q-gold-text")
+    return {
+        "decision_k": decision_k,
+        "decision_population": population,
+        "gate_net_pp": gate_pp,
+        "gate_rule": "net corrective power >= gate_net_pp AND CI90 lower bound > 0",
+        "echo_degeneracy_pp": echo_degeneracy_pp,
+        "degenerate_sets": degenerate,
+        "eligible_sets": eligible,
+        "diagnostic_only": dict(DIAGNOSTIC_ONLY),
+        "net_pp_by_set": nets,
+        "echo_rate_by_set": echoes,
+        "ci90_low_by_set": {key: float(value) for key, value in ci_low_by_set.items()},
+        "winner": winner,
+        "winner_net_pp": None if winner is None else nets[winner],
+        "winner_ci90_low": ci_low,
+        "runner_up": runner_up,
+        "runner_up_net_pp": None if runner_up is None else nets[runner_up],
+        "point_estimate_cleared": bool(point_cleared),
+        "interval_cleared": bool(interval_cleared),
+        "gate_cleared": gate_cleared,
+        "verdict": (
+            f"KU-S1 flies with {winner}"
+            if gate_cleared
+            else "CLOSED: neighbour retrieval on SLURP intent does not clear the gate; "
+            "re-scoped to the slot side (KU-S3) and to Audio2Tool (KU-A1)"
+        ),
+        "gold_text_upper_bound_net_pp": gold_net,
+        "cross_modal_loss_pp": (
+            None if gold_net is None or winner is None else gold_net - nets[winner]
+        ),
+    }
+
+
 def scenario_table(measurements: Sequence[RowMeasurement]) -> list[dict[str, object]]:
     """One row per gold scenario -- the per-stratum table every verdict carries."""
 
@@ -807,8 +974,15 @@ def build_summary(
     snapshot_sha256: str,
     key_npz_sha256: str,
     accounting: Mapping[str, object],
+    reference: str = "q-draft",
 ) -> dict[str, object]:
-    """The receipt directory's ``summary.json``."""
+    """The receipt directory's ``summary.json``.
+
+    ``reference`` names the set every other set is paired against. It defaults
+    to ``q-draft`` -- MF-7's own reference and the lock's legacy signal -- and
+    the paired block is simply omitted when that set was not measured, which is
+    the case for a key space no CPU encoder ever embedded (MF-7b's label keys).
+    """
 
     tables: dict[str, object] = {}
     for set_id, by_k in per_set.items():
@@ -835,18 +1009,18 @@ def build_summary(
             for population in POPULATIONS
         }
 
-    reference = "q-draft"
     deltas: dict[str, object] = {}
-    for set_id, by_k in per_set.items():
-        if set_id == reference:
-            continue
-        deltas[f"{set_id}__vs__{reference}"] = {
-            population: delta_ci(
-                _population_filter(list(per_set[reference][decision_k]), population),
-                _population_filter(list(by_k[decision_k]), population),
-            )
-            for population in POPULATIONS
-        }
+    if reference in per_set:
+        for set_id, by_k in per_set.items():
+            if set_id == reference:
+                continue
+            deltas[f"{set_id}__vs__{reference}"] = {
+                population: delta_ci(
+                    _population_filter(list(per_set[reference][decision_k]), population),
+                    _population_filter(list(by_k[decision_k]), population),
+                )
+                for population in POPULATIONS
+            }
     speech_sets = [set_id for set_id in per_set if set_id not in DIAGNOSTIC_ONLY]
     for left in speech_sets:
         for right in speech_sets:
