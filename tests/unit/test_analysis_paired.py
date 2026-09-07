@@ -22,6 +22,7 @@ from speech_aware_evidence_acquisition.analysis.paired import (
     per_sample_scores_from_score_file,
     per_stratum_table,
     render_markdown,
+    resampled_statistic,
 )
 
 
@@ -503,3 +504,143 @@ def test_score_file_reader_refuses_unreadable_or_non_object_documents(tmp_path):
     listy.write_text("[]", encoding="utf-8")
     with pytest.raises(PairedAnalysisError, match="must be a JSON object"):
         per_sample_scores_from_score_file(listy, _SCORER, ["tool_correct"])
+
+
+# ---------------------------------------------------------------------------
+# (d) The cluster bootstrap under CORRELATION -- the Earnings window ruling
+#     (2026-09-06): the pairing unit is the 90-second window and the cluster is
+#     the call. Windows inside one call share a speaker set, an acoustic channel
+#     and a vocabulary, so a window-level interval that ignores the call is
+#     optimistic. These tests pin the two properties that ruling rests on.
+# ---------------------------------------------------------------------------
+
+
+def _correlated_clusters(
+    *, clusters: int, per_cluster: int, cluster_sigma: float, within_sigma: float, seed: int
+):
+    """Windows whose paired difference is a CALL-level effect plus small
+    window-level noise: the dominant variance lives between calls, exactly the
+    structure a call-clustered interval has to see and a window-level one cannot."""
+
+    rng = random.Random(seed)
+    left: dict[str, dict[str, float]] = {}
+    right: dict[str, dict[str, float]] = {}
+    for cluster in range(clusters):
+        offset = rng.gauss(0.0, cluster_sigma)
+        for index in range(per_cluster):
+            sample_id = f"call{cluster:03d}#w{index:03d}"
+            base = rng.uniform(0.0, 1.0)
+            left[sample_id] = {"x": base}
+            right[sample_id] = {"x": base + offset + rng.gauss(0.0, within_sigma)}
+    return left, right
+
+
+def _call_of(sample_id: str) -> str:
+    return sample_id.split("#", 1)[0]
+
+
+def test_the_cluster_bootstrap_widens_the_interval_when_windows_are_correlated():
+    left, right = _correlated_clusters(
+        clusters=20, per_cluster=30, cluster_sigma=0.30, within_sigma=0.02, seed=20260903
+    )
+    windowed = paired_contrast(
+        left, right, metrics=["x"], seed=20260903, n_replicates=2000
+    )["x"]
+    clustered = paired_contrast(
+        left,
+        right,
+        metrics=["x"],
+        cluster_of=_call_of,
+        seed=20260903,
+        n_replicates=2000,
+    )["x"]
+
+    assert windowed.delta == pytest.approx(clustered.delta)
+    windowed_width = windowed.bootstrap.ci_high - windowed.bootstrap.ci_low
+    clustered_width = clustered.bootstrap.ci_high - clustered.bootstrap.ci_low
+    # The honest width is several times the optimistic one: 20 real units, not 600.
+    assert clustered_width > 3.0 * windowed_width
+
+
+def test_the_two_intervals_agree_when_windows_are_independent():
+    """The converse guard: clustering is not a blunt widener. With no call-level
+    effect at all, resampling whole calls and resampling windows see the same
+    variance, so the ruling costs nothing where it buys nothing."""
+
+    left, right = _correlated_clusters(
+        clusters=20, per_cluster=30, cluster_sigma=0.0, within_sigma=0.20, seed=20260903
+    )
+    windowed = paired_contrast(
+        left, right, metrics=["x"], seed=20260903, n_replicates=2000
+    )["x"]
+    clustered = paired_contrast(
+        left,
+        right,
+        metrics=["x"],
+        cluster_of=_call_of,
+        seed=20260903,
+        n_replicates=2000,
+    )["x"]
+    windowed_width = windowed.bootstrap.ci_high - windowed.bootstrap.ci_low
+    clustered_width = clustered.bootstrap.ci_high - clustered.bootstrap.ci_low
+    assert 0.6 < clustered_width / windowed_width < 1.6
+
+
+def test_a_cluster_bootstrap_keeps_every_window_of_a_drawn_call():
+    """Resampling is at the CLUSTER level: the statistic never sees a partial
+    call, and a call drawn twice contributes all its windows twice."""
+
+    seen: list[tuple[str, ...]] = []
+
+    def statistic(resampled_ids):
+        seen.append(tuple(resampled_ids))
+        return float(len(resampled_ids))
+
+    ids = [f"call{cluster}#w{index}" for cluster in range(4) for index in range(5)]
+    result = resampled_statistic(
+        sample_ids=ids,
+        statistic=statistic,
+        cluster_of=_call_of,
+        seed=20260903,
+        n_replicates=25,
+    )
+    assert result.point_estimate == 20.0
+    replicates = seen[1:]
+    assert len(replicates) == 25
+    for draw in replicates:
+        assert len(draw) == 20
+        counts: dict[str, int] = {}
+        for sample_id in draw:
+            counts[_call_of(sample_id)] = counts.get(_call_of(sample_id), 0) + 1
+        # every drawn call contributes a whole multiple of its five windows
+        assert all(count % 5 == 0 for count in counts.values())
+
+
+def test_resampled_statistic_pools_rather_than_averaging_rates():
+    """A pooled ratio and a mean of per-unit rates are different estimands, and
+    the Earnings metrics are pooled: two windows, one with 1 error in 100 words
+    and one with 1 error in 1 word, pool to 2/101, not to (0.01 + 1.0) / 2."""
+
+    errors = {"c0#w0": 1.0, "c0#w1": 1.0}
+    words = {"c0#w0": 100.0, "c0#w1": 1.0}
+
+    def pooled(resampled_ids):
+        return sum(errors[sid] for sid in resampled_ids) / sum(
+            words[sid] for sid in resampled_ids
+        )
+
+    result = resampled_statistic(
+        sample_ids=sorted(errors),
+        statistic=pooled,
+        cluster_of=_call_of,
+        seed=20260903,
+        n_replicates=10,
+    )
+    assert result.point_estimate == pytest.approx(2.0 / 101.0)
+
+
+def test_resampled_statistic_refuses_a_duplicate_id():
+    with pytest.raises(PairedAnalysisError, match="duplicate"):
+        resampled_statistic(
+            sample_ids=["a", "a"], statistic=lambda ids: 0.0, seed=1, n_replicates=2
+        )
