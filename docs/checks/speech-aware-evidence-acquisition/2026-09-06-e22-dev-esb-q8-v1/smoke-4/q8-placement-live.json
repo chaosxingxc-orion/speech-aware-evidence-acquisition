@@ -1,0 +1,1501 @@
+{
+  "attempt_id": "attempt-20260907T025701Z-447a93",
+  "boundary": "no gold, reference transcript, segment text or annotation entered the request path; the four references were opened only by core.scoring_batch, strictly after the run",
+  "decision_rule": "refuse if the achieved free VRAM is below 3,072 MiB or below llama.cpp's own printed audio-encoder worst-case estimate at this geometry; if no N clears the floor the cell STOPS and does not shrink -np",
+  "device": {
+    "after_load_zero_completions": {
+      "basis": "the first sampler reading at or after the launcher's own 'served' line, with GPU utilisation still 0 % -- no /completion had been dispatched",
+      "free_mib": 5100,
+      "gpu_utilisation_percent": 0,
+      "used_mib": 19038,
+      "utc": "02:57:41Z"
+    },
+    "encoder_runtime_cost_mib": 48,
+    "first_busy_sample": {
+      "epoch": 1788749862.3049638,
+      "free_mib": 5088,
+      "power_w": 14.13,
+      "used_mib": 19050,
+      "utc": "02:57:42Z",
+      "util_percent": 1
+    },
+    "free_before_mib": 24137,
+    "min_free_basis": "the tightest reading over the whole session, i.e. with the live mmproj encode of the 32.88 s worst case in flight",
+    "min_free_while_resident_mib": 5052,
+    "sample_count": 148,
+    "sample_interval_seconds_nominal": 0.25,
+    "total_mib": 24463
+  },
+  "dry_run": {
+    "budget_assumed_ratio": 7.85,
+    "comparator_mean_latency_seconds": 1.927,
+    "cuda_fault": false,
+    "ids": [
+      "4469088-654",
+      "4479944-334",
+      "4482383-188",
+      "4482613-439"
+    ],
+    "latency_seconds_total": 71.55645496200304,
+    "longest_item_seconds": 32.88,
+    "manifest_sha256": "156b5d112e97553cbfb8b49ac463a57d73e78c072976c459fea128903796d4fc",
+    "mean_latency_seconds": 17.88911374050076,
+    "measured_q8_to_q4km_latency_ratio": 9.283,
+    "note": "the dry run's own WER numbers are on four rows and enter no verdict",
+    "out_of_memory": false,
+    "ratio_caveat": "the four dry-run rows average 12.93 s of audio against the roster's 6.63 s, and only four of the eight slots were ever occupied, so this ratio is an upper bound on what the flight will show rather than a like-for-like figure",
+    "sample_count": 4,
+    "scorers_verified": true,
+    "scores": {
+      "asr-wer-esb": {
+        "corpus_wer": 0.1527777777777778,
+        "deletions": 1,
+        "insertions": 14,
+        "mean_wer": 0.3456980519480519,
+        "normalizer": "saea-scoring-v1",
+        "reference_layer": "e22-esb hash-pinned derived layers (test + dev10)",
+        "reference_words": 144,
+        "samples": 4,
+        "scorer_version": "asr-wer-esb-v1",
+        "substitutions": 7
+      },
+      "asr-wer-esb-whisper": {
+        "corpus_wer": 0.125,
+        "deletions": 1,
+        "insertions": 11,
+        "mean_wer": 0.33092532467532465,
+        "merge_compounds": false,
+        "normalizer": "whisper-english-v20240930",
+        "reference_layer": "e22-esb hash-pinned derived layers (test + dev10)",
+        "reference_words": 144,
+        "references_empty_after_normalization": 0,
+        "samples": 4,
+        "scorer_version": "asr-wer-whisper-v20240930",
+        "substitutions": 6
+      },
+      "cost": {
+        "audio_seconds_used": 51.700500000000005,
+        "calls_used": 4,
+        "completion_tokens_total": 178,
+        "latency_seconds_total": 71.55645496200304,
+        "prompt_tokens_total": 898,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+      }
+    },
+    "server_load_seconds": 10.030614852905273,
+    "wall_seconds": 23.5250301361084
+  },
+  "feature_cache": {
+    "legacy_cache_dirs_untouched": [
+      {
+        "entries": 9,
+        "mtime_utc": "2026-09-04T05:38:56.787419+00:00",
+        "path": "/home/chao/feat-cache/a2t-calibration-400-packets-04ccc72a"
+      },
+      {
+        "entries": 14,
+        "mtime_utc": "2026-09-02T17:00:14.213049+00:00",
+        "path": "/home/chao/feat-cache/a2t-q4km-packets-04ccc72a"
+      },
+      {
+        "entries": 9,
+        "mtime_utc": "2026-09-03T17:31:35.926421+00:00",
+        "path": "/home/chao/feat-cache/a2t-semantic-agentloop-select-fill-v1-packets-04ccc72a"
+      },
+      {
+        "entries": 9,
+        "mtime_utc": "2026-09-03T12:15:54.562919+00:00",
+        "path": "/home/chao/feat-cache/a2t-semantic-agentloop-v1-packets-04ccc72a"
+      },
+      {
+        "entries": 52529,
+        "mtime_utc": "2026-08-20T07:02:57.584106+00:00",
+        "path": "/home/chao/feat-cache/ami-q4km"
+      },
+      {
+        "entries": 28,
+        "mtime_utc": "2026-09-02T17:00:11.514130+00:00",
+        "path": "/home/chao/feat-cache/audio2tool-g3-dialogue-q4km-04ccc72a"
+      },
+      {
+        "entries": 490,
+        "mtime_utc": "2026-08-19T16:10:52.730537+00:00",
+        "path": "/home/chao/feat-cache/audio2tool-q4km"
+      },
+      {
+        "entries": 5617,
+        "mtime_utc": "2026-09-04T21:33:58.427768+00:00",
+        "path": "/home/chao/feat-cache/audio2tool-q4km-04ccc72a"
+      },
+      {
+        "entries": 34350,
+        "mtime_utc": "2026-08-16T18:09:12.587865+00:00",
+        "path": "/home/chao/feat-cache/q4km"
+      },
+      {
+        "entries": 1,
+        "mtime_utc": "2026-08-30T12:30:27.893195+00:00",
+        "path": "/home/chao/feat-cache/slurp-dev100-train63-v1-combined"
+      },
+      {
+        "entries": 65,
+        "mtime_utc": "2026-08-29T02:49:42.001037+00:00",
+        "path": "/home/chao/feat-cache/slurp-knowledge-q4km-04ccc72a"
+      },
+      {
+        "entries": 2,
+        "mtime_utc": "2026-08-29T22:50:48.686596+00:00",
+        "path": "/home/chao/feat-cache/slurp-knowledge63-v3-packets-7e08d730"
+      },
+      {
+        "entries": 65,
+        "mtime_utc": "2026-08-29T22:50:40.732204+00:00",
+        "path": "/home/chao/feat-cache/slurp-knowledge63-v3-q4km-7e08d730"
+      },
+      {
+        "entries": 0,
+        "mtime_utc": "2026-08-30T00:30:02.701639+00:00",
+        "path": "/home/chao/feat-cache/slurp-knowledge63-v5-mmproj-w8-8e381e39c"
+      },
+      {
+        "entries": 44,
+        "mtime_utc": "2026-08-30T01:44:23.341694+00:00",
+        "path": "/home/chao/feat-cache/slurp-knowledge63-v6-mmproj-w8-8e381e39c"
+      },
+      {
+        "entries": 1,
+        "mtime_utc": "2026-08-30T02:53:33.136934+00:00",
+        "path": "/home/chao/feat-cache/slurp-knowledge63-v7-audio-only-packets-70323a9c"
+      },
+      {
+        "entries": 1,
+        "mtime_utc": "2026-08-30T02:53:33.136934+00:00",
+        "path": "/home/chao/feat-cache/slurp-knowledge63-v7-mmproj-audio-only-packets-70323a9c"
+      },
+      {
+        "entries": null,
+        "mtime_utc": "2026-08-30T02:53:33.315322+00:00",
+        "path": "/home/chao/feat-cache/slurp-knowledge63-v7-mmproj-audio-only-packets-70323a9c-promotion.json"
+      },
+      {
+        "entries": 66,
+        "mtime_utc": "2026-08-30T02:53:32.307041+00:00",
+        "path": "/home/chao/feat-cache/slurp-knowledge63-v7-mmproj-audio-only-w8-70323a9c"
+      },
+      {
+        "entries": 122,
+        "mtime_utc": "2026-08-20T11:56:16.146526+00:00",
+        "path": "/home/chao/feat-cache/slurp-lco3b"
+      },
+      {
+        "entries": 122,
+        "mtime_utc": "2026-08-20T19:05:17.722462+00:00",
+        "path": "/home/chao/feat-cache/slurp-lco7b"
+      },
+      {
+        "entries": 3809,
+        "mtime_utc": "2026-09-06T21:49:05.885909+00:00",
+        "path": "/home/chao/feat-cache/slurp-q4km"
+      },
+      {
+        "entries": 2,
+        "mtime_utc": "2026-08-21T10:22:27.976726+00:00",
+        "path": "/home/chao/feat-cache/slurp-q4km-packets"
+      },
+      {
+        "entries": 18,
+        "mtime_utc": "2026-09-06T21:50:17.429523+00:00",
+        "path": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a"
+      },
+      {
+        "entries": 2,
+        "mtime_utc": "2026-08-22T05:11:45.766114+00:00",
+        "path": "/home/chao/feat-cache/slurp-q4km-packets-x108-04ccc72a"
+      }
+    ],
+    "llama_mtmd_feat_cache_dir_in_argv": true,
+    "server_env_declared": {
+      "GGML_CUDA_DISABLE_GRAPHS": "1"
+    },
+    "why_it_matters": "the sealed comparator encoded every utterance live on the GPU; a cache hit here would give the contrast a second factor and would also make the placement floor meaningless, because the floor exists for the encoder's compute buffer"
+  },
+  "floor": {
+    "achieved_free_mib": 5100,
+    "basis": "llama.cpp's own printed worst-case mmproj estimate at this geometry, rounded up",
+    "clears_floor": true,
+    "clears_printed_estimate": true,
+    "llama_cpp_printed_mmproj_worst_case_mib": 2940.29,
+    "margin_over_floor_mib": 2028,
+    "margin_over_printed_estimate_mib": 2159.71,
+    "min_free_mib": 3072
+  },
+  "generated_at": "2026-09-07T03:01:49.064147+00:00",
+  "generated_tokens": 178,
+  "gpu_health": {
+    "checked_before_anything": true,
+    "enforced_power_limit_w": 100.0,
+    "legion_smartfanmode_note": "a Quiet-mode 35 W cap silently overrides the limit and has recurred; the reading above is 100.00 W with no HW slowdown active"
+  },
+  "gpu_timeline": [
+    {
+      "epoch": 1788749820.0433903,
+      "free_mib": 24137,
+      "power_w": 16.67,
+      "used_mib": 0,
+      "utc": "02:57:00Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749820.3560936,
+      "free_mib": 24137,
+      "power_w": 16.0,
+      "used_mib": 0,
+      "utc": "02:57:00Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749820.6519432,
+      "free_mib": 24137,
+      "power_w": 17.33,
+      "used_mib": 0,
+      "utc": "02:57:00Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749821.9624383,
+      "free_mib": 24137,
+      "power_w": 17.36,
+      "used_mib": 0,
+      "utc": "02:57:01Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749823.325711,
+      "free_mib": 24137,
+      "power_w": 17.32,
+      "used_mib": 0,
+      "utc": "02:57:03Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749824.6772075,
+      "free_mib": 24137,
+      "power_w": 17.38,
+      "used_mib": 0,
+      "utc": "02:57:04Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749826.0273337,
+      "free_mib": 24137,
+      "power_w": 15.61,
+      "used_mib": 0,
+      "utc": "02:57:06Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749826.399687,
+      "free_mib": 24137,
+      "power_w": 17.47,
+      "used_mib": 0,
+      "utc": "02:57:06Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749827.7555497,
+      "free_mib": 24137,
+      "power_w": 17.48,
+      "used_mib": 0,
+      "utc": "02:57:07Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749829.0938954,
+      "free_mib": 24137,
+      "power_w": 15.55,
+      "used_mib": 0,
+      "utc": "02:57:09Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749829.4800255,
+      "free_mib": 24137,
+      "power_w": 17.51,
+      "used_mib": 0,
+      "utc": "02:57:09Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749830.7318528,
+      "free_mib": 24137,
+      "power_w": 17.6,
+      "used_mib": 0,
+      "utc": "02:57:10Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749832.0024183,
+      "free_mib": 24137,
+      "power_w": 17.56,
+      "used_mib": 0,
+      "utc": "02:57:12Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749833.2716408,
+      "free_mib": 24137,
+      "power_w": 17.64,
+      "used_mib": 0,
+      "utc": "02:57:13Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749834.5438051,
+      "free_mib": 24137,
+      "power_w": 15.82,
+      "used_mib": 0,
+      "utc": "02:57:14Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749834.9070892,
+      "free_mib": 24137,
+      "power_w": 17.64,
+      "used_mib": 0,
+      "utc": "02:57:14Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749836.1778836,
+      "free_mib": 24137,
+      "power_w": 17.68,
+      "used_mib": 0,
+      "utc": "02:57:16Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749837.4577973,
+      "free_mib": 24137,
+      "power_w": 17.73,
+      "used_mib": 0,
+      "utc": "02:57:17Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749838.7368953,
+      "free_mib": 24137,
+      "power_w": 17.67,
+      "used_mib": 0,
+      "utc": "02:57:18Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749840.0010185,
+      "free_mib": 24137,
+      "power_w": 17.66,
+      "used_mib": 0,
+      "utc": "02:57:20Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749841.2734642,
+      "free_mib": 24137,
+      "power_w": 17.71,
+      "used_mib": 0,
+      "utc": "02:57:21Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749842.543762,
+      "free_mib": 24137,
+      "power_w": 17.77,
+      "used_mib": 0,
+      "utc": "02:57:22Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749845.2789311,
+      "free_mib": 24137,
+      "power_w": 17.77,
+      "used_mib": 0,
+      "utc": "02:57:25Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749846.612038,
+      "free_mib": 24137,
+      "power_w": 17.81,
+      "used_mib": 0,
+      "utc": "02:57:26Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749847.9684632,
+      "free_mib": 24137,
+      "power_w": 16.03,
+      "used_mib": 0,
+      "utc": "02:57:27Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749848.3536398,
+      "free_mib": 24137,
+      "power_w": 17.75,
+      "used_mib": 0,
+      "utc": "02:57:28Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749849.6670396,
+      "free_mib": 24137,
+      "power_w": 17.87,
+      "used_mib": 0,
+      "utc": "02:57:29Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749851.01026,
+      "free_mib": 24137,
+      "power_w": 16.02,
+      "used_mib": 0,
+      "utc": "02:57:31Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749851.3753507,
+      "free_mib": 24137,
+      "power_w": 17.84,
+      "used_mib": 0,
+      "utc": "02:57:31Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749852.6642807,
+      "free_mib": 23884,
+      "power_w": 18.5,
+      "used_mib": 254,
+      "utc": "02:57:32Z",
+      "util_percent": 9
+    },
+    {
+      "epoch": 1788749852.952449,
+      "free_mib": 23884,
+      "power_w": 17.31,
+      "used_mib": 254,
+      "utc": "02:57:32Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749853.2362943,
+      "free_mib": 23884,
+      "power_w": 16.91,
+      "used_mib": 254,
+      "utc": "02:57:33Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749853.5227423,
+      "free_mib": 23884,
+      "power_w": 16.86,
+      "used_mib": 254,
+      "utc": "02:57:33Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749853.808493,
+      "free_mib": 23884,
+      "power_w": 16.14,
+      "used_mib": 254,
+      "utc": "02:57:33Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749854.0940216,
+      "free_mib": 23884,
+      "power_w": 16.15,
+      "used_mib": 254,
+      "utc": "02:57:34Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749854.3764973,
+      "free_mib": 18316,
+      "power_w": 15.9,
+      "used_mib": 5822,
+      "utc": "02:57:34Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749854.6706376,
+      "free_mib": 10360,
+      "power_w": 18.03,
+      "used_mib": 13778,
+      "utc": "02:57:34Z",
+      "util_percent": 42
+    },
+    {
+      "epoch": 1788749854.958613,
+      "free_mib": 10360,
+      "power_w": 19.02,
+      "used_mib": 13778,
+      "utc": "02:57:34Z",
+      "util_percent": 11
+    },
+    {
+      "epoch": 1788749855.2426958,
+      "free_mib": 10360,
+      "power_w": 20.36,
+      "used_mib": 13778,
+      "utc": "02:57:35Z",
+      "util_percent": 10
+    },
+    {
+      "epoch": 1788749855.5268595,
+      "free_mib": 10360,
+      "power_w": 18.8,
+      "used_mib": 13778,
+      "utc": "02:57:35Z",
+      "util_percent": 11
+    },
+    {
+      "epoch": 1788749855.8094592,
+      "free_mib": 10360,
+      "power_w": 18.1,
+      "used_mib": 13778,
+      "utc": "02:57:35Z",
+      "util_percent": 10
+    },
+    {
+      "epoch": 1788749856.091912,
+      "free_mib": 10360,
+      "power_w": 18.05,
+      "used_mib": 13778,
+      "utc": "02:57:36Z",
+      "util_percent": 10
+    },
+    {
+      "epoch": 1788749856.377347,
+      "free_mib": 10360,
+      "power_w": 17.92,
+      "used_mib": 13778,
+      "utc": "02:57:36Z",
+      "util_percent": 10
+    },
+    {
+      "epoch": 1788749856.6633337,
+      "free_mib": 10360,
+      "power_w": 17.45,
+      "used_mib": 13778,
+      "utc": "02:57:36Z",
+      "util_percent": 11
+    },
+    {
+      "epoch": 1788749856.9473934,
+      "free_mib": 10360,
+      "power_w": 16.9,
+      "used_mib": 13778,
+      "utc": "02:57:36Z",
+      "util_percent": 11
+    },
+    {
+      "epoch": 1788749857.2343552,
+      "free_mib": 10360,
+      "power_w": 16.27,
+      "used_mib": 13778,
+      "utc": "02:57:37Z",
+      "util_percent": 8
+    },
+    {
+      "epoch": 1788749857.535588,
+      "free_mib": 8018,
+      "power_w": 16.68,
+      "used_mib": 16120,
+      "utc": "02:57:37Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749857.8835332,
+      "free_mib": 7156,
+      "power_w": 19.78,
+      "used_mib": 16982,
+      "utc": "02:57:37Z",
+      "util_percent": 18
+    },
+    {
+      "epoch": 1788749858.1698184,
+      "free_mib": 5654,
+      "power_w": 21.53,
+      "used_mib": 18484,
+      "utc": "02:57:38Z",
+      "util_percent": 18
+    },
+    {
+      "epoch": 1788749858.4705353,
+      "free_mib": 5100,
+      "power_w": 21.78,
+      "used_mib": 19038,
+      "utc": "02:57:38Z",
+      "util_percent": 7
+    },
+    {
+      "epoch": 1788749858.820134,
+      "free_mib": 5100,
+      "power_w": 20.1,
+      "used_mib": 19038,
+      "utc": "02:57:38Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749859.1128259,
+      "free_mib": 5100,
+      "power_w": 17.97,
+      "used_mib": 19038,
+      "utc": "02:57:39Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749859.4476871,
+      "free_mib": 5100,
+      "power_w": 16.34,
+      "used_mib": 19038,
+      "utc": "02:57:39Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749859.7300904,
+      "free_mib": 5100,
+      "power_w": 13.98,
+      "used_mib": 19038,
+      "utc": "02:57:39Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749860.0145116,
+      "free_mib": 5100,
+      "power_w": 13.95,
+      "used_mib": 19038,
+      "utc": "02:57:40Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749860.2950249,
+      "free_mib": 5100,
+      "power_w": 13.94,
+      "used_mib": 19038,
+      "utc": "02:57:40Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749860.5776062,
+      "free_mib": 5100,
+      "power_w": 13.93,
+      "used_mib": 19038,
+      "utc": "02:57:40Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749860.8587801,
+      "free_mib": 5100,
+      "power_w": 13.92,
+      "used_mib": 19038,
+      "utc": "02:57:40Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749861.1564338,
+      "free_mib": 5100,
+      "power_w": 13.93,
+      "used_mib": 19038,
+      "utc": "02:57:41Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749861.4375203,
+      "free_mib": 5100,
+      "power_w": 13.93,
+      "used_mib": 19038,
+      "utc": "02:57:41Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749861.7265093,
+      "free_mib": 5100,
+      "power_w": 13.95,
+      "used_mib": 19038,
+      "utc": "02:57:41Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749862.0179753,
+      "free_mib": 5100,
+      "power_w": 13.99,
+      "used_mib": 19038,
+      "utc": "02:57:42Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749862.3049638,
+      "free_mib": 5088,
+      "power_w": 14.13,
+      "used_mib": 19050,
+      "utc": "02:57:42Z",
+      "util_percent": 1
+    },
+    {
+      "epoch": 1788749862.596,
+      "free_mib": 5088,
+      "power_w": 16.45,
+      "used_mib": 19050,
+      "utc": "02:57:42Z",
+      "util_percent": 69
+    },
+    {
+      "epoch": 1788749862.8851578,
+      "free_mib": 5088,
+      "power_w": 20.35,
+      "used_mib": 19050,
+      "utc": "02:57:42Z",
+      "util_percent": 71
+    },
+    {
+      "epoch": 1788749863.1739106,
+      "free_mib": 5088,
+      "power_w": 24.76,
+      "used_mib": 19050,
+      "utc": "02:57:43Z",
+      "util_percent": 69
+    },
+    {
+      "epoch": 1788749863.4594789,
+      "free_mib": 5088,
+      "power_w": 28.63,
+      "used_mib": 19050,
+      "utc": "02:57:43Z",
+      "util_percent": 71
+    },
+    {
+      "epoch": 1788749863.7479036,
+      "free_mib": 5088,
+      "power_w": 30.61,
+      "used_mib": 19050,
+      "utc": "02:57:43Z",
+      "util_percent": 69
+    },
+    {
+      "epoch": 1788749864.0359452,
+      "free_mib": 5088,
+      "power_w": 30.66,
+      "used_mib": 19050,
+      "utc": "02:57:44Z",
+      "util_percent": 68
+    },
+    {
+      "epoch": 1788749864.324318,
+      "free_mib": 5088,
+      "power_w": 30.5,
+      "used_mib": 19050,
+      "utc": "02:57:44Z",
+      "util_percent": 71
+    },
+    {
+      "epoch": 1788749864.6104789,
+      "free_mib": 5088,
+      "power_w": 33.68,
+      "used_mib": 19050,
+      "utc": "02:57:44Z",
+      "util_percent": 71
+    },
+    {
+      "epoch": 1788749864.920523,
+      "free_mib": 5086,
+      "power_w": 36.58,
+      "used_mib": 19052,
+      "utc": "02:57:44Z",
+      "util_percent": 1
+    },
+    {
+      "epoch": 1788749865.2699947,
+      "free_mib": 5084,
+      "power_w": 39.19,
+      "used_mib": 19054,
+      "utc": "02:57:45Z",
+      "util_percent": 32
+    },
+    {
+      "epoch": 1788749865.5556371,
+      "free_mib": 5084,
+      "power_w": 38.91,
+      "used_mib": 19054,
+      "utc": "02:57:45Z",
+      "util_percent": 31
+    },
+    {
+      "epoch": 1788749865.863479,
+      "free_mib": 5072,
+      "power_w": 33.25,
+      "used_mib": 19066,
+      "utc": "02:57:45Z",
+      "util_percent": 21
+    },
+    {
+      "epoch": 1788749866.235513,
+      "free_mib": 5072,
+      "power_w": 19.65,
+      "used_mib": 19066,
+      "utc": "02:57:46Z",
+      "util_percent": 18
+    },
+    {
+      "epoch": 1788749866.576121,
+      "free_mib": 5052,
+      "power_w": 21.39,
+      "used_mib": 19086,
+      "utc": "02:57:46Z",
+      "util_percent": 6
+    },
+    {
+      "epoch": 1788749866.9104502,
+      "free_mib": 5052,
+      "power_w": 20.06,
+      "used_mib": 19086,
+      "utc": "02:57:46Z",
+      "util_percent": 21
+    },
+    {
+      "epoch": 1788749867.1987314,
+      "free_mib": 5052,
+      "power_w": 20.0,
+      "used_mib": 19086,
+      "utc": "02:57:47Z",
+      "util_percent": 19
+    },
+    {
+      "epoch": 1788749867.4879305,
+      "free_mib": 5052,
+      "power_w": 19.89,
+      "used_mib": 19086,
+      "utc": "02:57:47Z",
+      "util_percent": 21
+    },
+    {
+      "epoch": 1788749867.7761023,
+      "free_mib": 5052,
+      "power_w": 19.94,
+      "used_mib": 19086,
+      "utc": "02:57:47Z",
+      "util_percent": 20
+    },
+    {
+      "epoch": 1788749868.0687232,
+      "free_mib": 5052,
+      "power_w": 21.61,
+      "used_mib": 19086,
+      "utc": "02:57:48Z",
+      "util_percent": 22
+    },
+    {
+      "epoch": 1788749868.4923139,
+      "free_mib": 5052,
+      "power_w": 30.11,
+      "used_mib": 19086,
+      "utc": "02:57:48Z",
+      "util_percent": 41
+    },
+    {
+      "epoch": 1788749868.7803783,
+      "free_mib": 5052,
+      "power_w": 26.73,
+      "used_mib": 19086,
+      "utc": "02:57:48Z",
+      "util_percent": 29
+    },
+    {
+      "epoch": 1788749869.0661633,
+      "free_mib": 5052,
+      "power_w": 25.45,
+      "used_mib": 19086,
+      "utc": "02:57:49Z",
+      "util_percent": 29
+    },
+    {
+      "epoch": 1788749869.3585353,
+      "free_mib": 5052,
+      "power_w": 21.84,
+      "used_mib": 19086,
+      "utc": "02:57:49Z",
+      "util_percent": 28
+    },
+    {
+      "epoch": 1788749869.66744,
+      "free_mib": 5052,
+      "power_w": 24.87,
+      "used_mib": 19086,
+      "utc": "02:57:49Z",
+      "util_percent": 42
+    },
+    {
+      "epoch": 1788749869.9544535,
+      "free_mib": 5052,
+      "power_w": 24.66,
+      "used_mib": 19086,
+      "utc": "02:57:49Z",
+      "util_percent": 29
+    },
+    {
+      "epoch": 1788749870.2425497,
+      "free_mib": 5052,
+      "power_w": 24.69,
+      "used_mib": 19086,
+      "utc": "02:57:50Z",
+      "util_percent": 29
+    },
+    {
+      "epoch": 1788749870.5284092,
+      "free_mib": 5052,
+      "power_w": 21.9,
+      "used_mib": 19086,
+      "utc": "02:57:50Z",
+      "util_percent": 28
+    },
+    {
+      "epoch": 1788749870.8144596,
+      "free_mib": 5052,
+      "power_w": 25.4,
+      "used_mib": 19086,
+      "utc": "02:57:50Z",
+      "util_percent": 38
+    },
+    {
+      "epoch": 1788749871.100958,
+      "free_mib": 5052,
+      "power_w": 26.08,
+      "used_mib": 19086,
+      "utc": "02:57:51Z",
+      "util_percent": 30
+    },
+    {
+      "epoch": 1788749871.3871777,
+      "free_mib": 5052,
+      "power_w": 26.34,
+      "used_mib": 19086,
+      "utc": "02:57:51Z",
+      "util_percent": 31
+    },
+    {
+      "epoch": 1788749871.6968257,
+      "free_mib": 5052,
+      "power_w": 26.31,
+      "used_mib": 19086,
+      "utc": "02:57:51Z",
+      "util_percent": 31
+    },
+    {
+      "epoch": 1788749871.985106,
+      "free_mib": 5052,
+      "power_w": 26.72,
+      "used_mib": 19086,
+      "utc": "02:57:51Z",
+      "util_percent": 31
+    },
+    {
+      "epoch": 1788749872.2719135,
+      "free_mib": 5052,
+      "power_w": 26.67,
+      "used_mib": 19086,
+      "utc": "02:57:52Z",
+      "util_percent": 30
+    },
+    {
+      "epoch": 1788749872.5593793,
+      "free_mib": 5052,
+      "power_w": 26.32,
+      "used_mib": 19086,
+      "utc": "02:57:52Z",
+      "util_percent": 29
+    },
+    {
+      "epoch": 1788749872.8479915,
+      "free_mib": 5052,
+      "power_w": 26.43,
+      "used_mib": 19086,
+      "utc": "02:57:52Z",
+      "util_percent": 31
+    },
+    {
+      "epoch": 1788749873.146092,
+      "free_mib": 5052,
+      "power_w": 22.68,
+      "used_mib": 19086,
+      "utc": "02:57:53Z",
+      "util_percent": 30
+    },
+    {
+      "epoch": 1788749873.4380467,
+      "free_mib": 5052,
+      "power_w": 25.57,
+      "used_mib": 19086,
+      "utc": "02:57:53Z",
+      "util_percent": 30
+    },
+    {
+      "epoch": 1788749873.728166,
+      "free_mib": 5052,
+      "power_w": 25.32,
+      "used_mib": 19086,
+      "utc": "02:57:53Z",
+      "util_percent": 31
+    },
+    {
+      "epoch": 1788749874.0169632,
+      "free_mib": 5052,
+      "power_w": 25.81,
+      "used_mib": 19086,
+      "utc": "02:57:54Z",
+      "util_percent": 31
+    },
+    {
+      "epoch": 1788749874.3129225,
+      "free_mib": 5052,
+      "power_w": 25.81,
+      "used_mib": 19086,
+      "utc": "02:57:54Z",
+      "util_percent": 30
+    },
+    {
+      "epoch": 1788749874.6222265,
+      "free_mib": 5052,
+      "power_w": 24.65,
+      "used_mib": 19086,
+      "utc": "02:57:54Z",
+      "util_percent": 23
+    },
+    {
+      "epoch": 1788749875.036305,
+      "free_mib": 5052,
+      "power_w": 22.22,
+      "used_mib": 19086,
+      "utc": "02:57:55Z",
+      "util_percent": 34
+    },
+    {
+      "epoch": 1788749875.378405,
+      "free_mib": 5052,
+      "power_w": 23.92,
+      "used_mib": 19086,
+      "utc": "02:57:55Z",
+      "util_percent": 30
+    },
+    {
+      "epoch": 1788749875.6676621,
+      "free_mib": 5052,
+      "power_w": 22.99,
+      "used_mib": 19086,
+      "utc": "02:57:55Z",
+      "util_percent": 30
+    },
+    {
+      "epoch": 1788749875.9663625,
+      "free_mib": 5052,
+      "power_w": 22.98,
+      "used_mib": 19086,
+      "utc": "02:57:55Z",
+      "util_percent": 30
+    },
+    {
+      "epoch": 1788749876.2725806,
+      "free_mib": 5052,
+      "power_w": 24.07,
+      "used_mib": 19086,
+      "utc": "02:57:56Z",
+      "util_percent": 19
+    },
+    {
+      "epoch": 1788749876.6164649,
+      "free_mib": 5052,
+      "power_w": 29.91,
+      "used_mib": 19086,
+      "utc": "02:57:56Z",
+      "util_percent": 12
+    },
+    {
+      "epoch": 1788749876.9568486,
+      "free_mib": 5052,
+      "power_w": 37.08,
+      "used_mib": 19086,
+      "utc": "02:57:56Z",
+      "util_percent": 14
+    },
+    {
+      "epoch": 1788749877.3085732,
+      "free_mib": 5052,
+      "power_w": 36.87,
+      "used_mib": 19086,
+      "utc": "02:57:57Z",
+      "util_percent": 14
+    },
+    {
+      "epoch": 1788749877.6323779,
+      "free_mib": 5052,
+      "power_w": 35.4,
+      "used_mib": 19086,
+      "utc": "02:57:57Z",
+      "util_percent": 13
+    },
+    {
+      "epoch": 1788749877.9843488,
+      "free_mib": 5052,
+      "power_w": 39.98,
+      "used_mib": 19086,
+      "utc": "02:57:57Z",
+      "util_percent": 15
+    },
+    {
+      "epoch": 1788749878.3163247,
+      "free_mib": 5052,
+      "power_w": 41.1,
+      "used_mib": 19086,
+      "utc": "02:57:58Z",
+      "util_percent": 15
+    },
+    {
+      "epoch": 1788749878.6535382,
+      "free_mib": 5052,
+      "power_w": 34.06,
+      "used_mib": 19086,
+      "utc": "02:57:58Z",
+      "util_percent": 13
+    },
+    {
+      "epoch": 1788749880.9059248,
+      "free_mib": 5052,
+      "power_w": 52.0,
+      "used_mib": 19086,
+      "utc": "02:58:00Z",
+      "util_percent": 18
+    },
+    {
+      "epoch": 1788749881.2353857,
+      "free_mib": 5052,
+      "power_w": 46.13,
+      "used_mib": 19086,
+      "utc": "02:58:01Z",
+      "util_percent": 18
+    },
+    {
+      "epoch": 1788749881.5795867,
+      "free_mib": 5052,
+      "power_w": 42.53,
+      "used_mib": 19086,
+      "utc": "02:58:01Z",
+      "util_percent": 17
+    },
+    {
+      "epoch": 1788749881.9517949,
+      "free_mib": 5052,
+      "power_w": 34.69,
+      "used_mib": 19086,
+      "utc": "02:58:01Z",
+      "util_percent": 16
+    },
+    {
+      "epoch": 1788749882.299772,
+      "free_mib": 5052,
+      "power_w": 50.23,
+      "used_mib": 19086,
+      "utc": "02:58:02Z",
+      "util_percent": 19
+    },
+    {
+      "epoch": 1788749882.615201,
+      "free_mib": 5052,
+      "power_w": 20.45,
+      "used_mib": 19086,
+      "utc": "02:58:02Z",
+      "util_percent": 6
+    },
+    {
+      "epoch": 1788749882.9511921,
+      "free_mib": 5052,
+      "power_w": 36.99,
+      "used_mib": 19086,
+      "utc": "02:58:02Z",
+      "util_percent": 13
+    },
+    {
+      "epoch": 1788749883.2835155,
+      "free_mib": 5052,
+      "power_w": 44.98,
+      "used_mib": 19086,
+      "utc": "02:58:03Z",
+      "util_percent": 19
+    },
+    {
+      "epoch": 1788749883.6028564,
+      "free_mib": 5052,
+      "power_w": 42.99,
+      "used_mib": 19086,
+      "utc": "02:58:03Z",
+      "util_percent": 16
+    },
+    {
+      "epoch": 1788749883.9433658,
+      "free_mib": 5052,
+      "power_w": 47.42,
+      "used_mib": 19086,
+      "utc": "02:58:03Z",
+      "util_percent": 20
+    },
+    {
+      "epoch": 1788749884.2803566,
+      "free_mib": 5052,
+      "power_w": 59.45,
+      "used_mib": 19086,
+      "utc": "02:58:04Z",
+      "util_percent": 20
+    },
+    {
+      "epoch": 1788749884.6197429,
+      "free_mib": 5052,
+      "power_w": 55.24,
+      "used_mib": 19086,
+      "utc": "02:58:04Z",
+      "util_percent": 14
+    },
+    {
+      "epoch": 1788749884.9475126,
+      "free_mib": 5052,
+      "power_w": 50.11,
+      "used_mib": 19086,
+      "utc": "02:58:04Z",
+      "util_percent": 15
+    },
+    {
+      "epoch": 1788749885.2847712,
+      "free_mib": 5052,
+      "power_w": 66.86,
+      "used_mib": 19086,
+      "utc": "02:58:05Z",
+      "util_percent": 21
+    },
+    {
+      "epoch": 1788749885.610745,
+      "free_mib": 5052,
+      "power_w": 65.41,
+      "used_mib": 19086,
+      "utc": "02:58:05Z",
+      "util_percent": 17
+    },
+    {
+      "epoch": 1788749885.9273534,
+      "free_mib": 5052,
+      "power_w": 14.79,
+      "used_mib": 19086,
+      "utc": "02:58:05Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749886.225454,
+      "free_mib": 5052,
+      "power_w": 14.04,
+      "used_mib": 19086,
+      "utc": "02:58:06Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749886.5230305,
+      "free_mib": 5052,
+      "power_w": 13.58,
+      "used_mib": 19086,
+      "utc": "02:58:06Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749886.815901,
+      "free_mib": 5052,
+      "power_w": 13.71,
+      "used_mib": 19086,
+      "utc": "02:58:06Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749887.1290925,
+      "free_mib": 5052,
+      "power_w": 13.58,
+      "used_mib": 19086,
+      "utc": "02:58:07Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749887.4174354,
+      "free_mib": 5052,
+      "power_w": 13.76,
+      "used_mib": 19086,
+      "utc": "02:58:07Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749887.7029414,
+      "free_mib": 5052,
+      "power_w": 13.64,
+      "used_mib": 19086,
+      "utc": "02:58:07Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749887.9889455,
+      "free_mib": 5052,
+      "power_w": 13.51,
+      "used_mib": 19086,
+      "utc": "02:58:07Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749888.2757926,
+      "free_mib": 5052,
+      "power_w": 13.51,
+      "used_mib": 19086,
+      "utc": "02:58:08Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749888.561376,
+      "free_mib": 5052,
+      "power_w": 13.47,
+      "used_mib": 19086,
+      "utc": "02:58:08Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749888.8534954,
+      "free_mib": 5052,
+      "power_w": 13.56,
+      "used_mib": 19086,
+      "utc": "02:58:08Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749889.1436355,
+      "free_mib": 5052,
+      "power_w": 13.55,
+      "used_mib": 19086,
+      "utc": "02:58:09Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749889.4291239,
+      "free_mib": 5052,
+      "power_w": 13.55,
+      "used_mib": 19086,
+      "utc": "02:58:09Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749889.7177641,
+      "free_mib": 5052,
+      "power_w": 13.55,
+      "used_mib": 19086,
+      "utc": "02:58:09Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749890.0024252,
+      "free_mib": 5052,
+      "power_w": 10.94,
+      "used_mib": 19086,
+      "utc": "02:58:10Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749890.2869325,
+      "free_mib": 5052,
+      "power_w": 10.94,
+      "used_mib": 19086,
+      "utc": "02:58:10Z",
+      "util_percent": 0
+    },
+    {
+      "epoch": 1788749890.683881,
+      "free_mib": 23852,
+      "power_w": 10.46,
+      "used_mib": 286,
+      "utc": "02:58:10Z",
+      "util_percent": 0
+    }
+  ],
+  "manifest_identity": {
+    "protocol_hash": "605b30f7a181815368e7ac17fe92c80c16691d94013d46ecf63729ee0f83979f",
+    "run_id": "SAEA-E22-DEV-ESB-Q8-SMOKE-V1",
+    "study_commit": "b133f85b085ce737affe5ebda11786b163ab38f9"
+  },
+  "model_contacts": 4,
+  "precondition": "Q8-P1, the LIVE half. Section 1.3 and section 7.2 item 8 of docs/readiness/2026-09-06-e22-dev-usage-cells-v1-preregistration.md",
+  "preregistration": "docs/readiness/2026-09-06-e22-dev-usage-cells-v1-preregistration.md",
+  "projection_check": {
+    "free_error_mib": 17.0,
+    "measured_free_mib": 5100,
+    "measured_used_mib": 19038,
+    "projected_free_mib": 5083.0,
+    "projected_used_mib": 19054.0,
+    "reading": "the offline arithmetic is confirmed on the live card: the one quantity that did not carry over -- the CUDA context plus compute buffers, fitted at -c 49152 -np 3 and reused at -c 40960 -np 8 -- was right to within a few tens of MiB",
+    "used_error_mib": -16.0
+  },
+  "projection_this_measures": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-dev-usage-cells/q8-placement.json",
+  "run_id": "SAEA-E22-DEV-ESB-Q8-SMOKE-V1",
+  "schema": "saea-e22-q8-placement-live-v1",
+  "serving_geometry": {
+    "context_tokens": 40960,
+    "server_args": [
+      "-c",
+      "40960",
+      "-np",
+      "8",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--n-cpu-moe",
+      "28"
+    ],
+    "slot_ids_live": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "slot_n_ctx_live": [
+      5120
+    ],
+    "slot_tokens_declared": 5120,
+    "slots": 8,
+    "unchanged_from": "the sealed SAEA-E22-DEV-ESB-PROMPT-A-V1 comparator"
+  },
+  "session": {
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "model_files": [
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf/Qwen3-Omni-30B-A3B-Instruct-Q8_0.gguf",
+        "sha256": "8a50e5a7d29ae6a28fea9ca45e3bb0a142e76ec07e6787a7703cd498eb08ffaa"
+      },
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+        "sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+      }
+    ],
+    "pid": 839,
+    "session_id": "SAEA-E22-DEV-ESB-Q8-SMOKE-V1-attempt-20260907T025701Z-447a93",
+    "started_at": "2026-09-07T02:57:31.417383+00:00"
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "verdict": "PASS",
+  "why_this_run_id": "the live placement read and the four-row dry run are ONE server session: the decoder is loaded once at --n-cpu-moe 28 on the sealed geometry, free VRAM is read after load with zero completions behind it, and only then do the four requests go out. A separate zero-token session would have measured a different load of the same file at the cost of a second 30.3 GiB page-in, and would not have measured what the encoder actually costs while the four rows run"
+}
