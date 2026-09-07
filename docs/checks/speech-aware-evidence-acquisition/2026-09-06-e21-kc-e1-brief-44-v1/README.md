@@ -229,6 +229,31 @@ than the `65825553…` the fit published, because the shared experiment fragment
 note was rewritten at `fa357a24` — an edit that moves both cells' composed hashes and neither cell's
 protocol.
 
+## The wire check, re-run against the token-matched twin — `wire-check-token-matched/`
+
+`saea-driver smoke --dry-run` for BOTH cells on the clean committed tree at **`85b64030`**, over the
+same four shortest kb-construction calls, 61 contacts each, run id `SAEA-E21-KU-E1C-TOKEN-MATCH-V1`. **Zero model
+contacts, zero servers, zero sockets, zero GPU seconds**; the only fakes are the two the committed
+dry-run path substitutes, `core.driver.smoke._dry_run_transport` and `_NoOpGate`.
+
+The load-bearing line for this repair is `every_half_rehashes_to_its_transform_output`: **the
+derivation registry re-derives the PADDED twin from the same ConEC bytes and the same declared
+params**, so the pad plan is not a side channel — it is inside `params_hash` and inside the chain the
+gate re-proves. `payload_key_set_equals_the_arm_allowlist` also holds, which is the other question
+the new config key raises: `evidence_pad_plan` governs the render and never reaches the wire.
+
+Everything the first wire check proved still holds for both cells: two evidence items roster-then-
+document; both relpaths in `evidence_provenance`, each naming its own call; a REAL `FrozenCoreGate`
+routing all four calls' two relpaths to `e21_participant_names` and `e21_contexts` with
+`verify_evidence_identity` and `verify_evidence_content_identity` PASS; the OBS tiling cutting the
+roster receipt's own window count; `verify_bundle` PASS over four sealed rows with all five declared
+scorers producing aggregates; and the one-factor comparison — same arm, cap, contact count, windows
+per call and scorers, different `evidence_source` and different evidence ids
+(`conec-class-lists-roster-placebo-tm/…` now, against the arm's `conec-class-lists-roster/…`).
+
+The pre-existing `fixed-legal-context` GRANDFATHERED legality warning is unchanged and still not this
+cell's to fix.
+
 ## Files
 
 | file | what it holds |
@@ -238,6 +263,7 @@ protocol.
 | `prompt-fit/cap-impact.json` | schema `saea-e21-kc-e1-cap-impact-v1`. What the cap discards, class by class and call by call. Zero contacts of every kind — six pure class extractors over the same two ConEC files the evidence source reads |
 | `wire-check/wire-check.json` | schema `saea-e21-kc-e1-wire-check-v1`. Both cells' dry runs, the three halves above, the sealed artifact hashes, and the one-factor comparison. Run against the WHITESPACE twin, before the token match |
 | `placebo-token-match/placebo-token-match.json` | schema `saea-e21-ku-e1c-token-match-v1`. Both caps, per call and per half: the pad plan, both arms' prefix counts and totals, the per-window request-text distributions after padding, and the header residual |
+| `wire-check-token-matched/wire-check.json` | schema `saea-e21-kc-e1-wire-check-v1`. The same check re-run against the TOKEN-matched twin, run id `SAEA-E21-KU-E1C-TOKEN-MATCH-V1` |
 | `MANIFEST.sha256` | SHA-256 of every file in this directory |
 
 Produced by `scripts/e21_kc_e1_prompt_fit.py` (with `--cap-impact-only` for the third file),

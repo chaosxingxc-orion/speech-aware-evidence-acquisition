@@ -330,6 +330,16 @@ The separately registered `SAEA-E21-TOOL-DIARIZATION-V1` (50 tool contacts, 145,
    match is asserted by measurement in the prompt-fit receipt; its flight-token difference is
    reported there and is NOT zero (§7 item 2).
 
+   **Re-run 2026-09-07 against the token-matched twin — PASS** (receipt
+   `docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-kc-e1-brief-44-v1/wire-check-token-matched/`,
+   run id `SAEA-E21-KU-E1C-TOKEN-MATCH-V1`, study commit `85b64030`, clean tree, zero contacts of
+   every kind). Every property above holds for the new `conec-class-lists-placebo-token-matched`
+   source, and two of them answer the questions the repair raises:
+   `every_half_rehashes_to_its_transform_output` — the derivation registry re-derives the PADDED twin
+   from the same ConEC bytes and the same declared params, so the pad plan lives inside `params_hash`
+   and inside the chain the gate re-proves — and `payload_key_set_equals_the_arm_allowlist`, so the
+   new `evidence_pad_plan` key governs the render and never reaches the wire.
+
    **One pre-existing condition surfaced and left alone:** `fixed-legal-context` predates the
    2026-08-15 legality doctrine's either-field rule, so every run of it — this dry run and the flight
    alike — records provenance tier `UNVERIFIED` in the manifest's `legality` block, with a
