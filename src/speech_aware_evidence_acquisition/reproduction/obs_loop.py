@@ -90,13 +90,13 @@ from ..e0.artifacts import write_json_artifact
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
 from .obs_audio import (
     accept_up_to_boundary,
+    encode_slice,
     energy_vad_flags,
     nonspeech_spans,
     parse_boundary_response,
     resolve_advance,
-    rms_normalize,
+    tail_silence_samples,
     vad_transitions,
-    write_wav_bytes,
 )
 
 OBS_LOOP_POLICY_NAME = "obs-agent-loop"
@@ -132,6 +132,7 @@ _KNOWN_OBS_KEYS = frozenset(
         "obs_slice_skip_max",
         "obs_batch_samples",
         "obs_batch_slices",
+        "obs_slice_tail_silence_seconds",
     }
 )
 _EPSILON_SECONDS = 1e-6
@@ -321,6 +322,7 @@ class ObsLoopConfig:
     slice_skip_max: int
     batch_samples: int
     batch_slices: int
+    slice_tail_silence_seconds: float
 
     @classmethod
     def from_values(cls, values: Mapping[str, object], repo_root: Path) -> "ObsLoopConfig":
@@ -341,6 +343,33 @@ class ObsLoopConfig:
         fallback = _number(values, "obs_fallback_advance_seconds", 50.0)
         trim_min = _number(values, "obs_vad_trim_min_seconds", 5.0)
         rms_target = _number(values, "obs_rms_target_dbfs", -20.0)
+        # Slice tail silence (2026-09-07 cross-carrier silence-tail
+        # preregistration section 6.3). ONE thin knob on the registered
+        # obs-agent-loop policy, not a new base: after the buffered cut and
+        # after any declared preprocess transform, append exactly this many
+        # seconds of digital silence to the emitted slice. DEFAULT 0.0 = the
+        # historical bytes, so every sealed Earnings run stays reproducible;
+        # 2.0 at 16 kHz is the 32,000 zero samples whose byte-exact oracle is
+        # the committed @ts2 window media
+        # (docs/receipts/artifacts/d1-e21-buf90-1593-tail2s.json).
+        #
+        # The tail changes the DELIVERED bytes only. The window cut, the
+        # cursor advance, the slice span and therefore SliceRecord's
+        # start/end/audio_seconds are untouched -- core.model.SliceRegistry
+        # requires audio_seconds to equal the span, and moving the span would
+        # move the next window and destroy the pairing against the sealed
+        # comparator. Delivered seconds per slice are audio_seconds + this
+        # value, and the record declares the tail in its preprocess tuple.
+        tail_silence = _number(values, "obs_slice_tail_silence_seconds", 0.0)
+        if tail_silence < 0:
+            raise ObsLoopError(
+                f"obs_slice_tail_silence_seconds must be >= 0 (0 = today's bytes), "
+                f"got {tail_silence}"
+            )
+        if tail_silence > 0:
+            # Refuse a length that is not a whole number of samples at the
+            # slice rate, here, before a single window is cut.
+            tail_silence_samples(SLICE_SAMPLE_RATE_HZ, tail_silence)
         if buffer_seconds <= 0:
             raise ObsLoopError(f"obs_buffer_seconds must be positive, got {buffer_seconds}")
         if not (0 < min_advance <= max_advance <= buffer_seconds):
@@ -470,6 +499,7 @@ class ObsLoopConfig:
             slice_skip_max=skip_max,
             batch_samples=batch_samples,
             batch_slices=batch_slices,
+            slice_tail_silence_seconds=tail_silence,
         )
 
 
@@ -612,12 +642,13 @@ class ObsAgentLoopPolicy:
             slice_samples = pcm[start_frame:end_frame]
             slice_seconds = (end_frame - start_frame) / rate
             is_final = end_frame >= len(pcm)
-            raw_bytes = write_wav_bytes(slice_samples, rate)
-            pre_sha256: str | None = None
-            if "rms-norm" in cfg.preprocess:
-                pre_sha256 = hashlib.sha256(raw_bytes).hexdigest()
-                slice_samples = rms_normalize(slice_samples, cfg.rms_target_dbfs)
-                raw_bytes = write_wav_bytes(slice_samples, rate)
+            raw_bytes, transforms, pre_sha256 = encode_slice(
+                slice_samples,
+                rate,
+                preprocess=cfg.preprocess,
+                rms_target_dbfs=cfg.rms_target_dbfs,
+                tail_silence_seconds=cfg.slice_tail_silence_seconds,
+            )
             relpath = registry.slice_relpath(sample.sample_id, iteration)
             slice_path = data_root / relpath
             slice_path.parent.mkdir(parents=True, exist_ok=True)
@@ -634,7 +665,7 @@ class ObsAgentLoopPolicy:
                 sha256=hashlib.sha256(raw_bytes).hexdigest(),
                 bytes=len(raw_bytes),
                 iteration=iteration,
-                preprocess=cfg.preprocess,
+                preprocess=transforms,
                 pre_sha256=pre_sha256,
             )
             registry.register(record)
@@ -921,12 +952,13 @@ class ObsAgentLoopPolicy:
             slice_samples = pcm[start_frame:end_frame]
             slice_seconds = (end_frame - start_frame) / rate
             is_final = end_frame >= len(pcm)
-            raw_bytes = write_wav_bytes(slice_samples, rate)
-            pre_sha256: str | None = None
-            if "rms-norm" in cfg.preprocess:
-                pre_sha256 = hashlib.sha256(raw_bytes).hexdigest()
-                slice_samples = rms_normalize(slice_samples, cfg.rms_target_dbfs)
-                raw_bytes = write_wav_bytes(slice_samples, rate)
+            raw_bytes, transforms, pre_sha256 = encode_slice(
+                slice_samples,
+                rate,
+                preprocess=cfg.preprocess,
+                rms_target_dbfs=cfg.rms_target_dbfs,
+                tail_silence_seconds=cfg.slice_tail_silence_seconds,
+            )
             relpath = registry.slice_relpath(sample.sample_id, iteration)
             slice_path = data_root / relpath
             slice_path.parent.mkdir(parents=True, exist_ok=True)
@@ -943,7 +975,7 @@ class ObsAgentLoopPolicy:
                 sha256=hashlib.sha256(raw_bytes).hexdigest(),
                 bytes=len(raw_bytes),
                 iteration=iteration,
-                preprocess=cfg.preprocess,
+                preprocess=transforms,
                 pre_sha256=pre_sha256,
             )
             registry.register(record)

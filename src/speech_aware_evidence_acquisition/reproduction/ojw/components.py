@@ -61,10 +61,9 @@ from ...core.model import SliceRecord
 from ...data.loader import SampleRef
 from ..obs_audio import (
     accept_up_to_boundary,
+    encode_slice,
     parse_boundary_response,
     resolve_advance,
-    rms_normalize,
-    write_wav_bytes,
 )
 from ..obs_loop import OBS_TAIL_FRAME_V1, ObsLoopError, request_slice_with_retry
 from . import OpenJiuwenExecutorError
@@ -135,12 +134,13 @@ class FeedBuffer(WorkflowComponent):
         slice_samples = state.pcm[start_frame:end_frame]
         slice_seconds = (end_frame - start_frame) / state.rate
         is_final = end_frame >= len(state.pcm)
-        raw_bytes = write_wav_bytes(slice_samples, state.rate)
-        pre_sha256: str | None = None
-        if "rms-norm" in cfg.preprocess:
-            pre_sha256 = hashlib.sha256(raw_bytes).hexdigest()
-            slice_samples = rms_normalize(slice_samples, cfg.rms_target_dbfs)
-            raw_bytes = write_wav_bytes(slice_samples, state.rate)
+        raw_bytes, transforms, pre_sha256 = encode_slice(
+            slice_samples,
+            state.rate,
+            preprocess=cfg.preprocess,
+            rms_target_dbfs=cfg.rms_target_dbfs,
+            tail_silence_seconds=cfg.slice_tail_silence_seconds,
+        )
         relpath = state.registry.slice_relpath(state.sample.sample_id, state.iteration)
         slice_path = state.data_root / relpath
         slice_path.parent.mkdir(parents=True, exist_ok=True)
@@ -157,7 +157,7 @@ class FeedBuffer(WorkflowComponent):
             sha256=hashlib.sha256(raw_bytes).hexdigest(),
             bytes=len(raw_bytes),
             iteration=state.iteration,
-            preprocess=cfg.preprocess,
+            preprocess=transforms,
             pre_sha256=pre_sha256,
         )
         state.registry.register(record)

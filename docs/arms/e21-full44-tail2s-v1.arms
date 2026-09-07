@@ -1,0 +1,23 @@
+# SAEA-E21-FULL44-TAIL2S-V1 - the Earnings-21 arm of the cross-carrier
+# silence-tail probe (docs/readiness/2026-09-07-cross-carrier-silence-tail-v1-
+# preregistration.md sections 1.4, 4.3 and 6.3). NOT AUTHORIZED: this file is
+# a launch record, not a permission. The cell needs its own owner GO and its
+# own exposure row before the first contact.
+#
+# Same population, same split identity, same experiment population block, same
+# model fragment, same serving geometry (-c 36864 -np 6,
+# GGML_CUDA_DISABLE_GRAPHS=1) and the same instruction as the sealed
+# comparator SAEA-E21-FULL44-DIRECT-BASELINE-V2. ONE factor moves: the
+# baseline fragment's obs_slice_tail_silence_seconds 2.0, which appends
+# exactly 2.0 s (32,000 zero samples at 16 kHz) of digital silence to each
+# 90-second window AFTER the buffered cut. The cut, the cursor and the window
+# spans are untouched, so the cell pairs row for row against the comparator.
+#
+# Launch with --dataset earnings21-discovery
+# --experiment e21-full44-tail2s-v1
+# --model q4km-e21-buf90-mmproj-gpu-04ccc72a-np6
+# --execution-profile baseline-reproduction
+# --planned-model-calls 1750 --planned-gpu-hours 1.2
+# --planned-speech-audio-seconds 150000
+# run_id:baseline_fragment
+SAEA-E21-FULL44-TAIL2S-V1:e21-buf90-tail2s-scored7
