@@ -141,10 +141,11 @@ def main() -> int:
     parser.add_argument("--run-id", default=RUN_ID)
     parser.add_argument(
         "--tracking-uri",
-        default=str(Path.home() / "mlruns"),
+        default="sqlite:///%s" % (Path.home() / "mlruns.db"),
         help=(
-            "explicit local MLflow tracking URI. Defaults to the ext4 path the R0 "
-            "smoke runbook fixes; never a path on the mounted data drive"
+            "explicit local MLflow tracking URI. Defaults to the SAME ext4 sqlite "
+            "backend scripts/run_arm_sequence.sh uses; the file store this "
+            "repository once used is refused outright by the installed MLflow"
         ),
     )
     parser.add_argument(
