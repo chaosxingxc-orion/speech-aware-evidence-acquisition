@@ -721,9 +721,18 @@ def main() -> int:
                     }
                 )
     finally:
-        stop_session(session)
+        stop_out = stop_session(
+            session,
+            runtime_receipt=runtime_receipt,
+            runtime_root=RUNTIME_ROOT,
+            receipt_path=run_dir / "session.stop-receipt.json",
+            force_after_timeout=True,
+        )
         server_stopped_at = datetime.now(tz=timezone.utc)
-        log("server stopped")
+        log(
+            "server stopped: %s forced=%s"
+            % (stop_out.get("termination_signal"), stop_out.get("forced"))
+        )
 
     by_cell: dict[str, dict[str, dict[str, Any]]] = {}
     for row in request_rows:
