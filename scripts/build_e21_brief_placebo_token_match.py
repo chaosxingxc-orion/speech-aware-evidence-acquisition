@@ -100,10 +100,14 @@ PAD_PLAN_RELPATH = "configs/knowledge/e21-brief-placebo-v2/pad-plan-v1.json"
 #: The prompt fit's own budget convention, restated: the transport here is a
 #: capture and the routes are non-generative, so nothing is drawn. The plan
 #: exists because ``contracts.ExecutionPlan`` requires a positive budget to
-#: gate a server, and it is cumulative across every attempt of this run id.
-PLAN_CALLS = 400
-PLAN_AUDIO_SECONDS = 30000
-PLAN_GPU_HOURS = 0.5
+#: gate a server, and ``contracts.gate_exposure`` refuses a plan larger than
+#: the exposure row registered for this run id -- 12 calls, 12 speech-audio
+#: seconds and 0.5 GPU-hours, all nominal, all drawn 0. Sized as the prompt
+#: fit sized its own: comfortably inside the row, because a plan that spends
+#: the whole registration leaves no room for a second attempt.
+PLAN_CALLS = 2
+PLAN_AUDIO_SECONDS = 2
+PLAN_GPU_HOURS = 0.4
 
 SPLIT_IDENTITY_HASH = (
     "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e"
