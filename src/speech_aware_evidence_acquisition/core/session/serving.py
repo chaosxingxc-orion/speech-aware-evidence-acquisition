@@ -519,6 +519,15 @@ def summarize_monitor_samples(
     fewer than two samples carrying that counter (``tokens_predicted_total``
     needs llama-server's ``--metrics`` endpoint, which the pinned fragments
     do not enable by default).
+
+    HOST memory (E7c, 2026-09-07 incident): ``host_free_gb_min`` /
+    ``host_free_gb_min_at`` / ``host_free_gb_last`` track the Windows host's
+    own free memory across the window (the number the watchdog acted on);
+    ``vm_available_gb_min`` and ``vmmem_ws_gb_max`` are the VM-side and
+    VM-footprint-on-host companions. ``host_memory_samples`` counts samples
+    carrying a non-null ``host_free_gb`` reading -- a monitor run entirely on
+    a host with WSL interop disabled reports ``0`` here rather than a
+    misleadingly present-but-empty minimum.
     """
 
     selected = [
@@ -544,6 +553,12 @@ def summarize_monitor_samples(
         "mean_power_watts": None,
         "peak_power_watts": None,
         "mean_utilization_percent": None,
+        "host_free_gb_min": None,
+        "host_free_gb_min_at": None,
+        "host_free_gb_last": None,
+        "vm_available_gb_min": None,
+        "vmmem_ws_gb_max": None,
+        "host_memory_samples": 0,
         "parked_definition": (
             "every slot idle AND nvidia-smi utilization.gpu < "
             f"{PARKED_UTILIZATION_PERCENT:g}%"
@@ -595,6 +610,36 @@ def summarize_monitor_samples(
     ]
     if utilizations:
         summary["mean_utilization_percent"] = sum(utilizations) / len(utilizations)
+
+    host_free_series = [
+        (float(sample["sampled_at"]), value)
+        for sample in selected
+        for value in (_numeric(sample, "host_memory", "host_free_gb"),)
+        if value is not None
+    ]
+    summary["host_memory_samples"] = len(host_free_series)
+    if host_free_series:
+        min_at, min_value = min(host_free_series, key=lambda pair: pair[1])
+        summary["host_free_gb_min"] = min_value
+        summary["host_free_gb_min_at"] = min_at
+        summary["host_free_gb_last"] = host_free_series[-1][1]
+
+    vm_available_values = [
+        value
+        for value in (_numeric(sample, "host_memory", "vm_available_gb") for sample in selected)
+        if value is not None
+    ]
+    if vm_available_values:
+        summary["vm_available_gb_min"] = min(vm_available_values)
+
+    vmmem_values = [
+        value
+        for value in (_numeric(sample, "host_memory", "vmmem_ws_gb") for sample in selected)
+        if value is not None
+    ]
+    if vmmem_values:
+        summary["vmmem_ws_gb_max"] = max(vmmem_values)
+
     return summary
 
 
@@ -696,6 +741,196 @@ def read_gpu_occupancy(*, run: Callable[..., object] | None = None) -> dict[str,
         "memory_used_mib": memory_used,
         "compute_processes": list(app_rows) if apps_ok else None,
         "error": memory_error or apps_error,
+    }
+
+
+# ---------------------------------------------------------------------------
+# HOST memory (E7c, 2026-09-07 incident): the VM's own 20 GB GGUF mmap plus
+# page cache filled the 56 GB the WSL VM was then allowed, Windows ran out of
+# headroom around it, and the Claude Code host watchdog killed the serving
+# wrapper and its llama-server child -- the KC-E1 flight aborted at 42/44
+# calls with no seal. Neither side alone would have shown this coming: the VM
+# side (``/proc/meminfo``) never runs low (the VM itself has headroom), and
+# nothing before this read the WINDOWS side at all. `.wslconfig` was lowered
+# to ``memory=44GB`` with ``[experimental] autoMemoryReclaim=gradual``
+# afterwards; this section is what makes the next flight not blind to either
+# side again.
+# ---------------------------------------------------------------------------
+
+#: Win32_OperatingSystem reports memory in KiB; ``vmmemWSL``'s working set in
+#: bytes. Both are converted to GiB here (binary, matching this module's other
+#: size fields such as ``GPU_IDLE_MEMORY_MIB``), so "GB" below always means
+#: GiB.
+_KIB_PER_GIB = 1024.0 * 1024.0
+_BYTES_PER_GIB = 1024.0**3
+
+#: ONE ``powershell.exe`` interop call answers both Windows-side questions:
+#: the host's own total/free memory (``Win32_OperatingSystem``, in KiB) and
+#: the WSL VM's own footprint on the host (``vmmemWSL``'s working set, in
+#: bytes) -- a second call would double the timeout budget for no reason,
+#: since both come from the same trusted process on the same host.
+_HOST_MEMORY_POWERSHELL_SCRIPT = (
+    "$os = Get-CimInstance Win32_OperatingSystem | "
+    "Select-Object TotalVisibleMemorySize, FreePhysicalMemory; "
+    "$vmmemWs = Get-Process -Name 'vmmem*' -ErrorAction SilentlyContinue | "
+    "Select-Object -First 1 -ExpandProperty WorkingSet64; "
+    "[PSCustomObject]@{"
+    "TotalVisibleMemorySize=$os.TotalVisibleMemorySize;"
+    "FreePhysicalMemory=$os.FreePhysicalMemory;"
+    "VmmemWorkingSet64=$vmmemWs"
+    "} | ConvertTo-Json -Compress"
+)
+
+#: The WSL interop call is capped at 8 seconds: it is sampled every monitor
+#: interval, and a hung ``powershell.exe`` must never stall the monitor loop
+#: (or a flight's contact window) waiting on the host side.
+_HOST_MEMORY_POWERSHELL_TIMEOUT_SECONDS = 8
+
+#: WSL login shells on the study host do not carry the Windows PATH
+#: (``which powershell.exe`` is empty there, measured 2026-09-07), while the
+#: interop binary itself is always reachable at its canonical mount. PATH is
+#: tried first so a test or a differently configured host can shadow it.
+_HOST_MEMORY_POWERSHELL_FALLBACK = "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
+
+
+def _powershell_executable() -> str:
+    """``powershell.exe`` from PATH, else the canonical WSL interop mount when
+    that file exists, else the bare name (so the caller's ``FileNotFoundError``
+    branch still fails soft)."""
+
+    import shutil  # noqa: PLC0415 (CLI-only)
+
+    found = shutil.which("powershell.exe")
+    if found:
+        return found
+    if Path(_HOST_MEMORY_POWERSHELL_FALLBACK).is_file():
+        return _HOST_MEMORY_POWERSHELL_FALLBACK
+    return "powershell.exe"
+
+
+def _read_windows_memory(*, run: Callable[..., object]) -> dict[str, float | None] | None:
+    """Windows total/free GB and the ``vmmemWSL`` working set GB, via the ONE
+    interop call above, or ``None`` when the interop is unavailable -- no
+    ``powershell.exe`` on PATH, a non-zero exit, a timeout, or output that is
+    not the JSON object the script above always emits. This probe fails
+    SOFT, never raises: a host with WSL interop disabled (or a Linux-only
+    test/CI host) must keep sampling the VM side instead of dying.
+    """
+
+    import subprocess  # noqa: PLC0415 (CLI-only)
+
+    try:
+        completed = run(
+            [
+                _powershell_executable(),
+                "-NoProfile",
+                "-NonInteractive",
+                "-Command",
+                _HOST_MEMORY_POWERSHELL_SCRIPT,
+            ],
+            capture_output=True,
+            text=True,
+            timeout=_HOST_MEMORY_POWERSHELL_TIMEOUT_SECONDS,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    returncode = getattr(completed, "returncode", None)
+    if not isinstance(returncode, int) or returncode != 0:
+        return None
+    try:
+        parsed = json.loads(str(getattr(completed, "stdout", "") or "").strip())
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(parsed, Mapping):
+        return None
+
+    def _field(key: str) -> float | None:
+        value = parsed.get(key)
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            return None
+        return float(value)
+
+    total_kib = _field("TotalVisibleMemorySize")
+    free_kib = _field("FreePhysicalMemory")
+    vmmem_bytes = _field("VmmemWorkingSet64")
+    return {
+        "host_total_gb": (total_kib / _KIB_PER_GIB) if total_kib is not None else None,
+        "host_free_gb": (free_kib / _KIB_PER_GIB) if free_kib is not None else None,
+        "vmmem_ws_gb": (vmmem_bytes / _BYTES_PER_GIB) if vmmem_bytes is not None else None,
+    }
+
+
+def _read_vm_memory(meminfo_path: Path) -> dict[str, float | None] | None:
+    """This WSL VM's own ``MemTotal``/``MemAvailable`` from ``/proc/meminfo``
+    (kB, per the kernel's own convention), or ``None`` when the file cannot
+    be read -- any non-Linux host, most plainly."""
+
+    try:
+        text = Path(meminfo_path).read_text(encoding="utf-8")
+    except OSError:
+        return None
+    values: dict[str, float] = {}
+    for line in text.splitlines():
+        name, _, rest = line.partition(":")
+        name = name.strip()
+        if name not in ("MemTotal", "MemAvailable"):
+            continue
+        parts = rest.strip().split()
+        if not parts:
+            continue
+        try:
+            values[name] = float(parts[0])
+        except ValueError:
+            continue
+    if not values:
+        return None
+    return {
+        "vm_total_gb": (values["MemTotal"] / _KIB_PER_GIB) if "MemTotal" in values else None,
+        "vm_available_gb": (
+            (values["MemAvailable"] / _KIB_PER_GIB) if "MemAvailable" in values else None
+        ),
+    }
+
+
+def read_host_memory(
+    *,
+    run: Callable[..., object] | None = None,
+    meminfo_path: Path | str = "/proc/meminfo",
+) -> dict[str, object]:
+    """The host/VM memory pair the 2026-09-07 incident showed was missing:
+    the VM side never looked short of memory (it had headroom of its own),
+    while nothing here read the WINDOWS side at all until the host itself
+    ran out and the coordinator's watchdog took the serving wrapper down
+    with it.
+
+    Always returns a dict -- never ``None`` -- so every monitor sample and
+    every ``status``/``start`` reading carries a ``host_memory`` object; the
+    two SIDES fail soft independently (``_read_windows_memory``,
+    ``_read_vm_memory``), and ``host_memory_source`` names which side(s)
+    actually answered (``"windows+vm"``, ``"windows-only"``, ``"vm-only"``,
+    or ``"unavailable"``) so a sample with every field ``None`` is
+    distinguishable from one where interop is simply switched off.
+    """
+
+    import subprocess  # noqa: PLC0415 (CLI-only)
+
+    windows = _read_windows_memory(run=run if run is not None else subprocess.run)
+    vm = _read_vm_memory(Path(meminfo_path))
+    if windows is not None and vm is not None:
+        source = "windows+vm"
+    elif windows is not None:
+        source = "windows-only"
+    elif vm is not None:
+        source = "vm-only"
+    else:
+        source = "unavailable"
+    return {
+        "host_total_gb": windows.get("host_total_gb") if windows else None,
+        "host_free_gb": windows.get("host_free_gb") if windows else None,
+        "vmmem_ws_gb": windows.get("vmmem_ws_gb") if windows else None,
+        "vm_total_gb": vm.get("vm_total_gb") if vm else None,
+        "vm_available_gb": vm.get("vm_available_gb") if vm else None,
+        "host_memory_source": source,
     }
 
 
@@ -950,11 +1185,39 @@ def _resident_refusal(
     )
 
 
+def _refuse_low_host_memory(min_host_free_gb: float) -> None:
+    """Refuse to start a new 18.5 GB resident server on a host that does not
+    provably have room for it (E7c, the 2026-09-07 incident: the VM's mmap
+    plus page cache filled the host's headroom and the coordinator's
+    watchdog killed the serving wrapper mid-flight).
+
+    Fails OPEN when the reading itself is unavailable (WSL interop off, no
+    ``powershell.exe``): a probe that cannot prove the host is short of
+    memory must never block a start on that basis, exactly as an unreadable
+    GPU never proves staleness in :func:`observe_session_process`.
+    """
+
+    host_memory = read_host_memory()
+    free_gb = host_memory.get("host_free_gb")
+    if isinstance(free_gb, bool) or not isinstance(free_gb, (int, float)):
+        return
+    if float(free_gb) < min_host_free_gb:
+        raise ServingSessionError(
+            f"refusing to start: the host's free memory is {float(free_gb):.1f} GB, below "
+            f"--min-host-free-gb {float(min_host_free_gb):.1f} GB -- a serving wrapper is a "
+            "host-watchdog target (2026-09-07: the VM's mmap plus page cache filled the "
+            "host's headroom and the watchdog killed the wrapper mid-flight); free host "
+            "memory, or lower the VM's .wslconfig memory cap, before starting this geometry"
+        )
+
+
 def _start(args) -> int:
     from datetime import datetime, timezone  # noqa: PLC0415 (CLI-only)
 
     from ...data.lock import data_root as resolve_data_root  # noqa: PLC0415 (CLI-only)
     from . import start_session, stop_session  # noqa: PLC0415 (CLI-only)
+
+    _refuse_low_host_memory(args.min_host_free_gb)
 
     repo_root = _repo_root()
     data_root = resolve_data_root()
@@ -1262,6 +1525,11 @@ def _status(args) -> int:
                 "monitor_sample_count": len(samples),
                 "last_monitor_sample": samples[-1] if samples else None,
                 "monitor_summary": summarize_monitor_samples(samples),
+                # The CURRENT host reading (E7c), not the window's: an
+                # operator running `status` wants to know whether the host
+                # has room right now, same question `start` asks before it
+                # spawns a second 18.5 GB server.
+                "host_memory": read_host_memory(),
             },
             ensure_ascii=False,
             indent=2,
@@ -1430,6 +1698,16 @@ def build_parser():
         help="start the session and stay in the foreground",
     )
     start.add_argument("model_fragment", help="a configs/model/<name>.json fragment id")
+    start.add_argument(
+        "--min-host-free-gb",
+        type=float,
+        default=12.0,
+        help=(
+            "refuse to start when the Windows host's free memory is below this (owner "
+            "cap, 2026-09-07: a serving wrapper is a host-watchdog target, so the running "
+            "cap must always leave this much for Windows)"
+        ),
+    )
     start.set_defaults(handler=_start)
     subparsers.add_parser(
         "status", parents=[common], help="print the session document and the last sample"
@@ -1509,6 +1787,7 @@ __all__ = [
     "observe_session_process",
     "props_identity",
     "read_gpu_occupancy",
+    "read_host_memory",
     "read_monitor_samples",
     "read_session_document",
     "resolve_serving_profile",

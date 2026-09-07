@@ -61,6 +61,7 @@ from speech_aware_evidence_acquisition.core.session.serving import (
     observe_session_process,
     props_identity,
     read_gpu_occupancy,
+    read_host_memory,
     resolve_serving_profile,
     serving_identity,
     serving_session_dir,
@@ -519,6 +520,15 @@ def test_the_cli_requires_a_subcommand():
         build_parser().parse_args([])
 
 
+def test_the_cli_accepts_min_host_free_gb_only_on_start():
+    args = build_parser().parse_args(["start", "frag"])
+    assert args.min_host_free_gb == 12.0
+    overridden = build_parser().parse_args(["start", "frag", "--min-host-free-gb", "20"])
+    assert overridden.min_host_free_gb == 20.0
+    with pytest.raises(SystemExit):
+        build_parser().parse_args(["status", "--min-host-free-gb", "20"])
+
+
 # ---------------------------------------------------------------------------
 # A server that exited but was never reaped (E7b defect 1, observed
 # 2026-09-07 on both sessions of the first day).
@@ -787,6 +797,142 @@ def test_read_gpu_occupancy_reports_a_card_it_cannot_read_instead_of_raising():
     assert gpu["memory_used_mib"] is None
     assert gpu["compute_processes"] is None
     assert "nvidia-smi" in str(gpu["error"])
+
+
+# ---------------------------------------------------------------------------
+# ``read_host_memory`` (E7c, 2026-09-07 incident): the Windows host's own
+# total/free GB and the vmmemWSL working set, beside the VM's own
+# MemTotal/MemAvailable -- neither side alone would have shown the host
+# running out of headroom around an already-fat WSL VM.
+# ---------------------------------------------------------------------------
+
+
+def _windows_memory_json(
+    *, total_kib: int = 46137344, free_kib: int = 6291456, vmmem_bytes: object = 19327352832
+) -> str:
+    vmmem = "null" if vmmem_bytes is None else str(vmmem_bytes)
+    return (
+        f'{{"TotalVisibleMemorySize":{total_kib},"FreePhysicalMemory":{free_kib},'
+        f'"VmmemWorkingSet64":{vmmem}}}'
+    )
+
+
+def _write_meminfo(path: Path, *, total_kib: int = 46137344, available_kib: int = 41943040) -> Path:
+    path.write_text(
+        f"MemTotal:       {total_kib} kB\nMemFree:         2000000 kB\n"
+        f"MemAvailable:   {available_kib} kB\n",
+        encoding="utf-8",
+    )
+    return path
+
+
+def test_read_host_memory_parses_the_powershell_json_and_the_vm_meminfo(tmp_path):
+    meminfo = _write_meminfo(tmp_path / "meminfo")
+    memory = read_host_memory(
+        run=lambda *a, **k: _FakeCompleted(_windows_memory_json()), meminfo_path=meminfo
+    )
+    assert memory["host_total_gb"] == pytest.approx(44.0)
+    assert memory["host_free_gb"] == pytest.approx(6.0)
+    assert memory["vmmem_ws_gb"] == pytest.approx(18.0)
+    assert memory["vm_total_gb"] == pytest.approx(44.0)
+    assert memory["vm_available_gb"] == pytest.approx(40.0)
+    assert memory["host_memory_source"] == "windows+vm"
+
+
+def test_read_host_memory_reports_an_absent_vmmem_process_as_null_not_a_failure(tmp_path):
+    meminfo = _write_meminfo(tmp_path / "meminfo")
+    memory = read_host_memory(
+        run=lambda *a, **k: _FakeCompleted(_windows_memory_json(vmmem_bytes=None)),
+        meminfo_path=meminfo,
+    )
+    assert memory["vmmem_ws_gb"] is None
+    assert memory["host_total_gb"] == pytest.approx(44.0)
+    assert memory["host_memory_source"] == "windows+vm"
+
+
+@pytest.mark.parametrize(
+    "outcome",
+    [_FakeCompleted("not json"), _FakeCompleted("", returncode=1)],
+)
+def test_read_host_memory_fails_soft_on_anything_unusable_from_powershell(outcome, tmp_path):
+    meminfo = _write_meminfo(tmp_path / "meminfo")
+    memory = read_host_memory(run=lambda *a, **k: outcome, meminfo_path=meminfo)
+    assert memory["host_total_gb"] is None
+    assert memory["host_free_gb"] is None
+    assert memory["vmmem_ws_gb"] is None
+    assert memory["host_memory_source"] == "vm-only"
+    # The VM side is unaffected by the Windows side failing.
+    assert memory["vm_total_gb"] == pytest.approx(44.0)
+
+
+def test_read_host_memory_reports_one_malformed_field_as_null_not_a_whole_failure(tmp_path):
+    """The interop call itself succeeded and returned valid JSON, so the
+    Windows side still answers -- only the one field whose type is wrong
+    comes back null, exactly like an absent ``vmmemWSL`` process does."""
+
+    meminfo = _write_meminfo(tmp_path / "meminfo")
+    memory = read_host_memory(
+        run=lambda *a, **k: _FakeCompleted('{"TotalVisibleMemorySize": "oops"}'),
+        meminfo_path=meminfo,
+    )
+    assert memory["host_total_gb"] is None
+    assert memory["host_free_gb"] is None
+    assert memory["vmmem_ws_gb"] is None
+    assert memory["host_memory_source"] == "windows+vm"
+
+
+def test_read_host_memory_fails_soft_when_powershell_is_absent(tmp_path):
+    meminfo = _write_meminfo(tmp_path / "meminfo")
+
+    def _boom(*_args, **_kwargs):
+        raise FileNotFoundError("powershell.exe")
+
+    memory = read_host_memory(run=_boom, meminfo_path=meminfo)
+    assert memory["host_free_gb"] is None
+    assert memory["vm_total_gb"] == pytest.approx(44.0)
+    assert memory["host_memory_source"] == "vm-only"
+
+
+def test_read_host_memory_fails_soft_when_the_vm_meminfo_is_unreadable(tmp_path):
+    memory = read_host_memory(
+        run=lambda *a, **k: _FakeCompleted(_windows_memory_json()),
+        meminfo_path=tmp_path / "does-not-exist",
+    )
+    assert memory["vm_total_gb"] is None
+    assert memory["vm_available_gb"] is None
+    assert memory["host_total_gb"] == pytest.approx(44.0)
+    assert memory["host_memory_source"] == "windows-only"
+
+
+def test_read_host_memory_is_unavailable_when_neither_side_answers(tmp_path):
+    def _boom(*_args, **_kwargs):
+        raise FileNotFoundError("powershell.exe")
+
+    memory = read_host_memory(run=_boom, meminfo_path=tmp_path / "does-not-exist")
+    assert memory == {
+        "host_total_gb": None,
+        "host_free_gb": None,
+        "vmmem_ws_gb": None,
+        "vm_total_gb": None,
+        "vm_available_gb": None,
+        "host_memory_source": "unavailable",
+    }
+
+
+def test_read_host_memory_passes_the_pinned_timeout_and_command_shape(tmp_path):
+    calls: list[dict[str, object]] = []
+
+    def fake_run(argv, **kwargs):
+        calls.append({"argv": list(argv), "kwargs": kwargs})
+        return _FakeCompleted(_windows_memory_json())
+
+    read_host_memory(run=fake_run, meminfo_path=_write_meminfo(tmp_path / "meminfo"))
+    assert len(calls) == 1
+    argv = calls[0]["argv"]
+    assert argv[0].endswith("powershell.exe")
+    assert "-NoProfile" in argv and "-NonInteractive" in argv
+    assert "Get-CimInstance" in argv[-1] and "Get-Process" in argv[-1]
+    assert calls[0]["kwargs"]["timeout"] == 8
 
 
 # ---------------------------------------------------------------------------
@@ -1099,3 +1245,101 @@ def test_the_arm_launcher_only_kills_llama_server_behind_the_resident_check():
     guard = body.split("kill_stray_llama_servers () {", 1)[1].split("\n}", 1)[0]
     assert "serving_session.sh" in guard and "pkill" in guard
     assert 'rc" -ne 3' in guard, "only 'no session resident' (exit 3) may permit the kill"
+
+
+# ---------------------------------------------------------------------------
+# Host memory (E7c, 2026-09-07 incident): ``start`` refuses to bring up
+# another 18.5 GB resident server on a host that provably does not have room
+# for it; ``status`` reports the CURRENT reading beside the session document.
+# ---------------------------------------------------------------------------
+
+_HEALTHY_HOST_MEMORY = {
+    "host_total_gb": 44.0,
+    "host_free_gb": 30.0,
+    "vmmem_ws_gb": 10.0,
+    "vm_total_gb": 40.0,
+    "vm_available_gb": 32.0,
+    "host_memory_source": "windows+vm",
+}
+
+_LOW_HOST_MEMORY = {
+    "host_total_gb": 44.0,
+    "host_free_gb": 4.0,
+    "vmmem_ws_gb": 20.0,
+    "vm_total_gb": 40.0,
+    "vm_available_gb": 8.0,
+    "host_memory_source": "windows+vm",
+}
+
+_UNAVAILABLE_HOST_MEMORY = {
+    "host_total_gb": None,
+    "host_free_gb": None,
+    "vmmem_ws_gb": None,
+    "vm_total_gb": None,
+    "vm_available_gb": None,
+    "host_memory_source": "unavailable",
+}
+
+
+def test_start_refuses_when_the_host_free_memory_is_below_the_floor(monkeypatch):
+    import speech_aware_evidence_acquisition.core.session.serving as serving_module
+
+    monkeypatch.setattr(serving_module, "read_host_memory", lambda: dict(_LOW_HOST_MEMORY))
+    args = build_parser().parse_args(["start", "frag"])
+
+    with pytest.raises(ServingSessionError, match=r"host's free memory is 4\.0 GB"):
+        serving_module._start(args)
+
+
+def test_start_proceeds_past_the_host_memory_check_on_a_healthy_reading(tmp_path, monkeypatch):
+    """A healthy reading must not block ``start``: this proves it by letting
+    the (faked) check pass and observing the NEXT refusal in line -- resolving
+    ``frag`` against a repo that declares no such fragment -- instead of the
+    host-memory one."""
+
+    import speech_aware_evidence_acquisition.core.session.serving as serving_module
+    from speech_aware_evidence_acquisition.data import lock as lock_module
+
+    monkeypatch.setattr(serving_module, "read_host_memory", lambda: dict(_HEALTHY_HOST_MEMORY))
+    monkeypatch.setattr(lock_module, "data_root", lambda: tmp_path)
+    monkeypatch.setattr(serving_module, "_repo_root", lambda: tmp_path / "no-such-repo")
+    args = build_parser().parse_args(["start", "frag"])
+
+    with pytest.raises(ConfigError, match="missing config fragment"):
+        serving_module._start(args)
+
+
+def test_start_fails_open_on_the_host_memory_check_when_the_reading_is_unavailable(
+    tmp_path, monkeypatch
+):
+    """An unreadable host must never be treated as a low one: fail-soft
+    ``None`` fields fail OPEN here, exactly as an unreadable GPU never proves
+    staleness in :func:`observe_session_process`."""
+
+    import speech_aware_evidence_acquisition.core.session.serving as serving_module
+    from speech_aware_evidence_acquisition.data import lock as lock_module
+
+    monkeypatch.setattr(
+        serving_module, "read_host_memory", lambda: dict(_UNAVAILABLE_HOST_MEMORY)
+    )
+    monkeypatch.setattr(lock_module, "data_root", lambda: tmp_path)
+    monkeypatch.setattr(serving_module, "_repo_root", lambda: tmp_path / "no-such-repo")
+    args = build_parser().parse_args(["start", "frag"])
+
+    with pytest.raises(ConfigError, match="missing config fragment"):
+        serving_module._start(args)
+
+
+def test_status_reports_the_current_host_reading_beside_the_session(
+    tmp_path, monkeypatch, capsys
+):
+    import speech_aware_evidence_acquisition.core.session.serving as serving_module
+
+    _stop_world(tmp_path, monkeypatch, state=PROCESS_STATE_RUNNING)
+    monkeypatch.setattr(serving_module, "read_host_memory", lambda: dict(_HEALTHY_HOST_MEMORY))
+    args = build_parser().parse_args(["status"])
+
+    assert args.handler(args) == 0
+
+    reported = json.loads(capsys.readouterr().out)
+    assert reported["host_memory"] == _HEALTHY_HOST_MEMORY
