@@ -1,0 +1,45 @@
+{
+  "cells": [
+    {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-r1-i",
+      "baseline_fragment": "slurp-phase-slots-given-intent-schema-projected-v2-fold-b",
+      "cell_id": "slurp-evo-s1-r1-foldB-incumbent",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "factor": "the incumbent on fold B, the confirmation's comparator",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-B-V2"
+    },
+    {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-r1-a",
+      "baseline_fragment": "evolved-slot-schema-58feaf936194c3d9-fold-b",
+      "cell_id": "slurp-evo-s1-r1-foldB-assembly",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "factor": "the assembled winners of every admitted target, confirmed as a WHOLE and never partially",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-B-V2"
+    }
+  ],
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "planned_gpu_hours": 0.48,
+    "planned_model_calls": 2160,
+    "planned_speech_audio_seconds": 6310,
+    "split_role": "discovery"
+  },
+  "execution_profile": "baseline-reproduction",
+  "experiment_id": "SAEA-SLURP-EVO-S1-FOLD-B-V2",
+  "fragment_kind": "saea-a2t-direct-calibration-experiment-v1",
+  "generated_by": "scripts/run_evolution_round.py",
+  "populations": [
+    {
+      "arm": "speech-feature-query",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080"
+    }
+  ],
+  "preregistration": "docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md",
+  "purpose": "EVO-S1 round 1 FOLD B: the incumbent and the assembly, confirmed as a whole.",
+  "round": 1,
+  "split_id": "SLURP-EVO-FOLD-B-V2"
+}

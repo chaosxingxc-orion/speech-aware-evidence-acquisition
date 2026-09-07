@@ -1,0 +1,54 @@
+{
+  "arm": "speech-feature-query",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_is_bound_but_invisible": "As in KC-S1a, and for the same reason: the phase declares knowledge 'none', bootstrap ids stay empty, and the snapshot exists only so the leakage rule has something to enforce. The content dimension is excluded from the bound snapshot because the raw one- and two-word TRAIN utterances it carries collide by substring with SLURP's own scenario names and with ordinary English -- see the KC-S1 preregistration's deviation note. Measured against THIS snapshot's 11,863 protected payloads: zero hits in the full schema, zero in all sixty per-intent blocks, and zero in all 1,000 sealed closed-list responses.",
+  "knowledge_snapshot_note": "THE FOLD-EXCLUDING SNAPSHOT, and it is not optional. Every phase-program cell binds a frozen TRAIN snapshot even when all its phases declare knowledge 'none' -- FlightRuntime._load_knowledge_snapshot requires one, because the snapshot is what the runner's leakage rule is enforced AGAINST -- and rails.runner.run_speech_native_agent_loop ALSO refuses any run whose QUERY samples overlap that snapshot's own source_sample_ids. KC-S1b never met the second rule because its queries were DEVEL; every EVO-S1 fold row is TRAIN, and the committed size-full-label-prior-speaker snapshot's source is all 50,628 TRAIN recordings, so it refused all 1,080 fold-A rows at once. This arm therefore binds size-full-label-prior-speaker-evo-s1: the same builder, the same saea-kb-distmodel-v1 policy id, the same seed and the same restricted dimension set, over the TRAIN rows MINUS the two fold rosters -- 9,354 values against 11,514, 348 facets, intent and entity-type coverage still 1.0000 and KL 0.000000. Receipt docs/receipts/knowledge/slurp-kb-size-full-label-prior-speaker-evo-s1.json records both excluded rosters by relpath, file sha256, roster id and count. The three committed snapshots keep their bytes and their paths.",
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-label-prior-speaker-evo-s1/snapshot.json",
+  "knowledge_snapshot_sha256": "a2a9f99bb1d2b7634bb5686288e0fea9c7b71e31b5bd6c4b8d21ef288e810d7b",
+  "never_flown_directly": "This is the TEMPLATE rails.evolution.write_candidate_fragments copies for every candidate portfolio, and the file the two per-fold INCUMBENT fragments beside it are derived from. It is not itself a flyable cell: its predecessor_source is a placeholder, because the sealed intent manifest differs per fold.",
+  "phase_material": {
+    "slots": {
+      "fill_params": {
+        "artifact_relpath": "configs/knowledge/slurp-evo-s1/evolved-schema-58feaf936194c3d9.json",
+        "artifact_sha256": "0d4491dc4fa4bdb3f52d2c3954bdb3a7e72d5a2ec2fad4b1898891f950032e44",
+        "k": null,
+        "portfolio_sha256": "58feaf936194c3d9e1466f35370ce19c2e58a6abb092c871fb26d57cb289d08f",
+        "projection": "slurp-legal-label-projection-v2",
+        "round": 1
+      },
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_phase_slots.txt",
+      "predecessor_binding": "sealed-manifest",
+      "predecessor_source": {
+        "manifest_relpath": "runs/SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2/attempt-intent-b/SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2.run-manifest.json",
+        "manifest_sha256": "efc281fff88f0f13970437a4e2dca3ffad063884494337b96bda9ff896a24b39",
+        "producer_policy_id": "SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2"
+      },
+      "response_format_id": null,
+      "state_fill": "slurp-evolved-slot-schema-for-state"
+    }
+  },
+  "policy": "phase-slots-given-intent-v1",
+  "scorer_split_note": "TRAIN GOLD, DECLARED. The registered slurp-slu-official / slurp-slu ids resolve gold from the DEVEL split and refuse a TRAIN prediction outright -- correctly, because a devel read must never silently score against another split's gold. Every EVO-S1 fold row is a construction-role discovery utterance drawn from train.jsonl, so this arm declares the SAME official scorer at the same pinned commit 8eb16545...311f1 pointed at the split its own rows came from. Both ids are thin keyword bindings of reproduction.slurp_official_eval.score_slurp_outputs_official, never a second implementation, and naming them here is what makes the run manifest state which gold it was scored against.",
+  "scorers": [
+    "slurp-slu-official-train",
+    "cost"
+  ],
+  "serving_slot_tokens": 16384,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-slurp-evo-s1-phase-slots-given-intent-schema-projected-v2:slots",
+  "speech_feature_matcher_policy_id": "saea-slurp-evo-s1-phase-slots-given-intent-schema-projected-v2",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+  "speech_packet_promotion_receipt_note": "The UNION promotion receipt over all 2,160 fold rows, model-free-merged from the two per-fold receipts the two preprocess sessions wrote (their sha256s are recorded inside it as its parents, and every packet entry is copied verbatim). It has to be the union rather than a fold's own, because rails.evolution.write_candidate_fragments copies ONE base fragment into a fold-a and a fold-b variant and a base fragment names one receipt. The incumbent fragments name the same one so the incumbent and every candidate differ by the artifact and by nothing else.",
+  "speech_packet_promotion_receipt_sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_template_active": true,
+  "the_one_difference_from_kc_s1a": "state_fill. Every other key of this fragment is byte-identical to configs/baseline/slurp-phase-slots-given-intent-v1.json apart from the two speech-feature identity ids (which must be unique per arm) and this note block. rails.phase_material.build_material_for_phase appends the registered fill's text AFTER the appended sealed state, so this cell's contact instruction is KC-S1a's contact instruction plus a pure per-sample SUFFIX, per row, by construction -- the same pure-suffix discipline data.slurp.render_slurp_closed_label_inventory follows for the system message.",
+  "the_one_difference_from_kc_s1b": "phase_material.slots.fill_params.projection = slurp-legal-label-projection-v2, plus the fold-specific predecessor_source and packet receipt the per-round emitter fills in. Every other key is byte-identical to configs/baseline/slurp-phase-slots-given-intent-schema-v1.json apart from the two speech-feature identity ids, which must be unique per arm, and these note blocks.",
+  "what_the_fill_renders": "slurp-intent-slot-schema-for-state resolves through rails.phase_material.PHASE_STATE_FILLS to data.slurp.render_slurp_slot_schema_for_state_detail. For a row whose sealed closed-list response parses to an intent TRAIN carries, it renders THAT intent's block alone: the entity types holding at least 2 percent of the intent's TRAIN slot mentions, each with its share and up to five lower-case example fillers (494 to 1,224 characters, sixty such blocks). For a row whose sealed response does not parse or names a (scenario, action) pair TRAIN never carries, it falls back to the FULL 60-intent schema (26,720 characters) so the row still gets a legal slot instruction; the flight counts and reports those rows. TRAIN only: load_slurp_intent_slot_schema has no split parameter and can reach no devel or test file. Receipt docs/receipts/knowledge/slurp-intent-slot-schema-v1.json.",
+  "what_this_is": "EVO-S1's fold base fragment: KC-S1b's arm, on the EVO-S1 folds, with the sealed legal-label projection applied BEFORE the per-intent block is selected. It is the INCUMBENT arm of every fold round and the base rails.evolution.write_candidate_fragments copies for every candidate portfolio, so the incumbent and its challengers differ by the artifact and by nothing else.",
+  "why_np4": "The fallback block is about 7,500 tokens on top of a 7,583-character system message and does not fit an 8,192-token slot. serving_slots 4 / serving_slot_tokens 16384 fits it with room to spare, and KC-S1a flies the same geometry so the contrast between them is geometry-matched.",
+  "why_the_projection_is_here_and_not_on_the_dev_read": "The projection repairs a sealed closed-list label that names a (scenario, action) pair TRAIN never carries -- 3.9 percent of DEV-1000 rows -- so the row gets its gold intent's own block instead of the 26,720-character full-schema fallback. On the FOLDS that is free of confound: the one-time intent flight SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2 is this cell's own, and the incumbent arm and every candidate arm read it through the same projection declared here, once, so a round stays a single-factor contrast. On the DEV-1000 FINAL READ it is NOT free: the headline comparator is KC-S1b's SEALED rows, which chose their blocks from UNPROJECTED bytes (the v2 verdict, section 6: 39 of KC-S1b's 42 fallback rows become legal and 17 land on the gold intent), so an A* arm that projected would beat that comparator partly by better block selection rather than by the evolved schema. The final read therefore flies configs/baseline/slurp-phase-slots-given-intent-schema-v1.json unchanged, and the fold-to-read difference in block selection is reported as a named term of the generalization gap G. Preregistration section 4."
+}

@@ -1,0 +1,8 @@
+{
+  "1": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-EVO-S1-FOLD-A-V2/attempt-r1-c1/score-batch/attempt-r1-c1.score.json",
+  "2": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-EVO-S1-FOLD-A-V2/attempt-r1-c2/score-batch/attempt-r1-c2.score.json",
+  "3": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-EVO-S1-FOLD-A-V2/attempt-r1-c3/score-batch/attempt-r1-c3.score.json",
+  "4": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-EVO-S1-FOLD-A-V2/attempt-r1-c4/score-batch/attempt-r1-c4.score.json",
+  "5": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-EVO-S1-FOLD-A-V2/attempt-r1-c5/score-batch/attempt-r1-c5.score.json",
+  "incumbent": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-EVO-S1-FOLD-A-V2/attempt-r1-i/score-batch/attempt-r1-i.score.json"
+}
