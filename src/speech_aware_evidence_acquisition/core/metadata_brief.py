@@ -105,13 +105,25 @@ TOKEN MATCHING (owner ruling, 2026-09-06)
 ------------------------------------------
 A control is locked to its treatment on the FLIGHT tokenizer, not on characters
 or whitespace. "United States" and "South Africa" do not cost the same number of
-tokens, so the deranged twin is padded, line by line, until each of its rendered
-PREFIXES measures its own brief line's -- through
-``core.class_lists.placebo_pad_repeats``/``pad_placebo``, i.e. the SAME padder
-KU-E1c uses, reached through the same ``token_counter`` seam, never a second
-implementation. The measurement is taken once against a resident server by
-``scripts/e22_kc_e2_prompt_fit.py`` and materialised as a hash-pinned pad plan;
-the flight replays it and needs no tokenizer of its own.
+tokens, so the pair is padded, line by line, until both rendered PREFIXES measure
+the same -- replayed on the wire by ``core.class_lists.pad_placebo``, the SAME
+replayer KU-E1c uses, reached through the same ``token_counter`` seam, never a
+second implementation.
+
+The padder itself is :func:`pair_pad_repeats` rather than
+``core.class_lists.placebo_pad_repeats``, and the difference is SYMMETRY. KU-E1c's
+twin is a placeholder, always shorter than the proper nouns it replaces, so
+growing the twin alone always works. This twin is another REAL call's brief, and a
+real brief can be longer than the one it twins: the two Oceania calls render the
+corpus's shortest briefs and every fact-distinct partner is longer than them. So
+whichever side is short at a line is the side that grows, and what the ARM gains
+is the same neutral one-token filler -- token volume, and no fact, no name, no
+sector.
+
+The measurement is taken once against a resident server by
+``scripts/e22_kc_e2_prompt_fit.py`` and materialised as a hash-pinned pad plan
+keyed by each half's own source-slice digest; the flight replays it and needs no
+tokenizer of its own.
 """
 
 from __future__ import annotations
@@ -389,6 +401,15 @@ def derange_calls(call_ids: Sequence[str]) -> dict[str, str]:
     SAMPLE level, applied here at the CALL level instead: the Earnings-22 dev
     clips come 150 to a call, so a sample-level rotation would hand almost every
     clip its own call's brief back.
+
+    **This is the reference rule, not the one the committed pairing uses.** It
+    fails the control on both counts a real pairing has to satisfy, and both
+    failures were measured rather than argued: on the ten dev calls it hands
+    4453225 a partner that restates its country, its region and its dialect
+    family verbatim, and it leaves five of the ten unmatchable by a one-sided
+    padder. :func:`select_twin_partners` is what the artifact is built with; this
+    function stays because it is the simplest statement of what a derangement is
+    and because the tests exercise :func:`validate_derangement` through it.
     """
 
     ordered = sorted({str(call_id) for call_id in call_ids})
