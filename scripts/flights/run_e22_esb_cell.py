@@ -58,7 +58,6 @@ import argparse
 import hashlib
 import json
 import os
-import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -84,7 +83,14 @@ if (
 ):
     raise SystemExit("package resolves to %s, not this checkout" % (_pkg.__file__,))
 
+from speech_aware_evidence_acquisition.core.base import EVIDENCE_SOURCES  # noqa: E402
 from speech_aware_evidence_acquisition.core.config import compose  # noqa: E402
+from speech_aware_evidence_acquisition.core.evidence import (  # noqa: E402
+    resolve_declared_transform_params,
+)
+from speech_aware_evidence_acquisition.core.evidence_derivation import (  # noqa: E402
+    DerivedEvidenceRegistry,
+)
 from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime  # noqa: E402
 from speech_aware_evidence_acquisition.data.lock import (  # noqa: E402
     data_root,
@@ -218,11 +224,13 @@ class EsbUtteranceAdapter(Earnings21Adapter):
         samples: Sequence[EarningsSample],
         instruction_text: str,
         geometry: Mapping[str, object],
+        evidence_blocks: Mapping[str, str] | None = None,
     ) -> None:
         super().__init__(lock, root, repo_root=repo_root)
         self._split_id = split_id
         self._samples = tuple(samples)
         self._instruction_text = instruction_text
+        self._evidence_blocks = dict(evidence_blocks or {})
         self.SERVING_SLOTS = int(geometry["slots"])
         self.SERVING_SLOT_TOKENS = int(geometry["slot_tokens"])
         self.SERVING_MAX_TOKENS = int(geometry["max_tokens"])
@@ -234,8 +242,37 @@ class EsbUtteranceAdapter(Earnings21Adapter):
             )
         return self._samples
 
-    def instruction(self, sample):  # noqa: D102
-        return self._instruction_text
+    def instruction(self, sample):
+        """The system message: this sample's evidence blocks, then the
+        instruction (``prompt_order`` "evidence-first-system-v3").
+
+        A cell whose baseline fragment declares ``evidence_source: "none"``
+        carries no blocks and this returns the instruction unchanged, byte for
+        byte -- every sealed Earnings-22 arm keeps its exact system message.
+
+        A cell that DOES declare an evidence source gets that source's rendered
+        content joined ahead of the instruction, in the same
+        ``[evidence <id>] <content>`` line format ``core.model.transport``
+        renders ``supplied_evidence`` in and ``rails.knowledge_provider.
+        ConecContextProvider.materialize`` mirrors -- one format for a knowledge
+        block in this repository, not a second spelling of it. The blocks are
+        resolved ONCE, before the flight, by :func:`resolve_evidence_blocks`,
+        and every one of them has already been re-derived from its own source
+        bytes by ``DerivedEvidenceRegistry`` before this method can be called.
+
+        Why the system message and not ``supplied_evidence``: this carrier flies
+        the shared ``FlightRuntime`` (owner rule, one harness for every arm), and
+        that harness assembles a request through ``TaskAdapter.assemble_prompt``
+        rather than through ``core.policies.build_arm_payload``. Folding the
+        block into the instruction keeps the payload's field set exactly
+        ``ARM_VISIBLE_FIELDS["bare-core"]`` -- the sealed comparator's own -- so
+        the ONE factor between the two arms is the system text and nothing else.
+        """
+
+        block = self._evidence_blocks.get(str(sample.sample_id))
+        if not block:
+            return self._instruction_text
+        return f"{block}\n\n{self._instruction_text}"
 
     def score(self, sample, response):
         """Reference-free, deliberately.
@@ -256,6 +293,96 @@ class EsbUtteranceAdapter(Earnings21Adapter):
             "response_chars": len(response),
             "scored_post_hoc_by": "asr-wer-esb-whisper / asr-wer-esb via core.scoring_batch",
         }
+
+
+def resolve_evidence_blocks(
+    values: Mapping[str, object],
+    lock,
+    root: Path,
+    samples: Sequence[EarningsSample],
+) -> tuple[dict[str, str], dict[str, object]]:
+    """Every sample's evidence, resolved and RE-DERIVED before the flight.
+
+    Returns ``({sample_id -> rendered block text}, receipt)``. A fragment whose
+    ``evidence_source`` is ``"none"`` returns an empty map and a receipt saying
+    so, which is the sealed comparator's own path, unchanged.
+
+    The rail is the one ``core.driver.run_experiment`` runs, called here rather
+    than re-implemented: each item's ``DerivedEvidenceRecord`` is registered with
+    ``DerivedEvidenceRegistry`` against the params THIS composed config declares
+    (``core.evidence.resolve_declared_transform_params``), so the registry
+    independently re-invokes the pinned transform on the same source bytes and
+    refuses anything that does not reproduce. An evidence source that lied about
+    its params, its transform or its content stops the flight here, before a
+    server exists.
+
+    A ``carrier_bound`` record additionally has no D1 anchor by construction
+    (``core.base.DerivedEvidenceRecord``): the Earnings-22 metadata brief is
+    exactly that case and says so in its own module docstring, so this function
+    reports each record's ``carrier_bound`` flag into the receipt instead of
+    silently implying an identity rail that did not run.
+    """
+
+    source_id = str(values.get("evidence_source", "none"))
+    if source_id == "none":
+        return {}, {"evidence_source": "none", "samples_with_evidence": 0, "items": 0}
+    if values.get("evidence_mismatch", False):
+        raise SystemExit(
+            "evidence_mismatch is not supported on this entry point: the rotated "
+            "mismatch decorator lives in core.driver.run_experiment, and a control "
+            "this cell needs is declared as its own evidence source instead"
+        )
+    source = EVIDENCE_SOURCES.resolve(source_id)
+    registry = DerivedEvidenceRegistry()
+    blocks: dict[str, str] = {}
+    digests: dict[str, str] = {}
+    carrier_bound = set()
+    transforms = set()
+    items_total = 0
+    for sample in samples:
+        items = source(lock, root, sample.sample_id, sample.carrier_lock_key, values)
+        if not items:
+            raise SystemExit(
+                "evidence source %r returned no evidence for %s; a cell that supplies "
+                "knowledge to some rows and not others is not one factor"
+                % (source_id, sample.sample_id)
+            )
+        rendered: list[str] = []
+        for item in items:
+            record = item.derivation
+            if record is None:
+                raise SystemExit(
+                    "evidence source %r returned an item with no derivation record"
+                    % source_id
+                )
+            registry.register(
+                record,
+                source_content=item.derivation_source_bytes,
+                derived_content=item.content.encode("utf-8"),
+                params=resolve_declared_transform_params(record.transform_name, values),
+            )
+            transforms.add(f"{record.transform_name}@{record.transform_version}")
+            carrier_bound.add(bool(record.carrier_bound))
+            rendered.append(f"[evidence {item.evidence_id}] {item.content}")
+            items_total += 1
+        block = "\n".join(rendered)
+        blocks[sample.sample_id] = block
+        digests[sample.sample_id] = hashlib.sha256(block.encode("utf-8")).hexdigest()
+    receipt = {
+        "evidence_source": source_id,
+        "samples_with_evidence": len(blocks),
+        "items": items_total,
+        "transforms": sorted(transforms),
+        "carrier_bound": sorted(carrier_bound),
+        "derivation_records_verified": items_total,
+        "distinct_block_digests": len(set(digests.values())),
+        "blocks_sha256": hashlib.sha256(
+            "\n".join(f"{key},{digests[key]}" for key in sorted(digests)).encode("utf-8")
+        ).hexdigest(),
+        "block_format": "[evidence <evidence_id>] <content>, joined by newlines",
+        "prompt_position": "the system message, ahead of the task instruction",
+    }
+    return blocks, receipt
 
 
 def build_runtime(
@@ -333,6 +460,19 @@ def build_runtime(
         raise SystemExit("baseline fragment must declare a non-empty task_instruction")
     split_id = str(values["split_id"])
 
+    evidence_blocks, evidence_receipt = resolve_evidence_blocks(values, lock, root, samples)
+    if evidence_receipt["evidence_source"] != "none":
+        log(
+            "evidence %s: %d items over %d samples, %d distinct blocks, %s"
+            % (
+                evidence_receipt["evidence_source"],
+                evidence_receipt["items"],
+                evidence_receipt["samples_with_evidence"],
+                evidence_receipt["distinct_block_digests"],
+                evidence_receipt["blocks_sha256"][:12],
+            )
+        )
+
     def adapter_factory(lock_, root_):
         return EsbUtteranceAdapter(
             lock_,
@@ -342,6 +482,7 @@ def build_runtime(
             samples=samples,
             instruction_text=instruction_text,
             geometry=geometry,
+            evidence_blocks=evidence_blocks,
         )
 
     def derived_carrier_root(_lock, _carrier_lock_key, resolved_root):
@@ -350,7 +491,7 @@ def build_runtime(
 
         return Path(resolved_root) / derived_subdir
 
-    return FlightRuntime(
+    runtime = FlightRuntime(
         REPO,
         root,
         model=model,
@@ -368,6 +509,13 @@ def build_runtime(
         port=int(str(values["base_url"]).rsplit(":", 1)[-1]),
         request_id_prefix="e22esb",
     )
+    # What the evidence rail resolved, carried on the returned runtime so a
+    # dry run's and a wire check's receipts can report it. A plain attribute
+    # rather than a FlightRuntime field: the rail is this entry point's, not
+    # the shared harness's, and the harness must not grow a carrier-specific
+    # slot for it.
+    runtime.evidence_receipt = evidence_receipt
+    return runtime
 
 
 def _write_receipt(path: Path, document: Mapping[str, object]) -> str:
@@ -448,7 +596,8 @@ def main() -> int:
 
     if args.dry_run:
         log("dry run: preflight only, no server, no contact")
-        receipt = runtime.preflight()
+        receipt = dict(runtime.preflight())
+        receipt["evidence"] = runtime.evidence_receipt
         print(json.dumps(receipt, indent=2, sort_keys=True, default=str))
         return 0
 
@@ -456,6 +605,7 @@ def main() -> int:
         log("wire check: whole request path, fake gate and transport, zero sockets")
         receipt = dict(runtime.wire_check(max_workers=1))
         receipt["cell_id"] = args.cell
+        receipt["evidence"] = runtime.evidence_receipt
         document = {
             "schema": "saea-e22-esb-wire-check-v1",
             "study": "speech-aware-evidence-acquisition",

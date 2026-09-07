@@ -1,0 +1,323 @@
+{
+  "calls": [
+    "4453225",
+    "4469088",
+    "4470684",
+    "4474506",
+    "4479944",
+    "4481952",
+    "4482383",
+    "4482613",
+    "4483937",
+    "4485192"
+  ],
+  "carrier_lock_key": "earnings22-original",
+  "derangement": {
+    "4453225": "4473837",
+    "4469088": "4474229",
+    "4470684": "4452058",
+    "4474506": "4420696",
+    "4479944": "4474327",
+    "4481952": "2020-03-0230487MTN-Ghana-2019-Annual-Results-Call",
+    "4482383": "2020-Annual-Results-Call-Recording",
+    "4482613": "4475604",
+    "4483937": "4466251",
+    "4485192": "4430051"
+  },
+  "distinct_twin_fields": [
+    "Ticker symbol",
+    "Country",
+    "UN region",
+    "Major dialect family"
+  ],
+  "metadata_relpath": "datasets/earnings21-22/earnings22/metadata.csv",
+  "metadata_sha256": "52dbda11f4abbabf1b59dedae315d5873d6ccfe75104d1bce3d8ab24341f28e1",
+  "roster_receipt": "docs/receipts/rosters/e22-dev-esb-1500-tail2s-v1.json",
+  "roster_receipt_sha256": "703e5517c63f09c047ae834fac36883929098ebb3390ec81722d9a68f141ca99",
+  "rule": "core.metadata_brief.select_twin_partners: for each roster call in sorted order, the unused Earnings-22 call OUTSIDE the roster whose brief already measures CLOSEST to the arm's and whose ticker, country, UN region and major dialect family all DIFFER from the arm's, taking the first the symmetric padder accepts. Deterministic, injective and fixed-point-free, so no clip ever receives its own call's brief and no twin restates its arm's facts. Drawn from outside the roster because a partner inside it could state a fact that is true of another roster call; matched by the SYMMETRIC padder because a real brief can be longer than the one it twins -- the two Oceania calls render the corpus's shortest briefs and nothing that states different facts fits inside them.",
+  "schema": "saea-e22-brief-derangement-v1",
+  "selection_counter": "whitespace_token_count",
+  "source_row_sha256": {
+    "4453225": "eaedc18735abdf73a9c4d635560ba2ee3f789ebdea512c81f7c3d79cf2523e91",
+    "4469088": "2b43553d1029119e940babec44b8ee026e420146fdea82ef09028f91739b4d50",
+    "4470684": "717a7689eaac428e49abbbfbd711816e9596a0a436d420f13449d72db6d6a500",
+    "4474506": "9387ed7862b0f8a7d0ba427aa0cb5a0d43a5829713523e8cb3c2172a311047db",
+    "4479944": "ed892fb4dbe36e85f2e2fdb963259a4c2324dfb95e050b142dd040219edead45",
+    "4481952": "284f4d0748f96c0fbecafb940fda004e3c696a49f3fbdaac863d8397e58cf410",
+    "4482383": "4ad1d491e75deaed972aa0b5cceca5c5daa45e7ad69cb5ee1a87335948ee5b6b",
+    "4482613": "86056c55391e068e413f1c7b8a5fd83cde7aeda02afb759ad499c19519a2d3cd",
+    "4483937": "2860f86838a6d27e7b7eccd93ea1f991b311790bb6e9bde296aa92453bb485eb",
+    "4485192": "8da3386223df461b0d25f945982df078102131f00a29c98a50170ffee89437df"
+  },
+  "split_identity_hash": "8dc9d6a04c408226e0575254ba4cbad605417c293fc5e55f40e6c8cf50f51207",
+  "study": "speech-aware-evidence-acquisition",
+  "twin_row_sha256": {
+    "4453225": "9c98b2466f9d2faf3ded1722878f6e1574b83168cb684e4e92011171b6861c69",
+    "4469088": "2c7209a3944391c8ffdb7be0fb6121c7f83c0df4978da81d4cbcd68834a59b85",
+    "4470684": "f699d3b7512cc69572f549246c8d5118bca2d808b5f1a52f9a2297ee7c894393",
+    "4474506": "db2b461e7811a48a11bd05d0a7bb7ea27ef2d52d06a5af29a2cffac3bd5e6bef",
+    "4479944": "e971aa8b5c0e9b4404b9fe83c5b4779dc02dbfe2d5ec222dc0326116b8f172a9",
+    "4481952": "265f39f761ae24491837d10ddd331e78ad9400cee5d9c3b308839cb896b6669d",
+    "4482383": "52329815325e25de8f6cec4edd9e30ee25283fe61b4f93d3b3fc961884f66231",
+    "4482613": "5142718a00110430f375c567a73e8a7980485dc2ab311c79d8f554931f66f54b",
+    "4483937": "dc16ba5dce022a9b756e7656b56517709393259036f18cc393527315b7c10a6a",
+    "4485192": "35a6a4fb6dd68891560bfabd771637da31e0ce357148d732730144d5aa422f85"
+  },
+  "twin_terms": {
+    "4453225": {
+      "Country": "UK",
+      "Language family and area": "English",
+      "Major dialect family": "British Isles",
+      "Ticker symbol": "BCKIF",
+      "UN region": "Europe and Northern America"
+    },
+    "4469088": {
+      "Country": "UK",
+      "Language family and area": "English",
+      "Major dialect family": "British Isles",
+      "Ticker symbol": "VRSRF",
+      "UN region": "Europe and Northern America"
+    },
+    "4470684": {
+      "Country": "Turkey",
+      "Language family and area": "Asian",
+      "Major dialect family": "Other",
+      "Ticker symbol": "HEPS",
+      "UN region": "Northern Africa and Western Asia"
+    },
+    "4474506": {
+      "Country": "South Korea",
+      "Language family and area": "Asian",
+      "Major dialect family": "Other",
+      "Ticker symbol": "KB",
+      "UN region": "Eastern and South-Eastern Asia"
+    },
+    "4479944": {
+      "Country": "UK",
+      "Language family and area": "English",
+      "Major dialect family": "British Isles",
+      "Ticker symbol": "DITHF",
+      "UN region": "Europe and Northern America"
+    },
+    "4481952": {
+      "Country": "Ghana",
+      "Language family and area": "African",
+      "Major dialect family": "Other",
+      "Ticker symbol": "MTNGH",
+      "UN region": "Sub-Saharan Africa"
+    },
+    "4482383": {
+      "Country": "Ghana",
+      "Language family and area": "African",
+      "Major dialect family": "Other",
+      "Ticker symbol": "MTNGH",
+      "UN region": "Sub-Saharan Africa"
+    },
+    "4482613": {
+      "Country": "UK",
+      "Language family and area": "English",
+      "Major dialect family": "British Isles",
+      "Ticker symbol": "ARQQ",
+      "UN region": "Europe and Northern America"
+    },
+    "4483937": {
+      "Country": "Turkey",
+      "Language family and area": "Asian",
+      "Major dialect family": "Other",
+      "Ticker symbol": "COCAL",
+      "UN region": "Northern Africa and Western Asia"
+    },
+    "4485192": {
+      "Country": "South Korea",
+      "Language family and area": "Asian",
+      "Major dialect family": "Other",
+      "Ticker symbol": "SKM",
+      "UN region": "Eastern and South-Eastern Asia"
+    }
+  },
+  "verification_step": "scripts/e22_kc_e2_prompt_fit.py re-measures every pair on the flight tokenizer and, if any call's twin exceeds its arm at any prefix there, re-selects and rewrites this artifact before the pad plan is built.",
+  "verified_on_flight_tokenizer": false,
+  "what_this_is": "the pinned call pairing core.evidence's e22-metadata-brief-deranged and -deranged-token-matched sources read to decide WHICH call's brief twins each clip. Pinned by path and sha256 in the twin's baseline fragment, so its exact contents land in params_hash and the derivation registry re-derives the twin from the same bytes on every gated run.",
+  "whitespace_pad_repeats": {
+    "4453225": {
+      "arm": [
+        0,
+        0,
+        0,
+        3,
+        2,
+        0
+      ],
+      "twin": [
+        0,
+        0,
+        2,
+        0,
+        0,
+        0
+      ]
+    },
+    "4469088": {
+      "arm": [
+        0,
+        0,
+        0,
+        3,
+        2,
+        0
+      ],
+      "twin": [
+        0,
+        0,
+        2,
+        0,
+        0,
+        0
+      ]
+    },
+    "4470684": {
+      "arm": [
+        0,
+        0,
+        0,
+        2,
+        0,
+        0
+      ],
+      "twin": [
+        0,
+        0,
+        0,
+        0,
+        2,
+        0
+      ]
+    },
+    "4474506": {
+      "arm": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "twin": [
+        0,
+        0,
+        0,
+        0,
+        2,
+        0
+      ]
+    },
+    "4479944": {
+      "arm": [
+        0,
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      "twin": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "4481952": {
+      "arm": [
+        0,
+        0,
+        0,
+        3,
+        0,
+        0
+      ],
+      "twin": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "4482383": {
+      "arm": [
+        0,
+        0,
+        0,
+        3,
+        0,
+        0
+      ],
+      "twin": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "4482613": {
+      "arm": [
+        0,
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      "twin": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "4483937": {
+      "arm": [
+        0,
+        0,
+        0,
+        2,
+        0,
+        0
+      ],
+      "twin": [
+        0,
+        0,
+        0,
+        0,
+        2,
+        0
+      ]
+    },
+    "4485192": {
+      "arm": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "twin": [
+        0,
+        0,
+        0,
+        0,
+        2,
+        0
+      ]
+    }
+  }
+}

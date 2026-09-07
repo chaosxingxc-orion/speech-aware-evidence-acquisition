@@ -1,0 +1,390 @@
+{
+  "brief_field_labels": [
+    "Ticker symbol",
+    "Country",
+    "UN region",
+    "Major dialect family",
+    "Language family and area"
+  ],
+  "call_fields": [
+    {
+      "Country": "South Africa",
+      "Language family and area": "English",
+      "Major dialect family": "Other",
+      "Ticker symbol": "APNHF",
+      "UN region": "Sub-Saharan Africa",
+      "call_id": "4453225",
+      "source_slice_sha256": "eaedc18735abdf73a9c4d635560ba2ee3f789ebdea512c81f7c3d79cf2523e91"
+    },
+    {
+      "Country": "South Africa",
+      "Language family and area": "English",
+      "Major dialect family": "Other",
+      "Ticker symbol": "SPPJY",
+      "UN region": "Sub-Saharan Africa",
+      "call_id": "4469088",
+      "source_slice_sha256": "2b43553d1029119e940babec44b8ee026e420146fdea82ef09028f91739b4d50"
+    },
+    {
+      "Country": "UK",
+      "Language family and area": "English",
+      "Major dialect family": "British Isles",
+      "Ticker symbol": "IVTJF",
+      "UN region": "Europe and Northern America",
+      "call_id": "4470684",
+      "source_slice_sha256": "717a7689eaac428e49abbbfbd711816e9596a0a436d420f13449d72db6d6a500"
+    },
+    {
+      "Country": "United States",
+      "Language family and area": "English",
+      "Major dialect family": "North American",
+      "Ticker symbol": "COST",
+      "UN region": "Europe and Northern America",
+      "call_id": "4474506",
+      "source_slice_sha256": "9387ed7862b0f8a7d0ba427aa0cb5a0d43a5829713523e8cb3c2172a311047db"
+    },
+    {
+      "Country": "India",
+      "Language family and area": "Asian",
+      "Major dialect family": "Other",
+      "Ticker symbol": "HDB",
+      "UN region": "Central and Southern Asia",
+      "call_id": "4479944",
+      "source_slice_sha256": "ed892fb4dbe36e85f2e2fdb963259a4c2324dfb95e050b142dd040219edead45"
+    },
+    {
+      "Country": "Australia",
+      "Language family and area": "English",
+      "Major dialect family": "Oceanic",
+      "Ticker symbol": "CAHPF",
+      "UN region": "Oceania",
+      "call_id": "4481952",
+      "source_slice_sha256": "284f4d0748f96c0fbecafb940fda004e3c696a49f3fbdaac863d8397e58cf410"
+    },
+    {
+      "Country": "Australia",
+      "Language family and area": "English",
+      "Major dialect family": "Oceanic",
+      "Ticker symbol": "PBTHF",
+      "UN region": "Oceania",
+      "call_id": "4482383",
+      "source_slice_sha256": "4ad1d491e75deaed972aa0b5cceca5c5daa45e7ad69cb5ee1a87335948ee5b6b"
+    },
+    {
+      "Country": "India",
+      "Language family and area": "Asian",
+      "Major dialect family": "Other",
+      "Ticker symbol": "VEDL",
+      "UN region": "Central and Southern Asia",
+      "call_id": "4482613",
+      "source_slice_sha256": "86056c55391e068e413f1c7b8a5fd83cde7aeda02afb759ad499c19519a2d3cd"
+    },
+    {
+      "Country": "UK",
+      "Language family and area": "English",
+      "Major dialect family": "British Isles",
+      "Ticker symbol": "RNSHF",
+      "UN region": "Europe and Northern America",
+      "call_id": "4483937",
+      "source_slice_sha256": "2860f86838a6d27e7b7eccd93ea1f991b311790bb6e9bde296aa92453bb485eb"
+    },
+    {
+      "Country": "United States",
+      "Language family and area": "English",
+      "Major dialect family": "North American",
+      "Ticker symbol": "EPC",
+      "UN region": "Europe and Northern America",
+      "call_id": "4485192",
+      "source_slice_sha256": "8da3386223df461b0d25f945982df078102131f00a29c98a50170ffee89437df"
+    }
+  ],
+  "contacts": {
+    "audio_decode_seconds": 0,
+    "embedder": 0,
+    "gpu": 0,
+    "media_bytes_opened": 0,
+    "model": 0,
+    "network": 0,
+    "outbound_connection_attempts": 0,
+    "outbound_targets": [],
+    "retriever": 0,
+    "tokenizer": 0
+  },
+  "distinctive": {
+    "call_specific_reference_words": 0,
+    "call_specific_share": 0.0,
+    "covered_reference_words": 47,
+    "reading": "a term whose only occurrences are in the calls whose metadata names it is a call fact; a term that also occurs in other calls' references is ordinary earnings vocabulary the brief happens to name. Both are inside the metric's denominator by construction and both arms are scored on the same words, so the shared half dilutes an effect rather than biasing one -- but a verdict that quotes only the pooled recall without this split is quoting a diluted number.",
+    "shared_vocabulary_reference_words": 47
+  },
+  "exposure_row": "SAEA-E22-MF-BRIEF-SOURCE-AUDIT-V1",
+  "external_sources": {
+    "ruling": "owner 2026-09-07: Earnings-22 must not collect any external information, or the result stops being comparable with the academic references. The company-name brief variant is dropped, no ticker -> legal-name lookup table is built or registered, and the brief's only source is the corpus's own metadata table.",
+    "used": false
+  },
+  "identity_anchor": {
+    "clips": 1500,
+    "deletions": 763,
+    "insertions": 665,
+    "measured_corpus_wer_percent": 9.405356,
+    "normalizer": "whisper-english-v20240930",
+    "published_corpus_wer_percent": 9.4054,
+    "reference_words": 26251,
+    "reproduced": true,
+    "scorer": "asr-wer-esb-whisper",
+    "substitutions": 1041
+  },
+  "inputs": {
+    "clip_call_map": "docs/receipts/artifacts/e22-dev1500-clip-call-map.json",
+    "clip_call_map_sha256": "c68aa0dec1ba02e8adaad7e2a6040878b3cafa4b6f8789a9556b32dfbdf606f7",
+    "comparator": {
+      "attempt": "attempt-20260907T090708Z-df36cc",
+      "corpus_wer_percent": 9.4054,
+      "run_id": "SAEA-E22-DEV-ESB-TAIL2S-V1",
+      "scorer": "asr-wer-esb-whisper",
+      "source": "docs/readiness/2026-09-07-e22-dev-encoding-probes-v1-verdict.md section 1.2"
+    },
+    "metadata_relpath": "datasets/earnings21-22/earnings22/metadata.csv",
+    "metadata_sha256": "52dbda11f4abbabf1b59dedae315d5873d6ccfe75104d1bce3d8ab24341f28e1",
+    "reference_layer": "the hash-pinned DEV10 ESB layer only (test layer unreachable)",
+    "roster_receipt": "docs/receipts/rosters/e22-dev-esb-1500-tail2s-v1.json"
+  },
+  "measurement": {
+    "brief_term_deletions": 1,
+    "brief_term_error_mass_words": 6,
+    "brief_term_hits": 41,
+    "brief_term_recall": 0.8723404255319149,
+    "brief_term_reference_words": 47,
+    "brief_term_share_of_reference_words": 0.0017904079844577349,
+    "brief_term_substitutions": 5,
+    "ceiling_corpus_wer_points": 0.022856,
+    "normalizer": "whisper-english-v20240930",
+    "per_call": [
+      {
+        "brief_term_reference_words": 10,
+        "call_id": "4453225",
+        "clips": 150,
+        "hits": 10,
+        "recall": 1.0,
+        "reference_words": 2662
+      },
+      {
+        "brief_term_reference_words": 6,
+        "call_id": "4469088",
+        "clips": 150,
+        "hits": 6,
+        "recall": 1.0,
+        "reference_words": 1946
+      },
+      {
+        "brief_term_reference_words": 5,
+        "call_id": "4470684",
+        "clips": 150,
+        "hits": 2,
+        "recall": 0.4,
+        "reference_words": 2581
+      },
+      {
+        "brief_term_reference_words": 2,
+        "call_id": "4474506",
+        "clips": 150,
+        "hits": 2,
+        "recall": 1.0,
+        "reference_words": 2993
+      },
+      {
+        "brief_term_reference_words": 10,
+        "call_id": "4479944",
+        "clips": 150,
+        "hits": 10,
+        "recall": 1.0,
+        "reference_words": 2773
+      },
+      {
+        "brief_term_reference_words": 2,
+        "call_id": "4481952",
+        "clips": 150,
+        "hits": 2,
+        "recall": 1.0,
+        "reference_words": 2166
+      },
+      {
+        "brief_term_reference_words": 1,
+        "call_id": "4482383",
+        "clips": 150,
+        "hits": 1,
+        "recall": 1.0,
+        "reference_words": 3015
+      },
+      {
+        "brief_term_reference_words": 5,
+        "call_id": "4482613",
+        "clips": 150,
+        "hits": 5,
+        "recall": 1.0,
+        "reference_words": 2386
+      },
+      {
+        "brief_term_reference_words": 2,
+        "call_id": "4483937",
+        "clips": 150,
+        "hits": 0,
+        "recall": 0.0,
+        "reference_words": 2567
+      },
+      {
+        "brief_term_reference_words": 4,
+        "call_id": "4485192",
+        "clips": 150,
+        "hits": 3,
+        "recall": 0.75,
+        "reference_words": 3162
+      }
+    ],
+    "per_field": [
+      {
+        "ceiling_corpus_wer_points": 0.0,
+        "deletions": 0,
+        "field": "Ticker symbol",
+        "hits": 2,
+        "recall": 1.0,
+        "reference_words": 2,
+        "substitutions": 0
+      },
+      {
+        "ceiling_corpus_wer_points": 0.019047,
+        "deletions": 0,
+        "field": "Country",
+        "hits": 15,
+        "recall": 0.75,
+        "reference_words": 20,
+        "substitutions": 5
+      },
+      {
+        "ceiling_corpus_wer_points": 0.0,
+        "deletions": 0,
+        "field": "UN region",
+        "hits": 0,
+        "recall": 0.0,
+        "reference_words": 0,
+        "substitutions": 0
+      },
+      {
+        "ceiling_corpus_wer_points": 0.0,
+        "deletions": 0,
+        "field": "Major dialect family",
+        "hits": 23,
+        "recall": 1.0,
+        "reference_words": 23,
+        "substitutions": 0
+      },
+      {
+        "ceiling_corpus_wer_points": 0.003809,
+        "deletions": 1,
+        "field": "Language family and area",
+        "hits": 1,
+        "recall": 0.5,
+        "reference_words": 2,
+        "substitutions": 0
+      }
+    ],
+    "reference_words": 26251,
+    "scorer_version": "brief-term-recall-v1",
+    "terms": [
+      {
+        "call_specific": false,
+        "field": "Country",
+        "normalized": "australia",
+        "other_call_reference_words": 3,
+        "own_call_reference_words": 3,
+        "term": "Australia"
+      },
+      {
+        "call_specific": false,
+        "field": "Country",
+        "normalized": "india",
+        "other_call_reference_words": 8,
+        "own_call_reference_words": 2,
+        "term": "India"
+      },
+      {
+        "call_specific": false,
+        "field": "Country",
+        "normalized": "south africa",
+        "other_call_reference_words": 30,
+        "own_call_reference_words": 6,
+        "term": "South Africa"
+      },
+      {
+        "call_specific": false,
+        "field": "Country",
+        "normalized": "uk",
+        "other_call_reference_words": 7,
+        "own_call_reference_words": 7,
+        "term": "UK"
+      },
+      {
+        "call_specific": false,
+        "field": "Country",
+        "normalized": "united states",
+        "other_call_reference_words": 6,
+        "own_call_reference_words": 2,
+        "term": "United States"
+      },
+      {
+        "call_specific": false,
+        "field": "Language family and area",
+        "normalized": "english",
+        "other_call_reference_words": 14,
+        "own_call_reference_words": 2,
+        "term": "English"
+      },
+      {
+        "call_specific": false,
+        "field": "Major dialect family",
+        "normalized": "north american",
+        "other_call_reference_words": 4,
+        "own_call_reference_words": 0,
+        "term": "North American"
+      },
+      {
+        "call_specific": false,
+        "field": "Major dialect family",
+        "normalized": "other",
+        "other_call_reference_words": 149,
+        "own_call_reference_words": 23,
+        "term": "Other"
+      },
+      {
+        "call_specific": false,
+        "field": "Ticker symbol",
+        "normalized": "cost",
+        "other_call_reference_words": 38,
+        "own_call_reference_words": 2,
+        "term": "COST"
+      }
+    ]
+  },
+  "pairing": {
+    "clips": 1500,
+    "clips_per_call": {
+      "4453225": 150,
+      "4469088": 150,
+      "4470684": 150,
+      "4474506": 150,
+      "4479944": 150,
+      "4481952": 150,
+      "4482383": 150,
+      "4482613": 150,
+      "4483937": 150,
+      "4485192": 150
+    },
+    "cluster_unit": "the source call",
+    "clusters": 10,
+    "split_identity_hash": "8dc9d6a04c408226e0575254ba4cbad605417c293fc5e55f40e6c8cf50f51207"
+  },
+  "preregistration": "docs/readiness/2026-09-07-e22-kc-e2-pre-meeting-brief-v1-preregistration.md",
+  "schema": "saea-e22-brief-source-audit-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "test_split_read": false
+}
