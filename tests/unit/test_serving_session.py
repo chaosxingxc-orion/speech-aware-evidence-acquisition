@@ -331,6 +331,29 @@ def test_a_differing_model_file_and_env_are_named(tmp_path):
     assert fields == ["model_files", "server_env"]
 
 
+def test_a_reordered_argv_is_named_as_an_ordering_difference():
+    session = _identity()
+    argv = list(session["server_argv"])
+    # Same flags and same values, different order.
+    session["server_argv"] = argv[:5] + argv[7:] + argv[5:7]
+    fields = [entry["field"] for entry in identity_mismatches(session, _identity())]
+    assert fields == ["server_argv[order]"]
+
+
+def test_an_ordering_difference_is_not_reported_when_a_flag_already_differs():
+    """The order fallback must count THIS field's own mismatches, not the
+    whole list: an unrelated model_files difference used to suppress it."""
+
+    session = _identity(model_files=[{"path": "models/q4km/model.gguf", "sha256": "z" * 64}])
+    argv = list(session["server_argv"])
+    argv[argv.index("-c") + 1] = "40960"
+    session["server_argv"] = argv
+    fields = [entry["field"] for entry in identity_mismatches(session, _identity())]
+    assert "server_argv[-c]" in fields
+    assert "model_files" in fields
+    assert "server_argv[order]" not in fields
+
+
 def test_a_props_key_the_flight_cannot_derive_is_not_compared():
     session = _identity()
     session["props_identity"]["build_info"] = "version: 1 (deadbeef)"

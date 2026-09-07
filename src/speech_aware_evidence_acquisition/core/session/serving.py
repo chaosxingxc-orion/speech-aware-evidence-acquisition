@@ -270,8 +270,10 @@ def identity_mismatches(
         if field == "server_argv":
             session_flags = _argv_map(list(session_value or ()))
             required_flags = _argv_map(list(required_value or ()))
+            flag_mismatches = 0
             for flag in sorted(set(session_flags) | set(required_flags)):
                 if session_flags.get(flag) != required_flags.get(flag):
+                    flag_mismatches += 1
                     mismatches.append(
                         {
                             "field": f"server_argv[{flag}]",
@@ -279,7 +281,11 @@ def identity_mismatches(
                             "required": required_flags.get(flag),
                         }
                     )
-            if not mismatches and list(session_value or ()) != list(required_value or ()):
+            # Only when every flag agrees can an argv difference be pure
+            # ORDER; counting this field's own mismatches (not the whole
+            # list, which may already carry an unrelated model_files entry)
+            # is what makes that true.
+            if not flag_mismatches and list(session_value or ()) != list(required_value or ()):
                 mismatches.append(
                     {
                         "field": "server_argv[order]",
