@@ -54,6 +54,8 @@ read_host_memory = monitor.read_host_memory
 read_metrics = monitor.read_metrics
 read_slots = monitor.read_slots
 sample_loop = monitor.sample_loop
+warn_host_memory_if_low = monitor.warn_host_memory_if_low
+MONITOR_LOG_NAME = monitor.MONITOR_LOG_NAME
 
 
 class _Completed:
@@ -70,7 +72,20 @@ def _sample(
     power: float = 30.0,
     requests_total: int = 0,
     tokens: float | None = None,
+    host_free_gb: float | None = None,
+    vm_available_gb: float | None = None,
+    vmmem_ws_gb: float | None = None,
 ) -> dict:
+    host_memory = None
+    if host_free_gb is not None or vm_available_gb is not None or vmmem_ws_gb is not None:
+        host_memory = {
+            "host_total_gb": 44.0,
+            "host_free_gb": host_free_gb,
+            "vmmem_ws_gb": vmmem_ws_gb,
+            "vm_total_gb": 40.0,
+            "vm_available_gb": vm_available_gb,
+            "host_memory_source": "windows+vm",
+        }
     return build_sample(
         now=at,
         gpu={
@@ -83,6 +98,7 @@ def _sample(
         slots={"total": 8, "busy": busy, "idle": 8 - busy},
         metrics=({"tokens_predicted_total": tokens} if tokens is not None else None),
         requests_total=requests_total,
+        host_memory=host_memory,
     )
 
 
@@ -193,6 +209,7 @@ def test_sample_loop_appends_one_line_and_stops_at_its_duration(tmp_path, monkey
         host = "127.0.0.1"
         port = 8080
         interval = 0.0
+        host_free_warn_gb = 6.0
         # A tiny positive duration: the loop writes one sample, then finds
         # its deadline already passed and returns.
         duration = 1e-6
@@ -204,6 +221,46 @@ def test_sample_loop_appends_one_line_and_stops_at_its_duration(tmp_path, monkey
     assert samples[0]["requests_total"] == 1
     assert samples[0]["server_ok"] is True
     assert samples[0]["host_memory"]["host_free_gb"] == 30.0
+    # A healthy reading (30 GB, above the 6 GB default floor) writes no WARN.
+    assert not (session_dir / MONITOR_LOG_NAME).exists()
+
+
+def test_sample_loop_writes_one_warn_line_when_the_host_free_gb_is_low(tmp_path, monkeypatch):
+    session_dir = serving_session_dir(tmp_path, "serving-low")
+    session_dir.mkdir(parents=True)
+    monkeypatch.setattr(monitor, "read_gpu", lambda: None)
+    monkeypatch.setattr(monitor, "read_slots", lambda base_url: (None, {}))
+    monkeypatch.setattr(monitor, "read_metrics", lambda base_url: None)
+    monkeypatch.setattr(
+        monitor,
+        "read_host_memory",
+        lambda: {
+            "host_total_gb": 44.0,
+            "host_free_gb": 3.0,
+            "vmmem_ws_gb": 20.0,
+            "vm_total_gb": 40.0,
+            "vm_available_gb": 8.0,
+            "host_memory_source": "windows+vm",
+        },
+    )
+
+    class _Args:
+        data_root = tmp_path
+        session_id = "serving-low"
+        host = "127.0.0.1"
+        port = 8080
+        interval = 0.0
+        host_free_warn_gb = 6.0
+        duration = 1e-6
+
+    assert sample_loop(_Args) == 0
+    log_lines = (session_dir / MONITOR_LOG_NAME).read_text(encoding="utf-8").splitlines()
+    assert len(log_lines) == 1
+    assert "WARN host-memory" in log_lines[0]
+    assert "host_free_gb=3.00" in log_lines[0]
+    # The WARN line is never mixed into the JSONL a flight reads.
+    jsonl_text = (session_dir / MONITOR_JSONL_NAME).read_text(encoding="utf-8")
+    assert "WARN" not in jsonl_text
 
 
 def test_build_sample_carries_the_host_memory_reading():
@@ -221,6 +278,91 @@ def test_build_sample_carries_the_host_memory_reading():
 def test_build_sample_host_memory_defaults_to_none():
     sample = build_sample(now=0.0, gpu=None, slots=None, metrics=None, requests_total=0)
     assert sample["host_memory"] is None
+
+
+# ---------------------------------------------------------------------------
+# ``warn_host_memory_if_low``: the monitor's own throttled operator warning
+# (E7c, 2026-09-07 incident).
+# ---------------------------------------------------------------------------
+
+
+def test_warn_host_memory_if_low_writes_below_the_threshold(tmp_path):
+    log_path = tmp_path / "monitor.log"
+    last = warn_host_memory_if_low(
+        log_path,
+        {"host_free_gb": 4.0},
+        threshold_gb=6.0,
+        sampled_at_iso="2026-09-07T00:00:00+00:00",
+        now_monotonic=1000.0,
+        last_warn_monotonic=None,
+    )
+    assert last == 1000.0
+    text = log_path.read_text(encoding="utf-8")
+    assert "2026-09-07T00:00:00+00:00 WARN host-memory" in text
+    assert "host_free_gb=4.00" in text and "--host-free-warn-gb 6.00" in text
+
+
+def test_warn_host_memory_if_low_writes_nothing_at_or_above_the_threshold(tmp_path):
+    log_path = tmp_path / "monitor.log"
+    last = warn_host_memory_if_low(
+        log_path,
+        {"host_free_gb": 6.0},
+        threshold_gb=6.0,
+        sampled_at_iso="2026-09-07T00:00:00+00:00",
+        now_monotonic=1000.0,
+        last_warn_monotonic=None,
+    )
+    assert last is None
+    assert not log_path.exists()
+
+
+def test_warn_host_memory_if_low_writes_nothing_without_a_reading(tmp_path):
+    log_path = tmp_path / "monitor.log"
+    last = warn_host_memory_if_low(
+        log_path,
+        None,
+        threshold_gb=6.0,
+        sampled_at_iso="2026-09-07T00:00:00+00:00",
+        now_monotonic=1000.0,
+        last_warn_monotonic=5.0,
+    )
+    assert last == 5.0
+    assert not log_path.exists()
+
+
+def test_warn_host_memory_if_low_is_throttled_to_once_per_minute(tmp_path):
+    log_path = tmp_path / "monitor.log"
+    first = warn_host_memory_if_low(
+        log_path,
+        {"host_free_gb": 2.0},
+        threshold_gb=6.0,
+        sampled_at_iso="t0",
+        now_monotonic=1000.0,
+        last_warn_monotonic=None,
+    )
+    assert first == 1000.0
+    second = warn_host_memory_if_low(
+        log_path,
+        {"host_free_gb": 2.0},
+        threshold_gb=6.0,
+        sampled_at_iso="t1",
+        now_monotonic=1030.0,
+        last_warn_monotonic=first,
+    )
+    # 30 seconds later, still below the minute: no new line, last unchanged.
+    assert second == first
+    assert len(log_path.read_text(encoding="utf-8").splitlines()) == 1
+
+    third = warn_host_memory_if_low(
+        log_path,
+        {"host_free_gb": 2.0},
+        threshold_gb=6.0,
+        sampled_at_iso="t2",
+        now_monotonic=1061.0,
+        last_warn_monotonic=second,
+    )
+    assert third == 1061.0
+    assert len(log_path.read_text(encoding="utf-8").splitlines()) == 2
 
 
 def test_sample_loop_refuses_a_session_directory_that_does_not_exist(tmp_path):
@@ -331,3 +473,61 @@ def test_summarize_monitor_file_skips_a_truncated_final_line(tmp_path):
 
 def test_summarize_monitor_file_is_empty_when_no_monitor_ran(tmp_path):
     assert summarize_monitor_file(tmp_path / "absent.jsonl")["sample_count"] == 0
+
+
+# ---------------------------------------------------------------------------
+# Host memory in the summary (E7c, 2026-09-07 incident): the window's
+# host-free minimum (with its timestamp), its last reading, and the VM-side
+# companions, the numbers a flight's seal receipt and an agent's final
+# message both carry.
+# ---------------------------------------------------------------------------
+
+
+def test_an_empty_window_reports_no_host_memory_reading():
+    summary = summarize_monitor_samples([])
+    assert summary["host_memory_samples"] == 0
+    assert summary["host_free_gb_min"] is None
+    assert summary["host_free_gb_min_at"] is None
+    assert summary["host_free_gb_last"] is None
+    assert summary["vm_available_gb_min"] is None
+    assert summary["vmmem_ws_gb_max"] is None
+
+
+def test_summarize_reports_the_host_free_minimum_its_timestamp_and_the_last_reading():
+    samples = [
+        _sample(0.0, host_free_gb=20.0, vm_available_gb=30.0, vmmem_ws_gb=8.0),
+        _sample(10.0, host_free_gb=5.0, vm_available_gb=25.0, vmmem_ws_gb=12.0),
+        _sample(20.0, host_free_gb=15.0, vm_available_gb=28.0, vmmem_ws_gb=9.0),
+    ]
+    summary = summarize_monitor_samples(samples)
+    assert summary["host_memory_samples"] == 3
+    assert summary["host_free_gb_min"] == 5.0
+    assert summary["host_free_gb_min_at"] == 10.0
+    assert summary["host_free_gb_last"] == 15.0
+    assert summary["vm_available_gb_min"] == 25.0
+    assert summary["vmmem_ws_gb_max"] == 12.0
+
+
+def test_summarize_counts_only_samples_carrying_a_non_null_host_reading():
+    samples = [
+        _sample(0.0),
+        _sample(10.0, host_free_gb=9.0),
+        _sample(20.0),
+    ]
+    summary = summarize_monitor_samples(samples)
+    assert summary["host_memory_samples"] == 1
+    assert summary["host_free_gb_min"] == 9.0
+    assert summary["host_free_gb_last"] == 9.0
+
+
+def test_summarize_host_memory_fields_respect_the_window_bounds():
+    samples = [
+        _sample(0.0, host_free_gb=3.0),
+        _sample(10.0, host_free_gb=20.0),
+        _sample(20.0, host_free_gb=18.0),
+    ]
+    summary = summarize_monitor_samples(samples, from_epoch=10.0, to_epoch=30.0)
+    assert summary["host_memory_samples"] == 2
+    assert summary["host_free_gb_min"] == 18.0
+    assert summary["host_free_gb_min_at"] == 20.0
+    assert summary["host_free_gb_last"] == 18.0

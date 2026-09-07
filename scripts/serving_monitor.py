@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """GPU + server + host-memory monitor for the always-on serving session (E7).
 
-    python scripts/serving_monitor.py sample --session-id ID [--interval 10]
+    python scripts/serving_monitor.py sample --session-id ID [--interval 10] \
+        [--host-free-warn-gb 6.0]
     python scripts/serving_monitor.py summarize --session-id ID [--from T0] [--to T1]
 
 ``sample`` appends one JSONL line per interval to ``$SPEECHRL_DATA_DIR/
@@ -12,10 +13,14 @@ and ``host_memory`` -- the Windows host's total/free GB and the ``vmmemWSL``
 working set beside the VM's own ``MemTotal``/``MemAvailable`` (E7c, added
 after the 2026-09-07 host-memory incident: see
 :func:`speech_aware_evidence_acquisition.core.session.serving.read_host_memory`).
+A sample whose host free GB drops below ``--host-free-warn-gb`` (default
+6.0) writes one ``WARN host-memory`` line to ``monitor.log`` beside the
+JSONL -- never to stdout -- at most once per minute.
 ``summarize`` prints the parked/active accounting through
 ``core.session.serving.summarize_monitor_samples`` -- the SAME function the
 flight runtime folds into its seal receipt, so a hand-reported number and a
-sealed one cannot disagree. Neither subcommand is a model contact: both
+sealed one cannot disagree; it now also reports the window's host-memory
+minimum/last/maximum fields. Neither subcommand is a model contact: both
 endpoints and the host-memory reading are read-only and no completion is
 requested. See docs/readiness/2026-09-07-always-on-serving-operating-note.md.
 """
@@ -48,6 +53,16 @@ from speech_aware_evidence_acquisition.core.session.serving import (  # noqa: E4
 
 GPU_FIELDS = ("utilization_percent", "memory_used_mib", "power_watts", "pstate", "clocks_sm_mhz")
 NVIDIA_SMI_QUERY = "utilization.gpu,memory.used,power.draw,pstate,clocks.sm"
+
+#: The monitor's own operator log, beside ``monitor.jsonl`` in the same
+#: session directory -- a WARN line about the host running low on memory is
+#: an operator signal, never stdout spam mixed into the JSONL a flight reads.
+MONITOR_LOG_NAME = "monitor.log"
+
+#: A host-memory WARN is written at most this often, however low the reading
+#: stays: a host parked below the floor for an hour must write one line, not
+#: one every sampling interval.
+HOST_MEMORY_WARN_INTERVAL_SECONDS = 60.0
 
 
 def _number(text: object) -> float | None:
@@ -164,29 +179,81 @@ def build_sample(
     }
 
 
+def warn_host_memory_if_low(
+    log_path: Path,
+    host_memory: Mapping[str, object] | None,
+    *,
+    threshold_gb: float,
+    sampled_at_iso: str,
+    now_monotonic: float,
+    last_warn_monotonic: float | None,
+) -> float | None:
+    """Append one ``WARN host-memory`` line to the monitor's own log
+    (``monitor.log``, beside ``monitor.jsonl`` in the same session
+    directory) when this sample's host free GB is below ``threshold_gb`` --
+    never to stdout, which is the monitor's JSONL data channel, not an
+    operator feed. At most once per
+    :data:`HOST_MEMORY_WARN_INTERVAL_SECONDS`, so a host parked below the
+    floor for an hour writes one line, not 360.
+
+    Returns the monotonic time of the warning just written, or the unchanged
+    ``last_warn_monotonic`` when nothing was (no reading, the reading is at
+    or above the threshold, or the interval has not yet elapsed) -- the
+    caller threads this back in as next call's ``last_warn_monotonic``.
+    """
+
+    free_gb = host_memory.get("host_free_gb") if isinstance(host_memory, Mapping) else None
+    if isinstance(free_gb, bool) or not isinstance(free_gb, (int, float)):
+        return last_warn_monotonic
+    if float(free_gb) >= threshold_gb:
+        return last_warn_monotonic
+    if (
+        last_warn_monotonic is not None
+        and now_monotonic - last_warn_monotonic < HOST_MEMORY_WARN_INTERVAL_SECONDS
+    ):
+        return last_warn_monotonic
+    with Path(log_path).open("a", encoding="utf-8") as handle:
+        handle.write(
+            f"{sampled_at_iso} WARN host-memory: host_free_gb={float(free_gb):.2f} < "
+            f"--host-free-warn-gb {float(threshold_gb):.2f}\n"
+        )
+    return now_monotonic
+
+
 def sample_loop(args) -> int:
     session_dir = serving_session_dir(args.data_root, args.session_id)
     if not session_dir.is_dir():
         raise SystemExit(f"no serving session directory at {session_dir}")
     path = session_dir / MONITOR_JSONL_NAME
+    log_path = session_dir / MONITOR_LOG_NAME
     base_url = f"http://{args.host}:{args.port}"
     previous_tasks: dict[int, object] = {}
     requests_total = 0
+    last_warn_monotonic: float | None = None
     deadline = time.monotonic() + args.duration if args.duration else None
     while True:
         slots, tasks = read_slots(base_url)
         requests_total += count_new_requests(previous_tasks, tasks)
         previous_tasks = tasks
+        host_memory = read_host_memory()
         sample = build_sample(
             now=time.time(),
             gpu=read_gpu(),
             slots=slots,
             metrics=read_metrics(base_url),
             requests_total=requests_total,
-            host_memory=read_host_memory(),
+            host_memory=host_memory,
         )
         with path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(sample, ensure_ascii=False, sort_keys=True) + "\n")
+        last_warn_monotonic = warn_host_memory_if_low(
+            log_path,
+            host_memory,
+            threshold_gb=args.host_free_warn_gb,
+            sampled_at_iso=sample["sampled_at_iso"],
+            now_monotonic=time.monotonic(),
+            last_warn_monotonic=last_warn_monotonic,
+        )
         if deadline is not None and time.monotonic() >= deadline:
             return 0
         time.sleep(args.interval)
@@ -221,6 +288,15 @@ def build_parser() -> argparse.ArgumentParser:
     sample.add_argument("--host", default="127.0.0.1")
     sample.add_argument("--port", type=int, default=8080)
     sample.add_argument("--duration", type=float, default=None, help="stop after N seconds")
+    sample.add_argument(
+        "--host-free-warn-gb",
+        type=float,
+        default=6.0,
+        help=(
+            "write a WARN host-memory line to monitor.log (not stdout) when the host's "
+            "free memory drops below this, at most once per minute"
+        ),
+    )
     sample.set_defaults(handler=sample_loop)
     window = subparsers.add_parser(
         "summarize", parents=[common], help="parked/active accounting over a window"

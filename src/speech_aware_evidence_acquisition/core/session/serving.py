@@ -519,6 +519,15 @@ def summarize_monitor_samples(
     fewer than two samples carrying that counter (``tokens_predicted_total``
     needs llama-server's ``--metrics`` endpoint, which the pinned fragments
     do not enable by default).
+
+    HOST memory (E7c, 2026-09-07 incident): ``host_free_gb_min`` /
+    ``host_free_gb_min_at`` / ``host_free_gb_last`` track the Windows host's
+    own free memory across the window (the number the watchdog acted on);
+    ``vm_available_gb_min`` and ``vmmem_ws_gb_max`` are the VM-side and
+    VM-footprint-on-host companions. ``host_memory_samples`` counts samples
+    carrying a non-null ``host_free_gb`` reading -- a monitor run entirely on
+    a host with WSL interop disabled reports ``0`` here rather than a
+    misleadingly present-but-empty minimum.
     """
 
     selected = [
@@ -544,6 +553,12 @@ def summarize_monitor_samples(
         "mean_power_watts": None,
         "peak_power_watts": None,
         "mean_utilization_percent": None,
+        "host_free_gb_min": None,
+        "host_free_gb_min_at": None,
+        "host_free_gb_last": None,
+        "vm_available_gb_min": None,
+        "vmmem_ws_gb_max": None,
+        "host_memory_samples": 0,
         "parked_definition": (
             "every slot idle AND nvidia-smi utilization.gpu < "
             f"{PARKED_UTILIZATION_PERCENT:g}%"
@@ -595,6 +610,36 @@ def summarize_monitor_samples(
     ]
     if utilizations:
         summary["mean_utilization_percent"] = sum(utilizations) / len(utilizations)
+
+    host_free_series = [
+        (float(sample["sampled_at"]), value)
+        for sample in selected
+        for value in (_numeric(sample, "host_memory", "host_free_gb"),)
+        if value is not None
+    ]
+    summary["host_memory_samples"] = len(host_free_series)
+    if host_free_series:
+        min_at, min_value = min(host_free_series, key=lambda pair: pair[1])
+        summary["host_free_gb_min"] = min_value
+        summary["host_free_gb_min_at"] = min_at
+        summary["host_free_gb_last"] = host_free_series[-1][1]
+
+    vm_available_values = [
+        value
+        for value in (_numeric(sample, "host_memory", "vm_available_gb") for sample in selected)
+        if value is not None
+    ]
+    if vm_available_values:
+        summary["vm_available_gb_min"] = min(vm_available_values)
+
+    vmmem_values = [
+        value
+        for value in (_numeric(sample, "host_memory", "vmmem_ws_gb") for sample in selected)
+        if value is not None
+    ]
+    if vmmem_values:
+        summary["vmmem_ws_gb_max"] = max(vmmem_values)
+
     return summary
 
 
