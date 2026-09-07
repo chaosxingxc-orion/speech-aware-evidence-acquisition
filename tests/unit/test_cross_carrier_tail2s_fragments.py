@@ -259,9 +259,18 @@ def test_only_the_declared_configs_name_a_derived_root() -> None:
         for path in (REPO / "configs/dataset").glob("*.json")
         if '"derived_media_subdir"' in path.read_text(encoding="utf-8")
     ]
+    # The allowlist is explicit on purpose: a fragment reaches this set only by
+    # being named here. The four input-rate fragments (2026-09-07,
+    # scripts/build_a2t_input_rate_16k_fragments.py) declare the same seam
+    # deliberately, each against its own derived root, so they are added rather
+    # than the assertion being loosened.
     assert {path.name for path in a2t} == {
         "audio2tool-calibration-400-tail2s.json",
         "audio2tool-calibration-400-tail2s-smoke4.json",
+        "audio2tool-calibration-400-16k.json",
+        "audio2tool-calibration-400-16k-smoke4.json",
+        "audio2tool-calibration-400-16k-tail2s.json",
+        "audio2tool-calibration-400-16k-tail2s-smoke4.json",
     }
     assert {path.name for path in slurp} == {
         "slurp-speech-native-dev1000-tail2s.json",

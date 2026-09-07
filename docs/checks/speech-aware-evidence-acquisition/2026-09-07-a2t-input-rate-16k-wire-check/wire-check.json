@@ -1,0 +1,165 @@
+{
+  "authorizes": "nothing. No contact, no server, no scoring and no Stage-3 activity.",
+  "cells": [
+    {
+      "cell": "R-official-16k-smoke-4",
+      "dataset": "audio2tool-calibration-400-16k-smoke4",
+      "experiment": "a2t-official-protocol-16k-400-smoke-v1",
+      "preflight": {
+        "mode": "dry-run",
+        "model_contacts": 0,
+        "opened_a_socket": false,
+        "reached_the_end": false,
+        "returncode": 1,
+        "stdout_tail": [],
+        "stop_class": "gate-not-authorized",
+        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-A2T-OFFICIAL-PROTOCOL-16K-SMOKE-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/saea-worktrees/wt-a2t16k/docs/exposure-ledger.md (rows are written before results are read)"
+      },
+      "request_half": "RAN. The stop is at the FIRST per-row metrics call, which is downstream of the whole request path: config composition, roster hydration, payload binding, tool-schema resolution and the fake-transport dispatch all completed for the first sample before gold was ever asked for.",
+      "rows": 4,
+      "seal_half": "PENDING the '@' gold-id rail merge from wt/ts2y. rails/task_adapter.py:198 calls adapter.gold() from score(), which core/flight/runtime.py:2653 calls per row immediately after dispatch -- so the rail blocks per-row metrics first, and FlightRuntime.wire_check's seal_and_score stage is downstream of that and is never reached. It is neither passed nor failed here.",
+      "variant": "16k",
+      "wire_check": {
+        "mode": "wire-check",
+        "model_contacts": 0,
+        "opened_a_socket": false,
+        "reached_the_end": false,
+        "returncode": 1,
+        "stdout_tail": [
+          "wire check: R-official-16k-smoke-4"
+        ],
+        "stop_class": "a2t-gold-id-rail-missing",
+        "stopped_at": "ValueError: sample 'tier1_direct:000045@16k' is not in the frozen audio2tool probe receipt"
+      }
+    },
+    {
+      "cell": "R-official-16k",
+      "dataset": "audio2tool-calibration-400-16k",
+      "experiment": "a2t-official-protocol-16k-400-v1",
+      "preflight": {
+        "mode": "dry-run",
+        "model_contacts": 0,
+        "opened_a_socket": false,
+        "reached_the_end": false,
+        "returncode": 1,
+        "stdout_tail": [],
+        "stop_class": "gate-not-authorized",
+        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-A2T-OFFICIAL-PROTOCOL-16K-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/saea-worktrees/wt-a2t16k/docs/exposure-ledger.md (rows are written before results are read)"
+      },
+      "request_half": "RAN. The stop is at the FIRST per-row metrics call, which is downstream of the whole request path: config composition, roster hydration, payload binding, tool-schema resolution and the fake-transport dispatch all completed for the first sample before gold was ever asked for.",
+      "rows": 400,
+      "seal_half": "PENDING the '@' gold-id rail merge from wt/ts2y. rails/task_adapter.py:198 calls adapter.gold() from score(), which core/flight/runtime.py:2653 calls per row immediately after dispatch -- so the rail blocks per-row metrics first, and FlightRuntime.wire_check's seal_and_score stage is downstream of that and is never reached. It is neither passed nor failed here.",
+      "variant": "16k",
+      "wire_check": {
+        "mode": "wire-check",
+        "model_contacts": 0,
+        "opened_a_socket": false,
+        "reached_the_end": false,
+        "returncode": 1,
+        "stdout_tail": [
+          "wire check: R-official-16k"
+        ],
+        "stop_class": "a2t-gold-id-rail-missing",
+        "stopped_at": "ValueError: sample 'tier1_direct:000045@16k' is not in the frozen audio2tool probe receipt"
+      }
+    },
+    {
+      "cell": "R-official-16k-tail2s-smoke-4",
+      "dataset": "audio2tool-calibration-400-16k-tail2s-smoke4",
+      "experiment": "a2t-official-protocol-16k-tail2s-400-smoke-v1",
+      "preflight": {
+        "mode": "dry-run",
+        "model_contacts": 0,
+        "opened_a_socket": false,
+        "reached_the_end": false,
+        "returncode": 1,
+        "stdout_tail": [],
+        "stop_class": "gate-not-authorized",
+        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-A2T-OFFICIAL-PROTOCOL-16K-TAIL2S-SMOKE-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/saea-worktrees/wt-a2t16k/docs/exposure-ledger.md (rows are written before results are read)"
+      },
+      "request_half": "RAN. The stop is at the FIRST per-row metrics call, which is downstream of the whole request path: config composition, roster hydration, payload binding, tool-schema resolution and the fake-transport dispatch all completed for the first sample before gold was ever asked for.",
+      "rows": 4,
+      "seal_half": "PENDING the '@' gold-id rail merge from wt/ts2y. rails/task_adapter.py:198 calls adapter.gold() from score(), which core/flight/runtime.py:2653 calls per row immediately after dispatch -- so the rail blocks per-row metrics first, and FlightRuntime.wire_check's seal_and_score stage is downstream of that and is never reached. It is neither passed nor failed here.",
+      "variant": "16k+ts2",
+      "wire_check": {
+        "mode": "wire-check",
+        "model_contacts": 0,
+        "opened_a_socket": false,
+        "reached_the_end": false,
+        "returncode": 1,
+        "stdout_tail": [
+          "wire check: R-official-16k-tail2s-smoke-4"
+        ],
+        "stop_class": "a2t-gold-id-rail-missing",
+        "stopped_at": "ValueError: sample 'tier1_direct:000045@16k+ts2' is not in the frozen audio2tool probe receipt"
+      }
+    },
+    {
+      "cell": "R-official-16k-tail2s",
+      "dataset": "audio2tool-calibration-400-16k-tail2s",
+      "experiment": "a2t-official-protocol-16k-tail2s-400-v1",
+      "preflight": {
+        "mode": "dry-run",
+        "model_contacts": 0,
+        "opened_a_socket": false,
+        "reached_the_end": false,
+        "returncode": 1,
+        "stdout_tail": [],
+        "stop_class": "gate-not-authorized",
+        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-A2T-OFFICIAL-PROTOCOL-16K-TAIL2S-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/saea-worktrees/wt-a2t16k/docs/exposure-ledger.md (rows are written before results are read)"
+      },
+      "request_half": "RAN. The stop is at the FIRST per-row metrics call, which is downstream of the whole request path: config composition, roster hydration, payload binding, tool-schema resolution and the fake-transport dispatch all completed for the first sample before gold was ever asked for.",
+      "rows": 400,
+      "seal_half": "PENDING the '@' gold-id rail merge from wt/ts2y. rails/task_adapter.py:198 calls adapter.gold() from score(), which core/flight/runtime.py:2653 calls per row immediately after dispatch -- so the rail blocks per-row metrics first, and FlightRuntime.wire_check's seal_and_score stage is downstream of that and is never reached. It is neither passed nor failed here.",
+      "variant": "16k+ts2",
+      "wire_check": {
+        "mode": "wire-check",
+        "model_contacts": 0,
+        "opened_a_socket": false,
+        "reached_the_end": false,
+        "returncode": 1,
+        "stdout_tail": [
+          "wire check: R-official-16k-tail2s"
+        ],
+        "stop_class": "a2t-gold-id-rail-missing",
+        "stopped_at": "ValueError: sample 'tier1_direct:000045@16k+ts2' is not in the frozen audio2tool probe receipt"
+      }
+    }
+  ],
+  "contacts": {
+    "frozen_core": 0,
+    "gpu_hours": 0,
+    "paid_api_spend": 0,
+    "servers_started": 0,
+    "sockets_opened": 0
+  },
+  "date": "2026-09-07",
+  "execution_profile": "model-free-check",
+  "expected_stops": {
+    "a2t-gold-id-rail-missing": "is not in the frozen audio2tool probe receipt",
+    "gate-not-authorized": "has no pre-registered exposure row"
+  },
+  "fragments": {
+    "configs/dataset/audio2tool-calibration-400-16k-smoke4.json": "569c7beae971b9f9ef99697e8b35e309ef5e56ae8fe3b8809d597541578c1ca3",
+    "configs/dataset/audio2tool-calibration-400-16k-tail2s-smoke4.json": "d3c86ee422b8e28d173689f54cc1a5a16ad376046bb53fc96716be1e162355fe",
+    "configs/dataset/audio2tool-calibration-400-16k-tail2s.json": "1b9902199bfbcc18d5e5868f04a13a40c572ad46ee96c6fbeec934628766264f",
+    "configs/dataset/audio2tool-calibration-400-16k.json": "8f4595aa5ba4c6f6472f288b1558cea9e1eac39f5e0417213fd38485e1f6177c",
+    "configs/experiment/a2t-official-protocol-16k-400-smoke-v1.json": "47827c55b8952078f6ba4e77ed75cef1291996129aef1fa8f645cf69b7926b3c",
+    "configs/experiment/a2t-official-protocol-16k-400-v1.json": "9477c6dbd4a53291ab0e3499ecca9660fe452c96506bdfb497636e4a4a6696f8",
+    "configs/experiment/a2t-official-protocol-16k-tail2s-400-smoke-v1.json": "3651498a4b0f179bfde399c1c9d57ee84004bf7b8c14be9a2dc1099caa035082",
+    "configs/experiment/a2t-official-protocol-16k-tail2s-400-v1.json": "e62579fde473c9b1a0a8c9762d4d05b8609b2ae2fd2adfad7f2b0c4d861215b9"
+  },
+  "gold_id_rail": {
+    "blocks": "the SEAL half of every suffixed Audio2Tool population (@ts2, @16k and @16k+ts2 alike). One rail unblocks all three.",
+    "call_site": "rails/adapters/audio2tool.py::Audio2ToolAdapter.gold",
+    "landed": false,
+    "lands_on": "wt/ts2y",
+    "precedent": "reproduction.esb_reference.published_segment_key -- splits a derived-media id on the FIRST '@' and is provably inert for unsuffixed ids"
+  },
+  "media_exposure_row": "SAEA-SN-MF-A2T-CAL400-16K-MEDIA-V1",
+  "preregistration": "docs/readiness/2026-09-07-a2t-input-rate-standardization-v1-preregistration.md",
+  "schema": "saea-a2t-input-rate-16k-wire-check-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "what_preflight_proves": "config composition, roster hydration with a per-file SHA-256 re-hash of all 400 media, media-path confinement to the variant's OWN derived root, the count check and ExecutionPlan construction all pass -- and only THEN does the real gate refuse, because these cells are not authorized. Reaching the gate is the CORRECT state.",
+  "where_the_rail_bites": "rails/task_adapter.py:198 (score -> gold) called from core/flight/runtime.py:2653 (_row_for), i.e. per row immediately AFTER the response comes back from the fake transport. So the request half is proved and the seal half is unreachable until the rail lands -- not because sealing is broken, but because nothing downstream of the first row's metrics runs."
+}
