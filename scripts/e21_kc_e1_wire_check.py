@@ -92,11 +92,17 @@ WIRE_DATASET = "e21-kc-e1-wire-check-4"
 RUN_ID = "SAEA-E21-KC-E1-WIRE-CHECK-V1"
 FLIGHT_RUN_ID = "SAEA-E21-KC-E1-BRIEF-44-V1"
 
-#: Nominal budget for the dry run. 61 windows per cell over the four calls,
-#: plus retry headroom; nothing is spent because nothing is contacted.
-PLAN_CALLS = 80
-PLAN_AUDIO_SECONDS = 6000
-PLAN_GPU_HOURS = 0.1
+#: The dry run's ExecutionPlan budget. NOT a spend registration: the transport
+#: is ``core.driver.smoke._dry_run_transport`` and zero real contacts are made,
+#: but the REAL metering rail still runs, and it is cumulative across every
+#: attempt of a run id. One attempt costs 61 windows and 5,322.108 audio
+#: seconds -- the four calls' whole duration, tiled -- so a budget sized for a
+#: single attempt makes the SECOND invocation of the check fail with an
+#: exhausted budget rather than a result. Sized for five attempts, which is
+#: what a check that may need iterating actually needs.
+PLAN_CALLS = 400
+PLAN_AUDIO_SECONDS = 30000
+PLAN_GPU_HOURS = 0.5
 
 ROSTER_SUBDIR = "contexts/participant_names/"
 DOCUMENT_SUBDIR = "contexts/"
@@ -645,6 +651,19 @@ def main() -> int:
             "against a fake transport and a no-op gate, plus the D1 evidence rail "
             "driven separately with a REAL gate because the no-op one skips it"
         ),
+        "plan_budget": {
+            "planned_model_calls": PLAN_CALLS,
+            "planned_speech_audio_seconds": PLAN_AUDIO_SECONDS,
+            "planned_gpu_hours": PLAN_GPU_HOURS,
+            "what_it_is_not": (
+                "a spend registration. Zero real contacts are made: the transport "
+                "is core.driver.smoke._dry_run_transport. The REAL metering rail "
+                "still runs and is cumulative across every attempt of a run id, so "
+                "the plan has to cover one attempt's 61 windows and 5,322.108 tiled "
+                "audio seconds several times over or a second invocation of this "
+                "check fails on an exhausted budget instead of returning a result"
+            ),
+        },
         "zero_contact": {
             "model_contacts": 0,
             "generated_tokens": 0,
