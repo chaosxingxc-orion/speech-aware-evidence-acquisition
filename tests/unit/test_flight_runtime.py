@@ -1620,15 +1620,24 @@ class _TransportDrivingClient(_FakeClient):
 def _calling_rails_runner(**kwargs):
     """Mirrors rails.runner._run_one_arm: one complete() per sample. The
     plain _fake_rails_runner never calls the client at all, so a wire check
-    driven by it would see zero requests reach the transport."""
+    driven by it would see zero requests reach the transport.
+
+    ``decoding_params`` may be a per-sample CALLABLE rather than a mapping
+    (``rails.runner.run_rails_experiment``'s own contract, the seam a
+    per-sample ``max_tokens`` rule travels); this double resolves it exactly
+    where the real runner does, so a wire check driven by it proves something
+    about the runner rather than about a second copy of it."""
 
     adapter = kwargs["adapter"]
     client = kwargs["core_client"]
+    decoding_params = kwargs.get("decoding_params")
     results = []
     for sample in adapter.load_split(kwargs["split_id"]):
         client.complete(
             adapter.assemble_prompt(sample, None),
-            decoding_params=kwargs.get("decoding_params"),
+            decoding_params=(
+                decoding_params(sample) if callable(decoding_params) else decoding_params
+            ),
         )
         results.append(_FakeArmResult(sample.sample_id))
     return _FakeRunSummary(results)
@@ -2883,3 +2892,219 @@ def test_the_fixed_policy_estimate_is_byte_identical_to_the_direct_payload(tmp_p
     ).hexdigest()
     assert [entry["phase"] for entry in receipt["prompt_budget"]] == ["direct"]
     assert receipt["prompt_budget"][0]["payload_sha256"] == expected
+
+
+# ---------------------------------------------------------------------------
+# The per-sample decoding_params.max_tokens seam (E22 cell (b), 2026-09-06).
+#
+# A fragment normally declares one integer cap for the whole cell. It may
+# instead declare a rule object naming a core.base.MAX_TOKENS_POLICIES id, and
+# this runtime resolves it to an integer per sample from that sample's own
+# audio_seconds -- in the same three places it already resolves the id_slot
+# slot-affinity sentinel. See core.flight.runtime.MAX_TOKENS_POLICY_KEY.
+# ---------------------------------------------------------------------------
+
+
+_DURATION_RULE = {
+    "policy": "duration-proportional-v1",
+    "alpha": 1.5,
+    "words_per_second_p95": 4.999220954734555,
+    "tokens_per_word": 1.2991996296395218,
+    "floor": 1,
+    "ceiling": 1024,
+}
+
+
+class _TwoDurationAdapter(_FakeAdapter):
+    """Two samples whose durations differ, so a per-sample cap is observable as
+    two different integers rather than one repeated one."""
+
+    def __init__(self, lock, root: Path) -> None:
+        super().__init__(lock, root)
+        self.samples = (
+            _FakeSample("s1", audio_seconds=5.0),
+            _FakeSample("s2", audio_seconds=32.88),
+        )
+
+
+class _EchoingDecodingClient(_TransportDrivingClient):
+    """Like ``_TransportDrivingClient``, but the payload it emits carries the
+    decoding params it was actually HANDED and the real sample's own
+    ``sample_id``/``audio_seconds`` -- recovered from the audio part's
+    ``media_relpath``, exactly as the real ``FrozenCoreClient`` recovers them
+    from the sample binding. Without that the wire check would be asserting
+    against a fixture instead of against what crossed the seam."""
+
+    _DURATIONS = {"s1": 5.0, "s2": 32.88}
+
+    def complete(self, messages, **kwargs):
+        payload = {field: "x" for field in self._arm_fields}
+        media_relpath = ""
+        for message in messages:
+            content = message.get("content")
+            if isinstance(content, list):
+                for part in content:
+                    if isinstance(part, Mapping) and part.get("type") == "input_audio":
+                        media_relpath = str(part.get("media_relpath") or "")
+        sample_id = media_relpath.rsplit("/", 1)[-1].removesuffix(".wav")
+        payload["sample_id"] = sample_id
+        payload["media_relpath"] = media_relpath
+        payload["audio_seconds"] = self._DURATIONS.get(sample_id, 2.0)
+        decoding = dict(kwargs.get("decoding_params") or {})
+        decoding.setdefault("id_slot", 0)
+        payload["decoding_params"] = decoding
+        response = json.loads(
+            self._transport(json.dumps(payload).encode("utf-8")).decode("utf-8")
+        )
+        calls = response.get("tool_calls")
+        with self._lock:
+            self.timings = tuple(self.timings) + (
+                _FakeTiming(
+                    sample_id=sample_id or f"s{len(self.timings) + 1}",
+                    request_id=f"req-{len(self.timings) + 1:04d}",
+                    native_tool_calls=len(calls) if isinstance(calls, list) else None,
+                ),
+            )
+        return "resp"
+
+
+def _cap_runtime(tmp_path, max_tokens, **kwargs):
+    return _wire_runtime(
+        tmp_path,
+        adapter_cls=_TwoDurationAdapter,
+        client_factory=_EchoingDecodingClient,
+        config_kwargs={
+            "arm": "bare-core",
+            "policy": "fixed",
+            "model_extra": {
+                "decoding_params": {
+                    "temperature": 0,
+                    "seed": 20260803,
+                    "max_tokens": max_tokens,
+                    "id_slot": "per-sample",
+                }
+            },
+        },
+        **kwargs,
+    )
+
+
+def test_a_plain_integer_max_tokens_is_handed_on_by_identity(tmp_path):
+    """Byte identity, at the seam itself: with no rule declared the resolver
+    returns the SAME mapping object it was given, so nothing is rebuilt, no key
+    is reordered, and a fragment that predates this seam renders exactly the
+    request it always did."""
+
+    runtime = _cap_runtime(tmp_path, 1024)
+    runtime._prepare()
+    base = runtime._decoding_params()
+    assert base["max_tokens"] == 1024
+    for sample in runtime._samples:
+        assert runtime._sample_decoding_params(sample, base) is base
+
+
+def test_a_per_sample_rule_resolves_from_each_samples_own_audio_seconds(tmp_path):
+    """Two samples, two durations, two different caps -- and each is the
+    integer the registered policy resolves for THAT sample."""
+
+    runtime = _cap_runtime(tmp_path, dict(_DURATION_RULE))
+    receipt = runtime.wire_check(seal_and_score=False)
+
+    assert receipt["max_tokens_policy"] == "duration-proportional-v1"
+    assert receipt["max_tokens_rule"] == _DURATION_RULE
+    # 5.00 s -> 49 tokens and 32.88 s -> 321, the ladder section 2.1 of the
+    # preregistration published before any capped request existed.
+    assert receipt["max_tokens_per_sample"] == {"s1": 49, "s2": 321}
+    assert receipt["max_tokens"] in (49, 321)
+
+
+def test_a_token_matched_rule_dispatches_byte_identically_to_the_integer(tmp_path):
+    """The byte-identity pin. A rule whose floor and ceiling force every sample
+    to 1,024 must produce the SAME request bytes as the plain integer 1,024:
+    the seam moves the resolution of ``max_tokens`` and nothing else about the
+    request."""
+
+    plain = _cap_runtime(tmp_path / "plain", 1024).wire_check(seal_and_score=False)
+    ruled = _cap_runtime(
+        tmp_path / "ruled", dict(_DURATION_RULE, floor=1024, ceiling=1024)
+    ).wire_check(seal_and_score=False)
+
+    assert plain["request_body_sha256"] == ruled["request_body_sha256"]
+    assert plain["max_tokens"] == ruled["max_tokens"] == 1024
+    assert plain["max_tokens_per_sample"] is None
+    assert ruled["max_tokens_per_sample"] == {"s1": 1024, "s2": 1024}
+
+
+def test_the_serial_rails_path_resolves_the_cap_per_sample(tmp_path):
+    """``workers=1`` dispatches through ``rails.runner.run_rails_experiment``
+    rather than the concurrent dispatcher, so the resolver has to reach that
+    path too -- it travels there as a per-sample callable."""
+
+    runtime = _cap_runtime(tmp_path, dict(_DURATION_RULE))
+    receipt = runtime.wire_check(seal_and_score=False, workers=1)
+
+    assert receipt["dispatch"]["dispatch"] == "serial"
+    assert receipt["max_tokens_per_sample"] == {"s1": 49, "s2": 321}
+
+
+def test_the_serial_rails_path_passes_a_plain_mapping_through_unchanged(tmp_path):
+    """And with no rule declared the runner is handed the mapping itself, not a
+    resolver -- the serial half of the byte-identity pin."""
+
+    seen: dict[str, object] = {}
+
+    def _recording_rails_runner(**kwargs):
+        seen["decoding_params"] = kwargs.get("decoding_params")
+        return _calling_rails_runner(**kwargs)
+
+    runtime = _cap_runtime(tmp_path, 1024, rails_runner=_recording_rails_runner)
+    runtime.wire_check(seal_and_score=False, workers=1)
+
+    assert not callable(seen["decoding_params"])
+    assert seen["decoding_params"] == {
+        "temperature": 0,
+        "seed": 20260803,
+        "max_tokens": 1024,
+        "id_slot": 0,
+    }
+
+
+def test_an_unregistered_max_tokens_policy_is_refused(tmp_path):
+    runtime = _cap_runtime(tmp_path, dict(_DURATION_RULE, policy="cap-by-vibes"))
+    runtime._prepare()
+    with pytest.raises(FlightRuntimeError, match="unknown max-tokens policy"):
+        runtime._decoding_params()
+
+
+def test_a_max_tokens_rule_without_a_policy_id_is_refused(tmp_path):
+    rule = {key: value for key, value in _DURATION_RULE.items() if key != "policy"}
+    runtime = _cap_runtime(tmp_path, rule)
+    runtime._prepare()
+    with pytest.raises(FlightRuntimeError, match="registered in core.base"):
+        runtime._decoding_params()
+
+
+def test_a_malformed_max_tokens_rule_is_refused_before_any_sample_runs(tmp_path):
+    runtime = _cap_runtime(tmp_path, dict(_DURATION_RULE, alpha=0))
+    runtime._prepare()
+    with pytest.raises(FlightRuntimeError, match="alpha"):
+        runtime._decoding_params()
+
+
+def test_a_max_tokens_that_is_neither_an_integer_nor_a_rule_is_refused(tmp_path):
+    runtime = _cap_runtime(tmp_path, "1024")
+    runtime._prepare()
+    with pytest.raises(FlightRuntimeError, match="integer or a per-sample rule"):
+        runtime._decoding_params()
+
+
+def test_a_phase_program_refuses_a_per_sample_max_tokens_rule(tmp_path):
+    """The seam resolves where a fixed direct arm builds its request. A phase
+    program's contacts are built by ``rails.phase_runner`` from ONE run-level
+    mapping, so a rule there would travel unresolved and die at the first
+    contact -- after a server start. Refused before one."""
+
+    runtime = _cap_runtime(tmp_path, dict(_DURATION_RULE))
+    runtime._prepare()
+    with pytest.raises(FlightRuntimeError, match="fixed-policy direct-arm seam"):
+        runtime._phase_decoding_params()

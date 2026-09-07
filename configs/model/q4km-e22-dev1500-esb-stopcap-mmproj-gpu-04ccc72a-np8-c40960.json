@@ -1,0 +1,51 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 420.0,
+  "runtime_receipt": "receipts/runtime-q4km-featcache-04ccc72a.json",
+  "server_args": [
+    "-c",
+    "40960",
+    "-np",
+    "8",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0"
+  ],
+  "serving_geometry": {
+    "slots": 8,
+    "slot_tokens": 5120,
+    "max_tokens": 1024
+  },
+  "serving_geometry_basis": "IDENTICAL to configs/model/q4km-e22-dev-esb-mmproj-gpu-04ccc72a-np8-c40960.json, the geometry the sealed comparator SAEA-E22-DEV-ESB-PROMPT-A-V1 flew: -c 40960 -np 8, 5,120 tokens per slot. It is carried over unchanged rather than re-derived for the shorter 1,500-row subset, because greedy decoding is not bitwise reproducible across batch compositions on this runtime and a slot-count change would stop the cell being single-factor. The subset's longest utterance is 32.880000 s -> 13 * ceil(32.88) = 429 speech tokens plus arm A's 49-token text envelope plus the 1,024 completion ceiling plus 2 special = about 1504 against a 5,120-token slot, a ratio of 3.4x on this repository's slot_tokens >= 2 x worst rule.",
+  "serving_geometry_max_tokens_basis": "serving_geometry.max_tokens stays 1024 -- the CEILING, not the cap. It is the completion reserve core.flight.FlightRuntime's prompt-budget assessment and its tokens/s upper-bound estimate read, and reserving the worst case there is what keeps the fit assertion conservative while the per-request cap below only ever asks for less. It is not a request field and never reaches the wire.",
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": {
+      "policy": "duration-proportional-v1",
+      "alpha": 1.5,
+      "words_per_second_p95": 4.999220954734555,
+      "tokens_per_word": 1.2991996296395218,
+      "floor": 1,
+      "ceiling": 1024
+    },
+    "id_slot": "per-sample"
+  },
+  "decoding_basis": "THE ONE FACTOR of cell (b) and the only difference from the sealed comparator's request: max_tokens is a PER-SAMPLE rule object rather than the integer 1024. core.flight.FlightRuntime resolves it, from each sample's own audio_seconds, exactly where it already resolves the id_slot sentinel, through the policy registered as 'duration-proportional-v1' in core.base.MAX_TOKENS_POLICIES; core.model.adapter.FrozenCoreAdapter.request refuses a non-integer max_tokens reaching the transport, so an unresolved rule cannot make a single contact. Everything else is byte-identical to the sealed arm: greedy (temperature 0), seed 20260803 (inert under greedy), id_slot per-sample.",
+  "max_tokens_rule_basis": "n_predict_i = min(1024, max(1, ceil(1.5 * media_seconds_i * 4.999220954734555 * 1.2991996296395218))). Both constants are measured on the sealed dev population and committed to docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-overgeneration-analysis/summary.json: words_per_second_p95 is the 95th percentile of REFERENCE words per second (the reference side deliberately, so the over-generation the cap bounds cannot set the cap's own scale) and tokens_per_word is the flight tokenizer's pooled tokens per normalized hypothesis word taken from the sealed usage.completion_tokens, never from a re-tokenization. alpha 1.5 is the tightest rung on the declared ladder whose full-population agentic point estimate does not worsen (1.9232 against 1.9241, -0.0009); the better-SCORING alpha 0.8 makes the agentic error rate worse and is refused on the decision-relevant metric. The cap is 10 tokens for a 1 s clip, 49 for 5 s, 98 for 10 s and 321 for this subset's 32.88 s longest -- all under the 1,024 the sealed arm flew, so it is a genuine tightening everywhere and never a loosening. Preregistration section 2.1.",
+  "graphs_basis": "GGML_CUDA_DISABLE_GRAPHS=1 carried forward unchanged from the sealed dev arms as INHERITED HARDENING, not as a diagnosis. The variable changes no request byte and so cannot move the number.",
+  "feature_cache_basis": "server_env carries no LLAMA_MTMD_FEAT_CACHE_DIR. The legacy /home/chao/feat-cache/* caches hold other builds' and other populations' encoder outputs; the sealed comparator encoded every utterance live on the GPU and so must this cell, or the contrast acquires a second factor.",
+  "audio_path_basis": "--no-mmproj-offload is absent, so the bf16 mmproj sha256 f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883 stays resident on the GPU and every one of the 1,500 utterances is encoded there, exactly as the sealed comparator encoded them.",
+  "prompt_order": "evidence-first-system-v3",
+  "server_env": {
+    "GGML_CUDA_DISABLE_GRAPHS": "1"
+  }
+}

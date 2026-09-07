@@ -52,6 +52,18 @@ EVIDENCE_SOURCES = Registry("evidence source")
 TRANSPORTS = Registry("transport")
 POLICIES = Registry("policy")
 SCORERS = Registry("scorer")
+# E22 cell (b), 2026-09-06: named PER-SAMPLE resolution rules for
+# ``decoding_params.max_tokens``. A config fragment normally declares that key
+# as a plain integer and every request of a cell carries the same one; a
+# fragment may instead declare an OBJECT naming a policy registered here plus
+# that policy's parameters, and ``core.flight.FlightRuntime`` resolves it to an
+# integer per sample from the sample's own ``audio_seconds`` -- exactly where it
+# already resolves the ``id_slot`` slot-affinity sentinel. Same one-Registry
+# discipline as every other seam above, so the id resolves in a ``core.base``
+# registry like every other config-declared component id and
+# ``scripts/checks/engineering_base_check.py`` can read that resolution from
+# source. The entries are populated from ``core/policies.py``.
+MAX_TOKENS_POLICIES = Registry("max-tokens policy")
 # P1 scaffold: named fills for the ONE supported task-instruction template
 # placeholder ("{tool_schemas}" -- see core.instructions). A fill is a
 # callable (lock, root) -> str rendering pinned carrier data (e.g. the

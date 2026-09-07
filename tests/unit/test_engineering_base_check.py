@@ -333,9 +333,61 @@ def test_regex_extraction_agrees_with_package_import():
         # E6 (2026-09-06): the knowledge providers a baseline fragment's
         # phase_supply.provider resolves against.
         "KNOWLEDGE_PROVIDERS": set(core_base.KNOWLEDGE_PROVIDERS.names()),
+        # E22 cell (b) (2026-09-06): the per-sample decoding_params.max_tokens
+        # rules, registered from the same canonical core/policies.py file.
+        "MAX_TOKENS_POLICIES": set(core_base.MAX_TOKENS_POLICIES.names()),
     }
 
     assert regex_registered == import_registered
+
+
+def test_a_per_sample_max_tokens_policy_id_must_resolve(tmp_path):
+    """E22 cell (b) (2026-09-06): ``decoding_params.max_tokens`` may be a
+    per-sample RULE OBJECT, and its ``policy`` id resolves in
+    ``core.base.MAX_TOKENS_POLICIES`` like every other component id a config
+    declares.
+
+    Matched by PATH rather than by bare key name, which this test pins: the
+    top-level ``"policy": "fixed"`` of an arm program is still checked against
+    ``POLICIES`` and is NOT dragged into the max-tokens registry, and a plain
+    integer ``max_tokens`` declares no id at all.
+    """
+
+    _write(
+        tmp_path / "configs/model/known.json",
+        json.dumps(
+            {
+                "decoding_params": {
+                    "max_tokens": {"policy": "duration-proportional-v1", "alpha": 1.5}
+                }
+            }
+        ),
+    )
+    _write(
+        tmp_path / "configs/model/unknown.json",
+        json.dumps({"decoding_params": {"max_tokens": {"policy": "cap-by-vibes"}}}),
+    )
+    _write(
+        tmp_path / "configs/model/plain.json",
+        json.dumps({"decoding_params": {"temperature": 0, "max_tokens": 1024}}),
+    )
+    _write(
+        tmp_path / "configs/baseline/arm.json",
+        json.dumps({"arm": "a", "policy": "fixed", "scorers": []}),
+    )
+
+    registered = {var: set() for var in ebc.ALL_REGISTRY_VARS}
+    registered["MAX_TOKENS_POLICIES"] = {"duration-proportional-v1"}
+    registered["POLICIES"] = {"fixed"}
+    offenders, keys_found = ebc.rule_unregistered_config_values(
+        ebc.LiveTreeReader(tmp_path), registered
+    )
+
+    assert offenders == [
+        "configs/model/unknown.json::decoding_params.max_tokens.policy=cap-by-vibes"
+    ]
+    assert "decoding_params.max_tokens.policy" in keys_found
+    assert "policy" in keys_found
 
 
 # ---------------------------------------------------------------------------

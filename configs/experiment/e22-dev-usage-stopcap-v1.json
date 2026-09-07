@@ -1,0 +1,176 @@
+{
+  "experiment_id": "SAEA-E22-DEV-ESB-STOPCAP-V1",
+  "schema": "saea-e22-esb-shortform-experiment-v1",
+  "date": "2026-09-06",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "Cell (b) of the three Earnings-22 model-usage alignment cells: ONE factor, a duration-proportional generation cap, on 1,500 rows of this study's own Earnings-22 DEV subset10, paired row for row against the SEALED comparator on identical audio bytes. The request is byte-identical to the sealed arm A's in every field but one -- the integer in max_tokens, which is resolved per sample from that sample's own media duration instead of being the cell-wide 1024. Preregistration: docs/readiness/2026-09-06-e22-dev-usage-cells-v1-preregistration.md section 2. NOT AUTHORIZED by this fragment: the cell needs its own owner GO, its own exposure row registered before the first contact, and its own contracts.ExecutionPlan.",
+  "basis": {
+    "instruction_text_excluded": "docs/readiness/2026-09-05-e22-dev-esb-prompt-ab-v1-verdict.md -- arm B is 0.83 points worse",
+    "request_shape_excluded": "docs/readiness/2026-09-05-e22-dev-esb-shape-c-v1-verdict.md -- arm C is 0.325 points worse and its oracle floor ROSE",
+    "clip_boundary_excluded": "docs/readiness/2026-09-06-e22-clip-boundary-audit-v1.md and docs/readiness/2026-09-06-e22-esb-array-durations-v1.md -- the published segmentation overlaps and the ESB release's own arrays carry that overlap",
+    "decode_discipline_bounded": "docs/readiness/2026-09-06-e22-overgeneration-analysis-v1.md -- decode discipline is bounded at 0.73 dev WER points and the achievable share at a non-worsening agentic rate is 0.23"
+  },
+  "comparator": {
+    "run_id": "SAEA-E22-DEV-ESB-PROMPT-A-V1",
+    "attempt_id": "attempt-20260905T073641Z-f977d1",
+    "restricted_to": "the 1,500 drawn ids",
+    "why_sealed_and_never_a_rerun": "Greedy decoding is not bitwise reproducible across batch compositions on this runtime, so the contrast is against sealed outputs. No new arm A is flown.",
+    "subset_uncapped_numbers": {
+      "corpus_wer_percent_whisper_normalizer": 17.4012,
+      "agentic_error_rate_percent": 1.9161,
+      "source": "section 5.4 of the over-generation verdict, measured model-free before this cell existed"
+    }
+  },
+  "populations": {
+    "E22-ESB-DEV1500-UTTERANCES": {
+      "dataset_fragment": "earnings22-esb-dev1500-utterances",
+      "carrier": "earnings22-original",
+      "split_role": "dev",
+      "count": 1500,
+      "strata": "source call, 150 utterances in each of the ten: 4453225 / 4469088 / 4470684 / 4474506 / 4479944 / 4481952 / 4482383 / 4482613 / 4483937 / 4485192",
+      "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-dev-esb-1500-v1/roster/flight-roster-receipt.json",
+      "receipt_sha256": "fe9528be3ad62c27b95da61e7397fda5e19c0fe711fda07db6731c2d6fcccf9f",
+      "frozen_roster_receipt": "docs/receipts/rosters/e22-dev-esb-1500-v1.json",
+      "frozen_roster_receipt_sha256": "5d2b4e86054a16c072173d0f29162aef4931ab690bebba7636bf706624b2e7b8",
+      "d1_media_supplement": "docs/receipts/artifacts/d1-e22-esb-dev1500-utterances.json",
+      "d1_media_supplement_sha256": "6a3d247208ab027e76b742b35cd4f84bc916f1db05d55444e8e040d05f2ca19f",
+      "split_identity_hash": "c626e62f8876bf52a2904a0d2ec91807a530f3195c10facc8c036f661b2bf88a",
+      "audio_seconds_one_pass": 9948.983,
+      "audio_seconds_longest_item": 32.88,
+      "selection": "150 per source call at seed 20260906 through core.roster.freeze_roster, by the model-free row SAEA-SN-MF-E22-DEV1500-ROSTER-V1",
+      "estimand": "the paired within-utterance effect of the generation cap on corpus WER and on the agentic error rate, on a population this study is allowed to optimize on"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "E22-DEV-ESB-STOPCAP",
+      "dataset_fragment": "earnings22-esb-dev1500-utterances",
+      "arm": "bare-core",
+      "baseline_fragment": "e22-esb-dev1500-stopcap",
+      "model_fragment": "q4km-e22-dev1500-esb-stopcap-mmproj-gpu-04ccc72a-np8-c40960",
+      "run_id": "SAEA-E22-DEV-ESB-STOPCAP-V1",
+      "serving_geometry": "-c 40960 -np 8, 5120 tokens per slot -- the sealed comparator's, unchanged",
+      "factor": "the generation cap: n_predict resolved per sample from the sample's own duration"
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "runtime_receipt": "docs/receipts/runtime-q4km-featcache-04ccc72a.json",
+    "quantization": "Q4_K_M",
+    "decoder_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+    "mmproj_sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883",
+    "audio_path": "raw audio, bf16 mmproj resident on the GPU, no feature cache directory",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": "PER SAMPLE: min(1024, max(1, ceil(1.5 * media_seconds * 4.999220954734555 * 1.2991996296395218))) -- 10 tokens for a 1 s clip, 49 for 5 s, 98 for 10 s, 321 for this subset's 32.88 s longest. Declared as a rule object in the model fragment's decoding_params and resolved by core.flight.FlightRuntime through the 'duration-proportional-v1' entry of core.base.MAX_TOKENS_POLICIES.",
+    "id_slot": "per-sample",
+    "contacts_per_item": 1,
+    "evidence": "none",
+    "obs": "none -- an ESB utterance IS the request; there is no windowing here",
+    "harness": "core.flight.FlightRuntime with the shared rails zero-supply direct arm and the OpenJiuwen executor, entered through scripts/flights/run_e22_esb_cell.py -- the same harness and entry point the sealed comparator used",
+    "prompt_shape": "the base TaskAdapter.assemble_prompt default: one system message carrying the instruction, one user message carrying the audio. IDENTICAL to the comparator.",
+    "stop_strings": "NONE, and none may be added; section 2.4 of the preregistration refuses one by name",
+    "the_only_difference": "the integer in max_tokens. Same roster, same media bytes, same instruction, same reference layer, same scorers, same build, same decoder, same geometry, same harness, same entry point, same prompt shape."
+  },
+  "deviations": [
+    {
+      "id": "S1",
+      "deviation": "the experiment fragment carries ONE cell, not the three the preregistration's section 6 imagined in one file",
+      "why": "a composed experiment fragment declares exactly one execution_plan object (core.flight.FlightRuntime._build_execution_plan reads values['execution_plan']) and that object carries the single execution_profile contracts.assert_execution_scope validates. Cell (a) plans 2.0 GPU-hours and cell (b) 0.20, so the two cannot share one plan -- the same reason configs/experiment/a2t-evo-a1-description-evolution-v1.json already records for its own split.",
+      "expected_effect": "none on any request byte; it is a packaging fact"
+    },
+    {
+      "id": "S2",
+      "deviation": "serving_geometry.max_tokens stays 1024 while every request asks for less",
+      "why": "that field is the completion reserve the prompt-budget assertion and the tokens/s estimate read, not a request field; reserving the worst case keeps the fit assertion conservative and identical to the comparator's",
+      "expected_effect": "none; it never reaches the wire"
+    }
+  ],
+  "prediction": {
+    "declared_before_any_capped_request_exists": true,
+    "source": "section 5.4 of docs/readiness/2026-09-06-e22-overgeneration-analysis-v1.md, projected onto these exact 1,500 rows",
+    "rows_the_cap_bites": 50,
+    "cut_entirely_inside_surplus_benefit": 35,
+    "cut_below_own_reference_length_harm": 15,
+    "tail_bleed_rows_cut_of_218": 5,
+    "corpus_wer_percent": 17.1765,
+    "corpus_wer_delta": -0.2248,
+    "agentic_error_rate_percent": 1.9428,
+    "agentic_error_rate_delta": 0.0267,
+    "assumptions_the_flight_tests": [
+      "a greedy decode under an n_predict cap returns exactly the uncapped decode's token PREFIX -- llama.cpp stops generating, it does not re-decode",
+      "the token-to-word mapping inside a row is approximately linear in that row's own measured tokens-per-word ratio"
+    ]
+  },
+  "evaluation": {
+    "official_scorers": [
+      "asr-wer-esb-whisper",
+      "asr-wer-esb",
+      "cost"
+    ],
+    "paper_facing_scorer": "asr-wer-esb-whisper",
+    "paper_facing_aggregation": "corpus: total S+D+I over total reference words",
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "merge_compounds": false,
+    "agentic_metric": "analysis.e22_error_taxonomy at its committed version, recomputed on the new outputs: HIGH-impact reference-word mass over reference words",
+    "metrics": [
+      "corpus WER under the Whisper EnglishTextNormalizer, pooled and per call (paper-facing)",
+      "mean of per-utterance WER under the same normalizer",
+      "corpus and mean WER under the frozen saea-scoring-v1 normalizer",
+      "the agentic error rate, and the boundary category mass (segmentation-artifact + runaway-tail + runaway-head) with its tail/head containment buckets",
+      "substitutions / deletions / insertions and reference words",
+      "hypothesis-to-reference length ratio and the insertion share of errors",
+      "the utterance-duration decomposition",
+      "the MEASURED rows-capped / benefit / harm counts beside the section 2.2 predictions, named as a prediction check",
+      "prompt_tokens, completion tokens, latency, throughput"
+    ],
+    "paired_analysis": {
+      "module": "analysis.paired.paired_contrast",
+      "strata": "source call (10 strata)",
+      "seed": 20260903,
+      "n_replicates": 10000,
+      "ci_level": 0.9,
+      "signed_as": "cell minus arm A, on the same 1,500 rows, paired per utterance"
+    },
+    "mandatory_slices": [
+      "the per-call table for all ten calls, corpus WER under both normalizers",
+      "natural-mixture (corpus) and equal-call weightings side by side",
+      "the insertion / deletion / substitution split and the hypothesis-to-reference length ratio",
+      "the utterance-duration decomposition",
+      "the prediction check of section 2.2"
+    ],
+    "renderer": "analysis.paired.render_markdown"
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "dev",
+    "planned_model_calls": 1508,
+    "planned_gpu_hours": 0.2,
+    "planned_speech_audio_seconds": 10000
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "1,500 rows x 1 contact + 8 canaries = 1,508; the registered exposure ceiling is 1,600.",
+    "planned_speech_audio_seconds": "9,948.983 s for one pass, rounded up to 10,000; the registered ceiling is 10,500.",
+    "planned_gpu_hours": "0.20 planned, 0.35 registered. The sealed comparator used 0.4515 GPU-h for 6,038 contacts on the same runtime and geometry; 1,500 is 24.8 % of that, about 0.112 h, and the cap can only shorten generation. Expected dispatch is about 400 s at eight slots (the comparator ran 3.744 contacts/s).",
+    "paid_api_spend": 0,
+    "cumulative_metering": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are the exposure row's own calls / speech-audio-seconds / gpu-hours cells, and the plan budget is metered CUMULATIVELY across every attempt of this run id, so a recovery plan must cover prior durable spend as well as its own worst case."
+  },
+  "decision": {
+    "rule": "ADMITTED as a model-usage local optimization iff BOTH hold: (1) corpus WER improves and the CI90 upper bound on the delta is below 0; and (2) the agentic error rate does not worsen -- the CI90 upper bound on its delta is below +0.05 points.",
+    "non_inferiority_margin_provenance": "+0.05 points, inherited verbatim from section 1.6 of docs/readiness/2026-09-06-e22-dev-boundary-exact-v1-preregistration.md and fixed before any number exists.",
+    "why_clause_two_reads_a_ci": "On the full 6,038 rows the alpha-1.5 cap's predicted agentic delta is -0.0009; on these 1,500 it is +0.0267, on 50 capped rows of which 15 are harmed. That is noise around zero at this sample size, and the margin was set to accommodate exactly this rather than chosen after seeing it.",
+    "claim_surface": "A dev number on a 1,500-row subset of this study's own dev split. This is NOT an alignment verdict, it is not compared to the published 9.79 or 12.3 as a difference, and the published figures appear as orientation only where they appear at all.",
+    "test_read": "NONE. This is not a scorer-side change -- the cap changes the request -- so applying it to the six calibration-exposed ESB test calls would require RE-FLYING them, a second read of a population the 2026-09-04 owner allowance permitted once. It may be proposed to the owner and never taken on this fragment's authority.",
+    "not_authorized": "No mechanism arm. No knob tuned on the test split. No fourth prompt. No few-shot. No post-processing of any hypothesis. No re-scoring of any sealed arm. No merge_compounds. No packet or feature-cache path. No stop string. No second read of the six calibration-exposed ESB test calls. No read of any confirmatory call. No paper-scale-confirmatory profile, no manuscript, no submission, no Stage-3 activity.",
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "companion_run": {
+    "experiment_id": "SAEA-E22-DEV-ESB-STOPCAP-SMOKE-V1",
+    "fragment": "e22-dev-usage-stopcap-smoke4-v1",
+    "why_separate": "contracts.gate_exposure requires exactly one pre-registered exposure row per run id whose split identity hash equals the plan's, and the smoke's four rows have a different split identity hash and a much smaller budget, so it cannot share a run id with the flight."
+  }
+}

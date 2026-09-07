@@ -237,39 +237,129 @@ diverges materially from −0.2248, one of those two is wrong, and several other
 account rest on the first. **That falsifiability is the cell's main value, and this document says so
 rather than overselling a quarter of a point against a 6.15-point test gap.**
 
-### 2.3 The seam, and why the cap cannot be a config value today
+### 2.3 The seam, and why the cap could not be a config value
 
-`decoding_params.max_tokens` is composed **per cell**, not per sample:
-`core.flight.FlightRuntime._decoding_params` reads one mapping off the composed config and hands the
-same one to every request. A duration-proportional cap therefore needs a per-sample resolution seam,
-and there is exactly one precedent for it in this repository — `id_slot: "per-sample"`, which
+`decoding_params.max_tokens` was composed **per cell**, not per sample:
+`core.flight.FlightRuntime._decoding_params` read one mapping off the composed config and handed the
+same one to every request. A duration-proportional cap therefore needed a per-sample resolution seam,
+and there was exactly one precedent for it in this repository — `id_slot: "per-sample"`, which
 `FlightRuntime` resolves per request and `core.model.adapter.FrozenCoreAdapter.request` refuses if it
 ever arrives unresolved.
 
-**The seam, specified minimally and before it is written:**
+**The seam, as specified above before it was written, and as it LANDED on 2026-09-06.** The
+specification's substance is unchanged — resolution moves, nothing else does — and the one shape
+change is named as a deviation below rather than quietly absorbed.
 
-* a model fragment may declare `decoding_params.max_tokens: "per-sample-duration"` together with a
-  fragment-level `max_tokens_duration_rule` carrying `alpha`, `words_per_second_p95`,
-  `tokens_per_word`, `floor_tokens` and `ceiling_tokens`;
-* `FlightRuntime` resolves it **where it already resolves `id_slot`**, from the sample's own
-  `audio_seconds` (already on the request payload — the sealed trace records it), to the integer of
-  §2.1;
-* `core.model.request_types.ALLOWED_DECODING_KEYS` is **unchanged**: `max_tokens` is already
-  admitted, and only its resolution moves;
-* the adapter refuses a non-integer `max_tokens` reaching the transport, exactly as it refuses an
-  unresolved `id_slot`, so a silent fall-through is impossible;
-* the rule is refused when the sentinel is absent, and the sentinel is refused when the rule is
-  absent — fail-closed in both directions;
-* absent both, **every fragment that predates this seam renders byte-identical requests**, pinned by
-  a test in the manner of
-  `tests/unit/test_llama_server_transport.py::test_sealed_e22_arm_a_payload_is_byte_identical_without_the_seam`.
+A config fragment declares the cap as an OBJECT instead of an integer:
+
+```json
+"decoding_params": {
+  "temperature": 0,
+  "seed": 20260803,
+  "max_tokens": {
+    "policy": "duration-proportional-v1",
+    "alpha": 1.5,
+    "words_per_second_p95": 4.999220954734555,
+    "tokens_per_word": 1.2991996296395218,
+    "floor": 1,
+    "ceiling": 1024
+  },
+  "id_slot": "per-sample"
+}
+```
+
+* **`duration-proportional-v1` is a registered id**, in the new one-entry registry
+  `core.base.MAX_TOKENS_POLICIES`, populated from `core/policies.py` — one of the canonical
+  registration sites `scripts/checks/engineering_base_check.py` already reads. The check resolves
+  this id by PATH (`decoding_params.max_tokens.policy`) across `configs/model`,
+  `configs/baseline` and `configs/experiment`, so the owner rule "every component id a config
+  declares resolves in a `core.base` registry" now covers the cap too. The check PASSES.
+* **The arithmetic is frozen under that id**: `min(ceiling, max(floor, ceil(alpha · seconds ·
+  words_per_second_p95 · tokens_per_word)))`, numerically identical to
+  `analysis.e22_overgeneration.cap_tokens(...)` clamped — pinned row for row by
+  `tests/unit/test_max_tokens_policies.py`, because the simulator's projection and the flight's cap
+  must be the same intervention or the §2.2 prediction check compares two different things. A
+  different formula is a different id.
+* **`FlightRuntime` resolves it where it already resolves `id_slot`**, from the sample's own
+  `audio_seconds`: `_sample_decoding_params(sample, base)` is called in the concurrent dispatcher's
+  per-request assembly (`_dispatch_concurrent.one`, the path an `-np 8` cell takes), in the
+  serial packet path, and — as a per-sample callable `rails.runner.run_rails_experiment` invokes
+  once per sample — in the serial raw-audio path. A malformed or unregistered rule is refused in
+  `_decoding_params()`, once, **before any sample is dispatched**.
+* **`core.model.request_types.ALLOWED_DECODING_KEYS` is unchanged.** `max_tokens` was already
+  admitted; only its resolution moved.
+* **The adapter refuses a non-integer `max_tokens` reaching the transport**, exactly as it refuses
+  an unresolved `id_slot`, so a silent fall-through is impossible
+  (`tests/unit/test_frozen_core_adapter.py::test_decoding_params_max_tokens_unresolved_rule_refused`).
+* **A phase program is refused outright**: its contacts are built by `rails.phase_runner` from one
+  run-level mapping, so a rule there would travel unresolved. `_phase_decoding_params` refuses it
+  before a server start rather than after one.
+* **Absent a rule, every fragment that predates this seam renders byte-identical requests.** The
+  resolver returns the base mapping *by identity*, not a copy, so nothing is rebuilt and no key is
+  reordered. Pinned three ways in `tests/unit/test_flight_runtime.py`:
+  `test_a_plain_integer_max_tokens_is_handed_on_by_identity`,
+  `test_the_serial_rails_path_passes_a_plain_mapping_through_unchanged`, and
+  `test_a_token_matched_rule_dispatches_byte_identically_to_the_integer` — which drives two full
+  wire checks, one on the plain integer 1024 and one on a rule clamped to 1024 for every sample, and
+  asserts the two `request_body_sha256` lists are **equal**.
+
+**Deviation S3, named rather than absorbed.** The specification above imagined a string sentinel
+`max_tokens: "per-sample-duration"` beside a sibling fragment-level `max_tokens_duration_rule`
+object. What landed puts the rule **in** `max_tokens`, as one object carrying its own `policy` id.
+Three reasons, all of which post-date the specification: the owner's 2026-09-03 rule requires the
+component id to resolve in a `core.base` registry, which a bare sentinel string is not; a sibling
+top-level key would have to stay disjoint across all four fragments (`core.config.compose`) while
+being bound to a key in a different object, which nothing else in this repository does; and one
+object lets the base check resolve the id by path without teaching it that a nested `"policy"` key
+sometimes means something other than an arm program's policy. Fail-closed in both directions is
+preserved and strengthened: there is no way to declare half of it.
+
+**Deviation S4.** The seam is **fragment-agnostic**. `core.config.compose` merges the four fragments'
+top-level keys into one flat mapping, so whichever fragment carries `decoding_params` carries the
+rule. Cell (b) puts it in the MODEL fragment, following this repository's own convention — 67 model
+fragments declare `decoding_params` and no baseline fragment does.
 
 This is a seam on the existing base, not a new module: no `rails/probes/` module, no `TaskAdapter`
-subclass, no controller subclass, no `launcher/` directory. `scripts/checks/engineering_base_check.py`
-must PASS on the change.
+subclass, no controller subclass, no `launcher/` directory, no new file under `src/` at all.
 
-The resolved per-row `max_tokens` already lands in the trace's `decoding_params`, so **every row's
-cap is auditable after the fact** without a new receipt shape.
+The resolved per-row `max_tokens` lands in the trace's `decoding_params` (the adapter emits the whole
+payload in its `MODEL_REQUEST` record), so **every row's cap is auditable after the fact** without a
+new receipt shape. The `run_phases` receipt additionally carries `max_tokens` and
+`max_tokens_resolution`, and a wire check carries `max_tokens_policy`, `max_tokens_rule` and
+`max_tokens_per_sample` — the resolved integer of **every** request, keyed by sample id, each
+re-derived at the transport seam from that request's own `audio_seconds` and refused if it disagrees.
+
+### 2.3.1 The cell's fragments, and its composed identity
+
+| | |
+|---|---|
+| dataset | `configs/dataset/earnings22-esb-dev1500-utterances.json` |
+| baseline | `configs/baseline/e22-esb-dev1500-stopcap.json` |
+| model | `configs/model/q4km-e22-dev1500-esb-stopcap-mmproj-gpu-04ccc72a-np8-c40960.json` |
+| experiment | `configs/experiment/e22-dev-usage-stopcap-v1.json` |
+| **`config_hash`** | **`d47999a6ecc9b16b058017a80253f24dc1a160401ddddd2ecf683901edf6e460`** |
+| **`protocol_hash`** | **`4fda9f678991ab09d2280113aa3202db0fa74df41543a3b91235dbb837a8b6e4`** |
+| `split_identity_hash` | `c626e62f8876bf52a2904a0d2ec91807a530f3195c10facc8c036f661b2bf88a` |
+| run id | `SAEA-E22-DEV-ESB-STOPCAP-V1` |
+
+The 4-row dry run of §6.6 is its own run id with its own exposure row (a different split identity
+hash and a much smaller budget cannot share one): fragments
+`configs/dataset/earnings22-esb-dev1500-smoke4.json` +
+`configs/experiment/e22-dev-usage-stopcap-smoke4-v1.json`, `config_hash`
+`78205c9eeb302ee75ba06a52b479a5c2a858f5faf50627f2beee8d5891712d17`, `protocol_hash`
+`e03ec753c2b5e0205d24aa9c881e1a4fc636d25a0caa23c1a51e89226fb267e9`, `split_identity_hash`
+`c5b9886a421a9d9483c934759d9cb2a9d3b0eee2a029f73726883179f6f5f033`, four rows
+(`4469088-654`, `4479944-334`, `4482383-188`, `4482613-439` — shortest, p90, longest, median) whose
+caps resolve to **3, 127, 321 and 55**. Four different integers on four rows is what makes the dry
+run a test of the seam rather than of one arbitrary cap.
+
+**`protocol_hash` is `compute_protocol_hash(config_hash, arm, split_identity_hash)` and is the value
+the `contracts.ExecutionPlan` must carry.** Both hashes move if any fragment byte moves, so a cell
+flown under a different hash is a different cell.
+
+Across the whole 1,500-row roster the rule resolves to caps between **3 and 321 tokens**, mean
+**65.1**, and **not one row reaches the 1,024 ceiling** — the cap is a genuine tightening on every
+row of this population, exactly as §2.1 claims.
 
 ### 2.4 Stop strings: none, and none may be invented
 
@@ -457,13 +547,24 @@ every one of these documents keeps pointing at.**
 
 Common to every cell:
 
-1. **Configuration fragments**, none of which exists yet and each of which is one file:
-   `configs/dataset/earnings22-esb-dev1500-utterances.json` (naming the §0 probe view, the D1
+1. **Configuration fragments**, none of which existed when this was written and each of which is one
+   file: `configs/dataset/earnings22-esb-dev1500-utterances.json` (naming the §0 probe view, the D1
    supplement and their digests, the reference-layer receipt and the segment-table receipt the
    dev10 fragment already pins); `configs/baseline/e22-esb-dev1500-*.json` per cell; one
    `configs/model/*` fragment per cell; one `configs/experiment/*` fragment. Every `policy`,
    `evidence_source` and `scorers` value must resolve in a `core.base` registry, and
    `scripts/checks/engineering_base_check.py` must PASS.
+
+   **Landed 2026-09-06, with one deviation.** The fragments are §2.3.1's for cell (b); cell (a)'s
+   land with its placement receipt. The deviation is **one experiment fragment PER CELL** rather than one for all
+   three (deviation S1, recorded in each fragment): a composed experiment fragment declares exactly
+   one `execution_plan` object, `core.flight.FlightRuntime._build_execution_plan` reads
+   `values["execution_plan"]`, and cell (a) plans 2.0 GPU-hours against cell (b)'s 0.20 — the two
+   cannot share one plan. `configs/experiment/a2t-evo-a1-description-evolution-v1.json` already
+   records the same constraint for its own split. Each cell's 4-row dry run (§6.6) is a further
+   fragment pair for the same reason `contracts.gate_exposure` requires: a different split identity
+   hash cannot share a run id. `scripts/checks/engineering_base_check.py` PASSES, and it now
+   resolves the cap's own policy id as well (§2.3).
 2. **The roster hydrates.** `FlightRuntime.preflight` must compute
    `c626e62f8876bf52a2904a0d2ec91807a530f3195c10facc8c036f661b2bf88a` from the probe view and the
    exposure row must carry the same value.
@@ -487,10 +588,18 @@ Cell-specific:
 * **(a)** the placement pass of §1.3, with its own receipt, zero generated tokens, and a refusal if
   no `N` clears 3,072 MiB free at `-c 40960 -np 8`. Also: confirm the Q8_0 GGUF is materialized and
   re-hashes to `8a50e5a7…`, and that **no** `LLAMA_MTMD_FEAT_CACHE_DIR` is set in `server_env`.
+
 * **(b)** the seam of §2.3 with its tests, including the byte-identical-without-the-seam pin; and a
   model-free assertion that the resolver reproduces
   `analysis.e22_overgeneration.cap_tokens(1.5, seconds, 4.999220954734555, 1.2991996296395218)` on
-  every one of the 1,500 rows, clamped to 1,024.
+  every one of the 1,500 rows, clamped to 1,024. **CLOSED 2026-09-06.** The seam landed (§2.3) and
+  `scripts/e22_stopcap_resolver_check.py` composed the four real fragments, resolved through the
+  registered policy and compared row for row against the simulator:
+  `docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-dev-usage-cells/stopcap-resolver.json`
+  — **1,500 rows checked, 0 disagreements**, caps from 3 to 321 tokens (median 55, mean 65.1),
+  **0 rows at the 1,024 ceiling**, and the §2.1 ladder (10 / 49 / 98 / 321) reproduced. The cell's
+  planned completion-token ceiling falls from 1,536,000 to **97,673**, a 15.7× reduction in what the
+  decoder is allowed to emit — which is the size of the intervention, not of its expected payoff.
 * **(c)** unblocking first (§3.2), then the identity rebuild of §3.3, then a byte-determinism check
   — cut twice, assert `items_sha256` is unchanged — exactly as the `dev-v1` cut was proved.
 

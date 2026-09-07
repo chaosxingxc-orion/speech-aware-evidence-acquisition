@@ -501,6 +501,42 @@ def test_decoding_params_id_slot_unresolved_sentinel_refused(tmp_path):
             )
 
 
+def test_decoding_params_max_tokens_integer_admitted(tmp_path):
+    """The ordinary case, unchanged: a plain positive integer cap goes through
+    the choke point exactly as it always has."""
+
+    adapter, _ = _adapter(tmp_path)
+    response = adapter.request(
+        _payload(decoding_params={"temperature": 0, "max_tokens": 1024})
+    )
+    assert response.text
+
+
+def test_decoding_params_max_tokens_unresolved_rule_refused(tmp_path):
+    """E22 cell (b), 2026-09-06: a fragment may declare
+    ``decoding_params.max_tokens`` as a PER-SAMPLE rule object which
+    ``core.flight.FlightRuntime`` resolves to an integer from the sample's own
+    ``audio_seconds``. An executor that did not resolve it must be refused at
+    this choke point rather than sending a JSON object to llama-server as a
+    generation cap -- the same discipline the unresolved ``id_slot`` sentinel
+    above already gets."""
+
+    adapter, _ = _adapter(tmp_path)
+    unresolved = {
+        "policy": "duration-proportional-v1",
+        "alpha": 1.5,
+        "words_per_second_p95": 4.999220954734555,
+        "tokens_per_word": 1.2991996296395218,
+        "floor": 1,
+        "ceiling": 1024,
+    }
+    for bad in (unresolved, "1024", 1024.0, 0, -1, True):
+        with pytest.raises(FrozenCoreError, match="max_tokens"):
+            adapter.request(
+                _payload(decoding_params={"temperature": 0, "max_tokens": bad})
+            )
+
+
 def test_call_budget_exhaustion_fails_closed(tmp_path):
     adapter, _ = _adapter(tmp_path, plan=_plan(planned_model_calls=1))
     adapter.request(_payload())
