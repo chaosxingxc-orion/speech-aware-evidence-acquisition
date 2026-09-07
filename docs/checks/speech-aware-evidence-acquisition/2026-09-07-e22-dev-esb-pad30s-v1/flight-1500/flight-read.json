@@ -1,0 +1,634 @@
+{
+ "agentic": {
+  "agentic_error_rate_percent": 1.7752,
+  "high_impact_reference_word_mass": 466,
+  "high_impact_spans": 319,
+  "reference_words": 26251
+ },
+ "attempt_id": "attempt-20260907T093441Z-3a2278",
+ "boundary": "NO PAIRING AND NO VERDICT. These are this cell's own numbers on its own 1,500 rows; the paired contrast against the sealed comparator, its CI90 and the three-clause decision rule of section 4 of docs/readiness/2026-09-07-e22-dev-encoding-probes-v1-preregistration.md are a later document's",
+ "category_mass": {
+  "boundary": {
+   "containment": {
+    "head": {
+     "inserted_words": 220,
+     "insertion_spans": 132,
+     "spans_by_containment": {
+      "contains_0.34_to_0.6": 8,
+      "contains_0.6_or_more": 63,
+      "contains_none": 56,
+      "contains_some": 5
+     },
+     "words_matched_at_0.6": 97
+    },
+    "tail": {
+     "inserted_words": 33,
+     "insertion_spans": 21,
+     "spans_by_containment": {
+      "contains_0.34_to_0.6": 0,
+      "contains_0.6_or_more": 11,
+      "contains_none": 10,
+      "contains_some": 0
+     },
+     "words_matched_at_0.6": 13
+    }
+   },
+   "runaway_head_mass": 40,
+   "runaway_tail_mass": 0,
+   "segmentation_artifact_mass": 204,
+   "total_error_mass": 244,
+   "wer_points": 0.9295
+  },
+  "categories": [
+   {
+    "category": "format-convention",
+    "error_mass": 113,
+    "impact_HIGH": 0,
+    "impact_LOW": 0,
+    "impact_NONE": 98,
+    "share_of_error_mass_percent": 4.616,
+    "spans": 98,
+    "wer_points": 0.4305
+   },
+   {
+    "category": "reference-convention",
+    "error_mass": 238,
+    "impact_HIGH": 0,
+    "impact_LOW": 0,
+    "impact_NONE": 206,
+    "share_of_error_mass_percent": 9.722,
+    "spans": 206,
+    "wer_points": 0.9066
+   },
+   {
+    "category": "segmentation-artifact",
+    "error_mass": 204,
+    "impact_HIGH": 0,
+    "impact_LOW": 0,
+    "impact_NONE": 156,
+    "share_of_error_mass_percent": 8.333,
+    "spans": 156,
+    "wer_points": 0.7771
+   },
+   {
+    "category": "named-entity",
+    "error_mass": 279,
+    "impact_HIGH": 210,
+    "impact_LOW": 0,
+    "impact_NONE": 0,
+    "share_of_error_mass_percent": 11.397,
+    "spans": 210,
+    "wer_points": 1.0628
+   },
+   {
+    "category": "domain-term",
+    "error_mass": 57,
+    "impact_HIGH": 1,
+    "impact_LOW": 36,
+    "impact_NONE": 0,
+    "share_of_error_mass_percent": 2.328,
+    "spans": 37,
+    "wer_points": 0.2171
+   },
+   {
+    "category": "model-behaviour",
+    "error_mass": 212,
+    "impact_HIGH": 11,
+    "impact_LOW": 18,
+    "impact_NONE": 34,
+    "share_of_error_mass_percent": 8.66,
+    "spans": 63,
+    "wer_points": 0.8076
+   },
+   {
+    "category": "acoustic-misrecognition",
+    "error_mass": 327,
+    "impact_HIGH": 31,
+    "impact_LOW": 194,
+    "impact_NONE": 32,
+    "share_of_error_mass_percent": 13.358,
+    "spans": 257,
+    "wer_points": 1.2457
+   },
+   {
+    "category": "other",
+    "error_mass": 1018,
+    "impact_HIGH": 66,
+    "impact_LOW": 367,
+    "impact_NONE": 369,
+    "share_of_error_mass_percent": 41.585,
+    "spans": 802,
+    "wer_points": 3.8779
+   }
+  ]
+ },
+ "cell_id": "E22-DEV-ESB-PAD30S",
+ "equal_call_weighting": {
+  "asr-wer-esb": 14.7857,
+  "asr-wer-esb-whisper": 9.4754
+ },
+ "outputs_sha256": "178ada5e3307065056459bb3c2ad677650d439a4ade070f6d5986053145df272",
+ "per_call": [
+  {
+   "agentic_error_rate_percent": 0.7889,
+   "call": "4453225",
+   "corpus_wer_percent": 10.1803,
+   "error_mass": 271,
+   "points_acoustic-misrecognition": 1.5026,
+   "points_domain-term": 0.3757,
+   "points_format-convention": 0.263,
+   "points_model-behaviour": 0.0,
+   "points_named-entity": 0.6011,
+   "points_other": 4.7333,
+   "points_reference-convention": 2.0661,
+   "points_segmentation-artifact": 0.6386,
+   "reference_words": 2662
+  },
+  {
+   "agentic_error_rate_percent": 2.4152,
+   "call": "4469088",
+   "corpus_wer_percent": 10.1233,
+   "error_mass": 197,
+   "points_acoustic-misrecognition": 0.5139,
+   "points_domain-term": 0.0,
+   "points_format-convention": 0.8222,
+   "points_model-behaviour": 1.7472,
+   "points_named-entity": 1.1305,
+   "points_other": 3.443,
+   "points_reference-convention": 1.5416,
+   "points_segmentation-artifact": 0.925,
+   "reference_words": 1946
+  },
+  {
+   "agentic_error_rate_percent": 1.1623,
+   "call": "4470684",
+   "corpus_wer_percent": 5.1918,
+   "error_mass": 134,
+   "points_acoustic-misrecognition": 0.5812,
+   "points_domain-term": 0.0,
+   "points_format-convention": 0.155,
+   "points_model-behaviour": 0.6974,
+   "points_named-entity": 0.5424,
+   "points_other": 1.6273,
+   "points_reference-convention": 1.1623,
+   "points_segmentation-artifact": 0.4262,
+   "reference_words": 2581
+  },
+  {
+   "agentic_error_rate_percent": 1.7374,
+   "call": "4474506",
+   "corpus_wer_percent": 7.551,
+   "error_mass": 226,
+   "points_acoustic-misrecognition": 1.136,
+   "points_domain-term": 0.3007,
+   "points_format-convention": 0.6348,
+   "points_model-behaviour": 0.4678,
+   "points_named-entity": 0.5346,
+   "points_other": 3.2743,
+   "points_reference-convention": 0.568,
+   "points_segmentation-artifact": 0.6348,
+   "reference_words": 2993
+  },
+  {
+   "agentic_error_rate_percent": 2.7407,
+   "call": "4479944",
+   "corpus_wer_percent": 16.3361,
+   "error_mass": 453,
+   "points_acoustic-misrecognition": 1.8031,
+   "points_domain-term": 0.5049,
+   "points_format-convention": 0.2885,
+   "points_model-behaviour": 2.2719,
+   "points_named-entity": 1.154,
+   "points_other": 8.2943,
+   "points_reference-convention": 0.4688,
+   "points_segmentation-artifact": 1.5507,
+   "reference_words": 2773
+  },
+  {
+   "agentic_error_rate_percent": 1.7544,
+   "call": "4481952",
+   "corpus_wer_percent": 8.2641,
+   "error_mass": 179,
+   "points_acoustic-misrecognition": 1.1542,
+   "points_domain-term": 0.1385,
+   "points_format-convention": 0.3693,
+   "points_model-behaviour": 0.0923,
+   "points_named-entity": 1.5235,
+   "points_other": 2.6777,
+   "points_reference-convention": 1.4774,
+   "points_segmentation-artifact": 0.831,
+   "reference_words": 2166
+  },
+  {
+   "agentic_error_rate_percent": 1.592,
+   "call": "4482383",
+   "corpus_wer_percent": 7.8939,
+   "error_mass": 238,
+   "points_acoustic-misrecognition": 1.2272,
+   "points_domain-term": 0.0332,
+   "points_format-convention": 0.6302,
+   "points_model-behaviour": 0.1658,
+   "points_named-entity": 1.1609,
+   "points_other": 3.2836,
+   "points_reference-convention": 0.6965,
+   "points_segmentation-artifact": 0.6965,
+   "reference_words": 3015
+  },
+  {
+   "agentic_error_rate_percent": 4.1492,
+   "call": "4482613",
+   "corpus_wer_percent": 17.0997,
+   "error_mass": 408,
+   "points_acoustic-misrecognition": 2.347,
+   "points_domain-term": 0.6706,
+   "points_format-convention": 0.7125,
+   "points_model-behaviour": 2.1375,
+   "points_named-entity": 2.6823,
+   "points_other": 7.083,
+   "points_reference-convention": 0.2096,
+   "points_segmentation-artifact": 1.2573,
+   "reference_words": 2386
+  },
+  {
+   "agentic_error_rate_percent": 1.4414,
+   "call": "4483937",
+   "corpus_wer_percent": 6.8952,
+   "error_mass": 177,
+   "points_acoustic-misrecognition": 1.2855,
+   "points_domain-term": 0.039,
+   "points_format-convention": 0.1948,
+   "points_model-behaviour": 0.0,
+   "points_named-entity": 1.1687,
+   "points_other": 2.8438,
+   "points_reference-convention": 0.8181,
+   "points_segmentation-artifact": 0.5454,
+   "reference_words": 2567
+  },
+  {
+   "agentic_error_rate_percent": 0.5693,
+   "call": "4485192",
+   "corpus_wer_percent": 5.2182,
+   "error_mass": 165,
+   "points_acoustic-misrecognition": 0.8539,
+   "points_domain-term": 0.0949,
+   "points_format-convention": 0.3163,
+   "points_model-behaviour": 0.7906,
+   "points_named-entity": 0.5376,
+   "points_other": 1.771,
+   "points_reference-convention": 0.4428,
+   "points_segmentation-artifact": 0.4111,
+   "reference_words": 3162
+  }
+ ],
+ "per_call_scorer_corpus": {
+  "asr-wer-esb": {
+   "4453225": {
+    "corpus_wer_percent": 15.6503,
+    "deletions": 146,
+    "insertion_share_of_errors_percent": 17.37,
+    "insertions": 74,
+    "mean_wer_percent": 17.694,
+    "reference_words": 2722,
+    "substitutions": 206
+   },
+   "4469088": {
+    "corpus_wer_percent": 12.7692,
+    "deletions": 114,
+    "insertion_share_of_errors_percent": 16.08,
+    "insertions": 41,
+    "mean_wer_percent": 19.5531,
+    "reference_words": 1997,
+    "substitutions": 100
+   },
+   "4470684": {
+    "corpus_wer_percent": 13.7369,
+    "deletions": 188,
+    "insertion_share_of_errors_percent": 19.0,
+    "insertions": 72,
+    "mean_wer_percent": 16.709,
+    "reference_words": 2759,
+    "substitutions": 119
+   },
+   "4474506": {
+    "corpus_wer_percent": 12.6188,
+    "deletions": 83,
+    "insertion_share_of_errors_percent": 31.17,
+    "insertions": 120,
+    "mean_wer_percent": 19.8166,
+    "reference_words": 3051,
+    "substitutions": 182
+   },
+   "4479944": {
+    "corpus_wer_percent": 22.9769,
+    "deletions": 114,
+    "insertion_share_of_errors_percent": 42.14,
+    "insertions": 268,
+    "mean_wer_percent": 29.4573,
+    "reference_words": 2768,
+    "substitutions": 254
+   },
+   "4481952": {
+    "corpus_wer_percent": 14.0045,
+    "deletions": 62,
+    "insertion_share_of_errors_percent": 29.71,
+    "insertions": 93,
+    "mean_wer_percent": 21.458,
+    "reference_words": 2235,
+    "substitutions": 158
+   },
+   "4482383": {
+    "corpus_wer_percent": 12.5417,
+    "deletions": 65,
+    "insertion_share_of_errors_percent": 33.24,
+    "insertions": 125,
+    "mean_wer_percent": 15.8513,
+    "reference_words": 2998,
+    "substitutions": 186
+   },
+   "4482613": {
+    "corpus_wer_percent": 23.7515,
+    "deletions": 126,
+    "insertion_share_of_errors_percent": 32.31,
+    "insertions": 189,
+    "mean_wer_percent": 30.966,
+    "reference_words": 2463,
+    "substitutions": 270
+   },
+   "4483937": {
+    "corpus_wer_percent": 12.046,
+    "deletions": 87,
+    "insertion_share_of_errors_percent": 28.62,
+    "insertions": 93,
+    "mean_wer_percent": 14.1108,
+    "reference_words": 2698,
+    "substitutions": 145
+   },
+   "4485192": {
+    "corpus_wer_percent": 7.7611,
+    "deletions": 66,
+    "insertion_share_of_errors_percent": 30.45,
+    "insertions": 74,
+    "mean_wer_percent": 12.5141,
+    "reference_words": 3131,
+    "substitutions": 103
+   }
+  },
+  "asr-wer-esb-whisper": {
+   "4453225": {
+    "corpus_wer_percent": 10.1803,
+    "deletions": 105,
+    "insertion_share_of_errors_percent": 15.87,
+    "insertions": 43,
+    "mean_wer_percent": 12.0226,
+    "reference_words": 2662,
+    "substitutions": 123
+   },
+   "4469088": {
+    "corpus_wer_percent": 10.1233,
+    "deletions": 93,
+    "insertion_share_of_errors_percent": 15.23,
+    "insertions": 30,
+    "mean_wer_percent": 19.068,
+    "reference_words": 1946,
+    "substitutions": 74
+   },
+   "4470684": {
+    "corpus_wer_percent": 5.1918,
+    "deletions": 64,
+    "insertion_share_of_errors_percent": 20.9,
+    "insertions": 28,
+    "mean_wer_percent": 9.3139,
+    "reference_words": 2581,
+    "substitutions": 42
+   },
+   "4474506": {
+    "corpus_wer_percent": 7.551,
+    "deletions": 79,
+    "insertion_share_of_errors_percent": 20.8,
+    "insertions": 47,
+    "mean_wer_percent": 15.9993,
+    "reference_words": 2993,
+    "substitutions": 100
+   },
+   "4479944": {
+    "corpus_wer_percent": 16.3361,
+    "deletions": 126,
+    "insertion_share_of_errors_percent": 35.32,
+    "insertions": 160,
+    "mean_wer_percent": 21.5534,
+    "reference_words": 2773,
+    "substitutions": 167
+   },
+   "4481952": {
+    "corpus_wer_percent": 8.2641,
+    "deletions": 46,
+    "insertion_share_of_errors_percent": 26.82,
+    "insertions": 48,
+    "mean_wer_percent": 18.9718,
+    "reference_words": 2166,
+    "substitutions": 85
+   },
+   "4482383": {
+    "corpus_wer_percent": 7.8939,
+    "deletions": 56,
+    "insertion_share_of_errors_percent": 27.31,
+    "insertions": 65,
+    "mean_wer_percent": 10.8534,
+    "reference_words": 3015,
+    "substitutions": 117
+   },
+   "4482613": {
+    "corpus_wer_percent": 17.0997,
+    "deletions": 111,
+    "insertion_share_of_errors_percent": 26.96,
+    "insertions": 110,
+    "mean_wer_percent": 25.6616,
+    "reference_words": 2386,
+    "substitutions": 187
+   },
+   "4483937": {
+    "corpus_wer_percent": 6.8952,
+    "deletions": 55,
+    "insertion_share_of_errors_percent": 20.9,
+    "insertions": 37,
+    "mean_wer_percent": 9.9547,
+    "reference_words": 2567,
+    "substitutions": 85
+   },
+   "4485192": {
+    "corpus_wer_percent": 5.2182,
+    "deletions": 64,
+    "insertion_share_of_errors_percent": 22.42,
+    "insertions": 37,
+    "mean_wer_percent": 10.5085,
+    "reference_words": 3162,
+    "substitutions": 64
+   }
+  }
+ },
+ "per_duration": [
+  {
+   "bucket": "0-1s",
+   "corpus_wer_percent": 49.0975,
+   "points_acoustic-misrecognition": 3.2491,
+   "points_domain-term": 0.0,
+   "points_format-convention": 1.444,
+   "points_model-behaviour": 20.2166,
+   "points_named-entity": 2.8881,
+   "points_other": 12.9964,
+   "points_reference-convention": 5.4152,
+   "points_segmentation-artifact": 2.8881,
+   "reference_words": 277,
+   "utterances": 116
+  },
+  {
+   "bucket": "1-2s",
+   "corpus_wer_percent": 26.0708,
+   "points_acoustic-misrecognition": 0.5587,
+   "points_domain-term": 0.0,
+   "points_format-convention": 0.9311,
+   "points_model-behaviour": 5.4004,
+   "points_named-entity": 5.959,
+   "points_other": 10.0559,
+   "points_reference-convention": 0.3724,
+   "points_segmentation-artifact": 2.7933,
+   "reference_words": 537,
+   "utterances": 109
+  },
+  {
+   "bucket": "2-4s",
+   "corpus_wer_percent": 14.8343,
+   "points_acoustic-misrecognition": 1.7319,
+   "points_domain-term": 0.3012,
+   "points_format-convention": 0.5271,
+   "points_model-behaviour": 0.7154,
+   "points_named-entity": 1.7696,
+   "points_other": 6.4759,
+   "points_reference-convention": 1.1672,
+   "points_segmentation-artifact": 2.1461,
+   "reference_words": 2656,
+   "utterances": 291
+  },
+  {
+   "bucket": "4-8s",
+   "corpus_wer_percent": 9.1942,
+   "points_acoustic-misrecognition": 1.1232,
+   "points_domain-term": 0.222,
+   "points_format-convention": 0.2873,
+   "points_model-behaviour": 0.9273,
+   "points_named-entity": 1.1232,
+   "points_other": 3.7482,
+   "points_reference-convention": 0.8228,
+   "points_segmentation-artifact": 0.9403,
+   "reference_words": 7657,
+   "utterances": 488
+  },
+  {
+   "bucket": "8-16s",
+   "corpus_wer_percent": 7.2424,
+   "points_acoustic-misrecognition": 1.18,
+   "points_domain-term": 0.2223,
+   "points_format-convention": 0.4446,
+   "points_model-behaviour": 0.2993,
+   "points_named-entity": 0.6242,
+   "points_other": 3.2236,
+   "points_reference-convention": 0.9064,
+   "points_segmentation-artifact": 0.342,
+   "reference_words": 11695,
+   "utterances": 425
+  },
+  {
+   "bucket": "16s+",
+   "corpus_wer_percent": 6.62,
+   "points_acoustic-misrecognition": 1.3123,
+   "points_domain-term": 0.175,
+   "points_format-convention": 0.4666,
+   "points_model-behaviour": 0.0583,
+   "points_named-entity": 0.9624,
+   "points_other": 2.683,
+   "points_reference-convention": 0.6124,
+   "points_segmentation-artifact": 0.35,
+   "reference_words": 3429,
+   "utterances": 71
+  }
+ ],
+ "reference_layer": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-e22-dev-esb-prompt-ab-v1/reference-layer/reference-layer-receipt.json",
+ "rows": 1500,
+ "run_id": "SAEA-E22-DEV-ESB-PAD30S-V1",
+ "schema": "saea-e22-encoding-probe-flight-read-v1",
+ "scorer_aggregate_as_sealed": {
+  "asr-wer-esb": {
+   "corpus_wer": 0.14626053239877712,
+   "deletions": 1051,
+   "insertions": 1149,
+   "mean_wer": 0.19813013876583008,
+   "normalizer": "saea-scoring-v1",
+   "reference_words": 26822,
+   "substitutions": 1723
+  },
+  "asr-wer-esb-whisper": {
+   "corpus_wer": 0.09325359033941565,
+   "deletions": 799,
+   "insertions": 605,
+   "mean_wer": 0.153907077003523,
+   "normalizer": "whisper-english-v20240930",
+   "reference_words": 26251,
+   "substitutions": 1044
+  }
+ },
+ "scorer_corpus": {
+  "asr-wer-esb": {
+   "corpus_wer_percent": 14.6261,
+   "deletions": 1051,
+   "insertion_share_of_errors_percent": 29.29,
+   "insertions": 1149,
+   "mean_wer_percent": 19.813,
+   "reference_words": 26822,
+   "substitutions": 1723
+  },
+  "asr-wer-esb-whisper": {
+   "corpus_wer_percent": 9.3254,
+   "deletions": 799,
+   "insertion_share_of_errors_percent": 24.71,
+   "insertions": 605,
+   "mean_wer_percent": 15.3907,
+   "reference_words": 26251,
+   "substitutions": 1044
+  }
+ },
+ "scores_sha256": "d41fb760ac4e74f63ff9410de9349aa878305fc311db5b64964c57af84fa69cb",
+ "study": "speech-aware-evidence-acquisition",
+ "taxonomy_identity_gate": {
+  "fields": {
+   "deletions": {
+    "paper_facing_scorer": 799,
+    "taxonomy": 799
+   },
+   "insertions": {
+    "paper_facing_scorer": 605,
+    "taxonomy": 605
+   },
+   "reference_words": {
+    "paper_facing_scorer": 26251,
+    "taxonomy": 26251
+   },
+   "substitutions": {
+    "paper_facing_scorer": 1044,
+    "taxonomy": 1044
+   }
+  },
+  "reproduced": true
+ },
+ "taxonomy_totals": {
+  "corpus_wer_percent": 9.3254,
+  "deletions": 799,
+  "error_spans": 1829,
+  "hypothesis_over_reference_ratio": 0.9926,
+  "hypothesis_words": 26057,
+  "insertions": 605,
+  "reference_words": 26251,
+  "substitutions": 1044
+ },
+ "variant": "pad-30s",
+ "variant_audio_seconds_total": 45002.88
+}
