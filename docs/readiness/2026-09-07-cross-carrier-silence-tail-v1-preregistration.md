@@ -573,7 +573,7 @@ attaches to the coordinator's resident session for its geometry (§8 item 6).
 did.
 
 ```bash
-# smoke: four windows, media falsifier on 4 of 4 before anything else flies
+# the full cell, 1,593 windows over 44 calls -- AFTER the four-window smoke below
 bash scripts/run_arm_sequence.sh \
   --arms docs/arms/e21-full44-tail2s-v1.arms \
   --dataset earnings21-discovery \
@@ -643,9 +643,10 @@ python scripts/flights/run_slurp_closed_list_cell.py \
 never sharded (§8 item 9), overlapping the next flight. The Earnings-21 cell declares all seven of
 its scorer ids in its own manifest, so its four agentic metrics come out of that verified path; all
 four were re-run against the sealed comparator's own outputs on 2026-09-07 and reproduce §1.4's
-figures to the digit (`asr-wer-whisper` 8.1995, `conec-entity-wer-official` 8.1995 overall,
-`numeric-value-accuracy-v1` 90.7335), which is §2's identity gate for this carrier already passed
-offline.
+figures to the digit -- `asr-wer-whisper` corpus WER 8.19952 against §1.4's 8.1995,
+`conec-entity-wer-official` 8.19952 against its 8.200, `numeric-value-accuracy-v1` 90.73351 against
+its 90.7335, and `semantic-high-impact-error-rate-v1` running clean -- which is §2's identity gate
+for this carrier, already passed offline and at zero contacts.
 
 ---
 
