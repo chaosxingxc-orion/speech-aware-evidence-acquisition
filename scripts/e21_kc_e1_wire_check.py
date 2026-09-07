@@ -104,8 +104,13 @@ PLAN_CALLS = 400
 PLAN_AUDIO_SECONDS = 30000
 PLAN_GPU_HOURS = 0.5
 
-ROSTER_SUBDIR = "contexts/participant_names/"
-DOCUMENT_SUBDIR = "contexts/"
+#: An evidence provenance relpath is relative to the ``conec`` lock key's own
+#: asset root, so it reads ``earnings21/contexts/...`` rather than
+#: ``contexts/...``. These anchor on the TAIL, which is what distinguishes the
+#: two halves: ``contexts/`` is a prefix of ``contexts/participant_names/``, so
+#: a prefix test alone would classify the roster as a document.
+ROSTER_SUFFIX = "/contexts/participant_names/%s.names.txt"
+DOCUMENT_SUFFIX = "/contexts/%s.txt"
 
 
 def log(message: str) -> None:
@@ -441,12 +446,17 @@ def main() -> int:
             if [entry["brief_part"] for entry in provenance] != ["roster", "document"]:
                 failures.append("%s: evidence is not roster-then-document" % sample_id)
             relpaths = [str(entry["relpath"]) for entry in provenance]
-            if not relpaths[0].startswith(ROSTER_SUBDIR) or sample_id not in relpaths[0]:
+            # Shape, not prefix: a provenance relpath is relative to the conec
+            # lock key's own asset root, so it opens with the carrier subdir
+            # (``earnings21/``) and only THEN reaches the layer directories.
+            # Anchoring on the tail is what makes the two halves distinguishable
+            # -- ``contexts/`` is a prefix of ``contexts/participant_names/``,
+            # so a prefix test alone would call the roster a document.
+            if not relpaths[0].endswith(ROSTER_SUFFIX % sample_id):
                 failures.append("%s: roster relpath %r" % (sample_id, relpaths[0]))
             if (
-                not relpaths[1].startswith(DOCUMENT_SUBDIR)
-                or relpaths[1].startswith(ROSTER_SUBDIR)
-                or sample_id not in relpaths[1]
+                not relpaths[1].endswith(DOCUMENT_SUFFIX % sample_id)
+                or "participant_names" in relpaths[1]
             ):
                 failures.append("%s: document relpath %r" % (sample_id, relpaths[1]))
             for index, item in enumerate(evidence):
@@ -598,8 +608,13 @@ def main() -> int:
             )
 
         if failures:
-            for entry in failures:
-                log("  FAIL %s" % entry)
+            # Deduplicated: one broken property repeats once per contact, and a
+            # 61-line wall of the same sentence hides how many DISTINCT things
+            # are wrong.
+            for entry, count in sorted(
+                {entry: failures.count(entry) for entry in failures}.items()
+            ):
+                log("  FAIL (x%d) %s" % (count, entry))
             raise SystemExit("wire check failed for cell %s" % cell_id)
         log("  request half OK: %d contacts, %d calls, %d windows"
             % (len(requests), len(expected_by_sample), sum(window_counts.values())))
