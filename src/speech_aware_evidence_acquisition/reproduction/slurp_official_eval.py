@@ -68,6 +68,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
 
+from ..data.variant_ids import published_sample_key
 from ..data.slurp import (
     SlurpRecord,
     load_slurp_intent_slot_schema,
@@ -680,7 +681,16 @@ def score_slurp_outputs_official(
 
     for row in rows:
         sample_id = row["sample_id"]
-        gold_record = gold_by_id.get(sample_id)
+        # VARIANT-ID RAIL (2026-09-07 cross-carrier silence-tail
+        # preregistration section 6.2): a derived-media population carries
+        # <published id>@<variant> ids (data.variant_ids), and the gold a row
+        # is scored against is the PUBLISHED sample's own. Inert for every
+        # unsuffixed id, and never a skeleton key -- a foreign published key
+        # still refuses here, naming the RAW id that was flown. The published
+        # key is also what goes into the official evaluator's "file" field
+        # below, on BOTH sides, because that is the key evaluate.py pairs on.
+        published_id = published_sample_key(sample_id)
+        gold_record = gold_by_id.get(published_id)
         if gold_record is None:
             raise SlurpOfficialEvalError(
                 f"outputs sample_id {sample_id!r} is not part of SLURP split {split_id!r}"
@@ -715,7 +725,7 @@ def score_slurp_outputs_official(
             pred_scenario, pred_action = outcome.scenario, outcome.action
         predictions.append(
             PredictedSlurpSample(
-                sample_id=sample_id,
+                sample_id=published_id,
                 scenario=pred_scenario,
                 action=pred_action,
                 entities=tuple(pred_entities),
