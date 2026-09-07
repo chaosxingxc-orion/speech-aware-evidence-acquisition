@@ -1,0 +1,102 @@
+{
+  "experiment_id": "SAEA-E22-DEV-ESB-STOPCAP-SMOKE-V1",
+  "schema": "saea-e22-esb-shortform-experiment-v1",
+  "date": "2026-09-06",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "The 4-row dry run section 6.6 of docs/readiness/2026-09-06-e22-dev-usage-cells-v1-preregistration.md requires before cell (b) flies, on four rows of the same 1,500-row roster chosen before any contact to bracket it (longest, shortest, median, p90 by duration). Three reads, in order of importance: (1) does the per-sample cap actually reach the wire as four DIFFERENT integers -- 3, 55, 127 and 321 -- and does each equal the rule's own resolution for that row's duration, read back out of the sealed trace's decoding_params; (2) do both ESB scorers resolve references from the dev10 hash-pinned layer and score the sealed manifest through core.scoring_batch with verified = true; (3) a wall-time reading for the flight's projection. The smoke's own WER numbers are on four rows and enter no verdict.",
+  "populations": {
+    "E22-ESB-DEV1500-SMOKE-4": {
+      "dataset_fragment": "earnings22-esb-dev1500-smoke4",
+      "carrier": "earnings22-original",
+      "split_role": "dev",
+      "count": 4,
+      "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-dev-esb-1500-v1/roster/flight-roster-receipt.json",
+      "receipt_sha256": "fe9528be3ad62c27b95da61e7397fda5e19c0fe711fda07db6731c2d6fcccf9f",
+      "split_identity_hash": "c5b9886a421a9d9483c934759d9cb2a9d3b0eee2a029f73726883179f6f5f033",
+      "ids": [
+        "4469088-654",
+        "4479944-334",
+        "4482383-188",
+        "4482613-439"
+      ],
+      "audio_seconds_one_pass": 51.7005,
+      "audio_seconds_longest_item": 32.88,
+      "selection": "deterministic and pre-registered, the same rule the 2026-09-05 dev smoke used: the longest utterance (the window-fit and VRAM worst case), the shortest, the median and the p90 by duration over the drawn 1,500, ties broken by sample id",
+      "resolved_caps": {
+        "4469088-654": 3,
+        "4482613-439": 55,
+        "4479944-334": 127,
+        "4482383-188": 321
+      }
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "E22-DEV-ESB-STOPCAP-SMOKE-4",
+      "dataset_fragment": "earnings22-esb-dev1500-smoke4",
+      "arm": "bare-core",
+      "baseline_fragment": "e22-esb-dev1500-stopcap",
+      "model_fragment": "q4km-e22-dev1500-esb-stopcap-mmproj-gpu-04ccc72a-np8-c40960",
+      "run_id": "SAEA-E22-DEV-ESB-STOPCAP-SMOKE-V1",
+      "serving_geometry": "-c 40960 -np 8, 5120 tokens per slot -- identical to the flight",
+      "factor": "none; this is cell (b)'s own protocol on four rows"
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "runtime_receipt": "docs/receipts/runtime-q4km-featcache-04ccc72a.json",
+    "quantization": "Q4_K_M",
+    "decoder_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+    "mmproj_sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883",
+    "audio_path": "raw audio, bf16 mmproj resident on the GPU, no feature cache directory",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": "PER SAMPLE, the same rule the flight sends",
+    "id_slot": "per-sample",
+    "contacts_per_item": 1,
+    "evidence": "none",
+    "obs": "none -- an ESB utterance IS the request",
+    "harness": "core.flight.FlightRuntime, entered through scripts/flights/run_e22_esb_cell.py"
+  },
+  "evaluation": {
+    "official_scorers": [
+      "asr-wer-esb-whisper",
+      "asr-wer-esb",
+      "cost"
+    ],
+    "paper_facing_scorer": "asr-wer-esb-whisper",
+    "paper_facing_aggregation": "corpus: total S+D+I over total reference words",
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "merge_compounds": false,
+    "metrics": [
+      "the per-row resolved max_tokens read back out of the sealed trace's decoding_params, against the rule's own resolution for that row's duration",
+      "completion tokens per row against that row's cap -- whether the cap bound at all on four rows",
+      "prompt_tokens per request (the text envelope)",
+      "latency, throughput, peak VRAM and any CUDA fault or out-of-memory",
+      "whether both ESB scorers returned per-sample rows through core.scoring_batch with verified = true"
+    ],
+    "renderer": "analysis.paired.render_markdown"
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "dev",
+    "planned_model_calls": 20,
+    "planned_gpu_hours": 0.25,
+    "planned_speech_audio_seconds": 120
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "4 rows x 1 contact = 4, plus headroom for a canary and one recovery attempt; the registered ceiling is 60. core/model/adapter.py meters the plan cumulatively across every attempt of this run id.",
+    "planned_speech_audio_seconds": "51.7005 s for one pass, rounded up to 120 to cover a recovery attempt; the registered ceiling is 200.",
+    "planned_gpu_hours": "0.25, essentially all of it model load; the registered ceiling is 0.5.",
+    "paid_api_spend": 0
+  },
+  "decision": {
+    "go_no_go": "The flight launches only if all four reads are affirmative: the four requests carried four DIFFERENT resolved integers and each equals the rule's own resolution for that row's duration; the -c 40960 -np 8 geometry serves without an out-of-memory or CUDA fault; both ESB scorers return per-sample rows on the sealed manifest through core.scoring_batch with verified = true; and the projected flight time is at or under the registered ceiling.",
+    "claim_surface": "none; a smoke's numbers enter no verdict",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}

@@ -804,7 +804,9 @@ def run_rails_experiment(
     split_id: str,
     supply_builder: SupplyBuilder | None = None,
     arms: Sequence[str] = RAILS_ARMS,
-    decoding_params: Mapping[str, object] | None = None,
+    decoding_params: Mapping[str, object]
+    | Callable[[TaskSample], Mapping[str, object] | None]
+    | None = None,
 ) -> RunSummary:
     """Execute ``arms`` (default: zero-supply then supplied) for every
     sample ``adapter.load_split(split_id)`` returns, through
@@ -827,6 +829,15 @@ def run_rails_experiment(
     (``rails.obs.default_obs_packet`` + ``adapter.build_task_contract``) and reused
     across every arm for that sample -- they do not depend on which arm is
     running, only on the sample itself.
+
+    ``decoding_params`` is normally ONE mapping every request of the run
+    carries. It may instead be a CALLABLE taking the sample and returning that
+    sample's mapping -- the serial counterpart of what
+    ``core.flight.FlightRuntime._dispatch_concurrent`` already does per request,
+    and the seam a per-sample ``max_tokens`` rule travels
+    (``core.flight.runtime.MAX_TOKENS_POLICY_KEY``). A mapping is passed
+    through by identity, so a caller that hands one dispatches exactly as
+    before this seam existed.
     """
 
     plan.validate()
@@ -865,7 +876,11 @@ def run_rails_experiment(
                     core_client=core_client,
                     sample=sample,
                     supply=supply,
-                    decoding_params=decoding_params,
+                    decoding_params=(
+                        decoding_params(sample)
+                        if callable(decoding_params)
+                        else decoding_params
+                    ),
                 )
             )
 

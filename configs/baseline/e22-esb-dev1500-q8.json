@@ -1,0 +1,19 @@
+{
+  "arm": "bare-core",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "rails_arms": [
+    "zero-supply"
+  ],
+  "scorers": [
+    "asr-wer-esb-whisper",
+    "asr-wer-esb",
+    "cost"
+  ],
+  "task_instruction": "Transcribe the speech verbatim exactly as spoken. Never insert, repeat, or add any word you do not clearly hear in the audio. Output only the transcript text.",
+  "instruction_basis": "Byte-identical to configs/baseline/e22-esb-dev-prompt-a.json and to configs/baseline/e22-esb-dev1500-stopcap.json, i.e. to the instruction the sealed SAEA-E22-DEV-ESB-PROMPT-A-V1 arm sent on these same 1,500 rows. Cell (a) varies the DECODER QUANTIZATION and nothing about the request; holding this string byte-identical to the comparator is what makes the paired contrast a measurement of the quantization.",
+  "why_a_second_baseline_fragment_beside_the_stopcap_one": "The two fragments carry identical arm, policy, evidence and scorer values today, and they are still two files rather than one shared fragment: each cell's composed config_hash -- and therefore its protocol_hash and its exposure row -- must be movable only by an edit to ITS OWN fragments. A shared baseline would mean a later clarification written for one cell silently changed the other cell's protocol identity.",
+  "scorer_basis": "Unchanged from e22-esb-dev-prompt-a: asr-wer-esb-whisper is the paper-facing scorer (vendored Whisper EnglishTextNormalizer on both sides, whitespace tokenization, corpus aggregation), asr-wer-esb reports the frozen saea-scoring-v1 number beside it, and entity-wer is absent by construction because data.carriers registers no entity layer for earnings22-original. Scoring runs once over the complete manifest through core.scoring_batch, never sharded.",
+  "obs_basis": "There is no OBS loop here and no windowing: an ESB utterance IS the request. policy 'fixed' sends exactly one contact per sample through core.flight.FlightRuntime's own concurrent dispatch at eight slots -- the same dispatch the sealed comparator used."
+}

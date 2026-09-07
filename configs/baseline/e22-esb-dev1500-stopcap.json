@@ -1,0 +1,19 @@
+{
+  "arm": "bare-core",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "rails_arms": [
+    "zero-supply"
+  ],
+  "scorers": [
+    "asr-wer-esb-whisper",
+    "asr-wer-esb",
+    "cost"
+  ],
+  "task_instruction": "Transcribe the speech verbatim exactly as spoken. Never insert, repeat, or add any word you do not clearly hear in the audio. Output only the transcript text.",
+  "instruction_basis": "Byte-identical to configs/baseline/e22-esb-dev-prompt-a.json, i.e. to the instruction the sealed SAEA-E22-DEV-ESB-PROMPT-A-V1 arm sent on these same 1,500 rows and to the one the sealed ESB test flight sent before it. Cell (b) varies the generation CAP and nothing else; holding this string byte-identical to the comparator is what makes the paired contrast a measurement of the cap.",
+  "scorer_basis": "Unchanged from e22-esb-dev-prompt-a: asr-wer-esb-whisper is the paper-facing scorer (vendored Whisper EnglishTextNormalizer on both sides, whitespace tokenization, corpus aggregation), asr-wer-esb reports the frozen saea-scoring-v1 number beside it, and entity-wer is absent by construction because data.carriers registers no entity layer for earnings22-original. Scoring runs once over the complete manifest through core.scoring_batch, never sharded.",
+  "obs_basis": "There is no OBS loop here and no windowing: an ESB utterance IS the request. policy 'fixed' sends exactly one contact per sample through core.flight.FlightRuntime's own concurrent dispatch at eight slots -- the same dispatch the sealed comparator used.",
+  "stop_string_basis": "NONE, and none may be added. core.model.request_types.ALLOWED_DECODING_KEYS admits no 'stop' key and no 'repeat_penalty' key, so this study's transport cannot send a stop sequence without a seam change of its own; no Qwen3-Omni ASR recipe in this repository's records carries one; and the pinned GGUF chat template's own end-of-turn token terminated every one of the 6,038 sealed rows (zero reached the 1,024 ceiling, largest completion 130 tokens). Section 2.4 of the preregistration refuses one by name."
+}

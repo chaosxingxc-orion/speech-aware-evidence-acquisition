@@ -56,7 +56,7 @@ from ...rails.phase_runner import run_continuous_program, run_program
 from ...rails.runner import RAILS_ARMS, run_rails_experiment
 from ...rails.task_adapter import TaskAdapter
 from ..attempts.store import AttemptStore
-from ..base import RunResult, TRANSPORTS
+from ..base import CoreError, MAX_TOKENS_POLICIES, RunResult, TRANSPORTS
 from ..bundle.finalize import abort_attempt_if_opened, finalize_bundle
 from ..bundle.git_commit import require_clean_study_repo
 from ..bundle.manifest import build_manifest
@@ -165,6 +165,31 @@ SLOT_AFFINITY_SENTINEL = "per-sample"
 #: a free-slot queue instead, exactly as ``core.policies``' fixed-batch
 #: policy and ``reproduction.ojw.runner`` already do.
 SEQUENTIAL_DISPATCH_SLOT = 0
+
+#: A model (or baseline) fragment normally declares
+#: ``decoding_params.max_tokens`` as a plain integer and every request of the
+#: cell carries that same one. It may instead declare an OBJECT -- ``{"policy":
+#: <a core.base.MAX_TOKENS_POLICIES id>, ...that policy's parameters}`` -- and
+#: this runtime resolves it to an integer PER SAMPLE, from the sample's own
+#: ``audio_seconds``, in exactly the three places it already resolves
+#: :data:`SLOT_AFFINITY_SENTINEL` into a per-request slot.
+#:
+#: The seam is deliberately fragment-agnostic: ``core.config.compose`` merges
+#: the four fragments into one flat mapping with disjoint top-level keys, so
+#: whichever fragment carries ``decoding_params`` carries this too (the model
+#: fragment, by this repository's convention -- 67 model fragments declare
+#: ``decoding_params`` and no baseline fragment does).
+#:
+#: Fail-closed in both directions and byte-identical when absent:
+#:
+#: * an object without a registered ``policy`` id is refused;
+#: * a ``max_tokens`` that is neither an integer nor such an object is refused;
+#: * ``core.model.adapter.FrozenCoreAdapter.request`` refuses a non-integer
+#:   ``max_tokens`` reaching the transport, exactly as it refuses an unresolved
+#:   ``id_slot``, so a resolver that did not run cannot make a single contact;
+#: * a fragment declaring a plain integer renders byte-identical requests (the
+#:   base mapping is passed through unchanged, not rebuilt).
+MAX_TOKENS_POLICY_KEY = "policy"
 
 
 def _canonical_hash(document: object) -> str:
@@ -2159,6 +2184,85 @@ class FlightRuntime:
                 "decoding_params.id_slot must be a non-negative integer or the "
                 f"{SLOT_AFFINITY_SENTINEL!r} sentinel, got {id_slot!r}"
             )
+        # Validate a declared per-sample max_tokens rule HERE, once, before any
+        # sample is dispatched -- a malformed rule must not become 1,500
+        # requests under a cap nobody intended. The rule OBJECT itself stays in
+        # place; :meth:`_sample_decoding_params` is what turns it into an
+        # integer, per request.
+        self._max_tokens_rule(resolved)
+        return resolved
+
+    def _max_tokens_rule(
+        self, decoding_params: Mapping[str, object] | None
+    ) -> tuple[object, Mapping[str, object]] | None:
+        """``(policy, rule)`` when ``decoding_params.max_tokens`` declares a
+        per-sample rule object, ``None`` when it is a plain integer or absent
+        (see :data:`MAX_TOKENS_POLICY_KEY`).
+
+        Refuses anything else, and refuses an unregistered policy id: those are
+        the two ways a cell could otherwise reach the wire with a cap that was
+        silently ignored.
+        """
+
+        if decoding_params is None or "max_tokens" not in decoding_params:
+            return None
+        declared = decoding_params["max_tokens"]
+        if isinstance(declared, bool):
+            raise FlightRuntimeError(
+                f"decoding_params.max_tokens must be an integer or a per-sample rule "
+                f"object, got {declared!r}"
+            )
+        if isinstance(declared, int):
+            return None
+        if not isinstance(declared, Mapping):
+            raise FlightRuntimeError(
+                f"decoding_params.max_tokens must be an integer or a per-sample rule "
+                f"object, got {declared!r}"
+            )
+        policy_id = declared.get(MAX_TOKENS_POLICY_KEY)
+        if not isinstance(policy_id, str) or not policy_id:
+            raise FlightRuntimeError(
+                "a per-sample decoding_params.max_tokens rule must name a "
+                f"{MAX_TOKENS_POLICY_KEY!r} registered in core.base.MAX_TOKENS_POLICIES"
+            )
+        # Function-local: importing core.policies is what POPULATES
+        # core.base.MAX_TOKENS_POLICIES (the registration lives beside the
+        # implementation, in the one canonical policy-registration site), and
+        # this module deliberately does not import core.policies at module
+        # scope.
+        from .. import policies as _policies  # noqa: PLC0415, F401 (registration)
+
+        try:
+            policy = MAX_TOKENS_POLICIES.resolve(policy_id)
+            policy.parameters(declared)
+        except CoreError as error:
+            raise FlightRuntimeError(str(error)) from None
+        return policy, declared
+
+    def _sample_decoding_params(
+        self, sample: object, decoding_params: Mapping[str, object] | None
+    ) -> Mapping[str, object] | None:
+        """``decoding_params`` with a per-sample ``max_tokens`` rule resolved to
+        this sample's integer.
+
+        Returns the argument UNCHANGED -- the same object, not a copy -- when no
+        rule is declared, which is what makes every fragment that predates this
+        seam render byte-identical requests.
+        """
+
+        binding = self._max_tokens_rule(decoding_params)
+        if binding is None:
+            return decoding_params
+        policy, rule = binding
+        audio_seconds = getattr(sample, "audio_seconds", None)
+        try:
+            cap = policy.resolve(rule, audio_seconds)
+        except CoreError as error:
+            raise FlightRuntimeError(
+                f"sample {getattr(sample, 'sample_id', sample)!r}: {error}"
+            ) from None
+        resolved = dict(decoding_params or {})
+        resolved["max_tokens"] = cap
         return resolved
 
     @staticmethod
@@ -2342,7 +2446,9 @@ class FlightRuntime:
                 set_current_trace_buffer(buffer)
                 buffers[index] = buffer
             try:
-                decoding_params = dict(base_decoding)
+                decoding_params = dict(
+                    self._sample_decoding_params(sample, base_decoding) or {}
+                )
                 decoding_params["id_slot"] = slot
                 return contact(client, sample, decoding_params)
             finally:
@@ -2433,7 +2539,7 @@ class FlightRuntime:
             )
             response_text = client.complete(
                 messages,
-                decoding_params=decoding_params,
+                decoding_params=self._sample_decoding_params(sample, decoding_params),
                 speech_feature_sample_id=sample.sample_id,
                 key_representation_id=key_representation_id,
                 matcher_policy_id=matcher_policy_id,
@@ -2634,6 +2740,7 @@ class FlightRuntime:
             rows = self._run_speech_feature_direct(client)
             return rows, len(rows), "direct-speech-feature-packets", serial
         arms = tuple(baseline_values.get("rails_arms", RAILS_ARMS))
+        base_decoding = self._decoding_params()
         summary = self._rails_runner(
             data_root=self._data_root,
             plan=plan,
@@ -2641,7 +2748,16 @@ class FlightRuntime:
             core_client=client,
             split_id=self._split_id,
             arms=arms,
-            decoding_params=self._decoding_params(),
+            # A per-sample max_tokens rule reaches the SERIAL path as a
+            # resolver, which ``rails.runner.run_rails_experiment`` calls once
+            # per sample; with no rule declared this is the same mapping the
+            # runner has always been handed, by identity, so a fragment that
+            # predates the seam dispatches byte-identically.
+            decoding_params=(
+                base_decoding
+                if self._max_tokens_rule(base_decoding) is None
+                else (lambda sample: self._sample_decoding_params(sample, base_decoding))
+            ),
         )
         return (
             self._rows_from_direct_summary(summary),
@@ -2903,6 +3019,18 @@ class FlightRuntime:
                 == SLOT_AFFINITY_SENTINEL
                 else "declared by the model fragment; no sentinel to resolve"
             ),
+            # The generation cap this cell sent. A plain integer here means one
+            # cap for every request; a mapping means the fragment declared a
+            # per-sample rule (see MAX_TOKENS_POLICY_KEY) and every row's own
+            # resolved integer is in that row's MODEL_REQUEST trace record.
+            "max_tokens": decoding.get("max_tokens"),
+            "max_tokens_resolution": (
+                f"per-sample rule {decoding.get('max_tokens', {}).get(MAX_TOKENS_POLICY_KEY)!r} "
+                "resolved from each sample's own audio_seconds; every request's integer "
+                "is in its MODEL_REQUEST trace record"
+                if self._max_tokens_rule(decoding) is not None
+                else "one integer declared by the fragment; no rule to resolve"
+            ),
             "wall_seconds": wall_seconds,
             "contact_count": contact_count,
             # One entry per phase of a phase program, in program order:
@@ -2987,7 +3115,20 @@ class FlightRuntime:
           registry now supplies).
         """
 
-        params = dict(self._decoding_params() or {})
+        base = self._decoding_params()
+        if self._max_tokens_rule(base) is not None:
+            # The per-sample max_tokens seam resolves at the ONE place a fixed
+            # direct arm builds a request (:meth:`_sample_decoding_params`).
+            # A phase program's contacts are built by rails.phase_runner, which
+            # this method hands ONE run-level mapping, so a rule arriving here
+            # would travel unresolved to the adapter and die at the first
+            # contact -- after a server start. Refused here instead, before one.
+            raise FlightRuntimeError(
+                "a per-sample decoding_params.max_tokens rule is a fixed-policy "
+                "direct-arm seam; this cell declares a phase program, whose contacts "
+                "are not resolved per sample here. Declare an integer max_tokens"
+            )
+        params = dict(base or {})
         params.pop("id_slot", None)
         params.pop("response_format", None)
         return params
@@ -3771,6 +3912,8 @@ class FlightRuntime:
         expected_fields = set(ARM_VISIBLE_FIELDS.get(arm, ()))
         expected_payloads = len(self._samples) * contacts_per_sample
         problems: list[str] = []
+        max_tokens_binding = self._max_tokens_rule(self._decoding_params())
+        max_tokens_per_sample: dict[str, int] = {}
         if len(transport.payloads) != expected_payloads:
             problems.append(
                 f"{len(transport.payloads)} request(s) reached the transport for "
@@ -3792,9 +3935,31 @@ class FlightRuntime:
                 problems.append(
                     f"request {index} carries tool_schemas for a non-native arm"
                 )
-            id_slot = dict(payload.get("decoding_params") or {}).get("id_slot")
+            request_decoding = dict(payload.get("decoding_params") or {})
+            id_slot = request_decoding.get("id_slot")
             if isinstance(id_slot, bool) or not isinstance(id_slot, int):
                 problems.append(f"request {index} id_slot is {id_slot!r}, not an integer")
+            if max_tokens_binding is not None:
+                # The per-sample cap must have become an INTEGER by the time it
+                # crossed the transport seam, and it must be exactly the integer
+                # the declared policy resolves for THIS request's own audio
+                # duration -- the proof that the resolver ran on the sample it
+                # was supposed to and not on some cell-wide stand-in.
+                cap_policy, cap_rule = max_tokens_binding
+                sent = request_decoding.get("max_tokens")
+                if isinstance(sent, bool) or not isinstance(sent, int):
+                    problems.append(
+                        f"request {index} max_tokens is {sent!r}, not an integer; the "
+                        "per-sample rule reached the wire unresolved"
+                    )
+                else:
+                    expected = cap_policy.resolve(cap_rule, payload.get("audio_seconds"))
+                    if sent != expected:
+                        problems.append(
+                            f"request {index} max_tokens is {sent}, not the {expected} "
+                            f"the rule resolves for {payload.get('audio_seconds')!r} s"
+                        )
+                    max_tokens_per_sample[str(payload.get("sample_id"))] = sent
         if proposer:
             problems.extend(
                 self._wire_check_construction_problems(transport, contacts_per_sample)
@@ -3943,6 +4108,27 @@ class FlightRuntime:
                 len(first.get("tool_schemas") or []) if native else 0
             ),
             "id_slot": dict(first.get("decoding_params") or {}).get("id_slot"),
+            # The generation cap that actually crossed the transport seam. For
+            # a plain-integer fragment this is that integer and
+            # ``max_tokens_per_sample`` is None; for a fragment declaring a
+            # per-sample rule it is the FIRST request's resolved integer and
+            # the mapping carries every request's, keyed by sample id -- the
+            # observable proof that the cap was resolved per sample and not
+            # once for the cell.
+            "max_tokens": dict(first.get("decoding_params") or {}).get("max_tokens"),
+            "max_tokens_policy": (
+                max_tokens_binding[1].get(MAX_TOKENS_POLICY_KEY)
+                if max_tokens_binding is not None
+                else None
+            ),
+            "max_tokens_rule": (
+                dict(max_tokens_binding[1]) if max_tokens_binding is not None else None
+            ),
+            "max_tokens_per_sample": (
+                dict(sorted(max_tokens_per_sample.items()))
+                if max_tokens_binding is not None
+                else None
+            ),
             "request_body_sha256": [
                 hashlib.sha256(body).hexdigest() for body in transport.request_bodies
             ],

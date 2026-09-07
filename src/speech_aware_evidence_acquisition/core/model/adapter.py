@@ -154,6 +154,21 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
                         "executor did not (slot affinity is resolved by the ojw batch "
                         "path, reproduction/ojw/runner.py)"
                     )
+            if "max_tokens" in decoding_params:
+                max_tokens = decoding_params["max_tokens"]
+                if (
+                    isinstance(max_tokens, bool)
+                    or not isinstance(max_tokens, int)
+                    or max_tokens < 1
+                ):
+                    raise FrozenCoreError(
+                        f"decoding_params max_tokens must be an integer >= 1, got "
+                        f"{max_tokens!r} — a config may declare a PER-SAMPLE rule object "
+                        "instead of an integer (core.flight.runtime."
+                        "MAX_TOKENS_POLICY_KEY) and the flight runtime resolves it from "
+                        "the sample's own audio_seconds; this executor did not, so the "
+                        "cap would have reached the server unresolved"
+                    )
             if "response_format" in decoding_params:
                 response_format = decoding_params["response_format"]
                 if not isinstance(response_format, Mapping):

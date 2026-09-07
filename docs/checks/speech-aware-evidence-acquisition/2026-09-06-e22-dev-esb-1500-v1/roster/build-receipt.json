@@ -1,0 +1,67 @@
+{
+  "audio_seconds_longest_item": 32.88,
+  "audio_seconds_shortest_item": 0.219938,
+  "audio_seconds_total": 9948.983,
+  "clamped_to_decoded_parent": [],
+  "contacts": {
+    "audio_seconds_decoded": 0,
+    "embedder": 0,
+    "frozen_core": 0,
+    "gpu_hours": 0,
+    "network": 0,
+    "outbound_connection_attempts": 0,
+    "outbound_connection_targets": [],
+    "paid_api_spend": 0,
+    "retriever": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "count": 1500,
+  "execution_profile": "model-free-check",
+  "exposure_row": "SAEA-SN-MF-E22-DEV1500-ROSTER-V1",
+  "media_identity": {
+    "all_digests_matched_the_sealed_supplement": true,
+    "audio_samples_decoded": 0,
+    "files_rehashed": 1500,
+    "rehash_requested": true
+  },
+  "opened": {
+    "reference_sentences": 0,
+    "scores": 0,
+    "sealed_outputs": 0,
+    "test_split_artifacts": 0
+  },
+  "outputs": {
+    "d1_media_supplement": "docs/receipts/artifacts/d1-e22-esb-dev1500-utterances.json",
+    "d1_media_supplement_sha256": "6a3d247208ab027e76b742b35cd4f84bc916f1db05d55444e8e040d05f2ca19f",
+    "probe_view": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-dev-esb-1500-v1/roster/flight-roster-receipt.json",
+    "probe_view_sha256": "fe9528be3ad62c27b95da61e7397fda5e19c0fe711fda07db6731c2d6fcccf9f",
+    "roster_receipt": "docs/receipts/rosters/e22-dev-esb-1500-v1.json",
+    "roster_receipt_sha256": "5d2b4e86054a16c072173d0f29162aef4931ab690bebba7636bf706624b2e7b8"
+  },
+  "per_stratum": 150,
+  "roster_id": "E22-DEV-ESB-1500-V1",
+  "schema": "saea-e22-dev1500-roster-build-receipt-v1",
+  "seed": 20260906,
+  "sources": {
+    "d1_media_supplement": "docs/receipts/artifacts/d1-e22-esb-dev10-utterances.json",
+    "d1_media_supplement_sha256": "ad01c4eca82b2739e121886fda5d95172756c9f232e5627b1f3f42274c2946a1",
+    "roster_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-e22-dev-esb-prompt-ab-v1/roster/flight-roster-receipt.json",
+    "roster_receipt_sha256": "20437bcbde1a52b58bb48642d8809836e20073f7963f19b5ff836ead69c945c8"
+  },
+  "split_identity_hash": "c626e62f8876bf52a2904a0d2ec91807a530f3195c10facc8c036f661b2bf88a",
+  "split_name": "E22-ESB-DEV1500-UTTERANCES",
+  "split_role": "dev",
+  "strata_counts": {
+    "4453225": 150,
+    "4469088": 150,
+    "4470684": 150,
+    "4474506": 150,
+    "4479944": 150,
+    "4481952": 150,
+    "4482383": 150,
+    "4482613": 150,
+    "4483937": 150,
+    "4485192": 150
+  }
+}

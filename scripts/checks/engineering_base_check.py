@@ -141,10 +141,34 @@ NESTED_ID_KEYS = {
     "fuse_policy": "KNOWLEDGE_FUSERS",
 }
 
+# E22 cell (b) (2026-09-06): a config fragment may declare
+# ``decoding_params.max_tokens`` as a PER-SAMPLE RULE OBJECT naming a policy id
+# instead of a plain integer (``core.flight.runtime.MAX_TOKENS_POLICY_KEY``);
+# that id must resolve in ``core.base.MAX_TOKENS_POLICIES`` like every other
+# component id a config declares.
+#
+# It is matched by PATH, not by bare key name, for one reason: the key inside
+# the rule object is spelled ``policy``, which at top level already means an
+# arm program's own ``POLICIES``/``AGENT_CONTROLLERS`` id. Adding ``policy`` to
+# NESTED_ID_KEYS would make every ``"policy": "fixed"`` in the tree an offender
+# against the wrong registry.
+#
+# ``decoding_params`` lives in a MODEL fragment by this repository's
+# convention (67 model fragments declare it, no baseline fragment does), and
+# ``core.config.compose`` merges the four fragments' top-level keys into one
+# flat mapping, so the key is looked for in the model directory as well as in
+# the two CONFIG_DIRS above -- wherever the fragment author put it.
+DECODING_PARAMS_KEY = "decoding_params"
+MAX_TOKENS_KEY = "max_tokens"
+MAX_TOKENS_POLICY_KEY = "policy"
+MAX_TOKENS_POLICY_VAR = "MAX_TOKENS_POLICIES"
+DECODING_CONFIG_DIRS = ("configs/model", *CONFIG_DIRS)
+
 ALL_REGISTRY_VARS = (
     {var for vars_ in TOP_LEVEL_STRING_KEYS.values() for var in vars_}
     | {TOP_LEVEL_LIST_KEY[1]}
     | set(NESTED_ID_KEYS.values())
+    | {MAX_TOKENS_POLICY_VAR}
 )
 
 RATCHETED_RULES = (
@@ -513,6 +537,31 @@ def rule_unregistered_config_values(
                 var = NESTED_ID_KEYS[key]
                 if value not in registered[var]:
                     offenders.append(f"{relpath}::{dotted_path}={value}")
+
+    # The per-sample max_tokens rule, matched by PATH (see
+    # DECODING_PARAMS_KEY's own comment for why not by bare key name).
+    for config_dir in DECODING_CONFIG_DIRS:
+        depth = config_dir.count("/") + 1
+        for relpath in reader.list_files(prefix=config_dir):
+            if not relpath.endswith(".json") or relpath.count("/") != depth:
+                continue
+            try:
+                doc = json.loads(reader.read_text(relpath))
+            except json.JSONDecodeError as exc:
+                raise EngineeringBaseError(f"cannot parse JSON {relpath}: {exc}") from exc
+            if not isinstance(doc, dict):
+                continue
+            decoding = doc.get(DECODING_PARAMS_KEY)
+            if not isinstance(decoding, dict):
+                continue
+            rule = decoding.get(MAX_TOKENS_KEY)
+            if not isinstance(rule, dict):
+                continue
+            dotted = f"{DECODING_PARAMS_KEY}.{MAX_TOKENS_KEY}.{MAX_TOKENS_POLICY_KEY}"
+            keys_found.add(dotted)
+            value = rule.get(MAX_TOKENS_POLICY_KEY)
+            if not isinstance(value, str) or value not in registered[MAX_TOKENS_POLICY_VAR]:
+                offenders.append(f"{relpath}::{dotted}={value}")
 
     return sorted(offenders), sorted(keys_found)
 

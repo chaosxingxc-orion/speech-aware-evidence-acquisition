@@ -8,6 +8,7 @@ vocabulary never grows without a new D2 receipt.
 
 from __future__ import annotations
 
+import math
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
 from functools import lru_cache
@@ -20,7 +21,15 @@ from ..data.audio2tool_tools import render_openai_tools
 from ..data.loader import SampleRef
 from ..data.lock import load_lock, umbrella_lock_path
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
-from .base import POLICIES, EvidenceItem, Registry, SampleContext, SampleOutcome
+from .base import (
+    MAX_TOKENS_POLICIES,
+    POLICIES,
+    CoreError,
+    EvidenceItem,
+    Registry,
+    SampleContext,
+    SampleOutcome,
+)
 from .tracing import set_current_trace_buffer
 
 
@@ -480,6 +489,117 @@ class FixedPolicy:
 
 
 POLICIES.register("fixed", FixedPolicy())
+
+
+# ---------------------------------------------------------------------------
+# Per-sample ``decoding_params.max_tokens`` policies (E22 cell (b), 2026-09-06)
+# ---------------------------------------------------------------------------
+
+#: The one registered per-sample ``max_tokens`` rule. Named ``-v1`` because the
+#: arithmetic below is FROZEN: a different formula is a different id, so a
+#: sealed trace's per-row cap can always be re-derived from the id plus the
+#: parameters the fragment declared.
+DURATION_PROPORTIONAL_MAX_TOKENS_V1 = "duration-proportional-v1"
+
+
+class DurationProportionalMaxTokens:
+    """``min(ceiling, max(floor, ceil(alpha * seconds * wps * tpw)))``.
+
+    The generation cap of one request, resolved from that request's OWN media
+    duration instead of a single cell-wide integer. Every constant is declared
+    by the config fragment and none is hard-coded here: ``alpha`` is the
+    slack multiplier, ``words_per_second_p95`` a REFERENCE-side speaking-rate
+    percentile, ``tokens_per_word`` the flight tokenizer's pooled tokens per
+    normalized word, ``floor`` the smallest cap a sub-second clip may get and
+    ``ceiling`` the cell-wide ceiling the cap may never exceed.
+
+    Numerically identical, by construction, to
+    ``analysis.e22_overgeneration.cap_tokens(alpha, seconds, wps, tpw)`` clamped
+    to ``[floor, ceiling]`` -- that module is the model-free simulator whose
+    projection a capped flight is measured against, so the two must agree row
+    for row or the prediction check compares two different interventions.
+    ``tests/unit/test_max_tokens_policies.py`` pins that equality.
+    """
+
+    #: Exactly the keys a rule object carries beside ``policy``. Fail-closed in
+    #: both directions: a missing key is a rule this policy cannot evaluate, and
+    #: an extra key is a knob the author believes is being honoured and is not.
+    PARAMETERS = ("alpha", "words_per_second_p95", "tokens_per_word", "floor", "ceiling")
+
+    def parameters(self, rule: Mapping[str, object]) -> dict[str, object]:
+        """Validate ``rule`` and return its parameters, canonically typed.
+
+        Raises :class:`core.base.CoreError` on anything malformed, so a cell
+        that mis-declares its cap dies at composition time rather than sending
+        1,500 requests under a cap nobody intended.
+        """
+
+        if not isinstance(rule, Mapping):
+            raise CoreError("max_tokens rule must be a mapping")
+        declared = set(rule) - {"policy"}
+        missing = sorted(set(self.PARAMETERS) - declared)
+        extra = sorted(declared - set(self.PARAMETERS))
+        if missing or extra:
+            raise CoreError(
+                f"max_tokens policy {DURATION_PROPORTIONAL_MAX_TOKENS_V1!r} requires "
+                f"exactly {sorted(self.PARAMETERS)}; missing={missing} extra={extra}"
+            )
+        numbers: dict[str, object] = {}
+        for name in ("alpha", "words_per_second_p95", "tokens_per_word"):
+            value = rule[name]
+            if (
+                isinstance(value, bool)
+                or not isinstance(value, (int, float))
+                or not math.isfinite(float(value))
+                or float(value) <= 0
+            ):
+                raise CoreError(
+                    f"max_tokens rule {name!r} must be a finite positive number, "
+                    f"got {value!r}"
+                )
+            numbers[name] = float(value)
+        for name in ("floor", "ceiling"):
+            value = rule[name]
+            if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+                raise CoreError(
+                    f"max_tokens rule {name!r} must be an integer >= 1, got {value!r}"
+                )
+            numbers[name] = int(value)
+        if int(numbers["floor"]) > int(numbers["ceiling"]):
+            raise CoreError(
+                f"max_tokens rule floor {numbers['floor']} exceeds ceiling "
+                f"{numbers['ceiling']}"
+            )
+        return numbers
+
+    def resolve(self, rule: Mapping[str, object], audio_seconds: float) -> int:
+        """This sample's integer cap. ``audio_seconds`` is the sample's own
+        measured media duration -- the roster's, which is also what the payload
+        carries and what the adapter meters."""
+
+        params = self.parameters(rule)
+        if (
+            isinstance(audio_seconds, bool)
+            or not isinstance(audio_seconds, (int, float))
+            or not math.isfinite(float(audio_seconds))
+            or float(audio_seconds) <= 0
+        ):
+            raise CoreError(
+                "max_tokens resolution needs a finite positive audio_seconds, got "
+                f"{audio_seconds!r}"
+            )
+        raw = math.ceil(
+            float(params["alpha"])
+            * float(audio_seconds)
+            * float(params["words_per_second_p95"])
+            * float(params["tokens_per_word"])
+        )
+        return min(int(params["ceiling"]), max(int(params["floor"]), int(raw)))
+
+
+MAX_TOKENS_POLICIES.register(
+    DURATION_PROPORTIONAL_MAX_TOKENS_V1, DurationProportionalMaxTokens()
+)
 
 # obs-agent-loop (owner directive 2026-08-08): the model-driven OBS
 # segmentation loop -- N slice requests per whole-call sample, one stitched
