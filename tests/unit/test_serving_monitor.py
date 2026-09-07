@@ -50,6 +50,7 @@ monitor = _monitor()
 build_sample = monitor.build_sample
 count_new_requests = monitor.count_new_requests
 read_gpu = monitor.read_gpu
+read_host_memory = monitor.read_host_memory
 read_metrics = monitor.read_metrics
 read_slots = monitor.read_slots
 sample_loop = monitor.sample_loop
@@ -173,6 +174,18 @@ def test_sample_loop_appends_one_line_and_stops_at_its_duration(tmp_path, monkey
         lambda base_url: ({"total": 2, "busy": 0, "idle": 2}, {0: 5, 1: None}),
     )
     monkeypatch.setattr(monitor, "read_metrics", lambda base_url: None)
+    monkeypatch.setattr(
+        monitor,
+        "read_host_memory",
+        lambda: {
+            "host_total_gb": 44.0,
+            "host_free_gb": 30.0,
+            "vmmem_ws_gb": 10.0,
+            "vm_total_gb": 40.0,
+            "vm_available_gb": 32.0,
+            "host_memory_source": "windows+vm",
+        },
+    )
 
     class _Args:
         data_root = tmp_path
@@ -190,6 +203,24 @@ def test_sample_loop_appends_one_line_and_stops_at_its_duration(tmp_path, monkey
     assert samples[0]["slots"] == {"total": 2, "busy": 0, "idle": 2}
     assert samples[0]["requests_total"] == 1
     assert samples[0]["server_ok"] is True
+    assert samples[0]["host_memory"]["host_free_gb"] == 30.0
+
+
+def test_build_sample_carries_the_host_memory_reading():
+    sample = build_sample(
+        now=0.0,
+        gpu=None,
+        slots=None,
+        metrics=None,
+        requests_total=0,
+        host_memory={"host_free_gb": 12.0, "host_memory_source": "windows+vm"},
+    )
+    assert sample["host_memory"] == {"host_free_gb": 12.0, "host_memory_source": "windows+vm"}
+
+
+def test_build_sample_host_memory_defaults_to_none():
+    sample = build_sample(now=0.0, gpu=None, slots=None, metrics=None, requests_total=0)
+    assert sample["host_memory"] is None
 
 
 def test_sample_loop_refuses_a_session_directory_that_does_not_exist(tmp_path):

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""GPU + server monitor for the always-on serving session (E7).
+"""GPU + server + host-memory monitor for the always-on serving session (E7).
 
     python scripts/serving_monitor.py sample --session-id ID [--interval 10]
     python scripts/serving_monitor.py summarize --session-id ID [--from T0] [--to T1]
@@ -7,13 +7,17 @@
 ``sample`` appends one JSONL line per interval to ``$SPEECHRL_DATA_DIR/
 serving/<session-id>/monitor.jsonl``: nvidia-smi utilization/memory/power/
 pstate/clocks, ``GET /slots`` busy-vs-idle, a cumulative ``requests_total``
-derived from slot task-id changes, and ``GET /metrics`` when the server has
-it. ``summarize`` prints the parked/active accounting through
+derived from slot task-id changes, ``GET /metrics`` when the server has it,
+and ``host_memory`` -- the Windows host's total/free GB and the ``vmmemWSL``
+working set beside the VM's own ``MemTotal``/``MemAvailable`` (E7c, added
+after the 2026-09-07 host-memory incident: see
+:func:`speech_aware_evidence_acquisition.core.session.serving.read_host_memory`).
+``summarize`` prints the parked/active accounting through
 ``core.session.serving.summarize_monitor_samples`` -- the SAME function the
 flight runtime folds into its seal receipt, so a hand-reported number and a
 sealed one cannot disagree. Neither subcommand is a model contact: both
-endpoints are read-only and no completion is requested. See
-docs/readiness/2026-09-07-always-on-serving-operating-note.md.
+endpoints and the host-memory reading are read-only and no completion is
+requested. See docs/readiness/2026-09-07-always-on-serving-operating-note.md.
 """
 
 from __future__ import annotations
@@ -36,6 +40,7 @@ if str(REPO_ROOT / "src") not in sys.path:
 from speech_aware_evidence_acquisition.core.session.serving import (  # noqa: E402
     MONITOR_JSONL_NAME,
     SERVING_MONITOR_SAMPLE_SCHEMA,
+    read_host_memory,
     read_monitor_samples,
     serving_session_dir,
     summarize_monitor_samples as summarize,
@@ -144,6 +149,7 @@ def build_sample(
     slots: Mapping[str, object] | None,
     metrics: Mapping[str, float] | None,
     requests_total: int,
+    host_memory: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
     return {
         "schema": SERVING_MONITOR_SAMPLE_SCHEMA,
@@ -152,6 +158,7 @@ def build_sample(
         "gpu": dict(gpu) if gpu is not None else None,
         "slots": dict(slots) if slots is not None else None,
         "metrics": dict(metrics) if metrics is not None else None,
+        "host_memory": dict(host_memory) if host_memory is not None else None,
         "requests_total": requests_total,
         "server_ok": slots is not None,
     }
@@ -176,6 +183,7 @@ def sample_loop(args) -> int:
             slots=slots,
             metrics=read_metrics(base_url),
             requests_total=requests_total,
+            host_memory=read_host_memory(),
         )
         with path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(sample, ensure_ascii=False, sort_keys=True) + "\n")

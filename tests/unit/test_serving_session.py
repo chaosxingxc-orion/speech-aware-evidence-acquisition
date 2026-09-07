@@ -61,6 +61,7 @@ from speech_aware_evidence_acquisition.core.session.serving import (
     observe_session_process,
     props_identity,
     read_gpu_occupancy,
+    read_host_memory,
     resolve_serving_profile,
     serving_identity,
     serving_session_dir,
@@ -787,6 +788,142 @@ def test_read_gpu_occupancy_reports_a_card_it_cannot_read_instead_of_raising():
     assert gpu["memory_used_mib"] is None
     assert gpu["compute_processes"] is None
     assert "nvidia-smi" in str(gpu["error"])
+
+
+# ---------------------------------------------------------------------------
+# ``read_host_memory`` (E7c, 2026-09-07 incident): the Windows host's own
+# total/free GB and the vmmemWSL working set, beside the VM's own
+# MemTotal/MemAvailable -- neither side alone would have shown the host
+# running out of headroom around an already-fat WSL VM.
+# ---------------------------------------------------------------------------
+
+
+def _windows_memory_json(
+    *, total_kib: int = 46137344, free_kib: int = 6291456, vmmem_bytes: object = 19327352832
+) -> str:
+    vmmem = "null" if vmmem_bytes is None else str(vmmem_bytes)
+    return (
+        f'{{"TotalVisibleMemorySize":{total_kib},"FreePhysicalMemory":{free_kib},'
+        f'"VmmemWorkingSet64":{vmmem}}}'
+    )
+
+
+def _write_meminfo(path: Path, *, total_kib: int = 46137344, available_kib: int = 41943040) -> Path:
+    path.write_text(
+        f"MemTotal:       {total_kib} kB\nMemFree:         2000000 kB\n"
+        f"MemAvailable:   {available_kib} kB\n",
+        encoding="utf-8",
+    )
+    return path
+
+
+def test_read_host_memory_parses_the_powershell_json_and_the_vm_meminfo(tmp_path):
+    meminfo = _write_meminfo(tmp_path / "meminfo")
+    memory = read_host_memory(
+        run=lambda *a, **k: _FakeCompleted(_windows_memory_json()), meminfo_path=meminfo
+    )
+    assert memory["host_total_gb"] == pytest.approx(44.0)
+    assert memory["host_free_gb"] == pytest.approx(6.0)
+    assert memory["vmmem_ws_gb"] == pytest.approx(18.0)
+    assert memory["vm_total_gb"] == pytest.approx(44.0)
+    assert memory["vm_available_gb"] == pytest.approx(40.0)
+    assert memory["host_memory_source"] == "windows+vm"
+
+
+def test_read_host_memory_reports_an_absent_vmmem_process_as_null_not_a_failure(tmp_path):
+    meminfo = _write_meminfo(tmp_path / "meminfo")
+    memory = read_host_memory(
+        run=lambda *a, **k: _FakeCompleted(_windows_memory_json(vmmem_bytes=None)),
+        meminfo_path=meminfo,
+    )
+    assert memory["vmmem_ws_gb"] is None
+    assert memory["host_total_gb"] == pytest.approx(44.0)
+    assert memory["host_memory_source"] == "windows+vm"
+
+
+@pytest.mark.parametrize(
+    "outcome",
+    [_FakeCompleted("not json"), _FakeCompleted("", returncode=1)],
+)
+def test_read_host_memory_fails_soft_on_anything_unusable_from_powershell(outcome, tmp_path):
+    meminfo = _write_meminfo(tmp_path / "meminfo")
+    memory = read_host_memory(run=lambda *a, **k: outcome, meminfo_path=meminfo)
+    assert memory["host_total_gb"] is None
+    assert memory["host_free_gb"] is None
+    assert memory["vmmem_ws_gb"] is None
+    assert memory["host_memory_source"] == "vm-only"
+    # The VM side is unaffected by the Windows side failing.
+    assert memory["vm_total_gb"] == pytest.approx(44.0)
+
+
+def test_read_host_memory_reports_one_malformed_field_as_null_not_a_whole_failure(tmp_path):
+    """The interop call itself succeeded and returned valid JSON, so the
+    Windows side still answers -- only the one field whose type is wrong
+    comes back null, exactly like an absent ``vmmemWSL`` process does."""
+
+    meminfo = _write_meminfo(tmp_path / "meminfo")
+    memory = read_host_memory(
+        run=lambda *a, **k: _FakeCompleted('{"TotalVisibleMemorySize": "oops"}'),
+        meminfo_path=meminfo,
+    )
+    assert memory["host_total_gb"] is None
+    assert memory["host_free_gb"] is None
+    assert memory["vmmem_ws_gb"] is None
+    assert memory["host_memory_source"] == "windows+vm"
+
+
+def test_read_host_memory_fails_soft_when_powershell_is_absent(tmp_path):
+    meminfo = _write_meminfo(tmp_path / "meminfo")
+
+    def _boom(*_args, **_kwargs):
+        raise FileNotFoundError("powershell.exe")
+
+    memory = read_host_memory(run=_boom, meminfo_path=meminfo)
+    assert memory["host_free_gb"] is None
+    assert memory["vm_total_gb"] == pytest.approx(44.0)
+    assert memory["host_memory_source"] == "vm-only"
+
+
+def test_read_host_memory_fails_soft_when_the_vm_meminfo_is_unreadable(tmp_path):
+    memory = read_host_memory(
+        run=lambda *a, **k: _FakeCompleted(_windows_memory_json()),
+        meminfo_path=tmp_path / "does-not-exist",
+    )
+    assert memory["vm_total_gb"] is None
+    assert memory["vm_available_gb"] is None
+    assert memory["host_total_gb"] == pytest.approx(44.0)
+    assert memory["host_memory_source"] == "windows-only"
+
+
+def test_read_host_memory_is_unavailable_when_neither_side_answers(tmp_path):
+    def _boom(*_args, **_kwargs):
+        raise FileNotFoundError("powershell.exe")
+
+    memory = read_host_memory(run=_boom, meminfo_path=tmp_path / "does-not-exist")
+    assert memory == {
+        "host_total_gb": None,
+        "host_free_gb": None,
+        "vmmem_ws_gb": None,
+        "vm_total_gb": None,
+        "vm_available_gb": None,
+        "host_memory_source": "unavailable",
+    }
+
+
+def test_read_host_memory_passes_the_pinned_timeout_and_command_shape(tmp_path):
+    calls: list[dict[str, object]] = []
+
+    def fake_run(argv, **kwargs):
+        calls.append({"argv": list(argv), "kwargs": kwargs})
+        return _FakeCompleted(_windows_memory_json())
+
+    read_host_memory(run=fake_run, meminfo_path=_write_meminfo(tmp_path / "meminfo"))
+    assert len(calls) == 1
+    argv = calls[0]["argv"]
+    assert argv[0] == "powershell.exe"
+    assert "-NoProfile" in argv and "-NonInteractive" in argv
+    assert "Get-CimInstance" in argv[-1] and "Get-Process" in argv[-1]
+    assert calls[0]["kwargs"]["timeout"] == 8
 
 
 # ---------------------------------------------------------------------------
