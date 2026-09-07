@@ -1,0 +1,112 @@
+{
+  "accepted": false,
+  "confirmation": {
+    "accepted": false,
+    "background": {
+      "bootstrap": {
+        "ci_high": 0.005000000000000001,
+        "ci_level": 0.9,
+        "ci_low": -0.010243055555555554,
+        "n_replicates": 10000,
+        "point_estimate": -0.002638888888888889,
+        "seed": 20260903,
+        "sigma_hat": 0.0046603744265051586
+      },
+      "delta": -0.002638888888888913,
+      "harms": 15,
+      "left_mean": 0.2115277777777778,
+      "metric": "slot_f1_exact_f1",
+      "n": 960,
+      "per_stratum": {},
+      "right_mean": 0.20888888888888887,
+      "saves": 12,
+      "sign_test_p": 0.7011080384254456,
+      "ties": 933
+    },
+    "background_gain_pp": -0.2638888888888913,
+    "background_tolerance_pp": -1.0,
+    "harm_bound": {
+      "harms_per_rows": 30,
+      "max_net_harm_rows": 1,
+      "unadmitted_tolerance_pp": -1.0
+    },
+    "metric": "slot_f1_exact_f1",
+    "per_target": [
+      {
+        "admitted": true,
+        "ci90_high_pp": 8.88888888888889,
+        "ci90_low_pp": -0.5555555555555554,
+        "delta_pp": 3.888888888888889,
+        "harms": 1,
+        "n": 60,
+        "net_harm_rows": -2,
+        "net_harm_rows_allowed": 2,
+        "saves": 3,
+        "target_id": "news",
+        "ties": 56,
+        "within_harm_bound": true
+      },
+      {
+        "admitted": true,
+        "ci90_high_pp": 3.055555555555556,
+        "ci90_low_pp": -0.5555555555555558,
+        "delta_pp": 1.1111111111111127,
+        "harms": 1,
+        "n": 60,
+        "net_harm_rows": -2,
+        "net_harm_rows_allowed": 2,
+        "saves": 3,
+        "target_id": "social",
+        "ties": 56,
+        "within_harm_bound": true
+      },
+      {
+        "admitted": false,
+        "ci90_high_pp": 0.5000000000000001,
+        "ci90_low_pp": -1.0243055555555554,
+        "delta_pp": -0.2638888888888913,
+        "harms": 15,
+        "n": 960,
+        "net_harm_rows": 3,
+        "net_harm_rows_allowed": null,
+        "saves": 12,
+        "target_id": "(unadmitted, pooled)",
+        "ties": 933,
+        "within_harm_bound": true
+      }
+    ],
+    "reason": "pooled targeted CI90 lower bound -0.000 pp is not > 0; every admitted scenario within harms - saves <= 1 per 30 rows; unadmitted pooled delta -0.264 pp >= -1.000 pp",
+    "schema": "saea-evolution-confirmation-v1",
+    "targeted": {
+      "bootstrap": {
+        "ci_high": 0.05416666666666667,
+        "ci_level": 0.9,
+        "ci_low": -9.251858538542971e-19,
+        "n_replicates": 10000,
+        "point_estimate": 0.025,
+        "seed": 20260903,
+        "sigma_hat": 0.016520636547214345
+      },
+      "delta": 0.025000000000000022,
+      "harms": 2,
+      "left_mean": 0.31666666666666665,
+      "metric": "slot_f1_exact_f1",
+      "n": 120,
+      "per_stratum": {},
+      "right_mean": 0.3416666666666667,
+      "saves": 6,
+      "sign_test_p": 0.2890625,
+      "ties": 112
+    },
+    "targeted_gain_pp": 2.500000000000002
+  },
+  "gain_pp": 2.500000000000002,
+  "next_incumbent_state_sha256": "2cd6834d8920d47c3ed5fc69e7f9ee00a231f12e213534123b256d4e77c0400e",
+  "reason": "pooled targeted CI90 lower bound -0.000 pp is not > 0; every admitted scenario within harms - saves <= 1 per 30 rows; unadmitted pooled delta -0.264 pp >= -1.000 pp",
+  "round": 1,
+  "round_receipt": "evolution-round-01.json",
+  "round_receipt_sha256": "906634869ec1a95e10a796c54b5bd0410db7adff5196612a38833ea73939aff3",
+  "schema": "saea-evolution-confirmation-step-v1",
+  "stop": false,
+  "stop_reason": "continue"
+}
