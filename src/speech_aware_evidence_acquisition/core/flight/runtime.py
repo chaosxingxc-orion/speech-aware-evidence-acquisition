@@ -3108,7 +3108,7 @@ class FlightRuntime:
         supply_for_phase = binding.get("supply_for_phase")
         supply_specs = binding.get("supply_specs") or {}
         facet_seed, value_seed = self._phase_supply_seeds(
-            program, binding, supply_specs
+            program, binding, supply_specs, plan
         )
         # E6: a program with a supplied NON-FIRST phase must run as ONE
         # continuous trajectory. run_program executes each phase as its own
@@ -3199,6 +3199,7 @@ class FlightRuntime:
         program: object,
         binding: Mapping[str, object],
         supply_specs: Mapping[str, object],
+        plan: ExecutionPlan,
     ) -> tuple[dict[str, object], dict[str, object]]:
         """``({phase: facet seed}, {phase: value seed})`` for a supplied
         FIRST phase (E6).
@@ -3206,6 +3207,14 @@ class FlightRuntime:
         Only the first phase can be seeded, and only the first phase needs
         to be: every later phase carries its supply on the preceding wave's
         ``acquire`` transition. Empty for every other program.
+
+        ``plan`` is the plan DRIVING this dispatch, not ``self._plan``. They
+        are the same object in a real flight, but :meth:`wire_check` builds
+        its own plan under its own run id and never sets ``self._plan`` -- so
+        reading the attribute raised ``AttributeError: 'NoneType'`` and made
+        the one cell shape that seeds a first phase (KU-S3) unable to be
+        wire-checked at all. Found by wire-checking it, 2026-09-07, which is
+        the case the method exists for.
         """
 
         from ...rails.phase_supply import (  # noqa: PLC0415 (cycle guard)
@@ -3233,7 +3242,7 @@ class FlightRuntime:
             provider=provider,
             query_vectors_by_sample=query_tables.get(first_phase, {}),
             speech_packet_bindings=binding["speech_packet_bindings"],
-            split_identity_hash=self._plan.split_identity_hash,
+            split_identity_hash=plan.split_identity_hash,
         )
         return ({first_phase: facets} if facets else {}), (
             {first_phase: values} if values else {}
@@ -3624,7 +3633,9 @@ class FlightRuntime:
           per-sample seeded into the initial ``QueryState`` instead, through
           ``rails.runner``'s ``bootstrap_value_ids`` mapping form -- but the
           decision has to be computable before the flight, so it is refused
-          here unless a provider was injected for it;
+          here unless the phase's provider is ``kb-facet-v1`` (which this
+          seam constructs from the frozen snapshot) or an instance was
+          injected through :meth:`bind_phase_supply_providers`;
         * an ``embedding-server`` query source (declared, never resolvable).
         """
 
@@ -3639,13 +3650,29 @@ class FlightRuntime:
             self._phase_supply_receipt = None
             return None, {}
         first_phase = program.phase_names()[0]
-        if first_phase in specs and self._phase_supply_providers is None:
+        if (
+            first_phase in specs
+            and self._phase_supply_providers is None
+            # ``build_supply_for_phase`` CONSTRUCTS 'kb-facet-v1' itself -- its
+            # whole state is the frozen snapshot this runtime already loaded and
+            # hash-verified -- and publishes the factory on
+            # ``supply_for_phase.provider_factories``, which is exactly what
+            # ``_phase_supply_seeds`` reads to compute the pre-flight bootstrap
+            # selection. So the requirement the message below states ("the
+            # decision has to be computable before the flight") is already met
+            # for that provider, and refusing it forced a launcher script the
+            # owner's engineering base rules forbid (cell KU-S3, 2026-09-07).
+            # Every other registered provider still needs its instance injected.
+            and specs[first_phase].provider != "kb-facet-v1"
+        ):
             raise FlightRuntimeError(
                 f"phase_supply declares the FIRST phase {first_phase!r} of program "
-                f"{getattr(program, 'program_id', program)!r}. A first phase has no "
+                f"{getattr(program, 'program_id', program)!r} with provider "
+                f"{specs[first_phase].provider!r}. A first phase has no "
                 "preceding advance, so it cannot carry an acquire transition; its "
                 "selection has to be computed before the flight and seeded into each "
-                "sample's initial QueryState. Bind the built provider through "
+                "sample's initial QueryState, and this seam can only construct "
+                "'kb-facet-v1' on its own. Bind the built provider through "
                 "bind_phase_supply_providers so this runtime can compute it, or move "
                 "the supply to a later phase"
             )
