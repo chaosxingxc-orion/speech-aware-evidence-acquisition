@@ -11,16 +11,36 @@ runtime receipt, exactly as ``tests/unit/test_session.py`` already does.
 
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import json
+import os
+import subprocess
+import sys
+import time
 from pathlib import Path
 
 import pytest
 
 from speech_aware_evidence_acquisition.core.config import ConfigError, read_fragment
 from speech_aware_evidence_acquisition.core.session import (
+    PROCESS_STATE_DEFUNCT,
+    PROCESS_STATE_GONE,
+    PROCESS_STATE_RUNNING,
+    SESSION_RECEIPT_SCHEMA,
+    STUDY_SLUG,
+    ModelFileRef,
     SessionError,
+    SessionReceipt,
+    _defunct_wait_status,
+    _pid_alive,
+    _pid_is_defunct,
+    _process_image_path,
     build_server_command,
+    describe_wait_status,
+    process_state,
+    reap_child,
+    stop_session,
 )
 from speech_aware_evidence_acquisition.core.session.serving import (
     MONITOR_JSONL_NAME,
@@ -29,13 +49,16 @@ from speech_aware_evidence_acquisition.core.session.serving import (
     SERVING_SESSION_SCHEMA,
     ServingIdentityMismatch,
     ServingSessionError,
+    _resident_refusal,
     assert_identity_matches,
     build_parser,
     build_session_document,
     find_resident_session,
     identity_mismatches,
     merge_server_args,
+    observe_session_process,
     props_identity,
+    read_gpu_occupancy,
     resolve_serving_profile,
     serving_identity,
     serving_session_dir,
@@ -492,3 +515,392 @@ def test_the_cli_accepts_shared_options_after_the_subcommand():
 def test_the_cli_requires_a_subcommand():
     with pytest.raises(SystemExit):
         build_parser().parse_args([])
+
+
+# ---------------------------------------------------------------------------
+# A server that exited but was never reaped (E7b defect 1, observed
+# 2026-09-07 on both sessions of the first day).
+#
+# The zombie below is real: a child of this test process that has exited and
+# that nothing has waited on yet. Everything in this section is about the
+# gap between "the OS still answers kill(pid, 0)" and "there is a process
+# there", which is what made every stop and every start refuse for the rest
+# of that day.
+# ---------------------------------------------------------------------------
+
+_POSIX_PROC = os.name != "nt" and Path("/proc").is_dir()
+_NEEDS_PROC = pytest.mark.skipif(
+    not _POSIX_PROC, reason="zombie states are observable only through a POSIX /proc"
+)
+
+
+@contextlib.contextmanager
+def _unreaped_child():
+    """A real, unreaped zombie: a child that has exited while this process
+    has deliberately not waited on it (``Popen.poll`` would reap it, so it is
+    never called)."""
+
+    process = subprocess.Popen(
+        [sys.executable, "-c", "raise SystemExit(7)"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    try:
+        deadline = time.monotonic() + 30.0
+        while process_state(process.pid) != PROCESS_STATE_DEFUNCT:
+            if time.monotonic() >= deadline:
+                raise AssertionError("the child never became a zombie")
+            time.sleep(0.02)
+        yield process
+    finally:
+        try:
+            process.kill()
+            process.wait(timeout=5)
+        except (OSError, ValueError, ChildProcessError, subprocess.SubprocessError):
+            # Already reaped by the code under test; keep Popen quiet at GC.
+            if process.returncode is None:
+                process.returncode = 0
+
+
+@_NEEDS_PROC
+def test_a_zombie_is_alive_to_the_old_check_and_defunct_to_the_new_one():
+    with _unreaped_child() as process:
+        # This IS the 2026-09-07 refusal, reproduced: liveness says yes...
+        assert _pid_alive(process.pid) is True
+        # ...while the executable image every I5 check resolves is gone.
+        with pytest.raises(SessionError, match="cannot resolve executable image"):
+            _process_image_path(process.pid)
+        assert _pid_is_defunct(process.pid) is True
+        assert process_state(process.pid) == PROCESS_STATE_DEFUNCT
+        # The kernel still holds the status the parent never collected.
+        assert describe_wait_status(_defunct_wait_status(process.pid))["exit_code"] == 7
+
+
+@_NEEDS_PROC
+def test_a_reaped_child_is_gone_and_its_status_is_the_one_it_chose():
+    with _unreaped_child() as process:
+        reaped, status = reap_child(process.pid)
+        assert reaped is True
+        described = describe_wait_status(status)
+        assert described["exit_code"] == 7
+        assert described["signal"] is None
+        assert "exited with code 7" in described["description"]
+        assert process_state(process.pid) == PROCESS_STATE_GONE
+        # Reaping is the parent's privilege and happens exactly once.
+        assert reap_child(process.pid) == (False, None)
+
+
+def test_a_live_process_is_running_and_an_impossible_pid_is_gone():
+    assert process_state(os.getpid()) == PROCESS_STATE_RUNNING
+    assert process_state(2**22 - 1) == PROCESS_STATE_GONE
+
+
+def test_describe_wait_status_never_calls_an_unknown_status_a_clean_exit():
+    unknown = describe_wait_status(None)
+    assert unknown["exit_code"] is None and unknown["signal"] is None
+    assert "unknown" in unknown["description"]
+
+
+@_NEEDS_PROC
+def test_stop_session_records_a_defunct_server_as_already_exited(monkeypatch, tmp_path):
+    """The whole 2026-09-07 stop failure, in one test.
+
+    Before this fix ``stop_session`` sent no signal (correct) but then waited
+    its full timeout on a pid that ``_pid_alive`` insisted was alive, and
+    finally raised out of the force path while re-verifying the pinned
+    binary of a process that no longer had an executable image -- so no stop
+    record was ever written for a server that had stopped.
+    """
+
+    import speech_aware_evidence_acquisition.core.session.lifecycle as lifecycle_module
+
+    with _unreaped_child() as process:
+        receipt = SessionReceipt(
+            schema=SESSION_RECEIPT_SCHEMA,
+            study=STUDY_SLUG,
+            session_id="serving-defunct",
+            binary_path="llama.cpp/build/bin/llama-server",
+            binary_sha256="c" * 64,
+            argv=("llama-server", "--host", "127.0.0.1", "--port", "8080"),
+            pid=process.pid,
+            host="127.0.0.1",
+            port=8080,
+            model_files=(ModelFileRef(path="models/x/model.gguf", sha256="a" * 64),),
+            started_at="2026-09-07T00:00:00+00:00",
+            startup_stdout_sha256=hashlib.sha256(b"").hexdigest(),
+        )
+        monkeypatch.setattr(
+            lifecycle_module, "verify_against_runtime_receipt", lambda *_args: None
+        )
+        monkeypatch.setattr(
+            lifecycle_module,
+            "assert_session_alive",
+            lambda *_args: pytest.fail("a zombie can never pass a live-process audit"),
+        )
+        monkeypatch.setattr(
+            lifecycle_module.os,
+            "kill",
+            lambda *_args: pytest.fail("an exited process must never be signalled"),
+        )
+        output = tmp_path / "stop.json"
+        stopped = stop_session(
+            receipt,
+            runtime_receipt={"runtime": "pinned"},
+            runtime_root=tmp_path,
+            timeout_seconds=1.0,
+            poll_interval_seconds=0.01,
+            receipt_path=output,
+        )
+
+    assert stopped["termination_signal"] == "ALREADY_EXITED"
+    assert stopped["forced"] is False
+    # Reaped on the way out, so the record describes a pid that is truly gone.
+    assert stopped["final_process_state"] == PROCESS_STATE_GONE
+    assert json.loads(output.read_text(encoding="utf-8")) == stopped
+
+
+# ---------------------------------------------------------------------------
+# Proving a session is stale: the pid, the port and the card must all agree.
+# ---------------------------------------------------------------------------
+
+
+def _fake_gpu(*, memory_used_mib=0.0, processes=(), available=True, error=None):
+    return lambda: {
+        "available": available,
+        "memory_used_mib": memory_used_mib,
+        "compute_processes": list(processes),
+        "error": error,
+    }
+
+
+def _observe(document, *, state=PROCESS_STATE_DEFUNCT, listening=False, gpu=None, status=None):
+    return observe_session_process(
+        document,
+        process_state_probe=lambda _pid: state,
+        port_probe=lambda _host, _port: listening,
+        gpu_probe=gpu or _fake_gpu(),
+        wait_status_probe=lambda _pid: status,
+    )
+
+
+def _session_document(session_id: str = "serving-stale") -> dict:
+    return build_session_document(
+        session_id=session_id,
+        identity=_identity(),
+        pid=4242,
+        started_at="2026-09-07T00:00:00+00:00",
+        serving_geometry={"slots": 2, "slot_tokens": 8192, "max_tokens": 256},
+        props=None,
+        session_receipt_path="session-receipt.json",
+        server_log_path="server.log",
+        monitor_path=MONITOR_JSONL_NAME,
+    )
+
+
+def test_a_defunct_pid_on_a_silent_port_and_an_empty_card_is_stale():
+    observation = _observe(_session_document(), status=15)
+    assert observation["stale"] is True
+    assert observation["blockers"] == []
+    assert observation["process_state"] == PROCESS_STATE_DEFUNCT
+    assert observation["host"] == "127.0.0.1" and observation["port"] == 8080
+    assert observation["port_listening"] is False
+    # 15 == SIGTERM: the stop that DID land, which is what the coordinator
+    # had to reconstruct by hand on 2026-09-07.
+    assert observation["exit_status"]["signal"] == 15
+    assert observation["exit_status"]["signal_name"] == "SIGTERM"
+    assert "advisory" in observation["exit_status"]["source"]
+
+
+def test_a_running_pid_is_never_stale():
+    observation = _observe(_session_document(), state=PROCESS_STATE_RUNNING)
+    assert observation["stale"] is False
+    assert observation["blockers"] == ["pid 4242 is still running"]
+    # A running server has no zombie status to read.
+    assert observation["exit_status"]["raw"] is None
+
+
+def test_a_listening_port_blocks_staleness_even_when_the_pid_is_gone():
+    observation = _observe(_session_document(), state=PROCESS_STATE_GONE, listening=True)
+    assert observation["stale"] is False
+    assert observation["blockers"] == ["something is still listening on 127.0.0.1:8080"]
+
+
+def test_a_card_that_still_holds_the_model_blocks_staleness():
+    observation = _observe(_session_document(), gpu=_fake_gpu(memory_used_mib=18500.0))
+    assert observation["stale"] is False
+    assert "still holds 18500 MiB" in observation["blockers"][0]
+
+
+def test_a_listed_compute_process_blocks_staleness():
+    observation = _observe(
+        _session_document(), gpu=_fake_gpu(processes=["63718, 18500, llama-server"])
+    )
+    assert observation["stale"] is False
+    assert "still lists compute processes" in observation["blockers"][0]
+
+
+def test_an_unreadable_card_blocks_staleness_rather_than_guessing():
+    observation = _observe(
+        _session_document(),
+        gpu=_fake_gpu(
+            available=False, memory_used_mib=None, error="FileNotFoundError: nvidia-smi"
+        ),
+    )
+    assert observation["stale"] is False
+    assert "nvidia-smi could not be read" in observation["blockers"][0]
+
+
+class _FakeCompleted:
+    def __init__(self, stdout: str, returncode: int = 0, stderr: str = "") -> None:
+        self.stdout = stdout
+        self.stderr = stderr
+        self.returncode = returncode
+
+
+def test_read_gpu_occupancy_reads_memory_and_the_process_table():
+    calls: list[list[str]] = []
+
+    def fake_run(argv, **_kwargs):
+        calls.append(list(argv))
+        if "--query-gpu=memory.used" in argv:
+            return _FakeCompleted("0\n")
+        return _FakeCompleted("")
+
+    gpu = read_gpu_occupancy(run=fake_run)
+    assert gpu == {
+        "available": True,
+        "memory_used_mib": 0.0,
+        "compute_processes": [],
+        "error": None,
+    }
+    assert [argv[0] for argv in calls] == ["nvidia-smi", "nvidia-smi"]
+
+
+def test_read_gpu_occupancy_reports_a_card_it_cannot_read_instead_of_raising():
+    def fake_run(_argv, **_kwargs):
+        raise FileNotFoundError("nvidia-smi")
+
+    gpu = read_gpu_occupancy(run=fake_run)
+    assert gpu["available"] is False
+    assert gpu["memory_used_mib"] is None
+    assert gpu["compute_processes"] is None
+    assert "nvidia-smi" in str(gpu["error"])
+
+
+# ---------------------------------------------------------------------------
+# ``stop --stale``, ``status`` and ``start``: the three operator surfaces the
+# defunct state reaches.
+# ---------------------------------------------------------------------------
+
+
+def _stop_world(tmp_path: Path, monkeypatch, **observe):
+    """A data root holding one resident session, with the CLI's data-root
+    resolution and its process observation both pointed at fakes."""
+
+    import speech_aware_evidence_acquisition.core.session.serving as serving_module
+    from speech_aware_evidence_acquisition.data import lock as lock_module
+
+    session_dir = _write_session(tmp_path, "serving-defunct")
+    monkeypatch.setattr(lock_module, "data_root", lambda: tmp_path)
+    monkeypatch.setattr(
+        serving_module,
+        "observe_session_process",
+        lambda document, **_kwargs: _observe(document, **observe),
+    )
+    return session_dir
+
+
+def test_stop_records_a_stale_session_without_signalling_anything(tmp_path, monkeypatch):
+    session_dir = _stop_world(tmp_path, monkeypatch, status=15)
+    args = build_parser().parse_args(["stop"])
+
+    assert args.handler(args) == 0
+
+    document = json.loads((session_dir / SESSION_STOP_NAME).read_text(encoding="utf-8"))
+    assert document["stale"] is True
+    assert document["stop_receipt"] is None, "nothing was signalled, so there is no stop receipt"
+    assert document["observed"]["process_state"] == PROCESS_STATE_DEFUNCT
+    assert document["observed"]["exit_status"]["signal_name"] == "SIGTERM"
+    assert document["session_id"] == "serving-defunct"
+    assert document["monitor_summary"]["sample_count"] == 0
+    # ...and the session is no longer resident, so the next geometry can start.
+    assert find_resident_session(tmp_path) is None
+
+
+def test_stop_stale_refuses_a_session_that_is_still_there(tmp_path, monkeypatch):
+    session_dir = _stop_world(tmp_path, monkeypatch, state=PROCESS_STATE_RUNNING)
+    args = build_parser().parse_args(["stop", "--stale"])
+
+    with pytest.raises(ServingSessionError, match="is not stale"):
+        args.handler(args)
+    assert not (session_dir / SESSION_STOP_NAME).exists()
+    assert find_resident_session(tmp_path) is not None
+
+
+def test_stop_does_not_take_the_stale_path_for_a_running_server(tmp_path, monkeypatch):
+    session_dir = _stop_world(tmp_path, monkeypatch, state=PROCESS_STATE_RUNNING)
+    args = build_parser().parse_args(["stop"])
+
+    # The ordinary path runs instead, and fails on this fake world's missing
+    # runtime receipt -- the point is that NO stop record was written for a
+    # server that is still running.
+    with pytest.raises(SessionError):
+        args.handler(args)
+    assert not (session_dir / SESSION_STOP_NAME).exists()
+
+
+def test_status_names_the_defunct_state_beside_the_old_liveness_flag(
+    tmp_path, monkeypatch, capsys
+):
+    _stop_world(tmp_path, monkeypatch)
+    args = build_parser().parse_args(["status"])
+
+    assert args.handler(args) == 0
+
+    reported = json.loads(capsys.readouterr().out)
+    assert reported["process_state"] == PROCESS_STATE_DEFUNCT
+    assert reported["observed"]["stale"] is True
+    assert reported["stopped"] is False
+    assert reported["session"]["session_id"] == "serving-defunct"
+
+
+def test_start_explains_a_stale_resident_session_and_names_the_remedy(tmp_path):
+    session_dir = _write_session(tmp_path, "serving-defunct")
+    document = json.loads((session_dir / SESSION_DOCUMENT_NAME).read_text(encoding="utf-8"))
+    message = _resident_refusal(
+        session_dir, document, observer=lambda doc: _observe(doc, status=15)
+    )
+    assert "already recorded as resident" in message
+    assert "defunct" in message
+    assert "stop --stale --session-id serving-defunct" in message
+
+
+def test_start_still_says_stop_it_for_a_session_that_is_actually_running(tmp_path):
+    session_dir = _write_session(tmp_path, "serving-live")
+    document = json.loads((session_dir / SESSION_DOCUMENT_NAME).read_text(encoding="utf-8"))
+    message = _resident_refusal(
+        session_dir,
+        document,
+        observer=lambda doc: _observe(doc, state=PROCESS_STATE_RUNNING),
+    )
+    assert "stop it before starting another" in message
+    assert "--stale" not in message
+
+
+def test_start_names_what_is_still_holding_a_defunct_session(tmp_path):
+    session_dir = _write_session(tmp_path, "serving-defunct")
+    document = json.loads((session_dir / SESSION_DOCUMENT_NAME).read_text(encoding="utf-8"))
+    message = _resident_refusal(
+        session_dir,
+        document,
+        observer=lambda doc: _observe(doc, gpu=_fake_gpu(memory_used_mib=18500.0)),
+    )
+    assert "not yet provably gone" in message
+    assert "still holds 18500 MiB" in message
+
+
+def test_only_the_stop_subcommand_takes_stale():
+    assert build_parser().parse_args(["stop", "--stale"]).stale is True
+    assert build_parser().parse_args(["stop"]).stale is False
+    with pytest.raises(SystemExit):
+        build_parser().parse_args(["status", "--stale"])
