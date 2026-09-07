@@ -22,7 +22,9 @@ from speech_aware_evidence_acquisition.core.roster import (
 )
 from speech_aware_evidence_acquisition.data.audio2tool import audio2tool_receipts
 from speech_aware_evidence_acquisition.data.splits import prefixed, split_identity_hash
+from speech_aware_evidence_acquisition.data.variant_ids import published_sample_key
 from speech_aware_evidence_acquisition.rails.knowledge_build_a2t import (
+    EVALUATION_ROSTER_ROLE,
     exposed_identity_report,
     exposed_sample_ids,
 )
@@ -32,6 +34,9 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 CONSTRUCTION = REPO_ROOT / "docs/receipts/rosters/a2t-construction-800-v1.json"
 FRESH = REPO_ROOT / "docs/receipts/rosters/a2t-fresh-800-v1.json"
 PROBE_VIEW = REPO_ROOT / "docs/receipts/probe-samples/a2t-construction-800-v1.json"
+#: The committed KB v3 exposure-union / block-partition receipt
+#: (exposure row SAEA-SN-MF-A2T-KB-EXPOSURE-UNION-V3).
+KB_V3_PARTITION = REPO_ROOT / "docs/receipts/knowledge/a2t-partition-proposal.json"
 TIERS = (
     "tier1_direct",
     "tier2_parametric",
@@ -101,10 +106,60 @@ def test_the_construction_roster_is_excluded_from_the_exposure_union() -> None:
     }
     assert not construction_ids & union
     report = exposed_identity_report(REPO_ROOT)
-    roster_sources = {
-        str(row["name"]) for row in report["sources"] if row["kind"] == "roster-receipt"
+    roster_rows = [row for row in report["sources"] if row["kind"] == "roster-receipt"]
+    roster_sources = {str(row["name"]) for row in roster_rows}
+
+    # COORDINATOR DECISION 2026-09-07. This assertion used to name
+    # ``a2t-fresh-800-v1`` and nothing else, and went red when two more
+    # evaluation-role Audio2Tool rosters landed: ``a2t-evo-curve-400-v1`` (a
+    # SUBSET of already-exposed evaluation ids, drawn for the EVO curve) and
+    # ``a2t-calibration-400-ts2-v1`` (the ``@ts2`` MEDIA VARIANT of the frozen
+    # 400). Both are evaluation identities of an already-exposed evaluation
+    # population, so both belong in the union, and admitting them by CLASS --
+    # rather than by re-typing a name list that the next variant roster breaks
+    # again -- is what this test now checks. The property that actually
+    # matters is that such a roster can only WIDEN the hold-out; the two
+    # assertions below say so, and the third proves the construction side did
+    # not shrink.
+    assert "a2t-fresh-800-v1" in roster_sources
+    assert all(str(row["roster_role"]) == EVALUATION_ROSTER_ROLE for row in roster_rows)
+    assert all(
+        str(row["relpath"]).startswith("docs/receipts/rosters/") for row in roster_rows
+    )
+
+    v3 = json.loads(KB_V3_PARTITION.read_text(encoding="utf-8"))
+    assert v3["exposure_row"] == "SAEA-SN-MF-A2T-KB-EXPOSURE-UNION-V3"
+    v3_union = v3["exposure_union"]
+    v3_roster_names = {
+        str(row["name"]) for row in v3_union["sources"] if row["kind"] == "roster-receipt"
     }
-    assert roster_sources == {"a2t-fresh-800-v1"}
+    assert v3_roster_names == {"a2t-fresh-800-v1"}
+    # The union only ever grew.
+    assert len(union) >= int(v3_union["union_sample_ids"])
+
+    reserved_blocks = {int(block) for block in v3["reserved_exposed_blocks"]}
+    for name in sorted(roster_sources - v3_roster_names):
+        receipt = read_roster(REPO_ROOT / "docs/receipts/rosters" / f"{name}.json")
+        assert receipt["roster_role"] == "evaluation"
+        ids = {str(item["sample_id"]) for item in receipt["items"]}
+        # Every id it names is an evaluation identity this repository had
+        # ALREADY exposed, under its own published key.
+        assert {published_sample_key(sample_id) for sample_id in ids} <= union
+        # And every block it touches was ALREADY reserved. A variant roster
+        # names no pool unit at all (its ids carry the ``@`` suffix, so they
+        # match no ``query_idx``), and the curve roster was drawn from ids the
+        # union already held -- so neither can take a block away from the
+        # construction pool.
+        blocks = {int(item["query_idx"]) for item in receipt["items"] if "query_idx" in item}
+        assert blocks <= reserved_blocks, name
+
+    # Therefore the construction side of the partition is exactly what the
+    # committed KB v3 receipt recorded, and has not shrunk.
+    assert (
+        int(v3["report"]["blocks_total"]) - len(reserved_blocks)
+        == int(v3["report"]["blocks_construction"])
+        == 1689
+    )
 
 
 def test_the_reserved_roster_has_no_probe_sample_view() -> None:

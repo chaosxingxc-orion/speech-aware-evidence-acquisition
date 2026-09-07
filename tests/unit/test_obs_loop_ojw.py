@@ -142,6 +142,30 @@ def _scenario(name):
             texts=[_boundary_text("Quiet speech.", 20)],
             values=_config_values(obs_preprocess=["rms-norm"]),
         )
+    if name == "tail-silence":
+        # The 2026-09-07 Earnings-21 obs knob: 2.0 s of digital silence after
+        # the buffered cut. The openJiuwen executor "mirrors it" only if the
+        # slice BYTES, the derivation records (including the declared
+        # tail-silence transform and pre_sha256) and every metered second come
+        # out identical to the plain policy's -- which is what this scenario
+        # puts through the equivalence harness rather than asserting
+        # separately.
+        values = _config_values(
+            obs_buffer_seconds=30,
+            obs_min_advance_seconds=30,
+            obs_max_advance_seconds=30,
+            obs_fallback_advance_seconds=30,
+            obs_silence_snap_seconds=0,
+            obs_boundary_mode="fixed",
+            obs_vad_trim_min_seconds=0,
+            obs_slice_tail_silence_seconds=2.0,
+        )
+        values.pop("obs_boundary_prompt")
+        return dict(
+            pcm=_noise(75.0),
+            texts=["span one", "span two", "span three"],
+            values=values,
+        )
     if name == "fallback-boundary":
         return dict(
             pcm=_noise(90.0),
@@ -186,6 +210,7 @@ SCENARIOS = (
     "fixed-ablation",
     "evidence-arm",
     "rms-norm",
+    "tail-silence",
     "fallback-boundary",
     "retry-flaky",
     "retry-exhausted-skip",

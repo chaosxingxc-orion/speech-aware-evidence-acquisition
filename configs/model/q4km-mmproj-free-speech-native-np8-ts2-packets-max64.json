@@ -1,0 +1,46 @@
+{
+  "base_url": "http://127.0.0.1:8080",
+  "decoding_params": {
+    "id_slot": "per-sample",
+    "max_tokens": 64,
+    "seed": 20260803,
+    "temperature": 0
+  },
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "profile_slot_count": 8,
+  "prompt_order": "speech-query-prefix-v2",
+  "runtime_receipt": "receipts/runtime-q4km-mmproj-free.json",
+  "server_args": [
+    "-c",
+    "65536",
+    "-np",
+    "8",
+    "-b",
+    "2048",
+    "-ub",
+    "512",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "--cache-prompt",
+    "--cache-ram",
+    "0",
+    "--no-cache-idle-slots",
+    "--slot-prompt-similarity",
+    "0"
+  ],
+  "server_env": {
+    "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+    "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-dev1000-ts2-packets-04ccc72a"
+  },
+  "speech_feature_root": "/home/chao/feat-cache/slurp-dev1000-ts2-packets-04ccc72a",
+  "timeout_seconds": 420.0,
+  "transport": "llama-server",
+  "variant_basis": "IDENTICAL to q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64 except speech_feature_root / LLAMA_SPEECH_FEATURE_ROOT, which point at the @ts2 packet root instead of the comparator's. Same -c 65536 -np 8, same decoding, same prompt order, same decoder sha256. The packets in that root do NOT exist yet: they are produced by the separately registered CPU-only encode pass the media build receipt's packet_promotion_plan specifies."
+}

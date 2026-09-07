@@ -1,0 +1,62 @@
+{
+  "authorizes": "nothing. No contact, no server, no scoring and no Stage-3 activity. Composition and FlightRuntime.wire_check only.",
+  "cells": [
+    {
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-direct-closed-list",
+      "cell_id": "closed-list-tail2s-smoke-4",
+      "dataset_fragment": "slurp-speech-native-dev1000-tail2s-smoke4",
+      "model_fragment": "q4km-mmproj-free-speech-native-np8-ts2-packets-max64"
+    }
+  ],
+  "comparator": {
+    "attempt_id": "attempt-20260905T060424Z-2c5596",
+    "config_hash": "6be064ba49d4b3b8b430aa063b4fef46a898ce5a0b3702fe35c4896d5d1b894f",
+    "paper_facing_scorer": "slurp-slu-official-projected-v2",
+    "protocol_hash": "7e83a70508068d1a1c2512cabbc91b8417821ae5796038c2bc6fa4950bb951b2",
+    "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1",
+    "sealed_official_projected_v2": {
+      "action": 74.6,
+      "char_f1": 38.2,
+      "entities_strict": 21.91,
+      "intent_scen_act": 73.1,
+      "n": 1000,
+      "scenario": 82.6,
+      "slu_f1": 35.8,
+      "unparsed": 3,
+      "word_f1": 33.69
+    },
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "planned_gpu_hours": 0.05,
+    "planned_model_calls": 8,
+    "planned_speech_audio_seconds": 60,
+    "split_role": "dev"
+  },
+  "experiment_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1",
+  "media": {
+    "build_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-slurp-dev1000-tail2s-media/build-receipt.json",
+    "count": 4,
+    "exposure_row": "SAEA-SN-MF-SLURP-DEV1000-TS2-MEDIA-V1"
+  },
+  "open_preconditions": [
+    "PACKETS: the @ts2 packet root does not exist. A separately registered bounded-discovery-probe row must run the CPU-only sidecar encode (1,000 contacts, 0 GPU-h) and promote the packets before this cell can serve.",
+    "SCORER ID RAIL: core.scorers 'slurp-slu-official-projected-v2' resolves gold by EXACT sample_id, so an @ts2 id fails closed at scoring. Earnings-22 already solved the same problem with reproduction.esb_reference.published_segment_key, which splits on '@' and is provably inert for unsuffixed ids. The equivalent one-line rail for SLURP is NOT applied by the preparation that wrote this fragment; it is a named, reviewed change to a paper-facing scorer."
+  ],
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-dev1000-tail2s-smoke4",
+      "ids": [
+        "slurp:devel:000011:audio-1497266596@ts2",
+        "slurp:devel:000053:audio-1498758443@ts2",
+        "slurp:devel:000058:audio-1488637952@ts2",
+        "slurp:devel:000068:audio-1488550098@ts2"
+      ]
+    }
+  ],
+  "preregistration": "docs/readiness/2026-09-07-cross-carrier-silence-tail-v1-preregistration.md",
+  "purpose": "SLURP arm of the cross-carrier silence-tail probe. ONE factor, the MEDIA: exactly 2.0 s of digital silence appended to every one of the 1,000 sealed devel recordings. The prompt, the roster membership, the build, the geometry and the decoding are the sealed SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1 comparator's, byte for byte; the only other difference is which packet root the mmproj-free decoder reads, which is forced by the media change because the legacy feature-cache key is FNV-1a over the original media bytes. This fragment authorizes NOTHING: the cell needs its own owner GO, its own exposure row, and a separately registered CPU-only encode pass to materialize its packets. This is the 4-row dry run that must pass before the 1,000 contacts.",
+  "split_id": "DEV-1000-TAIL2S-SMOKE-4"
+}

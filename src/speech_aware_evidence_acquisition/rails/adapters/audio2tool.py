@@ -39,6 +39,7 @@ from ...data.audio2tool import (
     render_tool_schemas,
 )
 from ...data.lock import REPO_ROOT
+from ...data.variant_ids import published_sample_key
 from ...reproduction.toolcall_scoring import ToolCall, parse_tool_calls_text, score_item
 from ..obs import AudioRef, ObsPacket
 from ..task_adapter import TaskAdapter
@@ -161,10 +162,18 @@ class Audio2ToolAdapter(TaskAdapter):
     def gold(self, sample: Audio2ToolSample) -> tuple[ToolCall, ...]:
         """Look up ``sample``'s frozen expected tool call(s) -- read HERE
         (module docstring), never in ``assemble_prompt``/
-        ``build_task_contract`` above."""
+        ``build_task_contract`` above.
+
+        VARIANT-ID RAIL (2026-09-07): a derived-media population carries
+        ``<published id>@<variant>`` ids (``data.variant_ids``), so the
+        published key is recovered before the lookup. Inert for every
+        unsuffixed id, and not a skeleton key -- a foreign published key
+        still refuses below, and the refusal names the RAW id that was
+        flown.
+        """
 
         expected_by_id = load_expected_calls(self._lock, self._root, repo_root=self._repo_root)
-        expected = expected_by_id.get(sample.sample_id)
+        expected = expected_by_id.get(published_sample_key(sample.sample_id))
         if expected is None:
             raise ValueError(
                 f"sample {sample.sample_id!r} is not in the frozen audio2tool probe receipt"

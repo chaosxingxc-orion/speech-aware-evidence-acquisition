@@ -66,6 +66,7 @@ import json
 from pathlib import Path
 from typing import Mapping
 
+from ..data.variant_ids import published_sample_key
 from ..e0.artifacts import REPO_ROOT
 from ..scoring import align, tokens_v1
 from .asr_wer_whisper import (
@@ -283,9 +284,14 @@ def published_segment_key(sample_id: str) -> str:
 
     An id without a suffix is returned unchanged, so every population that
     existed before the convention is byte-for-byte unaffected.
+
+    This is the Earnings-22 NAME for the rule; the rule itself lives once, in
+    ``data.variant_ids.published_sample_key``, so the Audio2Tool and SLURP
+    gold rails (2026-09-07) share this exact behaviour rather than a second
+    spelling of it.
     """
 
-    return sample_id.split("@", 1)[0]
+    return published_sample_key(sample_id)
 
 
 def _reference_for(

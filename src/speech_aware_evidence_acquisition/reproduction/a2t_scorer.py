@@ -35,6 +35,7 @@ from typing import Mapping, Sequence
 
 from ..data.audio2tool import load_expected_calls, load_official_gold, load_tool_registry
 from ..data.lock import REPO_ROOT
+from ..data.variant_ids import published_sample_key
 from .audio2tool_official import (
     AUDIO2TOOL_OFFICIAL_COMMIT,
     AUDIO2TOOL_OFFICIAL_METRICS_BLOB_SHA1,
@@ -52,6 +53,15 @@ from .toolcall_scoring import (
     parse_tool_calls_text,
     score_item,
 )
+#: VARIANT-ID RAIL (2026-09-07 cross-carrier silence-tail preregistration
+#: section 6.2). A derived-media population carries ``<published id>@<variant>``
+#: ids (``data.variant_ids``); all three scorer entry points below recover the
+#: published key before the gold lookup and keep the RAW id in every per-sample
+#: row and every refusal message, so a receipt still records exactly which media
+#: was flown. Inert for unsuffixed ids by construction, and never a skeleton key:
+#: a foreign published key refuses exactly as it did before. The tier is read
+#: from the id's ``<tier>:<number>`` prefix, which the suffix never touches.
+
 from .toolcall_scoring_v2 import (
     A2T_SCORER_V2_VERSION,
     AggregateScoreV2,
@@ -146,7 +156,7 @@ def score_audio2tool_outputs(
         if sample_id in seen:
             raise ToolCallScoringError(f"outputs carry a duplicate sample_id {sample_id!r}")
         seen.add(sample_id)
-        expected = expected_by_id.get(sample_id)
+        expected = expected_by_id.get(published_sample_key(sample_id))
         if expected is None:
             raise ToolCallScoringError(
                 f"outputs sample_id {sample_id!r} is not in the frozen audio2tool "
@@ -253,7 +263,7 @@ def score_audio2tool_outputs_v2(
         if sample_id in seen:
             raise ToolCallScoringError(f"outputs carry a duplicate sample_id {sample_id!r}")
         seen.add(sample_id)
-        expected = expected_by_id.get(sample_id)
+        expected = expected_by_id.get(published_sample_key(sample_id))
         if expected is None:
             raise ToolCallScoringError(
                 f"outputs sample_id {sample_id!r} is not in the frozen audio2tool "
@@ -484,7 +494,7 @@ def score_audio2tool_outputs_official(
         if sample_id in seen:
             raise ToolCallScoringError(f"outputs carry a duplicate sample_id {sample_id!r}")
         seen.add(sample_id)
-        gold = gold_by_id.get(sample_id)
+        gold = gold_by_id.get(published_sample_key(sample_id))
         if gold is None:
             raise ToolCallScoringError(
                 f"outputs sample_id {sample_id!r} is not in the frozen audio2tool "

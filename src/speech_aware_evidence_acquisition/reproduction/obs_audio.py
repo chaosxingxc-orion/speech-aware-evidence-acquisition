@@ -31,6 +31,7 @@ slice/derivation hashes the payload-binding rail re-verifies are stable.
 
 from __future__ import annotations
 
+import hashlib
 import io
 import math
 import re
@@ -189,6 +190,63 @@ def rms_normalize(samples: Sequence[int], target_dbfs: float) -> array:
 
 
 # ---------------------------------------------------------------------------
+# Slice tail silence (obs_slice_tail_silence_seconds, 2026-09-07)
+# ---------------------------------------------------------------------------
+
+SLICE_TAIL_SILENCE_TRANSFORM = "tail-silence"
+"""Name recorded in a slice's ``preprocess`` tuple when a tail was appended.
+
+Spelled with its length at the call site (``tail-silence-2.0s``) so the
+derivation record says how much silence, not merely that there was some.
+"""
+
+
+def tail_silence_samples(sample_rate_hz: int, seconds: float) -> int:
+    """The exact zero-sample count for ``seconds`` at ``sample_rate_hz``.
+
+    Stated in SECONDS and resolved against the file's OWN rate, which is the
+    rule ``scripts/build_cross_carrier_tail2s_media.py`` proves byte-identical
+    to the pinned Earnings-22 ``transform('tail-silence-2s', ...)`` at 16 kHz
+    -- there, 2.0 s is 32,000 samples. A length that is not a whole number of
+    samples at this rate is REFUSED rather than silently rounded: the tail is
+    the factor under test and it must be exact.
+    """
+
+    if (
+        isinstance(sample_rate_hz, bool)
+        or not isinstance(sample_rate_hz, int)
+        or sample_rate_hz <= 0
+    ):
+        raise ValueError(f"sample_rate_hz must be a positive integer, got {sample_rate_hz!r}")
+    if isinstance(seconds, bool) or not isinstance(seconds, (int, float)):
+        raise ValueError(f"tail seconds must be a number, got {seconds!r}")
+    if not math.isfinite(seconds) or seconds < 0:
+        raise ValueError(f"tail seconds must be finite and >= 0, got {seconds!r}")
+    exact = float(seconds) * sample_rate_hz
+    count = int(round(exact))
+    if abs(exact - count) > 1e-9:
+        raise ValueError(
+            f"a {seconds} s tail is not a whole number of samples at {sample_rate_hz} Hz"
+        )
+    return count
+
+
+def append_tail_silence(
+    samples: Sequence[int], sample_rate_hz: int, seconds: float
+) -> array:
+    """``samples`` followed by exactly ``seconds`` of digital silence.
+
+    Strictly ADDITIVE: nothing is removed, no sample is altered, the sample
+    rate never changes. ``seconds == 0`` returns the samples unchanged (a
+    fresh ``array``), so the default knob value is byte-identical to the
+    historical path.
+    """
+
+    tail = tail_silence_samples(sample_rate_hz, seconds)
+    return array("h", samples) + array("h", bytes(2 * tail))
+
+
+# ---------------------------------------------------------------------------
 # WAV bytes (deterministic: stdlib wave writer, 44-byte canonical header)
 # ---------------------------------------------------------------------------
 
@@ -204,6 +262,60 @@ def write_wav_bytes(samples: Sequence[int], sample_rate_hz: int) -> bytes:
         handle.setframerate(sample_rate_hz)
         handle.writeframes(array("h", samples).tobytes())
     return buffer.getvalue()
+
+
+# ---------------------------------------------------------------------------
+# The ONE slice encoder every obs executor calls
+# ---------------------------------------------------------------------------
+
+
+def encode_slice(
+    slice_samples: Sequence[int],
+    sample_rate_hz: int,
+    *,
+    preprocess: Sequence[str] = (),
+    rms_target_dbfs: float = -20.0,
+    tail_silence_seconds: float = 0.0,
+) -> tuple[bytes, tuple[str, ...], str | None]:
+    """Turn one already-cut window into the bytes that go on the wire.
+
+    Returns ``(wav_bytes, transforms, pre_sha256)`` -- exactly the three
+    values a :class:`core.model.SliceRecord` needs beyond the span, and the
+    single place the transform ORDER is decided. Both obs executors (the
+    sequential and parallel paths of ``reproduction.obs_loop`` and the
+    openJiuwen ``FeedBuffer`` component) call this one function, so the two
+    can never diverge in what they send.
+
+    Order: raw cut -> ``rms-norm`` (when declared) -> tail silence (when
+    ``tail_silence_seconds > 0``). ``pre_sha256`` is the hash of the RAW cut,
+    before any declared transform, which is what
+    :meth:`core.model.SliceRegistry.register` requires whenever
+    ``transforms`` is non-empty.
+
+    With ``preprocess=()`` and ``tail_silence_seconds=0.0`` this is
+    ``write_wav_bytes(slice_samples, sample_rate_hz)`` and ``((), None)`` --
+    byte-identical to the historical path, which is what keeps every sealed
+    Earnings run reproducible.
+    """
+
+    transforms = tuple(preprocess)
+    raw_bytes = write_wav_bytes(slice_samples, sample_rate_hz)
+    pre_sha256: str | None = None
+    if "rms-norm" in transforms:
+        pre_sha256 = hashlib.sha256(raw_bytes).hexdigest()
+        slice_samples = rms_normalize(slice_samples, rms_target_dbfs)
+        raw_bytes = write_wav_bytes(slice_samples, sample_rate_hz)
+    if tail_silence_seconds > 0:
+        if pre_sha256 is None:
+            pre_sha256 = hashlib.sha256(raw_bytes).hexdigest()
+        slice_samples = append_tail_silence(
+            slice_samples, sample_rate_hz, tail_silence_seconds
+        )
+        raw_bytes = write_wav_bytes(slice_samples, sample_rate_hz)
+        transforms = transforms + (
+            f"{SLICE_TAIL_SILENCE_TRANSFORM}-{tail_silence_seconds:g}s",
+        )
+    return raw_bytes, transforms, pre_sha256
 
 
 # ---------------------------------------------------------------------------

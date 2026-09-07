@@ -1,0 +1,131 @@
+{
+  "experiment_id": "SAEA-E21-FULL44-TAIL2S-V1",
+  "schema": "saea-e21-full44-direct-baseline-experiment-v1",
+  "date": "2026-09-07",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "Earnings-21 arm of the cross-carrier silence-tail probe. ONE factor, the media each 90-second window carries: exactly 2.0 s (32,000 zero samples at 16 kHz) of digital silence appended after the buffered cut, before the request. The population, the split identity, the instruction, the OBS protocol, the evidence source, the decoding, the audio path, the feature-cache policy and the serving geometry are the sealed SAEA-E21-FULL44-DIRECT-BASELINE-V2 arm's, byte for byte; the only differences are the baseline fragment's obs_slice_tail_silence_seconds 2.0 and the three additional registered scorer ids. Preregistration: docs/readiness/2026-09-07-cross-carrier-silence-tail-v1-preregistration.md sections 1.4, 4.3 and 6.3. THIS FRAGMENT AUTHORIZES NOTHING: the cell needs its own owner GO and its own exposure row before any contact.",
+  "authorizes": "nothing. No contact, no server, no scoring and no Stage-3 activity. Composition and a model-free preflight only.",
+  "population": {
+    "carrier": "earnings21-original",
+    "split_name": "discovery",
+    "dataset_fragment": "earnings21-discovery",
+    "split_role": "discovery",
+    "count": 44,
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "receipt": "docs/receipts/splits.json",
+    "fixed_90s_windows_one_pass": 1593,
+    "audio_seconds_one_pass_cut": 141348.532,
+    "audio_seconds_one_pass_delivered": 144534.532,
+    "media_exposure_row": "SAEA-SN-MF-E21-BUF90-TS2-MEDIA-V1",
+    "selection": "no draw: the whole frozen earnings21-original discovery split, exactly the population the sealed comparator flew. The @ts2 windows are the SAME audio with a tail; nothing new is drawn and no new call identity is opened.",
+    "estimand": "corpus-level WER over all 44 calls, paired per window against the sealed comparator on the key analysis.e21_window_pairing mints, and clustered by call."
+  },
+  "cells": [
+    {
+      "cell_id": "E21-full44-tail2s-buf90",
+      "dataset_fragment": "earnings21-discovery",
+      "baseline_fragment": "e21-buf90-tail2s-scored7",
+      "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "arm": "bare-core",
+      "factor": "the media, and only the media: +2.0 s of digital silence after each buffered 90-second cut",
+      "obs": "fixed 90-second windows, no VAD trim, no overlap, no rolling tail, no preprocessing; advance = buffer in obs_boundary_mode fixed -- identical to the comparator, because the tail is appended AFTER the cut and never moves it",
+      "evidence": "none",
+      "serving_geometry": "-c 36864 -np 6, 6,144 tokens per slot, bf16 mmproj resident on the GPU, GGML_CUDA_DISABLE_GRAPHS=1",
+      "audio_path": "raw audio through the bf16 mmproj on the GPU; no feature cache, no CPU packet preprocessing"
+    }
+  ],
+  "smoke": {
+    "cell_id": "E21-full44-tail2s-buf90-smoke-4",
+    "windows": 4,
+    "rule": "section 8 item 5 of the preregistration: a four-window dry run flies first and its media falsifier must hold on 4 of 4 -- each emitted slice SHA-256 equal to the committed @ts2 entry for that window -- before the 1,593 fly.",
+    "how": "the same fragments, restricted to one short call, with the emitted slice hashes checked against docs/receipts/artifacts/d1-e21-buf90-1593-tail2s.json before any score file is opened."
+  },
+  "comparator": {
+    "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+    "attempt_id": "attempt-20260904T233816Z-bcd338",
+    "config_hash": "e4b133d1",
+    "protocol_hash": "06f7f308",
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "paper_facing_scorer": "asr-wer-whisper",
+    "sealed_corpus_wer_whisper_normalized": 8.1995,
+    "sealed_counts": {
+      "substitutions": 13098,
+      "deletions": 5701,
+      "insertions": 10700,
+      "reference_words": 359765
+    },
+    "sealed_agentic_metrics": {
+      "asr-wer-whisper": 8.1995,
+      "conec_entity_wer_official_overall": 8.2,
+      "conec_entity_wer_official_non_entity": 4.73,
+      "numeric_value_accuracy_v1": 90.7335,
+      "semantic_high_impact_error_rate_v1": 0.0278
+    },
+    "pairing": "per window <call>#w<NNNN> (analysis.e21_window_pairing.call_of), clustered by call; owner ruling 2026-09-06. The verdict reads the call-clustered interval as the honest one and reports the stratified one beside it."
+  },
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample",
+    "contacts_per_item": "one per 90-second window; 1,593 windows over 44 calls",
+    "harness": "core.driver.run_experiment_bundled through scripts/run_arm_sequence.sh -- the exact launcher path that produced the sealed comparator. core.flight.FlightRuntime cannot express this protocol (rails/adapters/earnings.py yields whole calls with no windowing and the 90-second tiling lives in the registered core.base policy obs-agent-loop), so this cell has NO wire_check; its model-free preflight is core.driver.bundled's own load_verified_split + require_clean_study_repo, which both run BEFORE any attempt is opened or any budget is spent.",
+    "instruction": "byte-identical to the sealed comparator's baseline fragment task_instruction"
+  },
+  "the_only_difference": {
+    "baseline_fragment": "e21-buf90-zero-locked-scored4 becomes e21-buf90-tail2s-scored7",
+    "keys_that_move": [
+      "obs_slice_tail_silence_seconds: absent (default 0.0) becomes 2.0",
+      "scorers: the sealed four plus conec-entity-wer-official, numeric-value-accuracy-v1 and semantic-high-impact-error-rate-v1, so section 4.3's four agentic metrics come out of core.scoring_batch's verified path rather than an out-of-band read"
+    ],
+    "keys_that_do_not": "population, split identity, dataset fragment, model fragment, serving geometry, server env, decoding params, instruction, arm, policy, evidence source, and every obs buffer/advance/snap/boundary-mode/VAD/preprocess/tail-chars/retry/skip/batch setting",
+    "why_the_cut_cannot_move": "the tail is appended by reproduction.obs_audio.encode_slice AFTER the window is cut; the cursor advances on the CUT span, and core.model.SliceRegistry.register requires audio_seconds to equal end_seconds - start_seconds, so a tail that moved the span would refuse rather than silently re-tile the call."
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "discovery",
+    "planned_model_calls": 1750,
+    "planned_gpu_hours": 1.2,
+    "planned_speech_audio_seconds": 150000
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "1,593 fixed 90-second windows plus 157 of headroom for obs_slice_retry_max=1 retries -- the comparator's own registered figure.",
+    "planned_speech_audio_seconds": "144,534.532 s delivered for one pass (141,348.532 cut + 1,593 x 2.0 tail), rounded up with retry headroom to 150,000. NOTE that SliceRecord.audio_seconds meters the CUT span, so the harness's own metered total is the smaller 141,348.532; the plan is stated on the larger DELIVERED figure so the ceiling can never be the thing that has to be re-read.",
+    "planned_gpu_hours": "1.2, section 7 of the preregistration. The sealed comparator spent 0.9734 GPU-h on the same 1,593 windows and each request now carries 2.3 % more audio.",
+    "paid_api_spend": 0,
+    "budget_is_run_cumulative": "core/model/adapter.py meters planned_model_calls and planned_speech_audio_seconds across ALL attempts of a run id, so a partially spent attempt cannot be re-run under this id."
+  },
+  "evaluation": {
+    "manifest_scorers": [
+      "asr-wer-whisper",
+      "conec-entity-wer-official",
+      "numeric-value-accuracy-v1",
+      "semantic-high-impact-error-rate-v1",
+      "asr-wer",
+      "entity-wer",
+      "cost"
+    ],
+    "paper_facing_scorer": "asr-wer-whisper",
+    "paper_facing_metric": "corpus WER with the Whisper EnglishTextNormalizer on both sides and whitespace tokenization",
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "mandatory_slices": [
+      "the per-call table for all 44 calls including 4346923",
+      "the per-window paired contrast, stratified by call and clustered by call, 10,000 replicates, seed 20260903, CI90",
+      "the mechanism clause of section 4.3 item 3: the contrast on the 1,088 interior windows that end within 20 ms of active speech, beside the 39 windows that already carry 2.0 s or more of trailing silence",
+      "the four agentic metrics against their sealed values",
+      "by sector and by sample rate, natural mixture and equal-stratum weighting"
+    ]
+  },
+  "decision": {
+    "rule": "section 4.3 of the preregistration, quoted verbatim before it is applied: ADMITTED iff (1) the CI90 upper bound on the corpus-WER delta is < -0.2356, below zero and disjoint from the Earnings-22 same-request null, which is IMPORTED and not measured on this carrier; (2) no agentic metric worsens at its own CI90, with semantic-high-impact-error-rate-v1's sealed 0.02780 restated as a strict lower bound; (3) the effect concentrates on the interior mid-speech-ended windows rather than on the 39 that already carry 2.0 s.",
+    "falsifier_before_any_score": "section 4.4: each flown window's emitted slice SHA-256 must equal the committed @ts2 entry for that window and each delivered clip must be its sealed twin plus exactly 2.0 s. Zero disagreeing rows, or the cell is void and no score is read.",
+    "claim_surface": "Discovery data. No superiority, generality, published-comparison or Stage-3 claim; a media-changed number is never reported as a like-for-like reproduction of a published protocol.",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "authorizes": "nothing. No contact, no server, no scoring and no Stage-3 activity. Composition and FlightRuntime.wire_check only.",
+  "cells": [
+    {
+      "arm": "bare-core",
+      "baseline_fragment": "a2t-direct-official-protocol",
+      "cell_id": "R-official-tail2s",
+      "dataset_fragment": "audio2tool-calibration-400-tail2s",
+      "factor": "the media, and only the media: +2.0 s of digital silence after the sealed samples",
+      "model_fragment": "q4km-featcache-a2t-official-04ccc72a"
+    }
+  ],
+  "comparator": {
+    "attempt_id": "attempt-20260904T135250Z-rofficialraw",
+    "cell_id": "R-official-raw",
+    "config_hash": "0e56ce8f2e71d1e4e8702433ae7c997aacf4e548414100bad5a1d9b9c8ef5165",
+    "paper_facing_scorer": "a2t-toolcall-official",
+    "protocol_hash": "6da614b22de0001760b0263f6026483373ce190d801cc8dd9008e34bb595aa8a",
+    "run_id": "SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-V1",
+    "sealed_official_tool_accuracy": {
+      "exact_match": 20.25,
+      "n": 400,
+      "overall": 61.0,
+      "parse_rate": 99.75,
+      "rows_with_multiple_call_matches": 52,
+      "tier1_direct": 60.0,
+      "tier2_parametric": 74.0,
+      "tier3_multi_intent": 72.0,
+      "tier4_implicit": 28.0,
+      "tier5_needle": 78.0,
+      "tier6_correction": 84.0,
+      "tier7_multiturn": 58.0,
+      "tier8_intent_blending": 34.0
+    },
+    "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c"
+  },
+  "date": "2026-09-07",
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "planned_gpu_hours": 0.2,
+    "planned_model_calls": 408,
+    "planned_speech_audio_seconds": 3100,
+    "split_role": "discovery"
+  },
+  "execution_profile": "baseline-reproduction",
+  "experiment_id": "SAEA-A2T-OFFICIAL-PROTOCOL-TAIL2S-V1",
+  "open_preconditions": [
+    "SCORER ID RAIL: reproduction.a2t_scorer resolves gold by EXACT sample_id (expected_by_id.get(sample_id)), so an @ts2 id fails closed at scoring with 'is not in the frozen audio2tool ...'. Earnings-22 already solved the same problem with reproduction.esb_reference.published_segment_key, which splits on '@' and is provably inert for unsuffixed ids. The equivalent one-line rail for Audio2Tool is NOT applied by the preparation that wrote this fragment; it is a named, reviewed change to a paper-facing scorer."
+  ],
+  "population": {
+    "carrier": "audio2tool",
+    "count": 400,
+    "dataset_fragment": "audio2tool-calibration-400-tail2s",
+    "media_exposure_row": "SAEA-SN-MF-A2T-CAL400-TS2-MEDIA-V1",
+    "split_name": "A2T-CALIBRATION-400-TAIL2S",
+    "split_role": "discovery"
+  },
+  "preregistration": "docs/readiness/2026-09-07-cross-carrier-silence-tail-v1-preregistration.md",
+  "purpose": "Audio2Tool arm of the cross-carrier silence-tail probe. ONE factor, the MEDIA: exactly 2.0 s of digital silence appended to every one of the 400 sealed frozen-400 wavs (48,000 zero samples at the release's own 24 kHz). The published system message, the compact 152-row registry, the user turn, the geometry, the decoding and the official scorer are the sealed SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-V1 cell R-official-raw's, byte for byte. This fragment authorizes NOTHING: the cell needs its own owner GO and its own exposure row.",
+  "schema": "saea-a2t-direct-calibration-experiment-v1"
+}
