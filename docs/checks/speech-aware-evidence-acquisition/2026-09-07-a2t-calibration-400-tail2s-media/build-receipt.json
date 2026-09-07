@@ -1,0 +1,110 @@
+{
+  "authorizes": "nothing beyond writing this media and these receipts. No cell is flown, no request is built, no server is started, no packet is promoted and no scorer runs.",
+  "carrier": "audio2tool",
+  "carrier_lock_key": "audio2tool",
+  "comparator": {
+    "attempt_id": "attempt-20260904T135250Z-rofficialraw",
+    "cell_id": "R-official-raw",
+    "flight_split_identity_hash": "11091b38ae9d53530952af632636d7e79a614350213e10c6c26583c37f85846b",
+    "paper_facing_scorer": "a2t-toolcall-official",
+    "run_id": "SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-V1",
+    "serving_path": "raw audio through the bf16 mmproj, -c 49152 -np 3",
+    "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c"
+  },
+  "contacts": {
+    "embedder": 0,
+    "ffmpeg_calls": 0,
+    "frozen_core": 0,
+    "gpu_hours": 0,
+    "librosa_calls": 0,
+    "network": 0,
+    "outbound_connection_attempts": 0,
+    "paid_api_spend": 0,
+    "parent_container_decodes": 0,
+    "retriever": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "container": "wav",
+  "count": 400,
+  "deterministic": "this receipt carries no timestamp: two back-to-back writes reproduce the same MANIFEST.sha256",
+  "execution_profile": "model-free-check",
+  "exposure_row": "SAEA-SN-MF-A2T-CAL400-TS2-MEDIA-V1",
+  "id_suffix": "ts2",
+  "measured_media": {
+    "audio_hours_total": 0.822124,
+    "audio_seconds_longest_item": 37.71375,
+    "audio_seconds_shortest_item": 2.616875,
+    "audio_seconds_total": 2959.647,
+    "clips_left_unchanged": 0,
+    "n_samples_total": 71031528,
+    "samples_added_total": 19200000,
+    "samples_removed_total": 0,
+    "source_audio_seconds_total": 2159.647,
+    "total_bytes": 142080656
+  },
+  "media_root": "derived/a2t-calibration-400-tail2s-v1",
+  "opened": {
+    "evaluation_query_text": 0,
+    "gold_labels": 0,
+    "hypothesis_text": 0,
+    "note": "MEDIA BYTES ONLY. The build reads the pinned receipts (identifiers, media paths, measured media identity, window spans) and the audio samples of the sealed files those receipts name. No gold label, reference sentence, evaluation query, tool name, sealed output, hypothesis or score is opened, and none is reachable from this process.",
+    "reference_transcripts": 0,
+    "scores": 0,
+    "sealed_outputs": 0,
+    "tool_registry_rows": 0
+  },
+  "outputs": {
+    "d1_media_supplement": "docs/receipts/artifacts/d1-a2t-calibration-400-tail2s.json",
+    "d1_media_supplement_sha256": "4bfc77f06a7d92ea6f0b57c6ed4823996d4bc218ed56bf894f01cc4d0d885693",
+    "probe_view": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-a2t-calibration-400-tail2s-media/roster/flight-roster-receipt.json",
+    "probe_view_sha256": "683f124e9dcda27bc14f5e3eafb454d46a636d94bcb95689df039ce7b3227db2",
+    "roster_receipt": "docs/receipts/rosters/a2t-calibration-400-ts2-v1.json",
+    "roster_receipt_sha256": "7919aab6f64001f4826ef1607771462392c9983f3f1159616cdd92ed8e80d2f7"
+  },
+  "roster_id": "A2T-CALIBRATION-400-TS2-V1",
+  "rule": "exactly 2.0 s of digital silence appended to the sealed clip -- 2.0 x the file's OWN sample rate in zero samples; nothing is removed, no sealed sample is altered, the sample rate is never changed and no parent container is re-decoded that the sealed comparator did not itself send",
+  "rule_implementation": {
+    "function": "transform('tail-silence-2s', ...)",
+    "module": "scripts/build_e22_dev1500_media_variants.py",
+    "sha256": "49e5d91095c061d167688bd4dea35fc7503d3a09caa3066db68fde9807d196e6"
+  },
+  "schema": "saea-cross-carrier-ts2-media-build-receipt-v1",
+  "sealed_clip_trailing_silence": {
+    "ends_exactly_at_an_active_frame": 20,
+    "max": 0.62,
+    "mean": 0.1213,
+    "measured_by": "analysis.e22_clip_boundary.energy_margins at its committed version, on the SEALED samples (not the variant): 20 ms frames, active = frame RMS within 35 dB of the clip peak and above the absolute floor",
+    "median": 0.08,
+    "min": 0.0,
+    "n": 400,
+    "p10": 0.02,
+    "p90": 0.28,
+    "trailing_silence_at_least_2_00_s": 0,
+    "trailing_silence_at_most_0_02_s": 51,
+    "trailing_silence_at_most_0_10_s": 237
+  },
+  "source_population": {
+    "all_source_digests_matched": true,
+    "files_rehashed_before_reading": 400,
+    "roster_receipt": {
+      "path": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-calibration-400-roster/flight-roster-receipt.json",
+      "sha256": "6f352ea583d0bb91f77aad62e07bdad4d3210d066440fbfaee8e2af504853fe7"
+    }
+  },
+  "split_identity_hash": "6aa3aa43becbb4e11a42d174b181e2acc9ba5b5bdd599b2edbef93589536b503",
+  "split_name": "A2T-CALIBRATION-400-TAIL2S",
+  "split_role": "discovery",
+  "strata_counts": {
+    "tier1_direct": 50,
+    "tier2_parametric": 50,
+    "tier3_multi_intent": 50,
+    "tier4_implicit": 50,
+    "tier5_needle": 50,
+    "tier6_correction": 50,
+    "tier7_multiturn": 50,
+    "tier8_intent_blending": 50
+  },
+  "test_split_read": false,
+  "variant": "tail-silence-2s"
+}

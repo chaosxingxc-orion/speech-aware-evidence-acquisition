@@ -1,0 +1,2432 @@
+{
+  "carrier_lock_key": "audio2tool",
+  "excluded_count": 0,
+  "items": [
+    {
+      "audio_seconds": 3.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000045@ts2.wav",
+      "sample_id": "tier1_direct:000045@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.856875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000062@ts2.wav",
+      "sample_id": "tier1_direct:000062@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.096875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000074@ts2.wav",
+      "sample_id": "tier1_direct:000074@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.136875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000077@ts2.wav",
+      "sample_id": "tier1_direct:000077@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.11775,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000167@ts2.wav",
+      "sample_id": "tier1_direct:000167@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000178@ts2.wav",
+      "sample_id": "tier1_direct:000178@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000232@ts2.wav",
+      "sample_id": "tier1_direct:000232@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.896875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000270@ts2.wav",
+      "sample_id": "tier1_direct:000270@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 5.016875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000362@ts2.wav",
+      "sample_id": "tier1_direct:000362@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.256875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000424@ts2.wav",
+      "sample_id": "tier1_direct:000424@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.816875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000579@ts2.wav",
+      "sample_id": "tier1_direct:000579@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.136875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000593@ts2.wav",
+      "sample_id": "tier1_direct:000593@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.136875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000620@ts2.wav",
+      "sample_id": "tier1_direct:000620@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.736875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_000636@ts2.wav",
+      "sample_id": "tier1_direct:000636@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.656875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_001124@ts2.wav",
+      "sample_id": "tier1_direct:001124@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.136875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_001128@ts2.wav",
+      "sample_id": "tier1_direct:001128@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 5.976875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_001242@ts2.wav",
+      "sample_id": "tier1_direct:001242@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 5.016875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_001422@ts2.wav",
+      "sample_id": "tier1_direct:001422@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.816875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_001432@ts2.wav",
+      "sample_id": "tier1_direct:001432@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.136875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_001444@ts2.wav",
+      "sample_id": "tier1_direct:001444@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.376875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_001607@ts2.wav",
+      "sample_id": "tier1_direct:001607@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 5.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_001631@ts2.wav",
+      "sample_id": "tier1_direct:001631@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.296875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_001976@ts2.wav",
+      "sample_id": "tier1_direct:001976@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.296875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_002212@ts2.wav",
+      "sample_id": "tier1_direct:002212@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.096875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_002300@ts2.wav",
+      "sample_id": "tier1_direct:002300@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.216875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_002510@ts2.wav",
+      "sample_id": "tier1_direct:002510@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.976875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_002581@ts2.wav",
+      "sample_id": "tier1_direct:002581@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.536875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_002609@ts2.wav",
+      "sample_id": "tier1_direct:002609@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 5.016875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_002687@ts2.wav",
+      "sample_id": "tier1_direct:002687@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.176875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_002720@ts2.wav",
+      "sample_id": "tier1_direct:002720@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_002728@ts2.wav",
+      "sample_id": "tier1_direct:002728@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_002763@ts2.wav",
+      "sample_id": "tier1_direct:002763@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.136875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_003109@ts2.wav",
+      "sample_id": "tier1_direct:003109@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_003178@ts2.wav",
+      "sample_id": "tier1_direct:003178@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 2.616875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_003198@ts2.wav",
+      "sample_id": "tier1_direct:003198@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_003210@ts2.wav",
+      "sample_id": "tier1_direct:003210@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.736875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_003343@ts2.wav",
+      "sample_id": "tier1_direct:003343@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_003492@ts2.wav",
+      "sample_id": "tier1_direct:003492@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 5.016875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_003562@ts2.wav",
+      "sample_id": "tier1_direct:003562@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.296875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_003651@ts2.wav",
+      "sample_id": "tier1_direct:003651@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.136875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_003668@ts2.wav",
+      "sample_id": "tier1_direct:003668@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_003706@ts2.wav",
+      "sample_id": "tier1_direct:003706@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.073208333,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_003713@ts2.wav",
+      "sample_id": "tier1_direct:003713@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.296875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_003775@ts2.wav",
+      "sample_id": "tier1_direct:003775@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.896875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_004040@ts2.wav",
+      "sample_id": "tier1_direct:004040@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.816875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_004082@ts2.wav",
+      "sample_id": "tier1_direct:004082@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.656875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_004145@ts2.wav",
+      "sample_id": "tier1_direct:004145@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.576875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_004159@ts2.wav",
+      "sample_id": "tier1_direct:004159@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_004218@ts2.wav",
+      "sample_id": "tier1_direct:004218@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 5.016875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier1_direct/tier1_direct_004244@ts2.wav",
+      "sample_id": "tier1_direct:004244@ts2",
+      "stratum": "tier1_direct"
+    },
+    {
+      "audio_seconds": 5.256875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_000045@ts2.wav",
+      "sample_id": "tier2_parametric:000045@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.576875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_000068@ts2.wav",
+      "sample_id": "tier2_parametric:000068@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 7.336875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_000132@ts2.wav",
+      "sample_id": "tier2_parametric:000132@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.296875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_000240@ts2.wav",
+      "sample_id": "tier2_parametric:000240@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.096875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_000247@ts2.wav",
+      "sample_id": "tier2_parametric:000247@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_000369@ts2.wav",
+      "sample_id": "tier2_parametric:000369@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 7.096875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_000421@ts2.wav",
+      "sample_id": "tier2_parametric:000421@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.736875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_000525@ts2.wav",
+      "sample_id": "tier2_parametric:000525@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 7.256875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_000568@ts2.wav",
+      "sample_id": "tier2_parametric:000568@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.816875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_000632@ts2.wav",
+      "sample_id": "tier2_parametric:000632@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.736875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_000695@ts2.wav",
+      "sample_id": "tier2_parametric:000695@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.976875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_000704@ts2.wav",
+      "sample_id": "tier2_parametric:000704@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.656875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_000713@ts2.wav",
+      "sample_id": "tier2_parametric:000713@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 6.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_000895@ts2.wav",
+      "sample_id": "tier2_parametric:000895@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.216875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_001004@ts2.wav",
+      "sample_id": "tier2_parametric:001004@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.296875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_001014@ts2.wav",
+      "sample_id": "tier2_parametric:001014@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.576875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_001365@ts2.wav",
+      "sample_id": "tier2_parametric:001365@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.896875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_001474@ts2.wav",
+      "sample_id": "tier2_parametric:001474@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.016875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_001644@ts2.wav",
+      "sample_id": "tier2_parametric:001644@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.976875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_001693@ts2.wav",
+      "sample_id": "tier2_parametric:001693@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 7.016875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_001720@ts2.wav",
+      "sample_id": "tier2_parametric:001720@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 9.096875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_001869@ts2.wav",
+      "sample_id": "tier2_parametric:001869@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.896875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_001972@ts2.wav",
+      "sample_id": "tier2_parametric:001972@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.216875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_002069@ts2.wav",
+      "sample_id": "tier2_parametric:002069@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.296875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_002197@ts2.wav",
+      "sample_id": "tier2_parametric:002197@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.736875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_002289@ts2.wav",
+      "sample_id": "tier2_parametric:002289@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.536875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_002334@ts2.wav",
+      "sample_id": "tier2_parametric:002334@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.936875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_002653@ts2.wav",
+      "sample_id": "tier2_parametric:002653@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_002787@ts2.wav",
+      "sample_id": "tier2_parametric:002787@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 6.776875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_003068@ts2.wav",
+      "sample_id": "tier2_parametric:003068@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.296875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_003115@ts2.wav",
+      "sample_id": "tier2_parametric:003115@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_003619@ts2.wav",
+      "sample_id": "tier2_parametric:003619@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.016875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_003631@ts2.wav",
+      "sample_id": "tier2_parametric:003631@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 6.616875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_003650@ts2.wav",
+      "sample_id": "tier2_parametric:003650@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.016875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_003923@ts2.wav",
+      "sample_id": "tier2_parametric:003923@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_004217@ts2.wav",
+      "sample_id": "tier2_parametric:004217@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.256875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_004290@ts2.wav",
+      "sample_id": "tier2_parametric:004290@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 6.296875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_004516@ts2.wav",
+      "sample_id": "tier2_parametric:004516@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.736875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_004826@ts2.wav",
+      "sample_id": "tier2_parametric:004826@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.336875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_005385@ts2.wav",
+      "sample_id": "tier2_parametric:005385@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.536875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_005407@ts2.wav",
+      "sample_id": "tier2_parametric:005407@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 6.856875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_005677@ts2.wav",
+      "sample_id": "tier2_parametric:005677@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 8.936875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_005678@ts2.wav",
+      "sample_id": "tier2_parametric:005678@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.936875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_005732@ts2.wav",
+      "sample_id": "tier2_parametric:005732@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.256875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_005856@ts2.wav",
+      "sample_id": "tier2_parametric:005856@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.096875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_005859@ts2.wav",
+      "sample_id": "tier2_parametric:005859@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.136875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_005891@ts2.wav",
+      "sample_id": "tier2_parametric:005891@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.096875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_006028@ts2.wav",
+      "sample_id": "tier2_parametric:006028@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.656875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_006210@ts2.wav",
+      "sample_id": "tier2_parametric:006210@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.176875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier2_parametric/tier2_parametric_006317@ts2.wav",
+      "sample_id": "tier2_parametric:006317@ts2",
+      "stratum": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 7.736875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_000078@ts2.wav",
+      "sample_id": "tier3_multi_intent:000078@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.936875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_000259@ts2.wav",
+      "sample_id": "tier3_multi_intent:000259@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.856875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_000419@ts2.wav",
+      "sample_id": "tier3_multi_intent:000419@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.536875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_000427@ts2.wav",
+      "sample_id": "tier3_multi_intent:000427@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.416875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_000760@ts2.wav",
+      "sample_id": "tier3_multi_intent:000760@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.136875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_000855@ts2.wav",
+      "sample_id": "tier3_multi_intent:000855@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 8.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_000879@ts2.wav",
+      "sample_id": "tier3_multi_intent:000879@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.736875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_000924@ts2.wav",
+      "sample_id": "tier3_multi_intent:000924@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.936875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_000998@ts2.wav",
+      "sample_id": "tier3_multi_intent:000998@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 8.776875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_001251@ts2.wav",
+      "sample_id": "tier3_multi_intent:001251@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 9.176875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_001424@ts2.wav",
+      "sample_id": "tier3_multi_intent:001424@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 10.136875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_001487@ts2.wav",
+      "sample_id": "tier3_multi_intent:001487@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.096875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_001511@ts2.wav",
+      "sample_id": "tier3_multi_intent:001511@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 9.416875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_001562@ts2.wav",
+      "sample_id": "tier3_multi_intent:001562@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 7.416875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_001732@ts2.wav",
+      "sample_id": "tier3_multi_intent:001732@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 8.136875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_001914@ts2.wav",
+      "sample_id": "tier3_multi_intent:001914@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.536875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_002096@ts2.wav",
+      "sample_id": "tier3_multi_intent:002096@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.656875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_002103@ts2.wav",
+      "sample_id": "tier3_multi_intent:002103@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 7.096875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_002163@ts2.wav",
+      "sample_id": "tier3_multi_intent:002163@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.136875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_002166@ts2.wav",
+      "sample_id": "tier3_multi_intent:002166@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.856875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_002200@ts2.wav",
+      "sample_id": "tier3_multi_intent:002200@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 9.016875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_002264@ts2.wav",
+      "sample_id": "tier3_multi_intent:002264@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 10.536875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_002382@ts2.wav",
+      "sample_id": "tier3_multi_intent:002382@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.816875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_002405@ts2.wav",
+      "sample_id": "tier3_multi_intent:002405@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.296875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_002421@ts2.wav",
+      "sample_id": "tier3_multi_intent:002421@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 7.096875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_002490@ts2.wav",
+      "sample_id": "tier3_multi_intent:002490@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 9.256875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_002553@ts2.wav",
+      "sample_id": "tier3_multi_intent:002553@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 8.376875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_002560@ts2.wav",
+      "sample_id": "tier3_multi_intent:002560@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 8.216875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_002645@ts2.wav",
+      "sample_id": "tier3_multi_intent:002645@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.856875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_002651@ts2.wav",
+      "sample_id": "tier3_multi_intent:002651@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.176875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_002818@ts2.wav",
+      "sample_id": "tier3_multi_intent:002818@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.376875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_002915@ts2.wav",
+      "sample_id": "tier3_multi_intent:002915@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.656875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_002970@ts2.wav",
+      "sample_id": "tier3_multi_intent:002970@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.696875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_002986@ts2.wav",
+      "sample_id": "tier3_multi_intent:002986@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_002995@ts2.wav",
+      "sample_id": "tier3_multi_intent:002995@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 10.936875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_003058@ts2.wav",
+      "sample_id": "tier3_multi_intent:003058@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 8.456875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_003153@ts2.wav",
+      "sample_id": "tier3_multi_intent:003153@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.736875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_003220@ts2.wav",
+      "sample_id": "tier3_multi_intent:003220@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.576875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_003268@ts2.wav",
+      "sample_id": "tier3_multi_intent:003268@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 7.256875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_003469@ts2.wav",
+      "sample_id": "tier3_multi_intent:003469@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 7.016875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_003642@ts2.wav",
+      "sample_id": "tier3_multi_intent:003642@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.856875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_003740@ts2.wav",
+      "sample_id": "tier3_multi_intent:003740@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 4.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_003764@ts2.wav",
+      "sample_id": "tier3_multi_intent:003764@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 7.096875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_003816@ts2.wav",
+      "sample_id": "tier3_multi_intent:003816@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 7.176875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_003868@ts2.wav",
+      "sample_id": "tier3_multi_intent:003868@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.22325,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_003973@ts2.wav",
+      "sample_id": "tier3_multi_intent:003973@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.936875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_003982@ts2.wav",
+      "sample_id": "tier3_multi_intent:003982@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 8.376875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_003994@ts2.wav",
+      "sample_id": "tier3_multi_intent:003994@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 4.856875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_004025@ts2.wav",
+      "sample_id": "tier3_multi_intent:004025@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.376875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier3_multi_intent/tier3_multi_intent_004291@ts2.wav",
+      "sample_id": "tier3_multi_intent:004291@ts2",
+      "stratum": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 3.896875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_000141@ts2.wav",
+      "sample_id": "tier4_implicit:000141@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 4.776875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_000216@ts2.wav",
+      "sample_id": "tier4_implicit:000216@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.816875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_000279@ts2.wav",
+      "sample_id": "tier4_implicit:000279@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 4.216875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_000469@ts2.wav",
+      "sample_id": "tier4_implicit:000469@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 4.856875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_000562@ts2.wav",
+      "sample_id": "tier4_implicit:000562@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 6.936875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_000655@ts2.wav",
+      "sample_id": "tier4_implicit:000655@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 4.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_000812@ts2.wav",
+      "sample_id": "tier4_implicit:000812@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.736875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_000900@ts2.wav",
+      "sample_id": "tier4_implicit:000900@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.416875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_001010@ts2.wav",
+      "sample_id": "tier4_implicit:001010@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_001034@ts2.wav",
+      "sample_id": "tier4_implicit:001034@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.976875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_001074@ts2.wav",
+      "sample_id": "tier4_implicit:001074@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 6.376875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_001148@ts2.wav",
+      "sample_id": "tier4_implicit:001148@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_001389@ts2.wav",
+      "sample_id": "tier4_implicit:001389@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 4.536875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_001409@ts2.wav",
+      "sample_id": "tier4_implicit:001409@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_001513@ts2.wav",
+      "sample_id": "tier4_implicit:001513@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.576875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_001541@ts2.wav",
+      "sample_id": "tier4_implicit:001541@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 4.136875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_001546@ts2.wav",
+      "sample_id": "tier4_implicit:001546@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.096875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_001628@ts2.wav",
+      "sample_id": "tier4_implicit:001628@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 7.176875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_001759@ts2.wav",
+      "sample_id": "tier4_implicit:001759@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 4.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_001855@ts2.wav",
+      "sample_id": "tier4_implicit:001855@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 4.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_002024@ts2.wav",
+      "sample_id": "tier4_implicit:002024@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.736875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_002046@ts2.wav",
+      "sample_id": "tier4_implicit:002046@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.029666667,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_002071@ts2.wav",
+      "sample_id": "tier4_implicit:002071@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.016875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_002119@ts2.wav",
+      "sample_id": "tier4_implicit:002119@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 6.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_002241@ts2.wav",
+      "sample_id": "tier4_implicit:002241@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.896875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_002314@ts2.wav",
+      "sample_id": "tier4_implicit:002314@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.576875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_002376@ts2.wav",
+      "sample_id": "tier4_implicit:002376@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 4.376875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_002412@ts2.wav",
+      "sample_id": "tier4_implicit:002412@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_002563@ts2.wav",
+      "sample_id": "tier4_implicit:002563@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.336875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_002649@ts2.wav",
+      "sample_id": "tier4_implicit:002649@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.176875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_002718@ts2.wav",
+      "sample_id": "tier4_implicit:002718@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.976875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_002719@ts2.wav",
+      "sample_id": "tier4_implicit:002719@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.896875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_002943@ts2.wav",
+      "sample_id": "tier4_implicit:002943@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.656875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_002987@ts2.wav",
+      "sample_id": "tier4_implicit:002987@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 4.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_003049@ts2.wav",
+      "sample_id": "tier4_implicit:003049@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 4.536875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_003079@ts2.wav",
+      "sample_id": "tier4_implicit:003079@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.816875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_003199@ts2.wav",
+      "sample_id": "tier4_implicit:003199@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.896875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_003312@ts2.wav",
+      "sample_id": "tier4_implicit:003312@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.736875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_003317@ts2.wav",
+      "sample_id": "tier4_implicit:003317@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.016875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_003370@ts2.wav",
+      "sample_id": "tier4_implicit:003370@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 4.616875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_003464@ts2.wav",
+      "sample_id": "tier4_implicit:003464@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 7.096875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_003473@ts2.wav",
+      "sample_id": "tier4_implicit:003473@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.576875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_003484@ts2.wav",
+      "sample_id": "tier4_implicit:003484@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_003523@ts2.wav",
+      "sample_id": "tier4_implicit:003523@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.656875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_003664@ts2.wav",
+      "sample_id": "tier4_implicit:003664@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.816875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_003734@ts2.wav",
+      "sample_id": "tier4_implicit:003734@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.416875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_003949@ts2.wav",
+      "sample_id": "tier4_implicit:003949@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 6.456875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_003979@ts2.wav",
+      "sample_id": "tier4_implicit:003979@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 4.136875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_004122@ts2.wav",
+      "sample_id": "tier4_implicit:004122@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.336875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier4_implicit/tier4_implicit_004273@ts2.wav",
+      "sample_id": "tier4_implicit:004273@ts2",
+      "stratum": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 9.736875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_000060@ts2.wav",
+      "sample_id": "tier5_needle:000060@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 14.376875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_000061@ts2.wav",
+      "sample_id": "tier5_needle:000061@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 13.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_000151@ts2.wav",
+      "sample_id": "tier5_needle:000151@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 14.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_000171@ts2.wav",
+      "sample_id": "tier5_needle:000171@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 14.856875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_000241@ts2.wav",
+      "sample_id": "tier5_needle:000241@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 15.816875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_000285@ts2.wav",
+      "sample_id": "tier5_needle:000285@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 10.376875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_000534@ts2.wav",
+      "sample_id": "tier5_needle:000534@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 12.376875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_000537@ts2.wav",
+      "sample_id": "tier5_needle:000537@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 12.376875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_000595@ts2.wav",
+      "sample_id": "tier5_needle:000595@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 8.936875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_000757@ts2.wav",
+      "sample_id": "tier5_needle:000757@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 13.016875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_000976@ts2.wav",
+      "sample_id": "tier5_needle:000976@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 12.776875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_001059@ts2.wav",
+      "sample_id": "tier5_needle:001059@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 15.176875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_001248@ts2.wav",
+      "sample_id": "tier5_needle:001248@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 13.576875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_001296@ts2.wav",
+      "sample_id": "tier5_needle:001296@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 13.176875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_001323@ts2.wav",
+      "sample_id": "tier5_needle:001323@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 10.936875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_001368@ts2.wav",
+      "sample_id": "tier5_needle:001368@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 15.256875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_001430@ts2.wav",
+      "sample_id": "tier5_needle:001430@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 12.376875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_001458@ts2.wav",
+      "sample_id": "tier5_needle:001458@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 8.216875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_001532@ts2.wav",
+      "sample_id": "tier5_needle:001532@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 14.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_001656@ts2.wav",
+      "sample_id": "tier5_needle:001656@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 15.736875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_001679@ts2.wav",
+      "sample_id": "tier5_needle:001679@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 9.336875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_001687@ts2.wav",
+      "sample_id": "tier5_needle:001687@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 13.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_001719@ts2.wav",
+      "sample_id": "tier5_needle:001719@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 11.976875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_001795@ts2.wav",
+      "sample_id": "tier5_needle:001795@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 10.536875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_001930@ts2.wav",
+      "sample_id": "tier5_needle:001930@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 14.536875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_002007@ts2.wav",
+      "sample_id": "tier5_needle:002007@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 13.416875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_002054@ts2.wav",
+      "sample_id": "tier5_needle:002054@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 13.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_002215@ts2.wav",
+      "sample_id": "tier5_needle:002215@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 11.096875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_002284@ts2.wav",
+      "sample_id": "tier5_needle:002284@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 16.136875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_002396@ts2.wav",
+      "sample_id": "tier5_needle:002396@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 15.016875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_002428@ts2.wav",
+      "sample_id": "tier5_needle:002428@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 14.856875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_002546@ts2.wav",
+      "sample_id": "tier5_needle:002546@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 13.256875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_002638@ts2.wav",
+      "sample_id": "tier5_needle:002638@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 16.616875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_002640@ts2.wav",
+      "sample_id": "tier5_needle:002640@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 11.416875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_002753@ts2.wav",
+      "sample_id": "tier5_needle:002753@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 11.336875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_003107@ts2.wav",
+      "sample_id": "tier5_needle:003107@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 11.896875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_003189@ts2.wav",
+      "sample_id": "tier5_needle:003189@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 16.696875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_003305@ts2.wav",
+      "sample_id": "tier5_needle:003305@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 11.016875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_003341@ts2.wav",
+      "sample_id": "tier5_needle:003341@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 13.816875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_003355@ts2.wav",
+      "sample_id": "tier5_needle:003355@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 12.456875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_003398@ts2.wav",
+      "sample_id": "tier5_needle:003398@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 13.816875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_003592@ts2.wav",
+      "sample_id": "tier5_needle:003592@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 13.176875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_003841@ts2.wav",
+      "sample_id": "tier5_needle:003841@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 11.576875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_003863@ts2.wav",
+      "sample_id": "tier5_needle:003863@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 12.216875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_003873@ts2.wav",
+      "sample_id": "tier5_needle:003873@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 12.856875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_003935@ts2.wav",
+      "sample_id": "tier5_needle:003935@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 9.736875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_003940@ts2.wav",
+      "sample_id": "tier5_needle:003940@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 12.536875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_004037@ts2.wav",
+      "sample_id": "tier5_needle:004037@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 13.656875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_004078@ts2.wav",
+      "sample_id": "tier5_needle:004078@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 13.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier5_needle/tier5_needle_004242@ts2.wav",
+      "sample_id": "tier5_needle:004242@ts2",
+      "stratum": "tier5_needle"
+    },
+    {
+      "audio_seconds": 6.456875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_000008@ts2.wav",
+      "sample_id": "tier6_correction:000008@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.216875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_000009@ts2.wav",
+      "sample_id": "tier6_correction:000009@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 7.416875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_000168@ts2.wav",
+      "sample_id": "tier6_correction:000168@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 9.896875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_000305@ts2.wav",
+      "sample_id": "tier6_correction:000305@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.576875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_000398@ts2.wav",
+      "sample_id": "tier6_correction:000398@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.296875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_000484@ts2.wav",
+      "sample_id": "tier6_correction:000484@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 8.376875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_000590@ts2.wav",
+      "sample_id": "tier6_correction:000590@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.656875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_000631@ts2.wav",
+      "sample_id": "tier6_correction:000631@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_000946@ts2.wav",
+      "sample_id": "tier6_correction:000946@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.856875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_001056@ts2.wav",
+      "sample_id": "tier6_correction:001056@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 8.696875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_001329@ts2.wav",
+      "sample_id": "tier6_correction:001329@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 8.376875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_001489@ts2.wav",
+      "sample_id": "tier6_correction:001489@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 8.136875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_001618@ts2.wav",
+      "sample_id": "tier6_correction:001618@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 7.656875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_001756@ts2.wav",
+      "sample_id": "tier6_correction:001756@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.896875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_001764@ts2.wav",
+      "sample_id": "tier6_correction:001764@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 7.336875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_001766@ts2.wav",
+      "sample_id": "tier6_correction:001766@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 9.896875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_001794@ts2.wav",
+      "sample_id": "tier6_correction:001794@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.233333333,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_001873@ts2.wav",
+      "sample_id": "tier6_correction:001873@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 7.176875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_002178@ts2.wav",
+      "sample_id": "tier6_correction:002178@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.856875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_002179@ts2.wav",
+      "sample_id": "tier6_correction:002179@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.416875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_002205@ts2.wav",
+      "sample_id": "tier6_correction:002205@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.456875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_002270@ts2.wav",
+      "sample_id": "tier6_correction:002270@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.816875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_002313@ts2.wav",
+      "sample_id": "tier6_correction:002313@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.696875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_002430@ts2.wav",
+      "sample_id": "tier6_correction:002430@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 9.896875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_002461@ts2.wav",
+      "sample_id": "tier6_correction:002461@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 7.896875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_002548@ts2.wav",
+      "sample_id": "tier6_correction:002548@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 7.416875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_002630@ts2.wav",
+      "sample_id": "tier6_correction:002630@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 10.14875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_002689@ts2.wav",
+      "sample_id": "tier6_correction:002689@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.856875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_002740@ts2.wav",
+      "sample_id": "tier6_correction:002740@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.856875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_002850@ts2.wav",
+      "sample_id": "tier6_correction:002850@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 9.096875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_002940@ts2.wav",
+      "sample_id": "tier6_correction:002940@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 7.976875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_002999@ts2.wav",
+      "sample_id": "tier6_correction:002999@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.376875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_003043@ts2.wav",
+      "sample_id": "tier6_correction:003043@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 7.256875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_003103@ts2.wav",
+      "sample_id": "tier6_correction:003103@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.096875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_003197@ts2.wav",
+      "sample_id": "tier6_correction:003197@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.976875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_003198@ts2.wav",
+      "sample_id": "tier6_correction:003198@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.136875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_003226@ts2.wav",
+      "sample_id": "tier6_correction:003226@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.946875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_003267@ts2.wav",
+      "sample_id": "tier6_correction:003267@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 8.536875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_003450@ts2.wav",
+      "sample_id": "tier6_correction:003450@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 7.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_003568@ts2.wav",
+      "sample_id": "tier6_correction:003568@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.392916667,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_003671@ts2.wav",
+      "sample_id": "tier6_correction:003671@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.195458333,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_003783@ts2.wav",
+      "sample_id": "tier6_correction:003783@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.616875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_003820@ts2.wav",
+      "sample_id": "tier6_correction:003820@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 8.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_003856@ts2.wav",
+      "sample_id": "tier6_correction:003856@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 7.896875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_003900@ts2.wav",
+      "sample_id": "tier6_correction:003900@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 7.496875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_004017@ts2.wav",
+      "sample_id": "tier6_correction:004017@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 7.976875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_004155@ts2.wav",
+      "sample_id": "tier6_correction:004155@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 8.616875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_004160@ts2.wav",
+      "sample_id": "tier6_correction:004160@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.216875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_004215@ts2.wav",
+      "sample_id": "tier6_correction:004215@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 8.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier6_correction/tier6_correction_004281@ts2.wav",
+      "sample_id": "tier6_correction:004281@ts2",
+      "stratum": "tier6_correction"
+    },
+    {
+      "audio_seconds": 8.776875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000009@ts2.wav",
+      "sample_id": "tier7_multiturn:000009@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 6.310916667,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000043@ts2.wav",
+      "sample_id": "tier7_multiturn:000043@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 36.03375,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000062@ts2.wav",
+      "sample_id": "tier7_multiturn:000062@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 10.136875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000091@ts2.wav",
+      "sample_id": "tier7_multiturn:000091@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 3.896875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000214@ts2.wav",
+      "sample_id": "tier7_multiturn:000214@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 5.816875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000272@ts2.wav",
+      "sample_id": "tier7_multiturn:000272@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 4.456875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000274@ts2.wav",
+      "sample_id": "tier7_multiturn:000274@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 7.976875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000293@ts2.wav",
+      "sample_id": "tier7_multiturn:000293@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 5.816875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000318@ts2.wav",
+      "sample_id": "tier7_multiturn:000318@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 7.576875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000330@ts2.wav",
+      "sample_id": "tier7_multiturn:000330@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 4.696875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000348@ts2.wav",
+      "sample_id": "tier7_multiturn:000348@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 7.176875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000418@ts2.wav",
+      "sample_id": "tier7_multiturn:000418@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 9.736875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000440@ts2.wav",
+      "sample_id": "tier7_multiturn:000440@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 29.79375,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000545@ts2.wav",
+      "sample_id": "tier7_multiturn:000545@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 6.696875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000554@ts2.wav",
+      "sample_id": "tier7_multiturn:000554@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 10.216875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000599@ts2.wav",
+      "sample_id": "tier7_multiturn:000599@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 6.376875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000637@ts2.wav",
+      "sample_id": "tier7_multiturn:000637@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 5.176875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000739@ts2.wav",
+      "sample_id": "tier7_multiturn:000739@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 3.976875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000813@ts2.wav",
+      "sample_id": "tier7_multiturn:000813@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 7.176875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_000818@ts2.wav",
+      "sample_id": "tier7_multiturn:000818@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 7.096875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001098@ts2.wav",
+      "sample_id": "tier7_multiturn:001098@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 4.696875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001129@ts2.wav",
+      "sample_id": "tier7_multiturn:001129@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 12.296875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001148@ts2.wav",
+      "sample_id": "tier7_multiturn:001148@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 4.296875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001240@ts2.wav",
+      "sample_id": "tier7_multiturn:001240@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 8.136875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001272@ts2.wav",
+      "sample_id": "tier7_multiturn:001272@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 3.416875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001292@ts2.wav",
+      "sample_id": "tier7_multiturn:001292@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 7.416875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001293@ts2.wav",
+      "sample_id": "tier7_multiturn:001293@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 3.816875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001418@ts2.wav",
+      "sample_id": "tier7_multiturn:001418@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 3.656875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001453@ts2.wav",
+      "sample_id": "tier7_multiturn:001453@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 3.176875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001516@ts2.wav",
+      "sample_id": "tier7_multiturn:001516@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 37.71375,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001590@ts2.wav",
+      "sample_id": "tier7_multiturn:001590@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 8.470041667,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001599@ts2.wav",
+      "sample_id": "tier7_multiturn:001599@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 3.016875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001614@ts2.wav",
+      "sample_id": "tier7_multiturn:001614@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 6.056875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001629@ts2.wav",
+      "sample_id": "tier7_multiturn:001629@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 6.936875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001646@ts2.wav",
+      "sample_id": "tier7_multiturn:001646@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 5.976875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001701@ts2.wav",
+      "sample_id": "tier7_multiturn:001701@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 6.616875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001707@ts2.wav",
+      "sample_id": "tier7_multiturn:001707@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 6.149458333,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001708@ts2.wav",
+      "sample_id": "tier7_multiturn:001708@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 5.816875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001732@ts2.wav",
+      "sample_id": "tier7_multiturn:001732@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 14.7815,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001734@ts2.wav",
+      "sample_id": "tier7_multiturn:001734@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 3.674583333,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001777@ts2.wav",
+      "sample_id": "tier7_multiturn:001777@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 27.79375,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001781@ts2.wav",
+      "sample_id": "tier7_multiturn:001781@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 3.5975,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001834@ts2.wav",
+      "sample_id": "tier7_multiturn:001834@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 10.949041667,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001836@ts2.wav",
+      "sample_id": "tier7_multiturn:001836@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 5.976875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001865@ts2.wav",
+      "sample_id": "tier7_multiturn:001865@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 5.096875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001892@ts2.wav",
+      "sample_id": "tier7_multiturn:001892@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 5.896875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_001922@ts2.wav",
+      "sample_id": "tier7_multiturn:001922@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 15.176875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_002099@ts2.wav",
+      "sample_id": "tier7_multiturn:002099@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 7.016875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_002115@ts2.wav",
+      "sample_id": "tier7_multiturn:002115@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 25.816875,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier7_multiturn/tier7_multiturn_002120@ts2.wav",
+      "sample_id": "tier7_multiturn:002120@ts2",
+      "stratum": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 17.177,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000010@ts2.wav",
+      "sample_id": "tier8_intent_blending:000010@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 10.057,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000023@ts2.wav",
+      "sample_id": "tier8_intent_blending:000023@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 9.177,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000039@ts2.wav",
+      "sample_id": "tier8_intent_blending:000039@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.257,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000052@ts2.wav",
+      "sample_id": "tier8_intent_blending:000052@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 8.777,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000061@ts2.wav",
+      "sample_id": "tier8_intent_blending:000061@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.257,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000065@ts2.wav",
+      "sample_id": "tier8_intent_blending:000065@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.097,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000108@ts2.wav",
+      "sample_id": "tier8_intent_blending:000108@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 10.457,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000160@ts2.wav",
+      "sample_id": "tier8_intent_blending:000160@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 10.057,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000185@ts2.wav",
+      "sample_id": "tier8_intent_blending:000185@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.897,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000192@ts2.wav",
+      "sample_id": "tier8_intent_blending:000192@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.666,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000201@ts2.wav",
+      "sample_id": "tier8_intent_blending:000201@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 12.386,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000213@ts2.wav",
+      "sample_id": "tier8_intent_blending:000213@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 9.497,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000216@ts2.wav",
+      "sample_id": "tier8_intent_blending:000216@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.257,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000220@ts2.wav",
+      "sample_id": "tier8_intent_blending:000220@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 11.177,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000224@ts2.wav",
+      "sample_id": "tier8_intent_blending:000224@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 12.057,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000231@ts2.wav",
+      "sample_id": "tier8_intent_blending:000231@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 8.217,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000245@ts2.wav",
+      "sample_id": "tier8_intent_blending:000245@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 9.977,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000249@ts2.wav",
+      "sample_id": "tier8_intent_blending:000249@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 17.417,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000269@ts2.wav",
+      "sample_id": "tier8_intent_blending:000269@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 6.057,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000284@ts2.wav",
+      "sample_id": "tier8_intent_blending:000284@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 8.708,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000305@ts2.wav",
+      "sample_id": "tier8_intent_blending:000305@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 9.977,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000324@ts2.wav",
+      "sample_id": "tier8_intent_blending:000324@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 5.417,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000339@ts2.wav",
+      "sample_id": "tier8_intent_blending:000339@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.177,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000352@ts2.wav",
+      "sample_id": "tier8_intent_blending:000352@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 9.817,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000355@ts2.wav",
+      "sample_id": "tier8_intent_blending:000355@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.097,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000358@ts2.wav",
+      "sample_id": "tier8_intent_blending:000358@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.097,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000372@ts2.wav",
+      "sample_id": "tier8_intent_blending:000372@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 8.297,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000376@ts2.wav",
+      "sample_id": "tier8_intent_blending:000376@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 8.227,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000423@ts2.wav",
+      "sample_id": "tier8_intent_blending:000423@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 6.617,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000426@ts2.wav",
+      "sample_id": "tier8_intent_blending:000426@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 6.457,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000433@ts2.wav",
+      "sample_id": "tier8_intent_blending:000433@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 8.217,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000434@ts2.wav",
+      "sample_id": "tier8_intent_blending:000434@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.497,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000441@ts2.wav",
+      "sample_id": "tier8_intent_blending:000441@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.737,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000475@ts2.wav",
+      "sample_id": "tier8_intent_blending:000475@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.737,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000484@ts2.wav",
+      "sample_id": "tier8_intent_blending:000484@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 5.977,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000488@ts2.wav",
+      "sample_id": "tier8_intent_blending:000488@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 8.857,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000489@ts2.wav",
+      "sample_id": "tier8_intent_blending:000489@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.177,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000494@ts2.wav",
+      "sample_id": "tier8_intent_blending:000494@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 6.297,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000528@ts2.wav",
+      "sample_id": "tier8_intent_blending:000528@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 8.857,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000581@ts2.wav",
+      "sample_id": "tier8_intent_blending:000581@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 8.697,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000631@ts2.wav",
+      "sample_id": "tier8_intent_blending:000631@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 5.897,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000656@ts2.wav",
+      "sample_id": "tier8_intent_blending:000656@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 10.697,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000673@ts2.wav",
+      "sample_id": "tier8_intent_blending:000673@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 9.417,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000696@ts2.wav",
+      "sample_id": "tier8_intent_blending:000696@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 9.417,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000713@ts2.wav",
+      "sample_id": "tier8_intent_blending:000713@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 6.777,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000720@ts2.wav",
+      "sample_id": "tier8_intent_blending:000720@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.177,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000724@ts2.wav",
+      "sample_id": "tier8_intent_blending:000724@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 8.057,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000758@ts2.wav",
+      "sample_id": "tier8_intent_blending:000758@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 9.897,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000763@ts2.wav",
+      "sample_id": "tier8_intent_blending:000763@ts2",
+      "stratum": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 5.977,
+      "media_relpath": "derived/a2t-calibration-400-tail2s-v1/tier8_intent_blending/tier8_intent_blending_000772@ts2.wav",
+      "sample_id": "tier8_intent_blending:000772@ts2",
+      "stratum": "tier8_intent_blending"
+    }
+  ],
+  "per_stratum": {
+    "tier1_direct": 50,
+    "tier2_parametric": 50,
+    "tier3_multi_intent": 50,
+    "tier4_implicit": 50,
+    "tier5_needle": 50,
+    "tier6_correction": 50,
+    "tier7_multiturn": 50,
+    "tier8_intent_blending": 50
+  },
+  "roster_id": "A2T-CALIBRATION-400-TS2-V1",
+  "roster_role": "evaluation",
+  "schema": "saea-roster-receipt-v1",
+  "seed": 20260907,
+  "split_identity_hash": "6aa3aa43becbb4e11a42d174b181e2acc9ba5b5bdd599b2edbef93589536b503",
+  "split_role": "discovery",
+  "strata_counts": {
+    "tier1_direct": 50,
+    "tier2_parametric": 50,
+    "tier3_multi_intent": 50,
+    "tier4_implicit": 50,
+    "tier5_needle": 50,
+    "tier6_correction": 50,
+    "tier7_multiturn": 50,
+    "tier8_intent_blending": 50
+  }
+}

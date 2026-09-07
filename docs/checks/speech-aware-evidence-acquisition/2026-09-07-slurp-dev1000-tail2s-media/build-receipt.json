@@ -1,0 +1,128 @@
+{
+  "authorizes": "nothing beyond writing this media and these receipts. No cell is flown, no request is built, no server is started, no packet is promoted and no scorer runs.",
+  "carrier": "slurp",
+  "carrier_lock_key": "slurp",
+  "comparator": {
+    "attempt_id": "attempt-20260905T060424Z-2c5596",
+    "paper_facing_scorer": "slurp-slu-official-projected-v2",
+    "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1",
+    "serving_path": "mmproj-free decode over pre-materialized SpeechFeaturePacketV1 packets, -c 65536 -np 8",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+  },
+  "contacts": {
+    "embedder": 0,
+    "ffmpeg_calls": 0,
+    "frozen_core": 0,
+    "gpu_hours": 0,
+    "librosa_calls": 0,
+    "network": 0,
+    "outbound_connection_attempts": 0,
+    "paid_api_spend": 0,
+    "parent_container_decodes": 0,
+    "retriever": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "container": "flac",
+  "count": 1000,
+  "deterministic": "this receipt carries no timestamp: two back-to-back writes reproduce the same MANIFEST.sha256",
+  "execution_profile": "model-free-check",
+  "exposure_row": "SAEA-SN-MF-SLURP-DEV1000-TS2-MEDIA-V1",
+  "id_suffix": "ts2",
+  "measured_media": {
+    "audio_hours_total": 1.356887,
+    "audio_seconds_longest_item": 14.032,
+    "audio_seconds_shortest_item": 2.639937,
+    "audio_seconds_total": 4884.793687,
+    "clips_left_unchanged": 0,
+    "n_samples_total": 78156699,
+    "samples_added_total": 32000000,
+    "samples_removed_total": 0,
+    "source_audio_seconds_total": 2884.793688,
+    "total_bytes": 55255582
+  },
+  "media_root": "derived/slurp-dev1000-tail2s-v1",
+  "opened": {
+    "evaluation_query_text": 0,
+    "gold_labels": 0,
+    "hypothesis_text": 0,
+    "note": "MEDIA BYTES ONLY. The build reads the pinned receipts (identifiers, media paths, measured media identity, window spans) and the audio samples of the sealed files those receipts name. No gold label, reference sentence, evaluation query, tool name, sealed output, hypothesis or score is opened, and none is reachable from this process.",
+    "reference_transcripts": 0,
+    "scores": 0,
+    "sealed_outputs": 0,
+    "tool_registry_rows": 0
+  },
+  "outputs": {
+    "d1_media_supplement": "docs/receipts/artifacts/d1-slurp-dev1000-tail2s.json",
+    "d1_media_supplement_sha256": "56a75cf621806c1864a802e9b42e2478cc5621b6db2a0b700d9b4be032fedae1",
+    "probe_view": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-slurp-dev1000-tail2s-media/roster/flight-roster-receipt.json",
+    "probe_view_sha256": "3cd155257ccc17e784ec7c458628766dc0f82c527ac878c136ff08f4add0b37f",
+    "roster_receipt": "docs/receipts/rosters/slurp-dev-1000-ts2-v1.json",
+    "roster_receipt_sha256": "46330f24f22228bdafa1714beaceb4d65e8c4ead588906b8c99378bae12ea740"
+  },
+  "packet_promotion_plan": {
+    "encode_pass": {
+      "audio_seconds": 4884.794,
+      "contacts": 1000,
+      "execution_profile": "bounded-discovery-probe",
+      "exposure_row": "SAEA-SN-SLURP-DEV1000-TS2-PREPROCESS-V1 (NOT registered here)",
+      "gpu_hours": 0.0,
+      "legacy_cache_dir": "/home/chao/feat-cache/slurp-ts2-q4km",
+      "max_tokens": 1,
+      "model_fragment": "q4km-preprocess-featcache-cpu-sidecar",
+      "projected_wall_minutes": 36.7,
+      "projection_basis": "SAEA-SN-DEV1000-PREPROCESS: 11.0 min of wall for 1,462.712 metered audio seconds through this same CPU-only sidecar, scaled by audio seconds",
+      "prompt": "the fixed minimal preprocessing prompt; no response is read semantically",
+      "server": "CPU-only llama-server on port 8081, -ngl 0 --no-mmproj-offload"
+    },
+    "gate_before_1000_contacts": "a 4-row dry run of the encode pass, proving the libsndfile-written FLAC decodes in llama.cpp's miniaudio front end and that the promoted packet's token count equals the sealed packet's plus the tail's blocks",
+    "promotion": {
+      "contacts": 0,
+      "packet_id_convention": "the comparator's own convention with the variant suffix carried on the leaf: slurp/devel/<group>/<audio-id>@ts2",
+      "packet_root": "/home/chao/feat-cache/slurp-dev1000-ts2-packets-04ccc72a",
+      "primitive": "core.model.speech_features.materialize_legacy_cached_speech_feature_packets",
+      "promotion_receipt": "/home/chao/feat-cache/slurp-dev1000-ts2-packets-04ccc72a/DEV-1000-TAIL2S-promotion.json"
+    },
+    "what_it_does_not_prove": "that the CPU sidecar and the GPU mmproj produce identical features. They are the same graph and the same weights, and the comparator's own packets were produced by this same sidecar, so the two arms are encoded by the same instrument -- but no bit-exactness claim is made or needed.",
+    "what_this_buys": "the cell then flies on the comparator's OWN serving path -- mmproj-free decode over packets at -c 65536 -np 8 -- so the contrast against the sealed DEV-1000 rows is single-factor in the media and nothing else",
+    "why_a_promotion_is_needed": "the sealed comparator serves mmproj-free over promoted packets; the legacy feature-cache key is FNV-1a over the ORIGINAL media bytes, so a @ts2 file can never hit the comparator's cache and needs its own encode"
+  },
+  "roster_id": "SLURP-DEV-1000-TS2-V1",
+  "rule": "exactly 2.0 s of digital silence appended to the sealed clip -- 2.0 x the file's OWN sample rate in zero samples; nothing is removed, no sealed sample is altered, the sample rate is never changed and no parent container is re-decoded that the sealed comparator did not itself send",
+  "rule_implementation": {
+    "function": "transform('tail-silence-2s', ...)",
+    "module": "scripts/build_e22_dev1500_media_variants.py",
+    "sha256": "49e5d91095c061d167688bd4dea35fc7503d3a09caa3066db68fde9807d196e6"
+  },
+  "schema": "saea-cross-carrier-ts2-media-build-receipt-v1",
+  "sealed_clip_trailing_silence": {
+    "ends_exactly_at_an_active_frame": 549,
+    "max": 1.4,
+    "mean": 0.07456,
+    "measured_by": "analysis.e22_clip_boundary.energy_margins at its committed version, on the SEALED samples (not the variant): 20 ms frames, active = frame RMS within 35 dB of the clip peak and above the absolute floor",
+    "median": 0.0,
+    "min": 0.0,
+    "n": 1000,
+    "p10": 0.0,
+    "p90": 0.2,
+    "trailing_silence_at_least_2_00_s": 0,
+    "trailing_silence_at_most_0_02_s": 644,
+    "trailing_silence_at_most_0_10_s": 844
+  },
+  "source_population": {
+    "all_source_digests_matched": true,
+    "files_rehashed_before_reading": 1000,
+    "runtime_view": {
+      "path": "configs/dataset/slurp-speech-native-dev1000.json",
+      "sha256": "f92846760b3657ba50009e52f98fcec96df27c16ac66ea57467b4f8fa42f288d"
+    }
+  },
+  "split_identity_hash": "9f78d0ff2dbaf81f5e9f666ee036a3c994d69a7f464e555089e25decfd97f5c5",
+  "split_name": "DEV-1000-TAIL2S",
+  "split_role": "dev",
+  "strata_counts": {
+    "devel": 1000
+  },
+  "test_split_read": false,
+  "variant": "tail-silence-2s"
+}
