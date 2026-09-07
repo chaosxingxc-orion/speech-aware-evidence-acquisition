@@ -1,0 +1,150 @@
+{
+  "schema": "saea-e22-esb-wire-check-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "generated_at": "2026-09-07T07:21:38.310494+00:00",
+  "flight_run_id": "SAEA-E22-DEV-ESB-BX-SMOKE-V1",
+  "cells_checked": [
+    "E22-DEV-ESB-BX-SMOKE-4"
+  ],
+  "model_contacts": 0,
+  "servers_started": 0,
+  "boundary": "zero model contacts: the only fakes are the gate and the transport (core.flight.runtime.WireCheckGate / WireCheckTransport, which never opens a socket). Any score below is computed over the transport's canned response and is not a measurement of anything.",
+  "cells": [
+    {
+      "schema": "saea-flight-wire-check-v1",
+      "flight_run_id": "SAEA-E22-DEV-ESB-BX-SMOKE-V1",
+      "wire_check_run_id": "WIRECHECK-SAEA-E22-DEV-ESB-BX-SMOKE-V1-1788765694006",
+      "attempt_id": "attempt-wire-check-1788765694006",
+      "attempt_aborted": true,
+      "config_hash": "b00e60d8fd3641fb4a231a417514d95a992fba28c3c6c8799ad4963da07cc032",
+      "protocol_hash": "6ee19994081b584a3ce9c3bb5caf43688f977f1719da0fd3e6e11788d1c44dc0",
+      "split_id": "E22-ESB-DEV1500-BX1-SMOKE-4",
+      "split_identity_hash": "0bf6c232bed4f2ec9811463328dc5a89b8cb4a384bbfdf35cad37b6a914e0f17",
+      "arm": "bare-core",
+      "native_tools_arm": false,
+      "construction_proposer_arm": false,
+      "construction_draws": [],
+      "sample_count": 4,
+      "contact_count": 4,
+      "contacts_per_sample": 1,
+      "policy": "fixed",
+      "policy_kind": "direct",
+      "phases": [],
+      "phase_material": null,
+      "phase_supply": null,
+      "typed_knowledge_blocks": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "typed_knowledge_blocks_total": 0,
+      "dispatch": {
+        "workers": 8,
+        "max_in_flight": 4,
+        "slot_ids_used": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "dispatch": "concurrent",
+        "contacts_per_sample": 1,
+        "queue_depth": "not a knob: one contact per sample means nothing queues behind a sample, and more in-flight requests than slots is what the slot pinning exists to forbid"
+      },
+      "wall_seconds": 0.09522509574890137,
+      "payload_keys": [
+        "audio_seconds",
+        "carrier_lock_key",
+        "decoding_params",
+        "history",
+        "media_relpath",
+        "request_id",
+        "sample_id",
+        "sample_rate_hz",
+        "speech_ref",
+        "task_instruction"
+      ],
+      "payload_keys_equal_arm_visible_fields": true,
+      "tool_schemas_count": 0,
+      "id_slot": 3,
+      "max_tokens": 1024,
+      "max_tokens_policy": null,
+      "max_tokens_rule": null,
+      "max_tokens_per_sample": null,
+      "request_body_sha256": [
+        "f034003fcf5c79cfff80dc3034fb72d06a93bada94588b7ecd36d089b3d95dcf",
+        "5f3cc9da02fc700844295005246d2b12dcc853482aba7f7f49c4270fd614f74a",
+        "eb746075b805d0d6e75c10ed3320217dbeb2e56e6a05efb50752b5c91074b2be",
+        "12377fa0c4c567a046643ccdd0587e7b7e84dbf6a0177357d313de7e732c9ccd"
+      ],
+      "speech_packets_verified": {},
+      "trace_manifest_hash": "1eea65c0f03a872464bb87fc66a9a74f7e8a3980c0f214233f54b069d9031366",
+      "cost": {
+        "calls_used": 4,
+        "audio_seconds_used": 51.2601875,
+        "latency_seconds_total": 9.89390246104449e-05,
+        "prompt_tokens_total": 4,
+        "completion_tokens_total": 4,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "response_arrival": {
+        "rows_total": 4,
+        "rows_with_native_tool_calls": 0,
+        "rows_answered_as_text": 4,
+        "native_tool_calls_total": 0,
+        "basis": "rails.core_client.RequestTiming.native_tool_calls, set from core.model.CoreResponse.tool_calls; None means the response envelope carried no tool_calls key at all, i.e. the model answered as text"
+      },
+      "seal_and_score": {
+        "status": "OK",
+        "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/WIRECHECK-SAEA-E22-DEV-ESB-BX-SMOKE-V1-1788765694006/attempt-wire-check-1788765694006/WIRECHECK-SAEA-E22-DEV-ESB-BX-SMOKE-V1-1788765694006.run-manifest.json",
+        "manifest_sha256": "0a546bd705cf2f49beb0ec00b2e233fc076aeb45961e965db8a5d29b51c62bd3",
+        "verified_attempt_state": "OPENED",
+        "outputs_row_count": 4,
+        "score_result": {
+          "schema": "saea-parallel-score-batch-v1",
+          "operation": "score",
+          "parallelism_boundary": "one-complete-verified-manifest-per-process",
+          "aggregation_rule": "no dataset sharding and no averaging of shard-level official metrics",
+          "requested_max_workers": 1,
+          "effective_max_workers": 1,
+          "job_count": 1,
+          "succeeded": 1,
+          "failed": 0,
+          "elapsed_seconds": 2.688445337989833,
+          "jobs": [
+            {
+              "index": 0,
+              "job_id": "attempt-wire-check-1788765694006",
+              "operation": "score",
+              "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/WIRECHECK-SAEA-E22-DEV-ESB-BX-SMOKE-V1-1788765694006/attempt-wire-check-1788765694006/WIRECHECK-SAEA-E22-DEV-ESB-BX-SMOKE-V1-1788765694006.run-manifest.json",
+              "ledger_cells": null,
+              "status": "succeeded",
+              "returncode": 0,
+              "elapsed_seconds": 2.6480577859911136,
+              "result_file": "attempt-wire-check-1788765694006.score.json",
+              "result_sha256": "bce3e173c0ec9f72f31321d2c91d4033a8c1ca36b33086e7b2958d7ba9273121",
+              "stdout_log": null,
+              "stderr_log": "attempt-wire-check-1788765694006.stderr.log",
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "error": null
+            }
+          ]
+        },
+        "scorers": [
+          "asr-wer-esb-whisper",
+          "asr-wer-esb",
+          "cost"
+        ],
+        "ledger_surface_validated": true,
+        "numbers_are_meaningless": "these scores are computed over WireCheckTransport's canned response, not over any model output; they prove the scoring link runs and nothing else"
+      },
+      "transport": "core.flight.runtime.WireCheckTransport (never opens a socket)",
+      "gate": "core.flight.runtime.WireCheckGate (authorizes nothing real)",
+      "payload_to_wire_tools_mapping": "payload tool_schemas -> request body 'tools' is core.model.transport.LlamaServerTransport's own step, covered by tests/unit/test_native_tools_arm.py's transport section; this check asserts at the transport seam, where the payload is what crosses",
+      "model_contacts": 0,
+      "cell_id": "E22-DEV-ESB-BX-SMOKE-4"
+    }
+  ]
+}
