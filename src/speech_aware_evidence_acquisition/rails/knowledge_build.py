@@ -114,6 +114,55 @@ KB_BUILD_POLICY_ID = "saea-kb-distmodel-v1"
 _ALLOWED_DIMENSIONS = frozenset({"content", "label", "speaker", "prior"})
 _DEFAULT_DIMENSIONS: tuple[str, ...] = ("content", "label", "speaker", "prior")
 
+#: The default rendering of a content facet and of every value: the exemplar
+#: view every committed snapshot carries. A content facet's representation is
+#: the TRAIN utterance verbatim and a value is the exemplar sentence, its
+#: intent, its slot type=filler pairs, TRAIN's other surface forms for those
+#: types and (when the ``prior`` dimension is built) the intent's entity-type
+#: prior.
+VIEW_EXEMPLAR = "exemplar"
+
+#: The SLOT-FILLER view (2026-09-07, cell KU-S3). Same selection, same facet
+#: ids, same value ids, same ``prior_score``s, same provenance -- only the two
+#: rendered strings change:
+#:
+#: * a content facet's representation becomes a DESCRIPTOR that quotes the
+#:   utterance instead of BEING it, exactly as the ``label``/``speaker``/
+#:   ``prior`` dimensions already do;
+#: * a value's content becomes that utterance's slot ``type=filler`` pairs
+#:   alone -- no exemplar sentence, no intent name, no surface-form variants,
+#:   no entity-type prior.
+#:
+#: Both changes are forced by what a SUPPLIED content dimension does to a
+#: SLURP phase cell, and both were measured before they were written.
+#:
+#: The representation. ``rails.runner._assert_agent_control_excludes_knowledge_
+#: payloads`` protects every facet representation and every value content of
+#: the BOUND snapshot by raw substring, at an eight-character floor. The
+#: exemplar view's content facets are 11,514 raw TRAIN utterances and SLURP
+#: has one- and two-word ones, so ``next episode``, ``next podcast`` and
+#: ``how much`` are protected payloads and the per-intent slot schema KC-S1b
+#: sends contains all three: measured 2026-09-07, the exemplar view refuses
+#: **1,000 of 1,000** KU-S3 instructions, while its VALUES collide with
+#: **0 of 1,000** -- the values are paragraphs and can never be substrings of
+#: an instruction. KC-S1a/b dodged this by dropping the ``content`` dimension
+#: (``scripts/build_knowledge_snapshot.py``, 2026-09-05); a cell that RECALLS
+#: on content facets cannot, which is the ruling KC-S1b's deviation 1 asked
+#: for. Quoting the utterance inside a descriptor keeps the leakage rule at
+#: full strength over everything a control turn could actually paste -- every
+#: value, and the utterance itself the moment anyone tries to send it with its
+#: own key text -- and removes only substring hits on ordinary English.
+#:
+#: The value. Neighbour retrieval on SLURP INTENT is CLOSED (the 2026-09-06
+#: MF-7b audit), and this view is the one that keeps a supplied cell inside
+#: what MF-7b handed on: filler recall. An exemplar value names the
+#: neighbour's own intent and re-states the entity-type prior the phase's
+#: schema block already carries, so it would supply a closed mechanism and
+#: duplicate an admitted one. The filler view supplies fillers.
+VIEW_SLOT_FILLERS = "slot-fillers"
+
+_ALLOWED_VIEWS: tuple[str, ...] = (VIEW_EXEMPLAR, VIEW_SLOT_FILLERS)
+
 SPLIT_IDENTITY_SCHEMA = "saea-kb-split-identity-v1"
 SPLIT_IDENTITY_RECEIPT_RELPATH = "docs/receipts/knowledge/slurp-split-identity.json"
 _DEV_LADDER_RECEIPT_DIR_RELPATH = "docs/receipts/probe-samples"
@@ -251,6 +300,7 @@ class KnowledgeBuildSpec:
     datastore_size: int | None = None
     seed: int = 20260823
     dimensions: tuple[str, ...] = _DEFAULT_DIMENSIONS
+    view: str = VIEW_EXEMPLAR
 
     def validate(self) -> "KnowledgeBuildSpec":
         if not isinstance(self.carrier_lock_key, str) or not self.carrier_lock_key.strip():
@@ -279,6 +329,16 @@ class KnowledgeBuildSpec:
             raise RailsError(
                 "KnowledgeBuildSpec.dimensions must include 'content' or 'label' so every "
                 "value has at least one grounded facet"
+            )
+        if self.view not in _ALLOWED_VIEWS:
+            raise RailsError(
+                f"KnowledgeBuildSpec.view must be one of {list(_ALLOWED_VIEWS)}, got "
+                f"{self.view!r}"
+            )
+        if self.view == VIEW_SLOT_FILLERS and "content" not in set(self.dimensions):
+            raise RailsError(
+                f"KnowledgeBuildSpec.view={VIEW_SLOT_FILLERS!r} exists to be RECALLED on "
+                "per-utterance content facets, so it requires the 'content' dimension"
             )
         return self
 
@@ -346,6 +406,48 @@ def _hamilton_apportion(capacity_by_key: Mapping[str, int], total: int) -> dict[
 # ---------------------------------------------------------------------------
 # Facet / value emission
 # ---------------------------------------------------------------------------
+
+
+def _content_facet_representation(row: KbRow, view: str) -> str:
+    """The content facet's key text under ``view``.
+
+    :data:`VIEW_EXEMPLAR` is the utterance verbatim, which is what every
+    committed snapshot carries and what the MF-7b key vectors embedded.
+    :data:`VIEW_SLOT_FILLERS` QUOTES it inside a descriptor instead, so the
+    key still says exactly which TRAIN utterance it is (and still shows the
+    utterance whenever a cell sets ``expose_facets``) while the protected
+    payload the leakage rule tests is the descriptor and not a bare English
+    phrase. See :data:`VIEW_SLOT_FILLERS` for the measurement that forced it.
+    """
+
+    if view == VIEW_SLOT_FILLERS:
+        return (
+            f"TRAIN utterance {row.utterance_id} (slot-filler retrieval key): "
+            f"\"{row.content}\""
+        )
+    return row.content
+
+
+def _slot_filler_value_content(row: KbRow) -> str:
+    """A value's payload under :data:`VIEW_SLOT_FILLERS`: this utterance's
+    slot ``type=filler`` pairs and nothing else.
+
+    No exemplar sentence, no intent name, no surface-form variants and no
+    entity-type prior -- see :data:`VIEW_SLOT_FILLERS` for why each of those
+    is deliberately absent. A TRAIN utterance carrying no entity still gets a
+    value, because every selected utterance must have one and a neighbour
+    that happens to carry no filler is a real property of the retrieval, not
+    something to hide.
+    """
+
+    pairs = "; ".join(
+        f"{entity_type}={'|'.join(row.entity_fillers[entity_type])}"
+        for entity_type in sorted(row.entity_fillers)
+    )
+    body = pairs if pairs else "none recorded"
+    return (
+        f"Slot type=filler pairs observed in TRAIN utterance {row.utterance_id}: {body}."
+    )
 
 
 def _build_facets_and_values(
@@ -454,7 +556,7 @@ def _build_facets_and_values(
                     facet_id=content_fid,
                     dimension="content",
                     representation_kind="text",
-                    representation=row.content,
+                    representation=_content_facet_representation(row, spec.view),
                     source_sample_ids=row.sample_ids,
                     parent_facet_ids=parent,
                 ).validate()
@@ -551,13 +653,16 @@ def _build_facets_and_values(
             if normalization_lines
             else "no additional surface-form variants observed for this utterance's entity types"
         )
-        content_text = (
-            f"Exemplar sentence: \"{row.content}\" -> intent {row.intent} "
-            f"(scenario={row.scenario}, action={row.action}). "
-            f"Slot type=filler pairs: {slot_text}. {normalization_text}."
-        )
-        if row.intent in prior_representation_by_intent:
-            content_text += f" {prior_representation_by_intent[row.intent]}"
+        if spec.view == VIEW_SLOT_FILLERS:
+            content_text = _slot_filler_value_content(row)
+        else:
+            content_text = (
+                f"Exemplar sentence: \"{row.content}\" -> intent {row.intent} "
+                f"(scenario={row.scenario}, action={row.action}). "
+                f"Slot type=filler pairs: {slot_text}. {normalization_text}."
+            )
+            if row.intent in prior_representation_by_intent:
+                content_text += f" {prior_representation_by_intent[row.intent]}"
 
         # p(intent | scenario). BOTH counts range over the SAME population --
         # the rows of this one scenario -- because that is what conditioning
@@ -831,6 +936,10 @@ def build_knowledge_snapshot(
         "source_split_identity_hash": source_split_identity_hash,
         "utterance_count": len(selected),
     }
+    if spec.view != VIEW_EXEMPLAR:
+        # Appended only for a non-default view, so every snapshot built before
+        # 2026-09-07 keeps its build hash, its snapshot id and its bytes.
+        build_descriptor["view"] = spec.view
     build_sha256 = content_hash(build_descriptor)
     return KnowledgeSnapshot(
         snapshot_id=f"slurp-kb-distmodel-{build_sha256[:16]}",
@@ -995,6 +1104,8 @@ __all__ = [
     "KB_BUILD_POLICY_ID",
     "SPLIT_IDENTITY_RECEIPT_RELPATH",
     "SPLIT_IDENTITY_SCHEMA",
+    "VIEW_EXEMPLAR",
+    "VIEW_SLOT_FILLERS",
     "KbRow",
     "KnowledgeBuildSpec",
     "build_knowledge_snapshot",

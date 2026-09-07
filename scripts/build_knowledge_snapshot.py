@@ -16,6 +16,7 @@ Usage::
     python scripts/build_knowledge_snapshot.py --size 5000
     python scripts/build_knowledge_snapshot.py --size full
     python scripts/build_knowledge_snapshot.py --size full --dimensions label,speaker,prior
+    python scripts/build_knowledge_snapshot.py --size full --dimensions content --view slot-fillers
 
 Artifacts::
 
@@ -43,7 +44,18 @@ leaves the leakage rule at full strength over every exemplar value and every
 label, speaker and prior facet -- 11,863 protected payloads -- while removing
 the raw-utterance layer that produced the collisions.
 
-Deterministic: re-running the same ``--size``/``--dimensions`` against an
+Why a second RENDERING exists (2026-09-07, cell KU-S3). Dropping ``content``
+is only available to a cell that binds the snapshot without consuming it. A
+cell that RECALLS on per-utterance content facets must bind them, and then the
+same raw-utterance representations refuse its prompts -- measured on KU-S3's
+own instruction, the exemplar view collides with 1,000 of 1,000 rows while its
+VALUES collide with 0 of 1,000. ``--view slot-fillers`` quotes the utterance
+inside a key descriptor (so the leakage rule tests a descriptor, never a bare
+English phrase) and renders each value as that utterance's slot ``type=filler``
+pairs alone. Same selection, same facet and value ids, same prior scores, same
+provenance; two rendered strings differ, and the tier label says so.
+
+Deterministic: re-running the same ``--size``/``--dimensions``/``--view`` against an
 unchanged TRAIN corpus and unchanged decontamination receipts produces a
 byte-identical governance receipt (sorted ids, fixed canonical JSON formatting
 via ``e0.artifacts.write_json_artifact``, explicit UTF-8).
@@ -71,6 +83,8 @@ from speech_aware_evidence_acquisition.e0.artifacts import write_json_artifact  
 from speech_aware_evidence_acquisition.rails.knowledge_build import (  # noqa: E402
     KB_BUILD_POLICY_ID,
     SPLIT_IDENTITY_RECEIPT_RELPATH,
+    VIEW_EXEMPLAR,
+    VIEW_SLOT_FILLERS,
     KnowledgeBuildSpec,
     build_knowledge_snapshot,
     coverage_report,
@@ -115,7 +129,7 @@ def _parse_dimensions(raw: str) -> tuple[str, ...]:
     return names
 
 
-def _tier_label(size: int | None, dimensions: tuple[str, ...]) -> str:
+def _tier_label(size: int | None, dimensions: tuple[str, ...], view: str = VIEW_EXEMPLAR) -> str:
     """The artifact and receipt label for one build.
 
     The DEFAULT dimension set keeps the historical ``size-<N>`` label, so the
@@ -123,13 +137,17 @@ def _tier_label(size: int | None, dimensions: tuple[str, ...]) -> str:
     set gets its dimensions appended in sorted order
     (``size-full-label-prior-speaker``), because two snapshots over the same
     TRAIN rows with different dimensions are different artifacts and must
-    never share a path.
+    never share a path. A non-default ``--view`` appends its own name last,
+    for exactly the same reason: same rows, same dimensions, different
+    rendered strings, different artifact.
     """
 
     label = _size_label(size)
-    if tuple(dimensions) == tuple(KnowledgeBuildSpec.dimensions):
-        return label
-    return "-".join((label, *sorted(dimensions)))
+    if tuple(dimensions) != tuple(KnowledgeBuildSpec.dimensions):
+        label = "-".join((label, *sorted(dimensions)))
+    if view != VIEW_EXEMPLAR:
+        label = f"{label}-{view}"
+    return label
 
 
 def freeze_split_identity() -> int:
@@ -175,6 +193,7 @@ def build_one(
     size: int | None,
     dimensions: tuple[str, ...],
     *,
+    view: str = VIEW_EXEMPLAR,
     exclude_rosters: Sequence[str] = (),
     tier_suffix: str = "",
 ) -> int:
@@ -209,8 +228,9 @@ def build_one(
         datastore_size=size,
         seed=SEED,
         dimensions=tuple(dimensions),
+        view=view,
     ).validate()
-    tier = _tier_label(size, tuple(dimensions)) + tier_suffix
+    tier = _tier_label(size, tuple(dimensions), view) + tier_suffix
     build_start = time.monotonic()
     snapshot = build_knowledge_snapshot(
         spec, lock=lock, root=root, rows=rows, repo_root=REPO_ROOT
@@ -248,6 +268,7 @@ def build_one(
             "datastore_size": spec.datastore_size,
             "seed": spec.seed,
             "dimensions": list(spec.dimensions),
+            "view": spec.view,
         },
         "snapshot_sha256": snapshot_sha256,
         "snapshot_id": snapshot.snapshot_id,
@@ -300,6 +321,18 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--view",
+        choices=(VIEW_EXEMPLAR, VIEW_SLOT_FILLERS),
+        default=VIEW_EXEMPLAR,
+        help=(
+            "how content facets and values RENDER. 'exemplar' (default) is what every "
+            "committed snapshot carries. 'slot-fillers' quotes the utterance inside a "
+            "key descriptor and renders each value as that utterance's slot type=filler "
+            "pairs alone; it requires the 'content' dimension and writes to "
+            "size-<...>-slot-fillers"
+        ),
+    )
+    parser.add_argument(
         "--exclude-rosters",
         default=None,
         help=(
@@ -322,6 +355,7 @@ def main() -> int:
     return build_one(
         _parse_size(args.size),
         tuple(args.dimensions),
+        view=str(args.view),
         exclude_rosters=tuple(
             item.strip() for item in str(args.exclude_rosters or "").split(",") if item.strip()
         ),
