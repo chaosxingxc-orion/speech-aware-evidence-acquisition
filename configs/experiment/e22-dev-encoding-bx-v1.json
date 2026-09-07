@@ -1,0 +1,176 @@
+{
+  "experiment_id": "SAEA-E22-DEV-ESB-BX-V1",
+  "schema": "saea-e22-esb-shortform-experiment-v1",
+  "date": "2026-09-07",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "One of the three Earnings-22 SHORT-CLIP ENCODING probe cells: ONE factor, the MEDIA, on the same 1,500 published segments of this study's own Earnings-22 DEV subset10, paired row for row against the SEALED comparator. Nothing about the request changes -- same instruction, same shape, same decoding params, same geometry, same build, same decoder and mmproj by sha256, same audio path. Preregistration: docs/readiness/2026-09-07-e22-dev-encoding-probes-v1-preregistration.md. NOT AUTHORIZED by this fragment: the cell needs its own owner GO, its own exposure row registered before the first contact, and its own contracts.ExecutionPlan.",
+  "basis": {
+    "encoding_audit": "docs/readiness/2026-09-07-e22-short-clip-encoding-audit-v1.md -- our path keeps one more mel frame than the published path and rounds the mel up to whole 100-frame blocks with the literal float 0.0, unmasked, at 13 audio tokens per block: 6.99 % of the audio tokens we send on these 1,500 rows, 42.2 % on sub-second clips",
+    "instruction_text_excluded": "docs/readiness/2026-09-05-e22-dev-esb-prompt-ab-v1-verdict.md -- arm B is 0.83 points worse",
+    "request_shape_excluded": "docs/readiness/2026-09-05-e22-dev-esb-shape-c-v1-verdict.md -- arm C is 0.325 points worse and its oracle floor ROSE",
+    "quantization_measured": "docs/readiness/2026-09-06-e22-dev-usage-cells-v1-verdict.md -- Q8_0 is worth 0.4305 points and moves 2.1 % of the boundary block",
+    "what_survives": "the audio the protocol delivers, which is the last controllable face of the serving path this study has not varied"
+  },
+  "comparator": {
+    "run_id": "SAEA-E22-DEV-ESB-PROMPT-A-V1",
+    "attempt_id": "attempt-20260905T073641Z-f977d1",
+    "restricted_to": "the 1,500 drawn published segments",
+    "join_rule": "the variant sample id is <call>-<segment>@bx1; the published segment key is recovered by splitting on '@', which is what makes the paired join against the sealed arm exact",
+    "why_sealed_and_never_a_rerun": "Greedy decoding is not bitwise reproducible across batch compositions on this runtime, so the contrast is against sealed outputs. No new arm A is flown.",
+    "subset_uncapped_numbers": {
+      "corpus_wer_percent_whisper_normalizer": 17.4012,
+      "agentic_error_rate_percent": 1.9161,
+      "boundary_block_wer_points": 8.2778,
+      "source": "sections 1 and 4.5 of the 2026-09-06 usage-cells verdict, measured model-free before this cell existed"
+    },
+    "same_request_null": {
+      "corpus_wer_delta_points": -0.0844,
+      "ci90": [
+        -0.2356,
+        0.0692
+      ],
+      "source": "section 3.2 of the 2026-09-06 usage-cells verdict",
+      "binding": "an effect is claimed only if its CI90 excludes this interval; a preregistered effect smaller than about 0.25 points on 1,500 rows cannot be distinguished from this null by one flight"
+    }
+  },
+  "populations": {
+    "E22-ESB-DEV1500-BX-UTTERANCES": {
+      "dataset_fragment": "earnings22-esb-dev1500-bx",
+      "carrier": "earnings22-original",
+      "split_role": "dev",
+      "count": 1500,
+      "strata": "source call, 150 utterances in each of the ten: 4453225 / 4469088 / 4470684 / 4474506 / 4479944 / 4481952 / 4482383 / 4482613 / 4483937 / 4485192",
+      "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-dev1500-encoding-variants/boundary-exact/roster/flight-roster-receipt.json",
+      "receipt_sha256": "8d83f0b247c75d563916200b7a308e51126dff14f2eed42e00f89dc7a86eb9f2",
+      "d1_media_supplement": "docs/receipts/artifacts/d1-e22-esb-dev1500-bx.json",
+      "d1_media_supplement_sha256": "d008022f0845c0ff53c56cb140c8ca9951d673949e7c67da1032e2db2fead99c",
+      "split_identity_hash": "87d0cc654b05fa595068cb14d461e9e279f3e080e9f3c1d78a404be8f9f37848",
+      "audio_seconds_one_pass": 9783.571187,
+      "audio_seconds_longest_item": 32.800063,
+      "audio_tokens_one_pass": 137163,
+      "media_build_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-dev1500-encoding-variants/boundary-exact/build-receipt.json",
+      "media_build_row": "SAEA-SN-MF-E22-DEV1500-ENCODING-VARIANTS-V1",
+      "estimand": "the paired within-segment effect of this one encoding factor on corpus WER, on the agentic error rate and on the boundary category mass, on a population this study is allowed to optimize on"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "E22-DEV-ESB-BX",
+      "dataset_fragment": "earnings22-esb-dev1500-bx",
+      "arm": "bare-core",
+      "baseline_fragment": "e22-esb-dev1500-bx",
+      "model_fragment": "q4km-e22-dev-esb-mmproj-gpu-04ccc72a-np8-c40960",
+      "run_id": "SAEA-E22-DEV-ESB-BX-V1",
+      "serving_geometry": "-c 40960 -np 8, 5120 tokens per slot -- the sealed comparator's, unchanged",
+      "factor": "the clip boundary: the midpoint-of-overlap re-cut of section 1.1 of the 2026-09-06 boundary-exact preregistration, restricted to these 1,500 rows",
+      "what_it_separates": "whether the boundary-insertion mass is the OVERLAP -- the 0.14-0.16 s of the next sentence the published segmentation hands the model. This is cell 1 of the 2026-09-06 boundary-exact preregistration, executed on the 1,500-row subset rather than the full 6,038, and it inherits that preregistration's honest prior in full: the audit's own ceiling says a re-cut can return at most about a quarter of the tail insertion mass, because most of it is continuation the overlap TRIGGERS rather than speech it DELIVERS."
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "runtime_receipt": "docs/receipts/runtime-q4km-featcache-04ccc72a.json",
+    "quantization": "Q4_K_M",
+    "audio_path": "raw audio, bf16 mmproj resident on the GPU, no feature cache directory",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample",
+    "contacts_per_item": 1,
+    "evidence": "none",
+    "obs": "none -- an ESB utterance IS the request; there is no windowing here",
+    "harness": "core.flight.FlightRuntime with the shared rails zero-supply direct arm and the OpenJiuwen executor, entered through scripts/flights/run_e22_esb_cell.py -- the same harness and entry point the sealed comparator used",
+    "prompt_shape": "the base TaskAdapter.assemble_prompt default: one system message carrying the instruction, one user message carrying the audio. IDENTICAL to the comparator.",
+    "the_only_difference": "the WAV bytes the request carries. Same roster of published segments, same instruction, same reference layer, same scorers, same build, same decoder, same encoder, same geometry, same decoding params, same harness, same entry point, same prompt shape, same model fragment as the sealed comparator."
+  },
+  "deviations": [
+    {
+      "id": "D-ENC-1",
+      "deviation": "the sample ids carry a variant suffix (@bx1), so the split identity hash is not the comparator's",
+      "why": "section 1.4 of the 2026-09-06 boundary-exact preregistration: a re-encoded clip must never share an identifier with its dev-v1 twin, or a receipt, a reference lookup or a paired join could silently mix the two populations",
+      "expected_effect": "none on any request byte; the published segment key is recovered by splitting on '@' for the reference lookup and for the paired join"
+    },
+    {
+      "id": "D-ENC-2",
+      "deviation": "the media root is this variant's own derived directory, not dev-v1",
+      "why": "it is the factor",
+      "expected_effect": "payload confinement binds to the declared root, so each population's root holds exactly its own roster's media and nothing else"
+    }
+  ],
+  "what_this_cell_can_and_cannot_conclude": {
+    "can": "whether this one encoding factor moves this study's Earnings-22 dev number and its boundary category mass, on live encodes, paired against sealed outputs on the same published segments",
+    "cannot": "anything about alignment. The 2026-09-06 array-durations verdict made the boundary claim rule UNCONDITIONAL: a number from a cell that changes the audio the protocol delivers is a statement about this study's own sensitivity on its own dev split, is never compared to the published 9.79 or 12.3, and there is no longer any condition under which that comparison becomes legitimate."
+  },
+  "evaluation": {
+    "official_scorers": [
+      "asr-wer-esb-whisper",
+      "asr-wer-esb",
+      "cost"
+    ],
+    "paper_facing_scorer": "asr-wer-esb-whisper",
+    "paper_facing_aggregation": "corpus: total S+D+I over total reference words",
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "merge_compounds": false,
+    "agentic_metric": "analysis.e22_error_taxonomy at its committed version, recomputed on the new outputs: HIGH-impact reference-word mass over reference words",
+    "metrics": [
+      "corpus WER under the Whisper EnglishTextNormalizer, pooled and per call (paper-facing)",
+      "mean of per-utterance WER under the same normalizer",
+      "corpus and mean WER under the frozen saea-scoring-v1 normalizer",
+      "the agentic error rate",
+      "the boundary category mass (segmentation-artifact + runaway-tail + runaway-head) with its tail/head containment buckets",
+      "substitutions / deletions / insertions and reference words",
+      "hypothesis-to-reference length ratio and the insertion share of errors",
+      "the utterance-duration decomposition, which is where the encoding audit predicts the effect concentrates",
+      "prompt_tokens against the audit's own predicted audio-token count for this media, row for row"
+    ],
+    "paired_analysis": {
+      "module": "analysis.paired",
+      "pooled_ratio_statistic": "resampled_statistic",
+      "per_unit_statistic": "paired_contrast",
+      "strata": "source call (10 strata)",
+      "seed": 20260903,
+      "n_replicates": 10000,
+      "ci_level": 0.9,
+      "signed_as": "cell minus arm A, on the same 1,500 published segments, paired per segment"
+    },
+    "mandatory_slices": [
+      "the per-call table for all ten calls, corpus WER under both normalizers",
+      "natural-mixture (corpus) and equal-call weightings side by side",
+      "the insertion / deletion / substitution split and the hypothesis-to-reference length ratio",
+      "the utterance-duration decomposition",
+      "the boundary category mass before and after"
+    ],
+    "renderer": "analysis.paired.render_markdown"
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "dev",
+    "planned_model_calls": 1508,
+    "planned_gpu_hours": 0.25,
+    "planned_speech_audio_seconds": 9800
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "1,500 rows x 1 contact + 8 canaries = 1,508; the registered exposure ceiling is 1,600.",
+    "planned_speech_audio_seconds": "9783.571 s for one pass, rounded up to 9800; the registered ceiling is 10200.",
+    "planned_gpu_hours": "0.25 planned, 0.40 registered. Derived rather than guessed: the sealed comparator ran 6,038 contacts over 39,292.647 s of audio in 0.4515 GPU-h at 1.927 s mean latency and 3.744 contacts/s on eight slots, i.e. 1.149e-5 GPU-h per audio second on this exact geometry and audio path. This cell's 9783.571 s of audio scales to 0.112 h; the plan carries roughly a 2x margin because every row pays a live mmproj encode and the encode cost is what this cell's media changes.",
+    "paid_api_spend": 0,
+    "cumulative_metering": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are the exposure row's own calls / speech-audio-seconds / gpu-hours cells, and the plan budget is metered CUMULATIVELY across every attempt of this run id, so a recovery plan must cover prior durable spend as well as its own worst case."
+  },
+  "decision": {
+    "rule": "ADMITTED as a model-usage local optimization iff ALL THREE hold: (1) corpus WER improves and the CI90 upper bound on the delta is below 0 AND that interval excludes the same-request null interval [-0.2356, +0.0692]; (2) the agentic error rate does not worsen -- the CI90 upper bound on its delta is below +0.05 points; and (3) the boundary category mass falls by at least 2.0 WER points from arm A's 8.2778.",
+    "non_inferiority_margin_provenance": "+0.05 points, inherited verbatim from section 1.6 of docs/readiness/2026-09-06-e22-dev-boundary-exact-v1-preregistration.md and fixed before any number exists.",
+    "boundary_clause_provenance": "2.0 points is fixed here, before any number exists: the boundary block is 8.2778 of arm A's 17.4012 points on these rows and no model-usage knob has moved more than 2.2 % of it, so a mechanism claim on the encoding needs a visible fraction of the block, not a corpus-WER wobble that could be the runtime's own jitter.",
+    "claim_surface": "A dev number on a 1,500-row subset of this study's own dev split. This is NOT an alignment verdict, it is not compared to the published 9.79 or 12.3 as a difference, and those figures appear as orientation only where they appear at all.",
+    "test_read": "NONE. This is not a scorer-side change -- it changes the audio -- so applying it to the six calibration-exposed ESB test calls would require RE-FLYING them, a second read of a population the 2026-09-04 owner allowance permitted once. It may be proposed to the owner and never taken on this fragment's authority.",
+    "not_authorized": "No mechanism arm. No knob tuned on the test split. No fourth prompt. No few-shot. No post-processing of any hypothesis. No re-scoring of any sealed arm. No merge_compounds. No packet or feature-cache path. No second read of the six calibration-exposed ESB test calls. No read of any confirmatory call. No paper-scale-confirmatory profile, no manuscript, no submission, no Stage-3 activity.",
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "companion_run": {
+    "experiment_id": "SAEA-E22-DEV-ESB-BX-SMOKE-V1",
+    "fragment": "e22-dev-encoding-bx-smoke4-v1",
+    "why_separate": "contracts.gate_exposure requires exactly one pre-registered exposure row per run id whose split identity hash equals the plan's, and the smoke's four rows have a different split identity hash and a much smaller budget, so it cannot share a run id with the flight."
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "contacts": {
+    "embedder": 0,
+    "frozen_core": 0,
+    "gpu_hours": 0,
+    "librosa_calls": 0,
+    "network": 0,
+    "outbound_connection_attempts": 0,
+    "paid_api_spend": 0,
+    "parent_mp3_decodes": 0,
+    "retriever": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "count": 1500,
+  "deterministic": "this receipt carries no timestamp: two back-to-back writes reproduce the same MANIFEST.sha256",
+  "execution_profile": "model-free-check",
+  "exposure_row": "SAEA-SN-MF-E22-DEV1500-ENCODING-VARIANTS-V1",
+  "id_suffix": "ts2",
+  "measured_media": {
+    "audio_hours_total": 3.59694,
+    "audio_seconds_longest_item": 34.88,
+    "audio_seconds_shortest_item": 2.219937,
+    "audio_seconds_total": 12948.983,
+    "audio_tokens_longest_item": 455,
+    "audio_tokens_total": 178282,
+    "clips_left_unchanged": 0,
+    "encoder_windows_max": 5,
+    "n_samples_total": 207183728,
+    "samples_added_total": 48000000,
+    "samples_removed_total": 0,
+    "total_bytes": 414433456,
+    "zero_pad_frames_total": 75330
+  },
+  "media_root": "derived/e22-esb-utterances/dev1500-tail2s-v1",
+  "opened": {
+    "hypothesis_text": 0,
+    "reference_sentences": 0,
+    "scores": 0,
+    "segment_table_columns": [],
+    "test_split_artifacts": 0
+  },
+  "outputs": {
+    "d1_media_supplement": "docs/receipts/artifacts/d1-e22-esb-dev1500-tail2s.json",
+    "d1_media_supplement_sha256": "61a9f18d7940235b861598d7883094ef339f1e6a8c4e8d6ccbcf62e8da9fdbdd",
+    "probe_view": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-dev1500-encoding-variants/tail-silence-2s/roster/flight-roster-receipt.json",
+    "probe_view_sha256": "ae747c5261bea3c076d53d3ce37fea112418b476ddf07049fdaba505b90ddd80",
+    "roster_receipt": "docs/receipts/rosters/e22-dev-esb-1500-tail2s-v1.json",
+    "roster_receipt_sha256": "703e5517c63f09c047ae834fac36883929098ebb3390ec81722d9a68f141ca99"
+  },
+  "recut_properties": {},
+  "roster_id": "E22-DEV-ESB-1500-TAIL2S-V1",
+  "rule": "exactly 2.0 s (32,000 zero samples) appended to the sealed dev-v1 clip; nothing is removed and nothing is re-decoded",
+  "schema": "saea-e22-dev1500-media-variant-build-receipt-v1",
+  "source_population": {
+    "all_source_digests_matched": true,
+    "audio_seconds_total": 9948.983,
+    "d1_media_supplement": "docs/receipts/artifacts/d1-e22-esb-dev1500-utterances.json",
+    "d1_media_supplement_sha256": "6a3d247208ab027e76b742b35cd4f84bc916f1db05d55444e8e040d05f2ca19f",
+    "files_rehashed_before_reading": 1500,
+    "roster_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-dev-esb-1500-v1/roster/flight-roster-receipt.json",
+    "roster_receipt_sha256": "fe9528be3ad62c27b95da61e7397fda5e19c0fe711fda07db6731c2d6fcccf9f",
+    "split_identity_hash": "c626e62f8876bf52a2904a0d2ec91807a530f3195c10facc8c036f661b2bf88a"
+  },
+  "split_identity_hash": "8dc9d6a04c408226e0575254ba4cbad605417c293fc5e55f40e6c8cf50f51207",
+  "split_name": "E22-ESB-DEV1500-TAIL2S-UTTERANCES",
+  "split_role": "dev",
+  "strata_counts": {
+    "4453225": 150,
+    "4469088": 150,
+    "4470684": 150,
+    "4474506": 150,
+    "4479944": 150,
+    "4481952": 150,
+    "4482383": 150,
+    "4482613": 150,
+    "4483937": 150,
+    "4485192": 150
+  },
+  "test_split_read": false,
+  "variant": "tail-silence-2s"
+}

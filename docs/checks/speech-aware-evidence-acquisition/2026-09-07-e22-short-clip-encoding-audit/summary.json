@@ -1,0 +1,552 @@
+{
+  "contacts": {
+    "audio_seconds_decoded": 0,
+    "embedder": 0,
+    "frozen_core": 0,
+    "gpu_hours": 0,
+    "llama_cpp_processes_started": 0,
+    "llama_cpp_sources_modified": 0,
+    "network": 0,
+    "outbound_connection_attempts": 0,
+    "outbound_connection_targets": [],
+    "paid_api_spend": 0,
+    "retriever": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "deterministic": "this receipt carries no timestamp: two back-to-back writes reproduce the same MANIFEST.sha256",
+  "duration_buckets_dev1500": [
+    {
+      "bucket": "[0, 1)",
+      "clips": 116,
+      "extra_audio_tokens": 636,
+      "extra_token_share": 0.421751,
+      "llamacpp_audio_tokens": 1508,
+      "zero_pad_frames_mean": 41.75
+    },
+    {
+      "bucket": "[1, 2)",
+      "clips": 109,
+      "extra_audio_tokens": 709,
+      "extra_token_share": 0.250176,
+      "llamacpp_audio_tokens": 2834,
+      "zero_pad_frames_mean": 50.4587
+    },
+    {
+      "bucket": "[2, 4)",
+      "clips": 291,
+      "extra_audio_tokens": 1842,
+      "extra_token_share": 0.137967,
+      "llamacpp_audio_tokens": 13351,
+      "zero_pad_frames_mean": 48.8144
+    },
+    {
+      "bucket": "[4, 8)",
+      "clips": 488,
+      "extra_audio_tokens": 3276,
+      "extra_token_share": 0.081925,
+      "llamacpp_audio_tokens": 39988,
+      "zero_pad_frames_mean": 52.0246
+    },
+    {
+      "bucket": "[8, 16)",
+      "clips": 425,
+      "extra_audio_tokens": 2816,
+      "extra_token_share": 0.044774,
+      "llamacpp_audio_tokens": 62894,
+      "zero_pad_frames_mean": 51.3906
+    },
+    {
+      "bucket": "[16, inf)",
+      "clips": 71,
+      "extra_audio_tokens": 461,
+      "extra_token_share": 0.024643,
+      "llamacpp_audio_tokens": 18707,
+      "zero_pad_frames_mean": 50.0423
+    }
+  ],
+  "execution_profile": "model-free-check",
+  "exposure_row": "SAEA-E22-MF-SHORT-CLIP-ENCODING-AUDIT-V1",
+  "front_end": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "chunk_frames": 100,
+    "encoder_mask_basis": "models/qwen3a.cpp carries n_len_org but never reads it; the graph views the padded [n_frames, n_mel] tensor as n_frames/100 chunks and emits 13 tokens for each, padded or not",
+    "encoder_masks_the_padding": false,
+    "fixed_30_second_window": false,
+    "fixed_30_second_window_basis": "hparams.audio_chunk_len is set to 30 at clip.cpp:1551 for the whole ULTRAVOX/QWEN2A/QWEN3A/... arm, but mtmd_audio_preprocessor_qwen3a never reads it: it calls log_mel_spectrogram with no_padding=true, so neither the 30-second stage_1_pad of mtmd-audio.cpp:399 nor the whisper preprocessor's min_samples short-audio pad of mtmd-audio.cpp:559 is on this path",
+    "hop_len": 160,
+    "inference_window_frames": 800,
+    "n_fft": 400,
+    "pad_value_in_normalized_mel_space": 0.0,
+    "projector_type": "PROJECTOR_TYPE_QWEN3A",
+    "reflection_pad_samples_each_end": 200,
+    "sample_rate_hz": 16000,
+    "tokens_per_chunk": 13,
+    "window_len": 400
+  },
+  "media_identity": {
+    "all_digests_matched_the_committed_supplement": true,
+    "audio_samples_read_for_the_mel_floor_probe": 6325183,
+    "audio_samples_sent_anywhere": 0,
+    "files_header_read": 6038,
+    "files_rehashed": 6038
+  },
+  "mel_floor_probe": {
+    "appended_digital_silence_normalized": {
+      "max": -0.492941,
+      "mean": -0.728149,
+      "median": -0.715199,
+      "min": -1.102651
+    },
+    "clamp_floor_normalized": {
+      "max": -0.492941,
+      "mean": -0.728163,
+      "median": -0.715199,
+      "min": -1.10265
+    },
+    "clips_sampled": 60,
+    "feature_max_normalized": {
+      "max": 1.507059,
+      "mean": 1.271837,
+      "median": 1.284801,
+      "min": 0.89735
+    },
+    "final_ten_real_frames_mean": {
+      "max": 0.161924,
+      "mean": -0.166387,
+      "median": -0.138154,
+      "min": -0.509402
+    },
+    "front_end": "transformers WhisperFeatureExtractor._np_extract_fbank_features, feature_size=128, n_fft=400, hop=160 -- the published path's own kernel",
+    "pad_value_the_encoder_sees": 0.0,
+    "pcm_samples_read": 6325183,
+    "per_call": 6,
+    "reading": "the pad the encoder is handed is 0.0; digital silence on the same clips lands on the clamp floor, which is strictly lower. The pad is not silence, and it is not the clip's own room tone either",
+    "seed": 20260907,
+    "share_of_real_frames_below_the_pad_value": {
+      "max": 0.925836,
+      "mean": 0.664336,
+      "median": 0.665037,
+      "min": 0.364746
+    }
+  },
+  "opened": {
+    "hypothesis_text": 0,
+    "reference_sentences": 0,
+    "scores": 0,
+    "sealed_usage_records": 6038,
+    "test_split_artifacts": 0
+  },
+  "per_call_dev1500": [
+    {
+      "audio_seconds": 1029.128443,
+      "call": "4453225",
+      "clips": 150,
+      "extra_audio_tokens": 978,
+      "hf_audio_tokens": 13400,
+      "llamacpp_audio_tokens": 14378,
+      "zero_pad_frames": 7578
+    },
+    {
+      "audio_seconds": 738.174123,
+      "call": "4469088",
+      "clips": 150,
+      "extra_audio_tokens": 952,
+      "hf_audio_tokens": 9617,
+      "llamacpp_audio_tokens": 10569,
+      "zero_pad_frames": 7364
+    },
+    {
+      "audio_seconds": 1134.753496,
+      "call": "4470684",
+      "clips": 150,
+      "extra_audio_tokens": 974,
+      "hf_audio_tokens": 14769,
+      "llamacpp_audio_tokens": 15743,
+      "zero_pad_frames": 7495
+    },
+    {
+      "audio_seconds": 1028.464505,
+      "call": "4474506",
+      "clips": 150,
+      "extra_audio_tokens": 964,
+      "hf_audio_tokens": 13388,
+      "llamacpp_audio_tokens": 14352,
+      "zero_pad_frames": 7443
+    },
+    {
+      "audio_seconds": 931.987743,
+      "call": "4479944",
+      "clips": 150,
+      "extra_audio_tokens": 1021,
+      "hf_audio_tokens": 12135,
+      "llamacpp_audio_tokens": 13156,
+      "zero_pad_frames": 7882
+    },
+    {
+      "audio_seconds": 803.966758,
+      "call": "4481952",
+      "clips": 150,
+      "extra_audio_tokens": 957,
+      "hf_audio_tokens": 10470,
+      "llamacpp_audio_tokens": 11427,
+      "zero_pad_frames": 7390
+    },
+    {
+      "audio_seconds": 1055.644062,
+      "call": "4482383",
+      "clips": 150,
+      "extra_audio_tokens": 968,
+      "hf_audio_tokens": 13748,
+      "llamacpp_audio_tokens": 14716,
+      "zero_pad_frames": 7520
+    },
+    {
+      "audio_seconds": 1029.089065,
+      "call": "4482613",
+      "clips": 150,
+      "extra_audio_tokens": 998,
+      "hf_audio_tokens": 13406,
+      "llamacpp_audio_tokens": 14404,
+      "zero_pad_frames": 7775
+    },
+    {
+      "audio_seconds": 1052.70756,
+      "call": "4483937",
+      "clips": 150,
+      "extra_audio_tokens": 947,
+      "hf_audio_tokens": 13704,
+      "llamacpp_audio_tokens": 14651,
+      "zero_pad_frames": 7305
+    },
+    {
+      "audio_seconds": 1145.067244,
+      "call": "4485192",
+      "clips": 150,
+      "extra_audio_tokens": 981,
+      "hf_audio_tokens": 14905,
+      "llamacpp_audio_tokens": 15886,
+      "zero_pad_frames": 7578
+    }
+  ],
+  "populations": {
+    "E22-ESB-DEV10-UTTERANCES": {
+      "audio_seconds_total": 39292.64675,
+      "clips": 6038,
+      "clips_spanning_multiple_windows": 1898,
+      "clips_with_no_extra_token": 104,
+      "clips_with_zero_pad": 6032,
+      "extra_audio_tokens_histogram": {
+        "0": 104,
+        "1": 477,
+        "10": 513,
+        "11": 458,
+        "12": 461,
+        "13": 120,
+        "2": 481,
+        "3": 474,
+        "4": 454,
+        "5": 490,
+        "6": 512,
+        "7": 525,
+        "8": 477,
+        "9": 492
+      },
+      "extra_audio_tokens_max": 13,
+      "extra_audio_tokens_mean": 6.521696,
+      "extra_audio_tokens_min": 0,
+      "extra_audio_tokens_total": 39378,
+      "extra_token_share_max": 0.769231,
+      "extra_token_share_mean": 0.123318,
+      "hf_audio_tokens_total": 511614,
+      "llamacpp_audio_tokens_total": 550992,
+      "roster_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-e22-dev-esb-prompt-ab-v1/roster/flight-roster-receipt.json",
+      "roster_receipt_sha256": "20437bcbde1a52b58bb48642d8809836e20073f7963f19b5ff836ead69c945c8",
+      "zero_pad_frames_mean": 50.420835,
+      "zero_pad_frames_total": 304441,
+      "zero_pad_seconds_total": 3044.41
+    },
+    "E22-ESB-DEV1500-UTTERANCES": {
+      "audio_seconds_total": 9948.983,
+      "clips": 1500,
+      "clips_spanning_multiple_windows": 496,
+      "clips_with_no_extra_token": 36,
+      "clips_with_zero_pad": 1498,
+      "extra_audio_tokens_histogram": {
+        "0": 36,
+        "1": 124,
+        "10": 122,
+        "11": 108,
+        "12": 123,
+        "13": 29,
+        "2": 120,
+        "3": 113,
+        "4": 94,
+        "5": 128,
+        "6": 130,
+        "7": 124,
+        "8": 129,
+        "9": 120
+      },
+      "extra_audio_tokens_max": 13,
+      "extra_audio_tokens_mean": 6.493333,
+      "extra_audio_tokens_min": 0,
+      "extra_audio_tokens_total": 9740,
+      "extra_token_share_max": 0.769231,
+      "extra_token_share_mean": 0.12003,
+      "hf_audio_tokens_total": 129542,
+      "llamacpp_audio_tokens_total": 139282,
+      "roster_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-dev-esb-1500-v1/roster/flight-roster-receipt.json",
+      "roster_receipt_sha256": "fe9528be3ad62c27b95da61e7397fda5e19c0fe711fda07db6731c2d6fcccf9f",
+      "zero_pad_frames_mean": 50.22,
+      "zero_pad_frames_total": 75330,
+      "zero_pad_seconds_total": 753.3
+    }
+  },
+  "published_path": {
+    "audio_kwargs": {
+      "padding": true,
+      "sampling_rate": 16000,
+      "truncation": false
+    },
+    "feature_extractor": "WhisperFeatureExtractor",
+    "frames_rule": "n_samples // 160 (torch.stft center=True, last frame dropped)",
+    "processor": "Qwen3OmniMoeProcessor (transformers 5.12.1)",
+    "tail_block_rule": "chunk_and_pad_features records each 100-frame chunk's TRUE length and get_valid_indices keeps only _get_feat_extract_output_lengths(length) = ceil(length/8) post-CNN positions, so the padding is discarded rather than encoded"
+  },
+  "schema": "saea-e22-short-clip-encoding-audit-v1",
+  "sealed_prompt_token_cross_check": {
+    "distinct_envelopes": 1,
+    "rows_checked": 6038,
+    "source": "sealed SAEA-E22-DEV-ESB-PROMPT-A-V1 trace, usage.prompt_tokens only; no hypothesis text, no score and no reference was read",
+    "text_envelope_tokens": 49
+  },
+  "speech_token_rule_check_dev10": {
+    "distinct_n_samples_mod_hop": 17,
+    "exact_rule": "13 * (n_samples // 16000 + 1)",
+    "longest_clip": {
+      "audio_tokens": 1027,
+      "both_rules_agree": true,
+      "encoder_windows": 10,
+      "sample_id": "4470684-13",
+      "seconds": 78.36
+    },
+    "n_samples_mod_hop_values": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159
+    ],
+    "quantization_note": "the published start_ts/end_ts are quantized, so n_samples takes only 17 residues mod 160 across this population and whole-second durations are common rather than measure-zero",
+    "rows_checked": 6038,
+    "rows_where_the_study_rule_understates_by_13": 87,
+    "shortest_clip": {
+      "audio_tokens": 13,
+      "extra_audio_tokens": 10,
+      "hf_audio_tokens": 3,
+      "sample_id": "4469088-654",
+      "seconds": 0.219938
+    },
+    "study_rule": "13 * ceil(audio_seconds)",
+    "whole_second_clips": 87
+  },
+  "speech_token_rule_check_dev1500": {
+    "distinct_n_samples_mod_hop": 17,
+    "exact_rule": "13 * (n_samples // 16000 + 1)",
+    "longest_clip": {
+      "audio_tokens": 429,
+      "both_rules_agree": true,
+      "encoder_windows": 5,
+      "sample_id": "4482383-188",
+      "seconds": 32.88
+    },
+    "n_samples_mod_hop_values": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159
+    ],
+    "quantization_note": "the published start_ts/end_ts are quantized, so n_samples takes only 17 residues mod 160 across this population and whole-second durations are common rather than measure-zero",
+    "rows_checked": 1500,
+    "rows_where_the_study_rule_understates_by_13": 25,
+    "shortest_clip": {
+      "audio_tokens": 13,
+      "extra_audio_tokens": 10,
+      "hf_audio_tokens": 3,
+      "sample_id": "4469088-654",
+      "seconds": 0.219938
+    },
+    "study_rule": "13 * ceil(audio_seconds)",
+    "whole_second_clips": 25
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "test_split_read": false,
+  "variant_projections_on_the_1500": {
+    "pad-30s": {
+      "audio_seconds_delta": 35053.897001,
+      "audio_seconds_total": 45002.88,
+      "clips": 1500,
+      "clips_left_unchanged": 1,
+      "clips_spanning_multiple_windows": 1500,
+      "clips_with_no_extra_token": 0,
+      "clips_with_zero_pad": 1500,
+      "extra_audio_tokens_histogram": {
+        "13": 1499,
+        "2": 1
+      },
+      "extra_audio_tokens_max": 13,
+      "extra_audio_tokens_mean": 12.992667,
+      "extra_audio_tokens_min": 2,
+      "extra_audio_tokens_total": 19489,
+      "extra_token_share_max": 0.032258,
+      "extra_token_share_mean": 0.03224,
+      "hf_audio_tokens_total": 585037,
+      "llamacpp_audio_tokens_delta": 465244,
+      "llamacpp_audio_tokens_total": 604526,
+      "longest_clip_audio_tokens": 429,
+      "variant": "pad-30s",
+      "zero_pad_frames_mean": 98.941333,
+      "zero_pad_frames_total": 148412,
+      "zero_pad_seconds_total": 1484.12
+    },
+    "tail-silence-2s": {
+      "audio_seconds_delta": 3000.000001,
+      "audio_seconds_total": 12948.983,
+      "clips": 1500,
+      "clips_left_unchanged": 0,
+      "clips_spanning_multiple_windows": 701,
+      "clips_with_no_extra_token": 36,
+      "clips_with_zero_pad": 1498,
+      "extra_audio_tokens_histogram": {
+        "0": 36,
+        "1": 124,
+        "10": 122,
+        "11": 108,
+        "12": 123,
+        "13": 29,
+        "2": 120,
+        "3": 113,
+        "4": 94,
+        "5": 128,
+        "6": 130,
+        "7": 124,
+        "8": 129,
+        "9": 120
+      },
+      "extra_audio_tokens_max": 13,
+      "extra_audio_tokens_mean": 6.493333,
+      "extra_audio_tokens_min": 0,
+      "extra_audio_tokens_total": 9740,
+      "extra_token_share_max": 0.25641,
+      "extra_token_share_mean": 0.06995,
+      "hf_audio_tokens_total": 168542,
+      "llamacpp_audio_tokens_delta": 39000,
+      "llamacpp_audio_tokens_total": 178282,
+      "longest_clip_audio_tokens": 455,
+      "variant": "tail-silence-2s",
+      "zero_pad_frames_mean": 50.22,
+      "zero_pad_frames_total": 75330,
+      "zero_pad_seconds_total": 753.3
+    }
+  },
+  "walkthroughs": {
+    "33s": {
+      "extra_audio_tokens": 13,
+      "fixed_30_second_window_applied": false,
+      "hf_audio_tokens": 429,
+      "hf_mel_frames": 3300,
+      "llamacpp_audio_tokens": 442,
+      "llamacpp_mel_frames": 3301,
+      "n_samples": 528000,
+      "reflection_pad_samples_each_end": 200,
+      "seconds": 33.0,
+      "windows": [
+        {
+          "audio_tokens": 104,
+          "effective_frames": 800,
+          "offset_frames": 0,
+          "padded_frames": 800,
+          "zero_pad_frames": 0
+        },
+        {
+          "audio_tokens": 104,
+          "effective_frames": 800,
+          "offset_frames": 800,
+          "padded_frames": 800,
+          "zero_pad_frames": 0
+        },
+        {
+          "audio_tokens": 104,
+          "effective_frames": 800,
+          "offset_frames": 1600,
+          "padded_frames": 800,
+          "zero_pad_frames": 0
+        },
+        {
+          "audio_tokens": 104,
+          "effective_frames": 800,
+          "offset_frames": 2400,
+          "padded_frames": 800,
+          "zero_pad_frames": 0
+        },
+        {
+          "audio_tokens": 26,
+          "effective_frames": 101,
+          "offset_frames": 3200,
+          "padded_frames": 200,
+          "zero_pad_frames": 99
+        }
+      ],
+      "zero_pad_frames": 99,
+      "zero_pad_seconds": 0.99
+    },
+    "3s": {
+      "extra_audio_tokens": 13,
+      "fixed_30_second_window_applied": false,
+      "hf_audio_tokens": 39,
+      "hf_mel_frames": 300,
+      "llamacpp_audio_tokens": 52,
+      "llamacpp_mel_frames": 301,
+      "n_samples": 48000,
+      "reflection_pad_samples_each_end": 200,
+      "seconds": 3.0,
+      "windows": [
+        {
+          "audio_tokens": 52,
+          "effective_frames": 301,
+          "offset_frames": 0,
+          "padded_frames": 400,
+          "zero_pad_frames": 99
+        }
+      ],
+      "zero_pad_frames": 99,
+      "zero_pad_seconds": 0.99
+    }
+  }
+}

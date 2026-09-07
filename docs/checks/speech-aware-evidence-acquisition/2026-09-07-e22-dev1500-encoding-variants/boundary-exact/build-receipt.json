@@ -1,0 +1,92 @@
+{
+  "contacts": {
+    "embedder": 0,
+    "frozen_core": 0,
+    "gpu_hours": 0,
+    "librosa_calls": 0,
+    "network": 0,
+    "outbound_connection_attempts": 0,
+    "paid_api_spend": 0,
+    "parent_mp3_decodes": 0,
+    "retriever": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "count": 1500,
+  "deterministic": "this receipt carries no timestamp: two back-to-back writes reproduce the same MANIFEST.sha256",
+  "execution_profile": "model-free-check",
+  "exposure_row": "SAEA-SN-MF-E22-DEV1500-ENCODING-VARIANTS-V1",
+  "id_suffix": "bx1",
+  "measured_media": {
+    "audio_hours_total": 2.717659,
+    "audio_seconds_longest_item": 32.800063,
+    "audio_seconds_shortest_item": 0.12,
+    "audio_seconds_total": 9783.571187,
+    "audio_tokens_longest_item": 429,
+    "audio_tokens_total": 137163,
+    "clips_left_unchanged": 0,
+    "encoder_windows_max": 5,
+    "n_samples_total": 156537139,
+    "samples_added_total": 0,
+    "samples_removed_total": 2646589,
+    "total_bytes": 313140278,
+    "zero_pad_frames_total": 75619
+  },
+  "media_root": "derived/e22-esb-utterances/dev1500-bx-v1",
+  "opened": {
+    "hypothesis_text": 0,
+    "reference_sentences": 0,
+    "scores": 0,
+    "segment_table_columns": [
+      "source_id",
+      "start_ts",
+      "end_ts"
+    ],
+    "test_split_artifacts": 0
+  },
+  "outputs": {
+    "d1_media_supplement": "docs/receipts/artifacts/d1-e22-esb-dev1500-bx.json",
+    "d1_media_supplement_sha256": "d008022f0845c0ff53c56cb140c8ca9951d673949e7c67da1032e2db2fead99c",
+    "probe_view": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-dev1500-encoding-variants/boundary-exact/roster/flight-roster-receipt.json",
+    "probe_view_sha256": "8d83f0b247c75d563916200b7a308e51126dff14f2eed42e00f89dc7a86eb9f2",
+    "roster_receipt": "docs/receipts/rosters/e22-dev-esb-1500-bx-v1.json",
+    "roster_receipt_sha256": "f705db00c3e11b0a0d86d941f7a50b2855d5d81d8e61a837000a4a66ddfaaa21"
+  },
+  "recut_properties": {
+    "calls": 10,
+    "overlapping_pairs_after": 0,
+    "overlapping_pairs_before": 4681,
+    "positive_gaps_closed": 0,
+    "segments": 6038
+  },
+  "roster_id": "E22-DEV-ESB-1500-BX-V1",
+  "rule": "the midpoint-of-overlap re-cut of section 1.1 of the 2026-09-06 boundary-exact preregistration, applied as a strictly subtractive SLICE of the sealed dev-v1 clip",
+  "schema": "saea-e22-dev1500-media-variant-build-receipt-v1",
+  "source_population": {
+    "all_source_digests_matched": true,
+    "audio_seconds_total": 9948.983,
+    "d1_media_supplement": "docs/receipts/artifacts/d1-e22-esb-dev1500-utterances.json",
+    "d1_media_supplement_sha256": "6a3d247208ab027e76b742b35cd4f84bc916f1db05d55444e8e040d05f2ca19f",
+    "files_rehashed_before_reading": 1500,
+    "roster_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-dev-esb-1500-v1/roster/flight-roster-receipt.json",
+    "roster_receipt_sha256": "fe9528be3ad62c27b95da61e7397fda5e19c0fe711fda07db6731c2d6fcccf9f",
+    "split_identity_hash": "c626e62f8876bf52a2904a0d2ec91807a530f3195c10facc8c036f661b2bf88a"
+  },
+  "split_identity_hash": "87d0cc654b05fa595068cb14d461e9e279f3e080e9f3c1d78a404be8f9f37848",
+  "split_name": "E22-ESB-DEV1500-BX-UTTERANCES",
+  "split_role": "dev",
+  "strata_counts": {
+    "4453225": 150,
+    "4469088": 150,
+    "4470684": 150,
+    "4474506": 150,
+    "4479944": 150,
+    "4481952": 150,
+    "4482383": 150,
+    "4482613": 150,
+    "4483937": 150,
+    "4485192": 150
+  },
+  "test_split_read": false,
+  "variant": "boundary-exact"
+}

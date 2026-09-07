@@ -1,0 +1,82 @@
+{
+  "contacts": {
+    "embedder": 0,
+    "frozen_core": 0,
+    "gpu_hours": 0,
+    "librosa_calls": 0,
+    "network": 0,
+    "outbound_connection_attempts": 0,
+    "paid_api_spend": 0,
+    "parent_mp3_decodes": 0,
+    "retriever": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "count": 1500,
+  "deterministic": "this receipt carries no timestamp: two back-to-back writes reproduce the same MANIFEST.sha256",
+  "execution_profile": "model-free-check",
+  "exposure_row": "SAEA-SN-MF-E22-DEV1500-ENCODING-VARIANTS-V1",
+  "id_suffix": "p30",
+  "measured_media": {
+    "audio_hours_total": 12.5008,
+    "audio_seconds_longest_item": 32.88,
+    "audio_seconds_shortest_item": 30.0,
+    "audio_seconds_total": 45002.88,
+    "audio_tokens_longest_item": 429,
+    "audio_tokens_total": 604526,
+    "clips_left_unchanged": 1,
+    "encoder_windows_max": 5,
+    "n_samples_total": 720046080,
+    "samples_added_total": 560862352,
+    "samples_removed_total": 0,
+    "total_bytes": 1440158160,
+    "zero_pad_frames_total": 148412
+  },
+  "media_root": "derived/e22-esb-utterances/dev1500-pad30s-v1",
+  "opened": {
+    "hypothesis_text": 0,
+    "reference_sentences": 0,
+    "scores": 0,
+    "segment_table_columns": [],
+    "test_split_artifacts": 0
+  },
+  "outputs": {
+    "d1_media_supplement": "docs/receipts/artifacts/d1-e22-esb-dev1500-pad30s.json",
+    "d1_media_supplement_sha256": "a6f92aeecce8be1128ba4547b1b3f0f62dc45dbd0389263ae4c2808789a08c00",
+    "probe_view": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-dev1500-encoding-variants/pad-30s/roster/flight-roster-receipt.json",
+    "probe_view_sha256": "c1dcd6b895f93d1ee135977d297664310bcdc3842f2e26912e75ec0f21b6291e",
+    "roster_receipt": "docs/receipts/rosters/e22-dev-esb-1500-pad30s-v1.json",
+    "roster_receipt_sha256": "55d8dae7e5661219caa02ed97f54d51476a7ac55825533d84a7cf17e2f14c8ee"
+  },
+  "recut_properties": {},
+  "roster_id": "E22-DEV-ESB-1500-PAD30S-V1",
+  "rule": "zero samples appended up to exactly 480,000 (30.0 s); a clip already at or past 30.0 s is copied byte-identical and is NEVER truncated",
+  "schema": "saea-e22-dev1500-media-variant-build-receipt-v1",
+  "source_population": {
+    "all_source_digests_matched": true,
+    "audio_seconds_total": 9948.983,
+    "d1_media_supplement": "docs/receipts/artifacts/d1-e22-esb-dev1500-utterances.json",
+    "d1_media_supplement_sha256": "6a3d247208ab027e76b742b35cd4f84bc916f1db05d55444e8e040d05f2ca19f",
+    "files_rehashed_before_reading": 1500,
+    "roster_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-dev-esb-1500-v1/roster/flight-roster-receipt.json",
+    "roster_receipt_sha256": "fe9528be3ad62c27b95da61e7397fda5e19c0fe711fda07db6731c2d6fcccf9f",
+    "split_identity_hash": "c626e62f8876bf52a2904a0d2ec91807a530f3195c10facc8c036f661b2bf88a"
+  },
+  "split_identity_hash": "2c13bf01e8a4ff3bc4e1313d0da99655fbcee304b9e77466037831dbe1044934",
+  "split_name": "E22-ESB-DEV1500-PAD30S-UTTERANCES",
+  "split_role": "dev",
+  "strata_counts": {
+    "4453225": 150,
+    "4469088": 150,
+    "4470684": 150,
+    "4474506": 150,
+    "4479944": 150,
+    "4481952": 150,
+    "4482383": 150,
+    "4482613": 150,
+    "4483937": 150,
+    "4485192": 150
+  },
+  "test_split_read": false,
+  "variant": "pad-30s"
+}
