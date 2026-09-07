@@ -391,6 +391,18 @@ def main() -> int:
     parser.add_argument("--campaign-active", action="store_true")
     parser.add_argument("--workers", type=int, default=None)
     parser.add_argument("--preprocess-workers", type=int, default=None)
+    parser.add_argument(
+        "--include-per-sample",
+        action="store_true",
+        help=(
+            "forward include_per_sample to core.scoring_batch, exactly as the SLURP "
+            "sibling scripts/flights/run_slurp_closed_list_cell.py already does. The "
+            "PAIRED analysis reads it: analysis.paired contrasts a cell against the "
+            "sealed comparator ROW BY ROW, which needs the per-sample scores the "
+            "batch otherwise summarizes away. Off by default, so every existing "
+            "cell's receipt shape is unchanged"
+        ),
+    )
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--dry-run", action="store_true")
     mode.add_argument("--wire-check", action="store_true")
@@ -509,7 +521,7 @@ def main() -> int:
         )
         stages["seal"] = runtime.seal()
         log("sealed: %s" % stages["seal"]["manifest_path"])
-        stages["score"] = runtime.score()
+        stages["score"] = runtime.score(include_per_sample=args.include_per_sample)
         log("scored")
     except BaseException as failure:  # noqa: BLE001 -- re-raised below
         # An attempt that opened and then died must be recorded ABORTED, not
