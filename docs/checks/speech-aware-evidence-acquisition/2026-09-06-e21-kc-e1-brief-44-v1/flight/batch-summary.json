@@ -1,0 +1,30 @@
+{
+  "aggregation_rule": "no dataset sharding and no averaging of shard-level official metrics",
+  "effective_max_workers": 1,
+  "elapsed_seconds": 1441.2874924449989,
+  "failed": 0,
+  "job_count": 1,
+  "jobs": [
+    {
+      "elapsed_seconds": 1441.2323685489991,
+      "error": null,
+      "index": 0,
+      "job_id": "e21-kc-e1-brief-44-v1",
+      "ledger_cells": null,
+      "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-KC-E1-BRIEF-44-V1/attempt-20260907T171238Z-f02eef/SAEA-E21-KC-E1-BRIEF-44-V1.run-manifest.json",
+      "operation": "score",
+      "result_file": "e21-kc-e1-brief-44-v1.score.json",
+      "result_sha256": "c71392492e7ff7ea7f231e792040d7bfa8a3ca2406af7e16e968166f8f287b9d",
+      "returncode": 0,
+      "status": "succeeded",
+      "stderr_log": "e21-kc-e1-brief-44-v1.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_log": null
+    }
+  ],
+  "operation": "score",
+  "parallelism_boundary": "one-complete-verified-manifest-per-process",
+  "requested_max_workers": 1,
+  "schema": "saea-parallel-score-batch-v1",
+  "succeeded": 1
+}
