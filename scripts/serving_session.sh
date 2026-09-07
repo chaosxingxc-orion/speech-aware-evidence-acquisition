@@ -5,7 +5,8 @@
 # is reused across agents instead of being paid for again by every flight).
 #
 #   scripts/serving_session.sh start <model-fragment-id> [--session-id ID] \
-#                                    [--host H] [--port N] [--runtime-root R]
+#                                    [--host H] [--port N] [--runtime-root R] \
+#                                    [--min-host-free-gb 12.0]
 #   scripts/serving_session.sh status [--session-id ID]
 #   scripts/serving_session.sh resident            (exit 0 = one is resident,
 #                                                   3 = none, 2 = cannot tell)
@@ -46,6 +47,17 @@
 # identity fields session.json records, and refuses with the exact differing
 # field rather than spawning a second 18.5 GB server.
 #
+# `start` also refuses when the WINDOWS host's free memory is below
+# --min-host-free-gb (default 12.0), printing the reading in the refusal (E7c,
+# 2026-09-07: the VM's mmap plus page cache filled the host's headroom and the
+# Claude Code host watchdog killed the serving wrapper and its llama-server
+# child mid-flight -- a serving wrapper is a host-watchdog target, so the
+# running cap must always leave that much for Windows). `status` prints the
+# CURRENT host reading (Windows total/free GB, the vmmemWSL working set, and
+# the VM's own MemTotal/MemAvailable) beside the session document. Both are
+# enforced in core.session.serving (core.session.serving.read_host_memory),
+# not here.
+#
 # See docs/readiness/2026-09-07-always-on-serving-operating-note.md.
 
 set -euo pipefail
@@ -54,7 +66,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 usage() {
-    sed -n '2,49p' "${BASH_SOURCE[0]}" | sed 's/^#\{1,2\} \{0,1\}//'
+    sed -n '2,61p' "${BASH_SOURCE[0]}" | sed 's/^#\{1,2\} \{0,1\}//'
 }
 
 if [[ $# -lt 1 ]]; then

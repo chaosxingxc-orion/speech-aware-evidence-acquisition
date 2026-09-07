@@ -1164,11 +1164,39 @@ def _resident_refusal(
     )
 
 
+def _refuse_low_host_memory(min_host_free_gb: float) -> None:
+    """Refuse to start a new 18.5 GB resident server on a host that does not
+    provably have room for it (E7c, the 2026-09-07 incident: the VM's mmap
+    plus page cache filled the host's headroom and the coordinator's
+    watchdog killed the serving wrapper mid-flight).
+
+    Fails OPEN when the reading itself is unavailable (WSL interop off, no
+    ``powershell.exe``): a probe that cannot prove the host is short of
+    memory must never block a start on that basis, exactly as an unreadable
+    GPU never proves staleness in :func:`observe_session_process`.
+    """
+
+    host_memory = read_host_memory()
+    free_gb = host_memory.get("host_free_gb")
+    if isinstance(free_gb, bool) or not isinstance(free_gb, (int, float)):
+        return
+    if float(free_gb) < min_host_free_gb:
+        raise ServingSessionError(
+            f"refusing to start: the host's free memory is {float(free_gb):.1f} GB, below "
+            f"--min-host-free-gb {float(min_host_free_gb):.1f} GB -- a serving wrapper is a "
+            "host-watchdog target (2026-09-07: the VM's mmap plus page cache filled the "
+            "host's headroom and the watchdog killed the wrapper mid-flight); free host "
+            "memory, or lower the VM's .wslconfig memory cap, before starting this geometry"
+        )
+
+
 def _start(args) -> int:
     from datetime import datetime, timezone  # noqa: PLC0415 (CLI-only)
 
     from ...data.lock import data_root as resolve_data_root  # noqa: PLC0415 (CLI-only)
     from . import start_session, stop_session  # noqa: PLC0415 (CLI-only)
+
+    _refuse_low_host_memory(args.min_host_free_gb)
 
     repo_root = _repo_root()
     data_root = resolve_data_root()
@@ -1476,6 +1504,11 @@ def _status(args) -> int:
                 "monitor_sample_count": len(samples),
                 "last_monitor_sample": samples[-1] if samples else None,
                 "monitor_summary": summarize_monitor_samples(samples),
+                # The CURRENT host reading (E7c), not the window's: an
+                # operator running `status` wants to know whether the host
+                # has room right now, same question `start` asks before it
+                # spawns a second 18.5 GB server.
+                "host_memory": read_host_memory(),
             },
             ensure_ascii=False,
             indent=2,
@@ -1644,6 +1677,16 @@ def build_parser():
         help="start the session and stay in the foreground",
     )
     start.add_argument("model_fragment", help="a configs/model/<name>.json fragment id")
+    start.add_argument(
+        "--min-host-free-gb",
+        type=float,
+        default=12.0,
+        help=(
+            "refuse to start when the Windows host's free memory is below this (owner "
+            "cap, 2026-09-07: a serving wrapper is a host-watchdog target, so the running "
+            "cap must always leave this much for Windows)"
+        ),
+    )
     start.set_defaults(handler=_start)
     subparsers.add_parser(
         "status", parents=[common], help="print the session document and the last sample"
