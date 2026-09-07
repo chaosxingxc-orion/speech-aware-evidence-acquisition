@@ -410,6 +410,7 @@ def build_payload_binding(
     samples: Sequence[object],
     data_root: Path,
     carrier_root: Path,
+    derived_media_roots: Sequence[Path] = (),
     sample_rate_prober: Callable[[Path], int] = _probe_sample_rate_hz,
 ) -> PayloadBindingContext:
     """The :class:`~core.base.PayloadBindingContext` a :class:`FrozenCoreClient`
@@ -424,7 +425,12 @@ def build_payload_binding(
     subdirectory ``data.lock.asset_dir(lock, carrier_lock_key, root)`` would
     resolve -- callers already hold ``lock``/``root`` for their own carrier
     loading and pass the result straight through, so this module (like the
-    rest of ``rails``) never needs its own lock coupling."""
+    rest of ``rails``) never needs its own lock coupling.
+
+    ``derived_media_roots`` is the composed dataset fragment's own declared
+    derived media roots (``core.base.declared_derived_media_roots``), empty for
+    every fragment that declares none. See
+    :attr:`core.base.PayloadBindingContext.derived_media_roots`."""
 
     if not samples:
         raise FrozenCoreClientError(
@@ -453,6 +459,7 @@ def build_payload_binding(
         data_root=Path(data_root),
         carrier_root=Path(carrier_root),
         media_relpaths=media_relpaths,
+        derived_media_roots=tuple(Path(root) for root in derived_media_roots),
     ).validate()
 
 

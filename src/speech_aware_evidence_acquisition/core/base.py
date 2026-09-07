@@ -11,6 +11,7 @@ wiring.
 from __future__ import annotations
 
 import math
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -258,6 +259,120 @@ class RunResult:
     cost: Mapping[str, object]
 
 
+#: The one directory beneath ``SPEECHRL_DATA_DIR`` that derived media may live
+#: in. Every media variant this study builds (silence-tail ``@ts2``, 16 kHz
+#: input-rate, ESB utterance cuts) is written under ``<data_root>/derived/
+#: <variant>/`` by its own build script, and its dataset fragment names that
+#: same directory back. Nothing else is ever a legal derived media root.
+DERIVED_MEDIA_PREFIX = "derived"
+
+#: Dataset-fragment key -> the (path, sha256) key pair whose D1 media
+#: supplement vouches for the media under that derived root. Each carrier
+#: spells its own key (the SLURP runtime views, the Audio2Tool calibration
+#: fragments and the Earnings-22 ESB fragments were each written before there
+#: was a shared one), and each pairs with the supplement its media identity is
+#: actually pinned by. A key not in this table is not a derived-root
+#: declaration and contributes nothing.
+DERIVED_MEDIA_SUBDIR_KEYS: Mapping[str, tuple[str, str]] = {
+    "derived_media_subdir": ("d1_media_supplement", "d1_media_supplement_sha256"),
+    "a2t_calibration_derived_subdir": (
+        "a2t_calibration_d1_media_supplement",
+        "a2t_calibration_d1_media_supplement_sha256",
+    ),
+    "e22_esb_derived_subdir": ("d1_media_supplement", "d1_media_supplement_sha256"),
+}
+
+_SHA256_HEX = re.compile(r"^[0-9a-f]{64}$")
+
+
+def _assert_d1_media_supplement(
+    values: Mapping[str, object], subdir_key: str, path_key: str, digest_key: str
+) -> None:
+    """Refuse a declared derived media root whose fragment carries no
+    hash-pinned D1 media supplement for it (fail-closed).
+
+    A derived root widens what a payload may name. The ONLY thing that makes
+    that widening safe is that every file under it is itself an identity the
+    study froze: the fragment's D1 media supplement (schema
+    ``saea-d1-media-supplement-v1``, verified byte-for-byte by
+    ``contracts.gate_media_identity``) records the sample id, relpath, size and
+    SHA-256 of each derived file. Without that pair there is nothing vouching
+    for the root's contents, so the root is refused rather than trusted.
+    Several fragments carry the supplement key as PROSE explaining why they
+    need none (they declare no derived root either) -- requiring the paired
+    lowercase 64-hex digest is what tells the two apart.
+    """
+
+    path_value = values.get(path_key)
+    digest_value = values.get(digest_key)
+    if path_value is None or digest_value is None:
+        raise CoreError(
+            f"dataset fragment declares {subdir_key!r} but no D1 media supplement "
+            f"({path_key!r} + {digest_key!r}); a derived media root is legal only "
+            "when a hash-pinned D1 supplement vouches for its contents"
+        )
+    if (
+        not isinstance(path_value, str)
+        or not path_value
+        or any(character.isspace() for character in path_value)
+        or "\\" in path_value
+        or path_value.startswith("/")
+        or any(part in ("", ".", "..") for part in path_value.split("/"))
+    ):
+        raise CoreError(
+            f"dataset fragment {path_key!r} must be a relative POSIX path, got "
+            f"{path_value!r}"
+        )
+    if not isinstance(digest_value, str) or _SHA256_HEX.fullmatch(digest_value) is None:
+        raise CoreError(
+            f"dataset fragment {digest_key!r} must be a lowercase 64-hex SHA-256, got "
+            f"{digest_value!r}"
+        )
+
+
+def declared_derived_media_roots(
+    values: Mapping[str, object], data_root: Path
+) -> tuple[Path, ...]:
+    """The additional legal media roots THIS composed dataset fragment declares.
+
+    Reads only the keys in :data:`DERIVED_MEDIA_SUBDIR_KEYS`, in a fixed order,
+    and returns them resolved beneath ``data_root``. A fragment that declares
+    none returns ``()`` -- which is every fragment that existed before derived
+    media did, so their bindings are byte-identical. Each declared value must
+    be a relative POSIX path strictly beneath ``derived/`` and must come with
+    the fragment's own hash-pinned D1 media supplement
+    (:func:`_assert_d1_media_supplement`); anything else refuses here, before a
+    binding is ever built, rather than widening confinement on trust.
+    """
+
+    roots: list[Path] = []
+    seen: set[str] = set()
+    for subdir_key, (path_key, digest_key) in DERIVED_MEDIA_SUBDIR_KEYS.items():
+        declared = values.get(subdir_key)
+        if declared is None:
+            continue
+        if not isinstance(declared, str) or not declared:
+            raise CoreError(f"dataset fragment {subdir_key!r} must be a non-empty string")
+        parts = declared.split("/")
+        if (
+            declared.startswith("/")
+            or "\\" in declared
+            or len(parts) < 2
+            or parts[0] != DERIVED_MEDIA_PREFIX
+            or any(part in ("", ".", "..") for part in parts)
+        ):
+            raise CoreError(
+                f"dataset fragment {subdir_key!r} must be a relative POSIX path strictly "
+                f"beneath {DERIVED_MEDIA_PREFIX!r}/, got {declared!r}"
+            )
+        _assert_d1_media_supplement(values, subdir_key, path_key, digest_key)
+        if declared in seen:
+            continue
+        seen.add(declared)
+        roots.append(Path(data_root) / declared)
+    return tuple(roots)
+
+
 @dataclass(frozen=True)
 class PayloadBindingContext:
     """Immutable payload<->plan<->split binding facts (R0 repair T3, invariants I3/I4).
@@ -319,6 +434,23 @@ class PayloadBindingContext:
     # paired with it: ``evidence_contents[sid][i]`` is the content of
     # ``evidence_relpaths[sid][i]``.
     evidence_contents: Mapping[str, bytes | tuple[bytes, ...]] = field(default_factory=dict)
+    # DERIVED-MEDIA CONFINEMENT (2026-09-07 defect: every cross-carrier
+    # derived-media fragment was refused at payload time). A carrier whose
+    # media lives under ``<data_root>/<carrier subdir>`` has exactly one legal
+    # media root, and ``carrier_root`` is it. A DERIVED media variant of that
+    # carrier -- the ``@ts2`` silence-tail populations, the 16 kHz input-rate
+    # populations, the ESB utterance cuts -- lives instead under its own
+    # hash-pinned ``<data_root>/derived/<variant>`` root, declared by the
+    # dataset fragment itself (``derived_media_subdir`` /
+    # ``a2t_calibration_derived_subdir`` / ``e22_esb_derived_subdir``, read by
+    # :func:`declared_derived_media_roots`) and vouched for by that fragment's
+    # own D1 media supplement. Those roots go HERE, and
+    # ``core.model._enforce_payload_binding`` accepts a relpath confined under
+    # the carrier root OR under one of them -- always AFTER the I4 exact
+    # relpath check, never instead of it. A fragment that declares no such key
+    # contributes nothing, so this tuple is empty for every binding that
+    # existed before and their behaviour is byte-identical.
+    derived_media_roots: tuple[Path, ...] = ()
 
     def validate(self) -> "PayloadBindingContext":
         """Structural self-check, no filesystem access: a malformed binding
@@ -370,6 +502,34 @@ class PayloadBindingContext:
             raise CoreError("binding context data_root/carrier_root must be Path objects")
         if not self.carrier_root.is_relative_to(self.data_root):
             raise CoreError("binding context carrier_root must be beneath data_root")
+        # DERIVED-MEDIA CONFINEMENT (see the field's own docstring): the extra
+        # legal roots are checked with exactly the discipline carrier_root gets
+        # -- purely lexical, no filesystem access -- plus the two rules that
+        # keep the widening narrow. A root outside data_root would let a
+        # payload name bytes this run's controlled data tree does not even
+        # contain; a root outside ``derived/`` (or ``derived/`` itself, which
+        # would legalize EVERY variant at once rather than this fragment's own)
+        # would re-open the confinement hole the whole check exists to close.
+        if not isinstance(self.derived_media_roots, tuple):
+            raise CoreError("binding context derived_media_roots must be a tuple")
+        for derived_root in self.derived_media_roots:
+            if not isinstance(derived_root, Path):
+                raise CoreError(
+                    "binding context derived_media_roots must contain Path objects, "
+                    f"got {derived_root!r}"
+                )
+            if not derived_root.is_relative_to(self.data_root):
+                raise CoreError(
+                    f"binding context derived media root {str(derived_root)!r} must be "
+                    "beneath data_root"
+                )
+            parts = derived_root.relative_to(self.data_root).parts
+            if len(parts) < 2 or parts[0] != DERIVED_MEDIA_PREFIX:
+                raise CoreError(
+                    f"binding context derived media root {str(derived_root)!r} must be a "
+                    f"named variant directory strictly beneath "
+                    f"<data_root>/{DERIVED_MEDIA_PREFIX}/"
+                )
         if not isinstance(self.media_relpaths, Mapping):
             raise CoreError("binding context media_relpaths must be a mapping")
         # I-4: optional (empty is allowed -- see the field's own docstring), but

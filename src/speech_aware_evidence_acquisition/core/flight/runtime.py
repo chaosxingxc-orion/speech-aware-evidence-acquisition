@@ -57,7 +57,13 @@ from ...rails.phase_runner import run_continuous_program, run_program
 from ...rails.runner import RAILS_ARMS, run_rails_experiment
 from ...rails.task_adapter import TaskAdapter
 from ..attempts.store import AttemptStore
-from ..base import CoreError, MAX_TOKENS_POLICIES, RunResult, TRANSPORTS
+from ..base import (
+    CoreError,
+    MAX_TOKENS_POLICIES,
+    RunResult,
+    TRANSPORTS,
+    declared_derived_media_roots,
+)
 from ..bundle.finalize import abort_attempt_if_opened, finalize_bundle
 from ..bundle.git_commit import require_clean_study_repo
 from ..bundle.manifest import build_manifest
@@ -2419,6 +2425,15 @@ class FlightRuntime:
             samples=self._samples,
             data_root=self._data_root,
             carrier_root=carrier_root,
+            # DERIVED-MEDIA CONFINEMENT: whatever derived media roots the
+            # composed fragment declares (and pins to a D1 media supplement)
+            # become legal alongside the carrier root, so a media-variant
+            # population binds without moving its files or rewriting its
+            # roster. Empty -- hence inert -- for every fragment without such
+            # a key.
+            derived_media_roots=declared_derived_media_roots(
+                baseline_values, self._data_root
+            ),
         )
         self._binding = binding
         kwargs: dict[str, object] = {

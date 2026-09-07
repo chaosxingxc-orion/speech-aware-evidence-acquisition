@@ -30,7 +30,12 @@ class FrozenCoreError(RuntimeError):
     payload<->plan<->split value mismatch (I3), or media confinement (I4)."""
 
 
-from .paths import _DRIVE_PREFIX, _normalized_relative_path, _resolve_confined  # noqa: E402
+from .paths import (  # noqa: E402
+    _DRIVE_PREFIX,
+    _normalized_relative_path,
+    _resolve_confined,
+    _resolve_confined_any,
+)
 from .slices import (  # noqa: E402
     OBS_SLICES_SUBDIR,
     PARENT_DURATION_TOLERANCE_SECONDS,
@@ -87,6 +92,7 @@ __all__ = [
     "_llama_server_factory",
     "_normalized_relative_path",
     "_resolve_confined",
+    "_resolve_confined_any",
     "legacy_audio_feature_cache_key",
     "load_speech_feature_packet",
     "load_speech_feature_packet_ids",

@@ -57,7 +57,7 @@ from ...rails.probes.pslu_flight import (
     validate_openjiuwen_speech_native_match_tasks,
 )
 from ..attempts import AttemptStore
-from ..base import TRANSPORTS
+from ..base import TRANSPORTS, declared_derived_media_roots
 from ..config import (
     compose,
     d1_evidence_supplement_relpath,
@@ -12050,6 +12050,13 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
             samples=gate_view.samples,
             data_root=root,
             carrier_root=asset_dir(lock, plan.carrier_lock_key, root),
+            # DERIVED-MEDIA CONFINEMENT: this profile is what packet
+            # preprocessing runs through, and a derived media population (the
+            # ``@ts2`` runtime views) names its files under its own
+            # ``derived/<variant>/`` root rather than under the carrier's. The
+            # fragment declares that root; without it here every such row was
+            # refused at payload time with no request ever reaching the wire.
+            derived_media_roots=declared_derived_media_roots(values, root),
         )
         client = FrozenCoreClient(
             plan=plan,

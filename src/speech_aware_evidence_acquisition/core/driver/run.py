@@ -26,6 +26,7 @@ from ..base import (
     CoreError,
     EvidenceError,
     PayloadBindingContext,
+    declared_derived_media_roots,
     RunResult,
     SampleContext,
 )
@@ -574,6 +575,11 @@ def run_experiment(
             evidence_contents=evidence_contents,
             data_root=Path(root),
             carrier_root=carrier_root,
+            # DERIVED-MEDIA CONFINEMENT: the additional legal media roots THIS
+            # composed dataset fragment declares, each vouched for by its own
+            # hash-pinned D1 media supplement. Empty for every fragment that
+            # declares none, which is every fragment that predates derived media.
+            derived_media_roots=declared_derived_media_roots(values, Path(root)),
         )
         # obs-agent-loop rail (owner directive 2026-08-08): the per-run slice
         # registry, built from EXACTLY the same loader facts the binding above
