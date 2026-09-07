@@ -8,7 +8,7 @@
   "population": {
     "carrier": "earnings21-original",
     "split_name": "discovery",
-    "dataset_fragment": "earnings21-discovery",
+    "dataset_fragment": "earnings21-discovery-conec-names",
     "split_role": "discovery",
     "count": 44,
     "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
@@ -43,7 +43,7 @@
   "cells": [
     {
       "cell_id": "E21-kc-e1-brief-whole-prompt",
-      "dataset_fragment": "earnings21-discovery",
+      "dataset_fragment": "earnings21-discovery-conec-names",
       "baseline_fragment": "e21-kc-e1-brief-whole-prompt",
       "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
       "arm": "fixed-legal-context",
@@ -54,7 +54,7 @@
     },
     {
       "cell_id": "E21-ku-e1c-brief-placebo",
-      "dataset_fragment": "earnings21-discovery",
+      "dataset_fragment": "earnings21-discovery-conec-names",
       "baseline_fragment": "e21-ku-e1c-brief-placebo",
       "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
       "arm": "fixed-legal-context",

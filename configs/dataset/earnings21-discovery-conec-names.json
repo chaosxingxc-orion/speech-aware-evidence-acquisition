@@ -1,0 +1,7 @@
+{
+  "carrier_lock_key": "earnings21-original",
+  "split_name": "discovery",
+  "d1_evidence_supplement": "receipts/artifacts/d1-e21-participant-names.json",
+  "d1_evidence_supplement_sha256": "313da4c48acf7403207e2a45c28f90262a94adfaa42873a0c9f251fc9d6bfd83",
+  "d1_evidence_supplement_note": "The SAME 44-call earnings21-original discovery split as earnings21-discovery.json, plus the one additive D1 EVIDENCE-layer supplement a ConEC participant-roster arm needs. docs/receipts/artifacts/d1-identity.json records four ConEC layers and not e21_participant_names, so contracts.gate_evidence_identity._route_evidence_layer_key could name that layer and never resolve it: any run whose evidence source reads contexts/participant_names/<call>.names.txt (core.evidence._conec_names, and through it conec-class-lists / conec-class-lists-placebo / conec-names) failed closed at the evidence-identity rail. This fragment carries the additive successor built by scripts/build_e21_participant_names_d1_supplement.py: schema saea-d1-evidence-supplement-v1, 44 rosters, 15,067 bytes, ids_sha256 81236a16... equal to the carrier's own e21_contexts sample universe, parent_d1_sha256 9c10fad1.... contracts.FrozenCoreGate carries the base D1 identity plus AT MOST ONE supplement, so a cell composing this fragment carries NO media supplement -- and needs none: all 44 earnings21-original media entries are already inside the immutable D1 closure. An arm with no ConEC evidence should compose earnings21-discovery.json instead."
+}

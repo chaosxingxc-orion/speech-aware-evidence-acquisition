@@ -295,7 +295,16 @@ class PayloadBindingContext:
     # carries evidence -- evidence_source "none" supplies an empty mapping)
     # and, unlike media_relpaths, deliberately NOT required to cover every
     # allowed_sample_id: only samples with actual evidence appear here.
-    evidence_relpaths: Mapping[str, str] = field(default_factory=dict)
+    # 2026-09-06 (KC-E1): a sample may carry MORE THAN ONE evidence file. E5's
+    # ``conec-class-lists`` returns two items per call -- the participant roster
+    # (D1 layer ``e21_participant_names``) and the context document (D1 layer
+    # ``e21_contexts``) -- and this field used to hold one relpath per sample, so
+    # ``core.driver.run_experiment``'s per-item loop silently overwrote the first
+    # with the second and only the LAST item's file was ever identity-checked.
+    # The value is therefore ``str`` (one file, byte-identical to before) or an
+    # ordered ``tuple[str, ...]`` (several, checked in order, each routed to its
+    # own D1 layer).
+    evidence_relpaths: Mapping[str, str | tuple[str, ...]] = field(default_factory=dict)
     # IMPROVEMENT (fifth external-threat-model review): the same sample ids as
     # evidence_relpaths, mapped instead to the exact UTF-8 bytes of the
     # evidence content this run's evidence source ALREADY READ into memory --
@@ -306,7 +315,10 @@ class PayloadBindingContext:
     # check<->send race this closes). Optional/defaulted like
     # evidence_relpaths, for the same reason: not every binding built in this
     # module's own test suite constructs a real evidence corpus.
-    evidence_contents: Mapping[str, bytes] = field(default_factory=dict)
+    # Same one-or-many shape as ``evidence_relpaths`` above, and positionally
+    # paired with it: ``evidence_contents[sid][i]`` is the content of
+    # ``evidence_relpaths[sid][i]``.
+    evidence_contents: Mapping[str, bytes | tuple[bytes, ...]] = field(default_factory=dict)
 
     def validate(self) -> "PayloadBindingContext":
         """Structural self-check, no filesystem access: a malformed binding
@@ -387,10 +399,13 @@ class PayloadBindingContext:
                 "allowed_sample_ids"
             )
         for sample_id, relpath in self.evidence_relpaths.items():
-            if not isinstance(relpath, str) or not relpath:
+            values = relpath if isinstance(relpath, tuple) else (relpath,)
+            if not values or not all(
+                isinstance(value, str) and value for value in values
+            ):
                 raise CoreError(
                     f"binding context evidence_relpaths[{sample_id!r}] must be a "
-                    "non-empty string"
+                    "non-empty string or a non-empty tuple of them"
                 )
         if not isinstance(self.evidence_contents, Mapping):
             raise CoreError("binding context evidence_contents must be a mapping")
@@ -402,11 +417,23 @@ class PayloadBindingContext:
                 "allowed_sample_ids"
             )
         for sample_id, content_bytes in self.evidence_contents.items():
-            if not isinstance(content_bytes, (bytes, bytearray)) or not content_bytes:
+            values = content_bytes if isinstance(content_bytes, tuple) else (content_bytes,)
+            if not values or not all(
+                isinstance(value, (bytes, bytearray)) and value for value in values
+            ):
                 raise CoreError(
                     f"binding context evidence_contents[{sample_id!r}] must be "
-                    "non-empty bytes"
+                    "non-empty bytes or a non-empty tuple of them"
                 )
+            paired = self.evidence_relpaths.get(sample_id)
+            if paired is not None:
+                relpaths = paired if isinstance(paired, tuple) else (paired,)
+                if len(relpaths) != len(values):
+                    raise CoreError(
+                        f"binding context evidence_contents[{sample_id!r}] has "
+                        f"{len(values)} entries but evidence_relpaths has "
+                        f"{len(relpaths)}; the two are positionally paired"
+                    )
         return self
 
 

@@ -1,0 +1,85 @@
+{
+  "claim_limit": "4-speaker design bound: AMI scenario meetings fit exactly; ICSI (3-10 speakers) is outside this tool's bound and must use the registered fallback (pyannote 3.1) instead. CC BY 4.0 attribution carried on any release.",
+  "ffmpeg_on_path": null,
+  "payloads": [
+    {
+      "actual_bytes": 471367680,
+      "actual_sha256": "b371afce2c4958186469df33d939936b9746c89f38b10a69cfd2c61254e83329",
+      "byte_identity_holds": true,
+      "declared_bytes": 471367680,
+      "declared_sha256": "b371afce2c4958186469df33d939936b9746c89f38b10a69cfd2c61254e83329",
+      "filename": "diar_streaming_sortformer_4spk-v2.nemo",
+      "present": true
+    },
+    {
+      "actual_bytes": 147075776,
+      "actual_sha256": "0679cfeb1ce356d0dea9470b31274f4bfc7eb927497d82005483770666da998a",
+      "byte_identity_holds": true,
+      "declared_bytes": 147075776,
+      "declared_sha256": "0679cfeb1ce356d0dea9470b31274f4bfc7eb927497d82005483770666da998a",
+      "filename": "diar_streaming_sortformer_4spk-v2.q8_0.gguf",
+      "present": true
+    }
+  ],
+  "research_role": "Frozen tool-level speaker diarization for turn-aware 90 s transport packing in the meeting-minutes-agent paper repo (TOOL_DIAR tier); same-family alternate diar_sortformer_4spk-v1 (CC-BY-NC-4.0) deliberately NOT acquired unless the registered smoke's contingent Arm C triggers.",
+  "route_a_nemo": {
+    "checkpoint_present": true,
+    "install_policy": "nemo_toolkit must NEVER be installed into the shared speechrl venv; the isolated ~/.venvs/diar is the only sanctioned home for it and this script installs nothing",
+    "isolated_venv": "/home/chao/.venvs/diar",
+    "isolated_venv_present": true,
+    "live": true,
+    "name": "NeMo reference path (.nemo)",
+    "nemo_in_isolated_venv": true,
+    "nemo_in_shared_venv": false,
+    "shared_venv": "/home/chao/.venvs/speechrl",
+    "torch_in_isolated_venv": true
+  },
+  "route_b_nemo_speech_cpp": {
+    "actual_binary_sha256": "1a3e3f4fe7db4c48e5d6e44a76d5adf2bbfef80024c023b0eab2766eb61aca78",
+    "binary_identity_holds": true,
+    "binary_path": "/home/chao/nemo-speech.cpp/build/cuda-diar/bin/nemo-speech",
+    "binary_present": true,
+    "checkout": "/home/chao/nemo-speech.cpp",
+    "declared_binary_sha256": "1a3e3f4fe7db4c48e5d6e44a76d5adf2bbfef80024c023b0eab2766eb61aca78",
+    "diarize_usage": {
+      "argv": [
+        "help",
+        "diarize"
+      ],
+      "returncode": 0,
+      "stderr_tail": [],
+      "stdout": "Usage: /home/chao/nemo-speech.cpp/build/cuda-diar/bin/nemo-speech diarize INPUT [--model MODEL] [options]\n\nDiarize one WAV file or every WAV file in a directory. Concurrent\ndirectory work shares one model and batches compatible GPU steps.\n\nOptions:\n  -m, --model MODEL         Local Sortformer GGUF path\n  --device, --backend DEVICE\n                            auto, cpu, cuda[:N], metal, or vulkan[:N]\n  --offline                 Full-attention mode for short audio\n  --preset NAME             streaming or offline geometry\n  --config FILE             Load diarization YAML configuration\n  --format text|json|rttm   Output format (default: text)\n  --recording-id NAME       RTTM recording id\n  -o, --output PATH         Write output instead of stdout\n  --output-dir DIR          Preserve directory layout under DIR\n  -c, --concurrency N       Concurrent files; one shared model\n  -r, --recursive           Recurse into input directories\n  --onset VALUE             Speaker activation threshold\n  --offset VALUE            Speaker deactivation threshold\n  --pad-onset SECONDS       Extend segment starts\n  --pad-offset SECONDS      Extend segment ends\n  --min-duration-on SEC     Remove shorter speech segments\n  --min-duration-off SEC    Fill shorter silence gaps\n  --no-batching             Disable dynamic batching\n  --force                   Replace existing output files"
+    },
+    "doctor": {
+      "argv": [
+        "doctor",
+        "--json"
+      ],
+      "returncode": 1,
+      "stderr_tail": [
+        "ggml_cuda_init: failed to initialize CUDA: no CUDA-capable device is detected"
+      ],
+      "stdout": "{\n  \"accelerator_available\": false,\n  \"accelerator_compiled\": true,\n  \"devices\": [\n    {\n      \"async\": false,\n      \"description\": \"Intel(R) Core(TM) Ultra 9 275HX\",\n      \"events\": false,\n      \"index\": 0,\n      \"memory_free\": 58967842816,\n      \"memory_total\": 58967842816,\n      \"name\": \"CPU\",\n      \"type\": \"cpu\"\n    }\n  ],\n  \"driver_runtime_compatible\": false,\n  \"features\": {\n    \"asr\": false,\n    \"backend_cuda\": true,\n    \"backend_metal\": false,\n    \"backend_vulkan\": false,\n    \"diarization\": true,\n    \"flashlight\": false,\n    \"grpc\": false,\n    \"http\": false,\n    \"integrated_vad\": false,\n    \"punctuation\": false,\n    \"realtime_websocket\": false,\n    \"speech_translation\": false,\n    \"text_normalization\": false,\n    \"translation\": false,\n    \"tts\": false,\n    \"tts_japanese\": false,\n    \"tts_mandarin\": false\n  },\n  \"runtime_warnings\": [\n    \"this build includes a GPU backend, but no compatible accelerator/driver was discovered; use --device cpu or repair the driver/runtime installation\"\n  ],\n  \"version\": \"1.0.0\"\n}"
+    },
+    "gguf_present": true,
+    "live": true,
+    "name": "NeMo-Speech.cpp deployment path (q8_0 GGUF)",
+    "pinned_commit": "4c749a700500e077d4732a539eb082bf2208dac7",
+    "runtime": "NVIDIA NeMo-Speech.cpp (Apache-2.0), CUDA build, WSL2 ext4 sibling of the llama.cpp checkouts",
+    "version": {
+      "argv": [
+        "--version"
+      ],
+      "returncode": 0,
+      "stderr_tail": [],
+      "stdout": "nemo-speech 1.0.0"
+    }
+  },
+  "schema": "saea-e21-diarization-feasibility-v1",
+  "selected_route": "route_b_nemo_speech_cpp",
+  "study": "speech-aware-evidence-acquisition",
+  "tool_license": "cc-by-4.0",
+  "tool_lock_key": "diar-sortformer-4spk-v2",
+  "tool_revision": "5240a64075176943f677d30fa2171c780229f341",
+  "zero_contact": "environment inventory only: file hashes, interpreter module probes, and the pinned binary's --version / doctor / help subcommands, all with CUDA_VISIBLE_DEVICES empty. No model was loaded, no corpus audio was read, no frozen-core contact was made, and nothing was installed. The corpus diarization pass is pre-registered as SAEA-E21-TOOL-DIARIZATION-V1 and has not been run."
+}

@@ -47,6 +47,19 @@ concatenation of every member of the drawn clusters. Passing both resamples
 clusters independently within each stratum (every member of a cluster must
 share one stratum, checked). Passing neither calls
 ``analysis.bootstrap.paired_cluster_bootstrap`` directly and unmodified.
+
+Pooled statistics (2026-09-06, the Earnings window ruling)
+-----------------------------------------------------------
+:func:`paired_contrast`'s own bootstrap statistic is fixed: the MEAN of the
+per-unit differences. That is right for a per-unit score (an exact-match flag, a
+per-utterance F1) and wrong for a POOLED RATIO -- corpus WER and ConEC entity WER
+are ``sum(errors) / sum(reference words)`` over the units, never an average of
+per-unit rates, so a thin 8-second tail window would otherwise weigh as much as a
+dense 90-second one. :func:`resampled_statistic` exposes the SAME stratum/cluster
+resampling machinery for an arbitrary caller-supplied statistic, so a pooled ratio
+gets the identical draws (same seed, same rule, same replicate sequence) as the
+mean does -- one resampler, two estimators, never a second implementation of
+"resample clusters with replacement".
 """
 
 from __future__ import annotations
@@ -72,6 +85,7 @@ __all__ = [
     "PairedContrast",
     "mcnemar_exact",
     "paired_contrast",
+    "resampled_statistic",
     "per_sample_scores_from_score_file",
     "per_stratum_table",
     "render_markdown",
@@ -455,6 +469,57 @@ def paired_contrast(
             per_stratum=per_stratum,
         )
     return results
+
+
+def resampled_statistic(
+    *,
+    sample_ids: Sequence[str],
+    statistic: Callable[[Sequence[str]], float],
+    seed: int,
+    n_replicates: int = 10_000,
+    ci_level: float = 0.90,
+    strata_of: Callable[[str], str] | None = None,
+    cluster_of: Callable[[str], str] | None = None,
+) -> BootstrapResult:
+    """One bootstrap of an ARBITRARY statistic under this module's own stratum /
+    cluster resampling rule (module docstring's "Pooled statistics" section).
+
+    ``paired_contrast`` is the right tool when the estimand is the mean of a
+    per-unit difference. When it is a pooled ratio -- corpus WER, ConEC entity
+    WER, numeric-value accuracy, all of which are ``sum(numerator) /
+    sum(denominator)`` over the resampled units -- the caller supplies that ratio
+    here and gets the identical draws: ``cluster_of`` resamples whole clusters
+    (every member of a drawn cluster is kept, and a cluster drawn twice
+    contributes its members twice), ``strata_of`` resamples each stratum to its
+    own size, both together resample clusters within strata, and neither is the
+    plain per-unit bootstrap.
+
+    ``statistic`` receives the resampled id sequence -- ids REPEAT, and a pooled
+    statistic must therefore sum over the sequence rather than over ``set(ids)``.
+    """
+
+    if isinstance(sample_ids, (str, bytes)) or not sample_ids:
+        raise PairedAnalysisError("sample_ids must be a non-empty sequence of ids")
+    ids = tuple(sample_ids)
+    if len(set(ids)) != len(ids):
+        raise PairedAnalysisError("sample_ids contains a duplicate")
+    if not all(isinstance(sample_id, str) and sample_id for sample_id in ids):
+        raise PairedAnalysisError("sample_ids must all be non-empty text")
+    if isinstance(seed, bool) or not isinstance(seed, int):
+        raise PairedAnalysisError("seed must be an integer")
+    if isinstance(n_replicates, bool) or not isinstance(n_replicates, int) or n_replicates <= 0:
+        raise PairedAnalysisError("n_replicates must be a positive integer")
+    if not 0.0 < ci_level < 1.0:
+        raise PairedAnalysisError("ci_level must be strictly within (0, 1)")
+    return _bootstrap_result(
+        ids=ids,
+        statistic=statistic,
+        n_replicates=n_replicates,
+        seed=seed,
+        ci_level=ci_level,
+        strata=_grouped_strata(ids, strata_of),
+        clusters=_grouped_clusters(ids, cluster_of),
+    )
 
 
 def per_sample_scores_from_score_file(

@@ -60,6 +60,8 @@ from ..attempts import AttemptStore
 from ..base import TRANSPORTS
 from ..config import (
     compose,
+    d1_evidence_supplement_relpath,
+    d1_evidence_supplement_sha256,
     d1_media_supplement_relpath,
     d1_media_supplement_sha256,
     model_lock_key,
@@ -11905,6 +11907,8 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         model_root=model_root,
         d1_media_supplement_relpath=d1_media_supplement_relpath(values),
         d1_media_supplement_sha256=d1_media_supplement_sha256(values),
+        d1_evidence_supplement_relpath=d1_evidence_supplement_relpath(values),
+        d1_evidence_supplement_sha256=d1_evidence_supplement_sha256(values),
     )
     session_receipt_path = run_dir / f"{plan.run_id}.session-receipt.json"
     stop_receipt_path = run_dir / f"{plan.run_id}.session-stop-receipt.json"

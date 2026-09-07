@@ -201,6 +201,66 @@ def d1_media_supplement_sha256(values: Mapping[str, object]) -> str | None:
     return value
 
 
+def _d1_evidence_supplement_pair(
+    values: Mapping[str, object],
+) -> tuple[object | None, object | None]:
+    path = values.get("d1_evidence_supplement")
+    digest = values.get("d1_evidence_supplement_sha256")
+    if (path is None) != (digest is None):
+        raise ConfigError(
+            "model config d1_evidence_supplement and d1_evidence_supplement_sha256 "
+            "must be configured together"
+        )
+    return path, digest
+
+
+def d1_evidence_supplement_relpath(values: Mapping[str, object]) -> str | None:
+    """Return the optional, protocol-bound D1 EVIDENCE-layer supplement path.
+
+    The evidence-layer counterpart of :func:`d1_media_supplement_relpath`, with
+    the same rules: additive successor for a layer the immutable D1 closure does
+    not carry, relative to ``<repo_root>/docs``, accepted only together with its
+    exact SHA-256, so selecting different bytes changes the composed protocol
+    identity. ``contracts.FrozenCoreGate`` additionally refuses a configuration
+    that carries BOTH supplements.
+    """
+
+    value, _digest = _d1_evidence_supplement_pair(values)
+    if value is None:
+        return None
+    if not isinstance(value, str) or not value:
+        raise ConfigError(
+            f"model config d1_evidence_supplement must be a non-empty string, got {value!r}"
+        )
+    if "\\" in value:
+        raise ConfigError(
+            f"model config d1_evidence_supplement must not contain a backslash: {value!r}"
+        )
+    if value.startswith("/") or _DRIVE_PREFIX.match(value):
+        raise ConfigError(
+            f"model config d1_evidence_supplement must be relative, got {value!r}"
+        )
+    if any(part in ("", ".", "..") for part in value.split("/")):
+        raise ConfigError(
+            "model config d1_evidence_supplement contains an empty or traversal "
+            f"segment: {value!r}"
+        )
+    return value
+
+
+def d1_evidence_supplement_sha256(values: Mapping[str, object]) -> str | None:
+    """Return the exact digest paired with :func:`d1_evidence_supplement_relpath`."""
+
+    _path, value = _d1_evidence_supplement_pair(values)
+    if value is None:
+        return None
+    if not isinstance(value, str) or _SHA256.fullmatch(value) is None:
+        raise ConfigError(
+            "model config d1_evidence_supplement_sha256 must be a lowercase 64-hex SHA-256"
+        )
+    return value
+
+
 def model_lock_key(values: Mapping[str, object]) -> str:
     """Resolve a composed config's ``model_lock_key`` -- the pinned model
     THIS RUN declares. Read directly, no default: every model fragment names

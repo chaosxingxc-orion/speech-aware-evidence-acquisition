@@ -1,0 +1,72 @@
+{
+  "carrier_lock_key": "earnings21-original",
+  "checks": {
+    "1_refused_without_supplement": {
+      "message": "D1 identity artifact carrier 'conec' lacks a 'e21_participant_names' manifest, and no D1 evidence supplement declares that layer; model touch refused",
+      "refused": true
+    },
+    "2_file_rail_all_calls": {
+      "resolved": 44
+    },
+    "3_content_rail_all_calls": {
+      "resolved": 44
+    },
+    "4_conec_class_lists_both_halves": {
+      "items": [
+        {
+          "brief_part": "roster",
+          "routed_d1_layer_key": "e21_participant_names",
+          "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4330115.names.txt",
+          "source_sha256": "08840410feff4b5ef428628687afc59e2231958531f31b9ed6de96867b99599c",
+          "transform_name": "conec-class-lists-roster"
+        },
+        {
+          "brief_part": "document",
+          "routed_d1_layer_key": "e21_contexts",
+          "source_relpath": "datasets/conec/earnings21/contexts/4330115.txt",
+          "source_sha256": "14dcf588585b4e8f32a0c5f0055c73b0ef68780729facd8d8ac33a808549acad",
+          "transform_name": "conec-class-lists-document"
+        }
+      ],
+      "sample_id": "4330115"
+    },
+    "5_tampered_content_refused": {
+      "message": "evidence content identity drift for sample '4330115': D1 recorded 416 bytes / 08840410feff..., the in-memory content this run already read is 417 bytes / 54e0c14da079...; model touch refused (fifth review, evidence-bytes-consumed check)",
+      "refused": true
+    },
+    "6_foreign_sample_refused": {
+      "message": "sample '0000000' (carrier 'earnings21-original') has no D1-recorded evidence identity; evidence outside D1's identity closure can never enter a run",
+      "refused": true
+    }
+  },
+  "count": 44,
+  "d1_layer_key": "e21_participant_names",
+  "evaluation_calls": [
+    "4330115",
+    "4365024",
+    "4365948",
+    "4366429",
+    "4366522",
+    "4384964",
+    "4385072",
+    "4387383",
+    "4389907",
+    "4397829"
+  ],
+  "evaluation_roster": "r4-e21-sub10",
+  "evaluation_roster_receipt": "docs/receipts/probe-samples/r4-e21-sub10-sample.json",
+  "evaluation_split_identity_hash": "fa1d298208b1324d60a379ba06ec730c005e376369ddede114d29ae746134cc2",
+  "excluded_non_layer_files": [
+    "names.txt"
+  ],
+  "exposure_row": "SAEA-SN-MF-E21-PARTICIPANT-NAMES-D1-V1",
+  "parent_d1_sha256": "9c10fad1e5b625f977a5bdc71ed0c782e5d5c76c7a13af11ce811c5e152d35e3",
+  "probe_evaluation_call": "4330115",
+  "schema": "saea-e21-participant-names-d1-verification-v1",
+  "source_binding_sha256": "81236a165bc5a7bea24b7a9e04ce7a7a4dcfd74a04ee2ae08e7686e3abeb51d6",
+  "study": "speech-aware-evidence-acquisition",
+  "supplement_relpath": "docs/receipts/artifacts/d1-e21-participant-names.json",
+  "supplement_sha256": "313da4c48acf7403207e2a45c28f90262a94adfaa42873a0c9f251fc9d6bfd83",
+  "total_bytes": 15067,
+  "zero_contact": "no model, GPU, tool, embedding, tokenizer, network, audio-decode or paid-API contact; only ConEC context bytes and committed receipts are opened, and no reference transcript, timestamp file, wer_tags sidecar or bias list is read"
+}

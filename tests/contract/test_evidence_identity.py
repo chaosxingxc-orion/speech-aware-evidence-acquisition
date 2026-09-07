@@ -248,8 +248,10 @@ def test_content_identity_empty_mapping_refused(world):
 
 
 def test_content_identity_non_bytes_value_refused(world):
+    # 2026-09-06: the wording widened when a sample became able to carry SEVERAL
+    # evidence files (gate_evidence_identity._as_tuple); the refusal is the same.
     gate = world.gate()
-    with pytest.raises(GateClosed, match="must be bytes"):
+    with pytest.raises(GateClosed, match="must be a bytes/bytearray"):
         gate.verify_evidence_content_identity(
             world.CARRIER, {SAMPLE_ID: "not-bytes"}, _evidence_facts()
         )
