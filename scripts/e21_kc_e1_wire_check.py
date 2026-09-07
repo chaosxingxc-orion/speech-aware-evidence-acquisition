@@ -241,7 +241,7 @@ def main() -> int:
         != REPO / "src" / "speech_aware_evidence_acquisition" / "__init__.py"
     ):
         raise SystemExit(
-            "package resolves to %s, not the main checkout" % (_pkg.__file__,)
+            "package resolves to %s, not this checkout" % (_pkg.__file__,)
         )
 
     from speech_aware_evidence_acquisition.contracts import FrozenCoreGate
