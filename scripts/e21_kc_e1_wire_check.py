@@ -70,11 +70,15 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, NamedTuple, Sequence
 
-REPO = Path(
-    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition"
-)
+#: Resolved from the script's own location, exactly as every ``scripts/
+#: flights/*.py`` entry point already does, so this check runs against
+#: WHICHEVER checkout (or git worktree) it is invoked from rather than always
+#: the one main checkout path this constant used to hard-code -- a worktree
+#: doing model-free repair work must be able to run its own copy of this
+#: check without ever touching the main checkout's tree.
+REPO = Path(__file__).resolve().parents[1]
 
 CHECK = (
     REPO
@@ -111,6 +115,51 @@ PLAN_GPU_HOURS = 0.5
 #: a prefix test alone would classify the roster as a document.
 ROSTER_SUFFIX = "/contexts/participant_names/%s.names.txt"
 DOCUMENT_SUFFIX = "/contexts/%s.txt"
+
+
+class _RosterAudioRef(NamedTuple):
+    """The one field ``rails.core_client.build_payload_binding`` reads off a
+    sample's ``audio_ref`` (``.path``); a placeholder, unvalidated sha256 is
+    fine here because nothing calls ``.validate()`` on it. A ``NamedTuple``
+    rather than a ``@dataclass``: this script is loaded via bare
+    ``importlib.util.exec_module`` by at least one sibling test convention
+    (``tests/unit/test_a2t_input_rate_16k_fragments.py``'s own ``_module()``
+    helper, applied to a sibling wire-check script), which does not register
+    the loaded module in ``sys.modules`` first -- and ``dataclasses.
+    _process_class`` unconditionally reads ``sys.modules[cls.__module__]``
+    under ``from __future__ import annotations``, so any ``@dataclass``
+    defined directly in such a module raises at import time."""
+
+    path: str
+
+
+class _RosterSample(NamedTuple):
+    """The minimal ``rails.task_adapter.TaskSample`` duck type (sample_id /
+    audio_ref.path / audio_seconds) built directly from this cell's own
+    flight-roster-receipt row -- never a second load, so the payload-binding
+    stage checks exactly the media identity the roster itself already
+    re-hashed."""
+
+    sample_id: str
+    audio_ref: _RosterAudioRef
+    audio_seconds: float
+
+
+def roster_binding_samples(
+    roster: Mapping[str, Any], sample_ids: Sequence[str]
+) -> tuple[_RosterSample, ...]:
+    by_id = {str(call["sample_id"]): call for call in roster["calls"]}
+    missing = [sample_id for sample_id in sample_ids if sample_id not in by_id]
+    if missing:
+        raise SystemExit("flight roster receipt lacks sample id(s) %r" % (missing,))
+    return tuple(
+        _RosterSample(
+            sample_id=sample_id,
+            audio_ref=_RosterAudioRef(path=str(by_id[sample_id]["media_relpath"])),
+            audio_seconds=float(by_id[sample_id]["audio_seconds"]),
+        )
+        for sample_id in sample_ids
+    )
 
 
 def log(message: str) -> None:
@@ -199,7 +248,10 @@ def main() -> int:
     from speech_aware_evidence_acquisition.contracts.gate_evidence_identity import (
         _route_evidence_layer_key,
     )
-    from speech_aware_evidence_acquisition.core.base import EVIDENCE_SOURCES
+    from speech_aware_evidence_acquisition.core.base import (
+        EVIDENCE_SOURCES,
+        declared_derived_media_roots,
+    )
     from speech_aware_evidence_acquisition.core.bundle import verify_bundle
     from speech_aware_evidence_acquisition.core.config import (
         compose,
@@ -210,11 +262,13 @@ def main() -> int:
         model_materialization_root,
     )
     from speech_aware_evidence_acquisition.data.lock import (
+        asset_dir,
         data_root,
         load_lock,
         umbrella_lock_path,
     )
     from speech_aware_evidence_acquisition.e0.d2_leakage import ARM_VISIBLE_FIELDS
+    from speech_aware_evidence_acquisition.rails.core_client import payload_binding_stage
 
     dirty = git("status", "--porcelain")
     if dirty and not args.allow_dirty:
@@ -566,6 +620,36 @@ def main() -> int:
                 % (sorted(supplied_ids), sorted(expected_ids))
             )
 
+        # ---------------- payload-binding stage ----------------
+        # docs/readiness/2026-09-07-derived-media-confinement-v1.md section 5:
+        # no model-free gate in this repository had ever built a payload. This
+        # drives the shared rails.core_client.payload_binding_stage over this
+        # cell's own real roster rows, through the REAL carrier root (never a
+        # per-script carrier_root_resolver swap) plus whatever derived media
+        # roots this dataset fragment declares (empty for earnings21-original,
+        # which declares none -- the carrier-rooted comparator case) -- so a
+        # cell is reported wire-ready only if its payloads actually BIND.
+        binding_stage = payload_binding_stage(
+            dataset_fragment=args.dataset,
+            carrier_lock_key=str(values["carrier_lock_key"]),
+            samples=roster_binding_samples(roster, sorted(expected_by_sample)),
+            data_root=root,
+            carrier_root=asset_dir(lock, str(values["carrier_lock_key"]), root),
+            derived_media_roots=declared_derived_media_roots(values, root),
+        )
+        if not binding_stage.bound:
+            failures.append(
+                "payload-binding stage did not bind: %r" % (binding_stage.failures,)
+            )
+        log(
+            "  payload-binding stage: %s (%d/%d row(s) checked)"
+            % (
+                "PASS" if binding_stage.bound else "FAIL",
+                len(binding_stage.rows_checked),
+                binding_stage.rows_total,
+            )
+        )
+
         # ---------------- evidence-rail half ----------------
         configured_model_root = model_materialization_root(values)
         gate = FrozenCoreGate.for_study_repo(
@@ -710,6 +794,7 @@ def main() -> int:
                     for item in next(iter(expected_by_sample.values()))
                 ],
             },
+            "payload_binding_stage": binding_stage.as_receipt(),
             "evidence_rail_half": {
                 "calls": len(evidence_facts),
                 "relpaths_per_call": 2,
