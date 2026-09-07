@@ -271,6 +271,23 @@ def _outputs_rows(outputs_path: Path) -> list[Mapping[str, object]]:
     return rows
 
 
+def published_segment_key(sample_id: str) -> str:
+    """The published ``<call>-<segment>`` key a derived-media id scores against.
+
+    A probe MEDIA variant re-encodes the SAME published segment and must never
+    share an identifier with its source population -- section 1.4 of
+    ``docs/readiness/2026-09-06-e22-dev-boundary-exact-v1-preregistration.md``
+    fixes the convention as ``<call>-<segment>@<variant>``. The published key is
+    recovered by splitting on ``@``, which is what keeps the reference lookup,
+    the neighbour lookup and the paired join against a sealed arm exact.
+
+    An id without a suffix is returned unchanged, so every population that
+    existed before the convention is byte-for-byte unaffected.
+    """
+
+    return sample_id.split("@", 1)[0]
+
+
 def _reference_for(
     row: Mapping[str, object], references: Mapping[str, str], number: int
 ) -> str:
@@ -280,10 +297,11 @@ def _reference_for(
             f"outputs line {number} names carrier {carrier!r}; the ESB scorers only ever "
             f"score {ESB_CARRIER_LOCK_KEY!r}"
         )
-    sample_id = row.get("sample_id")
+    raw_id = row.get("sample_id")
+    sample_id = published_segment_key(raw_id) if isinstance(raw_id, str) else raw_id
     if not isinstance(sample_id, str) or sample_id not in references:
         raise EsbReferenceError(
-            f"outputs line {number} names sample {sample_id!r}, which the hash-pinned ESB "
+            f"outputs line {number} names sample {raw_id!r}, which the hash-pinned ESB "
             "reference layer does not contain; a sample outside the pinned reference "
             "closure can never be scored against"
         )

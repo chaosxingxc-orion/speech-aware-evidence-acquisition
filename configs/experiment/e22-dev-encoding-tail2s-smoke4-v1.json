@@ -1,0 +1,46 @@
+{
+  "experiment_id": "SAEA-E22-DEV-ESB-TAIL2S-SMOKE-V1",
+  "schema": "saea-e22-esb-shortform-experiment-v1",
+  "date": "2026-09-07",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "The pre-flight 4-row dry run for SAEA-E22-DEV-ESB-TAIL2S-V1, required by section 6 of docs/readiness/2026-09-07-e22-dev-encoding-probes-v1-preregistration.md. Same protocol, same geometry, same media root, four rows. It proves the serving geometry live on this variant's worst encode before 1,500 contacts are spent.",
+  "populations": {
+    "E22-ESB-DEV1500-TS2-SMOKE-4": {
+      "dataset_fragment": "earnings22-esb-dev1500-tail2s-smoke4",
+      "carrier": "earnings22-original",
+      "split_role": "dev",
+      "count": 4,
+      "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-dev1500-encoding-variants/tail-silence-2s/roster/flight-roster-receipt.json",
+      "receipt_sha256": "ae747c5261bea3c076d53d3ce37fea112418b476ddf07049fdaba505b90ddd80",
+      "split_identity_hash": "672a0630141ef355e3d2f9b780684fae1c042f0ac999d63cac48a0d88f3dbef7",
+      "ids": [
+        "4469088-654@ts2",
+        "4479944-334@ts2",
+        "4482383-188@ts2",
+        "4482613-439@ts2"
+      ],
+      "audio_seconds_one_pass": 59.7005,
+      "audio_seconds_longest_item": 34.88,
+      "selection": "deterministic and pre-registered: the SAME four published segments the 2026-09-06 dev1500 smoke selected (longest, shortest, median and p90 by duration over the drawn 1,500, ties broken by sample id), in this variant's encoding"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "E22-DEV-ESB-TAIL2S-SMOKE-4",
+      "dataset_fragment": "earnings22-esb-dev1500-tail2s-smoke4",
+      "arm": "bare-core",
+      "baseline_fragment": "e22-esb-dev1500-tail2s",
+      "model_fragment": "q4km-e22-dev-esb-mmproj-gpu-04ccc72a-np8-c40960",
+      "run_id": "SAEA-E22-DEV-ESB-TAIL2S-SMOKE-V1",
+      "serving_geometry": "-c 40960 -np 8, 5120 tokens per slot -- identical to the flight",
+      "factor": "none; this is the cell's own protocol on four rows"
+    }
+  ],
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "dev",
+    "planned_model_calls": 20,
+    "planned_gpu_hours": 0.25,
+    "planned_speech_audio_seconds": 348
+  }
+}

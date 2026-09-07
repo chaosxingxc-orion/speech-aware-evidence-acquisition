@@ -63,9 +63,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Mapping, Sequence
 
-REPO = Path(
-    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition"
-)
+#: The checkout this script belongs to, resolved from the script's own location
+#: exactly as ``scripts/flights/run_calibration_cell.py`` already does. The
+#: guard below is unchanged in force -- the imported package must resolve inside
+#: THIS tree -- so the shared-venv hijack armor still holds; what changes is that
+#: a git worktree can now run a dry run or a wire check against its own configs
+#: instead of silently loading the main checkout's.
+REPO = Path(__file__).resolve().parents[2]
 
 if os.environ.get("PYTHONDONTWRITEBYTECODE") != "1":
     raise SystemExit("PYTHONDONTWRITEBYTECODE=1 is required")
@@ -78,7 +82,7 @@ if (
     Path(_pkg.__file__ or "")
     != REPO / "src" / "speech_aware_evidence_acquisition" / "__init__.py"
 ):
-    raise SystemExit("package resolves to %s, not the main checkout" % (_pkg.__file__,))
+    raise SystemExit("package resolves to %s, not this checkout" % (_pkg.__file__,))
 
 from speech_aware_evidence_acquisition.core.config import compose  # noqa: E402
 from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime  # noqa: E402

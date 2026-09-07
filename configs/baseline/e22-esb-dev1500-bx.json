@@ -1,0 +1,19 @@
+{
+  "arm": "bare-core",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "rails_arms": [
+    "zero-supply"
+  ],
+  "scorers": [
+    "asr-wer-esb-whisper",
+    "asr-wer-esb",
+    "cost"
+  ],
+  "task_instruction": "Transcribe the speech verbatim exactly as spoken. Never insert, repeat, or add any word you do not clearly hear in the audio. Output only the transcript text.",
+  "instruction_basis": "Byte-identical to configs/baseline/e22-esb-dev-prompt-a.json, i.e. to the instruction the sealed SAEA-E22-DEV-ESB-PROMPT-A-V1 arm sent on these same 1,500 published segments. This cell varies the MEDIA and nothing about the request; holding this string byte-identical to the comparator is what makes the paired contrast a measurement of the encoding factor and of nothing else.",
+  "why_a_separate_baseline_fragment": "The three encoding-probe fragments carry identical arm, policy, evidence and scorer values today, and they are still three files rather than one shared fragment, for the reason configs/baseline/e22-esb-dev1500-q8.json already records: each cell's composed config_hash -- and therefore its protocol_hash and its exposure row -- must be movable only by an edit to ITS OWN fragments. A shared baseline would mean a later clarification written for one cell silently changed the other two cells' protocol identity.",
+  "scorer_basis": "Unchanged from e22-esb-dev-prompt-a: asr-wer-esb-whisper is the paper-facing scorer (vendored Whisper EnglishTextNormalizer on both sides, whitespace tokenization, corpus aggregation), asr-wer-esb reports the frozen saea-scoring-v1 number beside it, and entity-wer is absent by construction because data.carriers registers no entity layer for earnings22-original. Scoring runs once over the complete manifest through core.scoring_batch, never sharded. The reference layer is the dev10 layer the sealed arms used, unedited; the '@bx1' id suffix is split off before the lookup.",
+  "obs_basis": "There is no OBS loop here and no windowing: an ESB utterance IS the request. policy 'fixed' sends exactly one contact per sample through core.flight.FlightRuntime's own concurrent dispatch."
+}

@@ -1,0 +1,46 @@
+{
+  "experiment_id": "SAEA-E22-DEV-ESB-BX-SMOKE-V1",
+  "schema": "saea-e22-esb-shortform-experiment-v1",
+  "date": "2026-09-07",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "The pre-flight 4-row dry run for SAEA-E22-DEV-ESB-BX-V1, required by section 6 of docs/readiness/2026-09-07-e22-dev-encoding-probes-v1-preregistration.md. Same protocol, same geometry, same media root, four rows. It proves the serving geometry live on this variant's worst encode before 1,500 contacts are spent.",
+  "populations": {
+    "E22-ESB-DEV1500-BX1-SMOKE-4": {
+      "dataset_fragment": "earnings22-esb-dev1500-bx-smoke4",
+      "carrier": "earnings22-original",
+      "split_role": "dev",
+      "count": 4,
+      "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-dev1500-encoding-variants/boundary-exact/roster/flight-roster-receipt.json",
+      "receipt_sha256": "8d83f0b247c75d563916200b7a308e51126dff14f2eed42e00f89dc7a86eb9f2",
+      "split_identity_hash": "0bf6c232bed4f2ec9811463328dc5a89b8cb4a384bbfdf35cad37b6a914e0f17",
+      "ids": [
+        "4469088-654@bx1",
+        "4479944-334@bx1",
+        "4482383-188@bx1",
+        "4482613-439@bx1"
+      ],
+      "audio_seconds_one_pass": 51.260188,
+      "audio_seconds_longest_item": 32.800063,
+      "selection": "deterministic and pre-registered: the SAME four published segments the 2026-09-06 dev1500 smoke selected (longest, shortest, median and p90 by duration over the drawn 1,500, ties broken by sample id), in this variant's encoding"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "E22-DEV-ESB-BX-SMOKE-4",
+      "dataset_fragment": "earnings22-esb-dev1500-bx-smoke4",
+      "arm": "bare-core",
+      "baseline_fragment": "e22-esb-dev1500-bx",
+      "model_fragment": "q4km-e22-dev-esb-mmproj-gpu-04ccc72a-np8-c40960",
+      "run_id": "SAEA-E22-DEV-ESB-BX-SMOKE-V1",
+      "serving_geometry": "-c 40960 -np 8, 5120 tokens per slot -- identical to the flight",
+      "factor": "none; this is the cell's own protocol on four rows"
+    }
+  ],
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "dev",
+    "planned_model_calls": 20,
+    "planned_gpu_hours": 0.25,
+    "planned_speech_audio_seconds": 306
+  }
+}

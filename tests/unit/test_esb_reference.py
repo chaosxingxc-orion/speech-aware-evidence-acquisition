@@ -23,6 +23,7 @@ from speech_aware_evidence_acquisition.reproduction.esb_reference import (
     ESB_REFERENCE_RECEIPT_SCHEMA,
     EsbReferenceError,
     load_esb_references,
+    published_segment_key,
     score_esb_outputs,
     score_esb_outputs_whisper,
 )
@@ -271,3 +272,63 @@ def test_both_scorers_are_registered_under_their_flight_names() -> None:
 
     assert SCORERS.resolve("asr-wer-esb") is score_esb_outputs
     assert SCORERS.resolve("asr-wer-esb-whisper") is score_esb_outputs_whisper
+
+
+# ---------------------------------------------------------------------------
+# The probe MEDIA variant id convention (@<variant>)
+# ---------------------------------------------------------------------------
+
+
+def test_published_segment_key_strips_a_variant_suffix_and_nothing_else() -> None:
+    assert published_segment_key("4453225-103") == "4453225-103"
+    assert published_segment_key("4453225-103@ts2") == "4453225-103"
+    assert published_segment_key("4453225-103@p30") == "4453225-103"
+    assert published_segment_key("4453225-103@bx1") == "4453225-103"
+    # Only the FIRST '@' splits, so a suffix that itself contains one cannot
+    # smuggle a different published key in.
+    assert published_segment_key("4453225-103@a@b") == "4453225-103"
+
+
+def test_a_variant_row_scores_against_its_own_published_sentence(tmp_path: Path) -> None:
+    repo_root, data_root = _materialize(tmp_path, REFERENCE_ROWS)
+    outputs = _outputs(
+        tmp_path,
+        [
+            {
+                "sample_id": "4432298-0@ts2",
+                "carrier_lock_key": ESB_CARRIER_LOCK_KEY,
+                "text": "Good evening hello",
+            },
+            {
+                "sample_id": "4432298-1@ts2",
+                "carrier_lock_key": ESB_CARRIER_LOCK_KEY,
+                "text": "We sold 20 units",
+            },
+        ],
+    )
+    result = score_esb_outputs_whisper(outputs, {}, data_root, repo_root=repo_root)
+    assert result["aggregate"]["corpus_wer"] == pytest.approx(0.0)
+    assert result["aggregate"]["reference_words"] == 7
+    # The per-sample rows keep the SUFFIXED id, which is what a paired join and
+    # a receipt need; only the reference lookup uses the published key.
+    assert [entry["sample_id"] for entry in result["per_sample"]] == [
+        "4432298-0@ts2",
+        "4432298-1@ts2",
+    ]
+
+
+def test_a_variant_row_outside_the_reference_layer_is_still_refused(tmp_path: Path) -> None:
+    repo_root, data_root = _materialize(tmp_path, REFERENCE_ROWS)
+    outputs = _outputs(
+        tmp_path,
+        [
+            {
+                "sample_id": "9999999-0@ts2",
+                "carrier_lock_key": ESB_CARRIER_LOCK_KEY,
+                "text": "hello",
+            }
+        ],
+    )
+    for scorer in (score_esb_outputs, score_esb_outputs_whisper):
+        with pytest.raises(EsbReferenceError, match="pinned reference closure"):
+            scorer(outputs, {}, data_root, repo_root=repo_root)
