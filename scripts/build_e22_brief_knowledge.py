@@ -2,11 +2,15 @@
 """Build KC-E2's two model-free knowledge artifacts, deterministically.
 
 1. ``configs/knowledge/e22-brief-v1/derangement-v1.json`` -- the form twin's
-   CALL PAIRING. ``core.metadata_brief.derange_calls`` is the rule (sorted
-   order, shift by one, cyclic, no fixed point); this materialises it for the
-   dev1500 roster's ten calls and hash-pins the roster receipt and the metadata
-   table it was derived from, so a later roster change cannot silently re-pair
-   the control.
+   CALL PAIRING. ``core.metadata_brief.select_twin_partners`` is the rule: for
+   each roster call, the closest-measuring unused Earnings-22 call OUTSIDE the
+   roster whose ticker, country, UN region and dialect family all differ from the
+   arm's, matched by the SYMMETRIC padder. Measured here on WHITESPACE tokens,
+   because this builder is model-free; ``scripts/e22_kc_e2_prompt_fit.py``
+   re-verifies every pair on the FLIGHT tokenizer, writes the real pad plan and
+   rewrites this artifact if any pair fails there. The roster receipt and the
+   metadata table it was derived from are hash-pinned in the document, so a later
+   roster change cannot silently re-pair the control.
 
 2. ``docs/receipts/artifacts/e22-dev1500-clip-call-map.json`` -- the clip -> call
    map the whole cell is paired and clustered by: 1,500 published ESB clips over
@@ -53,11 +57,17 @@ from typing import Any, Mapping
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
+from speech_aware_evidence_acquisition.core.class_lists import (  # noqa: E402
+    whitespace_token_count,
+)
 from speech_aware_evidence_acquisition.core.metadata_brief import (  # noqa: E402
     DERANGEMENT_SCHEMA,
+    DISTINCT_TWIN_FIELDS,
+    brief_terms,
     call_source_slice,
-    derange_calls,
     metadata_header_and_rows,
+    render_brief,
+    select_twin_partners,
 )
 from speech_aware_evidence_acquisition.data.lock import data_root  # noqa: E402
 
@@ -118,9 +128,23 @@ def build(root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     per_call = {call: sorted(k for k, v in clip_call.items() if v == call) for call in calls}
     row_digests = {
         call: sha256_bytes(call_source_slice(metadata_text, call).encode("utf-8"))
-        for call in calls
+        for call in sorted(table_rows)
     }
-    derangement = derange_calls(calls)
+    slices_by_call = {call: call_source_slice(metadata_text, call) for call in table_rows}
+    briefs_by_call = {call: render_brief(text) for call, text in slices_by_call.items()}
+    terms_by_call = {call: brief_terms(text) for call, text in slices_by_call.items()}
+    # Measured on WHITESPACE tokens here, deliberately: this builder is
+    # model-free and the flight tokenizer needs a resident server. The pairing
+    # is a hash-pinned DEFAULT that scripts/e22_kc_e2_prompt_fit.py re-verifies
+    # -- and, if a call fails on flight tokens, re-selects and rewrites -- before
+    # the twin can fly. The document records which counter chose it.
+    derangement, pad_repeats = select_twin_partners(
+        briefs_by_call=briefs_by_call,
+        roster_calls=calls,
+        candidate_calls=sorted(table_rows),
+        token_counter=whitespace_token_count,
+        terms_by_call=terms_by_call,
+    )
 
     ids_sha256 = sha256_bytes("\n".join(sorted(clip_call)).encode("utf-8"))
     map_sha256 = sha256_bytes(
@@ -132,9 +156,30 @@ def build(root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
         "study": STUDY_SLUG,
         "carrier_lock_key": CARRIER_LOCK_KEY,
         "rule": (
-            "core.metadata_brief.derange_calls: the calls sorted, each paired with the "
-            "NEXT one cyclically. Deterministic, a bijection, and fixed-point-free, so "
-            "no clip ever receives its own call's brief as a control."
+            "core.metadata_brief.select_twin_partners: for each roster call in sorted "
+            "order, the unused Earnings-22 call OUTSIDE the roster whose brief already "
+            "measures CLOSEST to the arm's and whose ticker, country, UN region and "
+            "major dialect family all DIFFER from the arm's, taking the first the "
+            "symmetric padder accepts. Deterministic, injective and fixed-point-free, "
+            "so no clip ever receives its own call's brief and no twin restates its "
+            "arm's facts. Drawn from outside the roster because a partner inside it "
+            "could state a fact that is true of another roster call; matched by the "
+            "SYMMETRIC padder because a real brief can be longer than the one it twins "
+            "-- the two Oceania calls render the corpus's shortest briefs and nothing "
+            "that states different facts fits inside them."
+        ),
+        "selection_counter": "whitespace_token_count",
+        "distinct_twin_fields": list(DISTINCT_TWIN_FIELDS),
+        "twin_terms": {call: dict(terms_by_call[derangement[call]]) for call in calls},
+        "whitespace_pad_repeats": {
+            call: {"arm": pad_repeats[call][0], "twin": pad_repeats[call][1]}
+            for call in calls
+        },
+        "verified_on_flight_tokenizer": False,
+        "verification_step": (
+            "scripts/e22_kc_e2_prompt_fit.py re-measures every pair on the flight "
+            "tokenizer and, if any call's twin exceeds its arm at any prefix there, "
+            "re-selects and rewrites this artifact before the pad plan is built."
         ),
         "calls": calls,
         "derangement": {call: derangement[call] for call in calls},

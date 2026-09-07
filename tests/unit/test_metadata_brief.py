@@ -18,7 +18,10 @@ import pytest
 
 from speech_aware_evidence_acquisition.core import metadata_brief as mb
 from speech_aware_evidence_acquisition.core.base import EVIDENCE_SOURCES, EvidenceError
-from speech_aware_evidence_acquisition.core.class_lists import PLACEBO_PAD_FILLER
+from speech_aware_evidence_acquisition.core.class_lists import (
+    PLACEBO_PAD_FILLER,
+    pad_placebo,
+)
 from speech_aware_evidence_acquisition.core.evidence import (
     brief_call_id,
     e22_metadata_file_relpath,
@@ -41,6 +44,18 @@ ROWS = (
 )
 TABLE = HEADER + "\n" + "\n".join(ROWS) + "\n"
 CALLS = ("4453225", "4474506", "4479944")
+
+#: A wider table for the partner-selection tests: 4453226 restates 4453225's
+#: country, region and dialect family under a different ticker (the exact
+#: near-copy the distinctness rule exists to skip), and two further calls give
+#: the selector somewhere else to go.
+WIDE_ROWS = ROWS + (
+    "4453226,SPPJY,South Africa,Sub-Saharan Africa,Other,English,4634,44100",
+    "4470684,IVTJF,UK,Europe and Northern America,British Isles,English,4696,24000",
+    "4481952,CAHPF,Australia,Oceania,Oceanic,English,3710,24000",
+)
+TABLE_WIDE = HEADER + "\n" + "\n".join(WIDE_ROWS) + "\n"
+WIDE_CALLS = ("4453225", "4453226", "4470684", "4474506", "4479944", "4481952")
 
 
 def _sha256(text: str) -> str:
@@ -255,6 +270,98 @@ def test_the_token_matched_twin_replays_the_pinned_pad_plan(tmp_path):
     assert len(padded.splitlines()) == len(plain.splitlines())
     for line, base, count in zip(padded.splitlines(), plain.splitlines(), repeats):
         assert line == base + PLACEBO_PAD_FILLER * count
+
+
+def test_the_ARM_is_padded_too_and_gains_no_fact(tmp_path):
+    """The padder here is SYMMETRIC, unlike KU-E1c's: a real-call twin can be
+    longer than the brief it twins, so the pair meets in the middle. What the arm
+    gains has to be filler and nothing else."""
+
+    mb._load_pinned_json.cache_clear()
+    arm_slice = mb.call_source_slice(TABLE, "4453225")
+    repeats = [0, 1, 0, 2, 0, 0]
+    values = {mb.BRIEF_SOURCE_KEY: _pin("datasets/x/metadata.csv", "0" * 64)}
+    values.update(
+        _write_pad_plan(
+            tmp_path, [{"source_sha256": _sha256(arm_slice), "pad_repeats": repeats}]
+        )
+    )
+    params = mb.resolve_arm_token_matched_params(values, repo_root=tmp_path)
+    padded = mb.e22_metadata_brief_tm_content(arm_slice, params)
+    plain = mb.render_brief(arm_slice)
+    for line, base, count in zip(padded.splitlines(), plain.splitlines(), repeats):
+        assert line == base + PLACEBO_PAD_FILLER * count
+    stripped = padded.replace(PLACEBO_PAD_FILLER, "")
+    assert stripped == plain.replace(PLACEBO_PAD_FILLER, "")
+
+
+def test_the_symmetric_padder_matches_both_sides_prefix_for_prefix():
+    counter = lambda text: len(text.split())  # noqa: E731
+    arm = mb.render_brief(mb.call_source_slice(TABLE, "4453225"))
+    twin = mb.render_brief(mb.call_source_slice(TABLE, "4479944"))
+    arm_repeats, twin_repeats = mb.pair_pad_repeats(arm, twin, token_counter=counter)
+    padded_arm = pad_placebo(arm, arm_repeats)
+    padded_twin = pad_placebo(twin, twin_repeats)
+    assert mb.prefix_counts(padded_arm, counter) == mb.prefix_counts(padded_twin, counter)
+    # The shorter side is the one that grows at each line: never both.
+    assert all(a == 0 or t == 0 for a, t in zip(arm_repeats, twin_repeats))
+
+
+def test_the_symmetric_padder_refuses_a_twin_of_a_different_shape():
+    counter = lambda text: len(text.split())  # noqa: E731
+    arm = mb.render_brief(mb.call_source_slice(TABLE, "4453225"))
+    with pytest.raises(mb.MetadataBriefError, match="line count"):
+        mb.pair_pad_repeats(arm, "one line only", token_counter=counter)
+
+
+def test_partner_selection_never_restates_the_arms_facts():
+    """The defect this constraint exists for: the first pairing this repository
+    built gave call 4453225 a whitespace-identical partner that restated its
+    country, its region and its dialect family verbatim."""
+
+    counter = lambda text: len(text.split())  # noqa: E731
+    slices = {call: mb.call_source_slice(TABLE_WIDE, call) for call in WIDE_CALLS}
+    briefs = {call: mb.render_brief(text) for call, text in slices.items()}
+    terms = {call: mb.brief_terms(text) for call, text in slices.items()}
+    partners, plans = mb.select_twin_partners(
+        briefs_by_call=briefs,
+        roster_calls=("4453225",),
+        candidate_calls=WIDE_CALLS,
+        token_counter=counter,
+        terms_by_call=terms,
+    )
+    # 4453226 is 4453225's twin in every field but the ticker, so it is skipped.
+    assert partners["4453225"] != "4453226"
+    for field in mb.DISTINCT_TWIN_FIELDS:
+        assert terms[partners["4453225"]][field] != terms["4453225"][field]
+    assert set(plans) == {"4453225"}
+    assert len(plans["4453225"]) == 2
+
+
+def test_partner_selection_never_draws_from_the_roster():
+    counter = lambda text: len(text.split())  # noqa: E731
+    slices = {call: mb.call_source_slice(TABLE_WIDE, call) for call in WIDE_CALLS}
+    briefs = {call: mb.render_brief(text) for call, text in slices.items()}
+    partners, _ = mb.select_twin_partners(
+        briefs_by_call=briefs,
+        roster_calls=("4453225", "4474506"),
+        candidate_calls=WIDE_CALLS,
+        token_counter=counter,
+    )
+    assert set(partners.values()).isdisjoint({"4453225", "4474506"})
+    assert len(set(partners.values())) == 2
+
+
+def test_partner_selection_refuses_when_the_pool_is_the_roster():
+    counter = lambda text: len(text.split())  # noqa: E731
+    briefs = {call: mb.render_brief(mb.call_source_slice(TABLE, call)) for call in CALLS}
+    with pytest.raises(mb.MetadataBriefError, match="outside the roster"):
+        mb.select_twin_partners(
+            briefs_by_call=briefs,
+            roster_calls=CALLS,
+            candidate_calls=CALLS,
+            token_counter=counter,
+        )
 
 
 def test_a_twin_with_no_plan_entry_is_refused_rather_than_rendered_unpadded(tmp_path):

@@ -212,10 +212,12 @@ from .class_lists import (
 )
 from .evidence_derivation import TRANSFORMS, canonical_params_hash
 from .metadata_brief import (
+    METADATA_BRIEF_ARM_TOKEN_MATCHED_TRANSFORMS,
     METADATA_BRIEF_DERANGED_TRANSFORMS,
     METADATA_BRIEF_TOKEN_MATCHED_TRANSFORMS,
     METADATA_BRIEF_TRANSFORMS,
     call_source_slice,
+    resolve_arm_token_matched_params,
     resolve_brief_source_pin,
     resolve_derangement_params,
     resolve_token_matched_params,
@@ -1099,13 +1101,14 @@ def _metadata_brief_items(
     there is no D1-recorded per-sample evidence identity to check against, and
     the record says so rather than fabricating one. The table's bytes are pinned
     instead by the composed config and re-hashed here on every read.
+
+    ``token_matched`` applies to BOTH sides, unlike the Earnings-21 brief's
+    one-sided twin: ``core.metadata_brief.pair_pad_repeats`` grows whichever side
+    is short, because a real-call twin can be longer than the brief it twins and
+    on the Oceania calls every fact-distinct partner is. The padded arm gains
+    neutral filler and no fact.
     """
 
-    if token_matched and not deranged:
-        raise EvidenceError(
-            "the token-matched variant is a form twin; there is no token-matched "
-            "rendering of the arm itself"
-        )
     relpath = e22_metadata_file_relpath(lock, carrier_lock_key)
     pinned_relpath, pinned_sha256 = resolve_brief_source_pin(values)
     if pinned_relpath != relpath:
@@ -1136,9 +1139,12 @@ def _metadata_brief_items(
         ) from error
 
     call_id = brief_call_id(sample_id)
-    if token_matched:
+    if token_matched and deranged:
         transform = "e22-metadata-brief-deranged-tm"
         params = resolve_token_matched_params(values)
+    elif token_matched:
+        transform = "e22-metadata-brief-tm"
+        params = resolve_arm_token_matched_params(values)
     elif deranged:
         transform = "e22-metadata-brief-deranged"
         params = resolve_derangement_params(values)
@@ -1204,6 +1210,28 @@ def _e22_metadata_brief(
 
     return _metadata_brief_items(
         lock, root, sample_id, carrier_lock_key, values, deranged=False, token_matched=False
+    )
+
+
+def _e22_metadata_brief_token_matched(
+    lock: Mapping[str, object],
+    root: Path,
+    sample_id: str,
+    carrier_lock_key: str,
+    values: Mapping[str, object] | None = None,
+) -> list[EvidenceItem]:
+    """KC-E2's own arm, PADDED to its twin (owner ruling 2026-09-06, the control
+    is locked to the treatment on the flight tokenizer).
+
+    A padded ARM is what the Earnings-21 brief never needed and this one does:
+    ``core.metadata_brief.pair_pad_repeats`` is symmetric because a real
+    Earnings-22 brief can be longer than the one it twins, so the two sides meet
+    in the middle instead of the twin always growing. The arm gains ``" item"``
+    repeats and nothing else -- no fact, no name, no sector -- and the ONE factor
+    between the two cells stays the words in the five fact fields."""
+
+    return _metadata_brief_items(
+        lock, root, sample_id, carrier_lock_key, values, deranged=False, token_matched=True
     )
 
 
@@ -1286,6 +1314,8 @@ def resolve_declared_transform_params(
     if transform_name in METADATA_BRIEF_TRANSFORMS:
         relpath, sha256_hex = resolve_brief_source_pin(values)
         return {"metadata_relpath": relpath, "metadata_sha256": sha256_hex}
+    if transform_name in METADATA_BRIEF_ARM_TOKEN_MATCHED_TRANSFORMS:
+        return resolve_arm_token_matched_params(values)
     if transform_name in METADATA_BRIEF_DERANGED_TRANSFORMS:
         return resolve_derangement_params(values)
     if transform_name in METADATA_BRIEF_TOKEN_MATCHED_TRANSFORMS:
@@ -1309,6 +1339,9 @@ EVIDENCE_SOURCES.register(
     "conec-class-lists-placebo-token-matched", _conec_class_lists_placebo_token_matched
 )
 EVIDENCE_SOURCES.register("e22-metadata-brief", _e22_metadata_brief)
+EVIDENCE_SOURCES.register(
+    "e22-metadata-brief-token-matched", _e22_metadata_brief_token_matched
+)
 EVIDENCE_SOURCES.register("e22-metadata-brief-deranged", _e22_metadata_brief_deranged)
 EVIDENCE_SOURCES.register(
     "e22-metadata-brief-deranged-token-matched",

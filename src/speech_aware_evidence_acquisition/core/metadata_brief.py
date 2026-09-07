@@ -81,11 +81,20 @@ vary the content AND the plausibility of the content at once.
 
 The twin here is therefore the DERANGEMENT twin the E5 brief already names as an
 alternative -- "the same shape with names from OTHER calls" -- made explicit and
-deterministic: each call is paired with the NEXT call in sorted order, cyclically
-(:func:`derange_calls`), so the twin is a real, well-formed Earnings-22 brief of
-a real Earnings-22 call that is never the call being decoded. Same labels, same
-field set, same kind of value in every field, zero information about this call.
-Ten calls give a shift-by-one permutation with no fixed point.
+deterministic: the twin is a real, well-formed Earnings-22 brief of a real
+Earnings-22 call that is never the call being decoded. Same labels, same field
+set, same kind of value in every field, zero information about this call.
+
+WHICH other call is chosen by MEASUREMENT, not by position, and the reason is
+arithmetic rather than taste. Padding can only ADD tokens, so a twin is
+matchable only if it is no longer than its arm at every prefix -- and no
+permutation of a finite set maps every element to a strictly smaller one, so the
+obvious cyclic rule over the ten roster calls (:func:`derange_calls`) always
+leaves at least one call unmatchable. On the real ten it leaves five.
+:func:`select_twin_partners` therefore draws the partner from the OTHER 115
+Earnings-22 calls: an injection, still fixed-point-free, always feasible, and
+strictly safer -- a partner from outside the roster cannot accidentally state a
+fact that is true of some other roster call.
 
 The pairing is not recomputed at flight time from whatever call set happens to be
 loaded: it is a hash-pinned artifact under ``configs/knowledge/``
@@ -123,6 +132,7 @@ from .class_lists import (
     PLACEBO_PAD_FILLER,
     annotate_normalized,
     pad_placebo,
+    validate_pad_filler,
     validate_pad_repeats,
 )
 from .evidence_derivation import TRANSFORMS
@@ -169,9 +179,35 @@ PAD_PLAN_KEY = "evidence_brief_pad_plan"
 DERANGEMENT_SCHEMA = "saea-e22-brief-derangement-v1"
 PAD_PLAN_SCHEMA = "saea-e22-brief-placebo-token-match-v1"
 
+#: The fields a form twin must NOT restate. A twin whose country, region,
+#: dialect family or ticker happen to equal the arm's is not a control: with 115
+#: candidate calls the selector below can and does find a partner that matches
+#: the arm's SHAPE without repeating its FACTS, and the first pairing this
+#: repository built failed exactly here -- call 4453225's whitespace-identical
+#: partner restated its country, its region and its dialect family verbatim.
+#: ``Language family and area`` is deliberately absent: it is a three-value
+#: taxonomy (English / Asian / Spanish-Portuguese) and requiring it to differ
+#: would force the twin's other fields into a narrow corner of the corpus for no
+#: gain.
+DISTINCT_TWIN_FIELDS: tuple[str, ...] = (
+    "Ticker symbol",
+    "Country",
+    "UN region",
+    "Major dialect family",
+)
+
+#: The separator a brief's lines are joined by. Named rather than inlined so a
+#: reader of :func:`prefix_counts` can see at a glance that a prefix is rebuilt
+#: exactly the way ``core.class_lists.placebo_pad_repeats`` rebuilds one.
+NEWLINE = "\n"
+
 _SHA256_HEX = re.compile(r"[0-9a-f]{64}")
 _DATA_RELPATH = re.compile(r"[A-Za-z0-9._][A-Za-z0-9._/-]*")
-_CALL_ID = re.compile(r"[0-9A-Za-z_]+")
+#: An Earnings-22 File ID. Mostly a seven-digit number, but the corpus also
+#: ships a handful of descriptive ids (e.g. a dated MTN-Ghana results call), and
+#: a twin may legitimately be one of them -- the pool is the corpus, not the
+#: roster. Kept fail-closed on separators a path or a CSV field would care about.
+_CALL_ID = re.compile(r"[0-9A-Za-z][0-9A-Za-z._-]*")
 
 
 class MetadataBriefError(EvidenceError):
@@ -368,6 +404,253 @@ def derange_calls(call_ids: Sequence[str]) -> dict[str, str]:
     return {call: ordered[(index + 1) % len(ordered)] for index, call in enumerate(ordered)}
 
 
+def prefix_counts(text: str, token_counter) -> list[int]:
+    """The measured count of every rendered PREFIX of ``text``, line by line.
+
+    The unit ``core.class_lists.placebo_pad_repeats`` matches on: matching
+    prefixes rather than isolated lines makes whole-block equality a consequence
+    rather than a hope, because the prefix at the last index IS the whole block.
+    """
+
+    if not callable(token_counter):
+        raise MetadataBriefError("token_counter must be callable")
+    lines = text.splitlines()
+    if NEWLINE.join(lines) != text:
+        raise MetadataBriefError(
+            "a brief must round-trip through splitlines() to be measured by prefix"
+        )
+    counts: list[int] = []
+    for index in range(len(lines)):
+        value = token_counter(NEWLINE.join(lines[: index + 1]))
+        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+            raise MetadataBriefError(
+                f"token_counter returned {value!r} for prefix {index}; a token count "
+                "must be a non-negative integer"
+            )
+        counts.append(value)
+    return counts
+
+
+def pair_pad_repeats(
+    arm: str,
+    twin: str,
+    *,
+    token_counter,
+    filler: str = PLACEBO_PAD_FILLER,
+) -> tuple[list[int], list[int]]:
+    """The SYMMETRIC padder: how many ``filler`` repeats each line of the arm and
+    each line of the twin needs so that both rendered PREFIXES measure the same,
+    line for line, on ``token_counter``.
+
+    ``core.class_lists.placebo_pad_repeats`` pads one side only, which is right
+    when the control is a placeholder twin -- a placeholder is always shorter
+    than the proper nouns it replaces, so growing it is always possible. It is
+    NOT always possible here, and the reason is a property of this carrier rather
+    than an implementation detail: the twin is another REAL call's brief, and a
+    real brief can be longer than the one it twins on any given line. On the ten
+    dev calls it is: the two Oceania calls render the corpus's SHORTEST briefs
+    ("Oceania" is the only one-word UN region), so no call that states different
+    facts fits inside them.
+
+    Growing whichever side is short at each line is the honest generalization.
+    The filler is ``core.class_lists.PLACEBO_PAD_FILLER`` -- one leading space
+    and one neutral noun -- so what the arm gains is token volume and nothing
+    else: no fact, no name, no sector, and exactly the volume the twin gains.
+    The one factor between the two cells stays the words in the five fact fields.
+
+    Prefixes rather than isolated lines, for ``placebo_pad_repeats``' own reason:
+    equality at the last index IS whole-block equality, by construction, and a
+    per-line count taken in isolation would leave the newline joins unaccounted
+    for.
+
+    Three refusals, all fail-closed: a mismatched line count, a filler that adds
+    no token, and a filler that overshoots the target. An approximate match is
+    the defect this function exists to remove.
+    """
+
+    validate_pad_filler(filler)
+    arm_lines = arm.splitlines()
+    twin_lines = twin.splitlines()
+    if NEWLINE.join(arm_lines) != arm or NEWLINE.join(twin_lines) != twin:
+        raise MetadataBriefError(
+            "a brief must round-trip through splitlines() to carry a per-line pad plan"
+        )
+    if len(arm_lines) != len(twin_lines):
+        raise MetadataBriefError(
+            f"the form twin has {len(twin_lines)} lines against the brief's "
+            f"{len(arm_lines)}; a twin that does not share the brief's line count "
+            "cannot be matched line by line"
+        )
+    if not callable(token_counter):
+        raise MetadataBriefError("token_counter must be callable")
+
+    def measure(lines: Sequence[str], label: str) -> int:
+        value = token_counter(NEWLINE.join(lines))
+        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+            raise MetadataBriefError(
+                f"token_counter returned {value!r} for {label}; a token count must be a "
+                "non-negative integer"
+            )
+        return value
+
+    def grow(
+        padded: list[str], line: str, target: int, index: int, label: str
+    ) -> tuple[str, int]:
+        count = 0
+        measured = measure(padded + [line], f"{label} prefix {index}")
+        while measured < target:
+            grown = count + (target - measured)
+            if grown > MAX_PAD_REPEATS_PER_LINE:
+                raise MetadataBriefError(
+                    f"line {index} of the {label} would need more than "
+                    f"{MAX_PAD_REPEATS_PER_LINE} {filler!r} repeats to reach {target} "
+                    "tokens; refusing to build it"
+                )
+            after = measure(
+                padded + [line + filler * grown], f"{label} prefix {index} at {grown}"
+            )
+            if after <= measured:
+                raise MetadataBriefError(
+                    f"filler {filler!r} adds no token to line {index} of the {label} "
+                    f"({measured} tokens at {count} repeats, {after} at {grown}); it "
+                    "cannot close a token gap"
+                )
+            if after > target:
+                raise MetadataBriefError(
+                    f"line {index} of the {label} cannot be matched with {filler!r}: "
+                    f"{grown} repeats take it from {measured} to {after} tokens against "
+                    f"the target's {target}"
+                )
+            count, measured = grown, after
+        return line + filler * count, count
+
+    arm_padded: list[str] = []
+    twin_padded: list[str] = []
+    arm_repeats: list[int] = []
+    twin_repeats: list[int] = []
+    for index in range(len(arm_lines)):
+        arm_here = measure(arm_padded + [arm_lines[index]], f"brief prefix {index}")
+        twin_here = measure(twin_padded + [twin_lines[index]], f"twin prefix {index}")
+        target = max(arm_here, twin_here)
+        arm_line, arm_count = grow(arm_padded, arm_lines[index], target, index, "brief")
+        twin_line, twin_count = grow(twin_padded, twin_lines[index], target, index, "twin")
+        arm_padded.append(arm_line)
+        twin_padded.append(twin_line)
+        arm_repeats.append(arm_count)
+        twin_repeats.append(twin_count)
+    return arm_repeats, twin_repeats
+
+
+def select_twin_partners(
+    *,
+    briefs_by_call: Mapping[str, str],
+    roster_calls: Sequence[str],
+    candidate_calls: Sequence[str],
+    token_counter,
+    terms_by_call: Mapping[str, Mapping[str, str]] | None = None,
+    filler: str = PLACEBO_PAD_FILLER,
+) -> tuple[dict[str, str], dict[str, tuple[list[int], list[int]]]]:
+    """Which call's brief twins each roster call's, chosen by MEASUREMENT, with
+    the symmetric pad plan that choice implies.
+
+    Why the simple cyclic :func:`derange_calls` is not enough here, stated as a
+    fact rather than a preference: a control has to be locked to its treatment on
+    the flight tokenizer, and a cyclic derangement over the roster alone pairs a
+    call with whatever call sorts next, whose brief may say the same things. The
+    partner is drawn instead from the OTHER Earnings-22 calls, of which there are
+    115 -- still a real, well-formed Earnings-22 brief of a real call, with the
+    same five labels and the same kind of value in every field, never the call
+    being decoded, and never a call whose facts this roster already carries.
+
+    Two constraints, both enforced rather than hoped for:
+
+    * **it must say something else.** ``terms_by_call``, when supplied, makes the
+      selector skip any candidate that restates the arm's own value in one of
+      :data:`DISTINCT_TWIN_FIELDS`. Without it the shape-matching rule below
+      happily picks a call from the same country with the same region and the
+      same dialect family -- a copy of the arm's facts wearing a different
+      ticker, which is not a control at all. The first pairing this repository
+      built did exactly that for call 4453225;
+    * **it must be matchable.** :func:`pair_pad_repeats` has to produce a plan
+      for the pair. Because that padder is SYMMETRIC, "no candidate is short
+      enough" is no longer a failure mode -- which matters, since the two Oceania
+      calls' briefs are the shortest in the corpus and nothing that states
+      different facts fits inside them.
+
+    The rule, deterministic end to end: for each roster call in sorted order, try
+    the unused, fact-distinct candidates in order of how CLOSE their brief already
+    measures to the arm's (ties broken toward the longer candidate, then by call
+    id) and take the first the padder accepts. Closest first, because the pair
+    then needs the least filler and filler is the one part of either side that
+    says nothing. Refuses, naming the call, if none is accepted.
+
+    Returns ``(partners, {roster call -> (arm repeats, twin repeats)})``: the
+    caller gets the pairing AND the measurement that justified it, so a pad plan
+    can never be built from a different pairing than the one that was verified.
+    """
+
+    roster = [str(call) for call in roster_calls]
+    if len(set(roster)) != len(roster) or not roster:
+        raise MetadataBriefError("roster_calls must be a non-empty set of distinct calls")
+    pool = [str(call) for call in candidate_calls if str(call) not in set(roster)]
+    if not pool:
+        raise MetadataBriefError(
+            "no candidate call outside the roster; a twin drawn from the roster itself "
+            "could state a fact that is true of another roster call"
+        )
+    totals = {
+        call: prefix_counts(briefs_by_call[call], token_counter)[-1]
+        for call in set(roster) | set(pool)
+    }
+    used: set[str] = set()
+    partners: dict[str, str] = {}
+    plans: dict[str, tuple[list[int], list[int]]] = {}
+
+    def _says_something_else(call: str, candidate: str) -> bool:
+        if terms_by_call is None:
+            return True
+        arm_terms = terms_by_call[call]
+        twin_terms = terms_by_call[candidate]
+        return all(
+            twin_terms.get(field) != arm_terms.get(field) for field in DISTINCT_TWIN_FIELDS
+        )
+
+    for call in sorted(roster):
+        feasible = sorted(
+            (
+                candidate
+                for candidate in pool
+                if candidate not in used and _says_something_else(call, candidate)
+            ),
+            key=lambda candidate: (
+                abs(totals[candidate] - totals[call]),
+                -totals[candidate],
+                candidate,
+            ),
+        )
+        chosen: tuple[str, tuple[list[int], list[int]]] | None = None
+        for candidate in feasible:
+            try:
+                repeats = pair_pad_repeats(
+                    briefs_by_call[call],
+                    briefs_by_call[candidate],
+                    token_counter=token_counter,
+                    filler=filler,
+                )
+            except MetadataBriefError:
+                continue
+            chosen = (candidate, repeats)
+            break
+        if chosen is None:
+            raise MetadataBriefError(
+                f"no unused Earnings-22 call outside the roster states different facts "
+                f"from call {call!r} AND can be token-matched to it; the twin cannot be "
+                "built and an unmatched twin is not a control"
+            )
+        partners[call], plans[call] = chosen
+        used.add(chosen[0])
+    return validate_derangement(partners), plans
+
 def validate_derangement(mapping: object) -> dict[str, str]:
     """Fail-closed derangement validation: a non-empty call -> call bijection
     with no fixed point."""
@@ -489,16 +772,19 @@ def resolve_derangement_params(
     }
 
 
-def resolve_token_matched_params(
+def _pad_plan_entries(
     values: Mapping[str, object] | None, *, repo_root: Path | str | None = None
 ) -> dict[str, object]:
-    """The token-matched twin's declared params: :func:`resolve_derangement_params`
-    plus the measured per-line pad plan, keyed by the SOURCE SLICE's sha256 --
-    exactly the key ``DerivedEvidenceRecord.source_sha256`` carries, so a plan
-    entry is bound to the bytes the chain already proves. The derangement is a
-    bijection, so each twin slice is a plan key at most once."""
+    """The pinned pad plan's per-line repeats, keyed by the SOURCE SLICE's sha256
+    -- exactly the key ``DerivedEvidenceRecord.source_sha256`` carries, so a plan
+    entry is bound to the bytes the derivation chain already proves.
 
-    params = resolve_derangement_params(values, repo_root=repo_root)
+    ONE plan serves both sides of the pair. An arm slice and a twin slice are
+    different calls' bytes by construction (:func:`select_twin_partners` draws
+    every partner from OUTSIDE the roster), so a flat table keyed by source
+    digest can never confuse the two.
+    """
+
     relpath, digest = _validate_pin(values, PAD_PLAN_KEY, under="configs/")
     root = Path(repo_root) if repo_root is not None else REPO_ROOT
     document = _load_pinned_json(relpath, digest, str(root), PAD_PLAN_SCHEMA)
@@ -516,8 +802,8 @@ def resolve_token_matched_params(
             )
         if key in line_pad_repeats:
             raise MetadataBriefError(
-                f"pad-plan {relpath} names source bytes {key[:12]}... twice; two plans "
-                "for one source can never both be the plan"
+                f"pad-plan {relpath} names source bytes {key[:12]} twice; two plans for "
+                "one source can never both be the plan"
             )
         repeats = entry.get("pad_repeats")
         if isinstance(repeats, (str, bytes)) or not isinstance(repeats, Sequence):
@@ -525,13 +811,45 @@ def resolve_token_matched_params(
                 f"pad-plan {relpath} entry {index} carries no pad_repeats list"
             )
         line_pad_repeats[key] = validate_pad_repeats(repeats, len(list(repeats)))
-    params.update(
-        {
-            "pad_artifact_relpath": relpath,
-            "pad_artifact_sha256": digest,
-            "line_pad_repeats": line_pad_repeats,
-        }
-    )
+    return {
+        "pad_artifact_relpath": relpath,
+        "pad_artifact_sha256": digest,
+        "line_pad_repeats": line_pad_repeats,
+    }
+
+
+def resolve_arm_token_matched_params(
+    values: Mapping[str, object] | None, *, repo_root: Path | str | None = None
+) -> dict[str, object]:
+    """The token-matched ARM's declared params: the metadata pin plus the pinned
+    pad plan.
+
+    The arm carries a pad plan at all because the padder is SYMMETRIC
+    (:func:`pair_pad_repeats`): a real-call twin can be longer than the brief it
+    twins on a line, and on the two Oceania calls every fact-distinct partner is,
+    so the pair is matched by growing whichever side is short. What the arm gains
+    is neutral filler and nothing else. The derangement is deliberately NOT in
+    these params: the arm renders its own call and never needs to know which call
+    twins it.
+    """
+
+    relpath, sha256_hex = resolve_brief_source_pin(values)
+    params: dict[str, object] = {
+        "metadata_relpath": relpath,
+        "metadata_sha256": sha256_hex,
+    }
+    params.update(_pad_plan_entries(values, repo_root=repo_root))
+    return params
+
+
+def resolve_token_matched_params(
+    values: Mapping[str, object] | None, *, repo_root: Path | str | None = None
+) -> dict[str, object]:
+    """The token-matched TWIN's declared params: :func:`resolve_derangement_params`
+    plus the same pinned pad plan the arm reads."""
+
+    params = resolve_derangement_params(values, repo_root=repo_root)
+    params.update(_pad_plan_entries(values, repo_root=repo_root))
     return params
 
 
@@ -548,6 +866,16 @@ def e22_metadata_brief_content(text: str, params: Mapping[str, object]) -> str:
 
     _require_metadata_pin(params, "e22-metadata-brief")
     return render_brief(text)
+
+
+def e22_metadata_brief_tm_content(text: str, params: Mapping[str, object]) -> str:
+    """TRANSFORMS: ``e22-metadata-brief-tm`` v1 -- the ARM with its measured
+    per-line pad plan replayed. Neutral filler only; the five facts are the
+    unpadded transform's, verbatim."""
+
+    transform = "e22-metadata-brief-tm"
+    _require_metadata_pin(params, transform)
+    return pad_placebo(render_brief(text), _pad_repeats_for_source(text, params, transform))
 
 
 def e22_metadata_brief_deranged_content(text: str, params: Mapping[str, object]) -> str:
@@ -621,6 +949,7 @@ def _pad_repeats_for_source(
 
 
 TRANSFORMS.register("e22-metadata-brief", "v1", e22_metadata_brief_content)
+TRANSFORMS.register("e22-metadata-brief-tm", "v1", e22_metadata_brief_tm_content)
 TRANSFORMS.register("e22-metadata-brief-deranged", "v1", e22_metadata_brief_deranged_content)
 TRANSFORMS.register(
     "e22-metadata-brief-deranged-tm", "v1", e22_metadata_brief_deranged_tm_content
@@ -628,6 +957,8 @@ TRANSFORMS.register(
 
 #: The arm's own transform. Its declared params are the metadata pin alone.
 METADATA_BRIEF_TRANSFORMS = ("e22-metadata-brief",)
+#: The arm's PADDED transform: the metadata pin PLUS the pinned pad plan.
+METADATA_BRIEF_ARM_TOKEN_MATCHED_TRANSFORMS = ("e22-metadata-brief-tm",)
 #: The unpadded twin's transform: metadata pin PLUS the pinned derangement.
 METADATA_BRIEF_DERANGED_TRANSFORMS = ("e22-metadata-brief-deranged",)
 #: The token-matched twin's transform: the above PLUS the pinned pad plan.
@@ -638,9 +969,11 @@ __all__ = [
     "BRIEF_HEADING",
     "BRIEF_SOURCE_KEY",
     "DERANGEMENT_KEY",
+    "DISTINCT_TWIN_FIELDS",
     "DERANGEMENT_SCHEMA",
     "ID_COLUMN",
     "MAX_PAD_REPEATS_PER_LINE",
+    "METADATA_BRIEF_ARM_TOKEN_MATCHED_TRANSFORMS",
     "METADATA_BRIEF_DERANGED_TRANSFORMS",
     "METADATA_BRIEF_TOKEN_MATCHED_TRANSFORMS",
     "METADATA_BRIEF_TRANSFORMS",
@@ -654,9 +987,13 @@ __all__ = [
     "call_source_slice",
     "derange_calls",
     "metadata_header_and_rows",
+    "pair_pad_repeats",
+    "prefix_counts",
     "render_brief",
+    "resolve_arm_token_matched_params",
     "resolve_brief_source_pin",
     "resolve_derangement_params",
     "resolve_token_matched_params",
+    "select_twin_partners",
     "validate_derangement",
 ]

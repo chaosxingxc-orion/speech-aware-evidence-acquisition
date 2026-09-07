@@ -1,0 +1,194 @@
+{
+  "experiment_id": "SAEA-E22-KC-E2-BRIEF-DEV1500-V1",
+  "schema": "saea-e22-esb-shortform-experiment-v1",
+  "date": "2026-09-07",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "KNOWLEDGE CONSTRUCTION ON EARNINGS-22 (owner ruling 2026-09-07, 'once E22 is aligned it can be knowledge-enhanced too'): does supplying the call's OWN pre-meeting brief -- the five facts the Earnings-22 corpus publishes about it -- change what the frozen core transcribes on the admitted tail-silence-2s serving surface? TWO cells, ONE factor each. KC-E2 supplies the call's own brief; KU-E2c supplies ANOTHER call's brief at the same shape, so the arm-versus-twin contrast isolates the brief's CONTENT. Preregistration: docs/readiness/2026-09-07-e22-kc-e2-pre-meeting-brief-v1-preregistration.md. NOT AUTHORIZED by this fragment: the cells need the owner's GO, their own exposure rows registered before the first contact, their own contracts.ExecutionPlan, and the two preconditions of the preregistration's section 8 -- the measured prompt fit and the token-matched twin.",
+  "read_the_audit_first": {
+    "row": "SAEA-E22-MF-BRIEF-SOURCE-AUDIT-V1",
+    "note": "docs/readiness/2026-09-07-e22-brief-source-audit-v1.md",
+    "ceiling_corpus_wer_points": 0.022856,
+    "brief_term_reference_words": 47,
+    "reference_words": 26251,
+    "comparator_recall_on_them_percent": 87.23,
+    "call_specific_share_of_term_mass": 0.0,
+    "what_it_means": "The brief's DIRECT channel is measured and it is 0.0229 corpus-WER points, an order of magnitude below this runtime's own same-request null of [-0.2356, +0.0692] on this roster. Every one of the 47 covered reference words belongs to a term that also occurs in calls the term does not describe. This fragment exists so the cell is expressible and reviewable; whether it is worth a GPU hour is the owner's call and the preregistration's section 9 states the case both ways."
+  },
+  "basis": {
+    "serving_surface": "docs/readiness/2026-09-07-e22-dev-encoding-probes-v1-verdict.md -- tail-silence-2s is ADMITTED on all three clauses and is the recommended Earnings-22 short-form serving default: corpus WER 9.4054 on these 1,500 rows against arm A's 17.4012, boundary block 8.2778 -> 1.1085",
+    "why_the_comparator_is_the_tail2s_arm_and_not_arm_A": "a knowledge cell must be measured on the serving surface the study actually recommends, or it measures the encoding defect instead of the knowledge",
+    "brief_source": "core.metadata_brief -- the corpus's own metadata.csv and nothing else; owner ruling 2026-09-07, Earnings-22 collects no external information",
+    "metric": "reproduction.brief_term_recall (brief-term-recall-v1), defined and measured on the comparator BEFORE this cell existed"
+  },
+  "comparator": {
+    "run_id": "SAEA-E22-DEV-ESB-TAIL2S-V1",
+    "attempt_id": "attempt-20260907T090708Z-df36cc",
+    "corpus_wer_percent_whisper_normalizer": 9.4054,
+    "agentic_error_rate_percent": 1.7599,
+    "boundary_block_wer_points": 1.1085,
+    "restricted_to": "the same 1,500 published segments, on the same tail-silence-2s media",
+    "join_rule": "both arms fly the @ts2 ids; the published segment key is recovered by splitting on '@', which is what makes the paired join against the sealed rows exact",
+    "why_sealed_and_never_a_rerun": "Greedy decoding is not bitwise reproducible across batch compositions on this runtime, so the contrast is against sealed outputs. No new comparator is flown.",
+    "same_request_null": {
+      "corpus_wer_delta_points": -0.0844,
+      "ci90": [-0.2356, 0.0692],
+      "source": "section 3.2 of docs/readiness/2026-09-06-e22-dev-usage-cells-v1-verdict.md",
+      "binding": "an effect is claimed only if its CI90 excludes this interval; a preregistered effect smaller than about 0.25 points on 1,500 rows cannot be distinguished from this null by one flight"
+    }
+  },
+  "populations": {
+    "E22-ESB-DEV1500-TAIL2S-UTTERANCES": {
+      "dataset_fragment": "earnings22-esb-dev1500-tail2s",
+      "carrier": "earnings22-original",
+      "split_role": "dev",
+      "count": 1500,
+      "strata": "source call, 150 utterances in each of the ten: 4453225 / 4469088 / 4470684 / 4474506 / 4479944 / 4481952 / 4482383 / 4482613 / 4483937 / 4485192",
+      "clusters": 10,
+      "clip_call_map": "docs/receipts/artifacts/e22-dev1500-clip-call-map.json",
+      "clip_call_map_sha256": "c68aa0dec1ba02e8adaad7e2a6040878b3cafa4b6f8789a9556b32dfbdf606f7",
+      "split_identity_hash": "8dc9d6a04c408226e0575254ba4cbad605417c293fc5e55f40e6c8cf50f51207",
+      "audio_seconds_one_pass": 12948.983,
+      "audio_seconds_longest_item": 34.88,
+      "estimand": "the paired within-segment effect of supplying the call's own metadata brief, on corpus WER and on brief-term recall, against sealed rows on a population this study is allowed to optimize on",
+      "dataset_fragment_unchanged": "The dataset fragment is the comparator's own, byte for byte. This cell varies the REQUEST and nothing about the media, the roster, the reference layer or the split identity."
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "E22-KC-E2-BRIEF",
+      "dataset_fragment": "earnings22-esb-dev1500-tail2s",
+      "arm": "bare-core",
+      "baseline_fragment": "e22-kc-e2-brief-whole-prompt",
+      "model_fragment": "q4km-e22-dev-esb-mmproj-gpu-04ccc72a-np8-c40960",
+      "run_id": "SAEA-E22-KC-E2-BRIEF-V1",
+      "serving_geometry": "-c 40960 -np 8, 5120 tokens per slot -- the sealed comparator's, unchanged",
+      "factor": "the call's OWN pre-meeting brief at the head of the system message: ticker, country, UN region, dialect family, language family, each with its Whisper-normalized form where casing moves it",
+      "what_it_separates": "whether five published facts about a call change what the core transcribes of it, on the serving surface this study recommends"
+    },
+    {
+      "cell_id": "E22-KU-E2C-PLACEBO",
+      "dataset_fragment": "earnings22-esb-dev1500-tail2s",
+      "arm": "bare-core",
+      "baseline_fragment": "e22-ku-e2c-brief-placebo",
+      "model_fragment": "q4km-e22-dev-esb-mmproj-gpu-04ccc72a-np8-c40960",
+      "run_id": "SAEA-E22-KU-E2C-PLACEBO-V1",
+      "serving_geometry": "-c 40960 -np 8, 5120 tokens per slot -- identical to KC-E2's",
+      "factor": "the FORM twin: another call's brief, chosen by the pinned fixed-point-free call derangement, at the same shape and the same five labels",
+      "what_it_separates": "the brief's CONTENT from its FORM and its token volume. The arm-versus-twin contrast is the ONE-factor contrast; the arm-versus-comparator contrast moves the evidence AND the task instruction and is reported as such, never quoted as the content effect."
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "runtime_receipt": "docs/receipts/runtime-q4km-featcache-04ccc72a.json",
+    "quantization": "Q4_K_M",
+    "audio_path": "raw audio, bf16 mmproj resident on the GPU, no feature cache directory",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample",
+    "contacts_per_item": 1,
+    "obs": "none -- an ESB utterance IS the request; there is no windowing here",
+    "harness": "core.flight.FlightRuntime with the shared rails zero-supply direct arm and the OpenJiuwen executor, entered through scripts/flights/run_e22_esb_cell.py -- the same harness and the same entry point the sealed comparator used",
+    "prompt_shape": "the base TaskAdapter.assemble_prompt default: one system message, one user message carrying the audio. The brief is the HEAD of the system message, in the '[evidence <id>] <content>' line format core.model.transport renders supplied_evidence in, so the payload's field set stays exactly ARM_VISIBLE_FIELDS['bare-core'] -- the comparator's own.",
+    "evidence_rail": "scripts/flights/run_e22_esb_cell.py resolves the fragment's evidence_source through core.base.EVIDENCE_SOURCES once, before the flight, and registers every item's DerivedEvidenceRecord with core.evidence_derivation.DerivedEvidenceRegistry against the params core.evidence.resolve_declared_transform_params reads from THIS composed config -- the same rail core.driver.run_experiment runs. A source that lied about its params, its transform or its content stops the flight before a server exists.",
+    "the_only_difference": "between the two cells, the CONTENT of the brief. Between either cell and the sealed comparator, the brief plus the instruction preamble that describes it."
+  },
+  "deviations": [
+    {
+      "id": "D-KCE2-1",
+      "deviation": "the task instruction gains a preamble describing the brief, and the word 'listed' inside the anti-insertion sentence",
+      "why": "an arm that supplies reference material must say what it is, and must warn against reading it aloud; the KC-E1 Earnings-21 brief instruction carries the identical change for the identical reason",
+      "expected_effect": "the arm-versus-COMPARATOR contrast moves two things and is reported as such; the arm-versus-TWIN contrast moves one, because the twin's instruction is byte-identical to the arm's"
+    },
+    {
+      "id": "D-KCE2-2",
+      "deviation": "the brief's evidence record carries carrier_bound=False, so the D1 evidence-identity rail does not run for it",
+      "why": "D1 records the Earnings-22 metadata table's 125 ids through data.identity._csv_layer and no per-file manifest, so there is no per-sample evidence identity to check against. A saea-d1-evidence-supplement-v1 cannot be written either: contracts.gate.FrozenCoreGate allows at most ONE supplement per gate and this cell must carry the media supplement, and gate_evidence_identity requires an evidence supplement's ids_sha256 to equal the carrier's own evidence layer universe, which earnings22-original does not have.",
+      "expected_effect": "identity rests on the derivation chain plus the composed config's byte pin on the table, which is re-hashed on every read; the honesty is stated in the fragment, in core.metadata_brief and in the audit note rather than papered over"
+    }
+  ],
+  "evaluation": {
+    "official_scorers": [
+      "asr-wer-esb-whisper",
+      "asr-wer-esb",
+      "brief-term-recall-v1",
+      "cost"
+    ],
+    "paper_facing_scorer": "asr-wer-esb-whisper",
+    "paper_facing_aggregation": "corpus: total S+D+I over total reference words",
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "merge_compounds": false,
+    "agentic_metric": "analysis.e22_error_taxonomy at its committed version, recomputed on the new outputs, on the DEV10 inventory basis -- named in the flight receipt, per the 2026-09-07 verdict's standing reporting obligation",
+    "metrics": [
+      "corpus WER under the Whisper EnglishTextNormalizer, pooled and per call (paper-facing anchor)",
+      "brief-term recall, pooled and per field and per call (the targeted metric)",
+      "numeric-value accuracy, computed post-seal from the sealed rows (there is no ESB-scoped numeric scorer registration; the carrier-layer numeric-value-accuracy-v1 resolves a CALL's .nlp reference and cannot key an utterance)",
+      "the semantic high-impact rate, from analysis.e22_error_taxonomy on the DEV10 basis",
+      "corpus and mean WER under the frozen saea-scoring-v1 normalizer",
+      "substitutions / deletions / insertions, reference words, and the hypothesis-to-reference length ratio -- a brief that gets read aloud shows up in the insertion share first",
+      "the utterance-duration decomposition",
+      "prompt_tokens against the prompt fit's own predicted per-row text envelope"
+    ],
+    "paired_analysis": {
+      "module": "analysis.paired",
+      "pooled_ratio_statistic": "resampled_statistic",
+      "per_unit_statistic": "paired_contrast",
+      "pairing_unit": "the published ESB segment (1,500)",
+      "cluster_unit": "the source call (10)",
+      "strata": "source call (10 strata)",
+      "seed": 20260903,
+      "n_replicates": 10000,
+      "ci_level": 0.9,
+      "weightings": ["natural-mixture (corpus)", "equal-call"],
+      "signed_as": "cell minus comparator, and cell minus twin, on the same 1,500 published segments, paired per segment"
+    },
+    "mandatory_slices": [
+      "the per-call table for all ten calls, corpus WER under both normalizers",
+      "natural-mixture and equal-call weightings side by side",
+      "the per-FIELD brief-term recall table with its reference-word counts",
+      "the call-specific versus shared-vocabulary split of the term mass",
+      "the insertion / deletion / substitution split and the hypothesis-to-reference length ratio",
+      "the utterance-duration decomposition",
+      "the brief's flight-tokenizer token distribution, and the twin's beside it"
+    ],
+    "renderer": "analysis.paired.render_markdown"
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "dev",
+    "planned_model_calls": 1508,
+    "planned_gpu_hours": 0.3,
+    "planned_speech_audio_seconds": 13000
+  },
+  "execution_plan_basis": {
+    "per_cell": "each of the two cells carries its own run id, its own exposure row and its own plan; the figures above are PER CELL",
+    "planned_model_calls": "1,500 rows x 1 contact + 8 canaries = 1,508; the registered exposure ceiling is 1,600 per cell.",
+    "planned_speech_audio_seconds": "12948.983 s for one pass, rounded up to 13000; the registered ceiling is 13500 per cell.",
+    "planned_gpu_hours": "0.30 planned, 0.50 registered per cell. Derived rather than guessed: the sealed tail-silence-2s comparator realized 0.1188 GPU-h for exactly this roster, this geometry and this audio path. The brief adds text tokens to a prompt whose cost is dominated by the live mmproj encode, so the realized figure should land near 0.15 h and the 0.50 ceiling carries better than a 3x margin.",
+    "paid_api_spend": 0,
+    "cumulative_metering": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are each exposure row's own calls / speech-audio-seconds / gpu-hours cells, and the plan budget is metered CUMULATIVELY across every attempt of a run id, so a recovery plan must cover prior durable spend as well as its own worst case."
+  },
+  "decision": {
+    "rule": "ADMITTED iff BOTH hold on the reported roster: (1) corpus WER is NON-INFERIOR -- the call-clustered CI90 UPPER bound on the delta (cell minus comparator) is <= +0.10 absolute points; AND (2) brief-term recall IMPROVES -- the call-clustered CI90 LOWER bound on the delta is > 0 against BOTH the sealed comparator AND the KU-E2c twin.",
+    "null": "NULL if either brief-term-recall lower bound includes 0. A NULL with a positive point estimate against the twin and a negative one against the comparator is reported as 'the form carried it', and the next cell is a supply-form question, not a content one.",
+    "harmful": "HARMFUL if the corpus-WER non-inferiority bound fails, with the failing guard named and the per-call table published either way.",
+    "non_inferiority_margin_provenance": "+0.10 absolute corpus-WER points, fixed here before any number exists. It is deliberately TIGHTER than the 0.25-point resolution the same-request null implies, so the guard can only ever refuse a cell, never admit one on noise.",
+    "power_disclosure": "The audit measured the brief-term denominator at 47 reference words over 10 clusters with 6 errors on them. Clause 2 is therefore, on this roster, a gate on six words, and no bootstrap over 10 call clusters produces a usable interval on it. This is stated in the rule rather than discovered in the verdict: a NULL here is the expected outcome and is not evidence that knowledge does not help this carrier.",
+    "claim_surface": "A dev number on a 1,500-row subset of this study's own dev split. NOT an alignment verdict, never compared to the published 9.79 or 12.3 as a difference, and no generalization to Earnings-21, to other carriers or to richer knowledge sources.",
+    "test_read": "NONE. Not proposed and not authorized on this fragment's authority.",
+    "not_authorized": "No second mechanism. No knob tuned on the test split. No fourth prompt. No few-shot. No post-processing of any hypothesis. No re-scoring of any sealed arm. No external source of any kind. No paper-scale-confirmatory profile, no manuscript, no submission, no Stage-3 activity.",
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "preconditions": [
+    "PROMPT FIT, on the flight tokenizer: scripts/e22_kc_e2_prompt_fit.py must measure both cells' rendered requests at -c 40960 -np 8 and satisfy slot_tokens >= 2 x worst_required. Not run here; it touches the server and is the flight agent's step.",
+    "TOKEN-MATCHED TWIN: the same script writes configs/knowledge/e22-brief-v1/pad-plan-v1.json, and KU-E2c's fragment then moves to the e22-metadata-brief-deranged-token-matched source with its evidence_brief_pad_plan pin. Until that lands, the twin is whitespace-shaped and no verdict may be drawn from it.",
+    "OWNER GO and one exposure row per cell, registered and committed before the first contact."
+  ],
+  "companion_run": {
+    "note": "A 4-row smoke gets its own fragment and its own run id when the flight agent prepares takeoff, for the reason configs/experiment/e22-dev-encoding-tail2s-v1.json records: contracts.gate_exposure requires exactly one pre-registered exposure row per run id whose split identity hash equals the plan's, and a smoke's rows have a different split identity hash and a much smaller budget."
+  }
+}
