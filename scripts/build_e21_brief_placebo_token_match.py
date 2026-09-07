@@ -35,8 +35,13 @@ WHAT IS WRITTEN
    and needs no tokenizer of its own.
 2. ``configs/baseline/e21-ku-e1c-brief-placebo.json`` -- repointed at the
    token-matched evidence source and at the plan above, by relpath and sha256.
-   KC-E1's own fragment is NOT touched, so the config hash the prompt-fit
-   receipt published for the arm still stands.
+   KC-E1's own baseline fragment is NOT touched, and the receipt proves that
+   with git rather than asserting it: the arm's fragment is re-diffed against
+   the prompt fit's own study commit. Its COMPOSED hash is reported beside the
+   one the fit published, because the two already differ for a reason that
+   predates this measurement -- ``configs/experiment/e21-kc-e1-brief-44-v1.json``
+   gained a reporting note at fa357a24, which moves both cells' composed hashes
+   and no cell's protocol.
 3. The receipt under ``--out-dir``: per-call token totals for both arms at both
    caps, the per-window request-text distribution of both arms after padding,
    and the residual the padding cannot reach -- the evidence-block HEADER, a
@@ -305,6 +310,29 @@ def main() -> int:
 
     fit = load_json(PROMPT_FIT)
     expected_template_sha256 = str(fit["geometry"]["chat_template_sha256"])
+    fit_study_commit = str(fit["study_commit"])
+    fit_config_hashes = {
+        str(cell["cell_id"]): str(cell["config_hash"]) for cell in fit["cells"]
+    }
+    # The arm's BASELINE FRAGMENT must be byte-identical to what the fit
+    # measured -- proved by git, not asserted in prose. Its COMPOSED hash is a
+    # different question: the experiment fragment both cells share gained a
+    # reporting note after the fit, which moves both composed hashes without
+    # touching either protocol. Both numbers are reported.
+    arm_fragment_relpath = "configs/baseline/%s.json" % next(
+        str(cell["baseline_fragment"])
+        for cell in cells
+        if str(cell["cell_id"]) == arm_cell_id
+    )
+    arm_fragment_changed = bool(
+        git("diff", "--name-only", fit_study_commit, "HEAD", "--", arm_fragment_relpath)
+    )
+    if arm_fragment_changed:
+        raise SystemExit(
+            "%s changed since the prompt fit measured it (%s); the twin can only be "
+            "matched to the arm the fit certified"
+            % (arm_fragment_relpath, fit_study_commit[:8])
+        )
 
     roster = load_json(ROSTER_RECEIPT)
     sample_ids = [str(call["sample_id"]) for call in roster["calls"]]
@@ -835,22 +863,42 @@ def main() -> int:
             arm_cell_id: {
                 "evidence_source": str(values_a["evidence_source"]),
                 "config_hash": arm_composed.config_hash,
-                "fragment_unchanged": True,
+                "config_hash_published_by_the_prompt_fit": fit_config_hashes.get(
+                    arm_cell_id
+                ),
+                "config_hash_unchanged_since_the_prompt_fit": (
+                    arm_composed.config_hash == fit_config_hashes.get(arm_cell_id)
+                ),
+                "baseline_fragment_relpath": arm_fragment_relpath,
+                "baseline_fragment_unchanged_since_the_prompt_fit": not arm_fragment_changed,
+                "why_the_composed_hash_can_differ": (
+                    "the two cells share configs/experiment/e21-kc-e1-brief-44-v1.json, "
+                    "whose mandatory_slices note was rewritten at fa357a24 to point at "
+                    "the prompt-fit receipt. That edit moves BOTH cells' composed "
+                    "hashes and neither cell's protocol; the arm's own baseline "
+                    "fragment is byte-identical to the one the fit measured, which is "
+                    "checked with git diff above rather than asserted"
+                ),
             },
             TWIN_CELL_ID: {
                 "evidence_source": TWIN_SOURCE,
                 "config_hash_before": twin_composed_before.config_hash,
                 "config_hash": twin_composed_after.config_hash,
+                "config_hash_published_by_the_prompt_fit": fit_config_hashes.get(
+                    TWIN_CELL_ID
+                ),
             },
         },
         "one_factor_check": {
             "differing_composed_keys": differing_after,
             "rule": (
                 "exactly ['evidence_pad_plan', 'evidence_source'] after the rewrite. "
-                "The pad-plan pin is the byte identity of the twin's own measurement; "
-                "it names no call content and changes nothing the arm renders, and "
-                "KC-E1's fragment is not touched, so the config hash the prompt-fit "
-                "receipt published for the arm still stands"
+                "The pad-plan pin is the byte identity of the twin's own measurement: "
+                "it names no call content, it changes nothing the arm renders, and it "
+                "exists so the two cells' briefs measure the same on this very "
+                "tokenizer. The arm's own baseline fragment is byte-identical to the "
+                "one the prompt fit measured, checked with git; a third differing key "
+                "would not be admitted"
             ),
         },
         "request_text": {
