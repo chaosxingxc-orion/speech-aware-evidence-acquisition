@@ -227,6 +227,37 @@ flight **stops and reports** if the measured rate projects past 3.2 GPU-h.
 The separately registered `SAEA-E21-TOOL-DIARIZATION-V1` (50 tool contacts, 145,000 audio seconds,
 2.0 GPU-h, **zero frozen-core contacts**) is not part of this budget and is not a KC-E1 cost.
 
+**2026-09-07 — the envelope is raised for the KC-E1 recovery, and the raise is headroom, not new
+exposure.** KC-E1's first attempt `attempt-20260907T142632Z-a388ef` was killed at 42 of 44 calls, with
+no seal and no score, when the host's low-memory watchdog took down the coordinator's serving wrapper
+(`.wslconfig memory=56GB` on a 63.4 GB host; fixed by the owner the same day at `memory=44GB` with
+gradual reclaim, plus the E7c host-memory instrumentation). That is an infrastructure failure, not a
+model, protocol or data one, and it consumed the ONE recovery re-registration this flight is allowed:
+a second failure stops the flight and the fix must be proven on a 4-row dry run first. Its spend is
+durable and counts — **1,520 calls, 134,821.4766875 speech-audio seconds, 1.4993 realized GPU hours**
+(the session monitor's wall clock over that attempt's own contact window, 5,397.478 s; 4,399.65 s
+active, 997.82 s parked, 1,499 requests, mean 74.30 W). The run-cumulative rule therefore raises
+KC-E1's own ceilings to prior durable spend plus its own worst case — **3,270 calls, 285,000
+speech-audio seconds, 3.1 GPU hours** — while KU-E1c's are untouched at 1,750 / 150,000 / 1.6, so the
+section 6 envelope for the two cells together becomes:
+
+| | v1 envelope | after this amendment |
+|---|---:|---:|
+| planned model calls | 3,500 | **5,020** (KC-E1 3,270 + KU-E1c 1,750) |
+| planned speech audio seconds | 300,000 | **435,000** (285,000 + 150,000) |
+| planned GPU hours | 3.2 | **4.7** (3.1 + 1.6) |
+| paid API spend | 0 | 0, unchanged and still in force |
+
+**Nothing else moves.** The population, the split identity `fcc1b0bc…d69e`, the composed config hash
+`3ac6d436…`, the protocol hash `da55a18d…`, the cap of 12, the arms, the one factor, the five manifest
+scorers, the pairing unit, the strata, the guards and the decision rule of §5 are all exactly as
+written above; the raise buys retry headroom for a re-flown pass and nothing else. It is not new
+exposure: all 44 calls are exposed many times over (the flight row's inherited-exposure cell lists the
+families), the recovery decodes the same windows with the same prompt, and **no byte of the dead
+attempt is read, scored or paired** — scoring runs once per COMPLETE manifest and that attempt has
+none. Recorded in `docs/exposure-ledger.md`: the dated recovery block at the head of the file and the
+raised ceiling cells on row `SAEA-E21-KC-E1-BRIEF-44-V1`.
+
 ## 7. Preconditions — both closed
 
 1. **`e21_participant_names` in D1 — CLOSED.** ✅
