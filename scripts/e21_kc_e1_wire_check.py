@@ -209,13 +209,19 @@ def main() -> int:
     study_commit = git("rev-parse", "HEAD")
     log("clean tree at %s" % study_commit[:8])
 
+    # ``pgrep -x`` matches the process NAME, not the command line. ``-f`` was
+    # tried first and is wrong here: it matches any shell, editor or pipeline
+    # whose arguments merely mention llama-server, which made this check refuse
+    # to run because of a transient sibling that was never a server. The
+    # matched command lines are printed when it does fire, so a future refusal
+    # is diagnosable instead of a bare pid.
     resident = subprocess.run(
-        ["pgrep", "-f", "llama-server"], capture_output=True, text=True
+        ["pgrep", "-ax", "llama-server"], capture_output=True, text=True
     )
     if resident.returncode == 0 and resident.stdout.strip():
         raise SystemExit(
-            "a llama-server is resident (%s); a zero-socket wire check refuses to "
-            "run beside one" % resident.stdout.split()[0]
+            "a llama-server is resident; a zero-socket wire check refuses to run "
+            "beside one:\n" + resident.stdout
         )
 
     experiment_doc = load_json(REPO / "configs" / "experiment" / f"{args.experiment}.json")
