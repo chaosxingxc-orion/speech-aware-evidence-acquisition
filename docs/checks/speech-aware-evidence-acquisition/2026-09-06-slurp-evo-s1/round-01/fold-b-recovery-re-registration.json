@@ -1,0 +1,100 @@
+{
+  "aborted_attempt": {
+    "attempt_id": "attempt-r1-a",
+    "cause": "The coordinator stopped the flight engineer's process while the assembly cell's llama-server session was up. This is an OPERATOR event, not a fault of the runtime, the model, the GPU or the protocol: no CUDA illegal memory access, no out-of-memory, no budget exhaustion, no gate refusal. The server log's last line is 'srv update_slots: all slots are idle', so the server had finished loading and was waiting; the first request was never sent.",
+    "durable_spend": {
+      "audio_seconds": 0.0,
+      "calls": 0,
+      "gpu_seconds": 0.0
+    },
+    "evidence": {
+      "artifact_location": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-EVO-S1-FOLD-B-V2/attempt-r1-a",
+      "attempt_file_sha256_at_abort": "8a4286e37c7b104688f9057e3195c4361fe0599389bbafeb1fd29c52ff12a866",
+      "files_absent": [
+        "*.outputs.jsonl",
+        "*.trace.jsonl",
+        "*.trace-manifest.json",
+        "*.phases.json",
+        "*.run-manifest.json",
+        "*.scores.json",
+        "*.session-stop-receipt.json"
+      ],
+      "files_present": [
+        "SAEA-SLURP-EVO-S1-FOLD-B-V2-attempt-r1-a.server.log",
+        "SAEA-SLURP-EVO-S1-FOLD-B-V2-attempt-r1-a.session-receipt.json"
+      ],
+      "gpu_residency_bound_seconds": 240,
+      "gpu_residency_note": "Bounded, not measured: the server session receipt is stamped 01:40:13 UTC and the coordinator's stop landed roughly four minutes later. No resource sampler ran to completion, so no gpu_seconds figure was ever persisted for this attempt; 240 s (0.067 GPU-h) is the upper bound this receipt claims.",
+      "server_log_sha256": "d7632d8632032537f6473be67312a7d2ef0088d6ba6bef32a74e2e85992a91c4",
+      "session_receipt_sha256": "d9f59141835da4073b8a96a1ad476832622706e625959a3569a494ef5c0b6b99"
+    },
+    "opened_at": "2026-09-07T01:40:13.902312+00:00",
+    "terminal_state": "ABORTED"
+  },
+  "budget_arithmetic": {
+    "covered": true,
+    "covered_note": "The registered ceiling covers prior durable spend plus the successor's own worst case with zero call headroom and 0.41 s of audio headroom -- which is the arithmetic the row was written at: two passes of a 1,080-row fold whose single pass is 3,154.797375 s. The aborted attempt costs nothing here BECAUSE it sent nothing; had it spent, the successor would have needed a raised plan or a shortened roster, and this receipt would say so.",
+    "cumulative_worst_case": {
+      "audio_seconds": 6309.594749999986,
+      "calls": 2160
+    },
+    "enforcement": "core.model.adapter.FrozenCoreAdapter re-reads sibling actual usage from core.attempts on EVERY request, so the plan's ceiling is run-cumulative across attempt-r1-i, attempt-r1-a and attempt-r1-a2 rather than per attempt.",
+    "headroom": {
+      "audio_seconds": 0.405250000014,
+      "calls": 0
+    },
+    "planned_gpu_hours": 0.48,
+    "planned_model_calls": 2160,
+    "planned_speech_audio_seconds": 6310,
+    "prior_durable_spend": {
+      "attempt-r1-a": {
+        "audio_seconds": 0.0,
+        "calls": 0
+      },
+      "attempt-r1-i": {
+        "audio_seconds": 3154.797374999993,
+        "calls": 1080
+      },
+      "total": {
+        "audio_seconds": 3154.797374999993,
+        "calls": 1080
+      }
+    },
+    "successor_worst_case": {
+      "audio_seconds": 3154.797374999993,
+      "calls": 1080
+    }
+  },
+  "cell_id": "slurp-evo-s1-r1-foldB-assembly",
+  "experiment": "slurp-evo-s1-fold-b-r01",
+  "invariants_held": [
+    "one recovery re-registration per run id, and this is the first and only one",
+    "the tree is clean and committed before the successor's first contact",
+    "no roster change, no scorer change, no protocol change, no gold contact",
+    "the row stays consumed = no"
+  ],
+  "permitted_recoveries_per_run_id": 1,
+  "preregistration": "docs/readiness/2026-09-06-slurp-evo-s1-slot-schema-evolution-v1-preregistration.md",
+  "recoveries_used_by_this_registration": 1,
+  "registered_at": "2026-09-07",
+  "registered_before_first_contact": true,
+  "round": 1,
+  "run_id": "SAEA-SLURP-EVO-S1-FOLD-B-V2",
+  "schema": "saea-recovery-re-registration-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "successor_attempt": {
+    "attempt_id": "attempt-r1-a2",
+    "changed": [
+      "attempt_id only"
+    ],
+    "how_it_is_bound": "Passed on the command line as --attempt-id. The experiment fragment configs/experiment/slurp-evo-s1-fold-b-r01.json is NOT edited: its cells array is merged whole into the composed config, so rewriting the assembly cell's attempt_id would move config_hash 846c742b... for BOTH cells and the incumbent arm already flown under that hash could no longer be compared to the assembly by the artifact alone. The config keeps the identity; the attempt id is a run-time key and travels on the command line.",
+    "no_np_reduction_note": "The preregistration's recovery recipe reduces -np and sets GGML_CUDA_DISABLE_GRAPHS=1 for a CUDA illegal-memory-access. This abort was not that, and the incumbent arm of this very run flew 1,080 contacts clean at -np 4 forty minutes earlier, so the geometry is left exactly as registered. Changing it here would make the two fold-B arms differ by more than the artifact under test.",
+    "same_as_aborted_attempt": [
+      "model_fragment q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "baseline_fragment evolved-slot-schema-58feaf936194c3d9-fold-b",
+      "dataset_fragment slurp-speech-native-evo-fold-b-1080",
+      "serving geometry -c 65536 -np 4 (16,384 slot tokens), max_tokens 64",
+      "execution_plan (unchanged: 2,160 calls, 6,310 audio seconds, 0.48 GPU-h)"
+    ]
+  }
+}
