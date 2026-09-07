@@ -5,8 +5,9 @@ draft's §1, §2, §5 and §9 stand unchanged and are not restated here except w
 document replaces its §3 (pairing), §4 (power), §7 (preconditions) and §8 (checklist), which is what
 the owner's 2026-09-06 rulings and the three model-free rows landed since have changed.
 
-**Status: PREREGISTERED, NOT AUTHORIZED TO FLY.** One precondition of v1 is now closed and one is
-still open; §7 says which. Nothing here is an authorization.
+**Status: PREREGISTERED, NOT AUTHORIZED TO FLY.** Both preconditions of v1 are now closed and the
+wire check is done; §7 and §8 say what was measured. The cell still needs its own exposure row and
+the owner's GO, and nothing here is an authorization.
 
 Experiment fragment `configs/experiment/e21-kc-e1-brief-44-v1.json`; arms
 `configs/baseline/e21-kc-e1-brief-whole-prompt.json` (KC-E1) and
@@ -172,7 +173,7 @@ every stratum table of §4 under both weightings; throughput and token totals ag
 |---|---:|---|
 | planned model calls | 3,500 | 1,593 windows × 2 cells = 3,186, plus 314 retry headroom; the comparator realized exactly 1,593 |
 | planned speech audio seconds | 300,000 | 141,348.532 realized per pass × 2 = 282,697, rounded up |
-| planned GPU hours | 3.2 | the comparator realized 0.973 GPU-h for one pass at this geometry; two passes is 1.95 before the brief, and the brief roughly triples the prompt (comparator mean 1,215 prompt tokens per window; the brief adds a median 969 and a maximum 2,565 whitespace tokens) |
+| planned GPU hours | 3.2 | the comparator realized 0.973 GPU-h for one pass at this geometry; two passes is 1.95 before the brief. MEASURED since (§7 item 2): against the comparator's mean 1,215 prompt tokens per window, the CAPPED brief's text envelope is 454 to 855 flight tokens (median 673) where the comparator's was a constant 62, so the prefill roughly doubles rather than triples and 3.2 keeps its margin |
 | paid API spend | 0 | unchanged and still in force |
 
 Budgets are **run-cumulative across every attempt** of the run id. Re-measured on the preflight; the
@@ -181,7 +182,7 @@ flight **stops and reports** if the measured rate projects past 3.2 GPU-h.
 The separately registered `SAEA-E21-TOOL-DIARIZATION-V1` (50 tool contacts, 145,000 audio seconds,
 2.0 GPU-h, **zero frozen-core contacts**) is not part of this budget and is not a KC-E1 cost.
 
-## 7. Preconditions — one closed, one open
+## 7. Preconditions — both closed
 
 1. **`e21_participant_names` in D1 — CLOSED.** ✅
    The layer is registered through an additive, hash-pinned D1 **evidence** supplement,
@@ -211,35 +212,79 @@ The separately registered `SAEA-E21-TOOL-DIARIZATION-V1` (50 tool contacts, 145,
    `tests/contract/test_multi_file_evidence_identity.py` tampers the roster half while leaving the
    document half clean — the case last-wins let through.
 
-2. **Prompt fit on the flight tokenizer — STILL OPEN.** ❌
-   The brief runs **263 to 2,565 whitespace tokens** (median 969) against a 6,144-token slot whose
-   certified worst request was 2,258 tokens; whitespace tokens are a lower bound on model tokens. The
-   preflight must tokenize every call's brief with the FLIGHT tokenizer, report the per-call
-   distribution beside the whitespace counts in the E5 provenance receipt
-   (`docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-pre-meeting-brief-provenance/`), and
-   the worst-case total request. If it does not fit with the study's usual margin, set
-   `brief_max_entries_per_class`, and **set it to the identical value in BOTH fragments** — the twin
-   stops being a twin the moment the two cells cap differently. The value goes into both fragments and
-   into the flight receipt.
+2. **Prompt fit on the flight tokenizer — CLOSED, and it cost the whole brief.** ✅
+   Exposure row `SAEA-E21-KC-E1-PROMPT-FIT-V1`; receipt
+   `docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-kc-e1-brief-44-v1/prompt-fit/`;
+   measured by `scripts/e21_kc_e1_prompt_fit.py` through `/apply-template` + `/tokenize` at zero
+   generated tokens, on all 1,593 windows of both cells, with the audio replaced by the resident
+   server's own opaque media marker.
 
-   **Do not fly with the roster half disabled.** Dropping it changes the cell from "the pre-meeting
-   brief" to "a keyword list", which is a different question and already has an arm
-   (`conec-contexts`).
+   **The whole brief does not fit, and not narrowly.** KC-E1's uncapped text envelope runs 669 to
+   **6,072** flight tokens (median 2,377); with 1,170 speech tokens for a 90-second window, the
+   1,024-token completion ceiling and 2 special tokens the worst request is **8,268 against a
+   6,144-token slot**. It fails the study's `slot_tokens >= 2 x worst_required` margin rule by a
+   factor of 2.7 and it fails the STRICT fit by 2,124 tokens. The E5 receipt's whitespace maximum of
+   2,565 understated the real envelope by **2.37x**, which is exactly why that receipt refused to
+   guess.
+
+   **`brief_max_entries_per_class` is 12 in BOTH fragments.** 12 is the LARGEST value on the
+   preregistered grid whose worst request still satisfies the margin rule: worst required **3,051**,
+   margin 3,093, factor **2.014**. The boundary is measured from both sides — 16 was rendered too and
+   refused: its worst request needs 3,152 against the 3,072 the rule allows, so it fits strictly
+   and fails the margin. Capped, KC-E1's
+   envelope is 454 / 673 / 855 (min / median / max) and KU-E1c's is 412 / 518 / 599.
+
+   "The smallest cap that fits" is read as the smallest INTERVENTION. Taken literally it is
+   degenerate — the fit is monotone in the cap, so 1 always fits — and the receipt says so in writing.
+
+   **The roster half is NOT disabled, and the cap's cost is published.** Model-free `cap-impact.json`,
+   over the real 44: the roster half keeps **661 of 705** entries and the participant class — the one
+   the PERSON hypothesis rests on — keeps **386 of 426** across 13 truncated calls. What the slot
+   removed is the document half's residual-term class, 528 of 34,129 on all 44 calls, which this
+   document already calls a recall aid rather than an inventory. The cell is still "the pre-meeting
+   brief" and not "a keyword list".
+
+   **One thing the flight must carry rather than assume: the twin is whitespace-matched, not
+   token-matched.** KU-E1c's per-line whitespace counts equal KC-E1's on every call at every cap, as
+   `core.class_lists.placebo_of` guarantees. On the FLIGHT tokenizer they do not: at cap 12 the
+   placebo is 42 to 256 tokens **shorter** (median 161), because placeholder nouns cost fewer tokens
+   than proper nouns and bracketed normalized forms. The cap shrinks that gap sevenfold from the
+   uncapped median of 1,154; it does not close it. A verdict that reads the arm-versus-twin contrast
+   as a pure content effect must say that the arm also carried a median 161 more prompt tokens.
 
 ## 8. The flight agent's checklist, in order
 
 1. **Diarization pass** — `SAEA-E21-TOOL-DIARIZATION-V1`, if it is to fly before this cell. It is
    independent of everything below and shares no GPU window with it: run it, or explicitly defer it
    under §4's read-time clause and say so in the flight receipt. Zero frozen-core contacts either way.
-2. **Prompt fit** — precondition 2. Tokenize all 44 briefs and both cells' full requests on the flight
-   tokenizer; set `brief_max_entries_per_class` identically in both fragments if needed; land the
-   measurement as a receipt. **The flight does not take off until this is a committed number.**
-3. **Wire check** — a 4-row dry run through the committed launcher path on CONSTRUCTION calls only.
-   Confirm: two `[evidence …]` blocks arrive in roster-then-document order; `evidence_provenance`
-   carries both relpaths; the derivation registry accepts both records; the gate's evidence rail sees
-   **both** relpaths for each sample and routes them to `e21_participant_names` and `e21_contexts`
-   respectively (this is what precondition 1's fix makes observable — check it explicitly); and the
-   placebo cell's requests match the arm cell's token counts line for line.
+2. **Prompt fit** — precondition 2. **DONE** (2026-09-07, exposure row
+   `SAEA-E21-KC-E1-PROMPT-FIT-V1`, receipt under
+   `docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-kc-e1-brief-44-v1/prompt-fit/`).
+   `brief_max_entries_per_class` is **12** in both fragments; §7 item 2 carries the numbers and what
+   the cap costs.
+3. **Wire check** — **DONE** (2026-09-07, receipt under
+   `docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-kc-e1-brief-44-v1/wire-check/`,
+   `scripts/e21_kc_e1_wire_check.py`). `saea-driver smoke --dry-run` for BOTH cells on a clean
+   committed tree over the four shortest kb-construction calls, 61 windows each, zero sockets and
+   zero model contacts. Confirmed: the two `[evidence …]` blocks arrive in roster-then-document
+   order and the system message EQUALS the two blocks joined to the instruction (asserted on all
+   6,460 rendered requests of the prompt fit, which is where the real transport can be driven —
+   `LlamaServerTransport` re-checks session liveness on every send, so a contact-free check cannot
+   drive it); `evidence_provenance` carries both relpaths, each routed by a REAL `FrozenCoreGate` to
+   `e21_participant_names` and `e21_contexts` (the `_NoOpGate` a dry run uses skips that rail, so it
+   is driven separately); the derivation registry accepts both records and every rendered half
+   re-hashes to its transform's output at cap 12; the OBS tiling cut the roster receipt's own window
+   count on every call with the stitch chains covering each contact exactly once; and the seal half
+   verified with all five declared scorers producing aggregates. The placebo's per-LINE whitespace
+   match is asserted by measurement in the prompt-fit receipt; its flight-token difference is
+   reported there and is NOT zero (§7 item 2).
+
+   **One pre-existing condition surfaced and left alone:** `fixed-legal-context` predates the
+   2026-08-15 legality doctrine's either-field rule, so every run of it — this dry run and the flight
+   alike — records provenance tier `UNVERIFIED` in the manifest's `legality` block, with a
+   GRANDFATHERED declaration warning. That is a property of the arm, not of this cell, and closing it
+   is not this flight's business; the flight receipt should carry the warning rather than be
+   surprised by it.
 4. **Register the exposure row** `SAEA-E21-KC-E1-BRIEF-44-V1` before the first contact — split
    identity `fcc1b0bc…d69e`, both cells, the §6 budget, the inherited exposure of these 44 calls — and
    **commit it** before takeoff.
@@ -259,7 +304,14 @@ The separately registered `SAEA-E21-TOOL-DIARIZATION-V1` (50 tool contacts, 145,
 
 ## 9. What this document is not
 
-It is not an authorization to fly. Precondition 2 is open, the exposure row is unwritten, and the
-owner's GO for this cell is a separate act. It fixes the measurement so that when the cell does fly,
-the unit, the estimator, the strata, the guards and the failure modes were all chosen before any
-result existed.
+It is not an authorization to fly. Both preconditions are now closed and the wire check has passed,
+but the flight's own exposure row `SAEA-E21-KC-E1-BRIEF-44-V1` is unwritten and the owner's GO for
+this cell is a separate act. It fixes the measurement so that when the cell does fly, the unit, the
+estimator, the strata, the guards and the failure modes were all chosen before any result existed.
+
+**What the flight agent inherits that this document did not originally anticipate.** The cell it will
+fly is the brief capped at 12 entries per class, not the whole brief — the 6,144-token slot made that
+choice, not a judgment about what the brief should contain. The margin at 12 is 2.014 against a rule
+of 2.0, so there is no room to enlarge the brief at this geometry; enlarging it would need a larger
+slot, which is a serving-geometry decision this document does not make and this preflight did not
+take.

@@ -97,7 +97,7 @@
     "mandatory_slices": [
       "per entity class, with reference-word counts, beside ConEC Table 2 rows 1 / 5 / 8",
       "all 44, the construction 34 and the evaluation 10, reported apart",
-      "the brief's token distribution on the FLIGHT tokenizer, per call, beside the whitespace counts in docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-pre-meeting-brief-provenance/",
+      "the brief's token distribution on the FLIGHT tokenizer, per call, beside the whitespace counts -- ALREADY MEASURED before the flight and carried by docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-kc-e1-brief-44-v1/prompt-fit/prompt-fit.json (both counts, per call, at cap 12 and uncapped); the flight reports it and re-derives nothing",
       "by sector (9 levels) and sample rate (5 levels), natural mixture and equal-stratum weighting",
       "throughput: windows per minute, GPU seconds, wall, realized realtime factor, prompt and completion tokens against the comparator's 1,935,965 / 439,532"
     ]

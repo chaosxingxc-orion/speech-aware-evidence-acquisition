@@ -1,0 +1,477 @@
+{
+  "cells": {
+    "E21-kc-e1-brief-whole-prompt": {
+      "arm": "fixed-legal-context",
+      "artifact_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-KC-E1-WIRE-CHECK-V1/e21-kc-e1-brief-whole-prompt/attempt-20260907T065624Z-29b327",
+      "artifact_sha256": {
+        "outputs.jsonl": "7df38f466a1be2b1c5ba2161cbd4d4096cfa37ee688680563eb44e1eed0c7af9",
+        "run-manifest.json": "2f4b6a44ed49b8d3f6d1e77fefe37f4c4296e39169fa61dc7aa81c62a7729183",
+        "scores.json": "7b04bdde2a0c2a457b98139f930e88f3d4c28e034361e11700e83331eab61e13",
+        "trace.jsonl": "b6953e18b23e896041c6d4ccdb8639057812c6b35588e210e9cfb6bb4f24fbb0"
+      },
+      "attempt_id": "attempt-20260907T065624Z-29b327",
+      "attempt_state": "FINALIZED",
+      "baseline_fragment": "e21-kc-e1-brief-whole-prompt",
+      "brief_max_entries_per_class": 12,
+      "cell_id": "E21-kc-e1-brief-whole-prompt",
+      "config_hash": "1b3f56559eeb593bbc34e528a038da7e02b1f36d2f068b583bb4f43b81325ee2",
+      "driver_run_id": "SAEA-E21-KC-E1-WIRE-CHECK-V1-e21-kc-e1-brief-whole-prompt-20260907T065621Z",
+      "evidence_rail_half": {
+        "calls": 4,
+        "expected_routing": [
+          "e21_participant_names",
+          "e21_contexts"
+        ],
+        "relpaths_per_call": 2,
+        "routing": {
+          "4384683": [
+            "e21_participant_names",
+            "e21_contexts"
+          ],
+          "4386541": [
+            "e21_participant_names",
+            "e21_contexts"
+          ],
+          "4387332": [
+            "e21_participant_names",
+            "e21_contexts"
+          ],
+          "4392809": [
+            "e21_participant_names",
+            "e21_contexts"
+          ]
+        },
+        "verify_evidence_content_identity": "PASS",
+        "verify_evidence_identity": "PASS",
+        "why_this_is_here": "smoke --dry-run runs under core.driver.smoke._NoOpGate, which accepts any plan and never touches the D1 evidence rail, so the rail is driven here with a REAL FrozenCoreGate built from this cell's own composed config. This is the property precondition 1 of the preregistration created and the accumulate-not-assign driver fix made observable: BOTH halves are checked, against two different D1 layers"
+      },
+      "evidence_source": "conec-class-lists",
+      "launcher_warnings": [
+        "WARNING: GRANDFATHERED legality declaration: evidence-bearing arm 'fixed-legal-context' does not declare ['span_source', 'reference_source', 'legality_tier'] (docs/readiness/2026-08-15-legality-doctrine.md's either-field rule); this run's provenance tier is UNVERIFIED -- see the run manifest's 'legality' block"
+      ],
+      "legality_block": {
+        "declaration_warning": "GRANDFATHERED legality declaration: evidence-bearing arm 'fixed-legal-context' does not declare ['span_source', 'reference_source', 'legality_tier'] (docs/readiness/2026-08-15-legality-doctrine.md's either-field rule); this run's provenance tier is UNVERIFIED -- see the run manifest's 'legality' block",
+        "evidence_materialization_id": null,
+        "legality_tier": null,
+        "oracle_lineage_materialization": false,
+        "reference_source": null,
+        "span_source": null
+      },
+      "protocol_hash": "90bd0af5ebb8ec8ff03dd66d9c5e819fc29775e8b33e29cca99c3cbfe612300f",
+      "request_half": {
+        "arm_allowlist": [
+          "audio_seconds",
+          "carrier_lock_key",
+          "decoding_params",
+          "evidence_provenance",
+          "history",
+          "media_relpath",
+          "request_id",
+          "sample_id",
+          "sample_rate_hz",
+          "speech_ref",
+          "supplied_evidence",
+          "task_instruction"
+        ],
+        "both_relpaths_in_evidence_provenance": true,
+        "calls": 4,
+        "contacts": 61,
+        "cost_records": 61,
+        "every_half_rehashes_to_its_transform_output": true,
+        "every_window_names_this_runs_own_slice": true,
+        "evidence_ids": [
+          "conec-class-lists-roster/4386541",
+          "conec-class-lists-document/4386541"
+        ],
+        "org_records_report_two_evidence_items": true,
+        "payload_key_set_equals_the_arm_allowlist": true,
+        "provenance_records_the_committed_cap": true,
+        "stitch_chains_cover_every_contact_exactly_once": true,
+        "stitch_records": 4,
+        "supply_records_name_the_sources_own_evidence_ids": true,
+        "two_evidence_items_roster_then_document": true,
+        "windows_per_call": {
+          "4384683": 17,
+          "4386541": 13,
+          "4387332": 15,
+          "4392809": 16
+        },
+        "windows_per_call_matches_the_roster_receipt": true
+      },
+      "seal_half": {
+        "all_declared_scorers_produced_an_aggregate": true,
+        "declared_scorers": [
+          "asr-wer-whisper",
+          "conec-entity-wer-official",
+          "numeric-value-accuracy-v1",
+          "semantic-high-impact-error-rate-v1",
+          "cost"
+        ],
+        "manifest_scorers": [
+          "asr-wer-whisper",
+          "conec-entity-wer-official",
+          "numeric-value-accuracy-v1",
+          "semantic-high-impact-error-rate-v1",
+          "cost"
+        ],
+        "manifest_split": "e21-kc-e1-wire-check-4-sample",
+        "manifest_split_count": 4,
+        "manifest_status": "COMPLETED",
+        "manifest_study_commit": "baa36d9f7173214a2af0b1c8c7dcbbd2d762c691",
+        "manifest_study_repo_dirt": [],
+        "scorer_aggregate_keys": {
+          "asr-wer-whisper": [
+            "corpus_wer",
+            "deletions",
+            "insertions",
+            "normalizer",
+            "reference_words",
+            "samples",
+            "scorer_version",
+            "substitutions"
+          ],
+          "conec-entity-wer-official": [
+            "by_entity_type",
+            "corpus_wer",
+            "definition_source",
+            "implementation",
+            "insertions_attributed_to_entities",
+            "normalizer",
+            "official_tool",
+            "official_tool_run",
+            "paper_source",
+            "reference_words",
+            "samples",
+            "scorer_version",
+            "unlabelled_reference_words"
+          ],
+          "cost": [
+            "admitted_evidence_bytes",
+            "audio_seconds_used",
+            "calls_used",
+            "completion_tokens_total",
+            "cost_unavailable_reason",
+            "cpu_seconds",
+            "failed_attempt_audio_seconds",
+            "failed_attempt_calls",
+            "failed_attempt_cost_reason",
+            "gate_setup_seconds",
+            "gpu_sampling_reason",
+            "gpu_seconds",
+            "latency_seconds_total",
+            "peak_vram_mib",
+            "prompt_tokens_total",
+            "request_gpu_sample_count",
+            "request_gpu_samples",
+            "request_gpu_utilization_median_pct",
+            "request_gpu_utilization_p10_pct",
+            "saturated_sample_ids",
+            "saturated_slice_count",
+            "server_slot_probe_failure_count",
+            "server_slot_sample_count",
+            "server_slot_sampling_configured",
+            "server_slot_sampling_reason",
+            "skipped_sample_ids",
+            "skipped_slice_count",
+            "supplied_evidence_bytes",
+            "tool_calls",
+            "umbrella_lock_sha256"
+          ],
+          "numeric-value-accuracy-v1": [
+            "accuracy",
+            "by_kind",
+            "expected_numeric_words",
+            "hypothesis_numeric_words",
+            "hypothesis_words",
+            "matched_numeric_words",
+            "normalizer",
+            "reference_words",
+            "samples",
+            "scorer_version",
+            "spurious_numeric_words"
+          ],
+          "semantic-high-impact-error-rate-v1": [
+            "high_impact_error_rate",
+            "high_impact_insertions",
+            "high_impact_reference_words",
+            "insertions_by_level",
+            "normalizer",
+            "reference_words",
+            "reference_words_by_level",
+            "reference_words_by_rule",
+            "samples",
+            "scorer_version",
+            "taxonomy_id",
+            "unclassified_reference_words"
+          ]
+        },
+        "sealed_output_rows": 4,
+        "verify_bundle": "PASS"
+      },
+      "smoke_run_id": "SAEA-E21-KC-E1-WIRE-CHECK-V1-e21-kc-e1-brief-whole-prompt-20260907T065621Z"
+    },
+    "E21-ku-e1c-brief-placebo": {
+      "arm": "fixed-legal-context",
+      "artifact_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-KC-E1-WIRE-CHECK-V1/e21-ku-e1c-brief-placebo/attempt-20260907T065707Z-1d00e3",
+      "artifact_sha256": {
+        "outputs.jsonl": "7777211a060bfcaabca1f98a7cb9b4bebe4b95ba9150dbe9f1ae4ec15fe70d5a",
+        "run-manifest.json": "fbcaa4364e54fc24242e085c3489f52d886ee77db5b6c232835ab94570677ba7",
+        "scores.json": "117af12e413737b7b226b6ddde17e0ccd747cb0163944431ad0de901e41ca2b2",
+        "trace.jsonl": "4cfed0994927dc0053ff4c78af272f173623ecbf69db9870f7003b116ba939ec"
+      },
+      "attempt_id": "attempt-20260907T065707Z-1d00e3",
+      "attempt_state": "FINALIZED",
+      "baseline_fragment": "e21-ku-e1c-brief-placebo",
+      "brief_max_entries_per_class": 12,
+      "cell_id": "E21-ku-e1c-brief-placebo",
+      "config_hash": "64e675a820f6d55cdf48cd501d819dccc5c8eca8278caee22a41ed5f284cfbfb",
+      "driver_run_id": "SAEA-E21-KC-E1-WIRE-CHECK-V1-e21-ku-e1c-brief-placebo-20260907T065621Z",
+      "evidence_rail_half": {
+        "calls": 4,
+        "expected_routing": [
+          "e21_participant_names",
+          "e21_contexts"
+        ],
+        "relpaths_per_call": 2,
+        "routing": {
+          "4384683": [
+            "e21_participant_names",
+            "e21_contexts"
+          ],
+          "4386541": [
+            "e21_participant_names",
+            "e21_contexts"
+          ],
+          "4387332": [
+            "e21_participant_names",
+            "e21_contexts"
+          ],
+          "4392809": [
+            "e21_participant_names",
+            "e21_contexts"
+          ]
+        },
+        "verify_evidence_content_identity": "PASS",
+        "verify_evidence_identity": "PASS",
+        "why_this_is_here": "smoke --dry-run runs under core.driver.smoke._NoOpGate, which accepts any plan and never touches the D1 evidence rail, so the rail is driven here with a REAL FrozenCoreGate built from this cell's own composed config. This is the property precondition 1 of the preregistration created and the accumulate-not-assign driver fix made observable: BOTH halves are checked, against two different D1 layers"
+      },
+      "evidence_source": "conec-class-lists-placebo",
+      "launcher_warnings": [
+        "WARNING: GRANDFATHERED legality declaration: evidence-bearing arm 'fixed-legal-context' does not declare ['span_source', 'reference_source', 'legality_tier'] (docs/readiness/2026-08-15-legality-doctrine.md's either-field rule); this run's provenance tier is UNVERIFIED -- see the run manifest's 'legality' block"
+      ],
+      "legality_block": {
+        "declaration_warning": "GRANDFATHERED legality declaration: evidence-bearing arm 'fixed-legal-context' does not declare ['span_source', 'reference_source', 'legality_tier'] (docs/readiness/2026-08-15-legality-doctrine.md's either-field rule); this run's provenance tier is UNVERIFIED -- see the run manifest's 'legality' block",
+        "evidence_materialization_id": null,
+        "legality_tier": null,
+        "oracle_lineage_materialization": false,
+        "reference_source": null,
+        "span_source": null
+      },
+      "protocol_hash": "69334b8f35ce31357ab27a9e42cf7d5f2275be483e048035a4bc158b64b6fc88",
+      "request_half": {
+        "arm_allowlist": [
+          "audio_seconds",
+          "carrier_lock_key",
+          "decoding_params",
+          "evidence_provenance",
+          "history",
+          "media_relpath",
+          "request_id",
+          "sample_id",
+          "sample_rate_hz",
+          "speech_ref",
+          "supplied_evidence",
+          "task_instruction"
+        ],
+        "both_relpaths_in_evidence_provenance": true,
+        "calls": 4,
+        "contacts": 61,
+        "cost_records": 61,
+        "every_half_rehashes_to_its_transform_output": true,
+        "every_window_names_this_runs_own_slice": true,
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo/4386541",
+          "conec-class-lists-document-placebo/4386541"
+        ],
+        "org_records_report_two_evidence_items": true,
+        "payload_key_set_equals_the_arm_allowlist": true,
+        "provenance_records_the_committed_cap": true,
+        "stitch_chains_cover_every_contact_exactly_once": true,
+        "stitch_records": 4,
+        "supply_records_name_the_sources_own_evidence_ids": true,
+        "two_evidence_items_roster_then_document": true,
+        "windows_per_call": {
+          "4384683": 17,
+          "4386541": 13,
+          "4387332": 15,
+          "4392809": 16
+        },
+        "windows_per_call_matches_the_roster_receipt": true
+      },
+      "seal_half": {
+        "all_declared_scorers_produced_an_aggregate": true,
+        "declared_scorers": [
+          "asr-wer-whisper",
+          "conec-entity-wer-official",
+          "numeric-value-accuracy-v1",
+          "semantic-high-impact-error-rate-v1",
+          "cost"
+        ],
+        "manifest_scorers": [
+          "asr-wer-whisper",
+          "conec-entity-wer-official",
+          "numeric-value-accuracy-v1",
+          "semantic-high-impact-error-rate-v1",
+          "cost"
+        ],
+        "manifest_split": "e21-kc-e1-wire-check-4-sample",
+        "manifest_split_count": 4,
+        "manifest_status": "COMPLETED",
+        "manifest_study_commit": "baa36d9f7173214a2af0b1c8c7dcbbd2d762c691",
+        "manifest_study_repo_dirt": [],
+        "scorer_aggregate_keys": {
+          "asr-wer-whisper": [
+            "corpus_wer",
+            "deletions",
+            "insertions",
+            "normalizer",
+            "reference_words",
+            "samples",
+            "scorer_version",
+            "substitutions"
+          ],
+          "conec-entity-wer-official": [
+            "by_entity_type",
+            "corpus_wer",
+            "definition_source",
+            "implementation",
+            "insertions_attributed_to_entities",
+            "normalizer",
+            "official_tool",
+            "official_tool_run",
+            "paper_source",
+            "reference_words",
+            "samples",
+            "scorer_version",
+            "unlabelled_reference_words"
+          ],
+          "cost": [
+            "admitted_evidence_bytes",
+            "audio_seconds_used",
+            "calls_used",
+            "completion_tokens_total",
+            "cost_unavailable_reason",
+            "cpu_seconds",
+            "failed_attempt_audio_seconds",
+            "failed_attempt_calls",
+            "failed_attempt_cost_reason",
+            "gate_setup_seconds",
+            "gpu_sampling_reason",
+            "gpu_seconds",
+            "latency_seconds_total",
+            "peak_vram_mib",
+            "prompt_tokens_total",
+            "request_gpu_sample_count",
+            "request_gpu_samples",
+            "request_gpu_utilization_median_pct",
+            "request_gpu_utilization_p10_pct",
+            "saturated_sample_ids",
+            "saturated_slice_count",
+            "server_slot_probe_failure_count",
+            "server_slot_sample_count",
+            "server_slot_sampling_configured",
+            "server_slot_sampling_reason",
+            "skipped_sample_ids",
+            "skipped_slice_count",
+            "supplied_evidence_bytes",
+            "tool_calls",
+            "umbrella_lock_sha256"
+          ],
+          "numeric-value-accuracy-v1": [
+            "accuracy",
+            "by_kind",
+            "expected_numeric_words",
+            "hypothesis_numeric_words",
+            "hypothesis_words",
+            "matched_numeric_words",
+            "normalizer",
+            "reference_words",
+            "samples",
+            "scorer_version",
+            "spurious_numeric_words"
+          ],
+          "semantic-high-impact-error-rate-v1": [
+            "high_impact_error_rate",
+            "high_impact_insertions",
+            "high_impact_reference_words",
+            "insertions_by_level",
+            "normalizer",
+            "reference_words",
+            "reference_words_by_level",
+            "reference_words_by_rule",
+            "samples",
+            "scorer_version",
+            "taxonomy_id",
+            "unclassified_reference_words"
+          ]
+        },
+        "sealed_output_rows": 4,
+        "verify_bundle": "PASS"
+      },
+      "smoke_run_id": "SAEA-E21-KC-E1-WIRE-CHECK-V1-e21-ku-e1c-brief-placebo-20260907T065621Z"
+    }
+  },
+  "driver_run_id_suffix": "20260907T065621Z",
+  "for_flight_run_id": "SAEA-E21-KC-E1-BRIEF-44-V1",
+  "generated_at": "2026-09-07T06:57:51.119860+00:00",
+  "not_certified_here": "nothing about the model. A wire check proves the harness assembles, seals and scores the right request; what the frozen core does with that request is the flight's question, and the flight is not authorized by this receipt",
+  "one_factor_on_the_wire": {
+    "different_evidence_ids": true,
+    "different_evidence_source": true,
+    "same_arm": true,
+    "same_cap": true,
+    "same_contact_count": true,
+    "same_declared_scorers": true,
+    "same_windows_per_call": true
+  },
+  "plan_budget": {
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 400,
+    "planned_speech_audio_seconds": 30000,
+    "what_it_is_not": "a spend registration. Zero real contacts are made: the transport is core.driver.smoke._dry_run_transport. The REAL metering rail still runs and is cumulative across every attempt of a run id, so the plan has to cover one attempt's 61 windows and 5,322.108 tiled audio seconds several times over or a second invocation of this check fails on an exhausted budget instead of returning a result"
+  },
+  "population": {
+    "calls": [
+      "4384683",
+      "4386541",
+      "4387332",
+      "4392809"
+    ],
+    "carrier_lock_key": "earnings21-original",
+    "carries_the_flight_fragments_d1_evidence_supplement": true,
+    "construction_only": true,
+    "dataset_fragment": "e21-kc-e1-wire-check-4",
+    "split_name": "e21-kc-e1-wire-check-4-sample",
+    "why_construction_only": "section 8 item 3 of the preregistration: an evaluation call's brief is the thing under test, and a dry run must not rehearse it",
+    "windows": 61
+  },
+  "run_id": "SAEA-E21-KC-E1-WIRE-CHECK-V1",
+  "schema": "saea-e21-kc-e1-wire-check-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "study_commit": "baa36d9f7173214a2af0b1c8c7dcbbd2d762c691",
+  "what_this_is": "saea-driver smoke --dry-run for BOTH cells on a clean committed tree: the real compose, split verification, ExecutionPlan validation, evidence resolution, derivation registry, 90-second OBS slicing, request assembly under the arm's D2-frozen allowlist, bundle sealing, all five manifest scorers through core.scoring_batch and finalize -- against a fake transport and a no-op gate, plus the D1 evidence rail driven separately with a REAL gate because the no-op one skips it",
+  "why_the_driver_run_id_is_suffixed": "the attempt store meters cumulatively across every attempt of a run id, and each invocation of this check tiles 5,322.108 audio seconds through core.driver.smoke._dry_run_transport. A stable driver run id therefore exhausts its own budget after a handful of invocations and the check fails for a reason unrelated to the cell. A per-invocation suffix is correct HERE and only here, because zero real contacts are made and there is no real spend for the rail to bound. The stable run_id above is what this receipt and the exposure ledger name",
+  "working_tree_clean": true,
+  "zero_contact": {
+    "fakes": [
+      "core.driver.smoke._dry_run_transport",
+      "core.driver.smoke._NoOpGate"
+    ],
+    "generated_tokens": 0,
+    "gpu_seconds": 0,
+    "llama_server_processes": 0,
+    "model_contacts": 0,
+    "servers_started": 0,
+    "sockets_opened": 0
+  }
+}

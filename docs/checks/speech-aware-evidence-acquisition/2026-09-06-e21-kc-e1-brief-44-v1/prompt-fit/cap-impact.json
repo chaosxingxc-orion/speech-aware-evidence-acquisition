@@ -1,0 +1,1490 @@
+{
+  "brief_max_entries_per_class": 12,
+  "call_rows": [
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 2,
+          "before": 2
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 6,
+          "before": 6
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 736
+        },
+        "Participants and roles": {
+          "after": 9,
+          "before": 9
+        },
+        "Product and segment candidates": {
+          "after": 2,
+          "before": 2
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 15,
+      "roster_half_entries_before": 15,
+      "sample_id": "4320211"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 5,
+          "before": 5
+        },
+        "Divisions and segments named in the roster": {
+          "after": 1,
+          "before": 1
+        },
+        "Organizations named in the roster": {
+          "after": 3,
+          "before": 3
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 992
+        },
+        "Participants and roles": {
+          "after": 7,
+          "before": 7
+        },
+        "Product and segment candidates": {
+          "after": 5,
+          "before": 5
+        }
+      },
+      "in_sealed_ten": true,
+      "roster_half_entries_after": 11,
+      "roster_half_entries_before": 11,
+      "sample_id": "4330115"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 1,
+          "before": 1
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 10,
+          "before": 10
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 1415
+        },
+        "Participants and roles": {
+          "after": 12,
+          "before": 13
+        },
+        "Product and segment candidates": {
+          "after": 2,
+          "before": 2
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 22,
+      "roster_half_entries_before": 23,
+      "sample_id": "4341191"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 3,
+          "before": 3
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 4,
+          "before": 4
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 577
+        },
+        "Participants and roles": {
+          "after": 7,
+          "before": 7
+        },
+        "Product and segment candidates": {
+          "after": 2,
+          "before": 2
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 11,
+      "roster_half_entries_before": 11,
+      "sample_id": "4344338"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 3,
+          "before": 3
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 6,
+          "before": 6
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 1117
+        },
+        "Participants and roles": {
+          "after": 9,
+          "before": 9
+        },
+        "Product and segment candidates": {
+          "after": 1,
+          "before": 1
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 15,
+      "roster_half_entries_before": 15,
+      "sample_id": "4344866"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 4,
+          "before": 4
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 11,
+          "before": 11
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 1308
+        },
+        "Participants and roles": {
+          "after": 12,
+          "before": 14
+        },
+        "Product and segment candidates": {
+          "after": 3,
+          "before": 3
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 23,
+      "roster_half_entries_before": 25,
+      "sample_id": "4346818"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 1,
+          "before": 1
+        },
+        "Divisions and segments named in the roster": {
+          "after": 3,
+          "before": 3
+        },
+        "Organizations named in the roster": {
+          "after": 12,
+          "before": 13
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 925
+        },
+        "Participants and roles": {
+          "after": 12,
+          "before": 19
+        },
+        "Product and segment candidates": {
+          "after": 7,
+          "before": 7
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 27,
+      "roster_half_entries_before": 35,
+      "sample_id": "4346923"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 4,
+          "before": 4
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 9,
+          "before": 9
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 902
+        },
+        "Participants and roles": {
+          "after": 11,
+          "before": 11
+        },
+        "Product and segment candidates": {
+          "after": 2,
+          "before": 2
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 20,
+      "roster_half_entries_before": 20,
+      "sample_id": "4359732"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 2,
+          "before": 2
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 5,
+          "before": 5
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 811
+        },
+        "Participants and roles": {
+          "after": 9,
+          "before": 9
+        },
+        "Product and segment candidates": {
+          "after": 2,
+          "before": 2
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 14,
+      "roster_half_entries_before": 14,
+      "sample_id": "4359971"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 9,
+          "before": 9
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 8,
+          "before": 8
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 1204
+        },
+        "Participants and roles": {
+          "after": 12,
+          "before": 14
+        },
+        "Product and segment candidates": {
+          "after": 2,
+          "before": 2
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 20,
+      "roster_half_entries_before": 22,
+      "sample_id": "4360366"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 6,
+          "before": 6
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 5,
+          "before": 5
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 1147
+        },
+        "Participants and roles": {
+          "after": 8,
+          "before": 8
+        },
+        "Product and segment candidates": {
+          "after": 1,
+          "before": 1
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 13,
+      "roster_half_entries_before": 13,
+      "sample_id": "4360674"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 4,
+          "before": 4
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 12,
+          "before": 12
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 1263
+        },
+        "Participants and roles": {
+          "after": 12,
+          "before": 14
+        },
+        "Product and segment candidates": {
+          "after": 2,
+          "before": 2
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 24,
+      "roster_half_entries_before": 26,
+      "sample_id": "4360717"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 3,
+          "before": 3
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 7,
+          "before": 7
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 472
+        },
+        "Participants and roles": {
+          "after": 10,
+          "before": 10
+        },
+        "Product and segment candidates": {
+          "after": 1,
+          "before": 1
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 17,
+      "roster_half_entries_before": 17,
+      "sample_id": "4361631"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 2,
+          "before": 2
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 9,
+          "before": 9
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 1354
+        },
+        "Participants and roles": {
+          "after": 12,
+          "before": 14
+        },
+        "Product and segment candidates": {
+          "after": 3,
+          "before": 3
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 21,
+      "roster_half_entries_before": 23,
+      "sample_id": "4363614"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 3,
+          "before": 3
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 11,
+          "before": 11
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 1682
+        },
+        "Participants and roles": {
+          "after": 12,
+          "before": 14
+        },
+        "Product and segment candidates": {
+          "after": 2,
+          "before": 2
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 23,
+      "roster_half_entries_before": 25,
+      "sample_id": "4364366"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 3,
+          "before": 3
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 8,
+          "before": 8
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 698
+        },
+        "Participants and roles": {
+          "after": 12,
+          "before": 12
+        },
+        "Product and segment candidates": {
+          "after": 1,
+          "before": 1
+        }
+      },
+      "in_sealed_ten": true,
+      "roster_half_entries_after": 20,
+      "roster_half_entries_before": 20,
+      "sample_id": "4365024"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 1,
+          "before": 1
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 2,
+          "before": 2
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 838
+        },
+        "Participants and roles": {
+          "after": 5,
+          "before": 5
+        },
+        "Product and segment candidates": {
+          "after": 2,
+          "before": 2
+        }
+      },
+      "in_sealed_ten": true,
+      "roster_half_entries_after": 7,
+      "roster_half_entries_before": 7,
+      "sample_id": "4365948"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 4,
+          "before": 4
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 8,
+          "before": 8
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 1075
+        },
+        "Participants and roles": {
+          "after": 12,
+          "before": 13
+        },
+        "Product and segment candidates": {
+          "after": 0,
+          "before": 0
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 20,
+      "roster_half_entries_before": 21,
+      "sample_id": "4366302"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 4,
+          "before": 4
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 9,
+          "before": 9
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 794
+        },
+        "Participants and roles": {
+          "after": 12,
+          "before": 12
+        },
+        "Product and segment candidates": {
+          "after": 2,
+          "before": 2
+        }
+      },
+      "in_sealed_ten": true,
+      "roster_half_entries_after": 21,
+      "roster_half_entries_before": 21,
+      "sample_id": "4366429"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 4,
+          "before": 4
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 2,
+          "before": 2
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 1342
+        },
+        "Participants and roles": {
+          "after": 4,
+          "before": 4
+        },
+        "Product and segment candidates": {
+          "after": 1,
+          "before": 1
+        }
+      },
+      "in_sealed_ten": true,
+      "roster_half_entries_after": 6,
+      "roster_half_entries_before": 6,
+      "sample_id": "4366522"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 3,
+          "before": 3
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 5,
+          "before": 5
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 596
+        },
+        "Participants and roles": {
+          "after": 8,
+          "before": 8
+        },
+        "Product and segment candidates": {
+          "after": 0,
+          "before": 0
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 13,
+      "roster_half_entries_before": 13,
+      "sample_id": "4366893"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 2,
+          "before": 2
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 3,
+          "before": 3
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 327
+        },
+        "Participants and roles": {
+          "after": 6,
+          "before": 6
+        },
+        "Product and segment candidates": {
+          "after": 1,
+          "before": 1
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 9,
+      "roster_half_entries_before": 9,
+      "sample_id": "4367318"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 2,
+          "before": 2
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 5,
+          "before": 5
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 560
+        },
+        "Participants and roles": {
+          "after": 11,
+          "before": 11
+        },
+        "Product and segment candidates": {
+          "after": 0,
+          "before": 0
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 16,
+      "roster_half_entries_before": 16,
+      "sample_id": "4367535"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 5,
+          "before": 5
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 12,
+          "before": 12
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 2234
+        },
+        "Participants and roles": {
+          "after": 12,
+          "before": 14
+        },
+        "Product and segment candidates": {
+          "after": 3,
+          "before": 3
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 24,
+      "roster_half_entries_before": 26,
+      "sample_id": "4368670"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 2,
+          "before": 2
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 1,
+          "before": 1
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 965
+        },
+        "Participants and roles": {
+          "after": 2,
+          "before": 2
+        },
+        "Product and segment candidates": {
+          "after": 2,
+          "before": 2
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 3,
+      "roster_half_entries_before": 3,
+      "sample_id": "4374910"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 1,
+          "before": 1
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 5,
+          "before": 5
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 475
+        },
+        "Participants and roles": {
+          "after": 9,
+          "before": 9
+        },
+        "Product and segment candidates": {
+          "after": 1,
+          "before": 1
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 14,
+      "roster_half_entries_before": 14,
+      "sample_id": "4375653"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 1,
+          "before": 1
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 12,
+          "before": 12
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 515
+        },
+        "Participants and roles": {
+          "after": 12,
+          "before": 18
+        },
+        "Product and segment candidates": {
+          "after": 0,
+          "before": 0
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 24,
+      "roster_half_entries_before": 30,
+      "sample_id": "4382825"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 3,
+          "before": 3
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 7,
+          "before": 7
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 471
+        },
+        "Participants and roles": {
+          "after": 10,
+          "before": 10
+        },
+        "Product and segment candidates": {
+          "after": 2,
+          "before": 2
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 17,
+      "roster_half_entries_before": 17,
+      "sample_id": "4383161"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 2,
+          "before": 2
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 3,
+          "before": 3
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 573
+        },
+        "Participants and roles": {
+          "after": 6,
+          "before": 6
+        },
+        "Product and segment candidates": {
+          "after": 1,
+          "before": 1
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 9,
+      "roster_half_entries_before": 9,
+      "sample_id": "4384198"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 3,
+          "before": 3
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 2,
+          "before": 2
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 480
+        },
+        "Participants and roles": {
+          "after": 7,
+          "before": 7
+        },
+        "Product and segment candidates": {
+          "after": 0,
+          "before": 0
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 9,
+      "roster_half_entries_before": 9,
+      "sample_id": "4384683"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 1,
+          "before": 1
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 6,
+          "before": 6
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 230
+        },
+        "Participants and roles": {
+          "after": 8,
+          "before": 8
+        },
+        "Product and segment candidates": {
+          "after": 0,
+          "before": 0
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 14,
+      "roster_half_entries_before": 14,
+      "sample_id": "4384744"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 1,
+          "before": 1
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 12,
+          "before": 12
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 352
+        },
+        "Participants and roles": {
+          "after": 12,
+          "before": 17
+        },
+        "Product and segment candidates": {
+          "after": 0,
+          "before": 0
+        }
+      },
+      "in_sealed_ten": true,
+      "roster_half_entries_after": 24,
+      "roster_half_entries_before": 29,
+      "sample_id": "4384964"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 3,
+          "before": 3
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 6,
+          "before": 6
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 260
+        },
+        "Participants and roles": {
+          "after": 9,
+          "before": 9
+        },
+        "Product and segment candidates": {
+          "after": 0,
+          "before": 0
+        }
+      },
+      "in_sealed_ten": true,
+      "roster_half_entries_after": 15,
+      "roster_half_entries_before": 15,
+      "sample_id": "4385072"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 4,
+          "before": 4
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 8,
+          "before": 8
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 466
+        },
+        "Participants and roles": {
+          "after": 11,
+          "before": 11
+        },
+        "Product and segment candidates": {
+          "after": 1,
+          "before": 1
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 19,
+      "roster_half_entries_before": 19,
+      "sample_id": "4385388"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 3,
+          "before": 3
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 12,
+          "before": 15
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 684
+        },
+        "Participants and roles": {
+          "after": 12,
+          "before": 18
+        },
+        "Product and segment candidates": {
+          "after": 3,
+          "before": 3
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 24,
+      "roster_half_entries_before": 33,
+      "sample_id": "4385939"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 3,
+          "before": 3
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 1,
+          "before": 1
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 352
+        },
+        "Participants and roles": {
+          "after": 4,
+          "before": 4
+        },
+        "Product and segment candidates": {
+          "after": 0,
+          "before": 0
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 5,
+      "roster_half_entries_before": 5,
+      "sample_id": "4386541"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 2,
+          "before": 2
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 1,
+          "before": 1
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 410
+        },
+        "Participants and roles": {
+          "after": 4,
+          "before": 4
+        },
+        "Product and segment candidates": {
+          "after": 1,
+          "before": 1
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 5,
+      "roster_half_entries_before": 5,
+      "sample_id": "4387332"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 2,
+          "before": 2
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 2,
+          "before": 2
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 418
+        },
+        "Participants and roles": {
+          "after": 5,
+          "before": 5
+        },
+        "Product and segment candidates": {
+          "after": 0,
+          "before": 0
+        }
+      },
+      "in_sealed_ten": true,
+      "roster_half_entries_after": 7,
+      "roster_half_entries_before": 7,
+      "sample_id": "4387383"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 4,
+          "before": 4
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 2,
+          "before": 2
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 435
+        },
+        "Participants and roles": {
+          "after": 4,
+          "before": 4
+        },
+        "Product and segment candidates": {
+          "after": 1,
+          "before": 1
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 6,
+      "roster_half_entries_before": 6,
+      "sample_id": "4387865"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 5,
+          "before": 5
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 3,
+          "before": 3
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 870
+        },
+        "Participants and roles": {
+          "after": 6,
+          "before": 6
+        },
+        "Product and segment candidates": {
+          "after": 3,
+          "before": 3
+        }
+      },
+      "in_sealed_ten": true,
+      "roster_half_entries_after": 9,
+      "roster_half_entries_before": 9,
+      "sample_id": "4389907"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 2,
+          "before": 2
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 2,
+          "before": 2
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 378
+        },
+        "Participants and roles": {
+          "after": 5,
+          "before": 5
+        },
+        "Product and segment candidates": {
+          "after": 1,
+          "before": 1
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 7,
+      "roster_half_entries_before": 7,
+      "sample_id": "4392809"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 1,
+          "before": 1
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 1,
+          "before": 1
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 102
+        },
+        "Participants and roles": {
+          "after": 4,
+          "before": 4
+        },
+        "Product and segment candidates": {
+          "after": 0,
+          "before": 0
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 5,
+      "roster_half_entries_before": 5,
+      "sample_id": "4394084"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 1,
+          "before": 1
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 5,
+          "before": 5
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 302
+        },
+        "Participants and roles": {
+          "after": 8,
+          "before": 8
+        },
+        "Product and segment candidates": {
+          "after": 2,
+          "before": 2
+        }
+      },
+      "in_sealed_ten": false,
+      "roster_half_entries_after": 13,
+      "roster_half_entries_before": 13,
+      "sample_id": "4397800"
+    },
+    {
+      "classes": {
+        "Company and ticker candidates": {
+          "after": 2,
+          "before": 2
+        },
+        "Divisions and segments named in the roster": {
+          "after": 0,
+          "before": 0
+        },
+        "Organizations named in the roster": {
+          "after": 8,
+          "before": 8
+        },
+        "Other terms from the call's documents": {
+          "after": 12,
+          "before": 1022
+        },
+        "Participants and roles": {
+          "after": 12,
+          "before": 14
+        },
+        "Product and segment candidates": {
+          "after": 1,
+          "before": 1
+        }
+      },
+      "in_sealed_ten": true,
+      "roster_half_entries_after": 20,
+      "roster_half_entries_before": 22,
+      "sample_id": "4397829"
+    }
+  ],
+  "calls": 44,
+  "generated_at": "2026-09-07T06:56:20.989109+00:00",
+  "halves": {
+    "document": {
+      "entries_after": 720,
+      "entries_before": 34321,
+      "kept_fraction": 0.020978
+    },
+    "roster": {
+      "entries_after": 661,
+      "entries_before": 705,
+      "kept_fraction": 0.937589
+    }
+  },
+  "headline": "the cap falls almost entirely on the DOCUMENT half's residual-term class (528 of 34129 entries kept, 44 of 44 calls truncated); the ROSTER half keeps 661 of 705 entries, and the participant class -- the one the PERSON hypothesis rests on -- keeps 386 of 426 over 13 truncated calls",
+  "per_class": {
+    "Company and ticker candidates": {
+      "brief_part": "document",
+      "calls_truncated": 0,
+      "calls_with_the_class": 44,
+      "entries_after": 126,
+      "entries_before": 126,
+      "kept_fraction": 1.0,
+      "max_entries_on_any_call": 9
+    },
+    "Divisions and segments named in the roster": {
+      "brief_part": "roster",
+      "calls_truncated": 0,
+      "calls_with_the_class": 2,
+      "entries_after": 4,
+      "entries_before": 4,
+      "kept_fraction": 1.0,
+      "max_entries_on_any_call": 3
+    },
+    "Organizations named in the roster": {
+      "brief_part": "roster",
+      "calls_truncated": 2,
+      "calls_with_the_class": 44,
+      "entries_after": 271,
+      "entries_before": 275,
+      "kept_fraction": 0.985455,
+      "max_entries_on_any_call": 15
+    },
+    "Other terms from the call's documents": {
+      "brief_part": "document",
+      "calls_truncated": 44,
+      "calls_with_the_class": 44,
+      "entries_after": 528,
+      "entries_before": 34129,
+      "kept_fraction": 0.015471,
+      "max_entries_on_any_call": 2234
+    },
+    "Participants and roles": {
+      "brief_part": "roster",
+      "calls_truncated": 13,
+      "calls_with_the_class": 44,
+      "entries_after": 386,
+      "entries_before": 426,
+      "kept_fraction": 0.906103,
+      "max_entries_on_any_call": 19
+    },
+    "Product and segment candidates": {
+      "brief_part": "document",
+      "calls_truncated": 0,
+      "calls_with_the_class": 33,
+      "entries_after": 66,
+      "entries_before": 66,
+      "kept_fraction": 1.0,
+      "max_entries_on_any_call": 7
+    }
+  },
+  "run_id": "SAEA-E21-KC-E1-PROMPT-FIT-V1",
+  "schema": "saea-e21-kc-e1-cap-impact-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "study_commit": "baa36d9f7173214a2af0b1c8c7dcbbd2d762c691",
+  "what_this_answers": "the fit says the cap is legal at this geometry. This says what it costs: how many entries each class had before the cap and how many survive it, over the real 44 calls",
+  "zero_contact": "no model, server, tokenizer, GPU, tool, embedding, network or audio-decode contact; six pure class extractors over the same two ConEC context files the evidence source reads, and nothing else"
+}
