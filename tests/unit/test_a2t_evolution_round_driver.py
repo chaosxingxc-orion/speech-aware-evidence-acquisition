@@ -184,59 +184,82 @@ def _sha(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-def _sealed_trace(path: Path, rows, digests) -> str:
-    """The two files a real arm seals beside its scores: the run manifest and
-    the ``.outputs.jsonl`` whose per-row request and response digests the round
-    receipt's noise floor is computed from.
+def _sealed_trace(path: Path, rows, questions) -> str:
+    """The three files a real arm seals beside its scores: the run manifest,
+    the raw trace whose ``MODEL_REQUEST`` payloads carry the QUESTION, and the
+    ``.outputs.jsonl`` whose per-row response digest goes with it. The round
+    receipt's noise floor is computed from exactly these.
 
-    Both are referenced RELATIVELY, exactly as ``sealed_output_digests``
-    resolves them, so the synthetic bundle carries no absolute path and two
-    runs of this dry run stay byte-identical.
+    ``request_id`` and ``decoding_params.id_slot`` are made DIFFERENT in every
+    arm on purpose: they are transport (an ordinal and a server slot), and an
+    instrument that counted them as a new question would report every row of
+    every round as changed. ``rails.evolution.question_sha256`` drops them.
+
+    Everything is referenced RELATIVELY, exactly as ``sealed_question_digests``
+    resolves it, so the synthetic bundle carries no absolute path and two runs
+    of this dry run stay byte-identical.
     """
 
     stem = path.name.split(".", 1)[0]
-    outputs = path.parent / f"{stem}.outputs.jsonl"
-    outputs.parent.mkdir(parents=True, exist_ok=True)
-    outputs.write_text(
-        "".join(
+    trace, outputs = [], []
+    for index, sample_id in enumerate(sorted(rows)):
+        question, response = questions.get(
+            sample_id, (f"ask|{sample_id}", _sha(f"answer|{sample_id}"))
+        )
+        request_id = f"{stem}-{index:04d}"
+        trace.append(
             json.dumps(
                 {
-                    "sample_id": sample_id,
-                    "request_sha256": digests.get(
-                        sample_id, (_sha(f"prompt|{sample_id}"), "")
-                    )[0],
-                    "response_text_sha256": digests.get(
-                        sample_id, ("", _sha(f"answer|{sample_id}"))
-                    )[1],
+                    "channel": "MODEL_REQUEST",
+                    "record_id": f"{request_id}/request",
+                    "payload": {
+                        "arm": stem,
+                        "payload": {
+                            "request_id": request_id,
+                            "sample_id": sample_id,
+                            "decoding_params": {
+                                "id_slot": (index + len(stem)) % 4,
+                                "temperature": 0,
+                            },
+                            "history": [{"content": question}],
+                        },
+                    },
                 }
             )
-            + "\n"
-            for sample_id in sorted(rows)
-        ),
-        encoding="utf-8",
-        newline="\n",
-    )
+        )
+        outputs.append(
+            json.dumps({"sample_id": sample_id, "response_text_sha256": response})
+        )
+    named = {}
+    for suffix, lines in (("trace.jsonl", trace), ("outputs.jsonl", outputs)):
+        file = path.parent / f"{stem}.{suffix}"
+        file.parent.mkdir(parents=True, exist_ok=True)
+        file.write_text(
+            "".join(line + "\n" for line in lines), encoding="utf-8", newline="\n"
+        )
+        named[suffix] = {
+            "path": file.name,
+            "sha256": hashlib.sha256(file.read_bytes()).hexdigest(),
+        }
     _write(
         path.parent / f"{stem}.run-manifest.json",
         {
             "schema": "saea-run-manifest-v1",
             "status": "COMPLETED",
-            "outputs": {
-                "path": outputs.name,
-                "sha256": hashlib.sha256(outputs.read_bytes()).hexdigest(),
-            },
+            "raw_trace": named["trace.jsonl"],
+            "outputs": named["outputs.jsonl"],
         },
     )
     return f"{stem}.run-manifest.json"
 
 
 def _score_file(
-    path: Path, rows: Mapping[str, bool], digests: Mapping[str, tuple] = {}
+    path: Path, rows: Mapping[str, bool], questions: Mapping[str, tuple] | None = None
 ) -> str:
     """One ``<job_id>.score.json`` as ``core.scoring_batch`` writes it, beside
     the run manifest and sealed outputs it names."""
 
-    manifest = _sealed_trace(path, rows, digests)
+    manifest = _sealed_trace(path, rows, questions or {})
     _write(
         path,
         {

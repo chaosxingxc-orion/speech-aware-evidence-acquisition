@@ -253,7 +253,8 @@ __all__ = [
     "run_propose_step",
     "run_candidates_step",
     "NOISE_FLOOR_SCHEMA",
-    "sealed_output_digests",
+    "question_sha256",
+    "sealed_question_digests",
     "prompt_noise_floor",
     "run_select_step",
     "run_confirm_step",
@@ -4782,16 +4783,83 @@ def run_select_step(
 NOISE_FLOOR_SCHEMA = "saea-evolution-prompt-noise-floor-v1"
 
 
-def sealed_output_digests(score_file: Path | str) -> dict[str, tuple[str, str]]:
-    """``{sample_id: (request_sha256, response_text_sha256)}`` for one arm.
+#: Payload fields that are TRANSPORT and not QUESTION. ``request_id`` is the
+#: request's ordinal in its own run and ``decoding_params.id_slot`` is which
+#: server slot the scheduler happened to hand it; two arms that asked exactly
+#: the same thing differ in both whenever their batches packed differently.
+#: Round 1 is the demonstration: of its 1,080 fold-B rows, 820 differ in
+#: ``id_slot`` alone and 62 in ``request_id``, while only 61 differ in
+#: ``history`` -- the rendered prompt. Comparing whole request digests would
+#: therefore have reported 842 "different questions" against the 61 there are.
+QUESTION_TRANSPORT_FIELDS = ("request_id",)
+QUESTION_TRANSPORT_DECODING_FIELDS = ("id_slot",)
+
+
+def question_sha256(payload: Mapping[str, object]) -> str:
+    """The digest of WHAT one request asked, with the transport envelope
+    removed: the whole sealed payload minus :data:`QUESTION_TRANSPORT_FIELDS`
+    and minus :data:`QUESTION_TRANSPORT_DECODING_FIELDS` inside
+    ``decoding_params``.
+
+    A denylist rather than an allowlist, and deliberately: a field this module
+    has never heard of is CONTENT until someone proves it is scheduling, so a
+    future addition to the payload widens the "different question" set rather
+    than being silently ignored by it.
+    """
+
+    if not isinstance(payload, Mapping):
+        raise EvolutionError("payload must be a mapping")
+    question = {
+        key: value
+        for key, value in payload.items()
+        if key not in QUESTION_TRANSPORT_FIELDS
+    }
+    decoding = question.get("decoding_params")
+    if isinstance(decoding, Mapping):
+        question["decoding_params"] = {
+            key: value
+            for key, value in decoding.items()
+            if key not in QUESTION_TRANSPORT_DECODING_FIELDS
+        }
+    return hashlib.sha256(canonical_json_bytes(question)).hexdigest()
+
+
+def _sealed_file(
+    manifest: Mapping[str, object], manifest_file: Path, key: str
+) -> bytes:
+    """One file a run manifest names, read and hash-checked against what the
+    manifest says it is."""
+
+    named = manifest.get(key)
+    if not isinstance(named, Mapping) or not isinstance(named.get("path"), str):
+        raise EvolutionError(f"{manifest_file} names no {key} file")
+    path = Path(str(named["path"]))
+    if not path.is_absolute():
+        path = manifest_file.parent / str(named["path"])
+    raw = path.read_bytes()
+    expected = named.get("sha256")
+    measured = hashlib.sha256(raw).hexdigest()
+    if isinstance(expected, str) and expected and expected != measured:
+        raise EvolutionError(
+            f"sealed {key} {path} hashes to {measured}, not the manifest's {expected}"
+        )
+    return raw
+
+
+def sealed_question_digests(score_file: Path | str) -> dict[str, tuple[str, str]]:
+    """``{sample_id: (question_sha256, response_text_sha256)}`` for one arm.
 
     Resolved from the SAME file the confirm step already reads: a
-    ``<job_id>.score.json`` names its own ``manifest``, the run manifest names
-    its ``outputs`` path and that file's sha256, and the digest is verified
-    before a line is parsed. Nothing new is opened that the round did not
-    already have to trust, and no response TEXT is read -- only the two digests
-    the sealed trace already carries, which is what keeps this instrumentation
-    off the evidence surface.
+    ``<job_id>.score.json`` names its own run manifest, the manifest names its
+    ``raw_trace`` and its ``outputs``, and both are hash-checked against the
+    manifest before a line is parsed. Nothing is opened that the round did not
+    already have to trust.
+
+    The trace is where the QUESTION lives (the ``MODEL_REQUEST`` payload, whose
+    ``history`` is the rendered prompt) and the outputs file is where the
+    answer's digest lives. Neither the prompt nor the response text leaves this
+    function: only two sha256s per row do, which is what keeps a diagnostic off
+    the evidence surface.
     """
 
     score = json.loads(Path(score_file).read_text(encoding="utf-8"))
@@ -4804,35 +4872,49 @@ def sealed_output_digests(score_file: Path | str) -> dict[str, tuple[str, str]]:
     if not manifest_file.is_absolute():
         manifest_file = Path(score_file).parent / manifest_path
     manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
-    outputs = manifest.get("outputs") if isinstance(manifest, Mapping) else None
-    if not isinstance(outputs, Mapping) or not isinstance(outputs.get("path"), str):
-        raise EvolutionError(f"{manifest_file} names no sealed outputs file")
-    outputs_file = Path(str(outputs["path"]))
-    if not outputs_file.is_absolute():
-        outputs_file = manifest_file.parent / str(outputs["path"])
-    raw = outputs_file.read_bytes()
-    expected = outputs.get("sha256")
-    measured = hashlib.sha256(raw).hexdigest()
-    if isinstance(expected, str) and expected and expected != measured:
-        raise EvolutionError(
-            f"sealed outputs {outputs_file} hash to {measured}, not the manifest's "
-            f"{expected}"
-        )
+    if not isinstance(manifest, Mapping):
+        raise EvolutionError(f"{manifest_file} is not a run manifest")
+
+    questions: dict[str, str] = {}
+    for line in _sealed_file(manifest, manifest_file, "raw_trace").decode(
+        "utf-8"
+    ).splitlines():
+        if not line.strip():
+            continue
+        record = json.loads(line)
+        if not str(record.get("record_id", "")).endswith("/request"):
+            continue
+        payload = record.get("payload", {}).get("payload")
+        if not isinstance(payload, Mapping):
+            raise EvolutionError(f"{manifest_file} traces a request with no payload")
+        sample_id = str(payload.get("sample_id", ""))
+        if not sample_id:
+            raise EvolutionError(f"{manifest_file} traces a request with no sample id")
+        questions[sample_id] = question_sha256(payload)
+
     digests: dict[str, tuple[str, str]] = {}
-    for line in raw.decode("utf-8").splitlines():
+    for line in _sealed_file(manifest, manifest_file, "outputs").decode(
+        "utf-8"
+    ).splitlines():
         if not line.strip():
             continue
         row = json.loads(line)
         sample_id = str(row.get("sample_id", ""))
-        request = row.get("request_sha256")
         response = row.get("response_text_sha256")
-        if not sample_id or not isinstance(request, str) or not isinstance(response, str):
+        if not sample_id or not isinstance(response, str):
             raise EvolutionError(
-                f"{outputs_file} carries a row without a sample id and both digests"
+                f"{manifest_file} seals an output row without a sample id and a "
+                "response digest"
             )
-        digests[sample_id] = (request, response)
+        question = questions.get(sample_id)
+        if question is None:
+            raise EvolutionError(
+                f"{manifest_file} seals an output for {sample_id!r} that its own trace "
+                "never requested"
+            )
+        digests[sample_id] = (question, response)
     if not digests:
-        raise EvolutionError(f"{outputs_file} carries no sealed row")
+        raise EvolutionError(f"{manifest_file} seals no output row")
     return digests
 
 
@@ -4886,11 +4968,14 @@ def prompt_noise_floor(
 ) -> dict[str, object]:
     """How much of a fold's movement the DECODER can account for.
 
-    A row whose rendered prompt was byte-identical across the two arms asked
-    the frozen core the same question; greedy decoding at temperature 0 is
-    nevertheless not bitwise reproducible across batch compositions, so such a
-    row can still come back different, and its reward can still move. Splitting
-    both counts by that test is the whole of this function:
+    Both digest mappings are :func:`sealed_question_digests` output --
+    ``{sample_id: (question_sha256, response_text_sha256)}`` -- so "the same
+    question" is the sealed payload minus its transport envelope and not the
+    whole request digest. A row the two arms asked identically asked the frozen
+    core the same thing; greedy decoding at temperature 0 is nevertheless not
+    bitwise reproducible across batch compositions, so such a row can still come
+    back different, and its reward can still move. Splitting both counts by that
+    test is the whole of this function:
 
     * ``unchanged_prompt_flips`` -- rows the two arms asked identically and
       that answered differently anyway. This is the noise floor;
@@ -5021,8 +5106,8 @@ def run_confirm_step(
         # recorded as unmeasured rather than raised.
         try:
             noise_floor = prompt_noise_floor(
-                sealed_output_digests(Path(score_files[INCUMBENT_KEY])),
-                sealed_output_digests(Path(score_files["assembly"])),
+                sealed_question_digests(Path(score_files[INCUMBENT_KEY])),
+                sealed_question_digests(Path(score_files["assembly"])),
                 incumbent_rows,
                 assembly_rows,
                 metric=config.metric,

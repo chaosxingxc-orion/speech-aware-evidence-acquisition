@@ -927,8 +927,15 @@ from now on carries `extra.noise_floor`: per target and pooled, the rows whose r
 byte-identical across the two fold-B arms, of those the ones that answered differently anyway
 (`unchanged_prompt_flips`), and the round's saves and harms split by the same test. It is computed by
 `rails.evolution.prompt_noise_floor` from the sealed traces the confirm step's own two score files
-already name (score file → run manifest → `outputs.jsonl`, digest-verified; no response text is
-read). It exists because round 1 measured the quantity and it is large: 286 of 1,019 byte-identically
+already name (score file → run manifest → `raw_trace` for the question and `outputs.jsonl` for the
+answer's digest, both hash-checked; neither prompt nor response text leaves the function). "The same
+question" is `question_sha256`: the whole sealed request payload MINUS `request_id` and
+`decoding_params.id_slot`, which are an ordinal and a server slot rather than anything the core was
+asked — on round 1, 820 of 1,080 rows differ in `id_slot` alone and 62 in `request_id`, so comparing
+whole request digests would have reported 842 changed questions against the 61 there are. Rebuilt
+over round 1's own sealed traces the block reproduces the verdict's independently computed numbers
+exactly: 61 changed, 1,019 unchanged, 286 flips, 3/1 saves and harms on changed questions against
+15/16 on unchanged ones. It exists because that quantity is large: 286 of 1,019 byte-identically
 asked rows returned different text, and 31 of the 35 rows whose reward moved were of that kind.
 **The admission rule is unchanged** — nothing in `select_per_target`, `confirm_assembly` or
 `advance_round` reads any of these counts, and whether the rule should change is the owner's open

@@ -32,6 +32,8 @@ from speech_aware_evidence_acquisition.rails.evolution import (
     assert_disjoint_targets,
     confirm_assembly,
     ledger_budget,
+    prompt_noise_floor,
+    question_sha256,
     replay_selection,
     select_per_target,
     selection_record,
@@ -867,3 +869,101 @@ def test_loop_config_refuses_a_target_that_is_all_sentinels():
 def test_loop_config_refuses_sentinels_for_an_unknown_target():
     with pytest.raises(EvolutionError, match="not a target"):
         LoopConfig.from_json(loop_document(sentinel_tools={"nope": ["setLighting"]}))
+
+
+# ---------------------------------------------------------------------------
+# The question digest the noise floor is computed on (track E3e, 2026-09-07)
+# ---------------------------------------------------------------------------
+
+
+def _payload(**overrides) -> dict:
+    payload = {
+        "sample_id": "slurp:train:000006:audio-1",
+        "history": [{"content": "Extract the entities of this command."}],
+        "task_instruction": "You are given spoken audio.",
+        "speech_packet_sha256": "b" * 64,
+        "decoding_params": {"id_slot": 0, "max_tokens": 64, "temperature": 0},
+        "request_id": "cell-0001",
+    }
+    payload.update(overrides)
+    return payload
+
+
+def test_a_question_digest_ignores_the_transport_envelope():
+    """``request_id`` is an ordinal and ``id_slot`` is which server slot the
+    scheduler happened to hand the request. Counting either as part of the
+    question is what makes an instrument useless: on EVO-S1 round 1, 820 of
+    1,080 rows differ in ``id_slot`` alone and 62 in ``request_id``, against 61
+    that differ in the rendered prompt."""
+
+    asked = _payload()
+    same_question_other_envelope = _payload(
+        request_id="cell-0997",
+        decoding_params={"id_slot": 3, "max_tokens": 64, "temperature": 0},
+    )
+    assert question_sha256(asked) == question_sha256(same_question_other_envelope)
+
+
+def test_a_question_digest_moves_on_anything_it_does_not_know_to_be_transport():
+    """A denylist, on purpose: a payload field this module has never heard of
+    is CONTENT until someone proves it is scheduling."""
+
+    asked = _payload()
+    assert question_sha256(asked) != question_sha256(
+        _payload(history=[{"content": "Extract the entities of this other command."}])
+    )
+    assert question_sha256(asked) != question_sha256(
+        _payload(decoding_params={"id_slot": 0, "max_tokens": 96, "temperature": 0})
+    )
+    assert question_sha256(asked) != question_sha256(_payload(some_new_field=["x"]))
+    with pytest.raises(EvolutionError, match="mapping"):
+        question_sha256("not a payload")
+
+
+def test_the_noise_floor_counts_split_moves_by_the_question_test():
+    """Four rows: one asked differently and saved, one asked identically and
+    saved, one asked identically and harmed, one asked identically, answered
+    differently and moved nothing. Recountable by eye."""
+
+    incumbent_digests = {row: ("q-same", f"a-{row}") for row in ("r1", "r2", "r3", "r4")}
+    arm_digests = {
+        "r1": ("q-changed", "a-r1-new"),
+        "r2": ("q-same", "a-r2-new"),
+        "r3": ("q-same", "a-r3-new"),
+        "r4": ("q-same", "a-r4-new"),
+    }
+    incumbent_scores = {row: {METRIC: 0.0} for row in ("r1", "r2", "r4")}
+    incumbent_scores["r3"] = {METRIC: 1.0}
+    arm_scores = {row: {METRIC: 1.0} for row in ("r1", "r2")}
+    arm_scores["r3"] = {METRIC: 0.0}
+    arm_scores["r4"] = {METRIC: 0.0}
+
+    report = prompt_noise_floor(
+        incumbent_digests,
+        arm_digests,
+        incumbent_scores,
+        arm_scores,
+        metric=METRIC,
+        rows=("r1", "r2", "r3", "r4"),
+        rows_of_target={"only": ("r2", "r3")},
+    )
+    assert report["rows"] == 4
+    assert report["changed_prompt_rows"] == 1
+    assert report["unchanged_prompt_rows"] == 3
+    assert report["unchanged_prompt_flips"] == 3
+    assert report["changed_prompt"] == {"saves": 1, "harms": 0}
+    assert report["unchanged_prompt"] == {"saves": 1, "harms": 1}
+    assert report["by_target"]["only"]["unchanged_prompt"] == {"saves": 1, "harms": 1}
+    assert report["by_target"]["only"]["rows"] == 2
+    # A row missing from one side is not counted rather than guessed at.
+    assert (
+        prompt_noise_floor(
+            incumbent_digests,
+            arm_digests,
+            incumbent_scores,
+            arm_scores,
+            metric=METRIC,
+            rows=("r1", "absent"),
+        )["rows"]
+        == 1
+    )
