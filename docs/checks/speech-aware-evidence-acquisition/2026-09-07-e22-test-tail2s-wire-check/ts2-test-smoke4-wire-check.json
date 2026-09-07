@@ -1,7 +1,7 @@
 {
   "schema": "saea-e22-esb-wire-check-v1",
   "study": "speech-aware-evidence-acquisition",
-  "generated_at": "2026-09-07T09:50:38.667844+00:00",
+  "generated_at": "2026-09-07T10:00:49.867723+00:00",
   "flight_run_id": "SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-SMOKE-V1",
   "cells_checked": [
     "E22-ESB-2735-TS2-SMOKE-4"
@@ -13,8 +13,8 @@
     {
       "schema": "saea-flight-wire-check-v1",
       "flight_run_id": "SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-SMOKE-V1",
-      "wire_check_run_id": "WIRECHECK-SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-SMOKE-V1-1788774632704",
-      "attempt_id": "attempt-wire-check-1788774632704",
+      "wire_check_run_id": "WIRECHECK-SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-SMOKE-V1-1788775243710",
+      "attempt_id": "attempt-wire-check-1788775243710",
       "attempt_aborted": true,
       "config_hash": "ab21243840a0d3e437e2af42baaee4b4227ff7e7a6872085703d23e0bdee73b8",
       "protocol_hash": "cb8f4e5e65b7830435bbd50b9ecb5f3cea15b9650ffbd1b9d8f925c03493a0dd",
@@ -52,7 +52,7 @@
         "contacts_per_sample": 1,
         "queue_depth": "not a knob: one contact per sample means nothing queues behind a sample, and more in-flight requests than slots is what the slot pinning exists to forbid"
       },
-      "wall_seconds": 0.07120442390441895,
+      "wall_seconds": 0.06802129745483398,
       "payload_keys": [
         "audio_seconds",
         "carrier_lock_key",
@@ -79,11 +79,11 @@
         "5daeea9ed2de420e4f2727c6bcd6a6c55d8cb62ccf866822789b7fc2d3081bd8"
       ],
       "speech_packets_verified": {},
-      "trace_manifest_hash": "68abf27074c0ba27ffc43fcfbd9ee7a8b74afa39b2aa9b8b79b358f18a8d1ec5",
+      "trace_manifest_hash": "ceeede99d7af886465faaaab5f9bfb8af68b9a309f1f53cd0083be65aa6c5de5",
       "cost": {
         "calls_used": 4,
         "audio_seconds_used": 64.76018749999999,
-        "latency_seconds_total": 0.00011794301099143922,
+        "latency_seconds_total": 0.00010947702685371041,
         "prompt_tokens_total": 4,
         "completion_tokens_total": 4,
         "tool_calls": 0,
@@ -98,8 +98,8 @@
       },
       "seal_and_score": {
         "status": "OK",
-        "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/WIRECHECK-SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-SMOKE-V1-1788774632704/attempt-wire-check-1788774632704/WIRECHECK-SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-SMOKE-V1-1788774632704.run-manifest.json",
-        "manifest_sha256": "13f7a9f0b2d9696f97b3d2dbefead2776273ae963928d33f031f2cb0fb5ff149",
+        "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/WIRECHECK-SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-SMOKE-V1-1788775243710/attempt-wire-check-1788775243710/WIRECHECK-SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-SMOKE-V1-1788775243710.run-manifest.json",
+        "manifest_sha256": "489249e944422f20fc17b7b24184a584a663136a9c3113890690427fe03c6f81",
         "verified_attempt_state": "OPENED",
         "outputs_row_count": 4,
         "score_result": {
@@ -112,21 +112,21 @@
           "job_count": 1,
           "succeeded": 1,
           "failed": 0,
-          "elapsed_seconds": 2.267208383011166,
+          "elapsed_seconds": 2.4526451179990545,
           "jobs": [
             {
               "index": 0,
-              "job_id": "attempt-wire-check-1788774632704",
+              "job_id": "attempt-wire-check-1788775243710",
               "operation": "score",
-              "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/WIRECHECK-SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-SMOKE-V1-1788774632704/attempt-wire-check-1788774632704/WIRECHECK-SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-SMOKE-V1-1788774632704.run-manifest.json",
+              "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/WIRECHECK-SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-SMOKE-V1-1788775243710/attempt-wire-check-1788775243710/WIRECHECK-SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-SMOKE-V1-1788775243710.run-manifest.json",
               "ledger_cells": null,
               "status": "succeeded",
               "returncode": 0,
-              "elapsed_seconds": 2.2494951330008917,
-              "result_file": "attempt-wire-check-1788774632704.score.json",
-              "result_sha256": "c3c11e4092bb70a969f7f69dda235ccc599c5bd9b1018dc54b137741e581bfbc",
+              "elapsed_seconds": 2.4397443319903687,
+              "result_file": "attempt-wire-check-1788775243710.score.json",
+              "result_sha256": "fcb5fa9ecda2a4733ed9b25f8b2c6707de87688aadda3b6a5cd58c8a00a6a66a",
               "stdout_log": null,
-              "stderr_log": "attempt-wire-check-1788774632704.stderr.log",
+              "stderr_log": "attempt-wire-check-1788775243710.stderr.log",
               "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
               "error": null
             }

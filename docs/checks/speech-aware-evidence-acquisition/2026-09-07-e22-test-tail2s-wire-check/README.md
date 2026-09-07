@@ -8,7 +8,10 @@ through the **real** registered scorers over the transport's canned response, on
 job, none failed, empty stderr.
 
 Run under the model-free row `SAEA-SN-MF-E22-TEST-TS2-MEDIA-V1` on the clean committed tree at
-commit `42da8bb4`. **Neither cell is authorized**; see
+commit `599c7b0a`. (An earlier pass at `42da8bb4` was superseded: correcting the pad accounting in
+the flight cell's dataset and experiment fragments moved that cell's composed identity, so both
+cells were re-run rather than left stale. The smoke's fragments were untouched and its hashes are
+therefore unchanged across the two passes.) **Neither cell is authorized**; see
 `docs/readiness/2026-09-07-e22-esb-shortform-tail2s-test-v1-preregistration.md`, and note that
 this cell is a **second read** of the six calibration-exposed ESB test calls and needs the owner's
 explicit GO recorded in its own exposure row.
@@ -22,7 +25,7 @@ explicit GO recorded in its own exposure row.
 
 | cell | split id | split identity (flight-computed) | config hash | protocol hash | audio seconds |
 |---|---|---|---|---|---:|
-| `E22-ESB-2735-TS2` | `E22-ESB-TEST2735-TAIL2S-UTTERANCES` | `ecd9ab76755c…` | `abf5cf1d7246…` | `8ad4c419c9a4…` | 24,964.608 |
+| `E22-ESB-2735-TS2` | `E22-ESB-TEST2735-TAIL2S-UTTERANCES` | `ecd9ab76755c…` | `f84f207844ea…` | `f3442e1be030…` | 24,964.608 |
 | `E22-ESB-2735-TS2-SMOKE-4` | `E22-ESB-TEST2735-TS2-SMOKE-4` | `f47de393dc03…` | `ab21243840a0…` | `cb8f4e5e65b7…` | 64.760 |
 
 **Both flight-computed split identities equal the ones their dataset fragments declare**, and both
@@ -74,6 +77,6 @@ second test read that has no owner GO.
 
 `core.scorers._assert_scoring_entry_gate` calls `require_clean_study_repo`, and that gate refuses
 on **any** untracked or modified path, not only the load-bearing surface. Both receipts here were
-produced with the tree clean at commit `42da8bb4` and written to a scratchpad directory outside the
+produced with the tree clean at commit `599c7b0a` and written to a scratchpad directory outside the
 repository, then copied in. A flight agent writing receipts into the repository mid-campaign will
 hit the same wall.
