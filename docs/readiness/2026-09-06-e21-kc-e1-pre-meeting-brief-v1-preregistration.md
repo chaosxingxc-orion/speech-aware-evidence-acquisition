@@ -1,4 +1,11 @@
-# KC-E1 — the Earnings-21 pre-meeting brief, whole prompt (v1, DRAFT)
+# KC-E1 — the Earnings-21 pre-meeting brief, whole prompt (v1, DRAFT — SUPERSEDED)
+
+> **Superseded 2026-09-06 by `docs/readiness/2026-09-06-e21-kc-e1-pre-meeting-brief-v2-preregistration.md`.**
+> The owner ruled on the pairing question this draft's §4 put to them (the 90-second window is the
+> paired unit, the call is the bootstrap cluster), and precondition 1 of §7 is now closed by the
+> additive D1 evidence supplement `docs/receipts/artifacts/d1-e21-participant-names.json`. §3, §4,
+> §7 and §8 below are REPLACED by v2's; §1, §2, §5, §6 and §9 stand and v2 restates only what moved.
+> Read v2 for anything the flight will act on.
 
 **Status: DRAFT. Not authorized to fly.** E5 built the pieces — the evidence source, its form twin,
 the semantic taxonomy, the comparator's fourth metric, the per-call provenance receipt and the config
