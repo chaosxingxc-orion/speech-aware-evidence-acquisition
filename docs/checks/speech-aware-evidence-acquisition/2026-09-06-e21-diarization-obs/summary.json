@@ -1,0 +1,1015 @@
+{
+  "artifact_bytes": 2224669,
+  "artifact_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-TOOL-DIARIZATION-V1/attempt-20260907T045837Z-5b3f93/diarization.json",
+  "artifact_relpath": "runs/SAEA-E21-TOOL-DIARIZATION-V1/attempt-20260907T045837Z-5b3f93/diarization.json",
+  "artifact_sha256": "a61c4d559debe3814e024bb1edd9c1b65f063e22aa6a37b1df4a3eea22691ce7",
+  "attempt_id": "attempt-20260907T045837Z-5b3f93",
+  "audio_seconds": 141345.8526875,
+  "both_strata": {
+    "speakers=0/speakers=0": 5,
+    "speakers=1/dominated": 645,
+    "speakers=2/dominated": 414,
+    "speakers=2/shared": 84,
+    "speakers>=3/dominated": 292,
+    "speakers>=3/shared": 153
+  },
+  "calls": 44,
+  "contacts": [
+    {
+      "device": "cuda:0",
+      "gpu": {
+        "mean_utilization_pct": 60.2,
+        "peak_memory_used_mib": 510.0,
+        "peak_power_w": 95.07,
+        "peak_utilization_pct": 94.0,
+        "samples": 15
+      },
+      "phase": "preflight",
+      "return_code": 0,
+      "rttm_count": 1,
+      "wall_seconds": 18.518302623997442
+    },
+    {
+      "device": "cuda:0",
+      "gpu": {
+        "mean_utilization_pct": 92.12952968388589,
+        "peak_memory_used_mib": 708.0,
+        "peak_power_w": 104.78,
+        "peak_utilization_pct": 99.0,
+        "samples": 1297
+      },
+      "phase": "full-pass",
+      "return_code": 0,
+      "rttm_count": 44,
+      "wall_seconds": 1358.4526081149816
+    }
+  ],
+  "count_strata": {
+    "speakers=0": 5,
+    "speakers=1": 645,
+    "speakers=2": 498,
+    "speakers>=3": 445
+  },
+  "dominance_strata": {
+    "dominated": 1351,
+    "shared": 237,
+    "speakers=0": 5
+  },
+  "four_speaker_bound_caveat": {
+    "calls_whose_roster_exceeds_the_bound": 38,
+    "read": "a COUNT of non-empty lines in each call ConEC participant_names file (a runtime-legal-input layer already hashed by the committed brief-provenance receipt). No name was recorded, no speaker id was mapped to a name, and no diarization accuracy was measured",
+    "roster_participant_max": 19,
+    "roster_participant_min": 2,
+    "tool_bound": 4,
+    "windows_in_those_calls": 1476,
+    "windows_total": 1593
+  },
+  "frozen_core_contacts": 0,
+  "generated_at": "2026-09-07T05:35:17.991021+00:00",
+  "lock_path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+  "overlap_share": {
+    "max": 0.07880000000000109,
+    "mean": 0.003292850641334702,
+    "median": 0.0,
+    "p90": 0.0111555555555444,
+    "windows_with_any_overlap": 491
+  },
+  "per_call": [
+    {
+      "audio_seconds": 3285.816,
+      "sample_id": "4320211",
+      "segments": 314,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 3015.351999999999,
+      "windows": 37
+    },
+    {
+      "audio_seconds": 2458.872,
+      "sample_id": "4330115",
+      "segments": 188,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 2303.355,
+      "windows": 28
+    },
+    {
+      "audio_seconds": 5740.608,
+      "sample_id": "4341191",
+      "segments": 740,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 4961.279999999993,
+      "windows": 64
+    },
+    {
+      "audio_seconds": 2720.9143125,
+      "sample_id": "4344338",
+      "segments": 227,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 2531.688000000001,
+      "windows": 31
+    },
+    {
+      "audio_seconds": 3275.424,
+      "sample_id": "4344866",
+      "segments": 319,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 2870.5719999999988,
+      "windows": 37
+    },
+    {
+      "audio_seconds": 3971.9749375,
+      "sample_id": "4346818",
+      "segments": 368,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 3421.0249999999996,
+      "windows": 45
+    },
+    {
+      "audio_seconds": 4709.376,
+      "sample_id": "4346923",
+      "segments": 407,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 4001.3559999999966,
+      "windows": 53
+    },
+    {
+      "audio_seconds": 4887.0019375,
+      "sample_id": "4359732",
+      "segments": 233,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 4670.484999999996,
+      "windows": 55
+    },
+    {
+      "audio_seconds": 3759.912,
+      "sample_id": "4359971",
+      "segments": 359,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 3527.531999999999,
+      "windows": 42
+    },
+    {
+      "audio_seconds": 3906.72,
+      "sample_id": "4360366",
+      "segments": 465,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 3439.630999999998,
+      "windows": 44
+    },
+    {
+      "audio_seconds": 3594.97575,
+      "sample_id": "4360674",
+      "segments": 264,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 3347.071999999999,
+      "windows": 40
+    },
+    {
+      "audio_seconds": 4511.28,
+      "sample_id": "4360717",
+      "segments": 277,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 4257.475999999995,
+      "windows": 51
+    },
+    {
+      "audio_seconds": 4411.428625,
+      "sample_id": "4361631",
+      "segments": 399,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 3713.692,
+      "windows": 50
+    },
+    {
+      "audio_seconds": 5587.226125,
+      "sample_id": "4363614",
+      "segments": 315,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 5087.7410000000045,
+      "windows": 63
+    },
+    {
+      "audio_seconds": 3506.0026875,
+      "sample_id": "4364366",
+      "segments": 255,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 3035.819999999999,
+      "windows": 39
+    },
+    {
+      "audio_seconds": 4328.676,
+      "sample_id": "4365024",
+      "segments": 197,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 4118.275999999999,
+      "windows": 49
+    },
+    {
+      "audio_seconds": 2518.9878125,
+      "sample_id": "4365948",
+      "segments": 196,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 2342.287999999998,
+      "windows": 28
+    },
+    {
+      "audio_seconds": 3595.0116875,
+      "sample_id": "4366302",
+      "segments": 373,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 3122.5749999999966,
+      "windows": 40
+    },
+    {
+      "audio_seconds": 4010.4809375,
+      "sample_id": "4366429",
+      "segments": 295,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 3698.2999999999997,
+      "windows": 45
+    },
+    {
+      "audio_seconds": 1817.730625,
+      "sample_id": "4366522",
+      "segments": 91,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 1710.0280000000002,
+      "windows": 21
+    },
+    {
+      "audio_seconds": 2366.352,
+      "sample_id": "4366893",
+      "segments": 148,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 2209.904,
+      "windows": 27
+    },
+    {
+      "audio_seconds": 1720.8,
+      "sample_id": "4367318",
+      "segments": 176,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 1556.448,
+      "windows": 20
+    },
+    {
+      "audio_seconds": 3175.296,
+      "sample_id": "4367535",
+      "segments": 311,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 2774.8279999999995,
+      "windows": 36
+    },
+    {
+      "audio_seconds": 4221.988625,
+      "sample_id": "4368670",
+      "segments": 315,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 3844.220000000002,
+      "windows": 47
+    },
+    {
+      "audio_seconds": 2028.504,
+      "sample_id": "4374910",
+      "segments": 217,
+      "speaker_count": 2,
+      "speakers": [
+        "speaker_1",
+        "speaker_2"
+      ],
+      "speech_seconds": 1920.9160000000002,
+      "windows": 23
+    },
+    {
+      "audio_seconds": 3472.152,
+      "sample_id": "4375653",
+      "segments": 271,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 3231.2280000000005,
+      "windows": 39
+    },
+    {
+      "audio_seconds": 3795.1096875,
+      "sample_id": "4382825",
+      "segments": 302,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 3338.1359999999972,
+      "windows": 43
+    },
+    {
+      "audio_seconds": 3376.68,
+      "sample_id": "4383161",
+      "segments": 257,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 3074.115999999996,
+      "windows": 38
+    },
+    {
+      "audio_seconds": 2636.3439375,
+      "sample_id": "4384198",
+      "segments": 267,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 2317.355999999999,
+      "windows": 30
+    },
+    {
+      "audio_seconds": 1476.744,
+      "sample_id": "4384683",
+      "segments": 165,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 1204.0200000000013,
+      "windows": 17
+    },
+    {
+      "audio_seconds": 3271.968,
+      "sample_id": "4384744",
+      "segments": 279,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 3046.262999999998,
+      "windows": 37
+    },
+    {
+      "audio_seconds": 4022.592,
+      "sample_id": "4384964",
+      "segments": 333,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 3635.8549999999973,
+      "windows": 45
+    },
+    {
+      "audio_seconds": 2559.986,
+      "sample_id": "4385072",
+      "segments": 286,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 2310.5790000000006,
+      "windows": 29
+    },
+    {
+      "audio_seconds": 4346.006,
+      "sample_id": "4385388",
+      "segments": 448,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 3829.6639999999998,
+      "windows": 49
+    },
+    {
+      "audio_seconds": 3049.8,
+      "sample_id": "4385939",
+      "segments": 199,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 2802.092,
+      "windows": 34
+    },
+    {
+      "audio_seconds": 1097.1,
+      "sample_id": "4386541",
+      "segments": 120,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 993.8400000000008,
+      "windows": 13
+    },
+    {
+      "audio_seconds": 1310.16,
+      "sample_id": "4387332",
+      "segments": 81,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 1229.3490000000004,
+      "windows": 15
+    },
+    {
+      "audio_seconds": 2158.0539375,
+      "sample_id": "4387383",
+      "segments": 223,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 1418.044000000001,
+      "windows": 24
+    },
+    {
+      "audio_seconds": 2162.5730625,
+      "sample_id": "4387865",
+      "segments": 205,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 2010.0210000000004,
+      "windows": 25
+    },
+    {
+      "audio_seconds": 2058.816,
+      "sample_id": "4389907",
+      "segments": 174,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 1877.6030000000005,
+      "windows": 23
+    },
+    {
+      "audio_seconds": 1438.008,
+      "sample_id": "4392809",
+      "segments": 127,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 1302.0759999999996,
+      "windows": 16
+    },
+    {
+      "audio_seconds": 1758.024,
+      "sample_id": "4394084",
+      "segments": 176,
+      "speaker_count": 2,
+      "speakers": [
+        "speaker_1",
+        "speaker_2"
+      ],
+      "speech_seconds": 1592.8480000000009,
+      "windows": 20
+    },
+    {
+      "audio_seconds": 2771.64,
+      "sample_id": "4397800",
+      "segments": 191,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 2530.1879999999983,
+      "windows": 31
+    },
+    {
+      "audio_seconds": 4472.736,
+      "sample_id": "4397829",
+      "segments": 551,
+      "speaker_count": 4,
+      "speakers": [
+        "speaker_1",
+        "speaker_2",
+        "speaker_3",
+        "speaker_4"
+      ],
+      "speech_seconds": 3237.719,
+      "windows": 50
+    }
+  ],
+  "reader_validation": "PASS",
+  "reader_validation_detail": "load_diarization re-derived every window dominant speaker, dominant share, speaker count and overlap share from that call own segment list and found no disagreement, on all 44 calls and all 1593 windows",
+  "roster_bound_rows": [
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 9,
+      "sample_id": "4320211",
+      "tool_speaker_count": 4,
+      "windows": 37
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 7,
+      "sample_id": "4330115",
+      "tool_speaker_count": 4,
+      "windows": 28
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 13,
+      "sample_id": "4341191",
+      "tool_speaker_count": 4,
+      "windows": 64
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 7,
+      "sample_id": "4344338",
+      "tool_speaker_count": 4,
+      "windows": 31
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 9,
+      "sample_id": "4344866",
+      "tool_speaker_count": 4,
+      "windows": 37
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 14,
+      "sample_id": "4346818",
+      "tool_speaker_count": 4,
+      "windows": 45
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 19,
+      "sample_id": "4346923",
+      "tool_speaker_count": 4,
+      "windows": 53
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 11,
+      "sample_id": "4359732",
+      "tool_speaker_count": 4,
+      "windows": 55
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 9,
+      "sample_id": "4359971",
+      "tool_speaker_count": 4,
+      "windows": 42
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 14,
+      "sample_id": "4360366",
+      "tool_speaker_count": 4,
+      "windows": 44
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 8,
+      "sample_id": "4360674",
+      "tool_speaker_count": 4,
+      "windows": 40
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 14,
+      "sample_id": "4360717",
+      "tool_speaker_count": 4,
+      "windows": 51
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 10,
+      "sample_id": "4361631",
+      "tool_speaker_count": 4,
+      "windows": 50
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 14,
+      "sample_id": "4363614",
+      "tool_speaker_count": 4,
+      "windows": 63
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 14,
+      "sample_id": "4364366",
+      "tool_speaker_count": 4,
+      "windows": 39
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 12,
+      "sample_id": "4365024",
+      "tool_speaker_count": 4,
+      "windows": 49
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 5,
+      "sample_id": "4365948",
+      "tool_speaker_count": 4,
+      "windows": 28
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 13,
+      "sample_id": "4366302",
+      "tool_speaker_count": 4,
+      "windows": 40
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 12,
+      "sample_id": "4366429",
+      "tool_speaker_count": 4,
+      "windows": 45
+    },
+    {
+      "exceeds_tool_bound": false,
+      "roster_participants": 4,
+      "sample_id": "4366522",
+      "tool_speaker_count": 4,
+      "windows": 21
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 8,
+      "sample_id": "4366893",
+      "tool_speaker_count": 4,
+      "windows": 27
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 6,
+      "sample_id": "4367318",
+      "tool_speaker_count": 4,
+      "windows": 20
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 11,
+      "sample_id": "4367535",
+      "tool_speaker_count": 4,
+      "windows": 36
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 14,
+      "sample_id": "4368670",
+      "tool_speaker_count": 4,
+      "windows": 47
+    },
+    {
+      "exceeds_tool_bound": false,
+      "roster_participants": 2,
+      "sample_id": "4374910",
+      "tool_speaker_count": 2,
+      "windows": 23
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 9,
+      "sample_id": "4375653",
+      "tool_speaker_count": 4,
+      "windows": 39
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 18,
+      "sample_id": "4382825",
+      "tool_speaker_count": 4,
+      "windows": 43
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 10,
+      "sample_id": "4383161",
+      "tool_speaker_count": 4,
+      "windows": 38
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 6,
+      "sample_id": "4384198",
+      "tool_speaker_count": 4,
+      "windows": 30
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 7,
+      "sample_id": "4384683",
+      "tool_speaker_count": 4,
+      "windows": 17
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 8,
+      "sample_id": "4384744",
+      "tool_speaker_count": 4,
+      "windows": 37
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 17,
+      "sample_id": "4384964",
+      "tool_speaker_count": 4,
+      "windows": 45
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 9,
+      "sample_id": "4385072",
+      "tool_speaker_count": 4,
+      "windows": 29
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 11,
+      "sample_id": "4385388",
+      "tool_speaker_count": 4,
+      "windows": 49
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 18,
+      "sample_id": "4385939",
+      "tool_speaker_count": 4,
+      "windows": 34
+    },
+    {
+      "exceeds_tool_bound": false,
+      "roster_participants": 4,
+      "sample_id": "4386541",
+      "tool_speaker_count": 4,
+      "windows": 13
+    },
+    {
+      "exceeds_tool_bound": false,
+      "roster_participants": 4,
+      "sample_id": "4387332",
+      "tool_speaker_count": 4,
+      "windows": 15
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 5,
+      "sample_id": "4387383",
+      "tool_speaker_count": 4,
+      "windows": 24
+    },
+    {
+      "exceeds_tool_bound": false,
+      "roster_participants": 4,
+      "sample_id": "4387865",
+      "tool_speaker_count": 4,
+      "windows": 25
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 6,
+      "sample_id": "4389907",
+      "tool_speaker_count": 4,
+      "windows": 23
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 5,
+      "sample_id": "4392809",
+      "tool_speaker_count": 4,
+      "windows": 16
+    },
+    {
+      "exceeds_tool_bound": false,
+      "roster_participants": 4,
+      "sample_id": "4394084",
+      "tool_speaker_count": 2,
+      "windows": 20
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 8,
+      "sample_id": "4397800",
+      "tool_speaker_count": 4,
+      "windows": 31
+    },
+    {
+      "exceeds_tool_bound": true,
+      "roster_participants": 14,
+      "sample_id": "4397829",
+      "tool_speaker_count": 4,
+      "windows": 50
+    }
+  ],
+  "run_id": "SAEA-E21-TOOL-DIARIZATION-V1",
+  "schema": "saea-e21-diarization-obs-summary-v1",
+  "segments": 12104,
+  "speaker_count_histogram": {
+    "2": 2,
+    "4": 42
+  },
+  "speaker_count_max": 4,
+  "speaker_count_median": 4,
+  "speaker_count_min": 2,
+  "study": "speech-aware-evidence-acquisition",
+  "windows": 1593
+}
