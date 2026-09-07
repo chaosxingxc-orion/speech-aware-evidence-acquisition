@@ -1,0 +1,125 @@
+{
+  "attempt_id": "attempt-20260907T042025Z-b8bfc6",
+  "boundary": "model-free: this reads the SEALED trace of an already-flown attempt. It contacts nothing and it pairs nothing -- no comparator row is opened here.",
+  "cap_disagreements_with_the_rule": [],
+  "cap_distribution": {
+    "at_the_ceiling": 0,
+    "distinct": 4,
+    "max": 321,
+    "mean": 126.5,
+    "median": 91.0,
+    "min": 3
+  },
+  "completion_tokens": {
+    "max": 97,
+    "mean": 42.75,
+    "total": 171
+  },
+  "planned_completion_token_ceiling": {
+    "with_the_cap": 506,
+    "with_the_sealed_cell_wide_1024": 4096
+  },
+  "row_count": 4,
+  "rows": {
+    "4469088-654": {
+      "audio_seconds": 0.2199375,
+      "cap_bound": true,
+      "cap_matches_rule": true,
+      "completion_tokens": 3,
+      "decoding_keys": [
+        "id_slot",
+        "max_tokens",
+        "seed",
+        "temperature"
+      ],
+      "headroom_tokens": 0,
+      "id_slot": 0,
+      "latency_seconds": 1.3520624039811082,
+      "prompt_tokens": 62,
+      "request_id": "e22esb-0001",
+      "resolved_max_tokens": 3,
+      "rule_cap": 3,
+      "sample_id": "4469088-654"
+    },
+    "4479944-334": {
+      "audio_seconds": 13.02025,
+      "cap_bound": false,
+      "cap_matches_rule": true,
+      "completion_tokens": 53,
+      "decoding_keys": [
+        "id_slot",
+        "max_tokens",
+        "seed",
+        "temperature"
+      ],
+      "headroom_tokens": 74,
+      "id_slot": 1,
+      "latency_seconds": 2.1043513439944945,
+      "prompt_tokens": 231,
+      "request_id": "e22esb-0002",
+      "resolved_max_tokens": 127,
+      "rule_cap": 127,
+      "sample_id": "4479944-334"
+    },
+    "4482383-188": {
+      "audio_seconds": 32.88,
+      "cap_bound": false,
+      "cap_matches_rule": true,
+      "completion_tokens": 97,
+      "decoding_keys": [
+        "id_slot",
+        "max_tokens",
+        "seed",
+        "temperature"
+      ],
+      "headroom_tokens": 224,
+      "id_slot": 2,
+      "latency_seconds": 2.6221027779974975,
+      "prompt_tokens": 478,
+      "request_id": "e22esb-0003",
+      "resolved_max_tokens": 321,
+      "rule_cap": 321,
+      "sample_id": "4482383-188"
+    },
+    "4482613-439": {
+      "audio_seconds": 5.5803125,
+      "cap_bound": false,
+      "cap_matches_rule": true,
+      "completion_tokens": 18,
+      "decoding_keys": [
+        "id_slot",
+        "max_tokens",
+        "seed",
+        "temperature"
+      ],
+      "headroom_tokens": 37,
+      "id_slot": 3,
+      "latency_seconds": 1.6119957350019831,
+      "prompt_tokens": 127,
+      "request_id": "e22esb-0004",
+      "resolved_max_tokens": 55,
+      "rule_cap": 55,
+      "sample_id": "4482613-439"
+    }
+  },
+  "rows_where_the_cap_bound": {
+    "count": 1,
+    "definition": "completion_tokens == the row's own resolved cap; a greedy decode stopped by n_predict emits exactly the cap",
+    "sample_ids": [
+      "4469088-654"
+    ]
+  },
+  "rows_whose_cap_is_not_an_integer": [],
+  "rows_with_a_resolved_integer_cap": 4,
+  "rule": {
+    "alpha": 1.5,
+    "ceiling": 1024,
+    "floor": 1,
+    "policy": "duration-proportional-v1",
+    "tokens_per_word": 1.2991996296395218,
+    "words_per_second_p95": 4.999220954734555
+  },
+  "run_id": "SAEA-E22-DEV-ESB-STOPCAP-SMOKE-V1",
+  "schema": "saea-e22-stopcap-per-row-read-v1",
+  "study": "speech-aware-evidence-acquisition"
+}
