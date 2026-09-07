@@ -82,6 +82,7 @@ import json
 import math
 import os
 import statistics
+import subprocess
 import sys
 import time
 from collections import Counter
@@ -152,6 +153,12 @@ PLAN_GPU_HOURS = 0.4
 STAND_IN_RELPATH = "derived/prompt-fit/e21-kc-e1/silence-100ms-16k.wav"
 STAND_IN_SECONDS = 0.1
 STAND_IN_RATE_HZ = 16000
+
+
+def git(*argv: str) -> str:
+    return subprocess.run(
+        ["git", *argv], cwd=REPO, check=True, capture_output=True, text=True
+    ).stdout.strip()
 
 
 def log(message: str) -> None:
@@ -498,6 +505,7 @@ def write_cap_impact(
         "run_id": args.run_id,
         "generated_at": datetime.now(tz=timezone.utc).isoformat(),
         "brief_max_entries_per_class": cap,
+        "study_commit": git("rev-parse", "HEAD"),
         "zero_contact": (
             "no model, server, tokenizer, GPU, tool, embedding, network or "
             "audio-decode contact; six pure class extractors over the same two "
@@ -558,6 +566,16 @@ def main() -> int:
     parser.add_argument("--out-dir", type=Path, default=CHECK / "prompt-fit")
     parser.add_argument("--experiment", default=EXPERIMENT)
     parser.add_argument("--run-id", default=RUN_ID)
+    parser.add_argument(
+        "--allow-dirty",
+        action="store_true",
+        help=(
+            "TEST-ONLY. A fit certifies COMMITTED fragments -- the cap it reports "
+            "is only meaningful if the baseline fragments it read are the ones "
+            "that will fly. Without this the run refuses a dirty tree rather than "
+            "recording a study_commit that describes different bytes"
+        ),
+    )
     parser.add_argument(
         "--cap-impact-only",
         action="store_true",
@@ -628,6 +646,14 @@ def main() -> int:
     )
     from speech_aware_evidence_acquisition.data.loader import SampleRef
     from speech_aware_evidence_acquisition.reproduction.obs_audio import write_wav_bytes
+
+    dirty = git("status", "--porcelain")
+    if dirty and not args.allow_dirty:
+        raise SystemExit(
+            "the working tree is dirty; a fit certifies committed fragments:\n" + dirty
+        )
+    study_commit = git("rev-parse", "HEAD")
+    log("clean tree at %s" % study_commit[:8])
 
     experiment_doc = load_json(REPO / "configs" / "experiment" / f"{args.experiment}.json")
     cells = list(experiment_doc["cells"])
@@ -1364,6 +1390,8 @@ def main() -> int:
         "run_id": args.run_id,
         "attempt_id": str(plan.attempt_id),
         "generated_at": datetime.now(tz=timezone.utc).isoformat(),
+        "study_commit": study_commit,
+        "working_tree_clean": not dirty,
         "flight_run_id": FLIGHT_RUN_ID,
         "experiment_fragment": args.experiment,
         "dataset_fragment": dataset,
