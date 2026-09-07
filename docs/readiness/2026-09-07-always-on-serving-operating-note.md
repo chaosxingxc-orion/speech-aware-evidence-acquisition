@@ -235,3 +235,59 @@ the two new scripts need no allowlist entry; the check passes unchanged. Coverag
 `tests/unit/test_flight_runtime.py` — no model contact, no GPU, no network in any of them. The
 E7b tests drive real processes (an unreaped child for the zombie states, a signal-recording fake
 server for the teardown) but never a model.
+
+## Host memory (E7c)
+
+**The incident (2026-09-07).** The WSL VM was allowed 56 GB of a 63.4 GB host. The serving
+session's `llama-server` holds an ~18.5 GB resident footprint through a 20 GB GGUF `mmap` plus the
+page cache behind it; that footprint filled the VM's own budget, Windows itself ran out of
+headroom around the VM, and the Claude Code host watchdog killed the serving wrapper and its
+`llama-server` child — not the VM, the wrapper process the coordinator was running. The in-flight
+KC-E1 attempt aborted at 42 of 44 calls with no seal. Neither side alone would have shown this
+coming: the VM side (`/proc/meminfo`) never ran low, because the VM itself had headroom; nothing
+before E7c read the WINDOWS side at all.
+
+**The `.wslconfig` change.** The owner lowered the WSL VM's memory allowance from 56 GB to
+`memory=44GB` (host RAM is 63.4 GB), with `[experimental] autoMemoryReclaim=gradual` added so the
+VM hands idle page cache back to Windows instead of holding everything it has ever touched. The
+prior file is kept as `.wslconfig.bak-20260907`. 44 GB keeps ~19 GB of host headroom at the VM's
+own ceiling, comfortably above the 12 GB `--min-host-free-gb` floor below, where the 56 GB cap left
+only ~7 GB.
+
+**The new fields.** `core.session.serving.read_host_memory()` answers both sides of the question in
+one probe: ONE `powershell.exe` interop call (`Get-CimInstance Win32_OperatingSystem` for the
+Windows host's own total/free memory, `Get-Process vmmem*` for the WSL VM's working set on the
+host, both via `ConvertTo-Json` in a single 8-second-capped call) for the Windows side, and
+`/proc/meminfo`'s own `MemTotal`/`MemAvailable` for the VM side. Each side fails soft to `None`
+independently (no `powershell.exe`, a non-zero exit, or an unreadable `/proc/meminfo` each degrade
+only their own side), and `host_memory_source` names which side(s) actually answered
+(`"windows+vm"` / `"windows-only"` / `"vm-only"` / `"unavailable"`) so an all-`None` reading is
+distinguishable from interop simply being switched off.
+
+Every `scripts/serving_monitor.py sample` line now carries a `host_memory` object with
+`host_total_gb`, `host_free_gb`, `vmmem_ws_gb`, `vm_total_gb`, `vm_available_gb` and
+`host_memory_source`. `summarize_monitor_samples` folds the window's reading beside the existing
+parked/active accounting: `host_free_gb_min` (with `host_free_gb_min_at`, the epoch of that
+minimum) and `host_free_gb_last` track the Windows host's own free memory — the number the
+watchdog acted on — while `vm_available_gb_min` and `vmmem_ws_gb_max` are the VM-side and
+VM-footprint-on-host companions; `host_memory_samples` counts only samples carrying a non-null
+`host_free_gb` reading, so a run entirely on a host with interop off reports `0` rather than a
+misleadingly present minimum.
+
+**The thresholds.**
+
+| Threshold | Default | Where | Effect |
+|---|---|---|---|
+| `--host-free-warn-gb` | 6.0 GB | `scripts/serving_monitor.py sample` | a sample whose host free GB drops below this writes one `WARN host-memory` line to the monitor's own log (`monitor.log`, beside `monitor.jsonl` in the same session directory — never stdout), at most once per minute |
+| `--min-host-free-gb` | 12.0 GB | `scripts/serving_session.sh start` (`core.session.serving._start`) | refuses to start a new resident server when the host's free memory is below this, naming the reading in the refusal; fails OPEN (never blocks) when the reading itself is unavailable |
+
+`scripts/serving_session.sh status` prints the CURRENT `host_memory` reading beside the session
+document — the same question `start` asks before it would spawn.
+
+**The rule.** A serving wrapper is a host-watchdog target: the process the coordinator runs to hold
+`llama-server` open is exactly the kind of long-lived, memory-heavy background process a host
+watchdog kills first when Windows itself runs short, and it takes the resident server down with it
+with no seal for whatever flight was mid-call. So the running `.wslconfig` cap must always leave
+>= 12 GB free for Windows (matching `--min-host-free-gb`'s default) — lowering the VM's cap further
+is always the correct response to a repeat of this incident, not raising the threshold to match a
+tighter cap.
