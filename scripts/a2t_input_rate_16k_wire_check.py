@@ -156,7 +156,15 @@ def gold_id_rail_state() -> dict[str, Any]:
     )
 
     source = inspect.getsource(Audio2ToolAdapter.gold)
-    landed = "published_segment_key" in source or 'split("@"' in source
+    landed = (
+        # The name the rail actually landed under when ``wt/ts2y`` merged: the
+        # rule moved into ``data.variant_ids`` so the three carriers cannot
+        # drift into three spellings of it. The Earnings-22 spelling and a raw
+        # split stay accepted, because either would be the same rail.
+        "published_sample_key" in source
+        or "published_segment_key" in source
+        or 'split("@"' in source
+    )
     return {
         "landed": landed,
         "call_site": "rails/adapters/audio2tool.py::Audio2ToolAdapter.gold",
@@ -172,6 +180,16 @@ def gold_id_rail_state() -> dict[str, Any]:
         if not landed
         else "nothing -- the rail is present on this branch",
     }
+
+
+def _scratch_receipt(cell: dict[str, Any]) -> Path:
+    """Where the runner's own wire-check by-product goes: outside the repo."""
+
+    from speech_aware_evidence_acquisition.data.lock import data_root  # noqa: PLC0415
+
+    directory = Path(data_root()) / "wire-check" / "a2t-input-rate-16k"
+    directory.mkdir(parents=True, exist_ok=True)
+    return directory / f"{cell['cell']}.wire-check.json"
 
 
 def run_mode(cell: dict[str, Any], mode: str) -> dict[str, Any]:
@@ -192,8 +210,15 @@ def run_mode(cell: dict[str, Any], mode: str) -> dict[str, Any]:
     ]
     if mode == "wire-check":
         # Never the runner's default, which points inside a SEALED 2026-09-04
-        # check directory.
-        argv += ["--wire-check-out", str(OUT_DIR / "runner" / f"{cell['cell']}.json")]
+        # check directory -- and never inside THIS check's directory either.
+        # The runner's per-cell receipt is a by-product of a contactless check,
+        # not evidence: once the gold-id rail landed the cells run far enough
+        # for it to be written, it lands in the working tree, the tree goes
+        # dirty, and the next cell's scoring correctly refuses a COMPLETED
+        # manifest on a dirty tree. Same defect, same fix as
+        # ``scripts/cross_carrier_tail2s_wire_check.py`` -- out of the repo,
+        # under ``$SPEECHRL_DATA_DIR``, where large by-products already live.
+        argv += ["--wire-check-out", str(_scratch_receipt(cell))]
     completed = subprocess.run(  # noqa: S603 (fixed argv, no shell)
         argv, cwd=REPO, env=env, capture_output=True, text=True, timeout=1800
     )
