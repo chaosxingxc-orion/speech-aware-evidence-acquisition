@@ -15,9 +15,11 @@ import json
 
 import pytest
 
+from speech_aware_evidence_acquisition.analysis.e22_error_taxonomy import ErrorSpan, ScoredSpan
 from speech_aware_evidence_acquisition.analysis.e22_usage_cells import (
     AGENTIC_MARGIN_POINTS,
     UsageCellsError,
+    boundary_charge,
     decide,
     duration_table,
     high_impact_charge,
@@ -28,6 +30,7 @@ from speech_aware_evidence_acquisition.analysis.e22_usage_cells import (
     per_call_table,
     pooled_delta,
     weightings,
+    write_check_manifest,
 )
 
 WHISPER = "asr-wer-esb-whisper"
@@ -211,6 +214,15 @@ def test_decide_refuses_an_agentic_upper_bound_above_the_fixed_margin():
     assert verdict["clause_2_margin_points"] == 0.05
 
 
+def test_decide_refuses_a_worsening_agentic_rate_even_inside_the_margin():
+    """Clause 2's other half: the point estimate must not be above the comparator's."""
+
+    verdict = decide(_stat(-0.43, -0.65, -0.22), _stat(0.01, -0.02, 0.04))
+    assert verdict["clause_2_agentic_ci90_upper_below_margin"] is False
+    assert verdict["clause_2_point_estimate"] == 0.01
+    assert verdict["admitted"] is False
+
+
 def test_decide_refuses_a_worsening_wer_even_with_a_negative_upper_bound():
     verdict = decide(_stat(0.20, -0.40, -0.01), _stat(0.0, -0.01, 0.01))
     assert verdict["admitted"] is False
@@ -345,19 +357,164 @@ def test_load_roster_refuses_a_duplicated_id(tmp_path):
         load_roster(repo)
 
 
-def test_load_score_rows_refuses_a_missing_roster_row(tmp_path):
+def _score_file(tmp_path, rows):
     run = tmp_path / "runs" / "RUN" / "attempt"
-    run.mkdir(parents=True)
-    block = {
-        "aggregate": {},
-        "per_sample": [
-            dict(sample_id="c1-1", wer=0.1, hits=9, substitutions=1, deletions=0, insertions=0)
-        ],
-    }
+    run.mkdir(parents=True, exist_ok=True)
+    block = {"aggregate": {}, "per_sample": rows}
     (run / "RUN.scores.json").write_text(
         json.dumps({WHISPER: block, FROZEN: block}), encoding="utf-8"
     )
-    source = {"run_id": "RUN", "attempt": "attempt"}
+    return {"run_id": "RUN", "attempt": "attempt"}
+
+
+def test_load_score_rows_refuses_a_missing_roster_row(tmp_path):
+    source = _score_file(
+        tmp_path,
+        [dict(sample_id="c1-1", wer=0.1, hits=9, substitutions=1, deletions=0, insertions=0)],
+    )
     assert set(load_score_rows(tmp_path, source, ["c1-1"])[WHISPER]) == {"c1-1"}
     with pytest.raises(UsageCellsError, match="missing 1 roster rows"):
         load_score_rows(tmp_path, source, ["c1-1", "c1-2"])
+
+
+def test_load_score_rows_folds_a_variant_suffix_onto_the_published_segment(tmp_path):
+    """Deviation D-ENC-1: a media-variant cell's rows join on the published key."""
+
+    source = _score_file(
+        tmp_path,
+        [
+            dict(sample_id="c1-1@ts2", wer=0.1, hits=9, substitutions=1, deletions=0, insertions=0),
+            dict(sample_id="c1-2@ts2", wer=0.2, hits=8, substitutions=2, deletions=0, insertions=0),
+        ],
+    )
+    rows = load_score_rows(tmp_path, source, ["c1-1", "c1-2"])[WHISPER]
+    assert set(rows) == {"c1-1", "c1-2"}
+    assert rows["c1-2"]["substitutions"] == pytest.approx(2.0)
+
+
+def test_load_score_rows_refuses_two_variants_of_one_published_segment(tmp_path):
+    source = _score_file(
+        tmp_path,
+        [
+            dict(sample_id="c1-1@ts2", wer=0.1, hits=9, substitutions=1, deletions=0, insertions=0),
+            dict(sample_id="c1-1@p30", wer=0.3, hits=7, substitutions=3, deletions=0, insertions=0),
+        ],
+    )
+    with pytest.raises(UsageCellsError, match="two rows for published segment"):
+        load_score_rows(tmp_path, source, ["c1-1"])
+
+
+# ---------------------------------------------------------------------------
+# The per-row BOUNDARY charge, clause 3's estimand
+# ---------------------------------------------------------------------------
+
+
+def _span(op: str, ref: tuple[str, ...], hyp: tuple[str, ...]) -> ErrorSpan:
+    return ErrorSpan(
+        op=op,
+        ref_start=0,
+        ref_end=len(ref),
+        hyp_start=0,
+        hyp_end=len(hyp),
+        ref_tokens=ref,
+        hyp_tokens=hyp,
+        ref_left=(),
+        ref_right=(),
+        hyp_left=(),
+        hyp_right=(),
+    )
+
+
+def _scored(sample_id: str, category: str, rule: str, span: ErrorSpan) -> ScoredSpan:
+    return ScoredSpan(
+        sample_id=sample_id,
+        call=sample_id.split("-")[0],
+        category=category,
+        rule=rule,
+        content_impact="LOW",
+        impact="LOW",
+        span=span,
+    )
+
+
+def test_boundary_charge_counts_the_category_and_the_two_runaway_rules_only():
+    scored = [
+        _scored("a", "segmentation-artifact", "segmentation-artifact/neighbour-bleed",
+                _span("INS", (), ("one", "two", "three"))),
+        _scored("a", "model-behaviour", "model-behaviour/runaway-tail",
+                _span("INS", (), ("four", "five"))),
+        _scored("b", "model-behaviour", "model-behaviour/runaway-head",
+                _span("INS", (), ("six",))),
+        # Neither of these belongs to the block the rule decides on.
+        _scored("b", "model-behaviour", "model-behaviour/hypothesis-repetition",
+                _span("INS", (), ("seven", "eight"))),
+        _scored("c", "named-entity", "named-entity/call-inventory",
+                _span("SUB", ("nine",), ("ten",))),
+    ]
+    assert boundary_charge(scored) == {"a": 5, "b": 1}
+
+
+def test_boundary_charge_uses_the_taxonomys_own_span_mass_rule():
+    """SUB and DEL charge reference words; INS charges hypothesis words."""
+
+    scored = [
+        _scored("a", "segmentation-artifact", "segmentation-artifact/boundary-substitution",
+                _span("SUB", ("one", "two", "three"), ("x",))),
+        _scored("a", "segmentation-artifact", "segmentation-artifact/boundary-deletion",
+                _span("DEL", ("four", "five"), ())),
+    ]
+    assert boundary_charge(scored) == {"a": 5}
+
+
+# ---------------------------------------------------------------------------
+# The three-clause form of the rule
+# ---------------------------------------------------------------------------
+
+
+def test_decide_without_a_boundary_block_is_the_two_clause_rule():
+    verdict = decide(_stat(-0.43, -0.65, -0.22), _stat(-0.06, -0.15, 0.02))
+    assert verdict["admitted"] is True
+    assert "clause_3_boundary_block_falls_by_at_least_points" not in verdict
+    assert verdict["clause_1_ci90_upper_threshold"] == 0.0
+
+
+def test_decide_with_a_boundary_block_adds_clause_3():
+    verdict = decide(
+        _stat(-8.0, -8.9, -7.1),
+        _stat(-0.16, -0.31, -0.02),
+        wer_ci_upper_max=-0.2356,
+        boundary=_stat(-7.17, -7.9, -6.4),
+        boundary_drop_points=2.0,
+    )
+    assert verdict["clause_3_boundary_block_falls_by_at_least_points"] is True
+    assert verdict["clause_3_required_drop_points"] == 2.0
+    assert verdict["admitted"] is True
+
+
+def test_decide_reads_the_stricter_wer_threshold_when_one_is_given():
+    verdict = decide(
+        _stat(-0.43, -0.65, -0.22),
+        _stat(-0.06, -0.15, 0.02),
+        wer_ci_upper_max=-0.2356,
+        boundary=_stat(-5.0, -5.5, -4.5),
+        boundary_drop_points=2.0,
+    )
+    # -0.22 clears zero but not the null's lower edge.
+    assert verdict["clause_1_corpus_wer_improves_with_ci90_upper_below_zero"] is False
+    assert verdict["admitted"] is False
+
+
+# ---------------------------------------------------------------------------
+# The receipt manifest
+# ---------------------------------------------------------------------------
+
+
+def test_write_check_manifest_is_sorted_lf_and_excludes_itself(tmp_path):
+    (tmp_path / "summary.json").write_text("{}", encoding="utf-8")
+    (tmp_path / "per-call-table.csv").write_text("call\n", encoding="utf-8")
+    target = write_check_manifest(tmp_path)
+    payload = target.read_bytes()
+    assert b"\r" not in payload
+    names = [line.split(" *")[1] for line in payload.decode("utf-8").strip().split("\n")]
+    assert names == ["per-call-table.csv", "summary.json"]
+    assert write_check_manifest(tmp_path).read_bytes() == payload

@@ -1,0 +1,1957 @@
+{
+  "arms": {
+    "A": {
+      "agentic": {
+        "agentic_error_rate_percent": 1.9161,
+        "high_impact_reference_word_mass": 503,
+        "high_impact_spans": 359,
+        "reference_words": 26251
+      },
+      "attempt": "attempt-20260905T073641Z-f977d1",
+      "category_mass": {
+        "boundary": {
+          "containment": {
+            "head": {
+              "inserted_words": 266,
+              "insertion_spans": 149,
+              "spans_by_containment": {
+                "contains_0.34_to_0.6": 9,
+                "contains_0.6_or_more": 73,
+                "contains_none": 59,
+                "contains_some": 8
+              },
+              "words_matched_at_0.6": 109
+            },
+            "tail": {
+              "inserted_words": 1950,
+              "insertion_spans": 704,
+              "spans_by_containment": {
+                "contains_0.34_to_0.6": 101,
+                "contains_0.6_or_more": 218,
+                "contains_none": 188,
+                "contains_some": 197
+              },
+              "words_matched_at_0.6": 397
+            }
+          },
+          "runaway_head_mass": 70,
+          "runaway_tail_mass": 1179,
+          "segmentation_artifact_mass": 924,
+          "total_error_mass": 2173,
+          "wer_points": 8.2778
+        },
+        "categories": [
+          {
+            "category": "format-convention",
+            "error_mass": 96,
+            "impact_HIGH": 0,
+            "impact_LOW": 0,
+            "impact_NONE": 81,
+            "share_of_error_mass_percent": 2.102,
+            "spans": 81,
+            "wer_points": 0.3657
+          },
+          {
+            "category": "reference-convention",
+            "error_mass": 233,
+            "impact_HIGH": 0,
+            "impact_LOW": 0,
+            "impact_NONE": 190,
+            "share_of_error_mass_percent": 5.101,
+            "spans": 190,
+            "wer_points": 0.8876
+          },
+          {
+            "category": "segmentation-artifact",
+            "error_mass": 924,
+            "impact_HIGH": 0,
+            "impact_LOW": 0,
+            "impact_NONE": 552,
+            "share_of_error_mass_percent": 20.228,
+            "spans": 552,
+            "wer_points": 3.5199
+          },
+          {
+            "category": "named-entity",
+            "error_mass": 299,
+            "impact_HIGH": 219,
+            "impact_LOW": 0,
+            "impact_NONE": 0,
+            "share_of_error_mass_percent": 6.546,
+            "spans": 219,
+            "wer_points": 1.139
+          },
+          {
+            "category": "domain-term",
+            "error_mass": 49,
+            "impact_HIGH": 1,
+            "impact_LOW": 33,
+            "impact_NONE": 0,
+            "share_of_error_mass_percent": 1.073,
+            "spans": 34,
+            "wer_points": 0.1867
+          },
+          {
+            "category": "model-behaviour",
+            "error_mass": 1390,
+            "impact_HIGH": 38,
+            "impact_LOW": 245,
+            "impact_NONE": 62,
+            "share_of_error_mass_percent": 30.429,
+            "spans": 345,
+            "wer_points": 5.295
+          },
+          {
+            "category": "acoustic-misrecognition",
+            "error_mass": 343,
+            "impact_HIGH": 31,
+            "impact_LOW": 192,
+            "impact_NONE": 30,
+            "share_of_error_mass_percent": 7.509,
+            "spans": 253,
+            "wer_points": 1.3066
+          },
+          {
+            "category": "other",
+            "error_mass": 1234,
+            "impact_HIGH": 70,
+            "impact_LOW": 408,
+            "impact_NONE": 388,
+            "share_of_error_mass_percent": 27.014,
+            "spans": 866,
+            "wer_points": 4.7008
+          }
+        ]
+      },
+      "error_shape_saea_v1": {
+        "corpus_wer_percent": 22.6419,
+        "deletions": 810,
+        "errors": 6073,
+        "hypothesis_over_reference_ratio": 1.097,
+        "hypothesis_words": 29423,
+        "insertion_share_of_errors_percent": 56.17,
+        "insertions": 3411,
+        "mean_per_utterance_wer_percent": 35.9345,
+        "reference_words": 26822,
+        "rows": 1500,
+        "substitutions": 1852
+      },
+      "error_shape_whisper": {
+        "corpus_wer_percent": 17.4012,
+        "deletions": 592,
+        "errors": 4568,
+        "hypothesis_over_reference_ratio": 1.0855,
+        "hypothesis_words": 28495,
+        "insertion_share_of_errors_percent": 62.08,
+        "insertions": 2836,
+        "mean_per_utterance_wer_percent": 31.3566,
+        "reference_words": 26251,
+        "rows": 1500,
+        "substitutions": 1140
+      },
+      "media": {
+        "audio_seconds_total": 9948.983,
+        "audio_tokens_total": 139282,
+        "padding_derived_audio_tokens_total": 9740,
+        "published_path_audio_tokens_total": 129542,
+        "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-short-clip-encoding-audit/summary.json",
+        "receipt_sha256": "e6f765ae4ad939707029a2ef48f35215da14343191329df955c38386cb82bfe1",
+        "rows": 1500,
+        "rows_carrying_a_zero_pad_block": 1498,
+        "zero_pad_frames_total": 75330,
+        "zero_pad_seconds_total": 753.3
+      },
+      "outputs_sha256": "7f785db352627fbe4cd159142d779a12373f75d24e2b5fb98cc35f293b1bf336",
+      "run_id": "SAEA-E22-DEV-ESB-PROMPT-A-V1",
+      "taxonomy_totals": {
+        "corpus_wer_percent": 17.4012,
+        "deletions": 592,
+        "insertions": 2836,
+        "reference_words": 26251,
+        "substitutions": 1140
+      },
+      "verified_cross_check": {
+        "available": false,
+        "disagreements": [],
+        "reason": "attempt-20260905T073641Z-f977d1.score.json carries no per_sample block for asr-wer-esb-whisper; it was scored without --include-per-sample",
+        "rows_compared": 0,
+        "score_file": "attempt-20260905T073641Z-f977d1.score.json",
+        "score_file_sha256": "01393ec52b22e1333935ede8b86f4b1f50bc7e3d7db32bedf71a391dc2944b0c"
+      }
+    },
+    "BX": {
+      "agentic": {
+        "agentic_error_rate_percent": 1.8971,
+        "high_impact_reference_word_mass": 498,
+        "high_impact_spans": 347,
+        "reference_words": 26251
+      },
+      "attempt": "attempt-20260907T083612Z-20c7c4",
+      "category_mass": {
+        "boundary": {
+          "containment": {
+            "head": {
+              "inserted_words": 233,
+              "insertion_spans": 130,
+              "spans_by_containment": {
+                "contains_0.34_to_0.6": 10,
+                "contains_0.6_or_more": 62,
+                "contains_none": 51,
+                "contains_some": 7
+              },
+              "words_matched_at_0.6": 87
+            },
+            "tail": {
+              "inserted_words": 1234,
+              "insertion_spans": 454,
+              "spans_by_containment": {
+                "contains_0.34_to_0.6": 50,
+                "contains_0.6_or_more": 89,
+                "contains_none": 196,
+                "contains_some": 119
+              },
+              "words_matched_at_0.6": 124
+            }
+          },
+          "runaway_head_mass": 72,
+          "runaway_tail_mass": 788,
+          "segmentation_artifact_mass": 583,
+          "total_error_mass": 1443,
+          "wer_points": 5.4969
+        },
+        "categories": [
+          {
+            "category": "format-convention",
+            "error_mass": 103,
+            "impact_HIGH": 0,
+            "impact_LOW": 0,
+            "impact_NONE": 88,
+            "share_of_error_mass_percent": 2.734,
+            "spans": 88,
+            "wer_points": 0.3924
+          },
+          {
+            "category": "reference-convention",
+            "error_mass": 230,
+            "impact_HIGH": 0,
+            "impact_LOW": 0,
+            "impact_NONE": 194,
+            "share_of_error_mass_percent": 6.104,
+            "spans": 194,
+            "wer_points": 0.8762
+          },
+          {
+            "category": "segmentation-artifact",
+            "error_mass": 583,
+            "impact_HIGH": 0,
+            "impact_LOW": 0,
+            "impact_NONE": 384,
+            "share_of_error_mass_percent": 15.472,
+            "spans": 384,
+            "wer_points": 2.2209
+          },
+          {
+            "category": "named-entity",
+            "error_mass": 301,
+            "impact_HIGH": 220,
+            "impact_LOW": 0,
+            "impact_NONE": 0,
+            "share_of_error_mass_percent": 7.988,
+            "spans": 220,
+            "wer_points": 1.1466
+          },
+          {
+            "category": "domain-term",
+            "error_mass": 58,
+            "impact_HIGH": 1,
+            "impact_LOW": 41,
+            "impact_NONE": 0,
+            "share_of_error_mass_percent": 1.539,
+            "spans": 42,
+            "wer_points": 0.2209
+          },
+          {
+            "category": "model-behaviour",
+            "error_mass": 1015,
+            "impact_HIGH": 29,
+            "impact_LOW": 163,
+            "impact_NONE": 63,
+            "share_of_error_mass_percent": 26.937,
+            "spans": 255,
+            "wer_points": 3.8665
+          },
+          {
+            "category": "acoustic-misrecognition",
+            "error_mass": 334,
+            "impact_HIGH": 31,
+            "impact_LOW": 194,
+            "impact_NONE": 29,
+            "share_of_error_mass_percent": 8.864,
+            "spans": 254,
+            "wer_points": 1.2723
+          },
+          {
+            "category": "other",
+            "error_mass": 1144,
+            "impact_HIGH": 66,
+            "impact_LOW": 393,
+            "impact_NONE": 398,
+            "share_of_error_mass_percent": 30.361,
+            "spans": 857,
+            "wer_points": 4.3579
+          }
+        ]
+      },
+      "error_shape_saea_v1": {
+        "corpus_wer_percent": 19.6853,
+        "deletions": 847,
+        "errors": 5280,
+        "hypothesis_over_reference_ratio": 1.0653,
+        "hypothesis_words": 28574,
+        "insertion_share_of_errors_percent": 49.22,
+        "insertions": 2599,
+        "mean_per_utterance_wer_percent": 29.4574,
+        "reference_words": 26822,
+        "rows": 1500,
+        "substitutions": 1834
+      },
+      "error_shape_whisper": {
+        "corpus_wer_percent": 14.3537,
+        "deletions": 633,
+        "errors": 3768,
+        "hypothesis_over_reference_ratio": 1.0518,
+        "hypothesis_words": 27612,
+        "insertion_share_of_errors_percent": 52.92,
+        "insertions": 1994,
+        "mean_per_utterance_wer_percent": 25.1707,
+        "reference_words": 26251,
+        "rows": 1500,
+        "substitutions": 1141
+      },
+      "media": {
+        "audio_seconds_longest_item": 32.800063,
+        "audio_seconds_shortest_item": 0.12,
+        "audio_seconds_total": 9783.571,
+        "audio_tokens_total": 137163,
+        "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-dev1500-encoding-variants/boundary-exact/roster/flight-roster-receipt.json",
+        "receipt_sha256": "8d83f0b247c75d563916200b7a308e51126dff14f2eed42e00f89dc7a86eb9f2",
+        "rows": 1500,
+        "rows_carrying_a_zero_pad_block": 1486,
+        "zero_pad_frames_total": 75619,
+        "zero_pad_seconds_total": 756.19
+      },
+      "outputs_sha256": "d0010c57cb6d90c41c120fc3b5a094dd12020dbb9dfe64ae7330f403e8d582f0",
+      "run_id": "SAEA-E22-DEV-ESB-BX-V1",
+      "taxonomy_totals": {
+        "corpus_wer_percent": 14.3537,
+        "deletions": 633,
+        "insertions": 1994,
+        "reference_words": 26251,
+        "substitutions": 1141
+      },
+      "verified_cross_check": {
+        "available": true,
+        "disagreements": [],
+        "rows_compared": 1500,
+        "score_file": "attempt-20260907T083612Z-20c7c4.score.json",
+        "score_file_sha256": "aaa2b54264203742fdeb026094bee94cce142cfdd0e1d2e8c580460cee1307d8"
+      }
+    },
+    "PAD30S": {
+      "agentic": {
+        "agentic_error_rate_percent": 1.798,
+        "high_impact_reference_word_mass": 472,
+        "high_impact_spans": 323,
+        "reference_words": 26251
+      },
+      "attempt": "attempt-20260907T093441Z-3a2278",
+      "category_mass": {
+        "boundary": {
+          "containment": {
+            "head": {
+              "inserted_words": 220,
+              "insertion_spans": 132,
+              "spans_by_containment": {
+                "contains_0.34_to_0.6": 8,
+                "contains_0.6_or_more": 63,
+                "contains_none": 56,
+                "contains_some": 5
+              },
+              "words_matched_at_0.6": 97
+            },
+            "tail": {
+              "inserted_words": 33,
+              "insertion_spans": 21,
+              "spans_by_containment": {
+                "contains_0.34_to_0.6": 0,
+                "contains_0.6_or_more": 11,
+                "contains_none": 10,
+                "contains_some": 0
+              },
+              "words_matched_at_0.6": 13
+            }
+          },
+          "runaway_head_mass": 37,
+          "runaway_tail_mass": 0,
+          "segmentation_artifact_mass": 204,
+          "total_error_mass": 241,
+          "wer_points": 0.9181
+        },
+        "categories": [
+          {
+            "category": "format-convention",
+            "error_mass": 113,
+            "impact_HIGH": 0,
+            "impact_LOW": 0,
+            "impact_NONE": 98,
+            "share_of_error_mass_percent": 4.616,
+            "spans": 98,
+            "wer_points": 0.4305
+          },
+          {
+            "category": "reference-convention",
+            "error_mass": 238,
+            "impact_HIGH": 0,
+            "impact_LOW": 0,
+            "impact_NONE": 206,
+            "share_of_error_mass_percent": 9.722,
+            "spans": 206,
+            "wer_points": 0.9066
+          },
+          {
+            "category": "segmentation-artifact",
+            "error_mass": 204,
+            "impact_HIGH": 0,
+            "impact_LOW": 0,
+            "impact_NONE": 156,
+            "share_of_error_mass_percent": 8.333,
+            "spans": 156,
+            "wer_points": 0.7771
+          },
+          {
+            "category": "named-entity",
+            "error_mass": 286,
+            "impact_HIGH": 213,
+            "impact_LOW": 0,
+            "impact_NONE": 0,
+            "share_of_error_mass_percent": 11.683,
+            "spans": 213,
+            "wer_points": 1.0895
+          },
+          {
+            "category": "domain-term",
+            "error_mass": 57,
+            "impact_HIGH": 1,
+            "impact_LOW": 36,
+            "impact_NONE": 0,
+            "share_of_error_mass_percent": 2.328,
+            "spans": 37,
+            "wer_points": 0.2171
+          },
+          {
+            "category": "model-behaviour",
+            "error_mass": 206,
+            "impact_HIGH": 12,
+            "impact_LOW": 15,
+            "impact_NONE": 34,
+            "share_of_error_mass_percent": 8.415,
+            "spans": 61,
+            "wer_points": 0.7847
+          },
+          {
+            "category": "acoustic-misrecognition",
+            "error_mass": 327,
+            "impact_HIGH": 31,
+            "impact_LOW": 194,
+            "impact_NONE": 32,
+            "share_of_error_mass_percent": 13.358,
+            "spans": 257,
+            "wer_points": 1.2457
+          },
+          {
+            "category": "other",
+            "error_mass": 1017,
+            "impact_HIGH": 66,
+            "impact_LOW": 366,
+            "impact_NONE": 369,
+            "share_of_error_mass_percent": 41.544,
+            "spans": 801,
+            "wer_points": 3.8741
+          }
+        ]
+      },
+      "error_shape_saea_v1": {
+        "corpus_wer_percent": 14.6261,
+        "deletions": 1051,
+        "errors": 3923,
+        "hypothesis_over_reference_ratio": 1.0037,
+        "hypothesis_words": 26920,
+        "insertion_share_of_errors_percent": 29.29,
+        "insertions": 1149,
+        "mean_per_utterance_wer_percent": 19.813,
+        "reference_words": 26822,
+        "rows": 1500,
+        "substitutions": 1723
+      },
+      "error_shape_whisper": {
+        "corpus_wer_percent": 9.3254,
+        "deletions": 799,
+        "errors": 2448,
+        "hypothesis_over_reference_ratio": 0.9926,
+        "hypothesis_words": 26057,
+        "insertion_share_of_errors_percent": 24.71,
+        "insertions": 605,
+        "mean_per_utterance_wer_percent": 15.3907,
+        "reference_words": 26251,
+        "rows": 1500,
+        "substitutions": 1044
+      },
+      "media": {
+        "audio_seconds_longest_item": 32.88,
+        "audio_seconds_shortest_item": 30.0,
+        "audio_seconds_total": 45002.88,
+        "audio_tokens_total": 604526,
+        "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-dev1500-encoding-variants/pad-30s/roster/flight-roster-receipt.json",
+        "receipt_sha256": "c1dcd6b895f93d1ee135977d297664310bcdc3842f2e26912e75ec0f21b6291e",
+        "rows": 1500,
+        "rows_carrying_a_zero_pad_block": 1500,
+        "zero_pad_frames_total": 148412,
+        "zero_pad_seconds_total": 1484.12
+      },
+      "outputs_sha256": "178ada5e3307065056459bb3c2ad677650d439a4ade070f6d5986053145df272",
+      "run_id": "SAEA-E22-DEV-ESB-PAD30S-V1",
+      "taxonomy_totals": {
+        "corpus_wer_percent": 9.3254,
+        "deletions": 799,
+        "insertions": 605,
+        "reference_words": 26251,
+        "substitutions": 1044
+      },
+      "verified_cross_check": {
+        "available": true,
+        "disagreements": [],
+        "rows_compared": 1500,
+        "score_file": "attempt-20260907T093441Z-3a2278.score.json",
+        "score_file_sha256": "d5996e9f89b60d4871d7853acd698973a1d7f0cc7f4286f7a04705ededef3edf"
+      }
+    },
+    "TAIL2S": {
+      "agentic": {
+        "agentic_error_rate_percent": 1.7828,
+        "high_impact_reference_word_mass": 468,
+        "high_impact_spans": 319,
+        "reference_words": 26251
+      },
+      "attempt": "attempt-20260907T090708Z-df36cc",
+      "category_mass": {
+        "boundary": {
+          "containment": {
+            "head": {
+              "inserted_words": 227,
+              "insertion_spans": 135,
+              "spans_by_containment": {
+                "contains_0.34_to_0.6": 6,
+                "contains_0.6_or_more": 68,
+                "contains_none": 55,
+                "contains_some": 6
+              },
+              "words_matched_at_0.6": 106
+            },
+            "tail": {
+              "inserted_words": 75,
+              "insertion_spans": 39,
+              "spans_by_containment": {
+                "contains_0.34_to_0.6": 3,
+                "contains_0.6_or_more": 20,
+                "contains_none": 13,
+                "contains_some": 3
+              },
+              "words_matched_at_0.6": 26
+            }
+          },
+          "runaway_head_mass": 38,
+          "runaway_tail_mass": 22,
+          "segmentation_artifact_mass": 228,
+          "total_error_mass": 288,
+          "wer_points": 1.0971
+        },
+        "categories": [
+          {
+            "category": "format-convention",
+            "error_mass": 120,
+            "impact_HIGH": 0,
+            "impact_LOW": 0,
+            "impact_NONE": 104,
+            "share_of_error_mass_percent": 4.86,
+            "spans": 104,
+            "wer_points": 0.4571
+          },
+          {
+            "category": "reference-convention",
+            "error_mass": 241,
+            "impact_HIGH": 0,
+            "impact_LOW": 0,
+            "impact_NONE": 207,
+            "share_of_error_mass_percent": 9.761,
+            "spans": 207,
+            "wer_points": 0.9181
+          },
+          {
+            "category": "segmentation-artifact",
+            "error_mass": 228,
+            "impact_HIGH": 0,
+            "impact_LOW": 0,
+            "impact_NONE": 170,
+            "share_of_error_mass_percent": 9.235,
+            "spans": 170,
+            "wer_points": 0.8685
+          },
+          {
+            "category": "named-entity",
+            "error_mass": 289,
+            "impact_HIGH": 214,
+            "impact_LOW": 0,
+            "impact_NONE": 0,
+            "share_of_error_mass_percent": 11.705,
+            "spans": 214,
+            "wer_points": 1.1009
+          },
+          {
+            "category": "domain-term",
+            "error_mass": 54,
+            "impact_HIGH": 1,
+            "impact_LOW": 36,
+            "impact_NONE": 0,
+            "share_of_error_mass_percent": 2.187,
+            "spans": 37,
+            "wer_points": 0.2057
+          },
+          {
+            "category": "model-behaviour",
+            "error_mass": 213,
+            "impact_HIGH": 11,
+            "impact_LOW": 20,
+            "impact_NONE": 33,
+            "share_of_error_mass_percent": 8.627,
+            "spans": 64,
+            "wer_points": 0.8114
+          },
+          {
+            "category": "acoustic-misrecognition",
+            "error_mass": 334,
+            "impact_HIGH": 32,
+            "impact_LOW": 198,
+            "impact_NONE": 33,
+            "share_of_error_mass_percent": 13.528,
+            "spans": 263,
+            "wer_points": 1.2723
+          },
+          {
+            "category": "other",
+            "error_mass": 990,
+            "impact_HIGH": 61,
+            "impact_LOW": 344,
+            "impact_NONE": 375,
+            "share_of_error_mass_percent": 40.097,
+            "spans": 780,
+            "wer_points": 3.7713
+          }
+        ]
+      },
+      "error_shape_saea_v1": {
+        "corpus_wer_percent": 14.764,
+        "deletions": 1010,
+        "errors": 3960,
+        "hypothesis_over_reference_ratio": 1.0075,
+        "hypothesis_words": 27024,
+        "insertion_share_of_errors_percent": 30.61,
+        "insertions": 1212,
+        "mean_per_utterance_wer_percent": 19.8547,
+        "reference_words": 26822,
+        "rows": 1500,
+        "substitutions": 1738
+      },
+      "error_shape_whisper": {
+        "corpus_wer_percent": 9.4054,
+        "deletions": 763,
+        "errors": 2469,
+        "hypothesis_over_reference_ratio": 0.9963,
+        "hypothesis_words": 26153,
+        "insertion_share_of_errors_percent": 26.93,
+        "insertions": 665,
+        "mean_per_utterance_wer_percent": 15.4208,
+        "reference_words": 26251,
+        "rows": 1500,
+        "substitutions": 1041
+      },
+      "media": {
+        "audio_seconds_longest_item": 34.88,
+        "audio_seconds_shortest_item": 2.219937,
+        "audio_seconds_total": 12948.983,
+        "audio_tokens_total": 178282,
+        "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-dev1500-encoding-variants/tail-silence-2s/roster/flight-roster-receipt.json",
+        "receipt_sha256": "ae747c5261bea3c076d53d3ce37fea112418b476ddf07049fdaba505b90ddd80",
+        "rows": 1500,
+        "rows_carrying_a_zero_pad_block": 1498,
+        "zero_pad_frames_total": 75330,
+        "zero_pad_seconds_total": 753.3
+      },
+      "outputs_sha256": "26123a945528c5dd9427ba0844a69be8b49c2f98666bf290526da36df3acc090",
+      "run_id": "SAEA-E22-DEV-ESB-TAIL2S-V1",
+      "taxonomy_totals": {
+        "corpus_wer_percent": 9.4054,
+        "deletions": 763,
+        "insertions": 665,
+        "reference_words": 26251,
+        "substitutions": 1041
+      },
+      "verified_cross_check": {
+        "available": true,
+        "disagreements": [],
+        "rows_compared": 1500,
+        "score_file": "attempt-20260907T090708Z-df36cc.score.json",
+        "score_file_sha256": "b09764a79d798d1499f1b3a6cf0ef8ca2fbd47d6a005df61f7177b8ddd25e847"
+      }
+    }
+  },
+  "boundary": {
+    "gpu_hours": 0,
+    "model_contacts": 0,
+    "outbound_connection_attempts": 0,
+    "outbound_targets": [],
+    "statement": "sealed score files, sealed outputs, the hash-pinned dev10 reference layer and segment table, the committed roster receipts and the committed per-cell falsifier receipts. Nothing is re-flown, re-scored or post-processed, and no media byte is opened.",
+    "test_split_read": false
+  },
+  "boundary_asymmetry": [
+    {
+      "arm": "A",
+      "boundary_total_error_mass": 2173,
+      "boundary_wer_points": 8.2778,
+      "head_inserted_words": 266,
+      "head_insertion_spans": 149,
+      "head_spans_contained_at_0.6": 73,
+      "runaway_head_mass": 70,
+      "runaway_tail_mass": 1179,
+      "segmentation_artifact_mass": 924,
+      "tail_inserted_words": 1950,
+      "tail_insertion_spans": 704,
+      "tail_spans_contained_at_0.6": 218
+    },
+    {
+      "arm": "BX",
+      "boundary_total_error_mass": 1443,
+      "boundary_wer_points": 5.4969,
+      "head_inserted_words": 233,
+      "head_insertion_spans": 130,
+      "head_spans_contained_at_0.6": 62,
+      "runaway_head_mass": 72,
+      "runaway_tail_mass": 788,
+      "segmentation_artifact_mass": 583,
+      "tail_inserted_words": 1234,
+      "tail_insertion_spans": 454,
+      "tail_spans_contained_at_0.6": 89
+    },
+    {
+      "arm": "TAIL2S",
+      "boundary_total_error_mass": 288,
+      "boundary_wer_points": 1.0971,
+      "head_inserted_words": 227,
+      "head_insertion_spans": 135,
+      "head_spans_contained_at_0.6": 68,
+      "runaway_head_mass": 38,
+      "runaway_tail_mass": 22,
+      "segmentation_artifact_mass": 228,
+      "tail_inserted_words": 75,
+      "tail_insertion_spans": 39,
+      "tail_spans_contained_at_0.6": 20
+    },
+    {
+      "arm": "PAD30S",
+      "boundary_total_error_mass": 241,
+      "boundary_wer_points": 0.9181,
+      "head_inserted_words": 220,
+      "head_insertion_spans": 132,
+      "head_spans_contained_at_0.6": 63,
+      "runaway_head_mass": 37,
+      "runaway_tail_mass": 0,
+      "segmentation_artifact_mass": 204,
+      "tail_inserted_words": 33,
+      "tail_insertion_spans": 21,
+      "tail_spans_contained_at_0.6": 11
+    }
+  ],
+  "boundary_by_call": [
+    {
+      "A_wer_points": 9.9174,
+      "BX_delta": -4.245,
+      "BX_wer_points": 5.6724,
+      "PAD30S_delta": -9.2788,
+      "PAD30S_wer_points": 0.6386,
+      "TAIL2S_delta": -9.091,
+      "TAIL2S_wer_points": 0.8264,
+      "group": "4453225",
+      "rows": 150
+    },
+    {
+      "A_wer_points": 8.9928,
+      "BX_delta": -2.3124,
+      "BX_wer_points": 6.6804,
+      "PAD30S_delta": -8.0678,
+      "PAD30S_wer_points": 0.925,
+      "TAIL2S_delta": -7.8623,
+      "TAIL2S_wer_points": 1.1305,
+      "group": "4469088",
+      "rows": 150
+    },
+    {
+      "A_wer_points": 8.2526,
+      "BX_delta": -2.1697,
+      "BX_wer_points": 6.0829,
+      "PAD30S_delta": -7.8264,
+      "PAD30S_wer_points": 0.4262,
+      "TAIL2S_delta": -7.7877,
+      "TAIL2S_wer_points": 0.4649,
+      "group": "4470684",
+      "rows": 150
+    },
+    {
+      "A_wer_points": 6.4484,
+      "BX_delta": -1.3365,
+      "BX_wer_points": 5.1119,
+      "PAD30S_delta": -5.8136,
+      "PAD30S_wer_points": 0.6348,
+      "TAIL2S_delta": -5.5463,
+      "TAIL2S_wer_points": 0.9021,
+      "group": "4474506",
+      "rows": 150
+    },
+    {
+      "A_wer_points": 8.3303,
+      "BX_delta": -2.3801,
+      "BX_wer_points": 5.9502,
+      "PAD30S_delta": -6.3108,
+      "PAD30S_wer_points": 2.0195,
+      "TAIL2S_delta": -6.2387,
+      "TAIL2S_wer_points": 2.0916,
+      "group": "4479944",
+      "rows": 150
+    },
+    {
+      "A_wer_points": 8.9566,
+      "BX_delta": -3.1394,
+      "BX_wer_points": 5.8172,
+      "PAD30S_delta": -8.1256,
+      "PAD30S_wer_points": 0.831,
+      "TAIL2S_delta": -7.7101,
+      "TAIL2S_wer_points": 1.2465,
+      "group": "4481952",
+      "rows": 150
+    },
+    {
+      "A_wer_points": 7.2637,
+      "BX_delta": -4.5771,
+      "BX_wer_points": 2.6866,
+      "PAD30S_delta": -6.5672,
+      "PAD30S_wer_points": 0.6965,
+      "TAIL2S_delta": -6.1692,
+      "TAIL2S_wer_points": 1.0945,
+      "group": "4482383",
+      "rows": 150
+    },
+    {
+      "A_wer_points": 8.005,
+      "BX_delta": -0.9639,
+      "BX_wer_points": 7.0411,
+      "PAD30S_delta": -5.7418,
+      "PAD30S_wer_points": 2.2632,
+      "TAIL2S_delta": -5.5322,
+      "TAIL2S_wer_points": 2.4728,
+      "group": "4482613",
+      "rows": 150
+    },
+    {
+      "A_wer_points": 8.7261,
+      "BX_delta": -1.4803,
+      "BX_wer_points": 7.2458,
+      "PAD30S_delta": -8.1807,
+      "PAD30S_wer_points": 0.5454,
+      "TAIL2S_delta": -7.9859,
+      "TAIL2S_wer_points": 0.7402,
+      "group": "4483937",
+      "rows": 150
+    },
+    {
+      "A_wer_points": 8.5073,
+      "BX_delta": -4.5225,
+      "BX_wer_points": 3.9848,
+      "PAD30S_delta": -8.0962,
+      "PAD30S_wer_points": 0.4111,
+      "TAIL2S_delta": -8.2227,
+      "TAIL2S_wer_points": 0.2846,
+      "group": "4485192",
+      "rows": 150
+    }
+  ],
+  "boundary_by_duration": [
+    {
+      "A_wer_points": 30.6859,
+      "BX_delta": -7.9422,
+      "BX_wer_points": 22.7437,
+      "PAD30S_delta": -27.7978,
+      "PAD30S_wer_points": 2.8881,
+      "TAIL2S_delta": -27.4368,
+      "TAIL2S_wer_points": 3.2491,
+      "group": "[0, 1)",
+      "rows": 116
+    },
+    {
+      "A_wer_points": 20.1117,
+      "BX_delta": -7.2625,
+      "BX_wer_points": 12.8492,
+      "PAD30S_delta": -17.3184,
+      "PAD30S_wer_points": 2.7933,
+      "TAIL2S_delta": -16.7597,
+      "TAIL2S_wer_points": 3.352,
+      "group": "[1, 2)",
+      "rows": 109
+    },
+    {
+      "A_wer_points": 12.8012,
+      "BX_delta": -4.2169,
+      "BX_wer_points": 8.5843,
+      "PAD30S_delta": -10.5045,
+      "PAD30S_wer_points": 2.2967,
+      "TAIL2S_delta": -10.4292,
+      "TAIL2S_wer_points": 2.372,
+      "group": "[2, 4)",
+      "rows": 291
+    },
+    {
+      "A_wer_points": 10.9442,
+      "BX_delta": -4.1138,
+      "BX_wer_points": 6.8304,
+      "PAD30S_delta": -9.7557,
+      "PAD30S_wer_points": 1.1885,
+      "TAIL2S_delta": -9.6121,
+      "TAIL2S_wer_points": 1.3321,
+      "group": "[4, 8)",
+      "rows": 488
+    },
+    {
+      "A_wer_points": 5.8829,
+      "BX_delta": -1.7529,
+      "BX_wer_points": 4.13,
+      "PAD30S_delta": -5.4212,
+      "PAD30S_wer_points": 0.4617,
+      "TAIL2S_delta": -5.1988,
+      "TAIL2S_wer_points": 0.6841,
+      "group": "[8, 16)",
+      "rows": 425
+    },
+    {
+      "A_wer_points": 3.3246,
+      "BX_delta": -1.079,
+      "BX_wer_points": 2.2456,
+      "PAD30S_delta": -2.9746,
+      "PAD30S_wer_points": 0.35,
+      "TAIL2S_delta": -2.858,
+      "TAIL2S_wer_points": 0.4666,
+      "group": "[16, inf)",
+      "rows": 71
+    }
+  ],
+  "cell_1_short_recut_clips": {
+    "clips_that_lose_audio": 1403,
+    "clips_under_threshold": [
+      {
+        "audio_seconds": 0.12,
+        "sample_id": "4469088-522@bx1",
+        "source_audio_seconds": 0.22025
+      },
+      {
+        "audio_seconds": 0.1200625,
+        "sample_id": "4479944-293@bx1",
+        "source_audio_seconds": 0.26
+      },
+      {
+        "audio_seconds": 0.139875,
+        "sample_id": "4469088-654@bx1",
+        "source_audio_seconds": 0.2199375
+      },
+      {
+        "audio_seconds": 0.1399375,
+        "sample_id": "4481952-268@bx1",
+        "source_audio_seconds": 0.2199375
+      },
+      {
+        "audio_seconds": 0.14,
+        "sample_id": "4481952-330@bx1",
+        "source_audio_seconds": 0.26025
+      }
+    ],
+    "max_seconds_removed": 0.180188,
+    "mean_seconds_removed": 0.117899,
+    "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-dev1500-encoding-variants/boundary-exact/roster/flight-roster-receipt.json",
+    "receipt_sha256": "8d83f0b247c75d563916200b7a308e51126dff14f2eed42e00f89dc7a86eb9f2",
+    "threshold_seconds": 0.15
+  },
+  "closing_rule": {
+    "cells_admitted": [
+      "PAD30S",
+      "TAIL2S"
+    ],
+    "cells_clearing_clause_3": [
+      "BX",
+      "PAD30S",
+      "TAIL2S"
+    ],
+    "fires": false,
+    "rule": "section 8: if NO cell moves the boundary category mass by at least 2.0 WER points, Earnings-22 short-form is DROPPED from this work's scope"
+  },
+  "comparator": {
+    "arm": "A",
+    "attempt": "attempt-20260905T073641Z-f977d1",
+    "label": "the sealed dev arm A, restricted to the 1,500 roster ids; NO new arm A is flown",
+    "run_id": "SAEA-E22-DEV-ESB-PROMPT-A-V1"
+  },
+  "contrasts": {
+    "BX": {
+      "agentic_delta_points": {
+        "clustered": {
+          "ci_high": 0.0885,
+          "ci_level": 0.9,
+          "ci_low": -0.1316,
+          "n_replicates": 10000,
+          "point_estimate": -0.019,
+          "seed": 20260903,
+          "sigma_hat": 0.067
+        },
+        "stratified": {
+          "ci_high": 0.0637,
+          "ci_level": 0.9,
+          "ci_low": -0.1026,
+          "n_replicates": 10000,
+          "point_estimate": -0.019,
+          "seed": 20260903,
+          "sigma_hat": 0.0508
+        }
+      },
+      "audio_token_cost_ratio_vs_comparator": 0.9848,
+      "boundary_delta_points": {
+        "clustered": {
+          "ci_high": -2.0728,
+          "ci_level": 0.9,
+          "ci_low": -3.4937,
+          "n_replicates": 10000,
+          "point_estimate": -2.7808,
+          "seed": 20260903,
+          "sigma_hat": 0.4309
+        },
+        "stratified": {
+          "ci_high": -2.3505,
+          "ci_level": 0.9,
+          "ci_low": -3.2253,
+          "n_replicates": 10000,
+          "point_estimate": -2.7808,
+          "seed": 20260903,
+          "sigma_hat": 0.2662
+        }
+      },
+      "cell": "1",
+      "corpus_wer_delta_points": {
+        "clustered": {
+          "ci_high": -2.2205,
+          "ci_level": 0.9,
+          "ci_low": -3.8757,
+          "n_replicates": 10000,
+          "point_estimate": -3.0475,
+          "seed": 20260903,
+          "sigma_hat": 0.5013
+        },
+        "stratified": {
+          "ci_high": -2.5654,
+          "ci_level": 0.9,
+          "ci_low": -3.5344,
+          "n_replicates": 10000,
+          "point_estimate": -3.0475,
+          "seed": 20260903,
+          "sigma_hat": 0.2927
+        }
+      },
+      "decision": {
+        "admitted": false,
+        "clause_1_ci90_upper": -2.5654,
+        "clause_1_ci90_upper_threshold": -0.2356,
+        "clause_1_corpus_wer_improves_with_ci90_upper_below_zero": true,
+        "clause_2_agentic_ci90_upper_below_margin": false,
+        "clause_2_ci90_upper": 0.0637,
+        "clause_2_margin_points": 0.05,
+        "clause_2_point_estimate": -0.019,
+        "clause_3_boundary_block_falls_by_at_least_points": true,
+        "clause_3_boundary_delta_points": -2.7808,
+        "clause_3_ci90": [
+          -3.2253,
+          -2.3505
+        ],
+        "clause_3_required_drop_points": 2.0,
+        "rule": "ADMITTED iff corpus WER improves AND its call-stratified CI90 upper bound is < -0.2356, AND the agentic error rate does not worsen (point estimate <= the comparator's) with a CI90 upper bound < +0.05 points, AND the boundary block falls by at least 2 WER points (preregistration section 4, applied unmodified)"
+      },
+      "factor": "the clip boundary: the midpoint-of-overlap re-cut, strictly subtractive",
+      "falsifier": {
+        "measured_prompt_tokens_total": 210663,
+        "predicted_prompt_tokens_total": 210663,
+        "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-dev-esb-bx-v1/flight-1500/falsifier.json",
+        "receipt_sha256": "61a72b17cb508ed700bbf8ff5ce05f52e14b5f6afc4967a3b2a1872c865db3aa",
+        "rows_checked": 1500,
+        "rows_where_the_falsifier_holds": 1500,
+        "text_envelope_tokens": 49,
+        "verdict": "HOLDS"
+      },
+      "per_row_wer": {
+        "harms": 265,
+        "mean_per_utterance_wer_delta_points": -6.1858,
+        "saves": 512,
+        "sign_test_p": 0.0,
+        "ties": 723
+      },
+      "signed_as": "BX minus A; negative means BX is the better arm",
+      "variant": "boundary-exact"
+    },
+    "PAD30S": {
+      "agentic_delta_points": {
+        "clustered": {
+          "ci_high": -0.058,
+          "ci_level": 0.9,
+          "ci_low": -0.1812,
+          "n_replicates": 10000,
+          "point_estimate": -0.1181,
+          "seed": 20260903,
+          "sigma_hat": 0.0373
+        },
+        "stratified": {
+          "ci_high": -0.0269,
+          "ci_level": 0.9,
+          "ci_low": -0.2083,
+          "n_replicates": 10000,
+          "point_estimate": -0.1181,
+          "seed": 20260903,
+          "sigma_hat": 0.0549
+        }
+      },
+      "audio_token_cost_ratio_vs_comparator": 4.3403,
+      "boundary_delta_points": {
+        "clustered": {
+          "ci_high": -6.7753,
+          "ci_level": 0.9,
+          "ci_low": -7.9756,
+          "n_replicates": 10000,
+          "point_estimate": -7.3597,
+          "seed": 20260903,
+          "sigma_hat": 0.3637
+        },
+        "stratified": {
+          "ci_high": -6.9204,
+          "ci_level": 0.9,
+          "ci_low": -7.8431,
+          "n_replicates": 10000,
+          "point_estimate": -7.3597,
+          "seed": 20260903,
+          "sigma_hat": 0.2823
+        }
+      },
+      "cell": "3",
+      "corpus_wer_delta_points": {
+        "clustered": {
+          "ci_high": -7.3327,
+          "ci_level": 0.9,
+          "ci_low": -8.8804,
+          "n_replicates": 10000,
+          "point_estimate": -8.0759,
+          "seed": 20260903,
+          "sigma_hat": 0.4717
+        },
+        "stratified": {
+          "ci_high": -7.5659,
+          "ci_level": 0.9,
+          "ci_low": -8.6069,
+          "n_replicates": 10000,
+          "point_estimate": -8.0759,
+          "seed": 20260903,
+          "sigma_hat": 0.3167
+        }
+      },
+      "decision": {
+        "admitted": true,
+        "clause_1_ci90_upper": -7.5659,
+        "clause_1_ci90_upper_threshold": -0.2356,
+        "clause_1_corpus_wer_improves_with_ci90_upper_below_zero": true,
+        "clause_2_agentic_ci90_upper_below_margin": true,
+        "clause_2_ci90_upper": -0.0269,
+        "clause_2_margin_points": 0.05,
+        "clause_2_point_estimate": -0.1181,
+        "clause_3_boundary_block_falls_by_at_least_points": true,
+        "clause_3_boundary_delta_points": -7.3597,
+        "clause_3_ci90": [
+          -7.8431,
+          -6.9204
+        ],
+        "clause_3_required_drop_points": 2.0,
+        "rule": "ADMITTED iff corpus WER improves AND its call-stratified CI90 upper bound is < -0.2356, AND the agentic error rate does not worsen (point estimate <= the comparator's) with a CI90 upper bound < +0.05 points, AND the boundary block falls by at least 2 WER points (preregistration section 4, applied unmodified)"
+      },
+      "factor": "the input length: digital silence appended up to exactly 30.0 s",
+      "falsifier": {
+        "measured_prompt_tokens_total": 678026,
+        "predicted_prompt_tokens_total": 678026,
+        "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-dev-esb-pad30s-v1/flight-1500/falsifier.json",
+        "receipt_sha256": "d0bac7803fb6332c35d0bbf4c900ef624dfbdb10b8c272d4257756f3f895f86d",
+        "rows_checked": 1500,
+        "rows_where_the_falsifier_holds": 1500,
+        "text_envelope_tokens": 49,
+        "verdict": "HOLDS"
+      },
+      "per_row_wer": {
+        "harms": 103,
+        "mean_per_utterance_wer_delta_points": -15.9659,
+        "saves": 823,
+        "sign_test_p": 0.0,
+        "ties": 574
+      },
+      "signed_as": "PAD30S minus A; negative means PAD30S is the better arm",
+      "variant": "pad-30s"
+    },
+    "TAIL2S": {
+      "agentic_delta_points": {
+        "clustered": {
+          "ci_high": -0.0661,
+          "ci_level": 0.9,
+          "ci_low": -0.2044,
+          "n_replicates": 10000,
+          "point_estimate": -0.1333,
+          "seed": 20260903,
+          "sigma_hat": 0.0418
+        },
+        "stratified": {
+          "ci_high": -0.0554,
+          "ci_level": 0.9,
+          "ci_low": -0.2129,
+          "n_replicates": 10000,
+          "point_estimate": -0.1333,
+          "seed": 20260903,
+          "sigma_hat": 0.0476
+        }
+      },
+      "audio_token_cost_ratio_vs_comparator": 1.28,
+      "boundary_delta_points": {
+        "clustered": {
+          "ci_high": -6.5663,
+          "ci_level": 0.9,
+          "ci_low": -7.8227,
+          "n_replicates": 10000,
+          "point_estimate": -7.1807,
+          "seed": 20260903,
+          "sigma_hat": 0.3817
+        },
+        "stratified": {
+          "ci_high": -6.7379,
+          "ci_level": 0.9,
+          "ci_low": -7.6649,
+          "n_replicates": 10000,
+          "point_estimate": -7.1807,
+          "seed": 20260903,
+          "sigma_hat": 0.2827
+        }
+      },
+      "cell": "2",
+      "corpus_wer_delta_points": {
+        "clustered": {
+          "ci_high": -7.3239,
+          "ci_level": 0.9,
+          "ci_low": -8.7149,
+          "n_replicates": 10000,
+          "point_estimate": -7.9959,
+          "seed": 20260903,
+          "sigma_hat": 0.423
+        },
+        "stratified": {
+          "ci_high": -7.5007,
+          "ci_level": 0.9,
+          "ci_low": -8.5203,
+          "n_replicates": 10000,
+          "point_estimate": -7.9959,
+          "seed": 20260903,
+          "sigma_hat": 0.3087
+        }
+      },
+      "decision": {
+        "admitted": true,
+        "clause_1_ci90_upper": -7.5007,
+        "clause_1_ci90_upper_threshold": -0.2356,
+        "clause_1_corpus_wer_improves_with_ci90_upper_below_zero": true,
+        "clause_2_agentic_ci90_upper_below_margin": true,
+        "clause_2_ci90_upper": -0.0554,
+        "clause_2_margin_points": 0.05,
+        "clause_2_point_estimate": -0.1333,
+        "clause_3_boundary_block_falls_by_at_least_points": true,
+        "clause_3_boundary_delta_points": -7.1807,
+        "clause_3_ci90": [
+          -7.6649,
+          -6.7379
+        ],
+        "clause_3_required_drop_points": 2.0,
+        "rule": "ADMITTED iff corpus WER improves AND its call-stratified CI90 upper bound is < -0.2356, AND the agentic error rate does not worsen (point estimate <= the comparator's) with a CI90 upper bound < +0.05 points, AND the boundary block falls by at least 2 WER points (preregistration section 4, applied unmodified)"
+      },
+      "factor": "the acoustic tail: +2.0 s of digital silence after the last word",
+      "falsifier": {
+        "measured_prompt_tokens_total": 251782,
+        "predicted_prompt_tokens_total": 251782,
+        "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-dev-esb-tail2s-v1/flight-1500/falsifier.json",
+        "receipt_sha256": "56de61f5ecfca029838f376ee9741913f31a4d5f710b6a2c7f3fe32d849f33d2",
+        "rows_checked": 1500,
+        "rows_where_the_falsifier_holds": 1500,
+        "text_envelope_tokens": 49,
+        "verdict": "HOLDS"
+      },
+      "per_row_wer": {
+        "harms": 97,
+        "mean_per_utterance_wer_delta_points": -15.9358,
+        "saves": 811,
+        "sign_test_p": 0.0,
+        "ties": 592
+      },
+      "signed_as": "TAIL2S minus A; negative means TAIL2S is the better arm",
+      "variant": "tail-silence-2s"
+    }
+  },
+  "duration_decomposition": [
+    {
+      "A_corpus_wer_whisper": 74.0072,
+      "BX_corpus_wer_whisper": 70.7581,
+      "BX_delta": -3.2491,
+      "PAD30S_corpus_wer_whisper": 49.0975,
+      "PAD30S_delta": -24.9097,
+      "TAIL2S_corpus_wer_whisper": 48.7365,
+      "TAIL2S_delta": -25.2707,
+      "bucket": "[0, 1)",
+      "reference_words": 277,
+      "rows": 116
+    },
+    {
+      "A_corpus_wer_whisper": 42.0857,
+      "BX_corpus_wer_whisper": 34.4507,
+      "BX_delta": -7.635,
+      "PAD30S_corpus_wer_whisper": 26.0708,
+      "PAD30S_delta": -16.0149,
+      "TAIL2S_corpus_wer_whisper": 23.4637,
+      "TAIL2S_delta": -18.622,
+      "bucket": "[1, 2)",
+      "reference_words": 537,
+      "rows": 109
+    },
+    {
+      "A_corpus_wer_whisper": 27.2214,
+      "BX_corpus_wer_whisper": 23.0045,
+      "BX_delta": -4.2169,
+      "PAD30S_corpus_wer_whisper": 14.8343,
+      "PAD30S_delta": -12.3871,
+      "TAIL2S_corpus_wer_whisper": 14.3072,
+      "TAIL2S_delta": -12.9142,
+      "bucket": "[2, 4)",
+      "reference_words": 2656,
+      "rows": 291
+    },
+    {
+      "A_corpus_wer_whisper": 20.2168,
+      "BX_corpus_wer_whisper": 15.4238,
+      "BX_delta": -4.793,
+      "PAD30S_corpus_wer_whisper": 9.1942,
+      "PAD30S_delta": -11.0226,
+      "TAIL2S_corpus_wer_whisper": 9.4815,
+      "TAIL2S_delta": -10.7353,
+      "bucket": "[4, 8)",
+      "reference_words": 7657,
+      "rows": 488
+    },
+    {
+      "A_corpus_wer_whisper": 13.1595,
+      "BX_corpus_wer_whisper": 11.0902,
+      "BX_delta": -2.0693,
+      "PAD30S_corpus_wer_whisper": 7.2424,
+      "PAD30S_delta": -5.9171,
+      "TAIL2S_corpus_wer_whisper": 7.5673,
+      "TAIL2S_delta": -5.5922,
+      "bucket": "[8, 16)",
+      "reference_words": 11695,
+      "rows": 425
+    },
+    {
+      "A_corpus_wer_whisper": 9.5363,
+      "BX_corpus_wer_whisper": 8.6906,
+      "BX_delta": -0.8457,
+      "PAD30S_corpus_wer_whisper": 6.62,
+      "PAD30S_delta": -2.9163,
+      "TAIL2S_corpus_wer_whisper": 6.3284,
+      "TAIL2S_delta": -3.2079,
+      "bucket": "[16, inf)",
+      "reference_words": 3429,
+      "rows": 71
+    }
+  ],
+  "entity_inventory_basis": {
+    "finding": "THE THREE FLIGHT RECEIPTS DO NOT SHARE ONE BASIS. Arm A (the 2026-09-06 usage-cells verdict) and cell 1 reproduce to the digit on dev10; cells 2 and 3 reproduce to the digit on subset1500 and on nothing else. This was found by reproducing each receipt, not chosen: each triple reproduces on exactly one basis. The identity gate therefore checks every arm against the basis its own receipt used -- which is what proves this read is over the same sealed tables -- and every contrast is then computed on the comparator's basis for all four arms, because a paired contrast whose arms use different inventories is not a paired contrast",
+    "flight_read_basis_per_arm": {
+      "A": "dev10",
+      "BX": "dev10",
+      "PAD30S": "subset1500",
+      "TAIL2S": "subset1500"
+    },
+    "per_arm_both_bases": {
+      "A": {
+        "dev10": {
+          "agentic_error_rate_percent": 1.9161,
+          "boundary_block_wer_points": 8.2778
+        },
+        "subset1500": {
+          "agentic_error_rate_percent": 1.8895,
+          "boundary_block_wer_points": 8.2892
+        }
+      },
+      "BX": {
+        "dev10": {
+          "agentic_error_rate_percent": 1.8971,
+          "boundary_block_wer_points": 5.4969
+        },
+        "subset1500": {
+          "agentic_error_rate_percent": 1.8742,
+          "boundary_block_wer_points": 5.4969
+        }
+      },
+      "PAD30S": {
+        "dev10": {
+          "agentic_error_rate_percent": 1.798,
+          "boundary_block_wer_points": 0.9181
+        },
+        "subset1500": {
+          "agentic_error_rate_percent": 1.7752,
+          "boundary_block_wer_points": 0.9295
+        }
+      },
+      "TAIL2S": {
+        "dev10": {
+          "agentic_error_rate_percent": 1.7828,
+          "boundary_block_wer_points": 1.0971
+        },
+        "subset1500": {
+          "agentic_error_rate_percent": 1.7599,
+          "boundary_block_wer_points": 1.1085
+        }
+      }
+    },
+    "verdict_basis": "dev10",
+    "what_it_changes": "the per-call entity inventory feeds classify_span, so it moves the agentic error rate and, through the runaway-head rule, the boundary block. Corpus WER comes from the scorer and is identical on both bases"
+  },
+  "exposure_row": "SAEA-E22-MF-ENCODING-PROBES-VERDICT-V1",
+  "identity_gate": {
+    "pairs": [
+      {
+        "arm": "A",
+        "measured": 1.9161,
+        "metric": "agentic_error_rate_percent",
+        "reproduced": true,
+        "sealed": 1.9161
+      },
+      {
+        "arm": "A",
+        "measured": 8.2778,
+        "metric": "boundary_block_wer_points",
+        "reproduced": true,
+        "sealed": 8.2778
+      },
+      {
+        "arm": "A",
+        "measured": 17.4012,
+        "metric": "corpus_wer_percent",
+        "reproduced": true,
+        "sealed": 17.4012
+      },
+      {
+        "arm": "BX",
+        "measured": 1.8971,
+        "metric": "agentic_error_rate_percent",
+        "reproduced": true,
+        "sealed": 1.8971
+      },
+      {
+        "arm": "BX",
+        "measured": 5.4969,
+        "metric": "boundary_block_wer_points",
+        "reproduced": true,
+        "sealed": 5.4969
+      },
+      {
+        "arm": "BX",
+        "measured": 14.3537,
+        "metric": "corpus_wer_percent",
+        "reproduced": true,
+        "sealed": 14.3537
+      },
+      {
+        "arm": "PAD30S",
+        "measured": 1.7752,
+        "metric": "agentic_error_rate_percent",
+        "reproduced": true,
+        "sealed": 1.7752
+      },
+      {
+        "arm": "PAD30S",
+        "measured": 0.9295,
+        "metric": "boundary_block_wer_points",
+        "reproduced": true,
+        "sealed": 0.9295
+      },
+      {
+        "arm": "PAD30S",
+        "measured": 9.3254,
+        "metric": "corpus_wer_percent",
+        "reproduced": true,
+        "sealed": 9.3254
+      },
+      {
+        "arm": "TAIL2S",
+        "measured": 1.7599,
+        "metric": "agentic_error_rate_percent",
+        "reproduced": true,
+        "sealed": 1.7599
+      },
+      {
+        "arm": "TAIL2S",
+        "measured": 1.1085,
+        "metric": "boundary_block_wer_points",
+        "reproduced": true,
+        "sealed": 1.1085
+      },
+      {
+        "arm": "TAIL2S",
+        "measured": 9.4054,
+        "metric": "corpus_wer_percent",
+        "reproduced": true,
+        "sealed": 9.4054
+      }
+    ],
+    "reproduced": true
+  },
+  "pairwise_contrasts": {
+    "BX_minus_TAIL2S": {
+      "audio_seconds_ratio": 0.7555,
+      "audio_token_ratio": 0.7694,
+      "boundary_delta_points": {
+        "clustered": {
+          "ci_high": 5.0864,
+          "ci_level": 0.9,
+          "ci_low": 3.6823,
+          "n_replicates": 10000,
+          "point_estimate": 4.3998,
+          "seed": 20260903,
+          "sigma_hat": 0.4247
+        },
+        "stratified": {
+          "ci_high": 4.8045,
+          "ci_level": 0.9,
+          "ci_low": 4.0169,
+          "n_replicates": 10000,
+          "point_estimate": 4.3998,
+          "seed": 20260903,
+          "sigma_hat": 0.2393
+        }
+      },
+      "corpus_wer_delta_points": {
+        "clustered": {
+          "ci_high": 5.7913,
+          "ci_level": 0.9,
+          "ci_low": 4.0107,
+          "n_replicates": 10000,
+          "point_estimate": 4.9484,
+          "seed": 20260903,
+          "sigma_hat": 0.5434
+        },
+        "stratified": {
+          "ci_high": 5.4049,
+          "ci_level": 0.9,
+          "ci_low": 4.4996,
+          "n_replicates": 10000,
+          "point_estimate": 4.9484,
+          "seed": 20260903,
+          "sigma_hat": 0.276
+        }
+      },
+      "per_row_wer": {
+        "harms": 585,
+        "mean_per_utterance_wer_delta_points": 9.75,
+        "saves": 126,
+        "sign_test_p": 0.0,
+        "ties": 789
+      },
+      "question": "does removing the delivered overlap beat moving the encoder's pad away?",
+      "signed_as": "BX minus TAIL2S; negative means BX is the better arm"
+    },
+    "PAD30S_minus_TAIL2S": {
+      "audio_seconds_ratio": 3.4754,
+      "audio_token_ratio": 3.3908,
+      "boundary_delta_points": {
+        "clustered": {
+          "ci_high": -0.0893,
+          "ci_level": 0.9,
+          "ci_low": -0.2649,
+          "n_replicates": 10000,
+          "point_estimate": -0.179,
+          "seed": 20260903,
+          "sigma_hat": 0.0534
+        },
+        "stratified": {
+          "ci_high": -0.0962,
+          "ci_level": 0.9,
+          "ci_low": -0.269,
+          "n_replicates": 10000,
+          "point_estimate": -0.179,
+          "seed": 20260903,
+          "sigma_hat": 0.0526
+        }
+      },
+      "corpus_wer_delta_points": {
+        "clustered": {
+          "ci_high": 0.0902,
+          "ci_level": 0.9,
+          "ci_low": -0.2534,
+          "n_replicates": 10000,
+          "point_estimate": -0.08,
+          "seed": 20260903,
+          "sigma_hat": 0.1052
+        },
+        "stratified": {
+          "ci_high": 0.1,
+          "ci_level": 0.9,
+          "ci_low": -0.2581,
+          "n_replicates": 10000,
+          "point_estimate": -0.08,
+          "seed": 20260903,
+          "sigma_hat": 0.1083
+        }
+      },
+      "per_row_wer": {
+        "harms": 75,
+        "mean_per_utterance_wer_delta_points": -0.03,
+        "saves": 82,
+        "sign_test_p": 0.632185,
+        "ties": 1343
+      },
+      "question": "is 30.0 s of appended silence worth its 4.34x audio tokens?",
+      "signed_as": "PAD30S minus TAIL2S; negative means PAD30S is the better arm"
+    }
+  },
+  "per_call_table": [
+    {
+      "A_agentic_percent": 1.127,
+      "A_corpus_wer_saea_v1": 25.9001,
+      "A_corpus_wer_whisper": 20.9992,
+      "A_reference_words": 2662,
+      "BX_agentic_percent": 0.864,
+      "BX_corpus_wer_saea_v1": 21.1609,
+      "BX_corpus_wer_whisper": 16.2284,
+      "BX_delta_agentic": -0.263,
+      "BX_delta_whisper": -4.7708,
+      "BX_reference_words": 2662,
+      "PAD30S_agentic_percent": 0.7889,
+      "PAD30S_corpus_wer_saea_v1": 15.6503,
+      "PAD30S_corpus_wer_whisper": 10.1803,
+      "PAD30S_delta_agentic": -0.3381,
+      "PAD30S_delta_whisper": -10.8189,
+      "PAD30S_reference_words": 2662,
+      "TAIL2S_agentic_percent": 0.7889,
+      "TAIL2S_corpus_wer_saea_v1": 16.0176,
+      "TAIL2S_corpus_wer_whisper": 10.7438,
+      "TAIL2S_delta_agentic": -0.3381,
+      "TAIL2S_delta_whisper": -10.2554,
+      "TAIL2S_reference_words": 2662,
+      "call": "4453225",
+      "rows": 150
+    },
+    {
+      "A_agentic_percent": 2.6208,
+      "A_corpus_wer_saea_v1": 22.4837,
+      "A_corpus_wer_whisper": 18.5509,
+      "A_reference_words": 1946,
+      "BX_agentic_percent": 2.5694,
+      "BX_corpus_wer_saea_v1": 18.5779,
+      "BX_corpus_wer_whisper": 15.4162,
+      "BX_delta_agentic": -0.0514,
+      "BX_delta_whisper": -3.1347,
+      "BX_reference_words": 1946,
+      "PAD30S_agentic_percent": 2.4666,
+      "PAD30S_corpus_wer_saea_v1": 12.7692,
+      "PAD30S_corpus_wer_whisper": 10.1233,
+      "PAD30S_delta_agentic": -0.1542,
+      "PAD30S_delta_whisper": -8.4276,
+      "PAD30S_reference_words": 1946,
+      "TAIL2S_agentic_percent": 2.4666,
+      "TAIL2S_corpus_wer_saea_v1": 12.6189,
+      "TAIL2S_corpus_wer_whisper": 9.6095,
+      "TAIL2S_delta_agentic": -0.1542,
+      "TAIL2S_delta_whisper": -8.9414,
+      "TAIL2S_reference_words": 1946,
+      "call": "4469088",
+      "rows": 150
+    },
+    {
+      "A_agentic_percent": 1.3948,
+      "A_corpus_wer_saea_v1": 21.3121,
+      "A_corpus_wer_whisper": 13.6769,
+      "A_reference_words": 2581,
+      "BX_agentic_percent": 1.5885,
+      "BX_corpus_wer_saea_v1": 19.4998,
+      "BX_corpus_wer_whisper": 11.236,
+      "BX_delta_agentic": 0.1937,
+      "BX_delta_whisper": -2.4409,
+      "BX_reference_words": 2581,
+      "PAD30S_agentic_percent": 1.2011,
+      "PAD30S_corpus_wer_saea_v1": 13.7369,
+      "PAD30S_corpus_wer_whisper": 5.1918,
+      "PAD30S_delta_agentic": -0.1937,
+      "PAD30S_delta_whisper": -8.4851,
+      "PAD30S_reference_words": 2581,
+      "TAIL2S_agentic_percent": 1.4336,
+      "TAIL2S_corpus_wer_saea_v1": 14.353,
+      "TAIL2S_corpus_wer_whisper": 5.7342,
+      "TAIL2S_delta_agentic": 0.0388,
+      "TAIL2S_delta_whisper": -7.9427,
+      "TAIL2S_reference_words": 2581,
+      "call": "4470684",
+      "rows": 150
+    },
+    {
+      "A_agentic_percent": 1.8376,
+      "A_corpus_wer_saea_v1": 19.469,
+      "A_corpus_wer_whisper": 13.9659,
+      "A_reference_words": 2993,
+      "BX_agentic_percent": 1.9379,
+      "BX_corpus_wer_saea_v1": 17.6991,
+      "BX_corpus_wer_whisper": 12.2954,
+      "BX_delta_agentic": 0.1003,
+      "BX_delta_whisper": -1.6705,
+      "BX_reference_words": 2993,
+      "PAD30S_agentic_percent": 1.9044,
+      "PAD30S_corpus_wer_saea_v1": 12.6188,
+      "PAD30S_corpus_wer_whisper": 7.551,
+      "PAD30S_delta_agentic": 0.0668,
+      "PAD30S_delta_whisper": -6.4149,
+      "PAD30S_reference_words": 2993,
+      "TAIL2S_agentic_percent": 1.8376,
+      "TAIL2S_corpus_wer_saea_v1": 12.7171,
+      "TAIL2S_corpus_wer_whisper": 7.5175,
+      "TAIL2S_delta_agentic": 0.0,
+      "TAIL2S_delta_whisper": -6.4484,
+      "TAIL2S_reference_words": 2993,
+      "call": "4474506",
+      "rows": 150
+    },
+    {
+      "A_agentic_percent": 2.8128,
+      "A_corpus_wer_saea_v1": 30.4191,
+      "A_corpus_wer_whisper": 23.837,
+      "A_reference_words": 2773,
+      "BX_agentic_percent": 2.8128,
+      "BX_corpus_wer_saea_v1": 27.5289,
+      "BX_corpus_wer_whisper": 21.3127,
+      "BX_delta_agentic": 0.0,
+      "BX_delta_whisper": -2.5243,
+      "BX_reference_words": 2773,
+      "PAD30S_agentic_percent": 2.7407,
+      "PAD30S_corpus_wer_saea_v1": 22.9769,
+      "PAD30S_corpus_wer_whisper": 16.3361,
+      "PAD30S_delta_agentic": -0.0721,
+      "PAD30S_delta_whisper": -7.5009,
+      "PAD30S_reference_words": 2773,
+      "TAIL2S_agentic_percent": 2.7047,
+      "TAIL2S_corpus_wer_saea_v1": 22.6517,
+      "TAIL2S_corpus_wer_whisper": 16.3,
+      "TAIL2S_delta_agentic": -0.1081,
+      "TAIL2S_delta_whisper": -7.537,
+      "TAIL2S_reference_words": 2773,
+      "call": "4479944",
+      "rows": 150
+    },
+    {
+      "A_agentic_percent": 1.8467,
+      "A_corpus_wer_saea_v1": 21.8792,
+      "A_corpus_wer_whisper": 16.759,
+      "A_reference_words": 2166,
+      "BX_agentic_percent": 1.9391,
+      "BX_corpus_wer_saea_v1": 18.9262,
+      "BX_corpus_wer_whisper": 13.5734,
+      "BX_delta_agentic": 0.0924,
+      "BX_delta_whisper": -3.1856,
+      "BX_reference_words": 2166,
+      "PAD30S_agentic_percent": 1.8006,
+      "PAD30S_corpus_wer_saea_v1": 14.0045,
+      "PAD30S_corpus_wer_whisper": 8.2641,
+      "PAD30S_delta_agentic": -0.0461,
+      "PAD30S_delta_whisper": -8.4949,
+      "PAD30S_reference_words": 2166,
+      "TAIL2S_agentic_percent": 1.8467,
+      "TAIL2S_corpus_wer_saea_v1": 14.0492,
+      "TAIL2S_corpus_wer_whisper": 8.6334,
+      "TAIL2S_delta_agentic": 0.0,
+      "TAIL2S_delta_whisper": -8.1256,
+      "TAIL2S_reference_words": 2166,
+      "call": "4481952",
+      "rows": 150
+    },
+    {
+      "A_agentic_percent": 1.592,
+      "A_corpus_wer_saea_v1": 19.2128,
+      "A_corpus_wer_whisper": 14.7927,
+      "A_reference_words": 3015,
+      "BX_agentic_percent": 1.194,
+      "BX_corpus_wer_saea_v1": 14.0427,
+      "BX_corpus_wer_whisper": 9.1874,
+      "BX_delta_agentic": -0.398,
+      "BX_delta_whisper": -5.6053,
+      "BX_reference_words": 3015,
+      "PAD30S_agentic_percent": 1.592,
+      "PAD30S_corpus_wer_saea_v1": 12.5417,
+      "PAD30S_corpus_wer_whisper": 7.8939,
+      "PAD30S_delta_agentic": 0.0,
+      "PAD30S_delta_whisper": -6.8988,
+      "PAD30S_reference_words": 3015,
+      "TAIL2S_agentic_percent": 1.5589,
+      "TAIL2S_corpus_wer_saea_v1": 12.7418,
+      "TAIL2S_corpus_wer_whisper": 8.126,
+      "TAIL2S_delta_agentic": -0.0331,
+      "TAIL2S_delta_whisper": -6.6667,
+      "TAIL2S_reference_words": 3015,
+      "call": "4482383",
+      "rows": 150
+    },
+    {
+      "A_agentic_percent": 4.1492,
+      "A_corpus_wer_saea_v1": 29.7605,
+      "A_corpus_wer_whisper": 22.6739,
+      "A_reference_words": 2386,
+      "BX_agentic_percent": 4.4845,
+      "BX_corpus_wer_saea_v1": 29.2326,
+      "BX_corpus_wer_whisper": 22.5063,
+      "BX_delta_agentic": 0.3353,
+      "BX_delta_whisper": -0.1676,
+      "BX_reference_words": 2386,
+      "PAD30S_agentic_percent": 4.0654,
+      "PAD30S_corpus_wer_saea_v1": 23.7515,
+      "PAD30S_corpus_wer_whisper": 17.0997,
+      "PAD30S_delta_agentic": -0.0838,
+      "PAD30S_delta_whisper": -5.5742,
+      "PAD30S_reference_words": 2386,
+      "TAIL2S_agentic_percent": 3.8558,
+      "TAIL2S_corpus_wer_saea_v1": 23.6703,
+      "TAIL2S_corpus_wer_whisper": 16.6387,
+      "TAIL2S_delta_agentic": -0.2934,
+      "TAIL2S_delta_whisper": -6.0352,
+      "TAIL2S_reference_words": 2386,
+      "call": "4482613",
+      "rows": 150
+    },
+    {
+      "A_agentic_percent": 1.6751,
+      "A_corpus_wer_saea_v1": 21.8681,
+      "A_corpus_wer_whisper": 16.79,
+      "A_reference_words": 2567,
+      "BX_agentic_percent": 1.5193,
+      "BX_corpus_wer_saea_v1": 20.0519,
+      "BX_corpus_wer_whisper": 14.8422,
+      "BX_delta_agentic": -0.1558,
+      "BX_delta_whisper": -1.9478,
+      "BX_reference_words": 2567,
+      "PAD30S_agentic_percent": 1.4414,
+      "PAD30S_corpus_wer_saea_v1": 12.046,
+      "PAD30S_corpus_wer_whisper": 6.8952,
+      "PAD30S_delta_agentic": -0.2337,
+      "PAD30S_delta_whisper": -9.8948,
+      "PAD30S_reference_words": 2567,
+      "TAIL2S_agentic_percent": 1.3635,
+      "TAIL2S_corpus_wer_saea_v1": 12.5278,
+      "TAIL2S_corpus_wer_whisper": 7.09,
+      "TAIL2S_delta_agentic": -0.3116,
+      "TAIL2S_delta_whisper": -9.7,
+      "TAIL2S_reference_words": 2567,
+      "call": "4483937",
+      "rows": 150
+    },
+    {
+      "A_agentic_percent": 0.7274,
+      "A_corpus_wer_saea_v1": 16.1929,
+      "A_corpus_wer_whisper": 13.7571,
+      "A_reference_words": 3162,
+      "BX_agentic_percent": 0.759,
+      "BX_corpus_wer_saea_v1": 12.3922,
+      "BX_corpus_wer_whisper": 9.4244,
+      "BX_delta_agentic": 0.0316,
+      "BX_delta_whisper": -4.3327,
+      "BX_reference_words": 3162,
+      "PAD30S_agentic_percent": 0.5693,
+      "PAD30S_corpus_wer_saea_v1": 7.7611,
+      "PAD30S_corpus_wer_whisper": 5.2182,
+      "PAD30S_delta_agentic": -0.1581,
+      "PAD30S_delta_whisper": -8.5389,
+      "PAD30S_reference_words": 3162,
+      "TAIL2S_agentic_percent": 0.5693,
+      "TAIL2S_corpus_wer_saea_v1": 7.793,
+      "TAIL2S_corpus_wer_whisper": 5.0601,
+      "TAIL2S_delta_agentic": -0.1581,
+      "TAIL2S_delta_whisper": -8.697,
+      "TAIL2S_reference_words": 3162,
+      "call": "4485192",
+      "rows": 150
+    }
+  ],
+  "population": {
+    "pairing_key": "the published ESB segment id, recovered from each cell's variant id by splitting on '@' (deviation D-ENC-1)",
+    "roster_id": "E22-DEV-ESB-1500-V1",
+    "roster_receipt": "docs/receipts/rosters/e22-dev-esb-1500-v1.json",
+    "roster_receipt_sha256": "5d2b4e86054a16c072173d0f29162aef4931ab690bebba7636bf706624b2e7b8",
+    "rows": 1500,
+    "split_identity_hash": "c626e62f8876bf52a2904a0d2ec91807a530f3195c10facc8c036f661b2bf88a",
+    "strata": 10
+  },
+  "preregistration": "docs/readiness/2026-09-07-e22-dev-encoding-probes-v1-preregistration.md",
+  "same_request_null": {
+    "ci_high": 0.0692,
+    "ci_low": -0.2356,
+    "point_estimate": -0.0844,
+    "rows": 1432,
+    "rows_emitting_different_bytes": 302,
+    "source": "docs/readiness/2026-09-06-e22-dev-usage-cells-v1-verdict.md section 3.2"
+  },
+  "schema": "saea-e22-encoding-probes-verdict-v1",
+  "weightings": {
+    "A": {
+      "equal_call_agentic": 1.9783,
+      "equal_call_corpus_wer": 17.5803,
+      "natural_mixture_agentic": 1.9161,
+      "natural_mixture_corpus_wer": 17.4012
+    },
+    "BX": {
+      "equal_call_agentic": 1.9669,
+      "equal_call_corpus_wer": 14.6022,
+      "natural_mixture_agentic": 1.8971,
+      "natural_mixture_corpus_wer": 14.3537
+    },
+    "PAD30S": {
+      "equal_call_agentic": 1.857,
+      "equal_call_corpus_wer": 9.4754,
+      "natural_mixture_agentic": 1.798,
+      "natural_mixture_corpus_wer": 9.3254
+    },
+    "TAIL2S": {
+      "equal_call_agentic": 1.8426,
+      "equal_call_corpus_wer": 9.5453,
+      "natural_mixture_agentic": 1.7828,
+      "natural_mixture_corpus_wer": 9.4054
+    }
+  }
+}

@@ -22,7 +22,6 @@ contact. Usage (WSL2): ``python scripts/e22_usage_cells_read.py [--write]``.
 from __future__ import annotations
 
 import argparse
-import hashlib
 import sys
 from pathlib import Path
 
@@ -37,6 +36,7 @@ from speech_aware_evidence_acquisition.analysis.e22_error_taxonomy import (  # n
 )
 from speech_aware_evidence_acquisition.analysis.e22_usage_cells import (  # noqa: E402
     build_receipts,
+    write_check_manifest,
 )
 from speech_aware_evidence_acquisition.data.lock import data_root  # noqa: E402
 from speech_aware_evidence_acquisition.e0.artifacts import write_json_artifact  # noqa: E402
@@ -59,15 +59,6 @@ OUT_DIR = (
     / "docs/checks/speech-aware-evidence-acquisition"
     / "2026-09-06-e22-dev-usage-cells/verdict"
 )
-
-
-def write_manifest(directory: Path) -> None:
-    lines = [
-        f"{hashlib.sha256(path.read_bytes()).hexdigest()} *{path.name}"
-        for path in sorted(directory.iterdir())
-        if path.is_file() and path.name != "MANIFEST.sha256"
-    ]
-    (directory / "MANIFEST.sha256").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def _interval(stat: dict, key: str) -> str:
@@ -140,7 +131,7 @@ def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     write_json_artifact(OUT_DIR / "summary.json", summary)
     (OUT_DIR / "per-call-table.csv").write_text(per_call, encoding="utf-8", newline="\n")
-    write_manifest(OUT_DIR)
+    write_check_manifest(OUT_DIR)
     print(f"wrote {OUT_DIR}")
     return 0
 

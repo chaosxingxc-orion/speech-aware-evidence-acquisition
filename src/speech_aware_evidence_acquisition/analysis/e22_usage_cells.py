@@ -28,6 +28,16 @@ sealed.
 The six ESB TEST calls are unreachable from here: the reference loader is pinned
 to the dev10 receipt alone and the segment-table loader to the dev10 extracted
 table, exactly as ``analysis.e22_error_taxonomy`` pins them.
+
+**This module is also the BASE for the 2026-09-07 encoding-probe verdict.**
+``analysis.e22_encoding_probes`` is a thin derivation over it: it reuses the
+loaders, the identity gate, :func:`pooled_delta`, :func:`decide`, the tables and
+:func:`category_mass` unchanged, and adds only what its own preregistration
+adds -- three cells instead of two, a per-row BOUNDARY charge
+(:func:`boundary_charge`) so clause 3 can be bootstrapped like the other two
+estimands, and the ``@``-suffixed variant ids of deviation ``D-ENC-1``, which
+the loaders here fold back onto the published segment key. No pooled ratio, no
+resampling rule, no table and no decision clause is implemented twice.
 """
 
 from __future__ import annotations
@@ -52,12 +62,18 @@ from speech_aware_evidence_acquisition.analysis.e22_error_taxonomy import (
     rule_table,
     scan_arm,
 )
+from speech_aware_evidence_acquisition.analysis.e22_error_taxonomy import (
+    _mass as _span_mass,  # the taxonomy's one span-mass rule, never re-implemented here
+)
 from speech_aware_evidence_acquisition.analysis.paired import (
     paired_contrast,
     per_sample_scores_from_score_file,
 )
 from speech_aware_evidence_acquisition.analysis.paired import (
     resampled_statistic as _resampled_statistic,
+)
+from speech_aware_evidence_acquisition.reproduction.esb_reference import (
+    published_segment_key,
 )
 
 ANALYSIS_VERSION = "saea-e22-usage-cells-verdict-v1"
@@ -164,6 +180,13 @@ def load_score_rows(
     reading path for every arm. Where a cell also has a verified
     ``score-batch-per-sample`` file, :func:`verified_cross_check` proves the two
     agree row for row rather than assuming it.
+
+    **Rows are keyed by the PUBLISHED segment.** A media-variant cell carries
+    deviation ``D-ENC-1``: its sample ids are ``<call>-<segment>@<variant>``, so
+    the score side is folded back onto the published key with
+    ``reproduction.esb_reference.published_segment_key`` -- the same split on
+    ``@`` the reference side already applies -- and the paired join is per
+    published segment. An unsuffixed population is returned unchanged.
     """
 
     source_dir = _run_dir(root, source)
@@ -174,9 +197,14 @@ def load_score_rows(
     for scorer in (WHISPER_SCORER, FROZEN_SCORER):
         rows: dict[str, dict[str, float]] = {}
         for row in document[scorer]["per_sample"]:
-            sample_id = str(row["sample_id"])
+            sample_id = published_segment_key(str(row["sample_id"]))
             if sample_id not in wanted:
                 continue
+            if sample_id in rows:
+                raise UsageCellsError(
+                    f"{path} scorer {scorer} carries two rows for published segment "
+                    f"{sample_id!r}; a variant suffix must not collapse two rows into one"
+                )
             rows[sample_id] = {
                 key: float(row[key])
                 for key in ("wer", "hits", "substitutions", "deletions", "insertions")
@@ -195,6 +223,8 @@ def verified_cross_check(
     root: Path,
     source: Mapping[str, str],
     rows: Mapping[str, Mapping[str, Mapping[str, float]]],
+    *,
+    directories: Sequence[str] = ("score-batch-per-sample",),
 ) -> dict[str, object]:
     """Prove the finalize per-sample rows equal the VERIFIED batch ones.
 
@@ -202,18 +232,57 @@ def verified_cross_check(
     (``"verified": true``); the finalize table is a convenience copy. Where both
     exist they must be the same numbers, and this says so with a count rather
     than with a sentence.
+
+    ``directories`` names the sub-directories to search, in order, because
+    ``run_score_batch`` has written its result under more than one name across
+    this study's flights; the first that yields a ``*.score.json`` is read.
+    Verified ids carry the same possible variant suffix the finalize table does,
+    so they are folded onto the published segment key before the comparison.
     """
 
-    directory = _run_dir(root, source) / "score-batch-per-sample"
-    # ``run_score_batch`` writes the result beside its summary on one path and
-    # under ``results/`` on another; both are the same verified document, so the
-    # search is recursive rather than pinned to whichever layout ran first.
-    matches = sorted(directory.rglob("*.score.json")) if directory.is_dir() else []
+    matches: list[Path] = []
+    for name in directories:
+        directory = _run_dir(root, source) / name
+        # ``run_score_batch`` writes the result beside its summary on one path
+        # and under ``results/`` on another; both are the same verified
+        # document, so the search is recursive rather than pinned to whichever
+        # layout ran first.
+        matches = sorted(directory.rglob("*.score.json")) if directory.is_dir() else []
+        if matches:
+            break
     if not matches:
-        return {"available": False, "rows_compared": 0, "disagreements": []}
-    verified = per_sample_scores_from_score_file(
-        matches[0], WHISPER_SCORER, ("wer", "substitutions", "deletions", "insertions")
-    )
+        return {
+            "available": False,
+            "rows_compared": 0,
+            "disagreements": [],
+            "reason": "no core.scoring_batch result file under " + " or ".join(directories),
+        }
+    # Without ``--include-per-sample`` the driver emits each scorer's aggregate
+    # block only, and the sealed comparator was scored that way. That is an
+    # ABSENT cross-check, not a failed one -- the reading path is the finalize
+    # table and the identity gate is what protects it -- so it is reported as
+    # absent with its reason rather than swallowed or raised. Every other
+    # malformation still fails closed inside the reader below.
+    document = json.loads(matches[0].read_text(encoding="utf-8"))
+    scorer_block = document.get("scores", {}).get(WHISPER_SCORER, {})
+    if not isinstance(scorer_block, dict) or not scorer_block.get("per_sample"):
+        return {
+            "available": False,
+            "rows_compared": 0,
+            "disagreements": [],
+            "score_file": matches[0].name,
+            "score_file_sha256": hashlib.sha256(matches[0].read_bytes()).hexdigest(),
+            "reason": (
+                f"{matches[0].name} carries no per_sample block for {WHISPER_SCORER}; it was "
+                "scored without --include-per-sample"
+            ),
+        }
+    verified = {
+        published_segment_key(sample_id): row
+        for sample_id, row in per_sample_scores_from_score_file(
+            matches[0], WHISPER_SCORER, ("wer", "substitutions", "deletions", "insertions")
+        ).items()
+    }
     disagreements = [
         sample_id
         for sample_id, row in rows[WHISPER_SCORER].items()
@@ -238,10 +307,22 @@ def scan(
     inventory: Mapping[str, frozenset[str]],
     sample_ids: Sequence[str],
 ) -> tuple[object, list[ScoredSpan], dict[str, UtteranceContext]]:
-    """One arm's sealed outputs through the committed taxonomy, on the roster."""
+    """One arm's sealed outputs through the committed taxonomy, on the roster.
+
+    The hypotheses are re-keyed by published segment for the same ``D-ENC-1``
+    reason :func:`load_score_rows` gives, so ``build_contexts`` resolves the
+    reference, the neighbours and the entity inventory of the segment the clip
+    was cut from, whatever the media variant was called.
+    """
 
     path = _run_dir(root, source) / f"{source['run_id']}.outputs.jsonl"
-    hypotheses = load_hypotheses(path)
+    sealed = load_hypotheses(path)
+    hypotheses = {published_segment_key(sample_id): text for sample_id, text in sealed.items()}
+    if len(hypotheses) != len(sealed):
+        raise UsageCellsError(
+            f"{path} collapses {len(sealed)} sealed ids onto {len(hypotheses)} published "
+            "segments; a variant suffix must not merge two rows"
+        )
     wanted = set(sample_ids)
     missing = wanted - set(hypotheses)
     if missing:
@@ -268,6 +349,25 @@ def high_impact_charge(scored: Sequence[ScoredSpan]) -> dict[str, int]:
         neutral = item.category in IMPACT_NEUTRAL_CATEGORIES or item.rule in IMPACT_NEUTRAL_RULES
         if ("NONE" if neutral else item.content_impact) == "HIGH":
             charge[item.sample_id] += item.span.reference_word_charge
+    return dict(charge)
+
+
+def boundary_charge(scored: Sequence[ScoredSpan]) -> dict[str, int]:
+    """Per-row BOUNDARY-block error mass -- the numerator of the boundary contrast.
+
+    The block is the one :func:`category_mass` reports and clause 3 of the
+    encoding-probe preregistration decides on: every span in the
+    ``segmentation-artifact`` category plus the ``model-behaviour/runaway-tail``
+    and ``model-behaviour/runaway-head`` rules. The mass is the same
+    :func:`~...e22_error_taxonomy._mass` a span owns in ``category_table``, so
+    these per-row numerators sum to exactly the corpus block that table reports
+    and the pooled bootstrap is over the same quantity the rule names.
+    """
+
+    charge: Counter[str] = Counter()
+    for item in scored:
+        if item.category == BOUNDARY_CATEGORY or item.rule in BOUNDARY_RULES:
+            charge[item.sample_id] += _span_mass(item.span)
     return dict(charge)
 
 
@@ -355,26 +455,71 @@ def pooled_delta(
     return out
 
 
-def decide(wer: Mapping[str, object], agentic: Mapping[str, object]) -> dict[str, object]:
-    """Section 4's rule, applied unmodified, on the STRATIFIED interval."""
+def decide(
+    wer: Mapping[str, object],
+    agentic: Mapping[str, object],
+    *,
+    wer_ci_upper_max: float = 0.0,
+    boundary: Mapping[str, object] | None = None,
+    boundary_drop_points: float = 0.0,
+) -> dict[str, object]:
+    """The preregistered rule, applied unmodified, on the STRATIFIED interval.
+
+    Two clauses are the 2026-09-06 usage-cells rule and are the defaults:
+    corpus WER improves with a CI90 upper bound below ``wer_ci_upper_max``
+    (0 there), and the agentic CI90 upper bound is below the fixed
+    non-inferiority margin.
+
+    The 2026-09-07 encoding-probe rule is the SAME two clauses with a stricter
+    ``wer_ci_upper_max`` -- -0.2356, the lower edge of the measured same-request
+    null, so a cell must be disjoint from this runtime's own cross-run noise --
+    plus a third: the boundary block must FALL by at least
+    ``boundary_drop_points``. Passing ``boundary`` turns clause 3 on; omitting
+    it leaves the two-clause rule byte-for-byte as it was.
+    """
 
     wer_block = wer["stratified"]
     agentic_block = agentic["stratified"]
-    clause_1 = bool(wer_block["point_estimate"] < 0.0 and wer_block["ci_high"] < 0.0)
-    clause_2 = bool(agentic_block["ci_high"] < AGENTIC_MARGIN_POINTS)
-    return {
+    clause_1 = bool(wer_block["point_estimate"] < 0.0 and wer_block["ci_high"] < wer_ci_upper_max)
+    # Clause 2 has TWO halves in the preregistered text -- "its point estimate is
+    # <= arm A's AND the CI90 upper bound on its delta is below +0.05 points" --
+    # and both are tested. On every cell this study has decided the two halves
+    # agree, so this is fidelity to the written rule rather than a change of
+    # outcome.
+    clause_2 = bool(
+        agentic_block["point_estimate"] <= 0.0
+        and agentic_block["ci_high"] < AGENTIC_MARGIN_POINTS
+    )
+    rule = (
+        "ADMITTED iff corpus WER improves AND its call-stratified CI90 upper bound is "
+        f"< {wer_ci_upper_max:g}, AND the agentic error rate does not worsen (point estimate "
+        f"<= the comparator's) with a CI90 upper bound < +{AGENTIC_MARGIN_POINTS} points"
+    )
+    decision: dict[str, object] = {
         "clause_1_corpus_wer_improves_with_ci90_upper_below_zero": clause_1,
         "clause_1_ci90_upper": wer_block["ci_high"],
+        "clause_1_ci90_upper_threshold": wer_ci_upper_max,
         "clause_2_agentic_ci90_upper_below_margin": clause_2,
         "clause_2_ci90_upper": agentic_block["ci_high"],
+        "clause_2_point_estimate": agentic_block["point_estimate"],
         "clause_2_margin_points": AGENTIC_MARGIN_POINTS,
-        "admitted": bool(clause_1 and clause_2),
-        "rule": (
-            "ADMITTED iff corpus WER improves AND its call-stratified CI90 upper bound is "
-            f"< 0, AND the agentic error rate's CI90 upper bound is < +{AGENTIC_MARGIN_POINTS} "
-            "points (preregistration section 4, applied unmodified)"
-        ),
     }
+    if boundary is None:
+        decision["admitted"] = bool(clause_1 and clause_2)
+        decision["rule"] = rule + " (preregistration section 4, applied unmodified)"
+        return decision
+    boundary_block = boundary["stratified"]
+    clause_3 = bool(float(boundary_block["point_estimate"]) <= -boundary_drop_points)
+    decision["clause_3_boundary_block_falls_by_at_least_points"] = clause_3
+    decision["clause_3_boundary_delta_points"] = boundary_block["point_estimate"]
+    decision["clause_3_required_drop_points"] = boundary_drop_points
+    decision["clause_3_ci90"] = [boundary_block["ci_low"], boundary_block["ci_high"]]
+    decision["admitted"] = bool(clause_1 and clause_2 and clause_3)
+    decision["rule"] = (
+        rule + f", AND the boundary block falls by at least {boundary_drop_points:g} WER "
+        "points (preregistration section 4, applied unmodified)"
+    )
+    return decision
 
 
 # ---------------------------------------------------------------------------
@@ -407,9 +552,17 @@ def _corpus(rows: Mapping[str, Mapping[str, float]], subset: Sequence[str]) -> d
     }
 
 
-def _agentic(
+def pooled_charge_points(
     charge: Mapping[str, int], reference_words: Mapping[str, int], subset: Sequence[str]
 ) -> float:
+    """``100 * sum(charge) / sum(reference words)`` over ``subset``, in WER points.
+
+    One pooled-ratio arithmetic for every per-row charge this study reports on a
+    reference-word denominator: the agentic HIGH-impact mass
+    (:func:`high_impact_charge`) and the boundary block
+    (:func:`boundary_charge`). Rows absent from ``charge`` carry zero.
+    """
+
     mass = sum(charge.get(s, 0) for s in subset)
     words = sum(reference_words[s] for s in subset)
     return round(100.0 * mass / words, 4) if words else 0.0
@@ -432,7 +585,7 @@ def per_call_table(
             row[f"{arm}_reference_words"] = whisper["reference_words"]
             row[f"{arm}_corpus_wer_whisper"] = whisper["corpus_wer_percent"]
             row[f"{arm}_corpus_wer_saea_v1"] = frozen["corpus_wer_percent"]
-            row[f"{arm}_agentic_percent"] = _agentic(
+            row[f"{arm}_agentic_percent"] = pooled_charge_points(
                 block["charge"], block["reference_words_of"], subset
             )
         for arm in arms:
@@ -463,7 +616,7 @@ def weightings(
             "equal_call_corpus_wer": round(
                 sum(float(r[f"{arm}_corpus_wer_whisper"]) for r in per_call) / len(per_call), 4
             ),
-            "natural_mixture_agentic": _agentic(
+            "natural_mixture_agentic": pooled_charge_points(
                 block["charge"], block["reference_words_of"], sample_ids
             ),
             "equal_call_agentic": round(
@@ -621,7 +774,7 @@ def prediction_check(
             "benefit_rows": benefit,
             "harm_rows": harm,
             "corpus_wer_percent": _corpus(cell, sample_ids)["corpus_wer_percent"],
-            "agentic_error_rate_percent": _agentic(
+            "agentic_error_rate_percent": pooled_charge_points(
                 arms["STOPCAP"]["charge"], arms["STOPCAP"]["reference_words_of"], sample_ids
             ),
         },
@@ -852,6 +1005,26 @@ def per_call_csv(per_call: Sequence[Mapping[str, object]]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def write_check_manifest(directory: Path) -> Path:
+    """``MANIFEST.sha256`` over every file this verdict's receipt directory holds.
+
+    The convention is this study's receipt convention -- ``<sha256> *<name>``,
+    sorted by name, LF, no timestamp anywhere -- so two back-to-back writes of a
+    deterministic read reproduce the same manifest. Both Earnings-22 verdict
+    runners call this one function.
+    """
+
+    directory = Path(directory)
+    lines = [
+        f"{hashlib.sha256(path.read_bytes()).hexdigest()} *{path.name}"
+        for path in sorted(directory.iterdir())
+        if path.is_file() and path.name != "MANIFEST.sha256"
+    ]
+    target = directory / "MANIFEST.sha256"
+    target.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    return target
+
+
 __all__ = [
     "AGENTIC_MARGIN_POINTS",
     "ANALYSIS_VERSION",
@@ -860,6 +1033,7 @@ __all__ = [
     "EXPOSURE_ROW_ID",
     "STOPCAP_PREDICTION",
     "UsageCellsError",
+    "boundary_charge",
     "build_receipts",
     "category_mass",
     "decide",
@@ -870,9 +1044,11 @@ __all__ = [
     "load_score_rows",
     "per_call_csv",
     "per_call_table",
+    "pooled_charge_points",
     "pooled_delta",
     "prediction_check",
     "scan",
     "verified_cross_check",
     "weightings",
+    "write_check_manifest",
 ]
