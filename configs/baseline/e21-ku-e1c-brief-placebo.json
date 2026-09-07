@@ -3,7 +3,7 @@
   "policy": "obs-agent-loop",
   "evidence_source": "conec-class-lists-placebo",
   "evidence_mismatch": false,
-  "brief_max_entries_per_class": 0,
+  "brief_max_entries_per_class": 12,
   "scorers": [
     "asr-wer-whisper",
     "conec-entity-wer-official",

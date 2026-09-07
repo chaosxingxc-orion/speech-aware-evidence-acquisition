@@ -47,7 +47,7 @@
       "baseline_fragment": "e21-kc-e1-brief-whole-prompt",
       "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
       "arm": "fixed-legal-context",
-      "evidence": "conec-class-lists -- two items per call, the participant roster rendered as labelled participant/organization/division lines and the context document rendered as company-ticker, product-segment and residual-term candidates. Whole brief by default (brief_max_entries_per_class 0); the preflight prompt-fit gate may cap it, and the cap it sets applies IDENTICALLY to the twin cell.",
+      "evidence": "conec-class-lists -- two items per call, the participant roster rendered as labelled participant/organization/division lines and the context document rendered as company-ticker, product-segment and residual-term candidates. CAPPED at brief_max_entries_per_class 12, set by the preflight prompt-fit gate SAEA-E21-KC-E1-PROMPT-FIT-V1 (docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-kc-e1-brief-44-v1/prompt-fit/) and applied IDENTICALLY to the twin cell. The whole brief does not fit: measured on the flight tokenizer over all 1,593 windows it reaches a 6,072-token text envelope and an 8,268-token worst request against a 6,144-token slot, failing even the strict fit. 12 is the LARGEST grid value whose worst request still satisfies the Earnings family's slot_tokens >= 2 x worst_required rule (3,051 required, margin 3,093, factor 2.014); 16 was measured and refused at 3,152.",
       "obs": "fixed 90-second windows, no VAD trim, no overlap, no rolling tail, no preprocessing -- byte-identical to the comparator's OBS protocol",
       "serving_geometry": "-c 36864 -np 6, 6,144 tokens per slot, bf16 mmproj resident on the GPU",
       "audio_path": "raw audio through the bf16 mmproj on the GPU; no feature cache"
@@ -112,7 +112,7 @@
   "execution_plan_basis": {
     "planned_model_calls": "1,593 windows per cell x 2 cells = 3,186, plus 314 of headroom for obs_slice_retry_max=1 retries. The comparator realized exactly 1,593.",
     "planned_speech_audio_seconds": "141,345.85 realized per pass x 2 = 282,692, rounded up to 300,000 with retry headroom.",
-    "planned_gpu_hours": "the comparator realized 3,504.38 GPU-seconds (0.973 GPU-h) for one pass at this geometry. Two passes is 1.95 GPU-h before the brief, and the brief roughly triples the prompt: the comparator averaged 1,215 prompt tokens per window (1,935,965 over 1,593) and the brief adds a median 969 and a maximum 2,565 WHITESPACE tokens, so 3.2 GPU-h carries a prefill increase of well over 2x with margin. The projection is re-measured on the preflight and the flight STOPS and reports if the measured rate projects past it.",
+    "planned_gpu_hours": "the comparator realized 3,504.38 GPU-seconds (0.973 GPU-h) for one pass at this geometry. Two passes is 1.95 GPU-h before the brief, and the brief roughly triples the prompt: the comparator averaged 1,215 prompt tokens per window (1,935,965 over 1,593) and the CAPPED brief's measured text envelope is 454 to 855 flight tokens, median 673, against the comparator's constant 62 -- so the prefill roughly doubles rather than triples and 3.2 GPU-h keeps its margin. The projection is re-measured on the preflight and the flight STOPS and reports if the measured rate projects past it.",
     "paid_api_spend": 0,
     "budget_is_run_cumulative": "core/model/adapter.py enforces planned_model_calls and planned_speech_audio_seconds across ALL attempts of a run id; a successor plan must cover prior durable spend plus its own worst case."
   },
