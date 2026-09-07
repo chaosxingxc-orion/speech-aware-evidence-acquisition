@@ -1,0 +1,38 @@
+# SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1 - the Earnings-21 OBS cell of the
+# 2026-09-05 three-dimension program
+# (docs/readiness/2026-09-07-e21-obs-speaker-turn-units-v1-preregistration.md).
+#
+# NOT AUTHORIZED AND NOT COMPOSABLE. This file is a launch record, not a
+# permission, and it cannot be launched today even with one: the baseline
+# fragment carries obs_unit_plan, obs_unit_plan_sha256 and
+# obs_slice_tail_silence_seconds, and ObsLoopConfig.from_values rejects every
+# unknown obs_ key fail-closed. The seam is specified in section 8 of the
+# preregistration and is implemented AFTER wt/ts2y's tail knob merges, because
+# the cutter calls reproduction.obs_audio.encode_slice. The cell then needs a
+# passing seam falsifier, a 4-row dry run, its own exposure row and the owner's
+# GO.
+#
+# Same population, same split identity, same D1 identity, same model fragment,
+# same serving geometry (-c 36864 -np 6, GGML_CUDA_DISABLE_GRAPHS=1), same
+# greedy decoding, same build, same audio path and the same instruction byte for
+# byte as the sealed comparator SAEA-E21-FULL44-DIRECT-BASELINE-V2. ONE factor
+# moves: the TRANSPORT UNIT. Instead of ceil(D/90) fixed windows off the clock,
+# the OBS loop cuts each call into the hash-pinned plan's speaker-turn units --
+# 5,288 over the 44 calls against 1,593 windows, 11.7 % of them ending on an
+# active frame against 65.5 %, 76.1 % of them carrying exactly one speaker
+# against 40.5 %.
+#
+# The units and the windows do NOT align one to one, so the cell pairs at the
+# CALL (44 clusters, seed 20260903, CI90) and makes no paper-facing
+# effectiveness claim; and a contact-matched control is impossible by
+# construction. Both facts are stated in the preregistration before any number
+# is read.
+#
+# Launch with --dataset earnings21-discovery
+# --experiment e21-obs-e1-speaker-turn-units-v1
+# --model q4km-e21-buf90-mmproj-gpu-04ccc72a-np6
+# --execution-profile bounded-discovery-probe
+# --planned-model-calls 5800 --planned-gpu-hours 3.5
+# --planned-speech-audio-seconds 165000
+# run_id:baseline_fragment
+SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1:e21-units-obse1-scored7
