@@ -26,6 +26,7 @@ candidate is refused for using -- legal in a test, never in a flight.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 from typing import Mapping
@@ -52,6 +53,10 @@ from speech_aware_evidence_acquisition.rails.evolution import (
     run_confirm_step,
     run_propose_step,
     run_select_step,
+)
+from speech_aware_evidence_acquisition.rails.proposer import (
+    NULL_REWRITE_GATE,
+    slurp_block_texts,
 )
 
 CARRIER = "slurp"
@@ -314,15 +319,93 @@ def _repo(root: Path, config: LoopConfig, *, fill_params: Mapping | None = None)
     return root
 
 
-def _score_file(path: Path, rows: Mapping[str, float]) -> str:
+
+
+def _sha(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _sealed_trace(path: Path, rows, questions) -> str:
+    """The three files a real arm seals beside its scores: the run manifest,
+    the raw trace whose ``MODEL_REQUEST`` payloads carry the QUESTION, and the
+    ``.outputs.jsonl`` whose per-row response digest goes with it. The round
+    receipt's noise floor is computed from exactly these.
+
+    ``request_id`` and ``decoding_params.id_slot`` are made DIFFERENT in every
+    arm on purpose: they are transport (an ordinal and a server slot), and an
+    instrument that counted them as a new question would report every row of
+    every round as changed. ``rails.evolution.question_sha256`` drops them.
+
+    Everything is referenced RELATIVELY, exactly as ``sealed_question_digests``
+    resolves it, so the synthetic bundle carries no absolute path and two runs
+    of this dry run stay byte-identical.
+    """
+
+    stem = path.name.split(".", 1)[0]
+    trace, outputs = [], []
+    for index, sample_id in enumerate(sorted(rows)):
+        question, response = questions.get(
+            sample_id, (f"ask|{sample_id}", _sha(f"answer|{sample_id}"))
+        )
+        request_id = f"{stem}-{index:04d}"
+        trace.append(
+            json.dumps(
+                {
+                    "channel": "MODEL_REQUEST",
+                    "record_id": f"{request_id}/request",
+                    "payload": {
+                        "arm": stem,
+                        "payload": {
+                            "request_id": request_id,
+                            "sample_id": sample_id,
+                            "decoding_params": {
+                                "id_slot": (index + len(stem)) % 4,
+                                "temperature": 0,
+                            },
+                            "history": [{"content": question}],
+                        },
+                    },
+                }
+            )
+        )
+        outputs.append(
+            json.dumps({"sample_id": sample_id, "response_text_sha256": response})
+        )
+    named = {}
+    for suffix, lines in (("trace.jsonl", trace), ("outputs.jsonl", outputs)):
+        file = path.parent / f"{stem}.{suffix}"
+        file.parent.mkdir(parents=True, exist_ok=True)
+        file.write_text(
+            "".join(line + "\n" for line in lines), encoding="utf-8", newline="\n"
+        )
+        named[suffix] = {
+            "path": file.name,
+            "sha256": hashlib.sha256(file.read_bytes()).hexdigest(),
+        }
+    _write(
+        path.parent / f"{stem}.run-manifest.json",
+        {
+            "schema": "saea-run-manifest-v1",
+            "status": "COMPLETED",
+            "raw_trace": named["trace.jsonl"],
+            "outputs": named["outputs.jsonl"],
+        },
+    )
+    return f"{stem}.run-manifest.json"
+
+
+def _score_file(
+    path: Path, rows: Mapping[str, float], questions: Mapping[str, tuple] | None = None
+) -> str:
     """One ``<job_id>.score.json`` as ``core.scoring_batch`` writes it, with
     the READ metric recorded beside the reward exactly as every round receipt
-    must report it."""
+    must report it, and beside the run manifest and sealed outputs it names."""
 
+    manifest = _sealed_trace(path, rows, questions or {})
     _write(
         path,
         {
-            "manifest": str(path.name),
+            "manifest": manifest,
             "verified": True,
             "scores": {
                 SCORER: {
@@ -437,8 +520,35 @@ def _fold_b_scores(*, arm: str, harm_case: bool) -> dict[str, float]:
     return rows
 
 
+def _fold_b_digests(arm: str) -> dict[str, tuple[str, str]]:
+    """One fold-B arm's sealed question and response, per row.
+
+    The three cases the round receipt's noise floor has to separate, built by
+    hand: ``alarm`` is the scenario the assembly rewrote, so its six rows were
+    asked a DIFFERENT question; ``news`` and ``weather`` kept the incumbent's
+    question byte for byte, and three rows of each answered differently anyway.
+    That last group is the decoder noise floor -- the same phenomenon EVO-S1
+    round 1 measured at 286 of 1,019 byte-identically asked rows.
+    """
+
+    digests: dict[str, tuple[str, str]] = {}
+    for scenario, ids in FOLD_B_ROWS.items():
+        for index, sample_id in enumerate(ids):
+            changed = arm == "assembly" and scenario == "alarm"
+            flipped = arm == "assembly" and (changed or index < 3)
+            digests[sample_id] = (
+                f"ask|assembly|{sample_id}" if changed else f"ask|{sample_id}",
+                _sha(f"answer|assembly|{sample_id}" if flipped else f"answer|{sample_id}"),
+            )
+    return digests
+
+
 def _run_round(
-    root: Path, *, refuse_second_slot: bool = True, harm_case: bool = False
+    root: Path,
+    *,
+    refuse_second_slot: bool = True,
+    harm_case: bool = False,
+    missing_trace: bool = False,
 ) -> dict[str, object]:
     config = _loop_config()
     repo_root = _repo(root, config)
@@ -527,12 +637,17 @@ def _run_round(
         "incumbent": _score_file(
             repo_root / f"{stem}/scores/foldB-incumbent.score.json",
             _fold_b_scores(arm="incumbent", harm_case=harm_case),
+            _fold_b_digests("incumbent"),
         ),
         "assembly": _score_file(
             repo_root / f"{stem}/scores/foldB-assembly.score.json",
             _fold_b_scores(arm="assembly", harm_case=harm_case),
+            _fold_b_digests("assembly"),
         ),
     }
+    if missing_trace:
+        for name in ("foldB-incumbent", "foldB-assembly"):
+            (repo_root / f"{stem}/scores/{name}.run-manifest.json").unlink()
     _write(repo_root / f"{stem}/fold-b-scores.json", fold_b_scores)
 
     # -- (d) confirm ------------------------------------------------------
@@ -1209,3 +1324,287 @@ def test_an_emitted_fragment_does_not_collide_with_a_runtime_view_dataset(tmp_pa
     ]
     assert "schema" not in fragment
     assert fragment["fragment_kind"] == "saea-a2t-direct-calibration-experiment-v1"
+
+
+# ---------------------------------------------------------------------------
+# The null-rewrite form gate (track E3e, 2026-09-07)
+# ---------------------------------------------------------------------------
+
+
+def _incumbent_answer(intents: tuple[str, ...]) -> str:
+    """The failure EVO-S1 round 1 produced on ``social``: the proposer hands
+    the incumbent's own blocks straight back, byte for byte."""
+
+    texts = slurp_block_texts(_schema(floored=True), intents=intents)
+    return "\n".join(texts[intent] for intent in intents) + "\n"
+
+
+def test_a_block_set_that_renders_to_the_incumbent_is_refused_as_a_null_rewrite(
+    tmp_path,
+) -> None:
+    """``social``'s round-1 winner rendered to A_0's own ``social_post`` block:
+    the old guard checked that a candidate EXISTED, not that it DIFFERED, so
+    the round spent an admission on an arm identical to the incumbent on the
+    wire. It is now refused at the candidates step, and its slot falls back to
+    the existing "refused candidate flies no portfolio" path."""
+
+    config = _loop_config()
+    repo_root = _repo(tmp_path / "run", config)
+    carrier = _carrier()
+    state = EvolutionState(round=0, incumbent_overrides={}).validate()
+    propose = run_propose_step(state, 1, config=config, carrier=carrier)
+    receipt = propose.documents[config.round_paths(1)["propose"]["writes"][2]]
+
+    responses: dict[str, str] = {}
+    for contact in receipt["contacts"]:
+        intents = tuple(str(intent) for intent in contact["artifact_keys"])
+        responses[contact["sample_id"]] = (
+            _incumbent_answer(intents)
+            if contact["target_id"] == "news"
+            else _rewritten(intents)
+        )
+
+    candidates = run_candidates_step(
+        state,
+        1,
+        config=config,
+        carrier=carrier,
+        propose_receipt=receipt,
+        responses=responses,
+        repo_root=repo_root,
+        fold_a_rows=sum(len(rows) for rows in FOLD_A_ROWS.values()),
+        fold_a_speech_seconds=24.0,
+        token_counter=_word_counter,
+    )
+    document = candidates.documents[config.round_paths(1)["candidates"]["writes"][0]]
+    refused = [
+        record
+        for record in document["harvest"]["refusals"]
+        if record.get("gate") == NULL_REWRITE_GATE
+    ]
+    assert {record["target_id"] for record in refused} == {"news"}
+    assert all(
+        record["reason"].startswith(f"{NULL_REWRITE_GATE}:") for record in refused
+    )
+    assert candidates.summary["null_rewrites_refused"] == len(refused)
+
+    # Never admitted, and never flown: no ``news`` candidate survives, so every
+    # proposer portfolio leaves ``news`` at the incumbent's blocks.
+    assert all(
+        candidate["target_id"] != "news"
+        for candidate in document["harvest"]["candidates"]
+    )
+    for slot, portfolio in document["portfolios"].items():
+        if int(slot) in config.proposer_slots:
+            assert "news" not in portfolio["candidate_ids"], slot
+
+
+def test_the_gate_leaves_a_real_rewrite_alone(tmp_path) -> None:
+    """The dry run's own legal answer changes one filler per type, so no
+    candidate of a normal round is refused by this gate: it costs a round
+    nothing that a round should keep."""
+
+    config = _loop_config()
+    repo_root = _repo(tmp_path / "run", config)
+    carrier = _carrier()
+    state = EvolutionState(round=0, incumbent_overrides={}).validate()
+    propose = run_propose_step(state, 1, config=config, carrier=carrier)
+    receipt = propose.documents[config.round_paths(1)["propose"]["writes"][2]]
+    candidates = run_candidates_step(
+        state,
+        1,
+        config=config,
+        carrier=carrier,
+        propose_receipt=receipt,
+        responses=_responses(receipt, refuse_second_slot=False),
+        repo_root=repo_root,
+        fold_a_rows=sum(len(rows) for rows in FOLD_A_ROWS.values()),
+        fold_a_speech_seconds=24.0,
+        token_counter=_word_counter,
+    )
+    document = candidates.documents[config.round_paths(1)["candidates"]["writes"][0]]
+    assert candidates.summary["null_rewrites_refused"] == 0
+    assert document["null_rewrite_checks"]
+    assert not any(record["null_rewrite"] for record in document["null_rewrite_checks"])
+
+
+# ---------------------------------------------------------------------------
+# The landed round: replaying the gate over the committed round-1 receipt
+# ---------------------------------------------------------------------------
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+A_0_RECEIPT = REPO_ROOT / "docs/receipts/knowledge/slurp-intent-slot-schema-v1.json"
+ROUND_01 = (
+    REPO_ROOT
+    / "docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-s1/round-01"
+)
+
+
+def _a_0_block_texts() -> dict[str, str]:
+    """A_0's own rendered blocks, rebuilt from the COMMITTED schema receipt the
+    loop config pins -- no data root, no TRAIN file, no flight."""
+
+    document = json.loads(A_0_RECEIPT.read_text(encoding="utf-8"))
+    construction = document["construction"]
+    schema = SlurpIntentSlotSchema(
+        schema_id=construction["schema_id"],
+        source_split=construction["source_split"],
+        source_identity_hash=construction["source_identity_hash"],
+        utterance_count=construction["utterance_count"],
+        min_share=construction["min_share"],
+        examples_per_type=construction["examples_per_type"],
+        intents={
+            record["intent"]: SlurpIntentSlots(
+                intent=record["intent"],
+                n=record["utterances"],
+                mentions=record["slot_mentions"],
+                types=tuple(
+                    (row["entity_type"], row["count"], row["share"])
+                    for row in record["types"]
+                ),
+                fillers={
+                    row["entity_type"]: tuple(row["fillers"]) for row in record["types"]
+                },
+            )
+            for record in document["intents"]
+        },
+    )
+    return slurp_block_texts(schema)
+
+
+@pytest.mark.skipif(
+    not (A_0_RECEIPT.exists() and (ROUND_01 / "candidates.json").exists()),
+    reason="the landed EVO-S1 round-1 receipts are not in this checkout",
+)
+def test_the_landed_round_one_candidates_replay_through_the_gate() -> None:
+    """Round 1's own ``candidates.json``, replayed through the new gate.
+
+    The candidate side is the receipt's committed ``rendered_sha256``; the
+    incumbent side is A_0's blocks over the SAME intents, rebuilt from the
+    committed schema receipt. Round 1's incumbent state IS A_0, so no override
+    enters. FIVE of the 29 candidates render to the incumbent, one of which is
+    ``social``'s admitted winner ``bb02b5f3`` -- the finding this gate exists
+    for, and the reason the round's confirmation carried 60 rows of noise.
+    """
+
+    blocks = _a_0_block_texts()
+    document = json.loads((ROUND_01 / "candidates.json").read_text(encoding="utf-8"))
+    by_id = {
+        record["candidate_id"]: record for record in document["harvest"]["candidates"]
+    }
+    null_rewrites = []
+    for validation in document["validations"]:
+        intents = sorted(str(record["intent"]) for record in validation["per_key"])
+        whole = "\n".join(blocks[intent] for intent in intents)
+        digest = hashlib.sha256(whole.encode("utf-8")).hexdigest()
+        if digest == validation["rendered_sha256"]:
+            null_rewrites.append(validation["candidate_id"])
+
+    selection = json.loads((ROUND_01 / "selection.json").read_text(encoding="utf-8"))
+    winners = set(selection["winners"].values())
+    refused_winners = sorted(set(null_rewrites) & winners)
+    assert len(refused_winners) == 1
+    assert refused_winners[0].startswith("bb02b5f3")
+    assert by_id[refused_winners[0]]["target_id"] == "social"
+    assert sorted(by_id[candidate_id]["target_id"] for candidate_id in null_rewrites) == [
+        "calendar",
+        "calendar",
+        "general",
+        "iot",
+        "social",
+    ]
+
+
+def test_the_propose_receipt_names_the_instruction_revision_it_rendered(
+    tmp_path,
+) -> None:
+    """The instruction bytes are inside every candidate id, so the round that
+    flew them has to say which revision they were."""
+
+    config = _loop_config()
+    _repo(tmp_path / "run", config)
+    propose = run_propose_step(
+        EvolutionState(round=0, incumbent_overrides={}).validate(),
+        1,
+        config=config,
+        carrier=_carrier(),
+    )
+    receipt = propose.documents[config.round_paths(1)["propose"]["writes"][2]]
+    assert receipt["proposer_instruction_version"] == "proposer-instruction-v2"
+
+
+# ---------------------------------------------------------------------------
+# The round receipt's noise floor (track E3e, 2026-09-07)
+# ---------------------------------------------------------------------------
+
+
+def test_the_round_receipt_reports_the_prompt_noise_floor(tmp_path) -> None:
+    """How much of a round's movement the DECODER can account for, per target
+    and pooled -- computed from the sealed traces the confirm step's own score
+    files name, and gating nothing.
+
+    This dry run's fold B is 18 rows: ``alarm``'s six were asked a different
+    question, ``news``'s and ``weather``'s twelve were asked the incumbent's
+    own, and six of those twelve answered differently anyway. Three of the six
+    saves are on changed prompts and three on unchanged ones -- which is the
+    whole reason the number is now in the receipt.
+    """
+
+    result = _run_round(tmp_path / "run")
+    receipt = json.loads(
+        Path(result["confirm"]["round_receipt"]).read_text(encoding="utf-8")
+    )
+    floor = receipt["extra"]["noise_floor"]
+    assert floor["measured"] is True
+    assert floor["metric"] == METRIC
+    assert floor["rows"] == 18
+    assert floor["changed_prompt_rows"] == 6
+    assert floor["unchanged_prompt_rows"] == 12
+    assert floor["unchanged_prompt_flips"] == 6
+    assert floor["changed_prompt"] == {"saves": 3, "harms": 0}
+    assert floor["unchanged_prompt"] == {"saves": 3, "harms": 0}
+    assert result["confirm"]["unchanged_prompt_flips"] == 6
+
+    # Per target, because a scenario the assembly never touched is all noise
+    # floor by construction and has to be readable as such.
+    by_target = floor["by_target"]
+    assert sorted(by_target) == sorted(SCENARIOS)
+    assert by_target["alarm"]["changed_prompt_rows"] == 6
+    assert by_target["alarm"]["unchanged_prompt_flips"] == 0
+    assert by_target["news"]["unchanged_prompt_rows"] == 6
+    assert by_target["news"]["unchanged_prompt_flips"] == 3
+    assert by_target["news"]["unchanged_prompt"] == {"saves": 0, "harms": 0}
+    assert by_target["weather"]["unchanged_prompt_flips"] == 3
+    assert by_target["weather"]["unchanged_prompt"] == {"saves": 3, "harms": 0}
+
+
+def test_the_noise_floor_changes_no_rule(tmp_path) -> None:
+    """The admission rule is the owner's and is unchanged: the round receipt
+    reports the floor beside the confirmation, and the confirmation does not
+    read it."""
+
+    result = _run_round(tmp_path / "run")
+    receipt = json.loads(
+        Path(result["confirm"]["round_receipt"]).read_text(encoding="utf-8")
+    )
+    assert "never gated" in receipt["extra"]["noise_floor"]["rule"]
+    confirmation = receipt["extra"]["confirmation"]
+    assert json.dumps(confirmation).find("noise") == -1
+    assert json.dumps(receipt["extra"]["selection"]).find("noise") == -1
+
+
+def test_an_unreadable_sealed_trace_is_recorded_rather_than_raised(tmp_path) -> None:
+    """A diagnostic must never stop a round: a score file whose manifest chain
+    cannot be resolved leaves the floor unmeasured, with the reason in the
+    receipt, and the confirmation lands unchanged."""
+
+    measured = _run_round(tmp_path / "whole")
+    blind = _run_round(tmp_path / "blind", missing_trace=True)
+    receipt = json.loads(
+        Path(blind["confirm"]["round_receipt"]).read_text(encoding="utf-8")
+    )
+    assert receipt["extra"]["noise_floor"]["measured"] is False
+    assert "could not be read" in receipt["extra"]["noise_floor"]["reason"]
+    # The round itself is unaffected: same verdict, same gain.
+    assert blind["confirm"]["accepted"] == measured["confirm"]["accepted"]
+    assert blind["confirm"]["gain_pp"] == measured["confirm"]["gain_pp"]

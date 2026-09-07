@@ -16,6 +16,7 @@ this repository.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from dataclasses import replace
 from pathlib import Path
@@ -42,7 +43,10 @@ from speech_aware_evidence_acquisition.rails.evolution_carrier import (
     rows_of_target_from_roster,
     sentinel_rows_from_roster,
 )
-from speech_aware_evidence_acquisition.rails.proposer import CandidateArtifact
+from speech_aware_evidence_acquisition.rails.proposer import (
+    NULL_REWRITE_GATE,
+    CandidateArtifact,
+)
 
 CARRIER = "audio2tool"
 TARGETS = {"castContent": ["castContent", "playMedia"]}
@@ -174,13 +178,92 @@ def _repo(root: Path, config: LoopConfig) -> Path:
     return root
 
 
-def _score_file(path: Path, rows: Mapping[str, bool]) -> str:
-    """One ``<job_id>.score.json`` as ``core.scoring_batch`` writes it."""
 
+
+def _sha(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _sealed_trace(path: Path, rows, questions) -> str:
+    """The three files a real arm seals beside its scores: the run manifest,
+    the raw trace whose ``MODEL_REQUEST`` payloads carry the QUESTION, and the
+    ``.outputs.jsonl`` whose per-row response digest goes with it. The round
+    receipt's noise floor is computed from exactly these.
+
+    ``request_id`` and ``decoding_params.id_slot`` are made DIFFERENT in every
+    arm on purpose: they are transport (an ordinal and a server slot), and an
+    instrument that counted them as a new question would report every row of
+    every round as changed. ``rails.evolution.question_sha256`` drops them.
+
+    Everything is referenced RELATIVELY, exactly as ``sealed_question_digests``
+    resolves it, so the synthetic bundle carries no absolute path and two runs
+    of this dry run stay byte-identical.
+    """
+
+    stem = path.name.split(".", 1)[0]
+    trace, outputs = [], []
+    for index, sample_id in enumerate(sorted(rows)):
+        question, response = questions.get(
+            sample_id, (f"ask|{sample_id}", _sha(f"answer|{sample_id}"))
+        )
+        request_id = f"{stem}-{index:04d}"
+        trace.append(
+            json.dumps(
+                {
+                    "channel": "MODEL_REQUEST",
+                    "record_id": f"{request_id}/request",
+                    "payload": {
+                        "arm": stem,
+                        "payload": {
+                            "request_id": request_id,
+                            "sample_id": sample_id,
+                            "decoding_params": {
+                                "id_slot": (index + len(stem)) % 4,
+                                "temperature": 0,
+                            },
+                            "history": [{"content": question}],
+                        },
+                    },
+                }
+            )
+        )
+        outputs.append(
+            json.dumps({"sample_id": sample_id, "response_text_sha256": response})
+        )
+    named = {}
+    for suffix, lines in (("trace.jsonl", trace), ("outputs.jsonl", outputs)):
+        file = path.parent / f"{stem}.{suffix}"
+        file.parent.mkdir(parents=True, exist_ok=True)
+        file.write_text(
+            "".join(line + "\n" for line in lines), encoding="utf-8", newline="\n"
+        )
+        named[suffix] = {
+            "path": file.name,
+            "sha256": hashlib.sha256(file.read_bytes()).hexdigest(),
+        }
+    _write(
+        path.parent / f"{stem}.run-manifest.json",
+        {
+            "schema": "saea-run-manifest-v1",
+            "status": "COMPLETED",
+            "raw_trace": named["trace.jsonl"],
+            "outputs": named["outputs.jsonl"],
+        },
+    )
+    return f"{stem}.run-manifest.json"
+
+
+def _score_file(
+    path: Path, rows: Mapping[str, bool], questions: Mapping[str, tuple] | None = None
+) -> str:
+    """One ``<job_id>.score.json`` as ``core.scoring_batch`` writes it, beside
+    the run manifest and sealed outputs it names."""
+
+    manifest = _sealed_trace(path, rows, questions or {})
     _write(
         path,
         {
-            "manifest": str(path.name),
+            "manifest": manifest,
             "verified": True,
             "scores": {
                 SCORER: {
@@ -663,3 +746,101 @@ def test_a_sentinel_the_fold_never_drew_is_refused_rather_than_reported_empty() 
         sentinel_rows_from_roster(
             _fold_document(), SENTINEL_TARGETS, {"castContent": ["absentTool"]}
         )
+
+
+# ---------------------------------------------------------------------------
+# The null-rewrite form gate (track E3e, 2026-09-07)
+# ---------------------------------------------------------------------------
+
+
+def _null_rewrite_response(carrier: CarrierMaterial) -> str:
+    """The failure EVO-S1 round 1 actually produced, in A2T's family: the
+    proposer hands back the incumbent's own descriptions, word for word."""
+
+    incumbent = {
+        str(row["tool_name"]): str(row["description"])
+        for row in carrier.registry_rows
+        if str(row["tool_name"]) in TOOLS
+    }
+    return json.dumps({"cue": "they already read differently", "descriptions": incumbent})
+
+
+def test_a_candidate_that_renders_to_the_incumbent_is_refused_as_a_null_rewrite(
+    tmp_path,
+) -> None:
+    """A rewrite that changes no rendered byte is not a rewrite. It is refused
+    at the candidates step, never admitted and never flown, and its slot falls
+    back to the existing "refused candidate flies no portfolio" path."""
+
+    config = _loop_config()
+    repo_root = _repo(tmp_path / "run", config)
+    carrier = _carrier()
+    state = EvolutionState(round=0, incumbent_overrides={}).validate()
+    propose = run_propose_step(state, 1, config=config, carrier=carrier)
+    receipt = propose.documents[config.round_paths(1)["propose"]["writes"][2]]
+
+    responses = {}
+    for contact in receipt["contacts"]:
+        if contact["family"] == "placebo":
+            responses[contact["sample_id"]] = _placebo_response()
+        elif contact["k"] == 1:
+            responses[contact["sample_id"]] = _null_rewrite_response(carrier)
+        else:
+            responses[contact["sample_id"]] = _valid_response()
+
+    candidates = run_candidates_step(
+        state,
+        1,
+        config=config,
+        carrier=carrier,
+        propose_receipt=receipt,
+        responses=responses,
+        repo_root=repo_root,
+        fold_a_rows=len(carrier.fold_a_rows_of_target["castContent"]),
+        fold_a_speech_seconds=16.0,
+    )
+    document = candidates.documents[config.round_paths(1)["candidates"]["writes"][0]]
+    refused = [
+        record
+        for record in document["harvest"]["refusals"]
+        if record.get("gate") == NULL_REWRITE_GATE
+    ]
+    assert len(refused) == 1
+    assert refused[0]["k"] == 1 and refused[0]["target_id"] == "castContent"
+    assert refused[0]["reason"].startswith(f"{NULL_REWRITE_GATE}:")
+    assert candidates.summary["null_rewrites_refused"] == 1
+
+    # Never admitted: no candidate at slot 1, and therefore no k=1 portfolio,
+    # because that target is this dry run's only target.
+    assert all(
+        candidate["k"] != 1 for candidate in document["harvest"]["candidates"]
+    )
+    assert "1" not in document["portfolios"]
+
+    # The check is recorded for every candidate that reached it, refused or
+    # not, so a reviewer reads the digests rather than trusting the verdict.
+    checks = {record["candidate_id"]: record for record in document["null_rewrite_checks"]}
+    assert checks and any(record["null_rewrite"] for record in checks.values())
+    for record in checks.values():
+        assert (record["candidate_rendered_sha256"] == record["incumbent_rendered_sha256"]) is (
+            record["null_rewrite"]
+        )
+
+
+def test_the_propose_receipt_names_this_familys_unchanged_instruction_revision(
+    tmp_path,
+) -> None:
+    """EVO-A1's instruction did not move: its strict-JSON contract never lost a
+    draw to the blank-line habit, so it stays ``proposer-instruction-v1`` and
+    its candidate ids stay comparable across the E3e change."""
+
+    config = _loop_config()
+    _repo(tmp_path / "run", config)
+    propose = run_propose_step(
+        EvolutionState(round=0, incumbent_overrides={}).validate(),
+        1,
+        config=config,
+        carrier=_carrier(),
+    )
+    receipt = propose.documents[config.round_paths(1)["propose"]["writes"][2]]
+    assert receipt["proposer_instruction_version"] == "proposer-instruction-v1"

@@ -213,11 +213,13 @@ several rows of section 3 carry no artifact.
 
 | refusal reason | count |
 |---|---:|
-| a blank line inside a block (lines 4, 6, 7, 8, 9) | 23 |
+| a blank line inside a block (lines 4, 6, 7, 8, 9) | 22 |
 | a line outside the block grammar | 1 |
 | over the +20 % relative token budget (`general_joke` 154 tokens, `cooking_query` 65) | 2 |
 
-Twenty-three of the twenty-five are one formatting habit: the model puts a blank line between types.
+Twenty-two of the twenty-five are one formatting habit: the model puts a blank line between blocks
+(corrected 2026-09-07, track E3e: the receipt's 25 refusals are 22 blank lines, 1 line outside the
+block grammar and 2 over budget; this table read 23 and the arithmetic did not close).
 Per scenario the refusals fall on `play` 3, `takeaway` 3, `datetime` 3, `email` 3, `alarm` 2,
 `music` 2, `transport` 2, and one each on `news`, `lists`, `recommendation`, `qa`, `social`,
 `general` and `cooking`. **`takeaway` lost all three of its draws**, which is why its 4-saves,
@@ -342,6 +344,6 @@ are handed to whoever opens the next round, in the order they matter:
    operating below that floor. A rule change, a paired re-fly of the same arm as an explicit null
    control, and a larger per-scenario `n` are the three ways out, and only the owner picks among
    them.
-3. **Twenty-three of the 25 refusals are one blank line.** Saying so in the proposer instruction
+3. **Twenty-two of the 25 refusals are one blank line.** Saying so in the proposer instruction
    would roughly double the number of scenarios holding a real candidate, which is the cheapest
    available increase in this loop's search width.

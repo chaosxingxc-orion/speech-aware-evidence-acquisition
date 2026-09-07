@@ -354,9 +354,27 @@ Rules:
 - at most {L} type lines per block, the most used type first
 - at most five fillers per type, lower case, written as they would be spoken
 - ASCII only; one line per type; no blank lines; no numbering
+- leave no blank line between one block and the next: the next block's == header line comes immediately after the previous block's last type line
 - never write anything that is not an entity type name or a filler
 - never write an identifier, a file name or a number that is not part of a filler
 ```
+
+**`proposer-instruction-v2`, from round 2 onward — dated 2026-09-07 (track E3e).** The rule line
+"leave no blank line between one block and the next…" above is NEW, and it is the whole of the
+change. Round 1 lost **22 of its 54 draws** to one formatting habit: the model separated its blocks
+with a blank line, which v1 covered only as the general "no blank lines" in a rule whose other two
+clauses are about type lines. `takeaway` lost all three of its draws that way, so its 4-saves,
+0-harms stage-one count stood against no artifact at all. The parser is deliberately unchanged and
+stays fail-closed — repairing a proposer answer here would be a second, unlogged policy deciding what
+the frozen core meant — so the repair belongs in the instruction, where it costs nothing and is
+visible. Because the instruction bytes are inside every candidate id (through
+`proposer_prompt_sha256`) and are the preregistered prompt, the revision is versioned rather than
+edited quietly: `rails.proposer.PROPOSER_INSTRUCTION_VERSIONS` names
+`slurp-slot-schema -> proposer-instruction-v2`, and every PROPOSE receipt from round 2 on records
+`proposer_instruction_version`. **Round 1's sealed prompts are untouched**: they were flown under v1,
+their digests stand, and round 1 remains replayable exactly as it landed. The `a2t-descriptions`
+instruction stays `proposer-instruction-v1` — its output contract is strict JSON, whose parser treats
+a blank line as the insignificant whitespace it is, so the same habit cannot cost EVO-A1 a draw.
 
 **No sample id ever reaches the rendered instruction** — exemplar ids are used only to group, to
 order and to seed the candidate id. No devel row, no test row, no evaluation gold and no score enters
@@ -387,6 +405,18 @@ Other form caps, all enforced before a candidate flies: ASCII only; at most five
 at most `L` type lines per intent, where `L` is that intent's unfloored TRAIN type count; every
 listed type has at least one TRAIN mention for that intent; the header line byte-identical to
 `A_0`'s; the block parses under the renderer's own grammar.
+
+**Null rewrites, added 2026-09-07 (track E3e), after round 1.** A candidate whose RENDERED artifact
+is byte-identical to the incumbent's rendering over exactly the intents it rewrote is refused at the
+candidates step with the reason `null-rewrite`: it is never admitted, never flown, and its slot flies
+the incumbent's blocks like any other refusal. Round 1 needed this. `social` was admitted on a block
+set that renders to `A_0`'s own `social_post` block — the old guard checked that a candidate EXISTED,
+not that it DIFFERED — which spent one of two admissions and put 60 rows of pure decoder noise into
+the confirmation. Replaying round 1's `candidates.json` through the gate refuses five of its 29
+candidates: `social` k = 2 (the admitted winner `bb02b5f3`), `calendar` k = 1 and k = 2, `iot` k = 1
+and `general` k = 3. The gate needs no tokenizer — whether a rewrite is a rewrite is not a question
+about tokens — so it runs on every round, before the relative token budget, and it is enforced for
+both artifact families (`rails.proposer.null_rewrite_check`).
 
 ## 6. The rounds
 
@@ -891,6 +921,26 @@ sealed per-sample score files, and `analysis.paired.render_markdown` for the tab
 reproduces section 10's arithmetic. Official scoring is `slurp-slu-official` — the unmodified official
 `evaluate.py` at pinned commit `8eb1654…311f1` — run once per complete manifest through
 `core.scoring_batch`, never sharded. No new analysis module is admitted for this cell.
+
+**The prompt noise floor, added 2026-09-07 (track E3e). Reported, never gated.** Every round receipt
+from now on carries `extra.noise_floor`: per target and pooled, the rows whose rendered prompt was
+byte-identical across the two fold-B arms, of those the ones that answered differently anyway
+(`unchanged_prompt_flips`), and the round's saves and harms split by the same test. It is computed by
+`rails.evolution.prompt_noise_floor` from the sealed traces the confirm step's own two score files
+already name (score file → run manifest → `raw_trace` for the question and `outputs.jsonl` for the
+answer's digest, both hash-checked; neither prompt nor response text leaves the function). "The same
+question" is `question_sha256`: the whole sealed request payload MINUS `request_id` and
+`decoding_params.id_slot`, which are an ordinal and a server slot rather than anything the core was
+asked — on round 1, 820 of 1,080 rows differ in `id_slot` alone and 62 in `request_id`, so comparing
+whole request digests would have reported 842 changed questions against the 61 there are. Rebuilt
+over round 1's own sealed traces the block reproduces the verdict's independently computed numbers
+exactly: 61 changed, 1,019 unchanged, 286 flips, 3/1 saves and harms on changed questions against
+15/16 on unchanged ones. It exists because that quantity is large: 286 of 1,019 byte-identically
+asked rows returned different text, and 31 of the 35 rows whose reward moved were of that kind.
+**The admission rule is unchanged** — nothing in `select_per_target`, `confirm_assembly` or
+`advance_round` reads any of these counts, and whether the rule should change is the owner's open
+question. A trace this driver cannot resolve leaves the block `measured: false` with the reason
+recorded; a diagnostic never stops a round.
 
 ## 15. Claim surface
 
