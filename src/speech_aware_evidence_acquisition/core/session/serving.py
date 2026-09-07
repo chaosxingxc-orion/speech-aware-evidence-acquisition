@@ -1078,40 +1078,99 @@ def _hold_session_open(
     flowing). Returns 0 when the operator asked it to stop, 1 when the
     server exited on its own -- an unrequested exit is a failure, and the
     exit status is what a coordinator's job monitor sees.
+
+    E7b defect 2 (2026-09-07): this loop is the server's PARENT, and until
+    now it did none of a parent's three jobs. It polled ``_pid_alive``,
+    which a zombie satisfies forever, so when llama-server exited the loop
+    kept spinning: the child was never reaped (leaving the ``<defunct>``
+    entry that then made every ``stop`` refuse -- see
+    :func:`observe_session_process`), no ``session-stop.json`` was written,
+    and the wrapper never exited, so nothing a coordinator watches could
+    tell that the session was over. It now reaps the child, records the stop
+    with the reaped exit status, and exits non-zero with ONE operator line.
+
+    Deliberately NOT added: a ``--restart-on-exit`` option. A server that
+    exits unasked is a fact the coordinator must see -- an OOM, a crash, a
+    stray signal -- and restarting it silently would hide exactly the thing
+    that needs looking at.
     """
 
     import signal  # noqa: PLC0415 (CLI-only)
+    import sys  # noqa: PLC0415 (CLI-only)
     import time  # noqa: PLC0415 (CLI-only)
+    from datetime import datetime, timezone  # noqa: PLC0415 (CLI-only)
 
     from . import stop_session  # noqa: PLC0415 (CLI-only)
-    from .process import _pid_alive  # noqa: PLC0415 (CLI-only)
+    from .lifecycle import describe_wait_status, reap_child  # noqa: PLC0415 (CLI-only)
 
     stopping = {"asked": False}
 
     def _on_signal(_signum, _frame) -> None:
         stopping["asked"] = True
 
+    installed: list[tuple[int, object]] = []
     for signal_name in ("SIGTERM", "SIGINT", "SIGHUP"):
-        handler = getattr(signal, signal_name, None)
-        if handler is not None:
-            signal.signal(handler, _on_signal)
+        number = getattr(signal, signal_name, None)
+        if number is not None:
+            installed.append((number, signal.signal(number, _on_signal)))
 
-    while not stopping["asked"] and _pid_alive(session.pid):
-        time.sleep(1.0)
+    try:
+        exit_status: int | None = None
+        exited_unasked = False
+        while not stopping["asked"]:
+            # Reaping FIRST, because this process is the parent: waitpid is
+            # the only thing that turns an exited child into a real exit
+            # status instead of a zombie, and it is non-blocking here.
+            reaped, exit_status = reap_child(session.pid)
+            if reaped:
+                exited_unasked = True
+                break
+            state = process_state(session.pid)
+            if state in (PROCESS_STATE_GONE, PROCESS_STATE_DEFUNCT):
+                # Gone: already reaped by someone else. Defunct without a
+                # successful reap: not this process's child after all (an
+                # adopted pid). Either way the server has exited.
+                exited_unasked = True
+                break
+            time.sleep(1.0)
 
-    stop_document = _write_stop_document(
-        session_dir,
-        session_id=session_id,
-        stop_receipt=stop_session(
-            session,
-            runtime_receipt=profile["runtime_receipt"],
-            runtime_root=Path(args.runtime_root),
-            force_after_timeout=True,
-        ),
-        monitor_path=monitor_path,
-    )
-    print(json.dumps(stop_document, ensure_ascii=False, indent=2, sort_keys=True))
-    return 0 if stopping["asked"] else 1
+        server_exit = None
+        if exited_unasked:
+            server_exit = {
+                "reason": "server-exited",
+                "reaped": exit_status is not None,
+                "status": describe_wait_status(exit_status),
+                "detected_at": datetime.now(tz=timezone.utc).isoformat(),
+            }
+
+        stop_document = _write_stop_document(
+            session_dir,
+            session_id=session_id,
+            stop_receipt=stop_session(
+                session,
+                runtime_receipt=profile["runtime_receipt"],
+                runtime_root=Path(args.runtime_root),
+                force_after_timeout=True,
+            ),
+            monitor_path=monitor_path,
+            server_exit=server_exit,
+        )
+        print(json.dumps(stop_document, ensure_ascii=False, indent=2, sort_keys=True))
+        if not exited_unasked:
+            return 0
+        print(
+            f"serving_session: server pid {session.pid} of session {session_id!r} exited "
+            f"on its own ({server_exit['status']['description']}); the stop is recorded in "
+            f"{session_dir / SESSION_STOP_NAME} and nothing was restarted",
+            file=sys.stderr,
+        )
+        return 1
+    finally:
+        # Hand the signals back: everything above this point is the only
+        # window in which they mean "stop the session" rather than "stop
+        # this process".
+        for number, handler in installed:
+            signal.signal(number, handler)
 
 
 def _write_stop_document(

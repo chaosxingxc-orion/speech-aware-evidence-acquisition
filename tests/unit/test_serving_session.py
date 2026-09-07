@@ -49,6 +49,7 @@ from speech_aware_evidence_acquisition.core.session.serving import (
     SERVING_SESSION_SCHEMA,
     ServingIdentityMismatch,
     ServingSessionError,
+    _hold_session_open,
     _resident_refusal,
     assert_identity_matches,
     build_parser,
@@ -904,3 +905,135 @@ def test_only_the_stop_subcommand_takes_stale():
     assert build_parser().parse_args(["stop"]).stale is False
     with pytest.raises(SystemExit):
         build_parser().parse_args(["status", "--stale"])
+
+
+# ---------------------------------------------------------------------------
+# The wrapper's own three jobs (E7b defect 2): reap the child, record the
+# stop, report the exit. It did none of them on 2026-09-07.
+# ---------------------------------------------------------------------------
+
+
+class _WrapperSession:
+    """Only what ``_hold_session_open`` reads off a session receipt."""
+
+    def __init__(self, pid: int) -> None:
+        self.pid = pid
+        self.session_id = "serving-wrapper"
+
+
+def _wrapper_world(monkeypatch, tmp_path: Path):
+    """A faked ``stop_session`` (the real one re-verifies a pinned binary
+    that does not exist in a test world) plus the argv the wrapper runs
+    under."""
+
+    import speech_aware_evidence_acquisition.core.session as session_package
+
+    calls: list[object] = []
+
+    def fake_stop_session(session, **kwargs):
+        calls.append((session, kwargs))
+        return {
+            "schema": "saea-session-stop-receipt-v1",
+            "session_id": session.session_id,
+            "pid": session.pid,
+            "termination_signal": "ALREADY_EXITED",
+            "forced": False,
+            "final_process_state": PROCESS_STATE_GONE,
+        }
+
+    monkeypatch.setattr(session_package, "stop_session", fake_stop_session)
+    args = build_parser().parse_args(["start", "frag"])
+    return args, calls
+
+
+@_NEEDS_PROC
+def test_the_wrapper_reaps_the_server_and_records_why_it_exited(
+    tmp_path, monkeypatch, capsys
+):
+    args, calls = _wrapper_world(monkeypatch, tmp_path)
+
+    with _unreaped_child() as process:
+        # The 2026-09-07 state exactly: the child has exited, the wrapper is
+        # still its parent, and nothing has reaped it.
+        assert _pid_alive(process.pid) is True
+        status = _hold_session_open(
+            args,
+            profile={"runtime_receipt": {"schema": "fake"}},
+            session=_WrapperSession(process.pid),
+            session_id="serving-wrapper",
+            session_dir=tmp_path,
+            monitor_path=tmp_path / MONITOR_JSONL_NAME,
+        )
+        # Reaped: the zombie that broke every later stop is gone.
+        assert process_state(process.pid) == PROCESS_STATE_GONE
+
+    assert status == 1, "an unrequested exit must be visible to a job monitor"
+    document = json.loads((tmp_path / SESSION_STOP_NAME).read_text(encoding="utf-8"))
+    assert document["server_exit"]["reason"] == "server-exited"
+    assert document["server_exit"]["reaped"] is True
+    assert document["server_exit"]["status"]["exit_code"] == 7
+    assert document["stale"] is False
+    assert document["stop_receipt"]["termination_signal"] == "ALREADY_EXITED"
+    assert len(calls) == 1
+
+    captured = capsys.readouterr()
+    lines = [line for line in captured.err.splitlines() if line.strip()]
+    assert len(lines) == 1, "one operator line, not a traceback"
+    assert lines[0].startswith("serving_session: server pid ")
+    assert "exited with code 7" in lines[0]
+    assert str(tmp_path / SESSION_STOP_NAME) in lines[0]
+    # The document itself still goes to stdout, as every other command does.
+    assert json.loads(captured.out)["session_id"] == "serving-wrapper"
+
+
+@_NEEDS_PROC
+def test_the_wrapper_returns_zero_and_restores_signals_when_asked_to_stop(
+    tmp_path, monkeypatch, capsys
+):
+    import signal as signal_module
+    import threading
+
+    import speech_aware_evidence_acquisition.core.session.lifecycle as lifecycle_module
+    import speech_aware_evidence_acquisition.core.session.serving as serving_module
+
+    args, calls = _wrapper_world(monkeypatch, tmp_path)
+    # A server that is running and stays running: only the operator's signal
+    # can end this loop.
+    monkeypatch.setattr(serving_module, "process_state", lambda _pid: PROCESS_STATE_RUNNING)
+    monkeypatch.setattr(lifecycle_module, "reap_child", lambda _pid: (False, None))
+
+    def _test_handler(_signum, _frame):  # pragma: no cover -- only if mistimed
+        return None
+
+    # Installed before the timer so a signal that arrives early cannot kill
+    # the test run; _hold_session_open restores exactly this handler.
+    previous = signal_module.signal(signal_module.SIGTERM, _test_handler)
+    timer = threading.Timer(0.3, lambda: os.kill(os.getpid(), signal_module.SIGTERM))
+    timer.start()
+    try:
+        status = _hold_session_open(
+            args,
+            profile={"runtime_receipt": {"schema": "fake"}},
+            session=_WrapperSession(4242),
+            session_id="serving-wrapper",
+            session_dir=tmp_path,
+            monitor_path=tmp_path / MONITOR_JSONL_NAME,
+        )
+        assert signal_module.getsignal(signal_module.SIGTERM) is _test_handler
+    finally:
+        timer.cancel()
+        signal_module.signal(signal_module.SIGTERM, previous)
+
+    assert status == 0
+    document = json.loads((tmp_path / SESSION_STOP_NAME).read_text(encoding="utf-8"))
+    assert document["server_exit"] is None, "the operator asked; nothing exited unasked"
+    assert len(calls) == 1
+    assert capsys.readouterr().err == ""
+
+
+def test_the_wrapper_has_no_restart_on_exit_option():
+    """An unexpected exit must be visible, not papered over (owner rule:
+    monitoring numbers are the price of leaving the model on)."""
+
+    with pytest.raises(SystemExit):
+        build_parser().parse_args(["start", "frag", "--restart-on-exit"])

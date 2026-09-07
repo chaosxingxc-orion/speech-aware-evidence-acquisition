@@ -7,7 +7,7 @@
 #   scripts/serving_session.sh start <model-fragment-id> [--session-id ID] \
 #                                    [--host H] [--port N] [--runtime-root R]
 #   scripts/serving_session.sh status [--session-id ID]
-#   scripts/serving_session.sh stop   [--session-id ID]
+#   scripts/serving_session.sh stop   [--session-id ID] [--stale]
 #
 # `start` launches ONE llama-server for that fragment's geometry, built by
 # exactly the argument builder a flight uses (core.session.build_server_command
@@ -25,10 +25,19 @@
 # and stop it with `scripts/serving_session.sh stop` (or by signalling the
 # wrapper; either path writes session-stop.json).
 #
+# The wrapper OWNS the server process, so it reaps it: when llama-server exits
+# on its own, `start` writes session-stop.json with the reaped exit status,
+# prints one line to stderr and exits 1 (0 only when the operator asked it to
+# stop). There is deliberately no --restart-on-exit: an unrequested exit is a
+# fact the coordinator has to see.
+#
 # `start` refuses when a session.json without a session-stop.json is already
 # recorded, or when anything is already listening on the port. Both refusals
 # are enforced in core.session.serving, not here, so a caller that reaches the
-# module directly gets them too.
+# module directly gets them too. A session whose server is already gone or
+# <defunct> is recorded stopped with `stop --stale` (taken automatically by a
+# plain `stop`), which refuses unless the pid, the port and the card all agree
+# there is nothing left.
 #
 # Agents never run `start` or `stop`. A flight attaches automatically:
 # core.flight.FlightRuntime.serve finds the resident session, compares the
@@ -43,7 +52,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 usage() {
-    sed -n '2,39p' "${BASH_SOURCE[0]}" | sed 's/^#\{1,2\} \{0,1\}//'
+    sed -n '2,47p' "${BASH_SOURCE[0]}" | sed 's/^#\{1,2\} \{0,1\}//'
 }
 
 if [[ $# -lt 1 ]]; then
