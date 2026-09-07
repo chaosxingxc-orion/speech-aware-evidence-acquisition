@@ -60,46 +60,104 @@ from speech_aware_evidence_acquisition.reproduction.asr_wer_whisper import (  # 
 
 CARRIER = "earnings21-original"
 SEALED_RUN = "SAEA-E21-FULL44-DIRECT-BASELINE-V2"
-SEALED_ATTEMPT = "attempt-20260904T233816Z-bcd338"
 
-#: The sealed corpus numbers this decomposition has to reproduce, quoted from
-#: docs/readiness/2026-09-06-earnings-agentic-metric-baseline-v1.md sections 1-3
-#: and the sealed verdict. Written here so the check is a comparison against a
-#: committed claim, not against whatever this run happens to compute.
-SEALED = {
-    "corpus_wer_percent": 8.200,
-    "substitutions": 13098,
-    "deletions": 5701,
-    "insertions": 10700,
-    "reference_words": 359765,
-    "windows": 1593,
-    "calls": 44,
-    "entity_wer_percent": {
-        "PERSON": 22.5,
-        "ORG": 17.2,
-        "GPE": 18.7,
-        "LOC": 2.5,
-        "PRODUCT": 19.2,
-        "EVENT": 2.4,
-        "NORP": 9.7,
-        "FAC": 21.3,
+#: One committed sealed profile per run this instrument has been asked to
+#: reproduce -- the check is always a comparison against a committed claim,
+#: never against whatever this run happens to compute (module docstring
+#: above). ``--run-id`` selects a profile; ``--attempt-id`` overrides its
+#: pinned attempt only if given.
+#:
+#: The comparator's numbers are quoted from
+#: docs/readiness/2026-09-06-earnings-agentic-metric-baseline-v1.md sections
+#: 1-3 and the sealed verdict. KC-E1's are quoted from its own sealed
+#: docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-kc-e1-brief-44-v1/flight/score-read.json
+#: aggregates (``asr-wer-whisper``, ``conec-entity-wer-official``,
+#: ``numeric-value-accuracy-v1``, ``semantic-high-impact-error-rate-v1``),
+#: rounded exactly as this script's own checks round its live computation
+#: (2 decimal places for entity WER, 3 for everything else), so the two
+#: rounded quotations are directly comparable.
+SEALED_PROFILES: dict[str, dict[str, object]] = {
+    "SAEA-E21-FULL44-DIRECT-BASELINE-V2": {
+        "attempt_id": "attempt-20260904T233816Z-bcd338",
+        "sealed": {
+            "corpus_wer_percent": 8.200,
+            "substitutions": 13098,
+            "deletions": 5701,
+            "insertions": 10700,
+            "reference_words": 359765,
+            "windows": 1593,
+            "calls": 44,
+            "entity_wer_percent": {
+                "PERSON": 22.5,
+                "ORG": 17.2,
+                "GPE": 18.7,
+                "LOC": 2.5,
+                "PRODUCT": 19.2,
+                "EVENT": 2.4,
+                "NORP": 9.7,
+                "FAC": 21.3,
+            },
+            "entity_reference_words": {
+                "PERSON": 2917,
+                "ORG": 4363,
+                "GPE": 1537,
+                "LOC": 485,
+                "PRODUCT": 390,
+                "EVENT": 494,
+                "NORP": 236,
+                "FAC": 122,
+            },
+            "non_entity_wer_percent": 4.730,
+            "unlabelled_reference_words": 1479,
+            "numeric_expected": 9734,
+            "numeric_matched": 8832,
+            "negation_critical_high_reference_words": 100,
+            "negation_critical_high_insertions": 56,
+        },
     },
-    "entity_reference_words": {
-        "PERSON": 2917,
-        "ORG": 4363,
-        "GPE": 1537,
-        "LOC": 485,
-        "PRODUCT": 390,
-        "EVENT": 494,
-        "NORP": 236,
-        "FAC": 122,
+    # KC-E1 (docs/checks/.../2026-09-06-e21-kc-e1-brief-44-v1/), sealed with
+    # two of its 1,593 windows saturated at the 1,024-token decode cap --
+    # the case docs/checks/speech-aware-evidence-acquisition/
+    # 2026-09-07-e21-window-pairing-fix/ exists to prove the fixed pairing
+    # instrument still reproduces exactly.
+    "SAEA-E21-KC-E1-BRIEF-44-V1": {
+        "attempt_id": "attempt-20260907T171238Z-f02eef",
+        "sealed": {
+            "corpus_wer_percent": 8.736,
+            "substitutions": 13022,
+            "deletions": 8393,
+            "insertions": 10014,
+            "reference_words": 359765,
+            "windows": 1593,
+            "calls": 44,
+            "entity_wer_percent": {
+                "PERSON": 18.34,
+                "ORG": 17.99,
+                "GPE": 19.52,
+                "LOC": 2.68,
+                "PRODUCT": 16.67,
+                "EVENT": 2.43,
+                "NORP": 11.86,
+                "FAC": 21.31,
+            },
+            "entity_reference_words": {
+                "PERSON": 2917,
+                "ORG": 4363,
+                "GPE": 1537,
+                "LOC": 485,
+                "PRODUCT": 390,
+                "EVENT": 494,
+                "NORP": 236,
+                "FAC": 122,
+            },
+            "non_entity_wer_percent": 5.507,
+            "unlabelled_reference_words": 1479,
+            "numeric_expected": 9734,
+            "numeric_matched": 8779,
+            "negation_critical_high_reference_words": 120,
+            "negation_critical_high_insertions": 43,
+        },
     },
-    "non_entity_wer_percent": 4.730,
-    "unlabelled_reference_words": 1479,
-    "numeric_expected": 9734,
-    "numeric_matched": 8832,
-    "negation_critical_high_reference_words": 100,
-    "negation_critical_high_insertions": 56,
 }
 
 DEFAULT_DATA_ROOT = Path(
@@ -125,7 +183,11 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-root", type=Path, default=DEFAULT_DATA_ROOT)
     parser.add_argument("--run-id", default=SEALED_RUN)
-    parser.add_argument("--attempt-id", default=SEALED_ATTEMPT)
+    parser.add_argument(
+        "--attempt-id",
+        default=None,
+        help="overrides the selected run's pinned sealed attempt id",
+    )
     parser.add_argument("--out-dir", type=Path, required=True)
     parser.add_argument(
         "--rows-out",
@@ -138,12 +200,20 @@ def main(argv: list[str] | None = None) -> int:
         ),
     )
     args = parser.parse_args(argv)
+    if args.run_id not in SEALED_PROFILES:
+        raise SystemExit(
+            f"no committed sealed profile for run {args.run_id!r}; add one to "
+            "SEALED_PROFILES in this script before checking it"
+        )
+    profile = SEALED_PROFILES[args.run_id]
+    attempt_id = args.attempt_id or profile["attempt_id"]
+    sealed = profile["sealed"]
     rows_path = args.rows_out or (
         args.data_root / "runs" / "SAEA-E21-MF-WINDOW-PAIRING-V1" / "window-rows.json"
     )
 
     started = time.time()
-    attempt_dir = args.data_root / "runs" / args.run_id / args.attempt_id
+    attempt_dir = args.data_root / "runs" / args.run_id / attempt_id
     outputs_path = attempt_dir / f"{args.run_id}.outputs.jsonl"
     trace_path = attempt_dir / f"{args.run_id}.trace.jsonl"
 
@@ -274,46 +344,46 @@ def main(argv: list[str] | None = None) -> int:
             }
         )
 
-    check("windows", aggregate["windows"], SEALED["windows"],
-          aggregate["windows"] == SEALED["windows"])
-    check("calls", len(windows), SEALED["calls"], len(windows) == SEALED["calls"])
+    check("windows", aggregate["windows"], sealed["windows"],
+          aggregate["windows"] == sealed["windows"])
+    check("calls", len(windows), sealed["calls"], len(windows) == sealed["calls"])
     for key in ("substitutions", "deletions", "insertions", "reference_words"):
-        check(key, aggregate[key], SEALED[key], aggregate[key] == SEALED[key])
+        check(key, aggregate[key], sealed[key], aggregate[key] == sealed[key])
     corpus = aggregate["corpus_wer"] * 100.0
-    check("corpus_wer_percent", round(corpus, 3), SEALED["corpus_wer_percent"],
-          _close(corpus, SEALED["corpus_wer_percent"], 0.0005))
+    check("corpus_wer_percent", round(corpus, 3), sealed["corpus_wer_percent"],
+          _close(corpus, sealed["corpus_wer_percent"], 0.0005))
     overall_bucket = entity_totals[conec.OVERALL_BUCKET]
     check("conec_all_bucket_wer_percent", round(overall_bucket["wer"] * 100.0, 3),
-          SEALED["corpus_wer_percent"],
-          _close(overall_bucket["wer"] * 100.0, SEALED["corpus_wer_percent"], 0.0005),
+          sealed["corpus_wer_percent"],
+          _close(overall_bucket["wer"] * 100.0, sealed["corpus_wer_percent"], 0.0005),
           "the ConEC mirror's own __ALL__ anchor, re-derived from window rows")
-    for entity, expected in SEALED["entity_wer_percent"].items():
+    for entity, expected in sealed["entity_wer_percent"].items():
         bucket = entity_totals.get(entity, {"wer": 0.0, "reference_words": 0})
         check(f"entity_wer_percent[{entity}]", round(bucket["wer"] * 100.0, 2), expected,
               _close(bucket["wer"] * 100.0, expected, 0.05))
         check(f"entity_reference_words[{entity}]", bucket["reference_words"],
-              SEALED["entity_reference_words"][entity],
-              bucket["reference_words"] == SEALED["entity_reference_words"][entity])
+              sealed["entity_reference_words"][entity],
+              bucket["reference_words"] == sealed["entity_reference_words"][entity])
     non_entity = entity_totals[conec.NON_ENTITY_BUCKET]
     check("non_entity_wer_percent", round(non_entity["wer"] * 100.0, 3),
-          SEALED["non_entity_wer_percent"],
-          _close(non_entity["wer"] * 100.0, SEALED["non_entity_wer_percent"], 0.0005))
+          sealed["non_entity_wer_percent"],
+          _close(non_entity["wer"] * 100.0, sealed["non_entity_wer_percent"], 0.0005))
     unlabelled = entity_totals[conec.UNLABELLED_BUCKET]
     check("unlabelled_reference_words", unlabelled["reference_words"],
-          SEALED["unlabelled_reference_words"],
-          unlabelled["reference_words"] == SEALED["unlabelled_reference_words"])
+          sealed["unlabelled_reference_words"],
+          unlabelled["reference_words"] == sealed["unlabelled_reference_words"])
     check("negation_critical_high_reference_words",
           semantic_totals["high_impact_reference_words"],
-          SEALED["negation_critical_high_reference_words"],
+          sealed["negation_critical_high_reference_words"],
           semantic_totals["high_impact_reference_words"]
-          == SEALED["negation_critical_high_reference_words"])
+          == sealed["negation_critical_high_reference_words"])
     check("negation_critical_high_insertions", semantic_totals["high_impact_insertions"],
-          SEALED["negation_critical_high_insertions"],
+          sealed["negation_critical_high_insertions"],
           semantic_totals["high_impact_insertions"]
-          == SEALED["negation_critical_high_insertions"])
+          == sealed["negation_critical_high_insertions"])
     check("numeric_expected", numeric_totals["expected_numeric_words"],
-          SEALED["numeric_expected"],
-          numeric_totals["expected_numeric_words"] == SEALED["numeric_expected"],
+          sealed["numeric_expected"],
+          numeric_totals["expected_numeric_words"] == sealed["numeric_expected"],
           "expected numeric values partition exactly; only `matched` can fall short")
 
     shortfall = sum(row["numeric_matched_shortfall"] for row in per_call)
@@ -344,7 +414,7 @@ def main(argv: list[str] | None = None) -> int:
                 "study": "speech-aware-evidence-acquisition",
                 "exposure_row": "SAEA-E21-MF-WINDOW-PAIRING-V1",
                 "source_run_id": args.run_id,
-                "source_attempt_id": args.attempt_id,
+                "source_attempt_id": attempt_id,
                 "carrier_lock_key": CARRIER,
                 "split_identity_hash": (
                     "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e"
@@ -373,7 +443,7 @@ def main(argv: list[str] | None = None) -> int:
                 "study": "speech-aware-evidence-acquisition",
                 "exposure_row": "SAEA-E21-MF-WINDOW-PAIRING-V1",
                 "source_run_id": args.run_id,
-                "source_attempt_id": args.attempt_id,
+                "source_attempt_id": attempt_id,
                 "verdict": "FAIL" if failures else "PASS",
                 "rows_path": str(rows_path),
                 "rows_sha256": rows_sha256,
