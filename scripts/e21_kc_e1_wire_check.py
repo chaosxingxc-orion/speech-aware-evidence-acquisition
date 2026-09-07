@@ -254,6 +254,59 @@ def main() -> int:
             % (cell_id, baseline, values["evidence_source"], cap)
         )
 
+        # finalize_bundle renders a DRAFT wiki-ledger row and core.tracking.
+        # ledger_row refuses a missing column outright, so the launcher must
+        # supply the judgment columns the driver has no basis to invent --
+        # exactly what scripts/run_arm_sequence.sh does for a real arm. A wire
+        # check has no science, so its cells say so rather than borrowing the
+        # launcher's PENDING-ANALYSIS placeholders, which would imply an
+        # analysis is coming.
+        cells_path = scratch / f"{baseline}.ledger-cells.json"
+        cells_path.parent.mkdir(parents=True, exist_ok=True)
+        cells_path.write_text(
+            json.dumps(
+                {
+                    "experiment_id": (
+                        "%s (%s; CONTACT-FREE WIRE CHECK, never a measurement)"
+                        % (args.run_id, cell_id)
+                    ),
+                    "speech task/carrier": (
+                        "dataset fragment %r, the four shortest kb-construction calls; "
+                        "identity: exposure-ledger row SAEA-E21-KC-E1-PROMPT-FIT-V1"
+                        % args.dataset
+                    ),
+                    "changed axes": (
+                        "baseline fragment %r; the one factor against its twin is "
+                        "evidence_source" % baseline
+                    ),
+                    "shared code revision": "none (study repo only)",
+                    "model rev": (
+                        "model fragment %r; NO MODEL WAS TOUCHED -- the transport is "
+                        "core.driver.smoke._dry_run_transport" % model
+                    ),
+                    "dataset rev": (
+                        "umbrella lock; sha256 recorded at manifest "
+                        "cost.umbrella_lock_sha256"
+                    ),
+                    "effectiveness": (
+                        "NOT MEASURED. Every score in this bundle is computed over a "
+                        "canned fake response and means nothing"
+                    ),
+                    "reasonableness": "NOT MEASURED (see effectiveness)",
+                    "efficiency": "NOT MEASURED (see effectiveness)",
+                    "deviations": "none",
+                    "decision": (
+                        "no decision. A wire check gates a flight; it never "
+                        "contributes to one"
+                    ),
+                },
+                indent=1,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
         argv = [
             sys.executable,
             "-m",
@@ -282,6 +335,8 @@ def main() -> int:
             str(scratch / baseline),
             "--tracking-uri",
             args.tracking_uri,
+            "--ledger-cells",
+            str(cells_path),
         ]
         log("  smoke --dry-run: %s" % " ".join(argv[3:8]))
         completed = subprocess.run(
@@ -307,6 +362,20 @@ def main() -> int:
             "  smoke OK: attempt %s, state %s"
             % (smoke_out["attempt_id"], smoke_out["attempt_state"])
         )
+        # Surfaced rather than swallowed: the arm predates the 2026-08-15
+        # legality doctrine's either-field rule, so every run of it -- this
+        # dry run and the flight alike -- records provenance tier UNVERIFIED.
+        # The flight agent should know that before reading the manifest's
+        # legality block, not after.
+        warnings = sorted(
+            {
+                line.strip()
+                for line in (completed.stdout + completed.stderr).splitlines()
+                if line.startswith("WARNING:")
+            }
+        )
+        for line in warnings:
+            log("  %s" % line)
 
         # ---------------- request half ----------------
         allowlist = set(ARM_VISIBLE_FIELDS[arm])
@@ -474,6 +543,8 @@ def main() -> int:
             "arm": arm,
             "config_hash": composed.config_hash,
             "protocol_hash": manifest.get("protocol_hash"),
+            "launcher_warnings": warnings,
+            "legality_block": manifest.get("legality"),
             "smoke_run_id": smoke_run_id,
             "attempt_id": str(smoke_out["attempt_id"]),
             "attempt_state": str(smoke_out["attempt_state"]),
