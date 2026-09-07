@@ -48,6 +48,10 @@ _EXPECTED_PROGRAM_SHAPES = {
     "phase-select-then-fill-v1": (("select", "fill"), 2, "always-run-full-program"),
     "phase-draft-revise-v1": (("draft", "revise"), 2, "always-run-full-program"),
     "phase-slots-given-intent-v1": (("slots",), 1, "always-run-full-program"),
+    # KU-S3, 2026-09-07: the same one-contact slot program with its single
+    # phase declaring knowledge "supplied". Two program ids rather than a flag
+    # on one, because a phase's knowledge value rides the config hash.
+    "phase-slots-given-intent-supplied-v1": (("slots",), 1, "always-run-full-program"),
 }
 
 

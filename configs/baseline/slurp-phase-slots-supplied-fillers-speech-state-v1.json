@@ -1,0 +1,84 @@
+{
+  "arm": "speech-feature-query",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers/snapshot.json",
+  "knowledge_snapshot_sha256": "2c43147780b60fe64a3f46de5e9f6ab28b053f3a28a6900b2a92c04591541cf6",
+  "phase_material": {
+    "slots": {
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_phase_slots.txt",
+      "predecessor_binding": "sealed-manifest",
+      "predecessor_source": {
+        "manifest_relpath": "runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.run-manifest.json",
+        "manifest_sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c",
+        "producer_policy_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1"
+      },
+      "response_format_id": null,
+      "state_fill": "slurp-intent-slot-schema-for-state"
+    }
+  },
+  "phase_supply": {
+    "slots": {
+      "dimensions": [
+        "content"
+      ],
+      "expose_facets": false,
+      "facet_source": {
+        "embedded_signal": "text: Omni-Embed-Nemotron-3B over the 11,514 governed SLURP TRAIN utterance texts, prompt 'passage: ', mean-pooled and L2-normalised; one vector per content facet id facet:content:<slurp_id>. The KEY side is knowledge text by construction and is unconstrained by the owner's 2026-09-06 query-signal rule.",
+        "kind": "sealed-vectors",
+        "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+        "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+        "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+      },
+      "fuse_coverage": {
+        "c": 5,
+        "m": 5,
+        "top_l": 5
+      },
+      "fuse_policy": "saea-fuse-supplyfilter-v1",
+      "k": 5,
+      "provider": "kb-facet-v1",
+      "query_source": {
+        "embedded_signal": "speech+state: Omni-Embed-Nemotron-3B over the DEV-1000 recording of this row FUSED INSIDE THE ENCODER with that row's own sealed KU-S1c phase-1 draft text (run SAEA-SLURP-KU-S1C-DRAFT-REVISE-DEV1000-V1), prompt 'query: ' + audio + newline + the draft. Set q-speech-nemotron-fused of the sealed 2026-09-06 MF-7b pass.",
+        "kind": "sealed-vectors",
+        "relpath": "vectors/slurp-kus3/query-vectors-speech-state.jsonl",
+        "sha256": "a17382eb57149a49a69cda2ee5afbefe024ed5ad8d38e9b15b774d9038ed92b2",
+        "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+      },
+      "rank_policy": "saea-rank-wcos-prior-agree-v1",
+      "rank_weights": {
+        "w_agree": 0.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "tau": 0.0
+    }
+  },
+  "policy": "phase-slots-given-intent-supplied-v1",
+  "predecessor_is_unprojected_and_that_is_deliberate": "predecessor_binding sealed-manifest with NO fill_params.projection, exactly as KC-S1b flew. The headline comparator is KC-S1b's SEALED rows, which chose their per-intent blocks from UNPROJECTED bytes; an arm that projected would beat that comparator partly by better block selection (the v2 verdict, section 6: 39 of KC-S1b's 42 fallback rows become legal and 17 land on the gold intent) rather than by the supplied fillers. This is the same ruling configs/baseline/slurp-phase-slots-given-intent-schema-projected-v2.json states for the DEV-1000 final read, applied here for the same reason.",
+  "scorers": [
+    "slurp-slu-official",
+    "slurp-slu",
+    "cost"
+  ],
+  "serving_slot_tokens": 16384,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-slurp-consumption-ku-s3-speech-state-v1:slots",
+  "speech_feature_matcher_policy_id": "saea-slurp-consumption-ku-s3-speech-state-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_template_active": true,
+  "the_one_difference_from_kc_s1a": "state_fill. Every other key of this fragment is byte-identical to configs/baseline/slurp-phase-slots-given-intent-v1.json apart from the two speech-feature identity ids (which must be unique per arm) and this note block. rails.phase_material.build_material_for_phase appends the registered fill's text AFTER the appended sealed state, so this cell's contact instruction is KC-S1a's contact instruction plus a pure per-sample SUFFIX, per row, by construction -- the same pure-suffix discipline data.slurp.render_slurp_closed_label_inventory follows for the system message.",
+  "the_one_difference_from_kc_s1b": "phase_supply, and the two keys it needs: the policy id gains '-supplied' so the slots phase declares knowledge 'supplied' (rails.phase_supply refuses to supply a phase whose program does not say so), and the bound snapshot becomes the slot-filler view of the same TRAIN rows. Every other key -- the system message, the instruction template, the state fill, the sealed predecessor manifest, the packet receipt, the geometry, the scorers -- is byte-identical to configs/baseline/slurp-phase-slots-given-intent-schema-v1.json apart from the two speech-feature identity ids, which must be unique per arm, and these note blocks.",
+  "the_one_difference_from_the_speech_arm": "phase_supply.slots.query_source (relpath, sha256 and the declared modality, which moves from 'speech:' to 'speech+state:'), and the two speech-feature identity ids. The modality string rides the config hash, so the two keys are two cells by construction and neither can be slipped in as the other.",
+  "what_the_fill_renders": "slurp-intent-slot-schema-for-state resolves through rails.phase_material.PHASE_STATE_FILLS to data.slurp.render_slurp_slot_schema_for_state_detail. For a row whose sealed closed-list response parses to an intent TRAIN carries, it renders THAT intent's block alone: the entity types holding at least 2 percent of the intent's TRAIN slot mentions, each with its share and up to five lower-case example fillers (494 to 1,224 characters, sixty such blocks). For a row whose sealed response does not parse or names a (scenario, action) pair TRAIN never carries, it falls back to the FULL 60-intent schema (26,720 characters) so the row still gets a legal slot instruction; the flight counts and reports those rows. TRAIN only: load_slurp_intent_slot_schema has no split parameter and can reach no devel or test file. Receipt docs/receipts/knowledge/slurp-intent-slot-schema-v1.json.",
+  "what_the_supply_is": "The one factor. For each DEV row, the top-5 TRAIN utterances of the frozen slot-filler snapshot recalled by cosine against that row's SEALED Omni-Embed-Nemotron-3B vector, ranked by saea-rank-wcos-prior-agree-v1 and passed through saea-fuse-supplyfilter-v1. The decision is computed BEFORE the flight by rails.phase_supply.build_bootstrap_selection -- the slot phase is the program's FIRST phase, so no advance precedes it and no acquire transition can carry its selection -- and seeded into each sample's initial QueryState through rails.runner's bootstrap_value_ids mapping. It reaches the model ONLY as typed content blocks carrying evidence_id / source_uri / knowledge_role='value'. Nothing is written into the instruction: KU-S3's contact instruction is KC-S1b's contact instruction, byte for byte.",
+  "what_this_is": "Cell KU-S3 key (b): identical to the speech-alone arm except the query vector, which adds the row's own sealed draft answer INSIDE the encoder. Ordered SECOND: the state half comes from a different program (KU-S1c's draft phase), so the arm is one step further from KC-S1b, and MF-7b measured the two keys' filler recall@5 at 42.85 (fused) against 43.46 (speech alone) -- a tie on the quantity this cell consumes, while the fused key's advantage was on intent, which is closed here.",
+  "why_np4": "The fallback block is about 7,500 tokens on top of a 7,583-character system message and does not fit an 8,192-token slot. serving_slots 4 / serving_slot_tokens 16384 fits it with room to spare, and KC-S1a flies the same geometry so the contrast between them is geometry-matched.",
+  "why_the_knobs_are_not_the_blend_lock_s": "THE LOCKED KNOBS DO NOT TRANSFER, and this was measured before it was decided. The DEV-1000 BLEND lock's tau 0.65 is a percept-admission threshold calibrated on a TEXT query against TEXT keys, where Nemotron's own text-space neighbour cosine is about 0.87. This cell's query is a SPEECH vector: measured over 20 DEV-1000 rows against all 11,514 keys, the top-1 cross-modal cosine is 0.2232 to 0.5522 (mean 0.3975) and the pooled top-5 is 0.2123 to 0.5522 (mean 0.3861). At tau 0.65, 0 of 100 top-5 candidates are admitted and 0 of 20 rows keep a single value -- the cell supplies nothing, on every row. tau is therefore 0.0: rails.kb_policy.multidim_recall has ALREADY truncated to the top k=5 by cosine, so the admission filter can only subtract from the mechanism this cell preregisters, which is 'the top-5 neighbours'. fuse_coverage m 5 / c 5 / top_l 5 for the same reason: the lock's c 2 / top_l 3 is a coverage reshaper that would group the five neighbours by intent and keep two per intent for the top three intents, making the block COUNT depend on how many intents the neighbourhood spans. Five in, five out, on every row and on both arms. rank_weights 1.0 / 0.0 / 0.0 makes the ranked score EQUAL the cosine: with a content-only snapshot the prior term is structurally 0.0 (no PRIOR_MASS dimension is recalled) and the agreement term is structurally 1.0 (one dimension of one), so this is an identity on the ordering and a readable number in the trace -- and it says out loud that this cell ranks on speech-to-text similarity alone, never on how common a neighbour's intent is.",
+  "why_the_values_carry_no_intent": "Neighbour retrieval on SLURP INTENT is CLOSED (docs/readiness/2026-09-06-slurp-retrieval-key-audit-v2.md): the best speech key ties the re-locked comparator at +0.60 pp. What MF-7b handed on is the FILLER side -- filler recall@5 42.85 for the fused key and 43.46 for speech alone, against the draft key's 31.47. The exemplar value would name its neighbour's intent and restate the entity-type prior this phase's own schema block already carries, so it would supply a closed mechanism and duplicate an admitted one. This view supplies fillers.",
+  "why_this_snapshot": "THE SLOT-FILLER VIEW, and it is not optional. A supplied cell must BIND the content dimension it recalls on, and the exemplar view's content facets are 11,514 raw TRAIN utterances: measured 2026-09-07 against this cell's own instruction, rails.runner._assert_agent_control_excludes_knowledge_payloads refuses 1,000 of 1,000 rows -- 'how much' alone hits every row, because the per-intent slot schema KC-S1b sends contains it -- while the exemplar VALUES collide with 0 of 1,000. scripts/build_knowledge_snapshot.py --view slot-fillers quotes the utterance inside a key descriptor and renders each value as that utterance's slot type=filler pairs alone. Same selection, same facet ids (so the sealed key vectors bind unchanged), same value ids, same prior scores, same provenance. Measured against THIS snapshot's 23,028 protected payloads: 0 of 1,000 instructions collide. Receipt docs/receipts/knowledge/slurp-kb-size-full-content-slot-fillers.json."
+}
