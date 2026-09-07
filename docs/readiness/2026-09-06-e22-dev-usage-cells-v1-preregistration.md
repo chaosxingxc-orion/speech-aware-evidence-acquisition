@@ -1,11 +1,18 @@
 # Preregistration — the three Earnings-22 model-usage alignment cells
 
-**STATUS: PREREGISTERED, NOT AUTHORIZED. One of the three is BLOCKED.** Three single-factor cells
-are specified here and **none is flown by the rows that write this document**
+**STATUS: two cells FLIGHT-READY and NOT AUTHORIZED; the third is CLOSED.** Three single-factor
+cells are specified here and **none is flown by the rows that write this document**
 (`SAEA-E22-MF-OVERGENERATION-ANALYSIS-V1` and `SAEA-SN-MF-E22-DEV1500-ROSTER-V1`, both
 `model-free-check`). Each cell needs its own owner GO, its own exposure row registered before its
 first contact, and its own `contracts.ExecutionPlan`. Nothing below may be executed on the
 authority of this file.
+
+**2026-09-06 update, all model-free.** Cells (a) and (b) are now flight-ready: their fragments,
+their model-free preconditions and their contact-free wire checks are landed and are cited in place
+(§1.3, §1.3.1, §2.3, §2.3.1, §6, §7). Cell (c) is **CLOSED** by the owner's refusal of the 22 GB
+acquisition its population would have required (§3), with its blocking facts kept. **Flight-ready is
+not authorized**: no cell here has an owner GO, no exposure row is registered, and no model has been
+contacted by any row that produced this update.
 
 Basis, all model-free and all landed:
 
@@ -471,9 +478,37 @@ Expected dispatch ≈ 400 s at eight slots (arm A: 3.744 contacts/s).
 
 ---
 
-## 3. Cell (c) — `SAEA-E22-DEV-ESB-FRONTEND-V1` — **BLOCKED**
+## 3. Cell (c) — `SAEA-E22-DEV-ESB-FRONTEND-V1` — **CLOSED (owner, 2026-09-06)**
 
 **One factor: the audio decode path. And it cannot be flown from anything on this machine.**
+
+> **CLOSED, 2026-09-06.** §3.2 put the unblocking price to the owner: a 22,039,334,688-byte
+> acquisition of all 55 ESB train shards, or a targeted row-group projection of the `audio` leaf
+> over the network. **The owner refused the 22 GB fetch.** With no dev arrays on disk and no
+> authorization to acquire them, the cell has no population, and it is closed rather than left
+> pending: a BLOCKED cell invites a later agent to look for a way around the block, and the way
+> around it here runs through the four ESB **test** shards that are on disk — which this cell is
+> forbidden to touch, because it is scoped to dev and because reading test audio content would be a
+> second answer-bearing read of a one-shot asset.
+>
+> **Nothing below is deleted, and that is deliberate.** §3.1–§3.5 are the blocking facts, the price
+> in identity, and the confound the cell could never have removed. They stay because the front end
+> is still an unmeasured difference between this study and the published evaluations, and whoever
+> revisits it should start from what was already established rather than re-derive it: the two paths
+> agree on the span and differ on the decode; the difference is **four** things at once (source
+> container, sample rate, channel fold, a sub-frame span difference with a median of +0.0000316 s),
+> and one cell could never have said "the resampler is worth X points".
+>
+> **Reopening it needs an owner decision and this file is not one.** If the owner ever authorizes the
+> acquisition, §3.3's identity rebuild is executable unchanged — new version directory
+> `derived/e22-esb-utterances/dev-fe-v1/`, `@fe1`-suffixed sample ids, a new roster probe view and a
+> new D1 media supplement — and it is an **umbrella** action with its own accounting
+> (`docs/datasets.lock.json`, `scripts/data/`), never something this study does unilaterally.
+>
+> **What this closure does not mean.** It is not a finding that the front end does not matter. It is
+> a finding that this study cannot measure it at an acceptable cost today, and the honest reading of
+> §1, §2 and this section together is the one §5 already states: all three faces of model usage are
+> bounded small, and the mechanism these documents keep pointing at is elsewhere.
 
 ### 3.1 The question
 
@@ -609,7 +644,10 @@ decision and its own exposure row, and it inherits this section's claim rule in 
    component. **None of these three is a mechanism** — (a) and (c) are runtime factors and (b) is a
    decode-discipline knob.
 
-**Recommended order, and the reasoning is on the record.** (b) is the cheapest (0.20 GPU-h) and its
+**Recommended order — SUPERSEDED as an ORDER by §7.** The owner sequenced (a) before (b) on
+2026-09-06. The reasoning below is on the record and stands as reasoning, not as the order.
+
+**The original reasoning.** (b) is the cheapest (0.20 GPU-h) and its
 prediction is already fixed, so it is the fastest falsifiable thing available; (a) is the largest
 untested runtime factor but costs ten times as much GPU; (c) cannot start without an owner decision.
 The over-generation verdict bounds (b)'s payoff at a quarter of a point and says so — if the owner
@@ -655,9 +693,27 @@ Common to every cell:
    contacts, zero servers, zero sockets — writing its receipts **outside** the tree and copying them
    in afterwards. (The 2026-09-05 A/B experiment lost three of four scoring gates to receipts written
    straight into `docs/checks/` making the tree dirty; do not repeat it.)
-6. **A 4-row dry run** before the flight, on four of the 1,500.
+
+   **LANDED 2026-09-06 for all four run ids**, in
+   `docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-dev-usage-cells/wire-check/`.
+   **Both halves passed on every one**: the client half (1,500 / 1,500 / 4 / 4 requests, payload keys
+   exactly `ARM_VISIBLE_FIELDS["bare-core"]`, integer `id_slot` over all eight slots, concurrent
+   dispatch) and the seal-and-score half (`status: OK`, manifest built and verified, the complete
+   21-column ledger surface validated, every registered scorer run to completion). Cell (b)'s two
+   receipts carry `max_tokens_per_sample` — **202 distinct integers across the 1,500 rows, 3 to 321**,
+   and 3 / 55 / 127 / 321 on the four dry-run rows — each one re-derived at the transport seam from
+   that request's own `audio_seconds` and refused on any disagreement.
+
+   The receipt-hygiene rule above was learned the hard way again while doing this: a first pass ran
+   with an edit open in the working tree and **all four scoring jobs failed**, because
+   `core.scorers._assert_scoring_entry_gate` calls `require_clean_study_repo`. The receipts here are
+   from the re-run on a clean tree at commit `3f33234e`; only documents and receipts were added
+   after it.
+6. **A 4-row dry run** before the flight, on four of the 1,500. Fragments and go/no-go landed
+   (§1.3.1, §2.3.1); the dry run itself is a model contact and is the flight agent's, not this
+   document's.
 7. **A clean working tree for the whole run.** A COMPLETED manifest reads `study_commit` at finalize
-   and refuses a dirty tree.
+   and refuses a dirty tree — and so does the SCORER, before it reads a row.
 
 Cell-specific:
 
@@ -682,30 +738,122 @@ Cell-specific:
   **0 rows at the 1,024 ceiling**, and the §2.1 ladder (10 / 49 / 98 / 321) reproduced. The cell's
   planned completion-token ceiling falls from 1,536,000 to **97,673**, a 15.7× reduction in what the
   decoder is allowed to emit — which is the size of the intervention, not of its expected payoff.
-* **(c)** unblocking first (§3.2), then the identity rebuild of §3.3, then a byte-determinism check
-  — cut twice, assert `items_sha256` is unchanged — exactly as the `dev-v1` cut was proved.
+* **(c)** **MOOT — the cell is CLOSED (§3).** Kept as written so that an owner who ever
+  authorizes the acquisition inherits the sequence rather than re-deriving it: unblocking first
+  (§3.2), then the identity rebuild of §3.3, then a byte-determinism check — cut twice, assert
+  `items_sha256` is unchanged — exactly as the `dev-v1` cut was proved.
 
 ---
 
 ## 7. The flight agent's checklist
 
-1. Read the owner GO and this section. **If there is no owner GO for the specific cell, stop.**
-2. Register the exposure row **before the first contact**, naming the population, the comparator
-   attempt, the budget, the ceilings and the claim rule of §4.
-3. Front-load the model load as a background step at mission start; run the CPU preconditions of §6
-   during it and join at the first session-bound step.
-4. Run every model-free precondition and **stop on any refusal**. Land their receipts.
-5. Check the GPU before anything else: `nvidia-smi -q -d POWER` for `enforced.power.limit`, and the
-   Legion SmartFanMode. A Quiet-mode 35 W cap silently overrides everything and has recurred.
-6. Fly **one attempt**, 1,500 contacts, one serving geometry, no repair, no retry, no resend. At most
-   one recovery re-registration; a second failure stops the flight.
-7. Score **once**, over the complete manifest, through `core.scoring_batch`, `verified: true`.
-8. Run `analysis.e22_error_taxonomy` at its committed version on the new outputs and report the
-   agentic rate and the boundary mass beside the WER.
-9. Run the paired contrast of §4 against the **sealed** arm A rows — never against a re-run.
-10. Write the verdict with the per-stratum table and the claim rule quoted verbatim, and for cell (b)
-    the prediction check of §4.
-11. **Stop.** No test read, no second cell, no mechanism arm.
+**Sequence, owner 2026-09-06: (a) then (b).** This supersedes §5's cheapest-first recommendation.
+The owner ordered the Earnings-22 Q8 and stop-cap cells as the next GPU item and put Q8 first; §5's
+reasoning stands as reasoning and is not the order.
+
+Everything marked LANDED below is done, model-free, and cited in place. Everything else is the
+flight agent's, in this order.
+
+### 7.0 Before anything, once
+
+1. **Read the owner GO for the specific cell.** There is none in this file. **If there is no owner GO
+   for the cell you are about to fly, stop here.** Flight-ready is not authorized.
+2. **Check the GPU before anything else**: `nvidia-smi -q -d POWER` for `enforced.power.limit`, and
+   the Legion SmartFanMode. A Quiet-mode 35 W cap silently overrides everything, reverts silently on
+   Fn+Q and on reboot, and has recurred.
+3. **Front-load the model load** as a background step at mission start; run the CPU work below
+   during it and join at the first session-bound step. For cell (a) this matters more than usual: a
+   30.3 GiB Q8_0 load faults 17,136 MiB of expert tensors into host RAM.
+4. **A clean working tree for the whole run.** A COMPLETED manifest reads `study_commit` at finalize
+   and refuses a dirty tree, and receipts written straight into `docs/checks/` are how the
+   2026-09-05 A/B experiment lost three of four scoring gates. Write receipts outside the tree and
+   copy them in afterwards.
+
+### 7.1 Rows
+
+5. **Register the exposure row before the first contact**, one per run id, naming the population, the
+   comparator attempt (`SAEA-E22-DEV-ESB-PROMPT-A-V1` / `attempt-20260905T073641Z-f977d1`), the
+   budget, the ceilings and the claim rule of §4. The plan's `split_identity_hash` and the row's must
+   both be `c626e62f…` for a flight and `c5b9886a…` for a 4-row dry run. Four run ids exist here and
+   each needs its own row: `SAEA-E22-DEV-ESB-Q8-V1`, `SAEA-E22-DEV-ESB-Q8-SMOKE-V1`,
+   `SAEA-E22-DEV-ESB-STOPCAP-V1`, `SAEA-E22-DEV-ESB-STOPCAP-SMOKE-V1`. Budget is metered
+   **cumulatively across every attempt of a run id**, so a recovery plan must cover prior durable
+   spend as well as its own worst case.
+
+### 7.2 Model-free preconditions — stop on any refusal
+
+6. **LANDED — the seam and its resolver check** (§2.3, §6(b)):
+   `docs/checks/…/2026-09-06-e22-dev-usage-cells/stopcap-resolver.json`, 1,500 rows, 0 disagreements
+   against `analysis.e22_overgeneration.cap_tokens`, 0 rows at the ceiling.
+7. **LANDED — the Q8 placement, cited as the projection it is** (§1.3):
+   `docs/checks/…/2026-09-06-e22-dev-usage-cells/q8-placement.json` — `--n-cpu-moe 28`, 5,083 MiB
+   projected free against a 3,072 MiB floor, and N = 24 short by 437 MiB. The Q8_0 decoder re-hashes
+   to `8a50e5a7…` and the mmproj to `f0dfe825…`.
+8. **STILL OPEN — the LIVE half of Q8-P1, cell (a) only.** One zero-token server start at
+   `--n-cpu-moe 28`, `-c 40960 -np 8`: read free VRAM through `GET /props` and `nvidia-smi`, read
+   llama.cpp's **own printed** audio-encoder compute-buffer estimate at this geometry, and **refuse
+   if the achieved free is below 3,072 MiB or below that estimate**. No `/completion` call. **If no N
+   clears the floor the cell STOPS** — it does not shrink `-np`, and a geometry change is a new
+   registration.
+9. **LANDED — the wire check**, zero contacts, zero servers, zero sockets, for all four run ids:
+   `docs/checks/…/2026-09-06-e22-dev-usage-cells/wire-check/`. It was run in the `wt/e22b` worktree;
+   §7.6 says what to re-run on the primary checkout and why.
+10. **STILL OPEN — roster hydration, media identity and prompt fit at flight time.**
+    `FlightRuntime.preflight` recomputes `c626e62f…` from the probe view; `contracts.gate_media_identity`
+    re-reads `docs/receipts/artifacts/d1-e22-esb-dev1500-utterances.json`; and the live `n_ctx` per
+    slot must be 5,120 through `GET /props` against a worst request of ≈1,504 tokens
+    (429 speech + 49 envelope + 1,024 completion + 2 special).
+11. **STILL OPEN — the 4-row dry run**, per cell, on its own run id: `E22-DEV-ESB-Q8-SMOKE-4` then
+    `E22-DEV-ESB-STOPCAP-SMOKE-4`. Its go/no-go is written in each smoke fragment's own `decision`
+    block. For cell (b) the binding read is that the four requests carried four **different**
+    resolved caps — 3, 55, 127 and 321 — each equal to the rule's own resolution for that row's
+    duration.
+
+### 7.3 Cell (a), `SAEA-E22-DEV-ESB-Q8-V1`
+
+12. Fly **one attempt**: 1,500 contacts, `-c 40960 -np 8 --n-cpu-moe 28`, no repair, no retry, no
+    resend. At most one recovery re-registration; a second failure stops the flight and the fix is
+    proven on a 4-row dry run.
+13. **Score once**, over the complete manifest, through `core.scoring_batch`, `verified: true`,
+    never sharded. Paper-facing scorer `asr-wer-esb-whisper`; `asr-wer-esb` and `cost` beside it.
+14. Run **`analysis.e22_error_taxonomy` at its committed version** on the new outputs — the agentic
+    rate hook — and report the agentic error rate and the boundary mass beside the WER.
+
+### 7.4 Cell (b), `SAEA-E22-DEV-ESB-STOPCAP-V1`
+
+15. Fly **one attempt**: 1,500 contacts, the same geometry, the Q4_K_M decoder, the per-sample cap.
+    Same one-attempt and one-recovery discipline.
+16. **Score once**, exactly as step 13.
+17. Run the agentic-rate hook, exactly as step 14.
+
+### 7.5 Verdicts
+
+18. Run the paired contrast of §4 against the **sealed** arm A rows restricted to these same 1,500 —
+    never against a re-run. `analysis.paired.paired_contrast`, **stratified by source call (10
+    strata), 10,000 replicates, seed 20260903, CI90**, on **both** metrics: corpus WER under the
+    Whisper `EnglishTextNormalizer` and the agentic error rate, each signed as `cell − arm A`.
+19. Apply the decision rule of §4 **as preregistered, unmodified**: ADMITTED iff corpus WER improves
+    with a CI90 **upper** bound below 0, **and** the agentic error rate's CI90 upper bound is below
+    **+0.05** points.
+20. Write each verdict with the per-stratum table for all ten calls, both normalizers, natural-mixture
+    and equal-call weightings side by side, the S/D/I split, the hypothesis-to-reference length ratio,
+    the utterance-duration decomposition, and the boundary category mass before and after. For cell
+    (b) add the **prediction check** of §2.2 — measured rows-capped / benefit / harm beside the
+    predicted 50 / 35 / 15 — named as a prediction check. For cell (a) add the achieved free VRAM
+    beside the 5,083 MiB projection and the measured Q8_0-to-Q4_K_M latency ratio beside the 7.85×
+    the budget assumed.
+21. **Stop.** No test read, no third cell, no mechanism arm.
+
+### 7.6 What must be re-run on the primary checkout, and why
+
+The wire checks of step 9 ran in the `wt/e22b` worktree, through the committed launcher's own
+`build_runtime` with only its `REPO` constant repointed. That is enough to prove the request path,
+the payload allowlist, the dispatch and the per-request resolved cap — none of which depends on
+which checkout the code sits in. It is **not** a substitute for the primary checkout's own run,
+because two things there are checkout-specific: `study_commit` and the clean-tree assertion the seal
+half exercises, and the launcher's `REPO` pin itself. **Re-run
+`scripts/flights/run_e22_esb_cell.py --wire-check` on the primary checkout, unpatched, immediately
+before the flight**, and land its receipt beside these.
 
 **Environment notes that have cost this program time before.** `PYTHONDONTWRITEBYTECODE=1` is
 required — bytecode under the frozen scoring package refuses the D3 gate. Data-touching CLIs run in
