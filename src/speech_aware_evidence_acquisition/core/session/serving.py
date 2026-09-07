@@ -786,6 +786,27 @@ _HOST_MEMORY_POWERSHELL_SCRIPT = (
 #: (or a flight's contact window) waiting on the host side.
 _HOST_MEMORY_POWERSHELL_TIMEOUT_SECONDS = 8
 
+#: WSL login shells on the study host do not carry the Windows PATH
+#: (``which powershell.exe`` is empty there, measured 2026-09-07), while the
+#: interop binary itself is always reachable at its canonical mount. PATH is
+#: tried first so a test or a differently configured host can shadow it.
+_HOST_MEMORY_POWERSHELL_FALLBACK = "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
+
+
+def _powershell_executable() -> str:
+    """``powershell.exe`` from PATH, else the canonical WSL interop mount when
+    that file exists, else the bare name (so the caller's ``FileNotFoundError``
+    branch still fails soft)."""
+
+    import shutil  # noqa: PLC0415 (CLI-only)
+
+    found = shutil.which("powershell.exe")
+    if found:
+        return found
+    if Path(_HOST_MEMORY_POWERSHELL_FALLBACK).is_file():
+        return _HOST_MEMORY_POWERSHELL_FALLBACK
+    return "powershell.exe"
+
 
 def _read_windows_memory(*, run: Callable[..., object]) -> dict[str, float | None] | None:
     """Windows total/free GB and the ``vmmemWSL`` working set GB, via the ONE
@@ -801,7 +822,7 @@ def _read_windows_memory(*, run: Callable[..., object]) -> dict[str, float | Non
     try:
         completed = run(
             [
-                "powershell.exe",
+                _powershell_executable(),
                 "-NoProfile",
                 "-NonInteractive",
                 "-Command",

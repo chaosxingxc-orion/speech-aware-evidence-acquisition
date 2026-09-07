@@ -929,7 +929,7 @@ def test_read_host_memory_passes_the_pinned_timeout_and_command_shape(tmp_path):
     read_host_memory(run=fake_run, meminfo_path=_write_meminfo(tmp_path / "meminfo"))
     assert len(calls) == 1
     argv = calls[0]["argv"]
-    assert argv[0] == "powershell.exe"
+    assert argv[0].endswith("powershell.exe")
     assert "-NoProfile" in argv and "-NonInteractive" in argv
     assert "Get-CimInstance" in argv[-1] and "Get-Process" in argv[-1]
     assert calls[0]["kwargs"]["timeout"] == 8
