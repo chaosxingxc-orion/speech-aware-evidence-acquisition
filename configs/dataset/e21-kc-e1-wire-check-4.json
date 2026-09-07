@@ -1,0 +1,7 @@
+{
+  "carrier_lock_key": "earnings21-original",
+  "split_name": "e21-kc-e1-wire-check-4-sample",
+  "d1_evidence_supplement": "receipts/artifacts/d1-e21-participant-names.json",
+  "d1_evidence_supplement_sha256": "313da4c48acf7403207e2a45c28f90262a94adfaa42873a0c9f251fc9d6bfd83",
+  "d1_evidence_supplement_note": "The WIRE-CHECK fragment of configs/dataset/earnings21-discovery-conec-names.json: byte-identical to it apart from split_name, which narrows the 44 to the four shortest kb-construction calls (docs/receipts/probe-samples/e21-kc-e1-wire-check-4-sample.json, 5,322.108 s over 61 fixed 90-second windows). It carries the SAME additive D1 evidence supplement and the SAME digest, because that is the point: conec-class-lists reads contexts/participant_names/<call>.names.txt through core.evidence._conec_names, and without the supplement contracts.gate_evidence_identity._route_evidence_layer_key names the e21_participant_names layer and never resolves it, so a wire check on a fragment WITHOUT the supplement would rehearse a different run than the flight's. Construction calls only, by docs/readiness/2026-09-06-e21-kc-e1-pre-meeting-brief-v2-preregistration.md section 8 item 3: an evaluation call's brief is the thing under test and a dry run must not rehearse it. This fragment is for the contact-free wire check and for nothing else -- no measurement, contrast, verdict or reported number may be computed on these four calls."
+}

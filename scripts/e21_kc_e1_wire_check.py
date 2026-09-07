@@ -1,0 +1,627 @@
+#!/usr/bin/env python3
+"""Contact-free wire check for the Earnings-21 pre-meeting-brief cells.
+
+Section 8 item 3 of ``docs/readiness/2026-09-06-e21-kc-e1-pre-meeting-brief-v2-
+preregistration.md``: a 4-row dry run through the committed launcher path, on
+CONSTRUCTION calls only, before either cell is registered to fly.
+
+**Zero contacts of every kind**: no model, no server, no socket, no GPU, no
+tokenizer, no network. The only fakes are the two the committed
+``saea-driver smoke --dry-run`` path substitutes and documents at their own
+construction sites -- ``core.driver.smoke._dry_run_transport`` and
+``core.driver.smoke._NoOpGate``. Everything between them is the real thing:
+the real ``core.config.compose``, the real split verification, the real
+``contracts.ExecutionPlan`` validation, the real evidence source, the real
+``core.evidence_derivation.DerivedEvidenceRegistry``, the real 90-second OBS
+tiling with its real cut slices, the real arm allowlist, the real bundle seal,
+the real ``core.scoring_batch`` over all five declared scorers and the real
+finalize.
+
+THE TWO HALVES
+--------------
+**Request half.** Read out of the SEALED trace, per contact, never from a
+second in-memory copy:
+
+1. the payload's key set is exactly ``fixed-legal-context``'s D2-frozen field
+   set -- no more, no less;
+2. ``supplied_evidence`` carries exactly TWO items, roster first then document.
+   This is the property precondition 1's driver fix made observable: before it,
+   ``core.driver.run_experiment`` ASSIGNED rather than accumulated the per-sample
+   evidence relpath and the ROSTER half was the one silently dropped;
+3. ``evidence_provenance`` carries both relpaths, each naming this call's own
+   sample id, one under ``contexts/participant_names/`` and one directly under
+   ``contexts/``;
+4. every rendered brief half re-hashes to the derived sha256 the transform
+   produces at the COMMITTED cap -- so the wire check and the prompt fit are
+   pinned to the same bytes, and a fragment edited between them would be caught;
+5. the OBS tiling cut exactly the roster receipt's own window count for each
+   call, every window naming a slice under this run's own slice directory.
+
+**Evidence-rail half.** ``smoke --dry-run`` runs under ``_NoOpGate``, so the D1
+evidence-identity rail is NOT exercised by it. That rail is therefore driven
+here directly, with a REAL ``contracts.FrozenCoreGate`` built from the cell's own
+composed config, over the four calls' own two relpaths each: both must resolve,
+and they must route to ``e21_participant_names`` and ``e21_contexts``
+respectively. A gate is a file-and-hash check; it opens nothing and contacts
+nothing.
+
+**Seal half.** The sealed manifest verifies through ``core.bundle.verify_bundle``,
+carries one canonical row per call, and every one of the five declared scorers
+produced an aggregate over the complete manifest. A four-scorer manifest that
+does not actually score is the defect the full-44 preregistration existed to
+fix; this is the same proof for a five-scorer one.
+
+Finally the two cells are compared: identical everywhere except the evidence
+transform names, the evidence ids and the rendered content -- which is the one
+factor the experiment claims, asserted on the wire rather than in prose.
+
+Usage::
+
+    python scripts/e21_kc_e1_wire_check.py --out-dir <dir>
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import subprocess
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Mapping
+
+REPO = Path(
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition"
+)
+
+CHECK = (
+    REPO
+    / "docs/checks/speech-aware-evidence-acquisition"
+    / "2026-09-06-e21-kc-e1-brief-44-v1"
+)
+ROSTER_RECEIPT = (
+    REPO
+    / "docs/checks/speech-aware-evidence-acquisition"
+    / "2026-09-04-e21-full44-roster/flight-roster-receipt.json"
+)
+
+EXPERIMENT = "e21-kc-e1-brief-44-v1"
+WIRE_DATASET = "e21-kc-e1-wire-check-4"
+RUN_ID = "SAEA-E21-KC-E1-WIRE-CHECK-V1"
+FLIGHT_RUN_ID = "SAEA-E21-KC-E1-BRIEF-44-V1"
+
+#: Nominal budget for the dry run. 61 windows per cell over the four calls,
+#: plus retry headroom; nothing is spent because nothing is contacted.
+PLAN_CALLS = 80
+PLAN_AUDIO_SECONDS = 6000
+PLAN_GPU_HOURS = 0.1
+
+ROSTER_SUBDIR = "contexts/participant_names/"
+DOCUMENT_SUBDIR = "contexts/"
+
+
+def log(message: str) -> None:
+    print(
+        "[%s] %s" % (datetime.now(tz=timezone.utc).strftime("%H:%M:%SZ"), message),
+        flush=True,
+    )
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def load_json(path: Path) -> Any:
+    return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def git(*argv: str) -> str:
+    return subprocess.run(
+        ["git", *argv], cwd=REPO, check=True, capture_output=True, text=True
+    ).stdout.strip()
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--out-dir", type=Path, default=CHECK / "wire-check")
+    parser.add_argument("--experiment", default=EXPERIMENT)
+    parser.add_argument("--dataset", default=WIRE_DATASET)
+    parser.add_argument("--run-id", default=RUN_ID)
+    parser.add_argument(
+        "--tracking-uri",
+        default=str(Path.home() / "mlruns"),
+        help=(
+            "explicit local MLflow tracking URI. Defaults to the ext4 path the R0 "
+            "smoke runbook fixes; never a path on the mounted data drive"
+        ),
+    )
+    parser.add_argument(
+        "--allow-dirty",
+        action="store_true",
+        help=(
+            "TEST-ONLY. A wire check certifies a COMMITTED tree; without this the "
+            "run refuses a dirty one rather than recording a study_commit that "
+            "describes different bytes than the ones it exercised"
+        ),
+    )
+    args = parser.parse_args()
+
+    if os.environ.get("PYTHONDONTWRITEBYTECODE") != "1":
+        raise SystemExit("PYTHONDONTWRITEBYTECODE=1 is required")
+    if str(REPO / "src") not in os.environ.get("PYTHONPATH", "").split(":"):
+        raise SystemExit("PYTHONPATH must contain the literal " + str(REPO / "src"))
+
+    import speech_aware_evidence_acquisition as _pkg
+
+    if (
+        Path(_pkg.__file__ or "")
+        != REPO / "src" / "speech_aware_evidence_acquisition" / "__init__.py"
+    ):
+        raise SystemExit(
+            "package resolves to %s, not the main checkout" % (_pkg.__file__,)
+        )
+
+    from speech_aware_evidence_acquisition.contracts import FrozenCoreGate
+    from speech_aware_evidence_acquisition.contracts.gate_evidence_identity import (
+        _route_evidence_layer_key,
+    )
+    from speech_aware_evidence_acquisition.core.base import EVIDENCE_SOURCES
+    from speech_aware_evidence_acquisition.core.bundle import verify_bundle
+    from speech_aware_evidence_acquisition.core.config import (
+        compose,
+        d1_evidence_supplement_relpath,
+        d1_evidence_supplement_sha256,
+        d1_media_supplement_relpath,
+        d1_media_supplement_sha256,
+        model_materialization_root,
+    )
+    from speech_aware_evidence_acquisition.data.lock import (
+        data_root,
+        load_lock,
+        umbrella_lock_path,
+    )
+    from speech_aware_evidence_acquisition.e0.d2_leakage import ARM_VISIBLE_FIELDS
+
+    dirty = git("status", "--porcelain")
+    if dirty and not args.allow_dirty:
+        raise SystemExit(
+            "the working tree is dirty; a wire check certifies committed bytes:\n"
+            + dirty
+        )
+    study_commit = git("rev-parse", "HEAD")
+    log("clean tree at %s" % study_commit[:8])
+
+    resident = subprocess.run(
+        ["pgrep", "-f", "llama-server"], capture_output=True, text=True
+    )
+    if resident.returncode == 0 and resident.stdout.strip():
+        raise SystemExit(
+            "a llama-server is resident (%s); a zero-socket wire check refuses to "
+            "run beside one" % resident.stdout.split()[0]
+        )
+
+    experiment_doc = load_json(REPO / "configs" / "experiment" / f"{args.experiment}.json")
+    cells = list(experiment_doc["cells"])
+    model = str(cells[0]["model_fragment"])
+    roster = load_json(ROSTER_RECEIPT)
+    windows_by_call = {
+        str(call["sample_id"]): int(call["fixed_90s_windows"]) for call in roster["calls"]
+    }
+
+    dataset_doc = load_json(REPO / "configs" / "dataset" / f"{args.dataset}.json")
+    wire_split = load_json(
+        REPO / "docs/receipts/probe-samples" / f"{dataset_doc['split_name']}.json"
+    )
+    wire_sample_ids = [str(item["id"]) for item in wire_split["items"]]
+    flight_dataset_doc = load_json(
+        REPO / "configs" / "dataset" / f"{cells[0]['dataset_fragment']}.json"
+    )
+    supplement_keys = (
+        "carrier_lock_key",
+        "d1_evidence_supplement",
+        "d1_evidence_supplement_sha256",
+    )
+    supplement_matches_flight = all(
+        dataset_doc.get(key) == flight_dataset_doc.get(key) for key in supplement_keys
+    )
+    if not supplement_matches_flight:
+        raise SystemExit(
+            "the wire-check dataset fragment must carry the flight fragment's own "
+            "carrier and D1 evidence supplement, or it rehearses a different run"
+        )
+
+    lock = load_lock(umbrella_lock_path())
+    root = data_root()
+    scratch = root / "runs" / args.run_id
+    scratch.mkdir(parents=True, exist_ok=True)
+
+    per_cell: dict[str, Any] = {}
+    for cell in cells:
+        cell_id = str(cell["cell_id"])
+        baseline = str(cell["baseline_fragment"])
+        composed = compose(REPO, model, args.dataset, baseline, args.experiment)
+        values = composed.values
+        arm = str(values["arm"])
+        cap = int(values["brief_max_entries_per_class"])
+        log(
+            "cell %s: baseline %s, evidence_source %s, cap %d"
+            % (cell_id, baseline, values["evidence_source"], cap)
+        )
+
+        argv = [
+            sys.executable,
+            "-m",
+            "speech_aware_evidence_acquisition.core.driver",
+            "smoke",
+            "--dry-run",
+            "--model",
+            model,
+            "--dataset",
+            args.dataset,
+            "--baseline",
+            baseline,
+            "--experiment",
+            args.experiment,
+            "--run-id",
+            "%s-%s" % (args.run_id, baseline),
+            "--execution-profile",
+            str(values["execution_profile"]),
+            "--planned-model-calls",
+            str(PLAN_CALLS),
+            "--planned-gpu-hours",
+            str(PLAN_GPU_HOURS),
+            "--planned-speech-audio-seconds",
+            str(PLAN_AUDIO_SECONDS),
+            "--run-dir",
+            str(scratch / baseline),
+            "--tracking-uri",
+            args.tracking_uri,
+        ]
+        log("  smoke --dry-run: %s" % " ".join(argv[3:8]))
+        completed = subprocess.run(
+            argv, cwd=REPO, capture_output=True, text=True, env=dict(os.environ)
+        )
+        if completed.returncode != 0:
+            sys.stderr.write(completed.stdout[-4000:])
+            sys.stderr.write(completed.stderr[-4000:])
+            raise SystemExit(
+                "smoke --dry-run exited %d for cell %s" % (completed.returncode, cell_id)
+            )
+        # The CLI prints its artifact locations as the LAST JSON object it
+        # writes; everything before it is progress output.
+        brace = completed.stdout.rindex("{")
+        smoke_out = json.loads(completed.stdout[brace:])
+        manifest_path = Path(smoke_out["manifest"])
+        attempt_dir = manifest_path.parent
+        smoke_run_id = str(smoke_out["run_id"])
+        trace_path = attempt_dir / f"{smoke_run_id}.trace.jsonl"
+        outputs_path = attempt_dir / f"{smoke_run_id}.outputs.jsonl"
+        scores_path = Path(smoke_out["scores"])
+        log(
+            "  smoke OK: attempt %s, state %s"
+            % (smoke_out["attempt_id"], smoke_out["attempt_state"])
+        )
+
+        # ---------------- request half ----------------
+        allowlist = set(ARM_VISIBLE_FIELDS[arm])
+        source = EVIDENCE_SOURCES.resolve(str(values["evidence_source"]))
+        expected_by_sample = {
+            sample_id: source(
+                lock, root, sample_id, str(values["carrier_lock_key"]), values
+            )
+            for sample_id in wire_sample_ids
+        }
+        requests: list[Mapping[str, Any]] = []
+        for line in trace_path.read_text(encoding="utf-8").splitlines():
+            record = json.loads(line)
+            if record.get("channel") == "MODEL_REQUEST":
+                requests.append(record["payload"]["payload"])
+
+        failures: list[str] = []
+        windows_seen: dict[str, set[int]] = {}
+        for payload in requests:
+            sample_id = str(payload["sample_id"])
+            items = expected_by_sample[sample_id]
+            if set(payload) != allowlist:
+                failures.append(
+                    "payload key set for %s is %r, not the %s allowlist"
+                    % (sample_id, sorted(set(payload) ^ allowlist), arm)
+                )
+            evidence = payload["supplied_evidence"]
+            provenance = payload["evidence_provenance"]
+            if len(evidence) != 2 or len(provenance) != 2:
+                failures.append(
+                    "%s carries %d evidence item(s) and %d provenance entr(ies), "
+                    "expected 2 and 2" % (sample_id, len(evidence), len(provenance))
+                )
+                continue
+            if [entry["brief_part"] for entry in provenance] != ["roster", "document"]:
+                failures.append("%s: evidence is not roster-then-document" % sample_id)
+            relpaths = [str(entry["relpath"]) for entry in provenance]
+            if not relpaths[0].startswith(ROSTER_SUBDIR) or sample_id not in relpaths[0]:
+                failures.append("%s: roster relpath %r" % (sample_id, relpaths[0]))
+            if (
+                not relpaths[1].startswith(DOCUMENT_SUBDIR)
+                or relpaths[1].startswith(ROSTER_SUBDIR)
+                or sample_id not in relpaths[1]
+            ):
+                failures.append("%s: document relpath %r" % (sample_id, relpaths[1]))
+            for index, item in enumerate(evidence):
+                if item["evidence_id"] != items[index].evidence_id:
+                    failures.append(
+                        "%s: evidence id %r, expected %r"
+                        % (sample_id, item["evidence_id"], items[index].evidence_id)
+                    )
+                if (
+                    hashlib.sha256(item["content"].encode("utf-8")).hexdigest()
+                    != items[index].derivation.derived_sha256
+                ):
+                    failures.append(
+                        "%s: half %d does not re-hash to the transform's own output at "
+                        "cap %d" % (sample_id, index, cap)
+                    )
+                if int(entry_cap := provenance[index]["max_entries_per_class"]) != cap:
+                    failures.append(
+                        "%s: provenance records cap %d, the fragment carries %d"
+                        % (sample_id, entry_cap, cap)
+                    )
+            media = str(payload["media_relpath"])
+            prefix = "derived/obs-slices/%s/%s/" % (smoke_run_id, sample_id)
+            if not media.startswith(prefix):
+                failures.append("%s: media_relpath %r is not this run's own slice"
+                                % (sample_id, media))
+            else:
+                windows_seen.setdefault(sample_id, set()).add(
+                    int(media[len(prefix) + 1 : -len(".wav")])
+                )
+
+        window_counts = {sid: len(seen) for sid, seen in windows_seen.items()}
+        expected_windows = {sid: windows_by_call[sid] for sid in expected_by_sample}
+        if window_counts != expected_windows:
+            failures.append(
+                "OBS tiling cut %r windows, the roster receipt says %r"
+                % (window_counts, expected_windows)
+            )
+
+        # ---------------- evidence-rail half ----------------
+        configured_model_root = model_materialization_root(values)
+        gate = FrozenCoreGate.for_study_repo(
+            REPO,
+            root,
+            Path("/home/chao"),
+            runtime_receipt_relpath=str(values["runtime_receipt"]),
+            expected_model_lock_key=str(values["model_lock_key"]),
+            model_root=(Path(configured_model_root) if configured_model_root else None),
+            d1_media_supplement_relpath=d1_media_supplement_relpath(values),
+            d1_media_supplement_sha256=d1_media_supplement_sha256(values),
+            d1_evidence_supplement_relpath=d1_evidence_supplement_relpath(values),
+            d1_evidence_supplement_sha256=d1_evidence_supplement_sha256(values),
+        )
+        evidence_facts = {
+            sample_id: tuple(
+                item.derivation.source_relpath for item in items
+            )
+            for sample_id, items in expected_by_sample.items()
+        }
+        evidence_contents = {
+            sample_id: tuple(item.derivation_source_bytes for item in items)
+            for sample_id, items in expected_by_sample.items()
+        }
+        layout = gate._evidence_layout(str(values["carrier_lock_key"]))
+        routing = {
+            sample_id: [
+                _route_evidence_layer_key(layout, relpath) for relpath in relpaths
+            ]
+            for sample_id, relpaths in evidence_facts.items()
+        }
+        expected_routing = ["e21_participant_names", "e21_contexts"]
+        rail_failures = [
+            sample_id
+            for sample_id, keys in routing.items()
+            if keys != expected_routing
+        ]
+        gate.verify_evidence_identity(str(values["carrier_lock_key"]), evidence_facts)
+        gate.verify_evidence_content_identity(
+            str(values["carrier_lock_key"]), evidence_contents, evidence_facts
+        )
+        if rail_failures:
+            failures.append("evidence rail routing failed for %r" % (rail_failures,))
+        log("  evidence rail: both relpaths of all %d calls resolve and route"
+            % len(evidence_facts))
+
+        # ---------------- seal half ----------------
+        manifest = load_json(manifest_path)
+        verify_bundle(manifest_path)
+        scores = load_json(scores_path)
+        declared = list(values["scorers"])
+        aggregates = {
+            name: sorted(block.get("aggregate", {}))
+            for name, block in scores.items()
+            if isinstance(block, Mapping)
+        }
+        missing = [name for name in declared if name not in aggregates]
+        if missing:
+            failures.append("declared scorers with no aggregate: %r" % (missing,))
+        outputs_rows = sum(
+            1 for line in outputs_path.read_text(encoding="utf-8").splitlines() if line
+        )
+        if outputs_rows != len(expected_by_sample):
+            failures.append(
+                "sealed outputs carry %d rows for %d calls"
+                % (outputs_rows, len(expected_by_sample))
+            )
+
+        if failures:
+            for entry in failures:
+                log("  FAIL %s" % entry)
+            raise SystemExit("wire check failed for cell %s" % cell_id)
+        log("  request half OK: %d contacts, %d calls, %d windows"
+            % (len(requests), len(expected_by_sample), sum(window_counts.values())))
+        log("  seal half OK: %d sealed rows, %d scorers with aggregates"
+            % (outputs_rows, len(declared)))
+
+        per_cell[cell_id] = {
+            "cell_id": cell_id,
+            "baseline_fragment": baseline,
+            "evidence_source": str(values["evidence_source"]),
+            "brief_max_entries_per_class": cap,
+            "arm": arm,
+            "config_hash": composed.config_hash,
+            "protocol_hash": manifest.get("protocol_hash"),
+            "smoke_run_id": smoke_run_id,
+            "attempt_id": str(smoke_out["attempt_id"]),
+            "attempt_state": str(smoke_out["attempt_state"]),
+            "artifact_dir": str(attempt_dir),
+            "artifact_sha256": {
+                "outputs.jsonl": sha256_file(outputs_path),
+                "run-manifest.json": sha256_file(manifest_path),
+                "scores.json": sha256_file(scores_path),
+                "trace.jsonl": sha256_file(trace_path),
+            },
+            "request_half": {
+                "contacts": len(requests),
+                "calls": len(expected_by_sample),
+                "windows_per_call": window_counts,
+                "windows_per_call_matches_the_roster_receipt": True,
+                "payload_key_set_equals_the_arm_allowlist": True,
+                "arm_allowlist": sorted(allowlist),
+                "two_evidence_items_roster_then_document": True,
+                "both_relpaths_in_evidence_provenance": True,
+                "every_half_rehashes_to_its_transform_output": True,
+                "provenance_records_the_committed_cap": True,
+                "every_window_names_this_runs_own_slice": True,
+                "evidence_ids": [
+                    item.evidence_id
+                    for item in next(iter(expected_by_sample.values()))
+                ],
+            },
+            "evidence_rail_half": {
+                "calls": len(evidence_facts),
+                "relpaths_per_call": 2,
+                "routing": routing,
+                "expected_routing": expected_routing,
+                "verify_evidence_identity": "PASS",
+                "verify_evidence_content_identity": "PASS",
+                "why_this_is_here": (
+                    "smoke --dry-run runs under core.driver.smoke._NoOpGate, which "
+                    "accepts any plan and never touches the D1 evidence rail, so "
+                    "the rail is driven here with a REAL FrozenCoreGate built from "
+                    "this cell's own composed config. This is the property "
+                    "precondition 1 of the preregistration created and the "
+                    "accumulate-not-assign driver fix made observable: BOTH halves "
+                    "are checked, against two different D1 layers"
+                ),
+            },
+            "seal_half": {
+                "manifest_rows": len(manifest.get("rows", [])),
+                "verify_bundle": "PASS",
+                "sealed_output_rows": outputs_rows,
+                "declared_scorers": declared,
+                "scorer_aggregate_keys": aggregates,
+                "all_declared_scorers_produced_an_aggregate": True,
+            },
+        }
+
+    arm_cell, twin_cell = (per_cell[str(cell["cell_id"])] for cell in cells)
+    one_factor = {
+        "same_arm": arm_cell["arm"] == twin_cell["arm"],
+        "same_cap": (
+            arm_cell["brief_max_entries_per_class"]
+            == twin_cell["brief_max_entries_per_class"]
+        ),
+        "same_contact_count": (
+            arm_cell["request_half"]["contacts"] == twin_cell["request_half"]["contacts"]
+        ),
+        "same_windows_per_call": (
+            arm_cell["request_half"]["windows_per_call"]
+            == twin_cell["request_half"]["windows_per_call"]
+        ),
+        "same_declared_scorers": (
+            arm_cell["seal_half"]["declared_scorers"]
+            == twin_cell["seal_half"]["declared_scorers"]
+        ),
+        "different_evidence_source": (
+            arm_cell["evidence_source"] != twin_cell["evidence_source"]
+        ),
+        "different_evidence_ids": (
+            arm_cell["request_half"]["evidence_ids"]
+            != twin_cell["request_half"]["evidence_ids"]
+        ),
+    }
+    if not all(one_factor.values()):
+        raise SystemExit("the one-factor comparison failed: %r" % (one_factor,))
+
+    document = {
+        "schema": "saea-e21-kc-e1-wire-check-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "run_id": args.run_id,
+        "generated_at": datetime.now(tz=timezone.utc).isoformat(),
+        "for_flight_run_id": FLIGHT_RUN_ID,
+        "study_commit": study_commit,
+        "working_tree_clean": not dirty,
+        "what_this_is": (
+            "saea-driver smoke --dry-run for BOTH cells on a clean committed tree: "
+            "the real compose, split verification, ExecutionPlan validation, "
+            "evidence resolution, derivation registry, 90-second OBS slicing, "
+            "request assembly under the arm's D2-frozen allowlist, bundle sealing, "
+            "all five manifest scorers through core.scoring_batch and finalize -- "
+            "against a fake transport and a no-op gate, plus the D1 evidence rail "
+            "driven separately with a REAL gate because the no-op one skips it"
+        ),
+        "zero_contact": {
+            "model_contacts": 0,
+            "generated_tokens": 0,
+            "servers_started": 0,
+            "sockets_opened": 0,
+            "llama_server_processes": 0,
+            "gpu_seconds": 0,
+            "fakes": [
+                "core.driver.smoke._dry_run_transport",
+                "core.driver.smoke._NoOpGate",
+            ],
+        },
+        "population": {
+            "dataset_fragment": args.dataset,
+            "split_name": str(dataset_doc["split_name"]),
+            "carrier_lock_key": str(dataset_doc["carrier_lock_key"]),
+            "calls": sorted(arm_cell["request_half"]["windows_per_call"]),
+            "windows": sum(arm_cell["request_half"]["windows_per_call"].values()),
+            "construction_only": True,
+            "why_construction_only": (
+                "section 8 item 3 of the preregistration: an evaluation call's "
+                "brief is the thing under test, and a dry run must not rehearse it"
+            ),
+            "carries_the_flight_fragments_d1_evidence_supplement": (
+                supplement_matches_flight
+            ),
+        },
+        "cells": per_cell,
+        "one_factor_on_the_wire": one_factor,
+        "not_certified_here": (
+            "nothing about the model. A wire check proves the harness assembles, "
+            "seals and scores the right request; what the frozen core does with "
+            "that request is the flight's question, and the flight is not "
+            "authorized by this receipt"
+        ),
+    }
+
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = out_dir / "wire-check.json"
+    out_path.write_text(
+        json.dumps(document, indent=2, sort_keys=True, default=str) + "\n",
+        encoding="utf-8",
+    )
+    log("wrote %s (%d bytes)" % (out_path, out_path.stat().st_size))
+    log("WIRE CHECK PASS for both cells at study commit %s" % study_commit[:8])
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

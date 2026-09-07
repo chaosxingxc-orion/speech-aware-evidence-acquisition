@@ -132,10 +132,11 @@ FIT_MULTIPLE = 2
 #: Recorded, never applied here: it exceeds this geometry's whole slot.
 GENERIC_SLOT_RESERVE_TOKENS = 8192
 
-#: The cap grid. 0 is "the whole brief" and is the value both fragments carry
-#: today; the rest are the candidates the sweep may choose from. Fixed here,
-#: before any measurement, so the chosen value cannot be reverse-engineered
-#: from a result.
+#: The cap grid. 0 is "the whole brief" -- always measured first, whatever the
+#: fragments currently carry, so the receipt can answer "does the whole brief
+#: fit" from its own numbers; the rest are the candidates the sweep may choose
+#: from. Fixed here, before any measurement, so the chosen value cannot be
+#: reverse-engineered from a result.
 CAP_GRID = (0, 128, 96, 64, 48, 32, 24, 20, 16, 12, 10, 8, 6, 4, 2, 1)
 
 #: Nominal: nothing decodes. A positive budget is still required by
@@ -270,6 +271,90 @@ def text_token_count(client, counts, messages, media_marker) -> tuple[int, str]:
             raise SystemExit("tokenize returned no token list")
         total += len(tokens)
     return total, prompt
+
+
+#: The wire-shape properties every rendered request must satisfy. Named here,
+#: before the measurement, so a receipt reader sees the claim rather than a
+#: pass/fail with no proposition attached.
+WIRE_SHAPE_PROPERTIES = (
+    "system_then_user_roles",
+    "system_text_is_evidence_blocks_then_instruction",
+    "exactly_two_evidence_blocks",
+    "roster_block_precedes_document_block",
+    "one_input_audio_part_and_nothing_else",
+    "instruction_verbatim_in_rendered_prompt",
+    "both_evidence_blocks_precede_the_media_marker",
+    "instruction_precedes_the_media_marker",
+)
+
+
+def wire_shape(
+    *,
+    messages: Sequence[Mapping[str, Any]],
+    prompt: str,
+    media_marker: str,
+    items: Sequence[Any],
+    instruction: str,
+) -> dict[str, bool]:
+    """The eight propositions the preregistration's wire check asks of a request.
+
+    Checked HERE rather than in the contact-free wire check for one structural
+    reason: ``core.model.transport.LlamaServerTransport`` re-runs the full I5
+    session liveness, binary-identity and socket-ownership check on every send,
+    so the only place the REAL transport can be driven is beside a REAL
+    resident server -- which is exactly where this measurement already is. The
+    wire check proves everything up to the payload, from the sealed trace; this
+    proves what the transport then does with it.
+
+    The second property is the load-bearing one: an EQUALITY against the two
+    evidence items the source returned, which pins the block order, the
+    ``[evidence <id>] `` prefix, the blank-line separator and the instruction's
+    position after both blocks in a single assertion rather than four
+    independent substring searches.
+    """
+
+    roles = [str(message["role"]) for message in messages]
+    system = messages[0]["content"] if messages and roles[:1] == ["system"] else None
+    expected_system = "\n\n".join(
+        [f"[evidence {item.evidence_id}] {item.content}" for item in items]
+        + [instruction]
+    )
+    user_content = messages[-1]["content"] if messages else None
+    roster_marker = f"[evidence {items[0].evidence_id}]"
+    document_marker = f"[evidence {items[1].evidence_id}]"
+    marker_index = prompt.index(media_marker)
+    system_is_text = isinstance(system, str)
+    return {
+        "system_then_user_roles": roles == ["system", "user"],
+        "system_text_is_evidence_blocks_then_instruction": (
+            system_is_text and system == expected_system
+        ),
+        "exactly_two_evidence_blocks": (
+            system_is_text and system.count("[evidence ") == 2
+        ),
+        "roster_block_precedes_document_block": (
+            system_is_text
+            and roster_marker in system
+            and document_marker in system
+            and system.index(roster_marker) < system.index(document_marker)
+        ),
+        "one_input_audio_part_and_nothing_else": (
+            isinstance(user_content, list)
+            and len(user_content) == 1
+            and isinstance(user_content[0], Mapping)
+            and user_content[0].get("type") == "input_audio"
+        ),
+        "instruction_verbatim_in_rendered_prompt": instruction in prompt,
+        "both_evidence_blocks_precede_the_media_marker": (
+            roster_marker in prompt
+            and document_marker in prompt
+            and prompt.index(roster_marker) < marker_index
+            and prompt.index(document_marker) < marker_index
+        ),
+        "instruction_precedes_the_media_marker": (
+            instruction in prompt and prompt.index(instruction) < marker_index
+        ),
+    }
 
 
 def tokenize_count(client, counts, text: str) -> int:
@@ -789,6 +874,7 @@ def main() -> int:
 
             brief_rows: list[dict[str, Any]] = []
             window_rows: list[dict[str, Any]] = []
+            shape_rows: list[dict[str, bool]] = []
             rendered_by_sample: dict[str, dict[str, Any]] = {}
             for sample_id in sample_ids:
                 items = evidence[sample_id]
@@ -845,6 +931,15 @@ def main() -> int:
                     messages = captured["body"]["messages"]
                     tokens, prompt = text_token_count(
                         client, counts, messages, media_marker
+                    )
+                    shape_rows.append(
+                        wire_shape(
+                            messages=messages,
+                            prompt=prompt,
+                            media_marker=media_marker,
+                            items=items,
+                            instruction=instruction,
+                        )
                     )
                     required = (
                         int(window["speech_tokens"]) + tokens + max_tokens + SPECIAL_TOKENS
@@ -942,6 +1037,22 @@ def main() -> int:
                         SPECIAL_TOKENS,
                     )
                 ),
+                "wire_shape": {
+                    "requests_checked": len(shape_rows),
+                    "properties": {
+                        name: {
+                            "holds_on_every_request": all(
+                                row[name] for row in shape_rows
+                            ),
+                            "requests_holding": sum(1 for row in shape_rows if row[name]),
+                        }
+                        for name in WIRE_SHAPE_PROPERTIES
+                    },
+                    "all_hold": all(
+                        all(row[name] for row in shape_rows)
+                        for name in WIRE_SHAPE_PROPERTIES
+                    ),
+                },
                 "brief_rows": brief_rows,
                 "window_rows": window_rows,
                 "rendered_by_sample": rendered_by_sample,
@@ -1049,20 +1160,21 @@ def main() -> int:
         )
         log("props OK: slot n_ctx=%s, media marker %r" % (live_slot_ctx, media_marker))
 
-        # PASS 1 -- the committed cap, every window of both cells.
-        log("pass 1: the committed cap %d, all %d windows x 2 cells"
-            % (committed_cap, len(windows)))
-        passes["committed"] = render_pass(
-            client, committed_cap, label="committed", full=True
-        )
+        # PASS 1 -- the WHOLE brief, every window of both cells. Always
+        # measured, whatever the fragments currently carry: the receipt has to
+        # answer "does the whole brief fit" from its own numbers, or a reader
+        # would have to take the cap on trust. Cap 0 is the uncapped renderer
+        # by definition (core.class_lists.DEFAULT_MAX_ENTRIES_PER_CLASS).
+        log("pass 1: the WHOLE brief (cap 0), all %d windows x 2 cells" % len(windows))
+        passes["whole_brief"] = render_pass(client, 0, label="whole_brief", full=True)
 
-        # PASS 2 -- the sweep. Only if the committed cap does not fit.
-        chosen_cap = committed_cap
-        if not passes["committed"]["fit"]["fits_under_study_rule"]:
-            log("the committed cap does NOT fit; sweeping the cap grid")
+        # PASS 2 -- the sweep. Only if the whole brief does not fit.
+        chosen_cap = 0
+        if not passes["whole_brief"]["fit"]["fits_under_study_rule"]:
+            log("the whole brief does NOT fit; sweeping the cap grid")
             overhead = max(
                 max(entry["fixed_envelope_overhead_tokens"])
-                for entry in passes["committed"]["cells"].values()
+                for entry in passes["whole_brief"]["cells"].values()
             )
             sweep_rows = []
             for cap in CAP_GRID:
@@ -1124,7 +1236,7 @@ def main() -> int:
                 "rule": (
                     "the sweep estimates a cap's envelope as (the brief's own "
                     "tokenized halves) + (the fixed per-request overhead measured in "
-                    "pass 1). Tokenization is not exactly additive across the two "
+                    "the whole-brief pass). Tokenization is not exactly additive across the two "
                     "'\\n\\n' joins, so this is a NARROWING step only: the chosen cap "
                     "and the next larger candidate are both re-rendered in full "
                     "below, and the decision is made on those exact numbers"
@@ -1148,6 +1260,18 @@ def main() -> int:
                     "estimate was optimistic and the grid must be re-run" % candidate
                 )
             chosen_cap = candidate
+            # The measurement chooses the cap; the FRAGMENTS are what flies.
+            # A re-run against fragments carrying anything other than the
+            # chosen value is refused rather than quietly reported, because a
+            # receipt whose decision disagrees with the committed configs
+            # certifies a cell that does not exist.
+            if committed_cap not in (0, chosen_cap):
+                raise SystemExit(
+                    "the fragments carry brief_max_entries_per_class %d but the "
+                    "measurement chooses %d; set the fragments to the chosen value "
+                    "(both of them) or re-run the grid"
+                    % (committed_cap, chosen_cap)
+                )
 
             # PASS 4 -- the next larger candidate, one window per call. The
             # refusal has to be measured too, or "the largest that fits" is an
@@ -1180,15 +1304,36 @@ def main() -> int:
     if counts.get("generations", 0):
         raise SystemExit("a prompt-fit measurement must never generate a token")
 
-    final = passes.get("candidate", passes["committed"])
+    # Fail-closed on the wire shape. A fit that certified a request whose
+    # evidence blocks arrived in the wrong order, or whose instruction was
+    # lost, would be certifying the wrong prompt.
+    shape_failures = [
+        (label, cell_id, name)
+        for label, entry in passes.items()
+        for cell_id, cell in entry["cells"].items()
+        for name in WIRE_SHAPE_PROPERTIES
+        if not cell["wire_shape"]["properties"][name]["holds_on_every_request"]
+    ]
+    if shape_failures:
+        raise SystemExit("wire-shape properties failed: %r" % (shape_failures,))
+    log(
+        "wire shape: all %d properties hold on every rendered request of every "
+        "pass and cell" % len(WIRE_SHAPE_PROPERTIES)
+    )
+
+    final = passes.get("candidate", passes["whole_brief"])
     decision = {
-        "committed_cap": committed_cap,
-        "committed_cap_fits_under_study_rule": passes["committed"]["fit"][
+        "cap_in_the_committed_fragments_at_measurement_time": committed_cap,
+        "whole_brief_fits_under_study_rule": passes["whole_brief"]["fit"][
             "fits_under_study_rule"
         ],
-        "committed_cap_fits_strictly": passes["committed"]["fit"]["fits_strictly"],
+        "whole_brief_fits_strictly": passes["whole_brief"]["fit"]["fits_strictly"],
+        "whole_brief_worst_required_tokens": passes["whole_brief"]["fit"][
+            "worst_required_tokens"
+        ],
         "chosen_cap": chosen_cap,
-        "cap_changed": chosen_cap != committed_cap,
+        "a_cap_is_required": chosen_cap != 0,
+        "committed_fragments_agree_with_the_decision": committed_cap == chosen_cap,
         "why_largest_not_smallest": (
             "the preregistration asks for 'the smallest brief_max_entries_per_class "
             "that fits'. Read literally that is degenerate: the fit is MONOTONE in "
@@ -1326,6 +1471,24 @@ def main() -> int:
             "rule": "exactly ['evidence_source'], asserted before any measurement",
         },
         "passes": passes,
+        "wire_shape_summary": {
+            "properties": list(WIRE_SHAPE_PROPERTIES),
+            "requests_checked": sum(
+                cell["wire_shape"]["requests_checked"]
+                for entry in passes.values()
+                for cell in entry["cells"].values()
+            ),
+            "all_properties_hold_on_every_request": True,
+            "why_here_and_not_in_the_wire_check": (
+                "core.model.transport.LlamaServerTransport re-runs the full I5 "
+                "session liveness, pinned-binary and socket-ownership check on "
+                "every send, so the REAL transport can only be driven beside a "
+                "REAL resident server. The contact-free wire check therefore "
+                "proves everything up to and including the payload, from the "
+                "sealed trace; this block proves what the transport does with "
+                "that payload, on the same requests the fit measures"
+            ),
+        },
         "cap_sweep": sweep or None,
         "decision": decision,
         "not_certified_here": (
@@ -1382,11 +1545,11 @@ def main() -> int:
     )
     log("wrote %s (%d bytes)" % (out_path, out_path.stat().st_size))
     log(
-        "DECISION: committed cap %d %s; chosen cap %d, worst required %d against a "
-        "%d-token slot (margin %d, factor %.3f)"
+        "DECISION: the whole brief (cap 0) %s at worst required %d; chosen cap %d, "
+        "worst required %d against a %d-token slot (margin %d, factor %.3f)"
         % (
-            committed_cap,
-            "fits" if decision["committed_cap_fits_under_study_rule"] else "DOES NOT FIT",
+            "fits" if decision["whole_brief_fits_under_study_rule"] else "DOES NOT FIT",
+            decision["whole_brief_worst_required_tokens"],
             chosen_cap,
             decision["final_worst_required_tokens"],
             slot_tokens,

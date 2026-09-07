@@ -1,0 +1,30 @@
+{
+  "carrier": "earnings21-original",
+  "design": "THE FOUR SHORTEST calls of the FROZEN kb-construction-sample 34 by measured audio duration, for the KC-E1 / KU-E1c WIRE CHECK and for nothing else. Deterministic: the rule is sort the construction 34 by the flight roster receipt's own audio_seconds ascending, tie-broken by sample_id, and take four -- not a seeded draw, so the 'seed' field below is carried for schema parity only. CONSTRUCTION calls by requirement: docs/readiness/2026-09-06-e21-kc-e1-pre-meeting-brief-v2-preregistration.md section 8 item 3 makes the wire check construction-only, because an evaluation call's brief is the thing under test and a dry run must not rehearse it. SHORTEST by requirement too: a wire check cuts every OBS window it exercises, and 5,322.108 s over 61 windows is the cheapest honest exercise of the 90-second tiling on this half. This receipt freezes identity only. It is a SMOKE roster: no measurement, contrast, verdict or reported number may ever be computed on it, and it opens no evaluation surface -- all four calls are already inside the sealed SAEA-E21-FULL44-DIRECT-BASELINE-V2 population at parent discovery hash fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e.",
+  "items": [
+    {
+      "id": "4386541",
+      "key": "earnings21-original:4386541"
+    },
+    {
+      "id": "4387332",
+      "key": "earnings21-original:4387332"
+    },
+    {
+      "id": "4392809",
+      "key": "earnings21-original:4392809"
+    },
+    {
+      "id": "4384683",
+      "key": "earnings21-original:4384683"
+    }
+  ],
+  "pool_size": 34,
+  "probe": "wire-check",
+  "seed": 20260907,
+  "split_identity_hash": "bfaae430d99931c7fb277e35d342cfd83a158f60d591bd0bfe09dccc7cd260f3",
+  "split_role": "discovery",
+  "strata_counts": {
+    "kb-construction": 4
+  }
+}
