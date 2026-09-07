@@ -265,6 +265,7 @@ cell's to fix.
 | `placebo-token-match/placebo-token-match.json` | schema `saea-e21-ku-e1c-token-match-v1`. Both caps, per call and per half: the pad plan, both arms' prefix counts and totals, the per-window request-text distributions after padding, and the header residual |
 | `wire-check-token-matched/wire-check.json` | schema `saea-e21-kc-e1-wire-check-v1`. The same check re-run against the TOKEN-matched twin, run id `SAEA-E21-KU-E1C-TOKEN-MATCH-V1` |
 | `flight/` | **the KC-E1 flight itself** (2026-09-07, exposure row `SAEA-E21-KC-E1-BRIEF-44-V1`, attempt `attempt-20260907T171238Z-f02eef`, study commit `bfab2b16`): the receipt, the one whole-manifest `core.scoring_batch` read with its 44 per-sample rows per metric, and that directory's own `README.md`. It reports the cell's four metrics; it decides nothing |
+| `flight-placebo/` | **the KU-E1c flight itself** (2026-09-07, exposure row `SAEA-E21-KU-E1C-PLACEBO-44-V1`, attempt `attempt-20260907T200859Z-251383`, study commit `60fca960`): the receipt, the one whole-manifest `core.scoring_batch` read with its per-sample rows per metric, and that directory's own `README.md`. It reports the form twin's four metrics; it decides nothing, and the pairing against `flight/` is a separate act |
 | `MANIFEST.sha256` | SHA-256 of every file in this directory |
 
 Produced by `scripts/e21_kc_e1_prompt_fit.py` (with `--cap-impact-only` for the third file),
