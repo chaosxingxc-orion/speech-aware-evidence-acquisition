@@ -116,6 +116,21 @@ def last_exception(text: str) -> str:
     return lines[-1] if lines else ""
 
 
+#: Both runners print ``seal_and_score=<status>`` on their own summary line. A
+#: cell that reaches that line has already passed every stop ``classify`` knows
+#: about, so a NON-OK status there would otherwise be recorded as
+#: ``stop_class: none`` with ``reached_the_end: true`` -- a green that hides the
+#: one link §8 item 4 of the preregistration actually exists to prove. It is
+#: lifted out here and given its own class instead.
+_SEAL_LINE = re.compile(r"seal_and_score=(\S+)")
+SEAL_NOT_OK = "seal-and-score-not-ok"
+
+
+def seal_status(text: str) -> str | None:
+    matches = _SEAL_LINE.findall(text)
+    return matches[-1] if matches else None
+
+
 #: ``[12:46:06Z] `` -- the runners' own log stamp. Stripped so this receipt has
 #: no timestamp anywhere and two back-to-back writes reproduce the same
 #: ``MANIFEST.sha256``, which is this repository's receipt convention.
@@ -167,12 +182,25 @@ def run_mode(cell: dict[str, Any], mode: str) -> dict[str, Any]:
     )
     merged = completed.stdout + completed.stderr
     stop = last_exception(merged)
+    seal = seal_status(merged)
+    reached_the_end = completed.returncode == 0 and seal in (None, "OK")
+    if completed.returncode != 0:
+        stop_class = classify(merged)
+    elif seal in (None, "OK"):
+        stop_class = "none"
+    else:
+        stop_class = SEAL_NOT_OK
+        stop = next(
+            (line.strip() for line in merged.splitlines() if "seal_and_score=" in line),
+            stop,
+        )
     return {
         "mode": mode,
         "returncode": completed.returncode,
-        "reached_the_end": completed.returncode == 0,
+        "reached_the_end": reached_the_end,
+        "seal_and_score": seal,
         "stopped_at": _LOG_STAMP.sub("", stop),
-        "stop_class": "none" if completed.returncode == 0 else classify(merged),
+        "stop_class": stop_class,
         "stdout_tail": undated(completed.stdout.strip().splitlines()[-6:]),
         "opened_a_socket": False,
         "model_contacts": 0,
@@ -216,6 +244,13 @@ def build() -> dict[str, Any]:
             "paid_api_spend": 0,
         },
         "expected_stops": EXPECTED_STOPS,
+        "seal_and_score_rule": (
+            "a run that exits 0 is green only when the runner's own "
+            "seal_and_score line says OK; any other status is recorded as "
+            f"stop_class {SEAL_NOT_OK!r} with reached_the_end false, so a "
+            "manifest that seals COMPLETED and then will not score can never "
+            "be reported here as 'none'"
+        ),
         "fragments": fragment_digests(),
         "cells": results,
         "earnings21": (

@@ -293,7 +293,15 @@ def test_wire_check_receipt_records_zero_contacts_on_every_cell() -> None:
 
 
 def test_every_wire_check_stop_is_one_of_the_named_preconditions() -> None:
-    """No surprises: each cell stops where the preregistration says it stops."""
+    """No surprises: each cell stops where the preregistration says it stops.
+
+    UPDATED 2026-09-07, when the gold-id rail of section 6.2 landed. Both
+    Audio2Tool cells used to stop at ``a2t-gold-id-rail-missing``; they now run
+    the whole request path, so what this test pins is no longer a fixed stop
+    name but the two properties that actually matter: SLURP is still blocked on
+    its packet root, and an Audio2Tool cell that exits 0 is only green when its
+    own ``seal_and_score`` line says so.
+    """
 
     receipt = json.loads(WIRE.read_text(encoding="utf-8"))
     stops = {
@@ -306,11 +314,31 @@ def test_every_wire_check_stop_is_one_of_the_named_preconditions() -> None:
         stops[(cell, "preflight")] == "gate-not-authorized"
         for cell in {row["cell"] for row in receipt["cells"]}
     )
-    by_carrier = {
-        row["carrier"]: row["wire_check"]["stop_class"] for row in receipt["cells"]
-    }
-    assert by_carrier["slurp"] == "slurp-packet-root-missing"
-    assert by_carrier["audio2tool"] == "a2t-gold-id-rail-missing"
+    by_cell = {row["cell"]: row["wire_check"] for row in receipt["cells"]}
+
+    # SLURP: unchanged, and it stays this way until the encode of section 1.2
+    # has run and the cell's baseline fragment pins the new promotion receipt.
+    for cell in ("closed-list-tail2s-smoke-4", "closed-list-tail2s"):
+        assert by_cell[cell]["stop_class"] == "slurp-packet-root-missing", cell
+        assert by_cell[cell]["seal_and_score"] is None, cell
+
+    # Audio2Tool: the rail is in, so no cell may stop there any more, and the
+    # smoke -- the cell whose whole job is to prove the link end to end --
+    # must reach seal_and_score OK.
+    for cell in ("R-official-tail2s-smoke-4", "R-official-tail2s"):
+        entry = by_cell[cell]
+        assert entry["stop_class"] != "a2t-gold-id-rail-missing", cell
+        # A green here REQUIRES the seal to have said OK: a run that exits 0
+        # with a refused or failed seal is recorded as its own stop class, so
+        # "none" can never hide the link section 8 item 4 exists to prove.
+        if entry["stop_class"] == "none":
+            assert entry["seal_and_score"] == "OK", cell
+            assert entry["reached_the_end"] is True, cell
+        else:
+            assert entry["stop_class"] == "seal-and-score-not-ok", cell
+            assert entry["seal_and_score"] not in (None, "OK"), cell
+            assert entry["reached_the_end"] is False, cell
+    assert by_cell["R-official-tail2s-smoke-4"]["seal_and_score"] == "OK"
 
 
 def test_wire_check_receipt_pins_the_fragments_it_drove() -> None:
