@@ -76,6 +76,8 @@ from ..scoring_batch import load_score_jobs, run_score_batch
 from ..tracing import set_current_trace_buffer
 from ..tracking import ledger_row_for_bundle
 from ..session import load_runtime_receipt, start_session, stop_session
+from ..session.serving import ServingSessionError
+from ..session.serving import merge_server_args as _merge_server_args
 from ..split_receipt import VerifiedSplit
 from .receipts import FLIGHT_STAGES, FlightReceipts, require_mandatory_throughput_fields
 
@@ -368,22 +370,19 @@ def merge_server_args(
     (the adapter is what ``serve``/``FlightQueue`` compare when deciding
     whether a resident server can be reused), but nothing else is invented
     or discarded here.
+
+    The merge itself now lives in ``core.session.serving`` so an
+    operator-started always-on server (``scripts/serving_session.sh``) and a
+    flight-started one are built by exactly ONE function -- otherwise the
+    cross-process attach predicate would be comparing two dialects of the
+    same command line. This wrapper exists only to keep the failure type a
+    :class:`FlightRuntimeError` for every existing caller.
     """
 
-    if isinstance(server_args, (str, bytes)) or not isinstance(server_args, Sequence):
-        raise FlightRuntimeError("model config server_args must be a list of strings")
-    merged = [str(value) for value in server_args]
-    for flag, value in (("-np", slots), ("-c", context_tokens)):
-        if flag in merged:
-            index = merged.index(flag)
-            if index + 1 >= len(merged):
-                raise FlightRuntimeError(
-                    f"model config server_args declares {flag} with no value"
-                )
-            merged[index + 1] = str(value)
-        else:
-            merged.extend([flag, str(value)])
-    return merged
+    try:
+        return _merge_server_args(server_args, slots=slots, context_tokens=context_tokens)
+    except ServingSessionError as error:
+        raise FlightRuntimeError(str(error)) from error
 
 
 def _default_tool_schema_resolver(

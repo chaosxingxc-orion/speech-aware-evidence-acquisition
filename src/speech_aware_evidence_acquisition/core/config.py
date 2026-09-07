@@ -79,6 +79,55 @@ def _canonical_hash(document: Mapping[str, object]) -> str:
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()
 
 
+def fragment_path(repo_root: Path, kind: str, name: str) -> Path:
+    """``<repo_root>/configs/<kind>/<name>.json``, with the fragment-name
+    pattern :func:`compose` enforces applied to ``name`` first."""
+
+    if kind not in _KINDS:
+        raise ConfigError(f"unknown config fragment kind {kind!r}; known kinds are {_KINDS}")
+    if not isinstance(name, str) or not _FRAGMENT_NAME_PATTERN.fullmatch(name):
+        raise ConfigError(f"invalid config fragment name for {kind}: {name!r}")
+    return Path(repo_root) / "configs" / kind / f"{name}.json"
+
+
+def read_fragment(repo_root: Path, kind: str, name: str) -> dict[str, object]:
+    """ONE config fragment's own top-level object, read exactly the way
+    :func:`compose` reads it (duplicate top-level keys refused before
+    ``json.loads`` can silently keep the last value).
+
+    Split out of :func:`compose` so a caller that legitimately has only ONE
+    fragment -- the operator-run serving session, which composes no dataset,
+    baseline or experiment -- reads it through the same rules a flight does,
+    rather than a second ``json.loads`` with different discipline.
+    """
+
+    path = fragment_path(repo_root, kind, name)
+    if not path.is_file():
+        raise ConfigError(f"missing config fragment: {path}")
+    try:
+        text = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as error:
+        raise ConfigError(f"cannot read config fragment {path}: {error}") from error
+    try:
+        # M-5 fix: object_pairs_hook rejects a duplicate top-level key
+        # before json.loads ever builds the (last-value-wins) dict --
+        # ConfigError raised inside the hook propagates straight out of
+        # json.loads uncaught below, since it is not a json.JSONDecodeError.
+        fragment = json.loads(text, object_pairs_hook=_reject_duplicate_keys(path))
+    except json.JSONDecodeError as error:
+        raise ConfigError(f"cannot read config fragment {path}: {error}") from error
+    if not isinstance(fragment, dict):
+        raise ConfigError(f"config fragment {path} must be a JSON object")
+    return fragment
+
+
+def fragment_hash(fragment: Mapping[str, object]) -> str:
+    """The canonical SHA-256 of ONE fragment's own object -- the same
+    canonicalization :func:`compose` applies to the merged four."""
+
+    return _canonical_hash(dict(fragment))
+
+
 def compose(
     repo_root: Path, model: str, dataset: str, baseline: str, experiment: str
 ) -> ComposedConfig:
@@ -86,26 +135,7 @@ def compose(
     merged: dict[str, object] = {}
     origins: dict[str, str] = {}
     for kind in _KINDS:
-        name = names[kind]
-        if not isinstance(name, str) or not _FRAGMENT_NAME_PATTERN.fullmatch(name):
-            raise ConfigError(f"invalid config fragment name for {kind}: {name!r}")
-        path = Path(repo_root) / "configs" / kind / f"{name}.json"
-        if not path.is_file():
-            raise ConfigError(f"missing config fragment: {path}")
-        try:
-            text = path.read_text(encoding="utf-8")
-        except (OSError, UnicodeError) as error:
-            raise ConfigError(f"cannot read config fragment {path}: {error}") from error
-        try:
-            # M-5 fix: object_pairs_hook rejects a duplicate top-level key
-            # before json.loads ever builds the (last-value-wins) dict --
-            # ConfigError raised inside the hook propagates straight out of
-            # json.loads uncaught below, since it is not a json.JSONDecodeError.
-            fragment = json.loads(text, object_pairs_hook=_reject_duplicate_keys(path))
-        except json.JSONDecodeError as error:
-            raise ConfigError(f"cannot read config fragment {path}: {error}") from error
-        if not isinstance(fragment, dict):
-            raise ConfigError(f"config fragment {path} must be a JSON object")
+        fragment = read_fragment(repo_root, kind, names[kind])
         for key, value in fragment.items():
             if key in merged:
                 raise ConfigError(

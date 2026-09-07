@@ -15,6 +15,7 @@ import signal
 import subprocess
 import threading
 import time
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
@@ -404,6 +405,100 @@ def _capture_startup_stdout(
     return bytes(collected[:max_bytes])
 
 
+@dataclass(frozen=True)
+class ServerCommand:
+    """Everything ``start_session`` needs to spawn ONE llama-server, and
+    everything a cross-process attach needs to prove it is looking at the
+    same server: the full argv, the receipt-relative pinned binary path, the
+    binary's re-hashed sha256, and the exact GGUF set this role serves.
+
+    Built by :func:`build_server_command`, which is the ONLY place this
+    repository composes a llama-server command line. ``core.serving`` (the
+    always-on serving session) and ``start_session`` both call it, so an
+    operator-started resident server and a flight-started one cannot drift.
+    """
+
+    argv: tuple[str, ...]
+    binary: Path
+    binary_path: str
+    binary_sha256: str
+    model_files: tuple[ModelFileRef, ...]
+
+
+def build_server_command(
+    *,
+    runtime_root: Path,
+    data_root: Path,
+    runtime_receipt: Mapping[str, object],
+    host: str,
+    port: int,
+    extra_argv: Sequence[str] = (),
+    extra_env: Mapping[str, str] | None = None,
+    role: str = "legacy",
+    model_root: Path | None = None,
+) -> ServerCommand:
+    """The one llama-server argument builder (see :class:`ServerCommand`).
+
+    Fail-closed, exactly as ``start_session`` has always been before it
+    spawned anything: ``host``/``port`` must be loopback (I5); the binary at
+    the receipt's pinned relative path must exist and re-hash to EXACTLY the
+    receipt's pinned sha256 (a binary swapped on disk between gate-open time
+    and spawn time is refused here, never silently executed); an
+    ``inference`` role must not smuggle an mmproj through ``extra_argv`` or a
+    feature-cache directory through ``extra_env``.
+
+    Deliberately does NOT call ``assert_wsl_execution_environment()``: this
+    function starts no process and touches no model, so it is safe to call
+    from a check or a test on any host. The spawn itself
+    (:func:`start_session`) still asserts the execution environment first.
+    """
+
+    require_loopback(f"http://{_bracketed(host)}:{port}")
+    pinned_path, pinned_sha = _pinned_binary(runtime_receipt)
+    binary = _resolve_under(
+        runtime_root, pinned_path, "runtime llama_cpp.binary_path", must_exist=True
+    )
+    if not binary.is_file():
+        raise SessionError(f"pinned binary is not a regular file: {binary}")
+    actual_sha = _sha256_file(binary)
+    if actual_sha != pinned_sha:
+        raise SessionError(
+            f"spawn refused: {binary} hashes to {actual_sha[:12]}... but the runtime "
+            f"receipt pins {pinned_sha[:12]}... (binary swapped on disk since the gate "
+            "verified it; I5)"
+        )
+    model_files = _pinned_model_files(runtime_receipt)
+    model_argv = _model_file_argv(
+        Path(data_root), model_files, role=role, model_root=model_root
+    )
+    if role == "inference":
+        forbidden_extra = [part for part in extra_argv if "mmproj" in part.lower()]
+        if forbidden_extra:
+            raise SessionError(
+                "inference extra_argv must not mention mmproj; --no-mmproj is injected "
+                f"by start_session: {forbidden_extra!r}"
+            )
+        if extra_env and "LLAMA_MTMD_FEAT_CACHE_DIR" in extra_env:
+            raise SessionError(
+                "inference extra_env must not set LLAMA_MTMD_FEAT_CACHE_DIR"
+            )
+        session_model_files = tuple(
+            entry
+            for entry in model_files
+            if "mmproj" not in Path(entry.path).name.lower()
+        )
+    else:
+        session_model_files = model_files
+    argv = [str(binary), "--host", host, "--port", str(port), *model_argv, *list(extra_argv)]
+    return ServerCommand(
+        argv=tuple(argv),
+        binary=binary,
+        binary_path=pinned_path,
+        binary_sha256=actual_sha,
+        model_files=tuple(session_model_files),
+    )
+
+
 def start_session(
     *,
     runtime_root: Path,
@@ -450,41 +545,22 @@ def start_session(
     """
 
     assert_wsl_execution_environment()
-    require_loopback(f"http://{_bracketed(host)}:{port}")
-    pinned_path, pinned_sha = _pinned_binary(runtime_receipt)
-    binary = _resolve_under(runtime_root, pinned_path, "runtime llama_cpp.binary_path", must_exist=True)
-    if not binary.is_file():
-        raise SessionError(f"pinned binary is not a regular file: {binary}")
-    actual_sha = _sha256_file(binary)
-    if actual_sha != pinned_sha:
-        raise SessionError(
-            f"spawn refused: {binary} hashes to {actual_sha[:12]}... but the runtime "
-            f"receipt pins {pinned_sha[:12]}... (binary swapped on disk since the gate "
-            "verified it; I5)"
-        )
-    model_files = _pinned_model_files(runtime_receipt)
-    model_argv = _model_file_argv(
-        Path(data_root), model_files, role=role, model_root=model_root
+    command = build_server_command(
+        runtime_root=runtime_root,
+        data_root=data_root,
+        runtime_receipt=runtime_receipt,
+        host=host,
+        port=port,
+        extra_argv=tuple(extra_argv),
+        extra_env=extra_env,
+        role=role,
+        model_root=model_root,
     )
-    if role == "inference":
-        forbidden_extra = [part for part in extra_argv if "mmproj" in part.lower()]
-        if forbidden_extra:
-            raise SessionError(
-                "inference extra_argv must not mention mmproj; --no-mmproj is injected "
-                f"by start_session: {forbidden_extra!r}"
-            )
-        if extra_env and "LLAMA_MTMD_FEAT_CACHE_DIR" in extra_env:
-            raise SessionError(
-                "inference extra_env must not set LLAMA_MTMD_FEAT_CACHE_DIR"
-            )
-        session_model_files = tuple(
-            entry
-            for entry in model_files
-            if "mmproj" not in Path(entry.path).name.lower()
-        )
-    else:
-        session_model_files = model_files
-    argv = [str(binary), "--host", host, "--port", str(port), *model_argv, *list(extra_argv)]
+    binary = command.binary
+    pinned_path = command.binary_path
+    actual_sha = command.binary_sha256
+    session_model_files = command.model_files
+    argv = list(command.argv)
 
     started_wall = now()
     # server_env (W3, 2026-08-11): runtime-behaviour environment for the
