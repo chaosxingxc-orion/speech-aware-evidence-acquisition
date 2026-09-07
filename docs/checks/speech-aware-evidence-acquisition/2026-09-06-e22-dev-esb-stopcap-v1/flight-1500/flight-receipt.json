@@ -1,0 +1,254 @@
+{
+  "schema": "saea-e22-esb-flight-receipt-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "generated_at": "2026-09-07T04:34:52.225928+00:00",
+  "run_id": "SAEA-E22-DEV-ESB-STOPCAP-V1",
+  "attempt_id": "attempt-20260907T042641Z-2a48e8",
+  "cell_id": "E22-DEV-ESB-STOPCAP",
+  "experiment": "e22-dev-usage-stopcap-v1",
+  "dataset": "earnings22-esb-dev1500-utterances",
+  "stages": {
+    "preflight": {
+      "run_id": "SAEA-E22-DEV-ESB-STOPCAP-V1",
+      "attempt_id": "attempt-20260907T042641Z-2a48e8",
+      "config_hash": "d47999a6ecc9b16b058017a80253f24dc1a160401ddddd2ecf683901edf6e460",
+      "protocol_hash": "4fda9f678991ab09d2280113aa3202db0fa74df41543a3b91235dbb837a8b6e4",
+      "split_identity_hash": "c626e62f8876bf52a2904a0d2ec91807a530f3195c10facc8c036f661b2bf88a",
+      "split_id": "E22-ESB-DEV1500-UTTERANCES",
+      "sample_count": 1500,
+      "carrier_lock_key": "earnings22-original",
+      "serving_geometry": {
+        "slots": 8,
+        "slot_tokens": 5120,
+        "max_tokens": 1024
+      },
+      "study_commit": "47adbd433a934df5dde6505b16cbd27a39e6fb78",
+      "attempt_reservation": "deferred to core.model.adapter.FrozenCoreAdapter",
+      "prompt_budget": [
+        {
+          "phase": "direct",
+          "breakdown": {
+            "completion_token_ceiling": 1024,
+            "rendered_text_tokens": 81,
+            "required_window_tokens": 1225,
+            "special_token_reserve": 2,
+            "speech_feature_packet_tokens": [
+              [
+                "4453225-103",
+                118
+              ]
+            ],
+            "speech_feature_tokens": 118
+          },
+          "compaction_pass": 0,
+          "decision": "ALLOW",
+          "dropped_identifiers": [],
+          "operational_margin_tokens": 23351,
+          "operational_reserve_tokens": 8192,
+          "payload_sha256": "a03baab2bc453d59919897e57a426f05951cabb1a7a20ea4197582ebc90ec76c",
+          "physical_margin_tokens": 31543,
+          "slot_limit_tokens": 32768
+        }
+      ],
+      "phase_prompt_fit": null,
+      "stage": "preflight",
+      "stage_hash": "a9d7a3ec4eae890c4578fbe378d7af79dc5611e1365113a2d81a18397097bf29"
+    },
+    "preprocess": {
+      "kind": "speech-packets",
+      "workers_declared": 8,
+      "workers_used": 8,
+      "campaign_active": false,
+      "packet_count": 0,
+      "packet_manifest_hash": "87c8d31e8b5d31255b80221de105b1ff1d3b2dcb032197409886f06b864d1182",
+      "duration_seconds": 4.291534423828125e-06,
+      "packets_per_second": 0.0,
+      "promoter_meta": {
+        "audio_path": "raw-audio-mmproj",
+        "packets_required": false,
+        "reason": "this arm's D2 field set carries no speech_feature_parts; its audio travels through the mmproj at request time and no packet is promoted"
+      },
+      "stage": "preprocess",
+      "stage_hash": "2848b5c28386dc466d1463ea51cac5e118eab8c1fdfcbe885fc09a57e3604a66"
+    },
+    "serve": {
+      "session_id": "SAEA-E22-DEV-ESB-STOPCAP-V1-attempt-20260907T042641Z-2a48e8",
+      "host": "127.0.0.1",
+      "port": 8080,
+      "pid": 702,
+      "serving_geometry": {
+        "slots": 8,
+        "slot_tokens": 5120,
+        "max_tokens": 1024
+      },
+      "extra_argv": [
+        "-c",
+        "40960",
+        "-np",
+        "8",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0"
+      ],
+      "session_role": "legacy",
+      "model_root": "/home/chao",
+      "startup_seconds": 10.107513904571533,
+      "reused": false,
+      "stage": "serve",
+      "stage_hash": "14d5e287d16dc43c65119f1ec643cd0ad976ea435d51f13958b8d713857e3610"
+    },
+    "run_phases": {
+      "policy": "fixed",
+      "policy_kind": "direct",
+      "arm": "bare-core",
+      "id_slot": 0,
+      "id_slot_resolution": "'per-sample' sentinel resolved to slot 0 (this harness dispatches one contact at a time)",
+      "max_tokens": {
+        "policy": "duration-proportional-v1",
+        "alpha": 1.5,
+        "words_per_second_p95": 4.999220954734555,
+        "tokens_per_word": 1.2991996296395218,
+        "floor": 1,
+        "ceiling": 1024
+      },
+      "max_tokens_resolution": "per-sample rule 'duration-proportional-v1' resolved from each sample's own audio_seconds; every request's integer is in its MODEL_REQUEST trace record",
+      "wall_seconds": 410.78364300727844,
+      "contact_count": 1500,
+      "phases": [],
+      "phase_material": null,
+      "phase_supply": null,
+      "contacts_per_second": 3.6515572748192953,
+      "average_latency_seconds": 2.013332881187011,
+      "slot_occupancy": 0.9189750411164154,
+      "tokens_per_second": 3739.1946494149583,
+      "tokens_per_second_basis": "contacts_per_second_times_completion_token_ceiling_upper_bound_estimate",
+      "response_arrival": {
+        "rows_total": 1500,
+        "rows_with_native_tool_calls": 0,
+        "rows_answered_as_text": 1500,
+        "native_tool_calls_total": 0,
+        "basis": "rails.core_client.RequestTiming.native_tool_calls, set from core.model.CoreResponse.tool_calls; None means the response envelope carried no tool_calls key at all, i.e. the model answered as text"
+      },
+      "dispatch": {
+        "workers": 8,
+        "max_in_flight": 8,
+        "slot_ids_used": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "dispatch": "concurrent",
+        "contacts_per_sample": 1,
+        "queue_depth": "not a knob: one contact per sample means nothing queues behind a sample, and more in-flight requests than slots is what the slot pinning exists to forbid"
+      },
+      "serving_slots": 8,
+      "occupancy_slots": 8,
+      "stage": "run_phases",
+      "stage_hash": "de293e2349ecb447cd8d05b7fc9643de4bfbb073578006251aa5bdf643af3e82"
+    },
+    "seal": {
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-STOPCAP-V1/attempt-20260907T042641Z-2a48e8/SAEA-E22-DEV-ESB-STOPCAP-V1.run-manifest.json",
+      "manifest_sha256": "4c84151161e0babe7076aad6358609b82958e00da385ccf85c3256a463d28ef3",
+      "verified_attempt_state": "OPENED",
+      "outputs_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-STOPCAP-V1/attempt-20260907T042641Z-2a48e8/SAEA-E22-DEV-ESB-STOPCAP-V1.outputs.jsonl",
+      "outputs_row_count": 1500,
+      "phases_path": null,
+      "phases_sha256": null,
+      "phase_count": 0,
+      "trace_manifest_hash": "31f67238c1e9a2ac370390d5aa38128b2143286fd86eb846908ad968d7fe79d0",
+      "cost": {
+        "calls_used": 1500,
+        "audio_seconds_used": 9948.982999999995,
+        "latency_seconds_total": 3019.9993217805168,
+        "prompt_tokens_total": 212782,
+        "completion_tokens_total": 36769,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+      },
+      "ledger_cells": {
+        "experiment_id": "SAEA-E22-DEV-ESB-STOPCAP-V1",
+        "speech task/carrier": "earnings22-original; split E22-ESB-DEV1500-UTTERANCES; 1500 samples",
+        "changed axes": "model=q4km-e22-dev1500-esb-stopcap-mmproj-gpu-04ccc72a-np8-c40960; dataset=earnings22-esb-dev1500-utterances; baseline=e22-esb-dev1500-stopcap; experiment=e22-dev-usage-stopcap-v1",
+        "shared code revision": "none; this study declares no speechrl_common dependency",
+        "model rev": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+        "dataset rev": "c626e62f8876bf52a2904a0d2ec91807a530f3195c10facc8c036f661b2bf88a",
+        "MLflow run": "not used",
+        "effectiveness": "pending post-run analysis",
+        "reasonableness": "pending post-run analysis",
+        "efficiency": "pending post-run analysis",
+        "deviations": "pending post-run analysis",
+        "decision": "pending post-run analysis"
+      },
+      "finalize": {
+        "scores_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-STOPCAP-V1/attempt-20260907T042641Z-2a48e8/SAEA-E22-DEV-ESB-STOPCAP-V1.scores.json",
+        "ledger_markdown_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-STOPCAP-V1/attempt-20260907T042641Z-2a48e8/SAEA-E22-DEV-ESB-STOPCAP-V1.ledger-row.md",
+        "attempt_state": "FINALIZED"
+      },
+      "flight_receipt": null,
+      "stage": "seal",
+      "stage_hash": "552ffbe4c686db6b23f2b20c9b5ce6aa9e4a6c433cc95527d2eb678ed362f498"
+    },
+    "score": {
+      "jobs_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-STOPCAP-V1/attempt-20260907T042641Z-2a48e8/score-jobs.jsonl",
+      "output_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-STOPCAP-V1/attempt-20260907T042641Z-2a48e8/score-batch",
+      "job_count": 1,
+      "include_per_sample": false,
+      "duration_seconds": 3.2323966026306152,
+      "jobs_per_second": 0.30936797767519364,
+      "result": {
+        "schema": "saea-parallel-score-batch-v1",
+        "operation": "score",
+        "parallelism_boundary": "one-complete-verified-manifest-per-process",
+        "aggregation_rule": "no dataset sharding and no averaging of shard-level official metrics",
+        "requested_max_workers": 1,
+        "effective_max_workers": 1,
+        "job_count": 1,
+        "succeeded": 1,
+        "failed": 0,
+        "elapsed_seconds": 3.2210068620042875,
+        "jobs": [
+          {
+            "index": 0,
+            "job_id": "attempt-20260907T042641Z-2a48e8",
+            "operation": "score",
+            "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-STOPCAP-V1/attempt-20260907T042641Z-2a48e8/SAEA-E22-DEV-ESB-STOPCAP-V1.run-manifest.json",
+            "ledger_cells": null,
+            "status": "succeeded",
+            "returncode": 0,
+            "elapsed_seconds": 3.2097300160094164,
+            "result_file": "attempt-20260907T042641Z-2a48e8.score.json",
+            "result_sha256": "e0cad827954fce08c467622ea34886b2392304222bf488131ca7dd2b86ade1d2",
+            "stdout_log": null,
+            "stderr_log": "attempt-20260907T042641Z-2a48e8.stderr.log",
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "error": null
+          }
+        ]
+      },
+      "stage": "score",
+      "stage_hash": "cf2de1e6180b957163ac4a05f806910a6363016d1db1a6320942be92a4eb9a8c"
+    },
+    "stop_serving": {
+      "schema": "saea-session-stop-receipt-v1",
+      "study": "speech-aware-evidence-acquisition",
+      "session_id": "SAEA-E22-DEV-ESB-STOPCAP-V1-attempt-20260907T042641Z-2a48e8",
+      "session_role": "legacy",
+      "session_receipt_sha256": "85b898d1f00739525977a5d0748c8c139dbb76a566b3347e386b277b23f84117",
+      "runtime_receipt_sha256": "6446805904ca617cb9e5fcd92d31441ed376589996ddbb185697060752ce9d13",
+      "pid": 702,
+      "termination_signal": "SIGTERM",
+      "forced": false,
+      "stopped_at": "2026-09-07T04:34:52.121591+00:00"
+    }
+  }
+}
