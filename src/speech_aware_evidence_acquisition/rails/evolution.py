@@ -252,6 +252,9 @@ __all__ = [
     "STEP_RESULT_SCHEMA",
     "run_propose_step",
     "run_candidates_step",
+    "NOISE_FLOOR_SCHEMA",
+    "sealed_output_digests",
+    "prompt_noise_floor",
     "run_select_step",
     "run_confirm_step",
     "ROUND_STEP_RUNNERS",
@@ -4768,6 +4771,171 @@ def run_select_step(
     )
 
 
+#: The round receipt's decoder-noise instrumentation. It is a REPORT and never
+#: a rule: no admission, no confirmation and no stop decision reads it. Round 1
+#: measured why it has to exist -- of 1,019 fold-B rows whose prompt was
+#: byte-identical across the two arms, 286 (28.1 %) came back with different
+#: text anyway, and 31 of the 35 rows whose reward moved were of that kind. A
+#: round that cannot see that number cannot tell its mechanism from its
+#: decoder. Whether the admission rule should change is the OWNER's call and is
+#: open; this only makes the quantity visible.
+NOISE_FLOOR_SCHEMA = "saea-evolution-prompt-noise-floor-v1"
+
+
+def sealed_output_digests(score_file: Path | str) -> dict[str, tuple[str, str]]:
+    """``{sample_id: (request_sha256, response_text_sha256)}`` for one arm.
+
+    Resolved from the SAME file the confirm step already reads: a
+    ``<job_id>.score.json`` names its own ``manifest``, the run manifest names
+    its ``outputs`` path and that file's sha256, and the digest is verified
+    before a line is parsed. Nothing new is opened that the round did not
+    already have to trust, and no response TEXT is read -- only the two digests
+    the sealed trace already carries, which is what keeps this instrumentation
+    off the evidence surface.
+    """
+
+    score = json.loads(Path(score_file).read_text(encoding="utf-8"))
+    if not isinstance(score, Mapping):
+        raise EvolutionError(f"{score_file} is not a score document")
+    manifest_path = score.get("manifest")
+    if not isinstance(manifest_path, str) or not manifest_path:
+        raise EvolutionError(f"{score_file} names no run manifest")
+    manifest_file = Path(manifest_path)
+    if not manifest_file.is_absolute():
+        manifest_file = Path(score_file).parent / manifest_path
+    manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+    outputs = manifest.get("outputs") if isinstance(manifest, Mapping) else None
+    if not isinstance(outputs, Mapping) or not isinstance(outputs.get("path"), str):
+        raise EvolutionError(f"{manifest_file} names no sealed outputs file")
+    outputs_file = Path(str(outputs["path"]))
+    if not outputs_file.is_absolute():
+        outputs_file = manifest_file.parent / str(outputs["path"])
+    raw = outputs_file.read_bytes()
+    expected = outputs.get("sha256")
+    measured = hashlib.sha256(raw).hexdigest()
+    if isinstance(expected, str) and expected and expected != measured:
+        raise EvolutionError(
+            f"sealed outputs {outputs_file} hash to {measured}, not the manifest's "
+            f"{expected}"
+        )
+    digests: dict[str, tuple[str, str]] = {}
+    for line in raw.decode("utf-8").splitlines():
+        if not line.strip():
+            continue
+        row = json.loads(line)
+        sample_id = str(row.get("sample_id", ""))
+        request = row.get("request_sha256")
+        response = row.get("response_text_sha256")
+        if not sample_id or not isinstance(request, str) or not isinstance(response, str):
+            raise EvolutionError(
+                f"{outputs_file} carries a row without a sample id and both digests"
+            )
+        digests[sample_id] = (request, response)
+    if not digests:
+        raise EvolutionError(f"{outputs_file} carries no sealed row")
+    return digests
+
+
+def _noise_floor_counts(
+    rows: Sequence[str],
+    incumbent_digests: Mapping[str, tuple[str, str]],
+    arm_digests: Mapping[str, tuple[str, str]],
+    incumbent_scores: Mapping[str, Mapping[str, float]],
+    arm_scores: Mapping[str, Mapping[str, float]],
+    metric: str,
+) -> dict[str, object]:
+    counts = {
+        "rows": 0,
+        "changed_prompt_rows": 0,
+        "unchanged_prompt_rows": 0,
+        "unchanged_prompt_flips": 0,
+        "changed_prompt": {"saves": 0, "harms": 0},
+        "unchanged_prompt": {"saves": 0, "harms": 0},
+    }
+    for sample_id in rows:
+        left = incumbent_digests.get(sample_id)
+        right = arm_digests.get(sample_id)
+        if left is None or right is None:
+            continue
+        counts["rows"] += 1
+        unchanged = left[0] == right[0]
+        side = "unchanged_prompt" if unchanged else "changed_prompt"
+        counts[f"{side}_rows"] += 1
+        if unchanged and left[1] != right[1]:
+            counts["unchanged_prompt_flips"] += 1
+        before = incumbent_scores.get(sample_id, {}).get(metric)
+        after = arm_scores.get(sample_id, {}).get(metric)
+        if before is None or after is None:
+            continue
+        if after > before:
+            counts[side]["saves"] += 1
+        elif after < before:
+            counts[side]["harms"] += 1
+    return counts
+
+
+def prompt_noise_floor(
+    incumbent_digests: Mapping[str, tuple[str, str]],
+    arm_digests: Mapping[str, tuple[str, str]],
+    incumbent_scores: Mapping[str, Mapping[str, float]],
+    arm_scores: Mapping[str, Mapping[str, float]],
+    *,
+    metric: str,
+    rows: Sequence[str],
+    rows_of_target: Mapping[str, Sequence[str]] | None = None,
+) -> dict[str, object]:
+    """How much of a fold's movement the DECODER can account for.
+
+    A row whose rendered prompt was byte-identical across the two arms asked
+    the frozen core the same question; greedy decoding at temperature 0 is
+    nevertheless not bitwise reproducible across batch compositions, so such a
+    row can still come back different, and its reward can still move. Splitting
+    both counts by that test is the whole of this function:
+
+    * ``unchanged_prompt_flips`` -- rows the two arms asked identically and
+      that answered differently anyway. This is the noise floor;
+    * ``changed_prompt`` / ``unchanged_prompt`` saves and harms -- where the
+      round's movement actually came from.
+
+    Per target as well as pooled, because a scenario the assembly never touched
+    is ALL noise floor by construction and reading it beside a scenario the
+    assembly rewrote is the point. Reported, never gated: nothing in
+    :func:`confirm_assembly` or :func:`advance_round` reads any of it.
+    """
+
+    if not isinstance(metric, str) or not metric:
+        raise EvolutionError("metric must be non-empty text")
+    report: dict[str, object] = {
+        "schema": NOISE_FLOOR_SCHEMA,
+        "measured": True,
+        "metric": metric,
+        "rule": (
+            "reported, never gated: no admission, confirmation or stop decision "
+            "reads these counts"
+        ),
+        **_noise_floor_counts(
+            tuple(rows),
+            incumbent_digests,
+            arm_digests,
+            incumbent_scores,
+            arm_scores,
+            metric,
+        ),
+    }
+    report["by_target"] = {
+        target_id: _noise_floor_counts(
+            tuple(target_rows),
+            incumbent_digests,
+            arm_digests,
+            incumbent_scores,
+            arm_scores,
+            metric,
+        )
+        for target_id, target_rows in sorted((rows_of_target or {}).items())
+    }
+    return report
+
+
 def run_confirm_step(
     state: EvolutionState,
     round_index: int,
@@ -4797,6 +4965,11 @@ def run_confirm_step(
 
     assembly = None
     confirmation = None
+    noise_floor: dict[str, object] = {
+        "schema": NOISE_FLOOR_SCHEMA,
+        "measured": False,
+        "reason": "stage one admitted no target, so no fold-B pair was flown",
+    }
     if isinstance(assembly_raw, Mapping):
         assembly = Portfolio(
             round=int(assembly_raw["round"]),
@@ -4836,13 +5009,35 @@ def run_confirm_step(
                     for row in rows
                 )
             )
+        incumbent_rows = per_sample_scores_from_score_file(
+            Path(score_files[INCUMBENT_KEY]), config.scorer_id, [config.metric]
+        )
+        assembly_rows = per_sample_scores_from_score_file(
+            Path(score_files["assembly"]), config.scorer_id, [config.metric]
+        )
+        # The decoder-noise report, from the SAME two score files: each names
+        # its run manifest, which names its sealed outputs. It changes no rule
+        # and must never stop a round, so a trace this driver cannot resolve is
+        # recorded as unmeasured rather than raised.
+        try:
+            noise_floor = prompt_noise_floor(
+                sealed_output_digests(Path(score_files[INCUMBENT_KEY])),
+                sealed_output_digests(Path(score_files["assembly"])),
+                incumbent_rows,
+                assembly_rows,
+                metric=config.metric,
+                rows=tuple(sorted({*targeted_rows, *background_rows})),
+                rows_of_target=carrier.fold_b_rows_of_target or None,
+            )
+        except (EvolutionError, OSError, ValueError) as error:
+            noise_floor = {
+                "schema": NOISE_FLOOR_SCHEMA,
+                "measured": False,
+                "reason": f"the sealed traces could not be read: {error}",
+            }
         confirmation = confirm_assembly(
-            per_sample_scores_from_score_file(
-                Path(score_files[INCUMBENT_KEY]), config.scorer_id, [config.metric]
-            ),
-            per_sample_scores_from_score_file(
-                Path(score_files["assembly"]), config.scorer_id, [config.metric]
-            ),
+            incumbent_rows,
+            assembly_rows,
             targeted_rows=targeted_rows,
             background_rows=background_rows,
             metric=config.metric,
@@ -4869,6 +5064,7 @@ def run_confirm_step(
     )
     extra = {
         "selection": selection,
+        "noise_floor": noise_floor,
         "sentinel_harms": selection_receipt.get("sentinel_harms"),
         "confirmation": None if confirmation is None else confirmation.as_json(),
         "decontamination": selection_receipt.get("decontamination_inputs"),
@@ -4898,6 +5094,7 @@ def run_confirm_step(
         summary={
             "accepted": outcome.accepted,
             "gain_pp": outcome.gain_pp,
+            "unchanged_prompt_flips": noise_floor.get("unchanged_prompt_flips"),
             "stop": stop,
             "stop_reason": stop_reason,
             "round_receipt": str(receipt_path),

@@ -922,6 +922,19 @@ reproduces section 10's arithmetic. Official scoring is `slurp-slu-official` —
 `evaluate.py` at pinned commit `8eb1654…311f1` — run once per complete manifest through
 `core.scoring_batch`, never sharded. No new analysis module is admitted for this cell.
 
+**The prompt noise floor, added 2026-09-07 (track E3e). Reported, never gated.** Every round receipt
+from now on carries `extra.noise_floor`: per target and pooled, the rows whose rendered prompt was
+byte-identical across the two fold-B arms, of those the ones that answered differently anyway
+(`unchanged_prompt_flips`), and the round's saves and harms split by the same test. It is computed by
+`rails.evolution.prompt_noise_floor` from the sealed traces the confirm step's own two score files
+already name (score file → run manifest → `outputs.jsonl`, digest-verified; no response text is
+read). It exists because round 1 measured the quantity and it is large: 286 of 1,019 byte-identically
+asked rows returned different text, and 31 of the 35 rows whose reward moved were of that kind.
+**The admission rule is unchanged** — nothing in `select_per_target`, `confirm_assembly` or
+`advance_round` reads any of these counts, and whether the rule should change is the owner's open
+question. A trace this driver cannot resolve leaves the block `measured: false` with the reason
+recorded; a diagnostic never stops a round.
+
 ## 15. Claim surface
 
 Nothing here is a superiority, generality or Stage-3 claim. The folds are construction-role discovery

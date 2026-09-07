@@ -16,6 +16,7 @@ this repository.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from dataclasses import replace
 from pathlib import Path
@@ -177,13 +178,69 @@ def _repo(root: Path, config: LoopConfig) -> Path:
     return root
 
 
-def _score_file(path: Path, rows: Mapping[str, bool]) -> str:
-    """One ``<job_id>.score.json`` as ``core.scoring_batch`` writes it."""
 
+
+def _sha(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _sealed_trace(path: Path, rows, digests) -> str:
+    """The two files a real arm seals beside its scores: the run manifest and
+    the ``.outputs.jsonl`` whose per-row request and response digests the round
+    receipt's noise floor is computed from.
+
+    Both are referenced RELATIVELY, exactly as ``sealed_output_digests``
+    resolves them, so the synthetic bundle carries no absolute path and two
+    runs of this dry run stay byte-identical.
+    """
+
+    stem = path.name.split(".", 1)[0]
+    outputs = path.parent / f"{stem}.outputs.jsonl"
+    outputs.parent.mkdir(parents=True, exist_ok=True)
+    outputs.write_text(
+        "".join(
+            json.dumps(
+                {
+                    "sample_id": sample_id,
+                    "request_sha256": digests.get(
+                        sample_id, (_sha(f"prompt|{sample_id}"), "")
+                    )[0],
+                    "response_text_sha256": digests.get(
+                        sample_id, ("", _sha(f"answer|{sample_id}"))
+                    )[1],
+                }
+            )
+            + "\n"
+            for sample_id in sorted(rows)
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    _write(
+        path.parent / f"{stem}.run-manifest.json",
+        {
+            "schema": "saea-run-manifest-v1",
+            "status": "COMPLETED",
+            "outputs": {
+                "path": outputs.name,
+                "sha256": hashlib.sha256(outputs.read_bytes()).hexdigest(),
+            },
+        },
+    )
+    return f"{stem}.run-manifest.json"
+
+
+def _score_file(
+    path: Path, rows: Mapping[str, bool], digests: Mapping[str, tuple] = {}
+) -> str:
+    """One ``<job_id>.score.json`` as ``core.scoring_batch`` writes it, beside
+    the run manifest and sealed outputs it names."""
+
+    manifest = _sealed_trace(path, rows, digests)
     _write(
         path,
         {
-            "manifest": str(path.name),
+            "manifest": manifest,
             "verified": True,
             "scores": {
                 SCORER: {

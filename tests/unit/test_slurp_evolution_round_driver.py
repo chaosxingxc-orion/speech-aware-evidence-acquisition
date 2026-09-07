@@ -319,15 +319,70 @@ def _repo(root: Path, config: LoopConfig, *, fill_params: Mapping | None = None)
     return root
 
 
-def _score_file(path: Path, rows: Mapping[str, float]) -> str:
+
+
+def _sha(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _sealed_trace(path: Path, rows, digests) -> str:
+    """The two files a real arm seals beside its scores: the run manifest and
+    the ``.outputs.jsonl`` whose per-row request and response digests the round
+    receipt's noise floor is computed from.
+
+    Both are referenced RELATIVELY, exactly as ``sealed_output_digests``
+    resolves them, so the synthetic bundle carries no absolute path and two
+    runs of this dry run stay byte-identical.
+    """
+
+    stem = path.name.split(".", 1)[0]
+    outputs = path.parent / f"{stem}.outputs.jsonl"
+    outputs.parent.mkdir(parents=True, exist_ok=True)
+    outputs.write_text(
+        "".join(
+            json.dumps(
+                {
+                    "sample_id": sample_id,
+                    "request_sha256": digests.get(
+                        sample_id, (_sha(f"prompt|{sample_id}"), "")
+                    )[0],
+                    "response_text_sha256": digests.get(
+                        sample_id, ("", _sha(f"answer|{sample_id}"))
+                    )[1],
+                }
+            )
+            + "\n"
+            for sample_id in sorted(rows)
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    _write(
+        path.parent / f"{stem}.run-manifest.json",
+        {
+            "schema": "saea-run-manifest-v1",
+            "status": "COMPLETED",
+            "outputs": {
+                "path": outputs.name,
+                "sha256": hashlib.sha256(outputs.read_bytes()).hexdigest(),
+            },
+        },
+    )
+    return f"{stem}.run-manifest.json"
+
+
+def _score_file(
+    path: Path, rows: Mapping[str, float], digests: Mapping[str, tuple] = {}
+) -> str:
     """One ``<job_id>.score.json`` as ``core.scoring_batch`` writes it, with
     the READ metric recorded beside the reward exactly as every round receipt
-    must report it."""
+    must report it, and beside the run manifest and sealed outputs it names."""
 
+    manifest = _sealed_trace(path, rows, digests)
     _write(
         path,
         {
-            "manifest": str(path.name),
+            "manifest": manifest,
             "verified": True,
             "scores": {
                 SCORER: {
@@ -442,8 +497,35 @@ def _fold_b_scores(*, arm: str, harm_case: bool) -> dict[str, float]:
     return rows
 
 
+def _fold_b_digests(arm: str) -> dict[str, tuple[str, str]]:
+    """One fold-B arm's sealed request and response digests.
+
+    The three cases the round receipt's noise floor has to separate, built by
+    hand: ``alarm`` is the scenario the assembly rewrote, so its six rows were
+    asked a DIFFERENT question; ``news`` and ``weather`` kept the incumbent's
+    prompt byte for byte, and three rows of each answered differently anyway.
+    That last group is the decoder noise floor -- the same phenomenon EVO-S1
+    round 1 measured at 286 of 1,019 byte-identical rows.
+    """
+
+    digests: dict[str, tuple[str, str]] = {}
+    for scenario, ids in FOLD_B_ROWS.items():
+        for index, sample_id in enumerate(ids):
+            changed = arm == "assembly" and scenario == "alarm"
+            flipped = arm == "assembly" and (changed or index < 3)
+            digests[sample_id] = (
+                _sha(f"prompt|assembly|{sample_id}" if changed else f"prompt|{sample_id}"),
+                _sha(f"answer|assembly|{sample_id}" if flipped else f"answer|{sample_id}"),
+            )
+    return digests
+
+
 def _run_round(
-    root: Path, *, refuse_second_slot: bool = True, harm_case: bool = False
+    root: Path,
+    *,
+    refuse_second_slot: bool = True,
+    harm_case: bool = False,
+    missing_trace: bool = False,
 ) -> dict[str, object]:
     config = _loop_config()
     repo_root = _repo(root, config)
@@ -532,12 +614,17 @@ def _run_round(
         "incumbent": _score_file(
             repo_root / f"{stem}/scores/foldB-incumbent.score.json",
             _fold_b_scores(arm="incumbent", harm_case=harm_case),
+            _fold_b_digests("incumbent"),
         ),
         "assembly": _score_file(
             repo_root / f"{stem}/scores/foldB-assembly.score.json",
             _fold_b_scores(arm="assembly", harm_case=harm_case),
+            _fold_b_digests("assembly"),
         ),
     }
+    if missing_trace:
+        for name in ("foldB-incumbent", "foldB-assembly"):
+            (repo_root / f"{stem}/scores/{name}.run-manifest.json").unlink()
     _write(repo_root / f"{stem}/fold-b-scores.json", fold_b_scores)
 
     # -- (d) confirm ------------------------------------------------------
@@ -1421,3 +1508,80 @@ def test_the_propose_receipt_names_the_instruction_revision_it_rendered(
     )
     receipt = propose.documents[config.round_paths(1)["propose"]["writes"][2]]
     assert receipt["proposer_instruction_version"] == "proposer-instruction-v2"
+
+
+# ---------------------------------------------------------------------------
+# The round receipt's noise floor (track E3e, 2026-09-07)
+# ---------------------------------------------------------------------------
+
+
+def test_the_round_receipt_reports_the_prompt_noise_floor(tmp_path) -> None:
+    """How much of a round's movement the DECODER can account for, per target
+    and pooled -- computed from the sealed traces the confirm step's own score
+    files name, and gating nothing.
+
+    This dry run's fold B is 18 rows: ``alarm``'s six were asked a different
+    question, ``news``'s and ``weather``'s twelve were asked the incumbent's
+    own, and six of those twelve answered differently anyway. Three of the six
+    saves are on changed prompts and three on unchanged ones -- which is the
+    whole reason the number is now in the receipt.
+    """
+
+    result = _run_round(tmp_path / "run")
+    receipt = json.loads(
+        Path(result["confirm"]["round_receipt"]).read_text(encoding="utf-8")
+    )
+    floor = receipt["extra"]["noise_floor"]
+    assert floor["measured"] is True
+    assert floor["metric"] == METRIC
+    assert floor["rows"] == 18
+    assert floor["changed_prompt_rows"] == 6
+    assert floor["unchanged_prompt_rows"] == 12
+    assert floor["unchanged_prompt_flips"] == 6
+    assert floor["changed_prompt"] == {"saves": 3, "harms": 0}
+    assert floor["unchanged_prompt"] == {"saves": 3, "harms": 0}
+    assert result["confirm"]["unchanged_prompt_flips"] == 6
+
+    # Per target, because a scenario the assembly never touched is all noise
+    # floor by construction and has to be readable as such.
+    by_target = floor["by_target"]
+    assert sorted(by_target) == sorted(SCENARIOS)
+    assert by_target["alarm"]["changed_prompt_rows"] == 6
+    assert by_target["alarm"]["unchanged_prompt_flips"] == 0
+    assert by_target["news"]["unchanged_prompt_rows"] == 6
+    assert by_target["news"]["unchanged_prompt_flips"] == 3
+    assert by_target["news"]["unchanged_prompt"] == {"saves": 0, "harms": 0}
+    assert by_target["weather"]["unchanged_prompt_flips"] == 3
+    assert by_target["weather"]["unchanged_prompt"] == {"saves": 3, "harms": 0}
+
+
+def test_the_noise_floor_changes_no_rule(tmp_path) -> None:
+    """The admission rule is the owner's and is unchanged: the round receipt
+    reports the floor beside the confirmation, and the confirmation does not
+    read it."""
+
+    result = _run_round(tmp_path / "run")
+    receipt = json.loads(
+        Path(result["confirm"]["round_receipt"]).read_text(encoding="utf-8")
+    )
+    assert "never gated" in receipt["extra"]["noise_floor"]["rule"]
+    confirmation = receipt["extra"]["confirmation"]
+    assert json.dumps(confirmation).find("noise") == -1
+    assert json.dumps(receipt["extra"]["selection"]).find("noise") == -1
+
+
+def test_an_unreadable_sealed_trace_is_recorded_rather_than_raised(tmp_path) -> None:
+    """A diagnostic must never stop a round: a score file whose manifest chain
+    cannot be resolved leaves the floor unmeasured, with the reason in the
+    receipt, and the confirmation lands unchanged."""
+
+    measured = _run_round(tmp_path / "whole")
+    blind = _run_round(tmp_path / "blind", missing_trace=True)
+    receipt = json.loads(
+        Path(blind["confirm"]["round_receipt"]).read_text(encoding="utf-8")
+    )
+    assert receipt["extra"]["noise_floor"]["measured"] is False
+    assert "could not be read" in receipt["extra"]["noise_floor"]["reason"]
+    # The round itself is unaffected: same verdict, same gain.
+    assert blind["confirm"]["accepted"] == measured["confirm"]["accepted"]
+    assert blind["confirm"]["gain_pp"] == measured["confirm"]["gain_pp"]
