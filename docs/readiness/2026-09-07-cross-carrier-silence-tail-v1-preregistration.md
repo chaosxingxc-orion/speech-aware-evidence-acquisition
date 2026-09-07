@@ -144,6 +144,18 @@ set.** It is reported per tier, on both arms, with the `completion_tokens` distr
 The frozen 400 is used, not the tier-1 official 500: the 400 is the roster the official-protocol
 comparator itself flew, and pairing against it is what makes the contrast single-factor.
 
+**Amendment, 2026-09-07 — this cell may be superseded before it flies.** The same-day input-rate
+audit (`docs/readiness/2026-09-07-a2t-input-rate-audit-v1.md`) established that **Audio2Tool is the
+only carrier in this study whose audio llama.cpp resamples**: its release wavs are 24 kHz and
+miniaudio converts them to 16 kHz with its linear resampler. The `@ts2` media above appends 2.0 s to
+those **24 kHz** bytes, so it inherits that conversion. `docs/readiness/2026-09-07-a2t-input-rate-standardization-v1-preregistration.md`
+registers a `@16k+ts2` population — the same 2.0 s tail on librosa-standardized 16 kHz bytes,
+appended by this same pinned transform — as cell (b). **If that preregistration's cell (a) admits
+the standardization, cell (b) REPLACES `R-official-tail2s` and this Audio2Tool cell does not fly**;
+if cell (a) is not admitted, this cell stands exactly as written. **The SLURP and Earnings-21 cells
+of this preregistration are untouched either way**: their media is already 16 kHz and no resampler
+runs on it.
+
 ### 1.4 Earnings-21 — the full-44 buf90 windows
 
 | | |
