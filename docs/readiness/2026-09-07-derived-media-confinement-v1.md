@@ -111,7 +111,7 @@ is the regression fence: a carrier-rooted fragment declares nothing, and neither
 synthetic roots, plus the fragment reader's refusals and all 20 shipped fragments that declare a
 derived key.
 
-## 5. What the wire checks must now also exercise — follow-up, NOT done here
+## 5. What the wire checks must now also exercise
 
 This defect was invisible to every gate we had because **no model-free check ever built a payload**.
 The preregistration
@@ -120,16 +120,40 @@ section) already ASSERTS "media-path confinement to the variant's own derived ro
 preflight proves. It does not, and never did: preflight opens no `FrozenCoreClient` and calls no
 `_enforce_payload_binding`. That assertion should be read as covered by this check, not by preflight.
 
-**Named follow-up: extend `scripts/cross_carrier_tail2s_wire_check.py` (and the other
-`*_wire_check.py` entry points) with a payload-binding stage** — for one real row of the cell's own
-fragment, construct the binding the flight will use and run `_enforce_payload_binding` against it,
-exactly as `scripts/checks/derived_media_confinement_check.py` does, before declaring a cell
-wire-ready. Until that lands, a cell on a NEW media root is wire-ready only once
-`derived_media_confinement_check.py` has been extended to name its fragment. That extension is one
-line in `FRAGMENTS` and is the cheapest place to add a new variant.
+**CLOSED (commits `d28a9ee8`, `0ca25b21`): the named follow-up -- extend
+`scripts/cross_carrier_tail2s_wire_check.py` (and the other `*_wire_check.py` entry points) with a
+payload-binding stage.** `rails.core_client.payload_binding_stage` is the shared function (one
+canonical seam, beside `build_payload_binding`, which it calls unmodified): for a composed cell's own
+real roster rows it builds a real `core.base.PayloadBindingContext` through the real carrier root
+(never a per-script `carrier_root_resolver` swap) plus the fragment's own declared derived media
+roots, then drives the production `core.model.binding._enforce_payload_binding` against a synthetic
+payload for the first and last roster row (every row when the roster is 16 rows or fewer) -- zero
+sockets, zero servers, zero model contacts, exactly as `scripts/checks/derived_media_confinement_check.py`
+already proved, generalized into a call any wire check can make per cell instead of requiring every
+new derived variant to be added to that check's own `FRAGMENTS` tuple.
 
-A second, smaller follow-up: the three flight-cell scripts still rebind `carrier_root` to the derived
-root through the `carrier_root_resolver` seam (§2). That workaround is now redundant — the declared
+It is now wired into all three wire-check entry points as a mandatory stage between the request half
+and the seal half, so a cell is reported wire-ready only if its payloads BIND:
+`scripts/cross_carrier_tail2s_wire_check.py` and `scripts/a2t_input_rate_16k_wire_check.py` run it
+between `preflight` and `wire_check` in their per-cell loop (loading only the rows the stage will
+check -- reading the A2T full/smoke4 population split from the experiment fragment's own
+`populations` entry, since both variants share one 400-row roster receipt); `scripts/e21_kc_e1_wire_check.py`
+runs it between its own "request half" and "evidence-rail half" blocks. A cell whose payloads do not
+bind now fails the whole run.
+
+Re-run (no `--write`, no receipt regeneration) on the repair worktree: `cross_carrier_tail2s_wire_check.py`
+-- all 4 cells' stage BOUND; the two SLURP `@ts2` cells still stop at `slurp-packet-root-missing`,
+and it happens AFTER the stage (the stage's own roster loading only needs the raw derived-media bytes,
+which exist; the separate `wire_check` subprocess call needs the speech-feature packet promotion,
+which does not). `a2t_input_rate_16k_wire_check.py` -- all 4 cells' stage BOUND, `wire_check` reaches
+`stop_class "none"` for all four. `e21_kc_e1_wire_check.py` -- both cells' stage BOUND, verified
+directly (the full run's own pre-existing resident-llama-server guard correctly refused to run at all
+at verification time, because the main checkout's own GPU flight had a server resident; that refusal
+is unrelated to this change).
+
+A second, smaller follow-up remains open (not part of this closure): the three flight-cell scripts
+still rebind `carrier_root` to the derived root through the `carrier_root_resolver` seam (§2). That
+workaround is now redundant — the declared
 root is legal in its own right — and narrowing `carrier_root` away from the real carrier is the
 opposite of what confinement wants. Removing it WIDENS what those cells accept (their carrier root
 becomes legal again), so it changes live binding behaviour and belongs to its own change with its own
