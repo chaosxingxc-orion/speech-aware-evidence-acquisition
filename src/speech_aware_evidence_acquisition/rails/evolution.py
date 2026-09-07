@@ -69,11 +69,13 @@ from .hashing import canonical_json_bytes, content_hash
 from .proposer import (
     A2T_DESCRIPTIONS_FAMILY,
     DECONTAMINATION_NGRAM,
+    NULL_REWRITE_GATE,
     SLURP_SLOT_SCHEMA_FAMILY,
     CandidateArtifact,
     ProposerError,
     candidate_bytes,
     deterministic_candidate,
+    null_rewrite_check,
     parse_proposer_response,
     parse_slurp_schema_response,
     placebo_candidate,
@@ -4192,6 +4194,39 @@ def run_propose_step(
     )
 
 
+def _incumbent_artifact(
+    state: EvolutionState, *, config: LoopConfig, carrier: CarrierMaterial
+) -> dict[str, object]:
+    """``A_r`` as a whole artifact mapping in the loop's own family --
+    ``{tool: description}`` for ``a2t-descriptions``, ``{intent: block}`` for
+    ``slurp-slot-schema``.
+
+    This is the thing the null-rewrite gate compares a candidate against, and
+    it is built from the SAME two inputs the round already trusts: the
+    committed incumbent state and the carrier's own material. A tool or intent
+    no accepted round has touched contributes its released content, which is
+    what makes the round-1 case ("the proposer returned A_0's block verbatim")
+    a refusal rather than an admission.
+    """
+
+    if config.artifact_family == SLURP_SLOT_SCHEMA_FAMILY:
+        if carrier.slot_schema is None:
+            raise EvolutionError(
+                "the null-rewrite gate needs A_0 to render the incumbent's blocks"
+            )
+        return _checked_slurp_incumbent(state.incumbent_overrides, carrier.slot_schema)
+    rows_by_name = {str(row["tool_name"]): row for row in carrier.registry_rows}
+    if not rows_by_name:
+        raise EvolutionError(
+            "the null-rewrite gate needs the registry rows to render the incumbent"
+        )
+    return dict(
+        _incumbent_descriptions(
+            rows_by_name, sorted(rows_by_name), state.incumbent_overrides
+        )
+    )
+
+
 def run_candidates_step(
     state: EvolutionState,
     round_index: int,
@@ -4247,27 +4282,48 @@ def run_candidates_step(
         min_members=1 if config.target_kind == "scenario" else 2,
     )
 
+    # The null-rewrite form gate (track E3e). It runs BEFORE the injected
+    # validator and independently of it, because whether a candidate is a
+    # rewrite at all is not a question about tokens: it needs no tokenizer, so
+    # it must not be reachable only on the flights that supply one.
+    incumbent_artifact = _incumbent_artifact(state, config=config, carrier=carrier)
+    null_rewrites: list[Mapping[str, object]] = []
     validations: list[Mapping[str, object]] = []
     kept: list[CandidateArtifact] = []
     refusals = list(harvest.refusals)
     for candidate in harvest.candidates:
+        stub: dict[str, object] = {
+            "draw_id": None,
+            "sample_id": None,
+            "target_id": candidate.target_id,
+            "family": candidate.family,
+            "k": candidate.k,
+            "response_sha256": None,
+        }
+        try:
+            check = null_rewrite_check(
+                candidate,
+                incumbent_artifact,
+                registry_rows=carrier.registry_rows,
+                base=carrier.slot_schema,
+                unfloored=carrier.unfloored_schema,
+            )
+        except (ProposerError, EvolutionError) as error:
+            refusals.append({**stub, "reason": f"unrenderable candidate: {error}"})
+            continue
+        null_rewrites.append(check.as_json())
+        if check.null_rewrite:
+            refusals.append(
+                {**stub, "reason": check.reason, "gate": NULL_REWRITE_GATE}
+            )
+            continue
         if validator is None:
             kept.append(candidate)
             continue
         try:
             validations.append(dict(validator(candidate)))
         except (ProposerError, EvolutionError) as error:
-            refusals.append(
-                {
-                    "draw_id": None,
-                    "sample_id": None,
-                    "target_id": candidate.target_id,
-                    "family": candidate.family,
-                    "k": candidate.k,
-                    "reason": f"validation refused: {error}",
-                    "response_sha256": None,
-                }
-            )
+            refusals.append({**stub, "reason": f"validation refused: {error}"})
             continue
         kept.append(candidate)
     harvest = CandidateHarvest(
@@ -4384,6 +4440,7 @@ def run_candidates_step(
         "round": round_index,
         "incumbent_state_sha256": state.state_sha256(),
         "harvest": harvest.as_json(),
+        "null_rewrite_checks": null_rewrites,
         "validations": validations,
         "validation_authority": (
             "the serving geometry's own tokenizer at prompt fit (preregistration "
@@ -4407,6 +4464,9 @@ def run_candidates_step(
         summary={
             "candidates": len(harvest.candidates),
             "refusals": len(harvest.refusals),
+            "null_rewrites_refused": sum(
+                1 for record in null_rewrites if record["null_rewrite"]
+            ),
             "portfolios": sorted(portfolios),
             "fragments": [str(path) for path in written],
             "experiment_fragment": paths[1],

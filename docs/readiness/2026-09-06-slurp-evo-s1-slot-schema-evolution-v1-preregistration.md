@@ -388,6 +388,18 @@ at most `L` type lines per intent, where `L` is that intent's unfloored TRAIN ty
 listed type has at least one TRAIN mention for that intent; the header line byte-identical to
 `A_0`'s; the block parses under the renderer's own grammar.
 
+**Null rewrites, added 2026-09-07 (track E3e), after round 1.** A candidate whose RENDERED artifact
+is byte-identical to the incumbent's rendering over exactly the intents it rewrote is refused at the
+candidates step with the reason `null-rewrite`: it is never admitted, never flown, and its slot flies
+the incumbent's blocks like any other refusal. Round 1 needed this. `social` was admitted on a block
+set that renders to `A_0`'s own `social_post` block — the old guard checked that a candidate EXISTED,
+not that it DIFFERED — which spent one of two admissions and put 60 rows of pure decoder noise into
+the confirmation. Replaying round 1's `candidates.json` through the gate refuses five of its 29
+candidates: `social` k = 2 (the admitted winner `bb02b5f3`), `calendar` k = 1 and k = 2, `iot` k = 1
+and `general` k = 3. The gate needs no tokenizer — whether a rewrite is a rewrite is not a question
+about tokens — so it runs on every round, before the relative token budget, and it is enforced for
+both artifact families (`rails.proposer.null_rewrite_check`).
+
 ## 6. The rounds
 
 Per round `r`, in order:

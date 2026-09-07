@@ -42,7 +42,10 @@ from speech_aware_evidence_acquisition.rails.evolution_carrier import (
     rows_of_target_from_roster,
     sentinel_rows_from_roster,
 )
-from speech_aware_evidence_acquisition.rails.proposer import CandidateArtifact
+from speech_aware_evidence_acquisition.rails.proposer import (
+    NULL_REWRITE_GATE,
+    CandidateArtifact,
+)
 
 CARRIER = "audio2tool"
 TARGETS = {"castContent": ["castContent", "playMedia"]}
@@ -662,4 +665,83 @@ def test_a_sentinel_the_fold_never_drew_is_refused_rather_than_reported_empty() 
     with pytest.raises(EvolutionError, match="disagree"):
         sentinel_rows_from_roster(
             _fold_document(), SENTINEL_TARGETS, {"castContent": ["absentTool"]}
+        )
+
+
+# ---------------------------------------------------------------------------
+# The null-rewrite form gate (track E3e, 2026-09-07)
+# ---------------------------------------------------------------------------
+
+
+def _null_rewrite_response(carrier: CarrierMaterial) -> str:
+    """The failure EVO-S1 round 1 actually produced, in A2T's family: the
+    proposer hands back the incumbent's own descriptions, word for word."""
+
+    incumbent = {
+        str(row["tool_name"]): str(row["description"])
+        for row in carrier.registry_rows
+        if str(row["tool_name"]) in TOOLS
+    }
+    return json.dumps({"cue": "they already read differently", "descriptions": incumbent})
+
+
+def test_a_candidate_that_renders_to_the_incumbent_is_refused_as_a_null_rewrite(
+    tmp_path,
+) -> None:
+    """A rewrite that changes no rendered byte is not a rewrite. It is refused
+    at the candidates step, never admitted and never flown, and its slot falls
+    back to the existing "refused candidate flies no portfolio" path."""
+
+    config = _loop_config()
+    repo_root = _repo(tmp_path / "run", config)
+    carrier = _carrier()
+    state = EvolutionState(round=0, incumbent_overrides={}).validate()
+    propose = run_propose_step(state, 1, config=config, carrier=carrier)
+    receipt = propose.documents[config.round_paths(1)["propose"]["writes"][2]]
+
+    responses = {}
+    for contact in receipt["contacts"]:
+        if contact["family"] == "placebo":
+            responses[contact["sample_id"]] = _placebo_response()
+        elif contact["k"] == 1:
+            responses[contact["sample_id"]] = _null_rewrite_response(carrier)
+        else:
+            responses[contact["sample_id"]] = _valid_response()
+
+    candidates = run_candidates_step(
+        state,
+        1,
+        config=config,
+        carrier=carrier,
+        propose_receipt=receipt,
+        responses=responses,
+        repo_root=repo_root,
+        fold_a_rows=len(carrier.fold_a_rows_of_target["castContent"]),
+        fold_a_speech_seconds=16.0,
+    )
+    document = candidates.documents[config.round_paths(1)["candidates"]["writes"][0]]
+    refused = [
+        record
+        for record in document["harvest"]["refusals"]
+        if record.get("gate") == NULL_REWRITE_GATE
+    ]
+    assert len(refused) == 1
+    assert refused[0]["k"] == 1 and refused[0]["target_id"] == "castContent"
+    assert refused[0]["reason"].startswith(f"{NULL_REWRITE_GATE}:")
+    assert candidates.summary["null_rewrites_refused"] == 1
+
+    # Never admitted: no candidate at slot 1, and therefore no k=1 portfolio,
+    # because that target is this dry run's only target.
+    assert all(
+        candidate["k"] != 1 for candidate in document["harvest"]["candidates"]
+    )
+    assert "1" not in document["portfolios"]
+
+    # The check is recorded for every candidate that reached it, refused or
+    # not, so a reviewer reads the digests rather than trusting the verdict.
+    checks = {record["candidate_id"]: record for record in document["null_rewrite_checks"]}
+    assert checks and any(record["null_rewrite"] for record in checks.values())
+    for record in checks.values():
+        assert (record["candidate_rendered_sha256"] == record["incumbent_rendered_sha256"]) is (
+            record["null_rewrite"]
         )

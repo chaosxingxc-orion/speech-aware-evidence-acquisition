@@ -22,6 +22,7 @@ import pytest
 from speech_aware_evidence_acquisition.rails.proposer import (
     DECONTAMINATION_NGRAM,
     MAX_DESCRIPTION_CHARS,
+    NULL_REWRITE_GATE,
     REGISTRY_LINE_COUNT,
     TOKEN_HEADROOM,
     CandidateArtifact,
@@ -31,12 +32,14 @@ from speech_aware_evidence_acquisition.rails.proposer import (
     candidate_text,
     derive_target_id,
     deterministic_candidate,
+    null_rewrite_check,
     parse_proposer_response,
     placebo_candidate,
     prompt_sha256,
     proposer_candidate,
     render_placebo_instruction,
     render_proposer_instruction,
+    rendered_artifact_sha256,
     validate_candidate_artifact,
     word_ngrams,
 )
@@ -571,4 +574,74 @@ def test_validator_refuses_a_registry_that_is_not_152_rows():
             registry_rows=registry_rows(count=151),
             token_counter=fixed_counter(BASELINE_TOKENS),
             compact_baseline_tokens=BASELINE_TOKENS,
+        )
+
+
+# ---------------------------------------------------------------------------
+# The null-rewrite form gate (track E3e, 2026-09-07)
+# ---------------------------------------------------------------------------
+
+
+def test_rendered_artifact_sha256_is_the_digest_the_validator_measures():
+    """One renderer, both sides of the gate. If this ever disagreed with
+    ``validate_candidate_artifact`` the gate would be comparing two spellings
+    rather than two artifacts."""
+
+    candidate = a_candidate()
+    measured = validate_candidate_artifact(
+        candidate,
+        registry_rows=registry_rows(),
+        token_counter=fixed_counter(BASELINE_TOKENS),
+        compact_baseline_tokens=BASELINE_TOKENS,
+    )
+    assert (
+        rendered_artifact_sha256(
+            candidate.descriptions, registry_rows=registry_rows()
+        )
+        == measured.rendered_sha256
+    )
+
+
+def test_a_candidate_that_repeats_the_incumbent_is_a_null_rewrite():
+    incumbent_texts = incumbent()
+    check = null_rewrite_check(
+        a_candidate(descriptions=dict(incumbent_texts)),
+        incumbent_texts,
+        registry_rows=registry_rows(),
+    )
+    assert check.null_rewrite
+    assert check.keys == tuple(sorted(TARGET_TOOLS))
+    assert check.candidate_rendered_sha256 == check.incumbent_rendered_sha256
+    assert check.reason.startswith(f"{NULL_REWRITE_GATE}:")
+    assert check.as_json()["gate"] == NULL_REWRITE_GATE
+
+
+def test_one_changed_character_is_no_longer_a_null_rewrite():
+    incumbent_texts = incumbent()
+    rewritten = dict(incumbent_texts)
+    rewritten["tool000"] = rewritten["tool000"].replace(".", "!")
+    check = null_rewrite_check(
+        a_candidate(descriptions=rewritten), incumbent_texts, registry_rows=registry_rows()
+    )
+    assert not check.null_rewrite
+    assert check.candidate_rendered_sha256 != check.incumbent_rendered_sha256
+
+
+def test_the_gate_compares_only_the_keys_the_candidate_rewrote():
+    """The incumbent mapping may cover the whole registry; a candidate that
+    rewrote two tools is a null rewrite exactly when THOSE two are unchanged."""
+
+    whole = {row["tool_name"]: row["description"] for row in registry_rows()}
+    check = null_rewrite_check(
+        a_candidate(descriptions={tool: whole[tool] for tool in TARGET_TOOLS}),
+        whole,
+        registry_rows=registry_rows(),
+    )
+    assert check.null_rewrite and check.keys == tuple(sorted(TARGET_TOOLS))
+
+
+def test_the_gate_refuses_an_incumbent_that_does_not_cover_the_candidate():
+    with pytest.raises(ProposerError, match="no entry for"):
+        null_rewrite_check(
+            a_candidate(), {"tool000": "only one side"}, registry_rows=registry_rows()
         )

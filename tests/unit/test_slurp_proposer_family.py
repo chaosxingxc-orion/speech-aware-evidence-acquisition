@@ -30,6 +30,7 @@ from speech_aware_evidence_acquisition.data.slurp import (
 )
 from speech_aware_evidence_acquisition.rails.proposer import (
     DECONTAMINATION_NGRAM,
+    NULL_REWRITE_GATE,
     SERVING_TOKENIZER_ID,
     SLURP_DECONTAMINATION_SCHEMA,
     SLURP_MAX_FILLERS_PER_TYPE,
@@ -40,7 +41,9 @@ from speech_aware_evidence_acquisition.rails.proposer import (
     load_evaluation_ngram_digests,
     ngram_digest,
     ngram_digests,
+    null_rewrite_check,
     parse_slurp_schema_response,
+    rendered_artifact_sha256,
     slurp_block_texts,
     slurp_blocks_from_schema,
     slurp_candidate_schema,
@@ -733,3 +736,64 @@ def test_the_canonical_text_names_the_family_and_keeps_the_type_order():
     }
     straight = {"alarm_set": {"types": INCUMBENT_BLOCKS["alarm_set"]["types"]}}
     assert candidate(reordered).candidate_id != candidate(straight).candidate_id
+
+
+# ---------------------------------------------------------------------------
+# The null-rewrite form gate (track E3e, 2026-09-07)
+# ---------------------------------------------------------------------------
+
+
+def test_rendered_artifact_sha256_matches_the_slurp_validator():
+    artifact = candidate(parse(LEGAL_RESPONSE))
+    measured = validate(artifact)
+    assert (
+        rendered_artifact_sha256(
+            artifact.descriptions,
+            artifact_family=SLURP_SLOT_SCHEMA_FAMILY,
+            base=BASE,
+            unfloored=UNFLOORED,
+        )
+        == measured.rendered_sha256
+    )
+
+
+def test_a_block_set_copied_from_the_incumbent_is_a_null_rewrite():
+    """EVO-S1 round 1's ``social`` winner, in miniature: the proposer returns
+    A_0's own blocks, so the rendering is the incumbent's rendering."""
+
+    check = null_rewrite_check(
+        candidate(INCUMBENT_BLOCKS), INCUMBENT_BLOCKS, base=BASE, unfloored=UNFLOORED
+    )
+    assert check.null_rewrite
+    assert check.artifact_family == SLURP_SLOT_SCHEMA_FAMILY
+    assert check.keys == tuple(sorted(INTENTS))
+    assert check.reason.startswith(f"{NULL_REWRITE_GATE}:")
+
+
+def test_one_rewritten_filler_is_not_a_null_rewrite():
+    check = null_rewrite_check(
+        candidate(parse(LEGAL_RESPONSE)), INCUMBENT_BLOCKS, base=BASE, unfloored=UNFLOORED
+    )
+    assert not check.null_rewrite
+
+
+def test_a_reordered_type_list_is_not_a_null_rewrite():
+    """Order is one of the two things a candidate may choose, so a block that
+    lists the same types in a different order renders differently and is a
+    real rewrite -- the gate must not collapse it into the incumbent."""
+
+    blocks = {
+        intent: {"types": list(reversed(INCUMBENT_BLOCKS[intent]["types"]))}
+        for intent in INTENTS
+    }
+    check = null_rewrite_check(
+        candidate(blocks), INCUMBENT_BLOCKS, base=BASE, unfloored=UNFLOORED
+    )
+    assert not check.null_rewrite
+
+
+def test_a_slurp_rendering_without_the_train_tables_is_refused():
+    with pytest.raises(ProposerError, match="unfloored"):
+        rendered_artifact_sha256(
+            INCUMBENT_BLOCKS, artifact_family=SLURP_SLOT_SCHEMA_FAMILY
+        )

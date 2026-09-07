@@ -166,6 +166,8 @@ __all__ = [
     "A2T_DESCRIPTIONS_FAMILY",
     "SLURP_SLOT_SCHEMA_FAMILY",
     "SLURP_RELATIVE_TOKEN_BUDGET",
+    "NULL_REWRITE_GATE",
+    "NULL_REWRITE_SCHEMA",
     "SLURP_MAX_FILLERS_PER_TYPE",
     "SLURP_NO_FILLER_SENTINEL",
     "SLURP_PLACEHOLDER_FILLER",
@@ -175,6 +177,7 @@ __all__ = [
     "ProposerError",
     "CandidateArtifact",
     "CandidateValidation",
+    "NullRewriteCheck",
     "candidate_bytes",
     "candidate_id_for",
     "candidate_text",
@@ -188,6 +191,8 @@ __all__ = [
     "render_placebo_instruction",
     "render_proposer_instruction",
     "validate_candidate_artifact",
+    "rendered_artifact_sha256",
+    "null_rewrite_check",
     "word_ngrams",
     "ngram_digest",
     "ngram_digests",
@@ -2466,4 +2471,165 @@ def validate_slurp_candidate_artifact(
         artifact_family=SLURP_SLOT_SCHEMA_FAMILY,
         token_counter_id=token_counter_id,
         per_key=tuple(per_key),
+    )
+
+
+# ---------------------------------------------------------------------------
+# The null-rewrite form gate (track E3e, 2026-09-07)
+# ---------------------------------------------------------------------------
+#
+# EVO-S1 round 1 admitted `social` on a candidate whose rendered block IS the
+# incumbent's: the proposer returned A_0's own `social_post` block verbatim,
+# the guard checked that a candidate EXISTED rather than that it DIFFERED, and
+# the round spent one of two admissions on an arm that is byte-identical to
+# the incumbent on the wire. Sixty of the confirmation's rows were therefore
+# pure decoder noise. A rendering that equals the incumbent's is not a
+# rewrite, and this gate says so before the candidate can reach a portfolio.
+
+
+#: The name a null-rewrite refusal records, in ``reason`` and in ``gate``.
+NULL_REWRITE_GATE = "null-rewrite"
+
+#: Schema of one recorded check, which a candidates receipt carries per
+#: candidate whether or not it refused.
+NULL_REWRITE_SCHEMA = "saea-evolution-null-rewrite-check-v1"
+
+
+def rendered_artifact_sha256(
+    descriptions: Mapping[str, object],
+    *,
+    artifact_family: str = A2T_DESCRIPTIONS_FAMILY,
+    registry_rows: Sequence[Mapping[str, str]] = (),
+    base: object = None,
+    unfloored: object = None,
+) -> str:
+    """The digest of what ONE artifact mapping renders to, over its own keys.
+
+    The same bytes both validators already measure as
+    :attr:`CandidateValidation.rendered_sha256`, factored out so that the two
+    sides of the null-rewrite gate are rendered by ONE code path: a candidate
+    compared against an incumbent rendered by a second renderer would be
+    comparing two spellings, not two artifacts.
+
+    ``a2t-descriptions``: the whole compact registry with these descriptions
+    substituted. ``slurp-slot-schema``: this mapping's own blocks, in sorted
+    intent order, joined by newlines, with every count and share re-derived
+    from the unfloored TRAIN table -- so ``base`` and ``unfloored`` are
+    required and an estimated block is impossible.
+    """
+
+    if artifact_family == SLURP_SLOT_SCHEMA_FAMILY:
+        blocks = _checked_slurp_blocks(descriptions, "blocks")
+        if base is None or unfloored is None:
+            raise ProposerError(
+                "a slurp-slot-schema rendering needs A_0 (base) and the unfloored "
+                "TRAIN table"
+            )
+        intents = tuple(sorted(blocks))
+        texts = slurp_block_texts(
+            slurp_candidate_schema(blocks, unfloored=unfloored, base=base),
+            intents=intents,
+        )
+        whole = "\n".join(texts[intent] for intent in intents)
+    elif artifact_family == A2T_DESCRIPTIONS_FAMILY:
+        overrides = _checked_descriptions(descriptions, "descriptions")
+        whole = render_registry_compact_rows(
+            list(registry_rows), description_overrides=dict(overrides)
+        )
+    else:
+        raise ProposerError(f"artifact_family must be one of {ARTIFACT_FAMILIES}")
+    return hashlib.sha256(whole.encode("utf-8")).hexdigest()
+
+
+@dataclass(frozen=True)
+class NullRewriteCheck:
+    """What one candidate renders to, beside what the incumbent renders to
+    over exactly the same artifact keys."""
+
+    candidate_id: str
+    target_id: str
+    artifact_family: str
+    keys: tuple[str, ...]
+    candidate_rendered_sha256: str
+    incumbent_rendered_sha256: str
+
+    @property
+    def null_rewrite(self) -> bool:
+        return self.candidate_rendered_sha256 == self.incumbent_rendered_sha256
+
+    @property
+    def reason(self) -> str:
+        """The refusal text, which names the gate first so a receipt can be
+        filtered on it without parsing English."""
+
+        return (
+            f"{NULL_REWRITE_GATE}: this candidate renders byte-identically to the "
+            f"incumbent's own artifact for target {self.target_id!r} over "
+            f"{list(self.keys)} (sha256 {self.incumbent_rendered_sha256}); it is not "
+            "a rewrite and never flies"
+        )
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "schema": NULL_REWRITE_SCHEMA,
+            "gate": NULL_REWRITE_GATE,
+            "candidate_id": self.candidate_id,
+            "target_id": self.target_id,
+            "artifact_family": self.artifact_family,
+            "keys": list(self.keys),
+            "candidate_rendered_sha256": self.candidate_rendered_sha256,
+            "incumbent_rendered_sha256": self.incumbent_rendered_sha256,
+            "null_rewrite": self.null_rewrite,
+        }
+
+
+def null_rewrite_check(
+    candidate: CandidateArtifact,
+    incumbent_artifact: Mapping[str, object],
+    *,
+    registry_rows: Sequence[Mapping[str, str]] = (),
+    base: object = None,
+    unfloored: object = None,
+) -> NullRewriteCheck:
+    """Render ``candidate`` and the incumbent over the candidate's OWN keys,
+    and report whether the two renderings are the same bytes.
+
+    ``incumbent_artifact`` is ``A_r`` in the candidate's own family --
+    ``{tool: description}`` for ``a2t-descriptions``, ``{intent: block}`` for
+    ``slurp-slot-schema`` -- and must cover every key the candidate rewrote.
+    It is restricted to those keys here, because a candidate that touched two
+    intents of a nine-intent scenario is a null rewrite exactly when those two
+    are unchanged, whatever the other seven say.
+
+    Fail-closed: a candidate whose blocks cannot be rendered raises, and the
+    caller records that as the refusal it is. Nothing here decides anything --
+    :func:`rails.evolution.run_candidates_step` owns the refusal.
+    """
+
+    candidate.validate()
+    if not isinstance(incumbent_artifact, Mapping):
+        raise ProposerError("incumbent_artifact must be a mapping")
+    missing = sorted(set(candidate.descriptions) - set(incumbent_artifact))
+    if missing:
+        raise ProposerError(
+            f"the incumbent artifact carries no entry for {missing}, which this "
+            "candidate rewrites; a null-rewrite check needs both sides"
+        )
+    keys = tuple(sorted(candidate.descriptions))
+    incumbent = {key: incumbent_artifact[key] for key in keys}
+    render = {
+        "artifact_family": candidate.artifact_family,
+        "registry_rows": registry_rows,
+        "base": base,
+        "unfloored": unfloored,
+    }
+    return NullRewriteCheck(
+        candidate_id=candidate.candidate_id,
+        target_id=candidate.target_id,
+        artifact_family=candidate.artifact_family,
+        keys=keys,
+        candidate_rendered_sha256=rendered_artifact_sha256(
+            candidate.descriptions, **render
+        ),
+        incumbent_rendered_sha256=rendered_artifact_sha256(incumbent, **render),
     )

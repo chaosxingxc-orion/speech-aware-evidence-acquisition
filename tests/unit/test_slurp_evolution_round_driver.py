@@ -26,6 +26,7 @@ candidate is refused for using -- legal in a test, never in a flight.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 from typing import Mapping
@@ -52,6 +53,10 @@ from speech_aware_evidence_acquisition.rails.evolution import (
     run_confirm_step,
     run_propose_step,
     run_select_step,
+)
+from speech_aware_evidence_acquisition.rails.proposer import (
+    NULL_REWRITE_GATE,
+    slurp_block_texts,
 )
 
 CARRIER = "slurp"
@@ -1209,3 +1214,192 @@ def test_an_emitted_fragment_does_not_collide_with_a_runtime_view_dataset(tmp_pa
     ]
     assert "schema" not in fragment
     assert fragment["fragment_kind"] == "saea-a2t-direct-calibration-experiment-v1"
+
+
+# ---------------------------------------------------------------------------
+# The null-rewrite form gate (track E3e, 2026-09-07)
+# ---------------------------------------------------------------------------
+
+
+def _incumbent_answer(intents: tuple[str, ...]) -> str:
+    """The failure EVO-S1 round 1 produced on ``social``: the proposer hands
+    the incumbent's own blocks straight back, byte for byte."""
+
+    texts = slurp_block_texts(_schema(floored=True), intents=intents)
+    return "\n".join(texts[intent] for intent in intents) + "\n"
+
+
+def test_a_block_set_that_renders_to_the_incumbent_is_refused_as_a_null_rewrite(
+    tmp_path,
+) -> None:
+    """``social``'s round-1 winner rendered to A_0's own ``social_post`` block:
+    the old guard checked that a candidate EXISTED, not that it DIFFERED, so
+    the round spent an admission on an arm identical to the incumbent on the
+    wire. It is now refused at the candidates step, and its slot falls back to
+    the existing "refused candidate flies no portfolio" path."""
+
+    config = _loop_config()
+    repo_root = _repo(tmp_path / "run", config)
+    carrier = _carrier()
+    state = EvolutionState(round=0, incumbent_overrides={}).validate()
+    propose = run_propose_step(state, 1, config=config, carrier=carrier)
+    receipt = propose.documents[config.round_paths(1)["propose"]["writes"][2]]
+
+    responses: dict[str, str] = {}
+    for contact in receipt["contacts"]:
+        intents = tuple(str(intent) for intent in contact["artifact_keys"])
+        responses[contact["sample_id"]] = (
+            _incumbent_answer(intents)
+            if contact["target_id"] == "news"
+            else _rewritten(intents)
+        )
+
+    candidates = run_candidates_step(
+        state,
+        1,
+        config=config,
+        carrier=carrier,
+        propose_receipt=receipt,
+        responses=responses,
+        repo_root=repo_root,
+        fold_a_rows=sum(len(rows) for rows in FOLD_A_ROWS.values()),
+        fold_a_speech_seconds=24.0,
+        token_counter=_word_counter,
+    )
+    document = candidates.documents[config.round_paths(1)["candidates"]["writes"][0]]
+    refused = [
+        record
+        for record in document["harvest"]["refusals"]
+        if record.get("gate") == NULL_REWRITE_GATE
+    ]
+    assert {record["target_id"] for record in refused} == {"news"}
+    assert all(
+        record["reason"].startswith(f"{NULL_REWRITE_GATE}:") for record in refused
+    )
+    assert candidates.summary["null_rewrites_refused"] == len(refused)
+
+    # Never admitted, and never flown: no ``news`` candidate survives, so every
+    # proposer portfolio leaves ``news`` at the incumbent's blocks.
+    assert all(
+        candidate["target_id"] != "news"
+        for candidate in document["harvest"]["candidates"]
+    )
+    for slot, portfolio in document["portfolios"].items():
+        if int(slot) in config.proposer_slots:
+            assert "news" not in portfolio["candidate_ids"], slot
+
+
+def test_the_gate_leaves_a_real_rewrite_alone(tmp_path) -> None:
+    """The dry run's own legal answer changes one filler per type, so no
+    candidate of a normal round is refused by this gate: it costs a round
+    nothing that a round should keep."""
+
+    config = _loop_config()
+    repo_root = _repo(tmp_path / "run", config)
+    carrier = _carrier()
+    state = EvolutionState(round=0, incumbent_overrides={}).validate()
+    propose = run_propose_step(state, 1, config=config, carrier=carrier)
+    receipt = propose.documents[config.round_paths(1)["propose"]["writes"][2]]
+    candidates = run_candidates_step(
+        state,
+        1,
+        config=config,
+        carrier=carrier,
+        propose_receipt=receipt,
+        responses=_responses(receipt, refuse_second_slot=False),
+        repo_root=repo_root,
+        fold_a_rows=sum(len(rows) for rows in FOLD_A_ROWS.values()),
+        fold_a_speech_seconds=24.0,
+        token_counter=_word_counter,
+    )
+    document = candidates.documents[config.round_paths(1)["candidates"]["writes"][0]]
+    assert candidates.summary["null_rewrites_refused"] == 0
+    assert document["null_rewrite_checks"]
+    assert not any(record["null_rewrite"] for record in document["null_rewrite_checks"])
+
+
+# ---------------------------------------------------------------------------
+# The landed round: replaying the gate over the committed round-1 receipt
+# ---------------------------------------------------------------------------
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+A_0_RECEIPT = REPO_ROOT / "docs/receipts/knowledge/slurp-intent-slot-schema-v1.json"
+ROUND_01 = (
+    REPO_ROOT
+    / "docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-s1/round-01"
+)
+
+
+def _a_0_block_texts() -> dict[str, str]:
+    """A_0's own rendered blocks, rebuilt from the COMMITTED schema receipt the
+    loop config pins -- no data root, no TRAIN file, no flight."""
+
+    document = json.loads(A_0_RECEIPT.read_text(encoding="utf-8"))
+    construction = document["construction"]
+    schema = SlurpIntentSlotSchema(
+        schema_id=construction["schema_id"],
+        source_split=construction["source_split"],
+        source_identity_hash=construction["source_identity_hash"],
+        utterance_count=construction["utterance_count"],
+        min_share=construction["min_share"],
+        examples_per_type=construction["examples_per_type"],
+        intents={
+            record["intent"]: SlurpIntentSlots(
+                intent=record["intent"],
+                n=record["utterances"],
+                mentions=record["slot_mentions"],
+                types=tuple(
+                    (row["entity_type"], row["count"], row["share"])
+                    for row in record["types"]
+                ),
+                fillers={
+                    row["entity_type"]: tuple(row["fillers"]) for row in record["types"]
+                },
+            )
+            for record in document["intents"]
+        },
+    )
+    return slurp_block_texts(schema)
+
+
+@pytest.mark.skipif(
+    not (A_0_RECEIPT.exists() and (ROUND_01 / "candidates.json").exists()),
+    reason="the landed EVO-S1 round-1 receipts are not in this checkout",
+)
+def test_the_landed_round_one_candidates_replay_through_the_gate() -> None:
+    """Round 1's own ``candidates.json``, replayed through the new gate.
+
+    The candidate side is the receipt's committed ``rendered_sha256``; the
+    incumbent side is A_0's blocks over the SAME intents, rebuilt from the
+    committed schema receipt. Round 1's incumbent state IS A_0, so no override
+    enters. FIVE of the 29 candidates render to the incumbent, one of which is
+    ``social``'s admitted winner ``bb02b5f3`` -- the finding this gate exists
+    for, and the reason the round's confirmation carried 60 rows of noise.
+    """
+
+    blocks = _a_0_block_texts()
+    document = json.loads((ROUND_01 / "candidates.json").read_text(encoding="utf-8"))
+    by_id = {
+        record["candidate_id"]: record for record in document["harvest"]["candidates"]
+    }
+    null_rewrites = []
+    for validation in document["validations"]:
+        intents = sorted(str(record["intent"]) for record in validation["per_key"])
+        whole = "\n".join(blocks[intent] for intent in intents)
+        digest = hashlib.sha256(whole.encode("utf-8")).hexdigest()
+        if digest == validation["rendered_sha256"]:
+            null_rewrites.append(validation["candidate_id"])
+
+    selection = json.loads((ROUND_01 / "selection.json").read_text(encoding="utf-8"))
+    winners = set(selection["winners"].values())
+    refused_winners = sorted(set(null_rewrites) & winners)
+    assert len(refused_winners) == 1
+    assert refused_winners[0].startswith("bb02b5f3")
+    assert by_id[refused_winners[0]]["target_id"] == "social"
+    assert sorted(by_id[candidate_id]["target_id"] for candidate_id in null_rewrites) == [
+        "calendar",
+        "calendar",
+        "general",
+        "iot",
+        "social",
+    ]
