@@ -1243,3 +1243,27 @@ def score_semantic_high_impact_outputs(
 
 
 SCORERS.register("semantic-high-impact-error-rate-v1", score_semantic_high_impact_outputs)
+
+
+# ---------------------------------------------------------------------------
+# Earnings-22 brief-term recall (2026-09-07, KC-E2 / KU-E2c): how much of what
+# the pre-meeting brief NAMES the transcript actually keeps. Registered here
+# because a knowledge cell needs a metric its knowledge could plausibly move --
+# five metadata facts cannot shift 26,251 reference words of corpus WER, and a
+# cell that only reported WER would measure runtime noise. Definition, the
+# homograph dilution it does NOT correct for, and why it needs no entity
+# annotation: ``reproduction.brief_term_recall``'s own module docstring.
+#
+# Same uniform ``scorer(outputs_path, lock, root)`` signature as every other
+# registration above; references come from the SAME hash-pinned ESB layer
+# ``asr-wer-esb-whisper`` reads and the terms from the carrier's own metadata
+# table, resolved through the SAME ``core.evidence.e22_metadata_file_relpath``
+# the evidence source resolves it with.
+# ---------------------------------------------------------------------------
+
+from ..reproduction.brief_term_recall import (  # noqa: E402
+    score_brief_term_recall_outputs,
+)
+
+SCORERS.register("brief-term-recall-v1", score_brief_term_recall_outputs)
+

@@ -1,0 +1,60 @@
+{
+  "calls": [
+    "4453225",
+    "4469088",
+    "4470684",
+    "4474506",
+    "4479944",
+    "4481952",
+    "4482383",
+    "4482613",
+    "4483937",
+    "4485192"
+  ],
+  "carrier_lock_key": "earnings22-original",
+  "derangement": {
+    "4453225": "4469088",
+    "4469088": "4470684",
+    "4470684": "4474506",
+    "4474506": "4479944",
+    "4479944": "4481952",
+    "4481952": "4482383",
+    "4482383": "4482613",
+    "4482613": "4483937",
+    "4483937": "4485192",
+    "4485192": "4453225"
+  },
+  "metadata_relpath": "datasets/earnings21-22/earnings22/metadata.csv",
+  "metadata_sha256": "52dbda11f4abbabf1b59dedae315d5873d6ccfe75104d1bce3d8ab24341f28e1",
+  "roster_receipt": "docs/receipts/rosters/e22-dev-esb-1500-tail2s-v1.json",
+  "roster_receipt_sha256": "703e5517c63f09c047ae834fac36883929098ebb3390ec81722d9a68f141ca99",
+  "rule": "core.metadata_brief.derange_calls: the calls sorted, each paired with the NEXT one cyclically. Deterministic, a bijection, and fixed-point-free, so no clip ever receives its own call's brief as a control.",
+  "schema": "saea-e22-brief-derangement-v1",
+  "source_row_sha256": {
+    "4453225": "eaedc18735abdf73a9c4d635560ba2ee3f789ebdea512c81f7c3d79cf2523e91",
+    "4469088": "2b43553d1029119e940babec44b8ee026e420146fdea82ef09028f91739b4d50",
+    "4470684": "717a7689eaac428e49abbbfbd711816e9596a0a436d420f13449d72db6d6a500",
+    "4474506": "9387ed7862b0f8a7d0ba427aa0cb5a0d43a5829713523e8cb3c2172a311047db",
+    "4479944": "ed892fb4dbe36e85f2e2fdb963259a4c2324dfb95e050b142dd040219edead45",
+    "4481952": "284f4d0748f96c0fbecafb940fda004e3c696a49f3fbdaac863d8397e58cf410",
+    "4482383": "4ad1d491e75deaed972aa0b5cceca5c5daa45e7ad69cb5ee1a87335948ee5b6b",
+    "4482613": "86056c55391e068e413f1c7b8a5fd83cde7aeda02afb759ad499c19519a2d3cd",
+    "4483937": "2860f86838a6d27e7b7eccd93ea1f991b311790bb6e9bde296aa92453bb485eb",
+    "4485192": "8da3386223df461b0d25f945982df078102131f00a29c98a50170ffee89437df"
+  },
+  "split_identity_hash": "8dc9d6a04c408226e0575254ba4cbad605417c293fc5e55f40e6c8cf50f51207",
+  "study": "speech-aware-evidence-acquisition",
+  "twin_row_sha256": {
+    "4453225": "2b43553d1029119e940babec44b8ee026e420146fdea82ef09028f91739b4d50",
+    "4469088": "717a7689eaac428e49abbbfbd711816e9596a0a436d420f13449d72db6d6a500",
+    "4470684": "9387ed7862b0f8a7d0ba427aa0cb5a0d43a5829713523e8cb3c2172a311047db",
+    "4474506": "ed892fb4dbe36e85f2e2fdb963259a4c2324dfb95e050b142dd040219edead45",
+    "4479944": "284f4d0748f96c0fbecafb940fda004e3c696a49f3fbdaac863d8397e58cf410",
+    "4481952": "4ad1d491e75deaed972aa0b5cceca5c5daa45e7ad69cb5ee1a87335948ee5b6b",
+    "4482383": "86056c55391e068e413f1c7b8a5fd83cde7aeda02afb759ad499c19519a2d3cd",
+    "4482613": "2860f86838a6d27e7b7eccd93ea1f991b311790bb6e9bde296aa92453bb485eb",
+    "4483937": "8da3386223df461b0d25f945982df078102131f00a29c98a50170ffee89437df",
+    "4485192": "eaedc18735abdf73a9c4d635560ba2ee3f789ebdea512c81f7c3d79cf2523e91"
+  },
+  "what_this_is": "the pinned call pairing core.evidence's e22-metadata-brief-deranged and -deranged-token-matched sources read to decide WHICH call's brief twins each clip. Pinned by path and sha256 in the twin's baseline fragment, so its exact contents land in params_hash and the derivation registry re-derives the twin from the same bytes on every gated run."
+}

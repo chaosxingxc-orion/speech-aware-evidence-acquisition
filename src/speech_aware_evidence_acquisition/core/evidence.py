@@ -117,6 +117,25 @@ the same ConEC bytes on every gated run. No tokenizer is reached at flight
 time. The unpadded twin stays registered unchanged, because it is what the
 prompt-fit receipt measured.
 
+``e22-metadata-brief`` / ``-deranged`` / ``-deranged-token-matched``
+(2026-09-07, KC-E2 / KU-E2c, ``docs/readiness/2026-09-07-e22-kc-e2-pre-meeting-
+brief-v1-preregistration.md``): the Earnings-22 counterpart of the brief above,
+for a carrier with no ConEC evidence layer at all. Its source is the carrier's
+OWN metadata table (``data.carriers.CarrierDescriptor.metadata_filename``, the
+same file ``data.loader.load_carrier`` resolves), pinned by path and sha256 in
+the composed config and re-hashed on every read; the transform is invoked on the
+call's two-line SOURCE SLICE (header line plus that call's data line, both
+verbatim), because a transform signature carries no sample id and a params
+resolver carries no sample either. ``carrier_bound`` is ``False`` and the
+docstring says why: D1 records the table's 125 ids through a ``_csv_layer`` and
+no per-file manifest, so there is no per-sample evidence identity for the D1 rail
+to check and this source does not pretend otherwise -- the same honesty
+``distractor-only-bias-list`` already states. The form twin is another call's
+brief under a pinned, fixed-point-free call derangement rather than a neutral
+placeholder (``core.metadata_brief`` module docstring for why), and its
+token-matched form replays a per-line pad plan through
+``core.class_lists.pad_placebo`` -- the SAME padder KU-E1c uses.
+
 ``derived-candidates`` (2026-08-12, offline retrieval-gated candidate
 evidence -- the E-003R mechanism and the KC-Q3 two-pass machinery's shared
 evidence layer; see ``scripts/materialize_candidates.py``'s own module
@@ -184,6 +203,7 @@ from .bias_lists import (
     resolve_bias_list_max_entries,
     resolve_bias_phrase_max_tokens,
 )
+from ..data.variant_ids import published_sample_key
 from .class_lists import (
     CLASS_LIST_TOKEN_MATCHED_TRANSFORMS,
     CLASS_LIST_TRANSFORMS,
@@ -191,6 +211,15 @@ from .class_lists import (
     resolve_placebo_pad_params,
 )
 from .evidence_derivation import TRANSFORMS, canonical_params_hash
+from .metadata_brief import (
+    METADATA_BRIEF_DERANGED_TRANSFORMS,
+    METADATA_BRIEF_TOKEN_MATCHED_TRANSFORMS,
+    METADATA_BRIEF_TRANSFORMS,
+    call_source_slice,
+    resolve_brief_source_pin,
+    resolve_derangement_params,
+    resolve_token_matched_params,
+)
 
 
 class OracleEvidenceError(RuntimeError):
@@ -987,6 +1016,234 @@ def _distractor_only_bias_list(
     return [item.validate()]
 
 
+# ---------------------------------------------------------------------------
+# The Earnings-22 pre-meeting brief (2026-09-07, KC-E2 / KU-E2c)
+# ---------------------------------------------------------------------------
+
+
+def e22_metadata_file_relpath(lock: Mapping[str, object], carrier_lock_key: str) -> str:
+    """The carrier's own metadata table, relative to the controlled data root.
+
+    The ``conec-contexts`` counterpart of this module resolves a PER-SAMPLE
+    evidence file from ``descriptor.evidence``; Earnings-22 has no such layer
+    (``data.carriers.EARNINGS22_ORIGINAL.evidence is None``, and the ConEC
+    Earnings-22 side is per-call PDF packets nothing here reads). The
+    Earnings-22 brief's source is instead the carrier's OWN metadata table --
+    the same file ``data.loader.load_carrier`` already resolves through
+    ``descriptor.metadata_filename`` -- so this function derives its path from
+    the descriptor exactly the way the loader does, never from a literal.
+    """
+
+    try:
+        descriptor = get_carrier_descriptor(carrier_lock_key)
+    except CarrierDescriptorError as error:
+        raise EvidenceError(
+            f"carrier {carrier_lock_key!r} has no registered carrier descriptor; "
+            f"cannot resolve a metadata-brief source for it: {error}"
+        ) from error
+    if descriptor.metadata_filename is None:
+        raise EvidenceError(
+            f"carrier {carrier_lock_key!r} declares no metadata table "
+            "(data.carriers.CarrierDescriptor.metadata_filename is None); the "
+            "metadata brief is refused rather than pointed at another carrier's table"
+        )
+    entry = lock_entry(lock, carrier_lock_key)
+    local_subdir = entry.get("local_subdir")
+    if not isinstance(local_subdir, str) or not local_subdir:
+        raise EvidenceError(
+            f"asset {carrier_lock_key!r} lacks a usable local_subdir in the lock"
+        )
+    return f"{local_subdir.rstrip('/')}/{descriptor.metadata_filename}"
+
+
+def brief_call_id(sample_id: str) -> str:
+    """The CALL a dev clip belongs to: the published key (``@`` variant suffix
+    stripped, ``data.variant_ids.published_sample_key``) up to its first ``-``.
+
+    Earnings-22 File IDs are digit strings with no internal ``-``, and the ESB
+    clip convention is ``<call>-<segment>[@<variant>]``, so this recovers the
+    call for a clip and returns a bare call id unchanged. Fail-closed on
+    anything that is not a plain call id, rather than guessing.
+    """
+
+    if not isinstance(sample_id, str) or not sample_id:
+        raise EvidenceError("a sample id must be non-empty text")
+    call_id = published_sample_key(sample_id).split("-", 1)[0]
+    if not call_id or not call_id.isalnum():
+        raise EvidenceError(
+            f"cannot recover an Earnings-22 call id from sample {sample_id!r}; the "
+            "metadata brief is never rendered for a sample whose call is a guess"
+        )
+    return call_id
+
+
+def _metadata_brief_items(
+    lock: Mapping[str, object],
+    root: Path,
+    sample_id: str,
+    carrier_lock_key: str,
+    values: Mapping[str, object] | None,
+    *,
+    deranged: bool,
+    token_matched: bool,
+) -> list[EvidenceItem]:
+    """KC-E2's brief, or either form of its twin, as ONE evidence item.
+
+    One item rather than the brief's two (``conec-class-lists`` returns two
+    because the E21 brief spans two ConEC files under two D1 layers): the
+    Earnings-22 brief has exactly one source file and therefore exactly one
+    derivation chain.
+
+    ``carrier_bound`` is ``False`` (``core.metadata_brief`` module docstring):
+    D1 records this table's 125 sample ids and no per-file manifest for it, so
+    there is no D1-recorded per-sample evidence identity to check against, and
+    the record says so rather than fabricating one. The table's bytes are pinned
+    instead by the composed config and re-hashed here on every read.
+    """
+
+    if token_matched and not deranged:
+        raise EvidenceError(
+            "the token-matched variant is a form twin; there is no token-matched "
+            "rendering of the arm itself"
+        )
+    relpath = e22_metadata_file_relpath(lock, carrier_lock_key)
+    pinned_relpath, pinned_sha256 = resolve_brief_source_pin(values)
+    if pinned_relpath != relpath:
+        raise EvidenceError(
+            f"the composed config pins the metadata brief's source at {pinned_relpath!r} "
+            f"but carrier {carrier_lock_key!r} resolves it at {relpath!r}; a brief is "
+            "never rendered from a table the fragment did not pin"
+        )
+    path = Path(root) / relpath
+    if not path.is_file():
+        raise EvidenceError(f"Earnings-22 metadata table missing: {path}")
+    try:
+        blob = path.read_bytes()
+    except OSError as error:
+        raise EvidenceError(f"cannot read Earnings-22 metadata table {path}: {error}") from error
+    measured = hashlib.sha256(blob).hexdigest()
+    if measured != pinned_sha256:
+        raise EvidenceError(
+            f"Earnings-22 metadata table {path} hashes to {measured}, not the "
+            f"configured {pinned_sha256}; a corpus table edited after the fragment was "
+            "written is refused rather than silently flown"
+        )
+    try:
+        text = blob.decode("utf-8")
+    except UnicodeError as error:
+        raise EvidenceError(
+            f"Earnings-22 metadata table {path} is not UTF-8: {error}"
+        ) from error
+
+    call_id = brief_call_id(sample_id)
+    if token_matched:
+        transform = "e22-metadata-brief-deranged-tm"
+        params = resolve_token_matched_params(values)
+    elif deranged:
+        transform = "e22-metadata-brief-deranged"
+        params = resolve_derangement_params(values)
+    else:
+        transform = "e22-metadata-brief"
+        params = {"metadata_relpath": pinned_relpath, "metadata_sha256": pinned_sha256}
+    source_call = call_id
+    if deranged:
+        derangement = params["derangement"]
+        partner = derangement.get(call_id)
+        if partner is None:
+            raise EvidenceError(
+                f"the pinned derangement has no partner for call {call_id!r} (sample "
+                f"{sample_id!r}); a form twin is never improvised at flight time"
+            )
+        source_call = str(partner)
+    slice_text = call_source_slice(text, source_call)
+    source_bytes = slice_text.encode("utf-8")
+    content = TRANSFORMS.resolve(transform, "v1").apply(slice_text, params)
+    derivation = DerivedEvidenceRecord(
+        sample_id=sample_id,
+        source_relpath=relpath,
+        source_sha256=hashlib.sha256(source_bytes).hexdigest(),
+        transform_name=transform,
+        transform_version="v1",
+        params_hash=canonical_params_hash(params),
+        derived_sha256=hashlib.sha256(content.encode("utf-8")).hexdigest(),
+        carrier_bound=False,
+    )
+    item = EvidenceItem(
+        evidence_id=f"{transform}/{sample_id}",
+        source_uri=f"{transform}://{relpath}",
+        content=content,
+        provenance={
+            "lock_key": carrier_lock_key,
+            "relpath": relpath,
+            "sha256": pinned_sha256,
+            "extraction": f"{transform}-v1",
+            "call_id": call_id,
+            "source_call_id": source_call,
+            "brief_part": "metadata",
+        },
+        derivation=derivation,
+        derivation_source_bytes=source_bytes,
+    )
+    return [item.validate()]
+
+
+def _e22_metadata_brief(
+    lock: Mapping[str, object],
+    root: Path,
+    sample_id: str,
+    carrier_lock_key: str,
+    values: Mapping[str, object] | None = None,
+) -> list[EvidenceItem]:
+    """KC-E2: the Earnings-22 pre-meeting brief -- this call's own row of the
+    corpus metadata table, rendered as labelled fact lines with the
+    Whisper-normalized form beside each value. Built from the benchmark's own
+    published table and from nothing else: no transcript, no ESB reference, no
+    speaker list, no annotation overlay and no external lookup (owner ruling
+    2026-09-07: Earnings-22 collects no external information, or the result stops
+    being comparable with the academic references)."""
+
+    return _metadata_brief_items(
+        lock, root, sample_id, carrier_lock_key, values, deranged=False, token_matched=False
+    )
+
+
+def _e22_metadata_brief_deranged(
+    lock: Mapping[str, object],
+    root: Path,
+    sample_id: str,
+    carrier_lock_key: str,
+    values: Mapping[str, object] | None = None,
+) -> list[EvidenceItem]:
+    """KU-E2c's UNPADDED form twin: the SAME renderer on ANOTHER call's row,
+    chosen by the pinned call derangement. Same heading, same five labels, same
+    kind of value in every field, and zero information about the call being
+    decoded (``core.metadata_brief`` module docstring for why a neutral-token
+    placeholder is the wrong control for a five-line fact table)."""
+
+    return _metadata_brief_items(
+        lock, root, sample_id, carrier_lock_key, values, deranged=True, token_matched=False
+    )
+
+
+def _e22_metadata_brief_deranged_token_matched(
+    lock: Mapping[str, object],
+    root: Path,
+    sample_id: str,
+    carrier_lock_key: str,
+    values: Mapping[str, object] | None = None,
+) -> list[EvidenceItem]:
+    """KU-E2c's TOKEN-matched form twin (owner ruling 2026-09-06): the deranged
+    twin with a per-line pad plan replayed onto it, so each twin line measures
+    its own brief line on the FLIGHT tokenizer. A third registered source rather
+    than a knob, for the reason ``conec-class-lists-placebo-token-matched``
+    already gives: a padded and an unpadded twin are different derivations, and
+    the pinned transform name is what a sealed trace uses to say which ran."""
+
+    return _metadata_brief_items(
+        lock, root, sample_id, carrier_lock_key, values, deranged=True, token_matched=True
+    )
+
+
 def rotated_mismatch(
     evidence_by_sample: Mapping[str, list[EvidenceItem]],
 ) -> dict[str, list[EvidenceItem]]:
@@ -1026,6 +1283,13 @@ def resolve_declared_transform_params(
         return {"max_entries_per_class": resolve_max_entries_per_class(values)}
     if transform_name in CLASS_LIST_TOKEN_MATCHED_TRANSFORMS:
         return resolve_placebo_pad_params(values)
+    if transform_name in METADATA_BRIEF_TRANSFORMS:
+        relpath, sha256_hex = resolve_brief_source_pin(values)
+        return {"metadata_relpath": relpath, "metadata_sha256": sha256_hex}
+    if transform_name in METADATA_BRIEF_DERANGED_TRANSFORMS:
+        return resolve_derangement_params(values)
+    if transform_name in METADATA_BRIEF_TOKEN_MATCHED_TRANSFORMS:
+        return resolve_token_matched_params(values)
     raise EvidenceError(
         f"no declared-params resolver registered for transform {transform_name!r}"
     )
@@ -1043,4 +1307,10 @@ EVIDENCE_SOURCES.register("conec-class-lists", _conec_class_lists)
 EVIDENCE_SOURCES.register("conec-class-lists-placebo", _conec_class_lists_placebo)
 EVIDENCE_SOURCES.register(
     "conec-class-lists-placebo-token-matched", _conec_class_lists_placebo_token_matched
+)
+EVIDENCE_SOURCES.register("e22-metadata-brief", _e22_metadata_brief)
+EVIDENCE_SOURCES.register("e22-metadata-brief-deranged", _e22_metadata_brief_deranged)
+EVIDENCE_SOURCES.register(
+    "e22-metadata-brief-deranged-token-matched",
+    _e22_metadata_brief_deranged_token_matched,
 )
