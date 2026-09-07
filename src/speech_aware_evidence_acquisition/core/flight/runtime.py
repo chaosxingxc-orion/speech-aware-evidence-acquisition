@@ -34,6 +34,7 @@ from typing import Callable, Mapping, Sequence
 
 from ...contracts import (
     CONSTRUCTION_VISIBLE_FIELD,
+    STUDY_SLUG,
     ExecutionPlan,
     FrozenCoreGate,
     _EXPOSURE_RUN_COLUMN,
@@ -75,7 +76,17 @@ from ..model.speech_features import materialize_legacy_cached_speech_feature_pac
 from ..scoring_batch import load_score_jobs, run_score_batch
 from ..tracing import set_current_trace_buffer
 from ..tracking import ledger_row_for_bundle
-from ..session import load_runtime_receipt, start_session, stop_session
+from ..session import attach_session, load_runtime_receipt, start_session, stop_session
+from ..session.serving import (
+    MONITOR_JSONL_NAME,
+    SESSION_RECEIPT_NAME,
+    ServingSessionError,
+    assert_identity_matches,
+    find_resident_session,
+    serving_identity,
+    summarize_monitor_file,
+)
+from ..session.serving import merge_server_args as _merge_server_args
 from ..split_receipt import VerifiedSplit
 from .receipts import FLIGHT_STAGES, FlightReceipts, require_mandatory_throughput_fields
 
@@ -102,6 +113,32 @@ class FlightStageOrderError(FlightRuntimeError):
 class FlightServeGeometryMismatchError(FlightRuntimeError):
     """``serve(reuse=...)`` was asked to reuse a server of a different
     serving geometry -- the queue must start a fresh server instead."""
+
+
+#: Schema of the attempt-local record a flight writes when it ATTACHES to an
+#: always-on serving session instead of spawning its own server (E7). It is
+#: the attach counterpart of ``core.session``'s spawn-time session receipt:
+#: same run/attempt identity, the serving session it bound to, the identity
+#: fields that were compared, and -- once ``seal`` has run -- the monitor
+#: summary for this attempt's own contact window.
+SESSION_ATTACH_RECEIPT_SCHEMA = "saea-session-attach-receipt-v1"
+
+
+class FlightServingSessionMismatchError(FlightRuntimeError):
+    """An always-on serving session is resident, but it does not serve what
+    this flight requires.
+
+    Raised INSTEAD of quietly spawning a second server: two 18.5 GB
+    llama-servers do not fit in this host's VRAM, so the correct action is
+    always an operator decision (stop the session and start the other
+    geometry), never a silent second spawn. The message names every
+    differing identity field (``core.session.serving.identity_mismatches``);
+    ``mismatches`` carries them structured.
+    """
+
+    def __init__(self, message: str, mismatches: Sequence[Mapping[str, object]] = ()) -> None:
+        super().__init__(message)
+        self.mismatches = tuple(dict(entry) for entry in mismatches)
 
 
 #: Fields the experiment fragment's ``execution_plan`` object must declare;
@@ -368,22 +405,19 @@ def merge_server_args(
     (the adapter is what ``serve``/``FlightQueue`` compare when deciding
     whether a resident server can be reused), but nothing else is invented
     or discarded here.
+
+    The merge itself now lives in ``core.session.serving`` so an
+    operator-started always-on server (``scripts/serving_session.sh``) and a
+    flight-started one are built by exactly ONE function -- otherwise the
+    cross-process attach predicate would be comparing two dialects of the
+    same command line. This wrapper exists only to keep the failure type a
+    :class:`FlightRuntimeError` for every existing caller.
     """
 
-    if isinstance(server_args, (str, bytes)) or not isinstance(server_args, Sequence):
-        raise FlightRuntimeError("model config server_args must be a list of strings")
-    merged = [str(value) for value in server_args]
-    for flag, value in (("-np", slots), ("-c", context_tokens)):
-        if flag in merged:
-            index = merged.index(flag)
-            if index + 1 >= len(merged):
-                raise FlightRuntimeError(
-                    f"model config server_args declares {flag} with no value"
-                )
-            merged[index + 1] = str(value)
-        else:
-            merged.extend([flag, str(value)])
-    return merged
+    try:
+        return _merge_server_args(server_args, slots=slots, context_tokens=context_tokens)
+    except ServingSessionError as error:
+        raise FlightRuntimeError(str(error)) from error
 
 
 def _default_tool_schema_resolver(
@@ -739,6 +773,14 @@ class FlightRuntime:
         runtime_root: Path,
         session_starter: Callable[..., object] = start_session,
         session_stopper: Callable[..., Mapping[str, object]] = stop_session,
+        # E7 always-on serving (owner rule 2026-09-07). The finder returns
+        # the ONE resident serving session under the data root, or None; the
+        # attacher binds to its on-disk session receipt. Defaults are the
+        # real primitives, so a data root with no `serving/` directory (every
+        # existing test, and any host that never starts a session) behaves
+        # exactly as before: spawn, own, stop.
+        serving_session_finder: Callable[[Path], object | None] = find_resident_session,
+        session_attacher: Callable[..., object] = attach_session,
         transport_factory: Callable[..., object] | None = None,
         gate_factory: Callable[..., object] = FrozenCoreGate.for_study_repo,
         rails_runner: Callable[..., object] = run_rails_experiment,
@@ -797,6 +839,8 @@ class FlightRuntime:
         self._adapter_factory = adapter_factory
         self._session_starter = session_starter
         self._session_stopper = session_stopper
+        self._serving_session_finder = serving_session_finder
+        self._session_attacher = session_attacher
         self._transport_factory = transport_factory
         self._gate_factory = gate_factory
         self._rails_runner = rails_runner
@@ -868,6 +912,16 @@ class FlightRuntime:
         self._promotion_receipt: Mapping[str, object] | None = None
         self._construction_material: ProposerMaterial | None = None
         self._owns_session = False
+        # E7: set only when this flight ATTACHED to an always-on serving
+        # session -- the session's directory, its monitor JSONL, and the
+        # attempt-local attach receipt that records both plus (at seal) the
+        # monitor summary for this attempt's own contact window.
+        self._serving_session_dir: Path | None = None
+        self._serving_monitor_path: Path | None = None
+        self._session_attach_receipt_path: Path | None = None
+        self._session_attach_receipt: dict[str, object] | None = None
+        # (first contact epoch, last contact epoch) of ``run_phases``.
+        self._contact_window: tuple[float, float] | None = None
 
     # -- small read-only accessors ---------------------------------------
 
@@ -1943,6 +1997,8 @@ class FlightRuntime:
             # A reused server belongs to the flight that started it; this
             # flight must never stop it out from under that owner.
             self._owns_session = False
+            self._serving_session_dir = reuse._serving_session_dir
+            self._serving_monitor_path = reuse._serving_monitor_path
             payload = {
                 "reused_from_attempt_id": reuse.attempt_id,
                 "session_id": self._session.session_id,
@@ -1950,6 +2006,8 @@ class FlightRuntime:
                 "port": self._session.port,
                 "serving_geometry": geometry,
                 "reused": True,
+                "session_reused": True,
+                "session_source": "in-process-reuse",
                 "startup_seconds": 0.0,
             }
             return self.receipts.record("serve", payload)
@@ -1989,6 +2047,25 @@ class FlightRuntime:
         # Both were previously ignored here, so a packet flight would have
         # been served WITH the mmproj and from the wrong model root.
         configured_model_root = model_materialization_root(values)
+
+        # E7 (owner rule 2026-09-07): before spawning anything, look for the
+        # coordinator's always-on serving session. Attaching is the normal
+        # path on this host; spawning is the fallback for a host that has
+        # none. A resident session that serves something ELSE is a refusal,
+        # never a second spawn -- see FlightServingSessionMismatchError.
+        attached = self._attach_resident_serving_session(
+            geometry=geometry,
+            values=values,
+            runtime_receipt=runtime_receipt,
+            extra_argv=extra_argv,
+            extra_env=dict(extra_env_value),
+            configured_model_root=configured_model_root,
+            session_id=session_id,
+            run_dir=run_dir,
+        )
+        if attached is not None:
+            return attached
+
         started = self._clock()
         session = self._session_starter(
             runtime_root=self._runtime_root,
@@ -2034,8 +2111,222 @@ class FlightRuntime:
             ),
             "startup_seconds": startup_seconds,
             "reused": False,
+            "session_reused": False,
+            "session_source": "spawned",
         }
         return self.receipts.record("serve", payload)
+
+    # -- stage 3a: the always-on serving session (E7) -----------------------
+
+    def _required_serving_identity(
+        self,
+        *,
+        values: Mapping[str, object],
+        runtime_receipt: Mapping[str, object],
+        geometry: Mapping[str, object],
+        extra_argv: Sequence[str],
+        extra_env: Mapping[str, str],
+        configured_model_root: str | None,
+    ) -> Mapping[str, object]:
+        """What a resident serving session must BE for this flight to attach.
+
+        Built from exactly the values ``serve`` would otherwise spawn with --
+        the same ``core.session.build_server_command`` argv (so ``-c``,
+        ``-np``, ``-ngl``, ``--mmproj`` and the model paths are compared as
+        the command line they actually are), the same runtime receipt bytes,
+        the same role/model root, the same ``server_env``, the same
+        host/port -- plus the two ``GET /props`` facts a flight CAN derive
+        (``total_slots`` and the per-slot ``n_ctx``), which is the live
+        server's own account of the geometry it is serving.
+        """
+
+        from ..config import fragment_hash, read_fragment  # noqa: PLC0415 (light-import discipline)
+        from ..session import build_server_command  # noqa: PLC0415 (light-import discipline)
+        from ..session.paths import _sha256_file as _hash_file  # noqa: PLC0415
+
+        fragment = read_fragment(self._repo_root, "model", self._model)
+        receipt_path = resolve_runtime_receipt_path(self._repo_root, values)
+        command = build_server_command(
+            runtime_root=self._runtime_root,
+            data_root=self._data_root,
+            runtime_receipt=runtime_receipt,
+            host=self._host,
+            port=self._port,
+            extra_argv=tuple(extra_argv),
+            extra_env=extra_env,
+            role=str(runtime_receipt.get("role", "legacy")),
+            model_root=(
+                Path(configured_model_root) if configured_model_root is not None else None
+            ),
+        )
+        model_argv = list(command.argv)
+        model_path = model_argv[model_argv.index("-m") + 1] if "-m" in model_argv else None
+        return serving_identity(
+            model_fragment=self._model,
+            model_fragment_sha256=fragment_hash(fragment),
+            runtime_receipt_relpath=runtime_receipt_relpath(values),
+            runtime_receipt_sha256=_hash_file(receipt_path),
+            binary_path=command.binary_path,
+            binary_sha256=command.binary_sha256,
+            model_files=[
+                {"path": entry.path, "sha256": entry.sha256} for entry in command.model_files
+            ],
+            session_role=str(runtime_receipt.get("role", "legacy")),
+            model_root=configured_model_root,
+            server_argv=command.argv,
+            server_env=extra_env,
+            host=self._host,
+            port=self._port,
+            props={
+                "total_slots": int(geometry["slots"]),
+                "default_generation_settings": {"n_ctx": int(geometry["slot_tokens"])},
+                "model_path": model_path,
+            },
+        )
+
+    def _attach_resident_serving_session(
+        self,
+        *,
+        geometry: Mapping[str, object],
+        values: Mapping[str, object],
+        runtime_receipt: Mapping[str, object],
+        extra_argv: Sequence[str],
+        extra_env: Mapping[str, str],
+        configured_model_root: str | None,
+        session_id: str,
+        run_dir: Path,
+    ) -> Mapping[str, object] | None:
+        """Bind this flight to the coordinator's always-on server, or return
+        ``None`` when there is none to bind to.
+
+        Never stops what it attaches to (``_owns_session`` stays false, so
+        :meth:`stop_serving` is a no-op for this flight): the session belongs
+        to the coordinator's foreground wrapper, and an agent that stopped it
+        would take the GPU away from every other queued flight -- the exact
+        waste this enabler exists to remove.
+        """
+
+        resident = self._serving_session_finder(self._data_root)
+        if resident is None:
+            return None
+        session_dir, document = resident
+        session_dir = Path(session_dir)
+        required = self._required_serving_identity(
+            values=values,
+            runtime_receipt=runtime_receipt,
+            geometry=geometry,
+            extra_argv=extra_argv,
+            extra_env=extra_env,
+            configured_model_root=configured_model_root,
+        )
+        try:
+            assert_identity_matches(document, required)
+        except ServingSessionError as error:
+            raise FlightServingSessionMismatchError(
+                str(error), getattr(error, "mismatches", ())
+            ) from error
+
+        session = self._session_attacher(
+            session_dir / SESSION_RECEIPT_NAME,
+            runtime_receipt=runtime_receipt,
+            runtime_root=self._runtime_root,
+        )
+        self._session = session
+        self._owns_session = False
+        self._session_receipt_path = session_dir / SESSION_RECEIPT_NAME
+        self._serving_session_dir = session_dir
+        self._serving_monitor_path = session_dir / MONITOR_JSONL_NAME
+
+        transport_factory = self._transport_factory or TRANSPORTS.resolve(str(values["transport"]))
+        self._transport = transport_factory(
+            values,
+            self._data_root,
+            session=session,
+            runtime_receipt=runtime_receipt,
+            runtime_root=self._runtime_root,
+        )
+
+        serving_session_id = str(document.get("session_id"))
+        self._session_attach_receipt_path = (
+            run_dir / f"{session_id}.session-attach-receipt.json"
+        )
+        self._session_attach_receipt = {
+            "schema": SESSION_ATTACH_RECEIPT_SCHEMA,
+            "study": STUDY_SLUG,
+            "run_id": self._plan.run_id,
+            "attempt_id": self._plan.attempt_id,
+            "session_reused": True,
+            "session_source": "attached-serving-session",
+            "session_id": serving_session_id,
+            "serving_session_dir": str(session_dir),
+            "serving_session_pid": document.get("pid"),
+            "serving_session_started_at": document.get("started_at"),
+            "session_receipt_path": str(self._session_receipt_path),
+            "monitor_path": str(self._serving_monitor_path),
+            "serving_geometry": dict(geometry),
+            "identity": dict(required),
+            "attached_at": self._clock(),
+            # Filled by seal(): the monitor summary between this attempt's
+            # first and last contact.
+            "monitor_summary": None,
+        }
+        self._write_session_attach_receipt()
+
+        payload = {
+            "session_id": serving_session_id,
+            "host": session.host,
+            "port": session.port,
+            "pid": session.pid,
+            "serving_geometry": dict(geometry),
+            "extra_argv": list(extra_argv),
+            "session_role": str(runtime_receipt.get("role", "legacy")),
+            "model_root": (
+                str(configured_model_root) if configured_model_root is not None else None
+            ),
+            "startup_seconds": 0.0,
+            "reused": True,
+            "session_reused": True,
+            "session_source": "attached-serving-session",
+            "serving_session_dir": str(session_dir),
+            "monitor_path": str(self._serving_monitor_path),
+            "session_attach_receipt_path": str(self._session_attach_receipt_path),
+        }
+        return self.receipts.record("serve", payload)
+
+    def _write_session_attach_receipt(self) -> None:
+        if self._session_attach_receipt_path is None or self._session_attach_receipt is None:
+            return
+        path = self._session_attach_receipt_path
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(
+            json.dumps(
+                self._session_attach_receipt,
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+                default=str,
+            )
+            + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+
+    def serving_monitor_summary(self) -> Mapping[str, object] | None:
+        """The always-on session's monitor summary between this attempt's
+        first and last contact, or ``None`` when this flight did not attach
+        to a serving session (or made no contact at all).
+
+        ``core.session.serving.summarize_monitor_file`` in-process, over the
+        JSONL ``scripts/serving_monitor.py`` is appending to -- no second
+        implementation of the parked/active accounting, and no subprocess.
+        """
+
+        if self._serving_monitor_path is None or self._contact_window is None:
+            return None
+        first, last = self._contact_window
+        return summarize_monitor_file(
+            self._serving_monitor_path, from_epoch=first, to_epoch=last
+        )
 
     def stop_serving(self) -> Mapping[str, object] | None:
         """Stop the resident server THIS flight started, with its own stop
@@ -2980,7 +3271,13 @@ class FlightRuntime:
                 dispatch,
                 phase_receipt,
             ) = self._dispatch_phase_program(client, self._plan, policy)
-        wall_seconds = max(self._clock() - started, 1e-9)
+        ended = self._clock()
+        wall_seconds = max(ended - started, 1e-9)
+        # E7: the window the always-on session's monitor summary is taken
+        # over. Dispatch start/end, not per-request stamps: RequestTiming
+        # carries latency, not a wall clock, and the GPU accounting this
+        # window feeds is about the interval the flight occupied the card.
+        self._contact_window = (started, ended)
 
         timings = client.timings
         latencies = tuple(timing.latency_seconds for timing in timings)
@@ -3032,6 +3329,7 @@ class FlightRuntime:
                 else "one integer declared by the fragment; no rule to resolve"
             ),
             "wall_seconds": wall_seconds,
+            "contact_window": {"from": started, "to": ended},
             "contact_count": contact_count,
             # One entry per phase of a phase program, in program order:
             # which controller policy ran it, how many rows it answered and
@@ -3723,9 +4021,30 @@ class FlightRuntime:
             merged.setdefault("config_hash", self._composed.config_hash)
             flight_receipt = builder(**merged)
 
+        # E7: what the card did while this attempt held it. Recorded only
+        # for a flight that ATTACHED to an always-on serving session (a
+        # flight that spawned its own server has no monitor beside it), and
+        # folded back into the attach receipt so the attempt's own directory
+        # carries the GPU accounting beside its outputs.
+        serving_monitor_summary = self.serving_monitor_summary()
+        if serving_monitor_summary is not None and self._session_attach_receipt is not None:
+            self._session_attach_receipt["monitor_summary"] = dict(serving_monitor_summary)
+            self._session_attach_receipt["contact_window"] = {
+                "from": self._contact_window[0],
+                "to": self._contact_window[1],
+            }
+            self._write_session_attach_receipt()
+
         payload = {
             "manifest_path": str(manifest_path),
             "manifest_sha256": _sha256_file(manifest_path),
+            "session_reused": self._serving_session_dir is not None,
+            "session_attach_receipt_path": (
+                str(self._session_attach_receipt_path)
+                if self._session_attach_receipt_path is not None
+                else None
+            ),
+            "serving_monitor_summary": serving_monitor_summary,
             "verified_attempt_state": getattr(verified, "attempt_state", None),
             "outputs_path": str(outputs_path),
             "outputs_row_count": len(self._output_rows),

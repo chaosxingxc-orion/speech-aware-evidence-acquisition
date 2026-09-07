@@ -30,6 +30,7 @@ from speech_aware_evidence_acquisition.core.flight.runtime import (
     FlightRuntime,
     FlightRuntimeError,
     FlightServeGeometryMismatchError,
+    FlightServingSessionMismatchError,
     FlightStageOrderError,
 )
 from speech_aware_evidence_acquisition.e0.d2_leakage import ARM_VISIBLE_FIELDS
@@ -3163,3 +3164,326 @@ def test_a_phase_program_refuses_a_per_sample_max_tokens_rule(tmp_path):
     runtime._prepare()
     with pytest.raises(FlightRuntimeError, match="fixed-policy direct-arm seam"):
         runtime._phase_decoding_params()
+
+
+# ---------------------------------------------------------------------------
+# E7: the always-on serving session (owner rule 2026-09-07).
+#
+# A flight that finds the coordinator's resident server ATTACHES to it, never
+# stops it, and seals the monitor summary for its own contact window. A
+# resident server serving something else is a refusal naming the differing
+# field, never a second 18.5 GB spawn. A host with no serving session keeps
+# today's behaviour exactly: spawn, own, stop.
+# ---------------------------------------------------------------------------
+
+
+_SERVING_FRAGMENT = {
+    "runtime_receipt": "receipts/runtime-fake.json",
+    # -c / -np agree with _FakeAdapter's own geometry (2 slots x 4096).
+    "server_args": ["-c", "8192", "-np", "2", "-ngl", "999"],
+    "serving_geometry": {"slots": 2, "slot_tokens": 4096, "max_tokens": 64},
+    "server_env": {"GGML_CUDA_DISABLE_GRAPHS": "1"},
+}
+
+_SERVING_RUN_ID = "SAEA-TEST-SERVING"
+
+
+class _SteppingClock:
+    """A deterministic wall clock: every call advances by ``step``."""
+
+    def __init__(self, start: float = 1000.0, step: float = 10.0) -> None:
+        self._next = start
+        self._step = step
+
+    def __call__(self) -> float:
+        value = self._next
+        self._next += self._step
+        return value
+
+
+def _write_parked_monitor(path: Path, *, start: float, count: int, step: float) -> None:
+    """A monitor JSONL in which every sample is PARKED (no busy slot, cold
+    card), so a summary over any sub-window of it must report a parked
+    fraction of exactly 1.0."""
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as handle:
+        for index in range(count):
+            handle.write(
+                json.dumps(
+                    {
+                        "schema": "saea-serving-monitor-sample-v1",
+                        "sampled_at": start + index * step,
+                        "gpu": {
+                            "utilization_percent": 0.0,
+                            "power_watts": 32.0,
+                            "memory_used_mib": 18000.0,
+                        },
+                        "slots": {"total": 2, "busy": 0, "idle": 2},
+                        "metrics": None,
+                        "requests_total": index,
+                        "server_ok": True,
+                    },
+                    sort_keys=True,
+                )
+                + "\n"
+            )
+
+
+def _serving_world(tmp_path: Path):
+    """A repo whose model fragment declares a real serving profile, plus the
+    runtime root / data root / runtime receipt that profile resolves to.
+
+    ``runtime_root``/``data_root`` are the SAME two paths ``_make_runtime``
+    hands every flight in this module (``tmp_path/runtime``, ``tmp_path/
+    data``), so a runtime built by that helper resolves exactly these files.
+    """
+
+    repo_root = _make_repo(tmp_path, _SERVING_RUN_ID, model_extra=dict(_SERVING_FRAGMENT))
+    runtime_root = tmp_path / "runtime"
+    data_root = tmp_path / "data"
+    binary = runtime_root / "llama.cpp" / "build" / "bin" / "llama-server"
+    binary.parent.mkdir(parents=True, exist_ok=True)
+    binary.write_bytes(b"fake-llama-server")
+    model_relpath = "models/fake/model.gguf"
+    (data_root / model_relpath).parent.mkdir(parents=True, exist_ok=True)
+    (data_root / model_relpath).write_bytes(b"fake-main-gguf")
+
+    receipt = {
+        "schema": "saea-runtime-receipt-v2",
+        "study": "speech-aware-evidence-acquisition",
+        "llama_cpp": {
+            "binary_path": "llama.cpp/build/bin/llama-server",
+            "binary_sha256": hashlib.sha256(b"fake-llama-server").hexdigest(),
+        },
+        "gguf_files": [
+            {"path": model_relpath, "sha256": hashlib.sha256(b"fake-main-gguf").hexdigest()}
+        ],
+    }
+    receipt_path = repo_root / "docs" / "receipts" / "runtime-fake.json"
+    receipt_path.parent.mkdir(parents=True, exist_ok=True)
+    receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+    _git(repo_root, "add", "-A")
+    _git(repo_root, "commit", "-q", "-m", "serving profile")
+    return repo_root, runtime_root, data_root
+
+
+def _write_serving_session(
+    repo_root: Path,
+    runtime_root: Path,
+    data_root: Path,
+    *,
+    session_id: str = "serving-test",
+    argv_overrides: Mapping[str, str] | None = None,
+) -> Path:
+    """The session document the OPERATOR path writes -- built through
+    ``resolve_serving_profile`` + ``build_server_command``, the same two
+    functions ``scripts/serving_session.sh`` calls, so these tests prove the
+    operator path and the flight path agree rather than comparing a function
+    with itself."""
+
+    from speech_aware_evidence_acquisition.core.session import build_server_command
+    from speech_aware_evidence_acquisition.core.session.serving import (
+        SESSION_DOCUMENT_NAME,
+        build_session_document,
+        resolve_serving_profile,
+        serving_identity,
+        serving_session_dir,
+        write_json_document,
+    )
+
+    profile = resolve_serving_profile(repo_root, "m")
+    command = build_server_command(
+        runtime_root=runtime_root,
+        data_root=data_root,
+        runtime_receipt=profile["runtime_receipt"],
+        host="127.0.0.1",
+        port=8080,
+        extra_argv=tuple(profile["extra_argv"]),
+        extra_env=dict(profile["server_env"]),
+        role=str(profile["session_role"]),
+    )
+    argv = list(command.argv)
+    for flag, value in dict(argv_overrides or {}).items():
+        argv[argv.index(flag) + 1] = value
+    geometry = dict(profile["serving_geometry"])
+    identity = serving_identity(
+        model_fragment="m",
+        model_fragment_sha256=str(profile["model_fragment_sha256"]),
+        runtime_receipt_relpath=str(profile["runtime_receipt_relpath"]),
+        runtime_receipt_sha256=str(profile["runtime_receipt_sha256"]),
+        binary_path=command.binary_path,
+        binary_sha256=command.binary_sha256,
+        model_files=[{"path": e.path, "sha256": e.sha256} for e in command.model_files],
+        session_role=str(profile["session_role"]),
+        model_root=profile["model_root"],
+        server_argv=argv,
+        server_env=dict(profile["server_env"]),
+        host="127.0.0.1",
+        port=8080,
+        props={
+            "total_slots": int(geometry["slots"]),
+            "default_generation_settings": {
+                "n_ctx": int(argv[argv.index("-c") + 1]) // int(geometry["slots"])
+            },
+            "model_path": argv[argv.index("-m") + 1],
+            "build_info": "version: 1 (04ccc72a)",
+        },
+    )
+    session_dir = serving_session_dir(data_root, session_id)
+    write_json_document(
+        session_dir / SESSION_DOCUMENT_NAME,
+        build_session_document(
+            session_id=session_id,
+            identity=identity,
+            pid=4242,
+            started_at="2026-09-07T00:00:00+00:00",
+            serving_geometry=geometry,
+            props=None,
+            session_receipt_path=str(session_dir / "session-receipt.json"),
+            server_log_path=str(session_dir / "server.log"),
+            monitor_path=str(session_dir / "monitor.jsonl"),
+        ),
+    )
+    return session_dir
+
+
+class _CountingStarter:
+    def __init__(self) -> None:
+        self.calls = 0
+
+    def __call__(self, **kwargs: object) -> _FakeSession:
+        self.calls += 1
+        return _FakeSession(str(kwargs["session_id"]))
+
+
+def _serving_runtime(tmp_path, repo_root, **overrides):
+    starter = _CountingStarter()
+    attached: list[Path] = []
+
+    def _attacher(receipt_path, **_kwargs):
+        attached.append(Path(receipt_path))
+        return _FakeSession("resident-session", pid=4242)
+
+    kwargs: dict[str, object] = {
+        "session_starter": starter,
+        "session_attacher": _attacher,
+        "runtime_receipt_loader": lambda path: json.loads(Path(path).read_text(encoding="utf-8")),
+    }
+    kwargs.update(overrides)
+    runtime = _make_runtime(
+        tmp_path,
+        run_id=_SERVING_RUN_ID,
+        attempt_id="attempt-serving",
+        happy_path=True,
+        repo_root=repo_root,
+        **kwargs,
+    )
+    return runtime, starter, attached
+
+
+def test_a_flight_attaches_to_a_matching_resident_serving_session(tmp_path):
+    repo_root, runtime_root, data_root = _serving_world(tmp_path)
+    session_dir = _write_serving_session(repo_root, runtime_root, data_root)
+    runtime, starter, attached = _serving_runtime(tmp_path, repo_root)
+
+    runtime.preflight()
+    runtime.preprocess()
+    receipt = runtime.serve()
+
+    assert starter.calls == 0, "attaching must never spawn a second server"
+    assert attached == [session_dir / "session-receipt.json"]
+    assert receipt["session_reused"] is True
+    assert receipt["session_source"] == "attached-serving-session"
+    assert receipt["session_id"] == "serving-test"
+    assert receipt["serving_session_dir"] == str(session_dir)
+    assert receipt["startup_seconds"] == 0.0
+    # A flight NEVER stops the coordinator's server.
+    assert runtime._owns_session is False
+    assert runtime.stop_serving() is None
+
+
+def test_the_attach_receipt_lands_beside_the_attempt(tmp_path):
+    repo_root, runtime_root, data_root = _serving_world(tmp_path)
+    _write_serving_session(repo_root, runtime_root, data_root)
+    runtime, _starter, _attached = _serving_runtime(tmp_path, repo_root)
+    runtime.preflight()
+    runtime.preprocess()
+    receipt = runtime.serve()
+
+    path = Path(receipt["session_attach_receipt_path"])
+    document = json.loads(path.read_text(encoding="utf-8"))
+    assert document["schema"] == "saea-session-attach-receipt-v1"
+    assert document["session_reused"] is True
+    assert document["session_id"] == "serving-test"
+    assert document["run_id"] == _SERVING_RUN_ID
+    assert document["monitor_summary"] is None  # filled at seal
+    assert document["identity"]["server_argv"][0].endswith("llama-server")
+
+
+def test_a_resident_session_with_a_different_context_size_is_refused_by_name(tmp_path):
+    repo_root, runtime_root, data_root = _serving_world(tmp_path)
+    _write_serving_session(repo_root, runtime_root, data_root, argv_overrides={"-c": "40960"})
+    runtime, starter, _attached = _serving_runtime(tmp_path, repo_root)
+    runtime.preflight()
+    runtime.preprocess()
+
+    with pytest.raises(FlightServingSessionMismatchError) as excinfo:
+        runtime.serve()
+    assert "server_argv[-c]" in str(excinfo.value)
+    fields = [entry["field"] for entry in excinfo.value.mismatches]
+    assert "server_argv[-c]" in fields
+    assert "props_identity.slot_n_ctx" in fields
+    assert starter.calls == 0, "a mismatch must never fall back to a second spawn"
+
+
+def test_a_flight_with_no_resident_session_still_spawns_and_owns_its_own(tmp_path):
+    repo_root, _runtime_root, _data_root = _serving_world(tmp_path)
+    runtime, starter, attached = _serving_runtime(tmp_path, repo_root)
+    runtime.preflight()
+    runtime.preprocess()
+    receipt = runtime.serve()
+
+    assert starter.calls == 1
+    assert attached == []
+    assert receipt["session_reused"] is False
+    assert receipt["session_source"] == "spawned"
+    assert runtime._owns_session is True
+
+
+def test_the_seal_receipt_carries_the_monitor_summary_for_this_attempts_window(tmp_path):
+    repo_root, runtime_root, data_root = _serving_world(tmp_path)
+    session_dir = _write_serving_session(repo_root, runtime_root, data_root)
+    _write_parked_monitor(session_dir / "monitor.jsonl", start=1000.0, count=60, step=10.0)
+
+    runtime, _starter, _attached = _serving_runtime(
+        tmp_path, repo_root, clock=_SteppingClock(start=1100.0, step=10.0)
+    )
+    runtime.run_all()
+
+    window = runtime.receipts.require("run_phases")["contact_window"]
+    seal = runtime.receipts.require("seal")
+    summary = seal["serving_monitor_summary"]
+    assert summary is not None
+    assert summary["schema"] == "saea-serving-monitor-summary-v1"
+    assert summary["window"] == {"from": window["from"], "to": window["to"]}
+    assert summary["sample_count"] >= 2
+    # Every sample in the file is parked (idle slots, cold card).
+    assert summary["parked_fraction"] == 1.0
+    assert summary["active_seconds"] == 0.0
+    assert seal["session_reused"] is True
+
+    document = json.loads(
+        Path(seal["session_attach_receipt_path"]).read_text(encoding="utf-8")
+    )
+    assert document["monitor_summary"]["parked_fraction"] == 1.0
+    assert document["contact_window"] == {"from": window["from"], "to": window["to"]}
+
+
+def test_a_spawning_flight_seals_no_monitor_summary(tmp_path):
+    repo_root, _runtime_root, _data_root = _serving_world(tmp_path)
+    runtime, _starter, _attached = _serving_runtime(tmp_path, repo_root)
+    runtime.run_all()
+    assert runtime.receipts.require("seal")["serving_monitor_summary"] is None
+    assert runtime.receipts.require("seal")["session_reused"] is False
+    assert runtime.serving_monitor_summary() is None
