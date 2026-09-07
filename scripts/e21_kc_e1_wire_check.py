@@ -145,6 +145,22 @@ def main() -> int:
     parser.add_argument("--dataset", default=WIRE_DATASET)
     parser.add_argument("--run-id", default=RUN_ID)
     parser.add_argument(
+        "--driver-run-id-suffix",
+        default=datetime.now(tz=timezone.utc).strftime("%Y%m%dT%H%M%SZ"),
+        help=(
+            "per-invocation suffix for the run id handed to the driver. The "
+            "attempt store meters CUMULATIVELY across every attempt of a run id, "
+            "and each invocation of this check tiles the four calls' whole "
+            "5,322.108 seconds through the FAKE transport -- so a stable driver "
+            "run id makes the check die of an exhausted audio budget after a "
+            "handful of invocations, for a reason that has nothing to do with "
+            "the cell. A fresh suffix per invocation is correct here and ONLY "
+            "here: zero real contacts are made, so there is no real spend for "
+            "the rail to bound. The stable --run-id is what the receipt and the "
+            "exposure ledger name; the suffixed ids are recorded beside it"
+        ),
+    )
+    parser.add_argument(
         "--tracking-uri",
         default="sqlite:///%s" % (Path.home() / "mlruns.db"),
         help=(
@@ -279,6 +295,11 @@ def main() -> int:
         # check has no science, so its cells say so rather than borrowing the
         # launcher's PENDING-ANALYSIS placeholders, which would imply an
         # analysis is coming.
+        driver_run_id = "%s-%s-%s" % (
+            args.run_id,
+            baseline,
+            args.driver_run_id_suffix,
+        )
         cells_path = scratch / f"{baseline}.ledger-cells.json"
         cells_path.parent.mkdir(parents=True, exist_ok=True)
         cells_path.write_text(
@@ -340,7 +361,7 @@ def main() -> int:
             "--experiment",
             args.experiment,
             "--run-id",
-            "%s-%s" % (args.run_id, baseline),
+            driver_run_id,
             "--execution-profile",
             str(values["execution_profile"]),
             "--planned-model-calls",
@@ -657,6 +678,7 @@ def main() -> int:
             "launcher_warnings": warnings,
             "legality_block": manifest.get("legality"),
             "smoke_run_id": smoke_run_id,
+            "driver_run_id": driver_run_id,
             "attempt_id": str(smoke_out["attempt_id"]),
             "attempt_state": str(smoke_out["attempt_state"]),
             "artifact_dir": str(attempt_dir),
@@ -765,6 +787,17 @@ def main() -> int:
             "all five manifest scorers through core.scoring_batch and finalize -- "
             "against a fake transport and a no-op gate, plus the D1 evidence rail "
             "driven separately with a REAL gate because the no-op one skips it"
+        ),
+        "driver_run_id_suffix": args.driver_run_id_suffix,
+        "why_the_driver_run_id_is_suffixed": (
+            "the attempt store meters cumulatively across every attempt of a run "
+            "id, and each invocation of this check tiles 5,322.108 audio seconds "
+            "through core.driver.smoke._dry_run_transport. A stable driver run id "
+            "therefore exhausts its own budget after a handful of invocations and "
+            "the check fails for a reason unrelated to the cell. A per-invocation "
+            "suffix is correct HERE and only here, because zero real contacts are "
+            "made and there is no real spend for the rail to bound. The stable "
+            "run_id above is what this receipt and the exposure ledger name"
         ),
         "plan_budget": {
             "planned_model_calls": PLAN_CALLS,
