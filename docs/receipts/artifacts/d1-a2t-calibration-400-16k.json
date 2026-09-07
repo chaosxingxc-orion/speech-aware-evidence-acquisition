@@ -1,0 +1,4413 @@
+{
+  "carrier_lock_key": "audio2tool",
+  "count": 400,
+  "ids_sha256": "65659f1aed036c36e0b1510ff72138af09e619c0c8f96665e99ae24fc7f13d0c",
+  "manifest": [
+    {
+      "audio_seconds": 1.496875,
+      "bytes": 47944,
+      "id": "tier1_direct:000045@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000045@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1e5b2bbff5075fbc3b44fbf9e6a909e84a8a97c036231d20dbac7f48bc934043"
+    },
+    {
+      "audio_seconds": 2.856875,
+      "bytes": 91464,
+      "id": "tier1_direct:000062@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000062@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c4bfd747d5e1c1082c1abbca01c3966d5a3b267d4d7e134b73923501e431bfb9"
+    },
+    {
+      "audio_seconds": 1.096875,
+      "bytes": 35144,
+      "id": "tier1_direct:000074@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000074@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1f4f2e1b80b0a90f2e69049fb920564c1b1e55c2aa1d736e706c9cb65fc88e12"
+    },
+    {
+      "audio_seconds": 2.136875,
+      "bytes": 68424,
+      "id": "tier1_direct:000077@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000077@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9e319e2103560e3dd37b9fa1c4afedddbacfc4acd357af1cae4f54916d5952c0"
+    },
+    {
+      "audio_seconds": 1.11775,
+      "bytes": 35812,
+      "id": "tier1_direct:000167@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000167@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "01bb154469e4aafad604aae27e3afc8dbaa3883d51f1204ef91b14d750e7ab32"
+    },
+    {
+      "audio_seconds": 1.496875,
+      "bytes": 47944,
+      "id": "tier1_direct:000178@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000178@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "223cb41f31e15f7479c632b557e162eeef4f6e37bdbd63914716ed3cd136d953"
+    },
+    {
+      "audio_seconds": 2.056875,
+      "bytes": 65864,
+      "id": "tier1_direct:000232@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000232@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5bd23560dec0599e31705bc209505000a20a4582bea141eb51e2ace23885c1c3"
+    },
+    {
+      "audio_seconds": 1.896875,
+      "bytes": 60744,
+      "id": "tier1_direct:000270@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000270@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "13933eb9e3f1ebe686e6490da1b440f56600cfaafb16fa009452b6aba847db10"
+    },
+    {
+      "audio_seconds": 3.016875,
+      "bytes": 96584,
+      "id": "tier1_direct:000362@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000362@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f3215fa4614899691a968dbddffa2185448ac680d839626a08ee6bf8a1537025"
+    },
+    {
+      "audio_seconds": 1.256875,
+      "bytes": 40264,
+      "id": "tier1_direct:000424@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000424@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0fe7fa74db926793c6de312b67e93438d262c6b1c129e530fbcc33a31a606ed6"
+    },
+    {
+      "audio_seconds": 1.816875,
+      "bytes": 58184,
+      "id": "tier1_direct:000579@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000579@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c6551ffafa63a5e6ea89262279a3e5777c66f8791b534b4f30c4d9a1cfdccb56"
+    },
+    {
+      "audio_seconds": 2.136875,
+      "bytes": 68424,
+      "id": "tier1_direct:000593@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000593@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "2c223bdb4ad4b560de28b206b23026a582dfc82248fed05aeaf27abda55707ca"
+    },
+    {
+      "audio_seconds": 2.136875,
+      "bytes": 68424,
+      "id": "tier1_direct:000620@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000620@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "575c109eaa3b732f793a24517c2ea08a247590e03edec96ff36804e0c70af9b4"
+    },
+    {
+      "audio_seconds": 1.736875,
+      "bytes": 55624,
+      "id": "tier1_direct:000636@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_000636@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e9a12bfa73e33fee80d5caa748461e20f49cdce88ca5f4da8a45f8c9c275935c"
+    },
+    {
+      "audio_seconds": 1.656875,
+      "bytes": 53064,
+      "id": "tier1_direct:001124@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_001124@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "377a0f799033cb083809db8296155ec5571bb4db4b25efdba3be843901f8b24d"
+    },
+    {
+      "audio_seconds": 2.136875,
+      "bytes": 68424,
+      "id": "tier1_direct:001128@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_001128@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9837f6e57ba5e3ae5cb434f01dd3246ded9dece3798e78d641c12f34692f219d"
+    },
+    {
+      "audio_seconds": 3.976875,
+      "bytes": 127304,
+      "id": "tier1_direct:001242@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_001242@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4ecdbe6e58e1b0bcf59fe343f00ecb00785fb33a71dc99c4bb51c423fc2fdb26"
+    },
+    {
+      "audio_seconds": 3.016875,
+      "bytes": 96584,
+      "id": "tier1_direct:001422@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_001422@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "cac26970e5e377a0aa95435b1745e8060487ad43836bb674b7ea954cdb06c5ea"
+    },
+    {
+      "audio_seconds": 1.816875,
+      "bytes": 58184,
+      "id": "tier1_direct:001432@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_001432@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "64bd2c82495f743d5535b0520d5751c841f22b58d9c951c584bbfe55d2c6b1b5"
+    },
+    {
+      "audio_seconds": 2.136875,
+      "bytes": 68424,
+      "id": "tier1_direct:001444@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_001444@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c78581ce7ff38b60fd87f29fd8187746b37b58fc583260df228d1702657d9a8a"
+    },
+    {
+      "audio_seconds": 2.376875,
+      "bytes": 76104,
+      "id": "tier1_direct:001607@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_001607@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a47900aa177858340b02456821f4dbcb904e1a40b228b5f4eb5edb8652c0dc24"
+    },
+    {
+      "audio_seconds": 3.496875,
+      "bytes": 111944,
+      "id": "tier1_direct:001631@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_001631@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0135af6d70d2ee582f1cc9777d81b1df0c4039c5f783de79523bd548710302ca"
+    },
+    {
+      "audio_seconds": 2.296875,
+      "bytes": 73544,
+      "id": "tier1_direct:001976@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_001976@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b0eb201589f6584c10c4c183c26ee5ae997723ff7775587d3c06380ce7102dd8"
+    },
+    {
+      "audio_seconds": 2.296875,
+      "bytes": 73544,
+      "id": "tier1_direct:002212@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_002212@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1b90c54c0449d1e100cd98da855aee3206c4eef7d721c8714fee79797438c805"
+    },
+    {
+      "audio_seconds": 1.096875,
+      "bytes": 35144,
+      "id": "tier1_direct:002300@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_002300@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e8695dabd867e0c58250143d2fe42ac59a410121076dca2ede9f4875aaa31cd6"
+    },
+    {
+      "audio_seconds": 2.216875,
+      "bytes": 70984,
+      "id": "tier1_direct:002510@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_002510@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "fe27924d736c5fb09c0617c195c55a7c33dca07adcadf850879d1c882baf3cd1"
+    },
+    {
+      "audio_seconds": 1.976875,
+      "bytes": 63304,
+      "id": "tier1_direct:002581@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_002581@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0eef5529c389c61a3cca790c6761438c9cedb64356f0f3292cbc2bab7e69fb10"
+    },
+    {
+      "audio_seconds": 2.536875,
+      "bytes": 81224,
+      "id": "tier1_direct:002609@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_002609@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "2c7ca17fe4aa484681a2da4224d3b9991dd199958994d8f1d17049faf9ec8997"
+    },
+    {
+      "audio_seconds": 3.016875,
+      "bytes": 96584,
+      "id": "tier1_direct:002687@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_002687@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3f74fc09cf16a0ec4b123c05452f97eab9a45de1f334765b521fbdde3f49ec3c"
+    },
+    {
+      "audio_seconds": 1.176875,
+      "bytes": 37704,
+      "id": "tier1_direct:002720@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_002720@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a19962fe82fd26a4962609174fdd88a9df56550bcbd417460d477c97b3a01a23"
+    },
+    {
+      "audio_seconds": 2.056875,
+      "bytes": 65864,
+      "id": "tier1_direct:002728@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_002728@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "260a4915af7bcba28cf93f79f91248eabfeb25a7106ab1a17145e8aff7300216"
+    },
+    {
+      "audio_seconds": 2.056875,
+      "bytes": 65864,
+      "id": "tier1_direct:002763@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_002763@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5b016e82b5415fc3a6ba159051ad0ca2fbed05a0bbb94de0555f41c2dab3594c"
+    },
+    {
+      "audio_seconds": 2.136875,
+      "bytes": 68424,
+      "id": "tier1_direct:003109@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_003109@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "151ae83c17437f0fc3c63883392720d4a81b4ba8c0f28c58b2eb366d2ccc7b5f"
+    },
+    {
+      "audio_seconds": 2.056875,
+      "bytes": 65864,
+      "id": "tier1_direct:003178@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_003178@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a552bf5cc6950045fa7b5a7778e9f286e62d2e6b3da782997796e4ddb1ff96d6"
+    },
+    {
+      "audio_seconds": 0.616875,
+      "bytes": 19784,
+      "id": "tier1_direct:003198@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_003198@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1953c84f264564341729bd3b5bb282624334f1fec52f3e9dfd32134ef0a00bcc"
+    },
+    {
+      "audio_seconds": 1.496875,
+      "bytes": 47944,
+      "id": "tier1_direct:003210@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_003210@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "29155dfea7d84cc0ef85b4f8733a749132ea74d8b19ce1e809d2e80d59f4bd38"
+    },
+    {
+      "audio_seconds": 1.736875,
+      "bytes": 55624,
+      "id": "tier1_direct:003343@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_003343@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e4ad7faaf8074be77ea5070527ddfadb3c8e65fec783f6b9a41fb4b941857d26"
+    },
+    {
+      "audio_seconds": 2.056875,
+      "bytes": 65864,
+      "id": "tier1_direct:003492@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_003492@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b4b93497fc44a6b6df4c190291bf2a57902e0013fdcab678cc94ef6ad9f4346e"
+    },
+    {
+      "audio_seconds": 3.016875,
+      "bytes": 96584,
+      "id": "tier1_direct:003562@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_003562@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e6629a721f0edc7e12376776fc58b85ae13b865f632bdae81596889856ec182b"
+    },
+    {
+      "audio_seconds": 2.296875,
+      "bytes": 73544,
+      "id": "tier1_direct:003651@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_003651@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c2482595a7601142df4e605bc7958bd807d5081c73855c89e40992a58f5bfa5b"
+    },
+    {
+      "audio_seconds": 2.136875,
+      "bytes": 68424,
+      "id": "tier1_direct:003668@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_003668@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7992e48b7ca5211955712dd78009a13534696b847248667d4096d911365842c7"
+    },
+    {
+      "audio_seconds": 1.496875,
+      "bytes": 47944,
+      "id": "tier1_direct:003706@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_003706@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0ec67ae27aafc0d06f3c5cec8170ed8db3f90f206de6e27b6f41a26948650b92"
+    },
+    {
+      "audio_seconds": 2.07325,
+      "bytes": 66388,
+      "id": "tier1_direct:003713@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_003713@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "dc453692633a5bc921204c812db8f912b7da400e5983e85cbee4ef1914b4609f"
+    },
+    {
+      "audio_seconds": 2.296875,
+      "bytes": 73544,
+      "id": "tier1_direct:003775@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_003775@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "36bcf6ee18d9d323309816bc94ca53f96783dd4754aba2b003c458f27d7341c2"
+    },
+    {
+      "audio_seconds": 1.896875,
+      "bytes": 60744,
+      "id": "tier1_direct:004040@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_004040@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b5b2f3659499e0d63f8b5d79ec92c6410a3c7f24404202cdc8afad61d5b47702"
+    },
+    {
+      "audio_seconds": 1.816875,
+      "bytes": 58184,
+      "id": "tier1_direct:004082@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_004082@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5ebbfc4a6acfb45648a23f53dffb825835839b894bcd5353fe8b9f806492f444"
+    },
+    {
+      "audio_seconds": 1.656875,
+      "bytes": 53064,
+      "id": "tier1_direct:004145@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_004145@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "23d08aacf63461e42fad61b09164e7a4e0d823492df6ed6a2f9dc090caefc1af"
+    },
+    {
+      "audio_seconds": 1.576875,
+      "bytes": 50504,
+      "id": "tier1_direct:004159@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_004159@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "39a4585f4a4185ac6225fa3ea8dde5a6444cfd0c953dfc773639faa6942431b0"
+    },
+    {
+      "audio_seconds": 1.496875,
+      "bytes": 47944,
+      "id": "tier1_direct:004218@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_004218@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "2251468fa690c370c868d7b72e64b8cb01eeb489262d30d86e621e56c7dceb41"
+    },
+    {
+      "audio_seconds": 3.016875,
+      "bytes": 96584,
+      "id": "tier1_direct:004244@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier1_direct/tier1_direct_004244@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8212b94c8dbd15ae8f0c0aa37307b0ee5356035ba2385475e46e2f7cf770343f"
+    },
+    {
+      "audio_seconds": 3.256875,
+      "bytes": 104264,
+      "id": "tier2_parametric:000045@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_000045@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "53827362e548b5635e37190e0335b63d8f3dba93a0be44f1c30028f6b190b188"
+    },
+    {
+      "audio_seconds": 3.576875,
+      "bytes": 114504,
+      "id": "tier2_parametric:000068@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_000068@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a79c36c077b285317b6e392c83f7289c3db8955cecb56ed8dbbe5c97fc699d0a"
+    },
+    {
+      "audio_seconds": 5.336875,
+      "bytes": 170824,
+      "id": "tier2_parametric:000132@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_000132@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d7aa95977b496c6bdedce16f87d9c4918a5958bc99b9eed6dfb06184cba84896"
+    },
+    {
+      "audio_seconds": 2.296875,
+      "bytes": 73544,
+      "id": "tier2_parametric:000240@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_000240@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "675932a0517be14ff2eb16540ad7466b6765240ae91027897b4f0c0537af110e"
+    },
+    {
+      "audio_seconds": 3.096875,
+      "bytes": 99144,
+      "id": "tier2_parametric:000247@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_000247@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a8b5ff3dd09e85f07e3fa4d2bc391bee6a934b27182bf6915a8e3531bb91f686"
+    },
+    {
+      "audio_seconds": 3.496875,
+      "bytes": 111944,
+      "id": "tier2_parametric:000369@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_000369@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ceb649a580acb1ce0ab23bfab64b75380018f0611c86d2d1cc69acb533ff9a19"
+    },
+    {
+      "audio_seconds": 5.096875,
+      "bytes": 163144,
+      "id": "tier2_parametric:000421@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_000421@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d3cc00ea032a2be394cfe6dea7b095ee7ecde43eb184f9c41248984cced52a75"
+    },
+    {
+      "audio_seconds": 3.736875,
+      "bytes": 119624,
+      "id": "tier2_parametric:000525@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_000525@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c02cddb55a243cce88c1362655ec7fe29b46dcfa440d4ab208eb63ac0db64913"
+    },
+    {
+      "audio_seconds": 5.256875,
+      "bytes": 168264,
+      "id": "tier2_parametric:000568@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_000568@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f107b62fb74dce6519ea649fea93d619f165c16a2c5e263d61791fefbebc64c2"
+    },
+    {
+      "audio_seconds": 1.816875,
+      "bytes": 58184,
+      "id": "tier2_parametric:000632@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_000632@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7b09b5433116c333d78ec3bd8f4843b59c4f62e13a8880789856204c1dcb43bf"
+    },
+    {
+      "audio_seconds": 1.736875,
+      "bytes": 55624,
+      "id": "tier2_parametric:000695@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_000695@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "91c59711c592a66602370b5cb16a70f3610fe3f61c91dd0af8b89573563e6e23"
+    },
+    {
+      "audio_seconds": 1.976875,
+      "bytes": 63304,
+      "id": "tier2_parametric:000704@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_000704@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "97bb53b08e9db7e86157cdb4b7fd281a2353befa4a55d81f120ea19befe90248"
+    },
+    {
+      "audio_seconds": 1.656875,
+      "bytes": 53064,
+      "id": "tier2_parametric:000713@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_000713@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "800c18859ceb6366c732aa364f674c174aa49b9ce8c2467f2ddfa1b9e3c6a3b5"
+    },
+    {
+      "audio_seconds": 4.056875,
+      "bytes": 129864,
+      "id": "tier2_parametric:000895@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_000895@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b1eeb812511c5ac02160d14091c1fefb021936c6cdb107dbce28b3452847bf05"
+    },
+    {
+      "audio_seconds": 2.216875,
+      "bytes": 70984,
+      "id": "tier2_parametric:001004@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_001004@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c360f52829b773244a83ac498ff905ffe5bc8126c7d16b3bf94e9a4bb46ff503"
+    },
+    {
+      "audio_seconds": 2.296875,
+      "bytes": 73544,
+      "id": "tier2_parametric:001014@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_001014@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5bd5ac25be46bb6e8087dc40c020b8f5df59da6f44192bc263a4b7599860f544"
+    },
+    {
+      "audio_seconds": 3.576875,
+      "bytes": 114504,
+      "id": "tier2_parametric:001365@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_001365@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c2ec43959b4aa4f227c25fe077429798158b7b3417c760a6ca0461eb0698c03f"
+    },
+    {
+      "audio_seconds": 3.896875,
+      "bytes": 124744,
+      "id": "tier2_parametric:001474@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_001474@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a9b3cc7806fa7db93df9aaa4275498bc90ae559e72bf0c3a18800b3f9eb3de84"
+    },
+    {
+      "audio_seconds": 3.016875,
+      "bytes": 96584,
+      "id": "tier2_parametric:001644@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_001644@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f55c7f806a493d6a0ab200a7962fb921c3d4b34e9c1e063524ba4ae4304bf2e3"
+    },
+    {
+      "audio_seconds": 1.976875,
+      "bytes": 63304,
+      "id": "tier2_parametric:001693@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_001693@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5b269e2752dcf8d716a5b72c47dbe6ee38c29f713eac158be591e3d9ddd98e26"
+    },
+    {
+      "audio_seconds": 5.016875,
+      "bytes": 160584,
+      "id": "tier2_parametric:001720@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_001720@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "727f978c60e156afaf09ea9562c284a6af15e549e99530652e023aeda4420e24"
+    },
+    {
+      "audio_seconds": 7.096875,
+      "bytes": 227144,
+      "id": "tier2_parametric:001869@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_001869@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "86d31ca28555a8967d2754c4ebd2d95e495cfd408cc78b2609e5c0f518558bc0"
+    },
+    {
+      "audio_seconds": 3.896875,
+      "bytes": 124744,
+      "id": "tier2_parametric:001972@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_001972@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4bc5a4b7e2f9eba7b9c0344d3bc9944a08b9bc5ddd871a69f7fb9db0ce2c48c3"
+    },
+    {
+      "audio_seconds": 2.216875,
+      "bytes": 70984,
+      "id": "tier2_parametric:002069@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_002069@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "daaf503d4e40ac9472f5613d040cc26bcc53eae494389db1c322f847f317cb9e"
+    },
+    {
+      "audio_seconds": 2.296875,
+      "bytes": 73544,
+      "id": "tier2_parametric:002197@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_002197@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9e8a7c2fd8b6248b4626aac2a47070436c6f08583257f556e9fab553c1d3ca11"
+    },
+    {
+      "audio_seconds": 3.736875,
+      "bytes": 119624,
+      "id": "tier2_parametric:002289@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_002289@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d84d06ecd615873d2291f4b2f7fcdab5deae9d23edf5936549be7a509b4a24bc"
+    },
+    {
+      "audio_seconds": 2.536875,
+      "bytes": 81224,
+      "id": "tier2_parametric:002334@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_002334@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "569d1c87919a5e862dab857f21efd8cc72395c8d873fb0d281935be643965d2b"
+    },
+    {
+      "audio_seconds": 2.936875,
+      "bytes": 94024,
+      "id": "tier2_parametric:002653@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_002653@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "95a23f5d6f012a376d923a5b5fec2a1814b908893404b0c386285bb9c8fae752"
+    },
+    {
+      "audio_seconds": 3.496875,
+      "bytes": 111944,
+      "id": "tier2_parametric:002787@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_002787@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "aac8ef48fa1136ea47d57914c4ff8d0a03ad9b228ca28e74833b88aef7c1a644"
+    },
+    {
+      "audio_seconds": 4.776875,
+      "bytes": 152904,
+      "id": "tier2_parametric:003068@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_003068@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f0e5ff153abd0009c9c27a3dda97a9020de596a99f296aadcad1a4ce7969a5df"
+    },
+    {
+      "audio_seconds": 2.296875,
+      "bytes": 73544,
+      "id": "tier2_parametric:003115@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_003115@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "aaaaf0126517dcd38981566d7a81c4ed6ecc48b2c01bb6b4bae468a5ebd7d5a1"
+    },
+    {
+      "audio_seconds": 3.496875,
+      "bytes": 111944,
+      "id": "tier2_parametric:003619@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_003619@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "80116e3cbc02a9df42c7fbdc191caf9e46d3c72f347bc3d71d64d15283f4909d"
+    },
+    {
+      "audio_seconds": 3.016875,
+      "bytes": 96584,
+      "id": "tier2_parametric:003631@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_003631@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "458ca543ba4f4661cc728cb6a4043c8c33737dbe69bb715db731f9a673dd7f47"
+    },
+    {
+      "audio_seconds": 4.616875,
+      "bytes": 147784,
+      "id": "tier2_parametric:003650@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_003650@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "eb7217b718607ed024b1682b93e5a04fd8bb6880c1b8340354f48be3f16ee068"
+    },
+    {
+      "audio_seconds": 3.016875,
+      "bytes": 96584,
+      "id": "tier2_parametric:003923@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_003923@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3f99a44d8bb8f98777110ce1216327d957bf01fcdbe678ccd9e6e7360564b550"
+    },
+    {
+      "audio_seconds": 2.056875,
+      "bytes": 65864,
+      "id": "tier2_parametric:004217@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_004217@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "556eea7f4a84de9e3f4cd708c5039a05bb4cf7787a9621d91f60fc0853109214"
+    },
+    {
+      "audio_seconds": 3.256875,
+      "bytes": 104264,
+      "id": "tier2_parametric:004290@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_004290@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0acca26a8d3d6344cb684befa7d126f3253bf810574b262a9436624225d5be22"
+    },
+    {
+      "audio_seconds": 4.296875,
+      "bytes": 137544,
+      "id": "tier2_parametric:004516@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_004516@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4212ed3fc5a568cef6839da78ca788d621f1ca18db53c7399fa18144c6559466"
+    },
+    {
+      "audio_seconds": 3.736875,
+      "bytes": 119624,
+      "id": "tier2_parametric:004826@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_004826@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3e00614c76b821b0f452169545ff56167fed9d12a8de808b7539fd833cdc8170"
+    },
+    {
+      "audio_seconds": 3.336875,
+      "bytes": 106824,
+      "id": "tier2_parametric:005385@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_005385@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "27208a079e8a4ccd65c304f1d71d54927a7ac21caa611927b45b8475c957512c"
+    },
+    {
+      "audio_seconds": 2.536875,
+      "bytes": 81224,
+      "id": "tier2_parametric:005407@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_005407@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d79e258340cfe16155844761237bb516d8fc9cdbacd7e61606115ec4b2a743d4"
+    },
+    {
+      "audio_seconds": 4.856875,
+      "bytes": 155464,
+      "id": "tier2_parametric:005677@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_005677@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "39ef70d30ae75631574cbd4ef4821347b02f68c76cf1b9187ad566a9815c5476"
+    },
+    {
+      "audio_seconds": 6.936875,
+      "bytes": 222024,
+      "id": "tier2_parametric:005678@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_005678@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d41ce1dd3a8c140b5713decfbfdc950fecff1e4f0336a2f7aa759470da0f14aa"
+    },
+    {
+      "audio_seconds": 2.936875,
+      "bytes": 94024,
+      "id": "tier2_parametric:005732@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_005732@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "fbc999bace46eb4708b155973974ae1a94c375d3f70ce69cd9f138d6df030900"
+    },
+    {
+      "audio_seconds": 1.256875,
+      "bytes": 40264,
+      "id": "tier2_parametric:005856@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_005856@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f8ffa17ff4b24f158160640bc973a9c629f62df75844289fedb5981c21449218"
+    },
+    {
+      "audio_seconds": 3.096875,
+      "bytes": 99144,
+      "id": "tier2_parametric:005859@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_005859@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "12c2aaa5343f1bd242f3e91ace490817751652ef0992d3185182e41e4bd3b5b8"
+    },
+    {
+      "audio_seconds": 2.136875,
+      "bytes": 68424,
+      "id": "tier2_parametric:005891@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_005891@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e1d281f06f982c8320c45fca3d3d6ed77be59f4de409ac57df62c153bdcc9e44"
+    },
+    {
+      "audio_seconds": 3.096875,
+      "bytes": 99144,
+      "id": "tier2_parametric:006028@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_006028@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b542354eeeaa22ce2ee04c246ea16aea30eec425dc7ec57463ebdd4c843ef10f"
+    },
+    {
+      "audio_seconds": 1.656875,
+      "bytes": 53064,
+      "id": "tier2_parametric:006210@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_006210@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "fd9d319295a739cd0a6863d4dafd971a8d83e674f42d8f45d6b4c0cbd9f99cd1"
+    },
+    {
+      "audio_seconds": 3.176875,
+      "bytes": 101704,
+      "id": "tier2_parametric:006317@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier2_parametric/tier2_parametric_006317@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "17f63b31b1e99cf0dd54f363d63401590da78259fdce32558cc260c5ecda6075"
+    },
+    {
+      "audio_seconds": 5.736875,
+      "bytes": 183624,
+      "id": "tier3_multi_intent:000078@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_000078@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "2021748f0130ccc0a3cd3984b0261472a72d77d48a52db693334467c448bf652"
+    },
+    {
+      "audio_seconds": 4.936875,
+      "bytes": 158024,
+      "id": "tier3_multi_intent:000259@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_000259@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f46232aae3dff2cec3719a0fbbcbe6b0e2d50dc6b5b11ee4148e53149368bd0b"
+    },
+    {
+      "audio_seconds": 4.856875,
+      "bytes": 155464,
+      "id": "tier3_multi_intent:000419@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_000419@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "61823281354a1458291fc7e7ae1f2d0bb7e4e4c915550bcffa5acd1a16619f73"
+    },
+    {
+      "audio_seconds": 4.536875,
+      "bytes": 145224,
+      "id": "tier3_multi_intent:000427@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_000427@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b6f056df2efc6b69d20cd7b5ca7fb4a8d9685fffa829fc73dd8ef75878e79b5c"
+    },
+    {
+      "audio_seconds": 3.416875,
+      "bytes": 109384,
+      "id": "tier3_multi_intent:000760@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_000760@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1b791ec2dfe5b1efc0a6ecb3eab27c2d0330f915e77a097291f1504fed269bbc"
+    },
+    {
+      "audio_seconds": 4.136875,
+      "bytes": 132424,
+      "id": "tier3_multi_intent:000855@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_000855@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a8ff5567fc7b8a7d7070f11e0305e860601122d571c315d7ebc912981ba86605"
+    },
+    {
+      "audio_seconds": 6.056875,
+      "bytes": 193864,
+      "id": "tier3_multi_intent:000879@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_000879@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3d18ddbc8800d30fdd6e315418b9d7435d29faddb6e0814c1a2406b1aab62313"
+    },
+    {
+      "audio_seconds": 3.736875,
+      "bytes": 119624,
+      "id": "tier3_multi_intent:000924@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_000924@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7ba8024ce07aaf349b746e12288195185e94c1de0caec8038aa7d76f93769c98"
+    },
+    {
+      "audio_seconds": 4.936875,
+      "bytes": 158024,
+      "id": "tier3_multi_intent:000998@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_000998@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f3b5f8d801bb3c83b982316d926e59e5da86a21eb99814937511b0fd8475a254"
+    },
+    {
+      "audio_seconds": 6.776875,
+      "bytes": 216904,
+      "id": "tier3_multi_intent:001251@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_001251@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e39e7631051b2017dcd611d65619d96d384c976948f64c55d4becf0b5126154c"
+    },
+    {
+      "audio_seconds": 7.176875,
+      "bytes": 229704,
+      "id": "tier3_multi_intent:001424@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_001424@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "493d90f4bfc8ecbe99b74c4274f1367a6f93f2979154f2423f5fd1ade1fa4965"
+    },
+    {
+      "audio_seconds": 8.136875,
+      "bytes": 260424,
+      "id": "tier3_multi_intent:001487@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_001487@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d0babf3efc4243925fcc3e03f4b5e3c2dc9c37f6606db4719acd65a908af9454"
+    },
+    {
+      "audio_seconds": 3.096875,
+      "bytes": 99144,
+      "id": "tier3_multi_intent:001511@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_001511@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "772725b10031c5b50580ff6ce590122da1f171937c8c71e7c25dcc693cf282cd"
+    },
+    {
+      "audio_seconds": 7.416875,
+      "bytes": 237384,
+      "id": "tier3_multi_intent:001562@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_001562@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b9fde6773061a692d1bfb6243f9ae3fa88ef6460ded1f7a73c6dee83ec1f1828"
+    },
+    {
+      "audio_seconds": 5.416875,
+      "bytes": 173384,
+      "id": "tier3_multi_intent:001732@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_001732@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8b5562edb5f9e4ebf68f864edd5a83d7422aba0d766415ada56f701a2f51d097"
+    },
+    {
+      "audio_seconds": 6.136875,
+      "bytes": 196424,
+      "id": "tier3_multi_intent:001914@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_001914@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f7cda8d0fb8a1c3a3bd29d2016bf23851a29846072a07e823e54011eb545a77b"
+    },
+    {
+      "audio_seconds": 4.536875,
+      "bytes": 145224,
+      "id": "tier3_multi_intent:002096@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_002096@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e4db7342b172327fed4c1b8668f9316c2f6e5c211d6e609231efa2916611edce"
+    },
+    {
+      "audio_seconds": 3.656875,
+      "bytes": 117064,
+      "id": "tier3_multi_intent:002103@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_002103@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8c6f3347125fe6ddf02d318661ca6a096eb72885268fdbabd25c5ed2c0beef8e"
+    },
+    {
+      "audio_seconds": 5.096875,
+      "bytes": 163144,
+      "id": "tier3_multi_intent:002163@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_002163@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "910a8b2dd9490243e173f1e918f49219d41f2ad45aac71177e2cd06cdb452c37"
+    },
+    {
+      "audio_seconds": 4.136875,
+      "bytes": 132424,
+      "id": "tier3_multi_intent:002166@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_002166@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9ccfbda08bfd5b90b804c32ab2cfcfc0b23c20272f54e557e26cff48e4be841d"
+    },
+    {
+      "audio_seconds": 4.856875,
+      "bytes": 155464,
+      "id": "tier3_multi_intent:002200@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_002200@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3f2d24de533bc2f7ff326207b0c8ad9037ccb2410a9d596c0528c55b5f597001"
+    },
+    {
+      "audio_seconds": 7.016875,
+      "bytes": 224584,
+      "id": "tier3_multi_intent:002264@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_002264@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "714259111fba657f4db273c952ee9cc25f69dbf8b6efea02752e1bc226783ef0"
+    },
+    {
+      "audio_seconds": 8.536875,
+      "bytes": 273224,
+      "id": "tier3_multi_intent:002382@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_002382@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e70cc9457db54fb5f31d3ba34b16453bdf9ecae5b9a0ec47672cd0d792323d17"
+    },
+    {
+      "audio_seconds": 3.816875,
+      "bytes": 122184,
+      "id": "tier3_multi_intent:002405@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_002405@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5443047c2d3b6c7dabff983cadd706350271dfd19421b483c2c1f741d167b955"
+    },
+    {
+      "audio_seconds": 4.296875,
+      "bytes": 137544,
+      "id": "tier3_multi_intent:002421@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_002421@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "bd2a48a2e36da320606a83174ce74fd90e87293a47a3ca2d9b21f6bcdf48f44c"
+    },
+    {
+      "audio_seconds": 5.096875,
+      "bytes": 163144,
+      "id": "tier3_multi_intent:002490@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_002490@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "86f38c62fbf989f32ff690c92f094669b1c477693604f0f6d9618fcd22f7e42b"
+    },
+    {
+      "audio_seconds": 7.256875,
+      "bytes": 232264,
+      "id": "tier3_multi_intent:002553@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_002553@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "30d5ad9e1276a0f87033ee87163d9e4ffd232d6772f538bd644515cac7860563"
+    },
+    {
+      "audio_seconds": 6.376875,
+      "bytes": 204104,
+      "id": "tier3_multi_intent:002560@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_002560@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "92c8eeb60141d9989b8a5ce0f1ae56711d995860ccaf9aeb7a6bf7baf7884a07"
+    },
+    {
+      "audio_seconds": 6.216875,
+      "bytes": 198984,
+      "id": "tier3_multi_intent:002645@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_002645@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c7433ec91d11fc1a6c305a2f348c43b78dc35a1944f18af5f0db9c14bea64f6f"
+    },
+    {
+      "audio_seconds": 4.856875,
+      "bytes": 155464,
+      "id": "tier3_multi_intent:002651@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_002651@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "47fce083bfa8bf2700304e1ab7f8994ee1722f8aee8ea60ccf8586c5376c96f5"
+    },
+    {
+      "audio_seconds": 3.176875,
+      "bytes": 101704,
+      "id": "tier3_multi_intent:002818@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_002818@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c54c5e27a5364c54dac9a234a86deb8cd47e5ccc040ac50ee67668e2b1854c56"
+    },
+    {
+      "audio_seconds": 4.376875,
+      "bytes": 140104,
+      "id": "tier3_multi_intent:002915@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_002915@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3c95f1e0d20070c054cdd90913ac7aa3e52dde659ff87c94978292844b2bc091"
+    },
+    {
+      "audio_seconds": 3.656875,
+      "bytes": 117064,
+      "id": "tier3_multi_intent:002970@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_002970@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4f5af2c2fe01f9f3c0ef3dc2e509ad0e3378400e246cbacd79d2df1f3b53aa73"
+    },
+    {
+      "audio_seconds": 4.696875,
+      "bytes": 150344,
+      "id": "tier3_multi_intent:002986@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_002986@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "184dd48d91b490e7ea0270d105eafcb105ea66156a6c342bd19494120a19cd02"
+    },
+    {
+      "audio_seconds": 4.056875,
+      "bytes": 129864,
+      "id": "tier3_multi_intent:002995@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_002995@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8f0b46f220155945c425eb4f06261eb0232da25bd122d8eefad84002391ce453"
+    },
+    {
+      "audio_seconds": 8.936875,
+      "bytes": 286024,
+      "id": "tier3_multi_intent:003058@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_003058@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7419bbf5911560a6d7844d6f3bcde915a508c801796a9e30104ce596b9bcc532"
+    },
+    {
+      "audio_seconds": 6.456875,
+      "bytes": 206664,
+      "id": "tier3_multi_intent:003153@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_003153@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "12d5224f711fd4e69ad365c0033503e807080e4a03a3339f1d32aef6ce4d0b3b"
+    },
+    {
+      "audio_seconds": 3.736875,
+      "bytes": 119624,
+      "id": "tier3_multi_intent:003220@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_003220@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "bf02ae6417b851bb1931aa821f8d9a14c28a09c76f74ae770e0a238b14a7f6be"
+    },
+    {
+      "audio_seconds": 3.576875,
+      "bytes": 114504,
+      "id": "tier3_multi_intent:003268@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_003268@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a36c14c0a0cae832389924129aaf753fdc0d0e05e1f3e702eec73e94410b5e70"
+    },
+    {
+      "audio_seconds": 5.256875,
+      "bytes": 168264,
+      "id": "tier3_multi_intent:003469@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_003469@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "bd84ab2974b65e159b1411e806bc597e4bdb8b8bdd3915ebb5370fddf3653e63"
+    },
+    {
+      "audio_seconds": 5.016875,
+      "bytes": 160584,
+      "id": "tier3_multi_intent:003642@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_003642@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3d9bb806cb4c40200c2c54169fefbbf6701324f863837c63a3f85be535e7e01f"
+    },
+    {
+      "audio_seconds": 4.856875,
+      "bytes": 155464,
+      "id": "tier3_multi_intent:003740@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_003740@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d28247ba7da9bc4d093f11863477ed9209aff235b73d886fb9682f819e6fb372"
+    },
+    {
+      "audio_seconds": 2.056875,
+      "bytes": 65864,
+      "id": "tier3_multi_intent:003764@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_003764@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "86904eef931eee79a0d4d26d7fbce8f2fde611b8d13e5465116c53858fb2801c"
+    },
+    {
+      "audio_seconds": 5.096875,
+      "bytes": 163144,
+      "id": "tier3_multi_intent:003816@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_003816@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "914090960ca07e9bfda5512e35610ee90d5ad73ba8fb2ab7ce3dcb98c34d28aa"
+    },
+    {
+      "audio_seconds": 5.176875,
+      "bytes": 165704,
+      "id": "tier3_multi_intent:003868@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_003868@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "949da64b632f1a7507b7dbec94d87aee4586ce04f363b5a5b426062dde7df103"
+    },
+    {
+      "audio_seconds": 4.22325,
+      "bytes": 135188,
+      "id": "tier3_multi_intent:003973@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_003973@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5e758c78dff2d456519346e38b579e05c3aef9a62313078885cc99966b39f3c0"
+    },
+    {
+      "audio_seconds": 4.936875,
+      "bytes": 158024,
+      "id": "tier3_multi_intent:003982@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_003982@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6e9d8cda506324b6c10a2d719f59444ba979eb674c7c7bf8d3e47137c328d12a"
+    },
+    {
+      "audio_seconds": 6.376875,
+      "bytes": 204104,
+      "id": "tier3_multi_intent:003994@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_003994@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "598648d1b1b63a7acf165b681e45c511c15164ff7fcd03cf35ae0f059e4b2496"
+    },
+    {
+      "audio_seconds": 2.856875,
+      "bytes": 91464,
+      "id": "tier3_multi_intent:004025@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_004025@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5f4f1f311fa373ad7c32123c6423d299c1707181e4547dfa35a1d7a6522dd55f"
+    },
+    {
+      "audio_seconds": 4.376875,
+      "bytes": 140104,
+      "id": "tier3_multi_intent:004291@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier3_multi_intent/tier3_multi_intent_004291@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a20b58bdf3410a31be509cbfc1ed529a68b01c69c47557e4b4435a9971adb01f"
+    },
+    {
+      "audio_seconds": 1.896875,
+      "bytes": 60744,
+      "id": "tier4_implicit:000141@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_000141@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "26daff1b12d8b94a469bfc88eda69eb6b5ff474c9c72191288fb2a8aa2efa38a"
+    },
+    {
+      "audio_seconds": 2.776875,
+      "bytes": 88904,
+      "id": "tier4_implicit:000216@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_000216@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "11b13fc773e4d7915796d81f69d43d3b110fab01a4d9744b8147d5fa4364dac2"
+    },
+    {
+      "audio_seconds": 1.816875,
+      "bytes": 58184,
+      "id": "tier4_implicit:000279@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_000279@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9ecd3a020953c28c7f7ed9ec0aeec692705efcf76a6a81a4170a73aa62dc159a"
+    },
+    {
+      "audio_seconds": 2.216875,
+      "bytes": 70984,
+      "id": "tier4_implicit:000469@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_000469@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3230845278233be73ac53b69d58dd3baeeb2216ad707327623d9487075bea815"
+    },
+    {
+      "audio_seconds": 2.856875,
+      "bytes": 91464,
+      "id": "tier4_implicit:000562@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_000562@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8a5b7e631560d714bc4526dd6ae7683aa8644c167f55c53c1b2a7bebb8821042"
+    },
+    {
+      "audio_seconds": 4.936875,
+      "bytes": 158024,
+      "id": "tier4_implicit:000655@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_000655@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5bf72b77130c40171661b4b5d9e48e6c00a30092fdb2cd2cc25e6d6adb9b760d"
+    },
+    {
+      "audio_seconds": 2.056875,
+      "bytes": 65864,
+      "id": "tier4_implicit:000812@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_000812@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0d15c2882efca6da0711ea513d5be4332f3a2e219d4126654d77a84067e357d8"
+    },
+    {
+      "audio_seconds": 1.736875,
+      "bytes": 55624,
+      "id": "tier4_implicit:000900@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_000900@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "80e366a04937b1de6fda54a54ca2dd35ab5108251584f4f5ca4caea1ef9578ec"
+    },
+    {
+      "audio_seconds": 1.416875,
+      "bytes": 45384,
+      "id": "tier4_implicit:001010@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_001010@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "354a56e15d71f089faebeba0e855c7fe162b39afac89bc4a22012da5eb34576c"
+    },
+    {
+      "audio_seconds": 1.496875,
+      "bytes": 47944,
+      "id": "tier4_implicit:001034@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_001034@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1474c10602ca5956703164ec24bedc059f77cb464ffe5a84085da5eebfc45cc0"
+    },
+    {
+      "audio_seconds": 1.976875,
+      "bytes": 63304,
+      "id": "tier4_implicit:001074@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_001074@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f860f5871626976111b39a25d0454995fa68fa9f562da123dd64d4c916db2434"
+    },
+    {
+      "audio_seconds": 4.376875,
+      "bytes": 140104,
+      "id": "tier4_implicit:001148@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_001148@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7bfdd2266022eac13804ed82bca5fb60ee91f052121e612022aaedeb1f4e9540"
+    },
+    {
+      "audio_seconds": 3.496875,
+      "bytes": 111944,
+      "id": "tier4_implicit:001389@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_001389@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "84e1310d3065adfe1d646ae1ab342bd9c26ba14089e3c77894773a27d0f9bf0a"
+    },
+    {
+      "audio_seconds": 2.536875,
+      "bytes": 81224,
+      "id": "tier4_implicit:001409@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_001409@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6fd60ef88b49421811834d23c45aa8776a141e908469622d38e3347e3c26faf6"
+    },
+    {
+      "audio_seconds": 1.496875,
+      "bytes": 47944,
+      "id": "tier4_implicit:001513@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_001513@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0ac9a17bc23a5d735921d34d97d54c388dc263b13847865dbdffd925415a3f4e"
+    },
+    {
+      "audio_seconds": 3.576875,
+      "bytes": 114504,
+      "id": "tier4_implicit:001541@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_001541@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "392c1fb9dc7b685552fad90f1c52ac824efb33c4732bb68745148d3523be60e6"
+    },
+    {
+      "audio_seconds": 2.136875,
+      "bytes": 68424,
+      "id": "tier4_implicit:001546@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_001546@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0345c2fa09be140fe957e540c4810008a3e2167cf7584d4eb0e3683e443d351e"
+    },
+    {
+      "audio_seconds": 3.096875,
+      "bytes": 99144,
+      "id": "tier4_implicit:001628@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_001628@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9645e447b5f9fd9ce3e9553ce04bdfad3636c093f35179b244fa023f74a37b93"
+    },
+    {
+      "audio_seconds": 5.176875,
+      "bytes": 165704,
+      "id": "tier4_implicit:001759@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_001759@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c42d56300e4ad073452e78172c6162cc93957245447a7d254baad56c8012c3bc"
+    },
+    {
+      "audio_seconds": 2.056875,
+      "bytes": 65864,
+      "id": "tier4_implicit:001855@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_001855@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "db5f34299ab08549506f40305865abe9926e0bf865e8ac4bcd0ccf92008b75fd"
+    },
+    {
+      "audio_seconds": 2.056875,
+      "bytes": 65864,
+      "id": "tier4_implicit:002024@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_002024@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ad0868ea59ffeb69ae9c5d4ce4b91de38b2ab0b47f87a086b616afeadbcd0076"
+    },
+    {
+      "audio_seconds": 3.736875,
+      "bytes": 119624,
+      "id": "tier4_implicit:002046@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_002046@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "dda14bc2f0e904fa7b15ece01a94c37cbf311a482e4cad4796fd3423e5173ac5"
+    },
+    {
+      "audio_seconds": 3.029688,
+      "bytes": 96994,
+      "id": "tier4_implicit:002071@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_002071@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c9abec532d3f713f7298c3fe355fd48256bac02fa1b575f5d0674e0d73a0f90c"
+    },
+    {
+      "audio_seconds": 3.016875,
+      "bytes": 96584,
+      "id": "tier4_implicit:002119@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_002119@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9a114a7dd7cad26f40c713911272358e9a4290371edb2df3400731945318b725"
+    },
+    {
+      "audio_seconds": 4.056875,
+      "bytes": 129864,
+      "id": "tier4_implicit:002241@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_002241@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b275fb76e39ffbd6eb8df6243b0cda870cbb58f0a968afcc9e2f617a4826caa0"
+    },
+    {
+      "audio_seconds": 3.896875,
+      "bytes": 124744,
+      "id": "tier4_implicit:002314@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_002314@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "da1ab8977f86c860d120528cc165620b17dc7323d44525906eaecb3080e96e81"
+    },
+    {
+      "audio_seconds": 3.576875,
+      "bytes": 114504,
+      "id": "tier4_implicit:002376@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_002376@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1ff18daf94e5d627e56eb5abca0d10ebf574e47d4fff7ad1cfa38f85c99214ed"
+    },
+    {
+      "audio_seconds": 2.376875,
+      "bytes": 76104,
+      "id": "tier4_implicit:002412@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_002412@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "59024e21267b9f6afdafed67d54a67d41ce936bc5136cf594af3c001c78ad920"
+    },
+    {
+      "audio_seconds": 1.496875,
+      "bytes": 47944,
+      "id": "tier4_implicit:002563@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_002563@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "2283227fe08192666a7b7d4aee6eb3bce8b32435211699eb38d64ed5d6bd7762"
+    },
+    {
+      "audio_seconds": 3.336875,
+      "bytes": 106824,
+      "id": "tier4_implicit:002649@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_002649@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1b47bef48d9852319e7c1550e248fa5bfd8e6ca9c07190afea77d539c641e39a"
+    },
+    {
+      "audio_seconds": 1.176875,
+      "bytes": 37704,
+      "id": "tier4_implicit:002718@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_002718@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "74fb8c3d2162662930d505889fb1d750a9435bdae2b573362a9163794fc2366d"
+    },
+    {
+      "audio_seconds": 1.976875,
+      "bytes": 63304,
+      "id": "tier4_implicit:002719@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_002719@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f36aad52a6c613a1056108a8d520b62d5064fcd16f18f73ddbdced0eb0ca0448"
+    },
+    {
+      "audio_seconds": 3.896875,
+      "bytes": 124744,
+      "id": "tier4_implicit:002943@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_002943@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "72f1a912db0845097fd75e76c5ca2decdae7d47c3ca66e1ca85a6ba7718d8ad9"
+    },
+    {
+      "audio_seconds": 1.656875,
+      "bytes": 53064,
+      "id": "tier4_implicit:002987@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_002987@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8f5b52657639df3f7aa93d05b8a09833dde5cab0009af4722aa3ab33252e3eef"
+    },
+    {
+      "audio_seconds": 2.056875,
+      "bytes": 65864,
+      "id": "tier4_implicit:003049@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_003049@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "cf972e9ed0e0c6db037e67a1e10c3aabae62a57c83872e3f10b09ee5b78209da"
+    },
+    {
+      "audio_seconds": 2.536875,
+      "bytes": 81224,
+      "id": "tier4_implicit:003079@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_003079@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "52723def442b46185985adc9899a095f7c47c9eecb31a6a13525f81079223e09"
+    },
+    {
+      "audio_seconds": 1.816875,
+      "bytes": 58184,
+      "id": "tier4_implicit:003199@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_003199@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "490b9a00482744976376aee7c35e8864ff67b2331cac53f9e29f410a689cabec"
+    },
+    {
+      "audio_seconds": 3.896875,
+      "bytes": 124744,
+      "id": "tier4_implicit:003312@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_003312@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "88670d07049f1fd1ff7c860e9a1ef57ede8791ab44470145a23823954112fb7f"
+    },
+    {
+      "audio_seconds": 1.736875,
+      "bytes": 55624,
+      "id": "tier4_implicit:003317@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_003317@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e8314db11b4f2ead9bbce07ebfc69d34d28e9ca925180a7158abcbab322471cc"
+    },
+    {
+      "audio_seconds": 3.016875,
+      "bytes": 96584,
+      "id": "tier4_implicit:003370@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_003370@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "bbeb0ca426ad0935b26a0a61da95d80a51cb9ff34b78c4c7f8b21c1f36ecd884"
+    },
+    {
+      "audio_seconds": 2.616875,
+      "bytes": 83784,
+      "id": "tier4_implicit:003464@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_003464@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8b3f15356428e31bf9767b3c6b71daf0cad0aec2d98339dc4034beef44b6000f"
+    },
+    {
+      "audio_seconds": 5.096875,
+      "bytes": 163144,
+      "id": "tier4_implicit:003473@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_003473@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1af729e6e614a8d704ae4a8081885b5de5677718d554b224639c2207110cdeca"
+    },
+    {
+      "audio_seconds": 3.576875,
+      "bytes": 114504,
+      "id": "tier4_implicit:003484@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_003484@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a819af285a4bd768f76e2e79e943870a6263ad7ae57b90f97bf366fea401a670"
+    },
+    {
+      "audio_seconds": 1.496875,
+      "bytes": 47944,
+      "id": "tier4_implicit:003523@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_003523@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "10e527cc974c97288ac3285976e2a2c81acba1618c8c08195374b1fdc43b76ce"
+    },
+    {
+      "audio_seconds": 1.656875,
+      "bytes": 53064,
+      "id": "tier4_implicit:003664@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_003664@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e1dea054499824e484d104f9face507a09681c9a147246fc0f5db57a45725fdd"
+    },
+    {
+      "audio_seconds": 1.816875,
+      "bytes": 58184,
+      "id": "tier4_implicit:003734@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_003734@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ad047607339ec09c2e170289aaace8edcff658cb59a0fcbbee00f21dc9bf3169"
+    },
+    {
+      "audio_seconds": 3.416875,
+      "bytes": 109384,
+      "id": "tier4_implicit:003949@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_003949@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5e4c38948ce7fb91a85ecaeaf5274481392ddba1e2a96383ffdedd74c3e697e8"
+    },
+    {
+      "audio_seconds": 4.456875,
+      "bytes": 142664,
+      "id": "tier4_implicit:003979@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_003979@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "93807f8d0bc76329ced8313607248da334ad9efee841c6ffe9765d4dab193241"
+    },
+    {
+      "audio_seconds": 2.136875,
+      "bytes": 68424,
+      "id": "tier4_implicit:004122@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_004122@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "2ee0601bd32ee80b58db996c1f0ff4b1eaaf1bd267345dc730dcc3c6270437dc"
+    },
+    {
+      "audio_seconds": 3.336875,
+      "bytes": 106824,
+      "id": "tier4_implicit:004273@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier4_implicit/tier4_implicit_004273@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a92f9a2b4ee77b8b5638cf8c65e995d4a0050f1432f9319ca5d87cede24064a6"
+    },
+    {
+      "audio_seconds": 7.736875,
+      "bytes": 247624,
+      "id": "tier5_needle:000060@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_000060@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3731a92b3ef5eaa29ec7f0ead288c910a4d135c47a75a3788fdcd2097963efd4"
+    },
+    {
+      "audio_seconds": 12.376875,
+      "bytes": 396104,
+      "id": "tier5_needle:000061@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_000061@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "cf11c37e2dbaa75934bbbd10b26c7a07c2492b6c3438fa8f7dcc0ff35bec8c86"
+    },
+    {
+      "audio_seconds": 11.496875,
+      "bytes": 367944,
+      "id": "tier5_needle:000151@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_000151@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5c935c160be2027581ab26dcf280b406effa2459417f4c60c2558418427f2dda"
+    },
+    {
+      "audio_seconds": 12.056875,
+      "bytes": 385864,
+      "id": "tier5_needle:000171@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_000171@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "72929e761461647a3a38677241fda488c33e95006befdde93b0a607414cf1bc3"
+    },
+    {
+      "audio_seconds": 12.856875,
+      "bytes": 411464,
+      "id": "tier5_needle:000241@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_000241@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8928b8062787bc1a270391e9fdacb45f092ac3afa376f45dbd8c1843a64e6e3f"
+    },
+    {
+      "audio_seconds": 13.816875,
+      "bytes": 442184,
+      "id": "tier5_needle:000285@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_000285@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6e2c0d6cd8c466d34a03ad99e4dd7891d08b8513610b8214a0283de24d464497"
+    },
+    {
+      "audio_seconds": 8.376875,
+      "bytes": 268104,
+      "id": "tier5_needle:000534@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_000534@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "49af8e883e54ea5031772ac1946905ed6b3992f1c31179c5eb990b54ee91c7e7"
+    },
+    {
+      "audio_seconds": 10.376875,
+      "bytes": 332104,
+      "id": "tier5_needle:000537@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_000537@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ddb36b4b96778de885275384c71afda945f68dbf90cde6c8a0216425ed6fb4f4"
+    },
+    {
+      "audio_seconds": 10.376875,
+      "bytes": 332104,
+      "id": "tier5_needle:000595@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_000595@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f82ad5f791760199510186f8a09cae145b6264150dc01e469d5ca49059b988c6"
+    },
+    {
+      "audio_seconds": 6.936875,
+      "bytes": 222024,
+      "id": "tier5_needle:000757@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_000757@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "560683d3f21c073555fdd67e26483aabad94e21ffd7a58ff513046f4d3516606"
+    },
+    {
+      "audio_seconds": 11.016875,
+      "bytes": 352584,
+      "id": "tier5_needle:000976@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_000976@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "374e8aff1e66b647d27e8aaddea7cb6fea601e3920ba170d5fa0bd7876131a5a"
+    },
+    {
+      "audio_seconds": 10.776875,
+      "bytes": 344904,
+      "id": "tier5_needle:001059@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_001059@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7eb7ed8cce360995fd5394a1634db2412400d907442a1cfd131e4acddd6d7bfe"
+    },
+    {
+      "audio_seconds": 13.176875,
+      "bytes": 421704,
+      "id": "tier5_needle:001248@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_001248@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "448be6c5a82b71f8d119348616d475120e267d7da092ee54055eeddfdd2103cf"
+    },
+    {
+      "audio_seconds": 11.576875,
+      "bytes": 370504,
+      "id": "tier5_needle:001296@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_001296@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3a13577e1bf919dd914c1463d3a5531a4cb2ea4194ca2c8ec601677b3c359d9d"
+    },
+    {
+      "audio_seconds": 11.176875,
+      "bytes": 357704,
+      "id": "tier5_needle:001323@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_001323@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "862346a8591c47535ee67c1441718e9aa70daf39b48dc97f5f167400f17997b7"
+    },
+    {
+      "audio_seconds": 8.936875,
+      "bytes": 286024,
+      "id": "tier5_needle:001368@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_001368@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "afc001c801bfdb89d50eef46c8256480b31534f11587a7468a4a7b290f744419"
+    },
+    {
+      "audio_seconds": 13.256875,
+      "bytes": 424264,
+      "id": "tier5_needle:001430@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_001430@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "672acea38bf34e95203753f8bef7ae0d0dbc0f9b54e3efa8aaa8a56e10a5bde6"
+    },
+    {
+      "audio_seconds": 10.376875,
+      "bytes": 332104,
+      "id": "tier5_needle:001458@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_001458@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "24ac9c39cea623eca8798df648301be581731a7c37b8dadb281eaff36d609fcf"
+    },
+    {
+      "audio_seconds": 6.216875,
+      "bytes": 198984,
+      "id": "tier5_needle:001532@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_001532@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "97ad1adaebf4b18c5edbd4ac7e9aa24f294c18a62254f123acdc4ff5cfa7f35b"
+    },
+    {
+      "audio_seconds": 12.056875,
+      "bytes": 385864,
+      "id": "tier5_needle:001656@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_001656@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "99179ad977b6130eaf820a8d73c728155f626ca47d0ed2012d8e0d5621965dea"
+    },
+    {
+      "audio_seconds": 13.736875,
+      "bytes": 439624,
+      "id": "tier5_needle:001679@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_001679@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1bcd4b340868ba9d5ee9350fb849270c7f16b1b58868fc8e2cf833777e442f7e"
+    },
+    {
+      "audio_seconds": 7.336875,
+      "bytes": 234824,
+      "id": "tier5_needle:001687@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_001687@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "88237328efa280d476edbe67a4489d869eb755a4f5f60a42a95617696995e4e3"
+    },
+    {
+      "audio_seconds": 11.496875,
+      "bytes": 367944,
+      "id": "tier5_needle:001719@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_001719@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "afacd6fba79df23e3e74a3c9721512f510a525040407b37872cc3af2e5d3061f"
+    },
+    {
+      "audio_seconds": 9.976875,
+      "bytes": 319304,
+      "id": "tier5_needle:001795@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_001795@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1c26449375ac128fe4989829bfbea7922fab17e8af9abc876c8a78fded31123c"
+    },
+    {
+      "audio_seconds": 8.536875,
+      "bytes": 273224,
+      "id": "tier5_needle:001930@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_001930@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d50efd2c56aa9c64d45a737dcb27a030c810031e6de11f2d221403be4be41ffa"
+    },
+    {
+      "audio_seconds": 12.536875,
+      "bytes": 401224,
+      "id": "tier5_needle:002007@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_002007@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "723c8694f2948c33c9add99efb907478265b501105d7d20efe78fbd5dc9a93ba"
+    },
+    {
+      "audio_seconds": 11.416875,
+      "bytes": 365384,
+      "id": "tier5_needle:002054@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_002054@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "de9a29ee2f4fcd004e78928eca39b3f5048b603c50bbd6c18f294140302ae622"
+    },
+    {
+      "audio_seconds": 11.496875,
+      "bytes": 367944,
+      "id": "tier5_needle:002215@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_002215@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "80e37c28b9beebcc0f42c09f316631e5b46300e8915f98208f3e9b9206a332a1"
+    },
+    {
+      "audio_seconds": 9.096875,
+      "bytes": 291144,
+      "id": "tier5_needle:002284@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_002284@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "df6e4d542b740b7d07db0aa37821226a0a0987393fcf38610846d7b175bb0397"
+    },
+    {
+      "audio_seconds": 14.136875,
+      "bytes": 452424,
+      "id": "tier5_needle:002396@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_002396@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f1def3c889e2d04b343a02446c10a27ec08d0c11f2c29f0c9e4c914f489ca38f"
+    },
+    {
+      "audio_seconds": 13.016875,
+      "bytes": 416584,
+      "id": "tier5_needle:002428@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_002428@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "03055ec88a07e5833a03017192d8859200f668cef94af190133e214d01f738d9"
+    },
+    {
+      "audio_seconds": 12.856875,
+      "bytes": 411464,
+      "id": "tier5_needle:002546@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_002546@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "bab668d5e2e55fd12133b2bc2cf7d0b29cd312b4dc52d00935b6610609da844d"
+    },
+    {
+      "audio_seconds": 11.256875,
+      "bytes": 360264,
+      "id": "tier5_needle:002638@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_002638@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "10e856e48cffc4a4000bc8a7233a242dfd6750a4a30e8ce71931ed3d6f44cc74"
+    },
+    {
+      "audio_seconds": 14.616875,
+      "bytes": 467784,
+      "id": "tier5_needle:002640@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_002640@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f366297a310da45a02a1cf139d82db085667dbfbb1e8478c5341d9f8b281ae6f"
+    },
+    {
+      "audio_seconds": 9.416875,
+      "bytes": 301384,
+      "id": "tier5_needle:002753@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_002753@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "91132bf94b2168d1ad78a6efeb9c72bf42d77fc10897957dc44b26ebf2330e19"
+    },
+    {
+      "audio_seconds": 9.336875,
+      "bytes": 298824,
+      "id": "tier5_needle:003107@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_003107@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ad2261a6d910f03816bd02463e2612260e4e09bff32e5ed143dbe0431f464343"
+    },
+    {
+      "audio_seconds": 9.896875,
+      "bytes": 316744,
+      "id": "tier5_needle:003189@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_003189@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f6d93d5c2359ca687e5ad048ed4e1ca4a662c98804279b615063fc30aeb4b15d"
+    },
+    {
+      "audio_seconds": 14.696875,
+      "bytes": 470344,
+      "id": "tier5_needle:003305@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_003305@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "095366430310caa58e6ca77e02485b0a34abdc11b95d0bc4b8823718705f1466"
+    },
+    {
+      "audio_seconds": 9.016875,
+      "bytes": 288584,
+      "id": "tier5_needle:003341@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_003341@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "adcd0d5134500361e3e3ee9377bda73fce87b8e59474f4ca485bb75ef5a3f576"
+    },
+    {
+      "audio_seconds": 11.816875,
+      "bytes": 378184,
+      "id": "tier5_needle:003355@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_003355@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c34898b4855499d244714d24e735002cdd9a1f58f4b856e5f4b9cef021f4e392"
+    },
+    {
+      "audio_seconds": 10.456875,
+      "bytes": 334664,
+      "id": "tier5_needle:003398@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_003398@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d9de2dd0802aa8368b10ce1368874c7da1c7ebbd3ef9834385916662b8d586c3"
+    },
+    {
+      "audio_seconds": 11.816875,
+      "bytes": 378184,
+      "id": "tier5_needle:003592@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_003592@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ec0c6cb5fed06a0800431817fe3262638ce14864fd9678c83888e71fb3cf533d"
+    },
+    {
+      "audio_seconds": 11.176875,
+      "bytes": 357704,
+      "id": "tier5_needle:003841@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_003841@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7568b6b4be2b6b781b364952ddd07599a96438817d6e409b154b4b4eeab04442"
+    },
+    {
+      "audio_seconds": 9.576875,
+      "bytes": 306504,
+      "id": "tier5_needle:003863@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_003863@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e6e7e667be13f33dbbe4bb299394581d87ee89589fe4c0be4392d114a4c4487a"
+    },
+    {
+      "audio_seconds": 10.216875,
+      "bytes": 326984,
+      "id": "tier5_needle:003873@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_003873@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d00cb03c4e4279e41a2889a33f71bc6d5ca223ad446f54013fd25b4ad6815495"
+    },
+    {
+      "audio_seconds": 10.856875,
+      "bytes": 347464,
+      "id": "tier5_needle:003935@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_003935@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "453c62eaef4d7d435dfef1af7eda3de79276c4552566fae49fcac3d7beaa69a5"
+    },
+    {
+      "audio_seconds": 7.736875,
+      "bytes": 247624,
+      "id": "tier5_needle:003940@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_003940@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5291706f7f8938e70e1799a9ae38c31248711dfa418665435c35e288446be1fe"
+    },
+    {
+      "audio_seconds": 10.536875,
+      "bytes": 337224,
+      "id": "tier5_needle:004037@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_004037@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1dac63390f8a2f466134098a901dbd7f6602cea186811d940a1462936f457c9e"
+    },
+    {
+      "audio_seconds": 11.656875,
+      "bytes": 373064,
+      "id": "tier5_needle:004078@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_004078@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "31dc41fa9b906d29ff5051b1bdb95c9a650bf63d8c9a0d448b4747711201bb70"
+    },
+    {
+      "audio_seconds": 11.496875,
+      "bytes": 367944,
+      "id": "tier5_needle:004242@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier5_needle/tier5_needle_004242@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c587c1273ccef95e0ea310b24742a6db53e9969ca3ccc0439186e71aafb7f15d"
+    },
+    {
+      "audio_seconds": 4.456875,
+      "bytes": 142664,
+      "id": "tier6_correction:000008@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_000008@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c7fdb04f69d885def8bc58cbd5aaf7207a0aa0f3586bb875d36abc873618ae92"
+    },
+    {
+      "audio_seconds": 4.216875,
+      "bytes": 134984,
+      "id": "tier6_correction:000009@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_000009@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0a56d8ef6b2f8fca7c291bb291e0f76967d975d1cbc877ef3ca050546309db1a"
+    },
+    {
+      "audio_seconds": 5.416875,
+      "bytes": 173384,
+      "id": "tier6_correction:000168@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_000168@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4c61d47afe61d17163d0a14d23556940e6c5f6805837a09c2201776e9bfee3c1"
+    },
+    {
+      "audio_seconds": 7.896875,
+      "bytes": 252744,
+      "id": "tier6_correction:000305@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_000305@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f22559b4e01b3b0313639e37d13d913d61409e67acf41a5aa9a52aac693ba1df"
+    },
+    {
+      "audio_seconds": 3.576875,
+      "bytes": 114504,
+      "id": "tier6_correction:000398@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_000398@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c2659067d69ce2efa4fa49256c9df15ba168a48f2b58dc007eebd3d96844add1"
+    },
+    {
+      "audio_seconds": 4.296875,
+      "bytes": 137544,
+      "id": "tier6_correction:000484@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_000484@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "81c6de06cedd39dd1e59404ea57f0dba158e88bb0b61f099fa2ed628069c0cb4"
+    },
+    {
+      "audio_seconds": 6.376875,
+      "bytes": 204104,
+      "id": "tier6_correction:000590@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_000590@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4750f9bb8b675c66dcbe7f296e805f93f1bde7f64dc0e5a4d328adf072bee147"
+    },
+    {
+      "audio_seconds": 3.656875,
+      "bytes": 117064,
+      "id": "tier6_correction:000631@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_000631@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f62c990a615cc2710e84e7acc2350d36b630fb836aad7a2b1521e85e636a0cb7"
+    },
+    {
+      "audio_seconds": 4.056875,
+      "bytes": 129864,
+      "id": "tier6_correction:000946@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_000946@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "353ca09371ceb238191d8914ce392a3b6d6c3947939b5fd26cce6fc19d4e1396"
+    },
+    {
+      "audio_seconds": 4.856875,
+      "bytes": 155464,
+      "id": "tier6_correction:001056@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_001056@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e1654ab9054fc5861305b4863cfe1a89b91626920e4162a9ac7995fd49943325"
+    },
+    {
+      "audio_seconds": 6.696875,
+      "bytes": 214344,
+      "id": "tier6_correction:001329@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_001329@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b4c20ce82249804cfad63204d327860f3465d9cb712bf10cbea44aeac5d0ff8e"
+    },
+    {
+      "audio_seconds": 6.376875,
+      "bytes": 204104,
+      "id": "tier6_correction:001489@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_001489@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a3f90181733d283a185ebcb0b22700fb2acb7b8c4377b15e21c7ad907b7282e7"
+    },
+    {
+      "audio_seconds": 6.136875,
+      "bytes": 196424,
+      "id": "tier6_correction:001618@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_001618@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f913ded6fea8f9b77e4611551ca682d00355d39d58c16ca6c36392ea2beded8d"
+    },
+    {
+      "audio_seconds": 5.656875,
+      "bytes": 181064,
+      "id": "tier6_correction:001756@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_001756@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8c0697512b4d23789d4d8730e3726097782bf362c798479a0cbdf33fd92403e6"
+    },
+    {
+      "audio_seconds": 3.896875,
+      "bytes": 124744,
+      "id": "tier6_correction:001764@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_001764@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c73bc978e363438367911c6e539c1c0207171e149660adb0a087bf138f740317"
+    },
+    {
+      "audio_seconds": 5.336875,
+      "bytes": 170824,
+      "id": "tier6_correction:001766@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_001766@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "36e102d513538191a9938637d8da42c38d20e769726dc06d9dc387f3c8127cbd"
+    },
+    {
+      "audio_seconds": 7.896875,
+      "bytes": 252744,
+      "id": "tier6_correction:001794@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_001794@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9def722d61dc61cea2e29bf9e025a686286437afcc6a5890bc225c62062889fd"
+    },
+    {
+      "audio_seconds": 4.233375,
+      "bytes": 135512,
+      "id": "tier6_correction:001873@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_001873@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f4320d207d014799f8d7121c1daee024505255e60126a4185a44f445b41aa84d"
+    },
+    {
+      "audio_seconds": 5.176875,
+      "bytes": 165704,
+      "id": "tier6_correction:002178@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_002178@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "16785f7f5c0fc05ef9dd206bbf08e8e7bfc3ef85fb632c13b34324759feaab0b"
+    },
+    {
+      "audio_seconds": 4.856875,
+      "bytes": 155464,
+      "id": "tier6_correction:002179@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_002179@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7580747c071176e190ae9177f2adc5b278c42a0d512f60a1fddce85aad239449"
+    },
+    {
+      "audio_seconds": 3.416875,
+      "bytes": 109384,
+      "id": "tier6_correction:002205@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_002205@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b2c3e075dfcc8626c8295a0ab637009065cf1d86aa0589704a6f2bc25ba5ce22"
+    },
+    {
+      "audio_seconds": 4.456875,
+      "bytes": 142664,
+      "id": "tier6_correction:002270@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_002270@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c9696de16a2aef4c50afc5008f25b5cd2d1534e0b53c678f3c67e45b9759dda8"
+    },
+    {
+      "audio_seconds": 3.816875,
+      "bytes": 122184,
+      "id": "tier6_correction:002313@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_002313@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ce3165dd820b26adc3ca7c6ff554ec706d322d24fb2c3fb3b241241ec19d9d8e"
+    },
+    {
+      "audio_seconds": 4.696875,
+      "bytes": 150344,
+      "id": "tier6_correction:002430@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_002430@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "67f79b4f14a9ff68f9f1c0415e748392c08fab19231016030529fa4018801faf"
+    },
+    {
+      "audio_seconds": 7.896875,
+      "bytes": 252744,
+      "id": "tier6_correction:002461@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_002461@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5935b52d984b636da51065339a6aff028f20c3d692b3b15cad5aacf777c6261e"
+    },
+    {
+      "audio_seconds": 5.896875,
+      "bytes": 188744,
+      "id": "tier6_correction:002548@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_002548@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "11be63a50918efd6d30b1183bba6c8ce57b0d821501115148d0d7037a1a000ac"
+    },
+    {
+      "audio_seconds": 5.416875,
+      "bytes": 173384,
+      "id": "tier6_correction:002630@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_002630@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "93d5738ba8b6a92798d7bd9664940023bc87502cecfa56fd74fe9e28f9750993"
+    },
+    {
+      "audio_seconds": 8.14875,
+      "bytes": 260804,
+      "id": "tier6_correction:002689@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_002689@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "612cc432a06a8ca12a09b77c3960eebf13cf7db7576b5cde792728f3f8c766f2"
+    },
+    {
+      "audio_seconds": 4.856875,
+      "bytes": 155464,
+      "id": "tier6_correction:002740@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_002740@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "be835c8f47e531302015c0704dc2b381fb2802cc4266027878f0acec3071ea56"
+    },
+    {
+      "audio_seconds": 4.856875,
+      "bytes": 155464,
+      "id": "tier6_correction:002850@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_002850@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "481f2ad4b845f09a5251b5ece2c9bd7c8c040e1b3edfe8272e5ba868c2d5f07a"
+    },
+    {
+      "audio_seconds": 7.096875,
+      "bytes": 227144,
+      "id": "tier6_correction:002940@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_002940@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d76f5b7938c679645d52cb91043d57d5c14f0161f75d7682abe2a7d82b6141ed"
+    },
+    {
+      "audio_seconds": 5.976875,
+      "bytes": 191304,
+      "id": "tier6_correction:002999@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_002999@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "5b703485e6116d0d7b2756a0c93e3d42fec5fbc228cc374407a4944fe3b1a14a"
+    },
+    {
+      "audio_seconds": 4.376875,
+      "bytes": 140104,
+      "id": "tier6_correction:003043@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_003043@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8b0a497a73ed19e3aa57cea04aab1e3a61fa80521c06255d2841dce75e60a967"
+    },
+    {
+      "audio_seconds": 5.256875,
+      "bytes": 168264,
+      "id": "tier6_correction:003103@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_003103@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d6e519baf592fec26728245b22990a80a1a9eec13fb9d8ba0becab6eeb4bf3f3"
+    },
+    {
+      "audio_seconds": 3.096875,
+      "bytes": 99144,
+      "id": "tier6_correction:003197@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_003197@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "165dd6ce1358d23e74ea64d9979807c4ee24de714576498a2d01f9d4dc165624"
+    },
+    {
+      "audio_seconds": 3.976875,
+      "bytes": 127304,
+      "id": "tier6_correction:003198@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_003198@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e0740d020429b88c5f81806412c7e70eb8c7f4498c63e201aba6b5e6af403b54"
+    },
+    {
+      "audio_seconds": 4.136875,
+      "bytes": 132424,
+      "id": "tier6_correction:003226@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_003226@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b8d70146dddee28d05c0b509b06e65d1636166b19d6511b5857f202a409949cd"
+    },
+    {
+      "audio_seconds": 4.946875,
+      "bytes": 158344,
+      "id": "tier6_correction:003267@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_003267@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7ad84f9cb5d14cbcdb982e06e90eb0064c0187ae026cca71bafff7f4f09b1be5"
+    },
+    {
+      "audio_seconds": 6.536875,
+      "bytes": 209224,
+      "id": "tier6_correction:003450@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_003450@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "965a7141119bfcee59c5688f566562cdb5db39d48e330318e56664b04823e4a4"
+    },
+    {
+      "audio_seconds": 5.496875,
+      "bytes": 175944,
+      "id": "tier6_correction:003568@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_003568@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "84ef24c1780ede7b4613b44f16fbfcc54033ef036f7c6ff1657a2c1cc656fc90"
+    },
+    {
+      "audio_seconds": 4.392938,
+      "bytes": 140618,
+      "id": "tier6_correction:003671@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_003671@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "034587032a0c54f5ea74a0f18cf2f167d63353a0c4744b2c48bb27da9970b600"
+    },
+    {
+      "audio_seconds": 3.1955,
+      "bytes": 102300,
+      "id": "tier6_correction:003783@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_003783@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "cb81eca92cbe6f92a014e67a7f93d7d6eda9722d4098c468b79bb89b1655217c"
+    },
+    {
+      "audio_seconds": 4.616875,
+      "bytes": 147784,
+      "id": "tier6_correction:003820@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_003820@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0a6fbdedfd44ab3a0e76879a25f8d5c55b59143d1f2faafcf08d013c2f2b1f19"
+    },
+    {
+      "audio_seconds": 6.056875,
+      "bytes": 193864,
+      "id": "tier6_correction:003856@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_003856@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "15377a31ea336eb0c0de66c0f3e8a226f880560ba62fe04695632b1cac884bb0"
+    },
+    {
+      "audio_seconds": 5.896875,
+      "bytes": 188744,
+      "id": "tier6_correction:003900@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_003900@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b9d639a0d4c90de5d8090f2f20bef658e6dc9bf5cf9c616fb3da8f512211b1aa"
+    },
+    {
+      "audio_seconds": 5.496875,
+      "bytes": 175944,
+      "id": "tier6_correction:004017@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_004017@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4978c8f03311a7891fe2d2d4aedde95559a00a4a01d986cae1608c8d25167223"
+    },
+    {
+      "audio_seconds": 5.976875,
+      "bytes": 191304,
+      "id": "tier6_correction:004155@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_004155@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "2b207102a071297471ffcedfd50704462d68c43afa85d83c01e1e26689aab25d"
+    },
+    {
+      "audio_seconds": 6.616875,
+      "bytes": 211784,
+      "id": "tier6_correction:004160@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_004160@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "97e7361cb514245545986083e0df2353bf7abf9924e229a71d9abdd920ea6d5d"
+    },
+    {
+      "audio_seconds": 4.216875,
+      "bytes": 134984,
+      "id": "tier6_correction:004215@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_004215@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4c0608c4d1bee27572ba0ea79488092a7339ba734092176d71e5bac673356b05"
+    },
+    {
+      "audio_seconds": 6.056875,
+      "bytes": 193864,
+      "id": "tier6_correction:004281@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier6_correction/tier6_correction_004281@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a7ff482641b91f143939727956117e850c303e5669830d52ec6c7d07a9e0570a"
+    },
+    {
+      "audio_seconds": 6.776875,
+      "bytes": 216904,
+      "id": "tier7_multiturn:000009@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000009@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "88b1f16bcd58c7fb023ce3158395143bb39c7a5d466ef1507bd2c5fd74293be3"
+    },
+    {
+      "audio_seconds": 4.310937,
+      "bytes": 137994,
+      "id": "tier7_multiturn:000043@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000043@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0f2fb53292b1712709daa3f99ed0e828708ea6ad01e3b14643f89bb53c050678"
+    },
+    {
+      "audio_seconds": 34.03375,
+      "bytes": 1089124,
+      "id": "tier7_multiturn:000062@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000062@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a43c6564872efa9ecf6db8059298fa8c114cf03984cf037c2b4d5f7cd86eae42"
+    },
+    {
+      "audio_seconds": 8.136875,
+      "bytes": 260424,
+      "id": "tier7_multiturn:000091@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000091@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b4e3ab2e696a41d5a0220cdf2cef64f998d9d49a8b28aa39dd2c3022762a7e58"
+    },
+    {
+      "audio_seconds": 1.896875,
+      "bytes": 60744,
+      "id": "tier7_multiturn:000214@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000214@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "eba5daa669254df6b69e90c4a8976c110b63489c1f9ea45479301ed7a51d1ae6"
+    },
+    {
+      "audio_seconds": 3.816875,
+      "bytes": 122184,
+      "id": "tier7_multiturn:000272@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000272@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c5b1a018e7df994a3df5480ec71bf07de33eed6bc92b71e03e92a3f082d3f4d6"
+    },
+    {
+      "audio_seconds": 2.456875,
+      "bytes": 78664,
+      "id": "tier7_multiturn:000274@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000274@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "64ce867f84381f9b1bd2e6184386b83e3f248fff32b22fc2cbe1f92d820725a2"
+    },
+    {
+      "audio_seconds": 5.976875,
+      "bytes": 191304,
+      "id": "tier7_multiturn:000293@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000293@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ef0e6eceb426097699c6d75c43a9629121702b48a5d711358dcbf316f48c0203"
+    },
+    {
+      "audio_seconds": 3.816875,
+      "bytes": 122184,
+      "id": "tier7_multiturn:000318@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000318@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d32598bbeb40b18e395c580a8ef43b1b1f790facbed41b50b7ecb309925c85a0"
+    },
+    {
+      "audio_seconds": 5.576875,
+      "bytes": 178504,
+      "id": "tier7_multiturn:000330@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000330@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "019d3e6a1101bc31ea4d7460c19f9a175d4683325896e68b27ee702979243136"
+    },
+    {
+      "audio_seconds": 2.696875,
+      "bytes": 86344,
+      "id": "tier7_multiturn:000348@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000348@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a87b9f358d0862e970e8a1cd655f11890b692f439d86abc02085aae375c95897"
+    },
+    {
+      "audio_seconds": 5.176875,
+      "bytes": 165704,
+      "id": "tier7_multiturn:000418@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000418@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1172b5ad0db8eb31feb2fa8b994ceb6264bd0d2df0afe54ab11feb7e832a1391"
+    },
+    {
+      "audio_seconds": 7.736875,
+      "bytes": 247624,
+      "id": "tier7_multiturn:000440@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000440@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c0d2896ed0effd569df040ef7b553fd315629d9d14f7bbfd66a33f32bb0d93de"
+    },
+    {
+      "audio_seconds": 27.79375,
+      "bytes": 889444,
+      "id": "tier7_multiturn:000545@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000545@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8fc86395b99bd20fb49faa4a5e9cd1aa1aca22e7879321a88086aea8e8a5b91d"
+    },
+    {
+      "audio_seconds": 4.696875,
+      "bytes": 150344,
+      "id": "tier7_multiturn:000554@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000554@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "cc41bc3dec15eef03535df06ed2d4771648ffaf96cd26035143f2d6a2f0cd8de"
+    },
+    {
+      "audio_seconds": 8.216875,
+      "bytes": 262984,
+      "id": "tier7_multiturn:000599@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000599@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "23b5c78473f7d8058c955027c6c0107e115eec0fb844cc54e7cc6afdaa3bff02"
+    },
+    {
+      "audio_seconds": 4.376875,
+      "bytes": 140104,
+      "id": "tier7_multiturn:000637@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000637@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e60e058d7107235e1adaa38762bc5354f87b5d28c391af2912d27111a7d5a13b"
+    },
+    {
+      "audio_seconds": 3.176875,
+      "bytes": 101704,
+      "id": "tier7_multiturn:000739@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000739@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c3d8e691aecb3b68a1a251a4ee09a7aab7cffdf66f499ed838a89459fd826e9a"
+    },
+    {
+      "audio_seconds": 1.976875,
+      "bytes": 63304,
+      "id": "tier7_multiturn:000813@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000813@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b150f50c3724f2065927d84b107bb4bb2c46425a2df284d63f64d21a59fa17ba"
+    },
+    {
+      "audio_seconds": 5.176875,
+      "bytes": 165704,
+      "id": "tier7_multiturn:000818@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_000818@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3f35368fb5594f7efae4b08a911a23995f5cc1205dfc8e617d7693329e75337f"
+    },
+    {
+      "audio_seconds": 5.096875,
+      "bytes": 163144,
+      "id": "tier7_multiturn:001098@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001098@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b962fac381b98501b1c19cf3c01f4d4f199abd8048e2b8a40e4dba61694a83c1"
+    },
+    {
+      "audio_seconds": 2.696875,
+      "bytes": 86344,
+      "id": "tier7_multiturn:001129@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001129@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d05c4c52866c63a88661d3e8ceed263e12d59b944396f31f895849dfd9478537"
+    },
+    {
+      "audio_seconds": 10.296875,
+      "bytes": 329544,
+      "id": "tier7_multiturn:001148@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001148@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "bfdd80fde05e7f9a52c9c2f0c597fdd724c06473168ababa03c6f4bb95147461"
+    },
+    {
+      "audio_seconds": 2.296875,
+      "bytes": 73544,
+      "id": "tier7_multiturn:001240@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001240@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ca9e3cc1f9cfd53ab54f18691c14cefe6a3ea64fa346ccf6c7d4a11e9ac436cf"
+    },
+    {
+      "audio_seconds": 6.136875,
+      "bytes": 196424,
+      "id": "tier7_multiturn:001272@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001272@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b559b9e34797440e42da313853b2c7f9f0362dc465a96f2b659e8ad2603fa272"
+    },
+    {
+      "audio_seconds": 1.416875,
+      "bytes": 45384,
+      "id": "tier7_multiturn:001292@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001292@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3061b24009f3b3f7540333ef524a08fe07cd128547194f3b4f51c0dddec20d76"
+    },
+    {
+      "audio_seconds": 5.416875,
+      "bytes": 173384,
+      "id": "tier7_multiturn:001293@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001293@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1cd194296f4d4f27f1a4cd4597e415020cc8cd3cf2a358f38415c98f0e8aa88e"
+    },
+    {
+      "audio_seconds": 1.816875,
+      "bytes": 58184,
+      "id": "tier7_multiturn:001418@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001418@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "9d16edb6a636e2e5705773afd2c8bb492930a58774af5f5a22b5a1034175b025"
+    },
+    {
+      "audio_seconds": 1.656875,
+      "bytes": 53064,
+      "id": "tier7_multiturn:001453@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001453@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "34042abeeab0f127f1da5a1d82b4b613bffb0f038c4af12636f4fe61d3423c91"
+    },
+    {
+      "audio_seconds": 1.176875,
+      "bytes": 37704,
+      "id": "tier7_multiturn:001516@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001516@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ffe880d0663cf6b17e29d13ee4bc4474452709d9038516509322ec27d9c73e36"
+    },
+    {
+      "audio_seconds": 35.71375,
+      "bytes": 1142884,
+      "id": "tier7_multiturn:001590@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001590@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ed3c8fbcf9b394d66cc9e163f23ad36c0eeb5e6ca5cc249fcbb64d86105ec077"
+    },
+    {
+      "audio_seconds": 6.470063,
+      "bytes": 207086,
+      "id": "tier7_multiturn:001599@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001599@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "dcc770956feedfc4a5df9c910fecc5e9c8feaaff64df0bbcc7070054ec0dd5ae"
+    },
+    {
+      "audio_seconds": 1.016875,
+      "bytes": 32584,
+      "id": "tier7_multiturn:001614@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001614@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "fbd5c79d9fc26ff2f3cf61d759707eec6b7f52188d8499ba1644b3a3cd471af5"
+    },
+    {
+      "audio_seconds": 4.056875,
+      "bytes": 129864,
+      "id": "tier7_multiturn:001629@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001629@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "fadd2310c6ffc5cd10774d01067442de9e4304c59bb28bf6a646aab3c829d3ff"
+    },
+    {
+      "audio_seconds": 4.936875,
+      "bytes": 158024,
+      "id": "tier7_multiturn:001646@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001646@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8f8aca335061e8449b14c80c9d0b29e3f6788acee2efe98f71c0cfdc8924187c"
+    },
+    {
+      "audio_seconds": 3.976875,
+      "bytes": 127304,
+      "id": "tier7_multiturn:001701@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001701@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "fc04163e4706029653e54dc16e6383c6bbeb6e76db7877a979b90b1cd6d4afd9"
+    },
+    {
+      "audio_seconds": 4.616875,
+      "bytes": 147784,
+      "id": "tier7_multiturn:001707@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001707@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3b0244905e7c22d5b4b5e9f83a77a719cff8265271077a71f0612ae01696e288"
+    },
+    {
+      "audio_seconds": 4.1495,
+      "bytes": 132828,
+      "id": "tier7_multiturn:001708@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001708@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "27a91d798ca46e360e9a6a87064d98209934cd66478533203edad875394768b1"
+    },
+    {
+      "audio_seconds": 3.816875,
+      "bytes": 122184,
+      "id": "tier7_multiturn:001732@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001732@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0d520d85e30bc3e4f045b8d827f2c700b3f0104678e0947ceeaa0841158e3581"
+    },
+    {
+      "audio_seconds": 12.7815,
+      "bytes": 409052,
+      "id": "tier7_multiturn:001734@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001734@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "73a164a4d9f53e011ae0dd72026dece4c42ae2cafa6b6326419fc57e095d1e98"
+    },
+    {
+      "audio_seconds": 1.674625,
+      "bytes": 53632,
+      "id": "tier7_multiturn:001777@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001777@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8861fe9d909c3902881cc687936eaf67968631a99647dee56c51a10dd1957225"
+    },
+    {
+      "audio_seconds": 25.79375,
+      "bytes": 825444,
+      "id": "tier7_multiturn:001781@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001781@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "478848a42ffc598b163eddbe786fe8db4f4632e6ad313def865db9a3ff5b6af8"
+    },
+    {
+      "audio_seconds": 1.5975,
+      "bytes": 51164,
+      "id": "tier7_multiturn:001834@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001834@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "719321368f31112c588f1a1d54ea9135958402bd06fc5197a75d6789fa7b348a"
+    },
+    {
+      "audio_seconds": 8.949063,
+      "bytes": 286414,
+      "id": "tier7_multiturn:001836@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001836@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0ee050cd5b9f75e4764bfe59a31cc85261f0e781903010dc38c40a5c95950c9e"
+    },
+    {
+      "audio_seconds": 3.976875,
+      "bytes": 127304,
+      "id": "tier7_multiturn:001865@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001865@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d45a9b6d4ad533784d2ac7c42f7b57a142c6210ca0dcf1a6dd760da52b10727d"
+    },
+    {
+      "audio_seconds": 3.096875,
+      "bytes": 99144,
+      "id": "tier7_multiturn:001892@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001892@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ae50c7b81073165933896c06251adee275fe031a778e9d01775536988102b63b"
+    },
+    {
+      "audio_seconds": 3.896875,
+      "bytes": 124744,
+      "id": "tier7_multiturn:001922@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_001922@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "129a555d8080054be918dbda4f06b6d0e78a2039ce6ab80e38225acc434fdb65"
+    },
+    {
+      "audio_seconds": 13.176875,
+      "bytes": 421704,
+      "id": "tier7_multiturn:002099@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_002099@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "fc4f74309a1ff35e3c0aa623641de7a44a69ec56068305a8d3fcb2ba3b3d66a3"
+    },
+    {
+      "audio_seconds": 5.016875,
+      "bytes": 160584,
+      "id": "tier7_multiturn:002115@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_002115@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "99b803751af7fe359b74fda57ce9cd24649c1c0503fa1362bd1e60bd1701600b"
+    },
+    {
+      "audio_seconds": 23.816875,
+      "bytes": 762184,
+      "id": "tier7_multiturn:002120@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier7_multiturn/tier7_multiturn_002120@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "e1cc9945024fd09aa752755c5e7e1599e5bea6883dda2ef4664b0cdb460a631e"
+    },
+    {
+      "audio_seconds": 15.177,
+      "bytes": 485708,
+      "id": "tier8_intent_blending:000010@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000010@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "430e4bac2429d72d6a538c87f9a8f0513ffbaaa00d0bd77945ef3fcbbdabbaaa"
+    },
+    {
+      "audio_seconds": 8.057,
+      "bytes": 257868,
+      "id": "tier8_intent_blending:000023@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000023@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "16f2e8219e1af395402801b72f66c5cce0bcdb2012d59dd0ffd8c05da37404b6"
+    },
+    {
+      "audio_seconds": 7.177,
+      "bytes": 229708,
+      "id": "tier8_intent_blending:000039@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000039@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "bf1cf6e8d95598f0f3991c0f591294ff232fa3ce1a23ad51869a7428fa213334"
+    },
+    {
+      "audio_seconds": 5.257,
+      "bytes": 168268,
+      "id": "tier8_intent_blending:000052@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000052@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6a799fd4aad1c30402800b099069be29a2f99b0b80cc204df0b60d63c701d0b2"
+    },
+    {
+      "audio_seconds": 6.777,
+      "bytes": 216908,
+      "id": "tier8_intent_blending:000061@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000061@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "00f1b14101176d6118197130bdd9d3aa36a8726c89d92e53e46ff33a0d7deb40"
+    },
+    {
+      "audio_seconds": 5.257,
+      "bytes": 168268,
+      "id": "tier8_intent_blending:000065@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000065@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "78f3c5a181c72617f9e3fa9642cc5eab0f85192ade7c4ee0ce300d243aec4d3c"
+    },
+    {
+      "audio_seconds": 5.097,
+      "bytes": 163148,
+      "id": "tier8_intent_blending:000108@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000108@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b04da96f793e8e4d72d32f71c4d3aeb502dd7c865db2da82a602a98be1a489a6"
+    },
+    {
+      "audio_seconds": 8.457,
+      "bytes": 270668,
+      "id": "tier8_intent_blending:000160@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000160@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "2027802a58d85e096dc360d08d8f0ed2ebf6351930ccd1429c36ce661abbf8ab"
+    },
+    {
+      "audio_seconds": 8.057,
+      "bytes": 257868,
+      "id": "tier8_intent_blending:000185@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000185@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1d29051fd5d504e0236849fd623e2c17c264564f5269e0ea1d6e5edf17d3f9ea"
+    },
+    {
+      "audio_seconds": 5.897,
+      "bytes": 188748,
+      "id": "tier8_intent_blending:000192@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000192@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d4e9dfb55539c9edfaddc07863cbc0fa55af4443823da83a7de515b9e28cb04b"
+    },
+    {
+      "audio_seconds": 5.666,
+      "bytes": 181356,
+      "id": "tier8_intent_blending:000201@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000201@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "1341bcdb2a36332bb94c1cdd33142ce3dd1fe64c8e46d6652235e93fbe2d1baf"
+    },
+    {
+      "audio_seconds": 10.386,
+      "bytes": 332396,
+      "id": "tier8_intent_blending:000213@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000213@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "13a65d5fe3128341e928c7a8989c8cda7666c925b76831dd0ae5e0e27f89ef6d"
+    },
+    {
+      "audio_seconds": 7.497,
+      "bytes": 239948,
+      "id": "tier8_intent_blending:000216@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000216@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "af28aa0971a642154ac46b444a3ef756eb32e7641f479e7c304fcd08f58a15e5"
+    },
+    {
+      "audio_seconds": 5.257,
+      "bytes": 168268,
+      "id": "tier8_intent_blending:000220@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000220@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "483f8bc4771ada774bc4a9d122db118b988c9103b3e9864cdeadd52e33f03b5f"
+    },
+    {
+      "audio_seconds": 9.177,
+      "bytes": 293708,
+      "id": "tier8_intent_blending:000224@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000224@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "bbe62542f3c067197347485e6ffa55318c13cefe9b6d00d79a144f8ad15bb284"
+    },
+    {
+      "audio_seconds": 10.057,
+      "bytes": 321868,
+      "id": "tier8_intent_blending:000231@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000231@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3241133cb8394031a5c103330295662b8ad3b8a1eac7f9943569c4ff96ee3ba6"
+    },
+    {
+      "audio_seconds": 6.217,
+      "bytes": 198988,
+      "id": "tier8_intent_blending:000245@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000245@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6564a7d3a2a5de48b5a52d2fa201af9210b83adadd56e6af20ffb671b73b2371"
+    },
+    {
+      "audio_seconds": 7.977,
+      "bytes": 255308,
+      "id": "tier8_intent_blending:000249@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000249@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "3194cc816455a13034c6969200fbdae2de70488fa54d140a8a693c2fa28d5e0e"
+    },
+    {
+      "audio_seconds": 15.417,
+      "bytes": 493388,
+      "id": "tier8_intent_blending:000269@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000269@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c22556def420a2f9ff6082be90bc08b54e42e0edcc465b2e7405bd11abef3ab8"
+    },
+    {
+      "audio_seconds": 4.057,
+      "bytes": 129868,
+      "id": "tier8_intent_blending:000284@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000284@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "bbaaa0a85220b615a031952029105b42c30589cfe8c4991cd5f0ad4c806bffce"
+    },
+    {
+      "audio_seconds": 6.708,
+      "bytes": 214700,
+      "id": "tier8_intent_blending:000305@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000305@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "4b84de55d69149c2f7949add8831f47835172f07e24b25c39c19def06d92fda9"
+    },
+    {
+      "audio_seconds": 7.977,
+      "bytes": 255308,
+      "id": "tier8_intent_blending:000324@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000324@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0cdfb34cabb5ba497276299dd243c886473c77d96e00f5eb810e402338db9bef"
+    },
+    {
+      "audio_seconds": 3.417,
+      "bytes": 109388,
+      "id": "tier8_intent_blending:000339@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000339@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "bee0eff22723285e6ed087696135eeb0c2de1630f5828b13e782c58e4a08d885"
+    },
+    {
+      "audio_seconds": 5.177,
+      "bytes": 165708,
+      "id": "tier8_intent_blending:000352@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000352@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "200b379d5d1843cd86fab54b3f0a58d311191516efb7bbded3d4a6fc03ea82d2"
+    },
+    {
+      "audio_seconds": 7.817,
+      "bytes": 250188,
+      "id": "tier8_intent_blending:000355@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000355@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6631857c2798ea77db9752d9a5980304ec6849b77a03f129bca157f0f39ae978"
+    },
+    {
+      "audio_seconds": 5.097,
+      "bytes": 163148,
+      "id": "tier8_intent_blending:000358@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000358@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "a095daf34345084c33e7defb995634a0c7ca97df37f234ba1145855e962cad71"
+    },
+    {
+      "audio_seconds": 5.097,
+      "bytes": 163148,
+      "id": "tier8_intent_blending:000372@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000372@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "52865e7215e8d5b0516bdf3bfe115f321c5bff5f24f8acc736f6f956251c3803"
+    },
+    {
+      "audio_seconds": 6.297,
+      "bytes": 201548,
+      "id": "tier8_intent_blending:000376@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000376@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d538925f445efe92d7b9838395c40a1908a0201562096408601285223ff66228"
+    },
+    {
+      "audio_seconds": 6.227,
+      "bytes": 199308,
+      "id": "tier8_intent_blending:000423@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000423@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "7147de1ba2b6b51c660c7f7fd3396de308a697d90e7b2df4b818d89e30ce1628"
+    },
+    {
+      "audio_seconds": 4.617,
+      "bytes": 147788,
+      "id": "tier8_intent_blending:000426@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000426@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "cdaadc09852ca65860a7eba3a1a7fb86f0500af38041989bea0e85895e3475d7"
+    },
+    {
+      "audio_seconds": 4.457,
+      "bytes": 142668,
+      "id": "tier8_intent_blending:000433@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000433@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "c3dfe2a941a166116e2201bbc06a746ced2be4764e9d8feeb8d9d21c4178c30f"
+    },
+    {
+      "audio_seconds": 6.217,
+      "bytes": 198988,
+      "id": "tier8_intent_blending:000434@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000434@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "2e12d780e1b50d7c13948c7401d0b3b06ff7338b5e4b7cb9be3e8d76758d91f5"
+    },
+    {
+      "audio_seconds": 5.497,
+      "bytes": 175948,
+      "id": "tier8_intent_blending:000441@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000441@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "0cfb2ac0bdd3cc04c7dd40ab8b51681ddec4a4ea0eeb400d97da33db504d33e2"
+    },
+    {
+      "audio_seconds": 5.737,
+      "bytes": 183628,
+      "id": "tier8_intent_blending:000475@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000475@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "689a0d689460b806bb54febaebb21ec2cf459261324415cd4816df5fa29add7b"
+    },
+    {
+      "audio_seconds": 5.737,
+      "bytes": 183628,
+      "id": "tier8_intent_blending:000484@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000484@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "392b8c51e09d8118fe1ef190b4db2936b43f9881b78656b3fb3fe3b6c5c8cd5c"
+    },
+    {
+      "audio_seconds": 3.977,
+      "bytes": 127308,
+      "id": "tier8_intent_blending:000488@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000488@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "34b3720d0dcd503ba4dae0cb70ad210820eddac93047099480f432e60a9f9098"
+    },
+    {
+      "audio_seconds": 6.857,
+      "bytes": 219468,
+      "id": "tier8_intent_blending:000489@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000489@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ef80d144fee57ca448dde36437bd7cb14f884638658e1e7151c3666e6592bc81"
+    },
+    {
+      "audio_seconds": 5.177,
+      "bytes": 165708,
+      "id": "tier8_intent_blending:000494@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000494@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "8a204da1c503bae13596373030d47b2f45d1e818c4d386bc05bd2f3364e09786"
+    },
+    {
+      "audio_seconds": 4.297,
+      "bytes": 137548,
+      "id": "tier8_intent_blending:000528@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000528@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "52830055e7224d43bb42ca0b522a3d8752eb73f2716db11bf09f7dfb60ebf85b"
+    },
+    {
+      "audio_seconds": 6.857,
+      "bytes": 219468,
+      "id": "tier8_intent_blending:000581@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000581@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "ac8a5c54693dad7dd57b35a27509d903c597b668bc2041a871a7af0a936c3595"
+    },
+    {
+      "audio_seconds": 6.697,
+      "bytes": 214348,
+      "id": "tier8_intent_blending:000631@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000631@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "52e7629adeaecb2600989c2bbe43a3b69ea9d6d91c1417e4270fc2c44a5d561c"
+    },
+    {
+      "audio_seconds": 3.897,
+      "bytes": 124748,
+      "id": "tier8_intent_blending:000656@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000656@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "133c7f40fd14589027ee59cb1b94c0bc1d61936ec0bdbb9a27013c9746a5c5f1"
+    },
+    {
+      "audio_seconds": 8.697,
+      "bytes": 278348,
+      "id": "tier8_intent_blending:000673@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000673@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b21cd981d7ae6b8c58c2f597dcc6699e6e0ceac493401f748322b128ce5fb535"
+    },
+    {
+      "audio_seconds": 7.417,
+      "bytes": 237388,
+      "id": "tier8_intent_blending:000696@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000696@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6a18a499b244c63e44a5c62acb310f695015fec53aa6908179dee827a9b4f711"
+    },
+    {
+      "audio_seconds": 7.417,
+      "bytes": 237388,
+      "id": "tier8_intent_blending:000713@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000713@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "6a4c731847051c662468e4e78d7abbfe46048a6a10780c71c9f89b44cf3a4993"
+    },
+    {
+      "audio_seconds": 4.777,
+      "bytes": 152908,
+      "id": "tier8_intent_blending:000720@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000720@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "d15dd74647e2eff8353755b0e109dba7ac5fb450b0a2a6a9ce9b1594619823f9"
+    },
+    {
+      "audio_seconds": 5.177,
+      "bytes": 165708,
+      "id": "tier8_intent_blending:000724@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000724@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "59e8cf59c8ce5df3bddc64a8619c5fa4e21c3d7b636dfc53113843cab10db8c9"
+    },
+    {
+      "audio_seconds": 6.057,
+      "bytes": 193868,
+      "id": "tier8_intent_blending:000758@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000758@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "f57f89431ebe37acc84e80c004f7a66ac02f849d7dda457aed7a33002f8efa72"
+    },
+    {
+      "audio_seconds": 7.897,
+      "bytes": 252748,
+      "id": "tier8_intent_blending:000763@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000763@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "286deab5d35952bb03467f7be88913d071242ba7a53b5b3e0580dbea01aae7a8"
+    },
+    {
+      "audio_seconds": 3.977,
+      "bytes": 127308,
+      "id": "tier8_intent_blending:000772@16k",
+      "media_relpath": "derived/a2t-calibration-400-16k-v1/tier8_intent_blending/tier8_intent_blending_000772@16k.wav",
+      "roles": [
+        "query"
+      ],
+      "sample_rate_hz": 16000,
+      "sha256": "b87eeead6cbdbf9589d6668ca7ca0774bbb7797a8502e03418cd505c5cbc798c"
+    }
+  ],
+  "manifest_sha256": "5648373ea9f9cd50f3f1a22bcc65dd6b2f6d37f3335f1ae466bdcf91a11ad849",
+  "parent_d1_sha256": "9c10fad1e5b625f977a5bdc71ed0c782e5d5c76c7a13af11ce811c5e152d35e3",
+  "schema": "saea-d1-media-supplement-v1",
+  "source_binding_sha256": "11d3bcc2489aa346affd77735a2d0a3bce7c2a1b807af74ccdaf9d281195ef29",
+  "study": "speech-aware-evidence-acquisition",
+  "total_bytes": 69126314
+}
