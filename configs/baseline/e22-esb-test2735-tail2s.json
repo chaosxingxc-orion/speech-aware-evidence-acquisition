@@ -1,0 +1,19 @@
+{
+  "arm": "bare-core",
+  "policy": "fixed",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "rails_arms": [
+    "zero-supply"
+  ],
+  "scorers": [
+    "asr-wer-esb-whisper",
+    "asr-wer-esb",
+    "cost"
+  ],
+  "task_instruction": "Transcribe the speech verbatim exactly as spoken. Never insert, repeat, or add any word you do not clearly hear in the audio. Output only the transcript text.",
+  "instruction_basis": "Byte-identical to configs/baseline/e22-esb-direct-zero.json, i.e. to the instruction the sealed SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1 flight sent on these same 2,735 published test segments, itself byte-identical to the Earnings-21 full-44 direct baseline's and to the sealed 2026-08-14 fixed-batch-zero-locked-buf90 fragment. This cell varies the MEDIA and nothing about the request; holding this string byte-identical to the sealed test arm is what makes the re-read a measurement of the encoding factor and of nothing else.",
+  "why_a_separate_baseline_fragment": "The values here are today identical to e22-esb-direct-zero's, and this is still its own file, for the reason configs/baseline/e22-esb-dev1500-tail2s.json already records: each cell's composed config_hash -- and therefore its protocol_hash and its exposure row -- must be movable only by an edit to ITS OWN fragments. Sharing the sealed test flight's baseline fragment would mean a later clarification written for this cell silently changed the identity of the sealed 2026-09-04 comparator's own composition.",
+  "scorer_basis": "Unchanged from e22-esb-direct-zero: asr-wer-esb-whisper is the paper-facing scorer (vendored Whisper EnglishTextNormalizer on both sides, whitespace tokenization, corpus aggregation -- total S+D+I over total reference words), asr-wer-esb reports the frozen saea-scoring-v1 number beside it, and entity-wer is absent by construction because data.carriers registers no entity layer for earnings22-original. merge_compounds is not applied, exactly as in the sealed arm, and that works against us. Scoring runs once over the complete manifest through core.scoring_batch, never sharded. The reference layer is the 2026-09-04 test layer the sealed arm was scored against, unedited; the '@ts2' id suffix is split off before the lookup by reproduction.esb_reference.published_segment_key.",
+  "obs_basis": "There is no OBS loop here and no windowing: an ESB utterance IS the request. policy 'fixed' sends exactly one contact per sample through core.flight.FlightRuntime's own concurrent dispatch, which is what makes this cell a short-form measurement rather than the long-form one the full-44 flight made."
+}
