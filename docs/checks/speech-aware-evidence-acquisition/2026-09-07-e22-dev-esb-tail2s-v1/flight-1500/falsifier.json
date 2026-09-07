@@ -1,0 +1,20 @@
+{
+  "attempt_id": "attempt-20260907T090708Z-df36cc",
+  "disagreements": [],
+  "measured_prompt_tokens_total": 251782,
+  "predicted_prompt_tokens_total": 251782,
+  "roster_column_disagreements": [],
+  "roster_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-dev1500-encoding-variants/tail-silence-2s/roster/flight-roster-receipt.json",
+  "roster_rows_this_cell_never_flew": 0,
+  "rows_checked": 1500,
+  "rows_expected": 1500,
+  "rows_where_the_falsifier_holds": 1500,
+  "rule": "section 4.1 of docs/readiness/2026-09-07-e22-dev-encoding-probes-v1-preregistration.md: prompt_tokens == 49 + analysis.e22_short_clip_encoding.llamacpp_audio_tokens(n_samples) for every flown row of this variant media",
+  "run_id": "SAEA-E22-DEV-ESB-TAIL2S-V1",
+  "schema": "saea-e22-encoding-probe-falsifier-v1",
+  "source": "sealed run trace, usage.prompt_tokens integers only; no hypothesis text, no score and no reference was read",
+  "study": "speech-aware-evidence-acquisition",
+  "text_envelope_tokens": 49,
+  "trace_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-TAIL2S-V1/attempt-20260907T090708Z-df36cc/SAEA-E22-DEV-ESB-TAIL2S-V1.trace.jsonl",
+  "verdict": "HOLDS"
+}
