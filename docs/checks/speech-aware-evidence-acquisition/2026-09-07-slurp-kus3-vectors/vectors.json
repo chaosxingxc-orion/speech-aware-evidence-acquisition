@@ -1,0 +1,150 @@
+{
+  "accounting": {
+    "embedding_contacts": 0,
+    "frozen_core_contacts": 0,
+    "gpu_hours": 0.0,
+    "paid_spend": 0,
+    "tool_contacts": 0,
+    "wall_seconds": 72.464
+  },
+  "boundary": {
+    "devel_sentence_text_read": false,
+    "gold_read": false,
+    "held_out_test_split_named": false,
+    "new_embedding_pass": false
+  },
+  "execution_profile": "model-free-check",
+  "exposure_ledger_row": "SAEA-SLURP-KU-S3-VECTORS-V1",
+  "generator": "scripts/build_slurp_kus3_vectors.py",
+  "out_dir_relpath": "vectors/slurp-kus3",
+  "produced_by": {
+    "dims": 2048,
+    "encoder_id": "omni-embed-nemotron-3b",
+    "exposure_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1",
+    "pooling": "mean over the attention mask, include_prompt=true, then L2 normalise",
+    "prompts": {
+      "passage": "passage: ",
+      "query": "query: "
+    },
+    "receipt_relpath": "vectors/slurp-mf7b/nemotron.receipt.json"
+  },
+  "readback": {
+    "facet-vectors.jsonl": {
+      "max_abs_delta": 0.0,
+      "rows": 11514
+    },
+    "query-vectors-speech-state.jsonl": {
+      "max_abs_delta": 0.0,
+      "rows": 1000
+    },
+    "query-vectors-speech-twin.jsonl": {
+      "max_abs_delta": 0.0,
+      "rows": 1000
+    },
+    "query-vectors-speech.jsonl": {
+      "max_abs_delta": 0.0,
+      "rows": 1000
+    }
+  },
+  "schema": "saea-kus3-vectors-receipt-v1",
+  "sets": {
+    "facet-vectors.jsonl": {
+      "bytes": 528621826,
+      "count": 11514,
+      "dimension": "content",
+      "dims": 2048,
+      "l2_norms": {
+        "max": 1.000000098528392,
+        "mean": 0.9999999997155281,
+        "min": 0.999999890076604
+      },
+      "role": "facet",
+      "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+      "source_file": "nemotron-key-vectors.jsonl",
+      "source_set": "nemotron-train-text",
+      "source_sha256": "b907220e1a8673fa788231b56b980a2875f7ed970f820b8380c9ad4a6ffcf224"
+    },
+    "query-vectors-speech-state.jsonl": {
+      "bytes": 45818996,
+      "count": 1000,
+      "dimension": "content",
+      "dims": 2048,
+      "l2_norms": {
+        "max": 1.000000088117833,
+        "mean": 1.0000000007888596,
+        "min": 0.9999999118829223
+      },
+      "role": "query",
+      "sha256": "a17382eb57149a49a69cda2ee5afbefe024ed5ad8d38e9b15b774d9038ed92b2",
+      "source_file": "nemotron-fused-q-speech-query-vectors.jsonl",
+      "source_set": "q-speech-nemotron-fused",
+      "source_sha256": "2403a143bac0b841e0e22f7f6725751208eae8343992d69090bda65afbf7d70a"
+    },
+    "query-vectors-speech-twin.jsonl": {
+      "bytes": 45824178,
+      "count": 1000,
+      "dimension": "content",
+      "dims": 2048,
+      "l2_norms": {
+        "max": 1.0000000867699457,
+        "mean": 1.000000001041703,
+        "min": 0.9999999017046383
+      },
+      "permutation": {
+        "bucket_key": "the scenario the SEALED closed-list response names; an unparsed or scenario-free response gets its own bucket",
+        "bucket_sizes": {
+          "(unparsed)": 3,
+          "alarm": 57,
+          "audio": 27,
+          "calendar": 57,
+          "cooking": 37,
+          "datetime": 58,
+          "email": 62,
+          "events": 8,
+          "general": 67,
+          "iot": 64,
+          "lists": 56,
+          "locations": 10,
+          "movies": 1,
+          "music": 87,
+          "news": 57,
+          "play": 32,
+          "qa": 55,
+          "recommendation": 37,
+          "social": 56,
+          "sport": 1,
+          "sports": 1,
+          "takeaway": 41,
+          "transport": 60,
+          "weather": 66
+        },
+        "bucket_source_relpath": "runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.outputs.jsonl",
+        "cross_bucket_rows": 3,
+        "gold_read": false,
+        "rule": "saea-kus3-within-predicted-scenario-derangement-v1",
+        "self_maps": 0
+      },
+      "role": "query",
+      "sha256": "64e99d51f145e88ad1d8172c465968a2c61166605cbb45fb9162329f92508a12",
+      "source_file": "nemotron-q-speech-query-vectors.jsonl",
+      "source_set": "q-speech-nemotron",
+      "source_sha256": "13d618ad920dc44c557556582e236a66a86322f4ae1abb5340f10be43c4ccfa8"
+    },
+    "query-vectors-speech.jsonl": {
+      "bytes": 45824178,
+      "count": 1000,
+      "dimension": "content",
+      "dims": 2048,
+      "l2_norms": {
+        "max": 1.0000000867699457,
+        "mean": 1.000000001041703,
+        "min": 0.9999999017046383
+      },
+      "role": "query",
+      "sha256": "99b2e1700a058640a12c86fb261e3fc1898cd99004b0157366682b2a048b2e7c",
+      "source_file": "nemotron-q-speech-query-vectors.jsonl",
+      "source_set": "q-speech-nemotron",
+      "source_sha256": "13d618ad920dc44c557556582e236a66a86322f4ae1abb5340f10be43c4ccfa8"
+    }
+  }
+}
