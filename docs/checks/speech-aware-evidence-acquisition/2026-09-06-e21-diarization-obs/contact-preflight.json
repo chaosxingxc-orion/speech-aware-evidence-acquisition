@@ -1,0 +1,71 @@
+{
+  "argv": [
+    "/home/chao/nemo-speech.cpp/build/cuda-diar/bin/nemo-speech",
+    "diarize",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/meeting-minutes/e21-diar-input/4386541.wav",
+    "--model",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/diar-sortformer-4spk-v2/diar_streaming_sortformer_4spk-v2.q8_0.gguf",
+    "--format",
+    "rttm",
+    "--device",
+    "cuda:0",
+    "--recording-id",
+    "4386541",
+    "--output",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-TOOL-DIARIZATION-V1/attempt-20260907T045837Z-5b3f93/rttm-preflight/4386541.rttm",
+    "--force"
+  ],
+  "device": "cuda:0",
+  "frozen_core_contacts": 0,
+  "generated_at": "2026-09-07T05:00:31.353196+00:00",
+  "gpu": {
+    "mean_utilization_pct": 60.2,
+    "peak_memory_used_mib": 510.0,
+    "peak_power_w": 95.07,
+    "peak_utilization_pct": 94.0,
+    "samples": 15
+  },
+  "output_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-TOOL-DIARIZATION-V1/attempt-20260907T045837Z-5b3f93/rttm-preflight",
+  "phase": "preflight",
+  "return_code": 0,
+  "rttm_count": 1,
+  "rttm_files": [
+    "4386541.rttm"
+  ],
+  "run_id": "SAEA-E21-TOOL-DIARIZATION-V1",
+  "schema": "saea-e21-diarization-contact-v1",
+  "stderr_tail": [
+    "/home/chao/nemo-speech.cpp/src/runtime/ggml/backend.cpp:101:<init_backends> Using CPU backend",
+    "/home/chao/nemo-speech.cpp/src/runtime/ggml/backend.cpp:120:<init_backends> Buffer type: CUDA0",
+    "/home/chao/nemo-speech.cpp/src/runtime/ggml/backend.cpp:120:<init_backends> Buffer type: CPU_REPACK",
+    "/home/chao/nemo-speech.cpp/src/runtime/ggml/backend.cpp:120:<init_backends> Buffer type: CPU",
+    "/home/chao/nemo-speech.cpp/src/runtime/ggml/loader.cpp:246:<GGUFLoader> GGUF file size: 147075776",
+    "/home/chao/nemo-speech.cpp/src/runtime/ggml/loader.cpp:249:<GGUFLoader> GGUF has 971 tensors",
+    "/home/chao/nemo-speech.cpp/src/runtime/ggml/loader.cpp:270:<GGUFLoader> Max tensor size: 19 MB",
+    "ggml_backend_cuda_graph_compute: CUDA graph warmup complete key=0x7fb63e3c0f80 signature=e5755b24cc293315 uid=19 nodes=1978 first=node_0 last=node_1977",
+    "ggml_backend_cuda_graph_compute: CUDA graph warmup complete key=0x7fb63e737040 signature=980b0039de4e7d39 uid=21 nodes=1978 first=node_0 last=node_1977",
+    "ggml_backend_cuda_graph_compute: CUDA graph warmup complete key=0x7fb63ea6e000 signature=85f1fba163db8650 uid=23 nodes=1978 first=node_0 last=node_1977",
+    "ggml_backend_cuda_graph_compute: CUDA graph warmup complete key=0x7fb63edaefc0 signature=d5f3950b6d307bd1 uid=25 nodes=1978 first=node_0 last=node_1977",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/meeting-minutes/e21-diar-input/4386541.wav -> /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-TOOL-DIARIZATION-V1/attempt-20260907T045837Z-5b3f93/rttm-preflight/4386541.rttm"
+  ],
+  "stdout_tail": [],
+  "study": "speech-aware-evidence-acquisition",
+  "tool": {
+    "claim_limit": "4-speaker design bound: AMI scenario meetings fit exactly; ICSI (3-10 speakers) is outside this tool's bound and must use the registered fallback (pyannote 3.1) instead. CC BY 4.0 attribution carried on any release.",
+    "license": "cc-by-4.0",
+    "lock_key": "diar-sortformer-4spk-v2",
+    "lock_path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+    "model_filename": "diar_streaming_sortformer_4spk-v2.q8_0.gguf",
+    "model_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/diar-sortformer-4spk-v2/diar_streaming_sortformer_4spk-v2.q8_0.gguf",
+    "model_sha256": "0679cfeb1ce356d0dea9470b31274f4bfc7eb927497d82005483770666da998a",
+    "model_sha256_matches_lock": true,
+    "revision": "5240a64075176943f677d30fa2171c780229f341",
+    "runtime": "NVIDIA NeMo-Speech.cpp (Apache-2.0), CUDA build, WSL2 ext4 sibling of the llama.cpp checkouts",
+    "runtime_binary": "/home/chao/nemo-speech.cpp/build/cuda-diar/bin/nemo-speech",
+    "runtime_binary_sha256": "1a3e3f4fe7db4c48e5d6e44a76d5adf2bbfef80024c023b0eab2766eb61aca78",
+    "runtime_binary_sha256_matches_lock": true,
+    "runtime_commit": "4c749a700500e077d4732a539eb082bf2208dac7"
+  },
+  "tool_version": "nemo-speech 1.0.0",
+  "wall_seconds": 18.518302623997442
+}

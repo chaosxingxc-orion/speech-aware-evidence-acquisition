@@ -1,10 +1,13 @@
 # SAEA-E21-TOOL-DIARIZATION-V1 — speaker diarization as a frozen tool-level OBSERVATION
 
-**Status: PREREGISTERED, NOT RUN.** This document states, before any diarization output exists, what
-the pass will produce, what it costs, and what it is and is not allowed to say. The reader
-(`reproduction/diarization.py`, schema `saea-diarization-v1`) and the feasibility receipt
-(`docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-diarization-feasibility/`) are
-committed; the pass is a separate act.
+**Status: EXECUTED 2026-09-07** — receipt
+`docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-diarization-obs/`, section 11 below.
+Sections 1–10 are the pre-registration as it stood before any diarization output existed and are
+left unedited; they state what the pass would produce, what it would cost, and what it is and is not
+allowed to say. The reader (`reproduction/diarization.py`, schema `saea-diarization-v1`) and the
+feasibility receipt
+(`docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-diarization-feasibility/`) were
+committed first; the pass was a separate act.
 
 Exposure row `SAEA-E21-TOOL-DIARIZATION-V1`, `bounded-discovery-probe`, registered with
 `consumed = no` before the first contact. **Zero frozen-core contacts.** The frozen Qwen3-Omni core
@@ -201,3 +204,44 @@ Discovery data. This row produces an observation, not a result. No superiority, 
 diarization-accuracy or Stage-3 claim; no knob tuned on the evaluation ten; no Earnings-22 contact; no
 confirmatory read; no frozen-core contact. `paper-scale-confirmatory` is not available to this
 repository and is not requested.
+
+## 11. What the pass actually did (2026-09-07)
+
+Executed on Route B exactly as §2 selected, attempt `attempt-20260907T045837Z-5b3f93`; full receipt
+and per-call table at
+`docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-diarization-obs/`, runner
+`scripts/e21_diarization_pass.py`.
+
+| §8 checklist step | outcome |
+|---|---|
+| 1. register before the first contact | row was already `consumed = no`; closed COMPLETED after the pass |
+| 2. build the inputs | **1,593 of 1,593** slice SHA-256s re-verified against the sealed `obs-derivation` receipts, 141,345.853 s concatenated, tiling into exactly the sealed roster's 1,593 windows; no MP3 decode, no resample, `ffmpeg` untouched |
+| 3. preflight and project | `4386541`, 18.518 s wall, **59.2× realtime**, 510 MiB peak VRAM, projecting **0.66 GPU-h** against the 2.0 ceiling — the stop rule did **not** fire |
+| 4. run the 44 in one process | one model load, four workers, `--device cuda:0`, 1,358.453 s wall, **104.0× realtime**, 708 MiB peak VRAM |
+| 5. build through `build_call_block`, load back | reader validation **PASS** on 44 of 44 calls and 1,593 of 1,593 windows |
+| 6. report strata, the §6 caveat and the cost | below |
+| 7. name no speaker, compute no DER, reach no prompt | held — the artifact carries anonymous ids only and no accuracy number of any kind |
+
+**Cost.** 45 call-level tool contacts of 50; 142,442.95 audio seconds of 145,000; **0.3825 GPU-h** of
+2.0; **0** frozen-core contacts; 0 paid API. Two invocations before the preflight were refused by the
+tool's own argument validation (`rc 2`, a directory-only flag on a single-file contact, 0.07 s, 0 MiB
+GPU); they loaded no model and read no audio, and the fix was proven on the next one-call run — the
+one permitted recovery, spent on the preflight.
+
+**Strata.** Per call the speaker count is min 2 / median 4 / max 4. Over the 1,593 windows:
+`speakers=0` 5, `speakers=1` 645, `speakers=2` 498, `speakers>=3` 445; `dominated` 1,351 and `shared`
+237 at the 0.60 threshold. 491 windows carry any overlap (mean share 0.33 %, p90 1.12 %, max 7.88 %).
+
+**The §6 caveat is the headline, not a footnote.** 38 of the 44 calls name more than four
+participants on their own ConEC roster (sizes 2–19, median 9), and those calls hold 1,476 of the
+1,593 windows — 92.7 %. Forty-two of 44 calls saturate the tool at four speakers, so `speaker_count`
+is a floor rather than a count, and the dominance stratum is the primary one exactly as §6 required.
+
+**One thing §2 could not have known.** The preflight geometry (one file, one worker, batching off)
+and the corpus geometry (a directory, four workers, batching on) are not bit-identical: on `4386541`
+they produce 123 vs 120 segments with boundaries shifted by one or two 80 ms frames. That is a
+batched-GPU-reduction effect, the same class this program already records for greedy `llama-server`
+decoding, and §2's Route A fallback is written for a tool that "disagrees with itself". It does not
+disagree where this artifact is read: **0 count-stratum, 0 dominance-stratum and 0 dominant-speaker
+disagreements over all 13 windows** (`geometry-agreement.json`). Route B stands, and the artifact is
+built from the corpus-pass RTTMs only.

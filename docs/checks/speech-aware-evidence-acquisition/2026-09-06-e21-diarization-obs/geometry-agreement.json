@@ -1,0 +1,37 @@
+{
+  "audio_seconds": 1097.1,
+  "count_stratum_disagreements": 0,
+  "disagreeing_windows": [],
+  "dominance_stratum_disagreements": 0,
+  "dominant_speaker_disagreements": 0,
+  "generated_at": "2026-09-07T05:37:04.264480+00:00",
+  "geometry_a": "preflight: one file, 1 worker, batching off",
+  "geometry_b": "corpus pass: directory, 4 workers, batching on",
+  "reading": "the two geometries are not bit-identical -- a batched GPU reduction moves a frame-level activation across the onset/offset threshold, so segment boundaries shift by a frame or two. What matters for this artifact is whether that reaches the STRATUM, which is the only field a verdict reads",
+  "rttm_a": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-TOOL-DIARIZATION-V1/attempt-20260907T045837Z-5b3f93/rttm-preflight/4386541.rttm",
+  "rttm_a_sha256": "30c632437aa99392e0833a637ee633ff51806053fd51f4c4fb06b44ace6684d9",
+  "rttm_b": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-TOOL-DIARIZATION-V1/attempt-20260907T045837Z-5b3f93/rttm/4386541.rttm",
+  "rttm_b_sha256": "484018c0af337a0eaa7d418beccd5591dc926026378940424afc4365df8ddd63",
+  "run_id": "SAEA-E21-TOOL-DIARIZATION-V1",
+  "sample_id": "4386541",
+  "schema": "saea-e21-diarization-geometry-agreement-v1",
+  "segments_a": 123,
+  "segments_b": 120,
+  "speakers_a": [
+    "speaker_1",
+    "speaker_2",
+    "speaker_3",
+    "speaker_4"
+  ],
+  "speakers_b": [
+    "speaker_1",
+    "speaker_2",
+    "speaker_3",
+    "speaker_4"
+  ],
+  "speech_seconds_a": 991.3240000000005,
+  "speech_seconds_b": 993.8400000000008,
+  "study": "speech-aware-evidence-acquisition",
+  "windows": 13,
+  "zero_contact": "two committed RTTM files re-read offline. No model, GPU, tool, network or frozen-core contact"
+}
