@@ -63,9 +63,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Mapping, Sequence
 
-REPO = Path(
-    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition"
-)
+#: The checkout this script belongs to, resolved from the script's own location
+#: exactly as ``scripts/flights/run_calibration_cell.py`` and
+#: ``scripts/flights/run_e22_esb_cell.py`` already do. The guard below is
+#: unchanged in force -- the imported package must resolve inside THIS tree, so
+#: the shared-venv hijack armor still holds; what changes is that a git worktree
+#: can now run a dry run or a wire check against its own configs instead of
+#: silently loading the main checkout's.
+REPO = Path(__file__).resolve().parents[2]
 
 if os.environ.get("PYTHONDONTWRITEBYTECODE") != "1":
     raise SystemExit("PYTHONDONTWRITEBYTECODE=1 is required")
@@ -78,7 +83,7 @@ if (
     Path(_pkg.__file__ or "")
     != REPO / "src" / "speech_aware_evidence_acquisition" / "__init__.py"
 ):
-    raise SystemExit("package resolves to %s, not the main checkout" % (_pkg.__file__,))
+    raise SystemExit("package resolves to %s, not this checkout" % (_pkg.__file__,))
 
 from speech_aware_evidence_acquisition.core.config import compose  # noqa: E402
 from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime  # noqa: E402
@@ -169,6 +174,48 @@ def population_ids(
     return None
 
 
+def derived_media_subdir(values: Mapping[str, object]) -> str | None:
+    """The derived media root this runtime view confines payloads to, if any.
+
+    A MEDIA VARIANT of the frozen DEV-1000 view (the 2026-09-07 ``@ts2``
+    silence-tail population) lives under its own ``derived/...`` root rather
+    than under the carrier's ``datasets/slurp`` tree, so payload confinement has
+    to be bound to that root instead. ``FlightRuntime`` already exposes the
+    ``carrier_root_resolver`` seam for exactly this and
+    ``scripts/flights/run_e22_esb_cell.py`` already uses it; this is the same
+    seam, wired the same way, and it is INERT for every view that does not
+    declare the key -- which is every view that existed before it.
+    """
+
+    declared = values.get("derived_media_subdir")
+    if declared is None:
+        return None
+    subdir = str(declared)
+    if (
+        subdir.startswith("/")
+        or "\\" in subdir
+        or ".." in subdir.split("/")
+        or not subdir.startswith("derived/")
+    ):
+        raise SystemExit(
+            "derived_media_subdir must be a relative POSIX path under 'derived/'"
+        )
+    return subdir
+
+
+def derived_carrier_root_resolver(values: Mapping[str, object]) -> dict[str, object]:
+    """``{}`` for a carrier-rooted view, or the one keyword that rebinds it."""
+
+    subdir = derived_media_subdir(values)
+    if subdir is None:
+        return {}
+
+    def resolver(_lock, _carrier_lock_key, resolved_root):
+        return Path(resolved_root) / subdir
+
+    return {"carrier_root_resolver": resolver}
+
+
 def roster_samples(
     values: Mapping[str, object],
     data_root_path: Path,
@@ -210,6 +257,12 @@ def roster_samples(
         if sample_id.startswith("slurp:test:"):
             raise SystemExit(
                 "runtime view names the HELD OUT test split sample %r; refusing" % sample_id
+            )
+        prefix = derived_media_subdir(values)
+        if prefix is not None and not str(item["media_relpath"]).startswith(prefix + "/"):
+            raise SystemExit(
+                "runtime view media %r is outside the declared derived root %r"
+                % (item["media_relpath"], prefix)
             )
         selected.append(item)
     if wanted is not None:
@@ -492,6 +545,7 @@ def build_runtime(
         attempt_id=attempt_id,
         runtime_root=RUNTIME_ROOT,
         adapter_factory=adapter_factory,
+        **derived_carrier_root_resolver(values),
         lock=lock,
         campaign_active=campaign_active,
         host="127.0.0.1",

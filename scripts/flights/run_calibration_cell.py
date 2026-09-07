@@ -136,6 +136,49 @@ def population_ids(
     return None
 
 
+def derived_media_subdir(values: Mapping[str, object]) -> str | None:
+    """The derived media root this dataset fragment confines payloads to, if any.
+
+    A MEDIA VARIANT of the frozen roster (the 2026-09-07 ``@ts2`` silence-tail
+    population) lives under its own ``derived/...`` root rather than under the
+    carrier's ``datasets/audio2tool`` tree, so payload confinement has to be
+    bound to that root instead. ``FlightRuntime`` already exposes the
+    ``carrier_root_resolver`` seam for exactly this and
+    ``scripts/flights/run_e22_esb_cell.py`` already uses it; this is the same
+    seam, wired the same way, and it is INERT for every fragment that does not
+    declare the key -- which is every fragment that existed before it.
+    """
+
+    declared = values.get("a2t_calibration_derived_subdir")
+    if declared is None:
+        return None
+    subdir = str(declared)
+    if (
+        subdir.startswith("/")
+        or "\\" in subdir
+        or ".." in subdir.split("/")
+        or not subdir.startswith("derived/")
+    ):
+        raise SystemExit(
+            "a2t_calibration_derived_subdir must be a relative POSIX path under "
+            "'derived/'"
+        )
+    return subdir
+
+
+def derived_carrier_root_resolver(values: Mapping[str, object]) -> dict[str, object]:
+    """``{}`` for a carrier-rooted fragment, or the one keyword that rebinds it."""
+
+    subdir = derived_media_subdir(values)
+    if subdir is None:
+        return {}
+
+    def resolver(_lock, _carrier_lock_key, resolved_root):
+        return Path(resolved_root) / subdir
+
+    return {"carrier_root_resolver": resolver}
+
+
 def load_cells(experiment: str) -> dict[str, Mapping[str, object]]:
     """Every cell the experiment fragment declares, keyed by ``cell_id``."""
 
@@ -157,6 +200,7 @@ def roster_samples(
     data_root_path: Path,
     *,
     limit_sample_ids: Sequence[str] | None = None,
+    media_prefix: str | None = None,
 ) -> tuple[Audio2ToolSample, ...]:
     """Samples built ONLY from the hash-pinned roster receipt's media facts.
 
@@ -164,7 +208,10 @@ def roster_samples(
     a receipt-scoped roster: no carrier task data, no gold, no expected
     calls -- identifiers, media paths and measured media identity only.
     ``limit_sample_ids`` narrows the roster to a registered smoke subset and
-    fails closed on any id the roster does not contain.
+    fails closed on any id the roster does not contain. ``media_prefix``, when
+    a dataset fragment declares a derived media root, requires EVERY row to
+    live under it, so a variant roster can never mix its own media with the
+    carrier population's.
     """
 
     measured = sha256_file(roster_path)
@@ -181,6 +228,13 @@ def roster_samples(
         if wanted is not None and sample_id not in wanted:
             continue
         media_relpath = item["media_relpath"]
+        if media_prefix is not None and not str(media_relpath).startswith(
+            media_prefix + "/"
+        ):
+            raise SystemExit(
+                "roster media %r is outside the declared derived root %r"
+                % (media_relpath, media_prefix)
+            )
         media_path = (root / media_relpath).resolve()
         media_path.relative_to(root)
         if not media_path.is_file():
@@ -352,11 +406,13 @@ def build_runtime(
         str(values["a2t_calibration_subset_receipt_sha256"]),
         root,
         limit_sample_ids=limit_sample_ids,
+        media_prefix=str(values.get("a2t_calibration_derived_subdir", "")) or None,
     )
     if limit_sample_ids is None and len(samples) != int(values["a2t_calibration_count"]):
         raise SystemExit("roster resolved %d samples" % len(samples))
     split_id = str(values["split_id"])
     instruction_text = resolve_cell_instruction(values, lock, root)
+    carrier_root_resolver = derived_carrier_root_resolver(values)
 
     def adapter_factory(lock_, root_):
         return CalibrationAdapter(
@@ -380,6 +436,7 @@ def build_runtime(
         attempt_id=attempt_id,
         runtime_root=RUNTIME_ROOT,
         adapter_factory=adapter_factory,
+        **carrier_root_resolver,
         lock=lock,
         campaign_active=campaign_active,
         host="127.0.0.1",

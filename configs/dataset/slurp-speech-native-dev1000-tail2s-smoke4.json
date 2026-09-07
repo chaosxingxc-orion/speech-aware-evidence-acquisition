@@ -1,0 +1,59 @@
+{
+  "audio_seconds_total": 23.011,
+  "carrier_lock_key": "slurp",
+  "count": 4,
+  "d1_manifest_sha256": null,
+  "d1_media_supplement": "receipts/artifacts/d1-slurp-dev1000-tail2s.json",
+  "d1_media_supplement_sha256": "56a75cf621806c1864a802e9b42e2478cc5621b6db2a0b700d9b4be032fedae1",
+  "derived_media_subdir": "derived/slurp-dev1000-tail2s-v1",
+  "items": [
+    {
+      "audio_seconds": 5.4555625,
+      "audio_sha256": "e96223a4bdfe2a9e3706aeacf6d0fe95861e3ceb7886c4b1214b97b75e31faf3",
+      "media_relpath": "derived/slurp-dev1000-tail2s-v1/audio-1497266596@ts2.flac",
+      "packet_id": "slurp/devel/000011/audio-1497266596@ts2",
+      "sample_id": "slurp:devel:000011:audio-1497266596@ts2",
+      "sample_rate_hz": 16000
+    },
+    {
+      "audio_seconds": 6.0954375,
+      "audio_sha256": "004f562e069b544e5b9dd6c589983c8305465f2cae98577e825c465a6a42a3d5",
+      "media_relpath": "derived/slurp-dev1000-tail2s-v1/audio-1498758443@ts2.flac",
+      "packet_id": "slurp/devel/000053/audio-1498758443@ts2",
+      "sample_id": "slurp:devel:000053:audio-1498758443@ts2",
+      "sample_rate_hz": 16000
+    },
+    {
+      "audio_seconds": 6.56,
+      "audio_sha256": "e2dc238fa33e1d467c856b1e9df3bf44449b98fe9011a15f251a504ce39fbb12",
+      "media_relpath": "derived/slurp-dev1000-tail2s-v1/audio-1488637952@ts2.flac",
+      "packet_id": "slurp/devel/000058/audio-1488637952@ts2",
+      "sample_id": "slurp:devel:000058:audio-1488637952@ts2",
+      "sample_rate_hz": 16000
+    },
+    {
+      "audio_seconds": 4.9,
+      "audio_sha256": "b52cfdcd2e4e0534ce8a0fe7f504ea762fea02f3695091e28e8bc30a082b7bec",
+      "media_relpath": "derived/slurp-dev1000-tail2s-v1/audio-1488550098@ts2.flac",
+      "packet_id": "slurp/devel/000068/audio-1488550098@ts2",
+      "sample_id": "slurp:devel:000068:audio-1488550098@ts2",
+      "sample_rate_hz": 16000
+    }
+  ],
+  "runtime_view_sha256": "ffb6f61c5eaeb3979fb63ade3b3f1c9830665944e260c3b9248f046b4c647e6b",
+  "schema": "saea-speech-native-runtime-view-v1",
+  "seed": 20260907,
+  "source_binding_sha256": "379217a96f21357591a077ecebe7d63878439d8cbe496e45a21a1b9c859c1918",
+  "split_identity_hash": "c80d2295848ddd3e635497faf7abbff2842b749c1bbb73958883ab335ea28ede",
+  "split_name": "DEV-1000-TAIL2S-SMOKE-4",
+  "split_role": "dev",
+  "status": "MODEL-FREE, LABEL-FREE ENGINEERING INPUT; NOT AN EXPOSURE REGISTRATION. The @ts2 media of the sealed DEV-1000 comparator population. This view grants no contact authority and the cell it names is not authorized; the packets it points at do not exist until a separately registered CPU-only encode pass materializes them.",
+  "study": "speech-aware-evidence-acquisition",
+  "variant_of": {
+    "media_build_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-slurp-dev1000-tail2s-media/build-receipt.json",
+    "rule": "exactly 2.0 s of digital silence appended to the sealed clip -- 2.0 x the file's OWN sample rate in zero samples; nothing is removed, no sealed sample is altered, the sample rate is never changed and no parent container is re-decoded that the sealed comparator did not itself send",
+    "sealed_split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "sealed_view": "configs/dataset/slurp-speech-native-dev1000.json",
+    "sealed_view_sha256": "f92846760b3657ba50009e52f98fcec96df27c16ac66ea57467b4f8fa42f288d"
+  }
+}

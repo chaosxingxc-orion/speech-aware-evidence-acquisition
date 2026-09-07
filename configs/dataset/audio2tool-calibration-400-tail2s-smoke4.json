@@ -1,0 +1,21 @@
+{
+  "a2t_calibration_audio_seconds_longest_item": 7.736875,
+  "a2t_calibration_audio_seconds_total": 20.3875,
+  "a2t_calibration_count": 4,
+  "a2t_calibration_d1_basis": "Unlike the sealed frozen 400 -- whose ids are inside the base D1 closure and which therefore declares NO supplement -- the @ts2 ids are new media that duplicate nothing in that closure, so an additive supplement is both needed and legal under contracts.gate_media_identity.",
+  "a2t_calibration_d1_media_supplement": "receipts/artifacts/d1-a2t-calibration-400-tail2s.json",
+  "a2t_calibration_d1_media_supplement_sha256": "4bfc77f06a7d92ea6f0b57c6ed4823996d4bc218ed56bf894f01cc4d0d885693",
+  "a2t_calibration_derived_subdir": "derived/a2t-calibration-400-tail2s-v1",
+  "a2t_calibration_exposure": "The same frozen 400 discovery split, re-encoded. Nothing is drawn. Media row SAEA-SN-MF-A2T-CAL400-TS2-MEDIA-V1. This fragment grants no contact authority.",
+  "a2t_calibration_flight_split_identity_hash": "0146aea2d980f4d1afa263b1705821e7cb90de91c49c95c1982df26922461c77",
+  "a2t_calibration_identity_hash_conventions": "a2t_calibration_split_identity_hash is SHA-256 over the LF-joined sorted @ts2 sample ids of THIS variant; a2t_calibration_flight_split_identity_hash is data.splits.split_identity_hash(prefixed('audio2tool', sample_ids)), the value core.flight.FlightRuntime.preflight computes at flight time. Both differ from the sealed frozen 400's, which is the identity separation the @ts2 suffix exists to guarantee.",
+  "a2t_calibration_media_build_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-a2t-calibration-400-tail2s-media/build-receipt.json",
+  "a2t_calibration_sample_rate_hz": 24000,
+  "a2t_calibration_split_identity_hash": "05877b579e97aea8b4e941ab7d1b44ee20b501f8d734989e8122bf1c500ea862",
+  "a2t_calibration_split_name": "A2T-CALIBRATION-400-TAIL2S-SMOKE-4",
+  "a2t_calibration_split_role": "discovery",
+  "a2t_calibration_subset_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-a2t-calibration-400-tail2s-media/roster/flight-roster-receipt.json",
+  "a2t_calibration_subset_receipt_sha256": "683f124e9dcda27bc14f5e3eafb454d46a636d94bcb95689df039ce7b3227db2",
+  "carrier_lock_key": "audio2tool",
+  "split_id": "A2T-CALIBRATION-400-TS2-SMOKE-4"
+}
